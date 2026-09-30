@@ -555,8 +555,8 @@
    "use": "alternatives",
    "summary": "128GB 통합 메모리라 70B(4비트, 약 41GB)가 올라가지만 생성은 약 4.5 t/s 이고 긴 문맥에서 더 떨어진다. 활성 파라미터가 약 5B 인 MoE gpt-oss-120b 는 Vulkan 으로 약 34 t/s. 용량이 장점이고 속도는 대역폭이 막는다.",
    "evidence": "measurement",
-   "numbers": "70B Q4_K_M: 읽기 94.7 · 생성 4.5 t/s · gpt-oss-120b: 읽기 430.6 · 생성 33.7 t/s",
-   "as_of": "2025-10",
+   "numbers": "70B(Llama 3.3 70B 기반 Shisa V2, Q4_K_M, HIP rocWMMA): 읽기 94.7 · 생성 4.5 t/s · gpt-oss-120b(Vulkan AMDVLK): 읽기 430.6 · 생성 33.7 t/s — 2026-09-30 원문에서 다시 확인",
+   "as_of": "2026-09",
    "confidence": "medium",
    "sources": [
     {
@@ -596,8 +596,8 @@
    "use": "alternatives",
    "summary": "LMSYS 측정: Llama 3.1 70B(FP8) 생성 2.7 t/s, gpt-oss-20b 49.7 t/s — 같은 20B 를 5090 은 205 t/s. 병목은 273GB/s LPDDR5x 대역폭이라고 짚었다. 묶음 처리는 잘 는다(8B: 배치 1 에서 20.5, 배치 32 에서 368 t/s).",
    "evidence": "measurement",
-   "numbers": "70B FP8: 읽기 803 · 생성 2.7 t/s · gpt-oss-20b 생성: Spark 49.7 vs 5090 205 · 273GB/s",
-   "as_of": "2025-10",
+   "numbers": "70B FP8: 읽기 803 · 생성 2.7 t/s · gpt-oss-20b 생성: Spark 49.7 vs 5090 205 · 273GB/s — 2026-09-30 원문에서 다시 확인",
+   "as_of": "2026-09",
    "confidence": "high",
    "sources": [
     {
