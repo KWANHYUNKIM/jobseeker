@@ -1358,6 +1358,18 @@
       "postings": 3,
       "study_items": 9,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "bemyfriends",
+      "name": "비마이프렌즈",
+      "aliases": [
+        "비마이프렌즈",
+        "bemyfriends"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 9,
+      "updated_at": "2026-09-30"
     }
   ]
 }

@@ -1,0 +1,420 @@
+{
+  "slug": "bemyfriends",
+  "name": "비마이프렌즈",
+  "name_en": "bemyfriends",
+  "aliases": [
+    "비마이프렌즈",
+    "bemyfriends"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "https://bemyfriends.com/",
+  "one_liner": "아티스트 · 브랜드가 자기 팬덤 플랫폼을 여는 SaaS b.stage(유료 구독자 100 만) — 동영상 · 커뮤니티 웹 프론트와 커머스 · 팬덤 백엔드를 뽑는다",
+  "company": {
+    "business": "비마이프렌즈는 **팬덤을 사업으로 바꾸는** 회사다 — 홈페이지는 IT 플랫폼과 컨설팅을 묶은 '글로벌 팬덤 비즈니스 토털 솔루션' 이라 부르고, 핵심 제품 **b.stage** 는 아티스트 · 크리에이터 · e스포츠 · 스포츠 · 미디어 · 브랜드 같은 **오너가 자기 팬덤 플랫폼을 여는 SaaS** 다(bstage.in). 여기에 K-Pop 전문 엔터 서비스 **b.stage+**, 글로벌 판매 · 결제 · 배송을 맡는 **이커머스 · 풀필먼트**, IP 비즈니스 컨설팅 · 운영 대행, **b.stage Ads** 가 붙는다. b.stage 뉴스는 **월간 활성 유료 구독자 100 만 명 돌파**, 스티커 숍, G-DRAGON · KPop Demon Hunters 공식 팬 커뮤니티를 든다. 공고는 이를 '대용량 트래픽의 글로벌 SaaS' · 'AWS EKS 기반 크리에이터 이코노미 SaaS' 라 적고, 웹이 **동영상(라이브 · VOD · DRM) · 채팅 · 에디터 · 투표 · 커머스** 를 다 만든다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "bemyfriends | Global Fandom Business Company",
+        "url": "https://bemyfriends.com/",
+        "publisher": "비마이프렌즈",
+        "summary": "팬덤의 가치를 사업으로 — 글로벌 팬덤 비즈니스 토털 솔루션(IT 플랫폼 + 컨설팅). b.stage(팬덤 허브), b.stage+(K-Pop 전문가가 이끄는 엔터 서비스), 이커머스 · 풀필먼트(글로벌 판매 · 결제 · 배송), IP 비즈니스 컨설팅 · 운영 대행, b.stage Ads."
+      },
+      {
+        "title": "Your fandom, your way on b.stage",
+        "url": "https://bstage.in/",
+        "publisher": "비마이프렌즈",
+        "summary": "b.stage 는 팬덤 비즈니스 오너(엔터 · 크리에이터 · e스포츠 · 스포츠 · 미디어 · 브랜드)가 자기 팬덤 플랫폼을 여는 토털 솔루션. 뉴스: 월간 활성 유료 구독자 100 만 명 돌파, 스티커 숍, b.stage datalabs, 골프 팬덤 플랫폼 Grounding, G-DRAGON · KPop Demon Hunters 공식 팬 커뮤니티."
+      },
+      {
+        "title": "Front-end Developer",
+        "url": "https://www.wanted.co.kr/wd/305712",
+        "publisher": "원티드",
+        "summary": "커뮤니티 · 커머스 글로벌 SaaS bstage 웹 — 동영상(플레이어 · 업로더 · 라이브 · VOD · DRM) · 채팅 · 위지윅 에디터 · 투표 · 서베이 · 커머스 · 커스터마이징, BUI 디자인 시스템. React · TS · Next.js, React-Query · Zustand, Sass module, Yarn · Vite, GitLab · ArgoCD. 5년, 리드 경험, WebView(In-App)."
+      }
+    ],
+    "scale": [
+      {
+        "label": "b.stage 월간 활성 유료 구독자",
+        "value": "100 만 명 돌파(자사 뉴스 제목)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Your fandom, your way on b.stage",
+            "url": "https://bstage.in/",
+            "publisher": "비마이프렌즈",
+            "summary": "b.stage 는 팬덤 비즈니스 오너(엔터 · 크리에이터 · e스포츠 · 스포츠 · 미디어 · 브랜드)가 자기 팬덤 플랫폼을 여는 토털 솔루션. 뉴스: 월간 활성 유료 구독자 100 만 명 돌파, 스티커 숍, b.stage datalabs, 골프 팬덤 플랫폼 Grounding, G-DRAGON · KPop Demon Hunters 공식 팬 커뮤니티."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "팬덤 멤버십 · 구독",
+        "how": "b.stage 에서 팬이 유료 구독한다(월간 활성 유료 구독자 100 만) — 오너와 수익을 어떻게 나누는지는 읽은 자료에 없다.",
+        "domains": [
+          "팬덤 커뮤니티 · 동영상 웹",
+          "팬덤 서비스 백엔드"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "Your fandom, your way on b.stage",
+            "url": "https://bstage.in/",
+            "publisher": "비마이프렌즈",
+            "summary": "b.stage 는 팬덤 비즈니스 오너(엔터 · 크리에이터 · e스포츠 · 스포츠 · 미디어 · 브랜드)가 자기 팬덤 플랫폼을 여는 토털 솔루션. 뉴스: 월간 활성 유료 구독자 100 만 명 돌파, 스티커 숍, b.stage datalabs, 골프 팬덤 플랫폼 Grounding, G-DRAGON · KPop Demon Hunters 공식 팬 커뮤니티."
+          }
+        ]
+      },
+      {
+        "name": "커머스 · 풀필먼트",
+        "how": "굿즈 등 실물 상품의 글로벌 판매 · 결제 · 배송을 맡는다 — 수수료 구조는 모른다.",
+        "domains": [
+          "커머스 백엔드"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "bemyfriends | Global Fandom Business Company",
+            "url": "https://bemyfriends.com/",
+            "publisher": "비마이프렌즈",
+            "summary": "팬덤의 가치를 사업으로 — 글로벌 팬덤 비즈니스 토털 솔루션(IT 플랫폼 + 컨설팅). b.stage(팬덤 허브), b.stage+(K-Pop 전문가가 이끄는 엔터 서비스), 이커머스 · 풀필먼트(글로벌 판매 · 결제 · 배송), IP 비즈니스 컨설팅 · 운영 대행, b.stage Ads."
+          },
+          {
+            "title": "Commerce Back-end Developer",
+            "url": "https://www.wanted.co.kr/wd/287859",
+            "publisher": "원티드",
+            "summary": "커머스 도메인 백엔드, AWS EKS 크리에이터 이코노미 SaaS, 글로벌 서비스. Kotlin/Java 3년, 클라우드 네이티브, RDB 또는 NoSQL. 우대 서비스 오픈 · 이벤트 기반 · 비동기 · JPA. 테스트 코드 · Spring."
+          }
+        ]
+      },
+      {
+        "name": "광고 · 컨설팅",
+        "how": "b.stage Ads 와 IP 비즈니스 컨설팅 · 운영 대행 — 과금 방식은 모른다.",
+        "domains": [
+          "팬덤 커뮤니티 · 동영상 웹"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "bemyfriends | Global Fandom Business Company",
+            "url": "https://bemyfriends.com/",
+            "publisher": "비마이프렌즈",
+            "summary": "팬덤의 가치를 사업으로 — 글로벌 팬덤 비즈니스 토털 솔루션(IT 플랫폼 + 컨설팅). b.stage(팬덤 허브), b.stage+(K-Pop 전문가가 이끄는 엔터 서비스), 이커머스 · 풀필먼트(글로벌 판매 · 결제 · 배송), IP 비즈니스 컨설팅 · 운영 대행, b.stage Ads."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "팬덤 커뮤니티 · 동영상 웹",
+        "why": "프론트 공고가 bstage 웹의 동영상(플레이어 · 업로더 · 라이브 · VOD · DRM) · 채팅 · 위지윅 에디터 · 투표 · 커머스 · 서비스 커스터마이징과 WebView(In-App)를 적는다 — 오너마다 자기 브랜드로 여는 SaaS 라 커스터마이징이 핵심이다.",
+        "what_to_know": [
+          "HLS · DRM(EME)",
+          "WebView 브리지",
+          "멀티테넌트 테마"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Front-end Developer",
+            "url": "https://www.wanted.co.kr/wd/305712",
+            "publisher": "원티드",
+            "summary": "커뮤니티 · 커머스 글로벌 SaaS bstage 웹 — 동영상(플레이어 · 업로더 · 라이브 · VOD · DRM) · 채팅 · 위지윅 에디터 · 투표 · 서베이 · 커머스 · 커스터마이징, BUI 디자인 시스템. React · TS · Next.js, React-Query · Zustand, Sass module, Yarn · Vite, GitLab · ArgoCD. 5년, 리드 경험, WebView(In-App)."
+          },
+          {
+            "title": "Your fandom, your way on b.stage",
+            "url": "https://bstage.in/",
+            "publisher": "비마이프렌즈",
+            "summary": "b.stage 는 팬덤 비즈니스 오너(엔터 · 크리에이터 · e스포츠 · 스포츠 · 미디어 · 브랜드)가 자기 팬덤 플랫폼을 여는 토털 솔루션. 뉴스: 월간 활성 유료 구독자 100 만 명 돌파, 스티커 숍, b.stage datalabs, 골프 팬덤 플랫폼 Grounding, G-DRAGON · KPop Demon Hunters 공식 팬 커뮤니티."
+          }
+        ]
+      },
+      {
+        "name": "팬덤 서비스 백엔드",
+        "why": "팬덤 백엔드 공고가 커뮤니티 기반 팬덤 서비스를 Kotlin/Java · EKS · NoSQL + RDB 로 만든다고 적는다.",
+        "what_to_know": [
+          "피드 · 댓글 저장 설계",
+          "멀티테넌트 SaaS",
+          "이벤트 기반"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "팬덤서비스 Back-end Developer (Junior)",
+            "url": "https://www.wanted.co.kr/wd/283093",
+            "publisher": "원티드",
+            "summary": "커뮤니티 기반 팬덤 서비스 백엔드, AWS EKS 크리에이터 이코노미 SaaS, 글로벌. Kotlin/Java 3년, 클라우드 네이티브, NoSQL 및 RDB. 우대 서비스 오픈 · 이벤트 기반 · 비동기."
+          }
+        ]
+      },
+      {
+        "name": "커머스 백엔드",
+        "why": "커머스 백엔드 공고와 홈페이지의 이커머스 · 풀필먼트(글로벌 판매 · 결제 · 배송)가 이어진다.",
+        "what_to_know": [
+          "주문 · 재고 정합성",
+          "글로벌 결제 · 통화",
+          "JPA 트랜잭션"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Commerce Back-end Developer",
+            "url": "https://www.wanted.co.kr/wd/287859",
+            "publisher": "원티드",
+            "summary": "커머스 도메인 백엔드, AWS EKS 크리에이터 이코노미 SaaS, 글로벌 서비스. Kotlin/Java 3년, 클라우드 네이티브, RDB 또는 NoSQL. 우대 서비스 오픈 · 이벤트 기반 · 비동기 · JPA. 테스트 코드 · Spring."
+          },
+          {
+            "title": "bemyfriends | Global Fandom Business Company",
+            "url": "https://bemyfriends.com/",
+            "publisher": "비마이프렌즈",
+            "summary": "팬덤의 가치를 사업으로 — 글로벌 팬덤 비즈니스 토털 솔루션(IT 플랫폼 + 컨설팅). b.stage(팬덤 허브), b.stage+(K-Pop 전문가가 이끄는 엔터 서비스), 이커머스 · 풀필먼트(글로벌 판매 · 결제 · 배송), IP 비즈니스 컨설팅 · 운영 대행, b.stage Ads."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "오너마다 다른 플랫폼을 한 코드로 연다",
+        "evidence": "b.stage is a total solution for fandom businesses that supports the growth of its owners and their global fandoms.",
+        "so_what": "한 SaaS 로 여러 아티스트 · 브랜드의 사이트를 여는 구조다 — 멀티테넌트 · 테마 커스터마이징 경험이 말이 된다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "앱 안의 웹을 전제로 한다",
+        "evidence": "• WebView(In-App) 내에서 동작하는 서비스 개발 경험이 있으신 분",
+        "so_what": "프론트 자격에 WebView 가 있다 — 네이티브 앱과 웹 사이의 결제 · 로그인 · 동영상 제약을 다뤄 본 경험을 준비한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "매출 · 인원 · 투자 규모는 이번에 읽은 자료에 없다(투자자 페이지만 있음)",
+    "오너와의 수익 배분 · 커머스 수수료 구조는 모른다",
+    "세 공고 모두 오래 열려 있는 게시다(wd 283093 · 287859 · 305712) — 실제 채용 중인지 지원 전에 확인한다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/305712",
+      "title": "Front-end Developer",
+      "site": "wanted",
+      "verdict": "경력 5년 이상. 글로벌 커머스 · 커뮤니티 **bstage 웹** — **동영상(플레이어 · 업로더 · 라이브 스트리밍 · VOD · DRM)** · 채팅 · **위지윅 에디터** · 투표 · 서베이 · 커머스 · **서비스 커스터마이징**, **BUI 디자인 시스템** 컴포넌트. 개발 환경은 React · TypeScript · Next.js, React-Query · Zustand, Sass module, Yarn · Vite, GitLab pipelines · ArgoCD. 자격은 프론트 5년, **프로젝트 리드(기술 검토 · 일정 산정 · 이슈 전파)**, JS · HTML · CSS 깊은 이해, **WebView(In-App) 서비스 경험**, React · TS · Next.js, 상태 관리. 우대는 IT 전공, 0 부터 개발, 커머스 · 커뮤니티, 반응형, AWS · Docker · K8s · ArgoCD. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "프론트 5년",
+          "리드 경험",
+          "WebView",
+          "React · Next.js"
+        ],
+        "can_learn": [
+          "HLS · DRM",
+          "위지윅 에디터",
+          "멀티테넌트 테마"
+        ]
+      },
+      "study": [
+        {
+          "topic": "팬덤 동영상 — HLS 라이브 · VOD 와 DRM",
+          "from": "task",
+          "quote": "• 동영상 (플레이어, 업로더, 라이브 스트리밍, VOD, DRM), 채팅, 컨텐츠 에디터 (위지윅), 투표, 서베이, 커머스, 서비스 커스터마이징 등 웹 어플리케이션에서 할 수 있는 다양한 제품들을 개발합니다.",
+          "priority": "core",
+          "why": "주요업무 첫 목록이 동영상이다. 유료 멤버십 콘텐츠라 DRM 이 붙는다.",
+          "gap_check": "HLS 라이브와 VOD 는 플레이어에서 무엇이 다른가(라이브 엣지 · 지연)? 브라우저 DRM(EME)은 Widevine · FairPlay 가 어디서 갈리고 iOS WebView 에서는 무엇이 막히나? 큰 영상을 업로드할 때 끊겨도 이어 올리려면(멀티파트 · 재개)?",
+          "drill": "hls.js 로 공개 HLS 스트림(라이브 · VOD)을 재생하는 플레이어 컴포넌트를 만들고 화질 전환 · 지연 표시를 붙인다. S3 멀티파트 업로드(사전 서명 URL)로 1GB 파일을 올리다 끊고 이어 올리는 업로더를 만들고, EME · FairPlay 제약을 브라우저별 표로 정리한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "hls.js",
+              "url": "https://github.com/video-dev/hls.js",
+              "kind": "docs"
+            },
+            {
+              "title": "MDN — Encrypted Media Extensions API",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Encrypted_Media_Extensions_API",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "앱 안의 웹 — WebView 에서 로그인 · 결제 · 동영상",
+          "from": "qualification",
+          "quote": "• WebView(In-App) 내에서 동작하는 서비스 개발 경험이 있으신 분",
+          "priority": "core",
+          "why": "자격요건이다. 팬덤 앱이 웹 화면을 WebView 로 띄우면 브라우저와 다른 제약이 생긴다.",
+          "gap_check": "웹과 네이티브가 메시지를 주고받는 브리지(postMessage · JS 인터페이스)는 어떻게 버전 관리하나? WebView 안에서 결제 · 외부 로그인 창이 열리지 않거나 쿠키가 안 남는 이유는(iOS ITP · 서드파티 쿠키)? 뒤로 가기 · 전체 화면 · 자동 재생은 누가 처리하나?",
+          "drill": "Next.js 페이지를 React Native WebView(또는 Android 샘플 앱)에 띄우고 '로그인 토큰 받기 · 결제 완료 알리기 · 전체 화면 요청' 세 메시지를 타입이 있는 브리지로 주고받는다. 브리지가 없는 일반 브라우저에서도 페이지가 동작하도록 기능 감지 폴백을 넣는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "React Native WebView — Guide",
+              "url": "https://github.com/react-native-webview/react-native-webview/blob/master/docs/Guide.md",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "오너마다 다른 사이트 — BUI 와 테마 커스터마이징",
+          "from": "task",
+          "quote": "• BUI (bemyfrinds design system) 컴포넌트를 개발합니다.",
+          "priority": "high",
+          "why": "주요업무이고 b.stage 는 오너(아티스트 · 브랜드)마다 자기 팬덤 플랫폼을 연다 — 같은 컴포넌트가 다른 색 · 로고 · 구성으로 떠야 한다.",
+          "gap_check": "오너별 색 · 글꼴 · 모서리를 CSS 변수(디자인 토큰)로 두면 무엇이 쉬워지나? 오너가 켜고 끄는 기능(투표 · 서베이 · 커머스)을 설정으로 조립하려면? Sass module 과 런타임 테마 변경은 어떻게 같이 쓰나?",
+          "drill": "Button · Card · Tabs 세 컴포넌트를 CSS 변수 토큰으로 만들고, 오너 설정 JSON(색 · 로고 · 켠 기능)을 읽어 레이아웃을 조립하는 Next.js 페이지를 만든다. 두 오너 설정으로 같은 코드가 다른 사이트처럼 보이는지 Storybook 으로 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Storybook — Theming",
+              "url": "https://storybook.js.org/docs/configure/user-interface/theming",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/287859",
+      "title": "Commerce Back-end Developer",
+      "site": "wanted",
+      "verdict": "경력 3-5년, 학력 · 전공 무관. **커머스 도메인 백엔드**, **AWS EKS** 기반 크리에이터 이코노미 SaaS, 글로벌 서비스 개발 · 운영. 자격은 **Kotlin 또는 Java 백엔드 3년**, 클라우드 네이티브, RDB 또는 NoSQL, 협업 · 코드 리뷰. 우대는 설계부터 오픈까지, **이벤트 기반 · 비동기 처리 운영**, **JPA**. 필요 역량에 테스트 코드 · Spring 이해. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Kotlin/Java 3년",
+          "클라우드 네이티브",
+          "RDB 또는 NoSQL"
+        ],
+        "can_learn": [
+          "재고 동시성",
+          "글로벌 결제 · 통화",
+          "outbox"
+        ]
+      },
+      "study": [
+        {
+          "topic": "굿즈 한정 판매 — 재고를 넘겨 팔지 않게",
+          "from": "task",
+          "quote": "• 커머스 도메인내의 백엔드 개발을 담당합니다.",
+          "priority": "core",
+          "why": "주요업무이고 팬덤 커머스는 한정 굿즈가 열리는 순간 주문이 몰린다.",
+          "gap_check": "재고 100 개에 동시에 1,000 명이 주문하면 무엇으로 초과 판매를 막나(행 잠금 · 조건부 UPDATE · Redis 선차감)? 결제 대기 중인 주문의 재고는 언제 돌려놓나(예약 · 만료)? 결제는 성공했는데 주문 생성이 실패하면?",
+          "drill": "Spring Boot(Kotlin) + JPA 로 재고 차감을 비관적 잠금 · `UPDATE … WHERE stock >= n` 조건부 갱신 두 방식으로 만들고, 동시 요청 1,000 개 테스트로 초과 판매와 처리량을 비교한다. 결제 대기 10 분 만료 시 재고 복원 스케줄러를 붙인다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Spring Data JPA — Locking",
+              "url": "https://docs.spring.io/spring-data/jpa/reference/jpa/locking.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "주문 뒤의 일은 이벤트로 — 결제 · 배송 · 알림",
+          "from": "preference",
+          "quote": "• 이벤트 기반 아키텍처 및 비동기 처리 시스템 운영 경험이 있으신 분",
+          "priority": "high",
+          "why": "우대사항이고 홈페이지의 풀필먼트(판매 · 결제 · 배송)가 주문 뒤로 여러 시스템을 잇는다.",
+          "gap_check": "주문 확정 뒤 배송 요청 · 알림 · 정산을 한 트랜잭션에서 부르면 무엇이 문제인가? 이벤트 발행과 DB 커밋을 어떻게 묶나(outbox)? 같은 이벤트를 두 번 받은 소비자는 어떻게 무시하나?",
+          "drill": "주문 확정 시 outbox 테이블에 이벤트를 쓰고 발행기가 SQS(또는 Kafka)로 보내는 흐름을 만든다. 배송 소비자가 이벤트 ID 로 중복을 걸러 두 번 받아도 한 번만 배송 요청을 만드는지, 발행기를 중간에 죽여도 누락이 없는지 테스트한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Chris Richardson — Transactional outbox",
+              "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+              "kind": "blog"
+            }
+          ]
+        },
+        {
+          "topic": "JPA 를 알고 쓰기 — N+1 과 트랜잭션 경계",
+          "from": "preference",
+          "quote": "• ORM (JPA) 기반의 개발 경험이 있으신 분",
+          "priority": "high",
+          "why": "우대사항이고 필요 역량에 Spring 이해 · 테스트 코드가 있다.",
+          "gap_check": "주문 목록에서 상품 · 옵션을 불러올 때 N+1 은 어디서 생기고 fetch join · batch size · DTO 조회 중 무엇을 고르나? 영속성 컨텍스트 안에서 바꾼 값이 언제 SQL 이 되나(flush)? 긴 트랜잭션이 커넥션 풀을 어떻게 말리나?",
+          "drill": "주문 → 주문 항목 → 상품 엔티티로 목록 API 를 만들고 쿼리 로그로 N+1 을 확인한 뒤 fetch join · @BatchSize · DTO 프로젝션 세 방법으로 고쳐 쿼리 수를 비교한다. 테스트에서 쿼리 수를 단언해 회귀를 막는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Hibernate ORM — Fetching",
+              "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#fetching",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/283093",
+      "title": "팬덤서비스 Back-end Developer (Junior)",
+      "site": "wanted",
+      "verdict": "경력 3-5년(제목은 Junior), 학력 · 전공 무관. **커뮤니티 기반 팬덤 서비스 백엔드**, AWS EKS 크리에이터 이코노미 SaaS, 글로벌. 자격은 Kotlin/Java 3년, 클라우드 네이티브, **NoSQL 및 RDB**, 협업 · 코드 리뷰. 우대는 설계부터 오픈, 이벤트 기반 · 비동기. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Kotlin/Java 3년",
+          "NoSQL + RDB",
+          "클라우드 네이티브"
+        ],
+        "can_learn": [
+          "피드 팬아웃",
+          "좋아요 카운터",
+          "테넌트 분리"
+        ]
+      },
+      "study": [
+        {
+          "topic": "아티스트가 글을 올리면 — 팬 피드와 알림 팬아웃",
+          "from": "task",
+          "quote": "• 커뮤니티 기반 팬덤 서비스의 백엔드 개발을 담당합니다.",
+          "priority": "core",
+          "why": "주요업무다. 팬덤 커뮤니티는 한 사람(아티스트)의 글에 수십만 팬이 동시에 몰리는 모양이다.",
+          "gap_check": "아티스트 글을 팬마다 피드에 미리 넣는 방식(쓰기 팬아웃)과 읽을 때 모으는 방식(읽기 팬아웃)은 이 모양에서 무엇이 나은가? 수십만 명에게 푸시 알림을 보낼 때 큐 · 배치 · 속도 제한은? 댓글 폭주 때 정렬(최신 · 인기)은 어떻게 싸게 하나?",
+          "drill": "Spring Boot(Kotlin)로 게시글 · 댓글 · 알림 API 를 만들고, 팔로워 10 만 명인 계정의 글 작성 시 알림을 큐로 1,000 명씩 나눠 보내는 워커를 짠다. 피드를 읽기 시점 조합으로 만들고 캐시를 붙여 동시 조회 부하 테스트를 한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Designing Data-Intensive Applications (Twitter home timeline 예시)",
+              "url": "https://dataintensive.net/",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "NoSQL 과 RDB 를 나눠 쓰기 — 무엇을 어디에 두나",
+          "from": "qualification",
+          "quote": "• NoSQL DB 및 RDB 개발 경험이 있으신 분",
+          "priority": "core",
+          "why": "자격요건이다. 커뮤니티의 댓글 · 반응 같은 대량 쓰기와 회원 · 결제 같은 정합성 데이터는 성격이 다르다.",
+          "gap_check": "댓글 · 좋아요를 DynamoDB(또는 MongoDB)에, 회원 · 구독은 RDB 에 두면 어떤 조회가 어려워지나? 좋아요 수를 매번 세지 않고 카운터로 두면 정확도는 어떻게 맞추나? 파티션 키를 게시글 ID 로 잡으면 인기 글이 한 파티션에 몰리는 문제는?",
+          "drill": "DynamoDB Local 에 댓글 테이블(PK=게시글 ID, SK=작성 시각)을 만들고 최신순 페이지 조회를 구현한다. 좋아요 카운터를 원자적 증가로 두고, 인기 글 하나에 쓰기를 몰아 쓰로틀링을 재현한 뒤 샤딩 키(게시글 ID + 버킷)로 나눠 본다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Amazon DynamoDB — Best practices for designing partition keys",
+              "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "여러 오너의 팬덤을 한 SaaS 에 — 테넌트 분리",
+          "from": "task",
+          "quote": "• AWS EKS 를 기반으로 한 크리에이터 이코노미 SaaS 개발에 참여할 수 있습니다.",
+          "priority": "high",
+          "why": "주요업무이고 b.stage 는 오너마다 자기 팬덤 플랫폼을 연다 — 한 오너의 회원 · 글이 다른 오너에 섞이면 안 된다.",
+          "gap_check": "오너(테넌트)를 도메인 · 서브도메인에서 어떻게 알아내 요청 컨텍스트에 두나? 모든 조회에 테넌트 조건을 빠뜨리지 않게 하려면? 대형 오너 한 곳의 트래픽 폭주가 다른 오너를 느리게 하지 않게 하려면(EKS 에서 분리 · 요청 제한)?",
+          "drill": "Spring Boot 필터에서 Host 헤더로 테넌트를 결정해 컨텍스트에 넣고, 리포지토리 계층에서 테넌트 조건을 강제한다. 다른 테넌트의 게시글 ID 로 조회하는 테스트가 404 가 되는지 확인하고, 테넌트별 요청 제한(Bucket4j)을 붙인다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "AWS — SaaS Tenant Isolation Strategies (whitepaper)",
+              "url": "https://docs.aws.amazon.com/whitepapers/latest/saas-tenant-isolation-strategies/saas-tenant-isolation-strategies.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
