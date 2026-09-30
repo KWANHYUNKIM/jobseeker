@@ -1287,6 +1287,19 @@
       "postings": 3,
       "study_items": 9,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "artotem",
+      "name": "아르템코퍼레이션",
+      "aliases": [
+        "아르템코퍼레이션",
+        "아르템",
+        "ARTOTEM"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 9,
+      "updated_at": "2026-09-30"
     }
   ]
 }

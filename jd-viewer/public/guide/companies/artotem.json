@@ -1,0 +1,373 @@
+{
+  "slug": "artotem",
+  "name": "아르템코퍼레이션",
+  "name_en": "ARTOTEM",
+  "aliases": [
+    "아르템코퍼레이션",
+    "아르템",
+    "ARTOTEM"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "https://artotem.me/",
+  "one_liner": "작가 · 공방의 도자기 · 가구 · 회화를 취향 추천으로 파는 아트 커머스 아르템 — 이미지 인프라 · 커머스 프론트 · 앱(추천 · 디지털 보증서)을 뽑는다",
+  "company": {
+    "business": "아르템코퍼레이션은 **작가 · 공방의 작품을 파는 아트 커머스 '아르템(ARTOTEM)'** 을 운영한다 — 공고와 홈페이지 모두 **'취향 맞춤형 아트 버티컬 커머스'** 라 부른다. 홈페이지 첫 화면은 '오늘, 이 작품 어때요?' 추천 · '지금 가장 핫한 아트 랭킹' · '라이징 아티스트' 로 짜여 있고, 파는 것은 **도자 식기 · 화병 · 가구 · 오브제 · 향 · 회화**(1만 원대부터 100만 원대까지)이며 입점/제휴 문의 창구가 있다. 공고는 컬렉터의 아트 소비와 아티스트의 지속 가능한 창작을 연결한다고 적고, 기존 아트 시장의 **개인화 부재 · 소통 부족**을 풀어 **론칭 1 개월 만에 마켓플레이스를 구축**했다고 한다. 앱 공고에 **AI 개인화 추천**과 **디지털 보증서(NFT 등)** 연동이 있다. 목표는 글로벌 · K-아트. 모집중 셋(DevOps · 프론트 · 앱) 모두 3년 이상이다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "아르템 — 취향 맞춤형 아트 버티컬 커머스",
+        "url": "https://artotem.me/",
+        "publisher": "아르템코퍼레이션",
+        "summary": "첫 화면: '오늘, 이 작품 어때요?' 추천, '지금 가장 핫한 아트 랭킹', '라이징 아티스트'. 상품은 작가 · 공방의 도자 식기 · 화병 · 가구 · 오브제 · 향 · 회화(1만 원대 ~ 100만 원). 입점/제휴 문의. 통신판매업 신고 제2023-서울서초-2431호, (주)아르템코퍼레이션(서울 서초구)."
+      },
+      {
+        "title": "인프라 개발자 (DevOps Engineer)",
+        "url": "https://www.wanted.co.kr/wd/372131",
+        "publisher": "원티드",
+        "summary": "아르템(ARTOTEM) '취향 맞춤형 아트 버티컬 커머스' — 컬렉터와 아티스트를 연결, 론칭 1 개월 만에 마켓플레이스 구축, 글로벌 · K-아트 목표. 대규모 아트/이미지 자산 저장 · 서비스 인프라, CI/CD, AWS/GCP IaC. 클라우드 3년, Docker · K8s. 우대 대용량 이미지 트래픽, 이커머스/핀테크."
+      },
+      {
+        "title": "앱 개발자 (App Developer)",
+        "url": "https://www.wanted.co.kr/wd/372136",
+        "publisher": "원티드",
+        "summary": "아트 버티컬 커머스 앱(iOS/Android), 모바일 인터랙션, AI 개인화 추천 · 디지털 보증서(NFT 등) 연동, 앱 성능 · 크래시 모니터링. Flutter · RN 또는 Swift/Kotlin 3년, 상태 관리 · 비동기, REST/GraphQL. 우대 결제 · 커머스, 초기 A to Z."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "아트 · 공예 작품 판매(마켓플레이스)",
+        "how": "작가 · 공방이 입점해 작품을 팔고, 아르템이 통신판매업자로 판매 · 결제 · 배송을 잇는다 — 수수료율 · 매입 여부는 읽은 자료에 없다.",
+        "domains": [
+          "작품 이미지 인프라",
+          "발견 → 구매 커머스 프론트",
+          "앱 · 개인화 추천 · 디지털 보증서"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "아르템 — 취향 맞춤형 아트 버티컬 커머스",
+            "url": "https://artotem.me/",
+            "publisher": "아르템코퍼레이션",
+            "summary": "첫 화면: '오늘, 이 작품 어때요?' 추천, '지금 가장 핫한 아트 랭킹', '라이징 아티스트'. 상품은 작가 · 공방의 도자 식기 · 화병 · 가구 · 오브제 · 향 · 회화(1만 원대 ~ 100만 원). 입점/제휴 문의. 통신판매업 신고 제2023-서울서초-2431호, (주)아르템코퍼레이션(서울 서초구)."
+          },
+          {
+            "title": "프론트엔드 개발자 (Frontend Developer)",
+            "url": "https://www.wanted.co.kr/wd/372133",
+            "publisher": "원티드",
+            "summary": "React · Vue · Next.js 아트 커머스 웹/모바일, 발견 → 구매 사용자 여정, 몰입 인터랙션 · 비주얼, 결제 모듈 · 배송 트래킹 안정성. React 또는 Vue 3년, JS · TS, 웹 표준 · 크로스 브라우징."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "작품 이미지 인프라",
+        "why": "DevOps 공고가 대규모 아트/이미지 자산의 저장 · 관리 · 서비스 인프라와 대용량 이미지 트래픽 최적화를 적는다 — 작품은 사진이 곧 상품이다.",
+        "what_to_know": [
+          "이미지 변환 CDN",
+          "WebP/AVIF",
+          "S3/GCS 수명 주기"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "인프라 개발자 (DevOps Engineer)",
+            "url": "https://www.wanted.co.kr/wd/372131",
+            "publisher": "원티드",
+            "summary": "아르템(ARTOTEM) '취향 맞춤형 아트 버티컬 커머스' — 컬렉터와 아티스트를 연결, 론칭 1 개월 만에 마켓플레이스 구축, 글로벌 · K-아트 목표. 대규모 아트/이미지 자산 저장 · 서비스 인프라, CI/CD, AWS/GCP IaC. 클라우드 3년, Docker · K8s. 우대 대용량 이미지 트래픽, 이커머스/핀테크."
+          }
+        ]
+      },
+      {
+        "name": "발견 → 구매 커머스 프론트",
+        "why": "프론트 공고가 발견부터 구매까지의 여정, 몰입 인터랙션, 결제 모듈 · 배송 트래킹 안정성을 적는다.",
+        "what_to_know": [
+          "Next.js 이미지 최적화",
+          "PG 결제 연동",
+          "Core Web Vitals"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "프론트엔드 개발자 (Frontend Developer)",
+            "url": "https://www.wanted.co.kr/wd/372133",
+            "publisher": "원티드",
+            "summary": "React · Vue · Next.js 아트 커머스 웹/모바일, 발견 → 구매 사용자 여정, 몰입 인터랙션 · 비주얼, 결제 모듈 · 배송 트래킹 안정성. React 또는 Vue 3년, JS · TS, 웹 표준 · 크로스 브라우징."
+          }
+        ]
+      },
+      {
+        "name": "앱 · 개인화 추천 · 디지털 보증서",
+        "why": "앱 공고가 AI 개인화 추천 · 디지털 보증서(NFT 등) 연동과 앱 성능 · 크래시 모니터링을 적는다.",
+        "what_to_know": [
+          "추천 노출 로깅",
+          "보증서 검증 흐름",
+          "Crashlytics"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "앱 개발자 (App Developer)",
+            "url": "https://www.wanted.co.kr/wd/372136",
+            "publisher": "원티드",
+            "summary": "아트 버티컬 커머스 앱(iOS/Android), 모바일 인터랙션, AI 개인화 추천 · 디지털 보증서(NFT 등) 연동, 앱 성능 · 크래시 모니터링. Flutter · RN 또는 Swift/Kotlin 3년, 상태 관리 · 비동기, REST/GraphQL. 우대 결제 · 커머스, 초기 A to Z."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "초기 단계에서 전 영역을 한꺼번에 뽑는다",
+        "evidence": "• 초기 프로덕트의 아키텍처 설계부터 빌드, 배포, 스토어 등록까지의 A to Z 프로세스 리드 경험",
+        "so_what": "세 공고 모두 창업 · PO 경험을 우대한다 — 맡은 기술 밖의 결정(무엇을 먼저 만들지)까지 이야기할 준비를 한다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "사진이 상품이라 이미지 품질과 속도가 사업이다",
+        "evidence": "• 대규모 아트/이미지 자산의 안정적인 저장, 관리 및 서비스 제공 인프라 구축",
+        "so_what": "이미지 최적화(포맷 · 크기 · CDN)를 해 본 경험이 인프라 · 프론트 · 앱 어느 자리에서든 말이 된다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "투자 · 매출 · 인원 · 거래액은 읽은 자료에 없다",
+    "판매 수수료율 · 매입 여부는 모른다",
+    "디지털 보증서가 실제로 블록체인(NFT)인지는 공고가 'NFT 등' 이라고만 적는다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/372131",
+      "title": "인프라 개발자 (DevOps Engineer)",
+      "site": "wanted",
+      "verdict": "경력 3년 이상. **대규모 아트/이미지 자산**의 저장 · 관리 · 서비스 인프라, **CI/CD** 구축 · 개선, **AWS/GCP IaC** 운영 자동화. 자격은 **클라우드 구축 · 운영 3년**, **Docker · Kubernetes 깊은 이해 · 운영**, 성능 이슈를 빨리 알아채고 해결. 우대는 **대용량 이미지/미디어 트래픽 처리 · 최적화**, 이커머스 · 핀테크, 창업 · PO, 아트 관련 경험. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "클라우드 3년",
+          "Docker · K8s 운영",
+          "성능 문제 해결"
+        ],
+        "can_learn": [
+          "이미지 변환 CDN",
+          "Terraform",
+          "비용 관찰"
+        ]
+      },
+      "study": [
+        {
+          "topic": "작품 사진을 빠르게 — 원본 보관 + 요청 시 변환 + CDN",
+          "from": "task",
+          "quote": "• 대규모 아트/이미지 자산의 안정적인 저장, 관리 및 서비스 제공 인프라 구축",
+          "priority": "core",
+          "why": "주요업무 첫 줄이고 우대에 대용량 이미지 트래픽 최적화가 있다.",
+          "gap_check": "작가가 올린 20MB 원본을 목록 · 상세 · 확대 화면에 각각 어떤 크기 · 포맷으로 주나? 변환본을 미리 다 만들어 두나, 요청 때 만들고 CDN 에 캐시하나? 원본을 지워선 안 되는 이유(나중에 다른 크기가 필요)와, 오래된 변환본 비용은 어떻게 줄이나?",
+          "drill": "S3(또는 GCS)에 원본을 두고 CloudFront + Lambda(또는 Cloud Run + imgproxy)로 `?w=400&fmt=webp` 식 요청 시 변환을 만든다. 같은 사진의 JPEG 원본 · WebP · AVIF 크기와 첫 요청 · 캐시 적중 지연을 표로 비교하고, 변환본에 수명 주기 규칙을 건다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "imgproxy",
+              "url": "https://imgproxy.net/",
+              "kind": "docs"
+            },
+            {
+              "title": "web.dev — Serve images in modern formats",
+              "url": "https://web.dev/articles/serve-images-webp",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AWS/GCP 를 코드로 — Terraform 과 환경 분리",
+          "from": "task",
+          "quote": "• AWS/GCP 환경에서 서비스 운영 자동화 (IaC) 구축 및 관리",
+          "priority": "core",
+          "why": "주요업무다. 초기 스타트업이라 손으로 만든 리소스가 쌓이기 전에 코드로 옮기는 것이 일이다.",
+          "gap_check": "이미 콘솔로 만든 버킷 · DB 를 Terraform 으로 가져오려면(import)? 개발 · 운영 환경을 워크스페이스로 나누나 디렉터리로 나누나? state 파일은 어디에 두고 잠그나? 두 클라우드를 같이 쓰면 무엇이 두 배가 되나?",
+          "drill": "콘솔로 버킷 하나를 만든 뒤 Terraform import 로 코드에 가져오고, 모듈 하나(버킷 + CDN)를 dev/prod 두 디렉터리에서 변수만 달리 써서 올린다. 원격 state(S3 + DynamoDB 잠금 또는 GCS)를 설정하고 두 사람이 동시에 apply 하면 막히는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Terraform — Import",
+              "url": "https://developer.hashicorp.com/terraform/language/import",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Kubernetes 운영 — 성능 문제를 빨리 알아채기",
+          "from": "qualification",
+          "quote": "• 서비스의 성능 이슈를 빠르게 인지하고 해결할 수 있는 능력",
+          "priority": "high",
+          "why": "자격요건이고 Docker · K8s 운영 경험과 함께 적혀 있다.",
+          "gap_check": "파드가 느려졌을 때 CPU 스로틀링 · 메모리 한도 · 노드 부족 중 무엇인지 어떻게 가르나? requests · limits 를 잘못 잡으면 무엇이 생기나(OOMKilled · 스케줄 실패)? 세일 · 인플루언서 노출로 트래픽이 튈 때 HPA 는 얼마나 늦나?",
+          "drill": "kind(또는 minikube)에 작은 API 를 올리고 부하 도구로 몰아 CPU limit 을 낮게 · 높게 두 번 돌려 지연 차이와 스로틀링 지표를 본다. HPA 를 붙여 부하가 튈 때 파드가 늘기까지 걸리는 시간을 재고, 미리 늘려 두는 방법(최소 복제 수 예약)을 적는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Kubernetes — Resource Management for Pods and Containers",
+              "url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/372133",
+      "title": "프론트엔드 개발자 (Frontend Developer)",
+      "site": "wanted",
+      "verdict": "경력 3년 이상(또는 그에 준하는 실력). **React · Vue · Next.js** 아트 커머스 웹/모바일, 작품 **'발견' 부터 '구매' 까지**의 사용자 여정, **몰입 인터랙션 · 비주얼**, **결제 모듈 · 배송 트래킹 안정성**. 자격은 React 또는 Vue 3년, JS(ES6+) · TypeScript, 웹 표준 · 크로스 브라우징. 우대는 이커머스, 창업 · PO, 아트 관련 경험. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "React 또는 Vue 3년",
+          "TypeScript",
+          "크로스 브라우징"
+        ],
+        "can_learn": [
+          "Next.js 이미지",
+          "PG 결제 위젯",
+          "LCP 개선"
+        ]
+      },
+      "study": [
+        {
+          "topic": "작품 목록 · 상세를 빠르게 — Next.js 이미지와 LCP",
+          "from": "task",
+          "quote": "• 몰입도를 높이는 인터랙션 및 비주얼 요소를 개발하여 아트 감상 경험 극대화",
+          "priority": "core",
+          "why": "주요업무다. 큰 작품 사진과 인터랙션은 느린 첫 화면(LCP) · 레이아웃 흔들림(CLS)과 맞바꾸기 쉽다.",
+          "gap_check": "상세 화면의 첫 작품 사진이 LCP 요소일 때 무엇을 해야 하나(priority · 크기 지정 · 적절한 sizes)? 목록 무한 스크롤에서 아래 사진을 지연 로드하면서 자리 흔들림을 막으려면? 확대 · 스와이프 인터랙션이 메인 스레드를 막지 않게 하려면?",
+          "drill": "Next.js 로 작품 목록 · 상세 두 화면을 만들고 next/image 의 sizes · priority · placeholder=blur 를 넣기 전후로 Lighthouse 의 LCP · CLS 를 잰다. 상세 사진 확대를 CSS transform 으로 구현해 성능 탭에서 긴 작업이 생기지 않는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Next.js — Image Component",
+              "url": "https://nextjs.org/docs/app/api-reference/components/image",
+              "kind": "docs"
+            },
+            {
+              "title": "web.dev — Largest Contentful Paint",
+              "url": "https://web.dev/articles/lcp",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "결제가 끊겨도 주문이 꼬이지 않게 — PG 연동 프론트",
+          "from": "task",
+          "quote": "• 결제 모듈, 배송 트래킹 등 커머스 프론트엔드 안정성 확보",
+          "priority": "core",
+          "why": "주요업무다. 결제 창에서 뒤로 가기 · 새로 고침 · 앱 전환이 일어나면 주문 상태가 어긋나기 쉽다.",
+          "gap_check": "결제 성공 리다이렉트를 받았다고 프론트가 '주문 완료' 를 띄워도 되나(서버 승인 확인)? 결제 버튼을 두 번 누르면 무엇으로 막나(주문 ID · 멱등 키)? 모바일 웹에서 카드사 앱으로 넘어갔다 돌아올 때 상태는 어디서 복원하나?",
+          "drill": "토스페이먼츠(또는 포트원) 테스트 키로 결제 위젯을 붙이고, 성공 URL 에서 서버 승인 API 를 거친 뒤에만 완료 화면을 띄운다. 버튼 연타 · 결제 중 새로 고침 · 실패 URL 세 경우를 일부러 만들어 주문 상태가 한 번만 바뀌는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "토스페이먼츠 개발자센터 — 결제 연동",
+              "url": "https://docs.tosspayments.com/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "발견 → 구매 여정을 숫자로 — 퍼널 이벤트 설계",
+          "from": "task",
+          "quote": "• 유저가 작품을 '발견'부터 '구매'까지 매끄럽게 경험하는 최적의 사용자 여정 구현",
+          "priority": "high",
+          "why": "주요업무이고 우대에 데이터 기반 판단이 있다. 무엇이 '매끄러운지' 는 이탈 지점을 봐야 안다.",
+          "gap_check": "추천 노출 → 작품 클릭 → 상세 체류 → 찜 → 장바구니 → 결제 사이 어디서 이탈하는지 보려면 어떤 이벤트에 어떤 속성(작품 ID · 노출 위치 · 추천 출처)을 붙이나? 이벤트 이름을 화면마다 제각각 지으면 무엇이 깨지나?",
+          "drill": "앞 과제 화면에 이벤트 6 개를 정의한 표(이름 · 시점 · 속성)를 만들고 GA4(또는 Amplitude 무료)에 보낸다. 가짜 세션 몇 개로 퍼널 보고서를 만들어 이탈 단계를 확인하고, 추천 출처별 전환율을 나눠 본다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Google Analytics — Recommended events (ecommerce)",
+              "url": "https://developers.google.com/analytics/devguides/collection/ga4/ecommerce",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/372136",
+      "title": "앱 개발자 (App Developer)",
+      "site": "wanted",
+      "verdict": "경력 3년 이상(또는 그에 준하는 실력). 아르템 **아트 버티컬 커머스 앱(iOS/Android)** 개발 · 유지보수, 몰입 **모바일 인터랙션**, **AI 개인화 추천 · 디지털 보증서(NFT 등)** 기능의 앱 연동, **앱 성능(애니메이션 · 로딩 · 메모리) · 크래시 모니터링**. 자격은 **Flutter · React Native 또는 Swift/Kotlin 앱 출시 · 운영 3년**, 상태 관리 · 비동기, REST/GraphQL 연동, 앱 라이프사이클 · OS 특성. 우대는 결제 · 커머스 앱, **초기 프로덕트 A to Z(아키텍처 → 스토어 등록)** 리드. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "앱 출시 · 운영 3년",
+          "상태 관리 · 비동기",
+          "REST/GraphQL"
+        ],
+        "can_learn": [
+          "보증서 검증 UI",
+          "추천 노출 로깅",
+          "Crashlytics"
+        ]
+      },
+      "study": [
+        {
+          "topic": "디지털 보증서 — 앱이 '진품' 을 어떻게 보여 주나",
+          "from": "task",
+          "quote": "• AI 기반 개인화 추천 시스템 및 디지털 보증서(NFT 등) 기능의 앱 프론트엔드 연동",
+          "priority": "high",
+          "why": "주요업무다. 작품 거래에서 보증서는 신뢰의 근거지만, 사용자에게 지갑 · 가스비 같은 말을 들이밀면 이탈한다.",
+          "gap_check": "보증서를 블록체인에 올린다면 앱은 무엇을 보여 줘야 하나(작품 · 작가 · 발행일 · 소유자 · 검증 링크)? 사용자가 지갑을 모르면 누가 키를 쥐나(수탁)? 온체인 조회가 느리거나 실패하면 앱은 무엇을 캐시해 보여 주나? 되팔기 때 소유 이전은?",
+          "drill": "보증서 한 장의 데이터 모델(작품 ID · 작가 · 발행 시각 · 소유 이력 · 해시)을 정의하고, 서버 API 가 준 값을 보여 주되 '검증' 버튼은 공개 탐색기 링크로 여는 화면을 만든다. 조회 실패 · 지연 때의 캐시 표시와 문구를 정한다(블록체인 없이 서명된 JSON 으로 먼저 만들어도 된다).",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "EIP-721 — Non-Fungible Token Standard",
+              "url": "https://eips.ethereum.org/EIPS/eip-721",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "앱 성능과 크래시 — 큰 작품 사진 목록에서 메모리 지키기",
+          "from": "task",
+          "quote": "• 앱 성능 최적화(애니메이션, 로딩 속도, 메모리 관리 등) 및 크래시 모니터링을 통한 안정성 확보",
+          "priority": "core",
+          "why": "주요업무다. 고해상도 작품 사진 목록은 모바일 메모리를 가장 먼저 잡아먹는다.",
+          "gap_check": "목록에 원본 크기 이미지를 디코딩하면 메모리가 얼마나 드나(가로 × 세로 × 4 바이트)? 화면 크기에 맞춘 다운샘플 · 디스크 캐시 · 메모리 캐시 한도를 어떻게 잡나? 크래시 리포트에서 OOM 은 왜 잘 안 잡히나?",
+          "drill": "Flutter(또는 RN)로 고해상도 사진 200 장 그리드를 만들어 원본 로딩과 cacheWidth(또는 리사이즈 URL) 적용 후의 메모리를 DevTools 로 비교한다. Firebase Crashlytics 를 붙여 일부러 예외를 내고, 비치명 오류 기록과 사용자 속성(화면 · 작품 ID)을 남긴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Flutter — Performance best practices",
+              "url": "https://docs.flutter.dev/perf/best-practices",
+              "kind": "docs"
+            },
+            {
+              "title": "Firebase Crashlytics",
+              "url": "https://firebase.google.com/docs/crashlytics",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "상태 관리 · 비동기 — 찜 · 장바구니를 여러 화면이 함께 쓸 때",
+          "from": "qualification",
+          "quote": "• 상태 관리(State Management) 라이브러리 및 비동기 프로그래밍에 대한 깊은 이해와 활용 능력",
+          "priority": "high",
+          "why": "자격요건이다. 커머스 앱은 같은 작품의 찜 · 재고 · 가격이 여러 화면에 동시에 떠 있다.",
+          "gap_check": "상세에서 찜을 누르면 목록의 하트도 바로 바뀌게 하려면 상태를 어디에 두나? 낙관적 업데이트 뒤 서버가 실패하면 어떻게 되돌리나? 빠르게 여러 번 누르면 요청 순서가 뒤집히는 문제는(마지막 요청만 반영)?",
+          "drill": "Riverpod(또는 Redux Toolkit/Zustand)로 찜 상태를 작품 ID 키의 저장소 하나에 두고 목록 · 상세 · 찜 목록 세 화면이 구독하게 한다. 서버를 30% 확률로 실패 · 무작위 지연하게 만들어 낙관적 업데이트의 되돌리기와 연타 시 최종 상태가 맞는지 테스트한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Riverpod",
+              "url": "https://riverpod.dev/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
