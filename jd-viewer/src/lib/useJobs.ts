@@ -36,10 +36,15 @@ function expirePassed(jobs: Job[]): Job[] {
   )
 }
 
-export function useJobs(): State {
+/**
+ * 공고 전량을 파일로 받는다. `enabled` 가 false 면 아무것도 받지 않는다 — 공고 API 가
+ * 있는 배포에서는 184MB 를 받을 이유가 없다(App 이 API 가 없을 때만 켠다).
+ */
+export function useJobs(enabled = true): State {
   const [state, setState] = useState<State>({ jobs: [], loading: true, error: null })
 
   useEffect(() => {
+    if (!enabled) return
     let cancelled = false
     // 회사 규모는 얇은 색인(company_meta.json)에 따로 있다. 공고 파일에 넣으면
     // 62MB 짜리를 규모 하나 바뀔 때마다 다시 내려받게 된다. 이 색인이 없는 배포도
@@ -69,7 +74,7 @@ export function useJobs(): State {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [enabled])
 
   return state
 }

@@ -22,6 +22,7 @@ import { breadcrumbJsonLd, jobDescription, jobJsonLd, jobKey, jobTitle, paths, T
 import { absUrl, SITE_NAME } from './lib/seo'
 import { useHybridSearch, useSearchAvailable } from './lib/useHybridSearch'
 import { applyFilter, applyLocalFacets, computeFacets, emptyFilter } from './lib/filter'
+import { EMPTY_FACETS, lookupJobKey, useJob, useJobPage, useJobsApiAvailable } from './lib/useJobsApi'
 import type { Job } from './types'
 
 type Tab = 'jobs' | 'companies' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend' | 'book' | 'reveng' | 'reposts' | 'freelance' | 'hardware'
@@ -46,7 +47,11 @@ const TAB_BY_SEG: Record<string, Tab> = {
 }
 
 function App() {
-  const { jobs, loading, error } = useJobs()
+  // 공고 API(store.api)가 있으면 목록·칩 건수·상세를 DB 에서 받는다. 없는 배포에서만
+  // 예전처럼 공고 전량 파일(184MB)을 받아 화면에서 거른다.
+  const api = useJobsApiAvailable()
+  const apiMode = api === 'yes'
+  const { jobs, loading: fileLoading, error: fileError } = useJobs(api === 'no')
   const route = useRoute()
   const setQueryParam = useSetQuery()
   const tab: Tab = TAB_BY_SEG[route.seg[0] ?? ''] ?? 'jobs'
@@ -84,14 +89,20 @@ function App() {
 
   // 선택된 공고는 상태가 아니라 주소에서 나온다 — 뒤로가기·새로고침·링크 공유가
   // 전부 같은 경로 하나로 해결된다.
-  const selected = useMemo(
-    () => (tab === 'jobs' && detail ? (jobs.find((j) => jobKey(j) === detail) ?? null) : null),
-    [jobs, tab, detail],
+  const selectedLocal = useMemo(
+    () => (!apiMode && tab === 'jobs' && detail ? (jobs.find((j) => jobKey(j) === detail) ?? null) : null),
+    [apiMode, jobs, tab, detail],
   )
+  const remoteJob = useJob(tab === 'jobs' ? detail : null, apiMode)
+  const selected = apiMode ? remoteJob.job : selectedLocal
 
   // 추천 목록은 url 만 들고 있어서 실제 Job 을 여기서 찾는다(필터에 걸려 목록에
-  // 없는 공고도 열려야 하므로 jobs 전체 대상).
+  // 없는 공고도 열려야 하므로 jobs 전체 대상). API 모드에서는 서버에 주소 키를 묻는다.
   const openJobByUrl = (url: string) => {
+    if (apiMode) {
+      void lookupJobKey(url).then((key) => key && navigate(`/jobs/${key}`))
+      return
+    }
     const next = jobs.find((j) => j.url === url)
     if (next) navigate(paths.job(next))
   }
@@ -102,22 +113,42 @@ function App() {
   // 늦게 찍힌다. 입력 칸은 filter 로 바로 그리고, 무거운 계산은 한 박자 늦은 사본으로
   // 한다 — 빠르게 치는 동안의 중간 값은 React 가 건너뛴다.
   const view = useDeferredValue(filter)
-  const { hits, loading: searching, engines } = useHybridSearch(view.query, semanticOn, view)
+  // API 모드에서는 의미 검색도 /api/jobs 가 한다(후보를 뽑은 뒤 모든 필터 축을 서버가 건다).
+  const { hits, loading: searching, engines } = useHybridSearch(view.query, semanticOn && !apiMode, view)
 
-  const localFiltered = useMemo(() => applyFilter(jobs, view), [jobs, view])
+  // API 모드의 쪽 번호. 필터가 바뀌면 1쪽으로 — usePaged 와 같은 '렌더 중 조정' 패턴.
+  const [apiPage, setApiPage] = useState(0)
+  const [pagedFor, setPagedFor] = useState(view)
+  if (pagedFor !== view) {
+    setPagedFor(view)
+    setApiPage(0)
+  }
+  // 목록 탭이 아니어도 받는다 — 헤더의 전체·필터 건수가 이 응답에서 온다(한 쪽 20건,
+  // gzip 8KB 남짓. 예전에는 어느 탭에서든 184MB 를 받았다).
+  const remote = useJobPage(view, semanticOn, apiPage, apiMode)
+
+  const localFiltered = useMemo(() => (apiMode ? [] : applyFilter(jobs, view)), [apiMode, jobs, view])
 
   // 의미 검색이 돌 때는 API 가 매긴 관련도 순서가 결과의 핵심이라 그대로 따른다.
   // API 는 url 만 돌려주므로 여기서 실제 Job 으로 되돌린다.
   const filtered = useMemo(() => {
+    if (apiMode) return remote.items
     if (!hits) return localFiltered
     const byUrl = new Map(jobs.map((j) => [j.url, j]))
     const found = hits.map((h) => byUrl.get(h.url)).filter((j): j is Job => Boolean(j))
     // 지역·규모는 API 가 모르는 축이라 여기서 한 번 더 건다(순서는 그대로 둔다).
     return applyLocalFacets(found, view)
-  }, [hits, localFiltered, jobs, view])
+  }, [apiMode, remote.items, hits, localFiltered, jobs, view])
   // 칩 건수는 필터를 타야 한다. 예전에는 jobs 전체로 셌더니, 목록은 '모집중만'
   // 3천 건인데 사이드바는 마감까지 합친 1만 건을 말하고 있었다.
-  const facets = useMemo(() => computeFacets(jobs, view), [jobs, view])
+  const localFacets = useMemo(() => (apiMode ? EMPTY_FACETS : computeFacets(jobs, view)), [apiMode, jobs, view])
+  const facets = apiMode ? remote.facets : localFacets
+  // 헤더·사이드바의 건수. API 모드에서는 목록이 한 쪽뿐이라 서버가 센 값을 쓴다.
+  const totalCount = apiMode ? remote.allTotal : jobs.length
+  const filteredCount = apiMode ? remote.total : filtered.length
+  const loading = api === 'unknown' || (apiMode ? remote.loading && remote.allTotal === 0 && !detail : fileLoading)
+  const error = apiMode ? remote.error : fileError
+  const countsReady = apiMode ? remote.allTotal > 0 : !fileLoading
 
   // 공고 상세는 공고별 제목·설명·JobPosting 구조화 데이터를 쓰고, 그 외 탭은
   // 탭 문구를 쓴다. 검색어가 걸린 목록은 색인하지 않는다(같은 목록의 무한 변형이라
@@ -203,9 +234,10 @@ function App() {
           </TabLink>
         </div>
         <span className="ml-auto shrink-0 text-xs text-(--color-muted) tabular-nums whitespace-nowrap">
-          <span className="text-(--color-text) font-medium">{jobs.length.toLocaleString()}</span>건
+          {/* 첫 응답 전에는 0 이 아니라 '…' — 0건은 "공고가 없다" 로 읽힌다. */}
+          <span className="text-(--color-text) font-medium">{countsReady ? totalCount.toLocaleString() : '…'}</span>건
           <span className="hidden sm:inline"> · 필터 </span>
-          <span className="hidden sm:inline text-(--color-accent) font-medium">{filtered.length.toLocaleString()}</span>
+          <span className="hidden sm:inline text-(--color-accent) font-medium">{countsReady ? filteredCount.toLocaleString() : '…'}</span>
           <span className="hidden sm:inline">건</span>
         </span>
       </nav>
@@ -263,8 +295,16 @@ function App() {
           <ErrorState
             title="데이터를 불러오지 못했습니다"
             detail={error}
-            hint={<>public/all_jobs_enriched.json 이 있는지 확인하세요.</>}
+            hint={
+              apiMode ? (
+                <>공고 API(/api/jobs)와 정본 DB 가 떠 있는지 확인하세요.</>
+              ) : (
+                <>public/all_jobs_enriched.json 이 있는지 확인하세요.</>
+              )
+            }
           />
+        ) : apiMode && detail && remoteJob.loading ? (
+          <Loader label="공고 불러오는 중…" />
         ) : selected ? (
           // 공고를 고르면 목록을 통째로 갈아끼운다. 모달로 띄우면 오른쪽 취업 가이드가
           // 들어갈 폭이 안 나오고, 좁은 칸에 겹쳐 둔 JD 와 가이드는 둘 다 안 읽힌다.
@@ -284,23 +324,31 @@ function App() {
               filter={filter}
               setFilter={setFilter}
               facets={facets}
-              totalCount={jobs.length}
-              filteredCount={filtered.length}
+              totalCount={totalCount}
+              filteredCount={filteredCount}
               open={filterOpen}
               onClose={() => setFilterOpen(false)}
               semantic={
                 searchAvailable
-                  ? { on: semantic, setOn: setSemantic, loading: searching, engines }
+                  ? {
+                      on: semantic,
+                      setOn: setSemantic,
+                      loading: apiMode ? remote.loading : searching,
+                      engines: apiMode ? remote.engines : engines,
+                    }
                   : undefined
               }
             />
             <main data-scroll className="flex-1 min-w-0 overflow-auto jd-panel">
               <MobileBar onMenu={() => setFilterOpen(true)} label="필터">
                 <span className="ml-auto text-xs text-(--color-muted) tabular-nums">
-                  {filtered.length.toLocaleString()}건
+                  {filteredCount.toLocaleString()}건
                 </span>
               </MobileBar>
-              <JobList jobs={filtered} />
+              <JobList
+                jobs={filtered}
+                server={apiMode ? { page: apiPage, total: remote.total, onChange: setApiPage } : undefined}
+              />
             </main>
           </div>
         )

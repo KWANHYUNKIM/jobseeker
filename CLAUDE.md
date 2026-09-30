@@ -65,7 +65,12 @@
     `jd-viewer/src/lib/companySlug.js` 이고 여기서 읽어 쓴다) / `upsert`(쓰기 경로 —
     백필과 크롤이 같은 함수를 쓴다) / `backfill`(JSON→DB — 이관·복구용 일회성. 사이클에서는 뺐다) /
     `ingest_crawl`(크롤 사이클→DB, aggregate 가 매번 부른다 — 회사 표기 재선정과
-    `mv_company_stack` 갱신도 여기서 한다) / `export`(DB→뷰어 JSON) /
+    `mv_company_stack`·`job_facet` 갱신도 여기서 한다) / `export`(DB→뷰어 JSON) /
+    `api`(뷰어 API, FastAPI, 8771 — 공고 목록·칩 건수·상세·검색을 DB 에서 답한다.
+    뷰어는 이게 있으면 184MB `all_jobs_enriched.json` 을 안 받고, 없으면 그 파일로 물러선다) /
+    `facets`(필터 축 — 지역·직군·경력·규모·스택을 `job_facet` 에 채운다. **규칙 원본은 뷰어
+    TS**(`region.ts`·`classify.ts`·`career.ts`)이고 여기는 그 파이썬 판이다. 한쪽을 고치면
+    `python -m store.facets --parity` 와 `python -m store.api_parity` 로 대조한다) /
     `embed`·`similar`·`search`(pgvector 판 semantic) / `migrate_vectors`(sqlite-vec→pgvector) /
     `ledgers`(파일로 쌓이던 원장 — `trends_history.jsonl`→`trend_day`/`trend_metric`,
     `job_history.jsonl`→`job_version`, `engagement/events.jsonl`→`engagement_event`.
@@ -225,7 +230,7 @@
 `python -m semantic.search "재택 되는 백엔드"`, `python -m semantic.server`
 
 ## 로컬 서버 포트
-8765 stats(통계) / 8770 ops(크롤 운영) / 8771 search(검색 API) / 8910 admin(개인 이력, LAN 전용)
+8765 stats(통계) / 8770 ops(크롤 운영) / 8771 뷰어 API(공고 목록·상세·검색, `/api/docs`) / 8910 admin(개인 이력, LAN 전용)
 / 8780 design-lab(레퍼런스·포스터 렌더·소셜 발행, 파이프라인과 분리된 실험용)
 / 8790 agent-mcp(사용자의 에이전트에 채용 데이터·절차를 붙이는 MCP 서버, `catch_capture/agent_mcp/`).
 검색 API 는 뷰어 nginx 가 `/api/` 로 프록시하므로 별도 터널이 필요 없다.
@@ -244,8 +249,11 @@ ai-job-search 쪽 `/reality` 와 평가 관문이 이걸 부른다.
 - 새 공고의 임베딩은 크롤 사이클 끝의 `refresh_semantic()` 이 증분으로 처리한다.
   그러려면 Ollama 가 늘 떠 있어야 한다 — `brew services start ollama`.
   꺼져 있으면 사이클은 그대로 돌고 임베딩만 조용히 건너뛴다(추천·검색이 낡아간다).
-- 검색 API(8771)는 `./deploy/setup-dashboards.sh` 가 launchd 로 상시 등록한다.
-  이게 없으면 뷰어의 `/api/` 는 SPA 폴백으로 index.html 을 200 으로 돌려준다.
+- 뷰어 API(8771)는 `./deploy/setup-dashboards.sh` 가 launchd 로 상시 등록한다.
+  이게 없으면 뷰어의 `/api/` 는 SPA 폴백으로 index.html 을 200 으로 돌려주고, 뷰어는
+  공고 전량 파일로 물러선다(느리고, 파일이 구워진 시점의 상태를 보여준다).
+  DB 가 안 떠 있을 때 등록하면 옛 SQLite 판(`semantic.server`)으로 되돌려지니,
+  DB 를 살린 뒤 `--reschedule` 로 다시 등록한다.
 
 ## Git 워크플로
 - 커밋 메시지는 Conventional Commits 형식을 따른다: `type(scope): subject`

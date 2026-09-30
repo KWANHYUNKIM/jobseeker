@@ -10,26 +10,38 @@ import { postedOf, postedText, recruitBadge, type RecruitTone } from '../lib/rec
 
 interface Props {
   jobs: Job[]
+  /**
+   * 서버가 이미 한 쪽으로 잘라 보낸 목록(공고 API)일 때. 있으면 `jobs` 가 곧 지금 쪽이고
+   * 전체 건수와 쪽 번호는 여기서 온다. 없으면 예전처럼 `jobs` 전량을 화면에서 자른다.
+   */
+  server?: { page: number; total: number; onChange: (page: number) => void }
 }
 
 
 // 공고 제목은 목록 안에서 유일하게 '진짜 링크'다. 줄 전체를 <a> 로 감싸면 안에 든
 // 원본 링크와 앵커가 겹쳐 잘못된 마크업이 되므로, 제목만 링크로 두고 줄 클릭은
 // 그대로 살린다. 크롤러는 이 제목 링크를 따라 공고 상세로 들어온다.
-export function JobList({ jobs }: Props) {
-  const { page, setPage, totalPages, start, slice } = usePaged(jobs, PAGE_SIZE)
+export function JobList({ jobs, server }: Props) {
+  const local = usePaged(jobs, PAGE_SIZE)
+  const page = server ? server.page : local.page
+  const setPage = server ? server.onChange : local.setPage
+  const total = server ? server.total : jobs.length
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
+  const start = page * PAGE_SIZE
+  const slice = server ? jobs : local.slice
 
   const rows = useMemo(
     () =>
       slice.map((j) => ({
         job: j,
-        roles: classifyRoles(j.title, j.tech_stack, j.qualifications || ''),
+        // 공고 API 는 직군을 서버에서 계산해 보낸다(목록 응답엔 자격요건 본문이 없다).
+        roles: j.roles ?? classifyRoles(j.title, j.tech_stack, j.qualifications || ''),
         place: placeText(j),
       })),
     [slice],
   )
 
-  if (jobs.length === 0) {
+  if (total === 0) {
     return (
       <EmptyState
         title="조건에 맞는 공고가 없습니다"
@@ -185,7 +197,7 @@ export function JobList({ jobs }: Props) {
       <Pagination
         page={page}
         totalPages={totalPages}
-        total={jobs.length}
+        total={total}
         pageSize={PAGE_SIZE}
         onChange={setPage}
       />
@@ -240,7 +252,7 @@ function PostedText({ job }: { job: Job }) {
 
 // 목록에 보일 근무지 — '서울 강남구' 처럼 시도+시군구까지만. 원본 주소는 title 로 남긴다.
 function placeText(job: Job): string {
-  const p = placeOf(job)
+  const p = job.place ?? placeOf(job)
   if (p.region === UNKNOWN_REGION) return ''
   return p.district ? `${p.region} ${p.district}` : p.region
 }

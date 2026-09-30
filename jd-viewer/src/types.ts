@@ -36,7 +36,13 @@ export interface Job {
   overseas?: boolean
   // company_meta.json 에서 붙인 회사 규모. 공고 파일에는 없고 useJobs 가 이어 붙인다
   // (규모 판정은 dashboard/classifier 가 소유 — 화이트리스트 + 공고의 사원수·매출액).
+  // 공고 API 는 서버가 같은 함수로 판정해 실어 보낸다.
   company_size?: CompanySize
+  // 공고 API(store.api)가 서버에서 계산해 실어 보내는 필터 축. 목록 응답에는 본문
+  // (qualifications 등)이 없어서 화면이 직접 계산할 수 없다. 파일 모드에서는 없다 —
+  // 그때는 화면이 classifyRoles·placeOf 로 계산한다(규칙은 같다: store/facets.py).
+  roles?: string[]
+  place?: { region: string; district: string | null }
 }
 
 export type CompanySize = '대기업' | '중견기업' | '중소기업'

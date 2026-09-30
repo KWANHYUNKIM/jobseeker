@@ -32,7 +32,7 @@ interface State {
 
 // 개발 중에는 뷰어(5173)와 API(8771)가 다른 포트다. 배포에서는 nginx 가 /api 를
 // 같은 오리진으로 프록시하므로 상대 경로면 된다.
-const API_BASE = import.meta.env.DEV ? 'http://127.0.0.1:8771' : ''
+export const API_BASE = import.meta.env.DEV ? 'http://127.0.0.1:8771' : ''
 
 /** 검색 API 가 떠 있는지. 없으면 UI 에서 의미 검색 자체를 감춘다.
  *
