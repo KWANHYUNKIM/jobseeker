@@ -7,3 +7,4 @@
 형식: `- YYYY-MM-DD [레인] 무엇을 왜 — 어느 파일`
 
 - 2026-09-30 (hw-datacenter): datacenter.json 에 행마다 `rechecked`(YYYY-MM-DD) 필드를 두고 --gaps 10번이 as_of 대신 max(as_of, rechecked) 로 나이를 재게 해 달라. 슈퍼컴퓨터(El Capitan·Frontier·Aurora 등)와 ByteDance·Tencent 2024 구매 추정처럼 '다시 찾아봤지만 새 공개 숫자가 없는' 행이 영영 일감으로 남는다.
+- 2026-09-30 (hw-datacenter): notes.json 에도 `rechecked` 필드를 두고 --gaps 11번이 max(as_of, rechecked) 로 나이를 재게 해 달라. llama.cpp 점수판처럼 계속 갱신되는 글은 '측정 날짜'와 '다시 확인한 날짜'가 달라 as_of 하나로는 둘을 가르지 못한다(이번엔 원문과 같은 값을 확인한 3건만 as_of 를 옮기고 본문에 적었다).
