@@ -1,0 +1,337 @@
+{
+  "slug": "cyberlogitec",
+  "name": "싸이버로지텍",
+  "name_en": "CyberLogitec",
+  "aliases": [
+    "싸이버로지텍",
+    "CyberLogitec"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "",
+  "one_liner": "세계 컨테이너 선사에 선사 업무 솔루션 ALLEGRO · OPUS Container 를 공급 · 운영(ONE 등)하는 해운 IT 회사 — Agentic AI(정규직), 선사 솔루션 ITO · 개발(계약직)을 베트남 조직과 함께 할 개발자를 뽑는다",
+  "company": {
+    "business": "싸이버로지텍(CyberLogitec)은 **컨테이너 해운 선사(Container Shipping Liner)** 에 **선사의 모든 비즈니스 프로세스를 담은 B2B IT 솔루션**을 공급한다 — 공고에 나오는 제품은 **ALLEGRO(와 차세대 Allegro NX)** 와 **OPUS Container** 이고, OPUS Container 는 일본 국적 선사 **Ocean Network Express(ONE)** 에 IT 서비스(ITO — 운영 · 유지보수 · 개발)로 제공한다. 개발은 **베트남 법인 · 지사의 현지 개발 조직**과 함께 하고, 해외 고객 · 개발팀과 영어로 직접 소통 · 회의하며 해외 출장이 있다. 기존 스택은 Java · Spring · Oracle · Eclipse RCP · IBSheet/xPlatform 같은 엔터프라이즈 도구와 **EDI · API · Kafka 외부 인터페이스**이고, 차세대 쪽은 **MSA · Feature/User Story** 방식, 그리고 Allegro NX 위에 **Workflow 기반 Agentic AI · Graph RAG** 를 얹으려 한다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "글로벌 해운선사IT솔루션 Agentic AI 개발",
+        "url": "https://www.wanted.co.kr/wd/373043",
+        "publisher": "원티드",
+        "summary": "싸이버로지텍(CyberLogitec) — 해운 · 항만 물류의 세계 컨테이너 선사에 B2B IT 솔루션. Allegro NX(선사 전 비즈니스 프로세스)로 국내외 선사에 IT 서비스. 업무: 차세대 선사 솔루션, Workflow 기반 Agentic AI, Graph RAG, React Flow 연계, Graph DB 지식 검색, FastAPI, 베트남 개발 조직 협업. 정규직. Agentic AI 5년 · AI 코딩 에이전트 3년, 영어 업무, 해외 출장. 우대 해운 IT · Docker/K8s · Claude Code/Codex 하네스 엔지니어링."
+      },
+      {
+        "title": "글로벌 해운선사IT솔루션 ITO업무 및 차세대 솔루션 도입/API개발 (계약직)",
+        "url": "https://www.wanted.co.kr/wd/355396",
+        "publisher": "원티드",
+        "summary": "OPUS Container IT 솔루션을 일본 선사 Ocean Network Express(ONE)에 제공. 업무: ONE 대상 ITO 운영 · 설계 · 개발, 베트남 법인 협업, 차세대 솔루션 도입의 기존 시스템 I/F 설계 · 테스트 시나리오, Feature · User Story · MSA. 계약직 3년+. Java · JS, Oracle, Spring · 전자정부 · Struts, IBSheet · xPlatform, 리포트 도구, EDI · API · Kafka, 영어, 해외 출장."
+      },
+      {
+        "title": "해운선사용 IT솔루션 (Allegro) 개발 및 운영",
+        "url": "https://www.wanted.co.kr/wd/307334",
+        "publisher": "원티드",
+        "summary": "ALLEGRO — 선사 전 비즈니스 프로세스 IT 솔루션을 여러 선사에. 풀스택 개발 · 운영, 베트남 지사 협업. 계약직(1년 단위 갱신) 3년+. Java · JS, Oracle, Spring, Eclipse RCP, EDI · API · Kafka, Vue.js, 영어."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "선사 IT 솔루션 공급 · 구축(ALLEGRO / Allegro NX)",
+        "how": "세계 선사에 선사 업무 솔루션을 공급 · 구축 · 개발한다 — 라이선스 · 프로젝트 구조와 금액은 공고에 없다.",
+        "domains": [
+          "선사 업무 솔루션 개발 · 인터페이스",
+          "선사 솔루션 위 Agentic AI"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "해운선사용 IT솔루션 (Allegro) 개발 및 운영",
+            "url": "https://www.wanted.co.kr/wd/307334",
+            "publisher": "원티드",
+            "summary": "ALLEGRO — 선사 전 비즈니스 프로세스 IT 솔루션을 여러 선사에. 풀스택 개발 · 운영, 베트남 지사 협업. 계약직(1년 단위 갱신) 3년+. Java · JS, Oracle, Spring, Eclipse RCP, EDI · API · Kafka, Vue.js, 영어."
+          },
+          {
+            "title": "글로벌 해운선사IT솔루션 Agentic AI 개발",
+            "url": "https://www.wanted.co.kr/wd/373043",
+            "publisher": "원티드",
+            "summary": "싸이버로지텍(CyberLogitec) — 해운 · 항만 물류의 세계 컨테이너 선사에 B2B IT 솔루션. Allegro NX(선사 전 비즈니스 프로세스)로 국내외 선사에 IT 서비스. 업무: 차세대 선사 솔루션, Workflow 기반 Agentic AI, Graph RAG, React Flow 연계, Graph DB 지식 검색, FastAPI, 베트남 개발 조직 협업. 정규직. Agentic AI 5년 · AI 코딩 에이전트 3년, 영어 업무, 해외 출장. 우대 해운 IT · Docker/K8s · Claude Code/Codex 하네스 엔지니어링."
+          }
+        ]
+      },
+      {
+        "name": "선사 IT 운영 서비스(ITO — ONE)",
+        "how": "OPUS Container 를 ONE 에 운영 · 유지보수 · 개발 서비스로 제공한다.",
+        "domains": [
+          "선사 업무 솔루션 개발 · 인터페이스"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "글로벌 해운선사IT솔루션 ITO업무 및 차세대 솔루션 도입/API개발 (계약직)",
+            "url": "https://www.wanted.co.kr/wd/355396",
+            "publisher": "원티드",
+            "summary": "OPUS Container IT 솔루션을 일본 선사 Ocean Network Express(ONE)에 제공. 업무: ONE 대상 ITO 운영 · 설계 · 개발, 베트남 법인 협업, 차세대 솔루션 도입의 기존 시스템 I/F 설계 · 테스트 시나리오, Feature · User Story · MSA. 계약직 3년+. Java · JS, Oracle, Spring · 전자정부 · Struts, IBSheet · xPlatform, 리포트 도구, EDI · API · Kafka, 영어, 해외 출장."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "선사 업무 솔루션 개발 · 인터페이스",
+        "why": "ITO · Allegro 공고가 Java · Spring · Oracle 개발 · 운영, EDI · API · Kafka 외부 인터페이스, 차세대 도입의 I/F 설계 · 테스트 시나리오 · MSA 를 적는다.",
+        "what_to_know": [
+          "해운 EDI(EDIFACT — 부킹 · B/L · 컨테이너 상태)",
+          "Oracle SQL 튜닝",
+          "레거시 → MSA 인터페이스"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "글로벌 해운선사IT솔루션 ITO업무 및 차세대 솔루션 도입/API개발 (계약직)",
+            "url": "https://www.wanted.co.kr/wd/355396",
+            "publisher": "원티드",
+            "summary": "OPUS Container IT 솔루션을 일본 선사 Ocean Network Express(ONE)에 제공. 업무: ONE 대상 ITO 운영 · 설계 · 개발, 베트남 법인 협업, 차세대 솔루션 도입의 기존 시스템 I/F 설계 · 테스트 시나리오, Feature · User Story · MSA. 계약직 3년+. Java · JS, Oracle, Spring · 전자정부 · Struts, IBSheet · xPlatform, 리포트 도구, EDI · API · Kafka, 영어, 해외 출장."
+          },
+          {
+            "title": "해운선사용 IT솔루션 (Allegro) 개발 및 운영",
+            "url": "https://www.wanted.co.kr/wd/307334",
+            "publisher": "원티드",
+            "summary": "ALLEGRO — 선사 전 비즈니스 프로세스 IT 솔루션을 여러 선사에. 풀스택 개발 · 운영, 베트남 지사 협업. 계약직(1년 단위 갱신) 3년+. Java · JS, Oracle, Spring, Eclipse RCP, EDI · API · Kafka, Vue.js, 영어."
+          }
+        ]
+      },
+      {
+        "name": "선사 솔루션 위 Agentic AI",
+        "why": "Agentic AI 공고가 Workflow 기반 에이전트 · Graph RAG · Graph DB 지식 검색 · React Flow · FastAPI 를 적는다.",
+        "what_to_know": [
+          "Graph RAG",
+          "워크플로 편집기(React Flow)와 에이전트 실행",
+          "FastAPI"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "글로벌 해운선사IT솔루션 Agentic AI 개발",
+            "url": "https://www.wanted.co.kr/wd/373043",
+            "publisher": "원티드",
+            "summary": "싸이버로지텍(CyberLogitec) — 해운 · 항만 물류의 세계 컨테이너 선사에 B2B IT 솔루션. Allegro NX(선사 전 비즈니스 프로세스)로 국내외 선사에 IT 서비스. 업무: 차세대 선사 솔루션, Workflow 기반 Agentic AI, Graph RAG, React Flow 연계, Graph DB 지식 검색, FastAPI, 베트남 개발 조직 협업. 정규직. Agentic AI 5년 · AI 코딩 에이전트 3년, 영어 업무, 해외 출장. 우대 해운 IT · Docker/K8s · Claude Code/Codex 하네스 엔지니어링."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "영어 · 해외 협업이 필수",
+        "evidence": "• 기본적인 영어를 활용한 업무(서류, 커뮤니케이터 등) 가 가능하신 분",
+        "so_what": "세 자리 모두 해외 고객 · 베트남 개발팀과 직접 소통 · 회의가 필수라고 적는다 — 영어로 사양 · 이슈를 주고받은 경험을 보인다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "계약직 자리가 둘",
+        "evidence": "• 개발 업무에 즉시 투입 가능한 수준으로, 관련 경력 3년 이상이신 분",
+        "so_what": "ITO · Allegro 자리는 계약직(1 년 단위 갱신)이다 — 고용 형태를 확인하고 지원한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "회사 홈페이지 · 고객 선사 목록(ONE 외) · 매출 · 인원 · 근무지는 이번에 확인하지 않았다",
+    "ITO · Allegro 자리는 계약직이다(Allegro 는 1 년 단위 갱신)",
+    "공고가 회사 영문명을 'CyberLogtiec' · 'CyberLogtitec' 로 오기했다 — name_en 은 'CyberLogitec' 으로 적었다(오기 교정은 이 사이트의 판단)"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/373043",
+      "title": "글로벌 해운선사IT솔루션 Agentic AI 개발",
+      "site": "wanted",
+      "verdict": "경력 4-10년, **정규직**. **차세대 해운 선사 솔루션(Allegro NX)** 에 **Workflow 기반 Agentic AI 설계 · 개발**, **Graph RAG 파이프라인**, **Workflow(React Flow)와 에이전트 연계**, **Graph DB 지식 검색**, **FastAPI 서비스**, 베트남 개발 조직 협업. 자격은 **Agentic AI 서비스 개발 5년 · AI 코딩 에이전트 개발 3년**, 영어 업무(해외 고객 · 개발팀 직접 소통 · 회의 필수), 해외 출장. 우대는 해운 IT, Workflow Agentic AI, Graph RAG, FastAPI, Docker/K8s, **Claude Code · Codex 하네스 엔지니어링**, 영어 회의. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Agentic AI 5년",
+          "AI 코딩 에이전트 3년",
+          "영어 업무"
+        ],
+        "can_learn": [
+          "해운 선사 업무",
+          "Graph RAG"
+        ]
+      },
+      "study": [
+        {
+          "topic": "선사 업무 지식을 그래프로 — Graph RAG",
+          "from": "task",
+          "quote": "• Graph RAG 파이프라인 구축 및 고도화",
+          "priority": "core",
+          "why": "주요업무이고 Graph DB 기반 지식 검색이 함께 있다.",
+          "gap_check": "부킹 · B/L · 항차 · 컨테이너 · 항만 같은 선사 개념을 노드 · 관계로 어떻게 나누나? 문서에서 엔티티 · 관계를 LLM 으로 뽑을 때 중복 · 동의어는 어떻게 합치나? 벡터 RAG 로 안 되고 그래프가 필요한 질문은(여러 단계 관계 · 집계)? 그래프 질의(Cypher)를 LLM 이 만들게 할 때 잘못된 질의는 어떻게 막나?",
+          "drill": "해운 용어집 · 가상의 업무 매뉴얼로 Neo4j 에 선사 업무 그래프(부킹 → 컨테이너 → 항차 → 기항지)를 만들고, LangChain/LlamaIndex 의 그래프 RAG(Text-to-Cypher + 벡터 결합)로 '부산 기항 항차 중 냉동 컨테이너 부킹이 있는 것' 같은 질문 20 개를 벡터 RAG 와 비교한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Microsoft GraphRAG",
+              "url": "https://microsoft.github.io/graphrag/",
+              "kind": "docs"
+            },
+            {
+              "title": "Neo4j — GraphRAG for Python",
+              "url": "https://neo4j.com/docs/neo4j-graphrag-python/current/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "워크플로 편집기와 에이전트 실행 — React Flow + FastAPI",
+          "from": "task",
+          "quote": "• Workflow(React Flow)와 Agentic AI 연계 개발",
+          "priority": "core",
+          "why": "주요업무다.",
+          "gap_check": "React Flow 에서 그린 노드 · 간선을 백엔드가 실행 가능한 그래프(DAG · 조건 분기)로 어떻게 직렬화하나? 노드마다 입력 · 출력 스키마를 어떻게 맞추나? 긴 실행의 진행 상황을 화면에 어떻게 흘려 보여 주나(SSE · WebSocket)? 실패한 노드만 다시 돌리려면?",
+          "drill": "React Flow 로 '입력 → 검색 → LLM 판단 → 분기 → 결과' 노드를 편집해 JSON 으로 저장하고, FastAPI 가 그 JSON 을 LangGraph(또는 직접 만든 실행기)로 돌리며 노드별 상태를 SSE 로 흘려 보낸다. 노드 하나를 실패시켜 재시도 · 이어 실행을 확인한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "React Flow",
+              "url": "https://reactflow.dev/",
+              "kind": "docs"
+            },
+            {
+              "title": "LangGraph",
+              "url": "https://langchain-ai.github.io/langgraph/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI 코딩 에이전트를 개발 조직에 — 하네스 엔지니어링",
+          "from": "preference",
+          "quote": "• 클로드 코드, CODEX등 하네스 엔지니어링 경험이 있으신 분",
+          "priority": "high",
+          "why": "우대사항이고 자격요건에 AI 코딩 에이전트 개발 3년이 있다. 공고가 'AI Development Framework 구성' 을 말한다.",
+          "gap_check": "에이전트가 잘 도는 조건(테스트 · 타입 · 문서 · 작은 작업)을 저장소에 어떻게 마련하나? 한국 · 베트남 두 조직이 같은 규칙으로 에이전트를 쓰게 하려면? 에이전트가 만든 PR 을 무엇으로 막나?",
+          "drill": "작은 Spring 또는 FastAPI 저장소에 CI(lint · test · 타입)와 에이전트 지침 파일 · 작업 백로그 파일을 두고, 에이전트가 백로그에서 작업 하나를 골라 구현 · 테스트 · PR 까지 가게 한다. 실패 사례를 지침 · 테스트로 막은 전후를 영어로 한 쪽 정리한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Claude Code — Docs",
+              "url": "https://docs.claude.com/en/docs/claude-code/overview",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/355396",
+      "title": "글로벌 해운선사IT솔루션 ITO업무 및 차세대 솔루션 도입/API개발 (계약직)",
+      "site": "wanted",
+      "verdict": "경력 3-15년, **계약직**. 일본 선사 **ONE(Ocean Network Express)** 대상 **OPUS Container 운영(ITO)** — 요구사항 설계 · 개발 · 안정 운영, 베트남 법인 협업, **차세대 솔루션 도입을 위한 기존 시스템 I/F 설계 · 테스트 시나리오**, **Feature · User Story 설계 · MSA 개발** 지원. 자격은 즉시 투입 가능한 3년(전부 해당하지 않아도 지원 가능): **Java · JS**, **Oracle SQL**, Spring · 전자정부 · Struts, HTML5 · IBSheet · xPlatform, 리포트 도구(Crownix · OZ · CLIP), **EDI · API · Kafka 인터페이스**, 영어 쓰기/읽기, 해외 출장. 우대는 해운 IT, 영어 회의. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Java · Spring",
+          "Oracle SQL",
+          "영어 쓰기/읽기"
+        ],
+        "can_learn": [
+          "해운 EDI",
+          "레거시 → MSA 인터페이스"
+        ]
+      },
+      "study": [
+        {
+          "topic": "해운 EDI 와 외부 인터페이스 — 부킹 · 선하증권 · 컨테이너 상태",
+          "from": "qualification",
+          "quote": "• EDI, API, Kafka 등 외부 Data Interface 개발 및 운영이 가능하신 분",
+          "priority": "core",
+          "why": "자격요건이다. 선사는 화주 · 터미널 · 파트너와 EDI 로 데이터를 주고받는다.",
+          "gap_check": "해운에서 자주 쓰는 UN/EDIFACT 메시지(IFTMBF 부킹 · IFTMIN 선적 지시 · COPARN · CODECO 컨테이너 반출입)는 무엇을 담나? 같은 메시지가 두 번 오거나 순서가 바뀌면? EDI 배치 파일과 API · Kafka 실시간 연계를 차세대에서 어떻게 공존시키나? 실패 메시지 재처리 · 추적은?",
+          "drill": "공개 EDIFACT 표본(예: SMDG · UN/EDIFACT 문서의 예제)을 파싱하는 Java(Spring Boot) 서비스를 만들어 CODECO 메시지를 컨테이너 이벤트 JSON 으로 바꾸고 Kafka 토픽으로 낸다. 메시지 참조 번호로 중복을 거르고, 파싱 실패는 DLQ 로 보낸 뒤 재처리한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "SMDG — EDI message implementation guides",
+              "url": "https://smdg.org/documents/",
+              "kind": "docs"
+            },
+            {
+              "title": "UNECE — UN/EDIFACT",
+              "url": "https://unece.org/trade/uncefact/introducing-unedifact",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "차세대 도입 — 기존 시스템과의 인터페이스 설계와 테스트 시나리오",
+          "from": "task",
+          "quote": "• 차세대 해운 선사용 IT솔루션 도입/프로젝트 수행을 위한 기존 시스템과의 I/F설계, Test 시나리오 작성",
+          "priority": "core",
+          "why": "주요업무다.",
+          "gap_check": "기존 Oracle 기반 시스템과 새 MSA 가 공존하는 동안 데이터는 어느 쪽이 원본인가? 인터페이스 명세(필드 · 코드 · 오류 · 재시도)에 꼭 들어갈 것은? 이행 테스트 시나리오를 업무 흐름(부킹 → 선적 → B/L)으로 짜는 이유는?",
+          "drill": "가상 업무 '부킹 생성 → 컨테이너 배정 → B/L 발행' 에 대해 기존 시스템(Oracle 테이블)과 새 서비스(REST) 사이 인터페이스 명세서(OpenAPI + 코드표 + 오류 · 재시도 규칙)와 영어 테스트 시나리오 15 개(정상 · 경계 · 오류)를 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "OpenAPI Specification",
+              "url": "https://spec.openapis.org/oas/latest.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/307334",
+      "title": "해운선사용 IT솔루션 (Allegro) 개발 및 운영",
+      "site": "wanted",
+      "verdict": "경력 3-15년, **계약직(1 년 단위 갱신)**. **ALLEGRO(선사 전 업무 솔루션) 개발 · 운영**, 설계 · 개발 · 프로젝트 직접 수행, 베트남 지사 개발 조직 협업. 자격은 즉시 투입 3년(전부 해당하지 않아도 지원 가능): **Java · JS**, **Oracle**, Spring · 전자정부 · Struts, **Eclipse RCP 애플리케이션**, **EDI · API · Kafka**, **Vue.js**, 영어. 우대는 해운 · 물류 IT, 영어 말하기. ITO 자리와 스택 · 협업 조건이 거의 같다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Java · Oracle",
+          "영어"
+        ],
+        "can_learn": [
+          "Eclipse RCP",
+          "해운 업무"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Oracle SQL 로 선사 업무 조회 튜닝",
+          "from": "qualification",
+          "quote": "• Oracle DB, Oracle SQL 및 기타 RDMBS 활용 능력이 있으신 분",
+          "priority": "core",
+          "why": "자격요건이다. 선사 업무 솔루션의 중심 저장소다.",
+          "gap_check": "실행 계획(EXPLAIN PLAN · DBMS_XPLAN)에서 풀 스캔 · 중첩 루프를 어떻게 읽나? 바인드 변수를 안 쓰면 무엇이 나빠지나(하드 파싱)? 기간 조건이 붙는 대형 이력 테이블은 파티션을 어떻게 나누나?",
+          "drill": "Oracle Free(컨테이너)에 부킹 · 컨테이너 이벤트 가짜 데이터 수백만 건을 넣고, '항차별 냉동 컨테이너 수' 같은 조회 셋의 실행 계획을 인덱스 · 파티션 전후로 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Oracle Database — SQL Tuning Guide",
+              "url": "https://docs.oracle.com/en/database/oracle/oracle-database/23/tgsql/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Kafka 로 선사 이벤트 흘리기",
+          "from": "qualification",
+          "quote": "• EDI, API, Kafka 등 외부 Data Interface 개발 및 운영이 가능하신 분",
+          "priority": "high",
+          "why": "자격요건이다.",
+          "gap_check": "컨테이너 이벤트를 컨테이너 번호 키로 파티션하면 무엇이 보장되나(키별 순서)? 소비자가 재시작하면 중복 처리를 어떻게 막나? 스키마가 바뀌면(Schema Registry · 호환성) 기존 소비자는?",
+          "drill": "Spring Kafka 로 컨테이너 이벤트 생산자 · 소비자를 만들고 컨테이너 번호 키 · 수동 커밋 · 멱등 저장(이벤트 ID 유일 제약)을 적용한다. 소비자를 도중에 죽여 중복 · 유실이 없는지 센다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Spring for Apache Kafka",
+              "url": "https://docs.spring.io/spring-kafka/reference/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

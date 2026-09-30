@@ -1706,6 +1706,18 @@
       "postings": 3,
       "study_items": 7,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "cyberlogitec",
+      "name": "싸이버로지텍",
+      "aliases": [
+        "싸이버로지텍",
+        "CyberLogitec"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 7,
+      "updated_at": "2026-09-30"
     }
   ]
 }
