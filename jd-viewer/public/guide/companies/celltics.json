@@ -1,0 +1,310 @@
+{
+  "slug": "celltics",
+  "name": "셀틱스테크놀로지",
+  "name_en": "Celltics Technology",
+  "aliases": [
+    "셀틱스테크놀로지"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "https://www.celltics-tech.com/",
+  "one_liner": "글로벌 제약사 연구실을 로봇 자동화 플랫폼과 관제 · LIMS 소프트웨어로 바꾸는 회사(셀트리오와 함께) — C#/React 풀스택, 자동화 모듈 엔지니어, STM32 장비 펌웨어 엔지니어를 뽑는다",
+  "company": {
+    "business": "셀틱스테크놀로지(셀트리오와 함께 소개된다)는 **바이오 · 제약 연구실 자동화** 회사다 — **로봇 자동화 플랫폼**과 그 위에 올라가는 **연구 소프트웨어**로 연구자가 실험을 더 체계적으로 하게 한다. **주 고객은 글로벌 대형 제약사**이고, 세계의 연구자가 직접 쓰는 자동화 연구 소프트웨어를 만든다고 적는다. 공고로 보이는 제품 층은 셋이다 — 바이오 장비의 **제어 보드 펌웨어**(STM32 · Modbus · CAN), 장비를 조합하는 **자동화 모듈 운영체제 · 로봇 통합 관제 · 스케줄러**, 그리고 **LIMS**(바이오 의약품 · 소모품 재고 관리) · **연구 데이터 대시보드**. 제품은 **제약사의 제한된 보안 환경(온프레미스)** 에서 돌지만 클라우드 배포도 지향하고, 스택은 **C# · .NET · ASP.NET · React** 다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "Full stack Software Developer",
+        "url": "https://www.wanted.co.kr/wd/373231",
+        "publisher": "원티드",
+        "summary": "셀트리오 & 셀틱스테크놀로지 — 바이오 · 제약 연구를 로봇 자동화 플랫폼과 그 위 소프트웨어로, 주 고객은 글로벌 대형 제약사. 업무: 제약 연구 데이터 관리 · 대시보드, 바이오 의약품 · 소모품 재고 관리(LIMS), 제약 자동화 웹 플랫폼, 로봇 통합 관제 · 스케줄러. 4년+ C# · .NET 5+ 또는 React/TS. 우대 ASP.NET · React, 온프레미스(제약사 보안 환경) + 클라우드 배포 지향, 웹 + 하드웨어 제어, 영어."
+      },
+      {
+        "title": "System Module Engineer",
+        "url": "https://www.wanted.co.kr/wd/351130",
+        "publisher": "원티드",
+        "summary": "제약 연구 장비 데이터 관리 · 대시보드, LIMS, 자동화 웹 API, 자동화 모듈을 조합 · 확장하는 운영체제 개발. 3-12년. 자격요건 칸이 주요업무와 같은 글이다."
+      },
+      {
+        "title": "로봇 제어 엔지니어",
+        "url": "https://www.wanted.co.kr/wd/332801",
+        "publisher": "원티드",
+        "summary": "바이오 장비 제어 보드 펌웨어, STM32 임베디드 제어 SW, UART · SPI · I2C · CAN 드라이버, Modbus RTU/TCP/UDP, PC 제어 SW · 보드 테스트 자동화. 7년+, 전자 · 전기 · 컴퓨터 전공 필수, C/C++, C#/Python. 우대 바이오 · 의료 · 산업 장비, 로봇 기구학, FreeRTOS, 영어."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "연구실 자동화 로봇 플랫폼 + 소프트웨어(제약사)",
+        "how": "글로벌 제약사에 로봇 자동화 장비와 관제 · LIMS · 데이터 소프트웨어를 공급한다 — 판매 · 라이선스 구조와 금액은 공고에 없다.",
+        "domains": [
+          "실험 자동화 관제 · LIMS",
+          "바이오 장비 제어 펌웨어"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "Full stack Software Developer",
+            "url": "https://www.wanted.co.kr/wd/373231",
+            "publisher": "원티드",
+            "summary": "셀트리오 & 셀틱스테크놀로지 — 바이오 · 제약 연구를 로봇 자동화 플랫폼과 그 위 소프트웨어로, 주 고객은 글로벌 대형 제약사. 업무: 제약 연구 데이터 관리 · 대시보드, 바이오 의약품 · 소모품 재고 관리(LIMS), 제약 자동화 웹 플랫폼, 로봇 통합 관제 · 스케줄러. 4년+ C# · .NET 5+ 또는 React/TS. 우대 ASP.NET · React, 온프레미스(제약사 보안 환경) + 클라우드 배포 지향, 웹 + 하드웨어 제어, 영어."
+          },
+          {
+            "title": "로봇 제어 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/332801",
+            "publisher": "원티드",
+            "summary": "바이오 장비 제어 보드 펌웨어, STM32 임베디드 제어 SW, UART · SPI · I2C · CAN 드라이버, Modbus RTU/TCP/UDP, PC 제어 SW · 보드 테스트 자동화. 7년+, 전자 · 전기 · 컴퓨터 전공 필수, C/C++, C#/Python. 우대 바이오 · 의료 · 산업 장비, 로봇 기구학, FreeRTOS, 영어."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "실험 자동화 관제 · LIMS",
+        "why": "풀스택 · 시스템 모듈 공고가 로봇 통합 관제 · 스케줄러, 자동화 모듈 운영체제, LIMS, 연구 데이터 대시보드, 온프레미스 제약사 환경을 적는다.",
+        "what_to_know": [
+          "실험 스케줄링(장비 · 시간 제약)",
+          "LIMS 재고 · 추적성",
+          "SiLA 2 같은 실험 장비 표준"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Full stack Software Developer",
+            "url": "https://www.wanted.co.kr/wd/373231",
+            "publisher": "원티드",
+            "summary": "셀트리오 & 셀틱스테크놀로지 — 바이오 · 제약 연구를 로봇 자동화 플랫폼과 그 위 소프트웨어로, 주 고객은 글로벌 대형 제약사. 업무: 제약 연구 데이터 관리 · 대시보드, 바이오 의약품 · 소모품 재고 관리(LIMS), 제약 자동화 웹 플랫폼, 로봇 통합 관제 · 스케줄러. 4년+ C# · .NET 5+ 또는 React/TS. 우대 ASP.NET · React, 온프레미스(제약사 보안 환경) + 클라우드 배포 지향, 웹 + 하드웨어 제어, 영어."
+          },
+          {
+            "title": "System Module Engineer",
+            "url": "https://www.wanted.co.kr/wd/351130",
+            "publisher": "원티드",
+            "summary": "제약 연구 장비 데이터 관리 · 대시보드, LIMS, 자동화 웹 API, 자동화 모듈을 조합 · 확장하는 운영체제 개발. 3-12년. 자격요건 칸이 주요업무와 같은 글이다."
+          }
+        ]
+      },
+      {
+        "name": "바이오 장비 제어 펌웨어",
+        "why": "로봇 제어 공고가 STM32 제어 보드 · 주변장치 드라이버 · Modbus · PC 제어 · 보드 테스트 자동화를 적는다.",
+        "what_to_know": [
+          "STM32 HAL · 인터럽트/DMA",
+          "Modbus RTU/TCP",
+          "FreeRTOS"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "로봇 제어 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/332801",
+            "publisher": "원티드",
+            "summary": "바이오 장비 제어 보드 펌웨어, STM32 임베디드 제어 SW, UART · SPI · I2C · CAN 드라이버, Modbus RTU/TCP/UDP, PC 제어 SW · 보드 테스트 자동화. 7년+, 전자 · 전기 · 컴퓨터 전공 필수, C/C++, C#/Python. 우대 바이오 · 의료 · 산업 장비, 로봇 기구학, FreeRTOS, 영어."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "제약사 보안 환경에서 돈다",
+        "evidence": "• 실제 제품는 On-Premise 환경(제약회사의 제한된 보안 환경)에서 운영되지만 클라우드 환경에도 배포될 수 있는 제품 개발을 지향하고 있습니다.",
+        "so_what": "인터넷이 막힌 고객 서버에 설치 · 업데이트하는 방식과, 같은 코드를 클라우드에도 올리는 설계 경험이 강점이다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "웹과 하드웨어를 함께",
+        "evidence": "• 웹 기술과 하드웨어 제어 기술의 조합에 대한 적극적인 관심을 가지고 계신 분",
+        "so_what": "웹 개발자라도 장비 통신(시리얼 · Modbus)과 실시간 상태를 화면에 잇는 경험을 보이면 좋다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "셀트리오와 셀틱스테크놀로지의 관계(법인 구분)는 공고에 없다",
+    "홈페이지(celltrio.com · celltics-tech.com)는 이번에 읽지 않았다 — 제품명 · 고객 · 매출 · 근무지는 모른다",
+    "name_en 은 공고 속 도메인(celltics-tech)에서 옮긴 표기다",
+    "System Module Engineer 공고는 자격요건 칸이 주요업무와 같은 글이다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/373231",
+      "title": "Full stack Software Developer",
+      "site": "wanted",
+      "verdict": "경력 4년 이상. **제약 연구 데이터 관리 · 대시보드**, **바이오 의약품 · 소모품 재고 관리 운영 솔루션(LIMS)**, **제약 자동화 웹 플랫폼**, **로봇 통합 관제 시스템 · 스케줄러**. 자격은 **C# · .NET 5+ 4년 또는 React/TS 4년**, 제품 · 고객 중심 판단. 우대는 ASP.NET · React, **온프레미스(제약사 보안 환경) + 클라우드 배포**, 웹 + 하드웨어 제어, 스타트업 · 애자일, 로봇 · 자동화, 영어. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "C# .NET 또는 React/TS 4년"
+        ],
+        "can_learn": [
+          "실험 스케줄링",
+          "LIMS 도메인",
+          "장비 통신"
+        ]
+      },
+      "study": [
+        {
+          "topic": "로봇 여러 대 · 장비 여러 개의 실험 스케줄러",
+          "from": "task",
+          "quote": "• 로봇 통합 관제 시스템 및 스케줄러 개발",
+          "priority": "core",
+          "why": "주요업무다. 실험 자동화는 로봇 팔 · 인큐베이터 · 분주기 같은 장비를 순서와 시간 제약에 맞춰 돌린다(이 사이트의 해석).",
+          "gap_check": "'이 플레이트는 인큐베이터에서 정확히 30 분 뒤 꺼내야 한다' 같은 시간 제약과 장비 점유 충돌을 어떻게 표현하나? 실험 여러 개를 동시에 돌릴 때 로봇 팔이 병목이면 순서를 어떻게 정하나(제약 스케줄링)? 장비 하나가 오류로 멈추면 진행 중 실험은?",
+          "drill": ".NET(또는 Python)으로 장비 셋(로봇 팔 · 인큐베이터 · 리더)과 실험 셋(단계별 소요 시간 · 대기 제약)을 받아 Google OR-Tools CP-SAT 로 전체 완료 시간을 최소화하는 스케줄을 만들고, 간트 차트로 보인다. 장비 하나가 중간에 멈추는 이벤트로 재스케줄을 해 본다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Google OR-Tools — Job shop scheduling",
+              "url": "https://developers.google.com/optimization/scheduling/job_shop",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "LIMS — 시약 · 소모품 재고와 추적성",
+          "from": "task",
+          "quote": "• 바이오 의약품 및 소모품 재고 관리 및 운영 솔루션 개발 (LIMS)",
+          "priority": "core",
+          "why": "주요업무다.",
+          "gap_check": "시약 · 샘플을 로트 · 유효기간 · 보관 위치(냉동고 · 선반 · 칸)로 어떻게 모델링하나? 누가 언제 무엇을 얼마나 썼는지 감사 추적(audit trail)은 왜 필수인가(제약 규제 — 21 CFR Part 11 류)? 기록을 고치면 원본은 어떻게 남기나?",
+          "drill": "ASP.NET Core + EF Core(또는 React + API)로 시약 · 로트 · 위치 · 입출고 모델과 바코드 조회 화면을 만들고, 모든 변경을 추가 전용 감사 테이블(누가 · 언제 · 전 · 후 값 · 사유)에 남긴다. 유효기간 임박 · 재고 부족 알림을 만든다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "FDA — Part 11, Electronic Records; Electronic Signatures (Guidance)",
+              "url": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/part-11-electronic-records-electronic-signatures-scope-and-application",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "제약사 폐쇄망 온프레미스와 클라우드를 함께",
+          "from": "preference",
+          "quote": "• 실제 제품는 On-Premise 환경(제약회사의 제한된 보안 환경)에서 운영되지만 클라우드 환경에도 배포될 수 있는 제품 개발을 지향하고 있습니다.",
+          "priority": "high",
+          "why": "우대사항이다.",
+          "gap_check": "같은 앱을 온프레미스(윈도우 서버 · 사내 DB)와 클라우드(컨테이너 · 관리형 DB)에 모두 올리려면 설정 · 비밀 · 저장소를 어떻게 추상화하나? 인터넷이 막힌 곳에 업데이트는 어떻게 전달하나(오프라인 설치 패키지)? 인증은 고객 사내 AD 와 어떻게 잇나?",
+          "drill": "ASP.NET Core 앱을 Docker 이미지 · 윈도우 서비스 두 형태로 배포하고, 환경별 설정(appsettings · 환경 변수)과 저장소(로컬 파일 · S3 호환)를 인터페이스로 갈아 끼운다. 인증은 OIDC(클라우드)와 사내 AD(LDAP · Windows 인증)를 설정으로 바꾸게 한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Microsoft — Host ASP.NET Core in a Windows Service",
+              "url": "https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/windows-service",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/351130",
+      "title": "System Module Engineer",
+      "site": "wanted",
+      "verdict": "경력 3-12년. **제약 연구 장비 데이터 관리 · 대시보드**, **LIMS**, **제약 자동화 웹 API**, **자동화 모듈을 쉽게 조합 · 확장하는 운영체제 개발**. 공고의 자격요건 칸이 주요업무와 같은 글이라 실제 요구 수준은 면접에서 확인해야 한다. 우대는 ASP.NET · React, 온프레미스 + 클라우드, 웹 + 하드웨어 제어, 애자일, 영어. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "웹 API · 백엔드 경험"
+        ],
+        "can_learn": [
+          "장비 드라이버 추상화",
+          "실험 장비 표준"
+        ]
+      },
+      "study": [
+        {
+          "topic": "장비를 끼웠다 뺐다 — 자동화 모듈 운영체제와 장비 드라이버 추상화",
+          "from": "task",
+          "quote": "• 자동화 모듈을 손쉽게 조합·확장할 수 있는 운영체제 개발",
+          "priority": "core",
+          "why": "주요업무다.",
+          "gap_check": "제조사마다 다른 장비(시리얼 · TCP · 제조사 SDK)를 공통 명령(초기화 · 실행 · 상태 · 중지)으로 감싸는 드라이버 인터페이스는? 실험실 장비 표준 SiLA 2 는 무엇을 표준화하나(기능 · 명령 · 관측 속성)? 새 장비를 코드 수정 없이 붙이려면(플러그인 · 설정)?",
+          "drill": "C#(또는 Python)으로 IDevice 인터페이스와 가짜 장비 둘(시리얼 흉내 · TCP 흉내) 드라이버를 플러그인으로 만들고, 설정 파일로 조합한 워크플로를 실행한다. SiLA 2 의 Python 참조 구현으로 가짜 장비 하나를 SiLA 서버로 노출해 본다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "SiLA 2 — Standard",
+              "url": "https://sila-standard.com/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "장비 데이터를 대시보드로 — 시계열 상태와 실행 이력",
+          "from": "task",
+          "quote": "• 제약 연구 장비의 데이터 관리 및 대시 보드 개발",
+          "priority": "high",
+          "why": "주요업무다.",
+          "gap_check": "장비 상태(온도 · 진행률 · 오류)를 얼마 간격으로 모아 어디에 두나(시계열 DB · 관계형)? 실험 실행 · 결과 · 장비 로그를 한 실행 ID 로 어떻게 잇나? 실시간 상태를 화면에 흘리려면(SignalR)?",
+          "drill": "ASP.NET Core SignalR 로 가짜 장비 상태를 1 초마다 흘려 React 대시보드에 그리고, 실행 ID 로 실험 결과 · 장비 로그를 묶어 PostgreSQL(또는 TimescaleDB)에 쌓는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Microsoft — ASP.NET Core SignalR",
+              "url": "https://learn.microsoft.com/en-us/aspnet/core/signalr/introduction",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/332801",
+      "title": "로봇 제어 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 7-14년, **전자 · 전기 · 컴퓨터 전공 필수**. **바이오 장비 제어 보드 펌웨어**, **STM32 임베디드 제어 SW**, **UART · SPI · I2C · CAN 드라이버**, **Modbus RTU/TCP/UDP**, **PC 제어 SW · 보드 테스트 자동화**. 자격은 STM32 필수, 주변장치 이해, Modbus, C/C++, C# 또는 Python PC 프로그램, 7년. 우대는 바이오 · 의료 · 산업 장비, **로봇 기구학**, FreeRTOS, 회로도, 패킷 설계 · 디버깅, 영어. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "STM32",
+          "C/C++ FW",
+          "Modbus",
+          "관련 전공 · 7년"
+        ],
+        "can_learn": [
+          "로봇 기구학",
+          "FreeRTOS"
+        ]
+      },
+      "study": [
+        {
+          "topic": "STM32 에서 Modbus RTU 슬레이브 — 장비 제어를 레지스터로",
+          "from": "qualification",
+          "quote": "• Modbus 프로토콜 기반 통신 경험",
+          "priority": "core",
+          "why": "자격요건이고 주요업무에 Modbus RTU/TCP/UDP 구현이 있다.",
+          "gap_check": "RTU 프레임 끝을 문자 간 3.5 문자 시간으로 어떻게 판별하나(타이머 · UART IDLE 인터럽트)? CRC 오류 · 잘못된 기능 코드에 어떤 예외 응답을 주나? 모터 속도 · 온도 · 상태를 홀딩/입력 레지스터에 어떻게 배치하나? RS-485 방향 제어(DE 핀) 타이밍은?",
+          "drill": "STM32 보드에서 UART + DMA + IDLE 인터럽트로 Modbus RTU 슬레이브(기능 코드 03 · 06 · 16)를 구현하고, 가짜 모터 속도 · 온도 레지스터를 둔다. PC 에서 Python(pymodbus)으로 읽기 · 쓰기 · 잘못된 CRC 프레임을 보내 예외 응답을 확인하는 자동 테스트를 만든다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Modbus Organization — Specifications",
+              "url": "https://modbus.org/specs.php",
+              "kind": "docs"
+            },
+            {
+              "title": "pymodbus",
+              "url": "https://pymodbus.readthedocs.io/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "보드 테스트를 PC 에서 자동으로",
+          "from": "task",
+          "quote": "• PC 제어 소프트웨어 개발 및 보드 테스트 자동화",
+          "priority": "high",
+          "why": "주요업무다.",
+          "gap_check": "양산 · 수리 뒤 보드마다 무엇을 확인하나(통신 · 센서 · 모터 · 전원)? 테스트 결과를 보드 시리얼 번호와 함께 어떻게 남기나? 펌웨어 버전 확인 · 설정 쓰기도 같은 도구로 하려면?",
+          "drill": "Python(pytest + pyserial/pymodbus)으로 보드 연결 → 펌웨어 버전 확인 → 레지스터 쓰기/읽기 → 센서 값 범위 확인 → 결과를 CSV(시리얼 번호 · 항목 · 합불)로 남기는 테스트 스크립트를 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "pytest",
+              "url": "https://docs.pytest.org/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

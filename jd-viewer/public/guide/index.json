@@ -1729,6 +1729,17 @@
       "postings": 3,
       "study_items": 7,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "celltics",
+      "name": "셀틱스테크놀로지",
+      "aliases": [
+        "셀틱스테크놀로지"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 7,
+      "updated_at": "2026-09-30"
     }
   ]
 }
