@@ -510,8 +510,8 @@
    "use": "llm-inference",
    "summary": "Vulkan 점수판(7B 4비트)에서 7900 XTX 는 대역폭이 크고 24GB 라 생성이 4090 과 같고 3090 보다 빠르다. 읽기는 4090 의 약 1/3. ROCm 으로도 생성은 비슷하다(약 170 t/s).",
    "evidence": "measurement",
-   "numbers": "Vulkan 생성(FA): 7900 XTX 190.92 · 4090 190.10 · 3090 171.61 · 읽기 3,889 vs 10,830 · ROCm 생성 170.12",
-   "as_of": "2025-08",
+   "numbers": "Vulkan 생성(FA): 7900 XTX 190.92 · 4090 190.10 · 3090 171.61 · 읽기 3,889 vs 10,830 · ROCm 생성 170.12 — 2026-09-30 점수판 원문에서 다시 확인",
+   "as_of": "2026-09",
    "confidence": "high",
    "sources": [
     {
@@ -531,10 +531,10 @@
     "gpu-rtx-5070-ti"
    ],
    "use": "llm-inference",
-   "summary": "같은 사용자가 9070 XT 로 잰 값에서 Vulkan 이 읽기·생성 모두 빨랐다 — RDNA4 의 ROCm 경로가 아직 뒤졌다. Vulkan 으로도 9070 XT(16GB) 생성은 CUDA 의 5070 Ti 보다 느리다(점수판끼리는 빌드·시스템이 다르다).",
+   "summary": "9070 XT 를 Vulkan·ROCm 으로 잰 값에서 Vulkan 이 읽기·생성 모두 빨랐다 — RDNA4 의 ROCm 경로가 아직 뒤졌다. Vulkan 으로도 9070 XT(16GB) 생성은 CUDA 의 5070 Ti 보다 느리다(점수판끼리는 빌드·시스템이 다르다).",
    "evidence": "measurement",
-   "numbers": "9070 XT(FA): Vulkan 생성 131.5~142.9 · 읽기 5,048~6,004(점수판에 제출이 여러 개) vs ROCm 97.28 · 4,904 · 5070 Ti CUDA 생성 182.43",
-   "as_of": "2025-08",
+   "numbers": "9070 XT(FA): Vulkan 생성 131.54 · 읽기 5,048.07 vs ROCm 97.28 · 4,903.51 · 5070 Ti CUDA 생성 182.43 — 2026-09-30 점수판 원문에서 다시 확인(Vulkan 제출은 하나뿐)",
+   "as_of": "2026-09",
    "confidence": "medium",
    "sources": [
     {
