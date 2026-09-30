@@ -4,7 +4,7 @@
   "name_en": "Nulab",
   "country": "JP",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-30",
   "domain": "nulab.com",
   "one_liner": "프로젝트 관리 Backlog · 화이트보드 Cacoo 의 협업 SaaS 상장사 — Backlog 의 오래된 Perl · Apache 를 Go 로 옮기고, 비밀번호 재설정 직후에 패스키를 권해 등록률을 올린다",
@@ -181,7 +181,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "nulab-account-passkey-after-reset"
+      ]
     }
   ],
   "features": [
@@ -892,6 +894,330 @@
           "publisher": "ヌーラボ",
           "summary": "특정 엔드포인트가 일부 사용자에게 극단적으로 느림 — 세 테이블 JOIN · WHERE 조건이 흩어져 인덱스가 안 먹음(과제 1), 같은 테이블의 다른 SQL 이 피크에 DB AAS 의 1-2 할(과제 2), 수명이 다른 테이블 Z 레코드가 JOIN 때문에 오래 남음(과제 3). 해결안 · 범위 · 리팩터링 절차 · 감시 지표 · 결과.",
           "date": "2024-12-06"
+        }
+      ]
+    },
+    {
+      "key": "nulab-account-passkey-after-reset",
+      "name": "누랩 계정 비밀번호 재설정을 React · Next.js 로 새로 짓고, 재설정을 마친 바로 그 순간에 선택적 패스키 생성 화면을 붙인다 — 재설정 대체 · 수동 홍보 대신 FIDO 가이드라인의 '회복 뒤 패스키' 를 ADR 로 고른다",
+      "domain": "누랩 계정 — 비밀번호를 잊은 순간을 패스키로 바꾸는 기회로",
+      "updated_at": "2026-09-30",
+      "business": {
+        "why": "비밀번호를 잊는 '귀찮은' 경험은 누구에게나 있는 스트레스 지점이다. 누랩 계정(Backlog · Cacoo 등이 함께 쓰는 계정)의 **비밀번호 재설정 흐름을 현대화**하는 프로젝트에서, 목표는 둘이었다 — 비밀번호를 잊은 사용자에게 효율적이고 안전한 경험을 주는 것, 그리고 **패스워드리스 접근을 넓히는 것**. 계정 회복이라는 순간을 **보안을 올릴 전략적 기회**로 보고 패스키 등록을 밀었다. 2025 년 8 월 본번 출시.",
+        "metrics": [
+          {
+            "label": "재설정 완료 직후 패스키 생성 비율",
+            "value": "약 7%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "[EN] Leveraging User Frustration for Increased Security: How We Drove Passkey Adoption",
+                "url": "https://nulab.com/ja/blog/nulab/passkey-adoption-after-password-reset-bilingual/",
+                "publisher": "ヌーラボ",
+                "summary": "2025-08 누랩 계정 비밀번호 재설정 기능 쇄신 — React · Next.js 로 리팩터링, 패스키 생성 권유 시점을 ADR 로: A 재설정 대신 패스키 · B 수동 홍보 · C 재설정 완료 직후 선택적 패스키 생성 → 패스키 등록률 크게 향상.",
+                "date": "2025-11-07"
+              }
+            ]
+          },
+          {
+            "label": "하루 패스키 등록자 증가(출시 전)",
+            "value": "약 32.5 명/일",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "[EN] Leveraging User Frustration for Increased Security: How We Drove Passkey Adoption",
+                "url": "https://nulab.com/ja/blog/nulab/passkey-adoption-after-password-reset-bilingual/",
+                "publisher": "ヌーラボ",
+                "summary": "2025-08 누랩 계정 비밀번호 재설정 기능 쇄신 — React · Next.js 로 리팩터링, 패스키 생성 권유 시점을 ADR 로: A 재설정 대신 패스키 · B 수동 홍보 · C 재설정 완료 직후 선택적 패스키 생성 → 패스키 등록률 크게 향상.",
+                "date": "2025-11-07"
+              }
+            ]
+          },
+          {
+            "label": "하루 패스키 등록자 증가(출시 후)",
+            "value": "약 55.0 명/일",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "[EN] Leveraging User Frustration for Increased Security: How We Drove Passkey Adoption",
+                "url": "https://nulab.com/ja/blog/nulab/passkey-adoption-after-password-reset-bilingual/",
+                "publisher": "ヌーラボ",
+                "summary": "2025-08 누랩 계정 비밀번호 재설정 기능 쇄신 — React · Next.js 로 리팩터링, 패스키 생성 권유 시점을 ADR 로: A 재설정 대신 패스키 · B 수동 홍보 · C 재설정 완료 직후 선택적 패스키 생성 → 패스키 등록률 크게 향상.",
+                "date": "2025-11-07"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "프로젝트를 볼 때",
+          "thought": "프런트엔드 리팩터링도 과제지만, 더 큰 질문은 흐름의 어느 시점에 패스키 생성을 내미느냐다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "[EN] Leveraging User Frustration for Increased Security: How We Drove Passkey Adoption",
+              "url": "https://nulab.com/ja/blog/nulab/passkey-adoption-after-password-reset-bilingual/",
+              "publisher": "ヌーラボ",
+              "summary": "2025-08 누랩 계정 비밀번호 재설정 기능 쇄신 — React · Next.js 로 리팩터링, 패스키 생성 권유 시점을 ADR 로: A 재설정 대신 패스키 · B 수동 홍보 · C 재설정 완료 직후 선택적 패스키 생성 → 패스키 등록률 크게 향상.",
+              "date": "2025-11-07"
+            }
+          ]
+        },
+        {
+          "at": "시점을 고를 때",
+          "thought": "사용자가 계정 관리 한가운데서 재설정의 마찰을 겪고 있을 때 패스키 생성을 제안하면, 불필요한 중단이 아니라 지금 하는 일을 강화하는 관련 기능으로 느낀다(FIDO 가이드라인의 UX 지식).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "[EN] Leveraging User Frustration for Increased Security: How We Drove Passkey Adoption",
+              "url": "https://nulab.com/ja/blog/nulab/passkey-adoption-after-password-reset-bilingual/",
+              "publisher": "ヌーラボ",
+              "summary": "2025-08 누랩 계정 비밀번호 재설정 기능 쇄신 — React · Next.js 로 리팩터링, 패스키 생성 권유 시점을 ADR 로: A 재설정 대신 패스키 · B 수동 홍보 · C 재설정 완료 직후 선택적 패스키 생성 → 패스키 등록률 크게 향상.",
+              "date": "2025-11-07"
+            }
+          ]
+        },
+        {
+          "at": "돌아보며",
+          "thought": "마찰이 큰 경험(비밀번호 분실)을 의도적으로 고가치 보안 업그레이드의 기회로 썼다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "[EN] Leveraging User Frustration for Increased Security: How We Drove Passkey Adoption",
+              "url": "https://nulab.com/ja/blog/nulab/passkey-adoption-after-password-reset-bilingual/",
+              "publisher": "ヌーラボ",
+              "summary": "2025-08 누랩 계정 비밀번호 재설정 기능 쇄신 — React · Next.js 로 리팩터링, 패스키 생성 권유 시점을 ADR 로: A 재설정 대신 패스키 · B 수동 홍보 · C 재설정 완료 직후 선택적 패스키 생성 → 패스키 등록률 크게 향상.",
+              "date": "2025-11-07"
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "누랩 계정",
+            "what": "Backlog · Cacoo · Nulab Pass · Flowbase 가 함께 쓰는 계정."
+          },
+          {
+            "name": "비밀번호 재설정 흐름",
+            "what": "비밀번호를 잊은 사용자가 계정을 되찾는 흐름 — React · Next.js 로 새로 지었다."
+          },
+          {
+            "name": "패스키",
+            "what": "기기에 묶인 공개키 자격 증명(WebAuthn) — 비밀번호보다 안전하고 간단하다."
+          },
+          {
+            "name": "선택적 패스키 생성 화면",
+            "what": "재설정을 마친 직후에 뜨는 화면 — 만들지 않고 넘어갈 수 있다."
+          },
+          {
+            "name": "ADR",
+            "what": "패스키 권유 시점 결정을 남긴 설계 기록."
+          }
+        ],
+        "invariants": [
+          "비밀번호 재설정은 언제나 수행된다 — 패스키가 재설정을 대신하지 않는다.",
+          "패스키 생성은 선택이다 — 비밀번호를 당분간 유지하려는 사용자를 존중한다.",
+          "모든 인증 기능이 같은 UI/UX 를 쓴다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "재설정 기능을 최신 React · Next.js 로 리팩터링, 화면 기능 · 디자인 쇄신",
+            "why": "인증 기능 전체 UI/UX 일관성 · 유지보수성."
+          },
+          {
+            "step": "사용자가 새 비밀번호를 설정해 재설정을 끝낸다",
+            "why": "다른 흐름이 현재 비밀번호를 요구 — 일관성."
+          },
+          {
+            "step": "바로 이어 선택적 패스키 생성 화면",
+            "why": "마찰의 순간이 권유의 적기."
+          },
+          {
+            "step": "만들면 패스키 등록, 건너뛰면 그대로 로그인 상태로",
+            "why": "사용자 선택 존중."
+          },
+          {
+            "step": "출시 전후 하루 등록자 증가 · 재설정 완료자 중 생성 비율로 효과 측정",
+            "why": "결정 검증."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "패스키 생성을 흐름의 어디에 두나?",
+            "chosen": "**안 C — 필수인 비밀번호 재설정을 먼저 끝내고, 그 직후 선택적 패스키 생성 화면을 추가**한다. FIDO Alliance 디자인 가이드라인의 '비밀번호 분실로 계정 회복 뒤 패스키 생성' 권고를 근거로 했다.",
+            "alternatives": [
+              "안 A — 새 비밀번호 대신 패스키를 만들게 한다",
+              "안 B — 재설정은 그대로, 화면에서 패스키 장점만 홍보(직접 생성 불가)"
+            ],
+            "tradeoff": "안 A 는 다른 흐름이 현재 비밀번호를 요구해 UX 일관성이 깨질 걱정, 안 B 는 구체적인 등록 행동을 이끄는 효과가 제한될 걱정이 있었다. 안 C 는 일관성 · 사용자 선택 · 보안 향상을 모두 지킨다. 대가는 재설정 흐름이 한 화면 길어진다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "[EN] Leveraging User Frustration for Increased Security: How We Drove Passkey Adoption",
+                "url": "https://nulab.com/ja/blog/nulab/passkey-adoption-after-password-reset-bilingual/",
+                "publisher": "ヌーラボ",
+                "summary": "2025-08 누랩 계정 비밀번호 재설정 기능 쇄신 — React · Next.js 로 리팩터링, 패스키 생성 권유 시점을 ADR 로: A 재설정 대신 패스키 · B 수동 홍보 · C 재설정 완료 직후 선택적 패스키 생성 → 패스키 등록률 크게 향상.",
+                "date": "2025-11-07"
+              }
+            ]
+          },
+          {
+            "question": "이 결정을 어떻게 남기나?",
+            "chosen": "**ADR(아키텍처 설계서)에 가장 중요한 전략적 결정으로 기록**한다.",
+            "alternatives": [
+              "구현 PR 설명에만 남긴다"
+            ],
+            "tradeoff": "권유 시점은 코드가 아니라 제품 판단이라 나중에 '왜 여기에' 를 다시 물을 때 근거가 필요하다. WebDAV 이행도 ADR 로 판단을 맞췄다. 대가는 문서 비용.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "[EN] Leveraging User Frustration for Increased Security: How We Drove Passkey Adoption",
+                "url": "https://nulab.com/ja/blog/nulab/passkey-adoption-after-password-reset-bilingual/",
+                "publisher": "ヌーラボ",
+                "summary": "2025-08 누랩 계정 비밀번호 재설정 기능 쇄신 — React · Next.js 로 리팩터링, 패스키 생성 권유 시점을 ADR 로: A 재설정 대신 패스키 · B 수동 홍보 · C 재설정 완료 직후 선택적 패스키 생성 → 패스키 등록률 크게 향상.",
+                "date": "2025-11-07"
+              },
+              {
+                "title": "Apache + Perl の WebDAV 実装を Go に刷新した話 — 実装より難しかった「移行設計」",
+                "url": "https://nulab.com/ja/blog/nulab/rewriting-webdav-from-apache-perl-to-go/",
+                "publisher": "ヌーラボ",
+                "summary": "Backlog 파일 기능을 떠받친 WebDAV 서버(Apache + Perl 모듈)를 Go 로 — 단순 이식이 아니라 파일 읽기 · 쓰기 코어를 스스로 다룰 수 있게. 호환성과 구조 정리의 선 긋기, 릴리스 방식 · 판단 기준 사전 설계, 절차를 리뷰 가능하게, ADR 로 전제 맞추기, 개발 · 운영 · 릴리스를 나누지 않기, 릴리스 직전 결함과 구조적 복구.",
+                "date": "2026-05-01"
+              }
+            ]
+          },
+          {
+            "question": "기존 재설정 화면에 기능만 덧붙이나?",
+            "chosen": "**재설정 기능 전체를 최신 React · Next.js 로 리팩터링**하고 기능 · 디자인을 새로 — 모든 인증 기능에서 UI/UX 가 일관되게.",
+            "alternatives": [
+              "옛 구현에 패스키 화면만 추가"
+            ],
+            "tradeoff": "인증 화면이 제각각이면 사용자가 진짜 화면인지 헷갈리고 유지보수가 어렵다. 대가는 리팩터링 범위 — 프런트 엔지니어가 리드했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "[EN] Leveraging User Frustration for Increased Security: How We Drove Passkey Adoption",
+                "url": "https://nulab.com/ja/blog/nulab/passkey-adoption-after-password-reset-bilingual/",
+                "publisher": "ヌーラボ",
+                "summary": "2025-08 누랩 계정 비밀번호 재설정 기능 쇄신 — React · Next.js 로 리팩터링, 패스키 생성 권유 시점을 ADR 로: A 재설정 대신 패스키 · B 수동 홍보 · C 재설정 완료 직후 선택적 패스키 생성 → 패스키 등록률 크게 향상.",
+                "date": "2025-11-07"
+              }
+            ]
+          },
+          {
+            "question": "패스키 생성을 강제하나?",
+            "chosen": "**선택으로 둔다** — 비밀번호를 당분간 유지하고 싶은 기존 사용자의 선호를 존중한다.",
+            "alternatives": [
+              "재설정한 사용자에게 패스키 등록을 필수로"
+            ],
+            "tradeoff": "강제하면 등록 수는 늘겠지만 기기 · 브라우저가 준비되지 않은 사용자를 막고, 가장 마찰이 큰 순간에 마찰을 더한다. 대가는 등록률이 약 7% 에 머문다는 것 — 그래도 출시 전 대비 하루 등록자 증가가 약 32.5 명 → 55.0 명.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "[EN] Leveraging User Frustration for Increased Security: How We Drove Passkey Adoption",
+                "url": "https://nulab.com/ja/blog/nulab/passkey-adoption-after-password-reset-bilingual/",
+                "publisher": "ヌーラボ",
+                "summary": "2025-08 누랩 계정 비밀번호 재설정 기능 쇄신 — React · Next.js 로 리팩터링, 패스키 생성 권유 시점을 ADR 로: A 재설정 대신 패스키 · B 수동 홍보 · C 재설정 완료 직후 선택적 패스키 생성 → 패스키 등록률 크게 향상.",
+                "date": "2025-11-07"
+              }
+            ]
+          },
+          {
+            "question": "효과를 무엇으로 보나?",
+            "chosen": "**재설정 완료자 중 직후 패스키를 만든 비율**과 **출시 전후 하루 패스키 등록자 증가 속도**.",
+            "alternatives": [
+              "전체 패스키 사용자 수만 본다"
+            ],
+            "tradeoff": "배치(권유 위치)의 효과를 따로 떼어 본다. 대가는 다른 요인(시기 · 다른 홍보)과 섞일 수 있는 전후 비교라는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "[EN] Leveraging User Frustration for Increased Security: How We Drove Passkey Adoption",
+                "url": "https://nulab.com/ja/blog/nulab/passkey-adoption-after-password-reset-bilingual/",
+                "publisher": "ヌーラボ",
+                "summary": "2025-08 누랩 계정 비밀번호 재설정 기능 쇄신 — React · Next.js 로 리팩터링, 패스키 생성 권유 시점을 ADR 로: A 재설정 대신 패스키 · B 수동 홍보 · C 재설정 완료 직후 선택적 패스키 생성 → 패스키 등록률 크게 향상.",
+                "date": "2025-11-07"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "Backlog 구독 · Cacoo · Nulab Pass · Flowbase 구독(수익원)",
+          "via": "누랩 계정",
+          "contract": "여러 제품이 같은 누랩 계정을 쓰므로 계정 보안이 곧 모든 제품의 입구다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "[EN] Leveraging User Frustration for Increased Security: How We Drove Passkey Adoption",
+              "url": "https://nulab.com/ja/blog/nulab/passkey-adoption-after-password-reset-bilingual/",
+              "publisher": "ヌーラボ",
+              "summary": "2025-08 누랩 계정 비밀번호 재설정 기능 쇄신 — React · Next.js 로 리팩터링, 패스키 생성 권유 시점을 ADR 로: A 재설정 대신 패스키 · B 수동 홍보 · C 재설정 완료 직후 선택적 패스키 생성 → 패스키 등록률 크게 향상.",
+              "date": "2025-11-07"
+            },
+            {
+              "title": "チームにさらなるコラボレーションを | 株式会社ヌーラボ",
+              "url": "https://nulab.com/ja/",
+              "publisher": "ヌーラボ",
+              "summary": "수백만 사용자. 서비스: Backlog(프로젝트 · 태스크 관리, 소스 코드 관리), Cacoo(온라인 화이트보드), Nulab Pass(SAML SSO · 사용자 프로비저닝), Nulab Flowbase(노코드 워크플로 자동화). 뉴스: 프로젝트 횡단 간트 차트, Jooto → Backlog 이행 도구. IR 페이지(상장사), 보안 체크시트, 누랩 계정."
+            }
+          ]
+        },
+        {
+          "to": "WebDAV Perl → Go",
+          "via": "ADR",
+          "contract": "두 프로젝트 모두 핵심 판단을 ADR 로 남겼다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "[EN] Leveraging User Frustration for Increased Security: How We Drove Passkey Adoption",
+              "url": "https://nulab.com/ja/blog/nulab/passkey-adoption-after-password-reset-bilingual/",
+              "publisher": "ヌーラボ",
+              "summary": "2025-08 누랩 계정 비밀번호 재설정 기능 쇄신 — React · Next.js 로 리팩터링, 패스키 생성 권유 시점을 ADR 로: A 재설정 대신 패스키 · B 수동 홍보 · C 재설정 완료 직후 선택적 패스키 생성 → 패스키 등록률 크게 향상.",
+              "date": "2025-11-07"
+            },
+            {
+              "title": "Apache + Perl の WebDAV 実装を Go に刷新した話 — 実装より難しかった「移行設計」",
+              "url": "https://nulab.com/ja/blog/nulab/rewriting-webdav-from-apache-perl-to-go/",
+              "publisher": "ヌーラボ",
+              "summary": "Backlog 파일 기능을 떠받친 WebDAV 서버(Apache + Perl 모듈)를 Go 로 — 단순 이식이 아니라 파일 읽기 · 쓰기 코어를 스스로 다룰 수 있게. 호환성과 구조 정리의 선 긋기, 릴리스 방식 · 판단 기준 사전 설계, 절차를 리뷰 가능하게, ADR 로 전제 맞추기, 개발 · 운영 · 릴리스를 나누지 않기, 릴리스 직전 결함과 구조적 복구.",
+              "date": "2026-05-01"
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "세 가지 안",
+          "question": "패스키를 어디에 둘까?",
+          "kind": "flow",
+          "code": "flowchart TB\n  F[\"비밀번호를 잊음\"] --> R[\"재설정 메일 · 링크\"]\n  R --> A[\"안 A: 새 비밀번호 대신 패스키\\n✗ 다른 흐름은 현재 비밀번호 필요\"]\n  R --> B[\"안 B: 재설정 + 장점만 홍보\\n✗ 등록 행동으로 이어지기 약함\"]\n  R --> C[\"안 C: 재설정 완료 → 선택적 패스키 생성\\n✓ 채택(FIDO 가이드라인 · ADR)\"]"
+        },
+        {
+          "title": "채택한 흐름",
+          "question": "사용자는 무엇을 보나?",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant U as 사용자\n  participant W as 재설정 화면(Next.js)\n  participant A as 누랩 계정\n  U->>W: 새 비밀번호 입력\n  W->>A: 비밀번호 갱신(항상)\n  W-->>U: 패스키를 만들까요? (선택)\n  alt 만든다\n    U->>A: WebAuthn 등록\n  else 건너뛴다\n    U->>W: 나중에\n  end\n  Note over U,A: 재설정 완료자의 약 7% 가 직후 생성"
+        },
+        {
+          "title": "버린 안이 부딪혔을 곳",
+          "question": "왜 A 와 B 가 아니었나?",
+          "kind": "failure",
+          "code": "flowchart TB\n  A[\"안 A: 패스키만 있고 비밀번호 없음\"] --> X1[\"현재 비밀번호를 묻는 다른 흐름에서 막힘\\n→ UX 불일치\"]\n  B[\"안 B: 홍보 문구만\"] --> X2[\"생성하려면 설정 화면을 따로 찾아가야 함\\n→ 등록으로 안 이어짐\"]\n  FORCE[\"(강제 등록)\"] --> X3[\"준비 안 된 기기 · 선호 무시\\n→ 가장 마찰 큰 순간에 마찰 추가\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "[EN] Leveraging User Frustration for Increased Security: How We Drove Passkey Adoption",
+          "url": "https://nulab.com/ja/blog/nulab/passkey-adoption-after-password-reset-bilingual/",
+          "publisher": "ヌーラボ",
+          "summary": "2025-08 누랩 계정 비밀번호 재설정 기능 쇄신 — React · Next.js 로 리팩터링, 패스키 생성 권유 시점을 ADR 로: A 재설정 대신 패스키 · B 수동 홍보 · C 재설정 완료 직후 선택적 패스키 생성 → 패스키 등록률 크게 향상.",
+          "date": "2025-11-07"
         }
       ]
     }
