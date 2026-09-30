@@ -2859,3 +2859,8 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 
 - Alba 이행 글 + oRPC 조사 글로 `api-shape-contract`. 결정 6 — Alba 선택(Blueprinter · jsonapi-serializer 비교) / within 기본 '전개 안 함' / 출력 보증 spec 뒤 AI 에이전트로 일괄 / 복구 레벨 1~3 / oRPC 도입 안 함(서버 TS 전제 · BFF 는 이음매 이동) / 링크 셋 점검 → 손 타입 한 줄만 생성 타입 위임. 지표 3(190 파일 · JSON 조립 2배↑ · paths 262). 그림 3.
 
+## 2026-09-30 kickflow E2E flaky(기능 3/3) · 완주
+
+- E2E 글(2026-07)로 `e2e-flaky-measure-first`. 결정 7 — 계측 먼저 / 래칫 / 로그인 헬퍼 한 곳 / 결정적 실패는 멱등으로 / force 85 건 실증 분류 / 샤드 대신 고정비 삭감(리트라이 2→1 · 매니지드 러너 · 캐시 키) / 빨라지자 늘어난 실패를 지터로. 그림 3.
+- 완주 기준 — 도메인 3 모두 기능 1, 기능 셋이 서로 이어짐, 수익원 하나가 기능과 연결. `status: done`, QUEUE 완료로 옮김.
+
