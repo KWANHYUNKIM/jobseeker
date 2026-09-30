@@ -3233,6 +3233,81 @@
    "cost_usd": 10758488000.0,
    "cost_note": "Epoch: 284MW, 건설비 약 108억 달러(2025년 달러)",
    "cost_src": "https://epoch.ai/data/ai-data-centers/directory/amazon-madison-mega-site"
+  },
+  {
+   "key": "alibaba-zhangbei",
+   "company": "Alibaba",
+   "region": "CN",
+   "name": "장베이 (허베이)",
+   "chip": "H20",
+   "chip_key": null,
+   "count": null,
+   "h100eq": 31885,
+   "mw": 169,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2026-01",
+   "in_total": true,
+   "note": "Epoch 추정(위성사진·공시): H100 환산 약 3.2만, IT 전력 169MW, 건설비 약 64억 달러(2025년 달러). 사용자 Alibaba(Epoch '가능성 높음').",
+   "sources": [
+    {
+     "title": "Epoch: Alibaba Zhangbei",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/alibaba-zhangbei"
+    }
+   ],
+   "cost_usd": 6402058000.0,
+   "cost_note": "Epoch: 169MW, 건설비 약 64억 달러(2025년 달러)",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/alibaba-zhangbei"
+  },
+  {
+   "key": "oracle-batam",
+   "company": "Oracle",
+   "region": "OTHER",
+   "name": "바탐 (인도네시아)",
+   "chip": "B200 · B300",
+   "chip_key": null,
+   "count": null,
+   "h100eq": 84386,
+   "mw": 72,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2026-09",
+   "in_total": true,
+   "note": "Epoch 추정(위성사진·공시): H100 환산 약 8.4만, IT 전력 72MW, 건설비 약 27억 달러(2025년 달러). 소유 Oracle(Epoch '가능성 높음'), 사용자 미상.",
+   "sources": [
+    {
+     "title": "Epoch: Oracle Batam",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/oracle-batam"
+    }
+   ],
+   "cost_usd": 2727503999.9999995,
+   "cost_note": "Epoch: 72MW, 건설비 약 27억 달러(2025년 달러)",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/oracle-batam"
+  },
+  {
+   "key": "vnet-bayin-ulanqab",
+   "company": "VNET",
+   "region": "CN",
+   "name": "바인 (내몽골 울란차브)",
+   "chip": "Ascend 910C",
+   "chip_key": null,
+   "count": null,
+   "h100eq": 122789,
+   "mw": 221,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2026-09",
+   "in_total": true,
+   "note": "Epoch 추정(위성사진·공시): H100 환산 약 12.3만, IT 전력 221MW, 건설비 약 84억 달러(2025년 달러). 중국 데이터센터 운영사 VNET 소유. 사용자가 ByteDance 라는 건 Epoch '추측'뿐이라 VNET 에 센다.",
+   "sources": [
+    {
+     "title": "Epoch: VNET Bayin Ulanqab",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/vnet-bayin-ulanqab"
+    }
+   ],
+   "cost_usd": 8371922000.0,
+   "cost_note": "Epoch: 221MW, 건설비 약 84억 달러(2025년 달러)",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/vnet-bayin-ulanqab"
   }
  ],
  "chips": [
