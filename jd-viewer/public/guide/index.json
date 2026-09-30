@@ -1593,6 +1593,18 @@
       "postings": 3,
       "study_items": 8,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "personaai",
+      "name": "페르소나에이아이",
+      "aliases": [
+        "페르소나에이아이",
+        "페르소나AI"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 7,
+      "updated_at": "2026-09-30"
     }
   ]
 }

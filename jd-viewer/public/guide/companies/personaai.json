@@ -1,0 +1,362 @@
+{
+  "slug": "personaai",
+  "name": "페르소나에이아이",
+  "name_en": "PersonaAI",
+  "aliases": [
+    "페르소나에이아이",
+    "페르소나AI"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "https://personaai.co.kr/",
+  "one_liner": "자체 자연어 엔진으로 챗봇 · 콜봇 · AICC 와 GPU 없는 LLM 서버를 공공 · 금융에 설치하는 예비유니콘 — Python LLM 백엔드, 고객사 설치 인프라, 웹 디자이너를 뽑는다",
+  "company": {
+    "business": "페르소나에이아이(페르소나AI)는 **챗봇 · 콜봇 · AI 컨택센터(AICC)** 로 **고객 상담 · 민원 대응 · 반복 업무를 자동화**하는 AI 회사다. 2015 년부터 연구해 **자연어 생성 · 처리 엔진을 자체 개발**했다고 내세우며('다른 나라나 회사에 의지하지 않는 독자 원천 엔진'), 고객은 **공공 · 금융 · 바이오 · 자동차**(KB · 삼성바이오로직스 · 포르쉐파이낸셜). 제품이 많다 — **SONA CHAT**(AI 엔진까지 설치되는 챗봇), **SONA WORK**(클라우드 AICC), **SONA CALL**(AI 콜봇), **DEEPTALK**(AI 키오스크), **KGPT**(보안 걱정 없는 LLM 업무 효율화), **GEN STATION**(생성형 AI 기업용 플랫폼), **SONA EDGE**(LLM 탑재 AI 서버), **SONA SEMI**(초경량 임베디드 AI 반도체), SONA TUTOR. '**인터넷과 GPU 없이도 작동하는 AI**' 로 피지컬 AI 를 내세우고 CES 2025 · 2026 혁신상을 받았다. 2025 년 **예비유니콘**, 누적 투자 **약 410 억 원**, **IPO 준비** 중. 제품을 고객사 환경에 **설치형(온프레미스)** 으로도 넣는다 — 인프라 공고가 고객사 설치 · 연동 · 유지보수를 적는다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "Python Developer",
+        "url": "https://www.wanted.co.kr/wd/341771",
+        "publisher": "원티드",
+        "summary": "페르소나AI — '누구나 쉽고 편하고 안전하게 쓸 수 있는 AI', 독자 원천 엔진. AICC(인공지능 컨택센터) · 생성형 AI, 금융 · 바이오 · 자동차 · 공공(KB · 삼성바이오로직스 · 포르쉐파이낸셜). CES 2025 · 2026 혁신상, 인터넷 · GPU 없이 작동하는 AI(피지컬 AI), 2025 예비유니콘, 누적 투자 약 410 억 원(SK텔레콤 · 효성벤처스 · 네이버클라우드 · LIG넥스원 · IBK캐피탈 · DB금융투자 · HB인베스트먼트), IPO 준비. 업무: Python 백엔드, REST API, 데이터 파이프라인 · 자동화, LLM · RAG · AI Agent 연동. 2-15년. 우대 RAG · Agent · MCP, Docker · K8s, async."
+      },
+      {
+        "title": "AI 기업 웹 디자인 실무 담당자",
+        "url": "https://www.wanted.co.kr/wd/377177",
+        "publisher": "원티드",
+        "summary": "2015 년부터 AI 연구, 자연어 생성 · 처리 엔진 자체 개발. 제품: SONA CHAT(AI 엔진까지 설치되는 챗봇) · SONA WORK(클라우드 AICC) · SONA CALL(AI 콜봇) · DEEPTALK(AI 키오스크) · SONA SEMI(초경량 임베디드 AI 반도체) · KGPT(보안 LLM 업무 효율화) · GEN STATION(생성형 AI 기업용 플랫폼) · SONA TUTOR · SONA EDGE(LLM 탑재 AI 서버). 공공 · 금융 · 일반 기업. 웹 디자이너 5년+ — 홈페이지 UI/UX · 브랜드, Figma · Photoshop · Illustrator, 포트폴리오."
+      },
+      {
+        "title": "인프라 엔지니어",
+        "url": "https://www.wanted.co.kr/wd/348736",
+        "publisher": "원티드",
+        "summary": "고객사 환경에 자사 솔루션 설치 · 구축, 서버 · DB 연동, 장애 분석, 개발부서(Java · Node.js · Python) 솔루션 설치 · 운영, 내부 CI/CD · 빌드 · 테스트 서버, 고객사 솔루션 아키텍처, 보안 패치 · 백업, PoC, 설치 매뉴얼. 7-20년, 리눅스/유닉스 · 윈도우 서버, 도커, Python · Java, 기술지원, 문서화. 우대 Jenkins · GitLab CI, DB 운영, 보안 · 로그."
+      }
+    ],
+    "scale": [
+      {
+        "label": "누적 투자",
+        "value": "약 410 억 원(2025 예비유니콘)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Python Developer",
+            "url": "https://www.wanted.co.kr/wd/341771",
+            "publisher": "원티드",
+            "summary": "페르소나AI — '누구나 쉽고 편하고 안전하게 쓸 수 있는 AI', 독자 원천 엔진. AICC(인공지능 컨택센터) · 생성형 AI, 금융 · 바이오 · 자동차 · 공공(KB · 삼성바이오로직스 · 포르쉐파이낸셜). CES 2025 · 2026 혁신상, 인터넷 · GPU 없이 작동하는 AI(피지컬 AI), 2025 예비유니콘, 누적 투자 약 410 억 원(SK텔레콤 · 효성벤처스 · 네이버클라우드 · LIG넥스원 · IBK캐피탈 · DB금융투자 · HB인베스트먼트), IPO 준비. 업무: Python 백엔드, REST API, 데이터 파이프라인 · 자동화, LLM · RAG · AI Agent 연동. 2-15년. 우대 RAG · Agent · MCP, Docker · K8s, async."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "AICC · 챗봇 · 콜봇 솔루션(설치형 · 클라우드)",
+        "how": "공공 · 금융 · 기업에 상담 자동화 솔루션을 고객사 환경에 설치하거나 클라우드(SONA WORK)로 제공하고 유지보수한다 — 금액 구조는 공고에 없다.",
+        "domains": [
+          "LLM · RAG 백엔드",
+          "고객사 설치 · 운영 인프라",
+          "브랜드 · 홈페이지 디자인"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "Python Developer",
+            "url": "https://www.wanted.co.kr/wd/341771",
+            "publisher": "원티드",
+            "summary": "페르소나AI — '누구나 쉽고 편하고 안전하게 쓸 수 있는 AI', 독자 원천 엔진. AICC(인공지능 컨택센터) · 생성형 AI, 금융 · 바이오 · 자동차 · 공공(KB · 삼성바이오로직스 · 포르쉐파이낸셜). CES 2025 · 2026 혁신상, 인터넷 · GPU 없이 작동하는 AI(피지컬 AI), 2025 예비유니콘, 누적 투자 약 410 억 원(SK텔레콤 · 효성벤처스 · 네이버클라우드 · LIG넥스원 · IBK캐피탈 · DB금융투자 · HB인베스트먼트), IPO 준비. 업무: Python 백엔드, REST API, 데이터 파이프라인 · 자동화, LLM · RAG · AI Agent 연동. 2-15년. 우대 RAG · Agent · MCP, Docker · K8s, async."
+          },
+          {
+            "title": "인프라 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/348736",
+            "publisher": "원티드",
+            "summary": "고객사 환경에 자사 솔루션 설치 · 구축, 서버 · DB 연동, 장애 분석, 개발부서(Java · Node.js · Python) 솔루션 설치 · 운영, 내부 CI/CD · 빌드 · 테스트 서버, 고객사 솔루션 아키텍처, 보안 패치 · 백업, PoC, 설치 매뉴얼. 7-20년, 리눅스/유닉스 · 윈도우 서버, 도커, Python · Java, 기술지원, 문서화. 우대 Jenkins · GitLab CI, DB 운영, 보안 · 로그."
+          },
+          {
+            "title": "AI 기업 웹 디자인 실무 담당자",
+            "url": "https://www.wanted.co.kr/wd/377177",
+            "publisher": "원티드",
+            "summary": "2015 년부터 AI 연구, 자연어 생성 · 처리 엔진 자체 개발. 제품: SONA CHAT(AI 엔진까지 설치되는 챗봇) · SONA WORK(클라우드 AICC) · SONA CALL(AI 콜봇) · DEEPTALK(AI 키오스크) · SONA SEMI(초경량 임베디드 AI 반도체) · KGPT(보안 LLM 업무 효율화) · GEN STATION(생성형 AI 기업용 플랫폼) · SONA TUTOR · SONA EDGE(LLM 탑재 AI 서버). 공공 · 금융 · 일반 기업. 웹 디자이너 5년+ — 홈페이지 UI/UX · 브랜드, Figma · Photoshop · Illustrator, 포트폴리오."
+          }
+        ]
+      },
+      {
+        "name": "생성형 AI 기업 플랫폼 · 엣지 AI(KGPT · GEN STATION · SONA EDGE)",
+        "how": "보안이 필요한 기업에 LLM 업무 도구와 LLM 탑재 서버를 공급한다 — 과금은 공고에 없다.",
+        "domains": [
+          "LLM · RAG 백엔드",
+          "고객사 설치 · 운영 인프라"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "AI 기업 웹 디자인 실무 담당자",
+            "url": "https://www.wanted.co.kr/wd/377177",
+            "publisher": "원티드",
+            "summary": "2015 년부터 AI 연구, 자연어 생성 · 처리 엔진 자체 개발. 제품: SONA CHAT(AI 엔진까지 설치되는 챗봇) · SONA WORK(클라우드 AICC) · SONA CALL(AI 콜봇) · DEEPTALK(AI 키오스크) · SONA SEMI(초경량 임베디드 AI 반도체) · KGPT(보안 LLM 업무 효율화) · GEN STATION(생성형 AI 기업용 플랫폼) · SONA TUTOR · SONA EDGE(LLM 탑재 AI 서버). 공공 · 금융 · 일반 기업. 웹 디자이너 5년+ — 홈페이지 UI/UX · 브랜드, Figma · Photoshop · Illustrator, 포트폴리오."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "LLM · RAG 백엔드",
+        "why": "Python 공고가 Python 백엔드 · REST API · 데이터 파이프라인과 LLM · RAG · AI Agent 연동을 적고, 우대에 MCP 가 있다.",
+        "what_to_know": [
+          "FastAPI · async",
+          "RAG 파이프라인",
+          "MCP 서버"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Python Developer",
+            "url": "https://www.wanted.co.kr/wd/341771",
+            "publisher": "원티드",
+            "summary": "페르소나AI — '누구나 쉽고 편하고 안전하게 쓸 수 있는 AI', 독자 원천 엔진. AICC(인공지능 컨택센터) · 생성형 AI, 금융 · 바이오 · 자동차 · 공공(KB · 삼성바이오로직스 · 포르쉐파이낸셜). CES 2025 · 2026 혁신상, 인터넷 · GPU 없이 작동하는 AI(피지컬 AI), 2025 예비유니콘, 누적 투자 약 410 억 원(SK텔레콤 · 효성벤처스 · 네이버클라우드 · LIG넥스원 · IBK캐피탈 · DB금융투자 · HB인베스트먼트), IPO 준비. 업무: Python 백엔드, REST API, 데이터 파이프라인 · 자동화, LLM · RAG · AI Agent 연동. 2-15년. 우대 RAG · Agent · MCP, Docker · K8s, async."
+          }
+        ]
+      },
+      {
+        "name": "고객사 설치 · 운영 인프라",
+        "why": "인프라 공고가 고객사 환경 설치 · 구축, 서버 · DB 연동, 장애 분석, CI/CD, 보안 패치 · 백업, 설치 매뉴얼을 적는다.",
+        "what_to_know": [
+          "폐쇄망 설치 패키징",
+          "Docker Compose · 오프라인 이미지",
+          "리눅스 · 윈도우 서버 운영"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "인프라 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/348736",
+            "publisher": "원티드",
+            "summary": "고객사 환경에 자사 솔루션 설치 · 구축, 서버 · DB 연동, 장애 분석, 개발부서(Java · Node.js · Python) 솔루션 설치 · 운영, 내부 CI/CD · 빌드 · 테스트 서버, 고객사 솔루션 아키텍처, 보안 패치 · 백업, PoC, 설치 매뉴얼. 7-20년, 리눅스/유닉스 · 윈도우 서버, 도커, Python · Java, 기술지원, 문서화. 우대 Jenkins · GitLab CI, DB 운영, 보안 · 로그."
+          }
+        ]
+      },
+      {
+        "name": "브랜드 · 홈페이지 디자인",
+        "why": "웹 디자인 공고가 AI 기업 브랜드를 반영한 홈페이지 UI/UX · 제품 소개 페이지 · 리뉴얼을 적는다. 제품 수가 많아 소개 페이지 체계가 중요하고, 홈페이지는 B2B 솔루션 도입 문의의 입구다(이 사이트의 해석).",
+        "what_to_know": [
+          "디자인 시스템",
+          "제품 소개 페이지 구조"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI 기업 웹 디자인 실무 담당자",
+            "url": "https://www.wanted.co.kr/wd/377177",
+            "publisher": "원티드",
+            "summary": "2015 년부터 AI 연구, 자연어 생성 · 처리 엔진 자체 개발. 제품: SONA CHAT(AI 엔진까지 설치되는 챗봇) · SONA WORK(클라우드 AICC) · SONA CALL(AI 콜봇) · DEEPTALK(AI 키오스크) · SONA SEMI(초경량 임베디드 AI 반도체) · KGPT(보안 LLM 업무 효율화) · GEN STATION(생성형 AI 기업용 플랫폼) · SONA TUTOR · SONA EDGE(LLM 탑재 AI 서버). 공공 · 금융 · 일반 기업. 웹 디자이너 5년+ — 홈페이지 UI/UX · 브랜드, Figma · Photoshop · Illustrator, 포트폴리오."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "설치형으로 고객사에 들어간다",
+        "evidence": "• 고객사 환경에 자사 솔루션 설치 및 구축 수행",
+        "so_what": "클라우드만 해 본 사람보다 인터넷이 막힌 고객사 서버에 설치 · 장애 대응을 해 본 경험이 강점이다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "LLM 에이전트 연동으로 옮겨 간다",
+        "evidence": "• RAG, AI Agent, MCP(Model Context Protocol) 관련 개발 경험",
+        "so_what": "기존 챗봇 · 콜봇에 LLM · RAG · 에이전트를 붙이는 단계다 — 작은 RAG · MCP 서버를 직접 만들어 보이면 좋다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "홈페이지(personaai.co.kr)와 공고가 링크한 기사는 이번에 읽지 않았다 — 매출 · 인원은 모른다",
+    "제품별 과금 · 매출 비중은 모른다",
+    "근무지가 공고 필드에 없다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/341771",
+      "title": "Python Developer",
+      "site": "wanted",
+      "verdict": "경력 2-15년. **Python 백엔드 · 애플리케이션**, **REST API 설계 · 구현 · 문서화**, **데이터 처리 파이프라인 · 업무 자동화 스크립트**, **AI/ML · LLM · RAG · AI Agent 연동 개발**, 유지보수 · 리팩터링 · 성능. 자격은 Python 실무, **Flask · FastAPI · Django 중 하나**, REST, Git, Linux, SQL/NoSQL. 우대는 LLM 프로젝트, **RAG · AI Agent · MCP**, Docker · Kubernetes, **async · 멀티프로세싱**, 클라우드, 고가용성, 블로그 · 오픈소스. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Python 실무",
+          "FastAPI/Flask/Django",
+          "REST · SQL"
+        ],
+        "can_learn": [
+          "RAG",
+          "MCP",
+          "async"
+        ]
+      },
+      "study": [
+        {
+          "topic": "상담 지식으로 RAG — 문서를 넣고 근거로 답하기",
+          "from": "task",
+          "quote": "• AI/ML 모델, LLM(Large Language Model), RAG(Retrieval-Augmented Generation), AI Agent 시스템 연동 및 개발",
+          "priority": "core",
+          "why": "주요업무다. 챗봇 · 콜봇이 고객사 매뉴얼 · FAQ 로 답해야 한다(이 사이트의 해석).",
+          "gap_check": "상담 매뉴얼(표 · 절차)을 어떤 단위로 자르나? 한국어 검색에서 형태소 기반 키워드 검색과 벡터 검색을 섞는 이유는? 근거 문서가 없을 때 '상담원 연결' 로 넘기는 기준은? 콜봇처럼 답이 짧아야 하면 무엇을 바꾸나?",
+          "drill": "FastAPI 로 문서 업로드 → 청크 · 임베딩(pgvector) → 하이브리드 검색(BM25 + 벡터) → LLM 답변 + 근거 문단 반환 API 를 만들고, 공개 공공기관 FAQ 로 질문 30 개 평가셋을 만들어 검색 recall · 답변 근거 일치율을 잰다. 근거 점수가 낮으면 '상담원 연결' 을 돌려준다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "FastAPI",
+              "url": "https://fastapi.tiangolo.com/",
+              "kind": "docs"
+            },
+            {
+              "title": "pgvector",
+              "url": "https://github.com/pgvector/pgvector",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "사내 시스템을 에이전트에 붙이기 — MCP 서버",
+          "from": "preference",
+          "quote": "• RAG, AI Agent, MCP(Model Context Protocol) 관련 개발 경험",
+          "priority": "high",
+          "why": "우대사항이다. 상담 자동화는 조회(주문 · 민원 상태)와 처리(접수 · 변경)를 시스템에 해야 끝난다.",
+          "gap_check": "MCP 의 도구(tool) · 리소스(resource) · 프롬프트는 각각 무엇을 노출하나? 에이전트가 '변경' 도구를 부를 때 사용자 확인 · 권한은 어디서 막나? 도구 입력 스키마를 엄격히 두면 무엇이 좋아지나?",
+          "drill": "Python MCP SDK 로 민원 조회(읽기) · 민원 접수(쓰기) 도구 두 개를 가진 MCP 서버를 만들고, 쓰기 도구는 확인 토큰이 있어야 실행되게 한다. MCP Inspector 로 호출해 보고, 잘못된 입력이 스키마에서 막히는지 테스트한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Model Context Protocol — Python SDK",
+              "url": "https://github.com/modelcontextprotocol/python-sdk",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "동시에 많은 상담 — async 와 외부 호출 관리",
+          "from": "preference",
+          "quote": "• 비동기 처리(async/await), 멀티프로세싱/멀티스레딩에 대한 이해",
+          "priority": "high",
+          "why": "우대사항이다. 콜봇 · 챗봇은 LLM · 음성 · 외부 시스템 호출을 동시에 많이 기다린다.",
+          "gap_check": "FastAPI 에서 async 엔드포인트 안에 동기 DB 드라이버를 쓰면 무엇이 막히나? CPU 가 드는 전처리는 스레드 · 프로세스 중 어디로? LLM 호출에 타임아웃 · 동시 실행 제한(세마포어)을 거는 이유는?",
+          "drill": "FastAPI 에 httpx.AsyncClient 로 가짜 LLM(지연 1-3 초)을 부르는 엔드포인트를 만들고 세마포어 · 타임아웃을 건다. locust 로 동시 200 요청을 보내 동기 버전과 처리량 · 지연을 비교하고, 동기 DB 호출을 섞었을 때 이벤트 루프가 막히는 것을 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "FastAPI — Concurrency and async / await",
+              "url": "https://fastapi.tiangolo.com/async/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/348736",
+      "title": "인프라 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 7-20년. **고객사 환경에 자사 솔루션 설치 · 구축**, **서버 · DB 등 고객사 IT 인프라 연동**, 장애 원인 분석, **개발부서(Java · Node.js · Python) 솔루션 설치 · 운영**, 내부 CI/CD · 빌드 · 테스트 서버, 고객사 솔루션 아키텍처, 성능 모니터링, 보안 패치 · 백업, PoC, **설치 매뉴얼 · 기술 문서**, 구축 후 유지보수. 자격은 학사 또는 준하는 경력, **리눅스/유닉스 · 윈도우 서버**, **도커**, Python · Java, 기술지원 · 헬프데스크, 문서화. 우대는 Jenkins · GitLab CI, MySQL · PostgreSQL · Oracle 운영, 보안 · 로그 분석. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "리눅스 · 윈도우 서버",
+          "Docker",
+          "기술지원 · 문서화"
+        ],
+        "can_learn": [
+          "폐쇄망 설치 패키징",
+          "GPU 없는 LLM 서버"
+        ]
+      },
+      "study": [
+        {
+          "topic": "인터넷이 막힌 고객사에 설치하기 — 오프라인 패키지와 설치 매뉴얼",
+          "from": "task",
+          "quote": "• 고객사 환경에 자사 솔루션 설치 및 구축 수행",
+          "priority": "core",
+          "why": "주요업무다. 공공 · 금융 고객은 망이 분리된 경우가 많다(이 사이트의 해석).",
+          "gap_check": "인터넷 없는 서버에 Docker 이미지 · 파이썬 패키지 · OS 패키지를 어떻게 들여가나(docker save/load · 로컬 저장소 · wheelhouse)? 고객사 OS 버전이 다르면 무엇이 깨지나(glibc · 커널)? 설치 매뉴얼에 꼭 넣어야 할 확인 단계(포트 · 방화벽 · 계정 · 시간 동기)는?",
+          "drill": "Java 서비스 + Python 서비스 + PostgreSQL 을 Docker Compose 로 묶고, 네트워크를 끊은 VM 에 docker save 한 tar · compose 파일 · 설치 스크립트만으로 설치되게 만든다. 사전 점검(포트 · 디스크 · 메모리 · 시간) 스크립트와 한 장짜리 설치 · 롤백 매뉴얼을 쓴다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Docker — docker image save",
+              "url": "https://docs.docker.com/reference/cli/docker/image/save/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "고객사 장애를 원격 없이 풀기 — 로그 · 진단 번들",
+          "from": "task",
+          "quote": "• 장애 및 오류 발생 시 원인 분석 및 해결 지원",
+          "priority": "high",
+          "why": "주요업무이고 우대에 로그 분석이 있다.",
+          "gap_check": "고객사가 원격 접속을 허락하지 않으면 무엇을 받아 와야 하나(로그 · 설정 · 버전 · 리소스 상태)? 개인정보가 섞인 상담 로그를 어떻게 가리고 가져오나? 디스크가 차서 멈추는 것을 어떻게 미리 막나(로그 회전)?",
+          "drill": "앞 과제 설치본에 '진단 번들' 스크립트(컨테이너 상태 · 최근 로그 · 설정 · 디스크 · 메모리를 모아 전화번호 · 주민번호 패턴을 가린 tar 로)를 만들고, 일부러 DB 연결 실패 · 디스크 가득 참을 일으켜 번들만 보고 원인을 찾는 연습을 한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Docker — Configure logging drivers",
+              "url": "https://docs.docker.com/engine/logging/configure/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/377177",
+      "title": "AI 기업 웹 디자인 실무 담당자",
+      "site": "wanted",
+      "verdict": "경력 5-14년 — **개발이 아닌 웹 · 브랜드 디자인 자리**다. AI 기업 **브랜드 아이덴티티를 반영한 홈페이지 디자인 · 운영**, UI/UX · 비주얼, **'미래지향적 · 사이버틱' 웹 디자인**, 메인 · 주요 페이지, **제품 · 서비스 소개 페이지**, 개편 · 신규 프로젝트 주도, 개발 · 기획 · 마케팅 협업. 자격은 웹 · 브랜드 디자인 5년, Figma · Photoshop · Illustrator, **포트폴리오**. 우대는 AI · 테크 기업 경험, 홈페이지 리뉴얼, 구현까지 경험, HTML/CSS 이해, 인터랙션 · 모션 · 3D. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "웹 · 브랜드 디자인 5년",
+          "Figma 등",
+          "포트폴리오"
+        ],
+        "can_learn": [
+          "HTML/CSS",
+          "모션 · 3D"
+        ]
+      },
+      "study": [
+        {
+          "topic": "제품이 아홉 개인 회사의 홈페이지 — 소개 페이지 체계와 디자인 시스템",
+          "from": "task",
+          "quote": "○ 제품 및 서비스 소개 페이지, 기업 홍보 콘텐츠 디자인",
+          "priority": "core",
+          "why": "주요업무다. SONA CHAT · WORK · CALL · KGPT · GEN STATION · SONA EDGE 등 제품이 많다.",
+          "gap_check": "제품 소개 페이지마다 같은 틀(문제 · 해결 · 기능 · 고객 사례 · 도입 문의)을 쓰면 무엇이 좋아지나? Figma 에서 컴포넌트 · 변수(색 · 간격)로 디자인 시스템을 만들면 개발자 전달이 어떻게 쉬워지나? '사이버틱' 한 인상을 내면서도 공공 · 금융 고객에게 신뢰를 주려면?",
+          "drill": "제품 세 개를 골라 Figma 에서 같은 소개 페이지 템플릿(컴포넌트 · 변수 · 반응형 프레임)으로 만들고, 색 · 타이포 토큰을 정리한 한 장짜리 가이드를 붙여 포트폴리오 케이스로 쓴다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Figma — Guide to variables",
+              "url": "https://help.figma.com/hc/en-us/articles/15339657135383-Guide-to-variables-in-Figma",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "디자인을 구현까지 — HTML/CSS 와 모션",
+          "from": "preference",
+          "quote": "○ HTML/CSS 및 웹 개발 프로세스에 대한 기본적인 이해가 있으신 분",
+          "priority": "nice",
+          "why": "우대사항이고 인터랙션 · 모션도 우대한다.",
+          "gap_check": "디자인한 레이아웃이 CSS Grid · Flexbox 로 어떻게 옮겨지나? 스크롤 모션을 넣을 때 성능 · 접근성(prefers-reduced-motion)은? 개발자에게 넘길 때 무엇을 적어야 하나(상태 · 간격 · 반응형 규칙)?",
+          "drill": "앞 과제의 소개 페이지 하나를 HTML/CSS 로 직접 만들고 스크롤 등장 모션을 CSS 로 넣은 뒤 prefers-reduced-motion 이면 끄게 한다. Lighthouse 로 성능 · 접근성 점수를 재서 포트폴리오에 함께 싣는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "MDN — CSS layout",
+              "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
