@@ -3016,3 +3016,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 一休 LLM 대량 번역(기능 3/3) — 완주
 
 - `llm-bulk-translation-8-languages`. 결정 6 — ChatGPT 선정(원어민 채점) / 번역 사전 / Batch API / frequency_penalty / 길이 · 잔존 검사 후 추론 모델 재번역 / 사내 번역 API. 모든 도메인에 기능 → `done`. 진행 중 → 완료. 다음: スタンバイ.
+
+## 2026-09-30 スタンバイ 프로파일
+
+- 대기 → 진행 중. 블로그 글(Vespa Parent/Child · 광고 로그 리아키 · Databricks 이행 · 기술 정리 2024)로 도메인 셋. 수익원은 검색 연동형 구인 광고(해석, 광고 틀 · 캠페인 입찰은 글이 확인). category 검색.

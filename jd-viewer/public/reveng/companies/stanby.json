@@ -1,0 +1,165 @@
+{
+  "slug": "stanby",
+  "name": "スタンバイ",
+  "name_en": "Stanby",
+  "country": "JP",
+  "category": "검색",
+  "status": "in_progress",
+  "updated_at": "2026-09-30",
+  "domain": "stanby.co.jp",
+  "one_liner": "구인 검색 엔진 스탠바이 — 검색 결과의 광고 틀을 Vespa Parent/Child 로 바꿔 캠페인 갱신을 30 분에서 수 초로, 청구가 걸린 광고 로그 집계를 사양을 바꾸지 않고 옮기고, 데이터 기반을 과제부터 다시 짠다",
+  "business_model": "スタンバイ 는 **구인 검색 엔진 '스탠바이'** 를 운영한다 — 2015 년 **ビズリーチ 의 신규 사업**으로 시작해 10 년 가까이 된 서비스다(기술 블로그). 검색 결과에는 두 틀이 있다 — 검색 조건 일치도로 구인을 싣는 **무료 게재 틀**과, 일치도 + **캠페인 입찰 금액**으로 싣는 **광고 틀**. 구인 정보를 제공하는 고객(광고주)은 **광고 관리 화면**에서 캠페인(타깃 검색 조건 · 입찰 금액 · 예산 · 게재 기간)을 설정하고, 광고 로그(구직자 행동)의 집계 리포트와 **청구 데이터**를 받는다 — 즉 **검색 연동형 구인 광고**가 돈을 버는 구조로 읽힌다. 검색 엔진은 **Vespa**, 인프라는 AWS(EKS · ECS · Aurora MySQL)이고 엔저로 인프라 비용을 '삭감' 이 아니라 '최적화' 로 다뤘다.\n\n기술 블로그는 셋을 보여 준다. 광고용 Vespa 에서 캠페인을 구인표에 박아 넣어 **캠페인 하나를 바꿀 때마다 연결된 구인 전부를 다시 넣던** 구조를 **Parent/Child** 로 바꾼 것, **청구에 쓰이는 광고 로그 집계**가 세 경로로 흩어져 있던 것을 사양을 바꾸지 않고 신구 병행 · 2 단계로 옮긴 것, 그리고 Athena/Glue 데이터 기반을 **성숙도 평가와 이용자 설문**으로 과제부터 정리해 **Databricks** 로 옮긴 것.",
+  "products": [
+    "스탠바이(구인 검색 엔진)",
+    "스탠바이 광고(검색 연동형 캠페인)",
+    "광고 관리 화면(리포트 · 청구)",
+    "스탠바이 앱"
+  ],
+  "revenue_total": "이번에 읽은 자료에 없다.",
+  "revenue_streams": [
+    {
+      "name": "검색 연동형 구인 광고",
+      "how": "광고주가 캠페인에 입찰 금액 · 예산을 걸면 검색 결과의 광고 틀에 구인이 실리고, 광고 로그를 집계해 청구한다 — 과금 단위(클릭 등)와 매출은 읽은 글에 없다.",
+      "weight": "모름(주 수익원으로 읽힌다)",
+      "domains": [
+        "검색 연동 광고 — 캠페인을 바꿀 때 구인 100 만 건을 다시 넣지 않는다",
+        "광고 로그 · 청구 집계 — 흩어진 세 경로를 하나로",
+        "데이터 기반을 과제부터 다시 — Athena/Glue 에서 Databricks 로"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "VespaのParent/Childを用いた広告配信の改善",
+          "url": "https://techblog.stanby.co.jp/entry/vespa_parent_child",
+          "publisher": "スタンバイ",
+          "summary": "검색 결과에 무료 게재 틀(검색 조건 일치도)과 광고 틀(일치도 + 캠페인 입찰 금액). 광고주는 캠페인(타깃 검색 조건 · 입찰 · 예산 · 기간)을 설정. 광고용 Vespa 는 캠페인을 구인표에 박아 넣어 캠페인 갱신마다 연결된 구인표 전부를 Feed — 캠페인 100 개 × 구인 1 만 = 100 만 건, 약 30 분. Parent/Child 로 캠페인을 부모 문서로 → 수 초. 부하 시험에서 지연 악화 거의 없음(부모:자식 약 1:10,000), 복수 스키마로 검색 건수 변동 · 리소스 지정 오류 → restrict 파라미터.",
+          "date": "2025-03-10"
+        },
+        {
+          "title": "広告ログ基盤リアーキテクチャと良かった方針のご紹介",
+          "url": "https://techblog.stanby.co.jp/entry/howto_carryout_adlog_rearchitecture",
+          "publisher": "スタンバイ",
+          "summary": "광고 관리 화면의 리포트 · 청구 데이터를 만드는 광고 로그 기반 — 집계 경로 3 개(데이터 기반 · 배치 A · 배치 B)가 서로 다른 기술, 이중 관리, 배치 B 에 청구 처리. 신구 병행 가동 · 2 단계(1: 배치 B 폐지, 로그 → 배치 X · 청구 → 배치 Y, 2: 배치 A 폐지). 좋았던 방침: 원칙적으로 사양을 바꾸지 않는다 · 범위를 좁혀 단계 출시 · 전체 최적(데이터 기반 리아키와 맞춰 '새 데이터 기반 초기엔 광고 로그 우선').",
+          "date": "2025-11-14"
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "검색 한 번에서 청구까지",
+    "question": "광고 틀의 구인은 어떻게 실리고 어떻게 청구되나?",
+    "code": "flowchart LR\n  U[\"구직자 검색\"] --> V[\"Vespa\\n무료 틀 + 광고 틀\"]\n  C[\"광고주 캠페인\\n조건 · 입찰 · 예산\"] --> V\n  V --> LOG[\"광고 로그(행동)\"]\n  LOG --> AGG[\"광고 로그 기반\\n배치 X(로그) · 배치 Y(청구)\"]\n  AGG --> ADM[\"광고 관리 화면\\n리포트 · 청구\"]\n  LOG --> DP[\"데이터 기반\\nAthena/Glue → Databricks\"]",
+    "_note": "이 사이트의 해석 — Vespa · 광고 로그 · 데이터 기반 글의 구성을 한 장에 모았다."
+  },
+  "domains": [
+    {
+      "name": "검색 연동 광고 — 캠페인을 바꿀 때 구인 100 만 건을 다시 넣지 않는다",
+      "why": "광고용 Vespa 는 구인표 하나의 스키마에 캠페인 정보를 박아 넣었다 — 구인 갱신, 캠페인 설정 갱신, 캠페인 예산 소진 때마다 Feed 가 돈다. 캠페인 하나에 구인 1 만 건이 딸리면 캠페인 100 개 갱신이 구인 100 만 건 갱신(약 30 분)이 된다.",
+      "tech": [
+        {
+          "tech": "Vespa Parent/Child — 캠페인을 부모 문서로, 구인이 부모 ID 참조, 검색 대상은 restrict 로 한정",
+          "solves": "캠페인 갱신 Feed 를 수 초로.",
+          "limits": "간접 참조라 검색 지연을 부하 시험으로 확인해야 했고, 복수 스키마로 검색 건수 변동 · 리소스 지정 오류가 났다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "VespaのParent/Childを用いた広告配信の改善",
+              "url": "https://techblog.stanby.co.jp/entry/vespa_parent_child",
+              "publisher": "スタンバイ",
+              "summary": "검색 결과에 무료 게재 틀(검색 조건 일치도)과 광고 틀(일치도 + 캠페인 입찰 금액). 광고주는 캠페인(타깃 검색 조건 · 입찰 · 예산 · 기간)을 설정. 광고용 Vespa 는 캠페인을 구인표에 박아 넣어 캠페인 갱신마다 연결된 구인표 전부를 Feed — 캠페인 100 개 × 구인 1 만 = 100 만 건, 약 30 분. Parent/Child 로 캠페인을 부모 문서로 → 수 초. 부하 시험에서 지연 악화 거의 없음(부모:자식 약 1:10,000), 복수 스키마로 검색 건수 변동 · 리소스 지정 오류 → restrict 파라미터.",
+              "date": "2025-03-10"
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "광고 로그 · 청구 집계 — 흩어진 세 경로를 하나로",
+      "why": "광고 관리 화면의 리포트 · 청구 데이터를 만드는 광고 로그 집계가 역사적 경위로 세 경로(데이터 기반 · 배치 A · 배치 B)에 서로 다른 기술로 흩어져, 사양 하나를 고치려 해도 여러 경로를 고쳐야 했고 청구 처리를 가진 배치 B 에 기대는 앱이 많았다.",
+      "tech": [
+        {
+          "tech": "신구 병행 가동 · 2 단계(배치 B → X · Y, 배치 A → X), 사양 불변 · 범위 한정 · 전체 최적",
+          "solves": "집계 경로 통일 · 로그 일원 관리.",
+          "limits": "장기 작업 — 그룹 간 조정과 청구 데이터 품질 검증이 필요했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "広告ログ基盤リアーキテクチャと良かった方針のご紹介",
+              "url": "https://techblog.stanby.co.jp/entry/howto_carryout_adlog_rearchitecture",
+              "publisher": "スタンバイ",
+              "summary": "광고 관리 화면의 리포트 · 청구 데이터를 만드는 광고 로그 기반 — 집계 경로 3 개(데이터 기반 · 배치 A · 배치 B)가 서로 다른 기술, 이중 관리, 배치 B 에 청구 처리. 신구 병행 가동 · 2 단계(1: 배치 B 폐지, 로그 → 배치 X · 청구 → 배치 Y, 2: 배치 A 폐지). 좋았던 방침: 원칙적으로 사양을 바꾸지 않는다 · 범위를 좁혀 단계 출시 · 전체 최적(데이터 기반 리아키와 맞춰 '새 데이터 기반 초기엔 광고 로그 우선').",
+              "date": "2025-11-14"
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "데이터 기반을 과제부터 다시 — Athena/Glue 에서 Databricks 로",
+      "why": "S3 · Glue · Athena · MWAA 의 옛 데이터 기반에 과제가 쌓였다 — GA4 · Salesforce 같은 중요 데이터가 들어오지 않아 사일로가 되고, 데이터 관계 · 리니지 · 메타데이터가 부족하고, 분석자마다 KPI 계산식이 달랐다.",
+      "tech": [
+        {
+          "tech": "DMBOK2 성숙도 평가 + 이용자 설문 → 5 대 과제 → Databricks 이행",
+          "solves": "데이터 통합 · 메타데이터 · KPI 통일 · 품질.",
+          "limits": "이행 계획 · 실행의 상세는 기능에서 다룬다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "データ基盤を Athena / Glue から Databricks へ移行しました",
+              "url": "https://techblog.stanby.co.jp/entry/databricks_migration",
+              "publisher": "スタンバイ",
+              "summary": "옛 데이터 기반: S3 · Glue Data Catalog · Glue Job(PySpark) · Athena · MWAA · Redash · Looker Studio. '모던 데이터 스택으로 멋지게' 가 아니라 과제부터 — DMBOK2 데이터 관리 성숙도 평가(77 문항 5 단계) + 이용자 설문 → 5 대 중점 과제(비효율적 데이터 통합 — GA4 · Salesforce 사일로, ER 도 결여, 리니지 · 메타데이터, KPI 계산식 통일, 데이터 품질).",
+              "date": "2026-07-14"
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "매출 · 광고 과금 단위(클릭 · 노출)는 이번에 읽은 자료에 없다.",
+    "회사 공식 사이트는 이번에 읽지 않았다 — 사업 설명은 기술 블로그 서술이다.",
+    "검색 품질(SQ) 직군 글은 조직 글이라 도메인으로 세우지 않았다."
+  ],
+  "sources": [
+    {
+      "title": "VespaのParent/Childを用いた広告配信の改善",
+      "url": "https://techblog.stanby.co.jp/entry/vespa_parent_child",
+      "publisher": "スタンバイ",
+      "summary": "검색 결과에 무료 게재 틀(검색 조건 일치도)과 광고 틀(일치도 + 캠페인 입찰 금액). 광고주는 캠페인(타깃 검색 조건 · 입찰 · 예산 · 기간)을 설정. 광고용 Vespa 는 캠페인을 구인표에 박아 넣어 캠페인 갱신마다 연결된 구인표 전부를 Feed — 캠페인 100 개 × 구인 1 만 = 100 만 건, 약 30 분. Parent/Child 로 캠페인을 부모 문서로 → 수 초. 부하 시험에서 지연 악화 거의 없음(부모:자식 약 1:10,000), 복수 스키마로 검색 건수 변동 · 리소스 지정 오류 → restrict 파라미터.",
+      "date": "2025-03-10"
+    },
+    {
+      "title": "広告ログ基盤リアーキテクチャと良かった方針のご紹介",
+      "url": "https://techblog.stanby.co.jp/entry/howto_carryout_adlog_rearchitecture",
+      "publisher": "スタンバイ",
+      "summary": "광고 관리 화면의 리포트 · 청구 데이터를 만드는 광고 로그 기반 — 집계 경로 3 개(데이터 기반 · 배치 A · 배치 B)가 서로 다른 기술, 이중 관리, 배치 B 에 청구 처리. 신구 병행 가동 · 2 단계(1: 배치 B 폐지, 로그 → 배치 X · 청구 → 배치 Y, 2: 배치 A 폐지). 좋았던 방침: 원칙적으로 사양을 바꾸지 않는다 · 범위를 좁혀 단계 출시 · 전체 최적(데이터 기반 리아키와 맞춰 '새 데이터 기반 초기엔 광고 로그 우선').",
+      "date": "2025-11-14"
+    },
+    {
+      "title": "データ基盤を Athena / Glue から Databricks へ移行しました",
+      "url": "https://techblog.stanby.co.jp/entry/databricks_migration",
+      "publisher": "スタンバイ",
+      "summary": "옛 데이터 기반: S3 · Glue Data Catalog · Glue Job(PySpark) · Athena · MWAA · Redash · Looker Studio. '모던 데이터 스택으로 멋지게' 가 아니라 과제부터 — DMBOK2 데이터 관리 성숙도 평가(77 문항 5 단계) + 이용자 설문 → 5 대 중점 과제(비효율적 데이터 통합 — GA4 · Salesforce 사일로, ER 도 결여, 리니지 · 메타데이터, KPI 계산식 통일, 데이터 품질).",
+      "date": "2026-07-14"
+    },
+    {
+      "title": "スタンバイの最近の技術的な取り組み",
+      "url": "https://techblog.stanby.co.jp/entry/tech_summary",
+      "publisher": "スタンバイ",
+      "summary": "2015 년 ビズリーチ 신규 사업으로 시작한 서비스, 10 년 가까이. AWS. 2024 비용 '최적화'(삭감 아님) — 팀별 상향식 목표, 구인 데이터 거대 DB · Aurora MySQL 54% 삭감, Savings Plans 커버율 50 → 80%, Vespa EC2 를 Graviton 으로, EKS Fargate → EC2. 검색 엔진 Vespa 이행, 기술 부채를 영향도 · 긴급성 · 효과로 줄 세워 리아키 로드맵.",
+      "date": "2024-12-24"
+    },
+    {
+      "title": "検索品質の\"違和感\"に輪郭を与える – SQが始めた「SQレター」の話",
+      "url": "https://techblog.stanby.co.jp/entry/defining-discomfort",
+      "publisher": "スタンバイ",
+      "summary": "검색 품질(SQ) 직군이 검색 결과의 '위화감' 을 말로 만드는 활동.",
+      "date": "2026-05-27"
+    }
+  ]
+}
