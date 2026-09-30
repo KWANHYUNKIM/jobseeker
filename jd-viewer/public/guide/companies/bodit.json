@@ -1,0 +1,284 @@
+{
+  "slug": "bodit",
+  "name": "바딧",
+  "name_en": "BODIT",
+  "aliases": [
+    "바딧"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": null,
+  "one_liner": "소의 미세한 움직임으로 행동 · 질병을 읽는 축산 정밀사육 AI 파머스핸즈(국내 130 · 해외 70 농가) — MSA 이관 백엔드와 Flutter · Next.js 시니어 프론트를 뽑는다",
+  "company": {
+    "business": "바딧은 **보이지 않는 미세한 신호를 데이터로 읽어** 풀리지 않던 문제를 푸는 회사다 — 국내 최초 **심전도 기반 웨어러블 의료기기**를 만든 팀에서 시작해, 사람의 생체 신호 분석 경험을 **가축**으로 넓혔다. 주력 **FarmersHands(파머스핸즈)** 는 단순 활동량이 아니라 **소의 미세한 움직임 패턴으로 어떤 행동을 하는지 판별**하는 AI 축산 정밀사육 솔루션으로, 질병을 조기에 찾고 번식을 관리해 폐사율을 낮추고 생산성을 올린다. 공고는 **국내 130 · 해외 70 농가**, **등록 개체 10,119 마리**(4 년간 증가), **주요 행동 정확도 93.2%** 를 들고, R&D 정부 과제와 **ODA 사업**으로 넓히는 중이라 적는다. 두 번째 서비스 **BodyStamo** 는 15 가지 동작을 분석하는 헬스케어 센서(임산부 운동 처방 · 필라테스)다. 모집중 둘은 파머스핸즈의 **백엔드(MSA · 서버리스 이관)** 와 **시니어 프론트(Flutter 앱 · Next.js 웹)** 이며 둘 다 5 년 이상이다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "백엔드 개발자 (5년 이상)",
+        "url": "https://www.wanted.co.kr/wd/348612",
+        "publisher": "원티드",
+        "summary": "바딧 — 국내 최초 웨어러블 의료기기(심전도) 팀에서 시작, 비정형 대상의 미세 신호 분석. FarmersHands: 소의 미세한 움직임 패턴으로 행동을 판별하는 AI 축산 정밀사육 — 질병 조기 발견 · 번식 관리, 국내 130 · 해외 70 농가, 등록 개체 10,119 마리, 주요 행동 정확도 93.2%, R&D · ODA. BodyStamo: 15 가지 동작 분석 헬스케어 센서(임산부 운동 처방 · 필라테스). 백엔드: 파머스핸즈 REST API, MSA/서버리스, 기존 시스템 MSA 이관, AWS 운영 · 모니터링, 장애 대응 지침 · 재발 방지, 테크 리드. JS/TS · REST 5년 · RDBMS · 클라우드 · MSA/서버리스 · SLA · Throttling · Bulkhead. 우대 Lambda · SQS/SNS/Kafka · 멱등 컨슈머 · CloudFormation · IoT 센서 파이프라인."
+      }
+    ],
+    "scale": [
+      {
+        "label": "파머스핸즈 도입",
+        "value": "국내 130 · 해외 70 농가 · 등록 개체 10,119 마리 · 주요 행동 정확도 93.2%(공고)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "백엔드 개발자 (5년 이상)",
+            "url": "https://www.wanted.co.kr/wd/348612",
+            "publisher": "원티드",
+            "summary": "바딧 — 국내 최초 웨어러블 의료기기(심전도) 팀에서 시작, 비정형 대상의 미세 신호 분석. FarmersHands: 소의 미세한 움직임 패턴으로 행동을 판별하는 AI 축산 정밀사육 — 질병 조기 발견 · 번식 관리, 국내 130 · 해외 70 농가, 등록 개체 10,119 마리, 주요 행동 정확도 93.2%, R&D · ODA. BodyStamo: 15 가지 동작 분석 헬스케어 센서(임산부 운동 처방 · 필라테스). 백엔드: 파머스핸즈 REST API, MSA/서버리스, 기존 시스템 MSA 이관, AWS 운영 · 모니터링, 장애 대응 지침 · 재발 방지, 테크 리드. JS/TS · REST 5년 · RDBMS · 클라우드 · MSA/서버리스 · SLA · Throttling · Bulkhead. 우대 Lambda · SQS/SNS/Kafka · 멱등 컨슈머 · CloudFormation · IoT 센서 파이프라인."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "축산 정밀사육 솔루션(파머스핸즈)",
+        "how": "농가에 소 부착 센서와 행동 분석 서비스를 제공한다 — 판매 · 구독 구성은 읽은 자료에 없다. 해외는 ODA 사업으로도 넓힌다.",
+        "domains": [
+          "소 행동 데이터 백엔드 · MSA 이관",
+          "농가용 앱 · 대시보드"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "백엔드 개발자 (5년 이상)",
+            "url": "https://www.wanted.co.kr/wd/348612",
+            "publisher": "원티드",
+            "summary": "바딧 — 국내 최초 웨어러블 의료기기(심전도) 팀에서 시작, 비정형 대상의 미세 신호 분석. FarmersHands: 소의 미세한 움직임 패턴으로 행동을 판별하는 AI 축산 정밀사육 — 질병 조기 발견 · 번식 관리, 국내 130 · 해외 70 농가, 등록 개체 10,119 마리, 주요 행동 정확도 93.2%, R&D · ODA. BodyStamo: 15 가지 동작 분석 헬스케어 센서(임산부 운동 처방 · 필라테스). 백엔드: 파머스핸즈 REST API, MSA/서버리스, 기존 시스템 MSA 이관, AWS 운영 · 모니터링, 장애 대응 지침 · 재발 방지, 테크 리드. JS/TS · REST 5년 · RDBMS · 클라우드 · MSA/서버리스 · SLA · Throttling · Bulkhead. 우대 Lambda · SQS/SNS/Kafka · 멱등 컨슈머 · CloudFormation · IoT 센서 파이프라인."
+          }
+        ]
+      },
+      {
+        "name": "정부 R&D · ODA",
+        "how": "R&D 정부 과제와 ODA 사업으로 사업 확장 · 솔루션 고도화.",
+        "domains": [
+          "소 행동 데이터 백엔드 · MSA 이관"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "백엔드 개발자 (5년 이상)",
+            "url": "https://www.wanted.co.kr/wd/348612",
+            "publisher": "원티드",
+            "summary": "바딧 — 국내 최초 웨어러블 의료기기(심전도) 팀에서 시작, 비정형 대상의 미세 신호 분석. FarmersHands: 소의 미세한 움직임 패턴으로 행동을 판별하는 AI 축산 정밀사육 — 질병 조기 발견 · 번식 관리, 국내 130 · 해외 70 농가, 등록 개체 10,119 마리, 주요 행동 정확도 93.2%, R&D · ODA. BodyStamo: 15 가지 동작 분석 헬스케어 센서(임산부 운동 처방 · 필라테스). 백엔드: 파머스핸즈 REST API, MSA/서버리스, 기존 시스템 MSA 이관, AWS 운영 · 모니터링, 장애 대응 지침 · 재발 방지, 테크 리드. JS/TS · REST 5년 · RDBMS · 클라우드 · MSA/서버리스 · SLA · Throttling · Bulkhead. 우대 Lambda · SQS/SNS/Kafka · 멱등 컨슈머 · CloudFormation · IoT 센서 파이프라인."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "소 행동 데이터 백엔드 · MSA 이관",
+        "why": "백엔드 공고가 파머스핸즈 REST API, 기존 시스템의 MSA/서버리스 이관, AWS 운영, Throttling · Bulkhead, SQS/SNS · Kafka · 멱등 컨슈머, IoT 센서 파이프라인을 적는다.",
+        "what_to_know": [
+          "IoT 수집 파이프라인",
+          "멱등 컨슈머",
+          "스트랭글러 이관"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "백엔드 개발자 (5년 이상)",
+            "url": "https://www.wanted.co.kr/wd/348612",
+            "publisher": "원티드",
+            "summary": "바딧 — 국내 최초 웨어러블 의료기기(심전도) 팀에서 시작, 비정형 대상의 미세 신호 분석. FarmersHands: 소의 미세한 움직임 패턴으로 행동을 판별하는 AI 축산 정밀사육 — 질병 조기 발견 · 번식 관리, 국내 130 · 해외 70 농가, 등록 개체 10,119 마리, 주요 행동 정확도 93.2%, R&D · ODA. BodyStamo: 15 가지 동작 분석 헬스케어 센서(임산부 운동 처방 · 필라테스). 백엔드: 파머스핸즈 REST API, MSA/서버리스, 기존 시스템 MSA 이관, AWS 운영 · 모니터링, 장애 대응 지침 · 재발 방지, 테크 리드. JS/TS · REST 5년 · RDBMS · 클라우드 · MSA/서버리스 · SLA · Throttling · Bulkhead. 우대 Lambda · SQS/SNS/Kafka · 멱등 컨슈머 · CloudFormation · IoT 센서 파이프라인."
+          }
+        ]
+      },
+      {
+        "name": "농가용 앱 · 대시보드",
+        "why": "프론트 공고가 Flutter 앱 · Next.js 웹, 센서 · 행동 데이터 그래프 · 대시보드, 농가 피드백 · 현장 관찰을 적는다.",
+        "what_to_know": [
+          "시계열 차트(fl_chart · Recharts)",
+          "오프라인 · 저대역 환경",
+          "Flutter + Next.js 공존"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "시니어 프론트엔드 개발자 (5년 이상)",
+            "url": "https://www.wanted.co.kr/wd/377326",
+            "publisher": "원티드",
+            "summary": "파머스핸즈 모바일 앱(Flutter) · 웹(Next.js), 농가 피드백 · 현장 관찰로 기획 참여, 컴포넌트 · 상태 관리 · 디자인 시스템, 테스트 · 모니터링, 센서 · 행동 데이터 그래프 · 대시보드, AI 코딩 도구. 5년(Flutter 또는 Next.js 주력). 우대 테스트 · CI, 개인정보 인증 · 권한, D3 · Recharts · fl_chart, Claude Code · MCP."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "현장(농가)이 제품을 정한다",
+        "evidence": "• 농가 피드백과 현장 관찰을 바탕으로 무엇을 만들지 정의하는 과정에 참여합니다.",
+        "so_what": "개발자도 농가를 이해해야 한다 — 비개발 사용자의 현장 제약(장갑 · 햇빛 · 약한 통신)을 반영한 경험이 있으면 말이 된다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "시스템을 한 단계 올릴 시점이다",
+        "evidence": "• 기존 시스템의 구조를 파악하고, Microservice 또는 그에 상응하는 구조로 이관·개선합니다.",
+        "so_what": "백엔드는 새로 짓기보다 옮기기 · 안정화가 일의 중심이다 — 모놀리스를 멈추지 않고 나눈 경험을 준비한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "회사 홈페이지는 이번에 찾지 않았다 — 매출 · 인원 · 투자는 모른다",
+    "파머스핸즈 과금(센서 판매 · 구독)은 모른다",
+    "지원 때 '5 가지 질문' 답변이 필수라고 공고가 적는다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/348612",
+      "title": "백엔드 개발자 (5년 이상)",
+      "site": "wanted",
+      "verdict": "경력 5년 이상. **파머스핸즈 백엔드 · REST API** 설계 · 개발, **MSA 또는 서버리스**로 확장 가능한 API · 모듈, **기존 시스템을 Microservice 등으로 이관 · 개선**, **AWS** 인프라 구성 · 운영 · 모니터링 · 성능, **장애 대응 매뉴얼 · 지침과 장애 때 팀을 이끌고 재발 방지**, 테크 프로젝트 리드. 자격은 **JS/TS**, **REST API 상용 운영 5년**, RDBMS 설계 · 운영, 클라우드, **MSA · 서버리스 실제 적용**, 서비스 간 통신의 **SLA · 오버헤드 이해와 대체 설계**, 성능 병목 해결, **Throttling · Bulkhead 등 안정성 패턴**, 기술 리드. 우대는 Lambda · API Gateway, Docker, **SQS/SNS · Kafka 비동기**, **대량 데이터 · 멱등 컨슈머**, CloudFormation, 쿼리 튜닝, 모놀리스 → MSA 이관, **IoT · 센서 데이터 파이프라인**, 스타트업, 전산 학사. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "JS/TS",
+          "REST 운영 5년",
+          "MSA 또는 서버리스 실전",
+          "안정성 패턴"
+        ],
+        "can_learn": [
+          "IoT 수집",
+          "CloudFormation",
+          "멱등 컨슈머"
+        ]
+      },
+      "study": [
+        {
+          "topic": "소 목걸이 센서에서 서버까지 — 비동기 수집과 멱등 컨슈머",
+          "from": "preference",
+          "quote": "• 대량 데이터 처리 및 멱등성(Idempotency) 원칙에 따른 탄력적인 컨슈머 프로세스 구현 경험이 있는 분",
+          "priority": "core",
+          "why": "우대사항이고 IoT · 센서 파이프라인 우대와 이어진다. 1 만 마리 개체의 센서 데이터가 농가 통신 상태에 따라 몰려 들어온다.",
+          "gap_check": "농가 게이트웨이가 통신이 끊겼다 한꺼번에 데이터를 올리면 무엇이 몰리나? SQS 는 최소 한 번 전달이라 같은 데이터가 두 번 오면 무엇을 키로 걸러내나(개체 ID + 측정 시각)? 처리 실패가 반복되는 메시지는 어디로 보내고 누가 보나(DLQ)?",
+          "drill": "Node.js(TS) Lambda 로 SQS 소비자를 만들고, 가짜 게이트웨이가 개체 100 마리의 행동 데이터를 몰아 보내게 한다. (개체 ID, 측정 시각)을 조건부 쓰기(DynamoDB 또는 PostgreSQL ON CONFLICT)로 저장해 중복 전송에도 한 번만 남는지 확인하고, 깨진 메시지가 DLQ 로 가는지 · 배치 부분 실패 보고(ReportBatchItemFailures)가 동작하는지 본다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "AWS Lambda — Using Lambda with Amazon SQS (partial batch responses)",
+              "url": "https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모놀리스에서 서비스를 떼어 내기 — 이관 순서와 경계",
+          "from": "task",
+          "quote": "• 기존 시스템의 구조를 파악하고, Microservice 또는 그에 상응하는 구조로 이관·개선합니다.",
+          "priority": "core",
+          "why": "주요업무이고 우대에 모놀리스 → MSA 이관 경험이 있다.",
+          "gap_check": "무엇부터 떼어 내나(변경이 잦고 경계가 분명한 것 — 예: 알림 · 번식 관리)? 떼어 낸 서비스와 옛 모놀리스가 같은 DB 를 쓰면 무엇이 문제인가? 요청을 옛 · 새 경로로 나누는 곳은 어디인가(API Gateway 라우팅)?",
+          "drill": "작은 Express 모놀리스(개체 · 알림 · 번식 기록)에서 알림 기능을 Lambda 서비스로 떼어 내고, API Gateway 경로 하나만 새 서비스로 보낸다. 알림 데이터 소유권을 새 서비스로 옮기며 옛 코드는 이벤트(SNS)로만 알리게 바꾸고, 떼어 내기 전후 장애 격리를 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Martin Fowler — StranglerFigApplication",
+              "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+              "kind": "blog"
+            }
+          ]
+        },
+        {
+          "topic": "한 서비스가 느려도 전체가 안 죽게 — Throttling · Bulkhead · 타임아웃",
+          "from": "qualification",
+          "quote": "• Throttling, Bulkhead 등 서비스 안정성 패턴을 적용한 경험이 있는 분",
+          "priority": "high",
+          "why": "필수 자격이고 'SLA · 오버헤드 이해와 대체 설계', 장애 대응 리드와 이어진다.",
+          "gap_check": "하위 서비스가 느려지면 호출자의 커넥션 · 스레드(또는 Lambda 동시성)가 어떻게 고갈되나? Bulkhead 로 무엇을 나누나(외부 API 별 동시성 한도)? 타임아웃 · 재시도 · 서킷 브레이커를 어떤 순서로 두나? 장애 뒤 재발 방지 보고서엔 무엇을 쓰나?",
+          "drill": "앞 서비스가 외부 기상 API(가짜, 가끔 10 초 지연)를 부르게 하고, 타임아웃 · 지수 백오프 재시도 · opossum 서킷 브레이커 · 호출 대상별 동시성 한도를 넣는다. k6 로 부하를 주며 외부 API 가 느릴 때 다른 API 의 p95 가 지켜지는지 비교하고, 가짜 장애 보고서(타임라인 · 원인 · 재발 방지)를 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Microsoft — Bulkhead pattern",
+              "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/bulkhead",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/377326",
+      "title": "시니어 프론트엔드 개발자 (5년 이상)",
+      "site": "wanted",
+      "verdict": "경력 5년 이상. **파머스핸즈 모바일 앱(Flutter) · 웹(Next.js)** 설계 · 개발, **농가 피드백 · 현장 관찰로 무엇을 만들지 정의**, 컴포넌트 · 상태 관리 · 디자인 시스템, **테스트 · 모니터링**, **센서 · 행동 데이터 그래프 · 대시보드**, 코드 리뷰 · 기술 공유, **AI 코딩 도구 활용 · 전파**. 자격은 앱 · 웹 5년(**Flutter 또는 Next.js/React 중 하나 주력**), 출시 · 운영 경험, JS/TS · 상태 관리 · API, **Claude · Cursor · Copilot 실무 사용**, 소통. 우대는 소수 인원으로 서비스 전체 운영, 테스트 · CI 정착, **개인정보 인증 · 권한 설계**, 디자인 시스템, **IoT · 센서 · 실시간 시각화(D3 · Recharts · fl_chart)**, Claude Code · MCP 자동화. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "앱 · 웹 5년",
+          "Flutter 또는 Next.js 주력",
+          "AI 코딩 도구"
+        ],
+        "can_learn": [
+          "시계열 차트",
+          "농가 환경 UX",
+          "Flutter · Next.js 공존"
+        ]
+      },
+      "study": [
+        {
+          "topic": "소 한 마리의 하루를 그래프로 — 센서 · 행동 시계열 대시보드",
+          "from": "task",
+          "quote": "• 센서·행동 데이터를 다루는 그래프와 대시보드를 구현합니다.",
+          "priority": "core",
+          "why": "주요업무이고 우대에 D3 · Recharts · fl_chart 가 있다. 농가는 '어느 소가 이상한가' 를 한눈에 봐야 한다.",
+          "gap_check": "반추 · 휴식 · 섭식 같은 행동 비율을 하루 단위로 보여 줄 때 어떤 차트가 맞나(누적 막대 · 히트맵)? 평소 대비 이상을 어떻게 강조하나(개체별 기준선)? 수백 마리 × 몇 주 데이터를 앱에서 매끄럽게 그리려면(서버 집계 · 다운샘플)?",
+          "drill": "가짜 개체 50 마리 × 30 일 행동 데이터(시간별 행동 라벨)로 Next.js + Recharts 대시보드를 만든다 — 농장 전체 이상 개체 목록, 개체별 행동 비율 히트맵, 평소(7 일 이동 평균) 대비 반추 감소 강조. 같은 화면을 Flutter + fl_chart 로도 만들어 코드 · 성능을 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Recharts",
+              "url": "https://recharts.org/",
+              "kind": "docs"
+            },
+            {
+              "title": "fl_chart (pub.dev)",
+              "url": "https://pub.dev/packages/fl_chart",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Flutter 앱과 Next.js 웹을 한 팀이 — 공유할 것과 나눌 것",
+          "from": "task",
+          "quote": "• 파머스핸즈 모바일 앱(Flutter)과 웹(Next.js)을 설계하고 개발합니다.",
+          "priority": "core",
+          "why": "주요업무다. 두 스택이라 API 계약 · 디자인 토큰 · 비즈니스 규칙이 어긋나기 쉽다.",
+          "gap_check": "두 클라이언트가 같은 API 를 쓸 때 타입을 어떻게 한 원천에서 만드나(OpenAPI → Dart · TS 생성)? 디자인 토큰(색 · 간격)을 두 곳에 어떻게 맞추나? 농가에서 통신이 약할 때 앱은 무엇을 캐시하고 어떻게 알리나?",
+          "drill": "간단한 개체 API 의 OpenAPI 스펙에서 openapi-generator 로 Dart · TS 클라이언트를 생성해 Flutter · Next.js 양쪽에서 쓰고, Style Dictionary 로 토큰을 두 형식으로 뽑는다. Flutter 앱에 마지막 조회 데이터를 로컬 캐시(Hive/Isar)하고 오프라인 표시를 넣는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "OpenAPI Generator — Generators list",
+              "url": "https://openapi-generator.tech/docs/generators",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI 코딩 도구를 팀의 방식으로 — Claude Code · MCP 자동화",
+          "from": "qualification",
+          "quote": "• Claude, Cursor, Copilot 등 AI 코딩 도구를 실제 업무에 써본 경험",
+          "priority": "high",
+          "why": "자격요건이고 주요업무에 '그 방식을 팀에 전파', 우대에 Claude Code · MCP 자동화가 있다.",
+          "gap_check": "AI 가 만든 코드를 무엇으로 검증하나(테스트 · 린트 · 리뷰 기준)? 팀이 같은 규칙으로 쓰게 하려면 저장소에 무엇을 두나(규칙 파일 · 프롬프트 템플릿)? MCP 로 이슈 트래커 · 디자인 툴을 붙이면 무엇이 자동화되나?",
+          "drill": "앞 대시보드 저장소에 AI 도구용 규칙 문서(구조 · 명명 · 테스트 기준)를 두고, 기능 하나를 AI 로 만든 뒤 테스트 · 린트가 CI 에서 걸러 내는지 본다. Figma 또는 GitHub MCP 를 붙여 이슈 → 브랜치 → PR 초안까지의 흐름을 만들어 팀에 공유할 한 쪽 가이드를 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Model Context Protocol",
+              "url": "https://modelcontextprotocol.io/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
