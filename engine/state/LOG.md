@@ -3060,3 +3060,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 シンクロ・フード OpenSearch 스카우트 검색(기능 1/3)
 
 - `scout-search-opensearch-trigger-queue`. 결정 6 — 검색 엔진 도입 / 트리거 큐 테이블(SQS · Lambda · CDC 대신) / PK 만 OpenSearch / 이식에 집중 / refresh_interval 30s+ / 압축 옵션 보류. 3-12 초 → 약 0.5 초. 다음: 물건 등록 보조.
+
+## 2026-09-30 シンクロ・フード 마이소쿠 OCR + LLM(기능 2/3)
+
+- `maisoku-ocr-llm-property-entry`. 결정 5 — 입력 보조 / OCR + LLM(비전 직접 대신) / 항목 분해 · temperature 0 / PoC 팀 → 서비스팀 / 초안 JSON · 20 장 일괄(presigned). 다음: WAF.

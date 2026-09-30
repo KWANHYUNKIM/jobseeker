@@ -3524,7 +3524,7 @@
       "country": "JP",
       "category": "검색",
       "status": "in_progress",
-      "features_done": 1,
+      "features_done": 2,
       "one_liner": "음식점 포털 飲食店ドットコム(구인 · 점포 물건 · 점포 디자인)의 상장사 — MySQL 부하 1 위 스카우트 검색을 트리거 큐로 OpenSearch 에 옮기고, 부동산 담당자의 물건 입력을 OCR + LLM 으로 줄이고, 스크레이핑 급증을 WAF 로 막는다",
       "updated_at": "2026-09-30",
       "domain": "synchro-food.co.jp"
