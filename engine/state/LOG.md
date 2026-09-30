@@ -3088,3 +3088,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 JX通信社 프로파일
 
 - slug `jxpress`, SaaS. 회사 사이트(FASTALERT · NewsDigest · 정세 조사) + 기술 블로그(BigQuery 물리 과금 · Datadog 60% · 비용 최적화 · API 무중단 AWS → GCP · DB 이행 · Datastream · 기상청 XML). 도메인 3, 기능 0/3.
+
+## 2026-09-30 JX通信社 클라우드 비용 프로그램(기능 1/3)
+
+- `cloud-cost-program`. 결정 8 — 프로젝트화(30% · 우선순위 방침) / 월 ◯만 엔 소통 / BigQuery + Connected Sheets 주석 피벗 / Redash → Slack 고정 환율 / Datadog 수집 비용 합산 / 수집 대상 한정 / 물리 바이트 과금 데이터셋별 / 시산 → 전환 → billing export.

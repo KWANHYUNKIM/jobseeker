@@ -141,7 +141,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "cloud-cost-program"
+      ]
     },
     {
       "name": "앱을 멈추지 않고 AWS 에서 Google Cloud 로 — API · DB 무중단 이행",
@@ -210,7 +212,415 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "cloud-cost-program",
+      "name": "서버비를 '월 몇 만 엔' 으로 말한다 — 모든 클라우드 비용을 BigQuery 에 모아 기능별로 주석을 달고 매일 Slack 에 올린 뒤, 큰 것부터: Datadog 은 청구서 밖의 지표 수집 비용까지 합쳐 60% 이상, BigQuery 스토리지는 데이터셋별 압축률로 손익을 따져 물리 바이트 과금으로",
+      "domain": "쌓이기만 하는 데이터와 감시 비용을 줄인다 — BigQuery 물리 과금 · Datadog 지표 수집",
+      "updated_at": "2026-09-30",
+      "business": {
+        "why": "JX通信社 는 AWS · Google Cloud 를 쓰고 비용은 달러로 정해져 엔으로 낸다 — 2021 년 1 달러 103 엔이 2024 년 최고 160 엔까지 가 **원가가 1.5 배 가까이** 올랐다. 서버비 절감 개발은 직접 매출이나 고객 가치로 이어지지 않아 뒤로 밀리기 쉬웠지만, 환율 때문에 2022 년쯤부터 대규모 절감에 단속적으로 나섰다. 감시 SaaS Datadog 도 엔저와 시스템 증가로 불어났고, NewsDigest 행동 로그와 오픈데이터를 Lake · DWH · Mart 3 층으로 중복 보관하는 BigQuery 스토리지도 쌓여 갔다.",
+        "metrics": [
+          {
+            "label": "첫 서버비 절감 프로젝트 목표",
+            "value": "2023 년 3 월까지 30% 절감",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWSとGoogle Cloudのコスト最適化の道 〜データドリブンな取り組みの紹介〜",
+                "url": "https://tech.jxpress.net/entry/2024/08/14/120000",
+                "publisher": "JX通信社",
+                "summary": "AWS · Google Cloud 비용 최적화를 데이터 기반으로 — 비용 데이터를 모아 보고 줄이는 활동.",
+                "date": "2024-08-14"
+              }
+            ]
+          },
+          {
+            "label": "Datadog 관련 비용",
+            "value": "60% 이상 절감",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datadogとクラウドの費用を見直し、60%以上費用を削減した話",
+                "url": "https://tech.jxpress.net/entry/2025/02/03/150719",
+                "publisher": "JX通信社",
+                "summary": "FASTALERT 등을 AWS · Google Cloud 로 구축, Datadog 은 양쪽 횡단 감시가 주용도. 엔저 · 시스템 증가로 비용 증가. Datadog 청구서만이 아니라 지표를 끌어오는 클라우드 비용까지 합산: 서버리스 과금 30%(Invocations 16 · App Instances 14), CloudWatch GetMetricData 29%, Cloud Monitoring API 24%, Synthetics 11%. 대책: 감시할 Cloud Run 서비스만 service_name 필터, CloudWatch 폴링(10 분) 대상을 일본 리전 · 중요 서비스 · datadog:enabled 태그로 한정, Cloud Monitoring(5 분 폴링, 프로젝트당 약 1 만 엔/월) 서비스 · 프로젝트 한정. 60% 이상 절감.",
+                "date": "2025-02-03"
+              }
+            ]
+          },
+          {
+            "label": "BigQuery 스토리지 과금",
+            "value": "수십 % 절감(압축률 2~30 배)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "BigQueryの物理バイト課金への切り替えでストレージ料金を削減する",
+                "url": "https://tech.jxpress.net/entry/2026/06/25/154701",
+                "publisher": "JX通信社",
+                "summary": "CTO 글. 오픈데이터 해석 · NewsDigest 행동 로그를 Datalake/DWH/Datamart 3 층으로 중복 보관 → 스토리지 과금 누적. 물리 바이트 과금(압축 후, 단가 Active 약 2.3 배 · Long Term 약 1.6 배)으로 데이터셋별 전환 — 압축률이 단가 배율을 넘으면 이득, 추가 전용 로그는 10 배+, 매일 전량 교체 테이블은 타임트래블 보관료로 오히려 손해(10 배 악화 추정도). TABLE_STORAGE 로 전 데이터셋 손익 시산(Claude Code 로 집계), 반영 24 시간 · 14 일 재변경 불가, 타임트래블 최단 2 일. billing export 로 일별 효과 측정 — 시산과 거의 일치, 수십 % 절감.",
+                "date": "2026-06-25"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "절감을 시작할 때",
+          "thought": "'S3 가 비싸니 어떻게 해 주세요' 라고 하면 중요도도 난이도도 이유도 모른다 — 행동으로 이어지는 소통이 필요하다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AWSとGoogle Cloudのコスト最適化の道 〜データドリブンな取り組みの紹介〜",
+              "url": "https://tech.jxpress.net/entry/2024/08/14/120000",
+              "publisher": "JX通信社",
+              "summary": "AWS · Google Cloud 비용 최적화를 데이터 기반으로 — 비용 데이터를 모아 보고 줄이는 활동.",
+              "date": "2024-08-14"
+            }
+          ]
+        },
+        {
+          "at": "Datadog 비용을 볼 때",
+          "thought": "Datadog 을 쓰는 비용은 Datadog 청구서에 적힌 것만이 아니다 — 지표를 끌어오는 클라우드 비용도 합쳐 최적화해야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Datadogとクラウドの費用を見直し、60%以上費用を削減した話",
+              "url": "https://tech.jxpress.net/entry/2025/02/03/150719",
+              "publisher": "JX通信社",
+              "summary": "FASTALERT 등을 AWS · Google Cloud 로 구축, Datadog 은 양쪽 횡단 감시가 주용도. 엔저 · 시스템 증가로 비용 증가. Datadog 청구서만이 아니라 지표를 끌어오는 클라우드 비용까지 합산: 서버리스 과금 30%(Invocations 16 · App Instances 14), CloudWatch GetMetricData 29%, Cloud Monitoring API 24%, Synthetics 11%. 대책: 감시할 Cloud Run 서비스만 service_name 필터, CloudWatch 폴링(10 분) 대상을 일본 리전 · 중요 서비스 · datadog:enabled 태그로 한정, Cloud Monitoring(5 분 폴링, 프로젝트당 약 1 만 엔/월) 서비스 · 프로젝트 한정. 60% 이상 절감.",
+              "date": "2025-02-03"
+            }
+          ]
+        },
+        {
+          "at": "BigQuery 과금을 바꿀 때",
+          "thought": "무섭기도 해서 Claude Code 의 /cron 으로 매일 비용을 집계하며 조금씩 설정했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "BigQueryの物理バイト課金への切り替えでストレージ料金を削減する",
+              "url": "https://tech.jxpress.net/entry/2026/06/25/154701",
+              "publisher": "JX通信社",
+              "summary": "CTO 글. 오픈데이터 해석 · NewsDigest 행동 로그를 Datalake/DWH/Datamart 3 층으로 중복 보관 → 스토리지 과금 누적. 물리 바이트 과금(압축 후, 단가 Active 약 2.3 배 · Long Term 약 1.6 배)으로 데이터셋별 전환 — 압축률이 단가 배율을 넘으면 이득, 추가 전용 로그는 10 배+, 매일 전량 교체 테이블은 타임트래블 보관료로 오히려 손해(10 배 악화 추정도). TABLE_STORAGE 로 전 데이터셋 손익 시산(Claude Code 로 집계), 반영 24 시간 · 14 일 재변경 불가, 타임트래블 최단 2 일. billing export 로 일별 효과 측정 — 시산과 거의 일치, 수십 % 절감.",
+              "date": "2026-06-25"
+            }
+          ]
+        },
+        {
+          "at": "정리하며",
+          "thought": "정량적으로 분석하고 나서 손대는 것이 중요하다 — 절감 폭이 크지 않아 하지 않은 흔한 기법도 많다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AWSとGoogle Cloudのコスト最適化の道 〜データドリブンな取り組みの紹介〜",
+              "url": "https://tech.jxpress.net/entry/2024/08/14/120000",
+              "publisher": "JX通信社",
+              "summary": "AWS · Google Cloud 비용 최적화를 데이터 기반으로 — 비용 데이터를 모아 보고 줄이는 활동.",
+              "date": "2024-08-14"
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "비용 세목",
+            "what": "계정/프로젝트 · 제품 · SKU(리전은 합침) 단위의 클라우드 청구 행 — BigQuery 로 모은다."
+          },
+          {
+            "name": "주석(기능 · 목적)",
+            "what": "세목마다 '어느 제품 기능 · 목적(보안 감사 등) · 사업' 의 비용인지 사람이 단다(미주석은 전체의 약 1%)."
+          },
+          {
+            "name": "절감 시책",
+            "what": "'월 ◯만 엔' 단위의 효과 · 난이도 · 책임자를 가진 일."
+          },
+          {
+            "name": "스토리지 과금 모델",
+            "what": "BigQuery 데이터셋별 논리(압축 전) · 물리(압축 후 + 타임트래블 · 페일세이프) 바이트 과금."
+          }
+        ],
+        "invariants": [
+          "비용 · 절감 폭은 늘 '한 달에 ◯만 엔' 으로 말한다.",
+          "일별 모니터링 환율은 고정값 — 환율 변동이 절감처럼 보이지 않게.",
+          "과금 모델은 전환 전에 데이터셋별 손익을 시산한다(14 일 재변경 불가)."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "AWS · Google Cloud 의 모든 비용을 BigQuery 로 전송 → Connected Sheets 로 스프레드시트에",
+            "why": "클라우드 횡단 분석."
+          },
+          {
+            "step": "세목마다 기능 · 목적 · 사업 주석 → 계정 · 제품 · SKU · 기능 · 사업 축으로 피벗",
+            "why": "크고 헛된 비용을 찾는다."
+          },
+          {
+            "step": "프로젝트(이름 · 시기 · 목표 · 자원 · 우선순위 방침)로 시책을 고르고 '월 ◯만 엔' 으로 협상",
+            "why": "행동으로 잇는다."
+          },
+          {
+            "step": "Redash 로 정시 집계 → 매일 아침 Slack, 주간 · 월 예측 비교",
+            "why": "효과를 매일 본다."
+          },
+          {
+            "step": "시책 예: Datadog 수집 대상 한정 · BigQuery 물리 과금 전환 · 타임트래블 단축",
+            "why": "큰 것부터."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "절감을 어떻게 굴리나?",
+            "chosen": "**'프로젝트' 로 세운다** — 이름을 붙이고 시기 · 목표(2023 년 3 월까지 30%) · 자원을 정하고, 우선순위 방침(**월 10 만 엔 이상 효과**, **지우기만 하면 끝나는 것** 우선 · 1 개월 넘게 걸리는 것 · 놔두면 줄 것은 안 함 · 기능 삭감만으로 되는 것은 담당자와 조정 · 며칠이면 되는 것은 제품 백로그로)을 두고 모니터링 · 회고한다.",
+            "alternatives": [
+              "각자 생각날 때 줄이기",
+              "흔한 기법(예약 인스턴스 · 스팟) 일괄 적용"
+            ],
+            "tradeoff": "매출로 이어지지 않는 일이라 뒤로 밀리기 쉽다 — 목표와 방침이 있어야 우선순위 싸움에서 이긴다. 대가는 효과가 작은 '헛된 비용일지 모르는 것' 을 의도적으로 미룬다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWSとGoogle Cloudのコスト最適化の道 〜データドリブンな取り組みの紹介〜",
+                "url": "https://tech.jxpress.net/entry/2024/08/14/120000",
+                "publisher": "JX通信社",
+                "summary": "AWS · Google Cloud 비용 최적화를 데이터 기반으로 — 비용 데이터를 모아 보고 줄이는 활동.",
+                "date": "2024-08-14"
+              }
+            ]
+          },
+          {
+            "question": "비용을 어떤 말로 전하나?",
+            "chosen": "**단위를 '한 달에 ◯만 엔' 으로 맞추고**, 무엇의 비용인지 · 어떤 시책이나 매출에 묶였는지 · 줄이는 난이도를 함께 말한다 — 예: '개발용 S3 버킷에 월 20 만 엔, 3 개월보다 오래된 데이터 자동 삭제만으로 월 2 만 엔 정도까지'.",
+            "alternatives": [
+              "'S3 가 비싸다' 같은 막연한 요청"
+            ],
+            "tradeoff": "관계자가 납득하고 움직인다. 대가는 말하기 전에 조사해야 한다는 것 — 그래서 아래의 주석 · 피벗이 필요하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWSとGoogle Cloudのコスト最適化の道 〜データドリブンな取り組みの紹介〜",
+                "url": "https://tech.jxpress.net/entry/2024/08/14/120000",
+                "publisher": "JX通信社",
+                "summary": "AWS · Google Cloud 비용 최적화를 데이터 기반으로 — 비용 데이터를 모아 보고 줄이는 활동.",
+                "date": "2024-08-14"
+              }
+            ]
+          },
+          {
+            "question": "무엇으로 분석하나?",
+            "chosen": "**모든 클라우드 비용을 BigQuery 에 모아 Connected Sheets 로 스프레드시트에**, 세목마다 기능 · 목적을 사람이 주석하고(큰 금액은 엄밀히, 나머지는 규칙 기반) 계정 · 제품 · SKU(리전 합침) · 기능 · 사업으로 피벗.",
+            "alternatives": [
+              "AWS Cost Explorer"
+            ],
+            "tradeoff": "Cost Explorer 는 클라우드 횡단이 안 되고 집계 축이 한정돼 의미 있는 집계가 어렵고 정기 모니터링도 어렵다. 주석이 '비용 대비 효과가 안 맞는 제품 기능 · 사내 시스템' 을 드러낸다. 대가는 주석을 사람이 단다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWSとGoogle Cloudのコスト最適化の道 〜データドリブンな取り組みの紹介〜",
+                "url": "https://tech.jxpress.net/entry/2024/08/14/120000",
+                "publisher": "JX通信社",
+                "summary": "AWS · Google Cloud 비용 최적화를 데이터 기반으로 — 비용 데이터를 모아 보고 줄이는 활동.",
+                "date": "2024-08-14"
+              }
+            ]
+          },
+          {
+            "question": "효과를 어떻게 지켜보나?",
+            "chosen": "**Redash 정시 집계 → 매일 아침 Slack**(직접 만든 봇), 환율은 **고정값**으로 환산. 매일은 변동이 커서 주간 집계 · 월 예측의 과거 대비도 정기적으로 본다. AWS · GCP 밖의 비용은 결재 신청 때 확인.",
+            "alternatives": [
+              "월말 청구서 확인"
+            ],
+            "tradeoff": "시책의 효과와 새는 곳이 바로 보인다. 환율을 고정해야 엔고가 절감처럼 보이지 않는다. 대가는 파이프라인(S3 → GCS → BigQuery)이 오래돼 장황하다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWSとGoogle Cloudのコスト最適化の道 〜データドリブンな取り組みの紹介〜",
+                "url": "https://tech.jxpress.net/entry/2024/08/14/120000",
+                "publisher": "JX通信社",
+                "summary": "AWS · Google Cloud 비용 최적화를 데이터 기반으로 — 비용 데이터를 모아 보고 줄이는 활동.",
+                "date": "2024-08-14"
+              }
+            ]
+          },
+          {
+            "question": "Datadog 비용은 어디까지 세나?",
+            "chosen": "**청구서 + 지표를 끌어오는 클라우드 비용까지** — 합쳐 보니 서버리스 과금 30% · CloudWatch GetMetricData 29% · Cloud Monitoring API 24% · Synthetics 11%. 호스트 감시 비용은 거의 없었다(서버리스 중심).",
+            "alternatives": [
+              "Datadog Cost Summary 만 보기"
+            ],
+            "tradeoff": "청구서만 보면 절반 넘는 비용(수집 API)을 놓친다. 대가는 세 곳의 청구를 맞대야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datadogとクラウドの費用を見直し、60%以上費用を削減した話",
+                "url": "https://tech.jxpress.net/entry/2025/02/03/150719",
+                "publisher": "JX通信社",
+                "summary": "FASTALERT 등을 AWS · Google Cloud 로 구축, Datadog 은 양쪽 횡단 감시가 주용도. 엔저 · 시스템 증가로 비용 증가. Datadog 청구서만이 아니라 지표를 끌어오는 클라우드 비용까지 합산: 서버리스 과금 30%(Invocations 16 · App Instances 14), CloudWatch GetMetricData 29%, Cloud Monitoring API 24%, Synthetics 11%. 대책: 감시할 Cloud Run 서비스만 service_name 필터, CloudWatch 폴링(10 분) 대상을 일본 리전 · 중요 서비스 · datadog:enabled 태그로 한정, Cloud Monitoring(5 분 폴링, 프로젝트당 약 1 만 엔/월) 서비스 · 프로젝트 한정. 60% 이상 절감.",
+                "date": "2025-02-03"
+              }
+            ]
+          },
+          {
+            "question": "무엇을 줄였나?",
+            "chosen": "**감시할 것만 수집** — 서버리스는 감시하는 Cloud Run 만 service_name 으로 필터, CloudWatch 폴링(10 분마다)은 전 리전 → 일본 리전, 전 서비스 → Lambda · ECS 등 중요 서비스(EBS 등 안 쓰던 지표 끔), ALB 는 datadog:enabled 태그가 붙은 것만, Cloud Monitoring(5 분 폴링, 프로젝트당 월 약 1 만 엔)은 서비스 한정 · 안 쓰는 프로젝트 제외.",
+            "alternatives": [
+              "CloudWatch 스트림 방식으로 전환",
+              "Datadog 해지 · 각 클라우드 감시만"
+            ],
+            "tradeoff": "양쪽 클라우드를 횡단 감시한다는 핵심 용도는 지키며 60% 이상 줄였다. 대가는 필터 방법이 공식 문서에 없어 시행착오가 걸렸고, ECS 는 서비스 이름 지정이 안 됐다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datadogとクラウドの費用を見直し、60%以上費用を削減した話",
+                "url": "https://tech.jxpress.net/entry/2025/02/03/150719",
+                "publisher": "JX通信社",
+                "summary": "FASTALERT 등을 AWS · Google Cloud 로 구축, Datadog 은 양쪽 횡단 감시가 주용도. 엔저 · 시스템 증가로 비용 증가. Datadog 청구서만이 아니라 지표를 끌어오는 클라우드 비용까지 합산: 서버리스 과금 30%(Invocations 16 · App Instances 14), CloudWatch GetMetricData 29%, Cloud Monitoring API 24%, Synthetics 11%. 대책: 감시할 Cloud Run 서비스만 service_name 필터, CloudWatch 폴링(10 분) 대상을 일본 리전 · 중요 서비스 · datadog:enabled 태그로 한정, Cloud Monitoring(5 분 폴링, 프로젝트당 약 1 만 엔/월) 서비스 · 프로젝트 한정. 60% 이상 절감.",
+                "date": "2025-02-03"
+              }
+            ]
+          },
+          {
+            "question": "BigQuery 스토리지 — 지우나, GCS 로 옮기나, 과금 모델을 바꾸나?",
+            "chosen": "**물리 바이트 과금으로 데이터셋별 전환** — 코드 수정도 데이터 이행도 없이 ALTER SCHEMA 한 줄. 단가는 Active 약 2.3 배 · Long Term 약 1.6 배지만 압축 후 바이트로 과금되므로 **압축률이 단가 배율을 넘는 데이터셋만** 바꾼다.",
+            "alternatives": [
+              "안 쓰는 데이터 삭제",
+              "Cloud Storage 로 옮기기",
+              "전 데이터셋 일괄 전환"
+            ],
+            "tradeoff": "지우기 애매한 데이터를 남긴 채 줄인다. 추가 전용 로그는 압축률 10 배 이상이라 이득, **매일 전량 교체 테이블**은 타임트래블 보관료가 물리 과금에만 붙어 오히려 손해(10 배 악화 추정도) — 그런 것은 타임트래블을 최단 2 일로 줄이거나 논리 과금에 남겼다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "BigQueryの物理バイト課金への切り替えでストレージ料金を削減する",
+                "url": "https://tech.jxpress.net/entry/2026/06/25/154701",
+                "publisher": "JX通信社",
+                "summary": "CTO 글. 오픈데이터 해석 · NewsDigest 행동 로그를 Datalake/DWH/Datamart 3 층으로 중복 보관 → 스토리지 과금 누적. 물리 바이트 과금(압축 후, 단가 Active 약 2.3 배 · Long Term 약 1.6 배)으로 데이터셋별 전환 — 압축률이 단가 배율을 넘으면 이득, 추가 전용 로그는 10 배+, 매일 전량 교체 테이블은 타임트래블 보관료로 오히려 손해(10 배 악화 추정도). TABLE_STORAGE 로 전 데이터셋 손익 시산(Claude Code 로 집계), 반영 24 시간 · 14 일 재변경 불가, 타임트래블 최단 2 일. billing export 로 일별 효과 측정 — 시산과 거의 일치, 수십 % 절감.",
+                "date": "2026-06-25"
+              }
+            ]
+          },
+          {
+            "question": "되돌릴 수 없는 전환을 어떻게 안전하게?",
+            "chosen": "**전 데이터셋을 먼저 시산**(TABLE_STORAGE 뷰 — 프로젝트마다 돌려야 해 Claude Code 로 집계, 월 절감이 작은 것은 제외) → 전환 → **billing export 로 일별 효과 측정**(1~2 일 늦게 반영되므로 다 채워진 날로 판단). 반영 24 시간 · **14 일간 재변경 불가** · Long Term 90 일 타이머는 초기화 안 됨을 알고 들어간다.",
+            "alternatives": [
+              "바꿔 보고 다음 날 되돌리기"
+            ],
+            "tradeoff": "14 일 제약 때문에 '시험 삼아' 가 불가능하다 — 시산이 전제다. 결과는 사전 압축률 시산과 거의 일치했다. 대가는 시산 작업.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "BigQueryの物理バイト課金への切り替えでストレージ料金を削減する",
+                "url": "https://tech.jxpress.net/entry/2026/06/25/154701",
+                "publisher": "JX通信社",
+                "summary": "CTO 글. 오픈데이터 해석 · NewsDigest 행동 로그를 Datalake/DWH/Datamart 3 층으로 중복 보관 → 스토리지 과금 누적. 물리 바이트 과금(압축 후, 단가 Active 약 2.3 배 · Long Term 약 1.6 배)으로 데이터셋별 전환 — 압축률이 단가 배율을 넘으면 이득, 추가 전용 로그는 10 배+, 매일 전량 교체 테이블은 타임트래블 보관료로 오히려 손해(10 배 악화 추정도). TABLE_STORAGE 로 전 데이터셋 손익 시산(Claude Code 로 집계), 반영 24 시간 · 14 일 재변경 불가, 타임트래블 최단 2 일. billing export 로 일별 효과 측정 — 시산과 거의 일치, 수십 % 절감.",
+                "date": "2026-06-25"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "FASTALERT(수익원)",
+          "via": "달러 원가 · 감시 비용",
+          "contract": "FASTALERT 등을 AWS · Google Cloud 에 구축하고 Datadog 으로 횡단 감시한다 — 엔화 매출에 달러 원가라 환율이 곧 마진이다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Datadogとクラウドの費用を見直し、60%以上費用を削減した話",
+              "url": "https://tech.jxpress.net/entry/2025/02/03/150719",
+              "publisher": "JX通信社",
+              "summary": "FASTALERT 등을 AWS · Google Cloud 로 구축, Datadog 은 양쪽 횡단 감시가 주용도. 엔저 · 시스템 증가로 비용 증가. Datadog 청구서만이 아니라 지표를 끌어오는 클라우드 비용까지 합산: 서버리스 과금 30%(Invocations 16 · App Instances 14), CloudWatch GetMetricData 29%, Cloud Monitoring API 24%, Synthetics 11%. 대책: 감시할 Cloud Run 서비스만 service_name 필터, CloudWatch 폴링(10 분) 대상을 일본 리전 · 중요 서비스 · datadog:enabled 태그로 한정, Cloud Monitoring(5 분 폴링, 프로젝트당 약 1 만 엔/월) 서비스 · 프로젝트 한정. 60% 이상 절감.",
+              "date": "2025-02-03"
+            },
+            {
+              "title": "AWSとGoogle Cloudのコスト最適化の道 〜データドリブンな取り組みの紹介〜",
+              "url": "https://tech.jxpress.net/entry/2024/08/14/120000",
+              "publisher": "JX通信社",
+              "summary": "AWS · Google Cloud 비용 최적화를 데이터 기반으로 — 비용 데이터를 모아 보고 줄이는 활동.",
+              "date": "2024-08-14"
+            }
+          ]
+        },
+        {
+          "to": "NewsDigest 행동 로그",
+          "via": "BigQuery Lake · DWH · Mart",
+          "contract": "앱 행동 로그와 오픈데이터 해석을 3 층으로 중복 보관하는 것이 스토리지 비용의 원인이자 물리 과금이 이득인 이유(추가 전용 로그의 높은 압축률)다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "BigQueryの物理バイト課金への切り替えでストレージ料金を削減する",
+              "url": "https://tech.jxpress.net/entry/2026/06/25/154701",
+              "publisher": "JX通信社",
+              "summary": "CTO 글. 오픈데이터 해석 · NewsDigest 행동 로그를 Datalake/DWH/Datamart 3 층으로 중복 보관 → 스토리지 과금 누적. 물리 바이트 과금(압축 후, 단가 Active 약 2.3 배 · Long Term 약 1.6 배)으로 데이터셋별 전환 — 압축률이 단가 배율을 넘으면 이득, 추가 전용 로그는 10 배+, 매일 전량 교체 테이블은 타임트래블 보관료로 오히려 손해(10 배 악화 추정도). TABLE_STORAGE 로 전 데이터셋 손익 시산(Claude Code 로 집계), 반영 24 시간 · 14 일 재변경 불가, 타임트래블 최단 2 일. billing export 로 일별 효과 측정 — 시산과 거의 일치, 수십 % 절감.",
+              "date": "2026-06-25"
+            }
+          ]
+        },
+        {
+          "to": "AWS → Google Cloud 이행",
+          "via": "이행 뒤 비용",
+          "contract": "NewsDigest API 는 이행 뒤 비용이 너무 커 한 번 AWS 로 되돌린 적이 있다 — 비용은 이행 결정의 변수다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "APIをダウンタイムなしでAWSからGCPに引越しました",
+              "url": "https://tech.jxpress.net/entry/2023/03/09/112758",
+              "publisher": "JX通信社",
+              "summary": "NewsDigest 모바일 앱 API 를 AWS → GCP(회사 방침 · 관리형 서비스). 제약: 도메인 불변 · 무중단 · 앱 수정 없음 · 서버 팀이 낮에 완결. Cloud Load Balancing 앞단 — Google 관리형 인증서는 트래픽을 받아야 활성화되므로 먼저 셀프 관리형(Let's Encrypt · Certbot TXT 검증)을 붙여 전환하고 뒤에서 관리형을 활성화한 뒤 셀프 관리형 제거. /etc/hosts 로 사전 HTTPS 확인. 기존 도메인이 CloudFront 로 CNAME 이라 A 레코드를 못 두므로 새 도메인에 A 레코드 → 기존 도메인에 가중 CNAME(초기 10%) — 문제 시 0 으로 되돌림. 실제로 이행 뒤 비용이 커 한 번 AWS 로 되돌리기도.",
+              "date": "2023-03-09"
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "비용이 결정이 되기까지",
+          "question": "청구서에서 시책까지 무엇을 거치나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  AWS[\"AWS 비용\"] --> BQ[(\"BigQuery\")]\n  GCP[\"Google Cloud 비용\"] --> BQ\n  BQ --> CS[\"Connected Sheets\\n세목마다 기능 · 목적 주석\"]\n  CS --> PV[\"피벗: 계정 · 제품 · SKU · 기능 · 사업\"]\n  PV --> PJ[\"프로젝트: 월 10 만 엔+ · 지우면 끝 우선\"]\n  PJ --> ACT[\"시책: Datadog 수집 한정\\nBigQuery 물리 과금\"]\n  BQ --> RD[\"Redash 정시 집계\\n고정 환율\"] --> SL[\"매일 아침 Slack\"]\n  SL -.->|\"효과 확인\"| PJ"
+        },
+        {
+          "title": "BigQuery 과금 전환 한 번",
+          "question": "되돌릴 수 없는 설정을 어떻게 바꾸나?",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant CTO as CTO\n  participant AG as Claude Code\n  participant BQ as BigQuery\n  participant BE as billing export\n  CTO->>AG: 전 프로젝트 TABLE_STORAGE 로 손익 시산\n  AG->>BQ: 데이터셋별 논리 · 물리 · 타임트래블 바이트\n  AG-->>CTO: 압축률 > 단가 배율인 데이터셋 목록\n  CTO->>BQ: ALTER SCHEMA(물리 과금) · 교체 테이블은 타임트래블 2 일\n  Note over BQ: 반영 24 시간 · 14 일 재변경 불가\n  loop 매일(/cron)\n    AG->>BE: 일별 비용 집계(다 채워진 날만)\n    BE-->>CTO: 논리 과금 ↓ · 작은 물리 과금 ↑\n  end"
+        },
+        {
+          "title": "청구서만 봤다면",
+          "question": "무엇을 놓치고 무엇을 잘못 바꾸나?",
+          "kind": "failure",
+          "code": "flowchart TB\n  BILL[\"Datadog 청구서만 본다\"] --> MISS[\"CloudWatch 29% + Cloud Monitoring 24% 를 놓침\"]\n  ALL[\"전 데이터셋 물리 과금 일괄 전환\"] --> TT[\"매일 전량 교체 테이블:\\n타임트래블 보관료 → 약 10 배 악화\"]\n  TT --> LOCK[\"14 일간 되돌릴 수 없음\"]\n  FX[\"변동 환율로 일별 집계\"] --> FAKE[\"엔고가 절감처럼 보임\"]\n  MISS & LOCK & FAKE --> FIX[\"합산 · 시산 · 고정 환율로 막는다\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "AWSとGoogle Cloudのコスト最適化の道 〜データドリブンな取り組みの紹介〜",
+          "url": "https://tech.jxpress.net/entry/2024/08/14/120000",
+          "publisher": "JX通信社",
+          "summary": "AWS · Google Cloud 비용 최적화를 데이터 기반으로 — 비용 데이터를 모아 보고 줄이는 활동.",
+          "date": "2024-08-14"
+        },
+        {
+          "title": "Datadogとクラウドの費用を見直し、60%以上費用を削減した話",
+          "url": "https://tech.jxpress.net/entry/2025/02/03/150719",
+          "publisher": "JX通信社",
+          "summary": "FASTALERT 등을 AWS · Google Cloud 로 구축, Datadog 은 양쪽 횡단 감시가 주용도. 엔저 · 시스템 증가로 비용 증가. Datadog 청구서만이 아니라 지표를 끌어오는 클라우드 비용까지 합산: 서버리스 과금 30%(Invocations 16 · App Instances 14), CloudWatch GetMetricData 29%, Cloud Monitoring API 24%, Synthetics 11%. 대책: 감시할 Cloud Run 서비스만 service_name 필터, CloudWatch 폴링(10 분) 대상을 일본 리전 · 중요 서비스 · datadog:enabled 태그로 한정, Cloud Monitoring(5 분 폴링, 프로젝트당 약 1 만 엔/월) 서비스 · 프로젝트 한정. 60% 이상 절감.",
+          "date": "2025-02-03"
+        },
+        {
+          "title": "BigQueryの物理バイト課金への切り替えでストレージ料金を削減する",
+          "url": "https://tech.jxpress.net/entry/2026/06/25/154701",
+          "publisher": "JX通信社",
+          "summary": "CTO 글. 오픈데이터 해석 · NewsDigest 행동 로그를 Datalake/DWH/Datamart 3 층으로 중복 보관 → 스토리지 과금 누적. 물리 바이트 과금(압축 후, 단가 Active 약 2.3 배 · Long Term 약 1.6 배)으로 데이터셋별 전환 — 압축률이 단가 배율을 넘으면 이득, 추가 전용 로그는 10 배+, 매일 전량 교체 테이블은 타임트래블 보관료로 오히려 손해(10 배 악화 추정도). TABLE_STORAGE 로 전 데이터셋 손익 시산(Claude Code 로 집계), 반영 24 시간 · 14 일 재변경 불가, 타임트래블 최단 2 일. billing export 로 일별 효과 측정 — 시산과 거의 일치, 수십 % 절감.",
+          "date": "2026-06-25"
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "매출 · 인원 · FASTALERT 요금은 공개 자료에서 읽지 않았다.",
     "FASTALERT 가 SNS 에서 리스크를 검지하는 방식(모델 · 검수)은 이번 글에 없다.",
