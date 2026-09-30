@@ -187,7 +187,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "aws-to-gcp-no-downtime"
+      ]
     },
     {
       "name": "기상청 전문을 틀리지 않게 — 지진 · 쓰나미 XML 의 묶음과 취소",
@@ -619,6 +621,434 @@
           "date": "2026-06-25"
         }
       ]
+    },
+    {
+      "key": "aws-to-gcp-no-downtime",
+      "name": "재해 속보를 멈추지 않고 옮긴다 — DB 는 DMS 레플리카로 읽기 계통을 먼저 무중단 전환하고 쓰기는 공지한 5 분씩 두 번, 접속은 VPN · 도메인으로 재배포 없이 바꾸고, API 는 셀프 관리형 인증서 + 가중 CNAME 10% 로 조금씩, 옮긴 DB 는 Datastream CDC 로 BigQuery 에",
+      "domain": "앱을 멈추지 않고 AWS 에서 Google Cloud 로 — API · DB 무중단 이행",
+      "updated_at": "2026-09-30",
+      "business": {
+        "why": "FASTALERT · NewsDigest 는 **재해 · 사건 · 사고 같은 리스크 정보를 빨리 전하는** 서비스라 사용자가 못 쓰는 시간을 최대한 줄여야 한다. 그런데 회사는 비용을 중심으로 한 종합 판단과 **BigQuery 데이터 기반과의 연계**를 이유로 AWS 에서 Google Cloud 로 옮기기로 했다. DB(Aurora MySQL 글로벌 DB, 수백 GB)에는 초당 쓰기가 많이 들어오고, NewsDigest 앱은 이미 사용자 손에 있어 **API 도메인을 바꿀 수 없다**. 옮긴 뒤에는 쌓인 재해 데이터를 사내 · 고객이 BigQuery 로 쓰게 하려 했다.",
+        "metrics": [
+          {
+            "label": "DB 이행 쓰기 다운타임",
+            "value": "dump 시작 약 5 분 + 프로모트 약 5 분",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ダウンタイムを抑えてAWSからGoogle Cloudにデータベースを移行したはなし",
+                "url": "https://tech.jxpress.net/entry/gcp_database_migration",
+                "publisher": "JX通信社",
+                "summary": "Aurora MySQL 5.7 글로벌 DB(리전 장애 대비) → Cloud SQL 핫 스탠바이 멀티 리전. 이유는 비용 중심의 종합 판단 + BigQuery 데이터 기반과의 연계. 성능이 걱정돼 기존 Locust 시나리오로 Aurora 대 Cloud SQL 응답 시간 비교(손색없음) · 복제 지연도 허용 범위. 전제: 리스크 정보 서비스라 다운타임 최소, 초당 쓰기가 많아 짧은 쓰기 정지는 허용(뉴스 수집은 큐 경유라 누락 없음), 주 기능은 읽기 레플리카에서, DB 수백 GB, 앱은 AWS VPC 에 남김. 방침: DMS 로 Cloud SQL 레플리카 → 읽기 계통 먼저 무중단 전환 → 공지한 점검 시간에 쓰기 계통 전환, AWS↔GCP HA VPN(Terraform). Route 53 에 읽기 · 쓰기용 도메인(CNAME)을 두어 재배포 없이 전환(연결 유지 시 주기적 재접속 필요). DMS: dump 시작 때 약 5 분 쓰기 정지, 약 100GB/시간, 접속 사용자는 동기화 안 돼 콘솔에서 이식(root 권한 수정 필요), 프로모트 때 약 5 분. DMS 관리 중엔 레플리카를 못 만들어 이행 뒤 구축, 다른 리전 레플리카도.",
+                "date": "2023-07-13"
+              }
+            ]
+          },
+          {
+            "label": "DMS 적재 속도",
+            "value": "약 100GB/시간",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ダウンタイムを抑えてAWSからGoogle Cloudにデータベースを移行したはなし",
+                "url": "https://tech.jxpress.net/entry/gcp_database_migration",
+                "publisher": "JX通信社",
+                "summary": "Aurora MySQL 5.7 글로벌 DB(리전 장애 대비) → Cloud SQL 핫 스탠바이 멀티 리전. 이유는 비용 중심의 종합 판단 + BigQuery 데이터 기반과의 연계. 성능이 걱정돼 기존 Locust 시나리오로 Aurora 대 Cloud SQL 응답 시간 비교(손색없음) · 복제 지연도 허용 범위. 전제: 리스크 정보 서비스라 다운타임 최소, 초당 쓰기가 많아 짧은 쓰기 정지는 허용(뉴스 수집은 큐 경유라 누락 없음), 주 기능은 읽기 레플리카에서, DB 수백 GB, 앱은 AWS VPC 에 남김. 방침: DMS 로 Cloud SQL 레플리카 → 읽기 계통 먼저 무중단 전환 → 공지한 점검 시간에 쓰기 계통 전환, AWS↔GCP HA VPN(Terraform). Route 53 에 읽기 · 쓰기용 도메인(CNAME)을 두어 재배포 없이 전환(연결 유지 시 주기적 재접속 필요). DMS: dump 시작 때 약 5 분 쓰기 정지, 약 100GB/시간, 접속 사용자는 동기화 안 돼 콘솔에서 이식(root 권한 수정 필요), 프로모트 때 약 5 분. DMS 관리 중엔 레플리카를 못 만들어 이행 뒤 구축, 다른 리전 레플리카도.",
+                "date": "2023-07-13"
+              }
+            ]
+          },
+          {
+            "label": "API 전환 첫 가중치",
+            "value": "GCP 로 약 10%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "APIをダウンタイムなしでAWSからGCPに引越しました",
+                "url": "https://tech.jxpress.net/entry/2023/03/09/112758",
+                "publisher": "JX通信社",
+                "summary": "NewsDigest 모바일 앱 API 를 AWS → GCP(회사 방침 · 관리형 서비스). 제약: 도메인 불변 · 무중단 · 앱 수정 없음 · 서버 팀이 낮에 완결. Cloud Load Balancing 앞단 — Google 관리형 인증서는 트래픽을 받아야 활성화되므로 먼저 셀프 관리형(Let's Encrypt · Certbot TXT 검증)을 붙여 전환하고 뒤에서 관리형을 활성화한 뒤 셀프 관리형 제거. /etc/hosts 로 사전 HTTPS 확인. 기존 도메인이 CloudFront 로 CNAME 이라 A 레코드를 못 두므로 새 도메인에 A 레코드 → 기존 도메인에 가중 CNAME(초기 10%) — 문제 시 0 으로 되돌림. 실제로 이행 뒤 비용이 커 한 번 AWS 로 되돌리기도.",
+                "date": "2023-03-09"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "성능을 걱정하며",
+          "thought": "Aurora 는 독자 튜닝으로 처리량이 높아 옮기자마자 DB 가 비명을 지를 수 있었다 — 광고 문구로 추측해 판단하기도 어렵다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ダウンタイムを抑えてAWSからGoogle Cloudにデータベースを移行したはなし",
+              "url": "https://tech.jxpress.net/entry/gcp_database_migration",
+              "publisher": "JX通信社",
+              "summary": "Aurora MySQL 5.7 글로벌 DB(리전 장애 대비) → Cloud SQL 핫 스탠바이 멀티 리전. 이유는 비용 중심의 종합 판단 + BigQuery 데이터 기반과의 연계. 성능이 걱정돼 기존 Locust 시나리오로 Aurora 대 Cloud SQL 응답 시간 비교(손색없음) · 복제 지연도 허용 범위. 전제: 리스크 정보 서비스라 다운타임 최소, 초당 쓰기가 많아 짧은 쓰기 정지는 허용(뉴스 수집은 큐 경유라 누락 없음), 주 기능은 읽기 레플리카에서, DB 수백 GB, 앱은 AWS VPC 에 남김. 방침: DMS 로 Cloud SQL 레플리카 → 읽기 계통 먼저 무중단 전환 → 공지한 점검 시간에 쓰기 계통 전환, AWS↔GCP HA VPN(Terraform). Route 53 에 읽기 · 쓰기용 도메인(CNAME)을 두어 재배포 없이 전환(연결 유지 시 주기적 재접속 필요). DMS: dump 시작 때 약 5 분 쓰기 정지, 약 100GB/시간, 접속 사용자는 동기화 안 돼 콘솔에서 이식(root 권한 수정 필요), 프로모트 때 약 5 분. DMS 관리 중엔 레플리카를 못 만들어 이행 뒤 구축, 다른 리전 레플리카도.",
+              "date": "2023-07-13"
+            }
+          ]
+        },
+        {
+          "at": "다운타임 방침을 정할 때",
+          "thought": "완전 무중단을 노리면 공수와 난이도가 뛰어오른다 — 사전 공지와 짧은 다운타임으로 가는 방침을 택했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ダウンタイムを抑えてAWSからGoogle Cloudにデータベースを移行したはなし",
+              "url": "https://tech.jxpress.net/entry/gcp_database_migration",
+              "publisher": "JX通信社",
+              "summary": "Aurora MySQL 5.7 글로벌 DB(리전 장애 대비) → Cloud SQL 핫 스탠바이 멀티 리전. 이유는 비용 중심의 종합 판단 + BigQuery 데이터 기반과의 연계. 성능이 걱정돼 기존 Locust 시나리오로 Aurora 대 Cloud SQL 응답 시간 비교(손색없음) · 복제 지연도 허용 범위. 전제: 리스크 정보 서비스라 다운타임 최소, 초당 쓰기가 많아 짧은 쓰기 정지는 허용(뉴스 수집은 큐 경유라 누락 없음), 주 기능은 읽기 레플리카에서, DB 수백 GB, 앱은 AWS VPC 에 남김. 방침: DMS 로 Cloud SQL 레플리카 → 읽기 계통 먼저 무중단 전환 → 공지한 점검 시간에 쓰기 계통 전환, AWS↔GCP HA VPN(Terraform). Route 53 에 읽기 · 쓰기용 도메인(CNAME)을 두어 재배포 없이 전환(연결 유지 시 주기적 재접속 필요). DMS: dump 시작 때 약 5 분 쓰기 정지, 약 100GB/시간, 접속 사용자는 동기화 안 돼 콘솔에서 이식(root 권한 수정 필요), 프로모트 때 약 5 분. DMS 관리 중엔 레플리카를 못 만들어 이행 뒤 구축, 다른 리전 레플리카도.",
+              "date": "2023-07-13"
+            }
+          ]
+        },
+        {
+          "at": "API 를 옮기고 나서",
+          "thought": "한 번에 기도하며 옮기는 게 아니라 상황을 보며 천천히 할 수 있는 작전이라 정신적으로 정말 좋았다 — 이행 뒤 비용이 너무 커 한 번 AWS 로 되돌리기도 했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "APIをダウンタイムなしでAWSからGCPに引越しました",
+              "url": "https://tech.jxpress.net/entry/2023/03/09/112758",
+              "publisher": "JX通信社",
+              "summary": "NewsDigest 모바일 앱 API 를 AWS → GCP(회사 방침 · 관리형 서비스). 제약: 도메인 불변 · 무중단 · 앱 수정 없음 · 서버 팀이 낮에 완결. Cloud Load Balancing 앞단 — Google 관리형 인증서는 트래픽을 받아야 활성화되므로 먼저 셀프 관리형(Let's Encrypt · Certbot TXT 검증)을 붙여 전환하고 뒤에서 관리형을 활성화한 뒤 셀프 관리형 제거. /etc/hosts 로 사전 HTTPS 확인. 기존 도메인이 CloudFront 로 CNAME 이라 A 레코드를 못 두므로 새 도메인에 A 레코드 → 기존 도메인에 가중 CNAME(초기 10%) — 문제 시 0 으로 되돌림. 실제로 이행 뒤 비용이 커 한 번 AWS 로 되돌리기도.",
+              "date": "2023-03-09"
+            }
+          ]
+        },
+        {
+          "at": "Datastream 을 돌리며",
+          "thought": "max_staleness 설정을 깨닫기까지 반나절을 0 으로 돌려 꽤 헛된 비용이 났다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Datastream による Cloud SQL と BigQuery 同期：直面した課題と対応策",
+              "url": "https://tech.jxpress.net/entry/2024/12/10/204320",
+              "publisher": "JX通信社",
+              "summary": "FASTALERT 의 오랜 재해 데이터를 사내 · 고객이 쓰도록 Cloud SQL → BigQuery. 기존 Cloud Composer(Airflow) 일 · 시간 배치는 취득 범위 밖의 과거 갱신이 반영 안 되고 최대 1 일 지연, 테이블마다 ETL · DAG 비용 → Datastream(binlog CDC). 과제: 사설망 Cloud SQL 이라 Compute Engine 리버스 프록시, 행 수는 적지만 변경이 잦은 테이블의 CDC 처리비가 커 제외, Datastream 이 파티션을 지원 안 해 테이블을 다시 만들 때 Primary Key 와 max_staleness 를 직접 설정해야 했다(반나절 0 으로 돌려 스캔비 낭비).",
+              "date": "2024-12-10"
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "읽기 계통 · 쓰기 계통",
+            "what": "레플리카(주 기능 대부분) · 프라이머리 — 따로 옮긴다."
+          },
+          {
+            "name": "DB 엔드포인트 도메인",
+            "what": "Route 53 의 읽기용 · 쓰기용 이름 — CNAME 을 바꾸면 앱 접속처가 따라간다."
+          },
+          {
+            "name": "DMS 이행 작업",
+            "what": "Cloud SQL 기동 · mysqldump 적재 · 이후 실시간 차분 → 프로모트로 독립 프라이머리."
+          },
+          {
+            "name": "가중 CNAME",
+            "what": "기존 API 도메인 → (CloudFront | 새 도메인 A 레코드 → Cloud Load Balancing) 비율."
+          },
+          {
+            "name": "CDC 스트림",
+            "what": "Cloud SQL binlog → Datastream → BigQuery(Primary Key · max_staleness)."
+          }
+        ],
+        "invariants": [
+          "쓰기 전환 중에도 읽기 계통은 살아 있다 — 열람은 계속된다.",
+          "뉴스 수집은 DB 앞의 큐를 거친다 — 쓰기 정지 중에도 잃지 않는다.",
+          "새 경로는 트래픽을 받기 전에 유효한 인증서를 가진다.",
+          "어느 단계든 되돌릴 수 있다(DNS · 가중치)."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "Locust 부하 시험으로 Aurora 대 Cloud SQL 응답 · 복제 지연 비교",
+            "why": "이행 가능 판단."
+          },
+          {
+            "step": "AWS ↔ Google Cloud HA VPN(Terraform) · Route 53 에 읽기/쓰기 DB 도메인",
+            "why": "앱은 AWS 에 둔 채 접속처만 바꾼다."
+          },
+          {
+            "step": "DMS 로 Cloud SQL 레플리카(쓰기 약 5 분 정지 · 약 100GB/시간) → 사용자 이식 → 읽기 도메인 전환(무중단)",
+            "why": "읽기 먼저."
+          },
+          {
+            "step": "공지한 점검 시간에 쓰기 정지 → DMS 프로모트(약 5 분) → 쓰기 도메인 전환 → 레플리카 · 다른 리전 레플리카 구축",
+            "why": "쓰기는 짧게."
+          },
+          {
+            "step": "API: 셀프 관리형 인증서를 붙인 CLB → 새 도메인 A 레코드 → 기존 도메인 가중 CNAME 10% → 100%",
+            "why": "도메인 · 앱 불변."
+          },
+          {
+            "step": "Datastream(리버스 프록시 경유)으로 Cloud SQL → BigQuery CDC",
+            "why": "재해 데이터를 분석 기반으로."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "Cloud SQL 이 Aurora 만큼 버티나?",
+            "chosen": "**기존 Locust 부하 시나리오로 직접 비교** — Cloud SQL 에 DB 를 세우고 Aurora 와 Cloud SQL 에 번갈아 붙여 응답 시간을 보고, 프라이머리 ↔ 레플리카 복제 지연도 쟀다. 둘의 차이는 Google Cloud 공식 비교 문서로 먼저 확인.",
+            "alternatives": [
+              "사양 · 광고 문구로 추정"
+            ],
+            "tradeoff": "꽤 무거운 쿼리까지 손색없이 처리하는 것을 보고 안심했다. 예전에 DB 부하를 보려고 만든 시나리오가 있어 싸게 됐다. 대가는 시험용 인스턴스 비용.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ダウンタイムを抑えてAWSからGoogle Cloudにデータベースを移行したはなし",
+                "url": "https://tech.jxpress.net/entry/gcp_database_migration",
+                "publisher": "JX通信社",
+                "summary": "Aurora MySQL 5.7 글로벌 DB(리전 장애 대비) → Cloud SQL 핫 스탠바이 멀티 리전. 이유는 비용 중심의 종합 판단 + BigQuery 데이터 기반과의 연계. 성능이 걱정돼 기존 Locust 시나리오로 Aurora 대 Cloud SQL 응답 시간 비교(손색없음) · 복제 지연도 허용 범위. 전제: 리스크 정보 서비스라 다운타임 최소, 초당 쓰기가 많아 짧은 쓰기 정지는 허용(뉴스 수집은 큐 경유라 누락 없음), 주 기능은 읽기 레플리카에서, DB 수백 GB, 앱은 AWS VPC 에 남김. 방침: DMS 로 Cloud SQL 레플리카 → 읽기 계통 먼저 무중단 전환 → 공지한 점검 시간에 쓰기 계통 전환, AWS↔GCP HA VPN(Terraform). Route 53 에 읽기 · 쓰기용 도메인(CNAME)을 두어 재배포 없이 전환(연결 유지 시 주기적 재접속 필요). DMS: dump 시작 때 약 5 분 쓰기 정지, 약 100GB/시간, 접속 사용자는 동기화 안 돼 콘솔에서 이식(root 권한 수정 필요), 프로모트 때 약 5 분. DMS 관리 중엔 레플리카를 못 만들어 이행 뒤 구축, 다른 리전 레플리카도.",
+                "date": "2023-07-13"
+              }
+            ]
+          },
+          {
+            "question": "완전 무중단으로 가나?",
+            "chosen": "**아니다 — 사전 공지 + 짧은 쓰기 정지.** 초당 쓰기가 많아 신 · 구 DB 를 함께 돌리며 무정지로 갈아타기는 어렵고, 불일치를 피하려 짧은 쓰기 정지를 허용했다. 뉴스 수집은 DB 앞에 큐가 있어 전환 중 뉴스도 잃지 않는다.",
+            "alternatives": [
+              "양방향 동기 · 이중 쓰기로 완전 무중단"
+            ],
+            "tradeoff": "공수 · 난이도가 뛰어오르는 것을 피했다. 대가는 약 5 분씩 두 번의 쓰기 정지 — 큐와 읽기 레플리카가 있어 사용자 영향이 작다는 구조가 이 선택을 가능하게 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ダウンタイムを抑えてAWSからGoogle Cloudにデータベースを移行したはなし",
+                "url": "https://tech.jxpress.net/entry/gcp_database_migration",
+                "publisher": "JX通信社",
+                "summary": "Aurora MySQL 5.7 글로벌 DB(리전 장애 대비) → Cloud SQL 핫 스탠바이 멀티 리전. 이유는 비용 중심의 종합 판단 + BigQuery 데이터 기반과의 연계. 성능이 걱정돼 기존 Locust 시나리오로 Aurora 대 Cloud SQL 응답 시간 비교(손색없음) · 복제 지연도 허용 범위. 전제: 리스크 정보 서비스라 다운타임 최소, 초당 쓰기가 많아 짧은 쓰기 정지는 허용(뉴스 수집은 큐 경유라 누락 없음), 주 기능은 읽기 레플리카에서, DB 수백 GB, 앱은 AWS VPC 에 남김. 방침: DMS 로 Cloud SQL 레플리카 → 읽기 계통 먼저 무중단 전환 → 공지한 점검 시간에 쓰기 계통 전환, AWS↔GCP HA VPN(Terraform). Route 53 에 읽기 · 쓰기용 도메인(CNAME)을 두어 재배포 없이 전환(연결 유지 시 주기적 재접속 필요). DMS: dump 시작 때 약 5 분 쓰기 정지, 약 100GB/시간, 접속 사용자는 동기화 안 돼 콘솔에서 이식(root 권한 수정 필요), 프로모트 때 약 5 분. DMS 관리 중엔 레플리카를 못 만들어 이행 뒤 구축, 다른 리전 레플리카도.",
+                "date": "2023-07-13"
+              }
+            ]
+          },
+          {
+            "question": "무엇부터 옮기나?",
+            "chosen": "**읽기 계통 먼저, 쓰기 계통은 나중** — Cloud SQL 에 레플리카를 만들고 읽기 앱을 모두 옮긴다(레플리카 → 레플리카라 무정지). 쓰기는 점검 시간에 옮기되 그동안에도 읽기 계통이 살아 열람은 된다.",
+            "alternatives": [
+              "한 번에 전부 전환"
+            ],
+            "tradeoff": "주 기능이 거의 읽기 레플리카에서 나오므로 위험의 대부분을 무중단 구간에서 치른다. 대가는 DMS 관리 중엔 Cloud SQL 에 레플리카를 더 만들 수 없어, 읽기가 무거우면 이행 동안 인스턴스를 키워야 할 수 있다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ダウンタイムを抑えてAWSからGoogle Cloudにデータベースを移行したはなし",
+                "url": "https://tech.jxpress.net/entry/gcp_database_migration",
+                "publisher": "JX通信社",
+                "summary": "Aurora MySQL 5.7 글로벌 DB(리전 장애 대비) → Cloud SQL 핫 스탠바이 멀티 리전. 이유는 비용 중심의 종합 판단 + BigQuery 데이터 기반과의 연계. 성능이 걱정돼 기존 Locust 시나리오로 Aurora 대 Cloud SQL 응답 시간 비교(손색없음) · 복제 지연도 허용 범위. 전제: 리스크 정보 서비스라 다운타임 최소, 초당 쓰기가 많아 짧은 쓰기 정지는 허용(뉴스 수집은 큐 경유라 누락 없음), 주 기능은 읽기 레플리카에서, DB 수백 GB, 앱은 AWS VPC 에 남김. 방침: DMS 로 Cloud SQL 레플리카 → 읽기 계통 먼저 무중단 전환 → 공지한 점검 시간에 쓰기 계통 전환, AWS↔GCP HA VPN(Terraform). Route 53 에 읽기 · 쓰기용 도메인(CNAME)을 두어 재배포 없이 전환(연결 유지 시 주기적 재접속 필요). DMS: dump 시작 때 약 5 분 쓰기 정지, 약 100GB/시간, 접속 사용자는 동기화 안 돼 콘솔에서 이식(root 권한 수정 필요), 프로모트 때 약 5 분. DMS 관리 중엔 레플리카를 못 만들어 이행 뒤 구축, 다른 리전 레플리카도.",
+                "date": "2023-07-13"
+              }
+            ]
+          },
+          {
+            "question": "레플리카를 손으로 만드나?",
+            "chosen": "**Database Migration Service** — Cloud SQL 기동 · mysqldump 적재 · 이후 실시간 차분을 자동으로. RDS 계열에서는 dump 시작 때 약 5 분 쓰기 정지, 적재는 약 100GB/시간.",
+            "alternatives": [
+              "수동 MySQL 복제 구성"
+            ],
+            "tradeoff": "이행 공수를 크게 줄였다. 대가는 **MySQL 접속 사용자가 동기화되지 않아** 읽기 전환 때 인증이 실패한다는 것 — 콘솔에서 사용자를 만들어 이식했고, 그렇게 만든 사용자는 root 권한이 붙어 나중에 고쳐야 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ダウンタイムを抑えてAWSからGoogle Cloudにデータベースを移行したはなし",
+                "url": "https://tech.jxpress.net/entry/gcp_database_migration",
+                "publisher": "JX通信社",
+                "summary": "Aurora MySQL 5.7 글로벌 DB(리전 장애 대비) → Cloud SQL 핫 스탠바이 멀티 리전. 이유는 비용 중심의 종합 판단 + BigQuery 데이터 기반과의 연계. 성능이 걱정돼 기존 Locust 시나리오로 Aurora 대 Cloud SQL 응답 시간 비교(손색없음) · 복제 지연도 허용 범위. 전제: 리스크 정보 서비스라 다운타임 최소, 초당 쓰기가 많아 짧은 쓰기 정지는 허용(뉴스 수집은 큐 경유라 누락 없음), 주 기능은 읽기 레플리카에서, DB 수백 GB, 앱은 AWS VPC 에 남김. 방침: DMS 로 Cloud SQL 레플리카 → 읽기 계통 먼저 무중단 전환 → 공지한 점검 시간에 쓰기 계통 전환, AWS↔GCP HA VPN(Terraform). Route 53 에 읽기 · 쓰기용 도메인(CNAME)을 두어 재배포 없이 전환(연결 유지 시 주기적 재접속 필요). DMS: dump 시작 때 약 5 분 쓰기 정지, 약 100GB/시간, 접속 사용자는 동기화 안 돼 콘솔에서 이식(root 권한 수정 필요), 프로모트 때 약 5 분. DMS 관리 중엔 레플리카를 못 만들어 이행 뒤 구축, 다른 리전 레플리카도.",
+                "date": "2023-07-13"
+              }
+            ]
+          },
+          {
+            "question": "AWS 에 남은 앱이 Cloud SQL 에 어떻게 닿나?",
+            "chosen": "**AWS ↔ Google Cloud HA VPN(Terraform)** — VPC 안에서 DB 에 접속하는 구성을 깨지 않는다.",
+            "alternatives": [
+              "Cloud SQL 공인 IP 로 접속"
+            ],
+            "tradeoff": "장황해 보이지만 DB 이행 뒤 앱도 Google Cloud 로 옮길 것을 생각하면 같은 네트워크로 다루는 이득이 컸다. 대가는 서브넷 · 라우팅 설정에 애먹은 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ダウンタイムを抑えてAWSからGoogle Cloudにデータベースを移行したはなし",
+                "url": "https://tech.jxpress.net/entry/gcp_database_migration",
+                "publisher": "JX通信社",
+                "summary": "Aurora MySQL 5.7 글로벌 DB(리전 장애 대비) → Cloud SQL 핫 스탠바이 멀티 리전. 이유는 비용 중심의 종합 판단 + BigQuery 데이터 기반과의 연계. 성능이 걱정돼 기존 Locust 시나리오로 Aurora 대 Cloud SQL 응답 시간 비교(손색없음) · 복제 지연도 허용 범위. 전제: 리스크 정보 서비스라 다운타임 최소, 초당 쓰기가 많아 짧은 쓰기 정지는 허용(뉴스 수집은 큐 경유라 누락 없음), 주 기능은 읽기 레플리카에서, DB 수백 GB, 앱은 AWS VPC 에 남김. 방침: DMS 로 Cloud SQL 레플리카 → 읽기 계통 먼저 무중단 전환 → 공지한 점검 시간에 쓰기 계통 전환, AWS↔GCP HA VPN(Terraform). Route 53 에 읽기 · 쓰기용 도메인(CNAME)을 두어 재배포 없이 전환(연결 유지 시 주기적 재접속 필요). DMS: dump 시작 때 약 5 분 쓰기 정지, 약 100GB/시간, 접속 사용자는 동기화 안 돼 콘솔에서 이식(root 권한 수정 필요), 프로모트 때 약 5 분. DMS 관리 중엔 레플리카를 못 만들어 이행 뒤 구축, 다른 리전 레플리카도.",
+                "date": "2023-07-13"
+              }
+            ]
+          },
+          {
+            "question": "앱을 재배포하지 않고 접속처를 바꾸려면?",
+            "chosen": "**Route 53 에 읽기용 · 쓰기용 DB 도메인**을 두고 처음엔 Aurora 엔드포인트로 CNAME — 전환은 도메인 향방만 바꾼다. 앱은 연결을 주기적으로 다시 맺게 설정한다.",
+            "alternatives": [
+              "ECS · Lambda 설정을 바꿔 재배포"
+            ],
+            "tradeoff": "ECS · Lambda 재배포 없이 전환하고, 엔드포인트가 없는 Cloud SQL(인스턴스 IP 지정)에서도 라운드로빈이 된다. 대가는 연결을 오래 쥐고 있는 앱이 DNS 가 바뀐 줄 모르고 옛 DB 에 계속 붙는 위험 — 재접속 주기로 막는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ダウンタイムを抑えてAWSからGoogle Cloudにデータベースを移行したはなし",
+                "url": "https://tech.jxpress.net/entry/gcp_database_migration",
+                "publisher": "JX通信社",
+                "summary": "Aurora MySQL 5.7 글로벌 DB(리전 장애 대비) → Cloud SQL 핫 스탠바이 멀티 리전. 이유는 비용 중심의 종합 판단 + BigQuery 데이터 기반과의 연계. 성능이 걱정돼 기존 Locust 시나리오로 Aurora 대 Cloud SQL 응답 시간 비교(손색없음) · 복제 지연도 허용 범위. 전제: 리스크 정보 서비스라 다운타임 최소, 초당 쓰기가 많아 짧은 쓰기 정지는 허용(뉴스 수집은 큐 경유라 누락 없음), 주 기능은 읽기 레플리카에서, DB 수백 GB, 앱은 AWS VPC 에 남김. 방침: DMS 로 Cloud SQL 레플리카 → 읽기 계통 먼저 무중단 전환 → 공지한 점검 시간에 쓰기 계통 전환, AWS↔GCP HA VPN(Terraform). Route 53 에 읽기 · 쓰기용 도메인(CNAME)을 두어 재배포 없이 전환(연결 유지 시 주기적 재접속 필요). DMS: dump 시작 때 약 5 분 쓰기 정지, 약 100GB/시간, 접속 사용자는 동기화 안 돼 콘솔에서 이식(root 권한 수정 필요), 프로모트 때 약 5 분. DMS 관리 중엔 레플리카를 못 만들어 이행 뒤 구축, 다른 리전 레플리카도.",
+                "date": "2023-07-13"
+              }
+            ]
+          },
+          {
+            "question": "앱 API 는 도메인 · 앱을 안 바꾸고 어떻게 옮기나?",
+            "chosen": "**셀프 관리형 인증서(Let's Encrypt · Certbot TXT 검증)를 붙인 채 전환하고, 뒤에서 Google 관리형 인증서를 활성화한 뒤 셀프 관리형을 뗀다.** 기존 도메인은 CloudFront 로 CNAME 이라 A 레코드를 둘 수 없으므로 **새 도메인에 CLB IP 의 A 레코드**를 만들고 **기존 도메인에서 가중 CNAME**(처음 약 10%)으로 나눈다.",
+            "alternatives": [
+              "관리형 인증서만(활성화까지 다운타임 · 점검 필요)",
+              "셀프 관리형만(갱신 운영이 영구히)",
+              "CNAME 을 떼고 한 번에 교체"
+            ],
+            "tradeoff": "두 인증서의 좋은 점만 취하고 단계 이행 · 즉시 되돌림을 얻었다 — 실제로 이행 뒤 비용이 너무 커 한 번 AWS 로 되돌렸고 CLB 뒤 서비스를 바꿀 때도 가중치에 도움받았다. 대가는 셀프 관리형 인증서 발급이 수작업이라는 것 — 전환 전 /etc/hosts 로 HTTPS 를 미리 확인했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "APIをダウンタイムなしでAWSからGCPに引越しました",
+                "url": "https://tech.jxpress.net/entry/2023/03/09/112758",
+                "publisher": "JX通信社",
+                "summary": "NewsDigest 모바일 앱 API 를 AWS → GCP(회사 방침 · 관리형 서비스). 제약: 도메인 불변 · 무중단 · 앱 수정 없음 · 서버 팀이 낮에 완결. Cloud Load Balancing 앞단 — Google 관리형 인증서는 트래픽을 받아야 활성화되므로 먼저 셀프 관리형(Let's Encrypt · Certbot TXT 검증)을 붙여 전환하고 뒤에서 관리형을 활성화한 뒤 셀프 관리형 제거. /etc/hosts 로 사전 HTTPS 확인. 기존 도메인이 CloudFront 로 CNAME 이라 A 레코드를 못 두므로 새 도메인에 A 레코드 → 기존 도메인에 가중 CNAME(초기 10%) — 문제 시 0 으로 되돌림. 실제로 이행 뒤 비용이 커 한 번 AWS 로 되돌리기도.",
+                "date": "2023-03-09"
+              }
+            ]
+          },
+          {
+            "question": "옮긴 DB 의 재해 데이터를 BigQuery 로 어떻게 넘기나?",
+            "chosen": "**Datastream(binlog CDC)** — 기존 Cloud Composer 일 · 시간 배치 대신. 사설망 Cloud SQL 에는 Compute Engine 리버스 프록시로 닿고, 변경이 잦은 테이블은 제외하고, 파티션은 테이블을 다시 만들며 **Primary Key · max_staleness 를 직접** 설정한다.",
+            "alternatives": [
+              "Airflow 배치 유지(Cloud SQL 연합 쿼리)"
+            ],
+            "tradeoff": "배치는 취득 범위 밖(예: 7 일 전)의 갱신이 반영되지 않고 최대 1 일 늦으며 테이블마다 DAG 를 만들어야 했다. CDC 는 실시간 · 설정이 적다. 대가는 예상 밖 비용 — 행 수는 적어도 변경이 잦은 테이블의 CDC 처리비, 그리고 max_staleness 0 으로 반나절 돌린 스캔비.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Datastream による Cloud SQL と BigQuery 同期：直面した課題と対応策",
+                "url": "https://tech.jxpress.net/entry/2024/12/10/204320",
+                "publisher": "JX通信社",
+                "summary": "FASTALERT 의 오랜 재해 데이터를 사내 · 고객이 쓰도록 Cloud SQL → BigQuery. 기존 Cloud Composer(Airflow) 일 · 시간 배치는 취득 범위 밖의 과거 갱신이 반영 안 되고 최대 1 일 지연, 테이블마다 ETL · DAG 비용 → Datastream(binlog CDC). 과제: 사설망 Cloud SQL 이라 Compute Engine 리버스 프록시, 행 수는 적지만 변경이 잦은 테이블의 CDC 처리비가 커 제외, Datastream 이 파티션을 지원 안 해 테이블을 다시 만들 때 Primary Key 와 max_staleness 를 직접 설정해야 했다(반나절 0 으로 돌려 스캔비 낭비).",
+                "date": "2024-12-10"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "FASTALERT(수익원)",
+          "via": "다운타임 최소화",
+          "contract": "리스크 정보를 빨리 전하는 서비스라 쓰기 정지를 약 5 분씩 두 번으로 줄이고 열람은 계속되게 했다 — 이행 자체가 서비스 약속이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ダウンタイムを抑えてAWSからGoogle Cloudにデータベースを移行したはなし",
+              "url": "https://tech.jxpress.net/entry/gcp_database_migration",
+              "publisher": "JX通信社",
+              "summary": "Aurora MySQL 5.7 글로벌 DB(리전 장애 대비) → Cloud SQL 핫 스탠바이 멀티 리전. 이유는 비용 중심의 종합 판단 + BigQuery 데이터 기반과의 연계. 성능이 걱정돼 기존 Locust 시나리오로 Aurora 대 Cloud SQL 응답 시간 비교(손색없음) · 복제 지연도 허용 범위. 전제: 리스크 정보 서비스라 다운타임 최소, 초당 쓰기가 많아 짧은 쓰기 정지는 허용(뉴스 수집은 큐 경유라 누락 없음), 주 기능은 읽기 레플리카에서, DB 수백 GB, 앱은 AWS VPC 에 남김. 방침: DMS 로 Cloud SQL 레플리카 → 읽기 계통 먼저 무중단 전환 → 공지한 점검 시간에 쓰기 계통 전환, AWS↔GCP HA VPN(Terraform). Route 53 에 읽기 · 쓰기용 도메인(CNAME)을 두어 재배포 없이 전환(연결 유지 시 주기적 재접속 필요). DMS: dump 시작 때 약 5 분 쓰기 정지, 약 100GB/시간, 접속 사용자는 동기화 안 돼 콘솔에서 이식(root 권한 수정 필요), 프로모트 때 약 5 분. DMS 관리 중엔 레플리카를 못 만들어 이행 뒤 구축, 다른 리전 레플리카도.",
+              "date": "2023-07-13"
+            }
+          ]
+        },
+        {
+          "to": "클라우드 비용 프로그램",
+          "via": "이행 동기 · 되돌림",
+          "contract": "이행의 큰 이유는 비용이었고, API 는 이행 뒤 비용이 커 한 번 되돌렸다. Datastream 도 CDC 처리비 · 스캔비를 보며 대상을 줄였다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ダウンタイムを抑えてAWSからGoogle Cloudにデータベースを移行したはなし",
+              "url": "https://tech.jxpress.net/entry/gcp_database_migration",
+              "publisher": "JX通信社",
+              "summary": "Aurora MySQL 5.7 글로벌 DB(리전 장애 대비) → Cloud SQL 핫 스탠바이 멀티 리전. 이유는 비용 중심의 종합 판단 + BigQuery 데이터 기반과의 연계. 성능이 걱정돼 기존 Locust 시나리오로 Aurora 대 Cloud SQL 응답 시간 비교(손색없음) · 복제 지연도 허용 범위. 전제: 리스크 정보 서비스라 다운타임 최소, 초당 쓰기가 많아 짧은 쓰기 정지는 허용(뉴스 수집은 큐 경유라 누락 없음), 주 기능은 읽기 레플리카에서, DB 수백 GB, 앱은 AWS VPC 에 남김. 방침: DMS 로 Cloud SQL 레플리카 → 읽기 계통 먼저 무중단 전환 → 공지한 점검 시간에 쓰기 계통 전환, AWS↔GCP HA VPN(Terraform). Route 53 에 읽기 · 쓰기용 도메인(CNAME)을 두어 재배포 없이 전환(연결 유지 시 주기적 재접속 필요). DMS: dump 시작 때 약 5 분 쓰기 정지, 약 100GB/시간, 접속 사용자는 동기화 안 돼 콘솔에서 이식(root 권한 수정 필요), 프로모트 때 약 5 분. DMS 관리 중엔 레플리카를 못 만들어 이행 뒤 구축, 다른 리전 레플리카도.",
+              "date": "2023-07-13"
+            },
+            {
+              "title": "APIをダウンタイムなしでAWSからGCPに引越しました",
+              "url": "https://tech.jxpress.net/entry/2023/03/09/112758",
+              "publisher": "JX通信社",
+              "summary": "NewsDigest 모바일 앱 API 를 AWS → GCP(회사 방침 · 관리형 서비스). 제약: 도메인 불변 · 무중단 · 앱 수정 없음 · 서버 팀이 낮에 완결. Cloud Load Balancing 앞단 — Google 관리형 인증서는 트래픽을 받아야 활성화되므로 먼저 셀프 관리형(Let's Encrypt · Certbot TXT 검증)을 붙여 전환하고 뒤에서 관리형을 활성화한 뒤 셀프 관리형 제거. /etc/hosts 로 사전 HTTPS 확인. 기존 도메인이 CloudFront 로 CNAME 이라 A 레코드를 못 두므로 새 도메인에 A 레코드 → 기존 도메인에 가중 CNAME(초기 10%) — 문제 시 0 으로 되돌림. 실제로 이행 뒤 비용이 커 한 번 AWS 로 되돌리기도.",
+              "date": "2023-03-09"
+            },
+            {
+              "title": "Datastream による Cloud SQL と BigQuery 同期：直面した課題と対応策",
+              "url": "https://tech.jxpress.net/entry/2024/12/10/204320",
+              "publisher": "JX通信社",
+              "summary": "FASTALERT 의 오랜 재해 데이터를 사내 · 고객이 쓰도록 Cloud SQL → BigQuery. 기존 Cloud Composer(Airflow) 일 · 시간 배치는 취득 범위 밖의 과거 갱신이 반영 안 되고 최대 1 일 지연, 테이블마다 ETL · DAG 비용 → Datastream(binlog CDC). 과제: 사설망 Cloud SQL 이라 Compute Engine 리버스 프록시, 행 수는 적지만 변경이 잦은 테이블의 CDC 처리비가 커 제외, Datastream 이 파티션을 지원 안 해 테이블을 다시 만들 때 Primary Key 와 max_staleness 를 직접 설정해야 했다(반나절 0 으로 돌려 스캔비 낭비).",
+              "date": "2024-12-10"
+            }
+          ]
+        },
+        {
+          "to": "BigQuery 데이터 기반",
+          "via": "Datastream CDC",
+          "contract": "데이터 기반이 BigQuery 에 있어 연계가 쉬운 것이 이행의 이점이었고, 옮긴 뒤 재해 데이터를 CDC 로 넘겼다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ダウンタイムを抑えてAWSからGoogle Cloudにデータベースを移行したはなし",
+              "url": "https://tech.jxpress.net/entry/gcp_database_migration",
+              "publisher": "JX通信社",
+              "summary": "Aurora MySQL 5.7 글로벌 DB(리전 장애 대비) → Cloud SQL 핫 스탠바이 멀티 리전. 이유는 비용 중심의 종합 판단 + BigQuery 데이터 기반과의 연계. 성능이 걱정돼 기존 Locust 시나리오로 Aurora 대 Cloud SQL 응답 시간 비교(손색없음) · 복제 지연도 허용 범위. 전제: 리스크 정보 서비스라 다운타임 최소, 초당 쓰기가 많아 짧은 쓰기 정지는 허용(뉴스 수집은 큐 경유라 누락 없음), 주 기능은 읽기 레플리카에서, DB 수백 GB, 앱은 AWS VPC 에 남김. 방침: DMS 로 Cloud SQL 레플리카 → 읽기 계통 먼저 무중단 전환 → 공지한 점검 시간에 쓰기 계통 전환, AWS↔GCP HA VPN(Terraform). Route 53 에 읽기 · 쓰기용 도메인(CNAME)을 두어 재배포 없이 전환(연결 유지 시 주기적 재접속 필요). DMS: dump 시작 때 약 5 분 쓰기 정지, 약 100GB/시간, 접속 사용자는 동기화 안 돼 콘솔에서 이식(root 권한 수정 필요), 프로모트 때 약 5 분. DMS 관리 중엔 레플리카를 못 만들어 이행 뒤 구축, 다른 리전 레플리카도.",
+              "date": "2023-07-13"
+            },
+            {
+              "title": "Datastream による Cloud SQL と BigQuery 同期：直面した課題と対応策",
+              "url": "https://tech.jxpress.net/entry/2024/12/10/204320",
+              "publisher": "JX通信社",
+              "summary": "FASTALERT 의 오랜 재해 데이터를 사내 · 고객이 쓰도록 Cloud SQL → BigQuery. 기존 Cloud Composer(Airflow) 일 · 시간 배치는 취득 범위 밖의 과거 갱신이 반영 안 되고 최대 1 일 지연, 테이블마다 ETL · DAG 비용 → Datastream(binlog CDC). 과제: 사설망 Cloud SQL 이라 Compute Engine 리버스 프록시, 행 수는 적지만 변경이 잦은 테이블의 CDC 처리비가 커 제외, Datastream 이 파티션을 지원 안 해 테이블을 다시 만들 때 Primary Key 와 max_staleness 를 직접 설정해야 했다(반나절 0 으로 돌려 스캔비 낭비).",
+              "date": "2024-12-10"
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "DB 를 두 번에 나눠 옮긴다",
+          "question": "무엇이 언제 바뀌나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  APP[\"AWS 의 앱\\nECS · Lambda\"] --> RD[\"읽기 도메인\"]\n  APP --> WD[\"쓰기 도메인\"]\n  RD -->|\"① 무중단 전환\"| CR[\"Cloud SQL 레플리카\\n(DMS)\"]\n  WD -->|\"② 점검 시간 · 약 5 분\"| CP[\"Cloud SQL 프라이머리\\n(프로모트)\"]\n  AU[(\"Aurora 글로벌 DB\")] -->|\"DMS: dump + 차분\"| CR\n  APP -.->|\"HA VPN\"| CR\n  Q[\"뉴스 수집 큐\"] --> WD\n  CP --> DSx[\"Datastream CDC\"] --> BQ[(\"BigQuery\")]"
+        },
+        {
+          "title": "API 를 조금씩 넘긴다",
+          "question": "인증서와 트래픽은 어떤 순서로 움직이나?",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant OPS as 서버 팀\n  participant CLB as Cloud Load Balancing\n  participant DNS as Route 53\n  participant APPU as 앱 사용자\n  OPS->>CLB: 셀프 관리형 인증서(Let's Encrypt) 부착\n  OPS->>OPS: /etc/hosts 로 HTTPS 사전 확인\n  OPS->>DNS: 새 도메인 A 레코드 → CLB IP\n  OPS->>DNS: api 도메인 가중 CNAME: CloudFront 90 · 새 도메인 10\n  APPU->>DNS: api 조회\n  DNS-->>APPU: 10% 는 GCP 로\n  OPS->>CLB: Google 관리형 인증서 활성화 → 셀프 관리형 제거\n  alt 문제 · 비용 초과\n    OPS->>DNS: GCP 가중 0(되돌림)\n  else 정상\n    OPS->>DNS: GCP 가중 100\n  end"
+        },
+        {
+          "title": "이행에서 걸린 것들",
+          "question": "문서대로 했는데 무엇이 깨졌나?",
+          "kind": "failure",
+          "code": "flowchart TB\n  U[\"DMS 는 MySQL 접속 사용자를 동기화 안 함\"] --> AUTH[\"읽기 전환 때 인증 실패\"] --> FIXU[\"콘솔로 사용자 이식 · root 권한 회수\"]\n  CONN[\"앱이 DB 연결을 오래 유지\"] --> OLD[\"DNS 가 바뀌어도 옛 DB 에 붙어 있음\"] --> RC[\"주기적 재접속 설정\"]\n  PART[\"Datastream 테이블을 파티션으로 재생성\"] --> PK[\"Primary Key 없음 → CDC 오류\"]\n  PART --> MS[\"max_staleness = 0 → 스트림 버퍼까지 스캔 · 반나절 비용\"]\n  CHURN[\"행은 적지만 변경이 잦은 테이블\"] --> CDC[\"CDC 처리비 초과 → 대상에서 제외\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "ダウンタイムを抑えてAWSからGoogle Cloudにデータベースを移行したはなし",
+          "url": "https://tech.jxpress.net/entry/gcp_database_migration",
+          "publisher": "JX通信社",
+          "summary": "Aurora MySQL 5.7 글로벌 DB(리전 장애 대비) → Cloud SQL 핫 스탠바이 멀티 리전. 이유는 비용 중심의 종합 판단 + BigQuery 데이터 기반과의 연계. 성능이 걱정돼 기존 Locust 시나리오로 Aurora 대 Cloud SQL 응답 시간 비교(손색없음) · 복제 지연도 허용 범위. 전제: 리스크 정보 서비스라 다운타임 최소, 초당 쓰기가 많아 짧은 쓰기 정지는 허용(뉴스 수집은 큐 경유라 누락 없음), 주 기능은 읽기 레플리카에서, DB 수백 GB, 앱은 AWS VPC 에 남김. 방침: DMS 로 Cloud SQL 레플리카 → 읽기 계통 먼저 무중단 전환 → 공지한 점검 시간에 쓰기 계통 전환, AWS↔GCP HA VPN(Terraform). Route 53 에 읽기 · 쓰기용 도메인(CNAME)을 두어 재배포 없이 전환(연결 유지 시 주기적 재접속 필요). DMS: dump 시작 때 약 5 분 쓰기 정지, 약 100GB/시간, 접속 사용자는 동기화 안 돼 콘솔에서 이식(root 권한 수정 필요), 프로모트 때 약 5 분. DMS 관리 중엔 레플리카를 못 만들어 이행 뒤 구축, 다른 리전 레플리카도.",
+          "date": "2023-07-13"
+        },
+        {
+          "title": "APIをダウンタイムなしでAWSからGCPに引越しました",
+          "url": "https://tech.jxpress.net/entry/2023/03/09/112758",
+          "publisher": "JX通信社",
+          "summary": "NewsDigest 모바일 앱 API 를 AWS → GCP(회사 방침 · 관리형 서비스). 제약: 도메인 불변 · 무중단 · 앱 수정 없음 · 서버 팀이 낮에 완결. Cloud Load Balancing 앞단 — Google 관리형 인증서는 트래픽을 받아야 활성화되므로 먼저 셀프 관리형(Let's Encrypt · Certbot TXT 검증)을 붙여 전환하고 뒤에서 관리형을 활성화한 뒤 셀프 관리형 제거. /etc/hosts 로 사전 HTTPS 확인. 기존 도메인이 CloudFront 로 CNAME 이라 A 레코드를 못 두므로 새 도메인에 A 레코드 → 기존 도메인에 가중 CNAME(초기 10%) — 문제 시 0 으로 되돌림. 실제로 이행 뒤 비용이 커 한 번 AWS 로 되돌리기도.",
+          "date": "2023-03-09"
+        },
+        {
+          "title": "Datastream による Cloud SQL と BigQuery 同期：直面した課題と対応策",
+          "url": "https://tech.jxpress.net/entry/2024/12/10/204320",
+          "publisher": "JX通信社",
+          "summary": "FASTALERT 의 오랜 재해 데이터를 사내 · 고객이 쓰도록 Cloud SQL → BigQuery. 기존 Cloud Composer(Airflow) 일 · 시간 배치는 취득 범위 밖의 과거 갱신이 반영 안 되고 최대 1 일 지연, 테이블마다 ETL · DAG 비용 → Datastream(binlog CDC). 과제: 사설망 Cloud SQL 이라 Compute Engine 리버스 프록시, 행 수는 적지만 변경이 잦은 테이블의 CDC 처리비가 커 제외, Datastream 이 파티션을 지원 안 해 테이블을 다시 만들 때 Primary Key 와 max_staleness 를 직접 설정해야 했다(반나절 0 으로 돌려 스캔비 낭비).",
+          "date": "2024-12-10"
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -665,14 +1095,14 @@
       "title": "ダウンタイムを抑えてAWSからGoogle Cloudにデータベースを移行したはなし",
       "url": "https://tech.jxpress.net/entry/gcp_database_migration",
       "publisher": "JX通信社",
-      "summary": "AWS 에서 Google Cloud 로 데이터베이스를 다운타임을 줄여 이행한 이야기.",
+      "summary": "Aurora MySQL 5.7 글로벌 DB(리전 장애 대비) → Cloud SQL 핫 스탠바이 멀티 리전. 이유는 비용 중심의 종합 판단 + BigQuery 데이터 기반과의 연계. 성능이 걱정돼 기존 Locust 시나리오로 Aurora 대 Cloud SQL 응답 시간 비교(손색없음) · 복제 지연도 허용 범위. 전제: 리스크 정보 서비스라 다운타임 최소, 초당 쓰기가 많아 짧은 쓰기 정지는 허용(뉴스 수집은 큐 경유라 누락 없음), 주 기능은 읽기 레플리카에서, DB 수백 GB, 앱은 AWS VPC 에 남김. 방침: DMS 로 Cloud SQL 레플리카 → 읽기 계통 먼저 무중단 전환 → 공지한 점검 시간에 쓰기 계통 전환, AWS↔GCP HA VPN(Terraform). Route 53 에 읽기 · 쓰기용 도메인(CNAME)을 두어 재배포 없이 전환(연결 유지 시 주기적 재접속 필요). DMS: dump 시작 때 약 5 분 쓰기 정지, 약 100GB/시간, 접속 사용자는 동기화 안 돼 콘솔에서 이식(root 권한 수정 필요), 프로모트 때 약 5 분. DMS 관리 중엔 레플리카를 못 만들어 이행 뒤 구축, 다른 리전 레플리카도.",
       "date": "2023-07-13"
     },
     {
       "title": "Datastream による Cloud SQL と BigQuery 同期：直面した課題と対応策",
       "url": "https://tech.jxpress.net/entry/2024/12/10/204320",
       "publisher": "JX通信社",
-      "summary": "Cloud SQL 을 Datastream 으로 BigQuery 에 동기화하며 겪은 과제와 대응.",
+      "summary": "FASTALERT 의 오랜 재해 데이터를 사내 · 고객이 쓰도록 Cloud SQL → BigQuery. 기존 Cloud Composer(Airflow) 일 · 시간 배치는 취득 범위 밖의 과거 갱신이 반영 안 되고 최대 1 일 지연, 테이블마다 ETL · DAG 비용 → Datastream(binlog CDC). 과제: 사설망 Cloud SQL 이라 Compute Engine 리버스 프록시, 행 수는 적지만 변경이 잦은 테이블의 CDC 처리비가 커 제외, Datastream 이 파티션을 지원 안 해 테이블을 다시 만들 때 Primary Key 와 max_staleness 를 직접 설정해야 했다(반나절 0 으로 돌려 스캔비 낭비).",
       "date": "2024-12-10"
     },
     {

@@ -3092,3 +3092,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 JX通信社 클라우드 비용 프로그램(기능 1/3)
 
 - `cloud-cost-program`. 결정 8 — 프로젝트화(30% · 우선순위 방침) / 월 ◯만 엔 소통 / BigQuery + Connected Sheets 주석 피벗 / Redash → Slack 고정 환율 / Datadog 수집 비용 합산 / 수집 대상 한정 / 물리 바이트 과금 데이터셋별 / 시산 → 전환 → billing export.
+
+## 2026-09-30 JX通信社 AWS → GCP 무중단 이행(기능 2/3)
+
+- `aws-to-gcp-no-downtime`. 결정 8 — Locust 비교 / 짧은 쓰기 정지 + 큐 / 읽기 먼저 / DMS(사용자 미동기) / HA VPN / Route 53 DB 도메인 · 재접속 / API 셀프 관리형 인증서 + 가중 CNAME / Datastream CDC(PK · max_staleness). DB · Datastream 출처 요약을 본문 기준으로 보강.
