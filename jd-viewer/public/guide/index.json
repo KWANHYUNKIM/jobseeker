@@ -1465,6 +1465,18 @@
       "postings": 2,
       "study_items": 6,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "snuailab",
+      "name": "스누아이랩",
+      "aliases": [
+        "스누아이랩",
+        "SNUAILAB"
+      ],
+      "status": "done",
+      "postings": 2,
+      "study_items": 6,
+      "updated_at": "2026-09-30"
     }
   ]
 }

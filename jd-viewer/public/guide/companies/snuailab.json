@@ -1,0 +1,270 @@
+{
+  "slug": "snuailab",
+  "name": "스누아이랩",
+  "name_en": "SNUAILAB",
+  "aliases": [
+    "스누아이랩",
+    "SNUAILAB"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": null,
+  "one_liner": "서울대 기반 Vision AI 조인트 벤처 — 산업 이상 탐지 · 영상 감시를 엣지(Jetson)에서 돌리는 영상 파이프라인 개발자와 WPF 운영자 UI 개발자를 뽑는다",
+  "company": {
+    "business": "스누아이랩(SNUAILAB)은 서울대의 'SNU' 와 'AILAB' 을 합친 이름의 **Vision AI 조인트 벤처**다. 현장 데이터로 **Industrial Anomaly Detection(산업 이상 탐지)**, **Visual Surveillance(영상 감시)**, **3D point cloud** AI 솔루션을 만들고, 본점은 서울대 · 연구소는 서울대 융합기술대학원에 있어 연구실과 공동 연구를 한다. 공고는 **AI Start-up 100 두 번**, **2023 아기유니콘**, **누적 106 억 원 투자**를 든다. 모집중 둘이 제품의 양 끝을 보여 준다 — **IP 카메라 영상을 엣지(Jetson)에서 실시간 분석해 알람을 내는 파이프라인**(RTSP/ONVIF · GStreamer · DeepStream · TensorRT), 그리고 결과를 운영자에게 보여 주는 **C# WPF 데스크톱 UI**(C++ 네이티브 · OpenCV 연동).",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "엣지 디바이스용 영상 인식 솔루션 개발자 (5년 이상)",
+        "url": "https://www.wanted.co.kr/wd/361968",
+        "publisher": "원티드",
+        "summary": "스누아이랩(SNUAILAB) — 서울대 'SNU' + 'AILAB', 현장 데이터 기반 Industrial Anomaly Detection · Visual Surveillance · 3D point cloud AI. 본점 서울대, 연구소는 융합기술대학원과 공동 연구. AI Start-up 100 2 회, 2023 아기유니콘, 누적 106 억 투자. 업무: IP 카메라 스트리밍(RTSP/ONVIF/HLS), 엣지(Jetson) 전처리 · 검출 · 트래킹 · 알람, FFmpeg · GStreamer · DeepStream 파이프라인, YOLO · OpenVINO · TensorRT, 지연 · 처리율 · 장애 감시, 대시보드 · 알림, Elasticsearch · PostgreSQL 이벤트 검색. 마감 2026-09-30."
+      }
+    ],
+    "scale": [
+      {
+        "label": "투자",
+        "value": "누적 106 억 원 · 2023 아기유니콘(공고)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "엣지 디바이스용 영상 인식 솔루션 개발자 (5년 이상)",
+            "url": "https://www.wanted.co.kr/wd/361968",
+            "publisher": "원티드",
+            "summary": "스누아이랩(SNUAILAB) — 서울대 'SNU' + 'AILAB', 현장 데이터 기반 Industrial Anomaly Detection · Visual Surveillance · 3D point cloud AI. 본점 서울대, 연구소는 융합기술대학원과 공동 연구. AI Start-up 100 2 회, 2023 아기유니콘, 누적 106 억 투자. 업무: IP 카메라 스트리밍(RTSP/ONVIF/HLS), 엣지(Jetson) 전처리 · 검출 · 트래킹 · 알람, FFmpeg · GStreamer · DeepStream 파이프라인, YOLO · OpenVINO · TensorRT, 지연 · 처리율 · 장애 감시, 대시보드 · 알림, Elasticsearch · PostgreSQL 이벤트 검색. 마감 2026-09-30."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "산업 · 감시 Vision AI 솔루션",
+        "how": "현장(공장 · 시설)에 이상 탐지 · 영상 감시 솔루션을 공급한다 — 엣지 장비 · 소프트웨어 라이선스 · 구축 구성은 읽은 자료에 없다.",
+        "domains": [
+          "엣지 실시간 영상 분석 파이프라인",
+          "운영자용 WPF 데스크톱 UI"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "엣지 디바이스용 영상 인식 솔루션 개발자 (5년 이상)",
+            "url": "https://www.wanted.co.kr/wd/361968",
+            "publisher": "원티드",
+            "summary": "스누아이랩(SNUAILAB) — 서울대 'SNU' + 'AILAB', 현장 데이터 기반 Industrial Anomaly Detection · Visual Surveillance · 3D point cloud AI. 본점 서울대, 연구소는 융합기술대학원과 공동 연구. AI Start-up 100 2 회, 2023 아기유니콘, 누적 106 억 투자. 업무: IP 카메라 스트리밍(RTSP/ONVIF/HLS), 엣지(Jetson) 전처리 · 검출 · 트래킹 · 알람, FFmpeg · GStreamer · DeepStream 파이프라인, YOLO · OpenVINO · TensorRT, 지연 · 처리율 · 장애 감시, 대시보드 · 알림, Elasticsearch · PostgreSQL 이벤트 검색. 마감 2026-09-30."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "엣지 실시간 영상 분석 파이프라인",
+        "why": "엣지 공고가 IP 카메라 스트리밍 수집, Jetson 위 검출 · 트래킹 · 알람, GStreamer · DeepStream 파이프라인, TensorRT · OpenVINO 최적화, 지연 · 처리율 감시, 이벤트 저장 · 검색을 적는다.",
+        "what_to_know": [
+          "RTSP · ONVIF",
+          "GStreamer · DeepStream",
+          "TensorRT INT8"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "엣지 디바이스용 영상 인식 솔루션 개발자 (5년 이상)",
+            "url": "https://www.wanted.co.kr/wd/361968",
+            "publisher": "원티드",
+            "summary": "스누아이랩(SNUAILAB) — 서울대 'SNU' + 'AILAB', 현장 데이터 기반 Industrial Anomaly Detection · Visual Surveillance · 3D point cloud AI. 본점 서울대, 연구소는 융합기술대학원과 공동 연구. AI Start-up 100 2 회, 2023 아기유니콘, 누적 106 억 투자. 업무: IP 카메라 스트리밍(RTSP/ONVIF/HLS), 엣지(Jetson) 전처리 · 검출 · 트래킹 · 알람, FFmpeg · GStreamer · DeepStream 파이프라인, YOLO · OpenVINO · TensorRT, 지연 · 처리율 · 장애 감시, 대시보드 · 알림, Elasticsearch · PostgreSQL 이벤트 검색. 마감 2026-09-30."
+          }
+        ]
+      },
+      {
+        "name": "운영자용 WPF 데스크톱 UI",
+        "why": "C#/C++ 공고가 WPF MVVM UI, 실시간 데이터 표출, C++ · OpenCV 네이티브 연동(P/Invoke · C++/CLI)을 적는다.",
+        "what_to_know": [
+          "MVVM · 바인딩",
+          "UI 스레드 · Dispatcher",
+          "P/Invoke"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "C#/C++ 개발자",
+            "url": "https://www.wanted.co.kr/wd/373576",
+            "publisher": "원티드",
+            "summary": "C# WPF MVVM UI 설계 · 개발, 요구 분석 · UI/UX 개선, 백엔드 · 기획 협업, UI 성능 · 유지보수. 자격 C# · WPF · MVVM · XAML · 바인딩 · 커맨드 · 종속성 속성 · OOP · C++ · Git. 우대 커스텀 컨트롤 · 멀티스레드 UI · Prism · 상용 컨트롤 · 실시간 데이터 표출 · P/Invoke · C++/CLI · OpenCV 연동."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "모델보다 현장 영상 파이프라인이 일이다",
+        "evidence": "• 모니터링 및 유지보수: 영상 지연(latency), 처리율(throughput), 장애 감지",
+        "so_what": "카메라가 끊기고 네트워크가 흔들리는 현장에서 파이프라인을 살려 둔 경험을 숫자(지연 · FPS)로 준비한다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "연구실과 붙어 있다",
+        "evidence": "본점은 서울대학교, 연구소는 서울대학교 융합기술대학원과 함께 위치하여, 서울대학교 연구실과 긴밀한 공동 연구를 통하여 활발한 연구개발을 진행하고 있습니다.",
+        "so_what": "연구 모델을 엣지 제품으로 옮기는 자리다 — 경량화 · 최적화 경험이 강점이다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "회사 홈페이지는 이번에 찾지 않았다 — 고객 · 매출 · 인원은 모른다",
+    "엣지 공고 마감이 2026-09-30 이다 — 지원 전에 열려 있는지 확인한다",
+    "C#/C++ 공고의 자격 '경력 X년 이상' 은 공고 원문 그대로다(숫자 미기재)"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/361968",
+      "title": "엣지 디바이스용 영상 인식 솔루션 개발자 (5년 이상)",
+      "site": "wanted",
+      "verdict": "경력 5년 이상, 학사 이상, 마감 2026-09-30. **IP 카메라 영상 수집 · 스트리밍(RTSP/ONVIF/HLS)**, **리눅스 서버 · 엣지(Jetson)에서 전처리 · 객체 검출 · 트래킹 · 알람**, **실시간 파이프라인(FFmpeg · GStreamer · OpenCV · DeepStream)**, **모델 개발 · 최적화(YOLOv5/v8 · Detectron · OpenVINO · TensorRT)**, **지연 · 처리율 · 장애 감시**, UI/대시보드 · API · 알림, **이벤트 저장 · 검색(Elasticsearch · PostgreSQL)**. 자격은 Linux, OpenCV/FFmpeg/GStreamer, TF/PyTorch/ONNX, RTSP · HLS · WebRTC, ONVIF · IP 카메라 실무, Python · C++, 실시간 성능. 우대는 Jetson · DeepStream, ARM · 임베디드 리눅스 운영, Pruning · Quantization, Edge ML, 스트리밍 서버. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Linux",
+          "영상 처리 라이브러리",
+          "RTSP · ONVIF",
+          "Python · C++"
+        ],
+        "can_learn": [
+          "DeepStream",
+          "TensorRT INT8",
+          "이벤트 검색"
+        ]
+      },
+      "study": [
+        {
+          "topic": "카메라 16 대를 Jetson 한 대로 — GStreamer · DeepStream 파이프라인",
+          "from": "task",
+          "quote": "• 실시간 스트리밍 처리 파이프라인 구성 (FFmpeg, GStreamer, OpenCV, DeepStream 등)",
+          "priority": "core",
+          "why": "주요업무다. 엣지 한 대가 여러 카메라를 동시에 받아야 해서 디코딩 · 추론 · 인코딩을 모두 GPU/전용 하드웨어로 흘려야 한다.",
+          "gap_check": "OpenCV 로 프레임을 받아 파이썬에서 추론하면 왜 CPU 가 병목이 되나(디코딩 · 복사)? DeepStream 에서 nvstreammux 로 여러 스트림을 배치로 묶으면 무엇이 좋아지나? 카메라 하나가 끊기면 파이프라인 전체가 멈추지 않게 하려면(재연결 · 소스 교체)?",
+          "drill": "공개 RTSP 테스트 스트림(또는 mediamtx 로 만든 가짜 카메라 4 대)을 GStreamer(uridecodebin → nvstreammux → nvinfer(YOLO) → nvtracker → OSD)로 처리하고, 스트림 수를 1 · 4 · 8 로 늘리며 FPS · 지연 · GPU 사용률을 표로 만든다. Jetson 이 없으면 x86 GPU 의 DeepStream 컨테이너로 한다. 카메라 하나를 끊었다 붙여 파이프라인이 살아 있는지 확인한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "NVIDIA DeepStream SDK — Developer Guide",
+              "url": "https://docs.nvidia.com/metropolis/deepstream/dev-guide/",
+              "kind": "docs"
+            },
+            {
+              "title": "mediamtx (RTSP 서버)",
+              "url": "https://github.com/bluenviron/mediamtx",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "IP 카메라와 말하기 — ONVIF 탐색 · RTSP URL · 끊김",
+          "from": "qualification",
+          "quote": "• 카메라 인터페이스(ONVIF, RTSP URL 등) 경험 또는 IP 카메라 실무 경험",
+          "priority": "core",
+          "why": "자격요건이다. 현장마다 카메라 제조사 · 설정이 달라 연결부터 막힌다.",
+          "gap_check": "ONVIF 로 카메라를 네트워크에서 찾고(WS-Discovery) 스트림 URI · 해상도 · 코덱을 얻는 흐름은? RTSP 가 TCP · UDP 중 무엇으로 오느냐에 따라 끊김 · 지연이 어떻게 다른가? 카메라 시간과 서버 시간이 어긋나면 이벤트 시각은 무엇을 믿나?",
+          "drill": "python-onvif-zeep 으로 가짜 또는 실제 ONVIF 카메라에서 프로필 · 스트림 URI 를 가져오고, FFmpeg 로 RTSP 를 TCP · UDP 로 각각 받아 패킷 손실 · 지연을 비교한다. 스트림이 끊기면 지수 백오프로 재연결하는 수집기를 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "ONVIF — Profile S specification",
+              "url": "https://www.onvif.org/profiles/profile-s/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "엣지에서 빠르게 — TensorRT 변환과 INT8 양자화",
+          "from": "task",
+          "quote": "• 영상 분석 모델 개발 및 최적화 (딥러닝: YOLOv5/YOLOv8/Detectron, OpenVINO, TensorRT)",
+          "priority": "high",
+          "why": "주요업무이고 우대에 Pruning · Quantization 이 있다.",
+          "gap_check": "PyTorch → ONNX → TensorRT 엔진으로 옮길 때 무엇이 깨지나(지원 안 되는 연산)? FP16 · INT8 은 각각 무엇을 얻고 잃나, INT8 보정 데이터는 무엇으로 고르나(현장 영상)? 인텔 CPU 엣지에는 OpenVINO 를 쓰는 이유는?",
+          "drill": "YOLOv8n 을 ONNX 로 내보내 TensorRT(trtexec)로 FP32 · FP16 · INT8(현장 비슷한 이미지 수백 장으로 보정) 엔진을 만들고, 지연 · mAP 를 표로 비교한다. 같은 모델을 OpenVINO 로 CPU 에서 돌려 FPS 를 잰다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "NVIDIA TensorRT — Developer Guide",
+              "url": "https://docs.nvidia.com/deeplearning/tensorrt/developer-guide/index.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/373576",
+      "title": "C#/C++ 개발자",
+      "site": "wanted",
+      "verdict": "경력 3년 이상. **C# WPF MVVM UI** 설계 · 개발, 요구 분석으로 직관적 UI, UI/UX 개선 제안, 백엔드 · 기획/디자인 협업, **UI 모듈 성능 최적화 · 유지보수**. 자격은 C# · WPF UI 경력, **MVVM 깊은 이해 · 실전**, **XAML**, **데이터 바인딩 · 커맨드 · 종속성 속성**, OOP, **C++ 개발 경험**, 소프트웨어 공학 · Git · 협업. 우대는 컨트롤 템플릿 · 사용자 정의 컨트롤, **멀티스레드 UI 성능**, Prism · MVVM Light, Infragistics · Telerik · Syncfusion, **대규모 · 실시간 데이터 표출 UI**, 단위 · UI 테스트 자동화, **C++ ↔ C# 연동(P/Invoke · C++/CLI)**, 설계 패턴, **OpenCV 연동**. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "C# WPF",
+          "MVVM",
+          "XAML · 바인딩",
+          "C++"
+        ],
+        "can_learn": [
+          "실시간 영상 표출",
+          "P/Invoke",
+          "Prism"
+        ]
+      },
+      "study": [
+        {
+          "topic": "카메라 영상 · 알람을 WPF 에 — UI 스레드를 막지 않기",
+          "from": "preference",
+          "quote": "ㆍ대규모 데이터 처리 또는 실시간 데이터 표출 UI 개발 경험",
+          "priority": "core",
+          "why": "우대사항이다. 여러 카메라 영상과 초당 수십 개 알람을 한 화면에 띄우면 UI 스레드가 먼저 죽는다.",
+          "gap_check": "백그라운드 스레드에서 받은 프레임 · 알람을 UI 에 반영하려면(Dispatcher · SynchronizationContext)? 프레임마다 새 BitmapSource 를 만들면 무엇이 느려지나(WriteableBitmap 재사용)? 알람 목록 수만 줄을 어떻게 가볍게 그리나(UI 가상화)?",
+          "drill": "WPF 앱에 가짜 카메라 4 대(30 fps 프레임 생성)와 알람 스트림(초당 50 개)을 붙여, WriteableBitmap 재사용으로 영상을 그리고 알람은 VirtualizingStackPanel 목록에 배치 추가한다. 순진한 구현과 CPU · 프레임 드롭을 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Microsoft — Threading model (WPF)",
+              "url": "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/threading-model",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "MVVM 을 제대로 — 바인딩 · 커맨드 · 테스트 가능한 ViewModel",
+          "from": "qualification",
+          "quote": "ㆍMVVM(Model-View-ViewModel) 패턴에 대한 깊은 이해와 실제 프로젝트 적용 경험",
+          "priority": "core",
+          "why": "필수 자격이다.",
+          "gap_check": "ViewModel 이 View(컨트롤)를 모르게 하려면 대화 상자 · 파일 선택은 어떻게 부르나(서비스 인터페이스)? INotifyPropertyChanged 를 손으로 쓰는 대신 무엇을 쓰나(CommunityToolkit.Mvvm 소스 생성기)? ViewModel 을 UI 없이 단위 테스트하려면?",
+          "drill": "카메라 목록 · 선택 카메라 · 알람 확인 커맨드를 가진 화면을 CommunityToolkit.Mvvm 으로 만들고, 확인 대화 상자는 IDialogService 로 주입한다. ViewModel 만 xUnit 으로 테스트해 '알람 확인 → 목록에서 빠짐' 을 검증한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "CommunityToolkit.Mvvm — Introduction",
+              "url": "https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "C++ 영상 처리 모듈을 C# 에서 부르기 — P/Invoke 와 C++/CLI",
+          "from": "preference",
+          "quote": "ㆍC++와 C# 간 연동(P/Invoke, C++/CLI 등) 또는 네이티브 모듈 통합 경험",
+          "priority": "high",
+          "why": "우대사항이고 자격에 C++ 경험 · 우대에 OpenCV 연동이 있다. 분석 엔진은 C++, 화면은 C# 이다.",
+          "gap_check": "P/Invoke 로 이미지 버퍼를 넘길 때 복사 없이 넘기려면(고정 메모리 · IntPtr)? 네이티브 쪽에서 할당한 메모리는 누가 해제하나? C++/CLI 래퍼는 언제 P/Invoke 보다 낫나? 네이티브 예외는 C# 에서 어떻게 보이나?",
+          "drill": "OpenCV 로 그레이스케일 · 가장자리 검출을 하는 C++ DLL 을 만들고(extern \"C\"), C# 에서 P/Invoke 로 WriteableBitmap 의 BackBuffer 를 넘겨 제자리 처리한다. 같은 기능을 C++/CLI 래퍼로도 만들어 호출 오버헤드와 코드 복잡도를 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Microsoft — Platform Invoke (P/Invoke)",
+              "url": "https://learn.microsoft.com/en-us/dotnet/standard/native-interop/pinvoke",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
