@@ -244,6 +244,7 @@ RETURNING id, (xmax = 0) AS inserted; -- inserted=true 면 job_event('appeared')
 | 마감 재확인 대상 | `job_recheck_queue` → `pipeline.close_check` | ✅ 후보 10,496 → 12,548건 |
 | 행동 기록 이관 | `engagement/collect.py`·`score.py` | ✅ 409건 · DB↔파일 글자 그대로 일치 |
 | 검색 API | `catch_capture/store/server.py` | ✅ 8771, 뷰어 응답 형식 그대로 |
+| 공고 API | `catch_capture/store/api.py`(FastAPI) · `store/facets.py` · migrations/010 | ✅ 목록·칩·상세를 DB 에서. 화면 규칙과 18개 조합 대조 일치 |
 
 공통 기반: `store/conn.py`(DSN) · `store/slug.py`(주소 슬러그) · `store/upsert.py`(쓰기 경로).
 임베딩 입력 텍스트는 `semantic/text.py` 로 떼어내 SQLite·PostgreSQL 두 경로가 공유한다.
@@ -266,6 +267,41 @@ Ollama 가 없어도 서버는 죽지 않는다 — 검색이 반쪽으로라도
 6줄 뒤 파이프가 닫히면서 이후 모든 쓰기가 BrokenPipe 가 되고 요청 처리 스레드가
 조용히 죽는다(health 는 되는데 search 만 무응답인 모양으로 나타난다). 실제로 그렇게
 30분을 썼다. `launchd`/`nohup` 으로 파일에 직접 리다이렉트할 것.
+
+### 공고 API — 뷰어가 184MB 파일 대신 DB 를 읽는다
+
+뷰어는 첫 화면에서 공고 전량(`all_jobs_enriched.json`, 184MB)을 받아 필터·칩 건수를
+브라우저에서 셌다. 그 파일은 사이클마다 구워졌으므로 DB 에서 닫힌 공고가 다음 굽기까지
+화면에 모집중으로 남았고, 파이프라인이 멈추면(2026-09-30 Docker 가 열 시간 멎었다)
+그대로 굳었다. 지금은 같은 서버(8771, `store/api.py`)가 목록을 SQL 로 답한다.
+
+```
+GET /api/jobs?region=서울&role=백엔드&stack=Java&closed=hide&page=1&limit=20
+    → {total, all_total, items:[Job(본문 제외) + roles + place], facets:{…}}
+GET /api/jobs/{site}-{pid}      공고 한 건(본문 포함)
+GET /api/jobs/lookup?url=…      url → 주소 키(추천 목록용)
+GET /api/docs                   OpenAPI
+```
+
+- **상태는 여전히 `job_state` 가 읽는 순간 계산한다.** 화면이 DB 보다 늦을 수 없다.
+- 필터 축(지역·시군구·직군·경력 구간·회사 규모·스택)과 검색용 문자열은
+  `job_facet`(migrations/010)에 저장한다. 규칙이 정규식 수십 개와 회사별 사원수·매출액
+  추출이라 SQL 로 옮기면 세 번째 사본이 생긴다. **규칙 원본은 뷰어 TS 다** —
+  `store/facets.py` 가 그 파이썬 판이고, 크롤 사이클(`ingest_crawl`) 끝에 전량을 다시
+  채운다(약 1분). JS 와 파이썬 정규식은 `\b`·`\s` 가 다르다 — 옮길 때 주의.
+- 사이트 간 중복은 `mv_job_dup` 로 구체화했다(뷰 그대로면 요청마다 250ms×3).
+  대표 선정에 모집 상태가 들어가므로 상태를 바꾸는 쪽(크롤 사이클, `close_check`)이
+  끝에 갱신한다.
+- 목록 응답은 gzip 8KB 남짓, 250ms 안팎이다.
+- API 가 없는 배포에서는 뷰어가 예전처럼 파일로 돈다(`useJobsApiAvailable`).
+  그래서 `store.export` 는 계속 파일을 쓴다 — 사전 렌더링(`prerender.mjs`)도 아직 파일을 읽는다.
+
+규칙을 고치면 두 대조를 돌린다(둘 다 node 로 TS 원본을 직접 실행한다).
+
+```
+python -m store.facets --parity    # 공고별 지역·직군·경력 — 전량 대조
+python -m store.api_parity         # 목록 건수·첫 쪽 순서·칩 건수 — 필터 18조합
+```
 
 ### 엔진 산출물 색인
 
