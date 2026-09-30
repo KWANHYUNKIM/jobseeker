@@ -1650,6 +1650,17 @@
       "postings": 3,
       "study_items": 7,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "infosys-kr",
+      "name": "인포시즈",
+      "aliases": [
+        "인포시즈"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 8,
+      "updated_at": "2026-09-30"
     }
   ]
 }

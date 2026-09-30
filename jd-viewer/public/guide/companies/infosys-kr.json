@@ -1,0 +1,351 @@
+{
+  "slug": "infosys-kr",
+  "name": "인포시즈",
+  "name_en": "",
+  "aliases": [
+    "인포시즈"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "",
+  "one_liner": "플랜트 도면(P&ID) · ERP · 로그를 잇고 환각 없는 엔터프라이즈 에이전트를 산업 현장에 배포하는 Enterprise AI 회사 — FDE · Go 백엔드 · 에이전트 연구원(모두 시니어)을 뽑는다",
+  "company": {
+    "business": "인포시즈는 **제조 · 반도체 · 플랜트 · 금융 · 공공** 산업의 데이터를 **AI 가 실제 운영과 의사결정에 쓸 수 있는 구조로 연결**하는 **Enterprise AI Infrastructure** 회사다. 다루는 데이터가 특이하다 — 플랜트 · 제조의 핵심 자산인 **P&ID(배관 · 계장도)** 같은 산업 도면(설비 구조 · 공정 흐름 · 운영 로직), CLD, 문서, 관계형 DB, **ERP/CRM**, **EDR 보안 로그**가 뒤섞인다. 그 위에 **환각을 구조적으로 막은, 근거를 검증할 수 있는 엔터프라이즈 에이전트**를 올리고, 데이터의 개념 · 관계를 **온톨로지**로 모델링한다(사람이 하던 온톨로지 설계를 에이전트가 하게 하는 'AI FDE' 도 연구한다). 공고는 이를 '국내 최대 규모의 산업 프로젝트' 에 적용한다고 적는다. 채용은 고객 현장에 들어가 끝까지 배포하는 **Forward Deployed Engineer**, 코어 엔진 · 파이프라인의 **백엔드(Go · Java)**, 에이전트 **Applied Scientist** 로 짜여 있다. 공고 셋 모두 시니어다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "Sr. Forward Deployed Engineer (Sr. FDE)",
+        "url": "https://www.wanted.co.kr/wd/366617",
+        "publisher": "원티드",
+        "summary": "인포시즈 — 제조 · 반도체 · 플랜트 · 금융 산업 데이터를 AI 가 운영 · 의사결정에 쓸 수 있게 연결하는 Enterprise AI Infrastructure. 플랜트 · 제조의 P&ID 도면. FDE: 고객 운영 분석 → 배포 아키텍처 · 구현 · 운영 end-to-end, LLM Agent 프로덕션 정착, 업무 흐름 · 데이터 구조를 ontology 로 모델링, 경영진 · 실무진 소통, 재사용 프레임워크. 5년+, Python, LLM/Agentic, RAG · 벡터 DB · 임베딩 · 컨텍스트 엔지니어링, 대규모 트래픽, DB · 파이프라인. 우대 0 → 1, 엔터프라이즈 GenAI, 금융 · 공공 규제, LLMOps, K8s · Terraform · Airflow, Kafka · Beam · BigQuery · Dataflow."
+      },
+      {
+        "title": "Sr Software Engineer (Backend)",
+        "url": "https://www.wanted.co.kr/wd/366486",
+        "publisher": "원티드",
+        "summary": "코어 엔진 · 파이프라인 설계 · 개발, 팀 기술 전략 · 장기 로드맵(운영 부담 감소 · 확장성 · 리스크), 기술 리뷰, 엔지니어링 팀과 현장 운영자 협업 구조, 멘토링. 5년+, 설계 · 아키텍처 2년, 리딩 1년, Go · Java, 대규모 트래픽, 컴공 학사 또는 준하는 역량. 우대 cross-team 리딩, 여러 타임존 협업, 장애 대응."
+      },
+      {
+        "title": "Sr. Applied Scientist (Agent)",
+        "url": "https://www.wanted.co.kr/wd/364333",
+        "publisher": "원티드",
+        "summary": "제조 · 반도체 · 플랜트 · 금융 · 공공 현장에서 AI 가 운영 · 의사결정을 직접 수행하게 — 국내 최대 규모 산업 프로젝트. 연구: 환각을 구조적으로 차단한 grounded · verifiable 에이전트, 문서 · 도면(P&ID · CLD) · RDB · ERP/CRM · EDR 로그 멀티모달 · 멀티소스 에이전트, multi-turn 의도 구체화 검색, 온톨로지 자동 설계 · 변경 제안(AI FDE), self-improving 파이프라인, 에이전트 메모리, 평가 체계. 연구 3년(석박 포함), top-tier 학회, RAG · reasoning · tool use · planning, Python · PyTorch. 우대 박사, 온톨로지 · 지식 그래프, LLMOps, 규제 도메인."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "엔터프라이즈 AI 구축 · 배포(산업 고객)",
+        "how": "제조 · 반도체 · 플랜트 · 금융 · 공공 고객에게 데이터 연결 · 에이전트 솔루션을 현장 배포한다(FDE) — 계약 구조(프로젝트 · 라이선스 · 구독)와 금액은 공고에 없다.",
+        "domains": [
+          "엔터프라이즈 에이전트 · 온톨로지",
+          "고객 현장 배포(FDE)",
+          "코어 엔진 · 데이터 파이프라인"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "Sr. Forward Deployed Engineer (Sr. FDE)",
+            "url": "https://www.wanted.co.kr/wd/366617",
+            "publisher": "원티드",
+            "summary": "인포시즈 — 제조 · 반도체 · 플랜트 · 금융 산업 데이터를 AI 가 운영 · 의사결정에 쓸 수 있게 연결하는 Enterprise AI Infrastructure. 플랜트 · 제조의 P&ID 도면. FDE: 고객 운영 분석 → 배포 아키텍처 · 구현 · 운영 end-to-end, LLM Agent 프로덕션 정착, 업무 흐름 · 데이터 구조를 ontology 로 모델링, 경영진 · 실무진 소통, 재사용 프레임워크. 5년+, Python, LLM/Agentic, RAG · 벡터 DB · 임베딩 · 컨텍스트 엔지니어링, 대규모 트래픽, DB · 파이프라인. 우대 0 → 1, 엔터프라이즈 GenAI, 금융 · 공공 규제, LLMOps, K8s · Terraform · Airflow, Kafka · Beam · BigQuery · Dataflow."
+          },
+          {
+            "title": "Sr. Applied Scientist (Agent)",
+            "url": "https://www.wanted.co.kr/wd/364333",
+            "publisher": "원티드",
+            "summary": "제조 · 반도체 · 플랜트 · 금융 · 공공 현장에서 AI 가 운영 · 의사결정을 직접 수행하게 — 국내 최대 규모 산업 프로젝트. 연구: 환각을 구조적으로 차단한 grounded · verifiable 에이전트, 문서 · 도면(P&ID · CLD) · RDB · ERP/CRM · EDR 로그 멀티모달 · 멀티소스 에이전트, multi-turn 의도 구체화 검색, 온톨로지 자동 설계 · 변경 제안(AI FDE), self-improving 파이프라인, 에이전트 메모리, 평가 체계. 연구 3년(석박 포함), top-tier 학회, RAG · reasoning · tool use · planning, Python · PyTorch. 우대 박사, 온톨로지 · 지식 그래프, LLMOps, 규제 도메인."
+          },
+          {
+            "title": "Sr Software Engineer (Backend)",
+            "url": "https://www.wanted.co.kr/wd/366486",
+            "publisher": "원티드",
+            "summary": "코어 엔진 · 파이프라인 설계 · 개발, 팀 기술 전략 · 장기 로드맵(운영 부담 감소 · 확장성 · 리스크), 기술 리뷰, 엔지니어링 팀과 현장 운영자 협업 구조, 멘토링. 5년+, 설계 · 아키텍처 2년, 리딩 1년, Go · Java, 대규모 트래픽, 컴공 학사 또는 준하는 역량. 우대 cross-team 리딩, 여러 타임존 협업, 장애 대응."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "엔터프라이즈 에이전트 · 온톨로지",
+        "why": "Applied Scientist 공고가 grounded · verifiable 에이전트, 멀티소스 데이터 추론, multi-turn 검색, 온톨로지 자동 설계, self-improving, 에이전트 메모리, 평가 체계를 적는다.",
+        "what_to_know": [
+          "근거 인용 · 검증 RAG",
+          "지식 그래프 · 온톨로지(OWL/RDF · 속성 그래프)",
+          "Text-to-SQL · tool use",
+          "에이전트 평가"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Sr. Applied Scientist (Agent)",
+            "url": "https://www.wanted.co.kr/wd/364333",
+            "publisher": "원티드",
+            "summary": "제조 · 반도체 · 플랜트 · 금융 · 공공 현장에서 AI 가 운영 · 의사결정을 직접 수행하게 — 국내 최대 규모 산업 프로젝트. 연구: 환각을 구조적으로 차단한 grounded · verifiable 에이전트, 문서 · 도면(P&ID · CLD) · RDB · ERP/CRM · EDR 로그 멀티모달 · 멀티소스 에이전트, multi-turn 의도 구체화 검색, 온톨로지 자동 설계 · 변경 제안(AI FDE), self-improving 파이프라인, 에이전트 메모리, 평가 체계. 연구 3년(석박 포함), top-tier 학회, RAG · reasoning · tool use · planning, Python · PyTorch. 우대 박사, 온톨로지 · 지식 그래프, LLMOps, 규제 도메인."
+          }
+        ]
+      },
+      {
+        "name": "고객 현장 배포(FDE)",
+        "why": "FDE 공고가 고객 운영 분석 · 배포 아키텍처 · 프로덕션 정착 · 온톨로지 모델링 · 경영진 소통 · 재사용 프레임워크를 적는다.",
+        "what_to_know": [
+          "폐쇄망 · 규제 환경 배포",
+          "업무 흐름 → 데이터 모델",
+          "LLMOps"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Sr. Forward Deployed Engineer (Sr. FDE)",
+            "url": "https://www.wanted.co.kr/wd/366617",
+            "publisher": "원티드",
+            "summary": "인포시즈 — 제조 · 반도체 · 플랜트 · 금융 산업 데이터를 AI 가 운영 · 의사결정에 쓸 수 있게 연결하는 Enterprise AI Infrastructure. 플랜트 · 제조의 P&ID 도면. FDE: 고객 운영 분석 → 배포 아키텍처 · 구현 · 운영 end-to-end, LLM Agent 프로덕션 정착, 업무 흐름 · 데이터 구조를 ontology 로 모델링, 경영진 · 실무진 소통, 재사용 프레임워크. 5년+, Python, LLM/Agentic, RAG · 벡터 DB · 임베딩 · 컨텍스트 엔지니어링, 대규모 트래픽, DB · 파이프라인. 우대 0 → 1, 엔터프라이즈 GenAI, 금융 · 공공 규제, LLMOps, K8s · Terraform · Airflow, Kafka · Beam · BigQuery · Dataflow."
+          }
+        ]
+      },
+      {
+        "name": "코어 엔진 · 데이터 파이프라인",
+        "why": "백엔드 공고가 코어 엔진 · 파이프라인, 장기 기술 로드맵, Go · Java, 대규모 트래픽을 적는다.",
+        "what_to_know": [
+          "Go 동시성",
+          "파이프라인 신뢰성",
+          "기술 로드맵 · 리뷰"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Sr Software Engineer (Backend)",
+            "url": "https://www.wanted.co.kr/wd/366486",
+            "publisher": "원티드",
+            "summary": "코어 엔진 · 파이프라인 설계 · 개발, 팀 기술 전략 · 장기 로드맵(운영 부담 감소 · 확장성 · 리스크), 기술 리뷰, 엔지니어링 팀과 현장 운영자 협업 구조, 멘토링. 5년+, 설계 · 아키텍처 2년, 리딩 1년, Go · Java, 대규모 트래픽, 컴공 학사 또는 준하는 역량. 우대 cross-team 리딩, 여러 타임존 협업, 장애 대응."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "데모가 아니라 현장에서 도는 것",
+        "evidence": "• 문제를 대충 넘기지 않고 끝까지 파고들며, 데모가 아니라 실제 현장에서 작동하는 AI 제품을 만들고 싶은 분",
+        "so_what": "PoC 에서 멈춘 경험보다 실제 운영에 정착시킨 뒤 무엇이 깨졌고 어떻게 고쳤는지가 강하다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "환각 제거가 전제",
+        "evidence": "• 환각을 구조적으로 차단해, 근거가 검증되는(grounded·verifiable) 엔터프라이즈 에이전트를 설계하고 구현합니다.",
+        "so_what": "'그럴듯한 답' 이 아니라 '근거를 댈 수 있는 답' — 인용 · 검증 · 거절(모르면 모른다) 설계를 보여 준다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "회사 홈페이지 · 투자 · 인원 · 고객사 · 근무지는 이번에 확인하지 않았다",
+    "영문 이름을 확인하지 못했다 — 인도 IT 기업 Infosys 와는 다른 회사로 보인다(이름만 같다고 판단할 근거도 공고에 없다)",
+    "FDE · 백엔드 공고의 본문 머리말은 Applied Scientist(Computer Vision) 소개가 붙어 있다 — 공고 작성 때 섞인 것으로 보인다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/366617",
+      "title": "Sr. Forward Deployed Engineer (Sr. FDE)",
+      "site": "wanted",
+      "verdict": "경력 5년 이상. **고객사 운영 · 문제 분석 → 배포 아키텍처 설계 · 구현 · 운영 end-to-end**, **LLM Agent · AI 솔루션을 프로덕션 안정성으로 정착**, **업무 흐름 · 데이터 구조를 ontology 로 모델링**, **경영진 · 실무진과 직접 소통**, 현장 예외를 **재사용 프레임워크 · 컴포넌트**로, 코드 · 아키텍처 리뷰 · 멘토링, 현장 인사이트를 제품으로. 자격은 5년, **Python · 전체 라이프사이클**, **LLM/Agentic 시스템**, **RAG · 벡터 DB · 임베딩 · 프롬프트/컨텍스트 엔지니어링**, 대규모 트래픽, DB · 파이프라인, 비기술 고객과의 소통. 우대는 0 → 1, 엔터프라이즈 GenAI, **금융 · 공공 규제 환경**, 데이터 구조화, 리딩, 파인튜닝 · LLMOps, 풀스택, K8s · Terraform · Airflow, Kafka · Beam · BigQuery · Dataflow. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Python 5년",
+          "LLM/Agentic 시스템",
+          "RAG · 벡터 DB",
+          "고객 소통"
+        ],
+        "can_learn": [
+          "온톨로지 모델링",
+          "규제 환경 배포"
+        ]
+      },
+      "study": [
+        {
+          "topic": "고객 업무를 온톨로지로 — 설비 · 공정 · 이력을 그래프로",
+          "from": "task",
+          "quote": "• 고객의 업무 흐름과 데이터 구조를 빠르게 이해하고 패턴을 찾아내어 ontology 등의 추상적인 구조로 모델링합니다.",
+          "priority": "core",
+          "why": "주요업무다. 플랜트의 P&ID 는 설비 · 배관 · 계기의 관계 그 자체다.",
+          "gap_check": "설비 · 계기 · 배관 · 공정 · 정비 이력을 클래스 · 관계로 어떻게 나누나? 같은 설비가 ERP 코드 · 도면 태그 · 운영 로그에서 다른 이름이면 어떻게 잇나(엔티티 해석)? 온톨로지를 RDF/OWL 로 두나 속성 그래프(Neo4j)로 두나 — 추론 vs 질의 편의? 스키마가 바뀌면 기존 에이전트 질의는?",
+          "drill": "가상의 작은 플랜트(펌프 · 밸브 · 탱크 · 센서, 정비 이력 · 알람 로그)를 Neo4j 속성 그래프로 모델링하고, 서로 다른 태그 체계를 잇는 매핑 테이블을 만든다. 'P-101 과 같은 라인에 있는 밸브 중 최근 30 일 알람이 난 것' 같은 질의를 Cypher 로 쓰고, 같은 질의를 LLM 이 Cypher 로 생성하게 해 정확도를 잰다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Neo4j — Graph data modeling",
+              "url": "https://neo4j.com/docs/getting-started/data-modeling/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "RAG 를 프로덕션에 정착시키기 — 컨텍스트 엔지니어링과 평가",
+          "from": "qualification",
+          "quote": "• RAG, 벡터 DB, 임베딩, 프롬프트/컨텍스트 엔지니어링 등 GenAI 핵심 기술을 실무에서 다뤄본 분",
+          "priority": "core",
+          "why": "자격요건이고 주요업무가 LLM Agent 를 프로덕션 안정성으로 정착시키는 것이다.",
+          "gap_check": "문서 · 표 · 도면 설명이 섞일 때 청크 · 메타데이터를 어떻게 설계하나? 검색이 틀렸는지 생성이 틀렸는지 운영 중에 어떻게 가르나(추적 · 평가셋)? 모델 · 프롬프트를 바꿀 때 회귀를 무엇으로 막나?",
+          "drill": "사내 매뉴얼 PDF 몇 개로 하이브리드 검색 RAG 를 만들고, 질문 50 개의 정답 근거 평가셋과 Ragas 지표를 CI 에 넣어 프롬프트 · 청크 크기를 바꿀 때마다 점수가 떨어지면 실패하게 한다. Langfuse(또는 OpenTelemetry)로 요청마다 검색 결과 · 프롬프트 · 응답을 추적한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Ragas",
+              "url": "https://docs.ragas.io/",
+              "kind": "docs"
+            },
+            {
+              "title": "Langfuse",
+              "url": "https://langfuse.com/docs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "보안 · 규제가 까다로운 고객에 배포하기",
+          "from": "preference",
+          "quote": "• 금융·공공 등 보안과 규제가 까다로운 환경에서 AI 시스템을 설계해본 경험",
+          "priority": "high",
+          "why": "우대사항이다. 금융 · 공공 · 반도체 고객은 외부 API 와 인터넷을 막는 경우가 많다(이 사이트의 해석).",
+          "gap_check": "외부 LLM API 를 못 쓰면 무엇으로 대체하나(사내 오픈 모델 서빙)? 문서 권한(부서 · 등급)을 검색 단계에서 어떻게 거르나(메타데이터 필터)? 프롬프트 · 응답 로그에 개인정보가 남지 않게 하려면?",
+          "drill": "vLLM 으로 오픈 모델을 띄운 폐쇄망 가정 RAG 에 문서별 접근 등급 메타데이터를 넣고, 사용자 등급에 따라 검색 결과가 걸러지는지 테스트한다. 로그 파이프라인에 개인정보 패턴 마스킹을 넣는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "vLLM",
+              "url": "https://docs.vllm.ai/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/366486",
+      "title": "Sr Software Engineer (Backend)",
+      "site": "wanted",
+      "verdict": "경력 5년 이상. **코어 엔진 · 파이프라인 설계 · 개발**, 리더십과 함께 **팀 기술 전략**, **운영 부담 감소 · 확장성 · 리스크 최소화 장기 로드맵**, 깊은 기술 리뷰, **엔지니어링 팀과 현장 운영자 간 협업 구조**를 돕는 제품, 멘토링. 자격은 5년, **설계 · 아키텍처 2년**, **멘토링 · 테크 리드 1년**, **Go · Java**, 대규모 트래픽, 컴공 학사 또는 준하는 역량. 우대는 cross-team 프로젝트 리딩, **여러 지역 · 타임존 협업**, 장애 대응. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Go 또는 Java",
+          "아키텍처 2년",
+          "테크 리드 1년",
+          "대규모 트래픽"
+        ],
+        "can_learn": [
+          "산업 데이터 파이프라인",
+          "에이전트 백엔드"
+        ]
+      },
+      "study": [
+        {
+          "topic": "코어 파이프라인을 Go 로 — 동시성 · 역압 · 실패 격리",
+          "from": "task",
+          "quote": "• 코어 엔진 및 파이프라인 설계 및 개발",
+          "priority": "core",
+          "why": "주요업무다. 문서 · 도면 · DB · 로그를 받아 구조화하는 파이프라인으로 읽힌다(이 사이트의 해석).",
+          "gap_check": "단계마다 goroutine 풀과 채널을 둘 때 느린 단계가 앞 단계를 어떻게 막나(역압)? 한 문서 처리가 패닉 나면 전체가 죽지 않게 하려면? context 취소를 단계 끝까지 어떻게 전하나? 재처리 때 중복이 안 생기게 하려면(멱등 키)?",
+          "drill": "Go 로 수집 → 파싱 → 청크 → 임베딩(가짜 지연) → 저장 4 단계 파이프라인을 채널 · errgroup · 워커 수 제한으로 만들고, 임베딩 단계를 일부러 느리게 · 가끔 실패하게 해 메모리가 늘지 않는지, 실패 문서만 재시도 큐로 가는지 확인한다. pprof 로 병목을 본다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Go Blog — Pipelines and cancellation",
+              "url": "https://go.dev/blog/pipelines",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "장기 기술 로드맵 — 운영 부담 · 확장성 · 리스크를 숫자로",
+          "from": "task",
+          "quote": "• 운영 부담 감소·확장성 확보·리스크 최소화를 위한 장기 기술 로드맵 수립과 실행",
+          "priority": "high",
+          "why": "주요업무이고 테크 리드 경험을 요구한다.",
+          "gap_check": "운영 부담을 무엇으로 재나(호출 · 수작업 시간 · 장애 수)? 기술 부채 항목의 우선순위를 무엇으로 정하나(영향 × 확률 × 비용)? 로드맵을 ADR · RFC 로 어떻게 합의하나?",
+          "drill": "지난 프로젝트 하나를 골라 운영 지표(장애 · 수작업 시간 · 배포 빈도)와 부채 목록을 표로 만들고, 영향 × 확률 × 비용으로 점수를 매겨 2 분기 로드맵과 ADR 두 편을 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Architecture Decision Records",
+              "url": "https://adr.github.io/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/364333",
+      "title": "Sr. Applied Scientist (Agent)",
+      "site": "wanted",
+      "verdict": "경력 2-10년(연구 3년, 석박 포함). 연구 방향을 **스스로 우선순위 정하고 필요하면 동료를 직접 뽑는** 자리 — **환각을 구조적으로 차단한 grounded · verifiable 에이전트**, **문서 · 도면(P&ID · CLD) · DB · ERP/CRM · EDR 로그 멀티모달 · 멀티소스 에이전트**, **multi-turn 으로 모호한 요구를 구체화하는 검색**, **온톨로지 자동 설계 · 변경 제안(AI FDE)**, **self-improving 파이프라인**, **에이전트 메모리**, **평가 체계 설계**. 자격은 연구 3년, **NeurIPS · ICML · ACL · CVPR 등 top-tier 논문**, RAG · reasoning · tool use · planning, 여러 도메인 프로젝트, Python · PyTorch, 평가 방식 정의. 우대는 박사, Agentic 시스템, **온톨로지 · 지식 그래프**, 파인튜닝 · LLMOps, 규제 도메인. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "연구 3년",
+          "top-tier 논문",
+          "에이전트 핵심 기술 이해",
+          "PyTorch"
+        ],
+        "can_learn": [
+          "산업 도면 데이터",
+          "온톨로지 자동화"
+        ]
+      },
+      "study": [
+        {
+          "topic": "근거를 검증할 수 있는 답 — 인용 · 검증 · 거절",
+          "from": "task",
+          "quote": "• 환각을 구조적으로 차단해, 근거가 검증되는(grounded·verifiable) 엔터프라이즈 에이전트를 설계하고 구현합니다.",
+          "priority": "core",
+          "why": "주요업무이고 공고가 '신뢰할 수 있는 답' 을 전제 조건이라 적는다.",
+          "gap_check": "답의 각 문장을 근거 문단에 대 보는 검증기(NLI · LLM 판정)는 어떻게 만드나? 근거가 부족하면 답을 거절하는 문턱은 어떻게 정하나(정밀도 · 재현율 교환)? 표 · DB 결과처럼 숫자가 들어간 답은 계산을 모델에 맡기지 않고 어떻게 검증하나(도구 실행)?",
+          "drill": "공개 QA 데이터(예: 문서 기반 QA)로 '답변 → 문장 분해 → 근거 문단 매칭 → NLI 검증 → 검증 안 된 문장 제거 또는 거절' 파이프라인을 만들고, 거절 문턱별 정확도 · 응답률 곡선을 그린다. 숫자 질문은 SQL 도구 결과만 인용하게 한다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "RAGAS — Faithfulness metric",
+              "url": "https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/faithfulness/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "여러 출처를 한 질문에 — DB · 문서 · 로그를 넘나드는 에이전트",
+          "from": "task",
+          "quote": "• 문서·도면·데이터베이스·ERP/CRM·EDR 로그처럼 이질적이고 비정형적인 데이터를 이해하고 추론하는 멀티모달·멀티소스 에이전트를 개발합니다.",
+          "priority": "core",
+          "why": "주요업무다.",
+          "gap_check": "질문을 받아 어느 출처(SQL · 문서 검색 · 로그 검색)를 부를지 라우팅은 어떻게 하나? 여러 도구 결과를 합칠 때 엔티티를 어떻게 맞추나? 모호한 질문이면 되물을지 추측할지 무엇으로 정하나? 도구 호출 실패 · 빈 결과는 어떻게 다루나?",
+          "drill": "SQLite(ERP 가상 테이블) · 문서 벡터 검색 · 로그 검색 세 도구를 가진 에이전트를 만들고, 30 개 질문(일부는 모호)에 대한 정답 · 필요한 도구 · 되물어야 할 질문 여부를 적은 평가셋으로 도구 선택 정확도 · 최종 정답률 · 되묻기 적절성을 잰다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Anthropic — Building effective agents",
+              "url": "https://www.anthropic.com/engineering/building-effective-agents",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "정답이 없는 문제의 평가 체계",
+          "from": "task",
+          "quote": "• 정답이 정의되지 않은 문제에 대해, 무엇을 성공으로 볼지부터 정하는 평가 체계를 직접 설계합니다",
+          "priority": "high",
+          "why": "주요업무이고 자격요건에 평가 방식 정의 경험이 있다.",
+          "gap_check": "업무 성공(작업 완료 · 시간 절약)과 모델 지표(정확도)를 어떻게 잇나? LLM 판정자의 편향(자기 모델 선호 · 길이)을 어떻게 재고 줄이나? 운영 로그에서 평가셋을 계속 늘리려면(실패 사례 수집 · 사람 검수)?",
+          "drill": "앞 과제 에이전트에 대해 과업 성공 루브릭(사람 3 명이 30 건 채점)과 LLM 판정자 점수를 비교해 일치도(Cohen's kappa)를 재고, 판정 프롬프트를 고쳐 일치도를 올린다. 실패 사례를 평가셋에 자동으로 쌓는 흐름을 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Judging LLM-as-a-Judge (Zheng et al., 2023)",
+              "url": "https://arxiv.org/abs/2306.05685",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
