@@ -2900,3 +2900,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 スマートバンク 리컨사일 · 레플리카(기능 2/3)
 
 - 리컨사일 글 + 레플리카 쓰기 뒤 읽기 글로 `bnpl-reconcile-read-your-write`. 결정 8 — Webhook 실패 복구 대상 / 매시 · 2 일 범위 / 외부가 정답 / 기간 인자 멱등 재실행 / 점검 시간 건너뛰기 / 배치 문서 형식 / 사용자 프라이머리 고정(캐시 스토어 Resolver) / 0.5 초 · 허용 경로. 다음: Apple Pay.
+
+## 2026-09-30 スマートバンク Apple Pay · 완주
+
+- Apple Pay 프로비저닝 글 + 토큰화 · PCI DSS × SRE 글로 `wallet-provisioning-pci-scope`. 결정 7 — In-App / Color Path 는 추천 / OTP 만 / 약관 PNO 등록 / DPAN / 좁은 준수 범위(AWS 계정 분리) / 주기 증적. 도메인 3 모두 기능, 수익원 3 모두 연결 → **done**. 다음: 弁護士ドットコム 프로파일.

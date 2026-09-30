@@ -4,7 +4,7 @@
   "name_en": "SmartBank",
   "country": "JP",
   "category": "핀테크",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-30",
   "domain": "smartbank.co.jp",
   "one_liner": "가계부 앱에 자사 발행 Visa 프리페이드 카드와 あとばらい 를 담은 ワンバンク(옛 B/43) — 카드 번호는 PCI DSS 영역에 가두고, 파트너와의 어긋남은 대조로 고친다",
@@ -260,7 +260,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "wallet-provisioning-pci-scope"
+      ]
     }
   ],
   "features": [
@@ -1043,6 +1045,408 @@
           "publisher": "スマートバンク",
           "summary": "ワンバンク 는 한 제품 안에 여러 금융 서비스(사업)를 담는 플랫폼. あとばらいチャージ — 지금 돈이 없을 때 먼저 충전하고 나중에 갚는다, 충전한 값은 Visa 프리페이드 카드로 쓰며 등록부터 최단 1 분에 충전 · 발행 · 사용. BNPL(Klarna) 과 같은 영역. マイペース払い(론) — 더 큰 금액을 분할 상환. 결제 · 입금 · 출금에서 파트너 연계(알라이언스)가 전제. Biz · Tech · Product 의 종합 격투기.",
           "date": "2026-01-20"
+        }
+      ]
+    },
+    {
+      "key": "wallet-provisioning-pci-scope",
+      "name": "카드를 Apple Pay 에 한 번 눌러 올린다 — Apple 의 위험 색을 받아 발행사가 최종 판단하고, 기기에는 진짜 번호 대신 DPAN 을 두며, 그 구성은 처음부터 좁게 그은 PCI DSS 범위 안에 짓는다",
+      "domain": "카드를 Apple Pay · Google Pay 에 올린다 — 발행사로서 위험을 판단하고 토큰을 준다",
+      "updated_at": "2026-09-30",
+      "business": {
+        "why": "ワンバンク 는 2026-02 **Apple Pay** 대응을 시작했다. 사용자에게는 '월렛에 추가' → 약관 동의 → 활성화의 몇 번 탭이지만, 그 뒤에서는 **Apple · 이슈어(スマートバンク) · 국제 브랜드(PNO)** 가 함께 움직인다. 이슈어가 할 일은 셋이다 — 등록 요청이 도용인지 판단해 추가 본인 확인을 할지 정하고, 브랜드를 통해 약관을 보여 주고, 기기에 실제 카드 번호(FPAN) 대신 기기 전용 토큰(DPAN)이 올라가게 하는 것. Google Pay 도 흐름이 대체로 같다.\n\n이 작업은 **PCI DSS** 와도 얽힌다. SRE 는 Apple Pay · Google Pay 개발 때 준수 구성을 서버 사이드와 함께 짰고, 1 호 엔지니어는 창업 초기부터 **준수 범위를 작게** 잡는 것을 의식했다 — 모든 AWS 환경을 준수 환경으로 만들면 심사 범위가 늘고 개발 속도가 떨어지기 때문이다.",
+        "metrics": [
+          {
+            "label": "Yellow Path 본인 확인 수단",
+            "value": "SMS · 이메일 OTP 만 제공(앱 내 인증 · 콜센터는 제공 안 함)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Apple Pay カード登録の仕組み ─ ウォレットプロビジョニングの裏側",
+                "url": "https://blog.smartbank.co.jp/entry/apple-pay-provisioning",
+                "publisher": "スマートバンク",
+                "summary": "2026-02 Apple Pay 대응. 스마트뱅크는 이슈어. Manual · In-App 프로비저닝 → 약관 동의 → 리스크 판정에 따른 Green/Yellow/Red Path(추가 본인 확인) → FPAN 을 DPAN 으로 토큰화해 등록.",
+                "date": "2026-05-18"
+              }
+            ]
+          },
+          {
+            "label": "준수 / 비준수 환경 분리",
+            "value": "AWS 계정 단위 — 6 개월마다 경계별 세그멘테이션 침투 테스트",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "PCI DSS×SRE 〜審査対応を「設計要素」として楽しむスマートバンクのSREチーム〜",
+                "url": "https://blog.smartbank.co.jp/entry/2026/07/31",
+                "publisher": "スマートバンク",
+                "summary": "SRE 3 명이 AWS 보수 운영 · BtoB 인프라 · PCI DSS 준수(매년 갱신, Apple Pay/Google Pay 구성)를 맡는다. PCI DSS 는 국제 브랜드 5 사의 기준으로 준수 못 하면 Visa · Mastercard 와 거래 불가. 카드 번호 · 유효기간을 저장해 암호화 기준이 걸린다. 12 요건.",
+                "date": "2026-07-31"
+              }
+            ]
+          },
+          {
+            "label": "Apple Pay 대응 시작",
+            "value": "2026-02",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Apple Pay カード登録の仕組み ─ ウォレットプロビジョニングの裏側",
+                "url": "https://blog.smartbank.co.jp/entry/apple-pay-provisioning",
+                "publisher": "スマートバンク",
+                "summary": "2026-02 Apple Pay 대응. 스마트뱅크는 이슈어. Manual · In-App 프로비저닝 → 약관 동의 → 리스크 판정에 따른 Green/Yellow/Red Path(추가 본인 확인) → FPAN 을 DPAN 으로 토큰화해 등록.",
+                "date": "2026-05-18"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "등록 흐름을 설명할 때",
+          "thought": "사용자 시점에선 몇 번 탭으로 끝나는 단순한 흐름이지만, 뒤편은 Apple · 이슈어 · PNO 가 삼위일체로 받친다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Apple Pay カード登録の仕組み ─ ウォレットプロビジョニングの裏側",
+              "url": "https://blog.smartbank.co.jp/entry/apple-pay-provisioning",
+              "publisher": "スマートバンク",
+              "summary": "2026-02 Apple Pay 대응. 스마트뱅크는 이슈어. Manual · In-App 프로비저닝 → 약관 동의 → 리스크 판정에 따른 Green/Yellow/Red Path(추가 본인 확인) → FPAN 을 DPAN 으로 토큰화해 등록.",
+              "date": "2026-05-18"
+            }
+          ]
+        },
+        {
+          "at": "위험 색을 받을 때",
+          "thought": "Color Path 는 Apple 의 '추천' 일 뿐 등록 여부를 최종으로 정하지 않는다 — 이슈어 · PNO · 카드 상태 등 여러 요소가 얽혀, 같은 색이어도 결과와 인증 흐름이 다를 수 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Apple Pay カード登録の仕組み ─ ウォレットプロビジョニングの裏側",
+              "url": "https://blog.smartbank.co.jp/entry/apple-pay-provisioning",
+              "publisher": "スマートバンク",
+              "summary": "2026-02 Apple Pay 대응. 스마트뱅크는 이슈어. Manual · In-App 프로비저닝 → 약관 동의 → 리스크 판정에 따른 Green/Yellow/Red Path(추가 본인 확인) → FPAN 을 DPAN 으로 토큰화해 등록.",
+              "date": "2026-05-18"
+            }
+          ]
+        },
+        {
+          "at": "준수 범위를 정할 때",
+          "thought": "어디까지를 PCI DSS 범위로 할지 최초 선정이 가장 어려웠다 — 뒤의 개발 생산성에 크게 걸리는 결정이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "PCI DSS×SRE 〜審査対応を「設計要素」として楽しむスマートバンクのSREチーム〜",
+              "url": "https://blog.smartbank.co.jp/entry/2026/07/31",
+              "publisher": "スマートバンク",
+              "summary": "SRE 3 명이 AWS 보수 운영 · BtoB 인프라 · PCI DSS 준수(매년 갱신, Apple Pay/Google Pay 구성)를 맡는다. PCI DSS 는 국제 브랜드 5 사의 기준으로 준수 못 하면 Visa · Mastercard 와 거래 불가. 카드 번호 · 유효기간을 저장해 암호화 기준이 걸린다. 12 요건.",
+              "date": "2026-07-31"
+            }
+          ]
+        },
+        {
+          "at": "심사를 대할 때",
+          "thought": "심사 대응 · 컴플라이언스를 하나의 시스템 설계 요소로 보고 생각한다 — 제대로 공격하려고 수비 영역을 제대로 설계한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "PCI DSS×SRE 〜審査対応を「設計要素」として楽しむスマートバンクのSREチーム〜",
+              "url": "https://blog.smartbank.co.jp/entry/2026/07/31",
+              "publisher": "スマートバンク",
+              "summary": "SRE 3 명이 AWS 보수 운영 · BtoB 인프라 · PCI DSS 준수(매년 갱신, Apple Pay/Google Pay 구성)를 맡는다. PCI DSS 는 국제 브랜드 5 사의 기준으로 준수 못 하면 Visa · Mastercard 와 거래 불가. 카드 번호 · 유효기간을 저장해 암호화 기준이 걸린다. 12 요건.",
+              "date": "2026-07-31"
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "프로비저닝",
+            "what": "카드를 디지털 월렛에 안전하게 등록 · 활성화하는 과정 전체 — Manual(월렛에서 번호 입력 · 카메라) 또는 In-App(ワンバンク 앱의 '월렛에 추가', Android 는 Push)."
+          },
+          {
+            "name": "Color Path",
+            "what": "Apple 이 기기 · 계정 정보로 판정한 위험 추천 — Green(추가 인증 없음) · Yellow(추가 본인 확인) · Orange(준고위험) · Red(거절 추천)."
+          },
+          {
+            "name": "FPAN / DPAN",
+            "what": "실제 카드 번호 / 월렛 등록 때 발행되는 기기 전용 번호(토큰)."
+          },
+          {
+            "name": "약관",
+            "what": "이슈어가 PNO 에 미리 등록해 두고 PNO 를 통해 보여 주는 이용 약관 — 웹에도 공개(Apple Pay 모바일 페이먼트 특약)."
+          },
+          {
+            "name": "토큰 도메인 제한",
+            "what": "토큰이 허용된 가맹점 · 기기 · 입력 방식에서만 쓰이게 하는 제약 — 어긋나면 거절, 맞으면 PAN 으로 되돌려 승인으로."
+          }
+        ],
+        "invariants": [
+          "기기에는 FPAN 이 아니라 DPAN 이 저장된다 — 새어도 다른 기기에서 못 쓴다.",
+          "Red Path 추천이면 등록을 거절한다.",
+          "Yellow Path 는 추가 본인 확인이 성공해야 활성화된다.",
+          "비준수 환경에서 준수 환경으로는 닿을 수 없다 — 6 개월마다 경계별로 검사해 증적을 남긴다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "카드 정보 연계 — Manual(월렛에서 입력) 또는 In-App(앱 버튼, 번호 · 실물 카드 불필요)",
+            "why": "앱 안에서 과정이 끝나 매끄럽다."
+          },
+          {
+            "step": "PNO 를 통해 이슈어가 등록한 약관 표시 · 동의",
+            "why": "약관은 이슈어가 정하고 브랜드가 보여 준다."
+          },
+          {
+            "step": "Apple 이 Color Path 를 이슈어에 전달 → 이슈어가 추가 본인 확인 여부 결정(ワンバンク 는 SMS · 이메일 OTP)",
+            "why": "도용 등록을 막는다."
+          },
+          {
+            "step": "등록 완료 — FPAN 을 DPAN 으로 토큰화해 기기에 저장, 결제 때 토큰 도메인 제한 검증 뒤 PAN 으로 되돌려 승인",
+            "why": "번호가 새도 피해를 줄인다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "사용자는 카드를 어떻게 월렛에 올리나?",
+            "chosen": "**In-App 프로비저닝** — ワンバンク 앱의 'Apple 월렛에 추가' 한 번으로 카드 정보를 연계한다(월렛에서 직접 입력하는 Manual 도 된다).",
+            "alternatives": [
+              "Manual 프로비저닝만(번호를 손으로 입력하거나 카메라로 읽는다)"
+            ],
+            "tradeoff": "실물 카드와 번호가 없어도 되고 앱 안에서 끝나 매끄럽다 — 버추얼 카드만 가진 사용자도 올릴 수 있다(이 사이트의 해석). 대가는 이슈어가 Apple · 브랜드의 In-App 규격을 구현하고, 그 구성이 PCI DSS 에 걸린다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Apple Pay カード登録の仕組み ─ ウォレットプロビジョニングの裏側",
+                "url": "https://blog.smartbank.co.jp/entry/apple-pay-provisioning",
+                "publisher": "スマートバンク",
+                "summary": "2026-02 Apple Pay 대응. 스마트뱅크는 이슈어. Manual · In-App 프로비저닝 → 약관 동의 → 리스크 판정에 따른 Green/Yellow/Red Path(추가 본인 확인) → FPAN 을 DPAN 으로 토큰화해 등록.",
+                "date": "2026-05-18"
+              }
+            ]
+          },
+          {
+            "question": "Apple 의 위험 판정을 어떻게 쓰나?",
+            "chosen": "**Color Path 를 추천으로 받고 최종은 이슈어가** — Green 은 약관 동의 뒤 곧바로 활성화, Yellow 는 추가 본인 확인, Red 는 거절.",
+            "alternatives": [
+              "색과 무관하게 모두 추가 인증",
+              "색을 그대로 따르기만 한다"
+            ],
+            "tradeoff": "위험이 낮은 대부분은 가장 적은 단계로 끝난다. 대가는 같은 색이어도 이슈어 · PNO · 카드 상태에 따라 결과 · 흐름이 달라져 사용자 문의에 설명하기 어려울 수 있다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Apple Pay カード登録の仕組み ─ ウォレットプロビジョニングの裏側",
+                "url": "https://blog.smartbank.co.jp/entry/apple-pay-provisioning",
+                "publisher": "スマートバンク",
+                "summary": "2026-02 Apple Pay 대응. 스마트뱅크는 이슈어. Manual · In-App 프로비저닝 → 약관 동의 → 리스크 판정에 따른 Green/Yellow/Red Path(추가 본인 확인) → FPAN 을 DPAN 으로 토큰화해 등록.",
+                "date": "2026-05-18"
+              }
+            ]
+          },
+          {
+            "question": "Yellow Path 의 본인 확인 수단은?",
+            "chosen": "**SMS · 이메일 OTP 만** 제공한다.",
+            "alternatives": [
+              "앱 내 인증(월렛 → 이슈어 앱으로 넘어가 로그인 확인)",
+              "콜센터 오퍼레이터 확인"
+            ],
+            "tradeoff": "표준적인 검증 하나로 구현 · 운영이 단순하다. 대가는 앱 내 인증처럼 로그인 상태를 재사용하는 매끄러운 길과, 사람이 확인하는 길은 없다는 것. 글은 이유를 적지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Apple Pay カード登録の仕組み ─ ウォレットプロビジョニングの裏側",
+                "url": "https://blog.smartbank.co.jp/entry/apple-pay-provisioning",
+                "publisher": "スマートバンク",
+                "summary": "2026-02 Apple Pay 대응. 스마트뱅크는 이슈어. Manual · In-App 프로비저닝 → 약관 동의 → 리스크 판정에 따른 Green/Yellow/Red Path(추가 본인 확인) → FPAN 을 DPAN 으로 토큰화해 등록.",
+                "date": "2026-05-18"
+              }
+            ]
+          },
+          {
+            "question": "약관은 어디서 보여 주나?",
+            "chosen": "**이슈어가 정한 약관을 PNO 에 미리 등록해 PNO 경유로 표시**하고, 같은 내용을 웹(Apple Pay 모바일 페이먼트 특약)에도 공개한다.",
+            "alternatives": [
+              "앱에서 따로 동의를 받는다(이 사이트의 가정)"
+            ],
+            "tradeoff": "월렛에서 직접 올리는 Manual 경로에서도 같은 약관이 나온다. 대가는 약관을 바꿀 때 브랜드 쪽 등록도 고쳐야 한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Apple Pay カード登録の仕組み ─ ウォレットプロビジョニングの裏側",
+                "url": "https://blog.smartbank.co.jp/entry/apple-pay-provisioning",
+                "publisher": "スマートバンク",
+                "summary": "2026-02 Apple Pay 대응. 스마트뱅크는 이슈어. Manual · In-App 프로비저닝 → 약관 동의 → 리스크 판정에 따른 Green/Yellow/Red Path(추가 본인 확인) → FPAN 을 DPAN 으로 토큰화해 등록.",
+                "date": "2026-05-18"
+              }
+            ]
+          },
+          {
+            "question": "기기에는 무엇을 두나?",
+            "chosen": "**DPAN(기기 전용 토큰)** — 실제 번호 FPAN 은 기기에 없고, 결제 때 토큰 서비스가 토큰 도메인 제한(가맹점 · 기기 · 입력 방식)을 검증한 뒤 PAN 으로 되돌려 승인한다.",
+            "alternatives": [
+              "FPAN 을 기기에 저장"
+            ],
+            "tradeoff": "DPAN 이 새도 다른 기기에서 못 써 부정 피해가 작다. 대가는 토큰 발행 · 관리가 브랜드 쪽 토큰 서비스에 기대고, 제약이 어긋나면 정당한 결제도 거절된다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Apple Pay カード登録の仕組み ─ ウォレットプロビジョニングの裏側",
+                "url": "https://blog.smartbank.co.jp/entry/apple-pay-provisioning",
+                "publisher": "スマートバンク",
+                "summary": "2026-02 Apple Pay 대응. 스마트뱅크는 이슈어. Manual · In-App 프로비저닝 → 약관 동의 → 리스크 판정에 따른 Green/Yellow/Red Path(추가 본인 확인) → FPAN 을 DPAN 으로 토큰화해 등록.",
+                "date": "2026-05-18"
+              },
+              {
+                "title": "カード番号を扱わずに決済を成立させる仕組み ── トークナイゼーション入門",
+                "url": "https://blog.smartbank.co.jp/entry/2026/01/28/183000",
+                "publisher": "スマートバンク",
+                "summary": "이슈어 · 액콰이어러 · PAN · BIN · 오소리 용어. Google Pay 는 PAN 이 아니라 토큰을 저장한다. EMV 페이먼트 토큰 — PAN 호환 형식, 토큰 도메인 제한, 대면 · 앱 내 · Card-on-File, 발행 · 결제 · 관리 흐름. 글쓴이는 あとばらい · 결제 시스템 개발 · 운영.",
+                "date": "2026-01-28"
+              }
+            ]
+          },
+          {
+            "question": "PCI DSS 범위를 어디까지로 하나?",
+            "chosen": "**처음부터 작게** — 준수 환경과 비준수 환경을 AWS 계정 단위로 나누고, 카드 번호를 다루는 issuing-api 만 준수 쪽에 둔다.",
+            "alternatives": [
+              "모든 AWS 환경을 준수 환경으로"
+            ],
+            "tradeoff": "심사 범위가 줄고 개발 속도를 지킨다. 창업 초기라 돈을 못 써 심사 기관(QSA)도 비용이 적은 곳을 찾았다. 대가는 경계를 지키는 제약(비준수 → 준수 요청 금지)이 설계 전체에 걸리고, Apple Pay 같은 새 기능마다 준수 구성을 다시 짜야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "PCI DSS×SRE 〜審査対応を「設計要素」として楽しむスマートバンクのSREチーム〜",
+                "url": "https://blog.smartbank.co.jp/entry/2026/07/31",
+                "publisher": "スマートバンク",
+                "summary": "SRE 3 명이 AWS 보수 운영 · BtoB 인프라 · PCI DSS 준수(매년 갱신, Apple Pay/Google Pay 구성)를 맡는다. PCI DSS 는 국제 브랜드 5 사의 기준으로 준수 못 하면 Visa · Mastercard 와 거래 불가. 카드 번호 · 유효기간을 저장해 암호화 기준이 걸린다. 12 요건.",
+                "date": "2026-07-31"
+              },
+              {
+                "title": "バーチャルカード発行の排他制御 ～ 無駄な発行を防ぐシンプルなアプローチ~",
+                "url": "https://blog.smartbank.co.jp/entry/2025/03/19/123000",
+                "publisher": "スマートバンク",
+                "summary": "구성: PCI DSS 준수 환경의 issuing-api(오소리 수신 · 카드 발행, 카드 번호 등 보안 데이터 관리)와 비준수 환경의 core-api(B/43 거의 모든 로직). 리소스가 아직 없을 때의 배타 제어 — 조작 횟수 체크를 채택, 트랜잭션 · GET_LOCK 은 보류. PCI DSS 제약 때문에 일반 해법이 최적이 아니다.",
+                "date": "2025-03-19"
+              }
+            ]
+          },
+          {
+            "question": "경계가 지켜지는지 어떻게 증명하나?",
+            "chosen": "**주기 업무로** — 3 개월마다 외부 취약점 스캔(ASV), 6 개월마다 세그멘테이션 침투 테스트(비준수 → 준수 접근 불가를 경계별로 검사해 증적 기록) · 계정 권한 재검토(GitHub · IAM · Cognito), 12 개월마다 시큐어 코딩 연수 · 인시던트 대응 훈련.",
+            "alternatives": [
+              "연 1 회 심사 직전에 몰아서"
+            ],
+            "tradeoff": "증적이 쌓여 연 1 회 심사 때 모아 낸다. SRE 3 명이 AWS 운영 · BtoB 인프라와 함께 맡는다. 대가는 정해진 주기 업무가 늘 SRE 시간을 먹는다는 것 — 취약점 트리아지는 생성형 AI 로 줄이는 중이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "PCI DSS×SRE 〜審査対応を「設計要素」として楽しむスマートバンクのSREチーム〜",
+                "url": "https://blog.smartbank.co.jp/entry/2026/07/31",
+                "publisher": "スマートバンク",
+                "summary": "SRE 3 명이 AWS 보수 운영 · BtoB 인프라 · PCI DSS 준수(매년 갱신, Apple Pay/Google Pay 구성)를 맡는다. PCI DSS 는 국제 브랜드 5 사의 기준으로 준수 못 하면 Visa · Mastercard 와 거래 불가. 카드 번호 · 유효기간을 저장해 암호화 기준이 걸린다. 12 요건.",
+                "date": "2026-07-31"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "PCI DSS 경계 카드 발행",
+          "via": "issuing-api · 준수 범위",
+          "contract": "카드 번호 · 발행은 issuing-api(준수 영역)에 있고, core-api 는 거기에 요청할 수 없다 — 월렛 구성도 같은 경계 위에 짓는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "バーチャルカード発行の排他制御 ～ 無駄な発行を防ぐシンプルなアプローチ~",
+              "url": "https://blog.smartbank.co.jp/entry/2025/03/19/123000",
+              "publisher": "スマートバンク",
+              "summary": "구성: PCI DSS 준수 환경의 issuing-api(오소리 수신 · 카드 발행, 카드 번호 등 보안 데이터 관리)와 비준수 환경의 core-api(B/43 거의 모든 로직). 리소스가 아직 없을 때의 배타 제어 — 조작 횟수 체크를 채택, 트랜잭션 · GET_LOCK 은 보류. PCI DSS 제약 때문에 일반 해법이 최적이 아니다.",
+              "date": "2025-03-19"
+            },
+            {
+              "title": "PCI DSS×SRE 〜審査対応を「設計要素」として楽しむスマートバンクのSREチーム〜",
+              "url": "https://blog.smartbank.co.jp/entry/2026/07/31",
+              "publisher": "スマートバンク",
+              "summary": "SRE 3 명이 AWS 보수 운영 · BtoB 인프라 · PCI DSS 준수(매년 갱신, Apple Pay/Google Pay 구성)를 맡는다. PCI DSS 는 국제 브랜드 5 사의 기준으로 준수 못 하면 Visa · Mastercard 와 거래 불가. 카드 번호 · 유효기간을 저장해 암호화 기준이 걸린다. 12 요건.",
+              "date": "2026-07-31"
+            }
+          ]
+        },
+        {
+          "to": "카드 결제(수익원)",
+          "via": "Apple Pay 결제",
+          "contract": "월렛에 올린 카드로 결제하면 이슈어인 スマートバンク 의 카드 결제다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Apple Pay カード登録の仕組み ─ ウォレットプロビジョニングの裏側",
+              "url": "https://blog.smartbank.co.jp/entry/apple-pay-provisioning",
+              "publisher": "スマートバンク",
+              "summary": "2026-02 Apple Pay 대응. 스마트뱅크는 이슈어. Manual · In-App 프로비저닝 → 약관 동의 → 리스크 판정에 따른 Green/Yellow/Red Path(추가 본인 확인) → FPAN 을 DPAN 으로 토큰화해 등록.",
+              "date": "2026-05-18"
+            }
+          ]
+        },
+        {
+          "to": "あとばらい 리컨사일 · 레플리카",
+          "via": "충전 잔액",
+          "contract": "월렛 카드도 같은 프리페이드 잔액을 쓴다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Apple Pay カード登録の仕組み ─ ウォレットプロビジョニングの裏側",
+              "url": "https://blog.smartbank.co.jp/entry/apple-pay-provisioning",
+              "publisher": "スマートバンク",
+              "summary": "2026-02 Apple Pay 대응. 스마트뱅크는 이슈어. Manual · In-App 프로비저닝 → 약관 동의 → 리스크 판정에 따른 Green/Yellow/Red Path(추가 본인 확인) → FPAN 을 DPAN 으로 토큰화해 등록.",
+              "date": "2026-05-18"
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "월렛에 추가를 누른 뒤",
+          "question": "누가 무엇을 판단하나?",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant U as 사용자\n  participant App as ワンバンク 앱\n  participant A as Apple 월렛\n  participant P as PNO(브랜드)\n  participant I as 이슈어(スマートバンク)\n  U->>App: Apple 월렛에 추가\n  App->>A: 카드 정보 연계(In-App)\n  A->>P: 등록 요청\n  P-->>U: 이슈어가 등록한 약관\n  U->>A: 동의\n  A->>I: Color Path(Green/Yellow/Red)\n  alt Green\n    I-->>A: 곧바로 활성화\n  else Yellow\n    I->>U: SMS · 이메일 OTP\n    U->>I: OTP\n    I-->>A: 활성화\n  else Red\n    I-->>A: 거절\n  end\n  P-->>A: DPAN 발급(FPAN 은 기기에 없음)"
+        },
+        {
+          "title": "PCI DSS 범위를 어디에 그었나",
+          "question": "무엇이 준수 영역 안에 있나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  subgraph NON[\"비준수 AWS 계정\"]\n    CORE[\"core-api\\n거의 모든 로직\"]\n  end\n  subgraph PCI[\"준수 AWS 계정\"]\n    ISS[\"issuing-api\\n카드 번호 · 오소리 · 발행 · 월렛 구성\"]\n  end\n  ISS --> CORE\n  CORE -.x|\"요청 금지\"| ISS\n  PT[\"6 개월마다 세그멘테이션 침투 테스트\"] -.-> PCI\n  ASV[\"3 개월마다 ASV 스캔\"] -.-> PCI"
+        },
+        {
+          "title": "등록이 막히는 자리",
+          "question": "어디서 거절되고 무엇이 그대로 새지 않나?",
+          "kind": "failure",
+          "code": "flowchart TB\n  R1[\"Red Path — 도용 의심\"] --> X1[\"등록 거절\"]\n  R2[\"Yellow — OTP 실패\"] --> X2[\"활성화 안 됨\"]\n  R3[\"같은 색이어도 카드 상태 · PNO 판단\"] --> X3[\"결과가 다를 수 있음\"]\n  L1[\"기기에서 DPAN 유출\"] --> S1[\"다른 기기에선 못 씀\"]\n  L2[\"토큰이 허용 밖 가맹점 · 입력 방식\"] --> S2[\"토큰 도메인 제한으로 거절\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Apple Pay カード登録の仕組み ─ ウォレットプロビジョニングの裏側",
+          "url": "https://blog.smartbank.co.jp/entry/apple-pay-provisioning",
+          "publisher": "スマートバンク",
+          "summary": "2026-02 Apple Pay 대응. 스마트뱅크는 이슈어. Manual · In-App 프로비저닝 → 약관 동의 → 리스크 판정에 따른 Green/Yellow/Red Path(추가 본인 확인) → FPAN 을 DPAN 으로 토큰화해 등록.",
+          "date": "2026-05-18"
+        },
+        {
+          "title": "カード番号を扱わずに決済を成立させる仕組み ── トークナイゼーション入門",
+          "url": "https://blog.smartbank.co.jp/entry/2026/01/28/183000",
+          "publisher": "スマートバンク",
+          "summary": "이슈어 · 액콰이어러 · PAN · BIN · 오소리 용어. Google Pay 는 PAN 이 아니라 토큰을 저장한다. EMV 페이먼트 토큰 — PAN 호환 형식, 토큰 도메인 제한, 대면 · 앱 내 · Card-on-File, 발행 · 결제 · 관리 흐름. 글쓴이는 あとばらい · 결제 시스템 개발 · 운영.",
+          "date": "2026-01-28"
+        },
+        {
+          "title": "PCI DSS×SRE 〜審査対応を「設計要素」として楽しむスマートバンクのSREチーム〜",
+          "url": "https://blog.smartbank.co.jp/entry/2026/07/31",
+          "publisher": "スマートバンク",
+          "summary": "SRE 3 명이 AWS 보수 운영 · BtoB 인프라 · PCI DSS 준수(매년 갱신, Apple Pay/Google Pay 구성)를 맡는다. PCI DSS 는 국제 브랜드 5 사의 기준으로 준수 못 하면 Visa · Mastercard 와 거래 불가. 카드 번호 · 유효기간을 저장해 암호화 기준이 걸린다. 12 요건.",
+          "date": "2026-07-31"
         }
       ]
     }
