@@ -4,7 +4,7 @@
   "name_en": "newmo",
   "country": "JP",
   "category": "모빌리티",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-30",
   "domain": "newmo.me",
   "one_liner": "택시 회사를 사들여 직접 운영하며 DX 하는 모빌리티 회사 — 오사카 차량 수 1위, 급여 계산 · 음성 배차 AI · 미터 연계를 자체 개발",
@@ -75,7 +75,9 @@
       "name": "인재 소개 newジョブ",
       "how": "에센셜 워커(승무원 등) 대상 구인 · 인재 소개 — 소개 수수료로 읽히지만 확인하지 않았다.",
       "weight": "공개 안 됨",
-      "domains": [],
+      "domains": [
+        "소수 팀이 구인 서비스 newジョブ 를 — 헤드리스 CMS 를 '관리 화면 기반' 으로 삼아 스키마 하나로 화면 · API · DB 를 따라가게"
+      ],
       "confidence": "inferred",
       "sources": [
         {
@@ -215,6 +217,45 @@
       ],
       "features": [
         "tda-meter-link-softmeter"
+      ]
+    },
+    {
+      "name": "소수 팀이 구인 서비스 newジョブ 를 — 헤드리스 CMS 를 '관리 화면 기반' 으로 삼아 스키마 하나로 화면 · API · DB 를 따라가게",
+      "why": "2025-06 부터 개발한 구인 서비스 newジョブ 는 jinzai 팀이 소수로 맡는다. 구인 정보 관리 · 배포, SEO 용 구조화 데이터, 운영 팀의 콘텐츠 편집, 앞으로의 기능 확장을 한꺼번에 받아야 했고 기존 SaaS 로는 요건을 다 못 채웠다. 요건이 움직이는 것을 전제로 타입 · API · UI 를 동시에 따라가게 하는 것이 과제다.",
+      "tech": [
+        {
+          "tech": "PayloadCMS 3(TypeScript · Next.js App Router 통합) + PostgreSQL, Cloud Run 셀프 호스트",
+          "solves": "컬렉션 정의 하나에서 타입 · REST/GraphQL API · 관리 화면 · 인증이 나온다.",
+          "limits": "컬렉션이 관리 화면과 붙어 있어 DB 정규화와 어긋날 수 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "PayloadCMSを「管理画面基盤」として使う — 半年の学びと設計判断",
+              "url": "https://tech.newmo.me/entry/2025/12/12/090000",
+              "publisher": "newmo",
+              "summary": "2025-06 부터 구인 서비스 newジョブ — 소수의 jinzai 팀이 구인 정보 관리 · SEO 구조화 데이터 · 운용 팀 편집 · 확장에 대응하려 Headless CMS PayloadCMS(TypeScript · Next.js 통합 · 셀프 호스트)를 채택. Strapi · Sanity · microCMS 와 비교.",
+              "date": "2025-12-12"
+            }
+          ]
+        },
+        {
+          "tech": "Payload → Drizzle → SQL 을 뽑아 Atlas 마이그레이션 흐름에 합류",
+          "solves": "사내 공통 스키마 관리 방식에 CMS 스키마를 태운다.",
+          "limits": "셀프 호스트에서는 Payload 자동 마이그레이션(push)을 끈다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "PayloadCMSを「管理画面基盤」として使う — 半年の学びと設計判断",
+              "url": "https://tech.newmo.me/entry/2025/12/12/090000",
+              "publisher": "newmo",
+              "summary": "2025-06 부터 구인 서비스 newジョブ — 소수의 jinzai 팀이 구인 정보 관리 · SEO 구조화 데이터 · 운용 팀 편집 · 확장에 대응하려 Headless CMS PayloadCMS(TypeScript · Next.js 통합 · 셀프 호스트)를 채택. Strapi · Sanity · microCMS 와 비교.",
+              "date": "2025-12-12"
+            }
+          ]
+        }
+      ],
+      "features": [
+        "newjob-payload-admin-base"
       ]
     }
   ],
@@ -1248,13 +1289,375 @@
           "date": "2025-12-23"
         }
       ]
+    },
+    {
+      "key": "newjob-payload-admin-base",
+      "name": "구인 서비스 newジョブ 를 PayloadCMS 로 — CMS 가 아니라 '관리 화면 기반', 스키마는 Atlas 로 뽑고 호스팅이 사라지자 1주에 Cloud Run 으로",
+      "domain": "소수 팀이 구인 서비스 newジョブ 를 — 헤드리스 CMS 를 '관리 화면 기반' 으로 삼아 스키마 하나로 화면 · API · DB 를 따라가게",
+      "updated_at": "2026-09-30",
+      "business": {
+        "why": "newmo 는 택시 사업 · 배차 앱 · 라이드셰어 외에 에센셜 워커용 인재 소개 **newジョブ** 를 한다(홈페이지). 2025-06 에 개발을 시작한 이 구인 서비스는 jinzai 팀이 소수로 맡고, 구인 정보 관리 · 배포 · SEO 구조화 데이터 · 운영 팀 편집 · 향후 확장을 함께 받아야 했다. 기존 SaaS 로는 요건을 다 채우지 못해 커스터마이즈성이 높은 헤드리스 CMS 가 필요했다.\n\n글이 한마디로 줄인 선택 이유는 **'변경에 강해서'** — 요건이 움직인다는 전제에서 타입 · API · UI 를 동시에 따라가게 할 수 있다는 것. 소수 팀에게 이 '따라가는 속도' 가 안전장치였다고 적는다.",
+        "metrics": [
+          {
+            "label": "Payload Cloud → Cloud Run 셀프 호스트 이전",
+            "value": "약 1주(출시 전)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "PayloadCMSを「管理画面基盤」として使う — 半年の学びと設計判断",
+                "url": "https://tech.newmo.me/entry/2025/12/12/090000",
+                "publisher": "newmo",
+                "summary": "2025-06 부터 구인 서비스 newジョブ — 소수의 jinzai 팀이 구인 정보 관리 · SEO 구조화 데이터 · 운용 팀 편집 · 확장에 대응하려 Headless CMS PayloadCMS(TypeScript · Next.js 통합 · 셀프 호스트)를 채택. Strapi · Sanity · microCMS 와 비교.",
+                "date": "2025-12-12"
+              }
+            ]
+          },
+          {
+            "label": "본번 운영",
+            "value": "약 반년, 큰 장애 없음 — v3.0 부터 시작해 정기 업데이트도 문제없이",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "PayloadCMSを「管理画面基盤」として使う — 半年の学びと設計判断",
+                "url": "https://tech.newmo.me/entry/2025/12/12/090000",
+                "publisher": "newmo",
+                "summary": "2025-06 부터 구인 서비스 newジョブ — 소수의 jinzai 팀이 구인 정보 관리 · SEO 구조화 데이터 · 운용 팀 편집 · 확장에 대응하려 Headless CMS PayloadCMS(TypeScript · Next.js 통합 · 셀프 호스트)를 채택. Strapi · Sanity · microCMS 와 비교.",
+                "date": "2025-12-12"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "CMS 를 고를 때",
+          "thought": "실제로 각 CMS 를 initialize 해 만져 본 결과, 요건을 가장 유연하게 덮는 것이 PayloadCMS 였다 — 비교는 newジョブ 요건 기준이고 다른 용도에선 각 CMS 의 강점이 있을 수 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "PayloadCMSを「管理画面基盤」として使う — 半年の学びと設計判断",
+              "url": "https://tech.newmo.me/entry/2025/12/12/090000",
+              "publisher": "newmo",
+              "summary": "2025-06 부터 구인 서비스 newジョブ — 소수의 jinzai 팀이 구인 정보 관리 · SEO 구조화 데이터 · 운용 팀 편집 · 확장에 대응하려 Headless CMS PayloadCMS(TypeScript · Next.js 통합 · 셀프 호스트)를 채택. Strapi · Sanity · microCMS 와 비교.",
+              "date": "2025-12-12"
+            }
+          ]
+        },
+        {
+          "at": "호스팅이 사라졌을 때",
+          "thought": "출시 직전 Figma 인수로 Payload Cloud 가 일시 닫혔다 — 같은 코드가 클라우드에서도 셀프 호스트에서도 돈다는 '어느 쪽이든 동작' 이 큰 배움이었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "PayloadCMSを「管理画面基盤」として使う — 半年の学びと設計判断",
+              "url": "https://tech.newmo.me/entry/2025/12/12/090000",
+              "publisher": "newmo",
+              "summary": "2025-06 부터 구인 서비스 newジョブ — 소수의 jinzai 팀이 구인 정보 관리 · SEO 구조화 데이터 · 운용 팀 편집 · 확장에 대응하려 Headless CMS PayloadCMS(TypeScript · Next.js 통합 · 셀프 호스트)를 채택. Strapi · Sanity · microCMS 와 비교.",
+              "date": "2025-12-12"
+            }
+          ]
+        },
+        {
+          "at": "컬렉션을 설계할 때",
+          "thought": "처음 걸려 넘어진 곳이 컬렉션(화면)과 DB 테이블(도메인)의 분리다 — 도메인 설계를 우선하고 관리 화면의 편의는 따로 커스터마이즈한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "PayloadCMSを「管理画面基盤」として使う — 半年の学びと設計判断",
+              "url": "https://tech.newmo.me/entry/2025/12/12/090000",
+              "publisher": "newmo",
+              "summary": "2025-06 부터 구인 서비스 newジョブ — 소수의 jinzai 팀이 구인 정보 관리 · SEO 구조화 데이터 · 운용 팀 편집 · 확장에 대응하려 Headless CMS PayloadCMS(TypeScript · Next.js 통합 · 셀프 호스트)를 채택. Strapi · Sanity · microCMS 와 비교.",
+              "date": "2025-12-12"
+            }
+          ]
+        },
+        {
+          "at": "다시 정리하면",
+          "thought": "'빠르고 대충' 이 아니라 '빠르고 옳게'.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "PayloadCMSを「管理画面基盤」として使う — 半年の学びと設計判断",
+              "url": "https://tech.newmo.me/entry/2025/12/12/090000",
+              "publisher": "newmo",
+              "summary": "2025-06 부터 구인 서비스 newジョブ — 소수의 jinzai 팀이 구인 정보 관리 · SEO 구조화 데이터 · 운용 팀 편집 · 확장에 대응하려 Headless CMS PayloadCMS(TypeScript · Next.js 통합 · 셀프 호스트)를 채택. Strapi · Sanity · microCMS 와 비교.",
+              "date": "2025-12-12"
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "컬렉션",
+            "what": "Payload 의 스키마 단위 — 그대로 타입 정의 · API · 관리 화면이 된다(예: job-listings · tags)."
+          },
+          {
+            "name": "구인(JobListing)",
+            "what": "구인 정보 — 주소 ID 를 참조하고, 위경도 Point 를 가진다."
+          },
+          {
+            "name": "구인 주소",
+            "what": "job-listings-addresses 컬렉션 — 위도 · 경도를 가진다."
+          },
+          {
+            "name": "schema.sql",
+            "what": "Payload 설정에서 뽑은 SQL — `server/component/newjob/db/postgres/schema.sql`, Atlas 가 관리한다."
+          }
+        ],
+        "invariants": [
+          "스키마의 원본은 코드(컬렉션 정의)다 — GUI 로 스키마를 바꾸지 않는다.",
+          "셀프 호스트 본번은 Payload 자동 마이그레이션(push)을 끄고 Atlas 흐름으로만 바꾼다.",
+          "구인의 주소가 바뀌면 위경도 Point 도 같이 바뀐다(beforeChange hook).",
+          "Payload 앱은 다른 앱에 영향 없이 단독 배포된다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "컬렉션을 TypeScript 로 정의 → 타입 · REST/GraphQL API · 관리 화면 · 인증(롤 · API 키)이 자동으로",
+            "why": "스키마 변경이 타입과 API 로 전파돼 SSG 빌드 · 외부 연계의 변경 비용을 줄인다."
+          },
+          {
+            "step": "`extract-schema` — payload generate:db-schema(Drizzle 스키마) → drizzle-kit generate(SQL) → Atlas 관리 디렉터리로 모음",
+            "why": "사내 DB 스키마 관리(Atlas)에 CMS 스키마를 합류."
+          },
+          {
+            "step": "구인 저장 전 beforeChange hook 이 주소 컬렉션에서 위경도를 읽어 Point 로 채움",
+            "why": "PostgreSQL Point 필드면 자동 API 에서 근방 · 범위 검색을 그대로 쓴다."
+          },
+          {
+            "step": "pnpm workspace monorepo 에서 Panda CSS 디자인 시스템 · CI(lint · typecheck · test)를 공유하고 Cloud Run 에 단독 배포",
+            "why": "새 프로젝트를 더해도 CI 를 처음부터 쓰지 않는다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "구인 정보 관리 · 편집을 무엇으로 하나?",
+            "chosen": "**커스터마이즈성이 높은 헤드리스 CMS**를 들인다.",
+            "alternatives": [
+              "기존 SaaS",
+              "관리 화면을 직접 만든다"
+            ],
+            "tradeoff": "구인 배포 · SEO 구조화 데이터 · 운영 편집 · 확장을 소수 팀이 한 기반에서 받는다. 기존 SaaS 로는 요건을 다 못 채웠다. 대가는 CMS 자체를 운영해야 한다는 것 — 그래서 처음엔 공식 호스팅을 쓰려 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "PayloadCMSを「管理画面基盤」として使う — 半年の学びと設計判断",
+                "url": "https://tech.newmo.me/entry/2025/12/12/090000",
+                "publisher": "newmo",
+                "summary": "2025-06 부터 구인 서비스 newジョブ — 소수의 jinzai 팀이 구인 정보 관리 · SEO 구조화 데이터 · 운용 팀 편집 · 확장에 대응하려 Headless CMS PayloadCMS(TypeScript · Next.js 통합 · 셀프 호스트)를 채택. Strapi · Sanity · microCMS 와 비교.",
+                "date": "2025-12-12"
+              }
+            ]
+          },
+          {
+            "question": "어느 헤드리스 CMS 인가?",
+            "chosen": "**PayloadCMS** — TypeScript 네이티브(컬렉션 정의 = 타입, 이중 관리 없음), Next.js App Router 통합(커스텀 페이지 추가 쉬움), hook · 관리 화면 커스텀, API 자동 생성, 인증 · 롤 · API 키 기본 제공.",
+            "alternatives": [
+              "Strapi(플러그인 생태계 — 이번 요건 적합도 상대적으로 낮음)",
+              "Sanity(실시간 편집 · GROQ — 학습 비용 높다고 판단)",
+              "microCMS(일본산 · 단순 — 향후 확장 적합도 낮음)"
+            ],
+            "tradeoff": "CMS 를 넘어 '관리 화면 기반' 으로 쓸 수 있는 확장성이 결정타였다. 대가는 GUI 가 아니라 코드로 스키마를 정의하므로 개발자가 스키마를 쥔다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "PayloadCMSを「管理画面基盤」として使う — 半年の学びと設計判断",
+                "url": "https://tech.newmo.me/entry/2025/12/12/090000",
+                "publisher": "newmo",
+                "summary": "2025-06 부터 구인 서비스 newジョブ — 소수의 jinzai 팀이 구인 정보 관리 · SEO 구조화 데이터 · 운용 팀 편집 · 확장에 대응하려 Headless CMS PayloadCMS(TypeScript · Next.js 통합 · 셀프 호스트)를 채택. Strapi · Sanity · microCMS 와 비교.",
+                "date": "2025-12-12"
+              }
+            ]
+          },
+          {
+            "question": "공식 호스팅이 닫히면?",
+            "chosen": "**Google Cloud Run 에 셀프 호스트**로 급히 전환 — 약 1주, 출시 전이라 다행이었다.",
+            "alternatives": [
+              "Payload Cloud 재개를 기다린다"
+            ],
+            "tradeoff": "Payload 코드가 호스팅과 무관하게 같아 문제없이 가동했다. 대가는 원래 줄이려던 운영 부담(인프라 · 마이그레이션)을 스스로 지게 됐다는 것 — 자동 마이그레이션(push)을 끄고 아래 Atlas 흐름을 탔다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "PayloadCMSを「管理画面基盤」として使う — 半年の学びと設計判断",
+                "url": "https://tech.newmo.me/entry/2025/12/12/090000",
+                "publisher": "newmo",
+                "summary": "2025-06 부터 구인 서비스 newジョブ — 소수의 jinzai 팀이 구인 정보 관리 · SEO 구조화 데이터 · 운용 팀 편집 · 확장에 대응하려 Headless CMS PayloadCMS(TypeScript · Next.js 통합 · 셀프 호스트)를 채택. Strapi · Sanity · microCMS 와 비교.",
+                "date": "2025-12-12"
+              }
+            ]
+          },
+          {
+            "question": "CMS 의 DB 스키마를 누가 관리하나?",
+            "chosen": "**Payload 설정에서 SQL 을 뽑아 사내 Atlas 마이그레이션 흐름에 합류**시킨다(Drizzle 스키마 → drizzle-kit SQL → Atlas 디렉터리).",
+            "alternatives": [
+              "Payload 의 자동 마이그레이션에 맡긴다"
+            ],
+            "tradeoff": "컬렉션 정의만 바꾸면 사내 공통 마이그레이션 흐름에 자동으로 실린다. 대가는 CMS 와 사내 도구 사이에 뽑아내기 스크립트라는 접착층이 하나 생긴다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "PayloadCMSを「管理画面基盤」として使う — 半年の学びと設計判断",
+                "url": "https://tech.newmo.me/entry/2025/12/12/090000",
+                "publisher": "newmo",
+                "summary": "2025-06 부터 구인 서비스 newジョブ — 소수의 jinzai 팀이 구인 정보 관리 · SEO 구조화 데이터 · 운용 팀 편집 · 확장에 대응하려 Headless CMS PayloadCMS(TypeScript · Next.js 통합 · 셀프 호스트)를 채택. Strapi · Sanity · microCMS 와 비교.",
+                "date": "2025-12-12"
+              }
+            ]
+          },
+          {
+            "question": "컬렉션을 화면에 맞추나, 도메인에 맞추나?",
+            "chosen": "**도메인 설계를 우선**해 컬렉션(DB 테이블)을 짜고, 관리 화면의 편의는 따로 커스터마이즈한다 — '확장에 열리고, 화면은 분리'.",
+            "alternatives": [
+              "관리 화면 한 장 = 컬렉션 하나로 짠다"
+            ],
+            "tradeoff": "DB 를 정규화하고 장래 요건을 내다본 구조를 가진다. 대가는 화면이 여러 컬렉션을 엮어야 해서 커스터마이즈 · hook 이 늘어난다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "PayloadCMSを「管理画面基盤」として使う — 半年の学びと設計判断",
+                "url": "https://tech.newmo.me/entry/2025/12/12/090000",
+                "publisher": "newmo",
+                "summary": "2025-06 부터 구인 서비스 newジョブ — 소수의 jinzai 팀이 구인 정보 관리 · SEO 구조화 데이터 · 운용 팀 편집 · 확장에 대응하려 Headless CMS PayloadCMS(TypeScript · Next.js 통합 · 셀프 호스트)를 채택. Strapi · Sanity · microCMS 와 비교.",
+                "date": "2025-12-12"
+              }
+            ]
+          },
+          {
+            "question": "컬렉션 사이의 파생 값은 어디서 맞추나?",
+            "chosen": "**beforeChange hook** — 구인의 주소 ID 로 주소 컬렉션을 읽어 위경도 Point 를 채운다.",
+            "alternatives": [
+              "애플리케이션 쪽에서 저장 전에 채운다"
+            ],
+            "tradeoff": "관리 화면에서 고치든 API 로 고치든 같은 규칙이 돈다. PostgreSQL Point 필드면 자동 API 로 근방 · 범위 · 교차 검색을 바로 쓴다. 대가는 저장마다 조회가 하나 는다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "PayloadCMSを「管理画面基盤」として使う — 半年の学びと設計判断",
+                "url": "https://tech.newmo.me/entry/2025/12/12/090000",
+                "publisher": "newmo",
+                "summary": "2025-06 부터 구인 서비스 newジョブ — 소수의 jinzai 팀이 구인 정보 관리 · SEO 구조화 데이터 · 운용 팀 편집 · 확장에 대응하려 Headless CMS PayloadCMS(TypeScript · Next.js 통합 · 셀프 호스트)를 채택. Strapi · Sanity · microCMS 와 비교.",
+                "date": "2025-12-12"
+              }
+            ]
+          },
+          {
+            "question": "사내 monorepo 와 얼마나 섞나?",
+            "chosen": "**pnpm workspace monorepo 에 넣어 Panda CSS 디자인 시스템 · CI · Atlas 를 공유하되, 배포는 Payload 앱 단독**으로.",
+            "alternatives": [
+              "CMS 를 별도 저장소로 떼어 둔다"
+            ],
+            "tradeoff": "새 프로젝트를 더해도 CI 를 처음부터 쓰지 않고 공용 프리셋을 그대로 쓴다. 대가는 monorepo 전체의 의존성 갱신(Renovate · pnpm catalog)에 함께 묶인다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "PayloadCMSを「管理画面基盤」として使う — 半年の学びと設計判断",
+                "url": "https://tech.newmo.me/entry/2025/12/12/090000",
+                "publisher": "newmo",
+                "summary": "2025-06 부터 구인 서비스 newジョブ — 소수의 jinzai 팀이 구인 정보 관리 · SEO 구조화 데이터 · 운용 팀 편집 · 확장에 대응하려 Headless CMS PayloadCMS(TypeScript · Next.js 통합 · 셀프 호스트)를 채택. Strapi · Sanity · microCMS 와 비교.",
+                "date": "2025-12-12"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "인재 소개 newジョブ(수익원)",
+          "via": "구인 정보 관리 · 배포",
+          "contract": "newジョブ 의 구인 정보 · SEO 구조화 데이터 · 운영 편집이 이 관리 화면 기반 위에 있다 — 과금은 읽은 자료에 없다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "PayloadCMSを「管理画面基盤」として使う — 半年の学びと設計判断",
+              "url": "https://tech.newmo.me/entry/2025/12/12/090000",
+              "publisher": "newmo",
+              "summary": "2025-06 부터 구인 서비스 newジョブ — 소수의 jinzai 팀이 구인 정보 관리 · SEO 구조화 데이터 · 운용 팀 편집 · 확장에 대응하려 Headless CMS PayloadCMS(TypeScript · Next.js 통합 · 셀프 호스트)를 채택. Strapi · Sanity · microCMS 와 비교.",
+              "date": "2025-12-12"
+            },
+            {
+              "title": "newmo株式会社（ニューモ）｜移動で地域をカラフルに",
+              "url": "https://newmo.me/",
+              "publisher": "newmo",
+              "summary": "사업: 택시 사업(일반 승용 여객 자동차 운송 — 택시 · 하이어 운영), 배차 앱 'newmo', 일본판 라이드셰어(NRS), 자동운전 택시 개발 운영, 에센셜 워커용 인재 소개 'newジョブ'. 뉴스: 오리엔탈택시로부터 아사히자동차 그룹 3사 인수로 오사카 택시 차량 수 1위(2026-08-03), 삿포로교통 택시 사업 일부 인수(2026-08-25), 사카이시 자동운전 택시 실장 컨소시엄(2026-08-05), 쇼난 영업소 개업(2026-09-17)."
+            }
+          ]
+        },
+        {
+          "to": "newmo 공통 monorepo · 디자인 시스템 · Atlas",
+          "via": "pnpm workspace",
+          "contract": "newmo 는 서비스를 pnpm workspace 대형 monorepo 로 개발하고, Payload 프로젝트도 여기에 합류해 Panda CSS 프리셋 · CI · Atlas 마이그레이션을 공유한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "PayloadCMSを「管理画面基盤」として使う — 半年の学びと設計判断",
+              "url": "https://tech.newmo.me/entry/2025/12/12/090000",
+              "publisher": "newmo",
+              "summary": "2025-06 부터 구인 서비스 newジョブ — 소수의 jinzai 팀이 구인 정보 관리 · SEO 구조화 데이터 · 운용 팀 편집 · 확장에 대응하려 Headless CMS PayloadCMS(TypeScript · Next.js 통합 · 셀프 호스트)를 채택. Strapi · Sanity · microCMS 와 비교.",
+              "date": "2025-12-12"
+            }
+          ]
+        },
+        {
+          "to": "택시 요금 · 급여 계산(승무원)",
+          "via": "에센셜 워커 채용",
+          "contract": "newジョブ 는 에센셜 워커(승무원 등) 대상이라 그룹 택시 회사의 승무원 채용과 이어질 수 있다 — 글은 이 연결을 말하지 않는다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "newmo株式会社（ニューモ）｜移動で地域をカラフルに",
+              "url": "https://newmo.me/",
+              "publisher": "newmo",
+              "summary": "사업: 택시 사업(일반 승용 여객 자동차 운송 — 택시 · 하이어 운영), 배차 앱 'newmo', 일본판 라이드셰어(NRS), 자동운전 택시 개발 운영, 에센셜 워커용 인재 소개 'newジョブ'. 뉴스: 오리엔탈택시로부터 아사히자동차 그룹 3사 인수로 오사카 택시 차량 수 1위(2026-08-03), 삿포로교통 택시 사업 일부 인수(2026-08-25), 사카이시 자동운전 택시 실장 컨소시엄(2026-08-05), 쇼난 영업소 개업(2026-09-17)."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "컬렉션 하나가 퍼지는 길",
+          "question": "스키마를 한 번 바꾸면 무엇이 따라 바뀌나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  COL[\"컬렉션 정의(TypeScript)\"] --> TYPE[\"타입\"]\n  COL --> API[\"REST · GraphQL API\"]\n  COL --> ADMIN[\"관리 화면 · 인증 · 롤\"]\n  COL --> DZ[\"generate:db-schema\\n(Drizzle)\"]\n  DZ --> SQL[\"drizzle-kit → schema.sql\"]\n  SQL --> ATLAS[\"Atlas 마이그레이션\"]\n  ATLAS --> PG[\"PostgreSQL\"]\n  API --> SSG[\"SSG 빌드 · 외부 연계\"]"
+        },
+        {
+          "title": "구인 저장 때 위치가 채워지기까지",
+          "question": "주소가 바뀌면 위치 검색은 어떻게 따라오나?",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant OP as 운영 팀(관리 화면)\n  participant P as Payload\n  participant H as beforeChange hook\n  participant DB as PostgreSQL\n  OP->>P: 구인 저장(addressId)\n  P->>H: data\n  H->>P: findByID(job-listings-addresses)\n  P-->>H: 위도 · 경도\n  H-->>P: data.location = Point\n  P->>DB: 저장\n  Note over DB: 자동 API 로 근방 · 범위 검색"
+        },
+        {
+          "title": "호스팅이 사라진 주",
+          "question": "무엇이 끊겼고 무엇이 그대로였나?",
+          "kind": "failure",
+          "code": "flowchart LR\n  PLAN[\"계획: Payload Cloud\\n운영 부담 줄이기\"] -->|\"2025-06 Figma 인수 발표\"| CLOSE[\"Payload Cloud 일시 폐쇄\\n(출시 직전)\"]\n  CLOSE --> RUN[\"Cloud Run 셀프 호스트\\n약 1주\"]\n  RUN --> PUSH[\"push: false\\n자동 마이그레이션 끔\"]\n  PUSH --> ATLAS[\"Atlas 흐름으로만 스키마 변경\"]\n  CODE[\"Payload 코드\"] -.->|\"그대로\"| RUN"
+        }
+      ],
+      "sources": [
+        {
+          "title": "PayloadCMSを「管理画面基盤」として使う — 半年の学びと設計判断",
+          "url": "https://tech.newmo.me/entry/2025/12/12/090000",
+          "publisher": "newmo",
+          "summary": "2025-06 부터 구인 서비스 newジョブ — 소수의 jinzai 팀이 구인 정보 관리 · SEO 구조화 데이터 · 운용 팀 편집 · 확장에 대응하려 Headless CMS PayloadCMS(TypeScript · Next.js 통합 · 셀프 호스트)를 채택. Strapi · Sanity · microCMS 와 비교.",
+          "date": "2025-12-12"
+        },
+        {
+          "title": "newmo株式会社（ニューモ）｜移動で地域をカラフルに",
+          "url": "https://newmo.me/",
+          "publisher": "newmo",
+          "summary": "사업: 택시 사업(일반 승용 여객 자동차 운송 — 택시 · 하이어 운영), 배차 앱 'newmo', 일본판 라이드셰어(NRS), 자동운전 택시 개발 운영, 에센셜 워커용 인재 소개 'newジョブ'. 뉴스: 오리엔탈택시로부터 아사히자동차 그룹 3사 인수로 오사카 택시 차량 수 1위(2026-08-03), 삿포로교통 택시 사업 일부 인수(2026-08-25), 사카이시 자동운전 택시 실장 컨소시엄(2026-08-05), 쇼난 영업소 개업(2026-09-17)."
+        }
+      ]
     }
   ],
   "open_questions": [
     "그룹 전체 매출 · 차량 수 · 승무원 수는 읽은 자료에 없다(오사카 차량 수 1위라는 발표만).",
     "배차 앱 · 라이드셰어 · newジョブ 의 과금 구조는 읽지 않았다.",
     "급여 계산 글은 도메인 소개라 설계 결정이 얇다 — 대조 · 차이 판정의 구현 글을 더 찾아야 한다.",
-    "자동운전 택시 개발(JetRacer 합숙 글 등)은 아직 도메인으로 세우지 않았다."
+    "자동운전 택시 개발(JetRacer 합숙 글 등)은 아직 도메인으로 세우지 않았다.",
+    "newジョブ 의 검색 · 매칭 · 과금 구조는 읽은 자료에 없다(관리 화면 기반 글뿐)."
   ],
   "sources": [
     {
