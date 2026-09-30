@@ -102,7 +102,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "scout-search-opensearch-trigger-queue"
+      ]
     },
     {
       "name": "부동산 담당자의 물건 입력을 줄인다 — 마이소쿠 OCR + LLM",
@@ -156,7 +158,344 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "scout-search-opensearch-trigger-queue",
+      "name": "MySQL 부하 1 위 스카우트 검색을 OpenSearch 로 — 갱신 경로가 Rails · Java · 생 SQL 로 흩어져 있어 앱이 아니라 MySQL 트리거가 큐 테이블에 PK 를 넣고 30 초 폴링으로 반영, OpenSearch 는 PK 만 돌려주고 표시는 Aurora 에서, 응답 3-12 초가 약 0.5 초로",
+      "domain": "20 년 된 MySQL 검색을 OpenSearch 로 — 구인 · 스카우트 검색",
+      "updated_at": "2026-09-30",
+      "business": {
+        "why": "求人飲食店ドットコム 의 **스카우트** 는 구인 측(음식점)이 구직자의 경력 · 희망 근무지를 검색해 먼저 연락하는 기능이다. 이 **스카우트 대상자 검색**이 서비스에서 **MySQL 부하가 가장 큰** 기능이었다 — ① 여러 테이블에 걸친 검색을 SQL 여러 번으로 단계적으로 좁히고, ② 페이지용 건수 **COUNT(*) 가 풀스캔**, ③ 역사적 경위로 **쉼표 구분 칼럼**을 FIND_IN_SET 으로 검색, ④ 프리워드 부분 일치 **LIKE**. 접속이 늘면 곧 DB 리소스를 압박해 응답이 크게 느려지고 최악엔 장애로 이어졌고, 더 느려질까 봐 **새 기능 추가도 일부 막혔다**. OpenSearch 없이 빠르게 하려던 시도도 한계가 있어, '어차피 검색을 다시 구현한다면' 전문 검색 엔진을 쓰기로 했다. 앞서 가장 자주 쓰이는 **구인 검색**에 OpenSearch 를 넣어 효과를 본 뒤의 두 번째 적용이다.",
+        "metrics": [
+          {
+            "label": "스카우트 목록 응답 중앙값(조건 없음)",
+            "value": "3 초대 → 약 0.5 초",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "飲食店ドットコムの中で一番負荷の大きかった検索機能にOpenSearchを導入した話",
+                "url": "https://tech.synchro-food.co.jp/entry/2024/02/14/170000",
+                "publisher": "シンクロ・フード",
+                "summary": "스카우트 대상자 검색(구인 측이 구직자를 스카우트) — MySQL 부하 1 위: 여러 테이블 단계별 SQL, 페이지용 COUNT(*) 풀스캔, 쉼표 구분 칼럼 FIND_IN_SET, 프리워드 LIKE. 동기: 관련 테이블 11 개에 트리거 → 큐 테이블에 PK → rake 30 초 폴링 → OpenSearch 갱신(SQS · Aurora→Lambda→SQS · DMS · Debezium 대신 — 갱신 경로가 Rails · Java · 생 SQL 로 다양, 트랜잭션 안 정합). 검색은 OpenSearch 로 PK → Aurora 로 표시 데이터. refresh_interval 30 초+. 응답 중앙값: 조건 없음 3 초대 → 약 0.5 초, 프리워드 6-12 초 → 약 0.5 초.",
+                "date": "2024-02-14"
+              }
+            ]
+          },
+          {
+            "label": "프리워드 포함 응답 중앙값",
+            "value": "일별 6-12 초 → 약 0.5 초",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "飲食店ドットコムの中で一番負荷の大きかった検索機能にOpenSearchを導入した話",
+                "url": "https://tech.synchro-food.co.jp/entry/2024/02/14/170000",
+                "publisher": "シンクロ・フード",
+                "summary": "스카우트 대상자 검색(구인 측이 구직자를 스카우트) — MySQL 부하 1 위: 여러 테이블 단계별 SQL, 페이지용 COUNT(*) 풀스캔, 쉼표 구분 칼럼 FIND_IN_SET, 프리워드 LIKE. 동기: 관련 테이블 11 개에 트리거 → 큐 테이블에 PK → rake 30 초 폴링 → OpenSearch 갱신(SQS · Aurora→Lambda→SQS · DMS · Debezium 대신 — 갱신 경로가 Rails · Java · 생 SQL 로 다양, 트랜잭션 안 정합). 검색은 OpenSearch 로 PK → Aurora 로 표시 데이터. refresh_interval 30 초+. 응답 중앙값: 조건 없음 3 초대 → 약 0.5 초, 프리워드 6-12 초 → 약 0.5 초.",
+                "date": "2024-02-14"
+              }
+            ]
+          },
+          {
+            "label": "트리거를 건 테이블",
+            "value": "약 11 개",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "飲食店ドットコムの中で一番負荷の大きかった検索機能にOpenSearchを導入した話",
+                "url": "https://tech.synchro-food.co.jp/entry/2024/02/14/170000",
+                "publisher": "シンクロ・フード",
+                "summary": "스카우트 대상자 검색(구인 측이 구직자를 스카우트) — MySQL 부하 1 위: 여러 테이블 단계별 SQL, 페이지용 COUNT(*) 풀스캔, 쉼표 구분 칼럼 FIND_IN_SET, 프리워드 LIKE. 동기: 관련 테이블 11 개에 트리거 → 큐 테이블에 PK → rake 30 초 폴링 → OpenSearch 갱신(SQS · Aurora→Lambda→SQS · DMS · Debezium 대신 — 갱신 경로가 Rails · Java · 생 SQL 로 다양, 트랜잭션 안 정합). 검색은 OpenSearch 로 PK → Aurora 로 표시 데이터. refresh_interval 30 초+. 응답 중앙값: 조건 없음 3 초대 → 약 0.5 초, 프리워드 6-12 초 → 약 0.5 초.",
+                "date": "2024-02-14"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "원인을 볼 때",
+          "thought": "20 년 가까이 된 서비스라 만들 땐 성능이 문제가 안 되던 구현이 사용자가 늘며 문제가 되는 경우가 종종 있다 — 이번도 그중 하나다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "飲食店ドットコムの中で一番負荷の大きかった検索機能にOpenSearchを導入した話",
+              "url": "https://tech.synchro-food.co.jp/entry/2024/02/14/170000",
+              "publisher": "シンクロ・フード",
+              "summary": "스카우트 대상자 검색(구인 측이 구직자를 스카우트) — MySQL 부하 1 위: 여러 테이블 단계별 SQL, 페이지용 COUNT(*) 풀스캔, 쉼표 구분 칼럼 FIND_IN_SET, 프리워드 LIKE. 동기: 관련 테이블 11 개에 트리거 → 큐 테이블에 PK → rake 30 초 폴링 → OpenSearch 갱신(SQS · Aurora→Lambda→SQS · DMS · Debezium 대신 — 갱신 경로가 Rails · Java · 생 SQL 로 다양, 트랜잭션 안 정합). 검색은 OpenSearch 로 PK → Aurora 로 표시 데이터. refresh_interval 30 초+. 응답 중앙값: 조건 없음 3 초대 → 약 0.5 초, 프리워드 6-12 초 → 약 0.5 초.",
+              "date": "2024-02-14"
+            }
+          ]
+        },
+        {
+          "at": "범위를 정할 때",
+          "thought": "OpenSearch 를 끝까지 쓰면 더 고급 검색도 되지만, 이번엔 원래 기능의 이식과 성능 향상에 집중한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "飲食店ドットコムの中で一番負荷の大きかった検索機能にOpenSearchを導入した話",
+              "url": "https://tech.synchro-food.co.jp/entry/2024/02/14/170000",
+              "publisher": "シンクロ・フード",
+              "summary": "스카우트 대상자 검색(구인 측이 구직자를 스카우트) — MySQL 부하 1 위: 여러 테이블 단계별 SQL, 페이지용 COUNT(*) 풀스캔, 쉼표 구분 칼럼 FIND_IN_SET, 프리워드 LIKE. 동기: 관련 테이블 11 개에 트리거 → 큐 테이블에 PK → rake 30 초 폴링 → OpenSearch 갱신(SQS · Aurora→Lambda→SQS · DMS · Debezium 대신 — 갱신 경로가 Rails · Java · 생 SQL 로 다양, 트랜잭션 안 정합). 검색은 OpenSearch 로 PK → Aurora 로 표시 데이터. refresh_interval 30 초+. 응답 중앙값: 조건 없음 3 초대 → 약 0.5 초, 프리워드 6-12 초 → 약 0.5 초.",
+              "date": "2024-02-14"
+            }
+          ]
+        },
+        {
+          "at": "돌아보며",
+          "thought": "MySQL 로도 개선이 불가능하진 않았겠지만, COUNT(*) · LIKE · FIND_IN_SET 을 꽤 큰 테이블에서 쓰는 페이지라 OpenSearch 효과가 컸다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "飲食店ドットコムの中で一番負荷の大きかった検索機能にOpenSearchを導入した話",
+              "url": "https://tech.synchro-food.co.jp/entry/2024/02/14/170000",
+              "publisher": "シンクロ・フード",
+              "summary": "스카우트 대상자 검색(구인 측이 구직자를 스카우트) — MySQL 부하 1 위: 여러 테이블 단계별 SQL, 페이지용 COUNT(*) 풀스캔, 쉼표 구분 칼럼 FIND_IN_SET, 프리워드 LIKE. 동기: 관련 테이블 11 개에 트리거 → 큐 테이블에 PK → rake 30 초 폴링 → OpenSearch 갱신(SQS · Aurora→Lambda→SQS · DMS · Debezium 대신 — 갱신 경로가 Rails · Java · 생 SQL 로 다양, 트랜잭션 안 정합). 검색은 OpenSearch 로 PK → Aurora 로 표시 데이터. refresh_interval 30 초+. 응답 중앙값: 조건 없음 3 초대 → 약 0.5 초, 프리워드 6-12 초 → 약 0.5 초.",
+              "date": "2024-02-14"
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "스카우트 대상자",
+            "what": "경력 · 희망 근무지 등을 가진 求人飲食店ドットコム 회원 — 관련 테이블 약 11 개."
+          },
+          {
+            "name": "큐 테이블",
+            "what": "트리거가 갱신된 스카우트 대상자 PK 를 넣는 MySQL 테이블 — INSERT · DELETE 만."
+          },
+          {
+            "name": "동기 rake 태스크",
+            "what": "30 초마다 큐를 읽어 MySQL 에서 대상자를 모아 JSON 으로 OpenSearch 를 갱신."
+          },
+          {
+            "name": "refresh_interval",
+            "what": "OpenSearch 가 갱신을 검색 결과에 반영하는 간격 — 30 초 이상으로 올렸다."
+          }
+        ],
+        "invariants": [
+          "데이터 갱신과 큐 삽입은 같은 트랜잭션 안에서 끝난다 — 롤백되면 큐에도 남지 않는다.",
+          "어느 경로(Rails · Java · 생 SQL)로 바뀌어도 트리거가 큐에 남긴다.",
+          "OpenSearch 는 PK 만 돌려주고, 화면 데이터는 Aurora 에서 읽는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "관련 테이블 약 11 개에 INSERT · UPDATE · DELETE 트리거 → 큐 테이블에 대상자 PK",
+            "why": "모든 갱신 경로 포착."
+          },
+          {
+            "step": "rake 30 초 폴링 → MySQL 에서 대상자 조회 → OpenSearch 갱신 JSON",
+            "why": "준실시간 동기."
+          },
+          {
+            "step": "검색: 조건으로 조립한 JSON → OpenSearch search API → 대상자 PK",
+            "why": "여러 단계 SQL 을 한 번의 검색으로."
+          },
+          {
+            "step": "PK 로 Aurora 에서 표시 데이터 조회",
+            "why": "원본은 DB 에."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "MySQL 을 더 튜닝하나, 검색 엔진을 들이나?",
+            "chosen": "**어차피 검색을 다시 구현한다면 전문 검색 엔진(OpenSearch)** — 이미 구인 검색에 넣어 고속화 · DB 부하 저감을 확인했다.",
+            "alternatives": [
+              "MySQL 쿼리 · 인덱스 튜닝(과거 시도, 한계)"
+            ],
+            "tradeoff": "쉼표 구분 칼럼 · 부분 일치 LIKE · 건수 COUNT(*) 같은 인덱스가 안 먹는 검색을 검색 엔진이 맡는다. 대가는 저장소가 하나 늘고 동기화가 필요하다는 것 — 다음 결정.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "飲食店ドットコムの中で一番負荷の大きかった検索機能にOpenSearchを導入した話",
+                "url": "https://tech.synchro-food.co.jp/entry/2024/02/14/170000",
+                "publisher": "シンクロ・フード",
+                "summary": "스카우트 대상자 검색(구인 측이 구직자를 스카우트) — MySQL 부하 1 위: 여러 테이블 단계별 SQL, 페이지용 COUNT(*) 풀스캔, 쉼표 구분 칼럼 FIND_IN_SET, 프리워드 LIKE. 동기: 관련 테이블 11 개에 트리거 → 큐 테이블에 PK → rake 30 초 폴링 → OpenSearch 갱신(SQS · Aurora→Lambda→SQS · DMS · Debezium 대신 — 갱신 경로가 Rails · Java · 생 SQL 로 다양, 트랜잭션 안 정합). 검색은 OpenSearch 로 PK → Aurora 로 표시 데이터. refresh_interval 30 초+. 응답 중앙값: 조건 없음 3 초대 → 약 0.5 초, 프리워드 6-12 초 → 약 0.5 초.",
+                "date": "2024-02-14"
+              },
+              {
+                "title": "求人飲食店ドットコムの求人検索に OpenSearch を導入した話",
+                "url": "https://tech.synchro-food.co.jp/entry/2023/01/31/195802",
+                "publisher": "シンクロ・フード",
+                "summary": "가장 자주 쓰이는 구인 검색에 OpenSearch 를 먼저 도입해 고속화 · DB 부하 저감.",
+                "date": "2023-01-31"
+              }
+            ]
+          },
+          {
+            "question": "MySQL 변경을 OpenSearch 로 어떻게 보내나?",
+            "chosen": "**MySQL 트리거 → 큐 테이블(PK) → rake 30 초 폴링** — 이전 구인 검색 때처럼 각 앱이 SQS 로 보내는 방식을 쓰지 않았다.",
+            "alternatives": [
+              "앱마다 SQS 로 송신(이전 방식)",
+              "Aurora 트리거 → Lambda → SQS",
+              "AWS Glue · DMS · Debezium 같은 CDC"
+            ],
+            "tradeoff": "이유 넷: **갱신 경로가 여러 Rails 앱 · 여러 Java 앱 · 장애 때 쓰는 생 SQL** 로 나뉘어 앱마다 송신을 넣기 비싸다, **'枯れた'(검증된) 기술**로 새 위험을 피한다, 변경 즉시 큐에 들어간다, **갱신과 큐 삽입이 한 트랜잭션** 이라 정합이 지켜진다. Aurora → Lambda → SQS 안은 유력했지만 Lambda 가 트랜잭션 **커밋 뒤가 아니라** 호출 시점에 불려, 긴 트랜잭션 · 롤백을 다루기 어려워 버렸다. 받아들인 대가: 트리거로 DB 복잡도 증가(로그만 넣는 트리거라 괜찮다고 판단), 대량 갱신엔 확장이 어려움(연속 대량 갱신은 드물다), 큐 테이블 잠금으로 삭제가 늦어지는 일(특정 배치에서 트리거를 잠시 끄는 것으로 대응).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "飲食店ドットコムの中で一番負荷の大きかった検索機能にOpenSearchを導入した話",
+                "url": "https://tech.synchro-food.co.jp/entry/2024/02/14/170000",
+                "publisher": "シンクロ・フード",
+                "summary": "스카우트 대상자 검색(구인 측이 구직자를 스카우트) — MySQL 부하 1 위: 여러 테이블 단계별 SQL, 페이지용 COUNT(*) 풀스캔, 쉼표 구분 칼럼 FIND_IN_SET, 프리워드 LIKE. 동기: 관련 테이블 11 개에 트리거 → 큐 테이블에 PK → rake 30 초 폴링 → OpenSearch 갱신(SQS · Aurora→Lambda→SQS · DMS · Debezium 대신 — 갱신 경로가 Rails · Java · 생 SQL 로 다양, 트랜잭션 안 정합). 검색은 OpenSearch 로 PK → Aurora 로 표시 데이터. refresh_interval 30 초+. 응답 중앙값: 조건 없음 3 초대 → 약 0.5 초, 프리워드 6-12 초 → 약 0.5 초.",
+                "date": "2024-02-14"
+              }
+            ]
+          },
+          {
+            "question": "검색 결과를 어디서 채우나?",
+            "chosen": "**OpenSearch 로 대상자 PK 만 좁히고, 표시 데이터는 Aurora 에서** 가져온다 — 여러 SQL 로 단계적으로 좁히던 것을 한 번의 검색으로.",
+            "alternatives": [
+              "표시에 필요한 모든 필드를 OpenSearch 에 넣어 거기서 바로 렌더링"
+            ],
+            "tradeoff": "OpenSearch 문서를 검색 조건 필드로 좁게 유지하고, 화면의 원본은 DB 에 둔다. 대가는 검색 한 번에 DB 왕복이 하나 더 붙는다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "飲食店ドットコムの中で一番負荷の大きかった検索機能にOpenSearchを導入した話",
+                "url": "https://tech.synchro-food.co.jp/entry/2024/02/14/170000",
+                "publisher": "シンクロ・フード",
+                "summary": "스카우트 대상자 검색(구인 측이 구직자를 스카우트) — MySQL 부하 1 위: 여러 테이블 단계별 SQL, 페이지용 COUNT(*) 풀스캔, 쉼표 구분 칼럼 FIND_IN_SET, 프리워드 LIKE. 동기: 관련 테이블 11 개에 트리거 → 큐 테이블에 PK → rake 30 초 폴링 → OpenSearch 갱신(SQS · Aurora→Lambda→SQS · DMS · Debezium 대신 — 갱신 경로가 Rails · Java · 생 SQL 로 다양, 트랜잭션 안 정합). 검색은 OpenSearch 로 PK → Aurora 로 표시 데이터. refresh_interval 30 초+. 응답 중앙값: 조건 없음 3 초대 → 약 0.5 초, 프리워드 6-12 초 → 약 0.5 초.",
+                "date": "2024-02-14"
+              }
+            ]
+          },
+          {
+            "question": "얼마나 바꾸나?",
+            "chosen": "**원래 기능의 이식과 성능 향상에 집중** — OpenSearch 를 끝까지 활용한 고급 검색은 이번 범위 밖.",
+            "alternatives": [
+              "검색 품질 · 기능까지 함께 재설계"
+            ],
+            "tradeoff": "결과를 옛 검색과 비교하기 쉽고 출시가 빠르다. 대가는 검색 엔진의 장점(관련도 순위 등)을 아직 쓰지 않는다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "飲食店ドットコムの中で一番負荷の大きかった検索機能にOpenSearchを導入した話",
+                "url": "https://tech.synchro-food.co.jp/entry/2024/02/14/170000",
+                "publisher": "シンクロ・フード",
+                "summary": "스카우트 대상자 검색(구인 측이 구직자를 스카우트) — MySQL 부하 1 위: 여러 테이블 단계별 SQL, 페이지용 COUNT(*) 풀스캔, 쉼표 구분 칼럼 FIND_IN_SET, 프리워드 LIKE. 동기: 관련 테이블 11 개에 트리거 → 큐 테이블에 PK → rake 30 초 폴링 → OpenSearch 갱신(SQS · Aurora→Lambda→SQS · DMS · Debezium 대신 — 갱신 경로가 Rails · Java · 생 SQL 로 다양, 트랜잭션 안 정합). 검색은 OpenSearch 로 PK → Aurora 로 표시 데이터. refresh_interval 30 초+. 응답 중앙값: 조건 없음 3 초대 → 약 0.5 초, 프리워드 6-12 초 → 약 0.5 초.",
+                "date": "2024-02-14"
+              }
+            ]
+          },
+          {
+            "question": "갱신이 몰릴 때 검색이 느려지면?",
+            "chosen": "**refresh_interval 을 30 초 이상으로** — 구인 검색 때는 기본 1 초 + 인스턴스 증설로 풀었지만, 새 색인을 더해 다시 부하 시험하니 1 초에서 갱신 요청이 몰리면 검색 응답이 일시적으로 크게 나빠졌다. 앞으로 더 옮길 것까지 생각해 **기존 색인도 포함해** 30 초 이상으로.",
+            "alternatives": [
+              "기본 1 초 + 인스턴스 증설(구인 검색 때 방식)"
+            ],
+            "tradeoff": "검색 응답이 안정된다. 대가는 갱신이 검색에 반영되기까지 최대 30 초+ 폴링 30 초 — 스카우트 검색엔 허용 가능한 지연으로 판단(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "飲食店ドットコムの中で一番負荷の大きかった検索機能にOpenSearchを導入した話",
+                "url": "https://tech.synchro-food.co.jp/entry/2024/02/14/170000",
+                "publisher": "シンクロ・フード",
+                "summary": "스카우트 대상자 검색(구인 측이 구직자를 스카우트) — MySQL 부하 1 위: 여러 테이블 단계별 SQL, 페이지용 COUNT(*) 풀스캔, 쉼표 구분 칼럼 FIND_IN_SET, 프리워드 LIKE. 동기: 관련 테이블 11 개에 트리거 → 큐 테이블에 PK → rake 30 초 폴링 → OpenSearch 갱신(SQS · Aurora→Lambda→SQS · DMS · Debezium 대신 — 갱신 경로가 Rails · Java · 생 SQL 로 다양, 트랜잭션 안 정합). 검색은 OpenSearch 로 PK → Aurora 로 표시 데이터. refresh_interval 30 초+. 응답 중앙값: 조건 없음 3 초대 → 약 0.5 초, 프리워드 6-12 초 → 약 0.5 초.",
+                "date": "2024-02-14"
+              }
+            ]
+          },
+          {
+            "question": "테스트에서 막힌 것은?",
+            "chosen": "**요청 gzip 압축(compression) 옵션을 포기** — 로컬에선 됐지만 AWS 테스트 환경에서 오류가 났다. 출시 우선순위를 생각해 압축 없이 통신하고, 나중에 다시 조사해 켜기로 했다.",
+            "alternatives": [
+              "원인 규명까지 출시 연기"
+            ],
+            "tradeoff": "출시를 지킨다. 대가는 전송량이 늘고 조사가 남는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "飲食店ドットコムの中で一番負荷の大きかった検索機能にOpenSearchを導入した話",
+                "url": "https://tech.synchro-food.co.jp/entry/2024/02/14/170000",
+                "publisher": "シンクロ・フード",
+                "summary": "스카우트 대상자 검색(구인 측이 구직자를 스카우트) — MySQL 부하 1 위: 여러 테이블 단계별 SQL, 페이지용 COUNT(*) 풀스캔, 쉼표 구분 칼럼 FIND_IN_SET, 프리워드 LIKE. 동기: 관련 테이블 11 개에 트리거 → 큐 테이블에 PK → rake 30 초 폴링 → OpenSearch 갱신(SQS · Aurora→Lambda→SQS · DMS · Debezium 대신 — 갱신 경로가 Rails · Java · 생 SQL 로 다양, 트랜잭션 안 정합). 검색은 OpenSearch 로 PK → Aurora 로 표시 데이터. refresh_interval 30 초+. 응답 중앙값: 조건 없음 3 초대 → 약 0.5 초, 프리워드 6-12 초 → 약 0.5 초.",
+                "date": "2024-02-14"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "음식점 구인 광고(수익원)",
+          "via": "스카우트 기능",
+          "contract": "구인 측이 구직자를 찾아 먼저 연락하는 스카우트가 3-12 초에서 약 0.5 초로 — 새 기능 추가도 막혀 있던 기능이다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "飲食店ドットコムの中で一番負荷の大きかった検索機能にOpenSearchを導入した話",
+              "url": "https://tech.synchro-food.co.jp/entry/2024/02/14/170000",
+              "publisher": "シンクロ・フード",
+              "summary": "스카우트 대상자 검색(구인 측이 구직자를 스카우트) — MySQL 부하 1 위: 여러 테이블 단계별 SQL, 페이지용 COUNT(*) 풀스캔, 쉼표 구분 칼럼 FIND_IN_SET, 프리워드 LIKE. 동기: 관련 테이블 11 개에 트리거 → 큐 테이블에 PK → rake 30 초 폴링 → OpenSearch 갱신(SQS · Aurora→Lambda→SQS · DMS · Debezium 대신 — 갱신 경로가 Rails · Java · 생 SQL 로 다양, 트랜잭션 안 정합). 검색은 OpenSearch 로 PK → Aurora 로 표시 데이터. refresh_interval 30 초+. 응답 중앙값: 조건 없음 3 초대 → 약 0.5 초, 프리워드 6-12 초 → 약 0.5 초.",
+              "date": "2024-02-14"
+            }
+          ]
+        },
+        {
+          "to": "스크레이핑 급증 방어(WAF)",
+          "via": "DB 부하",
+          "contract": "무거운 검색이 DB 를 압박하던 문제를 검색 엔진으로 옮긴 것과, 돌발 트래픽을 입구에서 막는 것은 같은 '백엔드 자원 보호' 의 두 겹이다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "飲食店ドットコムの中で一番負荷の大きかった検索機能にOpenSearchを導入した話",
+              "url": "https://tech.synchro-food.co.jp/entry/2024/02/14/170000",
+              "publisher": "シンクロ・フード",
+              "summary": "스카우트 대상자 검색(구인 측이 구직자를 스카우트) — MySQL 부하 1 위: 여러 테이블 단계별 SQL, 페이지용 COUNT(*) 풀스캔, 쉼표 구분 칼럼 FIND_IN_SET, 프리워드 LIKE. 동기: 관련 테이블 11 개에 트리거 → 큐 테이블에 PK → rake 30 초 폴링 → OpenSearch 갱신(SQS · Aurora→Lambda→SQS · DMS · Debezium 대신 — 갱신 경로가 Rails · Java · 생 SQL 로 다양, 트랜잭션 안 정합). 검색은 OpenSearch 로 PK → Aurora 로 표시 데이터. refresh_interval 30 초+. 응답 중앙값: 조건 없음 3 초대 → 약 0.5 초, 프리워드 6-12 초 → 약 0.5 초.",
+              "date": "2024-02-14"
+            },
+            {
+              "title": "AWS WAF レートリミット導入と誤検知対策：正規トラフィックを保護するアーキテクチャを設計した話",
+              "url": "https://tech.synchro-food.co.jp/entry/2026/04/02/180000",
+              "publisher": "シンクロ・フード",
+              "summary": "Scutum 중심 보안에 더해, AI 학습용 등 돌발 스크레이핑 같은 예측 못 한 트래픽 급증 — 레이트 리밋이 정석이지만 오탐으로 정상 트래픽까지 막을 위험. Nginx + ALB 구성에서 AWS WAF 레이트 기반 규칙 vs Nginx limit_req + geo 비교(초기 비용 · 운영 · GeoIP/봇 DB 갱신 · Count 모드 · DDoS · 로그) → WAF. Count 모드로 단계 도입, 정상 사용자 오차단 방지.",
+              "date": "2026-04-02"
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "변경이 검색에 닿는 길",
+          "question": "어느 경로로 바뀌어도 어떻게 잡나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  R[\"Rails 앱들\"] --> DB[(\"Aurora MySQL\\n대상자 관련 테이블 약 11 개\")]\n  J[\"Java 앱들\"] --> DB\n  SQL[\"장애 대응 생 SQL\"] --> DB\n  DB -->|\"트리거(같은 트랜잭션)\"| Q[(\"큐 테이블: PK\")]\n  Q -->|\"rake 30 초 폴링\"| RK[\"대상자 조회 · JSON\"]\n  RK --> OS[\"OpenSearch\\nrefresh_interval 30s+\"]"
+        },
+        {
+          "title": "검색 한 번",
+          "question": "화면은 어디서 채우나?",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant U as 구인 측(음식점)\n  participant APP as 스카우트 검색\n  participant OS as OpenSearch\n  participant DB as Aurora\n  U->>APP: 조건 · 프리워드\n  APP->>OS: search API(조립한 JSON)\n  OS-->>APP: 대상자 PK · 건수\n  APP->>DB: PK 로 표시 데이터\n  DB-->>APP: 행\n  APP-->>U: 목록(약 0.5 초)"
+        },
+        {
+          "title": "버린 안이 부딪혔을 곳",
+          "question": "왜 Aurora → Lambda → SQS 가 아니었나?",
+          "kind": "failure",
+          "code": "flowchart TB\n  TX[\"긴 트랜잭션 진행 중\"] --> TRG[\"트리거가 Lambda 호출\"]\n  TRG --> ENQ[\"SQS 에 먼저 들어감\"]\n  ENQ --> READ[\"동기 작업이 아직 커밋 안 된 데이터를 읽음\"]\n  TX --> RB[\"트랜잭션 롤백\"]\n  RB --> GHOST[\"없었던 변경이 OpenSearch 에 반영\"]\n  GHOST --> CHOSEN[\"큐 테이블 방식: 롤백되면 큐도 사라짐\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "飲食店ドットコムの中で一番負荷の大きかった検索機能にOpenSearchを導入した話",
+          "url": "https://tech.synchro-food.co.jp/entry/2024/02/14/170000",
+          "publisher": "シンクロ・フード",
+          "summary": "스카우트 대상자 검색(구인 측이 구직자를 스카우트) — MySQL 부하 1 위: 여러 테이블 단계별 SQL, 페이지용 COUNT(*) 풀스캔, 쉼표 구분 칼럼 FIND_IN_SET, 프리워드 LIKE. 동기: 관련 테이블 11 개에 트리거 → 큐 테이블에 PK → rake 30 초 폴링 → OpenSearch 갱신(SQS · Aurora→Lambda→SQS · DMS · Debezium 대신 — 갱신 경로가 Rails · Java · 생 SQL 로 다양, 트랜잭션 안 정합). 검색은 OpenSearch 로 PK → Aurora 로 표시 데이터. refresh_interval 30 초+. 응답 중앙값: 조건 없음 3 초대 → 약 0.5 초, 프리워드 6-12 초 → 약 0.5 초.",
+          "date": "2024-02-14"
+        },
+        {
+          "title": "求人飲食店ドットコムの求人検索に OpenSearch を導入した話",
+          "url": "https://tech.synchro-food.co.jp/entry/2023/01/31/195802",
+          "publisher": "シンクロ・フード",
+          "summary": "가장 자주 쓰이는 구인 검색에 OpenSearch 를 먼저 도입해 고속화 · DB 부하 저감.",
+          "date": "2023-01-31"
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "매출 · 사업별 비중 · 요금은 IR 에 있지만 이번에 읽지 않았다.",
     "WAF 글의 뒷부분(구체 임계값 · 제외 규칙 · 결과)은 기능에서 더 읽는다."

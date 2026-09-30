@@ -3056,3 +3056,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 シンクロ・フード 프로파일
 
 - 대기 → 진행 중. 회사 사이트(음식점 지원 플랫폼 · IR) + 블로그(OpenSearch 스카우트 검색 · 마이소쿠 OCR + LLM · WAF · 기술 구성)로 도메인 셋. 수익원 둘(구인 광고 / 물건 · 디자인 중개 — 해석). category 검색.
+
+## 2026-09-30 シンクロ・フード OpenSearch 스카우트 검색(기능 1/3)
+
+- `scout-search-opensearch-trigger-queue`. 결정 6 — 검색 엔진 도입 / 트리거 큐 테이블(SQS · Lambda · CDC 대신) / PK 만 OpenSearch / 이식에 집중 / refresh_interval 30s+ / 압축 옵션 보류. 3-12 초 → 약 0.5 초. 다음: 물건 등록 보조.
