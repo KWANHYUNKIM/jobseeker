@@ -154,9 +154,9 @@ const D = JSON.parse(document.getElementById('data').textContent);
   } else if (S.type === 'gi') {
     sheet.append(el('div', 'no', S.no));
     sheet.append(rich(el('h2'), S.topic));
-    if (S.quote) { const q = el('blockquote'); q.append(el('small', '', '공고 원문')); q.append(S.quote); sheet.append(q); }
+    if (S.quote) { const q = el('blockquote'); q.append(el('small', '', S.quote_label || '공고 원문')); q.append(S.quote); sheet.append(q); }
     if (S.why) sheet.append(rich(el('div', 'why'), S.why));
-    if (S.check) { const c = el('div', 'chk'); c.append(el('small', '', '스스로 점검')); rich(c, S.check); sheet.append(c); }
+    if (S.check) { const c = el('div', 'chk'); c.append(el('small', '', S.check_label || '스스로 점검')); rich(c, S.check); sheet.append(c); }
   } else if (S.type === 'jobs') {
     sheet.append(rich(el('h2'), S.title));
     if (S.sub) sheet.append(rich(el('div', 'sub'), S.sub));

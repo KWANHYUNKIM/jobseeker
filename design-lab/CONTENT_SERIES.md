@@ -35,6 +35,7 @@
 | [IT 용어] | 면접 단골 용어를 1분에 | 캐러셀 | 테크블로그 사례 + 일반 설명 | 코드잇 IT 용어 | ✅ 멱등성 |
 | [면접 예상 질문] | 공고 하나에서 읽어 낸 질문 8 | 캐러셀 | 브리핑 interview.expect(446건) | 코드잇 직무 인터뷰 | ✅ 올리브영 코어플랫폼 BE |
 | [고민 상담소] | 취준 고민에 숫자로 답 | 캐러셀 | 공고 색인 | 코드잇 고민 상담소 | ✅ 신입인데 경력 공고? |
+| [인재상 해부] | 채용 페이지 문구가 아니라 **증거로 읽은** 인재상 — 돈 버는 구조·지금 여는 자리·현직 리더의 공개 발언·신호·남들과 갈리는 한 수·연봉(공개분)·아직 모르는 것 | 캐러셀 10장 | 브리핑 company·people·salary·open_questions | 캐치 기업분석 + 점핏 개발자 인터뷰 | 준비됨 6곳(포티투닷·토스·업스테이지·빗썸·메가존·엘리스) — 하루 1개 |
 | [공고 묶음] | 이번 주·신입·직군 | 캐러셀 | 공고 | 캐치 신입공고·공채속보 | ✅ |
 | [마감 D-3] | 이번 주에 닫히는 곳 | 캐러셀·스토리 | 마감일 | 원티드 D-day | ✅ 9/28–10/4 마감 8곳 |
 | [밸런스 게임] | A 회사 vs B 회사 | 스토리 투표 → 캐러셀 | 브리핑 두 곳 | 캐치 밸런스 게임 | 만들 것 |
@@ -81,6 +82,7 @@ python -m poster.series interview "올리브영:코어플랫폼유닛 Back-end" 
 python -m poster.series qa                                    # [고민 상담소] 신입인데 경력 공고?
 python -m poster.series guide 쿠팡 · stack · rates              # [들어가려면] · [데이터로 본 채용]
 python -m poster.series jd · same · roadmap · weekly · signal   # [JD 번역기] · [같은 직무 다른 회사] · [공부 로드맵] · [주간 리포트] · [채용 시그널]
+python -m poster.series talent 포티투닷                        # [인재상 해부] 브리핑에 people·salary 가 있는 회사일수록 깊다
 python -m publish.cli approve-collection deadline --allow-generic -p instagram  # [마감 D-3]
 python -m publish.cli approve-collection company --value 컬리   # [회사 해부]
 python -m poster.cutaway reels/<회사>_3d                        # [회사 해부] 3D 릴스

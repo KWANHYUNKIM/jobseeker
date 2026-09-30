@@ -49,10 +49,11 @@ THEMES = {
     "roadmap": {"paper": "#eaf7f0", "ink": "#0c2a24", "sub": "#4f6b64", "accent": "#0b7285", "line": "#c9e8da"},
     "weekly": {"paper": "#111317", "ink": "#f5f5f0", "sub": "#9a9ca3", "accent": "#ffd43b", "line": "#2a2d33"},
     "signal": {"paper": "#f8f0fa", "ink": "#2a1233", "sub": "#6f5a77", "accent": "#862e9c", "line": "#e8d5ee"},
+    "talent": {"paper": "#0e1a2b", "ink": "#f3f5f8", "sub": "#9aa6b8", "accent": "#5cc8ff", "line": "#22324a"},
 }
 SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", "term": "[IT 용어]",
           "interview": "[면접 예상 질문]", "qa": "[고민 상담소]", "jd": "[JD 번역기]",
-          "same": "[같은 직무 다른 회사]", "roadmap": "[공부 로드맵]", "weekly": "[주간 리포트]", "signal": "[채용 시그널]"}
+          "same": "[같은 직무 다른 회사]", "roadmap": "[공부 로드맵]", "weekly": "[주간 리포트]", "signal": "[채용 시그널]", "talent": "[인재상 해부]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -62,7 +63,8 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "same": ["백엔드개발자", "채용공고", "개발자채용", "이직준비", "기업분석"],
         "roadmap": ["백엔드로드맵", "개발공부", "백엔드개발자", "신입개발자", "개발자취업"],
         "weekly": ["주간리포트", "개발자채용", "채용트렌드", "IT채용", "개발자취업"],
-        "signal": ["채용시그널", "기업분석", "개발자채용", "이직준비", "채용트렌드"]}
+        "signal": ["채용시그널", "기업분석", "개발자채용", "이직준비", "채용트렌드"],
+        "talent": ["인재상", "기업분석", "개발자채용", "이직준비", "면접준비"]}
 
 
 # --- 재료 ---------------------------------------------------------------
@@ -541,6 +543,136 @@ def build_signals() -> dict:
             "slides": slides, "caption": caption, "jobs": []}
 
 
+# --- [인재상 해부] ---------------------------------------------------------------
+# 채용 페이지의 '인재상' 문구가 아니라 **증거에서 거꾸로 읽은 인재상**이다 — 돈 버는 구조(성과 기준),
+# 공고들이 반복하는 요구, 현직 리더가 공개 인터뷰에서 한 말, 전형, 연봉과 '아직 모르는 것'.
+# 전부 취업 브리핑(guide-engine)에 출처와 함께 있는 것만 쓴다. 해석(inferred)은 '(추정)' 으로 표시한다.
+def _clean(s: str) -> str:
+    return re.sub(r"`", "", _plain(s or "")).strip()
+
+
+def _nostar(s: str) -> str:
+    return _clean(s).replace("**", "")
+
+
+def _sent(s: str, limit: int = 150) -> str:
+    """문장 단위로 limit 자까지 — '보다' 처럼 '다' 로 끝나는 낱말에서 자르지 않도록 마침표로만 나눈다.
+    강조(**)가 짝이 안 맞으면 걷어 낸다."""
+    out = ""
+    for p in re.split(r"(?<=[.!?])\s+", (s or "").replace(chr(10), " ")):
+        if len(re.sub(r"\*\*", "", out + " " + p)) > limit and out:
+            break
+        out = (out + " " + p).strip()
+    return out.replace("**", "") if out.count("**") % 2 else out
+
+
+def _est(x: dict) -> str:
+    return "" if x.get("confidence") == "confirmed" else " (추정)"
+
+
+def build_talent(name: str) -> dict:
+    g = _guide_company(name)
+    co = g["company"]
+    short = g["name"]
+    live = [p for p in g["postings"] if not p.get("closed")]
+    note = f"{short} · 취업 브리핑(공고·공시·기사·공개 인터뷰, {g.get('updated_at', '')[:10]}) · (추정)은 이 계정의 해석"
+    srcs: list[tuple[str, str]] = []
+
+    def cite(items):
+        for s in items or []:
+            if s.get("url") and s["url"] not in [u for _, u in srcs]:
+                srcs.append((s.get("title") or s.get("publisher") or "", s["url"]))
+
+    sig = co.get("signals") or []
+    hook = _nostar(sig[0]["reading"]) if sig else _nostar(g["one_liner"])
+    slides = [{"type": "cover", "lines": [short, "**이런 사람**을 찾는다"],
+               "sub": hook + _est(sig[0] if sig else {"confidence": "confirmed"}), "note": note}]
+
+    # 1. 성과 기준 = 돈이 어디서 오나
+    rev = (co.get("revenue") or [{}])[0]
+    if rev:
+        cite(rev.get("sources"))
+        scale = [f"{x['label']} · {_nostar(x['value'])[:60]}" for x in (co.get("scale") or [])[:2]]
+        slides.append({"type": "end", "title": "먼저, 돈이 어디서 오나",
+                       "lines": [_sent(_clean(rev.get("how", "")), 130) + _est(rev)] + scale, "note": note})
+
+    # 2. 자리 이름이 곧 회사의 문제 목록 — 공고마다 '이 자리는'
+    roles = [{"role": re.sub(r"\s*\(.*$", "", p["title"])[:34], "meta": _first(_nostar(p.get("verdict", "")), 64)}
+             for p in live[:4] if p.get("verdict")]
+    if roles:
+        slides.append({"type": "jobs", "title": f"지금 여는 자리 {len(live)}개 중", "rows": roles, "note": note})
+
+    # 3. 현직 리더가 공개적으로 한 말
+    for pe in (g.get("people") or [])[:2]:
+        cite(pe.get("public_work"))
+        lean = [_nostar(x) for x in pe.get("leanings") or []]
+        if not lean:
+            continue
+        slides.append({"type": "gi", "no": f"현직 리더의 말 · {pe['role']}",
+                       "topic": _first(lean[0], 70),
+                       "quote": " / ".join(_first(x, 90) for x in lean[1:3]),
+                       "why": _sent(_clean(pe.get("what_it_means", "")), 150),
+                       "quote_label": "공개 인터뷰에서", "check_label": "출처",
+                       "check": f"{(pe.get('public_work') or [{}])[0].get('title', '')[:60]} · {(pe.get('public_work') or [{}])[0].get('kind', '')}",
+                       "note": note})
+
+    # 4. 공고가 먼저 말해 주는 것(신호) 셋
+    n_sig = 1 if len([x for x in g.get("people") or [] if x.get("leanings")]) >= 2 else 2   # 10장 안에 들게
+    for s in [x for x in sig[1:] if "수집" not in x["reading"]][:n_sig]:
+        slides.append({"type": "end", "title": _first(_nostar(s["reading"]), 40) + _est(s),
+                       "lines": ["근거 · " + _first(_nostar(s.get("evidence", "")).lstrip("•-· "), 110),
+                                 "그래서 · " + _first(_nostar(s.get("so_what", "")), 120)], "note": note})
+
+    # 5. 붙는 사람의 한 수 — 공고별 edge
+    edges = [(re.sub(r"\s*\(.*$", "", p["title"])[:24], e) for p in live[:3] for e in (p.get("edge") or [])[:1]]
+    if edges:
+        slides.append({"type": "end", "title": "남들과 갈리는 한 수",
+                       "lines": [f"**{t}** · {_nostar(e['idea'])[:60]} ({e.get('effort', '')})" for t, e in edges], "note": note})
+
+    # 6. 연봉 — 공개값과 그 한계
+    sal = g.get("salary") or {}
+    if sal.get("bands"):
+        b = sal["bands"][0]
+        for s in b.get("sources") or []:
+            cite([s])
+        # 범위는 한 줄에 안 들어간다 — 큰 숫자는 하한, 상한은 아래 줄에. 엔진의 필드 이름(bands 등)이 든 문장은 뺀다
+        rng = b["low"] != b["high"]
+        unit = sal.get("unit", "만원")
+        why = " ".join(x for x in re.split(r"(?<=[.])\s+", re.sub(r"\s*\([^()]*(?:inferred|confirmed)[^()]*\)", "",
+                                                                     _clean(sal.get("note", ""))))
+                       if not re.search(r"bands|inferred|confirmed|basis", x))
+        slides.append({"type": "stat", "title": "연봉, 공개된 만큼만", "num": f"{b['low']:,}",
+                       "unit": unit,
+                       "label": (f"부터 최고 {b['high']:,}{unit}까지 · " if rng else "") + f"{b.get('role', '')} · {sal.get('as_of', '')}",
+                       "explain": _sent(why, 90), "note": note})
+
+    # 7. 아직 모르는 것 — 지원 전에 물어볼 것
+    # 엔진이 제 작업 기록으로 남긴 줄('salary 를 비웠다', 'PROMPT 2단계')은 독자에게 뜻이 없다 — 회사에 관한 물음만
+    internal = re.compile(r"salary|people|signals|비웠|PROMPT|사이클|엔진|보강|평판|소문|열지 못했|403|더 찾지|검색 결과")
+    oq = [_first(_nostar(q), 80) for q in (sal.get("open_questions") or []) + (g.get("open_questions") or [])
+          if not internal.search(q)][:3]
+    if oq:
+        slides.append({"type": "end", "title": "아직 확인 못 한 것", "lines": oq + ["→ 면접 마지막 '질문 있나요?' 에 쓰면 된다"], "note": note})
+
+    slides = slides[:9]                                # 인스타 캐러셀은 10장까지 — 마지막 장은 남긴다
+    slides.append({"type": "end", "title": "한 줄로", "lines": [
+        _first(_nostar(sig[0].get("so_what", "")), 110) if sig else _nostar(g["one_liner"]),
+        f"{short} 가려는 친구에게 보내 주세요"], "note": note})
+    for p in live[:4]:
+        cite([{"title": p["title"], "url": p.get("url")}])
+
+    caption = "\n\n".join([
+        f"[인재상 해부] {short} — {hook}",
+        _first(_nostar(g["one_liner"]), 200),
+        "▪ 공고가 먼저 말해 주는 것\n" + "\n".join(f"· {_nostar(s['reading'])}{_est(s)}" for s in sig[:4]),
+        "채용 페이지의 '인재상' 문구가 아니라 공고·공시·기사·공개 인터뷰에서 거꾸로 읽었습니다. (추정)은 이 계정의 해석이고, "
+        "커뮤니티 평판·소문은 쓰지 않았습니다.",
+        "📌 출처\n" + "\n".join(f"· {t[:50]} {u}" for t, u in srcs[:8]),
+    ])
+    return {"kind": "talent", "id": f"talent-{g['slug']}-{date.today().isoformat().replace('-', '')}",
+            "title": f"{short} 인재상", "slides": slides, "caption": caption, "jobs": []}
+
+
 # --- 캡션의 회사 정보 -------------------------------------------------------
 def _sentences(s: str, n: int = 2, limit: int = 220) -> str:
     """브리핑 문단에서 앞 n 문장 — 마크다운 표기(**, `)는 떼고 limit 자 안에서."""
@@ -659,7 +791,7 @@ def approve(post: dict, paths: list[Path]) -> Path:
 
 def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
-    ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap", "weekly", "signal"])
+    ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap", "weekly", "signal", "talent"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     args = ap.parse_args()
@@ -674,6 +806,8 @@ def main() -> int:
         post = build_interview(name, part)
     elif args.kind == "qa":
         post = build_qa_newgrad()
+    elif args.kind == "talent":
+        post = build_talent(args.company)
     elif args.kind in ("jd", "same", "roadmap", "weekly", "signal"):
         post = {"jd": build_jd_translate, "same": build_same_role, "roadmap": build_roadmap,
                 "weekly": build_weekly, "signal": build_signals}[args.kind]()
