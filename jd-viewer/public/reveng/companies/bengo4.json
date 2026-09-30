@@ -202,7 +202,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "cedar-authz-edge-inprocess"
+      ]
     },
     {
       "name": "クラウドサイン — 250 만 사 전자계약을 떠받치는 개발 조직과 기반",
@@ -687,6 +689,400 @@
           "publisher": "弁護士ドットコム",
           "summary": "요약은 Gemini 프롬프트 설계를 채택했으나 형사 판결의 폭력 표현이 콘텐츠 필터에 걸려 요약이 거부되는 판례가 있었다. '전건 검색 가능' 전제라 LLM 없는 추출형 요약으로 대체 — LexRank · HipoRank 를 비교하고 판례 구조(구 · 신 양식)에 맞게 위치 가설을 바꿔 개선.",
           "date": "2026-04-17"
+        }
+      ]
+    },
+    {
+      "key": "cedar-authz-edge-inprocess",
+      "name": "인가를 네트워크 홉 없이 — NGINX 워커 안에서 Cedar 를 C 로 평가하고(forbid 우선 · 기본 거부 · 설정이 깨지면 500), PHP 에서는 AVP 와 같은 API 모양으로 로컬 평가해 본번과 코드를 가르지 않는다",
+      "domain": "인가를 엣지와 프로세스 안에서 선언적으로 — Cedar · OPA, NGINX 모듈, MCP 서버 보호",
+      "updated_at": "2026-09-30",
+      "business": {
+        "why": "NGINX 는 인증(auth_jwt · OAuth2 토큰 · OIDC) 쪽은 넉넉하지만 인가는 사실상 둘뿐이었다 — 판정을 외부 HTTP 서비스에 넘기는 **auth_request**(OPA 를 별도 프로세스로 띄워 요청마다 loopback 으로 묻는 구성)와 **IP 허용 · 거부**. 'JWT 의 role 이 editor 이고, 요청 대상 테넌트와 토큰의 테넌트가 같을 때만 허용' 정도의 **속성끼리 맞대는 인가를 NGINX 단독으로 쓸 방법이 없었다**.\n\n애플리케이션(PHP) 쪽도 같은 고민이다. 정책으로 인가를 쓰려면 **AWS Verified Permissions(AVP)** 가 매력적이지만 — 인가는 모든 요청이 지나는 길이라 **요청 과금**이 트래픽에 비례하고, 인가 로직의 중심이 외부 SaaS 에 묶이며(**락인**), 테스트마다 실제 AWS 나 목이 필요해 **로컬 · CI 가 느리고 불안정하고 과금된다**. 여기에 AI 에이전트 · MCP 서버가 늘며, 사람이 아닌 호출자의 인가를 어디서 판정할지가 다시 문제가 됐다.",
+        "metrics": [
+          {
+            "label": "nginx-auth-cedar 도입 단위",
+            "value": ".so 하나 + 설정 몇 줄 + 정책 파일(외부 프로세스 · 네트워크 홉 없음)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "NGINX 単体で宣言的認可を完結させる Cedar モジュールを作った",
+                "url": "https://creators.bengo4.com/entry/2026/06/16/080000",
+                "publisher": "弁護士ドットコム",
+                "summary": "nginx-auth-cedar — NGINX 워커 안에서 외부 프로세스 · 네트워크 홉 없이 ABAC 를 선언적 정책으로. Cedar 서브셋 평가 엔진을 C 로 자작. OPA + Envoy · OPA + auth_request · AWS Verified Permissions 와 비교(외부 프로세스 · 홉 · AWS 의존).",
+                "date": "2026-06-16"
+              }
+            ]
+          },
+          {
+            "label": "판정 결과 변수",
+            "value": "$cedar_result · $cedar_decision · $cedar_policy_id · $cedar_advice — 감사 로그에 정책 @id 가 남는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "NGINX 単体で宣言的認可を完結させる Cedar モジュールを作った",
+                "url": "https://creators.bengo4.com/entry/2026/06/16/080000",
+                "publisher": "弁護士ドットコム",
+                "summary": "nginx-auth-cedar — NGINX 워커 안에서 외부 프로세스 · 네트워크 홉 없이 ABAC 를 선언적 정책으로. Cedar 서브셋 평가 엔진을 C 로 자작. OPA + Envoy · OPA + auth_request · AWS Verified Permissions 와 비교(외부 프로세스 · 홉 · AWS 의존).",
+                "date": "2026-06-16"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "무엇을 만들까",
+          "thought": "NGINX 워커 프로세스 안에서 요청 단위 인가를 끝내고 싶었다 — JWT/OAuth2 에서 꺼낸 속성을 그대로 정책에 흘려 엣지에서 판정을 마친다. 외부 서비스를 안 부르니 운영 부하도 지연도 늘지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "NGINX 単体で宣言的認可を完結させる Cedar モジュールを作った",
+              "url": "https://creators.bengo4.com/entry/2026/06/16/080000",
+              "publisher": "弁護士ドットコム",
+              "summary": "nginx-auth-cedar — NGINX 워커 안에서 외부 프로세스 · 네트워크 홉 없이 ABAC 를 선언적 정책으로. Cedar 서브셋 평가 엔진을 C 로 자작. OPA + Envoy · OPA + auth_request · AWS Verified Permissions 와 비교(외부 프로세스 · 홉 · AWS 의존).",
+              "date": "2026-06-16"
+            }
+          ]
+        },
+        {
+          "at": "안전을 설계할 때",
+          "thought": "인가 모듈의 최악의 실패는 '말없이 통과시키는 것' 이다 — 버그가 의심되면 통과시키기보다 멈춘다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "NGINX 単体で宣言的認可を完結させる Cedar モジュールを作った",
+              "url": "https://creators.bengo4.com/entry/2026/06/16/080000",
+              "publisher": "弁護士ドットコム",
+              "summary": "nginx-auth-cedar — NGINX 워커 안에서 외부 프로세스 · 네트워크 홉 없이 ABAC 를 선언적 정책으로. Cedar 서브셋 평가 엔진을 C 로 자작. OPA + Envoy · OPA + auth_request · AWS Verified Permissions 와 비교(외부 프로세스 · 홉 · AWS 의존).",
+              "date": "2026-06-16"
+            }
+          ]
+        },
+        {
+          "at": "PHP 로 옮길 때",
+          "thought": "목표는 'Cedar 를 평가할 수 있다' 가 아니라 '평가 엔진을 AVP 에서 이 확장으로 바꿔도 호출 코드가 안 바뀐다' 였다 — 인가는 갈라놓은 곳에서 버그가 들어온다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "認可の呼び出しコードはほぼそのまま、評価だけ手元に寄せる Cedar 評価 PHP 拡張を作った",
+              "url": "https://creators.bengo4.com/entry/2026/07/15/094823",
+              "publisher": "弁護士ドットコム",
+              "summary": "PBAC 를 PHP 로 — AVP 는 요청 과금 · AWS 락인 · 로컬/CI 에서 돌리기 어렵다. AVP 와 같은 API 모양으로 평가만 프로세스 안에서 하는 PHP 확장(kjdev/php-ext-cedar) — 본번 AVP, 로컬 · CI · 온프레는 확장, 호출 코드를 거의 안 바꾸고 전환.",
+              "date": "2026-07-15"
+            }
+          ]
+        },
+        {
+          "at": "한계를 말할 때",
+          "thought": "새 프로젝트라 본번 채용엔 PoC 와 리뷰를 전제로 해 달라 — 과장 없이 맞는 용도와 안 맞는 용도를 갈라 고르게 하는 것이 OSS 에도 건전하다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "NGINX 単体で宣言的認可を完結させる Cedar モジュールを作った",
+              "url": "https://creators.bengo4.com/entry/2026/06/16/080000",
+              "publisher": "弁護士ドットコム",
+              "summary": "nginx-auth-cedar — NGINX 워커 안에서 외부 프로세스 · 네트워크 홉 없이 ABAC 를 선언적 정책으로. Cedar 서브셋 평가 엔진을 C 로 자작. OPA + Envoy · OPA + auth_request · AWS Verified Permissions 와 비교(외부 프로세스 · 홉 · AWS 의존).",
+              "date": "2026-06-16"
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Cedar 요청",
+            "what": "principal(누가) · action(무엇을) · resource(어디에) · context(어떤 상황) — NGINX 에선 action 이 요청 메서드, resource 가 `<type>::$uri`, context.ip 가 $remote_addr."
+          },
+          {
+            "name": "정책",
+            "what": "permit / forbid 와 when / unless 조건, @id · @advice 주석 — 설정 로드 때 AST 로 파싱해 설정 풀에 상주."
+          },
+          {
+            "name": "속성 매핑",
+            "what": "임의의 NGINX 변수($jwt_claim_* · $arg_* · map · Lua)를 Cedar 속성으로 — 빈 문자열은 넣지 않는다."
+          },
+          {
+            "name": "AVP 호환 요청 · 응답",
+            "what": "isAuthorized() 의 키 구조 · AttributeValue 단일 키 union · decision / determiningPolicies / errors."
+          },
+          {
+            "name": "정책 저장소 ID",
+            "what": "AVP 에선 CreatePolicyStore 의 PS…, 확장에선 PolicyStore 문자열 — 호출 페이로드에서 유일하게 값이 갈리는 곳."
+          }
+        ],
+        "invariants": [
+          "forbid 가 하나라도 맞으면 거부 — 어떤 permit 도 이를 뒤집지 못한다(테넌트 경계).",
+          "어떤 permit 도 안 맞으면 거부 — 써 넣지 않은 것은 막힌다(기본 거부).",
+          "켜져 있는데 정책 집합이 없으면 우회하지 않고 500.",
+          "인가는 인증(ACCESS) 뒤, 콘텐츠(proxy_pass) 앞에서 판정한다.",
+          "본번(AVP)과 로컬(확장)의 호출 코드는 같다 — 정책 저장소 ID 값만 환경에서 주입한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "auth_jwt 등 인증 모듈이 ACCESS phase 에서 $jwt_claim_* 를 세팅",
+            "why": "인증은 다른 모듈에 맡긴다."
+          },
+          {
+            "step": "PRECONTENT phase 의 auth_cedar 가 변수 → Cedar 속성 매핑으로 요청을 만들고, 설정 로드 때 파싱해 둔 AST 를 평가(1 패스 forbid, 2 패스 permit)",
+            "why": "요청마다 파싱하지 않는다."
+          },
+          {
+            "step": "거부면 403(또는 auth_cedar_deny_status 404 로 존재 숨김), 판정 · 정책 @id · @advice 를 변수로 내보내 로그에",
+            "why": "왜 거부됐는지를 정책 기술과 1 : 1 로 추적."
+          },
+          {
+            "step": "PHP 앱은 AuthorizationClientInterface 하나로 본번 AvpClient(->toArray()) · 로컬 CedarLocalClient 를 DI 로 고른다",
+            "why": "본번 · 로컬 · CI · 온프레를 한 호출 코드로."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "속성 인가를 어디서 판정하나?",
+            "chosen": "**NGINX 워커 프로세스 안에서** — 동적 모듈 nginx-auth-cedar.",
+            "alternatives": [
+              "OPA + Envoy(데이터 플레인 교체)",
+              "OPA + NGINX auth_request(OPA 데몬 병설 · loopback 홉)",
+              "AWS Verified Permissions(클라우드 · AWS API 홉)"
+            ],
+            "tradeoff": "외부 프로세스 · 네트워크 홉이 없어 운영 부하와 지연이 늘지 않고, .so 하나를 더하면 된다. 대가는 정책을 바꾸면 NGINX reload(SIGHUP)가 필요하고, AVP 를 진실의 원천으로 두는 구성과는 별도 동기화가 필요하다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "NGINX 単体で宣言的認可を完結させる Cedar モジュールを作った",
+                "url": "https://creators.bengo4.com/entry/2026/06/16/080000",
+                "publisher": "弁護士ドットコム",
+                "summary": "nginx-auth-cedar — NGINX 워커 안에서 외부 프로세스 · 네트워크 홉 없이 ABAC 를 선언적 정책으로. Cedar 서브셋 평가 엔진을 C 로 자작. OPA + Envoy · OPA + auth_request · AWS Verified Permissions 와 비교(외부 프로세스 · 홉 · AWS 의존).",
+                "date": "2026-06-16"
+              }
+            ]
+          },
+          {
+            "question": "정책 언어는?",
+            "chosen": "**Cedar** — AWS 가 2023 년 오픈소스화한 인가 전용 선언형 언어(AVP 의 평가 엔진).",
+            "alternatives": [
+              "Rego(OPA)"
+            ],
+            "tradeoff": "principal · action · resource · context 네 요소와 permit/forbid · when/unless 로 '속성끼리 맞대기' 를 사람이 읽는 형태로 쓴다 — CIDR · decimal · datetime 확장형까지. 대가는 다음 결정의 자작 서브셋 비용.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "NGINX 単体で宣言的認可を完結させる Cedar モジュールを作った",
+                "url": "https://creators.bengo4.com/entry/2026/06/16/080000",
+                "publisher": "弁護士ドットコム",
+                "summary": "nginx-auth-cedar — NGINX 워커 안에서 외부 프로세스 · 네트워크 홉 없이 ABAC 를 선언적 정책으로. Cedar 서브셋 평가 엔진을 C 로 자작. OPA + Envoy · OPA + auth_request · AWS Verified Permissions 와 비교(외부 프로세스 · 홉 · AWS 의존).",
+                "date": "2026-06-16"
+              }
+            ]
+          },
+          {
+            "question": "Cedar 평가기는 공식 Rust 구현을 쓰나?",
+            "chosen": "**C 로 서브셋을 자작**(nxe-cedar — lexer → 재귀 하강 parser → AST 평가, 별도 서브모듈) — NGINX 의 풀 · ngx_str_t · ngx_array_t 방식으로, 의존성 0.",
+            "alternatives": [
+              "공식 Rust 구현을 NGINX 에 내장(Rust 런타임을 끌어들임)"
+            ],
+            "tradeoff": "NGINX core 만으로 돈다. 본가와 어긋나지 않게 **공식 cedar-policy crate 를 Rust FFI 오라클로 두고 같은 입력의 판정을 대조**, CI 에서 AddressSanitizer 를 돌린다. 대가는 lexer · parser · 평가기를 스스로 떠안는 부담과, 형식 검증(Lean) 없음 · 스키마 검증 없음 · 엔티티 계층 자동 해결 없음(`principal in Role::\"editor\"` 대신 `principal.role == \"editor\"`) · 템플릿 정책 · 부분 평가 없음 — 금융 · 의료처럼 형식 검증이 관문이면 공식 Rust 를 고르라고 글이 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "NGINX 単体で宣言的認可を完結させる Cedar モジュールを作った",
+                "url": "https://creators.bengo4.com/entry/2026/06/16/080000",
+                "publisher": "弁護士ドットコム",
+                "summary": "nginx-auth-cedar — NGINX 워커 안에서 외부 프로세스 · 네트워크 홉 없이 ABAC 를 선언적 정책으로. Cedar 서브셋 평가 엔진을 C 로 자작. OPA + Envoy · OPA + auth_request · AWS Verified Permissions 와 비교(외부 프로세스 · 홉 · AWS 의존).",
+                "date": "2026-06-16"
+              }
+            ]
+          },
+          {
+            "question": "NGINX 요청 처리의 어느 단계에 거나?",
+            "chosen": "**PRECONTENT phase** — 인증(ACCESS) 뒤, 콘텐츠(proxy_pass) 앞.",
+            "alternatives": [
+              "ACCESS phase 에서 인증과 함께"
+            ],
+            "tradeoff": "인증 모듈이 세팅한 $remote_user · $jwt_claim_* 를 확실히 쓸 수 있고, 상류로 흘리기 전에 판정이 끝나 콘텐츠 핸들러에 우회당하지 않는다. 대가는 rewrite 단계에서 끝나는 `return 200;` 같은 응답은 PRECONTENT 를 지나지 않아 판정이 안 걸린다 — 인가를 걸 location 엔 실제 콘텐츠를 둬야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "NGINX 単体で宣言的認可を完結させる Cedar モジュールを作った",
+                "url": "https://creators.bengo4.com/entry/2026/06/16/080000",
+                "publisher": "弁護士ドットコム",
+                "summary": "nginx-auth-cedar — NGINX 워커 안에서 외부 프로세스 · 네트워크 홉 없이 ABAC 를 선언적 정책으로. Cedar 서브셋 평가 엔진을 C 로 자작. OPA + Envoy · OPA + auth_request · AWS Verified Permissions 와 비교(외부 프로세스 · 홉 · AWS 의존).",
+                "date": "2026-06-16"
+              }
+            ]
+          },
+          {
+            "question": "정책이 커지면 응답이 느려지나?",
+            "chosen": "**설정 로드 때 한 번 AST 로 파싱(설정 풀)하고, 요청 때는 평가만(요청 풀)** — malloc/free 를 쓰지 않고 NGINX 풀에 맡긴다.",
+            "alternatives": [
+              "요청마다 정책을 읽고 파싱"
+            ],
+            "tradeoff": "파싱이 요청 경로에서 빠져 정책 크기가 지연 · 요청 메모리에 안 실리고, 누수 경로가 생기지 않는다. 대가는 정책 갱신이 reload 로만 반영된다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "NGINX 単体で宣言的認可を完結させる Cedar モジュールを作った",
+                "url": "https://creators.bengo4.com/entry/2026/06/16/080000",
+                "publisher": "弁護士ドットコム",
+                "summary": "nginx-auth-cedar — NGINX 워커 안에서 외부 프로세스 · 네트워크 홉 없이 ABAC 를 선언적 정책으로. Cedar 서브셋 평가 엔진을 C 로 자작. OPA + Envoy · OPA + auth_request · AWS Verified Permissions 와 비교(외부 프로세스 · 홉 · AWS 의존).",
+                "date": "2026-06-16"
+              }
+            ]
+          },
+          {
+            "question": "틀렸을 때 어느 쪽으로 넘어지나?",
+            "chosen": "**forbid 우선 · 기본 거부 · fail-closed** — forbid 를 먼저 전부 보고 하나라도 맞으면 거부, permit 이 없으면 거부, 켜졌는데 정책 집합이 NULL 이면 우회 대신 500. 내부 리다이렉트로 location 이 바뀌면 판정 캐시를 버리고 다시 평가.",
+            "alternatives": [
+              "permit 을 먼저 보거나, 설정 이상 시 통과"
+            ],
+            "tradeoff": "테넌트 경계(`forbid … unless { resource.tenant == principal.tenant }`)가 permit 의 누락과 독립으로 보장되고, '써 넣지 않으면 막힌다'. 대가는 정책을 빠뜨리면 정상 요청도 막힌다는 것 — 감사 로그의 정책 @id 로 추적한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "NGINX 単体で宣言的認可を完結させる Cedar モジュールを作った",
+                "url": "https://creators.bengo4.com/entry/2026/06/16/080000",
+                "publisher": "弁護士ドットコム",
+                "summary": "nginx-auth-cedar — NGINX 워커 안에서 외부 프로세스 · 네트워크 홉 없이 ABAC 를 선언적 정책으로. Cedar 서브셋 평가 엔진을 C 로 자작. OPA + Envoy · OPA + auth_request · AWS Verified Permissions 와 비교(외부 프로세스 · 홉 · AWS 의존).",
+                "date": "2026-06-16"
+              }
+            ]
+          },
+          {
+            "question": "PHP 앱의 Cedar 평가를 로컬 · CI 에서 어떻게 돌리나?",
+            "chosen": "**AVP 와 같은 API 모양의 PHP 확장(php-ext-cedar)** — isAuthorized() 의 키 구조 · AttributeValue 단일 키 union · decision/determiningPolicies/errors 를 맞추고, interface 하나에 AvpClient · CedarLocalClient 어댑터.",
+            "alternatives": [
+              "독자 API 의 로컬 Cedar 라이브러리",
+              "AVP 를 목킹"
+            ],
+            "tradeoff": "본번은 AVP, 로컬 · CI · 온프레는 확장 — 호출 코드는 하나. 갈리는 곳은 policyStoreId 의 값 출처 하나로 가뒀고, AVP 의 Aws\\Result 는 어댑터에서 ->toArray() 로 평범한 배열에 맞췄다(확장이 AWS SDK 를 모르게). 대가는 AVP 의 새 기능을 확장이 따라가야 한다는 것 · 지원하지 않는 키가 있다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "認可の呼び出しコードはほぼそのまま、評価だけ手元に寄せる Cedar 評価 PHP 拡張を作った",
+                "url": "https://creators.bengo4.com/entry/2026/07/15/094823",
+                "publisher": "弁護士ドットコム",
+                "summary": "PBAC 를 PHP 로 — AVP 는 요청 과금 · AWS 락인 · 로컬/CI 에서 돌리기 어렵다. AVP 와 같은 API 모양으로 평가만 프로세스 안에서 하는 PHP 확장(kjdev/php-ext-cedar) — 본번 AVP, 로컬 · CI · 온프레는 확장, 호출 코드를 거의 안 바꾸고 전환.",
+                "date": "2026-07-15"
+              }
+            ]
+          },
+          {
+            "question": "속성 하나가 깨졌으면?",
+            "chosen": "**AVP 처럼 예외 대신 그 속성을 건너뛰고 errors[] 에 쌓은 채 판정을 계속** — 정책 파싱 불가 · 저장소 ID 불일치만 예외.",
+            "alternatives": [
+              "예외로 요청을 떨어뜨린다(C 확장으로는 더 쉽다)"
+            ],
+            "tradeoff": "에러 때 동작까지 AVP 와 같아야 '로컬에서 통과하면 본번에서도 통과' 가 성립한다. 대가는 건너뛴 속성에 걸린 조건이 평가되지 않아 **ALLOW 쪽으로 넘어질(fail-open) 수 있다**는 것 — errors[] 가 비지 않은 응답을 운영에서 감시하는 것이 전제다(NGINX 모듈의 fail-closed 와 반대 방향).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "認可の呼び出しコードはほぼそのまま、評価だけ手元に寄せる Cedar 評価 PHP 拡張を作った",
+                "url": "https://creators.bengo4.com/entry/2026/07/15/094823",
+                "publisher": "弁護士ドットコム",
+                "summary": "PBAC 를 PHP 로 — AVP 는 요청 과금 · AWS 락인 · 로컬/CI 에서 돌리기 어렵다. AVP 와 같은 API 모양으로 평가만 프로세스 안에서 하는 PHP 확장(kjdev/php-ext-cedar) — 본번 AVP, 로컬 · CI · 온프레는 확장, 호출 코드를 거의 안 바꾸고 전환.",
+                "date": "2026-07-15"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "CloudSign 개발 조직과 기반",
+          "via": "멀티테넌트 경계",
+          "contract": "테넌트 경계 forbid 는 여러 기업이 쓰는 SaaS 의 전형이다 — CloudSign 앞에 실제로 서는지는 글에 없다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "NGINX 単体で宣言的認可を完結させる Cedar モジュールを作った",
+              "url": "https://creators.bengo4.com/entry/2026/06/16/080000",
+              "publisher": "弁護士ドットコム",
+              "summary": "nginx-auth-cedar — NGINX 워커 안에서 외부 프로세스 · 네트워크 홉 없이 ABAC 를 선언적 정책으로. Cedar 서브셋 평가 엔진을 C 로 자작. OPA + Envoy · OPA + auth_request · AWS Verified Permissions 와 비교(외부 프로세스 · 홉 · AWS 의존).",
+              "date": "2026-06-16"
+            }
+          ]
+        },
+        {
+          "to": "LegalBrain 요약 · 역출력 측정",
+          "via": "AI 에이전트 · MCP 인가",
+          "contract": "MCP 서버를 NGINX 설정만으로 OAuth 2.1 Resource Server 로 만들고(토큰 검증 · 보호 리소스 메타데이터 · 인증 챌린지, AS 는 Keycloak 등 별도), 에이전트 시대의 제로 트러스트 인가를 OPA · Cedar · OpenFGA 로 비교한다 — LegalBrain 에 쓰이는지는 글에 없다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "MCP サーバーの認可を、自前で書かず NGINX で OAuth 2.1 Resource Server にする",
+              "url": "https://creators.bengo4.com/entry/2026/07/08/091219",
+              "publisher": "弁護士ドットコム",
+              "summary": "MCP 인가 사양은 서버를 OAuth 2.1 Resource Server 로 요구 — 토큰 검증 · 보호 리소스 메타데이터 · 인증 챌린지를 NGINX 설정만으로. 인가 서버(AS)는 Keycloak 등 별도.",
+              "date": "2026-07-08"
+            },
+            {
+              "title": "AI エージェント時代のゼロトラスト認可を実現するためのポリシーエンジン OPA・Cedar・OpenFGA を使ってみる",
+              "url": "https://creators.bengo4.com/entry/2026/09/14/102237",
+              "publisher": "弁護士ドットコム",
+              "summary": "AI 에이전트 시대의 제로 트러스트 인가 — OPA(Rego) · Cedar · OpenFGA(관계 기반)를 같은 시나리오로 비교.",
+              "date": "2026-09-14"
+            }
+          ]
+        },
+        {
+          "to": "CloudSign 구독(수익원)",
+          "via": "요청마다 지나는 인가",
+          "contract": "AVP 요청 과금은 트래픽에 비례한다 — 로컬 평가로 옮기면 비용이 줄 수 있다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "認可の呼び出しコードはほぼそのまま、評価だけ手元に寄せる Cedar 評価 PHP 拡張を作った",
+              "url": "https://creators.bengo4.com/entry/2026/07/15/094823",
+              "publisher": "弁護士ドットコム",
+              "summary": "PBAC 를 PHP 로 — AVP 는 요청 과금 · AWS 락인 · 로컬/CI 에서 돌리기 어렵다. AVP 와 같은 API 모양으로 평가만 프로세스 안에서 하는 PHP 확장(kjdev/php-ext-cedar) — 본번 AVP, 로컬 · CI · 온프레는 확장, 호출 코드를 거의 안 바꾸고 전환.",
+              "date": "2026-07-15"
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "요청이 NGINX 안에서 판정되기까지",
+          "question": "인증과 인가는 어디서 갈리나?",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant C as 클라이언트\n  participant A as ACCESS phase(auth_jwt)\n  participant Z as PRECONTENT(auth_cedar)\n  participant U as 상류(proxy_pass)\n  C->>A: 요청 + JWT\n  A->>A: 토큰 검증 → $jwt_claim_role · tenant\n  A->>Z: 변수 → principal · resource · context 속성\n  Z->>Z: 1 패스 forbid(하나라도 맞으면 거부)\n  Z->>Z: 2 패스 permit(없으면 거부)\n  alt 허용\n    Z->>U: proxy_pass\n  else 거부\n    Z-->>C: 403(또는 404 로 존재 숨김)\n  end\n  Note over Z: $cedar_policy_id · $cedar_advice 를 감사 로그에"
+        },
+        {
+          "title": "본번과 로컬을 한 호출 코드로",
+          "question": "무엇이 같고 무엇만 다른가?",
+          "kind": "flow",
+          "code": "flowchart LR\n  APP[\"PHP 앱\\nisAuthorized($params)\"] --> IF[\"AuthorizationClientInterface\"]\n  IF -->|\"production\"| AVP[\"AvpClient\\nAWS Verified Permissions\\n->toArray()\"]\n  IF -->|\"local · CI · 온프레\"| EXT[\"CedarLocalClient\\nphp-ext-cedar(프로세스 안)\"]\n  ENV[\"policyStoreId 값만 환경에서 주입\"] -.-> APP\n  AVP --> R[\"decision · determiningPolicies · errors\"]\n  EXT --> R"
+        },
+        {
+          "title": "어느 쪽으로 넘어지나",
+          "question": "실패가 막음인가 통과인가?",
+          "kind": "failure",
+          "code": "flowchart TB\n  F1[\"permit 을 빠뜨림\"] --> D1[\"기본 거부 — 막힘\"]\n  F2[\"켜졌는데 정책 집합 NULL\"] --> D2[\"500 — 우회 안 함(fail-closed)\"]\n  F3[\"return 200; 같은 rewrite 응답\"] --> D3[\"PRECONTENT 를 안 지남 — 판정 없음\"]\n  F4[\"PHP 확장에서 속성 값이 깨짐\"] --> D4[\"건너뛰고 errors[] — ALLOW 로 넘어질 수 있음(fail-open)\"]\n  D4 --> M[\"errors[] 비지 않은 응답을 감시\"]\n  F5[\"principal in Role 계층\"] --> D5[\"서브셋 미지원 — 속성으로 대체\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "NGINX 単体で宣言的認可を完結させる Cedar モジュールを作った",
+          "url": "https://creators.bengo4.com/entry/2026/06/16/080000",
+          "publisher": "弁護士ドットコム",
+          "summary": "nginx-auth-cedar — NGINX 워커 안에서 외부 프로세스 · 네트워크 홉 없이 ABAC 를 선언적 정책으로. Cedar 서브셋 평가 엔진을 C 로 자작. OPA + Envoy · OPA + auth_request · AWS Verified Permissions 와 비교(외부 프로세스 · 홉 · AWS 의존).",
+          "date": "2026-06-16"
+        },
+        {
+          "title": "認可の呼び出しコードはほぼそのまま、評価だけ手元に寄せる Cedar 評価 PHP 拡張を作った",
+          "url": "https://creators.bengo4.com/entry/2026/07/15/094823",
+          "publisher": "弁護士ドットコム",
+          "summary": "PBAC 를 PHP 로 — AVP 는 요청 과금 · AWS 락인 · 로컬/CI 에서 돌리기 어렵다. AVP 와 같은 API 모양으로 평가만 프로세스 안에서 하는 PHP 확장(kjdev/php-ext-cedar) — 본번 AVP, 로컬 · CI · 온프레는 확장, 호출 코드를 거의 안 바꾸고 전환.",
+          "date": "2026-07-15"
+        },
+        {
+          "title": "MCP サーバーの認可を、自前で書かず NGINX で OAuth 2.1 Resource Server にする",
+          "url": "https://creators.bengo4.com/entry/2026/07/08/091219",
+          "publisher": "弁護士ドットコム",
+          "summary": "MCP 인가 사양은 서버를 OAuth 2.1 Resource Server 로 요구 — 토큰 검증 · 보호 리소스 메타데이터 · 인증 챌린지를 NGINX 설정만으로. 인가 서버(AS)는 Keycloak 등 별도.",
+          "date": "2026-07-08"
         }
       ]
     }

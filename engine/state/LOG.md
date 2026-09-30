@@ -2912,3 +2912,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 弁護士ドットコム LegalBrain(기능 1/3)
 
 - 판례 요약 FT 글 + 추출형 대체 글 + 저작권 역출력 글로 `legalbrain-faithful-summary-verbatim`. 결정 8 — Gemini 채택(FT 는 ROUGE 1 위 · 변호사 평가 열세) / 충실성 독립 축 / 거부 판례는 추출형 / HipoRank tail 가설 / 최장 공통 부분 문자열 / 41 자 문턱 / 비교 전 정규화 / 접미사 배열 고속화. 다음: Cedar 인가.
+
+## 2026-09-30 弁護士ドットコム Cedar 인가(기능 2/3)
+
+- nginx-auth-cedar 글 + php-ext-cedar 글 + MCP RS 글로 `cedar-authz-edge-inprocess`. 결정 8 — 워커 안 판정 / Cedar / C 서브셋 자작(Rust FFI 오라클 · ASan) / PRECONTENT phase / 로드 때 파싱 / forbid 우선 · 기본 거부 · fail-closed / AVP 호환 PHP 확장 / errors[] 로 계속(fail-open 주의). 다음: CloudSign.
