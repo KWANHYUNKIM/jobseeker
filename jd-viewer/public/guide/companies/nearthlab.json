@@ -1,0 +1,378 @@
+{
+  "slug": "nearthlab",
+  "name": "니어스랩",
+  "name_en": "Nearthlab",
+  "aliases": [
+    "니어스랩"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "https://www.nearthlab.com/",
+  "one_liner": "풍력 블레이드 자율 점검과 방산 무인기를 한 소프트웨어 코어로 — GNC · 자율 비행 인지 엔지니어와 드론 코어 플랫폼 조직장을 뽑는다",
+  "company": {
+    "business": "니어스랩은 **드론 자율 비행 소프트웨어 코어**(회사 표현으로 Aerial Intelligence — 인지 · 항법 · 유도 · 제어를 기체 안에서 하나로)를 만들어 두 시장에 판다. **산업(Enterprise)**: 풍력 발전기 블레이드를 드론이 스스로 점검하는 **NearthWIND Pro · Mobile** 과 Zoomable — 블레이드 10 만 개 이상 점검, 40 개국 이상 배치를 내건다. **방산(Defense)**: 대드론 요격체 **KAiDEN** 과 군집 운용 체계 **XAiDEN**. 공고의 조직은 **HW Platform 팀(드론 코어 하드웨어) → SW Platform 팀(공통 자율 비행 소프트웨어 · SDK) → 임무별 제품팀(GNC · 자율 · 인지)** 과 선행기술팀으로 나뉘어, 공통 플랫폼 위에 임무별 제품을 올리는 구조다. 방산 쪽 공고(GCS 기획 · 디펜스 전략사업 · 방산 보안 인증)도 여럿 있었다(지금은 마감).",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "Nearthlab | We protect what matters most",
+        "url": "https://www.nearthlab.com/",
+        "publisher": "니어스랩",
+        "summary": "Physical AI · Aerial Intelligence — 하드웨어와 무관한 소프트웨어 코어(인지 · 항법 · 유도 · 제어를 기체 안에서 통합), GPS · 사전 경로 · 조종사 없이 자율 비행, 군집 제어, 기존 네트워크 연동. 현장 실적: 블레이드 10 만 개+ 점검, 40 개국+ 배치, 임무 성공률 99.9%+, 280 km/h 고속 자율 비행. 제품: 방산 KAiDEN(대드론 하드킬) · XAiDEN(군집 타격, 1 : 10 동시 통제), 산업 NearthWIND Pro · NearthWIND Mobile(풍력 블레이드 점검) · Zoomable."
+      },
+      {
+        "title": "[개발부문] 시니어 항공 및 로보틱스 엔지니어 (GNC)",
+        "url": "https://www.wanted.co.kr/wd/356279",
+        "publisher": "원티드",
+        "summary": "임무별 무인기 GNC 아키텍처, 유도 법칙 · 항법 필터 · 비행 제어, IMU · GNSS · 기압계 · 자력계 · 비전 다중 센서 융합 항법과 GPS-denied 대안 항법, 경로 계획 · 궤적, 6-DOF 시뮬레이션 · Monte Carlo · 비행 시험, C++ 비행제어 SW 통합, 로그 분석 튜닝. 석사+, GNC 7 년+, PID · LQR · MPC · Robust/Adaptive/Nonlinear, EKF · UKF, 비행역학, C/C++ 7 년. 우대 박사 · 궤적 최적화 · VIO/TRN · SILS/HILS · PX4 · MAVLink · Simulink · ROS2 · RTOS."
+      },
+      {
+        "title": "[개발부문] 항공 및 로보틱스 엔지니어 (UAV Autonomy)",
+        "url": "https://www.wanted.co.kr/wd/322206",
+        "publisher": "원티드",
+        "summary": "SW Platform 팀의 공통 플랫폼 위에서 임무별 인지 · 항법 · 유도 · 제어, 카메라 · LiDAR · IMU 로 SLAM · 객체 탐지/추적 · 장애물 회피를 GNC 와 통합, 6-DOF 시뮬레이션 검증부터 비행 시험까지, C++ 구현. 학사+, GNC/로보틱스 자율 3 년+, 제어 · 상태 추정 · 필터링. 우대 VO/VIO · YOLO 등 · 센서 캘리브레이션 · OpenCV/PCL/ROS · PX4/ArduPilot/MAVLink."
+      },
+      {
+        "title": "[개발부문] 플랫폼실 실장",
+        "url": "https://www.wanted.co.kr/wd/323962",
+        "publisher": "원티드",
+        "summary": "여러 임무 드론에 공통으로 들어가는 드론 코어 플랫폼 개발 총괄 — 자율비행 SW · 임베디드 SW · 전장 · 기구 팀 리딩, 플랫폼 버전 · 하위 호환성 전략, 부품(센서 · 액추에이터 · 통신) 표준화 · 검증 → 드라이버/HAL 라이브러리화, 운용 환경 테스트, 선행개발 TRL 4~6 → 7~9 성숙화, 제품팀 기술 지원 체계. 움직이는 전자 제품 개발 리더(양산 전환 총괄). 우대 10 명+ 매트릭스 조직 · 방위사업청 납품."
+      }
+    ],
+    "scale": [
+      {
+        "label": "블레이드 점검",
+        "value": "100,000 개 이상",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Nearthlab | We protect what matters most",
+            "url": "https://www.nearthlab.com/",
+            "publisher": "니어스랩",
+            "summary": "Physical AI · Aerial Intelligence — 하드웨어와 무관한 소프트웨어 코어(인지 · 항법 · 유도 · 제어를 기체 안에서 통합), GPS · 사전 경로 · 조종사 없이 자율 비행, 군집 제어, 기존 네트워크 연동. 현장 실적: 블레이드 10 만 개+ 점검, 40 개국+ 배치, 임무 성공률 99.9%+, 280 km/h 고속 자율 비행. 제품: 방산 KAiDEN(대드론 하드킬) · XAiDEN(군집 타격, 1 : 10 동시 통제), 산업 NearthWIND Pro · NearthWIND Mobile(풍력 블레이드 점검) · Zoomable."
+          }
+        ]
+      },
+      {
+        "label": "배치 국가",
+        "value": "40 개국 이상",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Nearthlab | We protect what matters most",
+            "url": "https://www.nearthlab.com/",
+            "publisher": "니어스랩",
+            "summary": "Physical AI · Aerial Intelligence — 하드웨어와 무관한 소프트웨어 코어(인지 · 항법 · 유도 · 제어를 기체 안에서 통합), GPS · 사전 경로 · 조종사 없이 자율 비행, 군집 제어, 기존 네트워크 연동. 현장 실적: 블레이드 10 만 개+ 점검, 40 개국+ 배치, 임무 성공률 99.9%+, 280 km/h 고속 자율 비행. 제품: 방산 KAiDEN(대드론 하드킬) · XAiDEN(군집 타격, 1 : 10 동시 통제), 산업 NearthWIND Pro · NearthWIND Mobile(풍력 블레이드 점검) · Zoomable."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "풍력 블레이드 자율 점검(NearthWIND)",
+        "how": "풍력 발전 운영사에 자율 점검 드론 · 소프트웨어를 공급한다 — 판매 · 서비스 요금 구조는 사이트 첫 화면에 없다.",
+        "domains": [
+          "자율 비행 인지(SLAM · 탐지 · 회피)",
+          "드론 코어 플랫폼(HW · SW 공통층)"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "Nearthlab | We protect what matters most",
+            "url": "https://www.nearthlab.com/",
+            "publisher": "니어스랩",
+            "summary": "Physical AI · Aerial Intelligence — 하드웨어와 무관한 소프트웨어 코어(인지 · 항법 · 유도 · 제어를 기체 안에서 통합), GPS · 사전 경로 · 조종사 없이 자율 비행, 군집 제어, 기존 네트워크 연동. 현장 실적: 블레이드 10 만 개+ 점검, 40 개국+ 배치, 임무 성공률 99.9%+, 280 km/h 고속 자율 비행. 제품: 방산 KAiDEN(대드론 하드킬) · XAiDEN(군집 타격, 1 : 10 동시 통제), 산업 NearthWIND Pro · NearthWIND Mobile(풍력 블레이드 점검) · Zoomable."
+          }
+        ]
+      },
+      {
+        "name": "방산 무인기 체계(KAiDEN · XAiDEN)",
+        "how": "군 · 방산 고객에게 무인기 체계를 납품한다 — 계약 규모는 공개 자료에서 읽지 않았다.",
+        "domains": [
+          "무인기 유도 · 항법 · 제어(GNC)",
+          "드론 코어 플랫폼(HW · SW 공통층)"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "Nearthlab | We protect what matters most",
+            "url": "https://www.nearthlab.com/",
+            "publisher": "니어스랩",
+            "summary": "Physical AI · Aerial Intelligence — 하드웨어와 무관한 소프트웨어 코어(인지 · 항법 · 유도 · 제어를 기체 안에서 통합), GPS · 사전 경로 · 조종사 없이 자율 비행, 군집 제어, 기존 네트워크 연동. 현장 실적: 블레이드 10 만 개+ 점검, 40 개국+ 배치, 임무 성공률 99.9%+, 280 km/h 고속 자율 비행. 제품: 방산 KAiDEN(대드론 하드킬) · XAiDEN(군집 타격, 1 : 10 동시 통제), 산업 NearthWIND Pro · NearthWIND Mobile(풍력 블레이드 점검) · Zoomable."
+          },
+          {
+            "title": "[개발부문] 플랫폼실 실장",
+            "url": "https://www.wanted.co.kr/wd/323962",
+            "publisher": "원티드",
+            "summary": "여러 임무 드론에 공통으로 들어가는 드론 코어 플랫폼 개발 총괄 — 자율비행 SW · 임베디드 SW · 전장 · 기구 팀 리딩, 플랫폼 버전 · 하위 호환성 전략, 부품(센서 · 액추에이터 · 통신) 표준화 · 검증 → 드라이버/HAL 라이브러리화, 운용 환경 테스트, 선행개발 TRL 4~6 → 7~9 성숙화, 제품팀 기술 지원 체계. 움직이는 전자 제품 개발 리더(양산 전환 총괄). 우대 10 명+ 매트릭스 조직 · 방위사업청 납품."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "무인기 유도 · 항법 · 제어(GNC)",
+        "why": "GNC 공고가 유도 법칙 · 항법 필터 · 비행 제어 · 다중 센서 융합 · GPS-denied 항법 · 6-DOF 시뮬레이션 · 비행 시험을 적는다.",
+        "what_to_know": [
+          "EKF · UKF 상태 추정",
+          "LQR · MPC",
+          "6-DOF 시뮬레이션 · Monte Carlo",
+          "PX4 구조"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[개발부문] 시니어 항공 및 로보틱스 엔지니어 (GNC)",
+            "url": "https://www.wanted.co.kr/wd/356279",
+            "publisher": "원티드",
+            "summary": "임무별 무인기 GNC 아키텍처, 유도 법칙 · 항법 필터 · 비행 제어, IMU · GNSS · 기압계 · 자력계 · 비전 다중 센서 융합 항법과 GPS-denied 대안 항법, 경로 계획 · 궤적, 6-DOF 시뮬레이션 · Monte Carlo · 비행 시험, C++ 비행제어 SW 통합, 로그 분석 튜닝. 석사+, GNC 7 년+, PID · LQR · MPC · Robust/Adaptive/Nonlinear, EKF · UKF, 비행역학, C/C++ 7 년. 우대 박사 · 궤적 최적화 · VIO/TRN · SILS/HILS · PX4 · MAVLink · Simulink · ROS2 · RTOS."
+          }
+        ]
+      },
+      {
+        "name": "자율 비행 인지(SLAM · 탐지 · 회피)",
+        "why": "UAV Autonomy 공고가 SLAM · 객체 탐지/추적 · 장애물 회피를 GNC 와 통합한다고 적는다.",
+        "what_to_know": [
+          "VIO",
+          "실시간 탐지 · 추적",
+          "센서 캘리브레이션"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[개발부문] 항공 및 로보틱스 엔지니어 (UAV Autonomy)",
+            "url": "https://www.wanted.co.kr/wd/322206",
+            "publisher": "원티드",
+            "summary": "SW Platform 팀의 공통 플랫폼 위에서 임무별 인지 · 항법 · 유도 · 제어, 카메라 · LiDAR · IMU 로 SLAM · 객체 탐지/추적 · 장애물 회피를 GNC 와 통합, 6-DOF 시뮬레이션 검증부터 비행 시험까지, C++ 구현. 학사+, GNC/로보틱스 자율 3 년+, 제어 · 상태 추정 · 필터링. 우대 VO/VIO · YOLO 등 · 센서 캘리브레이션 · OpenCV/PCL/ROS · PX4/ArduPilot/MAVLink."
+          }
+        ]
+      },
+      {
+        "name": "드론 코어 플랫폼(HW · SW 공통층)",
+        "why": "플랫폼실 실장 공고가 공통 드론 코어 플랫폼 · 부품 표준화 · 드라이버/HAL · 버전 · 하위 호환성 · TRL 성숙화를 적는다.",
+        "what_to_know": [
+          "HAL · 드라이버 계층",
+          "플랫폼 버전 · 하위 호환",
+          "TRL"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[개발부문] 플랫폼실 실장",
+            "url": "https://www.wanted.co.kr/wd/323962",
+            "publisher": "원티드",
+            "summary": "여러 임무 드론에 공통으로 들어가는 드론 코어 플랫폼 개발 총괄 — 자율비행 SW · 임베디드 SW · 전장 · 기구 팀 리딩, 플랫폼 버전 · 하위 호환성 전략, 부품(센서 · 액추에이터 · 통신) 표준화 · 검증 → 드라이버/HAL 라이브러리화, 운용 환경 테스트, 선행개발 TRL 4~6 → 7~9 성숙화, 제품팀 기술 지원 체계. 움직이는 전자 제품 개발 리더(양산 전환 총괄). 우대 10 명+ 매트릭스 조직 · 방위사업청 납품."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "GPS 없이",
+        "evidence": "• IMU, GNSS, 기압계, 자력계, 비전 센서 등 다중 센서 융합 기반 항법 시스템 설계, GPS-denied 환경 대안 항법 솔루션 개발 및 방법론 리딩",
+        "so_what": "회사 사이트도 'GPS 없이' 를 내세운다 — 위성 신호가 없을 때 상태 추정이 어떻게 발산하고 무엇으로 붙잡는지 설명할 수 있어야 한다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "비행 시험이 일의 일부",
+        "evidence": "• 현장에서 진행하는 비행 시험에 열려 있으신 분",
+        "so_what": "시뮬레이션에서 끝나지 않는다 — 비행 로그로 문제를 찾은 경험이 설득력이 크다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "매출 · 인원 · 사업별 비중은 이번에 읽지 않았다(사이트에 Investors 메뉴가 있다)",
+    "원티드 공고에 근무지가 없다 — 사람인 공고(마감)는 서울 송파구로 적었다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/356279",
+      "title": "[개발부문] 시니어 항공 및 로보틱스 엔지니어 (GNC)",
+      "site": "wanted",
+      "verdict": "경력 7년 이상, 석사 이상. 임무별 무인기 **GNC 아키텍처**와 팀 기술 방향 — **유도 법칙 · 항법 필터 · 비행 제어** 설계, **IMU · GNSS · 기압계 · 자력계 · 비전 다중 센서 융합 항법**과 **GPS-denied 대안 항법**, 경로 계획 · 궤적 생성/추종, **6-DOF 시뮬레이션 · Monte Carlo** · 실 비행 시험 전 주기, **C++ 로 비행제어 SW 통합**, 비행 로그로 성능 진단 · 튜닝, 설계 검토 · 안전성 평가 · 문서. 자격은 GNC 7 년, 고전(PID) · 최적(LQR · MPC) · 현대 제어(Robust · Adaptive · Nonlinear), **EKF · UKF**, 비행역학 · 6-DOF, **C/C++ 7 년 · 실시간 임베디드 최적화**, 코드 리뷰 리딩, 비행 시험 주도. 우대는 박사, 궤적 최적화, 비선형 유도, 강화 학습 유도제어, **VIO · TRN**, SILS/HILS, **PX4 커스터마이징**, MAVLink, Simulink 코드 생성, ROS2, RTOS, UART · SPI · I2C · CAN. 방산 제품(대드론 · 군집)을 만드는 회사다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "GNC 7년",
+          "EKF · UKF",
+          "LQR · MPC",
+          "C/C++ 실시간"
+        ],
+        "can_learn": [
+          "PX4 내부",
+          "HILS"
+        ]
+      },
+      "study": [
+        {
+          "topic": "GPS 가 끊겨도 위치를 붙잡는다 — 오차 상태 EKF 로 IMU · 기압계 · 자력계 · 비전 융합",
+          "from": "task",
+          "quote": "• IMU, GNSS, 기압계, 자력계, 비전 센서 등 다중 센서 융합 기반 항법 시스템 설계, GPS-denied 환경 대안 항법 솔루션 개발 및 방법론 리딩",
+          "priority": "core",
+          "why": "주요업무다. 회사 사이트도 GPS 없는 자율 비행을 내세운다.",
+          "gap_check": "IMU 적분만 남으면 위치 오차는 시간에 대해 어떻게 커지나(자이로 · 가속도 바이어스)? 오차 상태(error-state) EKF 가 전체 상태 EKF 보다 자세 표현에서 나은 이유는(쿼터니언 정규화)? 비전 속도 측정이 들어오면 관측 가능한 상태와 여전히 안 보이는 상태(요 · 절대 위치)는? 측정 지연(카메라 50 ms)은 어떻게 다루나?",
+          "drill": "PX4 SITL(Gazebo)에서 비행 로그를 받아 IMU · 기압계 · 자력계 · 광류(optical flow) 속도를 입력으로 파이썬 오차 상태 EKF 를 직접 짠다. GPS 를 30 초 끊었을 때 위치 · 속도 오차를 GPS 가 있을 때와 그래프로 비교하고, 광류를 넣고 뺀 두 경우의 드리프트를 표로 적는다. 결과를 PX4 EKF2 의 추정값과 겹쳐 본다.",
+          "hours": 16,
+          "resources": [
+            {
+              "title": "PX4 — Using the ECL EKF",
+              "url": "https://docs.px4.io/main/en/advanced_config/tuning_the_ecl_ekf.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Solà — Quaternion kinematics for the error-state Kalman filter",
+              "url": "https://arxiv.org/abs/1711.02508",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "제어기를 바꾸기 전에 — 6-DOF 시뮬레이션과 Monte Carlo 로 강건성을 잰다",
+          "from": "task",
+          "quote": "• 6-DOF 시뮬레이션 환경 구축·고도화, Monte Carlo 분석 주도, 실 비행 시험 전 주기 리딩",
+          "priority": "core",
+          "why": "주요업무다.",
+          "gap_check": "쿼드콥터 6-DOF 모델에서 흔들어 볼 매개변수는 무엇인가(질량 · 관성 · 모터 시정수 · 센서 잡음 · 바람)? Monte Carlo 몇 번이면 '99% 성공' 을 말할 수 있나? SITL · HILS 는 각각 무엇을 검증하고 무엇을 못 하나?",
+          "drill": "파이썬으로 쿼드콥터 6-DOF(강체 + 모터 1 차 지연 + 돌풍) 모델과 캐스케이드 PID(자세 · 위치)를 만든다. 질량 ±20% · 관성 ±30% · 모터 시정수 · 돌풍을 무작위로 뽑아 1,000 회 돌려 웨이포인트 추종 오차 분포와 발산 비율을 보고, 같은 조건에서 LQR 자세 제어기와 비교한다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "PX4 — Simulation",
+              "url": "https://docs.px4.io/main/en/simulation/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "비행 로그로 튜닝한다 — PX4 ulog 로 제어 성능 진단",
+          "from": "task",
+          "quote": "• 비행 시험 데이터(로그) 분석을 통한 GNC 성능 진단 및 지속적 튜닝, 문제 원인 분석 리드",
+          "priority": "high",
+          "why": "주요업무다.",
+          "gap_check": "자세 명령과 실제 각속도를 겹쳐 보면 무엇으로 과튜닝 · 저튜닝을 가르나(오버슈트 · 진동 주파수)? 진동이 제어 문제인지 기체 공진 · 프로펠러 불균형인지는 무엇으로 가르나(가속도 FFT)? 추정기 혁신값(innovation)이 튀면 무엇을 의심하나?",
+          "drill": "PX4 SITL 에서 자세 P 게인을 일부러 1.5 배 올린 비행과 기본값 비행 ulog 를 받아 pyulog 로 명령 대 실제 각속도 · 가속도 스펙트럼 · EKF 혁신값을 그리고, 두 로그의 차이를 한 쪽 진단 보고서로 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "PX4 — Flight Log Analysis",
+              "url": "https://docs.px4.io/main/en/log/flight_log_analysis.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/322206",
+      "title": "[개발부문] 항공 및 로보틱스 엔지니어 (UAV Autonomy)",
+      "site": "wanted",
+      "verdict": "경력 3년 이상, 학사 이상. **SW Platform 팀의 공통 플랫폼** 위에서 임무별 무인기의 **인지 · 항법 · 유도 · 제어**를 만든다 — 카메라 · LiDAR · IMU 로 **SLAM · 객체 탐지/추적 · 장애물 회피**를 GNC 와 통합, 요구사항 분석 → 아키텍처 → 알고리즘 → **6-DOF 시뮬레이션 검증 → 실제 비행 시험**, C++ 로 비행체 통합, 비행 데이터로 최적화. 자격은 GNC · 로보틱스 자율 3 년, 제어 · 상태 추정 · 필터링, 무인기 · 로봇 알고리즘, C++/C/Python 3 년, 멀티스레딩, 현장 비행 시험 가능. 우대는 석 · 박사, 궤적 최적화, **VO · VIO**, YOLO 등 실시간 탐지 · 추적, 다중 센서 융합 · 캘리브레이션, OpenCV · PCL · ROS2, 임베디드, **PX4 · ArduPilot · MAVLink**, Simulink. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "자율 · GNC 3년",
+          "상태 추정",
+          "C++"
+        ],
+        "can_learn": [
+          "VIO",
+          "PX4 오프보드 제어"
+        ]
+      },
+      "study": [
+        {
+          "topic": "카메라와 IMU 로 스스로 위치를 안다 — VIO 를 돌려 보고 실패 조건을 찾는다",
+          "from": "task",
+          "quote": "• 카메라, LiDAR, IMU 등 센서 데이터를 활용한 SLAM, 객체 탐지 및 추적, 장애물 회피 등의 인지 시스템을 구축하고, 이를 GNC 시스템과 통합하여 임무에 맞는 자율 비행 능력을 구현",
+          "priority": "core",
+          "why": "주요업무다.",
+          "gap_check": "VIO 가 무너지는 전형적 조건은(텍스처 없는 면 · 빠른 회전 · 조명 변화 · 동적 물체)? 카메라-IMU 외부 매개변수 · 시간 오프셋이 틀리면 궤적이 어떻게 틀어지나? VIO 출력을 비행 제어의 위치 추정에 넣을 때 공분산을 어떻게 넘기나?",
+          "drill": "EuRoC MAV 데이터셋에서 OpenVINS(또는 VINS-Fusion)를 돌려 쉬운 시퀀스 · 어려운 시퀀스의 궤적 오차(ATE)를 evo 로 재고, 카메라-IMU 시간 오프셋을 일부러 20 ms 틀렸을 때 오차 변화를 비교한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "OpenVINS",
+              "url": "https://docs.openvins.com/",
+              "kind": "docs"
+            },
+            {
+              "title": "EuRoC MAV Dataset",
+              "url": "https://projects.asl.ethz.ch/datasets/doku.php?id=kmavvisualinertialdatasets",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "인지 결과를 비행으로 — 장애물 회피를 PX4 오프보드 제어로 통합",
+          "from": "task",
+          "quote": "• 임무 요구사항 분석부터 시작하여 시스템 아키텍처 설계, 알고리즘 개발, 6-DOF 시뮬레이션을 통한 검증, 실제 비행 시험까지 전체 개발 주기를 주도",
+          "priority": "high",
+          "why": "주요업무다. 인지 모듈이 경로를 바꿔도 비행 제어가 안전해야 한다.",
+          "gap_check": "오프보드 모드에서 명령이 끊기면 PX4 는 어떻게 하나(페일세이프)? 깊이 영상에서 장애물을 볼 때 회피 경로를 몇 Hz 로 다시 짜야 하나(속도 · 제동 거리)? 회피가 실패했을 때 멈춤 · 복귀 중 무엇을 고르나?",
+          "drill": "PX4 SITL + Gazebo 에 깊이 카메라 기체를 띄우고 ROS 2 노드로 깊이 영상에서 앞쪽 장애물을 감지해 속도 명령을 옆으로 틀어 피하는 간단한 회피기를 만든다. 오프보드 명령을 일부러 끊어 페일세이프 동작을 확인하고, 비행 속도별 회피 성공률을 표로 만든다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "PX4 — ROS 2 Offboard Control Example",
+              "url": "https://docs.px4.io/main/en/ros2/offboard_control.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/323962",
+      "title": "[개발부문] 플랫폼실 실장",
+      "site": "wanted",
+      "verdict": "경력 15년 이상의 조직장. 여러 임무 드론에 공통으로 들어가는 **드론 코어 플랫폼 개발 총괄** — 자율비행 SW · 임베디드 SW · 전장 · 기구 팀 리딩, 부품 선정 · 라이브러리화 · 검증, **플랫폼 버전 관리 · 하위 호환성 전략**, 센서 · 액추에이터 · 통신 모듈 **표준화 · 검증 체계**와 **드라이버/HAL 라이브러리화**, 운용 환경 테스트 · 신뢰성, 선행개발 **TRL 4~6 → 7~9 성숙화**, 제품팀 기술 지원(문서 · 교육). 자격은 드론 · 로봇 · 자율주행 · 로봇청소기 같은 **움직이는 전자 제품 개발 리더**(아키텍처 · HW/SW 통합 · **양산 전환** 총괄), 크로스 도메인 의사결정, 플랫폼/SDK 아키텍처 · 버전, HW/SW 모듈화 · 인터페이스 표준화, 외주 관리. 우대는 10 명+ 매트릭스 조직, 프로토타입 → 양산 전주기, AI 비행제어 이해, **방위사업청 납품**, 영어. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "움직이는 제품 개발 리더 · 양산 전환",
+          "플랫폼/SDK 버전 관리"
+        ],
+        "can_learn": [
+          "방산 획득 절차",
+          "드론 부품 생태계"
+        ]
+      },
+      "study": [
+        {
+          "topic": "부품이 바뀌어도 위가 안 깨진다 — 드라이버/HAL 계층과 플랫폼 하위 호환",
+          "from": "task",
+          "quote": "• 플랫폼 버전 관리 및 하위 호환성 전략 수립",
+          "priority": "core",
+          "why": "주요업무다. 공통 플랫폼 위에 임무별 제품팀이 올라가므로 플랫폼 변경이 제품 여럿을 흔든다.",
+          "gap_check": "IMU 모델을 바꿨을 때 상위 추정기가 몰라도 되게 하려면 HAL 이 무엇을 감춰야 하나(좌표계 · 단위 · 타임스탬프 · 잡음 특성)? 플랫폼 API 의 깨지는 변경은 어떻게 알리고 몇 버전 동안 옛 API 를 두나? 제품팀마다 다른 플랫폼 버전을 쓰면 보안 · 안전 수정은 어떻게 내리나?",
+          "drill": "PX4 의 uORB 토픽 · 드라이버 구조를 읽고, 가상의 드론 플랫폼 v1 → v2 이행 계획서(깨지는 변경 목록 · 호환 기간 · 이행 도구 · 제품팀별 일정)를 2 쪽으로 쓴다. IMU 두 종의 데이터시트로 HAL 이 맞춰야 할 항목표를 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "PX4 — Architectural Overview",
+              "url": "https://docs.px4.io/main/en/concept/architecture.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "연구 결과를 제품으로 — TRL 4~6 에서 7~9 로",
+          "from": "task",
+          "quote": "• 선행개발 조직(별도 팀)의 TRL 4~6 수준 결과물을 TRL 7~9 단계로 성숙화",
+          "priority": "high",
+          "why": "주요업무다.",
+          "gap_check": "TRL 6(유사 환경 시연)과 7(운용 환경 시연) 사이에 추가로 필요한 증거는 무엇인가? 양산 전환 때 연구 코드에서 바뀌어야 하는 것(설정 관리 · 로깅 · 페일세이프 · 시험 자동화)은? 방산 납품에서 이 단계가 어떤 시험 · 문서로 확인되나?",
+          "drill": "NASA TRL 정의를 읽고, 앞 사례의 VIO 모듈 같은 선행 결과물 하나를 골라 TRL 5 → 8 로 올리는 데 필요한 시험 · 문서 · 품질 게이트를 단계별 체크리스트로 만든다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "NASA — Technology Readiness Levels",
+              "url": "https://www.nasa.gov/directorates/somd/space-communications-navigation-program/technology-readiness-levels/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
