@@ -1,0 +1,372 @@
+{
+  "slug": "hansolpns",
+  "name": "한솔피엔에스",
+  "name_en": "Hansol PNS",
+  "aliases": [
+    "한솔피엔에스",
+    "한솔PNS"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "https://www.hansolpns.com/",
+  "one_liner": "한솔그룹의 제조 현장에 강한 IT 서비스 회사 — 자사 MES I'MFACTO 개발과 고객 MES · 물류 시스템 운영 자리를 뽑는다",
+  "company": {
+    "business": "한솔PNS 는 한솔그룹의 IT 서비스 회사(IT 부문)이자 지류유통 회사다. IT 부문은 **한솔그룹 및 대외 고객**을 대상으로 **스마트 팩토리 · AI**, 클라우드 · Data Platform(클라우드 MSP), IT 서비스(ITO · ERP), ICT 인프라 사업을 한다. 공고는 스스로를 **'제조업 현장에 강한 IT 서비스 회사'** 라 부르고, ERP · MES · IoT · 인프라 전 영역의 운영과 오랜 **ITSM** 운영에서 오는 안정 운영 · 빠른 장애 대응을 핵심 경쟁력으로 든다. 자사 솔루션군 **I'MFACTO** — MES(국가공인 SW 품질 1등급, v2.0) · PAM(설비고장 예측) · QMS · WMS · ESH(안전관리) — 과 제조 버티컬 AI 플랫폼 **I'MFACTO AI 아틀라스**를 갖고 있다(홈페이지 · 공고). 모집중 셋은 자사 MES 풀스택(R&D), 고객사 MES 운영(Power Builder · Oracle), 물류 시스템 운영(WMS · TMS · OMS)이다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "한솔PNS",
+        "url": "https://www.hansolpns.com/main.do",
+        "publisher": "한솔PNS",
+        "summary": "사업: 스마트 팩토리 · AI(I'MFACTO AI Atlas · MES · PAM 설비고장 예측 · QMS · WMS · ESH 안전관리), 클라우드 · Data Platform(클라우드 MSP), IT 서비스(ITO · ERP), ICT 인프라(스토리지 · 네트워크 · 서버), 지류유통."
+      },
+      {
+        "title": "MES 개발자(full-stack) 6년 이상",
+        "url": "https://www.wanted.co.kr/wd/372772",
+        "publisher": "원티드",
+        "summary": "한솔PNS IT 부문 — 한솔그룹 및 대외 고객 대상 스마트 팩토리 · AI, 클라우드 · Data Platform, IT 서비스, ICT 인프라. ERP · MES · IoT · 인프라 운영, 오랜 ITSM 운영. SW 품질 1등급 I'MFACTO MES v2.0, 제조 버티컬 AI 플랫폼 I'MFACTO AI 아틀라스. 자사 MES R&D FE · BE(AI mode 포함) · 프로젝트. Spring Boot, Vue/React TS, RDB, 국내외 출장. 우대 MES/ERP, Nuxt3 · TDD, Python/Go, AI Code Agent."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "자사 솔루션 I'MFACTO 구축",
+        "how": "MES · WMS · QMS 등 자사 솔루션을 제조 고객에게 구축하는 프로젝트 — 국내외 출장이 자격에 있다. 라이선스 · 구축비 구성은 읽은 자료에 없다.",
+        "domains": [
+          "제조 MES 솔루션 개발"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "한솔PNS",
+            "url": "https://www.hansolpns.com/main.do",
+            "publisher": "한솔PNS",
+            "summary": "사업: 스마트 팩토리 · AI(I'MFACTO AI Atlas · MES · PAM 설비고장 예측 · QMS · WMS · ESH 안전관리), 클라우드 · Data Platform(클라우드 MSP), IT 서비스(ITO · ERP), ICT 인프라(스토리지 · 네트워크 · 서버), 지류유통."
+          },
+          {
+            "title": "MES 개발자(full-stack) 6년 이상",
+            "url": "https://www.wanted.co.kr/wd/372772",
+            "publisher": "원티드",
+            "summary": "한솔PNS IT 부문 — 한솔그룹 및 대외 고객 대상 스마트 팩토리 · AI, 클라우드 · Data Platform, IT 서비스, ICT 인프라. ERP · MES · IoT · 인프라 운영, 오랜 ITSM 운영. SW 품질 1등급 I'MFACTO MES v2.0, 제조 버티컬 AI 플랫폼 I'MFACTO AI 아틀라스. 자사 MES R&D FE · BE(AI mode 포함) · 프로젝트. Spring Boot, Vue/React TS, RDB, 국내외 출장. 우대 MES/ERP, Nuxt3 · TDD, Python/Go, AI Code Agent."
+          }
+        ]
+      },
+      {
+        "name": "IT 운영 대행(ITO) · 유지보수",
+        "how": "그룹사 · 대외 고객의 MES · ERP · 물류 시스템을 운영 · 고도화한다 — 운영 계약 형태는 모른다.",
+        "domains": [
+          "제조 · 물류 시스템 운영"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "제조생산 MES 운영/개발자 3년 이상",
+            "url": "https://www.wanted.co.kr/wd/372780",
+            "publisher": "원티드",
+            "summary": "MES 개발 · 운영, 생산 운영 · 프로젝트, Power Builder 기반 시스템 유지보수, Oracle 생산 · 품질 데이터, 인터페이스, 월/분기/반기/년 마감 · 외부 감사 지원, DX/AX 전환. Oracle PL/SQL, MES 운영. 우대 Power Builder, MES/ERP 리드, Spring Boot, Vue/React."
+          },
+          {
+            "title": "물류 운영/개발자 5년 이상",
+            "url": "https://www.wanted.co.kr/wd/375618",
+            "publisher": "원티드",
+            "summary": "물류 IT 운영 · 유지보수 — 주문 · 운송 · 창고 · 재고 · 출고 · 정산, WMS/TMS/OMS/물류 ERP 장애 대응, SAP/MES/외부기관 인터페이스, 내부통제 · 감사. Oracle 대용량 데이터 정합성, Spring 웹. 자격 Java · JSP · Spring, PL/SQL, Linux WAS, WMS · TMS · OMS · EDI. 우대 3PL, 대량 주문 · 마감 · 정산."
+          },
+          {
+            "title": "한솔PNS",
+            "url": "https://www.hansolpns.com/main.do",
+            "publisher": "한솔PNS",
+            "summary": "사업: 스마트 팩토리 · AI(I'MFACTO AI Atlas · MES · PAM 설비고장 예측 · QMS · WMS · ESH 안전관리), 클라우드 · Data Platform(클라우드 MSP), IT 서비스(ITO · ERP), ICT 인프라(스토리지 · 네트워크 · 서버), 지류유통."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "제조 MES 솔루션 개발",
+        "why": "자사 MES I'MFACTO 의 R&D 프론트 · 백엔드(AI mode 포함)와 고객 프로젝트를 Spring Boot · Vue/React 로 한다.",
+        "what_to_know": [
+          "ISA-95 계층",
+          "생산 실적 · LOT 추적",
+          "설비 데이터 수집"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "MES 개발자(full-stack) 6년 이상",
+            "url": "https://www.wanted.co.kr/wd/372772",
+            "publisher": "원티드",
+            "summary": "한솔PNS IT 부문 — 한솔그룹 및 대외 고객 대상 스마트 팩토리 · AI, 클라우드 · Data Platform, IT 서비스, ICT 인프라. ERP · MES · IoT · 인프라 운영, 오랜 ITSM 운영. SW 품질 1등급 I'MFACTO MES v2.0, 제조 버티컬 AI 플랫폼 I'MFACTO AI 아틀라스. 자사 MES R&D FE · BE(AI mode 포함) · 프로젝트. Spring Boot, Vue/React TS, RDB, 국내외 출장. 우대 MES/ERP, Nuxt3 · TDD, Python/Go, AI Code Agent."
+          },
+          {
+            "title": "한솔PNS",
+            "url": "https://www.hansolpns.com/main.do",
+            "publisher": "한솔PNS",
+            "summary": "사업: 스마트 팩토리 · AI(I'MFACTO AI Atlas · MES · PAM 설비고장 예측 · QMS · WMS · ESH 안전관리), 클라우드 · Data Platform(클라우드 MSP), IT 서비스(ITO · ERP), ICT 인프라(스토리지 · 네트워크 · 서버), 지류유통."
+          }
+        ]
+      },
+      {
+        "name": "제조 · 물류 시스템 운영",
+        "why": "MES 운영 공고(Power Builder · Oracle · 마감 · 감사)와 물류 공고(WMS · TMS · OMS · SAP 인터페이스 · 정산 · 데이터 정합성)가 운영 · 유지보수가 일의 중심이라고 적는다.",
+        "what_to_know": [
+          "Oracle PL/SQL 튜닝",
+          "인터페이스 재처리",
+          "월 마감 · 감사 대응"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "제조생산 MES 운영/개발자 3년 이상",
+            "url": "https://www.wanted.co.kr/wd/372780",
+            "publisher": "원티드",
+            "summary": "MES 개발 · 운영, 생산 운영 · 프로젝트, Power Builder 기반 시스템 유지보수, Oracle 생산 · 품질 데이터, 인터페이스, 월/분기/반기/년 마감 · 외부 감사 지원, DX/AX 전환. Oracle PL/SQL, MES 운영. 우대 Power Builder, MES/ERP 리드, Spring Boot, Vue/React."
+          },
+          {
+            "title": "물류 운영/개발자 5년 이상",
+            "url": "https://www.wanted.co.kr/wd/375618",
+            "publisher": "원티드",
+            "summary": "물류 IT 운영 · 유지보수 — 주문 · 운송 · 창고 · 재고 · 출고 · 정산, WMS/TMS/OMS/물류 ERP 장애 대응, SAP/MES/외부기관 인터페이스, 내부통제 · 감사. Oracle 대용량 데이터 정합성, Spring 웹. 자격 Java · JSP · Spring, PL/SQL, Linux WAS, WMS · TMS · OMS · EDI. 우대 3PL, 대량 주문 · 마감 · 정산."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "운영이 강점이자 일의 대부분이다",
+        "evidence": "오랜 기간 ITSM을 운영해온 만큼, 안정적인 시스템 운영과 빠른 장애 대응 능력은 한솔PNS IT부문의 핵심 경쟁력입니다.",
+        "so_what": "세 공고 중 둘이 운영 · 유지보수 자리다 — 면접에서 장애 대응 · 마감 · 감사 경험을 구체적으로 묻는다고 보고 준비한다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "레거시 위에서 DX/AX 를 얹는다",
+        "evidence": "ㆍPower Builder 기반 시스템 운영, 유지보수",
+        "so_what": "Power Builder · Oracle 운영과 Spring Boot · Vue · AI 가 한 공고에 같이 적혀 있다 — 오래된 시스템을 멈추지 않고 옮기는 경험이 강점이 된다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "IT 부문 매출 · 인원 · 그룹사 대비 대외 매출 비중은 읽은 자료에 없다",
+    "운영 · 물류 공고의 근무지(고객사 상주 여부)는 공고에 없다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/372772",
+      "title": "MES 개발자(full-stack) 6년 이상",
+      "site": "wanted",
+      "verdict": "경력 6-13년. **자사 MES 솔루션 I'MFACTO** 의 R&D 프론트 · 백엔드 설계/개발(**AI mode 포함**)과 고객 프로젝트 설계/개발. 자격은 **Java Spring Boot**, **Vue.js/React(TypeScript)**, **RDB(MariaDB · Oracle) 설계 · SQL**, **국내/외 출장 가능(프로젝트 기간)**. 우대는 MES/ERP 개발, Nuxt3 · TDD, Python/Go, AI Code Agent(Claude teams 등). 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Spring Boot",
+          "Vue 또는 React(TS)",
+          "RDB 설계 · SQL",
+          "출장 가능"
+        ],
+        "can_learn": [
+          "MES 도메인(LOT · 실적)",
+          "설비 데이터 수집",
+          "Nuxt3"
+        ]
+      },
+      "study": [
+        {
+          "topic": "MES 의 뼈대 — 작업 지시 · 생산 실적 · LOT 추적을 테이블로",
+          "from": "task",
+          "quote": "ㆍ자사 MES 솔루션(I'MFACTO) R&D FE, BE 설계/개발 (AI mode 포함)",
+          "priority": "core",
+          "why": "주요업무이고 우대에 제조 시스템(MES/ERP) 경험이 있다. 제품 솔루션이라 여러 공장에 맞는 일반 모델이 필요하다.",
+          "gap_check": "ERP 의 생산 계획이 MES 의 작업 지시로 내려오고, 실적 · 불량 · 자재 투입이 다시 ERP 로 올라가는 흐름(ISA-95 레벨 3 ↔ 4)은? 완제품 LOT 하나에서 투입된 원자재 LOT 까지 거꾸로 추적하려면 무엇을 저장해야 하나? 공장마다 공정이 다르면 공정 · 라우팅을 코드가 아니라 데이터로 두려면?",
+          "drill": "작업 지시 · 공정 라우팅 · 실적 · 자재 투입(LOT 계보) 테이블을 설계하고 Spring Boot 로 실적 등록 API 를 만든다. 완제품 LOT 하나로 원자재 LOT 까지 역추적하는 재귀 쿼리(WITH RECURSIVE)를 쓰고, 공정을 하나 더하는 것이 데이터 변경만으로 되는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "ISA-95 — Enterprise-Control System Integration (ISA)",
+              "url": "https://www.isa.org/standards-and-publications/isa-standards/isa-95-standard",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "공장 화면 — Vue/React 로 실시간 설비 · 실적 현황판",
+          "from": "qualification",
+          "quote": "ㆍVue.JS/React (TypeScript 기반) 웹 개발 가능자",
+          "priority": "core",
+          "why": "필수 자격이고 R&D 가 FE 까지 맡는다. 현장 화면은 대형 모니터 현황판 · 작업자 태블릿 입력이 많다.",
+          "gap_check": "설비 상태(가동 · 정지 · 알람)를 몇 초마다 갱신하나, 폴링과 WebSocket/SSE 중 무엇이 현장 네트워크에 맞나? 작업자가 장갑을 끼고 태블릿으로 실적을 입력한다면 입력 화면은 무엇이 달라야 하나? 네트워크가 끊겼을 때 입력한 실적은?",
+          "drill": "Vue 3(또는 React) + TS 로 설비 20 대의 가동 현황판(SSE 로 5 초 갱신)과 실적 입력 화면(큰 버튼 · 바코드 입력 · 오프라인 시 로컬 저장 후 재전송)을 만든다. 네트워크를 끊었다 붙여 실적이 한 번만 등록되는지(요청 ID) 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "MDN — Server-sent events",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "MES 에 AI 를 — 공정 데이터로 이상 탐지 · 질의",
+          "from": "task",
+          "quote": "ㆍ자사 MES 솔루션(I'MFACTO) 프로젝트 설계/개발 수행",
+          "priority": "high",
+          "why": "주요업무이고 R&D 에 'AI mode' 가 있으며 회사가 제조 버티컬 AI 플랫폼 AI 아틀라스를 공개했다.",
+          "gap_check": "공정 데이터(온도 · 압력 · 사이클 타임)로 불량을 미리 알리려면 무엇을 레이블로 쓰나(실적의 불량 코드)? 현장 사용자가 '어제 2 라인 불량이 왜 늘었나' 를 물으면 LLM 에 무엇을 넘기나(SQL 결과 · 집계)? 잘못된 SQL 이나 없는 설비를 만들어 내지 않게 하려면?",
+          "drill": "공개 제조 데이터셋(예: UCI SECOM)으로 불량 예측 기본 모델을 만들고, 앞 과제의 실적 테이블에 대해 'LLM 이 SQL 을 쓰고 → 읽기 전용 계정으로 실행 → 결과로 답' 하는 질의 화면을 만든다. 허용 테이블 목록 · 행 수 제한 · SQL 검증을 넣어 없는 설비명 질문에 모른다고 답하는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "UCI — SECOM dataset",
+              "url": "https://archive.ics.uci.edu/dataset/179/secom",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/372780",
+      "title": "제조생산 MES 운영/개발자 3년 이상",
+      "site": "wanted",
+      "verdict": "경력 3-8년. **제조생산 MES 운영 · 개발** — 생산 운영 · 프로젝트, **Power Builder 기반 시스템 운영 · 유지보수**, **Oracle 생산 · 품질 데이터**, 요구 분석에 따른 기능 개선 · 신규 개발, **연관 시스템 인터페이스**, 고객사 과제 발굴, **월/분기/반기/년 마감 · 외부 감사 지원**, DX/AX 전환. 자격은 **Oracle PL/SQL 개발**, **MES 운영(DB 설계 · 개발)**. 우대는 Power Builder, MES/ERP 리드, Spring Boot, Vue/React. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Oracle PL/SQL",
+          "MES 운영",
+          "DB 설계"
+        ],
+        "can_learn": [
+          "Power Builder",
+          "마감 · 감사 절차",
+          "Spring Boot 이행"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Oracle PL/SQL — 생산 · 품질 데이터를 빠르고 맞게",
+          "from": "qualification",
+          "quote": "ㆍOracle 등 DB 개발(PL/SQL 등) 가능자",
+          "priority": "core",
+          "why": "필수 자격이고 업무에 Oracle 생산 · 품질 데이터 관리가 있다. 레거시 MES 의 로직은 대부분 프로시저에 있다.",
+          "gap_check": "하루 실적 수백만 행 집계 프로시저가 느리면 실행 계획에서 무엇을 보나(풀 스캔 · 중첩 루프)? 행 단위 루프(커서 FOR) 대신 BULK COLLECT · FORALL 을 쓰면 무엇이 줄어드나? 프로시저 중간 실패 시 어디까지 커밋되나(예외 처리 · 저장점)?",
+          "drill": "Oracle Free(컨테이너)에 실적 테이블을 만들고 100 만 행을 넣은 뒤, 일일 집계 프로시저를 커서 루프 · BULK COLLECT/FORALL · 단일 INSERT … SELECT 세 방식으로 써서 시간을 비교한다. DBMS_XPLAN 으로 실행 계획을 보고 인덱스 하나를 더해 차이를 적는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Oracle — PL/SQL Language Reference: Bulk SQL and Bulk Binding",
+              "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/lnpls/plsql-optimization-and-tuning.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "월 마감과 외부 감사 — 운영자가 무엇을 준비하나",
+          "from": "task",
+          "quote": "ㆍ월/분기/반기/년 마감 및 외부 감사 지원",
+          "priority": "high",
+          "why": "주요업무다. 생산 · 품질 데이터는 원가 · 재고 금액의 근거라 마감과 감사에 걸린다.",
+          "gap_check": "마감 뒤 실적을 고쳐야 하면 무엇을 막고 무엇을 남기나(마감 잠금 · 수정 이력)? 감사인이 '이 재고 수량의 근거' 를 물으면 무엇을 보여 주나(실적 · 이동 · 조정 전표)? 운영자가 DB 를 직접 고친 기록(권한 · 변경 로그)은 왜 문제가 되나?",
+          "drill": "앞 과제 테이블에 마감 월 잠금(마감된 월 행은 트리거로 수정 거부)과 수정 이력 테이블을 더한다. '마감 뒤 조정' 을 별도 조정 전표로만 하게 만들고, 감사 질문 셋(재고 근거 · 수정자 · 수정 시각)에 답하는 쿼리를 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Oracle — Database Security Guide: Auditing",
+              "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/dbseg/introduction-to-auditing.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Power Builder 레거시를 멈추지 않고 웹으로",
+          "from": "task",
+          "quote": "ㆍDX/AX 전환 개선 및 프로젝트 수행",
+          "priority": "high",
+          "why": "주요업무이고 우대에 Power Builder 와 Spring Boot · Vue/React 가 함께 있다.",
+          "gap_check": "Power Builder 화면의 로직이 DataWindow · 프로시저 중 어디에 있는지 먼저 가르는 이유는? 화면 하나씩 웹으로 옮기는 동안 두 시스템이 같은 DB 를 쓰면 무엇을 조심하나(잠금 · 트리거)? 현장 사용자가 옛 화면에 익숙할 때 무엇부터 옮기나?",
+          "drill": "옛 화면 하나(예: 실적 조회 · 수정)를 가정해 그 로직을 프로시저로 모으고, Spring Boot API + Vue 화면으로 같은 기능을 만든다. 옛 클라이언트와 새 화면이 같은 행을 동시에 고칠 때 낙관적 잠금(버전 컬럼)으로 한쪽이 거절되는지 확인하고, 옮기는 순서 기준(사용 빈도 · 로직 위치)을 한 쪽으로 적는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Martin Fowler — StranglerFigApplication",
+              "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+              "kind": "blog"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/375618",
+      "title": "물류 운영/개발자 5년 이상",
+      "site": "wanted",
+      "verdict": "경력 5-11년. **물류 부문 IT 운영 · 유지보수** — 주문 · 운송 · 창고 · 재고 · 출고 · 정산, **WMS/TMS/OMS/물류 ERP 장애 대응 · 개선**, **SAP/MES/외부기관 인터페이스**, 내부통제 · 감사. **Oracle 대용량 데이터 처리 · 정합성**, Spring 웹 시스템. 자격은 Java · JSP · Spring 웹, PL/SQL, Linux WAS/WEB, **WMS · TMS · OMS · 물류 ERP · EDI · 인터페이스 운영**. 우대는 3PL, 대량 주문 · 출고 · 운송 · 마감 · 정산, SAP 연계. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Java · Spring · JSP",
+          "PL/SQL",
+          "WMS/TMS/OMS 운영",
+          "Linux WAS"
+        ],
+        "can_learn": [
+          "SAP IDoc/RFC",
+          "EDI 재처리",
+          "재고 정합성 점검"
+        ]
+      },
+      "study": [
+        {
+          "topic": "SAP · MES · 외부기관 인터페이스 — 실패를 재처리 가능하게",
+          "from": "task",
+          "quote": "· 연관 시스템(SAP/MES/외부기관)과의 인터페이스 개발 및 운영",
+          "priority": "core",
+          "why": "주요업무이고 우대에 SAP · ERP 연계 운영이 있다. 물류 장애의 상당수가 인터페이스에서 난다.",
+          "gap_check": "출고 확정을 SAP 로 보냈는데 응답이 없으면 다시 보내도 되나(중복 전표)? 인터페이스 테이블에 상태(대기 · 성공 · 실패 · 재처리)와 오류 메시지를 남기는 이유는? 외부기관 EDI 파일이 늦게 오거나 순서가 뒤바뀌면?",
+          "drill": "인터페이스 송신 테이블(키 · 상태 · 시도 횟수 · 오류)을 만들고 Spring Batch(또는 스케줄러)로 대기 건을 보내는 잡을 짠다. 수신 측을 30% 실패 · 가끔 타임아웃으로 흉내 내고, 같은 키 재송신에도 수신 측에 한 건만 남는지(멱등 키) · 실패 건만 재처리되는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Spring Batch — Reference",
+              "url": "https://docs.spring.io/spring-batch/reference/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "재고 정합성 — WMS 와 ERP 수량이 다를 때",
+          "from": "task",
+          "quote": "· 주문, 운송, 창고, 재고 등 대용량 데이터 처리 및 데이터 정합성 관리",
+          "priority": "core",
+          "why": "주요업무다. WMS(로케이션 단위)와 ERP(창고 단위) 재고가 어긋나면 마감 · 정산이 틀린다.",
+          "gap_check": "재고 수량을 '현재고 테이블' 로만 두면 어긋났을 때 원인을 어떻게 찾나(수불 이력)? 두 시스템을 매일 대조하는 쿼리는 무엇을 키로 비교하나(품목 · 창고 · 로트)? 차이가 나면 누가 무엇으로 맞추나(조정 전표)?",
+          "drill": "입고 · 출고 · 이동 · 조정의 수불 이력 테이블로 현재고를 계산하는 뷰를 만들고, ERP 쪽 재고 표본과 품목 · 창고 · 로트별로 대조하는 일일 쿼리를 쓴다. 일부러 출고 한 건의 인터페이스를 누락시켜 차이 보고서에 그 건이 원인으로 드러나는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Oracle — Analytic Functions (SQL Language Reference)",
+              "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/Analytic-Functions.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "WMS/TMS/OMS 장애 대응 — 출고 마감 시간 안에 복구",
+          "from": "task",
+          "quote": "· WMS/TMS/OMS/물류 ERP 등 물류 시스템 장애 대응 및 개선 업무",
+          "priority": "high",
+          "why": "주요업무다. 물류는 출고 마감 · 차량 출발 시각이 정해져 있어 장애 시간이 곧 배송 지연이다.",
+          "gap_check": "출고 피크에 WAS 응답이 느려지면 무엇부터 보나(스레드 덤프 · DB 잠금 · 커넥션 풀)? Oracle 에서 잠금을 쥔 세션을 찾는 방법은? 장애 뒤 재발 방지 보고서에는 무엇을 적나?",
+          "drill": "Spring 앱 + Oracle 로 두 세션이 같은 재고 행을 반대 순서로 잠가 교착을 만들고, v$session · v$lock 으로 잠금 보유 세션을 찾는다. jstack 으로 대기 스레드를 확인하고, 잠금 순서를 고정해 재현이 사라지는지 본 뒤 장애 보고서(현상 · 영향 · 원인 · 조치 · 재발 방지)를 한 쪽으로 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Oracle — V$LOCK (Database Reference)",
+              "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/refrn/V-LOCK.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

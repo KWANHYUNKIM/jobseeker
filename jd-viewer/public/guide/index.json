@@ -1300,6 +1300,18 @@
       "postings": 3,
       "study_items": 9,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "hansolpns",
+      "name": "한솔피엔에스",
+      "aliases": [
+        "한솔피엔에스",
+        "한솔PNS"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 9,
+      "updated_at": "2026-09-30"
     }
   ]
 }
