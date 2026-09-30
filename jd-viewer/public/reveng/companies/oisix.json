@@ -1,0 +1,333 @@
+{
+  "slug": "oisix",
+  "name": "オイシックス",
+  "name_en": "Oisix",
+  "country": "JP",
+  "category": "커머스",
+  "status": "in_progress",
+  "updated_at": "2026-09-30",
+  "domain": "oisix.co.jp",
+  "one_liner": "유기 채소 · 밀키트를 주간 정기 박스로 보내는 식품 택배(옛 オイシックス・ラ・大地) — 25 년 EC 를 REBORN 으로 새로 짓고, 품절이 가린 수요를 반사실로 잰다",
+  "business_model": "オイシックス(2026-07-01 オイシックス・ラ・大地 에서 사명 변경)는 **유기 · 특별 재배 채소 등 안전성에 배려한 식품 택배** 회사다(홈페이지 · 상장사). 개인용 브랜드는 **Oisix · らでぃっしゅぼーや · 大地を守る会** 셋이고, 밀키트 **Kit Oisix** 가 대표 상품이다. 법인용으로 **보육 시설 급식 · 제철 채소 노벨티 · 정기 회원 대상 광고 Ad Oisix** 가 있다.\n\n기술 블로그가 보여 주는 Oisix 의 심장은 **주간 정기 박스** 다 — 매주 목요일 새 상품이 공개되고 고객 기호에 맞춘 박스가 제안되며(일부 상품은 주초에 미리 카트에 들어간다), 고객은 다음 주 배송까지 자유롭게 바꾼다. 이 주기가 추천(과거에 안 산 상품 권하기) · 수요 예측(Kit Oisix 제조 수 · 재고 · 품절 대체) · 해지율(입회 직후의 '알기 어려움')의 문제를 만든다. 그리고 2000 년 창업부터 돌아온 EC 코드베이스를 **Oisix REBORN** 으로 새로 짓는 중이다.",
+  "products": [
+    "Oisix(정기 택배 · 본점 · 산직 주문 시장 · おいトク)",
+    "Kit Oisix(밀키트)",
+    "らでぃっしゅぼーや",
+    "大地を守る会",
+    "보육 시설 급식 서비스",
+    "Ad Oisix(정기 회원 대상 광고)"
+  ],
+  "revenue_total": "상장사라 IR 에 있다 — 이번에 매출 자료는 읽지 않았다.",
+  "revenue_streams": [
+    {
+      "name": "식품 정기 택배 EC(Oisix · らでぃっしゅぼーや · 大地を守る会)",
+      "how": "주간 정기 박스와 단품 주문으로 식품 · 밀키트를 판다 — 브랜드별 매출 비중은 이번에 읽지 않았다.",
+      "weight": "IR 에 있음(이번엔 안 읽음)",
+      "domains": [
+        "25 년 된 EC 를 멈추지 않고 새로 짓는다 — REBORN 제3세대(EKS · Dapr · OpenAPI)와 레거시 데드 코드 발굴",
+        "주간 정기 박스의 추천과 수요 예측 — 사지 않은 것을 권하고, 품절이 가린 수요를 반사실로 잰다",
+        "정기 구독이 떠나지 않게 — 입회 직후 해지율과 페이지 속도(LCP) · CVR"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "TOP｜オイシックス株式会社",
+          "url": "https://www.oisix.co.jp/",
+          "publisher": "オイシックス",
+          "summary": "オイシックス・ラ・大地 는 2026-07-01 'オイシックス株式会社' 로 사명 변경. 유기 · 특별 재배 채소 등 안전성에 배려한 식품 택배. 개인용: Oisix 본점 · 산직 주문 시장 · おいトク · 매장, らでぃっしゅぼーや, 大地を守る会. 법인용: 보육 시설 급식 서비스 · 제철 채소 노벨티 · 정기 회원 대상 광고 Ad Oisix. 뉴스: Kit Oisix 신상품. IR 페이지가 있다(상장사)."
+        },
+        {
+          "title": "売れたはずの数量が分からない！？ECサイトの需要予測評価における課題と反実仮想による解決策",
+          "url": "https://creators.oisix.co.jp/entry/2025/07/09/103602",
+          "publisher": "オイシックス",
+          "summary": "주간 사이클 — 목요일 상품 공개, 고객별 정기 박스 제안, 추가 · 삭제 · 변경 자유. 주문 시작 뒤 수요 예측이 Kit Oisix 제조 수 · 재고 · 품절 예상 상품의 대체를 정한다. 품절 · 대체로 '팔렸을 수량' 을 관측할 수 없어 반사실(反実仮想)로 평가.",
+          "date": "2025-07-09"
+        },
+        {
+          "title": "Oisix「あなたにおすすめ」を支える機械学習システム",
+          "url": "https://creators.oisix.co.jp/entry/2025/02/25/120858",
+          "publisher": "オイシックス",
+          "summary": "구매 이력으로 기호를 학습해 과거에 사지 않은 상품 중심으로 추천하는 개인화 기능 — 기존은 룰 기반(리타깃팅 '다시 사기'). 정기 구독자에게 주초 미리 카트에 들어가는 상품은 진짜 기호가 아니라 레이팅에서 제외. 서비스 전체 매출 향상 확인.",
+          "date": "2025-02-25"
+        }
+      ]
+    },
+    {
+      "name": "법인 · 광고(보육 급식 · 노벨티 · Ad Oisix)",
+      "how": "보육 시설 급식, 제철 채소 노벨티, 정기 회원에게 닿는 광고를 판다 — 규모 · 과금은 모른다.",
+      "weight": "공개 여부 미확인",
+      "domains": [],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "TOP｜オイシックス株式会社",
+          "url": "https://www.oisix.co.jp/",
+          "publisher": "オイシックス",
+          "summary": "オイシックス・ラ・大地 는 2026-07-01 'オイシックス株式会社' 로 사명 변경. 유기 · 특별 재배 채소 등 안전성에 배려한 식품 택배. 개인용: Oisix 본점 · 산직 주문 시장 · おいトク · 매장, らでぃっしゅぼーや, 大地を守る会. 법인용: 보육 시설 급식 서비스 · 제철 채소 노벨티 · 정기 회원 대상 광고 Ad Oisix. 뉴스: Kit Oisix 신상품. IR 페이지가 있다(상장사)."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "목요일 공개부터 배송까지",
+    "question": "정기 박스의 한 주에 어느 시스템이 끼나?",
+    "code": "flowchart LR\n  THU[\"목요일 새 상품 공개\"] --> BOX[\"정기 박스 제안\\n(일부는 미리 카트)\"]\n  REC[\"あなたにおすすめ\\n· LLM 보완 추천\"] --> BOX\n  BOX --> U[\"고객 추가 · 삭제 · 변경\"]\n  U --> DF[\"주문 시작 뒤 수요 예측\"]\n  DF --> MFG[\"Kit Oisix 제조 · 재고 · 품절 대체\"]\n  U --> CH[\"해지 · 계속\"]\n  EC[\"EC 레거시(2000 ~)\\n→ REBORN 제3세대\\nEKS · Dapr · OpenAPI BFF\"] -.-> BOX & U",
+    "_note": "이 사이트의 해석 — 수요 예측 · 추천 · 해지율 · REBORN 글의 구성을 한 장에 모았다. 제조 · 물류 시스템의 내부는 글에 없다."
+  },
+  "domains": [
+    {
+      "name": "25 년 된 EC 를 멈추지 않고 새로 짓는다 — REBORN 제3세대(EKS · Dapr · OpenAPI)와 레거시 데드 코드 발굴",
+      "why": "Oisix EC 는 2000 년 창업부터 25 년 동안 성장을 이끌었지만, 캠페인 · 실험 서비스 · 협업 · 인수 서비스 통합이 쌓이며 구조가 복잡해져 유연 · 신속한 릴리스가 어려워졌다 — 이대로면 사업 성장을 막는다. 그래서 'Oisix REBORN' 으로 여러 단계에 걸쳐 새로 짓는다.",
+      "tech": [
+        {
+          "tech": "EKS 위 BFF/Backend API — Helm · Dapr · Argo CD(App of Apps) · Karpenter",
+          "solves": "마이크로서비스를 한 플랫폼에서 배포 · 운영한다.",
+          "limits": "Pod 교체 · 노드 드레인 때 Dapr 호출 오류 · 500/503 이 튀었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Oisix REBORNプロジェクト - レガシーシステムのモダナイゼーションにおけるAmazon EKSの活用",
+              "url": "https://creators.oisix.co.jp/entry/2025/04/23/180142",
+              "publisher": "オイシックス",
+              "summary": "Oisix EC 는 2000 년 창업부터 25 년 성장을 이끌었지만 구조가 복잡해져 유연 · 신속한 릴리스가 어려워졌다 — 'Oisix REBORN' 프로젝트(여러 단계). EKS 위에 BFF/Backend API 를 Helm(Kustomize 에서 전환), Dapr, Argo CD(App of Apps · SSO), Karpenter NodePool.",
+              "date": "2025-04-23"
+            },
+            {
+              "title": "ほぼゼロダウンタイムな Pod 再起動戦略（EKS + Dapr + AWS LB）",
+              "url": "https://creators.oisix.co.jp/entry/2025/10/07/180348",
+              "publisher": "オイシックス",
+              "summary": "기반 쇄신 프로젝트에서 EKS + Dapr + AWS Load Balancer Controller. Pod 삭제 · 재시작 · Karpenter 노드 드레인 때 ERR_DIRECT_INVOKE 와 500 · 503 급증 — 매니페스트 · 컨트롤러 설정으로 해결.",
+              "date": "2025-10-07"
+            }
+          ]
+        },
+        {
+          "tech": "제3세대 API First — OpenAPI Spec 전용 저장소 + Git Submodule + 코드 생성",
+          "solves": "서비스 간 API 인식 차이 · 구현 불일치 · 병행 개발 충돌을 막는다.",
+          "limits": "Spec 저장소를 모든 서비스가 따라가야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "第三世代バックエンド開発の紹介 - OpenAPI Generator を活用したAPI駆動開発",
+              "url": "https://creators.oisix.co.jp/entry/2026/02/17/160907",
+              "publisher": "オイシックス",
+              "summary": "마이크로서비스 '제3세대 아키텍처' — Beyond the Twelve-Factor App 의 API First. OpenAPI Spec 을 Single Source of Truth 로 전용 저장소에 두고 Git Submodule · 코드 생성으로 서버 · 클라이언트 불일치를 막는다. BFF(web · app) 분리.",
+              "date": "2026-02-17"
+            }
+          ]
+        },
+        {
+          "tech": "레거시 데드 코드의 기표 기반 조사 · 삭제",
+          "solves": "25 년 잔해를 줄여 이행 부담을 낮춘다.",
+          "limits": "'삭제할 수 있지만 지금은 안 건드린다' 로 기각되는 것도 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "デッドコードから知るOisix25年の歴史",
+              "url": "https://creators.oisix.co.jp/entry/2026/08/26/171653",
+              "publisher": "オイシックス",
+              "summary": "2000 년부터 돈 EC 코드베이스(레거시 쪽)에서 캠페인 · 실험 서비스 · 협업 · 인수 서비스 통합의 잔해(데드 코드)를 기표 기반으로 조사 · 삭제 — 25 년 역사의 발굴. 제3세대 앱은 Spring Boot 4 로 맞췄다.",
+              "date": "2026-08-26"
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "주간 정기 박스의 추천과 수요 예측 — 사지 않은 것을 권하고, 품절이 가린 수요를 반사실로 잰다",
+      "why": "고객은 매주 목요일 공개되는 상품 중 기호에 맞춘 정기 박스를 제안받고 자유롭게 바꾼다. 추천이 좋으면 새 상품과의 만남이 늘고, 주문 시작 뒤의 수요 예측이 Kit Oisix 제조 수 · 재고 · 품절 대체를 정한다 — 고객 만족(품절 회피)과 수익(폐기 손실 감소)을 함께 건다.",
+      "tech": [
+        {
+          "tech": "'あなたにおすすめ' — 구매 이력 기반 모델 추천, 미리 카트에 든 상품은 레이팅에서 제외",
+          "solves": "과거에 안 산 상품을 권해 매출을 올린다.",
+          "limits": "명시적 평가가 없어 구매로 기호를 정의해야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Oisix「あなたにおすすめ」を支える機械学習システム",
+              "url": "https://creators.oisix.co.jp/entry/2025/02/25/120858",
+              "publisher": "オイシックス",
+              "summary": "구매 이력으로 기호를 학습해 과거에 사지 않은 상품 중심으로 추천하는 개인화 기능 — 기존은 룰 기반(리타깃팅 '다시 사기'). 정기 구독자에게 주초 미리 카트에 들어가는 상품은 진짜 기호가 아니라 레이팅에서 제외. 서비스 전체 매출 향상 확인.",
+              "date": "2025-02-25"
+            },
+            {
+              "title": "Oisix「あなたにおすすめ」導入の軌跡と効果検証",
+              "url": "https://creators.oisix.co.jp/entry/2025/04/18/095250",
+              "publisher": "オイシックス",
+              "summary": "'あなたにおすすめ' 도입 경위와 효과 검증.",
+              "date": "2025-04-18"
+            }
+          ]
+        },
+        {
+          "tech": "주문 시작 뒤 수요 예측 평가 — 품절 · 대체로 가려진 수요를 반사실로",
+          "solves": "모델 정확도를 공정하게 잰다.",
+          "limits": "'팔렸을 수량' 은 관측되지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "売れたはずの数量が分からない！？ECサイトの需要予測評価における課題と反実仮想による解決策",
+              "url": "https://creators.oisix.co.jp/entry/2025/07/09/103602",
+              "publisher": "オイシックス",
+              "summary": "주간 사이클 — 목요일 상품 공개, 고객별 정기 박스 제안, 추가 · 삭제 · 변경 자유. 주문 시작 뒤 수요 예측이 Kit Oisix 제조 수 · 재고 · 품절 예상 상품의 대체를 정한다. 품절 · 대체로 '팔렸을 수량' 을 관측할 수 없어 반사실(反実仮想)로 평가.",
+              "date": "2025-07-09"
+            }
+          ]
+        },
+        {
+          "tech": "LLM 보완 상품 추천",
+          "solves": "함께 사면 좋은 상품을 권한다.",
+          "limits": "세부는 이번에 안 읽었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "LLMを用いた補完商品推薦の開発",
+              "url": "https://creators.oisix.co.jp/entry/2025/07/07/085622",
+              "publisher": "オイシックス",
+              "summary": "LLM 으로 함께 사면 좋은 보완 상품을 추천하는 기능 개발.",
+              "date": "2025-07-07"
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "정기 구독이 떠나지 않게 — 입회 직후 해지율과 페이지 속도(LCP) · CVR",
+      "why": "생활 변화에 따른 해지는 어쩔 수 없지만, 나쁜 경험으로 떠나는 것은 막아야 한다. 정기 박스라는 구독 모델은 처음 쓰는 사람에게 복잡하고, 원하는 상품을 찾기 어렵다. 페이지 속도도 전환에 직결되는지 확인해야 했다.",
+      "tech": [
+        {
+          "tech": "입회 직후 비기너 대상 해지 가설 · 데이터 분석 · 검증(프로덕트 개발 조직의 사업 목표)",
+          "solves": "해지 트리거를 좁혀 시책을 고른다.",
+          "limits": "해지 요인이 다양하고 불확실하다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "入会直後の解約率改善に向けた仮説検証プロセス",
+              "url": "https://creators.oisix.co.jp/entry/2025/11/26/141512",
+              "publisher": "オイシックス",
+              "summary": "올해부터 프로덕트 개발 조직 — 팀이 사업 목표를 갖는다. 해지율 개선 팀: 정기 박스라는 구독 모델의 복잡성 · 원하는 상품을 찾기 어려움이 해지 트리거 가설, 입회 직후 비기너를 대상으로 데이터 분석 · 가설 검증.",
+              "date": "2025-11-26"
+            }
+          ]
+        },
+        {
+          "tech": "Core Web Vitals(LCP · INP · CLS) × CVR 실데이터 검증",
+          "solves": "속도 개선이 매출에 닿는지 숫자로 보인다.",
+          "limits": "상관이지 인과는 아니다(이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Core Web Vitalsの改善は売上に直結するのか？ データが示すCVRとの密接な関係",
+              "url": "https://creators.oisix.co.jp/entry/2025/11/07/130708",
+              "publisher": "オイシックス",
+              "summary": "Oisix 실데이터로 Core Web Vitals 와 CVR 을 정량 검증 — 특히 LCP 가 이탈 · CVR 과 강하게 관련.",
+              "date": "2025-11-07"
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "매출 · 회원 수 · 브랜드별 비중은 IR 에 있지만 이번에 읽지 않았다.",
+    "법인 · 광고(보육 급식 · Ad Oisix) 수익원은 기술 글을 아직 못 찾았다 — 도메인이 없다.",
+    "Kit Oisix 제조 · 물류 시스템의 구현 글은 아직 안 읽었다.",
+    "らでぃっしゅぼーや · 大地を守る会 가 같은 기반 위에 있는지는 글에 없다."
+  ],
+  "sources": [
+    {
+      "title": "TOP｜オイシックス株式会社",
+      "url": "https://www.oisix.co.jp/",
+      "publisher": "オイシックス",
+      "summary": "オイシックス・ラ・大地 는 2026-07-01 'オイシックス株式会社' 로 사명 변경. 유기 · 특별 재배 채소 등 안전성에 배려한 식품 택배. 개인용: Oisix 본점 · 산직 주문 시장 · おいトク · 매장, らでぃっしゅぼーや, 大地を守る会. 법인용: 보육 시설 급식 서비스 · 제철 채소 노벨티 · 정기 회원 대상 광고 Ad Oisix. 뉴스: Kit Oisix 신상품. IR 페이지가 있다(상장사)."
+    },
+    {
+      "title": "Oisix REBORNプロジェクト - レガシーシステムのモダナイゼーションにおけるAmazon EKSの活用",
+      "url": "https://creators.oisix.co.jp/entry/2025/04/23/180142",
+      "publisher": "オイシックス",
+      "summary": "Oisix EC 는 2000 년 창업부터 25 년 성장을 이끌었지만 구조가 복잡해져 유연 · 신속한 릴리스가 어려워졌다 — 'Oisix REBORN' 프로젝트(여러 단계). EKS 위에 BFF/Backend API 를 Helm(Kustomize 에서 전환), Dapr, Argo CD(App of Apps · SSO), Karpenter NodePool.",
+      "date": "2025-04-23"
+    },
+    {
+      "title": "Oisix REBORNプロジェクトにおけるバックエンドチームでの開発の進め方",
+      "url": "https://creators.oisix.co.jp/entry/2025/08/29/175339",
+      "publisher": "オイシックス",
+      "summary": "REBORN 백엔드 팀의 진행 방식(단계 계획).",
+      "date": "2025-08-29"
+    },
+    {
+      "title": "第三世代バックエンド開発の紹介 - OpenAPI Generator を活用したAPI駆動開発",
+      "url": "https://creators.oisix.co.jp/entry/2026/02/17/160907",
+      "publisher": "オイシックス",
+      "summary": "마이크로서비스 '제3세대 아키텍처' — Beyond the Twelve-Factor App 의 API First. OpenAPI Spec 을 Single Source of Truth 로 전용 저장소에 두고 Git Submodule · 코드 생성으로 서버 · 클라이언트 불일치를 막는다. BFF(web · app) 분리.",
+      "date": "2026-02-17"
+    },
+    {
+      "title": "デッドコードから知るOisix25年の歴史",
+      "url": "https://creators.oisix.co.jp/entry/2026/08/26/171653",
+      "publisher": "オイシックス",
+      "summary": "2000 년부터 돈 EC 코드베이스(레거시 쪽)에서 캠페인 · 실험 서비스 · 협업 · 인수 서비스 통합의 잔해(데드 코드)를 기표 기반으로 조사 · 삭제 — 25 년 역사의 발굴. 제3세대 앱은 Spring Boot 4 로 맞췄다.",
+      "date": "2026-08-26"
+    },
+    {
+      "title": "ほぼゼロダウンタイムな Pod 再起動戦略（EKS + Dapr + AWS LB）",
+      "url": "https://creators.oisix.co.jp/entry/2025/10/07/180348",
+      "publisher": "オイシックス",
+      "summary": "기반 쇄신 프로젝트에서 EKS + Dapr + AWS Load Balancer Controller. Pod 삭제 · 재시작 · Karpenter 노드 드레인 때 ERR_DIRECT_INVOKE 와 500 · 503 급증 — 매니페스트 · 컨트롤러 설정으로 해결.",
+      "date": "2025-10-07"
+    },
+    {
+      "title": "Oisix「あなたにおすすめ」を支える機械学習システム",
+      "url": "https://creators.oisix.co.jp/entry/2025/02/25/120858",
+      "publisher": "オイシックス",
+      "summary": "구매 이력으로 기호를 학습해 과거에 사지 않은 상품 중심으로 추천하는 개인화 기능 — 기존은 룰 기반(리타깃팅 '다시 사기'). 정기 구독자에게 주초 미리 카트에 들어가는 상품은 진짜 기호가 아니라 레이팅에서 제외. 서비스 전체 매출 향상 확인.",
+      "date": "2025-02-25"
+    },
+    {
+      "title": "Oisix「あなたにおすすめ」導入の軌跡と効果検証",
+      "url": "https://creators.oisix.co.jp/entry/2025/04/18/095250",
+      "publisher": "オイシックス",
+      "summary": "'あなたにおすすめ' 도입 경위와 효과 검증.",
+      "date": "2025-04-18"
+    },
+    {
+      "title": "売れたはずの数量が分からない！？ECサイトの需要予測評価における課題と反実仮想による解決策",
+      "url": "https://creators.oisix.co.jp/entry/2025/07/09/103602",
+      "publisher": "オイシックス",
+      "summary": "주간 사이클 — 목요일 상품 공개, 고객별 정기 박스 제안, 추가 · 삭제 · 변경 자유. 주문 시작 뒤 수요 예측이 Kit Oisix 제조 수 · 재고 · 품절 예상 상품의 대체를 정한다. 품절 · 대체로 '팔렸을 수량' 을 관측할 수 없어 반사실(反実仮想)로 평가.",
+      "date": "2025-07-09"
+    },
+    {
+      "title": "LLMを用いた補完商品推薦の開発",
+      "url": "https://creators.oisix.co.jp/entry/2025/07/07/085622",
+      "publisher": "オイシックス",
+      "summary": "LLM 으로 함께 사면 좋은 보완 상품을 추천하는 기능 개발.",
+      "date": "2025-07-07"
+    },
+    {
+      "title": "入会直後の解約率改善に向けた仮説検証プロセス",
+      "url": "https://creators.oisix.co.jp/entry/2025/11/26/141512",
+      "publisher": "オイシックス",
+      "summary": "올해부터 프로덕트 개발 조직 — 팀이 사업 목표를 갖는다. 해지율 개선 팀: 정기 박스라는 구독 모델의 복잡성 · 원하는 상품을 찾기 어려움이 해지 트리거 가설, 입회 직후 비기너를 대상으로 데이터 분석 · 가설 검증.",
+      "date": "2025-11-26"
+    },
+    {
+      "title": "Core Web Vitalsの改善は売上に直結するのか？ データが示すCVRとの密接な関係",
+      "url": "https://creators.oisix.co.jp/entry/2025/11/07/130708",
+      "publisher": "オイシックス",
+      "summary": "Oisix 실데이터로 Core Web Vitals 와 CVR 을 정량 검증 — 특히 LCP 가 이탈 · CVR 과 강하게 관련.",
+      "date": "2025-11-07"
+    },
+    {
+      "title": "Oisix技術スタック紹介（2025年度版）",
+      "url": "https://creators.oisix.co.jp/entry/2026/02/12/120514",
+      "publisher": "オイシックス",
+      "summary": "Oisix 기술 스택 2025 년도판(제3세대 쪽).",
+      "date": "2026-02-12"
+    }
+  ]
+}
