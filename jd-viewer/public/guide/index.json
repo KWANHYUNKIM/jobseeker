@@ -1382,6 +1382,18 @@
       "postings": 3,
       "study_items": 9,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "kakaomobility",
+      "name": "카카오모빌리티",
+      "aliases": [
+        "카카오모빌리티",
+        "kakaomobility"
+      ],
+      "status": "done",
+      "postings": 1,
+      "study_items": 3,
+      "updated_at": "2026-09-30"
     }
   ]
 }

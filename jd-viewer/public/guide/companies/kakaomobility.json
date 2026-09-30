@@ -1,0 +1,240 @@
+{
+  "slug": "kakaomobility",
+  "name": "카카오모빌리티",
+  "name_en": "Kakao Mobility",
+  "aliases": [
+    "카카오모빌리티",
+    "kakaomobility"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": null,
+  "one_liner": "카카오 T 로 택시 · 대리 · 주차 · 내비를 잇는 모빌리티 플랫폼 — 원티드엔 멀티모달 공간 인식 연구직, 잡코리아엔 내비 3D 지도 엔진 · MLOps · QA 가 올라와 있다",
+  "company": {
+    "business": "카카오모빌리티는 **카카오 T** 로 이동을 잇는 회사다 — 공고는 2015 년 **카카오택시**로 시작해 **블랙 · 바이크 · 대리 · 주차 · 내비 · 셔틀 · 시외버스**까지 넓혔다고 적는다. 잡코리아 기업 요약은 2017 년 설립, **매출액 약 5,066 억 원 · 사원 939 명**, 판교다. 모집중 넷이 회사의 층을 보여 준다 — **카카오내비의 3D 지도 렌더링 엔진**(C/C++, Android · iOS · Automotive 크로스 플랫폼), **Camera · LiDAR · Map 멀티모달 공간 인식 연구**(Multimodal LLM 장기 학습까지), **MLOps · LLM 에이전트 서비스 인프라**(Kubernetes · GCP), 그리고 택시 · 대리 · 주차 · 내비 전 제품의 **모바일 QA**. QA 공고의 우대에 '수요와 공급이 공존하는 서비스' 가 있다 — 승객과 기사 양쪽을 동시에 다루는 플랫폼이다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "머신러닝 research scientist (R&D)",
+        "url": "https://www.wanted.co.kr/wd/364303",
+        "publisher": "원티드",
+        "summary": "2015 카카오택시로 시작해 블랙 · 바이크 · 대리 · 주차 · 내비 · 셔틀 · 시외버스. 멀티모달 딥러닝, Camera · LiDAR · Map 센서 멀티모달 inference, Multimodal LLM 장기 학습 · 추론, 공간 정보 인식(Detection · Segmentation · Depth). 5년 또는 박사 졸업 예정, C/C++ · Python. 복지: 주택 대출 이자 · 사내 어린이집 · 금요일 2시간 조기 퇴근 등. 전형: 서류 > 코딩 테스트 > 1 · 2차 인터뷰."
+      },
+      {
+        "title": "[카카오모빌리티] 내비게이션 3D 지도 렌더링 엔진 개발자",
+        "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49538288?Oem_Code=C1&logpath=1&stext=iOS&listno=49&sc=630",
+        "publisher": "잡코리아",
+        "summary": "잡코리아 기업 요약: 2017 설립, 매출액 5,066 억, 사원 939 명, 판교. 내비게이션용 3D 지도 렌더링 엔진 개발 · 고도화, Android · iOS · Automotive 크로스 플랫폼 엔진 코어, 공간 데이터(Vector · POI · Route · 건물) 3D 시각화, 렌더링 파이프라인 성능 · 메모리. C/C++ 3년, OpenGL ES · Vulkan · Metal, 셰이더, 프로파일링. 우대 자체 엔진 · JNI/Swift 연동 · 게임 엔진 · GIS/LBS."
+      },
+      {
+        "title": "[카카오모빌리티] QA 엔지니어",
+        "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49629074?Oem_Code=C1&logpath=1&stext=QA&listno=1&sc=630",
+        "publisher": "잡코리아",
+        "summary": "모빌리티 서비스 품질관리 — 카카오 T · 택시 · 대리 · 주차 · 내비 제품별 테스트 계획 · 전략 · 릴리즈, 테스트 케이스, 결함 생명주기, 품질 기준 정의. 모바일 QA 2년. 우대 iOS/Android, 수요 · 공급이 공존하는 서비스 이해."
+      }
+    ],
+    "scale": [
+      {
+        "label": "매출액 · 사원(잡코리아 기업 요약)",
+        "value": "약 5,066 억 원 · 939 명",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[카카오모빌리티] 내비게이션 3D 지도 렌더링 엔진 개발자",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49538288?Oem_Code=C1&logpath=1&stext=iOS&listno=49&sc=630",
+            "publisher": "잡코리아",
+            "summary": "잡코리아 기업 요약: 2017 설립, 매출액 5,066 억, 사원 939 명, 판교. 내비게이션용 3D 지도 렌더링 엔진 개발 · 고도화, Android · iOS · Automotive 크로스 플랫폼 엔진 코어, 공간 데이터(Vector · POI · Route · 건물) 3D 시각화, 렌더링 파이프라인 성능 · 메모리. C/C++ 3년, OpenGL ES · Vulkan · Metal, 셰이더, 프로파일링. 우대 자체 엔진 · JNI/Swift 연동 · 게임 엔진 · GIS/LBS."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "모빌리티 플랫폼(택시 · 대리 · 주차 등 수수료 · 이용료)",
+        "how": "카카오 T 의 택시(블랙 등) · 대리 · 주차 · 바이크 · 셔틀 서비스를 운영한다 — 서비스별 수수료 · 가맹 구조는 이번에 읽은 자료에 없다.",
+        "domains": [
+          "내비 3D 지도 엔진",
+          "공간 인식 · ML 인프라",
+          "다제품 모바일 품질"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "머신러닝 research scientist (R&D)",
+            "url": "https://www.wanted.co.kr/wd/364303",
+            "publisher": "원티드",
+            "summary": "2015 카카오택시로 시작해 블랙 · 바이크 · 대리 · 주차 · 내비 · 셔틀 · 시외버스. 멀티모달 딥러닝, Camera · LiDAR · Map 센서 멀티모달 inference, Multimodal LLM 장기 학습 · 추론, 공간 정보 인식(Detection · Segmentation · Depth). 5년 또는 박사 졸업 예정, C/C++ · Python. 복지: 주택 대출 이자 · 사내 어린이집 · 금요일 2시간 조기 퇴근 등. 전형: 서류 > 코딩 테스트 > 1 · 2차 인터뷰."
+          },
+          {
+            "title": "[카카오모빌리티] QA 엔지니어",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49629074?Oem_Code=C1&logpath=1&stext=QA&listno=1&sc=630",
+            "publisher": "잡코리아",
+            "summary": "모빌리티 서비스 품질관리 — 카카오 T · 택시 · 대리 · 주차 · 내비 제품별 테스트 계획 · 전략 · 릴리즈, 테스트 케이스, 결함 생명주기, 품질 기준 정의. 모바일 QA 2년. 우대 iOS/Android, 수요 · 공급이 공존하는 서비스 이해."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "내비 3D 지도 엔진",
+        "why": "렌더링 공고가 내비게이션용 3D 지도 엔진을 C/C++ 로 Android · iOS · Automotive 에 올리고, Vector · POI · Route · 건물을 3D 로 그리며 성능 · 메모리를 최적화한다고 적는다.",
+        "what_to_know": [
+          "벡터 타일 렌더링",
+          "OpenGL ES · Vulkan · Metal",
+          "모바일 GPU 프로파일링"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[카카오모빌리티] 내비게이션 3D 지도 렌더링 엔진 개발자",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49538288?Oem_Code=C1&logpath=1&stext=iOS&listno=49&sc=630",
+            "publisher": "잡코리아",
+            "summary": "잡코리아 기업 요약: 2017 설립, 매출액 5,066 억, 사원 939 명, 판교. 내비게이션용 3D 지도 렌더링 엔진 개발 · 고도화, Android · iOS · Automotive 크로스 플랫폼 엔진 코어, 공간 데이터(Vector · POI · Route · 건물) 3D 시각화, 렌더링 파이프라인 성능 · 메모리. C/C++ 3년, OpenGL ES · Vulkan · Metal, 셰이더, 프로파일링. 우대 자체 엔진 · JNI/Swift 연동 · 게임 엔진 · GIS/LBS."
+          }
+        ]
+      },
+      {
+        "name": "공간 인식 · ML 인프라",
+        "why": "연구 공고가 Camera · LiDAR · Map 멀티모달 인식을, MLOps 공고가 개발-서빙-모니터링 파이프라인 · LLM 에이전트 · 실시간 추론을 적는다.",
+        "what_to_know": [
+          "BEV 멀티모달 융합",
+          "모델 서빙 · 모니터링",
+          "Kubernetes on GCP"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "머신러닝 research scientist (R&D)",
+            "url": "https://www.wanted.co.kr/wd/364303",
+            "publisher": "원티드",
+            "summary": "2015 카카오택시로 시작해 블랙 · 바이크 · 대리 · 주차 · 내비 · 셔틀 · 시외버스. 멀티모달 딥러닝, Camera · LiDAR · Map 센서 멀티모달 inference, Multimodal LLM 장기 학습 · 추론, 공간 정보 인식(Detection · Segmentation · Depth). 5년 또는 박사 졸업 예정, C/C++ · Python. 복지: 주택 대출 이자 · 사내 어린이집 · 금요일 2시간 조기 퇴근 등. 전형: 서류 > 코딩 테스트 > 1 · 2차 인터뷰."
+          },
+          {
+            "title": "[카카오모빌리티] MLOps 엔지니어",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49212541?Oem_Code=C1&logpath=1&stext=MLOps&listno=1&sc=630",
+            "publisher": "잡코리아",
+            "summary": "ML/DL 개발-서빙-모니터링 파이프라인, MLOps 플랫폼 · 학습/추론 자동화, LLM · AI Agent 서비스 아키텍처, 대규모 데이터 · 실시간 AI. 3년, Python/JVM, Kubernetes · GCP, MLOps · 데이터 파이프라인. 우대 성능 · 비용 최적화 · 실시간 추론 · AI 인프라 설계."
+          }
+        ]
+      },
+      {
+        "name": "다제품 모바일 품질",
+        "why": "QA 공고가 카카오 T · 택시 · 대리 · 주차 · 내비 제품별 테스트 전략 · 릴리즈 · 결함 생명주기를 적는다.",
+        "what_to_know": [
+          "위험 기반 테스트",
+          "양면 시장 시나리오",
+          "릴리즈 게이트"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[카카오모빌리티] QA 엔지니어",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49629074?Oem_Code=C1&logpath=1&stext=QA&listno=1&sc=630",
+            "publisher": "잡코리아",
+            "summary": "모빌리티 서비스 품질관리 — 카카오 T · 택시 · 대리 · 주차 · 내비 제품별 테스트 계획 · 전략 · 릴리즈, 테스트 케이스, 결함 생명주기, 품질 기준 정의. 모바일 QA 2년. 우대 iOS/Android, 수요 · 공급이 공존하는 서비스 이해."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "지도를 남의 엔진이 아니라 직접 그린다",
+        "evidence": "ㆍ내비게이션용 3D 지도 렌더링 엔진(Map Engine) 개발 및 고도화",
+        "so_what": "게임 엔진이 아닌 자체 엔진을 C/C++ 로 모바일 · 차량에 올린다 — 셰이더 · 메모리 프로파일링 경험을 구체 숫자로 준비한다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "센서 · 지도 · 언어를 한 모델로 묶는 연구를 한다",
+        "evidence": "• Camera, ​LiDAR, Map ​등 다양한 센서 ​데이터를 활용한 ​멀티모달 ​inference",
+        "so_what": "연구직은 CVPR · ICRA 급 이력과 멀티모달 LLM 경험을 우대한다 — 논문 · 재현 코드를 앞에 둔다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "매출 · 인원은 잡코리아 기업 요약 기준이다(연도 미표기) — 회사 공식 자료는 이번에 안 읽었다",
+    "서비스별 수수료 · 가맹 구조는 이번에 읽은 자료에 없다",
+    "잡코리아 게시 3건(3D 지도 엔진 49538288 · QA 49629074 · MLOps 49212541)은 크롤 데이터에 세 절(담당업무 · 자격 · 우대)이 비어 있어 인용 검사를 못 한다 — 회사 설명의 출처로만 쓰고 학습 항목은 원티드 공고로만 만들었다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/364303",
+      "title": "머신러닝 research scientist (R&D)",
+      "site": "wanted",
+      "verdict": "경력 5년 이상(또는 연구 역량을 갖춘 박사 졸업 예정자). **멀티모달 딥러닝** 연구 · 개발, **Camera · LiDAR · Map 센서 데이터 멀티모달 inference**, **Multimodal LLM 기반 장기 학습(Long-term learning) · 추론 구조**, 학습 기반 **공간 정보 인식**(Detection · Segmentation · Depth Estimation). 자격은 CS · EE · 수학 · 로보틱스 학위, C/C++ · Python, 모델 설계-학습-평가-개선 주도. 우대는 ML · CV · 로보틱스 석박사, CVPR · ICCV · NeurIPS · ICRA · IROS, 멀티모달 LLM(Vision-Language · Vision-Map · Sensor-Language). 전형은 서류 > 코딩 테스트 > 1 · 2차 인터뷰. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "5년 또는 박사",
+          "C/C++ · Python",
+          "모델 전 과정 주도"
+        ],
+        "can_learn": [
+          "BEV 융합",
+          "지도 사전 활용",
+          "멀티모달 LLM"
+        ]
+      },
+      "study": [
+        {
+          "topic": "카메라 · LiDAR · 지도를 한 공간에 — BEV 멀티모달 융합",
+          "from": "task",
+          "quote": "• Camera, ​LiDAR, Map ​등 다양한 센서 ​데이터를 활용한 ​멀티모달 ​inference",
+          "priority": "core",
+          "why": "주요업무다. 카카오모빌리티는 내비 지도라는 강한 사전 정보를 갖고 있다.",
+          "gap_check": "카메라 영상 특징을 위에서 본 격자(BEV)로 옮기는 방법(LSS · BEVFormer)과 LiDAR 포인트를 같은 격자에 쌓는 방법은? 두 센서의 시간 · 좌표 보정이 어긋나면? 지도(차선 · 도로)를 입력으로 넣으면 무엇이 쉬워지고 지도가 낡으면 무엇이 틀리나?",
+          "drill": "nuScenes mini 로 BEVFusion(또는 공개 구현)을 돌려 카메라만 · LiDAR 만 · 융합의 mAP 를 비교하고, 카메라-LiDAR 외부 파라미터에 일부러 오차를 넣었을 때 성능이 얼마나 떨어지는지 재 본다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "BEVFusion (MIT HAN Lab)",
+              "url": "https://github.com/mit-han-lab/bevfusion",
+              "kind": "docs"
+            },
+            {
+              "title": "nuScenes dataset",
+              "url": "https://www.nuscenes.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "공간 인식 기본기 — 검출 · 분할 · 깊이 추정",
+          "from": "task",
+          "quote": "• Detection ​/ ​Segmentation / ​Depth Estimation ​기반의 ​공간 인식 모델 ​개발",
+          "priority": "core",
+          "why": "주요업무이고 우대에 같은 모델 개발 경험이 있다.",
+          "gap_check": "단안 깊이 추정의 스케일 모호성은 무엇으로 푸나(LiDAR 감독 · 카메라 높이)? 도로 장면 분할에서 드문 클래스(공사 표지 · 킥보드)는 어떻게 다루나? 세 과제를 한 백본의 멀티태스크로 묶으면 무엇이 좋아지고 무엇이 싸우나?",
+          "drill": "Cityscapes(또는 KITTI) 소표본으로 공유 백본 + 분할 · 깊이 두 헤드 모델을 학습하고, 단일 과제 모델과 성능 · 추론 시간을 비교한다. 손실 가중치를 바꿔 한 과제가 다른 과제를 끌어내리는 지점을 찾는다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "KITTI Vision Benchmark",
+              "url": "https://www.cvlibs.net/datasets/kitti/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Multimodal LLM 의 장기 학습 — 지도 · 센서를 기억하는 추론",
+          "from": "task",
+          "quote": "• Multimodal LLM ​기반의 ​장기 ​학습(Long-term learning) 및 ​추론 ​구조 연구",
+          "priority": "high",
+          "why": "주요업무이고 우대에 Vision-Map · Sensor-Language 멀티모달 LLM 이 있다.",
+          "gap_check": "같은 길을 여러 번 달린 기록에서 무엇을 '기억' 으로 남기나(장소별 요약 · 임베딩 · 지도 갱신)? 새 관측으로 모델을 계속 학습할 때 예전 능력을 잊는 문제(망각)는? 센서 데이터를 LLM 에 토큰으로 넣는 방법(비전 인코더 · 투영층)은?",
+          "drill": "공개 VLM(예: LLaVA 계열)에 도로 장면 이미지 + 텍스트로 된 지도 정보(차선 수 · 제한 속도)를 함께 넣어 질의응답을 해 보고, 지도 정보가 있을 때와 없을 때 답 정확도를 비교한다. 장소별 요약을 벡터 DB 에 쌓아 다시 방문 때 불러오는 흐름을 흉내 낸다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "LLaVA",
+              "url": "https://github.com/haotian-liu/LLaVA",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
