@@ -3040,3 +3040,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 スペースリー 큐브맵 Lambda(기능 1/3)
 
 - `cubemap-sidekiq-to-lambda`. 결정 7 — 스케일 대신 격리 / 라이브러리 벤치마크(차이 없음) / 인터페이스 불변 / presigned URL 직통 / py360convert / 픽셀 수 메모리 계층 / 기업 단위 플래그 3 단계. 50 장 약 8 분 50 초 → 1 분 50 초, 월 약 350 달러. 다음: gh-ost.
+
+## 2026-09-30 スペースリー gh-ost on Aurora(기능 2/3)
+
+- `gh-ost-on-aurora-online-schema-change`. 결정 8 — gh-ost / pt-osc 대비(트리거리스 · 실행 중 제어) / Aurora 접속(assume-rbr · allow-on-master · TLS · IAM 포기) / binlog 상시 24h / FK 기록 · 교차 DB FK / schema_migrations 순서 / strong_migrations 설정 / 검증 · 첫 실행 · 정착. 다음: 가구 지우기.
