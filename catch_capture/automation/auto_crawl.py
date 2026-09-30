@@ -481,8 +481,12 @@ def _reload_pipeline() -> None:
     순서를 지킨다 — aggregate 는 함수 안에서 나머지를 import 하므로 맨 끝이면 된다.
     """
     import importlib
+    # store.jobs.facets 는 ingest.crawl 이 사이클 끝에 부른다(job_facet) — 그보다 먼저 온다.
+    # 9/30 에 이게 빠진 채 아침에 뜬 데몬이 밤까지 돌아, 그 사이 들어온 공고가 필터 축
+    # 없이 남았다(공고 API 목록에서 지역·직군 필터에 안 걸린다).
     for name in ("crawlers.jobs_common", "store.db.upsert", "store.db.ledgers",
-                 "store.ingest.crawl", "monitoring.health", "pipeline.aggregate"):
+                 "store.jobs.facets", "store.ingest.crawl", "monitoring.health",
+                 "pipeline.aggregate"):
         try:
             importlib.reload(importlib.import_module(name))
         except Exception as e:                                      # noqa: BLE001
