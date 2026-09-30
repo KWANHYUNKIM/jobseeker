@@ -1694,6 +1694,18 @@
       "postings": 3,
       "study_items": 5,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "cdri",
+      "name": "씨디알아이",
+      "aliases": [
+        "씨디알아이",
+        "CDRI"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 7,
+      "updated_at": "2026-09-30"
     }
   ]
 }

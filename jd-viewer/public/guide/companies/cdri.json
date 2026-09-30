@@ -1,0 +1,370 @@
+{
+  "slug": "cdri",
+  "name": "씨디알아이",
+  "name_en": "CDRI",
+  "aliases": [
+    "씨디알아이",
+    "CDRI"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "",
+  "one_liner": "화장품 해외 수출 인증을 자동화하는 Certicos 와 LLM 인허가 서류 분석 CertiPT 의 뷰티테크 — AI 엔지니어, DevOps, 프런트 리드를 뽑는다",
+  "company": {
+    "business": "씨디알아이(CDRI)는 **화장품 산업의 시험 · 검사 · 인증(TIC)** 을 소프트웨어로 바꾸는 뷰티테크 회사다. 원료 · 제품 · 브랜드를 직접 해 보다가 **해외 수출 인증**이 나라마다 법이 다르고 에이전시마다 서류가 달라 비효율적이라는 데서 출발했다. 주력은 **Certicos** — **36 개국 이상**에 화장품을 수출하기 위한 인증을 자동화하는 시스템(원료사 · 제조사 · 브랜드사를 한 커뮤니티로 운영, 담당자 교체 같은 휴먼 에러 방지) — 이고, **Cosmetest**(시험 · 임상 데이터와 자체 AI 로 시험 컨설팅), **CertiPT**(LLM · 멀티에이전트로 인허가 원천 서류 분류 · 분석), **Cosguide**(AI 컨설팅), **Cosbridge**(커뮤니티), 신규 **Cosmecareer**(채용)가 있다. 플랫폼 오픈 4 년 만에 **누적 고객사 1,400 곳**, **임상시험 3,700 건 컨설팅**, **특허 10 건**. 스스로 '대한민국 유일의 화장품 해외인증 전산화 서비스' 라고 적는다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "AI Engineer",
+        "url": "https://www.wanted.co.kr/wd/318805",
+        "publisher": "원티드",
+        "summary": "CDRI — 화장품 산업의 시험 · 검사 · 인증(TIC) 비효율을 IT 로. Certicos(36+ 개국 화장품 수출 인증 자동화) · Cosbridge(커뮤니티) · Cosguide(AI 컨설팅) · Cosmetest(시험 · 임상 컨설팅) · CertiPT(LLM · 멀티에이전트 인허가 서류 분류 · 분석) · Cosmecareer(채용, 신규). 플랫폼 오픈 4 년 만에 누적 고객사 1,400 곳 · 임상시험 3,700 건 컨설팅 · 특허 10 건. AI: 문서 레이아웃 분석 모델 · 배포, 인증 자동화 멀티에이전트 · 검색, 글로벌 규제 빅데이터 ETL, 논문 · 특허. 전공, PyTorch/TF, Google ADK 등 Agentic AI, RAG · Context Engineering · MSA API. 우대 석사 · 5년 · 논문 · ECS/Airflow/Redis/Celery."
+      },
+      {
+        "title": "DevOps",
+        "url": "https://www.wanted.co.kr/wd/365767",
+        "publisher": "원티드",
+        "summary": "'대한민국 유일의 화장품 해외인증 전산화 서비스' — Certicos · Cosmetest 의 AWS · IDC 인프라 · 자동 배포, Terraform, CI/CD, Docker · ECS 모니터링, IAM 최소 권한 · 설정 오류 모니터링, ISMS/ISMS-P 포트 · 접근 통제. 3년+. 우대 DevSecOps(SonarQube · Trivy), Python/Go/Bash, AI 인프라 지원. 기술 블로그 medium.com/cdri."
+      },
+      {
+        "title": "프론트엔드 개발자 Lead",
+        "url": "https://www.wanted.co.kr/wd/333190",
+        "publisher": "원티드",
+        "summary": "Certicos · Cosbridge · Cosmetest 프런트 고도화, AI 도구로 생산성, 아키텍처 개선, 팀 프로세스 · 멘토링. 5-10년, 팀 리딩, React 17~19 · TypeScript · 상태/서버 상태 관리 · 번들 최적화. 우대 AI 코딩 도구 · Micro Frontend · WASM · PWA · Core Web Vitals · WCAG 2.2 · TDD."
+      }
+    ],
+    "scale": [
+      {
+        "label": "누적 고객사",
+        "value": "1,400 곳(플랫폼 오픈 4 년)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI Engineer",
+            "url": "https://www.wanted.co.kr/wd/318805",
+            "publisher": "원티드",
+            "summary": "CDRI — 화장품 산업의 시험 · 검사 · 인증(TIC) 비효율을 IT 로. Certicos(36+ 개국 화장품 수출 인증 자동화) · Cosbridge(커뮤니티) · Cosguide(AI 컨설팅) · Cosmetest(시험 · 임상 컨설팅) · CertiPT(LLM · 멀티에이전트 인허가 서류 분류 · 분석) · Cosmecareer(채용, 신규). 플랫폼 오픈 4 년 만에 누적 고객사 1,400 곳 · 임상시험 3,700 건 컨설팅 · 특허 10 건. AI: 문서 레이아웃 분석 모델 · 배포, 인증 자동화 멀티에이전트 · 검색, 글로벌 규제 빅데이터 ETL, 논문 · 특허. 전공, PyTorch/TF, Google ADK 등 Agentic AI, RAG · Context Engineering · MSA API. 우대 석사 · 5년 · 논문 · ECS/Airflow/Redis/Celery."
+          }
+        ]
+      },
+      {
+        "label": "임상시험 컨설팅",
+        "value": "3,700 건",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI Engineer",
+            "url": "https://www.wanted.co.kr/wd/318805",
+            "publisher": "원티드",
+            "summary": "CDRI — 화장품 산업의 시험 · 검사 · 인증(TIC) 비효율을 IT 로. Certicos(36+ 개국 화장품 수출 인증 자동화) · Cosbridge(커뮤니티) · Cosguide(AI 컨설팅) · Cosmetest(시험 · 임상 컨설팅) · CertiPT(LLM · 멀티에이전트 인허가 서류 분류 · 분석) · Cosmecareer(채용, 신규). 플랫폼 오픈 4 년 만에 누적 고객사 1,400 곳 · 임상시험 3,700 건 컨설팅 · 특허 10 건. AI: 문서 레이아웃 분석 모델 · 배포, 인증 자동화 멀티에이전트 · 검색, 글로벌 규제 빅데이터 ETL, 논문 · 특허. 전공, PyTorch/TF, Google ADK 등 Agentic AI, RAG · Context Engineering · MSA API. 우대 석사 · 5년 · 논문 · ECS/Airflow/Redis/Celery."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "해외 인증 대행 · 자동화(Certicos)",
+        "how": "화장품 제조사 · 브랜드사의 36+ 개국 수출 인증을 자동화 시스템과 함께 진행한다 — 건당 · 구독 과금 여부와 금액은 공고에 없다.",
+        "domains": [
+          "인허가 서류 AI(CertiPT)",
+          "인증 · 임상 B2B 웹 서비스",
+          "AWS · IDC 인프라 · 보안"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "AI Engineer",
+            "url": "https://www.wanted.co.kr/wd/318805",
+            "publisher": "원티드",
+            "summary": "CDRI — 화장품 산업의 시험 · 검사 · 인증(TIC) 비효율을 IT 로. Certicos(36+ 개국 화장품 수출 인증 자동화) · Cosbridge(커뮤니티) · Cosguide(AI 컨설팅) · Cosmetest(시험 · 임상 컨설팅) · CertiPT(LLM · 멀티에이전트 인허가 서류 분류 · 분석) · Cosmecareer(채용, 신규). 플랫폼 오픈 4 년 만에 누적 고객사 1,400 곳 · 임상시험 3,700 건 컨설팅 · 특허 10 건. AI: 문서 레이아웃 분석 모델 · 배포, 인증 자동화 멀티에이전트 · 검색, 글로벌 규제 빅데이터 ETL, 논문 · 특허. 전공, PyTorch/TF, Google ADK 등 Agentic AI, RAG · Context Engineering · MSA API. 우대 석사 · 5년 · 논문 · ECS/Airflow/Redis/Celery."
+          },
+          {
+            "title": "DevOps",
+            "url": "https://www.wanted.co.kr/wd/365767",
+            "publisher": "원티드",
+            "summary": "'대한민국 유일의 화장품 해외인증 전산화 서비스' — Certicos · Cosmetest 의 AWS · IDC 인프라 · 자동 배포, Terraform, CI/CD, Docker · ECS 모니터링, IAM 최소 권한 · 설정 오류 모니터링, ISMS/ISMS-P 포트 · 접근 통제. 3년+. 우대 DevSecOps(SonarQube · Trivy), Python/Go/Bash, AI 인프라 지원. 기술 블로그 medium.com/cdri."
+          }
+        ]
+      },
+      {
+        "name": "시험 · 임상 컨설팅(Cosmetest · Cosguide)",
+        "how": "시험 · 임상 데이터와 AI 로 시험 컨설팅 · 맞춤 컨설팅을 제공한다.",
+        "domains": [
+          "인허가 서류 AI(CertiPT)",
+          "인증 · 임상 B2B 웹 서비스"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "AI Engineer",
+            "url": "https://www.wanted.co.kr/wd/318805",
+            "publisher": "원티드",
+            "summary": "CDRI — 화장품 산업의 시험 · 검사 · 인증(TIC) 비효율을 IT 로. Certicos(36+ 개국 화장품 수출 인증 자동화) · Cosbridge(커뮤니티) · Cosguide(AI 컨설팅) · Cosmetest(시험 · 임상 컨설팅) · CertiPT(LLM · 멀티에이전트 인허가 서류 분류 · 분석) · Cosmecareer(채용, 신규). 플랫폼 오픈 4 년 만에 누적 고객사 1,400 곳 · 임상시험 3,700 건 컨설팅 · 특허 10 건. AI: 문서 레이아웃 분석 모델 · 배포, 인증 자동화 멀티에이전트 · 검색, 글로벌 규제 빅데이터 ETL, 논문 · 특허. 전공, PyTorch/TF, Google ADK 등 Agentic AI, RAG · Context Engineering · MSA API. 우대 석사 · 5년 · 논문 · ECS/Airflow/Redis/Celery."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "인허가 서류 AI(CertiPT)",
+        "why": "AI 공고가 문서 레이아웃 분석 모델, 인증 프로세스 자동화 멀티에이전트 · 검색, 글로벌 규제 빅데이터 ETL 을 적는다.",
+        "what_to_know": [
+          "문서 레이아웃 분석(DLA)",
+          "멀티에이전트(Google ADK)",
+          "규제 데이터 RAG"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI Engineer",
+            "url": "https://www.wanted.co.kr/wd/318805",
+            "publisher": "원티드",
+            "summary": "CDRI — 화장품 산업의 시험 · 검사 · 인증(TIC) 비효율을 IT 로. Certicos(36+ 개국 화장품 수출 인증 자동화) · Cosbridge(커뮤니티) · Cosguide(AI 컨설팅) · Cosmetest(시험 · 임상 컨설팅) · CertiPT(LLM · 멀티에이전트 인허가 서류 분류 · 분석) · Cosmecareer(채용, 신규). 플랫폼 오픈 4 년 만에 누적 고객사 1,400 곳 · 임상시험 3,700 건 컨설팅 · 특허 10 건. AI: 문서 레이아웃 분석 모델 · 배포, 인증 자동화 멀티에이전트 · 검색, 글로벌 규제 빅데이터 ETL, 논문 · 특허. 전공, PyTorch/TF, Google ADK 등 Agentic AI, RAG · Context Engineering · MSA API. 우대 석사 · 5년 · 논문 · ECS/Airflow/Redis/Celery."
+          }
+        ]
+      },
+      {
+        "name": "인증 · 임상 B2B 웹 서비스",
+        "why": "프런트 리드 공고가 Certicos · Cosbridge · Cosmetest 프런트 고도화 · 아키텍처 · 팀 리딩을 적는다.",
+        "what_to_know": [
+          "React 19 · TypeScript",
+          "서버 상태 관리",
+          "Micro Frontend"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "프론트엔드 개발자 Lead",
+            "url": "https://www.wanted.co.kr/wd/333190",
+            "publisher": "원티드",
+            "summary": "Certicos · Cosbridge · Cosmetest 프런트 고도화, AI 도구로 생산성, 아키텍처 개선, 팀 프로세스 · 멘토링. 5-10년, 팀 리딩, React 17~19 · TypeScript · 상태/서버 상태 관리 · 번들 최적화. 우대 AI 코딩 도구 · Micro Frontend · WASM · PWA · Core Web Vitals · WCAG 2.2 · TDD."
+          }
+        ]
+      },
+      {
+        "name": "AWS · IDC 인프라 · 보안",
+        "why": "DevOps 공고가 AWS · IDC 운영, Terraform, CI/CD, ECS, IAM 최소 권한, ISMS-P 통제를 적는다.",
+        "what_to_know": [
+          "Terraform",
+          "ECS 운영",
+          "ISMS-P 기술 통제"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "DevOps",
+            "url": "https://www.wanted.co.kr/wd/365767",
+            "publisher": "원티드",
+            "summary": "'대한민국 유일의 화장품 해외인증 전산화 서비스' — Certicos · Cosmetest 의 AWS · IDC 인프라 · 자동 배포, Terraform, CI/CD, Docker · ECS 모니터링, IAM 최소 권한 · 설정 오류 모니터링, ISMS/ISMS-P 포트 · 접근 통제. 3년+. 우대 DevSecOps(SonarQube · Trivy), Python/Go/Bash, AI 인프라 지원. 기술 블로그 medium.com/cdri."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "서류가 핵심 데이터",
+        "evidence": "• 사내 Document Layout Analysis 모델 성능 지속적 개선 및 배포 파이프라인 관리",
+        "so_what": "인증은 성분표 · 시험 성적서 · 제품 정보 같은 문서 싸움이다 — 문서 구조화(레이아웃 · 표 추출) 경험이 강점이다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "사업 확장으로 동시에 여러 명",
+        "evidence": "• Google ADK와 같은 프레임워크를 사용해 Agentic AI를 개발한 경험이 있는 분",
+        "so_what": "공고가 '동료 5 명' 을 찾는다고 적는다 — 멀티에이전트를 실제로 만들어 본 저장소가 문을 연다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "과금 방식 · 매출 · 인원 · 근무지는 공고에 없다",
+    "기술 블로그(medium.com/cdri)는 이번에 읽지 않았다",
+    "AI 공고(318805)는 번호가 오래돼 상시 게시로 보인다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/318805",
+      "title": "AI Engineer",
+      "site": "wanted",
+      "verdict": "신입-경력 10년. **화장품 TIC 산업용 AI 프로덕트(CV · NLP)**, **문서 레이아웃 분석(DLA) 모델 개선 · 배포 파이프라인**, **화장품 인증 프로세스 자동화 멀티에이전트 · 검색 시스템**, **사내 · 글로벌 규제 빅데이터 ETL**, 논문 · 특허. 자격은 CS · 통계 등 ML 전공, **PyTorch/TF**, **Google ADK 등으로 Agentic AI 개발**, **RAG · Context Engineering · MSA API**, 바이브 코딩 · MAS 에 적극적. 우대는 석사, ML 5년, 논문, **ECS · Airflow · Redis · Celery 추론 인프라**. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "ML 관련 전공",
+          "PyTorch/TF",
+          "Agentic AI · RAG"
+        ],
+        "can_learn": [
+          "문서 레이아웃 분석",
+          "규제 데이터 ETL",
+          "Google ADK"
+        ]
+      },
+      "study": [
+        {
+          "topic": "인증 서류를 구조화 — 문서 레이아웃 분석과 표 추출",
+          "from": "task",
+          "quote": "• 사내 Document Layout Analysis 모델 성능 지속적 개선 및 배포 파이프라인 관리",
+          "priority": "core",
+          "why": "주요업무다. 성분표 · 시험 성적서 같은 서류가 인허가의 재료다(이 사이트의 해석).",
+          "gap_check": "레이아웃 분석은 제목 · 본문 · 표 · 그림 영역을 무엇으로 나누나(객체 탐지)? 표 구조(셀 병합)를 복원하려면? 스캔본 · 여러 언어 서류에서 OCR 오류가 뒤 단계로 어떻게 번지나? 모델 개선을 무엇으로 재나(영역 mAP · 표 TEDS)?",
+          "drill": "공개 레이아웃 데이터(DocLayNet · PubLayNet)로 사전학습된 레이아웃 모델(LayoutParser 또는 YOLO 계열)을 돌려 영역을 뽑고, 표 영역은 Table Transformer 로 구조를 복원한다. 화장품 전성분표 PDF 몇 장(공개 자료)에 적용해 성분 목록을 JSON 으로 뽑고 오류 유형을 표로 정리한다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "DocLayNet",
+              "url": "https://github.com/DS4SD/DocLayNet",
+              "kind": "docs"
+            },
+            {
+              "title": "Microsoft Table Transformer",
+              "url": "https://github.com/microsoft/table-transformer",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "인증 절차를 에이전트 여럿으로 — Google ADK 멀티에이전트",
+          "from": "qualification",
+          "quote": "• Google ADK와 같은 프레임워크를 사용해 Agentic AI를 개발한 경험이 있는 분",
+          "priority": "core",
+          "why": "자격요건이고 주요업무가 인증 프로세스 자동화 멀티에이전트다.",
+          "gap_check": "'국가별 필요 서류 확인 → 서류 분류 → 누락 점검 → 보완 요청 초안' 을 에이전트 하나로 하나 여럿(조정자 + 전문 에이전트)으로 하나? 에이전트 사이에 무엇을 넘기나(구조화 상태)? 규제 근거 없는 판단을 막으려면(검색 근거 필수)? 사람 검토 단계는 어디에 두나?",
+          "drill": "Google ADK 로 조정자 에이전트와 하위 에이전트 셋(서류 분류 · 국가별 요건 검색 · 누락 점검)을 만들고, 가상의 제품 서류 묶음과 두 나라 요건 문서를 넣어 누락 서류 목록과 근거 문단을 내게 한다. 각 에이전트의 입력 · 출력 스키마를 고정하고 20 개 사례로 누락 탐지 정확도를 잰다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Google Agent Development Kit (ADK)",
+              "url": "https://google.github.io/adk-docs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "글로벌 규제 데이터 ETL — 바뀌는 규정을 따라가기",
+          "from": "task",
+          "quote": "• 사내 데이터, 글로벌 규제 빅데이터 ETL 파이프라인 구축 및 운영",
+          "priority": "high",
+          "why": "주요업무이고 우대에 Airflow · Celery 가 있다.",
+          "gap_check": "나라마다 형식이 다른 규제 문서(성분 금지 · 한도 목록)를 공통 스키마(성분 · 국가 · 한도 · 시행일)로 어떻게 맞추나? 규정이 바뀌면 변경분만 어떻게 잡나(해시 · 버전)? 성분 이름 표기(INCI · 국가 명칭) 차이는 어떻게 잇나?",
+          "drill": "공개 규제 목록 두 곳(예: EU CosIng 성분 데이터 · 국내 화장품 성분 사전)을 Airflow DAG 로 주기 수집해 공통 스키마로 적재하고, 이전 버전과 비교해 추가 · 변경 · 삭제를 표로 내는 변경 감지 태스크를 만든다. INCI 이름으로 두 출처를 잇는다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "European Commission — CosIng",
+              "url": "https://single-market-economy.ec.europa.eu/sectors/cosmetics/cosmetic-ingredient-database_en",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/365767",
+      "title": "DevOps",
+      "site": "wanted",
+      "verdict": "경력 3-10년. **Certicos · Cosmetest 의 AWS · IDC 인프라 운영 · 자동 배포**, **Terraform IaC 설계 · 표준화**, **CI/CD 고도화**, **Docker · ECS 최적화 · 모니터링**, **IAM 최소 권한 · 설정 오류 상시 모니터링**, **ISMS/ISMS-P 기준 포트 · 접근 통제**. 자격은 상용 인프라 3년, AWS 초기 설계부터 운영, 컨테이너, Terraform, 장애 진단 · 자동화, 협업. 우대는 전 주기 경험, DevSecOps(SonarQube · Trivy), ISMS-P 통제, Python/Go/Bash, AI 부서 인프라 지원, AI 도구. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "AWS 설계 · 운영 3년",
+          "ECS/K8s",
+          "Terraform"
+        ],
+        "can_learn": [
+          "ISMS-P 기술 통제",
+          "DevSecOps"
+        ]
+      },
+      "study": [
+        {
+          "topic": "ISMS-P 기술 통제를 코드로 — IAM 최소 권한과 설정 감시",
+          "from": "task",
+          "quote": "• AWS IAM 권한 최소화 적용 및 클라우드 자산의 기술적 보안/설정 오류 상시 모니터링",
+          "priority": "core",
+          "why": "주요업무이고 ISMS-P 통제가 함께 있다.",
+          "gap_check": "사람 계정 대신 SSO · 역할(AssumeRole)로 가려면? 실제로 쓰는 권한만 남기려면(IAM Access Analyzer 정책 생성)? 열린 보안 그룹 · 공개 S3 같은 설정 오류를 무엇으로 상시 감시하나(Config 규칙 · Security Hub)? 감사 때 무엇을 증적으로 내나?",
+          "drill": "Terraform 으로 IAM Identity Center 권한 세트(개발 · 운영 · 읽기)를 만들고, Access Analyzer 로 CloudTrail 기반 최소 권한 정책을 생성해 비교한다. AWS Config 관리형 규칙(공개 S3 · 0.0.0.0/0 SSH)을 켜 위반을 일부러 만들고 알림이 오는지 확인한다(끝나면 지운다).",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "AWS — IAM Access Analyzer policy generation",
+              "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-policy-generation.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "ECS 배포와 CI/CD 에 보안 검사 넣기",
+          "from": "preference",
+          "quote": "• CI/CD 파이프라인 내 보안 요소(DevSecOps) 도입에 관심이 많거나 관련 솔루션(SonarQube, Trivy 등)을 활용해 보신 분",
+          "priority": "high",
+          "why": "우대사항이고 주요업무가 CI/CD 고도화 · ECS 최적화다.",
+          "gap_check": "GitHub Actions 에서 AWS 키 대신 OIDC 로 배포하려면? 이미지 취약점(Trivy)이 Critical 이면 배포를 막을지 알릴지 기준은? ECS 롤링 · 블루/그린(CodeDeploy) 중 무엇을 고르나 — 롤백은?",
+          "drill": "GitHub Actions(OIDC) → 이미지 빌드 → Trivy 스캔(Critical 차단) → ECR → ECS 롤링 배포 파이프라인을 만들고, 헬스체크 실패 시 이전 태스크 정의로 되돌아가는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "GitHub — Configuring OpenID Connect in AWS",
+              "url": "https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/333190",
+      "title": "프론트엔드 개발자 Lead",
+      "site": "wanted",
+      "verdict": "경력 5-10년, **리드**. **Certicos(인증 B2B) · Cosbridge(커뮤니티) · Cosmetest(임상) 프런트 고도화 · 운영**, **AI 개발 도구로 생산성**, 최신 기술 · 아키텍처 개선, 팀 프로세스 최적화, 멘토링 · 리더십. 자격은 프런트 팀 리딩 · 프로세스 개선, **React 생태계 · TypeScript**, AI 도구 협업, **React 17~19**, **상태 · 서버 상태 관리(Zustand · Recoil · Redux · React Query · SWR)**, 번들 최적화. 우대는 AI 페어 프로그래밍 · 코드 리뷰, **Micro Frontend** · Web Components · WASM · PWA, **Core Web Vitals · WCAG 2.2**, TDD, 스크럼. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "프런트 리딩",
+          "React · TypeScript",
+          "상태 관리"
+        ],
+        "can_learn": [
+          "Micro Frontend",
+          "B2B 복잡 폼"
+        ]
+      },
+      "study": [
+        {
+          "topic": "서비스 셋을 한 팀이 — 공통 기반과 Micro Frontend 판단",
+          "from": "preference",
+          "quote": "• 'Web Components' 및 'Micro Frontend' 아키텍처 이해• 'WebAssembly(WASM)' 및 'Web Workers' 활용 경험",
+          "priority": "core",
+          "why": "우대사항이고 주요업무가 서비스 셋의 프런트 고도화 · 아키텍처 개선이다.",
+          "gap_check": "서비스 셋을 모노레포 + 공유 패키지로 둘 때와 Micro Frontend(모듈 페더레이션)로 나눌 때 비용은 무엇이 다른가? 디자인 시스템 · 인증 · API 클라이언트는 어디에 두나? React 버전이 서비스마다 다르면(17 ~ 19) 공유 컴포넌트는 어떻게 하나?",
+          "drill": "pnpm + Turborepo 모노레포에 앱 셋(Next.js)과 공유 패키지(ui · api-client · auth)를 두고, 하나의 앱만 Module Federation 으로 원격 모듈을 불러오는 실험을 한다. 빌드 시간 · 배포 독립성 · 번들 크기를 표로 비교한 ADR 을 쓴다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Turborepo — Docs",
+              "url": "https://turborepo.com/docs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "인증 B2B 의 복잡한 폼 — 서버 상태 · 폼 · 타입",
+          "from": "qualification",
+          "quote": "• '상태 관리(Zustand, Recoil, Redux, MobX)' 및 '서버 상태 관리(React Query, SWR)'",
+          "priority": "core",
+          "why": "자격요건이다. 인증 서비스는 국가 · 제품 · 서류가 얽힌 긴 입력 흐름이다(이 사이트의 해석).",
+          "gap_check": "서버에서 온 데이터(React Query)와 화면 상태(Zustand)를 왜 나누나? 수십 단계 폼의 임시 저장 · 복구는 어디에 두나? API 스키마와 폼 검증을 한 곳(zod)에서 정의하면 무엇이 좋아지나?",
+          "drill": "React 19 + TypeScript 로 '국가 선택 → 제품 정보 → 서류 업로드 → 검토' 다단계 폼을 react-hook-form + zod 로 만들고, React Query 로 서버 저장 · 낙관적 갱신, 새로고침 뒤 임시 저장 복구를 구현한다. Testing Library 로 단계 이동 · 검증 테스트를 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "TanStack Query",
+              "url": "https://tanstack.com/query/latest",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
