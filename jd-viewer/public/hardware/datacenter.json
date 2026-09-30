@@ -199,9 +199,9 @@
    "h100eq": 276000,
    "mw": 340,
    "status": "operational",
-   "as_of": "2025-07",
+   "as_of": "2026-05",
    "confidence": "estimate",
-   "note": "H100 15만 + H200 5만 + GB200 3만(머스크·Epoch 같은 값). 2026-05 부터 Anthropic 이 통째로 쓴다(xAI 발표 '22만 장 이상').",
+   "note": "xAI 공식(2026-05-06): 'NVIDIA GPU 22만 장 이상 — H100·H200·GB200'. 구성은 H100 15만 + H200 5만 + GB200 3만(머스크·Epoch). 2026-05 부터 Anthropic 이 Claude Pro·Max 용량으로 통째로 쓴다(월 12.5억 달러, SpaceX S-1).",
    "sources": [
     {
      "title": "Epoch: Colossus 1",
@@ -421,13 +421,17 @@
    "chip": "NVIDIA 혼합(A100·H100·H200·GB200 등)",
    "chip_key": null,
    "count": 250000,
-   "mw": 360,
+   "mw": 1500,
    "status": "operational",
    "confidence": "official",
-   "as_of": "2024-12",
+   "as_of": "2026-06",
    "in_total": true,
-   "note": "S-1: 32곳에 GPU 25만 장 이상, 360MW 이상. 2025년 말 850MW·43곳이지만 GPU 수는 새로 밝히지 않았다. 기종 구성을 몰라 환산하지 않는다. OpenAI·Microsoft·Meta 등이 빌려 쓰는 몫이 들어 있다.",
+   "note": "활성 전력 1.5GW(2026-06-30, 한 분기에 약 500MW 증설), 계약 전력 약 3.7GW. GPU 수는 2024-12 S-1 의 '25만 장 이상' 뒤로 공개하지 않았다 — 칩 수는 그때 값이다. 기종 구성을 몰라 환산하지 않는다. OpenAI·Microsoft·Meta 등이 빌려 쓰는 몫이 들어 있다.",
    "sources": [
+    {
+     "title": "CoreWeave 2026 2분기 실적(8-K)",
+     "url": "https://www.sec.gov/Archives/edgar/data/1769628/000176962826000362/coreweave2q26earningspress.htm"
+    },
     {
      "title": "CoreWeave S-1",
      "url": "https://www.sec.gov/Archives/edgar/data/1769628/000119312525044231/d899798ds1.htm"
