@@ -387,8 +387,8 @@
    "use": "build",
    "summary": "der8auer 실험(PCGamesN 보도)에서 선 하나에 약 20A 가 흘러 파워 쪽 커넥터가 153°C 까지 올랐다. MSI 의 노란 전용 케이블·1,300W 파워로도 핀이 탄 사례가 있다. Buildzoid 는 RTX 40·50 기판이 12V 핀을 한데 묶어 핀별 전류를 못 잰다고 분석했고, 4090 때는 '덜 꽂은 사용자 탓'이 주된 설명이었다. 실무 조언: 끝까지 꽂고, 연장·어댑터를 피하고, 온도를 본다.",
    "evidence": "measurement",
-   "numbers": "선 하나 약 20A · 파워 쪽 커넥터 153°C (der8auer)",
-   "as_of": "2025-04",
+   "numbers": "선 하나 약 20A · 파워 쪽 커넥터 153°C (der8auer) — 2026-09-30 원문에서 다시 확인(PCGamesN 2025-04-29, MSI Suprim 5090·1,300W 파워)",
+   "as_of": "2026-09",
    "confidence": "medium",
    "sources": [
     {
@@ -413,8 +413,8 @@
    "use": "build",
    "summary": "대부분의 RX 9070 XT 는 8핀이지만 몇몇 고급 모델은 16핀이다. 위키백과는 ASRock Taichi OC(2025-08)와 Sapphire Nitro+ 두 건(2025-11)의 커넥터 손상을 인용한다. 원래 기사(TechPowerUp)는 열지 못했다.",
    "evidence": "experience",
-   "numbers": "",
-   "as_of": "2025-11",
+   "numbers": "ASRock Taichi OC(2025-08) · Sapphire Nitro+ 2건(2025-11) — 2026-09-30 위키백과 원문에서 다시 확인",
+   "as_of": "2026-09",
    "confidence": "low",
    "sources": [
     {
@@ -433,8 +433,8 @@
    "use": "fine-tuning",
    "summary": "2025-02 5090 사용자들이 vLLM 에서 오류를 겪었다 — 정식 PyTorch 가 블랙웰(sm_120)을 지원하지 않아 CUDA 12.8 나이틀리 빌드만 됐다. 새 세대 출시 직후 ML 지원은 실제 위험이다. 지금은 지원한다(Unsloth 가 RTX 50 을 명시).",
    "evidence": "experience",
-   "numbers": "sm_120 · CUDA 12.8",
-   "as_of": "2025-02",
+   "numbers": "sm_120 · CUDA 12.8 · 이슈는 2025-02-14 열렸고 지금은 닫혔다 — 2026-09-30 원문에서 다시 확인",
+   "as_of": "2026-09",
    "confidence": "medium",
    "sources": [
     {
@@ -661,8 +661,8 @@
    "use": "llm-inference",
    "summary": "RX 9070 과 9070 XT 는 메모리(16GB·대역폭)가 같아 답을 생성하는 속도 차이가 작다(Vulkan 약 120 대 132 t/s). 연산이 적어 프롬프트 읽기는 XT 의 약 57%다. 로컬 LLM 추론만 보면 값 차이만큼의 차이는 아니다. ROCm 보다 Vulkan 이 약간 빠르다.",
    "evidence": "measurement",
-   "numbers": "Vulkan(FA): 9070 생성 119.51 · 읽기 2,859.98 / 9070 XT 131.54 · 5,048.07 · ROCm(FA): 9070 생성 115.32 · 읽기 2,452.68 t/s (Llama 2 7B Q4_0)",
-   "as_of": "2025-08",
+   "numbers": "Vulkan(FA): 9070 생성 119.51 · 읽기 2,859.98 / 9070 XT 131.54 · 5,048.07 · ROCm(FA): 9070 생성 115.32 · 읽기 2,452.68 t/s (Llama 2 7B Q4_0) — 2026-09-30 점수판 원문에서 확인",
+   "as_of": "2026-09",
    "confidence": "high",
    "sources": [
     {
@@ -684,8 +684,8 @@
    "use": "llm-inference",
    "summary": "같은 16GB 급 입문 카드끼리 보면 RX 9060 XT 는 메모리 대역폭이 좁아 생성 속도가 RTX 5060 Ti 16GB 의 약 70% 다(Vulkan 약 71 대 97 t/s). 점수판 행에는 8GB·16GB 구분이 없지만 두 판은 대역폭이 같아 생성 속도도 같다고 본다. ROCm 은 Vulkan 보다 조금 느렸다.",
    "evidence": "measurement",
-   "numbers": "Vulkan(FA): 9060 XT 생성 70.52 · 읽기 1,915.41 / 5060 Ti 97.01 · 3,912.65 · ROCm(FA): 9060 XT 생성 65.42 · 읽기 1,479.27 t/s (Llama 2 7B Q4_0)",
-   "as_of": "2025-08",
+   "numbers": "Vulkan(FA): 9060 XT 생성 70.52 · 읽기 1,915.41 / 5060 Ti 97.01 · 3,912.65 · ROCm(FA): 9060 XT 생성 65.42 · 읽기 1,479.27 t/s (Llama 2 7B Q4_0) — 2026-09-30 점수판 원문에서 확인",
+   "as_of": "2026-09",
    "confidence": "medium",
    "sources": [
     {
