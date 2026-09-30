@@ -16,7 +16,7 @@ SOURCE = ROOT_DIR / "jd-viewer" / "public" / "all_jobs_enriched.json"
 INDEX = LAB_DIR / "state" / "jobs_index.json"
 # 색인 필드가 바뀌면 올린다. 원본이 그대로여도 옛 색인을 다시 만든다.
 #   2 → 3: 모집 기간·모집 방식(period)을 원본 full_jd 에서 뽑아 넣는다
-SCHEMA = 3
+SCHEMA = 4
 
 # 불릿으로 쓸 수 있는 줄머리들. 사이트마다 제각각이라 넉넉히 받는다.
 _BULLET = re.compile(r"^\s*(?:[*\-•·▶▪◆■□○●]|└|\d+[.)])\s*")
@@ -49,7 +49,8 @@ def _bullets(text: str, limit: int) -> list[str]:
 
 
 _GROUP_HEAD = re.compile(r"^\s*(\d+)[.)]\s+(.+)$")
-_BENEFIT = re.compile(r"^(.{1,16}?)\s*:\s*(.+)$")
+# 콜론 뒤가 '//' 면 라벨이 아니라 주소다('https://…' 가 'https' | '//…' 로 갈라지던 것)
+_BENEFIT = re.compile(r"^(.{1,16}?)\s*:(?!//)\s*(.+)$")
 
 
 def _groups(text: str) -> list[dict]:

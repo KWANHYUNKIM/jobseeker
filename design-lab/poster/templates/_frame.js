@@ -95,7 +95,8 @@ window.Frame = {
       ];
       // 글자·그림이 있는 잎 요소들만 본다(칸 자체는 넓어서 늘 겹친다)
       const marks = [...sheet.querySelectorAll('*')].filter(n => n !== box && !n.contains(box)
-        && (n.tagName === 'IMG' || n.tagName === 'SVG' || n.tagName === 'CANVAS'
+        // 인라인 svg 의 tagName 은 소문자다('SVG' 로 비교하면 쿠팡 바코드를 빈 자리로 본다)
+        && (['IMG', 'SVG', 'CANVAS'].includes(n.tagName.toUpperCase())
             || (!n.children.length && n.textContent.trim())));
       const overlap = (r) => marks.reduce((sum, n) => {
         const m = n.getBoundingClientRect();

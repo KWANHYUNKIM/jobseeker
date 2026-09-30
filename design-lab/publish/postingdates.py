@@ -68,6 +68,14 @@ def _from_wanted(job: dict, fetch) -> dict:
     if code != 200 or not body:
         return {}
     start, end = _jsonld(body)
+    # 원티드는 마감일을 JSON-LD 가 아니라 페이지 데이터의 due_time 에 둔다. null 이면
+    # '못 찾음' 이 아니라 **상시 채용**이다(9/29 확인: 신입 묶음 원티드 공고 4건이 전부 null).
+    # 판에 '7/7~' 만 남아 언제 끝나는지 안 보이던 것.
+    due = re.search(r'\\?"due_time\\?"\s*:\s*(null|\\?"([0-9-]{10}))', body)
+    if due and not end:
+        if due.group(1) == "null":
+            return {"start": start, "end": "", "always": True, "source": "wanted due_time 없음(상시)"}
+        end = _iso(due.group(2))
     return {"start": start, "end": end, "source": "wanted 공고 페이지 JSON-LD"}
 
 

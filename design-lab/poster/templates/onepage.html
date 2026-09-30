@@ -44,6 +44,7 @@
   .blk dl{margin-top:calc(var(--f)*.5);display:grid;grid-template-columns:auto 1fr;column-gap:calc(var(--f)*1);row-gap:calc(var(--f)*.4)}
   .blk dt{font-size:calc(var(--f)*.92);font-weight:700;color:var(--accent);line-height:1.58;white-space:nowrap}
   .blk dd{font-size:var(--f);line-height:1.45}
+  .blk dd.wide{grid-column:1/-1}
 
   /* 회사 조사가 있을 때(brands/*.json) — 회사 색, 한 줄 소개, 공개 수치, 제품 모티프 */
   .motif{position:absolute;pointer-events:none}
@@ -157,7 +158,11 @@
     if (sec.kicker === 'Tasks' && sec.title !== '주요업무') b.append(el('h4', '', sec.title));
     if (sec.kind === 'rows') {
       const dl = el('dl');
-      sec.items.forEach(it => { dl.append(el('dt', '', it.label || '·'), el('dd', '', it.text)); });
+      // 라벨 없는 줄은 두 칸을 다 쓴다 — '·' 만 라벨 칸에 떠 있으면 본문과 떨어져 보였다(토스 복지)
+      sec.items.forEach(it => {
+        if (it.label) dl.append(el('dt', '', it.label), el('dd', '', it.text));
+        else dl.append(el('dd', 'wide', it.text));
+      });
       b.append(dl);
     } else {
       const ul = el('ul'); sec.items.forEach(it => ul.append(el('li', '', it))); b.append(ul);

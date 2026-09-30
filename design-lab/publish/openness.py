@@ -111,7 +111,8 @@ def check(job: dict, today: date | None = None, *, network: bool = True) -> tupl
     if not checkers or site not in checkers:
         return "unknown", f"이 사이트({site})는 재확인 방법이 없음"
     try:
-        status, reason, iso = checkers[site](job, today, {})
+        v = checkers[site](job, today, {})     # Verdict(status, reason, deadline, posted)
+        status, reason, iso = v.status, v.reason, v.deadline
     except Exception as e:                  # noqa: BLE001 — 차단·타임아웃도 '모름' 이다
         return "unknown", f"재확인 실패: {type(e).__name__}: {e}"
     if status == "active":

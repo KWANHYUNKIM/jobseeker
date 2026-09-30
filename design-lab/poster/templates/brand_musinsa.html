@@ -118,6 +118,10 @@
   else val.append(el('span', '', F.career));
   yrs.append(val); pic.append(yrs); kv.append(pic);
   sheet.append(kv);
+  // 제목은 한 줄(nowrap)이라 길면 오른쪽 사진·경력 칸 밑으로 들어가 잘렸다
+  // ('Network Security Engineer'). 칸 폭에 들어올 때까지 줄인다.
+  { const h1 = txt.querySelector('h1'); let px = parseFloat(getComputedStyle(h1).fontSize);
+    while (h1.scrollWidth > h1.clientWidth && px > 24) { px -= 2; h1.style.fontSize = `${px}px`; } }
 
   const main = el('main'); sheet.append(main);
 
