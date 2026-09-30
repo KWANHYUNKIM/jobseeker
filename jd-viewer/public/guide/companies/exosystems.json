@@ -1,0 +1,327 @@
+{
+  "slug": "exosystems",
+  "name": "엑소시스템즈",
+  "name_en": "EXOSYSTEMS",
+  "aliases": [
+    "엑소시스템즈",
+    "EXOSYSTEMS"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "",
+  "one_liner": "골격근의 미세 신호를 웨어러블로 재는 근골격계 디지털 케어 스타트업 — 생체신호 기기 펌웨어와 BLE 로 받는 Kotlin 앱 · AWS 를 뽑는다(병역특례)",
+  "company": {
+    "business": "엑소시스템즈는 **근골격계 디지털 케어**를 만드는 하드웨어 + 소프트웨어 스타트업이다 — 지난 공고의 회사 소개는 '로봇공학과 인공지능 기술을 기반으로 디지털 헬스케어 솔루션을 개발' 한다고 적고, **근골격계 건강관리 디지털 케어 제품**에서 시작해 다른 **만성질환**으로 넓히려 한다. 핵심은 **골격근의 미세 신호(생체신호)** 를 **웨어러블 기기**로 비침습적으로 재서 근 기능을 진단 · 모니터링하는 것이고, 기기 → **블루투스** → **안드로이드 앱** → **AWS 클라우드** → 모니터링 웹으로 데이터가 흐른다. 임베디드 공고 제목은 이를 '생체신호 기반 **AI 의료기기**' 라고 부른다. 문제의식은 '어딘가를 가야만 건강관리를 받을 수 있는' 의료 사각지대와 전문 인력 시간에 의존하는 노동집약적 구조다. 근무지는 경기 성남시 수정구 창업로 43(지난 공고). 두 공고 모두 **병역특례**를 운영한다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "[디지털 헬스케어] 생체신호 기반 AI 의료기기 임베디드 개발자 (병역특례 가능)",
+        "url": "https://www.wanted.co.kr/wd/286681",
+        "publisher": "원티드",
+        "summary": "엑소시스템즈 — '건강한 삶을 위한 최고의 기술', 시간 · 공간 제약 없는 전문 건강관리. 하드웨어 · 소프트웨어 기술 기반 스타트업. 업무: 디지털 헬스케어 기기 회로 설계 · 펌웨어, 생체신호 취득 · 앱 데이터 통신. 자격 ARM MCU 디지털 회로 · ARM 펌웨어 · 아날로그 회로 기반 펌웨어 · 포트폴리오. 우대 아날로그 회로 · 아트워크, 양산 3건, 전기안전 · 전자파 시험, BT · Wi-Fi, RTOS. 경력 3-7년, 병역특례."
+      },
+      {
+        "title": "SW 개발자 (병역특례 가능)",
+        "url": "https://www.wanted.co.kr/wd/286678",
+        "publisher": "원티드",
+        "summary": "근골격계 디지털 케어 솔루션 운영 프로그램. 웨어러블 HW 측정 데이터를 앱에서 받아 관리, 모니터링 웹 서비스. 자격 Kotlin 안드로이드 네이티브, 데이터 통신 네트워크 프로그래밍, AWS 백엔드 협업, 포트폴리오. 우대 생성형 AI 도구, 앱 · 웹 초기 런칭, 사용자 피드백 업데이트, 클라우드 서버, 프로젝트 리드. 경력 3-7년, 병역특례."
+      },
+      {
+        "title": "디지털헬스케어 플랫폼 SW개발자(점핏, 마감)",
+        "url": "https://jumpit.saramin.co.kr/position/53998183",
+        "publisher": "점핏",
+        "summary": "같은 SW 자리의 지난 공고 — 자격에 'Bluetooth 데이터 통신' · 'AWS/Firebase' 가 명시. 근무지 경기 성남시 수정구 창업로 43. 회사 소개: 로봇공학과 인공지능 기반 디지털 헬스케어, 근골격계 건강관리 디지털 케어 제품에서 시작해 만성질환으로."
+      },
+      {
+        "title": "디지털헬스케어 플랫폼 임베디드 개발자(점핏, 마감)",
+        "url": "https://jumpit.saramin.co.kr/position/53998224",
+        "publisher": "점핏",
+        "summary": "지난 임베디드 공고 — 아날로그에서 디지털까지 ICT 융합 시스템으로 골격근의 미세 신호를 검출하는 근 기능 진단 시스템 설계 · 평가, 데이터를 클라우드와 연계."
+      },
+      {
+        "title": "디지털헬스케어 플랫폼 AI 엔지니어(점핏, 마감)",
+        "url": "https://jumpit.saramin.co.kr/position/53998199",
+        "publisher": "점핏",
+        "summary": "지난 AI 공고 — 생체신호로 질병 관련 디지털 바이오마커 분석, 골격근 상태를 비침습적으로 진단 · 모니터링하는 측정 기술, 비선형 근육 신호를 학습 알고리즘으로 정량 지표화."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "근골격계 디지털 케어 기기 · 서비스",
+        "how": "웨어러블 측정 기기와 앱 · 클라우드 서비스로 근골격계 건강관리를 제공한다 — 판매처(병원 · 요양기관 · 개인)와 과금 구조(기기 판매 · 구독 · 수가)는 읽은 자료에 없다.",
+        "domains": [
+          "생체신호 웨어러블 · 펌웨어",
+          "기기 연동 앱 · 클라우드"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "[디지털 헬스케어] 생체신호 기반 AI 의료기기 임베디드 개발자 (병역특례 가능)",
+            "url": "https://www.wanted.co.kr/wd/286681",
+            "publisher": "원티드",
+            "summary": "엑소시스템즈 — '건강한 삶을 위한 최고의 기술', 시간 · 공간 제약 없는 전문 건강관리. 하드웨어 · 소프트웨어 기술 기반 스타트업. 업무: 디지털 헬스케어 기기 회로 설계 · 펌웨어, 생체신호 취득 · 앱 데이터 통신. 자격 ARM MCU 디지털 회로 · ARM 펌웨어 · 아날로그 회로 기반 펌웨어 · 포트폴리오. 우대 아날로그 회로 · 아트워크, 양산 3건, 전기안전 · 전자파 시험, BT · Wi-Fi, RTOS. 경력 3-7년, 병역특례."
+          },
+          {
+            "title": "SW 개발자 (병역특례 가능)",
+            "url": "https://www.wanted.co.kr/wd/286678",
+            "publisher": "원티드",
+            "summary": "근골격계 디지털 케어 솔루션 운영 프로그램. 웨어러블 HW 측정 데이터를 앱에서 받아 관리, 모니터링 웹 서비스. 자격 Kotlin 안드로이드 네이티브, 데이터 통신 네트워크 프로그래밍, AWS 백엔드 협업, 포트폴리오. 우대 생성형 AI 도구, 앱 · 웹 초기 런칭, 사용자 피드백 업데이트, 클라우드 서버, 프로젝트 리드. 경력 3-7년, 병역특례."
+          },
+          {
+            "title": "디지털헬스케어 플랫폼 SW개발자(점핏, 마감)",
+            "url": "https://jumpit.saramin.co.kr/position/53998183",
+            "publisher": "점핏",
+            "summary": "같은 SW 자리의 지난 공고 — 자격에 'Bluetooth 데이터 통신' · 'AWS/Firebase' 가 명시. 근무지 경기 성남시 수정구 창업로 43. 회사 소개: 로봇공학과 인공지능 기반 디지털 헬스케어, 근골격계 건강관리 디지털 케어 제품에서 시작해 만성질환으로."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "생체신호 웨어러블 · 펌웨어",
+        "why": "임베디드 공고가 디지털 헬스케어 기기의 회로 설계 · 펌웨어, 생체신호 취득, ARM MCU · 아날로그 회로, 전기안전 · 전자파 시험, BT · Wi-Fi, RTOS 를 적는다.",
+        "what_to_know": [
+          "근전도 등 미세 신호 아날로그 프런트엔드",
+          "ARM Cortex-M 펌웨어 · RTOS",
+          "BLE GATT",
+          "의료기기 전기안전 · EMC(IEC 60601)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[디지털 헬스케어] 생체신호 기반 AI 의료기기 임베디드 개발자 (병역특례 가능)",
+            "url": "https://www.wanted.co.kr/wd/286681",
+            "publisher": "원티드",
+            "summary": "엑소시스템즈 — '건강한 삶을 위한 최고의 기술', 시간 · 공간 제약 없는 전문 건강관리. 하드웨어 · 소프트웨어 기술 기반 스타트업. 업무: 디지털 헬스케어 기기 회로 설계 · 펌웨어, 생체신호 취득 · 앱 데이터 통신. 자격 ARM MCU 디지털 회로 · ARM 펌웨어 · 아날로그 회로 기반 펌웨어 · 포트폴리오. 우대 아날로그 회로 · 아트워크, 양산 3건, 전기안전 · 전자파 시험, BT · Wi-Fi, RTOS. 경력 3-7년, 병역특례."
+          },
+          {
+            "title": "디지털헬스케어 플랫폼 임베디드 개발자(점핏, 마감)",
+            "url": "https://jumpit.saramin.co.kr/position/53998224",
+            "publisher": "점핏",
+            "summary": "지난 임베디드 공고 — 아날로그에서 디지털까지 ICT 융합 시스템으로 골격근의 미세 신호를 검출하는 근 기능 진단 시스템 설계 · 평가, 데이터를 클라우드와 연계."
+          }
+        ]
+      },
+      {
+        "name": "기기 연동 앱 · 클라우드",
+        "why": "SW 공고가 웨어러블 측정 데이터를 앱에서 받아 관리, 모니터링 웹, Kotlin 안드로이드, 데이터 통신, AWS 백엔드를 적는다.",
+        "what_to_know": [
+          "Android BLE",
+          "오프라인 버퍼 · 동기화",
+          "AWS 백엔드 · 모니터링 웹"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "SW 개발자 (병역특례 가능)",
+            "url": "https://www.wanted.co.kr/wd/286678",
+            "publisher": "원티드",
+            "summary": "근골격계 디지털 케어 솔루션 운영 프로그램. 웨어러블 HW 측정 데이터를 앱에서 받아 관리, 모니터링 웹 서비스. 자격 Kotlin 안드로이드 네이티브, 데이터 통신 네트워크 프로그래밍, AWS 백엔드 협업, 포트폴리오. 우대 생성형 AI 도구, 앱 · 웹 초기 런칭, 사용자 피드백 업데이트, 클라우드 서버, 프로젝트 리드. 경력 3-7년, 병역특례."
+          },
+          {
+            "title": "디지털헬스케어 플랫폼 SW개발자(점핏, 마감)",
+            "url": "https://jumpit.saramin.co.kr/position/53998183",
+            "publisher": "점핏",
+            "summary": "같은 SW 자리의 지난 공고 — 자격에 'Bluetooth 데이터 통신' · 'AWS/Firebase' 가 명시. 근무지 경기 성남시 수정구 창업로 43. 회사 소개: 로봇공학과 인공지능 기반 디지털 헬스케어, 근골격계 건강관리 디지털 케어 제품에서 시작해 만성질환으로."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "작은 팀에서 기기부터 클라우드까지 잇는다",
+        "evidence": "• 생체신호 취득 및 사용자 App SW와 데이터 통신 개발",
+        "so_what": "펌웨어 개발자도 앱과의 통신 규약을, 앱 개발자도 기기 쪽 제약(전송량 · 끊김)을 안다고 말할 수 있으면 강점이다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "양산 · 인증까지 가 본 사람을 원한다",
+        "evidence": "• 전기안전, 전자파 시험 및 디버깅 경험이 있으신 붑",
+        "so_what": "시제품이 아니라 의료기기로 파는 단계다 — 시험에서 떨어진 것을 어떻게 고쳤는지 같은 이야기가 포트폴리오에 들어가면 좋다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "회사 홈페이지는 이번에 읽지 않았다 — 제품명 · 인허가 등급 · 투자 · 인원은 모른다",
+    "과금 구조와 판매처는 모른다",
+    "근무지는 지난(마감) 점핏 공고 기준이다",
+    "name_en 'EXOSYSTEMS' 는 지난 공고 회사 소개의 표기다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/286681",
+      "title": "[디지털 헬스케어] 생체신호 기반 AI 의료기기 임베디드 개발자 (병역특례 가능)",
+      "site": "wanted",
+      "verdict": "경력 3-7년, **병역특례 가능**. **디지털 헬스케어 기기의 회로 설계 · 펌웨어**, **생체신호 취득**과 **사용자 앱과의 데이터 통신**. 자격은 **ARM MCU 디지털 회로 이해**, **ARM 펌웨어**, **아날로그 회로를 이해한 펌웨어**, 관련 프로젝트(포트폴리오 제출). 우대는 아날로그 회로 설계 · **아트워크(PCB)**, **3건 이상 완료 · 양산**, **전기안전 · 전자파 시험 · 디버깅**, **BT · Wi-Fi 무선 통신**, **RTOS 포팅**. 지난 공고로 보면 골격근의 미세 신호를 재는 근 기능 진단 기기다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "ARM 펌웨어",
+          "MCU 디지털 회로",
+          "아날로그 회로 이해",
+          "포트폴리오"
+        ],
+        "can_learn": [
+          "의료기기 전기안전 · EMC",
+          "BLE GATT 설계",
+          "RTOS 포팅"
+        ]
+      },
+      "study": [
+        {
+          "topic": "미세한 생체신호를 제대로 받기 — 아날로그 앞단과 ADC 샘플링",
+          "from": "qualification",
+          "quote": "• Analog 회로에 대한 이해에 기반한 펌웨어 개발 역량을 갖추신 분",
+          "priority": "core",
+          "why": "자격요건이다. 근육 신호는 마이크로 · 밀리볼트 단위라 증폭 · 필터 · 샘플링을 펌웨어가 회로와 맞춰야 한다(지난 공고: 골격근의 미세 신호 검출).",
+          "gap_check": "근전도(EMG) 대역이 대략 20~450 Hz 라면 샘플링은 얼마로, 안티에일리어싱 필터는 어디에 두나? 계측 증폭기(INA)는 왜 차동 입력이고 CMRR 이 왜 중요한가? 60 Hz 전원 잡음은 회로에서 막나 펌웨어 노치 필터로 막나? ADC 를 DMA + 타이머 트리거로 돌려야 하는 이유는(지터)?",
+          "drill": "STM32 개발 보드에서 타이머 트리거 ADC + DMA 이중 버퍼로 1 kHz 샘플링을 만들고, 함수 발생기(또는 DAC)로 넣은 신호에 60 Hz 를 섞어 CMSIS-DSP 로 대역 통과 · 노치 필터를 건다. 샘플 간격 지터를 GPIO 토글로 오실로스코프에서 재 본다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Arm CMSIS-DSP",
+              "url": "https://arm-software.github.io/CMSIS-DSP/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "TI — Analog front end for EMG/biopotential (INA · ADS1298 자료)",
+              "url": "https://www.ti.com/product/ADS1298",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "기기에서 앱으로 — BLE 로 측정값을 흘려보내기",
+          "from": "preference",
+          "quote": "• 무선(BT, Wifi) 데이터통신 개발 경험이 있으신 분",
+          "priority": "core",
+          "why": "우대사항이고 주요업무가 생체신호 취득 및 앱과의 데이터 통신이다. SW 공고도 Bluetooth 통신을 적었다(지난 공고).",
+          "gap_check": "1 kHz × 16 bit 신호를 BLE 로 보내려면 MTU · 연결 간격(connection interval)을 어떻게 잡나? Notify 와 Indicate 는 무엇이 다르고 측정 스트림엔 무엇을 쓰나? 연결이 끊긴 사이의 데이터는 기기에 버퍼로 두나 버리나 — 시퀀스 번호는 왜 필요한가?",
+          "drill": "nRF52(또는 ESP32) 에 커스텀 GATT 서비스(측정 스트림 Notify + 제어 Write)를 만들고, 패킷마다 시퀀스 번호 · 타임스탬프를 붙인다. nRF Connect 앱으로 받아 초당 처리량을 재고, MTU · 연결 간격을 바꿔 가며 손실률을 표로 남긴다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Nordic — Bluetooth LE fundamentals (DevAcademy)",
+              "url": "https://academy.nordicsemi.com/courses/bluetooth-low-energy-fundamentals/",
+              "kind": "course"
+            }
+          ]
+        },
+        {
+          "topic": "의료기기 전기안전 · 전자파 시험을 통과시키기",
+          "from": "preference",
+          "quote": "• 전기안전, 전자파 시험 및 디버깅 경험이 있으신 붑",
+          "priority": "high",
+          "why": "우대사항이다. 몸에 붙이는 의료기기는 IEC 60601-1(전기안전) · 60601-1-2(EMC) 계열 시험을 거친다(이 사이트의 해석 — 공고는 규격명을 적지 않았다).",
+          "gap_check": "환자에 닿는 부위(applied part)의 누설 전류는 왜 제한되나, 배터리 기기는 무엇이 쉬워지나? 방사 방출(RE)에서 특정 주파수가 튀면 어디부터 의심하나(클럭 고조파 · 케이블)? 정전기(ESD) 시험 뒤 기기가 리셋되면 펌웨어는 무엇을 해야 하나(워치독 · 상태 복구)?",
+          "drill": "진행한 보드 하나에 대해 클럭 · 스위칭 레귤레이터 주파수의 고조파 목록을 만들고, 근접장 프로브(또는 SDR)로 어디서 새는지 찾아 본다. 펌웨어에는 워치독 · 브라운아웃 리셋 뒤 측정 세션을 복구하는 경로를 넣고 강제로 리셋을 걸어 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "식품의약품안전처 — 의료기기 전기 · 기계적 안전 공통기준규격",
+              "url": "https://www.mfds.go.kr/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "RTOS 로 측정 · 통신 · 전원을 나누기",
+          "from": "preference",
+          "quote": "• RTOS 포팅 및 개발 역량을 갖추신 분",
+          "priority": "nice",
+          "why": "우대사항이다. 샘플링 · 필터 · BLE 전송 · 배터리 관리가 한 MCU 에서 겹친다.",
+          "gap_check": "샘플링은 인터럽트/DMA, 필터 · 패킷 만들기는 태스크, 전송은 또 다른 태스크로 나눌 때 큐 크기는 무엇으로 정하나? 우선순위 역전은 언제 생기나? 배터리를 위해 tickless idle 을 켜면 무엇을 확인해야 하나?",
+          "drill": "FreeRTOS 로 ADC(DMA 완료 알림) → 필터 태스크 → 전송 태스크 파이프라인을 큐로 잇고, 전송 태스크를 일부러 막아 큐가 넘칠 때의 동작(버림 · 카운트)을 정한다. uxTaskGetStackHighWaterMark 로 스택을 재 줄인다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "FreeRTOS — Kernel documentation",
+              "url": "https://www.freertos.org/Documentation/02-Kernel/01-About-the-FreeRTOS-kernel/01-FreeRTOS-kernel",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/286678",
+      "title": "SW 개발자 (병역특례 가능)",
+      "site": "wanted",
+      "verdict": "경력 3-7년, **병역특례 가능**. **근골격계 디지털 케어 솔루션**의 운영 프로그램 — **웨어러블 HW 측정 데이터를 앱에서 받아 관리**하고, 데이터를 **모니터링하는 웹 서비스**를 만든다. 자격은 **Kotlin 안드로이드 네이티브**, **데이터 통신 네트워크 프로그래밍**(지난 공고는 'Bluetooth' 로 적었다), **AWS 백엔드 협업**, 포트폴리오. 우대는 생성형 AI 도구 활용, **앱 · 웹 초기 개발 · 런칭**, 사용자 피드백 기반 업데이트, 클라우드 서버 구축, 프로젝트 리드. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Kotlin 안드로이드",
+          "네트워크 · 기기 통신",
+          "AWS 백엔드 협업",
+          "포트폴리오"
+        ],
+        "can_learn": [
+          "Android BLE 스택",
+          "측정 데이터 오프라인 동기화",
+          "모니터링 웹"
+        ]
+      },
+      "study": [
+        {
+          "topic": "안드로이드에서 BLE 기기를 붙들고 있기",
+          "from": "qualification",
+          "quote": "- 데이터 통신을 위한 네트워크 프로그래밍 역량",
+          "priority": "core",
+          "why": "자격요건이고 주요업무가 웨어러블 측정 데이터를 앱에서 받는 것이다. 같은 자리의 지난 공고는 이를 Bluetooth 데이터 통신이라고 적었다.",
+          "gap_check": "Android 12 이후 BLE 권한(BLUETOOTH_SCAN · BLUETOOTH_CONNECT)은 무엇이 바뀌었나? GATT 호출을 동시에 여러 개 날리면 왜 실패하나(한 번에 하나 — 큐)? 측정 중 화면을 꺼도 연결을 유지하려면(포그라운드 서비스 타입 connectedDevice)? 133 오류 · 끊김 뒤 재연결은 어떻게 설계하나?",
+          "drill": "Kotlin + 코루틴으로 스캔 → 연결 → 서비스 탐색 → Notify 구독을 하나의 명령 큐로 직렬화한 BLE 매니저를 만들고, 포그라운드 서비스에서 측정 스트림을 Flow 로 내보낸다. 기기를 껐다 켜며 지수 백오프 재연결과 시퀀스 번호로 빠진 패킷 수를 화면에 보인다(기기가 없으면 nRF52 · ESP32 또는 휴대폰 두 대로 GATT 서버를 흉내 낸다).",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Android Developers — Bluetooth Low Energy",
+              "url": "https://developer.android.com/develop/connectivity/bluetooth/ble/ble-overview",
+              "kind": "docs"
+            },
+            {
+              "title": "Android Developers — Foreground service types",
+              "url": "https://developer.android.com/develop/background-work/services/fgs/service-types",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "측정값을 잃지 않고 클라우드까지 — 로컬 저장과 동기화",
+          "from": "task",
+          "quote": "- 웨어러블 HW에서 측정된 데이터를 앱 서비스 SW에서 받아 데이터 관리",
+          "priority": "core",
+          "why": "주요업무다. 측정은 네트워크가 없을 때도 일어나고, 건강 데이터는 한 번 잃으면 다시 못 잰다.",
+          "gap_check": "측정 세션을 Room 에 먼저 저장하고 올리는 이유는? 업로드가 두 번 되면 서버에서 어떻게 한 번으로 만드나(클라이언트가 만든 세션 ID · 멱등 키)? 큰 원시 신호는 API 로 보내나 S3 사전 서명 URL 로 보내나? 재시도는 WorkManager 로 어떻게 거나?",
+          "drill": "Room 에 세션 · 요약값 · 원시 신호 파일 경로를 저장하고, WorkManager(네트워크 제약 · 백오프)로 요약값은 API Gateway + Lambda(또는 작은 서버)에, 원시 파일은 사전 서명 URL 로 S3 에 올린다. 같은 세션을 두 번 올려도 서버에 한 건만 남는지 테스트한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Android Developers — WorkManager",
+              "url": "https://developer.android.com/develop/background-work/background-tasks/persistent",
+              "kind": "docs"
+            },
+            {
+              "title": "AWS — Uploading objects with presigned URLs",
+              "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/PresignedUrlUploadObject.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모니터링 웹 — 여러 사용자의 측정을 한눈에",
+          "from": "task",
+          "quote": "- 데이터를 모니터링하고 관리할 수 있는 모니터링 웹 서비스 개발",
+          "priority": "high",
+          "why": "주요업무다. 전문가(또는 운영자)가 사용자들의 근 기능 변화를 원격으로 보는 화면으로 읽힌다(이 사이트의 해석).",
+          "gap_check": "측정 원시 신호 전체를 그리나, 서버가 만든 요약 지표만 그리나? 오래 측정하지 않은 사용자 · 값이 급변한 사용자를 먼저 보이게 하려면? 건강 데이터를 보는 권한과 접근 기록은 어떻게 남기나?",
+          "drill": "앞 과제의 데이터로 사용자 목록(마지막 측정일 · 추세 화살표 정렬) · 사용자 상세(지표 시계열 차트) 모니터링 웹을 만들고, 로그인한 관리자가 누구 데이터를 봤는지 조회 로그를 남긴다.",
+          "hours": 6,
+          "resources": []
+        }
+      ]
+    }
+  ]
+}
