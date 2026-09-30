@@ -1,0 +1,276 @@
+{
+  "slug": "aroalabs",
+  "name": "아로아랩스",
+  "name_en": "",
+  "aliases": [
+    "아로아랩스"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "",
+  "one_liner": "선사 ERP 로 여객 · 화물 해운을 다시 짜는 5 년 차 AI 물류 스타트업 — Go · Next.js 풀스택, 운임 예측 · 경로/적재 최적화 연구원(부산 게시 포함)을 뽑는다",
+  "company": {
+    "business": "아로아랩스는 **해운 물류와 여객 운송**을 소프트웨어로 다시 짜는 **5 년 차 AI 물류 스타트업**이다. 공고가 드는 토대는 **자체 선사 ERP 솔루션**(선사가 여객 · 화물 업무를 돌리는 시스템으로 읽힌다), **TIPS 선정(AI 연구)**, **KISA 블록체인 실증사업**이고, '실제 매출이 발생하는 탄탄한 재무 구조' 와 정부 R&D 과제를 함께 한다고 적는다. 개발은 **Go · Next.js · Azure** 스택으로 **여객 · 화물 비즈니스의 핵심 로직**을 만들고, 연구는 **경로 · 적재 최적화**와 **해상 운임 · 물동량 시계열 예측**을 한다. Claude Code · Codex · Cursor 같은 AI 개발 도구를 전폭 지원하고, 연차보다 실력으로 보상한다고 적는다. 연구원 자리는 부산 근무 게시가 따로 있다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "AI 국제 물류 스타트업 AI/ML 연구원",
+        "url": "https://www.wanted.co.kr/wd/327687",
+        "publisher": "원티드",
+        "summary": "5 년 차 AI 물류 스타트업 — TIPS(AI 연구), KISA 블록체인 실증사업, 자체 선사 ERP 솔루션, 실제 매출 · 정부 R&D. 업무: 경로 · 적재 최적화 알고리즘, 해상 운임 · 물동량 시계열 예측, SOTA 재현 · 경량화, 공급망 분석 시각화 파이프라인. 공학/이학 학사, Python · PyTorch/TF, 논문 구현. 우대 석사(최적화 · 시계열 · 통계), 논문, Kaggle. Cursor · Claude Code 지원."
+      },
+      {
+        "title": "AI 국제 물류 스타트업 풀스택 개발자",
+        "url": "https://www.wanted.co.kr/wd/379537",
+        "publisher": "원티드",
+        "summary": "아로아랩스 — Go · Next.js 로 해운 물류와 여객 운송의 표준을 다시 쓴다. Go · Next.js · Azure, Claude Code · Codex 지원. 업무: 시스템 안정화 · 리팩터링 최우선, 여객 · 화물 핵심 로직 풀스택, Go 대용량 백엔드 API, Next.js 데이터 시각화, Azure CI/CD · 모니터링. 1년+, 연차 무관. 우대 해운 · 물류 · 여객 · ERP, 대규모 시스템, Go 상용, 리더십."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "선사 ERP 솔루션(여객 · 화물)",
+        "how": "선사에 여객 · 화물 업무 ERP 를 공급한다 — 판매 · 구독 구조와 고객 수는 공고에 없다.",
+        "domains": [
+          "선사 여객 · 화물 시스템",
+          "물류 최적화 · 시황 예측"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "AI 국제 물류 스타트업 AI/ML 연구원",
+            "url": "https://www.wanted.co.kr/wd/327687",
+            "publisher": "원티드",
+            "summary": "5 년 차 AI 물류 스타트업 — TIPS(AI 연구), KISA 블록체인 실증사업, 자체 선사 ERP 솔루션, 실제 매출 · 정부 R&D. 업무: 경로 · 적재 최적화 알고리즘, 해상 운임 · 물동량 시계열 예측, SOTA 재현 · 경량화, 공급망 분석 시각화 파이프라인. 공학/이학 학사, Python · PyTorch/TF, 논문 구현. 우대 석사(최적화 · 시계열 · 통계), 논문, Kaggle. Cursor · Claude Code 지원."
+          },
+          {
+            "title": "AI 국제 물류 스타트업 풀스택 개발자",
+            "url": "https://www.wanted.co.kr/wd/379537",
+            "publisher": "원티드",
+            "summary": "아로아랩스 — Go · Next.js 로 해운 물류와 여객 운송의 표준을 다시 쓴다. Go · Next.js · Azure, Claude Code · Codex 지원. 업무: 시스템 안정화 · 리팩터링 최우선, 여객 · 화물 핵심 로직 풀스택, Go 대용량 백엔드 API, Next.js 데이터 시각화, Azure CI/CD · 모니터링. 1년+, 연차 무관. 우대 해운 · 물류 · 여객 · ERP, 대규모 시스템, Go 상용, 리더십."
+          }
+        ]
+      },
+      {
+        "name": "정부 R&D 과제(TIPS · KISA 실증)",
+        "how": "AI 연구 · 블록체인 실증 과제 수행 — 금액은 공고에 없다.",
+        "domains": [
+          "물류 최적화 · 시황 예측"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI 국제 물류 스타트업 AI/ML 연구원",
+            "url": "https://www.wanted.co.kr/wd/327687",
+            "publisher": "원티드",
+            "summary": "5 년 차 AI 물류 스타트업 — TIPS(AI 연구), KISA 블록체인 실증사업, 자체 선사 ERP 솔루션, 실제 매출 · 정부 R&D. 업무: 경로 · 적재 최적화 알고리즘, 해상 운임 · 물동량 시계열 예측, SOTA 재현 · 경량화, 공급망 분석 시각화 파이프라인. 공학/이학 학사, Python · PyTorch/TF, 논문 구현. 우대 석사(최적화 · 시계열 · 통계), 논문, Kaggle. Cursor · Claude Code 지원."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "선사 여객 · 화물 시스템",
+        "why": "풀스택 공고가 여객 · 화물 핵심 로직, Go 대용량 API, Next.js 시각화, Azure CI/CD 를 적고 연구 공고가 자체 선사 ERP 를 든다.",
+        "what_to_know": [
+          "예약 · 좌석 · 선적 재고",
+          "Go 동시성 · API 설계",
+          "Azure DevOps · 모니터링"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI 국제 물류 스타트업 풀스택 개발자",
+            "url": "https://www.wanted.co.kr/wd/379537",
+            "publisher": "원티드",
+            "summary": "아로아랩스 — Go · Next.js 로 해운 물류와 여객 운송의 표준을 다시 쓴다. Go · Next.js · Azure, Claude Code · Codex 지원. 업무: 시스템 안정화 · 리팩터링 최우선, 여객 · 화물 핵심 로직 풀스택, Go 대용량 백엔드 API, Next.js 데이터 시각화, Azure CI/CD · 모니터링. 1년+, 연차 무관. 우대 해운 · 물류 · 여객 · ERP, 대규모 시스템, Go 상용, 리더십."
+          },
+          {
+            "title": "AI 국제 물류 스타트업 AI/ML 연구원",
+            "url": "https://www.wanted.co.kr/wd/327687",
+            "publisher": "원티드",
+            "summary": "5 년 차 AI 물류 스타트업 — TIPS(AI 연구), KISA 블록체인 실증사업, 자체 선사 ERP 솔루션, 실제 매출 · 정부 R&D. 업무: 경로 · 적재 최적화 알고리즘, 해상 운임 · 물동량 시계열 예측, SOTA 재현 · 경량화, 공급망 분석 시각화 파이프라인. 공학/이학 학사, Python · PyTorch/TF, 논문 구현. 우대 석사(최적화 · 시계열 · 통계), 논문, Kaggle. Cursor · Claude Code 지원."
+          }
+        ]
+      },
+      {
+        "name": "물류 최적화 · 시황 예측",
+        "why": "연구 공고가 경로 · 적재 최적화, 해상 운임 · 물동량 시계열 예측, 공급망 분석 파이프라인을 적는다.",
+        "what_to_know": [
+          "차량 경로 문제(VRP)",
+          "컨테이너 적재(3D bin packing)",
+          "시계열 예측 평가"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI 국제 물류 스타트업 AI/ML 연구원",
+            "url": "https://www.wanted.co.kr/wd/327687",
+            "publisher": "원티드",
+            "summary": "5 년 차 AI 물류 스타트업 — TIPS(AI 연구), KISA 블록체인 실증사업, 자체 선사 ERP 솔루션, 실제 매출 · 정부 R&D. 업무: 경로 · 적재 최적화 알고리즘, 해상 운임 · 물동량 시계열 예측, SOTA 재현 · 경량화, 공급망 분석 시각화 파이프라인. 공학/이학 학사, Python · PyTorch/TF, 논문 구현. 우대 석사(최적화 · 시계열 · 통계), 논문, Kaggle. Cursor · Claude Code 지원."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "안정화가 먼저",
+        "evidence": "• 시스템 안정화 및 고도화 (Priority): 서비스의 안정적 운영을 최우선으로 리팩토링과 최적화를 수행합니다. 유지보수가 신규 개발의 강력한 토대임을 이해하고 실천합니다.",
+        "so_what": "새 기능보다 기존 시스템을 안정시키는 일이 우선인 자리다 — 리팩터링 · 장애 감소를 숫자로 보인 경험을 준비한다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "예외를 먼저 생각하는 사람",
+        "evidence": "• 치밀한 예외 처리: \"이게 왜 안 되지?\"보다 \"이렇게 되면 어떻게 하지?\"를 먼저 고민하며 기획의 빈틈을 채우는 분",
+        "so_what": "여객 · 화물은 결항 · 기상 · 변경 · 취소가 잦은 도메인이다(이 사이트의 해석) — 예외 케이스를 먼저 설계한 사례가 강하다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다('업계 최고 수준' 이라고만 적었다) — 비워 둔다",
+    "선사 ERP 의 제품명 · 고객 선사 · 매출 · 인원은 공고에 없다",
+    "풀스택 자리의 근무지가 공고 필드에 없다(연구원은 부산 게시가 따로 있다)",
+    "영문 이름을 확인하지 못했다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/379537",
+      "title": "AI 국제 물류 스타트업 풀스택 개발자",
+      "site": "wanted",
+      "verdict": "경력 1년 이상(연차 무관, 실력으로). **시스템 안정화 · 고도화가 최우선**(리팩터링 · 최적화), **여객 · 화물 핵심 로직 풀스택**, **Go 로 대용량 트래픽 백엔드 API · 구조**, **Next.js 로 복잡한 데이터 시각화 · UX**, **Azure CI/CD · 모니터링**. 자격은 기능 하나를 끝까지 구현하는 힘, **타 언어에 능숙해 Go 를 빨리 익힐 것**, Next.js/React 재사용 구조, 클라우드 배포 흐름, **치밀한 예외 처리**. 우대는 해운 · 물류 · 여객 · ERP, 대규모 시스템, Go 상용, 리더십. 급여는 공고에 없다('업계 최고 수준' 이라고만 적었다).",
+      "fit": {
+        "must_have": [
+          "풀스택 1년",
+          "Next.js/React",
+          "다른 언어 숙련(→ Go)"
+        ],
+        "can_learn": [
+          "Go",
+          "여객 · 선적 도메인",
+          "Azure"
+        ]
+      },
+      "study": [
+        {
+          "topic": "여객선 예약 — 좌석 · 선적 재고와 결항 같은 예외",
+          "from": "qualification",
+          "quote": "• 치밀한 예외 처리: \"이게 왜 안 되지?\"보다 \"이렇게 되면 어떻게 하지?\"를 먼저 고민하며 기획의 빈틈을 채우는 분",
+          "priority": "core",
+          "why": "자격요건이고 주요업무가 여객 · 화물 핵심 로직이다.",
+          "gap_check": "같은 항차의 마지막 좌석을 두 사람이 동시에 잡으면(행 잠금 · 조건부 갱신)? 결항 · 시간 변경 · 선박 교체 때 이미 발권된 예약은 어떤 상태로 가나? 차량 선적처럼 좌석과 다른 단위(차선 길이 · 무게)의 재고는 어떻게 모델링하나? 결제 뒤 발권이 실패하면?",
+          "drill": "Go + PostgreSQL 로 항차 · 좌석 등급 · 차량 선적 용량을 가진 예약 서비스를 만들고, SELECT … FOR UPDATE(또는 조건부 UPDATE)로 초과 판매를 막는다. 결항 이벤트가 오면 해당 항차 예약을 '결항-환불 대기' 로 일괄 전환하는 작업을 만들고, 동시 예약 1,000 건 부하에서 초과 판매가 0 인지 테스트한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "PostgreSQL — Explicit Locking",
+              "url": "https://www.postgresql.org/docs/current/explicit-locking.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "다른 언어에서 Go 로 — 실전 백엔드 API",
+          "from": "qualification",
+          "quote": "• 빠른 기술 습득: 타 언어에 능숙하여 Go 언어의 특성을 이해하고 빠르게 실전 퍼포먼스를 내실 분",
+          "priority": "core",
+          "why": "자격요건이다.",
+          "gap_check": "Go 의 에러 처리(errors.Is/As · 래핑)는 예외 기반 언어와 무엇이 다른가? goroutine 누수는 어디서 생기나(context 없이 막힌 채널)? 인터페이스는 쓰는 쪽에서 정의한다는 관례는 테스트를 어떻게 쉽게 하나? 대용량 요청에서 DB 커넥션 풀은 어떻게 잡나?",
+          "drill": "앞 과제 예약 API 를 Go 표준 net/http(또는 chi) + sqlc(또는 pgx)로 만들고, 요청마다 context 타임아웃 · 구조화 로그(slog) · 에러 래핑을 적용한다. 저장소 인터페이스를 가짜로 바꿔 끼운 테이블 기반 테스트를 쓰고, pprof 로 부하 중 goroutine 수를 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Effective Go",
+              "url": "https://go.dev/doc/effective_go",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "리팩터링을 안전하게 — 운영 중인 시스템 안정화",
+          "from": "task",
+          "quote": "• 시스템 안정화 및 고도화 (Priority): 서비스의 안정적 운영을 최우선으로 리팩토링과 최적화를 수행합니다. 유지보수가 신규 개발의 강력한 토대임을 이해하고 실천합니다.",
+          "priority": "high",
+          "why": "주요업무의 첫 줄이다.",
+          "gap_check": "테스트가 없는 코드를 리팩터링하기 전에 무엇부터 만드나(특성화 테스트)? 느린 API 는 무엇으로 찾나(APM · 느린 쿼리 로그)? 변경을 작게 나눠 되돌릴 수 있게 하려면(기능 플래그)?",
+          "drill": "오픈소스 Go 서비스(또는 이전 프로젝트) 하나의 핵심 핸들러에 특성화 테스트를 먼저 쓰고, 중복 로직을 함수로 뽑는 리팩터링을 작은 커밋 여러 개로 한다. Azure Monitor(또는 OpenTelemetry + Grafana)로 전후 지연을 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Azure Monitor — Application Insights (OpenTelemetry)",
+              "url": "https://learn.microsoft.com/en-us/azure/azure-monitor/app/opentelemetry-overview",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/327687",
+      "title": "AI 국제 물류 스타트업 AI/ML 연구원",
+      "site": "wanted",
+      "verdict": "경력 3-8년. **경로 · 적재 최적화 알고리즘**, **해상 운임 · 물동량 시계열 예측**, **SOTA 논문 재현 · 경량화 · 상용화**, **공급망 데이터 분석 · 시각화 파이프라인**. 자격은 **공학/이학 학사 또는 준하는 지식**, **Python(PyTorch · TensorFlow) · 논문 구현 · 검증**, 비정형 물류 데이터에서 패턴 → 비즈니스 해결. 우대는 최상위 기업 · 연구소, **석사(최적화 · 통계 · 시계열 · 군집 · 생성 모형)**, 논문 · 학회, Kaggle · 실제 비즈니스 성과. 같은 본문의 부산 근무 게시(368681)가 있다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "공학/이학 학사",
+          "PyTorch/TF",
+          "논문 구현"
+        ],
+        "can_learn": [
+          "VRP · 적재 최적화",
+          "운임 시계열 예측"
+        ]
+      },
+      "study": [
+        {
+          "topic": "해상 운임 · 물동량 예측 — 변동이 큰 시계열",
+          "from": "task",
+          "quote": "• 시계열 예측 및 시황 분석: 해상 운임, 물동량 등 변동성이 큰 시계열 데이터를 분석하고, 미래 시장 상황을 예측하는 고도화된 모델을 연구합니다.",
+          "priority": "core",
+          "why": "주요업무다.",
+          "gap_check": "운임처럼 급변(팬데믹 · 운하 봉쇄)이 있는 시계열에서 무작위 분할 대신 시간 순 교차 검증(rolling origin)을 쓰는 이유는? 점 예측보다 구간(분위수) 예측이 왜 쓸모 있나? 통계 모델(ETS · ARIMA) · 트리 모델 · 딥러닝(N-BEATS · TFT)을 같은 기준으로 비교하려면? 외생 변수(유가 · 환율)는 미래 값을 어떻게 구하나?",
+          "drill": "공개 운임 지수(예: 공개된 컨테이너 운임 지수 주간 값 또는 무역 물동량 통계)를 받아 seasonal naive · ETS · LightGBM · N-BEATS(Darts 또는 Nixtla)를 rolling origin 으로 비교하고 MASE · 분위수 손실을 표로 만든다. 급변 구간에서 어느 모델이 무너지는지 그래프로 보인다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Forecasting: Principles and Practice (3rd ed.)",
+              "url": "https://otexts.com/fpp3/",
+              "kind": "book"
+            },
+            {
+              "title": "Nixtla — StatsForecast / NeuralForecast",
+              "url": "https://nixtlaverse.nixtla.io/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "경로 · 적재 최적화 — VRP 와 컨테이너 적재",
+          "from": "task",
+          "quote": "• 물류 최적화 알고리즘 개발: 경로 최적화, 적재 최적화 등 물류 프로세스의 효율을 극대화하는 알고리즘을 설계하고 구현합니다.",
+          "priority": "core",
+          "why": "주요업무다.",
+          "gap_check": "시간 창 · 용량 제약이 있는 차량 경로 문제(CVRPTW)를 정확 해법 · 메타휴리스틱 중 무엇으로 푸나? 해 품질을 무엇과 비교하나(하한 · 알려진 최적해)? 컨테이너 적재에서 무게 중심 · 쌓기 제약 · 위험물 분리는 어떻게 넣나?",
+          "drill": "Google OR-Tools 로 Solomon 벤치마크 CVRPTW 인스턴스를 풀어 알려진 최적해와의 차이 · 시간 한도별 품질을 표로 만든다. 간단한 3D 적재(상자 50 개, 무게 한도 · 위에 쌓기 금지 표시)를 휴리스틱으로 풀어 적재율을 잰다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Google OR-Tools — Vehicle Routing",
+              "url": "https://developers.google.com/optimization/routing",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/368681",
+      "title": "AI 국제 물류 스타트업 AI/ML 연구원(부산)",
+      "site": "wanted",
+      "duplicate_of": "https://www.wanted.co.kr/wd/327687",
+      "verdict": "⚠️ **같은 자리의 부산 근무 게시다** — 주요업무 · 자격요건 · 우대사항이 `AI/ML 연구원`(327687)과 글자까지 같고 제목에 '(부산)' 만 붙었다. 브리핑은 그쪽을 본다. 근무지를 확인해 한 곳으로 지원한다."
+    }
+  ]
+}

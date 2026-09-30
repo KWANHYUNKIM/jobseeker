@@ -1683,6 +1683,17 @@
       "postings": 3,
       "study_items": 7,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "aroalabs",
+      "name": "아로아랩스",
+      "aliases": [
+        "아로아랩스"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 5,
+      "updated_at": "2026-09-30"
     }
   ]
 }
