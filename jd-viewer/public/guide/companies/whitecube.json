@@ -1,0 +1,491 @@
+{
+  "slug": "whitecube",
+  "name": "화이트큐브",
+  "name_en": "WhiteCube",
+  "aliases": [
+    "화이트큐브",
+    "챌린저스"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "biz-challengers.com",
+  "one_liner": "득템앱 '챌린저스' — 유저는 싸게 사고 브랜드는 노출 · 매출을 산다. 매출 273억 · 3년 연속 흑자, 커머스 플랫폼별 노출 로직을 모델링한다",
+  "company": {
+    "business": "화이트큐브는 앱 **챌린저스**를 만든다 — 처음엔 습관 앱(v1.0)이었고 지금은 **'득템앱'(v2.0)** 이다(채용 페이지). 공고가 설명하는 구조는 둘이다. **B2C** — 유저는 **압도적으로 저렴한 가격에 제품을 득템**하고, **B2B** — 브랜드는 **'매출 보장'** 을 받는다. 브랜드용 사이트(biz-challengers.com)는 '더 많이 보이고, 더 많이 팔리게' 를 내걸고 **1,417개 브랜드**, **핵심 고객 200만 명(20~40대 여성 75% 이상)**, 쿠팡 1페이지 노출 · 리뷰 · 톡딜 · Qoo10 사례와 **일본 뷰티 마케팅(리뷰 · 랭킹 · 매출)** 을 든다. 공고는 이것을 **'커머스 노출 최적화'** 시장이라 부른다 — 챌린저스 유저의 구매가 브랜드 상품의 커머스 플랫폼 순위 · 리뷰로 이어지는 구조로 읽힌다. 숫자로는 **매출 57억 → 147억 → 273억 원(2025)**, **2023 흑자 전환 뒤 3년 연속 흑자**, 아기 유니콘 · 알토스벤처스 투자, 일본 · 미국 진출을 적는다. 모집중 공고는 넷 — 프론트엔드(3년↑), 백엔드 리드(5-10년), 백엔드(3-10년), ML 엔지니어(5년↑).",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "챌린저스 — 브랜드용(biz-challengers.com)",
+        "url": "https://biz-challengers.com/",
+        "publisher": "화이트큐브",
+        "summary": "'더 많이 보이고, 더 많이 팔리게' — 브랜드 대상 광고 · 매출 부스팅. 1,417개 브랜드 이용, 고객 사례(톡딜 오가닉 매출 2배 · 쿠팡 1페이지 노출과 리뷰 · Qoo10), 일본 뷰티 마케팅(리뷰 · 랭킹 · 매출 · 인플루언서), 핵심 고객 200만 명(20~40대 여성 75% 이상), '무상 제공이 아닌 제품에 반응하는 잠재고객'."
+      },
+      {
+        "title": "팀 화이트큐브 채용",
+        "url": "https://teamchallengers.oopy.io/",
+        "publisher": "화이트큐브",
+        "summary": "v1.0 습관앱을 넘어 v2.0 득템앱 — '24시 경험 편의점 챌린저스'. 모집 직군: 사업개발(뷰티 브랜드 · 글로벌), Account Manager, 인플루언서 신사업, 콘텐츠 디자이너, 프로덕트 오너, 백엔드 리드 · 백엔드 · 프론트엔드 · 프로덕트 디자이너."
+      },
+      {
+        "title": "[챌린저스] 프론트엔드 개발자 (3년 이상)",
+        "url": "https://www.wanted.co.kr/wd/276525",
+        "publisher": "원티드",
+        "summary": "B2C — 유저는 압도적으로 저렴한 가격에 제품을 득템, B2B — 브랜드는 '매출 보장'. '커머스 노출 최적화' 시장. 매출 57억 → 147억 → 273억, 일본 · 미국 진출, 2023 흑자 전환 뒤 3년 연속 흑자. 매년 6월 · 12월 연봉 인상. 프론트: React Native · React 앱 · 웹 · 백오피스."
+      },
+      {
+        "title": "[챌린저스] 백엔드 리드",
+        "url": "https://www.wanted.co.kr/wd/355839",
+        "publisher": "원티드",
+        "summary": "CEO 레터: 9년차, PMF · 흑자, 3년 연속 흑자 · 7.1배 성장, 아기 유니콘 · 알토스벤처스 투자, 2025 매출 273억. 백엔드 리드: 기술 의사결정, 앱 · 관리자 API, 개발 속도, OKR, 팀 운영. 기술: Go(Gin) · Python(FastAPI) · MySQL · PostgreSQL · Redis · ElasticSearch · Mongo · Kubernetes + Istio · ArgoCD · Argo Workflows · Vault."
+      },
+      {
+        "title": "[챌린저스] 백엔드 개발자",
+        "url": "https://www.wanted.co.kr/wd/206658",
+        "publisher": "원티드",
+        "summary": "앱 · 관리자 API 개발 · 성능, 신규 비즈니스 MVP, 아키텍처, 빠른 실험, CI/CD. 어떤 언어로든 완성된 서비스 운영, Go · K8s 우대."
+      },
+      {
+        "title": "[챌린저스] ML Engineer",
+        "url": "https://www.wanted.co.kr/wd/348118",
+        "publisher": "원티드",
+        "summary": "유저 구매 여정(클릭 · 검색 · 전환)과 외부 플랫폼 지표의 관계 분석, 플랫폼별 목표 순위 달성을 위한 변수 분석 · 예측, 캠페인 집행 시 '추종구매' 임팩트 예측, 플랫폼별 노출 로직 모델링 · 검증, 실험 기반 시나리오. 우대: 커머스 · 광고 랭킹 · 추천, 실험 설계 · 인과 추론."
+      }
+    ],
+    "scale": [
+      {
+        "label": "매출(공고 주장)",
+        "value": "57억 → 147억 → 273억 원(2025), 3년 연속 흑자",
+        "as_of": "2025 기준(공고)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[챌린저스] 프론트엔드 개발자 (3년 이상)",
+            "url": "https://www.wanted.co.kr/wd/276525",
+            "publisher": "원티드",
+            "summary": "B2C — 유저는 압도적으로 저렴한 가격에 제품을 득템, B2B — 브랜드는 '매출 보장'. '커머스 노출 최적화' 시장. 매출 57억 → 147억 → 273억, 일본 · 미국 진출, 2023 흑자 전환 뒤 3년 연속 흑자. 매년 6월 · 12월 연봉 인상. 프론트: React Native · React 앱 · 웹 · 백오피스."
+          },
+          {
+            "title": "[챌린저스] 백엔드 리드",
+            "url": "https://www.wanted.co.kr/wd/355839",
+            "publisher": "원티드",
+            "summary": "CEO 레터: 9년차, PMF · 흑자, 3년 연속 흑자 · 7.1배 성장, 아기 유니콘 · 알토스벤처스 투자, 2025 매출 273억. 백엔드 리드: 기술 의사결정, 앱 · 관리자 API, 개발 속도, OKR, 팀 운영. 기술: Go(Gin) · Python(FastAPI) · MySQL · PostgreSQL · Redis · ElasticSearch · Mongo · Kubernetes + Istio · ArgoCD · Argo Workflows · Vault."
+          }
+        ]
+      },
+      {
+        "label": "브랜드 · 유저(브랜드용 사이트 주장)",
+        "value": "브랜드 1,417개 · 핵심 고객 200만 명",
+        "as_of": "2026-09 사이트 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "챌린저스 — 브랜드용(biz-challengers.com)",
+            "url": "https://biz-challengers.com/",
+            "publisher": "화이트큐브",
+            "summary": "'더 많이 보이고, 더 많이 팔리게' — 브랜드 대상 광고 · 매출 부스팅. 1,417개 브랜드 이용, 고객 사례(톡딜 오가닉 매출 2배 · 쿠팡 1페이지 노출과 리뷰 · Qoo10), 일본 뷰티 마케팅(리뷰 · 랭킹 · 매출 · 인플루언서), 핵심 고객 200만 명(20~40대 여성 75% 이상), '무상 제공이 아닌 제품에 반응하는 잠재고객'."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "브랜드 광고 · 매출 부스팅(B2B)",
+        "how": "브랜드가 캠페인을 집행하고 챌린저스 유저의 구매 · 리뷰로 노출 · 매출을 올린다 — 광고소개서 · 상담으로 판매, 단가는 공개되지 않았다.",
+        "domains": [
+          "캠페인 API 백엔드(Go · K8s)",
+          "캠페인 효과 예측(ML)",
+          "앱 · 백오피스 프론트엔드"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "챌린저스 — 브랜드용(biz-challengers.com)",
+            "url": "https://biz-challengers.com/",
+            "publisher": "화이트큐브",
+            "summary": "'더 많이 보이고, 더 많이 팔리게' — 브랜드 대상 광고 · 매출 부스팅. 1,417개 브랜드 이용, 고객 사례(톡딜 오가닉 매출 2배 · 쿠팡 1페이지 노출과 리뷰 · Qoo10), 일본 뷰티 마케팅(리뷰 · 랭킹 · 매출 · 인플루언서), 핵심 고객 200만 명(20~40대 여성 75% 이상), '무상 제공이 아닌 제품에 반응하는 잠재고객'."
+          },
+          {
+            "title": "[챌린저스] 프론트엔드 개발자 (3년 이상)",
+            "url": "https://www.wanted.co.kr/wd/276525",
+            "publisher": "원티드",
+            "summary": "B2C — 유저는 압도적으로 저렴한 가격에 제품을 득템, B2B — 브랜드는 '매출 보장'. '커머스 노출 최적화' 시장. 매출 57억 → 147억 → 273억, 일본 · 미국 진출, 2023 흑자 전환 뒤 3년 연속 흑자. 매년 6월 · 12월 연봉 인상. 프론트: React Native · React 앱 · 웹 · 백오피스."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "캠페인 API 백엔드(Go · K8s)",
+        "why": "백엔드 공고가 앱 · 관리자 API, 신규 비즈니스 MVP, CI/CD 와 Go(Gin) · FastAPI · Kubernetes + Istio · ArgoCD · Vault 를 적는다.",
+        "what_to_know": [
+          "Go Gin",
+          "Istio",
+          "Argo Workflows"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[챌린저스] 백엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/206658",
+            "publisher": "원티드",
+            "summary": "앱 · 관리자 API 개발 · 성능, 신규 비즈니스 MVP, 아키텍처, 빠른 실험, CI/CD. 어떤 언어로든 완성된 서비스 운영, Go · K8s 우대."
+          },
+          {
+            "title": "[챌린저스] 백엔드 리드",
+            "url": "https://www.wanted.co.kr/wd/355839",
+            "publisher": "원티드",
+            "summary": "CEO 레터: 9년차, PMF · 흑자, 3년 연속 흑자 · 7.1배 성장, 아기 유니콘 · 알토스벤처스 투자, 2025 매출 273억. 백엔드 리드: 기술 의사결정, 앱 · 관리자 API, 개발 속도, OKR, 팀 운영. 기술: Go(Gin) · Python(FastAPI) · MySQL · PostgreSQL · Redis · ElasticSearch · Mongo · Kubernetes + Istio · ArgoCD · Argo Workflows · Vault."
+          }
+        ]
+      },
+      {
+        "name": "캠페인 효과 예측(ML)",
+        "why": "ML 공고가 구매 여정과 외부 플랫폼 지표의 관계, 플랫폼별 노출 로직 모델링, 캠페인 임팩트 예측, 실험 · 인과 추론을 적는다.",
+        "what_to_know": [
+          "인과 추론",
+          "시계열 예측",
+          "실험 설계"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[챌린저스] ML Engineer",
+            "url": "https://www.wanted.co.kr/wd/348118",
+            "publisher": "원티드",
+            "summary": "유저 구매 여정(클릭 · 검색 · 전환)과 외부 플랫폼 지표의 관계 분석, 플랫폼별 목표 순위 달성을 위한 변수 분석 · 예측, 캠페인 집행 시 '추종구매' 임팩트 예측, 플랫폼별 노출 로직 모델링 · 검증, 실험 기반 시나리오. 우대: 커머스 · 광고 랭킹 · 추천, 실험 설계 · 인과 추론."
+          }
+        ]
+      },
+      {
+        "name": "앱 · 백오피스 프론트엔드",
+        "why": "프론트 공고가 React Native · React 앱 · 웹 · 백오피스와 빠른 실험을 적는다.",
+        "what_to_know": [
+          "React Native",
+          "실험 플래그",
+          "백오피스 폼"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[챌린저스] 프론트엔드 개발자 (3년 이상)",
+            "url": "https://www.wanted.co.kr/wd/276525",
+            "publisher": "원티드",
+            "summary": "B2C — 유저는 압도적으로 저렴한 가격에 제품을 득템, B2B — 브랜드는 '매출 보장'. '커머스 노출 최적화' 시장. 매출 57억 → 147억 → 273억, 일본 · 미국 진출, 2023 흑자 전환 뒤 3년 연속 흑자. 매년 6월 · 12월 연봉 인상. 프론트: React Native · React 앱 · 웹 · 백오피스."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "비즈니스 성과로 개발을 잰다",
+        "evidence": "기술 그 자체의 개선보다, 기술을 통해 고객 중심의 비즈니스 문제를 해결해본 적이 있는 분.",
+        "so_what": "네 공고가 같은 문장을 우대로 든다 — 면접에서 '그 개발로 무슨 숫자가 바뀌었나' 를 물을 가능성이 높다. 전형 전에 사전 설문조사를 따로 낸다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "커머스 플랫폼의 규칙에 기대는 사업",
+        "evidence": "• 커머스 플랫폼별로 서로 다른 노출 로직 분석, 모델링 및 검증 체계 설계",
+        "so_what": "쿠팡 · Qoo10 등 외부 플랫폼의 노출 로직과 리뷰 정책이 바뀌면 사업 성과가 흔들린다(이 사이트의 해석). 지원 전에 플랫폼 정책 변화에 어떻게 대응하는지 물어볼 만하다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다(연 2회 연봉 인상만 적혀 있다) — 비워 둔다",
+    "브랜드 캠페인 단가와 유저가 받는 혜택(할인 · 환급) 구조는 읽은 자료에 없다",
+    "외부 커머스 플랫폼의 리뷰 · 노출 정책과 이 사업의 관계는 공고에 설명돼 있지 않다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/276525",
+      "title": "[챌린저스] 프론트엔드 개발자 (3년 이상)",
+      "site": "wanted",
+      "verdict": "경력 3-5년. 챌린저스 **앱 · 웹 서비스와 백오피스 프론트엔드(React Native / React)** — 기존 · 신규 기능 기획을 함께 고민해 구현, 개발 환경 개선, **비즈니스 성장을 위한 빠른 실험**. 자격은 사용자 경험 · 고객 가치, 3년 이상, '왜 해야 하는가' 로 팀을 설득, **React Native 또는 React 로 완성된 서비스를 개발 · 배포 · 운영**, 여러 직군과 소통. 우대는 주도적 문제 해결, 기술로 고객 비즈니스 문제를 푼 경험, 비즈니스 성과, TypeScript, CS 전공. 서류 뒤 사전 설문조사를 따로 낸다. 매년 6월 · 12월 연봉 인상. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "프론트 3년",
+          "React Native 또는 React 운영",
+          "비즈니스 관점"
+        ],
+        "can_learn": [
+          "실험 플래그",
+          "OTA 업데이트",
+          "TypeScript"
+        ]
+      },
+      "study": [
+        {
+          "topic": "빠른 실험 — 기능 플래그와 A/B 로 앱을 두 갈래로",
+          "from": "task",
+          "quote": "• 비즈니스 성장을 위한, 빠른 실험과 시도",
+          "priority": "core",
+          "why": "주요업무이고 우대가 '비즈니스 성과를 달성하기 위한 개발' 이다. 앱은 스토어 심사를 거치므로 실험을 앱 배포와 떼어야 빠르다.",
+          "gap_check": "새 결제 버튼 문구를 절반에게만 보이려면 앱 안의 무엇으로 가르나(원격 설정 · 기능 플래그)? 같은 사용자가 매번 같은 쪽을 보게 하려면(사용자 ID 해시)? 실험 결과를 무엇으로 판단하고 몇 명이 필요한가?",
+          "drill": "React Native 샘플 앱에 원격 설정(Firebase Remote Config 또는 자체 JSON)으로 버튼 문구 A/B 를 넣고, 사용자 ID 해시로 고정 배정한다. 노출 · 클릭 이벤트를 남겨 가짜 데이터로 전환율 차이와 신뢰구간을 계산한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Firebase Remote Config — A/B Testing",
+              "url": "https://firebase.google.com/docs/ab-testing/abtest-config",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "React Native 앱을 스토어 심사 없이 고치기 — OTA 와 그 한계",
+          "from": "qualification",
+          "quote": "• React Native 혹은 React 로 완성된 서비스를 개발, 배포, 운영한 경험이 있으신 분",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무가 앱 · 웹 · 백오피스 개발이다. 빠른 실험을 하려면 배포 주기가 짧아야 한다.",
+          "gap_check": "JS 번들만 바꾸는 OTA 업데이트(EAS Update)로 고칠 수 있는 것과 없는 것(네이티브 모듈 · 권한)은? 잘못된 업데이트를 되돌리려면? 앱 버전과 OTA 채널을 어떻게 맞추나(runtimeVersion)?",
+          "drill": "Expo 의 'EAS Update' 문서대로 채널 두 개(preview · production)를 두고 JS 만 바꾼 업데이트를 배포 · 롤백한다. 네이티브 의존성을 바꾼 뒤 같은 runtimeVersion 으로 올리면 무엇이 깨지는지 확인한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Expo — EAS Update",
+              "url": "https://docs.expo.dev/eas-update/introduction/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "백오피스 — 운영자가 매일 쓰는 폼과 표",
+          "from": "task",
+          "quote": "• 앱/웹 서비스 및 백오피스 프론트엔드 개발 (React Native/React)",
+          "priority": "nice",
+          "why": "주요업무 첫 줄에 백오피스가 있다. 브랜드 캠페인 · 상품 · 유저 운영은 관리자 화면에서 일어난다.",
+          "gap_check": "수천 행 캠페인 목록을 필터 · 정렬 · 페이지네이션할 때 서버에서 하나 화면에서 하나? 긴 폼을 중간 저장하고 서버 검증 오류를 필드마다 보이려면? 운영자 권한별로 버튼을 숨기는 것만으로 충분한가?",
+          "drill": "React + TanStack Table + React Hook Form(zod) 로 캠페인 목록(서버 사이드 정렬 · 필터)과 생성 폼(서버 오류를 필드에 매핑)을 만든다. 권한 없는 사용자의 요청이 API 에서도 막히는지 목 서버로 확인한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "TanStack Table",
+              "url": "https://tanstack.com/table/latest",
+              "kind": "docs"
+            },
+            {
+              "title": "React Hook Form",
+              "url": "https://react-hook-form.com/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/355839",
+      "title": "[챌린저스] 백엔드 리드",
+      "site": "wanted",
+      "verdict": "경력 5-10년(채용 페이지는 7년 이상). **백엔드 리드** — 주요 기술 의사결정, 비즈니스 문제의 기술 해법, **챌린저스 앱 · 관리자 웹 API 개발 · 성능**, 짧은 사이클에서 개발 프로세스 최적화 · 속도, **OKR** 기여, 팀원 업무 조율 · 성장 지원, 리더십 일원으로 전략 · 커뮤니케이션. 자격은 기술로 고객 비즈니스 문제를 푼 경험, 얼라인, 비즈니스 관점 의사결정, **팀 성과를 올린 리더십**, 신뢰 기반 운영. 우대는 기술로 비즈니스 성과를 이끈 프로젝트, 테크 리드 · 파트장, **Go**, **Kubernetes** 운영. 스택 Go(Gin) · Python(FastAPI) · MySQL · PostgreSQL · Redis · ElasticSearch · Mongo · **Kubernetes + Istio** · ArgoCD · **Argo Workflows** · Vault. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "백엔드 5년↑",
+          "팀 성과 리더십",
+          "비즈니스 의사결정"
+        ],
+        "can_learn": [
+          "Go",
+          "Istio",
+          "OKR 운영"
+        ]
+      },
+      "study": [
+        {
+          "topic": "개발 속도를 숫자로 — 리드가 보는 DORA 지표",
+          "from": "task",
+          "quote": "• 짧은 개발 사이클 내에서, 개발 프로세스를 최적화하고, 개발 속도를 가속화하여, 더 빠른 테스트가 가능한 환경을 만듭니다.",
+          "priority": "core",
+          "why": "주요업무이고 자격에 '팀의 성과를 명확하게 향상시킨 리더십 경험' 이 있다.",
+          "gap_check": "'개발이 빨라졌다' 를 무엇으로 보이나(배포 빈도 · 변경 리드타임 · 실패율 · 복구 시간)? 리드타임이 길 때 어디서 막히는지(리뷰 대기 · QA · 배포 창) 어떻게 찾나? 속도를 올리며 실패율이 오르지 않게 무엇을 같이 보나?",
+          "drill": "DORA 의 네 지표 정의를 읽고, GitHub API 로 한 저장소의 PR 생성 → 머지 → 배포 태그까지 시간을 뽑아 주간 리드타임 · 배포 빈도 대시보드를 만든다. 가장 긴 구간을 찾아 줄이는 제안 한 쪽을 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "DORA — Four key metrics",
+              "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Go 백엔드와 Kubernetes + Istio 운영",
+          "from": "preference",
+          "quote": "-Kubernetes를 이용하여 실제 서비스를 운영해보신 분",
+          "priority": "high",
+          "why": "우대사항이고 사용 기술에 Kubernetes + Istio · ArgoCD · Argo Workflows · Vault 와 Go(Gin)가 있다.",
+          "gap_check": "Istio 사이드카가 주는 것(mTLS · 재시도 · 타임아웃 · 트래픽 분할)과 앱 코드에 남는 것은? 새 버전을 10% 에만 보내려면 무엇을 쓰나(VirtualService 가중치 · Argo Rollouts)? 비밀값을 Vault 에서 파드로 넣는 방식은?",
+          "drill": "kind 에 Istio 를 설치하고 Go(Gin) 서비스 v1 · v2 를 배포해 VirtualService 로 90/10 분할, 재시도 · 타임아웃 정책을 건다. v2 가 5xx 를 내게 만들어 재시도가 어떻게 보이는지, 트래픽을 되돌리는 데 무엇을 바꾸는지 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Istio — Traffic Management",
+              "url": "https://istio.io/latest/docs/concepts/traffic-management/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "OKR 로 개발팀을 회사 목표에 잇기",
+          "from": "task",
+          "quote": "• OKR(목표와 핵심결과)에 기여할 수 있는 프로덕트 개선에 신속하게 대응할 수 있도록 지원합니다.",
+          "priority": "high",
+          "why": "주요업무이고 자격에 얼라인 · 비즈니스 목표 관점 의사결정이 있다.",
+          "gap_check": "회사 KR(예: 재구매율)에서 개발팀 과제를 어떻게 내려받나? 기술 부채 과제는 어떤 KR 로 설명하나? 분기 중간에 우선순위가 바뀌면 무엇을 멈추고 누구에게 알리나?",
+          "drill": "가상의 회사 목표 하나(브랜드 재계약률 +10%p)에서 개발팀 KR 셋과 과제 목록을 만들고, 기술 부채 하나를 KR 로 설명하는 한 단락을 쓴다. 분기 중간 우선순위 변경 시나리오의 커뮤니케이션 초안도 붙인다.",
+          "hours": 3,
+          "resources": [
+            {
+              "title": "What Matters — OKR 소개",
+              "url": "https://www.whatmatters.com/faqs/okr-meaning-definition-example",
+              "kind": "site"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/206658",
+      "title": "[챌린저스] 백엔드 개발자",
+      "site": "wanted",
+      "verdict": "경력 3-10년. **앱 서비스 · 웹 관리자 API 개발 · 성능 최적화**, **신규 비즈니스 MVP 설계 · API**, 아키텍처 설계와 애자일 개선, 기획 참여, 빠른 실험, **CI/CD · DevOps**. 자격은 고객 가치 · 비즈니스 기여, '왜' 로 설득, **Go · Java · Kotlin 등 어떤 언어로든 완성된 서비스 배포 · 운영**, 3년 이상, CS 역량. 우대는 주도적 문제 해결, 기술로 고객 비즈니스 문제 해결, **Go**, 배포 자동화, **Kubernetes** 운영. 스택은 백엔드 리드와 같다. 서류 뒤 사전 설문조사. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "백엔드 3년",
+          "완성된 서비스 운영",
+          "비즈니스 관점"
+        ],
+        "can_learn": [
+          "Go",
+          "ArgoCD GitOps",
+          "MVP 범위 자르기"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Go 로 API 서버 — Gin · 컨텍스트 · 동시성",
+          "from": "preference",
+          "quote": "• Go 언어에 관심이 있거나 익숙하신 분",
+          "priority": "core",
+          "why": "우대사항이고 사용 기술 첫 줄이 Go(Gin)다. 자격은 어떤 언어든 된다고 하지만 주 언어가 Go 다.",
+          "gap_check": "요청이 끊기면 DB 쿼리도 멈추게 하려면 context 를 어떻게 넘기나? 고루틴 여러 개로 외부 API 를 동시에 부를 때 하나가 실패하면(errgroup)? Gorm 과 SQL 직접 쓰기(sqlc)의 차이는?",
+          "drill": "Go 공식 튜토리얼 'Developing a RESTful API with Go and Gin' 을 따라 캠페인 API 를 만들고, 요청 context 를 DB 호출까지 넘겨 타임아웃이 쿼리를 끊는지 확인한다. errgroup 으로 외부 호출 셋을 동시에 하고 하나가 실패하면 나머지가 취소되는지 테스트한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Tutorial: Developing a RESTful API with Go and Gin",
+              "url": "https://go.dev/doc/tutorial/web-service-gin",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "신규 비즈니스 MVP — 무엇을 안 만드나",
+          "from": "task",
+          "quote": "• 신규 비즈니스 확장을 위한 MVP 설계 및 API 개발",
+          "priority": "high",
+          "why": "주요업무이고 회사가 일본 · 미국 진출과 인플루언서 신사업을 진행한다(채용 페이지).",
+          "gap_check": "새 사업의 첫 판에서 결제 · 정산 · 관리자 화면 중 무엇을 수작업으로 두나? 나중에 버릴 코드와 남길 코드를 어떻게 가르나(데이터 모델은 남긴다)? MVP 가 성공했다고 무엇으로 판단하나?",
+          "drill": "가상 신사업(일본 브랜드용 캠페인 신청) 하나의 MVP 범위를 '만든다 / 수작업 / 안 한다' 표로 쓰고, 남길 데이터 모델과 버릴 화면을 가른다. 핵심 API 둘만 FastAPI 로 만들어 본다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Lean Startup — MVP",
+              "url": "https://leanstartup.co/resources/articles/what-is-an-mvp/",
+              "kind": "blog"
+            }
+          ]
+        },
+        {
+          "topic": "ArgoCD GitOps — 배포를 저장소 커밋으로",
+          "from": "task",
+          "quote": "• CI/CD DevOps",
+          "priority": "nice",
+          "why": "주요업무이고 우대에 배포 자동화 · Kubernetes 운영, 스택에 ArgoCD · Argo Workflows 가 있다.",
+          "gap_check": "CI 가 이미지를 만들면 무엇이 배포 저장소의 태그를 바꾸나(이미지 업데이터 · PR)? 누가 클러스터에서 손으로 바꾼 것(drift)을 ArgoCD 는 어떻게 되돌리나? 배치 작업은 Deployment 가 아니라 무엇으로(Argo Workflows · CronJob)?",
+          "drill": "ArgoCD 'Getting Started' 대로 kind 에 설치하고 Go 서비스 매니페스트 저장소를 연결한다. 이미지 태그를 커밋으로 바꿔 자동 동기화되는지, kubectl 로 레플리카를 손으로 바꾸면 self-heal 이 되돌리는지 확인한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Argo CD — Getting Started",
+              "url": "https://argo-cd.readthedocs.io/en/stable/getting_started/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/348118",
+      "title": "[챌린저스] ML Engineer",
+      "site": "wanted",
+      "verdict": "경력 5년 이상, 팀 초기 멤버. **유저 구매 여정(클릭 · 검색 · 전환)과 외부 커머스 플랫폼 지표의 관계** 분석, **플랫폼별 목표 순위 달성의 주요 변수 · 예측 로직**, 브랜드 캠페인 때 **'추종구매' 임팩트 예측 모델**, **플랫폼마다 다른 노출 로직 분석 · 모델링 · 검증**, 실험 데이터로 캠페인 시나리오, 비즈니스에 맞는 모델링 방식을 주도적으로 제안. 자격은 DS/ML 5년, 정의 안 된 문제의 구조화, 예측 · ML 모델 설계 · 학습 · 평가, **시계열 · 정형 데이터 예측**, Python 으로 운영 가능한 ML 시스템, 기술 스택을 스스로 탐색. 우대는 **커머스 · 광고 랭킹 · 추천**, **실험 설계 · 인과 추론**, 캠페인 효과 · 구매 전환 영향도 분석, 초기 조직 ML 인프라 · MLOps, 종속 없는 아키텍처. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "DS/ML 5년",
+          "시계열 · 정형 예측",
+          "운영 가능한 ML 시스템"
+        ],
+        "can_learn": [
+          "인과 추론",
+          "합성 통제",
+          "랭킹 지표"
+        ]
+      },
+      "study": [
+        {
+          "topic": "캠페인이 매출을 얼마나 올렸나 — 인과 추론(합성 통제 · DiD)",
+          "from": "preference",
+          "quote": "• 실험 설계 및 인과 추론(Causal Inference) 경험이 있는 분",
+          "priority": "core",
+          "why": "우대사항이고 주요업무가 캠페인 임팩트 예측과 실험 데이터 기반 시나리오다. 브랜드에 '매출 보장' 을 말하려면 캠페인이 없었을 때를 추정해야 한다.",
+          "gap_check": "캠페인을 한 상품의 매출 증가 중 캠페인 몫을 어떻게 가르나(비교군 · 이중차분 · 합성 통제)? 같은 시기 할인 행사나 계절 요인은 어떻게 빼나? 무작위 실험을 못 할 때 가정이 깨졌는지 무엇으로 점검하나(사전 추세)?",
+          "drill": "공개 합성 데이터(또는 직접 만든 상품 × 일 매출)로 캠페인 상품 하나와 비교 상품 수십 개를 두고 이중차분과 합성 통제(CausalImpact 또는 pysyncon)로 효과를 추정한다. 캠페인 전 기간에 가짜 효과가 나오는지(플라시보)로 가정을 점검한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Causal Inference: The Mixtape — Synthetic Control",
+              "url": "https://mixtape.scunning.com/10-synthetic_control",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "순위 · 매출 시계열 예측 — 기준 모델부터",
+          "from": "qualification",
+          "quote": "• 시계열 또는 정형 데이터 기반 예측 모델링 경험을 보유한 분",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무에 플랫폼별 목표 순위 달성의 변수 분석 · 예측 로직이 있다.",
+          "gap_check": "예측 모델이 쓸모 있는지 무엇과 비교하나(어제 값 · 계절 평균 같은 기준 모델)? 시계열을 무작위로 섞어 검증하면 무엇이 새나(미래 누수)? 순위는 연속값인가 순서형인가 — 무엇을 예측 대상으로 두나?",
+          "drill": "상품 × 일 판매량 가상 데이터로 naive · 계절 naive 기준선과 LightGBM(시차 · 이동 평균 피처)을 비교하되, 시간 순 롤링 검증(TimeSeriesSplit)으로 평가한다. 무작위 분할로 검증했을 때 점수가 얼마나 부풀어 오르는지도 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Forecasting: Principles and Practice (3rd ed.)",
+              "url": "https://otexts.com/fpp3/",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "초기 조직의 ML 운영 — 재학습 · 모니터링을 작게",
+          "from": "qualification",
+          "quote": "• Python 등 익숙한 언어와 도구를 활용해 실제 운영 가능한 ML 시스템을 구축해 본 분",
+          "priority": "high",
+          "why": "필수 자격이고 우대에 초기 조직의 파이프라인 · ML 인프라 · MLOps 구축이 있다. 팀의 초기 멤버다.",
+          "gap_check": "모델을 매주 다시 학습할 때 새 모델이 옛 모델보다 나쁘면 무엇이 막아 주나(검증 관문)? 입력 분포가 바뀐 것을 무엇으로 알아채나? 스택이 Kubernetes · Argo Workflows 일 때 학습 작업을 어디에 올리나?",
+          "drill": "Argo Workflows(또는 로컬 cron) 로 '데이터 추출 → 학습 → 이전 모델과 비교 → 좋을 때만 등록' 파이프라인을 만들고, MLflow 에 실험 · 모델을 기록한다. 입력 피처 분포 차이(PSI)를 계산해 임계값을 넘으면 경고하게 한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "MLflow — Model Registry",
+              "url": "https://mlflow.org/docs/latest/model-registry.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
