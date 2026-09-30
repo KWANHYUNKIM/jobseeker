@@ -3064,3 +3064,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 シンクロ・フード 마이소쿠 OCR + LLM(기능 2/3)
 
 - `maisoku-ocr-llm-property-entry`. 결정 5 — 입력 보조 / OCR + LLM(비전 직접 대신) / 항목 분해 · temperature 0 / PoC 팀 → 서비스팀 / 초안 JSON · 20 장 일괄(presigned). 다음: WAF.
+
+## 2026-09-30 シンクロ・フード WAF 레이트 리밋(기능 3/3) — 완주
+
+- `waf-rate-limit-legit-traffic`. 결정 5 — WAF vs Nginx / 3 단 필터 / 정적 파일 제외 / p95 × 안전 계수 / 4 단계 출시(본번 Count 2 주). 모든 도메인에 기능 → `done`.
