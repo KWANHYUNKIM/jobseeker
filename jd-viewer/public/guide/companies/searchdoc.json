@@ -1,0 +1,396 @@
+{
+  "slug": "searchdoc",
+  "name": "서치독",
+  "name_en": "Searchdoc",
+  "aliases": [
+    "서치독",
+    "Searchdoc",
+    "SEARCHDOC"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "https://searchdoc.ai",
+  "one_liner": "기업 문서(첫 산업 EPC — 시방서 · 도면 · BIM)를 AI 가 근거와 함께 읽게 하는 도메인 검색 계층 — 검색 · RAG 엔지니어와 AWS 보안 엔지니어를 뽑는다",
+  "company": {
+    "business": "서치독(Searchdoc)은 **기업 문서를 AI 가 제대로 읽게 하는 계층**을 판다 — 홈페이지는 스스로를 기업 고유의 문서 · 지식을 구조화해 **검색 · 분석 · 검증 · 생성 · 운영**으로 잇는 'Enterprise AI Layer' 라 부르고, 모델을 새로 만드는 경쟁보다 기업 데이터가 AI 안에서 올바르게 이해되는 쪽에 집중한다고 적는다. 핵심 주장은 둘이다 — 문서는 텍스트 묶음이 아니라 **조항 · 표 · 첨부 · 도면 · 개정 · 승인 관계**이고, **모든 결과를 원문 위치 · 기준 · 개정 이력에 연결**해 다시 확인할 수 있어야 한다. 대표 솔루션은 **EPC(설계 · 조달 · 시공)** — 계약서 · 시방서 · 공문 · 도면 · BIM 이 얽힌 문서에서 '이 조건의 최신 기준과 이전 버전과의 차이' 를 찾는다. 공고는 AWS · 네이버 · 삼성 출신이 세운 B2B 생성형 AI 스타트업, 2025 하반기 Seed 투자라 적고, 홈페이지는 15년 이상의 검색 · 엔터프라이즈 문서 처리 경험을 든다. 근무지는 판교와 **고객사**(보안 엔지니어는 고객사 프로젝트 현장)다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "Searchdoc — Domain intelligence for enterprise work",
+        "url": "https://searchdoc.ai",
+        "publisher": "서치독",
+        "summary": "기업 고유의 문서 · 지식을 구조화해 검색 · 분석 · 검증 · 생성 · 운영으로 잇는 Enterprise AI Layer. 모델을 새로 만드는 경쟁보다 기업 데이터가 AI 안에서 올바르게 이해되는 계층에 집중. 문서는 조항 · 표 · 첨부 · 도면 · 개정 · 승인 관계까지. 모든 결과를 원문 위치 · 기준 · 개정 · 승인 이력에 연결(Evidence by design). 대표 솔루션 EPC — 계약서 · 시방서 · 공문 · 도면 · BIM. 15년 이상의 검색 · 엔터프라이즈 문서 처리 경험. 주식회사 서치독."
+      },
+      {
+        "title": "AI/ML 개발자 3년 이상",
+        "url": "https://www.wanted.co.kr/wd/338902",
+        "publisher": "원티드",
+        "summary": "AWS · 네이버 · 삼성 출신이 설립, Vertical Domain Gen AI 어플리케이션 B2B 스타트업, 2025 하반기 Seed 투자. AIML Engineer — 가설 · 데이터셋 구축 · 평가 반복 실험, 글로벌 검색 수준의 Retrieval · Indexing 파이프라인, 도메인 Multi-Agent. Python AI/ML, 생성형 AI 서비스, 3년. 우대 A/B 테스트 · RAG · Semantic/BM25 · Evaluation Set. 판교 및 고객사 근무."
+      },
+      {
+        "title": "Security Engineer(5년 이상)",
+        "url": "https://www.wanted.co.kr/wd/364959",
+        "publisher": "원티드",
+        "summary": "AWS 멀티 어카운트 보안 아키텍처(SCP 가드레일 · 계정 경계 · 중앙 보안 운영), AWS Security 5 Epics(IAM · 탐지 통제 · 인프라 · 데이터 보호 · 인시던트 대응). 네트워크 · OS · 애플리케이션 · 코드 · SaaS 멀티 테넌트 격리 · 보안 자동화(Policy as Code · Auto-remediation · SOAR) · AI/LLM 보안(프롬프트 인젝션 · PII 마스킹 · Bedrock 거버넌스). 우대 AWS Security Specialty · CISSP · ISMS-P · CSAP · SOC 2. 근무지는 고객사 프로젝트 현장."
+      }
+    ],
+    "scale": [
+      {
+        "label": "투자",
+        "value": "2025 하반기 Seed 라운드",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI/ML 개발자 3년 이상",
+            "url": "https://www.wanted.co.kr/wd/338902",
+            "publisher": "원티드",
+            "summary": "AWS · 네이버 · 삼성 출신이 설립, Vertical Domain Gen AI 어플리케이션 B2B 스타트업, 2025 하반기 Seed 투자. AIML Engineer — 가설 · 데이터셋 구축 · 평가 반복 실험, 글로벌 검색 수준의 Retrieval · Indexing 파이프라인, 도메인 Multi-Agent. Python AI/ML, 생성형 AI 서비스, 3년. 우대 A/B 테스트 · RAG · Semantic/BM25 · Evaluation Set. 판교 및 고객사 근무."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "기업용 도메인 AI 계층 · 구축",
+        "how": "기업(첫 산업은 EPC)의 문서에 검색 · 검증 · 생성 계층을 구축하고 도입 뒤에도 사전 · 피드백 · 품질을 운영한다 — 근무지가 고객사라 구축형 프로젝트 비중이 커 보인다. 라이선스 · 구축비 · 운영비 구성은 읽은 자료에 없다.",
+        "domains": [
+          "도메인 검색 · RAG",
+          "EPC 문서 · 도면 · BIM 이해",
+          "AWS 멀티 어카운트 · SaaS · LLM 보안"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "Searchdoc — Domain intelligence for enterprise work",
+            "url": "https://searchdoc.ai",
+            "publisher": "서치독",
+            "summary": "기업 고유의 문서 · 지식을 구조화해 검색 · 분석 · 검증 · 생성 · 운영으로 잇는 Enterprise AI Layer. 모델을 새로 만드는 경쟁보다 기업 데이터가 AI 안에서 올바르게 이해되는 계층에 집중. 문서는 조항 · 표 · 첨부 · 도면 · 개정 · 승인 관계까지. 모든 결과를 원문 위치 · 기준 · 개정 · 승인 이력에 연결(Evidence by design). 대표 솔루션 EPC — 계약서 · 시방서 · 공문 · 도면 · BIM. 15년 이상의 검색 · 엔터프라이즈 문서 처리 경험. 주식회사 서치독."
+          },
+          {
+            "title": "AI/ML 개발자 3년 이상",
+            "url": "https://www.wanted.co.kr/wd/338902",
+            "publisher": "원티드",
+            "summary": "AWS · 네이버 · 삼성 출신이 설립, Vertical Domain Gen AI 어플리케이션 B2B 스타트업, 2025 하반기 Seed 투자. AIML Engineer — 가설 · 데이터셋 구축 · 평가 반복 실험, 글로벌 검색 수준의 Retrieval · Indexing 파이프라인, 도메인 Multi-Agent. Python AI/ML, 생성형 AI 서비스, 3년. 우대 A/B 테스트 · RAG · Semantic/BM25 · Evaluation Set. 판교 및 고객사 근무."
+          },
+          {
+            "title": "Security Engineer(5년 이상)",
+            "url": "https://www.wanted.co.kr/wd/364959",
+            "publisher": "원티드",
+            "summary": "AWS 멀티 어카운트 보안 아키텍처(SCP 가드레일 · 계정 경계 · 중앙 보안 운영), AWS Security 5 Epics(IAM · 탐지 통제 · 인프라 · 데이터 보호 · 인시던트 대응). 네트워크 · OS · 애플리케이션 · 코드 · SaaS 멀티 테넌트 격리 · 보안 자동화(Policy as Code · Auto-remediation · SOAR) · AI/LLM 보안(프롬프트 인젝션 · PII 마스킹 · Bedrock 거버넌스). 우대 AWS Security Specialty · CISSP · ISMS-P · CSAP · SOC 2. 근무지는 고객사 프로젝트 현장."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "도메인 검색 · RAG",
+        "why": "공고가 글로벌 검색 수준의 Retrieval · Indexing 파이프라인과 Semantic · BM25 검색, Evaluation Set 설계를 적고, 홈페이지가 키워드 일치가 아닌 도메인 의미 · 관계 검색과 근거 연결을 든다.",
+        "what_to_know": [
+          "하이브리드 검색(BM25 + 벡터)",
+          "검색 평가 지표(Recall@k · nDCG)",
+          "근거 인용"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI/ML 개발자 3년 이상",
+            "url": "https://www.wanted.co.kr/wd/338902",
+            "publisher": "원티드",
+            "summary": "AWS · 네이버 · 삼성 출신이 설립, Vertical Domain Gen AI 어플리케이션 B2B 스타트업, 2025 하반기 Seed 투자. AIML Engineer — 가설 · 데이터셋 구축 · 평가 반복 실험, 글로벌 검색 수준의 Retrieval · Indexing 파이프라인, 도메인 Multi-Agent. Python AI/ML, 생성형 AI 서비스, 3년. 우대 A/B 테스트 · RAG · Semantic/BM25 · Evaluation Set. 판교 및 고객사 근무."
+          },
+          {
+            "title": "Searchdoc — Domain intelligence for enterprise work",
+            "url": "https://searchdoc.ai",
+            "publisher": "서치독",
+            "summary": "기업 고유의 문서 · 지식을 구조화해 검색 · 분석 · 검증 · 생성 · 운영으로 잇는 Enterprise AI Layer. 모델을 새로 만드는 경쟁보다 기업 데이터가 AI 안에서 올바르게 이해되는 계층에 집중. 문서는 조항 · 표 · 첨부 · 도면 · 개정 · 승인 관계까지. 모든 결과를 원문 위치 · 기준 · 개정 · 승인 이력에 연결(Evidence by design). 대표 솔루션 EPC — 계약서 · 시방서 · 공문 · 도면 · BIM. 15년 이상의 검색 · 엔터프라이즈 문서 처리 경험. 주식회사 서치독."
+          }
+        ]
+      },
+      {
+        "name": "EPC 문서 · 도면 · BIM 이해",
+        "why": "홈페이지 대표 솔루션이 EPC(계약서 · 시방서 · 도면 · BIM)이고, 공고 하나가 건축 2D 도면 · 3D BIM 분석과 건축 전공 · EPC 경력을 요구한다.",
+        "what_to_know": [
+          "IFC(BIM 표준)",
+          "문서 개정(Rev) 비교",
+          "표 · 도면 파싱"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Searchdoc — Domain intelligence for enterprise work",
+            "url": "https://searchdoc.ai",
+            "publisher": "서치독",
+            "summary": "기업 고유의 문서 · 지식을 구조화해 검색 · 분석 · 검증 · 생성 · 운영으로 잇는 Enterprise AI Layer. 모델을 새로 만드는 경쟁보다 기업 데이터가 AI 안에서 올바르게 이해되는 계층에 집중. 문서는 조항 · 표 · 첨부 · 도면 · 개정 · 승인 관계까지. 모든 결과를 원문 위치 · 기준 · 개정 · 승인 이력에 연결(Evidence by design). 대표 솔루션 EPC — 계약서 · 시방서 · 공문 · 도면 · BIM. 15년 이상의 검색 · 엔터프라이즈 문서 처리 경험. 주식회사 서치독."
+          },
+          {
+            "title": "AI/ML 개발자 3년 이상 (AI 기반 건설/제조 등 도면 분석)",
+            "url": "https://www.wanted.co.kr/wd/354424",
+            "publisher": "원티드",
+            "summary": "같은 AIML Engineer 자리에 'AI 기반의 건축 2D 도면 /3D BIM 분석' 이 더해졌다. 자격: 건축 전공(학사 이상), EPC · 건설 · 플랜트 경력 2년 이상, 석사 DS/AI 또는 DS/AI Engineer 경력 3년 이상. 우대는 338902 와 같다."
+          }
+        ]
+      },
+      {
+        "name": "AWS 멀티 어카운트 · SaaS · LLM 보안",
+        "why": "보안 공고가 SCP 가드레일 · 5 Epics · 멀티 테넌트 격리 · LLM 가드레일 · Bedrock 거버넌스 · ISMS-P · CSAP 를 적는다 — 기업 문서를 다루니 고객 보안 실사를 통과해야 한다.",
+        "what_to_know": [
+          "AWS Organizations · SCP",
+          "테넌트 격리 검증",
+          "OWASP Top 10 for LLM"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Security Engineer(5년 이상)",
+            "url": "https://www.wanted.co.kr/wd/364959",
+            "publisher": "원티드",
+            "summary": "AWS 멀티 어카운트 보안 아키텍처(SCP 가드레일 · 계정 경계 · 중앙 보안 운영), AWS Security 5 Epics(IAM · 탐지 통제 · 인프라 · 데이터 보호 · 인시던트 대응). 네트워크 · OS · 애플리케이션 · 코드 · SaaS 멀티 테넌트 격리 · 보안 자동화(Policy as Code · Auto-remediation · SOAR) · AI/LLM 보안(프롬프트 인젝션 · PII 마스킹 · Bedrock 거버넌스). 우대 AWS Security Specialty · CISSP · ISMS-P · CSAP · SOC 2. 근무지는 고객사 프로젝트 현장."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "모델이 아니라 데이터 계층을 판다",
+        "evidence": "Searchdoc은 모델을 새로 만드는 경쟁보다 기업 데이터가 AI 안에서 올바르게 이해되고 실제 업무 결과로 이어지는 계층에 집중합니다.",
+        "so_what": "면접에서 모델 학습보다 파싱 · 색인 · 검색 평가 · 근거 연결을 얼마나 깊게 해 봤는지를 볼 가능성이 크다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "고객사 상주가 기본이다",
+        "evidence": "근무지는 고객사 프로젝트 현장입니다.",
+        "so_what": "AI/ML 공고도 '판교 및 고객사' 라 적는다 — 상주 기간 · 위치를 면접에서 확인한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "고객사 · 매출 · 인원은 읽은 자료에 없다",
+    "과금 방식(라이선스 · 구축 · 운영)은 모른다",
+    "고객사 상주 기간 · 위치는 공고에 없다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/338902",
+      "title": "AI/ML 개발자 3년 이상",
+      "site": "wanted",
+      "verdict": "경력 3-10년. **AIML Engineer** — 가설을 세우고 **데이터셋 구축 · 평가를 포함한 반복 실험**, 현장 피드백 · 성능 지표로 고도화, **글로벌 검색 수준의 Retrieval · Indexing 파이프라인** 설계 · 구축, 도메인 문제 해결형 **Multi-Agent** 서비스 개발 · 운영. 자격은 **Python AI/ML 구현**, **생성형 AI 서비스 구현**, 해당 스택 3년, Linux · Docker · CI/CD 모델 운영. 우대는 확률 · 통계 · A/B 테스트, NLP · LLM, **RAG**, **Semantic/Vector · BM25/Lexical 검색 이해**, **Dataset / Evaluation Set 설계**. 근무는 판교 및 고객사, 수습 3개월(85%). 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Python AI/ML",
+          "생성형 AI 서비스",
+          "3년"
+        ],
+        "can_learn": [
+          "하이브리드 검색",
+          "검색 평가셋",
+          "리랭커"
+        ]
+      },
+      "study": [
+        {
+          "topic": "BM25 와 벡터를 섞는 검색 파이프라인",
+          "from": "task",
+          "quote": "- 글로벌 검색 수준의 Retrieval·Indexing 파이프라인을 설계·구축합니다.",
+          "priority": "core",
+          "why": "주요업무이고 회사가 '검색 기술' 을 정체성으로 든다. 기업 문서에는 품번 · 조항 번호 같은 정확 일치가 중요한 말이 많다.",
+          "gap_check": "'8.2.1 조항' · 'P-312' 같은 질문에 벡터 검색만 쓰면 왜 놓치나? BM25 와 벡터 결과를 어떻게 합치나(RRF · 가중 합)? 문서를 어떤 단위로 쪼개 색인하나(조항 · 표 · 페이지), 쪼갤 때 상위 제목을 어떻게 붙이나? 리랭커는 어디에 두나?",
+          "drill": "공개 시방서 · 표준 문서(PDF) 몇 개를 조항 단위로 쪼개 OpenSearch(BM25) 와 벡터 색인에 함께 넣고, RRF 로 합친다. 정확 일치 질문 10 개 · 의미 질문 10 개로 BM25 만 · 벡터만 · RRF · RRF + 리랭커의 Recall@5 를 표로 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "OpenSearch — Hybrid search",
+              "url": "https://opensearch.org/docs/latest/search-plugins/hybrid-search/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "검색 모델 — BM25 · Semantic 이 무엇을 다르게 보나",
+          "from": "preference",
+          "quote": "- 검색 모델의 이해 (Semantic/Vector 검색 혹은 BM25/Lexical 검색 기술)",
+          "priority": "high",
+          "why": "우대사항이다. 파이프라인을 튜닝하려면 두 모델이 왜 틀리는지를 알아야 한다.",
+          "gap_check": "BM25 의 k1 · b 는 무엇을 조절하나(단어 빈도 포화 · 문서 길이)? 한국어 BM25 는 형태소 분석기 없이 왜 약한가? 임베딩 모델을 도메인 문서로 파인튜닝하면 무엇이 좋아지고 무엇을 잃나? 동의어 · 약어 사전은 어느 쪽에 넣나?",
+          "drill": "rank_bm25 로 한국어 문서를 공백 토큰 · 형태소(Kiwi 등) 토큰 두 방식으로 색인해 같은 질문의 순위를 비교하고, k1 · b 를 바꿔 순위 변화를 본다. 도메인 약어 사전(예: 'P&ID' ↔ '배관 계장도')을 질의 확장으로 넣었을 때 변화를 적는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Robertson & Zaragoza — The Probabilistic Relevance Framework: BM25 and Beyond",
+              "url": "https://www.staff.city.ac.uk/~sbrp622/papers/foundations_bm25_review.pdf",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "평가셋을 먼저 만든다 — 검색 · RAG 품질을 숫자로",
+          "from": "preference",
+          "quote": "- Dataset / Evaluation Set 설계 및 AI/ML 모델을 개발하고 운영한 경험",
+          "priority": "core",
+          "why": "우대사항이고 주요업무가 '데이터셋 구축 · 평가를 포함한 반복 실험' 이다. 홈페이지도 품질 지표 운영을 든다.",
+          "gap_check": "질문 · 정답 문서 · 정답 답변 쌍을 누가 어떻게 만드나(현업 · LLM 합성 · 로그)? 검색 평가(Recall@k · nDCG)와 생성 평가(근거 충실성 · 정답성)를 왜 나눠 재나? 평가셋이 실제 질문 분포와 어긋나면 무엇이 생기나?",
+          "drill": "위 문서로 질문 50 개(정확 일치 · 비교 · 개정 차이 · 답 없음)를 만들고 정답 조항을 표시한다. 검색 Recall@5 · nDCG 와, RAG 답변의 근거 인용 정확도(인용 조항이 정답인가)를 따로 재는 스크립트를 쓰고, '답 없음' 질문에서 모르겠다고 하는 비율도 잰다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "BEIR — heterogeneous IR benchmark",
+              "url": "https://github.com/beir-cellar/beir",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/354424",
+      "title": "AI/ML 개발자 3년 이상 (AI 기반 건설/제조 등 도면 분석)",
+      "site": "wanted",
+      "verdict": "경력 3-13년. 위 AIML Engineer 와 같은 일에 **AI 기반 건축 2D 도면 · 3D BIM 분석**이 더해진 자리다. 자격이 좁다 — **건축 전공(학사 이상)**, **EPC · 건설 · 플랜트 경력 2년 이상**, **석사 DS/AI 또는 DS/AI Engineer 경력 3년 이상**. 도메인(건축)과 AI 를 둘 다 가진 사람을 찾는다. 우대는 A/B 테스트 · NLP · LLM · RAG · 검색 모델 · 평가셋. 근무는 판교 및 고객사. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "건축 전공",
+          "EPC · 건설 2년",
+          "DS/AI 3년 또는 석사"
+        ],
+        "can_learn": [
+          "IFC 파싱",
+          "도면 OCR",
+          "멀티 에이전트"
+        ]
+      },
+      "study": [
+        {
+          "topic": "BIM(IFC)을 AI 가 읽는 데이터로 — 객체 · 속성 · 관계",
+          "from": "task",
+          "quote": "- AI 기반의 건축 2D 도면 /3D BIM 분석",
+          "priority": "core",
+          "why": "이 공고만의 주요업무이고 홈페이지 EPC 예시가 '도면 객체 P-312 — 연결된 승인 문서' 다.",
+          "gap_check": "IFC 파일에서 벽 · 배관 · 장비 객체와 그 속성(재질 · 치수 · 층)을 어떻게 꺼내나? 객체를 시방서 조항 · 승인 문서와 잇는 키는 무엇인가? 2D 도면은 벡터(DWG/DXF)와 스캔(이미지) 중 무엇이냐에 따라 방법이 어떻게 갈리나?",
+          "drill": "공개 IFC 샘플 파일을 IfcOpenShell 로 열어 객체 유형 · 속성 · 층 관계를 표로 뽑고, '3층 배관 중 재질이 X 인 것' 같은 질문을 표 질의로 답한다. 같은 객체 목록을 텍스트 청크로 바꿔 RAG 에 넣었을 때와 표 질의로 답했을 때 정확도를 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "IfcOpenShell",
+              "url": "https://ifcopenshell.org/",
+              "kind": "docs"
+            },
+            {
+              "title": "buildingSMART — IFC",
+              "url": "https://technical.buildingsmart.org/standards/ifc/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "도메인 문제를 나누는 멀티 에이전트 — 검색 · 비교 · 검증",
+          "from": "task",
+          "quote": "- 생성형 AI를 활용해 도메인 문제 해결형 Multi-Agent 서비스를 개발·운영하며, 도메인의 문제를 해결합니다.",
+          "priority": "high",
+          "why": "주요업무이고 홈페이지가 검색 · 분석(개정 비교) · 검증 · 생성(체크리스트 · 의견서)을 나눠 든다.",
+          "gap_check": "'Rev.03 → Rev.04 에서 바뀐 조건과 영향' 을 한 프롬프트로 물으면 무엇이 틀리나? 검색 · 비교 · 검증 에이전트로 나누면 각자의 입력 · 출력은? 검증 에이전트는 무엇을 근거로 '틀렸다' 고 하나(원문 위치 대조)?",
+          "drill": "같은 문서의 두 개정본(직접 몇 조항을 바꿔 만든다)으로 '바뀐 조항 찾기 → 차이 요약 → 각 주장에 원문 위치 붙이기 → 검증' 네 단계 파이프라인을 만든다. 검증 단계가 원문에 없는 주장을 잡아내는지 일부러 틀린 요약을 넣어 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Anthropic — Building effective agents",
+              "url": "https://www.anthropic.com/research/building-effective-agents",
+              "kind": "blog"
+            }
+          ]
+        },
+        {
+          "topic": "모델 운영 — Docker · CI/CD 로 검색 · 모델을 배포",
+          "from": "qualification",
+          "quote": "- Linux · Docker · CI/CD 환경에서 모델 운영 경험",
+          "priority": "nice",
+          "why": "자격 목록 끝에 붙어 있고 근무지가 고객사다 — 고객 환경(폐쇄망 포함 가능성)에 배포할 수 있어야 한다.",
+          "gap_check": "임베딩 모델 · 리랭커 · 색인을 한 이미지에 넣나 나누나? 색인을 다시 만들 때 서비스를 멈추지 않으려면(별칭 전환)? 고객사가 외부 API 를 막으면 무엇을 바꾸나(이 사이트의 가정)?",
+          "drill": "앞 과제의 검색 API · 임베딩 모델을 docker compose 로 묶고, GitHub Actions 로 이미지를 빌드한다. 새 색인을 만든 뒤 별칭(alias)만 바꿔 무중단 교체하는 스크립트를 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "OpenSearch — Index aliases",
+              "url": "https://opensearch.org/docs/latest/im-plugin/index-alias/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/364959",
+      "title": "Security Engineer(5년 이상)",
+      "site": "wanted",
+      "verdict": "경력 5-11년. **AWS 멀티 어카운트 보안 아키텍처**(SCP 가드레일 · 계정 경계 · 중앙 보안 운영)를 **AWS Security 5 Epics**(IAM · 탐지 통제 · 인프라 · 데이터 보호 · 인시던트 대응)로 구축 · 운영. 범위가 넓다 — 네트워크(VPC · WAF · PrivateLink), OS(CIS · Patch Manager · Inspector), 애플리케이션(위협 모델링 · OAuth2/OIDC · OWASP), 코드(SAST/DAST/SCA · 시크릿 스캐닝 · SBOM), **SaaS 멀티 테넌트 격리 · Cross-tenant 탐지 · 고객 보안 실사 대응**, 보안 자동화(Policy as Code · EventBridge/Lambda/SSM Auto-remediation · SOAR), **AI/LLM 보안**(프롬프트 인젝션 · 입출력 필터 · PII 마스킹 · Bedrock 거버넌스 · 레드팀). 자격은 멀티 어카운트 보안 설계 · 운영, Organizations · SCP · GuardDuty · Security Hub · Config, Terraform · CI/CD 보안 자동화, 인시던트 대응. 우대 AWS Security Specialty · CISSP · ISMS-P · CSAP · SOC 2. **근무지는 고객사 프로젝트 현장**. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "AWS 멀티 어카운트 보안 5년",
+          "Organizations · SCP",
+          "Terraform 보안 자동화",
+          "인시던트 대응"
+        ],
+        "can_learn": [
+          "LLM 가드레일",
+          "테넌트 격리 검증",
+          "SOAR"
+        ]
+      },
+      "study": [
+        {
+          "topic": "SCP 로 조직 전체에 가드레일 — 무엇을 막고 무엇을 남기나",
+          "from": "qualification",
+          "quote": "・ AWS Organizations, SCP, IAM, 보안 서비스(GuardDuty, Security Hub, Config 등) 실무 경험",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무 첫 줄이 SCP 기반 가드레일이다.",
+          "gap_check": "SCP 는 권한을 '주는' 가, '상한을 두는' 가? CloudTrail 끄기 · 허용 리전 밖 리소스 생성 · 루트 사용을 SCP 로 막을 때 관리 계정은 왜 영향을 안 받나? SCP 를 잘못 걸어 배포 파이프라인이 멈추면 어떻게 찾나(Access Denied 의 원인 판별)?",
+          "drill": "AWS Organizations 에 테스트 OU 두 개를 만들고 '허용 리전 제한 · CloudTrail/GuardDuty 비활성 금지 · 루트 사용 금지' SCP 를 Terraform 으로 건다. 멤버 계정에서 금지 행동을 시도해 거부되는지, 예외 역할(break-glass)만 통과하는지 확인하고 CloudTrail 에 남는 거부 이벤트를 찾는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "AWS — Service control policies (SCPs)",
+              "url": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "멀티 테넌트 격리를 검증한다 — Cross-tenant 접근 탐지",
+          "from": "task",
+          "quote": "・ 테넌트 간 데이터 접근 통제, 격리 위반(Cross-tenant access) 탐지 체계 구축",
+          "priority": "core",
+          "why": "주요업무(SaaS 보안)이고, 여러 기업의 문서를 한 플랫폼이 다루니 한 고객 문서가 다른 고객 답변에 섞이면 사업이 끝난다.",
+          "gap_check": "테넌트 격리를 계정 · DB 스키마 · 행(RLS) · 검색 색인 필터 중 어디서 하나, 각각 새는 길은? 벡터 검색에서 테넌트 필터를 빼먹으면 무엇이 나오나? 격리 위반을 운영 중에 어떻게 탐지하나(요청 테넌트 ≠ 문서 테넌트 로그)?",
+          "drill": "작은 API 에 테넌트 두 개의 문서를 넣고 PostgreSQL RLS(또는 색인 필터)로 격리한다. 테넌트 A 토큰으로 B 문서를 꺼내는 테스트를 CI 에 넣고, 필터를 일부러 빼 테스트가 실패하는지 본다. 응답의 문서 테넌트와 요청 테넌트가 다르면 경보를 남기는 로깅을 붙인다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "AWS — SaaS Tenant Isolation Strategies (whitepaper)",
+              "url": "https://docs.aws.amazon.com/whitepapers/latest/saas-tenant-isolation-strategies/saas-tenant-isolation-strategies.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "LLM 애플리케이션 가드레일 — 프롬프트 인젝션 · PII · 권한 경계",
+          "from": "task",
+          "quote": "・ LLM 애플리케이션 보안 가드레일 설계 — 입력·출력 필터링, 민감정보(PII) 마스킹, 권한 경계",
+          "priority": "high",
+          "why": "주요업무(AI 보안)이고 우대에 AI/LLM 보안 경험이 있다. RAG 는 문서 안의 문장이 곧 입력이다.",
+          "gap_check": "사용자 입력이 아니라 **검색된 문서 안**에 '이전 지시를 무시하라' 가 있으면(간접 인젝션) 무엇이 막나? 출력 필터로 PII 를 가리는 것과 색인 전에 가리는 것은 무엇이 다른가? LLM 이 호출하는 도구의 권한을 사용자 권한 이상으로 못 쓰게 하려면?",
+          "drill": "간단한 RAG 에 인젝션 문장이 든 문서를 섞어 넣고 모델이 따르는지 본다. 검색 결과를 데이터로 감싸는 프롬프트 구조 · 출력 PII 마스킹(정규식 + 사전) · 도구 호출 시 사용자 토큰 전달을 차례로 넣으며 OWASP Top 10 for LLM 항목별로 막힌 것을 표로 정리한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "OWASP Top 10 for LLM Applications",
+              "url": "https://genai.owasp.org/llm-top-10/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

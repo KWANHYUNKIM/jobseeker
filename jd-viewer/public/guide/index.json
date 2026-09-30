@@ -1262,6 +1262,19 @@
       "postings": 3,
       "study_items": 9,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "searchdoc",
+      "name": "서치독",
+      "aliases": [
+        "서치독",
+        "Searchdoc",
+        "SEARCHDOC"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 9,
+      "updated_at": "2026-09-30"
     }
   ]
 }
