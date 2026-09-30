@@ -1,0 +1,343 @@
+{
+  "slug": "eleven",
+  "name": "일레븐",
+  "name_en": "ELEVEN",
+  "aliases": [
+    "일레븐"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "https://babechat.ai/",
+  "one_liner": "AI 캐릭터 채팅 Babechat · Tookit 을 운영하는 회사 — LLM 인퍼런스 · 정렬 · RAG 엔지니어, 그로스 프론트, 0-to-1 데이터 분석가를 뽑는다",
+  "company": {
+    "business": "일레븐은 **AI 캐릭터 채팅 서비스 'Babechat(베이비챗)'** 과 **'Tookit'** 을 운영한다 — 공고는 사용자와 AI 캐릭터의 '경계 없는 소통' 으로 새로운 즐거움과 관계의 가능성을 만든다고 적고, 베이비챗 사이트는 '당신만의 AI 캐릭터와 24시간 자유롭게 대화' 하고 **개인화된 비주얼 콘텐츠**를 경험하라고 소개한다. 공고로 보이는 회사의 무게 중심은 셋이다 — **대화 품질**(LLM 인퍼런스 인프라 · 정렬 학습 · RAG · 에이전트로 '수백만 유저' 를 감당), **그로스**(온보딩 · 랜딩 · A/B · 계측으로 글로벌 유입), **데이터**(0 에서 데이터 환경 · 텍소노미를 세우고 리텐션 · LTV · BM 을 본다). 세 공고 모두 **일본어 · 영어**를 우대하고, 분석가 공고는 **일본 시장** 확장을 콕 집는다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "프론트엔드 엔지니어 (Growth Frontend Engineer)",
+        "url": "https://www.wanted.co.kr/wd/375692",
+        "publisher": "원티드",
+        "summary": "AI 캐릭터 채팅 서비스 Babechat · Tookit 운영. 그로스 스쿼드 — 유입 · 활성화, 마케팅 · 운영팀과 인플로우 설계 · 글로벌 확대. 온보딩 · 회원가입 · 랜딩, A/B · 피처 플래그 · 이벤트 트래킹, 계측, i18n, Web Vitals. 3년, React/Next.js, TS. 우대 Amplitude · Mixpanel · GA, 픽셀 · 어트리뷰션 SDK, SEO, 일본어/영어."
+      },
+      {
+        "title": "LLM/AI 엔지니어 (LLM/AI Engineer)",
+        "url": "https://www.wanted.co.kr/wd/330894",
+        "publisher": "원티드",
+        "summary": "대규모 LLM 인퍼런스 인프라 · GPU 서빙 튜닝 · 수백만 유저 아키텍처, 파인튜닝 정렬 파이프라인 · 분산 학습 · 대화 품질 데이터 큐레이션, RAG · 대화 컨텍스트 · 프롬프트 · 에이전트. 최소 한 영역 필수: vLLM/SGLang · GRPO/SFT/DPO · RAG/에이전트. 3-8년."
+      },
+      {
+        "title": "베이비챗(BabeChat) - 한계 없는 AI 채팅",
+        "url": "https://babechat.ai/",
+        "publisher": "일레븐",
+        "summary": "'베이비챗에서 당신만의 AI 캐릭터와 24시간 자유롭게 대화하세요. 맞춤형 AI 캐릭터와 채팅하고 개인화된 비주얼 콘텐츠를 경험해보세요.'(메타 설명)"
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "AI 캐릭터 채팅 이용료",
+        "how": "분석가 공고가 LTV · CVR · 비즈니스 모델(BM)을 지표로 든다 — 유료 전환이 있는 서비스로 읽히지만 과금 방식(구독 · 재화 · 광고)은 읽은 자료에 없다.",
+        "domains": [
+          "LLM 캐릭터 대화 시스템",
+          "그로스 — 유입 · 활성화 실험과 계측"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "데이터 분석가 (Data Analyst)",
+            "url": "https://www.wanted.co.kr/wd/330898",
+            "publisher": "원티드",
+            "summary": "Babechat 데이터 환경 0-to-1 · 텍소노미, 리텐션 · 퍼널 · LTV · CVR 지표 · 대시보드(Tableau · Snowflake · Amplitude), 코호트 · 퍼널 분석 · A/B, BM · 글로벌(일본 시장) 인사이트, 운영/재무 데이터 연결. 3년, SQL. 우대 일본어/영어 · Python/R · 서브컬처 도메인 · FP&A."
+          },
+          {
+            "title": "베이비챗(BabeChat) - 한계 없는 AI 채팅",
+            "url": "https://babechat.ai/",
+            "publisher": "일레븐",
+            "summary": "'베이비챗에서 당신만의 AI 캐릭터와 24시간 자유롭게 대화하세요. 맞춤형 AI 캐릭터와 채팅하고 개인화된 비주얼 콘텐츠를 경험해보세요.'(메타 설명)"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "LLM 캐릭터 대화 시스템",
+        "why": "LLM 공고가 대규모 인퍼런스(vLLM · SGLang) · 정렬 학습(GRPO · SFT · DPO) · RAG · 대화 컨텍스트 · 에이전트를 캐릭터 대화 품질과 수백만 유저 규모에 묶는다.",
+        "what_to_know": [
+          "vLLM 배치 · KV 캐시",
+          "DPO",
+          "캐릭터 장기 기억(RAG)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "LLM/AI 엔지니어 (LLM/AI Engineer)",
+            "url": "https://www.wanted.co.kr/wd/330894",
+            "publisher": "원티드",
+            "summary": "대규모 LLM 인퍼런스 인프라 · GPU 서빙 튜닝 · 수백만 유저 아키텍처, 파인튜닝 정렬 파이프라인 · 분산 학습 · 대화 품질 데이터 큐레이션, RAG · 대화 컨텍스트 · 프롬프트 · 에이전트. 최소 한 영역 필수: vLLM/SGLang · GRPO/SFT/DPO · RAG/에이전트. 3-8년."
+          }
+        ]
+      },
+      {
+        "name": "그로스 — 유입 · 활성화 실험과 계측",
+        "why": "프론트 · 분석가 공고가 온보딩 · 랜딩 · A/B · 피처 플래그 · 이벤트 텍소노미 · 퍼널 · 리텐션 · i18n 을 적는다.",
+        "what_to_know": [
+          "이벤트 텍소노미",
+          "A/B 표본 · 판정",
+          "Web Vitals · i18n"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "프론트엔드 엔지니어 (Growth Frontend Engineer)",
+            "url": "https://www.wanted.co.kr/wd/375692",
+            "publisher": "원티드",
+            "summary": "AI 캐릭터 채팅 서비스 Babechat · Tookit 운영. 그로스 스쿼드 — 유입 · 활성화, 마케팅 · 운영팀과 인플로우 설계 · 글로벌 확대. 온보딩 · 회원가입 · 랜딩, A/B · 피처 플래그 · 이벤트 트래킹, 계측, i18n, Web Vitals. 3년, React/Next.js, TS. 우대 Amplitude · Mixpanel · GA, 픽셀 · 어트리뷰션 SDK, SEO, 일본어/영어."
+          },
+          {
+            "title": "데이터 분석가 (Data Analyst)",
+            "url": "https://www.wanted.co.kr/wd/330898",
+            "publisher": "원티드",
+            "summary": "Babechat 데이터 환경 0-to-1 · 텍소노미, 리텐션 · 퍼널 · LTV · CVR 지표 · 대시보드(Tableau · Snowflake · Amplitude), 코호트 · 퍼널 분석 · A/B, BM · 글로벌(일본 시장) 인사이트, 운영/재무 데이터 연결. 3년, SQL. 우대 일본어/영어 · Python/R · 서브컬처 도메인 · FP&A."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "일본 시장이 다음 무대다",
+        "evidence": "비즈니스 모델(BM), 글로벌 확장 전략(일본 시장 등)에 대한 핵심 인사이트를 제시해요.",
+        "so_what": "세 공고가 모두 일본어 · 영어를 우대한다 — 현지화(i18n) · 일본 이용자 지표를 다뤄 본 경험이 있으면 앞에 둔다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "데이터 기반을 이제 세운다",
+        "evidence": "• Zero-to-one으로 데이터 환경(인프라, 파이프라인, 텍소노미)을 직접 구축하고 세팅해 본 경험이 있는 분",
+        "so_what": "분석가 · 그로스 프론트 모두 계측 설계부터 한다 — 이벤트 이름 규칙 · 속성 설계를 처음부터 잡아 본 경험이 말이 된다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "회사 홈페이지(법인 소개)를 찾지 못했다 — 사용자 수 · 매출 · 투자는 읽은 자료에 없다",
+    "Tookit 이 무엇인지(베이비챗과의 차이)는 공고에 없다",
+    "과금 방식은 모른다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/375692",
+      "title": "프론트엔드 엔지니어 (Growth Frontend Engineer)",
+      "site": "wanted",
+      "verdict": "경력 3년 이상. **그로스 스쿼드**의 프론트 — **온보딩 · 회원가입 · 랜딩** 등 유입 · 활성화 핵심 플로우, **A/B 테스트 · 피처 플래그 · 이벤트 트래킹**으로 빠른 실험 환경, 마케팅 · 데이터팀과 **퍼널 계측**, **다국어(i18n) · 지역별 최적화**, 초기 로딩 · 전환에 직결되는 **Web Vitals**. 자격은 프론트 3년, React/Next.js SPA · SSR, TypeScript, 계측 · A/B 구현 또는 그로스 관심, 디자이너 · 마케터 · 데이터 협업. 우대는 Amplitude · Mixpanel · GA 이벤트 설계, 픽셀 · 어트리뷰션 SDK, 글로벌 i18n, 웹 성능 · SEO, AI 채팅 · 서브컬처 관심, 일본어/영어. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "프론트 3년",
+          "React/Next.js SSR",
+          "TypeScript",
+          "계측 · 실험"
+        ],
+        "can_learn": [
+          "피처 플래그 · 실험 배정",
+          "어트리뷰션 SDK",
+          "Next.js i18n 라우팅"
+        ]
+      },
+      "study": [
+        {
+          "topic": "그로스 실험 환경 — 피처 플래그로 배정하고 이벤트로 잰다",
+          "from": "task",
+          "quote": "A/B 테스트, 피처 플래그, 이벤트 트래킹을 구현하여 그로스 실험을 빠르게 반복할 수 있는 환경을 만들어요.",
+          "priority": "core",
+          "why": "주요업무다. 실험을 코드 배포 없이 켜고 끄며, 같은 사용자에게 늘 같은 변형을 보여야 결과를 믿을 수 있다.",
+          "gap_check": "비로그인 방문자에게 변형을 배정하고, 가입 뒤에도 같은 변형을 유지하려면 무엇을 키로 쓰나(익명 ID → 사용자 ID 연결)? SSR 에서 배정하면 화면 깜빡임(flicker)을 어떻게 피하나? '노출' 이벤트를 언제 찍어야 전환율 분모가 맞나?",
+          "drill": "Next.js 미들웨어에서 익명 ID 쿠키 해시로 온보딩 A/B 변형을 배정하고 SSR 로 바로 그려 깜빡임을 없앤다. GrowthBook(또는 PostHog) 플래그로 비율을 바꾸고, 노출 · 가입 완료 이벤트를 찍어 가짜 트래픽으로 전환율 차이와 신뢰 구간을 계산한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "GrowthBook — Docs",
+              "url": "https://docs.growthbook.io/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "퍼널 계측 — 이벤트 이름과 속성을 처음부터 맞춘다",
+          "from": "task",
+          "quote": "마케팅·데이터팀과 협업해 퍼널 분석과 유입 캠페인에 필요한 데이터 계측(Instrumentation)을 정교하게 구축해요.",
+          "priority": "core",
+          "why": "주요업무이고 분석가 공고가 전사 텍소노미를 새로 세운다고 적는다 — 프론트가 찍는 이벤트가 그 재료다.",
+          "gap_check": "'랜딩 방문 → 캐릭터 선택 → 가입 → 첫 대화' 퍼널에서 각 이벤트에 무엇을 속성으로 붙이나(유입 채널 · UTM · 언어 · 변형)? 이벤트 이름을 '객체_동작' 규칙으로 통일하는 이유는? 광고 픽셀 · 어트리뷰션 SDK 와 제품 분석 이벤트가 숫자가 다르면 무엇을 의심하나?",
+          "drill": "퍼널 이벤트 6 개의 텍소노미 표(이름 · 시점 · 속성 · 소유자)를 만들고, 타입이 있는 track 함수(이벤트 이름 → 속성 타입 매핑)로 잘못된 속성은 컴파일에서 막는다. Amplitude(무료)에 보내 퍼널 차트를 만들고 UTM 별로 나눠 본다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Amplitude — Data taxonomy playbook",
+              "url": "https://amplitude.com/docs/data/data-planning-playbook",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "글로벌 랜딩 — i18n 과 Web Vitals",
+          "from": "task",
+          "quote": "글로벌 시장 확대를 위한 다국어(i18n) 대응 및 지역별 최적화를 구현해요.",
+          "priority": "high",
+          "why": "주요업무이고 우대에 SEO · 일본어가 있다. 첫 화면의 속도와 언어가 유입 전환을 가른다.",
+          "gap_check": "언어를 경로(/ja) · 도메인 · 쿠키 중 무엇으로 나누나, SEO(hreflang)에는 무엇이 맞나? 번역 문자열을 페이지마다 필요한 것만 싣으려면? 일본어 웹폰트가 LCP · CLS 를 어떻게 망치고 무엇으로 줄이나(서브셋 · font-display)?",
+          "drill": "Next.js 로 ko · ja · en 랜딩을 경로 기반으로 만들고 hreflang · 언어 감지 리다이렉트를 넣는다. 일본어 웹폰트를 통째로 · 서브셋 · 시스템 폰트 세 가지로 두고 Lighthouse LCP · CLS 를 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Next.js — Internationalization",
+              "url": "https://nextjs.org/docs/app/building-your-application/routing/internationalization",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/330898",
+      "title": "데이터 분석가 (Data Analyst)",
+      "site": "wanted",
+      "verdict": "경력 3년 이상. **Babechat 데이터 환경 0-to-1** — 백엔드와 파이프라인 · **전사 데이터 텍소노미**, OKR 연계 **리텐션 · 퍼널 · LTV · CVR** 지표와 대시보드(Tableau · Snowflake · Amplitude), **코호트 · 퍼널 분석 · A/B 설계 · 분석**, PO · 디자이너 · 마케팅과 제품 · **BM · 글로벌(일본) 전략** 인사이트, 유저 · 운영 · 재무 데이터 연결. 자격은 분석 3년, **0 에서 데이터 환경을 세워 본 경험**, SQL, 분석 툴 1 개 이상, 문제 정의 · 액션 제시, 모바일 지표 이해, 설득력. 우대는 일본어/영어, Python/R, AI 채팅 · 서브컬처 도메인, A/B, FP&A. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "분석 3년",
+          "0-to-1 데이터 환경",
+          "SQL",
+          "리텐션 · 코호트"
+        ],
+        "can_learn": [
+          "Snowflake 모델링",
+          "LTV 추정",
+          "A/B 검정력"
+        ]
+      },
+      "study": [
+        {
+          "topic": "0 에서 세우는 데이터 환경 — 이벤트에서 지표 테이블까지",
+          "from": "qualification",
+          "quote": "• Zero-to-one으로 데이터 환경(인프라, 파이프라인, 텍소노미)을 직접 구축하고 세팅해 본 경험이 있는 분",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무 첫 줄이다.",
+          "gap_check": "제품 이벤트(Amplitude) · 서버 DB(결제 · 대화) · 재무 데이터를 어디에 모으나(Snowflake)? 원천 → 정제 → 지표 테이블 층을 왜 나누나(dbt)? '활성 사용자' 정의가 팀마다 다르면 무엇으로 하나로 묶나(지표 정의 문서 · 시맨틱 레이어)?",
+          "drill": "가짜 이벤트 · 결제 데이터를 DuckDB(또는 Snowflake 체험판)에 올리고 dbt 로 staging → 사용자 일별 활동 → DAU/WAU · D1/D7 리텐션 모델을 만든다. '활성' 정의(첫 메시지 보냄 vs 앱 열기)를 바꿔 숫자가 얼마나 달라지는지 표로 남긴다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "dbt — Best practice guides: How we structure our dbt projects",
+              "url": "https://docs.getdbt.com/best-practices/how-we-structure/1-guide-overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "리텐션 · LTV — 캐릭터 채팅 사용자를 코호트로 본다",
+          "from": "task",
+          "quote": "Tableau, Snowflake, Amplitude 등을 활용해 대시보드를 구축 및 관리해요.",
+          "priority": "core",
+          "why": "주요업무의 지표(리텐션 · 퍼널 · LTV · CVR)를 대시보드로 만든다.",
+          "gap_check": "가입 주 코호트별 리텐션 곡선에서 무엇을 읽나(평탄해지는 지점)? 과금 사용자 비율이 낮은 서비스의 LTV 를 어떻게 추정하나(코호트 누적 매출 · 곡선 외삽)? 유입 채널 · 국가별로 나누면 평균이 무엇을 숨기나?",
+          "drill": "앞 과제 데이터로 주 코호트 리텐션 삼각표와 누적 매출 곡선을 SQL 로 만들고, 국가(ko · ja)별로 나눠 비교한다. Tableau Public(또는 Metabase)에 대시보드로 올리고, 한 장짜리 해석(무엇이 다르고 무엇을 해 볼지)을 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Amplitude — Retention analysis",
+              "url": "https://amplitude.com/docs/analytics/charts/retention-analysis/retention-analysis-interpret",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "A/B 를 설계하고 판정한다 — 표본 수와 함정",
+          "from": "task",
+          "quote": "사용자 행동 데이터를(코호트, 퍼널 등) 깊이 있게 분석하여",
+          "priority": "high",
+          "why": "주요업무의 이어지는 문장이 가설 수립 · A/B 설계/분석이고, 우대에도 A/B 가 있다.",
+          "gap_check": "기준 전환율 5% 에서 상대 10% 개선을 잡으려면 표본이 얼마나 필요한가? 결과를 매일 들여다보다 유의해지면 멈추는 것(peeking)이 왜 문제인가? 두 그룹 인원 비율이 설정과 다르면(SRM) 무엇을 의심하나?",
+          "drill": "파이썬으로 검정력 계산을 해 필요한 표본을 구하고, 차이가 없는 가짜 실험을 1,000 번 돌려 매일 들여다보고 멈출 때 거짓 양성률이 얼마나 오르는지 시뮬레이션한다. 배정 비율 카이제곱 검정(SRM)을 넣은 판정 노트북을 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Kohavi, Tang, Xu — Trustworthy Online Controlled Experiments",
+              "url": "https://experimentguide.com/",
+              "kind": "book"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/330894",
+      "title": "LLM/AI 엔지니어 (LLM/AI Engineer)",
+      "site": "wanted",
+      "verdict": "경력 3-8년. 세 영역 — **인프라**: 대규모 **LLM 인퍼런스** 설계 · 최적화, GPU 클러스터 서빙 · 성능 튜닝, **수백만 유저** 규모 아키텍처. **트레이닝**: 파인튜닝용 **데이터 정렬 파이프라인**, 분산 학습 · 실험, 캐릭터 대화 품질용 데이터 큐레이션. **시스템**: **RAG** 로 캐릭터 대화 품질, 대화 컨텍스트 · 프롬프트, **LLM 에이전트**. 자격은 셋 중 **최소 한 영역 실무 필수** — vLLM · SGLang 인퍼런스 / GRPO · SFT · DPO / RAG · 에이전트. 우대는 영역별로 K8s · 클라우드 · 양자화, PyTorch 분산 · Hugging Face · instruction 데이터셋, 벡터 DB · LangChain · n8n · Function calling. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "세 영역 중 하나 실무(인퍼런스 · 정렬 학습 · RAG/에이전트)"
+        ],
+        "can_learn": [
+          "다른 두 영역",
+          "캐릭터 일관성 평가",
+          "양자화"
+        ]
+      },
+      "study": [
+        {
+          "topic": "수백만 대화를 싸게 — vLLM 배치 · KV 캐시 · 양자화",
+          "from": "qualification",
+          "quote": "• (인프라) vLLM, SGLang 등 대규모 LLM 인퍼런스 처리 경험",
+          "priority": "core",
+          "why": "자격의 한 갈래이고 주요업무 첫 묶음이다. 캐릭터 채팅은 대화가 길고 동시 접속이 많아 GPU 비용이 곧 사업 비용이다.",
+          "gap_check": "연속 배치(continuous batching)와 PagedAttention 은 무엇을 늘리나(처리량)? 캐릭터 설정 프롬프트가 모든 대화에 앞에 붙으면 prefix 캐시가 무엇을 아끼나? 첫 토큰 지연(TTFT)과 토큰당 지연 중 채팅 체감은 무엇이 더 크나? AWQ · FP8 양자화는 무엇을 잃나?",
+          "drill": "작은 오픈 모델(7B 급)을 vLLM 으로 띄우고, 같은 캐릭터 시스템 프롬프트 + 다양한 대화로 동시 요청 1 · 16 · 64 에서 TTFT · 처리량을 잰다. prefix caching 을 켜고 끄며, AWQ 양자화 모델로 바꿔 품질(몇 개 대화 비교)과 처리량을 표로 남긴다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "vLLM — Documentation",
+              "url": "https://docs.vllm.ai/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "캐릭터다운 답을 배우게 — SFT 뒤 DPO",
+          "from": "qualification",
+          "quote": "• (트레이닝) GRPO, SFT, DPO 등 데이터 정렬 및 모델 학습 경험",
+          "priority": "high",
+          "why": "자격의 한 갈래이고 주요업무에 정렬 파이프라인 · 대화 품질 데이터 큐레이션이 있다.",
+          "gap_check": "SFT 는 무엇을 가르치고, DPO 는 선호 쌍(좋은 답 / 나쁜 답)으로 무엇을 더 가르치나? 캐릭터 말투 · 설정을 벗어나는 답(캐릭터 붕괴)을 나쁜 답으로 모으려면? 보상 모델 없이 규칙으로 점수를 매길 수 있는 부분(GRPO)은 무엇인가?",
+          "drill": "공개 롤플레이 대화 데이터 일부로 작은 모델에 LoRA SFT 를 하고, 같은 프롬프트에 대한 두 답 중 캐릭터 설정을 지킨 쪽을 고른 선호 쌍 몇 백 개로 TRL DPO 를 돌린다. 설정 위반률(규칙 체크)과 사람 비교 몇 개로 전후를 비교한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Hugging Face TRL — DPO Trainer",
+              "url": "https://huggingface.co/docs/trl/dpo_trainer",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "캐릭터의 기억 — 긴 대화 컨텍스트와 RAG",
+          "from": "task",
+          "quote": "• RAG(Retrieval-Augmented Generation) 시스템을 설계하고 구현하여 캐릭터의 대화 품질을 고도화해요.",
+          "priority": "high",
+          "why": "주요업무이고 '대화 컨텍스트 관리' 와 이어진다. 수백 턴 대화를 매번 통째로 넣을 수는 없다.",
+          "gap_check": "최근 N 턴 · 요약 · 검색한 과거 기억 · 캐릭터 설정을 컨텍스트에 어떤 순서 · 양으로 넣나? 사용자가 예전에 말한 이름 · 취향을 기억하게 하려면 무엇을 저장하고 언제 꺼내나? 잘못 꺼낸 기억(다른 사용자 · 다른 캐릭터)은 어떻게 막나?",
+          "drill": "대화 턴을 임베딩해 벡터 DB(pgvector 등)에 사용자 · 캐릭터 키로 저장하고, 새 질문마다 관련 기억 3 개 + 최근 8 턴 + 요약을 넣는 컨텍스트 조립기를 만든다. 50 턴 전 사용자가 말한 사실을 묻는 시험 대화 20 개로 기억 정답률과 토큰 수를 잰다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "pgvector",
+              "url": "https://github.com/pgvector/pgvector",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
