@@ -1809,6 +1809,17 @@
       "postings": 3,
       "study_items": 6,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "rebotics",
+      "name": "리보틱스",
+      "aliases": [
+        "리보틱스"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 7,
+      "updated_at": "2026-09-30"
     }
   ]
 }
