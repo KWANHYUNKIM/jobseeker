@@ -2928,3 +2928,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 オイシックス 프로파일
 
 - 홈페이지(사명 변경 · 브랜드 셋 · 법인 서비스) + 기술 글 12편(REBORN EKS · 백엔드 진행 · OpenAPI 제3세대 · 데드 코드 · Dapr 무중단 · あなたにおすすめ 둘 · 수요 예측 반사실 · LLM 보완 추천 · 해지율 · CWV × CVR · 스택). 도메인 3, 수익원 2(법인 · 광고는 도메인 없음). 다음: 후보 조사 또는 수요 예측 기능.
+
+## 2026-09-30 オイシックス REBORN(기능 1/3)
+
+- REBORN EKS 글 + Dapr 무중단 글 + OpenAPI 제3세대 글 + 데드 코드 글로 `reborn-eks-dapr-openapi`. 결정 8 — Dapr 추상화 / OpenAPI SSOT / Helm app-chart / Argo CD 별도 클러스터 · 본번 수동 / 관리형 + Karpenter / preStop · block-shutdown 여백 / Readiness Gate / 데드 코드 기표 삭제. 다음: 추천 · 수요 예측.

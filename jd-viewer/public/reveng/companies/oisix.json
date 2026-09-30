@@ -132,7 +132,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "reborn-eks-dapr-openapi"
+      ]
     },
     {
       "name": "주간 정기 박스의 추천과 수요 예측 — 사지 않은 것을 권하고, 품절이 가린 수요를 반사실로 잰다",
@@ -231,7 +233,411 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "reborn-eks-dapr-openapi",
+      "name": "25 년 된 EC 를 몇 년에 걸쳐 새로 짓는다 — 바뀔 것을 전제로 Dapr 로 의존을 추상화하고, OpenAPI 를 유일한 약속으로 두며, Pod 이 교체되는 순간의 500 · 503 은 preStop 여백과 Readiness Gate 로 지운다",
+      "domain": "25 년 된 EC 를 멈추지 않고 새로 짓는다 — REBORN 제3세대(EKS · Dapr · OpenAPI)와 레거시 데드 코드 발굴",
+      "updated_at": "2026-09-30",
+      "business": {
+        "why": "Oisix EC 는 2000 년 창업부터 25 년 동안 회사의 성장을 이끌었지만, 그동안 캠페인 · 실험 서비스 · 타사 협업 · 인수한 서비스의 통합이 쌓이며 구조가 복잡해졌고 애플리케이션을 유연 · 신속하게 릴리스하기 어려워졌다 — 이대로면 사업 성장을 막는다. 그래서 여러 단계에 걸친 **'Oisix REBORN'** 으로 새 기반(**제3세대 아키텍처** — EKS 위 BFF/Backend API 마이크로서비스)을 짓는다.\n\n계획이 몇 년짜리라 **불확실성이 적지 않고**, 마이크로서비스라 **서비스 간 API 인식 차이 · 구현 불일치 · 병행 개발 충돌**이 생기며, Kubernetes 에서 **Pod 이 교체될 때(배포 · Karpenter 노드 교체)** 500 · 503 이 튀었다. 한편 옛 코드베이스에는 끝난 기능의 잔해(데드 코드)가 그대로 남아 있다.",
+        "metrics": [
+          {
+            "label": "Pod 종료 여백",
+            "value": "preStop sleep 30 초 · Dapr block-shutdown 30 초 · terminationGracePeriod 60 초(권장 초깃값 35 초 — CoreDNS TTL 30 초 고려)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ほぼゼロダウンタイムな Pod 再起動戦略（EKS + Dapr + AWS LB）",
+                "url": "https://creators.oisix.co.jp/entry/2025/10/07/180348",
+                "publisher": "オイシックス",
+                "summary": "기반 쇄신 프로젝트에서 EKS + Dapr + AWS Load Balancer Controller. Pod 삭제 · 재시작 · Karpenter 노드 드레인 때 ERR_DIRECT_INVOKE 와 500 · 503 급증 — 매니페스트 · 컨트롤러 설정으로 해결.",
+                "date": "2025-10-07"
+              }
+            ]
+          },
+          {
+            "label": "Karpenter 노드",
+            "value": "m7g/m7gd(arm64) · 스팟 + 온디맨드 · 3 AZ · consolidateAfter 3 분",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Oisix REBORNプロジェクト - レガシーシステムのモダナイゼーションにおけるAmazon EKSの活用",
+                "url": "https://creators.oisix.co.jp/entry/2025/04/23/180142",
+                "publisher": "オイシックス",
+                "summary": "Oisix EC 는 2000 년 창업부터 25 년 성장을 이끌었지만 구조가 복잡해져 유연 · 신속한 릴리스가 어려워졌다 — 'Oisix REBORN' 프로젝트(여러 단계). EKS 위에 BFF/Backend API 를 Helm(Kustomize 에서 전환), Dapr, Argo CD(App of Apps · SSO), Karpenter NodePool.",
+                "date": "2025-04-23"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "기술을 고를 때",
+          "thought": "REBORN 은 몇 년에 걸친 계획이라 불확실성이 적지 않다 — 처음 구상한 아키텍처에서 바뀌더라도 적은 부담으로 대응할 수 있는 것이 맞았다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Oisix REBORNプロジェクト - レガシーシステムのモダナイゼーションにおけるAmazon EKSの活用",
+              "url": "https://creators.oisix.co.jp/entry/2025/04/23/180142",
+              "publisher": "オイシックス",
+              "summary": "Oisix EC 는 2000 년 창업부터 25 년 성장을 이끌었지만 구조가 복잡해져 유연 · 신속한 릴리스가 어려워졌다 — 'Oisix REBORN' 프로젝트(여러 단계). EKS 위에 BFF/Backend API 를 Helm(Kustomize 에서 전환), Dapr, Argo CD(App of Apps · SSO), Karpenter NodePool.",
+              "date": "2025-04-23"
+            }
+          ]
+        },
+        {
+          "at": "운영이 서툴 때",
+          "thought": "이만한 규모로 Kubernetes 생태계를 쓰는 것은 전례가 없다 — 작게 시작해 지식을 쌓으며 나아진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Oisix REBORNプロジェクト - レガシーシステムのモダナイゼーションにおけるAmazon EKSの活用",
+              "url": "https://creators.oisix.co.jp/entry/2025/04/23/180142",
+              "publisher": "オイシックス",
+              "summary": "Oisix EC 는 2000 년 창업부터 25 년 성장을 이끌었지만 구조가 복잡해져 유연 · 신속한 릴리스가 어려워졌다 — 'Oisix REBORN' 프로젝트(여러 단계). EKS 위에 BFF/Backend API 를 Helm(Kustomize 에서 전환), Dapr, Argo CD(App of Apps · SSO), Karpenter NodePool.",
+              "date": "2025-04-23"
+            }
+          ]
+        },
+        {
+          "at": "API 를 설계할 때",
+          "thought": "구현을 진행하며 API 사양을 정하면 사양이 구현에 끌려간다 — 구현에 앞서 사양을 확정하고 그것을 기점으로 병행 개발한다(API First).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "第三世代バックエンド開発の紹介 - OpenAPI Generator を活用したAPI駆動開発",
+              "url": "https://creators.oisix.co.jp/entry/2026/02/17/160907",
+              "publisher": "オイシックス",
+              "summary": "마이크로서비스 '제3세대 아키텍처' — Beyond the Twelve-Factor App 의 API First. OpenAPI Spec 을 Single Source of Truth 로 전용 저장소에 두고 Git Submodule · 코드 생성으로 서버 · 클라이언트 불일치를 막는다. BFF(web · app) 분리.",
+              "date": "2026-02-17"
+            }
+          ]
+        },
+        {
+          "at": "옛 코드를 지울 때",
+          "thought": "잔해인 것은 거의 알지만 '무엇의' 잔해인지는 지우려고 조사하면서 처음 안다 — 데드 코드 삭제는 25 년 역사의 발굴이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "デッドコードから知るOisix25年の歴史",
+              "url": "https://creators.oisix.co.jp/entry/2026/08/26/171653",
+              "publisher": "オイシックス",
+              "summary": "2000 년부터 돈 EC 코드베이스(레거시 쪽)에서 캠페인 · 실험 서비스 · 협업 · 인수 서비스 통합의 잔해(데드 코드)를 기표 기반으로 조사 · 삭제 — 25 년 역사의 발굴. 제3세대 앱은 Spring Boot 4 로 맞췄다.",
+              "date": "2026-08-26"
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "BFF / Backend API",
+            "what": "제3세대의 마이크로서비스 — BFF 는 web · app 으로 나뉜다."
+          },
+          {
+            "name": "OpenAPI Spec 저장소",
+            "what": "BFF · 백엔드 API 사양을 모은 전용 저장소 — 각 서비스가 Git Submodule 로 가져와 서버 · 클라이언트 코드를 생성."
+          },
+          {
+            "name": "Dapr 컴포넌트",
+            "what": "데이터 저장소 · 메시징 · 캐시 의존을 추상화한 정의 — 바꿀 때 정의만 고친다(글 시점엔 Service invocation · Configuration 사용)."
+          },
+          {
+            "name": "app-chart",
+            "what": "모든 API 의 매니페스트 템플릿(Helm) — API 마다 dev/prod values.yaml 만 둔다."
+          },
+          {
+            "name": "데드 코드 후보",
+            "what": "'안 쓰이는 것 같다' 고 느낀 코드를 기표한 목록 — 조사 뒤 삭제하거나 '지금은 안 건드림' 으로 기각."
+          }
+        ],
+        "invariants": [
+          "API 사양은 구현보다 먼저 확정되고, 서버와 클라이언트는 같은 Spec 에서 생성한다.",
+          "Pod 이 끝날 때 라우팅 제외가 끝나기 전에 앱 · 사이드카가 먼저 죽지 않는다.",
+          "새 Pod 은 로드 밸런서 대상 헬스가 통과하기 전에는 Ready 가 아니다.",
+          "롤링 업데이트는 maxUnavailable 0 — 늘 전체 레플리카가 떠 있다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "OpenAPI Spec 저장소에서 사양 PR 리뷰 → 각 서비스가 Submodule 로 받아 OpenAPI Generator 로 코드 생성",
+            "why": "계약과 코드를 떼고 변경을 PR 로 모두 본다."
+          },
+          {
+            "step": "공통 app-chart(Helm) + API 별 values.yaml → Argo CD(별도 EKS 클러스터, App of Apps, IAM Identity Center SSO)가 동기화 — 본번은 수동 SYNC",
+            "why": "매니페스트 수가 API 수에 비례해 늘지 않게."
+          },
+          {
+            "step": "EKS 에서 관리형 노드 그룹이 Karpenter 와 HPA minReplicas 를, Karpenter 가 스케일아웃 Pod 을",
+            "why": "Karpenter 가 자기 노드를 관리하지 않게."
+          },
+          {
+            "step": "Pod 종료: preStop sleep 30 초 → SIGTERM(Dapr 도 block-shutdown 30 초) → graceful shutdown, 새 Pod 은 ALB/NLB 대상 헬스까지 Readiness Gate 로 대기",
+            "why": "배포 · 노드 교체 때 500 · 503 을 없앤다."
+          },
+          {
+            "step": "레거시 쪽은 데드 코드 후보를 기표 → 조사 → 삭제 또는 기각",
+            "why": "이행할 양을 줄이고 역사를 알아낸다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "서비스가 기대는 저장소 · 메시징을 어떻게 묶나?",
+            "chosen": "**Dapr** — 데이터 저장소 · 메시징 · 캐시를 Dapr 컴포넌트로 추상화한다(선정 당시 CNCF Incubating, 2024-11 Graduated).",
+            "alternatives": [
+              "각 서비스가 SDK 로 직접 의존"
+            ],
+            "tradeoff": "의존 대상을 바꿔도 컴포넌트 정의만 고치면 돼 몇 년짜리 계획의 불확실성에 맞다. 대가는 일본어 정보가 적어 일부 기능(Service invocation · Configuration)만 시행착오로 쓰는 중이고, 사이드카가 Pod 종료 순서 문제(아래)를 만든다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Oisix REBORNプロジェクト - レガシーシステムのモダナイゼーションにおけるAmazon EKSの活用",
+                "url": "https://creators.oisix.co.jp/entry/2025/04/23/180142",
+                "publisher": "オイシックス",
+                "summary": "Oisix EC 는 2000 년 창업부터 25 년 성장을 이끌었지만 구조가 복잡해져 유연 · 신속한 릴리스가 어려워졌다 — 'Oisix REBORN' 프로젝트(여러 단계). EKS 위에 BFF/Backend API 를 Helm(Kustomize 에서 전환), Dapr, Argo CD(App of Apps · SSO), Karpenter NodePool.",
+                "date": "2025-04-23"
+              }
+            ]
+          },
+          {
+            "question": "서비스 사이의 API 를 어떻게 맞추나?",
+            "chosen": "**OpenAPI Spec 을 Single Source of Truth 로** — 전용 저장소에 BFF(web · app) · 백엔드 사양을 두고 Git Submodule 로 가져와 OpenAPI Generator 로 서버 · 클라이언트 코드를 생성.",
+            "alternatives": [
+              "구현하면서 사양을 정한다"
+            ],
+            "tradeoff": "계약과 코드가 떨어져 변경 이력 · 영향 범위가 보이고, 사양 변경이 PR 로 모두에게 공유돼 파괴적 변경을 미리 잡으며, 같은 Spec 에서 생성하니 해석 차이 버그가 없다. 대가는 모든 서비스가 Spec 저장소 버전을 따라가야 한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "第三世代バックエンド開発の紹介 - OpenAPI Generator を活用したAPI駆動開発",
+                "url": "https://creators.oisix.co.jp/entry/2026/02/17/160907",
+                "publisher": "オイシックス",
+                "summary": "마이크로서비스 '제3세대 아키텍처' — Beyond the Twelve-Factor App 의 API First. OpenAPI Spec 을 Single Source of Truth 로 전용 저장소에 두고 Git Submodule · 코드 생성으로 서버 · 클라이언트 불일치를 막는다. BFF(web · app) 분리.",
+                "date": "2026-02-17"
+              }
+            ]
+          },
+          {
+            "question": "늘어나는 API 의 매니페스트를 어떻게 관리하나?",
+            "chosen": "**Kustomize 에서 Helm 으로** — 공통 app-chart(Deployment · HPA · PDB · Service · Dapr 설정) 하나에 API 별 values.yaml.",
+            "alternatives": [
+              "사내 운영 실적이 있는 Kustomize(API · 환경마다 base/patch)"
+            ],
+            "tradeoff": "API 수에 비례해 매니페스트 파일이 폭증하던 문제가 사라진다. 대가는 템플릿 하나의 변경이 모든 API 에 퍼진다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Oisix REBORNプロジェクト - レガシーシステムのモダナイゼーションにおけるAmazon EKSの活用",
+                "url": "https://creators.oisix.co.jp/entry/2025/04/23/180142",
+                "publisher": "オイシックス",
+                "summary": "Oisix EC 는 2000 년 창업부터 25 년 성장을 이끌었지만 구조가 복잡해져 유연 · 신속한 릴리스가 어려워졌다 — 'Oisix REBORN' 프로젝트(여러 단계). EKS 위에 BFF/Backend API 를 Helm(Kustomize 에서 전환), Dapr, Argo CD(App of Apps · SSO), Karpenter NodePool.",
+                "date": "2025-04-23"
+              }
+            ]
+          },
+          {
+            "question": "배포를 누가 어디서 누르나?",
+            "chosen": "**Argo CD 를 서비스와 다른 EKS 클러스터에 두고 App of Apps 로 자기 설정까지 관리**, IAM Identity Center SSO 로 로그인 — **본번은 수동 SYNC**.",
+            "alternatives": [
+              "서비스 클러스터 안의 Argo CD",
+              "본번 자동 배포"
+            ],
+            "tradeoff": "클러스터가 늘면 한 곳에서 중앙 관리하고, 손으로 kubectl apply 할 매니페스트가 app-of-apps.yaml 하나뿐이다. 릴리스 흐름 · 운영에 아직 익숙하지 않아 본번은 수동이다. 대가는 클러스터가 안 늘면 별도 클러스터가 부담이라 나중에 다시 판단한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Oisix REBORNプロジェクト - レガシーシステムのモダナイゼーションにおけるAmazon EKSの活用",
+                "url": "https://creators.oisix.co.jp/entry/2025/04/23/180142",
+                "publisher": "オイシックス",
+                "summary": "Oisix EC 는 2000 년 창업부터 25 년 성장을 이끌었지만 구조가 복잡해져 유연 · 신속한 릴리스가 어려워졌다 — 'Oisix REBORN' 프로젝트(여러 단계). EKS 위에 BFF/Backend API 를 Helm(Kustomize 에서 전환), Dapr, Argo CD(App of Apps · SSO), Karpenter NodePool.",
+                "date": "2025-04-23"
+              }
+            ]
+          },
+          {
+            "question": "노드를 어떻게 늘리나?",
+            "chosen": "**관리형 노드 그룹 + Karpenter 병용** — 관리형은 Karpenter Pod 과 HPA minReplicas 를, Karpenter 는 스케일아웃 Pod 을(arm64 m7g · 스팟 + 온디맨드 · 3 AZ).",
+            "alternatives": [
+              "Karpenter 만",
+              "관리형 노드 그룹만"
+            ],
+            "tradeoff": "Karpenter 모범 사례대로 자기 자신이 뜨는 노드를 관리 대상과 분리하고, 스팟으로 비용을 줄인다. 대가는 Karpenter 가 노드를 정리(consolidate)할 때마다 Pod 이 옮겨져 아래 오류가 드러났다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Oisix REBORNプロジェクト - レガシーシステムのモダナイゼーションにおけるAmazon EKSの活用",
+                "url": "https://creators.oisix.co.jp/entry/2025/04/23/180142",
+                "publisher": "オイシックス",
+                "summary": "Oisix EC 는 2000 년 창업부터 25 년 성장을 이끌었지만 구조가 복잡해져 유연 · 신속한 릴리스가 어려워졌다 — 'Oisix REBORN' 프로젝트(여러 단계). EKS 위에 BFF/Backend API 를 Helm(Kustomize 에서 전환), Dapr, Argo CD(App of Apps · SSO), Karpenter NodePool.",
+                "date": "2025-04-23"
+              },
+              {
+                "title": "ほぼゼロダウンタイムな Pod 再起動戦略（EKS + Dapr + AWS LB）",
+                "url": "https://creators.oisix.co.jp/entry/2025/10/07/180348",
+                "publisher": "オイシックス",
+                "summary": "기반 쇄신 프로젝트에서 EKS + Dapr + AWS Load Balancer Controller. Pod 삭제 · 재시작 · Karpenter 노드 드레인 때 ERR_DIRECT_INVOKE 와 500 · 503 급증 — 매니페스트 · 컨트롤러 설정으로 해결.",
+                "date": "2025-10-07"
+              }
+            ]
+          },
+          {
+            "question": "Pod 이 죽을 때 500 이 튀는 이유와 대책은?",
+            "chosen": "**preStop 에 sleep 30 초로 여백**을 두고, **Dapr 도 block-shutdown-duration 30 초**로 맞추며 terminationGracePeriodSeconds 60 초 · maxUnavailable 0, 앱은 SIGTERM 에 새 요청을 끊고 진행 중인 것을 끝낸다.",
+            "alternatives": [
+              "기본 종료 흐름(SIGTERM → 30 초 → SIGKILL)"
+            ],
+            "tradeoff": "컨테이너 정지는 빨리 끝나는데 라우팅 제외(Endpoint · kube-proxy · CoreDNS TTL)는 비동기라 수십 초 늦는다 — 그 틈에 요청이 와 ERR_DIRECT_INVOKE · 500. 사이드카가 먼저 죽으면 연결이 끊긴다. 대가는 배포가 그만큼 느려지고, OOMKill · 노드 장애처럼 갑자기 죽는 경우엔 여전히 오류가 난다는 것 — k6 로 재며 30 초를 조정한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ほぼゼロダウンタイムな Pod 再起動戦略（EKS + Dapr + AWS LB）",
+                "url": "https://creators.oisix.co.jp/entry/2025/10/07/180348",
+                "publisher": "オイシックス",
+                "summary": "기반 쇄신 프로젝트에서 EKS + Dapr + AWS Load Balancer Controller. Pod 삭제 · 재시작 · Karpenter 노드 드레인 때 ERR_DIRECT_INVOKE 와 500 · 503 급증 — 매니페스트 · 컨트롤러 설정으로 해결.",
+                "date": "2025-10-07"
+              }
+            ]
+          },
+          {
+            "question": "Ingress Controller 교체 때 503 은?",
+            "chosen": "**AWS Load Balancer Controller 의 Pod Readiness Gate** — 네임스페이스 라벨로 자동 주입해, 새 Pod 이 ALB/NLB 대상 헬스까지 통과해야 Ready.",
+            "alternatives": [
+              "readinessProbe 만 믿는다"
+            ],
+            "tradeoff": "쿠버네티스는 readinessProbe 로 Ready 를 보지만 LB 는 대상 그룹 헬스 체크로 본다 — 새 Pod 이 LB 에선 아직 initial 인데 옛 Pod 이 먼저 지워지면 받을 대상이 0 이 된다. 대가는 EKS Auto Mode 여부로 라벨 키가 달라 클러스터마다 확인해야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ほぼゼロダウンタイムな Pod 再起動戦略（EKS + Dapr + AWS LB）",
+                "url": "https://creators.oisix.co.jp/entry/2025/10/07/180348",
+                "publisher": "オイシックス",
+                "summary": "기반 쇄신 프로젝트에서 EKS + Dapr + AWS Load Balancer Controller. Pod 삭제 · 재시작 · Karpenter 노드 드레인 때 ERR_DIRECT_INVOKE 와 500 · 503 급증 — 매니페스트 · 컨트롤러 설정으로 해결.",
+                "date": "2025-10-07"
+              }
+            ]
+          },
+          {
+            "question": "25 년 레거시의 잔해는?",
+            "chosen": "**기표 기반으로 데드 코드를 조사 · 삭제** — 코드를 만지다 '안 쓰이는 것 같다' 고 느끼면 후보로 올리고, 조사해 지우거나 '지울 수 있지만 지금은 안 건드린다' 로 기각. 누구든 해도 되는 일.",
+            "alternatives": [
+              "REBORN 이 끝날 때까지 레거시는 그대로"
+            ],
+            "tradeoff": "이행 부담을 줄이고 캠페인 · 협업 · 인수 서비스의 역사를 알아낸다. 대가는 무엇의 잔해인지 알아내는 조사 비용 — 아직 진행 중이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "デッドコードから知るOisix25年の歴史",
+                "url": "https://creators.oisix.co.jp/entry/2026/08/26/171653",
+                "publisher": "オイシックス",
+                "summary": "2000 년부터 돈 EC 코드베이스(레거시 쪽)에서 캠페인 · 실험 서비스 · 협업 · 인수 서비스 통합의 잔해(데드 코드)를 기표 기반으로 조사 · 삭제 — 25 년 역사의 발굴. 제3세대 앱은 Spring Boot 4 로 맞췄다.",
+                "date": "2026-08-26"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "식품 정기 택배 EC(수익원)",
+          "via": "EC 사이트 기반",
+          "contract": "Oisix EC 는 2000 년부터 회사 성장을 이끈 판매 채널이고, REBORN 은 그 릴리스 속도를 되찾으려는 것이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Oisix REBORNプロジェクト - レガシーシステムのモダナイゼーションにおけるAmazon EKSの活用",
+              "url": "https://creators.oisix.co.jp/entry/2025/04/23/180142",
+              "publisher": "オイシックス",
+              "summary": "Oisix EC 는 2000 년 창업부터 25 년 성장을 이끌었지만 구조가 복잡해져 유연 · 신속한 릴리스가 어려워졌다 — 'Oisix REBORN' 프로젝트(여러 단계). EKS 위에 BFF/Backend API 를 Helm(Kustomize 에서 전환), Dapr, Argo CD(App of Apps · SSO), Karpenter NodePool.",
+              "date": "2025-04-23"
+            }
+          ]
+        },
+        {
+          "to": "정기 박스 추천과 수요 예측",
+          "via": "BFF · API",
+          "contract": "추천 · 정기 박스 제안은 EC 화면에 API 로 실린다 — 제3세대로 옮겨졌는지는 글에 없다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Oisix REBORNプロジェクト - レガシーシステムのモダナイゼーションにおけるAmazon EKSの活用",
+              "url": "https://creators.oisix.co.jp/entry/2025/04/23/180142",
+              "publisher": "オイシックス",
+              "summary": "Oisix EC 는 2000 년 창업부터 25 년 성장을 이끌었지만 구조가 복잡해져 유연 · 신속한 릴리스가 어려워졌다 — 'Oisix REBORN' 프로젝트(여러 단계). EKS 위에 BFF/Backend API 를 Helm(Kustomize 에서 전환), Dapr, Argo CD(App of Apps · SSO), Karpenter NodePool.",
+              "date": "2025-04-23"
+            }
+          ]
+        },
+        {
+          "to": "해지율과 LCP · CVR",
+          "via": "페이지 속도 · 릴리스 속도",
+          "contract": "프론트 · BFF 쇄신은 LCP 와 시책 실험 속도에 걸린다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "第三世代バックエンド開発の紹介 - OpenAPI Generator を活用したAPI駆動開発",
+              "url": "https://creators.oisix.co.jp/entry/2026/02/17/160907",
+              "publisher": "オイシックス",
+              "summary": "마이크로서비스 '제3세대 아키텍처' — Beyond the Twelve-Factor App 의 API First. OpenAPI Spec 을 Single Source of Truth 로 전용 저장소에 두고 Git Submodule · 코드 생성으로 서버 · 클라이언트 불일치를 막는다. BFF(web · app) 분리.",
+              "date": "2026-02-17"
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "제3세대 기반의 모양",
+          "question": "사양에서 배포까지 무엇이 잇나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  SPEC[\"OpenAPI Spec 저장소\\nBFF web/app · Backend\"] -->|\"Submodule + Generator\"| SVC[\"BFF · Backend API\"]\n  SVC --> DAPR[\"Dapr 사이드카\\n저장소 · 메시징 추상화\"]\n  CHART[\"app-chart(Helm)\\n+ API 별 values.yaml\"] --> ARGO[\"Argo CD(별도 클러스터)\\nApp of Apps · 본번 수동 SYNC\"]\n  ARGO --> EKS[\"EKS\\n관리형 노드 + Karpenter(arm64 스팟)\"]\n  SVC --> EKS\n  LB[\"ALB/NLB\\nReadiness Gate\"] --> EKS"
+        },
+        {
+          "title": "Pod 이 끝날 때의 두 흐름",
+          "question": "왜 틈이 생기고 무엇으로 메우나?",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant K as Kubernetes\n  participant P as 앱 컨테이너\n  participant D as Dapr 사이드카\n  participant R as 라우팅(Endpoint · CoreDNS)\n  K->>R: Endpoint 에서 Pod 제거(비동기, TTL 30 초)\n  K->>P: preStop sleep 30 초(아직 요청 처리)\n  K->>D: block-shutdown 30 초\n  Note over R: 라우팅 제외가 퍼지는 동안\n  K->>P: SIGTERM → 새 요청 끊고 진행 중 완료\n  K->>D: 종료\n  Note over K: 새 Pod 은 LB 대상 헬스까지 Ready 아님(Readiness Gate)"
+        },
+        {
+          "title": "배포 때 튀던 오류",
+          "question": "무엇이 먼저 죽었나?",
+          "kind": "failure",
+          "code": "flowchart TB\n  A[\"앱 Pod 삭제(배포 · Karpenter drain)\"] --> A1[\"컨테이너는 이미 종료 중\"]\n  A1 --> A2[\"라우팅은 수십 초 남음\"]\n  A2 --> A3[\"ERR_DIRECT_INVOKE · 500\"]\n  I[\"Ingress Controller Pod 교체\"] --> I1[\"새 Pod: k8s Ready · LB 는 initial\"]\n  I1 --> I2[\"옛 Pod 먼저 삭제 → 대상 0\"]\n  I2 --> I3[\"503\"]\n  X[\"OOMKill · 노드 장애\"] --> X1[\"preStop 이 못 돎 — 오류 남음\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Oisix REBORNプロジェクト - レガシーシステムのモダナイゼーションにおけるAmazon EKSの活用",
+          "url": "https://creators.oisix.co.jp/entry/2025/04/23/180142",
+          "publisher": "オイシックス",
+          "summary": "Oisix EC 는 2000 년 창업부터 25 년 성장을 이끌었지만 구조가 복잡해져 유연 · 신속한 릴리스가 어려워졌다 — 'Oisix REBORN' 프로젝트(여러 단계). EKS 위에 BFF/Backend API 를 Helm(Kustomize 에서 전환), Dapr, Argo CD(App of Apps · SSO), Karpenter NodePool.",
+          "date": "2025-04-23"
+        },
+        {
+          "title": "ほぼゼロダウンタイムな Pod 再起動戦略（EKS + Dapr + AWS LB）",
+          "url": "https://creators.oisix.co.jp/entry/2025/10/07/180348",
+          "publisher": "オイシックス",
+          "summary": "기반 쇄신 프로젝트에서 EKS + Dapr + AWS Load Balancer Controller. Pod 삭제 · 재시작 · Karpenter 노드 드레인 때 ERR_DIRECT_INVOKE 와 500 · 503 급증 — 매니페스트 · 컨트롤러 설정으로 해결.",
+          "date": "2025-10-07"
+        },
+        {
+          "title": "第三世代バックエンド開発の紹介 - OpenAPI Generator を活用したAPI駆動開発",
+          "url": "https://creators.oisix.co.jp/entry/2026/02/17/160907",
+          "publisher": "オイシックス",
+          "summary": "마이크로서비스 '제3세대 아키텍처' — Beyond the Twelve-Factor App 의 API First. OpenAPI Spec 을 Single Source of Truth 로 전용 저장소에 두고 Git Submodule · 코드 생성으로 서버 · 클라이언트 불일치를 막는다. BFF(web · app) 분리.",
+          "date": "2026-02-17"
+        },
+        {
+          "title": "デッドコードから知るOisix25年の歴史",
+          "url": "https://creators.oisix.co.jp/entry/2026/08/26/171653",
+          "publisher": "オイシックス",
+          "summary": "2000 년부터 돈 EC 코드베이스(레거시 쪽)에서 캠페인 · 실험 서비스 · 협업 · 인수 서비스 통합의 잔해(데드 코드)를 기표 기반으로 조사 · 삭제 — 25 년 역사의 발굴. 제3세대 앱은 Spring Boot 4 로 맞췄다.",
+          "date": "2026-08-26"
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "매출 · 회원 수 · 브랜드별 비중은 IR 에 있지만 이번에 읽지 않았다.",
     "법인 · 광고(보육 급식 · Ad Oisix) 수익원은 기술 글을 아직 못 찾았다 — 도메인이 없다.",
