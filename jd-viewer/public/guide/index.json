@@ -1239,6 +1239,18 @@
       "postings": 2,
       "study_items": 3,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "ten",
+      "name": "텐",
+      "aliases": [
+        "텐",
+        "TEN"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 6,
+      "updated_at": "2026-09-30"
     }
   ]
 }

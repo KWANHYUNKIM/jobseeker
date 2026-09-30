@@ -1,0 +1,310 @@
+{
+  "slug": "ten",
+  "name": "텐",
+  "name_en": "TEN",
+  "aliases": [
+    "텐",
+    "TEN"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": null,
+  "one_liner": "GPU 를 쪼개고 모아 쓰게 하는 온프레미스 AI 인프라 플랫폼 AIPub 과 클러스터 컨설팅 RA:X — DGX-H100 레퍼런스 인프라를 둔 시리즈 A 스타트업",
+  "company": {
+    "business": "텐(TEN)은 **기업이 GPU 인프라를 투명하게 계획하고 효율적으로 쓰게 하는 AI 인프라 회사**다 — 공고는 GPU 서버 클러스터 구축비와 데이터센터 전력 · 관리비 때문에 기업이 AI 비용을 관리하기 어렵다는 문제에서 출발한다. 제품은 둘이다: **AIPub** — GPU 리소스 통합 · **분할 가상화**와 Kubernetes 오케스트레이션을 결합한 AI 인프라 도구로, **고객사 온프레미스에 직접 설치되어** 돈다. **RA:X** — 고객 맞춤 GPU 클러스터를 설계 · 구성하는 컨설팅(HW + SW). RA:X 팀은 **DGX-H100 · DGX-A100 · InfiniBand 400G** 등 자체 레퍼런스 인프라를 두고, 하드웨어 벤더가 신제품 성능 테스트를 맡길 정도라고 적는다. **2025년 5월 시리즈 A 80억 원**(LG유플러스 · KDB산업은행 등), **누적 112억 원**. 모집중 공고는 둘(원티드 · 사람인에 같은 플랫폼 엔지니어 자리가 겹친다) — AI 플랫폼 엔지니어(3년↑, 재택 가능), AI 인프라 연구원(3년↑ 또는 석박사 신입). 전형에 '대표님과 식사' 가 있다. 회사 홈페이지는 이번에 읽지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "AI 플랫폼 엔지니어",
+        "url": "https://www.wanted.co.kr/wd/378515",
+        "publisher": "원티드",
+        "summary": "'세상을 널리 AI롭게 하자'. GPU 리소스 통합 · 분할 가상화 + Kubernetes 오케스트레이션의 AI 인프라 도구 AIPub, 고객 맞춤 클러스터 설계 · 구성 컨설팅 RA:X. 2025-05 시리즈 A 80억 원(LG유플러스 · KDB산업은행 · 퀀텀벤처스코리아 · 어센도벤처스), 누적 112억 원. 업무: AIPub(고객사 온프레미스 설치형 K8s AI 인프라 플랫폼)을 '설치 가능한 형태' 로 — K8s 버전 · 업스트림, Helm Chart, Ansible 설치 자동화, 오픈소스 검증, 폐쇄망 설치 구성, 고객 실사 · 설치 · 마이그레이션 · 런북."
+      },
+      {
+        "title": "AI Infra Researcher — 사람인",
+        "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54632405&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=daed7b4a-eb56-49a9-b578-f536828c6142",
+        "publisher": "사람인",
+        "summary": "RA:X 팀 — AI 인프라 구축(HW)과 운영 도구(SW)를 함께. 'AI for Infrastructure'(LLM 운영 서비스 · 워크로드 스케줄링 알고리즘 · SLO 달성 인프라 구성 추천)와 'Infrastructure for AI'(K8s GPUaaS 의 MLOps · GPU 효율 시스템 SW · 워크로드 프로파일링). 자체 AI RA 인프라: DGX-H100 · DGX-A100, InfiniBand 400/200/100G, Ethernet 400/100G, 여러 벤더 스토리지 — 하드웨어 벤더가 신제품 성능 테스트를 의뢰한다. 경력 3년↑ 또는 석박사 신입 가능, 조직 확장 추가 채용."
+      },
+      {
+        "title": "AI 플랫폼 엔지니어 — 사람인",
+        "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54638685&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=d7d68c08-30ea-40a1-8c0d-0995a239ca8e",
+        "publisher": "사람인",
+        "summary": "원티드 게시와 같은 본문. 추가: 정규직(수습 3개월), 역삼 · 재택근무 가능(필요 시 출근), 유연 근무, 전형 서류 → 직무 인터뷰 → 대표님과 식사 → 최종합격."
+      }
+    ],
+    "scale": [
+      {
+        "label": "투자(공고 주장)",
+        "value": "시리즈 A 80억 원(2025-05) · 누적 112억 원",
+        "as_of": "2026-09 공고 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI 플랫폼 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/378515",
+            "publisher": "원티드",
+            "summary": "'세상을 널리 AI롭게 하자'. GPU 리소스 통합 · 분할 가상화 + Kubernetes 오케스트레이션의 AI 인프라 도구 AIPub, 고객 맞춤 클러스터 설계 · 구성 컨설팅 RA:X. 2025-05 시리즈 A 80억 원(LG유플러스 · KDB산업은행 · 퀀텀벤처스코리아 · 어센도벤처스), 누적 112억 원. 업무: AIPub(고객사 온프레미스 설치형 K8s AI 인프라 플랫폼)을 '설치 가능한 형태' 로 — K8s 버전 · 업스트림, Helm Chart, Ansible 설치 자동화, 오픈소스 검증, 폐쇄망 설치 구성, 고객 실사 · 설치 · 마이그레이션 · 런북."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "AIPub(온프레미스 설치형 AI 인프라 플랫폼)",
+        "how": "고객사 온프레미스에 설치해 GPU 를 분할 · 통합하고 Kubernetes 로 운영하게 한다 — 라이선스 · 유지보수로 읽히지만 과금 방식은 읽은 자료에 없다.",
+        "domains": [
+          "설치형 K8s AI 플랫폼 패키징",
+          "GPU 워크로드 스케줄링 · MLOps"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "AI 플랫폼 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/378515",
+            "publisher": "원티드",
+            "summary": "'세상을 널리 AI롭게 하자'. GPU 리소스 통합 · 분할 가상화 + Kubernetes 오케스트레이션의 AI 인프라 도구 AIPub, 고객 맞춤 클러스터 설계 · 구성 컨설팅 RA:X. 2025-05 시리즈 A 80억 원(LG유플러스 · KDB산업은행 · 퀀텀벤처스코리아 · 어센도벤처스), 누적 112억 원. 업무: AIPub(고객사 온프레미스 설치형 K8s AI 인프라 플랫폼)을 '설치 가능한 형태' 로 — K8s 버전 · 업스트림, Helm Chart, Ansible 설치 자동화, 오픈소스 검증, 폐쇄망 설치 구성, 고객 실사 · 설치 · 마이그레이션 · 런북."
+          }
+        ]
+      },
+      {
+        "name": "RA:X(GPU 클러스터 설계 · 구성 컨설팅)",
+        "how": "고객 목적에 맞는 AI 인프라 구축(HW)과 운영 도구(SW)를 함께 지원한다 — 구축 · 컨설팅 계약으로 읽힌다.",
+        "domains": [
+          "GPU 워크로드 스케줄링 · MLOps"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "AI Infra Researcher — 사람인",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54632405&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=daed7b4a-eb56-49a9-b578-f536828c6142",
+            "publisher": "사람인",
+            "summary": "RA:X 팀 — AI 인프라 구축(HW)과 운영 도구(SW)를 함께. 'AI for Infrastructure'(LLM 운영 서비스 · 워크로드 스케줄링 알고리즘 · SLO 달성 인프라 구성 추천)와 'Infrastructure for AI'(K8s GPUaaS 의 MLOps · GPU 효율 시스템 SW · 워크로드 프로파일링). 자체 AI RA 인프라: DGX-H100 · DGX-A100, InfiniBand 400/200/100G, Ethernet 400/100G, 여러 벤더 스토리지 — 하드웨어 벤더가 신제품 성능 테스트를 의뢰한다. 경력 3년↑ 또는 석박사 신입 가능, 조직 확장 추가 채용."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "설치형 K8s AI 플랫폼 패키징",
+        "why": "플랫폼 엔지니어 공고가 K8s 버전 · 업스트림 대응, Helm Chart 템플릿화, Ansible 설치 자동화, 폐쇄망 설치 구성, 고객 실사 · 설치 · 마이그레이션을 적는다.",
+        "what_to_know": [
+          "Helm 차트 설계",
+          "폐쇄망 설치",
+          "K8s 업그레이드 경로"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI 플랫폼 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/378515",
+            "publisher": "원티드",
+            "summary": "'세상을 널리 AI롭게 하자'. GPU 리소스 통합 · 분할 가상화 + Kubernetes 오케스트레이션의 AI 인프라 도구 AIPub, 고객 맞춤 클러스터 설계 · 구성 컨설팅 RA:X. 2025-05 시리즈 A 80억 원(LG유플러스 · KDB산업은행 · 퀀텀벤처스코리아 · 어센도벤처스), 누적 112억 원. 업무: AIPub(고객사 온프레미스 설치형 K8s AI 인프라 플랫폼)을 '설치 가능한 형태' 로 — K8s 버전 · 업스트림, Helm Chart, Ansible 설치 자동화, 오픈소스 검증, 폐쇄망 설치 구성, 고객 실사 · 설치 · 마이그레이션 · 런북."
+          }
+        ]
+      },
+      {
+        "name": "GPU 워크로드 스케줄링 · MLOps",
+        "why": "연구원 공고가 워크로드 스케줄링 알고리즘, SLO 달성을 위한 인프라 구성 추천, GPUaaS 플랫폼의 MLOps, GPU 효율 시스템 SW, 프로파일링을 적는다.",
+        "what_to_know": [
+          "GPU 분할(MIG · 타임 슬라이싱)",
+          "배치 스케줄러",
+          "GPU 프로파일링"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI Infra Researcher — 사람인",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54632405&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=daed7b4a-eb56-49a9-b578-f536828c6142",
+            "publisher": "사람인",
+            "summary": "RA:X 팀 — AI 인프라 구축(HW)과 운영 도구(SW)를 함께. 'AI for Infrastructure'(LLM 운영 서비스 · 워크로드 스케줄링 알고리즘 · SLO 달성 인프라 구성 추천)와 'Infrastructure for AI'(K8s GPUaaS 의 MLOps · GPU 효율 시스템 SW · 워크로드 프로파일링). 자체 AI RA 인프라: DGX-H100 · DGX-A100, InfiniBand 400/200/100G, Ethernet 400/100G, 여러 벤더 스토리지 — 하드웨어 벤더가 신제품 성능 테스트를 의뢰한다. 경력 3년↑ 또는 석박사 신입 가능, 조직 확장 추가 채용."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "제품이 고객 서버실에 깔린다",
+        "evidence": "AIPub은 고객사 온프레미스 환경에 직접 설치되어 운영되는 Kubernetes 기반 AI 인프라 플랫폼입니다.",
+        "so_what": "SaaS 가 아니라 설치형이라 '설치 가능한 형태로 만들기' 가 한 자리를 차지한다 — 폐쇄망 · 고객사 방문 · 기술 문서가 일의 큰 부분이다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "석박사는 신입으로도 연구원에",
+        "evidence": "ㆍ경력 : 3년 이상 (혹은 관련 석박사 학위자의 경우 신입 가능)",
+        "so_what": "GPU 스케줄링 · 시스템 SW 연구를 한 석박사는 경력 없이 지원할 수 있다. 결원 충원이 아니라 조직 확장 채용이라고 적는다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "AIPub · RA:X 의 과금 방식과 고객사 목록은 읽은 자료에 없다",
+    "회사 홈페이지는 이번에 읽지 않았다 — 다음 보강에서 확인",
+    "잡코리아 AI 플랫폼 엔지니어 게시는 본문 칸이 비어 넣지 않았다(같은 자리로 보인다)"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/378515",
+      "title": "AI 플랫폼 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 3년 이상, 역삼(사람인 게시엔 재택 가능). **AIPub** — 고객사 온프레미스에 설치되는 Kubernetes AI 인프라 플랫폼 — 을 **'설치 가능한 형태'** 로 만들고 고객 환경에서 실제로 돌게 끝까지 책임진다. 주 업무는 **K8s 배포 버전 관리 · 업스트림 대응(호환성 · 업그레이드 경로)**, **Helm Chart 템플릿화 · 릴리스 패키지**, **Ansible 설치 자동화**, 오픈소스 컴포넌트 검증, **폐쇄망 설치 구성**. 고객 쪽은 환경 실사 · 설치 · 검증, 클러스터 / 워크로드 마이그레이션, 런북 · 운영 가이드. 자격은 **온프레미스 K8s 직접 구축 · 운영**, Helm, Ansible 등 설치 자동화, Linux · Shell, Git · CI/CD, **오버레이 · 물리 네트워크 구조 이해**, **NVIDIA GPU 클러스터** 구축 · 운영. 우대는 **Cilium**, **폐쇄망 설치 · 패키징**, 상용 솔루션 납품 · 기술지원, **Kubespray**, CKA/CKS · 오픈소스 기여, Python. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "온프레미스 K8s 구축",
+          "Helm · Ansible",
+          "GPU 클러스터",
+          "네트워크 구조 이해"
+        ],
+        "can_learn": [
+          "Cilium",
+          "폐쇄망 패키징",
+          "Kubespray"
+        ]
+      },
+      "study": [
+        {
+          "topic": "폐쇄망 고객사에 K8s 플랫폼을 통째로 설치하기",
+          "from": "task",
+          "quote": "폐쇄망 등 다양한 고객 환경을 지원하기 위한 설치 구성 설계",
+          "priority": "core",
+          "why": "주요업무(패키징 · 릴리스)이고 우대에 폐쇄망 설치 · 패키징 경험이 있다. 금융 · 공공 고객의 GPU 서버실은 인터넷이 막혀 있다.",
+          "gap_check": "인터넷 없는 서버에 K8s · Helm 차트 · 컨테이너 이미지 · OS 패키지 · NVIDIA 드라이버를 어떻게 들고 가나(오프라인 번들 · 사설 레지스트리 · 로컬 저장소)? 이미지 태그가 아니라 다이제스트로 고정해야 하는 이유는? 번들 버전과 설치 대상 OS 조합을 어떻게 검증하나?",
+          "drill": "Kubespray 의 'Offline environment' 문서를 따라 네트워크를 끊은 VM 세 대에 설치하는 번들(이미지 tar · 바이너리 · 로컬 레지스트리 · 패키지 미러)을 만든다. 번들 목록 · 크기 · 설치 순서 · 점검 명령을 런북 한 쪽으로 쓰고, 이미지를 다이제스트로 고정한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Kubespray — Offline environment",
+              "url": "https://github.com/kubernetes-sigs/kubespray/blob/master/docs/operations/offline-environment.md",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Helm 으로 제품을 패키징 — 구성요소 템플릿과 업그레이드",
+          "from": "task",
+          "quote": "Helm Chart 기반 제품 구성요소 템플릿화 및 릴리스 패키지 관리",
+          "priority": "core",
+          "why": "주요업무이고 필수 자격에 Helm Chart 작성 · 유지보수가 있다.",
+          "gap_check": "여러 구성요소를 하나의 우산 차트(umbrella)로 묶을지, 차트를 따로 릴리스할지 무엇으로 정하나? 고객마다 다른 값(스토리지 클래스 · GPU 노드 선택)을 values 로 어떻게 열어 두나? CRD 는 helm upgrade 로 왜 잘 안 바뀌나 — 어떻게 다루나?",
+          "drill": "Helm 문서의 'Chart Best Practices' 와 'Custom Resource Definitions' 를 읽고, 구성요소 두 개(API · 워커)와 CRD 하나를 가진 우산 차트를 만든다. values.schema.json 으로 고객 값 검증을 걸고, 버전 1 → 2 업그레이드와 롤백을 kind 에서 시험한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Helm — Chart Best Practices",
+              "url": "https://helm.sh/docs/chart_best_practices/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "K8s 버전 업스트림 대응 — 고객 클러스터의 업그레이드 경로",
+          "from": "task",
+          "quote": "Kubernetes 배포 버전 관리 및 업스트림 대응 (호환성 검증, 업그레이드 경로 설계)",
+          "priority": "high",
+          "why": "주요업무 첫 줄이다. 고객마다 다른 K8s 버전에 제품이 설치되고, K8s 는 1년에 세 번 새 버전이 나온다.",
+          "gap_check": "K8s 는 마이너 버전을 건너뛰어 올릴 수 있나(한 번에 한 마이너)? 제품이 쓰는 API 가 새 버전에서 제거되면 무엇으로 미리 알아채나(deprecated API 검사)? GPU 오퍼레이터 · CNI(Cilium) 버전 호환표를 제품 릴리스와 어떻게 맞추나?",
+          "drill": "K8s 'Version Skew Policy' 와 'Deprecated API Migration Guide' 를 읽고, kind 로 1.29 클러스터에 샘플 차트를 올린 뒤 pluto(또는 kubent)로 제거 예정 API 를 찾는다. 1.29 → 1.30 → 1.31 로 한 단계씩 올리며 제품이 도는지 확인하는 호환표를 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Kubernetes — Version Skew Policy",
+              "url": "https://kubernetes.io/releases/version-skew-policy/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54638685&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=d7d68c08-30ea-40a1-8c0d-0995a239ca8e",
+      "title": "AI 플랫폼 엔지니어",
+      "site": "saramin",
+      "duplicate_of": "https://www.wanted.co.kr/wd/378515",
+      "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 주요업무 · 자격요건 · 우대사항이 원티드 `AI 플랫폼 엔지니어`(378515)와 같다. 브리핑은 그쪽을 본다. 여기에만 적힌 것은 근무 조건(정규직 · 수습 3개월, **재택근무 가능 — 필요 시 출근**, 유연 근무)과 전형(서류 → 직무 인터뷰 → **대표님과 식사** → 최종합격)이다. 한 곳으로만 지원한다."
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54632405&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=daed7b4a-eb56-49a9-b578-f536828c6142",
+      "title": "AI Infra Researcher",
+      "site": "saramin",
+      "verdict": "경력 3년 이상(또는 **관련 석박사는 신입 가능**), 학력 무관, 역삼, 조직 확장 추가 채용 1명. **RA:X 팀** — 두 방향을 함께 연구한다. **AI for Infrastructure**: AI 인프라 운영을 위한 LLM 서비스, **효율적인 워크로드 스케줄링 알고리즘**, **SLO 달성을 위한 인프라 구성 추천 모델**. **Infrastructure for AI**: 자사 K8s 기반 **GPUaaS 플랫폼의 MLOps** 기획 · 구축, **GPU 효율을 높이는 시스템 소프트웨어**, AI 워크로드 **성능 모니터링 · 프로파일링**. 자격은 AI · 인프라 3년, 두 영역 중 하나 이상, 문제 정의 · 해결, K8s · Docker · Linux 운영, AI 활용. 우대는 클러스터 개선 AI 연구, **Kubeflow · MLflow · Seldon · Airflow**, K8s 오픈소스 기여, 초거대 모델 학습 · 추론 운영, **GPU 최적화 연구 · 석박사**. 자체 AI RA 인프라(DGX-H100 · A100, InfiniBand 400G)를 쓴다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "AI · 인프라 3년 또는 석박사",
+          "K8s · Docker · Linux",
+          "두 영역 중 하나"
+        ],
+        "can_learn": [
+          "GPU 분할(MIG)",
+          "배치 스케줄러",
+          "Nsight 프로파일링"
+        ]
+      },
+      "study": [
+        {
+          "topic": "GPU 를 쪼개고 모으기 — MIG · 타임 슬라이싱 · 스케줄링",
+          "from": "task",
+          "quote": "효율적인 워크로드 스케줄링 알고리즘 개발",
+          "priority": "core",
+          "why": "주요업무(AI for Infrastructure)이고, 회사의 제품 AIPub 이 GPU 리소스 통합 · 분할 가상화와 K8s 오케스트레이션을 결합한다고 적는다.",
+          "gap_check": "A100 · H100 의 MIG 분할과 타임 슬라이싱은 격리 · 메모리 · 성능에서 어떻게 다른가? 학습 잡 여러 개가 GPU 를 기다릴 때 기본 K8s 스케줄러로 부족한 것은(갱 스케줄링 · 큐 · 공정 분배)? 팀별 GPU 할당량과 빌려 쓰기를 어떻게 설계하나?",
+          "drill": "NVIDIA GPU Operator 문서의 'Time-Slicing' 과 'MIG' 를 읽고(GPU 가 없으면 문서와 설정 예시로), Kueue 또는 Volcano 로 두 팀 큐 · 할당량 · 빌려 쓰기를 kind 에서 가짜 GPU 리소스(extended resource)로 시뮬레이션한다. 갱 스케줄링이 없을 때 반쯤 잡힌 잡이 자원을 붙잡는 상황을 재현한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "NVIDIA GPU Operator — GPU Sharing (Time-Slicing · MIG)",
+              "url": "https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/gpu-sharing.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Kueue",
+              "url": "https://kueue.sigs.k8s.io/docs/overview/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI 워크로드 프로파일링 — GPU 가 놀고 있는 이유 찾기",
+          "from": "task",
+          "quote": "AI 워크로드의 성능 모니터링 및 프로파일링 서비스 개발",
+          "priority": "core",
+          "why": "주요업무(Infrastructure for AI)이고 자격에 'AI 인프라 메트릭을 수집 · 분석해 병목 원인을 분석' 이 있다.",
+          "gap_check": "GPU 사용률 100% 가 곧 효율적이라는 뜻인가(SM 점유율 · 메모리 대역폭)? 학습이 느릴 때 데이터 로더 · 통신(InfiniBand · NCCL) · 연산 중 어디가 병목인지 무엇으로 가르나? 클러스터 전체 GPU 지표는 무엇으로 모으나(DCGM exporter)?",
+          "drill": "DCGM Exporter + Prometheus + Grafana 로 GPU 지표 대시보드를 만든다(GPU 가 없으면 공개 예시 대시보드와 지표 정의를 읽는다). PyTorch Profiler 로 작은 학습 스크립트를 프로파일해 데이터 로딩을 일부러 느리게 했을 때와 비교한 병목 보고서를 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "NVIDIA DCGM Exporter",
+              "url": "https://github.com/NVIDIA/dcgm-exporter",
+              "kind": "docs"
+            },
+            {
+              "title": "PyTorch Profiler",
+              "url": "https://pytorch.org/tutorials/recipes/recipes/profiler_recipe.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "GPUaaS 위의 MLOps — K8s 오픈소스로 학습 · 서빙 흐름",
+          "from": "task",
+          "quote": "자사 Kubernetes 기반 GPUaaS 플랫폼의 MLOps 기능 기획 및 구축",
+          "priority": "high",
+          "why": "주요업무이고 자격에 'K8s 오픈소스 MLOps 생태계 프로젝트 경험' 과 'ML 개발자 관점에서 MLOps 지원 요소를 정의', 우대에 Kubeflow · MLflow · Seldon · Airflow 가 있다.",
+          "gap_check": "ML 개발자가 GPU 플랫폼에서 가장 먼저 원하는 것은 무엇인가(노트북 · 학습 잡 제출 · 실험 기록 · 모델 서빙)? 학습 잡을 K8s 에 낼 때 분산 학습(PyTorchJob)은 무엇이 필요한가? 서빙은 무엇으로 올리고 GPU 를 어떻게 나눠 쓰나?",
+          "drill": "Kubeflow Training Operator 로 PyTorchJob(분산 학습 2 워커)을 kind 에 제출하고, MLflow 에 실험을 기록한 뒤, KServe(또는 Seldon)로 모델 하나를 서빙한다. '개발자가 코드 → 학습 → 서빙까지 몇 번의 명령이 필요한가' 를 세어 줄일 방법을 한 쪽으로 쓴다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Kubeflow Training Operator",
+              "url": "https://www.kubeflow.org/docs/components/training/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
