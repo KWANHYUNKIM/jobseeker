@@ -44,14 +44,25 @@ THEMES = {
     "term": {"paper": "#fff7e8", "ink": "#1d1a14", "sub": "#6d6456", "accent": "#e8590c", "line": "#eadcc4"},
     "interview": {"paper": "#16161d", "ink": "#f2f2f5", "sub": "#9a9aa8", "accent": "#7c9cff", "line": "#2c2c38"},
     "qa": {"paper": "#eef4ff", "ink": "#0f1b33", "sub": "#55627a", "accent": "#1f6feb", "line": "#cfdcf3"},
+    "jd": {"paper": "#f3efe6", "ink": "#1b1a17", "sub": "#6b6557", "accent": "#2b8a3e", "line": "#ddd5c4"},
+    "same": {"paper": "#ffffff", "ink": "#16161a", "sub": "#6a6a75", "accent": "#d6336c", "line": "#ececf0"},
+    "roadmap": {"paper": "#eaf7f0", "ink": "#0c2a24", "sub": "#4f6b64", "accent": "#0b7285", "line": "#c9e8da"},
+    "weekly": {"paper": "#111317", "ink": "#f5f5f0", "sub": "#9a9ca3", "accent": "#ffd43b", "line": "#2a2d33"},
+    "signal": {"paper": "#f8f0fa", "ink": "#2a1233", "sub": "#6f5a77", "accent": "#862e9c", "line": "#e8d5ee"},
 }
 SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", "term": "[IT 용어]",
-          "interview": "[면접 예상 질문]", "qa": "[고민 상담소]"}
+          "interview": "[면접 예상 질문]", "qa": "[고민 상담소]", "jd": "[JD 번역기]",
+          "same": "[같은 직무 다른 회사]", "roadmap": "[공부 로드맵]", "weekly": "[주간 리포트]", "signal": "[채용 시그널]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
         "interview": ["면접질문", "개발자면접", "올리브영", "백엔드개발자", "이직준비"],
-        "qa": ["신입개발자", "개발자취업", "취업고민", "개발자채용", "취업준비"]}
+        "qa": ["신입개발자", "개발자취업", "취업고민", "개발자채용", "취업준비"],
+        "jd": ["채용공고", "자격요건", "개발자취업", "백엔드개발자", "이직준비"],
+        "same": ["백엔드개발자", "채용공고", "개발자채용", "이직준비", "기업분석"],
+        "roadmap": ["백엔드로드맵", "개발공부", "백엔드개발자", "신입개발자", "개발자취업"],
+        "weekly": ["주간리포트", "개발자채용", "채용트렌드", "IT채용", "개발자취업"],
+        "signal": ["채용시그널", "기업분석", "개발자채용", "이직준비", "채용트렌드"]}
 
 
 # --- 재료 ---------------------------------------------------------------
@@ -365,6 +376,171 @@ def build_qa_newgrad() -> dict:
             "slides": slides, "caption": caption, "jobs": []}
 
 
+# --- [JD 번역기] · [같은 직무 다른 회사] · [공부 로드맵] · [주간 리포트] · [채용 시그널] -----------
+# CONTENT_SERIES.md 2절의 '만들 것' 들. 모두 공고 색인과 취업 브리핑(guide-engine)에서만 만든다.
+BRIEF = "해설은 이 계정의 공고 분석(취업 브리핑)"
+
+
+def _guides() -> list[dict]:
+    return [json.loads(p.read_text(encoding="utf-8")) for p in sorted((GUIDE / "companies").glob("*.json"))]
+
+
+def build_jd_translate() -> dict:
+    """공고에 자주 나오는 문장 다섯 — 원문 그대로 인용하고, 브리핑이 풀어 쓴 '진짜 뜻' 과 점검 질문을 붙인다."""
+    keys = ["대용량 트래픽", "MSA", "레거시", "고가용성", "코드 리뷰"]
+    picks = []
+    gs = _guides()
+    for k in keys:
+        for g in gs:
+            hit = next(((p, s) for p in g.get("postings") or [] if not p.get("closed")
+                        for s in p.get("study") or [] if k in (s.get("quote") or "") and s.get("gap_check")), None)
+            if hit:
+                picks.append((k, g["name"], *hit))
+                break
+    note = f"원문: 각 회사 모집 공고 · {BRIEF}"
+    slides = [{"type": "cover", "lines": ["JD 번역기", "공고 문장의 **진짜 뜻**"],
+               "sub": "자주 나오는 문장 다섯, 무엇을 할 줄 알라는 걸까", "note": note}]
+    for i, (k, co, p, s) in enumerate(picks, 1):
+        slides.append({"type": "gi", "no": f"'{k}' · {co}", "topic": _plain(s["topic"]).replace("**", ""),
+                       "quote": _plain(s["quote"])[:200], "why": _first(_plain(s.get("why", "")), 140),
+                       "check": _plain(s["gap_check"])[:150], "note": note})
+    slides.append({"type": "end", "title": "읽는 법", "lines": [
+        "형용사(대용량·안정적)는 **숫자**로 바꿔 읽는다 — 얼마나?",
+        "'경험' 은 **사례 하나**를 말할 수 있냐는 뜻", SEND], "note": note})
+    caption = "\n\n".join([
+        "[JD 번역기] 공고 문장의 진짜 뜻 — 자주 나오는 문장 다섯",
+        "\n".join(f"· '{k}' ({co} · {p['title'][:30]})" for k, co, p, _ in picks),
+        "문장은 각 회사 모집 공고 원문 그대로 인용했고, 뜻풀이와 점검 질문은 이 계정의 공고 분석입니다.",
+    ])
+    return {"kind": "jd", "id": f"jd-translate-{date.today().isoformat().replace('-', '')}", "title": "JD 번역기",
+            "slides": slides, "caption": caption, "jobs": []}
+
+
+def build_same_role() -> dict:
+    """같은 '백엔드' 라도 회사마다 요구가 다르다 — 브랜드 회사 다섯의 백엔드 공고 필수 조건을 나란히."""
+    want = ["토스플레이스", "컬리", "빗썸", "CJ올리브영", "포티투닷", "쿠팡", "미리디"]
+    rows, asof = _active_dev()
+    live = {(re.sub(r"\W+", "", (j.get("company") or "")), re.sub(r"\W+", "", (j.get("title") or "").lower())) for j in rows}
+    picks = []
+    for g in _guides():
+        if g["name"] not in want or len(picks) >= 5:
+            continue
+        p = next((p for p in g.get("postings") or [] if not p.get("closed")
+                  and re.search(r"백엔드|Back-?end|Server|서버", p["title"], re.I) and (p.get("fit") or {}).get("must_have")), None)
+        if p:
+            picks.append((g["name"], p))
+    note = f"원문: 각 회사 백엔드 모집 공고 · {BRIEF}"
+    slides = [{"type": "cover", "lines": ["같은 '백엔드'", "**다른 사람**을 찾는다"],
+               "sub": f"회사 {len(picks)}곳의 백엔드 공고, 꼭 필요하다고 적은 것", "note": note}]
+    for co, p in picks:
+        mh = [_plain(m).replace("**", "")[:70] for m in (p["fit"]["must_have"] or [])[:3]]
+        st = (p.get("study") or [{}])[0].get("topic", "")
+        slides.append({"type": "end", "title": co, "lines": [f"**{re.sub(r'\s*\(.*$', '', p['title'])[:34]}**"] + mh +
+                       ([f"공부할 것 → {_plain(st).replace('**', '')[:48]}"] if st else []), "note": note})
+    slides.append({"type": "end", "title": "그래서", "lines": [
+        "'백엔드' 라는 이름보다 **필수 조건 첫 줄**을 먼저 본다",
+        "내 경험과 겹치는 회사부터 — 전부를 준비할 수는 없다", SEND], "note": note})
+    caption = "\n\n".join([
+        "[같은 직무 다른 회사] 같은 '백엔드', 다른 사람을 찾는다",
+        "\n".join(f"· {co} — {p['title'][:40]}" for co, p in picks),
+        "필수 조건은 각 회사 공고 원문에서, 요약과 '공부할 것' 은 이 계정의 공고 분석입니다.",
+    ])
+    return {"kind": "same", "id": f"same-backend-{date.today().isoformat().replace('-', '')}", "title": "같은 백엔드 다른 회사",
+            "slides": slides, "caption": caption, "jobs": []}
+
+
+CATS = [("언어", ["Java", "Kotlin", "Python", "Go", "Node.js", "TypeScript", "JavaScript", "C++", "PHP", "Scala", "C#", "Rust"]),
+        ("프레임워크", ["Spring", "Spring Boot", "JPA", "NestJS", "Django", "FastAPI", "Express", "Flask", "MyBatis"]),
+        ("데이터 저장", ["MySQL", "PostgreSQL", "Redis", "MongoDB", "Oracle", "Elasticsearch", "DynamoDB", "MariaDB"]),
+        ("메시징", ["Kafka", "RabbitMQ", "SQS", "Redis Pub/Sub"]),
+        ("인프라·운영", ["AWS", "Docker", "Kubernetes", "GCP", "Terraform", "Linux", "Jenkins", "GitHub Actions", "Git"])]
+
+
+def build_roadmap() -> dict:
+    """백엔드 공고가 함께 적는 기술을 단계별로 센다 — 순서는 우리가 정한 학습 흐름, 숫자는 공고에서."""
+    rows, asof = _active_dev()
+    be = [j for j in rows if re.search(r"백엔드|back-?end|server|서버", j.get("title") or "", re.I)]
+    n = len(be)
+    cnt = collections.Counter(s for j in be for s in set(_stack(j)))
+    note = f"모집중 백엔드 공고 {n:,}건 · {_dot(asof)} 수집 기준 · 단계 순서는 이 계정의 제안"
+    slides = [{"type": "cover", "lines": ["백엔드", "**공부 로드맵**"], "sub": f"공고 {n:,}건이 함께 적은 기술을 단계별로", "note": note}]
+    for i, (cat, names) in enumerate(CATS, 1):
+        top = sorted(((k, cnt[k]) for k in names if cnt[k]), key=lambda x: -x[1])[:4]
+        if top:
+            slides.append({"type": "bars", "title": f"{i}단계 · {cat}", "sub": "이 기술을 적은 공고 수",
+                           "rows": [{"label": k, "value": v, "display": f"{v:,}", "unit": f"{round(100 * v / n)}%", "hi": j == 0}
+                                    for j, (k, v) in enumerate(top)], "note": note})
+    slides.append({"type": "end", "title": "순서대로 하나씩", "lines": [
+        "각 단계에서 **1위 하나**만 먼저 — 넓게보다 깊게",
+        "메시징·인프라는 공고 '우대사항' 에 자주 — 차이를 만드는 칸", SEND], "note": note})
+    caption = "\n\n".join([
+        f"[공부 로드맵] 백엔드 — 모집중 공고 {n:,}건이 함께 적은 기술",
+        "\n".join(f"{i}단계 {cat}: " + " · ".join(f"{k} {round(100 * cnt[k] / n)}%" for k in sorted([k for k in names if cnt[k]], key=lambda x: -cnt[x])[:3])
+                  for i, (cat, names) in enumerate(CATS, 1)),
+        f"{_dot(asof)} 수집한 모집중 백엔드 공고(제목 기준) {n:,}건에서 셌습니다. 단계 순서는 이 계정의 제안입니다.",
+    ])
+    return {"kind": "roadmap", "id": f"roadmap-backend-{asof.replace('-', '')}", "title": "백엔드 공부 로드맵",
+            "slides": slides, "caption": caption, "jobs": []}
+
+
+def build_weekly() -> dict:
+    rows, asof = _active_dev()
+    n = len(rows)
+    today = date.today()
+    soon = [j for j in rows if (d := _deadline(j, today)) and 0 <= (d - today).days <= 7]
+    newgrad = sum(1 for j in rows if "신입" in (j.get("career") or ""))
+    cos = collections.Counter(re.sub(r"\(.*?\)|㈜|주식회사", "", j.get("company") or "").strip() for j in rows).most_common(6)
+    st = collections.Counter(s for j in rows for s in set(_stack(j))).most_common(6)
+    note = f"모집중 개발 공고 {n:,}건 · {_dot(asof)} 수집 기준"
+    slides = [
+        {"type": "cover", "big": f"{n:,}", "big_unit": "건", "lines": ["이번 주", "개발 채용 리포트"],
+         "sub": f"{_dot(today.isoformat())} 주 · 숫자로 보는 한 주", "note": note},
+        {"type": "bars", "title": "공고를 가장 많이 연 회사", "sub": "모집중 개발 공고 수",
+         "rows": [{"label": k[:8], "value": v, "display": f"{v}", "hi": i == 0} for i, (k, v) in enumerate(cos)], "note": note},
+        {"type": "bars", "title": "가장 많이 찾는 기술", "sub": "공고에 적힌 수",
+         "rows": [{"label": k, "value": v, "display": f"{v}", "unit": f"{round(100 * v / n)}%", "hi": i == 0} for i, (k, v) in enumerate(st)], "note": note},
+        {"type": "stat", "title": "7일 안에 닫히는 공고", "num": f"{len(soon):,}", "unit": "건",
+         "label": f"신입 가능 공고는 {newgrad:,}건", "explain": "마감일을 적지 않은 공고가 많아 실제로 닫히는 수는 더 많다.", "note": note},
+        {"type": "end", "title": "다음 주 월요일에 또", "lines": ["저장해 두고 한 주씩 비교해 보세요", SEND], "note": note},
+    ]
+    caption = "\n\n".join([
+        f"[주간 리포트] 이번 주 개발 채용 — 모집중 {n:,}건",
+        "공고를 가장 많이 연 회사: " + " · ".join(f"{k} {v}" for k, v in cos),
+        "가장 많이 찾는 기술: " + " · ".join(f"{k} {v}" for k, v in st),
+        f"7일 안에 닫히는 공고 {len(soon):,}건 · 신입 가능 {newgrad:,}건",
+        f"{_dot(asof)} 수집한 모집중 개발 공고 기준입니다.",
+    ])
+    return {"kind": "weekly", "id": f"weekly-{today.isoformat().replace('-', '')}", "title": "주간 리포트",
+            "slides": slides, "caption": caption, "jobs": []}
+
+
+def build_signals() -> dict:
+    """회사 다섯의 채용 공고가 말해 주는 방향 — 브리핑 signals(해석)와 근거. 해석은 '추정' 으로 표시."""
+    want = ["CJ올리브영", "쿠팡", "컬리", "토스플레이스", "빗썸"]
+    picks = []
+    for g in _guides():
+        if g["name"] in want and (g.get("company") or {}).get("signals"):
+            picks.append((g["name"], g["company"]["signals"][0]))
+    note = f"근거: 각 회사 모집 공고·공시·기사 · 해석은 이 계정의 추정"
+    slides = [{"type": "cover", "lines": ["채용 공고가", "**먼저 말해 주는 것**"], "sub": f"회사 {len(picks)}곳의 다음 방향", "note": note}]
+    for co, s in picks:
+        tag = "" if s.get("confidence") == "confirmed" else " (추정)"
+        slides.append({"type": "end", "title": co, "lines": [
+            _plain(s["reading"]).replace("**", "") + tag,
+            "근거 · " + _first(_plain(s.get("evidence", "")).replace("**", "").lstrip("•-· "), 120),
+            "그래서 · " + _first(_plain(s.get("so_what", "")).replace("**", ""), 110)], "note": note})
+    slides.append({"type": "end", "title": "지원서에 쓰는 법", "lines": [
+        "회사가 **지금 키우는 쪽**과 내 경험을 잇는 한 문장", SEND], "note": note})
+    caption = "\n\n".join([
+        "[채용 시그널] 채용 공고가 먼저 말해 주는 것 — 회사 다섯의 다음 방향",
+        "\n".join(f"· {co}: {_plain(s['reading']).replace('**', '')}" + ("" if s.get("confidence") == "confirmed" else " (추정)")
+                  for co, s in picks),
+        "근거는 각 회사 모집 공고와 공시·기사이고, 해석은 이 계정의 추정입니다(추정 표시).",
+    ])
+    return {"kind": "signal", "id": f"signal-{date.today().isoformat().replace('-', '')}", "title": "채용 시그널",
+            "slides": slides, "caption": caption, "jobs": []}
+
+
 # --- 캡션의 회사 정보 -------------------------------------------------------
 def _sentences(s: str, n: int = 2, limit: int = 220) -> str:
     """브리핑 문단에서 앞 n 문장 — 마크다운 표기(**, `)는 떼고 limit 자 안에서."""
@@ -483,7 +659,7 @@ def approve(post: dict, paths: list[Path]) -> Path:
 
 def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
-    ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa"])
+    ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap", "weekly", "signal"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     args = ap.parse_args()
@@ -498,6 +674,9 @@ def main() -> int:
         post = build_interview(name, part)
     elif args.kind == "qa":
         post = build_qa_newgrad()
+    elif args.kind in ("jd", "same", "roadmap", "weekly", "signal"):
+        post = {"jd": build_jd_translate, "same": build_same_role, "roadmap": build_roadmap,
+                "weekly": build_weekly, "signal": build_signals}[args.kind]()
     else:
         post = build_stack() if args.kind == "stack" else build_rates()
     try:
