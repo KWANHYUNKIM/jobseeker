@@ -72,7 +72,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "vespa-parent-child-ad-campaign"
+      ]
     },
     {
       "name": "광고 로그 · 청구 집계 — 흩어진 세 경로를 하나로",
@@ -119,7 +121,329 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "vespa-parent-child-ad-campaign",
+      "name": "검색 연동 광고의 캠페인을 구인표에서 떼어 Vespa 부모 문서로 — 캠페인 100 개 갱신이 구인 100 만 건 재색인(약 30 분)에서 수 초로, 간접 참조의 검색 지연은 부하 시험으로 확인하고 복수 스키마의 부작용은 restrict 로 막는다",
+      "domain": "검색 연동 광고 — 캠페인을 바꿀 때 구인 100 만 건을 다시 넣지 않는다",
+      "updated_at": "2026-09-30",
+      "business": {
+        "why": "스탠바이 검색 결과에는 **무료 게재 틀**(검색 조건 일치도)과 **광고 틀**(일치도 + 캠페인 **입찰 금액**)이 있다. 광고주는 캠페인에 타깃 검색 조건 · 입찰 금액 · **예산** · 게재 기간을 걸어 자기 구인을 광고 틀에 싣는다. 광고용 검색 엔진도 무료 틀처럼 **Vespa** 로, 구인표와 캠페인 정보를 색인한다. 그런데 처음엔 **구인표 하나의 스키마**에 캠페인 정보를 박아 넣어서, 구인 갱신 · 캠페인 설정 갱신 · **캠페인 예산 소진**(광고를 내려야 하는 순간) 때마다 **캠페인에 딸린 구인 전부**를 다시 넣어야 했다 — 캠페인 하나에 구인 1 만 건이면 캠페인 100 개 갱신이 **구인 100 만 건 갱신**, 10 만 건에 3 분이면 **약 30 분**.",
+        "metrics": [
+          {
+            "label": "캠페인 100 개 갱신 Feed(전)",
+            "value": "구인 100 만 건 · 약 30 분(10 만 건 3 분 가정)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "VespaのParent/Childを用いた広告配信の改善",
+                "url": "https://techblog.stanby.co.jp/entry/vespa_parent_child",
+                "publisher": "スタンバイ",
+                "summary": "검색 결과에 무료 게재 틀(검색 조건 일치도)과 광고 틀(일치도 + 캠페인 입찰 금액). 광고주는 캠페인(타깃 검색 조건 · 입찰 · 예산 · 기간)을 설정. 광고용 Vespa 는 캠페인을 구인표에 박아 넣어 캠페인 갱신마다 연결된 구인표 전부를 Feed — 캠페인 100 개 × 구인 1 만 = 100 만 건, 약 30 분. Parent/Child 로 캠페인을 부모 문서로 → 수 초. 부하 시험에서 지연 악화 거의 없음(부모:자식 약 1:10,000), 복수 스키마로 검색 건수 변동 · 리소스 지정 오류 → restrict 파라미터.",
+                "date": "2025-03-10"
+              }
+            ]
+          },
+          {
+            "label": "캠페인 100 개 갱신 Feed(후)",
+            "value": "수 초",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "VespaのParent/Childを用いた広告配信の改善",
+                "url": "https://techblog.stanby.co.jp/entry/vespa_parent_child",
+                "publisher": "スタンバイ",
+                "summary": "검색 결과에 무료 게재 틀(검색 조건 일치도)과 광고 틀(일치도 + 캠페인 입찰 금액). 광고주는 캠페인(타깃 검색 조건 · 입찰 · 예산 · 기간)을 설정. 광고용 Vespa 는 캠페인을 구인표에 박아 넣어 캠페인 갱신마다 연결된 구인표 전부를 Feed — 캠페인 100 개 × 구인 1 만 = 100 만 건, 약 30 분. Parent/Child 로 캠페인을 부모 문서로 → 수 초. 부하 시험에서 지연 악화 거의 없음(부모:자식 약 1:10,000), 복수 스키마로 검색 건수 변동 · 리소스 지정 오류 → restrict 파라미터.",
+                "date": "2025-03-10"
+              }
+            ]
+          },
+          {
+            "label": "캠페인 : 구인 수 비",
+            "value": "약 1 : 10,000",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "VespaのParent/Childを用いた広告配信の改善",
+                "url": "https://techblog.stanby.co.jp/entry/vespa_parent_child",
+                "publisher": "スタンバイ",
+                "summary": "검색 결과에 무료 게재 틀(검색 조건 일치도)과 광고 틀(일치도 + 캠페인 입찰 금액). 광고주는 캠페인(타깃 검색 조건 · 입찰 · 예산 · 기간)을 설정. 광고용 Vespa 는 캠페인을 구인표에 박아 넣어 캠페인 갱신마다 연결된 구인표 전부를 Feed — 캠페인 100 개 × 구인 1 만 = 100 만 건, 약 30 분. Parent/Child 로 캠페인을 부모 문서로 → 수 초. 부하 시험에서 지연 악화 거의 없음(부모:자식 약 1:10,000), 복수 스키마로 검색 건수 변동 · 리소스 지정 오류 → restrict 파라미터.",
+                "date": "2025-03-10"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "원인을 볼 때",
+          "thought": "중복된 데이터 구조 때문에 캠페인 정보를 바꿀 때마다 관련 구인 전부를 갱신해야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "VespaのParent/Childを用いた広告配信の改善",
+              "url": "https://techblog.stanby.co.jp/entry/vespa_parent_child",
+              "publisher": "スタンバイ",
+              "summary": "검색 결과에 무료 게재 틀(검색 조건 일치도)과 광고 틀(일치도 + 캠페인 입찰 금액). 광고주는 캠페인(타깃 검색 조건 · 입찰 · 예산 · 기간)을 설정. 광고용 Vespa 는 캠페인을 구인표에 박아 넣어 캠페인 갱신마다 연결된 구인표 전부를 Feed — 캠페인 100 개 × 구인 1 만 = 100 만 건, 약 30 분. Parent/Child 로 캠페인을 부모 문서로 → 수 초. 부하 시험에서 지연 악화 거의 없음(부모:자식 약 1:10,000), 복수 스키마로 검색 건수 변동 · 리소스 지정 오류 → restrict 파라미터.",
+              "date": "2025-03-10"
+            }
+          ]
+        },
+        {
+          "at": "도입 전",
+          "thought": "직접 참조가 간접 참조가 되니 검색 성능이 조금은 나빠질 것이 걱정된다 — 부하 시험으로 확인한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "VespaのParent/Childを用いた広告配信の改善",
+              "url": "https://techblog.stanby.co.jp/entry/vespa_parent_child",
+              "publisher": "スタンバイ",
+              "summary": "검색 결과에 무료 게재 틀(검색 조건 일치도)과 광고 틀(일치도 + 캠페인 입찰 금액). 광고주는 캠페인(타깃 검색 조건 · 입찰 · 예산 · 기간)을 설정. 광고용 Vespa 는 캠페인을 구인표에 박아 넣어 캠페인 갱신마다 연결된 구인표 전부를 Feed — 캠페인 100 개 × 구인 1 만 = 100 만 건, 약 30 분. Parent/Child 로 캠페인을 부모 문서로 → 수 초. 부하 시험에서 지연 악화 거의 없음(부모:자식 약 1:10,000), 복수 스키마로 검색 건수 변동 · 리소스 지정 오류 → restrict 파라미터.",
+              "date": "2025-03-10"
+            }
+          ]
+        },
+        {
+          "at": "돌아보며",
+          "thought": "압도적인 Feed 효율화에 비해 검색 성능 악화가 없었던 것이 큰 장점이고, 데이터 구조가 단순해져 개발 효율도 올랐다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "VespaのParent/Childを用いた広告配信の改善",
+              "url": "https://techblog.stanby.co.jp/entry/vespa_parent_child",
+              "publisher": "スタンバイ",
+              "summary": "검색 결과에 무료 게재 틀(검색 조건 일치도)과 광고 틀(일치도 + 캠페인 입찰 금액). 광고주는 캠페인(타깃 검색 조건 · 입찰 · 예산 · 기간)을 설정. 광고용 Vespa 는 캠페인을 구인표에 박아 넣어 캠페인 갱신마다 연결된 구인표 전부를 Feed — 캠페인 100 개 × 구인 1 만 = 100 만 건, 약 30 분. Parent/Child 로 캠페인을 부모 문서로 → 수 초. 부하 시험에서 지연 악화 거의 없음(부모:자식 약 1:10,000), 복수 스키마로 검색 건수 변동 · 리소스 지정 오류 → restrict 파라미터.",
+              "date": "2025-03-10"
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "구인표(job)",
+            "what": "검색 대상 문서 — 부모 캠페인의 문서 ID 를 참조한다."
+          },
+          {
+            "name": "캠페인(campaign)",
+            "what": "광고주가 건 타깃 조건 · 입찰 금액 · 예산 · 기간 — 부모 문서로 분리, 모든 콘텐츠 노드에 복제된다."
+          },
+          {
+            "name": "Feed",
+            "what": "Vespa 에 문서를 넣고 갱신하는 처리 — 구인 갱신 · 캠페인 설정 갱신 · 예산 소진 때 돈다."
+          },
+          {
+            "name": "restrict",
+            "what": "검색할 스키마를 한정하는 파라미터 — 없으면 Vespa 는 모든 스키마를 검색한다."
+          }
+        ],
+        "invariants": [
+          "캠페인이 바뀌면 캠페인 문서만, 구인이 바뀌면 구인 문서만 갱신한다.",
+          "구인 검색은 언제나 job 스키마로 한정한다.",
+          "예산이 소진된 캠페인은 빨리 광고 틀에서 빠져야 한다(Feed 가 빨라야 하는 이유 — 이 사이트의 해석)."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "캠페인을 부모 문서 스키마로 정의, 구인 스키마는 부모 캠페인 문서 ID 를 reference 로",
+            "why": "중복 제거."
+          },
+          {
+            "step": "구인 스키마에 부모의 필요한 필드만 import",
+            "why": "검색 · 랭킹에서 캠페인 정보를 참조."
+          },
+          {
+            "step": "부하 시험으로 검색 지연 확인",
+            "why": "간접 참조 비용."
+          },
+          {
+            "step": "모든 구인 검색 요청에 restrict=job",
+            "why": "복수 스키마 부작용 제거."
+          },
+          {
+            "step": "캠페인 갱신 · 예산 소진은 캠페인 문서만 Feed",
+            "why": "수 초 반영."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "캠페인 갱신마다 구인 수만 건을 다시 넣는 문제를 어떻게 푸나?",
+            "chosen": "**Vespa Parent/Child** — 캠페인을 **부모 문서**로 정의하고, 구인표 스키마는 부모 캠페인의 문서 ID 를 참조한다. 검색 때 자식(구인)이 부모(캠페인)의 정보를 참조한다.",
+            "alternatives": [
+              "구인표에 캠페인 정보를 계속 박아 두고 Feed 를 병렬화 · 증설",
+              "캠페인 정보를 검색 뒤 애플리케이션에서 붙이기"
+            ],
+            "tradeoff": "캠페인 갱신은 캠페인만, 구인 갱신은 구인만 — 최소 갱신이 되어 캠페인 100 개 갱신이 수 초가 됐다. 부모 문서는 **모든 콘텐츠 노드에 복제**되어 검색 성능을 지킨다. 대가는 부모 수만큼 노드마다 메모리를 쓴다는 것과 참조가 간접이 된다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "VespaのParent/Childを用いた広告配信の改善",
+                "url": "https://techblog.stanby.co.jp/entry/vespa_parent_child",
+                "publisher": "スタンバイ",
+                "summary": "검색 결과에 무료 게재 틀(검색 조건 일치도)과 광고 틀(일치도 + 캠페인 입찰 금액). 광고주는 캠페인(타깃 검색 조건 · 입찰 · 예산 · 기간)을 설정. 광고용 Vespa 는 캠페인을 구인표에 박아 넣어 캠페인 갱신마다 연결된 구인표 전부를 Feed — 캠페인 100 개 × 구인 1 만 = 100 만 건, 약 30 분. Parent/Child 로 캠페인을 부모 문서로 → 수 초. 부하 시험에서 지연 악화 거의 없음(부모:자식 약 1:10,000), 복수 스키마로 검색 건수 변동 · 리소스 지정 오류 → restrict 파라미터.",
+                "date": "2025-03-10"
+              }
+            ]
+          },
+          {
+            "question": "간접 참조로 검색이 느려지지 않나?",
+            "chosen": "**부하 시험으로 확인** — 결과 지연 악화는 거의 없었다. Vespa 공식 블로그는 부모 : 자식 수 비가 작을수록 성능 영향이 크다고 하는데, 여기선 **약 1 : 10,000** 으로 매우 크고 import 하는 필드도 적었다.",
+            "alternatives": [
+              "지연 영향을 확인하지 않고 도입"
+            ],
+            "tradeoff": "데이터 모양(부모가 적고 자식이 많음)이 이 기능에 잘 맞는다는 것을 숫자로 확인했다. 대가는 캠페인 수가 크게 늘거나 import 필드가 늘면 다시 재야 한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "VespaのParent/Childを用いた広告配信の改善",
+                "url": "https://techblog.stanby.co.jp/entry/vespa_parent_child",
+                "publisher": "スタンバイ",
+                "summary": "검색 결과에 무료 게재 틀(검색 조건 일치도)과 광고 틀(일치도 + 캠페인 입찰 금액). 광고주는 캠페인(타깃 검색 조건 · 입찰 · 예산 · 기간)을 설정. 광고용 Vespa 는 캠페인을 구인표에 박아 넣어 캠페인 갱신마다 연결된 구인표 전부를 Feed — 캠페인 100 개 × 구인 1 만 = 100 만 건, 약 30 분. Parent/Child 로 캠페인을 부모 문서로 → 수 초. 부하 시험에서 지연 악화 거의 없음(부모:자식 약 1:10,000), 복수 스키마로 검색 건수 변동 · 리소스 지정 오류 → restrict 파라미터.",
+                "date": "2025-03-10"
+              }
+            ]
+          },
+          {
+            "question": "스키마가 둘이 되면서 생긴 문제는?",
+            "chosen": "**검색 요청에 restrict 파라미터로 대상 스키마(job)를 한정**한다. Vespa 는 기본적으로 모든 스키마를 검색하므로 캠페인 스키마를 더한 뒤 **검색 건수 변동 · 스키마별 리소스(RankProfile) 지정 오류 · 리소스 사용률 증가**가 생겼다.",
+            "alternatives": [
+              "기본(전 스키마 검색) 그대로"
+            ],
+            "tradeoff": "오류가 없는 요청에서도 restrict 가 없으면 쓸데없는 리소스를 쓴다 — 모든 호출 경로에 지정이 필요하다. 대가는 호출하는 모든 코드가 스키마 구성을 알아야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "VespaのParent/Childを用いた広告配信の改善",
+                "url": "https://techblog.stanby.co.jp/entry/vespa_parent_child",
+                "publisher": "スタンバイ",
+                "summary": "검색 결과에 무료 게재 틀(검색 조건 일치도)과 광고 틀(일치도 + 캠페인 입찰 금액). 광고주는 캠페인(타깃 검색 조건 · 입찰 · 예산 · 기간)을 설정. 광고용 Vespa 는 캠페인을 구인표에 박아 넣어 캠페인 갱신마다 연결된 구인표 전부를 Feed — 캠페인 100 개 × 구인 1 만 = 100 만 건, 약 30 분. Parent/Child 로 캠페인을 부모 문서로 → 수 초. 부하 시험에서 지연 악화 거의 없음(부모:자식 약 1:10,000), 복수 스키마로 검색 건수 변동 · 리소스 지정 오류 → restrict 파라미터.",
+                "date": "2025-03-10"
+              }
+            ]
+          },
+          {
+            "question": "광고용 검색 엔진을 무엇으로 두나?",
+            "chosen": "**무료 틀과 같은 Vespa** — 구인표와 캠페인 정보를 색인해 검색 · 랭킹(일치도 + 입찰)한다. 검색 엔진은 Vespa 로 이행 중이고, Vespa 의 EC2 는 Arm(Graviton)으로 바꿔 비용 증가를 눌렀다.",
+            "alternatives": [
+              "광고만 다른 엔진 · 별도 서비스"
+            ],
+            "tradeoff": "무료 틀과 광고 틀이 같은 검색 조건 일치도를 쓴다. 대가는 광고 쪽 요구(잦은 캠페인 · 예산 갱신)가 검색 색인 구조에 직접 부담이 된다는 것 — 이 기능이 그 부담을 푼 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "VespaのParent/Childを用いた広告配信の改善",
+                "url": "https://techblog.stanby.co.jp/entry/vespa_parent_child",
+                "publisher": "スタンバイ",
+                "summary": "검색 결과에 무료 게재 틀(검색 조건 일치도)과 광고 틀(일치도 + 캠페인 입찰 금액). 광고주는 캠페인(타깃 검색 조건 · 입찰 · 예산 · 기간)을 설정. 광고용 Vespa 는 캠페인을 구인표에 박아 넣어 캠페인 갱신마다 연결된 구인표 전부를 Feed — 캠페인 100 개 × 구인 1 만 = 100 만 건, 약 30 분. Parent/Child 로 캠페인을 부모 문서로 → 수 초. 부하 시험에서 지연 악화 거의 없음(부모:자식 약 1:10,000), 복수 스키마로 검색 건수 변동 · 리소스 지정 오류 → restrict 파라미터.",
+                "date": "2025-03-10"
+              },
+              {
+                "title": "スタンバイの最近の技術的な取り組み",
+                "url": "https://techblog.stanby.co.jp/entry/tech_summary",
+                "publisher": "スタンバイ",
+                "summary": "2015 년 ビズリーチ 신규 사업으로 시작한 서비스, 10 년 가까이. AWS. 2024 비용 '최적화'(삭감 아님) — 팀별 상향식 목표, 구인 데이터 거대 DB · Aurora MySQL 54% 삭감, Savings Plans 커버율 50 → 80%, Vespa EC2 를 Graviton 으로, EKS Fargate → EC2. 검색 엔진 Vespa 이행, 기술 부채를 영향도 · 긴급성 · 효과로 줄 세워 리아키 로드맵.",
+                "date": "2024-12-24"
+              }
+            ]
+          },
+          {
+            "question": "왜 Feed 속도가 중요한가?",
+            "chosen": "**캠페인 설정 갱신과 예산 소진이 Feed 를 부르는 사건**이기 때문 — 캠페인 갱신이 30 분 걸리면 그동안 광고 틀이 옛 설정으로 돈다.",
+            "alternatives": [
+              "배치로 몰아 갱신"
+            ],
+            "tradeoff": "예산이 바닥난 캠페인이 계속 노출되거나 새 캠페인이 늦게 뜨는 창을 줄인다(이 사이트의 해석 — 글은 Feed 시간 단축을 성과로 적는다). 대가는 부모 문서 갱신이 잦아진다는 것.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "VespaのParent/Childを用いた広告配信の改善",
+                "url": "https://techblog.stanby.co.jp/entry/vespa_parent_child",
+                "publisher": "スタンバイ",
+                "summary": "검색 결과에 무료 게재 틀(검색 조건 일치도)과 광고 틀(일치도 + 캠페인 입찰 금액). 광고주는 캠페인(타깃 검색 조건 · 입찰 · 예산 · 기간)을 설정. 광고용 Vespa 는 캠페인을 구인표에 박아 넣어 캠페인 갱신마다 연결된 구인표 전부를 Feed — 캠페인 100 개 × 구인 1 만 = 100 만 건, 약 30 분. Parent/Child 로 캠페인을 부모 문서로 → 수 초. 부하 시험에서 지연 악화 거의 없음(부모:자식 약 1:10,000), 복수 스키마로 검색 건수 변동 · 리소스 지정 오류 → restrict 파라미터.",
+                "date": "2025-03-10"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "검색 연동형 구인 광고(수익원)",
+          "via": "광고 틀 · 캠페인 입찰",
+          "contract": "광고 틀은 일치도 + 캠페인 입찰 금액으로 구인을 싣는다 — 캠페인 · 예산이 빨리 반영돼야 광고가 제대로 팔린다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "VespaのParent/Childを用いた広告配信の改善",
+              "url": "https://techblog.stanby.co.jp/entry/vespa_parent_child",
+              "publisher": "スタンバイ",
+              "summary": "검색 결과에 무료 게재 틀(검색 조건 일치도)과 광고 틀(일치도 + 캠페인 입찰 금액). 광고주는 캠페인(타깃 검색 조건 · 입찰 · 예산 · 기간)을 설정. 광고용 Vespa 는 캠페인을 구인표에 박아 넣어 캠페인 갱신마다 연결된 구인표 전부를 Feed — 캠페인 100 개 × 구인 1 만 = 100 만 건, 약 30 분. Parent/Child 로 캠페인을 부모 문서로 → 수 초. 부하 시험에서 지연 악화 거의 없음(부모:자식 약 1:10,000), 복수 스키마로 검색 건수 변동 · 리소스 지정 오류 → restrict 파라미터.",
+              "date": "2025-03-10"
+            }
+          ]
+        },
+        {
+          "to": "광고 로그 · 청구 집계",
+          "via": "광고 노출 · 행동 로그",
+          "contract": "광고 틀에 실린 구인에 대한 구직자 행동이 광고 로그가 되어 리포트 · 청구로 집계된다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "VespaのParent/Childを用いた広告配信の改善",
+              "url": "https://techblog.stanby.co.jp/entry/vespa_parent_child",
+              "publisher": "スタンバイ",
+              "summary": "검색 결과에 무료 게재 틀(검색 조건 일치도)과 광고 틀(일치도 + 캠페인 입찰 금액). 광고주는 캠페인(타깃 검색 조건 · 입찰 · 예산 · 기간)을 설정. 광고용 Vespa 는 캠페인을 구인표에 박아 넣어 캠페인 갱신마다 연결된 구인표 전부를 Feed — 캠페인 100 개 × 구인 1 만 = 100 만 건, 약 30 분. Parent/Child 로 캠페인을 부모 문서로 → 수 초. 부하 시험에서 지연 악화 거의 없음(부모:자식 약 1:10,000), 복수 스키마로 검색 건수 변동 · 리소스 지정 오류 → restrict 파라미터.",
+              "date": "2025-03-10"
+            },
+            {
+              "title": "広告ログ基盤リアーキテクチャと良かった方針のご紹介",
+              "url": "https://techblog.stanby.co.jp/entry/howto_carryout_adlog_rearchitecture",
+              "publisher": "スタンバイ",
+              "summary": "광고 관리 화면의 리포트 · 청구 데이터를 만드는 광고 로그 기반 — 집계 경로 3 개(데이터 기반 · 배치 A · 배치 B)가 서로 다른 기술, 이중 관리, 배치 B 에 청구 처리. 신구 병행 가동 · 2 단계(1: 배치 B 폐지, 로그 → 배치 X · 청구 → 배치 Y, 2: 배치 A 폐지). 좋았던 방침: 원칙적으로 사양을 바꾸지 않는다 · 범위를 좁혀 단계 출시 · 전체 최적(데이터 기반 리아키와 맞춰 '새 데이터 기반 초기엔 광고 로그 우선').",
+              "date": "2025-11-14"
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "문서 구조 전과 후",
+          "question": "캠페인 정보는 어디에 있나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  subgraph BEFORE[\"전: 구인표에 박아 넣음\"]\n    J1[\"구인 1 + 캠페인 A\"]\n    J2[\"구인 2 + 캠페인 A\"]\n    JN[\"… 구인 1 만 건 + 캠페인 A\"]\n  end\n  subgraph AFTER[\"후: Parent/Child\"]\n    CA[\"캠페인 A (부모)\\n모든 노드에 복제\"]\n    K1[\"구인 1 → A\"] --> CA\n    K2[\"구인 2 → A\"] --> CA\n    KN[\"… 구인 1 만 건 → A\"] --> CA\n  end"
+        },
+        {
+          "title": "캠페인 100 개를 바꿀 때",
+          "question": "무엇이 다시 들어가나?",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant AD as 광고 관리(캠페인 갱신 · 예산 소진)\n  participant F as Feed\n  participant V as Vespa\n  Note over AD,V: 전\n  AD->>F: 캠페인 100 개 변경\n  F->>V: 구인 100 만 건 갱신(약 30 분)\n  Note over AD,V: 후\n  AD->>F: 캠페인 100 개 변경\n  F->>V: 캠페인 문서 100 건 갱신(수 초)\n  Note over V: 검색 시 구인이 부모 캠페인 필드 참조"
+        },
+        {
+          "title": "스키마를 더했을 때 생긴 일",
+          "question": "왜 restrict 가 필요한가?",
+          "kind": "failure",
+          "code": "flowchart TB\n  ADD[\"campaign 스키마 추가\"] --> ALL[\"Vespa 기본: 모든 스키마 검색\"]\n  ALL --> E1[\"검색 히트 건수 변동\"]\n  ALL --> E2[\"job 의 RankProfile 지정 → campaign 에서 오류\"]\n  ALL --> E3[\"리소스 사용률 증가\"]\n  E1 & E2 & E3 --> FIX[\"모든 구인 검색에 restrict=job\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "VespaのParent/Childを用いた広告配信の改善",
+          "url": "https://techblog.stanby.co.jp/entry/vespa_parent_child",
+          "publisher": "スタンバイ",
+          "summary": "검색 결과에 무료 게재 틀(검색 조건 일치도)과 광고 틀(일치도 + 캠페인 입찰 금액). 광고주는 캠페인(타깃 검색 조건 · 입찰 · 예산 · 기간)을 설정. 광고용 Vespa 는 캠페인을 구인표에 박아 넣어 캠페인 갱신마다 연결된 구인표 전부를 Feed — 캠페인 100 개 × 구인 1 만 = 100 만 건, 약 30 분. Parent/Child 로 캠페인을 부모 문서로 → 수 초. 부하 시험에서 지연 악화 거의 없음(부모:자식 약 1:10,000), 복수 스키마로 검색 건수 변동 · 리소스 지정 오류 → restrict 파라미터.",
+          "date": "2025-03-10"
+        },
+        {
+          "title": "スタンバイの最近の技術的な取り組み",
+          "url": "https://techblog.stanby.co.jp/entry/tech_summary",
+          "publisher": "スタンバイ",
+          "summary": "2015 년 ビズリーチ 신규 사업으로 시작한 서비스, 10 년 가까이. AWS. 2024 비용 '최적화'(삭감 아님) — 팀별 상향식 목표, 구인 데이터 거대 DB · Aurora MySQL 54% 삭감, Savings Plans 커버율 50 → 80%, Vespa EC2 를 Graviton 으로, EKS Fargate → EC2. 검색 엔진 Vespa 이행, 기술 부채를 영향도 · 긴급성 · 효과로 줄 세워 리아키 로드맵.",
+          "date": "2024-12-24"
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "매출 · 광고 과금 단위(클릭 · 노출)는 이번에 읽은 자료에 없다.",
     "회사 공식 사이트는 이번에 읽지 않았다 — 사업 설명은 기술 블로그 서술이다.",

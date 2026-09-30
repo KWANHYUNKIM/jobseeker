@@ -3020,3 +3020,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 スタンバイ 프로파일
 
 - 대기 → 진행 중. 블로그 글(Vespa Parent/Child · 광고 로그 리아키 · Databricks 이행 · 기술 정리 2024)로 도메인 셋. 수익원은 검색 연동형 구인 광고(해석, 광고 틀 · 캠페인 입찰은 글이 확인). category 검색.
+
+## 2026-09-30 スタンバイ Vespa Parent/Child(기능 1/3)
+
+- `vespa-parent-child-ad-campaign`. 결정 5 — Parent/Child / 부하 시험(1:10,000) / restrict / 같은 Vespa · Graviton / Feed 속도의 이유(해석). 30 분 → 수 초. 다음: 광고 로그 리아키.
