@@ -1,0 +1,292 @@
+{
+  "slug": "wata",
+  "name": "와따에이아이",
+  "name_en": "WATA AI",
+  "aliases": [
+    "와따에이아이",
+    "WATA AI"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": null,
+  "one_liner": "창고 물류센터 DX(디지털 트윈 · 3D LiDAR 위치 측위 · AI 재고실사 로봇)를 SaaS 로 파는 회사(CES 혁신상 4 년 연속) — Java 백엔드와 LiDAR · Vision SLAM 시니어를 뽑는다",
+  "company": {
+    "business": "와따에이아이(WATA AI)는 **창고형 물류센터의 디지털 전환(DX)** 을 한다 — 공고는 **AI · 디지털 트윈 · 고정밀 위치 측위(3D LiDAR · Vision)** 를 핵심 기술로 들고, 기존 창고의 비효율 운영 · 높은 구축 비용 · 데이터 수집 한계를 **SaaS 구독형 클라우드 플랫폼**으로 푼다고 적는다. 연혁은 2019 년 실시간 위치 정보 서비스로 시작해 **도쿄 올림픽 · 패럴림픽 실내 안내**, 일본 법인 · 베트남 AI 데이터랩, **3D LiDAR 안전관리 플랫폼**(조달청 혁신시제품), 2025 년 **AI 재고실사 플랫폼(Robot)** 출시와 **Series B** 로 이어진다. **CES 혁신상 2022 ~ 2025 4 년 연속 6 개 부문**. 모집중 둘은 물류관리 B2B 플랫폼의 **Java 백엔드**와, 창고 안에서 로봇 · 장비의 위치를 잡는 **LiDAR · Vision SLAM 시니어**다(판교).",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "[판교] 백엔드 JAVA 개발자",
+        "url": "https://www.wanted.co.kr/wd/372230",
+        "publisher": "원티드",
+        "summary": "와따에이아이(WATA AI) — AI · 디지털 트윈 · 고정밀 위치 측위(3D LiDAR · Vision)로 창고형 물류센터 DX, SaaS 구독형 클라우드 플랫폼. CES 2022-2025 4 년 연속 6 개 부문 혁신상. 연혁: 2019 설립, 도쿄 올림픽 실내 안내, TIPS, 일본 법인, 베트남 AI 데이터랩, 3D LiDAR 안전관리 플랫폼, 2023 아기유니콘, 조달청 혁신시제품(AI 안전관리), 2025 AI 재고실사 플랫폼(Robot) · Series B · 스케일업 TIPS. 백엔드: 물류관리 B2B 플랫폼, DB · API, 레거시 통합, AWS 운영. Java · Spring Boot, PostgreSQL · MongoDB · Redis. 자격 Spring 5 년, REST, RDB 정규화, AWS, CI/CD. 우대 위치 기반 · MongoDB · 웹소켓. 마감 2026-09-30."
+      },
+      {
+        "title": "비전 SLAM 시니어 개발자(판교)",
+        "url": "https://www.wanted.co.kr/wd/367687",
+        "publisher": "원티드",
+        "summary": "LiDAR 실내 SLAM · 절대 위치 측위 리드, Reflector/Marker 위치 보정 하이브리드, Visual SLAM/VIO, LiDAR–IMU–Encoder–Camera 융합, ROS2 · C++, 실환경 테스트 · Drift 보정. 5 년, SLAM 3 년 또는 석 · 박사. 우대 AprilTag/ArUco, 물류 · 로봇 SLAM, Pose Graph · BA, Gazebo · Isaac Sim. 마감 2026-09-30."
+      }
+    ],
+    "scale": [
+      {
+        "label": "투자 · 수상",
+        "value": "Series B(2025) · CES 혁신상 4 년 연속 6 개 부문 · 2023 아기유니콘(공고)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[판교] 백엔드 JAVA 개발자",
+            "url": "https://www.wanted.co.kr/wd/372230",
+            "publisher": "원티드",
+            "summary": "와따에이아이(WATA AI) — AI · 디지털 트윈 · 고정밀 위치 측위(3D LiDAR · Vision)로 창고형 물류센터 DX, SaaS 구독형 클라우드 플랫폼. CES 2022-2025 4 년 연속 6 개 부문 혁신상. 연혁: 2019 설립, 도쿄 올림픽 실내 안내, TIPS, 일본 법인, 베트남 AI 데이터랩, 3D LiDAR 안전관리 플랫폼, 2023 아기유니콘, 조달청 혁신시제품(AI 안전관리), 2025 AI 재고실사 플랫폼(Robot) · Series B · 스케일업 TIPS. 백엔드: 물류관리 B2B 플랫폼, DB · API, 레거시 통합, AWS 운영. Java · Spring Boot, PostgreSQL · MongoDB · Redis. 자격 Spring 5 년, REST, RDB 정규화, AWS, CI/CD. 우대 위치 기반 · MongoDB · 웹소켓. 마감 2026-09-30."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "창고 물류 · 안전관리 SaaS 구독",
+        "how": "물류센터에 AI · 디지털 트윈 · 위치 측위 기반 관리 플랫폼을 구독형으로 제공한다(공고) — 요금 구성은 읽은 자료에 없다.",
+        "domains": [
+          "물류관리 B2B 플랫폼 백엔드",
+          "창고 안 위치 측위 SLAM"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[판교] 백엔드 JAVA 개발자",
+            "url": "https://www.wanted.co.kr/wd/372230",
+            "publisher": "원티드",
+            "summary": "와따에이아이(WATA AI) — AI · 디지털 트윈 · 고정밀 위치 측위(3D LiDAR · Vision)로 창고형 물류센터 DX, SaaS 구독형 클라우드 플랫폼. CES 2022-2025 4 년 연속 6 개 부문 혁신상. 연혁: 2019 설립, 도쿄 올림픽 실내 안내, TIPS, 일본 법인, 베트남 AI 데이터랩, 3D LiDAR 안전관리 플랫폼, 2023 아기유니콘, 조달청 혁신시제품(AI 안전관리), 2025 AI 재고실사 플랫폼(Robot) · Series B · 스케일업 TIPS. 백엔드: 물류관리 B2B 플랫폼, DB · API, 레거시 통합, AWS 운영. Java · Spring Boot, PostgreSQL · MongoDB · Redis. 자격 Spring 5 년, REST, RDB 정규화, AWS, CI/CD. 우대 위치 기반 · MongoDB · 웹소켓. 마감 2026-09-30."
+          }
+        ]
+      },
+      {
+        "name": "AI 재고실사 로봇 · 안전관리 플랫폼(조달 포함)",
+        "how": "재고실사 로봇 · 3D LiDAR 안전관리 플랫폼을 판매 · 공급한다(조달청 혁신시제품) — 판매 · 임대 구성은 모른다.",
+        "domains": [
+          "창고 안 위치 측위 SLAM"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "[판교] 백엔드 JAVA 개발자",
+            "url": "https://www.wanted.co.kr/wd/372230",
+            "publisher": "원티드",
+            "summary": "와따에이아이(WATA AI) — AI · 디지털 트윈 · 고정밀 위치 측위(3D LiDAR · Vision)로 창고형 물류센터 DX, SaaS 구독형 클라우드 플랫폼. CES 2022-2025 4 년 연속 6 개 부문 혁신상. 연혁: 2019 설립, 도쿄 올림픽 실내 안내, TIPS, 일본 법인, 베트남 AI 데이터랩, 3D LiDAR 안전관리 플랫폼, 2023 아기유니콘, 조달청 혁신시제품(AI 안전관리), 2025 AI 재고실사 플랫폼(Robot) · Series B · 스케일업 TIPS. 백엔드: 물류관리 B2B 플랫폼, DB · API, 레거시 통합, AWS 운영. Java · Spring Boot, PostgreSQL · MongoDB · Redis. 자격 Spring 5 년, REST, RDB 정규화, AWS, CI/CD. 우대 위치 기반 · MongoDB · 웹소켓. 마감 2026-09-30."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "물류관리 B2B 플랫폼 백엔드",
+        "why": "백엔드 공고가 물류관리 B2B 플랫폼 백엔드, DB · API, 레거시 통합, AWS 운영, PostgreSQL · MongoDB · Redis, 웹소켓 · 위치 기반 우대를 적는다.",
+        "what_to_know": [
+          "위치 이벤트 저장(시계열)",
+          "웹소켓 실시간 전달",
+          "레거시 통합"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[판교] 백엔드 JAVA 개발자",
+            "url": "https://www.wanted.co.kr/wd/372230",
+            "publisher": "원티드",
+            "summary": "와따에이아이(WATA AI) — AI · 디지털 트윈 · 고정밀 위치 측위(3D LiDAR · Vision)로 창고형 물류센터 DX, SaaS 구독형 클라우드 플랫폼. CES 2022-2025 4 년 연속 6 개 부문 혁신상. 연혁: 2019 설립, 도쿄 올림픽 실내 안내, TIPS, 일본 법인, 베트남 AI 데이터랩, 3D LiDAR 안전관리 플랫폼, 2023 아기유니콘, 조달청 혁신시제품(AI 안전관리), 2025 AI 재고실사 플랫폼(Robot) · Series B · 스케일업 TIPS. 백엔드: 물류관리 B2B 플랫폼, DB · API, 레거시 통합, AWS 운영. Java · Spring Boot, PostgreSQL · MongoDB · Redis. 자격 Spring 5 년, REST, RDB 정규화, AWS, CI/CD. 우대 위치 기반 · MongoDB · 웹소켓. 마감 2026-09-30."
+          }
+        ]
+      },
+      {
+        "name": "창고 안 위치 측위 SLAM",
+        "why": "SLAM 공고가 LiDAR 실내 SLAM · 절대 위치 측위, 반사판 · 마커 보정, VIO, 멀티센서 융합, ROS2 · C++, 드리프트 보정을 적는다.",
+        "what_to_know": [
+          "LiDAR SLAM(Cartographer 등)",
+          "AprilTag 절대 보정",
+          "포즈 그래프 최적화"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "비전 SLAM 시니어 개발자(판교)",
+            "url": "https://www.wanted.co.kr/wd/367687",
+            "publisher": "원티드",
+            "summary": "LiDAR 실내 SLAM · 절대 위치 측위 리드, Reflector/Marker 위치 보정 하이브리드, Visual SLAM/VIO, LiDAR–IMU–Encoder–Camera 융합, ROS2 · C++, 실환경 테스트 · Drift 보정. 5 년, SLAM 3 년 또는 석 · 박사. 우대 AprilTag/ArUco, 물류 · 로봇 SLAM, Pose Graph · BA, Gazebo · Isaac Sim. 마감 2026-09-30."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "구축형이 아니라 구독형 SaaS 로 판다",
+        "evidence": "우리는 기존 창고가 겪는 비효율적인 운영, 높은 구축비용, 데이터 수집의 한계를 SaaS 기반 구독형 클라우드 플랫폼으로 해결합니다.",
+        "so_what": "여러 창고 고객이 한 플랫폼을 쓴다 — 멀티테넌트 · 레거시 통합 경험이 백엔드 자리에서 말이 된다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "창고는 GPS 가 안 된다",
+        "evidence": "• Reflector / Marker 기반 위치 보정 및 SLAM 하이브리드 구조 설계",
+        "so_what": "반복되는 선반 사이에서 SLAM 이 흔들리는 문제를 절대 기준(반사판 · 마커)으로 잡는다 — 실환경 드리프트를 줄인 경험을 준비한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "회사 홈페이지를 이번에 찾지 않았다 — 매출 · 인원 · 고객사는 모른다",
+    "두 공고 모두 마감이 2026-09-30 이다 — 지원 전에 열려 있는지 확인한다",
+    "백엔드 공고 제목은 경력 8-16 년, 자격은 Spring 5 년 이상으로 적혀 있다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/372230",
+      "title": "[판교] 백엔드 JAVA 개발자",
+      "site": "wanted",
+      "verdict": "경력 8-16년(자격은 Java Spring 5 년 이상), 판교, 마감 2026-09-30. **물류관리 B2B 서비스 플랫폼 백엔드 개발 · 운영**, **DB · API 설계 · 개발**, **기존 레거시 파악 · 통합**, **AWS 서버 운영 · 모니터링**. 환경 Java · Spring Boot, AWS(EC2 · S3 · EBS), **PostgreSQL · MongoDB · Redis**, GitHub, Jira · Confluence. 자격은 Spring 5 년, 플랫폼 · 프로젝트 단계 이해, REST, **RDB 정규화 설계**, 적극적 소통, AWS 개발 · 배포, **CI/CD(Jenkins · GitHub Actions · Kubernetes 중 하나)**. 우대는 공학 계열, **위치 기반 시스템**, MongoDB, **웹소켓**, Node.js · JSP, DB 모니터링 · 튜닝, AWS DevOps. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Spring 5 년",
+          "REST",
+          "RDB 정규화",
+          "AWS · CI/CD"
+        ],
+        "can_learn": [
+          "위치 이벤트 저장",
+          "웹소켓",
+          "레거시 통합"
+        ]
+      },
+      "study": [
+        {
+          "topic": "창고 안 장비 위치를 실시간으로 — 위치 이벤트 저장과 웹소켓 전달",
+          "from": "preference",
+          "quote": "• 위치 기반 시스템 업무 경험",
+          "priority": "core",
+          "why": "우대사항이고 회사 핵심 기술이 고정밀 위치 측위다. 지게차 · 로봇 · 작업자 위치가 초 단위로 들어온다.",
+          "gap_check": "위치 이벤트(장비 ID · 좌표 · 시각)를 PostgreSQL · MongoDB · Redis 중 어디에 어떻게 나눠 두나(최신 위치 · 이력 · 조회)? 관제 화면에 지금 위치를 흘리려면 웹소켓 구독을 무엇 단위로(창고 · 구역) 나누나? 서버가 여러 대면 한 서버가 받은 위치를 다른 서버의 웹소켓 사용자에게 어떻게 보내나(Redis Pub/Sub)?",
+          "drill": "Spring Boot 에 위치 이벤트 수집 API 를 만들고, 최신 위치는 Redis Hash, 이력은 PostgreSQL(시간 파티션) 또는 MongoDB 시계열 컬렉션에 쓴다. STOMP 웹소켓으로 창고 단위 토픽을 열고 Redis Pub/Sub 으로 인스턴스 두 개 사이에 전파해, 가짜 장비 200 대(초당 1 회)를 흘려 지연을 잰다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Spring — WebSocket (STOMP)",
+              "url": "https://docs.spring.io/spring-framework/reference/web/websocket/stomp.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "레거시 시스템을 파악하고 통합하기",
+          "from": "task",
+          "quote": "• 기존 Legacy 시스템 파악 및 통합 작업",
+          "priority": "core",
+          "why": "주요업무다. 위치 서비스 · 안전관리 · 재고실사 등 제품이 늘며 시스템이 흩어졌을 수 있다(이 사이트의 해석).",
+          "gap_check": "문서가 없는 레거시를 무엇부터 파악하나(DB 스키마 · 실제 호출 로그 · 배치)? 두 시스템이 같은 개념(창고 · 장비 · 사용자)을 다르게 가지면 어느 쪽을 원천으로 두나? 통합 중 두 시스템이 함께 돌 때 데이터는 어떻게 맞추나(이중 쓰기 · CDC)?",
+          "drill": "가상의 두 시스템(위치 서비스 DB · 재고 DB)의 스키마를 비교해 창고 · 장비 개념 매핑표를 만들고, 한쪽을 원천으로 정해 다른 쪽을 Debezium(CDC)으로 따라가게 하는 구성을 로컬에서 띄운다. 통합 전후 API 호출 흐름을 그린다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Debezium — Tutorial",
+              "url": "https://debezium.io/documentation/reference/stable/tutorial.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "CI/CD 를 세운다 — GitHub Actions 로 AWS 배포",
+          "from": "qualification",
+          "quote": "• CI/CD 구축 및 운영이 가능하신 분(jenkins, github actions, kubernetes 중 하나 이상)",
+          "priority": "high",
+          "why": "필수 자격이다.",
+          "gap_check": "EC2 에 올리는 서비스를 무중단으로 바꾸려면(ALB 뒤 롤링 · 블루-그린)? DB 마이그레이션(Flyway)은 배포 흐름 어디에 넣나? 배포 뒤 문제를 무엇으로 알아채고 되돌리나?",
+          "drill": "GitHub Actions 로 테스트 → Docker 이미지 → ECR → (EC2 는 CodeDeploy 블루-그린, 또는 ECS 롤링) 배포 흐름을 만들고, Flyway 마이그레이션을 배포 앞 단계로 넣는다. 일부러 헬스 체크를 실패하게 해 자동 롤백을 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "AWS CodeDeploy — Blue/green deployments",
+              "url": "https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments-create-blue-green.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/367687",
+      "title": "비전 SLAM 시니어 개발자(판교)",
+      "site": "wanted",
+      "verdict": "경력 5-20년, 판교, 마감 2026-09-30. **LiDAR 기반 실내 SLAM · 절대 위치 측위 알고리즘 개발 · 리드**, **Reflector / Marker 기반 위치 보정 + SLAM 하이브리드**, **Visual SLAM / VIO**, **LiDAR–IMU–Encoder–Camera 융합**, **ROS2 · 순수 C++ SLAM**, 실환경 테스트 · **Drift 보정** · 최적화. 자격은 CS · 로봇 · 전자, **SLAM · Localization 실무 3 년(또는 석 · 박사 연구)**, LiDAR · Visual SLAM, ROS2 · C++ 구현, 실제 센서, **선형대수 · 최적화 · 확률 추정**. 우대는 석 · 박사, **AprilTag · ArUco**, 물류 · 로봇 · 산업 SLAM, **Pose Graph · Graph SLAM · BA**, Gazebo · Isaac Sim · 자동 캘리브레이션. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "SLAM 실무 3 년 또는 석 · 박사",
+          "LiDAR · Visual SLAM",
+          "ROS2 · C++",
+          "SLAM 수학"
+        ],
+        "can_learn": [
+          "반사판 · 마커 절대 보정",
+          "창고 반복 구조 대응",
+          "Isaac Sim"
+        ]
+      },
+      "study": [
+        {
+          "topic": "선반이 반복되는 창고 — 마커로 절대 위치를 잡아 드리프트를 끊는다",
+          "from": "task",
+          "quote": "• Reflector / Marker 기반 위치 보정 및 SLAM 하이브리드 구조 설계",
+          "priority": "core",
+          "why": "주요업무다. 창고는 같은 모양 선반이 반복돼 스캔 매칭이 엉뚱한 곳에 맞고, 오래 돌면 드리프트가 쌓인다.",
+          "gap_check": "반복 구조에서 LiDAR 스캔 매칭이 왜 잘못된 위치에 수렴하나(지각적 앨리어싱)? 천장 · 기둥의 반사판이나 바닥 · 선반의 AprilTag 을 관측했을 때 그 절대 좌표를 SLAM 추정에 어떻게 넣나(팩터 · 칼만 갱신)? 마커가 가려지거나 잘못 인식되면(이상치 제거)?",
+          "drill": "Gazebo(또는 Isaac Sim)에 반복 선반 창고를 만들고 slam_toolbox 로 주행해 드리프트를 잰다. 알려진 위치의 AprilTag 을 카메라로 검출해 그 포즈를 GTSAM 포즈 그래프에 사전 팩터로 넣어 보정 전후의 궤적 오차(ATE)를 비교한다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "AprilTag — Documentation",
+              "url": "https://april.eecs.umich.edu/software/apriltag",
+              "kind": "docs"
+            },
+            {
+              "title": "GTSAM",
+              "url": "https://gtsam.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "LiDAR · IMU · 엔코더 · 카메라 융합",
+          "from": "task",
+          "quote": "• LiDAR–IMU–Encoder–Camera 멀티 센서 융합",
+          "priority": "core",
+          "why": "주요업무다. 지게차처럼 빠르게 돌고 멈추는 장비는 한 센서만으론 흔들린다.",
+          "gap_check": "휠 엔코더는 미끄럼에, IMU 는 적분 드리프트에, LiDAR 는 빠른 회전 중 왜곡에 약하다 — 서로 무엇을 메워 주나? 센서 시간 동기화가 어긋나면 무엇이 생기나? 느슨한 결합(EKF)과 강한 결합(팩터 그래프) 중 무엇을 고르나?",
+          "drill": "ROS2 robot_localization 으로 휠 오도메트리 + IMU 를 EKF 로 합치고, 그 결과를 LiDAR SLAM 의 초기값으로 넣는다. 시뮬레이터에서 바퀴 미끄럼 · IMU 편향을 주입해 각 조합의 궤적 오차를 비교하고, 센서 타임스탬프를 일부러 50 ms 어긋나게 해 영향을 본다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "robot_localization (ROS 2)",
+              "url": "https://docs.ros.org/en/rolling/p/robot_localization/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SLAM 의 수학 — 포즈 그래프 최적화",
+          "from": "preference",
+          "quote": "• Pose Graph Optimization / Graph SLAM / BA 경험",
+          "priority": "high",
+          "why": "우대사항이고 자격에 선형대수 · 최적화 · 확률 추정 이해가 있다.",
+          "gap_check": "포즈 그래프에서 노드 · 엣지는 무엇이고 루프 폐쇄는 무엇을 더하나? 비선형 최소제곱(가우스-뉴턴 · LM)은 무엇을 푸나? 잘못된 루프 폐쇄 하나가 지도를 망가뜨리지 않게 하려면(로버스트 커널 · 스위처블 제약)?",
+          "drill": "GTSAM 파이썬으로 2D 포즈 그래프(오도메트리 엣지 + 루프 폐쇄 몇 개)를 만들어 최적화하고, 일부러 틀린 루프 폐쇄 하나를 넣었을 때 Huber 커널 유무로 결과가 어떻게 다른지 그림으로 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Grisetti et al. — A Tutorial on Graph-Based SLAM",
+              "url": "https://ieeexplore.ieee.org/document/5681215",
+              "kind": "paper"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
