@@ -1820,6 +1820,17 @@
       "postings": 3,
       "study_items": 7,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "deloitte-consulting-kr",
+      "name": "딜로이트컨설팅",
+      "aliases": [
+        "딜로이트컨설팅"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 8,
+      "updated_at": "2026-09-30"
     }
   ]
 }

@@ -1,0 +1,354 @@
+{
+  "slug": "deloitte-consulting-kr",
+  "name": "딜로이트컨설팅",
+  "name_en": "Deloitte Consulting Korea",
+  "aliases": [
+    "딜로이트컨설팅"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "",
+  "one_liner": "Deloitte 의 한국 컨설팅 법인 — 고객사 프로젝트를 도는 AI 엔지니어링 · 생성형 AI 컨설턴트, AI 거버넌스 전략가, 클라우드 보안 아키텍트를 뽑는다",
+  "company": {
+    "business": "딜로이트컨설팅은 글로벌 회계 · 컨설팅 네트워크 **Deloitte** 의 한국 컨설팅 법인이다(서울 영등포구). 공고의 자리는 모두 **고객사 프로젝트를 수행하는 기술 컨설턴트**다 — 제조 · 유통 · 금융 같은 산업 고객에게 **데이터 플랫폼 · AI 모델 · 생성형 AI 를 설계 · 구현**하고(AI 전문 컨설턴트), **AI 전략 · 거버넌스 프로젝트와 제안서 · 오퍼링**을 만들고(AI 전략/거버넌스), **클라우드 보안 아키텍처 · 이행과 ISV 보안 SW 리셀링**을 한다(Cloud 보안). 채용은 글로벌 공통의 **Global Talent Standards** 와 직급(Consultant ~ Director)으로 하고, 수습 3개월 · 인성 검사 · 직급에 따라 평판 조회가 붙는다. 제품 회사가 아니라서 '무엇을 만드나' 는 고객사 프로젝트마다 다르다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "26년 하반기 AI 전문 컨설턴트 경력직 채용",
+        "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/554570?ReturnUrl=RecruitInfo",
+        "publisher": "캐치",
+        "summary": "딜로이트컨설팅(서울 영등포구) — 세 갈래: AI Engineering(Docker · Kubernetes 모델 배포, Spark · Beam · Kafka 파이프라인, 데이터 플랫폼), AI Data Analytics(ML/DL 모델링), Generative AI(마스터플랜 · 서비스 기획 · 개발 구현 컨설팅). 3년+, SQL · Python 필수, ML/DL 프레임워크. 우대 제조 · 유통 · 금융 도메인, SageMaker · Databricks · Snowflake · Palantir, 영어. 수습 3개월, 서류 → 인성 검사 → 면접."
+      },
+      {
+        "title": "26년 하반기 AI 전략/거버넌스 경력직 채용",
+        "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/554571?ReturnUrl=RecruitInfo",
+        "publisher": "캐치",
+        "summary": "AI 전략(거버넌스) 프로젝트 수행 · 리드, 고객 커뮤니케이션 · 제안서, AI 서비스 오퍼링 고도화 · go-to-market. Manager ~ Director, DT 또는 AI/ML 기획 8년+(Big 4 · 컨설팅펌 · SI · 대기업 DT/AI 조직). 우대 석사, 파이썬, AI 특허 · 논문, 비즈니스 영어."
+      },
+      {
+        "title": "26년 하반기 Cloud 보안 서비스 경력직 채용",
+        "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/554572?ReturnUrl=RecruitInfo",
+        "publisher": "캐치",
+        "summary": "Cloud Security & Network 고도화, Cloud Migration & Modernization, Security Architecture 설계 · 구축, ISV 보안 SW 리셀링. 10년+ 컨설팅/기업 실무. 우대 글로벌 컨설팅 Firm 경력 · 영어."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "컨설팅 · 구축 프로젝트 수임",
+        "how": "고객사와 전략 · 구축 프로젝트 계약을 맺고 컨설턴트 투입으로 받는다 — 단가 · 계약 구조는 공고에 없다.",
+        "domains": [
+          "AI · 데이터 구축 컨설팅",
+          "AI 전략 · 거버넌스 컨설팅",
+          "클라우드 보안 · 이행"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "26년 하반기 AI 전문 컨설턴트 경력직 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/554570?ReturnUrl=RecruitInfo",
+            "publisher": "캐치",
+            "summary": "딜로이트컨설팅(서울 영등포구) — 세 갈래: AI Engineering(Docker · Kubernetes 모델 배포, Spark · Beam · Kafka 파이프라인, 데이터 플랫폼), AI Data Analytics(ML/DL 모델링), Generative AI(마스터플랜 · 서비스 기획 · 개발 구현 컨설팅). 3년+, SQL · Python 필수, ML/DL 프레임워크. 우대 제조 · 유통 · 금융 도메인, SageMaker · Databricks · Snowflake · Palantir, 영어. 수습 3개월, 서류 → 인성 검사 → 면접."
+          },
+          {
+            "title": "26년 하반기 AI 전략/거버넌스 경력직 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/554571?ReturnUrl=RecruitInfo",
+            "publisher": "캐치",
+            "summary": "AI 전략(거버넌스) 프로젝트 수행 · 리드, 고객 커뮤니케이션 · 제안서, AI 서비스 오퍼링 고도화 · go-to-market. Manager ~ Director, DT 또는 AI/ML 기획 8년+(Big 4 · 컨설팅펌 · SI · 대기업 DT/AI 조직). 우대 석사, 파이썬, AI 특허 · 논문, 비즈니스 영어."
+          }
+        ]
+      },
+      {
+        "name": "보안 SW 리셀링",
+        "how": "Cloud 보안 공고가 'ISV 보안 SW 리셀링' 을 업무로 적는다 — 보안 솔루션을 고객에게 재판매한다.",
+        "domains": [
+          "클라우드 보안 · 이행"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "26년 하반기 Cloud 보안 서비스 경력직 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/554572?ReturnUrl=RecruitInfo",
+            "publisher": "캐치",
+            "summary": "Cloud Security & Network 고도화, Cloud Migration & Modernization, Security Architecture 설계 · 구축, ISV 보안 SW 리셀링. 10년+ 컨설팅/기업 실무. 우대 글로벌 컨설팅 Firm 경력 · 영어."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "AI · 데이터 구축 컨설팅",
+        "why": "AI 전문 컨설턴트 공고가 모델 배포(Docker · Kubernetes), 파이프라인(Spark · Beam · Kafka), 데이터 레이크 · 클라우드 플랫폼, ML/DL 모델링, GenAI 구현을 적는다.",
+        "what_to_know": [
+          "MLOps 배포",
+          "스트리밍 · 배치 파이프라인",
+          "레이크하우스",
+          "RAG 구현"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "26년 하반기 AI 전문 컨설턴트 경력직 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/554570?ReturnUrl=RecruitInfo",
+            "publisher": "캐치",
+            "summary": "딜로이트컨설팅(서울 영등포구) — 세 갈래: AI Engineering(Docker · Kubernetes 모델 배포, Spark · Beam · Kafka 파이프라인, 데이터 플랫폼), AI Data Analytics(ML/DL 모델링), Generative AI(마스터플랜 · 서비스 기획 · 개발 구현 컨설팅). 3년+, SQL · Python 필수, ML/DL 프레임워크. 우대 제조 · 유통 · 금융 도메인, SageMaker · Databricks · Snowflake · Palantir, 영어. 수습 3개월, 서류 → 인성 검사 → 면접."
+          }
+        ]
+      },
+      {
+        "name": "AI 전략 · 거버넌스 컨설팅",
+        "why": "AI 전략/거버넌스 공고가 거버넌스 프로젝트 · 제안서 · 오퍼링 · GTM 을 적는다.",
+        "what_to_know": [
+          "AI 위험 관리 프레임워크",
+          "AI 규제(EU AI Act · 국내 AI 기본법)",
+          "제안서 구조"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "26년 하반기 AI 전략/거버넌스 경력직 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/554571?ReturnUrl=RecruitInfo",
+            "publisher": "캐치",
+            "summary": "AI 전략(거버넌스) 프로젝트 수행 · 리드, 고객 커뮤니케이션 · 제안서, AI 서비스 오퍼링 고도화 · go-to-market. Manager ~ Director, DT 또는 AI/ML 기획 8년+(Big 4 · 컨설팅펌 · SI · 대기업 DT/AI 조직). 우대 석사, 파이썬, AI 특허 · 논문, 비즈니스 영어."
+          }
+        ]
+      },
+      {
+        "name": "클라우드 보안 · 이행",
+        "why": "Cloud 보안 공고가 클라우드 보안 · 네트워크 고도화, 마이그레이션, 보안 아키텍처, 보안 SW 리셀링을 적는다.",
+        "what_to_know": [
+          "클라우드 랜딩존",
+          "제로 트러스트 네트워크",
+          "CSPM"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "26년 하반기 Cloud 보안 서비스 경력직 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/554572?ReturnUrl=RecruitInfo",
+            "publisher": "캐치",
+            "summary": "Cloud Security & Network 고도화, Cloud Migration & Modernization, Security Architecture 설계 · 구축, ISV 보안 SW 리셀링. 10년+ 컨설팅/기업 실무. 우대 글로벌 컨설팅 Firm 경력 · 영어."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "세 갈래를 한 공고에",
+        "evidence": "[Generative AI 컨설턴트]",
+        "so_what": "한 공고에 엔지니어링 · 분석 · 생성형 AI 세 갈래가 있다 — 지원서에 어느 갈래인지 먼저 밝히고, 그 갈래의 프로젝트 결과물로 말하는 편이 낫다(이 사이트의 해석).",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "고객 앞에 서는 자리",
+        "evidence": "▪ 고객 커뮤니케이션 및 전략적 제안서 작성",
+        "so_what": "컨설팅 자리는 구현만큼 보고 · 제안이 평가된다 — 기술 결정을 비즈니스 효과로 옮겨 말하는 연습이 필요하다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "매출 · 인원 · 한국 내 조직 구성은 공고에 없다 — 회사 사이트를 이번에 읽지 않았다",
+    "SAP ABAP · 데이터 엔지니어 공고 2 건은 이미 마감됐다(마감 공고는 싣지 않았다)"
+  ],
+  "postings": [
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/554570?ReturnUrl=RecruitInfo",
+      "title": "26년 하반기 AI 전문 컨설턴트 경력직 채용",
+      "site": "dev",
+      "verdict": "경력 3년 이상, 마감 2026-09-30. 세 갈래를 한 공고로 뽑는다 — **AI Engineering**(Docker · Kubernetes 로 모델 개발 · 배포, **Spark · Beam · Kafka 파이프라인**, SQL/NoSQL · 데이터 웨어하우스, 데이터 레이크 · 클라우드 플랫폼 방향 제시), **AI Data Analytics**(ML/DL 라이브러리 모델링, Python · R · SQL · TensorFlow · PyTorch 분석), **Generative AI**(GenAI 마스터플랜 · 서비스 기획, 개발 · 구현 컨설팅, AI 기술 전략). 자격은 데이터사이언스 유관 전공 학사, 주요 컨설팅사 · 업계 경험, **SQL · Python 필수**, ML 모델링 · 최적화 · 빅데이터 플랫폼 3년, ML/DL 프레임워크. 우대는 석사, AI 팀 리더, **제조 · 유통 · 금융 도메인**, **SageMaker · Databricks · Snowflake · Palantir**, 영어. 수습 3개월, 서류 → 인성 검사 → 면접. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "SQL · Python",
+          "ML 모델링 실무 3년",
+          "ML/DL 프레임워크"
+        ],
+        "can_learn": [
+          "Databricks · Snowflake",
+          "GenAI 구현",
+          "산업 도메인"
+        ]
+      },
+      "study": [
+        {
+          "topic": "모델을 서비스로 — 컨테이너 · Kubernetes 배포와 모델 버전",
+          "from": "task",
+          "quote": "▪ Docker, Kubernetes 등을 활용한 모델 개발 및 배포",
+          "priority": "core",
+          "why": "주요업무(AI Engineering)다.",
+          "gap_check": "학습한 모델을 컨테이너 이미지에 굽나, 모델 레지스트리에서 기동 때 받나? Kubernetes 에서 새 모델을 카나리로 내고 지표가 나쁘면 되돌리려면? GPU 노드를 추론 파드에만 쓰게 하려면(taint · toleration · 리소스 요청)?",
+          "drill": "scikit-learn 모델을 MLflow 레지스트리에 올리고 FastAPI 추론 서버를 Docker 로 만들어 kind 클러스터에 배포한다. 두 모델 버전을 Deployment 둘로 띄워 트래픽을 9:1 로 나누고, 버전별 지연 · 오류율을 Prometheus 로 본 뒤 롤백한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "MLflow Model Registry",
+              "url": "https://mlflow.org/docs/latest/model-registry.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Kubernetes — Deployments",
+              "url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "배치와 스트리밍을 한 파이프라인으로 — Spark · Kafka",
+          "from": "task",
+          "quote": "▪ Apache Spark, Beam, Kafka 등을 활용한 Data Pipeline 설계 및 개발",
+          "priority": "core",
+          "why": "주요업무(AI Engineering)다.",
+          "gap_check": "Kafka 토픽을 Spark Structured Streaming 으로 읽어 레이크에 쓸 때 정확히 한 번은 무엇으로 보장하나(체크포인트 · 멱등 쓰기)? 늦게 온 이벤트는 워터마크로 어떻게 다루나? 같은 로직을 배치로 재처리하려면?",
+          "drill": "로컬 Kafka 에 제조 설비 센서 이벤트를 흘리고 Spark Structured Streaming 으로 5 분 창 집계를 Delta Lake 테이블에 쓴다. 이벤트 순서를 섞어 워터마크 효과를 보고, 같은 원본을 배치로 다시 돌려 결과가 같은지 비교한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Structured Streaming Programming Guide",
+              "url": "https://spark.apache.org/docs/latest/streaming/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "고객 데이터 위에 생성형 AI 를 — RAG 구현과 평가",
+          "from": "task",
+          "quote": "▪ Gen AI 개발 및 구현 컨설팅",
+          "priority": "high",
+          "why": "주요업무(Generative AI)다.",
+          "gap_check": "고객사 사내 문서로 RAG 를 만들 때 문서 권한(누가 무엇을 볼 수 있나)을 검색 단계에서 어떻게 지키나? 청크 크기 · 임베딩 · 재순위를 바꿨을 때 좋아졌는지는 무엇으로 재나(정답 셋 · 근거 일치)?",
+          "drill": "공개 문서 30 건으로 RAG 를 만들고 질문 · 정답 30 쌍을 직접 적는다. 청크 크기 2 가지 × 재순위 유무로 정답률 · 근거 인용 정확도를 표로 비교하고, 문서마다 부서 태그를 달아 사용자 부서로 검색을 거른다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Ragas — Evaluation",
+              "url": "https://docs.ragas.io/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "산업 데이터 플랫폼 — Databricks · Snowflake 를 써 본다",
+          "from": "preference",
+          "quote": "▪ Sagemaker, Data Bricks, SnowFlake, Palantir 등 AI 데이터 플랫폼 경험 보유",
+          "priority": "nice",
+          "why": "우대사항이다. 고객사가 이미 쓰는 플랫폼 위에서 일하는 경우가 많다.",
+          "gap_check": "Databricks 의 Unity Catalog 와 Snowflake 의 역할 기반 권한은 무엇이 다른가? 두 플랫폼 모두 계산과 저장을 나눠 과금하는데, 비용이 튀는 전형적인 원인은?",
+          "drill": "Databricks Free Edition 과 Snowflake 체험 계정에서 같은 공개 데이터셋(뉴욕 택시 등)을 적재하고 같은 집계 쿼리를 돌려 실행 계획 · 소요 · 크레딧을 기록한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Databricks Documentation",
+              "url": "https://docs.databricks.com/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/554571?ReturnUrl=RecruitInfo",
+      "title": "26년 하반기 AI 전략/거버넌스 경력직 채용",
+      "site": "dev",
+      "verdict": "Manager ~ Director, 마감 2026-09-30. **AI 전략(거버넌스) 프로젝트 수행 · 리드**, **고객 커뮤니케이션 · 전략 제안서**, **AI 서비스 오퍼링 고도화 · go-to-market**. 자격은 **DT 또는 AI/ML 기획 8년 이상**(Big 4 · 동급 컨설팅펌 · 주요 SI · 대기업 DT/AI 조직), 보고서 · 제안서 작성과 보고 역량. 개발 자리가 아니라 **기획 · 전략 자리**다 — 코드는 우대(파이썬 데이터 프로그래밍)에만 있다. 우대는 경영정보 · 기술경영 · 데이터사이언스 석사, AI 특허 · 논문, 비즈니스 영어. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "DT · AI/ML 기획 8년",
+          "보고서 · 제안서"
+        ],
+        "can_learn": [
+          "AI 규제 · 거버넌스 프레임워크"
+        ]
+      },
+      "study": [
+        {
+          "topic": "AI 거버넌스를 틀로 — NIST AI RMF 와 ISO/IEC 42001",
+          "from": "task",
+          "quote": "▪ AI 전략(거버넌스) 프로젝트 수행, 리드",
+          "priority": "core",
+          "why": "주요업무다.",
+          "gap_check": "NIST AI RMF 의 Govern · Map · Measure · Manage 는 각각 조직에 무엇을 요구하나? ISO/IEC 42001(AI 경영시스템)은 인증 대상이 되는데 RMF 와 어떻게 겹치나? EU AI Act 의 고위험 분류는 고객사의 어떤 AI 사용을 건드리나?",
+          "drill": "가상의 금융사 AI 사용 사례 5 개(챗봇 · 신용평가 · 이상거래 탐지 · 문서 요약 · 채용 선별)를 EU AI Act 위험 등급과 NIST AI RMF 기능에 매핑하는 표를 만들고, 고위험 1 건에 필요한 통제(데이터 · 인간 감독 · 기록)를 한 쪽으로 적는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "NIST AI Risk Management Framework",
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "기술을 제안서로 — 문제 · 접근 · 효과 · 일정",
+          "from": "task",
+          "quote": "▪ 고객 커뮤니케이션 및 전략적 제안서 작성",
+          "priority": "high",
+          "why": "주요업무이고 자격요건에 보고서 · 제안서 작성이 있다.",
+          "gap_check": "생성형 AI 도입 제안에서 효과를 무엇으로 약속하나(처리 시간 · 정확도 · 비용), 측정할 수 없는 약속을 피하려면? PoC 에서 본사업으로 넘어가는 기준(성공 지표)을 제안서에 어떻게 박아 두나?",
+          "drill": "가상의 제조사 '설비 매뉴얼 질의응답' 과제에 대해 10 쪽 제안서(현황 · 문제 · 접근 · 아키텍처 한 장 · PoC 성공 지표 · 일정 · 위험)를 쓰고, 성공 지표마다 측정 방법을 한 줄씩 붙인다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "NIST AI RMF Playbook",
+              "url": "https://airc.nist.gov/airmf-resources/playbook/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/554572?ReturnUrl=RecruitInfo",
+      "title": "26년 하반기 Cloud 보안 서비스 경력직 채용",
+      "site": "dev",
+      "verdict": "경력 10년 이상, 마감 2026-09-30. **Cloud Security & Network 고도화**, **Cloud Migration & Modernization**, **Security Architecture 설계 · 구축**, **ISV 보안 SW 리셀링**. 자격은 컨설팅회사/일반 기업 관련 실무 10년 이상, 관련 전공 · 4년제 졸업. 우대는 글로벌 컨설팅 Firm 경력 · 영어. 공고가 짧아 클라우드(AWS · Azure · GCP) · 도구는 적혀 있지 않다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "보안 · 클라우드 실무 10년"
+        ],
+        "can_learn": [
+          "멀티 계정 랜딩존",
+          "보안 SW 리셀링 구조"
+        ]
+      },
+      "study": [
+        {
+          "topic": "클라우드 보안 아키텍처 — 랜딩존과 가드레일",
+          "from": "task",
+          "quote": "▪ Security Architecture 설계 및 구축",
+          "priority": "core",
+          "why": "주요업무다.",
+          "gap_check": "여러 계정(구독)으로 나눈 랜딩존에서 로그 · 보안 계정을 왜 따로 두나? SCP(조직 정책)로 막을 것과 IAM 으로 허용할 것은 어떻게 나누나? 온프레미스와 잇는 네트워크(Transit Gateway · 전용선)에서 동서 트래픽 검사는 어디서 하나?",
+          "drill": "AWS Organizations 로 로그 · 보안 · 워크로드 계정 셋을 만들고(무료 한도 내), CloudTrail 조직 트레일과 SCP(리전 제한 · 루트 사용 금지)를 걸어 금지된 동작이 실제로 거부되는지 확인한다. 구성은 Terraform 으로 남긴다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "AWS Security Reference Architecture",
+              "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/security-reference-architecture/welcome.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "옮기면서 보안을 지킨다 — 클라우드 이행 단계의 통제",
+          "from": "task",
+          "quote": "▪ Cloud Migration & Modernization",
+          "priority": "high",
+          "why": "주요업무다.",
+          "gap_check": "리프트 앤 시프트로 옮긴 VM 에서 온프레미스 방화벽이 하던 일은 무엇이 대신하나(보안 그룹 · WAF)? 이행 기간에 두 곳에 걸친 데이터의 암호화 키는 누가 관리하나? 설정 드리프트는 무엇으로 잡나(CSPM)?",
+          "drill": "앞 과제 워크로드 계정에 일부러 공개 S3 버킷 · 0.0.0.0/0 SSH 보안 그룹을 만들고 AWS Config 관리형 규칙(또는 오픈소스 Prowler)으로 탐지되는지 확인한 뒤, 탐지 → 수정 절차를 한 쪽 런북으로 적는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Prowler",
+              "url": "https://github.com/prowler-cloud/prowler",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
