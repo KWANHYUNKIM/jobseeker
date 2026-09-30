@@ -1,0 +1,301 @@
+{
+  "slug": "linqalpha",
+  "name": "링크알파",
+  "name_en": "LinqAlpha",
+  "aliases": [
+    "링크알파",
+    "LinqAlpha"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "",
+  "one_liner": "헤지펀드 · 자산운용사를 위한 AI 리서치 에이전트(실적 콜 · 공시 · 뉴스를 읽고 근거 정리) 핀테크 — 금융 문서 데이터 엔지니어 · 데이터 플랫폼 리드 · Applied AI 엔지니어를 뽑는다",
+  "company": {
+    "business": "링크알파(LinqAlpha)는 **헤지펀드 · 자산운용사 같은 기관 투자자를 위한 AI 리서치 에이전트** 를 만드는 핀테크다 — 애널리스트가 며칠씩 보던 **실적 콜(트랜스크립트) · 공시 · 뉴스**를 에이전트가 읽고 **근거를 정리**해 투자 판단에 참고할 리서치로 돌려준다. 국내외 여러 기관 투자자가 매일 쓴다고 적는다. 제품은 **Search · Chat · Analytics** AI 서비스와 그 아래 데이터 레이어, 그리고 고객사 맞춤 기능(Quant Analytics · Portfolio Skill)이며, Core Product 를 **API** 로도 내려 한다. 공고는 '제품의 품질은 결국 데이터에서 나온다' 고 적는다 — 정형 데이터와 비정형 문서를 수집 · 정제 · 색인(OpenSearch)해 에이전트가 쓰게 하는 것이 핵심이다. 인프라는 **멀티 클라우드(AWS · Azure · GCP) · 한국 · 미국 리전**, 하이브리드(온프레미스 연동)도 있다. 모든 공고가 **코딩 에이전트 활용**을 적는다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "Data Engineer(Data Platform)",
+        "url": "https://www.wanted.co.kr/wd/375853",
+        "publisher": "원티드",
+        "summary": "링크알파 — 헤지펀드 · 자산운용사를 위한 AI 리서치 제품: 실적 콜 · 공시 · 뉴스를 에이전트가 읽고 근거를 정리. 업무: 정형 · 비정형 금융 데이터(외부 데이터 · 공시 · 트랜스크립트 · 뉴스) 수집 · 적재, AI 서비스(검색 · 채팅 · 분석)용 정규화 · 색인 · 서빙, 품질 · 신선도 · 정합성 모니터링, OpenSearch 저장 · 색인 성능 · 비용, 새 데이터 소스 연동, 멀티 클라우드(AWS · Azure · GCP) · 한국 · 미국 리전, 코딩 에이전트. 1-5년."
+      },
+      {
+        "title": "Applied AI Engineer (Search & Integration)",
+        "url": "https://www.wanted.co.kr/wd/375857",
+        "publisher": "원티드",
+        "summary": "글로벌 헤지펀드 · 자산운용사 대상 AI 에이전트 핀테크, 국내외 기관 투자자가 매일 사용. API → Search · Chat · Analytics → 데이터 E2E, Core Product API 화 · Skill · 도구 시스템, 고객사 맞춤 R&D(Quant Analytics · Portfolio Skill), 프롬프트 · 도구 · 에이전트 워크플로 · 외부 연동 · 백엔드. Python/TS 백엔드, LLM · 에이전트, Claude Code · Cursor 깊이. 1-5년."
+      },
+      {
+        "title": "Data Platform Lead / Senior Data Engineer",
+        "url": "https://www.wanted.co.kr/wd/375854",
+        "publisher": "원티드",
+        "summary": "금융 리포트 · 공시 · 뉴스 · 소셜 비정형 데이터 — PDF 파싱 · 멀티모달 처리 · 품질 모니터링 · 재처리 자동화, IaC 인프라 · 실시간 모니터링, DW · Data Lake · 온프레미스 + AWS/GCP 하이브리드, Kafka · Spark · Airflow. 5-11년, 아키텍처 책임. 우대 금융 도메인 · 테크 리드 · Snowflake/BigQuery/Redshift · 카탈로그 · 리니지 · Terraform · K8s · 금융 규제 보안."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "기관 투자자용 AI 리서치 구독 · API",
+        "how": "헤지펀드 · 자산운용사가 AI 리서치 제품을 쓰고, 맞춤 기능 · API 를 받는다 — 요금 구조는 공고에 없다.",
+        "domains": [
+          "금융 문서 데이터 플랫폼",
+          "리서치 에이전트 · API"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "Applied AI Engineer (Search & Integration)",
+            "url": "https://www.wanted.co.kr/wd/375857",
+            "publisher": "원티드",
+            "summary": "글로벌 헤지펀드 · 자산운용사 대상 AI 에이전트 핀테크, 국내외 기관 투자자가 매일 사용. API → Search · Chat · Analytics → 데이터 E2E, Core Product API 화 · Skill · 도구 시스템, 고객사 맞춤 R&D(Quant Analytics · Portfolio Skill), 프롬프트 · 도구 · 에이전트 워크플로 · 외부 연동 · 백엔드. Python/TS 백엔드, LLM · 에이전트, Claude Code · Cursor 깊이. 1-5년."
+          },
+          {
+            "title": "Data Engineer(Data Platform)",
+            "url": "https://www.wanted.co.kr/wd/375853",
+            "publisher": "원티드",
+            "summary": "링크알파 — 헤지펀드 · 자산운용사를 위한 AI 리서치 제품: 실적 콜 · 공시 · 뉴스를 에이전트가 읽고 근거를 정리. 업무: 정형 · 비정형 금융 데이터(외부 데이터 · 공시 · 트랜스크립트 · 뉴스) 수집 · 적재, AI 서비스(검색 · 채팅 · 분석)용 정규화 · 색인 · 서빙, 품질 · 신선도 · 정합성 모니터링, OpenSearch 저장 · 색인 성능 · 비용, 새 데이터 소스 연동, 멀티 클라우드(AWS · Azure · GCP) · 한국 · 미국 리전, 코딩 에이전트. 1-5년."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "금융 문서 데이터 플랫폼",
+        "why": "데이터 엔지니어 · 리드 공고가 공시 · 트랜스크립트 · 뉴스 · 리포트 수집, PDF 파싱 · 멀티모달, 정규화 · 색인 · 서빙, 품질 · 신선도, OpenSearch, DW/Lake, Kafka · Spark · Airflow, 멀티 클라우드를 적는다.",
+        "what_to_know": [
+          "PDF · 표 파싱",
+          "문서 청크 · 색인(OpenSearch · 벡터)",
+          "데이터 신선도 · 품질 SLA",
+          "라이선스 데이터 취급"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Data Engineer(Data Platform)",
+            "url": "https://www.wanted.co.kr/wd/375853",
+            "publisher": "원티드",
+            "summary": "링크알파 — 헤지펀드 · 자산운용사를 위한 AI 리서치 제품: 실적 콜 · 공시 · 뉴스를 에이전트가 읽고 근거를 정리. 업무: 정형 · 비정형 금융 데이터(외부 데이터 · 공시 · 트랜스크립트 · 뉴스) 수집 · 적재, AI 서비스(검색 · 채팅 · 분석)용 정규화 · 색인 · 서빙, 품질 · 신선도 · 정합성 모니터링, OpenSearch 저장 · 색인 성능 · 비용, 새 데이터 소스 연동, 멀티 클라우드(AWS · Azure · GCP) · 한국 · 미국 리전, 코딩 에이전트. 1-5년."
+          },
+          {
+            "title": "Data Platform Lead / Senior Data Engineer",
+            "url": "https://www.wanted.co.kr/wd/375854",
+            "publisher": "원티드",
+            "summary": "금융 리포트 · 공시 · 뉴스 · 소셜 비정형 데이터 — PDF 파싱 · 멀티모달 처리 · 품질 모니터링 · 재처리 자동화, IaC 인프라 · 실시간 모니터링, DW · Data Lake · 온프레미스 + AWS/GCP 하이브리드, Kafka · Spark · Airflow. 5-11년, 아키텍처 책임. 우대 금융 도메인 · 테크 리드 · Snowflake/BigQuery/Redshift · 카탈로그 · 리니지 · Terraform · K8s · 금융 규제 보안."
+          }
+        ]
+      },
+      {
+        "name": "리서치 에이전트 · API",
+        "why": "Applied AI 공고가 Search · Chat · Analytics 서비스, Skill · 도구 시스템, Core Product API 화, 프롬프트 · 에이전트 워크플로를 적는다.",
+        "what_to_know": [
+          "근거 인용 RAG",
+          "도구 호출 에이전트",
+          "평가 · 모니터링"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Applied AI Engineer (Search & Integration)",
+            "url": "https://www.wanted.co.kr/wd/375857",
+            "publisher": "원티드",
+            "summary": "글로벌 헤지펀드 · 자산운용사 대상 AI 에이전트 핀테크, 국내외 기관 투자자가 매일 사용. API → Search · Chat · Analytics → 데이터 E2E, Core Product API 화 · Skill · 도구 시스템, 고객사 맞춤 R&D(Quant Analytics · Portfolio Skill), 프롬프트 · 도구 · 에이전트 워크플로 · 외부 연동 · 백엔드. Python/TS 백엔드, LLM · 에이전트, Claude Code · Cursor 깊이. 1-5년."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "데이터가 곧 제품 품질",
+        "evidence": "• 데이터 품질·신선도·정합성을 검증하는 모니터링과 테스트 체계를 구축합니다.",
+        "so_what": "실적 발표 직후 몇 분 안에 트랜스크립트가 색인돼야 하는 것 같은 신선도 요구를 숫자로 관리해 본 경험이 강점이다(이 사이트의 해석).",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "코딩 에이전트를 깊이",
+        "evidence": "• Claude Code, Cursor 같은 코딩 에이전트를 깊이 써본 분.",
+        "so_what": "세 자리 모두 코딩 에이전트 활용을 적는다 — 에이전트로 만든 결과와 한계를 말할 수 있게 한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "요금 · 고객 수 · 투자 · 인원 · 근무지는 공고에 없다",
+    "회사 홈페이지는 이번에 읽지 않았다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/375853",
+      "title": "Data Engineer(Data Platform)",
+      "site": "wanted",
+      "verdict": "경력 1-5년. **정형 · 비정형 금융 데이터(외부 데이터 · 공시 · 트랜스크립트 · 뉴스) 수집 · 적재 파이프라인**, **AI 서비스(검색 · 채팅 · 분석)가 바로 쓰는 정규화 · 색인 · 서빙 레이어**, **품질 · 신선도 · 정합성 모니터링 · 테스트**, **OpenSearch 등 저장 · 색인 구조의 성능 · 비용**, 새 데이터 소스 연동, **멀티 클라우드 · 한국 · 미국 리전**, 코딩 에이전트. 자격은 Python 파이프라인 설계 · 구현, 정형 · 비정형 · 대용량 색인 설계, 품질을 지표로, 클라우드 운영, 추진력. 우대는 **금융 · 시장 · 라이선스 데이터**, 검색 · 벡터 · **RAG 파이프라인**, 스트리밍 · Airflow, 모델링, **LLM · 에이전트에 데이터 공급**, 커넥터, 코딩 에이전트. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Python 파이프라인",
+          "대용량 색인 설계",
+          "클라우드 운영"
+        ],
+        "can_learn": [
+          "금융 문서 도메인",
+          "RAG 색인",
+          "신선도 SLA"
+        ]
+      },
+      "study": [
+        {
+          "topic": "공시 · 실적 콜을 에이전트가 쓰게 — 문서 색인 파이프라인",
+          "from": "task",
+          "quote": "• 수집한 데이터를 AI 서비스(검색·채팅·분석)가 바로 쓸 수 있도록 정규화·색인·서빙하는 데이터 레이어를 만듭니다.",
+          "priority": "core",
+          "why": "주요업무다.",
+          "gap_check": "같은 회사가 여러 이름 · 티커 · 거래소로 나오면 엔티티를 어떻게 맞추나(식별자 매핑)? 실적 콜 트랜스크립트는 발화자 · 질의응답 구조를 살려 어떻게 청크하나? 공시 원문이 정정되면 색인을 어떻게 갱신 · 버전 관리하나? 키워드(BM25) · 벡터를 한 OpenSearch 에서 함께 쓰려면?",
+          "drill": "SEC EDGAR 공개 API 로 몇 회사의 10-K · 8-K 를 받아 섹션 단위로 청크하고, 회사 식별자(CIK · 티커) · 제출일 · 섹션 메타데이터와 함께 OpenSearch 에 BM25 + k-NN 벡터로 색인한다. '매출 가이던스' 같은 질의로 하이브리드 검색 결과를 비교하고, 정정 공시(8-K/A)가 오면 이전 버전을 대체하는 갱신을 만든다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "SEC EDGAR — Developer resources (APIs)",
+              "url": "https://www.sec.gov/search-filings/edgar-application-programming-interfaces",
+              "kind": "docs"
+            },
+            {
+              "title": "OpenSearch — Hybrid search",
+              "url": "https://opensearch.org/docs/latest/search-plugins/hybrid-search/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "데이터 신선도 · 정합성을 지표로",
+          "from": "qualification",
+          "quote": "• 데이터 품질과 안정성을 지표로 관리하고, 문제를 사전에 잡는 체계를 만들어본 분.",
+          "priority": "core",
+          "why": "자격요건이고 주요업무에 품질 · 신선도 · 정합성 체계가 있다.",
+          "gap_check": "소스마다 '늦었다' 의 기준(실적 발표 뒤 몇 분 · 매일 몇 시)을 어떻게 정하나? 원천 건수와 색인 건수가 어긋나면 어디서 빠졌는지 어떻게 추적하나? 라이선스 데이터의 사용 범위(재배포 금지 · 고객별 권한)는 파이프라인에서 어떻게 지키나?",
+          "drill": "Airflow DAG 에 소스별 신선도 SLA(마지막 수신 시각)와 원천 ↔ 색인 건수 대조 · 필수 필드 검사를 넣어 위반 시 알림을 보내고, 문서마다 라이선스 태그를 붙여 검색 API 가 고객 권한으로 거르게 한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Apache Airflow — SLAs / Deadline Alerts",
+              "url": "https://airflow.apache.org/docs/apache-airflow/stable/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/375854",
+      "title": "Data Platform Lead / Senior Data Engineer",
+      "site": "wanted",
+      "verdict": "경력 5-11년, **리드**. **금융 리포트 · 공시 · 뉴스 · 소셜 비정형 데이터의 PDF 파싱 · 전처리 · 멀티모달 처리 파이프라인**, 품질 모니터링 · 오류 감지 · **재처리 자동화**, **IaC 인프라 자동화 · 실시간 모니터링**, **DW · Data Lake 설계 · 온프레미스 + AWS/GCP 하이브리드 운영**, **Kafka 스트리밍 · Spark 배치 · Airflow**. 자격은 데이터 엔지니어 5년, 아키텍처 · 기술 선택 책임, Python/Java · SQL · 모델링, 품질 · 보안 · 자동화, 협업 속 기술 결정. 우대는 금융 도메인, 테크 리드, Snowflake/BigQuery/Redshift · 카탈로그 · 리니지, Terraform/Ansible · K8s, 분산 성능 튜닝, **금융 규제 보안 아키텍처**. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "데이터 엔지니어 5년",
+          "아키텍처 책임",
+          "DW/Lake"
+        ],
+        "can_learn": [
+          "금융 문서 파싱",
+          "규제 보안"
+        ]
+      },
+      "study": [
+        {
+          "topic": "금융 PDF 를 구조로 — 표 · 레이아웃 파싱과 재처리",
+          "from": "task",
+          "quote": "• 금융 리포트, 공시, 뉴스, 소셜 데이터 등을 포함한 비정형 데이터를 대상으로 PDF 파싱, 전처리, 멀티모달 데이터 처리 파이프라인을 구축하고, 데이터 품질 모니터링과 오류 감지, 재처리 자동화를 통해 운영 신뢰성을 높입니다.",
+          "priority": "core",
+          "why": "주요업무다.",
+          "gap_check": "증권사 리포트의 표 · 차트 · 각주를 텍스트 추출(pdfplumber) · 레이아웃 모델 · 비전 LLM 중 무엇으로 뽑나, 비용과 정확도는? 파서를 바꾸면 이미 처리한 문서는 어떻게 다시 처리하나(원본 보관 · 버전 · 멱등)? 파싱 실패를 무엇으로 감지하나(표 행 수 · 숫자 합계 검증)?",
+          "drill": "공개 사업보고서 PDF 몇 개로 pdfplumber · Docling(또는 Unstructured) 두 파서의 표 추출 결과를 비교하고, 재무표 합계 검증으로 실패를 감지해 실패 문서만 다른 파서로 재처리하는 파이프라인을 만든다. 원본 · 파서 버전 · 결과를 저장해 파서 교체 시 전체 재처리를 할 수 있게 한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Docling",
+              "url": "https://github.com/docling-project/docling",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "금융 데이터 플랫폼의 보안 · 거버넌스 — 카탈로그 · 리니지 · 접근 통제",
+          "from": "preference",
+          "quote": "• 금융 규제 준수 관점에서 데이터 보안 아키텍처를 설계하거나 운영해본 경험이 있으신 분",
+          "priority": "high",
+          "why": "우대사항이고 미션에 품질 · 보안 · 거버넌스 · 금융 규제 준수가 있다.",
+          "gap_check": "고객(기관)별로 볼 수 있는 데이터가 다르면 Lake · DW · 색인에서 어떻게 격리하나? 라이선스 데이터가 어느 파생 테이블 · 색인으로 흘러갔는지 리니지로 어떻게 추적하나? 한국 · 미국 리전에 데이터가 나뉘면 이동 규칙은?",
+          "drill": "OpenLineage(또는 dbt 리니지)로 원천 → 정제 → 색인 흐름을 기록하고, 라이선스 태그가 파생 데이터로 전파되는지 확인한다. Terraform 으로 고객별 버킷 · 역할을 만들어 교차 접근이 거부되는지 테스트한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "OpenLineage",
+              "url": "https://openlineage.io/docs/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/375857",
+      "title": "Applied AI Engineer (Search & Integration)",
+      "site": "wanted",
+      "verdict": "경력 1-5년. **API → AI 서비스(Search · Chat · Analytics) → 데이터를 E2E 로 유지 · 최적화**, **Core Product API 화 · 내부 Skill · 도구 시스템 고도화**, **고객사 맞춤 R&D(Quant Analytics · Portfolio Skill)**, AI 서비스와 데이터 사이 거리 좁히기, **프롬프트 · 도구 · 에이전트 워크플로 · 외부 연동 · 백엔드 직접 구현**, 코딩 에이전트. 자격은 **Python 또는 TypeScript 백엔드**, 시스템 전체를 가로지르는 책임, 실험 → 데이터 확인 → 동작하는 시스템, LLM · 에이전트, **Claude Code · Cursor 깊이**. 우대는 금융 · 시장 관심, LLM 앱 · 에이전트, E2E 연결, **평가 · 모니터링**, 커넥터 · 파이프라인, 통계 · NLP, 클라우드. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Python/TS 백엔드",
+          "LLM · 에이전트",
+          "코딩 에이전트 숙련"
+        ],
+        "can_learn": [
+          "금융 분석 도구",
+          "평가 체계"
+        ]
+      },
+      "study": [
+        {
+          "topic": "리서치 에이전트의 도구 — Skill 로 계산은 코드가, 서술은 모델이",
+          "from": "task",
+          "quote": "• Core Product를 API화합니다. 내부 Skill·도구 시스템을 고도화하고 외부에서 쓸 수 있는 형태로 만듭니다.",
+          "priority": "core",
+          "why": "주요업무이고 예시로 Quant Analytics · Portfolio Skill 을 든다.",
+          "gap_check": "'이 회사의 최근 4 분기 매출 성장률' 같은 질문에서 숫자 계산을 LLM 에 맡기지 않고 도구(코드 · SQL)로 하게 하려면? 도구의 입력 스키마 · 설명을 어떻게 써야 모델이 잘 고르나? 내부 도구를 외부 API(또는 MCP)로 낼 때 인증 · 사용량 · 버전은?",
+          "drill": "Python(FastAPI)으로 '재무 수치 조회 · 성장률 계산 · 공시 검색' 세 도구를 만들고 에이전트가 질문에 따라 골라 부른 뒤 근거 문단 · 계산식을 함께 답하게 한다. 같은 도구를 MCP 서버로도 노출하고 API 키별 사용량을 기록한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Anthropic — Tool use",
+              "url": "https://docs.claude.com/en/docs/agents-and-tools/tool-use/overview",
+              "kind": "docs"
+            },
+            {
+              "title": "Model Context Protocol",
+              "url": "https://modelcontextprotocol.io/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "투자 리서치 답의 평가 — 근거 · 숫자 · 신선도",
+          "from": "preference",
+          "quote": "• 평가·모니터링 체계를 만들어본 경험.",
+          "priority": "high",
+          "why": "우대사항이다. 기관 투자자는 틀린 숫자 · 오래된 정보에 민감하다(이 사이트의 해석).",
+          "gap_check": "답의 숫자가 원천과 맞는지 자동으로 어떻게 확인하나? 인용한 문서가 최신인지(정정 · 새 분기)는? 운영 중 사용자가 '틀렸다' 고 표시한 답을 평가셋으로 어떻게 모으나?",
+          "drill": "앞 과제 에이전트에 대해 질문 30 개(숫자 · 비교 · 최신성)와 정답을 만든 평가셋으로 숫자 일치율 · 인용 정확도 · 최신 문서 사용률을 재고, 도구 설명 · 프롬프트를 바꿀 때마다 CI 에서 돌린다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Anthropic — Develop tests / evaluations",
+              "url": "https://docs.claude.com/en/docs/test-and-evaluate/develop-tests",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
