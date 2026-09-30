@@ -1875,6 +1875,17 @@
       "postings": 1,
       "study_items": 4,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "illunex",
+      "name": "일루넥스",
+      "aliases": [
+        "일루넥스"
+      ],
+      "status": "done",
+      "postings": 2,
+      "study_items": 3,
+      "updated_at": "2026-09-30"
     }
   ]
 }
