@@ -15,7 +15,6 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **JX通信社** | JP · SaaS · 보도 벤처(FASTALERT · NewsDigest) | 프로파일(2026-09-30, slug `jxpress`). 도메인 셋 — BigQuery 물리 과금 · Datadog 비용 / NewsDigest API · DB 무중단 AWS → GCP / 기상청 XML EventID · 취소 전문. 기능 2/3 — 클라우드 비용 프로그램(`cloud-cost-program`) · AWS → GCP 무중단 이행(`aws-to-gcp-no-downtime`). |
 | **オイシックス** | JP · 커머스 · 식품 정기 택배(Oisix · らでぃっしゅぼーや · 大地を守る会, 2026-07 사명 변경) | 프로파일(2026-09-30, slug `oisix`). 도메인 셋 — REBORN 제3세대(EKS · Dapr 무중단 · OpenAPI SSOT · 데드 코드) · 정기 박스 추천과 수요 예측(あなたにおすすめ · 반사실 평가 · LLM 보완 추천) · 해지율과 LCP · CVR. 입구 하테나 `creators.oisix.co.jp`(archive 로 2018 까지). 수익원 둘 — 정기 택배 EC(confirmed) · 법인 · 광고(inferred, **도메인 없음**). 기능 3(2026-09-30 REBORN / 추천 · 수요 예측 / 비기너 해지 · LCP × CVR). 도메인 셋 모두 기능. **hold** — 법인 · 광고 수익원 자료 두 번 없음(2026-09-30: archive 제목 · 블로그 검색 広告/保育/法人/AdOisix). 도메인 셋 모두 기능. |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 | **ラクス(RAKUS)** | JP · 백오피스 SaaS(楽楽精算·楽楽明細) | 프로파일(2026-09-26). 도메인 둘 — 경비 전표를 AI 가 초안 쓰고 규칙이 검사한다 · 청구서가 거래처에 닿는 제품의 장애를 영향으로 줄 세운다. 기능 2(楽楽精算 AI 에이전트 · 楽楽明細 장애 대응). **hold** — 메일 발송·웹 미디어 수익원 자료 두 번 없음(2026-09-26). 메일 발송·웹 미디어 수익원은 도메인 없음. |
@@ -1161,6 +1160,7 @@
 
 ## 완료
 
+- **JX通信社** (JP · 보도 벤처 — FASTALERT · NewsDigest · 기상청 XML API) — 2026-09-30 완주. 도메인 3 · 기능 3. **재해 정보는 멈추지도 틀리지도 않게, 그 비용은 숫자로.** 클라우드 비용 프로그램(월 ◯만 엔 · BigQuery 주석 피벗 · Datadog 수집 비용 합산 60% · BigQuery 물리 과금 데이터셋별), AWS → GCP 무중단(읽기 먼저 · DMS · VPN · DB 도메인 · API 가중 CNAME · Datastream CDC), 기상청 XML(PULL · EventID 묶기 · 발표 조건 · 취소 전문 롤백 · 가공 API). 비교 재료: 무중단 이행(JX ↔ ヌーラボ RDB ↔ スペースリー gh-ost), 비용 가시화(JX ↔ スタンバイ Databricks).
 - **GMOメイクショップ(MakeShop)** (JP · EC 사이트 구축 SaaS — 월정액 · 결제 수수료) — 2026-09-30 완주. 도메인 3 · 기능 3. **옮기는 동안 멈추지 않는다.** 결제 DB 신 · 구 대조(소스 사양을 가설로 · dev DB SELECT 한정 실데이터 대조 · 가드레일 넷), 주문 상세 재구축(Container/Presentational · Pages 층 · Repository/Mapper/Service) + Vue3 제자리 이행(신기능 병행 · 주기 병합), CSV 배치(ECS 롤링 120 초 → AWS Batch 리비전 없는 최신 제출 · 사이드카 재사용). 비교 재료: 레거시 결제 이행(MakeShop ↔ スマートバンク 리컨사일), 배포와 긴 작업(AWS Batch ↔ スペースリー Lambda).
 - **シンクロ・フード** (JP · 음식점 포털 상장사 — 구인 · 점포 물건 · 점포 디자인) — 2026-09-30 완주. 도메인 3 · 기능 3. **바꾸기 전에 경로와 숫자를 본다.** OpenSearch 스카우트 검색(갱신 경로가 Rails · Java · 생 SQL 이라 트리거 큐 테이블 — Aurora → Lambda → SQS 는 커밋 전 호출이라 탈락, 3-12 초 → 약 0.5 초), 마이소쿠 OCR + LLM(자동 등록 대신 입력 보조 · 항목 분해 · 초안 JSON · 20 장 일괄), WAF 레이트 리밋(3 단 필터 · p95 × 안전 계수 · 본번 Count 2 주). 수익원 둘(구인 광고 / 물건 · 디자인 중개 — 해석) 모두 연결. **우리 사이트와 같은 구인 업종**.
 - **スペースリー** (JP · 부동산/주택 360° VR SaaS) — 2026-09-30 완주. 도메인 3 · 기능 3. **측정하고 나서 바꾼다.** 큐브맵 Sidekiq → Lambda(라이브러리 벤치마크로 원인이 실행 위치임을 가림 · 인터페이스 불변 · presigned 직통 · 픽셀 수 메모리 계층 · 기업 단위 플래그, 50 장 약 8 분 50 초 → 1 분 50 초), gh-ost on Aurora(LOCK=NONE 인데 1 분 장애 2 회 · pt-osc 대비 · IAM/binlog/교차 DB FK 의 벽 · 배포 순서 · strong_migrations 오탐 61% 조정), 가구 지우기 인페인팅(빈방 + CG 가구 역방향 데이터 10 만 장 · 엉성한 마스크). 수익원 둘(구독 — 해석 / 촬영 · CG 대행 — 가격 확인) 모두 연결.

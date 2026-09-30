@@ -3547,8 +3547,8 @@
       "name_en": "JX PRESS Corporation",
       "country": "JP",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 2,
+      "status": "done",
+      "features_done": 3,
       "one_liner": "'보도의 기계화' 를 내건 보도 벤처 — 재해 · 사건 리스크 검지 SaaS FASTALERT 와 속보 앱 NewsDigest. 쌓인 BigQuery · 감시 비용을 숫자로 줄이고, 앱을 멈추지 않고 AWS 에서 GCP 로 옮기고, 기상청 XML 의 EventID · 취소 전문을 틀리지 않게 다룬다",
       "updated_at": "2026-09-30",
       "domain": "jxpress.net"

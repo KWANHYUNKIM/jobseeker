@@ -3096,3 +3096,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 JX通信社 AWS → GCP 무중단 이행(기능 2/3)
 
 - `aws-to-gcp-no-downtime`. 결정 8 — Locust 비교 / 짧은 쓰기 정지 + 큐 / 읽기 먼저 / DMS(사용자 미동기) / HA VPN / Route 53 DB 도메인 · 재접속 / API 셀프 관리형 인증서 + 가중 CNAME / Datastream CDC(PK · max_staleness). DB · Datastream 출처 요약을 본문 기준으로 보강.
+
+## 2026-09-30 JX通信社 기상청 XML(기능 3/3) — 완주
+
+- `jma-xml-event-cancel`. 결정 7 — 공식 XML 원천 / PULL 피드(PUSH 2020 종료, 폴링 간격은 미상) / EventID 묶기 / 발표 조건 · 순서 / 거친 → 세밀 구역 / 취소 전문 롤백 / 가공 API. 출처에 기상청 XML 정보 제공 페이지 · 고빈도 피드 추가. 모든 도메인에 기능 → `done`.
