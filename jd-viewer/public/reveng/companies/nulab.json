@@ -133,7 +133,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "backlog-webdav-perl-to-go"
+      ]
     },
     {
       "name": "Backlog 를 느리게 하는 SQL 을 테이블 구조부터 고친다",
@@ -180,7 +182,378 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "backlog-webdav-perl-to-go",
+      "name": "Backlog 파일 기능의 WebDAV 를 Apache + Perl 에서 Go 로 — 그대로 옮기지 않고 호환할 것과 정리할 것을 가르며, 읽기는 단계적으로 · 쓰기는 신중히 바꾸고, '지난 1 주 개발 환경에서 치명 결함 없음' 을 출시 조건으로 건다",
+      "domain": "Backlog 의 오래된 Perl · Apache 를 Go 로 — 파일 · Git 기능을 멈추지 않고 옮기고 관측한다",
+      "updated_at": "2026-09-30",
+      "business": {
+        "why": "Backlog 의 **파일 기능**을 떠받치는 **WebDAV 서버**는 Apache 를 Perl 모듈로 확장한 구성으로 오래 돌았다 — 당시엔 합리적이었지만, WebDAV 동작 · 애플리케이션 고유 도메인 로직 · 스토리지 조작 · 트랜잭션 경계가 촘촘히 엮여 있었다. 파일 하나를 읽고 쓰는 처리에도 권한 확인 · 메타데이터 · 기존 클라이언트 호환 · 오류 때 동작이 얽혀 있어 **보수 · 변경이 어려웠다**. 그리고 이 작업은 앞으로의 **스토리지 비용 최적화**로 이어질 토대이기도 했다 — Apache + Perl 그대로면 스토리지 층을 바꿀 때마다 오래 쌓인 구조와 마주해야 한다.\n\n그래서 WebDAV 를 **Go** 로 새로 짓기로 했다. 목표는 언어 교체가 아니라 **파일 읽기 · 쓰기라는 코어를 스스로 다룰 수 있는 형태로 옮겨 다음 개선의 토대를 만드는 것** — 그리고 글쓴이는 '구현보다 어려웠던 것은 무리 없이 안전하게, 관계자와 인식을 맞추며 어떻게 진행할지를 설계하는 것' 이라고 적는다.",
+        "metrics": [
+          {
+            "label": "출시 Go/No-Go 기준",
+            "value": "지난 1 주 안에 개발 환경에서 치명 결함이 발견되지 않았을 것",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Apache + Perl の WebDAV 実装を Go に刷新した話 — 実装より難しかった「移行設計」",
+                "url": "https://nulab.com/ja/blog/nulab/rewriting-webdav-from-apache-perl-to-go/",
+                "publisher": "ヌーラボ",
+                "summary": "Backlog 파일 기능을 떠받친 WebDAV 서버(Apache + Perl 모듈)를 Go 로 — 단순 이식이 아니라 파일 읽기 · 쓰기 코어를 스스로 다룰 수 있게. 호환성과 구조 정리의 선 긋기, 릴리스 방식 · 판단 기준 사전 설계, 절차를 리뷰 가능하게, ADR 로 전제 맞추기, 개발 · 운영 · 릴리스를 나누지 않기, 릴리스 직전 결함과 구조적 복구.",
+                "date": "2026-05-01"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "옮기는 방식을 정할 때",
+          "thought": "그대로 옮기면 겉은 Go 로 바뀌어도 지금의 복잡함을 새 구현에 옮길 뿐이다 — '무엇을 호환으로 지키고 무엇을 구조로 다시 정리할지' 를 나눠 생각해야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Apache + Perl の WebDAV 実装を Go に刷新した話 — 実装より難しかった「移行設計」",
+              "url": "https://nulab.com/ja/blog/nulab/rewriting-webdav-from-apache-perl-to-go/",
+              "publisher": "ヌーラボ",
+              "summary": "Backlog 파일 기능을 떠받친 WebDAV 서버(Apache + Perl 모듈)를 Go 로 — 단순 이식이 아니라 파일 읽기 · 쓰기 코어를 스스로 다룰 수 있게. 호환성과 구조 정리의 선 긋기, 릴리스 방식 · 판단 기준 사전 설계, 절차를 리뷰 가능하게, ADR 로 전제 맞추기, 개발 · 운영 · 릴리스를 나누지 않기, 릴리스 직전 결함과 구조적 복구.",
+              "date": "2026-05-01"
+            }
+          ]
+        },
+        {
+          "at": "범위를 정할 때",
+          "thought": "이상적인 재설계를 너무 노리면 범위가 넓어져 프로젝트가 나아가지 않는다 — 지금 할 것과 앞으로의 개선으로 남길 것을 가린다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Apache + Perl の WebDAV 実装を Go に刷新した話 — 実装より難しかった「移行設計」",
+              "url": "https://nulab.com/ja/blog/nulab/rewriting-webdav-from-apache-perl-to-go/",
+              "publisher": "ヌーラボ",
+              "summary": "Backlog 파일 기능을 떠받친 WebDAV 서버(Apache + Perl 모듈)를 Go 로 — 단순 이식이 아니라 파일 읽기 · 쓰기 코어를 스스로 다룰 수 있게. 호환성과 구조 정리의 선 긋기, 릴리스 방식 · 판단 기준 사전 설계, 절차를 리뷰 가능하게, ADR 로 전제 맞추기, 개발 · 운영 · 릴리스를 나누지 않기, 릴리스 직전 결함과 구조적 복구.",
+              "date": "2026-05-01"
+            },
+            {
+              "title": "Perlコードベースの再設計：Go言語によるモダン化へのアプローチ",
+              "url": "https://nulab.com/ja/blog/nulab/redesigning-perl-codebase-with-go/",
+              "publisher": "ヌーラボ",
+              "summary": "Backlog 일부 기능의 Perl 코드를 Go 로 — 생성 AI 활용. 스코프 최소화 · 책임 재설계 · 한 곳 집중, context.Context 로 요청 스코프 값 전달, 헬퍼 재설계, 전용 타입, 트랜잭션 책임을 서비스 층으로, 쿼리 결과를 구조체로, AI 로 테스트 케이스 · 테스트 코드.",
+              "date": "2025-10-07"
+            }
+          ]
+        },
+        {
+          "at": "호환을 확인할 때",
+          "thought": "호환 확인은 '같은 조작이 같은 결과가 되는 것' 만이 아니라 '기존 구현에서 보이지 않던 것이 새 구현에서도 보이지 않는 것' 까지다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Apache + Perl の WebDAV 実装を Go に刷新した話 — 実装より難しかった「移行設計」",
+              "url": "https://nulab.com/ja/blog/nulab/rewriting-webdav-from-apache-perl-to-go/",
+              "publisher": "ヌーラボ",
+              "summary": "Backlog 파일 기능을 떠받친 WebDAV 서버(Apache + Perl 모듈)를 Go 로 — 단순 이식이 아니라 파일 읽기 · 쓰기 코어를 스스로 다룰 수 있게. 호환성과 구조 정리의 선 긋기, 릴리스 방식 · 판단 기준 사전 설계, 절차를 리뷰 가능하게, ADR 로 전제 맞추기, 개발 · 운영 · 릴리스를 나누지 않기, 릴리스 직전 결함과 구조적 복구.",
+              "date": "2026-05-01"
+            }
+          ]
+        },
+        {
+          "at": "돌아보며",
+          "thought": "구현으로 '만들 수 있는 것' 과 프로젝트로 '진행할 수 있는 것' 사이에는 생각보다 거리가 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Apache + Perl の WebDAV 実装を Go に刷新した話 — 実装より難しかった「移行設計」",
+              "url": "https://nulab.com/ja/blog/nulab/rewriting-webdav-from-apache-perl-to-go/",
+              "publisher": "ヌーラボ",
+              "summary": "Backlog 파일 기능을 떠받친 WebDAV 서버(Apache + Perl 모듈)를 Go 로 — 단순 이식이 아니라 파일 읽기 · 쓰기 코어를 스스로 다룰 수 있게. 호환성과 구조 정리의 선 긋기, 릴리스 방식 · 판단 기준 사전 설계, 절차를 리뷰 가능하게, ADR 로 전제 맞추기, 개발 · 운영 · 릴리스를 나누지 않기, 릴리스 직전 결함과 구조적 복구.",
+              "date": "2026-05-01"
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "WebDAV 메서드",
+            "what": "읽기 계열(성능 · 기존 클라이언트 호환이 중요)과 갱신 계열(정합성 · 실패 처리가 중요) — 성질이 달라 전환 방식도 다르다."
+          },
+          {
+            "name": "도메인 패키지",
+            "what": "Perl 에서 WebDAV 동작과 엉켜 있던 애플리케이션 고유 로직을 Go 에서 따로 떼어 낸 패키지."
+          },
+          {
+            "name": "ADR",
+            "what": "새 WebDAV 를 기존 기반 위에서 어떻게 돌릴지 · 릴리스 방식 · 허용할 위험을 적은 설계 결정 기록 — 채택하지 않은 안과 걱정까지."
+          },
+          {
+            "name": "릴리스 절차서",
+            "what": "Git 으로 리뷰하는 표준화된 절차 — 환경별 차이를 기계적으로 반영."
+          },
+          {
+            "name": "내부 관리 영역",
+            "what": "기존 구현에서 사용자에게 보이지 않던 영역 — 새 구현에서 일반 리소스로 보이는 결함이 났다."
+          }
+        ],
+        "invariants": [
+          "기존에 보이지 않던 것은 새 구현에서도 보이지 않는다.",
+          "갱신 계열은 정합성을 우선해 신중히 전환한다.",
+          "지난 1 주 개발 환경에서 치명 결함이 없어야 다음 단계로 간다.",
+          "릴리스 절차는 코드처럼 Git 에서 리뷰된다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "엉킨 관심사(WebDAV 동작 · 도메인 로직 · 스토리지 · 트랜잭션 경계)를 조금씩 떼며 Go 로 이식 — 도메인 로직을 고유 패키지로",
+            "why": "다음 개선이 쉬운 구조."
+          },
+          {
+            "step": "ADR 로 실행 방식 · 릴리스 방식 · 허용 위험을 문서화해 SWE · SRE · EM · PdM · 지원 팀과 맞춘다",
+            "why": "판단의 재현성."
+          },
+          {
+            "step": "릴리스 절차를 표준화해 Git 으로 리뷰, 환경별 차이는 기계적으로 반영",
+            "why": "실행의 재현성."
+          },
+          {
+            "step": "읽기 계열은 단계적으로 전환해 동작 · 성능을 확인, 갱신 계열은 정합성을 보며 신중히 — 자동 계장 · 지속 프로파일링으로 관측",
+            "why": "리스크에 맞춘 릴리스."
+          },
+          {
+            "step": "출시 직전 치명 결함 → 주 단위 단계 · 단계별 완료 내용 · Go/No-Go 기준, EM · PdM 이 연기를 합의",
+            "why": "구조적 복구."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "Perl 코드를 그대로 Go 로 옮기나?",
+            "chosen": "**아니오 — 호환으로 지킬 것과 구조로 다시 정리할 것을 나눈다.** 엉킨 부분을 조금씩 떼어 도메인 로직을 고유 패키지로, 트랜잭션 경계 · 스토리지 조작은 의도가 읽히게.",
+            "alternatives": [
+              "단순 이식(겉만 Go)",
+              "이상적인 전면 재설계"
+            ],
+            "tradeoff": "단순 이식은 지금의 복잡함을 옮길 뿐이고, 이상적 재설계는 범위가 넓어져 나아가지 않는다 — 현실적인 선을 그었다(자세한 기준은 Perl 재설계 글). 대가는 '앞으로의 개선' 으로 남긴 부분이 생긴다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Apache + Perl の WebDAV 実装を Go に刷新した話 — 実装より難しかった「移行設計」",
+                "url": "https://nulab.com/ja/blog/nulab/rewriting-webdav-from-apache-perl-to-go/",
+                "publisher": "ヌーラボ",
+                "summary": "Backlog 파일 기능을 떠받친 WebDAV 서버(Apache + Perl 모듈)를 Go 로 — 단순 이식이 아니라 파일 읽기 · 쓰기 코어를 스스로 다룰 수 있게. 호환성과 구조 정리의 선 긋기, 릴리스 방식 · 판단 기준 사전 설계, 절차를 리뷰 가능하게, ADR 로 전제 맞추기, 개발 · 운영 · 릴리스를 나누지 않기, 릴리스 직전 결함과 구조적 복구.",
+                "date": "2026-05-01"
+              },
+              {
+                "title": "Perlコードベースの再設計：Go言語によるモダン化へのアプローチ",
+                "url": "https://nulab.com/ja/blog/nulab/redesigning-perl-codebase-with-go/",
+                "publisher": "ヌーラボ",
+                "summary": "Backlog 일부 기능의 Perl 코드를 Go 로 — 생성 AI 활용. 스코프 최소화 · 책임 재설계 · 한 곳 집중, context.Context 로 요청 스코프 값 전달, 헬퍼 재설계, 전용 타입, 트랜잭션 책임을 서비스 층으로, 쿼리 결과를 구조체로, AI 로 테스트 케이스 · 테스트 코드.",
+                "date": "2025-10-07"
+              }
+            ]
+          },
+          {
+            "question": "한 번에 바꾸나?",
+            "chosen": "**요청의 성질에 따라 전환 방식을 나눈다** — 읽기 계열은 단계적으로 바꿔 동작 · 성능을 확인하고, 갱신 계열은 정합성을 중시해 신중히.",
+            "alternatives": [
+              "완성한 구현을 마지막에 한꺼번에"
+            ],
+            "tradeoff": "각 처리의 위험에 맞춰 릴리스 방식을 바꿨다 — 메서드 성질 · 기존 클라이언트 영향 · 문제 때 가려내기 쉬움 · 관계자가 판단하기 쉬움을 함께 봤다. 대가는 과도기에 두 구현이 공존해 관측 · 절차가 복잡해진다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Apache + Perl の WebDAV 実装を Go に刷新した話 — 実装より難しかった「移行設計」",
+                "url": "https://nulab.com/ja/blog/nulab/rewriting-webdav-from-apache-perl-to-go/",
+                "publisher": "ヌーラボ",
+                "summary": "Backlog 파일 기능을 떠받친 WebDAV 서버(Apache + Perl 모듈)를 Go 로 — 단순 이식이 아니라 파일 읽기 · 쓰기 코어를 스스로 다룰 수 있게. 호환성과 구조 정리의 선 긋기, 릴리스 방식 · 판단 기준 사전 설계, 절차를 리뷰 가능하게, ADR 로 전제 맞추기, 개발 · 운영 · 릴리스를 나누지 않기, 릴리스 직전 결함과 구조적 복구.",
+                "date": "2026-05-01"
+              }
+            ]
+          },
+          {
+            "question": "릴리스 절차를 어떻게 믿을 수 있게 하나?",
+            "chosen": "**절차를 표준화해 소스 코드처럼 Git 으로 리뷰**하고, 환경별 차이는 기계적으로 반영해 사람이 매번 고쳐 쓰는 범위를 줄인다.",
+            "alternatives": [
+              "잘 아는 사람이 그 자리에서 판단하며 진행"
+            ],
+            "tradeoff": "재현성 · 리뷰 가능성 · 절차 신뢰도가 오르고 특정인 의존이 준다 — 역사가 긴 시스템일수록 암묵지가 많다. 대가는 절차 문서를 코드처럼 관리하는 수고.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Apache + Perl の WebDAV 実装を Go に刷新した話 — 実装より難しかった「移行設計」",
+                "url": "https://nulab.com/ja/blog/nulab/rewriting-webdav-from-apache-perl-to-go/",
+                "publisher": "ヌーラボ",
+                "summary": "Backlog 파일 기능을 떠받친 WebDAV 서버(Apache + Perl 모듈)를 Go 로 — 단순 이식이 아니라 파일 읽기 · 쓰기 코어를 스스로 다룰 수 있게. 호환성과 구조 정리의 선 긋기, 릴리스 방식 · 판단 기준 사전 설계, 절차를 리뷰 가능하게, ADR 로 전제 맞추기, 개발 · 운영 · 릴리스를 나누지 않기, 릴리스 직전 결함과 구조적 복구.",
+                "date": "2026-05-01"
+              }
+            ]
+          },
+          {
+            "question": "왜 그렇게 정했는지는 어떻게 남기나?",
+            "chosen": "**ADR** — 방침의 이유, 검토한 선택지, 채택하지 않은 안의 걱정, 최종적으로 우선한 것.",
+            "alternatives": [
+              "회의 · 채팅으로만 합의"
+            ],
+            "tradeoff": "SWE · SRE · EM · PdM · 지원 팀처럼 관점이 다른 사람과 같은 전제에서 논의하고, '왠지 불안' 이 아니라 무엇이 불확실한지를 말로 할 수 있다. 뒤에 같은 논점을 만나면 거기서 다시 시작한다. 대가는 쓰는 비용.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Apache + Perl の WebDAV 実装を Go に刷新した話 — 実装より難しかった「移行設計」",
+                "url": "https://nulab.com/ja/blog/nulab/rewriting-webdav-from-apache-perl-to-go/",
+                "publisher": "ヌーラボ",
+                "summary": "Backlog 파일 기능을 떠받친 WebDAV 서버(Apache + Perl 모듈)를 Go 로 — 단순 이식이 아니라 파일 읽기 · 쓰기 코어를 스스로 다룰 수 있게. 호환성과 구조 정리의 선 긋기, 릴리스 방식 · 판단 기준 사전 설계, 절차를 리뷰 가능하게, ADR 로 전제 맞추기, 개발 · 운영 · 릴리스를 나누지 않기, 릴리스 직전 결함과 구조적 복구.",
+                "date": "2026-05-01"
+              }
+            ]
+          },
+          {
+            "question": "관측은 언제 넣나?",
+            "chosen": "**실장 · 인프라 · 감시 · 절차 · 릴리스 판단을 나누지 않고** — Go 코드를 쓸 때부터 자동 계장과 지속 프로파일링을 넣어 전환 뒤 동작 · 성능 저하 · 병목을 쫓을 수 있게.",
+            "alternatives": [
+              "구현 뒤 운영 팀이 감시를 붙인다"
+            ],
+            "tradeoff": "단계적 전환에는 구현 쪽에서 요청 종류 · 결과를 추적할 수 있고, 운영 쪽에서 볼 로그 · 지표가 정해지고, 절차에 다음 단계 조건이 있어야 판단이 된다. 대가는 자동 계장의 기본 동작이 문제를 만들 수 있다는 것 — Git 기능에서 Orchestrion 이 거대 트레이스를 만든 일이 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Apache + Perl の WebDAV 実装を Go に刷新した話 — 実装より難しかった「移行設計」",
+                "url": "https://nulab.com/ja/blog/nulab/rewriting-webdav-from-apache-perl-to-go/",
+                "publisher": "ヌーラボ",
+                "summary": "Backlog 파일 기능을 떠받친 WebDAV 서버(Apache + Perl 모듈)를 Go 로 — 단순 이식이 아니라 파일 읽기 · 쓰기 코어를 스스로 다룰 수 있게. 호환성과 구조 정리의 선 긋기, 릴리스 방식 · 판단 기준 사전 설계, 절차를 리뷰 가능하게, ADR 로 전제 맞추기, 개발 · 운영 · 릴리스를 나누지 않기, 릴리스 직전 결함과 구조적 복구.",
+                "date": "2026-05-01"
+              },
+              {
+                "title": "Orchestrionの自動計装でDatadogのトレースが爆発した話",
+                "url": "https://nulab.com/ja/blog/nulab/datadog-orchestrion-grpc-large-trace/",
+                "publisher": "ヌーラボ",
+                "summary": "Backlog Git 기능은 여러 Go 마이크로서비스(서비스 간 gRPC Stream). Orchestrion 컴파일 시 자동 계장 — 기본으로 dd-trace-go 의 모든 integration. 무관한 요청이 같은 trace_id 를 공유하는 거대 트레이스: 이중 계장 가설 → 진범 GLS 누수(다른 goroutine 에서 Finish), Stream 의 대량 스팬.",
+                "date": "2026-08-27"
+              }
+            ]
+          },
+          {
+            "question": "출시 직전 치명 결함이 쏟아지면?",
+            "chosen": "**주 단위로 단계를 끊고, '지난 1 주 안에 개발 환경에서 치명 결함이 발견되지 않았을 것' 을 Go/No-Go 기준으로** — EM · PdM 이 위험과 사업 영향을 평가해 연기 합의를 이끌고 품질을 우선.",
+            "alternatives": [
+              "목표 날짜에 맞춰 강행"
+            ],
+            "tradeoff": "'다음 주로 간다' 도 '한 주 더 미룬다' 도 같은 사실에 근거해 판단된다. 대가는 일정이 미뤄졌다는 것 — 근본에는 통합 개발 환경 · 단계적 결합 검증이 작은 팀의 진행을 따라가지 못해 결합 테스트가 출시 직전으로 밀린 구조적 문제가 있었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Apache + Perl の WebDAV 実装を Go に刷新した話 — 実装より難しかった「移行設計」",
+                "url": "https://nulab.com/ja/blog/nulab/rewriting-webdav-from-apache-perl-to-go/",
+                "publisher": "ヌーラボ",
+                "summary": "Backlog 파일 기능을 떠받친 WebDAV 서버(Apache + Perl 모듈)를 Go 로 — 단순 이식이 아니라 파일 읽기 · 쓰기 코어를 스스로 다룰 수 있게. 호환성과 구조 정리의 선 긋기, 릴리스 방식 · 판단 기준 사전 설계, 절차를 리뷰 가능하게, ADR 로 전제 맞추기, 개발 · 운영 · 릴리스를 나누지 않기, 릴리스 직전 결함과 구조적 복구.",
+                "date": "2026-05-01"
+              }
+            ]
+          },
+          {
+            "question": "호환성은 무엇까지 확인하나?",
+            "chosen": "**'기존에 보이지 않던 것이 새 구현에서도 보이지 않는 것' 까지** — 사용자에게 보이지 않던 내부 관리 영역이 새 구현에서 일반 리소스로 보인 결함 뒤, 이를 검증 관점으로 명시했다.",
+            "alternatives": [
+              "같은 조작이 같은 결과인지만"
+            ],
+            "tradeoff": "Apache 와 Go 의 동작 차이 · 주변 시스템과의 결합부에서, 코드에 명시되지 않고 암묵적으로 지켜지던 동작까지 재현해야 했다 — WebDAV 메서드 단위 테스트만으론 못 찾는다. 대가는 검증 관점이 늘어난다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Apache + Perl の WebDAV 実装を Go に刷新した話 — 実装より難しかった「移行設計」",
+                "url": "https://nulab.com/ja/blog/nulab/rewriting-webdav-from-apache-perl-to-go/",
+                "publisher": "ヌーラボ",
+                "summary": "Backlog 파일 기능을 떠받친 WebDAV 서버(Apache + Perl 모듈)를 Go 로 — 단순 이식이 아니라 파일 읽기 · 쓰기 코어를 스스로 다룰 수 있게. 호환성과 구조 정리의 선 긋기, 릴리스 방식 · 판단 기준 사전 설계, 절차를 리뷰 가능하게, ADR 로 전제 맞추기, 개발 · 운영 · 릴리스를 나누지 않기, 릴리스 직전 결함과 구조적 복구.",
+                "date": "2026-05-01"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "Backlog 구독(수익원)",
+          "via": "Backlog 파일 기능",
+          "contract": "WebDAV 서버가 Backlog 의 파일 기능을 떠받친다 — 이행은 스토리지 비용 최적화의 토대이기도 하다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Apache + Perl の WebDAV 実装を Go に刷新した話 — 実装より難しかった「移行設計」",
+              "url": "https://nulab.com/ja/blog/nulab/rewriting-webdav-from-apache-perl-to-go/",
+              "publisher": "ヌーラボ",
+              "summary": "Backlog 파일 기능을 떠받친 WebDAV 서버(Apache + Perl 모듈)를 Go 로 — 단순 이식이 아니라 파일 읽기 · 쓰기 코어를 스스로 다룰 수 있게. 호환성과 구조 정리의 선 긋기, 릴리스 방식 · 판단 기준 사전 설계, 절차를 리뷰 가능하게, ADR 로 전제 맞추기, 개발 · 운영 · 릴리스를 나누지 않기, 릴리스 직전 결함과 구조적 복구.",
+              "date": "2026-05-01"
+            }
+          ]
+        },
+        {
+          "to": "느린 SQL 을 테이블 구조부터",
+          "via": "Backlog 백엔드 개선",
+          "contract": "같은 Backlog 의 오래된 구조를 운영 중에 고치는 작업이다 — 이행 절차 · 감시를 먼저 설계한다는 점이 같다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Apache + Perl の WebDAV 実装を Go に刷新した話 — 実装より難しかった「移行設計」",
+              "url": "https://nulab.com/ja/blog/nulab/rewriting-webdav-from-apache-perl-to-go/",
+              "publisher": "ヌーラボ",
+              "summary": "Backlog 파일 기능을 떠받친 WebDAV 서버(Apache + Perl 모듈)를 Go 로 — 단순 이식이 아니라 파일 읽기 · 쓰기 코어를 스스로 다룰 수 있게. 호환성과 구조 정리의 선 긋기, 릴리스 방식 · 판단 기준 사전 설계, 절차를 리뷰 가능하게, ADR 로 전제 맞추기, 개발 · 운영 · 릴리스를 나누지 않기, 릴리스 직전 결함과 구조적 복구.",
+              "date": "2026-05-01"
+            }
+          ]
+        },
+        {
+          "to": "누랩 계정 패스키",
+          "via": "ADR 로 결정 기록",
+          "contract": "패스키 권유 시점도 ADR 에 기록했다 — 두 프로젝트 모두 ADR 로 판단을 남긴다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Apache + Perl の WebDAV 実装を Go に刷新した話 — 実装より難しかった「移行設計」",
+              "url": "https://nulab.com/ja/blog/nulab/rewriting-webdav-from-apache-perl-to-go/",
+              "publisher": "ヌーラボ",
+              "summary": "Backlog 파일 기능을 떠받친 WebDAV 서버(Apache + Perl 모듈)를 Go 로 — 단순 이식이 아니라 파일 읽기 · 쓰기 코어를 스스로 다룰 수 있게. 호환성과 구조 정리의 선 긋기, 릴리스 방식 · 판단 기준 사전 설계, 절차를 리뷰 가능하게, ADR 로 전제 맞추기, 개발 · 운영 · 릴리스를 나누지 않기, 릴리스 직전 결함과 구조적 복구.",
+              "date": "2026-05-01"
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "무엇이 엉켜 있었고 어떻게 풀었나",
+          "question": "파일 하나를 쓰는 데 무엇이 얽혔나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  subgraph OLD[\"Apache + Perl\"]\n    W1[\"WebDAV 동작\"] --- D1[\"도메인 로직\"] --- S1[\"스토리지 조작\"] --- T1[\"트랜잭션 경계\"]\n  end\n  OLD -->|\"호환할 것 / 정리할 것 나누기\"| NEW\n  subgraph NEW[\"Go\"]\n    W2[\"WebDAV 핸들러\"] --> D2[\"도메인 패키지\"]\n    D2 --> S2[\"스토리지 층\\n(비용 최적화 토대)\"]\n    D2 --> T2[\"트랜잭션은 서비스 층\"]\n  end"
+        },
+        {
+          "title": "전환과 출시 판단",
+          "question": "읽기와 쓰기를 왜 다르게 바꿨나?",
+          "kind": "flow",
+          "code": "flowchart TB\n  ADR[\"ADR · Git 리뷰 절차\"] --> R[\"읽기 계열 — 단계적 전환\\n동작 · 성능 확인\"]\n  ADR --> U[\"갱신 계열 — 신중히\\n정합성 우선\"]\n  R & U --> OBS[\"자동 계장 · 지속 프로파일링\"]\n  OBS --> GO{\"지난 1 주\\n치명 결함 없음?\"}\n  GO -->|\"예\"| NEXT[\"다음 주 단계\"]\n  GO -->|\"아니오\"| SLIDE[\"한 주 연기(EM · PdM 합의)\"]"
+        },
+        {
+          "title": "출시 직전에 드러난 것",
+          "question": "왜 늦게 찾았나?",
+          "kind": "failure",
+          "code": "flowchart TB\n  L[\"통합 개발 환경 없이 로컬 검증 위주\"] --> LATE[\"결합 테스트가 출시 직전으로\"]\n  LATE --> B1[\"Apache 와 Go 의 동작 차이\"]\n  LATE --> B2[\"주변 시스템 결합부 문제\"]\n  LATE --> B3[\"숨어 있던 내부 관리 영역이 리소스로 보임\"]\n  B3 --> FIX[\"'안 보이던 것은 계속 안 보인다' 를 검증 관점에 추가\"]\n  B1 & B2 & B3 --> DELAY[\"일정 압박 → 주 단위 단계 · Go/No-Go\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Apache + Perl の WebDAV 実装を Go に刷新した話 — 実装より難しかった「移行設計」",
+          "url": "https://nulab.com/ja/blog/nulab/rewriting-webdav-from-apache-perl-to-go/",
+          "publisher": "ヌーラボ",
+          "summary": "Backlog 파일 기능을 떠받친 WebDAV 서버(Apache + Perl 모듈)를 Go 로 — 단순 이식이 아니라 파일 읽기 · 쓰기 코어를 스스로 다룰 수 있게. 호환성과 구조 정리의 선 긋기, 릴리스 방식 · 판단 기준 사전 설계, 절차를 리뷰 가능하게, ADR 로 전제 맞추기, 개발 · 운영 · 릴리스를 나누지 않기, 릴리스 직전 결함과 구조적 복구.",
+          "date": "2026-05-01"
+        },
+        {
+          "title": "Perlコードベースの再設計：Go言語によるモダン化へのアプローチ",
+          "url": "https://nulab.com/ja/blog/nulab/redesigning-perl-codebase-with-go/",
+          "publisher": "ヌーラボ",
+          "summary": "Backlog 일부 기능의 Perl 코드를 Go 로 — 생성 AI 활용. 스코프 최소화 · 책임 재설계 · 한 곳 집중, context.Context 로 요청 스코프 값 전달, 헬퍼 재설계, 전용 타입, 트랜잭션 책임을 서비스 층으로, 쿼리 결과를 구조체로, AI 로 테스트 케이스 · 테스트 코드.",
+          "date": "2025-10-07"
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "매출 · 제품별 비중은 IR 에 있지만 이번에 읽지 않았다.",
     "Backlog 본체의 언어 · 아키텍처 전체 구성은 이번 글들에 없다.",

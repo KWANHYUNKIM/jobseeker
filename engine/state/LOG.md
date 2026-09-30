@@ -2968,3 +2968,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 ヌーラボ 프로파일
 
 - 홈페이지(제품 넷) + 기술 글 7편(WebDAV Go 이행 · Perl 재설계 · Orchestrion · Git 서버 AL2023 · RDB 리팩터링 · 패스키 · 문서 기능). 도메인 3, 수익원 2(모두 inferred). 다음: WebDAV Go 이행 기능.
+
+## 2026-09-30 ヌーラボ WebDAV Go 이행(기능 1/3)
+
+- WebDAV 이행 글 + Perl 재설계 글로 `backlog-webdav-perl-to-go`. 결정 7 — 호환 · 정리 선 긋기 / 읽기 단계 · 쓰기 신중 / Git 리뷰 절차 / ADR / 처음부터 관측 / 1 주 Go/No-Go / '안 보이던 것은 안 보인다' 검증. 다음: RDB 리팩터링.
