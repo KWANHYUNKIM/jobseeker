@@ -3032,3 +3032,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 スタンバイ Databricks 이행(기능 3/3) — 완주
 
 - `data-platform-databricks-dbt`. 결정 6 — DMMA + 설문 / dbt 먼저 / 두 제품 PoC → Databricks(오픈 포맷 · 약 3 할 · Genie) / 메달리온 · Lakeflow Jobs / Fivetran → Lakeflow Connect / 이용 측 이행 5 단계 + 분석가의 SQL 변환 도구. 모든 도메인에 기능 → `done`.
+
+## 2026-09-30 スペースリー 프로파일
+
+- 대기 → 진행 중. 회사 사이트(spacely.co.jp — 부동산/주택/연수 VR, 홈 스테이징 · 사이즈 추정 · 추객 분석 · 촬영 대행 가격) + 블로그(큐브맵 Lambda · gh-ost · 150 만 건 통합 · 인페인팅)로 도메인 셋. 수익원 둘(VR 클라우드 구독 — 해석 / 촬영 · CG 대행 — 가격 확인).

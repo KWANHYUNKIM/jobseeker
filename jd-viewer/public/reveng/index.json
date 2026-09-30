@@ -3504,6 +3504,18 @@
       "one_liner": "구인 검색 엔진 스탠바이 — 검색 결과의 광고 틀을 Vespa Parent/Child 로 바꿔 캠페인 갱신을 30 분에서 수 초로, 청구가 걸린 광고 로그 집계를 사양을 바꾸지 않고 옮기고, 데이터 기반을 과제부터 다시 짠다",
       "updated_at": "2026-09-30",
       "domain": "stanby.co.jp"
+    },
+    {
+      "slug": "spacely",
+      "name": "スペースリー",
+      "name_en": "Spacely",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "부동산 · 주택용 360° VR 을 클라우드로 만드는 SaaS — 파노라마를 큐브맵으로 바꾸는 잡을 Lambda 로 옮겨 약 4 배, 수백만 행 이미지 테이블을 멈추지 않고 바꾸고, 빈방 사진으로 가구 지우기 AI 를 학습시킨다",
+      "updated_at": "2026-09-30",
+      "domain": "spacely.co.jp"
     }
   ],
   "domains": [
@@ -4349,7 +4361,10 @@
     "10 억 자를 여덟 언어로 — LLM 대량 번역",
     "검색 연동 광고 — 캠페인을 바꿀 때 구인 100 만 건을 다시 넣지 않는다",
     "광고 로그 · 청구 집계 — 흩어진 세 경로를 하나로",
-    "데이터 기반을 과제부터 다시 — Athena/Glue 에서 Databricks 로"
+    "데이터 기반을 과제부터 다시 — Athena/Glue 에서 Databricks 로",
+    "업로드한 360° 사진을 곧바로 둘러볼 수 있게 — 큐브맵 변환을 Sidekiq 에서 Lambda 로",
+    "자라는 이미지 테이블을 멈추지 않고 바꾼다 — 테이블 통합과 온라인 스키마 변경",
+    "사는 사람의 가구를 지워 빈방을 보여 준다 — 인페인팅 AI"
   ],
   "countries": {
     "KR": "한국",
