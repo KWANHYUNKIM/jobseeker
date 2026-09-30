@@ -1,0 +1,355 @@
+{
+  "slug": "jejememe",
+  "name": "제제미미",
+  "name_en": "",
+  "aliases": [
+    "제제미미"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "",
+  "one_liner": "아이 사진 자동 정리 · 가족 공유 앱 '쑥쑥찰칵' — 국내 신생아 3 명 중 1 명 가입, 130 만 회원, 흑자 전환 — 파이썬 백엔드 · Android · iOS 개발자를 뽑는다",
+  "company": {
+    "business": "제제미미는 **쑥쑥찰칵** — 휴대폰 속 **아이 사진을 자동으로 정리하고 가족과 공유**하는 육아 앱 — 을 만든다. 공고는 기존 육아 시장이 비교와 불안을 부추겨 소비를 이끈다고 보고, 대신 가족의 지지로 아이의 순간에 집중하게 한다고 적는다. 숫자로는 **국내에서 태어나는 아이 3 명 중 1 명이 가입**(스토어 평점 4.9), **일본 플레이스토어 육아 카테고리 2 위**, **약 40 개국** 출시, **전 세계 회원 130 만 명**, **매년 2.6 배 이상 매출 성장**, 작년 4 분기 **흑자 전환**. TIPS 선정, 시리즈 A 누적 **50 억 원**(스프링캠프 · 해시드 · 하나벤처스 · 윤민투자창의재단), 2020 구글 올해의 앱. 개발 채용은 백엔드(파이썬) · Android(Kotlin) · iOS(SwiftUI) 세 자리이고 모두 5-12년이다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "[쑥쑥찰칵] 서버(백엔드) 개발자",
+        "url": "https://www.wanted.co.kr/wd/364093",
+        "publisher": "원티드",
+        "summary": "제제미미 — 쑥쑥찰칵: 아이 사진 자동 정리 · 가족 공유. 국내 신생아 3 명 중 1 명 가입(평점 4.9), 일본 플레이스토어 육아 2 위, 약 40 개국, TIPS, 시리즈 A 누적 50 억(스프링캠프 · 해시드 · 하나벤처스 · 윤민투자창의재단), 매년 2.6 배 이상 매출 성장, 2020 구글 올해의 앱, 전 세계 130 만 회원, 작년 4 분기 흑자 전환. 백엔드: REST API, 데이터 처리 · 분석 파이프라인, 파이썬. 우대 MySQL · PostgreSQL · MongoDB · Redis, FastAPI, AWS/GCP, Docker/K8s, Spark, Airflow. 5-12년."
+      },
+      {
+        "title": "[쑥쑥찰칵] Android 개발자",
+        "url": "https://www.wanted.co.kr/wd/364098",
+        "publisher": "원티드",
+        "summary": "Kotlin Android 신규 기능 · 운영, 안정성 · 성능 최적화. 모바일 3년+, 기술 판단을 논리적으로 공유. 우대 구조 설계 주도, AI/사진/육아 · 대규모 트래픽 앱, 글로벌 다국어."
+      },
+      {
+        "title": "[쑥쑥찰칵] iOS 개발자",
+        "url": "https://www.wanted.co.kr/wd/364097",
+        "publisher": "원티드",
+        "summary": "Swift(SwiftUI) iOS 개발, Git · Jira. 우대 SwiftUI · RxSwift · Combine, 파이썬 등 타 플랫폼."
+      }
+    ],
+    "scale": [
+      {
+        "label": "회원",
+        "value": "전 세계 130 만 명(한국 · 일본 등)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[쑥쑥찰칵] 서버(백엔드) 개발자",
+            "url": "https://www.wanted.co.kr/wd/364093",
+            "publisher": "원티드",
+            "summary": "제제미미 — 쑥쑥찰칵: 아이 사진 자동 정리 · 가족 공유. 국내 신생아 3 명 중 1 명 가입(평점 4.9), 일본 플레이스토어 육아 2 위, 약 40 개국, TIPS, 시리즈 A 누적 50 억(스프링캠프 · 해시드 · 하나벤처스 · 윤민투자창의재단), 매년 2.6 배 이상 매출 성장, 2020 구글 올해의 앱, 전 세계 130 만 회원, 작년 4 분기 흑자 전환. 백엔드: REST API, 데이터 처리 · 분석 파이프라인, 파이썬. 우대 MySQL · PostgreSQL · MongoDB · Redis, FastAPI, AWS/GCP, Docker/K8s, Spark, Airflow. 5-12년."
+          }
+        ]
+      },
+      {
+        "label": "국내 신생아 가입",
+        "value": "3 명 중 1 명",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[쑥쑥찰칵] 서버(백엔드) 개발자",
+            "url": "https://www.wanted.co.kr/wd/364093",
+            "publisher": "원티드",
+            "summary": "제제미미 — 쑥쑥찰칵: 아이 사진 자동 정리 · 가족 공유. 국내 신생아 3 명 중 1 명 가입(평점 4.9), 일본 플레이스토어 육아 2 위, 약 40 개국, TIPS, 시리즈 A 누적 50 억(스프링캠프 · 해시드 · 하나벤처스 · 윤민투자창의재단), 매년 2.6 배 이상 매출 성장, 2020 구글 올해의 앱, 전 세계 130 만 회원, 작년 4 분기 흑자 전환. 백엔드: REST API, 데이터 처리 · 분석 파이프라인, 파이썬. 우대 MySQL · PostgreSQL · MongoDB · Redis, FastAPI, AWS/GCP, Docker/K8s, Spark, Airflow. 5-12년."
+          }
+        ]
+      },
+      {
+        "label": "누적 투자",
+        "value": "50 억 원(시리즈 A)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[쑥쑥찰칵] 서버(백엔드) 개발자",
+            "url": "https://www.wanted.co.kr/wd/364093",
+            "publisher": "원티드",
+            "summary": "제제미미 — 쑥쑥찰칵: 아이 사진 자동 정리 · 가족 공유. 국내 신생아 3 명 중 1 명 가입(평점 4.9), 일본 플레이스토어 육아 2 위, 약 40 개국, TIPS, 시리즈 A 누적 50 억(스프링캠프 · 해시드 · 하나벤처스 · 윤민투자창의재단), 매년 2.6 배 이상 매출 성장, 2020 구글 올해의 앱, 전 세계 130 만 회원, 작년 4 분기 흑자 전환. 백엔드: REST API, 데이터 처리 · 분석 파이프라인, 파이썬. 우대 MySQL · PostgreSQL · MongoDB · Redis, FastAPI, AWS/GCP, Docker/K8s, Spark, Airflow. 5-12년."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "쑥쑥찰칵 앱 매출",
+        "how": "매년 2.6 배 이상 성장했다고 적지만 무엇으로 버는지(구독 · 앨범 인화 · 광고)는 공고에 없다.",
+        "domains": [
+          "사진 · 가족 공유 백엔드",
+          "모바일 앱(Android · iOS)"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "[쑥쑥찰칵] 서버(백엔드) 개발자",
+            "url": "https://www.wanted.co.kr/wd/364093",
+            "publisher": "원티드",
+            "summary": "제제미미 — 쑥쑥찰칵: 아이 사진 자동 정리 · 가족 공유. 국내 신생아 3 명 중 1 명 가입(평점 4.9), 일본 플레이스토어 육아 2 위, 약 40 개국, TIPS, 시리즈 A 누적 50 억(스프링캠프 · 해시드 · 하나벤처스 · 윤민투자창의재단), 매년 2.6 배 이상 매출 성장, 2020 구글 올해의 앱, 전 세계 130 만 회원, 작년 4 분기 흑자 전환. 백엔드: REST API, 데이터 처리 · 분석 파이프라인, 파이썬. 우대 MySQL · PostgreSQL · MongoDB · Redis, FastAPI, AWS/GCP, Docker/K8s, Spark, Airflow. 5-12년."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "사진 · 가족 공유 백엔드",
+        "why": "백엔드 공고가 REST API 와 데이터 처리 · 분석 파이프라인, 파이썬 · FastAPI · 여러 DB · Airflow · Spark 를 적는다.",
+        "what_to_know": [
+          "대용량 사진 업로드 · 저장",
+          "가족 그룹 권한",
+          "Airflow 분석 파이프라인"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[쑥쑥찰칵] 서버(백엔드) 개발자",
+            "url": "https://www.wanted.co.kr/wd/364093",
+            "publisher": "원티드",
+            "summary": "제제미미 — 쑥쑥찰칵: 아이 사진 자동 정리 · 가족 공유. 국내 신생아 3 명 중 1 명 가입(평점 4.9), 일본 플레이스토어 육아 2 위, 약 40 개국, TIPS, 시리즈 A 누적 50 억(스프링캠프 · 해시드 · 하나벤처스 · 윤민투자창의재단), 매년 2.6 배 이상 매출 성장, 2020 구글 올해의 앱, 전 세계 130 만 회원, 작년 4 분기 흑자 전환. 백엔드: REST API, 데이터 처리 · 분석 파이프라인, 파이썬. 우대 MySQL · PostgreSQL · MongoDB · Redis, FastAPI, AWS/GCP, Docker/K8s, Spark, Airflow. 5-12년."
+          }
+        ]
+      },
+      {
+        "name": "모바일 앱(Android · iOS)",
+        "why": "Android 공고가 Kotlin 신규 기능 · 성능 최적화 · 다국어를, iOS 공고가 SwiftUI · Combine 을 적는다.",
+        "what_to_know": [
+          "사진 라이브러리 접근 · 백그라운드 업로드",
+          "이미지 메모리 관리",
+          "다국어"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[쑥쑥찰칵] Android 개발자",
+            "url": "https://www.wanted.co.kr/wd/364098",
+            "publisher": "원티드",
+            "summary": "Kotlin Android 신규 기능 · 운영, 안정성 · 성능 최적화. 모바일 3년+, 기술 판단을 논리적으로 공유. 우대 구조 설계 주도, AI/사진/육아 · 대규모 트래픽 앱, 글로벌 다국어."
+          },
+          {
+            "title": "[쑥쑥찰칵] iOS 개발자",
+            "url": "https://www.wanted.co.kr/wd/364097",
+            "publisher": "원티드",
+            "summary": "Swift(SwiftUI) iOS 개발, Git · Jira. 우대 SwiftUI · RxSwift · Combine, 파이썬 등 타 플랫폼."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "사진이 계속 쌓이는 서비스",
+        "evidence": "• 대용량 데이터 처리 경험(Spark, Hadoop 등)",
+        "so_what": "회원 130 만 명의 아이 사진이 매일 올라온다 — 저장 비용 · 업로드 신뢰성 · 이미지 처리 파이프라인 경험이 강점이다(이 사이트의 해석).",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "해외 확장 중",
+        "evidence": "• 글로벌 다국어 앱 개발 경험",
+        "so_what": "일본 2 위 · 40 개국 — 다국어 · 지역별 결제 · 시간대 경험을 준비한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "매출 구조(구독 · 인화 · 광고)는 공고에 없다",
+    "회사 홈페이지 · 영문 이름 · 인원 · 근무지는 이번에 확인하지 않았다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/364093",
+      "title": "[쑥쑥찰칵] 서버(백엔드) 개발자",
+      "site": "wanted",
+      "verdict": "경력 5-12년. **RESTful API 설계 · 개발**, **데이터 처리 · 분석 파이프라인 구축 · 유지보수**. 자격은 **파이썬을 아끼고 사랑하는 분**(한 줄). 우대는 **MySQL · PostgreSQL · MongoDB · Redis**, **FastAPI**, AWS/GCP, Docker/K8s, **Spark · Hadoop**, **Airflow · Luigi**, CI/CD, 오픈소스 기여. 요건이 짧아 면접에서 설계 · 경험을 직접 볼 것으로 보인다(이 사이트의 해석). 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "파이썬",
+          "REST API"
+        ],
+        "can_learn": [
+          "사진 업로드 파이프라인",
+          "FastAPI",
+          "Airflow"
+        ]
+      },
+      "study": [
+        {
+          "topic": "아이 사진 수백만 장 — 업로드 · 저장 · 썸네일 파이프라인",
+          "from": "task",
+          "quote": "• 데이터 처리 및 분석 파이프라인 구축 및 유지보수",
+          "priority": "core",
+          "why": "주요업무다. 사진 정리 · 가족 공유 서비스의 핵심 데이터는 사진이다(이 사이트의 해석).",
+          "gap_check": "큰 사진을 API 서버를 거치지 않고 올리려면(사전 서명 URL)? 업로드 완료 뒤 썸네일 · 메타데이터(EXIF 촬영 시각) 추출을 누가 언제 하나(큐 · 워커)? 같은 사진이 두 번 올라오면(해시로 중복 제거)? 오래된 원본은 어떤 저장 등급으로 옮기나(수명 주기 규칙)?",
+          "drill": "FastAPI 로 사전 서명 업로드 URL 발급 API 를 만들고, S3(또는 MinIO) 업로드 이벤트 → 큐 → 파이썬 워커가 썸네일 두 크기 · EXIF 촬영 시각 · 지각 해시를 만들어 DB 에 저장하게 한다. 같은 사진을 두 번 올려 한 건만 남는지, 워커를 죽였다 살려도 빠짐없이 처리되는지 테스트한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "FastAPI",
+              "url": "https://fastapi.tiangolo.com/",
+              "kind": "docs"
+            },
+            {
+              "title": "AWS — Uploading objects with presigned URLs",
+              "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/PresignedUrlUploadObject.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "가족 공유 API — 누가 어떤 아이의 사진을 보나",
+          "from": "task",
+          "quote": "• RESTful API 설계 및 개발",
+          "priority": "core",
+          "why": "주요업무다. 부모 · 조부모 등 가족이 한 아이의 사진을 함께 본다.",
+          "gap_check": "가족 그룹 · 아이 · 구성원 역할(관리자 · 보기만)을 어떻게 모델링하나? 초대 링크는 언제 만료되고 누가 취소하나? 타임라인 API 를 커서 기반 페이지네이션으로 만드는 이유는(사진이 계속 추가됨)? 아이 사진 같은 민감 데이터의 URL 이 새지 않게 하려면(짧은 서명 URL)?",
+          "drill": "FastAPI + PostgreSQL 로 가족 · 아이 · 구성원 · 사진 모델과 초대(만료 · 취소) · 타임라인(촬영 시각 커서 페이지네이션) API 를 만들고, 다른 가족의 사진에 접근하면 403 이 나는지 테스트한다. 사진 URL 은 10 분짜리 서명 URL 로만 준다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "PostgreSQL — Row Security Policies",
+              "url": "https://www.postgresql.org/docs/current/ddl-rowsecurity.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Airflow 로 분석 파이프라인",
+          "from": "preference",
+          "quote": "• 데이터 파이프라인 구축 경험(Airflow, Luigi 등)",
+          "priority": "high",
+          "why": "우대사항이고 주요업무에 분석 파이프라인이 있다.",
+          "gap_check": "운영 DB 를 직접 쿼리하지 않고 분석 데이터를 가져오려면(읽기 복제본 · CDC · 증분 추출)? DAG 재실행 때 같은 날짜 데이터가 두 번 쌓이지 않게 하려면(파티션 덮어쓰기)? 가입 코호트별 재방문율 같은 지표는 어떤 테이블로 미리 만드나?",
+          "drill": "Airflow 로 일별 증분 추출(업로드 · 가족 초대 이벤트) → 파티션 덮어쓰기 적재 → 가입 주 코호트별 4 주 재방문율 테이블을 만드는 DAG 를 만들고, 같은 날짜를 두 번 재실행해도 결과가 같은지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Apache Airflow — Best Practices",
+              "url": "https://airflow.apache.org/docs/apache-airflow/stable/best-practices.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/364098",
+      "title": "[쑥쑥찰칵] Android 개발자",
+      "site": "wanted",
+      "verdict": "경력 5-12년(자격은 모바일 3년 이상). **Kotlin Android 신규 기능 개발 · 운영**, **앱 안정성 · 사용자 편의를 고려한 성능 최적화**. 자격은 모바일 앱 3년, **기술 판단 기준 · 설계 의견을 논리적으로 공유**. 우대는 클라이언트 기술 결정 · 구조 설계 주도, **AI · 사진 · 육아** 또는 대규모 트래픽 앱, **글로벌 다국어**. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "모바일 3년",
+          "Kotlin",
+          "설계 판단 공유"
+        ],
+        "can_learn": [
+          "사진 라이브러리 스캔",
+          "백그라운드 업로드",
+          "이미지 메모리"
+        ]
+      },
+      "study": [
+        {
+          "topic": "기기 속 아이 사진을 찾아 올리기 — MediaStore 와 WorkManager",
+          "from": "preference",
+          "quote": "• AI/사진/육아 관련 서비스 또는 대규모 트래픽 앱 운영 경험",
+          "priority": "core",
+          "why": "우대사항이다. 서비스가 '아이 사진 자동 정리' 다.",
+          "gap_check": "Android 13 이후 사진 권한(READ_MEDIA_IMAGES · 선택한 사진만 허용)은 어떻게 다루나? 새 사진만 찾으려면 MediaStore 를 어떤 기준(DATE_ADDED · generation)으로 조회하나? 수백 장을 배터리 · 데이터를 아끼며 올리려면(WorkManager 제약 · 와이파이만)? 앱이 죽어도 이어 올리려면?",
+          "drill": "Kotlin 으로 MediaStore 에서 마지막 스캔 이후 사진을 찾고, WorkManager(충전 중 · 와이파이 제약, 지수 백오프)로 가짜 서버에 올리는 앱을 만든다. Room 에 업로드 상태를 저장해 앱을 강제 종료해도 이어지고 중복 업로드가 없는지 확인한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Android Developers — Access media files from shared storage",
+              "url": "https://developer.android.com/training/data-storage/shared/media",
+              "kind": "docs"
+            },
+            {
+              "title": "Android Developers — WorkManager",
+              "url": "https://developer.android.com/develop/background-work/background-tasks/persistent",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "사진이 많은 화면의 성능 — 이미지 로딩 · 메모리 · 스크롤",
+          "from": "task",
+          "quote": "• 앱 안정성과 사용자 편의를 고려한 성능 최적화",
+          "priority": "core",
+          "why": "주요업무다. 사진 타임라인은 수천 장을 스크롤한다.",
+          "gap_check": "Compose LazyVerticalGrid 에서 썸네일을 Coil 로 불러올 때 크기 지정 · 캐시는? OOM 은 어디서 나나(원본 비트맵 디코딩)? 스크롤 버벅임을 무엇으로 재나(Macrobenchmark · JankStats)? Baseline Profile 은 무엇을 줄이나?",
+          "drill": "Compose 로 5,000 장 사진 그리드를 만들고 Coil 로 썸네일 크기 지정 · 메모리/디스크 캐시를 설정한다. Macrobenchmark 로 스크롤 프레임 타이밍과 시작 시간을 재고, Baseline Profile 적용 전후를 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Android Developers — Macrobenchmark",
+              "url": "https://developer.android.com/topic/performance/benchmarking/macrobenchmark-overview",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/364097",
+      "title": "[쑥쑥찰칵] iOS 개발자",
+      "site": "wanted",
+      "verdict": "경력 5-12년. **Swift(SwiftUI 기반) iOS 앱 서비스 개발**, Git 협업, Jira 이슈 관리. 자격은 **Swift iOS 개발을 즐기는 분**(한 줄). 우대는 **SwiftUI · RxSwift · Combine**, 파이썬 등 타 플랫폼. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Swift",
+          "SwiftUI"
+        ],
+        "can_learn": [
+          "PhotoKit",
+          "백그라운드 업로드",
+          "Combine"
+        ]
+      },
+      "study": [
+        {
+          "topic": "PhotoKit 으로 새 사진 찾기와 백그라운드 업로드",
+          "from": "task",
+          "quote": "• Swift(SwiftUI 기반) 환경에서 iOS 앱 서비스 개발",
+          "priority": "core",
+          "why": "주요업무다. 서비스의 핵심이 휴대폰 속 아이 사진이다(이 사이트의 해석).",
+          "gap_check": "제한된 사진 접근(limited library)일 때 앱은 무엇을 보여 주나? 마지막 확인 이후 바뀐 사진만 받으려면(PHPhotoLibraryChangeObserver · 변경 이력)? 앱이 백그라운드로 가도 업로드를 이어 가려면(URLSession background configuration)? iCloud 에만 있는 원본은 어떻게 받나?",
+          "drill": "SwiftUI 앱에서 PhotoKit 으로 권한 상태별 화면을 만들고, 새 사진을 찾아 background URLSession 으로 가짜 서버에 올린다. 앱을 백그라운드로 보내고 종료해도 업로드가 끝나는지, 제한된 접근에서 사진 추가 선택 흐름이 되는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Apple — PhotoKit",
+              "url": "https://developer.apple.com/documentation/photokit",
+              "kind": "docs"
+            },
+            {
+              "title": "Apple — Downloading files in the background",
+              "url": "https://developer.apple.com/documentation/foundation/downloading-files-in-the-background",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "RxSwift 에서 Combine · async/await 로",
+          "from": "preference",
+          "quote": "• SwiftUI, RxSwift, Combine 개발 유경험자",
+          "priority": "high",
+          "why": "우대사항이다. RxSwift 와 Combine 이 함께 적혀 있어 옮겨 가는 중일 수 있다(이 사이트의 해석).",
+          "gap_check": "RxSwift 의 Observable · Subject 는 Combine 의 무엇에 대응하나? SwiftUI 에서 상태는 @Observable · ObservableObject 중 무엇으로? 한 번만 받는 비동기 값은 Combine 대신 async/await 가 나은 이유는?",
+          "drill": "RxSwift 로 짠 작은 화면(검색어 debounce → API → 목록)을 Combine 판과 async/await + @Observable 판으로 각각 다시 짜고, 코드 양 · 취소 처리 · 테스트 쉬움을 비교한 메모를 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Apple — Combine",
+              "url": "https://developer.apple.com/documentation/combine",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

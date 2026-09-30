@@ -1639,6 +1639,17 @@
       "postings": 3,
       "study_items": 8,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "jejememe",
+      "name": "제제미미",
+      "aliases": [
+        "제제미미"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 7,
+      "updated_at": "2026-09-30"
     }
   ]
 }
