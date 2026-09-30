@@ -1,0 +1,364 @@
+{
+  "slug": "axz",
+  "name": "에이엑스지",
+  "name_en": "axz",
+  "aliases": [
+    "에이엑스지",
+    "axz"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": null,
+  "one_liner": "포털 다음(Daum)을 운영하며 New Daum 을 만드는 회사 — 형태소 분석기부터 LTR · LLM 랭킹, RAG · MCP 검색 시스템까지 검색 전 층을 뽑는다",
+  "company": {
+    "business": "에이엑스지(axz)는 **포털 다음(Daum)을 운영**한다 — 공고는 Daum 이 쌓아 온 역사를 바탕으로 더 풍부하고 다양한 콘텐츠로 **'New Daum'** 을 만들어 갈 예정이라 적는다. 모집중 공고 셋이 모두 **검색**이다. AI 검색 개발팀이 검색 랭킹 모델링 · 검색어 서비스 · 데이터 분석 · AI 기술 연구 · **NLP 엔진(형태소 분석기 · 맞춤법 검사기 · 오타 교정기)** 까지 검색의 핵심 기술을 직접 만들고 운영한다고 적고, 랭킹은 통계 기반(LTR)과 LLM 기반을 함께, 서비스는 대용량 · 초저지연 아키텍처와 **RAG · MCP** 시스템을 든다. 닫힌 공고에는 AI 검색 서비스 기획 · 네트워크 보안 · 회원 · 커뮤니티 백엔드가 있었다. 회사 홈페이지는 찾지 못했다(axz.kr · axz.co.kr 응답 없음).",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "자연언어처리(NLP) 서비스 개발자",
+        "url": "https://www.wanted.co.kr/wd/369398",
+        "publisher": "원티드",
+        "summary": "에이엑스지(axz)는 포털 다음(Daum)을 운영하고 New Daum 을 만든다. AI 검색 개발팀 — 검색 랭킹 모델링 · 검색어 서비스 · 데이터 분석 · AI 기술 연구 · NLP 엔진. 형태소 분석기 · 맞춤법 검사기 · 오타 교정기를 대규모 트래픽에서 C/C++ 로. 경력 5년, C/C++ 3년, 한국어 언어학 이해."
+      },
+      {
+        "title": "검색 랭킹 모델링 개발자",
+        "url": "https://www.wanted.co.kr/wd/369399",
+        "publisher": "원티드",
+        "summary": "통계(LTR)와 LLM 을 아우르는 랭킹 모델, BM25 + Dense Retrieval 하이브리드, LLM 리랭킹 · RAG 연계, 개인화 랭킹, NDCG · MRR · A/B, 질의-문서 피처, 클릭 로그 레이블링 · LLM-as-a-Judge. 경력 5년, Python · PyTorch, SQL · Spark."
+      },
+      {
+        "title": "검색 서비스 개발자",
+        "url": "https://www.wanted.co.kr/wd/373814",
+        "publisher": "원티드",
+        "summary": "다음 포털 검색 서비스 개발 · 운영, 대용량 · 초저지연 검색 아키텍처, RAG/MCP 등 AI 시스템. 경력 3년, Python · Go · Java 중 하나, Elasticsearch 서비스 개발. 우대 IR · Hadoop/Spark · ETL · k8s · 벡터/하이브리드 검색 · 생성형 AI 도구."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "포털 다음 광고 · 콘텐츠",
+        "how": "포털 검색 · 콘텐츠 서비스를 운영한다 — 포털의 통상 수익은 검색 · 디스플레이 광고지만, 읽은 자료에는 수익 구조가 없다.",
+        "domains": [
+          "한국어 NLP 엔진",
+          "검색 랭킹 · 평가",
+          "검색 서비스 · AI 검색 시스템"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "자연언어처리(NLP) 서비스 개발자",
+            "url": "https://www.wanted.co.kr/wd/369398",
+            "publisher": "원티드",
+            "summary": "에이엑스지(axz)는 포털 다음(Daum)을 운영하고 New Daum 을 만든다. AI 검색 개발팀 — 검색 랭킹 모델링 · 검색어 서비스 · 데이터 분석 · AI 기술 연구 · NLP 엔진. 형태소 분석기 · 맞춤법 검사기 · 오타 교정기를 대규모 트래픽에서 C/C++ 로. 경력 5년, C/C++ 3년, 한국어 언어학 이해."
+          },
+          {
+            "title": "검색 서비스 개발자",
+            "url": "https://www.wanted.co.kr/wd/373814",
+            "publisher": "원티드",
+            "summary": "다음 포털 검색 서비스 개발 · 운영, 대용량 · 초저지연 검색 아키텍처, RAG/MCP 등 AI 시스템. 경력 3년, Python · Go · Java 중 하나, Elasticsearch 서비스 개발. 우대 IR · Hadoop/Spark · ETL · k8s · 벡터/하이브리드 검색 · 생성형 AI 도구."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "한국어 NLP 엔진",
+        "why": "NLP 공고가 형태소 분석기 · 맞춤법 검사기 · 오타 교정기 · 자동 띄어쓰기 · 사전 확장을 C/C++ 로 대규모 트래픽에서 돌린다고 적는다.",
+        "what_to_know": [
+          "형태소 분석(격자 · 비터비)",
+          "편집 거리 · 노이즈 채널 교정",
+          "C++ 메모리 · 스레드 최적화"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "자연언어처리(NLP) 서비스 개발자",
+            "url": "https://www.wanted.co.kr/wd/369398",
+            "publisher": "원티드",
+            "summary": "에이엑스지(axz)는 포털 다음(Daum)을 운영하고 New Daum 을 만든다. AI 검색 개발팀 — 검색 랭킹 모델링 · 검색어 서비스 · 데이터 분석 · AI 기술 연구 · NLP 엔진. 형태소 분석기 · 맞춤법 검사기 · 오타 교정기를 대규모 트래픽에서 C/C++ 로. 경력 5년, C/C++ 3년, 한국어 언어학 이해."
+          }
+        ]
+      },
+      {
+        "name": "검색 랭킹 · 평가",
+        "why": "랭킹 공고가 LTR · LLM 리랭킹 · 하이브리드 · 개인화와 NDCG · MRR · A/B · 클릭 로그 레이블링 · LLM-as-a-Judge 를 적는다.",
+        "what_to_know": [
+          "LambdaMART",
+          "클릭 편향 보정",
+          "NDCG · MRR"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "검색 랭킹 모델링 개발자",
+            "url": "https://www.wanted.co.kr/wd/369399",
+            "publisher": "원티드",
+            "summary": "통계(LTR)와 LLM 을 아우르는 랭킹 모델, BM25 + Dense Retrieval 하이브리드, LLM 리랭킹 · RAG 연계, 개인화 랭킹, NDCG · MRR · A/B, 질의-문서 피처, 클릭 로그 레이블링 · LLM-as-a-Judge. 경력 5년, Python · PyTorch, SQL · Spark."
+          }
+        ]
+      },
+      {
+        "name": "검색 서비스 · AI 검색 시스템",
+        "why": "서비스 공고가 다음 포털 검색의 대용량 · 초저지연 아키텍처와 RAG · MCP 시스템, Elasticsearch 를 적는다.",
+        "what_to_know": [
+          "Elasticsearch 샤드 · 지연",
+          "MCP 서버",
+          "캐시 · 타임아웃 예산"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "검색 서비스 개발자",
+            "url": "https://www.wanted.co.kr/wd/373814",
+            "publisher": "원티드",
+            "summary": "다음 포털 검색 서비스 개발 · 운영, 대용량 · 초저지연 검색 아키텍처, RAG/MCP 등 AI 시스템. 경력 3년, Python · Go · Java 중 하나, Elasticsearch 서비스 개발. 우대 IR · Hadoop/Spark · ETL · k8s · 벡터/하이브리드 검색 · 생성형 AI 도구."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "검색의 맨 아래 층(NLP 엔진)까지 직접 만든다",
+        "evidence": "형태소 분석기, 맞춤법 검사기, 오타 교정기 같은 NLP 핵심 엔진은 검색 품질의 가장 아래를 떠받치는 기반 기술로써",
+        "so_what": "오픈소스 분석기를 가져다 쓰는 회사가 아니다 — 면접에서 C/C++ 로 엔진을 어떻게 빠르고 작게 만들었는지를 물을 가능성이 크다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "랭킹은 통계와 LLM 을 섞는 쪽으로 간다",
+        "evidence": "• 통계 기반(LTR 등)과 LLM 기반을 아우르는 랭킹 모델 설계 및 학습",
+        "so_what": "LTR 만, LLM 만이 아니라 둘을 어느 단계에 두는지(1 차 후보 · 리랭킹 · 평가)를 설명할 수 있어야 한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "회사 홈페이지를 찾지 못했다 — 매출 · 인원 · 설립 경위는 읽은 자료에 없다",
+    "다음 포털의 수익 구조는 읽은 자료에 없다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/369398",
+      "title": "자연언어처리(NLP) 서비스 개발자",
+      "site": "wanted",
+      "verdict": "경력 5-11년. AI 검색 개발팀의 **NLP 엔진** — **한국어 형태소 분석기**(품사 태깅 · 토큰화 · 원형 복원), **맞춤법 검사 · 오타 교정**(규칙 + 통계/딥러닝 하이브리드), 자동 띄어쓰기 · 문장 분리, **사전 관리 · 신조어 · 전문 용어 자동 확장**. **C/C++ 고성능 엔진 · 메모리/속도 최적화**, 대규모 트래픽 안정성(멀티스레딩 · 비동기), API 서버, 벤치마크 · 품질 모니터링. 자격은 관련 경력 5년, **C/C++ 3년 이상**, 자료구조 · 알고리즘, Linux, **한국어 언어학 특성(조사 · 어미 활용 · 복합어)**, 언어 처리 엔진 개발 경험, 통계/딥러닝 모델을 엔진에 적용. 우대는 전산 언어학 석사, 대용량 사전 자동화, 다국어, 성능 프로파일링. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "NLP · 검색 5년",
+          "C/C++ 3년",
+          "한국어 언어학",
+          "언어 처리 엔진 개발"
+        ],
+        "can_learn": [
+          "격자 · 비터비 분석",
+          "노이즈 채널 교정",
+          "perf 프로파일링"
+        ]
+      },
+      "study": [
+        {
+          "topic": "한국어 형태소 분석기 — 사전 · 격자 · 비터비",
+          "from": "task",
+          "quote": "• 한국어 형태소 분석기 설계 및 고도화 (품사 태깅, 토큰화, 원형 복원 등)",
+          "priority": "core",
+          "why": "주요업무 첫 줄이고 자격에 한국어 언어학 특성(조사 · 어미 활용 · 복합어) 이해가 있다.",
+          "gap_check": "'먹었다' 를 '먹/VV + 었/EP + 다/EF' 로 복원하려면 사전 외에 무엇이 필요하나(불규칙 활용 규칙)? 가능한 분석 후보를 격자로 펼쳐 비터비로 고르는 방식에서 비용은 어디서 오나(단어 비용 · 연접 비용)? 사전에 없는 신조어가 오면 무엇이 깨지나?",
+          "drill": "Kiwi(또는 MeCab-ko) 로 같은 문장 30 개를 분석해 틀린 곳을 모으고, 사용자 사전에 신조어 몇 개를 넣어 결과가 어떻게 바뀌는지 본다. 작은 사전 + 연접 비용 표로 비터비 분석기를 파이썬으로 직접 짜서 '나는 사과를 먹었다' 를 분석해 본다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Kiwi — 한국어 형태소 분석기",
+              "url": "https://github.com/bab2min/Kiwi",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "오타 교정 — 편집 거리 후보 + 언어 모델 점수",
+          "from": "task",
+          "quote": "• 맞춤법 검사기 및 오타 교정 엔진 개발 (규칙 기반 + 통계/딥러닝 하이브리드 접근)",
+          "priority": "core",
+          "why": "주요업무이고 검색어 오타가 검색 품질을 바로 깎는다.",
+          "gap_check": "한국어 오타는 음절이 아니라 자모 단위로 편집 거리를 재야 하는 이유는? 후보를 빨리 만들려면(SymSpell 의 삭제 사전)? 후보 중 무엇을 고르나(노이즈 채널 = 오타 확률 × 언어 모델 확률)? 규칙으로 잡을 것과 모델로 잡을 것의 경계는?",
+          "drill": "한글을 자모로 풀어 SymSpell 식 삭제 사전을 만들고 검색어 사전(예: 인기 검색어 목록 가정)에서 후보를 뽑는다. 빈도 기반 점수와 간단한 n-gram 언어 모델 점수로 순위를 매겨 일부러 만든 오타 50 개의 교정 정확도와 질의당 지연을 잰다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "SymSpell",
+              "url": "https://github.com/wolfgarbe/SymSpell",
+              "kind": "docs"
+            },
+            {
+              "title": "Peter Norvig — How to Write a Spelling Corrector",
+              "url": "https://norvig.com/spell-correct.html",
+              "kind": "blog"
+            }
+          ]
+        },
+        {
+          "topic": "C/C++ 엔진을 빠르고 작게 — 사전 자료구조와 프로파일링",
+          "from": "task",
+          "quote": "• C/C++ 기반 고성능 NLP 엔진 설계 및 메모리/속도 최적화",
+          "priority": "high",
+          "why": "주요업무이고 자격에 C/C++ 3년 · 자료구조가 있다. 검색 질의마다 분석기가 돈다.",
+          "gap_check": "수백만 단어 사전을 해시맵 대신 더블 어레이 트라이 · FST 로 두면 무엇이 줄고 무엇이 느려지나? 사전을 mmap 으로 여러 프로세스가 나눠 쓰려면? 스레드마다 분석기를 두나, 공유하나(읽기 전용 사전 + 스레드 로컬 버퍼)?",
+          "drill": "같은 사전을 std::unordered_map 과 darts-clone(더블 어레이) 두 방식으로 만들어 메모리 · 공통 접두사 탐색 속도를 비교한다. perf 로 핫스팟을 찾고, 스레드 8 개에서 처리량이 선형으로 늘지 않으면 원인을 적는다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "darts-clone",
+              "url": "https://github.com/s-yata/darts-clone",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/369399",
+      "title": "검색 랭킹 모델링 개발자",
+      "site": "wanted",
+      "verdict": "경력 5-11년. **랭킹 모델** — 통계(LTR)와 LLM 을 아우르는 설계 · 학습, **BM25 + Dense Retrieval 하이브리드**, **LLM 리랭킹** · RAG 연계, **개인화 랭킹**. 평가 · 데이터 — **NDCG · MRR · A/B**, 질의-문서 관련성 피처 · 파이프라인, **학습 데이터 자동화(클릭 로그 레이블링 · LLM-as-a-Judge)**. 자격은 검색 · 추천 · 랭킹 · ML 5년, ML/DL 실무, Python · PyTorch/TF, SQL · Spark, 랭킹/매칭 모델 개발, 렉시컬 · 벡터 검색, LLM(프롬프트 · SFT), 논문 구현, 실험 설계. 우대는 IR 석사 · SIGIR 등 논문, LTR 이론, ANN, Elasticsearch/Lucene 튜닝, RAG, A/B 플랫폼. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "랭킹 · 추천 5년",
+          "PyTorch",
+          "Spark · SQL",
+          "렉시컬 · 벡터 검색"
+        ],
+        "can_learn": [
+          "클릭 편향 보정",
+          "LLM 판정 보정",
+          "LambdaMART"
+        ]
+      },
+      "study": [
+        {
+          "topic": "BM25 + Dense 하이브리드와 LTR 재순위",
+          "from": "task",
+          "quote": "• 렉시컬 검색(BM25)과 벡터 검색(Dense Retrieval)을 결합한 하이브리드 검색·랭킹 고도화",
+          "priority": "core",
+          "why": "주요업무이고 자격에 렉시컬 · 벡터 검색 개발 경험이 있다.",
+          "gap_check": "포털 검색어(고유명사 · 짧은 질의)에서 BM25 가 이기는 질의와 Dense 가 이기는 질의는 어떻게 다른가? 두 후보를 합칠 때 점수 정규화 없이 RRF 를 쓰는 이유는? 후보를 합친 뒤 LTR(LambdaMART)에 넣을 피처는(BM25 점수 · 벡터 유사도 · 신선도 · 클릭률)?",
+          "drill": "MS MARCO 소표본(또는 한국어 공개 검색 데이터셋)으로 BM25 · Dense(bge-m3 등) · RRF 를 만들고, LightGBM lambdarank 로 피처 5 개짜리 재순위 모델을 학습해 NDCG@10 을 비교한다. 질의 유형(짧은 고유명사 · 긴 자연어)별로 쪼개 어디서 이기는지 표로 만든다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "LightGBM — lambdarank objective",
+              "url": "https://lightgbm.readthedocs.io/en/latest/Parameters.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "랭킹 평가 — NDCG · MRR 과 A/B 가 어긋날 때",
+          "from": "task",
+          "quote": "• 랭킹 품질 평가 체계 구축 (NDCG, MRR 등) 및 A/B 테스트 기반 개선",
+          "priority": "core",
+          "why": "주요업무이고 자격에 실험 설계 · 데이터 기반 의사결정이 있다.",
+          "gap_check": "오프라인 NDCG 가 오른 모델이 A/B 에서 클릭률을 못 올리면 무엇을 의심하나(판정셋 분포 · 위치 편향 · 지표 정의)? MRR 은 어떤 질의(정답 하나 — 내비게이션)에 맞고 NDCG 는 어떤 질의에 맞나? 검색 A/B 에서 사용자 단위 무작위화를 해야 하는 이유는?",
+          "drill": "앞 과제의 두 모델로 NDCG@10 · MRR · Recall@100 을 질의 유형별로 계산하고, 가상의 클릭 로그(위치 편향을 넣어 생성)로 인터리빙 비교를 시뮬레이션해 오프라인 지표와 순위가 뒤집히는 경우를 찾는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Chapelle et al. — Large-scale validation and analysis of interleaved search evaluation",
+              "url": "https://dl.acm.org/doi/10.1145/2094072.2094078",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "학습 데이터 자동화 — 클릭 로그의 편향과 LLM-as-a-Judge",
+          "from": "task",
+          "quote": "• 학습 데이터 구축 자동화 (클릭 로그 레이블링, LLM-as-a-Judge 등)",
+          "priority": "high",
+          "why": "주요업무이고 우대에 LLM 을 활용한 랭킹 · 평가 파이프라인이 있다.",
+          "gap_check": "클릭을 그대로 정답으로 쓰면 위에 있던 문서가 계속 이기는 이유(위치 편향)는? 역성향 가중(IPS)은 무엇을 추정해 나누나? LLM 판정을 믿기 전에 무엇을 재나(사람 판정과의 일치도 · 위치/길이 편향)?",
+          "drill": "위치 편향을 넣은 가상 클릭 로그로 순진한 클릭 레이블과 IPS 보정 레이블로 각각 LTR 을 학습해 진짜 관련도 기준 NDCG 를 비교한다. 질의-문서 100 쌍을 직접 판정하고 LLM 판정과의 일치도(Cohen's kappa)를 재고, 문서 순서를 바꿨을 때 판정이 흔들리는지 본다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Joachims et al. — Unbiased Learning-to-Rank with Biased Feedback",
+              "url": "https://arxiv.org/abs/1608.04468",
+              "kind": "paper"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/373814",
+      "title": "검색 서비스 개발자",
+      "site": "wanted",
+      "verdict": "경력 3년 이상, IT 관련 전공. **다음 포털 검색 서비스** 개발 · 운영, **대용량 · 초저지연 검색 아키텍처** 수립 · 구축, **RAG/MCP** 등 AI 시스템 수립 · 구축. 자격은 Linux 개발, **Python · Golang · Java 중 하나**, **Elasticsearch 등 검색엔진 서비스 개발**. 우대는 IR 이론, Hadoop/Spark, 대용량 데이터 · ETL, k8s/docker, **벡터 · 하이브리드 검색 도입**, ChatGPT · Claude Code 등 생성형 AI 도구 실무 활용. 세 공고 중 문턱(3년)이 가장 낮다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "3년",
+          "Python · Go · Java",
+          "Elasticsearch 서비스",
+          "Linux"
+        ],
+        "can_learn": [
+          "MCP 서버",
+          "지연 예산 설계",
+          "하이브리드 검색"
+        ]
+      },
+      "study": [
+        {
+          "topic": "초저지연 검색 — 지연 예산 · 캐시 · 부분 응답",
+          "from": "task",
+          "quote": "• 대용량/초저지연 검색 서비스 시스템 아키텍처 수립 및 구축",
+          "priority": "core",
+          "why": "주요업무다. 포털 검색 결과 페이지는 여러 영역(웹 · 뉴스 · 이미지 · AI 답변)을 한 번에 모은다.",
+          "gap_check": "검색 결과 페이지가 영역 다섯 개를 부를 때 p99 지연은 무엇이 정하나(가장 느린 영역)? 영역마다 타임아웃을 두고 늦은 영역은 빼고 내보내려면? 인기 질의 캐시는 얼마나 신선해야 하나(뉴스 vs 백과)?",
+          "drill": "Go(또는 Java)로 가짜 영역 5 개(지연 분포가 다름)를 병렬 호출하는 집계 서버를 만들고, 전체 예산 200ms · 영역별 타임아웃 · 부분 응답을 넣는다. 인기 질의 캐시(TTL 영역별)를 붙여 부하 도구로 p50 · p99 를 전후 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Dean & Barroso — The Tail at Scale",
+              "url": "https://research.google/pubs/the-tail-at-scale/",
+              "kind": "paper"
+            }
+          ]
+        },
+        {
+          "topic": "RAG · MCP — 검색을 LLM 이 부르는 도구로",
+          "from": "task",
+          "quote": "• RAG/MCP 등 AI 관련 기술에 필요한 시스템 수립 및 구축",
+          "priority": "high",
+          "why": "주요업무이고 우대에 벡터 · 하이브리드 검색 도입이 있다.",
+          "gap_check": "검색을 MCP 서버의 도구로 열 때 입력 스키마(질의 · 영역 · 기간)와 출력(제목 · 요약 · URL · 날짜)을 어떻게 잡나? RAG 답변에 넣을 문서를 몇 개 · 얼마나 길게 자르나? 뉴스처럼 신선도가 중요한 질의는 어떻게 다루나?",
+          "drill": "Elasticsearch 에 공개 문서(위키 덤프 일부)를 색인하고, 검색을 MCP 서버의 `search` 도구로 연다(공식 SDK). Claude Code 에 붙여 질문하고, 도구 출력 길이를 바꿔 답변 품질 · 토큰 수를 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Model Context Protocol",
+              "url": "https://modelcontextprotocol.io/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Elasticsearch 로 검색 서비스 — 분석기 · 샤드 · 재색인",
+          "from": "qualification",
+          "quote": "• Elasticsearch 등의 검색엔진을 사용한 서비스 개발 유경험자",
+          "priority": "core",
+          "why": "필수 자격이고, 한국어 검색은 분석기(nori) 설정이 품질을 가른다.",
+          "gap_check": "nori 분석기의 decompound_mode · 사용자 사전은 무엇을 바꾸나? 샤드 수를 나중에 못 바꾸는 이유와, 매핑을 바꿔야 할 때 무중단 재색인(별칭 전환)은? 질의가 느릴 때 profile API 로 무엇을 보나?",
+          "drill": "nori 로 한국어 뉴스 몇 천 건을 색인해 decompound_mode 세 값의 검색 결과 차이를 비교하고, 매핑을 바꿔 새 인덱스로 reindex 후 별칭만 바꿔 무중단 교체한다. 느린 질의 하나를 profile 로 뜯어 원인을 적는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Elasticsearch — Korean (nori) analysis plugin",
+              "url": "https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-nori.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
