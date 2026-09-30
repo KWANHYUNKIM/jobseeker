@@ -1864,6 +1864,17 @@
       "postings": 2,
       "study_items": 5,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "42maru",
+      "name": "포티투마루",
+      "aliases": [
+        "포티투마루"
+      ],
+      "status": "done",
+      "postings": 1,
+      "study_items": 4,
+      "updated_at": "2026-09-30"
     }
   ]
 }

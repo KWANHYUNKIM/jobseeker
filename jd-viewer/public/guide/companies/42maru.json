@@ -1,0 +1,203 @@
+{
+  "slug": "42maru",
+  "name": "포티투마루",
+  "name_en": "42Maru",
+  "aliases": [
+    "포티투마루"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "https://www.42maru.ai/",
+  "one_liner": "기계 독해 · 검색 기반 기업용 AI(QA42 · CHAT42) 회사 — 여러 고객사 환경에 배포하는 Agent Builder 웹의 React 프론트엔드를 뽑는다",
+  "company": {
+    "business": "포티투마루는 **검색 · 딥러닝 · 기계 독해(MRC)** 를 바탕으로 한 기업용 AI 회사다. 회사 사이트는 질의응답 솔루션 **QA42**, 대화형 챗봇 **CHAT42**, 자연어 처리 **NL42** 를 내세우고, 대기업의 지식 관리 · 인지 검색, **문서 · 규격서 · 계약서 비교**(엔지니어링 고객), 가전 고객 챗봇을 사례로 든다 — 고객 표기에 LG U+ · SK이노베이션 · KT · 농협은행 · 기아가 있다. SQuAD 2.0 1 위 · ACL 논문을 기술 근거로 든다. 지금의 공고는 **Agent Builder · 인증/권한 관리**가 있는 웹 제품을 **여러 고객사 · 운영 환경(구축형 포함으로 읽힌다)** 에 맞춰 배포하는 프론트엔드를 뽑는다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "Home: Cognitive Search and AI Technologies | 42Maru",
+        "url": "https://www.42maru.ai/",
+        "publisher": "포티투마루",
+        "summary": "검색 · 딥러닝 · MRC(기계 독해) 엔지니어가 세운 AI 회사. 솔루션: QA42(질의응답) · CHAT42(대화형 챗봇) · NL42(자연어 처리). 대기업용 인지 검색 · 지식 관리, 문서 검색 · 비교, 규격서 · 계약서 비교(엔지니어링), 가전 고객 챗봇. 고객 표기: LG U+ · SK이노베이션 · KT · DSME · 농협은행 · 기아. SQuAD 2.0 1 위, ACL 논문(HCVAE), Techstars London 2018. (영문 사이트 — 최신 제품 구성과 다를 수 있다.)"
+      },
+      {
+        "title": "AI 솔루션 및 서비스 개발: Front-End (경력 3년 이상)",
+        "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54190332&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=2089e849-353b-439d-a778-e2c9b5bc5e5a",
+        "publisher": "사람인",
+        "summary": "서울 서초구, 경력 3 년+. React · TypeScript 웹 앱, Agent Builder · 인증/권한 관리 화면과 사용자 플로우, 모노레포 공통 UI · API 모듈 · shared 패키지, 고객사/운영 환경별 빌드 · 환경 변수 · 배포 구조, React Query · Zustand, 성능 · 접근성 · 에러 처리, GitHub Actions · Docker · Kubernetes 배포. 우대 K8s 프론트 운영 · 모노레포 디자인 시스템 · Vite/Yarn Berry/PNPM · 테스트 · CI."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "기업용 AI 솔루션 공급(QA · 검색 · 챗봇 · 에이전트)",
+        "how": "대기업 · 금융 · 통신 고객에게 솔루션을 공급한다 — 구축형 · 구독 등 계약 구조와 금액은 공개 자료에 없다.",
+        "domains": [
+          "기업 문서 질의응답 · 검색(QA42 · RAG)",
+          "에이전트 빌더 · 기업 AI 플랫폼 화면"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "Home: Cognitive Search and AI Technologies | 42Maru",
+            "url": "https://www.42maru.ai/",
+            "publisher": "포티투마루",
+            "summary": "검색 · 딥러닝 · MRC(기계 독해) 엔지니어가 세운 AI 회사. 솔루션: QA42(질의응답) · CHAT42(대화형 챗봇) · NL42(자연어 처리). 대기업용 인지 검색 · 지식 관리, 문서 검색 · 비교, 규격서 · 계약서 비교(엔지니어링), 가전 고객 챗봇. 고객 표기: LG U+ · SK이노베이션 · KT · DSME · 농협은행 · 기아. SQuAD 2.0 1 위, ACL 논문(HCVAE), Techstars London 2018. (영문 사이트 — 최신 제품 구성과 다를 수 있다.)"
+          },
+          {
+            "title": "AI 솔루션 및 서비스 개발: Front-End (경력 3년 이상)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54190332&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=2089e849-353b-439d-a778-e2c9b5bc5e5a",
+            "publisher": "사람인",
+            "summary": "서울 서초구, 경력 3 년+. React · TypeScript 웹 앱, Agent Builder · 인증/권한 관리 화면과 사용자 플로우, 모노레포 공통 UI · API 모듈 · shared 패키지, 고객사/운영 환경별 빌드 · 환경 변수 · 배포 구조, React Query · Zustand, 성능 · 접근성 · 에러 처리, GitHub Actions · Docker · Kubernetes 배포. 우대 K8s 프론트 운영 · 모노레포 디자인 시스템 · Vite/Yarn Berry/PNPM · 테스트 · CI."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "기업 문서 질의응답 · 검색(QA42 · RAG)",
+        "why": "회사 사이트가 QA42 · 인지 검색 · 문서 비교 · MRC 를 핵심 기술로 적는다.",
+        "what_to_know": [
+          "기계 독해 · RAG",
+          "문서 비교"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Home: Cognitive Search and AI Technologies | 42Maru",
+            "url": "https://www.42maru.ai/",
+            "publisher": "포티투마루",
+            "summary": "검색 · 딥러닝 · MRC(기계 독해) 엔지니어가 세운 AI 회사. 솔루션: QA42(질의응답) · CHAT42(대화형 챗봇) · NL42(자연어 처리). 대기업용 인지 검색 · 지식 관리, 문서 검색 · 비교, 규격서 · 계약서 비교(엔지니어링), 가전 고객 챗봇. 고객 표기: LG U+ · SK이노베이션 · KT · DSME · 농협은행 · 기아. SQuAD 2.0 1 위, ACL 논문(HCVAE), Techstars London 2018. (영문 사이트 — 최신 제품 구성과 다를 수 있다.)"
+          }
+        ]
+      },
+      {
+        "name": "에이전트 빌더 · 기업 AI 플랫폼 화면",
+        "why": "프론트엔드 공고가 Agent Builder · 인증/권한 관리 · 고객사별 빌드 · 환경 변수 · 배포를 적는다.",
+        "what_to_know": [
+          "모노레포",
+          "서버/클라이언트 상태 분리",
+          "런타임 환경 설정",
+          "RBAC 화면"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI 솔루션 및 서비스 개발: Front-End (경력 3년 이상)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54190332&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=2089e849-353b-439d-a778-e2c9b5bc5e5a",
+            "publisher": "사람인",
+            "summary": "서울 서초구, 경력 3 년+. React · TypeScript 웹 앱, Agent Builder · 인증/권한 관리 화면과 사용자 플로우, 모노레포 공통 UI · API 모듈 · shared 패키지, 고객사/운영 환경별 빌드 · 환경 변수 · 배포 구조, React Query · Zustand, 성능 · 접근성 · 에러 처리, GitHub Actions · Docker · Kubernetes 배포. 우대 K8s 프론트 운영 · 모노레포 디자인 시스템 · Vite/Yarn Berry/PNPM · 테스트 · CI."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "고객사마다 다른 배포",
+        "evidence": "• 다양한 고객사/운영 환경에 대응할 수 있도록 빌드, 환경 변수, 배포 구조를 개선해요.",
+        "so_what": "같은 프론트엔드를 여러 고객 환경에 까는 구조 — 빌드 때 박는 설정과 런타임에 읽는 설정을 가르는 경험이 직접 쓰인다(이 사이트의 해석).",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "회사 사이트는 영문 구버전 구성이라 현재 제품(Agent Builder 등)과 이름이 다를 수 있다",
+    "대기열 기준 모집중 4 건 중 본문 절이 있는 것은 이 1 건뿐이었다",
+    "매출 · 인원 · 계약 구조는 이번에 읽지 않았다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54190332&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=2089e849-353b-439d-a778-e2c9b5bc5e5a",
+      "title": "AI 솔루션 및 서비스 개발: Front-End (경력 3년 이상)",
+      "site": "saramin",
+      "verdict": "경력 3년 이상, 서울 서초구. **React · TypeScript** 웹 앱 개발 · 운영 — **Agent Builder · 인증/권한 관리** 화면과 사용자 플로우 고도화, **모노레포**의 공통 UI 컴포넌트 · API 모듈 · shared 패키지 개선, **다양한 고객사/운영 환경에 맞춘 빌드 · 환경 변수 · 배포 구조**, **React Query · Zustand** 상태 관리, 성능 · 접근성 · 에러 처리, **GitHub Actions · Docker · Kubernetes** 프론트엔드 배포 파이프라인. 자격은 운영 서비스 React/TS 경험, 상태 · 라우팅 · API · 에러 처리 구조 이해, 코드 의도 설명, 유지보수성 · 확장성, Git 코드 리뷰. 우대는 프론트 3 년+, 아키텍처, **K8s 프론트 배포 · 운영**, 모노레포 디자인 시스템 · DX, **Vite · Yarn Berry · PNPM**, 서버/클라이언트 상태 분리, 테스트 · CI, 성능 · 접근성 · 에러 모니터링, 지식 공유. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "React · TypeScript 운영 경험",
+          "상태 · 라우팅 · API 구조"
+        ],
+        "can_learn": [
+          "모노레포 운영",
+          "K8s 프론트 배포"
+        ]
+      },
+      "study": [
+        {
+          "topic": "한 번 빌드해 여러 고객사에 — 런타임 환경 설정과 컨테이너 배포",
+          "from": "task",
+          "quote": "• 다양한 고객사/운영 환경에 대응할 수 있도록 빌드, 환경 변수, 배포 구조를 개선해요.",
+          "priority": "core",
+          "why": "주요업무다.",
+          "gap_check": "Vite 의 import.meta.env 는 빌드 때 문자열로 박힌다 — 고객사마다 API 주소 · 인증 서버가 다르면 고객사 수만큼 빌드해야 하나? 컨테이너 기동 때 config.json(또는 window.__ENV__)을 만들어 런타임에 읽게 하면 무엇이 좋아지고 캐시 · 보안에서 무엇을 조심하나? 비밀 값이 번들에 들어가지 않게 하려면?",
+          "drill": "Vite + React 앱을 nginx 이미지로 만들고, 컨테이너 시작 스크립트가 환경 변수로 /config.json 을 생성해 앱이 부팅 때 fetch 로 읽게 한다. 같은 이미지를 kind 클러스터에 고객사 A · B 두 Deployment(ConfigMap 다름)로 띄워 다른 API 주소 · 로고가 나오는지 확인하고, config.json 에 Cache-Control: no-store 를 건다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Vite — Env Variables and Modes",
+              "url": "https://vite.dev/guide/env-and-mode",
+              "kind": "docs"
+            },
+            {
+              "title": "Kubernetes — ConfigMaps",
+              "url": "https://kubernetes.io/docs/concepts/configuration/configmap/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "서버 상태와 클라이언트 상태를 나눈다 — React Query · Zustand",
+          "from": "task",
+          "quote": "• React Query, Zustand 기반의 상태 관리 구조를 설계하고 안정적으로 운영해요.",
+          "priority": "core",
+          "why": "주요업무이고 우대사항에도 서버/클라이언트 상태 분리가 있다.",
+          "gap_check": "서버에서 온 목록을 Zustand 에 복사해 두면 무엇이 어긋나나(무효화 · 중복 요청)? 에이전트 설정을 편집 중인 폼 상태는 어디에 두나? 저장 뒤 목록을 갱신하는 방법(invalidateQueries vs setQueryData 낙관적 업데이트)의 장단점과 실패 때 되돌림은?",
+          "drill": "에이전트 목록 · 상세 · 편집 화면을 만들어 목록 · 상세는 React Query(쿼리 키 규칙 정리), 편집 중 초안 · 사이드바 열림은 Zustand 로 둔다. 저장을 낙관적 업데이트로 구현하고 MSW 로 저장 실패를 흉내 내 롤백되는지, 탭을 다시 열 때 재검증이 도는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "TanStack Query — Optimistic Updates",
+              "url": "https://tanstack.com/query/latest/docs/framework/react/guides/optimistic-updates",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "권한에 따라 다른 화면 — 인증 · 권한 관리 UI",
+          "from": "task",
+          "quote": "• Agent Builder, 인증/권한 관리 등 주요 서비스 화면과 사용자 플로우를 고도화해요.",
+          "priority": "high",
+          "why": "주요업무다. 기업 고객은 역할별로 에이전트를 만들 수 있는 사람 · 쓰기만 하는 사람을 나눈다.",
+          "gap_check": "버튼을 숨기는 것(UI)과 서버가 거부하는 것(API)은 왜 둘 다 필요한가? 권한 목록을 로그인 때 한 번 받나, 화면마다 받나? 토큰 만료 중 요청이 여러 개 동시에 401 이 나면 갱신을 한 번만 하게 하려면?",
+          "drill": "앞 과제 앱에 역할(관리자 · 빌더 · 사용자)별 권한 맵을 두고 라우트 가드 · 버튼 노출을 권한으로 제어한다. MSW 로 403 · 401 을 흉내 내 403 은 안내 화면, 401 은 토큰 갱신 한 번 뒤 대기 중 요청을 재시도하게 만들고, 동시 요청 5 개에서 갱신 호출이 1 번인지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "OWASP — Authorization Cheat Sheet",
+              "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "공통 패키지를 나눠 쓴다 — PNPM 워크스페이스 모노레포",
+          "from": "preference",
+          "quote": "• 모노레포 환경에서 공통 패키지, 디자인 시스템, 개발자 경험을 개선해 본 경험이 있으신 분이면 좋아요.",
+          "priority": "nice",
+          "why": "우대사항이고 주요업무에 모노레포 shared 패키지 개선이 있다.",
+          "gap_check": "shared 패키지를 빌드해서 쓰게 하나, 소스를 그대로 가져다 쓰게 하나(TS project references · 번들러 alias)? 공통 컴포넌트를 바꿨을 때 영향받는 앱만 CI 에서 돌리려면(affected)?",
+          "drill": "PNPM 워크스페이스로 apps/admin · apps/builder · packages/ui · packages/api 를 만들고, Turborepo(또는 pnpm --filter)로 packages/ui 변경 시 두 앱만 빌드 · 테스트되게 GitHub Actions 를 구성한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "pnpm — Workspaces",
+              "url": "https://pnpm.io/workspaces",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
