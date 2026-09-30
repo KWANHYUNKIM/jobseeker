@@ -1,0 +1,214 @@
+{
+  "slug": "synchro-food",
+  "name": "シンクロ・フード",
+  "name_en": "Synchro Food",
+  "country": "JP",
+  "category": "검색",
+  "status": "in_progress",
+  "updated_at": "2026-09-30",
+  "domain": "synchro-food.co.jp",
+  "one_liner": "음식점 포털 飲食店ドットコム(구인 · 점포 물건 · 점포 디자인)의 상장사 — MySQL 부하 1 위 스카우트 검색을 트리거 큐로 OpenSearch 에 옮기고, 부동산 담당자의 물건 입력을 OCR + LLM 으로 줄이고, 스크레이핑 급증을 WAF 로 막는다",
+  "business_model": "シンクロ・フード 는 '음식업에 도전하는 사람이 그 뜻을 이룰 수 있는 플랫폼' 을 미션으로 하는 **음식점 지원 플랫폼**(상장사 — IR 페이지)이다. 음식점 사용자(개업자 · 운영자)와 관련 사업자(부동산 · 내장 · 식자재 · 내장 디자인), 음식점에서 일하는 사람을 잇는다. 공고 · 블로그에 보이는 서비스는 **求人飲食店ドットコム**(음식점 정사원 · 아르바이트 구인 — 구인 검색과 구인 측이 구직자를 찾는 **스카우트**), **飲食店ドットコム 店舗物件探し**(점포에 강한 **부동산 회사와 제휴**해 점포 · **이누키(居抜き, 설비가 남은) 물건** 게재), **店舗デザイン.COM**(점포 디자인 · 시공 회사 소개), 인테리어 · 건축 구인, **モビマル**(키친카 출점 지원). 서비스는 20 년 가까이 됐고, M&A 로 인수한 PHP 시스템을 Rails 로 옮기는 중이다(Rails · Java · PHP · Express, Aurora MySQL · Solr · OpenSearch · BigQuery).\n\n기술 블로그는 셋을 보여 준다. 오래된 스키마(쉼표 구분 칼럼 · 여러 단계 SQL · COUNT(*) 풀스캔)로 **MySQL 부하 1 위**였던 스카우트 검색을 **MySQL 트리거 → 큐 테이블 → 폴링 → OpenSearch** 로 옮겨 응답을 3-12 초에서 약 0.5 초로 줄인 것, 부동산 담당자가 **마이소쿠**(물건 정보 한 장 자료)를 보며 손으로 치던 물건 등록을 **OCR + LLM 입력 보조**로 바꾼 것, 그리고 AI 학습용 등 **돌발 스크레이핑**을 **AWS WAF 레이트 리밋**으로 막되 정상 사용자를 막지 않도록 설계한 것.",
+  "products": [
+    "求人飲食店ドットコム(구인 · 스카우트)",
+    "飲食店ドットコム 店舗物件探し(점포 · 이누키 물건)",
+    "店舗デザイン.COM",
+    "モビマル(키친카)"
+  ],
+  "revenue_total": "상장사라 IR 에 있다 — 이번에 읽지 않았다.",
+  "revenue_streams": [
+    {
+      "name": "음식점 구인 광고(求人飲食店ドットコム)",
+      "how": "음식점이 구인을 게재하고 스카우트로 구직자에게 연락한다 — 요금 구조는 이번에 읽지 않았다.",
+      "weight": "IR 에 있음(이번엔 안 읽음)",
+      "domains": [
+        "20 년 된 MySQL 검색을 OpenSearch 로 — 구인 · 스카우트 검색",
+        "스크레이핑 급증에서 정상 사용자를 지킨다 — WAF 레이트 리밋"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "株式会社シンクロ・フード",
+          "url": "https://www.synchro-food.co.jp/",
+          "publisher": "シンクロ・フード",
+          "summary": "미션 '음식업에 도전하는 사람이 그 뜻을 이룰 수 있는 플랫폼을 만든다'. 음식점 지원 플랫폼 — 음식점 사용자(개업자 · 운영자)와 관련 사업자(부동산 · 내장 · 식자재 · 내장 디자인), 음식점에서 일하는 사람을 잇는다. 서비스: 음식점 정 · 아르바이트 구인 사이트, 점포 디자인 회사 소개, 인테리어 · 건축 구인, 이동 판매(키친카) 출점 지원(모비마루). IR 정보(상장사). ISMS 취득."
+        },
+        {
+          "title": "飲食店ドットコムの中で一番負荷の大きかった検索機能にOpenSearchを導入した話",
+          "url": "https://tech.synchro-food.co.jp/entry/2024/02/14/170000",
+          "publisher": "シンクロ・フード",
+          "summary": "스카우트 대상자 검색(구인 측이 구직자를 스카우트) — MySQL 부하 1 위: 여러 테이블 단계별 SQL, 페이지용 COUNT(*) 풀스캔, 쉼표 구분 칼럼 FIND_IN_SET, 프리워드 LIKE. 동기: 관련 테이블 11 개에 트리거 → 큐 테이블에 PK → rake 30 초 폴링 → OpenSearch 갱신(SQS · Aurora→Lambda→SQS · DMS · Debezium 대신 — 갱신 경로가 Rails · Java · 생 SQL 로 다양, 트랜잭션 안 정합). 검색은 OpenSearch 로 PK → Aurora 로 표시 데이터. refresh_interval 30 초+. 응답 중앙값: 조건 없음 3 초대 → 약 0.5 초, 프리워드 6-12 초 → 약 0.5 초.",
+          "date": "2024-02-14"
+        }
+      ]
+    },
+    {
+      "name": "점포 물건 · 점포 디자인 중개(店舗物件探し · 店舗デザイン.COM)",
+      "how": "제휴 부동산 회사의 물건을 게재하고 개업자와 잇고, 점포 디자인 · 시공 회사를 소개한다 — 수수료 구조는 이번에 읽지 않았다.",
+      "weight": "IR 에 있음(이번엔 안 읽음)",
+      "domains": [
+        "부동산 담당자의 물건 입력을 줄인다 — 마이소쿠 OCR + LLM",
+        "스크레이핑 급증에서 정상 사용자를 지킨다 — WAF 레이트 리밋"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "株式会社シンクロ・フード",
+          "url": "https://www.synchro-food.co.jp/",
+          "publisher": "シンクロ・フード",
+          "summary": "미션 '음식업에 도전하는 사람이 그 뜻을 이룰 수 있는 플랫폼을 만든다'. 음식점 지원 플랫폼 — 음식점 사용자(개업자 · 운영자)와 관련 사업자(부동산 · 내장 · 식자재 · 내장 디자인), 음식점에서 일하는 사람을 잇는다. 서비스: 음식점 정 · 아르바이트 구인 사이트, 점포 디자인 회사 소개, 인테리어 · 건축 구인, 이동 판매(키친카) 출점 지원(모비마루). IR 정보(상장사). ISMS 취득."
+        },
+        {
+          "title": "生成AIを利用して物件登録にかかる時間を大幅削減した話",
+          "url": "https://tech.synchro-food.co.jp/entry/2025/03/27/180000",
+          "publisher": "シンクロ・フード",
+          "summary": "'飲食店ドットコム 店舗物件探し' — 점포에 강한 부동산 회사와 제휴해 점포 · 이누키(居抜き) 물건 게재. 부동산 담당자가 '마이소쿠'(물건 개요 · 도면 · 지도 자료)를 보며 수기 입력 → OCR 로 텍스트 추출 + LLM 으로 항목 정리해 입력 보조(완전 자동은 어렵다). GPT 프로젝트팀 PoC · 프롬프트 튜닝 → 서비스팀 개발, 전년 여름 출시.",
+          "date": "2025-03-27"
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "음식점 한 곳이 문을 열기까지",
+    "question": "개업자 · 부동산 · 구직자가 어디서 만나나?",
+    "code": "flowchart LR\n  RE[\"제휴 부동산 회사\"] -->|\"마이소쿠 업로드 · OCR + LLM\"| PROP[\"店舗物件探し\"]\n  OWN[\"개업자 · 운영자\"] --> PROP\n  OWN --> DES[\"店舗デザイン.COM\"]\n  OWN --> JOB[\"求人飲食店ドットコム\\n구인 · 스카우트\"]\n  SEEK[\"구직자\"] --> JOB\n  JOB --> OS[\"OpenSearch\\n(트리거 큐 동기)\"]\n  OS -.-> DB[(\"Aurora MySQL\")]\n  BOT[\"스크레이핑 급증\"] -.->|\"WAF 레이트 리밋\"| JOB",
+    "_note": "이 사이트의 해석 — 회사 사이트와 OpenSearch · 물건 등록 · WAF 글의 구성을 한 장에 모았다."
+  },
+  "domains": [
+    {
+      "name": "20 년 된 MySQL 검색을 OpenSearch 로 — 구인 · 스카우트 검색",
+      "why": "20 년 가까이 된 서비스라 만들 땐 괜찮았던 검색이 사용자가 늘며 문제가 된다 — 스카우트 대상자 검색은 MySQL 부하 1 위였다(여러 테이블 · 여러 단계 SQL · 페이지용 COUNT(*) 풀스캔 · 쉼표 구분 칼럼 FIND_IN_SET · 프리워드 LIKE). 접속이 늘면 DB 가 압박받아 응답이 크게 느려지고 장애로 이어질 수 있었고, 더 느려질까 봐 새 기능도 일부 막혀 있었다.",
+      "tech": [
+        {
+          "tech": "MySQL 트리거 → 큐 테이블 → rake 30 초 폴링 → OpenSearch, 검색은 PK 만 OpenSearch 에서",
+          "solves": "응답 중앙값 3 초대 → 약 0.5 초, 프리워드 6-12 초 → 약 0.5 초.",
+          "limits": "트리거 · 큐 테이블로 DB 복잡도 증가, 대량 갱신엔 확장이 어렵다, refresh_interval 30 초로 반영 지연.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "飲食店ドットコムの中で一番負荷の大きかった検索機能にOpenSearchを導入した話",
+              "url": "https://tech.synchro-food.co.jp/entry/2024/02/14/170000",
+              "publisher": "シンクロ・フード",
+              "summary": "스카우트 대상자 검색(구인 측이 구직자를 스카우트) — MySQL 부하 1 위: 여러 테이블 단계별 SQL, 페이지용 COUNT(*) 풀스캔, 쉼표 구분 칼럼 FIND_IN_SET, 프리워드 LIKE. 동기: 관련 테이블 11 개에 트리거 → 큐 테이블에 PK → rake 30 초 폴링 → OpenSearch 갱신(SQS · Aurora→Lambda→SQS · DMS · Debezium 대신 — 갱신 경로가 Rails · Java · 생 SQL 로 다양, 트랜잭션 안 정합). 검색은 OpenSearch 로 PK → Aurora 로 표시 데이터. refresh_interval 30 초+. 응답 중앙값: 조건 없음 3 초대 → 약 0.5 초, 프리워드 6-12 초 → 약 0.5 초.",
+              "date": "2024-02-14"
+            },
+            {
+              "title": "求人飲食店ドットコムの求人検索に OpenSearch を導入した話",
+              "url": "https://tech.synchro-food.co.jp/entry/2023/01/31/195802",
+              "publisher": "シンクロ・フード",
+              "summary": "가장 자주 쓰이는 구인 검색에 OpenSearch 를 먼저 도입해 고속화 · DB 부하 저감.",
+              "date": "2023-01-31"
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "부동산 담당자의 물건 입력을 줄인다 — 마이소쿠 OCR + LLM",
+      "why": "점포 물건 사이트의 물건 등록은 입력 항목이 많아, 부동산 담당자가 마이소쿠를 보며 손으로 치는 데 시간이 걸렸다. 사내 사업부도 제휴사 대신 물건을 등록 · 이중 확인한다.",
+      "tech": [
+        {
+          "tech": "OCR(Cloud Vision) + LLM(GPT-4o) 으로 폼 자동 입력 보조, 사내 관리 화면 전개 · 초안 · 일괄 업로드",
+          "solves": "이용자 절반 이상이 3 분 이상 단축 체감.",
+          "limits": "완전 자동화는 어렵다 — 입력 '보조' 로 설계.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "生成AIを利用して物件登録にかかる時間を大幅削減した話",
+              "url": "https://tech.synchro-food.co.jp/entry/2025/03/27/180000",
+              "publisher": "シンクロ・フード",
+              "summary": "'飲食店ドットコム 店舗物件探し' — 점포에 강한 부동산 회사와 제휴해 점포 · 이누키(居抜き) 물건 게재. 부동산 담당자가 '마이소쿠'(물건 개요 · 도면 · 지도 자료)를 보며 수기 입력 → OCR 로 텍스트 추출 + LLM 으로 항목 정리해 입력 보조(완전 자동은 어렵다). GPT 프로젝트팀 PoC · 프롬프트 튜닝 → 서비스팀 개발, 전년 여름 출시.",
+              "date": "2025-03-27"
+            },
+            {
+              "title": "下書き機能とマイソク一括アップロードで物件登録業務をさらに効率化した話",
+              "url": "https://tech.synchro-food.co.jp/entry/2026/03/17/180000",
+              "publisher": "シンクロ・フード",
+              "summary": "물건 등록 보조(Cloud Vision OCR + GPT-4o)로 이용자 절반 이상이 3 분 이상 단축 체감. 사내 사업부 관리 화면에도 전개 — 이중 확인 운영에 임시 저장이 없어 '초안' 기능, 여러 마이소쿠 일괄 업로드.",
+              "date": "2026-03-17"
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "스크레이핑 급증에서 정상 사용자를 지킨다 — WAF 레이트 리밋",
+      "why": "AI 학습 등 데이터 수집 목적의 돌발 스크레이핑 같은 '예측 못 한 트래픽 급증' 이 늘어 백엔드 리소스를 압박하고 정상 사용자에게 영향을 줄 수 있었다. 레이트 리밋은 정석이지만 오탐으로 정상 트래픽을 막으면 기회 손실이다.",
+      "tech": [
+        {
+          "tech": "AWS WAF 레이트 기반 규칙(vs Nginx limit_req), Count 모드로 단계 도입",
+          "solves": "관리형 GeoIP · 봇 DB, 드라이런, 로그 가시성.",
+          "limits": "초기 비용은 Nginx 보다 높다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AWS WAF レートリミット導入と誤検知対策：正規トラフィックを保護するアーキテクチャを設計した話",
+              "url": "https://tech.synchro-food.co.jp/entry/2026/04/02/180000",
+              "publisher": "シンクロ・フード",
+              "summary": "Scutum 중심 보안에 더해, AI 학습용 등 돌발 스크레이핑 같은 예측 못 한 트래픽 급증 — 레이트 리밋이 정석이지만 오탐으로 정상 트래픽까지 막을 위험. Nginx + ALB 구성에서 AWS WAF 레이트 기반 규칙 vs Nginx limit_req + geo 비교(초기 비용 · 운영 · GeoIP/봇 DB 갱신 · Count 모드 · DDoS · 로그) → WAF. Count 모드로 단계 도입, 정상 사용자 오차단 방지.",
+              "date": "2026-04-02"
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "매출 · 사업별 비중 · 요금은 IR 에 있지만 이번에 읽지 않았다.",
+    "WAF 글의 뒷부분(구체 임계값 · 제외 규칙 · 결과)은 기능에서 더 읽는다."
+  ],
+  "sources": [
+    {
+      "title": "株式会社シンクロ・フード",
+      "url": "https://www.synchro-food.co.jp/",
+      "publisher": "シンクロ・フード",
+      "summary": "미션 '음식업에 도전하는 사람이 그 뜻을 이룰 수 있는 플랫폼을 만든다'. 음식점 지원 플랫폼 — 음식점 사용자(개업자 · 운영자)와 관련 사업자(부동산 · 내장 · 식자재 · 내장 디자인), 음식점에서 일하는 사람을 잇는다. 서비스: 음식점 정 · 아르바이트 구인 사이트, 점포 디자인 회사 소개, 인테리어 · 건축 구인, 이동 판매(키친카) 출점 지원(모비마루). IR 정보(상장사). ISMS 취득."
+    },
+    {
+      "title": "飲食店ドットコムの中で一番負荷の大きかった検索機能にOpenSearchを導入した話",
+      "url": "https://tech.synchro-food.co.jp/entry/2024/02/14/170000",
+      "publisher": "シンクロ・フード",
+      "summary": "스카우트 대상자 검색(구인 측이 구직자를 스카우트) — MySQL 부하 1 위: 여러 테이블 단계별 SQL, 페이지용 COUNT(*) 풀스캔, 쉼표 구분 칼럼 FIND_IN_SET, 프리워드 LIKE. 동기: 관련 테이블 11 개에 트리거 → 큐 테이블에 PK → rake 30 초 폴링 → OpenSearch 갱신(SQS · Aurora→Lambda→SQS · DMS · Debezium 대신 — 갱신 경로가 Rails · Java · 생 SQL 로 다양, 트랜잭션 안 정합). 검색은 OpenSearch 로 PK → Aurora 로 표시 데이터. refresh_interval 30 초+. 응답 중앙값: 조건 없음 3 초대 → 약 0.5 초, 프리워드 6-12 초 → 약 0.5 초.",
+      "date": "2024-02-14"
+    },
+    {
+      "title": "求人飲食店ドットコムの求人検索に OpenSearch を導入した話",
+      "url": "https://tech.synchro-food.co.jp/entry/2023/01/31/195802",
+      "publisher": "シンクロ・フード",
+      "summary": "가장 자주 쓰이는 구인 검색에 OpenSearch 를 먼저 도입해 고속화 · DB 부하 저감.",
+      "date": "2023-01-31"
+    },
+    {
+      "title": "生成AIを利用して物件登録にかかる時間を大幅削減した話",
+      "url": "https://tech.synchro-food.co.jp/entry/2025/03/27/180000",
+      "publisher": "シンクロ・フード",
+      "summary": "'飲食店ドットコム 店舗物件探し' — 점포에 강한 부동산 회사와 제휴해 점포 · 이누키(居抜き) 물건 게재. 부동산 담당자가 '마이소쿠'(물건 개요 · 도면 · 지도 자료)를 보며 수기 입력 → OCR 로 텍스트 추출 + LLM 으로 항목 정리해 입력 보조(완전 자동은 어렵다). GPT 프로젝트팀 PoC · 프롬프트 튜닝 → 서비스팀 개발, 전년 여름 출시.",
+      "date": "2025-03-27"
+    },
+    {
+      "title": "下書き機能とマイソク一括アップロードで物件登録業務をさらに効率化した話",
+      "url": "https://tech.synchro-food.co.jp/entry/2026/03/17/180000",
+      "publisher": "シンクロ・フード",
+      "summary": "물건 등록 보조(Cloud Vision OCR + GPT-4o)로 이용자 절반 이상이 3 분 이상 단축 체감. 사내 사업부 관리 화면에도 전개 — 이중 확인 운영에 임시 저장이 없어 '초안' 기능, 여러 마이소쿠 일괄 업로드.",
+      "date": "2026-03-17"
+    },
+    {
+      "title": "AWS WAF レートリミット導入と誤検知対策：正規トラフィックを保護するアーキテクチャを設計した話",
+      "url": "https://tech.synchro-food.co.jp/entry/2026/04/02/180000",
+      "publisher": "シンクロ・フード",
+      "summary": "Scutum 중심 보안에 더해, AI 학습용 등 돌발 스크레이핑 같은 예측 못 한 트래픽 급증 — 레이트 리밋이 정석이지만 오탐으로 정상 트래픽까지 막을 위험. Nginx + ALB 구성에서 AWS WAF 레이트 기반 규칙 vs Nginx limit_req + geo 비교(초기 비용 · 운영 · GeoIP/봇 DB 갱신 · Count 모드 · DDoS · 로그) → WAF. Count 모드로 단계 도입, 정상 사용자 오차단 방지.",
+      "date": "2026-04-02"
+    },
+    {
+      "title": "2025年3月時点のシンクロ・フードの技術構成",
+      "url": "https://tech.synchro-food.co.jp/entry/2025/03/31/180000",
+      "publisher": "シンクロ・フード",
+      "summary": "Ruby on Rails · Java(Seasar2) · PHP(Lumen, M&A 로 인수 — Rails 로 교체 중) · Express.js · React/TS, Aurora MySQL v3 · Solr · OpenSearch · BigQuery, Rails 테스트 커버리지 75-95%.",
+      "date": "2025-03-31"
+    }
+  ]
+}
