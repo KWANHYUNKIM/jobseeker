@@ -82,9 +82,16 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **シンクロ・フード** | JP · 음식점 포털 · 음식점 구인(飲食店.com 등) | 입구 `tech.synchro-food.co.jp/rss`. 'AWS WAF レートリミット導入と誤検知対策'(2026-04 — AI 학습용 스크레이핑 등 예측 못 한 스파이크, WAF 레이트 룰 vs Nginx limit_req 비교표 · Count 모드 단계 도입 · 정상 사용자 오차단 방지) · '複数DB間環境のRailsアプリのCIを自社版database_rewinderで' · 'AppsFlyer UDL ディファードディープリンク' · 'gem 버전업 수동 테스트를 Claude Code 로'. 사이트 보호 · 운영 축. |
+| **MakeShop** | JP · EC 사이트 구축 SaaS(GMO MakeShop) | 입구 `tech.makeshop.co.jp/rss`. 'レガシーECの決済DBを、AIエージェントに実データ照合で監査させる'(2026-06 — 장수 EC 리뉴얼에서 결제 방식 × 주문 종류마다 DB 쓰기가 신구로 다름, 코드로 만든 사양은 코드 오독을 그대로 물려받는다 → 신구 소스 CRUD 추출 + 개발 DB 실데이터 대조) · 'DORA 지표 자동 계측(여러 AI 도구 혼재)'. 결정 글이 적어 주의 — 결제 이행 축. |
+| **JX通信社** | JP · 뉴스(NewsDigest) · 재난 정보(FASTALERT) | 입구 `tech.jxpress.net/rss`. 'BigQuery 物理バイト課金への切り替え'(2026-06 — Datalake/DWH/Datamart 3 층 중복 보관, ALTER SCHEMA 한 줄로 수십 % 절감, 논리 vs 물리 과금) · 'Datadog とクラウド費用 60% 이상 삭감'(2025-02) · 'Datastream 으로 Cloud SQL ↔ BigQuery 동기' · Cloudflare Workers Slack 봇. 비용 · 데이터 기반 축. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
 
+- **2026-09-30 백열일곱 번째 후보 조사 — 목표 3곳 중 3곳. 입구: blog_new 목록에서 회사명 · 도메인 대조로 안 본 제품 회사 14 곳 → RSS → 본문 5편.**
+  - **シンクロ・フード** · **MakeShop** · **JX通信社** — `## 대기` 로 올렸다. MakeShop 은 결정 글이 한 편뿐이라 주의.
+  - **약함.** **SalesNow**(법인 DB — 'LLM 으로 3.76 억 엔 비용 삭감' 은 note 로 넘기는 짧은 글, 2024 이후 멈춤) · **Studyplus**(miko — Claude Code 스킬셋 · 비즈니스 룰 주도 개발, 개발 도구 글) · **テックタッチ**(CloudFront 실시간 로그 × Rust Lambda · Vertex AI 다층 방어 — 제품 결정보다 인프라 글).
+  - **걸렀다.** ContractS · Speee · Assured · トヨクモ · ユニファ(AI 도구 · 조직 · 행사 글 위주) · TENTIAL · ticketme(2023-24 에 멈춤) · Techouse(RubyKaigi 보고 위주).
 - **2026-09-30 백열여섯 번째 후보 조사 — 목표 3곳 중 3곳. 입구: 앞 조사의 `blog_new` 목록(366 곳) · 회사명 대조로 안 본 제품 회사 17 곳 → RSS → 본문 7편.**
   - **一休** · **スタンバイ** · **スペースリー** — `## 대기` 로 올렸다.
   - **약함.** **くらしのマーケット**(システム刷新 연재 5 화 — 에세이 · 사내 장애 지식 RAG/Agentic RAG, 제품 결정 글이 아니다) · **ROBOT PAYMENT**(결제 대행 · 서브스크 청구 — TransactionScope 밖 DB 연결로 이중 등록 · 관리 화면 검색 30 초 → 0.24 초, 기술은 좋으나 사내 · 버그 회고 위주) · **アソビュー**(최근 AI 도구 · 조직 글 위주, GA Measurement Protocol 한 편) · **OLTA**(팩토링 · INVOY — '社会保険+税金払い' 한 편, 데이터 기반 글 위주).
