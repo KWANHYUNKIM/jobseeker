@@ -2876,3 +2876,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 
 - UserSimulator 글 + Langfuse/DSPy 글로 `maido-voice-dispatch-eval`. 결정 7 — 배차 직전 재확인 가드레일 / DSPy 자동 개선 / 이진 판정부터 평가 / LLM 가짜 손님 / independent · with_audio 두 모드 / BigQuery ML.TRANSCRIBE(리전 제약) / LLM 세 단계 AudioClip. 지표 2. 그림 3.
 
+
+## 2026-09-30 newmo 미터 연계(기능 3/3)
+
+- 소프트미터 글(2025-12-16)로 `tda-meter-link-softmeter`. 결정 7 — TDA 가 Bluetooth 로 받아 백엔드로 / 조합마다 검증 · 개발(GATT · Classic · Advertise) / 재접속(100% 보장 없음) / 소프트미터 조사 / 국토교통성 방식의 거리 추정 / 차속부터 검증 / OBD2 USB(-5 km/h · 퓨즈). 다음: 완주 점검 — newジョブ 수익원에 도메인이 없다(PayloadCMS 글이 newジョブ 관리 화면).
