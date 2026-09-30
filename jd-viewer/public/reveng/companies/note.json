@@ -4,7 +4,7 @@
   "name_en": "note",
   "country": "JP",
   "category": "소셜",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-30",
   "domain": "note.com",
   "one_liner": "크리에이터가 글을 올리고 팔고 응원받는 일본 미디어 플랫폼 — 게스트 구매에 Amazon Pay 를 붙이고, 사이트맵으로 인덱스 시간을 1/30 로, A/B 실험을 GrowthBook 으로 옮긴다",
@@ -182,7 +182,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "growthbook-ab-namespaces"
+      ]
     }
   ],
   "features": [
@@ -811,6 +813,313 @@
           "publisher": "note株式会社",
           "summary": "1 년 전 vibe coding 으로 만든 Core Web Vitals 감시 도구(Playwright 계측 → 차트 → Slack) — 사람이 봐야 가치, 일별 스냅숏뿐, 원인 조사는 사람. 하네스 엔지니어링으로 다시: 먼저 lint · typecheck · test CI 와 자동 머지, 에이전트용 문서(계획 · 종료 조건 · 데이터 모델) → Slack 중심 이상 탐지 · 원인 조사를 에이전트에.",
           "date": "2026-04-06"
+        }
+      ]
+    },
+    {
+      "key": "growthbook-ab-namespaces",
+      "name": "화면 실험 하나에 배포 네 번 — 사내 Ruby A/B 라이브러리를 셀프 호스팅 GrowthBook 으로 바꾸되, 할당 API 자리만 갈아 끼우고 실험끼리 겹치지 않는 네임스페이스를 지키고, 다운에 대비해 설정을 Redis 에 둔다",
+      "domain": "화면 실험을 배포 없이 — 셀프 호스팅 A/B 테스트 기반",
+      "updated_at": "2026-09-30",
+      "business": {
+        "why": "note 는 사내에서 만든 **Ruby 라이브러리**로 A/B 테스트를 했는데, 화면 A/B 테스트 하나를 하려면 **배포를 4 번** 해야 했다 — 실험 하나를 끝까지 하는 데 시간이 많이 걸려 효율화가 필요했다. 목적은 단순히 'A/B 테스트를 더 효율적으로'. 먼저 일부 팀에서 GrowthBook 을 써 보니 반응이 좋고 A/B 테스트가 빨라져 **전 엔지니어로 넓혔다**.",
+        "metrics": [
+          {
+            "label": "도입 전 화면 A/B 테스트 하나의 배포 횟수",
+            "value": "4 번",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "noteでのGrowthBookの導入理由と使い方を紹介",
+                "url": "https://engineerteam.note.jp/n/n5e6f422289cd",
+                "publisher": "note株式会社",
+                "summary": "사내 Ruby 라이브러리 A/B 테스트는 화면 실험 하나에 배포 4 번 → GrowthBook(오픈소스, 셀프 호스팅, 무료판). Unleash 는 네임스페이스 불가로 탈락 — 실험끼리 부딪히지 않게 사용자를 나누는 네임스페이스가 전제. 웹 서버 → A/B API(GrowthBook) → 할당 → 화면 · 행동 로그 Snowflake → 1 주 뒤 분석. 실험 설정을 Redis 캐시(다운 대비). GUI 로 비엔지니어도. 기존 라이브러리 폐지는 남은 일.",
+                "date": "2024-11-15"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "도구를 고를 때",
+          "thought": "지금 방침(실험끼리 부딪히지 않게 네임스페이스로 사용자를 나누는 것)을 그대로 할 수 있는 도구가 전제 조건이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "noteでのGrowthBookの導入理由と使い方を紹介",
+              "url": "https://engineerteam.note.jp/n/n5e6f422289cd",
+              "publisher": "note株式会社",
+              "summary": "사내 Ruby 라이브러리 A/B 테스트는 화면 실험 하나에 배포 4 번 → GrowthBook(오픈소스, 셀프 호스팅, 무료판). Unleash 는 네임스페이스 불가로 탈락 — 실험끼리 부딪히지 않게 사용자를 나누는 네임스페이스가 전제. 웹 서버 → A/B API(GrowthBook) → 할당 → 화면 · 행동 로그 Snowflake → 1 주 뒤 분석. 실험 설정을 Redis 캐시(다운 대비). GUI 로 비엔지니어도. 기존 라이브러리 폐지는 남은 일.",
+              "date": "2024-11-15"
+            }
+          ]
+        },
+        {
+          "at": "아키텍처를 볼 때",
+          "thought": "A/B 테스트 API 서버에 묻는 수단은 같다 — 취득처 서버가 GrowthBook 으로 바뀔 뿐이라 큰 아키텍처 변경이 필요 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "noteでのGrowthBookの導入理由と使い方を紹介",
+              "url": "https://engineerteam.note.jp/n/n5e6f422289cd",
+              "publisher": "note株式会社",
+              "summary": "사내 Ruby 라이브러리 A/B 테스트는 화면 실험 하나에 배포 4 번 → GrowthBook(오픈소스, 셀프 호스팅, 무료판). Unleash 는 네임스페이스 불가로 탈락 — 실험끼리 부딪히지 않게 사용자를 나누는 네임스페이스가 전제. 웹 서버 → A/B API(GrowthBook) → 할당 → 화면 · 행동 로그 Snowflake → 1 주 뒤 분석. 실험 설정을 Redis 캐시(다운 대비). GUI 로 비엔지니어도. 기존 라이브러리 폐지는 남은 일.",
+              "date": "2024-11-15"
+            }
+          ]
+        },
+        {
+          "at": "앞으로",
+          "thought": "특별한 이유가 없으면 A/B 테스트는 GrowthBook 으로 — 다만 기존 라이브러리 폐지 등 개선 여지가 남았다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "noteでのGrowthBookの導入理由と使い方を紹介",
+              "url": "https://engineerteam.note.jp/n/n5e6f422289cd",
+              "publisher": "note株式会社",
+              "summary": "사내 Ruby 라이브러리 A/B 테스트는 화면 실험 하나에 배포 4 번 → GrowthBook(오픈소스, 셀프 호스팅, 무료판). Unleash 는 네임스페이스 불가로 탈락 — 실험끼리 부딪히지 않게 사용자를 나누는 네임스페이스가 전제. 웹 서버 → A/B API(GrowthBook) → 할당 → 화면 · 행동 로그 Snowflake → 1 주 뒤 분석. 실험 설정을 Redis 캐시(다운 대비). GUI 로 비엔지니어도. 기존 라이브러리 폐지는 남은 일.",
+              "date": "2024-11-15"
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "실험(Experiment)",
+            "what": "GUI 에서 만든 A/B 테스트 — control · treatment 등 변형(Variation)과 비율."
+          },
+          {
+            "name": "네임스페이스",
+            "what": "같은 페이지의 다른 실험이 같은 사용자에게 동시에 걸리지 않게 사용자를 나누는 구역."
+          },
+          {
+            "name": "기능 플래그",
+            "what": "A/B 가 아니라 특정 기능을 켜고 끄는 용도."
+          },
+          {
+            "name": "할당",
+            "what": "'user_id: 1 은 treatment_b' 같은 응답 — 프런트가 그에 따라 화면을 그린다."
+          },
+          {
+            "name": "행동 로그",
+            "what": "할당된 사용자의 클릭 · 조작 — Snowflake 에 쌓아 약 1 주 뒤 분석."
+          }
+        ],
+        "invariants": [
+          "한 사용자는 같은 네임스페이스의 실험 하나에만 걸린다.",
+          "GrowthBook 이 죽어도 할당은 Redis 에 캐시된 실험 설정으로 계속된다.",
+          "화면은 할당 결과만 보고 그린다 — 할당 로직은 프런트에 없다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "사용자가 note 웹 서버에 접속",
+            "why": "요청 시작."
+          },
+          {
+            "step": "웹 서버가 A/B 테스트 API 에 문의 — 취득처가 GrowthBook(셀프 호스팅, Redis 캐시)",
+            "why": "할당 결정."
+          },
+          {
+            "step": "'user_id: 1 은 treatment_b' 응답에 따라 프런트가 화면을 표시(getFeatureValue — note 가 만든 함수)",
+            "why": "변형 적용."
+          },
+          {
+            "step": "행동 로그를 Snowflake 에 기록",
+            "why": "분석 재료."
+          },
+          {
+            "step": "약 1 주 뒤 분석",
+            "why": "결론."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "무엇으로 A/B 테스트를 바꾸나?",
+            "chosen": "**GrowthBook**(오픈소스 A/B 테스트 · 기능 플래그 관리) — 먼저 검토한 **Unleash 는 네임스페이스 설정이 안 돼 포기**했다.",
+            "alternatives": [
+              "Unleash",
+              "사내 Ruby 라이브러리 유지"
+            ],
+            "tradeoff": "지금의 방침(네임스페이스로 사용자를 나눔)을 그대로 할 수 있는 도구가 전제였고, GrowthBook 은 기능도 풍부하다. 대가는 외부 도구에 실험 운영을 기대는 것과 기존 라이브러리 폐지라는 남은 일.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "noteでのGrowthBookの導入理由と使い方を紹介",
+                "url": "https://engineerteam.note.jp/n/n5e6f422289cd",
+                "publisher": "note株式会社",
+                "summary": "사내 Ruby 라이브러리 A/B 테스트는 화면 실험 하나에 배포 4 번 → GrowthBook(오픈소스, 셀프 호스팅, 무료판). Unleash 는 네임스페이스 불가로 탈락 — 실험끼리 부딪히지 않게 사용자를 나누는 네임스페이스가 전제. 웹 서버 → A/B API(GrowthBook) → 할당 → 화면 · 행동 로그 Snowflake → 1 주 뒤 분석. 실험 설정을 Redis 캐시(다운 대비). GUI 로 비엔지니어도. 기존 라이브러리 폐지는 남은 일.",
+                "date": "2024-11-15"
+              }
+            ]
+          },
+          {
+            "question": "왜 네임스페이스가 필수인가?",
+            "chosen": "**같은 페이지에서 동시에 도는 실험이 같은 사용자에게 겹쳐 적용되지 않게** 네임스페이스로 제어한다.",
+            "alternatives": [
+              "실험마다 독립 무작위 배정"
+            ],
+            "tradeoff": "'버튼 색 실험' 과 '가격 글자를 빨갛게 하는 실험' 이 겹치면 노란 버튼과 빨간 글자가 함께 나와 어느 실험이 효과를 냈는지 모른다. 대가는 네임스페이스를 나눌수록 실험마다 받을 수 있는 사용자 수가 준다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "noteでのGrowthBookの導入理由と使い方を紹介",
+                "url": "https://engineerteam.note.jp/n/n5e6f422289cd",
+                "publisher": "note株式会社",
+                "summary": "사내 Ruby 라이브러리 A/B 테스트는 화면 실험 하나에 배포 4 번 → GrowthBook(오픈소스, 셀프 호스팅, 무료판). Unleash 는 네임스페이스 불가로 탈락 — 실험끼리 부딪히지 않게 사용자를 나누는 네임스페이스가 전제. 웹 서버 → A/B API(GrowthBook) → 할당 → 화면 · 행동 로그 Snowflake → 1 주 뒤 분석. 실험 설정을 Redis 캐시(다운 대비). GUI 로 비엔지니어도. 기존 라이브러리 폐지는 남은 일.",
+                "date": "2024-11-15"
+              }
+            ]
+          },
+          {
+            "question": "클라우드판인가 셀프 호스팅인가, 유료인가?",
+            "chosen": "**셀프 호스팅 · 무료판** — 유료판의 세밀한 권한 설정은 특별히 필요 없어 보였다.",
+            "alternatives": [
+              "GrowthBook 클라우드 · 유료판"
+            ],
+            "tradeoff": "오픈소스라 코드가 공개돼 있고 직접 운영할 수 있다. 대가는 운영 책임 — 다음 결정(Redis 캐시)이 그 대가다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "noteでのGrowthBookの導入理由と使い方を紹介",
+                "url": "https://engineerteam.note.jp/n/n5e6f422289cd",
+                "publisher": "note株式会社",
+                "summary": "사내 Ruby 라이브러리 A/B 테스트는 화면 실험 하나에 배포 4 번 → GrowthBook(오픈소스, 셀프 호스팅, 무료판). Unleash 는 네임스페이스 불가로 탈락 — 실험끼리 부딪히지 않게 사용자를 나누는 네임스페이스가 전제. 웹 서버 → A/B API(GrowthBook) → 할당 → 화면 · 행동 로그 Snowflake → 1 주 뒤 분석. 실험 설정을 Redis 캐시(다운 대비). GUI 로 비엔지니어도. 기존 라이브러리 폐지는 남은 일.",
+                "date": "2024-11-15"
+              }
+            ]
+          },
+          {
+            "question": "기존 구조를 얼마나 바꾸나?",
+            "chosen": "**A/B 테스트 API 서버에 묻는 구조는 그대로, 취득처만 GrowthBook 으로** — 할당 응답 형식('user_id 는 treatment_b')과 프런트 표시 · 로그 흐름은 같다.",
+            "alternatives": [
+              "프런트에 GrowthBook SDK 를 직접 넣어 할당"
+            ],
+            "tradeoff": "큰 아키텍처 변경 없이 갈아 끼우고 여러 팀에 넓힐 수 있다. 대가는 중간 API 층 하나가 남는다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "noteでのGrowthBookの導入理由と使い方を紹介",
+                "url": "https://engineerteam.note.jp/n/n5e6f422289cd",
+                "publisher": "note株式会社",
+                "summary": "사내 Ruby 라이브러리 A/B 테스트는 화면 실험 하나에 배포 4 번 → GrowthBook(오픈소스, 셀프 호스팅, 무료판). Unleash 는 네임스페이스 불가로 탈락 — 실험끼리 부딪히지 않게 사용자를 나누는 네임스페이스가 전제. 웹 서버 → A/B API(GrowthBook) → 할당 → 화면 · 행동 로그 Snowflake → 1 주 뒤 분석. 실험 설정을 Redis 캐시(다운 대비). GUI 로 비엔지니어도. 기존 라이브러리 폐지는 남은 일.",
+                "date": "2024-11-15"
+              }
+            ]
+          },
+          {
+            "question": "GrowthBook 이 죽으면?",
+            "chosen": "**실험 설정을 Redis 에 캐시**해 GrowthBook 이 다운돼도 문제가 없게 한다.",
+            "alternatives": [
+              "GrowthBook 에 매 요청 직접 문의"
+            ],
+            "tradeoff": "셀프 호스팅 도구 장애가 서비스 화면 장애로 번지지 않는다. 대가는 설정 변경이 캐시 갱신만큼 늦게 반영될 수 있다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "noteでのGrowthBookの導入理由と使い方を紹介",
+                "url": "https://engineerteam.note.jp/n/n5e6f422289cd",
+                "publisher": "note株式会社",
+                "summary": "사내 Ruby 라이브러리 A/B 테스트는 화면 실험 하나에 배포 4 번 → GrowthBook(오픈소스, 셀프 호스팅, 무료판). Unleash 는 네임스페이스 불가로 탈락 — 실험끼리 부딪히지 않게 사용자를 나누는 네임스페이스가 전제. 웹 서버 → A/B API(GrowthBook) → 할당 → 화면 · 행동 로그 Snowflake → 1 주 뒤 분석. 실험 설정을 Redis 캐시(다운 대비). GUI 로 비엔지니어도. 기존 라이브러리 폐지는 남은 일.",
+                "date": "2024-11-15"
+              }
+            ]
+          },
+          {
+            "question": "누가 실험을 바꾸나?",
+            "chosen": "**모든 설정을 GUI 로** — 실험 생성, 변형 · 네임스페이스, 비율, 일부 사용자 고정 디자인, 사원 사용자 ID 지정까지. 엔지니어는 실험 이름을 프런트에 한 번 심어 출시하면 그 뒤 변경은 GUI 에서.",
+            "alternatives": [
+              "변경마다 코드 수정 · 배포(기존 — 배포 4 번)"
+            ],
+            "tradeoff": "엔지니어가 아니어도 쓸 수 있고 배포 횟수가 준다 — 3 개 이상 변형도 된다. 대가는 코드 밖에서 화면이 바뀌므로 누가 무엇을 바꿨는지 관리가 필요하다(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "noteでのGrowthBookの導入理由と使い方を紹介",
+                "url": "https://engineerteam.note.jp/n/n5e6f422289cd",
+                "publisher": "note株式会社",
+                "summary": "사내 Ruby 라이브러리 A/B 테스트는 화면 실험 하나에 배포 4 번 → GrowthBook(오픈소스, 셀프 호스팅, 무료판). Unleash 는 네임스페이스 불가로 탈락 — 실험끼리 부딪히지 않게 사용자를 나누는 네임스페이스가 전제. 웹 서버 → A/B API(GrowthBook) → 할당 → 화면 · 행동 로그 Snowflake → 1 주 뒤 분석. 실험 설정을 Redis 캐시(다운 대비). GUI 로 비엔지니어도. 기존 라이브러리 폐지는 남은 일.",
+                "date": "2024-11-15"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "유료 기사 · 멤버십 · 팁 거래 · noteプレミアム(수익원)",
+          "via": "화면 실험",
+          "contract": "구매 · 가입 화면의 변형을 빨리 시험해 전환을 개선한다 — 가격 글자 색 실험을 예로 든다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "noteでのGrowthBookの導入理由と使い方を紹介",
+              "url": "https://engineerteam.note.jp/n/n5e6f422289cd",
+              "publisher": "note株式会社",
+              "summary": "사내 Ruby 라이브러리 A/B 테스트는 화면 실험 하나에 배포 4 번 → GrowthBook(오픈소스, 셀프 호스팅, 무료판). Unleash 는 네임스페이스 불가로 탈락 — 실험끼리 부딪히지 않게 사용자를 나누는 네임스페이스가 전제. 웹 서버 → A/B API(GrowthBook) → 할당 → 화면 · 행동 로그 Snowflake → 1 주 뒤 분석. 실험 설정을 Redis 캐시(다운 대비). GUI 로 비엔지니어도. 기존 라이브러리 폐지는 남은 일.",
+              "date": "2024-11-15"
+            },
+            {
+              "title": "note株式会社",
+              "url": "https://note.jp/",
+              "publisher": "note株式会社",
+              "summary": "미션 '누구나 창작을 시작하고 이어갈 수 있게'. note — 크리에이터가 글 · 이미지 · 음성 · 영상을 올리고 사용자가 즐기고 응원하는 미디어 플랫폼. note pro — 법인용 정보 발신 플랫폼. noteプレミアム. IR 정보(상장). 최근 소식: AI 컨텍스트 네트워크(작품 · 기업 공식 정보와 팬 감상을 한곳에), 일본어 기사 영어 자동 번역을 유료 기사까지, llms.txt, NAVER 생성 AI 검색 인용, CSO 취임(콘텐츠 전달처 · 수익 기회 확대)."
+            }
+          ]
+        },
+        {
+          "to": "테크니컬 SEO",
+          "via": "한 번에 하나씩 재기",
+          "contract": "SEO 는 시책 하나 뒤 1 주 관찰, A/B 는 네임스페이스로 실험을 가른다 — 둘 다 원인을 섞지 않는 계측이다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "noteでのGrowthBookの導入理由と使い方を紹介",
+              "url": "https://engineerteam.note.jp/n/n5e6f422289cd",
+              "publisher": "note株式会社",
+              "summary": "사내 Ruby 라이브러리 A/B 테스트는 화면 실험 하나에 배포 4 번 → GrowthBook(오픈소스, 셀프 호스팅, 무료판). Unleash 는 네임스페이스 불가로 탈락 — 실험끼리 부딪히지 않게 사용자를 나누는 네임스페이스가 전제. 웹 서버 → A/B API(GrowthBook) → 할당 → 화면 · 행동 로그 Snowflake → 1 주 뒤 분석. 실험 설정을 Redis 캐시(다운 대비). GUI 로 비엔지니어도. 기존 라이브러리 폐지는 남은 일.",
+              "date": "2024-11-15"
+            },
+            {
+              "title": "SEO改善でクリック数2倍、クロール時間を1/30にした話",
+              "url": "https://engineerteam.note.jp/n/n20c453cd4d8d",
+              "publisher": "note株式会社",
+              "summary": "Stability 팀 리더가 겸임한 2 인 SEO 팀, 1 년 개선으로 클릭 수 약 2 배. 크롤러가 모르는 기능 찾기 · 크롤 버짓 최적화 · 사이트맵 생성 로직 · 인덱스 속도 계측 · 외부 임베드 수정. 뷰보다 클릭 수 중시, 오른 것보다 떨어지지 않는지 계측, 시책 하나 뒤 1 주 관찰. 공개 기사 인덱스 시간이 10 분~수 시간으로 흩어짐 → 사이트맵 로직 개선으로 빠르면 수십 분(약 1/30), 공개 기사를 1 시간마다 시트에 기록 · 인덱스 시각 기록. Next.js 이행의 표시 속도도 영향. 버그 수정에서 시작.",
+              "date": "2024-11-11"
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "할당 흐름 — 바뀐 것은 한 칸",
+          "question": "무엇이 GrowthBook 으로 바뀌었나?",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant U as 사용자\n  participant W as note 웹 서버\n  participant A as A/B API\n  participant G as GrowthBook(셀프 호스팅)\n  participant R as Redis\n  participant S as Snowflake\n  U->>W: 접속\n  W->>A: 이 사용자의 실험은?\n  A->>R: 실험 설정(캐시)\n  R-->>A: 설정\n  Note over A,G: 설정 원본은 GrowthBook — 다운돼도 캐시로 계속\n  A-->>W: user_id 1 = treatment_b\n  W-->>U: 변형 B 화면\n  U->>S: 행동 로그\n  Note over S: 약 1 주 뒤 분석"
+        },
+        {
+          "title": "네임스페이스가 없으면",
+          "question": "왜 Unleash 를 버렸나?",
+          "kind": "failure",
+          "code": "flowchart TB\n  E1[\"실험 1: 버튼 색 노랑\"] --> USER[\"같은 사용자\"]\n  E2[\"실험 2: 가격 글자 빨강\"] --> USER\n  USER --> MIX[\"노란 버튼 + 빨간 글자\"]\n  MIX --> UNK[\"어느 실험이 효과를 냈는지 모름\"]\n  UNK --> REQ[\"네임스페이스 필수 → Unleash 탈락 · GrowthBook 채택\"]"
+        },
+        {
+          "title": "실험 하나의 비용",
+          "question": "배포 네 번이 어떻게 줄었나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  subgraph OLD[\"사내 Ruby 라이브러리\"]\n    D1[\"배포\"] --> D2[\"배포\"] --> D3[\"배포\"] --> D4[\"배포\"]\n  end\n  subgraph NEW[\"GrowthBook\"]\n    N1[\"실험 이름을 프런트에 심어 배포\"] --> G1[\"GUI: 비율 · 변형 · 네임스페이스 변경\"]\n  end\n  OLD -.->|\"교체\"| NEW"
+        }
+      ],
+      "sources": [
+        {
+          "title": "noteでのGrowthBookの導入理由と使い方を紹介",
+          "url": "https://engineerteam.note.jp/n/n5e6f422289cd",
+          "publisher": "note株式会社",
+          "summary": "사내 Ruby 라이브러리 A/B 테스트는 화면 실험 하나에 배포 4 번 → GrowthBook(오픈소스, 셀프 호스팅, 무료판). Unleash 는 네임스페이스 불가로 탈락 — 실험끼리 부딪히지 않게 사용자를 나누는 네임스페이스가 전제. 웹 서버 → A/B API(GrowthBook) → 할당 → 화면 · 행동 로그 Snowflake → 1 주 뒤 분석. 실험 설정을 Redis 캐시(다운 대비). GUI 로 비엔지니어도. 기존 라이브러리 폐지는 남은 일.",
+          "date": "2024-11-15"
         }
       ]
     }

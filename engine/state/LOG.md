@@ -2992,3 +2992,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 note 테크니컬 SEO(기능 2/3)
 
 - `technical-seo-sitemap-index-speed`. 결정 6 — 키워드 대신 테크니컬 / 사이트맵 로직(인덱스 약 1/30) / 1 시간 기록 계측 / 클릭 수 주 지표 / 떨어짐 감시 · 1 주 1 시책 / 버그 수정에서 팀으로. 클릭 약 2 배. 다음: GrowthBook.
+
+## 2026-09-30 note GrowthBook(기능 3/3) — 완주
+
+- `growthbook-ab-namespaces`. 결정 6 — GrowthBook(Unleash 네임스페이스 불가) / 네임스페이스 필수 / 셀프 호스팅 무료판 / 할당 API 자리만 교체 / Redis 캐시 / GUI 운영. 모든 도메인에 기능, 수익원 셋 연결 → `done`. 진행 중 → 완료. 큐 0/3 → 다음 역설계는 후보 조사.
