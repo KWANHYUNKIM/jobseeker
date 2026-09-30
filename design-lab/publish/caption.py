@@ -86,8 +86,11 @@ def preview(spec: dict) -> dict:
 COLLECTION_TAGS = {
     "week": ["이번주채용", "채용속보"], "deadline": ["마감임박", "지원마감"],
     "role": ["직군별채용"], "size": ["대기업채용"], "stack": ["기술스택"],
-    "newgrad": ["신입채용", "신입개발자"],
+    "newgrad": ["신입채용", "신입개발자"], "company": ["기업분석"],
 }
+#: 인스타 해시태그 상한 — 2025 말부터 게시물당 5개(모세리: "도달이 아니라 검색을 돕는다").
+#: 키워드는 캡션 첫 125자(더보기 전)에 두는 쪽이 낫다. CONTENT_PLAN.md 참조.
+IG_TAGS = 5
 
 
 def build_collection(col: dict, platform: str) -> str:
@@ -97,7 +100,10 @@ def build_collection(col: dict, platform: str) -> str:
     본문에 그대로 쓴다. 공고 주소는 넣지 않는다(판과 같은 규칙).
     """
     head = f"{col['kicker']} · {col['title']}"
-    lines = [f"{i:02d}. {j['company']} — {j['role']}"
+    if col.get("kind") == "company":
+        # 한 회사 묶음 — 줄마다 회사 이름을 되풀이하지 않는다
+        head = f"[회사 해부] {col['value']} — 지금 열려 있는 자리"
+    lines = [f"{i:02d}. " + (j['role'] if col.get("kind") == "company" else f"{j['company']} — {j['role']}")
              + (f" ({j['career'].replace('경력 ', '')})" if j.get("career") else "")
              for i, j in enumerate(col.get("jobs") or [], 1)]
 
@@ -107,7 +113,8 @@ def build_collection(col: dict, platform: str) -> str:
             t = _TAG_CLEAN.sub("", s)
             if 1 < len(t) <= 18 and t not in stacks:
                 stacks.append(t)
-    tags = COLLECTION_TAGS.get(col.get("kind", ""), []) + stacks[:5] + BASE_TAGS
+    extra = [col["value"]] if col.get("kind") == "company" and col.get("value") else []
+    tags = COLLECTION_TAGS.get(col.get("kind", ""), []) + extra + stacks[:2] + BASE_TAGS[:1]
     seen, out = set(), []
     for t in tags:
         if t.lower() not in seen:
@@ -121,8 +128,17 @@ def build_collection(col: dict, platform: str) -> str:
         tail = ("각 회사 공고 전문이 영상에 이어서 나옵니다. 지원 안내는 프로필 링크에서."
                 if col.get("shape") == "reel" else
                 "각 회사 공고 전문은 넘겨서 보세요. 지원 안내는 프로필 링크에서.")
-        return "\n\n".join([head, f"{col['count']}곳", "\n".join(lines), tail,
-                            " ".join(f"#{t}" for t in out[:12])])
+        unit = f"{col['count']}개 자리" if col.get("kind") == "company" else f"{col['count']}곳"
+        if col.get("kind") == "company":
+            tail = tail.replace("각 회사 공고 전문은", "자리마다 공고 전문은")
+        text = "\n\n".join([head, unit, "\n".join(lines), tail,
+                            " ".join(f"#{t}" for t in out[:IG_TAGS])])
+        if col.get("kind") == "company":
+            # 회사 해부는 자리 목록만으로는 빈약하다 — 그 회사가 무엇으로 돈을 벌고 채용이 무엇을
+            # 말하는지(취업 브리핑)를 목록 뒤에 붙인다(CONTENT_PLAN.md 5절)
+            from poster.series import enrich
+            text = enrich(text, col.get("value", ""), before="자리마다")
+        return text
     if platform == "linkedin":
         return "\n\n".join([f"{head} — {col['count']}곳", "\n".join(lines),
                             " ".join(f"#{t}" for t in out[:4])])

@@ -179,42 +179,46 @@ MODE_LABEL = {"상시": "상시 채용 · 마감 없음", "수시": "수시 채�
 MODE_SHORT = {"상시": "상시 채용", "수시": "수시 채용", "채용시마감": "채용 시 마감"}
 
 
-def period_label(job: dict, *, short: bool = False) -> str:
-    """'언제부터 언제까지 / 어떻게 모집하나' 한 마디. 판과 차례가 같은 규칙을 쓴다.
+WEEKDAY = "월화수목금토일"
 
-    순서: **원본에서 찾아온 게시일·마감일**(publish.postingdates) → 공고 전문의 접수기간 →
-    마감일 → 모집 방식(상시·수시·채용 시 마감) → 사이트 표기 → 확인한 날짜.
+
+def _end_of(job: dict) -> date | None:
+    """이 공고가 끝나는 날 — 원본에서 찾은 마감일 → 전문의 접수기간 → 색인 마감 표기."""
+    live, p = job.get("period_live") or {}, job.get("period") or {}
+    for iso in (live.get("end"), p.get("end")):
+        if iso:
+            return date.fromisoformat(iso)
+    return _deadline(job)
+
+
+def period_label(job: dict, *, short: bool = False) -> str:
+    """'언제 끝나나' 한 마디. 판과 차례가 같은 규칙을 쓴다.
+
+    **끝나는 날이 먼저다** — 보는 사람이 묻는 건 '언제까지 낼 수 있나' 다. 그래서 시작일이
+    있어도 마감일을 앞에 두고 요일을 붙인다(달력을 안 봐도 이번 주인지 안다). D-day 는 적지
+    않는다 — 판은 찍은 날과 올라가는 날이 달라 하루만 밀려도 틀린 숫자가 남는다.
+    순서: 원본의 상시 표시 → 마감일 → 모집 방식(상시·수시·채용 시 마감) → 시작일만 → 사이트 표기.
     없는 것은 지어내지 않는다 — 판에 그대로 실린다.
     """
-    def both(a: date, b: date) -> str:
-        return f"{a.month}/{a.day}~{b.month}/{b.day}" if short else f"{_md(a)}부터 {_md(b)}까지 모집중"
-
-    live = job.get("period_live") or {}
+    live, p = job.get("period_live") or {}, job.get("period") or {}
     if live.get("always"):
-        return "상시 채용" if short else "상시 채용 · 마감 없음"
-    if live.get("start") and live.get("end"):
-        return both(date.fromisoformat(live["start"]), date.fromisoformat(live["end"]))
-    if live.get("start"):
-        a = date.fromisoformat(live["start"])
-        # 게시일은 찾았고 마감은 사이트에도 없다 — '언제부터' 만 말한다
-        return f"{a.month}/{a.day}~" if short else f"{_md(a)}부터 모집중"
-    p = job.get("period") or {}
-    if p.get("start") and p.get("end"):
-        return both(date.fromisoformat(p["start"]), date.fromisoformat(p["end"]))
-    if p.get("start_md") and p.get("end_md"):        # 연도 없는 표기 — 날짜만 보여 준다
-        return (f"{p['start_md']}~{p['end_md']}" if short
-                else f"{p['start_md']}부터 {p['end_md']}까지 모집중")
-    if d := _deadline(job):
-        # 여기까지 왔으면 원본에서도 게시일을 못 찾은 것이다 — '언제까지' 만 말한다.
-        return f"~{d.month}/{d.day}" if short else f"{_md(d)}까지 모집중"
+        return "상시 채용" if short else "상시 채용 · 채용 시 마감"
+    if end := _end_of(job):
+        w = WEEKDAY[end.weekday()]
+        return f"~{end.month}/{end.day}({w})" if short else f"{_md(end)}({w}) 마감"
+    if p.get("end_md"):                              # 연도 없는 표기 — 날짜만 보여 준다
+        return f"~{p['end_md']}" if short else f"{p['end_md']} 마감"
     if mode := (MODE_SHORT if short else MODE_LABEL).get(p.get("mode", "")):
         return mode
+    if live.get("start"):
+        a = date.fromisoformat(live["start"])
+        # 게시일은 찾았고 마감은 사이트에도 없다 — 끝을 모른다고 말한다(지어내지 않는다)
+        return f"{a.month}/{a.day}~" if short else f"{_md(a)}부터 · 마감일 공고 없음"
     raw = (job.get("deadline") or "").strip()
     if raw:
         return raw[:12] if short else raw[:16]
-    # 아무 날짜도 못 찾았다 — **아무것도 적지 않는다.** '9월 16일 확인' 처럼 우리 사정(확인 시점)을
-    # 판에 적으면 공고를 보는 사람에게는 무슨 말인지 모를 소리가 된다. 마감된 공고는 고르는
-    # 단계에서 이미 걸러지므로(publish.openness), 판에 남은 공고는 모집중인 것이다.
+    # 아무 날짜도 못 찾았다 — **아무것도 적지 않는다.** 마감된 공고는 고르는 단계에서
+    # 이미 걸러지므로(publish.openness), 판에 남은 공고는 모집중인 것이다.
     return ""
 
 
@@ -223,10 +227,53 @@ def _until(job: dict) -> str:
     return period_label(job, short=True)
 
 
+def _short(company: str) -> str:
+    """표지 타일에 쓸 짧은 이름 — 브랜드 조사가 있으면 그 파일 이름(토스·올리브영·오늘의집),
+    없으면 법인 표기를 뗀 이름. '비바리퍼블리카(토스)' 가 타일 한 칸에 안 들어간다."""
+    hit = brands.path_of(company)
+    if hit:
+        return hit.stem
+    return re.sub(r"\([^)]*\)|㈜|주식회사", "", company or "").strip() or company
+
+
+def _ink_on(hex_color: str) -> str:
+    """그 색 위에 얹을 글자색 — 밝은 색(카카오뱅크 노랑, 올리브영 연두)에 흰 글자는 안 읽힌다."""
+    h = hex_color.lstrip("#")
+    if len(h) != 6:
+        return "#ffffff"
+    r, g, b = (int(h[i:i + 2], 16) / 255 for i in (0, 2, 4))
+    return "#111317" if 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.6 else "#ffffff"
+
+
+def _brand_cover(stem: str) -> dict:
+    """회사 해부 표지의 재료 — 색은 brands/<회사>.json, 한 줄 소개는 취업 브리핑(guide)의 one_liner.
+    소개의 첫 문장만 쓴다(브리핑은 길다). 브리핑이 없으면 소개 없이 간다."""
+    b = json.loads((brands.BRANDS / f"{stem}.json").read_text(encoding="utf-8"))
+    accent = (b.get("ui") or {}).get("accent", "")
+    one = ""
+    guide = LAB_DIR.parent / "jd-viewer" / "public" / "guide"
+    names = {re.sub(r"\s+", "", n).lower() for n in [stem, *b.get("names", [])]}
+    try:
+        idx = json.loads((guide / "index.json").read_text(encoding="utf-8"))["companies"]
+        hit = next((c for c in idx if {re.sub(r"\s+", "", n).lower() for n in [c["name"], *c.get("aliases", [])]} & names), None)
+        if hit:
+            g = json.loads((guide / "companies" / f"{hit['slug']}.json").read_text(encoding="utf-8"))
+            one = re.split(r"\.\s+", g.get("one_liner", ""))[0].rstrip(".") + "."
+    except (OSError, KeyError, ValueError):
+        pass
+    return {"accent": accent, "on": _ink_on(accent) if accent else "", "one": one}
+
+
 def _entry(job: dict) -> dict:
+    accent = ((brands.find(job["company"]) or {}).get("ui") or {}).get("accent", "")
     return {"key": job["key"], "company": job["company"], "role": _role(job),
+            "short": _short(job["company"]),
+            # 표지 타일 색 — 그 회사의 색(brands/<회사>.json ui.accent). 없으면 표지가 먹색을 쓴다.
+            "accent": accent, "on": _ink_on(accent) if accent else "",
             "career": job.get("career", ""), "deadline": job.get("deadline", ""),
             "until": _until(job),
+            "end": (e.isoformat() if (e := _end_of(job)) else ""),
+            "always": bool((job.get("period_live") or {}).get("always")),
             "stack": (job.get("stack") or [])[:3],
             "brand": bool(brands.find(job["company"]))}
 
@@ -250,6 +297,8 @@ def _hook(kind: str, value: str, since: str, until: str) -> dict:
         top, big = f"{today.year}. {today.month:02d}. {today.day:02d} 기준", [value, "채용"]
     elif kind == "stack":
         top, big = f"{today.year}. {today.month:02d}. {today.day:02d} 기준", [value, "채용"]
+    elif kind == "company":
+        top, big = f"{today.year}. {today.month:02d}. {today.day:02d} 기준", [value]
     else:                                                # newgrad
         top, big = f"{today.year}. {today.month:02d}. {today.day:02d} 기준", ["신입", "채용"]
     return {"hook_top": top, "hook_big": big, "as_of": today.isoformat()}
@@ -278,6 +327,18 @@ def _family_frame(job: dict) -> str:
     return name if name in FRAMES else ""
 
 
+def _core(company: str) -> str:
+    """회사 한 번씩을 가를 때 쓰는 이름. 같은 회사가 '넛지헬스케어(주)' 와 '넛지헬스케어(캐시워크)'
+    로 따로 올라와 신입 묶음에 두 장 실렸다 — 괄호·법인 표기를 떼고 본다."""
+    return re.sub(r"\([^)]*\)|㈜|주식회사|\s+", "", company or "")
+
+
+def _posted() -> dict:
+    """이미 내보냈거나 내보내기로 한 공고 {키: 행}. publish 쪽 원장을 읽는다."""
+    from publish.posted import posted
+    return posted()
+
+
 def _dates(job: dict) -> dict:
     """모집 시작·마감을 원본에서 찾아온다(사이트마다 적어 두는 자리가 다르다)."""
     from publish.postingdates import find
@@ -286,7 +347,7 @@ def _dates(job: dict) -> dict:
 
 def build(kind: str, *, value: str = "", since: str = "", until: str = "",
           limit: int = MAX_SLIDES, jobs: list[dict] | None = None,
-          brand_only: bool = True, verify: bool = True) -> dict:
+          brand_only: bool = True, verify: bool = True, repost: bool = False) -> dict:
     """카테고리 하나를 묶음 데이터로. brand_only 면 **회사 전용 판이 있는 회사만** 넣는다.
 
     전용 판은 BRAND_RESEARCH.md 절차로 회사마다 만든 것이다(대표 물건 → 실제 서체 → 공식 색 →
@@ -305,6 +366,18 @@ def build(kind: str, *, value: str = "", since: str = "", until: str = "",
     rows = [j for j in rows if not _data_warning(j)]
     # 개발 자리가 아닌 공고를 뺀다(제목 기준)
     rows = [j for j in rows if not _not_dev(j)]
+    # 이미 내보낸 공고를 뺀다(publish.posted). 모집이 길게 열린 공고는 매주 같은 자리에 다시
+    # 뽑힌다 — 9/29 의 이번 주 묶음 8장 중 6장이 9/16 에 올라간 공고였다. 렌더·원본 확인보다
+    # 앞에서 걸러야 쓸데없이 묻지 않는다. repost 면 다시 싣는다(--allow-repost).
+    already = []
+    if not repost:
+        from publish.posted import taken as _taken
+        table = _posted()
+        # 묶음에는 원제목이 아니라 다듬은 직무명(_role)이 실린다 — 둘 다 대 본다
+        hit = {j["key"]: row for j in rows
+               if (row := _taken(j, table) or _taken({**j, "title": _role(j)}, table))}
+        already = [{"company": j["company"], "key": j["key"], **hit[j["key"]]} for j in rows if j["key"] in hit]
+        rows = [j for j in rows if j["key"] not in hit]
     sizes = _sizes()
     kicker, title, sub = "", "", ""
 
@@ -333,6 +406,10 @@ def build(kind: str, *, value: str = "", since: str = "", until: str = "",
     elif kind == "newgrad":
         kicker, title, sub = "신입 가능", "신입도 되는 자리", "경력 조건에 신입이 있는 공고"
         rows = [j for j in rows if "신입" in (j.get("career") or "")]
+    elif kind == "company":
+        # 회사 한 곳 집중 — value 는 brands/<회사>.json 의 파일 이름(토스·올리브영·컬리)
+        kicker, title, sub = "회사 해부", f"{value}", "지금 열려 있는 자리"
+        rows = [j for j in rows if (p := brands.path_of(j["company"])) and p.stem == value]
     else:
         raise KeyError(f"모르는 카테고리: {kind}")
 
@@ -355,8 +432,11 @@ def build(kind: str, *, value: str = "", since: str = "", until: str = "",
     # 캐시되므로 같은 공고를 반복해 두드리지 않는다. 필요한 만큼만 묻는다 — limit 을 채우면 멈춘다.
     verifier = _verifier() if verify else None
     picked, seen, closed = [], set(), []
+    # 한 회사 묶음은 '회사 한 번씩' 이 아니라 '같은 자리 한 번씩' 이다 — 같은 제목을 번호 둘로
+    # 올린 공고(토스 Node.js Developer)를 한 장만 싣는다.
+    once = (lambda j: re.sub(r"\W+", "", _role(j)).lower()) if kind == "company" else (lambda j: _core(j["company"]))
     for j in rows:
-        if j["company"] in seen:
+        if once(j) in seen:
             continue
         if verifier:
             state, why = verifier(j)
@@ -371,12 +451,15 @@ def build(kind: str, *, value: str = "", since: str = "", until: str = "",
                 closed.append({"company": j["company"], "key": j["key"], "state": "closed",
                                "why": f"원본 마감일 {end} 지남 ({j['period_live'].get('source', '')})"})
                 continue
-        seen.add(j["company"])
+        seen.add(once(j))
         picked.append(j)
         if len(picked) >= limit + SPARES:
             break
     spares = picked[limit:]
     picked = picked[:limit]
+    if kind in ("newgrad", "deadline"):
+        # 신입·마감 묶음은 '언제까지' 가 회사 이름보다 앞선다 — 빨리 끝나는 것부터, 상시는 맨 뒤
+        picked.sort(key=lambda j: _end_of(j) or far)
 
     stamp = date.today().isoformat().replace("-", "")
     slug = re.sub(r"[^0-9A-Za-z가-힣]+", "", value)[:20]
@@ -384,6 +467,8 @@ def build(kind: str, *, value: str = "", since: str = "", until: str = "",
         "brand_only": brand_only,
         # 고르는 단계에서 원본에 물어 걸러낸 것들 — 왜 빠졌는지 남긴다(렌더 전에 걸러야 토큰이 안 든다)
         "closed_out": closed[:20],
+        # 이미 내보내서 뺀 것 — 전용 판이 있는 회사 것만 센다(그 밖은 어차피 안 뽑힌다)
+        "already_posted": [a for a in already if brands.find(a["company"])][:20],
         "short_by": max(0, limit - len(picked)),      # 전용 판이 없어 못 채운 자리
         "gaps": _gaps(matched, {j["company"] for j in picked + spares}),
         **_hook(kind, value, since, until),
@@ -392,6 +477,7 @@ def build(kind: str, *, value: str = "", since: str = "", until: str = "",
         # 표지도 카테고리 특색이 나야 한다 — 직군 묶음이면 그 직군을 실어 보낸다
         # (collection_hook/cover 가 이걸 보고 껍질을 고른다).
         "family": value if kind == "role" else "",
+        "brand": _brand_cover(value) if kind == "company" else {},
         "kicker": kicker, "title": title, "sub": sub,
         "count": len(picked),
         "size_label": {j["company"]: sizes.get(j["company"], "") for j in picked + spares},
@@ -474,6 +560,9 @@ def render(col: dict, fmt_id: str = "ig_portrait", *, out_dir: Path | None = Non
         slides.append((job, src))
         print(f"[collection] {len(slides):02d} {job['company']} · {frame} · 본문 {layout['font_px']}px")
 
+    if col.get("kind") in ("newgrad", "deadline"):
+        # 빠진 판을 여유 후보로 메꾸면 그 후보는 뒤에 붙는다 — 확정된 목록으로 다시 마감 순
+        slides.sort(key=lambda s: s[0].get("end") or "9999-12-31")
     col["jobs"] = [j for j, _ in slides]
     col["count"] = len(slides)
     col["dropped"] = dropped
@@ -504,15 +593,17 @@ def main() -> int:
     sub.add_parser("cats", help="카테고리 목록")
     for name in ("pick", "render"):
         p = sub.add_parser(name)
-        p.add_argument("kind", choices=["week", "deadline", "role", "size", "stack", "newgrad"])
+        p.add_argument("kind", choices=["week", "deadline", "role", "size", "stack", "newgrad", "company"])
         p.add_argument("--value", default="", help="role: backend|frontend|data|infra|mobile / size: 대기업|중견기업 / stack: React 등")
         p.add_argument("--since", default="", help="YYYY-MM-DD (week·deadline)")
         p.add_argument("--until", default="", help="YYYY-MM-DD (week·deadline)")
         p.add_argument("--limit", type=int, default=MAX_SLIDES)
+        p.add_argument("--allow-repost", action="store_true",
+                       help="이미 올렸거나 승인한 공고도 다시 싣는다")
         p.add_argument("--allow-generic", action="store_true",
                        help="전용 판 없는 회사도 기본 틀로 넣는다(기본은 전용 판만)")
     g = sub.add_parser("gaps", help="이 카테고리에서 전용 판이 없어 빠지는 회사(= 다음에 만들 판)")
-    g.add_argument("kind", choices=["week", "deadline", "role", "size", "stack", "newgrad"])
+    g.add_argument("kind", choices=["week", "deadline", "role", "size", "stack", "newgrad", "company"])
     g.add_argument("--value", default="")
     g.add_argument("--since", default="")
     g.add_argument("--until", default="")
@@ -540,8 +631,10 @@ def main() -> int:
         return 0
 
     col = build(args.kind, value=args.value, since=args.since, until=args.until, limit=args.limit,
-                brand_only=not args.allow_generic)
+                brand_only=not args.allow_generic, repost=args.allow_repost)
     print(f"[{col['id']}] {col['kicker']} · {col['title']} · {col['count']}곳")
+    for a in col.get("already_posted", [])[:8]:
+        print(f"  = {a['company']:<22} 이미 냄 — {a['status']} {a['at'][:10]} ({a['id']})")
     for j in col["jobs"]:
         print(f"  - {j['company']:<22} {j['role'][:34]:<36} {j['career']}"
               f"{'  [브랜드 판]' if j['brand'] else ''}")

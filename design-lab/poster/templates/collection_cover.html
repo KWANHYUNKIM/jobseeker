@@ -6,7 +6,7 @@
 <head>
 <meta charset="utf-8">
 <style>
-  :root { --ink: #12141a; --sub: #6b7280; --line: #d9dde5; --paper: #f6f4f0; --accent: #1b6ef3; }
+  :root { --ink: #12141a; --sub: #6b7280; --line: #d9dde5; --paper: #f6f4f0; --accent: #1b6ef3; --hot: #e0322b; }
   * { box-sizing: border-box; margin: 0; }
   body { background: #222; }
   .sheet {
@@ -37,8 +37,21 @@
   li .no { font-size: 22px; color: var(--sub); font-variant-numeric: tabular-nums; font-weight: 700; }
   li .co { font-size: 31px; font-weight: 800; letter-spacing: -.02em; }
   li .ro { font-size: 23px; color: var(--sub); margin-top: 4px; font-weight: 500; }
-  li .ca { font-size: 21px; color: var(--ink); font-weight: 700; white-space: nowrap; text-align: right; }
-  li .ca .until { font-size: 18px; color: var(--accent); font-weight: 700; margin-top: 3px; }
+  /* 마감 칸 — 이 판에서 회사 이름 다음으로 중요한 것이 '언제 끝나나' 다.
+     경력은 직무 줄로 내리고 오른쪽 칸 전체를 마감에 준다. 요일을 붙여 달력 없이도 이번 주인지 안다.
+     D-day 는 쓰지 않는다 — 찍은 날과 올라가는 날이 다르면 틀린 숫자가 남는다. */
+  li .ca { font-size: 21px; white-space: nowrap; text-align: right; min-width: 150px;
+           display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+  li .ca .lab { font-size: 15px; font-weight: 700; letter-spacing: .06em; color: var(--sub); }
+  li .ca .day { font-size: 34px; font-weight: 800; letter-spacing: -.03em; line-height: 1;
+                font-variant-numeric: tabular-nums; color: var(--ink); }
+  li .ca .day small { font-size: .56em; font-weight: 700; margin-left: 2px; color: var(--sub); }
+  li .ca.soon .lab { color: #fff; background: var(--hot); padding: 3px 8px; border-radius: 4px; letter-spacing: .02em; }
+  li .ca.soon .day, li .ca.soon .day small { color: var(--hot); }
+  li .ca.always .day { font-size: 26px; color: var(--sub); }
+  li .ro .car { color: var(--ink); font-weight: 700; }
+  .count .first { margin-left: auto; font-size: 24px; color: var(--ink); font-weight: 700; }
+  .count .first em { font-style: normal; color: var(--hot); }
   li .tag { font-size: 18px; color: var(--sub); font-weight: 600; margin-left: 8px; }
   footer { margin-top: 20px; display: flex; justify-content: space-between; align-items: flex-end;
            font-size: 21px; color: var(--sub); font-weight: 600; }
@@ -56,6 +69,19 @@
                                 font-size: 17px; font-weight: 700; color: var(--sub); }
   .fam-frontend ol { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 18px; }
   .fam-frontend li { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  /* 카테고리 껍질 — 첫 장(collection_hook.html)과 같은 색을 이어받는다. 첫 장과 둘째 장이
+     다른 묶음과 똑같아 보인다는 판정(2026-09-30) 뒤로, 목록은 그대로 두고 옷만 갈아입힌다. */
+  .k-week { --paper: #f4f1ea; --accent: #111317; }
+  .k-week li { border-left: 10px solid var(--c, var(--ink)); padding-left: 16px; }
+  .k-week li .no { color: var(--ink); }
+  .k-role { --paper: #0d1420; --ink: #eef2f7; --sub: #8b97a8; --line: #243044; --accent: #3ee0c1; }
+  .k-role .count { border-top-color: var(--line); }
+  .k-role.fam-data li { border-bottom-color: var(--line); }
+  .k-role.fam-data ol { border-top-color: var(--accent); }
+  .k-role li .no, .k-role .tally { font-family: 'JetBrains Mono', ui-monospace, Consolas, Menlo, monospace; color: var(--accent); }
+  .k-newgrad { --paper: #e9f6ee; --ink: #0c2a1b; --sub: #4a6b58; --line: #b9dcc6; --accent: #12a150; }
+  .k-newgrad .count { border-top-color: var(--accent); }
+  .k-company li .co { font-size: 29px; }
 </style>
 </head>
 <body>
@@ -73,6 +99,7 @@ const D = JSON.parse(document.getElementById('data').textContent);
   // 직군 묶음이면 목록도 그 직군의 성격을 띤다 — 데이터는 표(집계 줄), 백엔드는 키:값,
   // 프론트는 격자. 장식을 더하는 게 아니라 이미 있는 목록의 성격만 바꾼다(ROLE_DESIGN.md).
   if (D.family) sheet.classList.add('fam-' + D.family);
+  if (['week', 'role', 'newgrad', 'company'].includes(D.kind)) sheet.classList.add('k-' + D.kind);
   sheet.append(el('div', 'kicker', D.kicker || ''));
 
   // 제목이 '9월 16일–22일' 처럼 기간이면 뒤쪽을 얇게 — 숫자가 주인공이 되게
@@ -83,22 +110,50 @@ const D = JSON.parse(document.getElementById('data').textContent);
   if (D.sub) sheet.append(el('div', 'sub', D.sub));
 
   const count = el('div', 'count');
-  count.append(el('b', '', `${D.count}곳`), el('span', '', '이 안에 있습니다'));
+  count.append(el('b', '', D.kind === 'company' ? `${D.count}개 자리` : `${D.count}곳`), el('span', '', '이 안에 있습니다'));
+  const W = '월화수목금토일';
+  const asOf = new Date((D.as_of || new Date().toISOString().slice(0, 10)) + 'T00:00:00');
+  const ends = (D.jobs || []).filter(j => j.end).map(j => new Date(j.end + 'T00:00:00')).sort((a, b) => a - b);
+  const md = d => `${d.getMonth() + 1}/${d.getDate()}(${W[(d.getDay() + 6) % 7]})`;
+  // '이번 주 마감' = 찍은 날부터 6일 안. 판이 올라가는 주와 같다(묶음은 그 주 안에 나간다)
+  const soon = d => (d - asOf) / 864e5 <= 6;
+  if (ends.length) {
+    const f = el('div', 'first'); f.append('첫 마감 ');
+    f.append(soon(ends[0]) ? el('em', '', md(ends[0])) : md(ends[0])); count.append(f);
+  }
   sheet.append(count);
 
   const ol = el('ol');
   (D.jobs || []).forEach((j, i) => {
     const li = el('li');
+    if (j.accent) li.style.setProperty('--c', j.accent);
     li.append(el('div', 'no', String(i + 1).padStart(2, '0')));
     const mid = el('div');
-    const co = el('div', 'co', j.company);
+    // 한 회사 묶음이면 줄마다 회사 이름이 같다 — 직무를 주인공으로 올린다
+    const co = el('div', 'co', D.kind === 'company' ? j.role : j.company);
     const size = (D.size_label || {})[j.company];
     if (size && size !== '중소기업') co.append(el('span', 'tag', size));
-    mid.append(co, el('div', 'ro', j.role));
+    const ro = el('div', 'ro', D.kind === 'company' ? '' : j.role);
+    const car = (j.career || '').replace(/^경력\s*/, '');
+    if (car) { if (ro.textContent) ro.append(' · '); ro.append(el('span', 'car', car)); }
+    mid.append(co, ro);
     const right = el('div', 'ca');
-    right.append(el('div', '', (j.career || '').replace(/^경력\s*/, '')));
-    // '언제까지' 는 이 판에서 경력만큼 중요하다 — 회사마다 오른쪽에 함께 세운다
-    if (j.until) right.append(el('div', 'until', j.until));
+    if (j.end) {
+      const d = new Date(j.end + 'T00:00:00');
+      if (soon(d)) right.classList.add('soon');
+      right.append(el('div', 'lab', +d === +asOf ? '오늘 마감' : soon(d) ? '이번 주 마감' : '마감'));
+      const day = el('div', 'day', `${d.getMonth() + 1}/${d.getDate()}`);
+      day.append(el('small', '', W[(d.getDay() + 6) % 7])); right.append(day);
+    } else if (j.always || /상시|수시|채용 시/.test(j.until || '')) {
+      right.classList.add('always');
+      right.append(el('div', 'lab', '채용 시 마감'), el('div', 'day', '상시'));
+    } else if (/^\d+\/\d+~$/.test(j.until || '')) {
+      // 마감일을 안 적은 공고(원티드 대부분) — '—' 만 두면 칸이 죽는다. 올라온 날이라도 보인다.
+      right.classList.add('always');
+      right.append(el('div', 'lab', '마감일 없음'), el('div', 'day', j.until));
+    } else {
+      right.append(el('div', 'lab', '마감'), el('div', 'day', '—'));
+    }
     li.append(mid, right);
     ol.append(li);
   });
@@ -127,8 +182,7 @@ const D = JSON.parse(document.getElementById('data').textContent);
       li.style.padding = `${14 * scale}px 0`;
       li.querySelector('.co').style.fontSize = `${31 * scale}px`;
       li.querySelector('.ro').style.fontSize = `${23 * scale}px`;
-      li.querySelector('.ca').style.fontSize = `${21 * scale}px`;
-      const u = li.querySelector('.until'); if (u) u.style.fontSize = `${18 * scale}px`;
+      const dd = li.querySelector('.ca .day'); if (dd) dd.style.fontSize = `${34 * scale}px`;
       li.querySelector('.no').style.fontSize = `${22 * scale}px`;
     });
   }

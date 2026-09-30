@@ -35,6 +35,8 @@ from publish import queue                                   # noqa: E402
 from publish.base import PLATFORMS, load_config, publisher_for  # noqa: E402
 
 LAB_DIR = Path(__file__).resolve().parent.parent
+#: 묶음 하나에 실려야 할 최소 공고 수 — 렌더에서 판이 빠진 뒤 기준
+MIN_POSTINGS = 3
 OUT = LAB_DIR / "out"
 
 
@@ -59,7 +61,7 @@ def cmd_check(_args) -> int:
 
 
 def cmd_plan(args) -> int:
-    platforms = [p.strip() for p in args.platforms.split(",") if p.strip()]
+    platforms = _platforms(args.platforms)
     unknown = [p for p in platforms if p not in PLATFORMS]
     if unknown:
         print(f"모르는 플랫폼: {unknown}", file=sys.stderr)
@@ -187,6 +189,18 @@ def _check_image(path: Path, *, reel: bool = False) -> str:
     return ""
 
 
+def _platforms(arg: str) -> list[str]:
+    """-p 를 비우면 자격이 다 있는 곳만 고른다. 예전 기본값(instagram,facebook)은 페이스북 페이지가
+    없는 계정에서 묶음 전체를 연습 발행으로 만들었다 — 두 곳 중 한 곳이라도 자격이 없으면
+    데몬은 판 전체를 연습으로 돌린다(SOCIAL.md '한쪽 자격이 없으면 판 전체가 연습')."""
+    if arg:
+        return [p.strip() for p in arg.split(",") if p.strip()]
+    cfg = load_config()
+    ready = [p for p in ("instagram", "facebook") if not publisher_for(p, cfg).missing()]
+    print(f"[platforms] 자격이 있는 곳: {', '.join(ready) or '없음'}")
+    return ready or ["instagram"]
+
+
 def cmd_approve(args) -> int:
     import shutil
     import socket
@@ -201,6 +215,11 @@ def cmd_approve(args) -> int:
         return 2
     # 끝난 모집을 홍보하면 안 된다. 색인의 status 는 못 믿는다(마감 표기가 없는 공고는 영구
     # '모집중' 으로 남는다) — 원본 사이트에 다시 묻는다(publish.openness). 확인 불가도 막는다.
+    from publish import posted
+    if (row := posted.taken({**job, "key": args.job_key}, posted.posted())) and not args.force:
+        print(f"이미 낸 공고입니다 — {posted.describe(args.job_key, row)} (--force 로만 다시 올린다)",
+              file=sys.stderr)
+        return 2
     from publish import openness
     state, why = openness.check(job)
     print(f"[확인] {openness.describe(job)}")
@@ -215,7 +234,7 @@ def cmd_approve(args) -> int:
         print(problem, file=sys.stderr)
         return 2
 
-    platforms = [p.strip() for p in args.platforms.split(",") if p.strip()]
+    platforms = _platforms(args.platforms)
     unknown = [p for p in platforms if p not in PLATFORMS]
     if unknown:
         print(f"모르는 플랫폼: {unknown}", file=sys.stderr)
@@ -259,20 +278,23 @@ def cmd_approve_collection(args) -> int:
     from poster import collection
     from poster.render import shutdown
 
-    platforms = [p.strip() for p in args.platforms.split(",") if p.strip()]
+    platforms = _platforms(args.platforms)
     unknown = [p for p in platforms if p not in PLATFORMS]
     if unknown:
         print(f"모르는 플랫폼: {unknown}", file=sys.stderr)
         return 2
     col = collection.build(args.kind, value=args.value, since=args.since, until=args.until,
                            limit=min(args.limit, collection.MAX_SLIDES),
-                           brand_only=not args.allow_generic)
+                           brand_only=not args.allow_generic, repost=args.allow_repost)
     if not col["count"]:
         print("조건에 맞는 공고가 없습니다 — 카테고리나 기간을 바꾸세요", file=sys.stderr)
         return 2
     print(f"[{col['id']}] {col['kicker']} · {col['title']} · {col['count']}곳")
     for j in col["jobs"]:
         print(f"  - {j['company']:<22} {j['role'][:32]:<34} {j['until']}")
+    for row in col.get("already_posted", [])[:8]:
+        # 이미 내보낸 공고 — 같은 판을 두 번 올리지 않는다(--allow-repost 로만 다시 싣는다)
+        print(f"  = {row['company']:<22} 이미 냄 — {row['status']} {row['at'][:10]} ({row['id']})")
     for row in col.get("closed_out", [])[:8]:
         # 렌더 전에 걸러진 것들. 여기서 걸러야 브라우저를 안 띄운다(판 하나가 수십 초다).
         print(f"  x {row['company']:<22} {row['state']} — {row['why'][:44]}")
@@ -290,6 +312,12 @@ def cmd_approve_collection(args) -> int:
         paths = collection.render(col, "ig_story" if reel else "ig_portrait")
     finally:
         shutdown()
+    # 못 읽는 판을 빼고 나면 묶음이 비기도 한다(9/29 신입 묶음은 표지 두 장만 남았다).
+    # 공고 두 장짜리 묶음은 '묶음' 이 아니다 — 올리지 않는다.
+    if col["count"] < MIN_POSTINGS and not args.force:
+        print(f"렌더 뒤 남은 공고가 {col['count']}곳뿐이라 승인하지 않습니다(최소 {MIN_POSTINGS}곳)."
+              f" 빠진 판: {', '.join(col.get('dropped') or []) or '없음'}", file=sys.stderr)
+        return 2
     problem = next((p for p in (_check_image(x, reel=reel) for x in paths) if p), "")
     if problem:
         print(problem, file=sys.stderr)
@@ -356,6 +384,25 @@ def cmd_approve_collection(args) -> int:
     return 0
 
 
+def _pull_ledger(host: str, root: str) -> None:
+    """맥 원장을 state/publish_queue.mac.json 으로 받아 둔다 — 윈도우에서 묶음을 고를 때
+    '이미 올린 공고' 를 빼는 데 쓴다(publish.posted). 못 받아도 push 는 계속한다."""
+    import subprocess
+    dest = LAB_DIR / "state" / "publish_queue.mac.json"
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    tmp = dest.with_suffix(".tmp")
+    proc = subprocess.run(["scp", "-q", "-o", "ConnectTimeout=10",
+                           f"{host}:{root}/state/publish_queue.json", str(tmp)],
+                          capture_output=True, text=True)
+    if proc.returncode == 0:
+        tmp.replace(dest)
+        print(f"[push] 맥 원장 사본 → {dest.name}")
+    else:
+        tmp.unlink(missing_ok=True)
+        print(f"[push] 맥 원장을 못 받았다(이미 올린 공고 판단은 이 머신 기록만 본다): {proc.stderr.strip()[:80]}",
+              file=sys.stderr)
+
+
 def cmd_push(args) -> int:
     """승인 묶음을 맥의 inbox 로 보낸다. bundle.json 은 맨 나중에 보내 반쪽 묶음이 안 잡히게 한다."""
     import shutil
@@ -368,6 +415,7 @@ def cmd_push(args) -> int:
         if INBOX.is_dir() else []
     if not bundles:
         print("보낼 승인 묶음이 없습니다")
+        _pull_ledger(host, root)
         return 0
     failed = 0
     for d in bundles:
@@ -390,6 +438,7 @@ def cmd_push(args) -> int:
             sent.parent.mkdir(parents=True, exist_ok=True)
             shutil.move(str(d), str(sent))
             print(f"[push] {d.name} → {host}:{remote}")
+    _pull_ledger(host, root)
     return 1 if failed else 0
 
 
@@ -451,7 +500,7 @@ def main() -> int:
     a = sub.add_parser("approve", help="포스터 한 장을 자동 발행 대상으로 승인한다")
     a.add_argument("job_key")
     a.add_argument("--image", default="", help="기본 out/<공고키>/brand_ig_portrait.jpg")
-    a.add_argument("-p", "--platforms", default="instagram,facebook",
+    a.add_argument("-p", "--platforms", default="",
                    help=f"쉼표 구분. 가능: {','.join(PLATFORMS)}")
     a.add_argument("--caption-file", default="", help="캡션을 직접 쓴 파일(기본은 플랫폼별 자동 생성)")
     a.add_argument("--template", default="brand")
@@ -460,12 +509,13 @@ def main() -> int:
     a.set_defaults(fn=cmd_approve)
 
     c = sub.add_parser("approve-collection", help="카테고리 묶음을 승인한다(표지+여러 장)")
-    c.add_argument("kind", choices=["week", "deadline", "role", "size", "stack", "newgrad"])
+    c.add_argument("kind", choices=["week", "deadline", "role", "size", "stack", "newgrad", "company"])
     c.add_argument("--value", default="", help="role: backend|frontend|data|infra|mobile / size: 대기업 / stack: React")
     c.add_argument("--since", default="", help="YYYY-MM-DD (week·deadline)")
     c.add_argument("--until", default="", help="YYYY-MM-DD (week·deadline)")
     c.add_argument("--limit", type=int, default=8, help="공고 수(표지 2장 제외, 최대 8)")
-    c.add_argument("-p", "--platforms", default="instagram,facebook")
+    c.add_argument("-p", "--platforms", default="",
+                   help="쉼표 구분. 비우면 자격이 갖춰진 곳만(instagram,facebook 중)")
     c.add_argument("--note", default="")
     c.add_argument("--force", action="store_true")
     c.add_argument("--as", dest="as_format", default="carousel", choices=["carousel", "reel"],
@@ -478,6 +528,8 @@ def main() -> int:
                         "음소거되거나 계정에 경고가 붙는다")
     c.add_argument("--audio-credit", default="",
                    help="음원 출처 표기(CC-BY 등). 캡션 끝에 붙는다")
+    c.add_argument("--allow-repost", action="store_true",
+                   help="이미 올렸거나 승인한 공고도 다시 싣는다(publish.posted)")
     c.add_argument("--allow-generic", action="store_true",
                    help="전용 판 없는 회사도 기본 틀로 넣는다(기본은 전용 판만)")
     c.set_defaults(fn=cmd_approve_collection)

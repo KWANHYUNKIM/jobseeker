@@ -15,10 +15,16 @@ from .assets import slug
 BRANDS = Path(__file__).resolve().parent.parent / "brands"
 
 
-def find(company: str) -> dict | None:
+def path_of(company: str) -> Path | None:
+    """그 회사의 조사 파일 — 파일 이름이 곧 그 회사를 부르는 짧은 이름이다(토스·올리브영)."""
     want = slug(company).lower()
     for path in sorted(BRANDS.glob("*.json")):
         data = json.loads(path.read_text(encoding="utf-8"))
         if want in {slug(n).lower() for n in [path.stem, *data.get("names", [])]}:
-            return data
+            return path
     return None
+
+
+def find(company: str) -> dict | None:
+    path = path_of(company)
+    return json.loads(path.read_text(encoding="utf-8")) if path else None

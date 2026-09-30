@@ -38,14 +38,26 @@ NO_DATES = lambda job: {}                                  # noqa: E731 — 원�
 class PickTest(unittest.TestCase):
     def setUp(self):
         # brands.find·회사 규모표·모집중 확인은 파일과 네트워크를 쓴다 — 시험에서는 끼워 넣는다
-        self.saved = (collection.brands.find, collection._sizes, collection._verifier, collection._dates)
+        self.saved = (collection.brands.find, collection._sizes, collection._verifier, collection._dates,
+                      collection._posted)
         collection.brands.find = lambda c: None
+        collection._posted = lambda: {}                  # 이 머신의 발행 원장을 읽지 않는다
         collection._sizes = lambda: {"쿠팡": "대기업", "당근서비스": "대기업", "와탭랩스": "중소기업"}
         collection._verifier = ALL_OPEN
         collection._dates = NO_DATES
 
     def tearDown(self):
-        collection.brands.find, collection._sizes, collection._verifier, collection._dates = self.saved
+        (collection.brands.find, collection._sizes, collection._verifier, collection._dates,
+         collection._posted) = self.saved
+
+    def test_already_posted_jobs_are_left_out(self):
+        # 9/16 에 올린 공고가 9/29 묶음에 다시 뽑히던 것 — 같은 회사의 다른 공고는 실린다
+        collection._posted = lambda: {"a": {"id": "x1", "status": "published", "at": "2026-09-16", "where": "t"}}
+        rows = [job("a", "쿠팡", "백엔드"), job("b", "쿠팡", "프론트엔드"), job("c", "당근서비스")]
+        got = collection.build("week", jobs=rows, brand_only=False)
+        self.assertEqual(sorted(j["key"] for j in got["jobs"]), ["b", "c"])
+        again = collection.build("week", jobs=rows, brand_only=False, repost=True)
+        self.assertIn("a", [j["key"] for j in again["jobs"]])
 
     def test_closed_and_empty_jobs_are_left_out(self):
         rows = [job("a", "가", status="closed"), job("b", "나"),
@@ -76,9 +88,12 @@ class PickTest(unittest.TestCase):
         self.assertEqual(got["title"], "대기업 채용")
 
     def test_deadline_category_keeps_only_that_window(self):
-        rows = [job("a", "가", deadline="2026-09-18"), job("b", "나", deadline="2026-10-30"),
-                job("c", "다", deadline="")]
-        got = collection.build("deadline", since="2026-09-14", until="2026-09-20", jobs=rows, brand_only=False)
+        # 날짜는 오늘 기준으로 — 고정 날짜(9/18)는 그날이 지나면 '지난 공고' 로 걸러져 테스트가 깨졌다
+        t = date.today()
+        rows = [job("a", "가", deadline=(t + timedelta(days=3)).isoformat()),
+                job("b", "나", deadline=(t + timedelta(days=40)).isoformat()), job("c", "다", deadline="")]
+        got = collection.build("deadline", since=t.isoformat(), until=(t + timedelta(days=6)).isoformat(),
+                               jobs=rows, brand_only=False)
         self.assertEqual([j["company"] for j in got["jobs"]], ["가"])
         self.assertIn("마감", got["title"])
 

@@ -1,35 +1,136 @@
 <!doctype html>
-<!-- 묶음 첫 장 — 키워드만 있는 판. 피드에서 넘길지 말지가 이 한 장에서 갈린다.
-     차례(collection_cover.html)는 이 다음 장이다. 여기에는 목록을 넣지 않는다.
-     poster/collection.py 가 /*__DATA__*/ 자리에 묶음 데이터를 박고 .sheet 를 찍는다. -->
+<!-- 묶음 첫 장 — 피드에서 넘길지 말지가 이 한 장에서 갈린다.
+     차례(collection_cover.html)는 이 다음 장이다.
+     poster/collection.py 가 /*__DATA__*/ 자리에 묶음 데이터를 박고 .sheet 를 찍는다.
+
+     카테고리마다 껍질이 다르다(2026-09-30). 전에는 모든 묶음이 같은 노란 판에 글자만 달랐고,
+     피드에 셋이 나란히 서자 "전부 똑같다" 는 판정을 받았다. 채용 사이트 계정(원티드·사람인)을
+     보면 게시물마다 **첫 장의 주인공 그림이 다르고**(사진·차트·일러스트) 색도 주제마다 바뀐다.
+     우리는 그림을 지어내지 않는다(ROLE_DESIGN.md 규칙 하나) — 주인공을 묶음 데이터에서 만든다.
+
+       week     회사들의 브랜드 색 타일 — 누가 뽑는지가 그림이 된다
+       role     그 직군이 보는 것 — 데이터는 기술 집계 표, 그 밖은 기술 줄
+       newgrad  마감 타임라인 — 언제까지 넣어야 하나가 그림이 된다
+       그 밖     예전 판(글자 표지) -->
 <html lang="ko">
 <head>
 <meta charset="utf-8">
 <style>
-  :root { --ink: #0e1116; --paper: #f2ef27; --sub: #3a3f46; }
+  :root { --ink: #0e1116; --paper: #f2ef27; --sub: #3a3f46; --accent: #0e1116; --line: rgba(0,0,0,.18); }
   * { box-sizing: border-box; margin: 0; }
   body { background: #222; }
   .sheet {
-    /* 크기는 collection.render 가 넘기는 포맷에서 온다(--sheet-w/h). 값이 없으면
-       기본 4:5. 릴스(9:16)로 찍을 때 여기가 박혀 있으면 표지만 4:5로 나와
-       영상 첫 장면에 검은 띠가 남는다 — 넘길지 말지가 갈리는 바로 그 장면이다. */
+    /* 크기는 collection.render 가 넘기는 포맷에서 온다(--sheet-w/h). 값이 없으면 기본 4:5. */
     width: var(--sheet-w, 1080px); height: var(--sheet-h, 1350px);
     background: var(--paper); color: var(--ink);
     font-family: 'Pretendard', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
-    padding: 96px 78px 78px; display: flex; flex-direction: column;
+    padding: 88px 78px 74px; display: flex; flex-direction: column;
     -webkit-font-smoothing: antialiased; position: relative; overflow: hidden;
   }
-  .top { font-size: 34px; font-weight: 800; letter-spacing: .01em; }
-  .top span { display: block; height: 8px; background: var(--ink); width: 168px; margin-top: 22px; }
-  h1 { margin-top: auto; font-weight: 800; letter-spacing: -.045em; line-height: .92; }
-  h1 div { font-size: 150px; }
-  h1 div + div { color: var(--ink); }
-  .count { margin-top: 36px; font-size: 44px; font-weight: 800; letter-spacing: -.02em; }
-  .count b { font-size: 60px; }
-  footer { margin-top: 30px; padding-top: 24px; border-top: 4px solid var(--ink);
+  .mono { font-family: 'JetBrains Mono', ui-monospace, Consolas, Menlo, monospace; }
+  /* 시리즈 이름표 — 원티드 '위클리 AI 커리어 뉴스' 처럼 같은 줄의 게시물임을 알린다 */
+  .chip { align-self: flex-start; display: inline-flex; gap: 14px; align-items: center;
+          font-size: 27px; font-weight: 800; letter-spacing: .01em;
+          padding: 12px 22px; border-radius: 999px; background: var(--ink); color: var(--paper); }
+  .chip small { font-size: 23px; font-weight: 600; opacity: .72; }
+  h1 { font-weight: 800; letter-spacing: -.045em; line-height: 1.04; }
+  h1 div { font-size: 150px; white-space: nowrap; }
+  .lede { font-size: 40px; font-weight: 800; letter-spacing: -.02em; }
+  .lede b { color: var(--accent); }
+  footer { margin-top: auto; padding-top: 24px; border-top: 4px solid var(--ink);
            display: flex; justify-content: space-between; align-items: baseline;
            font-size: 25px; font-weight: 700; }
   footer .who { font-size: 27px; }
+
+  /* ── 예전 판(size·stack·deadline) ───────────────────────── */
+  .k-plain h1 { margin-top: auto; }
+  .k-plain .lede { margin-top: 36px; }
+  .k-plain footer { margin-top: 30px; }
+  .first { margin-top: 14px; display: inline-flex; align-self: flex-start; align-items: baseline; gap: 12px;
+           background: var(--ink); color: #fff; padding: 10px 18px 12px; font-size: 30px; font-weight: 800; }
+  .first small { font-size: 22px; font-weight: 700; opacity: .75; }
+
+  /* ── week: 브랜드 타일 ─────────────────────────────────────
+     사람인 채용관 표지가 참여 회사를 위에 늘어놓듯, 이번 주 뽑는 회사들이 그림이다.
+     타일 색은 brands/<회사>.json 의 ui.accent(그 회사의 색) — 없으면 먹색. */
+  .k-week { --paper: #f4f1ea; --ink: #111317; --accent: #111317; }
+  .k-week h1 { margin-top: 40px; }
+  .k-week h1 div { font-size: 118px; }
+  .k-week h1 .thin { font-weight: 800; color: #8a8f98; }
+  .tiles { margin-top: 44px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .tile { aspect-ratio: 1 / 1.34; border-radius: 18px; padding: 20px 18px; display: flex; flex-direction: column;
+          justify-content: space-between; background: var(--c, #111317); color: var(--on, #fff); overflow: hidden; }
+  .tile .n { font-size: 20px; font-weight: 700; opacity: .7; }
+  .tile .co { font-size: 36px; font-weight: 800; letter-spacing: -.04em; line-height: 1.08; word-break: keep-all; }
+  .tile .ro { font-size: 17px; font-weight: 600; opacity: .8; margin-top: 6px; line-height: 1.25;
+              display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .k-week .lede { margin-top: 34px; }
+  .tile.more { background: transparent; color: var(--ink); border: 3px dashed #b9b4a8; }
+  .tile.more .co { white-space: pre-line; font-size: 30px; }
+
+  /* ── role: 그 직군이 보는 것 ───────────────────────────────
+     데이터 직군은 쿼리 결과 표를 본다(ROLE_DESIGN.md). 표의 열 이름은 '틀의 말' 이고,
+     값은 이 묶음 공고들의 기술 스택을 센 것뿐이다 — 지어낸 숫자가 없다. */
+  .k-role { --paper: #0d1420; --ink: #eef2f7; --sub: #8b97a8; --accent: #3ee0c1; --line: #243044; }
+  .k-role .chip { background: var(--accent); color: #06231d; }
+  .k-role h1 { margin-top: 64px; }
+  .k-role h1 div + div { color: var(--accent); }
+  .k-role .lede { margin-top: 26px; color: var(--sub); font-size: 34px; font-weight: 700; }
+  .k-role .lede b { color: var(--ink); }
+  .grid { margin-top: 52px; border: 2px solid var(--line); border-radius: 16px; overflow: hidden; font-size: 27px; }
+  .grid .q { padding: 16px 24px; font-size: 21px; color: var(--sub); border-bottom: 2px solid var(--line);
+             background: #111b2b; }
+  .grid .q b { color: var(--accent); font-weight: 700; }
+  .grid table { width: 100%; border-collapse: collapse; }
+  .grid th { text-align: left; font-size: 19px; font-weight: 700; color: var(--sub); padding: 14px 24px;
+             letter-spacing: .04em; border-bottom: 2px solid var(--line); }
+  .grid td { padding: 13px 24px; border-bottom: 1px solid var(--line); font-weight: 700; }
+  .grid td.num, .grid th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .grid td .bar { display: inline-block; height: 14px; background: var(--accent); border-radius: 3px;
+                  vertical-align: middle; margin-right: 14px; opacity: .85; }
+  .grid .tally { padding: 14px 24px; font-size: 19px; color: var(--sub); }
+  .k-role footer { border-top-color: var(--line); color: var(--sub); }
+  .k-role footer .who { color: var(--ink); }
+
+  /* ── newgrad: 마감 타임라인 ────────────────────────────────
+     신입 묶음은 '언제까지' 가 회사 이름보다 앞선다(collection.py 가 마감 순으로 줄 세운다).
+     그래서 그림이 달력이다 — 오늘부터 마지막 마감까지 한 줄, 공고마다 점 하나. */
+  .k-newgrad { --paper: #e9f6ee; --ink: #0c2a1b; --sub: #4a6b58; --accent: #12a150; --hot: #e0322b; --line: #b9dcc6; }
+  .k-newgrad .chip { background: var(--accent); color: #fff; }
+  .k-newgrad h1 { margin-top: 58px; }
+  .k-newgrad h1 div { font-size: 150px; }
+  .k-newgrad h1 div + div { color: var(--accent); }
+  .k-newgrad .lede { margin-top: 26px; }
+  /* 세로로 내려간다 — 가로 비례 눈금은 9/30·10/2 가 한쪽에 몰려 글자가 겹쳤다.
+     날짜 순서만 지키고 간격은 고르게 둔다(비례가 아니라 '다음 마감' 의 줄). */
+  .line { margin-top: 64px; position: relative; padding-left: 8px; }
+  .line::before { content: ''; position: absolute; left: 196px; top: 24px; bottom: 24px; width: 6px;
+                  background: var(--ink); border-radius: 3px; }
+  .row { display: grid; grid-template-columns: 170px 60px 1fr; align-items: center; column-gap: 20px;
+         padding: 24px 0; position: relative; }
+  .row .date { font-size: 54px; font-weight: 800; letter-spacing: -.03em; text-align: right;
+               font-variant-numeric: tabular-nums; }
+  .row .date small { font-size: 24px; margin-left: 4px; color: var(--sub); }
+  .row .dot { width: 46px; height: 46px; border-radius: 50%; background: var(--accent); border: 6px solid var(--paper);
+              justify-self: center; color: #fff; font-size: 20px; font-weight: 800;
+              display: flex; align-items: center; justify-content: center; position: relative; left: -2px; }
+  .row .who { font-size: 36px; font-weight: 800; letter-spacing: -.02em; line-height: 1.25; }
+  .row .who small { display: block; font-size: 23px; font-weight: 700; color: var(--sub); margin-top: 2px; }
+  .row.hot .date, .row.hot .date small { color: var(--hot); }
+  .row.hot .dot { background: var(--hot); }
+  .row.hot .who small { color: var(--hot); }
+  .row.always .date { font-size: 36px; color: var(--sub); }
+  .row.always .dot { background: var(--paper); border-color: var(--ink); }
+  .k-newgrad footer { border-top-color: var(--ink); }
+
+  /* ── company: 회사 해부 ──────────────────────────────────── */
+  .k-company .chip { background: var(--ink); color: var(--paper); }
+  .k-company .co { margin-top: auto; font-size: 200px; font-weight: 800; letter-spacing: -.06em; line-height: .95; white-space: nowrap; }
+  .k-company .one { margin-top: 36px; font-size: 36px; font-weight: 600; line-height: 1.5; letter-spacing: -.02em; }
+  .k-company .one b { font-weight: 800; }
+  .k-company .lede { margin-top: 30px; }
+  .k-company .lede b { color: inherit; }
+  .k-company footer { margin-top: 40px; }
 </style>
 </head>
 <body>
@@ -39,37 +140,150 @@
 const D = JSON.parse(document.getElementById('data').textContent);
 (function () {
   const el = (t, c, x) => { const n = document.createElement(t); if (c) n.className = c; if (x != null) n.textContent = x; return n; };
+  const W = '월화수목금토일';
+  const day = s => new Date(s + 'T00:00:00');
+  const md = d => `${d.getMonth() + 1}/${d.getDate()}`;
+  const wd = d => W[(d.getDay() + 6) % 7];
+  const jobs = D.jobs || [];
   const sheet = el('section', 'sheet');
-  const REEL = D.shape === 'reel';   // 릴스에서는 넘기는 사람이 없다
+  const REEL = D.shape === 'reel';            // 릴스에서는 넘기는 사람이 없다
   if (REEL) sheet.classList.add('reel');
+  const kind = ['week', 'role', 'newgrad', 'company'].includes(D.kind) ? D.kind : 'plain';
+  sheet.classList.add('k-' + kind);
 
-  const top = el('div', 'top', D.hook_top || '');
-  top.append(el('span'));
-  sheet.append(top);
+  const rich = (node, s) => { String(s || '').split(/(\*\*[^*]+\*\*)/).forEach(p => {
+    if (p.startsWith('**')) node.append(el('b', '', p.slice(2, -2))); else if (p) node.append(p.replace(/`/g, '')); }); return node; };
+  const chip = (a, b) => { const c = el('div', 'chip', a); if (b) c.append(el('small', '', b)); return c; };
+  const bigLines = lines => { const h = el('h1'); lines.forEach(l => h.append(typeof l === 'string' ? el('div', '', l) : l)); return h; };
 
-  const h1 = el('h1');
-  (D.hook_big || []).forEach(line => h1.append(el('div', '', line)));
-  sheet.append(h1);
-
-  const count = el('div', 'count');
-  count.append(el('b', '', `${D.count}곳`), document.createTextNode(' 모집중'));
-  sheet.append(count);
+  if (kind === 'week') {
+    // 칩: '이번 주 채용' + '2026. 09 · 4주차'. 제목: 기간 / 개발자 채용
+    sheet.append(chip('이번 주 채용', D.hook_top || ''));
+    const [span, what] = D.hook_big || ['', ''];
+    const l2 = el('div'); l2.append(what || '개발자 채용');
+    sheet.append(bigLines([span, l2]));
+    const lede = el('div', 'lede'); lede.append(el('b', '', `${D.count}곳`), '이 이번 주 뽑습니다');
+    sheet.append(lede);
+    const tiles = el('div', 'tiles');
+    jobs.slice(0, 8).forEach((j, i) => {
+      const t = el('div', 'tile');
+      if (j.accent) { t.style.setProperty('--c', j.accent); t.style.setProperty('--on', j.on || '#fff'); }
+      const top = el('div'); top.append(el('div', 'n', String(i + 1).padStart(2, '0')));
+      const bot = el('div'); bot.append(el('div', 'co', j.short || j.company), el('div', 'ro', j.role));
+      t.append(top, bot); tiles.append(t);
+    });
+    // 네 칸 줄이 비면 마지막 칸을 '넘겨서' 타일로 — 빈 칸은 빠진 공고처럼 보인다
+    const n = Math.min(jobs.length, 8);
+    if (n % 4 && !REEL) {
+      const t = el('div', 'tile more');
+      t.append(el('div', 'n', '→'), el('div', 'co', '넘겨서\n전문 보기'));
+      tiles.append(t);
+    }
+    sheet.append(tiles);
+  } else if (kind === 'role') {
+    sheet.append(chip('직군별 채용', D.hook_top || ''));
+    sheet.append(bigLines(D.hook_big || []));
+    const lede = el('div', 'lede'); lede.append(el('b', '', `${D.count}곳`), ' 모집중 · 이 자리들이 쓰는 기술');
+    sheet.append(lede);
+    // 기술 집계 — 공고마다 stack 앞 세 개를 모아 센다. 표 모양은 직군 틀의 말이고 값은 원문이다.
+    const tally = {};
+    jobs.forEach(j => (j.stack || []).forEach(s => { tally[s] = (tally[s] || 0) + 1; }));
+    const rows = Object.entries(tally).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 6);
+    const g = el('div', 'grid mono');
+    const q = el('div', 'q'); q.append('stack ', el('b', '', 'count'), ` · ${D.count}곳의 공고에서`);
+    g.append(q);
+    const tb = el('table'); const hr = el('tr');
+    hr.append(el('th', '', 'stack'), el('th', 'num', 'jobs'));
+    tb.append(hr);
+    const max = Math.max(1, ...rows.map(r => r[1]));
+    rows.forEach(([s, n]) => {
+      const tr = el('tr'); const a = el('td', '', s); const b = el('td', 'num');
+      const bar = el('span', 'bar'); bar.style.width = `${Math.round(160 * n / max)}px`;
+      b.append(bar, String(n)); tr.append(a, b); tb.append(tr);
+    });
+    g.append(tb);
+    g.append(el('div', 'tally', `(${rows.length} rows)`));
+    if (rows.length) sheet.append(g);
+  } else if (kind === 'newgrad') {
+    sheet.append(chip('신입 가능', D.hook_top || ''));
+    sheet.append(bigLines(['신입도', '지원 가능']));
+    const lede = el('div', 'lede'); lede.append('경력 없어도 넣을 수 있는 ', el('b', '', `${D.count}곳`));
+    sheet.append(lede);
+    // 타임라인 — 마감 날짜마다 한 줄, 같은 날은 한 줄에 모은다. 상시는 맨 끝 한 줄.
+    const asOf = day(D.as_of || new Date().toISOString().slice(0, 10));
+    const by = {};
+    jobs.filter(j => j.end).forEach(j => { (by[j.end] = by[j.end] || []).push(j); });
+    const always = jobs.filter(j => !j.end);
+    const line = el('div', 'line');
+    Object.keys(by).sort().forEach(s => {
+      const d = day(s); const hot = (d - asOf) / 864e5 <= 6;
+      const r = el('div', 'row' + (hot ? ' hot' : ''));
+      const dt = el('div', 'date', md(d)); dt.append(el('small', '', wd(d)));
+      const who = el('div', 'who', by[s].map(j => j.short || j.company).join(' · '));
+      who.append(el('small', '', +d === +asOf ? '오늘 마감' : hot ? '이번 주 마감' : '마감'));
+      r.append(dt, el('div', 'dot', by[s].length > 1 ? String(by[s].length) : ''), who);
+      line.append(r);
+    });
+    if (always.length) {
+      const r = el('div', 'row always');
+      const who = el('div', 'who', always.map(j => j.short || j.company).join(' · '));
+      who.append(el('small', '', '채용 시 마감'));
+      r.append(el('div', 'date', '상시'), el('div', 'dot'), who);
+      line.append(r);
+    }
+    sheet.append(line);
+  } else if (kind === 'company') {
+    // 회사 해부 — 바탕이 그 회사의 색(brands/<회사>.json ui.accent), 글자는 그 위에서 읽히는 색
+    const B = D.brand || {};
+    if (B.accent) { sheet.style.setProperty('--paper', B.accent); sheet.style.setProperty('--ink', B.on || '#fff'); }
+    sheet.append(chip('회사 해부', D.hook_top || ''));
+    const co = el('div', 'co', D.value || ''); sheet.append(co);
+    if (B.one) { const o = el('div', 'one'); rich(o, B.one); sheet.append(o); }
+    const lede = el('div', 'lede'); lede.append(el('b', '', `${D.count}개 자리`), ' 지금 모집중');
+    sheet.append(lede);
+  } else {
+    const top = el('div', '', D.hook_top || '');
+    top.style.cssText = 'font-size:34px;font-weight:800';
+    sheet.append(top);
+    sheet.append(bigLines(D.hook_big || []));
+    const lede = el('div', 'lede'); lede.append(el('b', '', `${D.count}곳`), ' 모집중');
+    sheet.append(lede);
+    const ends = jobs.filter(j => j.end).map(j => j.end).sort();
+    if (ends.length) {
+      const d = day(ends[0]); const f = el('div', 'first');
+      f.append(el('small', '', '첫 마감'), `${d.getMonth() + 1}월 ${d.getDate()}일(${wd(d)})`);
+      sheet.append(f);
+    }
+  }
 
   const foot = el('footer');
-  foot.append(el('div', '', REEL ? '회사별 공고 전문이 이어서 나옵니다'
-                                 : '넘겨서 회사별 공고 전문 보기 →'));
+  foot.append(el('div', '', REEL ? '회사별 공고 전문이 이어서 나옵니다' : '넘겨서 회사별 공고 전문 보기 →'));
   foot.append(el('div', 'who', '@devjobseeker'));
   sheet.append(foot);
   document.getElementById('root').append(sheet);
 
   // 큰 글자가 폭을 넘으면 줄인다(제목 길이는 카테고리마다 다르다)
-  const lines = [...h1.querySelectorAll('div')];
-  let size = 150;
-  while (size > 74 && lines.some(l => l.scrollWidth > sheet.clientWidth - 156)) {
+  const co = sheet.querySelector('.k-company .co');
+  if (co) { let s = 200; while (s > 80 && co.scrollWidth > sheet.clientWidth - 156) { s -= 6; co.style.fontSize = s + 'px'; } }
+  const lines = [...sheet.querySelectorAll('h1 div')];
+  let size = parseFloat(getComputedStyle(lines[0] || sheet).fontSize) || 150;
+  while (size > 64 && lines.some(l => l.scrollWidth > sheet.clientWidth - 156)) {
     size -= 6;
     lines.forEach(l => { l.style.fontSize = `${size}px`; });
   }
+  // 타일 회사 이름이 칸을 넘으면 그 칸만 줄인다(올리브영·오늘의집 같은 긴 이름)
+  sheet.querySelectorAll('.tile .co').forEach(c => {
+    let s = 36;
+    while (s > 22 && (c.scrollWidth > c.clientWidth + 1 || c.scrollHeight > 90)) { s -= 2; c.style.fontSize = `${s}px`; }
+  });
+  // 마감 줄이 많으면(신입 묶음 5줄 이상) 줄 간격부터 줄인다 — 아래 문구가 잘리면 안 된다
+  let pad = 24;
+  while (sheet.scrollHeight > sheet.clientHeight + 1 && pad > 6) {
+    pad -= 3;
+    sheet.querySelectorAll('.row').forEach(r => { r.style.padding = pad + 'px 0'; });
+  }
   window.__fit = size;
+  window.__overflow = sheet.scrollHeight > sheet.clientHeight + 1;
   window.__ready = true;
 })();
 </script>
