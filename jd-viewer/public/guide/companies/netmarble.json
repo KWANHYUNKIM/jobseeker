@@ -1,0 +1,257 @@
+{
+  "slug": "netmarble",
+  "name": "넷마블",
+  "name_en": "Netmarble",
+  "aliases": [
+    "넷마블"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "",
+  "one_liner": "모바일 · PC 게임 회사 — 핵툴 · 봇에 맞서는 게임 보안 개발자와 ISMS-P 개인정보 관리체계 담당자를 뽑는다",
+  "company": {
+    "business": "넷마블은 **모바일 · PC 게임을 개발 · 퍼블리싱**하는 게임 회사다(본사 서울 구로구 디지털로 26길 38 — 개인정보 공고의 근무지). 이번 대기열에서 본문을 읽을 수 있는 공고는 **보안**에 몰려 있다 — 게임 쪽에서는 **핵툴(메모리 변조 · 패킷 위변조) 분석과 대응, 보안 솔루션, 로그 기반 봇 · 매크로 탐지**를 만드는 게임 보안 개발자, 회사 쪽에서는 **개인정보 흐름 분석 · ISMS-P/ISO 27001 인증 · 사내 보안 규정 · AI · SaaS 보안성 검토**를 맡는 개인정보 관리체계 담당자. 같은 시기 게임 보안 운영 · 분석가와 **AI 엔지니어(VLM · 음성 에이전트)** 공고도 있으나 본문이 수집되지 않았다. 게임 목록 · 매출은 이번에 읽지 않았다(상장사라 IR 이 있다).",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "게임 보안 개발자",
+        "url": "https://www.wanted.co.kr/wd/363874",
+        "publisher": "원티드",
+        "summary": "넷마블 — PC/모바일 게임 보안 솔루션 설계 · 개발, 핵툴 분석(메모리 변조 · 패킷 위변조 대응), 보안 솔루션 성능 최적화 · 우회 대응, 게임 로그 · 이상 행위(봇/매크로) 탐지 시스템. 1 년+, C/C++, OS 동작 · TCP/IP 패킷 분석 이해. 우대 Unity/Unreal 구조, 커널/드라이버 보안, 게임 보안 솔루션 분석, AI 게임 보안, 리버스 엔지니어링(IDA Pro · Frida · Ghidra)."
+      },
+      {
+        "title": "개인정보 관리체계 /보안 정책 담당자 채용",
+        "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/554759?ReturnUrl=RecruitInfo",
+        "publisher": "캐치",
+        "summary": "경력 7 년+ — 개인정보 흐름 분석 · 컴플라이언스 점검, ISMS-P · ISO 27001 인증 수행, 사내 보안 규정 설계 · 정착. 우대 정보보호 · 컴퓨터공학 전공, 안전성 확보조치 개선, 신기술(AI · SaaS) 보안성 검토 · 위험 분석, 인증심사원 자격, Cloud · IDC 보안 운영. 근무지 서울 구로구 디지털로 26길 38. 2 차 면접 뒤 필요 시 평판 조회. (공고 이미지가 OCR 로 들어와 일부 글자가 깨져 있다.)"
+      },
+      {
+        "title": "게임 보안 운영/게임 보안 개발자 · 게임 보안 분석가 · AI 엔지니어(VLM /음성 에이전트) 채용",
+        "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/564759?ReturnUrl=RecruitInfo",
+        "publisher": "캐치",
+        "summary": "같은 시기 캐치에 게임 보안 운영/개발자(신입/경력) · 게임 보안 분석가(3 년+) · AI 엔지니어(VLM · 음성 에이전트, 2 년+) 공고가 더 있다 — 본문 절이 수집되지 않아 제목만 확인했다."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "게임 매출(인앱 결제 등)",
+        "how": "직접 개발하거나 퍼블리싱한 게임에서 매출이 난다 — 게임별 비중 · 구조는 이번에 읽지 않았다.",
+        "domains": [
+          "모바일 · PC 게임 개발 · 퍼블리싱",
+          "게임 보안(치트 · 봇 대응)",
+          "개인정보 보호 · 보안 인증"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "게임 보안 개발자",
+            "url": "https://www.wanted.co.kr/wd/363874",
+            "publisher": "원티드",
+            "summary": "넷마블 — PC/모바일 게임 보안 솔루션 설계 · 개발, 핵툴 분석(메모리 변조 · 패킷 위변조 대응), 보안 솔루션 성능 최적화 · 우회 대응, 게임 로그 · 이상 행위(봇/매크로) 탐지 시스템. 1 년+, C/C++, OS 동작 · TCP/IP 패킷 분석 이해. 우대 Unity/Unreal 구조, 커널/드라이버 보안, 게임 보안 솔루션 분석, AI 게임 보안, 리버스 엔지니어링(IDA Pro · Frida · Ghidra)."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "게임 보안(치트 · 봇 대응)",
+        "why": "게임 보안 개발자 공고가 보안 솔루션 · 핵툴 분석 · 우회 대응 · 봇/매크로 탐지를 적는다.",
+        "what_to_know": [
+          "서버 권한 검증",
+          "로그 기반 이상 탐지",
+          "클라이언트 무결성"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "게임 보안 개발자",
+            "url": "https://www.wanted.co.kr/wd/363874",
+            "publisher": "원티드",
+            "summary": "넷마블 — PC/모바일 게임 보안 솔루션 설계 · 개발, 핵툴 분석(메모리 변조 · 패킷 위변조 대응), 보안 솔루션 성능 최적화 · 우회 대응, 게임 로그 · 이상 행위(봇/매크로) 탐지 시스템. 1 년+, C/C++, OS 동작 · TCP/IP 패킷 분석 이해. 우대 Unity/Unreal 구조, 커널/드라이버 보안, 게임 보안 솔루션 분석, AI 게임 보안, 리버스 엔지니어링(IDA Pro · Frida · Ghidra)."
+          }
+        ]
+      },
+      {
+        "name": "개인정보 보호 · 보안 인증",
+        "why": "개인정보 공고가 개인정보 흐름 분석 · ISMS-P · ISO 27001 · 사내 보안 규정 · 신기술 보안성 검토를 적는다.",
+        "what_to_know": [
+          "ISMS-P 인증 기준",
+          "개인정보 흐름도",
+          "안전성 확보조치"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "개인정보 관리체계 /보안 정책 담당자 채용",
+            "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/554759?ReturnUrl=RecruitInfo",
+            "publisher": "캐치",
+            "summary": "경력 7 년+ — 개인정보 흐름 분석 · 컴플라이언스 점검, ISMS-P · ISO 27001 인증 수행, 사내 보안 규정 설계 · 정착. 우대 정보보호 · 컴퓨터공학 전공, 안전성 확보조치 개선, 신기술(AI · SaaS) 보안성 검토 · 위험 분석, 인증심사원 자격, Cloud · IDC 보안 운영. 근무지 서울 구로구 디지털로 26길 38. 2 차 면접 뒤 필요 시 평판 조회. (공고 이미지가 OCR 로 들어와 일부 글자가 깨져 있다.)"
+          }
+        ]
+      },
+      {
+        "name": "모바일 · PC 게임 개발 · 퍼블리싱",
+        "why": "보안 공고가 Unity · Unreal 게임 구조와 PC/모바일 게임을 전제로 한다.",
+        "what_to_know": [
+          "Unity · Unreal 구조",
+          "게임 서버 · 클라이언트 통신"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "게임 보안 개발자",
+            "url": "https://www.wanted.co.kr/wd/363874",
+            "publisher": "원티드",
+            "summary": "넷마블 — PC/모바일 게임 보안 솔루션 설계 · 개발, 핵툴 분석(메모리 변조 · 패킷 위변조 대응), 보안 솔루션 성능 최적화 · 우회 대응, 게임 로그 · 이상 행위(봇/매크로) 탐지 시스템. 1 년+, C/C++, OS 동작 · TCP/IP 패킷 분석 이해. 우대 Unity/Unreal 구조, 커널/드라이버 보안, 게임 보안 솔루션 분석, AI 게임 보안, 리버스 엔지니어링(IDA Pro · Frida · Ghidra)."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "로그로 사람과 봇을 가른다",
+        "evidence": "• 게임 로그 및 이상 행위(봇/매크로) 탐지 시스템 구축",
+        "so_what": "클라이언트 방어는 결국 우회된다 — 서버 로그로 행동을 보는 층을 설계해 본 경험이 차이를 만든다(이 사이트의 해석).",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "AI 도 보안 검토 대상",
+        "evidence": "- Cloud 및 IDC 보안 운영/관리 경험 보유",
+        "so_what": "개인정보 담당 자리도 클라우드 · 신기술(AI · SaaS) 도입의 보안성 검토를 함께 본다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "게임 목록 · 매출 · 인원은 이번에 읽지 않았다(상장사 IR 이 있다)",
+    "캐치의 게임 보안 운영 · 분석가 · AI 엔지니어(VLM/음성 에이전트) 공고는 본문 절이 수집되지 않아 싣지 않았다",
+    "개인정보 공고는 이미지 OCR 이라 주요업무가 비었다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/363874",
+      "title": "게임 보안 개발자",
+      "site": "wanted",
+      "verdict": "경력 1년 이상. **PC/모바일 게임 보안 솔루션 설계 · 개발**, **핵툴 분석(메모리 변조 · 패킷 위변조 대응)**, 보안 솔루션 성능 최적화 · 우회 대응, **게임 로그 · 이상 행위(봇/매크로) 탐지 시스템**. 자격은 **C/C++**, OS 동작 이해, **TCP/IP · 패킷 분석**, 게임 또는 보안 기본 이해. 우대는 Unity · Unreal 게임 구조, 커널/드라이버 보안 개발, 주요 게임 보안 솔루션 분석, AI 게임 보안, 리버스 엔지니어링(IDA Pro · Frida · Ghidra), 게임을 좋아하는 사람. 방어 쪽 자리다 — 공격 기법을 아는 것은 막기 위해서다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "C/C++",
+          "OS · 네트워크 이해"
+        ],
+        "can_learn": [
+          "게임 구조",
+          "이상 탐지"
+        ]
+      },
+      "study": [
+        {
+          "topic": "클라이언트를 믿지 않는다 — 서버 권한 검증으로 패킷 위변조를 무력화",
+          "from": "task",
+          "quote": "• 핵툴 분석 (메모리 변조, 패킷 위변조 대응)",
+          "priority": "core",
+          "why": "주요업무다. 방어의 기본은 서버가 결과를 판정하는 구조다.",
+          "gap_check": "클라이언트가 '100 데미지를 줬다' 고 보내는 설계와 '공격 버튼을 눌렀다' 고 보내는 설계는 위변조에 어떻게 다른가? 서버가 이동 속도 · 쿨다운 · 재화 증감을 검증하려면 무엇을 서버 상태로 가져야 하나? 재전송(replay)은 시퀀스 번호 · 세션 키로 어떻게 막나?",
+          "drill": "간단한 멀티플레이 게임 서버(Python asyncio 또는 C++)를 만들어 이동 · 공격 · 보상 메시지를 받는다. ① 클라이언트 결과를 그대로 믿는 버전 ② 서버가 이동 속도 · 쿨다운 · 보상 조건을 판정하고 시퀀스 번호 · HMAC 으로 재전송 · 변조를 거부하는 버전을 만든다. 직접 만든 테스트 클라이언트로 비정상 메시지(속도 10 배 · 쿨다운 무시 · 같은 패킷 재전송)를 보내 두 버전이 각각 어떻게 반응하는지 로그로 비교한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Gabriel Gambetta — Fast-Paced Multiplayer (Client-Server Game Architecture)",
+              "url": "https://www.gabrielgambetta.com/client-server-game-architecture.html",
+              "kind": "article"
+            }
+          ]
+        },
+        {
+          "topic": "사람과 매크로를 가른다 — 게임 로그로 봇 탐지",
+          "from": "task",
+          "quote": "• 게임 로그 및 이상 행위(봇/매크로) 탐지 시스템 구축",
+          "priority": "core",
+          "why": "주요업무다.",
+          "gap_check": "매크로의 행동은 사람과 무엇이 다른가(입력 간격 분산 · 24 시간 접속 · 같은 경로 반복)? 규칙(임계값)과 비지도 이상 탐지(Isolation Forest)는 각각 어떤 봇을 잘 잡고 무엇을 오탐하나? 오탐으로 정상 유저를 제재하면 비용은? 제재 전 사람 검토를 어디에 두나?",
+          "drill": "가상 로그 생성기로 사람 플레이어 500 명(불규칙 간격 · 세션 길이 다양)과 매크로 50 개(고정 간격 ± 작은 잡음 · 장시간)를 만들고, 세션별 특징(입력 간격 변동계수 · 세션 길이 · 행동 엔트로피)을 뽑아 규칙 기반과 Isolation Forest 의 정밀도 · 재현율을 비교한다. 잡음을 키운 '똑똑한 매크로' 를 추가해 무엇이 먼저 무너지는지 본다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "scikit-learn — Novelty and Outlier Detection",
+              "url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Unity 게임은 어떻게 생겼나 — IL2CPP 빌드와 무결성 점검",
+          "from": "preference",
+          "quote": "• Unity, Unreal Engine 기반 게임 구조 이해",
+          "priority": "high",
+          "why": "우대사항이다. 보호할 대상의 구조를 알아야 어디를 지킬지 정한다.",
+          "gap_check": "Unity 의 Mono 빌드와 IL2CPP 빌드는 배포물이 어떻게 다르고 분석 난이도는 어떻게 다른가? 게임이 자기 파일 · 에셋의 변조를 확인하려면(해시 · 서명) 검증 결과를 누가 판정해야 하나(클라이언트 혼자면 우회된다)?",
+          "drill": "빈 Unity 프로젝트를 Mono 와 IL2CPP 로 각각 빌드해 산출물 구조(Managed DLL · global-metadata · libil2cpp)를 비교 표로 정리한다. 앱 시작 시 에셋 번들 해시를 계산해 서버로 보내고 서버가 허용 목록과 비교해 판정하는 흐름을 만들고, 번들을 바꿨을 때 서버 판정이 바뀌는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Unity Manual — IL2CPP",
+              "url": "https://docs.unity3d.com/Manual/IL2CPP.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/554759?ReturnUrl=RecruitInfo",
+      "title": "개인정보 관리체계 /보안 정책 담당자 채용",
+      "site": "dev",
+      "verdict": "경력 7년 이상. 공고가 이미지 OCR 로 들어와 주요업무 절이 비었고 일부 글자가 깨져 있다 — 읽히는 것은 **개인정보 흐름 분석 · 컴플라이언스 점검 주도**, **ISMS-P · ISO 27001 인증 수행**, **사내 보안 규정 설계 · 정착**. 우대는 정보보호 · 컴퓨터공학 전공, **안전성 확보조치** 개선안, **신기술(AI · SaaS) 보안성 검토 · 위험 분석**, 인증심사원 자격, **Cloud · IDC 보안 운영**, 유관 부서 협업. 근무지 서울 구로구 디지털로 26길 38, 2 차 면접 뒤 필요 시 평판 조회. 개발 자리가 아니라 **관리체계 · 정책** 자리다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "관련 경력 7년",
+          "ISMS-P · ISO 27001 수행",
+          "보안 규정 설계"
+        ],
+        "can_learn": [
+          "AI · SaaS 보안성 검토"
+        ]
+      },
+      "study": [
+        {
+          "topic": "규정을 쓰고 정착시킨다 — ISMS-P 인증 기준과 개인정보 흐름도",
+          "from": "qualification",
+          "quote": "- 사내 보안 규정 설계 및 정착 경험",
+          "priority": "core",
+          "why": "자격요건이다. ISMS-P 는 관리체계 · 보호대책 · 개인정보 처리 단계별 요구사항으로 규정과 증적을 요구한다.",
+          "gap_check": "ISMS-P 의 세 영역(관리체계 수립 · 운영, 보호대책 요구사항, 개인정보 처리 단계별 요구사항)은 각각 어떤 문서 · 증적을 요구하나? 게임 회원 가입 → 결제 → 고객 문의 → 탈퇴까지 개인정보 흐름도를 그리면 수집 · 이용 · 제공 · 파기 지점은 어디인가? 규정을 만든 뒤 '정착' 을 무엇으로 확인하나(점검 결과 · 교육 이수 · 예외 신청 수)?",
+          "drill": "KISA 의 ISMS-P 인증 기준 안내서를 읽고, 가상의 모바일 게임 서비스(회원 · 결제 · 고객센터 · 마케팅 수신)에 대해 개인정보 흐름표와 흐름도를 만든다. 흐름의 각 지점에 해당하는 인증 기준 항목 번호와 필요한 증적을 표로 매핑한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "ISMS-P 인증기준 안내서(KISA)",
+              "url": "https://isms.kisa.or.kr/main/ispims/notice/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "클라우드 · 데이터센터의 보안 운영 점검",
+          "from": "preference",
+          "quote": "- Cloud 및 IDC 보안 운영/관리 경험 보유",
+          "priority": "high",
+          "why": "우대사항이다. 인증 범위에 클라우드와 IDC 가 함께 들어간다.",
+          "gap_check": "클라우드에서 책임 공유 모델상 회사가 증적을 내야 하는 항목은(접근 통제 · 로그 · 암호화 키)? 개인정보 접속 기록 보관 · 점검 의무를 클라우드 로그로 어떻게 충족하나? IDC 와 클라우드에 같은 규정을 적용할 때 달라지는 통제는?",
+          "drill": "AWS 무료 계정에서 CloudTrail · S3 서버 측 암호화 · IAM 접근 분석기를 켜고, '개인정보처리시스템 접속 기록' 과 '접근 권한 검토' 증적을 어떤 화면 · 로그로 낼지 한 쪽 점검표로 만든다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "AWS — Shared Responsibility Model",
+              "url": "https://aws.amazon.com/compliance/shared-responsibility-model/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
