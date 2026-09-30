@@ -1228,6 +1228,17 @@
       "postings": 4,
       "study_items": 9,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "cloudnetworks",
+      "name": "클라우드네트웍스",
+      "aliases": [
+        "클라우드네트웍스"
+      ],
+      "status": "done",
+      "postings": 2,
+      "study_items": 3,
+      "updated_at": "2026-09-30"
     }
   ]
 }
