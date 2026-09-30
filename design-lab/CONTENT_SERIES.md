@@ -35,7 +35,7 @@
 | [IT 용어] | 면접 단골 용어를 1분에 | 캐러셀 | 테크블로그 사례 + 일반 설명 | 코드잇 IT 용어 | ✅ 멱등성 |
 | [면접 예상 질문] | 공고 하나에서 읽어 낸 질문 8 | 캐러셀 | 브리핑 interview.expect(446건) | 코드잇 직무 인터뷰 | ✅ 올리브영 코어플랫폼 BE |
 | [고민 상담소] | 취준 고민에 숫자로 답 | 캐러셀 | 공고 색인 | 코드잇 고민 상담소 | ✅ 신입인데 경력 공고? |
-| [인재상 해부] | 채용 페이지 문구가 아니라 **증거로 읽은** 인재상 — 돈 버는 구조·지금 여는 자리·현직 리더의 공개 발언·신호·남들과 갈리는 한 수·연봉(공개분)·아직 모르는 것 | 캐러셀 10장 | 브리핑 company·people·salary·open_questions | 캐치 기업분석 + 점핏 개발자 인터뷰 | 준비됨 6곳(포티투닷·토스·업스테이지·빗썸·메가존·엘리스) — 하루 1개 |
+| [인재상 해부] | 채용 페이지 문구가 아니라 **증거로 읽은** 인재상 — 돈 버는 구조·지금 여는 자리·현직 리더의 공개 발언·신호·남들과 갈리는 한 수·연봉(공개분)·아직 모르는 것 | 캐러셀 10장 | 브리핑 company·people·salary·open_questions | 캐치 기업분석 + 점핏 개발자 인터뷰 | ✅ 토스·제논 · 준비됨 16곳(대기업·작은 회사 섞어서) — 하루 1~2개 |
 | [공고 묶음] | 이번 주·신입·직군 | 캐러셀 | 공고 | 캐치 신입공고·공채속보 | ✅ |
 | [마감 D-3] | 이번 주에 닫히는 곳 | 캐러셀·스토리 | 마감일 | 원티드 D-day | ✅ 9/28–10/4 마감 8곳 |
 | [밸런스 게임] | A 회사 vs B 회사 | 스토리 투표 → 캐러셀 | 브리핑 두 곳 | 캐치 밸런스 게임 | 만들 것 |
@@ -52,6 +52,11 @@
 9/30 두 번째 묶음(6개): JD 번역기 `Dd5wvWJEh2l` · 같은 직무 `Dd5w1-EkvI4` · 공부 로드맵 `Dd5w8n6kpzW` · 주간 리포트 `Dd5xCWSEldv` ·
 채용 시그널 `Dd5xJGxkgf7` · 마감 임박 `Dd5xSlFEkLM`. 이날 게시물 34개 — 마지막 업로드 직후 인스타가 **429(요청 제한)** 를 돌려줬다.
 하루 1~2개로 돌아간다(3절).
+
+[인재상 해부] 연봉은 브리핑 연봉(출처별 범위)이 있으면 그것, 없으면 원티드의 **국민연금 기준 전 직군 평균**이다.
+여러 회사가 정확히 같은 값(6,032만원 — 포티투닷·노타·채널코퍼레이션, `rate` 까지 같다)이면 추정식의 상한으로 보고
+'그 이상일 수 있다' 고 적는다. 평균이 3,000만원 아래(CJ올리브영 1,582 — 매장 인력 포함)면 개발 직군 값이 아니라고 적는다.
+직원 300명 미만이면 표지에 인원을 붙이고 '무엇으로 돈을 버나' 에 사업 설명을 먼저 둔다.
 
 ## 3. 2주 달력 (새 계정 — 하루 1~2개, 스토리는 매일)
 
@@ -82,7 +87,8 @@ python -m poster.series interview "올리브영:코어플랫폼유닛 Back-end" 
 python -m poster.series qa                                    # [고민 상담소] 신입인데 경력 공고?
 python -m poster.series guide 쿠팡 · stack · rates              # [들어가려면] · [데이터로 본 채용]
 python -m poster.series jd · same · roadmap · weekly · signal   # [JD 번역기] · [같은 직무 다른 회사] · [공부 로드맵] · [주간 리포트] · [채용 시그널]
-python -m poster.series talent 포티투닷                        # [인재상 해부] 브리핑에 people·salary 가 있는 회사일수록 깊다
+python -m poster.company_facts 제논 바로팜                       # 원티드 기업정보(국민연금 평균연봉·인원·매출·업종) → state/company_facts.json
+python -m poster.series talent 포티투닷                        # [인재상 해부] 회사 한눈에·도메인·자리·리더 발언·연봉
 python -m publish.cli approve-collection deadline --allow-generic -p instagram  # [마감 D-3]
 python -m publish.cli approve-collection company --value 컬리   # [회사 해부]
 python -m poster.cutaway reels/<회사>_3d                        # [회사 해부] 3D 릴스

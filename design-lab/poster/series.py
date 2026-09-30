@@ -570,12 +570,61 @@ def _est(x: dict) -> str:
     return "" if x.get("confidence") == "confirmed" else " (추정)"
 
 
+def _eok(won: int | None) -> str:
+    """원 → '1,733억' / '9.3억' / '6,617만'. 매출 칸 한 줄."""
+    if not won:
+        return ""
+    e = won / 1e8
+    return f"{e:,.0f}억" if e >= 100 else f"{e:.1f}억" if e >= 1 else f"{won / 1e4:,.0f}만"
+
+
+def _salary_slide(g: dict, facts: dict | None, note: str, cite) -> dict | None:
+    """연봉 한 장 — 브리핑 연봉이 있으면 그것(출처별 범위), 없으면 원티드의 국민연금 기반 평균.
+    국민연금 추정치는 여러 회사가 **똑같은 값**으로 나오는 상한이 있다(6,032만원 등) — 그때는 '그 이상' 으로 읽게 쓴다."""
+    sal = g.get("salary") or {}
+    if sal.get("bands"):
+        b = sal["bands"][0]
+        for s in b.get("sources") or []:
+            cite([s])
+        rng = b["low"] != b["high"]
+        unit = sal.get("unit", "만원")
+        why = " ".join(x for x in re.split(r"(?<=[.])\s+", re.sub(r"\s*\([^()]*(?:inferred|confirmed)[^()]*\)", "",
+                                                                     _clean(sal.get("note", ""))))
+                       if not re.search(r"bands|inferred|confirmed|basis", x))
+        return {"type": "stat", "title": "평균 연봉", "num": f"{b['low']:,}", "unit": unit,
+                "label": (f"부터 최고 {b['high']:,}{unit}까지 · " if rng else "") + f"{b.get('role', '')} · {sal.get('as_of', '')}",
+                "explain": _sent(why, 90), "note": note}
+    if not (facts and facts.get("salary")):
+        return None
+    from .company_facts import load as _facts_all
+    s = facts["salary"]
+    cite([{"title": f"{facts.get('title') or g['name']} 기업정보(원티드)", "url": facts["url"]}])
+    same = [n for n, f in _facts_all().items() if f.get("salary") == s and n != facts["name"]]
+    tag = next((t for t in facts.get("tags") or [] if "연봉" in t), "")
+    if same:
+        why = (f"{same[0]} 등 다른 회사도 **정확히 같은 {s:,}만원**으로 나온다 — 추정식의 상한으로 보인다. "
+               "실제 평균은 그 이상일 수 있다 (추정).")
+    elif s < 3000:
+        why = "매장·현장 인력까지 섞인 전 직군 평균이다 — **개발 직군 값으로 읽으면 안 된다.**"
+    else:
+        why = "국민연금 납부액으로 추정한 **전 직군 평균**이다 — 개발 직군만의 값은 공개돼 있지 않다."
+    return {"type": "stat", "title": "평균 연봉", "num": f"{s:,}", "unit": "만원",
+            "label": " · ".join(x for x in [f"전 직군 · 국민연금 기준 · {facts.get('salary_as_of') or ''}", tag] if x),
+            "explain": why, "note": note}
+
+
 def build_talent(name: str) -> dict:
+    """[인재상 해부] 회사 한 곳, 10장.
+    ① 표지 ② 회사 한눈에(업종·업력·인원·매출·위치 — 원티드 공개값) ③ 무엇으로 돈을 버나 ④ 도메인, 쉽게
+    ⑤ 지금 여는 자리 ⑥~ 현직 리더의 공개 발언·신호·남들과 갈리는 한 수(남는 칸만큼) ⑨ 평균 연봉 ⑩ 한 줄로.
+    작은 회사는 이름만으로는 무엇을 하는지 모른다 — ②③④ 를 앞에 둔 까닭이다."""
+    from .company_facts import get as _facts
     g = _guide_company(name)
     co = g["company"]
     short = g["name"]
+    facts = _facts(short)
     live = [p for p in g["postings"] if not p.get("closed")]
-    note = f"{short} · 취업 브리핑(공고·공시·기사·공개 인터뷰, {g.get('updated_at', '')[:10]}) · (추정)은 이 계정의 해석"
+    note = f"{short} · 취업 브리핑(공고·공시·기사·공개 인터뷰, {g.get('updated_at', '')[:10]}) · 원티드 기업정보 · (추정)은 이 계정의 해석"
     srcs: list[tuple[str, str]] = []
 
     def cite(items):
@@ -583,92 +632,115 @@ def build_talent(name: str) -> dict:
             if s.get("url") and s["url"] not in [u for _, u in srcs]:
                 srcs.append((s.get("title") or s.get("publisher") or "", s["url"]))
 
-    sig = co.get("signals") or []
+    sig = [x for x in co.get("signals") or [] if "수집" not in x["reading"]]
     hook = _nostar(sig[0]["reading"]) if sig else _nostar(g["one_liner"])
-    slides = [{"type": "cover", "lines": [short, "**이런 사람**을 찾는다"],
-               "sub": hook + _est(sig[0] if sig else {"confidence": "confirmed"}), "note": note}]
+    emp = (facts or {}).get("employees")
+    small = bool(emp and emp < 300)
+    head: list[dict] = [{"type": "cover", "lines": [short, "**이런 사람**을 찾는다"],
+                         "sub": (f"직원 {emp:,}명 — " if small else "") + hook + _est(sig[0] if sig else {"confidence": "confirmed"}),
+                         "note": note}]
 
-    # 1. 성과 기준 = 돈이 어디서 오나
+    # ② 회사 한눈에 — 숫자는 원티드 기업정보(국민연금·국세청·공시 기반)
+    if facts:
+        cite([{"title": f"{facts.get('title') or short} 기업정보(원티드)", "url": facts["url"]}])
+        rows = []                                    # '하는 일' 은 길어서 표 글자를 통째로 줄인다 — 부제로 뺀다
+        if facts.get("industry"):
+            rows.append(["업종", facts["industry"][:22]])
+        if facts.get("founded"):
+            rows.append(["설립", f"{facts['founded']}년 · 업력 {facts.get('age')}년"])
+        if emp:
+            rows.append(["인원", f"{emp:,}명 (국민연금 가입자)"])
+        if facts.get("sales"):
+            rows.append(["매출", f"{_eok(facts['sales'])}원"])
+        if facts.get("location"):
+            rows.append(["위치", facts["location"]])
+        perks = [t for t in facts.get("tags") or [] if not re.search(r"명|연봉", t)]
+        if perks:
+            rows.append(["표시", " · ".join(perks[:2])])
+        head.append({"type": "table", "title": "회사 한눈에",
+                     "sub": _first(_nostar(g["one_liner"]), 70) + " · 숫자는 원티드 기업정보 공개값(인원 = 국민연금 가입자)",
+                     "head": ["", ""], "rows": rows, "note": note})
+
+    # ③ 무엇으로 돈을 버나 — 작은 회사일수록 사업 설명을 앞에
     rev = (co.get("revenue") or [{}])[0]
+    cite(co.get("business_sources"))
+    cite(rev.get("sources"))
+    lines = [_sent(_clean(co.get("business", "")), 120)] if small or not rev else []
     if rev:
-        cite(rev.get("sources"))
-        scale = [f"{x['label']} · {_nostar(x['value'])[:60]}" for x in (co.get("scale") or [])[:2]]
-        slides.append({"type": "end", "title": "먼저, 돈이 어디서 오나",
-                       "lines": [_sent(_clean(rev.get("how", "")), 130) + _est(rev)] + scale, "note": note})
+        lines.append(_sent(_clean(rev.get("how", "")), 110) + _est(rev))
+    head.append({"type": "end", "title": "무엇으로 돈을 버나", "lines": [x for x in lines if x][:2], "note": note})
 
-    # 2. 자리 이름이 곧 회사의 문제 목록 — 공고마다 '이 자리는'
-    roles = [{"role": re.sub(r"\s*\(.*$", "", p["title"])[:34], "meta": _first(_nostar(p.get("verdict", "")), 64)}
-             for p in live[:4] if p.get("verdict")]
+    # ④ 도메인, 쉽게 — 이 회사에서 일하려면 알아 둘 세계
+    doms = (co.get("domains") or [])[:3]
+    if doms:
+        head.append({"type": "end", "title": "이 회사의 도메인, 쉽게",
+                     "lines": [f"**{_nostar(d['name'])[:24]}** — {_first(_nostar(d.get('why', '')), 60)}"
+                               + (f" · 알아 둘 것: {', '.join(_nostar(w) for w in (d.get('what_to_know') or [])[:3])}"
+                                  if d.get("what_to_know") else "") for d in doms], "note": note})
+
+    # ⑤ 지금 여는 자리
+    # 한 문장이 길면 _first 가 통째로 돌려준다 — 칸이 좁아 이름이 세로로 접히므로 글자 수로 한 번 더 자른다
+    roles = [{"role": re.sub(r"^\[[^\]]*\]\s*|\s*\(.*$", "", p["title"])[:22],
+              "meta": (lambda m: m if len(m) <= 34 else m[:33] + "…")(_first(_nostar(p.get("verdict", "")), 34))}
+             for p in live if p.get("verdict")]
+    roles = list({r["role"]: r for r in reversed(roles)}.values())[::-1][:4]   # 같은 이름은 한 번만
     if roles:
-        slides.append({"type": "jobs", "title": f"지금 여는 자리 {len(live)}개 중", "rows": roles, "note": note})
+        head.append({"type": "jobs", "title": f"지금 여는 자리 {len(live)}개 중", "rows": roles, "note": note})
 
-    # 3. 현직 리더가 공개적으로 한 말
+    tail = [x for x in [_salary_slide(g, facts, note, cite)] if x]
+
+    # 남는 칸 — 현직 리더의 말 → 신호 → 한 수 순서로 채운다
+    extra: list[dict] = []
     for pe in (g.get("people") or [])[:2]:
         cite(pe.get("public_work"))
         lean = [_nostar(x) for x in pe.get("leanings") or []]
-        if not lean:
-            continue
-        slides.append({"type": "gi", "no": f"현직 리더의 말 · {pe['role']}",
-                       "topic": _first(lean[0], 70),
-                       "quote": " / ".join(_first(x, 90) for x in lean[1:3]),
-                       "why": _sent(_clean(pe.get("what_it_means", "")), 150),
-                       "quote_label": "공개 인터뷰에서", "check_label": "출처",
-                       "check": f"{(pe.get('public_work') or [{}])[0].get('title', '')[:60]} · {(pe.get('public_work') or [{}])[0].get('kind', '')}",
-                       "note": note})
-
-    # 4. 공고가 먼저 말해 주는 것(신호) 셋
-    n_sig = 1 if len([x for x in g.get("people") or [] if x.get("leanings")]) >= 2 else 2   # 10장 안에 들게
-    for s in [x for x in sig[1:] if "수집" not in x["reading"]][:n_sig]:
-        slides.append({"type": "end", "title": _first(_nostar(s["reading"]), 40) + _est(s),
-                       "lines": ["근거 · " + _first(_nostar(s.get("evidence", "")).lstrip("•-· "), 110),
-                                 "그래서 · " + _first(_nostar(s.get("so_what", "")), 120)], "note": note})
-
-    # 5. 붙는 사람의 한 수 — 공고별 edge
+        if lean:
+            extra.append({"type": "gi", "no": f"현직 리더의 말 · {pe['role']}", "topic": _first(lean[0], 70),
+                          "quote": " / ".join(_first(x, 90) for x in lean[1:3]),
+                          "why": _sent(_clean(pe.get("what_it_means", "")), 150),
+                          "quote_label": "공개 인터뷰에서", "check_label": "출처",
+                          "check": f"{(pe.get('public_work') or [{}])[0].get('title', '')[:60]} · {(pe.get('public_work') or [{}])[0].get('kind', '')}",
+                          "note": note})
+    for s in sig[1:3]:
+        extra.append({"type": "end", "title": _first(_nostar(s["reading"]), 40) + _est(s),
+                      "lines": ["근거 · " + _first(_nostar(s.get("evidence", "")).lstrip("•-· "), 110),
+                                "그래서 · " + _first(_nostar(s.get("so_what", "")), 120)], "note": note})
     edges = [(re.sub(r"\s*\(.*$", "", p["title"])[:24], e) for p in live[:3] for e in (p.get("edge") or [])[:1]]
     if edges:
-        slides.append({"type": "end", "title": "남들과 갈리는 한 수",
-                       "lines": [f"**{t}** · {_nostar(e['idea'])[:60]} ({e.get('effort', '')})" for t, e in edges], "note": note})
+        extra.insert(min(len(extra), 2), {"type": "end", "title": "남들과 갈리는 한 수",
+                                          "lines": [f"**{t}** · {_nostar(e['idea'])[:60]} ({e.get('effort', '')})" for t, e in edges],
+                                          "note": note})
+    room = 9 - len(head) - len(tail)                   # 인스타 캐러셀 10장 — 마지막 '한 줄로' 를 남긴다
+    slides = head + extra[:max(room, 0)] + tail
 
-    # 6. 연봉 — 공개값과 그 한계
-    sal = g.get("salary") or {}
-    if sal.get("bands"):
-        b = sal["bands"][0]
-        for s in b.get("sources") or []:
-            cite([s])
-        # 범위는 한 줄에 안 들어간다 — 큰 숫자는 하한, 상한은 아래 줄에. 엔진의 필드 이름(bands 등)이 든 문장은 뺀다
-        rng = b["low"] != b["high"]
-        unit = sal.get("unit", "만원")
-        why = " ".join(x for x in re.split(r"(?<=[.])\s+", re.sub(r"\s*\([^()]*(?:inferred|confirmed)[^()]*\)", "",
-                                                                     _clean(sal.get("note", ""))))
-                       if not re.search(r"bands|inferred|confirmed|basis", x))
-        slides.append({"type": "stat", "title": "연봉, 공개된 만큼만", "num": f"{b['low']:,}",
-                       "unit": unit,
-                       "label": (f"부터 최고 {b['high']:,}{unit}까지 · " if rng else "") + f"{b.get('role', '')} · {sal.get('as_of', '')}",
-                       "explain": _sent(why, 90), "note": note})
-
-    # 7. 아직 모르는 것 — 지원 전에 물어볼 것
-    # 엔진이 제 작업 기록으로 남긴 줄('salary 를 비웠다', 'PROMPT 2단계')은 독자에게 뜻이 없다 — 회사에 관한 물음만
-    internal = re.compile(r"salary|people|signals|비웠|PROMPT|사이클|엔진|보강|평판|소문|열지 못했|403|더 찾지|검색 결과")
-    oq = [_first(_nostar(q), 80) for q in (sal.get("open_questions") or []) + (g.get("open_questions") or [])
+    internal = re.compile(r"salary|people|signals|비웠|PROMPT|사이클|엔진|보강|평판|소문|열지 못했|403|더 찾지|검색 결과"
+                          r"|읽지 않았|읽혔|읽지 못|제목만|본문|열리지|머리말|wd/|\(\d{6}\)|확인하지 못했다\.?$")
+    oq = [_first(_nostar(q), 90) for q in ((g.get("salary") or {}).get("open_questions") or []) + (g.get("open_questions") or [])
           if not internal.search(q)][:3]
-    if oq:
-        slides.append({"type": "end", "title": "아직 확인 못 한 것", "lines": oq + ["→ 면접 마지막 '질문 있나요?' 에 쓰면 된다"], "note": note})
-
-    slides = slides[:9]                                # 인스타 캐러셀은 10장까지 — 마지막 장은 남긴다
     slides.append({"type": "end", "title": "한 줄로", "lines": [
         _first(_nostar(sig[0].get("so_what", "")), 110) if sig else _nostar(g["one_liner"]),
+        *( [f"공개 자료로 확인 안 되는 것 · {oq[0]}"] if oq else [] ),
         f"{short} 가려는 친구에게 보내 주세요"], "note": note})
     for p in live[:4]:
         cite([{"title": p["title"], "url": p.get("url")}])
 
-    caption = "\n\n".join([
+    fact_line = ""
+    if facts:
+        fact_line = " · ".join(x for x in [
+            facts.get("industry"), f"설립 {facts['founded']}년" if facts.get("founded") else "",
+            f"인원 {emp:,}명" if emp else "", f"매출 {_eok(facts.get('sales'))}원" if facts.get("sales") else "",
+            f"평균연봉 {facts['salary']:,}만원(국민연금 기준, 전 직군)" if facts.get("salary") else "", facts.get("location")] if x)
+    caption = "\n\n".join(x for x in [
         f"[인재상 해부] {short} — {hook}",
         _first(_nostar(g["one_liner"]), 200),
-        "▪ 공고가 먼저 말해 주는 것\n" + "\n".join(f"· {_nostar(s['reading'])}{_est(s)}" for s in sig[:4]),
-        "채용 페이지의 '인재상' 문구가 아니라 공고·공시·기사·공개 인터뷰에서 거꾸로 읽었습니다. (추정)은 이 계정의 해석이고, "
-        "커뮤니티 평판·소문은 쓰지 않았습니다.",
+        f"▪ 회사 한눈에\n{fact_line}" if fact_line else "",
+        "▪ 도메인\n" + "\n".join(f"· {_nostar(d['name'])} — {_first(_nostar(d.get('why', '')), 90)}" for d in doms) if doms else "",
+        "▪ 공고가 먼저 말해 주는 것\n" + "\n".join(f"· {_nostar(s['reading'])}{_est(s)}" for s in sig[:4]) if sig else "",
+        "▪ 공개 자료로 확인 안 되는 것 — 면접 끝 질문으로 쓸 만하다\n" + "\n".join(f"· {q}" for q in oq) if oq else "",
+        "채용 페이지의 '인재상' 문구가 아니라 공고·공시·기사·공개 인터뷰에서 거꾸로 읽었습니다. 평균연봉은 국민연금 기준 전 직군 "
+        "평균이라 개발 직군 값과 다를 수 있습니다. (추정)은 이 계정의 해석이고, 커뮤니티 평판·소문은 쓰지 않았습니다.",
         "📌 출처\n" + "\n".join(f"· {t[:50]} {u}" for t, u in srcs[:8]),
-    ])
+    ] if x)
     return {"kind": "talent", "id": f"talent-{g['slug']}-{date.today().isoformat().replace('-', '')}",
             "title": f"{short} 인재상", "slides": slides, "caption": caption, "jobs": []}
 
