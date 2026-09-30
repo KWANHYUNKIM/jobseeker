@@ -41,10 +41,17 @@ GUIDE = ROOT / "jd-viewer" / "public" / "guide"
 THEMES = {
     "insight": {"paper": "#f5f2ea", "ink": "#111317", "sub": "#5d6068", "accent": "#ff5a1f", "line": "#d8d3c7"},
     "guide": {"paper": "#102a43", "ink": "#f4f1e8", "sub": "#9fb3c8", "accent": "#ffc53d", "line": "#2a4a6b"},
+    "term": {"paper": "#fff7e8", "ink": "#1d1a14", "sub": "#6d6456", "accent": "#e8590c", "line": "#eadcc4"},
+    "interview": {"paper": "#16161d", "ink": "#f2f2f5", "sub": "#9a9aa8", "accent": "#7c9cff", "line": "#2c2c38"},
+    "qa": {"paper": "#eef4ff", "ink": "#0f1b33", "sub": "#55627a", "accent": "#1f6feb", "line": "#cfdcf3"},
 }
-SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]"}
+SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", "term": "[IT 용어]",
+          "interview": "[면접 예상 질문]", "qa": "[고민 상담소]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
-        "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"]}
+        "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
+        "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
+        "interview": ["면접질문", "개발자면접", "올리브영", "백엔드개발자", "이직준비"],
+        "qa": ["신입개발자", "개발자취업", "취업고민", "개발자채용", "취업준비"]}
 
 
 # --- 재료 ---------------------------------------------------------------
@@ -241,6 +248,123 @@ def build_guide(name: str, *, exclude: set[str] | None = None) -> dict:
             "jobs": [{"key": j["key"], "company": j["company"], "role": role}]}
 
 
+# --- [IT 용어] · [면접 예상 질문] · [고민 상담소] -----------------------------
+# 형식은 인프런·코드잇 계정의 시리즈에서 빌렸다(코드잇 'IT 용어'·'직무 인터뷰'·'고민 상담소').
+ARTICLE = "올리브영 테크블로그 「45분 배치에서 준실시간으로!」(2026.04.22)"
+SEND = "취준 중인 친구에게 보내 주세요"          # 마지막 장은 받을 사람을 지정한다(DM 공유가 가장 큰 도달 신호)
+
+
+def build_term_idempotency() -> dict:
+    """멱등성 — 올리브영 원문이 중복 메시지를 견딘 방법을 예시로. 뜻·비유는 일반 지식, 사례는 원문."""
+    note = f"예시: {ARTICLE} · 뜻과 비유는 일반적인 설명"
+    slides = [
+        {"type": "cover", "lines": ["멱등성", "**한 번 해도, 두 번 해도**"],
+         "sub": "같은 결과 — 면접 단골 용어를 1분 만에", "note": note},
+        {"type": "end", "title": "뜻", "lines": [
+            "같은 요청을 **여러 번** 보내도 결과가 **한 번** 보낸 것과 같은 성질",
+            "엘리베이터 버튼은 열 번 눌러도 한 번 부른 것과 같다 → 멱등",
+            "'결제하기' 를 두 번 눌러 두 번 빠져나가면 → 멱등이 아니다"], "note": note},
+        {"type": "end", "title": "왜 필요한가", "lines": [
+            "메시지는 **두 번 올 수 있다**",
+            "컨슈머가 죽었다 살아날 때, 리밸런싱될 때, 타임아웃으로 다시 보낼 때",
+            "'딱 한 번만 온다' 고 믿고 짜면 데이터가 틀어진다"], "note": note},
+        {"type": "end", "title": "올리브영은 이렇게", "lines": [
+            "① 메시지를 묶어 가져와 **중복을 지운다**",
+            "② **최신 발행 시각** 기준으로 걸러 오래된 게 최신을 덮지 않게",
+            "③ **UPSERT** 로 저장 — 중복이 남아 있어도 결과는 같다"], "note": note},
+        {"type": "end", "title": "면접에서 물으면", "lines": [
+            "Q. Kafka 컨슈머가 같은 메시지를 두 번 받으면?",
+            "① 중복이 생기는 이유(재시도·리밸런싱)를 먼저",
+            "② 막는 장치(중복 제거·시각 비교·UPSERT)를 **순서대로**"], "note": note},
+        {"type": "end", "title": "저장해 두고", "lines": [
+            "비슷한 용어: 정합성 · 순서 보장 · 재시도",
+            "3D 해설은 [회사 해부] 올리브영 릴스에서", SEND], "note": note},
+    ]
+    caption = "\n\n".join([
+        "[IT 용어] 멱등성 — 한 번 해도, 두 번 해도 같은 결과",
+        "같은 요청을 여러 번 보내도 결과가 한 번 보낸 것과 같은 성질. 메시지 시스템에서는 같은 메시지가 "
+        "두 번 올 수 있어서(재시도·리밸런싱) 꼭 필요합니다.",
+        "올리브영은 중복 제거 → 최신 발행 시각으로 거르기 → UPSERT 로 이 문제를 풀었습니다.",
+        "📌 출처: 사례는 올리브영 테크블로그 「45분 배치에서 준실시간으로! 다수 도메인 데이터를 Kafka로 "
+        "통합한 전환기」(2026.04.22) oliveyoung.tech/2026-04-22/display-benefits-migration/ · 뜻과 비유는 일반적인 설명입니다.",
+    ])
+    return {"kind": "term", "id": f"term-idempotency-{date.today().isoformat().replace('-', '')}",
+            "title": "멱등성", "slides": slides, "caption": caption, "jobs": []}
+
+
+def build_interview(name: str, title_part: str) -> dict:
+    """한 회사의 공고 하나 — 취업 브리핑이 공고에서 읽어 낸 예상 질문(interview.expect)을 묶는다.
+    답은 쓰지 않는다(지어내지 않는다). 그 자리가 무엇을 하는지(verdict)를 앞에 둔다."""
+    g = _guide_company(name)
+    p = next(p for p in g["postings"] if title_part in p["title"] and not p.get("closed"))
+    qs = [_plain(q).replace("**", "") for q in (p.get("interview") or {}).get("expect", [])][:8]
+    short = g["name"]
+    note = f"{short} · {p['title'][:40]} · 공고 본문에서 읽어 낸 예상 — 실제 면접과 다를 수 있다"
+    slides = [{"type": "cover", "lines": [short, "면접 예상 질문"],
+               "sub": f"**{p['title']}** 공고에서 읽어 낸 {len(qs)}개", "note": note},
+              {"type": "end", "title": "이 자리는", "lines": [_first(_plain(p.get("verdict", "")), 150)] +
+               [_plain(m) for m in (p.get("fit") or {}).get("must_have", [])[:2]], "note": note}]
+    for k in range(0, len(qs), 4):
+        slides.append({"type": "jobs", "title": f"질문 {k + 1}–{min(k + 4, len(qs))}",
+                       "rows": [{"role": q[:70], "meta": ""} for q in qs[k:k + 4]], "note": note})
+    slides.append({"type": "end", "title": "준비하는 법", "lines": [
+        "질문마다 **내 경험 하나**를 붙여 1분 안에 말해 보기",
+        "숫자로 끝내기 — 무엇이 몇 % 줄었나",
+        "회사 테크블로그를 읽고 가면 질문의 맥락이 보인다", SEND], "note": note})
+    caption = "\n\n".join([
+        f"[면접 예상 질문] {short} — {p['title']}",
+        "\n".join(f"Q{i}. {q}" for i, q in enumerate(qs, 1)),
+        "질문은 공고 본문(자격요건·우대사항·담당업무)에서 읽어 낸 예상이며, 실제 면접과 다를 수 있습니다.",
+    ])
+    caption = enrich(caption, short, before="질문은 공고")
+    return {"kind": "interview", "id": f"interview-{g['slug']}-{date.today().isoformat().replace('-', '')}",
+            "title": f"{short} 면접 예상 질문", "slides": slides, "caption": caption, "jobs": []}
+
+
+def build_qa_newgrad() -> dict:
+    """고민: '신입인데 경력 공고에 넣어도 되나요?' — 판단하지 않고, 모집중 공고가 요구하는 경력을 센다."""
+    rows, asof = _active_dev()
+    n = len(rows)
+
+    def band(c: str) -> str:
+        c = c or ""
+        if "신입" in c:
+            return "신입 가능"
+        m = re.search(r"(\d+)", c)
+        if not m:
+            return "적지 않음"
+        y = int(m.group(1))
+        return "1–2년" if y <= 2 else "3–4년" if y <= 4 else "5–7년" if y <= 7 else "8년 이상"
+
+    cnt = collections.Counter(band(j.get("career", "")) for j in rows)
+    order = ["신입 가능", "1–2년", "3–4년", "5–7년", "8년 이상", "적지 않음"]
+    note = f"모집중 개발 공고 {n:,}건 · {_dot(asof)} 수집 기준 · 경력 칸의 최소 연차로 셈"
+    slides = [
+        {"type": "cover", "lines": ["신입인데", "**경력 공고** 넣어도 돼요?"],
+         "sub": "답 대신, 지금 공고가 요구하는 경력을 세 봤습니다", "note": note},
+        {"type": "bars", "title": "공고가 적은 최소 경력", "sub": f"모집중 {n:,}건",
+         "rows": [{"label": k, "value": cnt[k], "display": f"{cnt[k]:,}", "unit": f"{round(100 * cnt[k] / n)}%",
+                   "hi": k == "신입 가능"} for k in order if cnt[k]], "note": note},
+        {"type": "stat", "title": "신입이 바로 넣을 수 있는 곳", "num": f"{round(100 * cnt['신입 가능'] / n)}", "unit": "%",
+         "label": f"{n:,}건 중 {cnt['신입 가능']:,}건이 경력 칸에 '신입' 을 적었다",
+         "explain": "나머지는 경력을 요구하거나 적지 않았다. **'적지 않음'** 인 공고는 본문 자격요건을 먼저 읽어 보자.",
+         "note": note},
+        {"type": "end", "title": "그래서 이렇게", "lines": [
+            "① '신입' 이 적힌 공고부터 — 가장 확실한 문",
+            "② 경력 칸이 비어 있으면 자격요건 본문을 확인",
+            "③ 1–2년 공고는 프로젝트 경험을 경력처럼 **숫자로** 정리",
+            SEND], "note": note},
+    ]
+    caption = "\n\n".join([
+        "[고민 상담소] 신입인데 경력 공고 넣어도 돼요?",
+        f"정답 대신 숫자로 봤습니다. 지금 모집중인 개발 공고 {n:,}건이 경력 칸에 적은 최소 연차:",
+        "\n".join(f"· {k}: {cnt[k]:,}건 ({round(100 * cnt[k] / n)}%)" for k in order if cnt[k]),
+        f"{_dot(asof)} 수집한 모집중 개발 공고 기준, 경력 칸의 최소 연차로 셌습니다. 공고마다 사정이 다르니 출발점으로만 보세요.",
+    ])
+    return {"kind": "qa", "id": f"qa-newgrad-{asof.replace('-', '')}", "title": "신입인데 경력 공고?",
+            "slides": slides, "caption": caption, "jobs": []}
+
+
 # --- 캡션의 회사 정보 -------------------------------------------------------
 def _sentences(s: str, n: int = 2, limit: int = 220) -> str:
     """브리핑 문단에서 앞 n 문장 — 마크다운 표기(**, `)는 떼고 limit 자 안에서."""
@@ -359,7 +483,7 @@ def approve(post: dict, paths: list[Path]) -> Path:
 
 def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
-    ap.add_argument("kind", choices=["stack", "rates", "guide"])
+    ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     args = ap.parse_args()
@@ -367,6 +491,13 @@ def main() -> int:
     if args.kind == "guide":
         from publish.posted import posted
         post = build_guide(args.company, exclude=set(posted()))
+    elif args.kind == "term":
+        post = build_term_idempotency()
+    elif args.kind == "interview":
+        name, _, part = args.company.partition(":")
+        post = build_interview(name, part)
+    elif args.kind == "qa":
+        post = build_qa_newgrad()
     else:
         post = build_stack() if args.kind == "stack" else build_rates()
     try:
