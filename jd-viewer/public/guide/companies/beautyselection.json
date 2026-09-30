@@ -1,0 +1,343 @@
+{
+  "slug": "beautyselection",
+  "name": "뷰티셀렉션",
+  "name_en": "",
+  "aliases": [
+    "뷰티셀렉션"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "https://biodance.co.kr/",
+  "one_liner": "마스크팩 누적 2 억 장 · 아마존 뷰티 1 위 스킨케어 브랜드 바이오던스의 회사 — 브랜드 운영을 에이전트로 바꿀 FDE, AI 제품 엔지니어, AI 디자이너를 뽑는다",
+  "company": {
+    "business": "뷰티셀렉션은 스킨케어 브랜드 **바이오던스(Biodance)** 를 운영하는 **글로벌 K-뷰티 브랜드 기업**이다. 대표 제품인 **콜라겐 마스크팩**이 '0.5 초에 한 장' 팔리고 2026 년 **누적 2 억 장**을 넘었으며, 국내 최대 온 · 오프라인 뷰티 플랫폼 판매율 1 위, **미국 아마존 전체 뷰티 랭킹 1 위**, 일본 · 대만 · 동남아 상위권이라고 적는다. 2022 년 8 월 **시리즈 A 130 억 원**. 개발 채용은 제조 · 유통 브랜드 회사답게 **사내 운영(AX)** 에 몰려 있다 — **FDE** 는 생산 · 재고 · 매출 · 광고 · S&OP · 채널 운영 기능을 사내 플랫폼에 직접 만들고 **멀티브랜드 도메인 모델(상품 · SKU · BOM · 채널 · 거래처 · 주문 · 재고)** 과 **멀티에이전트 · 권한 · 감사 경계**를 설계하며, **AI Product Engineer** 는 마케팅 · 콘텐츠팀의 요구를 AI 도구로 빠르게 제품화하고, **AI Designer** 는 AI 이미지 · 영상 생성 툴로 광고 · SNS · 상세페이지 콘텐츠를 만든다. 스택은 Kotlin · Spring Boot 4 · PostgreSQL · React 19, 에이전트 실행 루프와 Tool Registry 를 자체 구현한다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "[AX Dept] FDE (Forward Deployed Engineer)",
+        "url": "https://www.wanted.co.kr/wd/378781",
+        "publisher": "원티드",
+        "summary": "뷰티셀렉션 — 스킨케어 브랜드 바이오던스(Biodance) 운영 글로벌 브랜드 기업. 2022-08 시리즈 A 130 억 원. 콜라겐 마스크팩 0.5 초에 한 장, 2026 누적 2 억 장, 미국 아마존 전체 뷰티 랭킹 1 위, 일본 · 대만 · 동남아 상위권. AX 부서 FDE: 생산 · 재고 · 매출 · 광고 · S&OP · 채널 운영 도메인 기능을 사내 플랫폼에, 상품 · SKU · BOM · 채널 · 거래처 · 주문 · 재고의 멀티브랜드 도메인 모델, 멀티에이전트(A2A) · 권한 · 감사 경계, 백엔드 · 인증 · 파이프라인 · 배포. 스택: Kotlin · Spring Boot 4 · Gradle 멀티모듈 · PostgreSQL · Flyway · 자체 Agent 실행 루프 · Tool Registry · 멀티 프로바이더 · 프롬프트 인젝션 방어 · OAuth2/JWT · 부서 RBAC · 엔티티 변경 이력 · React 19. 3년+."
+      },
+      {
+        "title": "AI Product Engineer",
+        "url": "https://www.wanted.co.kr/wd/367296",
+        "publisher": "원티드",
+        "summary": "마케팅 · 콘텐츠팀 요구를 제품 스펙으로, LLM · agent · 자동화로 빠른 프로토타입 → 실서비스, 지표 기반 학습 루프, 동시 사용 데이터 모델 · API · 동시성 · 장애 대응, 프런트부터 DB 까지 E2E. 3년+, AI 코딩 도구로 실제 서비스. 우대 1 인 론칭, 하네스 · 워크플로, 대규모 안정성, 뷰티 마케팅."
+      },
+      {
+        "title": "AI Designer",
+        "url": "https://www.wanted.co.kr/wd/375179",
+        "publisher": "원티드",
+        "summary": "제품 단위 마케팅 콘텐츠(숏폼 · SNS · 광고 · 상세페이지 · 배너)를 AI 이미지 · 영상 툴(Nano Banana · Kling · Seedance · Runway)과 편집 툴로, 프롬프트 · 워크플로 자산화. 3년+, 퍼포먼스 광고 이해 · 성과, 영상 · 정적 디자인."
+      }
+    ],
+    "scale": [
+      {
+        "label": "마스크팩 누적 판매",
+        "value": "2 억 장(2026)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[AX Dept] FDE (Forward Deployed Engineer)",
+            "url": "https://www.wanted.co.kr/wd/378781",
+            "publisher": "원티드",
+            "summary": "뷰티셀렉션 — 스킨케어 브랜드 바이오던스(Biodance) 운영 글로벌 브랜드 기업. 2022-08 시리즈 A 130 억 원. 콜라겐 마스크팩 0.5 초에 한 장, 2026 누적 2 억 장, 미국 아마존 전체 뷰티 랭킹 1 위, 일본 · 대만 · 동남아 상위권. AX 부서 FDE: 생산 · 재고 · 매출 · 광고 · S&OP · 채널 운영 도메인 기능을 사내 플랫폼에, 상품 · SKU · BOM · 채널 · 거래처 · 주문 · 재고의 멀티브랜드 도메인 모델, 멀티에이전트(A2A) · 권한 · 감사 경계, 백엔드 · 인증 · 파이프라인 · 배포. 스택: Kotlin · Spring Boot 4 · Gradle 멀티모듈 · PostgreSQL · Flyway · 자체 Agent 실행 루프 · Tool Registry · 멀티 프로바이더 · 프롬프트 인젝션 방어 · OAuth2/JWT · 부서 RBAC · 엔티티 변경 이력 · React 19. 3년+."
+          }
+        ]
+      },
+      {
+        "label": "시리즈 A",
+        "value": "130 억 원(2022-08)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[AX Dept] FDE (Forward Deployed Engineer)",
+            "url": "https://www.wanted.co.kr/wd/378781",
+            "publisher": "원티드",
+            "summary": "뷰티셀렉션 — 스킨케어 브랜드 바이오던스(Biodance) 운영 글로벌 브랜드 기업. 2022-08 시리즈 A 130 억 원. 콜라겐 마스크팩 0.5 초에 한 장, 2026 누적 2 억 장, 미국 아마존 전체 뷰티 랭킹 1 위, 일본 · 대만 · 동남아 상위권. AX 부서 FDE: 생산 · 재고 · 매출 · 광고 · S&OP · 채널 운영 도메인 기능을 사내 플랫폼에, 상품 · SKU · BOM · 채널 · 거래처 · 주문 · 재고의 멀티브랜드 도메인 모델, 멀티에이전트(A2A) · 권한 · 감사 경계, 백엔드 · 인증 · 파이프라인 · 배포. 스택: Kotlin · Spring Boot 4 · Gradle 멀티모듈 · PostgreSQL · Flyway · 자체 Agent 실행 루프 · Tool Registry · 멀티 프로바이더 · 프롬프트 인젝션 방어 · OAuth2/JWT · 부서 RBAC · 엔티티 변경 이력 · React 19. 3년+."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "바이오던스 스킨케어 판매(국내 · 아마존 · 아시아)",
+        "how": "마스크팩 등 스킨케어를 국내 플랫폼 · 미국 아마존 · 일본/대만/동남아 채널로 판다 — 매출액은 공고에 없다.",
+        "domains": [
+          "브랜드 운영 플랫폼 · 에이전트",
+          "마케팅 제품 · AI 콘텐츠"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[AX Dept] FDE (Forward Deployed Engineer)",
+            "url": "https://www.wanted.co.kr/wd/378781",
+            "publisher": "원티드",
+            "summary": "뷰티셀렉션 — 스킨케어 브랜드 바이오던스(Biodance) 운영 글로벌 브랜드 기업. 2022-08 시리즈 A 130 억 원. 콜라겐 마스크팩 0.5 초에 한 장, 2026 누적 2 억 장, 미국 아마존 전체 뷰티 랭킹 1 위, 일본 · 대만 · 동남아 상위권. AX 부서 FDE: 생산 · 재고 · 매출 · 광고 · S&OP · 채널 운영 도메인 기능을 사내 플랫폼에, 상품 · SKU · BOM · 채널 · 거래처 · 주문 · 재고의 멀티브랜드 도메인 모델, 멀티에이전트(A2A) · 권한 · 감사 경계, 백엔드 · 인증 · 파이프라인 · 배포. 스택: Kotlin · Spring Boot 4 · Gradle 멀티모듈 · PostgreSQL · Flyway · 자체 Agent 실행 루프 · Tool Registry · 멀티 프로바이더 · 프롬프트 인젝션 방어 · OAuth2/JWT · 부서 RBAC · 엔티티 변경 이력 · React 19. 3년+."
+          },
+          {
+            "title": "AI Designer",
+            "url": "https://www.wanted.co.kr/wd/375179",
+            "publisher": "원티드",
+            "summary": "제품 단위 마케팅 콘텐츠(숏폼 · SNS · 광고 · 상세페이지 · 배너)를 AI 이미지 · 영상 툴(Nano Banana · Kling · Seedance · Runway)과 편집 툴로, 프롬프트 · 워크플로 자산화. 3년+, 퍼포먼스 광고 이해 · 성과, 영상 · 정적 디자인."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "브랜드 운영 플랫폼 · 에이전트",
+        "why": "FDE 공고가 생산 · 재고 · 매출 · 광고 · S&OP · 채널 운영 기능, 멀티브랜드 도메인 모델, 멀티에이전트 · 권한 · 감사, 자체 Agent 루프 · Tool Registry 를 적는다.",
+        "what_to_know": [
+          "SKU · BOM · 재고 모델",
+          "S&OP(수요 · 공급 계획)",
+          "에이전트 권한 · 감사",
+          "A2A · MCP"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[AX Dept] FDE (Forward Deployed Engineer)",
+            "url": "https://www.wanted.co.kr/wd/378781",
+            "publisher": "원티드",
+            "summary": "뷰티셀렉션 — 스킨케어 브랜드 바이오던스(Biodance) 운영 글로벌 브랜드 기업. 2022-08 시리즈 A 130 억 원. 콜라겐 마스크팩 0.5 초에 한 장, 2026 누적 2 억 장, 미국 아마존 전체 뷰티 랭킹 1 위, 일본 · 대만 · 동남아 상위권. AX 부서 FDE: 생산 · 재고 · 매출 · 광고 · S&OP · 채널 운영 도메인 기능을 사내 플랫폼에, 상품 · SKU · BOM · 채널 · 거래처 · 주문 · 재고의 멀티브랜드 도메인 모델, 멀티에이전트(A2A) · 권한 · 감사 경계, 백엔드 · 인증 · 파이프라인 · 배포. 스택: Kotlin · Spring Boot 4 · Gradle 멀티모듈 · PostgreSQL · Flyway · 자체 Agent 실행 루프 · Tool Registry · 멀티 프로바이더 · 프롬프트 인젝션 방어 · OAuth2/JWT · 부서 RBAC · 엔티티 변경 이력 · React 19. 3년+."
+          }
+        ]
+      },
+      {
+        "name": "마케팅 제품 · AI 콘텐츠",
+        "why": "AI Product Engineer 공고가 마케팅 · 콘텐츠팀 도구를 AI 로 제품화, AI Designer 공고가 AI 생성 툴 기반 광고 · SNS 콘텐츠 제작을 적는다.",
+        "what_to_know": [
+          "E2E 풀스택",
+          "하네스 · 워크플로",
+          "퍼포먼스 광고 지표"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI Product Engineer",
+            "url": "https://www.wanted.co.kr/wd/367296",
+            "publisher": "원티드",
+            "summary": "마케팅 · 콘텐츠팀 요구를 제품 스펙으로, LLM · agent · 자동화로 빠른 프로토타입 → 실서비스, 지표 기반 학습 루프, 동시 사용 데이터 모델 · API · 동시성 · 장애 대응, 프런트부터 DB 까지 E2E. 3년+, AI 코딩 도구로 실제 서비스. 우대 1 인 론칭, 하네스 · 워크플로, 대규모 안정성, 뷰티 마케팅."
+          },
+          {
+            "title": "AI Designer",
+            "url": "https://www.wanted.co.kr/wd/375179",
+            "publisher": "원티드",
+            "summary": "제품 단위 마케팅 콘텐츠(숏폼 · SNS · 광고 · 상세페이지 · 배너)를 AI 이미지 · 영상 툴(Nano Banana · Kling · Seedance · Runway)과 편집 툴로, 프롬프트 · 워크플로 자산화. 3년+, 퍼포먼스 광고 이해 · 성과, 영상 · 정적 디자인."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "에이전트가 운영 데이터를 만진다",
+        "evidence": "• Agent가 실제 운영 데이터를 다루면서도 사고를 내지 않도록 권한과 감사 경계를 코드로 정의",
+        "so_what": "에이전트에 재고 · 주문 같은 실제 데이터를 쥐여 줄 때 무엇을 막고 무엇을 기록하나를 설계해 본 경험이 핵심이다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "AI 도구로 혼자 끝까지",
+        "evidence": "• AI 코딩 도구(Claude Code, Cursor, Codex 등)로 실제 작동하는 서비스를 만들어 본 분",
+        "so_what": "세 자리 모두 AI 로 일하는 방식을 본다 — 혼자 만들어 운영 중인 결과물을 보여 준다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "매출액 · 인원 · 근무지는 공고에 없다",
+    "site 는 브랜드 홈페이지(biodance.co.kr)다 — 회사 홈페이지는 확인하지 않았다",
+    "영문 회사명을 확인하지 못했다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/378781",
+      "title": "[AX Dept] FDE (Forward Deployed Engineer)",
+      "site": "wanted",
+      "verdict": "경력 3년 이상. AX 부서 FDE — **생산 · 재고 · 매출 · 광고 · S&OP · 채널 운영 기능을 사내 플랫폼에 직접 개발**, **상품 · SKU · BOM · 채널 · 거래처 · 주문 · 재고의 멀티브랜드 도메인 모델 · 스키마**, **멀티에이전트 아키텍처(역할 · A2A 통신 · 실행 결과 검증)**, **에이전트의 권한 · 감사 경계를 코드로**, 백엔드 · 인증/권한 · 데이터 파이프라인 · 배포 전 구간, 검증된 해법을 플랫폼 코어로, FDPM 과 짝. 자격은 3년, 스스로 문제 정의 · 해결, **복잡한 도메인 DB 모델링**, 클라우드 프로덕션, 새 스택 습득, 직접 고치기. 우대는 **멀티에이전트 · A2A · MCP**, LLM 도구 호출 · RAG · 평가, DW, **Kotlin/Spring**, 이커머스 · 소비재. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "엔지니어링 3년",
+          "도메인 DB 모델링",
+          "클라우드 프로덕션"
+        ],
+        "can_learn": [
+          "SKU · BOM · S&OP",
+          "에이전트 권한 · 감사",
+          "Kotlin"
+        ]
+      },
+      "study": [
+        {
+          "topic": "소비재 브랜드의 도메인 모델 — 상품 · SKU · BOM · 채널 · 재고",
+          "from": "task",
+          "quote": "• 상품, SKU, BOM, 채널, 거래처, 주문, 재고 같은 소비재 비즈니스의 핵심 개념을 멀티브랜드 기준의 도메인 모델과 스키마로 설계",
+          "priority": "core",
+          "why": "주요업무다.",
+          "gap_check": "상품(마스크팩)과 SKU(용량 · 매수 · 국가별 포장)는 어떻게 나누나? 세트 상품 · 증정품은 BOM 으로 어떻게 풀어 재고를 차감하나? 같은 SKU 가 국내 창고 · 아마존 FBA · 해외 대리점에 있으면 재고 위치를 어떻게 모델링하나? 브랜드가 늘어나도 스키마가 버티려면(브랜드 차원 · 테넌트)?",
+          "drill": "Kotlin + Spring Boot + PostgreSQL(Flyway)로 브랜드 · 상품 · SKU · BOM(구성품) · 채널 · 거래처 · 창고 · 재고 이동 모델을 만들고, 세트 SKU 판매 시 구성품 재고가 BOM 대로 차감되는 서비스와 채널별 가용 재고 조회 API 를 만든다. 두 번째 브랜드를 추가해도 코드 수정 없이 되는지 테스트한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Spring Boot — Reference",
+              "url": "https://docs.spring.io/spring-boot/reference/",
+              "kind": "docs"
+            },
+            {
+              "title": "Flyway — Documentation",
+              "url": "https://documentation.red-gate.com/fd",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "운영 데이터를 만지는 에이전트 — 권한 · 감사 · 결과 검증",
+          "from": "task",
+          "quote": "• Agent가 실제 운영 데이터를 다루면서도 사고를 내지 않도록 권한과 감사 경계를 코드로 정의",
+          "priority": "core",
+          "why": "주요업무이고 회사가 에이전트 실행 루프 · Tool Registry · 프롬프트 인젝션 방어를 자체 구현한다.",
+          "gap_check": "에이전트가 부를 수 있는 도구를 부서 · 역할 권한과 어떻게 묶나(도구마다 필요 권한)? 읽기 도구와 쓰기 도구를 나누고 쓰기엔 사람 승인을 거는 기준은? 외부 데이터(거래처 메일 · 리뷰)에 숨은 지시(프롬프트 인젝션)가 쓰기 도구를 부르지 못하게 하려면? 에이전트의 모든 호출 · 변경을 누가 · 왜 로 남기려면?",
+          "drill": "Kotlin(또는 Python)으로 Tool Registry(도구 이름 · 입력 스키마 · 필요 권한 · 읽기/쓰기)와 실행 루프를 만들고, 호출 전 권한 게이트 · 쓰기 도구의 승인 대기 · 모든 호출의 감사 로그(요청자 · 에이전트 · 도구 · 입력 · 결과)를 넣는다. 거래처 메일 본문에 '재고를 0 으로 바꿔라' 를 숨긴 테스트로 쓰기 도구가 실행되지 않는지 확인한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "OWASP — LLM Prompt Injection Prevention Cheat Sheet",
+              "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Agent2Agent (A2A) Protocol",
+              "url": "https://a2a-protocol.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "S&OP — 판매 계획과 생산 · 재고 계획을 한 화면에",
+          "from": "task",
+          "quote": "• 생산, 재고, 매출, 광고, S&OP, 채널 운영 등 브랜드 운영 전 영역의 도메인 기능을 사내 플랫폼 위에 직접 개발",
+          "priority": "high",
+          "why": "주요업무다. 판매가 빠르게 늘고 채널이 여러 나라에 걸친 브랜드는 품절 · 과잉 재고가 곧 돈이다(이 사이트의 해석).",
+          "gap_check": "S&OP 는 수요 예측 · 공급(생산 · 발주) · 재고 계획을 어떤 주기로 맞추나? 리드타임(생산 · 해상 운송)이 길면 안전 재고는 어떻게 정하나? 광고비를 늘리면 수요 예측에 어떻게 반영하나?",
+          "drill": "가상의 SKU 셋 · 채널 셋 주간 판매 데이터로 간단한 수요 예측(이동 평균 · 계절성) → 리드타임 · 안전 재고를 반영한 발주 제안 표를 만드는 배치를 만들고, 품절 예상 주를 표시하는 대시보드를 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Forecasting: Principles and Practice (3rd ed.)",
+              "url": "https://otexts.com/fpp3/",
+              "kind": "book"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/367296",
+      "title": "AI Product Engineer",
+      "site": "wanted",
+      "verdict": "경력 3년 이상. **마케팅 · 콘텐츠팀 요구를 제품 스펙으로 구체화**, **LLM · agent · 자동화로 빠른 프로토타입 → 실서비스**, 지표 기반 학습 루프, **동시 사용을 견디는 데이터 모델 · API · 동시성 · 장애 대응**, 프런트부터 DB 까지 E2E. 자격은 **혼자 E2E 로 제품 설계 · 구현 · 운영 3년**, **AI 코딩 도구로 실제 서비스**, 문제 정의 · 우선순위, 제품 감각. 우대는 1 인 론칭 · 운영, **AI 코드 생성 하네스 · 워크플로**, 대규모 안정성, 뷰티 · 소비재 마케팅. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "E2E 풀스택 3년",
+          "AI 코딩 도구로 실서비스"
+        ],
+        "can_learn": [
+          "마케팅 도구 도메인",
+          "하네스 엔지니어링"
+        ]
+      },
+      "study": [
+        {
+          "topic": "마케팅팀 도구를 AI 로 빨리 — 프로토타입에서 실서비스까지",
+          "from": "task",
+          "quote": "• AI 기술(LLM·agent·자동화)로 빠르게 프로토타입을 만들고 실서비스에 반영",
+          "priority": "core",
+          "why": "주요업무다.",
+          "gap_check": "'광고 소재 문구 30 개 만들어 줘' 같은 요구를 제품 스펙(입력 · 출력 · 품질 기준 · 브랜드 금지어)으로 어떻게 바꾸나? 프로토타입이 실서비스가 될 때 무엇을 더해야 하나(인증 · 권한 · 로그 · 비용 한도 · 실패 처리)? 성공을 무엇으로 재나(사용 횟수 · 채택률 · 절약 시간)?",
+          "drill": "Next.js + 서버 API 로 '제품 정보 → 채널별(아마존 · 인스타 · 틱톡) 광고 문구 초안' 도구를 만들고, 브랜드 금지 표현 검사 · 사용자별 사용량 한도 · 결과 채택/거절 버튼으로 채택률을 모은다. 로그인 · 감사 로그를 더해 사내 배포한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Next.js Docs",
+              "url": "https://nextjs.org/docs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI 가 일관된 품질로 코드를 쓰게 — 하네스와 워크플로",
+          "from": "preference",
+          "quote": "• AI가 일관된 품질로 코드를 생성하도록 하네스·워크플로우를 구축해 본 분",
+          "priority": "high",
+          "why": "우대사항이고 자격요건이 AI 코딩 도구로 실제 서비스를 만든 경험이다.",
+          "gap_check": "에이전트가 매번 같은 규약을 지키게 하려면 저장소에 무엇을 두나(지침 파일 · 템플릿 · 테스트)? 결과를 사람 대신 무엇이 먼저 거르나(CI 게이트)? 작업을 어떤 크기로 쪼개 줘야 실패가 적나?",
+          "drill": "앞 과제 저장소에 에이전트 지침 · 컴포넌트/API 템플릿 · lint/typecheck/test CI 를 두고, 같은 기능 요청을 지침 없이 · 지침과 함께 세 번씩 에이전트로 만들어 CI 통과율 · 리뷰 수정 수를 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Claude Code — Docs",
+              "url": "https://docs.claude.com/en/docs/claude-code/overview",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/375179",
+      "title": "AI Designer",
+      "site": "wanted",
+      "verdict": "경력 3년 이상 — **개발이 아닌 디자인 자리**다. **제품 단위 마케팅 콘텐츠 총괄**(숏폼 · SNS · 광고 크리에이티브 · 상세페이지 · 배너)을 **AI 이미지 · 영상 생성 툴(Nano Banana · Kling · Seedance · Runway 등)** 과 편집 툴로, AI 생성 인물 · 캐릭터 후보정 · 자막 · 이펙트 · 음원까지 마감, **개선점을 자연어 프롬프트로 · 가설검증으로 워크플로 자산화**, AI 툴 리서치. 자격은 **퍼포먼스 광고 이해 · 본인 소재로 전환 성과**, 프롬프트로 개선 전후 증명, 모델별 특성 · 한계, 영상 · 정적 디자인 모두, 시스템적 사고, 미감. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "광고 소재로 낸 성과",
+          "AI 이미지 · 영상 툴 숙련",
+          "영상 · 정적 디자인"
+        ],
+        "can_learn": [
+          "프롬프트 워크플로 자산화"
+        ]
+      },
+      "study": [
+        {
+          "topic": "광고 소재를 가설로 — 무엇이 전환을 올렸나",
+          "from": "qualification",
+          "quote": "• Paid 광고(퍼포먼스 마케팅)를 이해하고, 무엇이 전환에 기여하는지 짚어 콘텐츠에 반영할 수 있는 분",
+          "priority": "core",
+          "why": "자격요건이다.",
+          "gap_check": "소재의 무엇(첫 3 초 훅 · 제품 클로즈업 · 사용 전후 · 자막 · 인물)이 CTR · 전환에 기여했는지 한 번에 하나씩 바꿔 시험하려면? 노출 · 클릭 · 전환 중 어느 지표로 소재를 판단하나? 화장품 광고에서 과장 · 효능 표현의 한계(표시 · 광고 규정)는?",
+          "drill": "하나의 마스크팩(가상 또는 공개 제품)으로 첫 3 초 훅만 다른 숏폼 네 개를 AI 툴로 만들고, 각 가설 · 바꾼 요소 · 봐야 할 지표를 적은 소재 테스트 계획서를 쓴다. 식약처 화장품 표시 · 광고 가이드라인에서 쓰면 안 되는 표현을 체크리스트로 붙인다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "식품의약품안전처 — 화장품 표시 · 광고 관련 안내",
+              "url": "https://www.mfds.go.kr/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "생성 워크플로를 재현 가능하게 — 프롬프트 · 참조 · 버전",
+          "from": "task",
+          "quote": "• 가설검증을 반복해 프롬프트·워크플로우를 재현 가능하게 자산화하는 일",
+          "priority": "high",
+          "why": "주요업무다.",
+          "gap_check": "같은 제품 · 인물이 소재마다 일관되게 나오게 하려면(참조 이미지 · 시드 · 스타일 가이드)? 프롬프트 개선 전후를 무엇으로 비교해 증명하나? 워크플로를 팀원이 그대로 돌리려면 무엇을 문서로 남기나?",
+          "drill": "제품 하나에 대해 참조 이미지 · 프롬프트 템플릿 · 모델별 설정을 묶은 '소재 레시피' 문서를 만들고, 같은 레시피로 다른 사람이 만든 결과와 비교해 일관성을 확인한다. 개선 전후 결과를 나란히 놓은 포트폴리오 한 장을 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Runway — Help Center",
+              "url": "https://help.runwayml.com/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

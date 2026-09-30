@@ -1740,6 +1740,17 @@
       "postings": 3,
       "study_items": 7,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "beautyselection",
+      "name": "뷰티셀렉션",
+      "aliases": [
+        "뷰티셀렉션"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 7,
+      "updated_at": "2026-09-30"
     }
   ]
 }
