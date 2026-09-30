@@ -88,7 +88,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "cubemap-sidekiq-to-lambda"
+      ]
     },
     {
       "name": "자라는 이미지 테이블을 멈추지 않고 바꾼다 — 테이블 통합과 온라인 스키마 변경",
@@ -150,7 +152,375 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "cubemap-sidekiq-to-lambda",
+      "name": "360° 파노라마를 큐브맵 6 면으로 바꾸는 CPU 잡을 공용 Sidekiq 에서 떼어 Lambda 로 — 라이브러리 교체로는 안 빨라진다는 벤치마크 뒤, 같은 입출력을 지킨 채 Sidekiq 은 지휘만, 이미지 바이트는 presigned URL 로 S3 ↔ Lambda 직통, 픽셀 수로 메모리 계층을 고른다",
+      "domain": "업로드한 360° 사진을 곧바로 둘러볼 수 있게 — 큐브맵 변환을 Sidekiq 에서 Lambda 로",
+      "updated_at": "2026-09-30",
+      "business": {
+        "why": "사용자가 올리는 360° 사진은 **정거원통(equirectangular)** JPEG — 구를 평면에 편 가로로 긴 이미지 — 이다. 저장엔 좋지만 실시간으로 그리기엔 비싸서, 표시 전에 같은 장면을 입방체 6 면(pano_r/l/u/d/f/b)으로 다시 투영한 **큐브맵**으로 바꾼다 — 360° 플레이어가 실제로 그리는 것이 이 6 장이다. 변환은 **하루 수천 번**, 그것도 **업로드 과정 안에서** 돌아 속도가 곧 사용자 경험이다. 옛 잡은 CPU 를 많이 먹는 krpano 1.1x(2019)를 다른 잡과 같은 **Sidekiq 워커**에서 돌렸다 — 프로젝트당 파노라마를 **최대 50 장** 올릴 수 있어, 한꺼번에 올리면 이 잡 수십 개가 CPU 를 차지해 **무관한 잡까지 느려졌고**, 변환 시간이 여유 있을 땐 5-10 초, 혼잡하면 **최대 2 분**으로 흔들렸다.",
+        "metrics": [
+          {
+            "label": "11K 파노라마 50 장 동시 업로드 — 업로드부터 플레이어 준비까지",
+            "value": "약 8 분 50 초 → 약 1 분 50 초(약 4 배)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Sidekiq から Lambda へ：360°キューブマップ生成を約4倍高速化した話",
+                "url": "https://tech.spacely.co.jp/entry/2026/06/10/163831",
+                "publisher": "スペースリー",
+                "summary": "사용자가 올린 정거원통(equirectangular) 360° 사진을 6 면 큐브맵으로 변환 — 파노라마 플레이어가 실제로 그리는 것. 하루 수천 번, 업로드 과정에서 실행. 옛 CreateCubeMapJob 은 krpano 1.1x(2019)를 Sidekiq 워커에서 — 프로젝트당 파노라마 최대 50 장, 몰리면 다른 잡까지 느려짐, 5-10 초 ~ 혼잡 시 최대 2 분. Lambda 로 옮겨 엔드투엔드 약 4 배.",
+                "date": "2026-06-10"
+              }
+            ]
+          },
+          {
+            "label": "5K 1 장 변환 p50(Sidekiq 공용 → Lambda 2048MB)",
+            "value": "18-21 초대 → 5.71 초(py360convert)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Sidekiq から Lambda へ：360°キューブマップ生成を約4倍高速化した話",
+                "url": "https://tech.spacely.co.jp/entry/2026/06/10/163831",
+                "publisher": "スペースリー",
+                "summary": "사용자가 올린 정거원통(equirectangular) 360° 사진을 6 면 큐브맵으로 변환 — 파노라마 플레이어가 실제로 그리는 것. 하루 수천 번, 업로드 과정에서 실행. 옛 CreateCubeMapJob 은 krpano 1.1x(2019)를 Sidekiq 워커에서 — 프로젝트당 파노라마 최대 50 장, 몰리면 다른 잡까지 느려짐, 5-10 초 ~ 혼잡 시 최대 2 분. Lambda 로 옮겨 엔드투엔드 약 4 배.",
+                "date": "2026-06-10"
+              }
+            ]
+          },
+          {
+            "label": "변환 횟수(바쁜 날)",
+            "value": "하루 약 19,000 회 · 월 약 57 만 회",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Sidekiq から Lambda へ：360°キューブマップ生成を約4倍高速化した話",
+                "url": "https://tech.spacely.co.jp/entry/2026/06/10/163831",
+                "publisher": "スペースリー",
+                "summary": "사용자가 올린 정거원통(equirectangular) 360° 사진을 6 면 큐브맵으로 변환 — 파노라마 플레이어가 실제로 그리는 것. 하루 수천 번, 업로드 과정에서 실행. 옛 CreateCubeMapJob 은 krpano 1.1x(2019)를 Sidekiq 워커에서 — 프로젝트당 파노라마 최대 50 장, 몰리면 다른 잡까지 느려짐, 5-10 초 ~ 혼잡 시 최대 2 분. Lambda 로 옮겨 엔드투엔드 약 4 배.",
+                "date": "2026-06-10"
+              }
+            ]
+          },
+          {
+            "label": "Lambda 비용(최악 가정)",
+            "value": "월 약 350 달러(컴퓨팅 약 323 달러 + 요청 · API Gateway)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Sidekiq から Lambda へ：360°キューブマップ生成を約4倍高速化した話",
+                "url": "https://tech.spacely.co.jp/entry/2026/06/10/163831",
+                "publisher": "スペースリー",
+                "summary": "사용자가 올린 정거원통(equirectangular) 360° 사진을 6 면 큐브맵으로 변환 — 파노라마 플레이어가 실제로 그리는 것. 하루 수천 번, 업로드 과정에서 실행. 옛 CreateCubeMapJob 은 krpano 1.1x(2019)를 Sidekiq 워커에서 — 프로젝트당 파노라마 최대 50 장, 몰리면 다른 잡까지 느려짐, 5-10 초 ~ 혼잡 시 최대 2 분. Lambda 로 옮겨 엔드투엔드 약 4 배.",
+                "date": "2026-06-10"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "첫 해결책을 볼 때",
+          "thought": "워커 CPU 를 늘리고 대수를 늘리면 여유는 생기지만, 변환이 여전히 다른 잡과 같은 워커를 두고 다툰다 — 스케일은 벽을 멀리 할 뿐 벽에서 떼어 주지는 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Sidekiq から Lambda へ：360°キューブマップ生成を約4倍高速化した話",
+              "url": "https://tech.spacely.co.jp/entry/2026/06/10/163831",
+              "publisher": "スペースリー",
+              "summary": "사용자가 올린 정거원통(equirectangular) 360° 사진을 6 면 큐브맵으로 변환 — 파노라마 플레이어가 실제로 그리는 것. 하루 수천 번, 업로드 과정에서 실행. 옛 CreateCubeMapJob 은 krpano 1.1x(2019)를 Sidekiq 워커에서 — 프로젝트당 파노라마 최대 50 장, 몰리면 다른 잡까지 느려짐, 5-10 초 ~ 혼잡 시 최대 2 분. Lambda 로 옮겨 엔드투엔드 약 4 배.",
+              "date": "2026-06-10"
+            }
+          ]
+        },
+        {
+          "at": "설계할 때",
+          "thought": "로직을 다시 쓰는 게 아니라 무거운 부분을 그에 맞는 환경으로 넘긴다 — 인터페이스를 바꾸지 않으면 영향 범위가 최소라고 확신할 수 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Sidekiq から Lambda へ：360°キューブマップ生成を約4倍高速化した話",
+              "url": "https://tech.spacely.co.jp/entry/2026/06/10/163831",
+              "publisher": "スペースリー",
+              "summary": "사용자가 올린 정거원통(equirectangular) 360° 사진을 6 면 큐브맵으로 변환 — 파노라마 플레이어가 실제로 그리는 것. 하루 수천 번, 업로드 과정에서 실행. 옛 CreateCubeMapJob 은 krpano 1.1x(2019)를 Sidekiq 워커에서 — 프로젝트당 파노라마 최대 50 장, 몰리면 다른 잡까지 느려짐, 5-10 초 ~ 혼잡 시 최대 2 분. Lambda 로 옮겨 엔드투엔드 약 4 배.",
+              "date": "2026-06-10"
+            }
+          ]
+        },
+        {
+          "at": "메모리를 정할 때",
+          "thought": "Lambda 의 메모리는 용량이 아니라 사실상 성능 손잡이다 — 정답은 하나가 아니라 입력 크기마다 따로 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Sidekiq から Lambda へ：360°キューブマップ生成を約4倍高速化した話",
+              "url": "https://tech.spacely.co.jp/entry/2026/06/10/163831",
+              "publisher": "スペースリー",
+              "summary": "사용자가 올린 정거원통(equirectangular) 360° 사진을 6 면 큐브맵으로 변환 — 파노라마 플레이어가 실제로 그리는 것. 하루 수천 번, 업로드 과정에서 실행. 옛 CreateCubeMapJob 은 krpano 1.1x(2019)를 Sidekiq 워커에서 — 프로젝트당 파노라마 최대 50 장, 몰리면 다른 잡까지 느려짐, 5-10 초 ~ 혼잡 시 최대 2 분. Lambda 로 옮겨 엔드투엔드 약 4 배.",
+              "date": "2026-06-10"
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "정거원통 파노라마",
+            "what": "사용자가 올린 가로:세로 2:1 JPEG — 천장 · 바닥이 늘어나 휘어 있다."
+          },
+          {
+            "name": "큐브맵 6 면",
+            "what": "pano_r · l · u · d · f · b — 왜곡 없는 정사각 평면 사진, GPU 가 입방체 안쪽에 붙여 그린다."
+          },
+          {
+            "name": "CreateCubeMapV2Job",
+            "what": "Sidekiq 의 가벼운 지휘자 — S3 복사 · presigned URL 생성 · Lambda 호출."
+          },
+          {
+            "name": "Lambda 메모리 계층",
+            "what": "같은 핸들러 코드 · 메모리만 다른 엔드포인트 셋(2048 · 3072 · 4096MB)."
+          },
+          {
+            "name": "기업 단위 기능 플래그",
+            "what": "기업별로 새 경로를 켜는 단계적 출시 스위치."
+          }
+        ],
+        "invariants": [
+          "새 잡은 옛 잡과 같은 입력을 읽고 같은 6 장을 같은 S3 위치에 쓴다 — 하류는 누가 만들었는지 모른다.",
+          "이미지 바이트는 Sidekiq 워커를 지나지 않는다.",
+          "모든 이미지는 픽셀 수에 맞는 메모리 계층에서 변환된다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "업로드 → Sidekiq CreateCubeMapV2Job(지휘만)",
+            "why": "워커를 가볍게."
+          },
+          {
+            "step": "서버 측 S3 복사 → 입력 GET · 출력 6 면 PUT presigned URL 생성",
+            "why": "바이트가 워커를 안 거치게."
+          },
+          {
+            "step": "픽셀 수로 Lambda 선택(≤11K 2048MB · ≤16K 3072MB · >16K 4096MB) 호출",
+            "why": "메모리 부족 · 과지불 모두 피함."
+          },
+          {
+            "step": "Lambda: presigned GET → py360convert → presigned PUT 6 장",
+            "why": "격리된 변환."
+          },
+          {
+            "step": "플레이어가 6 면을 입방체에 붙여 그림",
+            "why": "하류는 그대로."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "하드웨어를 늘리면 되지 않나?",
+            "chosen": "**아니다 — 아키텍처를 바꾼다.** CPU 집약 · 몰리는 잡은 지연에 민감한 잡과 공유하는 워커 풀이 아니라 **격리된 온디맨드 계산 환경(Lambda)** 에 둔다.",
+            "alternatives": [
+              "Sidekiq 워커 수직 · 수평 확장"
+            ],
+            "tradeoff": "확장은 어느 정도 효과가 있지만 부하가 새 용량을 넘는 순간 같은 경쟁 · 같은 불안정한 처리 시간으로 돌아간다. 대가는 외부 계산 환경 하나가 늘어 비용 · 호출 경로를 따로 관리해야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Sidekiq から Lambda へ：360°キューブマップ生成を約4倍高速化した話",
+                "url": "https://tech.spacely.co.jp/entry/2026/06/10/163831",
+                "publisher": "スペースリー",
+                "summary": "사용자가 올린 정거원통(equirectangular) 360° 사진을 6 면 큐브맵으로 변환 — 파노라마 플레이어가 실제로 그리는 것. 하루 수천 번, 업로드 과정에서 실행. 옛 CreateCubeMapJob 은 krpano 1.1x(2019)를 Sidekiq 워커에서 — 프로젝트당 파노라마 최대 50 장, 몰리면 다른 잡까지 느려짐, 5-10 초 ~ 혼잡 시 최대 2 분. Lambda 로 옮겨 엔드투엔드 약 4 배.",
+                "date": "2026-06-10"
+              }
+            ]
+          },
+          {
+            "question": "변환 라이브러리를 바꾸면 빨라지나?",
+            "chosen": "**먼저 재 본다** — 같은 ECS 서버 · 같은 CPU · 메모리에서 50 장 동시 업로드를 재현해 krpano 1.1x · 1.2x · py360convert 를 비교했더니 p50 이 **19.6 · 17.6 · 21.4 초**로 거의 같았다. 병행 부하의 CPU 경쟁이 엔진 차이보다 컸다.",
+            "alternatives": [
+              "2019 년판 krpano 를 새 버전으로 바꾸는 것만으로 해결"
+            ],
+            "tradeoff": "원인이 라이브러리가 아니라 실행 위치라는 것을 숫자로 가렸다. 대가는 벤치마크 준비 시간.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Sidekiq から Lambda へ：360°キューブマップ生成を約4倍高速化した話",
+                "url": "https://tech.spacely.co.jp/entry/2026/06/10/163831",
+                "publisher": "スペースリー",
+                "summary": "사용자가 올린 정거원통(equirectangular) 360° 사진을 6 면 큐브맵으로 변환 — 파노라마 플레이어가 실제로 그리는 것. 하루 수천 번, 업로드 과정에서 실행. 옛 CreateCubeMapJob 은 krpano 1.1x(2019)를 Sidekiq 워커에서 — 프로젝트당 파노라마 최대 50 장, 몰리면 다른 잡까지 느려짐, 5-10 초 ~ 혼잡 시 최대 2 분. Lambda 로 옮겨 엔드투엔드 약 4 배.",
+                "date": "2026-06-10"
+              }
+            ]
+          },
+          {
+            "question": "무엇을 바꾸지 않나?",
+            "chosen": "**인터페이스** — 새 잡은 옛 잡과 **같은 입력 · 같은 부작용**(같은 원본을 읽고 같은 6 장을 같은 S3 위치에 씀).",
+            "alternatives": [
+              "플레이어 · 저장 구조까지 함께 재설계"
+            ],
+            "tradeoff": "구현을 바꿔 끼워도 영향 범위가 최소라고 확신할 수 있다 — 하류 어디서도 어느 잡이 만들었는지 구별하지 못한다. 대가는 옛 구조의 제약(6 면 PNG/JPEG 배치)을 그대로 안고 간다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Sidekiq から Lambda へ：360°キューブマップ生成を約4倍高速化した話",
+                "url": "https://tech.spacely.co.jp/entry/2026/06/10/163831",
+                "publisher": "スペースリー",
+                "summary": "사용자가 올린 정거원통(equirectangular) 360° 사진을 6 면 큐브맵으로 변환 — 파노라마 플레이어가 실제로 그리는 것. 하루 수천 번, 업로드 과정에서 실행. 옛 CreateCubeMapJob 은 krpano 1.1x(2019)를 Sidekiq 워커에서 — 프로젝트당 파노라마 최대 50 장, 몰리면 다른 잡까지 느려짐, 5-10 초 ~ 혼잡 시 최대 2 분. Lambda 로 옮겨 엔드투엔드 약 4 배.",
+                "date": "2026-06-10"
+              }
+            ]
+          },
+          {
+            "question": "이미지 바이트는 어디로 흐르나?",
+            "chosen": "**S3 → Lambda → S3 직통** — Sidekiq 은 서버 측 S3 복사 뒤 **presigned URL(입력 GET · 출력 PUT)** 만 Lambda 에 넘기고 지휘만 한다. 원격 쪽은 얇게.",
+            "alternatives": [
+              "워커가 이미지를 받아 Lambda 로 보내고 결과를 받아 S3 에 올림"
+            ],
+            "tradeoff": "큰 이미지가 앱 서버를 지나지 않아 워커 CPU · 네트워크가 가벼워진다. 대가는 presigned URL 의 만료 · 권한 범위를 잘 잡아야 한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Sidekiq から Lambda へ：360°キューブマップ生成を約4倍高速化した話",
+                "url": "https://tech.spacely.co.jp/entry/2026/06/10/163831",
+                "publisher": "スペースリー",
+                "summary": "사용자가 올린 정거원통(equirectangular) 360° 사진을 6 면 큐브맵으로 변환 — 파노라마 플레이어가 실제로 그리는 것. 하루 수천 번, 업로드 과정에서 실행. 옛 CreateCubeMapJob 은 krpano 1.1x(2019)를 Sidekiq 워커에서 — 프로젝트당 파노라마 최대 50 장, 몰리면 다른 잡까지 느려짐, 5-10 초 ~ 혼잡 시 최대 2 분. Lambda 로 옮겨 엔드투엔드 약 4 배.",
+                "date": "2026-06-10"
+              }
+            ]
+          },
+          {
+            "question": "Lambda 위에선 어느 엔진을 쓰나?",
+            "chosen": "**py360convert** — CPU 경쟁이 사라진 Lambda(2048MB)에서 다시 재니 5K p50 5.71 초(krpano 1.2x 6.99 초), 11K 는 **10.24 초 대 21.26 초로 약 2 배** 차. 외부 바이너리 · 라이선스가 필요 없는 오픈소스 파이썬 라이브러리이고, 같은 면 해상도로 맞추면 출력 품질은 눈으로 구별되지 않았다.",
+            "alternatives": [
+              "krpano 1.2x"
+            ],
+            "tradeoff": "특히 중요한 큰 파노라마에서 가장 빠르다. 대가는 5K 의 p90 은 krpano 가 더 낮았다(8.33 초 대 10.95 초) — 꼬리 지연은 조금 손해.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Sidekiq から Lambda へ：360°キューブマップ生成を約4倍高速化した話",
+                "url": "https://tech.spacely.co.jp/entry/2026/06/10/163831",
+                "publisher": "スペースリー",
+                "summary": "사용자가 올린 정거원통(equirectangular) 360° 사진을 6 면 큐브맵으로 변환 — 파노라마 플레이어가 실제로 그리는 것. 하루 수천 번, 업로드 과정에서 실행. 옛 CreateCubeMapJob 은 krpano 1.1x(2019)를 Sidekiq 워커에서 — 프로젝트당 파노라마 최대 50 장, 몰리면 다른 잡까지 느려짐, 5-10 초 ~ 혼잡 시 최대 2 분. Lambda 로 옮겨 엔드투엔드 약 4 배.",
+                "date": "2026-06-10"
+              }
+            ]
+          },
+          {
+            "question": "Lambda 메모리는 얼마로?",
+            "chosen": "**이미지 크기마다 여러 메모리 설정을 벤치마크해 꺾이는 지점(sweet spot)을 찾고, 픽셀 수로 세 엔드포인트에 나눈다** — ≤11K 2048MB · ≤16K 3072MB · >16K 4096MB, 같은 핸들러 코드.",
+            "alternatives": [
+              "가장 큰 입력에 맞춘 단일 메모리 설정"
+            ],
+            "tradeoff": "Lambda 는 메모리에 비례해 CPU 가 늘어(1,769MB ≈ 1 vCPU) 2048MB 까지 크게 빨라지고 그 뒤로는 평평했다(5K: 9.10 → 5.71 → 5.97 초). 11K 는 1024MB 에서 메모리 부족. 큰 이미지의 메모리 부족도, 작은 이미지의 과지불도 피한다. 대가는 엔드포인트 셋을 운영한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Sidekiq から Lambda へ：360°キューブマップ生成を約4倍高速化した話",
+                "url": "https://tech.spacely.co.jp/entry/2026/06/10/163831",
+                "publisher": "スペースリー",
+                "summary": "사용자가 올린 정거원통(equirectangular) 360° 사진을 6 면 큐브맵으로 변환 — 파노라마 플레이어가 실제로 그리는 것. 하루 수천 번, 업로드 과정에서 실행. 옛 CreateCubeMapJob 은 krpano 1.1x(2019)를 Sidekiq 워커에서 — 프로젝트당 파노라마 최대 50 장, 몰리면 다른 잡까지 느려짐, 5-10 초 ~ 혼잡 시 최대 2 분. Lambda 로 옮겨 엔드투엔드 약 4 배.",
+                "date": "2026-06-10"
+              }
+            ]
+          },
+          {
+            "question": "어떻게 출시하나?",
+            "chosen": "**기업 단위 기능 플래그로 3 단계** — 1) 일부 기업만 Lambda 로 · 나머지는 Sidekiq + krpano 1.1x 그대로 두고 성능 · 비용 관찰, 2) 전 기업, 3) 옛 잡과 krpano 도구 삭제. 요청 일정 비율을 흘리는 카나리가 아니다.",
+            "alternatives": [
+              "요청 비율 카나리",
+              "한 번에 전환"
+            ],
+            "tradeoff": "고객(기업) 단위로 켜고 끌 수 있어 문제가 나면 그 기업만 되돌린다. 최악 가정 월 약 350 달러를 관찰하며 넓힌다. 대가는 과도기 동안 두 경로와 옛 도구를 유지한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Sidekiq から Lambda へ：360°キューブマップ生成を約4倍高速化した話",
+                "url": "https://tech.spacely.co.jp/entry/2026/06/10/163831",
+                "publisher": "スペースリー",
+                "summary": "사용자가 올린 정거원통(equirectangular) 360° 사진을 6 면 큐브맵으로 변환 — 파노라마 플레이어가 실제로 그리는 것. 하루 수천 번, 업로드 과정에서 실행. 옛 CreateCubeMapJob 은 krpano 1.1x(2019)를 Sidekiq 워커에서 — 프로젝트당 파노라마 최대 50 장, 몰리면 다른 잡까지 느려짐, 5-10 초 ~ 혼잡 시 최대 2 분. Lambda 로 옮겨 엔드투엔드 약 4 배.",
+                "date": "2026-06-10"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "VR 클라우드 구독(수익원)",
+          "via": "업로드 뒤 곧바로 둘러보기",
+          "contract": "회사 사이트가 '30 분이면 VR 완성' 을 내세우는데, 업로드한 파노라마가 큐브맵이 돼야 플레이어가 그린다 — 50 장 업로드가 약 9 분에서 약 2 분으로.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Sidekiq から Lambda へ：360°キューブマップ生成を約4倍高速化した話",
+              "url": "https://tech.spacely.co.jp/entry/2026/06/10/163831",
+              "publisher": "スペースリー",
+              "summary": "사용자가 올린 정거원통(equirectangular) 360° 사진을 6 면 큐브맵으로 변환 — 파노라마 플레이어가 실제로 그리는 것. 하루 수천 번, 업로드 과정에서 실행. 옛 CreateCubeMapJob 은 krpano 1.1x(2019)를 Sidekiq 워커에서 — 프로젝트당 파노라마 최대 50 장, 몰리면 다른 잡까지 느려짐, 5-10 초 ~ 혼잡 시 최대 2 분. Lambda 로 옮겨 엔드투엔드 약 4 배.",
+              "date": "2026-06-10"
+            },
+            {
+              "title": "360°パノラマVRなら「スペースリー」",
+              "url": "https://spacely.co.jp/",
+              "publisher": "スペースリー",
+              "summary": "공간 데이터 활용 플랫폼 — 360° VR 콘텐츠를 누구나 클라우드로 제작 · 편집(파노라마 사진 · 3D CG 업로드 → VR 자동 생성, 약 30 분). 부동산 VR · 주택 VR · 연수 VR. 이용자 1 만 2 천 ~ 1 만 5 천 이상(페이지 안에서 수치가 다르다), 서비스 계속률 99%. 기능: 버추얼 홈 스테이징(CG 가구 · AI 자동 배치) · AI 사이즈 추정 · 추객 URL · 시선 분석 · VR 웹 회의 · AI 자동 보정/차량 번호 흐림 · 촬영 대행 3,500 엔~ · CG 제작 대행 45,000 엔~. 요금 페이지 있음."
+            }
+          ]
+        },
+        {
+          "to": "자라는 이미지 테이블",
+          "via": "업로드된 파노라마 · 이미지 레코드",
+          "contract": "변환 원본과 결과가 물건 이미지 테이블 · S3 에 쌓인다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Sidekiq から Lambda へ：360°キューブマップ生成を約4倍高速化した話",
+              "url": "https://tech.spacely.co.jp/entry/2026/06/10/163831",
+              "publisher": "スペースリー",
+              "summary": "사용자가 올린 정거원통(equirectangular) 360° 사진을 6 면 큐브맵으로 변환 — 파노라마 플레이어가 실제로 그리는 것. 하루 수천 번, 업로드 과정에서 실행. 옛 CreateCubeMapJob 은 krpano 1.1x(2019)를 Sidekiq 워커에서 — 프로젝트당 파노라마 최대 50 장, 몰리면 다른 잡까지 느려짐, 5-10 초 ~ 혼잡 시 최대 2 분. Lambda 로 옮겨 엔드투엔드 약 4 배.",
+              "date": "2026-06-10"
+            },
+            {
+              "title": "150万レコードを持つ画像テーブルの移行",
+              "url": "https://tech.spacely.co.jp/entry/2023/07/06/103342",
+              "publisher": "スペースリー",
+              "summary": "용도별로 나뉜 내관 · 외관 이미지 테이블을 category 칼럼 하나의 테이블로 통합 — 150 만 건, 점검 시간 없음, 새 기능 출시일 고정, 새 썸네일 크기 필요. Rake 태스크(CarrierWave 로 썸네일 동시 생성 · 모델 검증 · 병렬) vs AWS Batch + MySQL 직접 복사 → Rake. ID 범위 인자로 병렬 · 옛 테이블에 새 ID 기록 · 독립 서버에서 최대 4 프로세스 약 2 주, 출시 전후 차분 재복사, 건수 검증.",
+              "date": "2023-07-06"
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "전과 후",
+          "question": "무엇이 어디서 도나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  subgraph BEFORE[\"전: 공용 Sidekiq\"]\n    UP1[\"50 장 업로드\"] --> SQ[\"Sidekiq 워커\\nkrpano 1.1x 가 CPU 점유\"]\n    SQ --> S31[(\"S3 6 면\")]\n    OTHER[\"무관한 잡들\"] -.->|\"뒤에서 대기\"| SQ\n  end\n  subgraph AFTER[\"후: 지휘 + Lambda\"]\n    UP2[\"50 장 업로드\"] --> OR[\"CreateCubeMapV2Job\\n(presigned URL · 라우팅)\"]\n    OR --> L1[\"Lambda 2048MB\"]\n    OR --> L2[\"Lambda 3072MB\"]\n    OR --> L3[\"Lambda 4096MB\"]\n    L1 & L2 & L3 <--> S32[(\"S3\")]\n  end"
+        },
+        {
+          "title": "한 장이 변환되는 순서",
+          "question": "바이트는 누구를 지나나?",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant R as Rails / Sidekiq(지휘)\n  participant S as S3\n  participant L as Lambda(py360convert)\n  participant P as 360° 플레이어\n  R->>S: 서버 측 복사\n  R->>R: presigned GET 1 + PUT 6 생성, 픽셀 수로 메모리 계층 선택\n  R->>L: 호출(URL 만)\n  L->>S: GET 원본\n  L->>L: 정거원통 → 6 면\n  L->>S: PUT pano_r/l/u/d/f/b\n  P->>S: 6 면 읽어 입방체에 그림"
+        },
+        {
+          "title": "스케일로는 안 풀린 이유",
+          "question": "왜 워커를 늘리는 것으로 끝나지 않나?",
+          "kind": "failure",
+          "code": "flowchart TB\n  BURST[\"50 장 동시 업로드\"] --> JOBS[\"큐브맵 잡 수십 개\"]\n  JOBS --> CPU[\"공용 워커 CPU 포화\"]\n  CPU --> SLOW1[\"큐브맵 5-10 초 → 최대 2 분\"]\n  CPU --> SLOW2[\"무관한 잡도 지연\"]\n  SCALE[\"워커 증설\"] --> TEMP[\"잠시 여유\"] --> AGAIN[\"더 큰 버스트에 같은 경쟁\"]\n  LIB[\"라이브러리 교체\"] --> SAME[\"p50 17-21 초 — 차이 없음\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Sidekiq から Lambda へ：360°キューブマップ生成を約4倍高速化した話",
+          "url": "https://tech.spacely.co.jp/entry/2026/06/10/163831",
+          "publisher": "スペースリー",
+          "summary": "사용자가 올린 정거원통(equirectangular) 360° 사진을 6 면 큐브맵으로 변환 — 파노라마 플레이어가 실제로 그리는 것. 하루 수천 번, 업로드 과정에서 실행. 옛 CreateCubeMapJob 은 krpano 1.1x(2019)를 Sidekiq 워커에서 — 프로젝트당 파노라마 최대 50 장, 몰리면 다른 잡까지 느려짐, 5-10 초 ~ 혼잡 시 최대 2 분. Lambda 로 옮겨 엔드투엔드 약 4 배.",
+          "date": "2026-06-10"
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "요금 · 매출 · 유료 고객 수는 이번에 읽지 않았다(회사 페이지 안에서 이용자 수가 1 만 · 1 만 2 천 · 1 만 5 천으로 다르게 적혀 있다).",
     "가구 지우기가 유료 기능인지 · 출시 상태인지는 글에 없다(연구개발팀 소개 · HuggingFace 데모).",
