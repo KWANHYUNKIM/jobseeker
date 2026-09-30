@@ -2851,3 +2851,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 
 - 홈페이지 · 요금 페이지(초기 0엔 · 50 ID 부터 · 개별 견적) + 기술 글 6편(AI eval · Alba 이행 · oRPC 조사 · E2E flaky · Metabase 시맨틱 타입 · Disk I/O Budget). 도메인 3(AI 품질 · API 응답 모양 · E2E 신뢰), 수익원 1(confirmed). 결재 엔진 · 조직도 설계 글은 아직 없다. Metabase · Disk I/O 는 도메인으로 세우지 않고 sources 로만.
 
+## 2026-09-30 kickflow AI eval(기능 1/3)
+
+- eval 글(2026-08)로 `ai-feature-eval`. 결정 6 — 실제 호출(모크 테스트는 PR CI 에 그대로) / 기계 채점 ↔ LLM judge 분담 / systematic · flaky 분리 / 문턱은 실측으로 조이고 데이터는 고정 / smoke · full / 모델 교체 판단. 지표 4(6 기능 · 185 × 3, 거부율 회귀 0.545 · 0.800 → 1.000, 약 $0.2577, 4.4~5.0초). 그림 3.
+
