@@ -32,6 +32,7 @@ import { HardwareUseIcon } from './HardwareUseIcon'
 import { PrebuiltPicks } from './HardwarePicks'
 import { HardwarePrebuilt } from './HardwarePrebuilt'
 import { HardwarePrices } from './HardwarePrices'
+import { HardwareDatacenter } from './HardwareDatacenter'
 import { ErrorState, Loader } from './ui'
 import { AiUses, DevUses, VideoSim } from './HardwareWorkloads'
 import { MemorySlots } from './HardwareMemory'
@@ -42,8 +43,9 @@ import { BuyRow } from './HardwareBuy'
 //   /hardware          조립·시뮬레이션 — 용도와 예산을 고르면 조합과 '그래서 뭐가 되나'가 나온다
 //   /hardware/parts    부품 비교 — 전문가용. 등급·스펙·원/성능으로 줄 세우고 골라 나란히 본다
 //   /hardware/prices   가격 추이 — 매일 찍는 다나와 최저가. 색인하지 않는다(가격 DB 를 다시 싣지 않는다)
+//   /hardware/datacenter AI 데이터센터 — 회사별 칩 수·성능 추정·금액·시장 조사(공개 자료 + 한 가지 잣대)
 
-type Sub = 'build' | 'parts' | 'prices' | 'prebuilt'
+type Sub = 'build' | 'parts' | 'prices' | 'prebuilt' | 'datacenter'
 
 export function HardwareNav({ current }: { current: Sub }) {
   const item = (key: Sub, to: string, label: string) => (
@@ -63,13 +65,14 @@ export function HardwareNav({ current }: { current: Sub }) {
       {item('parts', paths.hardwareParts(), '부품 비교')}
       {item('prebuilt', paths.hardwarePrebuilt(), '완제품 분석')}
       {item('prices', paths.hardwarePrices(), '가격 추이')}
+      {item('datacenter', paths.hardwareDatacenter(), 'AI 데이터센터')}
     </div>
   )
 }
 
 export function HardwareView({ seg }: { seg: string[] }) {
   const { data, error } = useHardware()
-  const sub: Sub = seg[0] === 'parts' ? 'parts' : seg[0] === 'prices' ? 'prices' : seg[0] === 'prebuilt' ? 'prebuilt' : 'build'
+  const sub: Sub = seg[0] === 'parts' ? 'parts' : seg[0] === 'prices' ? 'prices' : seg[0] === 'prebuilt' ? 'prebuilt' : seg[0] === 'datacenter' ? 'datacenter' : 'build'
   if (error) return <ErrorState title="부품 데이터를 불러오지 못했습니다" detail={error} hint={<>public/hardware/parts.json 이 있는지 확인하세요.</>} />
   if (!data) return <Loader label="부품 데이터 불러오는 중…" />
   return (
@@ -82,6 +85,8 @@ export function HardwareView({ seg }: { seg: string[] }) {
           <HardwarePrebuilt data={data} itemKey={seg[1] ?? null} />
         ) : sub === 'prices' ? (
           <HardwarePrices data={data} />
+        ) : sub === 'datacenter' ? (
+          <HardwareDatacenter data={data} />
         ) : (
           <Builder data={data} />
         )}

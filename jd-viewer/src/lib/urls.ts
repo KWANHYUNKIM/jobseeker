@@ -39,6 +39,7 @@ export const paths = {
   hardwarePart: (id: string) => `/hardware/parts/${encodeURIComponent(id)}`,
   hardwarePrices: () => '/hardware/prices',
   hardwarePrebuilt: () => '/hardware/prebuilt',
+  hardwareDatacenter: () => '/hardware/datacenter',
   hardwarePrebuiltItem: (key: string) => `/hardware/prebuilt/${encodeURIComponent(key)}`,
 }
 

@@ -1,0 +1,3487 @@
+{
+ "schema": 1,
+ "updated_at": "2026-09-30",
+ "note": "숫자는 출처가 있는 것만 싣는다. 칩 수는 회사 공식이거나 Epoch AI·SemiAnalysis·Omdia 같은 추정이고 행마다 가른다. 성능은 H100 환산 × 한 가지 잣대라 실제 서비스 성능과 다르다.",
+ "basis": {
+  "h100_tps": 3913,
+  "h100_tps_text": "H100 한 장이 Llama 2 70B 를 묶음 처리로 내는 초당 토큰 — MLPerf Inference v5.0 오프라인(DGX H100 8장 31,307 ÷ 8)",
+  "h100eq_text": "출처가 밝힌 H100 환산이 있으면 그것을 쓴다 — 큰 데이터센터는 Epoch AI(칩 연산 성능으로 셈), Tesla 는 회사 자료. 블랙웰은 토큰으로 재면 H100 의 3배 넘게 나와(MLPerf) 이 방식은 최신 칩을 낮게 잡는 쪽이다.",
+  "home_model": "70b",
+  "home_extra_w": 150
+ },
+ "clusters": [
+  {
+   "key": "colossus-2",
+   "org": "xAI",
+   "name": "Colossus 2 (멤피스)",
+   "chip": "GB200 + GB300",
+   "count": 440000,
+   "h100eq": 1110000,
+   "mw": 946,
+   "status": "operational",
+   "as_of": "2026-09",
+   "confidence": "estimate",
+   "note": "Epoch 추정: GB200 11만 + GB300 33만, IT 전력 946MW, 2027년 1분기 1,531MW 예상. 머스크는 GB300 44만(합 55만)이라고 했다 — 출처끼리 다르다.",
+   "sources": [
+    {
+     "title": "Epoch: Colossus 2",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/colossus-2"
+    },
+    {
+     "title": "머스크 X 게시물",
+     "url": "https://x.com/elonmusk/status/2103329761690865846"
+    }
+   ],
+   "company": "xAI",
+   "region": "US",
+   "chip_key": null,
+   "in_total": true
+  },
+  {
+   "key": "fairwater-atlanta",
+   "org": "Microsoft",
+   "name": "Fairwater 애틀랜타",
+   "chip": "GB200 / GB300",
+   "count": 304300,
+   "h100eq": 769000,
+   "mw": 636,
+   "status": "operational",
+   "as_of": "2026-06",
+   "confidence": "estimate",
+   "note": "Microsoft 공식은 'GB200·GB300 수십만 장'. 칩 수·환산값은 Epoch 추정.",
+   "sources": [
+    {
+     "title": "Microsoft 블로그",
+     "url": "https://blogs.microsoft.com/blog/2025/11/12/infinite-scale-the-architecture-behind-the-azure-ai-superfactory/"
+    },
+    {
+     "title": "Epoch: Fairwater Atlanta",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/microsoft-fairwater-atlanta"
+    }
+   ],
+   "company": "Microsoft",
+   "region": "US",
+   "chip_key": null,
+   "in_total": true
+  },
+  {
+   "key": "new-carlisle",
+   "org": "Anthropic · AWS",
+   "name": "Project Rainier (뉴칼라일)",
+   "chip": "Trainium2",
+   "count": 1045000,
+   "h100eq": 686000,
+   "mw": 910,
+   "status": "operational",
+   "as_of": "2026-09",
+   "confidence": "estimate",
+   "note": "Amazon 공식: 2025-10 가동 때 '약 50만 장', '연말 100만 장 이상'. 104.5만 장·환산값은 Epoch 추정. Claude 를 학습·서빙하는 곳이다.",
+   "sources": [
+    {
+     "title": "About Amazon",
+     "url": "https://www.aboutamazon.com/news/aws/aws-project-rainier-ai-trainium-chips-compute-cluster"
+    },
+    {
+     "title": "Epoch: New Carlisle",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/anthropic-amazon-new-carlisle"
+    }
+   ],
+   "company": "Anthropic",
+   "region": "US",
+   "chip_key": null,
+   "in_total": true
+  },
+  {
+   "key": "prometheus",
+   "org": "Meta",
+   "name": "Prometheus (오하이오)",
+   "chip": "B200 급",
+   "count": 237400,
+   "h100eq": 600000,
+   "mw": 496,
+   "status": "operational",
+   "as_of": "2026-09",
+   "confidence": "estimate",
+   "note": "저커버그가 2026년 1GW 로 발표. 칩 수·환산값은 Epoch 추정.",
+   "sources": [
+    {
+     "title": "Epoch: Meta Prometheus",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/meta-prometheus"
+    },
+    {
+     "title": "TechCrunch",
+     "url": "https://techcrunch.com/2025/07/14/mark-zuckerberg-says-meta-is-building-a-5gw-ai-data-center"
+    }
+   ],
+   "company": "Meta",
+   "region": "US",
+   "chip_key": null,
+   "in_total": true
+  },
+  {
+   "key": "abilene",
+   "org": "OpenAI · Oracle",
+   "name": "Stargate 애빌린 (텍사스)",
+   "chip": "GB200 / GB300",
+   "count": 201600,
+   "h100eq": 509000,
+   "mw": 421,
+   "status": "operational",
+   "as_of": "2026-07",
+   "confidence": "estimate",
+   "note": "목표는 GB200 45만 장·1.2GW. 지금 값은 Epoch 추정이고 2026년 4분기 843MW·H100 환산 약 102만 예상.",
+   "sources": [
+    {
+     "title": "Epoch: Stargate Abilene",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/openai-stargate-abilene"
+    },
+    {
+     "title": "CNBC",
+     "url": "https://www.cnbc.com/2025/09/23/openai-first-data-center-in-500-billion-stargate-project-up-in-texas.html"
+    }
+   ],
+   "company": "OpenAI",
+   "region": "US",
+   "chip_key": null,
+   "in_total": true
+  },
+  {
+   "key": "fairwater-wisconsin",
+   "org": "Microsoft",
+   "name": "Fairwater 위스콘신",
+   "chip": "GB300",
+   "count": null,
+   "h100eq": 446000,
+   "mw": null,
+   "status": "operational",
+   "as_of": "2026-04",
+   "confidence": "estimate",
+   "note": "2026-04 가동(Microsoft FY26 3분기 실적 발표). 환산값은 Epoch 추정.",
+   "sources": [
+    {
+     "title": "Microsoft FY26 Q3",
+     "url": "https://www.microsoft.com/en-us/investor/events/fy-2026/earnings-fy-2026-q3"
+    },
+    {
+     "title": "Epoch 목록",
+     "url": "https://epoch.ai/data/ai-data-centers/directory"
+    }
+   ],
+   "company": "Microsoft",
+   "region": "US",
+   "chip_key": null,
+   "in_total": true
+  },
+  {
+   "key": "colossus-1",
+   "org": "xAI → Anthropic",
+   "name": "Colossus 1 (멤피스)",
+   "chip": "H100 + H200 + GB200",
+   "count": 230000,
+   "h100eq": 276000,
+   "mw": 340,
+   "status": "operational",
+   "as_of": "2025-07",
+   "confidence": "estimate",
+   "note": "H100 15만 + H200 5만 + GB200 3만(머스크·Epoch 같은 값). 2026-05 부터 Anthropic 이 통째로 쓴다(xAI 발표 '22만 장 이상').",
+   "sources": [
+    {
+     "title": "Epoch: Colossus 1",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/colossus-1"
+    },
+    {
+     "title": "xAI–Anthropic",
+     "url": "https://x.ai/news/anthropic-compute-partnership"
+    }
+   ],
+   "company": "Anthropic",
+   "region": "US",
+   "chip_key": null,
+   "in_total": true
+  },
+  {
+   "key": "meta-2024",
+   "org": "Meta",
+   "name": "2024년 말 보유 목표",
+   "chip": "H100",
+   "count": 350000,
+   "h100eq": 600000,
+   "mw": null,
+   "status": "past",
+   "as_of": "2024-03",
+   "confidence": "official",
+   "note": "'H100 35만 장 … H100 약 60만 장에 맞먹는 연산'(목표였다).",
+   "sources": [
+    {
+     "title": "Meta 엔지니어링 블로그",
+     "url": "https://engineering.fb.com/2024/03/12/data-center-engineering/building-metas-genai-infrastructure/"
+    }
+   ],
+   "company": "Meta",
+   "region": "US",
+   "chip_key": null,
+   "in_total": true
+  },
+  {
+   "key": "anthropic-google",
+   "org": "Anthropic · Google",
+   "name": "Google Cloud TPU 계약",
+   "chip": "TPU",
+   "count": 1000000,
+   "h100eq": null,
+   "mw": 1000,
+   "status": "planned",
+   "as_of": "2025-10",
+   "confidence": "official",
+   "note": "'TPU 최대 100만 개, 2026년 1GW 를 훌쩍 넘는' 규모. 2026-04 확장으로 2027년부터 '수 GW' 추가.",
+   "sources": [
+    {
+     "title": "Anthropic 발표",
+     "url": "https://anthropic.com/news/expanding-our-use-of-google-cloud-tpus-and-services"
+    },
+    {
+     "title": "Anthropic: Google·Broadcom",
+     "url": "https://www.anthropic.com/news/google-broadcom-partnership-compute"
+    }
+   ],
+   "company": "Anthropic",
+   "region": "US",
+   "chip_key": null,
+   "in_total": true
+  },
+  {
+   "key": "anthropic-azure",
+   "org": "Anthropic · Microsoft · NVIDIA",
+   "name": "Azure 컴퓨트 계약",
+   "chip": "Grace Blackwell / Vera Rubin",
+   "count": null,
+   "h100eq": null,
+   "mw": 1000,
+   "status": "planned",
+   "as_of": "2025-11",
+   "confidence": "official",
+   "note": "Azure 300억 달러, 최대 1GW.",
+   "sources": [
+    {
+     "title": "Microsoft 블로그",
+     "url": "https://blogs.microsoft.com/blog/2025/11/18/microsoft-nvidia-and-anthropic-announce-strategic-partnerships/"
+    }
+   ],
+   "company": "Anthropic",
+   "region": "US",
+   "chip_key": null,
+   "in_total": true
+  },
+  {
+   "key": "google-tpu",
+   "org": "Google",
+   "name": "학습용 TPU 전체",
+   "chip": "TPU",
+   "count": 1000000,
+   "h100eq": null,
+   "mw": null,
+   "status": "operational",
+   "as_of": "2026-05",
+   "confidence": "official",
+   "note": "'전 세계 100만 개 넘는 TPU 로 학습'(I/O 2026). Ironwood 한 포드 = 9,216개.",
+   "sources": [
+    {
+     "title": "Pichai I/O 2026",
+     "url": "https://blog.google/innovation-and-ai/sundar-pichai-io-2026/"
+    },
+    {
+     "title": "Google TPU7x 문서",
+     "url": "https://docs.cloud.google.com/tpu/docs/tpu7x"
+    }
+   ],
+   "company": "Google",
+   "region": "US",
+   "chip_key": null,
+   "in_total": true
+  },
+  {
+   "key": "stargate-all",
+   "org": "OpenAI",
+   "name": "Stargate 전체(미국 7곳)",
+   "chip": null,
+   "count": null,
+   "h100eq": null,
+   "mw": 9000,
+   "status": "planned",
+   "as_of": "2026-04",
+   "confidence": "estimate",
+   "note": "Epoch: 7곳 합 9GW 넘게 계획, 가동은 약 0.3GW. OpenAI(2025-09)는 '약 7GW', 10GW 를 향한다고 했다.",
+   "sources": [
+    {
+     "title": "Epoch: Stargate",
+     "url": "https://epoch.ai/publications/openai-stargate-where-the-us-sites-stand"
+    },
+    {
+     "title": "OpenAI",
+     "url": "https://openai.com/index/five-new-stargate-sites/"
+    }
+   ],
+   "company": "OpenAI",
+   "region": "US",
+   "chip_key": null,
+   "in_total": true
+  },
+  {
+   "key": "hyperion",
+   "org": "Meta",
+   "name": "Hyperion (루이지애나)",
+   "chip": null,
+   "count": null,
+   "h100eq": null,
+   "mw": 5000,
+   "status": "planned",
+   "as_of": "2025-07",
+   "confidence": "official",
+   "note": "몇 년에 걸쳐 5GW 까지.",
+   "sources": [
+    {
+     "title": "TechCrunch",
+     "url": "https://techcrunch.com/2025/07/14/mark-zuckerberg-says-meta-is-building-a-5gw-ai-data-center"
+    }
+   ],
+   "company": "Meta",
+   "region": "US",
+   "chip_key": null,
+   "in_total": true
+  },
+  {
+   "company": "Tesla",
+   "region": "US",
+   "name": "Cortex 1 (기가 텍사스)",
+   "chip": "H100 환산(H100·H200 혼합)",
+   "chip_key": null,
+   "count": null,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2026-04",
+   "in_total": true,
+   "note": "Tesla 2026년 1분기 자료: 'H100 환산 10만 이상, 가동'. 실물 칩 수가 아니라 환산값이다.",
+   "sources": [
+    {
+     "title": "Tesla Q1 2026 (8-K)",
+     "url": "https://www.sec.gov/Archives/edgar/data/0001318605/000162828026026551/exhibit991.htm"
+    }
+   ],
+   "h100eq": 100000,
+   "key": "tesla-cortex-1-(기가-텍사스)"
+  },
+  {
+   "company": "Tesla",
+   "region": "US",
+   "name": "Cortex 2 (기가 텍사스)",
+   "chip": "H100 환산(블랙웰 세대 혼합)",
+   "chip_key": null,
+   "count": null,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2026-04",
+   "in_total": true,
+   "note": "'H100 환산 13만 이상, 증설 초기'. Dojo 는 2025-08 중단됐다.",
+   "sources": [
+    {
+     "title": "Tesla Q1 2026 (8-K)",
+     "url": "https://www.sec.gov/Archives/edgar/data/0001318605/000162828026026551/exhibit991.htm"
+    }
+   ],
+   "h100eq": 130000,
+   "key": "tesla-cortex-2-(기가-텍사스)"
+  },
+  {
+   "company": "CoreWeave",
+   "region": "US",
+   "name": "전체 보유",
+   "chip": "NVIDIA 혼합(A100·H100·H200·GB200 등)",
+   "chip_key": null,
+   "count": 250000,
+   "mw": 360,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2024-12",
+   "in_total": true,
+   "note": "S-1: 32곳에 GPU 25만 장 이상, 360MW 이상. 2025년 말 850MW·43곳이지만 GPU 수는 새로 밝히지 않았다. 기종 구성을 몰라 환산하지 않는다. OpenAI·Microsoft·Meta 등이 빌려 쓰는 몫이 들어 있다.",
+   "sources": [
+    {
+     "title": "CoreWeave S-1",
+     "url": "https://www.sec.gov/Archives/edgar/data/1769628/000119312525044231/d899798ds1.htm"
+    },
+    {
+     "title": "CoreWeave 2025 주주서한",
+     "url": "https://coreweave.com/blog/coreweave-2025-annual-report-shareholder-letter"
+    }
+   ],
+   "key": "coreweave-전체-보유",
+   "h100eq": null
+  },
+  {
+   "company": "CoreWeave",
+   "region": "US",
+   "name": "H200 클러스터",
+   "chip": "H200",
+   "chip_key": "H200",
+   "count": 42000,
+   "mw": 60,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2024-08",
+   "in_total": false,
+   "note": "Epoch 'Likely'. 위 전체 25만 장의 일부.",
+   "sources": [
+    {
+     "title": "Epoch AI GPU 클러스터 데이터",
+     "url": "https://epoch.ai/data/gpu_clusters.csv"
+    }
+   ],
+   "key": "coreweave-h200-클러스터",
+   "h100eq": null
+  },
+  {
+   "company": "Lambda",
+   "region": "US",
+   "name": "GB300 AI 팩토리",
+   "chip": "GB300 (NVL72)",
+   "chip_key": "GB300",
+   "count": 10000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2026-03",
+   "in_total": true,
+   "note": "'GB300 1만 장 이상'(GTC 2026). 전체 보유량은 밝히지 않았다.",
+   "sources": [
+    {
+     "title": "Lambda GTC 2026",
+     "url": "https://lambda.ai/blog/lambda-at-gtc-2026-building-the-superintelligence-cloud"
+    }
+   ],
+   "key": "lambda-gb300-ai-팩토리",
+   "h100eq": null
+  },
+  {
+   "company": "NVIDIA",
+   "region": "US",
+   "name": "Eos (DGX SuperPOD)",
+   "chip": "H100",
+   "chip_key": "H100",
+   "count": 4608,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2024-02",
+   "in_total": true,
+   "note": "DGX H100 576대 × 8.",
+   "sources": [
+    {
+     "title": "NVIDIA 블로그: Eos",
+     "url": "https://blogs.nvidia.com/blog/eos/"
+    }
+   ],
+   "key": "nvidia-eos-(dgx-superpod)",
+   "h100eq": null
+  },
+  {
+   "company": "NVIDIA",
+   "region": "US",
+   "name": "Israel-1",
+   "chip": "H100",
+   "chip_key": "H100",
+   "count": 2048,
+   "mw": null,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2024-11",
+   "in_total": true,
+   "note": "이스라엘. Epoch 'Likely'.",
+   "sources": [
+    {
+     "title": "Epoch AI GPU 클러스터 데이터",
+     "url": "https://epoch.ai/data/gpu_clusters.csv"
+    }
+   ],
+   "key": "nvidia-israel-1",
+   "h100eq": null
+  },
+  {
+   "company": "NVIDIA",
+   "region": "US",
+   "name": "Lambda 에서 되빌린 GPU",
+   "chip": "NVIDIA(기종 비공개)",
+   "chip_key": null,
+   "count": 18000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2025-09",
+   "in_total": false,
+   "note": "The Information 보도: 4년 15억 달러, 1만 + 8천. 서버인지 GPU 인지 보도마다 다르다. Lambda 보유분과 겹친다.",
+   "sources": [
+    {
+     "title": "Tom's Hardware",
+     "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/nvidia-signs-usd1-5-billion-deal-with-cloud-startup-lambda-to-rent-back-its-own-ai-chips-18-000-gpus-will-be-leased-over-4-years-as-lambda-gears-up-for-its-ipo"
+    }
+   ],
+   "key": "nvidia-lambda-에서-되빌린-gpu",
+   "h100eq": null
+  },
+  {
+   "company": "Voltage Park",
+   "region": "US",
+   "name": "Voltage Park 클라우드",
+   "chip": "H100 SXM5",
+   "chip_key": "H100",
+   "count": 24000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2023-10",
+   "in_total": true,
+   "note": "비영리. 약 5억 달러로 텍사스·버지니아·워싱턴에.",
+   "sources": [
+    {
+     "title": "Voltage Park",
+     "url": "https://voltagepark.com/blog/voltage-park-launches-massive-new-cloud-for-affordable-ai-development"
+    }
+   ],
+   "key": "voltage-park-voltage-park-클라우드",
+   "h100eq": null
+  },
+  {
+   "company": "Together AI",
+   "region": "US",
+   "name": "H100 클러스터",
+   "chip": "H100",
+   "chip_key": "H100",
+   "count": 4424,
+   "mw": null,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2024",
+   "in_total": true,
+   "note": "Epoch 'Likely'.",
+   "sources": [
+    {
+     "title": "Epoch AI GPU 클러스터 데이터",
+     "url": "https://epoch.ai/data/gpu_clusters.csv"
+    }
+   ],
+   "key": "together-ai-h100-클러스터",
+   "h100eq": null
+  },
+  {
+   "company": "Together AI",
+   "region": "US",
+   "name": "Hypertec 와 GB200 클러스터",
+   "chip": "GB200 (NVL72)",
+   "chip_key": "GB200",
+   "count": 36000,
+   "mw": null,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2024-11",
+   "in_total": true,
+   "note": "'GB200 3.6만 장 이상 배치 능력'(2025년 1분기부터). 실제 들어온 수는 확인되지 않았다.",
+   "sources": [
+    {
+     "title": "Together AI 블로그",
+     "url": "https://www.together.ai/blog/nvidia-gb200-together-gpu-cluster-36k"
+    }
+   ],
+   "key": "together-ai-hypertec-와-gb200-클러스터",
+   "h100eq": null
+  },
+  {
+   "company": "Vultr",
+   "region": "US",
+   "name": "시카고 클러스터",
+   "chip": "MI300X",
+   "chip_key": "MI300X",
+   "count": 3000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2024-12",
+   "in_total": true,
+   "note": "Epoch 'Likely'.",
+   "sources": [
+    {
+     "title": "Epoch AI GPU 클러스터 데이터",
+     "url": "https://epoch.ai/data/gpu_clusters.csv"
+    }
+   ],
+   "key": "vultr-시카고-클러스터",
+   "h100eq": null
+  },
+  {
+   "company": "Vultr",
+   "region": "US",
+   "name": "오하이오 슈퍼클러스터",
+   "chip": "MI355X",
+   "chip_key": "MI355X",
+   "count": 24000,
+   "mw": 50,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2025-12",
+   "in_total": true,
+   "note": "'GPU 2.4만 장 이상 추가', 50MW.",
+   "sources": [
+    {
+     "title": "Vultr 블로그",
+     "url": "https://blogs.vultr.com/vultr-amd-ai-supercluster"
+    }
+   ],
+   "key": "vultr-오하이오-슈퍼클러스터",
+   "h100eq": null
+  },
+  {
+   "company": "Oracle",
+   "region": "US",
+   "name": "OCI H200 슈퍼클러스터",
+   "chip": "H200",
+   "chip_key": "H200",
+   "count": 65536,
+   "mw": null,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2024-11",
+   "in_total": true,
+   "note": "Epoch 'Likely' — Oracle 이 광고한 최대 구성 기준이라 실제 배치 확인은 아니다. Stargate 는 OpenAI 칸에 있다.",
+   "sources": [
+    {
+     "title": "Epoch AI GPU 클러스터 데이터",
+     "url": "https://epoch.ai/data/gpu_clusters.csv"
+    }
+   ],
+   "key": "oracle-oci-h200-슈퍼클러스터",
+   "h100eq": null
+  },
+  {
+   "company": "Oracle",
+   "region": "US",
+   "name": "OCI AMD 슈퍼클러스터",
+   "chip": "MI450",
+   "chip_key": null,
+   "count": 50000,
+   "mw": null,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2025-10",
+   "in_total": true,
+   "note": "2026년 3분기부터. Zettascale(최대 13.1만)·Zettascale10(최대 80만)은 파는 최대 구성이지 보유량이 아니다.",
+   "sources": [
+    {
+     "title": "Oracle–AMD",
+     "url": "https://www.oracle.com/news/announcement/ai-world-oracle-and-amd-expand-partnership-to-help-customers-achieve-next-generation-ai-scale-2025-10-14/"
+    }
+   ],
+   "key": "oracle-oci-amd-슈퍼클러스터",
+   "h100eq": null
+  },
+  {
+   "company": "Amazon",
+   "region": "US",
+   "name": "Titan 학습 클러스터",
+   "chip": "A100",
+   "chip_key": "A100",
+   "count": 13760,
+   "mw": null,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2023-01",
+   "in_total": true,
+   "note": "Epoch 'Likely'. Amazon 자체 몫으로 찾은 유일한 숫자. Rainier(Trainium2)는 Anthropic 칸에 있다.",
+   "sources": [
+    {
+     "title": "Epoch AI GPU 클러스터 데이터",
+     "url": "https://epoch.ai/data/gpu_clusters.csv"
+    }
+   ],
+   "key": "amazon-titan-학습-클러스터",
+   "h100eq": null
+  },
+  {
+   "company": "Inflection AI",
+   "region": "US",
+   "name": "CoreWeave 클러스터",
+   "chip": "H100",
+   "chip_key": "H100",
+   "count": 22000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2023-06",
+   "in_total": true,
+   "note": "CoreWeave 가 운영 — CoreWeave 전체와 겹친다. 2024년 Microsoft 거래 뒤 상태는 모른다.",
+   "sources": [
+    {
+     "title": "insideHPC",
+     "url": "https://insidehpc.com/2023/06/22000-gpus-inflection-ai-building-22-exaflops-generative-ai-cluster/"
+    }
+   ],
+   "key": "inflection-ai-coreweave-클러스터",
+   "h100eq": null
+  },
+  {
+   "company": "Stability AI",
+   "region": "US",
+   "name": "Ezra-1 (AWS)",
+   "chip": "A100",
+   "chip_key": "A100",
+   "count": 4000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2022-11",
+   "in_total": true,
+   "note": "AWS 에서 빌린 A100 4천 장 이상(re:Invent 2022).",
+   "sources": [
+    {
+     "title": "AWS re:Invent 2022",
+     "url": "https://d1.awsstatic.com/events/Summits/reinvent2022/CMP314_How-Stable-Diffusion-was-built-Tips-and-tricks-to-train-large-AI-models.pdf"
+    }
+   ],
+   "key": "stability-ai-ezra-1-(aws)",
+   "h100eq": null
+  },
+  {
+   "company": "Imbue",
+   "region": "US",
+   "name": "H100 1만 장 클러스터",
+   "chip": "H100",
+   "chip_key": "H100",
+   "count": 10000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2023-09",
+   "in_total": true,
+   "note": "Epoch 'Likely'.",
+   "sources": [
+    {
+     "title": "Epoch AI GPU 클러스터 데이터",
+     "url": "https://epoch.ai/data/gpu_clusters.csv"
+    }
+   ],
+   "key": "imbue-h100-1만-장-클러스터",
+   "h100eq": null
+  },
+  {
+   "company": "Jane Street",
+   "region": "US",
+   "name": "텍사스 시설",
+   "chip": "GB300 (NVL72 56대)",
+   "chip_key": "GB300",
+   "count": 4032,
+   "mw": null,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2026-08",
+   "in_total": true,
+   "note": "State of AI Compute Index(NVIDIA 인용). Bloomberg 는 '수만 장'을 쓴다고 전했다.",
+   "sources": [
+    {
+     "title": "State of AI Compute Index",
+     "url": "https://www.stateof.ai/compute/sources"
+    },
+    {
+     "title": "Bloomberg",
+     "url": "https://www.bloomberg.com/news/articles/2026-06-04/jane-street-plans-new-data-center-as-compute-power-runs-scarce"
+    }
+   ],
+   "key": "jane-street-텍사스-시설",
+   "h100eq": null
+  },
+  {
+   "company": "Figure AI",
+   "region": "US",
+   "name": "Nscale 텍사스 용량",
+   "chip": "Vera Rubin",
+   "chip_key": null,
+   "count": 100000,
+   "mw": 234,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2026-09",
+   "in_total": true,
+   "note": "Nscale 에 35억 달러로 '최대 10만 장', 2027년 하반기부터(임차).",
+   "sources": [
+    {
+     "title": "Yahoo Finance",
+     "url": "https://finance.yahoo.com/technology/ai/articles/figure-ai-commits-3-5-124536120.html"
+    }
+   ],
+   "key": "figure-ai-nscale-텍사스-용량",
+   "h100eq": null
+  },
+  {
+   "company": "미국 에너지부(DOE)",
+   "region": "US",
+   "name": "Aurora (Argonne)",
+   "chip": "Intel Data Center GPU Max 1550",
+   "chip_key": "Intel Max 1550",
+   "count": 63744,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2025-01",
+   "in_total": true,
+   "note": "10,624 노드.",
+   "sources": [
+    {
+     "title": "ALCF: Aurora",
+     "url": "https://www.alcf.anl.gov/news/argonne-releases-aurora-exascale-supercomputer-researchers"
+    }
+   ],
+   "key": "미국-에너지부(doe)-aurora-(argonne)",
+   "h100eq": null
+  },
+  {
+   "company": "미국 에너지부(DOE)",
+   "region": "US",
+   "name": "El Capitan (LLNL)",
+   "chip": "MI300A",
+   "chip_key": "MI300A",
+   "count": 44544,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2024-11",
+   "in_total": true,
+   "note": "11,136 노드 × APU 4.",
+   "sources": [
+    {
+     "title": "HPCwire",
+     "url": "https://www.hpcwire.com/2024/11/19/an-inside-look-at-el-capitan-facts-beyond-the-numbers/"
+    }
+   ],
+   "key": "미국-에너지부(doe)-el-capitan-(llnl)",
+   "h100eq": null
+  },
+  {
+   "company": "미국 에너지부(DOE)",
+   "region": "US",
+   "name": "Frontier (ORNL)",
+   "chip": "MI250X",
+   "chip_key": "MI250X",
+   "count": 37632,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2022-05",
+   "in_total": true,
+   "note": "9,408 노드 × MI250X 4.",
+   "sources": [
+    {
+     "title": "OLCF Frontier 안내",
+     "url": "https://docs.olcf.ornl.gov/systems/frontier_user_guide.html"
+    }
+   ],
+   "key": "미국-에너지부(doe)-frontier-(ornl)",
+   "h100eq": null
+  },
+  {
+   "company": "미국 에너지부(DOE)",
+   "region": "US",
+   "name": "Perlmutter (NERSC)",
+   "chip": "A100",
+   "chip_key": "A100",
+   "count": 6144,
+   "mw": null,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2024",
+   "in_total": true,
+   "note": "Epoch 6,144 · State of AI 7,168 — 작은 쪽.",
+   "sources": [
+    {
+     "title": "Epoch AI GPU 클러스터 데이터",
+     "url": "https://epoch.ai/data/gpu_clusters.csv"
+    }
+   ],
+   "key": "미국-에너지부(doe)-perlmutter-(nersc)",
+   "h100eq": null
+  },
+  {
+   "company": "미국 에너지부(DOE)",
+   "region": "US",
+   "name": "Venado (LANL)",
+   "chip": "GH200",
+   "chip_key": "GH200",
+   "count": 2560,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2024-04",
+   "in_total": true,
+   "note": "TOP500.",
+   "sources": [
+    {
+     "title": "State of AI Compute Index",
+     "url": "https://www.stateof.ai/compute/sources"
+    }
+   ],
+   "key": "미국-에너지부(doe)-venado-(lanl)",
+   "h100eq": null
+  },
+  {
+   "company": "미국 에너지부(DOE)",
+   "region": "US",
+   "name": "Solstice + Equinox (Argonne)",
+   "chip": "블랙웰",
+   "chip_key": null,
+   "count": 110000,
+   "mw": null,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2025-10",
+   "in_total": true,
+   "note": "Solstice 10만 + Equinox 1만. NVIDIA·Oracle 과 함께.",
+   "sources": [
+    {
+     "title": "NVIDIA 뉴스룸",
+     "url": "https://nvidianews.nvidia.com/news/nvidia-oracle-us-department-of-energy-ai-supercomputer-scientific-discovery"
+    }
+   ],
+   "key": "미국-에너지부(doe)-solstice-+-equinox-(argonne)",
+   "h100eq": null
+  },
+  {
+   "company": "Nscale",
+   "region": "US",
+   "name": "텍사스 캠퍼스 (Microsoft 용)",
+   "chip": "GB300",
+   "chip_key": "GB300",
+   "count": 104000,
+   "mw": 240,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2025-10",
+   "in_total": true,
+   "note": "2026년 3분기부터, 240MW.",
+   "sources": [
+    {
+     "title": "Nscale",
+     "url": "https://www.nscale.com/press-releases/nscale-microsoft-2025"
+    }
+   ],
+   "key": "nscale-텍사스-캠퍼스-(microsoft-용)",
+   "h100eq": null
+  },
+  {
+   "company": "Naver",
+   "region": "KR",
+   "name": "정부 GPU 사업 2025 (네이버 몫)",
+   "chip": "H200",
+   "chip_key": "H200",
+   "count": 3056,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2025-07",
+   "in_total": true,
+   "note": "정부 몫 2,296장, 나머지는 네이버 자체 사용.",
+   "sources": [
+    {
+     "title": "바이라인네트워크",
+     "url": "https://byline.network/2025/07/28-498/"
+    }
+   ],
+   "key": "naver-정부-gpu-사업-2025-(네이버-몫)",
+   "h100eq": null
+  },
+  {
+   "company": "Naver",
+   "region": "KR",
+   "name": "보안 AI 과제에 쓰는 보유 GPU",
+   "chip": "기종 비공개",
+   "chip_key": null,
+   "count": 4000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2026-09",
+   "in_total": false,
+   "note": "'우리가 가진 GPU 4천 장'(한 건물 단일 클러스터). 정부 사업분과 겹칠 수 있어 합계에서 뺀다.",
+   "sources": [
+    {
+     "title": "서플",
+     "url": "https://supple.kr/news/cmtw2taju005tqmmw8zl0xzet"
+    }
+   ],
+   "key": "naver-보안-ai-과제에-쓰는-보유-gpu",
+   "h100eq": null
+  },
+  {
+   "company": "Naver",
+   "region": "KR",
+   "name": "정부 GPU 사업 2026 (네이버 몫)",
+   "chip": "Vera Rubin 1,008 + B300 3,112",
+   "chip_key": null,
+   "count": 4120,
+   "mw": null,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2026-06",
+   "in_total": true,
+   "note": "2031년까지 운영. 이 중 1,576장 사용권은 네이버.",
+   "sources": [
+    {
+     "title": "문화일보",
+     "url": "https://www.munhwa.com/article/11594113"
+    }
+   ],
+   "key": "naver-정부-gpu-사업-2026-(네이버-몫)",
+   "h100eq": null
+  },
+  {
+   "company": "Naver",
+   "region": "KR",
+   "name": "NVIDIA 공급 배정",
+   "chip": "NVIDIA 블랙웰",
+   "chip_key": null,
+   "count": 60000,
+   "mw": null,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2025-10",
+   "in_total": true,
+   "note": "APEC 발표 배정량, 일정 비공개.",
+   "sources": [
+    {
+     "title": "NVIDIA 뉴스룸",
+     "url": "https://nvidianews.nvidia.com/news/south-korea-ai-infrastructure"
+    }
+   ],
+   "key": "naver-nvidia-공급-배정",
+   "h100eq": null
+  },
+  {
+   "company": "NHN Cloud",
+   "region": "KR",
+   "name": "정부 GPU 사업 2025 (최대 몫)",
+   "chip": "B200",
+   "chip_key": "B200",
+   "count": 7656,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2025-07",
+   "in_total": true,
+   "note": "정부 몫 6,120장. 2025-07 계약, 완공 시점은 확인 못 했다.",
+   "sources": [
+    {
+     "title": "뉴스핌",
+     "url": "https://www.newspim.com/news/view/20250729000632"
+    }
+   ],
+   "key": "nhn-cloud-정부-gpu-사업-2025-(최대-몫)",
+   "h100eq": null
+  },
+  {
+   "company": "Kakao",
+   "region": "KR",
+   "name": "정부 GPU 사업 2025 — 안산 데이터센터",
+   "chip": "B200",
+   "chip_key": "B200",
+   "count": 2424,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2025-12",
+   "in_total": true,
+   "note": "2025-12 까지 2,040장(84%) 구축, 5년 운영.",
+   "sources": [
+    {
+     "title": "뉴시스",
+     "url": "https://www.newsis.com/view/NISX20251229_0003457254"
+    }
+   ],
+   "key": "kakao-정부-gpu-사업-2025-—-안산-데이터센터",
+   "h100eq": null
+  },
+  {
+   "company": "SK Telecom",
+   "region": "KR",
+   "name": "해인 GPUaaS 클러스터",
+   "chip": "B200",
+   "chip_key": "B200",
+   "count": 1000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2025-08",
+   "in_total": true,
+   "note": "단일 클러스터 B200 '1,000장 이상'.",
+   "sources": [
+    {
+     "title": "SKT 뉴스룸",
+     "url": "https://news.sktelecom.com/en/2895"
+    }
+   ],
+   "key": "sk-telecom-해인-gpuaas-클러스터",
+   "h100eq": null
+  },
+  {
+   "company": "SK Telecom",
+   "region": "KR",
+   "name": "2GW Vera Rubin AI 팩토리",
+   "chip": "Vera Rubin",
+   "chip_key": null,
+   "count": null,
+   "mw": 2000,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2026-06",
+   "in_total": true,
+   "note": "SK–NVIDIA 확대 협력, 첫 공장 2027년. GPU 수 비공개.",
+   "sources": [
+    {
+     "title": "NVIDIA 뉴스룸",
+     "url": "https://nvidianews.nvidia.com/news/sk-group-and-nvidia-expand-strategic-partnership-across-ai-factories-and-next-generation-memory"
+    }
+   ],
+   "key": "sk-telecom-2gw-vera-rubin-ai-팩토리",
+   "h100eq": null
+  },
+  {
+   "company": "SK Group",
+   "region": "KR",
+   "name": "SK AI 팩토리",
+   "chip": "NVIDIA 블랙웰",
+   "chip_key": null,
+   "count": 50000,
+   "mw": null,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2025-10",
+   "in_total": true,
+   "note": "'5만 장 이상', 1단계 2027년 말.",
+   "sources": [
+    {
+     "title": "NVIDIA 뉴스룸",
+     "url": "https://nvidianews.nvidia.com/news/sk-group-ai-factory"
+    }
+   ],
+   "key": "sk-group-sk-ai-팩토리",
+   "h100eq": null
+  },
+  {
+   "company": "Samsung",
+   "region": "KR",
+   "name": "반도체 AI 메가팩토리",
+   "chip": "NVIDIA 블랙웰",
+   "chip_key": null,
+   "count": 50000,
+   "mw": null,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2025-10",
+   "in_total": true,
+   "note": "'5만 장 이상'. 기존 사내 클러스터 규모는 공개되지 않았다.",
+   "sources": [
+    {
+     "title": "NVIDIA 뉴스룸",
+     "url": "https://nvidianews.nvidia.com/news/samsung-ai-factory"
+    }
+   ],
+   "key": "samsung-반도체-ai-메가팩토리",
+   "h100eq": null
+  },
+  {
+   "company": "Samsung SDS",
+   "region": "KR",
+   "name": "정부 GPU 사업 2026 (SDS 몫)",
+   "chip": "Vera Rubin 1,008 + B300 2,016",
+   "chip_key": null,
+   "count": 3024,
+   "mw": null,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2026-06",
+   "in_total": true,
+   "note": "2026 정부 사업 9,704장의 일부.",
+   "sources": [
+    {
+     "title": "문화일보",
+     "url": "https://www.munhwa.com/article/11594113"
+    }
+   ],
+   "key": "samsung-sds-정부-gpu-사업-2026-(sds-몫)",
+   "h100eq": null
+  },
+  {
+   "company": "Samsung SDS",
+   "region": "KR",
+   "name": "국가AI컴퓨팅센터 (해남 솔라시도, 컨소시엄)",
+   "chip": "첨단 GPU(+국산 AI 칩)",
+   "chip_key": null,
+   "count": 15000,
+   "mw": null,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2026-08",
+   "in_total": true,
+   "note": "2026-08 착공, 2028년까지 1.5만 장, 2.4조 원. 네이버클라우드 참여.",
+   "sources": [
+    {
+     "title": "ZDNet Korea",
+     "url": "https://zdnet.co.kr/view/?no=20260803081408"
+    }
+   ],
+   "key": "samsung-sds-국가ai컴퓨팅센터-(해남-솔라시도,-컨소시엄)",
+   "h100eq": null
+  },
+  {
+   "company": "Elice",
+   "region": "KR",
+   "name": "정부 GPU 사업 2026 (엘리스 몫)",
+   "chip": "B300",
+   "chip_key": "B300",
+   "count": 2560,
+   "mw": null,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2026-06",
+   "in_total": true,
+   "note": "2026 정부 사업의 일부.",
+   "sources": [
+    {
+     "title": "문화일보",
+     "url": "https://www.munhwa.com/article/11594113"
+    }
+   ],
+   "key": "elice-정부-gpu-사업-2026-(엘리스-몫)",
+   "h100eq": null
+  },
+  {
+   "company": "Hyundai Motor Group",
+   "region": "KR",
+   "name": "NVIDIA 블랙웰 AI 팩토리",
+   "chip": "NVIDIA 블랙웰",
+   "chip_key": null,
+   "count": 50000,
+   "mw": null,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2025-10",
+   "in_total": true,
+   "note": "NVIDIA 와 약 30억 달러 공동 투자.",
+   "sources": [
+    {
+     "title": "NVIDIA 뉴스룸",
+     "url": "https://nvidianews.nvidia.com/news/hyundai-motor-group-ai-factory"
+    }
+   ],
+   "key": "hyundai-motor-group-nvidia-블랙웰-ai-팩토리",
+   "h100eq": null
+  },
+  {
+   "company": "KISTI",
+   "region": "KR",
+   "name": "국가 슈퍼컴퓨터 6호기 '한강'",
+   "chip": "GH200 (+H200)",
+   "chip_key": "GH200",
+   "count": 8496,
+   "mw": null,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2026-09",
+   "in_total": true,
+   "note": "출처끼리 다르다 — GH200 8,496 / GH200 8,336 + H200 160. 614PF, 2026-12 가동.",
+   "sources": [
+    {
+     "title": "머니투데이",
+     "url": "https://www.mt.co.kr/tech/2026/09/09/2026090909074636226"
+    },
+    {
+     "title": "ZDNet Korea",
+     "url": "https://zdnet.co.kr/view/?no=20250514095940"
+    }
+   ],
+   "key": "kisti-국가-슈퍼컴퓨터-6호기-'한강'",
+   "h100eq": null
+  },
+  {
+   "company": "Konan Technology",
+   "region": "KR",
+   "name": "사내 학습용",
+   "chip": "H100",
+   "chip_key": "H100",
+   "count": 140,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2025-07",
+   "in_total": true,
+   "note": "'보유 H100 약 140장'(주주 서한).",
+   "sources": [
+    {
+     "title": "코난테크놀로지 공지",
+     "url": "https://konantech.com/pr/notice?number=2346&pn=&sfi=&stype2=&sword="
+    }
+   ],
+   "key": "konan-technology-사내-학습용",
+   "h100eq": null
+  },
+  {
+   "company": "SoftBank",
+   "region": "JP",
+   "name": "AI 계산 기반 (DGX SuperPOD 누적)",
+   "chip": "A100 2천 + H100 4천 + B200 4천",
+   "chip_key": null,
+   "count": 10000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2025-07",
+   "in_total": true,
+   "note": "'GPU 1만 장 초과', 13.7EF. SB Intuitions(Sarashina)가 쓴다.",
+   "sources": [
+    {
+     "title": "SoftBank 2025-07-23",
+     "url": "https://www.softbank.jp/en/corp/news/press/sbkk/2025/20250723_01/"
+    }
+   ],
+   "mix": [
+    {
+     "chip_key": "A100",
+     "count": 2000
+    },
+    {
+     "chip_key": "H100",
+     "count": 4000
+    },
+    {
+     "chip_key": "B200",
+     "count": 4000
+    }
+   ],
+   "key": "softbank-ai-계산-기반-(dgx-superpod-누적)",
+   "h100eq": null
+  },
+  {
+   "company": "SoftBank",
+   "region": "JP",
+   "name": "GB200 NVL72 수랭 플랫폼",
+   "chip": "GB200 NVL72",
+   "chip_key": "GB200",
+   "count": 1224,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2025-12",
+   "in_total": true,
+   "note": "2025-12-22 가동, 4천 장 이상으로 늘릴 계획.",
+   "sources": [
+    {
+     "title": "SoftBank 2025-12-25",
+     "url": "https://www.softbank.jp/en/corp/news/press/sbkk/2025/20251225_01/"
+    }
+   ],
+   "key": "softbank-gb200-nvl72-수랭-플랫폼",
+   "h100eq": null
+  },
+  {
+   "company": "Sakura Internet",
+   "region": "JP",
+   "name": "고화력 H100",
+   "chip": "H100",
+   "chip_key": "H100",
+   "count": 2000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2024-08",
+   "in_total": true,
+   "note": "2024-08-01 정비 완료(2.0EF). 경산성 인증 계획.",
+   "sources": [
+    {
+     "title": "사쿠라 인터넷",
+     "url": "https://www.sakura.ad.jp/corporate/information/newsreleases/2024/08/01/1968216504/"
+    }
+   ],
+   "key": "sakura-internet-고화력-h100",
+   "h100eq": null
+  },
+  {
+   "company": "Sakura Internet",
+   "region": "JP",
+   "name": "이시카리 H200",
+   "chip": "H200",
+   "chip_key": "H200",
+   "count": 1000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2025-06",
+   "in_total": true,
+   "note": "닛케이 '약 1천 장'.",
+   "sources": [
+    {
+     "title": "닛케이",
+     "url": "https://www.nikkei.com/article/DGXZQOUF115YB0R10C25A6000000/"
+    }
+   ],
+   "key": "sakura-internet-이시카리-h200",
+   "h100eq": null
+  },
+  {
+   "company": "Sakura Internet",
+   "region": "JP",
+   "name": "이시카리 블랙웰",
+   "chip": "B200",
+   "chip_key": "B200",
+   "count": 1100,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2026-02",
+   "in_total": true,
+   "note": "2026-02 부터 약 1,100장 가동.",
+   "sources": [
+    {
+     "title": "사쿠라 인터넷 2026-02-25",
+     "url": "https://www.sakura.ad.jp/corporate/information/newsreleases/2026/02/25/1968223641/"
+    }
+   ],
+   "key": "sakura-internet-이시카리-블랙웰",
+   "h100eq": null
+  },
+  {
+   "company": "KDDI",
+   "region": "JP",
+   "name": "오사카 사카이 데이터센터",
+   "chip": "GB200 NVL72 (HPE)",
+   "chip_key": null,
+   "count": null,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2026-01",
+   "in_total": true,
+   "note": "2026-01-22 가동. GPU 수는 공개하지 않았다.",
+   "sources": [
+    {
+     "title": "KDDI 뉴스룸",
+     "url": "https://newsroom.kddi.com/english/news/detail/kddi_nr-916_4323.html"
+    }
+   ],
+   "key": "kddi-오사카-사카이-데이터센터",
+   "h100eq": null
+  },
+  {
+   "company": "AIST (일본 산업기술종합연구소)",
+   "region": "JP",
+   "name": "ABCI 3.0",
+   "chip": "H200 SXM",
+   "chip_key": "H200",
+   "count": 6128,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2025-01",
+   "in_total": true,
+   "note": "766 노드 × 8.",
+   "sources": [
+    {
+     "title": "arXiv 2411.09134",
+     "url": "https://arxiv.org/abs/2411.09134"
+    }
+   ],
+   "key": "aist-(일본-산업기술종합연구소)-abci-3.0",
+   "h100eq": null
+  },
+  {
+   "company": "Institute of Science Tokyo",
+   "region": "JP",
+   "name": "TSUBAME 4.0",
+   "chip": "H100 SXM5",
+   "chip_key": "H100",
+   "count": 960,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2024-04",
+   "in_total": true,
+   "note": "240 노드 × 4.",
+   "sources": [
+    {
+     "title": "도쿄공대",
+     "url": "https://www.titech.ac.jp/english/news/2024/069452"
+    }
+   ],
+   "key": "institute-of-science-tokyo-tsubame-4.0",
+   "h100eq": null
+  },
+  {
+   "company": "RIKEN",
+   "region": "JP",
+   "name": "AI 과학용 + 양자용 시스템",
+   "chip": "GB200 NVL4",
+   "chip_key": "GB200",
+   "count": 2140,
+   "mw": null,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2025-11",
+   "in_total": true,
+   "note": "SC25 발표(1,600 + 540).",
+   "sources": [
+    {
+     "title": "NVIDIA 뉴스룸",
+     "url": "https://nvidianews.nvidia.com/news/nvidia-and-riken-advance-japans-scientific-frontiers-with-new-supercomputers-for-ai-and-quantum-computing"
+    }
+   ],
+   "key": "riken-ai-과학용-+-양자용-시스템",
+   "h100eq": null
+  },
+  {
+   "company": "GMO Internet",
+   "region": "JP",
+   "name": "GMO GPU 클라우드",
+   "chip": "H200",
+   "chip_key": "H200",
+   "count": 800,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2024-04",
+   "in_total": true,
+   "note": "경산성 인증 약 800장. 이후 B300 으로 바꿨다(수 비공개).",
+   "sources": [
+    {
+     "title": "GMO IR",
+     "url": "https://ir.group.gmo/pdf/irlibrary/gmo_disclose_info20240419.pdf"
+    }
+   ],
+   "key": "gmo-internet-gmo-gpu-클라우드",
+   "h100eq": null
+  },
+  {
+   "company": "Highreso",
+   "region": "JP",
+   "name": "다카마쓰 GPU 데이터센터",
+   "chip": "HGX H200",
+   "chip_key": "H200",
+   "count": 408,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2024-12",
+   "in_total": true,
+   "note": "2024-12-19 개소.",
+   "sources": [
+    {
+     "title": "PR TIMES",
+     "url": "https://prtimes.jp/main/html/rd/p/000000066.000058027.html"
+    }
+   ],
+   "key": "highreso-다카마쓰-gpu-데이터센터",
+   "h100eq": null
+  },
+  {
+   "company": "Preferred Networks",
+   "region": "JP",
+   "name": "MN-2",
+   "chip": "V100 SXM",
+   "chip_key": null,
+   "count": 1024,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2019",
+   "in_total": true,
+   "note": "V100 1,024장. MN-3(MN-Core 128~160개)는 자체 칩이라 환산하지 않는다.",
+   "sources": [
+    {
+     "title": "PFN 슈퍼컴퓨터",
+     "url": "https://projects.preferred.jp/supercomputers/en/"
+    }
+   ],
+   "key": "preferred-networks-mn-2",
+   "h100eq": null
+  },
+  {
+   "company": "Mistral AI",
+   "region": "EU",
+   "name": "Mistral Compute 1단계 (NVIDIA)",
+   "chip": "GB300",
+   "chip_key": "GB300",
+   "count": 18000,
+   "mw": null,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2025-06",
+   "in_total": true,
+   "note": "'Grace Blackwell 1.8만'(단위가 모호해 GPU 로 읽었다). 아래 1.38만과 겹친다.",
+   "sources": [
+    {
+     "title": "NVIDIA 뉴스룸",
+     "url": "https://nvidianews.nvidia.com/news/europe-ai-infrastructure"
+    }
+   ],
+   "key": "mistral-ai-mistral-compute-1단계-(nvidia)",
+   "h100eq": null
+  },
+  {
+   "company": "Mistral AI",
+   "region": "EU",
+   "name": "브뤼예르르샤텔 데이터센터",
+   "chip": "GB300",
+   "chip_key": "GB300",
+   "count": 13800,
+   "mw": 44,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2026-03",
+   "in_total": true,
+   "note": "2026년 2분기 개소 예정, 가동 확인 전. 44MW.",
+   "sources": [
+    {
+     "title": "TechCrunch",
+     "url": "https://techcrunch.com/2026/03/30/mistral-ai-raises-830m-in-debt-to-set-up-a-data-center-near-paris/"
+    }
+   ],
+   "key": "mistral-ai-브뤼예르르샤텔-데이터센터",
+   "h100eq": null
+  },
+  {
+   "company": "Aleph Alpha",
+   "region": "EU",
+   "name": "alpha ONE",
+   "chip": "A100 80GB",
+   "chip_key": "A100",
+   "count": 512,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2022-06",
+   "in_total": true,
+   "note": "서버 64대 × 8.",
+   "sources": [
+    {
+     "title": "The Decoder",
+     "url": "https://the-decoder.com/openai-competitor-launches-europes-fastest-commercial-ai-data-center/"
+    }
+   ],
+   "key": "aleph-alpha-alpha-one",
+   "h100eq": null
+  },
+  {
+   "company": "DeepL",
+   "region": "EU",
+   "name": "DeepL Mercury (스웨덴)",
+   "chip": "DGX H100",
+   "chip_key": "H100",
+   "count": 544,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2023-11",
+   "in_total": true,
+   "note": "DGX H100 68대 × 8, TOP500 34위. 2025 GB200 SuperPOD 는 수 비공개.",
+   "sources": [
+    {
+     "title": "TOP500",
+     "url": "https://top500.org/system/180224/"
+    }
+   ],
+   "key": "deepl-deepl-mercury-(스웨덴)",
+   "h100eq": null
+  },
+  {
+   "company": "Scaleway",
+   "region": "EU",
+   "name": "Nabuchodonosor (파리)",
+   "chip": "DGX H100",
+   "chip_key": "H100",
+   "count": 1016,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2023-10",
+   "in_total": true,
+   "note": "DGX H100 127대.",
+   "sources": [
+    {
+     "title": "DCD",
+     "url": "https://www.datacenterdynamics.com/en/news/french-telco-iliad-acquires-nvidia-dgx-superpod-with-1016-h100-gpus/"
+    }
+   ],
+   "key": "scaleway-nabuchodonosor-(파리)",
+   "h100eq": null
+  },
+  {
+   "company": "Deutsche Telekom",
+   "region": "EU",
+   "name": "산업용 AI 클라우드 (뮌헨)",
+   "chip": "블랙웰(DGX B200 + RTX PRO)",
+   "chip_key": null,
+   "count": 10000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2026-02",
+   "in_total": true,
+   "note": "'약 1만 장', 0.5EF, 가동 때 1/3 사용. RTX PRO 가 섞여 환산하지 않는다.",
+   "sources": [
+    {
+     "title": "Telekom",
+     "url": "https://www.telekom.com/en/media/media-information/archive/germany-s-first-ai-factory-for-industry-1101670"
+    }
+   ],
+   "key": "deutsche-telekom-산업용-ai-클라우드-(뮌헨)",
+   "h100eq": null
+  },
+  {
+   "company": "Nscale",
+   "region": "EU",
+   "name": "러프턴 AI 캠퍼스 (영국, Microsoft 용)",
+   "chip": "GB300",
+   "chip_key": "GB300",
+   "count": 23000,
+   "mw": 50,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2025-10",
+   "in_total": true,
+   "note": "2027년 1분기부터, 50MW.",
+   "sources": [
+    {
+     "title": "Nscale",
+     "url": "https://www.nscale.com/press-releases/nscale-microsoft-2025"
+    }
+   ],
+   "key": "nscale-러프턴-ai-캠퍼스-(영국,-microsoft-용)",
+   "h100eq": null
+  },
+  {
+   "company": "Nscale",
+   "region": "EU",
+   "name": "시네스 (포르투갈, Microsoft 용)",
+   "chip": "GB300",
+   "chip_key": "GB300",
+   "count": 12600,
+   "mw": null,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2025-10",
+   "in_total": true,
+   "note": "2026년 1분기부터, 가동 확인 전.",
+   "sources": [
+    {
+     "title": "Nscale",
+     "url": "https://www.nscale.com/press-releases/nscale-microsoft-2025"
+    }
+   ],
+   "key": "nscale-시네스-(포르투갈,-microsoft-용)",
+   "h100eq": null
+  },
+  {
+   "company": "Nscale",
+   "region": "EU",
+   "name": "Stargate 노르웨이 (나르비크)",
+   "chip": "NVIDIA",
+   "chip_key": null,
+   "count": 100000,
+   "mw": 230,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2025-07",
+   "in_total": true,
+   "note": "OpenAI·Aker 와 2026년 말 10만 장 목표, 230MW. 같은 부지의 Microsoft 용 GB300 5.2만과 겹친다.",
+   "sources": [
+    {
+     "title": "OpenAI",
+     "url": "https://openai.com/index/introducing-stargate-norway/"
+    }
+   ],
+   "key": "nscale-stargate-노르웨이-(나르비크)",
+   "h100eq": null
+  },
+  {
+   "company": "Nebius",
+   "region": "EU",
+   "name": "핀란드 1단계",
+   "chip": "H100",
+   "chip_key": "H100",
+   "count": 8000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2024-05",
+   "in_total": true,
+   "note": "Epoch 'Likely'. Nebius 는 전력만 밝힌다(2026년 말 5GW 목표).",
+   "sources": [
+    {
+     "title": "Epoch AI GPU 클러스터 데이터",
+     "url": "https://epoch.ai/data/gpu_clusters.csv"
+    }
+   ],
+   "key": "nebius-핀란드-1단계",
+   "h100eq": null
+  },
+  {
+   "company": "Nebius",
+   "region": "EU",
+   "name": "ISEG2 (네덜란드)",
+   "chip": "H200",
+   "chip_key": "H200",
+   "count": 4992,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2025-06",
+   "in_total": true,
+   "note": "TOP500 등재.",
+   "sources": [
+    {
+     "title": "Epoch AI GPU 클러스터 데이터",
+     "url": "https://epoch.ai/data/gpu_clusters.csv"
+    }
+   ],
+   "key": "nebius-iseg2-(네덜란드)",
+   "h100eq": null
+  },
+  {
+   "company": "Nebius",
+   "region": "EU",
+   "name": "캔자스시티 1단계 (미국)",
+   "chip": "H200",
+   "chip_key": "H200",
+   "count": 4000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2025-04",
+   "in_total": true,
+   "note": "Epoch 'Likely'.",
+   "sources": [
+    {
+     "title": "Epoch AI GPU 클러스터 데이터",
+     "url": "https://epoch.ai/data/gpu_clusters.csv"
+    }
+   ],
+   "key": "nebius-캔자스시티-1단계-(미국)",
+   "h100eq": null
+  },
+  {
+   "company": "Nebius",
+   "region": "EU",
+   "name": "롱크로스 (영국) 1단계",
+   "chip": "B300 급",
+   "chip_key": "B300",
+   "count": 4000,
+   "mw": null,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2025-06",
+   "in_total": true,
+   "note": "완공 때 약 9천 장.",
+   "sources": [
+    {
+     "title": "DCD",
+     "url": "https://www.datacenterdynamics.com/en/news/nebius-to-host-uk-nvidia-blackwell-ultra-gpu-cluster-in-ark-data-centres-facility-in-surrey/"
+    }
+   ],
+   "key": "nebius-롱크로스-(영국)-1단계",
+   "h100eq": null
+  },
+  {
+   "company": "Fluidstack",
+   "region": "EU",
+   "name": "프랑스 1GW 슈퍼컴퓨터 (MoU)",
+   "chip": "차세대 AI 칩",
+   "chip_key": null,
+   "count": 500000,
+   "mw": 1000,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2025-02",
+   "in_total": true,
+   "note": "1단계 '약 50만 장', 100억 유로, MoU.",
+   "sources": [
+    {
+     "title": "Fluidstack",
+     "url": "https://www.fluidstack.io/post/1gw-ai-supercomputer-france"
+    }
+   ],
+   "key": "fluidstack-프랑스-1gw-슈퍼컴퓨터-(mou)",
+   "h100eq": null
+  },
+  {
+   "company": "EuroHPC (유럽 공동)",
+   "region": "EU",
+   "name": "JUPITER Booster (독일)",
+   "chip": "GH200",
+   "chip_key": "GH200",
+   "count": 24000,
+   "mw": 18.2,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2025-11",
+   "in_total": true,
+   "note": "약 6천 노드 × 4, TOP500 4위.",
+   "sources": [
+    {
+     "title": "TOP500",
+     "url": "https://www.top500.org/system/180357/"
+    }
+   ],
+   "key": "eurohpc-(유럽-공동)-jupiter-booster-(독일)",
+   "h100eq": null
+  },
+  {
+   "company": "EuroHPC (유럽 공동)",
+   "region": "EU",
+   "name": "LUMI-G (핀란드)",
+   "chip": "MI250X",
+   "chip_key": "MI250X",
+   "count": 11912,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2023-06",
+   "in_total": true,
+   "note": "2,978 노드 × 4.",
+   "sources": [
+    {
+     "title": "LUMI 문서",
+     "url": "https://docs.lumi-supercomputer.eu/hardware/lumig/"
+    }
+   ],
+   "key": "eurohpc-(유럽-공동)-lumi-g-(핀란드)",
+   "h100eq": null
+  },
+  {
+   "company": "EuroHPC (유럽 공동)",
+   "region": "EU",
+   "name": "Leonardo Booster (이탈리아)",
+   "chip": "A100 64GB",
+   "chip_key": "A100",
+   "count": 13824,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2023-05",
+   "in_total": true,
+   "note": "3,456 노드 × 4.",
+   "sources": [
+    {
+     "title": "CINECA",
+     "url": "https://www.hpc.cineca.it/systems/hardware/leonardo/"
+    }
+   ],
+   "key": "eurohpc-(유럽-공동)-leonardo-booster-(이탈리아)",
+   "h100eq": null
+  },
+  {
+   "company": "EuroHPC (유럽 공동)",
+   "region": "EU",
+   "name": "MareNostrum 5 ACC (스페인)",
+   "chip": "H100 64GB",
+   "chip_key": "H100",
+   "count": 4480,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2023-12",
+   "in_total": true,
+   "note": "1,120 노드 × 4(곱은 우리 계산).",
+   "sources": [
+    {
+     "title": "BSC",
+     "url": "https://www.bsc.es/marenostrum/marenostrum-5"
+    }
+   ],
+   "key": "eurohpc-(유럽-공동)-marenostrum-5-acc-(스페인)",
+   "h100eq": null
+  },
+  {
+   "company": "EuroHPC (유럽 공동)",
+   "region": "EU",
+   "name": "LUMI-AI",
+   "chip": "MI430X",
+   "chip_key": null,
+   "count": 4960,
+   "mw": null,
+   "status": "planned",
+   "confidence": "estimate",
+   "as_of": "2026-09",
+   "in_total": true,
+   "note": "2027년 하반기 설치. 장수는 Next Platform 추정.",
+   "sources": [
+    {
+     "title": "EuroHPC",
+     "url": "https://www.eurohpc-ju.europa.eu/eurohpc-ju-signs-contract-deploy-lumi-ai-supercomputer-2026-08-31_en"
+    }
+   ],
+   "key": "eurohpc-(유럽-공동)-lumi-ai",
+   "h100eq": null
+  },
+  {
+   "company": "영국 정부 (AIRR)",
+   "region": "EU",
+   "name": "Isambard-AI (브리스톨)",
+   "chip": "GH200",
+   "chip_key": "GH200",
+   "count": 5448,
+   "mw": 5,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2025-07",
+   "in_total": true,
+   "note": "2.25억 파운드, TOP500 11위.",
+   "sources": [
+    {
+     "title": "TOP500",
+     "url": "https://top500.org/system/180388/"
+    }
+   ],
+   "key": "영국-정부-(airr)-isambard-ai-(브리스톨)",
+   "h100eq": null
+  },
+  {
+   "company": "영국 정부 (AIRR)",
+   "region": "EU",
+   "name": "Dawn (케임브리지)",
+   "chip": "Intel Data Center GPU Max 1550",
+   "chip_key": "Intel Max 1550",
+   "count": 1024,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2023-11",
+   "in_total": true,
+   "note": "Dell XE9640 256대 × 4. MI355X 업그레이드는 수 비공개.",
+   "sources": [
+    {
+     "title": "Intel",
+     "url": "https://newsroom.intel.com/artificial-intelligence/intel-dell-power-uk-fastest-ai-supercomputer"
+    }
+   ],
+   "key": "영국-정부-(airr)-dawn-(케임브리지)",
+   "h100eq": null
+  },
+  {
+   "company": "스위스 CSCS",
+   "region": "EU",
+   "name": "Alps",
+   "chip": "GH200",
+   "chip_key": "GH200",
+   "count": 10752,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2024-09",
+   "in_total": true,
+   "note": "2,688 노드 × 4.",
+   "sources": [
+    {
+     "title": "CSCS",
+     "url": "https://docs.cscs.ch/alps/hardware/"
+    }
+   ],
+   "key": "스위스-cscs-alps",
+   "h100eq": null
+  },
+  {
+   "company": "G42",
+   "region": "ME",
+   "name": "Stargate UAE 1단계",
+   "chip": "GB300",
+   "chip_key": "GB300",
+   "count": 100000,
+   "mw": 200,
+   "status": "planned",
+   "confidence": "estimate",
+   "as_of": "2026-01",
+   "in_total": true,
+   "note": "'GB300 약 10만'은 언론 수치(공식은 수 없음), 200MW, 2026년 3분기 목표. 미국 수출 허가(최대 3.5만)와 크게 다르다.",
+   "sources": [
+    {
+     "title": "G42",
+     "url": "https://www.g42.ai/resources/news/global-tech-alliance-launches-stargate-uae"
+    },
+    {
+     "title": "DCD",
+     "url": "https://www.datacenterdynamics.com/en/news/companies-behind-uae-stargate-offer-additional-details/"
+    }
+   ],
+   "key": "g42-stargate-uae-1단계",
+   "h100eq": null
+  },
+  {
+   "company": "G42",
+   "region": "ME",
+   "name": "Core42 버펄로 (미국)",
+   "chip": "MI300X",
+   "chip_key": "MI300X",
+   "count": 9000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2025",
+   "in_total": true,
+   "note": "'9천 장 이상' — 원문을 열지 못한 2차 요약이라 추정.",
+   "sources": [
+    {
+     "title": "Middle East AI News",
+     "url": "https://www.middleeastainews.com/p/core42-expands-us-ai-compute"
+    }
+   ],
+   "key": "g42-core42-버펄로-(미국)",
+   "h100eq": null
+  },
+  {
+   "company": "HUMAIN (사우디)",
+   "region": "ME",
+   "name": "NVIDIA 1단계",
+   "chip": "GB300",
+   "chip_key": "GB300",
+   "count": 18000,
+   "mw": null,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2025-05",
+   "in_total": true,
+   "note": "첫 데이터센터 2026년 2분기 목표, 가동 확인 전.",
+   "sources": [
+    {
+     "title": "DCD",
+     "url": "https://www.datacenterdynamics.com/en/news/saudi-arabian-ai-venture-humain-buys-18000-nvidia-gb300-chips-several-hundred-thousand-more-on-the-way/"
+    }
+   ],
+   "key": "humain-(사우디)-nvidia-1단계",
+   "h100eq": null
+  },
+  {
+   "company": "HUMAIN (사우디)",
+   "region": "ME",
+   "name": "NVIDIA 60만 장 계획",
+   "chip": "NVIDIA",
+   "chip_key": null,
+   "count": 600000,
+   "mw": null,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2025-11",
+   "in_total": true,
+   "note": "약 3년에 걸쳐(사우디 + 미국).",
+   "sources": [
+    {
+     "title": "Middle East AI News",
+     "url": "https://www.middleeastainews.com/p/humain-to-deploy-600000-nvidia-gpus"
+    }
+   ],
+   "key": "humain-(사우디)-nvidia-60만-장-계획",
+   "h100eq": null
+  },
+  {
+   "company": "Groq · Aramco Digital",
+   "region": "ME",
+   "name": "GroqCloud 담맘",
+   "chip": "Groq LPU v1",
+   "chip_key": null,
+   "count": 19000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2025-02",
+   "in_total": true,
+   "note": "사우디. Epoch 은 19,725장·소유 Aramco. 자체 칩이라 환산하지 않는다.",
+   "sources": [
+    {
+     "title": "Groq",
+     "url": "https://groq.com/newsroom/saudi-arabia-announces-1-5-billion-expansion-to-fuel-ai-powered-economy-with-ai-tech-leader-groq"
+    }
+   ],
+   "key": "groq-·-aramco-digital-groqcloud-담맘",
+   "h100eq": null
+  },
+  {
+   "company": "Yotta",
+   "region": "IN",
+   "name": "Shakti Cloud B300 슈퍼클러스터",
+   "chip": "B300",
+   "chip_key": "B300",
+   "count": 20736,
+   "mw": null,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2026-02",
+   "in_total": true,
+   "note": "20억 달러 이상, 2026-08 가동 목표(확인 전). H100 16,384장 계획(2023)은 설치 수 미확인.",
+   "sources": [
+    {
+     "title": "Yotta",
+     "url": "https://yotta.com/press-releases/yotta-to-deploy-20000-nvidia-blackwell-ultra-gpus/"
+    }
+   ],
+   "key": "yotta-shakti-cloud-b300-슈퍼클러스터",
+   "h100eq": null
+  },
+  {
+   "company": "Reliance · Jio",
+   "region": "IN",
+   "name": "잠나가르 AI 데이터센터 1단계",
+   "chip": "GB300",
+   "chip_key": null,
+   "count": null,
+   "mw": 120,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2026-08",
+   "in_total": true,
+   "note": "'H100 환산 7.5만 이상'으로 시작, 120MW 에서 20만 이상. 실물 수는 없다.",
+   "sources": [
+    {
+     "title": "IndiaAIPulse",
+     "url": "https://www.indiaaipulse.com/en/news/reliance-outlines-ai-push-at-2026-agm"
+    }
+   ],
+   "key": "reliance-·-jio-잠나가르-ai-데이터센터-1단계",
+   "h100eq": null
+  },
+  {
+   "company": "Cohere",
+   "region": "OTHER",
+   "name": "Bell·BUZZ 소버린 클러스터 (캐나다)",
+   "chip": "GB200 (NVL72)",
+   "chip_key": "GB200",
+   "count": 2304,
+   "mw": null,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2026-06",
+   "in_total": true,
+   "note": "2.2억 달러 3년, 2026년 말~2027년 초.",
+   "sources": [
+    {
+     "title": "HIVE",
+     "url": "https://www.hivedigitaltechnologies.com/news/hives-buzz-hpc-closes-usd-220-million-sovereign-ai-gpu-contract-with-bell-ai-fabric-for-cohere-inc/"
+    }
+   ],
+   "key": "cohere-bell·buzz-소버린-클러스터-(캐나다)",
+   "h100eq": null
+  },
+  {
+   "company": "Sharon AI (호주)",
+   "region": "OTHER",
+   "name": "소버린 AI 구축",
+   "chip": "NVIDIA(GB300 포함)",
+   "chip_key": null,
+   "count": 68000,
+   "mw": null,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2026-09",
+   "in_total": true,
+   "note": "NVIDIA 발표 6.8만.",
+   "sources": [
+    {
+     "title": "NVIDIA 뉴스룸",
+     "url": "https://nvidianews.nvidia.com/news/nvidia-expands-ai-infrastructure-capacity-in-partnership-with-australias-data-center-ecosystem"
+    }
+   ],
+   "key": "sharon-ai-(호주)-소버린-ai-구축",
+   "h100eq": null
+  },
+  {
+   "company": "Foxconn (대만)",
+   "region": "OTHER",
+   "name": "대만 AI 팩토리 슈퍼컴퓨터",
+   "chip": "GB300",
+   "chip_key": "GB300",
+   "count": 10000,
+   "mw": null,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2025-05",
+   "in_total": true,
+   "note": "Computex 2025 발표.",
+   "sources": [
+    {
+     "title": "NVIDIA 뉴스룸",
+     "url": "https://nvidianews.nvidia.com/news/foxconn-builds-ai-factory-in-partnership-with-taiwan-and-nvidia"
+    }
+   ],
+   "key": "foxconn-(대만)-대만-ai-팩토리-슈퍼컴퓨터",
+   "h100eq": null
+  },
+  {
+   "company": "대만 NCHC",
+   "region": "OTHER",
+   "name": "Nano4",
+   "chip": "H200 1,760 + GB200 144",
+   "chip_key": null,
+   "count": 1904,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2026-06",
+   "in_total": true,
+   "note": "2026-06-01 가동.",
+   "sources": [
+    {
+     "title": "DCD",
+     "url": "https://www.datacenterdynamics.com/en/news/taiwans-new-nano4-supercomputer-comes-online/"
+    }
+   ],
+   "mix": [
+    {
+     "chip_key": "H200",
+     "count": 1760
+    },
+    {
+     "chip_key": "GB200",
+     "count": 144
+    }
+   ],
+   "key": "대만-nchc-nano4",
+   "h100eq": null
+  },
+  {
+   "company": "싱가포르 NSCC",
+   "region": "OTHER",
+   "name": "ASPIRE 2A+",
+   "chip": "DGX H100",
+   "chip_key": "H100",
+   "count": 320,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2024-11",
+   "in_total": true,
+   "note": "DGX 40대 × 8.",
+   "sources": [
+    {
+     "title": "NSCC",
+     "url": "https://www.nscc.sg/aspire-2a-plus/"
+    }
+   ],
+   "key": "싱가포르-nscc-aspire-2a+",
+   "h100eq": null
+  },
+  {
+   "company": "DeepSeek",
+   "region": "CN",
+   "name": "Fire-Flyer 2 (Fire-Flyer AI-HPC)",
+   "chip": "NVIDIA A100 PCIe",
+   "chip_key": "A100",
+   "count": 10000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2024-08",
+   "in_total": false,
+   "note": "회사 논문(SC24): Fire-Flyer 2 에 PCIe A100 1만 장. 아래 SemiAnalysis 추정 5만 장과 겹칠 수 있어 합계에는 추정 쪽만 넣는다.",
+   "sources": [
+    {
+     "title": "Fire-Flyer AI-HPC (arXiv 2408.14158)",
+     "url": "https://arxiv.org/abs/2408.14158"
+    }
+   ],
+   "key": "deepseek-fire-flyer-2-(fire-flyer-ai-hpc)",
+   "h100eq": null
+  },
+  {
+   "company": "DeepSeek",
+   "region": "CN",
+   "name": "DeepSeek-V3 학습 클러스터",
+   "chip": "NVIDIA H800",
+   "chip_key": "H800",
+   "count": 2048,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2024-12",
+   "in_total": false,
+   "note": "V3 기술 보고서: H800 2,048장으로 278.8만 GPU·시간. 학습에 쓴 부분일 뿐 전체 보유량이 아니다.",
+   "sources": [
+    {
+     "title": "DeepSeek-V3 Technical Report",
+     "url": "https://arxiv.org/abs/2412.19437"
+    }
+   ],
+   "key": "deepseek-deepseek-v3-학습-클러스터",
+   "h100eq": null
+  },
+  {
+   "company": "DeepSeek",
+   "region": "CN",
+   "name": "전체 보유 (SemiAnalysis 추정)",
+   "chip": "H100 약 1만 + H800 약 1만 + H20 약 3만 (+ A100 약 1만)",
+   "chip_key": null,
+   "count": 50000,
+   "h100eq": null,
+   "mw": null,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2025-01",
+   "in_total": true,
+   "mix": [
+    {
+     "chip_key": "H100",
+     "count": 10000
+    },
+    {
+     "chip_key": "H800",
+     "count": 10000
+    },
+    {
+     "chip_key": "H20",
+     "count": 30000
+    },
+    {
+     "chip_key": "A100",
+     "count": 10000
+    }
+   ],
+   "note": "SemiAnalysis 추정 호퍼 약 5만 장(구성은 2차 보도) + A100 1만. DeepSeek 은 확인하지 않았다. 회사 공개값(A100 1만, V3 에 H800 2,048)과 다르다.",
+   "sources": [
+    {
+     "title": "SemiAnalysis: DeepSeek Debates",
+     "url": "https://newsletter.semianalysis.com/p/deepseek-debates"
+    },
+    {
+     "title": "Tom's Hardware 요약",
+     "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/deepseek-might-not-be-as-disruptive-as-claimed-firm-reportedly-has-50-000-nvidia-gpus-and-spent-usd1-6-billion-on-buildouts"
+    }
+   ],
+   "key": "deepseek-전체-보유-(semianalysis-추정)"
+  },
+  {
+   "company": "DeepSeek",
+   "region": "CN",
+   "name": "울란차브(내몽골) 데이터센터",
+   "chip": "Huawei Ascend 950DT",
+   "chip_key": null,
+   "count": 160000,
+   "mw": 1000,
+   "status": "planned",
+   "confidence": "estimate",
+   "as_of": "2026-09",
+   "in_total": false,
+   "note": "Bloomberg(관계자): 추론용 Ascend 950DT 최소 16만 장, 약 1GW. 2027년 말~2028년 초 일부 가동 목표. DeepSeek 미확인.",
+   "sources": [
+    {
+     "title": "Bloomberg: DeepSeek Plans Big Huawei AI Chip Order",
+     "url": "https://www.bloomberg.com/news/articles/2026-09-04/deepseek-plans-big-huawei-ai-chip-order-to-power-new-data-center"
+    }
+   ],
+   "key": "deepseek-울란차브(내몽골)-데이터센터",
+   "h100eq": null
+  },
+  {
+   "company": "ByteDance",
+   "region": "CN",
+   "name": "2024년 호퍼 구매량 (Omdia 추정)",
+   "chip": "NVIDIA Hopper (대부분 H20)",
+   "chip_key": "H20",
+   "count": 230000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2024-12",
+   "in_total": true,
+   "note": "FT 가 보도한 Omdia 추정: 2024년 한 해 약 23만 장 구매(대부분 H20). 보유 총량이 아니라 1년 구매량이다. 환산은 전부 H20 으로 친 하한.",
+   "sources": [
+    {
+     "title": "TechRadar (FT·Omdia 인용)",
+     "url": "https://www.techradar.com/pro/chinese-cloud-giants-bought-more-of-nvidias-flagship-ai-chips-than-anybody-else-except-microsoft"
+    }
+   ],
+   "key": "bytedance-2024년-호퍼-구매량-(omdia-추정)",
+   "h100eq": null
+  },
+  {
+   "company": "ByteDance",
+   "region": "CN",
+   "name": "2026 H200 예비 주문",
+   "chip": "NVIDIA H200",
+   "chip_key": "H200",
+   "count": 20000,
+   "mw": null,
+   "status": "planned",
+   "confidence": "estimate",
+   "as_of": "2025-12",
+   "in_total": false,
+   "note": "FT(TrendForce 인용): 2026년 AI 칩 예산 약 143억 달러 안에서 H200 2만 장 예비 계획, 중국 정부 승인 조건.",
+   "sources": [
+    {
+     "title": "TrendForce (FT 인용)",
+     "url": "https://www.trendforce.com/news/2025/12/23/news-bytedance-reportedly-to-boost-2026-ai-spend-to-23b-plans-preliminary-20k-h200-chips-order"
+    }
+   ],
+   "key": "bytedance-2026-h200-예비-주문",
+   "h100eq": null
+  },
+  {
+   "company": "ByteDance",
+   "region": "CN",
+   "name": "노르웨이 Nscale 임차",
+   "chip": "NVIDIA B200",
+   "chip_key": "B200",
+   "count": 2000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2026-09",
+   "in_total": true,
+   "note": "Nscale 공시 보도: ByteDance 싱가포르 자회사가 B200 2천 장 이상을 빌려 쓴다(중국 밖, 소유 아님). 하한.",
+   "sources": [
+    {
+     "title": "Tom's Hardware",
+     "url": "https://www.tomshardware.com/tech-industry/data-centers/filing-reveals-how-bytedance-gained-access-to-over-2-000-nvidia-b200-chips-through-nscales-norway-data-center-singaporean-subsidiary-spring-contributed-73-percent-of-uk-neoclouds-2025-revenue"
+    },
+    {
+     "title": "Fortune",
+     "url": "https://fortune.com/2026/09/23/nscale-35-billion-ipo-bytedance-nvidia-chips/"
+    }
+   ],
+   "key": "bytedance-노르웨이-nscale-임차",
+   "h100eq": null
+  },
+  {
+   "company": "Tencent",
+   "region": "CN",
+   "name": "2024년 호퍼 구매량 (Omdia 추정)",
+   "chip": "NVIDIA Hopper (대부분 H20)",
+   "chip_key": "H20",
+   "count": 230000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2024-12",
+   "in_total": true,
+   "note": "FT 가 보도한 Omdia 추정(ByteDance 와 같은 약 23만 장), 2024년 구매량. Tencent 는 숫자 없이 '중국에서 가장 큰 AI 칩 재고 중 하나'라고만 했다. 환산은 전부 H20 으로 친 하한.",
+   "sources": [
+    {
+     "title": "TechRadar (FT·Omdia 인용)",
+     "url": "https://www.techradar.com/pro/chinese-cloud-giants-bought-more-of-nvidias-flagship-ai-chips-than-anybody-else-except-microsoft"
+    },
+    {
+     "title": "The Register: Tencent 2025 1분기",
+     "url": "https://www.theregister.com/2025/05/15/tencent_q1_25/"
+    }
+   ],
+   "key": "tencent-2024년-호퍼-구매량-(omdia-추정)",
+   "h100eq": null
+  },
+  {
+   "company": "Baidu",
+   "region": "CN",
+   "name": "Kunlun P800 3만 장 클러스터",
+   "chip": "Kunlunxin P800",
+   "chip_key": "Kunlun P800",
+   "count": 30000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2025-04",
+   "in_total": true,
+   "note": "Baidu Create 2025 공개. 2025-02 에 1만 장으로 켠 뒤 3만 장으로 늘렸다(3.2만이라는 보도도 있다). NVIDIA 보유량은 공개 수가 없다.",
+   "sources": [
+    {
+     "title": "Caixin Global",
+     "url": "https://www.caixinglobal.com/2025-11-14/baidu-unveils-ambitious-ai-chip-roadmap-targeting-1-million-card-cluster-by-2030-102382580.html"
+    },
+    {
+     "title": "DigiTimes (1만 장 점등)",
+     "url": "https://www.digitimes.com/news/a20250208PD210/baidu-ai-chip-chips-2024-production.html"
+    }
+   ],
+   "key": "baidu-kunlun-p800-3만-장-클러스터",
+   "h100eq": null
+  },
+  {
+   "company": "Baidu",
+   "region": "CN",
+   "name": "Kunlun 100만 장 클러스터 목표",
+   "chip": "Kunlunxin (M100·M300 등)",
+   "chip_key": null,
+   "count": 1000000,
+   "mw": null,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2025-11",
+   "in_total": false,
+   "note": "Baidu World 2025 로드맵: 2030년까지 100만 장 클러스터.",
+   "sources": [
+    {
+     "title": "Caixin Global",
+     "url": "https://www.caixinglobal.com/2025-11-14/baidu-unveils-ambitious-ai-chip-roadmap-targeting-1-million-card-cluster-by-2030-102382580.html"
+    }
+   ],
+   "key": "baidu-kunlun-100만-장-클러스터-목표",
+   "h100eq": null
+  },
+  {
+   "company": "Alibaba",
+   "region": "CN",
+   "name": "차이나유니콤 싼장위안(시닝) 데이터센터",
+   "chip": "Alibaba T-Head PPU",
+   "chip_key": null,
+   "count": 16384,
+   "fp16_pflops": 1945,
+   "mw": null,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2025-09",
+   "in_total": true,
+   "note": "CCTV 보도(TrendForce 인용): Alibaba 서버 1,024대에 T-Head PPU 16,384개, 약 1,945 PFLOPS. 전체 보유량은 공개되지 않았다.",
+   "sources": [
+    {
+     "title": "TrendForce",
+     "url": "https://www.trendforce.com/news/2025/09/17/news-alibaba-t-head-ppu-lands-china-unicom-deal-reportedly-matches-nvidia-h20-performance/"
+    }
+   ],
+   "key": "alibaba-차이나유니콤-싼장위안(시닝)-데이터센터",
+   "h100eq": null
+  },
+  {
+   "company": "Alibaba",
+   "region": "CN",
+   "name": "데이터센터 용량 목표",
+   "chip": "혼합(T-Head 포함)",
+   "chip_key": null,
+   "count": null,
+   "mw": 20000,
+   "status": "planned",
+   "confidence": "official",
+   "as_of": "2026-09",
+   "in_total": false,
+   "note": "Apsara 2026: 2032년까지 20GW 넘게. 설치된 칩 수는 공개하지 않았다.",
+   "sources": [
+    {
+     "title": "Caixin Global",
+     "url": "https://www.caixinglobal.com/2026-09-22/alibaba-unveils-new-ai-chip-as-it-deepens-ai-infrastructure-push-102487686.html"
+    }
+   ],
+   "key": "alibaba-데이터센터-용량-목표",
+   "h100eq": null
+  },
+  {
+   "company": "Moonshot AI (Kimi)",
+   "region": "CN",
+   "name": "Alibaba 계약 컴퓨트",
+   "chip": "NVIDIA (모델 비공개)",
+   "chip_key": null,
+   "count": 20000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2026-07",
+   "in_total": true,
+   "note": "Bloomberg: Alibaba 계약으로 NVIDIA 칩 약 2만 장을 쓴다(임차, 모델 비공개 — 환산하지 않는다).",
+   "sources": [
+    {
+     "title": "Bloomberg",
+     "url": "https://www.bloomberg.com/news/articles/2026-07-31/moonshot-s-kimi-built-on-20-000-nvidia-chip-cluster-from-alibaba"
+    }
+   ],
+   "key": "moonshot-ai-(kimi)-alibaba-계약-컴퓨트",
+   "h100eq": null
+  },
+  {
+   "company": "01.AI",
+   "region": "CN",
+   "name": "Yi-Lightning 학습",
+   "chip": "NVIDIA H100",
+   "chip_key": "H100",
+   "count": 2000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2024-10",
+   "in_total": true,
+   "note": "리카이푸: H100 2,000장으로 약 한 달 학습(약 300만 달러). 학습 클러스터이지 전체 보유량이 아니다.",
+   "sources": [
+    {
+     "title": "Kai-Fu Lee (X)",
+     "url": "https://x.com/kaifulee/status/1846310645849047524"
+    },
+    {
+     "title": "Tom's Hardware",
+     "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/chinese-company-trained-gpt-4-rival-with-just-2-000-gpus-01-ai-spent-usd3m-compared-to-openais-usd80m-to-usd100m"
+    }
+   ],
+   "key": "01.ai-yi-lightning-학습",
+   "h100eq": null
+  },
+  {
+   "company": "iFlytek",
+   "region": "CN",
+   "name": "페이싱 1호(飞星一号)",
+   "chip": "Huawei Ascend 910B",
+   "chip_key": "Ascend 910B",
+   "count": 10000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2023-10",
+   "in_total": true,
+   "note": "Huawei 와 2023-10 가동한 '만 장급' 국산 플랫폼(정확한 수가 아니라 급). 페이싱 2호는 장수 비공개.",
+   "sources": [
+    {
+     "title": "21경제망",
+     "url": "https://m.21jingji.com/article/20240201/herald/601a51595139bcbab75fd6d4f6949901.html"
+    },
+    {
+     "title": "SCMP",
+     "url": "https://www.scmp.com/tech/big-tech/article/3268305/chinese-ai-firm-iflytek-says-its-llms-are-trained-completely-huawei-platform"
+    }
+   ],
+   "key": "iflytek-페이싱-1호(飞星一号)",
+   "h100eq": null
+  },
+  {
+   "company": "SenseTime",
+   "region": "CN",
+   "name": "SenseCore 운영 연산",
+   "chip": "비공개(혼합)",
+   "chip_key": null,
+   "count": null,
+   "fp16_pflops": 40400,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2026-03",
+   "in_total": true,
+   "note": "2025 연간 실적: FP16 40,400 PFLOPS(2025-03 2.3만에서). 카드 수는 공개하지 않는다.",
+   "sources": [
+    {
+     "title": "SenseTime 2025 연간 실적",
+     "url": "https://www.sensetime.com/en/news-detail/51170581?categoryId=1072"
+    }
+   ],
+   "key": "sensetime-sensecore-운영-연산",
+   "h100eq": null
+  },
+  {
+   "company": "China Mobile",
+   "region": "CN",
+   "name": "지능형 연산 규모",
+   "chip": "혼합",
+   "chip_key": null,
+   "count": null,
+   "fp16_pflops": 92500,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2025-12",
+   "in_total": true,
+   "note": "2025 연간 실적: FP16 92.5 EFLOPS(임차분 포함 여부는 자료마다 다르다). 카드 수 없음.",
+   "sources": [
+    {
+     "title": "TelecomLead",
+     "url": "https://telecomlead.com/5g/china-mobile-reports-stable-revenue-growth-in-2025-as-ai-and-computing-services-accelerate-expansion-125288"
+    }
+   ],
+   "key": "china-mobile-지능형-연산-규모",
+   "h100eq": null
+  },
+  {
+   "company": "China Telecom",
+   "region": "CN",
+   "name": "지능형 연산 규모(자체)",
+   "chip": "혼합",
+   "chip_key": null,
+   "count": null,
+   "fp16_pflops": 46000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2025-12",
+   "in_total": true,
+   "note": "2025 연간 실적: 자체 46 EFLOPS, 빌려 쓰는 것 포함 91 EFLOPS.",
+   "sources": [
+    {
+     "title": "China Telecom 2025 연간 실적",
+     "url": "https://doc.irasia.com/listco/hk/chinatelecom/annual/2025/res.pdf"
+    }
+   ],
+   "key": "china-telecom-지능형-연산-규모(자체)",
+   "h100eq": null
+  },
+  {
+   "company": "China Unicom",
+   "region": "CN",
+   "name": "지능형 연산 규모",
+   "chip": "혼합",
+   "chip_key": null,
+   "count": null,
+   "fp16_pflops": 45000,
+   "mw": null,
+   "status": "operational",
+   "confidence": "official",
+   "as_of": "2025-12",
+   "in_total": true,
+   "note": "2025 연간 실적: 45 EFLOPS.",
+   "sources": [
+    {
+     "title": "China Unicom 2025 연간 실적",
+     "url": "https://doc.irasia.com/listco/hk/chinaunicom/annual/2025/res.pdf"
+    }
+   ],
+   "key": "china-unicom-지능형-연산-규모",
+   "h100eq": null
+  }
+ ],
+ "chips": [
+  {
+   "name": "H100 SXM",
+   "hbm_gb": 80,
+   "bw_tbs": 3.35,
+   "fp8_tflops": 1979,
+   "tdp_w": 700,
+   "llama70b_tps": 3913,
+   "sources": [
+    {
+     "title": "NVIDIA H100",
+     "url": "https://www.nvidia.com/en-us/data-center/h100/"
+    }
+   ]
+  },
+  {
+   "name": "H200 SXM",
+   "hbm_gb": 141,
+   "bw_tbs": 4.8,
+   "fp8_tflops": 1979,
+   "tdp_w": 700,
+   "llama70b_tps": 4374,
+   "sources": [
+    {
+     "title": "NVIDIA H200",
+     "url": "https://www.nvidia.com/en-us/data-center/h200/"
+    }
+   ]
+  },
+  {
+   "name": "B200",
+   "hbm_gb": 180,
+   "bw_tbs": 8,
+   "fp8_tflops": 4500,
+   "tdp_w": null,
+   "llama70b_tps": 12691,
+   "sources": [
+    {
+     "title": "NVIDIA HGX",
+     "url": "https://www.nvidia.com/en-us/data-center/hgx/"
+    }
+   ]
+  },
+  {
+   "name": "GB200 (GPU 한 개)",
+   "hbm_gb": 186,
+   "bw_tbs": 8,
+   "fp8_tflops": 5000,
+   "tdp_w": null,
+   "llama70b_tps": 12934,
+   "sources": [
+    {
+     "title": "NVIDIA GB200 NVL72",
+     "url": "https://www.nvidia.com/en-us/data-center/gb200-nvl72/"
+    }
+   ]
+  },
+  {
+   "name": "TPU7x Ironwood",
+   "hbm_gb": 192,
+   "bw_tbs": 7.38,
+   "fp8_tflops": 4614,
+   "tdp_w": null,
+   "llama70b_tps": null,
+   "sources": [
+    {
+     "title": "Google TPU7x 문서",
+     "url": "https://docs.cloud.google.com/tpu/docs/tpu7x"
+    }
+   ]
+  },
+  {
+   "name": "RTX 5090 (내 PC)",
+   "hbm_gb": 32,
+   "bw_tbs": 1.792,
+   "fp8_tflops": null,
+   "tdp_w": 575,
+   "llama70b_tps": null,
+   "sources": [
+    {
+     "title": "NVIDIA RTX 5090",
+     "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5090/"
+    }
+   ]
+  }
+ ],
+ "inference": [
+  {
+   "model": "Llama 2 70B",
+   "system": "DGX H100 (8장)",
+   "gpus": 8,
+   "tokens_per_s": 31307,
+   "per_gpu": 3913,
+   "round": "v5.0",
+   "sources": [
+    {
+     "title": "MLCommons v5.0 결과",
+     "url": "https://github.com/mlcommons/inference_results_v5.0/tree/main/closed/NVIDIA/results/DGX-H100_H100-SXM-80GBx8_TRT"
+    }
+   ]
+  },
+  {
+   "model": "Llama 2 70B",
+   "system": "HGX H200 (8장)",
+   "gpus": 8,
+   "tokens_per_s": 34988,
+   "per_gpu": 4374,
+   "round": "v5.0",
+   "sources": [
+    {
+     "title": "NVIDIA v5.0 블로그",
+     "url": "https://developer.nvidia.com/blog/nvidia-blackwell-delivers-massive-performance-leaps-in-mlperf-inference-v5-0"
+    }
+   ]
+  },
+  {
+   "model": "Llama 2 70B",
+   "system": "HGX B200 (8장)",
+   "gpus": 8,
+   "tokens_per_s": 101527,
+   "per_gpu": 12691,
+   "round": "v5.1",
+   "sources": [
+    {
+     "title": "MLCommons v5.1 결과",
+     "url": "https://github.com/mlcommons/inference_results_v5.1/tree/main/closed/NVIDIA/results/B200-SXM-180GBx8_TRT"
+    }
+   ]
+  },
+  {
+   "model": "Llama 2 70B",
+   "system": "GB200 NVL72 (4장 트레이)",
+   "gpus": 4,
+   "tokens_per_s": 51737,
+   "per_gpu": 12934,
+   "round": "v5.1",
+   "sources": [
+    {
+     "title": "MLCommons v5.1 결과",
+     "url": "https://github.com/mlcommons/inference_results_v5.1/tree/main/closed/NVIDIA/results/GB200-NVL72_GB200-186GB_aarch64x4_TRT"
+    }
+   ]
+  },
+  {
+   "model": "Llama 3.1 405B",
+   "system": "GB300 NVL72 (72장)",
+   "gpus": 72,
+   "tokens_per_s": 16104,
+   "per_gpu": 224,
+   "round": "v5.1",
+   "sources": [
+    {
+     "title": "MLCommons v5.1 결과",
+     "url": "https://github.com/mlcommons/inference_results_v5.1/tree/main/closed/NVIDIA/results/GB300-NVL72_GB300-288GB_aarch64x72_TRT"
+    }
+   ]
+  }
+ ],
+ "usage": [
+  {
+   "org": "Google",
+   "claim": "한 달에 처리하는 토큰",
+   "value": 3200000000000000.0,
+   "text": "3.2경(3.2 quadrillion) 이상 · API 로만 분당 약 190억",
+   "as_of": "2026-05",
+   "sources": [
+    {
+     "title": "Pichai I/O 2026",
+     "url": "https://blog.google/innovation-and-ai/sundar-pichai-io-2026/"
+    }
+   ]
+  },
+  {
+   "org": "Google",
+   "claim": "한 달에 처리하는 토큰(1년 전)",
+   "value": 480000000000000.0,
+   "text": "480조",
+   "as_of": "2025-05",
+   "sources": [
+    {
+     "title": "Pichai I/O 2026(작년 값 인용)",
+     "url": "https://blog.google/innovation-and-ai/sundar-pichai-io-2026/"
+    }
+   ]
+  },
+  {
+   "org": "OpenAI",
+   "claim": "API 가 1분에 처리하는 토큰",
+   "value": 259200000000000.0,
+   "text": "분당 60억(한 달로 치면 약 26경)",
+   "as_of": "2025-10",
+   "sources": [
+    {
+     "title": "TechCrunch DevDay 2025",
+     "url": "https://techcrunch.com/2025/10/06/sam-altman-says-chatgpt-has-hit-800m-weekly-active-users/"
+    }
+   ]
+  },
+  {
+   "org": "OpenRouter",
+   "claim": "하루에 처리하는 토큰",
+   "value": 30000000000000.0,
+   "text": "하루 1조 이상",
+   "as_of": "2025-12",
+   "sources": [
+    {
+     "title": "arXiv 2601.10088",
+     "url": "https://arxiv.org/abs/2601.10088"
+    }
+   ]
+  }
+ ],
+ "local": [
+  {
+   "gpu": "RTX 5090",
+   "model": "Llama 2 7B",
+   "quant": "Q4_0",
+   "tokens_per_s": 290,
+   "sources": [
+    {
+     "title": "llama.cpp CUDA 점수판(277~300)",
+     "url": "https://github.com/ggml-org/llama.cpp/discussions/15013#discussioncomment-14761847"
+    }
+   ]
+  },
+  {
+   "gpu": "RTX 4090",
+   "model": "Llama 3 8B",
+   "quant": "Q4_K_M",
+   "tokens_per_s": 127.7,
+   "sources": [
+    {
+     "title": "XiongjieDai GPU 벤치마크",
+     "url": "https://github.com/XiongjieDai/GPU-Benchmarks-on-LLM-Inference"
+    }
+   ]
+  },
+  {
+   "gpu": "RTX 4090 ×2",
+   "model": "Llama 3 70B",
+   "quant": "Q4_K_M",
+   "tokens_per_s": 19.1,
+   "sources": [
+    {
+     "title": "XiongjieDai GPU 벤치마크(4090 한 장은 메모리 부족)",
+     "url": "https://github.com/XiongjieDai/GPU-Benchmarks-on-LLM-Inference"
+    }
+   ]
+  }
+ ],
+ "companies": [
+  {
+   "key": "Anthropic",
+   "note": "자체 데이터센터가 없고 AWS(Trainium2)·xAI(Colossus 1)·Google(TPU)·Azure 를 빌려 쓴다. Colossus 1 은 xAI 소유다."
+  },
+  {
+   "key": "xAI",
+   "note": "Colossus 1 은 2026-05 부터 Anthropic 이 쓴다 — 여기서는 Anthropic 쪽에 센다."
+  },
+  {
+   "key": "Microsoft",
+   "note": "OpenAI 의 주 클라우드이기도 하다 — Microsoft 칸의 일부는 OpenAI 가 쓴다."
+  },
+  {
+   "key": "OpenAI",
+   "note": "Stargate 는 Oracle·SoftBank 와 함께 짓는다. Azure 에서 쓰는 몫은 Microsoft 칸에 있다."
+  },
+  {
+   "key": "Meta",
+   "note": "2024년 초 '연말 H100 35만 장(H100 환산 약 60만)'을 목표로 밝혔다."
+  },
+  {
+   "key": "Google",
+   "note": "TPU 는 H100 환산 공식 값이 없다 — 대신 공개한 월간 처리 토큰으로 거꾸로 셈한 값을 싣는다."
+  },
+  {
+   "key": "CoreWeave",
+   "note": "빌려주는 회사(네오클라우드)다 — OpenAI·Microsoft·Meta·Inflection 이 빌려 쓰는 몫이 들어 있어 그 회사 줄과 겹친다. 기종 구성을 몰라 환산하지 않는다."
+  },
+  {
+   "key": "DeepSeek",
+   "note": "회사가 밝힌 것은 A100 1만 장(Fire-Flyer 2)과 V3 학습용 H800 2,048장뿐이다. 합계는 SemiAnalysis 추정 구성(H100·H800·H20·A100)으로 셌다."
+  },
+  {
+   "key": "ByteDance",
+   "note": "Omdia 추정 '2024년 한 해 구매량'이라 보유 총량보다 작을 수 있다. 전부 H20 으로 친 하한이다."
+  },
+  {
+   "key": "Tencent",
+   "note": "Omdia 추정 '2024년 한 해 구매량'. 전부 H20 으로 친 하한이다."
+  },
+  {
+   "key": "미국 에너지부(DOE)",
+   "note": "국립연구소 슈퍼컴퓨터. Aurora(Intel GPU Max)는 공식 사양비를 확인하지 못해 환산에서 빠졌다."
+  },
+  {
+   "key": "EuroHPC (유럽 공동)",
+   "note": "EU 공동 슈퍼컴퓨터. 영국·스위스는 따로 적었다."
+  }
+ ],
+ "ratios": [
+  {
+   "name": "H100",
+   "ratio": 1.0,
+   "basis": "기준(FP8 밀집 1,979 TFLOPS)",
+   "sources": [
+    {
+     "title": "NVIDIA H100",
+     "url": "https://www.nvidia.com/en-us/data-center/h100/"
+    }
+   ]
+  },
+  {
+   "name": "H800",
+   "ratio": 1.0,
+   "basis": "FP8 H100 과 같다(FP64·NVLink 만 깎였다)",
+   "sources": [
+    {
+     "title": "NVIDIA H800 데이터시트(사본)",
+     "url": "https://chaoqing-i.com/upload/20231128/NVIDIA%20H800%20GPU%20Datasheet.pdf"
+    }
+   ]
+  },
+  {
+   "name": "H200",
+   "ratio": 1.0,
+   "basis": "연산은 H100 과 같고 메모리만 크다",
+   "sources": [
+    {
+     "title": "NVIDIA H200",
+     "url": "https://www.nvidia.com/en-us/data-center/h200/"
+    }
+   ]
+  },
+  {
+   "name": "GH200",
+   "ratio": 1.0,
+   "basis": "GPU 부분이 H100 급",
+   "sources": [
+    {
+     "title": "NVIDIA GH200",
+     "url": "https://www.nvidia.com/en-us/data-center/grace-hopper-superchip/"
+    }
+   ]
+  },
+  {
+   "name": "H20",
+   "ratio": 0.15,
+   "basis": "FP8 296 — NVIDIA 공식 페이지가 없어 보도된 사양(비공식)",
+   "sources": [
+    {
+     "title": "VideoCardz",
+     "url": "https://videocardz.com/newz/nvidia-to-launch-hgx-h20-l20-and-l2-gpus-for-china"
+    }
+   ]
+  },
+  {
+   "name": "A100",
+   "ratio": 0.315,
+   "basis": "FP8 없음 → BF16 312 ÷ 989",
+   "sources": [
+    {
+     "title": "NVIDIA A100",
+     "url": "https://www.nvidia.com/en-us/data-center/a100/"
+    }
+   ]
+  },
+  {
+   "name": "B200",
+   "ratio": 2.274,
+   "basis": "FP8 4,500(HGX B200 ÷ 8, 밀집 = 희소 ÷ 2)",
+   "sources": [
+    {
+     "title": "NVIDIA HGX",
+     "url": "https://www.nvidia.com/en-us/data-center/hgx/"
+    }
+   ]
+  },
+  {
+   "name": "B300",
+   "ratio": 2.274,
+   "basis": "HGX B300 FP8 4,500(Blackwell Ultra 는 FP4·메모리가 늘었다)",
+   "sources": [
+    {
+     "title": "NVIDIA HGX",
+     "url": "https://www.nvidia.com/en-us/data-center/hgx/"
+    }
+   ]
+  },
+  {
+   "name": "GB200",
+   "ratio": 2.527,
+   "basis": "FP8 5,000(슈퍼칩 ÷ 2)",
+   "sources": [
+    {
+     "title": "NVIDIA GB200 NVL72",
+     "url": "https://www.nvidia.com/en-us/data-center/gb200-nvl72/"
+    }
+   ]
+  },
+  {
+   "name": "GB300",
+   "ratio": 2.527,
+   "basis": "FP8 5,000(NVL72 ÷ 72, 밀집 = 희소 ÷ 2)",
+   "sources": [
+    {
+     "title": "NVIDIA GB300 NVL72",
+     "url": "https://www.nvidia.com/en-us/data-center/gb300-nvl72/"
+    }
+   ]
+  },
+  {
+   "name": "MI250X",
+   "ratio": 0.387,
+   "basis": "FP8 없음 → BF16 383 ÷ 989",
+   "sources": [
+    {
+     "title": "AMD MI250X",
+     "url": "https://www.amd.com/en/products/accelerators/instinct/mi200/mi250x.html"
+    }
+   ]
+  },
+  {
+   "name": "MI300A",
+   "ratio": 0.991,
+   "basis": "FP8 1,961",
+   "sources": [
+    {
+     "title": "AMD MI300A",
+     "url": "https://www.amd.com/en/products/accelerators/instinct/mi300/mi300a.html"
+    }
+   ]
+  },
+  {
+   "name": "MI300X",
+   "ratio": 1.321,
+   "basis": "FP8 2,615",
+   "sources": [
+    {
+     "title": "AMD MI300X",
+     "url": "https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html"
+    }
+   ]
+  },
+  {
+   "name": "MI355X",
+   "ratio": 2.527,
+   "basis": "FP8 5,000",
+   "sources": [
+    {
+     "title": "AMD MI355X",
+     "url": "https://www.amd.com/en/products/accelerators/instinct/mi350/mi355x.html"
+    }
+   ]
+  },
+  {
+   "name": "Trainium2",
+   "ratio": 0.656,
+   "basis": "FP8 1,299(AWS 공식 밀집)",
+   "sources": [
+    {
+     "title": "AWS Neuron: Trainium2",
+     "url": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/trainium2.html"
+    }
+   ]
+  },
+  {
+   "name": "TPU v5p",
+   "ratio": 0.232,
+   "basis": "FP8 459(BF16 과 같은 속도)",
+   "sources": [
+    {
+     "title": "Cloud TPU v5p",
+     "url": "https://cloud.google.com/tpu/docs/v5p"
+    }
+   ]
+  },
+  {
+   "name": "TPU v6e",
+   "ratio": 0.464,
+   "basis": "FP8 918(BF16 과 같은 속도)",
+   "sources": [
+    {
+     "title": "Cloud TPU v6e",
+     "url": "https://cloud.google.com/tpu/docs/v6e"
+    }
+   ]
+  },
+  {
+   "name": "TPU7x Ironwood",
+   "ratio": 2.331,
+   "basis": "FP8 4,614",
+   "sources": [
+    {
+     "title": "Cloud TPU7x",
+     "url": "https://cloud.google.com/tpu/docs/tpu7x"
+    }
+   ]
+  },
+  {
+   "name": "Gaudi 3",
+   "ratio": 0.848,
+   "basis": "FP8 1,678(BF16 과 같은 속도 — BF16 로 재면 1.70)",
+   "sources": [
+    {
+     "title": "Intel Gaudi 3 백서",
+     "url": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf"
+    }
+   ]
+  }
+ ],
+ "national": [
+  {
+   "scope": "한국 정부 GPU 구매 2025 (1.46조 원)",
+   "claim": "B200 10,080 + H200 3,056 = 13,136장(NHN·카카오·네이버가 운영 — 위 회사 줄의 합)",
+   "as_of": "2025-07",
+   "confidence": "official",
+   "sources": [
+    {
+     "title": "바이라인네트워크",
+     "url": "https://byline.network/2025/07/28-498/"
+    }
+   ]
+  },
+  {
+   "scope": "한국 정부 GPU 구매 2026 (2.08조 원)",
+   "claim": "Vera Rubin 2,016 + B300 7,688 = 9,704장(네이버·삼성SDS·엘리스, 계획)",
+   "as_of": "2026-06",
+   "confidence": "official",
+   "sources": [
+    {
+     "title": "문화일보",
+     "url": "https://www.munhwa.com/article/11594113"
+    }
+   ]
+  },
+  {
+   "scope": "한국 — NVIDIA GPU 26만 장 공급",
+   "claim": "정부 5만+, 삼성·SK·현대차 각 5만, 네이버 6만(계획). 국내 약 6.5만 → 30만 장 이상",
+   "as_of": "2025-10",
+   "confidence": "official",
+   "sources": [
+    {
+     "title": "NVIDIA 블로그",
+     "url": "https://blogs.nvidia.com/blog/korea-ai-apec-ceo-summit/"
+    }
+   ]
+  },
+  {
+   "scope": "일본 경산성 클라우드 보조금 (2024-04)",
+   "claim": "5개사 최대 725억 엔(사쿠라 501억·KDDI 102억·GMO 약 19억·하이레조 최대 77억 …), SoftBank 별도 최대 421억 엔",
+   "as_of": "2024-04",
+   "confidence": "official",
+   "sources": [
+    {
+     "title": "Impress Watch",
+     "url": "https://www.watch.impress.co.jp/docs/news/1585751.html"
+    }
+   ]
+  },
+  {
+   "scope": "EuroHPC 전체",
+   "claim": "8개 시스템 가속기 30,324장 + GH200 27,104장 도입 예정(위 슈퍼컴퓨터 줄과 겹친다)",
+   "as_of": "2026-01",
+   "confidence": "official",
+   "sources": [
+    {
+     "title": "EuroHPC AI Factories 발표",
+     "url": "https://comite255.europa.eu/documents/d/endorse/lilit_axner_2026-01-15_eurohpc-ai-factories"
+    }
+   ]
+  },
+  {
+   "scope": "EU AI 기가팩토리",
+   "claim": "최대 5곳, 곳당 칩 10만 장 이상 목표(200억 유로, 2026-07 공모, 선정 전)",
+   "as_of": "2026-07",
+   "confidence": "official",
+   "sources": [
+    {
+     "title": "European Commission",
+     "url": "https://commission.europa.eu/topics/competitiveness/competitiveness-coordination-tool-projects/ai-gigafactories_en"
+    }
+   ]
+  },
+  {
+   "scope": "인도 IndiaAI Mission 공용 컴퓨트",
+   "claim": "34,333장(2025-05 공식) · 1차 18,693장(H100 12,896 · H200 1,480 …) · 2026 약 3.8만(2차 보도)",
+   "as_of": "2025-05",
+   "confidence": "official",
+   "sources": [
+    {
+     "title": "PIB",
+     "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2132817&reg=3&lang=1"
+    }
+   ]
+  },
+  {
+   "scope": "미국 수출 허가 (UAE G42 · 사우디 HUMAIN)",
+   "claim": "각각 GB300 최대 3.5만 장 반입 허가 — 설치 수가 아니다",
+   "as_of": "2025-11",
+   "confidence": "official",
+   "sources": [
+    {
+     "title": "Middle East AI News",
+     "url": "https://www.middleeastainews.com/p/us-approves-up-to-70000-advanced"
+    }
+   ]
+  },
+  {
+   "scope": "중국 전체(MIIT)",
+   "claim": "지능형 연산 1,590 EFLOPS(FP16) 이상 · 만 장급 클러스터 42개",
+   "as_of": "2025-12",
+   "confidence": "official",
+   "sources": [
+    {
+     "title": "과기일보",
+     "url": "https://www.stdaily.com/web/gdxw/2026-01/23/content_465300.html"
+    },
+    {
+     "title": "인민망",
+     "url": "http://finance.people.com.cn/n1/2026/0609/c1004-40736617.html"
+    }
+   ]
+  },
+  {
+   "scope": "중국에 들어간 NVIDIA 칩(Epoch AI)",
+   "claim": "2022년 뒤 공식 판매 약 40만 H100 환산 + 밀수 추정 30만~160만 H100 환산(2024~2025)",
+   "as_of": "2025-12",
+   "confidence": "estimate",
+   "sources": [
+    {
+     "title": "Epoch AI 칩 보유 방법론",
+     "url": "https://epoch.ai/data/ai-chip-owners-documentation/methodology"
+    }
+   ]
+  },
+  {
+   "scope": "Huawei Ascend 2025 생산량(미국 상무부)",
+   "claim": "20만 장 이하",
+   "as_of": "2025-06",
+   "confidence": "estimate",
+   "sources": [
+    {
+     "title": "Bloomberg",
+     "url": "https://www.bloomberg.com/news/articles/2025-06-12/us-says-huawei-s-2025-output-is-no-more-than-200-000-ai-chips"
+    }
+   ]
+  }
+ ]
+}
