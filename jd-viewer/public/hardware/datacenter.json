@@ -304,7 +304,7 @@
    "status": "operational",
    "as_of": "2026-05",
    "confidence": "official",
-   "note": "'전 세계 100만 개 넘는 TPU 로 학습'(I/O 2026). Ironwood 한 포드 = 9,216개.",
+   "note": "'전 세계 100만 개 넘는 TPU 로 학습'(I/O 2026) — 공식 발언. 위 데이터센터별 Epoch 추정과 겹쳐 합계에서 뺀다. Ironwood 한 포드 = 9,216개.",
    "sources": [
     {
      "title": "Pichai I/O 2026",
@@ -318,7 +318,7 @@
    "company": "Google",
    "region": "US",
    "chip_key": null,
-   "in_total": true
+   "in_total": false
   },
   {
    "key": "stargate-all",
@@ -2858,6 +2858,131 @@
    ],
    "key": "china-unicom-지능형-연산-규모",
    "h100eq": null
+  },
+  {
+   "key": "google-pryor-north",
+   "company": "Google",
+   "region": "US",
+   "name": "프라이어 (오클라호마, 북쪽)",
+   "chip": "TPU v5p · TPU v5e",
+   "chip_key": null,
+   "count": null,
+   "h100eq": 636685,
+   "mw": 368,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2026-09",
+   "in_total": true,
+   "note": "Epoch 추정(위성사진·공시): H100 환산 약 63.7만, IT 전력 368MW, 건설비 약 139억 달러(2025년 달러). 사용자는 Google DeepMind 로 추정(Epoch '추측').",
+   "sources": [
+    {
+     "title": "Epoch: Google Pryor (North)",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/google-pryor-north"
+    }
+   ],
+   "cost_usd": 13940576000.0,
+   "cost_note": "Epoch: 368MW, 건설비 약 139억 달러(2025년 달러)",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/google-pryor-north"
+  },
+  {
+   "key": "google-columbus",
+   "company": "Google",
+   "region": "US",
+   "name": "콜럼버스 (오하이오)",
+   "chip": "TPU v5e · TPU v5p · TPU v6e · TPU v7",
+   "chip_key": null,
+   "count": null,
+   "h100eq": 331986,
+   "mw": 303,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2026-09",
+   "in_total": true,
+   "note": "Epoch 추정(위성사진·공시): H100 환산 약 33.2만, IT 전력 303MW, 건설비 약 115억 달러(2025년 달러). 사용자는 Google DeepMind 로 추정(Epoch '추측').",
+   "sources": [
+    {
+     "title": "Epoch: Google Columbus",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/google-columbus"
+    }
+   ],
+   "cost_usd": 11478245999.999998,
+   "cost_note": "Epoch: 303MW, 건설비 약 115억 달러(2025년 달러)",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/google-columbus"
+  },
+  {
+   "key": "google-new-albany",
+   "company": "Google",
+   "region": "US",
+   "name": "뉴올버니 (오하이오)",
+   "chip": "TPU v5e · TPU v5p · TPU v6e",
+   "chip_key": null,
+   "count": null,
+   "h100eq": 323901,
+   "mw": 333,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2026-09",
+   "in_total": true,
+   "note": "Epoch 추정(위성사진·공시): H100 환산 약 32.4만, IT 전력 333MW, 건설비 약 126억 달러(2025년 달러). 사용자는 Google DeepMind 로 추정(Epoch '추측').",
+   "sources": [
+    {
+     "title": "Epoch: Google New Albany",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/google-new-albany"
+    }
+   ],
+   "cost_usd": 12614706000.0,
+   "cost_note": "Epoch: 333MW, 건설비 약 126억 달러(2025년 달러)",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/google-new-albany"
+  },
+  {
+   "key": "google-mesa",
+   "company": "Google",
+   "region": "US",
+   "name": "메사 (애리조나)",
+   "chip": "TPU v6e · TPU v5p",
+   "chip_key": null,
+   "count": null,
+   "h100eq": 289540,
+   "mw": 183,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2026-09",
+   "in_total": true,
+   "note": "Epoch 추정(위성사진·공시): H100 환산 약 29.0만, IT 전력 183MW, 건설비 약 69억 달러(2025년 달러). 사용자는 Google DeepMind 로 추정(Epoch '추측').",
+   "sources": [
+    {
+     "title": "Epoch: Google Mesa",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/google-mesa"
+    }
+   ],
+   "cost_usd": 6932405999.999999,
+   "cost_note": "Epoch: 183MW, 건설비 약 69억 달러(2025년 달러)",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/google-mesa"
+  },
+  {
+   "key": "google-council-bluffs-east",
+   "company": "Google",
+   "region": "US",
+   "name": "카운실블러프스 (아이오와, 동쪽)",
+   "chip": "TPU v5e · TPU v6e · TPU v5p · TPU v7",
+   "chip_key": null,
+   "count": null,
+   "h100eq": 255685,
+   "mw": 237,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2026-09",
+   "in_total": true,
+   "note": "Epoch 추정(위성사진·공시): H100 환산 약 25.6만, IT 전력 237MW, 건설비 약 90억 달러(2025년 달러). 사용자는 Google DeepMind 로 추정(Epoch '추측').",
+   "sources": [
+    {
+     "title": "Epoch: Google Council Bluffs (East)",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/google-council-bluffs-east"
+    }
+   ],
+   "cost_usd": 8978034000.0,
+   "cost_note": "Epoch: 237MW, 건설비 약 90억 달러(2025년 달러)",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/google-council-bluffs-east"
   }
  ],
  "chips": [
@@ -3133,7 +3258,7 @@
   },
   {
    "key": "Google",
-   "note": "TPU 는 H100 환산 공식 값이 없다 — 대신 공개한 월간 처리 토큰으로 거꾸로 셈한 값을 싣는다."
+   "note": "데이터센터별 H100 환산은 Epoch 추정(TPU v5p·v5e·v6e·v7). 20만 넘는 곳이 9곳이라 큰 곳부터 넣는 중이다. 공개한 월간 처리 토큰으로 거꾸로 셈한 하한도 같이 본다."
   },
   {
    "key": "CoreWeave",
