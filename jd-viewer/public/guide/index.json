@@ -1545,6 +1545,18 @@
       "postings": 2,
       "study_items": 7,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "zerooneai",
+      "name": "제로원에이아이",
+      "aliases": [
+        "제로원에이아이",
+        "ZeroOneAI"
+      ],
+      "status": "done",
+      "postings": 4,
+      "study_items": 11,
+      "updated_at": "2026-09-30"
     }
   ]
 }

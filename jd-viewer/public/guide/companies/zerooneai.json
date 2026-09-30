@@ -1,0 +1,560 @@
+{
+  "slug": "zerooneai",
+  "name": "제로원에이아이",
+  "name_en": "ZeroOneAI",
+  "aliases": [
+    "제로원에이아이",
+    "ZeroOneAI"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "",
+  "one_liner": "서울대병원 등과 중환자 · 수술 합병증 의료 AI 를 연구하고 폐쇄망용 의료 LLM(ZEO Med 2)을 내는 회사 — 연구 Lead · LLMOps · Go/K8S 백엔드 · Next.js 프런트를 뽑는다",
+  "company": {
+    "business": "제로원에이아이는 **폐쇄망(망 분리) 환경에 맞춘 AI 모델 · 인프라**를 만드는 회사다 — 대표는 송준호. 뿌리는 **클라우드 네이티브 AI 플랫폼**과 **의료 빅데이터**로, 서울대병원과 **한국형 중환자 빅데이터(K-MIMIC)** 사업에서 의료 데이터 분산처리 · 데이터 레이크 · 하이브리드 클라우드 AI 플랫폼을 맡았고, **중환자 AI · 위험약물 AI · 췌장절제/신장이식 합병증 예측 AI** 같은 국가 연구사업을 병원들과 수행한다. 여러 병원 데이터를 모으지 않고 학습하는 **다기관 연합학습**, **식약처 2등급 의료 소프트웨어 · AI CDSS** 플랫폼도 추진한다고 보도됐다. 최근엔 LLM 쪽으로 넓혀 **RAG 갑상선 질환 챗봇(Thyro-GenAI, JCM 논문)** 을 내고, 2026 년엔 **30B 의료 특화 모델 ZEO Med 2** 를 공개해 의사 국가고시 벤치마크 점수를 발표했다. 겨냥하는 고객은 **국방 · 의료 · 금융처럼 외부 클라우드를 못 쓰는 곳**이고, GPU 약 50 개를 자체 운용한다(2025 보도). 공고는 네 자리가 같은 '3가지 기술방향'(Cloud Native · Software 2.0 · Schillace Laws)에 공감하고 면접에서 설명하라고 요구한다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "AI 연구개발 Lead",
+        "url": "https://www.wanted.co.kr/wd/166694",
+        "publisher": "원티드",
+        "summary": "국가연구사업 기획 · 수행 리드 — 중환자AI(K-MIMIC) · 위험약물AI · 췌장/신장 수술 합병증 AI, 서울대병원 · 세브란스 · 성모병원 프로젝트, 논문 · 특허. 이공계 석박사, Python · PyTorch · TensorFlow, 국가과제 · 논문(최근 3년) · CI/CD. 우대 식약처 2등급 의료 SW, RAG · LLM · MLOps · 연합학습. 전형: 서류 > 코딩 테스트 > 기술 QA > 레퍼런스 > 최종. 수습 6개월, CV 에 깃랩 주소 · 희망연봉."
+      },
+      {
+        "title": "LLMOps Ops / AI 모델 개발 엔지니어",
+        "url": "https://www.wanted.co.kr/wd/166685",
+        "publisher": "원티드",
+        "summary": "SLM 학습 · 파인튜닝, LLM 운용 평가, RAG, 프롬프트 엔지니어링, 서울대병원과 중환자 · 신장/췌장 · 건강검진 AI 파이프라인, 정형 · 비정형 빅데이터 학습 · 배포 · 모니터링. 경력 3년+, Python, CNCF 이해. 우대 K8S · LLM 파인튜닝 · 의료/금융 모델링."
+      },
+      {
+        "title": "AI Back-End / Bigdata 엔지니어",
+        "url": "https://www.wanted.co.kr/wd/166683",
+        "publisher": "원티드",
+        "summary": "의료 / 금융 데이터 분산처리 · 실시간 파이프라인, 하이브리드 클라우드 백엔드, AI 학습 · 추론 · 빅데이터 · LLM 백엔드. Go · Rust · C++ 중 하나, K8S · CNCF, 빅데이터 분산처리 · 고가용성 · 온프레미스/하이브리드. 우대 Hadoop · Spark · Kafka · Ceph · LLMOps."
+      },
+      {
+        "title": "제로원에이아이, 폐쇄망 최적화 의료 AI로 한·미 의사 국가고시 벤치마크 1위 차지",
+        "url": "https://www.mt.co.kr/industry/2026/07/29/2026072417131034729",
+        "publisher": "머니투데이",
+        "date": "2026-07-29",
+        "summary": "대표 송준호. 폐쇄망 환경 특화 AI — 30B 의료 특화 모델 ZEO Med 2, KMLE 97.70 · USMLE 94.82(회사 발표 기준 1위), 간호사 · 약사 · 치과의사 국시 점수. 삼성서울병원 연구팀 협력, 정부 첨단 GPU 활용 사업 지원. 2026-01 FlowerTune 리더보드 4 부문 1위, 허깅페이스 공개. 국방 · 의료 · 금융 등 보안 분야."
+      },
+      {
+        "title": "제로원에이아이, RAG 기술로 AI '환각' 잡고 의료 혁신 이끈다…JCM 논문 게재",
+        "url": "https://www.mt.co.kr/industry/2025/07/07/2025070414025594588",
+        "publisher": "머니투데이",
+        "date": "2025-07-07",
+        "summary": "서울대병원 · 보라매 · 분당서울대병원 · 차의과학대와 Thyro-GenAI(RAG 갑상선 질환 관리 챗봇) 논문을 JCM 에 게재. 식약처 2등급 의료 소프트웨어 · AI CDSS 플랫폼, 다기관 연합학습, 중환자 AI, 췌장절제술 · 신장이식 합병증 예측 AI. GPU 약 50 개 자체 운용."
+      },
+      {
+        "title": "제로원에이아이 송준호 대표, K-MIMIC서 '의료 AI 빅데이터 플랫폼 역할·중요성' 강조",
+        "url": "https://news.mt.co.kr/mtview.php?no=2022062914202084049",
+        "publisher": "머니투데이",
+        "date": "2022-06-29",
+        "summary": "클라우드 네이티브 기반 AI 플랫폼 회사로 서울대병원과 한국형 중환자 빅데이터(K-MIMIC) 사업 — 의료 빅데이터 분산처리 서버 API, 정형 · 비정형 데이터 자동 저장 · 분산처리, 의료 빅데이터 레이크, 멀티 하이브리드 클라우드 의료 AI 플랫폼(검색 결과 요약 기준)."
+      }
+    ],
+    "scale": [
+      {
+        "label": "자체 운용 GPU",
+        "value": "약 50 개(2025-07 보도)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "제로원에이아이, RAG 기술로 AI '환각' 잡고 의료 혁신 이끈다…JCM 논문 게재",
+            "url": "https://www.mt.co.kr/industry/2025/07/07/2025070414025594588",
+            "publisher": "머니투데이",
+            "date": "2025-07-07",
+            "summary": "서울대병원 · 보라매 · 분당서울대병원 · 차의과학대와 Thyro-GenAI(RAG 갑상선 질환 관리 챗봇) 논문을 JCM 에 게재. 식약처 2등급 의료 소프트웨어 · AI CDSS 플랫폼, 다기관 연합학습, 중환자 AI, 췌장절제술 · 신장이식 합병증 예측 AI. GPU 약 50 개 자체 운용."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "의료 AI 국가 연구사업 · 병원 공동 연구",
+        "how": "중환자 · 수술 합병증 · 건강검진 AI 를 국가 과제로 병원과 수행한다 — 과제비 구조와 금액은 읽은 자료에 없다.",
+        "domains": [
+          "의료 AI 연구 · 모델",
+          "하이브리드 클라우드 · 빅데이터 백엔드"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "AI 연구개발 Lead",
+            "url": "https://www.wanted.co.kr/wd/166694",
+            "publisher": "원티드",
+            "summary": "국가연구사업 기획 · 수행 리드 — 중환자AI(K-MIMIC) · 위험약물AI · 췌장/신장 수술 합병증 AI, 서울대병원 · 세브란스 · 성모병원 프로젝트, 논문 · 특허. 이공계 석박사, Python · PyTorch · TensorFlow, 국가과제 · 논문(최근 3년) · CI/CD. 우대 식약처 2등급 의료 SW, RAG · LLM · MLOps · 연합학습. 전형: 서류 > 코딩 테스트 > 기술 QA > 레퍼런스 > 최종. 수습 6개월, CV 에 깃랩 주소 · 희망연봉."
+          },
+          {
+            "title": "LLMOps Ops / AI 모델 개발 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/166685",
+            "publisher": "원티드",
+            "summary": "SLM 학습 · 파인튜닝, LLM 운용 평가, RAG, 프롬프트 엔지니어링, 서울대병원과 중환자 · 신장/췌장 · 건강검진 AI 파이프라인, 정형 · 비정형 빅데이터 학습 · 배포 · 모니터링. 경력 3년+, Python, CNCF 이해. 우대 K8S · LLM 파인튜닝 · 의료/금융 모델링."
+          },
+          {
+            "title": "제로원에이아이, RAG 기술로 AI '환각' 잡고 의료 혁신 이끈다…JCM 논문 게재",
+            "url": "https://www.mt.co.kr/industry/2025/07/07/2025070414025594588",
+            "publisher": "머니투데이",
+            "date": "2025-07-07",
+            "summary": "서울대병원 · 보라매 · 분당서울대병원 · 차의과학대와 Thyro-GenAI(RAG 갑상선 질환 관리 챗봇) 논문을 JCM 에 게재. 식약처 2등급 의료 소프트웨어 · AI CDSS 플랫폼, 다기관 연합학습, 중환자 AI, 췌장절제술 · 신장이식 합병증 예측 AI. GPU 약 50 개 자체 운용."
+          }
+        ]
+      },
+      {
+        "name": "폐쇄망 AI 모델 · 플랫폼 공급",
+        "how": "보안이 필요한 국방 · 의료 · 금융에 폐쇄망용 모델(ZEO Med 2)과 AI 인프라 · 플랫폼을 공급한다 — 판매 · 구독 방식은 모른다.",
+        "domains": [
+          "LLM · RAG 운영(LLMOps)",
+          "하이브리드 클라우드 · 빅데이터 백엔드",
+          "연구 · 교육 플랫폼 프런트"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "제로원에이아이, 폐쇄망 최적화 의료 AI로 한·미 의사 국가고시 벤치마크 1위 차지",
+            "url": "https://www.mt.co.kr/industry/2026/07/29/2026072417131034729",
+            "publisher": "머니투데이",
+            "date": "2026-07-29",
+            "summary": "대표 송준호. 폐쇄망 환경 특화 AI — 30B 의료 특화 모델 ZEO Med 2, KMLE 97.70 · USMLE 94.82(회사 발표 기준 1위), 간호사 · 약사 · 치과의사 국시 점수. 삼성서울병원 연구팀 협력, 정부 첨단 GPU 활용 사업 지원. 2026-01 FlowerTune 리더보드 4 부문 1위, 허깅페이스 공개. 국방 · 의료 · 금융 등 보안 분야."
+          },
+          {
+            "title": "AI Back-End / Bigdata 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/166683",
+            "publisher": "원티드",
+            "summary": "의료 / 금융 데이터 분산처리 · 실시간 파이프라인, 하이브리드 클라우드 백엔드, AI 학습 · 추론 · 빅데이터 · LLM 백엔드. Go · Rust · C++ 중 하나, K8S · CNCF, 빅데이터 분산처리 · 고가용성 · 온프레미스/하이브리드. 우대 Hadoop · Spark · Kafka · Ceph · LLMOps."
+          },
+          {
+            "title": "Front-End 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/166679",
+            "publisher": "원티드",
+            "summary": "AI 연구/교육 플랫폼 프런트 SaaS, 서비스 플랫폼 프런트, 신장/췌장 수술 질 향상 프로젝트 프런트. 경력 3년+, React · TypeScript · Next.js, 상용 서비스 운영, CI/CD. 우대 대용량 트래픽 · 해외 사용자."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "의료 AI 연구 · 모델",
+        "why": "연구 Lead 공고가 중환자AI(K-MIMIC) · 위험약물AI · 췌장/신장 수술 합병증 AI 국가 연구와 논문 · 특허, 식약처 2등급 SW 를 적는다.",
+        "what_to_know": [
+          "임상 시계열 예측 모델",
+          "연합학습",
+          "의료기기 SW 인허가"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI 연구개발 Lead",
+            "url": "https://www.wanted.co.kr/wd/166694",
+            "publisher": "원티드",
+            "summary": "국가연구사업 기획 · 수행 리드 — 중환자AI(K-MIMIC) · 위험약물AI · 췌장/신장 수술 합병증 AI, 서울대병원 · 세브란스 · 성모병원 프로젝트, 논문 · 특허. 이공계 석박사, Python · PyTorch · TensorFlow, 국가과제 · 논문(최근 3년) · CI/CD. 우대 식약처 2등급 의료 SW, RAG · LLM · MLOps · 연합학습. 전형: 서류 > 코딩 테스트 > 기술 QA > 레퍼런스 > 최종. 수습 6개월, CV 에 깃랩 주소 · 희망연봉."
+          },
+          {
+            "title": "제로원에이아이, RAG 기술로 AI '환각' 잡고 의료 혁신 이끈다…JCM 논문 게재",
+            "url": "https://www.mt.co.kr/industry/2025/07/07/2025070414025594588",
+            "publisher": "머니투데이",
+            "date": "2025-07-07",
+            "summary": "서울대병원 · 보라매 · 분당서울대병원 · 차의과학대와 Thyro-GenAI(RAG 갑상선 질환 관리 챗봇) 논문을 JCM 에 게재. 식약처 2등급 의료 소프트웨어 · AI CDSS 플랫폼, 다기관 연합학습, 중환자 AI, 췌장절제술 · 신장이식 합병증 예측 AI. GPU 약 50 개 자체 운용."
+          }
+        ]
+      },
+      {
+        "name": "LLM · RAG 운영(LLMOps)",
+        "why": "LLMOps 공고가 SLM 학습 · 파인튜닝, LLM 운용 평가, RAG, 프롬프트 엔지니어링을 적고 보도가 Thyro-GenAI · ZEO Med 2 를 전한다.",
+        "what_to_know": [
+          "LoRA 파인튜닝",
+          "RAG 평가",
+          "K8S 모델 서빙"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "LLMOps Ops / AI 모델 개발 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/166685",
+            "publisher": "원티드",
+            "summary": "SLM 학습 · 파인튜닝, LLM 운용 평가, RAG, 프롬프트 엔지니어링, 서울대병원과 중환자 · 신장/췌장 · 건강검진 AI 파이프라인, 정형 · 비정형 빅데이터 학습 · 배포 · 모니터링. 경력 3년+, Python, CNCF 이해. 우대 K8S · LLM 파인튜닝 · 의료/금융 모델링."
+          },
+          {
+            "title": "제로원에이아이, RAG 기술로 AI '환각' 잡고 의료 혁신 이끈다…JCM 논문 게재",
+            "url": "https://www.mt.co.kr/industry/2025/07/07/2025070414025594588",
+            "publisher": "머니투데이",
+            "date": "2025-07-07",
+            "summary": "서울대병원 · 보라매 · 분당서울대병원 · 차의과학대와 Thyro-GenAI(RAG 갑상선 질환 관리 챗봇) 논문을 JCM 에 게재. 식약처 2등급 의료 소프트웨어 · AI CDSS 플랫폼, 다기관 연합학습, 중환자 AI, 췌장절제술 · 신장이식 합병증 예측 AI. GPU 약 50 개 자체 운용."
+          },
+          {
+            "title": "제로원에이아이, 폐쇄망 최적화 의료 AI로 한·미 의사 국가고시 벤치마크 1위 차지",
+            "url": "https://www.mt.co.kr/industry/2026/07/29/2026072417131034729",
+            "publisher": "머니투데이",
+            "date": "2026-07-29",
+            "summary": "대표 송준호. 폐쇄망 환경 특화 AI — 30B 의료 특화 모델 ZEO Med 2, KMLE 97.70 · USMLE 94.82(회사 발표 기준 1위), 간호사 · 약사 · 치과의사 국시 점수. 삼성서울병원 연구팀 협력, 정부 첨단 GPU 활용 사업 지원. 2026-01 FlowerTune 리더보드 4 부문 1위, 허깅페이스 공개. 국방 · 의료 · 금융 등 보안 분야."
+          }
+        ]
+      },
+      {
+        "name": "하이브리드 클라우드 · 빅데이터 백엔드",
+        "why": "백엔드 공고가 의료 · 금융 데이터 분산처리, 실시간 파이프라인, 하이브리드 클라우드, AI 학습 · 추론 백엔드를 Go · K8S · CNCF 로 적는다.",
+        "what_to_know": [
+          "Go · K8S 오퍼레이터",
+          "Kafka · Spark",
+          "온프레미스 스토리지(Ceph)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI Back-End / Bigdata 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/166683",
+            "publisher": "원티드",
+            "summary": "의료 / 금융 데이터 분산처리 · 실시간 파이프라인, 하이브리드 클라우드 백엔드, AI 학습 · 추론 · 빅데이터 · LLM 백엔드. Go · Rust · C++ 중 하나, K8S · CNCF, 빅데이터 분산처리 · 고가용성 · 온프레미스/하이브리드. 우대 Hadoop · Spark · Kafka · Ceph · LLMOps."
+          },
+          {
+            "title": "제로원에이아이 송준호 대표, K-MIMIC서 '의료 AI 빅데이터 플랫폼 역할·중요성' 강조",
+            "url": "https://news.mt.co.kr/mtview.php?no=2022062914202084049",
+            "publisher": "머니투데이",
+            "date": "2022-06-29",
+            "summary": "클라우드 네이티브 기반 AI 플랫폼 회사로 서울대병원과 한국형 중환자 빅데이터(K-MIMIC) 사업 — 의료 빅데이터 분산처리 서버 API, 정형 · 비정형 데이터 자동 저장 · 분산처리, 의료 빅데이터 레이크, 멀티 하이브리드 클라우드 의료 AI 플랫폼(검색 결과 요약 기준)."
+          }
+        ]
+      },
+      {
+        "name": "연구 · 교육 플랫폼 프런트",
+        "why": "프런트 공고가 AI 연구/교육 플랫폼 SaaS, 서비스 플랫폼, 신장/췌장 수술 질 향상 프로젝트 프런트를 적는다.",
+        "what_to_know": [
+          "Next.js",
+          "임상 대시보드"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Front-End 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/166679",
+            "publisher": "원티드",
+            "summary": "AI 연구/교육 플랫폼 프런트 SaaS, 서비스 플랫폼 프런트, 신장/췌장 수술 질 향상 프로젝트 프런트. 경력 3년+, React · TypeScript · Next.js, 상용 서비스 운영, CI/CD. 우대 대용량 트래픽 · 해외 사용자."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "면접에서 기술 철학을 묻는다",
+        "evidence": "• 3가지 기술방향에 공감 하고, 기술 면접 때 설명할 수 있어야 함.",
+        "so_what": "CNCF 의 클라우드 네이티브 정의, Karpathy 의 Software 2.0, Schillace Laws 를 읽고 자기 경험과 묶어 설명할 준비를 한다 — 네 자리 모두 같다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "코드를 먼저 본다",
+        "evidence": "• CV 공통 필수 기재사항 : 전화번호, 이메일주소, 깃랩주소, 입사가능날짜",
+        "so_what": "이력서에 저장소 주소가 필수이고 2 차가 코딩 테스트다 — 공개 저장소를 정리해 둔다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "외부 클라우드를 못 쓰는 고객",
+        "evidence": "[필수]경험 : 빅데이터분산처리, 고가용성, CNCF 생태계, 온프라미스/하이브리드 클라우드, CI/CD",
+        "so_what": "관리형 서비스 대신 온프레미스 K8S 위에서 직접 굴린 경험이 강점이다(폐쇄망 보도와 이어 읽은 이 사이트의 해석).",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다(경력직은 CV 에 희망연봉) — 비워 둔다",
+    "공식 홈페이지는 이번에 읽지 않았다 — 회사 소개는 언론 보도(머니투데이)로 채웠다",
+    "원티드 공고 번호(1666xx)가 오래된 편이라 상시 게시로 보인다 — 실제 채용 중인지는 모른다",
+    "벤치마크 '1위' 는 회사 발표를 옮긴 보도 기준이다",
+    "매출 · 인원 · 투자, 과제비 · 공급 방식은 모른다",
+    "근무지가 공고에 없다",
+    "people: 대표 송준호는 보도로 확인되지만 본인이 직접 쓴 공개 글 · 발표 링크를 찾지 않아 비웠다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/166694",
+      "title": "AI 연구개발 Lead",
+      "site": "wanted",
+      "verdict": "경력 3-10년, **이공계 석/박사**. **국가연구사업 연구기획 리드 · 수행** — **중환자AI(K-MIMIC) · 위험약물AI · 췌장/신장 수술 합병증 AI**, 서울대병원 · 세브란스 · 성모병원 프로젝트의 **연구책임자 또는 연구자**, 논문 주저자 · 특허. 필수는 **Python**, **PyTorch · TensorFlow AI 모델 개발**, **국가연구사업 수행 · 최근 3년 논문 실적**, CI/CD. 우대는 탑티어 출판, **식약처 2등급 의료 SW**, RAG · LLM · MLOps · **연합학습**. 전형은 서류 > **코딩 테스트** > 기술 QA > 레퍼런스 체크 > 최종, 수습 6개월. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "이공계 석박사",
+          "PyTorch/TensorFlow",
+          "국가과제 수행",
+          "최근 3년 논문"
+        ],
+        "can_learn": [
+          "연합학습",
+          "의료기기 SW 인허가",
+          "RAG"
+        ]
+      },
+      "study": [
+        {
+          "topic": "중환자 데이터로 예측 모델 — MIMIC 류 시계열과 누수 없는 평가",
+          "from": "task",
+          "quote": "• 중환자AI (K-MIMIC), 위험약물AI, 췌장/신장 수술 합병증 AI 국가 연구사업 리드 및 수행",
+          "priority": "core",
+          "why": "주요업무다. K-MIMIC 은 MIMIC 을 본뜬 한국형 중환자 데이터다(보도).",
+          "gap_check": "입원 중 불규칙하게 찍힌 활력징후 · 검사값을 모델 입력으로 만들 때 결측과 간격은 어떻게 다루나? 예측 시점 이후 정보가 섞이는 누수는 어디서 생기나(퇴원 요약 · 나중 검사)? 환자 단위로 나눠야 하는 이유는? 불균형 결과(합병증 수 %)에서 AUROC 말고 무엇을 보고하나(AUPRC · 보정 곡선)?",
+          "drill": "PhysioNet 의 공개 데모(MIMIC-IV demo)로 ICU 입원 후 24 시간 자료만 써서 사망 · 재입원 예측 모델을 만든다. 환자 단위 분할, 시간 창 특성, 로지스틱 회귀 대 GRU 비교, AUROC · AUPRC · 보정 곡선을 한 표에 적는다. TRIPOD 체크리스트로 보고서를 쓴다.",
+          "hours": 16,
+          "resources": [
+            {
+              "title": "PhysioNet — MIMIC-IV Clinical Database Demo",
+              "url": "https://physionet.org/content/mimic-iv-demo/",
+              "kind": "docs"
+            },
+            {
+              "title": "TRIPOD+AI statement",
+              "url": "https://www.tripod-statement.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "병원 데이터를 모으지 않고 학습 — 연합학습",
+          "from": "preference",
+          "quote": "보안AI(secure AI, federated learning)개발경험",
+          "priority": "high",
+          "why": "우대사항이고 회사가 다기관 연합학습 기반 의료 AI 를 추진한다(보도). 병원 데이터는 기관 밖으로 나가기 어렵다.",
+          "gap_check": "FedAvg 에서 병원마다 데이터 분포가 다르면(non-IID) 무엇이 나빠지나? 모델 가중치만 보내도 개인정보가 새어 나갈 수 있는 경로는? 차등 프라이버시 · 보안 집계는 각각 무엇을 막나?",
+          "drill": "Flower 로 가상 병원 3 곳(분포를 일부러 다르게 나눈 공개 데이터)에 FedAvg 와 FedProx 를 돌려 중앙 학습과 정확도를 비교한다. 클라이언트 하나의 데이터를 줄였을 때 결과가 어떻게 바뀌는지 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Flower — Federated Learning framework",
+              "url": "https://flower.ai/docs/framework/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "국가과제 연구기획 — 과제 제안서와 성과 지표",
+          "from": "qualification",
+          "quote": "국가연구사업이해 및 수행 경험",
+          "priority": "core",
+          "why": "자격요건이다. 연구 Lead 는 과제를 따 오고 성과(논문 · 특허 · 인허가)를 내는 자리다.",
+          "gap_check": "의료 AI 과제의 정량 성과 지표(논문 수 · 특허 · 임상 검증 · 인허가 단계)는 어떻게 잡나? 공동연구기관(병원)과 역할 · 데이터 반출 · IRB 는 어떻게 나누나? 연구 결과가 식약처 2등급 SW 로 가려면 무엇을 처음부터 남겨야 하나(임상 성능 평가 설계)?",
+          "drill": "한 가지 과제(예: 췌장절제 후 합병증 예측)로 2 쪽짜리 연구계획서를 쓴다 — 목표 · 데이터 · 방법 · 정량 지표 · 연차별 성과 · 인허가 경로. 식약처 인공지능 의료기기 허가 · 심사 가이드라인에서 필요한 임상 성능 평가 항목을 옮겨 적는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "식품의약품안전처 — 인공지능 의료기기 허가 · 심사 가이드라인",
+              "url": "https://www.mfds.go.kr/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/166685",
+      "title": "LLMOps Ops / AI 모델 개발 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 3-10년. **SLM 학습 · 파인튜닝**, **LLM 운용 평가**, **RAG 시스템**, 프롬프트 엔지니어링, **서울대병원과 중환자 · 신장/췌장 · 건강검진 AI** 파이프라인, 정형 · 비정형 빅데이터 학습 · 배포 · 모니터링. 필수는 **Python**, **CNCF 생태계 이해**. 우대는 K8S · CI/CD, 경진대회 입상, **LLM 파인튜닝**, 의료/금융 모델링, LangChain · LlamaIndex, SageMaker · Vertex. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Python",
+          "CNCF 이해",
+          "모델 학습 · 배포"
+        ],
+        "can_learn": [
+          "LoRA 파인튜닝",
+          "RAG 평가",
+          "K8S 서빙"
+        ]
+      },
+      "study": [
+        {
+          "topic": "작은 모델을 의료 도메인에 — LoRA 파인튜닝과 평가",
+          "from": "task",
+          "quote": "• SLM 모델 학습/파인튜닝, LLM운용평가, RAG 시스템 개발, 프럼프트 엔지니어링",
+          "priority": "core",
+          "why": "주요업무다. 회사가 폐쇄망용 의료 특화 모델(ZEO Med 2)을 내고 국가고시 벤치마크로 발표했다(보도).",
+          "gap_check": "전체 파인튜닝 대신 LoRA/QLoRA 를 쓰면 GPU 메모리 · 품질이 어떻게 달라지나? 의료 벤치마크(KorMedMCQA 같은)에서 점수가 오르면 실제 임상 질의응답도 나아졌다고 할 수 있나 — 데이터 오염은 어떻게 확인하나? 파인튜닝 뒤 일반 능력이 떨어지는 것은 무엇으로 재나?",
+          "drill": "공개 소형 모델(1-3B)을 Hugging Face PEFT 로 공개 의료 QA 데이터에 QLoRA 학습하고, lm-evaluation-harness 로 의료 과제와 일반 과제 점수를 전후로 비교한다. 학습 데이터와 평가 문항의 n-gram 중복을 검사해 오염 여부를 적는다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Hugging Face PEFT",
+              "url": "https://huggingface.co/docs/peft/",
+              "kind": "docs"
+            },
+            {
+              "title": "EleutherAI lm-evaluation-harness",
+              "url": "https://github.com/EleutherAI/lm-evaluation-harness",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "환각을 줄이는 의료 RAG — 검색 품질과 근거 표시",
+          "from": "preference",
+          "quote": "RAG 시스템 설계 개발 경험",
+          "priority": "core",
+          "why": "우대경험이고 회사가 RAG 갑상선 챗봇(Thyro-GenAI) 논문을 냈다(보도).",
+          "gap_check": "진료 지침 문서를 어떤 단위로 자르나(절 · 표)? 검색이 틀렸는지 생성이 틀렸는지 어떻게 나눠 재나(retrieval recall · faithfulness)? 답에 근거 문단을 붙이고, 근거가 없으면 모른다고 하게 하려면?",
+          "drill": "공개 진료 지침 PDF 몇 개로 LlamaIndex RAG 를 만들고, 질문 30 개의 정답 근거 문단을 손으로 표시한 평가셋으로 검색 recall@5 와 Ragas faithfulness 를 잰다. 청크 크기 · 하이브리드 검색(BM25 + 벡터) · 리랭커를 바꿔 표로 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Ragas — Evaluation for RAG",
+              "url": "https://docs.ragas.io/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모델을 K8S 위에서 서빙 · 감시 — CNCF 로 LLMOps",
+          "from": "qualification",
+          "quote": "필수경험 : Python, CNCF 생태계 이해",
+          "priority": "high",
+          "why": "자격요건이다. 폐쇄망 고객에겐 관리형 서비스 대신 자체 클러스터에서 모델을 돌려야 한다(이 사이트의 해석).",
+          "gap_check": "vLLM 같은 추론 서버를 K8S 에 올릴 때 GPU 요청 · 노드 선택은 어떻게 하나? 처리량 · 첫 토큰 지연을 Prometheus 로 보려면? 모델 버전을 바꿀 때 트래픽 일부만 새 모델로 보내려면(KServe canary)?",
+          "drill": "kind(또는 GPU 가 있으면 k3s)에 KServe 를 깔고 작은 모델을 InferenceService 로 올려 canary 로 두 버전을 나눠 받게 한다. Prometheus · Grafana 로 요청 수 · 지연을 대시보드로 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "KServe",
+              "url": "https://kserve.github.io/website/",
+              "kind": "docs"
+            },
+            {
+              "title": "vLLM",
+              "url": "https://docs.vllm.ai/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/166683",
+      "title": "AI Back-End / Bigdata 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 3-10년. **의료 / 금융 데이터 분산처리 · 실시간 파이프라인**, **하이브리드 클라우드 백엔드**, AI 분석환경 · 학습 · 추론 · 빅데이터 · **LLM 백엔드**. 필수는 **Go · Rust · C++ 중 하나에 강한 자신감**, **K8S · CNCF · 빅데이터 · 클라우드 네이티브**, 빅데이터 분산처리 · 고가용성 · **온프레미스/하이브리드 클라우드**, CI/CD. 우대는 학습 · 추론 · 배포 자동화, Hadoop · Spark · Kafka · **Ceph**, LLMOps. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Go/Rust/C++",
+          "K8S · CNCF",
+          "빅데이터 분산처리",
+          "온프레미스/하이브리드"
+        ],
+        "can_learn": [
+          "K8S 오퍼레이터",
+          "Ceph",
+          "GPU 스케줄링"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Go 로 K8S 를 확장하기 — 오퍼레이터로 AI 작업 관리",
+          "from": "qualification",
+          "quote": "[필수]언어 : 하나의 언어에 대한 강한 자신감이 있는 개발자 : Go 또는 Rust 또는 C++",
+          "priority": "core",
+          "why": "자격요건이고 상세 필수경험에 GoLang · K8S 가 있다. AI 학습 · 추론 환경을 사용자별로 띄우는 백엔드로 읽힌다(이 사이트의 해석).",
+          "gap_check": "CRD 와 컨트롤러의 조정 루프(reconcile)는 무엇을 보장하나(멱등 · 원하는 상태)? 사용자가 '노트북 환경 하나' 를 요청하면 Pod · PVC · Service 를 누가 만들고 지우나(OwnerReference)? 조정 중 실패하면 어떻게 다시 시도하나?",
+          "drill": "kubebuilder 로 `Workspace` CRD(이미지 · GPU 수 · 저장 용량)를 만들고, 컨트롤러가 Pod · PVC · Service 를 만들어 상태를 status 에 적게 한다. CR 을 지우면 자식 자원이 함께 지워지는지, 컨트롤러를 죽였다 살려도 같은 상태로 수렴하는지 envtest 로 확인한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "The Kubebuilder Book",
+              "url": "https://book.kubebuilder.io/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "의료 · 금융 데이터 실시간 파이프라인 — Kafka 와 정확히 한 번",
+          "from": "task",
+          "quote": "• 의료 / 금융 데이터 분산처리, 실시간 데이터처리 파이프라인 개발 운영",
+          "priority": "core",
+          "why": "주요업무이고 우대에 Kafka · Spark 가 있다. K-MIMIC 에서 정형 · 비정형 데이터 자동 저장 · 분산처리를 맡았다(보도).",
+          "gap_check": "병상 모니터 신호처럼 끊임없이 들어오는 데이터를 Kafka 에 넣을 때 파티션 키는 무엇으로(환자 ID)? 소비자가 죽었다 살아나면 중복 처리를 어떻게 막나(멱등 쓰기 · 트랜잭션)? 개인정보는 파이프라인의 어디에서 가명화하나?",
+          "drill": "Go 생산자가 가짜 활력징후를 환자 ID 키로 Kafka 에 넣고, Spark Structured Streaming(또는 Go 소비자)이 1 분 창 집계를 PostgreSQL 에 upsert 한다. 소비자를 중간에 죽여 중복 · 유실이 없는지 세고, 환자 ID 는 소비 단계에서 해시 키로 바꾼다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Apache Kafka — Documentation",
+              "url": "https://kafka.apache.org/documentation/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "클라우드 없이 — 온프레미스 · 하이브리드 K8S 와 저장소",
+          "from": "qualification",
+          "quote": "온프라미스/하이브리드 클라우드",
+          "priority": "high",
+          "why": "자격요건이다. 폐쇄망 · 병원 전산실처럼 퍼블릭 클라우드를 못 쓰는 곳이 고객이다(보도).",
+          "gap_check": "온프레미스에서 LoadBalancer 는 누가 제공하나(MetalLB)? 영속 볼륨은(Ceph · Rook)? 인터넷이 없는 폐쇄망에서 이미지 · 헬름 차트는 어떻게 들여오나(내부 레지스트리 · 미러)?",
+          "drill": "VM 세 대에 k3s(또는 kubeadm)를 깔고 MetalLB · Rook-Ceph 를 올린 뒤, 외부 인터넷을 끊은 상태에서 내부 Harbor 레지스트리로만 앱을 배포해 본다. 노드 하나를 꺼서 저장소 · 서비스가 살아남는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Rook — Ceph storage for Kubernetes",
+              "url": "https://rook.io/docs/rook/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "MetalLB",
+              "url": "https://metallb.universe.tf/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/166679",
+      "title": "Front-End 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 3-10년(상세는 3년 이상). **AI 연구/교육 플랫폼 프런트 SaaS**, 서비스 플랫폼 프런트, **신장/췌장 수술 질 향상 프로젝트** 프런트 개발 · 운영. 필수는 **React · TypeScript · Next.js**, 상용 서비스 개발 · 고도화 · 운용, CI/CD. 우대는 대용량 트래픽 · 해외 사용자, 그리고 다른 자리와 같은 AI · 클라우드 네이티브 키워드. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "React",
+          "TypeScript",
+          "Next.js",
+          "상용 서비스 운영"
+        ],
+        "can_learn": [
+          "임상 지표 대시보드",
+          "LLM 스트리밍 UI"
+        ]
+      },
+      "study": [
+        {
+          "topic": "수술 질 향상 대시보드 — 병원 · 의사별 지표를 안전하게",
+          "from": "task",
+          "quote": "• 신장/췌장 수술 질 향상 프로젝트 프런트 개발 운영",
+          "priority": "core",
+          "why": "주요업무다. 수술 합병증 예측 AI 국가 과제와 이어진 화면으로 읽힌다(보도 · 이 사이트의 해석).",
+          "gap_check": "기관 · 의사별 합병증률을 비교할 때 표본이 작은 곳은 어떻게 보여 주나(신뢰구간 · 퍼널 플롯)? 모델이 준 위험도는 확률로 보이나 등급으로 보이나? 환자 식별 정보를 화면 · URL · 로그에 남기지 않으려면?",
+          "drill": "Next.js 로 가짜 수술 데이터를 기관별 합병증률 퍼널 플롯(신뢰 한계선)과 환자별 위험도 목록으로 보여 주는 화면을 만든다. 환자 ID 는 URL 에 넣지 않고 세션 상태로만 다루며, 작은 표본 기관은 흐리게 표시한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Next.js Docs",
+              "url": "https://nextjs.org/docs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI 연구/교육 플랫폼 SaaS — LLM 응답 스트리밍과 작업 상태",
+          "from": "task",
+          "quote": "• AI 연구/교육 플랫폼 프런트 SaaS 개발 운영",
+          "priority": "high",
+          "why": "주요업무다. 학습 작업 · 모델 응답처럼 오래 걸리는 일을 화면에 보여 주는 것이 핵심으로 읽힌다(이 사이트의 해석).",
+          "gap_check": "LLM 답을 토큰 단위로 흘려 보여 주려면(SSE · ReadableStream)? 사용자가 중간에 멈추면 요청을 어떻게 끊나(AbortController)? 몇 시간짜리 학습 작업 상태는 폴링 · SSE · 웹소켓 중 무엇으로?",
+          "drill": "Next.js Route Handler 가 로컬 모델(또는 가짜 생성기)의 토큰을 SSE 로 흘리고, 클라이언트가 이어 붙여 보여 주며 '중지' 로 끊게 한다. 학습 작업 목록은 TanStack Query 폴링으로 상태(대기 · 실행 · 완료 · 실패)를 갱신한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "MDN — Using server-sent events",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
