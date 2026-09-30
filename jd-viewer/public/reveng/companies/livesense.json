@@ -145,7 +145,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "machbaito-full-html-cdn-cache"
+      ]
     },
     {
       "name": "転職ドラフト 의 제시 연봉 데이터 — 기술 경험으로 연봉 시세를 추정한다",
@@ -222,7 +224,403 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "machbaito-full-html-cdn-cache",
+      "name": "Rails 모놀리스의 HTML 을 통째로 CDN 에 — 사람마다 다른 부분은 표시 뒤 API 로 빼고, 캐시 여부는 CDN 정규식이 아니라 Rails 헤더가 정하며, 히트율 20% 대를 URL 정규화 · 퍼지 · 워밍업 · SWR 로 60 ~ 70% 까지 올린다",
+      "domain": "마하바이트 모놀리스를 빠르고 현대적으로 — HTML 을 CDN 에 통째로 캐시하고, 오프레에서 AWS 로 DB · 검색을 옮긴다",
+      "updated_at": "2026-09-30",
+      "business": {
+        "why": "マッハバイト 는 창업부터 이어진 아르바이트 구인 사이트이고, 사용자가 페이지를 열 때마다 **Rails 가 HTML 을 조립**했다 — 목록 · 상세가 대략 **300 ~ 700 ms**, 무거운 페이지는 1 초 넘게 걸렸고, 이것이 사이트 속도의 병목이었다. 이미지 · CSS · JS 는 이전부터 CDN 에서 내보내고 있었다. 이를 **HTML 본체까지 넓혀 Rails 를 거치지 않고 돌려줄 수 없을까** 가 출발점이다.\n\n그런데 HTML 에는 로그인 상태 · 즐겨찾기 · 그 사람용 추천이 박혀 있어 같은 URL 이라도 사람마다 조금씩 달랐다 — 그대로 캐시하면 앞사람의 정보가 다음 사람에게 보인다. 캐시를 늘리면 구인 정보 갱신이 늦게 반영되는 것도 문제였다.",
+        "metrics": [
+          {
+            "label": "구인 목록 페이지 LCP",
+            "value": "363 ms(측정 조건은 회사 보도자료)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "モノリスなアルバイト求人サイトの表示速度をCDNキャッシュで爆速にした話",
+                "url": "https://made.livesense.co.jp/entry/2026/06/12/080000",
+                "publisher": "リブセンス",
+                "summary": "マッハバイト — Rails 가 매번 HTML 을 조립해 300 ~ 700 ms(무거우면 1 초 이상). HTML 을 통째로 CDN 캐시: 사용자별 부분(로그인 · 즐겨찾기 · 추천)을 표시 뒤 JS 로 API 에서 가져오게 바꾸고, 캐시 규칙은 CDN 경로 정규식 대신 Rails 헤더로, 히트율 끌어올리기, 옛 HTML 이 지운 CSS/JS 참조 · 감시 · 숫자 감시. 구인 목록 LCP 363 ms.",
+                "date": "2026-06-12"
+              }
+            ]
+          },
+          {
+            "label": "CDN 캐시 히트율",
+            "value": "20% 대 → 60 ~ 70% 전후(URL 정규화만으로 약 20pt)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "モノリスなアルバイト求人サイトの表示速度をCDNキャッシュで爆速にした話",
+                "url": "https://made.livesense.co.jp/entry/2026/06/12/080000",
+                "publisher": "リブセンス",
+                "summary": "マッハバイト — Rails 가 매번 HTML 을 조립해 300 ~ 700 ms(무거우면 1 초 이상). HTML 을 통째로 CDN 캐시: 사용자별 부분(로그인 · 즐겨찾기 · 추천)을 표시 뒤 JS 로 API 에서 가져오게 바꾸고, 캐시 규칙은 CDN 경로 정규식 대신 Rails 헤더로, 히트율 끌어올리기, 옛 HTML 이 지운 CSS/JS 참조 · 감시 · 숫자 감시. 구인 목록 LCP 363 ms.",
+                "date": "2026-06-12"
+              }
+            ]
+          },
+          {
+            "label": "인프라 저장소 PR",
+            "value": "앱 엔지니어가 terraform 저장소에 15 개(S3 퇴피 · 감시 · CDN A/B 기반)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "モノリスなアルバイト求人サイトの表示速度をCDNキャッシュで爆速にした話",
+                "url": "https://made.livesense.co.jp/entry/2026/06/12/080000",
+                "publisher": "リブセンス",
+                "summary": "マッハバイト — Rails 가 매번 HTML 을 조립해 300 ~ 700 ms(무거우면 1 초 이상). HTML 을 통째로 CDN 캐시: 사용자별 부분(로그인 · 즐겨찾기 · 추천)을 표시 뒤 JS 로 API 에서 가져오게 바꾸고, 캐시 규칙은 CDN 경로 정규식 대신 Rails 헤더로, 히트율 끌어올리기, 옛 HTML 이 지운 CSS/JS 참조 · 감시 · 숫자 감시. 구인 목록 LCP 363 ms.",
+                "date": "2026-06-12"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "HTML 을 캐시하기 전에",
+          "thought": "'페이지 내용을 누구에게 보여도 같은 HTML 로' 만드는 것이 가장 먼저였다 — 로그인 사용자 고유 정보가 다른 사람에게 보이는 것은 절대 피해야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "モノリスなアルバイト求人サイトの表示速度をCDNキャッシュで爆速にした話",
+              "url": "https://made.livesense.co.jp/entry/2026/06/12/080000",
+              "publisher": "リブセンス",
+              "summary": "マッハバイト — Rails 가 매번 HTML 을 조립해 300 ~ 700 ms(무거우면 1 초 이상). HTML 을 통째로 CDN 캐시: 사용자별 부분(로그인 · 즐겨찾기 · 추천)을 표시 뒤 JS 로 API 에서 가져오게 바꾸고, 캐시 규칙은 CDN 경로 정규식 대신 Rails 헤더로, 히트율 끌어올리기, 옛 HTML 이 지운 CSS/JS 참조 · 감시 · 숫자 감시. 구인 목록 LCP 363 ms.",
+              "date": "2026-06-12"
+            }
+          ]
+        },
+        {
+          "at": "규칙을 어디에 둘지",
+          "thought": "CDN 정규식에 규칙을 쌓으면 앱의 작은 변경마다 CDN 설정도 따라가야 해 언젠가 사고 날 미래가 보였다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "モノリスなアルバイト求人サイトの表示速度をCDNキャッシュで爆速にした話",
+              "url": "https://made.livesense.co.jp/entry/2026/06/12/080000",
+              "publisher": "リブセンス",
+              "summary": "マッハバイト — Rails 가 매번 HTML 을 조립해 300 ~ 700 ms(무거우면 1 초 이상). HTML 을 통째로 CDN 캐시: 사용자별 부분(로그인 · 즐겨찾기 · 추천)을 표시 뒤 JS 로 API 에서 가져오게 바꾸고, 캐시 규칙은 CDN 경로 정규식 대신 Rails 헤더로, 히트율 끌어올리기, 옛 HTML 이 지운 CSS/JS 참조 · 감시 · 숫자 감시. 구인 목록 LCP 363 ms.",
+              "date": "2026-06-12"
+            }
+          ]
+        },
+        {
+          "at": "히트율이 안 오를 때",
+          "thought": "캐시 기한만 늘리면 히트율은 오르지만 구인 갱신이 반영되지 않는다 — 편집 팀과 '무엇은 즉시, 어디까지는 늦어도 되나' 를 맞췄다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "モノリスなアルバイト求人サイトの表示速度をCDNキャッシュで爆速にした話",
+              "url": "https://made.livesense.co.jp/entry/2026/06/12/080000",
+              "publisher": "リブセンス",
+              "summary": "マッハバイト — Rails 가 매번 HTML 을 조립해 300 ~ 700 ms(무거우면 1 초 이상). HTML 을 통째로 CDN 캐시: 사용자별 부분(로그인 · 즐겨찾기 · 추천)을 표시 뒤 JS 로 API 에서 가져오게 바꾸고, 캐시 규칙은 CDN 경로 정규식 대신 Rails 헤더로, 히트율 끌어올리기, 옛 HTML 이 지운 CSS/JS 참조 · 감시 · 숫자 감시. 구인 목록 LCP 363 ms.",
+              "date": "2026-06-12"
+            }
+          ]
+        },
+        {
+          "at": "돌아보며",
+          "thought": "화려한 은탄환은 없었다 — 수수한 설계와 운영의 쌓임이었다. Rails 모놀리스라도 CDN 을 잘 쓰면 속도에서 업계 최상위를 노릴 수 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "モノリスなアルバイト求人サイトの表示速度をCDNキャッシュで爆速にした話",
+              "url": "https://made.livesense.co.jp/entry/2026/06/12/080000",
+              "publisher": "リブセンス",
+              "summary": "マッハバイト — Rails 가 매번 HTML 을 조립해 300 ~ 700 ms(무거우면 1 초 이상). HTML 을 통째로 CDN 캐시: 사용자별 부분(로그인 · 즐겨찾기 · 추천)을 표시 뒤 JS 로 API 에서 가져오게 바꾸고, 캐시 규칙은 CDN 경로 정규식 대신 Rails 헤더로, 히트율 끌어올리기, 옛 HTML 이 지운 CSS/JS 참조 · 감시 · 숫자 감시. 구인 목록 LCP 363 ms.",
+              "date": "2026-06-12"
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "공통 HTML",
+            "what": "누가 봐도 같은 페이지 본체 — CDN 캐시 대상."
+          },
+          {
+            "name": "사용자별 조각",
+            "what": "로그인 상태 · 즐겨찾기 · 추천 — 표시 뒤 브라우저 JS 가 API 로 가져와 끼운다."
+          },
+          {
+            "name": "캐시 지시 헤더",
+            "what": "Rails 컨트롤러가 응답마다 캐시 여부 · 기간을 지시 — CDN 은 이를 본다."
+          },
+          {
+            "name": "신선도 약속",
+            "what": "구인 편집 팀과 합의한 '즉시 반영 · 늦어도 되는 한계' 선."
+          },
+          {
+            "name": "옛 에셋",
+            "what": "배포 때마다 S3 에 퇴피한 빌드 결과물 — 캐시에 남은 옛 HTML 이 요청해도 돌려준다."
+          }
+        ],
+        "invariants": [
+          "사용자 고유 정보는 캐시되는 HTML 에 들어가지 않는다.",
+          "'절대 캐시하면 안 되는 페이지' 는 Rails 헤더와 별도로 CDN 에서도 막는다.",
+          "캐시 기간은 편집 팀과 합의한 신선도 선을 넘지 않는다.",
+          "캐시에 남은 옛 HTML 이 참조하는 CSS/JS 는 사라지지 않는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "HTML 에서 로그인 · 즐겨찾기 · 추천을 빼고, 표시 뒤 JS 가 API 로 가져와 끼우게 고친다",
+            "why": "같은 URL 이면 누구에게나 같은 HTML."
+          },
+          {
+            "step": "Rails 가 응답 헤더로 캐시 여부 · 기간을 지시, CDN 이 따른다(금지 페이지는 CDN 에서도 이중 차단)",
+            "why": "규칙을 코드로 관리한다."
+          },
+          {
+            "step": "구인 갱신을 감지해 바뀐 만큼 주기적으로 퍼지 → 지운 페이지를 다시 요청해 데워 둔다, 매일 밤 전날 많이 본 페이지를 로그로 집계해 일괄 워밍업",
+            "why": "신선도를 지키며 히트율을 올린다."
+          },
+          {
+            "step": "표시에 영향 없는 파라미터(추적 등)를 캐시 키에서 빼고, stale-while-revalidate 로 만료 뒤에도 옛것을 주며 뒤에서 갱신",
+            "why": "같은 내용이 따로 캐시되지 않게 · 사용자를 기다리게 하지 않게."
+          },
+          {
+            "step": "배포마다 에셋을 S3 에 퇴피, 에셋 404 를 프론트에서 감지해 경보, Datadog 에 히트율 · LCP 대시보드 · 목표선 경보",
+            "why": "빠름을 계속 지킨다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "무엇을 캐시하나?",
+            "chosen": "**Rails 가 만드는 HTML 을 통째로 CDN 에** — 정적 파일만 캐시하던 것을 HTML 본체까지 넓힌다.",
+            "alternatives": [
+              "Rails 렌더링을 최적화한다(이 사이트의 가정)",
+              "프론트를 SPA 로 다시 짓는다(이 사이트의 가정)"
+            ],
+            "tradeoff": "모놀리스를 다시 짓지 않고 Rails 를 거치지 않는 응답을 만든다 — 목록 LCP 363 ms. 대가는 아래 모든 결정(개인화 분리 · 신선도 · 옛 에셋)이 따라온다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "モノリスなアルバイト求人サイトの表示速度をCDNキャッシュで爆速にした話",
+                "url": "https://made.livesense.co.jp/entry/2026/06/12/080000",
+                "publisher": "リブセンス",
+                "summary": "マッハバイト — Rails 가 매번 HTML 을 조립해 300 ~ 700 ms(무거우면 1 초 이상). HTML 을 통째로 CDN 캐시: 사용자별 부분(로그인 · 즐겨찾기 · 추천)을 표시 뒤 JS 로 API 에서 가져오게 바꾸고, 캐시 규칙은 CDN 경로 정규식 대신 Rails 헤더로, 히트율 끌어올리기, 옛 HTML 이 지운 CSS/JS 참조 · 감시 · 숫자 감시. 구인 목록 LCP 363 ms.",
+                "date": "2026-06-12"
+              }
+            ]
+          },
+          {
+            "question": "사람마다 다른 내용은?",
+            "chosen": "**HTML 에 박지 않고 표시 뒤 브라우저 JS 가 API 로 가져와 끼운다** — 처음 받는 HTML 은 '누가 봐도 같은 공통 상태'.",
+            "alternatives": [
+              "사용자별로 캐시 키를 나눈다(이 사이트의 가정)"
+            ],
+            "tradeoff": "HTML 캐시가 성립하는 토대이고, 다른 사람의 정보가 보이는 사고를 구조로 막는다. 대가는 로그인 표시 · 즐겨찾기가 늦게 뜬다는 것(이 사이트의 해석)과 지루한 재작성.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "モノリスなアルバイト求人サイトの表示速度をCDNキャッシュで爆速にした話",
+                "url": "https://made.livesense.co.jp/entry/2026/06/12/080000",
+                "publisher": "リブセンス",
+                "summary": "マッハバイト — Rails 가 매번 HTML 을 조립해 300 ~ 700 ms(무거우면 1 초 이상). HTML 을 통째로 CDN 캐시: 사용자별 부분(로그인 · 즐겨찾기 · 추천)을 표시 뒤 JS 로 API 에서 가져오게 바꾸고, 캐시 규칙은 CDN 경로 정규식 대신 Rails 헤더로, 히트율 끌어올리기, 옛 HTML 이 지운 CSS/JS 참조 · 감시 · 숫자 감시. 구인 목록 LCP 363 ms.",
+                "date": "2026-06-12"
+              }
+            ]
+          },
+          {
+            "question": "캐시 규칙은 어디에 두나?",
+            "chosen": "**Rails 가 응답 헤더로 지시하고 CDN 은 따른다** — 규칙이 컨트롤러의 Ruby 코드가 된다. 단 '절대 캐시하면 안 되는 페이지' 는 CDN 에서도 이중으로 막는다.",
+            "alternatives": [
+              "CDN 에 URL 정규식으로 캐시/제외 · 기간을 나눈다(처음 시도)"
+            ],
+            "tradeoff": "URL 구조가 복잡하고 사업 사정으로 경로를 바꾸기도 해 CDN 정규식은 곧 괴로워졌다 — 앱 변경마다 CDN 을 따라 고쳐야 한다. 헤더 방식은 구현 실수로 캐시하면 안 될 페이지가 캐시될 수 있어 CDN 에 마지막 방어선을 둔 다층 방어로 막는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "モノリスなアルバイト求人サイトの表示速度をCDNキャッシュで爆速にした話",
+                "url": "https://made.livesense.co.jp/entry/2026/06/12/080000",
+                "publisher": "リブセンス",
+                "summary": "マッハバイト — Rails 가 매번 HTML 을 조립해 300 ~ 700 ms(무거우면 1 초 이상). HTML 을 통째로 CDN 캐시: 사용자별 부분(로그인 · 즐겨찾기 · 추천)을 표시 뒤 JS 로 API 에서 가져오게 바꾸고, 캐시 규칙은 CDN 경로 정규식 대신 Rails 헤더로, 히트율 끌어올리기, 옛 HTML 이 지운 CSS/JS 참조 · 감시 · 숫자 감시. 구인 목록 LCP 363 ms.",
+                "date": "2026-06-12"
+              }
+            ]
+          },
+          {
+            "question": "히트율 20% 대를 어떻게 올리나 — 기한만 늘리나?",
+            "chosen": "**아니오 — 구인 편집 팀과 신선도 한계선을 합의**하고, 그 선 안에서 조정을 쌓는다.",
+            "alternatives": [
+              "캐시 기한을 길게"
+            ],
+            "tradeoff": "기한을 늘리면 히트율은 오르지만 구인 갱신이 반영되지 않는 딜레마 — '무엇은 즉시, 어디까지는 늦어도 되나' 를 사업과 맞춰 기준을 정했다. 대가는 편집 쪽 요구가 바뀌면 다시 맞춰야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "モノリスなアルバイト求人サイトの表示速度をCDNキャッシュで爆速にした話",
+                "url": "https://made.livesense.co.jp/entry/2026/06/12/080000",
+                "publisher": "リブセンス",
+                "summary": "マッハバイト — Rails 가 매번 HTML 을 조립해 300 ~ 700 ms(무거우면 1 초 이상). HTML 을 통째로 CDN 캐시: 사용자별 부분(로그인 · 즐겨찾기 · 추천)을 표시 뒤 JS 로 API 에서 가져오게 바꾸고, 캐시 규칙은 CDN 경로 정규식 대신 Rails 헤더로, 히트율 끌어올리기, 옛 HTML 이 지운 CSS/JS 참조 · 감시 · 숫자 감시. 구인 목록 LCP 363 ms.",
+                "date": "2026-06-12"
+              }
+            ]
+          },
+          {
+            "question": "신선도를 지키며 히트율을 올리는 수단은?",
+            "chosen": "**넷을 겹친다** — 구인 차분 갱신에 맞춘 퍼지 + 지운 페이지 즉시 워밍업, 매일 밤 전날 인기 페이지 일괄 워밍업, **URL 정규화**(추적 파라미터를 캐시 키에서 제외), **stale-while-revalidate**.",
+            "alternatives": [
+              "전체 퍼지 · 짧은 기한"
+            ],
+            "tradeoff": "20% 대 → 60 ~ 70% 전후. 가장 효과가 컸던 것은 URL 정규화(약 20pt). 대가는 워밍업 요청이 원본 부하를 만들고, SWR 동안은 잠깐 옛 내용이 보일 수 있다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "モノリスなアルバイト求人サイトの表示速度をCDNキャッシュで爆速にした話",
+                "url": "https://made.livesense.co.jp/entry/2026/06/12/080000",
+                "publisher": "リブセンス",
+                "summary": "マッハバイト — Rails 가 매번 HTML 을 조립해 300 ~ 700 ms(무거우면 1 초 이상). HTML 을 통째로 CDN 캐시: 사용자별 부분(로그인 · 즐겨찾기 · 추천)을 표시 뒤 JS 로 API 에서 가져오게 바꾸고, 캐시 규칙은 CDN 경로 정규식 대신 Rails 헤더로, 히트율 끌어올리기, 옛 HTML 이 지운 CSS/JS 참조 · 감시 · 숫자 감시. 구인 목록 LCP 363 ms.",
+                "date": "2026-06-12"
+              }
+            ]
+          },
+          {
+            "question": "캐시에 남은 옛 HTML 이 배포로 사라진 CSS/JS 를 부르면?",
+            "chosen": "**배포 때마다 빌드된 에셋을 S3 에 퇴피**해 옛 파일 요청에도 돌려주고, **프론트에서 에셋 404 를 감지해 경보**.",
+            "alternatives": [
+              "배포 때 HTML 캐시를 전부 퍼지"
+            ],
+            "tradeoff": "모바일 앱이 옛 버전 요청을 고려해야 하는 것과 같은 구도 — 옛 캐시가 남아도 화면이 안 깨지고, 빠져나간 경우도 사용자보다 먼저 안다. 대가는 S3 에 에셋 버전이 쌓인다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "モノリスなアルバイト求人サイトの表示速度をCDNキャッシュで爆速にした話",
+                "url": "https://made.livesense.co.jp/entry/2026/06/12/080000",
+                "publisher": "リブセンス",
+                "summary": "マッハバイト — Rails 가 매번 HTML 을 조립해 300 ~ 700 ms(무거우면 1 초 이상). HTML 을 통째로 CDN 캐시: 사용자별 부분(로그인 · 즐겨찾기 · 추천)을 표시 뒤 JS 로 API 에서 가져오게 바꾸고, 캐시 규칙은 CDN 경로 정규식 대신 Rails 헤더로, 히트율 끌어올리기, 옛 HTML 이 지운 CSS/JS 참조 · 감시 · 숫자 감시. 구인 목록 LCP 363 ms.",
+                "date": "2026-06-12"
+              }
+            ]
+          },
+          {
+            "question": "빨라진 것을 어떻게 지키나?",
+            "chosen": "**Datadog 에 캐시 히트율 · LCP 대시보드와 목표선 경보** — 운영상의 SLA 로 쥔다.",
+            "alternatives": [
+              "한 번 측정하고 끝"
+            ],
+            "tradeoff": "일회성 성과로 끝나지 않는다. 대가는 경보가 울리면 원인이 캐시인지 앱인지 가려야 한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "モノリスなアルバイト求人サイトの表示速度をCDNキャッシュで爆速にした話",
+                "url": "https://made.livesense.co.jp/entry/2026/06/12/080000",
+                "publisher": "リブセンス",
+                "summary": "マッハバイト — Rails 가 매번 HTML 을 조립해 300 ~ 700 ms(무거우면 1 초 이상). HTML 을 통째로 CDN 캐시: 사용자별 부분(로그인 · 즐겨찾기 · 추천)을 표시 뒤 JS 로 API 에서 가져오게 바꾸고, 캐시 규칙은 CDN 경로 정규식 대신 Rails 헤더로, 히트율 끌어올리기, 옛 HTML 이 지운 CSS/JS 참조 · 감시 · 숫자 감시. 구인 목록 LCP 363 ms.",
+                "date": "2026-06-12"
+              }
+            ]
+          },
+          {
+            "question": "CDN · terraform 은 누가 만지나?",
+            "chosen": "**앱 엔지니어가 인프라 저장소까지 넘어간다** — Claude Code 의 도움과 인프라 그룹 상담으로 S3 퇴피 · 감시 · CDN A/B 기반을 PR 15 개로.",
+            "alternatives": [
+              "인프라 그룹에 요청만 한다"
+            ],
+            "tradeoff": "앱의 요건을 아는 사람이 만지니 빠르게 진행됐다 — 리브센스의 '越境' 문화. 대가는 처음엔 terraform · CDN 동작을 잘 몰라 인프라 그룹의 리뷰가 필요했다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "モノリスなアルバイト求人サイトの表示速度をCDNキャッシュで爆速にした話",
+                "url": "https://made.livesense.co.jp/entry/2026/06/12/080000",
+                "publisher": "リブセンス",
+                "summary": "マッハバイト — Rails 가 매번 HTML 을 조립해 300 ~ 700 ms(무거우면 1 초 이상). HTML 을 통째로 CDN 캐시: 사용자별 부분(로그인 · 즐겨찾기 · 추천)을 표시 뒤 JS 로 API 에서 가져오게 바꾸고, 캐시 규칙은 CDN 경로 정규식 대신 Rails 헤더로, 히트율 끌어올리기, 옛 HTML 이 지운 CSS/JS 참조 · 감시 · 숫자 감시. 구인 목록 LCP 363 ms.",
+                "date": "2026-06-12"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "인재 영역(수익원)",
+          "via": "구인 페이지 속도",
+          "contract": "マッハバイト 는 인재 영역의 아르바이트 구인 사이트이고, 목록 LCP 를 주요 구인 사이트 대비 최대 5 배 빠르다고 보도자료를 냈다(측정 조건은 보도자료).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "モノリスなアルバイト求人サイトの表示速度をCDNキャッシュで爆速にした話",
+              "url": "https://made.livesense.co.jp/entry/2026/06/12/080000",
+              "publisher": "リブセンス",
+              "summary": "マッハバイト — Rails 가 매번 HTML 을 조립해 300 ~ 700 ms(무거우면 1 초 이상). HTML 을 통째로 CDN 캐시: 사용자별 부분(로그인 · 즐겨찾기 · 추천)을 표시 뒤 JS 로 API 에서 가져오게 바꾸고, 캐시 규칙은 CDN 경로 정규식 대신 Rails 헤더로, 히트율 끌어올리기, 옛 HTML 이 지운 CSS/JS 참조 · 감시 · 숫자 감시. 구인 목록 LCP 363 ms.",
+              "date": "2026-06-12"
+            }
+          ]
+        },
+        {
+          "to": "공통 기반 AWS 이행",
+          "via": "오프레 → 클라우드",
+          "contract": "マッハバイト 는 메인 DB(Aurora) · Solr(Fargate) 등 일부를 빼고 오프레에서 클라우드로 이행을 마쳤다 — CDN 캐시는 그 뒤의 속도 작업이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "マッハバイトのメインDBをAmazon Auroraに移行しました",
+              "url": "https://made.livesense.co.jp/entry/2024/03/13/083000",
+              "publisher": "リブセンス",
+              "summary": "2024-02 マッハバイト 메인 DB 를 오프레(스테이징은 EC2)에서 Aurora 로 — 1 년 반, AWS DMS(CDC 무중단 이행은 못 함), Mroonga 등 레거시 대응, 쓰이는지 모르는 코드 조사, Performance Insights.",
+              "date": "2024-03-13"
+            },
+            {
+              "title": "Solrのクラウド移行 -AWS ECS Fargateの事例-",
+              "url": "https://made.livesense.co.jp/entry/2024/02/21/080000",
+              "publisher": "リブセンス",
+              "summary": "マッハバイト 는 일부를 빼고 오프레 → 클라우드 이행 완료. Solr 이행 범위: 다른 검색 엔진으로 안 바꿈 · 앱은 접속처만 · 버전 업 안 함 · 운영 부하를 줄이는 구성 변경 · 새 운영 컴포넌트 최소 · 감시 정밀도 유지. Keepalived VM → ECS Fargate(Indexer 는 EFS).",
+              "date": "2024-02-21"
+            }
+          ]
+        },
+        {
+          "to": "転職ドラフト 제시 연봉",
+          "via": "같은 회사의 인재 서비스",
+          "contract": "같은 인재 영역의 다른 서비스다 — 기반 공유 여부는 글에 없다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "モノリスなアルバイト求人サイトの表示速度をCDNキャッシュで爆速にした話",
+              "url": "https://made.livesense.co.jp/entry/2026/06/12/080000",
+              "publisher": "リブセンス",
+              "summary": "マッハバイト — Rails 가 매번 HTML 을 조립해 300 ~ 700 ms(무거우면 1 초 이상). HTML 을 통째로 CDN 캐시: 사용자별 부분(로그인 · 즐겨찾기 · 추천)을 표시 뒤 JS 로 API 에서 가져오게 바꾸고, 캐시 규칙은 CDN 경로 정규식 대신 Rails 헤더로, 히트율 끌어올리기, 옛 HTML 이 지운 CSS/JS 참조 · 감시 · 숫자 감시. 구인 목록 LCP 363 ms.",
+              "date": "2026-06-12"
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "요청 하나가 CDN 에서 끝나기까지",
+          "question": "누가 무엇을 캐시하고 무엇을 늦게 끼우나?",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant U as 구직자 브라우저\n  participant C as CDN\n  participant R as Rails\n  participant A as 사용자별 API\n  U->>C: 구인 목록(추적 파라미터는 키에서 제외)\n  alt 캐시 적중\n    C-->>U: 공통 HTML\n  else 미스 · 만료(SWR 이면 옛것 먼저)\n    C->>R: 요청\n    R-->>C: HTML + 캐시 지시 헤더\n    C-->>U: 공통 HTML\n  end\n  U->>A: 로그인 · 즐겨찾기 · 추천\n  A-->>U: 사용자별 조각을 끼운다"
+        },
+        {
+          "title": "히트율을 올린 네 가지",
+          "question": "신선도 선 안에서 무엇을 했나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  H0[\"히트율 20% 대\"] --> N[\"URL 정규화\\n추적 파라미터 제외 · 약 +20pt\"]\n  N --> P[\"구인 차분 퍼지 + 즉시 워밍업\"]\n  P --> W[\"매일 밤 전날 인기 페이지 워밍업\"]\n  W --> S[\"stale-while-revalidate\"]\n  S --> H1[\"60 ~ 70% 전후\"]\n  L[\"편집 팀과 합의한 신선도 한계선\"] -.-> P & W & S"
+        },
+        {
+          "title": "캐시가 만드는 사고",
+          "question": "무엇이 새고 무엇이 깨지나?",
+          "kind": "failure",
+          "code": "flowchart TB\n  F1[\"사용자별 정보가 HTML 에\"] --> X1[\"다른 사람에게 노출\"] --> M1[\"표시 뒤 API 로 분리\"]\n  F2[\"헤더 구현 실수\"] --> X2[\"캐시하면 안 될 페이지가 캐시\"] --> M2[\"CDN 에 마지막 방어선\"]\n  F3[\"CDN 정규식 규칙\"] --> X3[\"앱 경로 변경마다 CDN 수정 — 사고 예감\"] --> M3[\"Rails 헤더로 이전\"]\n  F4[\"배포 뒤 옛 HTML\"] --> X4[\"사라진 CSS/JS 참조\"] --> M4[\"S3 퇴피 + 에셋 404 경보\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "モノリスなアルバイト求人サイトの表示速度をCDNキャッシュで爆速にした話",
+          "url": "https://made.livesense.co.jp/entry/2026/06/12/080000",
+          "publisher": "リブセンス",
+          "summary": "マッハバイト — Rails 가 매번 HTML 을 조립해 300 ~ 700 ms(무거우면 1 초 이상). HTML 을 통째로 CDN 캐시: 사용자별 부분(로그인 · 즐겨찾기 · 추천)을 표시 뒤 JS 로 API 에서 가져오게 바꾸고, 캐시 규칙은 CDN 경로 정규식 대신 Rails 헤더로, 히트율 끌어올리기, 옛 HTML 이 지운 CSS/JS 참조 · 감시 · 숫자 감시. 구인 목록 LCP 363 ms.",
+          "date": "2026-06-12"
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "매출 · 부문 비중 · 과금 방식은 IR 에 있지만 이번에 읽지 않았다.",
     "부동산(イエシル) 수익원의 기술 글을 아직 못 찾았다 — 도메인이 없다.",

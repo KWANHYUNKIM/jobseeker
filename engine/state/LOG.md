@@ -2948,3 +2948,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 リブセンス 프로파일
 
 - 홈페이지(사업 영역 · 서비스) + 기술 글 11편(CDN HTML 캐시 · 연봉 진단 · 수락 분석 · Aurora · Solr Fargate · 메일 AWS · PHP 탈출 · 도메인 변경 · 썸네일 Go/Rust · 데이터 기반). 도메인 3, 수익원 2(イエシル 는 도메인 없음). 다음: CDN HTML 캐시 기능.
+
+## 2026-09-30 リブセンス CDN HTML 캐시(기능 1/3)
+
+- マッハバイト CDN 캐시 글로 `machbaito-full-html-cdn-cache`. 결정 8 — HTML 통째 캐시 / 개인화는 표시 뒤 API / Rails 헤더 + CDN 방어선 / 신선도 합의 / 퍼지 · 워밍업 · URL 정규화 · SWR / S3 에셋 퇴피 · 404 경보 / Datadog SLA / 앱 엔지니어 越境. 다음: 연봉 진단.
