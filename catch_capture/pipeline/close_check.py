@@ -799,6 +799,14 @@ def _run(limit: int, *, recheck_days: float | None, sites: set[str] | None,
         n_db += record_to_db(fresh)
         if n_db:
             print(f"[close_check] 정본 DB 에 {n_db:,}건 기록", flush=True)
+        # 닫힌 공고가 사이트 간 중복의 대표였다면 열려 있는 사본이 대표를 이어받아야
+        # 목록(store.api)에서 안 사라진다 — 중복 구체화를 다시 뽑는다.
+        if stats["closed"]:
+            try:
+                from store.facets import refresh_dup
+                refresh_dup()
+            except Exception as e:                                  # noqa: BLE001
+                print(f"  [close_check] 중복 갱신 건너뜀: {e}", flush=True)
 
     print(f"[close_check] 확인 {stats['checked']:,}건 → 마감 {stats['closed']:,} / "
           f"모집중 {stats['active']:,} / 판정불가 {stats['unknown']:,} / "

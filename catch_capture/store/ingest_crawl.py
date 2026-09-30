@@ -313,6 +313,15 @@ def ingest(jobs: list[dict], *, label: str, keywords: list[str] | None = None,
         print(f"  [db] mv_company_stack 갱신 실패(사이클은 계속): {e}", flush=True)
         stats["mv_refreshed"] = False
 
+    # 공고 필터 축(job_facet) — 공고 API(store.api)의 필터·칩 건수가 이걸 읽는다.
+    # 새 공고가 여기 없으면 목록에는 나오되 지역·직군 필터에 안 걸린다.
+    try:
+        from store import facets
+        stats["facets"] = facets.refresh(verbose=True)
+    except Exception as e:                                          # noqa: BLE001
+        print(f"  [db] job_facet 갱신 실패(사이클은 계속): {e}", flush=True)
+        stats["facets"] = 0
+
     return stats
 
 
