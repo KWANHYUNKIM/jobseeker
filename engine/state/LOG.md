@@ -3080,3 +3080,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 GMOメイクショップ 주문 상세 재구축(기능 2/3)
 
 - `admin-order-detail-rebuild`. 결정 8 — 재구현 / Container·Presentational / Pages 층(목 없는 Storybook) / Repository·Mapper·Service / 컴포저블은 상태만 / Vue3 제자리 업그레이드 / vue3 브랜치 주기 병합 · 전용 환경 / compat 대부분 끔. 출처에 Vue3 이행 글 추가.
+
+## 2026-09-30 GMOメイクショップ CSV 배치 AWS Batch(기능 3/3) — 완주
+
+- `csv-batch-aws-batch-sidecar`. 결정 8 — 온라인/배치 분기 / ECS + machinery + SQS 의 120 초 한계 / 블루그린 기각 / AWS Batch 리비전 없는 제출 / ElasticMQ 흉내 Batch / 이미지 변환 사이드카 재사용 / cgo 분리 / Fluent Bit 로그 사이드카. 출처에 EC2 → Fargate 결제 이행 글 추가. 모든 도메인에 기능 → `done`.

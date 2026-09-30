@@ -4,7 +4,7 @@
   "name_en": "GMO MakeShop",
   "country": "JP",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-30",
   "domain": "makeshop.jp",
   "one_liner": "월정액 · 판매 수수료 0 엔의 EC 사이트 구축 SaaS makeshop — 오래된 결제를 새 결제 화면(SmartCheckout)으로 옮기며 신 · 구 DB 를 실데이터로 대조하고, 관리 화면을 Vue · Go 로 다시 짓고, 무거운 CSV 출력을 AWS Batch 로 뺀다",
@@ -172,7 +172,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "csv-batch-aws-batch-sidecar"
+      ]
     }
   ],
   "features": [
@@ -934,6 +936,412 @@
           "date": "2024-01-23"
         }
       ]
+    },
+    {
+      "key": "csv-batch-aws-batch-sidecar",
+      "name": "배포가 실행 중인 배치를 죽이지 않게 — 큰 CSV 는 온라인에서 떼어 배치로, ECS(Fargate) 롤링 업데이트의 120 초 종료 대기에 막히자 블루그린 대신 AWS Batch(리비전 없이 최신 잡 정의)로, 이미지 변환 · 로그는 이미 돌던 컨테이너를 사이드카로 재사용한다",
+      "domain": "관리 화면의 무거운 일을 뒤로 뺀다 — CSV · 이미지 배치를 AWS Batch 로",
+      "updated_at": "2026-09-30",
+      "business": {
+        "why": "makeshop 숍은 주문 · 상품 · 회원 데이터를 CSV 로 많이 내려받는다. 구 시스템은 CSV 출력을 **온라인으로** 처리해 응답 시간이 길고, 지정할 수 있는 기간이 너무 짧아 한계에 와 있었다. 차세대 EC 관리 화면에서 이를 배치로 빼자, 이번에는 **배포(롤링 업데이트) 중 실행 중이던 배치가 중간에 멈추는** 문제가 생겼다 — 숍 입장에서는 요청한 CSV 가 오지 않는 것이다. 또 EC 서비스는 피크와 평시 접속 차가 커 EC2 를 피크 기준으로 잡으면 평시엔 과잉이라, 컨테이너 · 관리형으로 옮기는 흐름 위에 있다.",
+        "metrics": [
+          {
+            "label": "Fargate 강제 종료 대기 상한",
+            "value": "120 초(배치가 중간에 멈춘 원인)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "GMOメイクショップのCSV機能改善",
+                "url": "https://tech.makeshop.co.jp/entry/2024/09/30/151827",
+                "publisher": "GMOメイクショップ",
+                "summary": "구 시스템은 CSV 출력을 온라인으로 처리해 응답이 길고 범위가 짧았다 → 건수 · 범위에 따라 온라인과 배치를 나눔. 처음엔 ECS + machinery + SQS 였으나 Fargate 롤링 업데이트 때 강제 종료 대기가 120 초까지라 실행 중 배치가 중간에 멈춤. CodeDeploy 블루그린(구 태스크 몇 시간 유지)은 SQS 신 · 구 분리 등 과제가 남아 기각 → AWS Batch: 잡 정의 리비전 없이 최신을 지정하면 실행 중인 잡은 구 버전, 배포 뒤 실행은 새 버전. 로컬은 ElasticMQ + Go 로 'AWS Batch 흉내'.",
+                "date": "2024-09-30"
+              }
+            ]
+          },
+          {
+            "label": "AWS Batch 멀티 컨테이너 잡",
+            "value": "잡당 1~10 컨테이너",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWS Batch × サイドカーパターン：マルチコンテナジョブで既存資産を有効活用し責務を分離する",
+                "url": "https://tech.makeshop.co.jp/entry/2026/01/09/152800",
+                "publisher": "GMOメイクショップ",
+                "summary": "관리 화면 배치를 AWS Batch 멀티 컨테이너 잡(최대 10 개)으로 — 메인(Go 배치 로직, cobra), log_router(Fluent Bit/FireLens), image_conversion(이미 관리 화면에서 돌던 이미지 변환 API 컨테이너를 사이드카로 재사용). cgo 의존을 사이드카로 떼어 메인을 순수 Go 로 유지. Fargate vCPU/메모리 제한은 전체 합계로 계산. EcsPropertiesOverride 로 실행 인자 전달.",
+                "date": "2026-01-09"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "처음",
+          "thought": "새 CSV 배치도 ECS 로 돌리려 했다 — 처리 자체는 문제없었지만 배포 때가 문제였다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "GMOメイクショップのCSV機能改善",
+              "url": "https://tech.makeshop.co.jp/entry/2024/09/30/151827",
+              "publisher": "GMOメイクショップ",
+              "summary": "구 시스템은 CSV 출력을 온라인으로 처리해 응답이 길고 범위가 짧았다 → 건수 · 범위에 따라 온라인과 배치를 나눔. 처음엔 ECS + machinery + SQS 였으나 Fargate 롤링 업데이트 때 강제 종료 대기가 120 초까지라 실행 중 배치가 중간에 멈춤. CodeDeploy 블루그린(구 태스크 몇 시간 유지)은 SQS 신 · 구 분리 등 과제가 남아 기각 → AWS Batch: 잡 정의 리비전 없이 최신을 지정하면 실행 중인 잡은 구 버전, 배포 뒤 실행은 새 버전. 로컬은 ElasticMQ + Go 로 'AWS Batch 흉내'.",
+              "date": "2024-09-30"
+            }
+          ]
+        },
+        {
+          "at": "블루그린을 검토하며",
+          "thought": "구 태스크를 몇 시간 살려 두면 배포 문제는 풀 수 있을 것 같았지만, 그동안 다음 배포를 못 하거나 SQS 를 신 · 구용으로 따로 둬야 하는 과제가 남았다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "GMOメイクショップのCSV機能改善",
+              "url": "https://tech.makeshop.co.jp/entry/2024/09/30/151827",
+              "publisher": "GMOメイクショップ",
+              "summary": "구 시스템은 CSV 출력을 온라인으로 처리해 응답이 길고 범위가 짧았다 → 건수 · 범위에 따라 온라인과 배치를 나눔. 처음엔 ECS + machinery + SQS 였으나 Fargate 롤링 업데이트 때 강제 종료 대기가 120 초까지라 실행 중 배치가 중간에 멈춤. CodeDeploy 블루그린(구 태스크 몇 시간 유지)은 SQS 신 · 구 분리 등 과제가 남아 기각 → AWS Batch: 잡 정의 리비전 없이 최신을 지정하면 실행 중인 잡은 구 버전, 배포 뒤 실행은 새 버전. 로컬은 ElasticMQ + Go 로 'AWS Batch 흉내'.",
+              "date": "2024-09-30"
+            }
+          ]
+        },
+        {
+          "at": "마무리하며",
+          "thought": "AWS 에는 같은 일을 할 수 있는 기능이 여럿 있다 — 이번 배치도 ECS · EC2 · Lambda · Glue · Batch 가 후보가 될 수 있었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "GMOメイクショップのCSV機能改善",
+              "url": "https://tech.makeshop.co.jp/entry/2024/09/30/151827",
+              "publisher": "GMOメイクショップ",
+              "summary": "구 시스템은 CSV 출력을 온라인으로 처리해 응답이 길고 범위가 짧았다 → 건수 · 범위에 따라 온라인과 배치를 나눔. 처음엔 ECS + machinery + SQS 였으나 Fargate 롤링 업데이트 때 강제 종료 대기가 120 초까지라 실행 중 배치가 중간에 멈춤. CodeDeploy 블루그린(구 태스크 몇 시간 유지)은 SQS 신 · 구 분리 등 과제가 남아 기각 → AWS Batch: 잡 정의 리비전 없이 최신을 지정하면 실행 중인 잡은 구 버전, 배포 뒤 실행은 새 버전. 로컬은 ElasticMQ + Go 로 'AWS Batch 흉내'.",
+              "date": "2024-09-30"
+            }
+          ]
+        },
+        {
+          "at": "사이드카를 나눌 때",
+          "thought": "이미 실적 있는 컨테이너를 그대로 사이드카로 재사용한다 — 코드 중복을 피하고 확장하기 쉬운 구성.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "AWS Batch × サイドカーパターン：マルチコンテナジョブで既存資産を有効活用し責務を分離する",
+              "url": "https://tech.makeshop.co.jp/entry/2026/01/09/152800",
+              "publisher": "GMOメイクショップ",
+              "summary": "관리 화면 배치를 AWS Batch 멀티 컨테이너 잡(최대 10 개)으로 — 메인(Go 배치 로직, cobra), log_router(Fluent Bit/FireLens), image_conversion(이미 관리 화면에서 돌던 이미지 변환 API 컨테이너를 사이드카로 재사용). cgo 의존을 사이드카로 떼어 메인을 순수 Go 로 유지. Fargate vCPU/메모리 제한은 전체 합계로 계산. EcsPropertiesOverride 로 실행 인자 전달.",
+              "date": "2026-01-09"
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "CSV 요청",
+            "what": "건수 · 범위에 따라 온라인 응답 또는 배치 실행으로 나뉜다."
+          },
+          {
+            "name": "잡 정의(Job Definition)",
+            "what": "배포 = 잡 정의 갱신 → 리비전이 올라간다. 온라인은 리비전 없이 이름으로 제출해 늘 최신을 쓴다."
+          },
+          {
+            "name": "메인 컨테이너",
+            "what": "Go 배치 본체(cobra 명령) — 순수 Go."
+          },
+          {
+            "name": "사이드카",
+            "what": "log_router(Fluent Bit / FireLens) · image_conversion(관리 화면의 이미지 변환 API 컨테이너 재사용, cgo)."
+          }
+        ],
+        "invariants": [
+          "배포는 실행 중인 잡을 건드리지 않는다 — 그 잡은 제출 때의 리비전으로 끝까지 돈다.",
+          "메인 컨테이너는 cgo 에 의존하지 않는다.",
+          "Fargate vCPU · 메모리 조합 제한은 잡 안 모든 컨테이너의 합계로 맞춘다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "관리 화면에서 CSV 요청 — 작으면 온라인으로 바로 응답",
+            "why": "빠른 경우는 그대로."
+          },
+          {
+            "step": "크면 온라인이 잡 정의 이름(리비전 없음)으로 AWS Batch 에 제출, EcsPropertiesOverride 로 명령 · 인자 전달",
+            "why": "배포와 실행을 떼어 놓는다."
+          },
+          {
+            "step": "잡: 메인(Go) + log_router + image_conversion 이 한 태스크로 뜸",
+            "why": "책임 분리 · 재사용."
+          },
+          {
+            "step": "배포 = 잡 정의 갱신(리비전 +1) — 실행 중인 잡은 구 리비전, 다음 제출부터 새 리비전",
+            "why": "끊김 없는 배포."
+          },
+          {
+            "step": "로컬: ElasticMQ 큐 등록을 Go 가 받아 배치 컨테이너를 띄우는 '흉내 AWS Batch'",
+            "why": "개발 환경."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "CSV 는 온라인으로 내나, 배치로 내나?",
+            "chosen": "**건수 · 범위에 따라 나눈다** — 작으면 온라인 응답, 크면 배치.",
+            "alternatives": [
+              "모두 온라인(구 방식)",
+              "모두 배치"
+            ],
+            "tradeoff": "구 방식은 응답이 길고 지정 가능 범위가 짧았다. 모두 배치로 하면 작은 출력도 기다려야 한다. 대가는 두 경로를 유지해야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "GMOメイクショップのCSV機能改善",
+                "url": "https://tech.makeshop.co.jp/entry/2024/09/30/151827",
+                "publisher": "GMOメイクショップ",
+                "summary": "구 시스템은 CSV 출력을 온라인으로 처리해 응답이 길고 범위가 짧았다 → 건수 · 범위에 따라 온라인과 배치를 나눔. 처음엔 ECS + machinery + SQS 였으나 Fargate 롤링 업데이트 때 강제 종료 대기가 120 초까지라 실행 중 배치가 중간에 멈춤. CodeDeploy 블루그린(구 태스크 몇 시간 유지)은 SQS 신 · 구 분리 등 과제가 남아 기각 → AWS Batch: 잡 정의 리비전 없이 최신을 지정하면 실행 중인 잡은 구 버전, 배포 뒤 실행은 새 버전. 로컬은 ElasticMQ + Go 로 'AWS Batch 흉내'.",
+                "date": "2024-09-30"
+              }
+            ]
+          },
+          {
+            "question": "배치를 어디서 돌리나 — 처음 안",
+            "chosen": "**처음엔 ECS(Fargate) + machinery(Go 비동기 처리 프레임워크) + SQS** — 차세대 EC 가 이미 ECS 컨테이너를 많이 쓰고 있었다. 처리는 문제없었지만, 배치 실행 중 **롤링 업데이트**가 일어나면 Fargate 컨테이너 강제 종료 전 대기를 **120 초까지만** 늘릴 수 있어 실행 중 배치가 중간에 멈췄다.",
+            "alternatives": [
+              "처음부터 AWS Batch"
+            ],
+            "tradeoff": "기존 운영 방식과 같아 시작은 쉬웠다. 긴 배치와 상주 서비스형 배포 모델(롤링 교체)이 맞지 않는다는 것이 운영에서 드러났다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "GMOメイクショップのCSV機能改善",
+                "url": "https://tech.makeshop.co.jp/entry/2024/09/30/151827",
+                "publisher": "GMOメイクショップ",
+                "summary": "구 시스템은 CSV 출력을 온라인으로 처리해 응답이 길고 범위가 짧았다 → 건수 · 범위에 따라 온라인과 배치를 나눔. 처음엔 ECS + machinery + SQS 였으나 Fargate 롤링 업데이트 때 강제 종료 대기가 120 초까지라 실행 중 배치가 중간에 멈춤. CodeDeploy 블루그린(구 태스크 몇 시간 유지)은 SQS 신 · 구 분리 등 과제가 남아 기각 → AWS Batch: 잡 정의 리비전 없이 최신을 지정하면 실행 중인 잡은 구 버전, 배포 뒤 실행은 새 버전. 로컬은 ElasticMQ + Go 로 'AWS Batch 흉내'.",
+                "date": "2024-09-30"
+              }
+            ]
+          },
+          {
+            "question": "배포 중 끊김을 블루그린으로 막나?",
+            "chosen": "**기각** — AWS CodeDeploy 블루그린으로 구 태스크를 몇 시간 살려 두는 안을 먼저 봤다.",
+            "alternatives": [
+              "CodeDeploy 블루그린 + 구 태스크 유지"
+            ],
+            "tradeoff": "유지 시간을 조절할 수 있어 배포 문제는 풀 것 같았지만, 그 시간 동안 배포를 못 하게 되고 SQS 를 신 · 구용으로 따로 둬야 할 것 같아 과제가 남았다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "GMOメイクショップのCSV機能改善",
+                "url": "https://tech.makeshop.co.jp/entry/2024/09/30/151827",
+                "publisher": "GMOメイクショップ",
+                "summary": "구 시스템은 CSV 출력을 온라인으로 처리해 응답이 길고 범위가 짧았다 → 건수 · 범위에 따라 온라인과 배치를 나눔. 처음엔 ECS + machinery + SQS 였으나 Fargate 롤링 업데이트 때 강제 종료 대기가 120 초까지라 실행 중 배치가 중간에 멈춤. CodeDeploy 블루그린(구 태스크 몇 시간 유지)은 SQS 신 · 구 분리 등 과제가 남아 기각 → AWS Batch: 잡 정의 리비전 없이 최신을 지정하면 실행 중인 잡은 구 버전, 배포 뒤 실행은 새 버전. 로컬은 ElasticMQ + Go 로 'AWS Batch 흉내'.",
+                "date": "2024-09-30"
+              }
+            ]
+          },
+          {
+            "question": "그럼 무엇으로?",
+            "chosen": "**AWS Batch** — 배포는 잡 정의 갱신(리비전 증가), 온라인은 **리비전을 지정하지 않고 늘 최신**으로 제출. 실행 중인 잡은 구 리비전으로 끝나고, 배포 뒤 제출부터 새 버전을 쓴다.",
+            "alternatives": [
+              "ECS 에서 종료 처리 · 재개 로직을 직접 구현"
+            ],
+            "tradeoff": "배포와 실행이 구조적으로 떨어져 배포 문제가 사라진다. 대가는 로컬 에뮬레이션이 어렵다는 것 — localstack 은 비용이 맞지 않아 포기했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "GMOメイクショップのCSV機能改善",
+                "url": "https://tech.makeshop.co.jp/entry/2024/09/30/151827",
+                "publisher": "GMOメイクショップ",
+                "summary": "구 시스템은 CSV 출력을 온라인으로 처리해 응답이 길고 범위가 짧았다 → 건수 · 범위에 따라 온라인과 배치를 나눔. 처음엔 ECS + machinery + SQS 였으나 Fargate 롤링 업데이트 때 강제 종료 대기가 120 초까지라 실행 중 배치가 중간에 멈춤. CodeDeploy 블루그린(구 태스크 몇 시간 유지)은 SQS 신 · 구 분리 등 과제가 남아 기각 → AWS Batch: 잡 정의 리비전 없이 최신을 지정하면 실행 중인 잡은 구 버전, 배포 뒤 실행은 새 버전. 로컬은 ElasticMQ + Go 로 'AWS Batch 흉내'.",
+                "date": "2024-09-30"
+              }
+            ]
+          },
+          {
+            "question": "로컬 개발은?",
+            "chosen": "**ElasticMQ + Go 로 '흉내 AWS Batch'** — 로컬 온라인이 ElasticMQ 에 큐를 등록하면 Go 프로그램이 배치 컨테이너를 띄운다.",
+            "alternatives": [
+              "localstack",
+              "로컬에서 배치를 직접 실행"
+            ],
+            "tradeoff": "싸고 가볍게 흐름 전체를 로컬에서 본다. 대가는 실제 Batch 의 스케줄링 · 리소스 제한과 다를 수 있다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "GMOメイクショップのCSV機能改善",
+                "url": "https://tech.makeshop.co.jp/entry/2024/09/30/151827",
+                "publisher": "GMOメイクショップ",
+                "summary": "구 시스템은 CSV 출력을 온라인으로 처리해 응답이 길고 범위가 짧았다 → 건수 · 범위에 따라 온라인과 배치를 나눔. 처음엔 ECS + machinery + SQS 였으나 Fargate 롤링 업데이트 때 강제 종료 대기가 120 초까지라 실행 중 배치가 중간에 멈춤. CodeDeploy 블루그린(구 태스크 몇 시간 유지)은 SQS 신 · 구 분리 등 과제가 남아 기각 → AWS Batch: 잡 정의 리비전 없이 최신을 지정하면 실행 중인 잡은 구 버전, 배포 뒤 실행은 새 버전. 로컬은 ElasticMQ + Go 로 'AWS Batch 흉내'.",
+                "date": "2024-09-30"
+              }
+            ]
+          },
+          {
+            "question": "배치에서 이미지 변환이 필요하면 다시 구현하나?",
+            "chosen": "**아니다 — 멀티 컨테이너 잡의 사이드카로 재사용.** 이미 관리 화면에서 서비스로 돌던 이미지 변환 API 컨테이너(image_conversion)를 그대로 잡에 넣었다(2024 년 업데이트로 Batch 가 잡당 최대 10 컨테이너 지원).",
+            "alternatives": [
+              "배치용으로 변환 로직 재구현",
+              "한 컨테이너에 모두"
+            ],
+            "tradeoff": "코드 중복을 피하고 실적 있는 컨테이너를 쓴다. 대가는 잡 안에서 컨테이너 간 통신(로컬 API 호출)과 기동 순서를 다뤄야 한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWS Batch × サイドカーパターン：マルチコンテナジョブで既存資産を有効活用し責務を分離する",
+                "url": "https://tech.makeshop.co.jp/entry/2026/01/09/152800",
+                "publisher": "GMOメイクショップ",
+                "summary": "관리 화면 배치를 AWS Batch 멀티 컨테이너 잡(최대 10 개)으로 — 메인(Go 배치 로직, cobra), log_router(Fluent Bit/FireLens), image_conversion(이미 관리 화면에서 돌던 이미지 변환 API 컨테이너를 사이드카로 재사용). cgo 의존을 사이드카로 떼어 메인을 순수 Go 로 유지. Fargate vCPU/메모리 제한은 전체 합계로 계산. EcsPropertiesOverride 로 실행 인자 전달.",
+                "date": "2026-01-09"
+              }
+            ]
+          },
+          {
+            "question": "cgo 의존은 어디에 두나?",
+            "chosen": "**사이드카로 떼어 메인을 '순수 Go 실행 환경' 으로 유지** — 이미지 변환은 cgo 를 쓴다.",
+            "alternatives": [
+              "메인 바이너리에 cgo 포함"
+            ],
+            "tradeoff": "cgo 를 쓰면 빌드 환경에 특정 C 라이브러리가 필요하고 컴파일 시간이 늘어 메인 로직 관리가 복잡해진다. 떼면 메인이 가볍고 깨끗하다. 대가는 컨테이너가 늘고, Fargate 의 vCPU · 메모리 조합 제한을 잡 전체 합계로 나눠야 한다는 것 — 대신 컨테이너 단위로는 자유롭게 나눌 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWS Batch × サイドカーパターン：マルチコンテナジョブで既存資産を有効活用し責務を分離する",
+                "url": "https://tech.makeshop.co.jp/entry/2026/01/09/152800",
+                "publisher": "GMOメイクショップ",
+                "summary": "관리 화면 배치를 AWS Batch 멀티 컨테이너 잡(최대 10 개)으로 — 메인(Go 배치 로직, cobra), log_router(Fluent Bit/FireLens), image_conversion(이미 관리 화면에서 돌던 이미지 변환 API 컨테이너를 사이드카로 재사용). cgo 의존을 사이드카로 떼어 메인을 순수 Go 로 유지. Fargate vCPU/메모리 제한은 전체 합계로 계산. EcsPropertiesOverride 로 실행 인자 전달.",
+                "date": "2026-01-09"
+              }
+            ]
+          },
+          {
+            "question": "로그는 어떻게 모으나?",
+            "chosen": "**Fluent Bit(FireLens) 로그 라우터 사이드카** — 배치 잡에도, EC2 → Fargate 로 옮긴 결제 서비스에도 같은 방식으로 붙여 오류 로그와 표준 출력을 CloudWatch 와 S3 로 나눠 저장한다.",
+            "alternatives": [
+              "각 앱이 직접 로그 전송",
+              "awslogs 드라이버 하나로"
+            ],
+            "tradeoff": "앱은 표준 출력만 쓰고 라우팅은 공통 사이드카가 맡는다. 대가는 컨테이너가 하나 더 늘고 설정이 사이드카에 흩어진다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AWS Batch × サイドカーパターン：マルチコンテナジョブで既存資産を有効活用し責務を分離する",
+                "url": "https://tech.makeshop.co.jp/entry/2026/01/09/152800",
+                "publisher": "GMOメイクショップ",
+                "summary": "관리 화면 배치를 AWS Batch 멀티 컨테이너 잡(최대 10 개)으로 — 메인(Go 배치 로직, cobra), log_router(Fluent Bit/FireLens), image_conversion(이미 관리 화면에서 돌던 이미지 변환 API 컨테이너를 사이드카로 재사용). cgo 의존을 사이드카로 떼어 메인을 순수 Go 로 유지. Fargate vCPU/메모리 제한은 전체 합계로 계산. EcsPropertiesOverride 로 실행 인자 전달.",
+                "date": "2026-01-09"
+              },
+              {
+                "title": "EC2からFargateへの移行体験",
+                "url": "https://tech.makeshop.co.jp/entry/2025/01/17/150153",
+                "publisher": "GMOメイクショップ",
+                "date": "2025-01-17",
+                "summary": "EC 서비스라 피크와 평시 접속 차가 커 피크 기준 스펙이 평시엔 과잉 + 인프라 보수 비용 → 결제 서비스 일부를 EC2 에서 Fargate 로. Dockerfile 은 생성형 AI 로 초안, Fluent Bit 사이드카로 오류 로그 · 표준 출력을 CloudWatch 와 S3 에 나눠 저장. 함정 ① 기존 결제 서버는 타깃 그룹 100 개인데 ECS 서비스는 5 개까지 → 접속원을 모으는 NLB 하나를 끼워 회피. 함정 ② 수십 분 뒤 헬스체크 실패로 태스크 재시작이 멈추지 않음 — 부정 경로 차단 · 스펙 증강 · 헬스체크 간격은 효과 없고 원인은 httpd KeepAliveTimeout 이 너무 긴 것."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "월정액(수익원)",
+          "via": "숍 운영자의 데이터 내보내기",
+          "contract": "숍이 요청한 CSV 가 배포와 상관없이 끝까지 만들어져야 한다 — 월정액 안에 포함된 관리 기능이다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "GMOメイクショップのCSV機能改善",
+              "url": "https://tech.makeshop.co.jp/entry/2024/09/30/151827",
+              "publisher": "GMOメイクショップ",
+              "summary": "구 시스템은 CSV 출력을 온라인으로 처리해 응답이 길고 범위가 짧았다 → 건수 · 범위에 따라 온라인과 배치를 나눔. 처음엔 ECS + machinery + SQS 였으나 Fargate 롤링 업데이트 때 강제 종료 대기가 120 초까지라 실행 중 배치가 중간에 멈춤. CodeDeploy 블루그린(구 태스크 몇 시간 유지)은 SQS 신 · 구 분리 등 과제가 남아 기각 → AWS Batch: 잡 정의 리비전 없이 최신을 지정하면 실행 중인 잡은 구 버전, 배포 뒤 실행은 새 버전. 로컬은 ElasticMQ + Go 로 'AWS Batch 흉내'.",
+              "date": "2024-09-30"
+            },
+            {
+              "title": "makeshop byGMO（公式）｜流通額No.1のECサイト構築システム",
+              "url": "https://www.makeshop.jp/",
+              "publisher": "GMOメイクショップ",
+              "summary": "GMO 인터넷 그룹의 EC 사이트 구축 SaaS. BtoC · BtoB · BtoE, 600 개 이상 기능, 판매 수수료 0 엔. 요금: 프리미엄 플랜 월 13,750 엔(카드 결제 수수료 3.19%~), 엔터프라이즈 플랜 월 55,000 엔(3.14%~), 모두 세금 포함. makeshop 결제 · makeshop apps(앱 스토어) · 발송 대행 · 컨설팅, 주문 · 회원 · 상품 데이터를 AI 가 다루는 MCP 연결 제공."
+            }
+          ]
+        },
+        {
+          "to": "차세대 EC 관리 화면",
+          "via": "CSV 요청 · 이미지 변환 컨테이너",
+          "contract": "관리 화면이 잡을 제출하고, 관리 화면에서 돌던 이미지 변환 컨테이너가 배치의 사이드카가 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "GMOメイクショップのCSV機能改善",
+              "url": "https://tech.makeshop.co.jp/entry/2024/09/30/151827",
+              "publisher": "GMOメイクショップ",
+              "summary": "구 시스템은 CSV 출력을 온라인으로 처리해 응답이 길고 범위가 짧았다 → 건수 · 범위에 따라 온라인과 배치를 나눔. 처음엔 ECS + machinery + SQS 였으나 Fargate 롤링 업데이트 때 강제 종료 대기가 120 초까지라 실행 중 배치가 중간에 멈춤. CodeDeploy 블루그린(구 태스크 몇 시간 유지)은 SQS 신 · 구 분리 등 과제가 남아 기각 → AWS Batch: 잡 정의 리비전 없이 최신을 지정하면 실행 중인 잡은 구 버전, 배포 뒤 실행은 새 버전. 로컬은 ElasticMQ + Go 로 'AWS Batch 흉내'.",
+              "date": "2024-09-30"
+            },
+            {
+              "title": "AWS Batch × サイドカーパターン：マルチコンテナジョブで既存資産を有効活用し責務を分離する",
+              "url": "https://tech.makeshop.co.jp/entry/2026/01/09/152800",
+              "publisher": "GMOメイクショップ",
+              "summary": "관리 화면 배치를 AWS Batch 멀티 컨테이너 잡(최대 10 개)으로 — 메인(Go 배치 로직, cobra), log_router(Fluent Bit/FireLens), image_conversion(이미 관리 화면에서 돌던 이미지 변환 API 컨테이너를 사이드카로 재사용). cgo 의존을 사이드카로 떼어 메인을 순수 Go 로 유지. Fargate vCPU/메모리 제한은 전체 합계로 계산. EcsPropertiesOverride 로 실행 인자 전달.",
+              "date": "2026-01-09"
+            }
+          ]
+        },
+        {
+          "to": "결제 서비스 컨테이너화",
+          "via": "같은 로그 사이드카 · Fargate",
+          "contract": "EC2 결제 서버를 Fargate 로 옮길 때도 같은 Fluent Bit 사이드카를 썼고, 타깃 그룹 5 개 제한은 NLB 한 겹으로, 재시작 루프는 KeepAliveTimeout 으로 풀었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "EC2からFargateへの移行体験",
+              "url": "https://tech.makeshop.co.jp/entry/2025/01/17/150153",
+              "publisher": "GMOメイクショップ",
+              "date": "2025-01-17",
+              "summary": "EC 서비스라 피크와 평시 접속 차가 커 피크 기준 스펙이 평시엔 과잉 + 인프라 보수 비용 → 결제 서비스 일부를 EC2 에서 Fargate 로. Dockerfile 은 생성형 AI 로 초안, Fluent Bit 사이드카로 오류 로그 · 표준 출력을 CloudWatch 와 S3 에 나눠 저장. 함정 ① 기존 결제 서버는 타깃 그룹 100 개인데 ECS 서비스는 5 개까지 → 접속원을 모으는 NLB 하나를 끼워 회피. 함정 ② 수십 분 뒤 헬스체크 실패로 태스크 재시작이 멈추지 않음 — 부정 경로 차단 · 스펙 증강 · 헬스체크 간격은 효과 없고 원인은 httpd KeepAliveTimeout 이 너무 긴 것."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "CSV 요청이 가는 두 길",
+          "question": "언제 배치로 가고 배포는 어떻게 비켜 가나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  REQ[\"숍: CSV 요청\"] --> SIZE{\"건수 · 범위\"}\n  SIZE -->|\"작다\"| ONL[\"온라인 응답\"]\n  SIZE -->|\"크다\"| SUB[\"AWS Batch 제출\\n잡 정의 이름만(리비전 없음)\"]\n  SUB --> JOB[\"잡(Fargate)\"]\n  JOB --> MAIN[\"메인: Go · cobra\"]\n  JOB --> IMG[\"사이드카: image_conversion(cgo)\"]\n  JOB --> LOG[\"사이드카: Fluent Bit\"]\n  LOG --> CW[\"CloudWatch · S3\"]\n  DEP[\"배포 = 잡 정의 리비전 +1\"] -.->|\"다음 제출부터\"| SUB"
+        },
+        {
+          "title": "배포와 실행 중인 잡",
+          "question": "왜 배치가 안 끊기나?",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant ADM as 관리 화면(온라인)\n  participant B as AWS Batch\n  participant J1 as 잡 A(리비전 7)\n  participant CI as 배포\n  participant J2 as 잡 B(리비전 8)\n  ADM->>B: 제출(정의 이름만)\n  B->>J1: 최신 = 리비전 7 로 실행\n  CI->>B: 잡 정의 갱신 → 리비전 8\n  Note over J1: 실행 중인 잡은 리비전 7 로 계속\n  ADM->>B: 다음 제출\n  B->>J2: 최신 = 리비전 8 로 실행\n  J1-->>ADM: CSV 완성"
+        },
+        {
+          "title": "ECS 롤링 업데이트였을 때",
+          "question": "무엇이 끊겼나?",
+          "kind": "failure",
+          "code": "flowchart TB\n  RUN[\"ECS(Fargate) 태스크에서 CSV 배치 실행 중\"] --> ROLL[\"롤링 업데이트\"]\n  ROLL --> STOP[\"구 태스크 종료 — 대기 최대 120 초\"]\n  STOP --> HALF[\"긴 배치가 중간에 멈춤 → CSV 안 옴\"]\n  HALF --> BG{\"블루그린으로 구 태스크를 몇 시간 유지?\"}\n  BG -->|\"그동안 배포 불가 · SQS 신 · 구 분리\"| REJ[\"기각\"]\n  HALF --> BATCH[\"AWS Batch 로 이전\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "GMOメイクショップのCSV機能改善",
+          "url": "https://tech.makeshop.co.jp/entry/2024/09/30/151827",
+          "publisher": "GMOメイクショップ",
+          "summary": "구 시스템은 CSV 출력을 온라인으로 처리해 응답이 길고 범위가 짧았다 → 건수 · 범위에 따라 온라인과 배치를 나눔. 처음엔 ECS + machinery + SQS 였으나 Fargate 롤링 업데이트 때 강제 종료 대기가 120 초까지라 실행 중 배치가 중간에 멈춤. CodeDeploy 블루그린(구 태스크 몇 시간 유지)은 SQS 신 · 구 분리 등 과제가 남아 기각 → AWS Batch: 잡 정의 리비전 없이 최신을 지정하면 실행 중인 잡은 구 버전, 배포 뒤 실행은 새 버전. 로컬은 ElasticMQ + Go 로 'AWS Batch 흉내'.",
+          "date": "2024-09-30"
+        },
+        {
+          "title": "AWS Batch × サイドカーパターン：マルチコンテナジョブで既存資産を有効活用し責務を分離する",
+          "url": "https://tech.makeshop.co.jp/entry/2026/01/09/152800",
+          "publisher": "GMOメイクショップ",
+          "summary": "관리 화면 배치를 AWS Batch 멀티 컨테이너 잡(최대 10 개)으로 — 메인(Go 배치 로직, cobra), log_router(Fluent Bit/FireLens), image_conversion(이미 관리 화면에서 돌던 이미지 변환 API 컨테이너를 사이드카로 재사용). cgo 의존을 사이드카로 떼어 메인을 순수 Go 로 유지. Fargate vCPU/메모리 제한은 전체 합계로 계산. EcsPropertiesOverride 로 실행 인자 전달.",
+          "date": "2026-01-09"
+        },
+        {
+          "title": "EC2からFargateへの移行体験",
+          "url": "https://tech.makeshop.co.jp/entry/2025/01/17/150153",
+          "publisher": "GMOメイクショップ",
+          "date": "2025-01-17",
+          "summary": "EC 서비스라 피크와 평시 접속 차가 커 피크 기준 스펙이 평시엔 과잉 + 인프라 보수 비용 → 결제 서비스 일부를 EC2 에서 Fargate 로. Dockerfile 은 생성형 AI 로 초안, Fluent Bit 사이드카로 오류 로그 · 표준 출력을 CloudWatch 와 S3 에 나눠 저장. 함정 ① 기존 결제 서버는 타깃 그룹 100 개인데 ECS 서비스는 5 개까지 → 접속원을 모으는 NLB 하나를 끼워 회피. 함정 ② 수십 분 뒤 헬스체크 실패로 태스크 재시작이 멈추지 않음 — 부정 경로 차단 · 스펙 증강 · 헬스체크 간격은 효과 없고 원인은 httpd KeepAliveTimeout 이 너무 긴 것."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -996,6 +1404,13 @@
       "publisher": "GMOメイクショップ",
       "date": "2024-03-27",
       "summary": "Vue2 EOL(2023-12-31)으로 차세대 EC 관리 화면(상품 · 주문 · 회원 등록 · 편집, 약 20 페이지) 전체를 Vue2/Vuetify2 → Vue3/Vuetify3 로. 코어 + SRE 약 10 명 · QA 약 5 명, 2023-07~11. 사전 작업(2022 말): Vue 2.7, vue-property-decorator → script setup(Python 정규식 반자동 스크립트), vuex → pinia, webpack → vite, vue-i18n-bridge. 다른 프레임워크 이탈 · 새 프로젝트 이식 대신 현 프로젝트 업그레이드(신기능 병행), develop 에서 vue3 브랜치를 떼어 주기적으로 병합, vue3 전용 개발 환경으로 비교 검증. vue/compat 기본값은 Vuetify3 오류가 많아 대부분 끔."
+    },
+    {
+      "title": "EC2からFargateへの移行体験",
+      "url": "https://tech.makeshop.co.jp/entry/2025/01/17/150153",
+      "publisher": "GMOメイクショップ",
+      "date": "2025-01-17",
+      "summary": "EC 서비스라 피크와 평시 접속 차가 커 피크 기준 스펙이 평시엔 과잉 + 인프라 보수 비용 → 결제 서비스 일부를 EC2 에서 Fargate 로. Dockerfile 은 생성형 AI 로 초안, Fluent Bit 사이드카로 오류 로그 · 표준 출력을 CloudWatch 와 S3 에 나눠 저장. 함정 ① 기존 결제 서버는 타깃 그룹 100 개인데 ECS 서비스는 5 개까지 → 접속원을 모으는 NLB 하나를 끼워 회피. 함정 ② 수십 분 뒤 헬스체크 실패로 태스크 재시작이 멈추지 않음 — 부정 경로 차단 · 스펙 증강 · 헬스체크 간격은 효과 없고 원인은 httpd KeepAliveTimeout 이 너무 긴 것."
     }
   ]
 }
