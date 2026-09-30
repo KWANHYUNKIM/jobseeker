@@ -3319,3 +3319,5 @@ Zendesk · Amazon Connect · Akamai) · **`A2A`·`MCP`** · **AWS 자격증을 �
 **제제미미(`jejememe`) — `done`(2026-09-30), 공고 3건(원티드 쑥쑥찰칵 백엔드 364093 · Android 364098 · iOS 364097).** 출처: 공고뿐(신생아 3 명 중 1 명 가입 · 130 만 회원 · 일본 육아 2 위 · 누적 50 억 · 흑자 전환). 급여 · 매출 구조 · 근무지는 비웠다. 다음 브리핑은 인포시즈.
 
 **인포시즈(`infosys-kr`) — `done`(2026-09-30), 공고 3건(원티드 Sr. FDE 366617 · Sr Backend 366486 · Sr. Applied Scientist Agent 364333).** 출처: 공고뿐(Enterprise AI Infrastructure · P&ID · 온톨로지 · grounded 에이전트). 두 공고 머리말에 CV 직무 소개가 섞여 있음을 open_questions 에. 급여 · 영문명 · 근무지는 비웠다. 다음 브리핑은 여기어때컴퍼니.
+
+**여기어때컴퍼니(`yeogi`) — `done`(2026-09-30), 공고 3건(원티드 DevOps Team Leader 376254 · SRE 370399 · Security Engineer 378649).** 출처: 공고뿐(인프라 · 플랫폼 · 보안 자리만 — 서비스 · 매출 서술은 얇다). 보안 자리는 모의해킹 절차 대신 SAST 자동화 · 위협 모델링 · CVE 영향 분석 같은 방어 쪽 학습 항목으로 썼다. 급여 · 근무지는 비웠다. 다음 브리핑은 아이에이클라우드.

@@ -1661,6 +1661,17 @@
       "postings": 3,
       "study_items": 8,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "yeogi",
+      "name": "여기어때컴퍼니",
+      "aliases": [
+        "여기어때컴퍼니"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 8,
+      "updated_at": "2026-09-30"
     }
   ]
 }
