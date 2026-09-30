@@ -2872,3 +2872,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 
 - 급여 DX 글 + 요금→급여 글(둘 다 2025-12, 얇음)로 `taxi-payroll-reconcile`. 결정 5 — 근태 · 일보는 마스터 설정 / 미수 · 급여는 회사별 로직 / 일보는 자동 일보 + 앱 이력(inferred) / 미수 대조는 자동 집계 · 차이 판정까지 / 공제 · 이체는 외부 SaaS / 유메시마교통 먼저. 그림 3(마지막 그림의 '늦으면' 가지는 _note).
 
+## 2026-09-30 newmo maido 평가(기능 2/3)
+
+- UserSimulator 글 + Langfuse/DSPy 글로 `maido-voice-dispatch-eval`. 결정 7 — 배차 직전 재확인 가드레일 / DSPy 자동 개선 / 이진 판정부터 평가 / LLM 가짜 손님 / independent · with_audio 두 모드 / BigQuery ML.TRANSCRIBE(리전 제약) / LLM 세 단계 AudioClip. 지표 2. 그림 3.
+

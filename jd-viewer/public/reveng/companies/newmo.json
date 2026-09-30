@@ -174,7 +174,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "maido-voice-dispatch-eval"
+      ]
     },
     {
       "name": "회사마다 다른 택시 미터를 차량 단말에 이어 '지금 태울 수 있나' 를 안다",
@@ -504,6 +506,375 @@
           "publisher": "newmo",
           "summary": "현금 / 미수 → 입고 · 납금(미터 조작 실수 · 납금기 사양 때문에 이 시점엔 완전 자동화 · 정합이 안 된다) → 영업소 마감 · 서류를 본사로 → 본사 티켓 센터가 미터 결제 정보 · 티켓 · 결제 단말 · 배차 앱 결제를 대조해 보합 계산의 기준 금액 확정 → 급여 계산 → 외부 금융 SaaS 용 CSV. 대조 · 금액 차이 자동 판정 기능으로 부서 성인화.",
           "date": "2025-12-23"
+        }
+      ]
+    },
+    {
+      "key": "maido-voice-dispatch-eval",
+      "name": "전화 배차 AI 를 가짜 손님과 실패 사례로 잰다 — 배차 직전 '재확인' 가드레일은 DSPy 가 다듬고, 시뮬레이터는 실제 통화에서 잘라 낸 목소리로 말한다",
+      "domain": "손님 전화를 LLM 음성 에이전트가 받아 배차하고, 그 대화를 시뮬레이터와 데이터셋으로 잰다",
+      "updated_at": "2026-09-30",
+      "business": {
+        "why": "newmo 그룹 택시 회사(未来都 등)의 배차 전화를 LLM 음성 에이전트 **maido(Mobility AI Dispatch Operator)** 가 받는다 — 용건을 확인하고(지금은 차종 지정 없는 즉시 배차만, 그 밖은 담당자에게 전환), 영차 장소를 받아 지리 정보 API 로 실재를 확인해 위경도로 정한 뒤 newmo 매칭 시스템에 배차를 넣는다. 배차에 실패하면 사람 오퍼레이터가 이어받는다.\n\n두 가지 성질이 사고를 만든다. **LLM** 은 프롬프트의 세부 규칙을 늘 지키지 않는다 — 장소를 물었는데 '현관 앞에 내일 8:30 에' 라고 하면 예약인 줄 모르고 바로 배차하기도 한다. **사람**은 대화를 엄밀하게 하지 않는다 — '지금 바로' 라고 해 놓고 '30 분 뒤 현관 앞에' 라고 말한다. 또 LLM 에이전트는 대화 폭이 넓고 발화가 확률적이어서, 규칙 기반 시나리오로는 평가 · 테스트를 다 덮을 수 없다.",
+        "metrics": [
+          {
+            "label": "DSPy 로 다듬은 즉시 배차 판정 프롬프트",
+            "value": "학습에 안 쓴 테스트 데이터셋 100% 정답",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LangfuseとDSPyを使った定量的なプロンプト評価と改善の仕組み",
+                "url": "https://tech.newmo.me/entry/maido-langfuse-dspy",
+                "publisher": "newmo",
+                "summary": "maido(Mobility AI Dispatch Operator) — 택시를 타려는 손님의 전화를 받아 지정 장소로 영차. Langfuse 로 전화 세션 · 트레이스(입출력 · 오류 · 지연 · 비용)를 기록하고 배포 없이 프롬프트를 갱신, 실제 트레이스로 데이터셋을 만든다. DSPy 가 데이터셋으로 평가하며 프롬프트를 자동 개선 — 사람은 정답 데이터만 더한다."
+              }
+            ]
+          },
+          {
+            "label": "통화에서 고객 발화 잘라 내기(LLM)",
+            "value": "체감 9 할 이상 정확(글쓴이)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "音声AI Agentの評価・テスト基盤を支えるUserSimulatorの実装",
+                "url": "https://tech.newmo.me/entry/2025/12/13/120000",
+                "publisher": "newmo",
+                "summary": "택시 음성 배차 AI 에이전트 Maido(멀티 에이전트). 규칙 기반 시나리오로는 LLM 에이전트의 다양한 발화를 다 못 덮어, 사용자 속성 · 답할 정보를 YAML 시나리오로 정의한 LLM 에이전트 UserSimulator 를 만들어 DeepEval 로 회화를 평가.",
+                "date": "2025-12-13"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "배차 직전에",
+          "thought": "LLM 의 성질과 사람의 성질 때문에, 대화 내용과 배차하려는 내용이 어긋나지 않는지 · 대응할 수 없는 의뢰를 받으려 하지 않는지 다시 본다 — 배차 에이전트 전체의 가드레일이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "LangfuseとDSPyを使った定量的なプロンプト評価と改善の仕組み",
+              "url": "https://tech.newmo.me/entry/maido-langfuse-dspy",
+              "publisher": "newmo",
+              "summary": "maido(Mobility AI Dispatch Operator) — 택시를 타려는 손님의 전화를 받아 지정 장소로 영차. Langfuse 로 전화 세션 · 트레이스(입출력 · 오류 · 지연 · 비용)를 기록하고 배포 없이 프롬프트를 갱신, 실제 트레이스로 데이터셋을 만든다. DSPy 가 데이터셋으로 평가하며 프롬프트를 자동 개선 — 사람은 정답 데이터만 더한다."
+            }
+          ]
+        },
+        {
+          "at": "평가를 설계할 때",
+          "thought": "출력이 두 값이면 평가가 쉽다. 자연어 출력 · 여러 턴 · 여러 에이전트를 거친 출력은 평가가 어렵지만, 평가하기 쉬운 단위로 쪼개면 평가 → 개선 루프를 만들 수 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "LangfuseとDSPyを使った定量的なプロンプト評価と改善の仕組み",
+              "url": "https://tech.newmo.me/entry/maido-langfuse-dspy",
+              "publisher": "newmo",
+              "summary": "maido(Mobility AI Dispatch Operator) — 택시를 타려는 손님의 전화를 받아 지정 장소로 영차. Langfuse 로 전화 세션 · 트레이스(입출력 · 오류 · 지연 · 비용)를 기록하고 배포 없이 프롬프트를 갱신, 실제 트레이스로 데이터셋을 만든다. DSPy 가 데이터셋으로 평가하며 프롬프트를 자동 개선 — 사람은 정답 데이터만 더한다."
+            }
+          ]
+        },
+        {
+          "at": "실패한 통화를 볼 때",
+          "thought": "기존 시스템에서 사고 난 버그를 고치면 재현 테스트를 더하듯, 실패한 경우를 쌓아 평가에 넣으면 정량적으로 품질이 오른다 — 실패는 앞으로 실패하지 않기 위한 귀한 사례가 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "LangfuseとDSPyを使った定量的なプロンプト評価と改善の仕組み",
+              "url": "https://tech.newmo.me/entry/maido-langfuse-dspy",
+              "publisher": "newmo",
+              "summary": "maido(Mobility AI Dispatch Operator) — 택시를 타려는 손님의 전화를 받아 지정 장소로 영차. Langfuse 로 전화 세션 · 트레이스(입출력 · 오류 · 지연 · 비용)를 기록하고 배포 없이 프롬프트를 갱신, 실제 트레이스로 데이터셋을 만든다. DSPy 가 데이터셋으로 평가하며 프롬프트를 자동 개선 — 사람은 정답 데이터만 더한다."
+            }
+          ]
+        },
+        {
+          "at": "시뮬레이터를 만들 때",
+          "thought": "자동운전에서도 시뮬레이터가 핵심이다 — 확률적으로 움직이는 시스템을 평가하려면 그것이 작용하는 세계(여기선 손님)를 시뮬레이션해야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "音声AI Agentの評価・テスト基盤を支えるUserSimulatorの実装",
+              "url": "https://tech.newmo.me/entry/2025/12/13/120000",
+              "publisher": "newmo",
+              "summary": "택시 음성 배차 AI 에이전트 Maido(멀티 에이전트). 규칙 기반 시나리오로는 LLM 에이전트의 다양한 발화를 다 못 덮어, 사용자 속성 · 답할 정보를 YAML 시나리오로 정의한 LLM 에이전트 UserSimulator 를 만들어 DeepEval 로 회화를 평가.",
+              "date": "2025-12-13"
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "통화 세션",
+            "what": "전화 한 통 — Langfuse 가 세션 · 트레이스(LLM 입출력 · 오류 · 지연 · 비용)로 기록한다."
+          },
+          {
+            "name": "재확인 판정",
+            "what": "배차 투입 전 네 값 — 즉시 배차인가 · 1 대인가 · 4 명 이하인가 · 반려동물 동승인가."
+          },
+          {
+            "name": "데이터셋 항목",
+            "what": "트러블이 난 통화의 대화 + 기대 출력 쌍 — Langfuse 에서 GUI · API 로 더하고 expected_output 만 손으로 고친다."
+          },
+          {
+            "name": "사용자 시나리오",
+            "what": "이름 · 나이 · 성별 · 영차 장소 · 예약 여부 · 수다스러움 · 성급함 · 말투 · 속도 · 오디오 클립 매핑(YAML)."
+          },
+          {
+            "name": "AudioClip",
+            "what": "실제 배차 통화에서 잘라 낸 고객 발화(이름 · 장소 · 확인 · 시각) 음성 — 카테고리 · 성별 · 목소리 · 사투리 속성을 GCS 메타데이터로."
+          }
+        ],
+        "invariants": [
+          "즉시 배차 · 1 대 · 4 명 이하 · 반려동물 없음이 확인되지 않으면 매칭 시스템에 배차를 넣지 않는다(대응 밖이면 사람에게).",
+          "'지금 바로' 와 미래 시각이 함께 나오면 미래 시각이 우선 — 예약으로 본다.",
+          "AudioClip 에는 고객 발화만 남긴다 — 에이전트(TTS) 음성은 제외한다.",
+          "확신할 수 없는 화자 속성은 null 로 둔다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "maido 가 용건 확인(즉시 배차만, 그 밖은 전환) → 영차 장소(지리 정보 API 로 실재 확인 · 위경도) → 재확인 → 매칭 시스템에 배차 투입",
+            "why": "단계마다 에이전트를 나눴다."
+          },
+          {
+            "step": "Langfuse 가 통화 세션 · 트레이스를 남기고, 배포 없이 프롬프트를 갱신한다",
+            "why": "원래 목적은 배포 없는 프롬프트 갱신 도구였다."
+          },
+          {
+            "step": "트러블이 난 통화를 데이터셋(대화 + 기대 출력)으로 쌓는다",
+            "why": "재현 테스트처럼 실패를 평가에 넣는다."
+          },
+          {
+            "step": "DSPy(GEPA)가 데이터셋으로 재확인 프롬프트를 평가 · 자동 개선, 비용은 OpenTelemetry 로 Langfuse 에",
+            "why": "사람은 정답 데이터만 더한다."
+          },
+          {
+            "step": "Google ADK 로 만든 UserSimulator 가 YAML 시나리오대로 maido 와 대화 — independent 모드(LLM 이 답을 생각 · TTS) 또는 with_audio 모드(LLM 은 다음 발화 카테고리만 고르고 실제 AudioClip 재생)",
+            "why": "평가는 폭넓은 대화, E2E 는 전화 음질이 성능에 주는 영향을 본다."
+          },
+          {
+            "step": "Twilio 녹음 → GCS → BigQuery 외부 테이블 → ML.TRANSCRIBE(Speech-to-Text) 예약 쿼리 → dbt 데이터마트 → LLM 으로 고객 발화 잘라 내기 · 사람 목소리 검증 · 속성 부여",
+            "why": "AudioClip 을 만들고 문자 기록을 다른 곳에도 쓴다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "LLM 이 세부 규칙을 흘려듣는 문제를 어디서 막나?",
+            "chosen": "**배차 투입 직전에 대화 전체를 다시 보는 '재확인' 단계**를 둔다 — 예약 시각 · 5 명 이상 · 2 대 이상 · 반려동물을 두 값으로 판정.",
+            "alternatives": [
+              "장소를 묻는 에이전트 프롬프트에 규칙을 더 적는다"
+            ],
+            "tradeoff": "앞 단계가 놓친 예약 의사('10 시에') 같은 것을 한 번 더 잡는다 — 에이전트 전체의 가드레일. 대가는 LLM 호출이 하나 늘고, 재확인 프롬프트 자체의 품질을 따로 지켜야 한다는 것(그래서 아래 DSPy).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LangfuseとDSPyを使った定量的なプロンプト評価と改善の仕組み",
+                "url": "https://tech.newmo.me/entry/maido-langfuse-dspy",
+                "publisher": "newmo",
+                "summary": "maido(Mobility AI Dispatch Operator) — 택시를 타려는 손님의 전화를 받아 지정 장소로 영차. Langfuse 로 전화 세션 · 트레이스(입출력 · 오류 · 지연 · 비용)를 기록하고 배포 없이 프롬프트를 갱신, 실제 트레이스로 데이터셋을 만든다. DSPy 가 데이터셋으로 평가하며 프롬프트를 자동 개선 — 사람은 정답 데이터만 더한다."
+              }
+            ]
+          },
+          {
+            "question": "재확인 프롬프트를 누가 다듬나?",
+            "chosen": "**Langfuse 데이터셋(실패 통화 + 기대 출력)으로 DSPy 가 자동 개선**한다 — GEPA 예제를 그대로 썼다.",
+            "alternatives": [
+              "사람이 프롬프트를 손으로 고친다"
+            ],
+            "tradeoff": "'즉시 배차면 true' 정도만 적은 프롬프트에서 미지의 테스트 데이터 100% 정답 프롬프트가 나왔다(사람 눈엔 장황하고 조금 부정확한 부분도 있지만 기다리기만 해서 얻은 품질로 충분). 대가는 탐색적으로 프롬프트를 만들어 평가하므로 LLM 호출 · 비용이 많다는 것 — Langfuse 로 비용을 본다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LangfuseとDSPyを使った定量的なプロンプト評価と改善の仕組み",
+                "url": "https://tech.newmo.me/entry/maido-langfuse-dspy",
+                "publisher": "newmo",
+                "summary": "maido(Mobility AI Dispatch Operator) — 택시를 타려는 손님의 전화를 받아 지정 장소로 영차. Langfuse 로 전화 세션 · 트레이스(입출력 · 오류 · 지연 · 비용)를 기록하고 배포 없이 프롬프트를 갱신, 실제 트레이스로 데이터셋을 만든다. DSPy 가 데이터셋으로 평가하며 프롬프트를 자동 개선 — 사람은 정답 데이터만 더한다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 평가 단위로 삼나?",
+            "chosen": "**두 값으로 떨어지는 판정(재확인)부터** 평가 → 개선 루프를 만든다.",
+            "alternatives": [
+              "통화 전체의 자연어 품질을 한 번에 평가"
+            ],
+            "tradeoff": "이진 출력이라 정답 비교가 쉽다. 자연어 · 멀티턴 · 멀티 에이전트 출력은 평가 자체가 어렵다 — 평가하기 쉬운 단위로 쪼개는 것이 관건이라고 적는다. 대가는 통화 전체의 경험은 이 루프로 잡히지 않는다는 것 — 그래서 시뮬레이터가 따로 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LangfuseとDSPyを使った定量的なプロンプト評価と改善の仕組み",
+                "url": "https://tech.newmo.me/entry/maido-langfuse-dspy",
+                "publisher": "newmo",
+                "summary": "maido(Mobility AI Dispatch Operator) — 택시를 타려는 손님의 전화를 받아 지정 장소로 영차. Langfuse 로 전화 세션 · 트레이스(입출력 · 오류 · 지연 · 비용)를 기록하고 배포 없이 프롬프트를 갱신, 실제 트레이스로 데이터셋을 만든다. DSPy 가 데이터셋으로 평가하며 프롬프트를 자동 개선 — 사람은 정답 데이터만 더한다."
+              }
+            ]
+          },
+          {
+            "question": "대화 전체는 어떻게 시험하나?",
+            "chosen": "**YAML 시나리오로 움직이는 LLM 가짜 손님 UserSimulator** — 속성(수다 · 성급함 · 말투 · 단골)에 따라 프롬프트가 동적으로 바뀐다.",
+            "alternatives": [
+              "'A 를 물으면 X 로 답' 규칙 기반 시나리오"
+            ],
+            "tradeoff": "에이전트의 다양한 발화를 자연어 그대로 해석해 응답하고, 말 돌리기까지 다양하게 흉내 낸다. 대가는 시뮬레이터도 확률적이라 같은 시나리오가 매번 같은 대화를 만들지 않는다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "音声AI Agentの評価・テスト基盤を支えるUserSimulatorの実装",
+                "url": "https://tech.newmo.me/entry/2025/12/13/120000",
+                "publisher": "newmo",
+                "summary": "택시 음성 배차 AI 에이전트 Maido(멀티 에이전트). 규칙 기반 시나리오로는 LLM 에이전트의 다양한 발화를 다 못 덮어, 사용자 속성 · 답할 정보를 YAML 시나리오로 정의한 LLM 에이전트 UserSimulator 를 만들어 DeepEval 로 회화를 평가.",
+                "date": "2025-12-13"
+              }
+            ]
+          },
+          {
+            "question": "가짜 손님의 목소리는 TTS 로 충분한가?",
+            "chosen": "**두 모드** — independent(LLM 이 답을 생각하고 TTS 로 말함, 폭넓은 평가용)와 with_audio(LLM 은 다음 발화 카테고리만 고르고 실제 통화에서 잘라 낸 AudioClip 을 재생, E2E 용).",
+            "alternatives": [
+              "TTS 하나로 평가와 E2E 모두"
+            ],
+            "tradeoff": "E2E 에서는 전화 음질 · 사투리 · 말 더듬음이 음성 인식에 주는 영향을 봐야 해서 실제 목소리가 필요하다. 대가는 AudioClip 을 만드는 주변 시스템(문자 기록 · 잘라 내기 · 검증 · 속성)이 크다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "音声AI Agentの評価・テスト基盤を支えるUserSimulatorの実装",
+                "url": "https://tech.newmo.me/entry/2025/12/13/120000",
+                "publisher": "newmo",
+                "summary": "택시 음성 배차 AI 에이전트 Maido(멀티 에이전트). 규칙 기반 시나리오로는 LLM 에이전트의 다양한 발화를 다 못 덮어, 사용자 속성 · 답할 정보를 YAML 시나리오로 정의한 LLM 에이전트 UserSimulator 를 만들어 DeepEval 로 회화를 평가.",
+                "date": "2025-12-13"
+              }
+            ]
+          },
+          {
+            "question": "통화 문자 기록을 어디서 만드나?",
+            "chosen": "**BigQuery 안에서** — Twilio 녹음을 GCS 에 올려 외부 테이블로 참조하고, BigQuery ML 의 ML.TRANSCRIBE 를 예약 쿼리로 돌려 결과 테이블에 쌓고 dbt 로 데이터마트를 만든다.",
+            "alternatives": [
+              "음성 파일을 Speech-to-Text API 에 보내는 스크립트"
+            ],
+            "tradeoff": "문자 기록은 시뮬레이터만이 아니라 폭넓게 쓸 데이터 자산이라 데이터 기반(BigQuery)에 함께 쌓는다 — 실제로 오퍼레이터 인계 화면 · STT 파인튜닝 검토로 번졌다. 대가는 당시 Chirp 2/3 + ja-JP 가 도쿄 리전을 못 골라 싱가포르에 두고 Data Transfer Service 로 도쿄로 복사했고, 인식기 · 모델은 Terraform 미지원이라 콘솔로 만들었다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "音声AI Agentの評価・テスト基盤を支えるUserSimulatorの実装",
+                "url": "https://tech.newmo.me/entry/2025/12/13/120000",
+                "publisher": "newmo",
+                "summary": "택시 음성 배차 AI 에이전트 Maido(멀티 에이전트). 규칙 기반 시나리오로는 LLM 에이전트의 다양한 발화를 다 못 덮어, 사용자 속성 · 답할 정보를 YAML 시나리오로 정의한 LLM 에이전트 UserSimulator 를 만들어 DeepEval 로 회화를 평가.",
+                "date": "2025-12-13"
+              }
+            ]
+          },
+          {
+            "question": "통화에서 고객 목소리만 어떻게 골라 내나?",
+            "chosen": "**LLM(gemini-2.5-flash) 세 단계** — 전문 + 단어별 발화 타이밍으로 고객 발화 구간 추출(신뢰도 0.8 이상), 사람 목소리인지 TTS 인지 검증(가장 튜닝이 많았던 단계), 카테고리 · 성별 · 목소리 · 사투리 속성 부여(확신 없으면 null).",
+            "alternatives": [
+              "사람이 통화를 듣고 잘라 낸다"
+            ],
+            "tradeoff": "체감 9 할 이상 잘라 낸다. 대가는 잘라 낸 문구의 텍스트가 STT 정확도에 기대 — 지명 · 이름 같은 도메인 단어 인식이 약한 문제가 그대로 남아, STT 파인튜닝 데이터로 쓰려면 사람 재주석이나 LLM 보정이 필요하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "音声AI Agentの評価・テスト基盤を支えるUserSimulatorの実装",
+                "url": "https://tech.newmo.me/entry/2025/12/13/120000",
+                "publisher": "newmo",
+                "summary": "택시 음성 배차 AI 에이전트 Maido(멀티 에이전트). 규칙 기반 시나리오로는 LLM 에이전트의 다양한 발화를 다 못 덮어, 사용자 속성 · 답할 정보를 YAML 시나리오로 정의한 LLM 에이전트 UserSimulator 를 만들어 DeepEval 로 회화를 평가.",
+                "date": "2025-12-13"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "택시 · 하이어 운임(수익원)",
+          "via": "전화 배차",
+          "contract": "그룹 택시 회사(未来都)의 배차 전화를 maido 가 받는다 — 시뮬레이터 대화 예시가 '未来都タクシーです' 로 시작한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "音声AI Agentの評価・テスト基盤を支えるUserSimulatorの実装",
+              "url": "https://tech.newmo.me/entry/2025/12/13/120000",
+              "publisher": "newmo",
+              "summary": "택시 음성 배차 AI 에이전트 Maido(멀티 에이전트). 규칙 기반 시나리오로는 LLM 에이전트의 다양한 발화를 다 못 덮어, 사용자 속성 · 답할 정보를 YAML 시나리오로 정의한 LLM 에이전트 UserSimulator 를 만들어 DeepEval 로 회화를 평가.",
+              "date": "2025-12-13"
+            }
+          ]
+        },
+        {
+          "to": "차량 단말 TDA 의 미터 연계",
+          "via": "배차 가능 여부",
+          "contract": "maido 가 매칭 시스템에 넣은 배차는 미터 상태(공차 · 영차)로 배차를 받을 수 있는 차에 간다(이 사이트가 두 글을 이음).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "ソフトメーターを考える",
+              "url": "https://tech.newmo.me/entry/2025/12/16/160000",
+              "publisher": "newmo",
+              "summary": "승무원용 차량 단말 TDA(Taxi Driver App)가 택시 미터 상태(공차 · 실차 · 영차)를 Bluetooth 로 받아 백엔드로 보내는 '미터 연계'. 과제: 그룹에 택시 회사가 늘며 미터 종류 × Bluetooth 송신기 조합(BLE GATT · Classic · Advertise 수신)이 늘어 매번 검증 · 개발, 무선이라 100% 접속 유지가 어렵다, 운임 개정마다 미터 본체 갱신 · 검정. 소프트미터와 OBD 차속 취득을 검증.",
+              "date": "2025-12-16"
+            },
+            {
+              "title": "LangfuseとDSPyを使った定量的なプロンプト評価と改善の仕組み",
+              "url": "https://tech.newmo.me/entry/maido-langfuse-dspy",
+              "publisher": "newmo",
+              "summary": "maido(Mobility AI Dispatch Operator) — 택시를 타려는 손님의 전화를 받아 지정 장소로 영차. Langfuse 로 전화 세션 · 트레이스(입출력 · 오류 · 지연 · 비용)를 기록하고 배포 없이 프롬프트를 갱신, 실제 트레이스로 데이터셋을 만든다. DSPy 가 데이터셋으로 평가하며 프롬프트를 자동 개선 — 사람은 정답 데이터만 더한다."
+            }
+          ]
+        },
+        {
+          "to": "배차 앱 · 라이드셰어(수익원)",
+          "via": "newmo 매칭 시스템",
+          "contract": "전화 배차도 앱 배차와 같은 newmo 매칭 시스템에 들어간다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "LangfuseとDSPyを使った定量的なプロンプト評価と改善の仕組み",
+              "url": "https://tech.newmo.me/entry/maido-langfuse-dspy",
+              "publisher": "newmo",
+              "summary": "maido(Mobility AI Dispatch Operator) — 택시를 타려는 손님의 전화를 받아 지정 장소로 영차. Langfuse 로 전화 세션 · 트레이스(입출력 · 오류 · 지연 · 비용)를 기록하고 배포 없이 프롬프트를 갱신, 실제 트레이스로 데이터셋을 만든다. DSPy 가 데이터셋으로 평가하며 프롬프트를 자동 개선 — 사람은 정답 데이터만 더한다."
+            },
+            {
+              "title": "newmo株式会社（ニューモ）｜移動で地域をカラフルに",
+              "url": "https://newmo.me/",
+              "publisher": "newmo",
+              "summary": "사업: 택시 사업(일반 승용 여객 자동차 운송 — 택시 · 하이어 운영), 배차 앱 'newmo', 일본판 라이드셰어(NRS), 자동운전 택시 개발 운영, 에센셜 워커용 인재 소개 'newジョブ'. 뉴스: 오리엔탈택시로부터 아사히자동차 그룹 3사 인수로 오사카 택시 차량 수 1위(2026-08-03), 삿포로교통 택시 사업 일부 인수(2026-08-25), 사카이시 자동운전 택시 실장 컨소시엄(2026-08-05), 쇼난 영업소 개업(2026-09-17)."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "전화 한 통이 배차되기까지",
+          "question": "maido 는 어느 단계에서 사람에게 넘기나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  CALL[\"손님 전화\"] --> Y{\"용건: 즉시 배차?\"}\n  Y -->|\"예약 · 분실물 · 요금 문의\"| HUMAN[\"담당자에게 전환\"]\n  Y -->|\"즉시\"| LOC[\"영차 장소\\n지리 정보 API · 위경도\"]\n  LOC --> RC{\"재확인\\n즉시 · 1대 · 4명↓ · 반려동물\"}\n  RC -->|\"어긋남\"| HUMAN\n  RC -->|\"통과\"| MATCH[\"newmo 매칭 시스템\"]\n  MATCH -->|\"실패\"| OP[\"사람 오퍼레이터 인계\\n문자 기록 표시\"]"
+        },
+        {
+          "title": "실패 통화가 프롬프트가 되기까지",
+          "question": "재확인 프롬프트는 어떻게 좋아지나?",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant C as 트러블 난 통화\n  participant LF as Langfuse(트레이스 · 데이터셋)\n  participant P as 사람\n  participant DS as DSPy(GEPA)\n  C->>LF: 트레이스를 데이터셋 항목으로\n  P->>LF: expected_output 만 손으로 고침\n  DS->>LF: 데이터셋으로 평가 · 실패 이유 추론 · 프롬프트 수정 반복\n  DS-->>LF: 개선된 프롬프트(배포 없이 갱신)\n  Note over DS: 미지의 테스트 데이터 100% — 비용은 OpenTelemetry 로 Langfuse 에"
+        },
+        {
+          "title": "시뮬레이터의 목소리를 만드는 길",
+          "question": "실제 통화가 어떻게 AudioClip 이 되나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  TW[\"Twilio 녹음\"] --> GCS[\"GCS\"]\n  GCS --> EXT[\"BigQuery 외부 테이블\"]\n  EXT --> TR[\"ML.TRANSCRIBE 예약 쿼리\\n(싱가포르 리전)\"]\n  TR -->|\"Data Transfer\"| DBT[\"dbt 데이터마트(도쿄)\"]\n  DBT --> CUT[\"LLM: 고객 발화 구간 잘라 내기\"]\n  CUT --> VAL[\"LLM: 사람 목소리 검증\"]\n  VAL --> ATT[\"LLM: 속성 부여 → GCS 메타데이터\"]\n  ATT --> SIM[\"UserSimulator with_audio 모드\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "音声AI Agentの評価・テスト基盤を支えるUserSimulatorの実装",
+          "url": "https://tech.newmo.me/entry/2025/12/13/120000",
+          "publisher": "newmo",
+          "summary": "택시 음성 배차 AI 에이전트 Maido(멀티 에이전트). 규칙 기반 시나리오로는 LLM 에이전트의 다양한 발화를 다 못 덮어, 사용자 속성 · 답할 정보를 YAML 시나리오로 정의한 LLM 에이전트 UserSimulator 를 만들어 DeepEval 로 회화를 평가.",
+          "date": "2025-12-13"
+        },
+        {
+          "title": "LangfuseとDSPyを使った定量的なプロンプト評価と改善の仕組み",
+          "url": "https://tech.newmo.me/entry/maido-langfuse-dspy",
+          "publisher": "newmo",
+          "summary": "maido(Mobility AI Dispatch Operator) — 택시를 타려는 손님의 전화를 받아 지정 장소로 영차. Langfuse 로 전화 세션 · 트레이스(입출력 · 오류 · 지연 · 비용)를 기록하고 배포 없이 프롬프트를 갱신, 실제 트레이스로 데이터셋을 만든다. DSPy 가 데이터셋으로 평가하며 프롬프트를 자동 개선 — 사람은 정답 데이터만 더한다."
         }
       ]
     }
