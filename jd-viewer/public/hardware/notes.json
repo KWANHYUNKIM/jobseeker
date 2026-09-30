@@ -157,8 +157,8 @@
    "use": "llm-inference",
    "summary": "Puget 이 NVIDIA 소비자 GPU 13종을 llama.cpp 로 잰 결과, 읽기는 FP16·텐서 연산을 따르고(4090 이 4080 SUPER 보다 28.5% 빠름) 생성은 메모리 대역폭을 따랐다 — 대역폭이 25% 큰 3080 Ti 가 새 카드들과 비슷했다. 다만 대역폭이 전부는 아니라고 덧붙였다.",
    "evidence": "measurement",
-   "numbers": "읽기: 4090 이 4080 SUPER 보다 +28.5%",
-   "as_of": "2024-08",
+   "numbers": "읽기: 4090 이 4080 SUPER 보다 +28.5% · 3080 Ti 는 4080 계열보다 대역폭 약 25% 많다 · 13종 시험(2024-08-22 글) — 2026-09-30 원문에서 다시 확인",
+   "as_of": "2026-09",
    "confidence": "high",
    "sources": [
     {
@@ -613,11 +613,11 @@
     "strix-halo"
    ],
    "use": "alternatives",
-   "summary": "llama.cpp 관리자 측정은 생성 약 60 t/s(32k 깊이에서 약 41), ServeTheHome 출시 리뷰는 14.5 t/s 였다. 소프트웨어·설정 차이로 보인다 — 숫자 하나만 믿지 않는다. 독자들은 Strix Halo 128GB 가 더 싸게 비슷하다고 논쟁했다.",
+   "summary": "llama.cpp 토론에는 gpt-oss-120b 생성 약 35 t/s(32k 깊이에서 약 25)가 있고, ServeTheHome 출시 리뷰는 14.5 t/s 였다. 처음 조사에서 들어온 60 t/s 는 2026-09-30 원문 확인에서 찾지 못해 뺐다. 소프트웨어·설정 차이가 커서 숫자 하나만 믿지 않는다.",
    "evidence": "measurement",
-   "numbers": "gpt-oss-120b 생성: 60.57(llama.cpp) vs 14.5(STH) · 읽기(2048) 1,956",
-   "as_of": "2025-10",
-   "confidence": "medium",
+   "numbers": "gpt-oss-120b 생성: 약 35(llama.cpp 토론, 32k 에서 약 25) vs 14.5(STH) · 읽기(2048) 약 1,800 — 2026-09-30 원문 확인(값은 요약본의 어림값)",
+   "as_of": "2026-09",
+   "confidence": "low",
    "sources": [
     {
      "title": "llama.cpp DGX Spark 성능 #16578",
