@@ -81,7 +81,8 @@ RECHECK_NO_DEADLINE = 1.0   # 모집중인데 마감일을 모름(wanted 일부�
 RECHECK_HAS_DEADLINE = 3.0  # 마감일이 앞에 있음 — 조기 마감 대비
 RECHECK_UNKNOWN = 7.0       # 지난번에 답을 못 얻음
 SLEEP_MS = 450           # 요청 간 기본 간격(지터 적용)
-SAVE_EVERY = 25          # 중간 저장 간격 — 도중에 죽어도 확인분은 남는다
+SAVE_EVERY = 25          # 중간 저장 간격 — 도중에 죽어도 확인분은 남는다(원장·DB 둘 다)
+TRIP_AFTER = 5           # 한 사이트가 일시적 실패를 연달아 이만큼 내면 이번 회차는 그 사이트를 쉰다
 
 class Verdict(NamedTuple):
     """원본에 물어본 결과.
@@ -100,6 +101,20 @@ class Verdict(NamedTuple):
     reason: str
     deadline: str | None = None
     posted: str | None = None
+
+
+_TRANSIENT = re.compile(r"^(?:확인 실패\(http=(None|403|429|5\d\d)\)|예외: )")
+
+
+def is_transient(v: Verdict) -> bool:
+    """원본이 답을 **거절**했거나 닿지 못한 것 — 공고에 대해 알게 된 게 없다.
+
+    429(요청 과다)·403(차단)·5xx·네트워크 오류가 그렇다. 이걸 "판정불가" 로 원장에
+    적으면 지난번에 받은 멀쩡한 답(마감일 등)을 덮어쓰고, 판정불가는 7일 뒤에나 다시
+    묻는다. 2026-09-26 수동 재확인에서 catch 가 429 를 내자 dev 163건 중 156건이
+    그렇게 덮였다. 그래서 원장에 쓰지 않고 다음 회차에 그대로 다시 묻는다.
+    """
+    return v.status == "unknown" and bool(_TRANSIENT.match(v.reason))
 
 
 def _sleep() -> None:
@@ -715,15 +730,32 @@ def _run(limit: int, *, recheck_days: float | None, sites: set[str] | None,
           flush=True)
 
     cache: dict = {}
-    fresh: list[tuple[str, dict]] = []       # 이번 회차 판정 — DB 에도 남긴다
+    fresh: list[tuple[str, dict]] = []       # 아직 DB 에 안 쓴 이번 회차 판정
+    n_db = 0
     stats = {"checked": 0, "closed": 0, "active": 0, "unknown": 0, "posted": 0}
     per_site: dict[str, list[int]] = {}
+    streak: dict[str, int] = {}              # 사이트별 연속 일시적 실패
+    tripped: set[str] = set()                # 이번 회차에 쉬기로 한 사이트
     for job in targets[:limit]:
         site = job["site"]
+        if site in tripped:
+            continue
         try:
             v = CHECKERS[site](job, today, cache)
         except Exception as e:                                      # noqa: BLE001
             v = Verdict("unknown", f"예외: {e!r}")
+        if is_transient(v):
+            # 원장에 안 쓴다 — 지난번 답을 지키고, 다음 회차에 다시 묻는다.
+            # 계속 거절하면 더 두드리지 않는다(그 사이트 크롤까지 막히면 손해가 더 크다).
+            stats["transient"] = stats.get("transient", 0) + 1
+            streak[site] = streak.get(site, 0) + 1
+            if streak[site] >= TRIP_AFTER:
+                tripped.add(site)
+                print(f"  [close_check] {site}: 연속 {streak[site]}회 {v.reason} — 이번 회차는 쉰다",
+                      flush=True)
+            _sleep()
+            continue
+        streak[site] = 0
         stats["checked"] += 1
         stats[v.status] += 1
         if v.posted:
@@ -755,18 +787,24 @@ def _run(limit: int, *, recheck_days: float | None, sites: set[str] | None,
                 fresh.append((key, entry))
             if stats["checked"] % SAVE_EVERY == 0:
                 save_closures(ledger)
+                # DB 도 같이 흘려 보낸다. 끝에서 한 번에 쓰면 도중에 멈춘 회차의
+                # 판정은 JSON 원장에만 남고 job_state 에는 끝내 안 들어간다.
+                n_db += record_to_db(fresh)
+                fresh = []
         _sleep()
 
     if not dry_run:
         ledger["updated_at"] = now.isoformat(timespec="seconds")
         save_closures(ledger)
-        n_db = record_to_db(fresh)
+        n_db += record_to_db(fresh)
         if n_db:
             print(f"[close_check] 정본 DB 에 {n_db:,}건 기록", flush=True)
 
     print(f"[close_check] 확인 {stats['checked']:,}건 → 마감 {stats['closed']:,} / "
           f"모집중 {stats['active']:,} / 판정불가 {stats['unknown']:,} / "
           f"등록일 확보 {stats['posted']:,}"
+          f"{' / 거절·실패(미기록) ' + format(stats['transient'], ',') if stats.get('transient') else ''}"
+          f"{' / 쉰 사이트 ' + ','.join(sorted(tripped)) if tripped else ''}"
           f"{' (dry-run: 원장 미기록)' if dry_run else ''}", flush=True)
     for site, (c, a, u, pd) in sorted(per_site.items()):
         print(f"    {site:<9} 마감 {c:>4} / 모집중 {a:>4} / 불명 {u:>4} / 등록일 {pd:>4}", flush=True)
@@ -870,6 +908,22 @@ def _selftest() -> int:
             failed += 1
             print(f"FAIL(나이) {name} → {got} (기대 {want})")
 
+    # 일시적 실패는 원장에 쓰지 않는다 — 지난번 답을 덮으면 안 된다.
+    transient = [
+        ("거절-429", Verdict("unknown", "확인 실패(http=429)"), True),
+        ("거절-403", Verdict("unknown", "확인 실패(http=403)"), True),
+        ("거절-503", Verdict("unknown", "확인 실패(http=503)"), True),
+        ("거절-네트워크", Verdict("unknown", "확인 실패(http=None)"), True),
+        ("거절-예외", Verdict("unknown", "예외: TimeoutError()"), True),
+        ("답-표기없음", Verdict("unknown", "마감일 표기를 찾지 못함"), False),
+        ("답-페이지생존", Verdict("unknown", "페이지 생존(http=200) — 마감 여부 불명"), False),
+        ("답-삭제", Verdict("closed", "원본 삭제(HTTP 404)"), False),
+    ]
+    for name, v, want in transient:
+        if is_transient(v) != want:
+            failed += 1
+            print(f"FAIL(거절) {name} → {is_transient(v)} (기대 {want})")
+
     # 재확인 주기 — 공고 상태마다 다시 묻는 간격이 다르다.
     d = lambda n: (now - timedelta(days=n)).isoformat()
     base = {"site": "wanted", "_ledger_closed": False}
@@ -896,7 +950,7 @@ def _selftest() -> int:
         failed += 1
         print(f"FAIL(주기) 처음 보는 것·사라진 것이 먼저가 아님 → {order}")
 
-    total = len(cases) + len(posted_cases) + 1 + len(ages) + len(policy) + 1
+    total = len(cases) + len(posted_cases) + 1 + len(ages) + len(transient) + len(policy) + 1
     print(f"close_check selftest: {total - failed}/{total} 통과")
     return 1 if failed else 0
 
