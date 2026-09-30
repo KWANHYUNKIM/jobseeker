@@ -2988,3 +2988,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 note Amazon Pay 게스트 구매(기능 1/3)
 
 - `amazon-pay-guest-checkout`. 결정 6 — Amazon Pay 선택 / Cookie → 쿼리 파라미터 / 백엔드 검사 + SDK 서명 payload / 결제와 사용자 정보 분리 / 기사 구매만 / QA 시트. 실패 그림: 다중 탭 · 뒤로 가기 Cookie 덮어쓰기. 다음: SEO.
+
+## 2026-09-30 note 테크니컬 SEO(기능 2/3)
+
+- `technical-seo-sitemap-index-speed`. 결정 6 — 키워드 대신 테크니컬 / 사이트맵 로직(인덱스 약 1/30) / 1 시간 기록 계측 / 클릭 수 주 지표 / 떨어짐 감시 · 1 주 1 시책 / 버그 수정에서 팀으로. 클릭 약 2 배. 다음: GrowthBook.
