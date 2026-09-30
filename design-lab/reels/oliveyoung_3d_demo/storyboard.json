@@ -1,0 +1,29 @@
+{
+  "title": "올리브영 매장은 가게일까, 창고일까",
+  "series": "[회사 해부] 올리브영",
+  "music": "bright",
+  "theme": {
+    "band": "#0b2a08",
+    "ink": "#ffffff",
+    "accent": "#82DC28",
+    "sub": "#cfe6c8"
+  },
+  "label": "3D는 AI 생성 · 연출입니다",
+  "style_prompt": "clean stylized 3D isometric cutaway render, architectural section view, soft global illumination, matte clay-like materials, warm white and light gray base with olive green (#82DC28) and coral (#FF7878) accents, shallow depth of field, cinematic, high detail, vertical 9:16 composition, NO text, NO letters, NO logos, NO brand signage, NO watermark",
+  "shots": [
+    {
+      "id": "shot02",
+      "sec": 5.0,
+      "sub": "전국 약 **1,300곳** — 파는 곳이면서 온라인 주문의 **물류 거점**",
+      "image": "Isometric cutaway of the same small health and beauty store with the roof and front wall sliced away: front half is a bright shop floor with low shelves of cosmetic bottles, back half is a compact stock room with stacked boxes and a packing table",
+      "motion": "the roof lifts off and the front wall slides away to reveal the interior section, camera tilts down, 5 seconds",
+      "source": "매장 약 1,300개 · 오늘드림 구조 — 트렌드라이트, 바이라인네트워크, 원티드 공고 337437 (guide cjoliveyoung business)"
+    }
+  ],
+  "end": {
+    "sec": 2.5,
+    "title": "저장해 두고",
+    "title2": "테크블로그부터",
+    "sub": "자리 목록은 [회사 해부] 올리브영 게시물에서"
+  }
+}

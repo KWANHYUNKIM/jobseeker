@@ -1,0 +1,269 @@
+<!doctype html>
+<!-- 올리브영 테크블로그 「45분 배치에서 준실시간으로!」(2026-04-22) 를 장면별로 풀어낸 3D.
+     https://oliveyoung.tech/2026-04-22/display-benefits-migration/
+     #s01 … #s17 로 장면을 고른다. 카메라는 장면 모델의 크기에 맞춰 자동으로 거리를 잡고(자동 구도),
+     아래 35% 는 자막 자리로 비운다(setViewOffset). 3D 속 글자는 캔버스로 그린다 — 오탈자 0.
+     트럭·신호등·확성기 같은 사물은 원문 개념을 보여주기 위한 비유(연출)다. -->
+<html><head><meta charset="utf-8">
+<style>html,body{margin:0;background:#eef1ea;overflow:hidden}canvas{display:block}</style>
+</head><body>
+<script type="importmap">{"imports": {"three": "../vendor/three.module.min.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import {RoundedBoxGeometry} from '../vendor/addons/RoundedBoxGeometry.js';
+import {RoomEnvironment} from '../vendor/addons/RoomEnvironment.js';
+const W = 1080, H = 1920; const HP = new URLSearchParams((location.hash || '#s01').slice(1).replace(/^([^&]*)/, 'shot=$1'));
+const SHOT = HP.get('shot'), DUR = parseFloat(HP.get('d')) || 5, NOM = 5;   // 장면 애니메이션은 5초 기준으로 짜고 실제 길이에 맞춰 늘린다
+const R = new THREE.WebGLRenderer({antialias: true, preserveDrawingBuffer: true});
+R.setPixelRatio(1); R.setSize(W, H); R.shadowMap.enabled = true; R.shadowMap.type = THREE.PCFSoftShadowMap;
+R.outputColorSpace = THREE.SRGBColorSpace; R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = .95;
+document.body.append(R.domElement);
+const scene = new THREE.Scene(); scene.background = new THREE.Color('#eef1ea');
+const cam = new THREE.PerspectiveCamera(28, W / H, .1, 800);
+cam.setViewOffset(W, H, 0, H * .15, W, H);            // 모델을 위로 — 아래는 자막·고객 화면 자리             // 모델을 화면 위쪽으로 — 아래는 자막 자리
+const pm = new THREE.PMREMGenerator(R); scene.environment = pm.fromScene(new RoomEnvironment(), .04).texture;   // 부드러운 반사
+scene.add(new THREE.HemisphereLight('#ffffff', '#aeb8a8', .55));
+const sun = new THREE.DirectionalLight('#fff3e2', 2.1); sun.position.set(-20, 40, 26); sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, {left: -40, right: 40, top: 40, bottom: -40, near: 1, far: 160}); sun.shadow.bias = -.0005; scene.add(sun);
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(600, 600), new THREE.MeshStandardMaterial({color: '#e2e6dc', roughness: 1})); floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+const grid = new THREE.GridHelper(400, 200, '#d3d8cc', '#d9ddd2'); grid.position.y = .01; scene.add(grid);
+
+const C = {green: '#82DC28', coral: '#FF7878', ink: '#16241a', white: '#ffffff', grey: '#c9cec4', dark: '#2f3a32', blue: '#8fb6ff', yellow: '#ffd66b', lilac: '#c8b6ff', paper: '#f7f5ef'};
+const DOM = [['상품', C.blue], ['쿠폰', C.coral], ['증정', C.yellow], ['행사·BEST', C.lilac]];
+const mat = (c, o = {}) => new THREE.MeshPhysicalMaterial({color: c, roughness: .55, metalness: 0, clearcoat: .25, clearcoatRoughness: .5, envMapIntensity: .6, ...o});
+const G = new THREE.Group(); scene.add(G);                // 장면 모델(자동 구도 기준)
+const box = (w, h, d, m, x = 0, y = 0, z = 0, p = G) => { const r = Math.min(w, h, d) * .14; const b = new THREE.Mesh(r > .02 ? new RoundedBoxGeometry(w, h, d, 3, r) : new THREE.BoxGeometry(w, h, d), typeof m === 'string' ? mat(m) : m);
+  b.position.set(x, y, z); b.castShadow = b.receiveShadow = true; p.add(b); return b; };
+const cyl = (r, h, m, x = 0, y = 0, z = 0, p = G) => { const c = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, 48), typeof m === 'string' ? mat(m) : m);
+  c.position.set(x, y, z); c.castShadow = c.receiveShadow = true; p.add(c); return c; };
+const ball = (r, c, x = 0, y = 0, z = 0, p = G, glow = 0) => { const s = new THREE.Mesh(new THREE.SphereGeometry(r, 32, 16), mat(c, {emissive: new THREE.Color(c), emissiveIntensity: glow}));
+  s.position.set(x, y, z); s.castShadow = true; p.add(s); return s; };
+const face = [];
+function label(text, {w = 4, h = 1, size = 120, color = C.ink, bg = null, weight = 800, align = 'center', billboard = true} = {}, p = G) {
+  const cv = document.createElement('canvas'); cv.width = Math.round(w * 200); cv.height = Math.round(h * 200); const g = cv.getContext('2d');
+  const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
+  const draw = (t, col = color, b = bg) => { g.clearRect(0, 0, cv.width, cv.height);
+    if (b) { g.fillStyle = b; g.beginPath(); g.roundRect(0, 0, cv.width, cv.height, 50); g.fill(); }
+    g.fillStyle = col; let s = size; g.font = `${weight} ${s}px "Malgun Gothic",sans-serif`;
+    while (g.measureText(t).width > cv.width - 40 && s > 20) { s -= 4; g.font = `${weight} ${s}px "Malgun Gothic",sans-serif`; }
+    g.textBaseline = 'middle'; g.textAlign = align; g.fillText(t, align === 'center' ? cv.width / 2 : 30, cv.height / 2); tex.needsUpdate = true; };
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({map: tex, transparent: true, depthWrite: false}));
+  draw(text); m.draw = draw; p.add(m); if (billboard) face.push(m); return m;
+}
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const ease = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const back = x => { x = clamp(x); if (x <= 0) return 0; const c = 1.7; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const pulse = (t, f = 2) => .5 + .5 * Math.sin(t * Math.PI * 2 * f);
+let view = {az: 30, el: 32, fit: 1.0, spin: 6}, update = () => {};
+
+// ── 공용 모델 ─────────────────────────────────────────
+function phone(p = G) {                                   // 폰 — 화면은 캔버스(상품 목록·상세를 그린다)
+  const g = new THREE.Group(); p.add(g); box(5.2, 10.4, .5, mat(C.dark, {roughness: .4}), 0, 0, 0, g);
+  const cv = document.createElement('canvas'); cv.width = 900; cv.height = 1800; const x = cv.getContext('2d');
+  const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
+  const scr = new THREE.Mesh(new THREE.PlaneGeometry(4.8, 9.6), new THREE.MeshBasicMaterial({map: tex})); scr.position.z = .26; g.add(scr);
+  const F = (s, w = 800) => `${w} ${s}px "Malgun Gothic",sans-serif`;
+  g.paint = ({page = 'list', tap = 0}) => {
+    x.fillStyle = '#fff'; x.fillRect(0, 0, 900, 1800);
+    if (page === 'list') {
+      x.fillStyle = '#16241a'; x.font = F(54); x.fillText('오늘의 추천', 60, 110);
+      x.fillStyle = '#eaf6dc'; x.beginPath(); x.roundRect(60, 180, 780, 700, 40); x.fill();
+      x.fillStyle = '#fff'; x.beginPath(); x.roundRect(360, 310, 180, 460, 60); x.fill(); x.fillStyle = C.green; x.fillRect(360, 310, 180, 100);
+      x.fillStyle = '#16241a'; x.font = F(62); x.fillText('수분 크림 50ml', 60, 980); x.font = F(78); x.fillText('24,000원', 60, 1090);
+      x.fillStyle = C.coral; x.beginPath(); x.roundRect(60, 1150, 520, 110, 30); x.fill(); x.fillStyle = '#fff'; x.font = F(58); x.fillText('선착순 추가 증정', 95, 1228);
+      x.fillStyle = '#8a9187'; x.font = F(46, 600); x.fillText('★ 4.8 · 리뷰 1,2xx', 60, 1350);
+      if (tap > 0) { x.fillStyle = `rgba(22,36,26,${.3 * (1 - tap)})`; x.beginPath(); x.arc(320, 1205, 40 + 200 * tap, 0, 7); x.fill(); }
+    } else {
+      x.fillStyle = '#16241a'; x.font = F(54); x.fillText('상품 상세', 60, 110);
+      x.fillStyle = '#f2f3ef'; x.beginPath(); x.roundRect(60, 180, 780, 520, 40); x.fill();
+      x.fillStyle = '#16241a'; x.font = F(62); x.fillText('수분 크림 50ml', 60, 810);
+      x.fillStyle = '#b7bcb4'; x.beginPath(); x.roundRect(60, 880, 640, 120, 30); x.fill(); x.fillStyle = '#fff'; x.font = F(58); x.fillText('증정 행사 마감', 110, 962);
+      x.fillStyle = '#FF7878'; x.font = F(52); x.fillText('이미 끝난 혜택이었다', 60, 1120);
+    }
+    tex.needsUpdate = true; };
+  g.paint({}); return g;
+}
+function card(p = G, s = 1) {                             // 상품카드(썸네일·가격·혜택·리뷰 네 겹)
+  const g = new THREE.Group(); p.add(g);
+  const L = [['썸네일', '#eaf6dc', 2.6], ['가격', '#ffffff', .8], ['혜택 플래그', C.coral, .8], ['리뷰·평점', '#fff3cc', .7]];
+  g.parts = L.map(([n, c, h], i) => { const k = new THREE.Group(); g.add(k); box(4 * s, h * s, .3 * s, c, 0, 0, 0, k);
+    const l = label(n, {w: 3.4 * s, h: .6 * s, size: 90, color: i === 2 ? '#fff' : C.ink, billboard: false}, k); l.position.z = .17 * s; k.base = [2.2, .4, -.6, -1.5][i] * s; k.position.y = k.base; return k; });
+  return g;
+}
+function domains(p, x0, z0, dz = 3.4, y = 0) {
+  return DOM.map(([n, c], i) => { const g = new THREE.Group(); p.add(g); g.position.set(x0, y, z0 + i * dz);
+    box(2.8, 2.4, 2.8, c, 0, 1.2, 0, g); const l = label(n, {w: 3.2, h: .9, size: 110}, g); l.position.set(0, 3.2, 0); return g; });
+}
+function table(p, rows, cols, x0, z0, tint = '#ffffff') {
+  const cells = []; for (let r = 0; r < rows; r++) { cells[r] = []; for (let c = 0; c < cols; c++) cells[r].push(box(1.2, .35, .85, tint, x0 + c * 1.3, .45, z0 + r * 1.0, p)); }
+  box(cols * 1.3 + .3, .3, rows * 1.0 + .3, '#dfe3da', x0 + (cols - 1) * .65, .15, z0 + (rows - 1) * .5, p); return cells;
+}
+const INI = {[C.blue]: '상', [C.coral]: '쿠', [C.yellow]: '증', [C.lilac]: '행', [C.green]: '상'};
+const pk = (c, x, y, z, p = G) => { const b = box(.9, .9, .9, c, x, y, z, p);          // 메시지 조각 — 윗면에 도메인 글자
+  if (INI[c]) { const l = label(INI[c], {w: .7, h: .7, size: 110, color: '#fff', billboard: false}, b); l.rotation.x = -Math.PI / 2; l.position.y = .46; } return b; };
+// 컨베이어 — 벨트 + 양옆 난간 + 롤러
+function belt(len, wid, x, z, c = '#3b463e', p = G) { const g = new THREE.Group(); p.add(g); g.position.set(x, 0, z);
+  box(len, .3, wid, c, 0, .45, 0, g); box(len, .5, .15, '#aab2a6', 0, .55, wid / 2 + .1, g); box(len, .5, .15, '#aab2a6', 0, .55, -wid / 2 - .1, g);
+  for (let i = 0; i < Math.floor(len / 1.2); i++) { const r = cyl(.18, wid + .4, '#8d968a', -len / 2 + .6 + i * 1.2, .22, 0, g); r.rotation.x = Math.PI / 2; }
+  return g; }
+// 서버 — 칸과 깜빡이는 불빛
+function server(p, x, z, name) { const g = new THREE.Group(); p.add(g); g.position.set(x, 0, z); box(2.4, 3, 2.4, '#f4f5f1', 0, 1.5, 0, g);
+  const leds = []; for (let k = 0; k < 4; k++) { box(2, .12, .05, '#c7ccc3', 0, .7 + k * .55, 1.22, g); leds.push(ball(.07, C.green, .8, .7 + k * .55, 1.25, g, .9)); }
+  g.leds = leds; if (name) { const l = label(name, {w: 2.8, h: .7, size: 90}, g); l.position.set(0, 3.7, 0); } return g; }
+// 트럭 — 적재함 + 운전석 + 바퀴
+function truck(p, c) { const g = new THREE.Group(); p.add(g); box(3.2, 1.8, 1.8, C.white, 0, 1.2, 0, g); box(1.2, 1.3, 1.7, c, 2.2, .95, 0, g);
+  box(.5, .5, 1.5, '#9fc3e0', 2.6, 1.3, 0, g); [[-1, .9], [-1, -.9], [2.2, .9], [2.2, -.9]].forEach(([wx, wz]) => { const w = cyl(.35, .3, '#2a2f2b', wx, .35, wz, g); w.rotation.x = Math.PI / 2; }); return g; }
+
+// ── 장면 ───────────────────────────────────────────────
+const S = {};
+S.s01 = () => { const p = phone(); p.position.set(0, 6, 0); view = {az: -14, el: 8, fit: .95, spin: 6};
+  update = t => { p.paint({page: t < 2.5 ? 'list' : 'detail', tap: t > 1.8 && t < 2.5 ? (t - 1.8) / .7 : 0}); p.rotation.y = .25 - .2 * ease(t / 5); p.position.y = 6 + .15 * Math.sin(t * 1.5); }; };
+S.s02 = () => { const c = card(); c.position.set(0, 5, 0); view = {az: 28, el: 12, fit: 1.0, spin: 8};
+  update = t => { c.parts.forEach((k, i) => { const sp = ease((t - .6) / 1.2) * 1.3; k.position.y = k.base + (1.5 - i) * sp; k.position.z = (i - 1.5) * .9 * ease((t - .6) / 1.2);
+      k.scale.setScalar(i === 2 ? 1 + .12 * back((t - 2.2) / .6) : 1); }); }; };
+S.s03 = () => { const ds = domains(G, -7, -5.1); const c = card(G, .9); c.position.set(6, 4.2, 0); c.rotation.y = 1.05;     // 카메라(옆에서 보는 각도) 쪽으로
+  const pipes = ds.map((d, i) => box(1, .25, .25, DOM[i][1], 0, 2.4, 0)); view = {az: 62, el: 28, fit: 1.0, spin: 8};
+  update = t => { pipes.forEach((pp, i) => { const u = ease((t - .5 - i * .35) / .8); const z = -5.1 + i * 3.4; const len = Math.hypot(12, z) * u;
+      pp.scale.x = Math.max(.01, len); pp.position.set(-7 + (6 - -7) * u / 2, 2.4 + (1.8) * u / 2, z * (1 - u / 2)); pp.rotation.y = -Math.atan2(-z, 13); });
+    c.parts[2].scale.setScalar(1 + .15 * back((t - 2.4) / .6)); }; };
+S.s04 = () => { const proc = box(6, 7, 6, mat('#d9dcd4', {emissive: new THREE.Color('#ff4a3a'), emissiveIntensity: 0}), 0, 3.5, 0);
+  const lp = label('10년 된 프로시저 하나', {w: 7, h: 1.1, size: 120}); lp.position.set(0, 8.2, 0);
+  const inside = DOM.map(([n, c], i) => box(1.6, 1.6, 1.6, c, -1.2 + (i % 2) * 2.4, 1.6 + Math.floor(i / 2) * 2.4, 3.05));
+  const clock = new THREE.Group(); G.add(clock); clock.position.set(7, 5, 0); const cf = cyl(2.2, .3, C.white, 0, 0, 0, clock); cf.rotation.x = Math.PI / 2;
+  const hand = box(.2, 1.9, .2, C.ink, 0, .9, .25, clock); hand.geometry.translate(0, 0, 0); const hp = new THREE.Group(); clock.add(hp); hp.add(hand); hand.position.set(0, .9, .25);
+  const l45 = label('최대 45분', {w: 4, h: 1, size: 120, color: C.coral}); l45.position.set(7, 1.7, .5);
+  view = {az: 16, el: 16, fit: 1.0, spin: 6};
+  update = t => { proc.material.emissiveIntensity = .1 + .3 * pulse(t, 1.2) * ease(t / 2); hp.rotation.z = -ease(t / 4) * Math.PI * 1.5;
+    inside.forEach((b, i) => b.position.z = 3.05 + .15 * Math.sin(t * 3 + i)); }; };
+S.s05 = () => { const cards = []; for (let r = 0; r < 8; r++) for (let c = 0; c < 12; c++) { const g = new THREE.Group(); G.add(g); g.position.set(-6.6 + c * 1.2, 1 + r * 1.45, 0);
+      box(1, 1.3, .08, C.white, 0, 0, 0, g); box(.8, .22, .1, C.green, 0, -.4, .02, g); cards.push(g); }
+  const tag = label('바뀐 건 1건 · 다시 계산은 전부', {w: 10, h: 1.1, size: 110, color: C.coral}); tag.position.set(0, 13.4, 0);
+  const one = cards[40]; const logs = []; for (let i = 0; i < 18; i++) logs.push(box(1.4, .08, 1, C.paper, 8.8 + (i % 2) * .1, .1 + i * .12, 0));
+  const ll = label('Redo log 쌓임', {w: 4.2, h: .8, size: 90}); ll.position.set(8.9, 3.4, 0);
+  view = {az: 12, el: 10, fit: 1.0, spin: 4};
+  update = t => { const cyc = (t % 2) / 2; cards.forEach(g => g.rotation.y = Math.PI * 2 * ease((cyc - .1) / .6));
+    one.children[1].material.color.set(C.coral); logs.forEach((l, i) => l.visible = i < 6 + Math.floor(t * 3)); }; };
+S.s06 = () => { const ds = domains(G, -6, -5.1);
+  const live = belt(9, 1.4, -.5, -5.1, C.green); const lv = label('실시간 이벤트', {w: 4.4, h: .9, size: 100}); lv.position.set(2, 2.2, -5.1);
+  const tr = []; [1, 2].forEach(i => { const g = truck(G, DOM[i][1]); g.position.set(-2, 0, -5.1 + i * 3.4); tr.push(g); });
+  const lb = label('배치로 모아 Kafka에 발행', {w: 6.4, h: .9, size: 100}); lb.position.set(3, 3.4, 0);
+  const kaf = box(2.4, 5, 12, mat('#2f3a32'), 7.5, 2.5, 0); const lk = label('Kafka', {w: 3, h: .9, size: 120, color: '#fff'}); lk.position.set(7.5, 5.8, 0);
+  const flow = []; for (let i = 0; i < 6; i++) flow.push(pk(C.blue, -4, .9, -5.1));
+  view = {az: 66, el: 34, fit: 1.0, spin: 8};
+  update = t => { flow.forEach((f, i) => { const u = ((t * .6 + i / 6) % 1); f.position.x = -4 + 10.5 * u; });
+    tr.forEach((g, i) => { g.position.x = -2 + 7 * ease(((t - .5 - i * .6) % 2.4) / 1.6); }); }; };
+S.s07 = () => { const row = table(G, 1, 1, 5, 0, C.white); const lrow = label('상품 줄 없음', {w: 4, h: .9, size: 100, color: C.coral}); lrow.position.set(5, 2.4, 0);
+  row[0][0].scale.set(3.4, 1, 2.2); row[0][0].material = mat('#f1f1ec'); row[0][0].material.transparent = true; row[0][0].material.opacity = .35;
+  const cp = pk(C.coral, -7, .9, -1.6); const pr = pk(C.blue, -7, .9, 1.6);
+  const lc = label('쿠폰 메시지', {w: 3.4, h: .8, size: 90}); const lp = label('상품 메시지', {w: 3.4, h: .8, size: 90});
+  const x = label('✕', {w: 1.6, h: 1.6, size: 180, color: C.coral}); x.position.set(3, 3, -1.6); x.visible = false;
+  view = {az: 56, el: 34, fit: 1.0, spin: 8};
+  update = t => { cp.position.x = -7 + 9.6 * ease(t / 1.8); pr.position.x = -7 + 4 * ease(t / 3.5);
+    if (t > 1.8) { const b = clamp((t - 1.8) / .6); cp.position.x = 2.6 - 2 * b; cp.position.y = .9 + 2 * Math.sin(b * Math.PI); x.visible = true; x.scale.setScalar(back(b)); }
+    lc.position.set(cp.position.x, cp.position.y + 1.4, -1.6); lp.position.set(pr.position.x, 2.3, 1.6); }; };
+S.s08 = () => { const lanes = ['상품A', '상품B', '상품C'].map((n, i) => { const z = -3.2 + i * 3.2; belt(16, 2, 1, z);
+    const l = label(n, {w: 2.6, h: .8, size: 100, color: '#fff'}); l.position.set(-8.6, 1.6, z); return z; });
+  const lt = label('Aggregation Topic · 상품ID로 줄 세우기', {w: 11, h: 1, size: 100}); lt.position.set(1, 4.2, -5.6);
+  const seq = []; lanes.forEach((z, i) => { [[C.blue, 0], [C.coral, 1], [C.yellow, 2]].forEach(([c, k]) => { const m = pk(c, -6, 1.1, z); seq.push({m, i, k}); }); });
+  const rows = lanes.map(z => box(2.6, 1.6, 1.8, '#f3fbe9', 10.5, .8, z));
+  view = {az: 68, el: 32, fit: 1.0, spin: 8};
+  update = t => { seq.forEach(s => { const u = clamp((t - .3 - s.k * .7 - s.i * .15) / 2.2); s.m.position.x = -6 + 15.5 * ease(u); s.m.visible = u < .98; });
+    rows.forEach((r, i) => r.scale.y = 1 + .25 * back((t - 2.8 - i * .1) / .5)); }; };
+S.s09 = () => { const row = box(6, 1.6, 3, '#f3fbe9', 4, .8, 0); const lr = label('상품 줄', {w: 3, h: .8, size: 100}); lr.position.set(4, 2.6, 0);
+  const cp = pk(C.coral, -6, .9, -3); const skip = label('먼저 온 쿠폰은 건너뜀', {w: 6, h: .9, size: 96, color: C.coral}); skip.position.set(-4, 3, -3);
+  const pr = pk(C.blue, -6, .9, 0); const api = new THREE.Group(); G.add(api); box(2.2, 2.2, 2.2, C.coral, 0, 1.1, 0, api); api.position.set(4, 0, 5.5);
+  const la = label('쿠폰 API', {w: 3, h: .8, size: 100}); la.position.set(4, 3, 5.5); const beam = box(.2, .2, 5, C.coral, 4, 1.6, 2.7); beam.scale.z = .01;
+  const got = pk(C.coral, 5.6, 1.9, 0); got.visible = false; view = {az: 48, el: 34, fit: 1.0, spin: 8};
+  update = t => { cp.position.x = -6 + 3 * ease(t / 1) ; cp.position.y = .9 + (t > 1 ? -2 * ease((t - 1) / .6) : 0); cp.visible = t < 1.6;
+    pr.position.x = -6 + 8.4 * ease((t - 1.2) / 1.2); beam.scale.z = Math.max(.01, ease((t - 2.4) / .5)); got.visible = t > 3; got.scale.setScalar(back((t - 3) / .5)); }; };
+S.s10 = () => { const row = box(9, 2, 3, '#f7f7f2', 0, 1, 0); const lr = label('상품혜택 테이블의 한 줄', {w: 7, h: .9, size: 100}); lr.position.set(0, 3.2, 0);
+  const a = pk(C.green, -9, 1, 0); const b = truck(G, C.yellow); b.position.set(12, 0, 0); b.rotation.y = Math.PI;
+  const la = label('스트림', {w: 2.6, h: .8, size: 100}); const lb = label('배치', {w: 2.6, h: .8, size: 100});
+  const lock = new THREE.Group(); G.add(lock); box(1.8, 1.4, .6, C.coral, 0, 0, 0, lock); const sh = new THREE.Mesh(new THREE.TorusGeometry(.6, .16, 12, 32, Math.PI), mat(C.coral)); sh.position.y = .7; lock.add(sh);
+  lock.position.set(0, 5.4, 0); const ll = label('락 · 덮어쓰기', {w: 4, h: .9, size: 100, color: C.coral}); ll.position.set(0, 7.2, 0);
+  view = {az: 58, el: 24, fit: 1.0, spin: 8};
+  update = t => { a.position.x = -9 + 6.5 * ease(t / 2); b.position.x = 12 - 7.2 * ease(t / 2); la.position.set(a.position.x, 2.4, 0); lb.position.set(b.position.x + 1, 3, 0);
+    lock.scale.setScalar(back((t - 2.1) / .5)); ll.visible = t > 2.2; row.material.color.set(t > 2.1 && pulse(t, 3) > .5 ? '#ffe1e1' : '#f7f7f2'); }; };
+S.s11 = () => { const hub = new THREE.Group(); G.add(hub); cyl(1.4, 3, C.white, 0, 1.5, 0, hub); cyl(1.45, .5, C.coral, 0, 3.2, 0, hub);
+  const lh = label('배치 인스턴스 · Redis Pub/Sub', {w: 8, h: .9, size: 96}); lh.position.set(0, 5.2, 0);
+  const rings = [0, 1, 2].map(() => { const r = new THREE.Mesh(new THREE.TorusGeometry(1, .08, 8, 64), mat(C.coral, {transparent: true})); r.rotation.x = Math.PI / 2; r.position.y = 3; r.userData.noFit = true; G.add(r); return r; });
+  const ins = [0, 1, 2, 3].map(i => { const g = new THREE.Group(); G.add(g); const a = i / 4 * Math.PI * 2 + .4; g.position.set(Math.cos(a) * 8, 0, Math.sin(a) * 6);
+    server(g, 0, 0); const f = box(.12, 1.6, .9, C.green, .9, 3.4, 0, g); f.geometry.translate(0, 0, .45); g.flag = f; g.pole = box(.1, 2.2, .1, C.grey, .9, 3.2, 0, g);
+    const l = label(`컨슈머 ${i + 1}`, {w: 2.8, h: .7, size: 90}); l.position.set(0, 5, 0); g.add(l); return g; });
+  const lp = label('"멈춰" → 처리 끝나면 플래그', {w: 8, h: .9, size: 96, color: C.coral}); lp.position.set(0, 8.4, 0);
+  view = {az: 20, el: 40, fit: 1.0, spin: 6};
+  update = t => { rings.forEach((r, i) => { const u = ((t - .6 + i * .35) % 1.6) / 1.6; r.scale.setScalar(1 + 9 * u); r.material.opacity = t < .6 ? 0 : 1 - u; });
+    ins.forEach((g, i) => { const up = ease((t - 1.8 - i * .45) / .5); g.flag.scale.y = Math.max(.01, up); g.flag.position.y = 2.5 + 1.2 * up; }); }; };
+S.s12 = () => { const ins = [0, 1, 2, 3].map(i => { const g = new THREE.Group(); G.add(g); g.position.set(-6 + i * 4, 0, 0); server(g, 0, 0);
+    const f = box(1, .6, .12, C.green, .6, 3.9, 0, g); box(.1, 2, .1, C.grey, 0, 3.4, 0, g); g.flag = f; return g; });
+  const off = label('신호 유실', {w: 3.4, h: .8, size: 96, color: C.coral}); off.position.set(6, 5.6, 0);
+  const tmr = new THREE.Group(); G.add(tmr); tmr.position.set(0, 9, 0); const tf = cyl(1.8, .3, C.white, 0, 0, 0, tmr); tf.rotation.x = Math.PI / 2; const th = new THREE.Group(); tmr.add(th); box(.18, 1.5, .2, C.ink, 0, .75, .25, th);
+  const bell = label('배치 취소 · 알림', {w: 5, h: 1, size: 110, color: '#fff', bg: C.coral}); bell.position.set(0, 12, 0);
+  view = {az: 8, el: 16, fit: 1.0, spin: 4};
+  update = t => { ins.forEach((g, i) => { const ok = i < 3 && t > .6 + i * .4; g.flag.material.color.set(i === 3 ? '#b7bcb4' : ok ? C.green : '#dfe3da'); if (i === 3) g.children[0].children[0].material.color.set(pulse(t, 2) > .5 ? '#ffe1e1' : '#f4f5f1'); });
+    th.rotation.z = -Math.PI * 2 * clamp(t / 3.4); bell.visible = t > 3.4; bell.scale.setScalar(back((t - 3.4) / .5)); }; };
+S.s13 = () => { const gate = box(1, 5, 7, mat('#2f3a32'), 0, 2.5, 0); const lg = label('중복 제거 · 최신 시각만', {w: 7, h: .9, size: 96}); lg.position.set(0, 6.4, 0);
+  const ms = [[C.blue, '10:02', 0], [C.blue, '10:02', 1], [C.blue, '09:58', 2], [C.blue, '10:05', 3]].map(([c, ts, k]) => { const g = new THREE.Group(); G.add(g); pk(c, 0, 0, 0, g);
+    const l = label(ts, {w: 1.8, h: .6, size: 90}, g); l.position.y = 1; g.k = k; return g; });
+  const tbl = box(3, 1.4, 4, '#f3fbe9', 6.5, .7, 0); const lu = label('UPSERT', {w: 3, h: .8, size: 100}); lu.position.set(6.5, 2.4, 0);
+  view = {az: 58, el: 28, fit: 1.0, spin: 8};
+  update = t => { ms.forEach(g => { const u = clamp((t - g.k * .6) / 1.6); const bad = g.k === 1 || g.k === 2; g.position.set(-8 + 8 * ease(u) + (bad ? 0 : 6 * ease((t - g.k * .6 - 1.6) / 1)), 1 + (bad && u >= 1 ? -3 * ease((t - g.k * .6 - 1.6) / .6) : 0), -2 + g.k * 1.3);
+      g.visible = !(bad && t > g.k * .6 + 2.3); }); }; };
+S.s14 = () => { const A = table(G, 7, 3, -6.4, -3, '#ffffff'), B = table(G, 7, 3, 1.8, -3, '#f3fbe9');
+  const la = label('기존 프로시저', {w: 4.4, h: .9, size: 100}); la.position.set(-5.1, 2, -4.4); const lb = label('새 파이프라인 (Shadow)', {w: 6, h: .9, size: 100}); lb.position.set(3.1, 2, -4.4);
+  const bad = [[1, 2], [4, 0], [5, 1]]; const star = label('새 쪽이 더 정확', {w: 5, h: .9, size: 96, color: '#fff', bg: C.green}); star.position.set(3.1, 6.2, 0);
+  const cal = label('3주 병행 · 올영세일 포함', {w: 7, h: .9, size: 100, color: C.coral}); cal.position.set(-1, 7.6, 0);
+  view = {az: 0, el: 48, fit: 1.0, spin: 3};
+  update = t => { for (let r = 0; r < 7; r++) { const sweep = t > .5 + r * .3; A[r].forEach((c, k) => c.material.color.set(sweep ? (bad.some(([rr, kk]) => rr === r && kk === k) ? '#ffc9c9' : '#eef7e6') : '#ffffff')); }
+    star.visible = t > 3.2; star.scale.setScalar(back((t - 3.2) / .5)); }; };
+S.s15 = () => { const mk = (x, name, a, b, keep) => { const st = []; for (let i = 0; i < 16; i++) st.push(cyl(1.6, .45, i % 2 ? '#d7dbd3' : '#c7ccc3', x, .25 + i * .5, 0));
+    const top = label(a, {w: 4.6, h: 1, size: 120}); top.position.set(x, 9.4, 0); const nm = label(name, {w: 4.6, h: .8, size: 96, color: '#5a6358'}); nm.position.set(x, -.6, 2.4);
+    return {st, top, b, keep}; };
+  const A = mk(-3.2, 'buffer_gets', '111.38M', '3.07M', 1), B = mk(3.2, 'disk_reads', '~120K', '8.48K', 2);
+  const big = label('97.2% ↓   93% ↓', {w: 10, h: 1.6, size: 170, color: C.coral}); big.position.set(0, 13.5, 0);
+  const sm = label('혜택 반영 45분 → 수 초', {w: 9, h: 1.1, size: 120}); sm.position.set(0, 11.6, 0);
+  view = {az: 0, el: 10, fit: 1.0, spin: 3};
+  update = t => { const p = ease((t - .8) / 1.6);
+    [A, B].forEach(s => { s.st.forEach((c, i) => { const gone = i >= s.keep; c.scale.y = gone ? Math.max(.01, 1 - p) : 1; c.position.y = .25 + (gone ? s.keep * .5 + (i - s.keep) * .5 * (1 - p) : i * .5); });
+      s.top.position.y = 9.4 - p * 7.8; if (t > 2 && !s.d) { s.top.draw(s.b, '#4c9a12'); s.d = 1; } });
+    big.visible = t > 2.4; big.scale.setScalar(back((t - 2.4) / .5)); sm.visible = t > 3; }; };
+S.s16 = () => { const bd = box(12, 8, .4, mat('#2f3a32'), 0, 5, 0); const lt = label('도메인별 모니터링', {w: 7, h: 1, size: 110}); lt.position.set(0, 10.2, 0);
+  const pan = DOM.map(([n, c], i) => { const g = new THREE.Group(); G.add(g); g.position.set(-3 + (i % 2) * 6, 7 - Math.floor(i / 2) * 3.8, .3);
+    box(5.4, 3.2, .1, '#3b463e', 0, 0, 0, g); const l = label(n, {w: 3, h: .7, size: 90, color: '#fff', billboard: false}, g); l.position.set(-1, 1.1, .1);
+    const bars = [0, 1, 2, 3, 4].map(k => box(.6, 1, .1, c, -1.8 + k * .9, -.9, .1, g)); g.bars = bars; return g; });
+  view = {az: 0, el: 6, fit: 1.0, spin: 4};
+  update = t => { pan.forEach((g, i) => g.bars.forEach((b, k) => { const h = .3 + 1.6 * (.5 + .5 * Math.sin(t * 2 + k + i)); b.scale.y = h; b.position.y = -1.3 + h / 2; })); }; };
+S.s17 = () => { const items = [['Kafka 파티션 키와 순서', C.blue], ['배치·스트림 동시성', C.yellow], ['멱등성 · 중복과 UPSERT', C.lilac], ['Shadow Table 검증', C.green], ['성과를 숫자로', C.coral]];
+  const cards = items.map(([n, c], i) => { const k = new THREE.Group(); G.add(k); box(9, 2, .3, C.white, 0, 0, 0, k); box(.5, 2, .32, c, -4.25, 0, 0, k);
+    const l = label(n, {w: 7.6, h: 1.1, size: 110, align: 'left', billboard: false}, k); l.position.set(.5, 0, .17); k.baseY = 2 + (4 - i) * 2.5; return k; });
+  const top = label('지원자라면 이것부터', {w: 8, h: 1.2, size: 130}); top.position.set(0, 15, 0);
+  view = {az: 0, el: 4, fit: 1.0, spin: 4};
+  update = t => { cards.forEach((k, i) => { const p = clamp((t - .3 - i * .35) / .5); k.position.set(0, k.baseY - 2 * (1 - ease(p)), 0); k.rotation.y = .6 * (1 - ease(p)); k.visible = p > 0; }); }; };
+
+(S[SHOT] || S.s01)();
+// 받침대 — 모델 아래 둥근 판(바닥과 구분되게)
+const leds = []; G.traverse(o => { if (o.geometry && o.geometry.type === 'SphereGeometry' && o.geometry.parameters.radius < .1) leds.push(o); });
+// 자동 구도 — 장면 전체 시간 동안 물체가 움직이는 범위를 여러 시점에서 모아(union), 그 상자가 화면 안에
+// 들어오는 거리를 직접 투영해 찾는다. 첫 프레임만 보면 나중에 움직이는 것이 밖으로 나가 잘린다.
+const bb = new THREE.Box3(), corners = [];
+for (const u of [0, .2, .4, .6, .8, 1]) { update(u * NOM); G.updateMatrixWorld(true);
+  G.traverse(o => { if (!o.isMesh || !o.visible || !o.geometry) return; for (let q = o; q; q = q.parent) if (q.userData.noFit) return; if (!o.geometry.boundingBox) o.geometry.computeBoundingBox();
+    const b = o.geometry.boundingBox.clone().applyMatrix4(o.matrixWorld); bb.union(b);
+    for (const x of [b.min.x, b.max.x]) for (const y of [b.min.y, b.max.y]) for (const z of [b.min.z, b.max.z]) corners.push(new THREE.Vector3(x, y, z)); }); }
+const ctr = bb.getCenter(new THREE.Vector3());
+const place = (t, d) => { const az = THREE.MathUtils.degToRad(view.az + view.spin * (t / DUR - .5)), el = THREE.MathUtils.degToRad(view.el);
+  cam.position.set(ctr.x + Math.sin(az) * Math.cos(el) * d, ctr.y + Math.sin(el) * d, ctr.z + Math.cos(az) * Math.cos(el) * d); cam.lookAt(ctr); cam.updateMatrixWorld(); };
+const fits = d => { for (const t of [0, DUR / 2, DUR]) { place(t, d * .95); for (const c of corners) { const v = c.clone().project(cam);
+      if (Math.abs(v.x) > .93 || v.y > .92 || v.y < -.55) return false;
+      if (v.x > .42 && v.y < .2) return false; } } return true; };   // 오른쪽 아래는 고객 화면(PIP) 자리
+let lo = 2, hi = 400; for (let k = 0; k < 40; k++) { const mid = (lo + hi) / 2; if (fits(mid)) hi = mid; else lo = mid; }
+const dist = hi * view.fit;
+window.__dbg = {size: bb.getSize(new THREE.Vector3()).toArray().map(v => +v.toFixed(1)), ctr: ctr.toArray().map(v => +v.toFixed(1)), dist: +dist.toFixed(1)};
+window.render = t => { const tt = Math.min(NOM, t * NOM / DUR) + Math.max(0, t - DUR) ; update(tt);   // 애니메이션은 장면 길이 전체에 걸쳐 진행
+  place(t, dist * (1.0 - .05 * ease(t / DUR)));                              // 끝까지 천천히 다가간다
+  leds.forEach((l, i) => { l.material.emissiveIntensity = .3 + .9 * pulse(t + i * .37, .9); });
+  face.forEach(f => f.lookAt(cam.position)); R.render(scene, cam); return true; };
+window.render(0);
+window.__ready = true;
+</script>
+</body></html>

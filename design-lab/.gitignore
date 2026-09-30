@@ -10,3 +10,11 @@ assets/audio/
 # 승인 묶음(윈도우 → 맥)과, 뷰어 nginx 가 /ig/ 로 내놓는 발행 이미지
 inbox/
 exposed/
+# 릴스 결과물(영상·클립·프레임·음성·그림) — 대본(storyboard.json)·캡션·코드가 원본이고 이것들은 다시 만든다
+reels/**/clips/
+reels/**/_work/
+reels/**/*.mp4
+reels/**/*.png
+reels/**/*.jpg
+reels/**/*.wav
+reels/**/*.mp3

@@ -1,0 +1,220 @@
+<!doctype html>
+<!-- 올리브영 테크블로그(2026-04-22 display-benefits-migration)를 3D 로 풀어낸 장면들.
+     주소 뒤 #shot01 … #shot08 로 장면을 고르고, poster/scene3d.py 가 render(t) 를 프레임마다 부른다.
+     로고·실제 매장 재현 없음(연출). 3D 안의 글자는 우리가 캔버스로 그린다 — 오탈자 0.
+     모든 숫자는 원문 그대로: 45분, 111.38M → 3.07M(97.2%), ~120K → 8.48K(93%), 3주, 수 초. -->
+<html><head><meta charset="utf-8">
+<style>html,body{margin:0;background:#eef1ea;overflow:hidden}canvas{display:block}</style>
+</head><body>
+<script type="module">
+import * as THREE from '../vendor/three.module.min.js';
+const W = 1080, H = 1920, SHOT = (location.hash || '#shot01').slice(1);
+const R = new THREE.WebGLRenderer({antialias: true, preserveDrawingBuffer: true});
+R.setPixelRatio(1); R.setSize(W, H); R.shadowMap.enabled = true; R.shadowMap.type = THREE.PCFSoftShadowMap;
+R.outputColorSpace = THREE.SRGBColorSpace; R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = .95;
+document.body.append(R.domElement);
+const scene = new THREE.Scene(); scene.background = new THREE.Color('#eef1ea');
+const cam = new THREE.PerspectiveCamera(30, W / H, .1, 400);
+scene.add(new THREE.HemisphereLight('#ffffff', '#aeb8a8', 1.0));
+const sun = new THREE.DirectionalLight('#fff3e2', 2.2); sun.position.set(-14, 30, 18); sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, {left: -25, right: 25, top: 25, bottom: -25, near: 1, far: 100}); sun.shadow.bias = -.0005; scene.add(sun);
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(300, 300), new THREE.MeshStandardMaterial({color: '#e4e8df', roughness: 1})); floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+
+const C = {green: '#82DC28', coral: '#FF7878', ink: '#16241a', white: '#ffffff', grey: '#c9cec4', dark: '#2a332c', blue: '#8fb6ff', yellow: '#ffd66b', lilac: '#c8b6ff'};
+const mat = (c, o = {}) => new THREE.MeshStandardMaterial({color: c, roughness: .85, metalness: 0, ...o});
+const box = (w, h, d, m, x = 0, y = 0, z = 0, parent = scene) => { const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), typeof m === 'string' ? mat(m) : m);
+  b.position.set(x, y, z); b.castShadow = b.receiveShadow = true; parent.add(b); return b; };
+const cyl = (r, h, m, x = 0, y = 0, z = 0, parent = scene) => { const c = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, 48), typeof m === 'string' ? mat(m) : m);
+  c.position.set(x, y, z); c.castShadow = c.receiveShadow = true; parent.add(c); return c; };
+// 글자판 — 캔버스에 그려 평면에 붙인다(한글 정확)
+function label(text, {w = 4, h = 1, size = 120, color = C.ink, bg = null, weight = 800, align = 'center'} = {}) {
+  const cv = document.createElement('canvas'); cv.width = Math.round(w * 256); cv.height = Math.round(h * 256);
+  const g = cv.getContext('2d');
+  const draw = (t, col = color, b = bg) => { g.clearRect(0, 0, cv.width, cv.height);
+    if (b) { g.fillStyle = b; g.beginPath(); g.roundRect(0, 0, cv.width, cv.height, 60); g.fill(); }
+    g.fillStyle = col; g.font = `${weight} ${size}px "Malgun Gothic","Pretendard",sans-serif`; g.textBaseline = 'middle';
+    g.textAlign = align; g.fillText(t, align === 'center' ? cv.width / 2 : 40, cv.height / 2); tex.needsUpdate = true; };
+  const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.35, h * 1.35), new THREE.MeshBasicMaterial({map: tex, transparent: true}));
+  draw(text); m.draw = draw; return m;
+}
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const ease = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const back = x => { x = clamp(x); const c = 1.7; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const face = [];                         // 카메라를 바라보는 글자판
+let update = () => {};
+// 세로 화면이라 가로 시야가 좁다 — 장면들은 목표점과 방향만 정하고, 거리는 ZOOM 배로 물린다
+const target = new THREE.Vector3(); const ZOOMS = {shot01: 1.25, shot02: 1.75, shot03: 1.65, shot04: 1.95, shot05: 1.75, shot06: 2.0, shot07: 1.8, shot08: 1.7}; let ZOOM = ZOOMS[SHOT] || 1.4;
+const look = (x, y, z) => target.set(x, y, z);
+
+// ── 공용 모델: 폰(화면은 캔버스 — 상품카드를 그린다) ─────────────────
+function phone(parent = scene) {
+  const g = new THREE.Group(); parent.add(g);
+  box(5.2, 10.4, .5, mat(C.dark, {roughness: .4}), 0, 0, 0, g);
+  const cv = document.createElement('canvas'); cv.width = 900; cv.height = 1800; const x = cv.getContext('2d');
+  const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
+  const scr = new THREE.Mesh(new THREE.PlaneGeometry(4.8, 9.6), new THREE.MeshBasicMaterial({map: tex})); scr.position.z = .26; g.add(scr);
+  g.paint = ({badge = true, ended = false, checkout = false, tap = 0}) => {
+    x.fillStyle = '#ffffff'; x.fillRect(0, 0, 900, 1800);
+    x.fillStyle = '#f2f4ef'; x.fillRect(0, 0, 900, 150);
+    x.fillStyle = '#16241a'; x.font = '800 54px "Malgun Gothic"'; x.fillText(checkout ? '결제' : '상품', 60, 95);
+    // 상품 사진 자리(파스텔 병)
+    x.fillStyle = '#eaf6dc'; x.beginPath(); x.roundRect(60, 200, 780, 620, 40); x.fill();
+    x.fillStyle = '#ffffff'; x.beginPath(); x.roundRect(360, 330, 180, 400, 60); x.fill();
+    x.fillStyle = '#82DC28'; x.fillRect(360, 330, 180, 90);
+    x.fillStyle = '#16241a'; x.font = '800 64px "Malgun Gothic"'; x.fillText('수분 크림 50ml', 60, 920);
+    x.font = '800 80px "Malgun Gothic"'; x.fillText('24,000원', 60, 1030);
+    if (badge) { x.fillStyle = ended ? '#b7bcb4' : '#FF7878'; x.beginPath(); x.roundRect(60, 1090, ended ? 420 : 380, 110, 30); x.fill();
+      x.fillStyle = '#ffffff'; x.font = '800 60px "Malgun Gothic"'; x.fillText(ended ? '쿠폰 종료됨' : '쿠폰 적용가', 95, 1168); }
+    x.fillStyle = checkout ? '#16241a' : '#82DC28'; x.beginPath(); x.roundRect(60, 1500, 780, 180, 50); x.fill();
+    x.fillStyle = checkout ? '#ffffff' : '#0b2a08'; x.font = '800 72px "Malgun Gothic"'; x.fillText(checkout ? '결제하기' : '구매하기', 320, 1612);
+    if (tap > 0) { x.fillStyle = `rgba(22,36,26,${.25 * (1 - tap)})`; x.beginPath(); x.arc(450, 1590, 40 + 160 * tap, 0, 7); x.fill(); }
+    tex.needsUpdate = true;
+  };
+  g.paint({}); return g;
+}
+// 도메인 블록 네 개(상품·쿠폰·증정·프로모션)
+const DOM = [['상품', C.blue], ['쿠폰', C.coral], ['증정', C.yellow], ['프로모션', C.lilac]];
+function domains(parent, x0, z0, gapZ = 3.2) {
+  return DOM.map(([n, c], i) => { const b = box(2.6, 2.2, 2.6, c, x0, 1.1, z0 + i * gapZ, parent);
+    const l = label(n, {w: 2.6, h: .8, size: 110}); l.position.set(x0, 2.75, z0 + i * gapZ); parent.add(l); face.push(l); return {b, c, z: z0 + i * gapZ}; });
+}
+// 상품카드 벽(수만 건을 상징) — 작은 카드 격자
+function cardWall(parent, cols, rows, x0, y0, z0, s = .9) {
+  const cards = [];
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+    const g = new THREE.Group(); g.position.set(x0 + c * s * 1.1, y0 + r * s * 1.35, z0); parent.add(g);
+    box(s, s * 1.25, .08, C.white, 0, 0, 0, g); const f = box(s * .8, s * .25, .1, C.green, 0, -s * .38, .01, g);
+    cards.push({g, f}); }
+  return cards;
+}
+
+// ── 장면들 ───────────────────────────────────────────────
+const S = {};
+S.shot01 = () => {                      // 문제: 화면엔 쿠폰, 결제할 땐 종료
+  const p = phone(); p.position.set(0, 7, 0); p.rotation.set(-.12, -.35, .05);
+  update = t => { const tap = clamp((t - 2.2) / .5);
+    p.paint({badge: true, ended: t > 3.0, checkout: t > 2.7, tap: t > 2.2 && t < 2.8 ? tap : 0});
+    p.rotation.y = -.35 + .25 * ease(t / 5); p.position.y = 7 + .2 * Math.sin(t * 1.6);
+    cam.position.set(0, 8.5, 19 - 3 * ease(t / 5)); look(0, 7, 0); };
+};
+S.shot02 = () => {                      // 45분 지연 — 시계가 한 바퀴의 3/4 을 돈다
+  const p = phone(); p.position.set(-3.6, 6.2, 0); p.scale.setScalar(.72); p.rotation.y = .35; p.paint({badge: true});
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(3.2, .35, 24, 96), mat('#dde2d8')); ring.position.set(3.2, 7.2, 0); scene.add(ring);
+  let arc = null; const face45 = cyl(2.8, .3, C.white); face45.rotation.x = Math.PI / 2; face45.position.set(3.2, 7.2, -.2);
+  const hand = box(.25, 2.5, .2, C.ink); hand.geometry.translate(0, 1.2, 0); hand.position.set(3.2, 7.2, .2); scene.add(hand);
+  const l = label('최대 45분', {w: 5, h: 1.4, size: 170, color: C.coral}); l.position.set(3.2, 2.6, .5); scene.add(l);
+  const l2 = label('혜택 표시가 늦게 바뀐다', {w: 7, h: 1, size: 110}); l2.position.set(0, 12.6, 0); scene.add(l2);
+  update = t => { const p45 = ease(t / 3.4) * .75;
+    if (arc) scene.remove(arc); arc = new THREE.Mesh(new THREE.TorusGeometry(3.2, .42, 20, 96, Math.max(.01, p45 * Math.PI * 2)), mat(C.coral));
+    arc.position.set(3.2, 7.2, .05); arc.rotation.z = Math.PI / 2 - p45 * Math.PI * 2; arc.scale.x = 1; scene.add(arc);
+    hand.rotation.z = -p45 * Math.PI * 2; l.scale.setScalar(.6 + .4 * back((t - 3) / .6));
+    cam.position.set(1.5 + 1.2 * Math.sin(t * .3), 8, 20 - 2 * ease(t / 5)); look(1.2, 7.2, 0); };
+};
+S.shot03 = () => {                      // 옛 구조: 프로시저 하나가 전부를 다시 계산
+  const g = new THREE.Group(); scene.add(g);
+  const db = cyl(2.6, 6, mat('#d7dbd3', {emissive: new THREE.Color('#ff3b2f'), emissiveIntensity: 0})); db.position.set(0, 3, 0); g.add(db);
+  [0, 1, 2].forEach(k => cyl(2.65, .18, C.grey, 0, 1.2 + k * 1.8, 0, g));
+  const ld = label('배치 프로시저 하나', {w: 6, h: 1, size: 110}); ld.position.set(0, 7.2, 0); g.add(ld); face.push(ld);
+  const ds = domains(g, -8, -4.8);
+  ds.forEach(d => { const pipe = box(5.6, .3, .3, C.grey, -4.6, 1.1, d.z * .55, g); pipe.rotation.y = Math.atan2(d.z * .45, 5.6); });
+  const cards = cardWall(g, 10, 7, -4.9, 9, -3);
+  const lt = label('바뀐 게 0건이어도 전부 다시 계산', {w: 9, h: 1, size: 100, color: C.coral}); lt.position.set(0, 19.5, -3); g.add(lt);
+  update = t => { const cyc = (t % 1.6) / 1.6, hot = .5 + .5 * Math.sin(t * 4);
+    db.material.emissiveIntensity = .15 + .35 * hot * ease(t / 2);
+    cards.forEach((c, i) => { c.g.rotation.y = Math.PI * 2 * ease(clamp((cyc - .1) / .5)); });
+    cam.position.set(4 + 2 * Math.sin(t * .25), 13, 26 - 3 * ease(t / 6)); look(-3.2, 8, -1); };
+};
+function belts(g, lanes = 4, x0 = -3.5, len = 12) {
+  const bs = [];
+  for (let i = 0; i < lanes; i++) { const z = -4.5 + i * 3; const b = box(len, .3, 1.8, '#3b463e', x0 + len / 2, .5, z, g);
+    const lab = label(`상품ID 그룹 ${i + 1}`, {w: 3.6, h: .7, size: 90, color: '#ffffff'}); lab.rotation.x = -Math.PI / 2; lab.position.set(x0 + 2.4, .67, z); g.add(lab);
+    bs.push(z); }
+  return bs;
+}
+S.shot04 = () => {                      // 새 구조: 바뀐 것만 흘려보낸다 — Kafka, 상품ID 별 줄
+  const g = new THREE.Group(); scene.add(g);
+  domains(g, -8, -4.5, 3);
+  const lanes = belts(g);
+  const lt = label('Aggregation Topic · 상품ID별 순서', {w: 9, h: 1, size: 100}); lt.position.set(2.5, 5.2, -7.5); g.add(lt);
+  const cards = cardWall(g, 6, 4, 9.6, 1.2, -5.2, 1.1); cards.forEach(c => c.g.rotation.y = -Math.PI / 2 + .0);
+  cards.forEach(c => { c.g.position.x = 10.5; c.g.position.z = -5 + (c.g.position.x - 9.6); });
+  cards.forEach((c, i) => { c.g.position.set(9.8 + (i % 4) * 1.15, 1.2 + Math.floor(i / 4) * 1.5, -3.5 - (i % 4) * .5); c.g.rotation.y = -.45; c.g.visible = i < 16; });
+  const pk = []; for (let i = 0; i < 16; i++) { const d = i % 4, lane = (i * 7) % 4; const m = box(.8, .8, .8, DOM[d][1], 0, 1.1, lanes[lane], g); pk.push({m, lane, d, t0: i * .32}); }
+  const lab2 = label('바뀐 1건만 반영', {w: 6, h: 1, size: 110, color: C.coral}); lab2.position.set(11.5, 8.4, -4); face.push(lab2); g.add(lab2);
+  update = t => {
+    pk.forEach(p => { const u = (t - p.t0) / 2.6; const on = u >= 0 && u <= 1; p.m.visible = on;
+      const x = -5.5 + 15.5 * clamp(u); const z0 = -4.5 + p.d * 3; const zz = u < .25 ? z0 + (lanes[p.lane] - z0) * ease(u / .25) : lanes[p.lane];
+      p.m.position.set(x, 1.1, zz); });
+    cards.forEach((c, i) => { const hit = [2, 5, 9, 14].indexOf(i); const tt = hit >= 0 ? clamp((t - 1.8 - hit * .8) / .5) : 0;
+      c.g.rotation.x = Math.PI * 2 * ease(tt); c.f.material = tt > .5 ? c.f.material : c.f.material; });
+    cam.position.set(-1 + 3 * ease(t / 6), 17, 20); look(4, 2, -.5); };
+};
+S.shot05 = () => {                      // 하이브리드: 배치가 돌 땐 신호로 스트림을 멈춘다
+  const g = new THREE.Group(); scene.add(g);
+  const lanes = belts(g, 4, -6, 14);
+  const pk = []; for (let i = 0; i < 12; i++) { const m = box(.8, .8, .8, DOM[i % 4][1], 0, 1.1, lanes[i % 4], g); pk.push({m, lane: i % 4, off: i * .9}); }
+  const pole = box(.25, 6, .25, C.grey, 6.5, 3, -7.2, g); const bulb = new THREE.Mesh(new THREE.SphereGeometry(.9, 32, 16), new THREE.MeshStandardMaterial({color: C.green, emissive: new THREE.Color(C.green), emissiveIntensity: .8}));
+  bulb.position.set(6.5, 6.6, -7.2); g.add(bulb);
+  const ls = label('Redis 신호', {w: 3.6, h: .8, size: 100}); ls.position.set(6.5, 8.1, -7.2); g.add(ls);
+  const truck = new THREE.Group(); g.add(truck); box(4.5, 2.4, 2.2, C.white, 0, 1.3, 0, truck); box(1.5, 1.6, 2.1, C.green, 2.9, .9, 0, truck);
+  const lt = label('배치', {w: 2.2, h: .8, size: 110}); lt.position.set(0, 2.95, 0); truck.add(lt);
+  const cap = label('배치가 도는 동안 스트림은 잠깐 멈춤', {w: 9, h: 1, size: 96, color: C.coral}); cap.position.set(0, 9.6, -7); g.add(cap);
+  let pos = 0, last = 0;
+  update = t => { const stop = t > 1.4 && t < 3.6; const dt = t - last; last = t; if (!stop) pos += dt;
+    bulb.material.color.set(stop ? C.coral : C.green); bulb.material.emissive.set(stop ? C.coral : C.green);
+    bulb.scale.setScalar(stop ? 1 + .12 * Math.sin(t * 12) : 1);
+    pk.forEach(p => { const u = ((pos * .9 + p.off) % 13); p.m.position.set(-5.5 + u, 1.1, lanes[p.lane]); });
+    truck.position.set(-12 + 11 * ease((t - .9) / 1.2) + 11 * ease((t - 3.7) / 1.2), 0, 6.5);
+    cap.material.opacity = stop ? 1 : .15;
+    cam.position.set(5, 16, 21); look(1.6, 2.4, -.5); };
+};
+S.shot06 = () => {                      // Shadow Table: 옛 결과와 새 결과를 나란히 3주
+  const g = new THREE.Group(); scene.add(g);
+  const cells = [];
+  [[-3.4, '기존 결과'], [3.4, '새 결과 (Shadow)']].forEach(([x, n], k) => {
+    box(5.6, .3, 9, mat(k ? '#dff3cf' : '#e8e8e2'), x, .15, 0, g);
+    const l = label(n, {w: 5.4, h: .9, size: 100}); l.position.set(x, 1.4, -5.3); g.add(l);
+    for (let r = 0; r < 8; r++) for (let c = 0; c < 4; c++) { const b = box(1.1, .35, .8, C.white, x - 1.8 + c * 1.2, .5, -3.7 + r * 1.05, g); if (!cells[r]) cells[r] = []; cells[r].push(b); }
+  });
+  const checks = []; for (let r = 0; r < 8; r++) { const s = new THREE.Mesh(new THREE.SphereGeometry(.34, 24, 12), mat(C.green)); s.position.set(0, .7, -3.7 + r * 1.05); g.add(s); checks.push(s); }
+  const cal = box(3.4, 3, .4, C.white, 0, 6.2, -6.2, g); const lc = label('3주 병행', {w: 3.2, h: 1, size: 110}); lc.position.set(0, 6.6, -5.95); g.add(lc);
+  const ls = label('올영세일 포함', {w: 3.2, h: .7, size: 80, color: C.coral}); ls.position.set(0, 5.6, -5.95); g.add(ls);
+  update = t => { checks.forEach((s, r) => { const p = clamp((t - .6 - r * .35) / .3); s.scale.setScalar(back(p) || .001);
+      cells[r].forEach(b => b.material.color.set(p > .5 ? '#f3fbe9' : C.white)); });
+    cam.position.set(0, 15, 14 - 2 * ease(t / 5)); look(0, 1.5, -1); };
+};
+S.shot07 = () => {                      // 결과: DB 가 읽는 양이 무너진다
+  const g = new THREE.Group(); scene.add(g);
+  const mk = (x, name, a, b) => { const stack = []; for (let i = 0; i < 16; i++) stack.push(cyl(1.5, .45, i % 2 ? '#d7dbd3' : '#c7ccc3', x, .25 + i * .5, 0, g));
+    const top = label(a, {w: 4.4, h: 1, size: 120}); top.position.set(x, 9.6, 0); g.add(top); face.push(top);
+    const nm = label(name, {w: 4.4, h: .8, size: 90, color: '#5a6358'}); nm.position.set(x, -.2, 2.2); nm.rotation.x = -Math.PI / 2; g.add(nm);
+    return {stack, top, a, b}; };
+  const A = mk(-3, '메모리 읽기', '111.38M', '3.07M'), B = mk(3, '디스크 읽기', '~120K', '8.48K');
+  const big = label('97.2% ↓', {w: 7, h: 1.8, size: 200, color: C.coral}); big.position.set(0, 13, 0); g.add(big); face.push(big);
+  const small = label('반영 45분 → 수 초', {w: 7, h: 1, size: 110}); small.position.set(0, 11.2, 0); g.add(small); face.push(small);
+  update = t => { const p = ease((t - .8) / 1.6);
+    [[A, 1], [B, 2]].forEach(([s, k]) => { const keep = k === 1 ? 1 : 2; s.stack.forEach((c, i) => { const gone = i >= keep; c.position.y = .25 + i * .5 + (gone ? -p * i * .5 : 0);
+        c.visible = !gone || p < .98; c.scale.set(1, gone ? 1 - p : 1, 1); });
+      s.top.position.y = 9.6 - p * 7.4; if (t > 1.6 && !s.done) { s.top.draw(s.b, C.green); s.done = true; } });
+    big.scale.setScalar(clamp((t - 2.2) / .1) * (.8 + .2 * back((t - 2.2) / .5))); small.material.opacity = clamp((t - 2.8) / .4);
+    cam.position.set(0, 9, 19); look(0, 6.2, 0); };
+};
+S.shot08 = () => {                      // 지원자라면 — 떠오르는 카드 세 장
+  const g = new THREE.Group(); scene.add(g);
+  const items = [['Kafka · 상품ID 파티션과 순서', C.blue], ['정합성 검증 · Shadow Table', C.green], ['성과를 숫자로 · 97.2%', C.coral]];
+  const cards = items.map(([n, c], i) => { const k = new THREE.Group(); g.add(k); box(8.4, 2.4, .3, C.white, 0, 0, 0, k); box(.5, 2.4, .32, c, -3.95, 0, 0, k);
+    const l = label(n, {w: 7.2, h: 1.2, size: 110, align: 'left'}); l.position.set(.4, 0, .17); k.add(l); k.position.set(0, 3 + i * 3.2, 0); return k; });
+  const top = label('지원자라면 이것부터', {w: 8, h: 1.2, size: 130, color: C.ink}); top.position.set(0, 13.2, 0); g.add(top);
+  update = t => { cards.forEach((k, i) => { const p = clamp((t - .4 - i * .5) / .6); k.position.y = (3 + (2 - i) * 3.2) - 3 * (1 - ease(p)); k.rotation.y = .5 * (1 - ease(p)) - .12; k.visible = p > 0; });
+    cam.position.set(2 * Math.sin(t * .3), 8.5, 18); look(0, 8.2, 0); };
+};
+
+(S[SHOT] || S.shot01)();
+window.render = t => { update(t);
+  cam.position.sub(target).multiplyScalar(ZOOM).add(target); cam.lookAt(target);
+  face.forEach(f => f.lookAt(cam.position)); R.render(scene, cam); return true; };
+window.render(0);
+window.__ready = true;
+</script>
+</body></html>
