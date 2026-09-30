@@ -3313,3 +3313,5 @@ Zendesk · Amazon Connect · Akamai) · **`A2A`·`MCP`** · **AWS 자격증을 �
 **투모로로보틱스(`tomorrowrobotics`) — `done`(2026-09-30), 공고 3건(원티드 Physical AI Researcher 357972 · FDE 357998 · Web Platform 358839, 모두 신입-6년).** 출처: 공고뿐(One Brain, a Thousand Bodies · RFM · 물류/유통/제조 실증 · 하빌리스 플랫폼). 급여 · 투자 · 과금 · 근무지는 비웠다. 다음 브리핑은 클로버추얼패션.
 
 **클로버추얼패션(`clovf`) — `done`(2026-09-30), 공고 3건(원티드 Data Engineer 349928 · DevOps 373193 · ML Engineer 전문연구요원 157782).** 출처: 공고뿐(CLO · Marvelous Designer · Jinny · CLO-SET · CONNECT, 13-14 개국 16 오피스, 엔터프라이즈 DR). 급여 · 매출 · 근무지는 비웠다. 다음 브리핑은 클레.
+
+**클레(`cle`) — `done`(2026-09-30), 공고 3건(점핏 3D 머신비전 알고리즘 53892637 · 데스크탑 앱 53892651 · 3D 카메라 HW 53830265).** 출처: 공고뿐(3D 머신비전 · 0.1mm 단차 검사 · 크로스플랫폼 데스크탑 · 군포 시스템연구소). 급여 · 영문명 · 매출은 비웠다. 다음 브리핑은 제제미미.
