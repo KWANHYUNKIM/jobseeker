@@ -36,7 +36,7 @@
 |---|---|---|---|
 | 부품·벤치 | `hw-engine` | 1~5 · 7 · 8 | `parts.json` · `bench.json` · `index.json` · `guide.json` · `state/{LOG,STATE,QUEUE}.md` |
 | 제품 스펙 | `hw-models` | 6 · 9 | `models/*.json` · `state/models/` |
-| AI 데이터센터 | `hw-datacenter` | 10 | `datacenter.json` · `state/datacenter/` |
+| AI 데이터센터·실무자 이야기 | `hw-datacenter` | 10 · 11 | `datacenter.json` · `notes.json` · `state/datacenter/` |
 | 형식 | (루프 아님) | `state/REQUESTS.md` | `schema.json` · `validate.py` · 이 문서 · 뷰어 코드 |
 
 - 루프는 **제 레인 파일만** 고치고, 커밋할 때도 그 경로만 `git add` 한다(`git add -A`·`commit -a` 금지).
@@ -61,6 +61,10 @@
 5. **한 사이클 = 가장 오래된 것부터 몇 개.** 10번이 보이는 순서: 확인 90일 넘은 섹션(`checked`) → 1년 넘은 가동 데이터센터 →
    H100 환산이 빠진 회사. 고친 섹션은 `checked` 날짜를 오늘로 바꾼다. 환율(`fx`)은 ECB 기준환율로 교차 계산한다.
 6. `state/datacenter/LOG.md` 에 한 단락, `STATE.md` 를 갱신하고 `docs(hardware)` 로 커밋한다.
+7. **실무자 이야기(`notes.json`, `--gaps` 11번)** — 고성능 그래픽카드를 AI·ML 에 쓰는 사람들의 실측·경험. 10번이 비면 한다.
+   Reddit 은 robots.txt 가 모든 수집을 막아 쓰지 않는다 — GitHub 토론(llama.cpp·vLLM 점수판·이슈)·Puget Systems·Tim Dettmers·
+   Hugging Face·제조사 문서처럼 읽고 링크할 수 있는 곳만. 원문을 옮기지 않고 우리 말로 요약(400자 안), 근거 종류
+   (`measurement`·`experience`·`official`)를 가르고, 핵심 숫자는 원문과 대조한다. 출처끼리 다르면 둘 다 적는다.
 
 ## 규칙 (어기면 안 되는 것)
 

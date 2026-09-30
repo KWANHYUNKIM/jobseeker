@@ -10,6 +10,7 @@ import {
   type VideoScore,
 } from '../lib/hardware'
 import { onLinkClick } from '../lib/router'
+import { FieldNotes } from './HardwareNotes'
 import { paths } from '../lib/urls'
 
 // 조립 화면의 'AI 는 얼마나 돌아가나' · '개발 작업은' 아래에 붙는 구매 안내.
@@ -198,6 +199,9 @@ export function AiUses({ data, gpu, ram }: { data: HwData; gpu: Part; ram?: Part
             {myPrice != null && ` (지금보다 ${nextTier.xs[0].price >= myPrice ? '+' : '−'}${won(Math.abs(nextTier.xs[0].price - myPrice))})`} — {nextTier.fitMax?.name ?? '더 큰 모델'} 까지 통째로 올라간다.
           </p>
         )}
+        <div className="mt-3">
+          <FieldNotes gpus={[gpu.id]} limit={2} title="이 카드를 AI 에 쓰는 사람들 이야기" />
+        </div>
         <p className="text-[11px] text-(--color-faint) mt-1">
           AMD(ROCm)·인텔(oneAPI)은 같은 VRAM 을 더 싸게 주지만 소프트웨어 보정을 {b.llm.stack_factor.ROCm}·{b.llm.stack_factor.oneAPI} 로 잡았다(CUDA = 1). 쓰려는 도구가 그 카드를 지원하는지 먼저 확인한다.
         </p>

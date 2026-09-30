@@ -9,6 +9,7 @@ import { OfficialImage } from './OfficialImage'
 import { DurabilityNotes, ModelTable, SaleForms } from './HardwareModels'
 import { TierBadge } from './HardwareView'
 import { NameGuide, PopularPick } from './HardwarePopular'
+import { FieldNotes } from './HardwareNotes'
 
 // 부품 비교 — 전문가용.
 //
@@ -341,6 +342,11 @@ function PartDetail({ data, part }: { data: HwData; part: Part }) {
         </p>
       )}
       {(part.category === 'gpu' || part.category === 'cpu' || part.category === 'case') && <PopularPick data={data} part={part} />}
+      {part.category === 'gpu' && (
+        <div className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4 empty:hidden">
+          <FieldNotes gpus={[part.id]} limit={4} title={`${part.name.replace('GeForce ', '').replace('Radeon ', '')} 를 AI 에 쓰는 사람들 이야기`} />
+        </div>
+      )}
       <div className="grid gap-4 md:grid-cols-2">
         <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4">
           <h2 className="text-sm font-semibold mb-2">스펙</h2>

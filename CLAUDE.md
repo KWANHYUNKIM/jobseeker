@@ -131,6 +131,9 @@
   시장 조사(수익 구조·임대가·회수 계산기·감가상각·고장률). 원본은 `datacenter.json` — 숫자마다 출처와 공식·추정·계획,
   겹치는 행은 `in_total: false`, 정부 합계는 `national`. 공식 사양이 없는 칩(Ascend 910B·Kunlun·Intel GPU Max)은
   환산하지 않는다. validate 가 형식을 보고 `--gaps` 10번이 오래된 섹션·데이터센터를 `hw-datacenter` 레인 일감으로 올린다.
+  **실무자 이야기**(`notes.json`): 고성능 그래픽카드를 AI·ML 에 쓰는 사람들의 실측·경험 요약 — 부품 상세와 조립 AI 칸에
+  참고용 카드로 뜬다. **Reddit 은 robots.txt 가 모든 수집을 막아 쓰지 않는다** — GitHub 토론(llama.cpp 점수판 등)·Puget·
+  Hugging Face·제조사 문서만, 원문은 옮기지 않고 요약, 근거(실측·경험담·공식)를 가른다. `--gaps` 11번 → `hw-datacenter` 레인.
   뷰어 `/hardware`(조립·성능 예측) · `/hardware/parts`(등급·스펙 비교) · `/hardware/prices`(가격 추이) · `/hardware/datacenter`.
   가격이 실리는 화면(추이·부품 상세)은 noindex 이고 프리렌더·sitemap 에서 뺐다.
   **완제품 조립PC**(`crawl_prebuilt`, 부품 가격 다음 단계): 다나와 통합검색의 조립PC 목록 + 상품 페이지

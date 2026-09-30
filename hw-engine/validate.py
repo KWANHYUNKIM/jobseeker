@@ -289,6 +289,7 @@ def check() -> tuple[list[str], list[dict], dict, dict, dict]:
                 errs.append(f"bench.json {g.get('key')}: {k} 는 fhd·qhd·uhd 셋")
     errs.extend(check_guide(ids))
     errs.extend(check_datacenter())
+    errs.extend(check_notes(ids))
     merrs, todo = check_models(ids, {p["id"]: p.get("category") for p in parts}, prices)
     errs.extend(merrs)
     prices["_model_todo"] = todo
@@ -387,6 +388,7 @@ def gaps(parts: list[dict], bench: dict, prices: dict) -> None:
           + (", ".join(f"{k} {'파일 없음' if v < 0 else v}" for k, v in top) or "-")
           + f" · 메모리 한도 없는 소켓 {len(sockets)}: {', '.join(sockets) or '-'}")
     dc_gaps()
+    notes_gaps(parts)
 
 
 # ── AI 데이터센터 (public/hardware/datacenter.json) ─────────────────────
@@ -463,6 +465,64 @@ def check_datacenter() -> list[str]:
             errs.append("datacenter.json fx: krw_per_usd 가 숫자가 아니다")
         _dc_srcs(errs, "fx", fx.get("sources"))
     return errs
+
+
+# ── 실무자 이야기 (public/hardware/notes.json) ─────────────────────────
+#
+# 고성능 그래픽카드를 AI·ML 에 쓰는 사람들의 실측·경험 요약. Reddit 은 robots.txt 가 전부 막아 쓰지 않는다.
+
+NOTES_PATH = HW / "notes.json"
+NOTES_EXTRA_GPUS = {"rtx-3090-used", "mac-studio", "strix-halo", "dgx-spark"}  # 우리 부품 목록 밖의 비교 대상
+NOTES_USES = {"llm-inference", "fine-tuning", "image-gen", "multi-gpu", "build", "alternatives"}
+NOTES_STALE_DAYS = 180
+
+
+def check_notes(ids: set[str]) -> list[str]:
+    if not NOTES_PATH.exists():
+        return []
+    errs: list[str] = []
+    try:
+        d = json.loads(NOTES_PATH.read_text(encoding="utf-8"))
+    except ValueError as e:
+        return [f"notes.json: JSON 이 깨졌다 {e}"]
+    for n in d.get("notes", []):
+        w = f"notes.json '{n.get('topic')}'"
+        if n.get("evidence") not in ("measurement", "experience", "official"):
+            errs.append(f"{w}: evidence 는 measurement·experience·official")
+        if n.get("confidence") not in ("high", "medium", "low"):
+            errs.append(f"{w}: confidence 는 high·medium·low")
+        if n.get("use") not in NOTES_USES:
+            errs.append(f"{w}: 모르는 use {n.get('use')}")
+        for g in n.get("gpus", []):
+            if g not in ids and g not in NOTES_EXTRA_GPUS:
+                errs.append(f"{w}: 모르는 GPU {g}")
+        srcs = n.get("sources") or []
+        if not srcs:
+            errs.append(f"{w}: 출처가 없다")
+        for s in srcs:
+            u = str(s.get("url", ""))
+            if not u.startswith(("http://", "https://")):
+                errs.append(f"{w}: 출처 url 이 이상하다")
+            if "reddit.com" in u:
+                errs.append(f"{w}: Reddit 은 robots.txt 가 막아 출처로 쓰지 않는다")
+        if len(n.get("summary", "")) > 400:
+            errs.append(f"{w}: 요약이 너무 길다 — 원문을 옮기지 말고 줄인다")
+    return errs
+
+
+def notes_gaps(parts: list[dict]) -> None:
+    """11번 — 실무자 이야기가 없는 고성능 그래픽카드(성능 지수 45 이상 · 12GB 이상), 반년 넘은 이야기."""
+    if not NOTES_PATH.exists():
+        return
+    notes = json.loads(NOTES_PATH.read_text(encoding="utf-8")).get("notes", [])
+    covered = {g for n in notes for g in n.get("gpus", [])}
+    high = [p for p in parts if p["category"] == "gpu" and p.get("status") == "current"
+            and p["perf"].get("index", 0) >= 45 and float(p["specs"].get("vram_gb") or 0) >= 12]
+    missing = [p["id"] for p in sorted(high, key=lambda p: -p["perf"]["index"]) if p["id"] not in covered]
+    today = date.today()
+    old = [n["topic"] for n in notes
+           if re.match(r"^\d{4}-\d{2}$", n.get("as_of", "")) and (today - datetime.strptime(n["as_of"] + "-01", "%Y-%m-%d").date()).days > NOTES_STALE_DAYS]
+    print(f"11. 실무자 이야기 — 없는 고성능 카드 {len(missing)}: {', '.join(missing) or '-'} · 반년 넘은 이야기 {len(old)}(새 측정으로 바꿀 후보)")
 
 
 def dc_gaps() -> None:
