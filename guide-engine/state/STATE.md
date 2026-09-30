@@ -3321,3 +3321,5 @@ Zendesk · Amazon Connect · Akamai) · **`A2A`·`MCP`** · **AWS 자격증을 �
 **인포시즈(`infosys-kr`) — `done`(2026-09-30), 공고 3건(원티드 Sr. FDE 366617 · Sr Backend 366486 · Sr. Applied Scientist Agent 364333).** 출처: 공고뿐(Enterprise AI Infrastructure · P&ID · 온톨로지 · grounded 에이전트). 두 공고 머리말에 CV 직무 소개가 섞여 있음을 open_questions 에. 급여 · 영문명 · 근무지는 비웠다. 다음 브리핑은 여기어때컴퍼니.
 
 **여기어때컴퍼니(`yeogi`) — `done`(2026-09-30), 공고 3건(원티드 DevOps Team Leader 376254 · SRE 370399 · Security Engineer 378649).** 출처: 공고뿐(인프라 · 플랫폼 · 보안 자리만 — 서비스 · 매출 서술은 얇다). 보안 자리는 모의해킹 절차 대신 SAST 자동화 · 위협 모델링 · CVE 영향 분석 같은 방어 쪽 학습 항목으로 썼다. 급여 · 근무지는 비웠다. 다음 브리핑은 아이에이클라우드.
+
+**아이에이클라우드(`iacloud`) — `done`(2026-09-30), 공고 3건(원티드 스토리지 개발자 376357 · 기술지원 376288 · 사업기획 370067 — 사업기획은 비개발).** 출처: 공고뿐(Private Cloud IaaS · Qcow2/Ceph 가상 스토리지 · MDC · Private AI 신사업). 급여 · 제품명 · 근무지는 비웠다. 다음 브리핑은 아로아랩스.

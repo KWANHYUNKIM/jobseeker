@@ -1,0 +1,344 @@
+{
+  "slug": "iacloud",
+  "name": "아이에이클라우드",
+  "name_en": "",
+  "aliases": [
+    "아이에이클라우드"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "",
+  "one_liner": "Private Cloud 가상화 솔루션(IaaS)과 모듈형 데이터센터 · Private AI 신사업의 회사 — Qcow2 · Ceph 스토리지 개발자, 가상화 기술지원 엔지니어, 사업기획자를 뽑는다",
+  "company": {
+    "business": "아이에이클라우드는 **클라우드 · 가상화 · AI 기반 솔루션**을 개발한다 — 공고로 보이는 중심은 **인프라 가상화 솔루션(IaaS)** 으로, 고객사(공공 · 제조 등)의 서버 · 스토리지 · 네트워크를 가상화해 **Private Cloud** 를 올리고 현장에서 기술 지원 · 업그레이드를 한다. 그 안의 **가상 스토리지 서비스**는 Java Spring Boot API 아래에서 **Qcow2 파일 · Ceph RBD · 오브젝트 스토리지**와 스냅샷을 관리하고, **AI 플랫폼용 고성능 스토리지**도 지원한다. 신사업으로는 **모듈형 데이터센터(MDC)** 와 **AI/Cloud/Edge 인프라**, **Private AI** 를 공공 · 제조 · 글로벌 시장에 내려 한다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "AI·Cloud 스토리지 개발자 (백엔드)",
+        "url": "https://www.wanted.co.kr/wd/376357",
+        "publisher": "원티드",
+        "summary": "아이에이클라우드 — 클라우드 · 가상화 · AI 기반 솔루션. Private Cloud 가상 스토리지 서비스: Java Spring Boot REST API, Linux 파일 시스템 Qcow2 · 스냅샷, Ceph RBD · 스냅샷, 오브젝트 스토리지 관리, AI 플랫폼용 고성능 스토리지, 장애 분석 · 성능 · 자동화 · 테스트. 학사, 2-10년, 스토리지 · 클라우드 지식. 우대 클라우드 인프라 · AWS · CKA."
+      },
+      {
+        "title": "AI·Cloud 기술지원 엔지니어",
+        "url": "https://www.wanted.co.kr/wd/376288",
+        "publisher": "원티드",
+        "summary": "인프라 가상화 솔루션 IaaS 고객사 기술 지원 — 서버 · 스토리지 · 네트워크 가상화 설계 · 성능 최적화, 로드밸런싱 가상화 플랫폼, 온사이트 기술 지원 · 장애 해결, 모니터링 성능 분석, 레거시 → 최신 버전 업그레이드, 솔루션 제안 · 컨설팅. 학사, 3-12년. 우대 서버 가상화 · 데이터센터 운영 · 고객 대면 · AWS/CCNA/CCNP/Linux 자격."
+      },
+      {
+        "title": "AI·Cloud 사업기획 담당자",
+        "url": "https://www.wanted.co.kr/wd/370067",
+        "publisher": "원티드",
+        "summary": "MDC(모듈형 데이터센터) · AI/Cloud/Edge 인프라 신사업 — 시장 분석, 진입 전략 · 수익 모델, 제안서 · PoC, 공공 · 제조 · 글로벌 · SI 파트너십, 파이프라인 관리. 대졸, 사업기획 · 전략 · 컨설팅 5-12년. 우대 영어, 공공조달, Private Cloud · Private AI."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "Private Cloud · 가상화 솔루션(IaaS) 공급 · 구축 · 기술 지원",
+        "how": "고객사 환경에 가상화 플랫폼을 구축하고 온사이트 지원 · 업그레이드를 한다 — 라이선스 · 유지보수 구조와 금액은 공고에 없다.",
+        "domains": [
+          "Private Cloud 가상 스토리지",
+          "가상화 인프라 구축 · 기술 지원"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "AI·Cloud 기술지원 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/376288",
+            "publisher": "원티드",
+            "summary": "인프라 가상화 솔루션 IaaS 고객사 기술 지원 — 서버 · 스토리지 · 네트워크 가상화 설계 · 성능 최적화, 로드밸런싱 가상화 플랫폼, 온사이트 기술 지원 · 장애 해결, 모니터링 성능 분석, 레거시 → 최신 버전 업그레이드, 솔루션 제안 · 컨설팅. 학사, 3-12년. 우대 서버 가상화 · 데이터센터 운영 · 고객 대면 · AWS/CCNA/CCNP/Linux 자격."
+          },
+          {
+            "title": "AI·Cloud 스토리지 개발자 (백엔드)",
+            "url": "https://www.wanted.co.kr/wd/376357",
+            "publisher": "원티드",
+            "summary": "아이에이클라우드 — 클라우드 · 가상화 · AI 기반 솔루션. Private Cloud 가상 스토리지 서비스: Java Spring Boot REST API, Linux 파일 시스템 Qcow2 · 스냅샷, Ceph RBD · 스냅샷, 오브젝트 스토리지 관리, AI 플랫폼용 고성능 스토리지, 장애 분석 · 성능 · 자동화 · 테스트. 학사, 2-10년, 스토리지 · 클라우드 지식. 우대 클라우드 인프라 · AWS · CKA."
+          }
+        ]
+      },
+      {
+        "name": "MDC · AI/Cloud/Edge 인프라 신사업",
+        "how": "모듈형 데이터센터와 AI · 엣지 인프라를 공공 · 제조 · 글로벌에 제안 · PoC 한다 — 아직 신사업 단계다.",
+        "domains": [
+          "신사업 기획(MDC · Private AI)"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "AI·Cloud 사업기획 담당자",
+            "url": "https://www.wanted.co.kr/wd/370067",
+            "publisher": "원티드",
+            "summary": "MDC(모듈형 데이터센터) · AI/Cloud/Edge 인프라 신사업 — 시장 분석, 진입 전략 · 수익 모델, 제안서 · PoC, 공공 · 제조 · 글로벌 · SI 파트너십, 파이프라인 관리. 대졸, 사업기획 · 전략 · 컨설팅 5-12년. 우대 영어, 공공조달, Private Cloud · Private AI."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "Private Cloud 가상 스토리지",
+        "why": "스토리지 개발자 공고가 Spring Boot API · Qcow2 · Ceph RBD · 스냅샷 · 오브젝트 스토리지 · AI 플랫폼용 고성능 스토리지를 적는다.",
+        "what_to_know": [
+          "qcow2 백킹 파일 · 스냅샷",
+          "Ceph RBD · 클론",
+          "S3 호환 오브젝트",
+          "libvirt"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI·Cloud 스토리지 개발자 (백엔드)",
+            "url": "https://www.wanted.co.kr/wd/376357",
+            "publisher": "원티드",
+            "summary": "아이에이클라우드 — 클라우드 · 가상화 · AI 기반 솔루션. Private Cloud 가상 스토리지 서비스: Java Spring Boot REST API, Linux 파일 시스템 Qcow2 · 스냅샷, Ceph RBD · 스냅샷, 오브젝트 스토리지 관리, AI 플랫폼용 고성능 스토리지, 장애 분석 · 성능 · 자동화 · 테스트. 학사, 2-10년, 스토리지 · 클라우드 지식. 우대 클라우드 인프라 · AWS · CKA."
+          }
+        ]
+      },
+      {
+        "name": "가상화 인프라 구축 · 기술 지원",
+        "why": "기술지원 공고가 서버 · 스토리지 · 네트워크 가상화 설계 · 로드밸런싱 · 온사이트 장애 해결 · 업그레이드를 적는다.",
+        "what_to_know": [
+          "KVM · OpenStack 류 IaaS",
+          "가상 네트워크(브리지 · VLAN · OVS)",
+          "성능 모니터링"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI·Cloud 기술지원 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/376288",
+            "publisher": "원티드",
+            "summary": "인프라 가상화 솔루션 IaaS 고객사 기술 지원 — 서버 · 스토리지 · 네트워크 가상화 설계 · 성능 최적화, 로드밸런싱 가상화 플랫폼, 온사이트 기술 지원 · 장애 해결, 모니터링 성능 분석, 레거시 → 최신 버전 업그레이드, 솔루션 제안 · 컨설팅. 학사, 3-12년. 우대 서버 가상화 · 데이터센터 운영 · 고객 대면 · AWS/CCNA/CCNP/Linux 자격."
+          }
+        ]
+      },
+      {
+        "name": "신사업 기획(MDC · Private AI)",
+        "why": "사업기획 공고가 모듈형 데이터센터 · AI/Cloud/Edge 인프라 신사업 · 공공조달 · 파트너십을 적는다. 신사업이다.",
+        "what_to_know": [
+          "공공조달 · 제안서",
+          "Private AI 수요",
+          "PoC 설계"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI·Cloud 사업기획 담당자",
+            "url": "https://www.wanted.co.kr/wd/370067",
+            "publisher": "원티드",
+            "summary": "MDC(모듈형 데이터센터) · AI/Cloud/Edge 인프라 신사업 — 시장 분석, 진입 전략 · 수익 모델, 제안서 · PoC, 공공 · 제조 · 글로벌 · SI 파트너십, 파이프라인 관리. 대졸, 사업기획 · 전략 · 컨설팅 5-12년. 우대 영어, 공공조달, Private Cloud · Private AI."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "고객 현장에 직접 간다",
+        "evidence": "• 온사이트 방문을 통한 직접적인 기술 지원 및 장애 해결",
+        "so_what": "기술지원 자리는 고객 데이터센터에서 장애를 푸는 일이 많다 — 가상화 · 네트워크 장애를 현장에서 해결한 사례를 준비한다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "AI 워크로드로 스토리지를 넓힌다",
+        "evidence": "- AI 플랫폼을 위한 고성능 스토리지 지원",
+        "so_what": "GPU 학습 데이터의 처리량 · 동시 접근을 이해하는 스토리지 개발자가 강점이다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "제품명 · 고객 · 매출 · 인원 · 근무지는 공고에 없고 홈페이지도 읽지 않았다",
+    "영문 이름을 확인하지 못했다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/376357",
+      "title": "AI·Cloud 스토리지 개발자 (백엔드)",
+      "site": "wanted",
+      "verdict": "경력 2-10년, 학사. **Private Cloud 가상 스토리지 서비스** — **Java Spring Boot REST API**, **Linux 파일 시스템 기반 Qcow2 · 스냅샷 관리**, **Ceph RBD · 스냅샷 관리**, **오브젝트 스토리지 관리**, **AI 플랫폼용 고성능 스토리지**, 장애 분석 · 성능 · 운영 자동화 · 테스트. 자격은 스토리지 · 클라우드 지식. 우대는 클라우드 인프라 경력, IT 전공, AWS · CKA, 협업. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "학사",
+          "스토리지 · 클라우드 지식",
+          "Spring Boot"
+        ],
+        "can_learn": [
+          "qcow2 · 스냅샷 체인",
+          "Ceph RBD",
+          "오브젝트 스토리지"
+        ]
+      },
+      "study": [
+        {
+          "topic": "가상 디스크와 스냅샷 — qcow2 백킹 체인",
+          "from": "task",
+          "quote": "- Linux 파일 시스템 기반 Qcow2 관리 및 스냅샷 관리 기능 구현",
+          "priority": "core",
+          "why": "주요업무다.",
+          "gap_check": "qcow2 의 내부 스냅샷과 외부 스냅샷(백킹 파일 체인)은 무엇이 다른가? 체인이 길어지면 읽기 성능은 왜 떨어지나 — 병합(block commit · pull)은 언제 하나? 돌고 있는 VM 의 스냅샷을 일관되게 뜨려면(게스트 에이전트 fsfreeze)? 씬 프로비저닝 디스크가 호스트 용량을 넘기면?",
+          "drill": "리눅스 호스트에서 qemu-img 로 base 이미지를 만들고 외부 스냅샷 체인 3 단계를 쌓은 뒤 qemu-img info --backing-chain 으로 확인, commit 으로 병합한다. libvirt 로 VM 을 띄워 qemu-guest-agent 로 fsfreeze 스냅샷을 뜨고, 이 과정을 Spring Boot API(스냅샷 생성 · 목록 · 삭제 · 복원)로 감싼다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "QEMU — qemu-img",
+              "url": "https://www.qemu.org/docs/master/tools/qemu-img.html",
+              "kind": "docs"
+            },
+            {
+              "title": "libvirt — Snapshots",
+              "url": "https://libvirt.org/kbase/snapshots.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Ceph RBD — 블록 이미지 · 스냅샷 · 클론",
+          "from": "task",
+          "quote": "- Ceph 기반 RBD 관리 및 스냅샷 관리 기능 구현",
+          "priority": "core",
+          "why": "주요업무다.",
+          "gap_check": "RBD 스냅샷을 보호(protect)하고 클론을 만드는 이유는(골든 이미지에서 VM 디스크 빨리 찍기)? 클론을 부모에서 떼려면(flatten)과 그 비용은? 풀 · 복제 수 · PG 수는 성능과 가용성에 어떻게 영향 주나? 스냅샷을 많이 두면 무엇이 느려지나?",
+          "drill": "cephadm(또는 microceph)으로 단일 노드 Ceph 를 띄우고 rbd 로 이미지 생성 → 스냅샷 → protect → clone → flatten 을 해 본다. python-rbd(librbd) 로 같은 작업을 호출하는 작은 서비스를 만들고, 클론 100 개 생성 시간과 flatten 시간을 잰다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Ceph — RBD snapshots",
+              "url": "https://docs.ceph.com/en/latest/rbd/rbd-snapshot/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI 플랫폼을 위한 스토리지 — 처리량과 동시 접근",
+          "from": "task",
+          "quote": "- AI 플랫폼을 위한 고성능 스토리지 지원",
+          "priority": "high",
+          "why": "주요업무다.",
+          "gap_check": "학습 데이터 읽기는 작은 파일 다수 · 큰 순차 읽기 중 무엇이 문제인가? 블록(RBD) · 파일(CephFS) · 오브젝트(RGW) 중 무엇을 학습 데이터에 쓰나? 성능을 무엇으로 재나(fio 의 블록 크기 · 큐 깊이 · 동시성)?",
+          "drill": "fio 로 RBD 볼륨에 4K 랜덤 · 1M 순차 읽기를 큐 깊이별로 재고, 작은 이미지 파일 10 만 개를 CephFS 와 오브젝트(RGW, s3 도구)에서 읽는 시간을 비교해 '학습 데이터에는 무엇' 한 쪽 메모를 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "fio — Documentation",
+              "url": "https://fio.readthedocs.io/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/376288",
+      "title": "AI·Cloud 기술지원 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 3-12년, 학사. **인프라 가상화 솔루션(IaaS) 고객사 기술 지원** — **서버 · 스토리지 · 네트워크 가상화 설계 · 성능 최적화**, **로드밸런싱 고려 가상화 플랫폼 구축**, **온사이트 기술 지원 · 장애 해결**, 모니터링 성능 분석, **레거시 → 최신 버전 업그레이드**, 솔루션 제안 · 컨설팅. 우대는 IT 전공, 클라우드/레거시 · 서버 가상화 구축 · 운영, 데이터센터 운영, 고객 대면, AWS · CCNA · CCNP · Linux 자격. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "학사",
+          "가상화 · 인프라 3년"
+        ],
+        "can_learn": [
+          "KVM 네트워킹",
+          "무중단 업그레이드",
+          "고객 대응"
+        ]
+      },
+      "study": [
+        {
+          "topic": "가상화 네트워크 설계 — 브리지 · VLAN · 본딩",
+          "from": "task",
+          "quote": "• 서버, 스토리지, 네트워크 가상화 환경 설계 및 성능 최적화",
+          "priority": "core",
+          "why": "주요업무다.",
+          "gap_check": "관리 · 스토리지 · VM 트래픽을 왜 다른 네트워크(VLAN)로 나누나? NIC 본딩 모드(active-backup · LACP)는 스위치 설정과 어떻게 맞춰야 하나? 리눅스 브리지와 Open vSwitch 는 언제 쓰나? MTU 9000(점보 프레임)을 스토리지망에만 켜면?",
+          "drill": "KVM 호스트 두 대(또는 중첩 VM)에 본딩 + VLAN 서브인터페이스 + 브리지로 관리 · 스토리지 · VM 망을 나누고, iperf3 로 MTU 1500 · 9000 처리량을 비교한다. 본딩 링크 하나를 끊어 VM 통신이 이어지는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Red Hat — Configuring network bonding",
+              "url": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/configuring_and_managing_networking/configuring-network-bonding_configuring-and-managing-networking",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "고객 현장 장애 해결과 무중단 업그레이드",
+          "from": "task",
+          "quote": "• 기존 legacy에서 최신 버전으로의 업그레이드 지원",
+          "priority": "high",
+          "why": "주요업무이고 온사이트 장애 해결이 함께 있다.",
+          "gap_check": "VM 을 멈추지 않고 호스트를 업그레이드하려면(라이브 마이그레이션 · 호스트 비우기)? 업그레이드 전 무엇을 백업 · 확인하나(설정 · DB · 호환성)? 실패하면 어디까지 되돌리나? 현장에서 성능 저하를 무엇부터 보나(CPU steal · 디스크 지연 · 네트워크)?",
+          "drill": "공유 스토리지(NFS 또는 Ceph)를 쓰는 KVM 호스트 두 대에서 virsh migrate --live 로 VM 을 옮기고 한 호스트의 패키지를 올린 뒤 되돌려 놓는 롤링 업그레이드 런북을 쓴다. 이동 중 VM 안의 ping 손실과 서비스 응답을 기록한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "libvirt — Guest migration",
+              "url": "https://libvirt.org/migration.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/370067",
+      "title": "AI·Cloud 사업기획 담당자",
+      "site": "wanted",
+      "verdict": "경력 5-12년, 대졸 — **개발이 아닌 사업기획 자리**다. **모듈형 데이터센터(MDC) · AI/Cloud/Edge 인프라** 신사업 발굴, 시장 진입 전략 · 수익 모델, **제안서 · PoC 기획**, 공공 · 제조 · 글로벌 · SI 파트너십, 파이프라인 · 성과 관리. 자격은 사업기획 · 전략 · 컨설팅 5-12년. 우대는 영어, 문서 · 발표, 경영 · 산업공학 · IT 전공, **공공조달 · 제안서**, 해외 사업, Private Cloud · Private AI 이해. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "사업기획 · 컨설팅 5년",
+          "제안서 · 발표"
+        ],
+        "can_learn": [
+          "데이터센터 인프라 기초",
+          "공공조달 절차"
+        ]
+      },
+      "study": [
+        {
+          "topic": "공공 시장에 들어가기 — 조달 절차와 제안서",
+          "from": "preference",
+          "quote": "• 프로젝트 관리, 클라우드/AI, 공공조달, 제안서 작성, 해외사업 관련 경험자",
+          "priority": "core",
+          "why": "우대사항이고 주요업무에 공공기관 협력 · 제안서가 있다.",
+          "gap_check": "공공기관이 클라우드 · 인프라를 사는 경로(나라장터 입찰 · 디지털서비스 이용지원 · 혁신제품 지정)는 무엇이 다른가? 제안요청서(RFP)의 평가 항목을 제안서 목차에 어떻게 맞추나? 공공 클라우드 보안 인증(CSAP)은 무엇을 요구하나?",
+          "drill": "나라장터에서 최근 공공 클라우드 · 데이터센터 관련 제안요청서 하나를 골라 평가 항목표를 뽑고, 그 항목에 1 대 1 로 대응하는 제안서 목차 · 핵심 메시지 · 증빙 목록을 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "조달청 나라장터",
+              "url": "https://www.g2b.go.kr/",
+              "kind": "docs"
+            },
+            {
+              "title": "KISA — 클라우드 보안인증(CSAP)",
+              "url": "https://isms.kisa.or.kr/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모듈형 데이터센터 · Private AI 의 사업성 분석",
+          "from": "task",
+          "quote": "• 모듈형 데이터센터, AI/Cloud/Edge 인프라 등 당사 제품과 연계된 새로운 사업 기회 탐색",
+          "priority": "high",
+          "why": "주요업무다.",
+          "gap_check": "모듈형 데이터센터는 기존 건물형과 비교해 무엇(구축 기간 · 확장 단위 · 입지)이 다른가? GPU 서버 한 랙의 전력 · 냉각 요구는 일반 서버 랙과 얼마나 다른가? Private AI 를 사는 고객은 무엇 때문에 사나(데이터 반출 금지 · 비용 예측)?",
+          "drill": "가상의 제조 고객(GPU 서버 4 랙)을 두고 퍼블릭 클라우드 GPU 임대 · 모듈형 데이터센터 구축 두 안의 3 년 총비용 · 구축 기간 · 위험을 비교한 한 쪽 사업성 분석표를 만든다(가정과 출처를 표에 적는다).",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Uptime Institute — Resources",
+              "url": "https://uptimeinstitute.com/resources",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
