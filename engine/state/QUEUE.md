@@ -81,9 +81,15 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **スマートバンク(SmartBank)** | JP · 핀테크(가계부 + 선불 카드 ワンバンク) | 입구 하테나 `blog.smartbank.co.jp/rss`(2026-09 까지 월 여러 편). 'PCI DSS × SRE'(2026-07, 카드 번호 · 유효기간을 저장해 12 요건 준수를 SRE 3 명이 맡는 이유 · Apple Pay/Google Pay 구성) · 'MySQL 클라이언트를 Trilogy 로 이행'(2026-09) · '1Password CLI 로 토큰을 파일에 안 남기는 npm 인증'(2026-09) · Jamf Pro MDM 선정. 결제 기반 · 컴플라이언스 결정이 분명하다. |
+| **弁護士ドットコム** | JP · 리걸테크(법률 상담 포털 · 전자계약 クラウドサイン · LegalBrain) | 입구 하테나 `creators.bengo4.com/rss`(2026-09 까지 주 1 편꼴). '문자열 알고리즘으로 저작권 침해 리스크 분석을 고속화'(2026-09, 법무 AI 에이전트가 근거 서적 문장을 그대로 내는 비율을 재려고 완전 일치 길이 지표 · 문턱 · 정규화 · 접미사 배열 · 비교 결과 재사용 — 재는 것과 못 재는 것을 먼저 나눔) · 'AI 에이전트 시대 제로 트러스트 인가 — OPA · Cedar · OpenFGA'(2026-09) · 'Google ADK 로 AI 어시스턴트 출력을 믿을 수 있게 하는 3 가지'(2026-08). Legalscape 와 같은 리걸 축이지만 전자계약 · 상담 포털이 다르다. |
+| **オイシックス・ラ・大地(Oisix)** | JP · 식품 정기 배송 EC | 입구 하테나 `creators.oisix.co.jp/rss`(2026-08 까지). '제3세대 백엔드 — OpenAPI Spec 을 Single Source of Truth 로'(2026-02, 마이크로서비스 간 API 불일치 · 병행 개발 충돌을 Spec 전용 저장소 + Git Submodule + 코드 생성으로 · BFF web/app 분리) · '데드 코드로 아는 Oisix 25 년 역사'(2026-08) · '11 애플리케이션 Spring Boot 4 대응'(2026-08) · 기술 스택 2025 판. 정기 배송 · 25 년 레거시 이행 축. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
 
+- **2026-09-30 백열네 번째 후보 조사 — 목표 3곳 중 3곳. 입구: `yamadashy.github.io/tech-blog-rss-feed/blogs/`(421 도메인) → sources · QUEUE 도메인 대조 367 곳 → 회사명 대조 · 자사 서비스 위주 8 곳 RSS → 본문 3편.**
+  - **スマートバンク** · **弁護士ドットコム** · **Oisix** — `## 대기` 로 올렸다.
+  - **약함.** **Retty**(2025 이후 글이 드묾 — Workload Identity · Devin 활용) · **ジモティー**(Bedrock AgentCore 사내 에이전트 · 비용 절감 한 편, 매칭 · 신뢰 설계 글 없음) · **ヌーラボ**(Backlog — Datadog Orchestrion 트레이스 폭발 · Git 서버 이행, 다음에 다시 볼 곳) · **DIGGLE** · **リーナー**(좌담 · 행사 · 채용 글 위주).
 - **2026-09-30 백열세 번째 후보 조사 — 목표 3곳 중 3곳. 입구: `yamadashy.github.io/tech-blog-rss-feed/blogs/`(421 도메인) → 기존 회사의 sources · QUEUE 도메인과 대조해 369 곳 → 회사명 대조 · 자사 서비스 위주 5 곳 RSS → 본문 3편.**
   - **NearMe** · **kickflow** · **newmo** — `## 대기` 로 올렸다.
   - **약함.** **トレタ**(음식점 예약 — 최근은 AI 해커톤 · 회고 · 사양 주도 개발, 2024 에 FeatureFlag · 릴리스 사이클 글) · **bitbank**(암호자산 거래소 — MCP 서버 공개 · 사내 DX · 도구 글, 매매 엔진 결정 글이 없다).

@@ -2884,3 +2884,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 newmo newジョブ · 완주
 
 - PayloadCMS 글(2025-12-12)로 네 번째 도메인(newジョブ 관리 화면 기반) + `newjob-payload-admin-base`. 결정 7 — 헤드리스 CMS / Payload 선정(Strapi · Sanity · microCMS) / Cloud Run 셀프 호스트 1주 / Atlas 합류 / 도메인 우선 컬렉션 / beforeChange hook Point / monorepo 공유 · 단독 배포. 수익원 셋 모두 기능과 이어져 **done**. 다음: 후보 조사.
+
+## 2026-09-30 백열네 번째 후보 조사
+
+- yamadashy 목록 421 → 도메인 대조 367 → RSS 8 곳 → 본문 3편. スマートバンク(PCI DSS × SRE) · 弁護士ドットコム(저작권 역출력 측정 · 접미사 배열) · Oisix(OpenAPI SSOT 제3세대) 를 대기로. 다음: スマートバンク 프로파일.
