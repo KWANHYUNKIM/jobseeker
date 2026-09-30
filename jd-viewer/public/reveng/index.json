@@ -3487,8 +3487,8 @@
       "name_en": "Ikyu",
       "country": "JP",
       "category": "커머스",
-      "status": "in_progress",
-      "features_done": 2,
+      "status": "done",
+      "features_done": 3,
       "one_liner": "고급 호텔 · 료칸 예약 사이트 一休.com — 예약 한 건의 재고 · 결제 · 포인트 · 통지를 Saga 로 맞추고, 흩어진 요금 · 포인트 계산을 모으고, 10 억 자를 LLM 으로 여덟 언어에 옮긴다",
       "updated_at": "2026-09-30",
       "domain": "ikyu.co.jp"
