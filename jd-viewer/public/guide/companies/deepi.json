@@ -1,0 +1,276 @@
+{
+  "slug": "deepi",
+  "name": "딥아이",
+  "name_en": "DEEPI",
+  "aliases": [
+    "딥아이"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": null,
+  "one_liner": "플랜트 비파괴검사를 AI 로 자동 평가하는 솔루션(부산 기장) — 검사 신호 시각화 프론트와 머신비전 이상 탐지 엔지니어를 뽑는다",
+  "company": {
+    "business": "딥아이는 **AI 로 비파괴검사(NDT)를 자동 평가**하는 솔루션을 만든다 — 공고는 '인공지능 기반 비파괴검사로 더욱 안전한 플랜트 환경' 을 목표로, 비파괴검사의 정확도 · 효율을 높여 산업 현장에서 신뢰성 높은 검사를 하게 하는 **비파괴검사 자동평가 솔루션**이라고 적는다. 공고로 보이는 제품 모양은 **검사 분석 웹 서비스와 데스크톱(Electron) 앱**, 그 안의 **대용량 신호 데이터 시각화**(3D · 캔버스 · 차트), 그리고 뒤편의 **머신비전 이상 탐지 · 분할 모델**이다. 근무지는 **부산 기장 일광역** 앞(일광에코테라스). 모집중 공고는 프론트엔드 하나와 AI 엔지니어 자리(같은 내용이 두 제목으로 올라와 있다)다. 회사 홈페이지는 찾지 못했다 — deepi.ai 는 이름이 같은 다른 회사(방위 AI)다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "프론트엔드 엔지니어",
+        "url": "https://www.wanted.co.kr/wd/363515",
+        "publisher": "원티드",
+        "summary": "인공지능 기반 비파괴검사로 더 안전한 플랜트 — AI 기반 비파괴검사 자동평가 솔루션. 검사 분석 웹 서비스 · 데스크톱(Electron) 프론트, React · TS 디자인 시스템, 대용량 신호 데이터 시각화(Babylon.js · R3F · d3 · Konva), Socket.IO · SignalR 실시간, Sentry · PostHog. 경력 1-3년. 근무지 부산 기장 일광역(일광에코테라스), 급여 협의."
+      },
+      {
+        "title": "AI 엔지니어",
+        "url": "https://www.wanted.co.kr/wd/342219",
+        "publisher": "원티드",
+        "summary": "머신비전 영상 전처리 · 정제, 특징 추출 · 이상 탐지 알고리즘, 객체 탐지 · 분할 · 이상 탐지 모델, 산업 현장 영상 실증, 데이터셋 · 증강 · 자동 라벨링 · 품질 검증 파이프라인, 실시간 · 경량화, 논문 구현. 신입 이상. 우대 산업용 머신비전 · 경량화 · 자동 검사 실증 · MLOps · 광학/영상 센서."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "비파괴검사 자동평가 솔루션",
+        "how": "플랜트 등 산업 현장의 비파괴검사 결과를 AI 로 평가하는 소프트웨어(웹 · 데스크톱)를 판다고 읽힌다 — 판매 · 구독 · 검사 용역 중 무엇인지는 읽은 자료에 없다.",
+        "domains": [
+          "검사 신호 · 영상 시각화 프론트",
+          "머신비전 결함 검출"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "프론트엔드 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/363515",
+            "publisher": "원티드",
+            "summary": "인공지능 기반 비파괴검사로 더 안전한 플랜트 — AI 기반 비파괴검사 자동평가 솔루션. 검사 분석 웹 서비스 · 데스크톱(Electron) 프론트, React · TS 디자인 시스템, 대용량 신호 데이터 시각화(Babylon.js · R3F · d3 · Konva), Socket.IO · SignalR 실시간, Sentry · PostHog. 경력 1-3년. 근무지 부산 기장 일광역(일광에코테라스), 급여 협의."
+          },
+          {
+            "title": "AI 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/342219",
+            "publisher": "원티드",
+            "summary": "머신비전 영상 전처리 · 정제, 특징 추출 · 이상 탐지 알고리즘, 객체 탐지 · 분할 · 이상 탐지 모델, 산업 현장 영상 실증, 데이터셋 · 증강 · 자동 라벨링 · 품질 검증 파이프라인, 실시간 · 경량화, 논문 구현. 신입 이상. 우대 산업용 머신비전 · 경량화 · 자동 검사 실증 · MLOps · 광학/영상 센서."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "검사 신호 · 영상 시각화 프론트",
+        "why": "프론트 공고가 검사 분석 웹 · Electron 앱, 대용량 신호 데이터 시각화(Babylon.js · R3F · d3 · Konva), Socket.IO · SignalR 실시간을 적는다.",
+        "what_to_know": [
+          "캔버스 · WebGL 렌더링",
+          "다운샘플링(LTTB)",
+          "Electron IPC"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "프론트엔드 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/363515",
+            "publisher": "원티드",
+            "summary": "인공지능 기반 비파괴검사로 더 안전한 플랜트 — AI 기반 비파괴검사 자동평가 솔루션. 검사 분석 웹 서비스 · 데스크톱(Electron) 프론트, React · TS 디자인 시스템, 대용량 신호 데이터 시각화(Babylon.js · R3F · d3 · Konva), Socket.IO · SignalR 실시간, Sentry · PostHog. 경력 1-3년. 근무지 부산 기장 일광역(일광에코테라스), 급여 협의."
+          }
+        ]
+      },
+      {
+        "name": "머신비전 결함 검출",
+        "why": "AI 공고가 머신비전 영상 전처리 · 이상 탐지 · 분할 · 자동 라벨링 · 경량화를 적는다.",
+        "what_to_know": [
+          "비지도 이상 탐지(PatchCore)",
+          "분할 모델",
+          "라벨 품질 검증"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/342219",
+            "publisher": "원티드",
+            "summary": "머신비전 영상 전처리 · 정제, 특징 추출 · 이상 탐지 알고리즘, 객체 탐지 · 분할 · 이상 탐지 모델, 산업 현장 영상 실증, 데이터셋 · 증강 · 자동 라벨링 · 품질 검증 파이프라인, 실시간 · 경량화, 논문 구현. 신입 이상. 우대 산업용 머신비전 · 경량화 · 자동 검사 실증 · MLOps · 광학/영상 센서."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "현장 사용자가 매일 쓰는 도구를 만든다",
+        "evidence": "•사용자가 매일 쓰는 B2B·산업·도메인 소프트웨어에 흥미가 있으신 분",
+        "so_what": "검사원이 결과를 판독하는 화면이 제품의 얼굴이다 — PostHog 사용 지표로 다음 일을 정한 경험을 준비한다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "신입에게도 열려 있다",
+        "evidence": "•React와 TypeScript로 무언가를 끝까지 만들어 본 경험이 있으신 분 (실무·인턴·사이드 프로젝트 모두 환영)",
+        "so_what": "경력 대신 '왜 그렇게 짰는지 설명' 과 PR 리뷰 태도를 본다 — 끝까지 만든 프로젝트 하나를 깊게 설명할 준비를 한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다('경력 및 자격에 따라 협의') — 비워 둔다",
+    "회사 홈페이지를 찾지 못했다 — deepi.ai 는 다른 회사다. 고객 · 매출 · 인원은 모른다",
+    "어떤 비파괴검사(방사선 · 초음파 · 와전류 등)를 다루는지는 공고에 없다",
+    "AI 엔지니어 공고의 근무지는 적혀 있지 않다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/363515",
+      "title": "프론트엔드 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 1-3년(자격은 '실무 · 인턴 · 사이드 프로젝트 모두 환영'). **검사 분석 웹 서비스와 데스크톱(Electron) 앱** 프론트, **React · TypeScript UI 컴포넌트 · 공용 디자인 시스템**, **대용량 신호 데이터 시각화(Babylon.js · React Three Fiber · d3 · Konva)**, 백엔드 · AI 팀과 API · **실시간 데이터(Socket.IO · SignalR)**, **Sentry · PostHog** 에러 · 사용성 모니터링. 자격은 React · TS 로 끝까지 만든 경험, 왜 그렇게 짰는지 설명, 문서 · 코드를 직접 읽기, PR 리뷰 태도. 우대는 차트 · 캔버스 · 3D 화면, B2B · 산업 소프트웨어, 사용 지표로 결정, 모노레포 · 디자인 시스템. 근무지 부산 기장(일광역), 9-18 (유연 8-17), 급여 협의.",
+      "fit": {
+        "must_have": [
+          "React · TS 로 끝까지 만든 것",
+          "설명할 수 있는 설계"
+        ],
+        "can_learn": [
+          "대용량 캔버스 렌더링",
+          "Electron",
+          "SignalR"
+        ]
+      },
+      "study": [
+        {
+          "topic": "수백만 점의 검사 신호를 화면에 — 다운샘플링과 캔버스",
+          "from": "task",
+          "quote": "•대용량 신호 데이터 시각화 화면 개발 (Babylon.js, React Three Fiber, d3, Konva 등)",
+          "priority": "core",
+          "why": "주요업무다. 초음파 · 와전류 같은 검사 신호는 한 번에 수십만 ~ 수백만 점이라 SVG 로 그리면 멈춘다.",
+          "gap_check": "SVG · Canvas · WebGL 은 점이 몇 개쯤부터 갈리나? 화면 폭이 1,000 픽셀인데 100 만 점을 다 그릴 필요가 있나(LTTB · min-max 다운샘플링)? 확대할 때 원본 구간을 다시 가져오는 방식은? 결함 후보 구간을 강조 · 선택하는 인터랙션은 어느 층에서 처리하나?",
+          "drill": "100 만 점 합성 신호(잡음 + 결함 펄스 몇 개)를 d3 + SVG, Konva(Canvas), WebGL(R3F 선 또는 regl) 세 방식으로 그려 첫 렌더 · 확대 · 이동 프레임률을 잰다. LTTB 다운샘플링을 넣고 결함 펄스가 사라지지 않는지(min-max 병행) 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Steinarsson — Downsampling Time Series for Visual Representation (LTTB)",
+              "url": "https://skemman.is/handle/1946/15343",
+              "kind": "paper"
+            },
+            {
+              "title": "Konva — Performance tips",
+              "url": "https://konvajs.org/docs/performance/All_Performance_Tips.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "웹과 Electron 한 코드로 — 공용 디자인 시스템과 데스크톱 경계",
+          "from": "task",
+          "quote": "•검사 분석 웹 서비스 및 데스크톱(Electron) 애플리케이션 프론트엔드 개발",
+          "priority": "core",
+          "why": "주요업무이고 우대에 모노레포 · 디자인 시스템 환경이 있다. 현장(플랜트)은 인터넷이 안 되거나 큰 파일을 로컬에서 열어야 할 때가 많다(이 사이트의 가정).",
+          "gap_check": "같은 React 컴포넌트를 웹과 Electron 에서 쓰려면 파일 열기 · 저장 같은 기능은 어떻게 추상화하나? Electron 에서 렌더러가 Node API 를 직접 쓰면 왜 위험한가(contextIsolation · preload)? 수 GB 검사 파일을 렌더러로 통째로 넘기면?",
+          "drill": "pnpm 모노레포에 ui(디자인 시스템) · web · desktop(Electron) 패키지를 만들고, '파일 열기' 를 인터페이스로 두어 웹은 input[type=file], 데스크톱은 preload 의 IPC 로 구현한다. 1GB 파일을 메인 프로세스에서 스트리밍으로 읽어 요약만 렌더러로 보내는 흐름을 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Electron — Security (Context Isolation)",
+              "url": "https://www.electronjs.org/docs/latest/tutorial/security",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI 결과를 실시간으로 받기 — Socket.IO · SignalR 과 재연결",
+          "from": "task",
+          "quote": "•백엔드·AI 팀 협업 기반 API 연동 및 실시간 데이터 처리 (Socket.IO, SignalR)",
+          "priority": "high",
+          "why": "주요업무다. 검사 영상 · 신호를 올리면 AI 판정이 진행률과 함께 나중에 도착한다.",
+          "gap_check": "진행률 · 판정 결과를 폴링이 아니라 푸시로 받으면 무엇이 나아지나? 연결이 끊겼다 붙는 동안 도착한 결과는 어떻게 따라잡나(마지막 이벤트 ID · 재조회)? 서버가 .NET(SignalR)과 Node(Socket.IO) 둘이면 클라이언트는 무엇을 공통으로 두나?",
+          "drill": "Node + Socket.IO 로 '분석 작업' 진행률을 1 초마다 보내다 끝에 판정을 보내는 서버를 만들고, React 쪽에서 작업 ID 별 진행 상태를 보여 준다. 중간에 연결을 끊었다 붙였을 때 REST 로 최신 상태를 재조회해 누락이 없는지 확인하고, Sentry 에 재연결 실패를 기록한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Socket.IO — Connection state recovery",
+              "url": "https://socket.io/docs/v4/connection-state-recovery",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/342219",
+      "title": "AI 엔지니어",
+      "site": "wanted",
+      "verdict": "신입 이상. **머신비전 영상 전처리 · 정제**, **특징 추출 · 이상 탐지 알고리즘**, **객체 탐지 · 분할 · 이상 탐지 모델** 개발 · 개선, **산업 현장 영상 실증**, **데이터셋 구성 · 증강 · 자동 라벨링 · 품질 검증 파이프라인**, **실시간 · 경량화**, 논문 구현. 자격은 컴퓨터비전 · ML · 전자/광학 영상 처리 이해, OpenCV · NumPy · scikit-image, TensorFlow/PyTorch 모델 구현, **고해상도 이미지 처리**, 팀 · 산학 · 기업 연구. 우대는 산업용 머신비전 · 영상 검사 실무, 경량화 · 실시간 추론, 자동 검사 실증, MLOps(MLflow · Docker · K8s · Airflow), 논문 재현 · 기술 리포트, 광학 · 영상 센서. 근무지는 프론트 공고와 같은 부산 기장으로 보인다(이 공고엔 적혀 있지 않다). 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "컴퓨터비전 · 영상 처리",
+          "PyTorch 또는 TF",
+          "고해상도 이미지"
+        ],
+        "can_learn": [
+          "비지도 이상 탐지",
+          "라벨 품질 검증",
+          "ONNX/TensorRT"
+        ]
+      },
+      "study": [
+        {
+          "topic": "결함 영상은 적다 — 정상만으로 배우는 이상 탐지",
+          "from": "task",
+          "quote": "• 영상 기반 주요 특징 추출 및 이상 탐지 알고리즘 개발",
+          "priority": "core",
+          "why": "주요업무다. 비파괴검사에서 실제 결함 사례는 드물고 종류가 많아, 결함 라벨만으로 학습하기 어렵다.",
+          "gap_check": "정상 영상만으로 학습하는 방법(PatchCore · PaDiM 의 특징 메모리)과 결함을 직접 가르치는 방법(분할 · 탐지)은 각각 언제 맞나? 이상 점수 지도에서 문턱을 어떻게 정하나(검사원이 놓치면 안 되는 쪽 — 재현율 우선)? 이미지 단위 AUROC 와 픽셀 단위 AUPRO 는 무엇이 다른가?",
+          "drill": "MVTec AD 의 한 범주로 anomalib 의 PatchCore 를 학습해 이미지 · 픽셀 지표를 재고, 같은 범주의 결함 몇 장만으로 U-Net 분할을 학습해 비교한다. 결함 재현율 99% 가 되는 문턱에서 오탐(정상을 결함으로) 비율이 얼마인지 적는다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "anomalib — Anomaly detection library",
+              "url": "https://github.com/open-edge-platform/anomalib",
+              "kind": "docs"
+            },
+            {
+              "title": "MVTec AD dataset",
+              "url": "https://www.mvtec.com/company/research/datasets/mvtec-ad",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "라벨이 틀리면 모델도 틀린다 — 자동 라벨링과 품질 검증",
+          "from": "task",
+          "quote": "• 데이터셋 구성, 증강, 자동 라벨링 및 품질 검증 파이프라인 구축",
+          "priority": "core",
+          "why": "주요업무다. 결함 경계는 검사원마다 다르게 그리고, 자동 라벨은 틀린 채로 쌓이기 쉽다.",
+          "gap_check": "모델이 만든 가짜 라벨을 사람이 전부 보지 않고 어디만 보게 하나(불확실도 · 모델 간 불일치)? 같은 이미지에 두 사람이 그린 마스크가 다르면 무엇으로 재나(IoU)? 학습 · 검증 셋에 같은 부품의 이웃 이미지가 섞이면 무엇이 생기나(누수)?",
+          "drill": "공개 결함 데이터셋에서 라벨 일부를 일부러 틀리게(경계 흐리기 · 누락) 만든 뒤, 모델 예측과 라벨의 IoU 가 낮은 순으로 검토 목록을 뽑아 틀린 라벨이 상위에 모이는지 본다. 부품(촬영 대상) 단위로 train/val 을 나눈 경우와 이미지 단위로 나눈 경우의 성능 차이를 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "cleanlab — Data-centric AI",
+              "url": "https://docs.cleanlab.ai/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "고해상도 검사 영상을 현장 PC 에서 — 타일링과 경량화",
+          "from": "task",
+          "quote": "• AI 영상처리 파이프라인 최적화 및 실시간/경량화 대응",
+          "priority": "high",
+          "why": "주요업무이고 자격에 고해상도 이미지 처리가 있다. 방사선 · 초음파 영상은 수천 픽셀이 넘고 결함은 몇 픽셀이다.",
+          "gap_check": "8000 × 8000 영상을 모델 입력 크기로 줄이면 작은 결함이 사라지는 이유는? 타일로 잘라 추론할 때 경계에 걸린 결함은(겹침 · 병합)? FP16 · INT8 양자화 뒤 정확도가 얼마나 떨어지는지 무엇으로 확인하나?",
+          "drill": "고해상도 합성 영상에 작은 결함을 심고, 축소 추론과 겹침 타일 추론(겹침 영역은 최댓값 병합)의 검출률을 비교한다. 앞 모델을 ONNX 로 내보내 ONNX Runtime(CPU) · TensorRT(FP16, 있으면)로 영상당 시간과 지표 변화를 표로 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "ONNX Runtime — Performance tuning",
+              "url": "https://onnxruntime.ai/docs/performance/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/315350",
+      "title": "AI 기반 머신 비전 개발자",
+      "site": "wanted",
+      "duplicate_of": "https://www.wanted.co.kr/wd/342219",
+      "verdict": "⚠️ **같은 자리가 다른 제목으로 올라온 게시다** — 주요업무 · 자격요건 · 우대사항이 `AI 엔지니어`(342219)와 글자까지 같다. 브리핑은 그쪽을 본다. 한 곳으로만 지원한다."
+    }
+  ]
+}
