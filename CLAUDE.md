@@ -117,11 +117,21 @@
   **케이스**도 같은 방식이다 — 미니·미들·빅타워 급의 다나와 인기순 위부터 `models/case-*.json` 에 크기·기본 팬
   배치·팬 자리·흡기면(메시·틈새·막힘)을 공식 사양으로 적고, 뷰어가 부피와 '이 조합의 열을 빼나'(CPU 최대 + GPU TDP
   대 흡기·배기 팬 수 — 경험 규칙 `fansNeeded`, 측정값 아님)를 계산한다. 조립 점검에도 같은 규칙이 뜬다.
-  **레인이 둘이다**(`loops.py` 의 `hw-engine` = 부품·벤치, `hw-models` = 제품 스펙 models/). 루프는 제 레인 파일만
+  **레인이 셋이다**(`loops.py` 의 `hw-engine` = 부품·벤치, `hw-models` = 제품 스펙 models/, `hw-datacenter` = AI 데이터센터). 루프는 제 레인 파일만
   고치고 커밋하며, 형식(schema·validate·PROMPT·뷰어 코드)은 `hw-engine/state/REQUESTS.md` 에 요청만 남긴다 —
   동시에 돈 세션들이 같은 파일을 고쳐 커밋이 섞이던 것을 막는다. 레인 표는 `hw-engine/PROMPT.md` 맨 앞.
   Ti·XT·X3D·F·OC·2X 같은 이름 읽는 법은 `guide.json` 의 `names`(출처 필수, validate 가 본다).
-  뷰어 `/hardware`(조립·성능 예측) · `/hardware/parts`(등급·스펙 비교) · `/hardware/prices`(가격 추이).
+  **조립 화면의 구매 안내**: 부품 줄마다 오늘 최저가·인기 1위 매물과 다나와·네이버쇼핑·쿠팡 링크(아이콘은 각 사이트가
+  공개한 파비콘 `public/brands/`, 링크 표시에만 쓴다). 메인보드를 고르면 **메모리 슬롯** 칸 — 최저가 보드의 실제 슬롯
+  수(models/ 의 `dimm_slots`, 모르면 규격으로 짐작)와 소켓별 최대 용량·꽂은 개수별 공식 속도(`guide.json`
+  `memory_platforms`, 4장이면 느려진다). AI·개발 칸에는 '할 수 있는 일'과 VRAM 급·CPU 급별 선택 안내(같은 추정식).
+  **AI 데이터센터**(`/hardware/datacenter`, noindex): 회사·기관 74곳의 칩 수 → H100 환산(출처 환산 → 칩 수 × 공식
+  사양비(FP8 밀집, 없으면 BF16) → 공시 FP16 연산) → 연산·초당 토큰(H100 = MLPerf 70B 3,913)·동시 응대 인원.
+  탭 셋: 보유 칩·성능 / 금액(Epoch 건설비 → 전력 × GW 당 비용 → 칩 수 × 단가, 공시 설비투자·약정, ECB 환율로 원화) /
+  시장 조사(수익 구조·임대가·회수 계산기·감가상각·고장률). 원본은 `datacenter.json` — 숫자마다 출처와 공식·추정·계획,
+  겹치는 행은 `in_total: false`, 정부 합계는 `national`. 공식 사양이 없는 칩(Ascend 910B·Kunlun·Intel GPU Max)은
+  환산하지 않는다. validate 가 형식을 보고 `--gaps` 10번이 오래된 섹션·데이터센터를 `hw-datacenter` 레인 일감으로 올린다.
+  뷰어 `/hardware`(조립·성능 예측) · `/hardware/parts`(등급·스펙 비교) · `/hardware/prices`(가격 추이) · `/hardware/datacenter`.
   가격이 실리는 화면(추이·부품 상세)은 noindex 이고 프리렌더·sitemap 에서 뺐다.
   **완제품 조립PC**(`crawl_prebuilt`, 부품 가격 다음 단계): 다나와 통합검색의 조립PC 목록 + 상품 페이지
   JSON-LD 에서 **부품 모델명만** 뽑아 `prebuilt.json` 에 쌓고 우리 부품 id 에 잇는다. 리뷰 글은 싣지 않는다
