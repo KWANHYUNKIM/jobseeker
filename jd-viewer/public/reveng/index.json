@@ -3451,8 +3451,8 @@
       "name_en": "Livesense",
       "country": "JP",
       "category": "기타",
-      "status": "in_progress",
-      "features_done": 3,
+      "status": "done",
+      "features_done": 4,
       "one_liner": "아르바이트 구인 マッハバイト · 엔지니어 스카우트 転職ドラフト · 부동산 イエシル 의 상장사 — Rails 모놀리스의 HTML 을 통째로 CDN 에 캐시하고, 지명 제시 연봉으로 연봉 시세를 추정한다",
       "updated_at": "2026-09-30",
       "domain": "livesense.co.jp"
@@ -4288,7 +4288,8 @@
     "정기 구독이 떠나지 않게 — 입회 직후 해지율과 페이지 속도(LCP) · CVR",
     "마하바이트 모놀리스를 빠르고 현대적으로 — HTML 을 CDN 에 통째로 캐시하고, 오프레에서 AWS 로 DB · 검색을 옮긴다",
     "転職ドラフト 의 제시 연봉 데이터 — 기술 경험으로 연봉 시세를 추정한다",
-    "여러 서비스를 떠받친 공통 기반을 데이터센터에서 AWS 로 — 메일 · 데이터 기반"
+    "여러 서비스를 떠받친 공통 기반을 데이터센터에서 AWS 로 — 메일 · 데이터 기반",
+    "イエシル 건물 상세 페이지를 빠르고 검색되게 — Rails · React 혼재를 Next.js ISR 과 CDN 캐시로"
   ],
   "countries": {
     "KR": "한국",

@@ -4,7 +4,7 @@
   "name_en": "Livesense",
   "country": "JP",
   "category": "기타",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-30",
   "domain": "livesense.co.jp",
   "one_liner": "아르바이트 구인 マッハバイト · 엔지니어 스카우트 転職ドラフト · 부동산 イエシル 의 상장사 — Rails 모놀리스의 HTML 을 통째로 CDN 에 캐시하고, 지명 제시 연봉으로 연봉 시세를 추정한다",
@@ -55,7 +55,9 @@
       "name": "부동산 영역(イエシル)",
       "how": "AI 추정 가격 · 가격 라벨로 맨션 매매를 돕는다 — 과금 · 기술 구조는 이번에 읽은 자료에 없다.",
       "weight": "공개 여부 미확인",
-      "domains": [],
+      "domains": [
+        "イエシル 건물 상세 페이지를 빠르고 검색되게 — Rails · React 혼재를 Next.js ISR 과 CDN 캐시로"
+      ],
       "confidence": "inferred",
       "sources": [
         {
@@ -63,6 +65,13 @@
           "url": "https://www.livesense.co.jp/",
           "publisher": "リブセンス",
           "summary": "'사람의 최적 선택' 을 막는 구조의 왜곡을 기술로 푼다. 사업 영역: 인재(マッハバイト · 転職ドラフト · 転職会議), 부동산(イエシル — AI 추정 가격 · 가격 라벨 기능), 신사업. IR 페이지가 있다(상장사)."
+        },
+        {
+          "title": "ISR化でIESHILの建物詳細ページの読み込み速度を10倍に改善した話",
+          "url": "https://made.livesense.co.jp/entry/2021/05/31/083000",
+          "publisher": "リブセンス",
+          "date": "2021-05-31",
+          "summary": "IESHIL 은 맨션 사정 가격을 곧바로 알려 주는 서비스. 가장 많이 접속되는 건물 상세 페이지를 2021-04-06 ISR(Next.js)로. 기존: Rails(Slim) SST + React CSR 혼재 — TTFB 느림 · CLS 높음 · CSR 의 API 호출이 크롤 예산의 약 70% 를 먹어 색인율 저하 · 한 가치에 두 앱 수정 · IE11 대응. ISR = SSR 을 캐시하고 뒤에서 갱신(stale-while-revalidate) — Vercel 대신 기존 Heroku + Fastly 로, Surrogate-Control max-age · SWR. 사이트 전체가 아니라 건물 상세만. 결과(모바일): TTFB 수백 ms → 십 ms 대, LCP 수 초 → 0.x 초, CLS 약 0.5 → 0.000, 우량 URL 약 16 배, 좋음 URL 노출/일 약 2 배, Lighthouse 40-50 → 70-80."
         }
       ]
     }
@@ -225,6 +234,30 @@
       ],
       "features": [
         "mail-platform-aws-ip-reputation"
+      ]
+    },
+    {
+      "name": "イエシル 건물 상세 페이지를 빠르고 검색되게 — Rails · React 혼재를 Next.js ISR 과 CDN 캐시로",
+      "why": "イエシル(IESHIL)은 맨션의 사정 가격을 곧바로 알려 주는 부동산 서비스이고(지금은 AI 추정 가격 · 가격 라벨), 가장 많이 접속되는 것이 **건물 상세 페이지**다 — 검색으로 들어오는 사람이 많아 속도와 색인이 곧 가치 전달이다. 그런데 모든 페이지가 Rails 서버 템플릿과 React 클라이언트 렌더링을 섞어 느리고 화면이 흔들렸다.",
+      "tech": [
+        {
+          "tech": "건물 상세 페이지를 Next.js ISR 로 — Surrogate-Control max-age + stale-while-revalidate 를 Fastly 가 해석",
+          "solves": "요청마다 렌더링하지 않고 CDN 엣지에서 돌려준다.",
+          "limits": "개인정보 등 민감한 부분은 여전히 클라이언트에서.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ISR化でIESHILの建物詳細ページの読み込み速度を10倍に改善した話",
+              "url": "https://made.livesense.co.jp/entry/2021/05/31/083000",
+              "publisher": "リブセンス",
+              "date": "2021-05-31",
+              "summary": "IESHIL 은 맨션 사정 가격을 곧바로 알려 주는 서비스. 가장 많이 접속되는 건물 상세 페이지를 2021-04-06 ISR(Next.js)로. 기존: Rails(Slim) SST + React CSR 혼재 — TTFB 느림 · CLS 높음 · CSR 의 API 호출이 크롤 예산의 약 70% 를 먹어 색인율 저하 · 한 가치에 두 앱 수정 · IE11 대응. ISR = SSR 을 캐시하고 뒤에서 갱신(stale-while-revalidate) — Vercel 대신 기존 Heroku + Fastly 로, Surrogate-Control max-age · SWR. 사이트 전체가 아니라 건물 상세만. 결과(모바일): TTFB 수백 ms → 십 ms 대, LCP 수 초 → 0.x 초, CLS 약 0.5 → 0.000, 우량 URL 약 16 배, 좋음 URL 노출/일 약 2 배, Lighthouse 40-50 → 70-80."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "ieshil-building-page-isr"
       ]
     }
   ],
@@ -1342,12 +1375,341 @@
           "date": "2024-09-17"
         }
       ]
+    },
+    {
+      "key": "ieshil-building-page-isr",
+      "name": "가장 많이 보는 건물 상세 페이지만 먼저 — Rails · React 가 섞인 화면을 Next.js ISR 로 바꾸되 Vercel 없이 기존 Heroku + Fastly 의 stale-while-revalidate 로 구현해 LCP 수 초를 0.x 초로, CLS 를 0 으로",
+      "domain": "イエシル 건물 상세 페이지를 빠르고 검색되게 — Rails · React 혼재를 Next.js ISR 과 CDN 캐시로",
+      "updated_at": "2026-09-30",
+      "business": {
+        "why": "IESHIL 은 **맨션 사정 가격을 곧바로 알려 주는** 서비스이고, 가장 많이 접속되는 것은 서비스의 주 가치인 **건물 상세 페이지**다. IESHIL 은 Rails 4 부터 진화해 왔고, 건물 상세를 포함한 모든 페이지가 **Rails(Slim) 서버 템플릿(SST)** 으로 뼈대를 그린 뒤 **React(CSR)** 로 나머지 부품을 그리는 혼재 구조였다.\n\n사용자 쪽 문제는 셋 — 요청마다 서버에 닿아 **TTFB 가 느리고**, SST 위에 CSR 을 그려 **화면이 흔들리며(CLS 높음)**, CSR 이 API 로 데이터를 가져오느라 크롤러의 **크롤 예산이 약 70% 소비돼 색인율이 떨어졌다** — 줄 수 있는 가치가 검색 결과에 안 나올 우려. 개발 쪽 문제도 셋 — 한 가치를 내려면 Rails · React **두 앱을 고쳐야 하고**, CSR 이 많을수록 **브라우저 차이(IE11 사용자 일부)** 대응이 늘며, 새 기술을 들이고 싶은 동기가 있었다.",
+        "metrics": [
+          {
+            "label": "건물 상세 페이지(모바일, 2021-04-30)",
+            "value": "TTFB 수백 ms → 십 ms 전후 · LCP 수 초 → 0.x 초 · CLS 약 0.500 → 0.000",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ISR化でIESHILの建物詳細ページの読み込み速度を10倍に改善した話",
+                "url": "https://made.livesense.co.jp/entry/2021/05/31/083000",
+                "publisher": "リブセンス",
+                "date": "2021-05-31",
+                "summary": "IESHIL 은 맨션 사정 가격을 곧바로 알려 주는 서비스. 가장 많이 접속되는 건물 상세 페이지를 2021-04-06 ISR(Next.js)로. 기존: Rails(Slim) SST + React CSR 혼재 — TTFB 느림 · CLS 높음 · CSR 의 API 호출이 크롤 예산의 약 70% 를 먹어 색인율 저하 · 한 가치에 두 앱 수정 · IE11 대응. ISR = SSR 을 캐시하고 뒤에서 갱신(stale-while-revalidate) — Vercel 대신 기존 Heroku + Fastly 로, Surrogate-Control max-age · SWR. 사이트 전체가 아니라 건물 상세만. 결과(모바일): TTFB 수백 ms → 십 ms 대, LCP 수 초 → 0.x 초, CLS 약 0.5 → 0.000, 우량 URL 약 16 배, 좋음 URL 노출/일 약 2 배, Lighthouse 40-50 → 70-80."
+              }
+            ]
+          },
+          {
+            "label": "Search Console · Lighthouse",
+            "value": "우량 URL 약 16 배 · 좋음 URL 노출/일 약 2 배 · Lighthouse 40-50 → 70-80",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ISR化でIESHILの建物詳細ページの読み込み速度を10倍に改善した話",
+                "url": "https://made.livesense.co.jp/entry/2021/05/31/083000",
+                "publisher": "リブセンス",
+                "date": "2021-05-31",
+                "summary": "IESHIL 은 맨션 사정 가격을 곧바로 알려 주는 서비스. 가장 많이 접속되는 건물 상세 페이지를 2021-04-06 ISR(Next.js)로. 기존: Rails(Slim) SST + React CSR 혼재 — TTFB 느림 · CLS 높음 · CSR 의 API 호출이 크롤 예산의 약 70% 를 먹어 색인율 저하 · 한 가치에 두 앱 수정 · IE11 대응. ISR = SSR 을 캐시하고 뒤에서 갱신(stale-while-revalidate) — Vercel 대신 기존 Heroku + Fastly 로, Surrogate-Control max-age · SWR. 사이트 전체가 아니라 건물 상세만. 결과(모바일): TTFB 수백 ms → 십 ms 대, LCP 수 초 → 0.x 초, CLS 약 0.5 → 0.000, 우량 URL 약 16 배, 좋음 URL 노출/일 약 2 배, Lighthouse 40-50 → 70-80."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "ISR 을 이해할 때",
+          "thought": "ISR 은 한 번 SSR 한 것을 캐시해 재사용하고 뒤에서 캐시를 갱신하는 것 — stale-while-revalidate 와 같은 생각이라, SSR 프레임워크와 SWR 을 지원하는 CDN 이면 Next.js 밖에서도 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ISR化でIESHILの建物詳細ページの読み込み速度を10倍に改善した話",
+              "url": "https://made.livesense.co.jp/entry/2021/05/31/083000",
+              "publisher": "リブセンス",
+              "date": "2021-05-31",
+              "summary": "IESHIL 은 맨션 사정 가격을 곧바로 알려 주는 서비스. 가장 많이 접속되는 건물 상세 페이지를 2021-04-06 ISR(Next.js)로. 기존: Rails(Slim) SST + React CSR 혼재 — TTFB 느림 · CLS 높음 · CSR 의 API 호출이 크롤 예산의 약 70% 를 먹어 색인율 저하 · 한 가치에 두 앱 수정 · IE11 대응. ISR = SSR 을 캐시하고 뒤에서 갱신(stale-while-revalidate) — Vercel 대신 기존 Heroku + Fastly 로, Surrogate-Control max-age · SWR. 사이트 전체가 아니라 건물 상세만. 결과(모바일): TTFB 수백 ms → 십 ms 대, LCP 수 초 → 0.x 초, CLS 약 0.5 → 0.000, 우량 URL 약 16 배, 좋음 URL 노출/일 약 2 배, Lighthouse 40-50 → 70-80."
+            }
+          ]
+        },
+        {
+          "at": "범위를 정할 때",
+          "thought": "사이트 전체를 ISR 로 바꾸면 가장 좋겠지만 엔지니어 자원과 기간이 늘어난다 — 큰 과제를 쪼개 성과를 계속 낸다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ISR化でIESHILの建物詳細ページの読み込み速度を10倍に改善した話",
+              "url": "https://made.livesense.co.jp/entry/2021/05/31/083000",
+              "publisher": "リブセンス",
+              "date": "2021-05-31",
+              "summary": "IESHIL 은 맨션 사정 가격을 곧바로 알려 주는 서비스. 가장 많이 접속되는 건물 상세 페이지를 2021-04-06 ISR(Next.js)로. 기존: Rails(Slim) SST + React CSR 혼재 — TTFB 느림 · CLS 높음 · CSR 의 API 호출이 크롤 예산의 약 70% 를 먹어 색인율 저하 · 한 가치에 두 앱 수정 · IE11 대응. ISR = SSR 을 캐시하고 뒤에서 갱신(stale-while-revalidate) — Vercel 대신 기존 Heroku + Fastly 로, Surrogate-Control max-age · SWR. 사이트 전체가 아니라 건물 상세만. 결과(모바일): TTFB 수백 ms → 십 ms 대, LCP 수 초 → 0.x 초, CLS 약 0.5 → 0.000, 우량 URL 약 16 배, 좋음 URL 노출/일 약 2 배, Lighthouse 40-50 → 70-80."
+            }
+          ]
+        },
+        {
+          "at": "결과를 볼 때",
+          "thought": "'페이지를 여는 게 느껴지지 않을 만큼 빠르다' 는 목소리를 많이 받았다 — 직귀율 감소 · 체류 시간 증가에도 분명한 좋은 영향.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ISR化でIESHILの建物詳細ページの読み込み速度を10倍に改善した話",
+              "url": "https://made.livesense.co.jp/entry/2021/05/31/083000",
+              "publisher": "リブセンス",
+              "date": "2021-05-31",
+              "summary": "IESHIL 은 맨션 사정 가격을 곧바로 알려 주는 서비스. 가장 많이 접속되는 건물 상세 페이지를 2021-04-06 ISR(Next.js)로. 기존: Rails(Slim) SST + React CSR 혼재 — TTFB 느림 · CLS 높음 · CSR 의 API 호출이 크롤 예산의 약 70% 를 먹어 색인율 저하 · 한 가치에 두 앱 수정 · IE11 대응. ISR = SSR 을 캐시하고 뒤에서 갱신(stale-while-revalidate) — Vercel 대신 기존 Heroku + Fastly 로, Surrogate-Control max-age · SWR. 사이트 전체가 아니라 건물 상세만. 결과(모바일): TTFB 수백 ms → 십 ms 대, LCP 수 초 → 0.x 초, CLS 약 0.5 → 0.000, 우량 URL 약 16 배, 좋음 URL 노출/일 약 2 배, Lighthouse 40-50 → 70-80."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "건물 상세 페이지",
+            "what": "IESHIL 에서 가장 많이 접속되는 페이지 — 서비스의 주 가치."
+          },
+          {
+            "name": "렌더링 방식",
+            "what": "SST(Rails + ERB/Slim) · CSR(React) · SSR(Next.js) · SSG(빌드 때) · ISR(첫 요청 때 SSR 후 캐시, 주기적 갱신)."
+          },
+          {
+            "name": "Surrogate-Control",
+            "what": "Next.js 가 붙이는 CDN 용 헤더 — max-age(재사용 최대 시간) · stale-while-revalidate(만료 뒤 백그라운드 갱신까지 옛것을 쓰는 시간)."
+          },
+          {
+            "name": "크롤 예산",
+            "what": "한 사이트에 대한 크롤러 수집 상한 — CSR 의 API 호출이 약 70% 를 소비했다."
+          }
+        ],
+        "invariants": [
+          "개인정보 등 민감한 정보는 캐시되는 SSR 에 넣지 않는다.",
+          "캐시는 max-age 안이면 그대로, max-age 뒤 SWR 안이면 옛것을 주며 뒤에서 새로 렌더링한다.",
+          "ISR 은 건물 상세 페이지에만 — 나머지 페이지는 Fastly 를 지나지만 기존 구성 그대로."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "Next.js App 이 Rails App 에서 건물 데이터를 받아 상세 페이지를 렌더링",
+            "why": "데이터는 기존 Rails 가 쥔다."
+          },
+          {
+            "step": "Next.js 가 Surrogate-Control 헤더에 max-age 와 stale-while-revalidate 를 붙여 Fastly 로 돌려준다",
+            "why": "캐시 정책은 앱이 지시한다."
+          },
+          {
+            "step": "Fastly 가 헤더 기준으로 캐시 · 응답 — max-age 가 지나면 옛 페이지를 주면서 Next.js 에 새 버전을 요청",
+            "why": "사용자는 늘 캐시를 받는다."
+          },
+          {
+            "step": "민감한 정보(로그인 사용자 부분)만 클라이언트에서",
+            "why": "비로그인 건물 상세는 CLS 0.000."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "혼재된 렌더링을 무엇으로 바꾸나?",
+            "chosen": "**ISR(Incremental Static Regeneration)** — Next.js 9.5 에서 정식 출시, SSR 한 페이지를 캐시해 재사용하고 일정 기간마다 SSR 로 다시 그린다.",
+            "alternatives": [
+              "SSR(요청마다 렌더링 — TTFB 느림 · 전용 서버)",
+              "SSG(빌드 때 전 페이지 — 페이지가 많을수록 비용 · 갱신 때 전부 다시)",
+              "현상 유지(SST + CSR)"
+            ],
+            "tradeoff": "SSG 처럼 빠르면서 대량 사전 렌더링이 필요 없고 데이터 갱신도 지킨다 — 건물 페이지처럼 수가 많고 가끔 바뀌는 페이지에 맞다. 대가는 캐시 기간 동안 옛 데이터가 보인다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ISR化でIESHILの建物詳細ページの読み込み速度を10倍に改善した話",
+                "url": "https://made.livesense.co.jp/entry/2021/05/31/083000",
+                "publisher": "リブセンス",
+                "date": "2021-05-31",
+                "summary": "IESHIL 은 맨션 사정 가격을 곧바로 알려 주는 서비스. 가장 많이 접속되는 건물 상세 페이지를 2021-04-06 ISR(Next.js)로. 기존: Rails(Slim) SST + React CSR 혼재 — TTFB 느림 · CLS 높음 · CSR 의 API 호출이 크롤 예산의 약 70% 를 먹어 색인율 저하 · 한 가치에 두 앱 수정 · IE11 대응. ISR = SSR 을 캐시하고 뒤에서 갱신(stale-while-revalidate) — Vercel 대신 기존 Heroku + Fastly 로, Surrogate-Control max-age · SWR. 사이트 전체가 아니라 건물 상세만. 결과(모바일): TTFB 수백 ms → 십 ms 대, LCP 수 초 → 0.x 초, CLS 약 0.5 → 0.000, 우량 URL 약 16 배, 좋음 URL 노출/일 약 2 배, Lighthouse 40-50 → 70-80."
+              }
+            ]
+          },
+          {
+            "question": "ISR 을 어디에 올리나?",
+            "chosen": "**Vercel 이 아니라 이미 쓰던 Heroku + Fastly(stale-while-revalidate 지원)** — Next.js 가 Surrogate-Control 로 max-age · SWR 을 지시하고 Fastly 가 해석.",
+            "alternatives": [
+              "ISR 의 일반적인 선택인 Vercel"
+            ],
+            "tradeoff": "ISR 은 결국 SWR 캐시 전략이라, SSR 프레임워크 + SWR CDN 이면 어디서든 된다 — 새 호스팅을 들이지 않았다. 대가는 캐시 동작을 CDN 설정 · 헤더로 직접 맞춰야 한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ISR化でIESHILの建物詳細ページの読み込み速度を10倍に改善した話",
+                "url": "https://made.livesense.co.jp/entry/2021/05/31/083000",
+                "publisher": "リブセンス",
+                "date": "2021-05-31",
+                "summary": "IESHIL 은 맨션 사정 가격을 곧바로 알려 주는 서비스. 가장 많이 접속되는 건물 상세 페이지를 2021-04-06 ISR(Next.js)로. 기존: Rails(Slim) SST + React CSR 혼재 — TTFB 느림 · CLS 높음 · CSR 의 API 호출이 크롤 예산의 약 70% 를 먹어 색인율 저하 · 한 가치에 두 앱 수정 · IE11 대응. ISR = SSR 을 캐시하고 뒤에서 갱신(stale-while-revalidate) — Vercel 대신 기존 Heroku + Fastly 로, Surrogate-Control max-age · SWR. 사이트 전체가 아니라 건물 상세만. 결과(모바일): TTFB 수백 ms → 십 ms 대, LCP 수 초 → 0.x 초, CLS 약 0.5 → 0.000, 우량 URL 약 16 배, 좋음 URL 노출/일 약 2 배, Lighthouse 40-50 → 70-80."
+              }
+            ]
+          },
+          {
+            "question": "사이트 전체를 한 번에?",
+            "chosen": "**가장 많이 접속되고 서비스의 주 가치인 건물 상세 페이지만 먼저**.",
+            "alternatives": [
+              "사이트 전체 ISR 화"
+            ],
+            "tradeoff": "큰 과제를 쪼개 성과를 계속 낸다 — 전체는 엔지니어 자원 · 기간이 크다. 대가는 나머지 페이지는 기존 Rails + React 혼재로 남아 두 구성이 공존한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ISR化でIESHILの建物詳細ページの読み込み速度を10倍に改善した話",
+                "url": "https://made.livesense.co.jp/entry/2021/05/31/083000",
+                "publisher": "リブセンス",
+                "date": "2021-05-31",
+                "summary": "IESHIL 은 맨션 사정 가격을 곧바로 알려 주는 서비스. 가장 많이 접속되는 건물 상세 페이지를 2021-04-06 ISR(Next.js)로. 기존: Rails(Slim) SST + React CSR 혼재 — TTFB 느림 · CLS 높음 · CSR 의 API 호출이 크롤 예산의 약 70% 를 먹어 색인율 저하 · 한 가치에 두 앱 수정 · IE11 대응. ISR = SSR 을 캐시하고 뒤에서 갱신(stale-while-revalidate) — Vercel 대신 기존 Heroku + Fastly 로, Surrogate-Control max-age · SWR. 사이트 전체가 아니라 건물 상세만. 결과(모바일): TTFB 수백 ms → 십 ms 대, LCP 수 초 → 0.x 초, CLS 약 0.5 → 0.000, 우량 URL 약 16 배, 좋음 URL 노출/일 약 2 배, Lighthouse 40-50 → 70-80."
+              }
+            ]
+          },
+          {
+            "question": "개인정보가 든 부분은?",
+            "chosen": "**민감한 정보 외의 거의 모든 콘텐츠를 SSR** 하고, 민감한 부분만 클라이언트에서.",
+            "alternatives": [
+              "로그인 사용자는 SSR 캐시를 쓰지 않는다(이 사이트의 가정)"
+            ],
+            "tradeoff": "CSR 비율이 줄어 CLS · 크롤 예산 소비 · 브라우저 대응이 함께 준다 — 비로그인 건물 상세는 CLS 0.000. 대가는 어떤 정보가 민감한지 경계를 늘 지켜야 한다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ISR化でIESHILの建物詳細ページの読み込み速度を10倍に改善した話",
+                "url": "https://made.livesense.co.jp/entry/2021/05/31/083000",
+                "publisher": "リブセンス",
+                "date": "2021-05-31",
+                "summary": "IESHIL 은 맨션 사정 가격을 곧바로 알려 주는 서비스. 가장 많이 접속되는 건물 상세 페이지를 2021-04-06 ISR(Next.js)로. 기존: Rails(Slim) SST + React CSR 혼재 — TTFB 느림 · CLS 높음 · CSR 의 API 호출이 크롤 예산의 약 70% 를 먹어 색인율 저하 · 한 가치에 두 앱 수정 · IE11 대응. ISR = SSR 을 캐시하고 뒤에서 갱신(stale-while-revalidate) — Vercel 대신 기존 Heroku + Fastly 로, Surrogate-Control max-age · SWR. 사이트 전체가 아니라 건물 상세만. 결과(모바일): TTFB 수백 ms → 십 ms 대, LCP 수 초 → 0.x 초, CLS 약 0.5 → 0.000, 우량 URL 약 16 배, 좋음 URL 노출/일 약 2 배, Lighthouse 40-50 → 70-80."
+              }
+            ]
+          },
+          {
+            "question": "색인 문제는 어떻게 풀리나?",
+            "chosen": "**CSR 의 API 호출을 줄여 크롤 예산 소비를 낮춘다** — 콘텐츠가 SSR HTML 에 들어 있으니 크롤러가 API 를 부를 필요가 줄어든다.",
+            "alternatives": [
+              "사이트맵 · 사전 렌더링 서비스만 쓴다(이 사이트의 가정)"
+            ],
+            "tradeoff": "색인율이 오르며 더 많은 IESHIL 페이지가 검색 결과에 나온다 — Search Console 우량 URL 약 16 배, 좋음 URL 노출 약 2 배. 대가는 SEO 효과가 여러 요인과 섞여 ISR 만의 몫을 가르기 어렵다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ISR化でIESHILの建物詳細ページの読み込み速度を10倍に改善した話",
+                "url": "https://made.livesense.co.jp/entry/2021/05/31/083000",
+                "publisher": "リブセンス",
+                "date": "2021-05-31",
+                "summary": "IESHIL 은 맨션 사정 가격을 곧바로 알려 주는 서비스. 가장 많이 접속되는 건물 상세 페이지를 2021-04-06 ISR(Next.js)로. 기존: Rails(Slim) SST + React CSR 혼재 — TTFB 느림 · CLS 높음 · CSR 의 API 호출이 크롤 예산의 약 70% 를 먹어 색인율 저하 · 한 가치에 두 앱 수정 · IE11 대응. ISR = SSR 을 캐시하고 뒤에서 갱신(stale-while-revalidate) — Vercel 대신 기존 Heroku + Fastly 로, Surrogate-Control max-age · SWR. 사이트 전체가 아니라 건물 상세만. 결과(모바일): TTFB 수백 ms → 십 ms 대, LCP 수 초 → 0.x 초, CLS 약 0.5 → 0.000, 우량 URL 약 16 배, 좋음 URL 노출/일 약 2 배, Lighthouse 40-50 → 70-80."
+              }
+            ]
+          },
+          {
+            "question": "개발 구조는 어떻게 바뀌나?",
+            "chosen": "**건물 상세를 Next.js(JS) 하나로 통일** — 한 가치를 위해 Rails · React 두 앱을 고치던 일을 없앤다. Next.js 는 팀 첫 채용.",
+            "alternatives": [
+              "Rails 뷰를 개선"
+            ],
+            "tradeoff": "개발 비용 · 브라우저 대응이 줄고 개발자 동기가 오른다. 대가는 데이터는 여전히 Rails 가 쥐어 Next.js ↔ Rails 사이 API 가 하나 늘고, 팀이 새 프레임워크를 익혀야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ISR化でIESHILの建物詳細ページの読み込み速度を10倍に改善した話",
+                "url": "https://made.livesense.co.jp/entry/2021/05/31/083000",
+                "publisher": "リブセンス",
+                "date": "2021-05-31",
+                "summary": "IESHIL 은 맨션 사정 가격을 곧바로 알려 주는 서비스. 가장 많이 접속되는 건물 상세 페이지를 2021-04-06 ISR(Next.js)로. 기존: Rails(Slim) SST + React CSR 혼재 — TTFB 느림 · CLS 높음 · CSR 의 API 호출이 크롤 예산의 약 70% 를 먹어 색인율 저하 · 한 가치에 두 앱 수정 · IE11 대응. ISR = SSR 을 캐시하고 뒤에서 갱신(stale-while-revalidate) — Vercel 대신 기존 Heroku + Fastly 로, Surrogate-Control max-age · SWR. 사이트 전체가 아니라 건물 상세만. 결과(모바일): TTFB 수백 ms → 십 ms 대, LCP 수 초 → 0.x 초, CLS 약 0.5 → 0.000, 우량 URL 약 16 배, 좋음 URL 노출/일 약 2 배, Lighthouse 40-50 → 70-80."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "부동산 영역 イエシル(수익원)",
+          "via": "건물 상세 페이지 유입",
+          "contract": "イエシル 은 リブセンス 의 부동산 영역 서비스이고, 건물 상세 페이지가 가장 많이 접속되는 주 가치다 — 속도 · 색인이 곧 유입이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "株式会社リブセンス",
+              "url": "https://www.livesense.co.jp/",
+              "publisher": "リブセンス",
+              "summary": "'사람의 최적 선택' 을 막는 구조의 왜곡을 기술로 푼다. 사업 영역: 인재(マッハバイト · 転職ドラフト · 転職会議), 부동산(イエシル — AI 추정 가격 · 가격 라벨 기능), 신사업. IR 페이지가 있다(상장사)."
+            },
+            {
+              "title": "ISR化でIESHILの建物詳細ページの読み込み速度を10倍に改善した話",
+              "url": "https://made.livesense.co.jp/entry/2021/05/31/083000",
+              "publisher": "リブセンス",
+              "date": "2021-05-31",
+              "summary": "IESHIL 은 맨션 사정 가격을 곧바로 알려 주는 서비스. 가장 많이 접속되는 건물 상세 페이지를 2021-04-06 ISR(Next.js)로. 기존: Rails(Slim) SST + React CSR 혼재 — TTFB 느림 · CLS 높음 · CSR 의 API 호출이 크롤 예산의 약 70% 를 먹어 색인율 저하 · 한 가치에 두 앱 수정 · IE11 대응. ISR = SSR 을 캐시하고 뒤에서 갱신(stale-while-revalidate) — Vercel 대신 기존 Heroku + Fastly 로, Surrogate-Control max-age · SWR. 사이트 전체가 아니라 건물 상세만. 결과(모바일): TTFB 수백 ms → 십 ms 대, LCP 수 초 → 0.x 초, CLS 약 0.5 → 0.000, 우량 URL 약 16 배, 좋음 URL 노출/일 약 2 배, Lighthouse 40-50 → 70-80."
+            }
+          ]
+        },
+        {
+          "to": "マッハバイト HTML CDN 캐시",
+          "via": "같은 생각 — SWR 캐시",
+          "contract": "イエシル ISR(2021)과 マッハバイト HTML 캐시(2026) 모두 stale-while-revalidate 와 앱이 지시하는 캐시 헤더로 페이지를 CDN 에서 돌려준다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ISR化でIESHILの建物詳細ページの読み込み速度を10倍に改善した話",
+              "url": "https://made.livesense.co.jp/entry/2021/05/31/083000",
+              "publisher": "リブセンス",
+              "date": "2021-05-31",
+              "summary": "IESHIL 은 맨션 사정 가격을 곧바로 알려 주는 서비스. 가장 많이 접속되는 건물 상세 페이지를 2021-04-06 ISR(Next.js)로. 기존: Rails(Slim) SST + React CSR 혼재 — TTFB 느림 · CLS 높음 · CSR 의 API 호출이 크롤 예산의 약 70% 를 먹어 색인율 저하 · 한 가치에 두 앱 수정 · IE11 대응. ISR = SSR 을 캐시하고 뒤에서 갱신(stale-while-revalidate) — Vercel 대신 기존 Heroku + Fastly 로, Surrogate-Control max-age · SWR. 사이트 전체가 아니라 건물 상세만. 결과(모바일): TTFB 수백 ms → 십 ms 대, LCP 수 초 → 0.x 초, CLS 약 0.5 → 0.000, 우량 URL 약 16 배, 좋음 URL 노출/일 약 2 배, Lighthouse 40-50 → 70-80."
+            },
+            {
+              "title": "モノリスなアルバイト求人サイトの表示速度をCDNキャッシュで爆速にした話",
+              "url": "https://made.livesense.co.jp/entry/2026/06/12/080000",
+              "publisher": "リブセンス",
+              "summary": "マッハバイト — Rails 가 매번 HTML 을 조립해 300 ~ 700 ms(무거우면 1 초 이상). HTML 을 통째로 CDN 캐시: 사용자별 부분(로그인 · 즐겨찾기 · 추천)을 표시 뒤 JS 로 API 에서 가져오게 바꾸고, 캐시 규칙은 CDN 경로 정규식 대신 Rails 헤더로, 히트율 끌어올리기, 옛 HTML 이 지운 CSS/JS 참조 · 감시 · 숫자 감시. 구인 목록 LCP 363 ms.",
+              "date": "2026-06-12"
+            }
+          ]
+        },
+        {
+          "to": "공통 기반 AWS 이행",
+          "via": "호스팅",
+          "contract": "이 글 시점(2021) IESHIL 은 Heroku + Fastly 위에 있었다 — 이후 AWS 이행 대상이었는지는 글에 없다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "ISR化でIESHILの建物詳細ページの読み込み速度を10倍に改善した話",
+              "url": "https://made.livesense.co.jp/entry/2021/05/31/083000",
+              "publisher": "リブセンス",
+              "date": "2021-05-31",
+              "summary": "IESHIL 은 맨션 사정 가격을 곧바로 알려 주는 서비스. 가장 많이 접속되는 건물 상세 페이지를 2021-04-06 ISR(Next.js)로. 기존: Rails(Slim) SST + React CSR 혼재 — TTFB 느림 · CLS 높음 · CSR 의 API 호출이 크롤 예산의 약 70% 를 먹어 색인율 저하 · 한 가치에 두 앱 수정 · IE11 대응. ISR = SSR 을 캐시하고 뒤에서 갱신(stale-while-revalidate) — Vercel 대신 기존 Heroku + Fastly 로, Surrogate-Control max-age · SWR. 사이트 전체가 아니라 건물 상세만. 결과(모바일): TTFB 수백 ms → 십 ms 대, LCP 수 초 → 0.x 초, CLS 약 0.5 → 0.000, 우량 URL 약 16 배, 좋음 URL 노출/일 약 2 배, Lighthouse 40-50 → 70-80."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "ISR 이 한 번의 요청을 다루는 법",
+          "question": "캐시는 언제 새로 그려지나?",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant U as 사용자 · 크롤러\n  participant F as Fastly\n  participant N as Next.js App\n  participant R as Rails App\n  U->>F: 건물 상세\n  alt 캐시 없음\n    F->>N: 요청\n    N->>R: 건물 데이터\n    N-->>F: 페이지 v1 + Surrogate-Control(max-age · SWR)\n    F-->>U: v1\n  else max-age 안\n    F-->>U: 캐시 v1\n  else max-age 뒤 · SWR 안\n    F-->>U: 캐시 v1(옛것)\n    F->>N: 뒤에서 v2 요청\n  end"
+        },
+        {
+          "title": "렌더링 방식 비교",
+          "question": "왜 SSR 도 SSG 도 아닌가?",
+          "kind": "flow",
+          "code": "flowchart TB\n  SST[\"SST + CSR(기존)\\nTTFB 느림 · CLS 높음 · 크롤 예산 70%\"] --> Q{\"무엇으로?\"}\n  Q --> SSR[\"SSR\\n요청마다 렌더링 — TTFB 느림\"]\n  Q --> SSG[\"SSG\\n전 페이지 빌드 — 페이지 많으면 비용 · 갱신 전부\"]\n  Q --> ISR[\"ISR\\n첫 요청 SSR 후 캐시 · 주기 갱신\"]\n  ISR --> RES[\"LCP 수 초 → 0.x 초 · CLS 0.5 → 0\"]"
+        },
+        {
+          "title": "혼재 구조가 만든 문제",
+          "question": "무엇이 사용자와 개발자를 괴롭혔나?",
+          "kind": "failure",
+          "code": "flowchart TB\n  M[\"Rails(Slim) 뼈대 + React 부품\"] --> U1[\"요청마다 서버 — TTFB\"]\n  M --> U2[\"그린 뒤 부품이 들어와 흔들림 — CLS\"]\n  M --> U3[\"CSR 의 API 호출 — 크롤 예산 70%, 색인 저하\"]\n  M --> D1[\"한 기능에 두 앱 수정\"]\n  M --> D2[\"CSR 많을수록 IE11 등 브라우저 대응\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "ISR化でIESHILの建物詳細ページの読み込み速度を10倍に改善した話",
+          "url": "https://made.livesense.co.jp/entry/2021/05/31/083000",
+          "publisher": "リブセンス",
+          "date": "2021-05-31",
+          "summary": "IESHIL 은 맨션 사정 가격을 곧바로 알려 주는 서비스. 가장 많이 접속되는 건물 상세 페이지를 2021-04-06 ISR(Next.js)로. 기존: Rails(Slim) SST + React CSR 혼재 — TTFB 느림 · CLS 높음 · CSR 의 API 호출이 크롤 예산의 약 70% 를 먹어 색인율 저하 · 한 가치에 두 앱 수정 · IE11 대응. ISR = SSR 을 캐시하고 뒤에서 갱신(stale-while-revalidate) — Vercel 대신 기존 Heroku + Fastly 로, Surrogate-Control max-age · SWR. 사이트 전체가 아니라 건물 상세만. 결과(모바일): TTFB 수백 ms → 십 ms 대, LCP 수 초 → 0.x 초, CLS 약 0.5 → 0.000, 우량 URL 약 16 배, 좋음 URL 노출/일 약 2 배, Lighthouse 40-50 → 70-80."
+        }
+      ]
     }
   ],
   "open_questions": [
     "매출 · 부문 비중 · 과금 방식은 IR 에 있지만 이번에 읽지 않았다.",
-    "부동산(イエシル) 수익원의 기술 글을 아직 못 찾았다 — 도메인이 없다.",
-    "転職会議 · knew 는 이번에 도메인으로 세우지 않았다."
+    "転職会議 · knew 는 이번에 도메인으로 세우지 않았다.",
+    "イエシル 의 AI 추정 가격 · 가격 라벨 모델 글은 아직 못 찾았다 — 부동산 도메인은 2021 ISR 글 하나에 기댄다."
   ],
   "sources": [
     {
@@ -1425,6 +1787,13 @@
       "publisher": "リブセンス",
       "summary": "10 년 된 데이터 기반을 새로 짓는 이야기.",
       "date": "2024-02-05"
+    },
+    {
+      "title": "ISR化でIESHILの建物詳細ページの読み込み速度を10倍に改善した話",
+      "url": "https://made.livesense.co.jp/entry/2021/05/31/083000",
+      "publisher": "リブセンス",
+      "date": "2021-05-31",
+      "summary": "IESHIL 은 맨션 사정 가격을 곧바로 알려 주는 서비스. 가장 많이 접속되는 건물 상세 페이지를 2021-04-06 ISR(Next.js)로. 기존: Rails(Slim) SST + React CSR 혼재 — TTFB 느림 · CLS 높음 · CSR 의 API 호출이 크롤 예산의 약 70% 를 먹어 색인율 저하 · 한 가치에 두 앱 수정 · IE11 대응. ISR = SSR 을 캐시하고 뒤에서 갱신(stale-while-revalidate) — Vercel 대신 기존 Heroku + Fastly 로, Surrogate-Control max-age · SWR. 사이트 전체가 아니라 건물 상세만. 결과(모바일): TTFB 수백 ms → 십 ms 대, LCP 수 초 → 0.x 초, CLS 약 0.5 → 0.000, 우량 URL 약 16 배, 좋음 URL 노출/일 약 2 배, Lighthouse 40-50 → 70-80."
     }
   ]
 }

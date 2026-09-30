@@ -2960,3 +2960,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 リブセンス 메일 기반(기능 3/3)
 
 - 메일 서버 AWS 이행 글로 `mail-platform-aws-ip-reputation`. 결정 7 — 라이선스 한 대씩 / 본번 메일로 평판 육성 / HAProxy 과도기 / EC2 리프트 · Terraform · Ansible / DKIM · DMARC / Outlook 속도 되돌림 / 중계 서버 재구축. 도메인 셋 모두 기능. イエシル 1 차 찾기 없음. 다음: 완주 점검(2 차).
+
+## 2026-09-30 リブセンス イエシル · 완주
+
+- イエシル 2 차 찾기(블로그 검색 IESHIL) — 2021 ISR 글 발견 → 네 번째 도메인 + `ieshil-building-page-isr`. 결정 6 — ISR / Heroku + Fastly SWR / 건물 상세만 먼저 / 민감 정보만 CSR / 크롤 예산 · 색인 / Next.js 통일. 수익원 둘 모두 기능과 이어져 **done**. 다음: ヌーラボ 프로파일.
