@@ -1887,6 +1887,17 @@
       "postings": 2,
       "study_items": 3,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "hellolive",
+      "name": "헬로라이브",
+      "aliases": [
+        "헬로라이브"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 4,
+      "updated_at": "2026-09-30"
     }
   ]
 }
