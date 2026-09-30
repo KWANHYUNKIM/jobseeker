@@ -3427,8 +3427,8 @@
       "name_en": "Bengo4.com",
       "country": "JP",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 3,
+      "status": "done",
+      "features_done": 4,
       "one_liner": "변호사 포털 · 전자계약 クラウドサイン · 법무 AI LegalBrain 을 가진 리걸테크 상장사 — AI 가 근거 서적을 그대로 베끼는지 재고, 인가는 NGINX 안에서 Cedar 로 판정한다",
       "updated_at": "2026-09-30",
       "domain": "bengo4.com"
@@ -4257,7 +4257,8 @@
     "카드를 Apple Pay · Google Pay 에 올린다 — 발행사로서 위험을 판단하고 토큰을 준다",
     "LegalBrain — 20 만 판례 · 법률 서적 위의 법무 AI 에이전트를 근거에 충실하게",
     "인가를 엣지와 프로세스 안에서 선언적으로 — Cedar · OPA, NGINX 모듈, MCP 서버 보호",
-    "クラウドサイン — 250 만 사 전자계약을 떠받치는 개발 조직과 기반"
+    "クラウドサイン — 250 만 사 전자계약을 떠받치는 개발 조직과 기반",
+    "みんなの法律相談 을 콘텐츠로 — 수백만 상담 × 생성 AI 정리 기사를 상태로 두 도메인에 나눠 싣는다"
   ],
   "countries": {
     "KR": "한국",

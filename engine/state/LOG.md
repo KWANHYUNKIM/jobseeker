@@ -2920,3 +2920,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 弁護士ドットコム CloudSign(기능 3/3)
 
 - 영역별 조직 글 + GitLab → GitHub 이행 글로 `cloudsign-domain-teams-github-migration`. 결정 8 — 사용자 경험별 영역 팀 / 권한 이양 / 경계는 운영하며 / GitHub EC(GitLab SaaS 대비) / Push Mirroring 단계 이행 / Label · Issue · MR 도구 / Push Rules → Branch Protection + pre-commit / 횡단 · 팀 분담. 도메인 셋 모두 기능, 포털 수익원만 도메인 없음 — 다음: 완주 점검.
+
+## 2026-09-30 弁護士ドットコム 포털 · 완주
+
+- article-archives.bengo4.com 구축 글로 네 번째 도메인(みんなの法律相談 정리 기사) + `bengo4-portal-article-archives`. 결정 6 — 생성 AI 정리 기사 / 아카이브 서브도메인 / 상태 기반 리다이렉트 / 전환 예약 / Event Sourcing 대신 단순 방식 / 담당자 조작 테스트. 포털 수익원이 도메인과 이어져 **done**. Compression Dictionary Transport 글은 쓰지 않았다(포털 적용 여부가 글에 없다). 다음: Oisix.
