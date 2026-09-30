@@ -1477,6 +1477,17 @@
       "postings": 2,
       "study_items": 6,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "dpplanning",
+      "name": "디피플래닝",
+      "aliases": [
+        "디피플래닝"
+      ],
+      "status": "done",
+      "postings": 2,
+      "study_items": 6,
+      "updated_at": "2026-09-30"
     }
   ]
 }

@@ -1,0 +1,272 @@
+{
+  "slug": "dpplanning",
+  "name": "디피플래닝",
+  "name_en": "DP Planning",
+  "aliases": [
+    "디피플래닝"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": null,
+  "one_liner": "검색광고 중심의 퍼포먼스 마케팅 에이전시(2020 설립) — AI 에이전트 · 마케팅 자동화 개발팀을 세울 팀장급 개발자와 AI 퍼포먼스 마케터를 뽑는다",
+  "company": {
+    "business": "디피플래닝은 2020 년 설립된 **온라인 퍼포먼스 마케팅 광고 에이전시**다 — **검색광고**를 주력으로 여러 온라인 매체의 마케팅을 대행하며, 이커머스 시장에서 '시장의 문제를 해결해 가치를 창조하는 마케터 집단' 을 비전으로 든다. 모집중 둘이 회사가 가려는 방향을 보여 준다 — 광고 대행 위에 **AI 에이전트 서비스와 사내 마케팅 자동화**를 올리려고 **개발팀을 새로 세우는 팀장급 AI 개발자**(기술 스택 선정 · 개발 표준 · 주니어 온보딩까지)와, 광고 운영을 넘어 **자동화 · 서비스 개선에 기여하는 AI 퍼포먼스 마케터**다. 개발 공고는 **포트폴리오 필수**다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "AI 서비스 개발자 (팀장급)",
+        "url": "https://www.wanted.co.kr/wd/367806",
+        "publisher": "원티드",
+        "summary": "디피플래닝 — 2020 설립 온라인 퍼포먼스 마케팅 광고 에이전시, 검색광고 주력, 이커머스 시장, '시장의 문제를 해결하여 가치를 창조하는 마케터집단'. AI 에이전트 서비스 설계 · 개발, LangChain 워크플로, RAG · LLM API, 기술 스택 · 개발 표준, 일정 · 요구 정의, 코드 리뷰 · 주니어 성장, 사내 마케팅 자동화. 자격 AI Agent 실무(포트폴리오 필수) · LangChain · RAG · 스택 선정 · 일정 관리 · 온보딩. 우대 Meta · Google · Naver 광고 API · 마케팅 데이터 파이프라인."
+      },
+      {
+        "title": "AI 퍼포먼스 마케터",
+        "url": "https://www.wanted.co.kr/wd/367802",
+        "publisher": "원티드",
+        "summary": "Naver SA · Meta Ads 운영 · 성과 관리, GA4 분석 · 리포트, A/B 테스트, 소재 방향, 업무 자동화 · 서비스 개선 기여. 1-5년. 우대 리포트 자동화 · AI 마케팅 · LLM 카피 · API 데이터 수집 · SQL."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "퍼포먼스 광고 대행(검색광고 등)",
+        "how": "광고주를 대신해 Naver SA · Meta 등 매체를 운영하고 성과를 관리한다 — 대행 수수료 구조는 읽은 자료에 없다.",
+        "domains": [
+          "광고 성과 데이터 · 자동화",
+          "마케팅 AI 에이전트"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "AI 서비스 개발자 (팀장급)",
+            "url": "https://www.wanted.co.kr/wd/367806",
+            "publisher": "원티드",
+            "summary": "디피플래닝 — 2020 설립 온라인 퍼포먼스 마케팅 광고 에이전시, 검색광고 주력, 이커머스 시장, '시장의 문제를 해결하여 가치를 창조하는 마케터집단'. AI 에이전트 서비스 설계 · 개발, LangChain 워크플로, RAG · LLM API, 기술 스택 · 개발 표준, 일정 · 요구 정의, 코드 리뷰 · 주니어 성장, 사내 마케팅 자동화. 자격 AI Agent 실무(포트폴리오 필수) · LangChain · RAG · 스택 선정 · 일정 관리 · 온보딩. 우대 Meta · Google · Naver 광고 API · 마케팅 데이터 파이프라인."
+          },
+          {
+            "title": "AI 퍼포먼스 마케터",
+            "url": "https://www.wanted.co.kr/wd/367802",
+            "publisher": "원티드",
+            "summary": "Naver SA · Meta Ads 운영 · 성과 관리, GA4 분석 · 리포트, A/B 테스트, 소재 방향, 업무 자동화 · 서비스 개선 기여. 1-5년. 우대 리포트 자동화 · AI 마케팅 · LLM 카피 · API 데이터 수집 · SQL."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "마케팅 AI 에이전트",
+        "why": "개발 공고가 AI 에이전트 서비스 · LangChain 워크플로 · RAG · LLM API 와 사내 마케팅 자동화를 적는다.",
+        "what_to_know": [
+          "에이전트 도구 호출",
+          "RAG 평가",
+          "LLM 비용 · 지연"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI 서비스 개발자 (팀장급)",
+            "url": "https://www.wanted.co.kr/wd/367806",
+            "publisher": "원티드",
+            "summary": "디피플래닝 — 2020 설립 온라인 퍼포먼스 마케팅 광고 에이전시, 검색광고 주력, 이커머스 시장, '시장의 문제를 해결하여 가치를 창조하는 마케터집단'. AI 에이전트 서비스 설계 · 개발, LangChain 워크플로, RAG · LLM API, 기술 스택 · 개발 표준, 일정 · 요구 정의, 코드 리뷰 · 주니어 성장, 사내 마케팅 자동화. 자격 AI Agent 실무(포트폴리오 필수) · LangChain · RAG · 스택 선정 · 일정 관리 · 온보딩. 우대 Meta · Google · Naver 광고 API · 마케팅 데이터 파이프라인."
+          }
+        ]
+      },
+      {
+        "name": "광고 성과 데이터 · 자동화",
+        "why": "마케터 공고가 GA4 분석 · 리포트 · A/B 와 리포트 자동화 · API 데이터 수집 · SQL 을, 개발 공고가 광고 플랫폼 API · 마케팅 데이터 파이프라인을 적는다.",
+        "what_to_know": [
+          "Naver 검색광고 · Meta Marketing API",
+          "GA4 BigQuery 내보내기",
+          "ROAS · 전환 기여"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI 퍼포먼스 마케터",
+            "url": "https://www.wanted.co.kr/wd/367802",
+            "publisher": "원티드",
+            "summary": "Naver SA · Meta Ads 운영 · 성과 관리, GA4 분석 · 리포트, A/B 테스트, 소재 방향, 업무 자동화 · 서비스 개선 기여. 1-5년. 우대 리포트 자동화 · AI 마케팅 · LLM 카피 · API 데이터 수집 · SQL."
+          },
+          {
+            "title": "AI 서비스 개발자 (팀장급)",
+            "url": "https://www.wanted.co.kr/wd/367806",
+            "publisher": "원티드",
+            "summary": "디피플래닝 — 2020 설립 온라인 퍼포먼스 마케팅 광고 에이전시, 검색광고 주력, 이커머스 시장, '시장의 문제를 해결하여 가치를 창조하는 마케터집단'. AI 에이전트 서비스 설계 · 개발, LangChain 워크플로, RAG · LLM API, 기술 스택 · 개발 표준, 일정 · 요구 정의, 코드 리뷰 · 주니어 성장, 사내 마케팅 자동화. 자격 AI Agent 실무(포트폴리오 필수) · LangChain · RAG · 스택 선정 · 일정 관리 · 온보딩. 우대 Meta · Google · Naver 광고 API · 마케팅 데이터 파이프라인."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "개발팀을 처음부터 세운다",
+        "evidence": "○ 개발팀 기술 스택 선정, 환경 구성 및 개발 표준 수립",
+        "so_what": "팀장급 자리는 코드만이 아니라 스택 선정 · 표준 · 온보딩을 맡는다 — 0 에서 팀을 꾸린 경험을 준비한다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "마케터에게도 자동화를 기대한다",
+        "evidence": "○ 단순 운영을 넘어 업무 자동화 및 서비스 개선에 기여하는 역할",
+        "so_what": "에이전시의 반복 업무(리포트 · 소재)를 AI 로 줄이려 한다 — 개발 자리라면 마케터가 쓸 도구를 만드는 일이 많을 것이다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "회사 홈페이지를 찾지 않았다 — 고객사 · 매출 · 인원 · 근무지는 모른다",
+    "AI 에이전트 서비스가 외부 판매용인지 사내 도구인지는 공고에 확정돼 있지 않다",
+    "AI 퍼포먼스 마케터는 개발 직군이 아니다 — 데이터 · 자동화 역량 위주로 학습 항목을 잡았다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/367806",
+      "title": "AI 서비스 개발자 (팀장급)",
+      "site": "wanted",
+      "verdict": "경력 3-8년, 팀장급. **AI 에이전트 서비스 설계 · 개발**, **LangChain 등으로 워크플로**, **RAG 파이프라인 · LLM API 연동 · 최적화**, **개발팀 기술 스택 선정 · 환경 구성 · 개발 표준**, 일정 관리 · 기획자 · PM 과 요구 정의, **코드 리뷰 · 주니어 성장**, 사내 마케팅 자동화. 자격은 **AI Agent 실무(포트폴리오 필수)**, LangChain 등 프레임워크, RAG 설계 · 구현, 스택 선정 · 환경 세팅 주도, 일정 산정 · 진행 관리, 코드 리뷰 문화 · 온보딩. 우대는 **Meta · Google · Naver 광고 API 연동**, 마케팅 데이터 파이프라인 · 업무 자동화, 비개발 직군 협업. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "AI Agent 포트폴리오",
+          "LangChain",
+          "RAG",
+          "팀 세팅 · 리뷰 문화"
+        ],
+        "can_learn": [
+          "광고 플랫폼 API",
+          "에이전트 평가",
+          "마케팅 데이터"
+        ]
+      },
+      "study": [
+        {
+          "topic": "광고 운영 에이전트 — 도구 호출로 성과를 묻고 제안한다",
+          "from": "task",
+          "quote": "○ LangChain 등 에이전트 프레임워크를 활용한 워크플로우 개발",
+          "priority": "core",
+          "why": "주요업무이고 자격에 포트폴리오 필수 · 에이전트 실무가 있다. 에이전시의 반복 업무(성과 조회 · 이상 탐지 · 제안)가 에이전트의 첫 대상이다.",
+          "gap_check": "'지난주 ROAS 가 떨어진 캠페인과 이유' 를 물으면 에이전트는 어떤 도구를 어떤 순서로 부르나(성과 조회 → 비교 → 원인 후보)? 예산 변경 · 입찰가 조정처럼 되돌리기 어려운 행동은 어떻게 사람 승인을 받나? 에이전트가 틀린 숫자를 말하지 않게 하려면(도구 결과만 인용)?",
+          "drill": "LangGraph(또는 LangChain 에이전트)로 '캠페인 성과 조회(가짜 CSV/DB)' · '기간 비교' · '예산 변경 제안(승인 대기)' 세 도구를 가진 에이전트를 만든다. 예산 변경은 승인 단계에서 멈추게 하고, 질문 20 개 평가셋으로 도구 선택 정확도와 숫자 인용 정확도를 잰다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "LangGraph — Human-in-the-loop",
+              "url": "https://langchain-ai.github.io/langgraph/concepts/human_in_the_loop/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "광고 플랫폼 API 로 데이터 모으기 — Naver · Meta · Google",
+          "from": "preference",
+          "quote": "○ 광고 플랫폼 API(Meta, Google, Naver 등) 연동 개발 경험자",
+          "priority": "core",
+          "why": "우대사항이고 에이전트 · 자동화의 재료가 매체별 성과 데이터다.",
+          "gap_check": "매체마다 인증(OAuth · API 키 · 서명), 요청 제한, 지표 이름(노출 · 클릭 · 전환)이 다를 때 한 스키마로 어떻게 맞추나? 광고주 계정 수십 개의 토큰은 어디에 어떻게 두나? 전환 수치가 며칠 뒤 확정되면(어트리뷰션 지연) 수집은 언제 다시 하나?",
+          "drill": "Naver 검색광고 API(서명 방식)와 Meta Marketing API(샌드박스 또는 공개 문서의 응답 예시)로 일별 캠페인 성과를 모아 공통 테이블(날짜 · 매체 · 캠페인 · 노출 · 클릭 · 비용 · 전환)로 적재하는 수집기를 만든다. 최근 7 일은 매일 다시 가져와 덮어쓰는 규칙을 넣는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "NAVER 검색광고 API",
+              "url": "https://naver.github.io/searchad-apidoc/",
+              "kind": "docs"
+            },
+            {
+              "title": "Meta — Marketing API",
+              "url": "https://developers.facebook.com/docs/marketing-apis/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "새 개발팀의 기반 — 스택 · 표준 · 코드 리뷰",
+          "from": "task",
+          "quote": "○ 개발팀 기술 스택 선정, 환경 구성 및 개발 표준 수립",
+          "priority": "high",
+          "why": "주요업무이고 자격에 스택 선정 · 리뷰 문화 · 온보딩 주도가 있다. 에이전시에 처음 생기는 개발팀이다(이 사이트의 해석).",
+          "gap_check": "작은 팀이 AI 서비스를 만들 때 스택을 무엇으로 고르나(Python FastAPI · 관리형 DB · 한 클라우드)? 무엇을 표준으로 정하나(브랜치 · PR 템플릿 · 린트 · 비밀 관리)? LLM 호출 비용 · 프롬프트 변경은 어떻게 리뷰하나?",
+          "drill": "FastAPI 서비스 템플릿(린트 · 포맷 · 테스트 · pre-commit · GitHub Actions · .env 대신 비밀 관리)을 만들고, PR 템플릿에 'LLM 프롬프트 · 모델 변경 시 평가셋 결과 첨부' 칸을 넣는다. 주니어 온보딩 체크리스트(첫 주 할 일)를 한 쪽으로 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Google — Engineering Practices: Code Review",
+              "url": "https://google.github.io/eng-practices/review/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/367802",
+      "title": "AI 퍼포먼스 마케터",
+      "site": "wanted",
+      "verdict": "경력 1-5년(마케팅 직군). **검색 · 디스플레이 광고(Naver SA · Meta Ads) 운영 · 성과 관리**, **GA4 분석 · 정기 리포트**, 개선 액션 · **A/B 테스트**, 소재(카피 · 이미지 · 영상) 방향, **업무 자동화 · 서비스 개선 기여**. 자격은 광고 매체 운영, 데이터 분석 · 리포팅, 소재 방향 제시. 우대는 **리포트 자동화**, AI 마케팅, **LLM 으로 소재 기획 · 카피**, **API 로 광고 데이터 수집 · 가공(개발자 협업)**, **SQL**. 개발 직군이 아니지만 데이터 · 자동화 역량을 본다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "광고 매체 운영",
+          "성과 리포팅",
+          "소재 방향"
+        ],
+        "can_learn": [
+          "SQL",
+          "리포트 자동화",
+          "LLM 카피 실험"
+        ]
+      },
+      "study": [
+        {
+          "topic": "GA4 와 SQL 로 광고 성과를 직접 뽑는다",
+          "from": "preference",
+          "quote": "○ SQL 기초 쿼리로 데이터 직접 추출·분석 가능한 자",
+          "priority": "core",
+          "why": "우대사항이고 주요업무가 GA4 기반 분석 · 리포트다.",
+          "gap_check": "GA4 화면 보고서와 BigQuery 내보내기 원자료는 무엇이 다른가(샘플링 · 이벤트 단위)? 캠페인별 전환율 · ROAS 를 SQL 로 계산하려면 어떤 필드(utm · 이벤트 · 매출)를 쓰나? 매체가 말하는 전환과 GA4 전환이 다른 이유는(기여 모델)?",
+          "drill": "GA4 공개 샘플 데이터셋(BigQuery 공개 전자상거래 데이터)으로 소스/매체별 세션 · 구매 전환율 · 매출을 SQL 로 뽑고, 주간 추이 표를 만든다. 같은 기간 매체 보고(가짜 CSV)와 전환 수를 나란히 놓고 차이의 이유를 적는다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Google Analytics 4 — BigQuery sample ecommerce dataset",
+              "url": "https://developers.google.com/analytics/bigquery/web-ecommerce-demo-dataset",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "주간 리포트를 자동으로 — 수집 · 집계 · 코멘트",
+          "from": "preference",
+          "quote": "○ 광고 성과 데이터 자동 분석 또는 리포트 자동화 경험자",
+          "priority": "high",
+          "why": "우대사항이고 주요업무에 '업무 자동화 기여' 가 있다. 광고주마다 매주 같은 리포트를 손으로 만든다(이 사이트의 해석).",
+          "gap_check": "매체 · GA4 데이터를 매주 자동으로 모아 표 · 그래프를 만들려면 무엇을 쓰나(스프레드시트 + Apps Script · Looker Studio)? 숫자 해석 코멘트를 LLM 에게 맡길 때 무엇을 확인해야 하나(숫자 인용 · 과장)? 광고주별로 지표 정의가 다르면?",
+          "drill": "가짜 매체 성과 CSV 를 Google 스프레드시트에 매주 불러오는 Apps Script 와 Looker Studio 대시보드를 만들고, 전주 대비 변화가 큰 캠페인 셋을 뽑아 LLM 에게 코멘트 초안을 쓰게 한다. 코멘트 속 숫자가 표와 맞는지 확인하는 체크 단계를 넣는다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Google Apps Script — Spreadsheet service",
+              "url": "https://developers.google.com/apps-script/reference/spreadsheet",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "소재 A/B 를 제대로 — 표본 · 기간 · 판정",
+          "from": "task",
+          "quote": "○ 광고 성과 기반 개선 액션 도출 및 A/B 테스트 기획·운영",
+          "priority": "high",
+          "why": "주요업무다. 소재 두 개의 CTR 차이가 우연인지 가려야 예산을 옮길 수 있다.",
+          "gap_check": "CTR 1% 대 1.2% 를 가리려면 노출이 얼마나 필요한가? 매체의 자동 최적화가 한쪽에 노출을 몰아 주면 비교가 공정한가? 요일 · 시간대 차이를 피하려면 최소 몇 주를 돌리나?",
+          "drill": "두 비율 검정으로 필요한 노출 수를 계산하는 스프레드시트 계산기를 만들고, 가짜 A/B 결과(노출 · 클릭)로 유의성을 판정한다. LLM 으로 카피 변형 5 개를 만들되 브랜드 금칙어 · 과장 표현을 거르는 체크 목록을 붙인다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Evan Miller — Sample Size Calculator",
+              "url": "https://www.evanmiller.org/ab-testing/sample-size.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
