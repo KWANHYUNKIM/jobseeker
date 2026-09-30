@@ -3076,3 +3076,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 GMOメイクショップ 결제 DB 신 · 구 대조(기능 1/3)
 
 - `payment-db-parity-audit`. 결정 8 — 소스 사양 + 실데이터 두 겹 / 사령탑 Skill / 병렬 서브에이전트 / 무거운 처리 전 전제 확인 / DB 가드레일 넷 / 티켓 형식 · 취소선 이력 / OpenAPI 스키마 주도 BFF / 생성 코드에 charset 태그.
+
+## 2026-09-30 GMOメイクショップ 주문 상세 재구축(기능 2/3)
+
+- `admin-order-detail-rebuild`. 결정 8 — 재구현 / Container·Presentational / Pages 층(목 없는 Storybook) / Repository·Mapper·Service / 컴포저블은 상태만 / Vue3 제자리 업그레이드 / vue3 브랜치 주기 병합 · 전용 환경 / compat 대부분 끔. 출처에 Vue3 이행 글 추가.

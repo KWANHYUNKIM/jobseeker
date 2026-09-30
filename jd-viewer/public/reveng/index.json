@@ -3536,7 +3536,7 @@
       "country": "JP",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 1,
+      "features_done": 2,
       "one_liner": "월정액 · 판매 수수료 0 엔의 EC 사이트 구축 SaaS makeshop — 오래된 결제를 새 결제 화면(SmartCheckout)으로 옮기며 신 · 구 DB 를 실데이터로 대조하고, 관리 화면을 Vue · Go 로 다시 짓고, 무거운 CSV 출력을 AWS Batch 로 뺀다",
       "updated_at": "2026-09-30",
       "domain": "makeshop.jp"
