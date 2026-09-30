@@ -2880,3 +2880,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 newmo 미터 연계(기능 3/3)
 
 - 소프트미터 글(2025-12-16)로 `tda-meter-link-softmeter`. 결정 7 — TDA 가 Bluetooth 로 받아 백엔드로 / 조합마다 검증 · 개발(GATT · Classic · Advertise) / 재접속(100% 보장 없음) / 소프트미터 조사 / 국토교통성 방식의 거리 추정 / 차속부터 검증 / OBD2 USB(-5 km/h · 퓨즈). 다음: 완주 점검 — newジョブ 수익원에 도메인이 없다(PayloadCMS 글이 newジョブ 관리 화면).
+
+## 2026-09-30 newmo newジョブ · 완주
+
+- PayloadCMS 글(2025-12-12)로 네 번째 도메인(newジョブ 관리 화면 기반) + `newjob-payload-admin-base`. 결정 7 — 헤드리스 CMS / Payload 선정(Strapi · Sanity · microCMS) / Cloud Run 셀프 호스트 1주 / Atlas 합류 / 도메인 우선 컬렉션 / beforeChange hook Point / monorepo 공유 · 단독 배포. 수익원 셋 모두 기능과 이어져 **done**. 다음: 후보 조사.
