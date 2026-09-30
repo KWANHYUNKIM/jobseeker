@@ -1,0 +1,281 @@
+{
+  "slug": "saladlab",
+  "name": "샐러드랩",
+  "name_en": "SaladLab",
+  "aliases": [
+    "샐러드랩",
+    "SaladLab"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "https://saladlab.co/",
+  "one_liner": "쇼핑몰 마케팅 SaaS 알파앱스(리뷰 · 추천 · CRM, 고객사 35,000+)를 투자 없이 키운 회사 — 프로덕트 엔지니어 지향의 프론트 · Python 백엔드를 뽑는다",
+  "company": {
+    "business": "샐러드랩은 **이커머스 운영의 마케팅 SaaS '알파앱스'** 를 만든다 — **알파리뷰**(리뷰 관리) · **알파업셀**(상품 추천) · **알파푸시**(CRM)로 커머스 마케팅 전 과정을 한 통합 프로덕트로 묶는다. 공고는 스타트업부터 대기업까지 **고객사 35,000 곳 이상**, **시장 점유율 1 위**, **설립 이후 외부 투자 한 건 없이** 제품력만으로 성장했고 **연평균 ARR 63% 상승**이라고 적는다. 매출은 판매자(쇼핑몰)에게서 나오지만 최종 소비자까지 생각해 균형 잡힌 서비스를 만든다고 하고, 누적 데이터를 활용해 이커머스 마케팅을 대신하는 **'AI 마케팅 에이전트'** 로 도약해 글로벌 시장을 노린다. 개발자에게는 프론트 · 백엔드 경계를 넘는 **프로덕트 엔지니어** 방향을 요구하며, 두 공고 모두 SPA 와 **Python(Django · Flask · FastAPI)** 을 함께 적는다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "이커머스 솔루션(SaaS) 프론트엔드 개발자",
+        "url": "https://www.wanted.co.kr/wd/365780",
+        "publisher": "원티드",
+        "summary": "샐러드랩 — 이커머스 마케팅 SaaS '알파앱스'(알파리뷰 리뷰 관리 · 알파업셀 상품 추천 · 알파푸시 CRM), 고객사 35,000 이상 · 시장 점유율 1 위, 투자 없이 제품력으로 성장, 연평균 ARR 63% 상승, 'AI 마케팅 에이전트' 로 도약 · 글로벌 진출. 프론트: 고객 대상 AI 챗봇, 인터널 대시보드, 디자인 시스템 · 컴포넌트 라이브러리, 공통 페인 포인트(필요시 백엔드), 레거시 리팩토링 · 점진적 마이그레이션 · 성능. 3년, Angular/React/Vue, TS, AI 코딩 도구. 우대 디자인 시스템 · Django/Flask/FastAPI. 프로덕트 엔지니어 지향."
+      }
+    ],
+    "scale": [
+      {
+        "label": "고객사",
+        "value": "35,000 곳 이상 · 시장 점유율 1 위(공고)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "이커머스 솔루션(SaaS) 프론트엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/365780",
+            "publisher": "원티드",
+            "summary": "샐러드랩 — 이커머스 마케팅 SaaS '알파앱스'(알파리뷰 리뷰 관리 · 알파업셀 상품 추천 · 알파푸시 CRM), 고객사 35,000 이상 · 시장 점유율 1 위, 투자 없이 제품력으로 성장, 연평균 ARR 63% 상승, 'AI 마케팅 에이전트' 로 도약 · 글로벌 진출. 프론트: 고객 대상 AI 챗봇, 인터널 대시보드, 디자인 시스템 · 컴포넌트 라이브러리, 공통 페인 포인트(필요시 백엔드), 레거시 리팩토링 · 점진적 마이그레이션 · 성능. 3년, Angular/React/Vue, TS, AI 코딩 도구. 우대 디자인 시스템 · Django/Flask/FastAPI. 프로덕트 엔지니어 지향."
+          }
+        ]
+      },
+      {
+        "label": "성장",
+        "value": "외부 투자 없음 · 연평균 ARR 63% 상승(공고)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "이커머스 솔루션(SaaS) 프론트엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/365780",
+            "publisher": "원티드",
+            "summary": "샐러드랩 — 이커머스 마케팅 SaaS '알파앱스'(알파리뷰 리뷰 관리 · 알파업셀 상품 추천 · 알파푸시 CRM), 고객사 35,000 이상 · 시장 점유율 1 위, 투자 없이 제품력으로 성장, 연평균 ARR 63% 상승, 'AI 마케팅 에이전트' 로 도약 · 글로벌 진출. 프론트: 고객 대상 AI 챗봇, 인터널 대시보드, 디자인 시스템 · 컴포넌트 라이브러리, 공통 페인 포인트(필요시 백엔드), 레거시 리팩토링 · 점진적 마이그레이션 · 성능. 3년, Angular/React/Vue, TS, AI 코딩 도구. 우대 디자인 시스템 · Django/Flask/FastAPI. 프로덕트 엔지니어 지향."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "알파앱스 구독(알파리뷰 · 알파업셀 · 알파푸시)",
+        "how": "쇼핑몰(판매자)이 리뷰 · 추천 · CRM 마케팅 SaaS 를 구독한다 — 요금제 구성은 이번에 읽지 않았다.",
+        "domains": [
+          "쇼핑몰 마케팅 SaaS 백엔드",
+          "고객 AI · 공통 프론트 토대"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "이커머스 솔루션(SaaS) 프론트엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/365780",
+            "publisher": "원티드",
+            "summary": "샐러드랩 — 이커머스 마케팅 SaaS '알파앱스'(알파리뷰 리뷰 관리 · 알파업셀 상품 추천 · 알파푸시 CRM), 고객사 35,000 이상 · 시장 점유율 1 위, 투자 없이 제품력으로 성장, 연평균 ARR 63% 상승, 'AI 마케팅 에이전트' 로 도약 · 글로벌 진출. 프론트: 고객 대상 AI 챗봇, 인터널 대시보드, 디자인 시스템 · 컴포넌트 라이브러리, 공통 페인 포인트(필요시 백엔드), 레거시 리팩토링 · 점진적 마이그레이션 · 성능. 3년, Angular/React/Vue, TS, AI 코딩 도구. 우대 디자인 시스템 · Django/Flask/FastAPI. 프로덕트 엔지니어 지향."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "쇼핑몰 마케팅 SaaS 백엔드",
+        "why": "백엔드 공고가 알파앱스 백엔드 설계 · DB 성능 · 클라우드 · 장애 대응을 적는다 — 35,000 쇼핑몰의 리뷰 · 추천 · 푸시가 한 서비스에 몰린다.",
+        "what_to_know": [
+          "멀티테넌트 SaaS",
+          "쇼핑몰 플랫폼 연동(카페24 등)",
+          "Django 성능 · 비동기 작업"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "이커머스 솔루션(SaaS) 백엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/365779",
+            "publisher": "원티드",
+            "summary": "알파앱스 백엔드 설계 · 개발 주도, DB 관리 · 성능 최적화, 클라우드 구축 · 관리 기초, 모니터링 · 장애 대응, 기술 문화. 웹 3년, SPA 실무, Python(Django · Flask · FastAPI) API. 우대 AWS · 풀스택 · Docker · 대규모 트래픽."
+          }
+        ]
+      },
+      {
+        "name": "고객 AI · 공통 프론트 토대",
+        "why": "프론트 공고가 고객 대상 AI 챗봇, 인터널 대시보드, 디자인 시스템 · 컴포넌트 라이브러리, 레거시 점진적 마이그레이션을 적는다.",
+        "what_to_know": [
+          "디자인 시스템 운영",
+          "LLM 챗봇 UI · 스트리밍",
+          "점진적 마이그레이션"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "이커머스 솔루션(SaaS) 프론트엔드 개발자",
+            "url": "https://www.wanted.co.kr/wd/365780",
+            "publisher": "원티드",
+            "summary": "샐러드랩 — 이커머스 마케팅 SaaS '알파앱스'(알파리뷰 리뷰 관리 · 알파업셀 상품 추천 · 알파푸시 CRM), 고객사 35,000 이상 · 시장 점유율 1 위, 투자 없이 제품력으로 성장, 연평균 ARR 63% 상승, 'AI 마케팅 에이전트' 로 도약 · 글로벌 진출. 프론트: 고객 대상 AI 챗봇, 인터널 대시보드, 디자인 시스템 · 컴포넌트 라이브러리, 공통 페인 포인트(필요시 백엔드), 레거시 리팩토링 · 점진적 마이그레이션 · 성능. 3년, Angular/React/Vue, TS, AI 코딩 도구. 우대 디자인 시스템 · Django/Flask/FastAPI. 프로덕트 엔지니어 지향."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "투자 없이 매출로 큰 회사다",
+        "evidence": "설립 이후 단 한 건의 투자 없이 오직 제품력만으로 정직하고 탄탄한 성장을 증명해 왔습니다.",
+        "so_what": "화려한 인프라보다 고객 문제 해결 속도를 본다 — 요구사항 분석 · 문제 해결 사례를 앞에 둔다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "프론트도 백엔드를 만진다",
+        "evidence": "• 백엔드 영역의 학습 의지 또는 실무 경험을 보유하신 분 (Python 기반 Django, Flask, FastAPI 우대)",
+        "so_what": "두 자리 모두 SPA + Python 을 함께 적는다 — 한쪽에 치우친 이력이라면 반대쪽 작은 프로젝트를 준비한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "홈페이지(saladlab.co)는 이번에 읽지 않았다 — 매출 · 인원 · 요금제는 모른다",
+    "어느 쇼핑몰 플랫폼(카페24 · 샵바이 등)과 연동하는지는 공고에 없다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/365780",
+      "title": "이커머스 솔루션(SaaS) 프론트엔드 개발자",
+      "site": "wanted",
+      "verdict": "경력 3-8년. **고객 대상 AI 챗봇 등 AI 프로덕트**, **인터널 대시보드**, **디자인 시스템 · 컴포넌트 라이브러리 등 공통 토대**와 새 워크플로 · 도구 확산, 스쿼드 공통 페인 포인트(필요시 **백엔드까지**), **레거시 리팩토링 · 최신 스택 점진적 마이그레이션 · 성능 최적화**. 공통 목표는 프로덕트 엔지니어. 자격은 프론트 3년, **Angular · React · Vue** 등 SPA, TypeScript, UI/UX 감각, 협업, **AI 코딩 도구(Claude · Cursor · Codex) 일상 활용**. 우대는 문제 발견 · 개선, 오픈소스, 개발 문화 개선, AI 워크플로 정립, **디자인 시스템 구축**, **Python(Django · Flask · FastAPI)**. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "프론트 3년",
+          "SPA 프레임워크",
+          "TypeScript",
+          "AI 코딩 도구 활용"
+        ],
+        "can_learn": [
+          "디자인 시스템",
+          "Django/FastAPI",
+          "점진적 마이그레이션"
+        ]
+      },
+      "study": [
+        {
+          "topic": "여러 스쿼드가 함께 쓰는 디자인 시스템 · 컴포넌트 라이브러리",
+          "from": "task",
+          "quote": "• 프로덕트 스쿼드가 효율적으로 일할 수 있도록 디자인 시스템, 컴포넌트 라이브러리 등 공통 토대를 제공하고, 새로운 워크플로우와 도구를 직접 시도·정립해 조직 내부에 확산시킵니다.",
+          "priority": "core",
+          "why": "주요업무이고 우대에 디자인 시스템 설계 · 구축 경험이 있다. 알파리뷰 · 업셀 · 푸시가 같은 관리자 화면 모양을 공유해야 한다.",
+          "gap_check": "디자인 토큰(색 · 간격 · 글꼴)을 Figma 와 코드에서 어떻게 한 원천으로 맞추나? 컴포넌트 라이브러리를 여러 앱이 쓸 때 깨지는 변경은 어떻게 알리나(시맨틱 버전 · 변경 기록)? 쇼핑몰 화면에 삽입되는 위젯은 호스트 CSS 와 어떻게 격리하나(Shadow DOM)?",
+          "drill": "Style Dictionary 로 토큰 JSON 에서 CSS 변수 · TS 상수를 생성하고, Button · Modal · Table 을 Storybook 으로 문서화한 패키지를 만든다. Changesets 로 버전 · 변경 기록을 관리하고, 같은 버튼을 Shadow DOM 위젯 안에 넣어 호스트 페이지 CSS 가 새지 않는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Style Dictionary",
+              "url": "https://styledictionary.com/",
+              "kind": "docs"
+            },
+            {
+              "title": "Storybook — Docs",
+              "url": "https://storybook.js.org/docs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "레거시를 멈추지 않고 새 스택으로 — 화면 단위 점진적 이행",
+          "from": "task",
+          "quote": "• 레거시 코드베이스 리팩토링과 최신 스택으로의 점진적 마이그레이션, 성능 최적화 등 서비스 품질 향상을 위한 작업을 지속적으로 수행합니다.",
+          "priority": "core",
+          "why": "주요업무이고 자격에 Angular · React · Vue 가 함께 적혀 있다 — 여러 프레임워크가 섞인 코드베이스일 수 있다(이 사이트의 해석).",
+          "gap_check": "옛 앱(예: Angular) 안에 새 React 화면을 끼워 넣으려면 무엇으로 경계를 두나(라우트 단위 · 웹 컴포넌트 · 모듈 페더레이션)? 인증 · 전역 상태는 두 쪽이 어떻게 나눠 쓰나? 이행이 끝났는지 무엇으로 재나(남은 화면 수 · 번들 크기)?",
+          "drill": "Vite 로 옛 앱과 새 React 앱을 한 셸 아래 라우트별로 나눠 띄우고, 인증 토큰은 공통 모듈로, 화면 간 이동은 URL 로만 하게 만든다. 화면 하나를 옮기기 전후 번들 크기 · LCP 를 재고 이행 체크리스트를 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Martin Fowler — StranglerFigApplication",
+              "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+              "kind": "blog"
+            }
+          ]
+        },
+        {
+          "topic": "쇼핑몰 운영자를 위한 AI 챗봇 화면 — 스트리밍과 근거",
+          "from": "task",
+          "quote": "• 고객이 AI 환경에서 우리 프로덕트를 쉽게 활용할 수 있도록, AI 챗봇 등 고객 대상 AI 프로덕트를 개발합니다.",
+          "priority": "high",
+          "why": "주요업무 첫 줄이고 회사가 'AI 마케팅 에이전트' 로 도약한다고 적는다.",
+          "gap_check": "답을 토큰 단위로 스트리밍할 때 UI 는 무엇을 보여 주나(진행 · 중단 · 재시도)? '지난달 리뷰 요약해 줘' 처럼 쇼핑몰 데이터를 부를 때 답에 근거(어느 리뷰 · 어느 기간)를 어떻게 붙이나? 에이전트가 설정을 바꾸는 행동(푸시 발송 예약)은 어떻게 확인을 받나?",
+          "drill": "React + Vercel AI SDK(또는 SSE 직접)로 스트리밍 챗 화면을 만들고, 백엔드(FastAPI)에서 '리뷰 요약' 도구 호출 결과를 근거 카드(리뷰 3 개 링크)로 함께 보낸다. '푸시 예약' 같은 쓰기 도구는 실행 전 확인 버튼을 띄우는 흐름을 넣는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Vercel AI SDK — Docs",
+              "url": "https://sdk.vercel.ai/docs",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/365779",
+      "title": "이커머스 솔루션(SaaS) 백엔드 개발자",
+      "site": "wanted",
+      "verdict": "경력 3-8년. **알파앱스 백엔드 설계 · 개발 주도**와 고도화, **DB 관리 · 성능 최적화**, 클라우드 구축 · 관리 기초, **모니터링 · 장애 대응**, 기술 문화. 자격은 웹 개발 3년, **SPA 실무**(백엔드 공고인데도), **Python(Django · Flask · FastAPI) 웹 앱 · API**. 우대는 **AWS**, 풀스택 · 프론트, **Docker**, Git, **대규모 트래픽 · 장애 대응**, IT 전공. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "웹 3년",
+          "Python 웹 프레임워크",
+          "SPA 실무"
+        ],
+        "can_learn": [
+          "멀티테넌트 성능",
+          "쇼핑몰 연동",
+          "비동기 작업 큐"
+        ]
+      },
+      "study": [
+        {
+          "topic": "35,000 쇼핑몰이 한 DB 에 — 멀티테넌트 쿼리 성능",
+          "from": "task",
+          "quote": "• 데이터베이스 관리 및 성능 최적화에 대한 이해를 높이고, 더 나은 개발 환경을 만드는 데 기여합니다.",
+          "priority": "core",
+          "why": "주요업무다. 리뷰 · 주문 · 푸시 데이터가 쇼핑몰별로 쌓이고, 대형 몰 하나가 전체를 느리게 할 수 있다.",
+          "gap_check": "모든 테이블에 몰 ID 가 있을 때 인덱스는 (몰 ID, 시간) 처럼 어떤 순서로 두나? 리뷰가 수백만 건인 대형 몰의 목록 조회는 OFFSET 대신 무엇으로 페이지를 넘기나? Django ORM 의 N+1 은 어떻게 찾고 줄이나(select_related · prefetch_related · django-debug-toolbar)?",
+          "drill": "Django + PostgreSQL 에 몰 1,000 곳 · 리뷰 1,000 만 건(한 몰에 몰리게) 가짜 데이터를 넣고, 몰별 최신 리뷰 목록 API 를 만든다. EXPLAIN 으로 (mall_id, created_at) 복합 인덱스 전후를 비교하고, 키셋 페이지네이션과 prefetch 로 쿼리 수 · 지연을 줄인다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Django — Database access optimization",
+              "url": "https://docs.djangoproject.com/en/stable/topics/db/optimization/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Python 으로 API 와 비동기 작업 — 리뷰 수집 · 푸시 발송",
+          "from": "qualification",
+          "quote": "• Python 기반 프레임워크(Django, Flask, FastAPI)를 이용한 웹 애플리케이션 개발 및 API 개발 경험을 보유하신 분",
+          "priority": "core",
+          "why": "필수 자격이다. 리뷰 수집 · 추천 계산 · 푸시 발송은 요청-응답이 아니라 뒤에서 도는 작업이 많다.",
+          "gap_check": "쇼핑몰 플랫폼 API(주문 · 상품)를 주기적으로 가져올 때 요청 제한 · 실패 재시도는 어디서 하나(작업 큐)? 푸시 발송 수십만 건을 한 번에 보내면 무엇이 터지나(속도 제한 · 배치)? 같은 작업이 두 번 실행돼도 한 번만 발송되게 하려면(멱등 키)?",
+          "drill": "FastAPI(또는 Django)에 Celery + Redis 로 '몰별 리뷰 동기화' · '푸시 발송' 작업을 만들고, 외부 API 를 가짜로 429 · 타임아웃을 내게 해 지수 백오프 재시도를 확인한다. 발송 작업에 멱등 키를 넣어 같은 작업을 두 번 넣어도 수신자당 한 번만 나가는지 테스트한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Celery — Tasks: Retrying",
+              "url": "https://docs.celeryq.dev/en/stable/userguide/tasks.html#retrying",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모니터링과 장애 대응 — 트래픽이 몰릴 때",
+          "from": "task",
+          "quote": "• 시스템 모니터링 및 장애 대응에 참여하여 서비스 안정화에 기여합니다.",
+          "priority": "high",
+          "why": "주요업무이고 우대에 대규모 트래픽 · 장애 대응이 있다. 쇼핑몰 세일 시즌에 위젯 호출이 몰린다(이 사이트의 해석).",
+          "gap_check": "쇼핑몰 페이지에 박힌 리뷰 · 추천 위젯이 느리면 그 몰의 상품 페이지가 느려진다 — 무엇을 캐시하고 얼마나 신선해야 하나? 어떤 지표로 경보를 거나(p95 지연 · 오류율 · 큐 적체)? 장애 후 무엇을 남기나?",
+          "drill": "앞 API 앞에 Redis 캐시(몰 · 상품별 리뷰 위젯 응답, TTL 60 초)를 두고 k6 로 세일 트래픽을 흉내 내 캐시 전후 p95 를 비교한다. Prometheus 지표(p95 · 오류율 · Celery 큐 길이)에 경보를 걸고, 가짜 장애 하나의 사후 보고서를 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Google SRE Book — Monitoring Distributed Systems",
+              "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+              "kind": "book"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

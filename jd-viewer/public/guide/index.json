@@ -1430,6 +1430,18 @@
       "postings": 2,
       "study_items": 6,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "saladlab",
+      "name": "샐러드랩",
+      "aliases": [
+        "샐러드랩",
+        "SaladLab"
+      ],
+      "status": "done",
+      "postings": 2,
+      "study_items": 6,
+      "updated_at": "2026-09-30"
     }
   ]
 }
