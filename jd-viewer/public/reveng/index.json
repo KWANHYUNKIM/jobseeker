@@ -3500,7 +3500,7 @@
       "country": "JP",
       "category": "검색",
       "status": "in_progress",
-      "features_done": 1,
+      "features_done": 2,
       "one_liner": "구인 검색 엔진 스탠바이 — 검색 결과의 광고 틀을 Vespa Parent/Child 로 바꿔 캠페인 갱신을 30 분에서 수 초로, 청구가 걸린 광고 로그 집계를 사양을 바꾸지 않고 옮기고, 데이터 기반을 과제부터 다시 짠다",
       "updated_at": "2026-09-30",
       "domain": "stanby.co.jp"
