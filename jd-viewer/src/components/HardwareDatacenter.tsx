@@ -4,7 +4,7 @@ import { absUrl, useSeo } from '../lib/seo'
 import { paths } from '../lib/urls'
 import { NOINDEX } from './HardwarePrices'
 import { MarketView, type Market } from './HardwareDcMarket'
-import { MoneyView, type Money } from './HardwareDcMoney'
+import { MoneyView, type Fx, type Money } from './HardwareDcMoney'
 
 // AI 데이터센터 — 회사별로 가진 칩과 거기서 나오는 성능 추정.
 //
@@ -77,6 +77,7 @@ interface National {
 interface Doc {
   market?: Market
   money?: Money
+  fx?: Fx
   updated_at: string
   ratios?: Ratio[]
   national?: National[]
@@ -250,7 +251,7 @@ export function HardwareDatacenter({ data }: { data: HwData }) {
         ))}
       </div>
       {view === 'market' && doc.market && <MarketView m={doc.market} />}
-      {view === 'money' && doc.money && <MoneyView clusters={doc.clusters} m={doc.money} />}
+      {view === 'money' && doc.money && <MoneyView clusters={doc.clusters} m={doc.money} fx={doc.fx} />}
       {view === 'chips' && (
       <>
 

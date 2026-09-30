@@ -20,6 +20,7 @@ interface MCluster {
   chip_key?: string | null
   mix?: { chip_key: string; count: number }[]
   count: number | null
+  h100eq?: number | null
   mw: number | null
   status: string
   in_total?: boolean
@@ -35,8 +36,24 @@ export interface Money {
   aggregate: { claim: string; src: string }
 }
 
-type How = 'epoch' | 'power' | 'chips'
-const HOW: Record<How, string> = { epoch: 'Epoch 건설비 추정', power: '전력 × GW 당 비용', chips: '칩 수 × 단가(칩만)' }
+type How = 'epoch' | 'power' | 'chips' | 'eq'
+const HOW: Record<How, string> = { epoch: 'Epoch 건설비 추정', power: '전력 × GW 당 비용', chips: '칩 수 × 단가(칩만)', eq: 'H100 환산 × H100 단가(칩만)' }
+
+export interface Fx {
+  krw_per_usd: number
+  as_of: string
+  basis: string
+  sources: Src[]
+}
+
+/** 원화 — 1,353원/달러면 358억 달러 → 약 48조 원 */
+function krw(n: number | null | undefined, fx?: Fx): string {
+  if (n == null || !fx || !Number.isFinite(n)) return ''
+  const w = n * fx.krw_per_usd
+  if (w >= 1e12) return `약 ${(w / 1e12).toFixed(w >= 1e14 ? 0 : 1)}조 원`
+  if (w >= 1e8) return `약 ${Math.round(w / 1e8).toLocaleString()}억 원`
+  return `약 ${Math.round(w / 1e4).toLocaleString()}만 원`
+}
 
 /** 달러를 한국식 단위로 — 35,836,000,000 → 358억 달러 */
 function usd(n: number | null | undefined): string {
@@ -65,10 +82,13 @@ function valueOf(c: MCluster, m: Money): { v: number; how: How } | null {
     return null
   }
   const p = price(c.chip_key)
-  return p != null && c.count != null ? { v: c.count * p, how: 'chips' } : null
+  if (p != null && c.count != null) return { v: c.count * p, how: 'chips' }
+  // 칩 구성은 모르고 H100 환산만 밝힌 곳(Tesla) — H100 단가로 친 칩 값
+  const h = price('H100')
+  return c.h100eq != null && h != null ? { v: c.h100eq * h, how: 'eq' } : null
 }
 
-export function MoneyView({ clusters, m }: { clusters: MCluster[]; m: Money }) {
+export function MoneyView({ clusters, m, fx }: { clusters: MCluster[]; m: Money; fx?: Fx }) {
   const [open, setOpen] = useState<string | null>(null)
   const live = clusters.filter((c) => c.status === 'operational' && c.in_total !== false)
   const names = [...new Set(live.map((c) => c.company))]
@@ -96,7 +116,7 @@ export function MoneyView({ clusters, m }: { clusters: MCluster[]; m: Money }) {
         <div className="p-4 pb-2">
           <h2 className="text-sm font-semibold">가동 중인 데이터센터는 얼마짜리인가 — 추정</h2>
           <p className="text-[11px] text-(--color-muted)">
-            {rows.length}개 회사·기관 합계 약 <b>{usd(grand)}</b>. 방법은 줄마다 다르다 — Epoch 건설비 추정 → 전력 × GW 당 {usd(m.per_gw.usd)} → 칩 수 × 단가(칩 값만이라 하한). 줄을 누르면 데이터센터별 내역.
+            {rows.length}개 회사·기관 합계 약 <b>{usd(grand)}</b>({krw(grand, fx)}). 방법은 줄마다 다르다 — Epoch 건설비 추정 → 전력 × GW 당 {usd(m.per_gw.usd)} → 칩 수 × 단가(칩 값만이라 하한). 줄을 누르면 데이터센터별 내역.
           </p>
         </div>
         <table className="w-full text-sm min-w-[820px]">
@@ -121,6 +141,7 @@ export function MoneyView({ clusters, m }: { clusters: MCluster[]; m: Money }) {
                       <div className="flex items-center gap-2">
                         <div className="h-3 rounded-r bg-(--color-accent)" style={{ width: `${Math.max(0.5, (r.total / max) * 70)}%` }} />
                         <span className="tabular-nums font-semibold whitespace-nowrap">{usd(r.total)}</span>
+                        <span className="text-[10px] text-(--color-faint) whitespace-nowrap">{krw(r.total, fx)}</span>
                       </div>
                     </td>
                     <td className="px-2 py-1.5 text-[11px] text-(--color-muted)">
@@ -188,7 +209,7 @@ export function MoneyView({ clusters, m }: { clusters: MCluster[]; m: Money }) {
                   <div key={label} className="grid grid-cols-[6.5rem_minmax(0,1fr)_5.5rem] items-center gap-2">
                     <span className="text-(--color-muted)">{label}</span>
                     <div className="h-2 rounded-r" style={{ width: `${(v / top) * 100}%`, background: kind === 'guidance' ? 'color-mix(in srgb, var(--color-accent) 40%, var(--color-panel))' : 'var(--color-accent)' }} />
-                    <span className="tabular-nums text-right">
+                    <span className="tabular-nums text-right" title={krw(v, fx)}>
                       {usd(v)}
                       {kind === 'guidance' && <span className="text-[9px] text-(--color-faint)"> 전망</span>}
                     </span>
@@ -225,7 +246,10 @@ export function MoneyView({ clusters, m }: { clusters: MCluster[]; m: Money }) {
                       </a>
                     </div>
                   </td>
-                  <td className="py-1 text-right tabular-nums font-semibold whitespace-nowrap">{usd(c.usd)}</td>
+                  <td className="py-1 text-right tabular-nums font-semibold whitespace-nowrap">
+                    {usd(c.usd)}
+                    <div className="text-[10px] font-normal text-(--color-faint)">{krw(c.usd, fx)}</div>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -278,6 +302,17 @@ export function MoneyView({ clusters, m }: { clusters: MCluster[]; m: Money }) {
             </tbody>
           </table>
           <p className="text-[10px] text-(--color-faint)">NVIDIA 는 정가를 공개하지 않는다 — 모두 보도·애널리스트·Epoch 추정이고 계약마다 다르다.</p>
+          {fx && (
+            <p className="text-[10px] text-(--color-faint)">
+              원화는 1달러 = {fx.krw_per_usd.toLocaleString()}원({fx.as_of}, {fx.basis}){' '}
+              {fx.sources.map((s) => (
+                <a key={s.url} href={s.url} target="_blank" rel="noreferrer" className="text-(--color-sky-400) hover:underline">
+                  {s.title}
+                </a>
+              ))}
+              로 바꿨다.
+            </p>
+          )}
         </section>
       </div>
     </div>
