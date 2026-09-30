@@ -3456,6 +3456,18 @@
       "one_liner": "아르바이트 구인 マッハバイト · 엔지니어 스카우트 転職ドラフト · 부동산 イエシル 의 상장사 — Rails 모놀리스의 HTML 을 통째로 CDN 에 캐시하고, 지명 제시 연봉으로 연봉 시세를 추정한다",
       "updated_at": "2026-09-30",
       "domain": "livesense.co.jp"
+    },
+    {
+      "slug": "nulab",
+      "name": "ヌーラボ",
+      "name_en": "Nulab",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "프로젝트 관리 Backlog · 화이트보드 Cacoo 의 협업 SaaS 상장사 — Backlog 의 오래된 Perl · Apache 를 Go 로 옮기고, 비밀번호 재설정 직후에 패스키를 권해 등록률을 올린다",
+      "updated_at": "2026-09-30",
+      "domain": "nulab.com"
     }
   ],
   "domains": [
@@ -4289,7 +4301,10 @@
     "마하바이트 모놀리스를 빠르고 현대적으로 — HTML 을 CDN 에 통째로 캐시하고, 오프레에서 AWS 로 DB · 검색을 옮긴다",
     "転職ドラフト 의 제시 연봉 데이터 — 기술 경험으로 연봉 시세를 추정한다",
     "여러 서비스를 떠받친 공통 기반을 데이터센터에서 AWS 로 — 메일 · 데이터 기반",
-    "イエシル 건물 상세 페이지를 빠르고 검색되게 — Rails · React 혼재를 Next.js ISR 과 CDN 캐시로"
+    "イエシル 건물 상세 페이지를 빠르고 검색되게 — Rails · React 혼재를 Next.js ISR 과 CDN 캐시로",
+    "Backlog 의 오래된 Perl · Apache 를 Go 로 — 파일 · Git 기능을 멈추지 않고 옮기고 관측한다",
+    "Backlog 를 느리게 하는 SQL 을 테이블 구조부터 고친다",
+    "누랩 계정 — 비밀번호를 잊은 순간을 패스키로 바꾸는 기회로"
   ],
   "countries": {
     "KR": "한국",

@@ -1,0 +1,246 @@
+{
+  "slug": "nulab",
+  "name": "ヌーラボ",
+  "name_en": "Nulab",
+  "country": "JP",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-30",
+  "domain": "nulab.com",
+  "one_liner": "프로젝트 관리 Backlog · 화이트보드 Cacoo 의 협업 SaaS 상장사 — Backlog 의 오래된 Perl · Apache 를 Go 로 옮기고, 비밀번호 재설정 직후에 패스키를 권해 등록률을 올린다",
+  "business_model": "ヌーラボ 는 '이 팀과 함께 일해서 다행이었다' 를 세상에 만든다는 목표로 **협업 도구**를 만든다(홈페이지 · 상장사). 주력은 **Backlog**(팀 누구나 쓰는 프로젝트 · 태스크 관리 — 마일스톤 · 간트 차트, **소스 코드 관리**)이고, **Cacoo**(온라인 화이트보드), **Nulab Pass**(SAML SSO · 사용자 프로비저닝으로 보안 · 거버넌스), **Nulab Flowbase**(노코드 워크플로 자동화)가 있다. 수백만 사용자가 쓰며, 제품들은 **누랩 계정**을 함께 쓴다.\n\n기술 블로그는 셋을 보여 준다. Backlog 의 **파일 기능(WebDAV)** 과 일부 기능은 오래 Apache + **Perl** 로 돌았고, 이를 **Go** 로 옮기고 있다 — 단순 이식이 아니라 '이행 설계' 가 더 어려웠다고 적는다. Git 기능은 Go 마이크로서비스와 Git 서버(EBS 에 리포지토리)로 이뤄져 서버 이행 · 관측이 까다롭다. DB 는 세 테이블 JOIN 때문에 인덱스가 안 먹는 SQL 을 테이블 구조부터 고쳤다. 계정 쪽은 비밀번호 재설정 흐름을 고치며 패스키 등록을 끌어올렸다.",
+  "products": [
+    "Backlog(프로젝트 · 태스크 · Git/SVN · 파일 · 문서)",
+    "Cacoo",
+    "Nulab Pass",
+    "Nulab Flowbase",
+    "누랩 계정"
+  ],
+  "revenue_total": "상장사라 IR 에 있다 — 이번에 매출 자료는 읽지 않았다.",
+  "revenue_streams": [
+    {
+      "name": "Backlog 구독",
+      "how": "팀 · 기업이 Backlog 요금제를 구독한다 — 요금 구성은 이번에 읽지 않았다.",
+      "weight": "IR 에 있음(이번엔 안 읽음)",
+      "domains": [
+        "Backlog 의 오래된 Perl · Apache 를 Go 로 — 파일 · Git 기능을 멈추지 않고 옮기고 관측한다",
+        "Backlog 를 느리게 하는 SQL 을 테이블 구조부터 고친다",
+        "누랩 계정 — 비밀번호를 잊은 순간을 패스키로 바꾸는 기회로"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "チームにさらなるコラボレーションを | 株式会社ヌーラボ",
+          "url": "https://nulab.com/ja/",
+          "publisher": "ヌーラボ",
+          "summary": "수백만 사용자. 서비스: Backlog(프로젝트 · 태스크 관리, 소스 코드 관리), Cacoo(온라인 화이트보드), Nulab Pass(SAML SSO · 사용자 프로비저닝), Nulab Flowbase(노코드 워크플로 자동화). 뉴스: 프로젝트 횡단 간트 차트, Jooto → Backlog 이행 도구. IR 페이지(상장사), 보안 체크시트, 누랩 계정."
+        },
+        {
+          "title": "Apache + Perl の WebDAV 実装を Go に刷新した話 — 実装より難しかった「移行設計」",
+          "url": "https://nulab.com/ja/blog/nulab/rewriting-webdav-from-apache-perl-to-go/",
+          "publisher": "ヌーラボ",
+          "summary": "Backlog 파일 기능을 떠받친 WebDAV 서버(Apache + Perl 모듈)를 Go 로 — 단순 이식이 아니라 파일 읽기 · 쓰기 코어를 스스로 다룰 수 있게. 호환성과 구조 정리의 선 긋기, 릴리스 방식 · 판단 기준 사전 설계, 절차를 리뷰 가능하게, ADR 로 전제 맞추기, 개발 · 운영 · 릴리스를 나누지 않기, 릴리스 직전 결함과 구조적 복구.",
+          "date": "2026-05-01"
+        }
+      ]
+    },
+    {
+      "name": "Cacoo · Nulab Pass · Flowbase 구독",
+      "how": "화이트보드 · SSO · 워크플로 자동화를 구독으로 판다 — 제품들은 누랩 계정을 함께 쓴다.",
+      "weight": "IR 에 있음(이번엔 안 읽음)",
+      "domains": [
+        "누랩 계정 — 비밀번호를 잊은 순간을 패스키로 바꾸는 기회로"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "チームにさらなるコラボレーションを | 株式会社ヌーラボ",
+          "url": "https://nulab.com/ja/",
+          "publisher": "ヌーラボ",
+          "summary": "수백만 사용자. 서비스: Backlog(프로젝트 · 태스크 관리, 소스 코드 관리), Cacoo(온라인 화이트보드), Nulab Pass(SAML SSO · 사용자 프로비저닝), Nulab Flowbase(노코드 워크플로 자동화). 뉴스: 프로젝트 횡단 간트 차트, Jooto → Backlog 이행 도구. IR 페이지(상장사), 보안 체크시트, 누랩 계정."
+        },
+        {
+          "title": "[EN] Leveraging User Frustration for Increased Security: How We Drove Passkey Adoption",
+          "url": "https://nulab.com/ja/blog/nulab/passkey-adoption-after-password-reset-bilingual/",
+          "publisher": "ヌーラボ",
+          "summary": "2025-08 누랩 계정 비밀번호 재설정 기능 쇄신 — React · Next.js 로 리팩터링, 패스키 생성 권유 시점을 ADR 로: A 재설정 대신 패스키 · B 수동 홍보 · C 재설정 완료 직후 선택적 패스키 생성 → 패스키 등록률 크게 향상.",
+          "date": "2025-11-07"
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "Backlog 뒤편의 서비스들",
+    "question": "어디가 Perl 이고 어디가 Go 인가?",
+    "code": "flowchart LR\n  U[\"사용자\"] --> ACC[\"누랩 계정\\n비밀번호 · 패스키 · SSO(Nulab Pass)\"]\n  ACC --> BL[\"Backlog\"]\n  ACC --> CA[\"Cacoo · Flowbase\"]\n  BL --> FILE[\"파일 기능 WebDAV\\nApache + Perl → Go\"]\n  BL --> GITS[\"Git 기능\\nGo 마이크로서비스 (gRPC Stream)\\n+ Git 서버(EBS)\"]\n  BL --> DB[\"RDB(Aurora MySQL)\\nX · Y · Z 테이블 리팩터링\"]\n  GITS -.-> DD[\"Datadog APM\\nOrchestrion 자동 계장\"]",
+    "_note": "이 사이트의 해석 — WebDAV · Perl · Orchestrion · Git 서버 · RDB · 패스키 글의 구성을 한 장에 모았다. Backlog 본체의 언어 구성 전체는 글에 없다."
+  },
+  "domains": [
+    {
+      "name": "Backlog 의 오래된 Perl · Apache 를 Go 로 — 파일 · Git 기능을 멈추지 않고 옮기고 관측한다",
+      "why": "Backlog 의 일부 기능과 파일 기능을 떠받친 WebDAV 서버는 오래 Apache + Perl 로 돌았다 — 당시엔 합리적이었지만 책임이 겹쳐 쌓여 보수 · 변경이 어려워졌고, 앞으로의 스토리지 구성 재검토와 개선의 발목을 잡았다. Git 기능은 여러 Go 마이크로서비스와 상태(리포지토리)를 가진 Git 서버로 이뤄져, 서버 이행 · 관측 도입이 까다롭다.",
+      "tech": [
+        {
+          "tech": "WebDAV Apache + Perl → Go(릴리스 방식 · 판단 기준 사전 설계, ADR, 절차 리뷰)",
+          "solves": "파일 읽기 · 쓰기 코어를 스스로 다룰 수 있게 한다.",
+          "limits": "구현보다 이행 설계가 어려웠다 · 릴리스 직전 결함.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Apache + Perl の WebDAV 実装を Go に刷新した話 — 実装より難しかった「移行設計」",
+              "url": "https://nulab.com/ja/blog/nulab/rewriting-webdav-from-apache-perl-to-go/",
+              "publisher": "ヌーラボ",
+              "summary": "Backlog 파일 기능을 떠받친 WebDAV 서버(Apache + Perl 모듈)를 Go 로 — 단순 이식이 아니라 파일 읽기 · 쓰기 코어를 스스로 다룰 수 있게. 호환성과 구조 정리의 선 긋기, 릴리스 방식 · 판단 기준 사전 설계, 절차를 리뷰 가능하게, ADR 로 전제 맞추기, 개발 · 운영 · 릴리스를 나누지 않기, 릴리스 직전 결함과 구조적 복구.",
+              "date": "2026-05-01"
+            }
+          ]
+        },
+        {
+          "tech": "Perl 코드베이스를 Go 로 재설계 — 생성 AI 로 분석 · 테스트",
+          "solves": "context · 전용 타입 · 서비스 층 트랜잭션으로 구조를 정리한다.",
+          "limits": "AI 는 마법 지팡이가 아니다 — 스코프를 좁혀야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Perlコードベースの再設計：Go言語によるモダン化へのアプローチ",
+              "url": "https://nulab.com/ja/blog/nulab/redesigning-perl-codebase-with-go/",
+              "publisher": "ヌーラボ",
+              "summary": "Backlog 일부 기능의 Perl 코드를 Go 로 — 생성 AI 활용. 스코프 최소화 · 책임 재설계 · 한 곳 집중, context.Context 로 요청 스코프 값 전달, 헬퍼 재설계, 전용 타입, 트랜잭션 책임을 서비스 층으로, 쿼리 결과를 구조체로, AI 로 테스트 케이스 · 테스트 코드.",
+              "date": "2025-10-07"
+            }
+          ]
+        },
+        {
+          "tech": "Git 서버 AL2023 이행 · Orchestrion 자동 계장",
+          "solves": "EoL 대응과 Go 서비스 트레이스.",
+          "limits": "자동 계장 기본값이 GLS 누수 · 대량 스팬을 만들었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Gitサーバーを Amazon Linux 2023 へ移行した話",
+              "url": "https://nulab.com/ja/blog/nulab/git-server-amazon-linux-2023-migration/",
+              "publisher": "ヌーラボ",
+              "summary": "AL2 EoL 로 Git 서버(리포지토리 상태를 EBS 에 가진 프라이머리 · 레플리카, 여러 환경 십수 대)를 AL2023 로 — EBS 스냅숏 · Fast Snapshot Restore, 레플리카 먼저 전환 후 프라이머리와 교체. 되돌아갈 곳이 바로 보이게 · 매직 넘버 없는 절차서 · 한 액션으로 묶기, 권한 부족 · 잊힌 설정 · 의존 관계 · swap.",
+              "date": "2026-09-01"
+            },
+            {
+              "title": "Orchestrionの自動計装でDatadogのトレースが爆発した話",
+              "url": "https://nulab.com/ja/blog/nulab/datadog-orchestrion-grpc-large-trace/",
+              "publisher": "ヌーラボ",
+              "summary": "Backlog Git 기능은 여러 Go 마이크로서비스(서비스 간 gRPC Stream). Orchestrion 컴파일 시 자동 계장 — 기본으로 dd-trace-go 의 모든 integration. 무관한 요청이 같은 trace_id 를 공유하는 거대 트레이스: 이중 계장 가설 → 진범 GLS 누수(다른 goroutine 에서 Finish), Stream 의 대량 스팬.",
+              "date": "2026-08-27"
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "Backlog 를 느리게 하는 SQL 을 테이블 구조부터 고친다",
+      "why": "문의 · 사내 피드백으로 특정 엔드포인트가 일부 사용자에게 극단적으로 느린 것이 드러났다 — 애플리케이션이 아니라 DB 가 병목이었고, 세 테이블을 JOIN 하며 조건이 흩어져 효과적인 인덱스를 걸 수 없었다.",
+      "tech": [
+        {
+          "tech": "RDB 테이블 리팩터링 — 같은 테이블의 관련 과제(피크 AAS 1-2 할 · 수명이 다른 레코드)를 함께",
+          "solves": "인덱스가 먹는 구조로 바꿔 스로 쿼리와 DB 부하를 줄인다.",
+          "limits": "운영 중 테이블 구조 변경 절차 · 감시가 필요하다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "パフォーマンス向上のためのRDBテーブルリファクタリング事例",
+              "url": "https://nulab.com/ja/blog/nulab/2024-backlog-rdb-table-refactoring/",
+              "publisher": "ヌーラボ",
+              "summary": "특정 엔드포인트가 일부 사용자에게 극단적으로 느림 — 세 테이블 JOIN · WHERE 조건이 흩어져 인덱스가 안 먹음(과제 1), 같은 테이블의 다른 SQL 이 피크에 DB AAS 의 1-2 할(과제 2), 수명이 다른 테이블 Z 레코드가 JOIN 때문에 오래 남음(과제 3). 해결안 · 범위 · 리팩터링 절차 · 감시 지표 · 결과.",
+              "date": "2024-12-06"
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "누랩 계정 — 비밀번호를 잊은 순간을 패스키로 바꾸는 기회로",
+      "why": "비밀번호를 잊는 '귀찮은' 경험은 누구에게나 있는 스트레스다. 누랩 계정의 비밀번호 재설정 흐름을 현대화하면서, 이 순간을 보안을 올릴 전략적 기회로 보고 패스키 도입을 밀었다.",
+      "tech": [
+        {
+          "tech": "비밀번호 재설정을 React · Next.js 로 리팩터링, 재설정 완료 직후 선택적 패스키 생성(ADR)",
+          "solves": "패스키 등록률을 크게 올린다.",
+          "limits": "다른 흐름이 현재 비밀번호를 요구해 재설정을 패스키로 대신할 수는 없었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "[EN] Leveraging User Frustration for Increased Security: How We Drove Passkey Adoption",
+              "url": "https://nulab.com/ja/blog/nulab/passkey-adoption-after-password-reset-bilingual/",
+              "publisher": "ヌーラボ",
+              "summary": "2025-08 누랩 계정 비밀번호 재설정 기능 쇄신 — React · Next.js 로 리팩터링, 패스키 생성 권유 시점을 ADR 로: A 재설정 대신 패스키 · B 수동 홍보 · C 재설정 완료 직후 선택적 패스키 생성 → 패스키 등록률 크게 향상.",
+              "date": "2025-11-07"
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "매출 · 제품별 비중은 IR 에 있지만 이번에 읽지 않았다.",
+    "Backlog 본체의 언어 · 아키텍처 전체 구성은 이번 글들에 없다.",
+    "Cacoo · Flowbase 의 기술 글은 이번에 읽지 않았다 — 수익원은 누랩 계정 도메인에 이었다."
+  ],
+  "sources": [
+    {
+      "title": "チームにさらなるコラボレーションを | 株式会社ヌーラボ",
+      "url": "https://nulab.com/ja/",
+      "publisher": "ヌーラボ",
+      "summary": "수백만 사용자. 서비스: Backlog(프로젝트 · 태스크 관리, 소스 코드 관리), Cacoo(온라인 화이트보드), Nulab Pass(SAML SSO · 사용자 프로비저닝), Nulab Flowbase(노코드 워크플로 자동화). 뉴스: 프로젝트 횡단 간트 차트, Jooto → Backlog 이행 도구. IR 페이지(상장사), 보안 체크시트, 누랩 계정."
+    },
+    {
+      "title": "Apache + Perl の WebDAV 実装を Go に刷新した話 — 実装より難しかった「移行設計」",
+      "url": "https://nulab.com/ja/blog/nulab/rewriting-webdav-from-apache-perl-to-go/",
+      "publisher": "ヌーラボ",
+      "summary": "Backlog 파일 기능을 떠받친 WebDAV 서버(Apache + Perl 모듈)를 Go 로 — 단순 이식이 아니라 파일 읽기 · 쓰기 코어를 스스로 다룰 수 있게. 호환성과 구조 정리의 선 긋기, 릴리스 방식 · 판단 기준 사전 설계, 절차를 리뷰 가능하게, ADR 로 전제 맞추기, 개발 · 운영 · 릴리스를 나누지 않기, 릴리스 직전 결함과 구조적 복구.",
+      "date": "2026-05-01"
+    },
+    {
+      "title": "Perlコードベースの再設計：Go言語によるモダン化へのアプローチ",
+      "url": "https://nulab.com/ja/blog/nulab/redesigning-perl-codebase-with-go/",
+      "publisher": "ヌーラボ",
+      "summary": "Backlog 일부 기능의 Perl 코드를 Go 로 — 생성 AI 활용. 스코프 최소화 · 책임 재설계 · 한 곳 집중, context.Context 로 요청 스코프 값 전달, 헬퍼 재설계, 전용 타입, 트랜잭션 책임을 서비스 층으로, 쿼리 결과를 구조체로, AI 로 테스트 케이스 · 테스트 코드.",
+      "date": "2025-10-07"
+    },
+    {
+      "title": "Orchestrionの自動計装でDatadogのトレースが爆発した話",
+      "url": "https://nulab.com/ja/blog/nulab/datadog-orchestrion-grpc-large-trace/",
+      "publisher": "ヌーラボ",
+      "summary": "Backlog Git 기능은 여러 Go 마이크로서비스(서비스 간 gRPC Stream). Orchestrion 컴파일 시 자동 계장 — 기본으로 dd-trace-go 의 모든 integration. 무관한 요청이 같은 trace_id 를 공유하는 거대 트레이스: 이중 계장 가설 → 진범 GLS 누수(다른 goroutine 에서 Finish), Stream 의 대량 스팬.",
+      "date": "2026-08-27"
+    },
+    {
+      "title": "Gitサーバーを Amazon Linux 2023 へ移行した話",
+      "url": "https://nulab.com/ja/blog/nulab/git-server-amazon-linux-2023-migration/",
+      "publisher": "ヌーラボ",
+      "summary": "AL2 EoL 로 Git 서버(리포지토리 상태를 EBS 에 가진 프라이머리 · 레플리카, 여러 환경 십수 대)를 AL2023 로 — EBS 스냅숏 · Fast Snapshot Restore, 레플리카 먼저 전환 후 프라이머리와 교체. 되돌아갈 곳이 바로 보이게 · 매직 넘버 없는 절차서 · 한 액션으로 묶기, 권한 부족 · 잊힌 설정 · 의존 관계 · swap.",
+      "date": "2026-09-01"
+    },
+    {
+      "title": "パフォーマンス向上のためのRDBテーブルリファクタリング事例",
+      "url": "https://nulab.com/ja/blog/nulab/2024-backlog-rdb-table-refactoring/",
+      "publisher": "ヌーラボ",
+      "summary": "특정 엔드포인트가 일부 사용자에게 극단적으로 느림 — 세 테이블 JOIN · WHERE 조건이 흩어져 인덱스가 안 먹음(과제 1), 같은 테이블의 다른 SQL 이 피크에 DB AAS 의 1-2 할(과제 2), 수명이 다른 테이블 Z 레코드가 JOIN 때문에 오래 남음(과제 3). 해결안 · 범위 · 리팩터링 절차 · 감시 지표 · 결과.",
+      "date": "2024-12-06"
+    },
+    {
+      "title": "[EN] Leveraging User Frustration for Increased Security: How We Drove Passkey Adoption",
+      "url": "https://nulab.com/ja/blog/nulab/passkey-adoption-after-password-reset-bilingual/",
+      "publisher": "ヌーラボ",
+      "summary": "2025-08 누랩 계정 비밀번호 재설정 기능 쇄신 — React · Next.js 로 리팩터링, 패스키 생성 권유 시점을 ADR 로: A 재설정 대신 패스키 · B 수동 홍보 · C 재설정 완료 직후 선택적 패스키 생성 → 패스키 등록률 크게 향상.",
+      "date": "2025-11-07"
+    },
+    {
+      "title": "Backlogにドキュメント機能ができるまで",
+      "url": "https://nulab.com/ja/blog/nulab/backlog-document/",
+      "publisher": "ヌーラボ",
+      "summary": "Backlog 에 문서 기능이 생기기까지.",
+      "date": "2024-12-20"
+    }
+  ]
+}

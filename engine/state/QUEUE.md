@@ -15,6 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **ヌーラボ** | JP · 협업 SaaS 상장사(Backlog · Cacoo · Nulab Pass · Flowbase) | 프로파일(2026-09-30, slug `nulab`). 도메인 셋 — Backlog Perl · Apache → Go(WebDAV 이행 설계 · Perl 재설계 · Git 서버 AL2023 · Orchestrion 트레이스) · 느린 SQL 을 테이블 구조부터(RDB 리팩터링) · 누랩 계정 패스키(비밀번호 재설정 직후). 입구 `nulab.com/ja/blog/categories/engineering/`. 수익원 둘 모두 inferred(Backlog · 나머지 제품은 누랩 계정 도메인). **다음 기능: WebDAV Go 이행 → RDB 리팩터링 → 패스키 → 완주 점검.** |
 | **オイシックス** | JP · 커머스 · 식품 정기 택배(Oisix · らでぃっしゅぼーや · 大地を守る会, 2026-07 사명 변경) | 프로파일(2026-09-30, slug `oisix`). 도메인 셋 — REBORN 제3세대(EKS · Dapr 무중단 · OpenAPI SSOT · 데드 코드) · 정기 박스 추천과 수요 예측(あなたにおすすめ · 반사실 평가 · LLM 보완 추천) · 해지율과 LCP · CVR. 입구 하테나 `creators.oisix.co.jp`(archive 로 2018 까지). 수익원 둘 — 정기 택배 EC(confirmed) · 법인 · 광고(inferred, **도메인 없음**). 기능 3(2026-09-30 REBORN / 추천 · 수요 예측 / 비기너 해지 · LCP × CVR). 도메인 셋 모두 기능. **hold** — 법인 · 광고 수익원 자료 두 번 없음(2026-09-30: archive 제목 · 블로그 검색 広告/保育/法人/AdOisix). 도메인 셋 모두 기능. |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 | **ラクス(RAKUS)** | JP · 백오피스 SaaS(楽楽精算·楽楽明細) | 프로파일(2026-09-26). 도메인 둘 — 경비 전표를 AI 가 초안 쓰고 규칙이 검사한다 · 청구서가 거래처에 닿는 제품의 장애를 영향으로 줄 세운다. 기능 2(楽楽精算 AI 에이전트 · 楽楽明細 장애 대응). **hold** — 메일 발송·웹 미디어 수익원 자료 두 번 없음(2026-09-26). 메일 발송·웹 미디어 수익원은 도메인 없음. |
@@ -82,7 +83,6 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **ヌーラボ(Nulab)** | JP · 협업 SaaS(Backlog · Cacoo) | 입구 `nulab.com/ja/blog/feed/`(2026-09 까지 주 여러 편). 'Orchestrion の自動計装で Datadog のトレースが爆発した話'(2026-08, Backlog Git 기능 마이크로서비스(Go · gRPC Stream)에 컴파일 시 자동 계장 — 이중 계장 가설 → 진범 GLS 누수 · Stream 대량 스팬, 대응) · 'Git サーバーを Amazon Linux 2023 へ移行'(2026-09) · 'イベントストーミング'(2026-09) · Backlog CLI 'bee' 공개. |
 | **note** | JP · 콘텐츠 플랫폼(note) | 입구 `engineerteam.note.jp/rss`(2026-08 까지). 'Amazon Pay 導入のメリットと開発話'(2025-04, 게스트 구매 흐름 — Cookie 파라미터 보존이 브라우저 뒤로 · 다중 탭에서 깨져 쿼리 파라미터 + 백엔드 검증 + 서명 payload 로) · 'note のレコメンド開発を支える AI エージェント'(2026-06) · 'Web パフォーマンス監視ツールを AI エージェントで作り直した'(2026-04) · 메일 디자인 프론트 관리(2026-08). |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)

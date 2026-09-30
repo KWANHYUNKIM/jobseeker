@@ -2964,3 +2964,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 リブセンス イエシル · 완주
 
 - イエシル 2 차 찾기(블로그 검색 IESHIL) — 2021 ISR 글 발견 → 네 번째 도메인 + `ieshil-building-page-isr`. 결정 6 — ISR / Heroku + Fastly SWR / 건물 상세만 먼저 / 민감 정보만 CSR / 크롤 예산 · 색인 / Next.js 통일. 수익원 둘 모두 기능과 이어져 **done**. 다음: ヌーラボ 프로파일.
+
+## 2026-09-30 ヌーラボ 프로파일
+
+- 홈페이지(제품 넷) + 기술 글 7편(WebDAV Go 이행 · Perl 재설계 · Orchestrion · Git 서버 AL2023 · RDB 리팩터링 · 패스키 · 문서 기능). 도메인 3, 수익원 2(모두 inferred). 다음: WebDAV Go 이행 기능.
