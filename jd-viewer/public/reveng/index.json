@@ -3468,6 +3468,18 @@
       "one_liner": "프로젝트 관리 Backlog · 화이트보드 Cacoo 의 협업 SaaS 상장사 — Backlog 의 오래된 Perl · Apache 를 Go 로 옮기고, 비밀번호 재설정 직후에 패스키를 권해 등록률을 올린다",
       "updated_at": "2026-09-30",
       "domain": "nulab.com"
+    },
+    {
+      "slug": "note",
+      "name": "note",
+      "name_en": "note",
+      "country": "JP",
+      "category": "소셜",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "크리에이터가 글을 올리고 팔고 응원받는 일본 미디어 플랫폼 — 게스트 구매에 Amazon Pay 를 붙이고, 사이트맵으로 인덱스 시간을 1/30 로, A/B 실험을 GrowthBook 으로 옮긴다",
+      "updated_at": "2026-09-30",
+      "domain": "note.com"
     }
   ],
   "domains": [
@@ -4304,7 +4316,10 @@
     "イエシル 건물 상세 페이지를 빠르고 검색되게 — Rails · React 혼재를 Next.js ISR 과 CDN 캐시로",
     "Backlog 의 오래된 Perl · Apache 를 Go 로 — 파일 · Git 기능을 멈추지 않고 옮기고 관측한다",
     "Backlog 를 느리게 하는 SQL 을 테이블 구조부터 고친다",
-    "누랩 계정 — 비밀번호를 잊은 순간을 패스키로 바꾸는 기회로"
+    "누랩 계정 — 비밀번호를 잊은 순간을 패스키로 바꾸는 기회로",
+    "유료 기사를 로그인 없이도 산다 — 결제 수단 추가와 게스트 구매 흐름",
+    "좋은 글이 검색에 빨리 닿게 — 테크니컬 SEO 와 웹 성능 감시",
+    "화면 실험을 배포 없이 — 셀프 호스팅 A/B 테스트 기반"
   ],
   "countries": {
     "KR": "한국",

@@ -1,0 +1,241 @@
+{
+  "slug": "note",
+  "name": "note",
+  "name_en": "note",
+  "country": "JP",
+  "category": "소셜",
+  "status": "in_progress",
+  "updated_at": "2026-09-30",
+  "domain": "note.com",
+  "one_liner": "크리에이터가 글을 올리고 팔고 응원받는 일본 미디어 플랫폼 — 게스트 구매에 Amazon Pay 를 붙이고, 사이트맵으로 인덱스 시간을 1/30 로, A/B 실험을 GrowthBook 으로 옮긴다",
+  "business_model": "note株式会社는 '**누구나 창작을 시작하고 이어갈 수 있게**' 를 미션으로 한다(회사 홈페이지). **note** 는 크리에이터가 글 · 이미지 · 음성 · 영상을 올리고 사용자가 그 콘텐츠를 즐기고 **응원(구매 · 팁 · 멤버십)** 하는 미디어 플랫폼이고, **note pro** 는 기업이 'note 의 거리' 에서 미디어를 쉽게 만들어 정보를 전하는 **법인용 발신 플랫폼**, **noteプレミアム** 은 개인 유료 플랜이다. 상장사로 IR 을 공개한다. 최근엔 작품 · 기업 공식 정보와 팬 감상을 모으는 **AI 컨텍스트 네트워크**, 유료 기사까지 넓힌 **영어 자동 번역**, llms.txt 대응처럼 콘텐츠를 AI 시대의 새 독자에게 닿게 하는 쪽으로 움직인다.\n\n기술 블로그는 셋을 보여 준다. **돈이 오가는 구매 흐름** — 2025 년 Amazon Pay 를 붙이며 계정 없는 게스트 구매에서 외부 결제 화면을 오가는 파라미터 보존 문제를 풀었다. **글이 독자에게 닿는 길** — 2 인 SEO 팀이 사이트맵 로직을 고쳐 공개 기사의 인덱스 시간을 약 1/30 로 줄이고 클릭 수를 약 2 배로 늘렸으며, Core Web Vitals 감시를 AI 에이전트가 돌리게 다시 지었다. **화면을 바꾸는 속도** — 배포 4 번이 필요하던 사내 A/B 라이브러리를 셀프 호스팅 GrowthBook 으로 옮겼다.",
+  "products": [
+    "note(글 · 이미지 · 음성 · 영상, 유료 기사 · 멤버십 · 팁)",
+    "noteプレミアム",
+    "note pro(법인)",
+    "AI 컨텍스트 네트워크"
+  ],
+  "revenue_total": "상장사라 IR 에 있다 — 이번에 매출 자료는 읽지 않았다.",
+  "revenue_streams": [
+    {
+      "name": "유료 기사 · 멤버십 · 팁 거래",
+      "how": "사용자가 크리에이터의 유료 기사 · 멤버십 · 팁으로 응원하고, 결제는 note 가 받는다(Amazon Pay · 포인트 등) — 수수료율은 이번에 읽지 않았다.",
+      "weight": "IR 에 있음(이번엔 안 읽음)",
+      "domains": [
+        "유료 기사를 로그인 없이도 산다 — 결제 수단 추가와 게스트 구매 흐름",
+        "좋은 글이 검색에 빨리 닿게 — 테크니컬 SEO 와 웹 성능 감시",
+        "화면 실험을 배포 없이 — 셀프 호스팅 A/B 테스트 기반"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "note株式会社",
+          "url": "https://note.jp/",
+          "publisher": "note株式会社",
+          "summary": "미션 '누구나 창작을 시작하고 이어갈 수 있게'. note — 크리에이터가 글 · 이미지 · 음성 · 영상을 올리고 사용자가 즐기고 응원하는 미디어 플랫폼. note pro — 법인용 정보 발신 플랫폼. noteプレミアム. IR 정보(상장). 최근 소식: AI 컨텍스트 네트워크(작품 · 기업 공식 정보와 팬 감상을 한곳에), 일본어 기사 영어 자동 번역을 유료 기사까지, llms.txt, NAVER 생성 AI 검색 인용, CSO 취임(콘텐츠 전달처 · 수익 기회 확대)."
+        },
+        {
+          "title": "Amazon Pay導入のメリットと開発話",
+          "url": "https://engineerteam.note.jp/n/nf75bfc36ed4c",
+          "publisher": "note株式会社",
+          "summary": "2025-01 결제 수단으로 Amazon Pay 도입. 로그인 구매(앱 · 브라우저에서 열람)와 게스트 구매(입력한 메일로 기사 송부) 두 흐름. note → Amazon 로그인 → note 확인 → Amazon 결제 이동에서 쿼리 파라미터 보존 — Cookie 보존은 뒤로 가기 · 다중 탭에서 덮어써져 다른 기사 구매 화면으로 → Amazon 이동 시 쿼리 파라미터 부여 + 백엔드 검증 + SDK 서명 payload. 결제와 사용자 정보 취득을 분리(메일 주소 변경 허용). QA 시트(기사 구매 가능 · 팁 · 멤버십 불가, 기기별, 취소 · 포인트 병용 · 세일). 3 개월 만에 출시.",
+          "date": "2025-02-18"
+        }
+      ]
+    },
+    {
+      "name": "note pro(법인)",
+      "how": "기업이 note 위에 미디어를 만들고 독자에게 닿게 하는 법인용 플랜 — 요금은 이번에 읽지 않았다.",
+      "weight": "IR 에 있음(이번엔 안 읽음)",
+      "domains": [
+        "좋은 글이 검색에 빨리 닿게 — 테크니컬 SEO 와 웹 성능 감시"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "note株式会社",
+          "url": "https://note.jp/",
+          "publisher": "note株式会社",
+          "summary": "미션 '누구나 창작을 시작하고 이어갈 수 있게'. note — 크리에이터가 글 · 이미지 · 음성 · 영상을 올리고 사용자가 즐기고 응원하는 미디어 플랫폼. note pro — 법인용 정보 발신 플랫폼. noteプレミアム. IR 정보(상장). 최근 소식: AI 컨텍스트 네트워크(작품 · 기업 공식 정보와 팬 감상을 한곳에), 일본어 기사 영어 자동 번역을 유료 기사까지, llms.txt, NAVER 생성 AI 검색 인용, CSO 취임(콘텐츠 전달처 · 수익 기회 확대)."
+        },
+        {
+          "title": "SEO改善でクリック数2倍、クロール時間を1/30にした話",
+          "url": "https://engineerteam.note.jp/n/n20c453cd4d8d",
+          "publisher": "note株式会社",
+          "summary": "Stability 팀 리더가 겸임한 2 인 SEO 팀, 1 년 개선으로 클릭 수 약 2 배. 크롤러가 모르는 기능 찾기 · 크롤 버짓 최적화 · 사이트맵 생성 로직 · 인덱스 속도 계측 · 외부 임베드 수정. 뷰보다 클릭 수 중시, 오른 것보다 떨어지지 않는지 계측, 시책 하나 뒤 1 주 관찰. 공개 기사 인덱스 시간이 10 분~수 시간으로 흩어짐 → 사이트맵 로직 개선으로 빠르면 수십 분(약 1/30), 공개 기사를 1 시간마다 시트에 기록 · 인덱스 시각 기록. Next.js 이행의 표시 속도도 영향. 버그 수정에서 시작.",
+          "date": "2024-11-11"
+        }
+      ]
+    },
+    {
+      "name": "noteプレミアム",
+      "how": "개인 크리에이터용 유료 플랜 — 내용 · 요금은 이번에 읽지 않았다.",
+      "weight": "IR 에 있음(이번엔 안 읽음)",
+      "domains": [
+        "화면 실험을 배포 없이 — 셀프 호스팅 A/B 테스트 기반"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "note株式会社",
+          "url": "https://note.jp/",
+          "publisher": "note株式会社",
+          "summary": "미션 '누구나 창작을 시작하고 이어갈 수 있게'. note — 크리에이터가 글 · 이미지 · 음성 · 영상을 올리고 사용자가 즐기고 응원하는 미디어 플랫폼. note pro — 법인용 정보 발신 플랫폼. noteプレミアム. IR 정보(상장). 최근 소식: AI 컨텍스트 네트워크(작품 · 기업 공식 정보와 팬 감상을 한곳에), 일본어 기사 영어 자동 번역을 유료 기사까지, llms.txt, NAVER 생성 AI 검색 인용, CSO 취임(콘텐츠 전달처 · 수익 기회 확대)."
+        },
+        {
+          "title": "noteでのGrowthBookの導入理由と使い方を紹介",
+          "url": "https://engineerteam.note.jp/n/n5e6f422289cd",
+          "publisher": "note株式会社",
+          "summary": "사내 Ruby 라이브러리 A/B 테스트는 화면 실험 하나에 배포 4 번 → GrowthBook(오픈소스, 셀프 호스팅, 무료판). Unleash 는 네임스페이스 불가로 탈락 — 실험끼리 부딪히지 않게 사용자를 나누는 네임스페이스가 전제. 웹 서버 → A/B API(GrowthBook) → 할당 → 화면 · 행동 로그 Snowflake → 1 주 뒤 분석. 실험 설정을 Redis 캐시(다운 대비). GUI 로 비엔지니어도. 기존 라이브러리 폐지는 남은 일.",
+          "date": "2024-11-15"
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "글이 쓰여서 팔리기까지",
+    "question": "크리에이터의 글은 어떤 길로 독자와 돈에 닿나?",
+    "code": "flowchart LR\n  C[\"크리에이터\\n글 · 이미지 · 음성 · 영상\"] --> N[\"note\\n(Next.js 프런트)\"]\n  N --> SM[\"사이트맵 · 크롤 버짓\"] --> G[\"Google 검색\"] --> R[\"독자\"]\n  N --> AB[\"A/B · 기능 플래그\\nGrowthBook(셀프 호스팅) + Redis\"]\n  AB --> LOG[\"행동 로그 → Snowflake\"]\n  R --> BUY[\"구매\\n로그인 / 게스트(메일로 송부)\"]\n  BUY --> AP[\"Amazon Pay · 기타 결제\"]\n  N -.-> CWV[\"Core Web Vitals 감시\\nPlaywright → Slack → AI 에이전트\"]",
+    "_note": "이 사이트의 해석 — Amazon Pay · SEO · GrowthBook · 성능 감시 글의 구성을 한 장에 모았다. 백엔드 전체 구성(Rails 등)은 이번 글들에 없다."
+  },
+  "domains": [
+    {
+      "name": "유료 기사를 로그인 없이도 산다 — 결제 수단 추가와 게스트 구매 흐름",
+      "why": "note 에는 로그인 구매와, 계정 없이 메일로 기사를 받는 게스트 구매가 있다. 결제 수단을 늘리면 외부 결제 화면을 오가는 이동 · 콜백 처리가 붙어 구현 난도가 오르는데, 특히 게스트 구매는 계정이 없어 상태를 어디에 둘지가 문제였다.",
+      "tech": [
+        {
+          "tech": "Amazon Pay — 쿼리 파라미터 + 백엔드 검증 + SDK 서명 payload",
+          "solves": "뒤로 가기 · 다중 탭에서도 다른 기사로 새지 않는 게스트 구매.",
+          "limits": "팁 · 멤버십은 Amazon Pay 불가 — 기능별 가부를 QA 시트로 관리.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Amazon Pay導入のメリットと開発話",
+              "url": "https://engineerteam.note.jp/n/nf75bfc36ed4c",
+              "publisher": "note株式会社",
+              "summary": "2025-01 결제 수단으로 Amazon Pay 도입. 로그인 구매(앱 · 브라우저에서 열람)와 게스트 구매(입력한 메일로 기사 송부) 두 흐름. note → Amazon 로그인 → note 확인 → Amazon 결제 이동에서 쿼리 파라미터 보존 — Cookie 보존은 뒤로 가기 · 다중 탭에서 덮어써져 다른 기사 구매 화면으로 → Amazon 이동 시 쿼리 파라미터 부여 + 백엔드 검증 + SDK 서명 payload. 결제와 사용자 정보 취득을 분리(메일 주소 변경 허용). QA 시트(기사 구매 가능 · 팁 · 멤버십 불가, 기기별, 취소 · 포인트 병용 · 세일). 3 개월 만에 출시.",
+              "date": "2025-02-18"
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "좋은 글이 검색에 빨리 닿게 — 테크니컬 SEO 와 웹 성능 감시",
+      "why": "note 는 콘텐츠가 모이는 플랫폼이라 키워드를 겨냥할 수 없다 — 좋은 글이 빨리 · 빠짐없이 인덱스되게 하는 테크니컬 SEO 와, 표시 속도를 지키는 감시가 유입의 바탕이다. 공개 기사의 인덱스 시간이 10 분에서 수 시간으로 흩어져 있었다.",
+      "tech": [
+        {
+          "tech": "사이트맵 생성 로직 · 크롤 버짓 최적화 · 인덱스 속도 계측",
+          "solves": "인덱스 시간 약 1/30, 클릭 수 약 2 배.",
+          "limits": "Google 로직 · 코어 업데이트에 좌우돼 겨냥해 개선할 수 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "SEO改善でクリック数2倍、クロール時間を1/30にした話",
+              "url": "https://engineerteam.note.jp/n/n20c453cd4d8d",
+              "publisher": "note株式会社",
+              "summary": "Stability 팀 리더가 겸임한 2 인 SEO 팀, 1 년 개선으로 클릭 수 약 2 배. 크롤러가 모르는 기능 찾기 · 크롤 버짓 최적화 · 사이트맵 생성 로직 · 인덱스 속도 계측 · 외부 임베드 수정. 뷰보다 클릭 수 중시, 오른 것보다 떨어지지 않는지 계측, 시책 하나 뒤 1 주 관찰. 공개 기사 인덱스 시간이 10 분~수 시간으로 흩어짐 → 사이트맵 로직 개선으로 빠르면 수십 분(약 1/30), 공개 기사를 1 시간마다 시트에 기록 · 인덱스 시각 기록. Next.js 이행의 표시 속도도 영향. 버그 수정에서 시작.",
+              "date": "2024-11-11"
+            }
+          ]
+        },
+        {
+          "tech": "Core Web Vitals 감시를 하네스 엔지니어링으로 — CI 게이트 · 에이전트용 문서 · Slack",
+          "solves": "이상 탐지부터 원인 조사까지 에이전트에.",
+          "limits": "처음 vibe coding 판은 사람이 봐야 가치가 났다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Webパフォーマンス監視ツールをAIエージェントで作り直した話 ─ Slackだけで完結する運用を目指して",
+              "url": "https://engineerteam.note.jp/n/n74ba15f79e8c",
+              "publisher": "note株式会社",
+              "summary": "1 년 전 vibe coding 으로 만든 Core Web Vitals 감시 도구(Playwright 계측 → 차트 → Slack) — 사람이 봐야 가치, 일별 스냅숏뿐, 원인 조사는 사람. 하네스 엔지니어링으로 다시: 먼저 lint · typecheck · test CI 와 자동 머지, 에이전트용 문서(계획 · 종료 조건 · 데이터 모델) → Slack 중심 이상 탐지 · 원인 조사를 에이전트에.",
+              "date": "2026-04-06"
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "화면 실험을 배포 없이 — 셀프 호스팅 A/B 테스트 기반",
+      "why": "사내 Ruby 라이브러리로는 화면 A/B 테스트 하나에 배포가 4 번 필요해 실험 하나를 끝내는 데 오래 걸렸다 — 실험끼리 부딪히지 않게 사용자를 나누는 네임스페이스는 지켜야 했다.",
+      "tech": [
+        {
+          "tech": "GrowthBook 셀프 호스팅 + Redis 캐시, 행동 로그는 Snowflake",
+          "solves": "GUI 로 실험 · 플래그를 바꿔 배포 횟수를 줄인다.",
+          "limits": "기존 라이브러리 폐지가 남았다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "noteでのGrowthBookの導入理由と使い方を紹介",
+              "url": "https://engineerteam.note.jp/n/n5e6f422289cd",
+              "publisher": "note株式会社",
+              "summary": "사내 Ruby 라이브러리 A/B 테스트는 화면 실험 하나에 배포 4 번 → GrowthBook(오픈소스, 셀프 호스팅, 무료판). Unleash 는 네임스페이스 불가로 탈락 — 실험끼리 부딪히지 않게 사용자를 나누는 네임스페이스가 전제. 웹 서버 → A/B API(GrowthBook) → 할당 → 화면 · 행동 로그 Snowflake → 1 주 뒤 분석. 실험 설정을 Redis 캐시(다운 대비). GUI 로 비엔지니어도. 기존 라이브러리 폐지는 남은 일.",
+              "date": "2024-11-15"
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "매출 · 수수료율 · 사업별 비중은 IR 에 있지만 이번에 읽지 않았다.",
+    "백엔드 언어 · 아키텍처 전체 구성은 이번 글들에 없다(RubyKaigi 스폰서 · 사내 Ruby 라이브러리로 Ruby 를 쓰는 것만 보인다).",
+    "추천 개발 글(2026-06)은 AI 에이전트 활용 Q&A 라 추천 시스템 자체는 알 수 없다 — 도메인으로 세우지 않았다.",
+    "note pro · noteプレミアム 과 도메인의 연결은 이 사이트의 해석이다."
+  ],
+  "sources": [
+    {
+      "title": "note株式会社",
+      "url": "https://note.jp/",
+      "publisher": "note株式会社",
+      "summary": "미션 '누구나 창작을 시작하고 이어갈 수 있게'. note — 크리에이터가 글 · 이미지 · 음성 · 영상을 올리고 사용자가 즐기고 응원하는 미디어 플랫폼. note pro — 법인용 정보 발신 플랫폼. noteプレミアム. IR 정보(상장). 최근 소식: AI 컨텍스트 네트워크(작품 · 기업 공식 정보와 팬 감상을 한곳에), 일본어 기사 영어 자동 번역을 유료 기사까지, llms.txt, NAVER 생성 AI 검색 인용, CSO 취임(콘텐츠 전달처 · 수익 기회 확대)."
+    },
+    {
+      "title": "Amazon Pay導入のメリットと開発話",
+      "url": "https://engineerteam.note.jp/n/nf75bfc36ed4c",
+      "publisher": "note株式会社",
+      "summary": "2025-01 결제 수단으로 Amazon Pay 도입. 로그인 구매(앱 · 브라우저에서 열람)와 게스트 구매(입력한 메일로 기사 송부) 두 흐름. note → Amazon 로그인 → note 확인 → Amazon 결제 이동에서 쿼리 파라미터 보존 — Cookie 보존은 뒤로 가기 · 다중 탭에서 덮어써져 다른 기사 구매 화면으로 → Amazon 이동 시 쿼리 파라미터 부여 + 백엔드 검증 + SDK 서명 payload. 결제와 사용자 정보 취득을 분리(메일 주소 변경 허용). QA 시트(기사 구매 가능 · 팁 · 멤버십 불가, 기기별, 취소 · 포인트 병용 · 세일). 3 개월 만에 출시.",
+      "date": "2025-02-18"
+    },
+    {
+      "title": "SEO改善でクリック数2倍、クロール時間を1/30にした話",
+      "url": "https://engineerteam.note.jp/n/n20c453cd4d8d",
+      "publisher": "note株式会社",
+      "summary": "Stability 팀 리더가 겸임한 2 인 SEO 팀, 1 년 개선으로 클릭 수 약 2 배. 크롤러가 모르는 기능 찾기 · 크롤 버짓 최적화 · 사이트맵 생성 로직 · 인덱스 속도 계측 · 외부 임베드 수정. 뷰보다 클릭 수 중시, 오른 것보다 떨어지지 않는지 계측, 시책 하나 뒤 1 주 관찰. 공개 기사 인덱스 시간이 10 분~수 시간으로 흩어짐 → 사이트맵 로직 개선으로 빠르면 수십 분(약 1/30), 공개 기사를 1 시간마다 시트에 기록 · 인덱스 시각 기록. Next.js 이행의 표시 속도도 영향. 버그 수정에서 시작.",
+      "date": "2024-11-11"
+    },
+    {
+      "title": "Webパフォーマンス監視ツールをAIエージェントで作り直した話 ─ Slackだけで完結する運用を目指して",
+      "url": "https://engineerteam.note.jp/n/n74ba15f79e8c",
+      "publisher": "note株式会社",
+      "summary": "1 년 전 vibe coding 으로 만든 Core Web Vitals 감시 도구(Playwright 계측 → 차트 → Slack) — 사람이 봐야 가치, 일별 스냅숏뿐, 원인 조사는 사람. 하네스 엔지니어링으로 다시: 먼저 lint · typecheck · test CI 와 자동 머지, 에이전트용 문서(계획 · 종료 조건 · 데이터 모델) → Slack 중심 이상 탐지 · 원인 조사를 에이전트에.",
+      "date": "2026-04-06"
+    },
+    {
+      "title": "noteでのGrowthBookの導入理由と使い方を紹介",
+      "url": "https://engineerteam.note.jp/n/n5e6f422289cd",
+      "publisher": "note株式会社",
+      "summary": "사내 Ruby 라이브러리 A/B 테스트는 화면 실험 하나에 배포 4 번 → GrowthBook(오픈소스, 셀프 호스팅, 무료판). Unleash 는 네임스페이스 불가로 탈락 — 실험끼리 부딪히지 않게 사용자를 나누는 네임스페이스가 전제. 웹 서버 → A/B API(GrowthBook) → 할당 → 화면 · 행동 로그 Snowflake → 1 주 뒤 분석. 실험 설정을 Redis 캐시(다운 대비). GUI 로 비엔지니어도. 기존 라이브러리 폐지는 남은 일.",
+      "date": "2024-11-15"
+    },
+    {
+      "title": "noteのレコメンド開発を支えるAIエージェント活用",
+      "url": "https://engineerteam.note.jp/n/nd0bc1a5987f9",
+      "publisher": "note株式会社",
+      "summary": "AI Engineering Summit Tokyo 2026 발표 Q&A — 추천 개발 팀의 PRD · design doc 을 코딩 에이전트 인터뷰로(/design 명령), CLAUDE.md 는 팀 · 제품마다, 횡단 도구(디자인 시스템 · text2sql)는 플러그인 · MCP, 새 모델 나오면 지침 줄이기, 개발 프로세스 표준화 → 루프 엔지니어링.",
+      "date": "2026-06-18"
+    },
+    {
+      "title": "メールのデザインをフロントエンドで管理できるようにしました",
+      "url": "https://engineerteam.note.jp/n/n6d2e8e7b5935",
+      "publisher": "note株式会社",
+      "summary": "메일 디자인을 프런트엔드에서 관리.",
+      "date": "2026-08-12"
+    }
+  ]
+}
