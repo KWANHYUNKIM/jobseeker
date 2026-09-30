@@ -1335,6 +1335,18 @@
       "postings": 3,
       "study_items": 6,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "ainjob",
+      "name": "아인잡",
+      "aliases": [
+        "아인잡",
+        "AINJOB"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 9,
+      "updated_at": "2026-09-30"
     }
   ]
 }

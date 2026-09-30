@@ -1,0 +1,354 @@
+{
+  "slug": "ainjob",
+  "name": "아인잡",
+  "name_en": "AINJOB",
+  "aliases": [
+    "아인잡",
+    "AINJOB"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "https://www.ainjob.com/",
+  "one_liner": "채용 · HR SaaS(ATS · 역량 모델링 · AI 추천)를 만드는 회사 — 신규 서비스의 프론트 리더와 Spring Boot 백엔드 엔지니어 · 리더를 뽑는다",
+  "company": {
+    "business": "아인잡(AINJOB)은 **채용 · HR 플랫폼**을 만든다 — 홈페이지는 '한국을 넘어 글로벌 일자리와 인사 플랫폼에서 혁신' 을 목표로 **Global Job platform**, **기업 채용 시스템 진단 · 솔루션**, **기업 온라인 역량 모델링**, **인공지능 추천 시스템**을 든다. 공고로 보이는 제품은 **B2B HR SaaS** 다 — 백엔드가 지원자 · 기업 · 공고 · **ATS(지원자 추적)** · 메시지 · 알림을 Spring Boot 로 만들고, 리더 공고가 **멀티테넌트 SaaS** 경험을 우대하며, 프론트는 서비스와 **어드민**을 함께 만든다. 프론트 리더 공고는 '신규 서비스' 이고 **기업부설 연구소** 소속이다. 모집중 셋은 프론트 리더(4년+) · 백엔드 엔지니어(4~6년) · 백엔드 리더(6~12년)이고, 근무지는 서울 강남대로(닫힌 점핏 게시 기준)다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "AINJOB - 아인잡",
+        "url": "https://www.ainjob.com/",
+        "publisher": "아인잡",
+        "summary": "'한국을 넘어 글로벌 일자리와 인사 플랫폼에서 혁신을 선두' — Global Job platform, 기업 채용 시스템 진단 및 solution 제공, 기업 온라인 역량 모델링, 인공 지능 추천 시스템."
+      },
+      {
+        "title": "HR Platform 백엔드 엔지니어 (4~6년)",
+        "url": "https://www.wanted.co.kr/wd/374402",
+        "publisher": "원티드",
+        "summary": "Spring Boot HR Platform — 지원자 · 기업 · 공고 · ATS · 메시지 · 알림, REST API, RDB 정합성 · 검색/필터/정렬 · 상태 전이 · 인덱스 최적화, ECS · RDS · S3 · SQS 비동기 Job, 로깅 · 모니터링, OpenAPI 문서. 4~5년(5~6년차), 상태 전이 구현 필수, AWS 일부. 우대 Native SQL · SQS · B2B SaaS · Docker · 실시간 알림."
+      },
+      {
+        "title": "HR 플랫폼 백엔드 개발 리더",
+        "url": "https://www.wanted.co.kr/wd/140981",
+        "publisher": "원티드",
+        "summary": "도메인 모델링 · ERD(확장성 · 정합성 · 성능), Spring Boot 3.0 모듈 구조, AWS(ECS/Fargate · RDS · SQS · Lambda · S3 · VPC), 개발 표준, Dev/Stage/Prod · CI/CD, 아키텍처 결정, 테스트 기반 품질, 핵심 API. 6~12년, Spring Boot 3 5년. 우대 멀티테넌트 SaaS · 이벤트 드리븐 · WebSocket · 멘토링."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "HR SaaS · 채용 솔루션",
+        "how": "기업에 채용 관리(ATS) · 역량 모델링 · 채용 시스템 진단을 판다고 읽힌다 — 구독 · 구축 · 컨설팅 중 무엇인지, 가격은 읽은 자료에 없다.",
+        "domains": [
+          "채용 · ATS 백엔드",
+          "HR 서비스 · 어드민 프론트"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "AINJOB - 아인잡",
+            "url": "https://www.ainjob.com/",
+            "publisher": "아인잡",
+            "summary": "'한국을 넘어 글로벌 일자리와 인사 플랫폼에서 혁신을 선두' — Global Job platform, 기업 채용 시스템 진단 및 solution 제공, 기업 온라인 역량 모델링, 인공 지능 추천 시스템."
+          },
+          {
+            "title": "HR Platform 백엔드 엔지니어 (4~6년)",
+            "url": "https://www.wanted.co.kr/wd/374402",
+            "publisher": "원티드",
+            "summary": "Spring Boot HR Platform — 지원자 · 기업 · 공고 · ATS · 메시지 · 알림, REST API, RDB 정합성 · 검색/필터/정렬 · 상태 전이 · 인덱스 최적화, ECS · RDS · S3 · SQS 비동기 Job, 로깅 · 모니터링, OpenAPI 문서. 4~5년(5~6년차), 상태 전이 구현 필수, AWS 일부. 우대 Native SQL · SQS · B2B SaaS · Docker · 실시간 알림."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "채용 · ATS 백엔드",
+        "why": "백엔드 공고 둘이 지원자 · 기업 · 공고 · ATS · 메시지 · 알림, 상태 전이, ERD 정합성, SQS 비동기, 멀티테넌트 SaaS 를 적는다.",
+        "what_to_know": [
+          "지원 상태 기계",
+          "멀티테넌트 데이터 분리",
+          "SQS 재시도 · DLQ"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "HR Platform 백엔드 엔지니어 (4~6년)",
+            "url": "https://www.wanted.co.kr/wd/374402",
+            "publisher": "원티드",
+            "summary": "Spring Boot HR Platform — 지원자 · 기업 · 공고 · ATS · 메시지 · 알림, REST API, RDB 정합성 · 검색/필터/정렬 · 상태 전이 · 인덱스 최적화, ECS · RDS · S3 · SQS 비동기 Job, 로깅 · 모니터링, OpenAPI 문서. 4~5년(5~6년차), 상태 전이 구현 필수, AWS 일부. 우대 Native SQL · SQS · B2B SaaS · Docker · 실시간 알림."
+          },
+          {
+            "title": "HR 플랫폼 백엔드 개발 리더",
+            "url": "https://www.wanted.co.kr/wd/140981",
+            "publisher": "원티드",
+            "summary": "도메인 모델링 · ERD(확장성 · 정합성 · 성능), Spring Boot 3.0 모듈 구조, AWS(ECS/Fargate · RDS · SQS · Lambda · S3 · VPC), 개발 표준, Dev/Stage/Prod · CI/CD, 아키텍처 결정, 테스트 기반 품질, 핵심 API. 6~12년, Spring Boot 3 5년. 우대 멀티테넌트 SaaS · 이벤트 드리븐 · WebSocket · 멘토링."
+          }
+        ]
+      },
+      {
+        "name": "HR 서비스 · 어드민 프론트",
+        "why": "프론트 리더 공고가 HR/JOB 운영관리 웹 · 어드민 컴포넌트 · React/Next.js 공통 설정 · 테스트를 적는다.",
+        "what_to_know": [
+          "Next.js 설정 · 공통 레이어",
+          "테이블 · 필터 UI",
+          "testing-library"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[기업부설 연구소] WEB/APP Front 개발 리더 (4년 이상)",
+            "url": "https://www.wanted.co.kr/wd/193805",
+            "publisher": "원티드",
+            "summary": "HR / Job platform WEB/APP 신규 서비스 Front 개발 리더. HR/JOB 서비스 운영관리 웹 클라이언트, 프론트 · 어드민 컴포넌트 · 페이지, React 프레임워크 설정(공통 로직), 배포 · 테스트 · 운영. 4년, React · Next.js 환경 설정, TS, styled-components · MUI, Webpack · Vite, Jest · testing-library, 4년제 SW 관련 전공. 우대 AWS · CI/CD."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "상태 전이를 제대로 다룰 사람을 찾는다",
+        "evidence": "• RDB기반 데이터 모델 (ERD) 이해 및 비즈니스 상태전이 구현 경험 (필수)",
+        "so_what": "지원서의 '서류 → 면접 → 합격/불합격' 같은 흐름을 테이블과 코드로 어떻게 지켰는지를 면접 이야기로 준비한다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "기반을 새로 까는 단계다",
+        "evidence": "5. Dev/Stage/Prod 환경 구성 및 CI/CD 파이프라인 구축",
+        "so_what": "리더 두 자리 모두 공통 설정 · 표준 · 환경 구성을 적는다 — 처음부터 표준을 세운 경험이 강점이 된다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "고객 · 매출 · 인원 · 투자는 읽은 자료에 없다",
+    "과금 방식(구독 · 구축 · 컨설팅)은 모른다",
+    "프론트 리더 공고(193805)는 오래 열려 있는 게시다 — 실제 채용 중인지는 지원 전에 확인한다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/193805",
+      "title": "[기업부설 연구소] WEB/APP Front 개발 리더 (4년 이상)",
+      "site": "wanted",
+      "verdict": "경력 4-10년, 기업부설 연구소. **HR/Job 플랫폼 WEB/APP 신규 서비스**의 프론트 리더 — **HR/JOB 서비스 운영관리 웹 클라이언트**, 프론트 · **어드민** 컴포넌트 · 페이지 설계 · 개발, UI 방향 제시, **React 프레임워크 설정(공통 업무 · 공통 로직)**, 배포 · 테스트 · 운영. 자격은 프론트 4년, 서비스 전 과정 경험, **React · Next.js 환경 설정**, TypeScript, styled-components · MUI, Webpack · Vite, **Jest · testing-library**, GitHub, 협업 툴, **4년제 SW 관련 전공**. 우대는 AWS · CI/CD. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "프론트 4년",
+          "React · Next.js 설정",
+          "TypeScript",
+          "테스트 코드",
+          "4년제 관련 전공"
+        ],
+        "can_learn": [
+          "어드민 데이터 그리드",
+          "공통 API 레이어",
+          "CI/CD"
+        ]
+      },
+      "study": [
+        {
+          "topic": "신규 서비스의 뼈대 — Next.js 공통 설정과 공통 로직",
+          "from": "task",
+          "quote": "• React Framework 설정 (공통 업무, 공통 로직 개발)",
+          "priority": "core",
+          "why": "주요업무이고 자격에 React · Next.js 환경 설정 경험이 있다. 리더 자리라 처음 깐 구조가 팀 전체의 속도를 정한다.",
+          "gap_check": "API 호출 · 인증 토큰 갱신 · 오류 처리를 화면마다 쓰지 않으려면 어디에 공통 층을 두나? 서비스(구직자)와 어드민(기업 · 운영자)을 한 저장소에 두나 나누나? 환경별 설정(dev · stage · prod)과 비밀 값은 어디서 읽나?",
+          "drill": "Next.js(App Router) + TS 로 fetch 래퍼(토큰 주입 · 401 시 갱신 한 번 · 오류 표준화) · 전역 오류 경계 · 환경 변수 검증(zod)을 넣은 템플릿을 만든다. 같은 모노레포에 service · admin 두 앱과 ui 패키지를 두고, ESLint · Prettier · 경로 별칭을 공통 설정으로 뽑는다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Next.js — Project structure",
+              "url": "https://nextjs.org/docs/app/getting-started/project-structure",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "어드민 화면 — 지원자 목록 · 필터 · 일괄 처리",
+          "from": "task",
+          "quote": "• 프론트, 어드민 운영에 필요한 컴포넌트, 페이지 설계, 기능 개발",
+          "priority": "core",
+          "why": "주요업무다. HR 서비스의 운영 화면은 대부분 큰 목록 · 필터 · 상태 변경이다.",
+          "gap_check": "필터 · 정렬 · 페이지 상태를 URL 쿼리에 두면 무엇이 좋아지나(새로 고침 · 공유)? 서버 페이지네이션과 클라이언트 페이지네이션은 언제 갈리나? 여러 지원자를 한꺼번에 '서류 합격' 으로 바꿀 때 일부만 실패하면 화면은 무엇을 보여 주나?",
+          "drill": "MUI DataGrid(또는 TanStack Table)로 지원자 1 만 명 목록을 서버 페이지네이션 · 필터(공고 · 단계 · 기간) · 정렬로 만들고, 상태를 URL 쿼리와 동기화한다. 일괄 상태 변경 API 가 일부 실패를 돌려줄 때 실패 행만 표시하고 재시도하는 흐름을 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "TanStack Query — Paginated queries",
+              "url": "https://tanstack.com/query/latest/docs/framework/react/guides/paginated-queries",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "테스트를 기본값으로 — Jest · testing-library",
+          "from": "qualification",
+          "quote": "• Jest, testing-library 등 테스트 코드",
+          "priority": "high",
+          "why": "자격요건이다. 공통 컴포넌트를 여러 화면이 쓰면 하나 고칠 때 어디가 깨지는지 테스트가 알려 준다.",
+          "gap_check": "구현 세부(state · 클래스 이름)가 아니라 사용자 행동으로 테스트하라는 이유는? API 를 가짜로 둘 때 fetch 를 직접 목킹하는 것과 MSW 로 네트워크 층을 가로채는 것은 무엇이 다른가? 무엇을 단위 · 통합 · E2E 로 나누나?",
+          "drill": "앞 과제의 필터 폼과 일괄 처리 버튼에 testing-library 테스트를 쓰고(역할 · 레이블로 요소 찾기), MSW 로 성공 · 일부 실패 응답을 흉내 낸다. CI(GitHub Actions)에서 테스트가 돌고 커버리지를 PR 에 남기게 한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Testing Library — Guiding Principles",
+              "url": "https://testing-library.com/docs/guiding-principles",
+              "kind": "docs"
+            },
+            {
+              "title": "Mock Service Worker",
+              "url": "https://mswjs.io/docs/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/374402",
+      "title": "HR Platform 백엔드 엔지니어 (4~6년)",
+      "site": "wanted",
+      "verdict": "경력 4-6년(공고 본문은 '4~5년, 5년차에서 6년차'). **Spring Boot HR Platform** — **지원자 · 기업 · 공고 · ATS · 메시지 · 알림** 기능, REST API, **RDB 정합성 설계 · 검색/필터/정렬 쿼리 · 정의된 상태 전이에 따른 데이터 변경 · 인덱스/쿼리 최적화**, **ECS · RDS · S3 · SQS 비동기 Job**, 로깅 · 모니터링, 버그 대응 · 코드 리뷰 · 테스트 시나리오, **OpenAPI 문서**. 자격은 Java/Spring Boot, 운영 SQL, **ERD 이해 · 비즈니스 상태 전이 구현(필수)**, REST, Git · CI/CD, AWS 일부, 학사 · CS/SW 전공. 우대는 Native SQL, SQS, B2B SaaS, Docker, 실시간 알림, 상태 전이 설계. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Spring Boot",
+          "운영 SQL",
+          "상태 전이 구현",
+          "AWS 일부",
+          "CS/SW 전공 학사"
+        ],
+        "can_learn": [
+          "SQS 재시도 · DLQ",
+          "검색 쿼리 인덱스",
+          "OpenAPI"
+        ]
+      },
+      "study": [
+        {
+          "topic": "지원서 상태 전이 — 허용된 이동만, 동시에 두 번 바뀌지 않게",
+          "from": "task",
+          "quote": "• 정의된 상태 전이에 따른 데이터 변경 로직 구현",
+          "priority": "core",
+          "why": "주요업무이고 자격에 '비즈니스 상태전이 구현 경험(필수)' 이 있다.",
+          "gap_check": "지원서가 '접수 → 서류 합격 → 면접 → 최종 합격/불합격' 으로만 가게 하려면 규칙을 어디에 두나(엔티티 메서드 · 전이 표)? 두 채용 담당자가 동시에 같은 지원서를 바꾸면(낙관적 잠금 · 버전)? 상태가 바뀔 때 알림 · 이력은 같은 트랜잭션에서 남기나?",
+          "drill": "Spring Boot + JPA 로 지원서 엔티티에 전이 표(현재 상태 → 허용 다음 상태)를 두고 허용되지 않은 전이는 예외를 낸다. @Version 으로 동시 수정 충돌을 재현하는 테스트를 쓰고, 전이마다 이력 테이블에 행을 남기며, 알림은 커밋 뒤 이벤트(@TransactionalEventListener AFTER_COMMIT)로 보낸다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Spring Framework — Transaction-bound Events",
+              "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction/event.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SQS 비동기 Job — 알림 · 메시지를 놓치지도 두 번 보내지도 않게",
+          "from": "task",
+          "quote": "• SQS 기반 비동기 Job 처리 개발",
+          "priority": "core",
+          "why": "주요업무이고 우대에 SQS · 실시간 알림이 있다. 지원자 · 기업에게 가는 메시지는 누락도 중복도 신뢰를 깎는다.",
+          "gap_check": "SQS 표준 큐는 최소 한 번 전달이다 — 같은 메시지를 두 번 받아도 한 번만 보내려면(멱등 키)? 처리 중 실패가 반복되면 메시지는 어디로 가나(DLQ · maxReceiveCount)? DB 커밋과 메시지 발행 사이에 서버가 죽으면(outbox)?",
+          "drill": "LocalStack 의 SQS 로 '면접 일정 알림' Job 을 만들고, 소비자가 메시지 ID 로 처리 기록을 남겨 중복 수신 시 건너뛰게 한다. 일부러 3 번 실패시켜 DLQ 로 옮겨지는지 보고, 상태 변경과 발행을 outbox 테이블로 묶은 뒤 발행기 재시작에도 누락이 없는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Amazon SQS — Dead-letter queues",
+              "url": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "지원자 검색 · 필터 · 정렬 쿼리와 인덱스",
+          "from": "task",
+          "quote": "• 검색·필터·정렬 쿼리 작성",
+          "priority": "high",
+          "why": "주요업무이고 '성능 (인덱스/쿼리) 최적화' 와 우대의 Native SQL 이 이어진다.",
+          "gap_check": "공고 · 단계 · 기간 필터 + 지원일 정렬 + 페이지네이션에 맞는 복합 인덱스 컬럼 순서는? OFFSET 이 큰 페이지가 느린 이유와 키셋 페이지네이션은? 필터 조합이 많을 때 JPA 대신 Querydsl · Native SQL 을 쓰는 기준은?",
+          "drill": "지원서 100 만 행을 만들고 흔한 필터 조합 셋에 대해 EXPLAIN 으로 인덱스 전후를 비교한다. OFFSET 50,000 페이지와 키셋(마지막 지원일 + ID) 페이지의 시간을 재고, 동적 필터를 Querydsl 로 조립하는 리포지토리를 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Use The Index, Luke — Paging Through Results",
+              "url": "https://use-the-index-luke.com/sql/partial-results/fetch-next-page",
+              "kind": "blog"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/140981",
+      "title": "HR 플랫폼 백엔드 개발 리더",
+      "site": "wanted",
+      "verdict": "경력 5-15년(공고 본문은 '6~12년, 7년차에서 13년차'). **HR 플랫폼 백엔드 리더** — **도메인 모델링 · ERD(확장성 · 정합성 · 성능)**, **Spring Boot 3.0 모듈 구조**, **AWS 인프라(ECS/Fargate · RDS · SQS · Lambda · S3 · VPC)**, 개발 표준(코드 리뷰 · API 규칙 · 패키지 구조 · 문서), **Dev/Stage/Prod · CI/CD**, 아키텍처 결정, 테스트 기반 품질, 핵심 API. 자격은 Spring Boot 3 이상 5년, ERD · 도메인 모델링, SQL 상급, AWS 중상급, REST 설계, 품질 · 안정성 · 보안, 학사 · CS/SW 전공. 우대는 **멀티테넌트 SaaS · B2B**, 이벤트 드리븐 · SQS, WebSocket 실시간 알림, CI/CD · DevOps, 멘토링. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Spring Boot 3 5년",
+          "도메인 모델링 · ERD",
+          "SQL 상급",
+          "AWS 중상급"
+        ],
+        "can_learn": [
+          "멀티테넌트 분리",
+          "모듈러 모놀리스",
+          "Fargate CI/CD"
+        ]
+      },
+      "study": [
+        {
+          "topic": "HR 도메인 모델 — 기업 · 공고 · 지원서 · 평가를 정합성 있게",
+          "from": "task",
+          "quote": "1. 도메인 모델링 및 ERD/DB 설계 (확장성·정합성·성능 중심)",
+          "priority": "core",
+          "why": "주요업무 첫 줄이고 자격에 정밀한 데이터 모델링 · 정합성 설계가 있다.",
+          "gap_check": "같은 사람이 여러 공고에 지원하면 지원자(사람)와 지원서(지원 건)를 왜 나누나? 공고가 수정돼도 이미 받은 지원서의 질문 · 조건이 바뀌지 않게 하려면(스냅숏)? 면접관 평가처럼 기업마다 항목이 다른 데이터는 어떻게 두나(정규화 vs JSON)?",
+          "drill": "기업 · 채용 담당자 · 공고 · 공고 버전 · 지원자 · 지원서 · 평가 항목 · 평가 ERD 를 그리고, 공고 수정 후에도 기존 지원서가 지원 당시 버전을 가리키는지 테스트로 확인한다. 기업별 평가 항목을 정규화 표와 JSON 컬럼 두 방식으로 만들어 '항목별 평균' 쿼리의 복잡도를 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Martin Fowler — Snapshot (Temporal patterns)",
+              "url": "https://martinfowler.com/eaaDev/Snapshot.html",
+              "kind": "blog"
+            }
+          ]
+        },
+        {
+          "topic": "멀티테넌트 SaaS — 한 기업의 지원자가 다른 기업에 보이지 않게",
+          "from": "preference",
+          "quote": "• 멀티테넌트 SaaS 또는 B2B 플랫폼 서비스 경험",
+          "priority": "core",
+          "why": "우대사항이고 HR SaaS 는 여러 기업의 개인정보(지원자)를 한 시스템에 담는다.",
+          "gap_check": "테넌트 분리를 DB 분리 · 스키마 분리 · 행 단위(tenant_id) 중 무엇으로 하나, 각각의 비용은? 행 단위일 때 모든 쿼리에 tenant_id 조건을 빠뜨리지 않게 하려면(Hibernate 필터 · RLS)? 한 기업의 대량 작업이 다른 기업을 느리게 하면?",
+          "drill": "Spring Boot 에서 요청의 테넌트를 컨텍스트에 두고 Hibernate @Filter(또는 PostgreSQL RLS)로 모든 조회에 tenant_id 를 강제한다. 다른 테넌트의 지원서 ID 로 조회하는 테스트가 404 가 되는지, 필터를 끈 네이티브 쿼리에서 새는지 확인해 규칙(네이티브 쿼리 리뷰 체크)을 적는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Hibernate — Filters",
+              "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#pc-filter",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Dev/Stage/Prod 와 ECS Fargate CI/CD",
+          "from": "task",
+          "quote": "5. Dev/Stage/Prod 환경 구성 및 CI/CD 파이프라인 구축",
+          "priority": "high",
+          "why": "주요업무다. 새 서비스라 환경과 배포 경로를 처음 까는 자리다.",
+          "gap_check": "같은 이미지를 dev → stage → prod 로 승격할 때 무엇을 환경마다 바꾸나(설정 · 비밀 · DB)? ECS 롤링 배포에서 헬스 체크가 늦게 통과하면 무엇이 생기나? DB 마이그레이션(Flyway)은 배포 전 · 후 언제 돌리고, 되돌릴 수 없는 변경은 어떻게 나누나?",
+          "drill": "GitHub Actions 로 이미지를 ECR 에 올리고 ECS Fargate dev 서비스에 자동 배포, prod 는 승인 뒤 같은 다이제스트로 배포하게 한다. Flyway 마이그레이션을 배포 앞 단계 태스크로 돌리고, 컬럼 이름 변경을 '추가 → 이중 쓰기 → 제거' 세 배포로 나누는 절차를 적는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Amazon ECS — Deploy with GitHub Actions",
+              "url": "https://docs.github.com/en/actions/use-cases-and-examples/deploying/deploying-to-amazon-elastic-container-service",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
