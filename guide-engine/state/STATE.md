@@ -3311,3 +3311,5 @@ Zendesk · Amazon Connect · Akamai) · **`A2A`·`MCP`** · **AWS 자격증을 �
 **페르소나에이아이(`personaai`) — `done`(2026-09-30), 공고 3건(원티드 Python Developer 341771 · 인프라 엔지니어 348736 · 웹 디자인 377177 — 디자인은 비개발).** 출처: 공고뿐(AICC · 챗봇 · 콜봇 · KGPT · SONA EDGE, 누적 투자 약 410 억 · 예비유니콘 · IPO 준비, 고객 KB · 삼성바이오로직스 · 포르쉐파이낸셜). 급여 · 매출은 비웠다. 다음 브리핑은 투모로로보틱스.
 
 **투모로로보틱스(`tomorrowrobotics`) — `done`(2026-09-30), 공고 3건(원티드 Physical AI Researcher 357972 · FDE 357998 · Web Platform 358839, 모두 신입-6년).** 출처: 공고뿐(One Brain, a Thousand Bodies · RFM · 물류/유통/제조 실증 · 하빌리스 플랫폼). 급여 · 투자 · 과금 · 근무지는 비웠다. 다음 브리핑은 클로버추얼패션.
+
+**클로버추얼패션(`clovf`) — `done`(2026-09-30), 공고 3건(원티드 Data Engineer 349928 · DevOps 373193 · ML Engineer 전문연구요원 157782).** 출처: 공고뿐(CLO · Marvelous Designer · Jinny · CLO-SET · CONNECT, 13-14 개국 16 오피스, 엔터프라이즈 DR). 급여 · 매출 · 근무지는 비웠다. 다음 브리핑은 클레.

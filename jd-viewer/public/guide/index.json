@@ -1616,6 +1616,18 @@
       "postings": 3,
       "study_items": 9,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "clovf",
+      "name": "클로버추얼패션",
+      "aliases": [
+        "클로버추얼패션",
+        "CLOVirtualFashion"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 9,
+      "updated_at": "2026-09-30"
     }
   ]
 }

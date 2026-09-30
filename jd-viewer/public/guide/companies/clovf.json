@@ -1,0 +1,418 @@
+{
+  "slug": "clovf",
+  "name": "클로버추얼패션",
+  "name_en": "CLO Virtual Fashion",
+  "aliases": [
+    "클로버추얼패션",
+    "CLOVirtualFashion"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "",
+  "one_liner": "3D 의상 시뮬레이션 소프트웨어 CLO · Marvelous Designer 와 협업 플랫폼 CLO-SET 을 파는 글로벌 SaaS — 데이터 엔지니어, DR 을 맡을 DevOps, 3D 생성 AI 연구원(전문연구요원)을 뽑는다",
+  "company": {
+    "business": "클로버추얼패션(CLO Virtual Fashion)은 **3D 의상 시뮬레이션 알고리즘**을 바탕으로 옷의 컨셉 · 디자인 · 제조 · 마케팅 · 피팅 · 스타일링 전 과정을 디지털로 옮기는 회사다(2009 설립). 제품은 두 겹이다 — 패션 디자이너용 3D 의상 디자인 소프트웨어 **CLO**, 게임 · 영상용 **Marvelous Designer**, **Jinny**, 그리고 의상 콘텐츠를 공유 · 협업하는 플랫폼 **CLO-SET** · **CONNECT**. 실제 옷과 디지털 옷을 태그로 잇는다고 말한다. **13-14 개국 16 개 오피스**를 둔 글로벌 SaaS 로, 데이터 팀은 전 세계 오피스 직원에게 분석용 데이터를 제공하고, DevOps 는 **엔터프라이즈 고객용 DR** 까지 책임진다. R&D 는 이미지 · 텍스트 · 영상에서 **3D 메시 · 패턴(CAD) · 아바타**를 추정하는 생성형 모델을 만든다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "Data Engineer",
+        "url": "https://www.wanted.co.kr/wd/349928",
+        "publisher": "원티드",
+        "summary": "클로버추얼패션 — 3D 의상 시뮬레이션 알고리즘 기반, 컨셉 · 디자인 · 제조 · 마케팅 · 피팅 · 스타일링. 2009 설립. 의상 디자인 SW CLO · Marvelous Designer · Jinny, 의상 콘텐츠 플랫폼 CLO-SET · CONNECT. 13 개국 16 개 오피스. 데이터 엔지니어: 프로덕트 분석용 데이터를 수집 · 정제해 글로벌 오피스에 제공, Airflow · Kafka · Flink · Spark(Databricks) ETL/ELT, BigQuery 설계, Terraform, 품질 · 거버넌스 · 비용. 3년+."
+      },
+      {
+        "title": "DevOps Engineer",
+        "url": "https://www.wanted.co.kr/wd/373193",
+        "publisher": "원티드",
+        "summary": "CLO-SET 인프라 고도화 · 재구성, CI/CD, 엔터프라이즈 고객 DR 계획 · 구성 관리, 보안 취약점. K8s · Docker · Terraform/Ansible · Datadog. 우대 DR · 글로벌 SaaS · 영어. 전형: 서류 > 과제 > 1차 > 2차(+레퍼런스). 14 개국 16 오피스."
+      },
+      {
+        "title": "Machine Learning Engineer (전문연구요원), R&D",
+        "url": "https://www.wanted.co.kr/wd/157782",
+        "publisher": "원티드",
+        "summary": "이미지 · 프롬프트 · 비디오로부터 3D polygon mesh · Parametric CAD · 3D 아바타 pose & shape 추정, Stable Diffusion 파인튜닝 · 경량화 · 서비스. 석박사 또는 2년, Python · PyTorch. 우대 mesh/graph 딥러닝 · Diffusion/StyleGAN · 그래픽스 · 기하 처리 · PBR · C++ · dockerize · onnx 온디바이스. 전형: 서류 > 폰 > 1차(기술 · 발표) > 2차(논문 세미나) > 3차. 전문연구요원."
+      }
+    ],
+    "scale": [
+      {
+        "label": "오피스",
+        "value": "13-14 개국 16 곳(공고마다 13 · 14 개국으로 다르게 적었다)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Data Engineer",
+            "url": "https://www.wanted.co.kr/wd/349928",
+            "publisher": "원티드",
+            "summary": "클로버추얼패션 — 3D 의상 시뮬레이션 알고리즘 기반, 컨셉 · 디자인 · 제조 · 마케팅 · 피팅 · 스타일링. 2009 설립. 의상 디자인 SW CLO · Marvelous Designer · Jinny, 의상 콘텐츠 플랫폼 CLO-SET · CONNECT. 13 개국 16 개 오피스. 데이터 엔지니어: 프로덕트 분석용 데이터를 수집 · 정제해 글로벌 오피스에 제공, Airflow · Kafka · Flink · Spark(Databricks) ETL/ELT, BigQuery 설계, Terraform, 품질 · 거버넌스 · 비용. 3년+."
+          },
+          {
+            "title": "DevOps Engineer",
+            "url": "https://www.wanted.co.kr/wd/373193",
+            "publisher": "원티드",
+            "summary": "CLO-SET 인프라 고도화 · 재구성, CI/CD, 엔터프라이즈 고객 DR 계획 · 구성 관리, 보안 취약점. K8s · Docker · Terraform/Ansible · Datadog. 우대 DR · 글로벌 SaaS · 영어. 전형: 서류 > 과제 > 1차 > 2차(+레퍼런스). 14 개국 16 오피스."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "3D 의상 디자인 소프트웨어(CLO · Marvelous Designer · Jinny)",
+        "how": "디자이너 · 브랜드 · 게임/영상 스튜디오에 3D 의상 소프트웨어를 판다 — 라이선스 · 구독 형태와 금액은 공고에 없다.",
+        "domains": [
+          "3D 의상 생성 AI",
+          "제품 데이터 플랫폼"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "Data Engineer",
+            "url": "https://www.wanted.co.kr/wd/349928",
+            "publisher": "원티드",
+            "summary": "클로버추얼패션 — 3D 의상 시뮬레이션 알고리즘 기반, 컨셉 · 디자인 · 제조 · 마케팅 · 피팅 · 스타일링. 2009 설립. 의상 디자인 SW CLO · Marvelous Designer · Jinny, 의상 콘텐츠 플랫폼 CLO-SET · CONNECT. 13 개국 16 개 오피스. 데이터 엔지니어: 프로덕트 분석용 데이터를 수집 · 정제해 글로벌 오피스에 제공, Airflow · Kafka · Flink · Spark(Databricks) ETL/ELT, BigQuery 설계, Terraform, 품질 · 거버넌스 · 비용. 3년+."
+          },
+          {
+            "title": "Machine Learning Engineer (전문연구요원), R&D",
+            "url": "https://www.wanted.co.kr/wd/157782",
+            "publisher": "원티드",
+            "summary": "이미지 · 프롬프트 · 비디오로부터 3D polygon mesh · Parametric CAD · 3D 아바타 pose & shape 추정, Stable Diffusion 파인튜닝 · 경량화 · 서비스. 석박사 또는 2년, Python · PyTorch. 우대 mesh/graph 딥러닝 · Diffusion/StyleGAN · 그래픽스 · 기하 처리 · PBR · C++ · dockerize · onnx 온디바이스. 전형: 서류 > 폰 > 1차(기술 · 발표) > 2차(논문 세미나) > 3차. 전문연구요원."
+          }
+        ]
+      },
+      {
+        "name": "의상 콘텐츠 플랫폼(CLO-SET · CONNECT, 엔터프라이즈)",
+        "how": "브랜드 · 제조사가 3D 의상을 공유 · 협업하는 SaaS — 엔터프라이즈 고객에게 DR 을 제공한다.",
+        "domains": [
+          "CLO-SET SaaS 인프라",
+          "제품 데이터 플랫폼"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "DevOps Engineer",
+            "url": "https://www.wanted.co.kr/wd/373193",
+            "publisher": "원티드",
+            "summary": "CLO-SET 인프라 고도화 · 재구성, CI/CD, 엔터프라이즈 고객 DR 계획 · 구성 관리, 보안 취약점. K8s · Docker · Terraform/Ansible · Datadog. 우대 DR · 글로벌 SaaS · 영어. 전형: 서류 > 과제 > 1차 > 2차(+레퍼런스). 14 개국 16 오피스."
+          },
+          {
+            "title": "Data Engineer",
+            "url": "https://www.wanted.co.kr/wd/349928",
+            "publisher": "원티드",
+            "summary": "클로버추얼패션 — 3D 의상 시뮬레이션 알고리즘 기반, 컨셉 · 디자인 · 제조 · 마케팅 · 피팅 · 스타일링. 2009 설립. 의상 디자인 SW CLO · Marvelous Designer · Jinny, 의상 콘텐츠 플랫폼 CLO-SET · CONNECT. 13 개국 16 개 오피스. 데이터 엔지니어: 프로덕트 분석용 데이터를 수집 · 정제해 글로벌 오피스에 제공, Airflow · Kafka · Flink · Spark(Databricks) ETL/ELT, BigQuery 설계, Terraform, 품질 · 거버넌스 · 비용. 3년+."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "CLO-SET SaaS 인프라",
+        "why": "DevOps 공고가 CLO-SET 인프라 고도화 · CI/CD · 엔터프라이즈 DR · 보안을 적는다.",
+        "what_to_know": [
+          "K8s 멀티 리전 DR",
+          "Terraform",
+          "Datadog",
+          "보안 취약점 관리"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "DevOps Engineer",
+            "url": "https://www.wanted.co.kr/wd/373193",
+            "publisher": "원티드",
+            "summary": "CLO-SET 인프라 고도화 · 재구성, CI/CD, 엔터프라이즈 고객 DR 계획 · 구성 관리, 보안 취약점. K8s · Docker · Terraform/Ansible · Datadog. 우대 DR · 글로벌 SaaS · 영어. 전형: 서류 > 과제 > 1차 > 2차(+레퍼런스). 14 개국 16 오피스."
+          }
+        ]
+      },
+      {
+        "name": "제품 데이터 플랫폼",
+        "why": "데이터 엔지니어 공고가 CLO · MD · CLO-SET 분석용 데이터 수집 · 정제, Airflow · Kafka · Flink · Databricks · BigQuery · Terraform · 품질 · 거버넌스 · 비용을 적는다.",
+        "what_to_know": [
+          "Kafka · Flink 스트리밍 · CDC",
+          "BigQuery 비용 최적화",
+          "데이터 품질 · 거버넌스"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Data Engineer",
+            "url": "https://www.wanted.co.kr/wd/349928",
+            "publisher": "원티드",
+            "summary": "클로버추얼패션 — 3D 의상 시뮬레이션 알고리즘 기반, 컨셉 · 디자인 · 제조 · 마케팅 · 피팅 · 스타일링. 2009 설립. 의상 디자인 SW CLO · Marvelous Designer · Jinny, 의상 콘텐츠 플랫폼 CLO-SET · CONNECT. 13 개국 16 개 오피스. 데이터 엔지니어: 프로덕트 분석용 데이터를 수집 · 정제해 글로벌 오피스에 제공, Airflow · Kafka · Flink · Spark(Databricks) ETL/ELT, BigQuery 설계, Terraform, 품질 · 거버넌스 · 비용. 3년+."
+          }
+        ]
+      },
+      {
+        "name": "3D 의상 생성 AI",
+        "why": "ML 공고가 이미지 · 프롬프트 · 비디오에서 3D 메시 · Parametric CAD · 아바타 추정, Stable Diffusion 파인튜닝 · 경량화를 적는다.",
+        "what_to_know": [
+          "메시 · 그래프 딥러닝",
+          "SMPL 아바타",
+          "Diffusion 파인튜닝",
+          "ONNX 온디바이스"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Machine Learning Engineer (전문연구요원), R&D",
+            "url": "https://www.wanted.co.kr/wd/157782",
+            "publisher": "원티드",
+            "summary": "이미지 · 프롬프트 · 비디오로부터 3D polygon mesh · Parametric CAD · 3D 아바타 pose & shape 추정, Stable Diffusion 파인튜닝 · 경량화 · 서비스. 석박사 또는 2년, Python · PyTorch. 우대 mesh/graph 딥러닝 · Diffusion/StyleGAN · 그래픽스 · 기하 처리 · PBR · C++ · dockerize · onnx 온디바이스. 전형: 서류 > 폰 > 1차(기술 · 발표) > 2차(논문 세미나) > 3차. 전문연구요원."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "전 세계 오피스가 쓰는 데이터",
+        "evidence": "• 데이터 거버넌스 정책 수립",
+        "so_what": "여러 나라 직원이 같은 숫자를 봐야 한다 — 지표 정의 · 접근 권한 · 개인정보(국가별 규제) 경험이 강점이다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "엔터프라이즈 고객이 DR 을 요구한다",
+        "evidence": "• Enterprise 고객 서비스에 대한 Infra DR 계획 수립 및 구성 관리",
+        "so_what": "RTO · RPO 를 숫자로 정하고 실제로 복구 훈련을 해 본 경험을 준비한다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "과제 · 논문 세미나로 본다",
+        "evidence": "• Python, PyTorch를 능숙하게 사용하시는 분",
+        "so_what": "ML 은 2 차가 회사가 고른 논문 세미나, DevOps 는 과제 전형이 있다 — 3D 비전 최신 논문 하나를 발표할 수 있게 준비한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "회사 홈페이지 · 매출 · 인원 · 요금제는 이번에 읽지 않았다",
+    "ML 공고(157782)는 번호가 오래돼 상시 게시로 보인다",
+    "근무지가 공고 필드에 없다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/349928",
+      "title": "Data Engineer",
+      "site": "wanted",
+      "verdict": "경력 3-10년. CLO · Marvelous Designer · CLO-SET · CONNECT 의 분석용 데이터를 모아 **글로벌 오피스 직원에게 제공**하는 데이터 플랫폼. **Airflow · Kafka · Flink · Spark(Databricks) ETL/ELT**, **BigQuery 설계 · 최적화**, **Terraform IaC**, **데이터 품질 모니터링 · 거버넌스 정책**, **비용 최적화 · 성능 튜닝**. 자격은 3년, DW 설계 · 구축, **Airflow 워크플로 운영**, **Kafka 이벤트 드리븐**, AWS/GCP. 우대는 **Flink · CDC 실시간 스트리밍**, DataOps, 컨테이너, CI/CD, AI Agent 활용. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "DW 설계",
+          "Airflow",
+          "Kafka",
+          "AWS/GCP"
+        ],
+        "can_learn": [
+          "Flink · CDC",
+          "BigQuery 비용 관리",
+          "데이터 거버넌스"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Kafka · Flink 로 실시간 파이프라인 — CDC 에서 BigQuery 까지",
+          "from": "preference",
+          "quote": "• 실시간 스트리밍 파이프라인 설계, 운영 경험(Flink, CDC)",
+          "priority": "core",
+          "why": "우대사항이고 자격요건에 Kafka 이벤트 드리븐이 있다.",
+          "gap_check": "Debezium CDC 로 받은 변경 이벤트를 BigQuery 에 넣을 때 upsert 와 삭제는 어떻게 반영하나? Flink 의 이벤트 시간 · 워터마크는 늦게 오는 이벤트를 어떻게 다루나? 정확히 한 번(exactly-once)은 어디부터 어디까지 보장되나?",
+          "drill": "Docker Compose 로 PostgreSQL → Debezium → Kafka → Flink SQL(5 분 텀블링 창 집계) → BigQuery(또는 로컬 DuckDB) 파이프라인을 만들고, 원본에서 행을 수정 · 삭제했을 때 대상에 어떻게 반영되는지 확인한다. 이벤트를 일부러 늦게 보내 워터마크 설정별 결과를 비교한다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Debezium — Documentation",
+              "url": "https://debezium.io/documentation/",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache Flink — Timely Stream Processing",
+              "url": "https://nightlies.apache.org/flink/flink-docs-stable/docs/concepts/time/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "BigQuery 설계와 비용 — 파티션 · 클러스터 · 과금 모델",
+          "from": "task",
+          "quote": "• 데이터 플랫폼 비용 최적화 및 성능 튜닝",
+          "priority": "core",
+          "why": "주요업무이고 BigQuery 설계 · 최적화가 따로 있다.",
+          "gap_check": "온디맨드(스캔 바이트)와 에디션(슬롯) 과금은 어떤 사용 패턴에서 유리한가? 날짜 파티션 + 클러스터링으로 스캔량이 얼마나 주나? 대시보드가 같은 쿼리를 반복하면 무엇을 쓰나(구체화 뷰 · BI Engine)? 누가 비용을 쓰는지 어떻게 보나(INFORMATION_SCHEMA.JOBS)?",
+          "drill": "공개 데이터셋 하나를 파티션 없음 · 날짜 파티션 · 파티션 + 클러스터 세 가지로 복사해 같은 쿼리의 스캔 바이트를 표로 비교하고, INFORMATION_SCHEMA.JOBS 로 사용자별 · 쿼리별 비용 대시보드를 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "BigQuery — Cost optimization best practices",
+              "url": "https://cloud.google.com/bigquery/docs/best-practices-costs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "글로벌 조직의 데이터 품질 · 거버넌스",
+          "from": "task",
+          "quote": "• 데이터 거버넌스 정책 수립",
+          "priority": "high",
+          "why": "주요업무이고 데이터 품질 모니터링이 함께 있다.",
+          "gap_check": "데이터 계약(스키마 · 신선도 · 오너)은 생산자와 소비자 중 누가 책임지나? 국가별 개인정보 규제(GDPR 등)가 있으면 칼럼 단위로 어떻게 가리나(정책 태그 · 동적 마스킹)? 품질 검사가 실패하면 파이프라인을 멈추나 경고만 하나?",
+          "drill": "Airflow DAG 에 dbt test(또는 Great Expectations)로 신선도 · 유일성 · 참조 무결성 검사를 넣어 실패 시 하위 태스크를 멈추게 하고, BigQuery 정책 태그로 이메일 칼럼을 권한 없는 사용자에게 가린다. 테이블마다 오너 · 갱신 주기 · SLA 를 적은 카탈로그 문서를 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "BigQuery — Column-level access control",
+              "url": "https://cloud.google.com/bigquery/docs/column-level-security-intro",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/373193",
+      "title": "DevOps Engineer",
+      "site": "wanted",
+      "verdict": "경력 3-10년. **CLO-SET 서비스 인프라 고도화 · 빠른 재구성**, **CI/CD**, 개발 · 운영 · 배포 환경 개선, **엔터프라이즈 고객 Infra DR 계획 · 구성 관리**, **보안 취약점 분석 · 체계 개선**. 자격은 클라우드 CI/CD 자동화, **Kubernetes · Docker**, **Terraform · Ansible**, **Datadog**, 문제 정의, 인프라 · 네트워크 · 앱 보안 조치. 우대는 DR 포함 경험, 글로벌 SaaS, 영어, 보안 정책. 전형은 서류 > **과제** > 1차 > 2차(+레퍼런스), 이력서 · 포트폴리오 필수. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "K8s · Docker",
+          "Terraform/Ansible",
+          "CI/CD",
+          "보안 조치"
+        ],
+        "can_learn": [
+          "멀티 리전 DR",
+          "Datadog SLO"
+        ]
+      },
+      "study": [
+        {
+          "topic": "엔터프라이즈 고객용 DR — RTO/RPO 부터 복구 훈련까지",
+          "from": "task",
+          "quote": "• Enterprise 고객 서비스에 대한 Infra DR 계획 수립 및 구성 관리",
+          "priority": "core",
+          "why": "주요업무이고 우대에도 DR 이 있다.",
+          "gap_check": "백업 · 복원, 파일럿 라이트, 웜 스탠바이, 멀티 사이트 액티브는 RTO · RPO · 비용이 어떻게 다른가? DB 는 교차 리전 복제, 3D 파일 같은 객체 저장소는 무엇으로 복제하나? DR 전환을 실제로 해 보지 않으면 무엇이 깨지나(DNS TTL · 시크릿 · 이미지 레지스트리)?",
+          "drill": "Terraform 으로 두 리전에 같은 K8s(EKS/GKE 소형) · DB 복제본 · 버킷 복제를 만들고, 주 리전을 끈 상태에서 DNS 전환 → DB 승격 → 앱 기동까지 걸린 시간(RTO)과 잃은 데이터(RPO)를 잰다. 런북 한 장을 쓰고 끝나면 모두 지운다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "AWS — Disaster recovery options in the cloud",
+              "url": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "기존 인프라를 빨리 다시 세울 수 있게 — IaC 로 옮기기",
+          "from": "task",
+          "quote": "• 기존 Infra 구조를 파악하고 빠르게 재구성할 수 있도록 개선",
+          "priority": "core",
+          "why": "주요업무다. 서비스 성장으로 인프라 복잡도가 늘었다고 공고가 적는다.",
+          "gap_check": "콘솔로 만든 기존 자원을 Terraform 으로 가져오려면(import 블록 · terraformer)? 상태 파일은 어디에 두고 잠그나? 모듈 · 환경(dev/stage/prod) 분리는 디렉터리 · 워크스페이스 중 무엇으로?",
+          "drill": "클라우드 콘솔로 VPC · 로드밸런서 · 버킷 몇 개를 손으로 만든 뒤 Terraform import 블록으로 코드화하고 plan 차이가 0 이 되게 맞춘다. 원격 상태(버킷 + 잠금)와 환경별 변수 파일로 같은 구성을 stage 에 새로 띄운다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Terraform — Import",
+              "url": "https://developer.hashicorp.com/terraform/language/import",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "인프라 · 애플리케이션 보안 취약점을 체계로",
+          "from": "task",
+          "quote": "• 서비스 인프라 및 애플리케이션 보안 취약점 분석 및 체계 개선",
+          "priority": "high",
+          "why": "주요업무이고 자격요건에 실무 보안 조치가 있다.",
+          "gap_check": "컨테이너 이미지 · IaC · 의존성 취약점을 CI 어디서 막나(Trivy · tfsec · Dependabot)? 심각도별로 막을지 알릴지 기준은? K8s 에서 권한 과다(root 실행 · 호스트 경로)를 무엇으로 막나(Pod Security Admission · Kyverno)?",
+          "drill": "GitHub Actions 에 Trivy 이미지 스캔 · tfsec · Dependabot 을 넣어 Critical 은 머지를 막고 나머지는 이슈로 남기게 한다. kind 클러스터에 Kyverno 정책(루트 금지 · 최신 태그 금지)을 걸어 위반 배포가 거부되는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Trivy",
+              "url": "https://trivy.dev/latest/docs/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/157782",
+      "title": "Machine Learning Engineer (전문연구요원), R&D",
+      "site": "wanted",
+      "verdict": "경력 2년 이상(**전문연구요원**). R&D — **이미지 · 프롬프트 · 비디오로부터 3D polygon mesh 추정**, **Parametric CAD 모델 추정**(패턴으로 읽힌다 — 이 사이트의 해석), **3D 아바타 pose & shape 추정**, **Stable Diffusion 파인튜닝 · 경량화 · 서비스**. 자격은 비전 · 그래픽스 석박사 또는 업계 2년, Vision · 3D · 생성 모델 연구, **Python · PyTorch**. 우대는 **mesh/graph 딥러닝**, Diffusion · StyleGAN, 그래픽스 · 기하 처리 · PBR, C++, dockerize API, **ONNX 온디바이스**. 전형은 서류 > 폰 > 1차(기술 · 발표) > **2차(회사가 고른 논문 세미나)** > 3차(+레퍼런스). 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "비전 · 그래픽스 석박사 또는 2년",
+          "PyTorch",
+          "3D · 생성 모델 연구"
+        ],
+        "can_learn": [
+          "SMPL 아바타",
+          "메시 처리",
+          "ONNX 경량화"
+        ]
+      },
+      "study": [
+        {
+          "topic": "사진 한 장에서 아바타 체형 · 자세 — SMPL 파라미터 추정",
+          "from": "task",
+          "quote": "• 다양한 입력으로부터 3D 아바타 pose & shape 추정 모델 개발 및 고도화",
+          "priority": "core",
+          "why": "주요업무다. 옷을 입힐 아바타가 사용자 체형과 맞아야 피팅이 의미 있다.",
+          "gap_check": "SMPL 의 β(체형) 와 θ(자세)는 각각 무엇을 나타내나? 옷을 입은 사진에서 체형을 추정하면 무엇이 틀어지나(헐렁한 옷)? 2D 키포인트 재투영 손실만으로 학습하면 깊이 모호성이 왜 생기나?",
+          "drill": "공개 모델(HMR2.0/4D-Humans 또는 SMPLer-X)로 사진 몇 장에서 SMPL 을 추정해 메시를 렌더링하고, 같은 사람의 헐렁한 옷 · 딱 붙는 옷 사진에서 β 가 얼마나 달라지는지 비교한다. 결과와 실패 사례를 한 쪽 보고서로 쓴다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "SMPL — A Skinned Multi-Person Linear Model",
+              "url": "https://smpl.is.tue.mpg.de/",
+              "kind": "docs"
+            },
+            {
+              "title": "4D-Humans (HMR 2.0)",
+              "url": "https://github.com/shubham-goel/4D-Humans",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "메시를 다루는 딥러닝 — 그래프로서의 3D 메시",
+          "from": "preference",
+          "quote": "• Mesh or Graph를 다루는 딥러닝 모델을 활용한 프로젝트 경험이 있는 분",
+          "priority": "core",
+          "why": "우대사항이고 주요업무가 3D polygon mesh 추정이다.",
+          "gap_check": "메시를 정점 · 간선 그래프로 보면 어떤 연산(그래프 컨볼루션 · 라플라시안)을 쓰나? 템플릿 메시를 변형하는 방식과 암시적 표면(SDF)에서 메시를 뽑는 방식(마칭 큐브)은 무엇이 다른가? Chamfer 거리만 쓰면 메시가 왜 지저분해지나(정규화 항)?",
+          "drill": "PyTorch3D 로 구 템플릿 메시를 목표 메시(예: 티셔츠 형태)로 변형하는 최적화를 Chamfer + 라플라시안 평활 + 간선 길이 손실로 돌리고, 정규화 가중치별 결과를 렌더링해 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "PyTorch3D — Deform a source mesh to form a target mesh",
+              "url": "https://pytorch3d.org/tutorials/deform_source_mesh_to_target_mesh",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "생성형 모델을 제품에 — Stable Diffusion 파인튜닝과 경량화",
+          "from": "task",
+          "quote": "• Stable Diffusion 과 같은 거대 생성형 모델을 목적에 맞게 fine-tune, 경량화 및 서비스",
+          "priority": "high",
+          "why": "주요업무이고 우대에 ONNX 온디바이스 서비스가 있다.",
+          "gap_check": "원단 텍스처 · 의상 스타일에 맞추려면 LoRA · DreamBooth · ControlNet 중 무엇을 쓰나? 추론 스텝 수를 줄이는 방법(증류 · LCM)은 품질을 얼마나 잃나? ONNX 로 내보낼 때 흔히 막히는 곳은?",
+          "drill": "diffusers 로 원단 텍스처 이미지 몇십 장에 LoRA 를 학습해 '타일링되는 원단 텍스처' 를 생성하고, LCM-LoRA 로 스텝을 4 로 줄였을 때 품질 · 속도를 비교한다. UNet 을 ONNX 로 내보내 onnxruntime 으로 돌려 본다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Hugging Face diffusers — LoRA training",
+              "url": "https://huggingface.co/docs/diffusers/training/lora",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
