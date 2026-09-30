@@ -288,6 +288,7 @@ def check() -> tuple[list[str], list[dict], dict, dict, dict]:
             if set(g.get(k, {})) != {"fhd", "qhd", "uhd"}:
                 errs.append(f"bench.json {g.get('key')}: {k} 는 fhd·qhd·uhd 셋")
     errs.extend(check_guide(ids))
+    errs.extend(check_datacenter())
     merrs, todo = check_models(ids, {p["id"]: p.get("category") for p in parts}, prices)
     errs.extend(merrs)
     prices["_model_todo"] = todo
@@ -385,6 +386,111 @@ def gaps(parts: list[dict], bench: dict, prices: dict) -> None:
     print(f"9. 메모리 슬롯 수 모르는 보드 제품 {sum(max(v, 0) for v in no_slots.values())}: "
           + (", ".join(f"{k} {'파일 없음' if v < 0 else v}" for k, v in top) or "-")
           + f" · 메모리 한도 없는 소켓 {len(sockets)}: {', '.join(sockets) or '-'}")
+    dc_gaps()
+
+
+# ── AI 데이터센터 (public/hardware/datacenter.json) ─────────────────────
+#
+# 회사별 칩 수·성능 환산·금액·시장 조사. 매출·설비투자·칩 수는 분기마다 바뀌어 오래 두면 틀린 숫자가 된다.
+# 형식 검사는 check_datacenter, 일감(10번)은 dc_gaps — hw-datacenter 레인이 오래된 것부터 다시 조사한다.
+
+DC_PATH = HW / "datacenter.json"
+DC_STALE_DAYS = 90        # 섹션(market·money·ratios) 확인일이 이보다 오래되면 다시 조사
+DC_CLUSTER_STALE_DAYS = 365  # 가동 중인 데이터센터의 as_of 가 이보다 오래되면 다시 조사
+DC_REGIONS = {"US", "CN", "KR", "JP", "EU", "ME", "IN", "OTHER"}
+
+
+def _dc_srcs(errs: list[str], where: str, xs) -> None:
+    if not xs:
+        errs.append(f"datacenter.json {where}: 출처가 없다")
+    for s in xs or []:
+        u = s.get("url") if isinstance(s, dict) else s
+        if not str(u or "").startswith(("http://", "https://")):
+            errs.append(f"datacenter.json {where}: 출처 url 이 이상하다")
+
+
+def check_datacenter() -> list[str]:
+    """숫자마다 출처, 환산에 쓰는 칩 이름이 사양비 표에 있나, 합계 규칙 필드가 맞나."""
+    if not DC_PATH.exists():
+        return []
+    errs: list[str] = []
+    try:
+        d = json.loads(DC_PATH.read_text(encoding="utf-8"))
+    except ValueError as e:
+        return [f"datacenter.json: JSON 이 깨졌다 {e}"]
+    ratio_names = {r.get("name") for r in d.get("ratios", [])}
+    for r in d.get("ratios", []):
+        if not isinstance(r.get("ratio"), (int, float)) or r["ratio"] <= 0:
+            errs.append(f"datacenter.json ratios/{r.get('name')}: ratio 가 양수가 아니다")
+        _dc_srcs(errs, f"ratios/{r.get('name')}", r.get("sources"))
+    keys: set[str] = set()
+    for c in d.get("clusters", []):
+        w = f"clusters/{c.get('key')}"
+        if not c.get("key") or c["key"] in keys:
+            errs.append(f"datacenter.json {w}: key 가 없거나 겹친다")
+        keys.add(c.get("key"))
+        if c.get("status") not in ("operational", "planned", "past"):
+            errs.append(f"datacenter.json {w}: status 는 operational·planned·past")
+        if c.get("confidence") not in ("official", "estimate"):
+            errs.append(f"datacenter.json {w}: confidence 는 official·estimate")
+        if c.get("region") not in DC_REGIONS:
+            errs.append(f"datacenter.json {w}: 모르는 region {c.get('region')}")
+        if not re.match(r"^\d{4}(-\d{2})?$", str(c.get("as_of", ""))):
+            errs.append(f"datacenter.json {w}: as_of 는 YYYY 또는 YYYY-MM")
+        if c.get("chip_key") and c["chip_key"] not in ratio_names:
+            errs.append(f"datacenter.json {w}: 사양비 표에 없는 chip_key {c['chip_key']}")
+        for m in c.get("mix") or []:
+            if m.get("chip_key") not in ratio_names:
+                errs.append(f"datacenter.json {w}: mix 에 사양비 표에 없는 칩 {m.get('chip_key')}")
+        _dc_srcs(errs, w, c.get("sources"))
+    for n in d.get("national", []):
+        _dc_srcs(errs, f"national/{n.get('scope')}", n.get("sources"))
+    money = d.get("money") or {}
+    for u in money.get("unit_prices", []):
+        if u.get("chip_key") not in ratio_names:
+            errs.append(f"datacenter.json money/unit_prices: 사양비 표에 없는 칩 {u.get('chip_key')}")
+        _dc_srcs(errs, f"money/unit_prices/{u.get('chip_key')}", u.get("sources"))
+    for c in money.get("capex", []):
+        _dc_srcs(errs, f"money/capex/{c.get('company')}", c.get("sources"))
+    for c in money.get("commitments", []):
+        _dc_srcs(errs, f"money/commitments/{c.get('who')}·{c.get('deal')}", [c.get("src")])
+    market = d.get("market") or {}
+    for b in market.get("business", []):
+        _dc_srcs(errs, f"market/business/{b.get('company')}", b.get("sources"))
+    fx = d.get("fx") or {}
+    if fx:
+        if not isinstance(fx.get("krw_per_usd"), (int, float)):
+            errs.append("datacenter.json fx: krw_per_usd 가 숫자가 아니다")
+        _dc_srcs(errs, "fx", fx.get("sources"))
+    return errs
+
+
+def dc_gaps() -> None:
+    """10번 — AI 데이터센터에서 다시 조사할 것: 오래된 섹션, 오래된 가동 데이터센터, 환산이 빠진 회사."""
+    if not DC_PATH.exists():
+        return
+    d = json.loads(DC_PATH.read_text(encoding="utf-8"))
+    today = date.today()
+
+    def age(s: str | None) -> int | None:
+        if not s:
+            return None
+        s = s if len(s) > 7 else (s + "-01" if len(s) == 7 else s + "-01-01")
+        try:
+            return (today - datetime.strptime(s[:10], "%Y-%m-%d").date()).days
+        except ValueError:
+            return None
+
+    checked = d.get("checked") or {}
+    old_sections = [k for k in ("clusters", "ratios", "money", "market", "fx") if (a := age(checked.get(k))) is None or a > DC_STALE_DAYS]
+    ratio_names = {r["name"] for r in d.get("ratios", [])}
+    live = [c for c in d.get("clusters", []) if c.get("status") == "operational" and c.get("in_total", True)]
+    old = sorted((c for c in live if (age(c.get("as_of")) or 0) > DC_CLUSTER_STALE_DAYS), key=lambda c: -(c.get("count") or c.get("h100eq") or 0))
+    no_eq = sorted({c["company"] for c in live if c.get("h100eq") is None and not c.get("fp16_pflops")
+                    and not (c.get("chip_key") in ratio_names or (c.get("mix") and all(m["chip_key"] in ratio_names for m in c["mix"])))})
+    print(f"10. AI 데이터센터 — 확인 {DC_STALE_DAYS}일 넘은 섹션 {len(old_sections)}: {', '.join(old_sections) or '-'}"
+          f" · 1년 넘은 가동 데이터센터 {len(old)}: {', '.join(f'{c['company']}/{c['name']}' for c in old[:6]) or '-'}"
+          f" · H100 환산이 빠진 회사 {len(no_eq)}: {', '.join(no_eq[:8]) or '-'}")
 
 
 def main(argv: list[str]) -> int:

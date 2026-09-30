@@ -36,11 +36,31 @@
 |---|---|---|---|
 | 부품·벤치 | `hw-engine` | 1~5 · 7 · 8 | `parts.json` · `bench.json` · `index.json` · `guide.json` · `state/{LOG,STATE,QUEUE}.md` |
 | 제품 스펙 | `hw-models` | 6 · 9 | `models/*.json` · `state/models/` |
+| AI 데이터센터 | `hw-datacenter` | 10 | `datacenter.json` · `state/datacenter/` |
 | 형식 | (루프 아님) | `state/REQUESTS.md` | `schema.json` · `validate.py` · 이 문서 · 뷰어 코드 |
 
 - 루프는 **제 레인 파일만** 고치고, 커밋할 때도 그 경로만 `git add` 한다(`git add -A`·`commit -a` 금지).
 - 형식을 바꿔야 하면 루프는 고치지 않고 `state/REQUESTS.md` 에 한 줄 적는다 — 사람이 지시한 세션이 모아 처리한다.
 - 가격·완제품은 크롤 단계(`cycle-hardware` → `cycle-prebuilt`)가 하루 한 번 받는다. 두 레인 다 읽기만 한다.
+
+## AI 데이터센터 레인 (`datacenter.json`, 뷰어 `/hardware/datacenter`)
+
+회사별로 가진 칩 수와 성능 환산, 데이터센터 값·설비투자·약정(금액), 수익 구조·임대가·감가상각·고장률(시장 조사).
+매출·설비투자·칩 수는 분기마다 바뀐다 — 오래 두면 틀린 숫자가 된다. 일감은 `--gaps` 10번이다.
+
+1. **숫자마다 출처 URL 과 공식·추정·계획 구분.** 회사 공시(10-K·8-K·20-F·실적 자료)·공식 발표가 먼저, 그다음 Epoch AI·
+   SemiAnalysis·Reuters·Bloomberg·FT 같은 곳. 원문을 열지 못한 숫자는 넣지 않는다(2차 요약만 봤으면 `estimate` 로 쓰고 메모에 적는다).
+   출처끼리 다르면 둘 다 적는다.
+2. **합계에서 두 번 세지 않는다.** 다른 행의 일부이거나 겹치는 행은 `in_total: false`. 정부·나라 합계는 `national` 에만.
+   빌려 쓰는 칩은 쓰는 회사 쪽에 세고 메모에 소유자를 적는다.
+3. **환산 잣대는 하나다** — 출처가 밝힌 H100 환산(`h100eq`)이 먼저, 없으면 칩 수 × `ratios`(H100 대비 FP8 밀집 비,
+   FP8 없는 칩은 BF16), 연산량만 공시했으면 `fp16_pflops`. `chip_key` 는 `ratios` 에 있는 이름만 — 공식 사양이 없는 칩은
+   `ratios` 에 넣지 않고 `chip_key: null` 로 둔다(짐작한 사양으로 채우지 않는다).
+4. **금액은 방법을 가른다** — 데이터센터의 Epoch 건설비(`cost_usd`) → 전력 × GW 당 비용 → 칩 수 × `unit_prices`.
+   공시 설비투자(`money.capex`)는 회사 전체 값이다(AI 만이 아니다).
+5. **한 사이클 = 가장 오래된 것부터 몇 개.** 10번이 보이는 순서: 확인 90일 넘은 섹션(`checked`) → 1년 넘은 가동 데이터센터 →
+   H100 환산이 빠진 회사. 고친 섹션은 `checked` 날짜를 오늘로 바꾼다. 환율(`fx`)은 ECB 기준환율로 교차 계산한다.
+6. `state/datacenter/LOG.md` 에 한 단락, `STATE.md` 를 갱신하고 `docs(hardware)` 로 커밋한다.
 
 ## 규칙 (어기면 안 되는 것)
 

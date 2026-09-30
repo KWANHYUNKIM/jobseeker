@@ -72,6 +72,7 @@ HW_PARTS_OWNS = ["jd-viewer/public/hardware/parts.json", "jd-viewer/public/hardw
 HW_REQUESTS = "hw-engine/state/REQUESTS.md"  # 두 레인이 형식 변경 요청을 한 줄씩 덧붙인다
 HW_PARTS_OWNS.append(HW_REQUESTS)
 HW_MODELS_OWNS = ["jd-viewer/public/hardware/models/", "hw-engine/state/models/", HW_REQUESTS]
+HW_DC_OWNS = ["jd-viewer/public/hardware/datacenter.json", "hw-engine/state/datacenter/", HW_REQUESTS]
 
 REGISTRY: list[Loop] = [
     # ── launchd (맥) ──────────────────────────────────────────────────
@@ -143,6 +144,19 @@ REGISTRY: list[Loop] = [
              "validate.py 가 통과하면 hw-engine/state/models/LOG.md 에 한 단락, STATE.md 를 갱신하고 "
              "docs(hardware) 로 커밋한다. 푸시는 하지 않는다. 무엇을 했는지 한두 줄로 보고한다."
              + _lane(HW_MODELS_OWNS, HW_REQUESTS))),
+    # AI 데이터센터 — 회사별 칩 수·금액·시장 조사. 매출·설비투자는 분기마다 바뀌어 90일이면 다시 본다.
+    Loop("hw-datacenter", "AI 데이터센터 — 칩·금액·시장", "claude-loop", "any", "분기 실적 뒤(주 1회면 충분)", 24 * 90,
+         "/loop <prompt>", ["jd-viewer/public/hardware/datacenter.json"],
+         check="python -X utf8 hw-engine/validate.py --gaps", owns=HW_DC_OWNS, backlog="hw_datacenter",
+         prompt=(
+             "AI 데이터센터 레인 한 사이클: hw-engine/PROMPT.md 의 'AI 데이터센터 레인' 규칙 1~6 을 따른다. "
+             "상태는 hw-engine/state/datacenter/STATE.md 에서 읽는다. 일감은 validate.py --gaps 의 10번이다 — "
+             "확인 90일 넘은 섹션 → 1년 넘은 가동 데이터센터 → H100 환산이 빠진 회사 순으로 한 사이클 3~5개를 새 공시·보도로 바꾼다. "
+             "숫자마다 출처 URL 과 공식·추정·계획 구분, 원문을 못 연 숫자는 넣지 않는다, 겹치는 행은 in_total:false, "
+             "공식 사양이 없는 칩은 ratios 에 넣지 않는다. 고친 섹션의 checked 날짜를 오늘로. validate.py 가 통과하면 "
+             "state/datacenter/LOG.md 에 한 단락, STATE.md 를 갱신하고 docs(hardware) 로 커밋한다. 푸시는 하지 않는다. "
+             "무엇을 했는지 한두 줄로 보고한다."
+             + _lane(HW_DC_OWNS, HW_REQUESTS))),
 ]
 
 BY_KEY = {l.key: l for l in REGISTRY}
@@ -185,7 +199,30 @@ def _hw_models_backlog() -> str | None:
     return "스펙 조사 전 매물 " + " · ".join(f"{c} {n}" for c, n in sorted(left.items(), key=lambda kv: -kv[1]))
 
 
-BACKLOG = {"hw_models": _hw_models_backlog}
+def _hw_datacenter_backlog() -> str | None:
+    """AI 데이터센터 — 확인 90일 넘은 섹션 수 · 1년 넘은 가동 데이터센터 수 (validate.py --gaps 10번과 같은 기준)"""
+    try:
+        d = json.loads((PUBLIC / "hardware" / "datacenter.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    now = datetime.now()
+
+    def days(s: str | None) -> int | None:
+        if not s:
+            return None
+        s = s if len(s) >= 10 else (s + "-01" if len(s) == 7 else s + "-01-01")
+        try:
+            return (now - datetime.strptime(s[:10], "%Y-%m-%d")).days
+        except ValueError:
+            return None
+
+    checked = d.get("checked") or {}
+    old_sec = sum(1 for k in ("clusters", "ratios", "money", "market", "fx") if (a := days(checked.get(k))) is None or a > 90)
+    old_dc = sum(1 for c in d.get("clusters", []) if c.get("status") == "operational" and c.get("in_total", True) and (days(c.get("as_of")) or 0) > 365)
+    return f"섹션 {old_sec} · 데이터센터 {old_dc}"
+
+
+BACKLOG = {"hw_models": _hw_models_backlog, "hw_datacenter": _hw_datacenter_backlog}
 
 
 # ── 상태 ─────────────────────────────────────────────────────────────

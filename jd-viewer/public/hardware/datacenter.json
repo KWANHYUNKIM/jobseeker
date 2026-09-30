@@ -845,14 +845,14 @@
    "region": "US",
    "name": "Aurora (Argonne)",
    "chip": "Intel Data Center GPU Max 1550",
-   "chip_key": "Intel Max 1550",
+   "chip_key": null,
    "count": 63744,
    "mw": null,
    "status": "operational",
    "confidence": "official",
    "as_of": "2025-01",
    "in_total": true,
-   "note": "10,624 노드.",
+   "note": "10,624 노드. Intel 공식 사양 페이지에 연산 성능(BF16·FP8)이 없어 환산하지 않는다(메모리 128GB·600W 만 공개).",
    "sources": [
     {
      "title": "ALCF: Aurora",
@@ -2073,14 +2073,14 @@
    "region": "EU",
    "name": "Dawn (케임브리지)",
    "chip": "Intel Data Center GPU Max 1550",
-   "chip_key": "Intel Max 1550",
+   "chip_key": null,
    "count": 1024,
    "mw": null,
    "status": "operational",
    "confidence": "official",
    "as_of": "2023-11",
    "in_total": true,
-   "note": "Dell XE9640 256대 × 4. MI355X 업그레이드는 수 비공개.",
+   "note": "Dell XE9640 256대 × 4. MI355X 업그레이드는 수 비공개. Intel 공식 사양 페이지에 연산 성능(BF16·FP8)이 없어 환산하지 않는다(메모리 128GB·600W 만 공개).",
    "sources": [
     {
      "title": "Intel",
@@ -2601,14 +2601,14 @@
    "region": "CN",
    "name": "Kunlun P800 3만 장 클러스터",
    "chip": "Kunlunxin P800",
-   "chip_key": "Kunlun P800",
+   "chip_key": null,
    "count": 30000,
    "mw": null,
    "status": "operational",
    "confidence": "official",
    "as_of": "2025-04",
    "in_total": true,
-   "note": "Baidu Create 2025 공개. 2025-02 에 1만 장으로 켠 뒤 3만 장으로 늘렸다(3.2만이라는 보도도 있다). NVIDIA 보유량은 공개 수가 없다.",
+   "note": "Baidu Create 2025 공개. 2025-02 에 1만 장으로 켠 뒤 3만 장으로 늘렸다(3.2만이라는 보도도 있다). NVIDIA 보유량은 공개 수가 없다. Kunlun P800 은 공식 칩 사양이 공개되지 않아 환산하지 않는다.",
    "sources": [
     {
      "title": "Caixin Global",
@@ -2742,14 +2742,14 @@
    "region": "CN",
    "name": "페이싱 1호(飞星一号)",
    "chip": "Huawei Ascend 910B",
-   "chip_key": "Ascend 910B",
+   "chip_key": null,
    "count": 10000,
    "mw": null,
    "status": "operational",
    "confidence": "official",
    "as_of": "2023-10",
    "in_total": true,
-   "note": "Huawei 와 2023-10 가동한 '만 장급' 국산 플랫폼(정확한 수가 아니라 급). 페이싱 2호는 장수 비공개.",
+   "note": "Huawei 와 2023-10 가동한 '만 장급' 국산 플랫폼(정확한 수가 아니라 급). 페이싱 2호는 장수 비공개. Ascend 910B 는 공식 칩 사양이 공개되지 않아 환산하지 않는다(보도값이 서로 다르다).",
    "sources": [
     {
      "title": "21경제망",
@@ -4663,6 +4663,28 @@
       "url": "https://newsletter.semianalysis.com/p/amazons-ai-self-sufficiency-trainium2-architecture-networking"
      }
     ]
+   },
+   {
+    "chip_key": "A100",
+    "usd": 12000,
+    "basis": "Epoch 추정 1.2만",
+    "sources": [
+     {
+      "title": "Epoch AI 칩 단가 추정",
+      "url": "https://epoch.ai/data/ai_chip_sales_chip_types.csv"
+     }
+    ]
+   },
+   {
+    "chip_key": "H800",
+    "usd": 30000,
+    "basis": "Epoch 추정 3만(중국 판매용 H100)",
+    "sources": [
+     {
+      "title": "Epoch AI 칩 단가 추정",
+      "url": "https://epoch.ai/data/ai_chip_sales_chip_types.csv"
+     }
+    ]
    }
   ],
   "per_gw": {
@@ -5085,5 +5107,23 @@
    "claim": "미국 빅4 하이퍼스케일러 2026 설비투자 약 7,450억 달러(FT 집계) · Epoch 추세 5곳 7,700억",
    "src": "https://www.tomshardware.com/tech-industry/big-tech/big-tech-spends-more-than-usd1-trillion-on-ai-infrastructure-additional-usd745-billion-expected-to-be-added-to-the-figure-in-2026-alone"
   }
+ },
+ "fx": {
+  "krw_per_usd": 1353.36,
+  "as_of": "2026-09-29",
+  "basis": "ECB 기준환율 — 1유로 = 1.1355달러 = 1,536.74원에서 교차 계산",
+  "sources": [
+   {
+    "title": "ECB 유로 기준환율(일간)",
+    "url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
+   }
+  ]
+ },
+ "checked": {
+  "clusters": "2026-09-30",
+  "ratios": "2026-09-30",
+  "money": "2026-09-30",
+  "market": "2026-09-30",
+  "fx": "2026-09-29"
  }
 }
