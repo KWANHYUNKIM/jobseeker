@@ -1,0 +1,271 @@
+{
+  "slug": "crabl",
+  "name": "크래블",
+  "name_en": "Crabl",
+  "aliases": [
+    "크래블"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": null,
+  "one_liner": "농업 전자동화(과수원 자율주행 방제기 · 부착형 자율주행 Kit · 농기계 텔레매틱스) — Jetson 엣지 비전과 STM32 · CAN · LoRaWAN 펌웨어 개발자를 뽑는다",
+  "company": {
+    "business": "크래블은 **농업의 전자동화**를 하는 회사다 — 공고는 '첨단기술로 1 차 산업의 근본 문제를 해결한다' 를 내걸고, **국내 최초 농기계 텔레매틱스 시스템**, 과수원 대상 **완전자율주행 농약 살포기(SS 기) 상용화**, **기존 농기계에 붙이는 자율주행 Kit**, **협동 로봇 플랫폼**을 든다. 농촌의 구인난 · 고임금 · 고령화를 자동 · 무인화로 풀겠다는 것이다. 모집중 둘이 기계의 두 층을 보여 준다 — 자율주행 농기계 · 농작업 로봇에 올리는 **Jetson 엣지 비전**(장애물 · 작업 구역 · 위험 인식)과, 자율주행 Kit · 텔레매틱스 장비의 **STM32 펌웨어**(CAN · LoRaWAN · 센서 · 액추에이터). 근무는 월-금 10-18 **단축 근무**다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "엣지 비전 솔루션 개발자",
+        "url": "https://www.wanted.co.kr/wd/369360",
+        "publisher": "원티드",
+        "summary": "크래블 — 첨단기술로 1 차 산업의 전자동화. 국내 최초 농기계 텔레매틱스, 과수원 완전자율주행 농약 살포기(SS 기) 상용화, 기존 농기계 부착형 자율주행 Kit, 협동 로봇 플랫폼. 구인난 · 고임금 · 고령화. 업무: 자율주행 농기계 · 무인 농작업 로봇의 엣지 비전, Jetson 실시간 인식, Detection · Segmentation · Mask, 장애물 · 작업 구역 · 위험 판단, Jetson 배포 · 튜닝, GStreamer · DeepStream 파이프라인, 현장 데이터셋 · 라벨링 기준 · 재학습, RTK-INS · LiDAR 연계. 월-금 10-18(단축근무), 급여 면접 후."
+      },
+      {
+        "title": "임베디드(펌웨어) 개발자",
+        "url": "https://www.wanted.co.kr/wd/372341",
+        "publisher": "원티드",
+        "summary": "STM32 Non-OS 펌웨어, LoRaWAN 무선 모듈 · 노드 제어, CAN · UART · RS-232/485 · SPI · I2C 컨트롤러, 자율주행 KIT · 텔레매틱스 MCU, 센서 · 액추에이터 · 통신 연동, 농기계 CAN 송수신 · 장비 간 프로토콜, 필드 테스트 · 로그 · 디버깅, 인증 · 생산 테스트 · 양산. 우대 LoRaWAN · CAN · HAL · 저전력 · 재전송 · OTA/부트로더 · LTE Cat.M1 · GNSS · EMI."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "자율주행 농기계 · Kit · 텔레매틱스 판매",
+        "how": "자율주행 농약 살포기 · 부착형 자율주행 Kit · 텔레매틱스 장비를 농가 · 농기계 업체에 판다고 읽힌다 — 판매 · 구독 구성은 읽은 자료에 없다.",
+        "domains": [
+          "농기계 엣지 비전",
+          "농기계 제어 · 통신 펌웨어"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "엣지 비전 솔루션 개발자",
+            "url": "https://www.wanted.co.kr/wd/369360",
+            "publisher": "원티드",
+            "summary": "크래블 — 첨단기술로 1 차 산업의 전자동화. 국내 최초 농기계 텔레매틱스, 과수원 완전자율주행 농약 살포기(SS 기) 상용화, 기존 농기계 부착형 자율주행 Kit, 협동 로봇 플랫폼. 구인난 · 고임금 · 고령화. 업무: 자율주행 농기계 · 무인 농작업 로봇의 엣지 비전, Jetson 실시간 인식, Detection · Segmentation · Mask, 장애물 · 작업 구역 · 위험 판단, Jetson 배포 · 튜닝, GStreamer · DeepStream 파이프라인, 현장 데이터셋 · 라벨링 기준 · 재학습, RTK-INS · LiDAR 연계. 월-금 10-18(단축근무), 급여 면접 후."
+          },
+          {
+            "title": "임베디드(펌웨어) 개발자",
+            "url": "https://www.wanted.co.kr/wd/372341",
+            "publisher": "원티드",
+            "summary": "STM32 Non-OS 펌웨어, LoRaWAN 무선 모듈 · 노드 제어, CAN · UART · RS-232/485 · SPI · I2C 컨트롤러, 자율주행 KIT · 텔레매틱스 MCU, 센서 · 액추에이터 · 통신 연동, 농기계 CAN 송수신 · 장비 간 프로토콜, 필드 테스트 · 로그 · 디버깅, 인증 · 생산 테스트 · 양산. 우대 LoRaWAN · CAN · HAL · 저전력 · 재전송 · OTA/부트로더 · LTE Cat.M1 · GNSS · EMI."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "농기계 엣지 비전",
+        "why": "비전 공고가 Jetson 위 실시간 인식(장애물 · 작업 구역 · 위험), Segmentation · Mask 모델, 현장 데이터셋 · 라벨링 기준, RTK-INS · LiDAR 연계를 적는다.",
+        "what_to_know": [
+          "세그멘테이션 모델(SegFormer 등)",
+          "Jetson 발열 · 전력",
+          "현장 라벨링 기준"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "엣지 비전 솔루션 개발자",
+            "url": "https://www.wanted.co.kr/wd/369360",
+            "publisher": "원티드",
+            "summary": "크래블 — 첨단기술로 1 차 산업의 전자동화. 국내 최초 농기계 텔레매틱스, 과수원 완전자율주행 농약 살포기(SS 기) 상용화, 기존 농기계 부착형 자율주행 Kit, 협동 로봇 플랫폼. 구인난 · 고임금 · 고령화. 업무: 자율주행 농기계 · 무인 농작업 로봇의 엣지 비전, Jetson 실시간 인식, Detection · Segmentation · Mask, 장애물 · 작업 구역 · 위험 판단, Jetson 배포 · 튜닝, GStreamer · DeepStream 파이프라인, 현장 데이터셋 · 라벨링 기준 · 재학습, RTK-INS · LiDAR 연계. 월-금 10-18(단축근무), 급여 면접 후."
+          }
+        ]
+      },
+      {
+        "name": "농기계 제어 · 통신 펌웨어",
+        "why": "펌웨어 공고가 STM32 Non-OS, 농기계 CAN, LoRaWAN, 센서 · 액추에이터 제어, 필드 디버깅 · 양산을 적는다.",
+        "what_to_know": [
+          "CAN · J1939",
+          "LoRaWAN 클래스 · 재전송",
+          "부트로더 · OTA"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "임베디드(펌웨어) 개발자",
+            "url": "https://www.wanted.co.kr/wd/372341",
+            "publisher": "원티드",
+            "summary": "STM32 Non-OS 펌웨어, LoRaWAN 무선 모듈 · 노드 제어, CAN · UART · RS-232/485 · SPI · I2C 컨트롤러, 자율주행 KIT · 텔레매틱스 MCU, 센서 · 액추에이터 · 통신 연동, 농기계 CAN 송수신 · 장비 간 프로토콜, 필드 테스트 · 로그 · 디버깅, 인증 · 생산 테스트 · 양산. 우대 LoRaWAN · CAN · HAL · 저전력 · 재전송 · OTA/부트로더 · LTE Cat.M1 · GNSS · EMI."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "이미 들판에서 돌고 있다",
+        "evidence": "이미 크래블의 전자동화는 상용화로 그 기술성을 입증했고, 국내 최초라는 수식어와 함께",
+        "so_what": "연구보다 현장 안정화가 일이다 — 먼지 · 햇빛 · 진동 · 전원 불안정 속에서 돌린 경험이 강점이다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "현장 조건을 직접 묻는다",
+        "evidence": "EMI/노이즈, 전원 불안정, 현장 환경 이슈를 고려한 제품 개발 경험이 있는 분",
+        "so_what": "펌웨어는 실험실이 아니라 트랙터 위 환경을 전제로 한다 — 필드 로그로 버그를 잡은 사례를 준비한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: '면접 후 협의' — 비워 둔다",
+    "회사 홈페이지를 찾지 않았다 — 매출 · 인원 · 투자 · 근무지는 모른다",
+    "제품 판매 · 구독 · 임대 구성은 모른다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/369360",
+      "title": "엣지 비전 솔루션 개발자",
+      "site": "wanted",
+      "verdict": "경력 2-20년. **자율주행 농기계 · 무인 농작업 로봇의 엣지 비전**, **NVIDIA GPU · Jetson 실시간 인식**, **Detection · Semantic/Instance Segmentation · Mask 모델**, **장애물 감지 · 작업 구역 인식 · 위험 판단**, **Jetson Orin/Xavier/Nano 배포 · 튜닝 · 안정화**, OpenCV · GStreamer · DeepStream 파이프라인, **현장 실증 데이터로 데이터셋 · 라벨링 기준 · 재학습**, RTK-INS · LiDAR 연계 인지. 자격은 CV · 딥러닝, Python/C++, PyTorch · OpenCV, **Jetson 에서 모델 구동**, 세그멘테이션 이해, 데이터 수집 · 라벨링 · 검증, **mAP · IoU · FPS · Latency 지표**, 제품 최적화 관심. 우대는 TensorRT · DeepStream, YOLO · Mask R-CNN · SAM · SegFormer, 실외 자율주행 · 농기계 · 드론, **발열 · 전력 · 메모리 최적화**, 멀티센서 융합, **농업 현장 데이터**, PoC 적용. 단축 근무(10-18), 급여 면접 후.",
+      "fit": {
+        "must_have": [
+          "CV · 딥러닝",
+          "Jetson 구동 경험",
+          "데이터 수집 · 라벨링",
+          "성능 지표 이해"
+        ],
+        "can_learn": [
+          "농업 현장 세그멘테이션",
+          "Jetson 전력 모드",
+          "RTK 연계"
+        ]
+      },
+      "study": [
+        {
+          "topic": "과수원 줄 사이를 가려내기 — 작업 구역 세그멘테이션",
+          "from": "task",
+          "quote": "• 카메라 기반 장애물 감지, 작업 구역 인식, 위험 상황 판단 알고리즘 개발",
+          "priority": "core",
+          "why": "주요업무다. 과수원 방제기는 나무 줄 사이 주행로를 알아야 하고, 사람 · 동물이 나타나면 멈춰야 한다.",
+          "gap_check": "주행 가능 영역(흙길 · 잔디)과 나무 줄 · 장애물을 세그멘테이션으로 나누면, 그 마스크를 조향에 어떻게 쓰나(중앙선 추정)? 사람 검출은 놓치면 사고라 재현율을 어떻게 지키나(문턱 · 이중 확인)? 역광 · 그림자 · 계절(잎 유무)에 따라 무엇이 무너지나?",
+          "drill": "공개 농업 · 오프로드 데이터셋(예: RELLIS-3D 또는 농로 영상 수백 장을 직접 라벨)으로 SegFormer-B0 를 학습해 '주행 가능 · 식생 · 장애물' 을 나누고, 마스크에서 주행로 중앙선을 뽑는다. 사람 클래스는 별도 검출기로 재현율 99% 문턱을 잡고, 역광 이미지에서 성능을 따로 잰다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Hugging Face — SegFormer",
+              "url": "https://huggingface.co/docs/transformers/model_doc/segformer",
+              "kind": "docs"
+            },
+            {
+              "title": "RELLIS-3D dataset",
+              "url": "https://github.com/unmannedlab/RELLIS-3D",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "들판의 Jetson — FPS · 지연 · 발열 · 전력을 함께 본다",
+          "from": "task",
+          "quote": "• Jetson Orin, Xavier, Nano 등 엣지 AI 장치에서의 모델 배포, 성능 튜닝 및 안정화",
+          "priority": "core",
+          "why": "주요업무이고 우대에 발열 · 전력 · 메모리 최적화가 있다. 한여름 과수원 기계 안의 Jetson 은 쓰로틀링된다.",
+          "gap_check": "Jetson 전력 모드(nvpmodel)를 낮추면 FPS 와 온도가 어떻게 바뀌나? 온도가 올라 클럭이 떨어지면 지연이 튀는데 주행 제어는 무엇을 기대나(최소 FPS 보장)? TensorRT FP16 · INT8 은 세그멘테이션 경계 품질을 얼마나 해치나?",
+          "drill": "앞 모델을 ONNX → TensorRT(FP16 · INT8)로 바꿔 Jetson(없으면 GPU + 제한 클럭)에서 FPS · p99 지연 · mIoU 를 재고, tegrastats 로 전력 · 온도를 기록한다. 온도가 오를 때 입력 해상도를 낮춰 최소 FPS 를 지키는 적응 규칙을 만든다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "NVIDIA Jetson — Power management (nvpmodel)",
+              "url": "https://docs.nvidia.com/jetson/archives/r36.4/DeveloperGuide/SD/PlatformPowerAndPerformance.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "현장 데이터로 모델을 키운다 — 라벨링 기준과 재학습",
+          "from": "task",
+          "quote": "• 현장 실증 데이터를 기반으로 데이터셋 구축, 라벨링 기준 수립, 모델 재학습 및 성능 개선",
+          "priority": "high",
+          "why": "주요업무다. 과수원 · 논 · 밭마다 풍경이 달라 연구 데이터셋만으로는 안 된다.",
+          "gap_check": "'장애물' 의 기준(가지 · 풀 · 사람 · 상자)을 라벨러마다 다르게 그리지 않게 하려면(라벨링 가이드 · 경계 사례)? 현장에서 모델이 틀린 장면만 골라 라벨링하려면(불확실도)? 재학습한 모델이 다른 농장에서 나빠지지 않았는지 무엇으로 확인하나(농장별 고정 평가셋)?",
+          "drill": "라벨링 가이드 한 쪽(클래스 정의 · 경계 사례 사진 · 하지 말 것)을 쓰고, 두 사람이 같은 50 장을 라벨해 IoU 일치도를 잰다. 모델 예측의 엔트로피가 높은 프레임만 골라 다음 라벨링 대상으로 뽑는 스크립트와, 농장별 고정 평가셋으로 재학습 전후를 비교하는 리포트를 만든다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "CVAT — Documentation",
+              "url": "https://docs.cvat.ai/docs/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/372341",
+      "title": "임베디드(펌웨어) 개발자",
+      "site": "wanted",
+      "verdict": "경력 1-20년. **STM32 Non-OS 펌웨어**, **LoRaWAN 무선 모듈 · 노드 제어**, CAN · UART · RS-232/485 · SPI · I2C 컨트롤러, **자율주행 KIT · 텔레매틱스 MCU**, 센서 · 액추에이터 · 통신 연동, **농기계 CAN 송수신 · 장비 간 프로토콜**, **필드 테스트 · 로그 · 통신 오류 디버깅**, 인증 · 생산 테스트 · 양산 · 유지보수. 자격은 **STM32 · Cortex-M**, Non-OS, C, 주변장치 제어, **회로도 · 데이터시트 기반 디버깅**. 우대는 LoRa/LoRaWAN, 차량 · 농기계 CAN, HAL, **저전력 · 재전송 · 로깅 · OTA/부트로더**, BLE · Wi-Fi · LTE Cat.M1 · GNSS, 모터 · 릴레이 · 밸브, **EMI · 전원 불안정 · 현장 환경**. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "STM32 · Cortex-M",
+          "Non-OS C 펌웨어",
+          "UART · CAN · SPI · I2C",
+          "회로도 · 데이터시트"
+        ],
+        "can_learn": [
+          "J1939",
+          "LoRaWAN",
+          "부트로더 · OTA"
+        ]
+      },
+      "study": [
+        {
+          "topic": "트랙터와 말하기 — 농기계 CAN 과 J1939",
+          "from": "task",
+          "quote": "차량/농기계 CAN 데이터 송수신 및 장비 간 통신 프로토콜 구현",
+          "priority": "core",
+          "why": "주요업무이고 우대에 CAN 기반 차량 · 농기계 연동이 있다. 부착형 자율주행 Kit 는 기존 농기계의 CAN 에 끼어든다.",
+          "gap_check": "농기계 · 상용차가 쓰는 SAE J1939 는 29 비트 ID 에 무엇(PGN · 우선순위 · 주소)을 담나? 엔진 회전수 · 차속 같은 값은 어떤 PGN 에 어떤 스케일로 오나? 버스에 메시지를 보낼 때 기존 ECU 와 충돌하지 않게 하려면(주소 클레임)? 필터를 안 걸면 MCU 가 무엇에 잠기나?",
+          "drill": "STM32(또는 Nucleo) + CAN 트랜시버로 bxCAN/FDCAN 수신 필터를 J1939 PGN 몇 개로 걸고, PC 쪽에서 python-can 으로 가짜 트랙터 메시지(엔진 속도 PGN 61444 등)를 보낸다. 수신한 값을 스케일 변환해 UART 로 찍고, 버스 오프 · 에러 프레임 상황에서 복구하는 코드를 넣는다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "python-can — Documentation",
+              "url": "https://python-can.readthedocs.io/",
+              "kind": "docs"
+            },
+            {
+              "title": "CSS Electronics — J1939 Explained",
+              "url": "https://www.csselectronics.com/pages/j1939-explained-simple-intro-tutorial",
+              "kind": "blog"
+            }
+          ]
+        },
+        {
+          "topic": "넓은 들판의 저전력 무선 — LoRaWAN 노드와 재전송",
+          "from": "task",
+          "quote": "LoRaWAN 기반 무선 통신 모듈 및 노드 제어 펌웨어 개발",
+          "priority": "core",
+          "why": "주요업무다. 농장은 넓고 LTE 가 약하며 전원이 없는 곳에 센서 노드가 있다.",
+          "gap_check": "LoRaWAN 클래스 A · B · C 는 수신 창과 전력 소비가 어떻게 다른가? 확인 메시지(confirmed uplink)를 늘 쓰면 무엇이 비싸지나(듀티 사이클 · 배터리)? 링크가 나쁠 때 확산 인자(SF)를 올리면 무엇을 얻고 잃나(ADR)? 보내지 못한 데이터는 어디에 얼마나 쌓아 두나?",
+          "drill": "STM32WL(또는 LoRa 모듈)과 The Things Network(또는 ChirpStack 로컬)로 클래스 A 노드를 만들어 10 분마다 센서 값을 보내고, 전송 실패 시 플래시에 쌓았다 링크 회복 때 몰아 보내는 로직을 넣는다. SF7 · SF12 에서 전송 시간 · 소비 전류를 재 표로 만든다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "The Things Network — LoRaWAN Documentation",
+              "url": "https://www.thethingsnetwork.org/docs/lorawan/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "현장에서 망가지지 않는 펌웨어 — 부트로더 · OTA · 워치독",
+          "from": "preference",
+          "quote": "저전력 펌웨어, 통신 재전송, 데이터 로깅, OTA 또는 부트로더 개발 경험이 있는 분",
+          "priority": "high",
+          "why": "우대사항이고 우대에 EMI · 전원 불안정이 있다. 들판의 장비를 회수해 다시 굽기는 비싸다.",
+          "gap_check": "OTA 업데이트 중 전원이 끊기면 장비가 벽돌이 되지 않게 하려면(A/B 슬롯 · 검증 뒤 전환)? 새 펌웨어가 부팅 뒤 계속 멈추면 누가 되돌리나(워치독 · 부팅 카운터)? 전압이 흔들릴 때 플래시 쓰기가 깨지지 않게 하려면(브라운아웃 리셋 · 이중 기록)?",
+          "drill": "STM32 에 두 슬롯 부트로더를 만들어 새 이미지를 받아 CRC 검증 뒤에만 전환하고, 새 이미지가 워치독 리셋을 3 번 일으키면 이전 슬롯으로 돌아가게 한다. 이미지 쓰기 도중 전원을 끊는 시험을 반복해 벽돌이 되지 않는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "MCUboot — Design",
+              "url": "https://docs.mcuboot.com/design.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
