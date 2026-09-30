@@ -1,0 +1,313 @@
+{
+  "slug": "pilsang",
+  "name": "필상",
+  "name_en": "Pilsang",
+  "aliases": [
+    "필상"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": null,
+  "one_liner": "피싱 차단 앱 '싹다잡아'(사용자 50 만+)를 만드는 대전의 AI 보안 스타트업 — 악성 URL 탐지 연구원과 Flutter 앱 개발자를 신입부터 뽑는다",
+  "company": {
+    "business": "필상은 **디지털 금융 사기(피싱 · 스미싱)를 막는 AI 보안 스타트업**이다(2021 설립, 대전). 자체 개발한 **피싱 차단 앱 '싹다잡아'** 는 사용자 **50 만 명 이상**이고, **한국전력공사 · 삼성증권 · 우리은행** 등 대형 기업 · 공공기관에 보안 솔루션을 제공한다고 공고가 적는다. 2024 년 **약 20 억 원 투자**와 **딥테크 TIPS · 스케일업 TIPS** 선정으로 AI 보안 연구를 넓히고, 정부 R&D 과제를 수행한다. 모집중 둘은 싹다잡아 같은 **Flutter 앱 개발자**와 **악성 URL 탐지 모델을 만드는 보안 AI 연구원**이며, 둘 다 **신입 지원 가능**하고 수습 3 개월에도 급여를 100% 준다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "[대전/IT] 모바일 앱(Flutter) 개발자 채용(신입/경력 무관)",
+        "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54704224&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=25c53843-a94b-4d60-a1cb-50be12be0920",
+        "publisher": "사람인",
+        "summary": "㈜필상 — 2021 설립 AI 기반 보안 스타트업, 디지털 금융 사기 예방. 피싱 차단 앱 '싹다잡아' 사용자 50 만 이상, 한국전력공사 · 삼성증권 · 우리은행 등 기업 · 공공기관에 보안 솔루션. Pre-A 투자 · 정부 R&D. Flutter 앱 · 아키텍처, 상태 관리 · Clean Architecture, API 연동. 자격 Flutter(신입 가능) · Method Channel 네이티브 연동 · Android/iOS 네이티브 · 상태 관리. 우대 MVVM · DI · Firebase · 상용 배포 · 보안/네트워크/광고 연동. 대전 도룡동, 마감 2026-10-09."
+      },
+      {
+        "title": "보안 AI 연구원 채용(경력 무관)",
+        "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54638946&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=32f077c2-67d3-4008-8bb0-6d8a06223471",
+        "publisher": "사람인",
+        "summary": "2024 약 20 억 투자, 딥테크 TIPS · 스케일업 TIPS. 주담당: 악성 URL 수집 · 라벨링 · 데이터셋, URL/HTML 구조 특징 추출, 탐지 모델 학습 · 평가 · 오탐/미탐 분석, 과제 기술문서. 경력 무관, 4년제, Python 데이터, 보안 학습 의지 또는 ML 기초. 우대 CTF · BoB · K-Shield, Kaggle, 딥러닝 프레임워크, 자격증. 대전 유성구, 마감 2026-10-02."
+      }
+    ],
+    "scale": [
+      {
+        "label": "싹다잡아 사용자",
+        "value": "50 만 명 이상(공고)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[대전/IT] 모바일 앱(Flutter) 개발자 채용(신입/경력 무관)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54704224&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=25c53843-a94b-4d60-a1cb-50be12be0920",
+            "publisher": "사람인",
+            "summary": "㈜필상 — 2021 설립 AI 기반 보안 스타트업, 디지털 금융 사기 예방. 피싱 차단 앱 '싹다잡아' 사용자 50 만 이상, 한국전력공사 · 삼성증권 · 우리은행 등 기업 · 공공기관에 보안 솔루션. Pre-A 투자 · 정부 R&D. Flutter 앱 · 아키텍처, 상태 관리 · Clean Architecture, API 연동. 자격 Flutter(신입 가능) · Method Channel 네이티브 연동 · Android/iOS 네이티브 · 상태 관리. 우대 MVVM · DI · Firebase · 상용 배포 · 보안/네트워크/광고 연동. 대전 도룡동, 마감 2026-10-09."
+          }
+        ]
+      },
+      {
+        "label": "투자",
+        "value": "2024 약 20 억 원 · 딥테크 TIPS · 스케일업 TIPS",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "보안 AI 연구원 채용(경력 무관)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54638946&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=32f077c2-67d3-4008-8bb0-6d8a06223471",
+            "publisher": "사람인",
+            "summary": "2024 약 20 억 투자, 딥테크 TIPS · 스케일업 TIPS. 주담당: 악성 URL 수집 · 라벨링 · 데이터셋, URL/HTML 구조 특징 추출, 탐지 모델 학습 · 평가 · 오탐/미탐 분석, 과제 기술문서. 경력 무관, 4년제, Python 데이터, 보안 학습 의지 또는 ML 기초. 우대 CTF · BoB · K-Shield, Kaggle, 딥러닝 프레임워크, 자격증. 대전 유성구, 마감 2026-10-02."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "기업 · 공공 보안 솔루션",
+        "how": "한국전력공사 · 삼성증권 · 우리은행 등에 보안 솔루션을 제공한다 — 납품 형태 · 과금은 읽은 자료에 없다.",
+        "domains": [
+          "피싱 URL 탐지 AI",
+          "피싱 차단 모바일 앱"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "[대전/IT] 모바일 앱(Flutter) 개발자 채용(신입/경력 무관)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54704224&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=25c53843-a94b-4d60-a1cb-50be12be0920",
+            "publisher": "사람인",
+            "summary": "㈜필상 — 2021 설립 AI 기반 보안 스타트업, 디지털 금융 사기 예방. 피싱 차단 앱 '싹다잡아' 사용자 50 만 이상, 한국전력공사 · 삼성증권 · 우리은행 등 기업 · 공공기관에 보안 솔루션. Pre-A 투자 · 정부 R&D. Flutter 앱 · 아키텍처, 상태 관리 · Clean Architecture, API 연동. 자격 Flutter(신입 가능) · Method Channel 네이티브 연동 · Android/iOS 네이티브 · 상태 관리. 우대 MVVM · DI · Firebase · 상용 배포 · 보안/네트워크/광고 연동. 대전 도룡동, 마감 2026-10-09."
+          }
+        ]
+      },
+      {
+        "name": "정부 R&D 과제",
+        "how": "정부 R&D · TIPS 과제를 수행한다 — 연구원 업무에 '과제 기술문서 작성' 이 있다.",
+        "domains": [
+          "피싱 URL 탐지 AI"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "보안 AI 연구원 채용(경력 무관)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54638946&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=32f077c2-67d3-4008-8bb0-6d8a06223471",
+            "publisher": "사람인",
+            "summary": "2024 약 20 억 투자, 딥테크 TIPS · 스케일업 TIPS. 주담당: 악성 URL 수집 · 라벨링 · 데이터셋, URL/HTML 구조 특징 추출, 탐지 모델 학습 · 평가 · 오탐/미탐 분석, 과제 기술문서. 경력 무관, 4년제, Python 데이터, 보안 학습 의지 또는 ML 기초. 우대 CTF · BoB · K-Shield, Kaggle, 딥러닝 프레임워크, 자격증. 대전 유성구, 마감 2026-10-02."
+          },
+          {
+            "title": "[대전/IT] 모바일 앱(Flutter) 개발자 채용(신입/경력 무관)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54704224&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=25c53843-a94b-4d60-a1cb-50be12be0920",
+            "publisher": "사람인",
+            "summary": "㈜필상 — 2021 설립 AI 기반 보안 스타트업, 디지털 금융 사기 예방. 피싱 차단 앱 '싹다잡아' 사용자 50 만 이상, 한국전력공사 · 삼성증권 · 우리은행 등 기업 · 공공기관에 보안 솔루션. Pre-A 투자 · 정부 R&D. Flutter 앱 · 아키텍처, 상태 관리 · Clean Architecture, API 연동. 자격 Flutter(신입 가능) · Method Channel 네이티브 연동 · Android/iOS 네이티브 · 상태 관리. 우대 MVVM · DI · Firebase · 상용 배포 · 보안/네트워크/광고 연동. 대전 도룡동, 마감 2026-10-09."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "피싱 URL 탐지 AI",
+        "why": "연구원 공고가 악성 URL 수집 · 라벨링, URL/HTML 구조 특징, 탐지 모델 학습 · 평가, 오탐 · 미탐 분석을 적는다.",
+        "what_to_know": [
+          "URL · HTML 특징 공학",
+          "불균형 분류 · 오탐 비용",
+          "피싱 데이터셋(PhishTank 등)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "보안 AI 연구원 채용(경력 무관)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54638946&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=32f077c2-67d3-4008-8bb0-6d8a06223471",
+            "publisher": "사람인",
+            "summary": "2024 약 20 억 투자, 딥테크 TIPS · 스케일업 TIPS. 주담당: 악성 URL 수집 · 라벨링 · 데이터셋, URL/HTML 구조 특징 추출, 탐지 모델 학습 · 평가 · 오탐/미탐 분석, 과제 기술문서. 경력 무관, 4년제, Python 데이터, 보안 학습 의지 또는 ML 기초. 우대 CTF · BoB · K-Shield, Kaggle, 딥러닝 프레임워크, 자격증. 대전 유성구, 마감 2026-10-02."
+          }
+        ]
+      },
+      {
+        "name": "피싱 차단 모바일 앱",
+        "why": "앱 공고가 Flutter 앱 · Clean Architecture · Method Channel 로 네이티브 연동, 보안 · 네트워크 기능 개선을 적는다 — 문자 · 링크를 막으려면 OS 기능에 닿아야 한다.",
+        "what_to_know": [
+          "Method Channel · Pigeon",
+          "Android SMS · 알림 권한",
+          "Riverpod · BLoC"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[대전/IT] 모바일 앱(Flutter) 개발자 채용(신입/경력 무관)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54704224&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=25c53843-a94b-4d60-a1cb-50be12be0920",
+            "publisher": "사람인",
+            "summary": "㈜필상 — 2021 설립 AI 기반 보안 스타트업, 디지털 금융 사기 예방. 피싱 차단 앱 '싹다잡아' 사용자 50 만 이상, 한국전력공사 · 삼성증권 · 우리은행 등 기업 · 공공기관에 보안 솔루션. Pre-A 투자 · 정부 R&D. Flutter 앱 · 아키텍처, 상태 관리 · Clean Architecture, API 연동. 자격 Flutter(신입 가능) · Method Channel 네이티브 연동 · Android/iOS 네이티브 · 상태 관리. 우대 MVVM · DI · Firebase · 상용 배포 · 보안/네트워크/광고 연동. 대전 도룡동, 마감 2026-10-09."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "연구와 서비스가 붙어 있다",
+        "evidence": "\"실제 서비스에 적용되는 AI를 만드는 곳, 필상입니다.\"",
+        "so_what": "모델 정확도만이 아니라 앱에서 오탐이 사용자에게 어떤 불편이 되는지까지 말할 수 있으면 좋다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "신입에게 문이 열려 있다",
+        "evidence": "• 경력 무관 (신입 지원 가능)",
+        "so_what": "CTF · 캡스톤 · Kaggle 수준의 경험도 우대로 적는다 — 작은 탐지 프로젝트 하나를 끝까지 만들어 가져간다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: '면접 후 결정' — 비워 둔다",
+    "회사 홈페이지는 이번에 찾지 않았다 — 매출 · 인원은 모른다",
+    "잡코리아 Flutter 게시(49754728)는 세 절 필드가 비어 뺐다(사람인 게시와 같은 제목)",
+    "보안 AI 연구원 공고의 주담당업무는 세 절 필드가 비어 있어 본문에서 읽었다 — 인용은 자격 · 우대에서만 했다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54638946&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=32f077c2-67d3-4008-8bb0-6d8a06223471",
+      "title": "보안 AI 연구원 채용(경력 무관)",
+      "site": "saramin",
+      "verdict": "경력 무관(신입 가능), 4년제 이상, 대전 유성구, 마감 2026-10-02. 본문의 주담당은 **악성 URL 수집 · 라벨링 · 학습 데이터셋**, **URL/HTML 구조 특징 추출**, **탐지 모델 학습 · 평가 · 오탐/미탐 사례 분석**, 과제 기술문서(세 절 필드엔 비어 있어 인용은 자격 · 우대에서만 한다). 자격은 보안 · 컴퓨터 · 데이터 전공, **Python 으로 데이터를 다뤄 본 경험(수업 · 캡스톤 포함)**, **보안 학습 의지(CTF · 취약점 분석) 또는 ML 기초(분류 · 전처리 · 평가)**. 우대는 CTF · BoB · K-Shield, Kaggle · 데이콘, PyTorch/TF, scikit-learn/pandas, 정보처리 · 빅데이터분석 · 정보보안기사(필기도 됨). 급여는 면접 후.",
+      "fit": {
+        "must_have": [
+          "Python 데이터 다루기",
+          "보안 관심 또는 ML 기초"
+        ],
+        "can_learn": [
+          "URL 특징 공학",
+          "오탐 분석",
+          "HTML 구조 특징"
+        ]
+      },
+      "study": [
+        {
+          "topic": "피싱 URL 분류기 — 특징을 만들고 오탐 · 미탐을 본다",
+          "from": "qualification",
+          "quote": "- 머신러닝/데이터 분석 기초 경험 (분류 모델, 전처리, 평가 등)",
+          "priority": "core",
+          "why": "자격요건이고, 본문 주담당(URL/HTML 특징 · 탐지 모델 · 오탐/미탐 분석)이 바로 이 일이다.",
+          "gap_check": "URL 문자열만으로 어떤 특징을 뽑나(길이 · 서브도메인 수 · IP 주소 여부 · '@' · 단축 URL · 도메인 나이)? 피싱은 소수라 정확도 대신 무엇을 보나(재현율 · 정밀도 · PR-AUC)? 은행 로그인 페이지를 피싱으로 잘못 막으면(오탐) 사용자에게 무슨 일이 생기나?",
+          "drill": "PhishTank(피싱)와 Tranco 상위 도메인(정상) URL 로 데이터셋을 만들고, 손으로 만든 URL 특징 20 개 + LightGBM 분류기를 학습한다. 혼동 행렬에서 오탐 · 미탐 URL 을 몇 개씩 꺼내 이유를 적고, 오탐을 줄이는 문턱을 PR 곡선에서 고른다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "PhishTank — Developer info",
+              "url": "https://phishtank.org/developer_info.php",
+              "kind": "docs"
+            },
+            {
+              "title": "Tranco list",
+              "url": "https://tranco-list.eu/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Python 으로 URL · HTML 을 뜯어보기 — 수집 · 정제 · 라벨",
+          "from": "qualification",
+          "quote": "• Python으로 데이터를 다뤄본 경험 (수업/개인 프로젝트, 캡스톤 등 포함)",
+          "priority": "core",
+          "why": "자격요건이고 본문 주담당 첫 줄이 악성 URL 수집 · 라벨링 · 데이터셋이다.",
+          "gap_check": "피싱 페이지는 금방 내려가는데 HTML 을 언제 저장하나? 같은 피싱 키트가 도메인만 바꿔 수천 개면 학습 · 시험 셋이 어떻게 오염되나(중복 · 누수)? 수집할 때 스스로를 지키려면(샌드박스 · 스크립트 실행 안 함)?",
+          "drill": "URL 목록을 받아 requests 로 HTML 을 저장(자바스크립트 실행 없이 · 타임아웃 · 격리된 환경)하고, 폼 개수 · 비밀번호 입력 · 외부 링크 비율 · 타이틀의 브랜드명 같은 HTML 특징을 BeautifulSoup 으로 뽑는다. HTML 해시로 중복을 묶어 같은 키트가 학습 · 시험에 동시에 들어가지 않게 나눈다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Beautiful Soup — Documentation",
+              "url": "https://www.crummy.com/software/BeautifulSoup/bs4/doc/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "공격자처럼 보기 — CTF 로 피싱 · 웹 취약점 감각",
+          "from": "preference",
+          "quote": "• 보안 동아리 · CTF 참가 경험(수상 불필요), BoB·K-Shield 수료",
+          "priority": "high",
+          "why": "우대사항이고 자격에 '보안 분야 학습 의지' 가 있다. 탐지 모델의 특징은 공격 수법을 알아야 고를 수 있다.",
+          "gap_check": "타이포스쿼팅 · 호모글리프(유니코드 비슷한 글자) · 오픈 리다이렉트 · 단축 URL 은 각각 탐지를 어떻게 피하나? 피싱 페이지가 봇을 알아보고 정상 페이지를 보여 주는 클로킹은 수집에 무슨 문제를 만드나?",
+          "drill": "PortSwigger Web Security Academy 의 오픈 리다이렉트 · XSS 실습 몇 개를 풀고, 호모글리프 도메인(예: 키릴 문자 섞기)을 만들어 앞 분류기가 잡는지 시험한다. 잡지 못하면 punycode 변환 · 브랜드 도메인과의 편집 거리 특징을 더해 다시 잰다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "PortSwigger — Web Security Academy",
+              "url": "https://portswigger.net/web-security",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54704224&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=25c53843-a94b-4d60-a1cb-50be12be0920",
+      "title": "[대전/IT] 모바일 앱(Flutter) 개발자 채용(신입/경력 무관)",
+      "site": "saramin",
+      "verdict": "신입 · 경력 무관, 대전 도룡동 본사, 마감 2026-10-09. **Flutter 앱 개발 · 아키텍처**, **상태 관리 · Clean Architecture 로 구조화된 코드**, UI/UX 반영, 백엔드 API 연동. 자격은 Flutter(신입 가능), **Method Channel 네이티브 연동**, **Android/iOS 네이티브**, 상태 관리 패턴, Git · Figma. 보유 스킬로 Flutter/Dart · Riverpod/BLoC/Provider · Kotlin · Swift · CI/CD. 우대는 Clean Architecture · MVVM · DI, Firebase, 상용 배포, **보안 · 네트워크 · 광고 연동 고급 기능**, AI 도구 결과 검증. 급여는 면접 후, 수습 급여 100%.",
+      "fit": {
+        "must_have": [
+          "Flutter",
+          "Method Channel",
+          "Android/iOS 네이티브",
+          "상태 관리"
+        ],
+        "can_learn": [
+          "문자 · 알림 권한",
+          "Clean Architecture",
+          "Firebase"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Flutter 에서 OS 기능에 닿기 — Method Channel 과 Pigeon",
+          "from": "qualification",
+          "quote": "• Method Channel을 통한 Native 연동 경험",
+          "priority": "core",
+          "why": "자격요건이다. 피싱 차단 앱은 문자 · 알림 · 전화 같은 OS 기능을 써야 하고, 이는 Flutter 가 아니라 네이티브에 있다.",
+          "gap_check": "Method Channel 로 Dart ↔ Kotlin/Swift 호출을 주고받을 때 타입 안전은 누가 보장하나(Pigeon 코드 생성)? 네이티브에서 Dart 로 계속 이벤트를 보내려면(EventChannel)? 앱이 백그라운드거나 꺼져 있을 때 들어온 이벤트는 누가 처리하나?",
+          "drill": "Flutter 앱에서 Pigeon 으로 'URL 검사 요청' 인터페이스를 정의해 Kotlin · Swift 쪽 구현을 만들고, 네이티브에서 수신한 공유 링크(Android 공유 인텐트 · iOS 공유 확장)를 EventChannel 로 Dart 에 흘려 검사 결과 화면을 띄운다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Flutter — Writing custom platform-specific code",
+              "url": "https://docs.flutter.dev/platform-integration/platform-channels",
+              "kind": "docs"
+            },
+            {
+              "title": "Pigeon (pub.dev)",
+              "url": "https://pub.dev/packages/pigeon",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "피싱 차단 앱의 보안 · 권한 — 문자 · 알림 · 개인정보",
+          "from": "preference",
+          "quote": "• 보안/네트워크/광고 연동 등 고급 기능 개선 경험",
+          "priority": "high",
+          "why": "우대사항이다. 문자 · 알림을 읽는 권한은 스토어 심사와 개인정보 문제가 크다.",
+          "gap_check": "Android 에서 SMS 읽기 권한은 Google Play 정책상 기본 SMS 앱이 아니면 왜 거의 못 쓰나 — 대안은(알림 리스너 · 공유 인텐트)? 검사할 URL 을 서버로 보낼 때 무엇을 보내고 무엇을 안 보내나(개인정보 최소화)? 앱과 서버 사이 통신 변조는 어떻게 막나(TLS · 인증서 고정)?",
+          "drill": "Google Play 의 SMS/통화 기록 권한 정책을 읽고 피싱 차단 앱이 쓸 수 있는 경로를 표로 정리한다. 앞 앱에 URL 만 해시 · 정규화해 보내는 검사 API 클라이언트를 만들고, dio 에 인증서 고정을 넣어 프록시(mitmproxy)로 가로채면 실패하는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Google Play — Use of SMS or Call Log permission groups",
+              "url": "https://support.google.com/googleplay/android-developer/answer/10208820",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "상태 관리와 Clean Architecture — 검사 결과 흐름을 계층으로",
+          "from": "task",
+          "quote": "• 상태 관리 패턴과 Clean Architecture를 적용한 구조화된 코드 구현",
+          "priority": "high",
+          "why": "주요업무이고 우대에 MVVM · DI 가 있다.",
+          "gap_check": "URL 검사 요청 → 로딩 → 안전/위험/오류를 한 상태 객체로 어떻게 표현하나(sealed class)? 데이터 · 도메인 · 표현 계층을 나누면 네이티브 채널 · 서버 API 를 어디에 두나? 테스트에서 네이티브를 어떻게 가짜로 바꾸나(DI)?",
+          "drill": "Riverpod 으로 URL 검사 기능을 domain(UseCase) · data(Repository — 서버 · 로컬 캐시) · presentation(Notifier) 으로 나누고, 상태를 sealed class 로 둔다. Repository 를 가짜로 바꾼 위젯 테스트로 안전 · 위험 · 네트워크 오류 세 화면을 검증한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Riverpod",
+              "url": "https://riverpod.dev/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
