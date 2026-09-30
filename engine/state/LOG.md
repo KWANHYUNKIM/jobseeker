@@ -3072,3 +3072,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 GMOメイクショップ 프로파일
 
 - slug `makeshop`, SaaS. 요금 페이지(월정액 · 결제 수수료, 판매 수수료 0 엔) + 기술 블로그 6 편(차세대 EC 스택 · SmartCheckout OpenAPI · 새 주문 상세 · CSV → AWS Batch · 사이드카 · 결제 DB 실데이터 대조). 도메인 3, 기능 0/3.
+
+## 2026-09-30 GMOメイクショップ 결제 DB 신 · 구 대조(기능 1/3)
+
+- `payment-db-parity-audit`. 결정 8 — 소스 사양 + 실데이터 두 겹 / 사령탑 Skill / 병렬 서브에이전트 / 무거운 처리 전 전제 확인 / DB 가드레일 넷 / 티켓 형식 · 취소선 이력 / OpenAPI 스키마 주도 BFF / 생성 코드에 charset 태그.
