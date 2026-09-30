@@ -263,7 +263,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "cloudsign-domain-teams-github-migration"
+      ]
     }
   ],
   "features": [
@@ -1083,6 +1085,406 @@
           "publisher": "弁護士ドットコム",
           "summary": "MCP 인가 사양은 서버를 OAuth 2.1 Resource Server 로 요구 — 토큰 검증 · 보호 리소스 메타데이터 · 인증 챌린지를 NGINX 설정만으로. 인가 서버(AS)는 Keycloak 등 별도.",
           "date": "2026-07-08"
+        }
+      ]
+    },
+    {
+      "key": "cloudsign-domain-teams-github-migration",
+      "name": "250 만 사 전자계약을 누가 책임지나 — 범용 피처 팀을 사용자 경험별 영역 팀으로 나눠 로드맵 · 백로그 권한을 넘기고, 802 리포지토리는 GitLab 을 켜 둔 채 1 년 반에 걸쳐 GitHub 로 옮긴다",
+      "domain": "クラウドサイン — 250 만 사 전자계약을 떠받치는 개발 조직과 기반",
+      "updated_at": "2026-09-30",
+      "business": {
+        "why": "CloudSign 은 도입 **250 만 사**를 넘었고 지자체 약 70% 가 쓰는 전자계약이 됐다. 제품은 계약 체결에서 서류 관리 · 조직 관리 · 시스템 연계로, '거래 전체의 플랫폼' 으로 넓어지고 있다. 그런데 개발 조직은 오래 **범용 피처 팀** — 여러 스크럼 팀이 제품 백로그 위쪽에서 자유롭게 일을 고르는 구조 — 이었고, 엔지니어와 제품이 커지자 세 가지가 터졌다. **인지 부하**(한 사람이 모든 사양 · 코드를 알 수 없어 조사에 시간이 들고, 잘못 건드려 장애 위험), **오너십 희박**(기능을 만드는 것이 목적이 되고, 처음 만든 팀과 다른 팀이 고치면 설계 사상 이해 · 영향 범위를 놓침), **일원적 의사결정의 한계**(우선순위를 전체에서 정하니 대기가 생기고 현장 판단이 안 산다, 팀을 늘려도 구조가 그대로).\n\n개발 기반도 같은 시기에 한계였다. EC2 위 **GitLab Self-Managed** 는 개발자 · 코드가 늘며 리소스를 계속 늘려야 했고(응답이 느리다는 지적), 보안 업데이트 · 버전업 · 백업 · 정상성 확인을 자사가 했으며, 업데이트 중엔 개발자가 GitLab 에 접근하지 못했다.",
+        "metrics": [
+          {
+            "label": "영역별 조직 9 개월 뒤 배포 빈도",
+            "value": "하루 30 회 이상(원래 배포 전략이 바탕)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "クラウドサイン流・領域別組織の「これまで」と「これから」",
+                "url": "https://creators.bengo4.com/entry/2025/12/25/000000",
+                "publisher": "弁護士ドットコム",
+                "summary": "クラウドサイン 도입 250 만 사 이상. 2025-04 부터 범용 피처 팀(백로그에서 자유롭게 선택)을 영역 특화 피처 팀('領域別組織')으로 — 사용자 경험별 영역, 전문성 · 오너십.",
+                "date": "2025-12-25"
+              }
+            ]
+          },
+          {
+            "label": "GitHub 이행 규모",
+            "value": "멤버 293 · 팀 63 · 리포지토리 802 · 1 년 반(2024-11 ~ 2026-03)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "800リポジトリを1年半で GitLab Self-Managed から GitHub Enterprise Cloud へ移行した話",
+                "url": "https://creators.bengo4.com/entry/2026/05/20/080000",
+                "publisher": "弁護士ドットコム",
+                "summary": "Platform & Reliability Engineering 부(SRE + Platform Engineering). 멤버 293 · 팀 63 · 리포지토리 802 · 1 년 반(2024-11 ~ 2026-03). 인프라 비용 · 운영 부하 증가가 이유, 팀별 CI/CD 의존을 보며 단계적으로.",
+                "date": "2026-05-20"
+              }
+            ]
+          },
+          {
+            "label": "CloudSign 도입",
+            "value": "250 만 사 이상(2025) · 지자체 437 곳",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "クラウドサイン流・領域別組織の「これまで」と「これから」",
+                "url": "https://creators.bengo4.com/entry/2025/12/25/000000",
+                "publisher": "弁護士ドットコム",
+                "summary": "クラウドサイン 도입 250 만 사 이상. 2025-04 부터 범용 피처 팀(백로그에서 자유롭게 선택)을 영역 특화 피처 팀('領域別組織')으로 — 사용자 경험별 영역, 전문성 · 오너십.",
+                "date": "2025-12-25"
+              },
+              {
+                "title": "企業情報 - 弁護士ドットコム株式会社",
+                "url": "https://www.bengo4.com/corporate/",
+                "publisher": "弁護士ドットコム",
+                "summary": "서비스: CloudSign(일본 최초 · 국내 점유율 1 위 전자계약, 지자체 437 곳 · 약 70%, 외부 연계 124), 弁護士ドットコム(등록 변호사 32,000 명 이상 · 국내 67%, みんなの法律相談 누적 약 149 만 건), 税理士ドットコム(등록 세무사 7,477 명, 월 이용자 180 만), LegalBrain(리걸 데이터베이스 × AI, 법무 AI 에이전트, 보유 리걸 데이터 약 26 억 자), BUSINESS LAWYERS, 뉴스. IR 페이지가 있다(상장사)."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "조직을 나눌 때",
+          "thought": "기능이나 레이어가 아니라 '누구의 어떤 경험에서 부딪히는 과제인가' 로 나눠, 팀이 그 사용자의 전문가가 되게 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "クラウドサイン流・領域別組織の「これまで」と「これから」",
+              "url": "https://creators.bengo4.com/entry/2025/12/25/000000",
+              "publisher": "弁護士ドットコム",
+              "summary": "クラウドサイン 도입 250 만 사 이상. 2025-04 부터 범용 피처 팀(백로그에서 자유롭게 선택)을 영역 특화 피처 팀('領域別組織')으로 — 사용자 경험별 영역, 전문성 · 오너십.",
+              "date": "2025-12-25"
+            }
+          ]
+        },
+        {
+          "at": "나눈 뒤",
+          "thought": "조직도를 고쳐 써도 시스템 아키텍처(모놀리스 부분)는 곧바로 안 바뀐다 — 콘웨이의 법칙과 싸우는 중이다. 완벽한 경계는 처음부터 못 긋는다, 운영하며 고친다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "クラウドサイン流・領域別組織の「これまで」と「これから」",
+              "url": "https://creators.bengo4.com/entry/2025/12/25/000000",
+              "publisher": "弁護士ドットコム",
+              "summary": "クラウドサイン 도입 250 만 사 이상. 2025-04 부터 범용 피처 팀(백로그에서 자유롭게 선택)을 영역 특화 피처 팀('領域別組織')으로 — 사용자 경험별 영역, 전문성 · 오너십.",
+              "date": "2025-12-25"
+            }
+          ]
+        },
+        {
+          "at": "기반을 옮길 때",
+          "thought": "호스팅 형태만 바꾸는 것이 아니라 CI/CD 운영 · 권한 관리 · 보안 대응 · 개발 팀 지원 방식을 다시 본다 — GitHub 이행은 목표가 아니라 출발점이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "800リポジトリを1年半で GitLab Self-Managed から GitHub Enterprise Cloud へ移行した話",
+              "url": "https://creators.bengo4.com/entry/2026/05/20/080000",
+              "publisher": "弁護士ドットコム",
+              "summary": "Platform & Reliability Engineering 부(SRE + Platform Engineering). 멤버 293 · 팀 63 · 리포지토리 802 · 1 년 반(2024-11 ~ 2026-03). 인프라 비용 · 운영 부하 증가가 이유, 팀별 CI/CD 의존을 보며 단계적으로.",
+              "date": "2026-05-20"
+            }
+          ]
+        },
+        {
+          "at": "정답을 물을 때",
+          "thought": "조직에 정답은 없다 — 그때 단계에 맞는 최적해를 계속 고르고, 조직을 고정하지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "クラウドサイン流・領域別組織の「これまで」と「これから」",
+              "url": "https://creators.bengo4.com/entry/2025/12/25/000000",
+              "publisher": "弁護士ドットコム",
+              "summary": "クラウドサイン 도입 250 만 사 이상. 2025-04 부터 범용 피처 팀(백로그에서 자유롭게 선택)을 영역 특화 피처 팀('領域別組織')으로 — 사용자 경험별 영역, 전문성 · 오너십.",
+              "date": "2025-12-25"
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "영역 팀",
+            "what": "사용자 경험별 스트림 정렬 팀 — 체결(송신자 · 수신자) · 서류 관리(서류 관리자) · IAM(조직 관리자) · Integration(개발자)."
+          },
+          {
+            "name": "지원 팀",
+            "what": "Technology 1/2(복잡한 서브시스템 · 공통 기반) · SRE(플랫폼) · 엔지니어링 오피스(개발자 경험, enabling)."
+          },
+          {
+            "name": "영역 권한",
+            "what": "비전 · 로드맵 수립, 백로그 관리, 우선순위 결정 — 영역 팀에 이양."
+          },
+          {
+            "name": "리포지토리 이행 단위",
+            "what": "리포지토리 본체(Push Mirroring) · Label/Issue/MR(API 이행 도구) · CI/CD · Secrets/Variables · 권한 · 외부 연계."
+          }
+        ],
+        "invariants": [
+          "한 영역의 설계 · 확장 · 보수는 같은 팀이 일관되게 맡는다.",
+          "무엇을 만들지와 어떻게 만들지를 영역 팀이 정한다.",
+          "이행 중에도 개발을 멈추지 않는다 — GitLab 에서 일하며 GitHub 로 미러링한다.",
+          "GitLab Self-Managed 는 과거 참조용 아카이브로 남긴다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "2025-04 영역별 조직 가동 — 체결 · 서류 관리 · IAM · Integration 영역 팀 + Technology · SRE · 엔지니어링 오피스",
+            "why": "인지 부하를 줄이고 오너십을 올린다."
+          },
+          {
+            "step": "비전 · 로드맵 · 백로그 · 우선순위 권한을 영역 팀에 이양, 그레이존(계약서 미리보기 · 조직 멤버 추가 API)은 운영하며 경계 조정",
+            "why": "의사결정 대기를 없앤다."
+          },
+          {
+            "step": "GitHub 이행 — 횡단 부서가 방침 · 인벤토리 · 템플릿 · 가이드라인 · 이행 도구, 각 팀이 자기 리포지토리 이행 · 확인",
+            "why": "리포지토리 실태는 쓰는 개발자만 안다."
+          },
+          {
+            "step": "리포지토리는 Push Mirroring, Label/Issue/MR 은 node-gitlab-2-github 을 고친 도구, Push Rules → Branch Protection + pre-commit, GitLab CI → Actions(타이밍 · 인증 · Secrets · 러너 · 권한 재검토)",
+            "why": "Git 이력만으로는 옮겨지지 않는 것을 갈라 다룬다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "개발 조직을 무엇으로 나누나?",
+            "chosen": "**사용자 경험별 영역 팀(領域別組織)** — 체결 · 서류 관리 · IAM · Integration, Team Topologies 에 가깝게 스트림 정렬 · 플랫폼 · 복잡 서브시스템 · enabling 역할을 대응.",
+            "alternatives": [
+              "범용 피처 팀 유지(백로그에서 자유롭게)",
+              "기능 · 레이어별로 나누기"
+            ],
+            "tradeoff": "도메인 지식과 내부 사양의 앎이 쌓이고 오너십이 오른다 — 9 개월 뒤 리스트 밖 개선(부채 · 사용성 · 성능)에 손을 대고 배포 하루 30 회 이상. 대가는 범용 팀의 노하우 평준화 · 유연성을 잃고, 아직 겸무가 있어 이론대로는 아니라는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "クラウドサイン流・領域別組織の「これまで」と「これから」",
+                "url": "https://creators.bengo4.com/entry/2025/12/25/000000",
+                "publisher": "弁護士ドットコム",
+                "summary": "クラウドサイン 도입 250 만 사 이상. 2025-04 부터 범용 피처 팀(백로그에서 자유롭게 선택)을 영역 특화 피처 팀('領域別組織')으로 — 사용자 경험별 영역, 전문성 · 오너십.",
+                "date": "2025-12-25"
+              }
+            ]
+          },
+          {
+            "question": "영역 팀에 무엇을 넘기나?",
+            "chosen": "**비전 · 로드맵 수립, 백로그 관리, 우선순위 결정 권한** — '무엇을 만들지' 부터 '어떻게' 까지.",
+            "alternatives": [
+              "우선순위는 제품 전체에서 일원 관리"
+            ],
+            "tradeoff": "의사결정 리드타임이 짧아지고 PdM 과 엔지니어가 가까워졌다('미니 스타트업' 마인드). 대가는 영역 사이의 우선순위 충돌을 전체가 조정하기 어려워질 수 있다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "クラウドサイン流・領域別組織の「これまで」と「これから」",
+                "url": "https://creators.bengo4.com/entry/2025/12/25/000000",
+                "publisher": "弁護士ドットコム",
+                "summary": "クラウドサイン 도입 250 만 사 이상. 2025-04 부터 범용 피처 팀(백로그에서 자유롭게 선택)을 영역 특화 피처 팀('領域別組織')으로 — 사용자 경험별 영역, 전문성 · 오너십.",
+                "date": "2025-12-25"
+              }
+            ]
+          },
+          {
+            "question": "코드가 조직처럼 나뉘지 않았는데?",
+            "chosen": "**경계는 운영하며 최적화** — 그레이존(계약서 미리보기는 어느 영역? 조직 멤버 추가 Web API 는?)은 처음부터 완벽히 긋지 않는다.",
+            "alternatives": [
+              "코드 · 데이터를 먼저 분리하고 조직을 나눈다"
+            ],
+            "tradeoff": "조직 변경을 기다리지 않고 시작했다. 대가는 모놀리스 · 데이터가 깔끔히 안 나뉘어 의존이 정리되지 않았고, 그레이존은 두 팀 모두 손대기 어려워진다는 것 — 중장기 과제로 남긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "クラウドサイン流・領域別組織の「これまで」と「これから」",
+                "url": "https://creators.bengo4.com/entry/2025/12/25/000000",
+                "publisher": "弁護士ドットコム",
+                "summary": "クラウドサイン 도입 250 만 사 이상. 2025-04 부터 범용 피처 팀(백로그에서 자유롭게 선택)을 영역 특화 피처 팀('領域別組織')으로 — 사용자 경험별 영역, 전문성 · 오너십.",
+                "date": "2025-12-25"
+              }
+            ]
+          },
+          {
+            "question": "GitLab Self-Managed 를 계속 쓰나?",
+            "chosen": "**GitHub Enterprise Cloud 로 이행**, GitLab 은 아카이브로 남긴다.",
+            "alternatives": [
+              "GitLab Self-Managed 증강 유지",
+              "GitLab SaaS(기존 GitLab CI · 권한 설계를 거의 그대로)"
+            ],
+            "tradeoff": "GitHub Actions 전제로 워크플로를 표준화하고, Secret scanning · Dependabot alerts · Code scanning 을 같은 기반에서 쓰며, 지원 · 문서로 Platform Engineering 을 밀 수 있다. GitLab SaaS 는 체험을 덜 바꾸지만 CI/CD · 권한을 다시 볼 기회가 없다. 대가는 CI 를 다시 쓰고 팀 단위로 권한을 재설계해야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "800リポジトリを1年半で GitLab Self-Managed から GitHub Enterprise Cloud へ移行した話",
+                "url": "https://creators.bengo4.com/entry/2026/05/20/080000",
+                "publisher": "弁護士ドットコム",
+                "summary": "Platform & Reliability Engineering 부(SRE + Platform Engineering). 멤버 293 · 팀 63 · 리포지토리 802 · 1 년 반(2024-11 ~ 2026-03). 인프라 비용 · 운영 부하 증가가 이유, 팀별 CI/CD 의존을 보며 단계적으로.",
+                "date": "2026-05-20"
+              }
+            ]
+          },
+          {
+            "question": "개발을 멈추지 않고 어떻게 옮기나?",
+            "chosen": "**GitLab Push Mirroring 을 기본으로 단계적 이행** — GitLab 에서 평소처럼 개발하면서 GitHub 에 커밋 이력을 반영, 팀별 이용 상황 · CI/CD 의존을 보며 1 년 반.",
+            "alternatives": [
+              "날짜를 정해 일괄 전환"
+            ],
+            "tradeoff": "개발을 멈추지 않았다. 대가는 기간이 길고, 감사 · 이력 참조가 걸린 리포지토리처럼 같은 절차로 기계적으로 못 옮기는 경우를 하나씩 다뤄야 했다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "800リポジトリを1年半で GitLab Self-Managed から GitHub Enterprise Cloud へ移行した話",
+                "url": "https://creators.bengo4.com/entry/2026/05/20/080000",
+                "publisher": "弁護士ドットコム",
+                "summary": "Platform & Reliability Engineering 부(SRE + Platform Engineering). 멤버 293 · 팀 63 · 리포지토리 802 · 1 년 반(2024-11 ~ 2026-03). 인프라 비용 · 운영 부하 증가가 이유, 팀별 CI/CD 의존을 보며 단계적으로.",
+                "date": "2026-05-20"
+              }
+            ]
+          },
+          {
+            "question": "Git 이력으로 안 옮겨지는 것은?",
+            "chosen": "**Label · Issue · Merge Request 는 OSS node-gitlab-2-github 을 자사 환경에 맞게 고친 도구로**(SAML 토큰 대응 · 첨부 S3 URL 커스텀 도메인), MR 은 조건에 따라 PR 또는 Issue 로.",
+            "alternatives": [
+              "이력만 옮기고 나머지는 GitLab 아카이브에서 본다"
+            ],
+            "tradeoff": "리뷰 · 논의 이력을 새 기반에서 이어 볼 수 있다. 대가는 이행 도구를 유지 · 조정하는 비용.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "800リポジトリを1年半で GitLab Self-Managed から GitHub Enterprise Cloud へ移行した話",
+                "url": "https://creators.bengo4.com/entry/2026/05/20/080000",
+                "publisher": "弁護士ドットコム",
+                "summary": "Platform & Reliability Engineering 부(SRE + Platform Engineering). 멤버 293 · 팀 63 · 리포지토리 802 · 1 년 반(2024-11 ~ 2026-03). 인프라 비용 · 운영 부하 증가가 이유, 팀별 CI/CD 의존을 보며 단계적으로.",
+                "date": "2026-05-20"
+              }
+            ]
+          },
+          {
+            "question": "GitLab 기능에 기대던 규칙은?",
+            "chosen": "**그대로 옮길 수 없는 것은 조합으로 메운다** — Push Rules(브랜치명 · 커밋 메시지 제약) → Branch Protection Rules + pre-commit hooks, CI/CD Variables → Secrets / Variables, Package Registry → GitHub Packages 등 참조 전환 검토.",
+            "alternatives": [
+              "같은 제약을 포기"
+            ],
+            "tradeoff": "보호할 브랜치 조작은 서버 쪽에서 막는다. 대가는 브랜치명 · 커밋 메시지 같은 제약이 클라이언트 훅이라 우회될 수 있다는 것(이 사이트의 해석) — 2026 년도에 Ruleset 등 공통 가이드라인을 정비한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "800リポジトリを1年半で GitLab Self-Managed から GitHub Enterprise Cloud へ移行した話",
+                "url": "https://creators.bengo4.com/entry/2026/05/20/080000",
+                "publisher": "弁護士ドットコム",
+                "summary": "Platform & Reliability Engineering 부(SRE + Platform Engineering). 멤버 293 · 팀 63 · 리포지토리 802 · 1 년 반(2024-11 ~ 2026-03). 인프라 비용 · 운영 부하 증가가 이유, 팀별 CI/CD 의존을 보며 단계적으로.",
+                "date": "2026-05-20"
+              }
+            ]
+          },
+          {
+            "question": "이행을 누가 하나?",
+            "chosen": "**역할 분담** — 횡단 부서(Platform & Reliability Engineering)가 방침 · 조정 · 인벤토리 · GitHub 설계 · 템플릿 · 가이드라인 · 도구 · 문의 창구, 각 개발 팀이 자기 리포지토리의 실태 확인 · CI/CD · Secrets 이행 · 동작 확인.",
+            "alternatives": [
+              "플랫폼 팀이 전부 옮긴다"
+            ],
+            "tradeoff": "그 리포지토리를 매일 쓰는 개발자의 지식 없이는 안전하게 못 옮긴다. 대가는 각 팀의 시간을 빌려야 해 진척 관리가 필요했다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "800リポジトリを1年半で GitLab Self-Managed から GitHub Enterprise Cloud へ移行した話",
+                "url": "https://creators.bengo4.com/entry/2026/05/20/080000",
+                "publisher": "弁護士ドットコム",
+                "summary": "Platform & Reliability Engineering 부(SRE + Platform Engineering). 멤버 293 · 팀 63 · 리포지토리 802 · 1 년 반(2024-11 ~ 2026-03). 인프라 비용 · 운영 부하 증가가 이유, 팀별 CI/CD 의존을 보며 단계적으로.",
+                "date": "2026-05-20"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "CloudSign 구독(수익원)",
+          "via": "제품 개발 속도",
+          "contract": "CloudSign 은 도입 250 만 사 · 지자체 437 곳의 전자계약이고, 영역 팀이 체결 · 서류 관리 · IAM · Integration 경험을 나눠 맡는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "クラウドサイン流・領域別組織の「これまで」と「これから」",
+              "url": "https://creators.bengo4.com/entry/2025/12/25/000000",
+              "publisher": "弁護士ドットコム",
+              "summary": "クラウドサイン 도입 250 만 사 이상. 2025-04 부터 범용 피처 팀(백로그에서 자유롭게 선택)을 영역 특화 피처 팀('領域別組織')으로 — 사용자 경험별 영역, 전문성 · 오너십.",
+              "date": "2025-12-25"
+            },
+            {
+              "title": "企業情報 - 弁護士ドットコム株式会社",
+              "url": "https://www.bengo4.com/corporate/",
+              "publisher": "弁護士ドットコム",
+              "summary": "서비스: CloudSign(일본 최초 · 국내 점유율 1 위 전자계약, 지자체 437 곳 · 약 70%, 외부 연계 124), 弁護士ドットコム(등록 변호사 32,000 명 이상 · 국내 67%, みんなの法律相談 누적 약 149 만 건), 税理士ドットコム(등록 세무사 7,477 명, 월 이용자 180 만), LegalBrain(리걸 데이터베이스 × AI, 법무 AI 에이전트, 보유 리걸 데이터 약 26 억 자), BUSINESS LAWYERS, 뉴스. IR 페이지가 있다(상장사)."
+            }
+          ]
+        },
+        {
+          "to": "인가를 엣지와 프로세스 안에서",
+          "via": "IAM 영역 · 공통 인증 기반",
+          "contract": "IAM 영역 팀이 조직 관리 체험과 공통 인증 기반을 맡는다 — Cedar 모듈과 같은 팀인지는 글에 없다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "クラウドサイン流・領域別組織の「これまで」と「これから」",
+              "url": "https://creators.bengo4.com/entry/2025/12/25/000000",
+              "publisher": "弁護士ドットコム",
+              "summary": "クラウドサイン 도입 250 만 사 이상. 2025-04 부터 범용 피처 팀(백로그에서 자유롭게 선택)을 영역 특화 피처 팀('領域別組織')으로 — 사용자 경험별 영역, 전문성 · 오너십.",
+              "date": "2025-12-25"
+            }
+          ]
+        },
+        {
+          "to": "LegalBrain 요약 · 역출력 측정",
+          "via": "전사 개발 기반",
+          "contract": "전사 802 리포지토리가 GitHub 로 옮겨졌다 — LegalBrain 도 같은 기반 위에 있다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "800リポジトリを1年半で GitLab Self-Managed から GitHub Enterprise Cloud へ移行した話",
+              "url": "https://creators.bengo4.com/entry/2026/05/20/080000",
+              "publisher": "弁護士ドットコム",
+              "summary": "Platform & Reliability Engineering 부(SRE + Platform Engineering). 멤버 293 · 팀 63 · 리포지토리 802 · 1 년 반(2024-11 ~ 2026-03). 인프라 비용 · 운영 부하 증가가 이유, 팀별 CI/CD 의존을 보며 단계적으로.",
+              "date": "2026-05-20"
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "영역별 조직의 모양",
+          "question": "누가 무엇의 전문가인가?",
+          "kind": "flow",
+          "code": "flowchart TB\n  subgraph SA[\"스트림 정렬 — 사용자 경험별\"]\n    T1[\"체결\\n송신자 · 수신자\"]\n    T2[\"서류 관리\\n서류 관리자\"]\n    T3[\"IAM\\n조직 관리자\"]\n    T4[\"Integration\\n개발자\"]\n  end\n  CS[\"Technology 1/2\\n복잡 서브시스템 · 부채\"] --> SA\n  PF[\"SRE · Technology · IAM\\n플랫폼 · 공통 인증\"] --> SA\n  EN[\"엔지니어링 오피스\\n개발자 경험\"] -.-> SA\n  P[\"권한 이양: 비전 · 로드맵 · 백로그 · 우선순위\"] --> SA"
+        },
+        {
+          "title": "802 리포지토리를 옮기는 길",
+          "question": "무엇이 자동으로 가고 무엇을 다시 짜나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  GL[\"GitLab Self-Managed\\n(개발 계속)\"] -->|\"Push Mirroring\"| GH[\"GitHub Enterprise Cloud\"]\n  GL -->|\"API 이행 도구\\nLabel · Issue · MR\"| GH\n  PR[\"Push Rules\"] --> BP[\"Branch Protection + pre-commit\"]\n  CI[\"GitLab CI\"] --> GA[\"GitHub Actions\\n타이밍 · 인증 · 러너 · 권한 재검토\"]\n  VAR[\"CI/CD Variables\"] --> SEC[\"Secrets / Variables\"]\n  BP & GA & SEC --> GH\n  GL -.->|\"이행 뒤\"| AR[\"아카이브(과거 참조)\"]"
+        },
+        {
+          "title": "아직 안 맞는 자리",
+          "question": "조직을 나눴는데 무엇이 남았나?",
+          "kind": "failure",
+          "code": "flowchart TB\n  O[\"조직도는 영역별로\"] --> C1[\"코드 · 데이터는 모놀리스 — 의존 미정리(콘웨이)\"]\n  O --> C2[\"그레이존: 계약서 미리보기 · 조직 멤버 추가 API\"]\n  C2 --> C3[\"두 팀 다 손대기 어려움\"]\n  O --> C4[\"겸무가 남아 이론대로 아님\"]\n  M[\"GitHub 이행\"] --> M1[\"Push Rules 를 서버에서 그대로 못 옮김 → pre-commit\"]\n  M --> M2[\"감사 · 이력 리포지토리는 기계적으로 못 옮김\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "クラウドサイン流・領域別組織の「これまで」と「これから」",
+          "url": "https://creators.bengo4.com/entry/2025/12/25/000000",
+          "publisher": "弁護士ドットコム",
+          "summary": "クラウドサイン 도입 250 만 사 이상. 2025-04 부터 범용 피처 팀(백로그에서 자유롭게 선택)을 영역 특화 피처 팀('領域別組織')으로 — 사용자 경험별 영역, 전문성 · 오너십.",
+          "date": "2025-12-25"
+        },
+        {
+          "title": "800リポジトリを1年半で GitLab Self-Managed から GitHub Enterprise Cloud へ移行した話",
+          "url": "https://creators.bengo4.com/entry/2026/05/20/080000",
+          "publisher": "弁護士ドットコム",
+          "summary": "Platform & Reliability Engineering 부(SRE + Platform Engineering). 멤버 293 · 팀 63 · 리포지토리 802 · 1 년 반(2024-11 ~ 2026-03). 인프라 비용 · 운영 부하 증가가 이유, 팀별 CI/CD 의존을 보며 단계적으로.",
+          "date": "2026-05-20"
         }
       ]
     }

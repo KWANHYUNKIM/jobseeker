@@ -2916,3 +2916,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 弁護士ドットコム Cedar 인가(기능 2/3)
 
 - nginx-auth-cedar 글 + php-ext-cedar 글 + MCP RS 글로 `cedar-authz-edge-inprocess`. 결정 8 — 워커 안 판정 / Cedar / C 서브셋 자작(Rust FFI 오라클 · ASan) / PRECONTENT phase / 로드 때 파싱 / forbid 우선 · 기본 거부 · fail-closed / AVP 호환 PHP 확장 / errors[] 로 계속(fail-open 주의). 다음: CloudSign.
+
+## 2026-09-30 弁護士ドットコム CloudSign(기능 3/3)
+
+- 영역별 조직 글 + GitLab → GitHub 이행 글로 `cloudsign-domain-teams-github-migration`. 결정 8 — 사용자 경험별 영역 팀 / 권한 이양 / 경계는 운영하며 / GitHub EC(GitLab SaaS 대비) / Push Mirroring 단계 이행 / Label · Issue · MR 도구 / Push Rules → Branch Protection + pre-commit / 횡단 · 팀 분담. 도메인 셋 모두 기능, 포털 수익원만 도메인 없음 — 다음: 완주 점검.
