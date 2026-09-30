@@ -1,0 +1,269 @@
+{
+  "slug": "bbinnovation",
+  "name": "비바이노베이션",
+  "name_en": "",
+  "aliases": [
+    "비바이노베이션"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "",
+  "one_liner": "'착한의사' 를 운영하며 의료 AI(폴립 · 병변 영상 · 건강 예측 · 의료 LLM)를 만드는 회사 — AI 실무자와 FastAPI 시니어 백엔드를 뽑는다",
+  "company": {
+    "business": "비바이노베이션은 **'착한의사'** 라는 서비스를 운영하는 회사다(잡코리아 공고 제목 '[착한의사 비바이노베이션]', 백엔드 공고 '착한의사 백엔드 서비스 개발'). 공고가 보여 주는 기술 축은 둘이다 — **의료 AI**: 의료 이미지 · 정형(Tabular) · 텍스트 데이터로 **의료 LLM**, **폴립 및 병변 이미지 분석**, **건강 상태 예측**을 만들고 상용 서비스로 배포한다. **서비스 백엔드**: Python(FastAPI) REST API · RDBMS · Sentry/Datadog 로 운영 중인 착한의사 서비스의 기술부채를 개선한다. 같은 시기 **의료 데이터 분석 전문가(5 년+)** 공고도 있다. 착한의사 서비스의 대상 · 수익 구조와 회사 사이트는 공개 자료에서 확인하지 못했다(서울 강남구).",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "AI 기술 개발 실무자급",
+        "url": "https://www.wanted.co.kr/wd/368618",
+        "publisher": "원티드",
+        "summary": "경력 3-7 년. 의료 AI 모델 성능 향상 · 신규 개발(이미지 · Tabular · 텍스트 의료 데이터), 프로젝트: 의료 LLM · 폴립 및 병변 이미지 분석 · Tabular(건강 상태 예측), 프로토타이핑 · 상용 배포. 자격 학사+, CV · NLP 이해, 생성형 AI · 이미지 분할 · LLM 중 1 개 이상 연구/개발, 클라우드 모델 배포. 우대 의료 AI · 헬스케어 데이터, 학회 논문, 스타트업 · 의료 기관 협업, Terraform IaC, 오픈소스, 석사."
+      },
+      {
+        "title": "Backend Developer",
+        "url": "https://www.wanted.co.kr/wd/311992",
+        "publisher": "원티드",
+        "summary": "경력 7-14 년. 착한의사 백엔드 서비스 개발. 자격 REST API 7 년+, Python(FastAPI), RDBMS 스키마 설계 · 트러블슈팅, Sentry · Datadog, 운영 서비스 기술부채 개선, 적극적 AI 활용. 우대 AWS 아키텍처 · 대규모 서비스 운영."
+      },
+      {
+        "title": "[착한의사 비바이노베이션] 의료 데이터 분석 전문가",
+        "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49075373?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&listno=86&sc=630",
+        "publisher": "잡코리아",
+        "summary": "서울 강남구, 경력 5 년+, 마감 2027-04-27. 세 절이 수집되지 않아 제목만 확인했다."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "착한의사 서비스",
+        "how": "착한의사를 운영한다 — 사용자 · 병원 중 누가 어떻게 돈을 내는지는 공고에 없다.",
+        "domains": [
+          "착한의사 서비스 백엔드",
+          "의료 AI(영상 · 정형 데이터 · 의료 LLM)"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "Backend Developer",
+            "url": "https://www.wanted.co.kr/wd/311992",
+            "publisher": "원티드",
+            "summary": "경력 7-14 년. 착한의사 백엔드 서비스 개발. 자격 REST API 7 년+, Python(FastAPI), RDBMS 스키마 설계 · 트러블슈팅, Sentry · Datadog, 운영 서비스 기술부채 개선, 적극적 AI 활용. 우대 AWS 아키텍처 · 대규모 서비스 운영."
+          },
+          {
+            "title": "[착한의사 비바이노베이션] 의료 데이터 분석 전문가",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49075373?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&listno=86&sc=630",
+            "publisher": "잡코리아",
+            "summary": "서울 강남구, 경력 5 년+, 마감 2027-04-27. 세 절이 수집되지 않아 제목만 확인했다."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "의료 AI(영상 · 정형 데이터 · 의료 LLM)",
+        "why": "AI 공고가 의료 LLM · 폴립 및 병변 이미지 분석 · Tabular 건강 상태 예측 · 상용 배포를 적는다.",
+        "what_to_know": [
+          "의료 영상 분할",
+          "정형 데이터 예측 · 보정",
+          "의료 LLM 평가"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "AI 기술 개발 실무자급",
+            "url": "https://www.wanted.co.kr/wd/368618",
+            "publisher": "원티드",
+            "summary": "경력 3-7 년. 의료 AI 모델 성능 향상 · 신규 개발(이미지 · Tabular · 텍스트 의료 데이터), 프로젝트: 의료 LLM · 폴립 및 병변 이미지 분석 · Tabular(건강 상태 예측), 프로토타이핑 · 상용 배포. 자격 학사+, CV · NLP 이해, 생성형 AI · 이미지 분할 · LLM 중 1 개 이상 연구/개발, 클라우드 모델 배포. 우대 의료 AI · 헬스케어 데이터, 학회 논문, 스타트업 · 의료 기관 협업, Terraform IaC, 오픈소스, 석사."
+          }
+        ]
+      },
+      {
+        "name": "착한의사 서비스 백엔드",
+        "why": "백엔드 공고가 착한의사 백엔드 · FastAPI · RDBMS · 모니터링 · 기술부채를 적는다.",
+        "what_to_know": [
+          "FastAPI 비동기",
+          "스키마 설계 · 쿼리 튜닝",
+          "관측성"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Backend Developer",
+            "url": "https://www.wanted.co.kr/wd/311992",
+            "publisher": "원티드",
+            "summary": "경력 7-14 년. 착한의사 백엔드 서비스 개발. 자격 REST API 7 년+, Python(FastAPI), RDBMS 스키마 설계 · 트러블슈팅, Sentry · Datadog, 운영 서비스 기술부채 개선, 적극적 AI 활용. 우대 AWS 아키텍처 · 대규모 서비스 운영."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "모델을 서비스까지",
+        "evidence": "• 모델 프로토타이핑 및 상용 서비스 배포",
+        "so_what": "연구만이 아니라 배포까지 맡는다 — 자격요건에도 클라우드 배포 경험이 있다. 모델 하나를 API 로 내고 모니터링한 이야기가 필요하다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "기술부채를 아는 사람",
+        "evidence": "* 운영 중인 서비스의 다양한 기술부채 개선에 경험이 풍부하신 분",
+        "so_what": "새로 짓기보다 돌아가는 서비스를 고치는 자리다 — 멈추지 않고 바꾼 경험(스키마 이행 · 느린 쿼리 · 장애)을 준비한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "착한의사 서비스의 대상 · 수익 구조와 회사 사이트 주소를 공개 자료에서 확인하지 못했다",
+    "잡코리아 의료 데이터 분석 전문가 공고는 세 절이 수집되지 않아 싣지 않았다",
+    "영문 이름을 확인하지 못했다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/368618",
+      "title": "AI 기술 개발 실무자급",
+      "site": "wanted",
+      "verdict": "경력 3-7년, 학사 이상. **의료 AI 모델 성능 향상 · 신규 모델 개발** — 이미지 · Tabular · 텍스트 의료 데이터 분석. 프로젝트는 **의료 LLM**, **폴립 및 병변 이미지 분석**, **Tabular 건강 상태 예측**, 그리고 **프로토타이핑부터 상용 서비스 배포**. 자격은 CV · NLP 등 AI/ML 전반 이해, **생성형 AI · 이미지 분할 · LLM 중 하나 이상**의 연구/개발, **클라우드(AWS · GCP · Azure) 모델 배포**. 우대는 의료 AI · 헬스케어 데이터, CV · NLP 학회 논문(포트폴리오에 링크 · 소개), 스타트업 · 의료 기관 협업, Terraform IaC, 오픈소스, 석사. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "AI/ML 3년",
+          "분할 · 생성형 · LLM 중 하나",
+          "클라우드 배포"
+        ],
+        "can_learn": [
+          "의료 데이터 특성",
+          "의료 AI 규제"
+        ]
+      },
+      "study": [
+        {
+          "topic": "폴립 · 병변을 픽셀 단위로 — 의료 영상 분할과 평가 지표",
+          "from": "task",
+          "quote": "• 폴립 및 병변 이미지 분석",
+          "priority": "core",
+          "why": "주요업무(관련 프로젝트)다. 자격요건에 Image Segmentation 이 있다.",
+          "gap_check": "병변 분할을 Dice · IoU 로만 보면 무엇을 놓치나(작은 병변 놓침 · 검출 단위 민감도)? 환자 단위로 학습/검증을 나누지 않으면 어떤 누수가 생기나? 촬영 장비 · 병원이 바뀌면(도메인 이동) 성능이 어떻게 떨어지고 무엇으로 확인하나?",
+          "drill": "공개 대장 내시경 폴립 데이터셋 Kvasir-SEG 로 U-Net(또는 segmentation_models_pytorch)을 학습해 Dice · IoU 와 '폴립 단위 검출 민감도' 를 함께 보고한다. 다른 공개 셋(CVC-ClinicDB)에서 그대로 평가해 도메인 이동으로 떨어진 폭을 표로 적는다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Kvasir-SEG",
+              "url": "https://datasets.simula.no/kvasir-seg/",
+              "kind": "docs"
+            },
+            {
+              "title": "segmentation_models.pytorch",
+              "url": "https://github.com/qubvel-org/segmentation_models.pytorch",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "검진 수치로 건강 상태를 예측한다 — 정형 데이터 모델과 확률 보정",
+          "from": "task",
+          "quote": "• Tabular 데이터 분석 (건강 상태 예측 등)",
+          "priority": "core",
+          "why": "주요업무(관련 프로젝트)다.",
+          "gap_check": "양성 비율이 낮은 질환 예측에서 정확도 대신 무엇을 보나(AUROC · AUPRC · 민감도 고정 시 특이도)? 모델이 낸 '위험 30%' 가 실제로 30% 인지는 무엇으로 확인하나(보정 곡선 · Brier)? 결측이 많은 검사 항목은 어떻게 다루나?",
+          "drill": "공개 당뇨 예측 데이터(예: CDC Diabetes Health Indicators, UCI)로 로지스틱 회귀와 LightGBM 을 비교해 AUROC · AUPRC 와 보정 곡선을 그리고, 등위 회귀(isotonic)로 보정한 전후 Brier 점수를 비교한다. SHAP 로 주요 변수를 확인해 의학적으로 말이 되는지 한 단락으로 적는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "scikit-learn — Probability calibration",
+              "url": "https://scikit-learn.org/stable/modules/calibration.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "의료 LLM 을 믿을 수 있게 — 근거 기반 답변과 평가",
+          "from": "task",
+          "quote": "• 의료 LLM",
+          "priority": "high",
+          "why": "주요업무(관련 프로젝트)다. 자격요건에 Large Language Model 이 있다.",
+          "gap_check": "의료 질문에 LLM 이 틀리게 확신하는 답(환각)을 줄이려면 무엇을 붙이나(검색 근거 · 인용 · 거절 규칙)? 진단 · 처방으로 읽힐 답을 막는 가드레일은? 평가를 정답률 하나로 하면 무엇을 놓치나(위험한 오답의 비중)?",
+          "drill": "공개 의학 질의응답 셋(MedQA 일부 또는 PubMedQA)에서 50 문항을 골라 ① LLM 단독 ② 공개 의학 문서 검색(RAG) 붙인 답을 비교한다. 정답률과 함께 '근거를 인용했는가' · '진료 권유로 넘겼어야 할 질문을 넘겼는가' 를 따로 채점해 표로 만든다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "PubMedQA",
+              "url": "https://pubmedqa.github.io/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/311992",
+      "title": "Backend Developer",
+      "site": "wanted",
+      "verdict": "경력 7-14년. 업무는 한 줄 — **착한의사 백엔드 서비스 개발**. 자격은 **REST API 백엔드 개발 · 운영 7 년 이상**, **Python(FastAPI)**, **RDBMS 스키마 설계 · 트러블슈팅**, **Sentry · Datadog**, **운영 서비스의 기술부채 개선**, 적극적 AI 활용. 우대는 **AWS 아키텍처 설계**, 대규모 서비스 운영. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "REST API 7년",
+          "FastAPI",
+          "RDBMS 설계 · 튜닝",
+          "모니터링"
+        ],
+        "can_learn": [
+          "착한의사 도메인"
+        ]
+      },
+      "study": [
+        {
+          "topic": "FastAPI 를 운영 수준으로 — 비동기 DB 접근 · 커넥션 풀 · 블로킹 찾기",
+          "from": "qualification",
+          "quote": "* Python(FastAPI) 활용이 능숙하신 분",
+          "priority": "core",
+          "why": "자격요건이다.",
+          "gap_check": "async 엔드포인트 안에서 동기 DB 드라이버를 부르면 무엇이 멈추나? 커넥션 풀 크기 · 워커 수 · DB max_connections 는 어떻게 맞추나? 의존성 주입으로 세션 수명을 요청 단위로 관리할 때 트랜잭션 경계는?",
+          "drill": "FastAPI + SQLAlchemy 2.0 async(asyncpg) + PostgreSQL 로 목록 · 상세 API 를 만들고, 일부러 동기 호출(time.sleep · 동기 드라이버)을 섞은 버전과 비교해 locust 로 동시 200 명에서 p95 지연을 잰다. 풀 크기를 바꿔 가며 'too many connections' 가 나는 지점을 찾는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "FastAPI — Concurrency and async / await",
+              "url": "https://fastapi.tiangolo.com/async/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "돌아가는 서비스의 기술부채를 갚는다 — 멈추지 않는 스키마 변경",
+          "from": "qualification",
+          "quote": "* 운영 중인 서비스의 다양한 기술부채 개선에 경험이 풍부하신 분",
+          "priority": "core",
+          "why": "자격요건이다. 같은 줄에 RDBMS 스키마 설계 · 트러블슈팅이 있다.",
+          "gap_check": "큰 테이블에 NOT NULL 칼럼을 더하거나 칼럼 이름을 바꿀 때 잠금 없이 하려면(확장 → 이중 쓰기 → 백필 → 전환 → 축소)? Alembic 마이그레이션을 배포와 어떻게 순서 맞추나(구 코드가 새 스키마에서도 돌게)? 되돌리기 계획은?",
+          "drill": "앞 과제 DB 에 100 만 행 테이블을 만들고 '칼럼 이름 변경' 을 한 번에 하는 방식과 expand-contract 5 단계 방식으로 각각 해 보며, 부하를 거는 동안 오류 · 잠금 대기를 비교한다. 각 단계를 Alembic 리비전으로 남긴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Alembic — Tutorial",
+              "url": "https://alembic.sqlalchemy.org/en/latest/tutorial.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "장애를 먼저 안다 — Sentry 오류 추적과 Datadog APM",
+          "from": "qualification",
+          "quote": "* Sentry, Datadog 등 모니터링 서비스 활용이 능숙하신 분",
+          "priority": "high",
+          "why": "자격요건이다.",
+          "gap_check": "Sentry 의 오류 그룹핑 · 릴리스 태그로 '이번 배포가 만든 오류' 를 어떻게 가려내나? 느린 요청의 원인이 N+1 쿼리인지는 APM 트레이스에서 무엇으로 보이나? 알림 피로를 줄이려면 무엇을 기준으로 알림을 거나(SLO · 오류율)?",
+          "drill": "앞 과제 API 에 Sentry SDK(릴리스 · 환경 태그)와 OpenTelemetry 트레이싱을 붙이고, 일부러 N+1 쿼리와 예외를 넣은 릴리스를 배포해 두 도구에서 원인을 찾는 과정을 스크린숏과 함께 한 쪽 보고서로 쓴다(Datadog 대신 Jaeger 로 해도 된다).",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Sentry — FastAPI integration",
+              "url": "https://docs.sentry.io/platforms/python/integrations/fastapi/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

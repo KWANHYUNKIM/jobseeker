@@ -1898,6 +1898,17 @@
       "postings": 3,
       "study_items": 4,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "bbinnovation",
+      "name": "비바이노베이션",
+      "aliases": [
+        "비바이노베이션"
+      ],
+      "status": "done",
+      "postings": 2,
+      "study_items": 6,
+      "updated_at": "2026-09-30"
     }
   ]
 }
