@@ -3044,3 +3044,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 スペースリー gh-ost on Aurora(기능 2/3)
 
 - `gh-ost-on-aurora-online-schema-change`. 결정 8 — gh-ost / pt-osc 대비(트리거리스 · 실행 중 제어) / Aurora 접속(assume-rbr · allow-on-master · TLS · IAM 포기) / binlog 상시 24h / FK 기록 · 교차 DB FK / schema_migrations 순서 / strong_migrations 설정 / 검증 · 첫 실행 · 정착. 다음: 가구 지우기.
+
+## 2026-09-30 スペースリー 가구 지우기(기능 3/3) — 완주
+
+- `furniture-removal-inpainting`. 결정 5 — SD 인페인팅 파인튜닝 / 빈방 역방향 데이터 / 엉성한 마스크 · 넉넉한 마스크 권장 / 자동 검출 + 여러 결과 비교 / 다음 개선. 모든 도메인에 기능 → `done`. 큐 0/3 → 다음 역설계는 후보 조사.
