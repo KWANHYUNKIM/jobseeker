@@ -3416,7 +3416,7 @@
       "country": "JP",
       "category": "핀테크",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "가계부 앱에 자사 발행 Visa 프리페이드 카드와 あとばらい 를 담은 ワンバンク(옛 B/43) — 카드 번호는 PCI DSS 영역에 가두고, 파트너와의 어긋남은 대조로 고친다",
       "updated_at": "2026-09-30",
       "domain": "smartbank.co.jp"
