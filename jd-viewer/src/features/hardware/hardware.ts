@@ -177,6 +177,10 @@ async function getJson<T>(path: string, fallback?: T): Promise<T> {
     if (fallback !== undefined) return fallback
     throw new Error(`${path} ${r.status}`)
   }
+  // 없는 파일도 404 가 아니라 200 으로 올 수 있다 — SPA 폴백이 index.html 을 돌려준다
+  // (vite 개발 서버도, 운영 nginx 도). 그걸 JSON 으로 읽다 터지면 대체값이 있는
+  // 파일(가격 원장처럼 크롤러가 한 번 돌아야 생기는 것) 하나 때문에 탭 전체가 죽는다.
+  if (fallback !== undefined && !(r.headers.get('content-type') ?? '').includes('json')) return fallback
   return r.json()
 }
 
