@@ -1,0 +1,354 @@
+{
+  "slug": "smartbank",
+  "name": "スマートバンク",
+  "name_en": "SmartBank",
+  "country": "JP",
+  "category": "핀테크",
+  "status": "in_progress",
+  "updated_at": "2026-09-30",
+  "domain": "smartbank.co.jp",
+  "one_liner": "가계부 앱에 자사 발행 Visa 프리페이드 카드와 あとばらい 를 담은 ワンバンク(옛 B/43) — 카드 번호는 PCI DSS 영역에 가두고, 파트너와의 어긋남은 대조로 고친다",
+  "business_model": "スマートバンク 는 **가계부 앱 ワンバンク(옛 이름 B/43)** 를 만든다. 홈페이지는 이를 '애쓰지 않아도 저절로 돈이 정리되는 차세대 AI 가계부' 라 부르고 — AI 어시스턴트가 지출을 학습한다 — **페어 카드**(커플 돈 관리)와 **あと払いチャージ** 를 든다. 핵심은 스마트뱅크가 **카드 발행사(이슈어)** 라는 점이다: 앱에서 충전한 값을 **Visa 프리페이드 카드**로 쓰고(물리 · 버추얼), 2026-02 부터 Apple Pay 에도 올라간다. 그래서 카드 번호 · 유효기간을 저장하고, 국제 브랜드 기준 **PCI DSS** 를 준수하지 못하면 Visa · Mastercard 와 거래할 수 없다.\n\n사업 글은 ワンバンク 를 '한 제품 안에 여러 금융 서비스를 담는 플랫폼' 이라 적는다 — **あとばらいチャージ**(지금 돈이 없을 때 먼저 충전하고 나중에 갚는 BNPL, 등록부터 최단 1 분에 충전 · 발행 · 사용)와 **マイペース払い**(분할 상환 론), 그리고 2026-09 오리엔트코퍼레이션 제휴 **請求書カード払い**. 결제 · 입금 · 출금 모두 파트너 연계가 전제다. 2024 년 **시리즈 B 40.8 억 엔**을 조달했다.",
+  "products": [
+    "ワンバンク(옛 B/43) — AI 가계부 + Visa 프리페이드 카드",
+    "페어 카드",
+    "バーチャルカード",
+    "あとばらいチャージ",
+    "マイペース払い(론)",
+    "ワンバンク請求書カード払い",
+    "Apple Pay · Google Pay 대응"
+  ],
+  "revenue_total": "공개 안 됨(비상장 — 시리즈 B 40.8 억 엔 조달만 확인).",
+  "revenue_streams": [
+    {
+      "name": "카드 결제(발행사 수익)",
+      "how": "スマートバンク 가 Visa 프리페이드 카드의 이슈어다 — 발행사는 통상 가맹점 결제에서 수수료 몫(인터체인지)을 받지만, 읽은 자료에 요율 · 비중은 없다.",
+      "weight": "공개 안 됨",
+      "domains": [
+        "자사 발행 카드의 결제 — 카드 번호를 PCI DSS 영역에 가두고 오소리를 제시간에 답한다",
+        "카드를 Apple Pay · Google Pay 에 올린다 — 발행사로서 위험을 판단하고 토큰을 준다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "PCI DSS×SRE 〜審査対応を「設計要素」として楽しむスマートバンクのSREチーム〜",
+          "url": "https://blog.smartbank.co.jp/entry/2026/07/31",
+          "publisher": "スマートバンク",
+          "summary": "SRE 3 명이 AWS 보수 운영 · BtoB 인프라 · PCI DSS 준수(매년 갱신, Apple Pay/Google Pay 구성)를 맡는다. PCI DSS 는 국제 브랜드 5 사의 기준으로 준수 못 하면 Visa · Mastercard 와 거래 불가. 카드 번호 · 유효기간을 저장해 암호화 기준이 걸린다. 12 요건.",
+          "date": "2026-07-31"
+        },
+        {
+          "title": "Apple Pay カード登録の仕組み ─ ウォレットプロビジョニングの裏側",
+          "url": "https://blog.smartbank.co.jp/entry/apple-pay-provisioning",
+          "publisher": "スマートバンク",
+          "summary": "2026-02 Apple Pay 대응. 스마트뱅크는 이슈어. Manual · In-App 프로비저닝 → 약관 동의 → 리스크 판정에 따른 Green/Yellow/Red Path(추가 본인 확인) → FPAN 을 DPAN 으로 토큰화해 등록.",
+          "date": "2026-05-18"
+        },
+        {
+          "title": "カード番号を扱わずに決済を成立させる仕組み ── トークナイゼーション入門",
+          "url": "https://blog.smartbank.co.jp/entry/2026/01/28/183000",
+          "publisher": "スマートバンク",
+          "summary": "이슈어 · 액콰이어러 · PAN · BIN · 오소리 용어. Google Pay 는 PAN 이 아니라 토큰을 저장한다. EMV 페이먼트 토큰 — PAN 호환 형식, 토큰 도메인 제한, 대면 · 앱 내 · Card-on-File, 발행 · 결제 · 관리 흐름. 글쓴이는 あとばらい · 결제 시스템 개발 · 운영.",
+          "date": "2026-01-28"
+        }
+      ]
+    },
+    {
+      "name": "あとばらい · 론(マイペース払い)",
+      "how": "먼저 충전하고 나중에 갚는 あとばらいチャージ 와 분할 상환 론 — 수수료 · 이자 구조는 읽은 자료에 없다. 사업 글은 이 사업을 ワンバンク 안의 한 사업으로 둔다.",
+      "weight": "공개 안 됨",
+      "domains": [
+        "あとばらい · 카드 발행을 외부 파트너와 비동기로 잇고, 어긋나면 대조해 고친다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "PMが事業をリードする。ワンバンクの「あとばらい」事業",
+          "url": "https://blog.smartbank.co.jp/entry/2026/01/21/060652",
+          "publisher": "スマートバンク",
+          "summary": "ワンバンク 는 한 제품 안에 여러 금융 서비스(사업)를 담는 플랫폼. あとばらいチャージ — 지금 돈이 없을 때 먼저 충전하고 나중에 갚는다, 충전한 값은 Visa 프리페이드 카드로 쓰며 등록부터 최단 1 분에 충전 · 발행 · 사용. BNPL(Klarna) 과 같은 영역. マイペース払い(론) — 더 큰 금액을 분할 상환. 결제 · 입금 · 출금에서 파트너 연계(알라이언스)가 전제. Biz · Tech · Product 의 종합 격투기.",
+          "date": "2026-01-20"
+        },
+        {
+          "title": "外部サービス連携におけるリコンサイルの重要性と実装時の検討ポイント",
+          "url": "https://blog.smartbank.co.jp/entry/2024/10/08/180000",
+          "publisher": "スマートバンク",
+          "summary": "2024-06 B/43 あとばらいチャージ 뒤편 사업자를 이행하며 상환 데이터 리컨사일 배치를 설계. 불일치 원인 — 자사 → 외부 통신 오류(타임아웃 재시도로 이중 처리), Webhook 불달 · 지연. 리컨사일 조건 · 불일치 지점 · 데이터량 · 실행 빈도 · 불일치 시 대응 · 멱등성 · 예외 · 문서화.",
+          "date": "2024-10-08"
+        }
+      ]
+    },
+    {
+      "name": "請求書カード払い(제휴)",
+      "how": "오리엔트코퍼레이션과의 사업 제휴로 청구서를 카드로 낸다(2026-09) — 과금 방식은 모른다.",
+      "weight": "공개 안 됨",
+      "domains": [
+        "자사 발행 카드의 결제 — 카드 번호를 PCI DSS 영역에 가두고 오소리를 제시간에 답한다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "株式会社スマートバンク | SmartBank, Inc.",
+          "url": "https://smartbank.co.jp/",
+          "publisher": "スマートバンク",
+          "summary": "미션 '人々が本当に欲しかったものをつくる'. 제품 ワンバンク — AI 가계부(AI 어시스턴트가 지출을 학습), 페어 카드로 커플 돈 관리, あと払いチャージ. 뉴스: 주유소 결제 대응(2026-09-17), 오리엔트코퍼레이션 제휴로 'ワンバンク請求書カード払い'(2026-09-09). 채용: 서버 사이드 · iOS · SRE · 보안 엔지니어 등."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "충전한 돈이 가맹점 결제가 되기까지",
+    "question": "어느 시스템이 카드 번호를 쥐고, 어디서 파트너와 어긋나나?",
+    "code": "flowchart LR\n  APP[\"ワンバンク 앱\"] --> CORE[\"core-api\\n(PCI DSS 밖 · 거의 모든 로직)\"]\n  APP --> ISS[\"issuing-api\\n(PCI DSS 영역 · 카드 번호 · 오소리 수신)\"]\n  ISS --> CORE\n  CHG[\"충전 · あとばらいチャージ\"] --> CORE\n  CORE <-->|\"API · Webhook\"| PART[\"외부 파트너\\n(あとばらい 사업자 등)\"]\n  PART -.->|\"대조 배치\"| CORE\n  MER[\"가맹점\"] --> VISA[\"Visa 네트워크\"]\n  VISA -->|\"오소리\"| ISS\n  WAL[\"Apple Pay · Google Pay\"] -->|\"프로비저닝 · DPAN\"| ISS",
+    "_note": "이 사이트의 해석 — 버추얼 카드 · 리컨사일 · 토큰화 · Apple Pay 글의 구성을 한 장에 모았다. 네트워크 · 프로세서의 세부는 글에 없다."
+  },
+  "domains": [
+    {
+      "name": "자사 발행 카드의 결제 — 카드 번호를 PCI DSS 영역에 가두고 오소리를 제시간에 답한다",
+      "why": "スマートバンク 가 Visa 프리페이드 카드의 이슈어라서 가맹점 결제마다 오소리를 받아 제시간에 답해야 하고, 카드 번호 · 유효기간을 저장하므로 PCI DSS 12 요건을 매년 통과해야 한다 — 못 하면 브랜드와 거래가 끊긴다. 그래서 카드 번호를 다루는 부분(issuing-api)을 PCI DSS 영역에 따로 두고, 나머지(core-api)에는 번호가 새지 않게 해야 한다.",
+      "tech": [
+        {
+          "tech": "issuing-api(PCI DSS 영역 — 오소리 수신 · 카드 발행 · 카드 번호) / core-api(비준수 영역 — 거의 모든 로직) 분리",
+          "solves": "카드 번호를 만지는 범위를 좁혀 준수 부담을 한 곳에 모은다.",
+          "limits": "PCI DSS 제약 때문에 일반적인 배타 제어 · 트랜잭션 방식이 최적이 아니다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "バーチャルカード発行の排他制御 ～ 無駄な発行を防ぐシンプルなアプローチ~",
+              "url": "https://blog.smartbank.co.jp/entry/2025/03/19/123000",
+              "publisher": "スマートバンク",
+              "summary": "구성: PCI DSS 준수 환경의 issuing-api(오소리 수신 · 카드 발행, 카드 번호 등 보안 데이터 관리)와 비준수 환경의 core-api(B/43 거의 모든 로직). 리소스가 아직 없을 때의 배타 제어 — 조작 횟수 체크를 채택, 트랜잭션 · GET_LOCK 은 보류. PCI DSS 제약 때문에 일반 해법이 최적이 아니다.",
+              "date": "2025-03-19"
+            },
+            {
+              "title": "PCI DSS×SRE 〜審査対応を「設計要素」として楽しむスマートバンクのSREチーム〜",
+              "url": "https://blog.smartbank.co.jp/entry/2026/07/31",
+              "publisher": "スマートバンク",
+              "summary": "SRE 3 명이 AWS 보수 운영 · BtoB 인프라 · PCI DSS 준수(매년 갱신, Apple Pay/Google Pay 구성)를 맡는다. PCI DSS 는 국제 브랜드 5 사의 기준으로 준수 못 하면 Visa · Mastercard 와 거래 불가. 카드 번호 · 유효기간을 저장해 암호화 기준이 걸린다. 12 요건.",
+              "date": "2026-07-31"
+            }
+          ]
+        },
+        {
+          "tech": "요청 속 카드 번호 검출(Go — 정규식 · 정규화 · Luhn · 브랜드), 로그 전용 출시 → 오검지 분석 → 거부",
+          "solves": "로그 · Sentry · Datadog 로 번호가 새는 경로를 막는다.",
+          "limits": "정규식만으론 오검지 투성이 — URL 서명 등 건너뛸 경로를 따로 관리.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "クレジットカード番号の混入を防ぐ技術",
+              "url": "https://blog.smartbank.co.jp/entry/2026/01/08/100000",
+              "publisher": "スマートバンク",
+              "summary": "ワンバンク(가계부 프리페이드 카드)는 PCI DSS 준수가 필수. 요청에 카드 번호 같은 문자열이 섞이는 것을 Go 로 검출 — 정규식 후보 → 정규화 → Luhn → 브랜드 확인. 1 단계 정규식만으론 오검지 투성이, 2 단계 URL 서명 건너뛰기 · 정규식 엄격화 · Luhn · 브랜드, 3 단계 전 브랜드 요청 거부 + 건너뛰기 경로. 로그만 남기고 출시 → 로그로 오검지 특정 → 검증 활성화.",
+              "date": "2026-01-08"
+            }
+          ]
+        },
+        {
+          "tech": "결제 SLI/SLO · 에러 버짓, 2 주마다 퍼포먼스 미팅, Aurora MySQL 인덱스 튜닝",
+          "solves": "결제 p99 가 선형으로 느려지는 쿼리를 에러 버짓 감소로 먼저 알아챈다.",
+          "limits": "평균은 멀쩡해 보여 p99 를 봐야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "インデックスの\"正解\"を探せ！決済レスポンスタイムを改善したパフォーマンスチューニング",
+              "url": "https://blog.smartbank.co.jp/entry/2024/12/26/152742",
+              "publisher": "スマートバンク",
+              "summary": "2 주마다 서버 전원 퍼포먼스 미팅. SRE 가 결제에 SLI/SLO · 에러 버짓. 결제 p99 가 날마다 늘어 쿼리 하나가 선형으로 느려짐 — 오소리제이션 1 : N 이력, 승인 번호 · 수신 일시 인덱스 후보 셋을 실행 계획으로 비교. Aurora MySQL 3.",
+              "date": "2024-12-26"
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "あとばらい · 카드 발행을 외부 파트너와 비동기로 잇고, 어긋나면 대조해 고친다",
+      "why": "あとばらいチャージ · 카드 발행 · 입출금은 외부 파트너 연계가 전제다. 자사 → 외부 요청이 타임아웃되면 재시도로 이중 처리가 생기고, Webhook 은 늦거나 안 온다. 2024-06 에는 あとばらい 뒤편 사업자를 갈아 끼웠다. 금융이라 데이터 정확성이 곧 신뢰다.",
+      "tech": [
+        {
+          "tech": "상환 데이터 리컨사일 배치 — 불일치 지점 · 실행 빈도 · 불일치 시 대응 · 멱등성 · 예외 케이스",
+          "solves": "통신 오류 · Webhook 불달로 생긴 어긋남을 주기적으로 찾아 고친다.",
+          "limits": "외부 서비스가 대조용 조회 수단을 줘야 리컨사일이 가능하다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "外部サービス連携におけるリコンサイルの重要性と実装時の検討ポイント",
+              "url": "https://blog.smartbank.co.jp/entry/2024/10/08/180000",
+              "publisher": "スマートバンク",
+              "summary": "2024-06 B/43 あとばらいチャージ 뒤편 사업자를 이행하며 상환 데이터 리컨사일 배치를 설계. 불일치 원인 — 자사 → 외부 통신 오류(타임아웃 재시도로 이중 처리), Webhook 불달 · 지연. 리컨사일 조건 · 불일치 지점 · 데이터량 · 실행 빈도 · 불일치 시 대응 · 멱등성 · 예외 · 문서화.",
+              "date": "2024-10-08"
+            }
+          ]
+        },
+        {
+          "tech": "이벤트 모델링 · Transactional outbox · 사가(보상 트랜잭션)",
+          "solves": "카드 발행 같은 여러 단계 비동기 흐름에서 DB 와 메시지의 정합성을 지킨다.",
+          "limits": "코레오그래피 · 오케스트레이션 중 무엇을 고를지 흐름마다 판단해야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "非同期処理においてデータの整合性を保つアーキテクチャパターン",
+              "url": "https://blog.smartbank.co.jp/entry/asynchronous_architecture_patterns",
+              "publisher": "スマートバンク",
+              "summary": "B/43 카드 발행 흐름을 예로 이벤트 모델링(앞 이벤트 ID · 첫 이벤트 ID · 트리 · 롱텀 이벤트, 전부 담기 NG), Transactional outbox(Polling publisher · Transaction log tailing), 사가(보상 트랜잭션 · 코레오그래피 vs 오케스트레이션), 스키마 정의. 글쓴이는 카드 결제 · あとばらい 기능 개발.",
+              "date": "2024-11-18"
+            }
+          ]
+        },
+        {
+          "tech": "리드 레플리카 + 쓰기 뒤 읽기 일관성",
+          "solves": "입금 직후 이전 잔액이 보이는 불안을 막으며 core-api DB 부하를 나눈다.",
+          "limits": "동기 복제는 쓰기 처리량과 가용성을 해친다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "リードレプリカにおける「書き込み後の読み取り一貫性」を担保する 〜 ワンバンクでの実践 〜",
+              "url": "https://blog.smartbank.co.jp/entry/2026/01/16/100005",
+              "publisher": "スマートバンク",
+              "summary": "core-api DB 부하 분산에 리드 레플리카 도입. 입금 직후 이전 잔액이 보이면 '입금이 안 됐다' 불안 — 동기 복제 · 사용자 일시 프라이머리 고정(Rails DatabaseSelector) · 그 밖의 방법을 비교.",
+              "date": "2026-01-16"
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "카드를 Apple Pay · Google Pay 에 올린다 — 발행사로서 위험을 판단하고 토큰을 준다",
+      "why": "2026-02 Apple Pay 대응으로 ワンバンク 카드를 휴대폰 월렛에 올릴 수 있게 됐다. 이슈어인 スマートバンク 가 등록 요청마다 위험을 판정해 바로 통과(Green) · 추가 본인 확인(Yellow) · 거절(Red) 을 정하고, 실제 카드 번호(FPAN) 대신 기기 전용 토큰(DPAN)을 내준다.",
+      "tech": [
+        {
+          "tech": "Manual · In-App 프로비저닝, Green/Yellow/Red Path 리스크 판정, FPAN → DPAN 토큰화",
+          "solves": "월렛 등록을 쉽게 하면서 도용 등록을 막는다.",
+          "limits": "Apple · 브랜드 · 이슈어 사이 규격을 따라야 하고 PCI DSS 구성도 새로 맞춰야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Apple Pay カード登録の仕組み ─ ウォレットプロビジョニングの裏側",
+              "url": "https://blog.smartbank.co.jp/entry/apple-pay-provisioning",
+              "publisher": "スマートバンク",
+              "summary": "2026-02 Apple Pay 대응. 스마트뱅크는 이슈어. Manual · In-App 프로비저닝 → 약관 동의 → 리스크 판정에 따른 Green/Yellow/Red Path(추가 본인 확인) → FPAN 을 DPAN 으로 토큰화해 등록.",
+              "date": "2026-05-18"
+            },
+            {
+              "title": "PCI DSS×SRE 〜審査対応を「設計要素」として楽しむスマートバンクのSREチーム〜",
+              "url": "https://blog.smartbank.co.jp/entry/2026/07/31",
+              "publisher": "スマートバンク",
+              "summary": "SRE 3 명이 AWS 보수 운영 · BtoB 인프라 · PCI DSS 준수(매년 갱신, Apple Pay/Google Pay 구성)를 맡는다. PCI DSS 는 국제 브랜드 5 사의 기준으로 준수 못 하면 Visa · Mastercard 와 거래 불가. 카드 번호 · 유효기간을 저장해 암호화 기준이 걸린다. 12 요건.",
+              "date": "2026-07-31"
+            }
+          ]
+        },
+        {
+          "tech": "EMV 페이먼트 토큰(토큰 도메인 제한 · 앱 내 · Card-on-File)",
+          "solves": "PAN 없이 결제를 성립시켜 유출 영향을 줄인다.",
+          "limits": "토큰 발행 · 관리가 네트워크 쪽 서비스에 의존한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "カード番号を扱わずに決済を成立させる仕組み ── トークナイゼーション入門",
+              "url": "https://blog.smartbank.co.jp/entry/2026/01/28/183000",
+              "publisher": "スマートバンク",
+              "summary": "이슈어 · 액콰이어러 · PAN · BIN · 오소리 용어. Google Pay 는 PAN 이 아니라 토큰을 저장한다. EMV 페이먼트 토큰 — PAN 호환 형식, 토큰 도메인 제한, 대면 · 앱 내 · Card-on-File, 발행 · 결제 · 관리 흐름. 글쓴이는 あとばらい · 결제 시스템 개발 · 운영.",
+              "date": "2026-01-28"
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "매출 · 회원 수 · 결제액은 읽은 자료에 없다(시리즈 B 40.8 억 엔만).",
+    "인터체인지 · あとばらい 수수료 · 론 이자 등 수익 구조는 읽지 않았다.",
+    "결제 프로세서 · 네트워크 연결(오소리가 어디를 거쳐 오는지)은 글에 없다.",
+    "AI 가계부(레시트 읽기 · AI 어시스턴트)는 아직 도메인으로 세우지 않았다."
+  ],
+  "sources": [
+    {
+      "title": "株式会社スマートバンク | SmartBank, Inc.",
+      "url": "https://smartbank.co.jp/",
+      "publisher": "スマートバンク",
+      "summary": "미션 '人々が本当に欲しかったものをつくる'. 제품 ワンバンク — AI 가계부(AI 어시스턴트가 지출을 학습), 페어 카드로 커플 돈 관리, あと払いチャージ. 뉴스: 주유소 결제 대응(2026-09-17), 오리엔트코퍼레이션 제휴로 'ワンバンク請求書カード払い'(2026-09-09). 채용: 서버 사이드 · iOS · SRE · 보안 엔지니어 등."
+    },
+    {
+      "title": "CEO×CFOの本音トーク！40.8億円の資金調達をどう実現したのか？",
+      "url": "https://blog.smartbank.co.jp/entry/2024/11/20/fundingstory",
+      "publisher": "スマートバンク",
+      "summary": "총 40.8 억 엔 시리즈 B 조달. 이전 조달은 CEO 가 직접 해 CEO 업무가 멈췄고, 이번엔 첫 CFO 를 채용해 진행.",
+      "date": "2024-11-21"
+    },
+    {
+      "title": "PMが事業をリードする。ワンバンクの「あとばらい」事業",
+      "url": "https://blog.smartbank.co.jp/entry/2026/01/21/060652",
+      "publisher": "スマートバンク",
+      "summary": "ワンバンク 는 한 제품 안에 여러 금융 서비스(사업)를 담는 플랫폼. あとばらいチャージ — 지금 돈이 없을 때 먼저 충전하고 나중에 갚는다, 충전한 값은 Visa 프리페이드 카드로 쓰며 등록부터 최단 1 분에 충전 · 발행 · 사용. BNPL(Klarna) 과 같은 영역. マイペース払い(론) — 더 큰 금액을 분할 상환. 결제 · 입금 · 출금에서 파트너 연계(알라이언스)가 전제. Biz · Tech · Product 의 종합 격투기.",
+      "date": "2026-01-20"
+    },
+    {
+      "title": "カード番号を扱わずに決済を成立させる仕組み ── トークナイゼーション入門",
+      "url": "https://blog.smartbank.co.jp/entry/2026/01/28/183000",
+      "publisher": "スマートバンク",
+      "summary": "이슈어 · 액콰이어러 · PAN · BIN · 오소리 용어. Google Pay 는 PAN 이 아니라 토큰을 저장한다. EMV 페이먼트 토큰 — PAN 호환 형식, 토큰 도메인 제한, 대면 · 앱 내 · Card-on-File, 발행 · 결제 · 관리 흐름. 글쓴이는 あとばらい · 결제 시스템 개발 · 운영.",
+      "date": "2026-01-28"
+    },
+    {
+      "title": "クレジットカード番号の混入を防ぐ技術",
+      "url": "https://blog.smartbank.co.jp/entry/2026/01/08/100000",
+      "publisher": "スマートバンク",
+      "summary": "ワンバンク(가계부 프리페이드 카드)는 PCI DSS 준수가 필수. 요청에 카드 번호 같은 문자열이 섞이는 것을 Go 로 검출 — 정규식 후보 → 정규화 → Luhn → 브랜드 확인. 1 단계 정규식만으론 오검지 투성이, 2 단계 URL 서명 건너뛰기 · 정규식 엄격화 · Luhn · 브랜드, 3 단계 전 브랜드 요청 거부 + 건너뛰기 경로. 로그만 남기고 출시 → 로그로 오검지 특정 → 검증 활성화.",
+      "date": "2026-01-08"
+    },
+    {
+      "title": "バーチャルカード発行の排他制御 ～ 無駄な発行を防ぐシンプルなアプローチ~",
+      "url": "https://blog.smartbank.co.jp/entry/2025/03/19/123000",
+      "publisher": "スマートバンク",
+      "summary": "구성: PCI DSS 준수 환경의 issuing-api(오소리 수신 · 카드 발행, 카드 번호 등 보안 데이터 관리)와 비준수 환경의 core-api(B/43 거의 모든 로직). 리소스가 아직 없을 때의 배타 제어 — 조작 횟수 체크를 채택, 트랜잭션 · GET_LOCK 은 보류. PCI DSS 제약 때문에 일반 해법이 최적이 아니다.",
+      "date": "2025-03-19"
+    },
+    {
+      "title": "インデックスの\"正解\"を探せ！決済レスポンスタイムを改善したパフォーマンスチューニング",
+      "url": "https://blog.smartbank.co.jp/entry/2024/12/26/152742",
+      "publisher": "スマートバンク",
+      "summary": "2 주마다 서버 전원 퍼포먼스 미팅. SRE 가 결제에 SLI/SLO · 에러 버짓. 결제 p99 가 날마다 늘어 쿼리 하나가 선형으로 느려짐 — 오소리제이션 1 : N 이력, 승인 번호 · 수신 일시 인덱스 후보 셋을 실행 계획으로 비교. Aurora MySQL 3.",
+      "date": "2024-12-26"
+    },
+    {
+      "title": "PCI DSS×SRE 〜審査対応を「設計要素」として楽しむスマートバンクのSREチーム〜",
+      "url": "https://blog.smartbank.co.jp/entry/2026/07/31",
+      "publisher": "スマートバンク",
+      "summary": "SRE 3 명이 AWS 보수 운영 · BtoB 인프라 · PCI DSS 준수(매년 갱신, Apple Pay/Google Pay 구성)를 맡는다. PCI DSS 는 국제 브랜드 5 사의 기준으로 준수 못 하면 Visa · Mastercard 와 거래 불가. 카드 번호 · 유효기간을 저장해 암호화 기준이 걸린다. 12 요건.",
+      "date": "2026-07-31"
+    },
+    {
+      "title": "外部サービス連携におけるリコンサイルの重要性と実装時の検討ポイント",
+      "url": "https://blog.smartbank.co.jp/entry/2024/10/08/180000",
+      "publisher": "スマートバンク",
+      "summary": "2024-06 B/43 あとばらいチャージ 뒤편 사업자를 이행하며 상환 데이터 리컨사일 배치를 설계. 불일치 원인 — 자사 → 외부 통신 오류(타임아웃 재시도로 이중 처리), Webhook 불달 · 지연. 리컨사일 조건 · 불일치 지점 · 데이터량 · 실행 빈도 · 불일치 시 대응 · 멱등성 · 예외 · 문서화.",
+      "date": "2024-10-08"
+    },
+    {
+      "title": "非同期処理においてデータの整合性を保つアーキテクチャパターン",
+      "url": "https://blog.smartbank.co.jp/entry/asynchronous_architecture_patterns",
+      "publisher": "スマートバンク",
+      "summary": "B/43 카드 발행 흐름을 예로 이벤트 모델링(앞 이벤트 ID · 첫 이벤트 ID · 트리 · 롱텀 이벤트, 전부 담기 NG), Transactional outbox(Polling publisher · Transaction log tailing), 사가(보상 트랜잭션 · 코레오그래피 vs 오케스트레이션), 스키마 정의. 글쓴이는 카드 결제 · あとばらい 기능 개발.",
+      "date": "2024-11-18"
+    },
+    {
+      "title": "リードレプリカにおける「書き込み後の読み取り一貫性」を担保する 〜 ワンバンクでの実践 〜",
+      "url": "https://blog.smartbank.co.jp/entry/2026/01/16/100005",
+      "publisher": "スマートバンク",
+      "summary": "core-api DB 부하 분산에 리드 레플리카 도입. 입금 직후 이전 잔액이 보이면 '입금이 안 됐다' 불안 — 동기 복제 · 사용자 일시 프라이머리 고정(Rails DatabaseSelector) · 그 밖의 방법을 비교.",
+      "date": "2026-01-16"
+    },
+    {
+      "title": "Apple Pay カード登録の仕組み ─ ウォレットプロビジョニングの裏側",
+      "url": "https://blog.smartbank.co.jp/entry/apple-pay-provisioning",
+      "publisher": "スマートバンク",
+      "summary": "2026-02 Apple Pay 대응. 스마트뱅크는 이슈어. Manual · In-App 프로비저닝 → 약관 동의 → 리스크 판정에 따른 Green/Yellow/Red Path(추가 본인 확인) → FPAN 을 DPAN 으로 토큰화해 등록.",
+      "date": "2026-05-18"
+    }
+  ]
+}
