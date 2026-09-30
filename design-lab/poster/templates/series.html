@@ -1,0 +1,196 @@
+<!doctype html>
+<!-- 시리즈 판 한 장 — 데이터로 본 채용 · 들어가려면(취업 가이드) · 회사 해부 표지.
+     poster/series.py 가 /*__DATA__*/ 자리에 {theme, series, page, slide} 를 박고 .sheet 를 찍는다.
+
+     규칙(CONTENT_PLAN.md · BRAND_RESEARCH.md 0절):
+       - 숫자는 우리 데이터에서 센 것만. 모든 수치 판은 기준일과 표본 수(n)를 판 안에 적는다.
+       - 장식 없음 — 알약 칩·강조 막대 달린 수치 카드·색 네모 불릿·그림자 금지. 강조색은 한 곳.
+       - 시리즈 이름은 대괄호 머리말([데이터로 본 채용])로 — 틀은 같고 주제만 바뀐다.
+       - 본문 18px 이상(1080 폭). 채용 사이트 이름·공고 주소는 판에 넣지 않는다. -->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<style>
+  :root { --paper:#f5f2ea; --ink:#111317; --sub:#5d6068; --accent:#ff5a1f; --line:#d8d3c7; }
+  * { box-sizing:border-box; margin:0; }
+  body { background:#222; }
+  .sheet { width:var(--sheet-w,1080px); height:var(--sheet-h,1350px); background:var(--paper); color:var(--ink);
+           font-family:'Pretendard','Noto Sans KR','Malgun Gothic',sans-serif; padding:84px 80px 70px;
+           display:flex; flex-direction:column; position:relative; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .mono { font-family:'JetBrains Mono',ui-monospace,Consolas,Menlo,monospace; }
+  .series { font-size:28px; font-weight:800; letter-spacing:-.01em; }
+  .series b { color:var(--accent); }
+  .rule { height:5px; background:var(--ink); margin-top:22px; }
+  h1 { font-weight:800; letter-spacing:-.045em; line-height:1.06; }
+  h2 { font-size:64px; font-weight:800; letter-spacing:-.04em; line-height:1.1; margin-top:40px; }
+  .sub { margin-top:20px; font-size:30px; color:var(--sub); font-weight:600; line-height:1.4; }
+  .note { margin-top:auto; padding-top:18px; font-size:19px; color:var(--sub); line-height:1.45; font-weight:500; }
+  footer { margin-top:18px; padding-top:18px; border-top:2px solid var(--ink); display:flex; justify-content:space-between;
+           font-size:22px; font-weight:700; }
+  footer .pg { color:var(--sub); font-variant-numeric:tabular-nums; }
+  em { font-style:normal; color:var(--accent); }
+
+  /* cover */
+  .cover h1 { margin-top:auto; font-size:132px; }
+  .cover h1 div { white-space:nowrap; }
+  .cover .sub { font-size:34px; margin-top:28px; }
+  .cover .big { font-size:260px; font-weight:800; letter-spacing:-.06em; line-height:.9; color:var(--accent);
+                font-variant-numeric:tabular-nums; margin-top:60px; }
+  .cover .big small { font-size:64px; letter-spacing:-.02em; color:var(--ink); margin-left:10px; }
+
+  /* bars */
+  .bars { margin-top:48px; display:flex; flex-direction:column; gap:16px; }
+  .bar { display:grid; grid-template-columns:230px 1fr 110px; align-items:center; gap:18px; }
+  .bar .l { font-size:34px; font-weight:800; letter-spacing:-.02em; text-align:right; white-space:nowrap; }
+  .bar .t { height:40px; background:var(--line); }
+  .bar .t i { display:block; height:100%; background:var(--ink); }
+  .bar.hi .t i { background:var(--accent); }
+  .bar .v { font-size:30px; font-weight:800; font-variant-numeric:tabular-nums; }
+  .bar .v small { font-size:18px; color:var(--sub); font-weight:600; margin-left:4px; }
+
+  /* table */
+  table { width:100%; border-collapse:collapse; margin-top:44px; }
+  th { text-align:left; font-size:24px; color:var(--sub); font-weight:700; padding:0 0 14px; border-bottom:3px solid var(--ink); }
+  td { font-size:42px; font-weight:800; padding:34px 0; border-bottom:1px solid var(--line); letter-spacing:-.02em;
+       font-variant-numeric:tabular-nums; }
+  th.r, td.r { text-align:right; }
+  td small { font-size:24px; color:var(--sub); font-weight:600; margin-left:6px; }
+  td.hi { color:var(--accent); }
+
+  /* stat */
+  .stat .num { margin-top:110px; font-size:300px; font-weight:800; letter-spacing:-.06em; line-height:.9; color:var(--accent);
+               font-variant-numeric:tabular-nums; }
+  .stat .num small { font-size:70px; color:var(--ink); }
+  .stat .lab { margin-top:40px; font-size:52px; font-weight:800; letter-spacing:-.03em; line-height:1.3; }
+  .stat .exp { margin-top:34px; font-size:36px; color:var(--sub); line-height:1.5; font-weight:600; }
+
+  /* guide item */
+  .gi .no { margin-top:44px; font-size:30px; font-weight:800; color:var(--accent); font-variant-numeric:tabular-nums; }
+  .gi h2 { margin-top:12px; font-size:58px; }
+  .gi blockquote { margin-top:36px; padding:26px 0 26px 30px; border-left:6px solid var(--accent);
+                   font-size:26px; line-height:1.5; font-weight:600; }
+  .gi blockquote small { display:block; font-size:18px; color:var(--sub); margin-bottom:10px; font-weight:700; }
+  .gi .why { margin-top:32px; font-size:28px; line-height:1.6; font-weight:500; }
+  .gi .chk { margin-top:30px; padding-top:22px; border-top:2px solid var(--line); font-size:27px; line-height:1.55; font-weight:700; }
+  .gi .chk small { display:block; font-size:19px; color:var(--sub); margin-bottom:8px; }
+
+  /* jobs list */
+  .jobs { margin-top:40px; }
+  .jobs li { list-style:none; display:grid; grid-template-columns:60px 1fr auto; gap:14px; align-items:baseline;
+             padding:18px 0; border-bottom:1px solid var(--line); }
+  .jobs .n { font-size:22px; color:var(--sub); font-weight:800; font-variant-numeric:tabular-nums; }
+  .jobs .r { font-size:32px; font-weight:800; letter-spacing:-.02em; line-height:1.25; }
+  .jobs .c { font-size:22px; color:var(--sub); font-weight:600; white-space:nowrap; }
+
+  /* end */
+  .end h2 { margin-top:auto; font-size:88px; }
+  .end ul { margin-top:34px; padding:0; }
+  .end li { list-style:none; font-size:40px; font-weight:700; line-height:1.45; padding:24px 0; border-bottom:1px solid var(--line); }
+
+  /* brand cover (회사 해부) — 바탕이 그 회사의 색이다 */
+  .brand .co { margin-top:auto; font-size:190px; font-weight:800; letter-spacing:-.06em; line-height:.95; white-space:nowrap; }
+  .brand .one { margin-top:34px; font-size:36px; font-weight:700; line-height:1.45; letter-spacing:-.02em; }
+  .brand .cnt { margin-top:30px; font-size:40px; font-weight:800; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+(function () {
+  const el = (t, c, x) => { const n = document.createElement(t); if (c) n.className = c; if (x != null) n.textContent = x; return n; };
+  const T = D.theme || {};
+  const root = document.documentElement;
+  for (const k of ['paper','ink','sub','accent','line']) if (T[k]) root.style.setProperty('--' + k, T[k]);
+  const S = D.slide; const sheet = el('section', 'sheet ' + S.type);
+
+  const head = el('div', 'series');
+  const m = (D.series || '').match(/^\[(.+)\]\s*(.*)$/);
+  if (m) { head.append('['); head.append(el('b', '', m[1])); head.append('] ' + m[2]); } else head.append(D.series || '');
+  sheet.append(head, el('div', 'rule'));
+
+  const rich = (node, s) => {   // **강조** 만 받는다(가이드 원고의 표기)
+    String(s || '').split(/(\*\*[^*]+\*\*)/).forEach(p => {
+      if (p.startsWith('**')) node.append(el('em', '', p.slice(2, -2))); else if (p) node.append(p.replace(/`/g, ''));
+    });
+    return node;
+  };
+
+  if (S.type === 'cover') {
+    if (S.big) { const b = el('div', 'big', S.big); if (S.big_unit) b.append(el('small', '', S.big_unit)); sheet.append(b); }
+    const h = el('h1'); (S.lines || []).forEach(l => h.append(rich(el('div'), l))); sheet.append(h);
+    if (S.sub) sheet.append(rich(el('div', 'sub'), S.sub));
+  } else if (S.type === 'brand') {
+    sheet.append(el('div', 'co', S.company));
+    if (S.one) sheet.append(rich(el('div', 'one'), S.one));
+    if (S.count) sheet.append(el('div', 'cnt', S.count));
+  } else if (S.type === 'bars') {
+    sheet.append(rich(el('h2'), S.title));
+    if (S.sub) sheet.append(rich(el('div', 'sub'), S.sub));
+    const box = el('div', 'bars'); const max = Math.max(...S.rows.map(r => r.value));
+    S.rows.forEach((r, i) => {
+      const row = el('div', 'bar' + (r.hi ? ' hi' : ''));
+      const t = el('div', 't'); const f = el('i'); f.style.width = `${(100 * r.value / max).toFixed(1)}%`; t.append(f);
+      const v = el('div', 'v', r.display || String(r.value)); if (r.unit) v.append(el('small', '', r.unit));
+      row.append(el('div', 'l', r.label), t, v); box.append(row);
+    });
+    sheet.append(box);
+  } else if (S.type === 'table') {
+    sheet.append(rich(el('h2'), S.title));
+    if (S.sub) sheet.append(rich(el('div', 'sub'), S.sub));
+    const tb = el('table'); const hr = el('tr');
+    S.head.forEach((h, i) => hr.append(el('th', i ? 'r' : '', h))); tb.append(hr);
+    S.rows.forEach(r => { const tr = el('tr'); r.forEach((c, i) => {
+      const td = el('td', (i ? 'r' : '') + (S.hi_col === i ? ' hi' : ''));
+      if (typeof c === 'object' && c) { td.append(c.v); if (c.s) td.append(el('small', '', c.s)); } else td.append(c);
+      tr.append(td); }); tb.append(tr); });
+    sheet.append(tb);
+  } else if (S.type === 'stat') {
+    sheet.append(rich(el('h2'), S.title));
+    const n = el('div', 'num', S.num); if (S.unit) n.append(el('small', '', S.unit)); sheet.append(n);
+    sheet.append(rich(el('div', 'lab'), S.label));
+    if (S.explain) sheet.append(rich(el('div', 'exp'), S.explain));
+  } else if (S.type === 'gi') {
+    sheet.append(el('div', 'no', S.no));
+    sheet.append(rich(el('h2'), S.topic));
+    if (S.quote) { const q = el('blockquote'); q.append(el('small', '', '공고 원문')); q.append(S.quote); sheet.append(q); }
+    if (S.why) sheet.append(rich(el('div', 'why'), S.why));
+    if (S.check) { const c = el('div', 'chk'); c.append(el('small', '', '스스로 점검')); rich(c, S.check); sheet.append(c); }
+  } else if (S.type === 'jobs') {
+    sheet.append(rich(el('h2'), S.title));
+    if (S.sub) sheet.append(rich(el('div', 'sub'), S.sub));
+    const ol = el('ol', 'jobs'); ol.style.padding = 0;
+    S.rows.forEach((r, i) => { const li = el('li');
+      li.append(el('div', 'n', String(i + 1).padStart(2, '0')), el('div', 'r', r.role), el('div', 'c', r.meta || '')); ol.append(li); });
+    sheet.append(ol);
+  } else if (S.type === 'end') {
+    sheet.append(rich(el('h2'), S.title));
+    const ul = el('ul'); (S.lines || []).forEach(l => ul.append(rich(el('li'), l))); sheet.append(ul);
+  }
+  if (S.note) sheet.append(el('div', 'note', S.note));
+  const foot = el('footer'); foot.append(el('div', '', '@devjobseeker'), el('div', 'pg', D.page || ''));
+  if (!S.note) foot.style.marginTop = 'auto';
+  sheet.append(foot);
+  document.getElementById('root').append(sheet);
+
+  // 넘치면 큰 글자부터 줄인다
+  const fitW = (sel, min) => sheet.querySelectorAll(sel).forEach(n => {
+    let s = parseFloat(getComputedStyle(n).fontSize);
+    while (s > min && n.scrollWidth > sheet.clientWidth - 160) { s -= 4; n.style.fontSize = s + 'px'; }
+  });
+  fitW('.cover h1 div', 60); fitW('.brand .co', 80);
+  let guard = 0;
+  while (sheet.scrollHeight > sheet.clientHeight + 1 && guard++ < 30) {
+    sheet.querySelectorAll('h1, h2, .why, blockquote, .one, .jobs .r, .end li, td').forEach(n => {
+      const s = parseFloat(getComputedStyle(n).fontSize); if (s > 20) n.style.fontSize = (s * 0.95) + 'px';
+    });
+  }
+  window.__minBody = Math.min(...[...sheet.querySelectorAll('.why, blockquote, .jobs .r, .end li, td, .sub, .chk')]
+    .map(n => parseFloat(getComputedStyle(n).fontSize)).concat([99]));
+  window.__overflow = sheet.scrollHeight > sheet.clientHeight + 1;
+  window.__ready = true;
+})();
+</script>
+</body>
+</html>

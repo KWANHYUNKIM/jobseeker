@@ -1,0 +1,194 @@
+<!doctype html>
+<!-- 모션 릴스 한 편의 모든 장면 — poster/reelfx.py 가 window.render(t) 를 프레임마다 불러 찍는다.
+     CSS 애니메이션을 쓰지 않는다: 시간 t(초)를 받아 모든 값을 계산하므로 몇 번을 찍어도 같은 프레임이 나온다.
+     장면: hook · count · bars · list · lines · cta. 장면 경계는 곡의 4박에 맞춰 reelfx.py 가 정한다.
+     규칙은 series.html 과 같다 — 숫자는 센 것만, 장식 없음, 판에 사이트 이름·주소 없음. -->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing:border-box; margin:0; }
+  html, body { width:1080px; height:1920px; overflow:hidden; background:#000; }
+  #stage { position:relative; width:1080px; height:1920px; overflow:hidden;
+           font-family:'Pretendard','Noto Sans KR','Malgun Gothic',sans-serif; -webkit-font-smoothing:antialiased; }
+  .scene { position:absolute; inset:0; padding:180px 90px 220px; display:none; flex-direction:column; }
+  .wipe { position:absolute; left:0; right:0; top:0; height:0; z-index:5; }
+  .top { position:absolute; left:90px; right:90px; top:96px; display:flex; justify-content:space-between;
+         font-size:34px; font-weight:800; letter-spacing:-.01em; z-index:6; }
+  .prog { position:absolute; left:90px; right:90px; top:152px; height:8px; z-index:6; }
+  .prog i { display:block; height:100%; }
+  .foot { position:absolute; left:90px; right:90px; bottom:110px; font-size:34px; font-weight:800; z-index:6; }
+  .kick { font-size:44px; font-weight:800; letter-spacing:-.01em; }
+  .big { font-weight:800; letter-spacing:-.05em; line-height:1.02; }
+  .num { font-weight:800; letter-spacing:-.06em; line-height:.9; font-variant-numeric:tabular-nums; }
+  .row { display:grid; align-items:center; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const S = document.getElementById('stage');
+const T = D.theme;                                // {bg, ink, sub, accent}
+S.style.background = T.bg; S.style.color = T.ink;
+const el = (t, c, x) => { const n = document.createElement(t); if (c) n.className = c; if (x != null) n.textContent = x; return n; };
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const ease = x => 1 - Math.pow(1 - clamp(x), 3);            // 끝에서 느려진다
+const back = x => { x = clamp(x); const c = 1.7; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); }; // 살짝 넘쳤다 돌아온다
+const rich = (node, s) => { String(s || '').split(/(\*\*[^*]+\*\*)/).forEach(p => {
+  if (p.startsWith('**')) { const b = el('span', '', p.slice(2, -2)); b.style.color = T.accent; node.append(b); } else if (p) node.append(p); }); return node; };
+
+// 머리·진행 막대·발 — 모든 장면 공통
+const topbar = el('div', 'top'); const tl = el('div', '', D.series); const tr = el('div', '', '@devjobseeker');
+tr.style.color = T.sub; topbar.append(tl, tr); S.append(topbar);
+const prog = el('div', 'prog'); prog.style.background = T.line; const pf = el('i'); pf.style.background = T.ink; prog.append(pf); S.append(prog);
+const foot = el('div', 'foot'); foot.style.color = T.sub; S.append(foot);
+const wipe = el('div', 'wipe'); wipe.style.background = T.accent; S.append(wipe);
+
+// 장면 DOM 을 한 번 만들어 두고 render(t) 가 값만 바꾼다
+const scenes = D.scenes.map(sc => {
+  const n = el('div', 'scene'); S.append(n); sc.node = n; sc.parts = [];
+  if (sc.type === 'hook') {
+    if (sc.kicker) { const k = el('div', 'kick', sc.kicker); k.style.color = T.accent; n.append(k); sc.parts.push(k); }
+    const box = el('div'); box.style.marginTop = 'auto'; box.style.marginBottom = 'auto';
+    sc.lines.forEach(l => { const d = rich(el('div', 'big'), l); d.style.fontSize = (sc.size || 150) + 'px'; box.append(d); sc.parts.push(d); });
+    if (sc.sub) { const s = rich(el('div'), sc.sub); s.style.cssText = `margin-top:44px;font-size:46px;font-weight:700;color:${T.sub};line-height:1.35`; box.append(s); sc.parts.push(s); }
+    n.append(box);
+  } else if (sc.type === 'count') {
+    const box = el('div'); box.style.margin = 'auto 0';
+    const t = rich(el('div', 'kick'), sc.title); box.append(t);
+    const num = el('div', 'num'); num.style.cssText = `font-size:${sc.size || 360}px;color:${T.accent};margin-top:40px`;
+    const v = el('span'); const u = el('span', '', sc.unit || ''); u.style.cssText = `font-size:120px;color:${T.ink};margin-left:14px`;
+    num.append(v, u); box.append(num); sc.v = v;
+    const lab = rich(el('div'), sc.label); lab.style.cssText = 'margin-top:40px;font-size:58px;font-weight:800;letter-spacing:-.03em;line-height:1.3'; box.append(lab);
+    if (sc.note) { const no = el('div', '', sc.note); no.style.cssText = `margin-top:36px;font-size:30px;color:${T.sub};font-weight:600;line-height:1.4`; box.append(no); sc.parts.push(no); }
+    sc.parts.unshift(t, num, lab); n.append(box);
+  } else if (sc.type === 'bars') {
+    const t = rich(el('div', 'big'), sc.title); t.style.fontSize = '84px'; n.append(t); sc.parts.push(t);
+    const box = el('div'); box.style.cssText = 'margin-top:auto;margin-bottom:auto;display:flex;flex-direction:column;gap:30px';
+    const max = Math.max(...sc.rows.map(r => r.value));
+    sc.bars = sc.rows.map((r, i) => {
+      const row = el('div', 'row'); row.style.gridTemplateColumns = '270px 1fr 150px'; row.style.gap = '22px';
+      const l = el('div', '', r.label); l.style.cssText = 'font-size:48px;font-weight:800;text-align:right;white-space:nowrap';
+      const tr = el('div'); tr.style.cssText = `height:64px;background:${T.line}`; const f = el('i'); f.style.cssText = `display:block;height:100%;width:0;background:${i ? T.ink : T.accent}`; tr.append(f);
+      const v = el('div', '', r.display); v.style.cssText = 'font-size:46px;font-weight:800;font-variant-numeric:tabular-nums';
+      row.append(l, tr, v); box.append(row); return {row, f, w: 100 * r.value / max};
+    });
+    n.append(box);
+    if (sc.note) { const no = el('div', '', sc.note); no.style.cssText = `font-size:30px;color:${T.sub};font-weight:600`; n.append(no); sc.parts.push(no); }
+  } else if (sc.type === 'list') {
+    const t = rich(el('div', 'big'), sc.title); t.style.fontSize = (sc.tsize || 84) + 'px'; n.append(t); sc.parts.push(t);
+    const box = el('div'); box.style.cssText = 'margin-top:auto;margin-bottom:auto;display:flex;flex-direction:column;gap:12px';
+    sc.items = sc.rows.map((r, i) => {
+      const row = el('div', 'row'); row.style.cssText = `grid-template-columns:${sc.left || 110}px 1fr;gap:26px;padding:40px 0;border-bottom:3px solid ${T.line}`;
+      const a = el('div', '', r.left ?? String(i + 1).padStart(2, '0')); a.style.cssText = `font-size:${sc.lsize || 44}px;font-weight:800;color:${T.accent};font-variant-numeric:tabular-nums;white-space:nowrap`;
+      const b = el('div'); const m = rich(el('div'), r.main); m.style.cssText = `font-size:${sc.msize || 50}px;font-weight:800;letter-spacing:-.03em;line-height:1.2`;
+      b.append(m); if (r.sub) { const s = el('div', '', r.sub); s.style.cssText = `font-size:40px;color:${T.sub};font-weight:600;margin-top:8px`; b.append(s); }
+      row.append(a, b); box.append(row); return row;
+    });
+    n.append(box);
+  } else if (sc.type === 'lines') {
+    if (sc.kicker) { const k = el('div', 'kick', sc.kicker); k.style.color = T.accent; n.append(k); sc.parts.push(k); }
+    const box = el('div'); box.style.cssText = 'margin-top:auto;margin-bottom:auto';
+    sc.lines.forEach((l, i) => { const d = rich(el('div'), l); d.style.cssText = `font-size:${i ? (sc.size2 || 50) : (sc.size || 76)}px;font-weight:800;letter-spacing:-.03em;line-height:1.3;margin-top:${i ? 36 : 0}px;${i ? 'color:' + T.sub : ''}`; box.append(d); sc.parts.push(d); });
+    n.append(box);
+  } else if (sc.type === 'map') {
+    // 매장 점 지도 — 점 N 개가 깔리고, 하나가 켜지고, 집까지 선이 그어진다(연출: 위치는 실제가 아니다)
+    const t = rich(el('div', 'big'), sc.title); t.style.fontSize = '84px'; n.append(t); sc.parts.push(t);
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgNS, 'svg'); svg.setAttribute('viewBox', '0 0 900 900');
+    svg.style.cssText = 'width:900px;height:900px;margin:50px 0 0';
+    let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    sc.dots = []; for (let i = 0; i < (sc.dots_n || 140); i++) {
+      const c = document.createElementNS(svgNS, 'circle'); const x = 60 + rnd() * 780, y = 60 + rnd() * 780;
+      c.setAttribute('cx', x); c.setAttribute('cy', y); c.setAttribute('r', 11); c.setAttribute('fill', T.dot || T.line); svg.append(c); sc.dots.push({c, x, y}); }
+    const home = {x: 640, y: 690}; const pick = sc.dots.reduce((b, d) => Math.hypot(d.x - home.x, d.y - home.y) < Math.hypot(b.x - home.x, b.y - home.y) ? d : b);
+    const line = document.createElementNS(svgNS, 'line'); line.setAttribute('x1', pick.x); line.setAttribute('y1', pick.y);
+    line.setAttribute('stroke', T.accent2 || T.accent); line.setAttribute('stroke-width', 10); line.setAttribute('stroke-linecap', 'round'); svg.append(line);
+    const hm = document.createElementNS(svgNS, 'rect'); hm.setAttribute('x', home.x - 26); hm.setAttribute('y', home.y - 26); hm.setAttribute('width', 52); hm.setAttribute('height', 52);
+    hm.setAttribute('rx', 10); hm.setAttribute('fill', T.ink); svg.append(hm);
+    sc.pick = pick; sc.home = home; sc.line = line; sc.hm = hm; n.append(svg);
+    const cap = rich(el('div'), sc.caption); cap.style.cssText = 'margin-top:30px;font-size:58px;font-weight:800;letter-spacing:-.03em;line-height:1.3;white-space:pre-line'; n.append(cap); sc.cap = cap;
+  } else if (sc.type === 'dialog') {
+    // 두 사람의 대화 — 그림 인물(연출). 말풍선이 차례로 뜨고 글자가 타이핑된다
+    if (sc.title) { const t = rich(el('div', 'kick'), sc.title); t.style.color = T.accent; n.append(t); sc.parts.push(t); }
+    const box = el('div'); box.style.cssText = 'margin:auto 0;display:flex;flex-direction:column;gap:70px';
+    sc.bubbles = sc.lines.map((ln, i) => {
+      const right = ln.who === 'b'; const row = el('div'); row.style.cssText = `display:flex;gap:30px;align-items:flex-end;${right ? 'flex-direction:row-reverse' : ''}`;
+      const who = D.cast[ln.who]; const av = el('div'); av.style.cssText = 'width:170px;flex:none;text-align:center';
+      av.innerHTML = `<svg viewBox="0 0 170 210" width="170" height="210"><circle cx="85" cy="62" r="46" fill="${who.skin}"/><path d="M39 58 Q85 -6 131 58 Q120 30 85 28 Q50 30 39 58Z" fill="${who.hair}"/><path d="M15 210 Q20 120 85 118 Q150 120 155 210Z" fill="${who.color}"/></svg>`;
+      const nm = el('div', '', who.name); nm.style.cssText = `font-size:28px;font-weight:800;margin-top:6px;color:${T.sub}`; av.append(nm);
+      const bub = el('div'); bub.style.cssText = `max-width:640px;padding:34px 40px;border-radius:40px;font-size:50px;font-weight:800;line-height:1.35;letter-spacing:-.03em;background:${right ? T.accent : T.card};color:${right ? T.onAccent : T.ink}`;
+      row.append(av, bub); box.append(row); return {row, bub, text: ln.text, at: ln.at ?? i * 1.6};
+    });
+    n.append(box);
+    const tag = el('div', '', sc.tag || '인물은 연출입니다'); tag.style.cssText = `font-size:26px;color:${T.sub};font-weight:600`; n.append(tag);
+  } else if (sc.type === 'cta') {
+    const box = el('div'); box.style.margin = 'auto 0';
+    const a = el('div', 'big', sc.title || '저장해 두고'); a.style.fontSize = '150px';
+    const b = el('div', 'big', sc.title2 || '다시 보세요'); b.style.cssText = `font-size:150px;color:${T.accent}`;
+    const c = el('div', '', sc.sub || '공고 전문은 캐러셀 게시물에서'); c.style.cssText = `margin-top:60px;font-size:50px;font-weight:700;color:${T.sub}`;
+    const d = el('div', '', '@devjobseeker'); d.style.cssText = 'margin-top:26px;font-size:60px;font-weight:800';
+    box.append(a, b, c, d); sc.parts.push(a, b, c, d); n.append(box);
+  }
+  return sc;
+});
+// 브랜드가 정한 기울기(올리브영 13°) — 제목 글자만. 움직임(transform)과 섞이지 않게 안쪽 칸에 건다
+if (D.skew) document.querySelectorAll('.big').forEach(b => { const w = el('span'); w.style.cssText = `display:inline-block;transform:skewX(-${D.skew}deg)`;
+  while (b.firstChild) w.append(b.firstChild); b.append(w); });
+const total = scenes.reduce((s, x) => s + x.dur, 0);
+
+window.render = t => {
+  let acc = 0, cur = scenes[scenes.length - 1], lt = 0;
+  for (const sc of scenes) { if (t < acc + sc.dur) { cur = sc; lt = t - acc; break; } acc += sc.dur; }
+  if (t >= total) lt = cur.dur;
+  scenes.forEach(sc => { sc.node.style.display = sc === cur ? 'flex' : 'none'; });
+  pf.style.width = `${100 * clamp(t / total)}%`;
+  foot.textContent = cur.foot || D.foot || '';
+  // 장면 머리: 강조색 막이 위에서 내려왔다가 걷힌다(0.28초)
+  const w = lt < .14 ? lt / .14 : lt < .28 ? 1 - (lt - .14) / .14 : 0;
+  wipe.style.height = `${1920 * ease(w)}px`;
+  const k = lt - .18;                                  // 막이 걷힌 뒤부터
+  const pop = (node, i, gap = .16) => { const p = clamp((k - i * gap) / .35);
+    node.style.opacity = p; node.style.transform = `translateY(${(1 - ease(p)) * 60}px) scale(${.92 + .08 * back(p)})`; };
+  if (cur.type === 'hook') cur.parts.forEach((n, i) => pop(n, i, .22));
+  else if (cur.type === 'count') {
+    cur.parts.forEach((n, i) => pop(n, i, .15));
+    const p = ease(clamp((k - .2) / (cur.dur * .5)));
+    const v = cur.value * p; cur.v.textContent = cur.decimals ? v.toFixed(cur.decimals) : Math.round(v).toLocaleString('ko-KR');
+  } else if (cur.type === 'bars') {
+    cur.parts.forEach((n, i) => pop(n, i));
+    cur.bars.forEach((b, i) => { const p = clamp((k - .25 - i * .12) / .45); b.row.style.opacity = clamp(p * 3); b.f.style.width = `${b.w * ease(p)}%`; });
+  } else if (cur.type === 'list') {
+    cur.parts.forEach((n, i) => pop(n, i));
+    cur.items.forEach((r, i) => { const p = clamp((k - .3 - i * (cur.gap || .22)) / .3); r.style.opacity = p; r.style.transform = `translateX(${(1 - ease(p)) * 140}px)`; });
+  } else if (cur.type === 'lines') cur.parts.forEach((n, i) => pop(n, i, .35));
+  else if (cur.type === 'map') {
+    cur.parts.forEach((n, i) => pop(n, i));
+    cur.dots.forEach((d, i) => { const p = clamp((k - i * .004) / .2); d.c.setAttribute('r', 11 * ease(p)); });
+    const on = clamp((k - 1.1) / .3); cur.pick.c.setAttribute('fill', on > 0 ? (T.accent2 || T.accent) : (T.dot || T.line)); cur.pick.c.setAttribute('r', 11 + 16 * back(on));
+    const ln = ease(clamp((k - 1.5) / .7)); cur.line.setAttribute('x2', cur.pick.x + (cur.home.x - cur.pick.x) * ln); cur.line.setAttribute('y2', cur.pick.y + (cur.home.y - cur.pick.y) * ln);
+    cur.hm.style.opacity = clamp((k - .6) / .2); pop(cur.cap, 0); cur.cap.style.opacity = clamp((k - 2.0) / .3);
+  } else if (cur.type === 'dialog') {
+    cur.parts.forEach((n, i) => pop(n, i));
+    cur.bubbles.forEach(b => { const p = clamp((k - b.at) / .3); b.row.style.opacity = p; b.row.style.transform = `translateY(${(1 - ease(p)) * 50}px)`;
+      const chars = Math.floor(clamp((k - b.at - .1) / Math.max(.6, b.text.length * .035)) * b.text.length); b.bub.textContent = b.text.slice(0, Math.max(1, chars)); });
+  }
+  else if (cur.type === 'cta') {
+    cur.parts.forEach((n, i) => pop(n, i, .18));
+    const s = 1 + .03 * Math.sin(lt * Math.PI * 2 / (D.beat || .5));   // 박자에 맞춰 살짝 뛴다
+    cur.parts[1].style.transform = `scale(${s})`; cur.parts[1].style.transformOrigin = 'left center';
+  }
+  // 긴 글자가 넘치면 줄인다(첫 프레임에서 한 번)
+  if (!cur.fitted) { cur.fitted = true; cur.node.querySelectorAll('.big').forEach(b => {
+    let s = parseFloat(getComputedStyle(b).fontSize); b.style.whiteSpace = 'nowrap';
+    while (s > 56 && b.scrollWidth > 900) { s -= 4; b.style.fontSize = s + 'px'; }
+    b.style.whiteSpace = ''; }); }
+  return total;
+};
+window.__total = total;
+window.__ready = true;
+</script>
+</body>
+</html>
