@@ -330,11 +330,11 @@ def record(keyword: str, active_jobs: list, force: bool = False) -> dict | None:
     # 정본 DB 에도 같은 스냅샷을 남긴다 — build_trends.py 가 읽는 원장이 이쪽이다.
     # 파일은 그대로 둔다: 이 시계열은 다시 계산할 수 없어서 사본이 하나 더 있는
     # 편이 낫고, DB 가 꺼진 머신에서도 사이클이 돌아야 한다. 실패는 치명적이지
-    # 않다 — 다음 사이클이 다시 쓰고, 밀린 날짜는 `store.ledgers seed --trends`
+    # 않다 — 다음 사이클이 다시 쓰고, 밀린 날짜는 `store.db.ledgers seed --trends`
     # 가 파일에서 멱등하게 채운다.
     try:
-        from store import conn as _store_conn
-        from store.ledgers import write_trend_day
+        from store.db import conn as _store_conn
+        from store.db.ledgers import write_trend_day
         with _store_conn.connect() as _db:
             with _db.cursor() as _cur:
                 write_trend_day(_cur, snap)

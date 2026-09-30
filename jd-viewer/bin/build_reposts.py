@@ -103,14 +103,14 @@ def diff(old: dict, new: dict, live: dict | None = None) -> list[dict]:
 def load_history() -> tuple[dict[str, list[dict]], bool]:
     """(자리별 판본, DB 를 쓰는가). DB 가 답하면 파일은 아예 열지 않는다."""
     try:
-        from store.ledgers import load_job_versions
+        from store.db.ledgers import load_job_versions
         hist = load_job_versions()
         if hist:
             return hist, True
         # 비어 있는 것과 못 읽는 것은 다르다. 여기까지 왔으면 DB 는 살아 있고
         # 원장만 아직 안 옮겨진 것이다 — 파일에서 읽고 쓰기는 DB 에 한다.
         print("  [history] DB 원장이 비어 있습니다 — 파일로 읽고 DB 로 씁니다"
-              " (python -m store.ledgers seed --history 로 옮기세요)")
+              " (python -m store.db.ledgers seed --history 로 옮기세요)")
     except Exception as e:
         print(f"  [history] DB 원장을 못 읽어 파일로 물러섭니다: {e}")
         return _load_history_file(), False
@@ -239,7 +239,7 @@ def main() -> None:
 
     if fresh:
         if use_db:
-            from store.ledgers import append_job_versions
+            from store.db.ledgers import append_job_versions
             append_job_versions(fresh)
         else:
             with HISTORY.open("a", encoding="utf-8") as fh:

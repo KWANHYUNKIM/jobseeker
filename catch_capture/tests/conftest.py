@@ -16,7 +16,7 @@ os.environ.setdefault("API_CACHE_TTL", "0")
 
 def _db_ok() -> bool:
     try:
-        from store import conn
+        from store.db import conn
         with conn.cursor(autocommit=True) as cur:
             cur.execute("SELECT to_regclass('job_facet') IS NOT NULL AS ok")
             return bool(cur.fetchone()["ok"])
@@ -42,5 +42,5 @@ def pytest_collection_modifyitems(config, items):
 @pytest.fixture(scope="session")
 def client():
     from fastapi.testclient import TestClient
-    from store.api import app
+    from store.api.main import app
     return TestClient(app)

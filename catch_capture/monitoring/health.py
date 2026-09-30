@@ -54,7 +54,7 @@ def _recent_records(keyword: str, n: int) -> list[dict]:
     try:
         import sys as _s
         _s.path.insert(0, str(BASE))
-        from store.ledgers import load_health
+        from store.db.ledgers import load_health
         rows = load_health(keyword, n)
         if rows:
             return rows
@@ -180,12 +180,12 @@ def record(keyword, site_counts, all_jobs, active_jobs, closed_jobs,
 
     # 정본 DB 에도. ingest_crawl 이 방금 만든 이번 사이클의 crawl_run 행에 얹는다.
     # 실패해도 사이클을 죽이지 않는다 — 파일에는 이미 남았고, 밀린 회차는
-    # `store.ledgers seed --health` 가 멱등하게 채운다.
+    # `store.db.ledgers seed --health` 가 멱등하게 채운다.
     try:
         import sys as _s
         _s.path.insert(0, str(BASE))
-        from store import conn as _store_conn
-        from store.ledgers import write_health
+        from store.db import conn as _store_conn
+        from store.db.ledgers import write_health
         with _store_conn.connect() as _db:
             with _db.cursor() as _cur:
                 write_health(_cur, cur)
@@ -201,7 +201,7 @@ def report(n: int = 12) -> None:
     try:
         import sys as _s
         _s.path.insert(0, str(BASE))
-        from store.ledgers import load_health
+        from store.db.ledgers import load_health
         records = load_health(None, n)
     except Exception:
         records = []

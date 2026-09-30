@@ -3,13 +3,13 @@
 -- 왜 필요한가. 뷰어는 지금까지 공고 전량(all_jobs_enriched.json, 184MB)을 받아 놓고
 -- 이 다섯 축을 브라우저에서 계산해 필터와 칩 건수를 셌다. 파일이 사이클마다 새로
 -- 구워져야 화면이 바뀌므로 DB 에서 공고가 닫혀도 화면은 다음 굽기까지 옛 상태였고,
--- 파이프라인이 멈추면 그대로 굳었다. 필터를 서버(store.api)로 옮기려면 같은 축이
+-- 파이프라인이 멈추면 그대로 굳었다. 필터를 서버(store.api.main)로 옮기려면 같은 축이
 -- SQL 로 걸려야 한다.
 --
 -- 값은 계산해서 저장한다(뷰로 두지 않는다). 규칙이 정규식 수십 개와 회사별 사원수·
 -- 매출액 추출이라 SQL 로 옮기면 세 번째 사본이 생긴다. 규칙은 뷰어 TS 가 원본이고
--- store/facets.py 가 그 파이썬 판이다(실데이터 전량 대조: python -m store.facets --parity).
--- store.facets.refresh() 가 매 크롤 사이클(ingest_crawl) 끝에 전량을 다시 채운다.
+-- store/jobs/facets.py 가 그 파이썬 판이다(실데이터 전량 대조: python -m store.jobs.facets --parity).
+-- store.jobs.facets.refresh() 가 매 크롤 사이클(ingest_crawl) 끝에 전량을 다시 채운다.
 --
 -- status 는 여기 두지 않는다 — 그건 job_state 가 읽는 순간 계산한다(낡을 수 없게).
 --
@@ -50,7 +50,7 @@ CREATE INDEX IF NOT EXISTS job_facet_hay_trgm_idx ON job_facet USING gin (hay gi
 -- 사이트 간 중복(job_dup, 004)을 구체화한다. job_dup 은 공고 전량에 윈도 함수를 거는
 -- 뷰라 한 번에 250ms 가 들고, 목록 API 는 요청마다 그걸 세 번 읽었다(칩·페이지·전체 수).
 -- 대표를 고르는 기준에 모집 상태가 들어가므로 영영 굳힐 수는 없다 — 상태를 바꾸는
--- 쪽(크롤 사이클의 store.facets.refresh, 10분마다 도는 close_check)이 끝에 갱신한다.
+-- 쪽(크롤 사이클의 store.jobs.facets.refresh, 10분마다 도는 close_check)이 끝에 갱신한다.
 -- 공고의 모집 상태 자체는 여전히 job_state 에서 읽는 순간 계산한다.
 CREATE MATERIALIZED VIEW IF NOT EXISTS mv_job_dup AS
 SELECT job_id, canonical_id FROM job_dup;

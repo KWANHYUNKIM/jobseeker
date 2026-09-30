@@ -870,9 +870,9 @@ def run(pages: int = PAGES_DEFAULT, only: set[str] | None = None) -> dict:
     stats = {"total": len(projects), "active": active, "new": new,
              "sources": len(ran), "report": report}
 
-    # 정본 DB 이중 쓰기(store/freelance.py). 드라이버가 없거나 DB 가 꺼져 있어도 크롤은 산다.
+    # 정본 DB 이중 쓰기(store/market/freelance.py). 드라이버가 없거나 DB 가 꺼져 있어도 크롤은 산다.
     try:
-        from store import freelance as _db
+        from store.market import freelance as _db
         db = _db.dual_write(touched)
         if db is not None:
             _db.dual_write_snapshot(snap)

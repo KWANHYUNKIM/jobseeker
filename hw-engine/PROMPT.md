@@ -148,6 +148,6 @@
 
 ## 새 부품을 더할 때의 필드
 
-`schema.json` 을 따른다. 분류별 `specs` 키는 뷰어의 `SPEC_COLUMNS`(`jd-viewer/src/lib/hardware.ts`)와
+`schema.json` 을 따른다. 분류별 `specs` 키는 뷰어의 `SPEC_COLUMNS`(`jd-viewer/src/features/hardware/hardware.ts`)와
 같아야 표에 나온다. `id` 는 `<분류>-<모델 소문자-하이픈>`(예: `gpu-rtx-5070-ti`). 한 번 정한 id 는
 바꾸지 않는다 — 가격 원장과 DB 가 id 로 이어진다.

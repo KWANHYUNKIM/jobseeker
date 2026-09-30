@@ -14,6 +14,27 @@ npm run build      # tsc -b + vite build (타입체크 포함, 배포 산출물 
 npm run preview    # 빌드 결과 미리보기
 ```
 
+## 폴더 구조 — 기능별
+
+```
+src/
+  App.tsx · main.tsx · types.ts · index.css     앱 뼈대(탭 라우팅·공통 타입)
+  features/<기능>/                              화면 + 그 화면만 쓰는 훅·로직·테스트
+    jobs/        공고 목록·상세·필터(filter·region·career)·공고 API(useJobsApi)
+    companies/   기업 기술스택            reveng/   기술 역설계
+    radar/       기업 100 레이더          blog/     기술 블로그
+    book/        기술도서(/wiki)          calendar/ 모집 캘린더
+    trend/       개발 트렌드·학습 경로    career/   커리어 마인드맵
+    reposts/     재공고 추적              freelance/ 외주·프리
+    hardware/    PC 하드웨어
+  shared/
+    ui/          공통 UI(ui.tsx·Md·ArchitectureDiagram)
+    lib/         두 기능 이상이 쓰는 것(router·seo·urls·usePaged·companySlug·classify …)
+```
+
+새 파일은 쓰는 기능의 폴더에 둔다. 두 번째 기능이 가져다 쓰기 시작하면 그때 `shared/` 로
+올린다. 테스트는 `npm test`(vitest), 대상 파일 옆에 `*.test.ts` 로 둔다.
+
 ## 주소와 검색 노출(SEO)
 
 해시 라우팅(`#radar/netflix`)을 경로 라우팅으로 바꿨다. 해시 뒤는 서버도 검색엔진도
@@ -31,13 +52,13 @@ URL 의 일부로 보지 않아서, 공고가 1만 건이어도 색인되는 주
 
 구성 요소는 셋이다.
 
-- `src/lib/router.ts` — pushState 라우터(60줄, 의존성 없음). 예전 해시 주소는
+- `src/shared/lib/router.ts` — pushState 라우터(60줄, 의존성 없음). 예전 해시 주소는
   진입 시 새 경로로 리다이렉트한다.
-- `src/lib/companySlug.js` — 한글 회사 이름을 ASCII 주소로. 영문 브랜드명 매핑
+- `src/shared/lib/companySlug.js` — 한글 회사 이름을 ASCII 주소로. 영문 브랜드명 매핑
   (`쿠팡` → `coupang`)이 먼저고, 없으면 국어의 로마자 표기법으로 옮긴다. 앱과
   프리렌더가 같은 파일을 읽어야 주소가 갈라지지 않는다(그래서 `.js`).
   눈에 걸리는 회사가 있으면 `BRAND_SLUGS` 에 한 줄 추가하면 된다.
-- `src/lib/seo.ts` + `src/lib/urls.ts` — 라우트마다 제목·설명·정규 URL·오픈그래프·
+- `src/shared/lib/seo.ts` + `src/shared/lib/urls.ts` — 라우트마다 제목·설명·정규 URL·오픈그래프·
   구조화 데이터(JobPosting/Organization)를 `<head>` 에 갈아끼운다.
 - `scripts/prerender.mjs` — `npm run build` 끝에 주소별 정적 HTML 과 `sitemap.xml`,
   `robots.txt` 를 찍는다. 크롤러와 카카오톡·슬랙 미리보기 봇이 보는 게 이것이다.

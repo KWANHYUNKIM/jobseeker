@@ -18,7 +18,7 @@
 # --reschedule 이 있는 이유는 setup-crawler.sh 와 같다. launchd 는 등록 당시의
 # 인자를 계속 들고 돈다 — 이 파일에서 모듈을 바꿔 커밋해도 누가 손으로 다시
 # 등록하기 전까지 서버는 옛 모듈을 돌린다. 실제로 2026-09-07 에 검색 API 를
-# 정본 DB 판(store.server)으로 바꿔 배포했는데, 8771 에서는 그 뒤로도 옛
+# 정본 DB 판(store.api.server)으로 바꿔 배포했는데, 8771 에서는 그 뒤로도 옛
 # semantic.server(SQLite)가 돌고 있었다. 배포가 이걸 부르면 그 간격이 없어진다.
 #
 # 터널은 docker-compose.prod.yml 의 dashboards 프로필이 담당한다.
@@ -40,12 +40,12 @@ log()  { printf '\033[1;34m▶\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33m!\033[0m %s\n' "$*"; }
 die()  { printf '\033[1;31m✗\033[0m %s\n' "$*" >&2; exit 1; }
 
-# 검색 API 는 정본 DB(PostgreSQL)를 읽는 store.server 다. 예전 SQLite 판은 지우지
+# 검색 API 는 정본 DB(PostgreSQL)를 읽는 store.api.server 다. 예전 SQLite 판은 지우지
 # 않고 되돌릴 자리로 남겨 둔다 — DB 컨테이너가 안 떠 있거나 psycopg 가 없는 머신에서
 # 새 서버는 기동 즉시 죽는다(health() 가 첫 줄에서 DB 를 친다). 그런 경우 아래
 # "기동 확인" 이 8771 만 예전 판으로 되돌린다. 검색이 반쪽으로 도는 편이 통째로
 # 죽어 뷰어의 /api/ 가 전부 502 가 되는 것보다 낫다.
-SEARCH_MODULE="${SEARCH_MODULE:-store.server}"
+SEARCH_MODULE="${SEARCH_MODULE:-store.api.server}"
 SEARCH_FALLBACK="semantic.server"
 SEARCH_DSN="${JOBSEEKER_DSN:-postgresql://jobseeker:jobseeker@127.0.0.1:5433/jobseeker}"
 
@@ -188,7 +188,7 @@ for entry in "${SERVICES[@]}"; do
     continue
   fi
 
-  # 검색만 되돌릴 자리가 있다. store.server 는 기동하자마자 정본 DB 를 치므로
+  # 검색만 되돌릴 자리가 있다. store.api.server 는 기동하자마자 정본 DB 를 치므로
   # DB 가 안 떠 있으면 KeepAlive 가 무한 재시작만 하고 포트는 영영 안 열린다.
   # 그 상태로 두면 뷰어 검색이 통째로 죽으므로 예전 SQLite 판으로 내려 앉힌다.
   if [ "$S_LABEL" = "com.jobseeker.search" ] && [ "$SEARCH_MODULE" != "$SEARCH_FALLBACK" ]; then

@@ -6,7 +6,7 @@
   1. `pipeline/aggregate._norm_key`      공백+소문자만 → `(주)클로봇` ≠ `클로봇`
   2. `dashboard/classifier._norm_company` NFKC + 법인격 제거 (제대로 된 것)
   3. `store/slug.norm_company`            2번을 베낀 것
-  4. `jd-viewer/src/lib/companyMark.ts`   TypeScript 쪽 (아래 참고)
+  4. `jd-viewer/src/shared/lib/companyMark.ts`   TypeScript 쪽 (아래 참고)
 
 2번과 3번이 같은 규칙의 두 구현이었다. 이 파일이 그 하나다 — classifier 와 store 가
 여기서 가져다 쓴다. classifier 에 두지 않은 이유는 그 모듈이 import 할 때

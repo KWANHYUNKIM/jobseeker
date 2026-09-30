@@ -872,7 +872,7 @@ def _load_profiles() -> dict[str, dict]:
     이름으로 맞물린다.
     """
     try:
-        from store import conn as store_conn
+        from store.db import conn as store_conn
         with store_conn.cursor(autocommit=True) as cur:
             cur.execute(
                 """SELECT norm, homepage, description, domains, homepage_tech

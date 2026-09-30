@@ -1,4 +1,4 @@
-"""뷰어 API(store.api) — 정본 DB 에 붙어 실제로 답을 받아 본다."""
+"""뷰어 API(store.api.main) — 정본 DB 에 붙어 실제로 답을 받아 본다."""
 from __future__ import annotations
 
 from datetime import datetime
@@ -174,9 +174,9 @@ def test_missing(client, path, code):
 # ── 파일 내보내기와 같은 모집단 ─────────────────────────────────────────
 
 def test_same_population_as_export(client):
-    """전체 수 = store.export 가 파일로 내보내는 수(사이트 간 중복 제외, job_dup 뷰 기준)."""
-    from store import conn
-    from store.facets import refresh_dup
+    """전체 수 = store.jobs.export 가 파일로 내보내는 수(사이트 간 중복 제외, job_dup 뷰 기준)."""
+    from store.db import conn
+    from store.jobs.facets import refresh_dup
     refresh_dup()
     with conn.cursor(autocommit=True) as cur:
         cur.execute("SELECT count(*) AS n FROM v_job v "
@@ -188,7 +188,7 @@ def test_same_population_as_export(client):
 # ── 응답 캐시 ───────────────────────────────────────────────────────────
 
 def test_cache_serves_repeat_queries(client, monkeypatch):
-    from store import api
+    from store.api import main as api
     monkeypatch.setattr(api, "CACHE_TTL", 60.0)
     api._cache.clear()
     calls = []

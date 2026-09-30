@@ -9,7 +9,7 @@
     상세 JSON-LD)·잡코리아(jobtype=6)·사람인(job_type=9)·아임잡·SISM(약관상 목록 요약과 링크만).
     all_jobs 와 섞지 않고 `public/freelance.json` 에 누적하며, 사이클 끝의 별도 단계로 돈다
     (crawl_all `--no-freelance` 로 끈다). 뷰어 `/freelance` 탭이 읽는다. DB 는 `project` 계열
-    (`db/migrations/005`, `store/freelance.py` 로 이중 쓰기) — job 과 따로 두되 tech 사전은 공유한다.
+    (`db/migrations/005`, `store/market/freelance.py` 로 이중 쓰기) — job 과 따로 두되 tech 사전은 공유한다.
     **사람을 구하면 닫힌다** — 목록에서 빠진 모집중 프로젝트를 회차당 60건씩 원본에 다시 묻는다
     (긱스 상세 API·이랜서 JSON-LD·잡코리아/사람인은 close_check 판정기·아임잡 상세 상태·SISM 은
     이틀 안 보이면 게재 종료). **단가 이력**: 단가·상태·기간이 바뀐 순간만 프로젝트의 `history`
@@ -61,25 +61,30 @@
   - `store/` : 정본 DB(PostgreSQL) 접근 계층 — **이관 중이다.** 지금까지 원본은
     `all_jobs_enriched.json` 한 덩어리였고 키도 제약도 없어서 회사 표기가 갈리고
     (`(주)클로봇` ≠ `클로봇`) `status` 가 계산 시점에 박제됐다. 스키마와 설계 근거는
-    `db/schema.sql` · `db/README.md`. `conn`(DSN) / `slug`(주소 슬러그 — 규칙 원본은
-    `jd-viewer/src/lib/companySlug.js` 이고 여기서 읽어 쓴다) / `upsert`(쓰기 경로 —
-    백필과 크롤이 같은 함수를 쓴다) / `backfill`(JSON→DB — 이관·복구용 일회성. 사이클에서는 뺐다) /
-    `ingest_crawl`(크롤 사이클→DB, aggregate 가 매번 부른다 — 회사 표기 재선정과
-    `mv_company_stack`·`job_facet` 갱신도 여기서 한다) / `export`(DB→뷰어 JSON) /
-    `api`(뷰어 API, FastAPI, 8771 — 공고 목록·칩 건수·상세·검색을 DB 에서 답한다.
-    뷰어는 이게 있으면 184MB `all_jobs_enriched.json` 을 안 받고, 없으면 그 파일로 물러선다) /
-    `facets`(필터 축 — 지역·직군·경력·규모·스택을 `job_facet` 에 채운다. **규칙 원본은 뷰어
-    TS**(`region.ts`·`classify.ts`·`career.ts`)이고 여기는 그 파이썬 판이다. 한쪽을 고치면
-    `python -m store.facets --parity` 와 `python -m store.api_parity` 로 대조한다) /
-    `embed`·`similar`·`search`(pgvector 판 semantic) / `migrate_vectors`(sqlite-vec→pgvector) /
-    `ledgers`(파일로 쌓이던 원장 — `trends_history.jsonl`→`trend_day`/`trend_metric`,
-    `job_history.jsonl`→`job_version`, `engagement/events.jsonl`→`engagement_event`.
-    지난 일은 다시 계산할 수 없는데 머신마다 따로 놀거나(트렌드가 로컬 54일/운영 23일)
-    조용히 회전돼 버려지고 있었다. `build_trends`·`build_reposts`·`engagement.score`
-    가 여기서 읽고, 씨앗 뿌리기는 `python -m store.ledgers seed`).
+    `db/schema.sql` · `db/README.md`. 기능별 하위 패키지로 나뉜다(테스트: `catch_capture/tests`,
+    `python -m pytest` — DB·node 가 없으면 해당 테스트만 건너뛴다):
+    · `db/` — `conn`(DSN) / `slug`(주소 슬러그 — 규칙 원본은
+      `jd-viewer/src/shared/lib/companySlug.js` 이고 여기서 읽어 쓴다) / `upsert`(쓰기 경로 —
+      백필과 크롤이 같은 함수를 쓴다) / `ledgers`(파일로 쌓이던 원장 — `trends_history.jsonl`→
+      `trend_day`/`trend_metric`, `job_history.jsonl`→`job_version`, `engagement/events.jsonl`→
+      `engagement_event`. 지난 일은 다시 계산할 수 없는데 머신마다 따로 놀거나(트렌드가 로컬
+      54일/운영 23일) 조용히 회전돼 버려지고 있었다. `build_trends`·`build_reposts`·
+      `engagement.score` 가 여기서 읽고, 씨앗 뿌리기는 `python -m store.db.ledgers seed`)
+    · `ingest/` — `crawl`(크롤 사이클→DB, aggregate 가 매번 부른다 — 회사 표기 재선정과
+      `mv_company_stack`·`job_facet` 갱신도 여기서 한다) / `posts`·`engines`(블로그 글·엔진
+      산출물) / `backfill`(JSON→DB — 이관·복구용 일회성. 사이클에서는 뺐다)
+    · `jobs/` — `facets`(필터 축 — 지역·직군·경력·규모·스택을 `job_facet` 에 채운다. **규칙
+      원본은 뷰어 TS**(`features/jobs/region.ts`·`career.ts`, `shared/lib/classify.ts`)이고 여기는
+      그 파이썬 판이다. 한쪽을 고치면 `python -m store.jobs.facets --parity` 와
+      `python -m store.api.parity` 로 대조한다) / `export`(DB→뷰어 JSON)
+    · `api/` — `main`(뷰어 API, FastAPI — 공고 목록·칩 건수·상세·검색을 DB 에서 답한다. 뷰어는
+      이게 있으면 184MB `all_jobs_enriched.json` 을 안 받고, 없으면 그 파일로 물러선다) /
+      `server`(8771 진입점, launchd 가 `-m store.api.server` 로 띄운다) / `parity`
+    · `vectors/` — `embed`·`similar`·`search`(pgvector 판 semantic) / `migrate`(sqlite-vec→pgvector)
+    · `market/` — `freelance`(외주 프로젝트)·`hardware`(PC 부품 가격)
     **status 는 컬럼이 아니라 `job_state` 뷰다** — 저장하지 않으면 낡을 수 없다.
     사이트 간 중복도 지우지 않고 `job_dup` 뷰가 대표를 가리킨다(모집중 → 사이트 순서).
-    `store.export` 가 사본을 걸러 뷰어·빌더에는 한 건만 간다.
+    `store.jobs.export` 가 사본을 걸러 뷰어·빌더에는 한 건만 간다.
     `posted_on`(등록일)은 close_check 만 쓴다 — `JOB_COLUMNS` 에 없어서 크롤이
     NULL 로 덮지 못한다. 스키마를 고칠 때는 `db/migrations/` 에 번호순 ALTER 를
     남긴다(돌고 있는 DB 는 `schema.sql` 을 다시 못 돌린다).
@@ -94,8 +99,12 @@
   - `paths.py` : 공통 경로(데이터/venv 위치) 단일 소스
 - `jd-viewer/` : React/Vite 기반 JD 뷰어 (5173, public 데이터 소비).
   화면마다 진짜 경로를 쓴다(`/jobs/<사이트>-<번호>`, `/companies/<회사>` 등) —
-  `src/lib/router.ts`(pushState) + `src/lib/seo.ts`(라우트별 head) +
+  `src/shared/lib/router.ts`(pushState) + `src/shared/lib/seo.ts`(라우트별 head) +
   `scripts/prerender.mjs`(빌드 때 주소별 정적 HTML·sitemap·robots). 자세한 건 뷰어 README.
+  **폴더는 기능별이다** — `src/features/<기능>/`(jobs·companies·reveng·radar·blog·book·calendar·
+  trend·career·reposts·freelance·hardware)에 화면과 그 화면만 쓰는 훅·로직을 같이 두고,
+  두 기능 이상이 쓰는 것만 `src/shared/{ui,lib}` 로 올린다. 테스트(`*.test.ts`, `npm test`)는
+  대상 파일 옆에 둔다.
 - `engine/` : 기업 기술 역설계 엔진 (크롤이 아니라 공개 자료 재구성).
   `PROMPT.md`(사이클 절차) / `schema.json`(형식) / `state/`(대기열·진행) /
   `validate.py`(커밋 전 검증). 산출물은 `jd-viewer/public/reveng/` 에 쌓이고

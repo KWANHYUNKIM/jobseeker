@@ -9,7 +9,7 @@
  *  문서다" 싶은 주소는 제목·설명·본문 요약·구조화 데이터를 미리 박아 둔 HTML 을 깐다.
  *  브라우저로 들어오면 그 HTML 위에서 React 가 마운트하며 평소 화면으로 바뀐다.
  *
- * 문구 규칙은 src/lib/urls.ts, 태그 조립 규칙은 src/lib/seo.ts 와 짝이다. 한쪽만
+ * 문구 규칙은 src/shared/lib/urls.ts, 태그 조립 규칙은 src/shared/lib/seo.ts 와 짝이다. 한쪽만
  * 고치면 크롤러가 보는 메타와 사람이 보는 메타가 갈라진다.
  *
  * 실행: node scripts/prerender.mjs   (npm run build 끝에 자동 실행)
@@ -24,7 +24,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 // 주소 슬러그 규칙은 앱과 공유한다 — 여기서만 다르게 만들면 프리렌더한 파일을
 // 앱이 만든 주소가 못 찾는다.
-import { buildCompanySlugs } from '../src/lib/companySlug.js'
+import { buildCompanySlugs } from '../src/shared/lib/companySlug.js'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const DIST = join(ROOT, 'dist')
@@ -183,7 +183,7 @@ const radar = readJson('company_tech_radar.json')
 const revengIndex = readJson('reveng/index.json')
 const blogs = readJson('tech_blogs.json')
 
-const jobKey = (j) => `${j.site}-${j.pid}` // src/lib/urls.ts 의 jobKey 와 같은 규칙
+const jobKey = (j) => `${j.site}-${j.pid}` // src/shared/lib/urls.ts 의 jobKey 와 같은 규칙
 const openJobs = jobs.filter((j) => j.status !== 'closed')
 // 같은 site-pid 가 두 번 들어오는 공고가 드물게 있다(원본 사이트의 중복 등록).
 // 주소는 하나여야 하므로 먼저 나온 것만 남긴다.
@@ -198,7 +198,7 @@ const urls = [] // sitemap 재료: { loc, lastmod, changefreq, priority }
 const add = (loc, lastmod, changefreq, priority) => urls.push({ loc, lastmod, changefreq, priority })
 
 // ── 탭(허브) 페이지 ─────────────────────────────────────────────────────
-// 문구는 src/lib/urls.ts 의 TAB_SEO 와 같아야 한다.
+// 문구는 src/shared/lib/urls.ts 의 TAB_SEO 와 같아야 한다.
 const TAB_SEO = {
   '/': {
     title: '개발자 채용공고 모아보기',
@@ -351,7 +351,7 @@ for (const j of jobPages) {
   )
   const iso = j.deadline_date && /^\d{4}-\d{2}-\d{2}/.test(j.deadline_date) ? j.deadline_date : null
 
-  // schema.org JobPosting — 구글 채용 검색이 읽는 형식(src/lib/urls.ts 의 jobJsonLd 와 같은 모양).
+  // schema.org JobPosting — 구글 채용 검색이 읽는 형식(src/shared/lib/urls.ts 의 jobJsonLd 와 같은 모양).
   // datePosted 는 원본이 주지 않는 공고가 대부분이라 넣지 않는다. 없는 날짜를 지어내는
   // 순간 그게 곧 잘못된 구조화 데이터다.
   const posting = {

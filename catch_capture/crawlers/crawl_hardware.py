@@ -217,7 +217,7 @@ def run(force: bool = False, only: set[str] | None = None, dry_run: bool = False
         return stats
     OUT_PATH.write_text(json.dumps(prev, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
     try:  # 이중 쓰기 — 실패해도 크롤 단계는 죽지 않는다
-        from store import hardware as _db
+        from store.market import hardware as _db
         if _db.enabled():
             _db.ingest(parts, prev, today)
     except Exception as e:

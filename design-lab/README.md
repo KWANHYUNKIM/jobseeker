@@ -10,7 +10,7 @@ python design-lab/serve.py        # http://localhost:8780
 
 ## 왜 있나
 
-`jd-viewer` 의 공고 상세(`src/components/JobDetail.tsx`)를 새로 짜기 전에,
+`jd-viewer` 의 공고 상세(`src/features/jobs/JobDetail.tsx`)를 새로 짜기 전에,
 남들이 '상세'를 어떻게 접는지부터 본다. 예쁜 화면 구경이 아니라 **레이아웃 /
 섹션 순서 / 카피 / 강약 만드는 법** 을 떼어 보는 게 목적이다.
 
@@ -184,4 +184,4 @@ assets.put("토스", Path("~/Downloads/toss.png").expanduser())   # 보관소에
 - 피그마 컴포넌트(버튼·칩 변형 세트)는 못 만들었다 — Figma MCP 무료 플랜 호출 한도에 걸렸다.
   시안은 아직 컴포넌트가 아니라 프레임 조립이다
 - 기업 채용 사이트(토스·당근·쿠팡) 실제 상세 화면은 아직 안 모았다
-- 시안을 `jd-viewer/src/components/JobDetail.tsx` 로 옮기는 일은 시작 전
+- 시안을 `jd-viewer/src/features/jobs/JobDetail.tsx` 로 옮기는 일은 시작 전

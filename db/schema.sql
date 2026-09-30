@@ -404,7 +404,7 @@ LEFT JOIN LATERAL (
 COMMENT ON VIEW v_job IS '뷰어/검색 API 가 읽는 정본. all_jobs_enriched.json 은 이 뷰의 덤프로 강등된다';
 
 -- 사이트 간 중복 → 대표 공고. 지우지 않고 가리키기만 한다 — 사이트마다 마감 판정이
--- 따로 오기 때문이다. store.export 가 사본을 걸러 뷰어·빌더에 한 건만 보낸다.
+-- 따로 오기 때문이다. store.jobs.export 가 사본을 걸러 뷰어·빌더에 한 건만 보낸다.
 -- 대표: 모집중 → aggregate 의 사이트 순서 → 먼저 본 것. 근거는 migrations/004.
 CREATE VIEW job_dup AS
 WITH k AS (

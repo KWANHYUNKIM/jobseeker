@@ -232,7 +232,7 @@ def _save_to_db(cache: dict[str, dict]) -> int:
     try:
         import sys as _s
         _s.path.insert(0, str(_Path(__file__).resolve().parent.parent))
-        from store import conn as store_conn
+        from store.db import conn as store_conn
     except Exception:
         return 0
     n = 0

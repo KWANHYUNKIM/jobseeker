@@ -29,13 +29,13 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 import psycopg  # noqa: E402
 from psycopg.rows import dict_row  # noqa: E402
 
-from store import conn as store_conn  # noqa: E402
+from store.db import conn as store_conn  # noqa: E402
 
 ROOT = _Path(__file__).resolve().parent.parent.parent
 SCHEMA = ROOT / "db" / "schema.sql"
 TEST_DB = os.environ.get("JOBSEEKER_TEST_DB", "jobseeker_test")
 
-# 시험 대상 모듈들(store.similar 등)은 자기 커넥션을 store.conn 으로 연다. 그래서
+# 시험 대상 모듈들(store.vectors.similar 등)은 자기 커넥션을 store.db.conn 으로 연다. 그래서
 # 여기서 JOBSEEKER_DSN 을 시험용 DB 로 **바꿔치기해야** 그것들이 운영 DB 가 아니라
 # 시험 DB 를 본다. 처음 한 번 원래 값을 붙들어 두고(아래 _BASE_DSN) 그걸 기준으로
 # 시험 DB 주소를 만든다 — 안 그러면 바꾼 값을 다시 읽어 자기 자신을 가리킨다.
@@ -101,7 +101,7 @@ def unit(*pairs) -> list[float]:
 
 
 def run() -> int:
-    from store.upsert import (
+    from store.db.upsert import (
         refresh_display_names, set_job_techs, upsert_company, upsert_job,
     )
 
@@ -131,7 +131,7 @@ def run() -> int:
         ids = {}
         for name in ("Windows", "Windows 서버", "QA", "QA 엔지니어링", "JIRA", "Jira",
                      ".NET", "데이터베이스", "dev"):
-            from store.upsert import upsert_tech
+            from store.db.upsert import upsert_tech
             ids[name] = upsert_tech(cur, name)
         check(ids["Windows"] != ids["Windows 서버"], "Windows ≠ Windows 서버")
         check(ids["QA"] != ids["QA 엔지니어링"], "QA ≠ QA 엔지니어링")
@@ -143,7 +143,7 @@ def run() -> int:
 
         # ── 2b. 조건 파싱: 크롤러가 흘린 제목이 DB 까지 못 가게 ──────
         print("\n[2b] 경력·고용형태 파싱")
-        from store.upsert import parse_career, parse_employment
+        from store.db.upsert import parse_career, parse_employment
         check(parse_employment("정규직") == "정규직"
               and parse_employment("정규직(수습 3개월)") == "정규직"
               and parse_employment("정규직/계약직") == "정규직",
@@ -295,7 +295,7 @@ def run() -> int:
                            VALUES (%s,'test',%s,%s)""", (jid, f"v{i}", str(vec)))
         db.commit()
 
-        from store import similar as sim_mod
+        from store.vectors import similar as sim_mod
         n = sim_mod.compute("job")
         cur.execute("""SELECT k.pid, round(s.score::numeric,3) score
                          FROM job_similar s JOIN job k ON k.id=s.similar_id
@@ -344,10 +344,10 @@ def run() -> int:
 
         # CLI 진입점. Ollama 가 없을 때 FTS 로 떨어지는 길이 살아 있어야 한다.
         db.commit()
-        from store.search import search as cli_search
+        from store.vectors.search import search as cli_search
         hits = cli_search("백엔드", 5, False, use_vector=False)
         check(bool(hits) and {"company", "title", "status"} <= set(hits[0]),
-              "store.search CLI 가 화면에 쓸 필드를 채워 돌려준다",
+              "store.vectors.search CLI 가 화면에 쓸 필드를 채워 돌려준다",
               str(sorted(hits[0])[:6]) if hits else "결과 없음")
 
         # ── 9. 임베딩 대기열 ───────────────────────────────────────
@@ -364,8 +364,8 @@ def run() -> int:
         # ── 10. 이중 쓰기: 사라짐 처리와 급감 가드 ─────────────────
         # 여기가 제일 위험한 코드다. 크롤이 차단당해 몇 건만 들어왔을 때 나머지를
         # "사라졌다"고 찍으면 close_check 가 헛돌고 화면에서도 근거 없이 사라진다.
-        print("\n[10] 크롤 이중 쓰기 (store.ingest_crawl)")
-        from store.ingest_crawl import ingest as crawl_ingest
+        print("\n[10] 크롤 이중 쓰기 (store.ingest.crawl)")
+        from store.ingest.crawl import ingest as crawl_ingest
 
         feed = [
             {"site": "jumpit", "pid": f"9{i}", "url": f"https://j.test/9{i}",
@@ -464,9 +464,9 @@ def run() -> int:
               f"보류 {a4['gone_skipped_sites']}")
 
         # ── 10-c. 파일에만 남은 마감 판정 → DB (DB 가 꺼져 있던 회차) ──────
-        print("\n[10-c] 마감 원장 동기화 (store.ledgers.seed_closures)")
+        print("\n[10-c] 마감 원장 동기화 (store.db.ledgers.seed_closures)")
         import tempfile
-        from store.ledgers import seed_closures
+        from store.db.ledgers import seed_closures
         cur.execute("SELECT id FROM job WHERE site='ats' AND pid='lever:other:1'")
         lever_id = cur.fetchone()["id"]
         cur.execute("""INSERT INTO job_closure_check (job_id, checked_at, closed, evidence, checker)
@@ -490,7 +490,7 @@ def run() -> int:
               f"1회 {n1} · 2회 {n2}")
 
         # ── 10-d. 사이트 간 중복은 대표 한 건만 내보낸다(job_dup) ──────────
-        print("\n[10-d] 사이트 간 중복 접기 (job_dup → store.export)")
+        print("\n[10-d] 사이트 간 중복 접기 (job_dup → store.jobs.export)")
         dup_feed = [
             {"site": "wanted", "pid": "d1", "url": "https://w.test/d1", "company": "(주)중복사",
              "title": "백엔드  개발자", "deadline_date": (TODAY - timedelta(days=3)).isoformat()},
@@ -498,7 +498,7 @@ def run() -> int:
              "title": "백엔드 개발자"},
         ]
         crawl_ingest(dup_feed, label="d0", site_counts={"wanted": 1, "saramin": 1})
-        from store.export import fetch_jobs
+        from store.jobs.export import fetch_jobs
         got = [j for j in fetch_jobs() if j["pid"] in ("d1", "d2")]
         check(len(got) == 1 and got[0]["pid"] == "d2" and got[0]["status"] == "active",
               "표기가 달라도 한 회사·같은 제목이면 한 건 — 모집중인 쪽이 대표",
@@ -518,7 +518,7 @@ def run() -> int:
         # 돌아야 한다 — 정규화와 차원 검사가 거기 들어 있고, 그게 이 모듈에서 가장
         # 중요한 방어선이다. 함수째로 대역하면 그 검사를 시험하지 못한다.
         print("\n[11] 임베딩 배치 (Ollama HTTP 만 대역)")
-        from store import embed as embed_mod
+        from store.vectors import embed as embed_mod
         real_post, real_check = embed_mod._post, embed_mod.check_model
         embed_mod.check_model = lambda: None
         dim = [embed_mod.EMBED_DIM]
@@ -563,7 +563,7 @@ def run() -> int:
             embed_mod._post, embed_mod.check_model = real_post, real_check
 
         # ── 12. sqlite-vec → pgvector 이관 ─────────────────────────
-        print("\n[12] 벡터 이관 (store.migrate_vectors)")
+        print("\n[12] 벡터 이관 (store.vectors.migrate)")
         ok_mig = _test_migrate(cur, db)
         check(ok_mig is True, "SQLite 의 벡터가 URL 로 이어져 옮겨진다", str(ok_mig))
 
@@ -578,7 +578,7 @@ def _test_migrate(cur, db) -> object:
 
     import sqlite_vec
 
-    from store import migrate_vectors as mig
+    from store.vectors import migrate as mig
 
     cur.execute("SELECT url FROM job ORDER BY id LIMIT 2")
     urls = [r["url"] for r in cur.fetchall()]

@@ -38,9 +38,9 @@ export interface Job {
   // (규모 판정은 dashboard/classifier 가 소유 — 화이트리스트 + 공고의 사원수·매출액).
   // 공고 API 는 서버가 같은 함수로 판정해 실어 보낸다.
   company_size?: CompanySize
-  // 공고 API(store.api)가 서버에서 계산해 실어 보내는 필터 축. 목록 응답에는 본문
+  // 공고 API(store.api.main)가 서버에서 계산해 실어 보내는 필터 축. 목록 응답에는 본문
   // (qualifications 등)이 없어서 화면이 직접 계산할 수 없다. 파일 모드에서는 없다 —
-  // 그때는 화면이 classifyRoles·placeOf 로 계산한다(규칙은 같다: store/facets.py).
+  // 그때는 화면이 classifyRoles·placeOf 로 계산한다(규칙은 같다: store/jobs/facets.py).
   roles?: string[]
   place?: { region: string; district: string | null }
 }

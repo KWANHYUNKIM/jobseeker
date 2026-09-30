@@ -71,7 +71,7 @@ def _rows_from_db() -> list[dict]:
     DB 가 꺼져 있다고 사이클을 죽이지 않는다. 다른 빌더들과 같은 태도다.
     """
     try:
-        from store.ledgers import load_trend_days
+        from store.db.ledgers import load_trend_days
         return load_trend_days()
     except Exception as e:
         print(f"  [trends] DB 원장을 못 읽어 파일로 물러섭니다: {e}")

@@ -64,7 +64,7 @@ def load(days: int) -> list[dict]:
     아무도 안 읽는다 — 오래된 기록이 조용히 사라지는 자리였다. DB 에는 회전이 없다.
     """
     try:
-        from store.ledgers import load_events
+        from store.db.ledgers import load_events
         rows = load_events(days)
         if rows:
             return rows

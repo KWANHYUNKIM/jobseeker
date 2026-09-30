@@ -7,10 +7,10 @@ pytestmark = [pytest.mark.db, pytest.mark.node]
 
 
 def test_facets_match_viewer_rules_on_all_jobs():
-    from store.facets import parity
+    from store.jobs.facets import parity
     assert parity() == 0
 
 
 def test_api_matches_browser_filter():
-    from store import api_parity
+    from store.api import parity as api_parity
     assert api_parity.main() == 0

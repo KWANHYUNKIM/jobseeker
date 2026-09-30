@@ -323,7 +323,7 @@ def refresh_store_vectors() -> None:
 
     **다시 임베딩하지 않는다.** 바로 위 refresh_semantic 이 이번 사이클의 새 공고를
     이미 임베딩해 SQLite 에 넣었고, 같은 모델·같은 차원이므로 URL 로 이어 옮기면
-    그대로 유효하다. 여기서 store.embed 를 부르면 같은 문장을 Ollama 에 두 번
+    그대로 유효하다. 여기서 store.vectors.embed 를 부르면 같은 문장을 Ollama 에 두 번
     보내는 셈이다 — 8GB 짜리 머신에서 크롤과 메모리를 다투는 판에 할 일이 아니다.
 
     이게 없으면 새 공고는 DB 에 행만 생기고 벡터가 비어, 8771 검색이 그 공고를
@@ -334,8 +334,8 @@ def refresh_store_vectors() -> None:
     """
     py = _python_executable()
     for args, what in (
-        (["-m", "store.migrate_vectors", "--kind", "job"], "벡터 이관"),
-        (["-m", "store.similar", "--kind", "job"], "추천 재계산"),
+        (["-m", "store.vectors.migrate", "--kind", "job"], "벡터 이관"),
+        (["-m", "store.vectors.similar", "--kind", "job"], "추천 재계산"),
     ):
         rc = subprocess.call([py, *args], cwd=str(BASE_DIR),
                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -481,8 +481,8 @@ def _reload_pipeline() -> None:
     순서를 지킨다 — aggregate 는 함수 안에서 나머지를 import 하므로 맨 끝이면 된다.
     """
     import importlib
-    for name in ("crawlers.jobs_common", "store.upsert", "store.ledgers",
-                 "store.ingest_crawl", "monitoring.health", "pipeline.aggregate"):
+    for name in ("crawlers.jobs_common", "store.db.upsert", "store.db.ledgers",
+                 "store.ingest.crawl", "monitoring.health", "pipeline.aggregate"):
         try:
             importlib.reload(importlib.import_module(name))
         except Exception as e:                                      # noqa: BLE001

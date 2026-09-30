@@ -452,7 +452,7 @@ def _as_date(value: str | None):
 def record_to_db(verdicts: list[tuple[str, dict]]) -> int:
     """이번 회차에 새로 판정한 것만 job_closure_check 에 남긴다.
 
-    **왜 여기서 쓰는가.** 이 원장을 DB 로 옮기는 일을 `store.backfill` 이 대신
+    **왜 여기서 쓰는가.** 이 원장을 DB 로 옮기는 일을 `store.ingest.backfill` 이 대신
     하고 있었다. 그런데 backfill 은 사이클마다 원장 **전체**를 다시 insert 했다 —
     append-only 표라 막아 주는 제약도 없어서, 공고 14,288건에 대해 175,140행이
     쌓여 있었다(12배). 판정한 쪽이 판정한 것만 남기면 그런 일이 없다.
@@ -464,7 +464,7 @@ def record_to_db(verdicts: list[tuple[str, dict]]) -> int:
     try:
         import sys as _s
         _s.path.insert(0, str(Path(__file__).resolve().parent.parent))
-        from store import conn as store_conn
+        from store.db import conn as store_conn
     except Exception as e:                                          # noqa: BLE001
         print(f"  [close_check] DB 기록 건너뜀: {e}", flush=True)
         return 0
@@ -520,7 +520,7 @@ def _source_jobs_db(include_closed: bool) -> list[dict]:
     try:
         import sys as _s
         _s.path.insert(0, str(Path(__file__).resolve().parent.parent))
-        from store import conn as store_conn
+        from store.db import conn as store_conn
         with store_conn.cursor(autocommit=True) as cur:
             cur.execute(
                 "SELECT site, pid, url, company, title, status, checked_at, ledger_closed,"
@@ -800,10 +800,10 @@ def _run(limit: int, *, recheck_days: float | None, sites: set[str] | None,
         if n_db:
             print(f"[close_check] 정본 DB 에 {n_db:,}건 기록", flush=True)
         # 닫힌 공고가 사이트 간 중복의 대표였다면 열려 있는 사본이 대표를 이어받아야
-        # 목록(store.api)에서 안 사라진다 — 중복 구체화를 다시 뽑는다.
+        # 목록(store.api.main)에서 안 사라진다 — 중복 구체화를 다시 뽑는다.
         if stats["closed"]:
             try:
-                from store.facets import refresh_dup
+                from store.jobs.facets import refresh_dup
                 refresh_dup()
             except Exception as e:                                  # noqa: BLE001
                 print(f"  [close_check] 중복 갱신 건너뜀: {e}", flush=True)

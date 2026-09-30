@@ -1,4 +1,4 @@
-"""필터 축 규칙(store.facets) — 뷰어 TS 원본과 같은 답을 내는가.
+"""필터 축 규칙(store.jobs.facets) — 뷰어 TS 원본과 같은 답을 내는가.
 
 기대값은 짐작이 아니라 뷰어 TS(region.ts·classify.ts·career.ts)를 node 로 돌려 얻은
 값이다. 그래서 원본 규칙의 이상한 답도 그대로 박혀 있다 — 그런 줄에는 '원본 규칙의
@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import pytest
 
-from store.facets import _js_slice, _stacks, career_bucket, classify_roles, facets_of, place_of
+from store.jobs.facets import _js_slice, _stacks, career_bucket, classify_roles, facets_of, place_of
 
 W = "　"   # 전각 공백 — JS 의 \s·trim 은 이걸 공백으로 본다
 

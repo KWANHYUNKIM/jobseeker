@@ -1,6 +1,6 @@
 # 책 데이터 형식
 
-`/wiki` 가 읽는다. 화면은 `src/components/BookView.tsx`, 타입은 `src/lib/useBook.ts` 가 단일 소스다.
+`/wiki` 가 읽는다. 화면은 `src/features/book/BookView.tsx`, 타입은 `src/features/book/useBook.ts` 가 단일 소스다.
 **색인 대상이 아니다** — 혼자 읽으려고 쓰는 책이라 `noindex` 를 걸고 sitemap·prerender 에서 뺐다.
 
 ```

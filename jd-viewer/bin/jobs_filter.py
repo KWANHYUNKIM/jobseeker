@@ -4,7 +4,7 @@
 
 정본 DB(`v_job`)에서 바로 읽는다. 지금까지 빌더들은 저마다
 `json.loads(all_jobs_enriched.json)` 으로 127MB 를 파싱했는데, 그 파일 자체가
-`store.export` 가 같은 DB 에서 뽑아 놓은 것이었다 — DB → JSON → 다시 파싱.
+`store.jobs.export` 가 같은 DB 에서 뽑아 놓은 것이었다 — DB → JSON → 다시 파싱.
 빌더 12개가 각자 그 짓을 했다.
 
 DB 에서 읽으면 부수적으로 두 가지가 맞는다:
@@ -40,12 +40,12 @@ ENRICHED = ROOT / "jd-viewer" / "public" / "all_jobs_enriched.json"
 def load_jobs(fallback: Path | None = None, *, quiet: bool = False) -> list[dict]:
     """정본 DB 의 공고 전량(모집중 + 마감). 못 읽으면 JSON 파일로 물러선다.
 
-    돌려주는 dict 는 `store.export` 가 JSON 에 쓰던 것과 **같은 모양**이다 —
+    돌려주는 dict 는 `store.jobs.export` 가 JSON 에 쓰던 것과 **같은 모양**이다 —
     빌더는 출처가 바뀐 줄 모른다.
     """
     sys.path.insert(0, str(ROOT / "catch_capture"))
     try:
-        from store.export import fetch_jobs
+        from store.jobs.export import fetch_jobs
         jobs = fetch_jobs()
         if jobs:
             if not quiet:
@@ -86,7 +86,7 @@ def load_posts(fallback: Path | None = None, *, quiet: bool = False) -> list[dic
     """
     sys.path.insert(0, str(ROOT / "catch_capture"))
     try:
-        from store import conn as store_conn
+        from store.db import conn as store_conn
         with store_conn.cursor(autocommit=True) as cur:
             cur.execute(
                 """SELECT p.url, p.title, p.blog_name, p.published_on, p.summary,

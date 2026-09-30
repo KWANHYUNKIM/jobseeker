@@ -199,7 +199,7 @@ def aggregate(keyword: str, keywords: list[str] | None = None,
         j["closed_reason"] = reason
         j["deadline_date"] = dl_iso
         # 등록일. 크롤은 이 값을 모르고, 마감 재확인(close_check)이 원본에서
-        # 받아다 원장에 넣어 둔 것을 여기서 꺼낸다. DB 경로에서는 store.export 가
+        # 받아다 원장에 넣어 둔 것을 여기서 꺼낸다. DB 경로에서는 store.jobs.export 가
         # 같은 칸을 v_job.posted_on 으로 채운다.
         if (posted := posted_for(j)):
             j["posted_date"] = posted
@@ -269,14 +269,14 @@ def aggregate(keyword: str, keywords: list[str] | None = None,
     # 끄려면 DB_DUAL_WRITE=0.
     if os.environ.get("DB_DUAL_WRITE", "1") != "0":
         try:
-            from store.ingest_crawl import ingest as _db_ingest, summary as _db_summary
+            from store.ingest.crawl import ingest as _db_ingest, summary as _db_summary
             _listed = {s: v for s, v in listings.items() if v.get("pids")}
             _db_stats = _db_ingest(raw_jobs, label=out_label, keywords=kws,
                                    site_counts=site_counts, listing=_listed)
             print(f"  [db] {_db_summary(_db_stats)}", flush=True)
             # 마감 재확인이 DB 에 못 쓴 회차(DB 가 꺼져 있었다)는 파일 원장에만 남는다.
             # close_check 는 다음 회차에 **새** 판정만 옮기므로 여기서 밀린 것을 채운다.
-            from store.ledgers import seed_closures as _seed_closures
+            from store.db.ledgers import seed_closures as _seed_closures
             _, _n_cl = _seed_closures()
             if _n_cl:
                 print(f"  [db] 파일에만 있던 마감 판정 {_n_cl:,}건을 옮겼다", flush=True)

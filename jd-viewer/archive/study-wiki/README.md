@@ -1,6 +1,6 @@
 # 보관 — 기술 백과사전 화면 (2026-09-08)
 
-`/wiki` 가 낱말 단위 백과사전에서 **책장**(`src/components/BookView.tsx`)으로 바뀌면서
+`/wiki` 가 낱말 단위 백과사전에서 **책장**(`src/features/book/BookView.tsx`)으로 바뀌면서
 화면에서 떼어 낸 파일들이다. 라우트에 걸려 있지 않고 컴파일 대상도 아니다.
 
 - `WikiView.tsx` — 낱말 문서 목록·상세 화면

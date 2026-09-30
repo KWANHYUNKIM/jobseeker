@@ -92,7 +92,7 @@ ELSE                                       'active'            -- 모름
 쓸 때도 `COALESCE(posted_on, %s)` 라 한 번 정해진 값은 다음 확인이 못 읽어 와도 남는다.
 
 saramin 은 영영 NULL 이다. 그 자리는 `first_seen_at`(우리가 처음 본 날)이 대신하고,
-`store.export` 가 둘을 **따로** 내보내 화면이 확정값과 추정값을 구분한다.
+`store.jobs.export` 가 둘을 **따로** 내보내 화면이 확정값과 추정값을 구분한다.
 
 ### 4. 이력은 덮어쓰지 않고 쌓는다 — `job_closure_check` / `job_event`
 
@@ -152,7 +152,7 @@ HNSW 인덱스가 벡터 본체보다 크다. 8GB M1 에서 메모리에 들지�
 직접 읽어야 한다. 편하다고 `WITH pool AS (SELECT ... FROM job_embedding ...)` 로 한 번
 싸면 Postgres 가 CTE 를 실체화하면서 HNSW 인덱스가 사라지고 17,067 × 17,067 완전탐색이
 된다. 실측 차이가 **단일 질의 1.7ms 대 전체 251초** 였다. 마감 필터·회사 상한은 이웃을
-뽑은 **뒤에** 걸어야 한다 — `store/similar.py` 상단에 같은 경고를 적어 뒀다.
+뽑은 **뒤에** 걸어야 한다 — `store/vectors/similar.py` 상단에 같은 경고를 적어 뒀다.
 
 한국어 검색: Postgres 기본 파서는 형태소를 모른다. `to_tsvector('simple', ...)` 로 토큰만
 쪼개 기술명·회사명 같은 고유명사를 잡고, 한글 부분일치("백엔드", "재택")는 `pg_trgm` GIN 이
@@ -228,30 +228,30 @@ RETURNING id, (xmax = 0) AS inserted; -- inserted=true 면 job_event('appeared')
 | 단계 | 모듈 | 상태 |
 |---|---|---|
 | 스키마 | `db/schema.sql` | ✅ 적용·검증 (`db/smoke_test.sql`) |
-| 1. 백필 | `catch_capture/store/backfill.py` | ✅ 17,067건 적재 완료 |
-| 3. 정본 교체 | `catch_capture/store/export.py` | ✅ `--check` 로 기존 JSON 과 대조됨 |
-| 2. 이중 쓰기 | `catch_capture/store/ingest_crawl.py` | ✅ aggregate 에 연결·4개 시나리오 검증 |
-| 4. 벡터 이관 | `catch_capture/store/migrate_vectors.py` | ⚠️ 코드·테스트만 — 맥에서 실행 필요 |
-| 임베딩 | `catch_capture/store/embed.py` | ✅ 실제 Ollama 로 300건 검증 |
-| 유사 공고 | `catch_capture/store/similar.py` | ✅ 실제 벡터로 추천 품질까지 확인 |
-| 검색 | `catch_capture/store/search.py` | ✅ FTS·RRF·마감제외 검증 |
+| 1. 백필 | `catch_capture/store/ingest/backfill.py` | ✅ 17,067건 적재 완료 |
+| 3. 정본 교체 | `catch_capture/store/jobs/export.py` | ✅ `--check` 로 기존 JSON 과 대조됨 |
+| 2. 이중 쓰기 | `catch_capture/store/ingest/crawl.py` | ✅ aggregate 에 연결·4개 시나리오 검증 |
+| 4. 벡터 이관 | `catch_capture/store/vectors/migrate.py` | ⚠️ 코드·테스트만 — 맥에서 실행 필요 |
+| 임베딩 | `catch_capture/store/vectors/embed.py` | ✅ 실제 Ollama 로 300건 검증 |
+| 유사 공고 | `catch_capture/store/vectors/similar.py` | ✅ 실제 벡터로 추천 품질까지 확인 |
+| 검색 | `catch_capture/store/vectors/search.py` | ✅ FTS·RRF·마감제외 검증 |
 
-| 블로그 글 적재 | `catch_capture/store/ingest_posts.py` | ✅ 1,063건 (회사 연결 282) |
-| 엔진 색인 적재 | `catch_capture/store/ingest_engines.py` | ✅ 브리핑 25 · 역설계 15 |
-| 파일 원장 이관 | `catch_capture/store/ledgers.py` | ✅ 트렌드 54일·22,304행 · 판본 30,431 |
+| 블로그 글 적재 | `catch_capture/store/ingest/posts.py` | ✅ 1,063건 (회사 연결 282) |
+| 엔진 색인 적재 | `catch_capture/store/ingest/engines.py` | ✅ 브리핑 25 · 역설계 15 |
+| 파일 원장 이관 | `catch_capture/store/db/ledgers.py` | ✅ 트렌드 54일·22,304행 · 판본 30,431 |
 | 사이클 중복 제거 | `refresh-data.sh` 에서 `backfill` 제거 | ✅ export 만 남김 · 산출물 무변화 확인 |
 | 빌더 입력 전환 | `jd-viewer/bin/jobs_filter.py` `load_jobs`/`load_posts` | ✅ 빌더 7개 · 운영에서 산출물 대조 |
 | 마감 재확인 대상 | `job_recheck_queue` → `pipeline.close_check` | ✅ 후보 10,496 → 12,548건 |
 | 행동 기록 이관 | `engagement/collect.py`·`score.py` | ✅ 409건 · DB↔파일 글자 그대로 일치 |
-| 검색 API | `catch_capture/store/server.py` | ✅ 8771, 뷰어 응답 형식 그대로 |
-| 공고 API | `catch_capture/store/api.py`(FastAPI) · `store/facets.py` · migrations/010 | ✅ 목록·칩·상세를 DB 에서. 화면 규칙과 18개 조합 대조 일치 |
+| 검색 API | `catch_capture/store/api/server.py` | ✅ 8771, 뷰어 응답 형식 그대로 |
+| 공고 API | `catch_capture/store/api/main.py`(FastAPI) · `store/jobs/facets.py` · migrations/010 | ✅ 목록·칩·상세를 DB 에서. 화면 규칙과 18개 조합 대조 일치 |
 
-공통 기반: `store/conn.py`(DSN) · `store/slug.py`(주소 슬러그) · `store/upsert.py`(쓰기 경로).
+공통 기반: `store/db/conn.py`(DSN) · `store/db/slug.py`(주소 슬러그) · `store/db/upsert.py`(쓰기 경로).
 임베딩 입력 텍스트는 `semantic/text.py` 로 떼어내 SQLite·PostgreSQL 두 경로가 공유한다.
 
 ### 서비스 연결 — 8771 검색 API
 
-`store/server.py` 가 `semantic/server.py` 를 대체한다. **응답 형식은 한 글자도 바뀌지
+`store/api/server.py` 가 `semantic/server.py` 를 대체한다. **응답 형식은 한 글자도 바뀌지
 않는다** — 뷰어의 `useHybridSearch.ts` 가 읽는 필드 그대로라 화면 쪽은 고칠 데가 없다.
 
 ```
@@ -263,7 +263,7 @@ GET /api/health
 Ollama 가 없어도 서버는 죽지 않는다 — 검색이 반쪽으로라도 도는 편이 통째로 실패하는
 것보다 낫고, 대신 그 사실을 health 가 드러낸다.
 
-**띄울 때 출력을 파이프로 자르지 말 것.** `python -m store.server | head -6` 처럼 쓰면
+**띄울 때 출력을 파이프로 자르지 말 것.** `python -m store.api.server | head -6` 처럼 쓰면
 6줄 뒤 파이프가 닫히면서 이후 모든 쓰기가 BrokenPipe 가 되고 요청 처리 스레드가
 조용히 죽는다(health 는 되는데 search 만 무응답인 모양으로 나타난다). 실제로 그렇게
 30분을 썼다. `launchd`/`nohup` 으로 파일에 직접 리다이렉트할 것.
@@ -273,7 +273,7 @@ Ollama 가 없어도 서버는 죽지 않는다 — 검색이 반쪽으로라도
 뷰어는 첫 화면에서 공고 전량(`all_jobs_enriched.json`, 184MB)을 받아 필터·칩 건수를
 브라우저에서 셌다. 그 파일은 사이클마다 구워졌으므로 DB 에서 닫힌 공고가 다음 굽기까지
 화면에 모집중으로 남았고, 파이프라인이 멈추면(2026-09-30 Docker 가 열 시간 멎었다)
-그대로 굳었다. 지금은 같은 서버(8771, `store/api.py`)가 목록을 SQL 로 답한다.
+그대로 굳었다. 지금은 같은 서버(8771, `store/api/main.py`)가 목록을 SQL 로 답한다.
 
 ```
 GET /api/jobs?region=서울&role=백엔드&stack=Java&closed=hide&page=1&limit=20
@@ -287,27 +287,27 @@ GET /api/docs                   OpenAPI
 - 필터 축(지역·시군구·직군·경력 구간·회사 규모·스택)과 검색용 문자열은
   `job_facet`(migrations/010)에 저장한다. 규칙이 정규식 수십 개와 회사별 사원수·매출액
   추출이라 SQL 로 옮기면 세 번째 사본이 생긴다. **규칙 원본은 뷰어 TS 다** —
-  `store/facets.py` 가 그 파이썬 판이고, 크롤 사이클(`ingest_crawl`) 끝에 전량을 다시
+  `store/jobs/facets.py` 가 그 파이썬 판이고, 크롤 사이클(`ingest_crawl`) 끝에 전량을 다시
   채운다(약 1분). JS 와 파이썬 정규식은 `\b`·`\s` 가 다르다 — 옮길 때 주의.
 - 사이트 간 중복은 `mv_job_dup` 로 구체화했다(뷰 그대로면 요청마다 250ms×3).
   대표 선정에 모집 상태가 들어가므로 상태를 바꾸는 쪽(크롤 사이클, `close_check`)이
   끝에 갱신한다.
 - 목록 응답은 gzip 8KB 남짓, 250ms 안팎이다.
 - API 가 없는 배포에서는 뷰어가 예전처럼 파일로 돈다(`useJobsApiAvailable`).
-  그래서 `store.export` 는 계속 파일을 쓴다 — 사전 렌더링(`prerender.mjs`)도 아직 파일을 읽는다.
+  그래서 `store.jobs.export` 는 계속 파일을 쓴다 — 사전 렌더링(`prerender.mjs`)도 아직 파일을 읽는다.
 
 규칙을 고치면 두 대조를 돌린다(둘 다 node 로 TS 원본을 직접 실행한다).
 
 ```
-python -m store.facets --parity    # 공고별 지역·직군·경력 — 전량 대조
-python -m store.api_parity         # 목록 건수·첫 쪽 순서·칩 건수 — 필터 18조합
+python -m store.jobs.facets --parity    # 공고별 지역·직군·경력 — 전량 대조
+python -m store.api.parity         # 목록 건수·첫 쪽 순서·칩 건수 — 필터 18조합
 ```
 
 ### 엔진 산출물 색인
 
 `engine/`·`guide-engine/`·`study-engine/` 이 쓴 JSON 본문은 **파일로 둔다**(사람이 쓴 글,
 git 리뷰 대상). DB 에는 무엇이 무엇에 붙어 있는지만 넣어 `validate.py --gaps` 를 SQL
-한 줄로 만든다. `store.ingest_engines` 가 채우고, `guide_gap` 뷰가 답한다.
+한 줄로 만든다. `store.ingest.engines` 가 채우고, `guide_gap` 뷰가 답한다.
 
 **기술 백과사전은 DB 에 색인을 두지 않는다.** `study_article`·`study_link`·`study_gap`
 을 뒀다가 없앴다 — 문서 139편이 전부 파일에 있고 `study-engine/validate.py --gaps` 는
@@ -344,7 +344,7 @@ git 리뷰 대상). DB 에는 무엇이 무엇에 붙어 있는지만 넣어 `va
 소요 3분 6초
 ```
 
-`store.export --check` 로 기존 JSON 과 대조한 결과:
+`store.jobs.export --check` 로 기존 JSON 과 대조한 결과:
 
 ```
 기존에만 있는 공고 517건 (= 492 + 25, 제약 위반)
@@ -359,7 +359,7 @@ status 가 달라진 공고: active → closed 1,842건 (전부 status_source=de
 
 `similar_jobs.json`(2026-08-19 생성)에 문서 10,542개, `similar_posts.json` 에 1,063개가
 들어 있다. 그 파일들이 곧 `semantic.db` 에 그만큼의 임베딩이 있다는 증거다.
-**`store.migrate_vectors` 가 그것을 URL 로 이어 그대로 옮긴다.** 같은 모델·같은 차원·
+**`store.vectors.migrate` 가 그것을 URL 로 이어 그대로 옮긴다.** 같은 모델·같은 차원·
 같은 입력 텍스트(`semantic/text.py`)면 이미 만든 벡터가 그대로 유효하다.
 
 새로 임베딩해야 하는 것은 8/19 이후에 들어온 나머지 ~7,000건뿐이다.
@@ -388,9 +388,9 @@ Postgres 를 띄우고 `schema.sql` 적용. `all_jobs_enriched.json` + `job_clos
 1,150건이 실제로 합쳐진다. `first_seen_at` 은 `reposts.json` 의 이력에서 최대한 복원하고,
 없으면 백필 시각으로 둔다. **이 단계는 기존 파이프라인을 건드리지 않는다** — 결과만 비교한다.
 
-**2단계 — 이중 쓰기.** `pipeline/aggregate.py` 가 매 사이클 `store.ingest_crawl` 을 부른다.
+**2단계 — 이중 쓰기.** `pipeline/aggregate.py` 가 매 사이클 `store.ingest.crawl` 을 부른다.
 **중복 제거를 거치기 전** 목록을 넘기므로 DB 는 URL 로 식별하고, JSON 쪽은 지금까지처럼
-`(회사명, 제목)` 으로 줄인다 — 두 결과를 며칠 나란히 두고 `store.export --check` 로
+`(회사명, 제목)` 으로 줄인다 — 두 결과를 며칠 나란히 두고 `store.jobs.export --check` 로
 diff 해서 차이가 전부 "고쳐진 것"인지 확인한다.
 
 DB 가 꺼져 있거나 느려도 사이클은 그대로 간다(`[db] 이중 쓰기 건너뜀` 한 줄만 찍힌다).
@@ -495,21 +495,21 @@ Playwright 크롤과 Ollama 임베딩이 이미 메모리를 다투므로 `share
 
 ## 검증하며 고친 것 (프론트엔드 대조)
 
-`store.export` 결과를 실제로 뷰어에 끼우고 Playwright 로 5개 화면 + 공고 상세를
+`store.jobs.export` 결과를 실제로 뷰어에 끼우고 Playwright 로 5개 화면 + 공고 상세를
 렌더해 본 결과, 이쪽에서 잡은 결함들이다. 전부 조용히 틀리는 종류라 적어 둔다.
 
 | 결함 | 증상 | 고친 곳 |
 |---|---|---|
-| 기술 슬러그가 한글을 지운 뒤 만들어짐 | `Windows 서버`→`windows`, `QA 엔지니어링`→`qa` 로 **다른 기술이 합쳐짐**(26·15건) | `store/slug.py` — 지우기 전에 로마자로 |
-| 마감일을 백필 시점에 재파싱 | `D-4` 가 오늘 기준이 돼 끝난 공고 899건이 미래 마감으로 되살아남 | `store/backfill.py`·`ingest_crawl.py` — 계산된 값 우선 |
-| `dday`·`education`·`employment` 누락 | `build_calendar.py`·`build_role_insights.py` 가 실제로 읽는 필드 | `store/export.py` — `dday` 는 재계산해서 |
-| `similar_*.json` 형식 불일치 | 뷰어는 `docs`+`similar`(sha1 id) 를 읽는데 `site-pid` 키로 씀 → **오류 없이 추천만 안 뜸** | `store/similar.py` |
-| `㈜` 가 대표표기로 뽑힘 | 뷰어의 `normalizeCompany` 가 `(주)` 만 지워서 그 회사 브리핑·로고가 사라짐 | `store/upsert.py`(NFKC 출력) + `companyMark.ts`(NFKC 입력) |
+| 기술 슬러그가 한글을 지운 뒤 만들어짐 | `Windows 서버`→`windows`, `QA 엔지니어링`→`qa` 로 **다른 기술이 합쳐짐**(26·15건) | `store/db/slug.py` — 지우기 전에 로마자로 |
+| 마감일을 백필 시점에 재파싱 | `D-4` 가 오늘 기준이 돼 끝난 공고 899건이 미래 마감으로 되살아남 | `store/ingest/backfill.py`·`ingest_crawl.py` — 계산된 값 우선 |
+| `dday`·`education`·`employment` 누락 | `build_calendar.py`·`build_role_insights.py` 가 실제로 읽는 필드 | `store/jobs/export.py` — `dday` 는 재계산해서 |
+| `similar_*.json` 형식 불일치 | 뷰어는 `docs`+`similar`(sha1 id) 를 읽는데 `site-pid` 키로 씀 → **오류 없이 추천만 안 뜸** | `store/vectors/similar.py` |
+| `㈜` 가 대표표기로 뽑힘 | 뷰어의 `normalizeCompany` 가 `(주)` 만 지워서 그 회사 브리핑·로고가 사라짐 | `store/db/upsert.py`(NFKC 출력) + `companyMark.ts`(NFKC 입력) |
 
 마지막 것은 원래 뷰어에 있던 결함이고, 이쪽 변경이 드러냈다. 양쪽을 다 고쳐서
 브리핑이 붙는 공고가 588 → 599건(+11)이 됐다. **회사명 정규화 규칙이 이 저장소에
 네 벌 있었다** — 그중 파이썬 쪽 두 벌(`classifier._norm_company` 와 `store/slug`)은
-`catch_capture/normalize.py` 하나로 모았고, `store.slug --selftest` 가 값이 같은지가
+`catch_capture/normalize.py` 하나로 모았고, `store.db.slug --selftest` 가 값이 같은지가
 아니라 **같은 함수인지**를 확인한다.
 
 남은 둘은 일부러 다르게 둔다. `aggregate._norm_key` 는 이관이 끝나면 사라지는 경로라
