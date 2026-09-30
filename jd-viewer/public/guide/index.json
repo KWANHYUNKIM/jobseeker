@@ -1763,6 +1763,17 @@
       "postings": 3,
       "study_items": 7,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "bunkerkids",
+      "name": "벙커키즈",
+      "aliases": [
+        "벙커키즈"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 5,
+      "updated_at": "2026-09-30"
     }
   ]
 }

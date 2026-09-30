@@ -3337,3 +3337,5 @@ Zendesk · Amazon Connect · Akamai) · **`A2A`·`MCP`** · **AWS 자격증을 �
 **뷰티셀렉션(`beautyselection`) — `done`(2026-09-30), 공고 3건(원티드 FDE 378781 · AI Product Engineer 367296 · AI Designer 375179 — 디자이너는 비개발).** 출처: 공고뿐(바이오던스 · 마스크팩 누적 2 억 장 · 아마존 뷰티 1 위 · 시리즈 A 130 억, AX 사내 플랫폼 · 멀티에이전트). 급여 · 매출 · 근무지는 비웠다. 다음 브리핑은 보이저엑스.
 
 **보이저엑스(`voyagerx`) — `done`(2026-09-30), 공고 3건(원티드 Vrew 웹 278425 · 안드로이드 82181 · iOS 82178).** 출처: 공고뿐(Vrew · vFlat, 서류에 CS 기술 질문 답변). **salary 를 채웠다** — 공고 셋 공통 '신입 최소 5,500 만원'(basis posting, low = high = 5500 이지만 하한임을 note 에). 제품 기능 · 과금은 비웠다. 다음 브리핑은 벙커키즈.
+
+**벙커키즈(`bunkerkids`) — `done`(2026-09-30), 공고 3건(원티드 Backend 356757 · Frontend 356758 · 사람인 Frontend 54730689 → 같은 자리의 새 판이라 `duplicate_of`).** 출처: 공고뿐(AI 캐릭터 채팅 위프 · 누적 투자 32 억 · EXIT 2 번). 급여 · 과금은 비웠다. 다음 브리핑은 버즈빌.

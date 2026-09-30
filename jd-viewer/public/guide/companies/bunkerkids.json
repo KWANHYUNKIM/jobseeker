@@ -1,0 +1,280 @@
+{
+  "slug": "bunkerkids",
+  "name": "벙커키즈",
+  "name_en": "",
+  "aliases": [
+    "벙커키즈"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "",
+  "one_liner": "AI 캐릭터 채팅 위프(WHIF)를 만드는 두 번 EXIT 한 창업자 팀(누적 투자 32 억) — Fastify/FastAPI · ConnectRPC · SSE 백엔드와 Next.js + Capacitor 프런트를 뽑는다",
+  "company": {
+    "business": "벙커키즈는 **AI 캐릭터 채팅(AI Companion)** 서비스 **위프(WHIF)** 를 만든다 — 공고는 AI 의 파도가 가장 먼저 닿는 곳이 콘텐츠 시장이고, 그중 AI 캐릭터 채팅이 인터넷 게임 초창기만큼 빠르게 크고 있다고 보고, 'Next Contents' 를 가장 매력 있게 전하는 플랫폼을 목표로 한다. 팀은 **6 년간 7 개 아이템에 도전해 5 번 실패 · 2 번 매각(EXIT)** 했고, **구성원 전원이 창업자 출신**, 쿠팡 등 IT 팀 출신의 소수 정예다. **누적 투자 32 억 원**(카카오벤처스 · 스프링캠프), **현금 15 억 원 이상**, 2 주 만에 만든 프로토타입으로 CBT 지표가 벤치마크를 모두 넘었다고 적는다. 스택은 **TypeScript(Fastify · ConnectRPC · Prisma) · Python(FastAPI) · Go**, **Supabase · SSE**, LLM 은 **OpenRouter · Claude · Vertex AI + 자체 모델 · Langfuse**, 결제는 **PortOne**, 앱은 **웹뷰 + Capacitor** 하이브리드. 서울 강남구.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "[위프(WHIF)] Tech - Backend Engineer",
+        "url": "https://www.wanted.co.kr/wd/356757",
+        "publisher": "원티드",
+        "summary": "벙커키즈 — AI 캐릭터 채팅(AI Companion) 서비스 위프(WHIF). 누적 투자 32 억(카카오벤처스 · 스프링캠프), EXIT 2 번, 전원 창업자 출신 · 쿠팡 등 IT 출신 소수 정예, 현금 15 억+, 6 년간 7 개 아이템 · 5 실패 · 2 매각, 2 주 프로토타입으로 CBT 지표 벤치마크 초과. 백엔드: Node.js(Fastify) · Python(FastAPI) · TypeScript · ConnectRPC · Prisma · Supabase(Auth) · SSE · OpenRouter · Langfuse · Claude · Vertex AI · NewRelic · PortOne 결제 · 모노레포 · 클린 아키텍처. 2년+."
+      },
+      {
+        "title": "[위프(WHIF)] Tech - Frontend Engineer",
+        "url": "https://www.wanted.co.kr/wd/356758",
+        "publisher": "원티드",
+        "summary": "Next.js(App Router) · Zustand · React Query · Emotion/Tailwind/shadcn · Vitest/Playwright, 앱은 웹뷰 + Capacitor(필요 시 네이티브 코드). PO · 디자이너와 복잡한 요구를 단순화. 3년+."
+      },
+      {
+        "title": "[위프(WHIF)] Tech - Frontend Engineer(사람인)",
+        "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54730689&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b9d3a68c-7a64-4477-9fd6-e01f78632a9e",
+        "publisher": "사람인",
+        "summary": "같은 자리의 다른 판 — 유저가 캐릭터와 대화하며 빠져드는 경험, 프런트 · 서버 · LLM 까지 관통, 이탈 데이터 · 실험, LLM 실험 · 프롬프트 · 모델 전환, 인프라 · 장애 대응, 결제 · 다국어 · 채팅 엔진. 3년+, 학력 무관. 스택: TypeScript · Python · Go, React SPA + 하이브리드 앱, 여러 LLM 프로바이더 + 자체 모델, GCP. 서울 강남구."
+      }
+    ],
+    "scale": [
+      {
+        "label": "누적 투자",
+        "value": "32 억 원(카카오벤처스 · 스프링캠프)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[위프(WHIF)] Tech - Backend Engineer",
+            "url": "https://www.wanted.co.kr/wd/356757",
+            "publisher": "원티드",
+            "summary": "벙커키즈 — AI 캐릭터 채팅(AI Companion) 서비스 위프(WHIF). 누적 투자 32 억(카카오벤처스 · 스프링캠프), EXIT 2 번, 전원 창업자 출신 · 쿠팡 등 IT 출신 소수 정예, 현금 15 억+, 6 년간 7 개 아이템 · 5 실패 · 2 매각, 2 주 프로토타입으로 CBT 지표 벤치마크 초과. 백엔드: Node.js(Fastify) · Python(FastAPI) · TypeScript · ConnectRPC · Prisma · Supabase(Auth) · SSE · OpenRouter · Langfuse · Claude · Vertex AI · NewRelic · PortOne 결제 · 모노레포 · 클린 아키텍처. 2년+."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "AI 캐릭터 채팅 유료 결제",
+        "how": "위프에 PortOne 결제가 붙어 있다 — 과금 방식(구독 · 재화)과 매출은 공고에 없다.",
+        "domains": [
+          "캐릭터 채팅 백엔드 · LLM",
+          "하이브리드 앱 프런트"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "[위프(WHIF)] Tech - Backend Engineer",
+            "url": "https://www.wanted.co.kr/wd/356757",
+            "publisher": "원티드",
+            "summary": "벙커키즈 — AI 캐릭터 채팅(AI Companion) 서비스 위프(WHIF). 누적 투자 32 억(카카오벤처스 · 스프링캠프), EXIT 2 번, 전원 창업자 출신 · 쿠팡 등 IT 출신 소수 정예, 현금 15 억+, 6 년간 7 개 아이템 · 5 실패 · 2 매각, 2 주 프로토타입으로 CBT 지표 벤치마크 초과. 백엔드: Node.js(Fastify) · Python(FastAPI) · TypeScript · ConnectRPC · Prisma · Supabase(Auth) · SSE · OpenRouter · Langfuse · Claude · Vertex AI · NewRelic · PortOne 결제 · 모노레포 · 클린 아키텍처. 2년+."
+          },
+          {
+            "title": "[위프(WHIF)] Tech - Frontend Engineer(사람인)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54730689&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b9d3a68c-7a64-4477-9fd6-e01f78632a9e",
+            "publisher": "사람인",
+            "summary": "같은 자리의 다른 판 — 유저가 캐릭터와 대화하며 빠져드는 경험, 프런트 · 서버 · LLM 까지 관통, 이탈 데이터 · 실험, LLM 실험 · 프롬프트 · 모델 전환, 인프라 · 장애 대응, 결제 · 다국어 · 채팅 엔진. 3년+, 학력 무관. 스택: TypeScript · Python · Go, React SPA + 하이브리드 앱, 여러 LLM 프로바이더 + 자체 모델, GCP. 서울 강남구."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "캐릭터 채팅 백엔드 · LLM",
+        "why": "백엔드 공고가 Fastify · FastAPI · ConnectRPC · Prisma · Supabase · SSE 와 OpenRouter · Langfuse · Claude · Vertex AI 통합, 프롬프트 엔지니어링을 적는다.",
+        "what_to_know": [
+          "SSE 스트리밍 응답",
+          "LLM 라우팅 · 관측(Langfuse)",
+          "캐릭터 대화 메모리 · 컨텍스트"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[위프(WHIF)] Tech - Backend Engineer",
+            "url": "https://www.wanted.co.kr/wd/356757",
+            "publisher": "원티드",
+            "summary": "벙커키즈 — AI 캐릭터 채팅(AI Companion) 서비스 위프(WHIF). 누적 투자 32 억(카카오벤처스 · 스프링캠프), EXIT 2 번, 전원 창업자 출신 · 쿠팡 등 IT 출신 소수 정예, 현금 15 억+, 6 년간 7 개 아이템 · 5 실패 · 2 매각, 2 주 프로토타입으로 CBT 지표 벤치마크 초과. 백엔드: Node.js(Fastify) · Python(FastAPI) · TypeScript · ConnectRPC · Prisma · Supabase(Auth) · SSE · OpenRouter · Langfuse · Claude · Vertex AI · NewRelic · PortOne 결제 · 모노레포 · 클린 아키텍처. 2년+."
+          }
+        ]
+      },
+      {
+        "name": "하이브리드 앱 프런트",
+        "why": "프런트 공고가 Next.js App Router · 웹뷰 + Capacitor 앱 · 스트리밍 응답 · 다국어 · 이탈 실험을 적는다.",
+        "what_to_know": [
+          "Capacitor 네이티브 연동",
+          "스트리밍 채팅 UI",
+          "i18n"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[위프(WHIF)] Tech - Frontend Engineer",
+            "url": "https://www.wanted.co.kr/wd/356758",
+            "publisher": "원티드",
+            "summary": "Next.js(App Router) · Zustand · React Query · Emotion/Tailwind/shadcn · Vitest/Playwright, 앱은 웹뷰 + Capacitor(필요 시 네이티브 코드). PO · 디자이너와 복잡한 요구를 단순화. 3년+."
+          },
+          {
+            "title": "[위프(WHIF)] Tech - Frontend Engineer(사람인)",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54730689&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b9d3a68c-7a64-4477-9fd6-e01f78632a9e",
+            "publisher": "사람인",
+            "summary": "같은 자리의 다른 판 — 유저가 캐릭터와 대화하며 빠져드는 경험, 프런트 · 서버 · LLM 까지 관통, 이탈 데이터 · 실험, LLM 실험 · 프롬프트 · 모델 전환, 인프라 · 장애 대응, 결제 · 다국어 · 채팅 엔진. 3년+, 학력 무관. 스택: TypeScript · Python · Go, React SPA + 하이브리드 앱, 여러 LLM 프로바이더 + 자체 모델, GCP. 서울 강남구."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "몰입이 지표다",
+        "evidence": "• 유저가 어디서 이탈하는지 데이터로 보고, 실험을 돌리고, 결과로 다음 방향을 결정",
+        "so_what": "캐릭터 대화에서 이탈 · 재방문을 데이터로 보고 실험한 경험, LLM 응답 품질을 바꾼 전후 숫자를 준비한다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "한 기능을 스택 끝까지",
+        "evidence": "• 하나의 기능을 프론트엔드 서버 LLM까지 스택을 관통하며 완성",
+        "so_what": "프런트 자리라도 서버 · 프롬프트까지 손대 본 경험이 강하다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "위프의 과금 방식 · 사용자 수 · 매출은 공고에 없다",
+    "원티드 판과 사람인 판의 스택이 조금 다르다(사람인 판에 Go · GCP · 자체 모델) — 최근 바뀐 것으로 보인다",
+    "영문 회사명을 확인하지 못했다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/356757",
+      "title": "[위프(WHIF)] Tech - Backend Engineer",
+      "site": "wanted",
+      "verdict": "경력 2년 이상. **Node.js(Fastify) · TypeScript · Python(FastAPI) 고성능 API**, **ConnectRPC 로 타입 안전한 프런트-백 통신**, **AI/LLM API 로 지능형 서비스 · 프롬프트 엔지니어링**, **클린 아키텍처 비즈니스 로직**, DB 설계 · 최적화 · 마이그레이션, **모노레포에서 프런트/백 코드 공유**, PO 와 확장 가능한 아키텍처. 스택: Prisma · Supabase Auth(JWT) · Swagger · **SSE** · **OpenRouter · Langfuse · Claude · Vertex AI** · NewRelic · GitHub Actions · Docker · **PortOne**. 자격은 백엔드 2년, Node 또는 Python API, REST, DB 설계 · 쿼리 최적화, 확장 설계. 우대는 대규모 TS, ConnectRPC/gRPC, LLM 통합, React, Supabase · Prisma, 모노레포, CI/CD, **캐릭터 챗봇 · 창작 · 감성 대화 서비스**. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "백엔드 2년",
+          "Node 또는 Python API",
+          "DB 설계"
+        ],
+        "can_learn": [
+          "ConnectRPC",
+          "SSE 스트리밍",
+          "LLM 관측"
+        ]
+      },
+      "study": [
+        {
+          "topic": "캐릭터 대화를 흘려보내기 — SSE 스트리밍과 LLM 사업자 라우팅",
+          "from": "task",
+          "quote": "• AI/LLM API를 활용한 지능형 서비스 개발 및 프롬프트 엔지니어링",
+          "priority": "core",
+          "why": "주요업무이고 스택에 SSE · OpenRouter · Langfuse 가 있다.",
+          "gap_check": "LLM 토큰을 SSE 로 흘릴 때 클라이언트가 끊으면 서버는 LLM 요청을 어떻게 취소하나? 한 사업자가 느리거나 실패하면 OpenRouter 로 다른 모델에 넘길 때 캐릭터 말투가 달라지는 문제는? 대화마다 모델 · 프롬프트 버전 · 토큰 · 지연을 Langfuse 에 어떻게 남기나?",
+          "drill": "Fastify(TypeScript)로 캐릭터 설정 + 대화 기록을 받아 OpenRouter 로 스트리밍 응답을 SSE 로 흘리는 엔드포인트를 만들고, 클라이언트 연결 끊김 시 AbortController 로 LLM 요청을 취소한다. Langfuse 로 요청마다 트레이스를 남기고, 주 모델 실패 시 대체 모델로 넘기는 폴백을 넣는다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Fastify — Documentation",
+              "url": "https://fastify.dev/docs/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "Langfuse",
+              "url": "https://langfuse.com/docs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "캐릭터가 대화를 기억하게 — 컨텍스트 · 요약 · 메모리 설계",
+          "from": "preference",
+          "quote": "• 캐릭터 챗봇, 창작 콘텐츠, 감성 기반 대화 등 몰입형 콘텐츠 서비스 개발 경험",
+          "priority": "core",
+          "why": "우대사항이다. 긴 대화를 모델 컨텍스트에 다 넣을 수 없다(이 사이트의 해석).",
+          "gap_check": "대화가 길어지면 최근 N 턴 · 요약 · 중요한 사실(이름 · 약속) 추출 중 무엇을 컨텍스트에 넣나? 요약을 언제 · 어느 모델로 만드나(비용)? 캐릭터 설정이 대화 중 흔들리지 않게 하려면(시스템 프롬프트 · 예시 대화 · 프롬프트 캐싱)?",
+          "drill": "PostgreSQL(Prisma)에 대화 · 요약 · 사용자 사실 테이블을 두고, 턴마다 최근 10 턴 + 누적 요약 + 사실 목록으로 프롬프트를 조립하는 서비스를 만든다. 50 턴 대화 스크립트로 캐릭터가 앞에서 말한 사실을 기억하는지 평가 질문 10 개를 돌려 전후를 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Prisma — Docs",
+              "url": "https://www.prisma.io/docs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "타입 안전한 프런트-백 통신 — ConnectRPC 와 모노레포",
+          "from": "task",
+          "quote": "• ConnectRPC를 통한 타입 세이프한 Frontend-Backend 통신 구현",
+          "priority": "high",
+          "why": "주요업무다.",
+          "gap_check": "Protobuf 스키마 하나로 서버(TypeScript · Go · Python)와 클라이언트 코드를 생성하면 무엇이 좋아지나? ConnectRPC 가 브라우저에서 gRPC-Web 없이 동작하는 방식은? 서버 스트리밍 RPC 와 SSE 는 언제 무엇을 쓰나? 스키마를 바꿀 때 하위 호환은?",
+          "drill": "pnpm 모노레포에 proto 패키지를 두고 buf 로 TypeScript 서버(Connect-Node) · React 클라이언트 코드를 생성해 '캐릭터 목록 · 대화 전송(서버 스트리밍)' RPC 를 만든다. 필드를 추가해 옛 클라이언트가 깨지지 않는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Connect RPC — Docs",
+              "url": "https://connectrpc.com/docs/introduction",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/356758",
+      "title": "[위프(WHIF)] Tech - Frontend Engineer",
+      "site": "wanted",
+      "verdict": "경력 3년 이상. **React · Next.js(App Router) · Capacitor** 로 웹/앱 서비스 개발 — 앱은 **기본적으로 웹뷰, 네이티브 이벤트가 필요하면 Capacitor(필요 시 네이티브 코드 직접)**. PO · 디자이너 · 이해관계자와 복잡한 요구를 단순화해 반복 실험을 최소 비용으로. 스택: Zustand · React Query · Emotion · Tailwind · shadcn · Vitest · Playwright. 자격은 프런트 3년, React · 브라우저 깊은 이해, 기술 트렌드 장단점, 요구 조율. 우대는 백엔드 · E2E 제품, 초기 멤버, AI 도구. 같은 자리의 최신 판이 사람인에 따로 있다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "프런트 3년",
+          "React · Next.js",
+          "브라우저 이해"
+        ],
+        "can_learn": [
+          "Capacitor 네이티브",
+          "스트리밍 채팅 UI"
+        ]
+      },
+      "study": [
+        {
+          "topic": "웹뷰 앱을 네이티브처럼 — Capacitor 플러그인",
+          "from": "task",
+          "quote": "• React, Nextjs, Capacitorjs(주로 웹뷰, 필요시 Native module)로 웹/앱 서비스 개발",
+          "priority": "core",
+          "why": "주요업무다.",
+          "gap_check": "Next.js App Router 앱을 Capacitor 로 감쌀 때 정적 내보내기와 서버 컴포넌트는 어떻게 공존하나? 푸시 알림 · 인앱 결제 · 키보드 · 뒤로 가기 같은 네이티브 이벤트는 어떤 플러그인으로 받나? 기존 플러그인이 없으면 Swift/Kotlin 으로 커스텀 플러그인을 어떻게 쓰나?",
+          "drill": "Next.js 앱을 Capacitor 로 iOS · Android 에 올리고 푸시 알림 · 딥링크 · 안드로이드 뒤로 가기 처리를 붙인다. 간단한 커스텀 플러그인(기기 햅틱 패턴)을 Swift · Kotlin 으로 써서 JS 에서 부른다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Capacitor — Docs",
+              "url": "https://capacitorjs.com/docs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "스트리밍 채팅 UI — 끊김 없이 · 스크롤 · 재연결",
+          "from": "qualification",
+          "quote": "• React, Web Browser에 대한 높은 수준의 이해도를 가진 분",
+          "priority": "high",
+          "why": "자격요건이다. 캐릭터 채팅은 토큰 스트리밍 화면이 핵심이다(이 사이트의 해석).",
+          "gap_check": "토큰이 올 때마다 setState 하면 무엇이 느려지나(렌더 배치 · requestAnimationFrame)? 사용자가 위로 스크롤해 과거를 읽는 중이면 자동 스크롤을 멈추려면? 모바일 웹뷰에서 키보드가 올라올 때 입력창 위치는?",
+          "drill": "React 로 SSE 스트리밍 채팅 화면을 만들고 토큰을 버퍼에 모아 프레임마다 반영, 사용자가 바닥에 있을 때만 자동 스크롤, 연결 끊김 시 이어받기를 넣는다. Playwright 로 스트리밍 중 스크롤 · 재연결 시나리오를 테스트한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "MDN — Using server-sent events",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54730689&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b9d3a68c-7a64-4477-9fd6-e01f78632a9e",
+      "title": "[위프(WHIF)] Tech - Frontend Engineer(사람인)",
+      "site": "saramin",
+      "duplicate_of": "https://www.wanted.co.kr/wd/356758",
+      "verdict": "⚠️ **같은 프런트 자리의 사람인 게시 — 글이 더 새 판이다.** 제목은 같지만 본문이 다르다: '유저가 캐릭터와 대화하며 빠져드는 경험' 을 중심으로 **프런트 · 서버 · LLM 을 관통**, 이탈 데이터 · 실험, **LLM 실험 · 프롬프트 · 모델 전환**, 인프라 · 장애 대응, 결제 · 다국어 · 채팅 엔진, 학력 무관, 스택에 **Go · 자체 모델 · GCP** 가 더해졌다. 우대는 하이브리드 앱 · DDD · HTTP/2 RPC · 스트리밍 응답 · i18n · Python/Go 백엔드 읽기 · E2E/Mutation Testing. 브리핑과 학습 항목은 원티드 게시를 본다 — 한 곳으로만 지원한다."
+    }
+  ]
+}
