@@ -35,7 +35,10 @@
    "company": "xAI",
    "region": "US",
    "chip_key": null,
-   "in_total": true
+   "in_total": true,
+   "cost_usd": 35836000000.0,
+   "cost_note": "Epoch: 946MW, 연산 247억 + 건설 111억. 1,531MW 완공 때 약 580억",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/colossus-2"
   },
   {
    "key": "fairwater-atlanta",
@@ -62,7 +65,10 @@
    "company": "Microsoft",
    "region": "US",
    "chip_key": null,
-   "in_total": true
+   "in_total": true,
+   "cost_usd": 24093000000.0,
+   "cost_note": "Epoch: 636MW",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/microsoft-fairwater-atlanta"
   },
   {
    "key": "new-carlisle",
@@ -89,7 +95,10 @@
    "company": "Anthropic",
    "region": "US",
    "chip_key": null,
-   "in_total": true
+   "in_total": true,
+   "cost_usd": 34473000000.0,
+   "cost_note": "Epoch: 910MW, 연산 238억. 1,925MW 완공 때 729억",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/anthropic-amazon-new-carlisle"
   },
   {
    "key": "prometheus",
@@ -116,7 +125,10 @@
    "company": "Meta",
    "region": "US",
    "chip_key": null,
-   "in_total": true
+   "in_total": true,
+   "cost_usd": 18789000000.0,
+   "cost_note": "Epoch: 496MW. 1,022MW 완공 때 387억",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/meta-prometheus"
   },
   {
    "key": "abilene",
@@ -143,7 +155,10 @@
    "company": "OpenAI",
    "region": "US",
    "chip_key": null,
-   "in_total": true
+   "in_total": true,
+   "cost_usd": 15948000000.0,
+   "cost_note": "Epoch: 지금 421MW. 843MW 완공 때 319억. 보도(FT): Oracle 이 GB200 약 400억 달러어치 주문",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/openai-stargate-abilene"
   },
   {
    "key": "fairwater-wisconsin",
@@ -170,7 +185,10 @@
    "company": "Microsoft",
    "region": "US",
    "chip_key": null,
-   "in_total": true
+   "in_total": true,
+   "cost_usd": 13978000000.0,
+   "cost_note": "Epoch: 지금 369MW. 2,263MW 완공 때 857억(Microsoft 는 '수백억 달러'라고만)",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/microsoft-fairwater-wisconsin"
   },
   {
    "key": "colossus-1",
@@ -197,7 +215,10 @@
    "company": "Anthropic",
    "region": "US",
    "chip_key": null,
-   "in_total": true
+   "in_total": true,
+   "cost_usd": 12880000000.0,
+   "cost_note": "Epoch: 340MW, 연산 89억 + 건설 40억",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/colossus-1"
   },
   {
    "key": "meta-2024",
@@ -3483,5 +3504,1586 @@
     }
    ]
   }
- ]
+ ],
+ "market": {
+  "business": [
+   {
+    "company": "Microsoft",
+    "model": "클라우드 임대 + 구독",
+    "domains": [
+     "Azure(AI 인프라·Foundry·OpenAI 모델)",
+     "Microsoft 365 Copilot",
+     "GitHub Copilot"
+    ],
+    "numbers": [
+     [
+      "분기 매출 (FY26 4분기)",
+      "900억 달러",
+      "official"
+     ],
+     [
+      "Azure 성장",
+      "+43%, 연 1,000억 달러 돌파",
+      "official"
+     ],
+     [
+      "상업 수주잔고(RPO)",
+      "6,780억 달러 (+84%)",
+      "official"
+     ],
+     [
+      "FY26 설비투자",
+      "1,159억 달러",
+      "official"
+     ]
+    ],
+    "payback": "AI 를 Azure 임대료로 바꾼다. 수주잔고가 설비투자의 몇 배라 회수 경로가 계약으로 잡혀 있다. 분기 영업이익 406억 달러로 돈을 버는 채로 투자한다.",
+    "sources": [
+     {
+      "title": "Microsoft FY26 Q4 8-K",
+      "url": "https://www.sec.gov/Archives/edgar/data/789019/000119312526323632/msft-ex99_1.htm"
+     }
+    ]
+   },
+   {
+    "company": "Google",
+    "model": "광고 + 클라우드 임대(TPU)",
+    "domains": [
+     "검색 광고(AI 개요)",
+     "Gemini 앱·구독",
+     "Gemini API",
+     "Google Cloud(TPU 포함)"
+    ],
+    "numbers": [
+     [
+      "Google Cloud 분기 매출",
+      "248억 달러 (+82%)",
+      "official"
+     ],
+     [
+      "Cloud 분기 영업이익",
+      "88억 달러",
+      "official"
+     ],
+     [
+      "분기 설비투자",
+      "449억 달러",
+      "official"
+     ]
+    ],
+    "payback": "자체 칩(TPU)이라 NVIDIA 마진을 덜 낸다. 검색 광고가 투자를 받치고 Cloud 가 이익을 낸다.",
+    "sources": [
+     {
+      "title": "Alphabet Q2 2026 8-K",
+      "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000066/googexhibit991q22026.htm"
+     }
+    ]
+   },
+   {
+    "company": "Amazon",
+    "model": "클라우드 임대 + 자체 칩 판매",
+    "domains": [
+     "EC2 GPU",
+     "Trainium",
+     "Bedrock",
+     "AI 칩을 Anthropic·OpenAI 에 공급"
+    ],
+    "numbers": [
+     [
+      "AWS 분기 매출",
+      "422억 달러 (+37%), 연 1,690억",
+      "official"
+     ],
+     [
+      "AI 사업·칩 사업 연 매출",
+      "각 250억 달러 이상",
+      "official"
+     ],
+     [
+      "최근 12개월 잉여현금흐름",
+      "-76억 달러",
+      "official"
+     ]
+    ],
+    "payback": "Trainium 을 Anthropic 에 빌려주고(Rainier) 그 대가로 AWS 매출이 는다. 설비투자가 커서 현금흐름은 마이너스로 돌았다.",
+    "sources": [
+     {
+      "title": "Amazon Q2 2026 8-K",
+      "url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000024/amzn-20260630xex991.htm"
+     }
+    ]
+   },
+   {
+    "company": "Meta",
+    "model": "광고(AI 는 추천·광고 효율에 쓴다)",
+    "domains": [
+     "광고(AI 랭킹·추천)",
+     "Meta AI(따로 돈을 받지 않는다)",
+     "남는 연산 임대 계획(보도)"
+    ],
+    "numbers": [
+     [
+      "분기 매출",
+      "608억 달러 (+28%), 광고 단가 +12%",
+      "official"
+     ],
+     [
+      "2026 설비투자 전망",
+      "1,300~1,450억 달러",
+      "official"
+     ],
+     [
+      "분기 잉여현금흐름",
+      "7.8억 달러",
+      "official"
+     ]
+    ],
+    "payback": "AI 를 팔지 않고 광고 단가를 올려 회수한다. 투자가 커 잉여현금이 거의 사라졌고, 남는 연산을 빌려주려 한다(Bloomberg).",
+    "sources": [
+     {
+      "title": "Meta Q2 2026 8-K",
+      "url": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026050596/meta-06302026xexhibit991.htm"
+     },
+     {
+      "title": "TechCrunch",
+      "url": "https://techcrunch.com/2026/07/01/meta-like-spacex-looks-to-turn-excess-ai-compute-into-cash/"
+     }
+    ]
+   },
+   {
+    "company": "Oracle",
+    "model": "클라우드 임대(주로 OpenAI)",
+    "domains": [
+     "OCI AI 학습·추론 용량",
+     "클라우드 애플리케이션"
+    ],
+    "numbers": [
+     [
+      "OCI 분기 매출",
+      "74억 달러 (+121%)",
+      "official"
+     ],
+     [
+      "수주잔고(RPO)",
+      "6,640억 달러",
+      "official"
+     ],
+     [
+      "분기 잉여현금흐름",
+      "-50억 달러",
+      "official"
+     ]
+    ],
+    "payback": "OpenAI 와 5년 3,000억 달러 계약(보도) 등 수주로 회수한다. 지금은 짓는 돈이 먼저 나가 현금흐름이 마이너스다.",
+    "sources": [
+     {
+      "title": "Oracle Q1 FY27 8-K",
+      "url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526387905/orcl-ex99_1.htm"
+     }
+    ]
+   },
+   {
+    "company": "OpenAI",
+    "model": "구독 + 광고 + API",
+    "domains": [
+     "ChatGPT 구독(Go·Plus·Pro)",
+     "ChatGPT 광고(2026~)",
+     "API",
+     "기업·Codex"
+    ],
+    "numbers": [
+     [
+      "연 환산 매출",
+      "400억 달러 (2026-08, Bloomberg)",
+      "reported"
+     ],
+     [
+      "2026 2분기 매출",
+      "67억 달러 (WSJ) — 위 값과 어긋난다",
+      "reported"
+     ],
+     [
+      "2025 매출",
+      "130억 달러",
+      "reported"
+     ]
+    ],
+    "payback": "보도상 2028년에도 약 850억 달러를 태운다. 1,220억 달러를 모았고(기업가치 8,520억) 2027년 상장을 노린다. 흑자 연도는 공식 확인되지 않았다.",
+    "sources": [
+     {
+      "title": "TechCrunch (Bloomberg 인용)",
+      "url": "https://techcrunch.com/2026/09/29/openai-reportedly-in-talks-to-raise-30b-round-at-1-4t-valuation/"
+     },
+     {
+      "title": "TechCrunch (WSJ 인용)",
+      "url": "https://techcrunch.com/2026/08/27/openai-to-start-showing-ads-on-chatgpts-free-and-go-tiers-in-india/"
+     }
+    ]
+   },
+   {
+    "company": "Anthropic",
+    "model": "API + 구독 + 코딩 도구",
+    "domains": [
+     "Claude API(직접·클라우드 경유)",
+     "Claude Code",
+     "Claude 구독(Pro·Max·Team·Enterprise)"
+    ],
+    "numbers": [
+     [
+      "연 환산 매출",
+      "470억 달러 (2026-05, 공식) → 650억 (2026-07 말, Bloomberg)",
+      "official"
+     ],
+     [
+      "2025 매출",
+      "약 46억 달러, 영업손실 80억 달러 이상(상장 서류 보도)",
+      "reported"
+     ],
+     [
+      "2026 2분기",
+      "매출 115억 달러, 조정 영업이익 흑자 두 분기째(보도)",
+      "reported"
+     ]
+    ],
+    "payback": "칩을 사지 않고 빌린다 — AWS·Google·Azure 에 더해 xAI Colossus 1 에 월 12.5억 달러. 계획된 인프라 지출 약 5,180억 달러(상장 서류 보도).",
+    "sources": [
+     {
+      "title": "Anthropic 공식(Series H)",
+      "url": "https://www.anthropic.com/news/series-h"
+     },
+     {
+      "title": "TechCrunch",
+      "url": "https://techcrunch.com/2026/09/28/anthropics-prospectus-details-losses-growth-and-yes-a-warning-that-its-ai-could-end-humanity/"
+     }
+    ]
+   },
+   {
+    "company": "xAI",
+    "model": "구독 + 광고 + 연산 임대",
+    "domains": [
+     "Grok·X 구독",
+     "X 광고",
+     "데이터 라이선스",
+     "연산 임대(Anthropic·Google)"
+    ],
+    "numbers": [
+     [
+      "AI 부문 분기 매출",
+      "25.6억 달러 (+247%)",
+      "official"
+     ],
+     [
+      "분기 영업손실",
+      "12.6억 달러",
+      "official"
+     ],
+     [
+      "Anthropic 임대료",
+      "월 12.5억 달러(2029-05 까지, 보도)",
+      "reported"
+     ]
+    ],
+    "payback": "Grok 사용이 줄자 Colossus 1 을 Anthropic 에 통째로 빌려줘 매출의 큰 몫을 임대로 번다.",
+    "sources": [
+     {
+      "title": "SpaceX Q2 2026 8-K",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026052515/earningsreleaseq22608042.htm"
+     },
+     {
+      "title": "TechCrunch",
+      "url": "https://techcrunch.com/2026/05/20/anthropic-will-pay-xai-1-25-billion-per-month-for-compute/"
+     }
+    ]
+   },
+   {
+    "company": "CoreWeave",
+    "model": "GPU 임대(다년 확정 계약)",
+    "domains": [
+     "GPU 클라우드 임대"
+    ],
+    "numbers": [
+     [
+      "분기 매출",
+      "25.8억 달러 (+112%)",
+      "official"
+     ],
+     [
+      "수주잔고",
+      "1,040억 달러",
+      "official"
+     ],
+     [
+      "마진",
+      "조정 EBITDA 59% → 감가상각 뒤 영업 5% → 이자 6.4억 뒤 순손실 6.3억",
+      "official"
+     ]
+    ],
+    "payback": "빚을 내 GPU 를 사고 다년 계약으로 갚는다. 감가상각과 이자가 이익을 거의 다 먹는다 — GPU 수명이 계약보다 짧으면 위험하다.",
+    "sources": [
+     {
+      "title": "CoreWeave Q2 2026 8-K",
+      "url": "https://www.sec.gov/Archives/edgar/data/1769628/000176962826000362/coreweave2q26earningspress.htm"
+     }
+    ]
+   },
+   {
+    "company": "Nebius",
+    "model": "GPU 임대",
+    "domains": [
+     "GPU 클라우드·AI 인프라"
+    ],
+    "numbers": [
+     [
+      "연 반복 매출(ARR)",
+      "30억 달러",
+      "official"
+     ],
+     [
+      "계약 단가",
+      "MW 당 연 2,000~2,500만 달러(다년), 단기 4,000~5,000만",
+      "official"
+     ],
+     [
+      "분기 설비투자",
+      "56.6억 달러, 순손실 1.9억",
+      "official"
+     ]
+    ],
+    "payback": "전력 1MW 를 빌려주면 연 2~5천만 달러 — 이 단가와 짓는 비용의 차이가 회수 속도다.",
+    "sources": [
+     {
+      "title": "Nebius Q2 2026 주주서한",
+      "url": "https://www.sec.gov/Archives/edgar/data/1513845/000110465926094568/tm2622968d1_ex99-2.htm"
+     }
+    ]
+   },
+   {
+    "company": "Tesla",
+    "model": "자율주행 구독·로보택시",
+    "domains": [
+     "FSD 구독·구매",
+     "로보택시"
+    ],
+    "numbers": [
+     [
+      "서비스 매출",
+      "46억 달러 (+50%)",
+      "official"
+     ],
+     [
+      "FSD 구독",
+      "148만 (+56%)",
+      "official"
+     ],
+     [
+      "분기 잉여현금흐름",
+      "-11억 달러",
+      "official"
+     ]
+    ],
+    "payback": "Cortex 로 학습한 FSD 를 구독으로 판다. FSD 매출은 따로 공개하지 않는다.",
+    "sources": [
+     {
+      "title": "Tesla Q2 2026 8-K",
+      "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026049213/exhibit991.htm"
+     }
+    ]
+   },
+   {
+    "company": "Alibaba",
+    "model": "클라우드 임대 + 모델 API",
+    "domains": [
+     "AI 클라우드·연산(T-Head 포함)",
+     "Qwen API",
+     "Qwen 앱"
+    ],
+    "numbers": [
+     [
+      "AI 클라우드·연산 분기 매출",
+      "484억 위안(약 71억 달러, +45%)",
+      "official"
+     ],
+     [
+      "AI 관련 제품 매출",
+      "124억 위안, 12분기 연속 세 자릿수 성장",
+      "official"
+     ]
+    ],
+    "payback": "클라우드 조정 EBITA 마진 12%. 3년 3,800억 위안 투자.",
+    "sources": [
+     {
+      "title": "Alibaba 6-K",
+      "url": "https://www.sec.gov/Archives/edgar/data/1577552/000110465926099220/tm2623667d1_ex99-1.htm"
+     }
+    ]
+   },
+   {
+    "company": "Naver",
+    "model": "기업 AI + 소버린 AI 팩토리(MW 단위 판매)",
+    "domains": [
+     "HyperCLOVA X 기업·공공",
+     "AI 팩토리(연산을 MW 단위로 판매)",
+     "검색 AI 브리핑 광고"
+    ],
+    "numbers": [
+     [
+      "엔터프라이즈 부문 분기 매출",
+      "1,537억 원 (+21.3%)",
+      "official"
+     ],
+     [
+      "GPU 감가상각",
+      "5 → 6년(연 약 1,000억 원 비용 이연)",
+      "official"
+     ],
+     [
+      "AI 팩토리 1단계 200MW",
+      "NVIDIA 10억 달러 투자, Brookfield 최대 90억 달러",
+      "official"
+     ]
+    ],
+    "payback": "GPU 를 따로 소유하는 회사(SPV)가 사고, 연산을 MW 단위로 팔아 회수한다.",
+    "sources": [
+     {
+      "title": "NAVER 2Q26 실적 자료",
+      "url": "https://www.navercorp.com/api/article/download/07b3b329-bbbe-481c-ac47-b3d0d7fea855"
+     }
+    ]
+   },
+   {
+    "company": "NVIDIA (공급자)",
+    "model": "칩·시스템 판매",
+    "domains": [
+     "데이터센터 GPU·시스템"
+    ],
+    "numbers": [
+     [
+      "데이터센터 분기 매출",
+      "890억 달러 (+117%)",
+      "official"
+     ],
+     [
+      "매출총이익률",
+      "75%",
+      "official"
+     ]
+    ],
+    "payback": "파는 쪽이라 이미 회수한다. GPU 담보 대출의 담보가치 부족분 최대 25%를 보증한다는 보도가 있다 — 중고 GPU 값이 떨어질 위험을 일부 떠안는다.",
+    "sources": [
+     {
+      "title": "NVIDIA Q2 FY27 8-K",
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000073/q2fy27pr.htm"
+     },
+     {
+      "title": "TechCrunch",
+      "url": "https://techcrunch.com/2026/08/13/nvidias-new-500b-plan-is-risky-but-brilliant-especially-for-aging-gpus/"
+     }
+    ]
+   }
+  ],
+  "rental": [
+   {
+    "gpu": "H100",
+    "d": "2023-10",
+    "usd": 7.76,
+    "note": "Silicon Data 지수(하이퍼스케일러만 있던 때 중앙값)",
+    "src": "https://www.silicondata.com/blog/h100-rental-price-over-time"
+   },
+   {
+    "gpu": "H100",
+    "d": "2024-03",
+    "usd": 7.92,
+    "note": "Silicon Data 중앙값",
+    "src": "https://www.silicondata.com/blog/h100-rental-price-over-time"
+   },
+   {
+    "gpu": "H100",
+    "d": "2024-09",
+    "usd": 2.99,
+    "note": "네오클라우드 중앙값(하이퍼스케일러 9.34)",
+    "src": "https://www.silicondata.com/blog/h100-rental-price-over-time"
+   },
+   {
+    "gpu": "H100",
+    "d": "2025-10",
+    "usd": 3.33,
+    "note": "네오클라우드 중앙값(마켓 1.95, 하이퍼스케일러 6.26)",
+    "src": "https://www.silicondata.com/blog/h100-rental-price-over-time"
+   },
+   {
+    "gpu": "H100",
+    "d": "2026-09",
+    "usd": 2.73,
+    "note": "Silicon Data H100 지수",
+    "src": "https://www.silicondata.com/products/silicon-index/h100"
+   },
+   {
+    "gpu": "B200",
+    "d": "2026-09",
+    "usd": 5.88,
+    "note": "Silicon Data B200 지수, 올해 +27.6%",
+    "src": "https://www.silicondata.com/products/silicon-index/b200"
+   }
+  ],
+  "list_prices": [
+   {
+    "gpu": "H100",
+    "usd": 3.99,
+    "who": "Lambda 정가(8장)",
+    "src": "https://lambda.ai/pricing"
+   },
+   {
+    "gpu": "H100",
+    "usd": 6.16,
+    "who": "CoreWeave 정가(8장 ÷ 8)",
+    "src": "https://www.coreweave.com/pricing"
+   },
+   {
+    "gpu": "H200",
+    "usd": 6.31,
+    "who": "CoreWeave 정가(8장 ÷ 8)",
+    "src": "https://www.coreweave.com/pricing"
+   },
+   {
+    "gpu": "B200",
+    "usd": 6.69,
+    "who": "Lambda 정가(8장)",
+    "src": "https://lambda.ai/pricing"
+   },
+   {
+    "gpu": "B200",
+    "usd": 8.6,
+    "who": "CoreWeave 정가(8장 ÷ 8)",
+    "src": "https://www.coreweave.com/pricing"
+   },
+   {
+    "gpu": "GB200",
+    "usd": 10.5,
+    "who": "CoreWeave 정가(4장 ÷ 4)",
+    "src": "https://www.coreweave.com/pricing"
+   }
+  ],
+  "payback": [
+   {
+    "who": "Sequoia (David Cahn)",
+    "claim": "AI 설비투자를 정당화하려면 필요한 매출: 2023년 2,000억 → 2024년 6,000억 → 2026년 설비투자만으로 1.5조 달러(누적 약 3조)",
+    "as_of": "2026-07",
+    "src": "https://dcahn.substack.com/p/ais-15t-question"
+   },
+   {
+    "who": "Bain 2025",
+    "claim": "2030년까지 연 2조 달러 매출이 필요하고 AI 절감분을 쳐도 8,000억 달러 모자란다",
+    "as_of": "2025-09",
+    "src": "https://www.bain.com/insights/how-can-we-meet-ais-insatiable-demand-for-compute-power-technology-report-2025/"
+   },
+   {
+    "who": "Bain 2026",
+    "claim": "2031년 AI 인프라 지출 연 1.5조 달러 — 회수하려면 AI 시장이 약 6조 달러가 돼야 한다",
+    "as_of": "2026-09",
+    "src": "https://www.bain.com/insights/new-innovation-is-required-to-fund-ais-6-trillion-buildout-technology-report-2026/"
+   },
+   {
+    "who": "Latent Space (Eugene Cheah)",
+    "claim": "H100 을 약 5만 달러에 사 5년 쓰면 가동률 100%에서 시간당 2.85달러 넘게 받아야 주식시장 수익률을 이기고, 1.65달러 아래면 손해",
+    "as_of": "2024-10",
+    "src": "https://www.latent.space/p/gpu-bubble"
+   },
+   {
+    "who": "MIT NANDA",
+    "claim": "기업 생성 AI 시범사업의 약 95%가 빠른 매출 효과를 못 냈다",
+    "as_of": "2025-08",
+    "src": "https://fortune.com/2025/08/18/mit-report-95-percent-generative-ai-pilots-at-companies-failing-cfo/"
+   },
+   {
+    "who": "Apollo (Torsten Slok)",
+    "claim": "하이퍼스케일러들은 2028년 잉여현금흐름이 크게 는다고 본다 — 늦어지면 경기 위험",
+    "as_of": "2026-07",
+    "src": "https://techcrunch.com/2026/07/09/can-ai-answer-the-3-trillion-question/"
+   }
+  ],
+  "tokens": [
+   {
+    "claim": "같은 성능이면 추론 값이 해마다 약 10배 싸진다(LLMflation)",
+    "as_of": "2024-11",
+    "src": "https://a16z.com/llmflation-llm-inference-cost/"
+   },
+   {
+    "claim": "같은 성능에 드는 값이 과제에 따라 해마다 9~900배 떨어진다(GPT-4 급 GPQA 는 연 40배)",
+    "as_of": "2025-03",
+    "src": "https://epoch.ai/data-insights/llm-inference-price-trends"
+   }
+  ],
+  "durability": {
+   "depreciation": [
+    {
+     "company": "Alphabet",
+     "years": 6,
+     "from": 4,
+     "when": "2023",
+     "impact": "2023년 감가상각 39억 달러 감소, 순이익 30억 달러 증가(2021년에도 3→4년)",
+     "sources": [
+      {
+       "title": "Alphabet 10-K 2023",
+       "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204424000022/R10.htm"
+      }
+     ]
+    },
+    {
+     "company": "Microsoft",
+     "years": 6,
+     "from": 4,
+     "when": "FY2023",
+     "impact": "FY23 영업이익 약 37억 달러 증가(CFO)",
+     "sources": [
+      {
+       "title": "Microsoft 10-K FY2022",
+       "url": "https://www.sec.gov/Archives/edgar/data/789019/000156459022026876/R8.htm"
+      }
+     ]
+    },
+    {
+     "company": "Amazon",
+     "years": 5,
+     "from": 6,
+     "when": "2025",
+     "impact": "일부 서버·네트워크를 6→5년으로 줄였다 — 'AI·ML 기술 발전 속도' 때문. 2025년 감가상각 14억 달러 증가, 2024년 4분기 조기 폐기 약 9.2억 달러. 2022년 4→5년, 2024년 5→6년으로 늘렸다가 되돌린 것이다.",
+     "sources": [
+      {
+       "title": "Amazon 10-K 2024",
+       "url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872425000004/R10.htm"
+      },
+      {
+       "title": "Amazon 10-K 2025",
+       "url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000004/R10.htm"
+      }
+     ]
+    },
+    {
+     "company": "Meta",
+     "years": 5.5,
+     "from": 5,
+     "when": "2025",
+     "impact": "2025년 감가상각 29.2억 달러 감소, 순이익 25.9억 달러 증가(2022년 4→5년)",
+     "sources": [
+      {
+       "title": "Meta 10-K 2024",
+       "url": "https://www.sec.gov/Archives/edgar/data/1326801/000132680125000017/R10.htm"
+      }
+     ]
+    },
+    {
+     "company": "Oracle",
+     "years": 6,
+     "from": 5,
+     "when": "FY2025",
+     "impact": "FY2025 영업비용 7.33억 달러 감소(FY2023 에 4→5년)",
+     "sources": [
+      {
+       "title": "Oracle 10-K FY2025",
+       "url": "https://www.sec.gov/Archives/edgar/data/1341439/000095017025087926/R12.htm"
+      }
+     ]
+    },
+    {
+     "company": "CoreWeave",
+     "years": 6,
+     "from": 5,
+     "when": "2023",
+     "impact": "2023년 비용 2천만 달러 감소",
+     "sources": [
+      {
+       "title": "CoreWeave 10-K 2025",
+       "url": "https://www.sec.gov/Archives/edgar/data/1769628/000176962826000104/R9.htm"
+      }
+     ]
+    },
+    {
+     "company": "Nebius",
+     "years": 5,
+     "from": 4,
+     "when": "2026",
+     "impact": "'사용 패턴과 현재 가동 약정' 때문(금액 미공개)",
+     "sources": [
+      {
+       "title": "Nebius 20-F 2025",
+       "url": "https://www.sec.gov/Archives/edgar/data/1513845/000110465926052948/R10.htm"
+      }
+     ]
+    },
+    {
+     "company": "Alibaba",
+     "years": null,
+     "from": null,
+     "when": "FY2026",
+     "impact": "컴퓨터 장비 3~5년(변경 공시 없음)",
+     "sources": [
+      {
+       "title": "Alibaba 20-F FY2026",
+       "url": "https://www.sec.gov/Archives/edgar/data/1577552/000119312526231755/R13.htm"
+      }
+     ]
+    },
+    {
+     "company": "Baidu",
+     "years": null,
+     "from": null,
+     "when": "FY2025",
+     "impact": "컴퓨터 장비 3~6년",
+     "sources": [
+      {
+       "title": "Baidu 20-F FY2025",
+       "url": "https://www.sec.gov/Archives/edgar/data/1329099/000119312526109289/R12.htm"
+      }
+     ]
+    }
+   ],
+   "critique": [
+    {
+     "who": "Satya Nadella (Microsoft CEO)",
+     "claim": "'한 세대 칩에 4~5년 감가상각으로 묶이고 싶지 않았다' — 세대를 나눠 사는 이유",
+     "as_of": "2025-11",
+     "sources": [
+      {
+       "title": "Dwarkesh Podcast",
+       "url": "https://www.dwarkesh.com/p/satya-nadella-2"
+      }
+     ]
+    },
+    {
+     "who": "Michael Burry",
+     "claim": "'감가상각 문제' — 빅테크가 GPU 수명을 길게 잡아 이익을 부풀린다는 비판(유료 글이라 숫자는 확인하지 못했다)",
+     "as_of": "2025-11",
+     "sources": [
+      {
+       "title": "Cassandra Unchained",
+       "url": "https://michaeljburry.substack.com/p/unicorns-and-cockroaches-blessed"
+      }
+     ]
+    }
+   ],
+   "failures": [
+    {
+     "study": "Meta Llama 3 (H100 1.6만 장, 54일)",
+     "finding": "예기치 않은 중단 419번(약 3시간에 한 번). 약 78%가 하드웨어, GPU 관련 58.7% — 고장 난 GPU 148번, HBM3 메모리 72번. 그래도 실제 학습 시간은 90% 넘게 지켰다.",
+     "as_of": "2024-07",
+     "sources": [
+      {
+       "title": "arXiv 2407.21783",
+       "url": "https://arxiv.org/html/2407.21783v3"
+      }
+     ]
+    },
+    {
+     "study": "Meta RSC 연구 클러스터 (A100 2.4만 장, 11개월)",
+     "finding": "노드 하루당 약 0.005번 고장 — 1,024장 작업은 평균 7.9시간, 16,384장 작업은 1.8시간마다 한 번 멈춘다고 추정.",
+     "as_of": "2024-10",
+     "sources": [
+      {
+       "title": "arXiv 2410.21680",
+       "url": "https://arxiv.org/abs/2410.21680"
+      }
+     ]
+    },
+    {
+     "study": "UIUC Delta (A100·H100 1,056장, 2.5년)",
+     "finding": "H100 은 메모리 오류가 A100 보다 3.2배 잦다. 큰 규모에서는 약 5% 여분 GPU 가 필요하다.",
+     "as_of": "2025-12",
+     "sources": [
+      {
+       "title": "arXiv 2503.11901",
+       "url": "https://arxiv.org/abs/2503.11901"
+      }
+     ]
+    },
+    {
+     "study": "Google TPUv4 (4,096칩 슈퍼컴퓨터)",
+     "finding": "가용률 99.98%, 학습 작업의 약 1%가 하드웨어 장애를 겪는다(광 스위치로 우회).",
+     "as_of": "2024-04",
+     "sources": [
+      {
+       "title": "NSDI'24",
+       "url": "https://www.usenix.org/conference/nsdi24/presentation/zu"
+      }
+     ]
+    },
+    {
+     "study": "ByteDance ByteRobust (호퍼 9,600장, 3개월)",
+     "finding": "실제 학습 시간 97%. 장애의 36.1%가 CUDA 오류.",
+     "as_of": "2025-09",
+     "sources": [
+      {
+       "title": "arXiv 2509.16293",
+       "url": "https://arxiv.org/html/2509.16293v4"
+      }
+     ]
+    },
+    {
+     "study": "Microsoft SuperBench (Azure GPU 수십만 장, 2년)",
+     "finding": "미리 검사해 장애 사이 평균 시간을 최대 22.6배 늘렸다.",
+     "as_of": "2024-07",
+     "sources": [
+      {
+       "title": "ATC'24",
+       "url": "https://www.usenix.org/conference/atc24/presentation/xiong"
+      }
+     ]
+    }
+   ],
+   "lifespan": [
+    {
+     "claim": "가동률 60~70%면 데이터센터 GPU 수명은 1~2년, 길어야 3년",
+     "who": "익명의 'Google 생성 AI 아키텍트'(X 계정 인용) — Tom's Hardware 도 확인하지 못했다",
+     "confidence": "낮음(익명·미확인)",
+     "as_of": "2024-10",
+     "sources": [
+      {
+       "title": "Tom's Hardware",
+       "url": "https://www.tomshardware.com/pc-components/gpus/datacenter-gpu-service-life-can-be-surprisingly-short-only-one-to-three-years-is-expected-according-to-unnamed-google-architect"
+      }
+     ]
+    },
+    {
+     "claim": "Llama 3 고장률로 셈하면 GPU 연 약 9%, 3년 약 27%가 고장",
+     "who": "Tom's Hardware 의 추산",
+     "confidence": "추정",
+     "as_of": "2024-10",
+     "sources": [
+      {
+       "title": "Tom's Hardware",
+       "url": "https://www.tomshardware.com/pc-components/gpus/datacenter-gpu-service-life-can-be-surprisingly-short-only-one-to-three-years-is-expected-according-to-unnamed-google-architect"
+      }
+     ]
+    },
+    {
+     "claim": "한낮 기온으로 GPU 클럭이 떨어져 처리량이 하루에 1~2% 오르내린다",
+     "who": "Meta Llama 3 팀(실측)",
+     "confidence": "높음",
+     "as_of": "2024-07",
+     "sources": [
+      {
+       "title": "arXiv 2407.21783",
+       "url": "https://arxiv.org/html/2407.21783v3"
+      }
+     ]
+    },
+    {
+     "claim": "데이터센터 GPU 의 보증 기간은 공개되지 않는다 — 개별 판매 계약(Terms of Sale)을 따른다",
+     "who": "NVIDIA",
+     "confidence": "높음(공개 부재 확인)",
+     "as_of": "2026-09",
+     "sources": [
+      {
+       "title": "NVIDIA 보증 페이지",
+       "url": "https://www.nvidia.com/en-us/support/warranty/"
+      }
+     ]
+    },
+    {
+     "claim": "H100 경제성 모델에서 수명 5년을 가정",
+     "who": "Latent Space (Eugene Cheah)",
+     "confidence": "추정(모델 가정)",
+     "as_of": "2024-10",
+     "sources": [
+      {
+       "title": "$2 H100s",
+       "url": "https://www.latent.space/p/gpu-bubble"
+      }
+     ]
+    }
+   ],
+   "residual": [
+    {
+     "gpu": "H100",
+     "usd_hour": 4.7,
+     "as_of": "2023-03",
+     "note": "출시 때",
+     "sources": [
+      {
+       "title": "Latent Space",
+       "url": "https://www.latent.space/p/gpu-bubble"
+      }
+     ]
+    },
+    {
+     "gpu": "H100",
+     "usd_hour": 8.0,
+     "as_of": "2023-09",
+     "note": "2023년 품귀 정점('8달러 넘게')",
+     "sources": [
+      {
+       "title": "Latent Space",
+       "url": "https://www.latent.space/p/gpu-bubble"
+      }
+     ]
+    },
+    {
+     "gpu": "H100",
+     "usd_hour": 2.85,
+     "as_of": "2024-02",
+     "note": "2024년 초",
+     "sources": [
+      {
+       "title": "Latent Space",
+       "url": "https://www.latent.space/p/gpu-bubble"
+      }
+     ]
+    },
+    {
+     "gpu": "H100",
+     "usd_hour": 2.0,
+     "as_of": "2024-08",
+     "note": "단기 경매 1~2달러, '해마다 40% 넘게 떨어진다'",
+     "sources": [
+      {
+       "title": "Latent Space",
+       "url": "https://www.latent.space/p/gpu-bubble"
+      }
+     ]
+    },
+    {
+     "gpu": "H100",
+     "usd_hour": 2.73,
+     "as_of": "2026-09",
+     "note": "Silicon Data H100 임대 지수(네오클라우드)",
+     "sources": [
+      {
+       "title": "Silicon Data",
+       "url": "https://www.silicondata.com/products/silicon-index/h100"
+      }
+     ]
+    },
+    {
+     "gpu": "H100 SXM",
+     "usd_hour": 1.73,
+     "as_of": "2026-09",
+     "note": "Vast.ai 최저 매물",
+     "sources": [
+      {
+       "title": "Vast.ai",
+       "url": "https://vast.ai/pricing/gpu/H100-SXM"
+      }
+     ]
+    },
+    {
+     "gpu": "A100 SXM4",
+     "usd_hour": 0.31,
+     "as_of": "2026-09",
+     "note": "Vast.ai 최저 매물",
+     "sources": [
+      {
+       "title": "Vast.ai",
+       "url": "https://vast.ai/pricing/gpu/A100-SXM4"
+      }
+     ]
+    }
+   ],
+   "obsolescence": [
+    {
+     "claim": "GB200 NVL72 는 H100 보다 실시간 추론 30배, 같은 전력에서 25배(제조사 주장, 조건 각주)",
+     "who": "NVIDIA",
+     "as_of": "2024",
+     "sources": [
+      {
+       "title": "NVIDIA GB200 NVL72",
+       "url": "https://www.nvidia.com/en-us/data-center/gb200-nvl72/"
+      }
+     ]
+    },
+    {
+     "claim": "'블랙웰은 호퍼의 40배 AI 팩토리 성능'",
+     "who": "젠슨 황, GTC 2025",
+     "as_of": "2025-03",
+     "sources": [
+      {
+       "title": "NVIDIA GTC 2025",
+       "url": "https://blogs.nvidia.com/blog/nvidia-keynote-at-gtc-2025-ai-news-live-updates/"
+      }
+     ]
+    },
+    {
+     "claim": "시간당 4달러로 기대하던 H100 값이 1.5년도 안 돼 사라졌다",
+     "who": "Latent Space",
+     "as_of": "2024-10",
+     "sources": [
+      {
+       "title": "$2 H100s",
+       "url": "https://www.latent.space/p/gpu-bubble"
+      }
+     ]
+    },
+    {
+     "claim": "AWS 가 2025-06 H100(P5) 값을 최대 45%, A100(P4d) 을 최대 33% 내렸다",
+     "who": "AWS 공식",
+     "as_of": "2025-06",
+     "sources": [
+      {
+       "title": "AWS What's New",
+       "url": "https://aws.amazon.com/about-aws/whats-new/2025/06/pricing-usage-model-ec2-instances-nvidia-gpus/"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "money": {
+  "unit_prices": [
+   {
+    "chip_key": "H100",
+    "usd": 25000,
+    "basis": "Epoch 추정 2.5만 · 애널리스트 2.5~4만(CNBC)",
+    "sources": [
+     {
+      "title": "Epoch AI 칩 단가 추정",
+      "url": "https://epoch.ai/data/ai_chip_sales_chip_types.csv"
+     },
+     {
+      "title": "CNBC 2024-03",
+      "url": "https://www.cnbc.com/2024/03/19/nvidias-blackwell-ai-chip-will-cost-more-than-30000-ceo-says.html"
+     }
+    ]
+   },
+   {
+    "chip_key": "H200",
+    "usd": 25000,
+    "basis": "Epoch 추정 2.5만 · 중국 주문 2.7만(보도)",
+    "sources": [
+     {
+      "title": "Epoch AI 칩 단가 추정",
+      "url": "https://epoch.ai/data/ai_chip_sales_chip_types.csv"
+     }
+    ]
+   },
+   {
+    "chip_key": "H20",
+    "usd": 12000,
+    "basis": "Epoch 추정 1.2만 · 보도 1~1.2만",
+    "sources": [
+     {
+      "title": "Epoch AI 칩 단가 추정",
+      "url": "https://epoch.ai/data/ai_chip_sales_chip_types.csv"
+     }
+    ]
+   },
+   {
+    "chip_key": "B200",
+    "usd": 37000,
+    "basis": "Epoch 추정 3.7만 · 젠슨 황 '3~4만'",
+    "sources": [
+     {
+      "title": "Epoch AI 칩 단가 추정",
+      "url": "https://epoch.ai/data/ai_chip_sales_chip_types.csv"
+     },
+     {
+      "title": "CNBC 2024-03",
+      "url": "https://www.cnbc.com/2024/03/19/nvidias-blackwell-ai-chip-will-cost-more-than-30000-ceo-says.html"
+     }
+    ]
+   },
+   {
+    "chip_key": "GB200",
+    "usd": 37000,
+    "basis": "B200 과 같게 — HSBC 는 GB200 슈퍼칩(GPU 2개) 6~7만, 랙 약 300만(GPU 당 약 4.2만)",
+    "sources": [
+     {
+      "title": "Epoch AI 칩 단가 추정",
+      "url": "https://epoch.ai/data/ai_chip_sales_chip_types.csv"
+     },
+     {
+      "title": "Tom's Hardware (HSBC)",
+      "url": "https://www.tomshardware.com/pc-components/gpus/nvidias-next-gen-blackwell-ai-gpus-to-cost-up-to-dollar70000-fully-equipped-servers-range-up-to-dollar3000000-report"
+     }
+    ]
+   },
+   {
+    "chip_key": "B300",
+    "usd": 43000,
+    "basis": "Epoch 추정 4.3만(GB300 시스템값에서 역산)",
+    "sources": [
+     {
+      "title": "Epoch AI 칩 단가 추정",
+      "url": "https://epoch.ai/data/ai_chip_sales_chip_types.csv"
+     }
+    ]
+   },
+   {
+    "chip_key": "GB300",
+    "usd": 43000,
+    "basis": "B300 과 같게 — 랙값은 약 400만(Morgan Stanley)~600~650만(업계) 으로 갈린다",
+    "sources": [
+     {
+      "title": "Epoch AI 칩 단가 추정",
+      "url": "https://epoch.ai/data/ai_chip_sales_chip_types.csv"
+     },
+     {
+      "title": "Tom's Hardware",
+      "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/price-of-nvidias-vera-rubin-nvl72-racks-skyrockets-to-as-much-as-usd8-8-million-apiece-but-server-makers-margins-will-be-tight-nvidia-is-moving-closer-to-shipping-entire-full-scale-systems"
+     }
+    ]
+   },
+   {
+    "chip_key": "MI300X",
+    "usd": 12500,
+    "basis": "Epoch 추정 1.25만 · Citi 1~1.5만",
+    "sources": [
+     {
+      "title": "Epoch AI 칩 단가 추정",
+      "url": "https://epoch.ai/data/ai_chip_sales_chip_types.csv"
+     }
+    ]
+   },
+   {
+    "chip_key": "MI355X",
+    "usd": 27500,
+    "basis": "Epoch 추정 2.75만",
+    "sources": [
+     {
+      "title": "Epoch AI 칩 단가 추정",
+      "url": "https://epoch.ai/data/ai_chip_sales_chip_types.csv"
+     }
+    ]
+   },
+   {
+    "chip_key": "TPU7x Ironwood",
+    "usd": 13000,
+    "basis": "Epoch 원가 추정(Google 은 칩을 팔지 않는다)",
+    "sources": [
+     {
+      "title": "Epoch AI 칩 단가 추정",
+      "url": "https://epoch.ai/data/ai_chip_sales_chip_types.csv"
+     }
+    ]
+   },
+   {
+    "chip_key": "Trainium2",
+    "usd": 4000,
+    "basis": "SemiAnalysis 원가 추정",
+    "sources": [
+     {
+      "title": "SemiAnalysis",
+      "url": "https://newsletter.semianalysis.com/p/amazons-ai-self-sufficiency-trainium2-architecture-networking"
+     }
+    ]
+   }
+  ],
+  "per_gw": {
+   "usd": 37883000000.0,
+   "basis": "Epoch AI 1GW(IT) 모델 — 서버 212억 + 네트워크 49억 + 건물 114억 등, 연산 몫 69%(GB200 NVL72 기준)",
+   "sources": [
+    {
+     "title": "Epoch: 1GW 데이터센터 총소유비용",
+     "url": "https://epoch.ai/data-insights/ai-datacenter-cost-breakdown"
+    }
+   ],
+   "others": [
+    {
+     "who": "NVIDIA 젠슨 황",
+     "claim": "GW 당 500~600억 달러, 그중 약 350억이 NVIDIA 몫",
+     "as_of": "2025-08",
+     "src": "https://www.cnbc.com/2025/09/22/nvidia-openai-data-center.html"
+    },
+    {
+     "who": "IBM CEO 아빈드 크리슈나",
+     "claim": "GW 를 연산 장비로 채우는 데 약 800억 달러 — 계획된 100GW 면 8조 달러",
+     "as_of": "2025-12",
+     "src": "https://www.tomshardware.com/tech-industry/ibm-ceo-warns-trillion-dollar-ai-boom-unsustainable-at-current-infrastructure-costs"
+    },
+    {
+     "who": "Morgan Stanley",
+     "claim": "Vera Rubin NVL72 랙 780만 달러(Rubin GPU 약 5.5만, 메모리가 원가의 25%)",
+     "as_of": "2026-05",
+     "src": "https://www.tomshardware.com/tech-industry/artificial-intelligence/nvidias-memory-costs-soar-485-percent-latest-ai-systems-now-cost-usd7-8-million-to-build-memory-now-comprises-25-percent-of-the-total-cost-rubin-gpus-a-mere-usd50-000-apiece"
+    },
+    {
+     "who": "Epoch AI",
+     "claim": "B200 한 장 만드는 원가는 약 6,400달러(파는 값이 아니다)",
+     "as_of": "2026",
+     "src": "https://epoch.ai/data-insights/b200-cost-breakdown"
+    },
+    {
+     "who": "Bloomberg",
+     "claim": "NVIDIA 가 큰 고객에게 서버 값이 15% 넘게 오른다고 알렸다(메모리 값)",
+     "as_of": "2026-08",
+     "src": "https://www.tomshardware.com/pc-components/dram/nvidia-reportedly-warns-biggest-customers-of-15-percent-price-hikes-on-ai-servers"
+    }
+   ]
+  },
+  "capex": [
+   {
+    "company": "Microsoft",
+    "rows": [
+     [
+      "FY2024",
+      44500000000.0,
+      "actual"
+     ],
+     [
+      "FY2025",
+      64599999999.99999,
+      "actual"
+     ],
+     [
+      "FY2026",
+      115900000000.0,
+      "actual"
+     ],
+     [
+      "2026년(달력) 전망",
+      175000000000.0,
+      "guidance"
+     ]
+    ],
+    "note": "현금 기준(금융 리스 제외). 2026 전망은 4월 약 1,900억에서 리스 회계 변경으로 약 1,750억",
+    "sources": [
+     {
+      "title": "Microsoft FY26 Q4",
+      "url": "https://www.microsoft.com/en-us/investor/earnings/fy-2026-q4/press-release-webcast"
+     }
+    ]
+   },
+   {
+    "company": "Alphabet",
+    "rows": [
+     [
+      "2024",
+      52500000000.0,
+      "actual"
+     ],
+     [
+      "2025",
+      91400000000.0,
+      "actual"
+     ],
+     [
+      "2026 상반기",
+      80600000000.0,
+      "actual"
+     ],
+     [
+      "2026 전망",
+      200000000000.0,
+      "guidance"
+     ]
+    ],
+    "note": "2026 전망 1,950~2,050억(7월 보도, 2월 공식 1,750~1,850억). 2분기에만 449억 — 처음으로 현금흐름이 마이너스",
+    "sources": [
+     {
+      "title": "Alphabet Q2 2026 8-K",
+      "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000066/googexhibit991q22026.htm"
+     },
+     {
+      "title": "Tom's Hardware",
+      "url": "https://www.tomshardware.com/tech-industry/big-tech/alphabet-goes-cash-flow-negative-for-the-first-time-as-ai-capex-doubles-to-44-9-billion-in-a-single-quarter"
+     }
+    ]
+   },
+   {
+    "company": "Amazon",
+    "rows": [
+     [
+      "2024",
+      83000000000.0,
+      "actual"
+     ],
+     [
+      "2025",
+      131800000000.00002,
+      "actual"
+     ],
+     [
+      "2026 상반기",
+      98400000000.0,
+      "actual"
+     ],
+     [
+      "2026 전망",
+      200000000000.0,
+      "guidance"
+     ]
+    ],
+    "note": "총액 기준. 재시: 'Trainium 이 해마다 설비투자 수백억 달러를 아낀다'",
+    "sources": [
+     {
+      "title": "Amazon Q2 2026 8-K",
+      "url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000024/amzn-20260630xex991.htm"
+     },
+     {
+      "title": "재시 주주서한",
+      "url": "https://www.aboutamazon.com/news/company-news/amazon-ceo-andy-jassy-2025-letter-to-shareholders"
+     }
+    ]
+   },
+   {
+    "company": "Meta",
+    "rows": [
+     [
+      "2024",
+      39200000000.0,
+      "actual"
+     ],
+     [
+      "2025",
+      72200000000.0,
+      "actual"
+     ],
+     [
+      "2026 전망",
+      137500000000.0,
+      "guidance"
+     ]
+    ],
+    "note": "2026 전망 1,300~1,450억(가운데 값). 금융 리스 원금 포함",
+    "sources": [
+     {
+      "title": "Meta Q2 2026 8-K",
+      "url": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026050596/meta-06302026xexhibit991.htm"
+     }
+    ]
+   },
+   {
+    "company": "Oracle",
+    "rows": [
+     [
+      "FY2024",
+      6900000000.0,
+      "actual"
+     ],
+     [
+      "FY2025",
+      21200000000.0,
+      "actual"
+     ],
+     [
+      "FY2026",
+      55700000000.0,
+      "actual"
+     ],
+     [
+      "FY27 1분기",
+      28500000000.0,
+      "actual"
+     ]
+    ],
+    "note": "수주잔고 6,640억 달러",
+    "sources": [
+     {
+      "title": "Oracle FY27 Q1 8-K",
+      "url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526387905/orcl-ex99_1.htm"
+     }
+    ]
+   },
+   {
+    "company": "xAI",
+    "rows": [
+     [
+      "2024",
+      5600000000.0,
+      "actual"
+     ],
+     [
+      "2025",
+      12700000000.0,
+      "actual"
+     ],
+     [
+      "2026 1분기",
+      7700000000.0,
+      "actual"
+     ]
+    ],
+    "note": "SpaceX S-1 의 AI 부문(유일하게 AI 만 따로 본 값)",
+    "sources": [
+     {
+      "title": "SpaceX S-1",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026036936/spaceexplorationtechnologi.htm"
+     }
+    ]
+   },
+   {
+    "company": "CoreWeave",
+    "rows": [
+     [
+      "2024",
+      8700000000.0,
+      "actual"
+     ],
+     [
+      "2025",
+      10300000000.0,
+      "actual"
+     ],
+     [
+      "2026 상반기",
+      14100000000.0,
+      "actual"
+     ]
+    ],
+    "note": "수주잔고 1,040억. Meta 최대 142억, NVIDIA 63억 계약",
+    "sources": [
+     {
+      "title": "SEC XBRL",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001769628/us-gaap/PaymentsToAcquirePropertyPlantAndEquipment.json"
+     }
+    ]
+   },
+   {
+    "company": "Nebius",
+    "rows": [
+     [
+      "2024",
+      800000000.0,
+      "actual"
+     ],
+     [
+      "2025",
+      4099999999.9999995,
+      "actual"
+     ],
+     [
+      "2026 2분기",
+      5700000000.0,
+      "actual"
+     ]
+    ],
+    "note": "Microsoft 계약 174억(최대 194억, 2031년까지)",
+    "sources": [
+     {
+      "title": "Nebius Q2 2026",
+      "url": "https://www.sec.gov/Archives/edgar/data/1513845/000110465926094568/tm2622968d1_ex99-2.htm"
+     }
+    ]
+   },
+   {
+    "company": "Tesla",
+    "rows": [
+     [
+      "2024",
+      11300000000.0,
+      "actual"
+     ],
+     [
+      "2025",
+      8500000000.0,
+      "actual"
+     ],
+     [
+      "2026 상반기",
+      8300000000.000001,
+      "actual"
+     ]
+    ],
+    "note": "회사 전체(공장 포함)",
+    "sources": [
+     {
+      "title": "Tesla Q2 2026",
+      "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026049213/exhibit991.htm"
+     }
+    ]
+   },
+   {
+    "company": "Alibaba",
+    "rows": [
+     [
+      "FY2025",
+      12108732394.366198,
+      "actual"
+     ],
+     [
+      "FY2026",
+      18300000000.0,
+      "actual"
+     ]
+    ],
+    "note": "위안화 공시(FY26 1,261억 위안). 3년 3,800억 위안(약 530억 달러) 약정",
+    "sources": [
+     {
+      "title": "Alibaba 20-F",
+      "url": "https://www.sec.gov/Archives/edgar/data/1577552/000119312526231755/baba-20260331.htm"
+     }
+    ]
+   }
+  ],
+  "commitments": [
+   {
+    "who": "OpenAI",
+    "deal": "Stargate(Oracle·SoftBank)",
+    "usd": 500000000000.0,
+    "note": "2029년까지, 미국 7곳 9GW 넘게",
+    "src": "https://epoch.ai/publications/openai-stargate-where-the-us-sites-stand"
+   },
+   {
+    "who": "OpenAI",
+    "deal": "Oracle 컴퓨트",
+    "usd": 300000000000.0,
+    "note": "약 5년 4.5GW(WSJ 보도)",
+    "src": "https://www.tomshardware.com/tech-industry/openai-signs-contract-to-buy-usd300-billion-worth-of-oracle-computing-power-over-the-next-five-years-company-needs-4-5-gigawatts-of-power-enough-to-power-four-million-homes"
+   },
+   {
+    "who": "OpenAI",
+    "deal": "Microsoft Azure 추가",
+    "usd": 250000000000.0,
+    "note": "공식",
+    "src": "https://blogs.microsoft.com/blog/2025/10/28/the-next-chapter-of-the-microsoft-openai-partnership/"
+   },
+   {
+    "who": "OpenAI",
+    "deal": "AWS",
+    "usd": 38000000000.0,
+    "note": "7년(공식). 2026-02 약 1,000억 늘렸다는 보도",
+    "src": "https://www.aboutamazon.com/news/aws/aws-open-ai-workloads-compute-infrastructure"
+   },
+   {
+    "who": "OpenAI",
+    "deal": "CoreWeave",
+    "usd": 22400000000.0,
+    "note": "2031년까지",
+    "src": "https://www.tomshardware.com/tech-industry/coreweave-deal-with-openai-now-worth-usd22-4-billion-another-usd6-4-billion-of-ai-data-center-capacity-added"
+   },
+   {
+    "who": "OpenAI",
+    "deal": "2026~2030 컴퓨트·인프라 계획 합계",
+    "usd": 856000000000.0,
+    "note": "투자자 자료(FT) — 누적 현금 소진 2,780억",
+    "src": "https://www.tomshardware.com/tech-industry/artificial-intelligence/openai-projections-point-to-a-massive-usd278-billion-cash-burn-through-2030-that-exceeds-the-national-budgets-of-indonesia-and-norway-usd856-billion-compute-tab-outpaces-tenfold-revenue-surge"
+   },
+   {
+    "who": "Anthropic",
+    "deal": "Fluidstack 미국 데이터센터",
+    "usd": 50000000000.0,
+    "note": "텍사스·뉴욕(공식)",
+    "src": "https://www.anthropic.com/news/anthropic-invests-50-billion-in-american-ai-infrastructure"
+   },
+   {
+    "who": "Anthropic",
+    "deal": "Microsoft Azure",
+    "usd": 30000000000.0,
+    "note": "최대 1GW(공식)",
+    "src": "https://blogs.microsoft.com/blog/2025/11/18/microsoft-nvidia-and-anthropic-announce-strategic-partnerships/"
+   },
+   {
+    "who": "Anthropic",
+    "deal": "xAI Colossus 1 임대",
+    "usd": 45000000000.0,
+    "note": "월 12.5억 × 2026-05~2029-05(90일 통보로 해지 가능)",
+    "src": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026036936/spaceexplorationtechnologi.htm"
+   },
+   {
+    "who": "Anthropic",
+    "deal": "Google Cloud TPU",
+    "usd": null,
+    "note": "'수백억 달러', TPU 최대 100만 개 · 2027년부터 약 3.5GW 추가(보도)",
+    "src": "https://www.anthropic.com/news/expanding-our-use-of-google-cloud-tpus-and-services"
+   },
+   {
+    "who": "Anthropic",
+    "deal": "Akamai 클라우드",
+    "usd": 11600000000.0,
+    "note": "7년(보도)",
+    "src": "https://techcrunch.com/2026/09/25/anthropic-to-pay-akamai-11-6-billion-over-seven-years-in-cloud-deal/"
+   }
+  ],
+  "aggregate": {
+   "claim": "미국 빅4 하이퍼스케일러 2026 설비투자 약 7,450억 달러(FT 집계) · Epoch 추세 5곳 7,700억",
+   "src": "https://www.tomshardware.com/tech-industry/big-tech/big-tech-spends-more-than-usd1-trillion-on-ai-infrastructure-additional-usd745-billion-expected-to-be-added-to-the-figure-in-2026-alone"
+  }
+ }
 }

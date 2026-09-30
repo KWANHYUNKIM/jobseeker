@@ -3,6 +3,8 @@ import { type HwData } from '../lib/hardware'
 import { absUrl, useSeo } from '../lib/seo'
 import { paths } from '../lib/urls'
 import { NOINDEX } from './HardwarePrices'
+import { MarketView, type Market } from './HardwareDcMarket'
+import { MoneyView, type Money } from './HardwareDcMoney'
 
 // AI 데이터센터 — 회사별로 가진 칩과 거기서 나오는 성능 추정.
 //
@@ -73,6 +75,8 @@ interface National {
   sources: Src[]
 }
 interface Doc {
+  market?: Market
+  money?: Money
   updated_at: string
   ratios?: Ratio[]
   national?: National[]
@@ -204,6 +208,7 @@ export function HardwareDatacenter({ data }: { data: HwData }) {
   const [doc, setDoc] = useState<Doc | null | false>(null)
   const [open, setOpen] = useState<string | null>(null)
   const [region, setRegion] = useState<string>('')
+  const [view, setView] = useState<'chips' | 'money' | 'market'>('chips')
   useEffect(() => {
     fetch('/hardware/datacenter.json')
       .then((r) => (r.ok ? r.json() : false))
@@ -225,6 +230,29 @@ export function HardwareDatacenter({ data }: { data: HwData }) {
         <h1 className="text-lg font-bold">AI 회사 데이터센터 — 누가 얼마나 가졌고 얼마나 나오나</h1>
         <span className="text-xs text-(--color-muted)">공개 자료 {doc.updated_at} 기준 · 성능은 한 가지 잣대로 셈한 추정</span>
       </header>
+      <div className="inline-flex self-start rounded-md border border-(--color-border) overflow-hidden text-sm" role="tablist">
+        {(
+          [
+            ['chips', '보유 칩·성능'],
+            ['money', '금액'],
+            ['market', '시장 조사'],
+          ] as const
+        ).map(([k, label]) => (
+          <button
+            key={k}
+            role="tab"
+            aria-selected={view === k}
+            onClick={() => setView(k)}
+            className={`px-3 py-1.5 ${view === k ? 'bg-(--color-accent) text-(--color-on-accent) font-semibold' : 'bg-(--color-panel) hover:bg-(--color-band)'}`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      {view === 'market' && doc.market && <MarketView m={doc.market} />}
+      {view === 'money' && doc.money && <MoneyView clusters={doc.clusters} m={doc.money} />}
+      {view === 'chips' && (
+      <>
 
       <div className="flex flex-wrap items-center gap-1.5 text-sm">
         {['', ...regions].map((k) => (
@@ -485,6 +513,8 @@ export function HardwareDatacenter({ data }: { data: HwData }) {
           </ul>
         </section>
       </div>
+      </>
+      )}
     </div>
   )
 }
