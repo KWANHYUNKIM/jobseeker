@@ -2904,3 +2904,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 スマートバンク Apple Pay · 완주
 
 - Apple Pay 프로비저닝 글 + 토큰화 · PCI DSS × SRE 글로 `wallet-provisioning-pci-scope`. 결정 7 — In-App / Color Path 는 추천 / OTP 만 / 약관 PNO 등록 / DPAN / 좁은 준수 범위(AWS 계정 분리) / 주기 증적. 도메인 3 모두 기능, 수익원 3 모두 연결 → **done**. 다음: 弁護士ドットコム 프로파일.
+
+## 2026-09-30 弁護士ドットコム 프로파일
+
+- 기업 정보 페이지(서비스 넷 · 숫자) + 기술 글 12편(저작권 역출력 · 판례 요약 FT · 추출형 대체 · ADK 어시스턴트 · nginx-auth-cedar · php-ext-cedar · MCP RS · OPA/Cedar/OpenFGA · GitHub 이행 · 영역별 조직 · pnpm · delta-wing-ui). 도메인 3, 수익원 3(모두 inferred, 포털은 도메인 없음). 다음: LegalBrain 기능.

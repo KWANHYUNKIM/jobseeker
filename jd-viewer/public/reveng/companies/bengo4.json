@@ -1,0 +1,364 @@
+{
+  "slug": "bengo4",
+  "name": "弁護士ドットコム",
+  "name_en": "Bengo4.com",
+  "country": "JP",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-30",
+  "domain": "bengo4.com",
+  "one_liner": "변호사 포털 · 전자계약 クラウドサイン · 법무 AI LegalBrain 을 가진 리걸테크 상장사 — AI 가 근거 서적을 그대로 베끼는지 재고, 인가는 NGINX 안에서 Cedar 로 판정한다",
+  "business_model": "弁護士ドットコム 는 '전문 지식을 기술로 더 가깝게' 를 내건 리걸테크 상장사다(기업 정보 · IR). 서비스는 넷이다 — **CloudSign**(일본 최초 · 국내 점유율 1 위 전자계약, 지자체 437 곳 · 약 70% 가 도입, 도입 250 만 사 이상), 창업부터 이어진 **弁護士ドットコム**(등록 변호사 32,000 명 이상 · 국내 변호사의 67%, 무료 법률 상담 누적 약 149 만 건), **税理士ドットコム**(세무사 매칭, 등록 7,477 명 · 월 이용자 180 만), 그리고 **LegalBrain**(약 20 년 쌓은 리걸 데이터베이스 × AI, 통합형 법무 AI 에이전트 — 보유 리걸 데이터 약 26 억 자).\n\n기술 블로그는 셋을 보여 준다. LegalBrain 은 20 만 건 넘는 판례와 법률 서적을 근거로 답하는데, 서적 문장을 그대로 내면 저작권 문제가 되고, 판례 요약은 자동 지표와 전문가 평가가 어긋난다. 인가는 NGINX 엣지 · PHP 프로세스 안에서 Cedar 정책으로 판정하는 OSS 모듈을 직접 만들어 공개한다. クラウドサイン 쪽은 조직을 영역별로 다시 짜고, 800 리포지토리를 GitHub 로 옮겼다.",
+  "products": [
+    "CloudSign(전자계약)",
+    "弁護士ドットコム(변호사 포털 · みんなの法律相談)",
+    "税理士ドットコム",
+    "LegalBrain / LegalBrain エージェント",
+    "BUSINESS LAWYERS",
+    "弁護士ドットコムニュース"
+  ],
+  "revenue_total": "상장사라 IR 자료에 있다 — 이번에 매출 자료는 읽지 않았다.",
+  "revenue_streams": [
+    {
+      "name": "CloudSign 구독",
+      "how": "기업 · 지자체가 전자계약 서비스를 유료 계약한다(지자체 집계 기준이 '유료 계약'). 요금 구조 · 매출 비중은 이번에 읽지 않았다.",
+      "weight": "IR 에 있음(이번엔 안 읽음)",
+      "domains": [
+        "クラウドサイン — 250 만 사 전자계약을 떠받치는 개발 조직과 기반",
+        "인가를 엣지와 프로세스 안에서 선언적으로 — Cedar · OPA, NGINX 모듈, MCP 서버 보호"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "企業情報 - 弁護士ドットコム株式会社",
+          "url": "https://www.bengo4.com/corporate/",
+          "publisher": "弁護士ドットコム",
+          "summary": "서비스: CloudSign(일본 최초 · 국내 점유율 1 위 전자계약, 지자체 437 곳 · 약 70%, 외부 연계 124), 弁護士ドットコム(등록 변호사 32,000 명 이상 · 국내 67%, みんなの法律相談 누적 약 149 만 건), 税理士ドットコム(등록 세무사 7,477 명, 월 이용자 180 만), LegalBrain(리걸 데이터베이스 × AI, 법무 AI 에이전트, 보유 리걸 데이터 약 26 억 자), BUSINESS LAWYERS, 뉴스. IR 페이지가 있다(상장사)."
+        },
+        {
+          "title": "クラウドサイン流・領域別組織の「これまで」と「これから」",
+          "url": "https://creators.bengo4.com/entry/2025/12/25/000000",
+          "publisher": "弁護士ドットコム",
+          "summary": "クラウドサイン 도입 250 만 사 이상. 2025-04 부터 범용 피처 팀(백로그에서 자유롭게 선택)을 영역 특화 피처 팀('領域別組織')으로 — 사용자 경험별 영역, 전문성 · 오너십.",
+          "date": "2025-12-25"
+        }
+      ]
+    },
+    {
+      "name": "LegalBrain(법무 AI · 리걸 데이터베이스)",
+      "how": "리걸 데이터 × AI 서비스를 판다 — 과금 방식은 읽은 자료에 없다.",
+      "weight": "공개 여부 미확인",
+      "domains": [
+        "LegalBrain — 20 만 판례 · 법률 서적 위의 법무 AI 에이전트를 근거에 충실하게"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "企業情報 - 弁護士ドットコム株式会社",
+          "url": "https://www.bengo4.com/corporate/",
+          "publisher": "弁護士ドットコム",
+          "summary": "서비스: CloudSign(일본 최초 · 국내 점유율 1 위 전자계약, 지자체 437 곳 · 약 70%, 외부 연계 124), 弁護士ドットコム(등록 변호사 32,000 명 이상 · 국내 67%, みんなの法律相談 누적 약 149 만 건), 税理士ドットコム(등록 세무사 7,477 명, 월 이용자 180 만), LegalBrain(리걸 데이터베이스 × AI, 법무 AI 에이전트, 보유 리걸 데이터 약 26 억 자), BUSINESS LAWYERS, 뉴스. IR 페이지가 있다(상장사)."
+        },
+        {
+          "title": "文字列アルゴリズムで著作権侵害リスクの分析を高速化した話",
+          "url": "https://creators.bengo4.com/entry/2026/09/18/080000",
+          "publisher": "弁護士ドットコム",
+          "summary": "LegalBrain 에이전트 — 법무 상담 · 법령 · 판례 리서치 · 문서 작성 · 리뷰를 다루는 법무 특화 AI 에이전트, 근거는 법령 · 판례 · 가이드라인 · 법률 서적을 통합한 자사 DB. 근거 서적 문장이 답에 그대로 나올 위험을 재려고 완전 일치 검출 · 지표 · 문턱 · 정규화 · 접미사 배열 · 비교 재사용으로 고속화. 역출력은 피할 부작용이자 기능의 본체(같은 복사 헤드).",
+          "date": "2026-09-18"
+        }
+      ]
+    },
+    {
+      "name": "弁護士ドットコム · 税理士ドットコム 포털",
+      "how": "변호사 · 세무사를 일반 이용자와 잇는 포털 — 변호사 유료 회원 · 세무사 소개 수수료 등으로 읽히지만 확인하지 않았다.",
+      "weight": "IR 에 있음(이번엔 안 읽음)",
+      "domains": [],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "企業情報 - 弁護士ドットコム株式会社",
+          "url": "https://www.bengo4.com/corporate/",
+          "publisher": "弁護士ドットコム",
+          "summary": "서비스: CloudSign(일본 최초 · 국내 점유율 1 위 전자계약, 지자체 437 곳 · 약 70%, 외부 연계 124), 弁護士ドットコム(등록 변호사 32,000 명 이상 · 국내 67%, みんなの法律相談 누적 약 149 만 건), 税理士ドットコム(등록 세무사 7,477 명, 월 이용자 180 만), LegalBrain(리걸 데이터베이스 × AI, 법무 AI 에이전트, 보유 리걸 데이터 약 26 억 자), BUSINESS LAWYERS, 뉴스. IR 페이지가 있다(상장사)."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "변호사 포털 · 전자계약 · 법무 AI 가 무엇을 나눠 쓰나",
+    "question": "리걸 데이터 · 인가 · 개발 기반은 어디에 걸리나?",
+    "code": "flowchart LR\n  U[\"일반 이용자\"] --> PORTAL[\"弁護士ドットコム · 税理士ドットコム\\n포털 · 법률 상담\"]\n  PORTAL --> LAW[\"변호사 · 세무사\"]\n  BIZ[\"기업 · 지자체\"] --> CS[\"CloudSign\\n전자계약\"]\n  BIZ --> LB[\"LegalBrain 에이전트\"]\n  DB[\"리걸 DB\\n법령 · 판례 20 만 · 서적\"] --> LB\n  EDGE[\"NGINX 엣지\\nCedar · OIDC · RBAC · 레이트 리밋\"] --> CS\n  EDGE --> LB\n  GH[\"GitHub · CI/CD\\nPlatform & Reliability\"] -.-> CS & LB & PORTAL",
+    "_note": "이 사이트의 해석 — 기업 정보 페이지와 기술 글의 구성을 한 장에 모았다. NGINX 모듈이 어느 서비스 앞에 실제로 서 있는지는 글에 없다."
+  },
+  "domains": [
+    {
+      "name": "LegalBrain — 20 만 판례 · 법률 서적 위의 법무 AI 에이전트를 근거에 충실하게",
+      "why": "LegalBrain 은 법령 · 판례 · 가이드라인 · 법률 서적을 통합한 자사 DB 를 근거로 답하는 법무 특화 AI 에이전트다. 판례 20 만 건 이상을 검색 대상으로 두는데 판결 요지가 일부에만 있어 요약을 자동 생성해야 하고, 서적을 근거로 쓰는 이상 그 문장이 답에 그대로 나오는 저작권 위험을 피할 수 없다. '전건 검색 가능' 이 전제라 LLM 이 거부하는 판례도 요약이 필요하다.",
+      "tech": [
+        {
+          "tech": "판례 요약 — Qwen2.5-14B LoRA vs Gemini Flash 제로샷을 ROUGE · BERTScore 와 전문가 평가로 비교, Gemini 프롬프트 채택",
+          "solves": "판결 요지가 없는 판례에도 요약을 붙여 검색 정확도를 올린다.",
+          "limits": "자동 지표가 높아도 조문 번호 오류 · 사실 날조 · 논점 누락이 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "判例要約のファインチューニングで学んだ「スコアが高い ≠ 品質が良い」という教訓",
+              "url": "https://creators.bengo4.com/entry/2026/03/19/080000",
+              "publisher": "弁護士ドットコム",
+              "summary": "Legal Brain 은 20 만 건 이상 판례를 검색 대상으로 둔다. 판결 요지가 일부에만 있어 자동 요약을 만든다. 16,538 건(학습 11,666), 입력 평균 7,666 자. Qwen2.5-14B LoRA vs Gemini Flash 제로샷 — ROUGE · BERTScore 는 FT 압승, 전문가 평가는 조문 번호 오류 · 사실 날조 · 논점 누락. 자동 지표는 같은 조건 상대 비교에만, 충실성 · 망라성을 별도 축으로.",
+              "date": "2026-03-19"
+            }
+          ]
+        },
+        {
+          "tech": "LLM 이 거부한 판례는 추출형 요약(판례 구조에 맞춘 HipoRank 위치 가설)",
+          "solves": "형사 판결이 콘텐츠 필터에 걸려도 전건 요약을 유지한다.",
+          "limits": "추출형은 사람이 읽기에 부자연스럽다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "LLMが使えない：科学論文向け手法を判例に適用して要約精度を上げた話",
+              "url": "https://creators.bengo4.com/entry/2026/04/17/080000",
+              "publisher": "弁護士ドットコム",
+              "summary": "요약은 Gemini 프롬프트 설계를 채택했으나 형사 판결의 폭력 표현이 콘텐츠 필터에 걸려 요약이 거부되는 판례가 있었다. '전건 검색 가능' 전제라 LLM 없는 추출형 요약으로 대체 — LexRank · HipoRank 를 비교하고 판례 구조(구 · 신 양식)에 맞게 위치 가설을 바꿔 개선.",
+              "date": "2026-04-17"
+            }
+          ]
+        },
+        {
+          "tech": "근거 서적 역출력 측정 — 완전 일치 길이 지표 · 문턱 · 정규화 · 접미사 배열",
+          "solves": "답에 서적 문장이 얼마나 그대로 나오는지를 현실적인 시간에 잰다.",
+          "limits": "축어 복사만 잰다 — 바꿔 쓴 복사는 못 잰다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "文字列アルゴリズムで著作権侵害リスクの分析を高速化した話",
+              "url": "https://creators.bengo4.com/entry/2026/09/18/080000",
+              "publisher": "弁護士ドットコム",
+              "summary": "LegalBrain 에이전트 — 법무 상담 · 법령 · 판례 리서치 · 문서 작성 · 리뷰를 다루는 법무 특화 AI 에이전트, 근거는 법령 · 판례 · 가이드라인 · 법률 서적을 통합한 자사 DB. 근거 서적 문장이 답에 그대로 나올 위험을 재려고 완전 일치 검출 · 지표 · 문턱 · 정규화 · 접미사 배열 · 비교 재사용으로 고속화. 역출력은 피할 부작용이자 기능의 본체(같은 복사 헤드).",
+              "date": "2026-09-18"
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "인가를 엣지와 프로세스 안에서 선언적으로 — Cedar · OPA, NGINX 모듈, MCP 서버 보호",
+      "why": "NGINX 는 인증(JWT · OIDC) 모듈은 많지만 인가는 외부 서비스 위임(auth_request + OPA)이나 IP 허용/거부뿐이라, '토큰의 role 이 editor 이고 테넌트가 같을 때만' 같은 속성 인가를 NGINX 단독으로 쓸 수 없었다. 애플리케이션(PHP)에서 Cedar 를 쓰려면 AWS Verified Permissions 가 있지만 요청 과금 · 락인 · 로컬/CI 제약이 있다. AI 에이전트 · MCP 서버가 늘며 인가를 어디서 어떻게 판정할지가 다시 문제가 됐다.",
+      "tech": [
+        {
+          "tech": "nginx-auth-cedar — NGINX 워커 안에서 Cedar 서브셋을 C 로 평가(외부 프로세스 · 홉 없음)",
+          "solves": "엣지에서 선언적 ABAC 를 끝낸다.",
+          "limits": "Cedar 서브셋만 — 전체 사양이 아니다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "NGINX 単体で宣言的認可を完結させる Cedar モジュールを作った",
+              "url": "https://creators.bengo4.com/entry/2026/06/16/080000",
+              "publisher": "弁護士ドットコム",
+              "summary": "nginx-auth-cedar — NGINX 워커 안에서 외부 프로세스 · 네트워크 홉 없이 ABAC 를 선언적 정책으로. Cedar 서브셋 평가 엔진을 C 로 자작. OPA + Envoy · OPA + auth_request · AWS Verified Permissions 와 비교(외부 프로세스 · 홉 · AWS 의존).",
+              "date": "2026-06-16"
+            }
+          ]
+        },
+        {
+          "tech": "php-ext-cedar — AVP 와 같은 API 모양으로 평가만 프로세스 안에서",
+          "solves": "본번 AVP · 로컬/CI/온프레 확장을 호출 코드 거의 그대로 전환.",
+          "limits": "AVP 와 SaaS · 로컬의 전제가 갈리는 곳을 흡수하는 이음새가 필요하다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "認可の呼び出しコードはほぼそのまま、評価だけ手元に寄せる Cedar 評価 PHP 拡張を作った",
+              "url": "https://creators.bengo4.com/entry/2026/07/15/094823",
+              "publisher": "弁護士ドットコム",
+              "summary": "PBAC 를 PHP 로 — AVP 는 요청 과금 · AWS 락인 · 로컬/CI 에서 돌리기 어렵다. AVP 와 같은 API 모양으로 평가만 프로세스 안에서 하는 PHP 확장(kjdev/php-ext-cedar) — 본번 AVP, 로컬 · CI · 온프레는 확장, 호출 코드를 거의 안 바꾸고 전환.",
+              "date": "2026-07-15"
+            }
+          ]
+        },
+        {
+          "tech": "NGINX 를 MCP 서버의 OAuth 2.1 Resource Server 로 · OPA/Cedar/OpenFGA 비교",
+          "solves": "앱 코드 없이 토큰 검증 · 메타데이터 · 챌린지를 처리한다.",
+          "limits": "인가 서버(AS)는 따로 둬야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "MCP サーバーの認可を、自前で書かず NGINX で OAuth 2.1 Resource Server にする",
+              "url": "https://creators.bengo4.com/entry/2026/07/08/091219",
+              "publisher": "弁護士ドットコム",
+              "summary": "MCP 인가 사양은 서버를 OAuth 2.1 Resource Server 로 요구 — 토큰 검증 · 보호 리소스 메타데이터 · 인증 챌린지를 NGINX 설정만으로. 인가 서버(AS)는 Keycloak 등 별도.",
+              "date": "2026-07-08"
+            },
+            {
+              "title": "AI エージェント時代のゼロトラスト認可を実現するためのポリシーエンジン OPA・Cedar・OpenFGA を使ってみる",
+              "url": "https://creators.bengo4.com/entry/2026/09/14/102237",
+              "publisher": "弁護士ドットコム",
+              "summary": "AI 에이전트 시대의 제로 트러스트 인가 — OPA(Rego) · Cedar · OpenFGA(관계 기반)를 같은 시나리오로 비교.",
+              "date": "2026-09-14"
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "クラウドサイン — 250 만 사 전자계약을 떠받치는 개발 조직과 기반",
+      "why": "CloudSign 은 도입 250 만 사를 넘었고 엔지니어 · 제품이 커지며 '백로그 위에서 자유롭게 고르는' 범용 피처 팀이 한계에 부딪혔다. 전사 개발 기반 GitLab Self-Managed 도 인프라 비용 · 운영 부하가 커졌다.",
+      "tech": [
+        {
+          "tech": "영역별 조직(2025-04 ~) — 사용자 경험별 영역 특화 피처 팀",
+          "solves": "팀마다 전문성과 오너십을 높인다.",
+          "limits": "범용 팀의 노하우 평준화 · 유연성을 잃는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "クラウドサイン流・領域別組織の「これまで」と「これから」",
+              "url": "https://creators.bengo4.com/entry/2025/12/25/000000",
+              "publisher": "弁護士ドットコム",
+              "summary": "クラウドサイン 도입 250 만 사 이상. 2025-04 부터 범용 피처 팀(백로그에서 자유롭게 선택)을 영역 특화 피처 팀('領域別組織')으로 — 사용자 경험별 영역, 전문성 · 오너십.",
+              "date": "2025-12-25"
+            }
+          ]
+        },
+        {
+          "tech": "GitLab Self-Managed → GitHub Enterprise Cloud(802 리포지토리 · 1 년 반 · 단계적)",
+          "solves": "인프라 비용 · 운영 부하를 줄이고 지원 방식을 다시 짠다.",
+          "limits": "팀별 CI/CD 의존을 하나씩 풀어야 해 오래 걸린다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "800リポジトリを1年半で GitLab Self-Managed から GitHub Enterprise Cloud へ移行した話",
+              "url": "https://creators.bengo4.com/entry/2026/05/20/080000",
+              "publisher": "弁護士ドットコム",
+              "summary": "Platform & Reliability Engineering 부(SRE + Platform Engineering). 멤버 293 · 팀 63 · 리포지토리 802 · 1 년 반(2024-11 ~ 2026-03). 인프라 비용 · 운영 부하 증가가 이유, 팀별 CI/CD 의존을 보며 단계적으로.",
+              "date": "2026-05-20"
+            }
+          ]
+        },
+        {
+          "tech": "프론트 — npm → pnpm, UI 라이브러리 delta-wing-ui",
+          "solves": "패키지 관리 · 공통 UI 를 정리한다.",
+          "limits": "이행 비용.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "クラウドサインは npm から pnpm へ移行しました",
+              "url": "https://creators.bengo4.com/entry/2026/01/26/080000",
+              "publisher": "弁護士ドットコム",
+              "summary": "クラウドサイン 프론트엔드 패키지 관리자를 npm 에서 pnpm 으로.",
+              "date": "2026-01-26"
+            },
+            {
+              "title": "クラウドサインUIコンポーネントライブラリ delta-wing-ui の9つの設計観点",
+              "url": "https://creators.bengo4.com/entry/2025/09/10/080000",
+              "publisher": "弁護士ドットコム",
+              "summary": "クラウドサイン UI 컴포넌트 라이브러리 delta-wing-ui 의 설계 관점 9 가지.",
+              "date": "2025-09-10"
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "매출 · 부문별 비중은 IR 자료에 있지만 이번에 읽지 않았다.",
+    "弁護士ドットコム · 税理士ドットコム 포털의 기술 결정 글을 아직 못 찾았다 — 수익원에 도메인이 없다.",
+    "NGINX Cedar 모듈이 어느 서비스 앞에 실제로 쓰이는지는 글에 없다.",
+    "CloudSign 의 서명 · 타임스탬프 · 계약 관리 구현 글은 아직 안 읽었다."
+  ],
+  "sources": [
+    {
+      "title": "企業情報 - 弁護士ドットコム株式会社",
+      "url": "https://www.bengo4.com/corporate/",
+      "publisher": "弁護士ドットコム",
+      "summary": "서비스: CloudSign(일본 최초 · 국내 점유율 1 위 전자계약, 지자체 437 곳 · 약 70%, 외부 연계 124), 弁護士ドットコム(등록 변호사 32,000 명 이상 · 국내 67%, みんなの法律相談 누적 약 149 만 건), 税理士ドットコム(등록 세무사 7,477 명, 월 이용자 180 만), LegalBrain(리걸 데이터베이스 × AI, 법무 AI 에이전트, 보유 리걸 데이터 약 26 억 자), BUSINESS LAWYERS, 뉴스. IR 페이지가 있다(상장사)."
+    },
+    {
+      "title": "文字列アルゴリズムで著作権侵害リスクの分析を高速化した話",
+      "url": "https://creators.bengo4.com/entry/2026/09/18/080000",
+      "publisher": "弁護士ドットコム",
+      "summary": "LegalBrain 에이전트 — 법무 상담 · 법령 · 판례 리서치 · 문서 작성 · 리뷰를 다루는 법무 특화 AI 에이전트, 근거는 법령 · 판례 · 가이드라인 · 법률 서적을 통합한 자사 DB. 근거 서적 문장이 답에 그대로 나올 위험을 재려고 완전 일치 검출 · 지표 · 문턱 · 정규화 · 접미사 배열 · 비교 재사용으로 고속화. 역출력은 피할 부작용이자 기능의 본체(같은 복사 헤드).",
+      "date": "2026-09-18"
+    },
+    {
+      "title": "判例要約のファインチューニングで学んだ「スコアが高い ≠ 品質が良い」という教訓",
+      "url": "https://creators.bengo4.com/entry/2026/03/19/080000",
+      "publisher": "弁護士ドットコム",
+      "summary": "Legal Brain 은 20 만 건 이상 판례를 검색 대상으로 둔다. 판결 요지가 일부에만 있어 자동 요약을 만든다. 16,538 건(학습 11,666), 입력 평균 7,666 자. Qwen2.5-14B LoRA vs Gemini Flash 제로샷 — ROUGE · BERTScore 는 FT 압승, 전문가 평가는 조문 번호 오류 · 사실 날조 · 논점 누락. 자동 지표는 같은 조건 상대 비교에만, 충실성 · 망라성을 별도 축으로.",
+      "date": "2026-03-19"
+    },
+    {
+      "title": "LLMが使えない：科学論文向け手法を判例に適用して要約精度を上げた話",
+      "url": "https://creators.bengo4.com/entry/2026/04/17/080000",
+      "publisher": "弁護士ドットコム",
+      "summary": "요약은 Gemini 프롬프트 설계를 채택했으나 형사 판결의 폭력 표현이 콘텐츠 필터에 걸려 요약이 거부되는 판례가 있었다. '전건 검색 가능' 전제라 LLM 없는 추출형 요약으로 대체 — LexRank · HipoRank 를 비교하고 판례 구조(구 · 신 양식)에 맞게 위치 가설을 바꿔 개선.",
+      "date": "2026-04-17"
+    },
+    {
+      "title": "Google ADK で AI アシスタントの出力を信頼できるものにするための 3 つの学び",
+      "url": "https://creators.bengo4.com/entry/2026/08/06/080000",
+      "publisher": "弁護士ドットコム",
+      "summary": "영업용 사내 어시스턴트(Google ADK, Coordinator + 전문 에이전트 3, Slack). 학습: 지표 정의를 코드에 고정(정의 하나로 자릿수가 바뀐다, 고정 못 하면 '낼 수 없다' 고 말하게, 나머지는 자유 SQL) · 실제 질문으로 평가 세트 · 실제 동작을 보이게 해 빨리 고친다.",
+      "date": "2026-08-06"
+    },
+    {
+      "title": "NGINX 単体で宣言的認可を完結させる Cedar モジュールを作った",
+      "url": "https://creators.bengo4.com/entry/2026/06/16/080000",
+      "publisher": "弁護士ドットコム",
+      "summary": "nginx-auth-cedar — NGINX 워커 안에서 외부 프로세스 · 네트워크 홉 없이 ABAC 를 선언적 정책으로. Cedar 서브셋 평가 엔진을 C 로 자작. OPA + Envoy · OPA + auth_request · AWS Verified Permissions 와 비교(외부 프로세스 · 홉 · AWS 의존).",
+      "date": "2026-06-16"
+    },
+    {
+      "title": "認可の呼び出しコードはほぼそのまま、評価だけ手元に寄せる Cedar 評価 PHP 拡張を作った",
+      "url": "https://creators.bengo4.com/entry/2026/07/15/094823",
+      "publisher": "弁護士ドットコム",
+      "summary": "PBAC 를 PHP 로 — AVP 는 요청 과금 · AWS 락인 · 로컬/CI 에서 돌리기 어렵다. AVP 와 같은 API 모양으로 평가만 프로세스 안에서 하는 PHP 확장(kjdev/php-ext-cedar) — 본번 AVP, 로컬 · CI · 온프레는 확장, 호출 코드를 거의 안 바꾸고 전환.",
+      "date": "2026-07-15"
+    },
+    {
+      "title": "MCP サーバーの認可を、自前で書かず NGINX で OAuth 2.1 Resource Server にする",
+      "url": "https://creators.bengo4.com/entry/2026/07/08/091219",
+      "publisher": "弁護士ドットコム",
+      "summary": "MCP 인가 사양은 서버를 OAuth 2.1 Resource Server 로 요구 — 토큰 검증 · 보호 리소스 메타데이터 · 인증 챌린지를 NGINX 설정만으로. 인가 서버(AS)는 Keycloak 등 별도.",
+      "date": "2026-07-08"
+    },
+    {
+      "title": "AI エージェント時代のゼロトラスト認可を実現するためのポリシーエンジン OPA・Cedar・OpenFGA を使ってみる",
+      "url": "https://creators.bengo4.com/entry/2026/09/14/102237",
+      "publisher": "弁護士ドットコム",
+      "summary": "AI 에이전트 시대의 제로 트러스트 인가 — OPA(Rego) · Cedar · OpenFGA(관계 기반)를 같은 시나리오로 비교.",
+      "date": "2026-09-14"
+    },
+    {
+      "title": "800リポジトリを1年半で GitLab Self-Managed から GitHub Enterprise Cloud へ移行した話",
+      "url": "https://creators.bengo4.com/entry/2026/05/20/080000",
+      "publisher": "弁護士ドットコム",
+      "summary": "Platform & Reliability Engineering 부(SRE + Platform Engineering). 멤버 293 · 팀 63 · 리포지토리 802 · 1 년 반(2024-11 ~ 2026-03). 인프라 비용 · 운영 부하 증가가 이유, 팀별 CI/CD 의존을 보며 단계적으로.",
+      "date": "2026-05-20"
+    },
+    {
+      "title": "クラウドサイン流・領域別組織の「これまで」と「これから」",
+      "url": "https://creators.bengo4.com/entry/2025/12/25/000000",
+      "publisher": "弁護士ドットコム",
+      "summary": "クラウドサイン 도입 250 만 사 이상. 2025-04 부터 범용 피처 팀(백로그에서 자유롭게 선택)을 영역 특화 피처 팀('領域別組織')으로 — 사용자 경험별 영역, 전문성 · 오너십.",
+      "date": "2025-12-25"
+    },
+    {
+      "title": "クラウドサインは npm から pnpm へ移行しました",
+      "url": "https://creators.bengo4.com/entry/2026/01/26/080000",
+      "publisher": "弁護士ドットコム",
+      "summary": "クラウドサイン 프론트엔드 패키지 관리자를 npm 에서 pnpm 으로.",
+      "date": "2026-01-26"
+    },
+    {
+      "title": "クラウドサインUIコンポーネントライブラリ delta-wing-ui の9つの設計観点",
+      "url": "https://creators.bengo4.com/entry/2025/09/10/080000",
+      "publisher": "弁護士ドットコム",
+      "summary": "クラウドサイン UI 컴포넌트 라이브러리 delta-wing-ui 의 설계 관점 9 가지.",
+      "date": "2025-09-10"
+    }
+  ]
+}

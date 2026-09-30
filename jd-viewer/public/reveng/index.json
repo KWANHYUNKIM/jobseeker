@@ -3420,6 +3420,18 @@
       "one_liner": "가계부 앱에 자사 발행 Visa 프리페이드 카드와 あとばらい 를 담은 ワンバンク(옛 B/43) — 카드 번호는 PCI DSS 영역에 가두고, 파트너와의 어긋남은 대조로 고친다",
       "updated_at": "2026-09-30",
       "domain": "smartbank.co.jp"
+    },
+    {
+      "slug": "bengo4",
+      "name": "弁護士ドットコム",
+      "name_en": "Bengo4.com",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "변호사 포털 · 전자계약 クラウドサイン · 법무 AI LegalBrain 을 가진 리걸테크 상장사 — AI 가 근거 서적을 그대로 베끼는지 재고, 인가는 NGINX 안에서 Cedar 로 판정한다",
+      "updated_at": "2026-09-30",
+      "domain": "bengo4.com"
     }
   ],
   "domains": [
@@ -4242,7 +4254,10 @@
     "소수 팀이 구인 서비스 newジョブ 를 — 헤드리스 CMS 를 '관리 화면 기반' 으로 삼아 스키마 하나로 화면 · API · DB 를 따라가게",
     "자사 발행 카드의 결제 — 카드 번호를 PCI DSS 영역에 가두고 오소리를 제시간에 답한다",
     "あとばらい · 카드 발행을 외부 파트너와 비동기로 잇고, 어긋나면 대조해 고친다",
-    "카드를 Apple Pay · Google Pay 에 올린다 — 발행사로서 위험을 판단하고 토큰을 준다"
+    "카드를 Apple Pay · Google Pay 에 올린다 — 발행사로서 위험을 판단하고 토큰을 준다",
+    "LegalBrain — 20 만 판례 · 법률 서적 위의 법무 AI 에이전트를 근거에 충실하게",
+    "인가를 엣지와 프로세스 안에서 선언적으로 — Cedar · OPA, NGINX 모듈, MCP 서버 보호",
+    "クラウドサイン — 250 만 사 전자계약을 떠받치는 개발 조직과 기반"
   ],
   "countries": {
     "KR": "한국",
