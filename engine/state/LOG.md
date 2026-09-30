@@ -2908,3 +2908,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 弁護士ドットコム 프로파일
 
 - 기업 정보 페이지(서비스 넷 · 숫자) + 기술 글 12편(저작권 역출력 · 판례 요약 FT · 추출형 대체 · ADK 어시스턴트 · nginx-auth-cedar · php-ext-cedar · MCP RS · OPA/Cedar/OpenFGA · GitHub 이행 · 영역별 조직 · pnpm · delta-wing-ui). 도메인 3, 수익원 3(모두 inferred, 포털은 도메인 없음). 다음: LegalBrain 기능.
+
+## 2026-09-30 弁護士ドットコム LegalBrain(기능 1/3)
+
+- 판례 요약 FT 글 + 추출형 대체 글 + 저작권 역출력 글로 `legalbrain-faithful-summary-verbatim`. 결정 8 — Gemini 채택(FT 는 ROUGE 1 위 · 변호사 평가 열세) / 충실성 독립 축 / 거부 판례는 추출형 / HipoRank tail 가설 / 최장 공통 부분 문자열 / 41 자 문턱 / 비교 전 정규화 / 접미사 배열 고속화. 다음: Cedar 인가.
