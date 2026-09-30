@@ -1,0 +1,364 @@
+{
+  "slug": "plateer",
+  "name": "플래티어",
+  "name_en": "Plateer",
+  "aliases": [
+    "플래티어",
+    "Plateer"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "",
+  "one_liner": "AI 검색 · 챗봇 SaaS(genser · gelatto · groobee)와 Atlassian · Perforce 등 개발 도구 공급 · 데브옵스 컨설팅을 하는 회사 — 커머스 검색 AI 엔지니어, 고객사 데이터 분석가, Atlassian 솔루션 엔지니어를 뽑는다",
+  "company": {
+    "business": "플래티어(Plateer)는 두 줄기로 돈을 번다. 하나는 **AI CX SaaS** — 생성형 AI 로 **검색 · 챗봇**을 주는 **genser(젠서)** · **gelatto(젤라또)** 와 **groobee(그루비)** 를 고객사(공공 · 제조 · 플랫폼 등)에 공급하고, AI Engineering팀이 **커머스 도메인의 검색 · 추천 · 대화형 AI** 를 만든다. 고객 환경이 **클라우드와 온프레미스**에 걸쳐 있어 오픈소스 언어모델(Qwen · Gemma · Llama)을 **직접 파인튜닝 · 서빙 · 경량화**하고 상용 API 를 자체 모델로 대체하는 검증까지 한다. 다른 하나는 **IDT(Integration of Digital Transformation)** — **Perforce · Atlassian · CloudBees · Tricentis** 같은 개발 · 협업 도구를 국내에 공급하고 **데브옵스 · 애자일 컨설팅**과 기술지원(ITSM 포함)을 한다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "[AI CX사업부문] AI 엔지니어",
+        "url": "https://www.wanted.co.kr/wd/374497",
+        "publisher": "원티드",
+        "summary": "AI Engineering팀 — 커머스 도메인 검색 · 추천 · 대화형 AI. LLM 검색 에이전트, 오픈소스 LM 파인튜닝 경량 모델, 임베딩 · 벡터 검색, 추천. 클라우드 · 온프레미스 고객 환경 — 자체 모델 학습 · 서빙 · 경량화 내재화. 업무: 텍스트 · 이미지 임베딩 학습 · 평가, 벡터 검색 · 리랭킹, Qwen · Gemma · Llama 분류 · NER · 속성 추출 파인튜닝, 상품 데이터 정규화 · 인덱스 파이프라인, VLM 캡셔닝, 오프라인 평가셋 · 자동 평가, 양자화 · LoRA · 상용 API 대체 검증. 3년. 우대 CLIP · vLLM · A/B · 커머스."
+      },
+      {
+        "title": "[SaaS 솔루션] 데이터 분석가",
+        "url": "https://www.wanted.co.kr/wd/301114",
+        "publisher": "원티드",
+        "summary": "AI CX SaaS 사업본부 — 생성형 AI 검색 · 챗봇 genser(젠서) · gelatto(젤라또), 그루비(groobee). 데이터플랫폼팀: 공공 · 제조 · 플랫폼 고객사 데이터 분석, 서비스 · 마케팅 성과 개선. 업무: 그루비 · 젠서 · 젤라또 데이터 분석, 고객사 캠페인 성과, DM 설계 · 개발, Metabase 대시보드. 학사(통계 · 수학 · 컴공), 3년. 유연 근무 8시~10시 반."
+      },
+      {
+        "title": "[IDT 사업부문] 아틀라시안 솔루션 엔지니어",
+        "url": "https://www.wanted.co.kr/wd/338862",
+        "publisher": "원티드",
+        "summary": "IDT(Integration of Digital Transformation) 사업부문 — 디지털 전환 컨설팅 · AI 기반 협업 환경. Perforce(형상관리) · Atlassian(협업) · CloudBees(CI/CD) · Tricentis(CT) 국내 공급, 데브옵스 · 애자일 컨설팅. 업무: Atlassian Open DevOps 기술지원, ITSM 기술지원, AI 기반 IT 서비스 교육 · 컨설팅. 3년, Atlassian/DevOps 제품, Git CI/CD, Jenkins · Nexus · SonarQube."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "AI CX SaaS(genser · gelatto · groobee)",
+        "how": "고객사에 AI 검색 · 챗봇 · 개인화 서비스를 SaaS 로 공급하고, 고객 환경에 따라 온프레미스로도 올린다 — 요금 구조는 읽은 자료에 없다.",
+        "domains": [
+          "커머스 AI 검색 · 추천",
+          "고객사 데이터 분석 · 성과"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "[AI CX사업부문] AI 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/374497",
+            "publisher": "원티드",
+            "summary": "AI Engineering팀 — 커머스 도메인 검색 · 추천 · 대화형 AI. LLM 검색 에이전트, 오픈소스 LM 파인튜닝 경량 모델, 임베딩 · 벡터 검색, 추천. 클라우드 · 온프레미스 고객 환경 — 자체 모델 학습 · 서빙 · 경량화 내재화. 업무: 텍스트 · 이미지 임베딩 학습 · 평가, 벡터 검색 · 리랭킹, Qwen · Gemma · Llama 분류 · NER · 속성 추출 파인튜닝, 상품 데이터 정규화 · 인덱스 파이프라인, VLM 캡셔닝, 오프라인 평가셋 · 자동 평가, 양자화 · LoRA · 상용 API 대체 검증. 3년. 우대 CLIP · vLLM · A/B · 커머스."
+          },
+          {
+            "title": "[SaaS 솔루션] 데이터 분석가",
+            "url": "https://www.wanted.co.kr/wd/301114",
+            "publisher": "원티드",
+            "summary": "AI CX SaaS 사업본부 — 생성형 AI 검색 · 챗봇 genser(젠서) · gelatto(젤라또), 그루비(groobee). 데이터플랫폼팀: 공공 · 제조 · 플랫폼 고객사 데이터 분석, 서비스 · 마케팅 성과 개선. 업무: 그루비 · 젠서 · 젤라또 데이터 분석, 고객사 캠페인 성과, DM 설계 · 개발, Metabase 대시보드. 학사(통계 · 수학 · 컴공), 3년. 유연 근무 8시~10시 반."
+          }
+        ]
+      },
+      {
+        "name": "IDT — 개발 · 협업 솔루션 공급과 컨설팅",
+        "how": "Perforce · Atlassian · CloudBees · Tricentis 제품 국내 공급(리셀) · 구축 · 기술지원 · 데브옵스/애자일 컨설팅.",
+        "domains": [
+          "Atlassian · DevOps 솔루션 기술지원"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[IDT 사업부문] 아틀라시안 솔루션 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/338862",
+            "publisher": "원티드",
+            "summary": "IDT(Integration of Digital Transformation) 사업부문 — 디지털 전환 컨설팅 · AI 기반 협업 환경. Perforce(형상관리) · Atlassian(협업) · CloudBees(CI/CD) · Tricentis(CT) 국내 공급, 데브옵스 · 애자일 컨설팅. 업무: Atlassian Open DevOps 기술지원, ITSM 기술지원, AI 기반 IT 서비스 교육 · 컨설팅. 3년, Atlassian/DevOps 제품, Git CI/CD, Jenkins · Nexus · SonarQube."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "커머스 AI 검색 · 추천",
+        "why": "AI 엔지니어 공고가 임베딩 · 벡터 검색 · 리랭킹, 오픈소스 LM 파인튜닝, 상품 데이터 인덱스, VLM, 평가 체계, 양자화 · LoRA 서빙을 적는다.",
+        "what_to_know": [
+          "하이브리드 검색 · 리랭킹",
+          "검색 오프라인 평가(nDCG)",
+          "vLLM · 양자화",
+          "상품 속성 추출"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[AI CX사업부문] AI 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/374497",
+            "publisher": "원티드",
+            "summary": "AI Engineering팀 — 커머스 도메인 검색 · 추천 · 대화형 AI. LLM 검색 에이전트, 오픈소스 LM 파인튜닝 경량 모델, 임베딩 · 벡터 검색, 추천. 클라우드 · 온프레미스 고객 환경 — 자체 모델 학습 · 서빙 · 경량화 내재화. 업무: 텍스트 · 이미지 임베딩 학습 · 평가, 벡터 검색 · 리랭킹, Qwen · Gemma · Llama 분류 · NER · 속성 추출 파인튜닝, 상품 데이터 정규화 · 인덱스 파이프라인, VLM 캡셔닝, 오프라인 평가셋 · 자동 평가, 양자화 · LoRA · 상용 API 대체 검증. 3년. 우대 CLIP · vLLM · A/B · 커머스."
+          }
+        ]
+      },
+      {
+        "name": "고객사 데이터 분석 · 성과",
+        "why": "데이터 분석가 공고가 그루비 · 젠서 · 젤라또 데이터 분석, 고객사 캠페인 성과, DM(데이터 마트), Metabase 를 적는다.",
+        "what_to_know": [
+          "캠페인 성과 지표",
+          "데이터 마트 설계",
+          "Metabase"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[SaaS 솔루션] 데이터 분석가",
+            "url": "https://www.wanted.co.kr/wd/301114",
+            "publisher": "원티드",
+            "summary": "AI CX SaaS 사업본부 — 생성형 AI 검색 · 챗봇 genser(젠서) · gelatto(젤라또), 그루비(groobee). 데이터플랫폼팀: 공공 · 제조 · 플랫폼 고객사 데이터 분석, 서비스 · 마케팅 성과 개선. 업무: 그루비 · 젠서 · 젤라또 데이터 분석, 고객사 캠페인 성과, DM 설계 · 개발, Metabase 대시보드. 학사(통계 · 수학 · 컴공), 3년. 유연 근무 8시~10시 반."
+          }
+        ]
+      },
+      {
+        "name": "Atlassian · DevOps 솔루션 기술지원",
+        "why": "IDT 공고가 Atlassian Open DevOps · ITSM 기술지원, Git CI/CD, Jenkins · Nexus · SonarQube 를 적는다.",
+        "what_to_know": [
+          "Jira Service Management",
+          "Jira · Bitbucket 관리",
+          "CI/CD 도구 연동"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[IDT 사업부문] 아틀라시안 솔루션 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/338862",
+            "publisher": "원티드",
+            "summary": "IDT(Integration of Digital Transformation) 사업부문 — 디지털 전환 컨설팅 · AI 기반 협업 환경. Perforce(형상관리) · Atlassian(협업) · CloudBees(CI/CD) · Tricentis(CT) 국내 공급, 데브옵스 · 애자일 컨설팅. 업무: Atlassian Open DevOps 기술지원, ITSM 기술지원, AI 기반 IT 서비스 교육 · 컨설팅. 3년, Atlassian/DevOps 제품, Git CI/CD, Jenkins · Nexus · SonarQube."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "상용 API 대신 자체 모델",
+        "evidence": "• 온프레미스 등 다양한 고객 환경을 위한 자체 모델 서빙·경량화(양자화, LoRA 등) 및 상용 API 대체 검증",
+        "so_what": "외부 API 를 못 쓰는 고객이 있다 — 작은 오픈소스 모델로 같은 품질을 낸 비교 실험이 가장 강한 포트폴리오다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "평가 체계를 중시한다",
+        "evidence": "• 검색·추천 품질에 대한 정량 평가 체계(오프라인 평가셋, 자동 평가 파이프라인) 구축 및 운영",
+        "so_what": "'모델을 바꿨더니 좋아졌다' 를 숫자로 보이는 습관을 보여 준다 — 평가셋을 어떻게 만들었는지까지.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "회사 홈페이지 · IR 은 이번에 읽지 않았다 — 매출 · 사업부 비중 · 인원은 모른다",
+    "그루비(groobee)는 공고가 홈페이지만 링크했다 — 제품 성격은 이 사이트의 해석이다",
+    "근무지가 공고 필드에 없다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/374497",
+      "title": "[AI CX사업부문] AI 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 3-8년(관련 전공 또는 3년 경력). AI Engineering팀 — **커머스 검색 · 추천 · 대화형 AI**. **텍스트 · 이미지 임베딩 학습 · 평가**, **벡터 검색 · 리랭킹**, **Qwen · Gemma · Llama 로 분류 · 개체 인식 · 속성/키워드 추출 파인튜닝**, **대규모 상품 데이터 정규화 · 검색 인덱스 파이프라인**, **VLM 이미지 캡셔닝 · 속성 추출 · 이미지 검색**, **오프라인 평가셋 · 자동 평가**, **온프레미스용 모델 서빙 · 양자화 · LoRA · 상용 API 대체 검증**. 자격은 관련 전공 또는 3년, 영문 기술 문서. 우대는 CLIP · VLM, **vLLM 서빙**, 상용 API → 자체 모델 전환, 검색/추천 A/B, 커머스 데이터. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "임베딩 · 벡터 검색",
+          "LM 파인튜닝",
+          "Python ML"
+        ],
+        "can_learn": [
+          "vLLM · 양자화",
+          "VLM 속성 추출",
+          "검색 평가 지표"
+        ]
+      },
+      "study": [
+        {
+          "topic": "상품 검색 — 임베딩 · 벡터 검색 · 리랭킹과 오프라인 평가",
+          "from": "task",
+          "quote": "• 텍스트·이미지 임베딩 모델의 학습·평가 및 벡터 검색·리랭킹 기반 검색 시스템 개발",
+          "priority": "core",
+          "why": "주요업무이고 평가 체계 구축도 따로 적었다.",
+          "gap_check": "'여름 린넨 셔츠' 같은 질의에서 BM25 가 이기는 경우와 벡터가 이기는 경우는? 둘을 합칠 때 점수 정규화 대신 RRF 를 쓰는 이유는? 크로스 인코더 리랭커는 몇 개 후보에만 쓰나(지연)? 클릭 로그 없이 평가셋을 만들려면(LLM 판정 + 사람 검수)? nDCG@10 과 Recall@100 은 각각 무엇을 보나?",
+          "drill": "공개 상품 검색 데이터(Amazon ESCI)로 BM25(OpenSearch) · 다국어 임베딩(bge-m3) · RRF 하이브리드 · bge-reranker 순으로 쌓아 nDCG@10 · Recall@100 을 한 표로 비교한다. 임베딩을 상품 제목 · 속성으로 짧게 파인튜닝(sentence-transformers, MultipleNegativesRankingLoss)해 전후를 잰다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Amazon ESCI Shopping Queries Dataset",
+              "url": "https://github.com/amazon-science/esci-data",
+              "kind": "docs"
+            },
+            {
+              "title": "Sentence Transformers — Training",
+              "url": "https://sbert.net/docs/sentence_transformer/training_overview.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "상용 API 를 작은 오픈소스 모델로 — 속성 추출 파인튜닝과 대체 검증",
+          "from": "task",
+          "quote": "• 오픈소스 언어모델(Qwen, Gemma, Llama 등)을 활용한 분류, 개체 인식, 속성·키워드 추출 등 ML 태스크 설계 및 파인튜닝",
+          "priority": "core",
+          "why": "주요업무이고 우대에 상용 LLM API 를 자체 모델로 전환 · 검증한 경험이 있다.",
+          "gap_check": "상품명에서 브랜드 · 색상 · 소재 · 사이즈를 뽑을 때 출력 형식을 어떻게 강제하나(JSON 스키마 · 제약 디코딩)? 상용 API 출력을 학습 데이터로 쓸 때 약관 · 품질 문제는? '대체 가능' 을 무엇으로 판정하나(필드별 F1 · 비용 · 지연)?",
+          "drill": "상품명 500 개에 속성을 사람이 라벨링한 평가셋을 만들고, 큰 모델(상용 API 또는 큰 오픈 모델) 제로샷과 Qwen 소형 모델 LoRA 파인튜닝(PEFT)의 필드별 F1 · 건당 비용 · 지연을 비교한다. vLLM 의 guided JSON 으로 형식 오류율을 0 으로 만든다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Hugging Face PEFT",
+              "url": "https://huggingface.co/docs/peft/",
+              "kind": "docs"
+            },
+            {
+              "title": "vLLM — Structured outputs",
+              "url": "https://docs.vllm.ai/en/latest/features/structured_outputs.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "온프레미스 고객에게 모델 올리기 — 양자화와 vLLM 서빙",
+          "from": "task",
+          "quote": "• 온프레미스 등 다양한 고객 환경을 위한 자체 모델 서빙·경량화(양자화, LoRA 등) 및 상용 API 대체 검증",
+          "priority": "high",
+          "why": "주요업무이고 우대에 vLLM 서빙 · 최적화가 있다.",
+          "gap_check": "AWQ · GPTQ · FP8 양자화는 품질 · 속도 · 지원 GPU 가 어떻게 다른가? 고객 GPU 한 장(24GB)에 어떤 크기 모델까지 올리나(KV 캐시 포함)? 고객마다 다른 LoRA 어댑터를 한 서버에서 나눠 쓰려면(multi-LoRA)?",
+          "drill": "7-8B 모델을 FP16 · AWQ 4bit 로 vLLM 에 올려 같은 평가셋의 정확도와 처리량(tokens/s) · 첫 토큰 지연을 표로 만든다. LoRA 어댑터 둘을 --enable-lora 로 동시에 서빙해 요청마다 바꿔 부른다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "vLLM — Quantization",
+              "url": "https://docs.vllm.ai/en/latest/features/quantization/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/301114",
+      "title": "[SaaS 솔루션] 데이터 분석가",
+      "site": "wanted",
+      "verdict": "경력 3-8년, **관련 전공 학사 이상**(통계 · 수학 · 컴공). AI CX SaaS 데이터플랫폼팀 — **그루비 · 젠서 · 젤라또 데이터 분석**, **고객사 캠페인 성과 분석 · 인사이트**, 분석용 **DM(데이터 마트) 설계 · 개발**, **Metabase 대시보드**, 고객사 분석 지원. 우대는 정보처리기사. 요건이 짧아 면접에서 SQL · 마트 설계 · 성과 해석을 직접 볼 가능성이 크다(이 사이트의 해석). 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "데이터 분석 3년",
+          "관련 전공 학사"
+        ],
+        "can_learn": [
+          "캠페인 성과 지표",
+          "검색 · 챗봇 로그 분석",
+          "Metabase"
+        ]
+      },
+      "study": [
+        {
+          "topic": "고객사 캠페인 성과 — 무엇을 비교해야 효과인가",
+          "from": "task",
+          "quote": "• 고객사 캠페인 성과 분석 및 인사이트 제공",
+          "priority": "core",
+          "why": "주요업무다. 그루비는 고객사 사이트의 마케팅 · 개인화 도구로 읽힌다(이 사이트의 해석 — 홈페이지 본문은 읽지 않았다).",
+          "gap_check": "캠페인을 본 사람과 안 본 사람의 구매율 차이를 그대로 효과라 하면 무엇이 섞이나(선택 편향)? 대조군(홀드아웃)이 없을 때 차선책은? 전환 귀속 창(1 일 · 7 일)을 바꾸면 숫자가 어떻게 달라지나? 고객사에 보고할 때 한 장에 무엇을 넣나?",
+          "drill": "가짜 이커머스 이벤트 로그(노출 · 클릭 · 구매)에 무작위 홀드아웃 10% 를 넣어 캠페인 증분 효과(uplift)와 신뢰구간을 SQL + Python 으로 계산하고, 귀속 창을 바꿨을 때의 차이를 표로 만든다. 결과를 고객사용 한 쪽 보고서로 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Trustworthy Online Controlled Experiments (Kohavi 외) — 공식 페이지",
+              "url": "https://experimentguide.com/",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "검색 · 챗봇 로그로 분석 마트 만들기 — DM 과 Metabase",
+          "from": "task",
+          "quote": "• 데이터 분석 및 활용을 위한 DM 설계, 개발",
+          "priority": "core",
+          "why": "주요업무이고 Metabase 대시보드 제작이 이어진다. 젠서 · 젤라또는 검색 · 챗봇 서비스다.",
+          "gap_check": "검색 로그로 '결과 없음 비율' · '검색 후 클릭률' · '재검색률' 을 정의하려면 세션을 어떻게 자르나? 여러 고객사 데이터를 한 마트에 둘 때 테넌트 격리는(행 단위 권한)? Metabase 에서 고객사별로 같은 대시보드를 보여 주려면(샌드박싱 · 필터)?",
+          "drill": "가짜 검색 · 챗봇 로그로 세션화 → 일별 고객사별 지표 마트(결과 없음 비율 · CTR · 재검색률 · 챗봇 해결률)를 SQL 로 만들고, Docker 로 띄운 Metabase 에 고객사 필터가 있는 대시보드를 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Metabase — Documentation",
+              "url": "https://www.metabase.com/docs/latest/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/338862",
+      "title": "[IDT 사업부문] 아틀라시안 솔루션 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 3-20년. IDT 사업부문 — **Atlassian 솔루션 중심 Open DevOps 기술지원**, **ITSM 서비스 기술지원**, **AI 기반 IT 서비스 지원 · 교육 · 컨설팅**. 부문은 Perforce · Atlassian · CloudBees · Tricentis 를 국내에 공급한다. 자격은 3년, **Atlassian 또는 DevOps 제품 엔지니어**(사용자 · 관리자 포함), **Git CI/CD 형상관리**, Jenkins · Nexus · SonarQube 관심. 우대는 **Atlassian 관리자**, DevOps 운영, **ITSM 운영 · 아키텍처**. 개발보다 고객사 도구 구축 · 운영 지원에 가깝다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Atlassian 또는 DevOps 제품 경험",
+          "Git CI/CD"
+        ],
+        "can_learn": [
+          "Jira Service Management",
+          "Atlassian 관리 · 자동화",
+          "ITIL 프로세스"
+        ]
+      },
+      "study": [
+        {
+          "topic": "ITSM 을 Jira Service Management 로 — 요청 · 인시던트 · 변경",
+          "from": "task",
+          "quote": "• ITSM 서비스에 대한 기술지원",
+          "priority": "core",
+          "why": "주요업무이고 우대에 ITSM 운영 · 아키텍처가 있다.",
+          "gap_check": "ITIL 의 서비스 요청 · 인시던트 · 문제 · 변경은 각각 무엇이 다르고 JSM 에서 어떤 요청 유형 · 워크플로가 되나? SLA(첫 응답 · 해결 시간)는 어떻게 걸고 캘린더(업무 시간)는? 배포 파이프라인과 변경 승인을 잇는 방법은?",
+          "drill": "Jira Service Management 무료판으로 IT 서비스 프로젝트를 만들어 요청 유형 넷(계정 · 장비 · 장애 · 변경), SLA 둘, 자동화 규칙(우선순위별 담당 배정 · SLA 임박 알림)을 설정하고, Bitbucket Pipelines 배포가 변경 요청 승인 뒤에만 진행되게 연결해 본다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Atlassian — Jira Service Management documentation",
+              "url": "https://support.atlassian.com/jira-service-management-cloud/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Atlassian 관리자 — 권한 체계 · 자동화 · 데이터센터에서 클라우드로",
+          "from": "preference",
+          "quote": "- Atlassian 관리자 경험자",
+          "priority": "high",
+          "why": "우대사항이다. 고객사의 Jira · Confluence 를 구축 · 이관 · 운영하는 일이 많다(이 사이트의 해석).",
+          "gap_check": "Jira 권한 체계(글로벌 권한 · 프로젝트 역할 · 권한 스킴 · 이슈 보안)는 어떻게 겹치나? Data Center 에서 Cloud 로 옮길 때 무엇이 안 따라오나(앱 · 사용자 디렉터리 · 커스텀 필드)? 반복 작업은 Automation 규칙과 REST API 중 무엇으로?",
+          "drill": "Jira Cloud 무료판에 프로젝트 둘을 만들어 역할 기반 권한 스킴과 이슈 보안 수준을 설계하고, Automation 으로 하위 작업 자동 생성 · 에픽 진행률 갱신을 건다. Python 으로 REST API 를 불러 이슈 일괄 생성 · 필드 수정 스크립트를 쓴다. Cloud Migration Assistant 문서로 이관 점검표를 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Atlassian — Jira Cloud platform REST API",
+              "url": "https://developer.atlassian.com/cloud/jira/platform/rest/v3/intro/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Git 기반 CI/CD 와 품질 게이트 — Jenkins · Nexus · SonarQube",
+          "from": "qualification",
+          "quote": "• Open Source 도구(Jenkins, Nexus, SonarQube 등)를 사용해 보거나 관심있는 분",
+          "priority": "nice",
+          "why": "자격요건이다. 부문이 CloudBees(Jenkins 기반) CI/CD 를 공급한다.",
+          "gap_check": "Jenkins 파이프라인에서 SonarQube 품질 게이트가 실패하면 빌드를 멈추게 하려면(waitForQualityGate)? 빌드 산출물은 왜 Nexus 같은 저장소에 두나(재현 · 캐시)? Jira 이슈 키를 커밋 메시지에 넣으면 무엇이 연결되나?",
+          "drill": "Docker Compose 로 Jenkins · Nexus · SonarQube 를 띄우고 작은 Java/Node 프로젝트에 Jenkinsfile(빌드 → 테스트 → Sonar 분석 → 품질 게이트 → Nexus 업로드)을 만든다. 일부러 커버리지를 떨어뜨려 게이트가 막는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "SonarQube — Jenkins integration",
+              "url": "https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/ci-integration/jenkins-integration/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

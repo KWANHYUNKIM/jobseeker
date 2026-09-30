@@ -3303,3 +3303,5 @@ Zendesk · Amazon Connect · Akamai) · **`A2A`·`MCP`** · **AWS 자격증을 �
 **제로원에이아이(`zerooneai`) — `done`(2026-09-30), 공고 4건(원티드 AI 연구개발 Lead 166694 · LLMOps 166685 · AI 백엔드/빅데이터 166683 · 프런트 166679).** 공고에 회사 소개가 없어 머니투데이 보도 셋(2022 K-MIMIC · 2025 Thyro-GenAI RAG 논문 · 2026 폐쇄망 의료 LLM ZEO Med 2)으로 채웠다. 대표 이름은 보도로만 확인돼 people 은 비웠다(public_work 없음). 급여 · 근무지 · 매출은 비웠다. 공고 번호가 오래돼 상시 게시로 보인다. 다음 브리핑은 쏘카.
 
 **쏘카(`socar`) — `done`(2026-09-30), 공고 4건(원티드 Product Engineer 362313 · 데이터 프로덕트 매니저 379348 · [에이펙스모빌리티] Embedded Platform SW 377443 · 정보보호 379700).** 출처: 공고뿐(회사 소개가 충분 — 커넥티드카 2.5만 대 · 하루 110만 km · 연 1,740만 시간 영상 · 에이펙스 1,500억 원 · 가격/면책/주행요금 과금). 에이펙스 자리는 별도 법인임을 open_questions 에. 급여 · 매출은 비웠다. 다음 브리핑은 플래티어.
+
+**플래티어(`plateer`) — `done`(2026-09-30), 공고 3건(원티드 AI 엔지니어 374497 · 데이터 분석가 301114 · 아틀라시안 솔루션 엔지니어 338862).** 출처: 공고뿐(AI CX SaaS genser · gelatto · groobee / IDT — Perforce · Atlassian · CloudBees · Tricentis 공급 · 데브옵스 컨설팅). 급여 · 매출 · 근무지는 비웠다. 다음 브리핑은 페칭.

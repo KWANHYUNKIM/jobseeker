@@ -1569,6 +1569,18 @@
       "postings": 4,
       "study_items": 12,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "plateer",
+      "name": "플래티어",
+      "aliases": [
+        "플래티어",
+        "Plateer"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 8,
+      "updated_at": "2026-09-30"
     }
   ]
 }
