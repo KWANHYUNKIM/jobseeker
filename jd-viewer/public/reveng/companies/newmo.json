@@ -860,6 +860,12 @@
           "question": "실제 통화가 어떻게 AudioClip 이 되나?",
           "kind": "flow",
           "code": "flowchart LR\n  TW[\"Twilio 녹음\"] --> GCS[\"GCS\"]\n  GCS --> EXT[\"BigQuery 외부 테이블\"]\n  EXT --> TR[\"ML.TRANSCRIBE 예약 쿼리\\n(싱가포르 리전)\"]\n  TR -->|\"Data Transfer\"| DBT[\"dbt 데이터마트(도쿄)\"]\n  DBT --> CUT[\"LLM: 고객 발화 구간 잘라 내기\"]\n  CUT --> VAL[\"LLM: 사람 목소리 검증\"]\n  VAL --> ATT[\"LLM: 속성 부여 → GCS 메타데이터\"]\n  ATT --> SIM[\"UserSimulator with_audio 모드\"]"
+        },
+        {
+          "title": "'지금 바로' 라더니 '10 시에'",
+          "question": "LLM 이 예약을 즉시 배차로 착각하면 무엇이 막나?",
+          "kind": "failure",
+          "code": "sequenceDiagram\n  participant U as 손님\n  participant L as 장소 에이전트\n  participant R as 재확인\n  participant H as 담당자\n  U->>L: 지금 바로요\n  L->>U: 어디로 가면 될까요?\n  U->>L: 靭公園, 四つ橋筋 쪽에 10 시로\n  Note over L: 세부 규칙을 흘려 '10 시' 를 놓친다\n  L->>R: 배차하려는 내용\n  R-->>R: immediate_dispatch = false(미래 시각 우선)\n  R->>H: 예약이라 담당자에게 전환\n  Note over R: 이 통화는 데이터셋 항목이 되어 다음 프롬프트 개선에 쓰인다"
         }
       ],
       "sources": [
