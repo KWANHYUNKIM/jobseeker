@@ -1,0 +1,262 @@
+{
+  "slug": "111percent",
+  "name": "111퍼센트",
+  "name_en": "111%",
+  "aliases": [
+    "111퍼센트"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": null,
+  "one_liner": "제주 사옥의 게임 회사가 스팀으로 — 혼자서도 게임을 끝까지 만들어 본 유니티 클라이언트 개발자와 ISMS-P · 해외 개인정보 담당 보안 인력을 뽑는다",
+  "company": {
+    "business": "111퍼센트는 **제주 사옥**에서 게임을 만드는 회사다 — 공고는 '다름, 빠름' 의 철학을 내세우고, 이제 **스팀(Steam)** 게임으로도 더 많은 유저에게 색다른 재미를 주려 한다고 적는다('111퍼센트가 스팀에 진출한다면? 또 하나의 기준이 바뀝니다'). 스팀 공고는 **혼자 또는 소수의 팀으로 게임을 처음부터 끝까지 만들어 본 사람**, 유니티 게임을 직접 출시해 피드백을 받아 본 사람을 찾는다 — 작은 팀이 빠르게 만드는 방식으로 읽힌다(이 사이트의 해석). 보안 공고는 **ISMS-P · ISO27001 인증 대응**과 **국외 개인정보보호법**을 적어 글로벌 서비스 운영을 보여 준다. 회사 홈페이지(111percent.com)는 응답이 없어 기존 대표작 · 매출은 이번 자료에 없다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "[스팀(Steam)] 클라이언트 개발자",
+        "url": "https://www.wanted.co.kr/wd/370052",
+        "publisher": "원티드",
+        "summary": "111퍼센트가 스팀에 진출 — 제주 사옥, '다름, 빠름' 철학. 스팀 플랫폼 신규 게임 개발, Steamworks 연동 · 운영 기술, 운영 · 품질 고도화. 자격: 혼자 또는 소수 팀으로 게임을 처음부터 끝까지 만든 경험, 유저 시선의 재미, '내 게임' 의 꿈. 우대 유니티 게임을 스팀 · 스토어에 출시해 피드백 받은 경험, PC · 콘솔 기능. 전형 서류 > 과제 > 인터뷰. 복지 전사 겨울 방학(크리스마스 ~ 신정)."
+      },
+      {
+        "title": "정보보안 담당자",
+        "url": "https://www.wanted.co.kr/wd/375373",
+        "publisher": "원티드",
+        "summary": "서비스 보안성 검토, 보안 인증 심사 대응, 임직원 정보보호 교육. 자격 ISMS-P · ISO27001 심사 대응, 정보보호 법령, 개발 프로세스. 우대 자격증, 취약점 진단 3 년, 게임 서비스, 국외 개인정보보호법."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "게임(모바일 · 스팀 신작)",
+        "how": "게임을 만들어 판다 — 기존 게임의 플랫폼 · 과금 모델(인앱 · 광고 · 유료 판매)은 이번에 읽은 자료에 없다. 스팀 신작이 새 판로다.",
+        "domains": [
+          "스팀 신작 클라이언트",
+          "글로벌 게임 서비스 보안 · 인증"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "[스팀(Steam)] 클라이언트 개발자",
+            "url": "https://www.wanted.co.kr/wd/370052",
+            "publisher": "원티드",
+            "summary": "111퍼센트가 스팀에 진출 — 제주 사옥, '다름, 빠름' 철학. 스팀 플랫폼 신규 게임 개발, Steamworks 연동 · 운영 기술, 운영 · 품질 고도화. 자격: 혼자 또는 소수 팀으로 게임을 처음부터 끝까지 만든 경험, 유저 시선의 재미, '내 게임' 의 꿈. 우대 유니티 게임을 스팀 · 스토어에 출시해 피드백 받은 경험, PC · 콘솔 기능. 전형 서류 > 과제 > 인터뷰. 복지 전사 겨울 방학(크리스마스 ~ 신정)."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "스팀 신작 클라이언트",
+        "why": "스팀 공고가 스팀 플랫폼 신규 게임, Steamworks 연동 · 운영 기술, 유니티 · PC · 콘솔 기능을 적는다.",
+        "what_to_know": [
+          "Steamworks SDK",
+          "유니티 PC 빌드 · 입력",
+          "스팀 출시 절차"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[스팀(Steam)] 클라이언트 개발자",
+            "url": "https://www.wanted.co.kr/wd/370052",
+            "publisher": "원티드",
+            "summary": "111퍼센트가 스팀에 진출 — 제주 사옥, '다름, 빠름' 철학. 스팀 플랫폼 신규 게임 개발, Steamworks 연동 · 운영 기술, 운영 · 품질 고도화. 자격: 혼자 또는 소수 팀으로 게임을 처음부터 끝까지 만든 경험, 유저 시선의 재미, '내 게임' 의 꿈. 우대 유니티 게임을 스팀 · 스토어에 출시해 피드백 받은 경험, PC · 콘솔 기능. 전형 서류 > 과제 > 인터뷰. 복지 전사 겨울 방학(크리스마스 ~ 신정)."
+          }
+        ]
+      },
+      {
+        "name": "글로벌 게임 서비스 보안 · 인증",
+        "why": "보안 공고가 서비스 보안성 검토, ISMS-P · ISO27001 심사, 국외 개인정보보호법을 적는다.",
+        "what_to_know": [
+          "ISMS-P 인증 기준",
+          "GDPR · COPPA(게임 이용자)",
+          "게임 치트 · 계정 탈취"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "정보보안 담당자",
+            "url": "https://www.wanted.co.kr/wd/375373",
+            "publisher": "원티드",
+            "summary": "서비스 보안성 검토, 보안 인증 심사 대응, 임직원 정보보호 교육. 자격 ISMS-P · ISO27001 심사 대응, 정보보호 법령, 개발 프로세스. 우대 자격증, 취약점 진단 3 년, 게임 서비스, 국외 개인정보보호법."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "작은 팀으로 게임 하나를 끝까지 만든다",
+        "evidence": "• 혼자서, 혹은 소수의 팀으로 게임을 처음부터 끝까지 만들어본 경험이 있는 분",
+        "so_what": "포트폴리오는 기술 데모가 아니라 '출시해 본 게임' 이 가장 강하다 — 과제 전형도 있다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "제주 근무다",
+        "evidence": "제주 ​사옥에서 ​'다름, 빠름'의 ​철학 ​하에, ​몰입감 있는 개발로 ​세상을 ​놀라게 할 스팀 ​게임을 ​창조할 ​분을 찾고 있습니다.",
+        "so_what": "근무지가 제주다 — 이주 · 원격 가능 여부를 지원 전에 확인한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "회사 홈페이지(111percent.com)는 응답이 없었다 — 기존 대표작 · 매출 · 인원은 이번 자료에 없다",
+    "스팀 공고 근무지는 제주 사옥이다 — 보안 공고의 근무지는 공고에 없다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/370052",
+      "title": "[스팀(Steam)] 클라이언트 개발자",
+      "site": "wanted",
+      "verdict": "경력 3년 이상, 제주 사옥. **스팀 플랫폼 기반 신규 게임 개발**, **Steamworks 기능 연동 · 운영 기술**, 운영 · 게임 품질 고도화. 자격은 **혼자 또는 소수 팀으로 게임을 처음부터 끝까지 만든 경험**, 새 도전, **유저 시선으로 재미를 고민**, '내 게임' 을 만들고 싶은 꿈. 우대는 **유니티로 만든 게임을 스팀 · 스토어에 출시해 피드백을 받은 경험**, PC · 콘솔 기능. 전형은 서류 > **과제** > 인터뷰 > 처우 협의. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "게임을 끝까지 만든 경험",
+          "유저 시선의 재미"
+        ],
+        "can_learn": [
+          "Steamworks SDK",
+          "PC 입력 · 해상도",
+          "스팀 출시 절차"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Steamworks 연동 — 업적 · 클라우드 저장 · 리더보드",
+          "from": "task",
+          "quote": "• Sreamworks 기능 연동 및 운영 기술 구축",
+          "priority": "core",
+          "why": "주요업무다(공고 원문 표기 그대로). 스팀 게임은 스팀 기능과 붙어야 플레이어가 기대하는 경험이 된다.",
+          "gap_check": "유니티에서 Steamworks 를 부를 때 어떤 래퍼를 쓰나(Steamworks.NET · Facepunch.Steamworks)? 업적 · 통계 · 클라우드 저장 · 리더보드는 각각 언제 서버에 반영되나(콜백 · StoreStats)? 스팀이 꺼져 있거나 오프라인일 때 게임은 어떻게 행동해야 하나?",
+          "drill": "작은 유니티 게임에 Steamworks.NET 을 붙여(App ID 480 Spacewar 테스트 앱) 업적 해제 · 통계 저장 · 리더보드 점수 업로드 · 클라우드 세이브를 구현한다. 스팀 클라이언트를 끈 상태로 실행해도 게임이 죽지 않고 나중에 동기화되는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Steamworks Documentation",
+              "url": "https://partner.steamgames.com/doc/home",
+              "kind": "docs"
+            },
+            {
+              "title": "Steamworks.NET",
+              "url": "https://steamworks.github.io/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모바일 감각의 게임을 PC 로 — 입력 · 해상도 · 성능",
+          "from": "preference",
+          "quote": "• PC 및 콘솔 기능에 대한 이해도가 있는 분",
+          "priority": "high",
+          "why": "우대사항이다. 스팀 게임은 키보드 · 마우스 · 게임패드, 다양한 해상도 · 모니터 주사율을 다뤄야 한다.",
+          "gap_check": "유니티 Input System 으로 키보드 · 마우스 · 게임패드를 한 액션 맵으로 받으려면? 16:9 · 21:9 · 16:10 해상도에서 UI 가 깨지지 않게 하려면(Canvas Scaler · 안전 영역)? 고주사율 모니터에서 게임 속도가 프레임에 묶이지 않게 하려면(deltaTime)? Steam Deck 대응은 무엇을 요구하나?",
+          "drill": "앞 게임에 Input System 액션 맵(키보드 · 마우스 · 게임패드)과 키 재지정 화면을 넣고, 해상도 셋 · 60/144 Hz 에서 UI 배치와 이동 속도가 같은지 확인한다. Steam Deck 호환성 체크리스트(컨트롤러 · 텍스트 크기 · 기본 해상도)를 한 쪽으로 정리한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Unity — Input System",
+              "url": "https://docs.unity3d.com/Packages/com.unity.inputsystem@latest",
+              "kind": "docs"
+            },
+            {
+              "title": "Steamworks — Steam Deck compatibility",
+              "url": "https://partner.steamgames.com/doc/steamdeck/compat",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "한 판을 끝까지 — 작은 게임을 출시해 피드백 받기",
+          "from": "qualification",
+          "quote": "• 혼자서, 혹은 소수의 팀으로 게임을 처음부터 끝까지 만들어본 경험이 있는 분",
+          "priority": "core",
+          "why": "필수 자격이고 우대에 '출시해 유저 피드백을 받은 경험' 이 있다. 과제 전형이 있다.",
+          "gap_check": "기획 · 코드 · 아트 · 사운드 · 빌드 · 스토어 페이지 · 출시 · 패치까지 무엇을 혼자 할 수 있고 무엇을 도구로 메우나? 출시 뒤 리뷰 · 로그에서 무엇을 보고 다음 패치를 정하나? 스코프를 어떻게 줄여야 끝까지 가나?",
+          "drill": "2 주 안에 끝낼 수 있는 한 화면짜리 게임을 기획 · 구현해 itch.io 에 올리고(스팀은 앱 등록비가 있다), 플레이어 10 명의 피드백과 간단한 플레이 로그(사망 지점 · 플레이 시간)로 패치 하나를 낸다. 무엇을 잘라서 끝냈는지 회고를 쓴다.",
+          "hours": 20,
+          "resources": [
+            {
+              "title": "itch.io — Creator docs",
+              "url": "https://itch.io/docs/creators/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/375373",
+      "title": "정보보안 담당자",
+      "site": "wanted",
+      "verdict": "경력 3년 이상. **서비스 보안성 검토**, **보안 인증 심사 대응**, 임직원 정보보호 교육 · 의식 제고. 자격은 **ISMS-P · ISO27001 심사 대응 경험**, 정보보호 법령 · 규제, **개발 프로세스 지식**. 우대는 ISMS-P · ISO27001 · CISA · CISSP 등 자격증, **취약점 진단 3 년**, **게임 서비스 이해**, **국외 개인정보보호법**. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "ISMS-P · ISO27001 심사",
+          "정보보호 법령",
+          "개발 프로세스"
+        ],
+        "can_learn": [
+          "게임 보안(치트 · 계정)",
+          "해외 개인정보법",
+          "보안성 검토 절차"
+        ]
+      },
+      "study": [
+        {
+          "topic": "ISMS-P 심사 대응 — 기준 · 증적 · 결함 조치",
+          "from": "qualification",
+          "quote": "• 보안인증 심사(ISMS-P, ISO27001) 대응 업무 경험 보유하신 분",
+          "priority": "core",
+          "why": "필수 자격이고 주요업무에 인증 심사 대응이 있다.",
+          "gap_check": "ISMS-P 의 관리체계 수립 · 보호대책 · 개인정보 처리 단계 요구사항은 어떻게 나뉘나? ISO27001 부속서 A 통제와 ISMS-P 항목을 한 번에 관리하려면(통제 매핑)? 심사 결함이 나오면 무엇을 언제까지 내야 하나(보완 조치 · 증적)?",
+          "drill": "KISA 의 ISMS-P 인증 기준 안내서에서 게임 회사에 해당할 항목 20 개를 골라 ISO27001:2022 부속서 A 통제와 매핑한 표를 만들고, 항목마다 필요한 증적(정책 · 로그 · 점검 기록)을 적는다. 가상 결함 두 건의 보완 조치 계획서를 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "KISA — ISMS-P 인증 제도",
+              "url": "https://isms.kisa.or.kr/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "게임 서비스 보안성 검토 — 계정 · 결제 · 치트",
+          "from": "task",
+          "quote": "• 서비스 보안성 검토",
+          "priority": "core",
+          "why": "주요업무이고 우대에 게임 서비스 이해 · 취약점 진단이 있다.",
+          "gap_check": "게임 출시 전에 무엇을 점검하나 — 계정 탈취(크리덴셜 스터핑 · 세션), 결제 영수증 위조 · 재사용, 클라이언트 변조 · 메모리 치트, 서버 권한 검증 누락? 개발 프로세스 어디에 보안 검토를 넣어야 늦지 않나(설계 리뷰 · 출시 전 체크)?",
+          "drill": "OWASP MASVS · 게임 보안 사례를 참고해 '게임 출시 전 보안성 검토 체크리스트'(인증 · 결제 · 통신 · 클라이언트 무결성 · 로그)를 만들고, 앱 내 결제 영수증을 서버에서 검증하지 않는 가상 구조의 위험과 고친 흐름을 한 쪽으로 그린다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "OWASP — MASVS",
+              "url": "https://mas.owasp.org/MASVS/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "해외 이용자의 개인정보 — GDPR · 아동 이용자",
+          "from": "preference",
+          "quote": "• 국외 개인정보보호법에 대한 높은 이해도 및 지식을 보유하신 분",
+          "priority": "high",
+          "why": "우대사항이다. 스팀 · 모바일 게임은 처음부터 전 세계 이용자를 받는다.",
+          "gap_check": "EU 이용자의 데이터를 한국 서버로 옮길 때 GDPR 은 무엇을 요구하나(적정성 결정 — 한국은 적정성 결정국)? 13 세 · 16 세 미만 이용자의 동의는 나라마다 어떻게 다른가(COPPA · GDPR 8 조)? 광고 SDK 가 기기 식별자를 가져가면 무엇이 필요한가(ATT · 동의 배너)?",
+          "drill": "게임 하나의 데이터 흐름(계정 · 결제 · 로그 · 광고 SDK)을 그리고, 나라(EU · 미국 · 한국)별로 필요한 고지 · 동의 · 보관 기간을 표로 만든다. 연령 확인 · 부모 동의 흐름 초안을 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "European Commission — Adequacy decisions (Republic of Korea)",
+              "url": "https://commission.europa.eu/law/law-topic/data-protection/international-dimension-data-protection/adequacy-decisions_en",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

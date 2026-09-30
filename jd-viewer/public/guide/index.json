@@ -1499,6 +1499,17 @@
       "postings": 2,
       "study_items": 6,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "111percent",
+      "name": "111퍼센트",
+      "aliases": [
+        "111퍼센트"
+      ],
+      "status": "done",
+      "postings": 2,
+      "study_items": 6,
+      "updated_at": "2026-09-30"
     }
   ]
 }
