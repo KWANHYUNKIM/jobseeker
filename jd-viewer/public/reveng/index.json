@@ -3528,6 +3528,18 @@
       "one_liner": "음식점 포털 飲食店ドットコム(구인 · 점포 물건 · 점포 디자인)의 상장사 — MySQL 부하 1 위 스카우트 검색을 트리거 큐로 OpenSearch 에 옮기고, 부동산 담당자의 물건 입력을 OCR + LLM 으로 줄이고, 스크레이핑 급증을 WAF 로 막는다",
       "updated_at": "2026-09-30",
       "domain": "synchro-food.co.jp"
+    },
+    {
+      "slug": "makeshop",
+      "name": "GMOメイクショップ",
+      "name_en": "GMO MakeShop",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "월정액 · 판매 수수료 0 엔의 EC 사이트 구축 SaaS makeshop — 오래된 결제를 새 결제 화면(SmartCheckout)으로 옮기며 신 · 구 DB 를 실데이터로 대조하고, 관리 화면을 Vue · Go 로 다시 짓고, 무거운 CSV 출력을 AWS Batch 로 뺀다",
+      "updated_at": "2026-09-30",
+      "domain": "makeshop.jp"
     }
   ],
   "domains": [
@@ -4379,7 +4391,10 @@
     "사는 사람의 가구를 지워 빈방을 보여 준다 — 인페인팅 AI",
     "20 년 된 MySQL 검색을 OpenSearch 로 — 구인 · 스카우트 검색",
     "부동산 담당자의 물건 입력을 줄인다 — 마이소쿠 OCR + LLM",
-    "스크레이핑 급증에서 정상 사용자를 지킨다 — WAF 레이트 리밋"
+    "스크레이핑 급증에서 정상 사용자를 지킨다 — WAF 레이트 리밋",
+    "20 년 된 결제를 새 시스템으로 옮긴다 — SmartCheckout 과 신 · 구 결제 DB 대조",
+    "숍 운영자의 관리 화면을 다시 짓는다 — 차세대 EC 와 주문 상세",
+    "관리 화면의 무거운 일을 뒤로 뺀다 — CSV · 이미지 배치를 AWS Batch 로"
   ],
   "countries": {
     "KR": "한국",

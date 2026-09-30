@@ -3068,3 +3068,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 シンクロ・フード WAF 레이트 리밋(기능 3/3) — 완주
 
 - `waf-rate-limit-legit-traffic`. 결정 5 — WAF vs Nginx / 3 단 필터 / 정적 파일 제외 / p95 × 안전 계수 / 4 단계 출시(본번 Count 2 주). 모든 도메인에 기능 → `done`.
+
+## 2026-09-30 GMOメイクショップ 프로파일
+
+- slug `makeshop`, SaaS. 요금 페이지(월정액 · 결제 수수료, 판매 수수료 0 엔) + 기술 블로그 6 편(차세대 EC 스택 · SmartCheckout OpenAPI · 새 주문 상세 · CSV → AWS Batch · 사이드카 · 결제 DB 실데이터 대조). 도메인 3, 기능 0/3.
