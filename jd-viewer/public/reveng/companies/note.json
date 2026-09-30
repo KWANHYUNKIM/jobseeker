@@ -119,7 +119,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "amazon-pay-guest-checkout"
+      ]
     },
     {
       "name": "좋은 글이 검색에 빨리 닿게 — 테크니컬 SEO 와 웹 성능 감시",
@@ -181,7 +183,294 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "amazon-pay-guest-checkout",
+      "name": "유료 기사 결제에 Amazon Pay 를 붙이며 계정 없는 게스트 구매를 지킨다 — 외부 결제 화면을 오가는 파라미터를 Cookie 가 아니라 URL 에 싣고, 백엔드가 검사해 서명한 payload 로만 넘긴다",
+      "domain": "유료 기사를 로그인 없이도 산다 — 결제 수단 추가와 게스트 구매 흐름",
+      "updated_at": "2026-09-30",
+      "business": {
+        "why": "note 에서 돈은 사용자가 크리에이터의 유료 기사를 사는 순간에 오간다. 결제 수단을 늘리려고 여러 서비스를 비교했는데, 결제 서비스를 붙이면 **외부 시스템으로의 이동과 콜백 처리**가 따라와 구현 난도가 높다. note 에는 **로그인 구매**(산 기사를 앱 · 브라우저에서 읽음)와 **게스트 구매**(계정 없이, 입력한 메일 주소로 기사를 받음) 두 흐름이 있어 처리도 달랐다. 2025 년 1 월 Amazon Pay 를 도입했고, Amazon 계정의 결제 정보 · 메일 주소를 쓰면 게스트 사용자는 구매에 필요한 입력을 모두 건너뛸 수 있다.",
+        "metrics": [
+          {
+            "label": "도입 기간",
+            "value": "3 개월",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Amazon Pay導入のメリットと開発話",
+                "url": "https://engineerteam.note.jp/n/nf75bfc36ed4c",
+                "publisher": "note株式会社",
+                "summary": "2025-01 결제 수단으로 Amazon Pay 도입. 로그인 구매(앱 · 브라우저에서 열람)와 게스트 구매(입력한 메일로 기사 송부) 두 흐름. note → Amazon 로그인 → note 확인 → Amazon 결제 이동에서 쿼리 파라미터 보존 — Cookie 보존은 뒤로 가기 · 다중 탭에서 덮어써져 다른 기사 구매 화면으로 → Amazon 이동 시 쿼리 파라미터 부여 + 백엔드 검증 + SDK 서명 payload. 결제와 사용자 정보 취득을 분리(메일 주소 변경 허용). QA 시트(기사 구매 가능 · 팁 · 멤버십 불가, 기기별, 취소 · 포인트 병용 · 세일). 3 개월 만에 출시.",
+                "date": "2025-02-18"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "결제 서비스를 고를 때",
+          "thought": "결제 수단 추가는 외부 이동 · 콜백 때문에 어렵다 — 문서가 충실해 구현이 쉽고, 사용자가 결제 정보를 입력 · 관리할 필요가 없고, 보안을 Amazon 이 담보하는 쪽을 고른다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Amazon Pay導入のメリットと開発話",
+              "url": "https://engineerteam.note.jp/n/nf75bfc36ed4c",
+              "publisher": "note株式会社",
+              "summary": "2025-01 결제 수단으로 Amazon Pay 도입. 로그인 구매(앱 · 브라우저에서 열람)와 게스트 구매(입력한 메일로 기사 송부) 두 흐름. note → Amazon 로그인 → note 확인 → Amazon 결제 이동에서 쿼리 파라미터 보존 — Cookie 보존은 뒤로 가기 · 다중 탭에서 덮어써져 다른 기사 구매 화면으로 → Amazon 이동 시 쿼리 파라미터 부여 + 백엔드 검증 + SDK 서명 payload. 결제와 사용자 정보 취득을 분리(메일 주소 변경 허용). QA 시트(기사 구매 가능 · 팁 · 멤버십 불가, 기기별, 취소 · 포인트 병용 · 세일). 3 개월 만에 출시.",
+              "date": "2025-02-18"
+            }
+          ]
+        },
+        {
+          "at": "게스트 구매 버그를 찾았을 때",
+          "thought": "Cookie 사양 때문에 생긴 문제는 보통 구매 흐름에선 일어나지 않았다 — 발견하지 못했다면 어땠을지.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Amazon Pay導入のメリットと開発話",
+              "url": "https://engineerteam.note.jp/n/nf75bfc36ed4c",
+              "publisher": "note株式会社",
+              "summary": "2025-01 결제 수단으로 Amazon Pay 도입. 로그인 구매(앱 · 브라우저에서 열람)와 게스트 구매(입력한 메일로 기사 송부) 두 흐름. note → Amazon 로그인 → note 확인 → Amazon 결제 이동에서 쿼리 파라미터 보존 — Cookie 보존은 뒤로 가기 · 다중 탭에서 덮어써져 다른 기사 구매 화면으로 → Amazon 이동 시 쿼리 파라미터 부여 + 백엔드 검증 + SDK 서명 payload. 결제와 사용자 정보 취득을 분리(메일 주소 변경 허용). QA 시트(기사 구매 가능 · 팁 · 멤버십 불가, 기기별, 취소 · 포인트 병용 · 세일). 3 개월 만에 출시.",
+              "date": "2025-02-18"
+            }
+          ]
+        },
+        {
+          "at": "세부를 다듬을 때",
+          "thought": "사용자의 행동을 상정한 작은 조정이 결국 매끄러운 구매 경험으로 이어진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Amazon Pay導入のメリットと開発話",
+              "url": "https://engineerteam.note.jp/n/nf75bfc36ed4c",
+              "publisher": "note株式会社",
+              "summary": "2025-01 결제 수단으로 Amazon Pay 도입. 로그인 구매(앱 · 브라우저에서 열람)와 게스트 구매(입력한 메일로 기사 송부) 두 흐름. note → Amazon 로그인 → note 확인 → Amazon 결제 이동에서 쿼리 파라미터 보존 — Cookie 보존은 뒤로 가기 · 다중 탭에서 덮어써져 다른 기사 구매 화면으로 → Amazon 이동 시 쿼리 파라미터 부여 + 백엔드 검증 + SDK 서명 payload. 결제와 사용자 정보 취득을 분리(메일 주소 변경 허용). QA 시트(기사 구매 가능 · 팁 · 멤버십 불가, 기기별, 취소 · 포인트 병용 · 세일). 3 개월 만에 출시.",
+              "date": "2025-02-18"
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "로그인 구매",
+            "what": "note 계정으로 사고 앱 · 브라우저에서 읽는다 — Amazon Pay 로는 결제만 한다."
+          },
+          {
+            "name": "게스트 구매",
+            "what": "계정 없이 사고 입력한 메일 주소로 기사를 받는다."
+          },
+          {
+            "name": "구매 파라미터",
+            "what": "어떤 기사를 얼마에 사는지 — note → Amazon → note → Amazon 을 오가는 동안 보존돼야 한다."
+          },
+          {
+            "name": "서명된 payload",
+            "what": "백엔드가 파라미터를 검사한 뒤 Amazon Pay SDK 로 서명한 결제 요청 — 프런트가 Amazon Pay 로 보낸다."
+          },
+          {
+            "name": "QA 시트",
+            "what": "기능별 사용 가부 · 기기 · 결제 패턴을 망라한 검증표."
+          }
+        ],
+        "invariants": [
+          "한 탭의 구매가 다른 탭의 구매 파라미터를 덮어쓰지 않는다.",
+          "프런트가 들고 온 파라미터는 백엔드 검사와 서명을 거친 뒤에만 결제로 간다.",
+          "결제에 쓰는 Amazon 계정과 기사를 받을 메일 주소는 따로 정할 수 있다.",
+          "Amazon Pay 는 기사 구매에만 — 팁 · 멤버십에는 쓰지 않는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "note — 결제 수단 선택(Amazon Pay)",
+            "why": "구매 흐름 진입 때 백엔드가 파라미터 검사."
+          },
+          {
+            "step": "Amazon — 로그인",
+            "why": "결제 정보 · 메일 주소를 Amazon 에서 가져온다."
+          },
+          {
+            "step": "note — 구매 확인(메일 주소 변경 가능)",
+            "why": "게스트는 기사를 받을 주소를 정한다."
+          },
+          {
+            "step": "Amazon — 결제(서명된 payload)",
+            "why": "변조된 파라미터로는 결제되지 않는다."
+          },
+          {
+            "step": "완료 — 로그인은 앱 · 브라우저에서 열람, 게스트는 메일로 기사 송부",
+            "why": "두 흐름의 결말."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "어느 결제 서비스를 붙이나?",
+            "chosen": "**Amazon Pay** — 문서가 충실해 구현이 쉽고, Amazon 계정으로 결제해 사용자가 결제 정보를 입력 · 관리할 필요가 없고, 보안을 Amazon 이 담보한다.",
+            "alternatives": [
+              "비교한 다른 결제 서비스들(글은 이름을 밝히지 않았다)"
+            ],
+            "tradeoff": "게스트 구매에선 Amazon 에 등록된 메일 주소를 쉽게 받아 입력을 모두 건너뛸 수 있고 결제 수단 검사도 필요 없다. 대가는 외부 이동 · 콜백이 붙는 흐름 — 다음 결정들이 그 대가를 치른 흔적이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Amazon Pay導入のメリットと開発話",
+                "url": "https://engineerteam.note.jp/n/nf75bfc36ed4c",
+                "publisher": "note株式会社",
+                "summary": "2025-01 결제 수단으로 Amazon Pay 도입. 로그인 구매(앱 · 브라우저에서 열람)와 게스트 구매(입력한 메일로 기사 송부) 두 흐름. note → Amazon 로그인 → note 확인 → Amazon 결제 이동에서 쿼리 파라미터 보존 — Cookie 보존은 뒤로 가기 · 다중 탭에서 덮어써져 다른 기사 구매 화면으로 → Amazon 이동 시 쿼리 파라미터 부여 + 백엔드 검증 + SDK 서명 payload. 결제와 사용자 정보 취득을 분리(메일 주소 변경 허용). QA 시트(기사 구매 가능 · 팁 · 멤버십 불가, 기기별, 취소 · 포인트 병용 · 세일). 3 개월 만에 출시.",
+                "date": "2025-02-18"
+              }
+            ]
+          },
+          {
+            "question": "외부 결제 화면을 오가는 동안 구매 파라미터를 어디에 두나?",
+            "chosen": "**Amazon 으로 이동할 때 쿼리 파라미터로 싣는다.** 처음엔 Cookie 에 저장해 Amazon 콜백에서 꺼내 다시 만들었다.",
+            "alternatives": [
+              "Cookie 에 저장(처음 구현)",
+              "서버 세션에 저장(이 사이트가 든 대안)"
+            ],
+            "tradeoff": "Cookie 는 브라우저 전체에 하나라 뒤로 가기나 여러 탭에서 동시에 구매하면 덮어써져 **다른 기사의 구매 화면으로 넘어가는** 문제가 났다. URL 에 실으면 탭마다 제 파라미터를 들고 다닌다. 대가는 파라미터가 사용자 손에 보인다는 것 — 변조 가능성을 다음 결정이 막는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Amazon Pay導入のメリットと開発話",
+                "url": "https://engineerteam.note.jp/n/nf75bfc36ed4c",
+                "publisher": "note株式会社",
+                "summary": "2025-01 결제 수단으로 Amazon Pay 도입. 로그인 구매(앱 · 브라우저에서 열람)와 게스트 구매(입력한 메일로 기사 송부) 두 흐름. note → Amazon 로그인 → note 확인 → Amazon 결제 이동에서 쿼리 파라미터 보존 — Cookie 보존은 뒤로 가기 · 다중 탭에서 덮어써져 다른 기사 구매 화면으로 → Amazon 이동 시 쿼리 파라미터 부여 + 백엔드 검증 + SDK 서명 payload. 결제와 사용자 정보 취득을 분리(메일 주소 변경 허용). QA 시트(기사 구매 가능 · 팁 · 멤버십 불가, 기기별, 취소 · 포인트 병용 · 세일). 3 개월 만에 출시.",
+                "date": "2025-02-18"
+              }
+            ]
+          },
+          {
+            "question": "URL 에 실린 파라미터가 변조됐다면?",
+            "chosen": "**구매 흐름에 들어올 때 백엔드가 파라미터를 검사하고, Amazon Pay SDK 로 서명한 payload 를 만들어 프런트가 Amazon Pay 로 보낸다.**",
+            "alternatives": [
+              "프런트 값을 그대로 결제 요청에 사용"
+            ],
+            "tradeoff": "금액 · 대상 기사가 서버가 확인하고 서명한 값으로만 결제된다. 대가는 백엔드 왕복 하나와 서명 키 관리.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Amazon Pay導入のメリットと開発話",
+                "url": "https://engineerteam.note.jp/n/nf75bfc36ed4c",
+                "publisher": "note株式会社",
+                "summary": "2025-01 결제 수단으로 Amazon Pay 도입. 로그인 구매(앱 · 브라우저에서 열람)와 게스트 구매(입력한 메일로 기사 송부) 두 흐름. note → Amazon 로그인 → note 확인 → Amazon 결제 이동에서 쿼리 파라미터 보존 — Cookie 보존은 뒤로 가기 · 다중 탭에서 덮어써져 다른 기사 구매 화면으로 → Amazon 이동 시 쿼리 파라미터 부여 + 백엔드 검증 + SDK 서명 payload. 결제와 사용자 정보 취득을 분리(메일 주소 변경 허용). QA 시트(기사 구매 가능 · 팁 · 멤버십 불가, 기기별, 취소 · 포인트 병용 · 세일). 3 개월 만에 출시.",
+                "date": "2025-02-18"
+              }
+            ]
+          },
+          {
+            "question": "Amazon 계정 메일로만 기사를 보내나?",
+            "chosen": "**Amazon Pay 로 결제하는 것과 Amazon Pay 에서 사용자 정보를 받는 것을 따로** 본다 — 게스트는 'Amazon Pay 로 내되 기사는 다른 주소로 받고 싶다' 를 할 수 있고, 로그인 사용자는 사용자 정보를 아예 받지 않는다(결제만 되면 된다).",
+            "alternatives": [
+              "Amazon 계정 메일 주소로 고정"
+            ],
+            "tradeoff": "휴대전화 회사 메일 주소 비권장 같은 기존 문제와 '읽을 주소는 바꾸고 싶다' 는 경우를 함께 푼다. 받지 않아도 되는 개인정보는 받지 않는다(이 사이트의 해석). 대가는 확인 화면의 주소 변경 분기.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Amazon Pay導入のメリットと開発話",
+                "url": "https://engineerteam.note.jp/n/nf75bfc36ed4c",
+                "publisher": "note株式会社",
+                "summary": "2025-01 결제 수단으로 Amazon Pay 도입. 로그인 구매(앱 · 브라우저에서 열람)와 게스트 구매(입력한 메일로 기사 송부) 두 흐름. note → Amazon 로그인 → note 확인 → Amazon 결제 이동에서 쿼리 파라미터 보존 — Cookie 보존은 뒤로 가기 · 다중 탭에서 덮어써져 다른 기사 구매 화면으로 → Amazon 이동 시 쿼리 파라미터 부여 + 백엔드 검증 + SDK 서명 payload. 결제와 사용자 정보 취득을 분리(메일 주소 변경 허용). QA 시트(기사 구매 가능 · 팁 · 멤버십 불가, 기기별, 취소 · 포인트 병용 · 세일). 3 개월 만에 출시.",
+                "date": "2025-02-18"
+              }
+            ]
+          },
+          {
+            "question": "어디까지 Amazon Pay 를 허용하나?",
+            "chosen": "**기사 구매만** — 팁 · 멤버십은 Amazon Pay 불가로 두고, 그 가부를 QA 시트의 첫 항목으로 관리한다.",
+            "alternatives": [
+              "모든 결제 기능에 한 번에 적용"
+            ],
+            "tradeoff": "3 개월 안에 출시할 범위를 좁힌다. 대가는 기능마다 결제 수단이 달라 사용자 · QA 가 헷갈릴 수 있다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Amazon Pay導入のメリットと開発話",
+                "url": "https://engineerteam.note.jp/n/nf75bfc36ed4c",
+                "publisher": "note株式会社",
+                "summary": "2025-01 결제 수단으로 Amazon Pay 도입. 로그인 구매(앱 · 브라우저에서 열람)와 게스트 구매(입력한 메일로 기사 송부) 두 흐름. note → Amazon 로그인 → note 확인 → Amazon 결제 이동에서 쿼리 파라미터 보존 — Cookie 보존은 뒤로 가기 · 다중 탭에서 덮어써져 다른 기사 구매 화면으로 → Amazon 이동 시 쿼리 파라미터 부여 + 백엔드 검증 + SDK 서명 payload. 결제와 사용자 정보 취득을 분리(메일 주소 변경 허용). QA 시트(기사 구매 가능 · 팁 · 멤버십 불가, 기기별, 취소 · 포인트 병용 · 세일). 3 개월 만에 출시.",
+                "date": "2025-02-18"
+              }
+            ]
+          },
+          {
+            "question": "무엇으로 출시 품질을 담보하나?",
+            "chosen": "**QA 엔지니어의 QA 시트** — 기능별 Amazon Pay 가부, 기기별(SP · PC · iOS · Android), 구매 취소 · 포인트 병용 · 세일 때 동작, Amazon Pay 외 결제 동작을 망라해 기기 · 브라우저(앱) · 결제 패턴을 테스트.",
+            "alternatives": [
+              "개발자 단위 테스트 · 수동 확인에 맡김"
+            ],
+            "tradeoff": "결제는 조합(기기 × 결제 수단 × 할인)이 많아 망라표가 빠진 칸을 드러낸다. 입사 한 달이 안 된 QA 엔지니어가 바로 들어와 3 개월 출시를 떠받쳤다. 대가는 조합이 늘수록 시트가 커진다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Amazon Pay導入のメリットと開発話",
+                "url": "https://engineerteam.note.jp/n/nf75bfc36ed4c",
+                "publisher": "note株式会社",
+                "summary": "2025-01 결제 수단으로 Amazon Pay 도입. 로그인 구매(앱 · 브라우저에서 열람)와 게스트 구매(입력한 메일로 기사 송부) 두 흐름. note → Amazon 로그인 → note 확인 → Amazon 결제 이동에서 쿼리 파라미터 보존 — Cookie 보존은 뒤로 가기 · 다중 탭에서 덮어써져 다른 기사 구매 화면으로 → Amazon 이동 시 쿼리 파라미터 부여 + 백엔드 검증 + SDK 서명 payload. 결제와 사용자 정보 취득을 분리(메일 주소 변경 허용). QA 시트(기사 구매 가능 · 팁 · 멤버십 불가, 기기별, 취소 · 포인트 병용 · 세일). 3 개월 만에 출시.",
+                "date": "2025-02-18"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "유료 기사 · 멤버십 · 팁 거래(수익원)",
+          "via": "기사 구매 결제",
+          "contract": "결제 수단을 늘려 더 많은 사용자가 매끄럽게 기사를 살 수 있게 한다 — 계정 없는 게스트도.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Amazon Pay導入のメリットと開発話",
+              "url": "https://engineerteam.note.jp/n/nf75bfc36ed4c",
+              "publisher": "note株式会社",
+              "summary": "2025-01 결제 수단으로 Amazon Pay 도입. 로그인 구매(앱 · 브라우저에서 열람)와 게스트 구매(입력한 메일로 기사 송부) 두 흐름. note → Amazon 로그인 → note 확인 → Amazon 결제 이동에서 쿼리 파라미터 보존 — Cookie 보존은 뒤로 가기 · 다중 탭에서 덮어써져 다른 기사 구매 화면으로 → Amazon 이동 시 쿼리 파라미터 부여 + 백엔드 검증 + SDK 서명 payload. 결제와 사용자 정보 취득을 분리(메일 주소 변경 허용). QA 시트(기사 구매 가능 · 팁 · 멤버십 불가, 기기별, 취소 · 포인트 병용 · 세일). 3 개월 만에 출시.",
+              "date": "2025-02-18"
+            },
+            {
+              "title": "note株式会社",
+              "url": "https://note.jp/",
+              "publisher": "note株式会社",
+              "summary": "미션 '누구나 창작을 시작하고 이어갈 수 있게'. note — 크리에이터가 글 · 이미지 · 음성 · 영상을 올리고 사용자가 즐기고 응원하는 미디어 플랫폼. note pro — 법인용 정보 발신 플랫폼. noteプレミアム. IR 정보(상장). 최근 소식: AI 컨텍스트 네트워크(작품 · 기업 공식 정보와 팬 감상을 한곳에), 일본어 기사 영어 자동 번역을 유료 기사까지, llms.txt, NAVER 생성 AI 검색 인용, CSO 취임(콘텐츠 전달처 · 수익 기회 확대)."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "게스트 구매가 오가는 길",
+          "question": "파라미터는 어디에 실려 다니나?",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant U as 게스트(브라우저 탭)\n  participant N as note\n  participant BE as note 백엔드\n  participant A as Amazon Pay\n  U->>N: 결제 수단 선택(기사 ID · 가격 = 쿼리 파라미터)\n  N->>BE: 파라미터 검사\n  BE-->>N: SDK 로 서명한 payload\n  N->>A: 로그인(서명 payload)\n  A-->>N: 메일 주소 · 결제 수단\n  U->>N: 구매 확인(받을 메일 주소 변경 가능)\n  N->>A: 결제\n  A-->>N: 완료\n  N-->>U: 입력한 메일로 기사 송부"
+        },
+        {
+          "title": "처음 구현이 깨진 곳",
+          "question": "Cookie 는 왜 안 됐나?",
+          "kind": "failure",
+          "code": "flowchart TB\n  T1[\"탭 1: 기사 A 구매 시작\\nCookie = A\"] --> CK[\"브라우저 Cookie 하나\"]\n  T2[\"탭 2: 기사 B 구매 시작\\nCookie = B (덮어씀)\"] --> CK\n  CK --> CB[\"탭 1 의 Amazon 콜백이 Cookie 를 읽음\"]\n  CB --> BAD[\"기사 B 의 구매 화면으로\"]\n  BACK[\"뒤로 가기\"] --> CK\n  BAD --> FIX[\"쿼리 파라미터 + 백엔드 검사 + 서명 payload\"]"
+        },
+        {
+          "title": "QA 시트의 축",
+          "question": "무엇을 망라했나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  Q[\"QA 시트\"] --> F[\"기능별 가부\\n기사 ○ · 팁 × · 멤버십 ×\"]\n  Q --> D[\"기기\\nSP · PC · iOS · Android\"]\n  Q --> P[\"결제 상황\\n취소 · 포인트 병용 · 세일\"]\n  Q --> O[\"다른 결제 수단 회귀\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Amazon Pay導入のメリットと開発話",
+          "url": "https://engineerteam.note.jp/n/nf75bfc36ed4c",
+          "publisher": "note株式会社",
+          "summary": "2025-01 결제 수단으로 Amazon Pay 도입. 로그인 구매(앱 · 브라우저에서 열람)와 게스트 구매(입력한 메일로 기사 송부) 두 흐름. note → Amazon 로그인 → note 확인 → Amazon 결제 이동에서 쿼리 파라미터 보존 — Cookie 보존은 뒤로 가기 · 다중 탭에서 덮어써져 다른 기사 구매 화면으로 → Amazon 이동 시 쿼리 파라미터 부여 + 백엔드 검증 + SDK 서명 payload. 결제와 사용자 정보 취득을 분리(메일 주소 변경 허용). QA 시트(기사 구매 가능 · 팁 · 멤버십 불가, 기기별, 취소 · 포인트 병용 · 세일). 3 개월 만에 출시.",
+          "date": "2025-02-18"
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "매출 · 수수료율 · 사업별 비중은 IR 에 있지만 이번에 읽지 않았다.",
     "백엔드 언어 · 아키텍처 전체 구성은 이번 글들에 없다(RubyKaigi 스폰서 · 사내 Ruby 라이브러리로 Ruby 를 쓰는 것만 보인다).",

@@ -2984,3 +2984,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 note 프로파일
 
 - 대기 → 진행 중. RSS(engineerteam.note.jp/rss)로 글 목록, 본문은 리다이렉트를 따라 받음(처음엔 -L 없이 0 바이트). 회사 소개 note.jp. 도메인 셋 — Amazon Pay 게스트 구매 · 테크니컬 SEO(+ CWV 감시) · GrowthBook. 수익원 셋(유료 기사 · 멤버십 · 팁 / note pro / noteプレミアム) 모두 도메인에 연결(pro · 프리미엄은 해석). 추천 글은 Q&A 라 도메인에서 뺐다.
+
+## 2026-09-30 note Amazon Pay 게스트 구매(기능 1/3)
+
+- `amazon-pay-guest-checkout`. 결정 6 — Amazon Pay 선택 / Cookie → 쿼리 파라미터 / 백엔드 검사 + SDK 서명 payload / 결제와 사용자 정보 분리 / 기사 구매만 / QA 시트. 실패 그림: 다중 탭 · 뒤로 가기 Cookie 덮어쓰기. 다음: SEO.
