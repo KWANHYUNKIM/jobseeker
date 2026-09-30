@@ -1786,6 +1786,17 @@
       "postings": 3,
       "study_items": 7,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "medialog",
+      "name": "미디어로그",
+      "aliases": [
+        "미디어로그"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 7,
+      "updated_at": "2026-09-30"
     }
   ]
 }
