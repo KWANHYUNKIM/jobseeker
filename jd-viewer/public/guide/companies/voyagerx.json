@@ -1,0 +1,348 @@
+{
+  "slug": "voyagerx",
+  "name": "보이저엑스",
+  "name_en": "VoyagerX",
+  "aliases": [
+    "보이저엑스",
+    "VoyagerX"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "",
+  "one_liner": "웹 동영상 편집기 Vrew 와 모바일 앱 vFlat 의 AI 소프트웨어 스타트업 — 서류에서 CS 기술 질문에 답하게 하고 신입 최소 5,500 만원을 적는다(웹 · 안드로이드 · iOS)",
+  "company": {
+    "business": "보이저엑스(VoyagerX)는 '더 즐겁고 편리한 삶을 돕는 **인공지능 소프트웨어**' 를 만드는 스타트업이다. 공고에 나오는 제품은 둘 — **Vrew(브루)**, 웹 기술 기반의 **동영상 편집기**(스택: React · Node.js · TypeScript · **FFmpeg · WebGL · WebAudio** · AWS), 그리고 **vFlat(브이플랫)** 모바일 앱(Android · iOS) — 이다(두 제품의 기능 설명은 공고에 없다). 모든 개발자 공통 요건으로 **수학을 좋아함 · 딥러닝에 관심이 많음**을 적고, 직무별로 **기술 질문 9 개 중 5 개 이상에 잘 답할 것**을 서류 단계에서 요구한다. 연봉은 **신입 기준 최소 5,500 만원 이상**, 사무실은 서초역 근처(마제스타시티 타워1).",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "[Vrew] 웹 애플리케이션 개발자",
+        "url": "https://www.wanted.co.kr/wd/278425",
+        "publisher": "원티드",
+        "summary": "보이저엑스 — 즐겁고 편리한 삶을 돕는 인공지능 소프트웨어 스타트업. 웹 기술 기반 동영상 편집기 Vrew 개발 — React · Node.js · TypeScript · FFmpeg · WebGL · WebAudio · AWS. 요건: 개발 · 수학 좋아함, 딥러닝 관심, C++ 또는 JS 깊은 이해 · 저수준으로 내려갈 수 있음 · 동영상 기술 관심, 공통 기술 질문 9 개 중 5 개 · Vrew 기술 질문 9 개 중 5 개. 연봉 신입 기준 최소 5,500 만원 이상 협의. 서초역 5 분 마제스타시티 타워1 10 층. 서류 → 면접(직원 · 대표, 최대 3 차). 신입-경력."
+      },
+      {
+        "title": "[Vrew/vFlat] 안드로이드 개발자",
+        "url": "https://www.wanted.co.kr/wd/82181",
+        "publisher": "원티드",
+        "summary": "Vrew 또는 vFlat 안드로이드 앱 — Android · Java · Kotlin. 공통 기술 질문 + 안드로이드 질문(dp · Context · Parcelable · Coroutine Dispatcher · Looper · 회전 시 데이터 유지 · 연타 중복 호출 · 고해상도 OOM · 긴 목록) 각 5 개 이상. 연봉 신입 최소 5,500 만원."
+      },
+      {
+        "title": "[Vrew/vFlat] iOS 개발자",
+        "url": "https://www.wanted.co.kr/wd/82178",
+        "publisher": "원티드",
+        "summary": "Vrew 또는 vFlat iOS 앱 — iOS · Swift. iOS 질문(Swift 특징 · MVC 한계 · Safe Area · 고차 함수 · weak/unowned · 연타 중복 호출 · 이미지 리스트 성능 · Copy-On-Write · actor) 5 개 이상. 연봉 신입 최소 5,500 만원."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "AI 소프트웨어(Vrew · vFlat)",
+        "how": "동영상 편집기 Vrew 와 모바일 앱 vFlat 을 공급한다 — 과금 방식(구독 · 유료 기능 · 광고)은 공고에 없다.",
+        "domains": [
+          "웹 동영상 편집기(Vrew)",
+          "모바일 앱(Vrew · vFlat)"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "[Vrew] 웹 애플리케이션 개발자",
+            "url": "https://www.wanted.co.kr/wd/278425",
+            "publisher": "원티드",
+            "summary": "보이저엑스 — 즐겁고 편리한 삶을 돕는 인공지능 소프트웨어 스타트업. 웹 기술 기반 동영상 편집기 Vrew 개발 — React · Node.js · TypeScript · FFmpeg · WebGL · WebAudio · AWS. 요건: 개발 · 수학 좋아함, 딥러닝 관심, C++ 또는 JS 깊은 이해 · 저수준으로 내려갈 수 있음 · 동영상 기술 관심, 공통 기술 질문 9 개 중 5 개 · Vrew 기술 질문 9 개 중 5 개. 연봉 신입 기준 최소 5,500 만원 이상 협의. 서초역 5 분 마제스타시티 타워1 10 층. 서류 → 면접(직원 · 대표, 최대 3 차). 신입-경력."
+          },
+          {
+            "title": "[Vrew/vFlat] 안드로이드 개발자",
+            "url": "https://www.wanted.co.kr/wd/82181",
+            "publisher": "원티드",
+            "summary": "Vrew 또는 vFlat 안드로이드 앱 — Android · Java · Kotlin. 공통 기술 질문 + 안드로이드 질문(dp · Context · Parcelable · Coroutine Dispatcher · Looper · 회전 시 데이터 유지 · 연타 중복 호출 · 고해상도 OOM · 긴 목록) 각 5 개 이상. 연봉 신입 최소 5,500 만원."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "웹 동영상 편집기(Vrew)",
+        "why": "웹 공고가 웹 기술 기반 동영상 편집기 Vrew 를 React · Node.js · FFmpeg · WebGL · WebAudio 로, 필요하면 저수준까지 내려가 만든다고 적는다.",
+        "what_to_know": [
+          "FFmpeg · 코덱 · 컨테이너",
+          "WebGL 렌더링",
+          "WebAudio",
+          "Electron · IPC"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[Vrew] 웹 애플리케이션 개발자",
+            "url": "https://www.wanted.co.kr/wd/278425",
+            "publisher": "원티드",
+            "summary": "보이저엑스 — 즐겁고 편리한 삶을 돕는 인공지능 소프트웨어 스타트업. 웹 기술 기반 동영상 편집기 Vrew 개발 — React · Node.js · TypeScript · FFmpeg · WebGL · WebAudio · AWS. 요건: 개발 · 수학 좋아함, 딥러닝 관심, C++ 또는 JS 깊은 이해 · 저수준으로 내려갈 수 있음 · 동영상 기술 관심, 공통 기술 질문 9 개 중 5 개 · Vrew 기술 질문 9 개 중 5 개. 연봉 신입 기준 최소 5,500 만원 이상 협의. 서초역 5 분 마제스타시티 타워1 10 층. 서류 → 면접(직원 · 대표, 최대 3 차). 신입-경력."
+          }
+        ]
+      },
+      {
+        "name": "모바일 앱(Vrew · vFlat)",
+        "why": "안드로이드 · iOS 공고가 Vrew 또는 vFlat 앱을 적고, 고해상도 이미지 OOM · 긴 목록 성능을 기술 질문으로 묻는다.",
+        "what_to_know": [
+          "이미지 메모리 관리",
+          "코루틴 · actor 동시성",
+          "목록 성능"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[Vrew/vFlat] 안드로이드 개발자",
+            "url": "https://www.wanted.co.kr/wd/82181",
+            "publisher": "원티드",
+            "summary": "Vrew 또는 vFlat 안드로이드 앱 — Android · Java · Kotlin. 공통 기술 질문 + 안드로이드 질문(dp · Context · Parcelable · Coroutine Dispatcher · Looper · 회전 시 데이터 유지 · 연타 중복 호출 · 고해상도 OOM · 긴 목록) 각 5 개 이상. 연봉 신입 최소 5,500 만원."
+          },
+          {
+            "title": "[Vrew/vFlat] iOS 개발자",
+            "url": "https://www.wanted.co.kr/wd/82178",
+            "publisher": "원티드",
+            "summary": "Vrew 또는 vFlat iOS 앱 — iOS · Swift. iOS 질문(Swift 특징 · MVC 한계 · Safe Area · 고차 함수 · weak/unowned · 연타 중복 호출 · 이미지 리스트 성능 · Copy-On-Write · actor) 5 개 이상. 연봉 신입 최소 5,500 만원."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "서류에서 기술 질문에 답한다",
+        "evidence": "• PNG와 JPG의 차이점은?",
+        "so_what": "공통 9 문항(PNG/JPG · DP · 가상 메모리 · GC · 캐시 · 인덱스 · 비대칭 암호 · 저장장치 성능 · Git)과 직무 9 문항 중 5 개 이상을 자기소개서에 답해야 한다 — CS 기초를 자기 말로 쓰는 준비가 곧 지원 준비다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "품질 감각을 본다",
+        "evidence": "• 1px 어긋난 것이 자꾸 눈에 밟힘",
+        "so_what": "부드러운 동작 · 픽셀 정확성을 신경 써 고친 사례(전후 비교)를 포트폴리오에 넣는다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": {
+    "unit": "만원",
+    "currency": "KRW",
+    "as_of": "2026-09",
+    "bands": [
+      {
+        "role": "앱 · 웹 개발자(공고 셋 공통)",
+        "level": "신입",
+        "low": 5500,
+        "high": 5500,
+        "basis": "posting",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[Vrew] 웹 애플리케이션 개발자",
+            "url": "https://www.wanted.co.kr/wd/278425",
+            "publisher": "원티드",
+            "summary": "보이저엑스 — 즐겁고 편리한 삶을 돕는 인공지능 소프트웨어 스타트업. 웹 기술 기반 동영상 편집기 Vrew 개발 — React · Node.js · TypeScript · FFmpeg · WebGL · WebAudio · AWS. 요건: 개발 · 수학 좋아함, 딥러닝 관심, C++ 또는 JS 깊은 이해 · 저수준으로 내려갈 수 있음 · 동영상 기술 관심, 공통 기술 질문 9 개 중 5 개 · Vrew 기술 질문 9 개 중 5 개. 연봉 신입 기준 최소 5,500 만원 이상 협의. 서초역 5 분 마제스타시티 타워1 10 층. 서류 → 면접(직원 · 대표, 최대 3 차). 신입-경력."
+          },
+          {
+            "title": "[Vrew/vFlat] 안드로이드 개발자",
+            "url": "https://www.wanted.co.kr/wd/82181",
+            "publisher": "원티드",
+            "summary": "Vrew 또는 vFlat 안드로이드 앱 — Android · Java · Kotlin. 공통 기술 질문 + 안드로이드 질문(dp · Context · Parcelable · Coroutine Dispatcher · Looper · 회전 시 데이터 유지 · 연타 중복 호출 · 고해상도 OOM · 긴 목록) 각 5 개 이상. 연봉 신입 최소 5,500 만원."
+          },
+          {
+            "title": "[Vrew/vFlat] iOS 개발자",
+            "url": "https://www.wanted.co.kr/wd/82178",
+            "publisher": "원티드",
+            "summary": "Vrew 또는 vFlat iOS 앱 — iOS · Swift. iOS 질문(Swift 특징 · MVC 한계 · Safe Area · 고차 함수 · weak/unowned · 연타 중복 호출 · 이미지 리스트 성능 · Copy-On-Write · actor) 5 개 이상. 연봉 신입 최소 5,500 만원."
+          }
+        ]
+      }
+    ],
+    "note": "세 공고 모두 '신입 기준 최소 5,500 만원 이상에서 협의' 라고 적었다 — **이 값은 하한이다(low = high = 5,500 으로 적었지만 상한이 아니다)**. 상한과 경력 밴드는 공고에 없다.",
+    "open_questions": [
+      "경력자 밴드는 공고에 없다"
+    ]
+  },
+  "people": [],
+  "open_questions": [
+    "Vrew · vFlat 의 기능 설명과 과금 방식은 공고에 없다 — 제품 홈페이지는 이번에 읽지 않았다",
+    "안드로이드 · iOS 공고 번호(821xx)가 매우 오래돼 상시 게시로 보인다",
+    "공고의 경력 범위 '신입-경력 35년' 은 원티드 표기 그대로다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/278425",
+      "title": "[Vrew] 웹 애플리케이션 개발자",
+      "site": "wanted",
+      "verdict": "신입-경력. **웹 기술 기반 동영상 편집기 Vrew 개발** — **React · Node.js · TypeScript · FFmpeg · WebGL · WebAudio · AWS**. 요건은 개발 · 수학을 좋아함, 딥러닝 관심, 협업 · 책임감, 1px · 부드러운 동작에 대한 감각, **C++ 또는 JavaScript 에 대한 깊은 이해 · 필요하면 더 저수준으로**, 동영상 기술 관심. 서류에 **공통 기술 질문 9 개 · Vrew 기술 질문 9 개(UTF-8 · React · Reflow · 함수형 · Callback hell · async I/O · IPC · C++ 다형성 · GPU 하드웨어 가속) 중 각 5 개 이상**을 답한다. 연봉은 **신입 기준 최소 5,500 만원 이상 협의**. 전형 서류 → 면접(직원 · 대표, 최대 3 차).",
+      "fit": {
+        "must_have": [
+          "C++ 또는 JS 깊은 이해",
+          "CS 기초 문항 답변"
+        ],
+        "can_learn": [
+          "FFmpeg",
+          "WebGL · WebAudio",
+          "Electron IPC"
+        ]
+      },
+      "study": [
+        {
+          "topic": "동영상의 바이트부터 — 코덱 · 컨테이너 · FFmpeg",
+          "from": "qualification",
+          "quote": "• 동영상 관련 기술에 대해 관심이 많음",
+          "priority": "core",
+          "why": "자격요건이고 스택에 FFmpeg 이 있다.",
+          "gap_check": "컨테이너(MP4 · WebM)와 코덱(H.264 · VP9 · AAC)은 무엇이 다른가? 키프레임(I-frame) 간격이 자르기 · 탐색 정확도에 왜 영향을 주나? 재인코딩 없이 자르기(-c copy)가 키프레임 경계에서만 정확한 이유는? 가변 프레임률 영상의 타임스탬프(PTS)는 편집에 어떤 문제를 만드나?",
+          "drill": "FFmpeg 으로 같은 영상을 키프레임 간격 1 초 · 10 초로 인코딩해 -c copy 자르기의 정확도를 비교하고, ffprobe 로 프레임별 PTS · 픽처 타입을 뽑아 표로 만든다. Node.js 에서 child_process 로 FFmpeg 을 불러 구간 자르기 · 이어 붙이기 · 자막 입히기를 하는 작은 CLI 를 만든다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "FFmpeg Documentation",
+              "url": "https://ffmpeg.org/documentation.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "브라우저에서 영상 미리보기 — WebGL 과 WebAudio",
+          "from": "task",
+          "quote": "2. 업무 관련 기술: React, Nodejs, Typescript, FFmpeg, WebGL, WebAudio, AWS",
+          "priority": "core",
+          "why": "주요업무의 기술이고 Vrew 기술 질문에 '그래픽카드를 이용한 하드웨어 가속' 이 있다.",
+          "gap_check": "비디오 프레임을 WebGL 텍스처로 올려 필터 · 합성을 GPU 에서 하면 캔버스 2D 보다 왜 빠른가? 영상과 오디오 재생 시각을 어떻게 맞추나(AudioContext.currentTime 기준)? 타임라인에서 파형을 그리려면 오디오를 어떻게 디코딩 · 요약하나?",
+          "drill": "React + WebGL 로 <video> 프레임을 텍스처로 받아 밝기 · 대비 셰이더를 실시간 적용하고, WebAudio 로 같은 파일의 파형을 타임라인에 그린다. 재생 헤드를 AudioContext 시간에 맞춰 움직이고 구간 선택 · 재생을 만든다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "MDN — WebGL tutorial",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial",
+              "kind": "docs"
+            },
+            {
+              "title": "MDN — Web Audio API",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "서류의 기술 질문 — Reflow · async I/O · IPC 를 자기 말로",
+          "from": "qualification",
+          "quote": "• Web Browser 의 프로세싱 중 Reflow 란?",
+          "priority": "high",
+          "why": "자격요건이고 서류에서 답을 적어야 한다.",
+          "gap_check": "레이아웃 속성을 읽고 쓰기를 번갈아 하면 왜 강제 동기 레이아웃(layout thrashing)이 생기나? Node.js 의 async I/O 는 이벤트 루프 · 스레드 풀(libuv)과 어떻게 이어지나? Electron 에서 렌더러 ↔ 메인 프로세스 IPC 는 왜 필요하고 무엇을 넘기면 안 되나?",
+          "drill": "각 질문에 대해 '정의 · 예시 코드 · 측정' 세 줄 답을 쓰고, 레이아웃 스래싱 예제를 Chrome Performance 패널로 전후 비교한 캡처를 붙인다. 공통 9 문항도 같은 형식으로 답안 노트를 만든다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "web.dev — Avoid large, complex layouts and layout thrashing",
+              "url": "https://web.dev/articles/avoid-large-complex-layouts-and-layout-thrashing",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/82181",
+      "title": "[Vrew/vFlat] 안드로이드 개발자",
+      "site": "wanted",
+      "verdict": "신입-경력. **Vrew 또는 vFlat 안드로이드 앱 개발** — Android · Java · Kotlin. 요건은 공통(개발 · 수학 · 딥러닝 관심 · 협업 · 책임감)과 앱 개발자 감각(1px · 부드러운 동작 · 속도 · 완성). 서류에 **공통 9 문항 + 안드로이드 9 문항(dp · Context · Parcelable · Coroutine Dispatcher · Looper · 화면 회전 · 연타 중복 호출 · 고해상도 이미지 OOM · 긴 목록) 중 각 5 개 이상** 답변. 연봉 **신입 기준 최소 5,500 만원 이상 협의**.",
+      "fit": {
+        "must_have": [
+          "Kotlin/Java",
+          "CS · 안드로이드 문항 답변"
+        ],
+        "can_learn": [
+          "대용량 이미지 처리",
+          "코루틴 심화"
+        ]
+      },
+      "study": [
+        {
+          "topic": "고해상도 이미지를 OOM 없이",
+          "from": "qualification",
+          "quote": "• 고해상도 이미지 로딩 시 OOM을 방지하는 방법은?",
+          "priority": "core",
+          "why": "자격요건의 기술 질문이다.",
+          "gap_check": "4000×3000 사진 한 장을 ARGB_8888 로 디코딩하면 메모리를 얼마 쓰나? inSampleSize · 목표 크기 디코딩 · RGB_565 · 하드웨어 비트맵은 각각 무엇을 줄이나? 목록에서 비트맵을 재사용 · 캐시하는 방법은(Coil/Glide 의 풀)?",
+          "drill": "Kotlin 으로 고해상도 사진 100 장 그리드 화면을 (a) 원본 디코딩 (b) inSampleSize (c) Coil 크기 지정으로 만들어 Android Studio Memory Profiler 로 최대 메모리를 비교한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Android Developers — Loading large bitmaps efficiently",
+              "url": "https://developer.android.com/topic/performance/graphics/load-bitmap",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Looper · Dispatcher · 연타 방지 — 안드로이드 스레드 모델",
+          "from": "qualification",
+          "quote": "• Coroutine Dispatcher의 종류와 스레드 풀과의 차이는?",
+          "priority": "high",
+          "why": "자격요건의 기술 질문이다.",
+          "gap_check": "메인 스레드의 Looper · MessageQueue · Handler 는 어떻게 맞물리나? Dispatchers.Main · IO · Default 는 무엇에 쓰고 IO 와 Default 가 같은 풀을 나누는 방식은? 버튼 연타로 API 가 두 번 불리지 않게 하려면(디바운스 · 진행 중 플래그 · Flow 의 conflate/collectLatest)?",
+          "drill": "각 질문에 코드 예제를 곁들인 답 노트를 쓰고, 연타 방지 세 가지(디바운스 · 진행 중 상태로 비활성화 · 서버 멱등 키)를 한 화면에 구현해 로그로 호출 횟수를 비교한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Kotlin — Coroutine context and dispatchers",
+              "url": "https://kotlinlang.org/docs/coroutine-context-and-dispatchers.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/82178",
+      "title": "[Vrew/vFlat] iOS 개발자",
+      "site": "wanted",
+      "verdict": "신입-경력. **Vrew 또는 vFlat iOS 앱 개발** — iOS · Swift. 요건은 공통 · 앱 개발자 감각과 서류의 **공통 9 문항 + iOS 9 문항(Swift 특징 · MVC 한계 · Safe Area · 고차 함수 · 메모리 누수와 weak/unowned · 연타 중복 호출 · 이미지 리스트 성능 · Copy-On-Write · actor 와 Data Race) 중 각 5 개 이상**. 연봉 **신입 기준 최소 5,500 만원 이상 협의**.",
+      "fit": {
+        "must_have": [
+          "Swift",
+          "CS · iOS 문항 답변"
+        ],
+        "can_learn": [
+          "actor · 동시성",
+          "이미지 리스트 성능"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Swift 동시성 — actor 로 데이터 경합 막기",
+          "from": "qualification",
+          "quote": "• Swift의 actor의 역할과 Data Race 방지 원리는?",
+          "priority": "core",
+          "why": "자격요건의 기술 질문이다.",
+          "gap_check": "actor 는 내부 상태 접근을 어떻게 직렬화하나(격리 · await)? 재진입(reentrancy) 때문에 await 전후로 상태가 바뀔 수 있다는 것은 무슨 뜻인가? Sendable 검사와 MainActor 는 무엇을 보장하나?",
+          "drill": "이미지 캐시를 class(락 없음) · actor 두 버전으로 만들어 동시 요청 1,000 개를 Task 로 날려 Thread Sanitizer 로 경합을 확인하고, actor 재진입으로 같은 이미지를 두 번 다운로드하는 문제를 진행 중 Task 사전으로 고친다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Swift — Concurrency",
+              "url": "https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "이미지 리스트 성능과 Copy-On-Write",
+          "from": "qualification",
+          "quote": "• 항목이 많은 이미지 리스트 구현 시 성능 최적화 방법은?",
+          "priority": "high",
+          "why": "자격요건의 기술 질문이다.",
+          "gap_check": "셀 재사용 · 다운샘플링(ImageIO) · 프리페치 · 취소는 각각 무엇을 줄이나? 값 타입 배열을 복사해도 느리지 않은 이유(Copy-On-Write)와 isKnownUniquelyReferenced 로 직접 구현하는 방법은?",
+          "drill": "UICollectionView(또는 SwiftUI LazyVGrid)로 고해상도 이미지 1,000 장 그리드를 만들고 ImageIO 다운샘플링 · 프리페치 · 셀 재사용 시 요청 취소를 넣어 Instruments 로 메모리 · 스크롤 히치를 전후 비교한다. 간단한 COW 버퍼 타입을 직접 구현해 본다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "WWDC18 — Image and Graphics Best Practices",
+              "url": "https://developer.apple.com/videos/play/wwdc2018/219/",
+              "kind": "course"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
