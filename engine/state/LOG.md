@@ -2896,3 +2896,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 スマートバンク PCI DSS 경계(기능 1/3)
 
 - 버추얼 카드 배타 제어 글 + 카드 번호 검출 글로 `pci-boundary-card-issuing`. 결정 7 — issuing/core 분리 / 조작 횟수 체크(Sliding window log) / 트랜잭션 보류 / GET_LOCK · Redis 보류(PCI DSS 진단 항목) / 4 단계 검출 / 로그 전용 → 거부 / 건너뛰기 경로. 다음: 리컨사일.
+
+## 2026-09-30 スマートバンク 리컨사일 · 레플리카(기능 2/3)
+
+- 리컨사일 글 + 레플리카 쓰기 뒤 읽기 글로 `bnpl-reconcile-read-your-write`. 결정 8 — Webhook 실패 복구 대상 / 매시 · 2 일 범위 / 외부가 정답 / 기간 인자 멱등 재실행 / 점검 시간 건너뛰기 / 배치 문서 형식 / 사용자 프라이머리 고정(캐시 스토어 Resolver) / 0.5 초 · 허용 경로. 다음: Apple Pay.
