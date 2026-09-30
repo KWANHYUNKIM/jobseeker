@@ -2983,6 +2983,131 @@
    "cost_usd": 8978034000.0,
    "cost_note": "Epoch: 237MW, 건설비 약 90억 달러(2025년 달러)",
    "cost_src": "https://epoch.ai/data/ai-data-centers/directory/google-council-bluffs-east"
+  },
+  {
+   "key": "meta-rosemount",
+   "company": "Meta",
+   "region": "US",
+   "name": "로즈마운트 (미네소타)",
+   "chip": "B200",
+   "chip_key": null,
+   "count": null,
+   "h100eq": 215675,
+   "mw": 178,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2026-09",
+   "in_total": true,
+   "note": "Epoch 추정(위성사진·공시): H100 환산 약 21.6만, IT 전력 178MW, 건설비 약 67억 달러(2025년 달러). 사용자 Meta(Epoch 확신).",
+   "sources": [
+    {
+     "title": "Epoch: Meta Rosemount",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/meta-rosemount"
+    }
+   ],
+   "cost_usd": 6742996000.0,
+   "cost_note": "Epoch: 178MW, 건설비 약 67억 달러(2025년 달러)",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/meta-rosemount"
+  },
+  {
+   "key": "meta-jeffersonville",
+   "company": "Meta",
+   "region": "US",
+   "name": "제퍼슨빌 (인디애나)",
+   "chip": "B300",
+   "chip_key": null,
+   "count": null,
+   "h100eq": 203133,
+   "mw": 178,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2026-09",
+   "in_total": true,
+   "note": "Epoch 추정(위성사진·공시): H100 환산 약 20.3만, IT 전력 178MW, 건설비 약 67억 달러(2025년 달러). 사용자 Meta(Epoch 확신).",
+   "sources": [
+    {
+     "title": "Epoch: Meta Jeffersonville",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/meta-jeffersonville"
+    }
+   ],
+   "cost_usd": 6742996000.0,
+   "cost_note": "Epoch: 178MW, 건설비 약 67억 달러(2025년 달러)",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/meta-jeffersonville"
+  },
+  {
+   "key": "coreweave-denton-tx",
+   "company": "OpenAI",
+   "region": "US",
+   "name": "CoreWeave 덴턴 (텍사스)",
+   "chip": "B200",
+   "chip_key": null,
+   "count": 100000,
+   "h100eq": 252653,
+   "mw": 262,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2026-09",
+   "in_total": true,
+   "note": "Epoch 추정(위성사진·공시): H100 환산 약 25.3만, IT 전력 262MW, 건설비 약 99억 달러(2025년 달러). B200 약 10만 장. 소유 CoreWeave, 사용자 OpenAI 로 추정(Epoch '가능성 높음') — CoreWeave 전체 1.5GW 와 겹친다(빌려 쓰는 칩은 쓰는 회사에 센다).",
+   "sources": [
+    {
+     "title": "Epoch: CoreWeave Denton TX",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/coreweave-denton-tx"
+    }
+   ],
+   "cost_usd": 9925084000.0,
+   "cost_note": "Epoch: 262MW, 건설비 약 99억 달러(2025년 달러)",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/coreweave-denton-tx"
+  },
+  {
+   "key": "microsoft-goodyear",
+   "company": "Microsoft",
+   "region": "US",
+   "name": "굿이어 (애리조나)",
+   "chip": "H100 · B200",
+   "chip_key": null,
+   "count": null,
+   "h100eq": 205154,
+   "mw": 202,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2026-09",
+   "in_total": true,
+   "note": "Epoch 추정(위성사진·공시): H100 환산 약 20.5만, IT 전력 202MW, 건설비 약 77억 달러(2025년 달러). 사용자 Microsoft(확신)·OpenAI(가능성 높음).",
+   "sources": [
+    {
+     "title": "Epoch: Microsoft Goodyear",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/microsoft-goodyear"
+    }
+   ],
+   "cost_usd": 7652164000.000001,
+   "cost_note": "Epoch: 202MW, 건설비 약 77억 달러(2025년 달러)",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/microsoft-goodyear"
+  },
+  {
+   "key": "aws-new-albany",
+   "company": "Amazon",
+   "region": "US",
+   "name": "AWS 뉴올버니 (오하이오)",
+   "chip": "Trainium2 · H100 · H200 · B200",
+   "chip_key": null,
+   "count": null,
+   "h100eq": 201112,
+   "mw": 213,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2026-09",
+   "in_total": true,
+   "note": "Epoch 추정(위성사진·공시): H100 환산 약 20.1만, IT 전력 213MW, 건설비 약 81억 달러(2025년 달러). Amazon 소유, 사용자 미상.",
+   "sources": [
+    {
+     "title": "Epoch: AWS New Albany",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/aws-new-albany"
+    }
+   ],
+   "cost_usd": 8068866000.0,
+   "cost_note": "Epoch: 213MW, 건설비 약 81억 달러(2025년 달러)",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/aws-new-albany"
   }
  ],
  "chips": [
