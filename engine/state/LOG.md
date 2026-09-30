@@ -2932,3 +2932,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 オイシックス REBORN(기능 1/3)
 
 - REBORN EKS 글 + Dapr 무중단 글 + OpenAPI 제3세대 글 + 데드 코드 글로 `reborn-eks-dapr-openapi`. 결정 8 — Dapr 추상화 / OpenAPI SSOT / Helm app-chart / Argo CD 별도 클러스터 · 본번 수동 / 관리형 + Karpenter / preStop · block-shutdown 여백 / Readiness Gate / 데드 코드 기표 삭제. 다음: 추천 · 수요 예측.
+
+## 2026-09-30 オイシックス 추천 · 수요 예측(기능 2/3)
+
+- あなたにおすすめ ML 시스템 글 + 수요 예측 반사실 글로 `weekly-box-rec-demand-counterfactual`. 결정 8 — 미리 카트 상품 제외 레이팅 / GNN(속성 · 0 임베딩) / MMR · 노출 무반응 제외 / 주 1 배치 / YAML A/B / 구매율 차분 기각 / 합성 통제 기각 / 분류 모델 채택(AUC 0.922). 다음: 해지율 · CWV.
