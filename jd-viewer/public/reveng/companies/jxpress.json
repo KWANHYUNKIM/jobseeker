@@ -1,0 +1,276 @@
+{
+  "slug": "jxpress",
+  "name": "JX通信社",
+  "name_en": "JX PRESS Corporation",
+  "country": "JP",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-30",
+  "domain": "jxpress.net",
+  "one_liner": "'보도의 기계화' 를 내건 보도 벤처 — 재해 · 사건 리스크 검지 SaaS FASTALERT 와 속보 앱 NewsDigest. 쌓인 BigQuery · 감시 비용을 숫자로 줄이고, 앱을 멈추지 않고 AWS 에서 GCP 로 옮기고, 기상청 XML 의 EventID · 취소 전문을 틀리지 않게 다룬다",
+  "business_model": "JX通信社 는 **'빅데이터와 테크놀로지로 만드는 새로운 보도 기관'** 을 내건 보도 벤처다. 사람 손으로 하던 정보 수집 · 취재를 기계화해 **보도 기관 · 기업 · 정부 · 지자체**에 판다. 주력은 **FASTALERT** — SNS 등 빅데이터에서 **재해 · 사고 · 사건 리스크 정보를 실시간 검지 · 배신**하는 법인 SaaS 로, 보도 기관 점유율 No.1 을 내건다(1 개월 무료 데모 → 계약). 소비자 쪽은 AI 가 보도 가치를 판단해 속보 · 재해 정보를 보내는 앱 **NewsDigest**(500 만 DL+), 그리고 자동 전화로 여론을 조사하는 **정세 조사**(클라우드 RDD 방식). 기상청 XML 을 가공해 돌려주는 **API · 시스템 통합**도 한다(日本テレビ 와 공동 개발한 기상 · 방재 사이트).\n\n기술 블로그는 **적은 인원으로 여러 클라우드를 싸고 안전하게 굴리는 법**이 두드러진다. Datalake/DWH/Datamart 3 층으로 중복 보관해 불어난 **BigQuery 스토리지를 물리 바이트 과금으로** 데이터셋별 손익을 따져 바꾸고, AWS · Google Cloud 를 횡단 감시하는 **Datadog 비용을 지표 수집 쪽까지 합쳐 60% 이상** 줄이고, NewsDigest API 를 **도메인 · 앱 수정 없이 무중단으로 AWS → GCP** 로 옮겼다. 재해 정보 쪽에서는 **기상청 XML 의 EventID · 발표 순서 · 취소 전문**을 정확히 다루는 것이 핵심이다.",
+  "products": [
+    "FASTALERT(재해 · 사건 리스크 검지 SaaS)",
+    "NewsDigest(뉴스 속보 앱)",
+    "정세 조사(자동 전화 조사)",
+    "기상청 XML 가공 API"
+  ],
+  "revenue_total": "",
+  "revenue_streams": [
+    {
+      "name": "FASTALERT 구독(법인)",
+      "how": "보도 기관 · 기업 · 정부 · 지자체가 리스크 정보 검지 · 배신 SaaS 를 구독한다 — 1 개월 무료 데모 뒤 계약. 요금은 공개되지 않았다.",
+      "weight": "",
+      "domains": [
+        "쌓이기만 하는 데이터와 감시 비용을 줄인다 — BigQuery 물리 과금 · Datadog 지표 수집",
+        "기상청 전문을 틀리지 않게 — 지진 · 쓰나미 XML 의 묶음과 취소"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "JX通信社 - JX PRESS Corp.",
+          "url": "https://jxpress.net/",
+          "publisher": "JX通信社",
+          "summary": "'빅데이터와 테크놀로지로 만드는 새로운 보도 기관' — 전국 대부분의 보도 기관에 속보 · 데이터 저널리즘 솔루션, 소비자에게 뉴스 속보 앱. FASTALERT: 빅데이터(SNS 등)에서 재해 · 사고 · 사건 리스크 정보를 실시간 검지 · 배신하는 법인 SaaS(보도 기관 점유율 No.1, 기업 · 정부 · 지자체, 1 개월 무료 데모). NewsDigest: AI 가 보도 가치를 판단해 속보 · 사건 · 재해 정보를 보내는 앱(500 만 DL+). 정세 조사: 독자 '클라우드 RDD 방식' 자동 전화 조사. API · 시스템 통합 고객용 긴급 연락 창구."
+        },
+        {
+          "title": "Datadogとクラウドの費用を見直し、60%以上費用を削減した話",
+          "url": "https://tech.jxpress.net/entry/2025/02/03/150719",
+          "publisher": "JX通信社",
+          "summary": "FASTALERT 등을 AWS · Google Cloud 로 구축, Datadog 은 양쪽 횡단 감시가 주용도. 엔저 · 시스템 증가로 비용 증가. Datadog 청구서만이 아니라 지표를 끌어오는 클라우드 비용까지 합산: 서버리스 과금 30%(Invocations 16 · App Instances 14), CloudWatch GetMetricData 29%, Cloud Monitoring API 24%, Synthetics 11%. 대책: 감시할 Cloud Run 서비스만 service_name 필터, CloudWatch 폴링(10 분) 대상을 일본 리전 · 중요 서비스 · datadog:enabled 태그로 한정, Cloud Monitoring(5 분 폴링, 프로젝트당 약 1 만 엔/월) 서비스 · 프로젝트 한정. 60% 이상 절감.",
+          "date": "2025-02-03"
+        }
+      ]
+    },
+    {
+      "name": "NewsDigest(소비자 앱)",
+      "how": "무료 속보 앱 — 수익 구조(광고 등)는 이번 자료에 없다.",
+      "weight": "",
+      "domains": [
+        "앱을 멈추지 않고 AWS 에서 Google Cloud 로 — API · DB 무중단 이행",
+        "쌓이기만 하는 데이터와 감시 비용을 줄인다 — BigQuery 물리 과금 · Datadog 지표 수집"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "JX通信社 - JX PRESS Corp.",
+          "url": "https://jxpress.net/",
+          "publisher": "JX通信社",
+          "summary": "'빅데이터와 테크놀로지로 만드는 새로운 보도 기관' — 전국 대부분의 보도 기관에 속보 · 데이터 저널리즘 솔루션, 소비자에게 뉴스 속보 앱. FASTALERT: 빅데이터(SNS 등)에서 재해 · 사고 · 사건 리스크 정보를 실시간 검지 · 배신하는 법인 SaaS(보도 기관 점유율 No.1, 기업 · 정부 · 지자체, 1 개월 무료 데모). NewsDigest: AI 가 보도 가치를 판단해 속보 · 사건 · 재해 정보를 보내는 앱(500 만 DL+). 정세 조사: 독자 '클라우드 RDD 방식' 자동 전화 조사. API · 시스템 통합 고객용 긴급 연락 창구."
+        },
+        {
+          "title": "APIをダウンタイムなしでAWSからGCPに引越しました",
+          "url": "https://tech.jxpress.net/entry/2023/03/09/112758",
+          "publisher": "JX通信社",
+          "summary": "NewsDigest 모바일 앱 API 를 AWS → GCP(회사 방침 · 관리형 서비스). 제약: 도메인 불변 · 무중단 · 앱 수정 없음 · 서버 팀이 낮에 완결. Cloud Load Balancing 앞단 — Google 관리형 인증서는 트래픽을 받아야 활성화되므로 먼저 셀프 관리형(Let's Encrypt · Certbot TXT 검증)을 붙여 전환하고 뒤에서 관리형을 활성화한 뒤 셀프 관리형 제거. /etc/hosts 로 사전 HTTPS 확인. 기존 도메인이 CloudFront 로 CNAME 이라 A 레코드를 못 두므로 새 도메인에 A 레코드 → 기존 도메인에 가중 CNAME(초기 10%) — 문제 시 0 으로 되돌림. 실제로 이행 뒤 비용이 커 한 번 AWS 로 되돌리기도.",
+          "date": "2023-03-09"
+        }
+      ]
+    },
+    {
+      "name": "API · 시스템 통합 · 정세 조사",
+      "how": "기상청 XML 을 가공한 API 를 방송사 등에 제공하고(日テレ 기상 · 방재 사이트 공동 개발), 자동 전화 정세 조사를 판다.",
+      "weight": "",
+      "domains": [
+        "기상청 전문을 틀리지 않게 — 지진 · 쓰나미 XML 의 묶음과 취소"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "JX通信社 - JX PRESS Corp.",
+          "url": "https://jxpress.net/",
+          "publisher": "JX通信社",
+          "summary": "'빅데이터와 테크놀로지로 만드는 새로운 보도 기관' — 전국 대부분의 보도 기관에 속보 · 데이터 저널리즘 솔루션, 소비자에게 뉴스 속보 앱. FASTALERT: 빅데이터(SNS 등)에서 재해 · 사고 · 사건 리스크 정보를 실시간 검지 · 배신하는 법인 SaaS(보도 기관 점유율 No.1, 기업 · 정부 · 지자체, 1 개월 무료 데모). NewsDigest: AI 가 보도 가치를 판단해 속보 · 사건 · 재해 정보를 보내는 앱(500 만 DL+). 정세 조사: 독자 '클라우드 RDD 방식' 자동 전화 조사. API · 시스템 통합 고객용 긴급 연락 창구."
+        },
+        {
+          "title": "気象庁XMLを正しく扱いたい！",
+          "url": "https://tech.jxpress.net/entry/2024/07/29/090000",
+          "publisher": "JX通信社",
+          "summary": "日本テレビ와 공동 개발한 '日テレ気象・防災サイト' 등 사내에서 기상청 방재 정보 XML(PULL 형)을 폭넓게 사용. 수십 종 전문마다 형식 · 사양 · 발표 조건 · 순서가 다르다 — 지진 · 쓰나미만 13 종(쓰나미 경보 · 진도 속보 · 진원 · 진원진도 · 장주기 지진동 등). 같은 지진은 14 자리 EventID 로 묶는다(전진 · 본진 · 여진은 다른 ID, 쓰나미 정보는 여러 ID). 드물게 오보 → 취소 전문(2024-01-01 노토 진도 7 오보 취소 사례) — DB 에 저장했다면 롤백 처리 필요. 기상청 XML 을 다루기 쉬운 형식으로 가공해 돌려주는 API 를 제공.",
+          "date": "2024-07-29"
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "재해 하나가 알림 하나가 되기까지",
+    "question": "데이터는 어디서 들어와 누구에게 가나?",
+    "code": "flowchart LR\n  SNS[\"SNS · 공개 데이터\"] --> FA[\"FASTALERT\\n리스크 검지\"]\n  JMA[\"기상청 방재 XML\\nEventID · 취소 전문\"] --> API[\"가공 API\"]\n  API --> TV[\"방송사 방재 사이트\"]\n  API --> FA\n  FA --> CORP[\"보도 기관 · 기업 · 지자체\"]\n  JMA --> ND[\"NewsDigest 앱\"]\n  ND --> LOG[(\"행동 로그 → BigQuery\\nLake · DWH · Mart\")]\n  FA -.->|\"AWS · GCP 횡단 감시\"| DD[\"Datadog\"]",
+    "_note": "이 사이트의 해석 — 회사 사이트와 BigQuery · Datadog · 이행 · 기상청 XML 글의 구성을 한 장에 모았다."
+  },
+  "domains": [
+    {
+      "name": "쌓이기만 하는 데이터와 감시 비용을 줄인다 — BigQuery 물리 과금 · Datadog 지표 수집",
+      "why": "오픈데이터 해석과 NewsDigest 행동 로그를 Lake · DWH · Mart 3 층으로 중복 보관해 BigQuery 스토리지 과금이 쌓였다 — 잘 안 쓰여도 지우기 애매한 데이터다. AWS · Google Cloud 를 Datadog 으로 횡단 감시하는 비용도 엔저와 시스템 증가로 불어났는데, 청구서에 안 보이는 지표 수집 API 비용이 Datadog 과 맞먹었다.",
+      "tech": [
+        {
+          "tech": "BigQuery 물리 바이트 과금으로 데이터셋별 전환 + 타임트래블 단축",
+          "solves": "코드 · 데이터 이행 없이 ALTER SCHEMA 한 줄로 스토리지 수십 % 절감.",
+          "limits": "단가가 1.6~2.3 배라 전량 교체 테이블은 손해 · 14 일 재변경 불가 — 사전 시산이 전제.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "BigQueryの物理バイト課金への切り替えでストレージ料金を削減する",
+              "url": "https://tech.jxpress.net/entry/2026/06/25/154701",
+              "publisher": "JX通信社",
+              "summary": "CTO 글. 오픈데이터 해석 · NewsDigest 행동 로그를 Datalake/DWH/Datamart 3 층으로 중복 보관 → 스토리지 과금 누적. 물리 바이트 과금(압축 후, 단가 Active 약 2.3 배 · Long Term 약 1.6 배)으로 데이터셋별 전환 — 압축률이 단가 배율을 넘으면 이득, 추가 전용 로그는 10 배+, 매일 전량 교체 테이블은 타임트래블 보관료로 오히려 손해(10 배 악화 추정도). TABLE_STORAGE 로 전 데이터셋 손익 시산(Claude Code 로 집계), 반영 24 시간 · 14 일 재변경 불가, 타임트래블 최단 2 일. billing export 로 일별 효과 측정 — 시산과 거의 일치, 수십 % 절감.",
+              "date": "2026-06-25"
+            }
+          ]
+        },
+        {
+          "tech": "Datadog 비용을 클라우드 지표 수집 비용까지 합산해 수집 대상 한정",
+          "solves": "60% 이상 절감.",
+          "limits": "필터 방법이 문서에 없어 시행착오 · ECS 는 서비스 이름 지정 불가.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Datadogとクラウドの費用を見直し、60%以上費用を削減した話",
+              "url": "https://tech.jxpress.net/entry/2025/02/03/150719",
+              "publisher": "JX通信社",
+              "summary": "FASTALERT 등을 AWS · Google Cloud 로 구축, Datadog 은 양쪽 횡단 감시가 주용도. 엔저 · 시스템 증가로 비용 증가. Datadog 청구서만이 아니라 지표를 끌어오는 클라우드 비용까지 합산: 서버리스 과금 30%(Invocations 16 · App Instances 14), CloudWatch GetMetricData 29%, Cloud Monitoring API 24%, Synthetics 11%. 대책: 감시할 Cloud Run 서비스만 service_name 필터, CloudWatch 폴링(10 분) 대상을 일본 리전 · 중요 서비스 · datadog:enabled 태그로 한정, Cloud Monitoring(5 분 폴링, 프로젝트당 약 1 만 엔/월) 서비스 · 프로젝트 한정. 60% 이상 절감.",
+              "date": "2025-02-03"
+            },
+            {
+              "title": "AWSとGoogle Cloudのコスト最適化の道 〜データドリブンな取り組みの紹介〜",
+              "url": "https://tech.jxpress.net/entry/2024/08/14/120000",
+              "publisher": "JX通信社",
+              "summary": "AWS · Google Cloud 비용 최적화를 데이터 기반으로 — 비용 데이터를 모아 보고 줄이는 활동.",
+              "date": "2024-08-14"
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "앱을 멈추지 않고 AWS 에서 Google Cloud 로 — API · DB 무중단 이행",
+      "why": "회사 방침으로 GCP 이용을 추진하고 GCP 관리형 서비스를 쓰려 했다. 그런데 NewsDigest 앱은 이미 배포돼 있어 API 도메인을 바꿀 수 없고, 앱 수정 없이 무중단으로, 서버 팀이 낮에 끝내고 싶었다.",
+      "tech": [
+        {
+          "tech": "셀프 관리형 인증서로 먼저 전환 → 관리형 인증서 뒤에서 활성화, 새 도메인 A 레코드 + 기존 도메인 가중 CNAME",
+          "solves": "무중단 · 10% 부터 단계 이행 · 즉시 되돌림.",
+          "limits": "셀프 관리형 인증서 발급은 수작업, 이행 뒤 비용이 커 한 번 되돌린 적도.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "APIをダウンタイムなしでAWSからGCPに引越しました",
+              "url": "https://tech.jxpress.net/entry/2023/03/09/112758",
+              "publisher": "JX通信社",
+              "summary": "NewsDigest 모바일 앱 API 를 AWS → GCP(회사 방침 · 관리형 서비스). 제약: 도메인 불변 · 무중단 · 앱 수정 없음 · 서버 팀이 낮에 완결. Cloud Load Balancing 앞단 — Google 관리형 인증서는 트래픽을 받아야 활성화되므로 먼저 셀프 관리형(Let's Encrypt · Certbot TXT 검증)을 붙여 전환하고 뒤에서 관리형을 활성화한 뒤 셀프 관리형 제거. /etc/hosts 로 사전 HTTPS 확인. 기존 도메인이 CloudFront 로 CNAME 이라 A 레코드를 못 두므로 새 도메인에 A 레코드 → 기존 도메인에 가중 CNAME(초기 10%) — 문제 시 0 으로 되돌림. 실제로 이행 뒤 비용이 커 한 번 AWS 로 되돌리기도.",
+              "date": "2023-03-09"
+            }
+          ]
+        },
+        {
+          "tech": "DB 이행 · Datastream 으로 Cloud SQL → BigQuery 동기",
+          "solves": "다운타임을 줄인 DB 이행, 분석 기반 연계.",
+          "limits": "이번엔 글 본문을 깊이 읽지 않았다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ダウンタイムを抑えてAWSからGoogle Cloudにデータベースを移行したはなし",
+              "url": "https://tech.jxpress.net/entry/gcp_database_migration",
+              "publisher": "JX通信社",
+              "summary": "AWS 에서 Google Cloud 로 데이터베이스를 다운타임을 줄여 이행한 이야기.",
+              "date": "2023-07-13"
+            },
+            {
+              "title": "Datastream による Cloud SQL と BigQuery 同期：直面した課題と対応策",
+              "url": "https://tech.jxpress.net/entry/2024/12/10/204320",
+              "publisher": "JX通信社",
+              "summary": "Cloud SQL 을 Datastream 으로 BigQuery 에 동기화하며 겪은 과제와 대응.",
+              "date": "2024-12-10"
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "기상청 전문을 틀리지 않게 — 지진 · 쓰나미 XML 의 묶음과 취소",
+      "why": "재해 정보는 틀리면 안 된다. 기상청 XML 은 수십 종이고 종류마다 형식 · 사양 · 발표 조건 · 순서가 다르며, 한 지진에 여러 전문이 오고, 드물게 오보가 나면 취소 전문이 온다(2024-01-01 노토 진도 7 오보). 방송사 방재 사이트와 사내 서비스가 이 전문을 그대로 쓴다.",
+      "tech": [
+        {
+          "tech": "EventID 로 전문 묶기 · 취소 전문 롤백 · 가공 API",
+          "solves": "같은 지진의 여러 전문을 하나로 보고, 오보를 되돌린다.",
+          "limits": "기상 · 화산 · 태풍마다 고유 사양이 따로 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "気象庁XMLを正しく扱いたい！",
+              "url": "https://tech.jxpress.net/entry/2024/07/29/090000",
+              "publisher": "JX通信社",
+              "summary": "日本テレビ와 공동 개발한 '日テレ気象・防災サイト' 등 사내에서 기상청 방재 정보 XML(PULL 형)을 폭넓게 사용. 수십 종 전문마다 형식 · 사양 · 발표 조건 · 순서가 다르다 — 지진 · 쓰나미만 13 종(쓰나미 경보 · 진도 속보 · 진원 · 진원진도 · 장주기 지진동 등). 같은 지진은 14 자리 EventID 로 묶는다(전진 · 본진 · 여진은 다른 ID, 쓰나미 정보는 여러 ID). 드물게 오보 → 취소 전문(2024-01-01 노토 진도 7 오보 취소 사례) — DB 에 저장했다면 롤백 처리 필요. 기상청 XML 을 다루기 쉬운 형식으로 가공해 돌려주는 API 를 제공.",
+              "date": "2024-07-29"
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "매출 · 인원 · FASTALERT 요금은 공개 자료에서 읽지 않았다.",
+    "FASTALERT 가 SNS 에서 리스크를 검지하는 방식(모델 · 검수)은 이번 글에 없다.",
+    "DB 이행 · Datastream 글은 기능을 팔 때 더 읽는다."
+  ],
+  "sources": [
+    {
+      "title": "JX通信社 - JX PRESS Corp.",
+      "url": "https://jxpress.net/",
+      "publisher": "JX通信社",
+      "summary": "'빅데이터와 테크놀로지로 만드는 새로운 보도 기관' — 전국 대부분의 보도 기관에 속보 · 데이터 저널리즘 솔루션, 소비자에게 뉴스 속보 앱. FASTALERT: 빅데이터(SNS 등)에서 재해 · 사고 · 사건 리스크 정보를 실시간 검지 · 배신하는 법인 SaaS(보도 기관 점유율 No.1, 기업 · 정부 · 지자체, 1 개월 무료 데모). NewsDigest: AI 가 보도 가치를 판단해 속보 · 사건 · 재해 정보를 보내는 앱(500 만 DL+). 정세 조사: 독자 '클라우드 RDD 방식' 자동 전화 조사. API · 시스템 통합 고객용 긴급 연락 창구."
+    },
+    {
+      "title": "BigQueryの物理バイト課金への切り替えでストレージ料金を削減する",
+      "url": "https://tech.jxpress.net/entry/2026/06/25/154701",
+      "publisher": "JX通信社",
+      "summary": "CTO 글. 오픈데이터 해석 · NewsDigest 행동 로그를 Datalake/DWH/Datamart 3 층으로 중복 보관 → 스토리지 과금 누적. 물리 바이트 과금(압축 후, 단가 Active 약 2.3 배 · Long Term 약 1.6 배)으로 데이터셋별 전환 — 압축률이 단가 배율을 넘으면 이득, 추가 전용 로그는 10 배+, 매일 전량 교체 테이블은 타임트래블 보관료로 오히려 손해(10 배 악화 추정도). TABLE_STORAGE 로 전 데이터셋 손익 시산(Claude Code 로 집계), 반영 24 시간 · 14 일 재변경 불가, 타임트래블 최단 2 일. billing export 로 일별 효과 측정 — 시산과 거의 일치, 수십 % 절감.",
+      "date": "2026-06-25"
+    },
+    {
+      "title": "Datadogとクラウドの費用を見直し、60%以上費用を削減した話",
+      "url": "https://tech.jxpress.net/entry/2025/02/03/150719",
+      "publisher": "JX通信社",
+      "summary": "FASTALERT 등을 AWS · Google Cloud 로 구축, Datadog 은 양쪽 횡단 감시가 주용도. 엔저 · 시스템 증가로 비용 증가. Datadog 청구서만이 아니라 지표를 끌어오는 클라우드 비용까지 합산: 서버리스 과금 30%(Invocations 16 · App Instances 14), CloudWatch GetMetricData 29%, Cloud Monitoring API 24%, Synthetics 11%. 대책: 감시할 Cloud Run 서비스만 service_name 필터, CloudWatch 폴링(10 분) 대상을 일본 리전 · 중요 서비스 · datadog:enabled 태그로 한정, Cloud Monitoring(5 분 폴링, 프로젝트당 약 1 만 엔/월) 서비스 · 프로젝트 한정. 60% 이상 절감.",
+      "date": "2025-02-03"
+    },
+    {
+      "title": "AWSとGoogle Cloudのコスト最適化の道 〜データドリブンな取り組みの紹介〜",
+      "url": "https://tech.jxpress.net/entry/2024/08/14/120000",
+      "publisher": "JX通信社",
+      "summary": "AWS · Google Cloud 비용 최적화를 데이터 기반으로 — 비용 데이터를 모아 보고 줄이는 활동.",
+      "date": "2024-08-14"
+    },
+    {
+      "title": "APIをダウンタイムなしでAWSからGCPに引越しました",
+      "url": "https://tech.jxpress.net/entry/2023/03/09/112758",
+      "publisher": "JX通信社",
+      "summary": "NewsDigest 모바일 앱 API 를 AWS → GCP(회사 방침 · 관리형 서비스). 제약: 도메인 불변 · 무중단 · 앱 수정 없음 · 서버 팀이 낮에 완결. Cloud Load Balancing 앞단 — Google 관리형 인증서는 트래픽을 받아야 활성화되므로 먼저 셀프 관리형(Let's Encrypt · Certbot TXT 검증)을 붙여 전환하고 뒤에서 관리형을 활성화한 뒤 셀프 관리형 제거. /etc/hosts 로 사전 HTTPS 확인. 기존 도메인이 CloudFront 로 CNAME 이라 A 레코드를 못 두므로 새 도메인에 A 레코드 → 기존 도메인에 가중 CNAME(초기 10%) — 문제 시 0 으로 되돌림. 실제로 이행 뒤 비용이 커 한 번 AWS 로 되돌리기도.",
+      "date": "2023-03-09"
+    },
+    {
+      "title": "ダウンタイムを抑えてAWSからGoogle Cloudにデータベースを移行したはなし",
+      "url": "https://tech.jxpress.net/entry/gcp_database_migration",
+      "publisher": "JX通信社",
+      "summary": "AWS 에서 Google Cloud 로 데이터베이스를 다운타임을 줄여 이행한 이야기.",
+      "date": "2023-07-13"
+    },
+    {
+      "title": "Datastream による Cloud SQL と BigQuery 同期：直面した課題と対応策",
+      "url": "https://tech.jxpress.net/entry/2024/12/10/204320",
+      "publisher": "JX通信社",
+      "summary": "Cloud SQL 을 Datastream 으로 BigQuery 에 동기화하며 겪은 과제와 대응.",
+      "date": "2024-12-10"
+    },
+    {
+      "title": "気象庁XMLを正しく扱いたい！",
+      "url": "https://tech.jxpress.net/entry/2024/07/29/090000",
+      "publisher": "JX通信社",
+      "summary": "日本テレビ와 공동 개발한 '日テレ気象・防災サイト' 등 사내에서 기상청 방재 정보 XML(PULL 형)을 폭넓게 사용. 수십 종 전문마다 형식 · 사양 · 발표 조건 · 순서가 다르다 — 지진 · 쓰나미만 13 종(쓰나미 경보 · 진도 속보 · 진원 · 진원진도 · 장주기 지진동 등). 같은 지진은 14 자리 EventID 로 묶는다(전진 · 본진 · 여진은 다른 ID, 쓰나미 정보는 여러 ID). 드물게 오보 → 취소 전문(2024-01-01 노토 진도 7 오보 취소 사례) — DB 에 저장했다면 롤백 처리 필요. 기상청 XML 을 다루기 쉬운 형식으로 가공해 돌려주는 API 를 제공.",
+      "date": "2024-07-29"
+    }
+  ]
+}

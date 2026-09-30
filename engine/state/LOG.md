@@ -3084,3 +3084,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 ## 2026-09-30 GMOメイクショップ CSV 배치 AWS Batch(기능 3/3) — 완주
 
 - `csv-batch-aws-batch-sidecar`. 결정 8 — 온라인/배치 분기 / ECS + machinery + SQS 의 120 초 한계 / 블루그린 기각 / AWS Batch 리비전 없는 제출 / ElasticMQ 흉내 Batch / 이미지 변환 사이드카 재사용 / cgo 분리 / Fluent Bit 로그 사이드카. 출처에 EC2 → Fargate 결제 이행 글 추가. 모든 도메인에 기능 → `done`.
+
+## 2026-09-30 JX通信社 프로파일
+
+- slug `jxpress`, SaaS. 회사 사이트(FASTALERT · NewsDigest · 정세 조사) + 기술 블로그(BigQuery 물리 과금 · Datadog 60% · 비용 최적화 · API 무중단 AWS → GCP · DB 이행 · Datastream · 기상청 XML). 도메인 3, 기능 0/3.

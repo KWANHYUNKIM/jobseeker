@@ -15,6 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **JX通信社** | JP · SaaS · 보도 벤처(FASTALERT · NewsDigest) | 프로파일(2026-09-30, slug `jxpress`). 도메인 셋 — BigQuery 물리 과금 · Datadog 비용 / NewsDigest API · DB 무중단 AWS → GCP / 기상청 XML EventID · 취소 전문. 기능 0/3. |
 | **オイシックス** | JP · 커머스 · 식품 정기 택배(Oisix · らでぃっしゅぼーや · 大地を守る会, 2026-07 사명 변경) | 프로파일(2026-09-30, slug `oisix`). 도메인 셋 — REBORN 제3세대(EKS · Dapr 무중단 · OpenAPI SSOT · 데드 코드) · 정기 박스 추천과 수요 예측(あなたにおすすめ · 반사실 평가 · LLM 보완 추천) · 해지율과 LCP · CVR. 입구 하테나 `creators.oisix.co.jp`(archive 로 2018 까지). 수익원 둘 — 정기 택배 EC(confirmed) · 법인 · 광고(inferred, **도메인 없음**). 기능 3(2026-09-30 REBORN / 추천 · 수요 예측 / 비기너 해지 · LCP × CVR). 도메인 셋 모두 기능. **hold** — 법인 · 광고 수익원 자료 두 번 없음(2026-09-30: archive 제목 · 블로그 검색 広告/保育/法人/AdOisix). 도메인 셋 모두 기능. |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 | **ラクス(RAKUS)** | JP · 백오피스 SaaS(楽楽精算·楽楽明細) | 프로파일(2026-09-26). 도메인 둘 — 경비 전표를 AI 가 초안 쓰고 규칙이 검사한다 · 청구서가 거래처에 닿는 제품의 장애를 영향으로 줄 세운다. 기능 2(楽楽精算 AI 에이전트 · 楽楽明細 장애 대응). **hold** — 메일 발송·웹 미디어 수익원 자료 두 번 없음(2026-09-26). 메일 발송·웹 미디어 수익원은 도메인 없음. |
@@ -82,7 +83,6 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **JX通信社** | JP · 뉴스(NewsDigest) · 재난 정보(FASTALERT) | 입구 `tech.jxpress.net/rss`. 'BigQuery 物理バイト課金への切り替え'(2026-06 — Datalake/DWH/Datamart 3 층 중복 보관, ALTER SCHEMA 한 줄로 수십 % 절감, 논리 vs 물리 과금) · 'Datadog とクラウド費用 60% 이상 삭감'(2025-02) · 'Datastream 으로 Cloud SQL ↔ BigQuery 동기' · Cloudflare Workers Slack 봇. 비용 · 데이터 기반 축. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
 
