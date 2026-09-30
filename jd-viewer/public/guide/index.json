@@ -1370,6 +1370,18 @@
       "postings": 3,
       "study_items": 9,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "mayi",
+      "name": "메이아이",
+      "aliases": [
+        "메이아이",
+        "mAy-I"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 9,
+      "updated_at": "2026-09-30"
     }
   ]
 }

@@ -1,0 +1,392 @@
+{
+  "slug": "mayi",
+  "name": "메이아이",
+  "name_en": "mAy-I",
+  "aliases": [
+    "메이아이",
+    "mAy-I"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": null,
+  "one_liner": "CCTV 영상으로 매장 방문객 · 동선 · 체류를 세는 '오프라인 구글 애널리틱스' mAsh(대기업 300 여 매장) — 지표 백엔드 · 분석가 · 추적 정확도 ML 엔지니어를 뽑는다",
+  "company": {
+    "business": "메이아이(mAy-I)는 **오프라인 매장의 구글 애널리틱스**를 만든다 — 공고는 '온라인에 구글 애널리틱스가 있다면 오프라인에는 메이아이의 **매쉬(mAsh)**' 라 적고, **CCTV 영상을 딥러닝으로 분석**해 방문객 수 · 동선 · 구역 체류 · 접객 데이터를 뽑아 대시보드와 인사이트로 준다. 고객은 **삼성전자 · LG전자 · 현대자동차 · 이랜드 패션 · CGV · 신세계백화점 · 현대백화점 · 아모레퍼시픽** 등 대기업의 **300 여 매장**이고, 영국 · 인도 · 베트남 매장도 분석한다. 기술 이력으로 CES 2024 AI 부문 혁신상, CVPR 2023 논문, ICLR 2025 spotlight 를 들고, **매일 13,000 시간 이상의 영상**을 분석하며 **수천 대 카메라**가 배포돼 있다. 2023 년 삼성벤처투자가 리드한 **60 억 원 시리즈 A**. 조직은 셀 단위다 — 제품 mAsh Cell(백엔드 · 분석가)과 ML 엔진 Research Cell. 세 공고가 한목소리로 '고객에게 보이는 숫자의 신뢰' 를 말한다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "Backend Engineer (백엔드 엔지니어)",
+        "url": "https://www.wanted.co.kr/wd/375249",
+        "publisher": "원티드",
+        "summary": "메이아이(mAy-I) — CCTV 영상을 딥러닝으로 분석해 매장 방문객 데이터 · 인사이트 대시보드 '매쉬(mAsh)'. 삼성전자 · LG전자 · 현대차 · CGV · 신세계 · 현대백화점 · 아모레퍼시픽 등 300 여 매장, 영국 · 인도 · 베트남. CES 2024 AI 혁신상, CVPR · ICLR spotlight. 2023 시리즈 A 60 억(삼성벤처투자 리드). mAsh Cell 백엔드 — Django/DRF 대시보드 API, 고객사별 맞춤 지표 파이프라인, 재처리 데이터 운영 플랫폼, 쿼리 매핑 · 스키마 · 데이터 계약, LLM 대화형 분석(LangGraph), PostgreSQL 성능 · Datadog. Python 3.11 · Prefect · S3 · Parquet. 3년, 대체복무 가능."
+      },
+      {
+        "title": "ML Engineer(머신러닝 엔지니어)",
+        "url": "https://www.wanted.co.kr/wd/380872",
+        "publisher": "원티드",
+        "summary": "Research Cell — 미션 1 정확도 관리(미검출 · Occlusion · Re-ID 실패 · Tracklet 병합/분할 오류 진단, 제품 파이프라인 반영), 미션 2 정합성 게이트(온보딩 · 재분석 단계별 자동 검증). 신입-경력 4년. Object Detection · MOT · Re-ID, AI 에이전트 활용. 우대 VLM 검증 · 라벨링 자동화. 매일 13,000 시간 이상 영상 분석, 수천 대 카메라."
+      }
+    ],
+    "scale": [
+      {
+        "label": "고객 매장",
+        "value": "대기업 300 여 매장 + 영국 · 인도 · 베트남",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Backend Engineer (백엔드 엔지니어)",
+            "url": "https://www.wanted.co.kr/wd/375249",
+            "publisher": "원티드",
+            "summary": "메이아이(mAy-I) — CCTV 영상을 딥러닝으로 분석해 매장 방문객 데이터 · 인사이트 대시보드 '매쉬(mAsh)'. 삼성전자 · LG전자 · 현대차 · CGV · 신세계 · 현대백화점 · 아모레퍼시픽 등 300 여 매장, 영국 · 인도 · 베트남. CES 2024 AI 혁신상, CVPR · ICLR spotlight. 2023 시리즈 A 60 억(삼성벤처투자 리드). mAsh Cell 백엔드 — Django/DRF 대시보드 API, 고객사별 맞춤 지표 파이프라인, 재처리 데이터 운영 플랫폼, 쿼리 매핑 · 스키마 · 데이터 계약, LLM 대화형 분석(LangGraph), PostgreSQL 성능 · Datadog. Python 3.11 · Prefect · S3 · Parquet. 3년, 대체복무 가능."
+          }
+        ]
+      },
+      {
+        "label": "투자",
+        "value": "2023 시리즈 A 60 억 원(삼성벤처투자 리드)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Backend Engineer (백엔드 엔지니어)",
+            "url": "https://www.wanted.co.kr/wd/375249",
+            "publisher": "원티드",
+            "summary": "메이아이(mAy-I) — CCTV 영상을 딥러닝으로 분석해 매장 방문객 데이터 · 인사이트 대시보드 '매쉬(mAsh)'. 삼성전자 · LG전자 · 현대차 · CGV · 신세계 · 현대백화점 · 아모레퍼시픽 등 300 여 매장, 영국 · 인도 · 베트남. CES 2024 AI 혁신상, CVPR · ICLR spotlight. 2023 시리즈 A 60 억(삼성벤처투자 리드). mAsh Cell 백엔드 — Django/DRF 대시보드 API, 고객사별 맞춤 지표 파이프라인, 재처리 데이터 운영 플랫폼, 쿼리 매핑 · 스키마 · 데이터 계약, LLM 대화형 분석(LangGraph), PostgreSQL 성능 · Datadog. Python 3.11 · Prefect · S3 · Parquet. 3년, 대체복무 가능."
+          }
+        ]
+      },
+      {
+        "label": "분석 영상",
+        "value": "매일 13,000 시간 이상 · 수천 대 카메라",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "ML Engineer(머신러닝 엔지니어)",
+            "url": "https://www.wanted.co.kr/wd/380872",
+            "publisher": "원티드",
+            "summary": "Research Cell — 미션 1 정확도 관리(미검출 · Occlusion · Re-ID 실패 · Tracklet 병합/분할 오류 진단, 제품 파이프라인 반영), 미션 2 정합성 게이트(온보딩 · 재분석 단계별 자동 검증). 신입-경력 4년. Object Detection · MOT · Re-ID, AI 에이전트 활용. 우대 VLM 검증 · 라벨링 자동화. 매일 13,000 시간 이상 영상 분석, 수천 대 카메라."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "매장 방문객 분석 SaaS(mAsh)",
+        "how": "대기업 매장에 CCTV 영상 분석 데이터 · 대시보드 · 인사이트를 제공한다 — 공고는 '실제 매출 성과' 를 말하지만 과금 단위(매장 · 카메라 · 구독)는 읽은 자료에 없다.",
+        "domains": [
+          "방문객 행동 지표 API · 파이프라인",
+          "비전 정확도 · 정합성 게이트",
+          "고객 지표 정의 · 검증 분석"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "Backend Engineer (백엔드 엔지니어)",
+            "url": "https://www.wanted.co.kr/wd/375249",
+            "publisher": "원티드",
+            "summary": "메이아이(mAy-I) — CCTV 영상을 딥러닝으로 분석해 매장 방문객 데이터 · 인사이트 대시보드 '매쉬(mAsh)'. 삼성전자 · LG전자 · 현대차 · CGV · 신세계 · 현대백화점 · 아모레퍼시픽 등 300 여 매장, 영국 · 인도 · 베트남. CES 2024 AI 혁신상, CVPR · ICLR spotlight. 2023 시리즈 A 60 억(삼성벤처투자 리드). mAsh Cell 백엔드 — Django/DRF 대시보드 API, 고객사별 맞춤 지표 파이프라인, 재처리 데이터 운영 플랫폼, 쿼리 매핑 · 스키마 · 데이터 계약, LLM 대화형 분석(LangGraph), PostgreSQL 성능 · Datadog. Python 3.11 · Prefect · S3 · Parquet. 3년, 대체복무 가능."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "방문객 행동 지표 API · 파이프라인",
+        "why": "백엔드 공고가 Django/DRF 대시보드 API, 고객사별 맞춤 지표 파이프라인, 재처리 운영 플랫폼, 데이터 계약, LLM 대화형 분석을 적는다.",
+        "what_to_know": [
+          "지표 정의 버전 관리",
+          "재처리 멱등성",
+          "PostgreSQL 집계 최적화"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Backend Engineer (백엔드 엔지니어)",
+            "url": "https://www.wanted.co.kr/wd/375249",
+            "publisher": "원티드",
+            "summary": "메이아이(mAy-I) — CCTV 영상을 딥러닝으로 분석해 매장 방문객 데이터 · 인사이트 대시보드 '매쉬(mAsh)'. 삼성전자 · LG전자 · 현대차 · CGV · 신세계 · 현대백화점 · 아모레퍼시픽 등 300 여 매장, 영국 · 인도 · 베트남. CES 2024 AI 혁신상, CVPR · ICLR spotlight. 2023 시리즈 A 60 억(삼성벤처투자 리드). mAsh Cell 백엔드 — Django/DRF 대시보드 API, 고객사별 맞춤 지표 파이프라인, 재처리 데이터 운영 플랫폼, 쿼리 매핑 · 스키마 · 데이터 계약, LLM 대화형 분석(LangGraph), PostgreSQL 성능 · Datadog. Python 3.11 · Prefect · S3 · Parquet. 3년, 대체복무 가능."
+          }
+        ]
+      },
+      {
+        "name": "비전 정확도 · 정합성 게이트",
+        "why": "ML 공고가 검출 · 추적 · Re-ID 오류 진단과 온보딩 · 재분석 단계별 자동 정합성 게이트, VLM 검증 자동화를 적는다.",
+        "what_to_know": [
+          "MOT 지표(IDF1 · HOTA)",
+          "Re-ID",
+          "자동 검증 규칙"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "ML Engineer(머신러닝 엔지니어)",
+            "url": "https://www.wanted.co.kr/wd/380872",
+            "publisher": "원티드",
+            "summary": "Research Cell — 미션 1 정확도 관리(미검출 · Occlusion · Re-ID 실패 · Tracklet 병합/분할 오류 진단, 제품 파이프라인 반영), 미션 2 정합성 게이트(온보딩 · 재분석 단계별 자동 검증). 신입-경력 4년. Object Detection · MOT · Re-ID, AI 에이전트 활용. 우대 VLM 검증 · 라벨링 자동화. 매일 13,000 시간 이상 영상 분석, 수천 대 카메라."
+          }
+        ]
+      },
+      {
+        "name": "고객 지표 정의 · 검증 분석",
+        "why": "분석가 공고가 방문 · 상담 · 전환 · 구역 체류의 지표 정의, 검증 · 보정 · 이상치 절차, 정합성 원인 추적을 적는다.",
+        "what_to_know": [
+          "지표 정의서",
+          "이상치 탐지",
+          "보정 계수 검증"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Data Analyst(데이터 분석가)",
+            "url": "https://www.wanted.co.kr/wd/375211",
+            "publisher": "원티드",
+            "summary": "고객사 측정 요구(방문 · 상담 · 전환 · 구역 체류)를 지표 정의로, 분석 스크립트, 검증 · 보정 · 이상치 절차, 고객사별 분석 설정 관리, 정합성 원인 추적, 매장 운영 인사이트 리포트. 3년, pandas · SQL, 통계적 사고. 우대 공간 · 위치 · 영상 기반 데이터, 고객 대면."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "모델 정확도보다 고객이 보는 숫자의 신뢰가 과제다",
+        "evidence": "개별 모델의 정확도를 올리는 것을 넘어, 배포된 수천 대의 카메라 환경에서 정확도가 스스로 검증되고 유지되는 체계를 만드는 것이 지금의 핵심 과제입니다.",
+        "so_what": "세 자리 모두 정합성 · 검증 · 재처리를 말한다 — 틀린 숫자가 고객에게 나가기 전에 막은 경험이 가장 강한 이야기다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "대체복무 · 신입에게도 열려 있다",
+        "evidence": "• 대체복무 | 가능",
+        "so_what": "백엔드는 대체복무 가능, ML 은 신입부터 — 병역 특례 대상자라면 조건을 먼저 확인한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "회사 홈페이지는 이번에 읽지 않았다 — 매출 · 인원은 모른다",
+    "과금 단위(매장 · 카메라 · 구독)는 모른다",
+    "영상 속 개인정보(얼굴 등) 처리 방식은 공고에 없다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/375249",
+      "title": "Backend Engineer (백엔드 엔지니어)",
+      "site": "wanted",
+      "verdict": "경력 3년 이상, 대체복무 가능. **mAsh Cell 플랫폼 레이어** — 방문객 수 · 동선 · 구역 체류 · 접객 **Django/DRF 대시보드 API**, **고객사별 맞춤 지표(방문 · 상담 · 전환)를 대규모 이벤트 데이터에서 산출하는 파이프라인**, 고객 요청 **재처리를 안전하게 실행 · 검증하는 데이터 운영 플랫폼**, 분석 실행 환경 ↔ 백엔드 **쿼리 매핑 · 스키마 · 데이터 계약**, **LLM 대화형 분석 · 리포트 · 인사이트 백엔드**, PostgreSQL 쿼리 · 인덱스 · 커넥션 · 관측성. 자격은 Python 웹 백엔드 3년, Django/DRF API, PostgreSQL 스키마 · 튜닝, 대용량 조회 · 집계 · 재처리의 성능 · 정합성 문제 해결, 분석가 · PM · 프론트 · 데이터 엔지니어 협업. 우대는 Prefect/Airflow, AWS, Datadog, 모노레포, LLM · 스트리밍 · 툴 콜 · RAG, LangGraph. 스택 Python 3.11 · Django · DRF · PostgreSQL · S3 · Parquet · pandas · Prefect · Docker · AWS · Datadog. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Python 백엔드 3년",
+          "Django/DRF",
+          "PostgreSQL 튜닝",
+          "대용량 집계 · 재처리"
+        ],
+        "can_learn": [
+          "Prefect",
+          "데이터 계약",
+          "LangGraph"
+        ]
+      },
+      "study": [
+        {
+          "topic": "고객사마다 다른 '방문 · 전환' — 지표를 설정으로 산출하는 파이프라인",
+          "from": "task",
+          "quote": "• 고객사별로 정의되는 방문, 상담, 전환 등 맞춤 지표를 대규모 이벤트 데이터에서 안정적으로 산출하는 데이터 파이프라인을 개발하고 개선합니다.",
+          "priority": "core",
+          "why": "주요업무다. 같은 '방문' 도 고객사마다 입구 선 · 체류 시간 기준이 다르다.",
+          "gap_check": "지표 정의(어느 구역 · 몇 초 이상 · 직원 제외)를 코드가 아니라 고객사별 설정으로 두려면? 정의가 바뀌면 과거 숫자는 다시 계산하나, 바뀐 날부터만 적용하나(정의 버전)? 수억 개 이벤트 집계를 PostgreSQL 에서 하나, Parquet 위에서 하나?",
+          "drill": "가짜 방문객 이벤트(트랙 ID · 구역 · 진입/이탈 시각) 1,000 만 행을 Parquet 로 만들고, 고객사 설정 JSON(구역 · 최소 체류 · 제외 규칙)을 읽어 일별 방문 · 구역 체류 · 전환을 계산하는 Prefect 플로를 짠다. 설정에 버전을 붙여 지난 날짜를 새 정의로 재계산하는 경로를 만든다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Prefect — Docs",
+              "url": "https://docs.prefect.io/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "분석과 서비스 사이의 약속 — 데이터 계약과 재처리",
+          "from": "task",
+          "quote": "• 분석 실행 환경과 백엔드 사이의 쿼리 매핑, 스키마, 데이터 계약을 관리해 분석 결과가 서비스 API로 안정적으로 연결되도록 합니다.",
+          "priority": "core",
+          "why": "주요업무이고 '재처리를 안전하게 실행 · 검증하는 운영 플랫폼' 과 이어진다. 분석가가 컬럼 하나를 바꾸면 대시보드가 깨질 수 있다.",
+          "gap_check": "분석 결과 테이블의 스키마 · 의미(단위 · 타임존 · NULL 뜻)를 누가 소유하고 어디에 적나? 재처리로 같은 날짜를 다시 쓰면 대시보드는 언제 새 값을 보나(원자적 교체 · 버전)? 재처리 결과를 공개 전에 무엇으로 검증하나(이전 값과 차이 한도)?",
+          "drill": "분석 결과 스키마를 pydantic(또는 JSON Schema)으로 계약화하고 파이프라인 출력이 계약을 어기면 실패시킨다. 재처리를 새 버전 테이블에 쓴 뒤 전일 대비 차이가 ±20% 를 넘으면 공개를 막는 검증 단계를 거쳐, 통과하면 뷰를 새 버전으로 교체한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Data Contract Specification",
+              "url": "https://datacontract.com/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "대화형 분석 — LLM 이 숫자를 지어내지 않게",
+          "from": "task",
+          "quote": "• LLM 기반 대화형 분석, 리포트, 인사이트 기능을 위한 AI 챗·인사이트 백엔드를 구현하고 제품 기능으로 연결합니다.",
+          "priority": "high",
+          "why": "주요업무이고 우대에 LangGraph · 툴 콜 · 스트리밍이 있다. 고객이 '지난주 강남점 전환율이 왜 떨어졌어?' 라고 묻는다.",
+          "gap_check": "LLM 이 숫자를 직접 만들지 않고 검증된 지표 API 를 도구로 부르게 하려면? 고객사 A 의 대화가 B 의 데이터를 부르지 않게 도구에 무엇을 강제하나? 답을 스트리밍하면서 도구 호출 결과를 어떻게 보여 주나?",
+          "drill": "LangGraph 로 '지표 조회(매장 · 기간 · 지표)' '기간 비교' 두 도구만 가진 에이전트를 만들고, 도구는 요청자의 고객사 ID 를 서버에서 주입해 다른 고객사 매장을 거부한다. 숫자는 도구 결과에서만 인용하게 하고, 없는 매장을 물으면 모른다고 답하는지 테스트한다. DRF 엔드포인트에서 SSE 로 스트리밍한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "LangGraph — Docs",
+              "url": "https://langchain-ai.github.io/langgraph/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/375211",
+      "title": "Data Analyst(데이터 분석가)",
+      "site": "wanted",
+      "verdict": "경력 3년 이상. **고객사 측정 요구(방문 · 상담 · 전환 · 구역 체류)를 분석 가능한 문제 · 지표 정의로** 바꾸고 문서화, 데이터 탐색 · 가공 · 분석 스크립트, **검증 · 보정 · 이상치 확인 절차 설계**, 고객사별 분석 설정 관리, **정합성 문제의 원인 추적**, 매장 운영 인사이트 리포트. 자격은 분석 3년, pandas · SQL, 통계적 사고 · 검증 감각, 모호한 요구를 지표로, 비개발자 · 고객에게 설명 · 문서화, PM · 개발 협업. 우대는 통계/ML 적용, **공간 · 위치 · 행동 · 시계열 · 센서/영상 데이터**, 고객 대면 제안, ETL 이해, 반복 분석 자동화. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "분석 3년",
+          "pandas · SQL",
+          "검증 감각",
+          "지표 정의 문서화"
+        ],
+        "can_learn": [
+          "영상 기반 계수 보정",
+          "이상치 규칙",
+          "고객 리포트"
+        ]
+      },
+      "study": [
+        {
+          "topic": "'방문' 을 정의한다 — 모호한 요구를 지표 정의서로",
+          "from": "task",
+          "quote": "• 고객사의 측정 요구(방문, 상담, 전환, 구역 체류 등)를 분석 가능한 문제와 지표 정의로 바꾸고, 분석 설계를 문서화합니다.",
+          "priority": "core",
+          "why": "주요업무 첫 줄이다. 고객이 '상담 몇 번 했는지' 를 물으면 영상에서 무엇을 상담으로 셀지 정해야 한다.",
+          "gap_check": "'상담' 을 직원과 방문객이 같은 구역에 N 초 이상 · 몇 미터 안에 있는 것으로 정의하면 무엇을 잘못 세나? 직원 · 반복 방문 · 일행은 어떻게 다루나? 정의서에 반드시 들어갈 칸(분자 · 분모 · 제외 · 단위 · 한계)은?",
+          "drill": "가상의 매장 요구 셋(방문 · 상담 · 피팅룸 전환)에 대해 지표 정의서 템플릿(정의 · 산식 · 제외 규칙 · 알려진 한계 · 검증 방법)을 쓰고, 가짜 트랙 데이터로 pandas 산출 스크립트를 만든다. 상담 기준 초 수를 10 · 30 · 60 초로 바꿨을 때 숫자가 얼마나 달라지는지 표로 붙인다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "dbt — About metrics (MetricFlow)",
+              "url": "https://docs.getdbt.com/docs/build/about-metricflow",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "숫자를 그대로 믿지 않기 — 검증 · 보정 · 이상치 절차",
+          "from": "task",
+          "quote": "• 분석 결과의 정확도와 신뢰성을 높이기 위한 검증 기준, 보정 기준, 이상치 확인 절차를 설계합니다.",
+          "priority": "core",
+          "why": "주요업무이고 자격에 '숫자의 의미와 한계를 설명' 이 있다. 카메라가 가려지거나 각도가 바뀌면 방문객 수가 조용히 틀린다.",
+          "gap_check": "카메라 계수를 무엇과 대조해 검증하나(POS 영수증 수 · 사람이 센 표본)? 요일 · 시간대 패턴에서 벗어난 날을 어떻게 자동으로 잡나? 보정 계수를 곱하면 무엇을 숨기게 되나?",
+          "drill": "가짜 일별 방문 데이터에 카메라 가림(한 주 -40%) · 행사일(+80%)을 섞고, 요일별 중앙값 대비 편차 · STL 분해 잔차로 이상치를 잡는 스크립트를 만든다. 사람이 센 표본 10 일과 비교해 보정 계수를 추정하고 신뢰 구간을 함께 보고하는 리포트를 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "statsmodels — STL decomposition",
+              "url": "https://www.statsmodels.org/stable/examples/notebooks/generated/stl_decomposition.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "정합성 문제의 원인을 좁히기 — 영상 → 트랙 → 지표",
+          "from": "task",
+          "quote": "• 데이터 정합성 문제를 발견하면 원인을 추적하고, Project Manager 및 개발 직군과 협업하여 해결 방향을 정리합니다.",
+          "priority": "high",
+          "why": "주요업무다. 숫자가 이상할 때 모델(검출 · 추적) · 파이프라인(집계) · 정의(설정) 중 어디가 원인인지 가려야 해결 담당이 정해진다.",
+          "gap_check": "방문객 수가 두 배로 튀면 먼저 무엇을 보나(트랙 수 vs 고유 방문자 · 트랙 분할)? 같은 날을 재처리했더니 숫자가 달라지면 무엇이 바뀐 것인가(모델 버전 · 설정 버전)? 원인 보고서는 누구에게 무엇을 요청하는 문서여야 하나?",
+          "drill": "가짜 데이터에 '트랙 분할(한 사람이 여러 트랙)' 오류를 넣어 방문 수를 부풀리고, 트랙 길이 분포 · 같은 시각 가까운 위치의 트랙 쌍으로 원인을 좁히는 노트북을 만든다. 원인 · 영향 범위 · 담당(ML · 백엔드 · 설정) · 임시 조치를 담은 한 쪽짜리 보고서를 쓴다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "pandas — User Guide",
+              "url": "https://pandas.pydata.org/docs/user_guide/index.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/380872",
+      "title": "ML Engineer(머신러닝 엔지니어)",
+      "site": "wanted",
+      "verdict": "신입-경력 4년, **Research Cell**. 상시 미션 둘 — **① 정확도 관리**: 글로벌 고객사 현장의 **미검출 · Occlusion · Re-ID 실패 · Tracklet 병합/분할 오류**를 관찰 · 진단해 모델 · 알고리즘에서 근본 해결하고 **제품 파이프라인에 반영**(재발 방지). **② 정합성 게이트**: 신규 매장 온보딩 · 재분석 **단계별 정합성 기준과 자동 검증 게이트**, 반복 수동 확인 자동화. 자격은 문제 구조화 · 실측 검증 · **End-to-End 완결(원인 분석 → 개선 → 상용 코드)**, **Object Detection · MOT · Person Re-ID**, AI 에이전트를 쓰되 산출물을 독립 검증, 미션 오너십. 우대는 상용 품질 관리, 모델 지표 ≠ 비즈니스 지표 감각, **VLM 검증 · 라벨링 자동화**, 대규모 영상 파이프라인, CV 연구 성과. 매일 13,000 시간 이상 영상 · 수천 대 카메라. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Detection · MOT · Re-ID 이해",
+          "End-to-End 완결",
+          "실측 검증"
+        ],
+        "can_learn": [
+          "정합성 게이트 설계",
+          "VLM 검증",
+          "현장 데이터 분석"
+        ]
+      },
+      "study": [
+        {
+          "topic": "사람을 끝까지 따라가기 — MOT 오류 유형과 지표",
+          "from": "task",
+          "quote": "- 현장 기반 정확도 이슈 해결: 글로벌 고객사들의 현장 데이터에서 발생하는 검출·추적·분석 정확도 이슈(미검출, Occlusion, Re-ID 실패, Tracklet 병합/분할 오류 등)를 관찰·진단하고, 모델·알고리즘 레벨에서 근본 원인을 해결합니다.",
+          "priority": "core",
+          "why": "미션 1 이다. 방문 수 · 체류 시간은 추적이 한 사람을 한 트랙으로 유지해야 맞는다.",
+          "gap_check": "트랙이 쪼개지면(분할) 방문 수가 늘고, 두 사람이 합쳐지면(병합) 줄어든다 — 어떤 지표가 이걸 드러내나(IDF1 · ID switch · HOTA 의 AssA)? 가림 뒤 다시 나타난 사람을 Re-ID 특징으로 잇는 문턱을 올리면 무엇이 늘고 무엇이 주나? 매장 입구처럼 사람이 몰리는 곳에서는?",
+          "drill": "MOT17 일부로 ByteTrack(또는 BoT-SORT)을 돌려 TrackEval 로 MOTA · IDF1 · HOTA 를 재고, Re-ID 매칭 문턱 · 트랙 유지 프레임 수를 바꿔 ID switch 와 분할 수가 어떻게 변하는지 표로 만든다. '방문 수' 로 환산했을 때 오차가 얼마인지도 같이 적는다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "TrackEval — HOTA 등 MOT 평가",
+              "url": "https://github.com/JonathonLuiten/TrackEval",
+              "kind": "docs"
+            },
+            {
+              "title": "ByteTrack",
+              "url": "https://github.com/ifzhang/ByteTrack",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "틀린 데이터가 고객에게 가기 전에 — 단계별 정합성 게이트",
+          "from": "task",
+          "quote": "- 단계별 정합성 게이트 구축: 신규 매장 온보딩과 재분석 단계별로 데이터 정합성 기준과 자동 검증 게이트를 설계·운영하여, 잘못된 데이터가 고객에게 전달되기 전에 걸러지는 체계를 구축합니다.",
+          "priority": "core",
+          "why": "미션 2 다. 수천 대 카메라를 사람이 매일 볼 수 없다.",
+          "gap_check": "새 매장을 켤 때 무엇을 통과해야 고객에게 숫자를 보이나(카메라 각도 · 구역 설정 · 표본 계수 대조)? 재분석 결과가 이전과 크게 다르면 자동으로 막나, 사람에게 넘기나? 게이트 규칙이 너무 엄하면 무엇이 생기나(모든 매장이 막힘)?",
+          "drill": "매장 일별 지표에 대해 게이트 규칙 셋(트랙 수 대비 방문 수 비율 범위 · 구역 체류 음수/0 비율 · 전주 대비 변화 한도)을 코드로 만들고, 통과 · 경고 · 차단 세 결과를 남기게 한다. 오류를 심은 가짜 매장 10 곳으로 규칙이 잡는 것과 놓치는 것을 표로 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Great Expectations — Expectations",
+              "url": "https://docs.greatexpectations.io/docs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "사람이 보던 확인을 VLM 에게 — 검증 · 라벨링 자동화",
+          "from": "preference",
+          "quote": "• 최신 AI 기법 적용 경험: VLM 등 최신 AI 기법을 검증·라벨링 자동화 등 실무에서 발생한 난제 해결에 적용해 본 경험",
+          "priority": "high",
+          "why": "우대사항이고 팀 소개가 'VLM 기반 검증 자동화 · 사람 손을 최소화한 학습 루프' 를 도구로 든다.",
+          "gap_check": "VLM 에게 '이 크롭에 사람이 있나 · 직원 유니폼인가' 를 물을 때 답을 어떻게 믿나(사람 판정과의 일치율)? 확신이 낮은 것만 사람에게 넘기는 기준은? VLM 판정을 학습 라벨로 쓰면 무엇이 되먹임되나?",
+          "drill": "공개 보행자 크롭 몇 백 장에 대해 오픈 VLM(예: Qwen2-VL)으로 '사람인가 · 가려졌나' 를 묻고, 직접 판정한 100 장과 일치율 · 혼동 행렬을 만든다. 신뢰도(또는 두 프롬프트의 일치 여부)로 사람 검토 대상을 고르면 검토량이 얼마나 줄고 오류가 얼마나 남는지 잰다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Qwen2-VL",
+              "url": "https://github.com/QwenLM/Qwen2-VL",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
