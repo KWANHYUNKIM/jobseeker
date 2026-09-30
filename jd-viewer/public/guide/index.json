@@ -1442,6 +1442,18 @@
       "postings": 2,
       "study_items": 6,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "mirny",
+      "name": "미르니",
+      "aliases": [
+        "미르니",
+        "노드인프라"
+      ],
+      "status": "done",
+      "postings": 2,
+      "study_items": 6,
+      "updated_at": "2026-09-30"
     }
   ]
 }

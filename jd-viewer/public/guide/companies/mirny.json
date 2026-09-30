@@ -1,0 +1,263 @@
+{
+  "slug": "mirny",
+  "name": "미르니",
+  "name_en": "Node Infra",
+  "aliases": [
+    "미르니",
+    "노드인프라"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": null,
+  "one_liner": "은행 · 증권사가 스테이블코인 · RWA 를 다루게 하는 디지털 자산 인프라 노드월렛(노드인프라) — Rust 보안 · 컴플라이언스 모듈과 Java SDK 개발자를 신입부터 뽑는다",
+  "company": {
+    "business": "미르니(노드인프라)는 **금융회사가 디지털 자산을 다루는 데 필요한 기술 인프라**를 B2B 로 공급한다 — 공고는 스스로를 '신뢰받는 디지털자산 인프라 회사' 라 부르고, **스테이블코인 · 실물 자산(RWA)** 등을 처리하는 인프라를 **국내 은행 · 카드사 · PG/결제사 · 증권사 · 자산운용사**에 판다고 적는다. 제품 이름은 **노드월렛** — 공고로 보이는 구성은 고객사가 자기 시스템에 붙이는 **Java/Spring SDK**, 고객사의 디지털 자산 **컴플라이언스 정책을 반영하는 모듈**, 고객사의 **보안 정책을 반영하는 모듈**이다. 개발팀은 AI(Claude)를 적극 써서 전통 금융과 Web3 기술을 조합한다고 하고, 20-30 대 엔지니어로 R&R 을 나누되 시스템 설계는 함께 논의한다. 모집중 둘은 **Rust 보안 솔루션 개발자**와 **산업기능요원(보충역 4급) 엔지니어**이며 둘 다 신입부터 뽑는다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "디지털자산 보안 솔루션 개발자 (Rust)",
+        "url": "https://www.wanted.co.kr/wd/142761",
+        "publisher": "원티드",
+        "summary": "'신뢰받는 디지털자산 인프라 회사' 노드인프라(미르니) — 금융 고객사가 스테이블코인 · 실물 자산(RWA) 등 디지털 자산을 처리하는 기술 인프라를 B2B 로 공급. 고객은 국내 은행 · 카드사 · PG/결제사 · 증권사 · 자산운용사. 개발팀은 AI(Claude)를 적극 활용, 20-30 대. 노드월렛 솔루션의 컴플라이언스 · 보안 모듈. 컴공 등, Linux(파일시스템 · 네트워킹). 우대 Rust · 디지털 자산 · 금융 보안 · AI 활용. 고성과자 스톡옵션."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "금융사 대상 디지털 자산 인프라(노드월렛)",
+        "how": "은행 · 카드 · PG · 증권 · 자산운용사에 노드월렛(SDK · 컴플라이언스 · 보안 모듈)을 공급한다 — 라이선스 · 구축 · 사용료 구성은 읽은 자료에 없다.",
+        "domains": [
+          "디지털 자산 지갑 보안 · 컴플라이언스 모듈",
+          "금융사 연동 SDK"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "디지털자산 보안 솔루션 개발자 (Rust)",
+            "url": "https://www.wanted.co.kr/wd/142761",
+            "publisher": "원티드",
+            "summary": "'신뢰받는 디지털자산 인프라 회사' 노드인프라(미르니) — 금융 고객사가 스테이블코인 · 실물 자산(RWA) 등 디지털 자산을 처리하는 기술 인프라를 B2B 로 공급. 고객은 국내 은행 · 카드사 · PG/결제사 · 증권사 · 자산운용사. 개발팀은 AI(Claude)를 적극 활용, 20-30 대. 노드월렛 솔루션의 컴플라이언스 · 보안 모듈. 컴공 등, Linux(파일시스템 · 네트워킹). 우대 Rust · 디지털 자산 · 금융 보안 · AI 활용. 고성과자 스톡옵션."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "디지털 자산 지갑 보안 · 컴플라이언스 모듈",
+        "why": "두 공고가 노드월렛의 컴플라이언스 모듈(고객사 정책 반영)과 보안 모듈(고객사 보안 정책 반영)을 적고, Rust · Linux · 금융 보안을 우대한다.",
+        "what_to_know": [
+          "키 관리(HSM · MPC)",
+          "트래블룰 · AML 스크리닝",
+          "정책 엔진(한도 · 화이트리스트 · 승인)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "디지털자산 보안 솔루션 개발자 (Rust)",
+            "url": "https://www.wanted.co.kr/wd/142761",
+            "publisher": "원티드",
+            "summary": "'신뢰받는 디지털자산 인프라 회사' 노드인프라(미르니) — 금융 고객사가 스테이블코인 · 실물 자산(RWA) 등 디지털 자산을 처리하는 기술 인프라를 B2B 로 공급. 고객은 국내 은행 · 카드사 · PG/결제사 · 증권사 · 자산운용사. 개발팀은 AI(Claude)를 적극 활용, 20-30 대. 노드월렛 솔루션의 컴플라이언스 · 보안 모듈. 컴공 등, Linux(파일시스템 · 네트워킹). 우대 Rust · 디지털 자산 · 금융 보안 · AI 활용. 고성과자 스톡옵션."
+          },
+          {
+            "title": "산업기능요원 병역특례 보충역(4급) 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/142760",
+            "publisher": "원티드",
+            "summary": "노드월렛 — Java/Spring SDK(고객사 개발용), 컴플라이언스 · 보안 모듈. 자격 산업기능요원 보충역(4급), 컴공 등. 우대 Java/Spring 또는 Rust · 디지털 자산 · 금융 보안 · AI 활용."
+          }
+        ]
+      },
+      {
+        "name": "금융사 연동 SDK",
+        "why": "병역특례 공고가 고객사가 노드월렛으로 개발할 때 쓰는 Java/Spring SDK 를 적는다 — 은행 · 증권사의 기존 시스템이 Java 다.",
+        "what_to_know": [
+          "SDK 버전 · 하위 호환",
+          "재시도 · 멱등 키",
+          "Spring Boot starter"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "산업기능요원 병역특례 보충역(4급) 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/142760",
+            "publisher": "원티드",
+            "summary": "노드월렛 — Java/Spring SDK(고객사 개발용), 컴플라이언스 · 보안 모듈. 자격 산업기능요원 보충역(4급), 컴공 등. 우대 Java/Spring 또는 Rust · 디지털 자산 · 금융 보안 · AI 활용."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "고객이 규제받는 금융회사다",
+        "evidence": "노드인프라의 고객사는 국내 은행, 카드사, PG/결제사, 증권사, 자산운용사 등으로 이루어져 있습니다.",
+        "so_what": "보안 · 컴플라이언스가 곧 제품이다 — 금융권 보안 요구(망분리 · 감사 로그 · 권한 분리)를 알면 말이 된다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "AI 도구를 일하는 방식으로 쓴다",
+        "evidence": "개발팀은 AI 기술(예: Claude)을 적극적으로 활용하여 전통 금융 및 Web3 기술을 깊이 있게 이해하고 조합합니다.",
+        "so_what": "두 공고 모두 AI 활용을 우대한다 — AI 로 새 도메인을 빨리 익힌 경험과, 그 결과를 검증한 방법을 준비한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "회사 홈페이지를 이번에 찾지 않았다 — 매출 · 인원 · 투자 · 실제 고객사 이름은 모른다",
+    "미르니와 노드인프라의 관계(사명 변경 · 브랜드)는 공고의 '노드인프라(미르니)' 표기뿐이다",
+    "두 공고 모두 오래 열린 게시다(wd 142760 · 142761)"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/142761",
+      "title": "디지털자산 보안 솔루션 개발자 (Rust)",
+      "site": "wanted",
+      "verdict": "신입-경력 4년. **노드월렛 솔루션**의 **컴플라이언스 모듈**(고객사 디지털 자산 컴플라이언스 정책 반영) · **보안 모듈**(고객사 보안 정책 반영) 중 특정 업무. 자격은 **컴퓨터공학 등 졸업**, **Linux OS(파일시스템 · 네트워킹) 이해**, 명료한 소통. 우대는 **Rust**, 디지털 자산 기술 · 비즈니스, **금융 보안**, AI(Claude) 활용. 복지에 고성과자 스톡옵션. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "컴공 등 졸업",
+          "Linux 이해"
+        ],
+        "can_learn": [
+          "Rust",
+          "키 관리 · 서명 정책",
+          "트래블룰"
+        ]
+      },
+      "study": [
+        {
+          "topic": "금융사가 보유한 코인 지갑의 보안 — 키 관리와 서명 정책",
+          "from": "task",
+          "quote": "• 보안: 고객사의 디지털자산 보안 정책을 반영할 수 있는 보안 모듈들을 개발합니다.",
+          "priority": "core",
+          "why": "주요업무다. 은행 · 증권사가 스테이블코인 · 토큰을 들고 있으려면 개인키를 누가 어떻게 쥐는지가 전부다.",
+          "gap_check": "개인키를 한 서버에 두지 않으려면 HSM · 멀티시그 · MPC(키 분할 서명) 중 무엇이 금융사에 맞나? '1 억 원 넘는 출금은 두 명 승인', '화이트리스트 주소로만' 같은 정책은 서명 전 어디서 검사하나? 서명 요청 · 승인 · 거절을 어떻게 위변조 없이 기록하나(감사 로그)?",
+          "drill": "Rust 로 출금 요청 → 정책 검사(한도 · 화이트리스트 · 필요 승인 수) → 승인 수집 → 서명(테스트넷 키, ed25519-dalek 또는 k256) 흐름의 작은 서비스를 만든다. 정책을 설정 파일로 빼고, 모든 단계를 해시 체인 감사 로그로 남겨 한 줄을 고치면 검증이 실패하는지 확인한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "The Rust Programming Language",
+              "url": "https://doc.rust-lang.org/book/",
+              "kind": "book"
+            },
+            {
+              "title": "NIST SP 800-57 — Key Management",
+              "url": "https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "디지털 자산 컴플라이언스 — 트래블룰 · 주소 스크리닝",
+          "from": "task",
+          "quote": "• 컴플라이언스: 고객사의 디지털 자산 컴플라이언스 정책을 반영할 수 있는 컴플라이언스 모듈들을 개발합니다.",
+          "priority": "core",
+          "why": "주요업무다. 가상자산을 옮기는 금융사는 자금세탁방지 의무를 진다.",
+          "gap_check": "트래블룰은 일정 금액 이상 이전 때 송신 · 수신 측이 무엇을 주고받게 하나? 제재 주소 · 위험 주소로 보내려는 출금을 어디서 막나(사전 스크리닝)? 고객사마다 기준이 다를 때 정책을 코드가 아니라 설정으로 두려면?",
+          "drill": "FATF 가상자산 지침의 트래블룰 요구를 한 쪽으로 요약하고, 앞 출금 흐름에 '주소 위험 점수 조회(가짜 API) → 기준 초과 시 차단 · 수동 검토' 와 '금액 기준 초과 시 송 · 수신인 정보 첨부' 단계를 정책 설정으로 넣는다. 고객사 두 곳의 서로 다른 설정으로 같은 출금이 다르게 처리되는지 테스트한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "FATF — Updated Guidance for a Risk-Based Approach to Virtual Assets and VASPs",
+              "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Guidance-rba-virtual-assets-2021.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Rust 로 보안 모듈 — 메모리 안전과 비밀 값 다루기",
+          "from": "preference",
+          "quote": "• Rust 개발 경험",
+          "priority": "high",
+          "why": "우대사항이다. 키 · 서명 코드에서 메모리 버그는 곧 자산 유출이다.",
+          "gap_check": "Rust 의 소유권 · 빌림이 C/C++ 의 어떤 버그를 막나(해제 후 사용 · 이중 해제)? 비밀 키를 쓴 뒤 메모리에서 지우려면(zeroize)? 로그 · 디버그 출력에 비밀이 새지 않게 하려면(Debug 구현을 가리기)? 의존 크레이트의 취약점은 무엇으로 점검하나(cargo audit)?",
+          "drill": "앞 서비스의 키 타입에 zeroize 를 적용하고, Debug 를 '***' 로만 찍게 구현한다. cargo audit · cargo deny 를 CI 에 넣고, 일부러 취약한 버전의 크레이트를 넣어 CI 가 막는지 확인한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "RustSec — cargo-audit",
+              "url": "https://rustsec.org/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/142760",
+      "title": "산업기능요원 병역특례 보충역(4급) 엔지니어",
+      "site": "wanted",
+      "verdict": "신입-경력 4년, **산업기능요원 병역특례 보충역(4급)** 대상. 노드월렛의 **Java/Spring SDK**(고객사가 노드월렛으로 개발할 때 쓰는 SDK · 모듈), **컴플라이언스 모듈**, **보안 모듈** 중 특정 업무. 자격은 보충역 4급, 컴공 등, 명료한 소통. 우대는 **Java/Spring 또는 Rust**, 디지털 자산 기술 · 비즈니스, **금융 보안**, AI(Claude) 활용. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "산업기능요원 보충역(4급)",
+          "컴공 등"
+        ],
+        "can_learn": [
+          "Spring Boot starter SDK",
+          "금융권 보안 요구",
+          "스테이블코인 구조"
+        ]
+      },
+      "study": [
+        {
+          "topic": "은행 개발자가 쓰는 SDK — Spring Boot starter 로 감싸기",
+          "from": "task",
+          "quote": "• Java/Spring SDK: 고객사가 노드월렛을 사용하여 개발할 때 필요한 SDK 및 관련 모듈들을 개발합니다.",
+          "priority": "core",
+          "why": "주요업무다. 은행 · 증권사의 기간 시스템은 대개 Java/Spring 이라, SDK 가 쓰기 쉬워야 도입이 빨라진다.",
+          "gap_check": "SDK 가 API 호출 · 서명 요청 · 결과 폴링을 감쌀 때 설정(엔드포인트 · 인증서)은 어떻게 주입하나(auto-configuration)? 네트워크 오류로 재시도할 때 같은 출금이 두 번 나가지 않게 하려면(멱등 키)? SDK 버전을 올려도 고객 코드가 안 깨지게 하려면(하위 호환 · 폐기 예고)?",
+          "drill": "노드월렛 API 를 흉내 낸 가짜 서버(WireMock)에 대해 Spring Boot starter 형태의 SDK 를 만든다 — application.yml 로 설정, 출금 요청에 멱등 키 자동 부여, 5xx 에만 지수 백오프 재시도. 타임아웃 뒤 재시도해도 서버에 출금이 한 번만 생기는지 테스트한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Spring Boot — Creating your own auto-configuration",
+              "url": "https://docs.spring.io/spring-boot/reference/features/developing-auto-configuration.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "금융권 보안 — 망분리 · 권한 분리 · 감사 로그",
+          "from": "preference",
+          "quote": "• 금융 보안에 대한 이해",
+          "priority": "high",
+          "why": "우대사항이다. 고객이 은행 · 증권사라 SDK 와 모듈이 그들의 보안 규정 안에서 돌아야 한다.",
+          "gap_check": "금융회사 내부망(망분리)에서 외부 블록체인 노드 · 노드인프라 서버와 어떻게 통신하나(허용 목록 · 중계)? 개발자 · 운영자 · 승인자 권한을 어떻게 나누나? 누가 언제 무엇을 했는지 감사 로그는 어디에 얼마나 두나?",
+          "drill": "전자금융감독규정의 망분리 · 접근통제 조항을 훑어 요약하고, 앞 SDK 에 '고객사 내부 → 중계 서버 → 노드인프라' 경로만 허용하는 설정 예시와, 모든 SDK 호출을 요청자 · 시각 · 결과로 남기는 감사 로그 인터셉터를 넣는다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "국가법령정보센터 — 전자금융감독규정",
+              "url": "https://www.law.go.kr/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "스테이블코인 · RWA 가 금융사 시스템에 들어오면",
+          "from": "preference",
+          "quote": "• 디지털 자산 기술 및 비즈니스에 대한 이해",
+          "priority": "high",
+          "why": "우대사항이고 회사의 고객 니즈(스테이블코인 · 실물 자산 처리)가 여기에 있다.",
+          "gap_check": "스테이블코인 발행 · 상환(민트 · 번)과 이전은 스마트 컨트랙트에서 어떻게 일어나나(ERC-20)? 블록체인 거래가 '확정' 됐다고 언제 보나(컨펌 수 · 파이널리티)? 금융사 원장과 체인 위 잔액이 어긋나면 무엇으로 맞추나(대사)?",
+          "drill": "로컬 테스트넷(Anvil)에 ERC-20 토큰을 배포해 민트 · 이전 · 번을 해 보고, Java(web3j)로 이전 이벤트를 구독해 N 컨펌 뒤에만 '확정' 으로 원장에 기록한다. 체인 재편성을 흉내 내 확정 전 거래가 사라질 때 원장이 어떻게 되는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "EIP-20 — Token Standard",
+              "url": "https://eips.ethereum.org/EIPS/eip-20",
+              "kind": "docs"
+            },
+            {
+              "title": "web3j — Docs",
+              "url": "https://docs.web3j.io/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
