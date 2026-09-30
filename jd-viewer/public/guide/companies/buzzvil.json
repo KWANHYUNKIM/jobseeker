@@ -1,0 +1,394 @@
+{
+  "slug": "buzzvil",
+  "name": "버즈빌",
+  "name_en": "Buzzvil",
+  "aliases": [
+    "버즈빌",
+    "buzzvil"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "https://www.buzzvil.com/",
+  "one_liner": "리워드 광고 업계 1 위(2024 매출 1 천억, 제휴 150 곳+)로 IPO 를 앞둔 애드테크 — 광고 추천 · 입찰 ML, 셀프서브 광고 백엔드(전문연구요원 가능), EKS · Istio DevOps 를 뽑는다",
+  "company": {
+    "business": "버즈빌은 **리워드 기반 애드테크 업계 1 위**다 — '광고는 사용자에게 진짜 혜택을 줘야 한다' 는 믿음으로, 광고를 보거나 참여하면 **쿠폰 · 게임 참여권 · 네이버페이/카카오페이 같은 현금성 리워드**를 주는 광고를 만든다(앱테크를 해 봤다면 뒤에 버즈빌이 있었다고 적는다). 광고주에게는 일반 배너보다 **최대 4 배 이상 전환**하는 퍼포먼스 광고를, **앱 운영사에게는 광고 지면 수익화**를 준다. **이동통신 3 사 · SK · CJ · 카카오뱅크 · 카카오페이 등 150 곳 이상 제휴사**, **2024 년 매출 1 천억 원**. 광고 추천팀은 버즈빌의 **DSP** 로서 광고 추천 · **입찰** · **예산 관리**를 한다. 2026 년엔 **IPO** 를 앞두고 AI 광고 효율 개선 · 범용 포인트 제휴 · SaaS 솔루션 통합을 진행 중이다. 스택은 Python(Django) · MySQL · DynamoDB · Athena · Kubernetes(EKS · Istio · ArgoCD) · Airflow, ML 은 SageMaker · Triton · MLflow.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "[광고 추천팀] ML 엔지니어 (5년 이상)",
+        "url": "https://www.wanted.co.kr/wd/335839",
+        "publisher": "원티드",
+        "summary": "버즈빌 — 리워드 기반 애드테크 업계 1 위, 2024 매출 1 천억 원. 광고 추천팀 = 버즈빌 DSP — 광고 추천 · 입찰 · 예산 관리, 추천 기반 광고 할당, A/B 실험, ML 추천 모델. 업무: 문제 정의 · 모델링 · 피처, 오프라인 평가 · 온라인 실험, 학습 · 서빙 · 모니터링(성능 · 비용 · 신뢰성). 환경: S3 · Athena · DynamoDB · Redis · Airflow · SageMaker · Triton · MLflow · PyTorch · HF · Bedrock. ML 5년+. AI 툴 지원(Claude Code Max 등)."
+      },
+      {
+        "title": "DevOps 엔지니어 (3년 이상)",
+        "url": "https://www.wanted.co.kr/wd/286225",
+        "publisher": "원티드",
+        "summary": "플랫폼 엔지니어링 · 자동화 · 비용 관리. 지난 1 년: 월 1.2 억 원 인프라 비용 절감, Drone → GitHub Actions, 헬름 차트 표준화(카나리), kOps → EKS, Istio · Argo Workflows · CoreDNS · CNI 가시성. 과제: x86 → Graviton, 운영 도구 최신화, Sealed Secrets 개선, Istio 장애 최소화. Django · MySQL · DynamoDB · Athena · K8s · ArgoCD · Datadog. 3년+, AWS K8s · 서비스 메쉬."
+      },
+      {
+        "title": "[Ad Spark] 백엔드 개발자(3년 이상 or 전문연구요원 편입/전직 희망)",
+        "url": "https://www.wanted.co.kr/wd/359810",
+        "publisher": "원티드",
+        "summary": "광고 상품(리워드형 · 노출형 · 참여형) 개선 · 신규, 외부 제휴 광고 플랫폼 연동, 광고주 셀프서브 플랫폼(도메인 모델 · API · 상태 전이), 레거시 공유 라이브러리 내재화 · 쿼리 최적화 · 서비스 분리. 3년+(전문연구요원 편입/전직 가능). 회사 소개: 배너 대비 4 배+ 전환 퍼포먼스 광고, 이통 3 사 · SK · CJ · 카카오뱅크 · 카카오페이 등 150 곳+ 제휴, 2026 IPO 앞두고 AI 광고 효율 · 범용 포인트 제휴 · SaaS 통합."
+      }
+    ],
+    "scale": [
+      {
+        "label": "매출",
+        "value": "1 천억 원(2024)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[광고 추천팀] ML 엔지니어 (5년 이상)",
+            "url": "https://www.wanted.co.kr/wd/335839",
+            "publisher": "원티드",
+            "summary": "버즈빌 — 리워드 기반 애드테크 업계 1 위, 2024 매출 1 천억 원. 광고 추천팀 = 버즈빌 DSP — 광고 추천 · 입찰 · 예산 관리, 추천 기반 광고 할당, A/B 실험, ML 추천 모델. 업무: 문제 정의 · 모델링 · 피처, 오프라인 평가 · 온라인 실험, 학습 · 서빙 · 모니터링(성능 · 비용 · 신뢰성). 환경: S3 · Athena · DynamoDB · Redis · Airflow · SageMaker · Triton · MLflow · PyTorch · HF · Bedrock. ML 5년+. AI 툴 지원(Claude Code Max 등)."
+          }
+        ]
+      },
+      {
+        "label": "제휴사",
+        "value": "150 곳 이상",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[Ad Spark] 백엔드 개발자(3년 이상 or 전문연구요원 편입/전직 희망)",
+            "url": "https://www.wanted.co.kr/wd/359810",
+            "publisher": "원티드",
+            "summary": "광고 상품(리워드형 · 노출형 · 참여형) 개선 · 신규, 외부 제휴 광고 플랫폼 연동, 광고주 셀프서브 플랫폼(도메인 모델 · API · 상태 전이), 레거시 공유 라이브러리 내재화 · 쿼리 최적화 · 서비스 분리. 3년+(전문연구요원 편입/전직 가능). 회사 소개: 배너 대비 4 배+ 전환 퍼포먼스 광고, 이통 3 사 · SK · CJ · 카카오뱅크 · 카카오페이 등 150 곳+ 제휴, 2026 IPO 앞두고 AI 광고 효율 · 범용 포인트 제휴 · SaaS 통합."
+          }
+        ]
+      },
+      {
+        "label": "인프라 비용 절감(1 년)",
+        "value": "월 1.2 억 원",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "DevOps 엔지니어 (3년 이상)",
+            "url": "https://www.wanted.co.kr/wd/286225",
+            "publisher": "원티드",
+            "summary": "플랫폼 엔지니어링 · 자동화 · 비용 관리. 지난 1 년: 월 1.2 억 원 인프라 비용 절감, Drone → GitHub Actions, 헬름 차트 표준화(카나리), kOps → EKS, Istio · Argo Workflows · CoreDNS · CNI 가시성. 과제: x86 → Graviton, 운영 도구 최신화, Sealed Secrets 개선, Istio 장애 최소화. Django · MySQL · DynamoDB · Athena · K8s · ArgoCD · Datadog. 3년+, AWS K8s · 서비스 메쉬."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "리워드 · 퍼포먼스 광고(광고주)",
+        "how": "광고주가 캠페인 성과에 돈을 내고, 사용자는 리워드를 받는다 — DSP 가 추천 · 입찰 · 예산을 관리한다. 과금 단위(CPA · CPC 등)는 공고에 없다.",
+        "domains": [
+          "광고 추천 · 입찰(DSP)",
+          "광고 상품 · 셀프서브 백엔드"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "[광고 추천팀] ML 엔지니어 (5년 이상)",
+            "url": "https://www.wanted.co.kr/wd/335839",
+            "publisher": "원티드",
+            "summary": "버즈빌 — 리워드 기반 애드테크 업계 1 위, 2024 매출 1 천억 원. 광고 추천팀 = 버즈빌 DSP — 광고 추천 · 입찰 · 예산 관리, 추천 기반 광고 할당, A/B 실험, ML 추천 모델. 업무: 문제 정의 · 모델링 · 피처, 오프라인 평가 · 온라인 실험, 학습 · 서빙 · 모니터링(성능 · 비용 · 신뢰성). 환경: S3 · Athena · DynamoDB · Redis · Airflow · SageMaker · Triton · MLflow · PyTorch · HF · Bedrock. ML 5년+. AI 툴 지원(Claude Code Max 등)."
+          },
+          {
+            "title": "[Ad Spark] 백엔드 개발자(3년 이상 or 전문연구요원 편입/전직 희망)",
+            "url": "https://www.wanted.co.kr/wd/359810",
+            "publisher": "원티드",
+            "summary": "광고 상품(리워드형 · 노출형 · 참여형) 개선 · 신규, 외부 제휴 광고 플랫폼 연동, 광고주 셀프서브 플랫폼(도메인 모델 · API · 상태 전이), 레거시 공유 라이브러리 내재화 · 쿼리 최적화 · 서비스 분리. 3년+(전문연구요원 편입/전직 가능). 회사 소개: 배너 대비 4 배+ 전환 퍼포먼스 광고, 이통 3 사 · SK · CJ · 카카오뱅크 · 카카오페이 등 150 곳+ 제휴, 2026 IPO 앞두고 AI 광고 효율 · 범용 포인트 제휴 · SaaS 통합."
+          }
+        ]
+      },
+      {
+        "name": "앱 수익화 · 마케팅 SaaS(매체사)",
+        "how": "제휴 앱이 광고 지면으로 수익을 얻고, 그 재원으로 마케팅 이벤트를 연다 — 수익 배분 구조는 공고에 없다.",
+        "domains": [
+          "광고 상품 · 셀프서브 백엔드",
+          "EKS 플랫폼 · 비용"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "[Ad Spark] 백엔드 개발자(3년 이상 or 전문연구요원 편입/전직 희망)",
+            "url": "https://www.wanted.co.kr/wd/359810",
+            "publisher": "원티드",
+            "summary": "광고 상품(리워드형 · 노출형 · 참여형) 개선 · 신규, 외부 제휴 광고 플랫폼 연동, 광고주 셀프서브 플랫폼(도메인 모델 · API · 상태 전이), 레거시 공유 라이브러리 내재화 · 쿼리 최적화 · 서비스 분리. 3년+(전문연구요원 편입/전직 가능). 회사 소개: 배너 대비 4 배+ 전환 퍼포먼스 광고, 이통 3 사 · SK · CJ · 카카오뱅크 · 카카오페이 등 150 곳+ 제휴, 2026 IPO 앞두고 AI 광고 효율 · 범용 포인트 제휴 · SaaS 통합."
+          },
+          {
+            "title": "DevOps 엔지니어 (3년 이상)",
+            "url": "https://www.wanted.co.kr/wd/286225",
+            "publisher": "원티드",
+            "summary": "플랫폼 엔지니어링 · 자동화 · 비용 관리. 지난 1 년: 월 1.2 억 원 인프라 비용 절감, Drone → GitHub Actions, 헬름 차트 표준화(카나리), kOps → EKS, Istio · Argo Workflows · CoreDNS · CNI 가시성. 과제: x86 → Graviton, 운영 도구 최신화, Sealed Secrets 개선, Istio 장애 최소화. Django · MySQL · DynamoDB · Athena · K8s · ArgoCD · Datadog. 3년+, AWS K8s · 서비스 메쉬."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "광고 추천 · 입찰(DSP)",
+        "why": "ML 공고가 광고 추천 · 입찰 · 예산 관리, 추천 기반 광고 할당, A/B 실험, 학습 · 서빙 · 모니터링을 적는다.",
+        "what_to_know": [
+          "CTR · CVR 예측",
+          "입찰 · 예산 페이싱",
+          "오프라인 평가 ↔ 온라인 실험",
+          "Triton 서빙"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[광고 추천팀] ML 엔지니어 (5년 이상)",
+            "url": "https://www.wanted.co.kr/wd/335839",
+            "publisher": "원티드",
+            "summary": "버즈빌 — 리워드 기반 애드테크 업계 1 위, 2024 매출 1 천억 원. 광고 추천팀 = 버즈빌 DSP — 광고 추천 · 입찰 · 예산 관리, 추천 기반 광고 할당, A/B 실험, ML 추천 모델. 업무: 문제 정의 · 모델링 · 피처, 오프라인 평가 · 온라인 실험, 학습 · 서빙 · 모니터링(성능 · 비용 · 신뢰성). 환경: S3 · Athena · DynamoDB · Redis · Airflow · SageMaker · Triton · MLflow · PyTorch · HF · Bedrock. ML 5년+. AI 툴 지원(Claude Code Max 등)."
+          }
+        ]
+      },
+      {
+        "name": "광고 상품 · 셀프서브 백엔드",
+        "why": "Ad Spark 공고가 리워드형 · 노출형 · 참여형 상품, 제휴 플랫폼 연동, 셀프서브 캠페인 도메인 · 상태 전이, 레거시 분리를 적는다.",
+        "what_to_know": [
+          "캠페인 상태 기계",
+          "외부 광고 API 어댑터",
+          "리워드 중복 지급 방지"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[Ad Spark] 백엔드 개발자(3년 이상 or 전문연구요원 편입/전직 희망)",
+            "url": "https://www.wanted.co.kr/wd/359810",
+            "publisher": "원티드",
+            "summary": "광고 상품(리워드형 · 노출형 · 참여형) 개선 · 신규, 외부 제휴 광고 플랫폼 연동, 광고주 셀프서브 플랫폼(도메인 모델 · API · 상태 전이), 레거시 공유 라이브러리 내재화 · 쿼리 최적화 · 서비스 분리. 3년+(전문연구요원 편입/전직 가능). 회사 소개: 배너 대비 4 배+ 전환 퍼포먼스 광고, 이통 3 사 · SK · CJ · 카카오뱅크 · 카카오페이 등 150 곳+ 제휴, 2026 IPO 앞두고 AI 광고 효율 · 범용 포인트 제휴 · SaaS 통합."
+          }
+        ]
+      },
+      {
+        "name": "EKS 플랫폼 · 비용",
+        "why": "DevOps 공고가 EKS 이전 · 헬름 표준화 · Istio · 월 1.2 억 절감 · Graviton 전환 · 시크릿 관리를 적는다.",
+        "what_to_know": [
+          "Istio 운영",
+          "Graviton 전환",
+          "Sealed Secrets",
+          "카나리 배포"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "DevOps 엔지니어 (3년 이상)",
+            "url": "https://www.wanted.co.kr/wd/286225",
+            "publisher": "원티드",
+            "summary": "플랫폼 엔지니어링 · 자동화 · 비용 관리. 지난 1 년: 월 1.2 억 원 인프라 비용 절감, Drone → GitHub Actions, 헬름 차트 표준화(카나리), kOps → EKS, Istio · Argo Workflows · CoreDNS · CNI 가시성. 과제: x86 → Graviton, 운영 도구 최신화, Sealed Secrets 개선, Istio 장애 최소화. Django · MySQL · DynamoDB · Athena · K8s · ArgoCD · Datadog. 3년+, AWS K8s · 서비스 메쉬."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "성과를 비즈니스 지표로",
+        "evidence": "• (핵심) 다양한 비즈니스 문제를 정의하고, ML 기반으로 비즈니스 임팩트를 만든 경험들이 있습니다.",
+        "so_what": "모델 AUC 보다 광고 매출 · 전환 · 예산 소진이 어떻게 바뀌었는지로 말한다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "AI 네이티브 조직",
+        "evidence": "• AI 도구를 적극적으로 도입하고, 이를 통해 생산성을 극대화할 수 있는 역량을 갖추신 분",
+        "so_what": "Claude Code Max 등 AI 도구를 회사가 지원한다 — AI 로 일한 방식과 결과를 보인다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "IPO 앞둔 정비",
+        "evidence": "• 레거시 시스템의 점진적 고도화(마이그레이션, 공유 라이브러리 내재화, 서비스 분리 등)를 주도해 본 경험이 있으신 분",
+        "so_what": "새 상품과 함께 레거시 정리 · 비용 절감이 동시에 진행 중이다 — 점진적 이관 경험이 강점이다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "과금 단위 · 매체사 수익 배분은 공고에 없다",
+    "기술 블로그(tech.buzzvil.com)는 이번에 읽지 않았다",
+    "DevOps 공고(286225)는 번호가 오래돼 '지난 1 년' 성과의 시점이 불분명하다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/335839",
+      "title": "[광고 추천팀] ML 엔지니어 (5년 이상)",
+      "site": "wanted",
+      "verdict": "경력 5년 이상(학업 제외). 광고 추천팀(버즈빌 DSP — **광고 추천 · 입찰 · 예산 관리**) — **데이터 · 도메인으로 문제 정의 → 모델링 · 피처**, **오프라인 평가와 온라인 실험(A/B)으로 검증 → 비즈니스 지표 개선**, **학습부터 서빙 · 모니터링까지 성능 · 비용 · 신뢰성 최적화**, 필요하면 ML 밖 접근도. 환경: S3 · Athena · DynamoDB · Redis · Airflow · **SageMaker · Triton · MLflow** · PyTorch · HF · Bedrock. 자격은 **ML 로 비즈니스 임팩트를 만든 경험(핵심)**, ML 5년, 비개발자 설명. 우대는 광고 · 추천, 시스템 설계 리더십. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "ML 실무 5년",
+          "비즈니스 임팩트 사례"
+        ],
+        "can_learn": [
+          "입찰 · 예산 페이싱",
+          "Triton 서빙"
+        ]
+      },
+      "study": [
+        {
+          "topic": "광고 전환 예측과 입찰 — CTR/CVR 모델에서 입찰가까지",
+          "from": "preference",
+          "quote": "• 광고/추천 분야에 대한 지식을 갖고 있습니다.",
+          "priority": "core",
+          "why": "우대사항이고 팀이 광고 추천 · 입찰 · 예산 관리를 한다.",
+          "gap_check": "기대 가치(eCPM = 입찰 × pCTR × pCVR)로 광고를 줄 세울 때 예측 확률의 보정(calibration)이 왜 중요한가? 희소한 전환을 예측할 때 지연 전환(전환이 며칠 뒤)은 라벨에 어떻게 반영하나? 광고 ID · 매체 같은 고차원 범주 피처는 어떻게 다루나(해싱 · 임베딩)?",
+          "drill": "공개 광고 데이터(Criteo 1TB 샘플 또는 Avazu)로 로지스틱 회귀 · LightGBM · 작은 DeepFM 의 CTR 예측을 비교하고 로그 손실 · AUC · 보정 곡선을 그린다. Isotonic 보정 전후로 eCPM 순위가 어떻게 바뀌는지 표로 만든다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Criteo — Display Advertising Challenge dataset",
+              "url": "https://www.kaggle.com/c/criteo-display-ad-challenge",
+              "kind": "docs"
+            },
+            {
+              "title": "scikit-learn — Probability calibration",
+              "url": "https://scikit-learn.org/stable/modules/calibration.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "예산을 하루 동안 고르게 — 예산 페이싱",
+          "from": "task",
+          "quote": "• 데이터와 도메인 이해를 바탕으로 문제를 정의하고, 적절한 ML 모델링과 피처 설계를 통해 성능을 개선합니다.",
+          "priority": "high",
+          "why": "주요업무이고 팀 소개에 예산 관리가 있다.",
+          "gap_check": "하루 예산이 오전에 다 소진되면 무엇이 나빠지나? 트래픽 곡선에 맞춰 시간대별 목표 소진량을 두고 참여 확률(throttling) · 입찰가를 조절하는 방법은? 리워드 광고처럼 전환 단가가 정해진 캠페인은 페이싱이 어떻게 다른가?",
+          "drill": "하루 트래픽 곡선과 캠페인 예산 셋을 가진 시뮬레이터를 만들고, 무조건 입찰 · 확률적 스로틀링(PID 제어) 두 전략의 시간대별 소진 · 전환 수를 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Budget Pacing for Targeted Online Advertisements at LinkedIn (KDD 2014)",
+              "url": "https://dl.acm.org/doi/10.1145/2623330.2623366",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "학습에서 서빙 · 모니터링까지 — Triton · MLflow",
+          "from": "task",
+          "quote": "• 학습부터 서빙·모니터링까지 프로덕션 환경에서 안정적으로 운영하며, 성능·비용·신뢰성을 함께 최적화합니다.",
+          "priority": "high",
+          "why": "주요업무이고 환경에 SageMaker · Triton · MLflow 가 있다.",
+          "gap_check": "광고 요청 지연 예산(수십 ms) 안에 후보 수백 개를 점수 매기려면 배치 · 동적 배칭은? 피처가 학습과 서빙에서 다르게 계산되는 문제(training-serving skew)는 어떻게 막나? 모델 교체 뒤 예측 분포 변화는 무엇으로 감시하나?",
+          "drill": "앞 과제 모델을 MLflow 로 기록하고 ONNX 로 내보내 Triton 에 올린 뒤 동적 배칭을 켜고 끈 지연 · 처리량을 잰다. 예측 평균 · 분포를 Prometheus 로 내보내 기준 대비 이탈 알림을 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "NVIDIA Triton Inference Server",
+              "url": "https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/359810",
+      "title": "[Ad Spark] 백엔드 개발자(3년 이상 or 전문연구요원 편입/전직 희망)",
+      "site": "wanted",
+      "verdict": "경력 3-10년, **전문연구요원 편입/전직 가능**. Ad Spark — **리워드형 · 노출형 · 참여형 광고 상품 개선 · 신규 백엔드**, **외부 제휴 광고 플랫폼 연동(확장 가능한 구조)**, **광고주 셀프서브 플랫폼의 도메인 모델 · API · 상태 전이**, **레거시 공유 라이브러리 내재화 · 쿼리 최적화 · 서비스 분리**. 환경: Python(Django) · MySQL · DynamoDB · Athena · K8s · Redis · Airflow · ArgoCD. 자격은 백엔드 3년, 아키텍처 결정, 기술로 문제 해결, **AI 도구로 생산성**(광고 도메인 경험 없어도 됨). 우대는 저장소 설계(MySQL · DynamoDB · Redis), 클라우드 네이티브, Kafka/Airflow, **레거시 점진 고도화**, 애드테크, 파트너 API 통합. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "백엔드 3년",
+          "아키텍처 결정",
+          "AI 도구 활용"
+        ],
+        "can_learn": [
+          "광고 도메인",
+          "셀프서브 상태 기계"
+        ]
+      },
+      "study": [
+        {
+          "topic": "셀프서브 캠페인 — 상태 전이와 예산 · 리워드 정합",
+          "from": "task",
+          "quote": "복잡한 비즈니스 요구사항을 반영하여 도메인 모델, API, 그리고 상태 전이 로직을 탄탄하게 구현합니다.",
+          "priority": "core",
+          "why": "주요업무다. 광고주가 직접 캠페인을 만들고 관리한다.",
+          "gap_check": "캠페인 상태(초안 · 심사 · 집행 · 일시정지 · 예산 소진 · 종료)와 허용 전이는? 예산 소진과 광고 노출이 동시에 일어나면 초과 집행을 어떻게 막나(원자적 차감)? 같은 사용자에게 리워드가 두 번 지급되지 않게 하려면(멱등 키 · 유일 제약)?",
+          "drill": "Django + MySQL 로 캠페인 · 예산 · 참여 · 리워드 모델과 상태 전이 서비스를 만들고, 예산 차감을 조건부 UPDATE(잔액 ≥ 단가)로, 리워드는 (사용자 · 캠페인) 유일 제약으로 막는다. 동시 참여 1,000 건 부하에서 초과 집행 · 중복 지급이 0 인지 테스트한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Django — Database transactions",
+              "url": "https://docs.djangoproject.com/en/stable/topics/db/transactions/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "제휴 광고 플랫폼 연동 — 어댑터와 확장",
+          "from": "task",
+          "quote": "제휴 광고 플랫폼과의 안정적인 API 연동 시스템을 설계합니다.",
+          "priority": "high",
+          "why": "주요업무다.",
+          "gap_check": "제휴사마다 다른 광고 · 전환 포스트백 형식을 내부 공통 모델로 바꾸려면(어댑터 패턴)? 포스트백이 늦거나 중복되면? 제휴사 API 장애가 우리 광고 요청을 느리게 하지 않게 하려면(타임아웃 · 서킷 브레이커 · 캐시)?",
+          "drill": "가상 제휴사 둘의 광고 조회 · 전환 포스트백 형식을 공통 인터페이스 어댑터로 감싸고, 포스트백을 이벤트 ID 로 중복 제거 · 서명 검증한다. 한 제휴사를 느리게 만들어 타임아웃 · 서킷 브레이커가 전체 응답을 지키는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Microsoft — Circuit Breaker pattern",
+              "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/286225",
+      "title": "DevOps 엔지니어 (3년 이상)",
+      "site": "wanted",
+      "verdict": "경력 3년 이상. DevOps 팀 — 플랫폼 엔지니어링 · 자동화 · 클라우드 비용. 지난 1 년 **월 1.2 억 원 절감**, Drone → GitHub Actions, **헬름 차트 표준화(카나리)**, **kOps → EKS**, Istio · Argo Workflows · CoreDNS · CNI 가시성. 앞으로 **x86 → Graviton**, 운영 도구 최신화, **Sealed Secrets 사용성**, **Istio 장애 최소화**. 자격은 인프라 사용자(엔지니어)를 고객으로, 장기 관점, **AWS 위 K8s 운영**, 프로그래밍 언어, 자료구조 · OS · 네트워크, **Istio/Linkerd 서비스 메쉬 운영**. 우대 백엔드. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "AWS K8s 운영",
+          "서비스 메쉬 운영",
+          "CS 기초"
+        ],
+        "can_learn": [
+          "Graviton 전환",
+          "헬름 표준 차트"
+        ]
+      },
+      "study": [
+        {
+          "topic": "x86 에서 Graviton 으로 — 멀티 아키텍처 이미지와 단계 전환",
+          "from": "task",
+          "quote": "• EC2 비용 최적화: 백엔드 서비스의 아키텍처를 x86에서 Arm 기반의 그라비톤으로 전환합니다.",
+          "priority": "core",
+          "why": "주요업무(앞으로 풀 문제)다.",
+          "gap_check": "Python(Django) 서비스의 네이티브 확장(C 확장 휠)이 arm64 에서 없으면? docker buildx 로 amd64 · arm64 이미지를 함께 만들려면? 노드 그룹을 섞어 두고 서비스별로 옮기는 순서 · 롤백은(nodeSelector · Karpenter)? 성능 · 비용은 무엇으로 비교하나?",
+          "drill": "Django 샘플 서비스를 buildx 로 멀티 아키텍처 이미지로 만들고, kind(또는 EKS 소형)에 arm64 노드를 섞어 nodeSelector 로 옮긴다. 같은 부하에서 p95 지연 · CPU 를 비교해 전환 체크리스트를 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "AWS — Graviton Technical Guide",
+              "url": "https://github.com/aws/aws-graviton-getting-started",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Istio 가 장애 원인일 때 — 사이드카 · 설정 전파 · 관측",
+          "from": "task",
+          "quote": "• Istio 장애 최소화: Istio가 원인이 되어 발생하는 장애를 최소화합니다.",
+          "priority": "core",
+          "why": "주요업무이고 자격요건에 서비스 메쉬 운영이 있다.",
+          "gap_check": "앱보다 사이드카가 늦게 뜨거나 먼저 죽으면 무엇이 깨지나(holdApplicationUntilProxyStarts · 종료 순서)? 잘못된 VirtualService/DestinationRule 이 전파되면 어떻게 막나(istioctl analyze · 단계 배포)? 사이드카 메모리 · CPU 한도가 트래픽 급증 때 병목이 되면? Ambient 메시로 옮기면 무엇이 달라지나?",
+          "drill": "kind 에 Istio 를 깔고 사이드카 시작 순서 문제 · 잘못된 DestinationRule(mTLS 불일치)을 일부러 만들어 503 을 재현한 뒤, 설정 · CI 의 istioctl analyze 로 막는 런북을 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Istio — Operations: Common problems",
+              "url": "https://istio.io/latest/docs/ops/common-problems/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
