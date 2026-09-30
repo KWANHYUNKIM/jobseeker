@@ -1,0 +1,273 @@
+{
+  "slug": "skylabs",
+  "name": "스카이랩스",
+  "name_en": "SkyLabs",
+  "aliases": [
+    "스카이랩스",
+    "SkyLabs"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": null,
+  "one_liner": "반지형 혈압계 CART BP(식약처 허가 · 보험 급여)로 커프 없는 24 시간 혈압을 재는 디지털 헬스케어 — 생체 신호 ML 연구원과 글로벌 규제 보안 담당을 뽑는다",
+  "company": {
+    "business": "스카이랩스(SkyLabs)는 **반지형 의료기기 CART** 로 질병 관리 솔루션을 만든다. 대표 제품 **CART BP** 는 공고에 따르면 스마트 반지 중 최초이자 세계에서 유일하게 **식약처 의료기기(혈압계) 품목 허가**를 받았고, **손가락에서 모은 생체 신호로 의료 AI 가 커프 없는 24 시간 자동 연속 혈압**을 잰다 — 특히 수면 중 **야간 고혈압** 관리가 가능해진 것을 강점으로 든다. 반지와 함께 데이터 수집 · 분석 · 연동 플랫폼을 제공한다. 최근 **심평원이 카트 비피 처방의 의료행위 수가를 인정해 보험 급여**가 적용됐고, **3 년 내 누계 700 억 원 매출**을 목표로 한다. 17 개가 넘는 임상 연구와 50 개가 넘는 논문 · 특허, 바이엘 · 사노피 · 세계경제포럼(2019 Technology Pioneer) · 유럽심장학회 수상 이력을 든다. 2015-09 설립, 판교(성남) 근무.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "머신러닝/딥러닝 Researcher (신입, 전문연구요원 신규편입 및 전직 가능)",
+        "url": "https://www.wanted.co.kr/wd/311491",
+        "publisher": "원티드",
+        "summary": "반지형 의료기기 CART 로 질병 관리. CART BP 는 스마트 반지 중 최초 · 유일 식약처 의료기기(혈압계) 허가. 손가락 생체 신호에서 의료 AI 로 커프 없는 24 시간 연속 혈압(야간 고혈압). 심평원 수가 인정 · 보험 급여, 3 년 내 누계 700 억 매출 목표. 17 개 이상 임상 · 50 개 이상 논문 · 특허. 2015-09 설립, WEF Technology Pioneer 2019. 업무: 전처리 · 통계 분석, 생체 신호 딥러닝/ML 모델. 우대 디지털 신호처리 · 헬스케어."
+      }
+    ],
+    "scale": [
+      {
+        "label": "매출 목표",
+        "value": "3 년 내 누계 700 억 원(공고)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "머신러닝/딥러닝 Researcher (신입, 전문연구요원 신규편입 및 전직 가능)",
+            "url": "https://www.wanted.co.kr/wd/311491",
+            "publisher": "원티드",
+            "summary": "반지형 의료기기 CART 로 질병 관리. CART BP 는 스마트 반지 중 최초 · 유일 식약처 의료기기(혈압계) 허가. 손가락 생체 신호에서 의료 AI 로 커프 없는 24 시간 연속 혈압(야간 고혈압). 심평원 수가 인정 · 보험 급여, 3 년 내 누계 700 억 매출 목표. 17 개 이상 임상 · 50 개 이상 논문 · 특허. 2015-09 설립, WEF Technology Pioneer 2019. 업무: 전처리 · 통계 분석, 생체 신호 딥러닝/ML 모델. 우대 디지털 신호처리 · 헬스케어."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "반지형 혈압계 CART BP 처방(보험 급여)",
+        "how": "병 · 의원이 CART BP 를 처방해 24 시간 혈압을 재면 의료행위 수가가 인정된다 — 기기 판매 · 대여 · 플랫폼 이용료 구성은 읽은 자료에 없다.",
+        "domains": [
+          "손가락 생체 신호로 커프 없는 혈압",
+          "의료 데이터 보안 · 규제"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "머신러닝/딥러닝 Researcher (신입, 전문연구요원 신규편입 및 전직 가능)",
+            "url": "https://www.wanted.co.kr/wd/311491",
+            "publisher": "원티드",
+            "summary": "반지형 의료기기 CART 로 질병 관리. CART BP 는 스마트 반지 중 최초 · 유일 식약처 의료기기(혈압계) 허가. 손가락 생체 신호에서 의료 AI 로 커프 없는 24 시간 연속 혈압(야간 고혈압). 심평원 수가 인정 · 보험 급여, 3 년 내 누계 700 억 매출 목표. 17 개 이상 임상 · 50 개 이상 논문 · 특허. 2015-09 설립, WEF Technology Pioneer 2019. 업무: 전처리 · 통계 분석, 생체 신호 딥러닝/ML 모델. 우대 디지털 신호처리 · 헬스케어."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "손가락 생체 신호로 커프 없는 혈압",
+        "why": "ML 공고가 생체 신호 기반 딥러닝/ML 모델과 통계 분석, 디지털 신호처리를 적고, 회사 소개가 손가락 신호로 24 시간 연속 혈압을 잰다고 적는다.",
+        "what_to_know": [
+          "PPG 신호 처리",
+          "혈압 추정 모델 검증 기준",
+          "개인 보정"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "머신러닝/딥러닝 Researcher (신입, 전문연구요원 신규편입 및 전직 가능)",
+            "url": "https://www.wanted.co.kr/wd/311491",
+            "publisher": "원티드",
+            "summary": "반지형 의료기기 CART 로 질병 관리. CART BP 는 스마트 반지 중 최초 · 유일 식약처 의료기기(혈압계) 허가. 손가락 생체 신호에서 의료 AI 로 커프 없는 24 시간 연속 혈압(야간 고혈압). 심평원 수가 인정 · 보험 급여, 3 년 내 누계 700 억 매출 목표. 17 개 이상 임상 · 50 개 이상 논문 · 특허. 2015-09 설립, WEF Technology Pioneer 2019. 업무: 전처리 · 통계 분석, 생체 신호 딥러닝/ML 모델. 우대 디지털 신호처리 · 헬스케어."
+          }
+        ]
+      },
+      {
+        "name": "의료 데이터 보안 · 규제",
+        "why": "보안 공고가 정보통신망법 · 개인정보보호법 · GDPR · HIPAA · ISO 27001/27701 과 글로벌 인증 · 규제 대응을 적는다 — 미 · 유럽 진출과 이어진다.",
+        "what_to_know": [
+          "HIPAA · GDPR 차이",
+          "ISO 27001/27701",
+          "수탁사 관리"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "정보보안 담당자",
+            "url": "https://www.wanted.co.kr/wd/361654",
+            "publisher": "원티드",
+            "summary": "보안 시스템(DDoS · 방화벽 · IPS · WAF) · 솔루션(백신 · 접근통제) 정책 운영, 보안 정책 · 가이드, 신규 보안 시스템, 임직원 교육 · 모의훈련, 신규 시스템 보안성 검토, 관제. 3-6년, 정보통신망법 · 개인정보보호법, GDPR · HIPAA. 우대 ISO 27001 · 27701, 수탁사 관리, 영어(글로벌 인증 · 규제)."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "의료기기 허가와 보험 급여를 이미 넘었다",
+        "evidence": "최근 건강보험심사평가원(심평원)이 병·의원의 카트 비피 처방에 대해 의료행위 수가를 최근 인정하면서 보험급여가 적용됨에 따라",
+        "so_what": "모델 성능은 논문 점수가 아니라 의료기기 기준(허가 · 임상)으로 검증된다 — 검증 절차를 이해하고 있음을 보이면 좋다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "글로벌 인증을 준비한다",
+        "evidence": "• GDPR, HIPAA 등 관련 법률 국제인증업무 이해와 경험",
+        "so_what": "보안 자리는 국내 법 · ISMS 만이 아니라 미 · 유럽 규제와 영어가 요구된다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "회사 홈페이지는 이번에 읽지 않았다 — 인원 · 현재 매출은 모른다",
+    "잡코리아 ML 2건 · 사람인 보안 1건은 세 절 필드가 비어 이번 브리핑에서 뺐다(원티드 게시와 같은 자리로 보이지만 대조하지 못했다)",
+    "ML 공고(wd 311491)는 오래 열린 게시다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/311491",
+      "title": "머신러닝/딥러닝 Researcher (신입, 전문연구요원 신규편입 및 전직 가능)",
+      "site": "wanted",
+      "verdict": "경력 1-3년(제목은 신입), **전문연구요원 현역 신규 편입 · 전직 가능**, 성남. **데이터 전처리 · 통계 분석으로 인사이트**, **생체 신호 기반 딥러닝/머신러닝 모델 개발**, 내부 세미나로 문제 분석. 자격은 TensorFlow/PyTorch, ML/DL 개념 이해와 적용, 통계적 이해 · 분석, 쉬운 설명, 빠른 몰입 · 자기 학습. 우대는 **디지털 신호처리 알고리즘**, 통계 · 응용수학 · 산공 · 전자 · 컴공 전공, **모델을 서비스에 적용 · 결과 분석**, 의료 · 헬스케어 지식. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "TensorFlow 또는 PyTorch",
+          "통계 분석",
+          "ML/DL 적용 경험"
+        ],
+        "can_learn": [
+          "PPG 신호 처리",
+          "혈압 추정 검증 기준",
+          "개인 보정"
+        ]
+      },
+      "study": [
+        {
+          "topic": "손가락 광혈류 신호(PPG) 다루기 — 필터 · 잡음 · 박동 검출",
+          "from": "preference",
+          "quote": "• 디지털 신호처리 알고리즘 개발 경험을 보유하신 분",
+          "priority": "core",
+          "why": "우대사항이고 제품의 입력이 손가락 생체 신호다. 반지는 손 움직임 · 조임 · 온도로 잡음이 크다.",
+          "gap_check": "PPG 에서 심박 대역만 남기려면 어떤 필터를 쓰나(대역통과 · 위상 왜곡 없는 filtfilt)? 움직임 잡음 구간을 어떻게 골라내나(가속도계 · 신호 품질 지수)? 박동 하나하나의 특징(상승 시간 · 이완기 노치)은 혈압과 어떻게 이어진다고 알려져 있나?",
+          "drill": "공개 PPG 데이터셋(예: MIMIC 파형 또는 PPG-DaLiA)으로 scipy 대역통과 필터 → 박동 검출(피크) → 박동별 특징 추출 파이프라인을 만들고, 가속도 신호로 움직임 구간을 잘라낸 전후의 심박 추정 오차를 비교한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "NeuroKit2 — PPG processing",
+              "url": "https://neuropsychology.github.io/NeuroKit/functions/ppg.html",
+              "kind": "docs"
+            },
+            {
+              "title": "PPG-DaLiA dataset (UCI)",
+              "url": "https://archive.ics.uci.edu/dataset/495/ppg+dalia",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "커프 없는 혈압 추정 모델 — 사람을 나눠 검증한다",
+          "from": "preference",
+          "quote": "• 딥러닝/머신러닝 모델을 설계·개발하여 서비스에 적용하고 결과를 분석해 본 경험이 있으신 분",
+          "priority": "core",
+          "why": "우대사항이고 회사의 핵심 기술이 생체 신호로 혈압을 추정하는 의료 AI 다.",
+          "gap_check": "같은 사람의 박동이 학습 · 시험 셋에 섞이면 성능이 왜 부풀어 오르나(피험자 단위 분할)? 혈압계 검증 기준(ISO 81060-2 · AAMI — 평균 오차 · 표준편차 한도)은 무엇을 요구하나? 개인마다 한 번 커프로 맞추는 보정(calibration)은 무엇을 해결하고 무엇을 못 하나?",
+          "drill": "PPG + 동맥압(ABP) 공개 데이터로 1D CNN 혈압 회귀 모델을 만들고, 박동 단위 무작위 분할과 피험자 단위 분할의 MAE 를 비교한다. 결과를 평균 오차 ± 표준편차로 계산해 AAMI 기준(평균 ≤ 5 mmHg, SD ≤ 8 mmHg)과 나란히 표로 놓는다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "MIMIC-III Waveform Database (PhysioNet)",
+              "url": "https://physionet.org/content/mimic3wdb/1.0/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "야간 혈압 데이터를 통계로 — 전처리와 의미 있는 차이",
+          "from": "task",
+          "quote": "• 데이터 전처리 및 통계 기반 분석을 통한 인사이트 도출",
+          "priority": "high",
+          "why": "주요업무 첫 줄이다. 24 시간 연속 측정은 수면 중 결측 · 이상치가 많고, 임상 해석(야간 강하 여부)이 목적이다.",
+          "gap_check": "24 시간 혈압에서 주간 · 야간 평균과 야간 강하율(dipping)을 어떻게 계산하나? 결측 구간을 보간하나 버리나? 두 기기(반지 vs 커프)의 일치도는 상관계수가 아니라 무엇으로 보나(Bland-Altman)?",
+          "drill": "가짜 24 시간 혈압 시계열(수면 구간 · 결측 · 이상치 포함)로 주간 · 야간 평균과 강하율을 계산하고 non-dipper 를 분류한다. 반지 추정치와 커프 측정치를 Bland-Altman 플롯으로 비교하는 노트북을 만든다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Bland & Altman (1986) — Statistical methods for assessing agreement",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/2868172/",
+              "kind": "paper"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/361654",
+      "title": "정보보안 담당자",
+      "site": "wanted",
+      "verdict": "경력 3-6년, 4년제 대졸. **보안 시스템(DDoS · 방화벽 · IPS · 웹방화벽) · 솔루션(비업무 사이트 차단 · 백신 · 접근통제) 정책 운영**, 보안 정책 · 절차 · 가이드, 장비 트러블슈팅, 신규 보안 시스템, **임직원 교육 · 모의훈련**, 보안 체크리스트, **신규 시스템 · 솔루션 도입 보안성 검토**, 관제. 자격은 보안 3-6년, 유관 부서 소통, **정보통신망법 · 개인정보보호법**, **GDPR · HIPAA 국제인증 업무**, 보안 시스템 운영. 우대는 정보보호 전공, **ISO 27001 · 27701**, 개인정보 수탁사 관리, **영어(글로벌 인증 · 규제)**, 스타트업. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "보안 3-6년",
+          "개인정보 법률",
+          "GDPR · HIPAA 이해"
+        ],
+        "can_learn": [
+          "ISO 27701",
+          "의료기기 사이버보안",
+          "수탁사 점검"
+        ]
+      },
+      "study": [
+        {
+          "topic": "HIPAA 와 GDPR — 미 · 유럽에서 건강 데이터를 다룰 때",
+          "from": "qualification",
+          "quote": "• GDPR, HIPAA 등 관련 법률 국제인증업무 이해와 경험",
+          "priority": "core",
+          "why": "자격요건이다. 회사가 미 · 유럽 진출을 말하고, 혈압 데이터는 건강 정보다.",
+          "gap_check": "HIPAA 의 Covered Entity 와 Business Associate 는 무엇이고, 스카이랩스는 어느 쪽이 될 수 있나(BAA)? GDPR 에서 건강 데이터는 '특수 범주' 라 무엇이 더 필요한가(명시적 동의 · DPIA)? 한국 개인정보보호법의 민감정보 처리와 어디가 다른가?",
+          "drill": "반지 → 앱 → 클라우드 → 병원 대시보드로 흐르는 혈압 데이터의 데이터 흐름도를 그리고, 각 단계에 HIPAA · GDPR · 한국 개인정보보호법 요구(동의 · 암호화 · 보존 · 국외 이전 · 접근 기록)를 대응시킨 표를 만든다. GDPR DPIA 템플릿으로 한 쪽짜리 영향 평가를 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "HHS — Summary of the HIPAA Privacy Rule",
+              "url": "https://www.hhs.gov/hipaa/for-professionals/privacy/laws-regulations/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "EDPB — Guidelines on DPIA",
+              "url": "https://www.edpb.europa.eu/our-work-tools/our-documents/guidelines_en",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "새 시스템을 들일 때의 보안성 검토 — 체크리스트로",
+          "from": "task",
+          "quote": "• 신규 시스템 도입 및 유관부서 솔루션 도입 시 보안성 검토 진행",
+          "priority": "core",
+          "why": "주요업무다. 스타트업은 SaaS 를 빠르게 들이고, 그중 일부는 환자 데이터에 닿는다.",
+          "gap_check": "SaaS 를 들일 때 무엇을 묻나(SOC 2 · ISO 27001 보고서, 데이터 위치, SSO · MFA, 로그 보존, 하위 수탁자)? 환자 데이터를 다루는 도구와 아닌 도구의 검토 깊이를 어떻게 나누나? 검토 결과 '조건부 승인' 은 무엇으로 추적하나?",
+          "drill": "위험 등급(환자 데이터 접근 여부 · 권한 범위)에 따라 질문이 늘어나는 보안성 검토 체크리스트를 만들고, 가상의 도입 요청 셋(협업 툴 · 로그 분석 SaaS · 외주 라벨링 업체)에 적용해 등급 · 조건 · 재검토 일정을 적는다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "CSA — Consensus Assessments Initiative Questionnaire (CAIQ)",
+              "url": "https://cloudsecurityalliance.org/artifacts/star-level-1-security-questionnaire-caiq-v4",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모의훈련 — 계획 · 진행 · 결과를 프로세스로",
+          "from": "task",
+          "quote": "• 모의훈련 (훈련 계획, 훈련 진행, 훈련 결과) 프로세스 운영",
+          "priority": "high",
+          "why": "주요업무다. 피싱 · 랜섬웨어 대응은 규정보다 훈련에서 드러난다.",
+          "gap_check": "악성 메일 모의훈련에서 무엇을 재나(열람률 · 클릭률 · 신고율 · 신고까지 시간)? 개인을 망신 주지 않고 교육으로 잇는 방법은? 침해 사고 탁상 훈련에서 의료 데이터 유출을 가정하면 누가 언제 무엇을 신고해야 하나(개인정보위 · HIPAA 72 시간 · 60 일 규정)?",
+          "drill": "GoPhish(로컬)로 가짜 피싱 캠페인을 만들어 테스트 계정에 보내고 클릭 · 신고 지표를 뽑는다. '반지 앱 서버 DB 유출' 시나리오의 탁상 훈련 각본(시간대별 상황 · 담당 · 신고 기한 · 대외 문구)을 쓴다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "GoPhish",
+              "url": "https://getgophish.com/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
