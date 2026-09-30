@@ -1842,6 +1842,17 @@
       "postings": 3,
       "study_items": 7,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "neosapience",
+      "name": "네오사피엔스",
+      "aliases": [
+        "네오사피엔스"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 7,
+      "updated_at": "2026-09-30"
     }
   ]
 }
