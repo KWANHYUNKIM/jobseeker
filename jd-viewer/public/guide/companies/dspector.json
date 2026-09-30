@@ -1,0 +1,368 @@
+{
+  "slug": "dspector",
+  "name": "디스펙터",
+  "name_en": "DSPECTOR",
+  "aliases": [
+    "디스펙터"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": null,
+  "one_liner": "여러 모바일 로봇을 현장(플랜트 · 건설)에서 안전하게 돌리는 '인지-판단-허가-실행-회고' 플랫폼 — 관제 FMS · 엣지-클라우드 · 필드 엔지니어를 뽑는다",
+  "company": {
+    "business": "디스펙터는 **여러 대의 모바일 로봇을 현장에서 안전하게 돌리는 플랫폼**을 만든다 — 공고는 피지컬 AI 기반으로 다양한 환경의 다양한 모바일 로봇에 바로 적용하는 **'인지-판단-허가-실행-회고' 전 주기 통합 플랫폼**이라 적고, 로봇이 스스로 길을 찾고 판단하며 **여러 대가 협업해 위험 · 반복 작업을 사람 대신** 하는 세상을 목표로 둔다. '로봇을 훈련하는 것과 현장에서 안전하게 운영하는 것은 전혀 다른 문제' 라며 현장 중심을 강조한다. 공고로 보이는 구성은 **로봇 관제 · FMS(Fleet Management System)**, **엣지 디바이스(로봇) ↔ GCP 서버 통신**, **현장 설치 · 안정화**이고, 필드 엔지니어 우대에 **플랜트 · 발전 · 건설** 현장이 있다. 모집중 공고는 셋 — 풀스택(3-8년), DevOps(1-5년), 필드 엔지니어(3-8년). 회사 홈페이지는 찾지 못했다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "풀스택 개발자",
+        "url": "https://www.wanted.co.kr/wd/343884",
+        "publisher": "원티드",
+        "summary": "피지컬 AI 기반으로 다양한 모바일 로봇에 바로 적용하는 '인지-판단-허가-실행-회고' 전 주기 통합 플랫폼. 여러 로봇이 협업해 위험 · 반복 작업을 대신. '훈련과 현장 운영은 전혀 다른 문제' — 현장 중심. 풀스택: FMS · 관제 시스템(실시간 모니터링 · 제어 · 데이터 시각화), 엣지-서버 통신 프로토콜 · API 명세, React · TypeScript + Node.js/Python API. 우대 RMF · ROS · WebSocket · MQTT · gRPC."
+      },
+      {
+        "title": "Devops 개발자",
+        "url": "https://www.wanted.co.kr/wd/343889",
+        "publisher": "원티드",
+        "summary": "GCP 인프라 운영(개발 · 스테이징 · 프로덕션), 엣지 디바이스 ↔ GCP 통신 구조 설계 지원, CI/CD(Docker · K8s), 자동화 스크립트 · 모니터링 · 로깅. GCP 1년↑. 우대: VPC · 방화벽 · 로드밸런서, 엣지-클라우드 네트워크, Prometheus · Grafana · ELK, IoT, ML 서빙."
+      },
+      {
+        "title": "필드 엔지니어",
+        "url": "https://www.wanted.co.kr/wd/343880",
+        "publisher": "원티드",
+        "summary": "현장 배포 · 안정화(설치 · 네트워크 · 센서 · 로봇 운용) 2nd 인력, 현장 장애 Top N 수집과 증거(로그 · 영상 · 재현 절차) 확보 → R&D 핸드오프, 운영 절차 · 체크리스트 표준화. Linux · 네트워크 · 장비 셋업 현장 3년+, 로봇 · 센서 · 카메라 운용. 우대 ROS 2 · Docker · VPN · 방화벽 · 플랜트 · 발전 · 건설 현장."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "로봇 관제 · 운영 플랫폼(FMS)",
+        "how": "여러 모바일 로봇의 관제 · 운영 플랫폼과 현장 배포 · 안정화를 함께 제공한다 — 라이선스 · 구축 · 운영 계약 중 무엇인지는 읽은 자료에 없다.",
+        "domains": [
+          "로봇 관제 FMS",
+          "엣지-클라우드 통신 · 인프라",
+          "현장 배포 · 장애 대응"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "풀스택 개발자",
+            "url": "https://www.wanted.co.kr/wd/343884",
+            "publisher": "원티드",
+            "summary": "피지컬 AI 기반으로 다양한 모바일 로봇에 바로 적용하는 '인지-판단-허가-실행-회고' 전 주기 통합 플랫폼. 여러 로봇이 협업해 위험 · 반복 작업을 대신. '훈련과 현장 운영은 전혀 다른 문제' — 현장 중심. 풀스택: FMS · 관제 시스템(실시간 모니터링 · 제어 · 데이터 시각화), 엣지-서버 통신 프로토콜 · API 명세, React · TypeScript + Node.js/Python API. 우대 RMF · ROS · WebSocket · MQTT · gRPC."
+          },
+          {
+            "title": "필드 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/343880",
+            "publisher": "원티드",
+            "summary": "현장 배포 · 안정화(설치 · 네트워크 · 센서 · 로봇 운용) 2nd 인력, 현장 장애 Top N 수집과 증거(로그 · 영상 · 재현 절차) 확보 → R&D 핸드오프, 운영 절차 · 체크리스트 표준화. Linux · 네트워크 · 장비 셋업 현장 3년+, 로봇 · 센서 · 카메라 운용. 우대 ROS 2 · Docker · VPN · 방화벽 · 플랜트 · 발전 · 건설 현장."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "로봇 관제 FMS",
+        "why": "풀스택 공고가 FMS · 관제 시스템(실시간 모니터링 · 제어 · 관제 데이터 시각화)과 React · API 서버를 적고 RMF · ROS 를 우대한다.",
+        "what_to_know": [
+          "Open-RMF",
+          "WebSocket 실시간 UI",
+          "로봇 상태 모델"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "풀스택 개발자",
+            "url": "https://www.wanted.co.kr/wd/343884",
+            "publisher": "원티드",
+            "summary": "피지컬 AI 기반으로 다양한 모바일 로봇에 바로 적용하는 '인지-판단-허가-실행-회고' 전 주기 통합 플랫폼. 여러 로봇이 협업해 위험 · 반복 작업을 대신. '훈련과 현장 운영은 전혀 다른 문제' — 현장 중심. 풀스택: FMS · 관제 시스템(실시간 모니터링 · 제어 · 데이터 시각화), 엣지-서버 통신 프로토콜 · API 명세, React · TypeScript + Node.js/Python API. 우대 RMF · ROS · WebSocket · MQTT · gRPC."
+          }
+        ]
+      },
+      {
+        "name": "엣지-클라우드 통신 · 인프라",
+        "why": "풀스택 · DevOps 공고가 엣지 디바이스와 서버(GCP) 간 통신 프로토콜 · 인터페이스를 적고 MQTT · gRPC · VPC · 방화벽을 우대한다.",
+        "what_to_know": [
+          "MQTT",
+          "gRPC 스트리밍",
+          "GCP 네트워크"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "풀스택 개발자",
+            "url": "https://www.wanted.co.kr/wd/343884",
+            "publisher": "원티드",
+            "summary": "피지컬 AI 기반으로 다양한 모바일 로봇에 바로 적용하는 '인지-판단-허가-실행-회고' 전 주기 통합 플랫폼. 여러 로봇이 협업해 위험 · 반복 작업을 대신. '훈련과 현장 운영은 전혀 다른 문제' — 현장 중심. 풀스택: FMS · 관제 시스템(실시간 모니터링 · 제어 · 데이터 시각화), 엣지-서버 통신 프로토콜 · API 명세, React · TypeScript + Node.js/Python API. 우대 RMF · ROS · WebSocket · MQTT · gRPC."
+          },
+          {
+            "title": "Devops 개발자",
+            "url": "https://www.wanted.co.kr/wd/343889",
+            "publisher": "원티드",
+            "summary": "GCP 인프라 운영(개발 · 스테이징 · 프로덕션), 엣지 디바이스 ↔ GCP 통신 구조 설계 지원, CI/CD(Docker · K8s), 자동화 스크립트 · 모니터링 · 로깅. GCP 1년↑. 우대: VPC · 방화벽 · 로드밸런서, 엣지-클라우드 네트워크, Prometheus · Grafana · ELK, IoT, ML 서빙."
+          }
+        ]
+      },
+      {
+        "name": "현장 배포 · 장애 대응",
+        "why": "필드 엔지니어 공고가 현장 설치 · 안정화, 장애 Top N · 증거 확보 · R&D 핸드오프, 체크리스트 표준화를 적는다.",
+        "what_to_know": [
+          "ROS 2 bag",
+          "재현 절차 문서",
+          "현장 네트워크"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "필드 엔지니어",
+            "url": "https://www.wanted.co.kr/wd/343880",
+            "publisher": "원티드",
+            "summary": "현장 배포 · 안정화(설치 · 네트워크 · 센서 · 로봇 운용) 2nd 인력, 현장 장애 Top N 수집과 증거(로그 · 영상 · 재현 절차) 확보 → R&D 핸드오프, 운영 절차 · 체크리스트 표준화. Linux · 네트워크 · 장비 셋업 현장 3년+, 로봇 · 센서 · 카메라 운용. 우대 ROS 2 · Docker · VPN · 방화벽 · 플랜트 · 발전 · 건설 현장."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "현장 운영이 연구만큼 중요하다",
+        "evidence": "로봇이 자율적으로, 또 자동적으로 어떤 행동을 하게끔 훈련하는 것과, 실제 현장에서 안전하게 로봇이 작업을 수행하게끔 운영하는 것은 전혀 다른 문제입니다.",
+        "so_what": "관제 · 인프라 · 필드 세 자리가 모두 '로봇이 현장에서 도는' 쪽이다 — 면접에서 현장 장애를 어떻게 재현 가능하게 넘겼는지를 물을 가능성이 높다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "AI 코드 검토 역량을 자격으로 적는다",
+        "evidence": "- AI가 생성한 코드를 그대로 사용하는 것이 아니라, 구조·품질·보안·유지보수성을 검토하고 개선할 수 있는 역량",
+        "so_what": "AI 코딩 도구를 쓰되 결과를 검토한 경험을 필수 자격으로 둔다 — 쓴 도구보다 고친 사례를 준비한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "회사 홈페이지를 찾지 못했다 — 고객 · 로봇 종류 · 매출 · 인원은 읽은 자료에 없다",
+    "플랫폼의 과금 방식은 모른다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/343884",
+      "title": "풀스택 개발자",
+      "site": "wanted",
+      "verdict": "경력 3-8년, 학사 이상. **FMS · AI 로봇 관제 시스템**의 프론트 · 백엔드 — **실시간 모니터링 · 제어**, 관제 데이터 수집 · 처리 · 시각화. **엣지-서버 통신 프로토콜 설계**와 엣지 SW 데이터 연동 인터페이스 · API 명세. React 관제 UI, 백엔드 API · DB, 엔드투엔드 구현 · 테스트. 자격은 **React 3년 · TypeScript**, **Node.js(Fastify · Express) 또는 Python(FastAPI · Django) API 3년**, RDB 또는 NoSQL 모델링 · 쿼리 최적화 · 마이그레이션, **AI 코딩 도구를 쓰되 생성 코드를 구조 · 품질 · 보안 · 유지보수성으로 검토 · 개선**. 우대는 **RMF(Robot Middleware Framework) · ROS**, IoT · 엣지 연동, **WebSocket · MQTT · gRPC** 실시간 처리 · 관제 · 스트리밍, Docker · K8s · CI/CD · 클라우드. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "React 3년 · TS",
+          "Node/Python API 3년",
+          "DB 모델링",
+          "AI 코드 검토"
+        ],
+        "can_learn": [
+          "Open-RMF",
+          "MQTT",
+          "ROS 2"
+        ]
+      },
+      "study": [
+        {
+          "topic": "여러 로봇을 한 화면에 — 실시간 관제 UI",
+          "from": "task",
+          "quote": "- 실시간 모니터링 및 제어 기능 구현",
+          "priority": "core",
+          "why": "주요업무(FMS · 관제)이고 우대에 실시간 데이터 처리 · 관제/모니터링 시스템 개발이 있다.",
+          "gap_check": "로봇 수십 대의 위치 · 배터리 · 작업 상태가 초당 여러 번 올 때 WebSocket 으로 전부 흘리나, 화면이 보는 로봇만 구독하나? 제어 명령(정지 · 복귀)을 보냈는데 로봇이 받았는지 어떻게 확인하나(명령 ID · 응답)? 연결이 끊겼다 붙으면 놓친 상태를 어떻게 따라잡나?",
+          "drill": "Fastify(또는 FastAPI) + WebSocket 으로 가짜 로봇 30대가 1초마다 상태를 보내는 서버를 만들고, React 관제 화면에 지도 · 목록 · 정지 버튼을 붙인다. 정지 명령에 ID 를 달아 로봇 응답(ACK)이 없으면 화면에 '미확인' 을 띄우고, 재접속 시 최신 상태 스냅숏을 먼저 받게 한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Fastify — WebSocket plugin",
+              "url": "https://github.com/fastify/fastify-websocket",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "엣지 로봇과 서버의 통신 — MQTT · gRPC 중 무엇을",
+          "from": "task",
+          "quote": "- 엣지 디바이스와 서버 간 통신 프로토콜 설계",
+          "priority": "core",
+          "why": "주요업무이고 우대에 WebSocket · MQTT · gRPC 가 있다. 현장 네트워크는 끊기고 느리다.",
+          "gap_check": "로봇 상태 보고(자주 · 작음)와 제어 명령(드묾 · 반드시 도착)을 같은 방식으로 보내나? MQTT QoS 0 · 1 · 2 는 각각 무엇을 보장하고 무엇이 비싼가? 로봇이 잠깐 오프라인일 때 명령은 어디에 머무나(retained · 세션 유지)? gRPC 양방향 스트리밍은 언제 낫나?",
+          "drill": "Mosquitto 를 띄워 로봇 상태(QoS 0)와 명령(QoS 1, 로봇별 토픽)을 나눈 토픽 설계를 하고, 로봇 클라이언트를 끊었다 붙여 명령이 전달되는지(persistent session) 확인한다. 같은 명령 흐름을 gRPC 양방향 스트리밍으로도 만들어 재접속 처리 코드량을 비교한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "MQTT Essentials — HiveMQ",
+              "url": "https://www.hivemq.com/mqtt/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "RMF 로 여러 로봇의 교통 정리",
+          "from": "preference",
+          "quote": "• 도메인 특화 경험 로봇/자율주행 시스템 개발 경험 RMF(Robot Middleware Framework)",
+          "priority": "high",
+          "why": "우대사항이고 회사가 여러 로봇의 협업을 목표로 둔다.",
+          "gap_check": "제조사가 다른 로봇 여러 대가 같은 복도 · 엘리베이터를 쓸 때 Open-RMF 는 무엇을 조정하나(교통 일정 · 충돌 협상 · 태스크 배정)? 로봇마다 다른 API 를 RMF 에 붙이는 층(fleet adapter)은 무엇을 번역하나? 관제 화면은 RMF 의 어떤 정보를 보여 주나?",
+          "drill": "Open-RMF 의 데모(rmf_demos)를 Docker 로 돌려 두 플릿이 한 층에서 태스크를 받는 시뮬레이션을 보고, 태스크 요청 · 상태를 API 로 받아 간단한 웹 관제 화면에 표시한다. fleet adapter 가 무엇을 번역하는지 한 쪽으로 정리한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Open-RMF",
+              "url": "https://www.open-rmf.org/",
+              "kind": "docs"
+            },
+            {
+              "title": "rmf_demos — GitHub",
+              "url": "https://github.com/open-rmf/rmf_demos",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/343889",
+      "title": "Devops 개발자",
+      "site": "wanted",
+      "verdict": "경력 1-5년, 학사 이상. **GCP 인프라** 구축 · 운영, 리소스 모니터링 · 최적화, 개발 · 스테이징 · 프로덕션 배포 환경. **엣지 디바이스 ↔ GCP 통신 구조 설계 지원**, 인프라 · 인터페이스 협의, API 연동 · 네트워크 구성. Git 자동 배포 · **Docker · Kubernetes**, 배포 표준화 · 문서화, Python · Bash 자동화 스크립트, 모니터링 · 로깅, 개발팀 지원. 자격은 **GCP 1년**, 클라우드 구축 · 운영, Linux, Docker, CI/CD(GitLab CI · GitHub Actions · Jenkins), Git, 스크립트, API · 네트워크 이해, 백엔드 기초. 우대는 **TCP/IP · VPC · 방화벽 · 로드밸런서 · 엣지-클라우드 네트워크**, Prometheus · Grafana · ELK, IoT · 실시간 처리 · ML 서빙, Node.js/Python, DB. 저연차(1년)부터 열려 있다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "GCP 1년",
+          "Docker · CI/CD",
+          "Linux · 스크립트"
+        ],
+        "can_learn": [
+          "엣지 인증 · VPN",
+          "GKE",
+          "Cloud Logging 알람"
+        ]
+      },
+      "study": [
+        {
+          "topic": "로봇이 GCP 에 안전하게 붙는 길 — 장치 인증과 네트워크",
+          "from": "task",
+          "quote": "- 엣지 디바이스와 GCP 간 통신 구조 설계 지원",
+          "priority": "core",
+          "why": "주요업무이고 우대에 VPC · 방화벽 · 엣지-클라우드 네트워크가 있다. 현장(플랜트 · 건설)의 로봇은 고객사 네트워크 뒤에 있다.",
+          "gap_check": "현장 로봇이 고객 방화벽 밖으로 나갈 때 어떤 포트 · 방향만 열게 하나(아웃바운드 한 줄)? 로봇마다 다른 인증서로 서버에 붙게 하려면(mTLS · 장치별 키)? 로봇 한 대가 탈취되면 무엇을 막아야 하나(키 폐기 · 권한 범위)?",
+          "drill": "GCP 무료 등급에서 VPC · 방화벽 규칙을 만들고, 가짜 로봇(작은 VM 또는 로컬 컨테이너)이 장치별 클라이언트 인증서로 MQTT 브로커(또는 HTTPS API)에 mTLS 로 붙게 한다. 인증서 하나를 폐기해 그 로봇만 끊기는지 확인하고, 필요한 포트 · 방향 목록을 고객 IT 팀용 한 쪽 문서로 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Google Cloud — VPC firewall rules",
+              "url": "https://cloud.google.com/firewall/docs/firewalls",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "개발 · 스테이징 · 프로덕션 — GitHub Actions 로 GKE 배포",
+          "from": "task",
+          "quote": "- 배포 환경 관리 (개발/스테이징/프로덕션)",
+          "priority": "core",
+          "why": "주요업무이고 자격에 Docker · CI/CD 구축이 있다.",
+          "gap_check": "같은 이미지를 개발 → 스테이징 → 프로덕션으로 승격하려면 무엇을 바꾸고 무엇을 고정하나(이미지 다이제스트 · 환경별 설정)? GitHub Actions 가 GCP 에 키 파일 없이 붙으려면(Workload Identity Federation)? 프로덕션 배포에 사람 승인을 넣으려면?",
+          "drill": "GitHub Actions 로 이미지를 Artifact Registry 에 올리고 Workload Identity Federation 으로 GKE Autopilot(또는 Cloud Run)에 개발 환경 자동 배포, 프로덕션은 environment 승인 후 같은 다이제스트로 배포하는 워크플로를 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "google-github-actions/auth — Workload Identity Federation",
+              "url": "https://github.com/google-github-actions/auth",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모니터링 · 로깅 — 로봇이 조용히 멈춘 것을 알아채기",
+          "from": "task",
+          "quote": "- 모니터링 및 로깅 시스템 구축",
+          "priority": "high",
+          "why": "주요업무이고 우대에 Prometheus · Grafana · ELK · 클라우드 알람이 있다.",
+          "gap_check": "로봇이 상태를 안 보내는 것(침묵)은 에러 로그가 없어 어떻게 알람을 거나(마지막 보고 시각 지표)? 서버 지표 · 로봇 지표 · 로그를 어디에 모으나? 알람이 너무 많아 무시되지 않게 하려면?",
+          "drill": "Prometheus 로 가짜 로봇들의 '마지막 보고 시각' 지표를 모아 60초 넘으면 알람이 가게 규칙을 쓰고, Grafana 에 로봇별 상태 패널을 만든다. 로봇 하나를 멈춰 알람이 오는지, 30대가 한꺼번에 끊기면 알람을 하나로 묶는지(그룹화) 확인한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Prometheus — Alerting rules",
+              "url": "https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/343880",
+      "title": "필드 엔지니어",
+      "site": "wanted",
+      "verdict": "경력 3-8년, 학사 이상. **현장 배포 · 안정화**(설치 · 네트워크 · 센서 · 로봇 운용)의 2nd 인력, **현장 장애 Top N 수집과 증거(로그 · 영상 · 재현 절차) 확보 → R&D 핸드오프**, **운영 절차 · 체크리스트 표준화(재발 방지)**. 자격은 **Linux · 네트워크 · 장비 셋업 현장 대응 3년+**, **이슈 리포팅 · 문서화 습관(재현 절차 포함)**, 로봇 · 센서 · 카메라 중 하나 이상 운용. 우대는 **ROS 2 · Docker**, VPN · 방화벽 · 라우팅, **플랜트 · 발전 · 건설** 현장. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "현장 대응 3년+",
+          "Linux · 네트워크",
+          "재현 절차 문서화",
+          "장비 운용"
+        ],
+        "can_learn": [
+          "ROS 2 bag",
+          "현장 체크리스트",
+          "VPN"
+        ]
+      },
+      "study": [
+        {
+          "topic": "현장 장애를 R&D 가 재현할 수 있게 넘기기 — rosbag · 로그 · 영상",
+          "from": "task",
+          "quote": "• 현장 장애 Top N 수집, 증거(로그/영상/재현절차) 확보 및 R&D 핸드오프",
+          "priority": "core",
+          "why": "주요업무이고 자격에 '이슈 리포팅/문서화 습관(재현 절차 포함)' 이 있다. 현장에서 한 번 난 문제를 사무실에서 다시 보려면 그 순간의 데이터가 있어야 한다.",
+          "gap_check": "로봇이 현장에서 멈췄을 때 무엇을 남겨야 R&D 가 재현하나(센서 원시 데이터 · 명령 · 로그 · 시각 동기화된 영상)? ROS 2 bag 을 늘 켜 두면 디스크가 모자라는데 무엇을 어떻게 남기나(링 버퍼 · 이벤트 앞뒤 N 초)? 장애 보고서에 반드시 들어갈 칸은?",
+          "drill": "ROS 2 튜토리얼대로 turtlesim 과 rosbag2 로 토픽을 기록 · 재생하고, 특정 이벤트(속도 0 이 5 초 이상) 앞뒤 30 초만 잘라 저장하는 스크립트를 쓴다. 장애 보고서 템플릿(환경 · 시각 · 증상 · 재현 절차 · 첨부 bag · 영상 · 임시 조치)을 한 쪽으로 만든다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "ROS 2 — Recording and playing back data",
+              "url": "https://docs.ros.org/en/rolling/Tutorials/Beginner-CLI-Tools/Recording-And-Playing-Back-Data/Recording-And-Playing-Back-Data.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "현장 설치 체크리스트 — 재발을 막는 표준 절차",
+          "from": "task",
+          "quote": "• 운영 절차/체크리스트 표준화(재발 방지)",
+          "priority": "core",
+          "why": "주요업무다. 같은 장애 Top N 이 반복된다면 절차가 빠진 것이다.",
+          "gap_check": "로봇 설치 첫날 무엇을 순서대로 확인하나(전원 · 네트워크 · 시각 동기화 · 센서 보정 · 지도 · 비상 정지)? 체크리스트 항목을 '했다' 가 아니라 '값이 이렇다' 로 적어야 하는 이유는? 장애가 나면 체크리스트의 어느 항목을 고쳐야 하나?",
+          "drill": "가상의 창고 로봇 설치를 두고 설치 · 일일 점검 · 장애 대응 체크리스트 셋을 만든다(항목마다 확인 명령과 기대 값). 가짜 장애 사례 셋(Wi-Fi 끊김 · 시각 불일치 · 센서 오염)을 두고 각 사례가 어느 항목을 추가하게 만드는지 적는다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "The Checklist Manifesto — Atul Gawande",
+              "url": "https://atulgawande.com/book/the-checklist-manifesto/",
+              "kind": "book"
+            }
+          ]
+        },
+        {
+          "topic": "현장 네트워크 — Linux 에서 로봇 연결 문제 좁히기",
+          "from": "qualification",
+          "quote": "• Linux/네트워크/장비 셋업 기반 현장 대응 경험 3년+",
+          "priority": "high",
+          "why": "필수 자격이고 우대에 VPN · 방화벽 · 라우팅 대응이 있다. 플랜트 · 건설 현장의 네트워크는 고객사가 관리한다.",
+          "gap_check": "로봇이 서버에 안 붙을 때 어느 층부터 확인하나(링크 · IP · 게이트웨이 · DNS · 포트 · TLS)? 고객 방화벽이 막은 것인지 무엇으로 보이나? 시각 동기화(NTP)가 틀어지면 인증서 · 로그에 무엇이 생기나?",
+          "drill": "리눅스 VM 두 대로 ip · ping · traceroute · dig · nc · curl -v · tcpdump 를 층별로 쓰는 진단 순서표를 만들고, iptables 로 포트 하나를 막았을 때와 시각을 하루 틀었을 때(TLS 실패) 증상이 어떻게 다른지 기록한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Linux Network Troubleshooting — Red Hat",
+              "url": "https://www.redhat.com/sysadmin/beginners-guide-network-troubleshooting-linux",
+              "kind": "blog"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

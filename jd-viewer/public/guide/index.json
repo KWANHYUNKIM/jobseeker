@@ -1251,6 +1251,17 @@
       "postings": 3,
       "study_items": 6,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "dspector",
+      "name": "디스펙터",
+      "aliases": [
+        "디스펙터"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 9,
+      "updated_at": "2026-09-30"
     }
   ]
 }
