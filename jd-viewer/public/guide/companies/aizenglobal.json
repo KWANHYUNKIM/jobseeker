@@ -1,0 +1,392 @@
+{
+  "slug": "aizenglobal",
+  "name": "에이젠글로벌",
+  "name_en": "AIZEN Global",
+  "aliases": [
+    "에이젠글로벌",
+    "AIZENGlobal"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": "aizenglobal.com",
+  "one_liner": "은행 · 카드사에 금융 특화 ML(ABACUS)을 팔고, 셀러의 정산 데이터를 신용으로 바꿔 금융을 잇는 AI BaaS — 30명대, 한국 · 동남아",
+  "company": {
+    "business": "에이젠글로벌은 **금융 데이터와 AI 의사결정 자동화**를 파는 핀테크다 — 공고는 금융 특화 ML 솔루션 **ABACUS(아바커스)** 와 AI 뱅킹 솔루션 **CreditConnect(크레딧커넥트)** 를 **한국 · 싱가포르 · 베트남 · 인도네시아**에 공급한다고 적는다. 데이터 사이언티스트 공고는 **우리은행 · 우리카드 · 현대카드 · NH농협생명 · 삼성생명** 이 솔루션을 쓰고, 동남아에서 **전기자동차 금융**을 한다고 적는다. 스스로를 **AI 기반 BaaS(Banking-as-a-Service)** 라 부르고 **이커머스 공급망 금융**과 **EV 금융**을 든다. 백엔드 두 공고의 **Seller Credit Connect 팀**은 온라인 셀러의 **판매 · 정산 데이터(정산 예정금 · 매출 흐름)** 로 셀러에게 맞는 금융 선택지를 설계한다 — 판매 활동 자체를 신용으로 보는 구조다. 잡코리아 기업 정보는 **2016년 설립 · 매출 약 68억 7천만 원 · 사원 32명**, 여의도 근무. 모집중 공고는 셋(잡코리아 Java 게시는 원티드와 같은 자리) — Python 백엔드(5년↑), 데이터 사이언티스트(5년↑), Java 백엔드(5년↑). 회사 홈페이지(aizenglobal.com)는 본문이 읽히지 않았다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "BackEnd Developer (Python)",
+        "url": "https://www.wanted.co.kr/wd/355498",
+        "publisher": "원티드",
+        "summary": "금융 데이터와 AI 의사결정 자동화 — 금융 특화 ML 솔루션 ABACUS · AI 뱅킹 솔루션 CreditConnect 를 한국 · 싱가포르 · 베트남 · 인도네시아에 공급. AI 기반 BaaS, 이커머스 공급망 금융 · EV 금융. Seller Credit Connect 팀: 온라인 셀러의 판매 · 정산 데이터(정산 예정금 · 매출 흐름)를 금융과 연결. 업무: AI 금융 플랫폼 · ML 관리 플랫폼 백엔드, 금융사 · ML 서비스 연동. Django · FastAPI · PostgreSQL."
+      },
+      {
+        "title": "DATA Scientist",
+        "url": "https://www.wanted.co.kr/wd/356966",
+        "publisher": "원티드",
+        "summary": "Citi · SC · SAP · IBM · 삼성 · Deloitte · EY 출신 매니지먼트. 우리은행 · 우리카드 · 현대카드 · NH농협생명 · 삼성생명이 솔루션 사용, 싱가포르 · 베트남 · 인도네시아 전기자동차 금융. 업무: 금융 데이터 통계 분석 · 시각화, 자사 AutoML 로 FDS · 리스크 예측 · 신용평가 모델, 학습 · 평가 · 배포 파이프라인, 운영 모니터링. LLM(RAG · Fine-tuning) 이해."
+      },
+      {
+        "title": "BackEnd Developer (Java)",
+        "url": "https://www.wanted.co.kr/wd/362687",
+        "publisher": "원티드",
+        "summary": "같은 회사 · 팀 소개. 업무: 금융 플랫폼 백엔드 설계 · 개발. Java 5년 · Spring Boot, 우대 금융 서비스 · Kafka/RabbitMQ · PostgreSQL · NoSQL."
+      },
+      {
+        "title": "[에이젠글로벌] Backend Developer (Java) — 잡코리아",
+        "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49699863?Oem_Code=C1&logpath=1&stext=%EC%9E%90%EB%B0%94&listno=36&sc=630",
+        "publisher": "잡코리아",
+        "summary": "기업 정보: 2016년 설립, 자본금 5억 1,859만 원, 매출액 68억 7,094만 원, 사원 32명, 벤처기업, 서울 영등포구 은행로 30(중소기업중앙회). 원티드 Java 공고와 같은 본문, 10/02 마감."
+      }
+    ],
+    "scale": [
+      {
+        "label": "매출 · 인원(잡코리아 기업 정보)",
+        "value": "매출 68억 7,094만 원 · 사원 32명 · 2016년 설립",
+        "as_of": "2026-09 잡코리아 게시 기준",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[에이젠글로벌] Backend Developer (Java) — 잡코리아",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49699863?Oem_Code=C1&logpath=1&stext=%EC%9E%90%EB%B0%94&listno=36&sc=630",
+            "publisher": "잡코리아",
+            "summary": "기업 정보: 2016년 설립, 자본금 5억 1,859만 원, 매출액 68억 7,094만 원, 사원 32명, 벤처기업, 서울 영등포구 은행로 30(중소기업중앙회). 원티드 Java 공고와 같은 본문, 10/02 마감."
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "금융기관용 AI 솔루션(ABACUS · CreditConnect)",
+        "how": "국내 대형 금융사(은행 · 카드 · 생명보험)가 솔루션을 도입했다고 적는다 — 라이선스 · 구축 · 운영 중 무엇으로 받는지는 읽은 자료에 없다.",
+        "domains": [
+          "금융 ML 모델(FDS · 신용평가)",
+          "금융 플랫폼 백엔드 · 금융사 연동"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "DATA Scientist",
+            "url": "https://www.wanted.co.kr/wd/356966",
+            "publisher": "원티드",
+            "summary": "Citi · SC · SAP · IBM · 삼성 · Deloitte · EY 출신 매니지먼트. 우리은행 · 우리카드 · 현대카드 · NH농협생명 · 삼성생명이 솔루션 사용, 싱가포르 · 베트남 · 인도네시아 전기자동차 금융. 업무: 금융 데이터 통계 분석 · 시각화, 자사 AutoML 로 FDS · 리스크 예측 · 신용평가 모델, 학습 · 평가 · 배포 파이프라인, 운영 모니터링. LLM(RAG · Fine-tuning) 이해."
+          }
+        ]
+      },
+      {
+        "name": "셀러 금융 · EV 금융(BaaS)",
+        "how": "셀러 정산 데이터 기반 금융 선택지와 동남아 EV 금융을 적는다 — 금융사 연결 수수료인지 직접 여신인지는 읽은 자료에 없다.",
+        "domains": [
+          "금융 플랫폼 백엔드 · 금융사 연동"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "BackEnd Developer (Python)",
+            "url": "https://www.wanted.co.kr/wd/355498",
+            "publisher": "원티드",
+            "summary": "금융 데이터와 AI 의사결정 자동화 — 금융 특화 ML 솔루션 ABACUS · AI 뱅킹 솔루션 CreditConnect 를 한국 · 싱가포르 · 베트남 · 인도네시아에 공급. AI 기반 BaaS, 이커머스 공급망 금융 · EV 금융. Seller Credit Connect 팀: 온라인 셀러의 판매 · 정산 데이터(정산 예정금 · 매출 흐름)를 금융과 연결. 업무: AI 금융 플랫폼 · ML 관리 플랫폼 백엔드, 금융사 · ML 서비스 연동. Django · FastAPI · PostgreSQL."
+          },
+          {
+            "title": "DATA Scientist",
+            "url": "https://www.wanted.co.kr/wd/356966",
+            "publisher": "원티드",
+            "summary": "Citi · SC · SAP · IBM · 삼성 · Deloitte · EY 출신 매니지먼트. 우리은행 · 우리카드 · 현대카드 · NH농협생명 · 삼성생명이 솔루션 사용, 싱가포르 · 베트남 · 인도네시아 전기자동차 금융. 업무: 금융 데이터 통계 분석 · 시각화, 자사 AutoML 로 FDS · 리스크 예측 · 신용평가 모델, 학습 · 평가 · 배포 파이프라인, 운영 모니터링. LLM(RAG · Fine-tuning) 이해."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "금융 플랫폼 백엔드 · 금융사 연동",
+        "why": "백엔드 공고가 AI 금융 플랫폼 · ML 관리 플랫폼 백엔드와 금융사 · ML 서비스 연동, Kafka · RabbitMQ 우대를 적는다.",
+        "what_to_know": [
+          "FastAPI · Spring",
+          "메시지 브로커",
+          "금융사 API 연동"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "BackEnd Developer (Python)",
+            "url": "https://www.wanted.co.kr/wd/355498",
+            "publisher": "원티드",
+            "summary": "금융 데이터와 AI 의사결정 자동화 — 금융 특화 ML 솔루션 ABACUS · AI 뱅킹 솔루션 CreditConnect 를 한국 · 싱가포르 · 베트남 · 인도네시아에 공급. AI 기반 BaaS, 이커머스 공급망 금융 · EV 금융. Seller Credit Connect 팀: 온라인 셀러의 판매 · 정산 데이터(정산 예정금 · 매출 흐름)를 금융과 연결. 업무: AI 금융 플랫폼 · ML 관리 플랫폼 백엔드, 금융사 · ML 서비스 연동. Django · FastAPI · PostgreSQL."
+          },
+          {
+            "title": "BackEnd Developer (Java)",
+            "url": "https://www.wanted.co.kr/wd/362687",
+            "publisher": "원티드",
+            "summary": "같은 회사 · 팀 소개. 업무: 금융 플랫폼 백엔드 설계 · 개발. Java 5년 · Spring Boot, 우대 금융 서비스 · Kafka/RabbitMQ · PostgreSQL · NoSQL."
+          }
+        ]
+      },
+      {
+        "name": "금융 ML 모델(FDS · 신용평가)",
+        "why": "데이터 사이언티스트 공고가 자사 AutoML 로 FDS · 리스크 예측 · 신용평가 모델과 운영 모니터링을 적는다.",
+        "what_to_know": [
+          "신용평가 모델 검증",
+          "불균형 데이터",
+          "모델 드리프트"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "DATA Scientist",
+            "url": "https://www.wanted.co.kr/wd/356966",
+            "publisher": "원티드",
+            "summary": "Citi · SC · SAP · IBM · 삼성 · Deloitte · EY 출신 매니지먼트. 우리은행 · 우리카드 · 현대카드 · NH농협생명 · 삼성생명이 솔루션 사용, 싱가포르 · 베트남 · 인도네시아 전기자동차 금융. 업무: 금융 데이터 통계 분석 · 시각화, 자사 AutoML 로 FDS · 리스크 예측 · 신용평가 모델, 학습 · 평가 · 배포 파이프라인, 운영 모니터링. LLM(RAG · Fine-tuning) 이해."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "판매 데이터가 신용이 된다",
+        "evidence": "단순한 상품 나열을 넘어, 셀러의 일상적인 판매 활동 자체가 신용이 되는 혁신적인 구조를 만듭니다",
+        "so_what": "정산 예정금 · 매출 흐름 같은 대체 데이터로 금융 조건을 매긴다 — 면접에서 셀러 데이터의 신뢰성 · 연동 방식을 물을 가능성이 높다(추정).",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "30명대 팀에 5년 이상만",
+        "evidence": "• python 개발 경력 5년 이상 혹은 그에 준함",
+        "so_what": "세 공고가 모두 5년 이상이다 — 작은 팀이 대형 금융사 연동을 맡아, 금융권 보안 · 인증 요구를 스스로 다룰 사람을 찾는다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "솔루션 과금(라이선스 · 구축)과 셀러 금융에서 버는 방식(수수료 · 직접 여신)은 읽은 자료에 없다",
+    "회사 홈페이지(aizenglobal.com)는 본문이 비어 읽지 못했다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/355498",
+      "title": "BackEnd Developer (Python)",
+      "site": "wanted",
+      "verdict": "경력 5-11년. **Seller Credit Connect 팀** — 온라인 셀러의 판매 · 정산 데이터를 금융과 연결한다. 업무는 **AI 금융 플랫폼 백엔드 아키텍처**, **ML 관리 플랫폼 백엔드**, **금융사 연동 · ML 서비스 연동**. 자격은 Python 5년, **Django · FastAPI · PostgreSQL**. 우대는 CS 전공, 금융 서비스, AI 플랫폼, **인증 · 인가 이해**, Git, **Kafka · RabbitMQ**, 클라우드 · k8s, MySQL/PostgreSQL, NoSQL. 공고의 업무 · 자격 서술은 짧다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Python 5년",
+          "Django/FastAPI",
+          "PostgreSQL"
+        ],
+        "can_learn": [
+          "금융사 API 연동",
+          "메시지 브로커",
+          "모델 서빙 API"
+        ]
+      },
+      "study": [
+        {
+          "topic": "금융사 연동 — 느리고 실패하는 외부 기관 API 를 안전하게",
+          "from": "task",
+          "quote": "금융사 연동 및 머신러닝 서비스 연동 등",
+          "priority": "core",
+          "why": "주요업무이고 우대에 금융 서비스 · 메시지 브로커 · 인증 인가가 있다. 셀러 금융은 금융사에 심사 · 실행을 요청하는 일이다.",
+          "gap_check": "금융사에 대출 신청을 보냈는데 응답 없이 끊기면 다시 보내도 되나(멱등 키 · 상태 조회)? 금융사마다 다른 요청 형식을 코드에서 어떻게 가르나(어댑터)? 금융사 응답이 몇 분 뒤 콜백으로 올 때 상태를 어떻게 두나?",
+          "drill": "FastAPI 로 '금융 선택지 신청' API 를 만들고, 서로 형식이 다른 목 금융사 둘(동기 응답 · 콜백 응답)을 어댑터로 붙인다. 신청을 RabbitMQ(또는 Kafka)에 넣어 비동기로 보내고, 타임아웃 · 중복 콜백에도 신청 상태가 한 번만 바뀌는지 테스트한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "FastAPI — Background Tasks · Dependencies",
+              "url": "https://fastapi.tiangolo.com/tutorial/",
+              "kind": "docs"
+            },
+            {
+              "title": "RabbitMQ Tutorials",
+              "url": "https://www.rabbitmq.com/tutorials",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "ML 관리 플랫폼의 백엔드 — 모델 버전 · 서빙 · 기록",
+          "from": "task",
+          "quote": "머신러닝 관리 플랫폼 백엔드 아키텍쳐 설계 및 개발",
+          "priority": "core",
+          "why": "주요업무이고 회사의 주력이 금융 특화 ML 솔루션(ABACUS)이다. 데이터 사이언티스트 공고가 자사 AutoML 로 모델을 만든다고 적는다.",
+          "gap_check": "금융사에 나간 신용 점수가 어느 모델 버전 · 어느 입력으로 나왔는지 나중에 설명하려면 무엇을 남기나? 새 모델을 일부 요청에만 흘려 비교하려면? 모델 등록 · 승인 · 배포를 누가 어떤 순서로 하나?",
+          "drill": "FastAPI 로 모델 레지스트리 API(등록 · 승인 · 활성 버전 전환)와 예측 API 를 만들고, 예측마다 모델 버전 · 입력 해시 · 결과를 PostgreSQL 에 남긴다. 활성 버전을 바꿔도 예전 예측을 버전별로 재현할 수 있는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "MLflow — Model Registry",
+              "url": "https://mlflow.org/docs/latest/model-registry.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Django · FastAPI · PostgreSQL 로 정산 데이터 다루기",
+          "from": "qualification",
+          "quote": "django, fastApi, postgreSql 사용 경험",
+          "priority": "high",
+          "why": "필수 자격이다. 셀러의 정산 예정금 · 매출 흐름이 이 저장소에 쌓인다.",
+          "gap_check": "금액은 어떤 타입으로 두나(numeric · 정수 최소 단위)? 셀러별 일 매출 흐름을 빠르게 집계하려면 어떤 인덱스 · 파티션이 필요한가? Django ORM 에서 N+1 을 무엇으로 찾고 막나?",
+          "drill": "셀러 × 정산 예정일 × 금액 테이블(numeric)을 만들어 가짜 100만 행을 넣고, 셀러별 30일 예정 정산 합계 쿼리를 EXPLAIN ANALYZE 로 보며 인덱스를 고친다. Django 에서 같은 집계를 annotate 로 쓰고 django-debug-toolbar 로 쿼리 수를 확인한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "PostgreSQL — Using EXPLAIN",
+              "url": "https://www.postgresql.org/docs/current/using-explain.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/356966",
+      "title": "DATA Scientist",
+      "site": "wanted",
+      "verdict": "경력 5년 이상. **금융 데이터 통계 분석 · 시각화 · 모델링 · 해석**, Python · SQL 로 비즈니스 인사이트, 이해관계자 보고. **자사 AutoML 솔루션**으로 **FDS · 리스크 예측 · 신용평가** 모델 개발 · 개선, 학습 · 평가 · 배포 파이프라인, **운영 모델 성능 모니터링 · 데이터 변화 대응**. 자격은 유관 5년, 통계 · ML · DL, 데이터로 비즈니스 문제 해결, Python · SQL, Pandas · Scikit-learn · TensorFlow · PyTorch, **수집 → EDA → 전처리 → 피처 → 학습 → 평가** 전 과정, **LLM(RAG · Fine-tuning) 이해**. 우대는 통계 · 산업공학 · AI 석박사, **금융 리스크 · 신용 분석**, 운영 모니터링 · 개선, 자율성. 고객으로 우리은행 · 우리카드 · 현대카드 · NH농협생명 · 삼성생명을 든다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "유관 5년",
+          "모델 개발 전 과정",
+          "Python · SQL",
+          "LLM 기본 이해"
+        ],
+        "can_learn": [
+          "신용평가 검증 지표",
+          "FDS 불균형 처리",
+          "드리프트 모니터링"
+        ]
+      },
+      "study": [
+        {
+          "topic": "신용평가 모델 — AUC 말고 KS · PSI 로 말하기",
+          "from": "task",
+          "quote": "FDS, 리스크 예측, 신용평가 등 금융 도메인 머신러닝 모델 개발 및 성능 개선",
+          "priority": "core",
+          "why": "주요업무이고 우대에 금융 리스크 · 신용 분석 지식이 있다. 고객이 은행 · 카드사라 금융권이 쓰는 지표로 설명해야 한다.",
+          "gap_check": "신용평가 모델의 변별력을 금융권은 무엇으로 보나(KS · Gini · AUC)? 점수 구간별 불량률을 표로 보여 주는 이유는? 운영 중 입력 분포가 바뀐 것을 무엇으로 재나(PSI)? 설명 가능성이 필요할 때 어떤 모델을 고르나(스코어카드 · WoE)?",
+          "drill": "공개 신용 데이터(Give Me Some Credit)로 로지스틱 스코어카드(WoE 변환)와 LightGBM 을 만들어 AUC · KS · Gini 와 점수 10분위별 불량률 표를 비교한다. 데이터를 기간으로 나눠 PSI 를 계산하고 0.1 · 0.25 기준으로 해석을 쓴다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Give Me Some Credit — Kaggle",
+              "url": "https://www.kaggle.com/c/GiveMeSomeCredit",
+              "kind": "dataset"
+            }
+          ]
+        },
+        {
+          "topic": "FDS — 사기는 드물다: 불균형 데이터와 비용 기반 문턱",
+          "from": "task",
+          "quote": "운영 중인 모델의 성능 모니터링 및 데이터 변화에 따른 지속적 고도화",
+          "priority": "high",
+          "why": "주요업무에 FDS · 운영 모니터링 · 데이터 변화 대응이 함께 있다. 사기 패턴은 계속 바뀐다.",
+          "gap_check": "사기 비율이 0.1% 일 때 정확도는 왜 쓸모없나 — 무엇을 보나(PR-AUC · 재현율@정밀도)? 문턱을 비용(놓친 사기 손실 vs 오탐 대응 비용)으로 어떻게 고르나? 라벨이 몇 주 늦게 확정될 때 모델 성능을 어떻게 추적하나?",
+          "drill": "공개 신용카드 사기 데이터(Kaggle creditcardfraud)로 LightGBM 을 학습해 PR 곡선을 그리고, 놓친 사기 1건 = 10만 원 · 오탐 1건 = 3천 원 가정으로 기대 비용이 최소인 문턱을 고른다. 시간순으로 나눠 뒤 기간 성능이 떨어지는지 본다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Credit Card Fraud Detection — Kaggle",
+              "url": "https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud",
+              "kind": "dataset"
+            }
+          ]
+        },
+        {
+          "topic": "금융 문서에 LLM — RAG 와 파인튜닝을 언제 쓰나",
+          "from": "qualification",
+          "quote": "LLM의 기본 원리(RAG, Fine-tuning 등)를 이해하고, 필요 시 업무에 적용 가능하신 분",
+          "priority": "nice",
+          "why": "필수 자격에 있다. 금융사 고객의 약관 · 심사 기준 같은 문서 업무가 대상이 될 수 있다(추정).",
+          "gap_check": "심사 기준 문서에서 답을 찾게 할 때 RAG 와 파인튜닝 중 무엇이 맞나(지식이 자주 바뀌나 · 근거가 필요한가)? 답에 근거 조항을 붙이려면? 개인정보가 섞인 문서를 외부 모델에 보내도 되나?",
+          "drill": "공개 약관 문서 몇 건으로 간단한 RAG(임베딩 검색 + 근거 인용)를 만들어 질문 20개의 정답률과 근거 일치율을 잰다. 같은 질문을 근거 없이 LLM 에만 물었을 때와 비교해 차이를 한 쪽으로 정리한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Anthropic — Retrieval augmented generation",
+              "url": "https://docs.anthropic.com/en/docs/build-with-claude/embeddings",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/362687",
+      "title": "BackEnd Developer (Java)",
+      "site": "wanted",
+      "verdict": "경력 5-11년. Python 공고와 같은 **Seller Credit Connect 팀**의 **금융 플랫폼 백엔드 설계 · 개발**(업무 서술은 한 줄뿐이다). 자격은 Java 5년, **Spring · Spring Boot**. 우대는 CS 전공, **금융 서비스**, Git, **Kafka · RabbitMQ**, PostgreSQL, NoSQL. 같은 자리가 잡코리아에도 올라와 있다(10/02 마감, 여의도). 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "Java 5년",
+          "Spring Boot"
+        ],
+        "can_learn": [
+          "Kafka 이벤트",
+          "금융 거래 정합성",
+          "PostgreSQL"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Spring Boot 로 금융 거래 — 트랜잭션 경계와 멱등성",
+          "from": "qualification",
+          "quote": "Spring, Spring-boot 사용 경험",
+          "priority": "core",
+          "why": "필수 자격이고 업무가 금융 플랫폼 백엔드다. 우대에 금융 서비스 개발 경험이 있다.",
+          "gap_check": "@Transactional 이 붙은 메서드 안에서 외부 금융사 API 를 부르면 무엇이 위험한가(긴 트랜잭션 · 롤백 불가)? 같은 요청이 두 번 와도 한 번만 처리하려면(멱등 키 · 유니크 제약)? 금액 계산에 double 을 쓰면?",
+          "drill": "Spring Boot 로 '셀러 금융 신청' API 를 만들고, DB 저장과 외부 호출을 트랜잭션 밖으로 분리한다(저장 → 커밋 → 이벤트로 외부 호출). Idempotency-Key 유니크 제약으로 중복 요청을 막고, BigDecimal 로 이자 계산 테스트를 쓴다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Spring Framework — Transaction Management",
+              "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "메시지 브로커로 정산 이벤트 흘리기 — Kafka 와 RabbitMQ",
+          "from": "preference",
+          "quote": "Kakfa, RabbitMQ 등 메세지 브로커 사용 경험",
+          "priority": "high",
+          "why": "우대사항이다. 셀러의 판매 · 정산 데이터가 들어오고 금융 선택지가 갱신되는 흐름은 이벤트로 잇기 좋다.",
+          "gap_check": "정산 예정금 변경 이벤트를 Kafka 로 흘릴 때 같은 셀러의 이벤트 순서를 어떻게 지키나(파티션 키)? 컨슈머가 같은 메시지를 두 번 받으면? Kafka 와 RabbitMQ 는 어떤 용도에 각각 맞나(로그 재생 vs 작업 큐)?",
+          "drill": "Spring Kafka 로 셀러 ID 를 키로 한 정산 이벤트 토픽을 만들고, 컨슈머가 처리한 이벤트 ID 를 기록해 중복을 건너뛰게 한다. 컨슈머를 중간에 죽였다 살려 같은 셀러의 이벤트 순서가 유지되는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Spring for Apache Kafka — Reference",
+              "url": "https://docs.spring.io/spring-kafka/reference/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "금융 서비스 백엔드의 보안 기본 — 인증 · 감사 로그 · 개인정보",
+          "from": "preference",
+          "quote": "금융 서비스 개발 경험",
+          "priority": "nice",
+          "why": "우대사항이고 고객이 은행 · 카드사다. 금융권 연동에는 보안 점검이 따른다.",
+          "gap_check": "금융사와 서버 간 호출은 무엇으로 인증하나(mTLS · 서명된 요청)? 누가 어떤 셀러의 금융 데이터를 봤는지 남기려면(감사 로그)? 사업자 번호 · 계좌번호를 DB 에 어떻게 두나(암호화 · 마스킹)?",
+          "drill": "Spring Security 로 서버 간 API 를 클라이언트 인증서(mTLS)로 막고, 조회 API 마다 사용자 · 대상 셀러 · 시각을 감사 로그 테이블에 남긴다. 계좌번호 컬럼을 JPA AttributeConverter 로 암호화 저장 · 마스킹 출력한다.",
+          "hours": 5,
+          "resources": [
+            {
+              "title": "Spring Security — X.509 Authentication",
+              "url": "https://docs.spring.io/spring-security/reference/servlet/authentication/x509.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49699863?Oem_Code=C1&logpath=1&stext=%EC%9E%90%EB%B0%94&listno=36&sc=630",
+      "title": "[에이젠글로벌] Backend Developer (Java)",
+      "site": "jobkorea",
+      "duplicate_of": "https://www.wanted.co.kr/wd/362687",
+      "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 담당업무 · 스킬 · 자격요건 · 우대사항이 원티드 `BackEnd Developer (Java)`(362687)와 같다. 브리핑은 그쪽을 본다. 여기에만 적힌 것은 기업 정보(2016년 설립 · 매출 68억 7,094만 원 · 사원 32명 · 벤처기업), 마감일 10/02, 근무지 '서울 영등포구 은행로 30(중소기업중앙회)' 이다. 한 곳으로만 지원한다."
+    }
+  ]
+}
