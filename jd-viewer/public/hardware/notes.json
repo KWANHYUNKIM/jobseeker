@@ -114,10 +114,10 @@
     "mac-studio"
    ],
    "use": "llm-inference",
-   "summary": "llama.cpp 관리자의 gpt-oss 안내에 카드별 생성 속도가 있다. 20b 는 8k 문맥에서 약 14.9GB 라 16GB 카드에 겨우 들어간다. 16GB 카드로 32k 문맥을 쓰려면 MoE 층 몇 개를 CPU 로 넘긴다(--n-cpu-moe).",
+   "summary": "llama.cpp 관리자의 gpt-oss 안내에 카드별 생성 속도가 있다. 20b 는 8k 문맥에서 모두 약 15.5GB 라 16GB 카드에 겨우 들어간다. 16GB 카드로 긴 문맥을 쓰려면 층 일부를 CPU 에 둔다.",
    "evidence": "measurement",
-   "numbers": "생성: 5090 282.5 · 4090 222.0 · 3090 161.8 · M3 Ultra 115.5 · M4 Max 92.4 t/s · 20b ≈14.9GB, 120b ≈64GB (8k 문맥)",
-   "as_of": "2025-08",
+   "numbers": "생성(tg128): 5090 282.51 · 4090 225.22 · 3090 161.77 · M3 Ultra 115.52 · M4 Max(36GB) 92.36 t/s · 8k 문맥 합계 20b 약 15.5GB, 120b 약 64.9GB — 2026-09-30 원문에서 다시 확인",
+   "as_of": "2026-09",
    "confidence": "medium",
    "sources": [
     {
@@ -236,8 +236,8 @@
    "use": "llm-inference",
    "summary": "llama.cpp 의 --cpu-moe · --n-cpu-moe 는 MoE 모델의 전문가 가중치를 시스템 메모리에 두고 어텐션만 GPU 에 둔다. 이걸로 8~16GB 카드에서 gpt-oss-120b·20b 를 돌린다. 윈도우에서 그래픽 메모리를 넘기면 크게 느려져, 이런 구성에서는 시스템 메모리 용량이 중요하다.",
    "evidence": "official",
-   "numbers": "16GB: 20b·32k 에 --n-cpu-moe 2 · 8GB: 120b·32k 에 --n-cpu-moe 35",
-   "as_of": "2025-08",
+   "numbers": "8GB: 120b·32k 에 --n-cpu-moe 35 · 16GB: 층 일부를 CPU 에(값은 문맥 길이에 따라) — 2026-09-30 안내 원문에서 다시 확인",
+   "as_of": "2026-09",
    "confidence": "high",
    "sources": [
     {
@@ -638,8 +638,8 @@
    "use": "alternatives",
    "summary": "애플 공식: 통합 메모리 최대 512GB·800GB/s 이상, 6,000억 파라미터 넘는 모델도 올라간다. llama.cpp 애플 점수판(7B 4비트)에서 M3 Ultra 생성(약 92 t/s)은 외장 카드 급이지만 읽기(약 1,471 t/s)는 3090 보다 몇 배 느리다. 70B 급 실측은 허용된 출처에서 찾지 못했다.",
    "evidence": "measurement",
-   "numbers": "M3 Ultra 7B 4비트: 읽기 1,471.24 · 생성 92.14 · M4 Max 885.68 · 83.06 · 512GB·800GB/s(공식)",
-   "as_of": "2025-03",
+   "numbers": "7B 4비트: M3 Ultra(80코어) 읽기 1,471.24 · 생성 92.14 · (60코어) 1,073.09 · 88.40 · M4 Max(40코어) 885.68 · 83.06 · 512GB·800GB/s(공식) — 2026-09-30 점수판 원문에서 다시 확인",
+   "as_of": "2026-09",
    "confidence": "medium",
    "sources": [
     {
