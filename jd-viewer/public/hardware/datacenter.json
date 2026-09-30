@@ -3108,6 +3108,131 @@
    "cost_usd": 8068866000.0,
    "cost_note": "Epoch: 213MW, 건설비 약 81억 달러(2025년 달러)",
    "cost_src": "https://epoch.ai/data/ai-data-centers/directory/aws-new-albany"
+  },
+  {
+   "key": "google-bristow",
+   "company": "Google",
+   "region": "US",
+   "name": "브리스토 (버지니아)",
+   "chip": "TPU v5e · TPU v5p · TPU v6e · TPU v7",
+   "chip_key": null,
+   "count": null,
+   "h100eq": 209861,
+   "mw": 238,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2026-09",
+   "in_total": true,
+   "note": "Epoch 추정(위성사진·공시): H100 환산 약 21.0만, IT 전력 238MW, 건설비 약 90억 달러(2025년 달러). 사용자 Google DeepMind 로 추정.",
+   "sources": [
+    {
+     "title": "Epoch: Google Bristow",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/google-bristow"
+    }
+   ],
+   "cost_usd": 9015915999.999998,
+   "cost_note": "Epoch: 238MW, 건설비 약 90억 달러(2025년 달러)",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/google-bristow"
+  },
+  {
+   "key": "google-omaha",
+   "company": "Google",
+   "region": "US",
+   "name": "오마하 (네브래스카)",
+   "chip": "TPU v5e · TPU v5p · TPU v6e · TPU v7",
+   "chip_key": null,
+   "count": null,
+   "h100eq": 198585,
+   "mw": 237,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2026-09",
+   "in_total": true,
+   "note": "Epoch 추정(위성사진·공시): H100 환산 약 19.9만, IT 전력 237MW, 건설비 약 90억 달러(2025년 달러). 사용자 Google DeepMind 로 추정(Epoch '추측').",
+   "sources": [
+    {
+     "title": "Epoch: Google Omaha",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/google-omaha"
+    }
+   ],
+   "cost_usd": 8978034000.0,
+   "cost_note": "Epoch: 237MW, 건설비 약 90억 달러(2025년 달러)",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/google-omaha"
+  },
+  {
+   "key": "google-lincoln",
+   "company": "Google",
+   "region": "US",
+   "name": "링컨 (네브래스카)",
+   "chip": "TPU v6e · TPU v7",
+   "chip_key": null,
+   "count": null,
+   "h100eq": 197575,
+   "mw": 141,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2026-09",
+   "in_total": true,
+   "note": "Epoch 추정(위성사진·공시): H100 환산 약 19.8만, IT 전력 141MW, 건설비 약 53억 달러(2025년 달러). 사용자 미상.",
+   "sources": [
+    {
+     "title": "Epoch: Google Lincoln",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/google-lincoln"
+    }
+   ],
+   "cost_usd": 5341361999.999999,
+   "cost_note": "Epoch: 141MW, 건설비 약 53억 달러(2025년 달러)",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/google-lincoln"
+  },
+  {
+   "key": "google-kansas-city-east",
+   "company": "Google",
+   "region": "US",
+   "name": "캔자스시티 동쪽 (미주리)",
+   "chip": null,
+   "chip_key": null,
+   "count": null,
+   "h100eq": 202628,
+   "mw": 105,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2026-09",
+   "in_total": true,
+   "note": "Epoch 추정(위성사진·공시): H100 환산 약 20.3만, IT 전력 105MW, 건설비 약 40억 달러(2025년 달러). 칩 기종·사용자 미상.",
+   "sources": [
+    {
+     "title": "Epoch: Google Kansas City East",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/google-kansas-city-east"
+    }
+   ],
+   "cost_usd": 3977609999.9999995,
+   "cost_note": "Epoch: 105MW, 건설비 약 40억 달러(2025년 달러)",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/google-kansas-city-east"
+  },
+  {
+   "key": "amazon-madison-mega-site",
+   "company": "Amazon",
+   "region": "US",
+   "name": "매디슨 메가 사이트 (미시시피)",
+   "chip": "Trainium2",
+   "chip_key": null,
+   "count": null,
+   "h100eq": 214348,
+   "mw": 284,
+   "status": "operational",
+   "confidence": "estimate",
+   "as_of": "2026-09",
+   "in_total": true,
+   "note": "Epoch 추정(위성사진·공시): H100 환산 약 21.4만, IT 전력 284MW, 건설비 약 108억 달러(2025년 달러). 사용자는 Anthropic 이라는 Epoch '추측'뿐이라 Amazon 에 센다.",
+   "sources": [
+    {
+     "title": "Epoch: Amazon Madison Mega Site",
+     "url": "https://epoch.ai/data/ai-data-centers/directory/amazon-madison-mega-site"
+    }
+   ],
+   "cost_usd": 10758488000.0,
+   "cost_note": "Epoch: 284MW, 건설비 약 108억 달러(2025년 달러)",
+   "cost_src": "https://epoch.ai/data/ai-data-centers/directory/amazon-madison-mega-site"
   }
  ],
  "chips": [
