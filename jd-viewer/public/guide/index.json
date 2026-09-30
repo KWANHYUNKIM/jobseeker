@@ -1312,6 +1312,18 @@
       "postings": 3,
       "study_items": 9,
       "updated_at": "2026-09-30"
+    },
+    {
+      "slug": "lab2market",
+      "name": "랩투마켓",
+      "aliases": [
+        "랩투마켓",
+        "Machine-Wise"
+      ],
+      "status": "done",
+      "postings": 3,
+      "study_items": 9,
+      "updated_at": "2026-09-30"
     }
   ]
 }

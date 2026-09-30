@@ -1,0 +1,355 @@
+{
+  "slug": "lab2market",
+  "name": "랩투마켓",
+  "name_en": "Machine-Wise",
+  "aliases": [
+    "랩투마켓",
+    "Machine-Wise"
+  ],
+  "status": "done",
+  "updated_at": "2026-09-30",
+  "site": null,
+  "one_liner": "물류 · 제조 현장의 AMR · 협동로봇 · 설비를 WCS · ACS · RMS 로 잇는 산업 자동화 소프트웨어(Machine-Wise) — 비전 · 로봇 제어 · 웹 플랫폼을 전문연구요원으로 뽑는다",
+  "company": {
+    "business": "랩투마켓은 **Machine-Wise** 라는 이름으로 공고를 낸다 — 물류 · 제조 자동화 현장에서 **AMR/AGV · 설비 · WCS/WMS · 관제 시스템을 연동해 실시간 운영과 제어**를 지원하는 산업 자동화 소프트웨어 기업이고, 현장 데이터와 장비 상태로 작업 흐름을 최적화하는 것이 목표라고 적는다. 공고 셋이 층을 나눠 보여 준다 — **위(웹 플랫폼)**: WCS(창고 제어) · ACS(AMR 제어) · RMS(로봇 관리)를 TypeScript/Node.js 로, 장비 인터페이스(TCP/IP · PLC · MQTT · **SECS/GEM**)와 MES · RTD 연동. **가운데(로봇 제어)**: AMR 의 SLAM · 경로 계획 · 도킹 · 충전과 협동로봇 Pick & Place, MQTT/NATS 로 FMS · RMS 와 잇는 어댑터 · 엣지 에이전트. **아래(비전)**: YOLO · OpenCV 로 물체 위치를 구해 카메라 좌표를 로봇 좌표로 바꾼다. SECS/GEM · RTD 는 반도체 공장 쪽 말이다. 세 자리 모두 **전문연구요원**(병역 특례)을 받는다. 회사 홈페이지(lab2market.com)는 글이 스크립트로만 나와 읽지 못했다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "[전문연구요원] Vision AI 개발자",
+        "url": "https://www.wanted.co.kr/wd/374238",
+        "publisher": "원티드",
+        "summary": "Machine-Wise — 물류 · 제조 자동화 현장에서 AMR/AGV · 설비 · WCS/WMS · 관제 시스템을 연동해 실시간 운영 · 제어를 지원하는 산업 자동화 소프트웨어 기업. YOLO 객체 검출, OpenCV, 좌표 · 방향 · 각도 산출, 카메라 ↔ 로봇 좌표 변환, Camera · Hand-Eye Calibration, 협동로봇 · AMR 제어 연동. 제어공학 등 석사 이상. 우대 회로 · 펌웨어 · 힘 제어 · Depth Camera · Pick & Place."
+      },
+      {
+        "title": "[전문연구요원] AMR / Cobot 제어 개발자",
+        "url": "https://www.wanted.co.kr/wd/374239",
+        "publisher": "원티드",
+        "summary": "AMR 주행 제어 — SLAM · Localization · Navigation, Path Planning · Tracking · 장애물 회피, LiDAR · IMU · Encoder · Depth Camera, MQTT/NATS FMS · RMS 연동, 협동로봇 시퀀스 · Pick & Place · 그리퍼, PLC · 로봇 컨트롤러 · 모터 드라이버 통신, 자동 도킹 · 충전 · 정밀 정차 · 안전 제어, 현장 튜닝. 제어공학 등 석사 이상."
+      },
+      {
+        "title": "[전문연구요원 가능] 로봇 / 물류 자동화 플랫폼 개발 (웹개발, nodejs)",
+        "url": "https://www.wanted.co.kr/wd/372864",
+        "publisher": "원티드",
+        "summary": "Back-end/Full-stack TypeScript, WCS · ACS(AMR control system) · RMS(Robot management system) 개발, 장비 인터페이스(TCP/IP · PLC · MQTT · SECS/GEM), MES · RTD 연동, 화면 · 공통 컴포넌트. 전문대 또는 석사 이상, 전문연구요원 신규 편입 대상, Node.js, 경력 10년 이하. 우대 물류 솔루션 · 사이트 적용 · SIM 장비 컨트롤."
+      }
+    ],
+    "scale": [],
+    "revenue": [
+      {
+        "name": "물류 · 제조 자동화 소프트웨어 구축",
+        "how": "현장(창고 · 공장)에 WCS · ACS · RMS 와 로봇 제어 · 비전을 붙여 넣는 구축 사업으로 읽힌다 — 우대에 '사이트 적용 경험' 이 있다. 라이선스 · 구축비 구성은 읽은 자료에 없다.",
+        "domains": [
+          "WCS · ACS · RMS 웹 플랫폼과 장비 인터페이스",
+          "AMR · 협동로봇 제어",
+          "로봇 비전(검출 · 캘리브레이션)"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "[전문연구요원 가능] 로봇 / 물류 자동화 플랫폼 개발 (웹개발, nodejs)",
+            "url": "https://www.wanted.co.kr/wd/372864",
+            "publisher": "원티드",
+            "summary": "Back-end/Full-stack TypeScript, WCS · ACS(AMR control system) · RMS(Robot management system) 개발, 장비 인터페이스(TCP/IP · PLC · MQTT · SECS/GEM), MES · RTD 연동, 화면 · 공통 컴포넌트. 전문대 또는 석사 이상, 전문연구요원 신규 편입 대상, Node.js, 경력 10년 이하. 우대 물류 솔루션 · 사이트 적용 · SIM 장비 컨트롤."
+          },
+          {
+            "title": "[전문연구요원] AMR / Cobot 제어 개발자",
+            "url": "https://www.wanted.co.kr/wd/374239",
+            "publisher": "원티드",
+            "summary": "AMR 주행 제어 — SLAM · Localization · Navigation, Path Planning · Tracking · 장애물 회피, LiDAR · IMU · Encoder · Depth Camera, MQTT/NATS FMS · RMS 연동, 협동로봇 시퀀스 · Pick & Place · 그리퍼, PLC · 로봇 컨트롤러 · 모터 드라이버 통신, 자동 도킹 · 충전 · 정밀 정차 · 안전 제어, 현장 튜닝. 제어공학 등 석사 이상."
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "WCS · ACS · RMS 웹 플랫폼과 장비 인터페이스",
+        "why": "웹 공고가 WCS · ACS · RMS 를 TypeScript 로 만들고 TCP/IP · PLC · MQTT · SECS/GEM 장비 인터페이스와 MES · RTD 연동을 적는다.",
+        "what_to_know": [
+          "SECS/GEM",
+          "PLC 통신(Modbus/MC 프로토콜)",
+          "작업 큐 · 상태 기계"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[전문연구요원 가능] 로봇 / 물류 자동화 플랫폼 개발 (웹개발, nodejs)",
+            "url": "https://www.wanted.co.kr/wd/372864",
+            "publisher": "원티드",
+            "summary": "Back-end/Full-stack TypeScript, WCS · ACS(AMR control system) · RMS(Robot management system) 개발, 장비 인터페이스(TCP/IP · PLC · MQTT · SECS/GEM), MES · RTD 연동, 화면 · 공통 컴포넌트. 전문대 또는 석사 이상, 전문연구요원 신규 편입 대상, Node.js, 경력 10년 이하. 우대 물류 솔루션 · 사이트 적용 · SIM 장비 컨트롤."
+          }
+        ]
+      },
+      {
+        "name": "AMR · 협동로봇 제어",
+        "why": "AMR/Cobot 공고가 SLAM · 경로 계획 · 도킹 · 안전 제어와 Pick & Place, MQTT/NATS 로 FMS · RMS 연동을 적는다.",
+        "what_to_know": [
+          "ROS 2 Nav2",
+          "Pure Pursuit",
+          "MQTT/NATS"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[전문연구요원] AMR / Cobot 제어 개발자",
+            "url": "https://www.wanted.co.kr/wd/374239",
+            "publisher": "원티드",
+            "summary": "AMR 주행 제어 — SLAM · Localization · Navigation, Path Planning · Tracking · 장애물 회피, LiDAR · IMU · Encoder · Depth Camera, MQTT/NATS FMS · RMS 연동, 협동로봇 시퀀스 · Pick & Place · 그리퍼, PLC · 로봇 컨트롤러 · 모터 드라이버 통신, 자동 도킹 · 충전 · 정밀 정차 · 안전 제어, 현장 튜닝. 제어공학 등 석사 이상."
+          }
+        ]
+      },
+      {
+        "name": "로봇 비전(검출 · 캘리브레이션)",
+        "why": "Vision 공고가 YOLO 검출 · 위치 · 각도 산출과 카메라 · Hand-Eye 캘리브레이션, 로봇 좌표 변환을 적는다.",
+        "what_to_know": [
+          "OpenCV calibrateCamera",
+          "calibrateHandEye",
+          "회전 박스 검출"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "[전문연구요원] Vision AI 개발자",
+            "url": "https://www.wanted.co.kr/wd/374238",
+            "publisher": "원티드",
+            "summary": "Machine-Wise — 물류 · 제조 자동화 현장에서 AMR/AGV · 설비 · WCS/WMS · 관제 시스템을 연동해 실시간 운영 · 제어를 지원하는 산업 자동화 소프트웨어 기업. YOLO 객체 검출, OpenCV, 좌표 · 방향 · 각도 산출, 카메라 ↔ 로봇 좌표 변환, Camera · Hand-Eye Calibration, 협동로봇 · AMR 제어 연동. 제어공학 등 석사 이상. 우대 회로 · 펌웨어 · 힘 제어 · Depth Camera · Pick & Place."
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "반도체 공장 연동까지 본다",
+        "evidence": "• 장비 인터페이스 개발 (TCP/IP, PLC, MQTT, SECS/GEM)",
+        "so_what": "SECS/GEM 과 RTD(실시간 디스패처)는 반도체 팹 자동화 말이다 — 창고만이 아니라 공장 반송 쪽도 고객일 수 있다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "석사 연구 인력을 병역 특례로 모은다",
+        "evidence": "• 제어공학 또는 관련 분야 석사 학위 이상 소지자 (졸업 예정자도 지원 가능)",
+        "so_what": "로봇 제어 · 비전 두 자리는 석사 이상이 필수다 — 논문 · 연구실 프로젝트로 제어 · 비전을 직접 구현한 경험을 보여 줄 준비를 한다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "open_questions": [
+    "salary: 공고에 금액이 없다 — 비워 둔다",
+    "회사 홈페이지(lab2market.com)는 글이 스크립트로만 나와 읽지 못했다 — 고객 · 매출 · 인원은 모른다",
+    "Machine-Wise 가 회사 브랜드인지 제품 이름인지는 공고만으로 확정하지 못했다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/374238",
+      "title": "[전문연구요원] Vision AI 개발자",
+      "site": "wanted",
+      "verdict": "신입-경력 6년, 전문연구요원. **YOLO 객체 검출** · **OpenCV 영상처리**로 물체의 **중심 좌표 · 방향 · 각도** 산출, **카메라 ↔ 로봇 좌표 변환**, **Camera · Hand-Eye Calibration**, 비전 결과를 **협동로봇 · AMR 제어**에 연동, 현장 인식률 · 위치 정확도 개선. 자격은 **제어공학 등 석사 이상(졸업 예정 가능)**, 해외여행 결격 없음. 우대는 회로 · 펌웨어 · 모터 드라이버, 힘/임피던스 제어, 산업용 · Depth 카메라 · 협동로봇, 제조 · 물류 자동화 · 검사 장비 · Pick & Place. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "석사(제어 등)",
+          "영상처리 · 검출",
+          "좌표 변환"
+        ],
+        "can_learn": [
+          "Hand-Eye 캘리브레이션",
+          "회전 박스 YOLO",
+          "Depth 카메라"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Hand-Eye 캘리브레이션 — 카메라가 본 점을 로봇이 집게",
+          "from": "task",
+          "quote": "• Camera Calibration 및 Hand-Eye Calibration",
+          "priority": "core",
+          "why": "주요업무이고 '카메라 좌표계와 로봇 좌표계 간 좌표 변환' 과 이어진다. 이게 틀리면 검출이 맞아도 로봇이 헛집는다.",
+          "gap_check": "내부 파라미터(초점 거리 · 왜곡)와 외부 파라미터는 무엇이 다른가? 카메라가 로봇 손목에 달린 경우(eye-in-hand)와 고정된 경우(eye-to-hand)는 무엇을 푸나(AX = XB)? 캘리브레이션 정확도는 무엇으로 재나(재투영 오차 · 실제 집기 오차)?",
+          "drill": "체커보드로 OpenCV calibrateCamera 를 돌려 재투영 오차를 확인하고, 시뮬레이터(또는 가짜 데이터: 로봇 자세 10 개 + 보드 자세)로 calibrateHandEye 를 풀어 알려진 정답 변환과 비교한다. 자세 수를 5 · 10 · 20 으로 바꿔 오차가 어떻게 줄어드는지 표로 만든다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "OpenCV — Camera Calibration and 3D Reconstruction (calibrateHandEye)",
+              "url": "https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "YOLO 로 물체와 각도까지 — 회전 박스 검출",
+          "from": "task",
+          "quote": "• 객체 중심 좌표, 방향, 각도 등 위치 정보 산출",
+          "priority": "core",
+          "why": "주요업무다. Pick & Place 는 물체 위치뿐 아니라 그리퍼를 돌릴 각도가 필요하다.",
+          "gap_check": "축 정렬 박스로는 비스듬히 놓인 상자의 각도를 모르는 이유는? 회전 박스(OBB) 모델과 마스크 → minAreaRect 는 무엇이 다른가? Depth 카메라가 있으면 2D 중심을 3D 점으로 어떻게 바꾸나(내부 파라미터 · 깊이)?",
+          "drill": "Ultralytics YOLO OBB 모델로 상자 이미지 몇 백 장을 학습(또는 사전학습 모델 사용)해 중심 · 각도를 뽑고, 같은 이미지에서 분할 마스크 + minAreaRect 결과와 각도 오차를 비교한다. 깊이 이미지가 있으면 중심 픽셀을 카메라 좌표 3D 점으로 바꾸는 함수를 쓴다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Ultralytics — Oriented Bounding Boxes (OBB)",
+              "url": "https://docs.ultralytics.com/tasks/obb/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "현장에서 인식률이 떨어질 때 — 조명 · 반사 · 새 물체",
+          "from": "task",
+          "quote": "• 현장 환경에 맞춘 객체 인식률 및 위치 정확도 개선",
+          "priority": "high",
+          "why": "주요업무다. 연구실에서 잘 되던 모델이 창고 조명 · 비닐 포장 반사 · 처음 보는 상자에서 무너진다.",
+          "gap_check": "현장 실패 이미지를 어떻게 모아 다시 학습에 넣나(실패 시 자동 저장)? 조명이 바뀌면 모델이 아니라 촬영 쪽에서 먼저 무엇을 바꾸나(노출 고정 · 편광 필터 · 조명)? 인식률과 위치 정확도는 따로 재야 하는 이유는?",
+          "drill": "앞 과제 모델에 밝기 · 대비 · 블러 · 반사광(흰 사각형 합성)을 넣은 시험셋을 만들어 조건별 mAP 와 각도 오차를 잰다. 증강을 학습에 넣은 모델과 비교하고, 신뢰도 낮은 추론 이미지를 자동으로 폴더에 모으는 스크립트를 붙인다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Albumentations",
+              "url": "https://albumentations.ai/docs/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/374239",
+      "title": "[전문연구요원] AMR / Cobot 제어 개발자",
+      "site": "wanted",
+      "verdict": "신입-경력 6년, 전문연구요원. **AMR 주행 제어** — **SLAM · Localization · Mapping · Navigation**, **Path Planning · Tracking · Obstacle Avoidance**, LiDAR · IMU · Encoder · Depth Camera 연동, **자동 도킹 · 충전 · 정밀 정차 · 안전 제어**. **협동로봇** 작업 시퀀스 · 팔 제어, 비전 좌표 기반 **Pick & Place**, 그리퍼 · 진공 · 말단 장치. **PLC · 로봇 컨트롤러 · 모터 드라이버** 통신, **MQTT/NATS 로 FMS 어댑터 · RMS 엣지 에이전트**, 현장 테스트 · 튜닝 · 장애 대응. 자격은 **제어공학 등 석사 이상**. 우대는 비전 공고와 같다. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "석사(제어 등)",
+          "SLAM · 경로 계획",
+          "센서 연동"
+        ],
+        "can_learn": [
+          "Nav2",
+          "MQTT/NATS 에이전트",
+          "정밀 도킹"
+        ]
+      },
+      "study": [
+        {
+          "topic": "AMR 내비게이션 — 위치 추정 · 경로 계획 · 추종",
+          "from": "task",
+          "quote": "• SLAM, Localization, Mapping, Navigation 기능 개발",
+          "priority": "core",
+          "why": "주요업무 첫 줄이고 경로 계획 · 추종 · 장애물 회피가 이어진다.",
+          "gap_check": "지도를 만드는 SLAM 과 만든 지도에서 위치를 찾는 Localization(AMCL)은 무엇이 다른가? 전역 경로(A* · 격자)와 지역 제어(DWA · Pure Pursuit · MPC)는 왜 나누나? 창고처럼 선반이 반복되는 곳에서 위치 추정이 왜 흔들리나?",
+          "drill": "ROS 2 + Gazebo 의 TurtleBot3 로 slam_toolbox 지도 작성 → Nav2 로 목표 이동을 해 보고, 지역 제어기를 DWB 와 Regulated Pure Pursuit 로 바꿔 좁은 통로 통과 · 경로 추종 오차를 비교한다. 반복 선반 월드에서 AMCL 이 틀어지는 상황을 재현해 본다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Nav2 — ROS 2 Navigation Stack",
+              "url": "https://docs.nav2.org/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "로봇과 관제의 약속 — MQTT/NATS 어댑터와 엣지 에이전트",
+          "from": "task",
+          "quote": "• MQTT/NATS 기반 FMS 연동 Adaptor 개발",
+          "priority": "core",
+          "why": "주요업무이고 RMS 엣지 에이전트도 같은 방식이다. 여러 제조사 로봇을 한 관제에 붙이는 층이다.",
+          "gap_check": "로봇 상태(위치 · 배터리 · 오류)와 작업 명령을 어떤 토픽 · 주기로 주고받나? MQTT 와 NATS 는 무엇이 다른가(요청/응답 · JetStream 보존)? 무선이 끊겼다 붙으면 로봇은 진행 중인 작업을 계속하나 멈추나? 표준(VDA 5050)은 무엇을 정해 두나?",
+          "drill": "VDA 5050 의 order · state 메시지 모양을 참고해 가짜 AMR 에이전트(파이썬)가 1 초마다 state 를 MQTT 로 보내고 order 를 받아 노드를 차례로 도는 흉내를 낸다. 브로커를 끊었다 붙여 order 가 다시 오거나 중복될 때 order ID · 순번으로 무시하는지 확인하고, 같은 흐름을 NATS 요청/응답으로도 만들어 본다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "VDA 5050 — AGV/AMR 통신 인터페이스(GitHub)",
+              "url": "https://github.com/VDA5050/VDA5050",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "비전 좌표로 협동로봇 Pick & Place",
+          "from": "task",
+          "quote": "• Vision 시스템에서 전달받은 좌표 기반 Pick & Place 제어",
+          "priority": "high",
+          "why": "주요업무다. 비전 공고의 결과가 이 자리로 넘어온다.",
+          "gap_check": "비전이 준 물체 자세(위치 + 각도)로 접근 · 집기 · 들어 올리기 자세를 어떻게 만드나? 역기구학이 여러 해를 주거나 못 풀면? 집기 실패(진공 압력 안 올라옴)를 어떻게 알아채고 재시도하나?",
+          "drill": "MoveIt 2 튜토리얼 로봇(Panda)으로 주어진 물체 자세에 대해 접근 → 하강 → 집기 → 상승 → 놓기 시퀀스를 만들고, 각도를 0 ~ 180° 로 바꿔 역기구학이 실패하는 구간을 찾는다. 집기 결과를 무작위로 실패시켜 재시도 · 포기 상태 기계를 짠다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "MoveIt 2 — Tutorials",
+              "url": "https://moveit.picknik.ai/main/index.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/372864",
+      "title": "[전문연구요원 가능] 로봇 / 물류 자동화 플랫폼 개발 (웹개발, nodejs)",
+      "site": "wanted",
+      "verdict": "신입-경력 10년, 전문연구요원 가능(신규 편입 대상 · 만 35세까지 복무 완료, 복무 중이면 어려움). **Back-end 또는 Full-stack TypeScript** 로 **WCS(창고 제어) · ACS(AMR 제어) · RMS(로봇 관리)** 개발, **장비 인터페이스(TCP/IP · PLC · MQTT · SECS/GEM)**, **MES · RTD 연동**, 화면 · 공통 컴포넌트. 자격은 전문대 또는 석사 이상, ES6/TypeScript · Node.js, 좋은 코드에 대한 고민. 우대는 물류 솔루션 · 사이트 적용 · 프로젝트 드라이브 · SIM 같은 장비 컨트롤. 급여는 공고에 없다.",
+      "fit": {
+        "must_have": [
+          "TypeScript · Node.js",
+          "전문연구요원 편입 대상(해당자)"
+        ],
+        "can_learn": [
+          "SECS/GEM",
+          "PLC 통신",
+          "작업 할당 · 상태 기계"
+        ]
+      },
+      "study": [
+        {
+          "topic": "WCS · ACS — 창고 작업을 로봇과 설비에 나눠 주기",
+          "from": "task",
+          "quote": "• WCS(Warehouse control System), ACS(AMR control system), RMS(Robot management system) 개발",
+          "priority": "core",
+          "why": "주요업무 중심이다. WMS 가 '무엇을' 정하면 WCS · ACS 가 '어느 장비가 언제' 를 정한다.",
+          "gap_check": "WMS · WCS · ACS · RMS 는 각각 무엇을 책임지나? 작업(이송 지시)을 상태 기계(대기 → 할당 → 이동 중 → 완료 · 실패)로 두는 이유는? 로봇이 중간에 오류로 멈추면 작업은 누가 다시 배정하나? 같은 통로에 두 AMR 이 들어오지 않게 하려면(구간 점유)?",
+          "drill": "Node.js(TypeScript) + PostgreSQL 로 이송 작업 테이블과 상태 기계를 만들고, 가짜 AMR 5 대에 가장 가까운 대기 로봇을 배정하는 할당기를 짠다. 로봇 하나를 오류로 멈춰 작업이 재할당되는지, 통로 구간을 한 대만 점유하게 잠그는지 테스트한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "XState — State machines for TypeScript",
+              "url": "https://stately.ai/docs/xstate",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "장비와 말하기 — PLC · SECS/GEM · TCP 소켓",
+          "from": "task",
+          "quote": "• 장비 인터페이스 개발 (TCP/IP, PLC, MQTT, SECS/GEM)",
+          "priority": "core",
+          "why": "주요업무이고 우대에 SIM 같은 장비 컨트롤이 있다. 컨베이어 · 리프트 · 반도체 장비가 각자 다른 방식으로 말한다.",
+          "gap_check": "PLC 와는 무엇으로 주고받나(Modbus TCP · 제조사 프로토콜 · 비트/워드 영역)? SECS/GEM 에서 S1F13(통신 수립) · 이벤트 보고(S6F11) · 원격 명령(S2F41)은 무엇인가? TCP 로 받은 바이트 스트림에서 메시지 경계를 어떻게 자르나(길이 헤더)?",
+          "drill": "Node.js 로 Modbus TCP 서버 흉내(또는 오픈소스 시뮬레이터)에 붙어 컨베이어 '도착' 비트를 폴링하고 '출발' 코일을 쓰는 어댑터를 만든다. 길이 헤더 프레이밍이 있는 TCP 메시지를 조각내 보내도 제대로 조립하는 파서를 테스트로 확인하고, SECS/GEM 주요 메시지 셋을 표로 정리한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Modbus Organization — Modbus Application Protocol Specification",
+              "url": "https://modbus.org/specs.php",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "MES · RTD 연동 — 공장 반송 지시를 받는 쪽",
+          "from": "task",
+          "quote": "• MES, RTD 연동 인터페이스 개발",
+          "priority": "high",
+          "why": "주요업무다. RTD(실시간 디스패처)는 반도체 팹에서 다음에 어느 LOT 을 어느 장비로 보낼지 정한다.",
+          "gap_check": "MES · RTD 가 '이 LOT 을 저 장비로' 라고 보내면 반송 시스템은 무엇을 돌려줘야 하나(수락 · 거절 · 완료 보고)? 같은 지시가 두 번 오면? 반송이 실패하면 MES 에 어떻게 알리고 재지시를 받나?",
+          "drill": "앞 과제 작업 테이블 앞에 '반송 지시 수신' API 를 두고 지시 ID 로 멱등 처리, 수락 · 완료 · 실패 콜백을 보내게 한다. 같은 지시 두 번 · 존재하지 않는 목적지 · 로봇 전원 꺼짐 세 경우의 응답을 테스트로 고정한다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "SEMI E30 — GEM (Generic Equipment Model) 소개",
+              "url": "https://www.semi.org/en/standards-watch-2020june/semi-e30-gem",
+              "kind": "docs"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
