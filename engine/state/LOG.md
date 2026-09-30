@@ -2855,3 +2855,7 @@ Medium 피드 최신 03-11. 새 글 없음. updated_at 만. 1회째.
 
 - eval 글(2026-08)로 `ai-feature-eval`. 결정 6 — 실제 호출(모크 테스트는 PR CI 에 그대로) / 기계 채점 ↔ LLM judge 분담 / systematic · flaky 분리 / 문턱은 실측으로 조이고 데이터는 고정 / smoke · full / 모델 교체 판단. 지표 4(6 기능 · 185 × 3, 거부율 회귀 0.545 · 0.800 → 1.000, 약 $0.2577, 4.4~5.0초). 그림 3.
 
+## 2026-09-30 kickflow API 응답 모양(기능 2/3)
+
+- Alba 이행 글 + oRPC 조사 글로 `api-shape-contract`. 결정 6 — Alba 선택(Blueprinter · jsonapi-serializer 비교) / within 기본 '전개 안 함' / 출력 보증 spec 뒤 AI 에이전트로 일괄 / 복구 레벨 1~3 / oRPC 도입 안 함(서버 TS 전제 · BFF 는 이음매 이동) / 링크 셋 점검 → 손 타입 한 줄만 생성 타입 위임. 지표 3(190 파일 · JSON 조립 2배↑ · paths 262). 그림 3.
+

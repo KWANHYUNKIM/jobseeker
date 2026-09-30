@@ -124,7 +124,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "api-shape-contract"
+      ]
     },
     {
       "name": "1,200 개 E2E 테스트가 '다시 돌리면 통과' 로 숨기던 불안정을 재고 줄여, CI 를 믿을 수 있게 한다",
@@ -528,6 +530,377 @@
           "publisher": "kickflow",
           "summary": "티켓 요약 · 계산식 생성 · 입력 보조 같은 AI 기능은 같은 입력에도 출력이 흔들려 '기대값과 한 번 일치' 하는 기존 테스트로 품질을 못 잰다. 본번과 같은 경로로 실제로 여러 번 불러 채점 · 기록하는 eval 프레임워크. 결정적 판정은 기계 채점, 의미적 품질은 LLM judge. 일시 오류로 전체를 불합격시키지 않기, 문턱 · 평가 데이터는 운용하며 키운다, smoke/full 2단. 첫 모델 업데이트에서 품질 기준을 지킨 채 더 싼 모델로 바꿀 수 있다고 판단.",
           "date": "2026-08-27"
+        }
+      ]
+    },
+    {
+      "key": "api-shape-contract",
+      "name": "JSON 모양은 한 글자도 안 바꾸고 안쪽을 갈아 끼운다 — 190 개 시리얼라이저를 신구 Hash 일치로 한 번에, 타입 사슬은 끊긴 한 줄만 잇는다",
+      "domain": "수백 개 응답의 JSON 모양을 한 글자도 바꾸지 않은 채 안쪽(시리얼라이저 · 타입)을 갈아 끼운다",
+      "updated_at": "2026-09-30",
+      "business": {
+        "why": "kickflow 의 전 API 응답은 약 190 개 시리얼라이저가 만든다. 그 기반인 ActiveModelSerializers 는 README 에 메인테이너가 거의 남지 않았다고 적혀 있고, 둘수록 시리얼라이저가 늘어 이행 비용이 커진다. 프런트(Nuxt)는 이 JSON — camelCase 키와 엔드포인트마다 다른 관련 전개 — 에 기대고 있어, 모양이 한 글자라도 바뀌면 결재 화면이 깨진다.\n\n또 티켓에 필드 하나를 더하면 Rails(Strong Parameters · 시리얼라이저 · 모델) · OpenAPI YAML · 프런트 타입 세 곳을 손으로 맞춰야 한다. 유행하는 oRPC 가 이것을 하나의 정의로 풀어 준다기에 조사했다.",
+        "metrics": [
+          {
+            "label": "교체한 시리얼라이저",
+            "value": "약 190 파일(2026-07-09 본번 일제 전환)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "kickflow のシリアライザを Alba に移行しました",
+                "url": "https://tech.kickflow.co.jp/entry/2026/08/07/113611",
+                "publisher": "kickflow",
+                "summary": "2026-07, 전 API 응답을 지탱하는 시리얼라이저 약 190 파일을 ActiveModelSerializers(메인테이너 거의 없음)에서 Alba 로 일제 교체. 필수 조건은 JSON 모양을 바꾸지 않는 것(camelCase · 엔드포인트별 관련 제어). 기저 클래스에서 관련을 기본 '전개 안 함' 으로 두고 within 으로 명시. AMS 와 Alba 출력을 Hash 수준에서 완전 일치시키는 spec 으로 보장.",
+                "date": "2026-08-07"
+              }
+            ]
+          },
+          {
+            "label": "전환 뒤 성능",
+            "value": "JSON 조립 시간 주요 화면 전부 2 배 이상 빠름 · 서버 응답 20% 이상 단축 · Ruby 객체 할당 20~37% 감소",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "kickflow のシリアライザを Alba に移行しました",
+                "url": "https://tech.kickflow.co.jp/entry/2026/08/07/113611",
+                "publisher": "kickflow",
+                "summary": "2026-07, 전 API 응답을 지탱하는 시리얼라이저 약 190 파일을 ActiveModelSerializers(메인테이너 거의 없음)에서 Alba 로 일제 교체. 필수 조건은 JSON 모양을 바꾸지 않는 것(camelCase · 엔드포인트별 관련 제어). 기저 클래스에서 관련을 기본 '전개 안 함' 으로 두고 within 으로 명시. AMS 와 Alba 출력을 Hash 수준에서 완전 일치시키는 spec 으로 보장.",
+                "date": "2026-08-07"
+              }
+            ]
+          },
+          {
+            "label": "OpenAPI 규모",
+            "value": "내부 API paths 262 · components 66 파일 → 생성 타입 약 21,000 줄",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "oRPC を調査したら、Rails + Nuxt の自分たちのスタックが思ったより型安全だと気づいた話",
+                "url": "https://tech.kickflow.co.jp/entry/2026/07/21/102711",
+                "publisher": "kickflow",
+                "summary": "백엔드 Rails · 프런트 Nuxt · OpenAPI YAML 을 손으로 쓰는 spec-first. 같은 모양을 세 곳에 쓴다는 불편에 oRPC 를 조사했지만 도입하지 않았다 — 하나의 정의에서 검증 · 타입 · OpenAPI 가 나오는 가치는 서버가 TypeScript 일 때만 성립. 대신 실장→스키마→프런트 타입의 '링크' 를 하나씩 점검하니 끊긴 것은 손으로 쓴 응답 타입 한 줄뿐 — OpenAPI 에서 생성한 타입으로 넘긴다.",
+                "date": "2026-07-21"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "이행처를 고를 때",
+          "thought": "필수 조건은 기존 JSON 의 모양을 바꾸지 않고 옮기는 것 — camelCase 변환과 호출 때의 관련 제어를 표준 기능으로 재현할 수 있어야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "kickflow のシリアライザを Alba に移行しました",
+              "url": "https://tech.kickflow.co.jp/entry/2026/08/07/113611",
+              "publisher": "kickflow",
+              "summary": "2026-07, 전 API 응답을 지탱하는 시리얼라이저 약 190 파일을 ActiveModelSerializers(메인테이너 거의 없음)에서 Alba 로 일제 교체. 필수 조건은 JSON 모양을 바꾸지 않는 것(camelCase · 엔드포인트별 관련 제어). 기저 클래스에서 관련을 기본 '전개 안 함' 으로 두고 within 으로 명시. AMS 와 Alba 출력을 Hash 수준에서 완전 일치시키는 spec 으로 보장.",
+              "date": "2026-08-07"
+            }
+          ]
+        },
+        {
+          "at": "도메인별로 나눠 옮기다가",
+          "thought": "PR → 리뷰 → QA 가 테스트 케이스를 만들고 검증 → 다음 릴리스 흐름이라, 도메인마다 나누면 끝나기까지 너무 오래 걸린다. 늘어지게 두고 싶지 않았다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "kickflow のシリアライザを Alba に移行しました",
+              "url": "https://tech.kickflow.co.jp/entry/2026/08/07/113611",
+              "publisher": "kickflow",
+              "summary": "2026-07, 전 API 응답을 지탱하는 시리얼라이저 약 190 파일을 ActiveModelSerializers(메인테이너 거의 없음)에서 Alba 로 일제 교체. 필수 조건은 JSON 모양을 바꾸지 않는 것(camelCase · 엔드포인트별 관련 제어). 기저 클래스에서 관련을 기본 '전개 안 함' 으로 두고 within 으로 명시. AMS 와 Alba 출력을 Hash 수준에서 완전 일치시키는 spec 으로 보장.",
+              "date": "2026-08-07"
+            }
+          ]
+        },
+        {
+          "at": "oRPC 를 볼 때",
+          "thought": "'oRPC 를 넣는 것' 이 목적이 되어 가고 있었다. 목적은 Rails + Nuxt 의 개발 경험을 좋게 하는 것이고, oRPC 가 보증하는 것을 우리 스택의 링크로 하나씩 확인하면 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "oRPC を調査したら、Rails + Nuxt の自分たちのスタックが思ったより型安全だと気づいた話",
+              "url": "https://tech.kickflow.co.jp/entry/2026/07/21/102711",
+              "publisher": "kickflow",
+              "summary": "백엔드 Rails · 프런트 Nuxt · OpenAPI YAML 을 손으로 쓰는 spec-first. 같은 모양을 세 곳에 쓴다는 불편에 oRPC 를 조사했지만 도입하지 않았다 — 하나의 정의에서 검증 · 타입 · OpenAPI 가 나오는 가치는 서버가 TypeScript 일 때만 성립. 대신 실장→스키마→프런트 타입의 '링크' 를 하나씩 점검하니 끊긴 것은 손으로 쓴 응답 타입 한 줄뿐 — OpenAPI 에서 생성한 타입으로 넘긴다.",
+              "date": "2026-07-21"
+            }
+          ]
+        },
+        {
+          "at": "BFF 안을 떠올렸을 때",
+          "thought": "Nuxt 의 Nitro 에 oRPC 를 두고 안에서 Rails 를 부르면 — 타입 안전하지 않은 이음매를 없앤 게 아니라 프런트 한 단 안쪽으로 옮겼을 뿐이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "oRPC を調査したら、Rails + Nuxt の自分たちのスタックが思ったより型安全だと気づいた話",
+              "url": "https://tech.kickflow.co.jp/entry/2026/07/21/102711",
+              "publisher": "kickflow",
+              "summary": "백엔드 Rails · 프런트 Nuxt · OpenAPI YAML 을 손으로 쓰는 spec-first. 같은 모양을 세 곳에 쓴다는 불편에 oRPC 를 조사했지만 도입하지 않았다 — 하나의 정의에서 검증 · 타입 · OpenAPI 가 나오는 가치는 서버가 TypeScript 일 때만 성립. 대신 실장→스키마→프런트 타입의 '링크' 를 하나씩 점검하니 끊긴 것은 손으로 쓴 응답 타입 한 줄뿐 — OpenAPI 에서 생성한 타입으로 넘긴다.",
+              "date": "2026-07-21"
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "시리얼라이저(Resource)",
+            "what": "모델을 API JSON 으로 만드는 클래스 — 약 190 개. 관련은 within 으로 엔드포인트마다 명시."
+          },
+          {
+            "name": "OpenAPI YAML(원본)",
+            "what": "손으로 쓰는 spec-first 계약 — paths 262 · components 66. redocly 로 번들 · lint."
+          },
+          {
+            "name": "생성 타입(openapi.gen.ts)",
+            "what": "openapi-typescript 가 YAML 에서 만든 약 21,000 줄 타입 — 프런트 API 클라이언트가 참조."
+          },
+          {
+            "name": "계약 검증",
+            "what": "json_schemer 로 응답은 request spec 에서(50 개 넘는 파일), 요청은 본번 Rack 미들웨어에서 스키마와 대조."
+          },
+          {
+            "name": "복구 레벨",
+            "what": "1 경미한 출력 차 → Resource 1 파일 hotfix · 2 특정 엔드포인트 500 → 그 render 만 AMS 로 · 3 광범위 이상 → PR 전체 revert."
+          }
+        ],
+        "invariants": [
+          "이행 중 신구 시리얼라이저의 출력은 Hash 로 완전히 같아야 한다.",
+          "관련은 within 으로 명시한 것만 전개한다 — 기본은 '전개 안 함'.",
+          "스키마에 없는 요청은 Rails 컨트롤러에 닿지 않는다(미들웨어가 400).",
+          "커밋된 생성 타입은 YAML 에서 다시 만든 것과 같아야 한다(CI 의 git diff --exit-code)."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "AMS 와 Alba 의 출력을 Hash 수준에서 완전 일치시키는 spec 을 만든다",
+            "why": "어느 쪽이 바뀌든 spec 이 떨어져 빠짐을 막는다."
+          },
+          {
+            "step": "쓰임이 적은 기능부터 PR 한두 개로 바꿔 문제없음을 확인",
+            "why": "방식이 맞는지 먼저 본다."
+          },
+          {
+            "step": "남은 시리얼라이저를 AI 에이전트(동적 워크플로)로 며칠 만에 한꺼번에 옮긴 PR",
+            "why": "도메인별 QA 를 반복하면 끝이 안 난다."
+          },
+          {
+            "step": "복구 레벨 1~3 과 Datadog · Sentry 감시 방법을 릴리스 계획에 적어 팀과 공유, QA 가 전 기능 회귀 테스트",
+            "why": "무슨 일이 나도 할 일이 정해져 있게 한다."
+          },
+          {
+            "step": "2026-07-09 본번 일제 전환 → 전후 전 요청 비교",
+            "why": "JSON 조립 2 배↑ · 응답 20%↑ 단축을 확인."
+          },
+          {
+            "step": "oRPC 조사 → 링크 셋 점검: YAML↔생성 타입(CI 재생성 diff) · Rails↔YAML(json_schemer) · 생성 타입↔프런트 손 타입(끊김)",
+            "why": "끊긴 한 줄만 생성 타입으로 넘겨 닫는다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "어느 시리얼라이저로 옮기나?",
+            "chosen": "**Alba** — camelCase(transform_keys) · 호출 때 관련 제어(within) · 자유로운 출력 형식, 유지보수 활발, AMS 보다 빠를 것 같다.",
+            "alternatives": [
+              "Blueprinter(camelCase 는 자작 Transformer, 동적 관련 제어가 표준에 없음)",
+              "jsonapi-serializer(JSON:API 형식이 전제)"
+            ],
+            "tradeoff": "쓰는 느낌은 AMS 와 거의 같고 컨트롤러만 바뀐다. 대가는 Alba 가 within 이 없으면 모든 관련을 재귀 전개한다는 것 — 그대로 쓰면 예전에 안 나가던 관련이 섞여 하위 호환이 깨진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "kickflow のシリアライザを Alba に移行しました",
+                "url": "https://tech.kickflow.co.jp/entry/2026/08/07/113611",
+                "publisher": "kickflow",
+                "summary": "2026-07, 전 API 응답을 지탱하는 시리얼라이저 약 190 파일을 ActiveModelSerializers(메인테이너 거의 없음)에서 Alba 로 일제 교체. 필수 조건은 JSON 모양을 바꾸지 않는 것(camelCase · 엔드포인트별 관련 제어). 기저 클래스에서 관련을 기본 '전개 안 함' 으로 두고 within 으로 명시. AMS 와 Alba 출력을 Hash 수준에서 완전 일치시키는 spec 으로 보장.",
+                "date": "2026-08-07"
+              }
+            ]
+          },
+          {
+            "question": "Alba 의 '전부 전개' 기본값은?",
+            "chosen": "**기저 클래스에서 기본을 '전개 안 함' 으로 뒤집고, 관련은 반드시 within 으로 명시.**",
+            "alternatives": [
+              "라이브러리 기본값 그대로"
+            ],
+            "tradeoff": "어느 엔드포인트가 무엇을 내는지 컨트롤러에 다 적혀 가독성도 오른다. 대가는 모든 render 에 within 을 적어야 한다는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "kickflow のシリアライザを Alba に移行しました",
+                "url": "https://tech.kickflow.co.jp/entry/2026/08/07/113611",
+                "publisher": "kickflow",
+                "summary": "2026-07, 전 API 응답을 지탱하는 시리얼라이저 약 190 파일을 ActiveModelSerializers(메인테이너 거의 없음)에서 Alba 로 일제 교체. 필수 조건은 JSON 모양을 바꾸지 않는 것(camelCase · 엔드포인트별 관련 제어). 기저 클래스에서 관련을 기본 '전개 안 함' 으로 두고 within 으로 명시. AMS 와 Alba 출력을 Hash 수준에서 완전 일치시키는 spec 으로 보장.",
+                "date": "2026-08-07"
+              }
+            ]
+          },
+          {
+            "question": "도메인별로 나눠 옮기나, 한 번에 옮기나?",
+            "chosen": "**출력 보증 spec 을 깐 뒤 AI 에이전트로 남은 것을 한꺼번에** 옮기고, 한 번의 QA 회귀로 끝낸다.",
+            "alternatives": [
+              "도메인마다 PR · QA 를 반복(처음 계획)"
+            ],
+            "tradeoff": "PR → QA → 릴리스 흐름이라 도메인별로는 끝없이 늘어진다 — 며칠 만에 옮겼다. 대가는 한 번에 크게 나가 위험이 모인다는 것 — 그래서 복구 레벨을 미리 정했다. 검증에는 아직 사람 손이 든다고 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "kickflow のシリアライザを Alba に移行しました",
+                "url": "https://tech.kickflow.co.jp/entry/2026/08/07/113611",
+                "publisher": "kickflow",
+                "summary": "2026-07, 전 API 응답을 지탱하는 시리얼라이저 약 190 파일을 ActiveModelSerializers(메인테이너 거의 없음)에서 Alba 로 일제 교체. 필수 조건은 JSON 모양을 바꾸지 않는 것(camelCase · 엔드포인트별 관련 제어). 기저 클래스에서 관련을 기본 '전개 안 함' 으로 두고 within 으로 명시. AMS 와 Alba 출력을 Hash 수준에서 완전 일치시키는 spec 으로 보장.",
+                "date": "2026-08-07"
+              }
+            ]
+          },
+          {
+            "question": "터지면 어떻게 되돌리나?",
+            "chosen": "**세 레벨로 미리 정한다** — 출력 차는 Resource 1 파일 hotfix, 특정 엔드포인트 500 은 그 render 한 줄만 AMS 로, 광범위 이상은 PR 전체 revert(AMS 가 남아 있어 옛 동작으로 완전 복귀).",
+            "alternatives": [
+              "문제가 나면 그때 판단"
+            ],
+            "tradeoff": "AMS 를 바로 지우지 않고 남겨 둬 한 줄 되돌리기가 가능하다. 대가는 이행이 끝난 뒤에도 옛 라이브러리를 한동안 들고 있다는 것(이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "kickflow のシリアライザを Alba に移行しました",
+                "url": "https://tech.kickflow.co.jp/entry/2026/08/07/113611",
+                "publisher": "kickflow",
+                "summary": "2026-07, 전 API 응답을 지탱하는 시리얼라이저 약 190 파일을 ActiveModelSerializers(메인테이너 거의 없음)에서 Alba 로 일제 교체. 필수 조건은 JSON 모양을 바꾸지 않는 것(camelCase · 엔드포인트별 관련 제어). 기저 클래스에서 관련을 기본 '전개 안 함' 으로 두고 within 으로 명시. AMS 와 Alba 출력을 Hash 수준에서 완전 일치시키는 spec 으로 보장.",
+                "date": "2026-08-07"
+              }
+            ]
+          },
+          {
+            "question": "세 곳에 같은 모양을 쓰는 문제 — oRPC 를 넣나?",
+            "chosen": "**넣지 않는다.** '하나의 정의 → 검증 · 타입 · OpenAPI' 는 서버가 TypeScript 일 때만 성립하고, Nuxt 에 BFF 를 두는 안은 이음매를 옮길 뿐이다.",
+            "alternatives": [
+              "Rails API 를 oRPC(TypeScript)로 다시 쓴다",
+              "Nuxt(Nitro)에 oRPC BFF"
+            ],
+            "tradeoff": "paths 262 개 규모의 전면 재작성은 비현실적이다. oRPC 는 앞으로 새 TypeScript 서비스를 세울 때의 선택지로 남긴다. 대가는 세 곳에 쓰는 수고가 그대로라는 것 — 대신 사이의 검증으로 어긋남을 곧바로 잡는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "oRPC を調査したら、Rails + Nuxt の自分たちのスタックが思ったより型安全だと気づいた話",
+                "url": "https://tech.kickflow.co.jp/entry/2026/07/21/102711",
+                "publisher": "kickflow",
+                "summary": "백엔드 Rails · 프런트 Nuxt · OpenAPI YAML 을 손으로 쓰는 spec-first. 같은 모양을 세 곳에 쓴다는 불편에 oRPC 를 조사했지만 도입하지 않았다 — 하나의 정의에서 검증 · 타입 · OpenAPI 가 나오는 가치는 서버가 TypeScript 일 때만 성립. 대신 실장→스키마→프런트 타입의 '링크' 를 하나씩 점검하니 끊긴 것은 손으로 쓴 응답 타입 한 줄뿐 — OpenAPI 에서 생성한 타입으로 넘긴다.",
+                "date": "2026-07-21"
+              }
+            ]
+          },
+          {
+            "question": "그럼 어디가 실제로 끊겨 있나?",
+            "chosen": "**링크 셋을 하나씩 점검** — YAML↔생성 타입은 CI 재생성 + git diff 로, Rails↔YAML 은 json_schemer 자작 검증(응답은 request spec, 요청은 본번 미들웨어)으로 이어져 있었다. **끊긴 것은 프런트의 손으로 쓴 응답 타입 한 줄** — 생성 타입에 위임해 닫는다.",
+            "alternatives": [
+              "전부 새 도구로 교체",
+              "그대로 둔다"
+            ],
+            "tradeoff": "API 클라이언트 · 호출하는 컴포넌트는 그대로 두고 타입의 출처만 바꾼다 — 이후 YAML 변경이 컴파일 오류로 드러난다. 한계는 계약 테스트가 '실장이 스키마대로인가' 만 본다는 것 — additionalProperties: false 가 없으면 키가 늘어도 못 잡고, 실장과 스키마가 같이 틀리면 통과한다. committee 는 OpenAPI 3.1 대응이 멈춰 자작으로 옮겼다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "oRPC を調査したら、Rails + Nuxt の自分たちのスタックが思ったより型安全だと気づいた話",
+                "url": "https://tech.kickflow.co.jp/entry/2026/07/21/102711",
+                "publisher": "kickflow",
+                "summary": "백엔드 Rails · 프런트 Nuxt · OpenAPI YAML 을 손으로 쓰는 spec-first. 같은 모양을 세 곳에 쓴다는 불편에 oRPC 를 조사했지만 도입하지 않았다 — 하나의 정의에서 검증 · 타입 · OpenAPI 가 나오는 가치는 서버가 TypeScript 일 때만 성립. 대신 실장→스키마→프런트 타입의 '링크' 를 하나씩 점검하니 끊긴 것은 손으로 쓴 응답 타입 한 줄뿐 — OpenAPI 에서 생성한 타입으로 넘긴다.",
+                "date": "2026-07-21"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "AI 기능 eval",
+          "via": "'바꿔도 같다' 를 기계로 증명",
+          "contract": "시리얼라이저는 신구 출력 Hash 일치로, AI 기능은 여러 번 실행한 합격률로 교체를 판단한다(이 사이트가 두 글을 이음).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "kickflow のシリアライザを Alba に移行しました",
+              "url": "https://tech.kickflow.co.jp/entry/2026/08/07/113611",
+              "publisher": "kickflow",
+              "summary": "2026-07, 전 API 응답을 지탱하는 시리얼라이저 약 190 파일을 ActiveModelSerializers(메인테이너 거의 없음)에서 Alba 로 일제 교체. 필수 조건은 JSON 모양을 바꾸지 않는 것(camelCase · 엔드포인트별 관련 제어). 기저 클래스에서 관련을 기본 '전개 안 함' 으로 두고 within 으로 명시. AMS 와 Alba 출력을 Hash 수준에서 완전 일치시키는 spec 으로 보장.",
+              "date": "2026-08-07"
+            },
+            {
+              "title": "AI機能の品質評価を自動化する：機械採点と LLM-as-a-Judge の役割分担",
+              "url": "https://tech.kickflow.co.jp/entry/2026/08/27/143040",
+              "publisher": "kickflow",
+              "summary": "티켓 요약 · 계산식 생성 · 입력 보조 같은 AI 기능은 같은 입력에도 출력이 흔들려 '기대값과 한 번 일치' 하는 기존 테스트로 품질을 못 잰다. 본번과 같은 경로로 실제로 여러 번 불러 채점 · 기록하는 eval 프레임워크. 결정적 판정은 기계 채점, 의미적 품질은 LLM judge. 일시 오류로 전체를 불합격시키지 않기, 문턱 · 평가 데이터는 운용하며 키운다, smoke/full 2단. 첫 모델 업데이트에서 품질 기준을 지킨 채 더 싼 모델로 바꿀 수 있다고 판단.",
+              "date": "2026-08-27"
+            }
+          ]
+        },
+        {
+          "to": "E2E 테스트 신뢰",
+          "via": "QA 전 기능 회귀 테스트",
+          "contract": "일제 전환 전에 QA 팀이 kickflow 전 기능을 통한 회귀 테스트를 했다 — E2E 의 안정성이 이런 대규모 교체의 안전망이 된다(이 사이트의 해석).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "kickflow のシリアライザを Alba に移行しました",
+              "url": "https://tech.kickflow.co.jp/entry/2026/08/07/113611",
+              "publisher": "kickflow",
+              "summary": "2026-07, 전 API 응답을 지탱하는 시리얼라이저 약 190 파일을 ActiveModelSerializers(메인테이너 거의 없음)에서 Alba 로 일제 교체. 필수 조건은 JSON 모양을 바꾸지 않는 것(camelCase · 엔드포인트별 관련 제어). 기저 클래스에서 관련을 기본 '전개 안 함' 으로 두고 within 으로 명시. AMS 와 Alba 출력을 Hash 수준에서 완전 일치시키는 spec 으로 보장.",
+              "date": "2026-08-07"
+            }
+          ]
+        },
+        {
+          "to": "kickflow 월액 라이선스(수익원)",
+          "via": "API · Webhook 연계",
+          "contract": "홈페이지가 풍부한 API · Webhook 연계를 강점으로 든다 — 응답 모양이 곧 고객 연계의 계약이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "kickflow（キックフロー）| AI搭載の新しいワークフローシステム",
+              "url": "https://kickflow.com/",
+              "publisher": "kickflow",
+              "summary": "수백 ~ 수천 명 규모 기업용 품의(稟議) · 클라우드 워크플로. 직관적 UI, 조직 개편에 강한 조직도 관리, 풍부한 API · Webhook 연계. AI 가 기안 · 요약 · 폼 작성을 지원(AI 입력 보조: 견적서 PDF · 회의록으로 폼 자동 입력). 도쿄증권 프라임 기업부터 스타트업까지, 서비스 계속률 99.76%."
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "모양이 같은지 보증하며 한 번에",
+          "question": "190 개를 어떤 순서로 옮기고 무엇이 막아 줬나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  SPEC[\"신구 출력 Hash 완전 일치 spec\"] --> SMALL[\"쓰임 적은 기능 1~2 PR\"]\n  SMALL --> BULK[\"AI 에이전트로 나머지 일괄 PR\"]\n  BULK --> PLAN[\"릴리스 계획\\n복구 레벨 1·2·3 · Datadog · Sentry\"]\n  PLAN --> QA[\"QA 전 기능 회귀\"]\n  QA --> REL[\"2026-07-09 일제 전환\\nJSON 조립 2배↑ · 응답 20%↑\"]"
+        },
+        {
+          "title": "타입 사슬의 세 링크",
+          "question": "oRPC 가 보증하는 것을 우리 스택은 어디까지 하고 있었나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  RAILS[\"Rails 실장\"] -->|\"② json_schemer\\n응답: request spec · 요청: 미들웨어 400\"| YAML[\"OpenAPI YAML\\n(원본)\"]\n  YAML -->|\"① CI 재생성 + git diff\"| GEN[\"openapi.gen.ts\\n약 21,000 줄\"]\n  GEN -.->|\"③ 끊김 — 손으로 쓴 Ticket 타입\"| FE[\"프런트 타입\"]\n  GEN ==>|\"고침: components['schemas']['Ticket'] 에 위임\"| FE"
+        },
+        {
+          "title": "일제 전환이 틀어지면",
+          "question": "무엇이 어긋났을 때 어디까지 되돌리나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  X{\"전환 뒤 이상\"} -->|\"경미한 출력 차\"| L1[\"레벨 1: 그 Resource 1 파일 hotfix\"]\n  X -->|\"특정 엔드포인트 500\"| L2[\"레벨 2: 그 컨트롤러 render 만 AMS 로(1줄)\"]\n  X -->|\"광범위 이상\"| L3[\"레벨 3: PR 전체 revert\\nAMS 가 남아 있어 옛 동작 완전 복귀\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "kickflow のシリアライザを Alba に移行しました",
+          "url": "https://tech.kickflow.co.jp/entry/2026/08/07/113611",
+          "publisher": "kickflow",
+          "summary": "2026-07, 전 API 응답을 지탱하는 시리얼라이저 약 190 파일을 ActiveModelSerializers(메인테이너 거의 없음)에서 Alba 로 일제 교체. 필수 조건은 JSON 모양을 바꾸지 않는 것(camelCase · 엔드포인트별 관련 제어). 기저 클래스에서 관련을 기본 '전개 안 함' 으로 두고 within 으로 명시. AMS 와 Alba 출력을 Hash 수준에서 완전 일치시키는 spec 으로 보장.",
+          "date": "2026-08-07"
+        },
+        {
+          "title": "oRPC を調査したら、Rails + Nuxt の自分たちのスタックが思ったより型安全だと気づいた話",
+          "url": "https://tech.kickflow.co.jp/entry/2026/07/21/102711",
+          "publisher": "kickflow",
+          "summary": "백엔드 Rails · 프런트 Nuxt · OpenAPI YAML 을 손으로 쓰는 spec-first. 같은 모양을 세 곳에 쓴다는 불편에 oRPC 를 조사했지만 도입하지 않았다 — 하나의 정의에서 검증 · 타입 · OpenAPI 가 나오는 가치는 서버가 TypeScript 일 때만 성립. 대신 실장→스키마→프런트 타입의 '링크' 를 하나씩 점검하니 끊긴 것은 손으로 쓴 응답 타입 한 줄뿐 — OpenAPI 에서 생성한 타입으로 넘긴다.",
+          "date": "2026-07-21"
         }
       ]
     }
