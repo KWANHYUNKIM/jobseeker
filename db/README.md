@@ -175,7 +175,7 @@ HNSW 인덱스가 벡터 본체보다 크다. 8GB M1 에서 메모리에 들지�
 | `company_stacks.json` (15MB) | `mv_company_stack` | `REFRESH ... CONCURRENTLY` |
 | `trends_history.jsonl` | `trend_day`, `trend_metric` | ✅ 이관됨 — 다시 계산 못 하는 시계열 |
 | `job_history.jsonl` | `job_version` | ✅ 이관됨 — `UNIQUE (job_key, hash)` 가 중복 판본을 막는다 |
-| `engagement/events.jsonl` | `engagement_event` | ✅ 이관됨 — 파일 쪽 64MB 회전이 옛 기록을 버리고 있었다 |
+| `engagement/events.jsonl`(지금은 `var/engagement/`) | `engagement_event` | ✅ 이관됨 — 파일 쪽 64MB 회전이 옛 기록을 버리고 있었다 |
 | `company_profiles.json` | `company.homepage`/`description`/`domains`/`homepage_tech` | ✅ 이관됨 |
 | `trends.json`, `trends_reports/*.md` | `trend_day`/`trend_metric` 에서 빌드 | `build_trends.py` |
 | `similar_jobs.json`, `similar_posts.json` | `job_similar`, `post_similar` | |
@@ -515,7 +515,7 @@ Playwright 크롤과 Ollama 임베딩이 이미 메모리를 다투므로 `share
 마지막 것은 원래 뷰어에 있던 결함이고, 이쪽 변경이 드러냈다. 양쪽을 다 고쳐서
 브리핑이 붙는 공고가 588 → 599건(+11)이 됐다. **회사명 정규화 규칙이 이 저장소에
 네 벌 있었다** — 그중 파이썬 쪽 두 벌(`classifier._norm_company` 와 `store/slug`)은
-`catch_capture/normalize.py` 하나로 모았고, `store.db.slug --selftest` 가 값이 같은지가
+`catch_capture/core/normalize.py` 하나로 모았고, `store.db.slug --selftest` 가 값이 같은지가
 아니라 **같은 함수인지**를 확인한다.
 
 남은 둘은 일부러 다르게 둔다. `aggregate._norm_key` 는 이관이 끝나면 사라지는 경로라

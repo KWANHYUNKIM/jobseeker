@@ -2,7 +2,10 @@
 
 채용 사이트(wanted/jumpit/jobkorea/saramin/devocean) 크롤링 → 통합/분류 → 대시보드/뷰어 시각화 시스템.
 
-- `catch_capture/` : 채용 크롤 파이프라인 (기능별 패키지)
+- `catch_capture/` : 채용 크롤 파이프라인 (기능별 패키지, `catch_capture` 를 import 루트로 `python -m <패키지>.<모듈>`)
+  - `core/` : 공통 기반 — `paths`(경로·데이터 위치의 단일 소스. 런타임 데이터는 코드 폴더 밖 `var/`,
+    옛 위치에 남은 데이터는 `adopt()` 가 처음 쓰일 때 옮긴다) · `sites`(아래) · `normalize`(회사명) ·
+    `classifier`(규모·직군·역량 규칙 + `companies.json`, 정렬은 `python -m core.sort_companies`)
   - `crawlers/` : 사이트별 크롤러(crawl_*.py) + 공통(jobs_common)
     `crawl_freelance` 는 채용 공고가 아니라 **외주·프리랜서 프로젝트**(SI/SM 상주·도급·부업)를
     모은다 — 원티드 긱스(API)·프리모아(목록 JSON, 의뢰인 이메일 필드는 버린다)·이랜서(사이트맵 →
@@ -46,17 +49,20 @@
     `validThrough` 가 둘 다 있다 — "wanted 는 마감일이 없다"는 API 얘기였다.
     등록일이 없는 곳은 saramin 하나뿐이고 그 자리는 `first_seen_at` 이 대신한다
     (추정값이라 화면이 구분해 보여준다). 출처표는 `db/README.md` 의 "3-1".
-  - `monitoring/` : 헬스 기록·이상탐지(health)
-  - `automation/` : 크롤 오케스트레이션(crawl_all) + 자동화 데몬(auto_crawl)
+  - `automation/` : 크롤 오케스트레이션(crawl_all) + 자동화 데몬(auto_crawl) + 단계 상태 기록(orchestration →
+    run_state.json·run_events.jsonl)
     + **반복 작업 등록부(`loops.py`)** — launchd 작업·크롤 회차의 단계·Claude `/loop` 조사 엔진(역설계·브리핑·
     백과사전·하드웨어)을 한 표로 모았다. `/loop` 엔진의 실행 프롬프트는 여기에만 있다 —
     다시 시작할 때 `python -m automation.loops prompt <키>` 출력을 `/loop` 에 준다. 상태는 산출물의 나이로 보고
     8770 대시보드 '반복 작업' 칸(`/api/loops`)에 뜬다. **새 반복 작업은 먼저 여기 한 줄을 더한다.**
-  - `sites.py` : 채용 사이트 등록부 — 사이트 목록의 단일 소스(순서 = 중복 대표 순서). 새 사이트는
+  - `core/sites.py` : 채용 사이트 등록부 — 사이트 목록의 단일 소스(순서 = 중복 대표 순서). 새 사이트는
     여기 한 줄 + DB enum·close_check 판정기·뷰어 `Site` 타입 — `tests/test_sites.py` 가 넷을 대조한다.
-  - `dashboard/` : 통계 대시보드(serve.py, 8765). 공고는 정본 DB(v_job 모집중), 직군·규모는
-    뷰어 칩과 같은 `job_facet` 값. 헬스 이력은 8770 과 같이 `monitoring.health.history`
-    (DB 우선, 없으면 jsonl)로 읽는다. DB 가 없으면 크롤 스냅샷으로 물러선다.
+  - `servers/` : 사람·에이전트가 붙는 서버 — 서버마다 `server.py`(+ 화면은 `static/`).
+    `ops`(8770, 크롤 운영) · `stats`(8765, 통계 — 공고는 정본 DB 모집중, 직군·규모는 뷰어 칩과 같은
+    `job_facet`) · `collect`(8772, 방문 기록 수집 → `var/engagement/events.jsonl` + DB) · `admin`(8910,
+    개인 이력 — 데이터는 `var/admin/`) · `agent_mcp`(8790). 헬스 이력은 ops·stats 가 같이
+    `pipeline.health.history`(DB 우선, 없으면 jsonl)로 읽는다.
+  - `pipeline/` 에는 통합·마감 외에 `health`(헬스 기록·이상탐지)와 `engagement_score`(방문 기록 → engagement.json)도 있다.
   - `store/` : 정본 DB(PostgreSQL) 접근 계층 — **이관 중이다.** 지금까지 원본은
     `all_jobs_enriched.json` 한 덩어리였고 키도 제약도 없어서 회사 표기가 갈리고
     (`(주)클로봇` ≠ `클로봇`) `status` 가 계산 시점에 박제됐다. 스키마와 설계 근거는
@@ -66,10 +72,10 @@
       `jd-viewer/src/utils/companySlug.js` 이고 여기서 읽어 쓴다) / `docs`(빌더가 계산한 화면용
       문서를 `viewer_doc`(011)에 쓴다 — 회사 프로필·외주 분석 등) / `upsert`(쓰기 경로 —
       백필과 크롤이 같은 함수를 쓴다) / `ledgers`(파일로 쌓이던 원장 — `trends_history.jsonl`→
-      `trend_day`/`trend_metric`, `job_history.jsonl`→`job_version`, `engagement/events.jsonl`→
+      `trend_day`/`trend_metric`, `job_history.jsonl`→`job_version`, `var/engagement/events.jsonl`→
       `engagement_event`. 지난 일은 다시 계산할 수 없는데 머신마다 따로 놀거나(트렌드가 로컬
       54일/운영 23일) 조용히 회전돼 버려지고 있었다. `build_trends`·`build_reposts`·
-      `engagement.score` 가 여기서 읽고, 씨앗 뿌리기는 `python -m store.db.ledgers seed`)
+      `pipeline.engagement_score` 가 여기서 읽고, 씨앗 뿌리기는 `python -m store.db.ledgers seed`)
     · `ingest/` — `crawl`(크롤 사이클→DB, aggregate 가 매번 부른다 — 회사 표기 재선정과
       `mv_company_stack`·`job_facet` 갱신도 여기서 한다) / `posts`(블로그 글 — 크롤 회차마다
       crawl_all 이 부른다) / `engines`(엔진 산출물) / `backfill`(JSON→DB — 이관·복구용 일회성)
@@ -99,7 +105,6 @@
     안 보였다고 내려간 게 아니라서 close_check 가 원본에 물어 닫는다. 받아 온
     보드들에서 절반 넘게 안 보이면(`DB_GONE_MIN_RATIO`) 사이트째 보류한다 —
     파서가 깨진 것과 공고가 내려간 것은 다르다. 지우지는 않는다.
-  - `paths.py` : 공통 경로(데이터/venv 위치) 단일 소스
 - `backend/` : **뷰어 API(8771, FastAPI)** — 정본 DB 를 **읽기만** 한다(쓰는 쪽은 catch_capture).
   `app/main.py`(라우터 등록·실행 `python -m app.main`) · `core/`(config·exceptions) · `db/`(session·
   viewer_doc 읽기) · `features/<기능>/{router,service,repository,schemas}.py` · `utils/` · `tests/`.
@@ -224,7 +229,7 @@
   `jd-viewer/public/book/README.md`.
 - `ai-job-search/` : [MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search)(MIT)를
   **git subtree 로 들인 것**. Claude Code 위의 구직 워크플로(`/scrape`·`/apply` 작성→검토→ATS·`/interview`).
-  원본은 덴마크 사이트를 긁는데, 이걸 우리 MCP 서버(`catch_capture/agent_mcp`, 8790)의 국내 공고·회사
+  원본은 덴마크 사이트를 긁는데, 이걸 우리 MCP 서버(`catch_capture/servers/agent_mcp`, 8790)의 국내 공고·회사
   브리핑·단가 데이터로 바꿔 쓰려고 파일째 들였다(고칠 수 있게). 원본 갱신:
   `git subtree pull --prefix=ai-job-search https://github.com/MadsLorentzen/ai-job-search master --squash`.
   이 폴더 안의 CLAUDE.md·AGENTS.md·.claude/ 는 원본 것이다 — 그 폴더에서 작업할 때만 적용된다.
@@ -246,14 +251,14 @@
   양쪽에 나가고(캡션은 플랫폼별로 따로), 한쪽만 실패하면 실패한 쪽만 다시 시도한다. `design-lab/SOCIAL.md`.
 
 실행 예: `python -m automation.auto_crawl start 개발자 100 1800`,
-`python -m pipeline.aggregate 개발자`, `python -m pipeline.close_check --limit 300`, `python -m monitoring.health report`,
+`python -m pipeline.aggregate 개발자`, `python -m pipeline.close_check --limit 300`, `python -m pipeline.health report`,
 `python -m store.vectors.embed && python -m store.vectors.similar --dump`,
 `python -m store.vectors.search "재택 되는 백엔드"`, `cd backend && python -m app.main`
 
 ## 로컬 서버 포트
 8765 stats(통계) / 8770 ops(크롤 운영) / 8771 뷰어 API(backend — 공고·회사·글·외주·가격·검색, `/api/docs`) / 8910 admin(개인 이력, LAN 전용)
 / 8780 design-lab(레퍼런스·포스터 렌더·소셜 발행, 파이프라인과 분리된 실험용)
-/ 8790 agent-mcp(사용자의 에이전트에 채용 데이터·절차를 붙이는 MCP 서버, `catch_capture/agent_mcp/`).
+/ 8790 agent-mcp(사용자의 에이전트에 채용 데이터·절차를 붙이는 MCP 서버, `catch_capture/servers/agent_mcp/`).
 뷰어 API 는 뷰어 nginx 가 `/api/` 로 프록시하므로 별도 터널이 필요 없다.
 agent-mcp 는 뷰어 API 와 일부러 뗐다 — 외부 에이전트의 호출량이 뷰어 검색을 느리게 하면 안 된다.
 **LLM 을 부르지 않는다** — 생각은 연결한 사람의 에이전트가 하고(토큰도 그쪽), 이 서버는 읽기 전용 도구

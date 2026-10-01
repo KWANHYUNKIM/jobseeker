@@ -119,7 +119,7 @@ rsync -av <계정>@<옛서버>:jobseeker/catch_capture/screenshots/ \
 
 ### 생성 데이터는 git 으로 나르지 않는다
 
-`jd-viewer/public/*.json`, `catch_capture/dashboard/data.json` 은 `.gitignore` 대상이다.
+`jd-viewer/public/*.json`, `catch_capture/servers/stats/static/data.json` 은 `.gitignore` 대상이다.
 크롤 파이프라인이 매 사이클 다시 만드는 파생물이고, git 에 넣으면 두 가지가 깨진다.
 
 1. 사이클마다 수십 MB 가 바뀌어 이력이 데이터 커밋으로 뒤덮인다.
@@ -144,10 +144,10 @@ rsync -av <계정>@<옛서버>:jobseeker/catch_capture/screenshots/ \
 
 | 포트 | 서버 | 역할 |
 |---|---|---|
-| 8770 | ops (`monitoring.ops_server`) | 크롤 파이프라인 **실시간** 운영 대시보드 |
-| 8765 | stats (`dashboard/serve.py`) | 공고 분류·집계 통계 대시보드(정본 DB) |
+| 8770 | ops (`servers.ops.server`) | 크롤 파이프라인 **실시간** 운영 대시보드 |
+| 8765 | stats (`servers.stats.server`) | 공고 분류·집계 통계 대시보드(정본 DB) |
 | 8771 | search (`backend/` — `python -m app.main`) | 뷰어 API(공고·회사·글·외주·가격·검색). 뷰어 `/api/` |
-| 8772 | collect (`engagement.collect`) | 방문 기록 수집. 뷰어 `/collect` |
+| 8772 | collect (`servers.collect.server`) | 방문 기록 수집. 뷰어 `/collect` |
 
 소셜 자동 발행 데몬(인스타·페이스북 페이지, `com.jobseeker.publisher`, 포트 없음)은 `./deploy/setup-publisher.sh` 로
 launchd 에 5분 주기로 등록한다. 결과는 8770 의 '인스타 발행' 칸이 읽고, 발행 이미지는 뷰어
@@ -165,7 +165,7 @@ nginx 의 `/ig/`(볼륨 `design-lab/exposed`)로 나간다 — 인스타가 공�
 데이터가 채워지려면 크롤러가 돌아야 한다(그전엔 빈 화면·0건).
 
 🔒 **admin(8910, `admin/server.py`)은 절대 터널에 붙이지 않는다.** 개인 이력·
-지원 내역·API 키를 다루고, 저장소에서도 `catch_capture/admin/`이 커밋 금지다.
+지원 내역·API 키를 다루고, 개인 데이터는 `catch_capture/var/admin/`(git 제외)에 있다.
 필요하면 LAN(`http://192.168.45.241:8910`)이나 SSH 포트포워딩으로만 접근한다.
 
 ## 다른 컴퓨터에서 작업하기
