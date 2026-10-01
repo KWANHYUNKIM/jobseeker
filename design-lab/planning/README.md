@@ -14,7 +14,7 @@
 | 0 | [00-goals.md](00-goals.md) | 무엇을 이기면 이긴 것인가 — 숫자 목표와 보는 지표 | 분기마다 |
 | 1 | [01-research/](01-research/README.md) | 조회가 나오는 이유를 **계속** 조사하고, 결론만 위에 남긴다 | 주 1회(`insta-growth` 루프) + 터진 릴스를 볼 때마다 |
 | 1-1 | [계정 학습](01-research/accounts.md) | 채용·직장인 큰 계정을 같은 칸으로 비교 — 형식·속도·잘 터진 것 | `insta-benchmark` 루프, 회차마다 2~3곳 |
-| 1-3 | [릴스 공부 기록](01-research/reels-study.md) · [이럴 땐 이렇게](01-research/playbook.md) | 터진 릴스를 한 편씩 — 장면·공감 장면·**댓글을 왜 쓰나** — 그리고 지침 | `insta-reels` 루프, 회차마다 처음 보는 편 |
+| 1-3 | [웹에서 배운 것](01-research/web-learning.md) → [릴스 공부 기록](01-research/reels-study.md) → [이럴 땐 이렇게](01-research/playbook.md) | 터진 릴스를 한 편씩 — 장면·공감 장면·**댓글을 왜 쓰나** — 그리고 지침 | `insta-reels` 루프, 회차마다 처음 보는 편 |
 | 1-2 | [전략 비교](01-research/strategies.md) | 마케팅 전략을 효과·맞음·비용 점수로 견주고 순위를 낸다 — **무엇이 더 나은가** | `insta-benchmark` 루프 |
 | 2 | [02-format.md](02-format.md) | 릴스 규격 — 보는 시간·구조·형식 목록·디자인·소리 | 조사 결론이 바뀔 때 |
 | 3 | [03-content.md](03-content.md) | 무엇을 올리나 — 기둥과 우선순위 일감(데이터 출처·훅·형식) | 매주 |

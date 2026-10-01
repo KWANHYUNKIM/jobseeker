@@ -223,9 +223,12 @@ REGISTRY: list[Loop] = [
     Loop("insta-reels", "터진 릴스 공부", "claude-loop", "any", "30분마다(세션이 열려 있을 때)", 24,
          "/loop 30m <prompt>", ["design-lab/planning/01-research/reels-study.md", "design-lab/planning/01-research/playbook.md"],
          owns=["design-lab/planning/01-research/reels-study.md", "design-lab/planning/01-research/playbook.md",
-               "design-lab/planning/01-research/data/reels-study.jsonl"],
+               "design-lab/planning/01-research/web-learning.md", "design-lab/planning/01-research/data/reels-study.jsonl"],
          prompt=(
-             "터진 릴스 공부 한 회차: design-lab/planning/01-research/reels-study.md · playbook.md · method.md('영상·댓글 받기')를 읽는다. "
+             "터진 릴스 공부 한 회차: design-lab/planning/01-research/reels-study.md · playbook.md · web-learning.md · method.md('영상·댓글 받기')를 읽는다. "
+             "① 먼저 웹에서 '릴스 조회수가 어떻게 나오나' 새 자료 1~2개를 찾는다 — 인스타 공식(about.instagram.com·creators.instagram.com·도움말·Mosseri) 우선, "
+             "그다음 분석 리포트·국내 가이드. web-learning.md 의 공식/리포트 칸에 더하고(공식은 원문 짧게 인용, 리포트 숫자는 '?'), "
+             "'우리가 본 것과 맞나' 표에 대조 한 줄(맞음/어긋남). ② 그다음 릴스: "
              "reels-study.md·teardown.md 에 없는 100만+ 릴스 4~6편을 고른다 — data/reels-1m-2026-10-02-links.csv 의 남은 것과 새 키워드 검색에서, "
              "갈래가 겹치지 않게(돈 표·콩트·브이로그·인터뷰·실촬영·공식 계정·개발자). method.md 절차대로 수신기(research.reelstudy serve)를 띄우고, "
              "인스타 탭에서 숫자·캡션·음원·댓글 40여 개를 모아 수신기로 넘긴 뒤 frames --clean 으로 장면표를 만든다(영상은 지운다). "
@@ -234,7 +237,8 @@ REGISTRY: list[Loop] = [
              "data/reels-study.jsonl 에 편마다 한 줄. 두 편 이상 같은 결과면 playbook.md 의 줄을 더하거나 '?' 를 떼고, 반대 사례면 고친다(근거 편을 단다). "
              "댓글 원문은 짧게 요약하고 길게 옮기지 않는다. 팔로우·좋아요·댓글 같은 계정 행동은 하지 않는다. 끝나면 탭을 인스타 프로필로 되돌리고 수신기를 끈다. "
              "docs(design-lab) 로 커밋, 푸시는 하지 않는다. 무엇을 배웠는지 한두 줄로 보고한다. "
-             "고치는 파일은 reels-study.md · playbook.md · data/reels-study.jsonl 뿐이다 — git add 도 이 경로만 준다.")),
+             "웹에서 배운 것과 릴스에서 본 것이 같은 방향이면 playbook 의 근거에 둘 다 단다. "
+             "고치는 파일은 reels-study.md · playbook.md · web-learning.md · data/reels-study.jsonl 뿐이다 — git add 도 이 경로만 준다.")),
 ]
 
 BY_KEY = {l.key: l for l in REGISTRY}

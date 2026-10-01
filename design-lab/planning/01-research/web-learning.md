@@ -1,0 +1,40 @@
+# 웹에서 배운 것 — 조회수는 어떻게 나오나 (공식 → 리포트 → 우리 관찰과 대조)
+
+`insta-reels` 루프가 회차마다 **먼저** 웹에서 새 자료 1~2개를 찾아 여기에 더하고, 그다음 터진 릴스를 본다.
+급이 다른 세 칸으로 나눈다 — **공식**(인스타 발표·도움말, 원문 인용) / **리포트**(분석 업체·매체, 숫자는 '?' 를 붙여 2차라고 밝힌다) /
+**우리가 본 것과 맞나**(reels-study·teardown 의 근거 편과 대조). 맞지 않으면 그대로 적는다 — 어긋나는 데서 배운다.
+
+## 공식 (인스타그램이 직접 말한 것)
+
+| 날짜 | 무엇 | 원문(짧게) | 출처 |
+|---|---|---|---|
+| 2023-05-31 | 릴스 순위의 가장 중요한 예측 네 가지 | "how likely you are to **reshare** a reel, **watch a reel all the way through**, **like** it, and **go to the audio page**" | [Instagram Ranking Explained](https://about.instagram.com/blog/announcements/instagram-ranking-explained) |
+| 2023-05-31 | 순위에 쓰는 정보 | 보는 사람의 최근 활동(좋아요·저장·공유·댓글) / 올린 사람과의 상호작용 이력 / 릴스 정보(**오디오 트랙·화면**, 인기) / 올린 사람 정보(팔로워·참여 수준) | 같은 글 |
+| — | 비연결(비팔로워) 추천은 **3분 이하** 영상 | 도움말·FAQ 요약 | [Creators FAQ](https://creators.instagram.com/faq?locale=en_US) |
+| 2024-04 · 2026-04-30 | 원본 우대, 남의 것을 주로 올리는 계정은 추천 제외(사진·캐러셀까지) | (strategies S12) | [TechCrunch 2026-04-30](https://techcrunch.com/2026/04/30/instagram-restricts-reach-of-content-aggregators-in-new-crackdown/) |
+| 2024-12 | 시험 릴스 — 비팔로워에게 먼저, 24시간 뒤 숫자 | (strategies S9) | [creators.instagram.com](https://creators.instagram.com/blog/instagram-trial-reels) |
+
+## 리포트 (2차 — 숫자는 확인 전 '?')
+
+| 무엇 | 숫자 | 출처 | 메모 |
+|---|---|---|---|
+| 첫 3초를 넘긴 비율 60%+ 릴스가 40% 미만보다 도달 최대 10배 | ? | [quso.ai](https://quso.ai/blog/instagram-reels-best-practices) · [1point](https://1point.kr/blog/insights/2026-reels-algorithm-guide/) | 원 연구 출처 미표기 |
+| 평균 릴스 시청 시간 8.5초(2,430만 게시물·37.5만 계정) | ? | Metricool 2026 연구 인용 — [loopexdigital](https://www.loopexdigital.com/blog/instagram-reels-statistics) | 원문 확인 필요 |
+| 7~15초가 완주율 가장 높음(60~80%) · 60~90초가 참여율 가장 높음 | ? | [wavevision](https://www.wavevision.io/blog/instagram-reels-length-what-performs-best-in-2026) · [quso.ai](https://quso.ai/blog/instagram-reels-best-practices) | 서로 다른 지표 — 완주 vs 참여 |
+| 2026 국내 가이드: 도달은 DM 공유 > 저장 > 시청 시간 순 | ? | [원포인트 블로그](https://1point.kr/blog/insights/2026-reels-algorithm-guide/) | 공식 순서는 '공유·완주·좋아요·오디오' (위) |
+
+## 우리가 본 것과 맞나
+
+| 웹에서 말한 것 | 우리 관찰 | 판정 |
+|---|---|---|
+| 끝까지 보는 것(완주)이 핵심 | 100만+ 69편 길이 가운데 12초, 표 릴스 5~8초 · 결과를 늦게 보여 주는 편(해경 합격·가계부)이 끝까지 보게 함 | **맞음** |
+| **공유(reshare)** 가 가장 큰 신호 | 친구 태그(C7·C13)가 많은 편: 엔지니어 vs PM, 연차 메모, 해경 합격 — 다만 '공유 수' 자체는 웹에서 안 보인다 | 맞음 (간접) |
+| **오디오 페이지로 가는가** 가 신호 | 가사가 상황을 말하는 유행곡(퇴근·퇴사할게여) 편이 많다 — 그 노래로 따라 만들고 싶게 함 | 맞음 (간접) |
+| 3분 이하만 비팔로워 추천 | 100만+ 중 가장 긴 것 83초(비빔밥데이) | 맞음 |
+| 공감·유머가 공유를 부른다 | 공감 밈 29편 가운데 290만 — 가장 많이 터진 갈래 | **맞음** |
+| 60~90초가 참여율 최고(?) | 61초 《인턴》 2.4%·83초 비빔밥 263만 — 하지만 100만+ 대부분은 15초 이하 | 일부 맞음 — 길면 '하나씩 모으기' 처럼 진행이 보여야 |
+| 원본 우대 | 해외 영상 재업로드(바빠 보이기 632만·엔지니어 vs PM 184만)도 터져 있다 — 2026-04 규정 뒤에는? | **어긋남** — 올린 시기 확인 필요 |
+| 팔로워 수도 신호 | 팔로워 3천 계정이 642만(365_bab.zip) | 어긋남 — 첫 노출 뒤엔 반응이 이긴다 |
+
+## 회차 기록
+- 2026-10-02 처음: 인스타 공식 순위 설명(2023) 원문 확인, 2026 리포트 3곳·국내 가이드 1곳. 공식 신호 네 가지(공유·완주·좋아요·오디오 페이지)를 우리 관찰과 대조.
