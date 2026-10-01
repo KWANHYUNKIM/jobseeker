@@ -241,21 +241,14 @@ export function stackCounts(jobs: Job[]): { name: string; count: number }[] {
 
 
 /**
- * 검색 API 결과에 덧씌우는 후처리 필터.
+ * 검색 API 결과에 덧씌우는 후처리 필터(파일 모드의 의미 검색).
  *
- * 의미 검색이 켜지면 목록은 API 가 매긴 순서를 그대로 쓰므로 applyFilter 를 타지
- * 않는다. 그런데 API 는 지역·규모 축을 모른다 — 그대로 두면 지역을 골라도 검색
- * 중에는 무시되는 것처럼 보인다. API 가 이미 거른 축(사이트·경력·스택)은 다시
- * 건드리지 않고, 화면에서만 아는 두 축만 여기서 건다.
+ * 의미 검색이 켜지면 목록은 API 가 매긴 관련도 순서를 그대로 쓰므로 applyFilter 의
+ * 정렬을 타면 안 된다. 그런데 /api/search 는 검색어 말고는 아무 축도 받지 않는다 —
+ * 예전에는 사이트·경력·스택을 API 가 거른다고 가정하고 지역·규모만 여기서 걸어서,
+ * 의미 검색 중에는 사이트·경력·스택·직군·모집 상태가 조용히 무시됐다.
+ * 그래서 모든 축과 모집 상태를 여기서 건다(순서는 그대로 둔다).
  */
 export function applyLocalFacets(jobs: Job[], f: FilterState): Job[] {
-  if (!f.regions.size && !f.districts.size && !f.sizes.size) return jobs
-  return jobs.filter((j) => {
-    if (f.sizes.size && !(j.company_size && f.sizes.has(j.company_size))) return false
-    if (!f.regions.size && !f.districts.size) return true
-    const p = placeOf(j)
-    if (f.regions.size && !f.regions.has(p.region)) return false
-    if (f.districts.size && (!p.district || !f.districts.has(p.district))) return false
-    return true
-  })
+  return jobs.filter((j) => matchesBase(j, f, '') && FACET_KEYS.every((k) => DIMENSIONS[k](j, f)))
 }

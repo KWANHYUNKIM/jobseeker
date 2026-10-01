@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Job } from '../../types'
-import { applyFilter, computeFacets, emptyFilter } from './filter'
+import { applyFilter, applyLocalFacets, computeFacets, emptyFilter } from './filter'
 
 function job(over: Partial<Job>): Job {
   return {
@@ -44,5 +44,14 @@ describe('computeFacets', () => {
     expect(fc.regions.find((r) => r.name === '부산')?.count).toBe(1)
     // 다른 축은 서울 필터를 탄다 → 모집중 서울 공고 2건
     expect([...fc.siteCount.values()].reduce((a, b) => a + b, 0)).toBe(2)
+  })
+})
+
+describe('applyLocalFacets', () => {
+  it('의미 검색 결과에도 모든 축·모집 상태를 걸고 순서는 그대로 둔다', () => {
+    const hits = [JOBS[2], JOBS[0], JOBS[3], JOBS[1]] // API 가 매긴 관련도 순서
+    expect(applyLocalFacets(hits, emptyFilter()).map((j) => j.pid)).toEqual(['1', '4', '2'])
+    const f = { ...emptyFilter(), stacks: new Set(['java']), sites: new Set(['wanted']) }
+    expect(applyLocalFacets(hits, f).map((j) => j.pid)).toEqual(['1', '4'])
   })
 })

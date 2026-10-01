@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { FilterState } from './filter'
 
-/** semantic/server.py 의 /api/search 응답. */
+/** 뷰어 API(backend, 8771)의 /api/search 응답. */
 export interface SearchHit {
   id: string
   url: string
@@ -74,10 +74,9 @@ export function useHybridSearch(query: string, enabled: boolean, filter: FilterS
   })
   const abortRef = useRef<AbortController | null>(null)
 
-  // Set 은 매 렌더 새 객체라 의존성으로 못 쓴다. 내용을 문자열로 굳혀서 비교한다.
-  const careers = [...filter.careers].sort().join(',')
-  const sites = [...filter.sites].sort().join(',')
-  const stacks = [...filter.stacks].sort().join(',')
+  // 축 필터는 결과를 받은 뒤 화면이 건다(applyLocalFacets) — /api/search 는 검색어만
+  // 받는다. 마감 공고까지 보는 중이면 후보에도 마감을 넣어 달라고 한다.
+  const includeClosed = filter.closed !== 'hide'
 
   useEffect(() => {
     const q = query.trim()
@@ -93,10 +92,8 @@ export function useHybridSearch(query: string, enabled: boolean, filter: FilterS
       const ac = new AbortController()
       abortRef.current = ac
 
-      const params = new URLSearchParams({ q, kind: 'job', limit: '60' })
-      for (const c of careers.split(',').filter(Boolean)) params.append('career', c)
-      for (const s of sites.split(',').filter(Boolean)) params.append('site', s)
-      for (const s of stacks.split(',').filter(Boolean)) params.append('stack', s)
+      const params = new URLSearchParams({ q, kind: 'job', limit: '100' })
+      if (includeClosed) params.set('include_closed', '1')
 
       fetch(`${API_BASE}/api/search?${params}`, { signal: ac.signal })
         .then((r) => {
@@ -111,7 +108,7 @@ export function useHybridSearch(query: string, enabled: boolean, filter: FilterS
     }, DEBOUNCE_MS)
 
     return () => clearTimeout(timer)
-  }, [query, enabled, careers, sites, stacks])
+  }, [query, enabled, includeClosed])
 
   return state
 }
