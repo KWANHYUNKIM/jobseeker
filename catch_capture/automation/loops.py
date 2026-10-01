@@ -173,15 +173,19 @@ REGISTRY: list[Loop] = [
              + _lane(HW_DC_OWNS, HW_REQUESTS))),
     # 인스타 키우기 — 알고리즘·경쟁 계정을 주마다 다시 보고 design-lab/GROWTH.md 를 고친다. 발행은 하지 않는다.
     Loop("insta-growth", "인스타 키우기 조사", "claude-loop", "any", "주 1회", 24 * 8,
-         "/loop <prompt>", ["design-lab/GROWTH.md"], owns=["design-lab/GROWTH.md"],
+         "/loop <prompt>", ["design-lab/GROWTH.md", "design-lab/planning/01-research/README.md"],
+         owns=["design-lab/GROWTH.md", "design-lab/planning/01-research/"],
          prompt=(
              "인스타 키우기 조사 한 사이클: design-lab/GROWTH.md 를 읽고, 지난 조사 뒤에 나온 인스타그램 공식 발표"
              "(about.instagram.com·creators.instagram.com·Adam Mosseri)와 데이터 리포트(Buffer·Later·Hootsuite·Sprout)를 "
              "웹에서 찾는다. 경쟁 계정(@catch.job·@wantedjobs.kr·@codeit_kr 등) 프로필에서 새 시리즈·하이라이트·형식을 본다. "
              "모든 주장에 출처 URL, 추측 금지. 규칙이 바뀌었으면 본문을 고치고 '바뀐 것' 맨 위에 날짜와 한 단락을 더한다. "
-             "다음 주에 만들 콘텐츠 후보 3개(데이터 출처와 사진 사용권까지)를 같은 단락에 적는다. 게시·댓글·팔로우 같은 "
+             "다음 주에 만들 콘텐츠 후보 3개(데이터 출처와 사진 사용권까지)를 같은 단락에 적는다. "
+             "그리고 실제로 터진 릴스를 한 회차 조사한다: design-lab/planning/01-research/method.md 대로 키워드 검색으로 "
+             "릴스의 조회·길이·음원·캡션을 모아 data/ 에 CSV 로 남기고, README 의 '조사 회차' 에 한 회차를 더한 뒤 "
+             "규칙 표(R…)·가설(H…)을 근거와 함께 고친다(규칙을 바꾸면 근거 회차를 적는다). 게시·댓글·팔로우 같은 "
              "계정 행동은 하지 않는다. docs(design-lab) 로 커밋하고 푸시는 하지 않는다. 무엇을 했는지 한두 줄로 보고한다."
-             " 이 레인이 고치는 파일은 design-lab/GROWTH.md 뿐이다 — git add 도 이 경로만 준다.")),
+             " 이 레인이 고치는 파일은 design-lab/GROWTH.md 와 design-lab/planning/01-research/ 뿐이다 — git add 도 이 경로만 준다.")),
 ]
 
 BY_KEY = {l.key: l for l in REGISTRY}
