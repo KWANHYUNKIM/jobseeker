@@ -65,9 +65,6 @@ AGNOSTIC_SITES = ["remote", "ats"]
 RADAR_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_company_tech_radar.py"
 REVIEWS_LOOP_SH = ROOT_DIR / "jd-viewer" / "bin" / "reviews-loop.sh"
 LEARNING_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_learning.py"
-CALENDAR_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_calendar.py"
-TRENDS_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_trends.py"
-RELATIONS_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_tech_relations.py"
 REPOSTS_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_reposts.py"
 CAREER_MAP_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_career_map.py"
 BLOG_GUIDES_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_blog_guides.py"
@@ -457,9 +454,8 @@ def enrich_extras() -> None:
     maybe_refresh_learning()
     enrich_radar()
     ensure_reviews_daemon()
-    run_builder("모집 캘린더", CALENDAR_SCRIPT)
-    run_builder("개발 트렌드", TRENDS_SCRIPT)
-    run_builder("기술 관계", RELATIONS_SCRIPT)
+    # 캘린더·트렌드·기술 관계는 refresh-data.sh 가 공고를 다시 뽑은 직후에 이미 굽는다
+    # (예전에는 여기서 한 회차에 한 번 더 돌았다 — 같은 입력, 같은 출력).
     # 재공고는 매 사이클 돌아야 한다. 여기서 한 번 거르면 그 회차의 변경은 영영 기록되지
     # 않고, 나중에 되돌아가 채울 방법도 없다(공고 원본이 이미 사라진다).
     run_builder("재공고 추적", REPOSTS_SCRIPT)
