@@ -87,18 +87,27 @@ def _ffprobe_exe(ffmpeg: str) -> str | None:
     return str(cand) if cand.is_file() else None
 
 
-def duration_for(n_slides: int, *, hold: float = HOLD, fade: float = FADE) -> float:
+def _holds(n: int, hold: float | list[float]) -> list[float]:
+    """장마다 머무는 시간. 한 값이면 모든 장에 같게, 목록이면 장마다(티어표를 한 칸씩 채울 때)."""
+    if isinstance(hold, (int, float)):
+        return [float(hold)] * n
+    if len(hold) != n:
+        raise ValueError(f"hold 가 {len(hold)}개인데 장면은 {n}장입니다")
+    return [float(h) for h in hold]
+
+
+def duration_for(n_slides: int, *, hold: float | list[float] = HOLD, fade: float = FADE) -> float:
     """장 수 → 완성된 영상 길이(초).
 
     장마다 (hold + fade) 만큼 두고 사이를 fade 만큼 겹치므로
-    전체 = n*(hold+fade) - (n-1)*fade = n*hold + fade 가 된다.
+    전체 = Σ(hold+fade) - (n-1)*fade = Σhold + fade 가 된다.
     """
     if n_slides <= 0:
         return 0.0
-    return n_slides * hold + fade
+    return sum(_holds(n_slides, hold)) + fade
 
 
-def _filter_chain(n: int, hold: float, fade: float, size: tuple[int, int], motion: float = 0.0) -> str:
+def _filter_chain(n: int, hold: float | list[float], fade: float, size: tuple[int, int], motion: float = 0.0) -> str:
     """장면 정규화 + xfade 사슬.
 
     **정규화를 먼저 한다.** xfade 는 크기가 다른 두 입력을 붙이지 못하고, 섞였을 때
@@ -110,26 +119,27 @@ def _filter_chain(n: int, hold: float, fade: float, size: tuple[int, int], motio
     같은 서브샘플링이라 ffmpeg 이 바꾸지 않는다. 폰과 메타가 기대하는 건 tv range 다.
     """
     w, h = size
+    holds = _holds(n, hold)
     fit = (f"scale={w}:{h}:force_original_aspect_ratio=decrease:"
            f"in_range=full:out_range=tv,"
            f"pad={w}:{h}:(ow-iw)/2:(oh-ih)/2:color=black,"
            f"setsar=1,format=yuv420p")
+    fits = [fit] * n
     if motion:
         # 천천히 다가가기(켄 번스). zoompan 은 타임스탬프를 새로 매겨 xfade 가 첫 장면에서 멈춘다 —
         # 시간(t)에 따라 키우고(eval=frame) 가운데를 잘라 낸다. 두 배 캔버스에서 해야 떨리지 않는다.
-        clip = hold + fade
-        fit = (f"fps={FPS},scale={w * 2}:{h * 2}:force_original_aspect_ratio=decrease:in_range=full:out_range=tv,"
+        fits = [(f"fps={FPS},scale={w * 2}:{h * 2}:force_original_aspect_ratio=decrease:in_range=full:out_range=tv,"
                f"pad={w * 2}:{h * 2}:(ow-iw)/2:(oh-ih)/2:color=black,"
-               f"scale=w='trunc({w * 2}*(1+{motion}*t/{clip:.3f})/2)*2':h=-2:eval=frame,"
-               f"crop={w * 2}:{h * 2},scale={w}:{h},setsar=1,format=yuv420p")
-    parts = [f"[{k}:v]{fit}[s{k}]" for k in range(n)]
+               f"scale=w='trunc({w * 2}*(1+{motion}*t/{hk + fade:.3f})/2)*2':h=-2:eval=frame,"
+               f"crop={w * 2}:{h * 2},scale={w}:{h},setsar=1,format=yuv420p") for hk in holds]
+    parts = [f"[{k}:v]{fits[k]}[s{k}]" for k in range(n)]
     prev = "[s0]"
     for k in range(1, n):
         out = f"[v{k}]"
         # k 번째 넘김이 시작되는 시각. 앞선 k 장이 각각 hold 만큼 '읽히고' 난 자리다
         # (겹치는 fade 는 앞 장의 hold 에 이어 붙으므로 여기 더하지 않는다).
         parts.append(f"{prev}[s{k}]xfade=transition=fade:duration={fade}:"
-                     f"offset={k * hold:.3f}{out}")
+                     f"offset={sum(holds[:k]):.3f}{out}")
         prev = out
     parts.append(f"{prev}format=yuv420p[vout]")
     return ";".join(parts)
@@ -155,7 +165,7 @@ def _audio_chain(idx: int, seconds: float) -> str:
             f"aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo[aout]")
 
 
-def build(slides: list[Path], dest: Path, *, hold: float = HOLD, fade: float = FADE,
+def build(slides: list[Path], dest: Path, *, hold: float | list[float] = HOLD, fade: float = FADE,
           fps: int = FPS, size: tuple[int, int] = REEL_SIZE, audio: Path | None = None,
           quiet: bool = True, motion: float = 0.0) -> Path:
     """장면들을 이어 붙여 mp4 를 만든다. 완성본 경로를 돌려준다.
@@ -163,6 +173,7 @@ def build(slides: list[Path], dest: Path, *, hold: float = HOLD, fade: float = F
     audio 를 주면 그 음원을 깐다(길이 맞춤 · 크기 고름 · 양끝 페이드).
     안 주면 무음 트랙을 깐다 — 권리 확인은 부르는 쪽 몫이다.
     motion 을 주면(예 0.05) 장면마다 그만큼 천천히 다가간다 — 사진 판은 멈춰 있으면 넘겨 버린다.
+    hold 에 목록을 주면 장마다 머무는 시간이 다르다(한 칸씩 채우는 판은 짧게, 마지막 판은 길게).
     """
     if not slides:
         raise ValueError("장면이 없습니다")
@@ -180,11 +191,10 @@ def build(slides: list[Path], dest: Path, *, hold: float = HOLD, fade: float = F
 
     exe = ffmpeg_exe()
     dest.parent.mkdir(parents=True, exist_ok=True)
-    clip = hold + fade
     cmd = [exe, "-y", "-loglevel", "error" if quiet else "info"]
-    for p in slides:
+    for p, hk in zip(slides, _holds(len(slides), hold)):
         # -loop 1 + -t 로 정지 이미지를 그 길이만큼의 영상으로 만든다.
-        cmd += ["-loop", "1", "-t", f"{clip:.3f}", "-i", str(p)]
+        cmd += ["-loop", "1", "-t", f"{hk + fade:.3f}", "-i", str(p)]
     # 소리는 **맨 뒤**에 붙인다. 앞에 두면 위의 [k:v] 번호가 통째로 밀린다.
     if audio is not None:
         if not audio.is_file():
