@@ -1324,7 +1324,7 @@ def build_lunch(area: str = "pangyo") -> dict:
                   for i, pl in enumerate(places, 1)),
         "고른 기준: 서로 다른 블로그·기사에 나온 횟수 순, 2024년 이후 출처가 있는 곳만. 미쉐린은 판교를 다루지 않아 "
         "'순위' 가 아니라 '추천' 입니다. 가기 전에 영업시간을 확인하세요.",
-        f"판교·분당 모집중 개발 공고 {len(pg)}건 — 프로필 링크에서 볼 수 있어요.",
+        f"판교·분당 모집중 개발 공고 {len(pg)}건 — 많이 뽑는 곳: " + " · ".join(c for c, _ in cos) + ".",
         "사진은 메뉴 예시이고 각 가게 사진이 아닙니다(Wikimedia Commons, 작가·라이선스는 각 장에).",
         "출처\n" + "\n".join(f"· {v[0]} ({v[1]})" for v in src.values()),
     ])
