@@ -60,7 +60,8 @@
   - `servers/` : 사람·에이전트가 붙는 서버 — 서버마다 `server.py`(+ 화면은 `static/`).
     `ops`(8770, 크롤 운영) · `stats`(8765, 통계 — 공고는 정본 DB 모집중, 직군·규모는 뷰어 칩과 같은
     `job_facet`) · `collect`(8772, 방문 기록 수집 → `var/engagement/events.jsonl` + DB) · `admin`(8910,
-    개인 이력 — 데이터는 `var/admin/`) · `agent_mcp`(8790). 헬스 이력은 ops·stats 가 같이
+    개인 이력 — 데이터는 `var/admin/`) · `agent_mcp`(8790). admin·agent_mcp 는 공고·브리핑·역설계·외주를
+    뷰어 API 로 읽는다(`core/api.py` — TTL·ETag 캐시, API 가 없으면 public 파일; 공고 전량은 `/api/jobs/all`). 헬스 이력은 ops·stats 가 같이
     `pipeline.health.history`(DB 우선, 없으면 jsonl)로 읽는다.
   - `pipeline/` 에는 통합·마감 외에 `health`(헬스 기록·이상탐지)와 `engagement_score`(방문 기록 → engagement.json)도 있다.
   - `store/` : 정본 DB(PostgreSQL) 접근 계층 — **이관 중이다.** 지금까지 원본은
