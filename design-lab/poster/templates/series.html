@@ -173,6 +173,20 @@
            text-shadow:0 4px 24px rgba(0,0,0,.6); }
   .vs .q em { color:var(--hi); }
   .vs .cr2 { position:absolute; left:64px; right:64px; z-index:2; font-size:18px; color:rgba(255,255,255,.6); }
+  /* tier — 티어표 한 장(5~8초 릴스). 맨 위 칸은 가려 두고 댓글로 맞히게 한다 */
+  .tier .tt { position:absolute; left:64px; right:64px; font-size:84px; font-weight:900; letter-spacing:-.05em; line-height:1.1; }
+  .tier .tt em { color:var(--hi); }
+  .tier .ts { position:absolute; left:64px; right:64px; font-size:30px; font-weight:700; color:rgba(255,255,255,.75); }
+  .tier .rows { position:absolute; left:48px; right:48px; display:flex; flex-direction:column; gap:12px; }
+  .tier .row { display:flex; align-items:stretch; border-radius:18px; overflow:hidden; background:rgba(255,255,255,.07); min-height:120px; }
+  .tier .row .g { flex:none; width:128px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+                  font-size:68px; font-weight:900; color:#141218; }
+  .tier .row .g small { font-size:19px; font-weight:800; margin-top:2px; }
+  .tier .row .c { flex:1; padding:18px 24px; display:flex; flex-direction:column; justify-content:center; font-size:32px; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+                  line-height:1.3; color:#fff; }
+  .tier .row .c .n { font-size:22px; font-weight:700; color:rgba(255,255,255,.6); margin-top:6px; }
+  .tier .row.hide .c { border:4px dashed var(--hi); border-left:0; border-radius:0 18px 18px 0; color:var(--hi); font-size:46px; letter-spacing:.1em; }
+  .tier .ft { position:absolute; left:64px; right:64px; font-size:19px; color:rgba(255,255,255,.55); line-height:1.4; }
   .mag .pg { position:absolute; right:64px; font-size:22px; font-weight:700; opacity:.6; }
 </style>
 </head>
@@ -193,6 +207,29 @@ const D = JSON.parse(document.getElementById('data').textContent);
 
 
   if (S.type === 'mag') {   // 머리·줄·바닥글을 쓰지 않는 판 — 따로 그리고 끝낸다
+    if (S.tiers) {   // 티어표 한 장
+      sheet.classList.add('tier'); sheet.style.setProperty('--hi', (D.theme && D.theme.hi) || '#ffe066');
+      const em3 = (node, t) => { String(t || '').split(/(\*\*[^*]+\*\*)/).forEach(p =>
+        node.append(p.startsWith('**') ? el('em', '', p.slice(2, -2)) : p)); return node; };
+      const st3 = (D.size || [1080, 1350])[1] > 1500;
+      const blur = el('div', 'blur'); if (S.image) blur.style.backgroundImage = `url("${S.image}")`; sheet.append(blur);
+      const top3 = el('div', 'top'); top3.style.top = (st3 ? 150 : 52) + 'px'; const tl3 = el('div'); const m3 = (D.series || '').match(/^\[(.+)\]/);
+      tl3.append('[', el('b', '', m3 ? m3[1] : D.series), ']'); top3.append(tl3, el('div', 'h', '@devjobseeker')); sheet.append(top3);
+      const tt = el('div', 'tt'); (S.head || []).forEach(l => tt.append(em3(el('div'), l))); tt.style.top = (st3 ? 230 : 110) + 'px'; sheet.append(tt);
+      if (S.sub) { const ts = el('div', 'ts', S.sub); ts.style.top = (st3 ? 440 : 310) + 'px'; sheet.append(ts); }
+      const COL = ['#ffe066', '#ffb36b', '#9be38a', '#7cc7ff', '#c4a8ff', '#b9b4c7'];
+      const rows = el('div', 'rows'); rows.style.top = (st3 ? 510 : 370) + 'px';
+      S.tiers.forEach((t, i) => {
+        const r = el('div', 'row' + (t.hide ? ' hide' : '')); const g = el('div', 'g', t.g); g.style.background = COL[i % COL.length];
+        g.append(el('small', '', t.range)); const c = el('div', 'c', t.hide ? '? ? ?' : t.names);
+        c.append(el('div', 'n', t.note)); r.append(g, c); rows.append(r);
+      });
+      sheet.append(rows);
+      if (S.foot) { const ft = el('div', 'ft', S.foot); ft.style.bottom = (st3 ? 430 : 40) + 'px'; sheet.append(ft); }
+      document.getElementById('root').append(sheet);
+      const rb = rows.getBoundingClientRect(), fb = sheet.querySelector('.ft')?.getBoundingClientRect();
+      window.__overflow = !!(fb && rb.bottom > fb.top - 8); window.__minBody = 22; window.__ready = true; return;
+    }
     if (S.vs) {   // 둘 중 하나: 위 A · 아래 B
       sheet.classList.add('vs'); sheet.style.setProperty('--hi', (D.theme && D.theme.hi) || '#ffe066');
       const em2 = (node, t) => { String(t || '').split(/(\*\*[^*]+\*\*)/).forEach(p =>
