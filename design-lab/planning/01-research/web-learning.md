@@ -10,6 +10,7 @@
 |---|---|---|---|
 | 2023-05-31 | 릴스 순위의 가장 중요한 예측 네 가지 | "how likely you are to **reshare** a reel, **watch a reel all the way through**, **like** it, and **go to the audio page**" | [Instagram Ranking Explained](https://about.instagram.com/blog/announcements/instagram-ranking-explained) |
 | 2023-05-31 | 순위에 쓰는 정보 | 보는 사람의 최근 활동(좋아요·저장·공유·댓글) / 올린 사람과의 상호작용 이력 / 릴스 정보(**오디오 트랙·화면**, 인기) / 올린 사람 정보(팔로워·참여 수준) | 같은 글 |
+| 2025 | Mosseri: 가장 중요한 신호 셋 — **시청 시간**, 도달 대비 **좋아요**, 도달 대비 **보내기(DM 공유)**. 좋아요는 팔로워에게, 보내기는 비팔로워에게 더 무겁다. 댓글은 세 가지에 없다 | (매체 요약 — 영상 원문 미확인) | [SocialMediaToday](https://www.socialmediatoday.com/news/instagram-shares-algorithm-insights-2025/738034/) |
 | — | 비연결(비팔로워) 추천은 **3분 이하** 영상 | 도움말·FAQ 요약 | [Creators FAQ](https://creators.instagram.com/faq?locale=en_US) |
 | 2024-04 · 2026-04-30 | 원본 우대, 남의 것을 주로 올리는 계정은 추천 제외(사진·캐러셀까지) | (strategies S12) | [TechCrunch 2026-04-30](https://techcrunch.com/2026/04/30/instagram-restricts-reach-of-content-aggregators-in-new-crackdown/) |
 | 2024-12 | 시험 릴스 — 비팔로워에게 먼저, 24시간 뒤 숫자 | (strategies S9) | [creators.instagram.com](https://creators.instagram.com/blog/instagram-trial-reels) |
@@ -35,6 +36,9 @@
 | 60~90초가 참여율 최고(?) | 61초 《인턴》 2.4%·83초 비빔밥 263만 — 하지만 100만+ 대부분은 15초 이하 | 일부 맞음 — 길면 '하나씩 모으기' 처럼 진행이 보여야 |
 | 원본 우대 | 해외 영상 재업로드(바빠 보이기 632만·엔지니어 vs PM 184만)도 터져 있다 — 2026-04 규정 뒤에는? | **어긋남** — 올린 시기 확인 필요 |
 | 팔로워 수도 신호 | 팔로워 3천 계정이 642만(365_bab.zip) | 어긋남 — 첫 노출 뒤엔 반응이 이긴다 |
+| 보내기·좋아요가 '도달 대비' 로 센다(Mosseri) — 댓글 수는 상위 신호 아님 | 얼집교사 월급공개: 댓글 1,844(키워드 미끼)인데 좋아요율 0.09% — 그래도 261만. 광고 집행분일 수 있어 판정 보류 | 일부 맞음 — 댓글 수로 성공을 재지 않는다 |
+| 좋아요는 팔로워 신호 | 화면 안에 '❤를 눌러주세요' 를 박은 월급 퇴장(1.9%)이 회차 중 최고 좋아요율 | 맞음 (간접, 한 편) |
 
 ## 회차 기록
 - 2026-10-02 처음: 인스타 공식 순위 설명(2023) 원문 확인, 2026 리포트 3곳·국내 가이드 1곳. 공식 신호 네 가지(공유·완주·좋아요·오디오 페이지)를 우리 관찰과 대조.
+- 2026-10-02 회차 3: SocialMediaToday 의 Mosseri 요약(시청 시간·도달 대비 좋아요·도달 대비 보내기) 추가. 회차 3 릴스 중 미끼 댓글 편(얼집교사)·좋아요 요청 편(월급 퇴장)과 대조.
