@@ -41,6 +41,26 @@ MIME = {".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png",
         ".webp": "image/webp", ".svg": "image/svg+xml", ".md": "text/markdown; charset=utf-8"}
 
 
+PLANNING = LAB_DIR / "planning"
+
+
+def planning_docs() -> list[dict]:
+    """기획 폴더의 문서 차례 — README 가 맨 앞, 나머지는 번호 순. 제목은 첫 '# ' 줄."""
+    out = []
+    for p in sorted(PLANNING.rglob("*")):
+        if p.suffix not in (".md", ".csv") or not p.is_file():
+            continue
+        rel = p.relative_to(PLANNING).as_posix()
+        title = rel
+        if p.suffix == ".md":
+            first = next((l for l in p.read_text(encoding="utf-8").splitlines() if l.startswith("# ")), "")
+            title = first[2:].strip() or rel
+        out.append({"path": rel, "title": title, "kind": p.suffix[1:],
+                    "updated": p.stat().st_mtime})
+    out.sort(key=lambda d: (d["path"] != "README.md", d["path"]))
+    return out
+
+
 def run_cli(*args: str, timeout: int = 300) -> dict:
     """publish.cli 를 자식 프로세스로 돌린다."""
     proc = subprocess.run([WORKER_PY, "-m", "publish.cli", *args], cwd=str(LAB_DIR),
@@ -90,6 +110,15 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 return self._json({"companies": assets.have()})
             if path == "/api/process":
                 return self._json(process.snapshot())
+            if path == "/api/planning":
+                return self._json({"docs": planning_docs()})
+            if path == "/api/planning/doc":
+                target = (PLANNING / one("path")).resolve()
+                if PLANNING.resolve() not in target.parents or not target.is_file():
+                    return self._json({"error": "없는 문서"}, status=404)
+                return self._body(target.read_bytes(), "text/plain; charset=utf-8")
+            if path in ("/planning", "/planning/"):
+                return self._body((LAB_DIR / "static" / "planning.html").read_bytes(), "text/html; charset=utf-8")
         except Exception as e:                      # 랩이니까 실패는 화면에서 보이면 된다
             return self._json({"error": f"{type(e).__name__}: {e}"}, status=400)
 

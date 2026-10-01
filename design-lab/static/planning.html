@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>기획 — design-lab</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<style>
+  :root { --bg:#f7f6f2; --ink:#16151a; --sub:#6b6875; --line:#e3e0d8; --accent:#ff5a1f; --side:#fff; --code:#efede7; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#131217; --ink:#ecebef; --sub:#9a97a3; --line:#2a2830; --accent:#ffb02e; --side:#1a1920; --code:#24222b; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:'Pretendard','Noto Sans KR','Malgun Gothic',system-ui,sans-serif; }
+  .wrap { display:grid; grid-template-columns:280px 1fr; min-height:100vh; }
+  nav { background:var(--side); border-right:1px solid var(--line); padding:24px 16px; position:sticky; top:0; height:100vh; overflow:auto; }
+  nav h1 { font-size:18px; margin:0 0 4px; } nav .s { color:var(--sub); font-size:13px; margin-bottom:18px; }
+  nav a { display:block; padding:8px 10px; border-radius:8px; color:var(--ink); text-decoration:none; font-size:14px; line-height:1.35; }
+  nav a small { display:block; color:var(--sub); font-size:12px; }
+  nav a.on { background:var(--code); font-weight:700; }
+  nav a:hover { background:var(--code); }
+  main { padding:40px 56px 80px; max-width:1100px; }
+  main h1 { font-size:30px; letter-spacing:-.02em; margin-top:0; }
+  main h2 { font-size:22px; margin-top:36px; padding-top:8px; border-top:1px solid var(--line); }
+  main h3 { font-size:17px; margin-top:24px; }
+  main p, main li { line-height:1.7; font-size:15px; }
+  main table { border-collapse:collapse; width:100%; margin:14px 0; font-size:14px; display:block; overflow-x:auto; }
+  main th, main td { border:1px solid var(--line); padding:7px 10px; text-align:left; vertical-align:top; }
+  main th { background:var(--code); white-space:nowrap; }
+  main code { background:var(--code); padding:1px 5px; border-radius:4px; font-size:13px; }
+  main pre { background:var(--code); padding:14px; border-radius:8px; overflow:auto; }
+  main pre code { padding:0; }
+  main a { color:var(--accent); }
+  .meta { color:var(--sub); font-size:13px; margin-bottom:20px; }
+  @media (max-width: 760px) { .wrap { grid-template-columns:1fr; } nav { position:static; height:auto; } main { padding:20px 16px 60px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav><h1>기획</h1><div class="s">@devjobseeker · design-lab/planning</div><div id="toc"></div></nav>
+  <main id="doc">불러오는 중…</main>
+</div>
+<script>
+const toc = document.getElementById('toc'), doc = document.getElementById('doc');
+let docs = [];
+const esc = s => s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function csvTable(text) {
+  const rows = text.trim().split(/\r?\n/).map(l => l.split(','));
+  const [h, ...b] = rows;
+  return '<table><thead><tr>' + h.map(c => `<th>${esc(c)}</th>`).join('') + '</tr></thead><tbody>' +
+    b.map(r => '<tr>' + r.map(c => `<td>${esc(c)}</td>`).join('') + '</tr>').join('') + '</tbody></table>';
+}
+async function show(path) {
+  const d = docs.find(x => x.path === path) || docs[0];
+  if (!d) return;
+  [...toc.children].forEach(a => a.classList.toggle('on', a.dataset.p === d.path));
+  const text = await (await fetch('/api/planning/doc?path=' + encodeURIComponent(d.path))).text();
+  const when = new Date(d.updated * 1000).toLocaleString('ko-KR');
+  if (d.kind === 'csv') doc.innerHTML = `<h1>${esc(d.path)}</h1><div class="meta">원자료 · 고친 시각 ${when}</div>` + csvTable(text);
+  else doc.innerHTML = `<div class="meta">${esc(d.path)} · 고친 시각 ${when}</div>` + marked.parse(text);
+  // 문서 안의 상대 링크(00-goals.md, 01-research/…)는 이 화면 안에서 연다
+  doc.querySelectorAll('a[href]').forEach(a => {
+    const href = a.getAttribute('href');
+    if (/^https?:/.test(href)) { a.target = '_blank'; return; }
+    const base = d.path.includes('/') ? d.path.slice(0, d.path.lastIndexOf('/') + 1) : '';
+    let p = (base + href).replace(/\/README\.md$|\/$/, '/README.md');
+    if (!p.endsWith('.md') && !p.endsWith('.csv')) p += '/README.md';
+    p = p.split('/').reduce((acc, s) => (s === '..' ? acc.slice(0, -1) : s === '.' ? acc : [...acc, s]), []).join('/');
+    if (docs.some(x => x.path === p)) a.onclick = e => { e.preventDefault(); location.hash = p; };
+  });
+  window.scrollTo(0, 0);
+}
+(async () => {
+  docs = (await (await fetch('/api/planning')).json()).docs;
+  toc.innerHTML = docs.map(d => `<a href="#${d.path}" data-p="${d.path}">${esc(d.title)}<small>${esc(d.path)}</small></a>`).join('');
+  const go = () => show(decodeURIComponent(location.hash.slice(1)) || 'README.md');
+  window.addEventListener('hashchange', go); go();
+})();
+</script>
+</body>
+</html>
