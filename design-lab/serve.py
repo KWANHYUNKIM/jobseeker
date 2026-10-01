@@ -38,7 +38,8 @@ WORKER_PY = str(VENV_PY if VENV_PY.is_file() else sys.executable)
 # 정적 파일로 열어 줄 폴더들. 이 밖은 못 나간다.
 SERVED_DIRS = {"refs": LAB_DIR / "refs", "out": LAB_DIR / "out", "assets": LAB_DIR / "assets"}
 MIME = {".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png",
-        ".webp": "image/webp", ".svg": "image/svg+xml", ".md": "text/markdown; charset=utf-8"}
+        ".webp": "image/webp", ".svg": "image/svg+xml", ".md": "text/markdown; charset=utf-8",
+        ".mp4": "video/mp4", ".txt": "text/plain; charset=utf-8"}
 
 
 PLANNING = LAB_DIR / "planning"
@@ -58,6 +59,21 @@ def planning_docs() -> list[dict]:
         out.append({"path": rel, "title": title, "kind": p.suffix[1:],
                     "updated": p.stat().st_mtime})
     out.sort(key=lambda d: (d["path"] != "README.md", d["path"]))
+    return out
+
+
+def ready_reels() -> list[dict]:
+    """찍어 둔 릴스 — out/series/*/reel.mp4 와 caption.txt, 최근 것부터."""
+    out = []
+    for mp4 in (LAB_DIR / "out" / "series").glob("*/reel.mp4"):
+        d = mp4.parent
+        cap = d / "caption.txt"
+        frames = sorted(f.name for f in d.glob("*.jpg"))
+        out.append({"id": d.name, "video": f"/out/series/{d.name}/reel.mp4",
+                    "cover": f"/out/series/{d.name}/{frames[0]}" if frames else "",
+                    "caption": cap.read_text(encoding="utf-8") if cap.is_file() else "",
+                    "updated": mp4.stat().st_mtime, "mb": round(mp4.stat().st_size / 1e6, 1)})
+    out.sort(key=lambda r: -r["updated"])
     return out
 
 
@@ -117,6 +133,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 if PLANNING.resolve() not in target.parents or not target.is_file():
                     return self._json({"error": "없는 문서"}, status=404)
                 return self._body(target.read_bytes(), "text/plain; charset=utf-8")
+            if path == "/api/reels":
+                return self._json({"reels": ready_reels()})
+            if path in ("/reels", "/reels/"):
+                return self._body((LAB_DIR / "static" / "reels.html").read_bytes(), "text/html; charset=utf-8")
             if path in ("/planning", "/planning/"):
                 return self._body((LAB_DIR / "static" / "planning.html").read_bytes(), "text/html; charset=utf-8")
         except Exception as e:                      # 랩이니까 실패는 화면에서 보이면 된다
