@@ -10,6 +10,10 @@ crawl_ats.crawl 을 그대로 쓴다(site·boards·parsers 만 바꾼다).
   incruit    인크루트 — job.incruit.com 목록 HTML(EUC-KR, occ1=150 IT) + 본문 iframe.
              robots 의 * 는 jobpostcontpartner 만 막는다. 앞 몇 쪽만 본다.
   alio       잡알리오(공공기관) — 목록 HTML, NCS 정보통신(R600020) 진행중. robots 없음.
+  gojobs     나라일터 — 국가·지자체·공공기관 공무원 채용. '전산' 등 키워드 검색 목록 + 상세 요약
+             (본문 전문은 hwp/pdf 첨부). robots 는 Googlebot 규칙만 있다.
+  gamejob    게임잡 — 게임사 공고가 모인다(그라비티 등은 자기 사이트 대신 여기로 보낸다). 개발 직무
+             코드로 서버가 거른 목록(POST _GI_Job_List) + 담당업무·자격조건 iframe. robots 는 /List_GG/ 만 막는다.
   kofia      금융투자협회 회원사 채용안내 — 증권·자산운용사 공고가 모인다(recruiter 호스트라
              못 받는 NH투자·키움·하나증권 공고도 여기 온다). 목록 HTML, 앞 몇 쪽만 본다.
              마감일(접수기간)은 상세에만 있다. robots 없음.
@@ -17,7 +21,6 @@ crawl_ats.crawl 을 그대로 쓴다(site·boards·parsers 만 바꾼다).
 일부러 뺀 곳(2026-10 조사): 리멤버·로켓펀치(약관이 자동 수집 금지), 잡플래닛(잡코리아
 미러), 나인하이어·flex(약관 금지), 마이다스 recruiter(robots 가 API 차단), 프로그래머스·
 블라인드 하이어(서비스 종료). 그리팅은 회사마다 robots 가 달라 kr_portals 가 허용된 곳만 받는다.
-나라일터는 본문이 첨부(hwp/pdf)에만 있어 아직 안 붙였다.
 
 사용법:
     python -m crawlers.crawl_boards 개발자 100
@@ -48,6 +51,10 @@ BOARDS: list[dict] = [
      "per_board": 30, "company_page": False, "label": "인크루트", "complete": False},
     {"provider": "kofia", "slug": "recruit", "company": "금융투자협회 채용안내", "region": "kr",
      "per_board": 20, "company_page": False, "label": "금융투자협회", "complete": False},
+    {"provider": "gojobs", "slug": "gov", "company": "나라일터", "region": "kr",
+     "per_board": 20, "company_page": False, "label": "나라일터(공무원·공공)", "complete": False},
+    {"provider": "gamejob", "slug": "dev", "company": "게임잡", "region": "kr",
+     "per_board": 30, "company_page": False, "label": "게임잡", "complete": False},
     {"provider": "superookie", "slug": "it", "company": "슈퍼루키", "region": "kr",
      "per_board": 20, "company_page": False, "label": "슈퍼루키"},
 ]
@@ -353,8 +360,136 @@ def _from_kofia(slug: str, company: str) -> list[dict]:
     return out
 
 
-PARSERS = {"rallit": _from_rallit, "superookie": _from_superookie,
-           "incruit": _from_incruit, "alio": _from_alio, "kofia": _from_kofia}
+# ── 게임잡(게임 업계 채용) ──────────────────────────────────────────────────
+# 게임사(그라비티 등)는 공고를 자기 사이트 대신 여기로 보낸다. robots 는 /List_GG/ 만 막는다.
+# 목록은 직무 코드로 서버가 거른다 — 게임 클라이언트·모바일·AI 개발, 플랫폼 개발, 서버·네트워크·
+# 엔진·시스템DB·보안·클라우드, 빅데이터 분석. 본문은 담당업무·자격조건 iframe 두 개다(이미지인 공고도 많다).
+GAMEJOB = "https://www.gamejob.co.kr/Recruit"
+GAMEJOB_DUTIES = "1,2,3,12,16,17,18,19,20,21,30"
+GAMEJOB_PAGES = 15   # 쪽당 40건
+_GJ_ROW = re.compile(r"<tr>(.*?)</tr>", re.S)
+_GJ_DEV = re.compile(r"프로그래머|프로그래밍|개발자|엔지니어|서버|클라이언트|DBA|보안|데브옵스|DevOps|TA\b", re.I)
+
+
+def _gamejob_detail(no: str) -> tuple[str, dict[str, str]]:
+    ref = f"{GAMEJOB}/GI_Read/View?GI_No={no}"
+    parts = {}
+    for head, path in (("주요업무", "GI_Read_Comt_Ifrm"), ("자격요건", "GI_Read_GI_Comment_Ifrm")):
+        raw = http_get(f"{GAMEJOB}/{path}?gno={no}&v1", referer=ref).decode("utf-8", "ignore")
+        raw = re.sub(r"<(script|style|title)[^>]*>.*?</\1>", "", raw, flags=re.S | re.I)
+        if (t := _text(raw)):
+            parts[head] = t
+    full = "\n\n".join(f"[{k}]\n{v}" for k, v in parts.items())
+    return crawl_ats._clean(full), parts
+
+
+def _from_gamejob(slug: str, company: str) -> list[dict]:
+    import urllib.request
+    out, seen = [], set()
+    for page in range(1, GAMEJOB_PAGES + 1):
+        req = urllib.request.Request(
+            f"{GAMEJOB.lower()}/_GI_Job_List",
+            data=f"Page={page}&duty={GAMEJOB_DUTIES}&menucode=duty".encode(),
+            headers={"User-Agent": kr_portals.UA, "X-Requested-With": "XMLHttpRequest",
+                     "Content-Type": "application/x-www-form-urlencoded"})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            html = r.read().decode("utf-8", "ignore")
+        rows = [b for b in _GJ_ROW.findall(html) if "GI_No=" in b]
+        if not rows:
+            break
+        for blk in rows:
+            no = re.search(r"GI_No=(\d+)", blk).group(1)
+            if no in seen:
+                continue
+            seen.add(no)
+            comp = re.search(r'class="company[^"]*".*?<strong>(.*?)</strong>', blk, re.S)
+            title = re.search(r'class="tit".*?<strong>(.*?)</strong>', blk, re.S)
+            info = [_text(x) for x in re.findall(r"<span>(.*?)</span>", blk, re.S)]
+            duty = re.search(r"IsNullOrWhiteSpace\('([^']*)'\)", blk)
+            date_ = re.search(r'class="date">(.*?)</span>', blk, re.S)
+            t = _text(title.group(1)) if title else ""
+            out.append({
+                "ext_id": no, "title": t,
+                "company": _text(comp.group(1)) if comp else "",
+                "url": f"{GAMEJOB}/GI_Read/View?GI_No={no}",
+                "location": next((x for x in info if ">" in x), "—"),
+                "category": _html.unescape(duty.group(1)) if duty else "게임 개발",
+                # 직무 필터는 '여러 직무 중 하나라도' 라서 원화·사업 PM 도 섞인다 — 제목으로 한 번 더 본다.
+                "full_jd": "", "dev": kr_portals._dev_kr(t) or bool(_GJ_DEV.search(t)),
+                "detail": (lambda n=no: _gamejob_detail(n)),
+                "deadline": _text(date_.group(1)) if date_ else "",
+                "career": info[0] if info else "",
+            })
+        _sleep()
+    return out
+
+
+# ── 나라일터(인사혁신처 — 국가·지자체·공공기관 공무원 채용) ─────────────────────────
+# 전산직은 '전산주사보'·'전산사무관' 처럼 직급 이름이라 공용 개발 필터가 모른다 — 키워드로
+# 서버 검색을 하고, 같은 검색에 섞이는 '합격자 발표'·'결과' 안내글은 제목으로 뺀다.
+# 본문 전문은 hwp/pdf 첨부라 상세의 요약(채용직급·근무지역·접수기간·소개)만 싣는다.
+GOJOBS = "https://www.gojobs.go.kr"
+GOJOBS_KEYWORDS = ("전산", "정보보호", "정보화", "데이터")
+GOJOBS_PAGES = 3   # 키워드마다 최신순 30건
+_GOJOBS_NOTICE = re.compile(r"합격|결과|발표|면접시험|시험\s*안내|일정\s*공고|등록\s*안내|취소|변경")
+
+
+_GOJOBS_IT = re.compile(r"전산|정보보호|정보화|정보통신|데이터|(?<![A-Za-z])(AI|ICT|IT)(?![A-Za-z])|보안|포렌식|"
+                        r"소프트웨어|시스템")
+_GOJOBS_NON_IT = re.compile(r"디자이너|보좌역|조사관|통계조사")
+
+
+def _gojobs_view(code: str, sn: str) -> str:
+    page = "smbView.do" if code == "060" else "apmView.do"
+    return f"{GOJOBS}/{page}?searchJobsecode={code}&empmnsn={sn}&menuNo=401"
+
+
+def _gojobs_detail(url: str) -> tuple[str, dict[str, str]]:
+    text = _text(re.sub(r"<(script|style)[^>]*>.*?</\1>", "", http_get(url).decode("utf-8", "ignore"),
+                        flags=re.S | re.I))
+    i = text.find("공고명")
+    j = text.find("\n목록", i)
+    return crawl_ats._clean(text[i if i >= 0 else 0:j if j > 0 else None]), {}
+
+
+def _from_gojobs(slug: str, company: str) -> list[dict]:
+    import urllib.parse
+    from datetime import date
+    today = date.today().isoformat()
+    out, seen = [], set()
+    for kw in GOJOBS_KEYWORDS:
+        for page in range(1, GOJOBS_PAGES + 1):
+            q = urllib.parse.urlencode({"menuNo": 401, "pageIndex": page, "searchKeyword": kw})
+            html = http_get(f"{GOJOBS}/apmList.do?{q}").decode("utf-8", "ignore")
+            rows = [r for r in re.findall(r"<tr\s*>(.*?)</tr>", html, re.S) if "fn_apmView" in r]
+            if not rows:
+                break
+            for r in rows:
+                ids = re.search(r"fn_apmView\('(\d+)',\s*'(\d+)'\)", r)
+                tds = [_text(x) for x in re.findall(r"<td[^>]*>(.*?)</td>", r, re.S)]
+                if not ids or len(tds) < 5:
+                    continue
+                code, sn = ids.groups()
+                title, org, end = tds[1], tds[2], tds[4]
+                if sn in seen or end < today or _GOJOBS_NOTICE.search(title):
+                    continue
+                seen.add(sn)
+                url = _gojobs_view(code, sn)
+                out.append({
+                    "ext_id": f"{code}-{sn}", "title": title, "company": org, "url": url,
+                    "location": "—", "category": f"공무원·공공 · {kw}", "full_jd": "",
+                    # 검색은 본문까지 훑어 디자이너·조사관도 걸린다 — 제목에 IT 직렬이 있어야 한다.
+                    "dev": bool(_GOJOBS_IT.search(title)) and not _GOJOBS_NON_IT.search(title),
+                    "detail": (lambda u=url: _gojobs_detail(u)),
+                    "deadline": _mmdd(end), "career": "",
+                })
+            _sleep()
+    return out
+
+
+PARSERS = {"gojobs": _from_gojobs, "rallit": _from_rallit, "superookie": _from_superookie,
+           "incruit": _from_incruit, "alio": _from_alio, "kofia": _from_kofia,
+           "gamejob": _from_gamejob}
 
 
 def main() -> None:

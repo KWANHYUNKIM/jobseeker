@@ -107,3 +107,19 @@ def test_kofia():
     assert cb._KOFIA_IT.search("[하나증권] AI전략실 경력직")
     assert cc.verdict_kofia("<td>접수기간</td><td>20260921~20261005</td>", t).status == "active"
     assert cc.verdict_kofia("<td>접수기간</td><td>~</td>", t).status == "unknown"
+
+
+def test_gamejob_and_gojobs_verdicts():
+    t = date(2026, 10, 1)
+    assert cc.verdict_gamejob("<p>이 공고는 마감되었습니다.</p>", t).status == "closed"
+    assert cc.verdict_gamejob("<a href='/Recruit/GI_Read/View'>채용</a> 채용시 마감", t).status == "active"
+    html = "<th>등록일</th><td>2026-09-30</td><th>접수마감일</th><td>2026-10-13</td>"
+    v = cc.verdict_gojobs(html, t)
+    assert v.status == "active" and v.deadline == "2026-10-13" and v.posted == "2026-09-30"
+    assert cc.verdict_gojobs(html, date(2026, 10, 20)).status == "closed"
+
+
+def test_gojobs_title_filter():
+    assert cb._GOJOBS_IT.search("외교부 일반직공무원(전산7급) 전입희망자 모집")
+    assert cb._GOJOBS_NON_IT.search("개인정보보호위원회 전문임기제 다급(디자이너) 경력채용")
+    assert cb._GOJOBS_NOTICE.search("출입국관리직 경채 서류전형 합격 공고")

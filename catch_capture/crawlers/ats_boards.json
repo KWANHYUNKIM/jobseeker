@@ -586,6 +586,27 @@
       "per_board": 20
     },
     {
+      "provider": "hd",
+      "slug": "group",
+      "company": "HD현대 그룹",
+      "region": "kr",
+      "per_board": 10
+    },
+    {
+      "provider": "douzone",
+      "slug": "group",
+      "company": "더존ICT그룹",
+      "region": "kr",
+      "per_board": 10
+    },
+    {
+      "provider": "koreainvest",
+      "slug": "group",
+      "company": "한국투자금융 그룹",
+      "region": "kr",
+      "per_board": 10
+    },
+    {
       "provider": "greenhouse",
       "slug": "anthropic",
       "company": "Anthropic",

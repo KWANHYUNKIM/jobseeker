@@ -13,7 +13,7 @@
   saramin  : 상세 페이지의 "마감일:YYYY-MM-DD" (등록일 표기는 없다)
   dev      : catch 상세 JSON-LD 의 validThrough / datePosted, 제목의 "[마감]" 접두
   ats      : greenhouse/lever API 404, ashby·skcareers·국내 포털(kr_portals) 목록에서 사라짐
-  boards   : 랠릿 API 상태·마감일, 잡알리오 채용기간·금융투자협회 접수기간, 인크루트·슈퍼루키 JSON-LD validThrough
+  boards   : 랠릿 API 상태·마감일, 잡알리오 채용기간·금융투자협회 접수기간·나라일터 접수마감일·게임잡 마감 표기, 인크루트·슈퍼루키 JSON-LD validThrough
   remote   : 원본 URL 이 404/410
 
 ## 마감일만이 아니라 등록일도 받아 온다
@@ -495,6 +495,25 @@ def verdict_alio(html: str, today: date) -> Verdict:
     return _by_deadline(end, today, "원본 확인: 모집중", posted)
 
 
+def verdict_gojobs(html: str, today: date) -> Verdict:
+    """나라일터 상세 — 접수마감일·등록일이 표로 있다."""
+    text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", html))
+    end = re.search(r"접수마감일 (\d{4}-\d{2}-\d{2})", text)
+    posted = re.search(r"등록일 (\d{4}-\d{2}-\d{2})", text)
+    if not end:
+        return Verdict("unknown", "접수마감일 표기 없음")
+    return _by_deadline(end.group(1), today, "원본 확인: 모집중", posted.group(1) if posted else None)
+
+
+def verdict_gamejob(html: str, today: date) -> Verdict:
+    """게임잡 상세 — 마감된 공고는 '마감되었습니다.' 가 박힌다. 없으면 열려 있는 공고다."""
+    if "마감되었습니다" in html:
+        return Verdict("closed", "원본 확인: 마감된 공고")
+    if "GI_Read" not in html and "채용" not in html:
+        return Verdict("unknown", "공고 페이지가 아님")
+    return Verdict("active", "원본 확인: 모집중")
+
+
 def verdict_kofia(html: str, today: date) -> Verdict:
     """금융투자협회 채용안내 상세 — '접수기간 20260921~20261005'. 비어 있으면('~') 판정 보류."""
     text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", html))
@@ -520,6 +539,14 @@ def check_kboard(job: dict, today: date, cache: dict) -> Verdict:
     if provider == "rallit":
         return _json_verdict(f"https://www.rallit.com/client/api/v1/position/{ext}",
                              verdict_rallit, today)
+    if provider == "gojobs":
+        code, sn = (ext.split("-", 1) + [""])[:2] if "-" in ext else ("020", ext)
+        page = "smbView.do" if code == "060" else "apmView.do"
+        return _html_verdict(f"https://www.gojobs.go.kr/{page}?searchJobsecode={code}&empmnsn={sn}&menuNo=401",
+                             verdict_gojobs, today)
+    if provider == "gamejob":
+        return _html_verdict(f"https://www.gamejob.co.kr/Recruit/GI_Read/View?GI_No={ext}",
+                             verdict_gamejob, today)
     if provider == "kofia":
         return _html_verdict(f"https://www.kofia.or.kr/brd/m_96/view.do?seq={ext}", verdict_kofia, today)
     if provider == "alio":

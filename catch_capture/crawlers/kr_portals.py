@@ -92,7 +92,7 @@ def _dev(title: str, *more) -> bool:
 # 잡는다. 공용 판정이 모르는 그룹 포털(건설·제조)에 쓴다. 'IT 마케팅' 같은 비개발은 뺀다.
 _IT_KO = re.compile(r"(?<![A-Za-z])(IT|AI|DX|ICT|SW)(?![A-Za-z])|전산|자동화 ?개발|데이터 ?(엔지니어|플랫폼|분석|자동화)|"
                     r"정보보(호|안)|보안관제|시스템 ?(개발|엔지니어)|인프라 ?엔지니어|클라우드|"
-                    r"Cloud|Architect|Smart ?Factory|Tech ?QA|ERP|MES")
+                    r"Cloud|Architect|Smart ?Factory|Tech ?QA|ERP|MES|개발 ?인재|개발직")
 _NON_IT_ROLE = re.compile(r"마케팅|세일즈|B2B 영업|영업 담당")
 
 
@@ -262,15 +262,16 @@ def from_cj(slug: str, company: str) -> list[dict]:
 # ── 넥슨 그룹 ────────────────────────────────────────────────────────────
 # 빠르게 부르면 Cloudflare 가 1분쯤 403 을 준다 — 한 번에 크게 받는다.
 def from_nexon(slug: str, company: str) -> list[dict]:
-    h = {"Origin": "https://careers.nexon.com", "Referer": "https://careers.nexon.com/"}
+    # 브라우저가 보내는 sec-fetch·Referer 가 없으면 Cloudflare 가 403 대기 페이지를 준다.
+    h = {"Origin": "https://careers.nexon.com", "Referer": "https://careers.nexon.com/recruit",
+         "Accept": "application/json, text/plain, */*", "sec-fetch-site": "same-site",
+         "sec-fetch-mode": "cors"}
     out, page = [], 1
     while page <= 5:
         body = {"corpCodes": [], "jobCategories": [], "careerTypes": [], "employmentTypes": [],
                 "workingAreas": [], "query": None, "page": page, "size": 100}
         d = _post_json("https://career-gateway.nexon.com/career/v1/open/job-posts", body, headers=h)
-        rows = d.get("content") or d.get("jobPosts") or d.get("data") or (d if isinstance(d, list) else [])
-        if isinstance(rows, dict):
-            rows = rows.get("content") or []
+        rows = d.get("list") or []
         for j in rows:
             no = j.get("jobPostNo")
             out.append(_cand(no, j.get("title"), j.get("corpName") or "넥슨",
@@ -988,7 +989,83 @@ def from_shiftup(slug: str, company: str) -> list[dict]:
     return out
 
 
+# HD현대(전 계열사) — 목록 API 하나에 지난 공고까지 다 온다(1.4MB). 본문은 recruiter 호스트의
+# 이미지라(그 호스트는 빼기로 했다) 공고명·계열사·모집 직무만 싣는다. 공고별 화면 주소가 없어
+# 채용 메인으로 잇는다.
+def from_hd(slug: str, company: str) -> list[dict]:
+    from datetime import datetime
+    d = _get_json("https://recruit.hd.com/api/v1/jobda/getRecruitNoticeList?isPost=true&LANG=KR",
+                  headers={"X-User-Role": "FRONT"}, timeout=60)
+    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+    out = []
+    for j in d.get("data") or []:
+        end = j.get("receiveEndDatetime") or ""
+        if end and end[:16] < now:
+            continue
+        title = j.get("recruitNoticeName") or ""
+        if re.search(r"인재\s*POOL|인재풀", title, re.I):
+            continue
+        sectors = [f"{s.get('job') or ''}/{s.get('jobDetail') or ''}".strip("/")
+                   for s in j.get("recruitSectorList") or []]
+        areas = sorted({s.get("area") or "" for s in j.get("recruitSectorList") or []} - {""})
+        cat = ", ".join(x for x in sectors if x)
+        it = [x for x in sectors if _dev_kr(x)]
+        out.append(_cand(j.get("recruitNoticeSn"), title, j.get("companyCategory") or "HD현대",
+                         "https://recruit.hd.com/kr", location=", ".join(areas[:3]), category=cat,
+                         full_jd=f"[모집 직무]\n{cat}",
+                         # 한 공고에 직무가 여럿이다 — IT 직무가 하나라도 있으면 받는다.
+                         dev=bool(it) or _dev_kr(title),
+                         deadline="상시채용" if end.startswith("2099") else _mmdd(end),
+                         career=j.get("recruitClassName") or ""))
+    return out
+
+
+# 더존(더존비즈온·더존ICT) — 열린 JSON 목록. 본문은 이미지라 공고명만 싣는다.
+# 이 회사는 개발 채용을 '상시 인재Pool' 공고로 받는다 — 다른 곳과 달리 풀 공고를 빼지 않는다.
+def from_douzone(slug: str, company: str) -> list[dict]:
+    from datetime import date
+    today = date.today().strftime("%Y%m%d")
+    out = []
+    for j in _get_json("https://recruit.douzone.com/api/rec-post/list?keyword=") or []:
+        if (j.get("end_dt") or "") < today or j.get("opbl_yn") == "N":
+            continue
+        title = j.get("pblancsj_dc") or ""
+        out.append(_cand(f"{j.get('company_cd')}-{j.get('pblanc_no')}", title, "더존ICT그룹",
+                         "https://recruit.douzone.com/", location=j.get("workarea_cd") or "",
+                         category=j.get("hire_fg_cd") or "", dev=_dev_kr(title.replace("더존ICT", "")),
+                         deadline=_mmdd(j.get("end_dt"))))
+    return out
+
+
+# 한국투자금융 그룹(한국투자증권 …) — 본문은 이미지 한 장이다. 대신 annoCategory 에 모집부문
+# 목록이 JSON 으로 와서, IT/Digital 부문이 있는 공고를 고르고 부문 목록을 본문으로 싣는다.
+def from_koreainvest(slug: str, company: str) -> list[dict]:
+    d = _get_json("https://career.koreainvestment.com/annoucement?company=ALL&annoType=ALL",
+                  headers={"AJAX": "true"})
+    out = []
+    for j in d.get("annoList") or []:
+        roles: list[str] = []
+        try:
+            for comp in json.loads(j.get("annoCategory") or "[]"):
+                for groups in comp.values():
+                    for g in groups:
+                        for v in g.values():
+                            roles += v
+        except (ValueError, AttributeError, TypeError):
+            pass
+        it = [r for r in roles if re.search(r"IT|Digital|디지털|AI|개발|정보보호|클라우드|엔지니어|데이터", r)]
+        rid = j.get("recruitId")
+        out.append(_cand(rid, j.get("title"), j.get("companyName") or "한국투자금융",
+                         f"https://career.koreainvestment.com/announcementView?recruitId={rid}",
+                         category=", ".join(it or roles[:5]),
+                         full_jd="[모집부문]\n" + "\n".join(roles), dev=bool(it) or _dev_kr(j.get("title")),
+                         deadline=_mmdd(j.get("eDate")), career=j.get("annoType") or ""))
+    return out
+
+
 PARSERS = {
+    "douzone": from_douzone, "koreainvest": from_koreainvest,
+    "hd": from_hd,
     "ncsoft": from_ncsoft, "pearlabyss": from_pearlabyss, "mobis": from_mobis, "lotte": from_lotte,
     "shiftup": from_shiftup,
     "hdec": from_hdec, "kcc": from_kcc, "kolon": from_kolon, "doosan": from_doosan,
