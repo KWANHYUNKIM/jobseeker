@@ -509,6 +509,83 @@
       "per_board": 20
     },
     {
+      "provider": "ncsoft",
+      "slug": "group",
+      "company": "엔씨소프트",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "pearlabyss",
+      "slug": "main",
+      "company": "펄어비스",
+      "region": "kr",
+      "per_board": 10
+    },
+    {
+      "provider": "mobis",
+      "slug": "main",
+      "company": "현대모비스",
+      "region": "kr",
+      "per_board": 10
+    },
+    {
+      "provider": "lotte",
+      "slug": "group",
+      "company": "롯데 그룹",
+      "region": "kr",
+      "per_board": 10
+    },
+    {
+      "provider": "shiftup",
+      "slug": "main",
+      "company": "시프트업",
+      "region": "kr",
+      "per_board": 10
+    },
+    {
+      "provider": "greeting",
+      "slug": "skshieldus",
+      "company": "SK쉴더스 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "hybe",
+      "company": "HYBE (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "11st",
+      "company": "11번가 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "nice",
+      "company": "NICE그룹 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "devsisters",
+      "company": "데브시스터즈 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "hancom",
+      "company": "한글과컴퓨터 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
       "provider": "greenhouse",
       "slug": "anthropic",
       "company": "Anthropic",

@@ -93,7 +93,7 @@ def _dev(title: str, *more) -> bool:
 _IT_KO = re.compile(r"(?<![A-Za-z])(IT|AI|DX|ICT|SW)(?![A-Za-z])|전산|자동화 ?개발|데이터 ?(엔지니어|플랫폼|분석|자동화)|"
                     r"정보보(호|안)|보안관제|시스템 ?(개발|엔지니어)|인프라 ?엔지니어|클라우드|"
                     r"Cloud|Architect|Smart ?Factory|Tech ?QA|ERP|MES")
-_NON_IT_ROLE = re.compile(r"마케팅|세일즈|B2B 영업|영업 담당|구매|회계|총무")
+_NON_IT_ROLE = re.compile(r"마케팅|세일즈|B2B 영업|영업 담당")
 
 
 def _dev_kr(title: str, *more) -> bool:
@@ -603,6 +603,12 @@ GREETING: dict[str, tuple[int, str, str]] = {
     "roai": (15355, "roai.career.greetinghr.com", "로아이"),
     "enerzai": (6701, "enerzai.career.greetinghr.com", "에너자이"),
     "hyundai-autoever": (13782, "career.hyundai-autoever.com", "현대오토에버"),
+    "skshieldus": (11263, "www.skshieldusapply.com", "SK쉴더스"),
+    "hybe": (10002, "careers.hybecorp.com", "HYBE"),
+    "11st": (10686, "11st.career.greetinghr.com", "11번가"),
+    "nice": (13465, "nice.career.greetinghr.com", "NICE그룹"),
+    "devsisters": (12227, "careers.devsisters.com", "데브시스터즈"),
+    "hancom": (9044, "hancom.career.greetinghr.com", "한글과컴퓨터"),
 }
 _GREETING_API = "https://api.greetinghr.com/ats"
 _GREETING_DEV = re.compile(r"Engineer|Develop|Software|Backend|Frontend|Server|Data|AI|ML|Infra|DevOps|"
@@ -820,7 +826,171 @@ def from_doosan(slug: str, company: str) -> list[dict]:
     return out
 
 
+# ── 게임·제조·유통(2026-10 조사) ─────────────────────────────────────────────
+# 엔씨소프트 — 세션 쿠키 + CSRF. Accept 를 JSON 으로 주지 않으면 404 HTML 이 온다.
+# "Development" 직군은 대부분 아트라 jobTypeName(Game Programming·AI R&D …)으로 가른다.
+_NC = "https://careers.ncsoft.com"
+_NC_DEV = re.compile(r"Programming|AI R&D|System|Information|Engineer|Data|Security|QA|개발|프로그래밍", re.I)
+
+
+def _nc_session():
+    opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+    page = _req(f"{_NC}/apply/list", opener=opener).decode("utf-8", "ignore")
+    m = re.search(r'name="_csrf"\s+content=\s*"([^"]+)"', page)
+    if not m:
+        raise RuntimeError("ncsoft CSRF 토큰을 못 찾음")
+    return opener, m.group(1)
+
+
+def _nc_detail(opener, token: str, jid, op) -> tuple[str, dict]:
+    raw = _req(f"{_NC}/apply/view/?companyId={op}", opener=opener,
+               data=urllib.parse.urlencode({"jopenId": jid, "regOpId": op, "_csrf": token}).encode(),
+               headers={"Content-Type": "application/x-www-form-urlencoded"}).decode("utf-8", "ignore")
+    raw = re.sub(r"<(script|style|header|footer|nav)[^>]*>.*?</\1>", "", raw, flags=re.S | re.I)
+    return _text(raw)[:16000], {}
+
+
+def from_ncsoft(slug: str, company: str) -> list[dict]:
+    opener, token = _nc_session()
+    body = ("order_type=ORDER_ETC&order_direction=desc&page=1&pagesize=200&channelCds=&keywords="
+            "&job_group_cd=&search_text=&job_type_cd=&companyIds=")
+    d = json.loads(_req(f"{_NC}/interface/apply/list", opener=opener, data=body.encode(), headers={
+        "X-CSRF-TOKEN": token, "X-Requested-With": "XMLHttpRequest",
+        "Accept": "application/json, text/javascript, */*; q=0.01",
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"}).decode("utf-8", "ignore"))
+    out = []
+    for j in ((d.get("result") or {}).get("data") or {}).get("record") or []:
+        jid, op = j.get("jopenId"), j.get("regOpId")
+        cat = " / ".join(x for x in (j.get("jobGroupName"), j.get("jobTypeName"), j.get("jobName")) if x)
+        out.append(_cand(jid, j.get("jopenNm"), j.get("companyNm") or "엔씨소프트",
+                         f"{_NC}/apply/view/?companyId={op}&jopenId={jid}&regOpId={op}", category=cat,
+                         dev=bool(_NC_DEV.search(f"{j.get('jobTypeName') or ''} {j.get('jobName') or ''}"))
+                         or _dev(j.get("jopenNm")),
+                         detail=(lambda i=jid, o=op: _nc_detail(opener, token, i, o)),
+                         deadline=_mmdd(j.get("endDt")), career=j.get("channelNm") or ""))
+    return out
+
+
+# 펄어비스 — 목록 HTML 한 쪽에 전부.
+_PA = "https://www.pearlabyss.com/ko-KR/Company/Careers"
+
+
+def _pa_detail(no) -> tuple[str, dict]:
+    raw = _req(f"{_PA}/detail?_jobOpeningNo={no}").decode("utf-8", "ignore")
+    raw = re.sub(r"<(script|style|header|footer|nav)[^>]*>.*?</\1>", "", raw, flags=re.S | re.I)
+    return _text(raw)[:16000], {}
+
+
+def from_pearlabyss(slug: str, company: str) -> list[dict]:
+    raw = _req(f"{_PA}/List?_pageNo=1").decode("utf-8", "ignore")
+    out = []
+    for m in re.finditer(r'_jobOpeningNo=(\d+)"[^>]*class="career_list_item"(.*?)</a>', raw, re.S):
+        no, blk = m.group(1), m.group(2)
+        blk = blk[blk.find(">") + 1:]   # 정규식이 <a> 태그 꼬리부터 잡는다
+        title = re.search(r'class="title"[^>]*>(.*?)</p>', blk, re.S)
+        if not title:
+            continue
+        spans = {k: _text(v) for k, v in re.findall(r'<span class="(date|career|office)"[^>]*>(.*?)</span>', blk, re.S)}
+        rest = re.sub(r'<(p|span) class="(title|date|career|office)".*?</\1>', " ", blk, flags=re.S)
+        cat = " ".join(dict.fromkeys(_text(rest).split()))
+        t = _text(title.group(1))
+        if t == "인재 Pool":
+            continue
+        out.append(_cand(no, t, "펄어비스", f"{_PA}/detail?_jobOpeningNo={no}",
+                         location=spans.get("office", ""), category=cat, dev=_dev_kr(t, cat),
+                         detail=(lambda n=no: _pa_detail(n)),
+                         deadline="상시채용" if "상시" in spans.get("date", "") else _mmdd(spans.get("date")),
+                         career=spans.get("career", "")))
+    return out
+
+
+# 현대모비스 — 목록 HTML. 지원은 recruiter 로 가지만 목록·상세는 자기 호스트(robots Allow)다.
+_MOBIS = "https://careers.mobis.com"
+
+
+def _mobis_detail(seq) -> tuple[str, dict]:
+    raw = _req(f"{_MOBIS}/jobs-view?seq={seq}").decode("utf-8", "ignore")
+    raw = re.sub(r"<(script|style|header|footer|nav)[^>]*>.*?</\1>", "", raw, flags=re.S | re.I)
+    raw = re.sub(r'<[^>]+class="[^"]*(tooltip|glossary|term)[^"]*"[^>]*>.*?</[^>]+>', "", raw, flags=re.S)
+    i = raw.find('class="view-cont')
+    i = raw.find(">", i) + 1 if i >= 0 else 0
+    return _text(raw[i:])[:16000], {}
+
+
+def from_mobis(slug: str, company: str) -> list[dict]:
+    raw = _req(f"{_MOBIS}/jobs").decode("utf-8", "ignore")
+    out = []
+    for m in re.finditer(r'href="/jobs-view\?seq=(\d+)"(.*?)</a>', raw, re.S):
+        seq, blk = m.group(1), m.group(2)
+        if 'class="dday' not in blk:   # 지난 행사 링크가 섞인다
+            continue
+        p = lambda c: _text((re.search(rf'class="{c}"[^>]*>(.*?)</p>', blk, re.S) or [None, ""])[1])  # noqa: E731
+        info = re.findall(r"<p[^>]*>(.*?)</p>", (re.search(r'class="info-wrap02"(.*?)</div>', blk, re.S) or [None, ""])[1], re.S)
+        info = [_text(x) for x in info]
+        title = " ".join(x for x in (p("integrated"), p("tit")) if x)
+        cat = " / ".join(info[:3])
+        out.append(_cand(seq, title, "현대모비스", f"{_MOBIS}/jobs-view?seq={seq}",
+                         location=info[3] if len(info) > 3 else "", category=cat,
+                         dev=_dev_kr(p("tit"), cat) or "SW" in cat,
+                         detail=(lambda s=seq: _mobis_detail(s)),
+                         deadline=_mmdd(p("date").split(" - ")[-1]), career=p("career")))
+    return out
+
+
+# 롯데그룹 — 목록 HTML(봇 관리 스크립트가 있지만 쿠키만 들고 가면 받힌다).
+_LOTTE = "https://recruit.lotte.co.kr"
+
+
+def _lotte_detail(path: str, opener) -> tuple[str, dict]:
+    raw = _req(f"{_LOTTE}{path}", opener=opener).decode("utf-8", "ignore")
+    raw = re.sub(r"<(script|style|header|footer|nav)[^>]*>.*?</\1>", "", raw, flags=re.S | re.I)
+    return _text(raw)[:16000], {}
+
+
+def from_lotte(slug: str, company: str) -> list[dict]:
+    opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+    raw = _req(f"{_LOTTE}/apply/announcement", opener=opener).decode("utf-8", "ignore")
+    out, seen = [], set()
+    # 카드의 링크 안에는 제목만 있다 — 기간·마감 표기는 링크 바로 뒤에 온다.
+    for m in re.finditer(r'href="(/apply/announcement/detail/(\d+)\?compcd=[^"]*)"[^>]*>(.*?)</a>', raw, re.S):
+        path, aid = _html.unescape(m.group(1)), m.group(2)
+        title = _text(m.group(3))
+        tail = _text(raw[m.end():m.end() + 1500])
+        period = re.search(r"\d{4}\.\d{2}\.\d{2}\s*~\s*(\d{4}\.\d{2}\.\d{2})", tail)
+        if aid in seen or not title or ("마감" in tail[:120] and "D-" not in tail[:120]):
+            continue
+        seen.add(aid)
+        comp = re.search(r"(롯데\S+?)(?:\s|$)", title)
+        out.append(_cand(aid, title, comp.group(1) if comp else "롯데", f"{_LOTTE}{path}", dev=_dev_kr(title),
+                         detail=(lambda q=path: _lotte_detail(q, opener)),
+                         deadline=_mmdd(period.group(1)) if period else ""))
+    return out
+
+
+# 시프트업 — 한 페이지에 공고와 본문이 다 있다. 공고 번호가 없어 제목의 해시를 키로 쓴다.
+def from_shiftup(slug: str, company: str) -> list[dict]:
+    import hashlib
+    raw = _req("https://shiftup.co.kr/recruit/recruit.php").decode("utf-8", "ignore")
+    out = []
+    for blk in re.split(r'<div class=["\']recruit_list', raw)[1:]:
+        if not re.search(r"""class=['"]status ing""", blk):
+            continue
+        title = re.search(r"<h4[^>]*>(.*?)</h4>", blk, re.S)
+        if not title:
+            continue
+        t = _text(title.group(1))
+        lis = [_text(x) for x in re.findall(r"<li[^>]*>(.*?)</li>", blk.split("recruit_content")[0], re.S)]
+        body = blk.split("recruit_content", 1)[1] if "recruit_content" in blk else ""
+        key = hashlib.sha1(t.encode()).hexdigest()[:12]
+        out.append(_cand(key, t, "시프트업", "https://shiftup.co.kr/recruit/recruit.php",
+                         category=lis[0] if lis else "", full_jd=_text("<div" + body)[:16000],
+                         dev=_dev_kr(t, lis[0] if lis else ""), career=lis[1] if len(lis) > 1 else ""))
+    return out
+
+
 PARSERS = {
+    "ncsoft": from_ncsoft, "pearlabyss": from_pearlabyss, "mobis": from_mobis, "lotte": from_lotte,
+    "shiftup": from_shiftup,
     "hdec": from_hdec, "kcc": from_kcc, "kolon": from_kolon, "doosan": from_doosan,
     "toss": from_toss, "line": from_line, "kakao": from_kakao, "nhn": from_nhn, "cj": from_cj,
     "nexon": from_nexon, "smilegate": from_smilegate, "lg": from_lg, "hkmc": from_hkmc,
