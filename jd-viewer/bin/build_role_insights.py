@@ -20,10 +20,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
-sys.path.insert(0, str(ROOT / "catch_capture" / "dashboard"))
+sys.path.insert(0, str(ROOT / "catch_capture"))  # core.classifier
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from classifier import classify_dev_roles, _norm_company  # noqa: E402
+from core.classifier import classify_dev_roles, _norm_company  # noqa: E402
 from build_company_stacks import infer_domains  # noqa: E402
 from jobs_filter import active_only, load_jobs  # noqa: E402
 

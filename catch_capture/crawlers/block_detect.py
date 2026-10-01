@@ -86,7 +86,7 @@ def report(site: str, reason: str, http_status: int | None = None, detail: str =
     except Exception:
         pass
     try:
-        from monitoring import orchestration as orch
+        from automation import orchestration as orch
         orch.emit("site_block", site=site, reason=reason,
                   http_status=http_status, detail=detail[:200])
     except Exception:

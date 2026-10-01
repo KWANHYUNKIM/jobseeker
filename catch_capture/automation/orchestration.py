@@ -16,7 +16,7 @@ import os
 from datetime import datetime
 from pathlib import Path
 
-# catch_capture 루트 (screenshots/ 등 데이터가 사는 곳). monitoring/ 의 한 단계 위.
+# catch_capture 루트 (screenshots/ 등 데이터가 사는 곳). automation/ 의 한 단계 위.
 BASE_DIR = Path(__file__).resolve().parent.parent
 SCREENSHOTS_DIR = BASE_DIR / "screenshots"
 STATE_FILE = BASE_DIR / "run_state.json"

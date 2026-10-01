@@ -28,7 +28,7 @@ sys.path.insert(0, str(ROOT / "catch_capture"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from jobs_filter import load_jobs  # noqa: E402
 
-from dashboard.classifier import (  # noqa: E402
+from core.classifier import (  # noqa: E402
     _norm_company,
     classify_company_size,
     extract_headcount,

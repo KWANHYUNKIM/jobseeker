@@ -33,8 +33,8 @@ from crawlers.jobs_common import (  # noqa: E402
 )
 
 ROOT = Path(__file__).resolve().parent.parent.parent
-sys.path.insert(0, str(ROOT / "catch_capture" / "dashboard"))
-from classifier import _norm_company  # noqa: E402
+sys.path.insert(0, str(ROOT / "catch_capture"))  # core.classifier
+from core.classifier import _norm_company  # noqa: E402
 
 # build_company_stacks 의 도메인 추론 재사용 (단일 소스)
 sys.path.insert(0, str(ROOT / "jd-viewer" / "bin"))

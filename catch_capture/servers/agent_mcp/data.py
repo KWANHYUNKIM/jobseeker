@@ -21,7 +21,7 @@ import threading
 from pathlib import Path
 from typing import Any
 
-ROOT = Path(__file__).resolve().parent.parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent.parent   # jobseeker/
 PUBLIC = ROOT / "jd-viewer" / "public"
 SITE_URL = os.environ.get("AGENT_SITE_URL", "http://localhost:5173").rstrip("/")
 

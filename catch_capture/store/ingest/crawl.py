@@ -30,7 +30,7 @@ from store.db.upsert import (  # noqa: E402
 CATCH = _Path(__file__).resolve().parent.parent.parent
 OVERRIDES = CATCH / "overrides.json"
 
-from sites import SITE_KEYS  # noqa: E402
+from core.sites import SITE_KEYS  # noqa: E402
 
 SITES = frozenset(SITE_KEYS)
 

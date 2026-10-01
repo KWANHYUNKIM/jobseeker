@@ -28,7 +28,7 @@ Each Korean entry carries `salary_kr` (만원/년) instead of index `categories`
 
 `metadata.market` holds p25 / median / p75 of stated salaries by career stage (신입, 1~3년, 4~6년, 7년+, 무관) × company size, and `metadata.caveats` says what those numbers are not. `--career` picks the row. A company with neither a band nor a stated salary — the common case in Korea — still gets the market rows (`not_in_data: true`).
 
-Parsing lives in `catch_capture/agent_mcp/data.py` (`parse_pay`, `salary_benchmark`); the MCP tool `salary_benchmark` returns the same numbers without building a file.
+Parsing lives in `catch_capture/servers/agent_mcp/data.py` (`parse_pay`, `salary_benchmark`); the MCP tool `salary_benchmark` returns the same numbers without building a file.
 
 ## How it works
 

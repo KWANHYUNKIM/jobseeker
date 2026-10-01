@@ -19,9 +19,9 @@
 따라 오르게 한다.
 
 사용법:
-    python -m engagement.score              # 최근 30일 기준으로 집계
-    python -m engagement.score --days 7
-    python -m engagement.score --dry-run    # 파일 안 쓰고 요약만
+    python -m pipeline.engagement_score              # 최근 30일 기준으로 집계
+    python -m pipeline.engagement_score --days 7
+    python -m pipeline.engagement_score --dry-run    # 파일 안 쓰고 요약만
 """
 from __future__ import annotations
 
@@ -37,10 +37,11 @@ from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent
-ROOT_DIR = BASE_DIR.parent.parent
-EVENTS = BASE_DIR / "events.jsonl"
-OUT = ROOT_DIR / "jd-viewer" / "public" / "engagement.json"
+from core.paths import ENGAGEMENT_EVENTS, VIEWER_PUBLIC, adopt  # noqa: E402
+
+EVENTS = ENGAGEMENT_EVENTS
+adopt(EVENTS, EVENTS.with_suffix(".jsonl.1"))
+OUT = VIEWER_PUBLIC / "engagement.json"
 
 WINDOW_DAYS = 30
 MIN_VIEWS = 2          # 이보다 적게 열린 항목은 점수표에 넣지 않는다(노이즈)
@@ -229,7 +230,7 @@ def main(argv: list[str]) -> int:
     if tr["landings"]:
         print("  첫 화면:   " + ", ".join(f"{k} {v}" for k, v in tr["landings"][:4]))
     if not events:
-        print("  아직 쌓인 기록이 없습니다 — 수집 서버(engagement.collect)가 떠 있는지 확인하세요.")
+        print("  아직 쌓인 기록이 없습니다 — 수집 서버(servers.collect.server)가 떠 있는지 확인하세요.")
     if args.dry_run:
         print("  [dry-run] 파일은 쓰지 않았습니다.")
         return 0

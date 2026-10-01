@@ -40,7 +40,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-from sites import BY_KEY
+from core.sites import BY_KEY
 
 BASE_DIR = Path(__file__).resolve().parent.parent.resolve()
 PID_FILE = BASE_DIR / "crawl_all.pid"
@@ -72,7 +72,7 @@ def _python_executable() -> str:
         return str(venv_py)
     return sys.executable
 
-# 사이트 목록은 sites.py 하나다(크롤러 스크립트 이름까지).
+# 사이트 목록은 core/sites.py 하나다(크롤러 스크립트 이름까지).
 SOURCES: dict[str, dict] = {k: {"script": s.script} for k, s in BY_KEY.items()}
 
 BLOG_PER_FEED_DEFAULT = 20  # 기술 블로그 피드당 기본 수집 개수
@@ -134,7 +134,7 @@ def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: 
     env["PYTHONUNBUFFERED"] = "1"
 
     try:
-        from monitoring import orchestration as orch
+        from automation import orchestration as orch
     except Exception:
         orch = None
 

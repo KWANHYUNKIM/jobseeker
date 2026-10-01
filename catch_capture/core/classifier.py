@@ -1,6 +1,6 @@
 """회사명 → 규모(대기업/중견/중소), title+tech → 개발자 직군 분류.
 
-회사 화이트리스트는 dashboard/companies.json 에서 로드 (수동 큐레이션).
+회사 화이트리스트는 core/companies.json 에서 로드 (수동 큐레이션, `python -m core.sort_companies` 로 정렬).
 매칭 안 되면 fallback("중소기업" / "기타").
 
 규모 매칭은 오탐 방지를 최우선으로 본다:
@@ -19,7 +19,7 @@ import sys as _sys
 from pathlib import Path
 
 _sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from normalize import company as _normalize_company  # noqa: E402
+from core.normalize import company as _normalize_company  # noqa: E402
 
 _COMPANIES_JSON = Path(__file__).parent / "companies.json"
 
@@ -57,7 +57,7 @@ _FALLBACK_MID: list[str] = [
 ]
 
 
-# 회사명 정규화 규칙은 catch_capture/normalize.py 하나다. 여기서 다시 쓰면
+# 회사명 정규화 규칙은 core/normalize.py 하나다. 여기서 다시 쓰면
 # store 쪽 구현과 두 벌이 되고, 그게 회사가 갈리는 결함의 뿌리였다.
 # 기존 호출부(crawl_company, sort_companies, semantic/similar)를 위해 이름은 그대로 둔다.
 _norm_company = _normalize_company

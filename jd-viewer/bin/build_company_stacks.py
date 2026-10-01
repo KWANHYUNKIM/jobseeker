@@ -24,8 +24,8 @@ from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
-sys.path.insert(0, str(ROOT / "catch_capture" / "dashboard"))
-from classifier import (  # noqa: E402
+sys.path.insert(0, str(ROOT / "catch_capture"))  # core.classifier
+from core.classifier import (  # noqa: E402
     classify_company_size,
     classify_dev_roles,
     extract_headcount,

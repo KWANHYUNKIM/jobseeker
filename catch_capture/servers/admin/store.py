@@ -1,6 +1,6 @@
 """비공개 데이터 저장 — 사실 프로필 / 지원 현황 / 생성 이력서.
 
-모든 파일은 admin/data/ 아래(.gitignore)에 둔다. 공개되면 안 되는 개인정보다.
+모든 파일은 catch_capture/var/admin/ 아래(.gitignore)에 둔다. 공개되면 안 되는 개인정보다.
 원자적 쓰기(temp→replace)로 크롤 데몬/동시 요청과의 경합에서 파일 손상을 막는다.
 """
 from __future__ import annotations
@@ -12,10 +12,17 @@ import threading
 from pathlib import Path
 from typing import Any
 
-ADMIN_DIR = Path(__file__).resolve().parent          # catch_capture/admin/
-DATA_DIR = ADMIN_DIR / "data"                          # 비공개 데이터 (gitignore)
+import sys as _sys
+
+_sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))  # catch_capture
+from core.paths import ADMIN_DATA_DIR, ADMIN_SECRETS, adopt  # noqa: E402
+
+# 비공개 데이터는 코드 폴더 밖(catch_capture/var/admin/)에 둔다 — gitignore.
+# 예전 위치(catch_capture/admin/data, .secrets.json)에 남아 있으면 처음 뜰 때 옮겨 온다.
+adopt(ADMIN_DATA_DIR, ADMIN_SECRETS)
+DATA_DIR = ADMIN_DATA_DIR
 RESUME_DIR = DATA_DIR / "resumes"                      # 생성 이력서 보관
-SECRETS_FILE = ADMIN_DIR / ".secrets.json"             # API 키 등 (gitignore)
+SECRETS_FILE = ADMIN_SECRETS                           # API 키 등
 
 PROFILE_FILE = DATA_DIR / "profile.json"
 APPLICATIONS_FILE = DATA_DIR / "applications.json"

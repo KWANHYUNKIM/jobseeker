@@ -28,7 +28,7 @@ from pathlib import Path as _Path
 
 _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent.parent))
 
-from normalize import company as norm_company  # noqa: E402
+from core.normalize import company as norm_company  # noqa: E402
 from store.db import conn as store_conn  # noqa: E402
 
 PUBLIC = _Path(__file__).resolve().parent.parent.parent.parent / "jd-viewer" / "public"

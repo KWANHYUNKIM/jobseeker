@@ -226,7 +226,7 @@ jobs:
           done
           echo
           echo "-- 쌓인 행동 기록"
-          ( cd catch_capture && "$PY" -m engagement.collect --stats ) || true
+          ( cd catch_capture && "$PY" -m servers.collect.server --stats ) || true
           echo "-- 집계 다시"
-          ( cd catch_capture && "$PY" -m engagement.score ) || true
+          ( cd catch_capture && "$PY" -m pipeline.engagement_score ) || true
           echo "::endgroup::"

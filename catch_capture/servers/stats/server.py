@@ -4,11 +4,13 @@
 모집단이다. 직군·회사 규모도 뷰어 칩과 같은 값(job_facet)을 쓴다. DB 에 못 붙으면
 예전처럼 가장 최근 크롤 스냅샷(screenshots/all_<키워드>_*/all_jobs.json)으로 물러선다.
 
-사용법:
-    python dashboard/serve.py                # 8765 포트, 키워드 자동
-    python dashboard/serve.py --port 9000
-    python dashboard/serve.py --keyword 백엔드
-    python dashboard/serve.py --build-only   # 서버 안 띄움
+사용법(catch_capture 에서):
+    python -m servers.stats.server                # 8765 포트
+    python -m servers.stats.server --port 9000
+    python -m servers.stats.server --keyword 백엔드   # DB 가 없을 때 고를 스냅샷 키워드
+    python -m servers.stats.server --build-only   # data.json 만 만들고 서버는 안 띄운다
+
+화면 파일(index.html·app.js·styles.css)과 만들어진 data.json 은 static/ 에 있다.
 """
 from __future__ import annotations
 
@@ -22,12 +24,12 @@ from collections import Counter
 from datetime import datetime
 from pathlib import Path
 
-DASHBOARD_DIR = Path(__file__).parent.resolve()
-CATCH_DIR = DASHBOARD_DIR.parent
+STATIC_DIR = Path(__file__).parent.resolve() / "static"   # 화면 파일 + data.json
+CATCH_DIR = Path(__file__).resolve().parent.parent.parent  # catch_capture/
 SCREENSHOTS_DIR = CATCH_DIR / "screenshots"
 
-sys.path.insert(0, str(DASHBOARD_DIR))
-from classifier import (
+sys.path.insert(0, str(CATCH_DIR))
+from core.classifier import (
     classify_company_size,
     classify_dev_roles,
     extract_competencies,
@@ -146,11 +148,11 @@ def compute_stats(jobs: list[dict]) -> dict:
 def load_history(limit: int = 200) -> list[dict]:
     """수집 이력 — 정본 DB(crawl_run) 우선, 못 읽으면 health_history.jsonl.
 
-    읽기는 monitoring.health.history 하나로 한다(8770 운영 대시보드와 같은 값).
+    읽기는 pipeline.health.history 하나로 한다(8770 운영 대시보드와 같은 값).
     같은 ts 가 여러 줄이면 마지막 것만 남기고, 차트·표에 필요한 필드만 추린다.
     """
     sys.path.insert(0, str(CATCH_DIR))
-    from monitoring.health import history
+    from pipeline.health import history
 
     by_ts: dict[str, dict] = {}
     for r in history(None, 0):
@@ -222,7 +224,7 @@ def build_data(keyword: str | None) -> dict:
 
 
 def write_data(data: dict) -> Path:
-    out = DASHBOARD_DIR / "data.json"
+    out = STATIC_DIR / "data.json"
     out.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
     return out
 
@@ -232,7 +234,7 @@ def serve(port: int) -> None:
     handler.extensions_map.update({".json": "application/json; charset=utf-8"})
     socketserver.TCPServer.allow_reuse_address = True
     import os
-    os.chdir(str(DASHBOARD_DIR))
+    os.chdir(str(STATIC_DIR))
     # 기본은 loopback(안전). 터널 컨테이너가 붙는 배포에서는 DASH_HOST=0.0.0.0.
     host = os.environ.get("DASH_HOST", "127.0.0.1")
     with socketserver.TCPServer((host, port), handler) as httpd:

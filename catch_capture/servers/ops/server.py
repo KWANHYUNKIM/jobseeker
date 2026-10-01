@@ -1,6 +1,6 @@
 """크롤 오케스트레이션 실시간 운영 대시보드 서버.
 
-정적 페이지(monitoring/ops_dashboard/)와 라이브 상태 JSON 을 함께 서빙한다.
+정적 페이지(servers/ops/static/)와 라이브 상태 JSON 을 함께 서빙한다.
 프런트는 아래 엔드포인트를 폴링해 '지금 파이프라인이 뭘 하는지'를 실시간 표시한다.
 
   GET /                → ops_dashboard/index.html
@@ -14,15 +14,15 @@
   GET /api/loops       → 반복 작업 등록부(automation/loops.py) + 산출물 나이로 본 상태
 
 사용법:
-    python -m monitoring.ops_server            # 8770 포트
-    python monitoring/ops_server.py --port 9100
-    python monitoring/ops_server.py --no-open  # 브라우저 자동 오픈 안 함
+    python -m servers.ops.server            # 8770 포트
+    python -m servers.ops.server --port 9100
+    python -m servers.ops.server --no-open  # 브라우저 자동 오픈 안 함
 """
 from __future__ import annotations
 
 import sys as _sys
 from pathlib import Path as _Path
-_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_capture 루트를 import 경로에 추가
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent.parent))  # catch_capture 루트를 import 경로에 추가
 
 import argparse
 import http.server
@@ -35,8 +35,8 @@ import webbrowser
 from datetime import datetime
 from pathlib import Path
 
-CATCH_DIR = Path(__file__).resolve().parent.parent     # catch_capture/
-OPS_DIR = Path(__file__).resolve().parent / "ops_dashboard"
+CATCH_DIR = Path(__file__).resolve().parent.parent.parent     # catch_capture/
+OPS_DIR = Path(__file__).resolve().parent / "static"          # 화면 파일
 STATE_FILE = CATCH_DIR / "run_state.json"
 EVENTS_FILE = CATCH_DIR / "run_events.jsonl"
 HEALTH_LATEST = CATCH_DIR / "health_latest.json"
@@ -218,9 +218,9 @@ class Handler(http.server.BaseHTTPRequestHandler):
             return
 
         if path == "/api/health":
-            # 정본 DB 의 crawl_run 이 먼저다(monitoring.health.history) — 파일은 DB 가 없을 때만.
+            # 정본 DB 의 crawl_run 이 먼저다(pipeline.health.history) — 파일은 DB 가 없을 때만.
             n = self._query_int(qs, "n", 30)
-            from monitoring.health import history
+            from pipeline.health import history
             self._send_json(history(None, n))
             return
 

@@ -10,9 +10,9 @@
 호출량이 뷰어 검색을 느리게 만들면 안 된다.
 
 실행
-    python -m agent_mcp.server                     # streamable HTTP  http://127.0.0.1:8790/mcp
-    python -m agent_mcp.server --host 0.0.0.0      # LAN 에서 붙일 때(공개 전 단계)
-    python -m agent_mcp.server --stdio             # 로컬 에이전트가 프로세스로 띄울 때
+    python -m servers.agent_mcp.server                     # streamable HTTP  http://127.0.0.1:8790/mcp
+    python -m servers.agent_mcp.server --host 0.0.0.0      # LAN 에서 붙일 때(공개 전 단계)
+    python -m servers.agent_mcp.server --stdio             # 로컬 에이전트가 프로세스로 띄울 때
 연결 예(Claude Code)
     claude mcp add --transport http jobseeker http://127.0.0.1:8790/mcp
 """
@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import sys as _sys
 from pathlib import Path as _Path
-_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_capture 루트
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent.parent))  # catch_capture 루트
 
 import argparse
 import os
@@ -29,7 +29,7 @@ from typing import Any
 from mcp.server.mcpserver import MCPServer
 from mcp.types import ToolAnnotations
 
-from agent_mcp import data
+from servers.agent_mcp import data
 
 PORT = int(os.environ.get("AGENT_MCP_PORT", "8790"))
 

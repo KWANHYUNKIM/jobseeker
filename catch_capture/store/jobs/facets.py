@@ -245,7 +245,7 @@ def company_sizes(jobs) -> dict[str, str]:
     최댓값만 들고 있다(공고 본문 합이 100MB 를 넘는다).
     """
     from collections import Counter, defaultdict
-    from dashboard.classifier import (
+    from core.classifier import (
         _norm_company, classify_company_size, extract_headcount, extract_revenue_eok,
     )
     name_votes: dict[str, Counter] = defaultdict(Counter)

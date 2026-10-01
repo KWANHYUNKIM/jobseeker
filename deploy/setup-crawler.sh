@@ -270,7 +270,7 @@ log "Playwright 브라우저 설치"
 # ── import 스모크 테스트 ───────────────────────────────────
 log "모듈 로드 확인"
 ( cd "$CATCH" && for m in automation.auto_crawl automation.crawl_all pipeline.aggregate \
-    monitoring.orchestration crawlers.crawl_saramin crawlers.crawl_techblog_graph; do
+    automation.orchestration crawlers.crawl_saramin crawlers.crawl_techblog_graph \n    servers.ops.server servers.stats.server servers.collect.server; do
     "$VENV/bin/python" -c "import $m" || die "import 실패: $m"
   done )
 log "모든 모듈 정상"

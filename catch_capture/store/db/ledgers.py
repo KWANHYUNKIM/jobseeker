@@ -10,8 +10,8 @@
 
   trend_day / trend_metric   trends_history.jsonl      → build_trends.py 가 읽는다
   job_version                job_history.jsonl         → build_reposts.py 가 읽고 쓴다
-  engagement_event           engagement/events.jsonl   → engagement.score 가 읽는다
-  crawl_run / crawl_run_site health_history.jsonl      → monitoring.health 가 읽고 쓴다
+  engagement_event           var/engagement/events.jsonl → pipeline.engagement_score 가 읽는다
+  crawl_run / crawl_run_site health_history.jsonl      → pipeline.health 가 읽고 쓴다
 
 읽기 함수(`load_trend_days`, `load_job_versions`)는 **파일이 주던 것과 똑같은
 모양**을 돌려준다. 빌더의 집계 로직(급상승 창 계산, 재공고 판정)은 손대지 않는다 —
@@ -36,9 +36,11 @@ from store.db import conn as store_conn  # noqa: E402
 BASE = _Path(__file__).resolve().parent.parent.parent
 TRENDS_JSONL = BASE / "trends_history.jsonl"
 HISTORY_JSONL = BASE / "job_history.jsonl"
-EVENTS_JSONL = BASE / "engagement" / "events.jsonl"
+from core.paths import ENGAGEMENT_EVENTS  # noqa: E402
+
+EVENTS_JSONL = ENGAGEMENT_EVENTS
 # 64MB 를 넘으면 collect 가 밀어내는 옛 파일. 아무도 안 읽고 있었다 — 씨앗으로는 쓴다.
-EVENTS_ROTATED = BASE / "engagement" / "events.jsonl.1"
+EVENTS_ROTATED = ENGAGEMENT_EVENTS.with_suffix(".jsonl.1")
 
 KINDS = ("session", "view", "click", "dwell", "search", "filter")
 HEALTH_JSONL = BASE / "health_history.jsonl"
@@ -337,7 +339,7 @@ def append_events(rows: list[dict]) -> int:
 
 
 def load_events(days: int) -> list[dict]:
-    """DB → engagement.score 가 받던 레코드 모양 그대로(t/ts/sid/k/from/s)."""
+    """DB → pipeline.engagement_score 가 받던 레코드 모양 그대로(t/ts/sid/k/from/s)."""
     with store_conn.cursor(autocommit=True) as cur:
         cur.execute(
             """SELECT sid, kind::text AS kind, at, item, source, dwell_s
@@ -439,7 +441,7 @@ def write_health(cur, rec: dict) -> int:
 
 
 def load_health(label: str | None = None, limit: int = 0) -> list[dict]:
-    """DB → monitoring.health 가 받던 기록 모양 그대로(오래된 것부터)."""
+    """DB → pipeline.health 가 받던 기록 모양 그대로(오래된 것부터)."""
     with store_conn.cursor(autocommit=True) as cur:
         cur.execute(
             """SELECT r.id, r.label, r.started_at, r.n_raw, r.n_upserted, r.n_closed,

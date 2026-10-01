@@ -1,4 +1,4 @@
-// catch_capture/dashboard/classifier.py 의 DEV_ROLE_RULES 를 TS 로 포팅
+// catch_capture/core/classifier.py 의 DEV_ROLE_RULES 를 TS 로 포팅
 // (제목 + tech_stack + 일부 qualifications 텍스트 기반 멀티라벨 분류)
 
 const RULES: Array<{ role: string; patterns: RegExp[] }> = [

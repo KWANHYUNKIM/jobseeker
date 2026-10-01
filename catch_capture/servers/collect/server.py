@@ -9,20 +9,20 @@
 '어떤 공고가 다음 공고를 부르는가' 이고, 그건 익명 세션만으로 답할 수 있다.
 개인을 식별할 수 있는 것을 안 적으면 유출될 것도 없다.
 
-**받아 적기만 한다.** 집계·점수는 engagement.score 가 따로 한다. 수집기는 쓰기만
+**받아 적기만 한다.** 집계·점수는 pipeline.engagement_score 가 따로 한다. 수집기는 쓰기만
 하므로 크롤 사이클이 돌든 말든 상관없이 항상 응답할 수 있어야 한다 — 여기서 뭘
 계산하기 시작하면 느려지고, 느려지면 브라우저가 이벤트를 버린다.
 
 사용법:
-    python -m engagement.collect                    # 127.0.0.1:8772
-    python -m engagement.collect --port 8772 --host 0.0.0.0
-    python -m engagement.collect --stats            # 쌓인 것 요약만 보고 끝
+    python -m servers.collect.server                    # 127.0.0.1:8772
+    python -m servers.collect.server --port 8772 --host 0.0.0.0
+    python -m servers.collect.server --stats            # 쌓인 것 요약만 보고 끝
 """
 from __future__ import annotations
 
 import sys as _sys
 from pathlib import Path as _Path
-_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_capture 루트
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent.parent))  # catch_capture 루트
 
 import argparse
 import json
@@ -32,8 +32,11 @@ from datetime import datetime
 from http.server import BaseHTTPRequestHandler
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent
-EVENTS = BASE_DIR / "events.jsonl"
+from core.paths import ENGAGEMENT_EVENTS, adopt  # noqa: E402
+
+# 방문 기록 원장(정본은 DB engagement_event). 코드 폴더 밖 var/ 에 둔다.
+EVENTS = ENGAGEMENT_EVENTS
+adopt(EVENTS, EVENTS.with_suffix(".jsonl.1"))
 
 DEFAULT_PORT = 8772
 MAX_BODY = 64 * 1024        # 한 요청 상한. 이보다 크면 우리가 보낸 게 아니다.

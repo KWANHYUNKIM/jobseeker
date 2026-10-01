@@ -47,10 +47,10 @@ API_DSN="${JOBSEEKER_DSN:-postgresql://jobseeker:jobseeker@127.0.0.1:5433/jobsee
 # label / 작업 폴더(ROOT 기준) / 모듈·인자 / bind 환경변수 / 포트 / 그 서비스에만 주는
 # 환경변수(선택, '|' 로 여럿). 마지막 칸은 값에 ':' 가 들어갈 수 있어(DSN) 반드시 맨 뒤여야 한다.
 SERVICES=(
-  "com.jobseeker.ops:catch_capture:monitoring.ops_server|--port|8770|--no-open:OPS_HOST:8770:"
-  "com.jobseeker.stats:catch_capture:dashboard/serve.py|--port|8765:DASH_HOST:8765:"
+  "com.jobseeker.ops:catch_capture:servers.ops.server|--port|8770|--no-open:OPS_HOST:8770:"
+  "com.jobseeker.stats:catch_capture:servers.stats.server|--port|8765:DASH_HOST:8765:"
   "com.jobseeker.search:backend:app.main|--port|8771:SEARCH_HOST:8771:JOBSEEKER_DSN=$API_DSN"
-  "com.jobseeker.collect:catch_capture:engagement.collect|--port|8772:COLLECT_HOST:8772:"
+  "com.jobseeker.collect:catch_capture:servers.collect.server|--port|8772:COLLECT_HOST:8772:"
 )
 
 # entry 를 여섯 칸으로 가른다. read 는 마지막 변수에 나머지를 통째로 넣으므로

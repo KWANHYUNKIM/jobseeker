@@ -28,6 +28,9 @@ catch_capture/.chrome_profile/
 catch_capture/screenshots/
 
 # 관리자(비공개) — 개인 이력/지원/생성물·API키. 절대 커밋 금지
+# 런타임 데이터(개인 이력·API 키·방문 기록) — 코드 폴더 밖 var/ 에 둔다(core/paths.py).
+catch_capture/var/
+# 폴더 개편(2026-10-01) 전 위치 — 맥에 남아 있으면 core.paths.adopt() 가 var/ 로 옮긴다.
 catch_capture/admin/data/
 catch_capture/admin/.secrets.json
 
@@ -71,6 +74,7 @@ jd-viewer/public/hardware/prebuilt.json
 jd-viewer/public/mindmap.md
 jd-viewer/public/blog_keywords.md
 catch_capture/dashboard/data.json
+catch_capture/servers/stats/static/data.json
 
 # 빌더 캐시 (재수집 비용만 줄이는 로컬 파일)
 jd-viewer/bin/.inflearn_cache/

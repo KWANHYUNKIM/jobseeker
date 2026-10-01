@@ -1,10 +1,10 @@
-"""사이트 등록부(sites.py)가 DB enum·마감 판정기·뷰어 타입과 같은지 — 한쪽만 고치면 조용히 빠진다."""
+"""사이트 등록부(core/sites.py)가 DB enum·마감 판정기·뷰어 타입과 같은지 — 한쪽만 고치면 조용히 빠진다."""
 from __future__ import annotations
 
 import re
 from pathlib import Path
 
-from sites import AGNOSTIC_SITES, KEYWORD_SITES, SITE_KEYS, SITES
+from core.sites import AGNOSTIC_SITES, KEYWORD_SITES, SITE_KEYS, SITES
 
 REPO = Path(__file__).resolve().parents[2]
 

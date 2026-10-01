@@ -4,7 +4,7 @@
   * 오직 127.0.0.1 에만 바인딩한다. 0.0.0.0 옵션을 두지 않는다(공개 금지).
   * 공개 뷰어/ngrok 경로와 완전히 분리. 이 서버는 인터넷에 노출되지 않는다.
 
-실행:  python -m admin.server         (포트: 환경변수 ADMIN_PORT, 기본 8910)
+실행:  python -m servers.admin.server         (포트: 환경변수 ADMIN_PORT, 기본 8910)
 접속:  http://127.0.0.1:8910
 """
 from __future__ import annotations

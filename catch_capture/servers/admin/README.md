@@ -7,7 +7,7 @@ ngrok·공개 서빙 경로에서는 절대 참조하지 않으므로 인터넷�
 
 ```bash
 cd catch_capture
-.venv/bin/python -m admin.server      # 또는: ./admin/run.sh
+.venv/bin/python -m servers.admin.server      # 또는: ./servers/admin/run.sh
 ```
 
 접속: **http://127.0.0.1:8910**  (포트 변경: `ADMIN_PORT=9000 ...`)
@@ -45,15 +45,15 @@ cd catch_capture
 ## AI 키
 
 이력서 생성·적합도 분석은 Anthropic API를 씁니다(모델 `claude-opus-4-8`).
-**설정 탭**에서 키를 입력하면 `admin/.secrets.json`(git 제외, 권한 600)에 저장됩니다.
+**설정 탭**에서 키를 입력하면 `catch_capture/var/admin/.secrets.json`(git 제외, 권한 600)에 저장됩니다.
 환경변수 `ANTHROPIC_API_KEY`가 있으면 그것을 우선 사용합니다.
 
 ## 데이터 위치 (모두 git 제외)
 
-- `admin/data/profile.json` — 사실 프로필
-- `admin/data/applications.json` — 지원 현황
-- `admin/data/resumes/*.json` — 생성된 이력서 보관
-- `admin/.secrets.json` — API 키
+- `var/admin/data/profile.json` — 사실 프로필
+- `var/admin/data/applications.json` — 지원 현황
+- `var/admin/data/resumes/*.json` — 생성된 이력서 보관
+- `var/admin/.secrets.json` — API 키
 
 ## 보안 설계
 

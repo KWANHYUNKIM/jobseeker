@@ -9,7 +9,7 @@ import threading
 from pathlib import Path
 from typing import Any
 
-ROOT_DIR = Path(__file__).resolve().parent.parent.parent      # jobseeker/
+ROOT_DIR = Path(__file__).resolve().parent.parent.parent.parent      # jobseeker/
 ENRICHED = ROOT_DIR / "jd-viewer" / "public" / "all_jobs_enriched.json"
 
 _lock = threading.Lock()

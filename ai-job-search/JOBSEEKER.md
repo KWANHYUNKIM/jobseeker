@@ -2,7 +2,7 @@
 
 이 폴더는 [MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search)(MIT)를
 `git subtree` 로 들인 것이다. 원본은 덴마크 사이트를 긁는다 — 여기서는 우리 MCP 서버
-(`../catch_capture/agent_mcp`, 기본 `http://127.0.0.1:8790/mcp`)의 국내 공고·회사 브리핑·
+(`../catch_capture/servers/agent_mcp`, 기본 `http://127.0.0.1:8790/mcp`)의 국내 공고·회사 브리핑·
 외주 단가 데이터를 쓰도록 붙였다. 원본 갱신을 합칠 때 충돌을 줄이려고 **원본 파일은 최소로
 고쳤고**, 고친 자리마다 `<!-- jobseeker -->` 또는 `# jobseeker:` 표시를 남겼다.
 
@@ -10,7 +10,7 @@
 
 ```bash
 # 1) 서버를 띄운다(저장소 루트에서)
-cd catch_capture && python -m agent_mcp.server          # 8790
+cd catch_capture && python -m servers.agent_mcp.server          # 8790
 
 # 2) 이 폴더에서 Claude Code 를 연다 — .mcp.json 이 jobseeker 서버를 잡는다
 cd ai-job-search && claude

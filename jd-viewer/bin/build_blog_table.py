@@ -18,9 +18,9 @@ from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
-sys.path.insert(0, str(ROOT / "catch_capture" / "dashboard"))
+sys.path.insert(0, str(ROOT / "catch_capture"))  # core.classifier
 sys.path.insert(0, str(ROOT / "jd-viewer" / "bin"))
-from classifier import classify_dev_roles, extract_competencies  # noqa: E402
+from core.classifier import classify_dev_roles, extract_competencies  # noqa: E402
 # 예전에는 build_mindmap 의 ROLE_PROFILE(직군별 '핵심스택' 큐레이션 dict)을 함께
 # 가져왔는데, b9a1efc 에서 마인드맵이 기업 중심으로 재구성되며 그 dict 가 사라져 이
 # 스크립트는 그때부터 import 에러로 죽어 있었다. 되살리는 대신 핵심 키워드를 관측

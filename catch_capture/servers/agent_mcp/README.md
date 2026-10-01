@@ -43,10 +43,10 @@
 
 ```bash
 cd catch_capture
-python -m agent_mcp.server                  # http://127.0.0.1:8790/mcp  (streamable HTTP)
-python -m agent_mcp.server --host 0.0.0.0   # LAN 에서 붙일 때
-python -m agent_mcp.server --stdio          # 로컬 에이전트가 프로세스로 띄울 때
-python -m agent_mcp.smoke                   # 프로토콜로 붙어 도구·프롬프트를 한 바퀴 확인
+python -m servers.agent_mcp.server                  # http://127.0.0.1:8790/mcp  (streamable HTTP)
+python -m servers.agent_mcp.server --host 0.0.0.0   # LAN 에서 붙일 때
+python -m servers.agent_mcp.server --stdio          # 로컬 에이전트가 프로세스로 띄울 때
+python -m servers.agent_mcp.smoke                   # 프로토콜로 붙어 도구·프롬프트를 한 바퀴 확인
 ```
 
 뷰어 주소(응답의 `viewer_url`)는 `AGENT_SITE_URL`, 포트는 `AGENT_MCP_PORT` 로 바꾼다.

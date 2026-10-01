@@ -4,7 +4,7 @@
   1) crawl_all.run_foreground 로 키워드 사이트 5곳을 키워드마다 크롤하고,
      키워드 무관 소스(remote·ats)는 사이클당 1회 붙인 뒤 aggregate 까지 수행
   2) 새 screenshots/all_<keyword>_* 폴더가 생기면(= 새 데이터)
-       - dashboard/data.json 재빌드 (serve.py --build-only)
+       - 통계 대시보드 data.json 재빌드 (servers.stats.server --build-only)
        - jd-viewer/public 데이터(enrich + mindmap) 갱신 (refresh-data.sh)
   3) interval 초만큼 대기 후 반복
 
@@ -38,7 +38,7 @@ import time
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from monitoring import orchestration as orch
+from automation import orchestration as orch
 
 BASE_DIR = Path(__file__).resolve().parent.parent.resolve()
 ROOT_DIR = BASE_DIR.parent
@@ -55,10 +55,10 @@ CLOSE_CHECK_LIMIT = int(os.environ.get("CLOSE_CHECK_LIMIT", "400"))
 CLOSE_CHECK_EVERY = int(os.environ.get("CLOSE_CHECK_EVERY", "600"))
 CLOSE_CHECK_BATCH = int(os.environ.get("CLOSE_CHECK_BATCH", "100"))
 
-# 사이트 목록은 sites.py 하나다. KEYWORD_SITES(국내 사이트)는 키워드마다 돌고,
+# 사이트 목록은 core/sites.py 하나다. KEYWORD_SITES(국내 사이트)는 키워드마다 돌고,
 # AGNOSTIC_SITES(해외 원격 보드·회사 ATS)는 보드 전체를 훑으므로 키워드마다 돌 이유가
 # 없다 — 기술 블로그와 같이 사이클당 1회(마지막 키워드)만 붙인다.
-from sites import AGNOSTIC_SITES, KEYWORD_SITES  # noqa: E402
+from core.sites import AGNOSTIC_SITES, KEYWORD_SITES  # noqa: E402
 
 # 크롤 오케스트레이션이 함께 굴리는 부가 작업(흩어진 cron 을 여기로 통합)
 RADAR_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_company_tech_radar.py"
@@ -69,7 +69,7 @@ CAREER_MAP_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_career_map.py"
 BLOG_GUIDES_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_blog_guides.py"
 INFLEARN_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_inflearn.py"
 # 행동 기록 집계는 crawlers/ 가 아니라 catch_capture 패키지 안에 있다.
-ENGAGEMENT_ARGS = ["-m", "engagement.score"]
+ENGAGEMENT_ARGS = ["-m", "pipeline.engagement_score"]
 RADAR_REFINE_N = 2                     # 사이클당 레이더 점진 리파인 회사 수
 LEARNING_REFRESH_SECS = 6 * 3600       # 학습영상 캐시 무시 재수집 주기(기존 learning cron 대체)
 # 인프런은 강의 상세를 한 건씩 받아오느라 기술 24개에 6~8분이 든다. 강의 카탈로그는
@@ -211,11 +211,10 @@ def refresh_data(keyword: str) -> None:
     """dashboard + jd-viewer 데이터를 최신 크롤 결과로 갱신."""
     py = _python_executable()
 
-    log("[refresh] dashboard/data.json 재빌드")
+    log("[refresh] 통계 대시보드 data.json 재빌드")
     orch.refresh_started("dashboard")
     rc = subprocess.call(
-        [py, str(BASE_DIR / "dashboard" / "serve.py"),
-         "--keyword", keyword, "--build-only"],
+        [py, "-m", "servers.stats.server", "--keyword", keyword, "--build-only"],
         cwd=str(BASE_DIR),
     )
     orch.refresh_finished("dashboard", rc == 0)
@@ -436,7 +435,7 @@ def _reload_pipeline() -> None:
     # 9/30 에 이게 빠진 채 아침에 뜬 데몬이 밤까지 돌아, 그 사이 들어온 공고가 필터 축
     # 없이 남았다(공고 API 목록에서 지역·직군 필터에 안 걸린다).
     for name in ("crawlers.jobs_common", "store.db.upsert", "store.db.ledgers",
-                 "store.jobs.facets", "store.ingest.crawl", "monitoring.health",
+                 "store.jobs.facets", "store.ingest.crawl", "pipeline.health",
                  "pipeline.aggregate"):
         try:
             importlib.reload(importlib.import_module(name))

@@ -13,7 +13,7 @@ collects:
   * a market reference: p25 / median / p75 of those stated salaries by career
     stage x company size.
 
-Parsing lives in one place — catch_capture/agent_mcp/data.py — and this script
+Parsing lives in one place — catch_capture/servers/agent_mcp/data.py — and this script
 imports it, so the MCP tool `salary_benchmark` and the offline lookup give the
 same numbers.
 
@@ -36,10 +36,10 @@ HERE = Path(__file__).resolve().parent.parent
 
 def _load_data_module(root: Path):
     catch = root / "catch_capture"
-    if not (catch / "agent_mcp" / "data.py").exists():
+    if not (catch / "servers" / "agent_mcp" / "data.py").exists():
         sys.exit(f"jobseeker data layer not found under {catch} — pass --jobseeker-root")
     sys.path.insert(0, str(catch))
-    from agent_mcp import data  # noqa: PLC0415
+    from servers.agent_mcp import data  # noqa: PLC0415
     return data
 
 

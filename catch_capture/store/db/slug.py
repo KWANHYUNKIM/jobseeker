@@ -14,7 +14,7 @@ from functools import lru_cache
 from pathlib import Path
 
 _sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
-from normalize import company as norm_company  # noqa: E402,F401
+from core.normalize import company as norm_company  # noqa: E402,F401
 
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent.parent
 COMPANY_SLUG_JS = ROOT_DIR / "jd-viewer" / "src" / "utils" / "companySlug.js"
@@ -163,8 +163,8 @@ def _selftest() -> int:
     try:
         import sys
         sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
-        from dashboard.classifier import _norm_company as ref
-        from normalize import company as canonical
+        from core.classifier import _norm_company as ref
+        from core.normalize import company as canonical
         if not (norm_company is canonical and ref is canonical):
             failed += 1
             print("FAIL 회사명 정규화가 아직 여러 벌이다 "

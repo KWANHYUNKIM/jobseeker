@@ -15,7 +15,7 @@ description: >
 
 # jobseeker-kr — Korean IT jobs via the jobseeker MCP server
 
-<!-- jobseeker: 이 포털은 우리 프로젝트(../catch_capture/agent_mcp)가 준다. 원본 ai-job-search 에는 없다. -->
+<!-- jobseeker: 이 포털은 우리 프로젝트(../catch_capture/servers/agent_mcp)가 준다. 원본 ai-job-search 에는 없다. -->
 
 This portal is served by an **MCP server**, not a CLI. `/scrape` Step 1b treats any portal
 whose frontmatter says `transport: mcp` this way: call the tools below instead of

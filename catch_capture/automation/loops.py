@@ -86,10 +86,10 @@ REGISTRY: list[Loop] = [
     Loop("publisher", "소셜 자동 발행", "launchd", "mac", "5분마다 tick(12:30·19:30 슬롯)", 24,
          "com.jobseeker.publisher → python -m publish.daemon tick", [],
          note="design-lab/SOCIAL.md. autopublish.live 가 꺼져 있으면 연습 발행만."),
-    Loop("ops", "운영 대시보드 8770", "launchd", "mac", "상주(KeepAlive)", 0, "com.jobseeker.ops → monitoring.ops_server"),
-    Loop("stats", "통계 대시보드 8765", "launchd", "mac", "상주(KeepAlive)", 0, "com.jobseeker.stats → dashboard/serve.py"),
+    Loop("ops", "운영 대시보드 8770", "launchd", "mac", "상주(KeepAlive)", 0, "com.jobseeker.ops → servers.ops.server"),
+    Loop("stats", "통계 대시보드 8765", "launchd", "mac", "상주(KeepAlive)", 0, "com.jobseeker.stats → servers.stats.server"),
     Loop("search", "뷰어 API 8771", "launchd", "mac", "상주(KeepAlive)", 0, "com.jobseeker.search → backend: python -m app.main"),
-    Loop("collect", "방문 수집 8772", "launchd", "mac", "상주(KeepAlive)", 0, "com.jobseeker.collect → engagement.collect"),
+    Loop("collect", "방문 수집 8772", "launchd", "mac", "상주(KeepAlive)", 0, "com.jobseeker.collect → servers.collect.server"),
 
     # ── 크롤 한 회차 안의 단계(차례대로) ──────────────────────────────
     Loop("cycle-jobs", "채용 공고 수집·통합", "cycle", "mac", "회차마다", 3,

@@ -1,8 +1,8 @@
 """companies.json 자동 정렬/중복 제거/충돌 경고.
 
 사용법:
-    python dashboard/sort_companies.py            # in-place 정렬+dedup
-    python dashboard/sort_companies.py --check    # 변경 없이 진단만 (CI용)
+    python -m core.sort_companies            # in-place 정렬+dedup
+    python -m core.sort_companies --check    # 변경 없이 진단만 (CI용)
 
 동작:
   - 각 (size, group) 안에서 가나다순 정렬
@@ -17,11 +17,11 @@ import json
 import sys
 from pathlib import Path
 
-DASHBOARD_DIR = Path(__file__).parent.resolve()
-COMPANIES_JSON = DASHBOARD_DIR / "companies.json"
+CORE_DIR = Path(__file__).parent.resolve()
+COMPANIES_JSON = CORE_DIR / "companies.json"
 
-sys.path.insert(0, str(DASHBOARD_DIR))
-from classifier import _norm_company  # 동일한 정규화 사용
+sys.path.insert(0, str(CORE_DIR.parent))  # catch_capture
+from core.classifier import _norm_company  # 동일한 정규화 사용
 
 
 def _sort_key(name: str) -> tuple[int, str]:

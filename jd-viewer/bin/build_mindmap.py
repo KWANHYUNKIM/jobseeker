@@ -18,9 +18,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 BIN = Path(__file__).resolve().parent
-sys.path.insert(0, str(ROOT / "catch_capture" / "dashboard"))
+sys.path.insert(0, str(ROOT / "catch_capture"))  # core.classifier
 sys.path.insert(0, str(BIN))
-from classifier import (  # noqa: E402
+from core.classifier import (  # noqa: E402
     classify_company_size,
     classify_dev_roles,
     extract_headcount,

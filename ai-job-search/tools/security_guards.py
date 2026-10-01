@@ -60,7 +60,7 @@ ALLOWED_PERMISSIONS = {
     "Bash(python tools/verify_layout.py:*)",
     "Bash(python3 tools/verify_layout.py:*)",
     "Bash(pdftotext:*)",
-    # jobseeker: the Korean job-data MCP server (../catch_capture/agent_mcp, registered in
+    # jobseeker: the Korean job-data MCP server (../catch_capture/servers/agent_mcp, registered in
     # .mcp.json). Every tool it exposes is read-only (ToolAnnotations readOnlyHint) - search,
     # posting excerpts, company briefs, ATS keywords, freelance rates. It never receives the CV:
     # job_keywords returns keywords and the comparison happens locally. No tool submits,
