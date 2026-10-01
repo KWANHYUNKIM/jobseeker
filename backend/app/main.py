@@ -20,6 +20,7 @@ from fastapi.middleware.gzip import GZipMiddleware
 from app.core import exceptions
 from app.core.config import settings
 from app.features.companies.router import router as companies_router
+from app.features.docs.router import router as docs_router
 from app.features.freelance.router import router as freelance_router
 from app.features.hardware.router import router as hardware_router
 from app.features.health.router import router as health_router
@@ -29,7 +30,7 @@ from app.features.search.router import router as search_router
 from app.features.similar.router import router as similar_router
 
 ROUTERS = [health_router, jobs_router, search_router, similar_router, companies_router,
-           posts_router, freelance_router, hardware_router]
+           posts_router, freelance_router, hardware_router, docs_router]
 
 
 def create_app() -> FastAPI:
