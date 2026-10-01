@@ -228,7 +228,7 @@ def refresh_data(keyword: str) -> None:
     orch.refresh_finished("viewer", rc == 0)
     log(f"[refresh] jd-viewer {'완료' if rc == 0 else f'실패(rc={rc})'}")
 
-    refresh_semantic()
+    refresh_vectors()
 
 
 def refresh_closures(limit: int = CLOSE_CHECK_LIMIT, name: str = "마감 재확인") -> int:
@@ -273,72 +273,28 @@ def refresh_closures(limit: int = CLOSE_CHECK_LIMIT, name: str = "마감 재확�
         return 0
 
 
-def refresh_semantic() -> None:
-    """시맨틱 갱신: 적재 → 변경분 임베딩 → 유사 공고 JSON 재생성.
+def refresh_vectors() -> None:
+    """벡터 갱신: 변경분 임베딩(Ollama → pgvector) → 유사 공고·글 재계산(+ 뷰어용 JSON).
 
-    public/*.json 이 갱신된 뒤에 부른다(그 파일들이 곧 입력이다). 임베딩은 증분이라
-    사이클당 실제 대상은 보통 수십~수백 건이다.
+    정본 DB 하나로 한다. 예전에는 SQLite(semantic.db)에 먼저 임베딩하고 그걸 pgvector 로
+    옮겼다 — 같은 벡터가 두 군데 있었고, 뷰어의 추천은 SQLite 판, 검색 API 는 pgvector 판을
+    봐서 둘이 갈릴 수 있었다.
 
-    Ollama 가 꺼져 있거나 모델이 없으면 로그만 남기고 넘어간다 — 추천은 부가 기능이고,
-    이것 때문에 크롤 사이클이 멈추면 손해가 더 크다.
-    """
-    try:
-        from semantic import db as sdb, embed as sembed, ingest as singest, similar as ssim
-    except ImportError as e:
-        log(f"[semantic] 모듈 적재 실패 — 건너뜀: {e}")
-        return
-
-    conn = None
-    try:
-        conn = sdb.open_db()
-        counts = singest.run(conn)
-        log("[semantic] 적재 " + ", ".join(
-            f"{k}: 신규 {v['new']}/변경 {v['changed']}/삭제 {v['removed']}"
-            for k, v in counts.items()))
-
-        rep = sembed.run(conn, verbose=False)
-        log(f"[semantic] 임베딩 {rep['embedded']}건 "
-            f"(실패 {rep['failed']}, {rep['seconds']}s)")
-
-        if rep["embedded"] or rep["failed"] == 0:
-            sim = ssim.run(conn)
-            log("[semantic] 추천 " + ", ".join(
-                f"{k}: {v['with_similar']}/{v['documents']}건" for k, v in sim.items()))
-    except sembed.EmbedError as e:
-        log(f"[semantic] 임베딩 불가 — 건너뜀: {e}")
-    except Exception as e:
-        log(f"[semantic] 실패: {e!r}")
-    finally:
-        if conn is not None:
-            conn.close()
-
-    refresh_store_vectors()
-
-
-def refresh_store_vectors() -> None:
-    """정본 DB 쪽 벡터·추천을 방금 갱신한 semantic.db 에서 맞춘다.
-
-    **다시 임베딩하지 않는다.** 바로 위 refresh_semantic 이 이번 사이클의 새 공고를
-    이미 임베딩해 SQLite 에 넣었고, 같은 모델·같은 차원이므로 URL 로 이어 옮기면
-    그대로 유효하다. 여기서 store.vectors.embed 를 부르면 같은 문장을 Ollama 에 두 번
-    보내는 셈이다 — 8GB 짜리 머신에서 크롤과 메모리를 다투는 판에 할 일이 아니다.
-
-    이게 없으면 새 공고는 DB 에 행만 생기고 벡터가 비어, 8771 검색이 그 공고를
-    FTS 로만 찾고 추천에서는 아예 빠진다(2026-09-08 에 job_embed_pending 이
-    사이클마다 쌓이는 것으로 드러났다).
-
-    DB 가 꺼져 있으면 로그만 남기고 넘어간다 — 크롤 사이클을 멈출 이유가 없다.
+    임베딩은 증분이다(job_embed_pending·post_embed_pending 만). Ollama 가 꺼져 있으면
+    임베딩만 건너뛰고 추천은 이미 있는 벡터로 다시 계산한다 — 추천은 부가 기능이고,
+    이것 때문에 크롤 사이클이 멈추면 손해가 더 크다. DB 가 꺼져 있어도 마찬가지다.
     """
     py = _python_executable()
-    for args, what in (
-        (["-m", "store.vectors.migrate", "--kind", "job"], "벡터 이관"),
-        (["-m", "store.vectors.similar", "--kind", "job"], "추천 재계산"),
+    for args, what, quiet in (
+        (["-m", "store.vectors.embed"], "임베딩(공고·글)", False),
+        # --dump: API 가 없는 배포용 similar_*.json 도 같은 표에서 쓴다.
+        (["-m", "store.vectors.similar", "--dump"], "추천 재계산", True),
     ):
+        t0 = time.time()
         rc = subprocess.call([py, *args], cwd=str(BASE_DIR),
-                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        log(f"[store] {what} {'완료' if rc == 0 else f'건너뜀(rc={rc})'}")
-        if rc != 0:
-            return
+                             stdout=subprocess.DEVNULL if quiet else None,
+                             stderr=subprocess.DEVNULL if quiet else None)
+        log(f"[vectors] {what} {'완료' if rc == 0 else f'건너뜀(rc={rc})'} ({time.time() - t0:.0f}s)")
 
 
 def _gh_env() -> dict:
@@ -448,8 +404,8 @@ def enrich_extras() -> None:
     """크롤과 무관하게 매 사이클 굴리는 부가 작업.
 
     순서에 의존성이 있다. 트렌드가 tracked 기술 목록을 만들고 인프런이 그것을 읽으므로
-    트렌드가 먼저다. 재공고·커리어 맵·블로그 가이드는 refresh_data/refresh_semantic 이
-    만들어 둔 enriched JSON 과 semantic.db 를 읽으므로 그 뒤에 온다.
+    트렌드가 먼저다. 커리어 맵·블로그 가이드는 refresh_vectors 가 갱신한 pgvector 임베딩을
+    읽으므로 그 뒤에 온다.
     """
     maybe_refresh_learning()
     enrich_radar()

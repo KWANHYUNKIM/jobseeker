@@ -1,7 +1,7 @@
-"""하이브리드 검색 CLI — `semantic/search.py` 의 PostgreSQL 대응물.
+"""하이브리드 검색 CLI·라이브러리 — FTS + pgvector 를 DB 함수 `search_jobs()` 가 RRF 로 합친다.
 
-FTS5 + sqlite-vec 를 파이썬에서 RRF 로 합치던 것이 DB 안의 `search_jobs()` 하나가
-됐다. 파이썬이 하는 일은 질의문을 Ollama 로 임베딩해 넘기는 것뿐이다.
+파이썬이 하는 일은 질의문을 Ollama 로 임베딩해 넘기는 것뿐이다. agent-mcp(8790)가 이걸
+쓰고, 뷰어 API(backend)는 같은 DB 함수를 자기 쪽에서 부른다.
 
 마감 공고 제외가 조인 조건이라(`JOIN job_state`) 색인에 복사해 둔 상태값이 필요
 없다. 지금까지는 ingest 시점의 status 사본을 봤기 때문에, 공고가 마감돼도 다음
@@ -27,7 +27,7 @@ def query_embedding(text: str) -> list[float] | None:
     """질의문 임베딩. Ollama 가 없으면 None — 그때는 FTS 만으로 답한다."""
     try:
         from store.vectors.embed import embed_batch
-        return embed_batch([text])[0]
+        return embed_batch([text], retries=1)[0]
     except Exception as e:
         print(f"  (벡터 검색 건너뜀 — {e})", file=_sys.stderr)
         return None

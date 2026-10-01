@@ -1,12 +1,8 @@
 """임베딩 입력 텍스트 생성 — 저장소에 의존하지 않는다.
 
-`ingest.py` 안에 있던 것을 떼어냈다. 이유는 하나다: 저장소를 SQLite 에서
-PostgreSQL 로 옮기는 동안 **두 경로가 같은 텍스트를 만들어야** 한다. ingest 에
-그대로 두면 `store.vectors.embed` 가 그 모듈을 import 하면서 sqlite_vec 까지 끌고 들어오고,
-그게 싫어서 규칙을 베끼는 순간 임베딩 입력이 두 벌이 된다 — 그러면 같은 공고의
-벡터가 경로에 따라 달라지고, content_hash 도 갈려서 증분 임베딩이 영원히 안 끝난다.
-
-ingest.py 는 여기서 re-export 해 쓰므로 기존 import 경로는 그대로 동작한다.
+이 텍스트가 바뀌면 content_hash 가 바뀌어 다음 회차에 전량 재임베딩된다 — 규칙을
+고칠 때는 그 비용(맥에서 한 시간 넘게)을 각오한다. 임베딩(store/vectors/embed.py)과
+글 적재(store/ingest/posts.py)가 이 한 곳을 같이 쓴다.
 """
 from __future__ import annotations
 

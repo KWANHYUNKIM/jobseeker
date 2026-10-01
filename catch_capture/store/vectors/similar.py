@@ -1,6 +1,6 @@
-"""유사 공고 top-K — pgvector HNSW 로 계산해 `job_similar` 에 굳힌다.
+"""유사 공고·글 top-K — pgvector HNSW 로 계산해 `job_similar`·`post_similar` 에 굳힌다.
 
-`semantic/similar.py` 의 PostgreSQL 대응물. 규칙은 그대로다:
+규칙:
   - MIN_SCORE 아래는 "비슷하다"고 부르기 민망하니 자른다.
   - DUP_SCORE 위는 사실상 같은 공고(재게시·중복)라 추천 가치가 없다.
   - 한 회사가 추천을 도배하지 않게 MAX_PER_COMPANY 로 막는다.
@@ -27,7 +27,7 @@ from pathlib import Path as _Path
 
 _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent.parent))
 
-from semantic.config import (  # noqa: E402
+from store.vectors.config import (  # noqa: E402
     DUP_SCORE, MAX_PER_COMPANY, MIN_SCORE, SIMILAR_JOBS_JSON, SIMILAR_POSTS_JSON, TOP_K,
 )
 from store.db import conn as store_conn  # noqa: E402
@@ -131,9 +131,9 @@ def compute(kind: str) -> int:
 
 
 def _doc_id(url: str) -> str:
-    """문서 id — semantic/ingest.doc_id 와 **같은 규칙이어야 한다**.
+    """정적 JSON 의 문서 id(url 해시).
 
-    뷰어(`src/hooks/useSimilar.ts`)는 공고의 url 로 docs 를 뒤져 id 를 얻고, 그 id 로
+    API 가 없는 배포에서 뷰어(`src/hooks/useSimilar.ts`)는 공고의 url 로 docs 를 뒤져 id 를 얻고, 그 id 로
     similar 를 찾는다. 여기서 id 규칙이 갈리면 추천이 통째로 빈다.
     """
     return hashlib.sha1(url.encode("utf-8")).hexdigest()[:16]

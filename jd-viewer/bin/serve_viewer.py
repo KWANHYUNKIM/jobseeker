@@ -5,8 +5,7 @@
   주소별 정적 HTML(dist/jobs/<id>/index.html)을 깔아 두므로 그게 있으면 그걸 주고,
   없으면 index.html 을 줘서 브라우저에서 라우터가 이어받게 한다.
 - 데이터(.json)는 항상 live public/ 에서 읽어 자동 크롤 갱신을 재빌드 없이 반영.
-- /api/ 는 하이브리드 검색 서버(semantic.server, 8771)로 넘긴다. 검색은 질의마다
-  임베딩이 필요해 정적 파일로 만들 수 없다. 뷰어와 같은 오리진으로 묶어 CORS 를 없앤다.
+- /api/ 는 뷰어 API(backend, 8771)로 넘긴다. 뷰어와 같은 오리진으로 묶어 CORS 를 없앤다.
 - launchd 서비스로 상시 구동(부팅/크래시 시 자동 재시작).
 
 실행: python3 serve_viewer.py   (포트: 환경변수 VIEWER_PORT, 기본 8137)

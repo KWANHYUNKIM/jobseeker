@@ -1,8 +1,7 @@
-"""Ollama 임베딩 배치 — 정본 DB 판. `semantic/embed.py` 의 PostgreSQL 대응물이다.
+"""Ollama 임베딩 배치 → 정본 DB(pgvector). 벡터가 사는 곳은 여기 하나다.
 
-달라진 것은 저장소뿐이다. 모델·차원·정규화·배치 크기는 `semantic/config.py` 를
-그대로 쓰고, 임베딩 입력 텍스트는 `semantic/text.py` 를 그대로 쓴다 — 두 벌이
-되는 순간 같은 공고의 벡터가 경로에 따라 달라진다.
+모델·차원·정규화·배치 크기는 `store/vectors/config.py`, 임베딩 입력 텍스트는
+`store/vectors/text.py` 를 쓴다 — 두 벌이 되는 순간 같은 공고의 벡터가 경로에 따라 달라진다.
 
 증분이 전부다. 공고 1만 건을 매 사이클 다시 임베딩하면 M1 에서 한 시간이 넘게
 걸리지만 실제로 본문이 바뀌는 건 사이클당 수십~수백 건이다. 대기 목록은
@@ -30,10 +29,10 @@ from pathlib import Path as _Path
 
 _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent.parent))
 
-from semantic.config import (  # noqa: E402
+from store.vectors.config import (  # noqa: E402
     EMBED_BATCH, EMBED_DIM, EMBED_MODEL, EMBED_TIMEOUT, OLLAMA_URL,
 )
-from semantic.text import job_embed_text, post_embed_text  # noqa: E402
+from store.vectors.text import job_embed_text, post_embed_text  # noqa: E402
 from store.db import conn as store_conn  # noqa: E402
 
 RETRIES = 3
@@ -78,9 +77,10 @@ def _normalize(vec) -> list[float]:
     return list(vec) if norm == 0 else [v / norm for v in vec]
 
 
-def embed_batch(texts: list[str]) -> list[list[float]]:
+def embed_batch(texts: list[str], retries: int = RETRIES) -> list[list[float]]:
+    """retries — 배치는 모델 로딩을 기다려 주지만(3회), 질의 한 줄은 바로 포기해야 한다(1회)."""
     last: Exception | None = None
-    for attempt in range(RETRIES):
+    for attempt in range(retries):
         try:
             res = _post("/api/embed", {"model": EMBED_MODEL, "input": texts}, EMBED_TIMEOUT)
             vecs = res.get("embeddings") or []
@@ -95,9 +95,9 @@ def embed_batch(texts: list[str]) -> list[list[float]]:
             return [_normalize(v) for v in vecs]
         except Exception as e:      # 모델 로딩·다른 요청으로 잠깐 바쁠 수 있다
             last = e
-            if attempt < RETRIES - 1:
+            if attempt < retries - 1:
                 time.sleep(RETRY_WAIT)
-    raise EmbedError(f"임베딩 실패({RETRIES}회 시도): {last}")
+    raise EmbedError(f"임베딩 실패({retries}회 시도): {last}")
 
 
 # ── 대상 조회 ─────────────────────────────────────────────────────────

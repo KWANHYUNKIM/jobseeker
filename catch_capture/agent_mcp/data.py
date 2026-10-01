@@ -6,7 +6,7 @@
   reveng/                  기술 역설계   (engine)
   company_stacks.json      기업 기술스택
   freelance.json           외주·프리 프로젝트와 단가 분석
-공고 검색은 semantic.db 의 하이브리드 검색(FTS+벡터)을 먼저 쓰고, 색인이나 Ollama 가 없으면
+공고 검색은 정본 DB 의 하이브리드 검색(FTS+pgvector)을 먼저 쓰고, DB 가 없으면
 제목·회사·기술 키워드 검색으로 물러선다.
 
 재배포 원칙: 공고 원문은 원 사이트의 것이다. 여기서는 **우리가 만든 것**(브리핑·역설계·단가 통계·
@@ -201,18 +201,19 @@ def job_card(s: dict, *, full: bool = False) -> dict:
 
 
 def _semantic(query: str, limit: int) -> list[str] | None:
-    """semantic.db 하이브리드 검색 → 공고 id 목록. 색인·Ollama 가 없으면 None."""
+    """정본 DB 하이브리드 검색(FTS + pgvector) → 공고 id 목록. DB 가 없으면 None.
+
+    뷰어 검색(backend /api/search)과 같은 DB 함수(search_jobs)를 쓴다 — 예전에는 여기만
+    SQLite(semantic.db)를 봐서 같은 질문에 뷰어와 다른 답이 나올 수 있었다.
+    Ollama 가 없으면 search 가 알아서 FTS 만으로 답한다.
+    """
     try:
-        from semantic import db as sdb, search as ssearch
-        conn = sdb.connect()
-        try:
-            out = ssearch.search(conn, query, kind="job", limit=limit * 3)
-        finally:
-            conn.close()
+        from store.vectors.search import search as pg_search
+        out = pg_search(query, limit * 3, include_closed=False, use_vector=True)
     except Exception:                                                # noqa: BLE001
         return None
     by_url = jobs()["by_url"]
-    ids = [by_url.get(r.get("url")) for r in out.get("results") or []]
+    ids = [by_url.get(r.get("url")) for r in out]
     return [i for i in ids if i]
 
 

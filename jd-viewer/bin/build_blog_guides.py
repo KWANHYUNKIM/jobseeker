@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """자격조건·우대사항 → 읽을 기술 블로그 글 연결기.
 
-입력: catch_capture/semantic.db          (job/post 임베딩, bge-m3 1024d)
+입력: 정본 DB 의 공고·글 임베딩            (job_embedding·post_embedding, bge-m3 1024d)
       jd-viewer/public/all_jobs_enriched.json  (qualifications / preferences 원문)
 출력: jd-viewer/public/blog_guides.json
 
@@ -31,17 +31,14 @@ from __future__ import annotations
 
 import json
 import re
-import sqlite3
 import sys
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
 
 import numpy as np
-import sqlite_vec
 
 ROOT = Path(__file__).resolve().parent.parent.parent
-DB = ROOT / "catch_capture" / "semantic.db"
 JOBS = ROOT / "jd-viewer" / "public" / "all_jobs_enriched.json"
 TRENDS = ROOT / "jd-viewer" / "public" / "trends.json"
 OUT = ROOT / "jd-viewer" / "public" / "blog_guides.json"
@@ -59,31 +56,10 @@ from pipeline.trends import CONCEPT_KEYWORDS  # noqa: E402
 
 
 def load_vectors() -> tuple[np.ndarray, list[dict], np.ndarray, list[dict]]:
-    con = sqlite3.connect(DB)
-    con.enable_load_extension(True)
-    sqlite_vec.load(con)
-    con.enable_load_extension(False)
-    rows = con.execute(
-        """
-        SELECT d.kind, d.url, d.title, d.company, d.meta, v.embedding
-        FROM documents d JOIN vec_documents v ON v.rowid = d.rowid
-        WHERE d.kind IN ('job', 'post')
-        """
-    ).fetchall()
-    con.close()
-
-    jv, jd, pv, pd = [], [], [], []
-    for kind, url, title, company, meta, emb in rows:
-        vec = np.frombuffer(emb, dtype=np.float32)
-        rec = {"url": url or "", "title": title or "", "company": company or "", "meta": meta}
-        if kind == "job":
-            jv.append(vec); jd.append(rec)
-        else:
-            pv.append(vec); pd.append(rec)
-    j = np.asarray(jv, dtype=np.float32)
-    p = np.asarray(pv, dtype=np.float32)
-    for m in (j, p):
-        m /= np.clip(np.linalg.norm(m, axis=1, keepdims=True), 1e-9, None)
+    """공고 행렬·문서, 글 행렬·문서(행은 정규화돼 있다)."""
+    from store.vectors.load import job_matrix, post_matrix
+    j, jd = job_matrix()
+    p, pd = post_matrix()
     return j, jd, p, pd
 
 
@@ -141,9 +117,9 @@ def top_posts(posts: list[dict], sims: np.ndarray, generic: np.ndarray,
 
 
 def main() -> None:
-    if not DB.exists():
-        raise SystemExit(f"[blog-guides] semantic.db 가 없습니다: {DB}")
     jvec, jdocs, pvec, pdocs = load_vectors()
+    if not jdocs or not pdocs:
+        raise SystemExit("[blog-guides] 공고·글 임베딩이 없습니다(store.vectors.embed 를 먼저).")
     print(f"[blog-guides] 공고 {len(jdocs):,} · 글 {len(pdocs):,}", flush=True)
 
     jobs = load_jobs(JOBS)

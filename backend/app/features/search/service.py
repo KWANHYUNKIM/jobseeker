@@ -1,4 +1,4 @@
-"""하이브리드 검색. 응답 형식은 예전 stdlib 서버(semantic.server)의 /api/search 그대로다."""
+"""하이브리드 검색(FTS + pgvector). 응답 형식은 뷰어·외부 도구가 읽는 /api/search 그대로다."""
 from __future__ import annotations
 
 from app.features.search import repository

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """커리어 맵 빌더 — JD 임베딩 군집 + 군집 간 인접도 + 이동 시 기술 격차.
 
-입력: catch_capture/semantic.db  (documents + vec_documents, bge-m3 1024d, 정규화 완료)
+입력: 정본 DB 의 공고 임베딩(job_embedding, bge-m3 1024d — store/vectors/load.py)
 출력: jd-viewer/public/career_map.json
 
 **기존 mindmap 과 무엇이 다른가.**
@@ -26,17 +26,14 @@ from __future__ import annotations
 import json
 import math
 import re
-import sqlite3
 import sys
 from collections import Counter, defaultdict
 from datetime import datetime
 from pathlib import Path
 
 import numpy as np
-import sqlite_vec
 
 ROOT = Path(__file__).resolve().parent.parent.parent
-DB = ROOT / "catch_capture" / "semantic.db"
 OUT = ROOT / "jd-viewer" / "public" / "career_map.json"
 
 K = int(sys.argv[1]) if len(sys.argv) > 1 else 28
@@ -65,43 +62,12 @@ TOKEN_RE = re.compile(r"[A-Za-z][A-Za-z0-9+#.]{1,}|[가-힣]{2,}")
 
 
 def load() -> tuple[np.ndarray, list[dict]]:
-    """임베딩 행렬과 문서 메타를 같은 순서로 반환."""
-    if not DB.exists():
-        raise SystemExit(f"[career-map] semantic.db 가 없습니다: {DB}")
-    con = sqlite3.connect(DB)
-    con.enable_load_extension(True)
-    sqlite_vec.load(con)
-    con.enable_load_extension(False)
-
-    rows = con.execute(
-        """
-        SELECT d.id, d.company, d.title, d.url, d.site, d.meta, v.embedding
-        FROM documents d JOIN vec_documents v ON v.rowid = d.rowid
-        WHERE d.kind = 'job'
-        """
-    ).fetchall()
-    con.close()
-    if not rows:
-        raise SystemExit("[career-map] job 임베딩이 없습니다.")
-
-    vecs = np.empty((len(rows), 1024), dtype=np.float32)
-    docs: list[dict] = []
-    for i, (id_, company, title, url, site, meta, emb) in enumerate(rows):
-        vecs[i] = np.frombuffer(emb, dtype=np.float32)
-        m = {}
-        if meta:
-            try:
-                m = json.loads(meta)
-            except json.JSONDecodeError:
-                m = {}
-        docs.append({
-            "id": id_, "company": company or "", "title": title or "",
-            "url": url or "", "site": site or "",
-            "tech": [t for t in (m.get("tech_stack") or []) if t],
-            "career": m.get("career") or "",
-        })
-    # 저장 시점에 정규화돼 있지만(‖v‖=1) 재임베딩·모델 교체 이력이 섞일 수 있어 한 번 더 맞춘다.
-    vecs /= np.clip(np.linalg.norm(vecs, axis=1, keepdims=True), 1e-9, None)
+    """임베딩 행렬과 문서 메타를 같은 순서로 반환(행은 정규화돼 있다)."""
+    sys.path.insert(0, str(ROOT / "catch_capture"))
+    from store.vectors.load import job_matrix
+    vecs, docs = job_matrix()
+    if not docs:
+        raise SystemExit("[career-map] job 임베딩이 없습니다(store.vectors.embed 를 먼저).")
     return vecs, docs
 
 
@@ -286,7 +252,7 @@ def main() -> None:
     clusters.sort(key=lambda c: -c["size"])
     doc = {
         "generated_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-        "source": "semantic.db (bge-m3, 1024d)",
+        "source": "정본 DB job_embedding (bge-m3, 1024d)",
         "jobs": n,
         "k": K,
         "seed": SEED,

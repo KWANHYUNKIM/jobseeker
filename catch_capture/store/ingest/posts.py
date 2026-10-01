@@ -1,8 +1,7 @@
-"""기술블로그 글 → 정본 DB(`post`). 벡터 파이프라인의 나머지 절반이다.
+"""기술블로그 글 → 정본 DB(`post`). 크롤 회차마다 crawl_all 이 부른다.
 
-`semantic/ingest.py` 가 SQLite 에 `documents(kind='post')` 로 넣던 것을 대체한다.
-공고(`job`)만 옮기고 이걸 빼면 `post_embedding` · `post_similar` · `similar_posts.json`
-이 전부 비어 있게 된다 — 뷰어의 기술블로그 탭에서 "관련 글"이 사라진다.
+이게 비면 `post_embedding` · `post_similar` · `/api/posts` 가 전부 빈다 — 뷰어의
+기술블로그 탭에서 글 목록과 "관련 글"이 사라진다.
 
 입력:
     jd-viewer/public/tech_blogs.json          글 목록(1,063건)
@@ -30,7 +29,7 @@ from pathlib import Path as _Path
 
 _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent.parent))
 
-from semantic.text import post_embed_text  # noqa: E402
+from store.vectors.text import post_embed_text  # noqa: E402
 from store.db import conn as store_conn  # noqa: E402
 from store.db.slug import norm_company  # noqa: E402
 

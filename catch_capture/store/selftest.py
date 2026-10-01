@@ -562,71 +562,7 @@ def run() -> int:
         finally:
             embed_mod._post, embed_mod.check_model = real_post, real_check
 
-        # ── 12. sqlite-vec → pgvector 이관 ─────────────────────────
-        print("\n[12] 벡터 이관 (store.vectors.migrate)")
-        ok_mig = _test_migrate(cur, db)
-        check(ok_mig is True, "SQLite 의 벡터가 URL 로 이어져 옮겨진다", str(ok_mig))
-
     return 0
-
-
-def _test_migrate(cur, db) -> object:
-    """작은 semantic.db 를 만들어 실제 이관 코드를 돌린다."""
-    import sqlite3
-    import struct
-    import tempfile
-
-    import sqlite_vec
-
-    from store.vectors import migrate as mig
-
-    cur.execute("SELECT url FROM job ORDER BY id LIMIT 2")
-    urls = [r["url"] for r in cur.fetchall()]
-    if len(urls) < 2:
-        return "시험할 공고가 모자란다"
-
-    path = _Path(tempfile.mkdtemp()) / "semantic.db"
-    lite = sqlite3.connect(path)
-    lite.enable_load_extension(True)
-    sqlite_vec.load(lite)
-    lite.executescript("""
-        CREATE TABLE documents (rowid INTEGER PRIMARY KEY, id TEXT, kind TEXT,
-            url TEXT UNIQUE, embed_model TEXT, embedded_hash TEXT);
-    """)
-    lite.execute("CREATE VIRTUAL TABLE vec_documents USING vec0(embedding float[1024])")
-    for i, u in enumerate(urls, start=1):
-        vec = unit((i, 1.0))
-        lite.execute(
-            "INSERT INTO documents (rowid,id,kind,url,embed_model,embedded_hash) "
-            "VALUES (?,?,'job',?,'bge-m3','done')", (i, f"id{i}", u))
-        lite.execute("INSERT INTO vec_documents (rowid, embedding) VALUES (?,?)",
-                     (i, struct.pack(f"{len(vec)}f", *vec)))
-    lite.commit()
-    lite.close()
-
-    cur.execute("DELETE FROM job_embedding")
-    db.commit()
-    saved = _sys.argv
-    _sys.argv = ["migrate_vectors", "--db", str(path), "--kind", "job"]
-    try:
-        mig.main()
-    finally:
-        _sys.argv = saved
-
-    cur.execute("SELECT count(*) n FROM job_embedding")
-    n = cur.fetchone()["n"]
-    if n != len(urls):
-        return f"{n}건만 옮겨졌다(기대 {len(urls)})"
-    # 이관된 벡터의 content_hash 는 **job 의 현재 값**이어야 한다. SQLite 쪽 값을
-    # 그대로 쓰면 다음 embed 배치가 옮겨 온 것까지 전부 재임베딩 대상으로 잡는다
-    # — 1만 건이면 M1 에서 한 시간이 넘고, 이관의 의미가 사라진다.
-    # (옮기지 않은 공고가 대기로 남는 것은 정상이라 옮긴 것만 확인한다.)
-    cur.execute("SELECT count(*) n FROM job_embed_pending p "
-                " JOIN job j ON j.id = p.id WHERE j.url = ANY(%s)", (urls,))
-    still = cur.fetchone()["n"]
-    if still:
-        return f"옮긴 {len(urls)}건 중 {still}건이 여전히 재임베딩 대기다"
-    return True
 
 
 def main() -> int:

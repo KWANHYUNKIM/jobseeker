@@ -1,23 +1,18 @@
-"""시맨틱 파이프라인 설정 — 경로/모델/튜닝 상수의 단일 소스."""
+"""벡터(임베딩·유사 문서) 설정 — 모델·튜닝 상수의 단일 소스.
+
+예전 SQLite 판(semantic/)의 config 를 옮겨 왔다. 환경변수 이름(SEMANTIC_*)은 운영 맥의
+설정을 깨지 않으려고 그대로 둔다.
+"""
 from __future__ import annotations
 
 import os
 from pathlib import Path
 
-CATCH_DIR = Path(__file__).resolve().parent.parent  # catch_capture/
+CATCH_DIR = Path(__file__).resolve().parent.parent.parent  # catch_capture/
 ROOT_DIR = CATCH_DIR.parent  # jobseeker/
 VIEWER_PUBLIC = ROOT_DIR / "jd-viewer" / "public"
 
-# ── 저장소 ────────────────────────────────────────────────────────────
-# 데이터 위치는 catch_capture 루트에 두는 기존 관례(screenshots/, seen_jobs.json)를 따른다.
-DB_PATH = Path(os.environ.get("SEMANTIC_DB", CATCH_DIR / "semantic.db"))
-
-# ── 입력 ──────────────────────────────────────────────────────────────
-JOBS_JSON = VIEWER_PUBLIC / "all_jobs_enriched.json"
-BLOGS_JSON = VIEWER_PUBLIC / "tech_blogs.json"
-BLOG_CONTENT_DIR = VIEWER_PUBLIC / "blog_content"
-
-# ── 출력 (뷰어가 정적으로 소비) ────────────────────────────────────────
+# ── 출력 (API 가 없는 배포에서 뷰어가 정적으로 소비) ──────────────────
 SIMILAR_JOBS_JSON = VIEWER_PUBLIC / "similar_jobs.json"
 SIMILAR_POSTS_JSON = VIEWER_PUBLIC / "similar_posts.json"
 
