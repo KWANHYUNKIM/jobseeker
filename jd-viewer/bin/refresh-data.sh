@@ -87,35 +87,32 @@ fi
 ln -sfn "$LATEST" all_개발자_latest
 echo "latest -> $LATEST (${NEW_COUNT}건 = 모집중 ${ACTIVE_COUNT} + 마감 ${CLOSED_COUNT:-0}${OLD_COUNT:+, 기존 ${OLD_COUNT}건})"
 
-# enrich + mindmap + 회사 기술스택 재빌드
-# build_company_stacks 는 company_profiles.json(crawl_company 결과)이 있으면 병합한다.
-"$PY" "$SCRIPT_DIR/enrich_jobs.py"
-# 근무지 보수 — 크롤이 못 채운 칸을 원본(wanted 상세 API / jobkorea JSON-LD)에서
-# 받아 온다. 캐시가 있어 이미 확인한 공고는 다시 조회하지 않는다.
-(cd "$ROOT_DIR/catch_capture" && "$PY" -m pipeline.backfill_location) || \
-  echo "  [경고] 근무지 보수 실패 — 기존 값으로 계속합니다." >&2
-
-# ── 정본 DB 로 한 벌 만들기 (이관 3단계) ────────────────────
-# 여기까지의 JSON 은 **이 서버가 이번에 훑은 것**만 담는다. 정본 DB 는 그보다
-# 넓다 — 다른 머신이 모아 온 공고가 얹혀 있고(2026-09-08 기준 7천여 건),
-# status·dday 도 저장값이 아니라 읽는 시점에 계산한 값이다. 그래서 8771 검색은
-# 2만 4천 건을 답하는데 목록 화면은 1만 7천 건만 보이는 어긋남이 생겼다.
+# ── 공고 전량 JSON — 정본 DB 에서 한 번만 쓴다 ─────────────────
+# 이 파일은 이제 사전 렌더링(prerender.mjs)·빌더의 대체 입력·API 가 없는 배포용이다.
+# 화면은 뷰어 API(backend)가 DB 에서 읽는 순간의 상태로 받는다.
 #
-# JSON 을 DB 에서 다시 뽑아 **아래 빌더들이 전부 같은 것을 읽게** 한다.
+# 예전에는 한 회차에 세 번 썼다: enrich_jobs(스냅샷) → backfill_location(고쳐 쓰기)
+# → store.jobs.export(DB 로 통째 덮어쓰기). 앞의 둘이 한 일은 셋째가 지웠다. 근무지
+# 보수는 이제 통합 **전에** 누적 폴더를 고친다(crawl_all.fix_locations) — 그래야 고친
+# 값이 그 회차의 DB 적재에 실린다.
 #
-# **backfill 은 여기 없다.** 크롤 결과는 aggregate 가 `store.ingest.crawl` 로
-# 이미 넣었다(이중 쓰기). backfill 까지 돌리면 같은 데이터가 한 사이클에 두 번
-# 들어간다 — 127MB JSON 전량 재적재이고, append-only 인 job_closure_check 에는
-# 원장이 통째로 다시 쌓여 공고 14,288건에 175,140행이 되어 있었다(12배).
-# 이제 판정한 쪽이 판정한 것만 남긴다(`pipeline.close_check`), 회사 표기 재선정과
-# mv_company_stack 갱신도 ingest_crawl 이 맡는다. backfill 은 이관·복구용
-# 일회성 도구로 남는다(`python -m store.ingest.backfill`).
+# **backfill(JSON→DB)은 여기 없다.** 크롤 결과는 aggregate 가 store.ingest.crawl 로
+# 이미 넣었다(이중 쓰기). 여기서 또 넣으면 append-only 원장이 통째로 다시 쌓인다
+# (공고 14,288건에 175,140행이 된 적이 있다). backfill 은 이관·복구용 일회성 도구다.
 #
-# DB 가 꺼져 있으면 조용히 지나간다 — 방금 만든 스냅샷 JSON 이 그대로 쓰이고
-# 사이클은 계속된다. export 는 원자적 교체이고 자체 급감 가드(EXPORT_MIN_RATIO)를
-# 들고 있으므로, 반쯤 쓰인 파일이나 갑자기 줄어든 파일이 화면에 닿지 않는다.
-(cd "$ROOT_DIR/catch_capture" && "$PY" -m store.jobs.export) \
-  || echo "  [경고] 정본 DB 반영 실패 — 이번 사이클은 스냅샷 JSON 으로 계속합니다." >&2
+# export 종료 코드: 0 = 썼다, 2 = 급감 가드가 막았다(EXPORT_MIN_RATIO — 기존 파일을
+# 그대로 둔다), 그 밖 = DB 에 못 붙었다. DB 가 없을 때만 예전처럼 스냅샷으로 굽는다
+# (enrich_jobs.py). 급감일 때 스냅샷으로 덮으면 가드를 두는 의미가 없다.
+set +e
+(cd "$ROOT_DIR/catch_capture" && "$PY" -m store.jobs.export)
+EXPORT_RC=$?
+set -e
+if [ "$EXPORT_RC" = 2 ]; then
+  echo "  [경고] 정본 DB 내보내기가 급감 가드에 걸렸다 — 기존 파일을 그대로 둡니다." >&2
+elif [ "$EXPORT_RC" != 0 ]; then
+  echo "  [경고] 정본 DB 에 못 붙었다 — 이번 회차는 스냅샷으로 굽습니다(enrich_jobs)." >&2
+  "$PY" "$SCRIPT_DIR/enrich_jobs.py"
+fi
 "$PY" "$SCRIPT_DIR/build_mindmap.py"
 "$PY" "$SCRIPT_DIR/build_company_stacks.py"
 # 회사 규모 색인 — 잡 리스트의 "기업 규모" 필터가 읽는 얇은 파일(공고 1건 회사 포함)

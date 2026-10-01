@@ -113,6 +113,18 @@ def _parse_sources(only: str | None) -> list[str]:
     return picked
 
 
+def fix_locations() -> None:
+    """근무지 보수(pipeline.backfill_location)를 **통합 전에** 돈다.
+
+    크롤이 못 채운 근무지를 원본(wanted 상세 API / jobkorea JSON-LD)에서 받아 누적 폴더를
+    고친다. 통합(aggregate → 정본 DB 적재) 앞에 두어야 고친 값이 그 회차 DB 에 바로 실린다.
+    캐시가 있어 이미 확인한 공고는 다시 묻지 않는다. 실패해도 사이클은 계속 간다.
+    """
+    rc = subprocess.call([sys.executable, "-m", "pipeline.backfill_location"], cwd=str(BASE_DIR))
+    if rc != 0:
+        print(f"[!] 근무지 보수 실패(rc={rc}) — 기존 값으로 계속합니다.", flush=True)
+
+
 def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: bool = True,
                    depth: int | None = None, do_blog: bool = True,
                    blog_per_feed: int = BLOG_PER_FEED_DEFAULT, do_freelance: bool = True,
@@ -201,6 +213,7 @@ def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: 
             orch.site_finished(source, rc == 0, count, elapsed, reason=reason)
 
     if do_aggregate:
+        fix_locations()
         print(f"\n----- aggregate 통합 -----", flush=True)
         agg_start = datetime.now()
         if orch:

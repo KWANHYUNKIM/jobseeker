@@ -197,6 +197,11 @@ def save_cache(cache: dict[str, dict[str, str]]) -> None:
     CACHE.write_text(json.dumps(cache, ensure_ascii=False), encoding="utf-8")
 
 
+def cumulative() -> list[Path]:
+    """근무지를 받아 올 수 있는 사이트의 누적 폴더(크롤러가 쓰는 원본)."""
+    return sorted(SCREENSHOTS.glob("wanted_*/jobs.json")) + sorted(SCREENSHOTS.glob("jobkorea_*/jobs.json"))
+
+
 def targets() -> list[Path]:
     """누적 폴더 → 스냅샷 → 뷰어 산출물. 앞을 안 고치면 다음 재빌드가 되돌린다."""
     out = sorted(SCREENSHOTS.glob("wanted_*/jobs.json"))
@@ -242,7 +247,10 @@ def main() -> None:
     if refetch:
         cache = {"wanted": {}, "jobkorea": {}}
 
-    jobs = json.loads(ENRICHED.read_text(encoding="utf-8"))
+    # 대상은 누적 폴더(크롤 원본)에서 고른다. 크롤 사이클은 이걸 aggregate **전에** 돌려
+    # (crawl_all.fix_locations) 고친 값이 그 회차의 정본 DB 적재에 바로 실린다 — 예전에는
+    # 뷰어 산출물(enriched)에서 골라 고쳤고, 그 파일은 곧바로 DB 내보내기가 덮어썼다.
+    jobs = [j for path in cumulative() for j in json.loads(path.read_text(encoding="utf-8"))]
     todo: list[tuple[str, str]] = []
     seen: set[tuple[str, str]] = set()
     for j in jobs:
@@ -294,7 +302,10 @@ def main() -> None:
         records = json.loads(path.read_text(encoding="utf-8"))
         n = patch_records(records, cache)
         if n:
-            path.write_text(json.dumps(records, ensure_ascii=False, indent=2), encoding="utf-8")
+            # 임시 파일에 쓰고 바꿔치기 — 도중에 죽어도 누적본이 반쯤 쓰인 채 남지 않는다.
+            tmp = path.with_suffix(path.suffix + ".tmp")
+            tmp.write_text(json.dumps(records, ensure_ascii=False, indent=2), encoding="utf-8")
+            tmp.replace(path)
         print(f"    {path.relative_to(ROOT_DIR)} — {n:,}건 반영", flush=True)
 
 

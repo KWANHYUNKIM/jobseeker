@@ -450,7 +450,7 @@ def run_cycle(keyword: str, count: int) -> bool:
     keyword 는 콤마로 여러 개를 줄 수 있다("개발자,백엔드,프론트엔드").
     여러 개면 키워드별로 크롤한 뒤 한 통합 폴더(all_통합_*)로 병합한다.
     """
-    from automation.crawl_all import run_foreground
+    from automation.crawl_all import fix_locations, run_foreground
     _reload_pipeline()
     from pipeline.aggregate import aggregate
 
@@ -474,6 +474,7 @@ def run_cycle(keyword: str, count: int) -> bool:
             log(f"[crawl] '{kw}' 일부 실패(rc={rc})")
 
     if multi:
+        fix_locations()  # 통합 전에 — 고친 근무지가 이번 회차 DB 적재에 실린다
         log(f"[aggregate] {len(kws)}개 키워드 통합 → all_{label}_*")
         aggregate(kws[0], keywords=kws, label=label)
 
