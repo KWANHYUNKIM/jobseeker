@@ -7,6 +7,14 @@
     옛 위치에 남은 데이터는 `adopt()` 가 처음 쓰일 때 옮긴다) · `sites`(아래) · `normalize`(회사명) ·
     `classifier`(규모·직군·역량 규칙 + `companies.json`, 정렬은 `python -m core.sort_companies`)
   - `crawlers/` : 사이트별 크롤러(crawl_*.py) + 공통(jobs_common)
+    **5대 보드 밖의 공고**도 받는다(2026-10, 광고 마이크로사이트 → skcareers 로 이어지던 공고를
+    놓친 데서 시작). `ats` 는 회사 채용페이지 — Greenhouse·Lever·Ashby 에 더해 SK Careers 와
+    `kr_portals.py` 의 그룹·IT 포털(토스·카카오·LINE·NHN·CJ·넥슨·스마일게이트·LG·현대차·기아·
+    한화·신세계·네이버·KT·카카오뱅크·넷마블·삼성)이 `ats_boards.json` 의 provider 로 붙는다.
+    `boards`(`crawl_boards.py`)는 국내 기타 보드·공공 — 랠릿·슈퍼루키·인크루트·잡알리오.
+    둘 다 목록이 모집중 전부라 close_check 는 "아직 목록에 있나"로 닫는다. **일부러 뺀 곳**:
+    리멤버·로켓펀치·나인하이어·flex(약관 수집 금지), POSCO·마이다스 recruiter API·우아한형제들
+    `/w1/`·그리팅 회사 채용 호스트(robots 차단), 잡플래닛(잡코리아 미러), 링커리어(약관 회색).
     `crawl_freelance` 는 채용 공고가 아니라 **외주·프리랜서 프로젝트**(SI/SM 상주·도급·부업)를
     모은다 — 원티드 긱스(API)·프리모아(목록 JSON, 의뢰인 이메일 필드는 버린다)·이랜서(사이트맵 →
     상세 JSON-LD)·잡코리아(jobtype=6)·사람인(job_type=9)·아임잡·SISM(약관상 목록 요약과 링크만).
