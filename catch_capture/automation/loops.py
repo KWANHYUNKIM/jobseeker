@@ -202,6 +202,23 @@ REGISTRY: list[Loop] = [
              "합계 상위 전략이 03-content.md 일감과 어긋나면 strategies.md '바뀐 것' 에 '03 반영 필요' 라고만 적는다(03 은 고치지 않는다). "
              "팔로우·좋아요·댓글·게시 같은 계정 행동은 하지 않는다. docs(design-lab) 로 커밋하고 푸시는 하지 않는다. "
              "무엇을 배웠는지 한두 줄로 보고한다. 이 레인이 고치는 파일은 위 두 파일뿐이다 — git add 도 이 경로만 준다.")),
+    # 인스타 콘텐츠 개발 — planning/03 일감을 위에서부터 하나씩 규격(02)대로 만들고 점검(04)한다. 게시는 사람이 한다.
+    Loop("insta-content", "인스타 콘텐츠 개발", "claude-loop", "any", "45분마다(세션이 열려 있을 때)", 24,
+         "/loop 45m <prompt>", ["design-lab/planning/03-content.md"],
+         owns=["design-lab/poster/", "design-lab/planning/03-content.md", "design-lab/planning/06-review.md",
+               "design-lab/assets/", "design-lab/content/"],
+         prompt=(
+             "인스타 콘텐츠 개발 한 회차: design-lab/planning/README.md · 02-format.md · 03-content.md · 04-production.md 와 "
+             "01-research/strategies.md(상위 전략과 '03 반영 필요' 줄)를 읽는다. strategies.md 에 '03 반영 필요' 가 있으면 먼저 03 의 "
+             "기준·일감을 고친다(01-research 파일은 고치지 않는다 — 반영했다는 기록은 03 에 날짜로). 03 일감 표에서 '할 일' 중 맨 위 하나를 "
+             "골라 02 규격(길이·첫 프레임·안전 여백·디자인)대로 만든다 — design-lab/poster/ 의 판·빌더를 쓰고, 없는 판 종류(예: 티어표)는 더한다. "
+             "숫자는 만들 때 우리 데이터에서 다시 세고, 정규식으로 센 숫자는 원문 5건을 확인하며, 04 점검표를 모두 통과시킨다. "
+             "결과는 out/series/<id>/ 에 영상·caption.txt 로 두고 찍은 장면을 직접 열어 본다. 03 일감 상태를 '제작(날짜·경로)' 로, "
+             "06 성적표에 올리기 전 줄(길이·형식)을 더한다. '할 일' 이 2개 이하로 줄면 01-research 규칙과 우리 데이터로 새 일감 3개를 "
+             "출처와 함께 더한다. 인스타 게시·팔로우·댓글 같은 계정 행동은 하지 않는다 — 다 만든 것은 보고에 '올릴 준비' 로 적는다. "
+             "design-lab 테스트(python -m pytest tests)를 통과시키고 feat/docs(design-lab) 로 커밋, 푸시는 하지 않는다. "
+             "무엇을 만들었는지 한두 줄로 보고한다. 고치는 곳은 design-lab/poster/ · assets/ · content/ · planning/03-content.md · "
+             "planning/06-review.md 뿐이다 — git add 도 이 경로만 준다.")),
 ]
 
 BY_KEY = {l.key: l for l in REGISTRY}
