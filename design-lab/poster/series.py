@@ -58,11 +58,12 @@ THEMES = {
     "perk": {"paper": "#effaf3", "ink": "#0d2618", "sub": "#4e6b5a", "accent": "#12b886", "line": "#cdebd9"},
     "map": {"paper": "#f1f3f9", "ink": "#121a2e", "sub": "#58627a", "accent": "#4263eb", "line": "#d6dcec"},
     "welcome": {"paper": "#fff4f1", "ink": "#2b1310", "sub": "#7a5a54", "accent": "#f76707", "line": "#f3d9d1"},
+    "gongchae": {"paper": "#14161c", "ink": "#f4f2ec", "sub": "#9b9fa9", "accent": "#ff6b4a", "line": "#2b2f38"},
 }
 SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", "term": "[IT 용어]",
           "interview": "[면접 예상 질문]", "qa": "[고민 상담소]", "jd": "[JD 번역기]",
           "same": "[같은 직무 다른 회사]", "roadmap": "[공부 로드맵]", "weekly": "[주간 리포트]", "signal": "[채용 시그널]", "talent": "[인재상 해부]",
-          "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]"}
+          "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -77,7 +78,8 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "pay": ["신입연봉", "개발자연봉", "초봉", "신입개발자", "개발자취업"],
         "perk": ["재택근무", "주4일제", "스톡옵션", "개발자복지", "개발자채용"],
         "map": ["판교", "성수", "개발자채용", "IT회사", "밸런스게임"],
-        "welcome": ["신입개발자", "전환형인턴", "졸업예정자", "개발자취업", "신입채용"]}
+        "welcome": ["신입개발자", "전환형인턴", "졸업예정자", "개발자취업", "신입채용"],
+        "gongchae": ["공채", "수시채용", "취업전략", "신입개발자", "중고신입", "개발자취업"]}
 
 
 # --- 재료 ---------------------------------------------------------------
@@ -1172,6 +1174,101 @@ def build_welcome() -> dict:
                      for j in {f"{j['site']}-{j['pid']}": j for v in groups.values() for j in v}.values()]}
 
 
+# 바깥 숫자 — 공고로 셀 수 없는 것은 조사 기관의 공개 발표를 그대로 옮긴다(출처는 캡션에).
+GONGCHAE_SRC = [
+    ("경총 「2025 신규채용 실태조사」(100인 이상 500개사)", "https://www.mt.co.kr/industry/2025/03/20/2025032008550919932"),
+    ("고용노동부 「2023 하반기 기업 채용동향조사」(500대 기업 315곳)", "https://www.moel.go.kr/news/enews/report/enewsView.do?news_seq=16352"),
+    ("국민일보 — 대기업 신입 중 중고신입 28.1%(500대 기업 121곳, 2025)", "https://www.kmib.co.kr/article/view.asp?arcid=0019940870"),
+    ("그리팅 — 현대차·LG 2019 공채 폐지, SK 2022 전원 수시", "https://blog.greetinghr.com/company-occasional-recruit-trend/"),
+    ("아시아경제 — 4대 그룹 중 정기 공채는 삼성뿐(2026 하반기)", "https://view.asiae.co.kr/article/2026090712525576714"),
+]
+
+ASKS = [  # (이름, 공고에서 찾는 말) — 신입 가능 공고가 전형·자격에 적은 것
+    ("포트폴리오", r"포트폴리오|portfolio"),
+    ("코딩테스트", r"코딩\s*테스트|코테|알고리즘\s*테스트"),
+    ("프로젝트 경험", r"프로젝트\s*(경험|수행)"),
+    ("과제 전형", r"과제\s*(전형|테스트)|사전\s*과제|take[- ]?home"),
+    ("인적성·필기", r"인적성|적성\s*검사|필기\s*(시험|전형)"),
+    ("토익·어학", r"토익|TOEIC|어학\s*(성적|점수)|오픽|OPIc"),
+]
+
+
+def build_gongchae() -> dict:
+    """[공채는 끝났다] 예전 공채와 지금 채용 — 무엇이 바뀌었고 그래서 무엇을 하나.
+
+    바깥 숫자(수시 비중·평가 요소·중고신입)는 조사 발표를 옮기고, '지금 공고가 무엇을 요구하나' 는
+    우리 모집중 개발 공고로 센다.
+    """
+    allj = _source()
+    asof = _data_date(allj)
+    rows = _open_dev(allj)
+    n = len(rows)
+    only = sum(1 for j in rows if re.fullmatch(r"\s*신입(/무관)?\s*", j.get("career") or ""))
+    newg = [j for j in rows if "신입" in (j.get("career") or "")]
+    ng = len(newg)
+    asks = [(name, sum(1 for j in newg if re.search(pat, _text(j) + (j.get("title") or ""), re.I)))
+            for name, pat in ASKS]
+    note = f"바깥 숫자: 경총 2025·고용노동부·500대 기업 조사(출처는 캡션) · 공고: 모집중 개발 {n:,}건, 최신 {_dot(asof)}"
+    slides = [
+        {"type": "cover", "big": "70.8", "big_unit": "%",
+         "lines": ["공채는 끝났다,", "**지금은 수시**다"],
+         "sub": "신규채용을 '수시로만' 하는 기업 비율(경총 2025) — 예전 공식으로 준비하면 늦는다", "note": note},
+        {"type": "table", "title": "예전 공채 vs 지금", "sub": "무엇이 바뀌었나", "head": ["", "예전", "지금"],
+         "rows": [["뽑는 때", "상·하반기", "자리 날 때"], ["뽑는 곳", "그룹 인사팀", "현업 팀"],
+                  ["보는 것", "학점·토익", "직무 경험"], ["시험", "인적성", "코테·과제"],
+                  ["경쟁자", "동기 졸업생", "중고신입"]], "hi_col": 2, "note": note},
+        {"type": "bars", "title": "신규채용을 어떻게 하나", "sub": "경총 2025 · 100인 이상 기업 500곳",
+         "rows": [{"label": "수시채용만", "value": 70.8, "display": "70.8", "unit": "%", "hi": True},
+                  {"label": "공채 + 수시", "value": 22.6, "display": "22.6", "unit": "%"},
+                  {"label": "정기공채만", "value": 6.6, "display": "6.6", "unit": "%"}], "note": note},
+        {"type": "bars", "title": "가장 중요한 건 직무 경험", "sub": "채용 평가 1순위로 '직무 관련 업무 경험' 을 꼽은 비율(경총)",
+         "rows": [{"label": "2023", "value": 58.4, "display": "58.4", "unit": "%"},
+                  {"label": "2024", "value": 74.6, "display": "74.6", "unit": "%"},
+                  {"label": "2025", "value": 81.6, "display": "81.6", "unit": "%", "hi": True}], "note": note},
+        {"type": "stat", "title": "신입의 경쟁자는 신입이 아니다", "num": "28.1", "unit": "%",
+         "label": "대기업 신입사원 중 경력이 있는 '중고신입'(500대 기업 121곳, 2025)",
+         "explain": "같은 신입 자리에 **1~2년 일해 본 사람**이 같이 넣는다. 그래서 신입도 '해 본 것' 을 보여 줘야 한다.",
+         "note": note},
+        {"type": "bars", "title": "우리가 모은 개발 공고로 보면", "sub": f"모집중 {n:,}건 · 경력 칸 기준",
+         "rows": [{"label": "경력만", "value": n - ng, "display": f"{n - ng:,}", "unit": f"{round(100 * (n - ng) / n)}%"},
+                  {"label": "신입·경력", "value": ng - only, "display": f"{ng - only}",
+                   "unit": f"{round(100 * (ng - only) / n)}%", "hi": True},
+                  {"label": "신입만", "value": only, "display": f"{only}", "unit": f"{round(100 * only / n)}%", "hi": True}],
+         "note": note},
+        {"type": "bars", "title": "신입 가능 공고가 적은 것", "sub": f"{ng}건 중 · 공고 본문에 그 말이 있는 수",
+         "rows": [{"label": name, "value": c, "display": f"{c}", "unit": f"{round(100 * c / ng)}%",
+                   "hi": name in ("포트폴리오", "코딩테스트")} for name, c in asks], "note": note},
+        {"type": "end", "title": "그래서 이렇게 ①", "lines": [
+            "① 공채 달력 대신 **공고 알림** — 수시는 자리 나면 열고 차면 닫는다. 가고 싶은 회사 10곳에 알림을 건다",
+            "② 스펙 한 줄보다 **결과물 하나** — 배포한 서비스, README, 막혔다 푼 기록",
+            "③ **직무 경험을 만든다** — 기업이 바라는 1순위는 3~6개월 장기 인턴(74%), 2위는 기업 프로젝트(69%)",
+            "④ **코딩테스트·과제** 둘 다 — 신입 가능 공고 다섯에 하나는 코테, 일곱에 하나는 과제를 적는다",
+        ], "note": note},
+        {"type": "end", "title": "그래서 이렇게 ②", "lines": [
+            f"⑤ **'신입·경력' 공고도 넣는다** — 신입만 받는 공고는 {only}건, 신입도 받는 공고는 {ng}건",
+            "⑥ 지원서는 **공고 문장으로** 다시 — 현업 팀이 읽는다. 그 팀이 적은 기술·문제에 내 경험을 붙인다",
+            "⑦ **작은 회사 1~2년도 길이다** — 돌아가는 게 아니라 경험을 사는 것",
+            "⑧ 공채가 남은 곳(삼성 등)은 **일정을 따로** 챙긴다",
+            SEND], "note": note},
+    ]
+    caption = "\n\n".join([
+        "[공채는 끝났다] 예전 공채 공식으로 준비하면 늦습니다",
+        "· 신규채용을 '수시로만' 하는 기업 70.8%, 정기공채만 하는 곳 6.6%(경총 2025, 100인 이상 500개사)\n"
+        "· 현대차·LG 2019년 공채 폐지, SK 2022년부터 전원 수시 — 4대 그룹 중 정기 공채는 삼성뿐\n"
+        "· 채용 평가 1순위 '직무 관련 업무 경험' 58.4%(2023) → 74.6%(2024) → 81.6%(2025)\n"
+        "· 대기업 신입사원 중 경력이 있는 '중고신입' 28.1%",
+        f"우리가 모은 모집중 개발 공고 {n:,}건 중 신입을 받는 공고는 {ng}건({round(100 * ng / n)}%), "
+        f"신입만 받는 공고는 {only}건. 신입 가능 공고가 적은 것: "
+        + " · ".join(f"{name} {c}건" for name, c in asks) + ".",
+        "그래서 —\n① 공채 달력 대신 공고 알림\n② 스펙보다 결과물(배포·README·문제 해결 기록)\n"
+        "③ 장기 인턴·기업 프로젝트로 직무 경험 만들기\n④ 코딩테스트와 과제 둘 다\n⑤ '신입·경력' 공고도 지원\n"
+        "⑥ 지원서는 공고 문장으로 다시\n⑦ 작은 회사 1~2년도 길\n⑧ 공채 남은 곳은 일정 따로",
+        "출처\n" + "\n".join(f"· {t}" for t, _ in GONGCHAE_SRC) + f"\n· 공고 숫자는 최신 공고 {_dot(asof)} 기준",
+    ])
+    return {"kind": "gongchae", "id": f"gongchae-{asof.replace('-', '')}", "title": "공채는 끝났다",
+            "slides": slides, "caption": caption, "jobs": []}
+
+
 # --- 찍기 · 승인 ---------------------------------------------------------
 def render(post: dict) -> list[Path]:
     from .render import _page_maker
@@ -1225,7 +1322,7 @@ def approve(post: dict, paths: list[Path]) -> Path:
 def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
-                                     "weekly", "signal", "talent", "pay", "perk", "map", "welcome"])
+                                     "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     args = ap.parse_args()
@@ -1245,8 +1342,9 @@ def main() -> int:
     elif args.kind == "map":
         a, _, b = (args.company or "판교·분당:성수").partition(":")
         post = build_commute(a, b or "성수")
-    elif args.kind in ("pay", "perk", "welcome"):
-        post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome}[args.kind]()
+    elif args.kind in ("pay", "perk", "welcome", "gongchae"):
+        post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
+                "gongchae": build_gongchae}[args.kind]()
     elif args.kind in ("jd", "same", "roadmap", "weekly", "signal"):
         post = {"jd": build_jd_translate, "same": build_same_role, "roadmap": build_roadmap,
                 "weekly": build_weekly, "signal": build_signals}[args.kind]()
@@ -1257,6 +1355,9 @@ def main() -> int:
     finally:
         shutdown()
     print(f"[series] {post['id']} {len(paths)}장 → {paths[0].parent}")
+    # 손으로 올릴 때(앱·웹) 붙여 넣을 캡션 — 승인함에 넣는 것과 같은 글.
+    tags = " ".join(f"#{t}" for t in TAGS[post["kind"]])
+    (paths[0].parent / "caption.txt").write_text(f"{post['caption']}\n\n{tags}", encoding="utf-8")
     if not args.dry:
         print(f"[series] 승인함 → {approve(post, paths)}")
     return 0
