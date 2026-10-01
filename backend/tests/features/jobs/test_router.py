@@ -1,4 +1,4 @@
-"""뷰어 API(store.api.main) — 정본 DB 에 붙어 실제로 답을 받아 본다."""
+"""공고 API — 정본 DB 에 붙어 실제로 답을 받아 본다."""
 from __future__ import annotations
 
 from datetime import datetime
@@ -34,22 +34,6 @@ def test_list_items_are_slim_and_carry_server_facets(client):
         assert j["roles"], "직군은 서버가 계산해 싣는다"
         assert j["place"]["region"]
         assert {"site", "pid", "company", "title", "url", "status"} <= set(j)
-
-
-def test_search_response_format_unchanged(client):
-    r = client.get("/api/search", params={"q": "백엔드", "limit": 3})
-    assert r.status_code == 200
-    d = r.json()
-    assert set(d) == {"query", "kind", "total", "engines", "results"}
-    if d["results"]:
-        assert set(d["results"][0]) == {"id", "url", "site", "company", "title", "career",
-                                        "location", "tech_stack", "score", "rank_fts",
-                                        "rank_vec"}
-
-
-def test_health(client):
-    d = client.get("/api/health").json()
-    assert d["ok"] is True and d["stats"]["job_facets"] > 0
 
 
 # ── 상태는 읽는 순간의 것 ───────────────────────────────────────────────
@@ -174,11 +158,10 @@ def test_missing(client, path, code):
 # ── 파일 내보내기와 같은 모집단 ─────────────────────────────────────────
 
 def test_same_population_as_export(client):
-    """전체 수 = store.jobs.export 가 파일로 내보내는 수(사이트 간 중복 제외, job_dup 뷰 기준)."""
-    from store.db import conn
-    from store.jobs.facets import refresh_dup
-    refresh_dup()
-    with conn.cursor(autocommit=True) as cur:
+    """전체 수 = 파일 내보내기(all_jobs_enriched.json)가 싣는 수(사이트 간 중복 제외, job_dup 뷰 기준)."""
+    from app.db.session import cursor
+    with cursor() as cur:
+        cur.execute("REFRESH MATERIALIZED VIEW mv_job_dup")
         cur.execute("SELECT count(*) AS n FROM v_job v "
                     "WHERE NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = v.id)")
         n = cur.fetchone()["n"]
@@ -188,15 +171,16 @@ def test_same_population_as_export(client):
 # ── 응답 캐시 ───────────────────────────────────────────────────────────
 
 def test_cache_serves_repeat_queries(client, monkeypatch):
-    from store.api import main as api
-    monkeypatch.setattr(api, "CACHE_TTL", 60.0)
-    api._cache.clear()
+    from app.features.jobs import service
+    from app.utils import cache
+    monkeypatch.setattr(cache, "ttl_override", 60.0)
+    cache.clear()
     calls = []
-    real = api._jobs_payload
-    monkeypatch.setattr(api, "_jobs_payload", lambda *a: calls.append(1) or real(*a))
+    real = service._list_jobs
+    monkeypatch.setattr(service, "_list_jobs", lambda q: calls.append(1) or real(q))
     a = jobs(client, region="서울", limit=5)
     b = jobs(client, region="서울", limit=5)
     c = jobs(client, region="부산", limit=5)
     assert a == b and a != c
     assert len(calls) == 2, "같은 질의는 한 번만 계산한다"
-    api._cache.clear()
+    cache.clear()

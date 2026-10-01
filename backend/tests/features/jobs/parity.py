@@ -1,11 +1,11 @@
-"""공고 API(store.api.main)가 뷰어의 브라우저 필터(filter.ts)와 같은 답을 내는지 대조한다.
+"""공고 API 가 뷰어의 브라우저 필터(filter.ts)와 같은 답을 내는지 대조한다.
 
 목록·칩 건수를 서버로 옮기면서 규칙이 두 곳에 생겼다 — 화면 쪽 원본(filter.ts·
-region.ts·classify.ts·career.ts)과 SQL·파이썬 쪽(store.jobs.facets·store.api.main). 이 스크립트는
+region.ts·classify.ts·career.ts)과 SQL·파이썬 쪽(파이프라인 store.jobs.facets·이 API). 이 스크립트는
 DB 의 공고 전량을 두고 여러 필터 조합을 양쪽에 똑같이 넣어 건수·첫 페이지 순서·
 칩 건수가 같은지 본다. node 로 TS 원본을 직접 돌린다(node 22.6+).
 
-    python -m store.api.parity        # 불일치가 있으면 종료 코드 1
+    python -m tests.features.jobs.parity   # (backend/ 에서) 불일치가 있으면 종료 코드 1
 
 규칙을 한쪽만 고치면 여기서 걸린다.
 """
@@ -13,13 +13,10 @@ from __future__ import annotations
 
 import json
 import subprocess
-import sys as _sys
 import tempfile
 from pathlib import Path
 
-_sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
-
-VIEWER = Path(__file__).resolve().parents[3] / "jd-viewer"
+VIEWER = Path(__file__).resolve().parents[4] / "jd-viewer"
 
 CASES: list[dict] = [
     {}, {"closed": "show"}, {"closed": "only"}, {"unverified": "hide"},
@@ -69,18 +66,36 @@ writeFileSync(outPath, JSON.stringify(cases.map((c) => {
 })))
 """
 
+def _load() -> tuple[list[dict], dict[str, str]]:
+    """파일 내보내기가 싣는 공고 전량(중복 제외)과 회사 → 규모.
+
+    규모는 파이프라인이 job_facet 에 채운 값을 쓴다 — 화면은 같은 판정 함수로 만든
+    company_meta.json 에서 붙인다. 여기서 보는 건 규모 판정이 아니라 필터 규칙이다.
+    """
+    from app.db.session import cursor
+    from app.features.jobs.mapping import JOB_SELECT, row_to_job
+    with cursor() as cur:
+        cur.execute("REFRESH MATERIALIZED VIEW mv_job_dup")
+        cur.execute("SELECT x.*, f.company_size AS f_size FROM (" + JOB_SELECT + """, v.id
+              FROM v_job v
+             WHERE NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = v.id)) x
+              JOIN job_facet f ON f.job_id = x.id
+             ORDER BY x.first_seen_at DESC, x.id DESC""")
+        rows = cur.fetchall()
+    jobs = [row_to_job(r, i) for i, r in enumerate(rows, start=1)]
+    sizes = {r["company"]: r["f_size"] for r in rows if r["f_size"]}
+    return jobs, sizes
+
+
 _PARAM = {"sites": "site", "careers": "career", "stacks": "stack", "roles": "role",
           "regions": "region", "districts": "district", "sizes": "size"}
 
 
 def main() -> int:
     from fastapi.testclient import TestClient
-    from store.api.main import app
-    from store.jobs.export import fetch_jobs
-    from store.jobs.facets import company_sizes, refresh_dup
+    from app.main import app
 
-    refresh_dup()
-    jobs = fetch_jobs()
+    jobs, sizes = _load()
     with tempfile.TemporaryDirectory() as td:
         t = Path(td)
         (t / "hooks.mjs").write_text(_HOOKS, encoding="utf-8")
@@ -90,8 +105,7 @@ def main() -> int:
         (t / "run.mjs").write_text(_RUNNER % {"viewer": VIEWER.as_uri()}, encoding="utf-8")
         (t / "jobs.json").write_text(json.dumps(jobs, ensure_ascii=False), encoding="utf-8")
         # 화면은 규모를 company_meta.json 에서 붙인다 — 같은 판정 함수로 만든 표를 준다.
-        (t / "sizes.json").write_text(json.dumps(company_sizes(jobs), ensure_ascii=False),
-                                      encoding="utf-8")
+        (t / "sizes.json").write_text(json.dumps(sizes, ensure_ascii=False), encoding="utf-8")
         (t / "cases.json").write_text(json.dumps(CASES, ensure_ascii=False), encoding="utf-8")
         subprocess.run(["node", "--no-warnings", "--import", (t / "reg.mjs").as_uri(), str(t / "run.mjs"),
                         str(t / "jobs.json"), str(t / "sizes.json"), str(t / "cases.json"),

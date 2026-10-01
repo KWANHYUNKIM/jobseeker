@@ -7,15 +7,16 @@
 from __future__ import annotations
 
 import re
-from pathlib import Path
+
+from tests.conftest import VIEWER
 
 VIEWER_PARAMS = {"site", "career", "stack", "role", "region", "district", "size", "q",
                  "semantic", "closed", "unverified", "page", "limit"}
-TS = Path(__file__).resolve().parents[2] / "jd-viewer" / "src" / "features" / "jobs" / "useJobsApi.ts"
+TS = VIEWER / "src" / "features" / "jobs" / "useJobsApi.ts"
 
 
 def _server_params() -> set[str]:
-    from store.api.main import app
+    from app.main import app
     op = app.openapi()["paths"]["/api/jobs"]["get"]
     return {p["name"] for p in op["parameters"]}
 
@@ -34,7 +35,7 @@ def test_viewer_source_sends_exactly_these_params():
 
 
 def test_list_paths_exist():
-    from store.api.main import app
+    from app.main import app
     paths = set(app.openapi()["paths"])
     assert {"/api/jobs", "/api/jobs/{key}", "/api/jobs/lookup", "/api/search",
             "/api/health"} <= paths

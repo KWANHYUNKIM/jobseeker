@@ -88,7 +88,7 @@ REGISTRY: list[Loop] = [
          note="design-lab/SOCIAL.md. autopublish.live 가 꺼져 있으면 연습 발행만."),
     Loop("ops", "운영 대시보드 8770", "launchd", "mac", "상주(KeepAlive)", 0, "com.jobseeker.ops → monitoring.ops_server"),
     Loop("stats", "통계 대시보드 8765", "launchd", "mac", "상주(KeepAlive)", 0, "com.jobseeker.stats → dashboard/serve.py"),
-    Loop("search", "뷰어 API 8771", "launchd", "mac", "상주(KeepAlive)", 0, "com.jobseeker.search → store.api.server"),
+    Loop("search", "뷰어 API 8771", "launchd", "mac", "상주(KeepAlive)", 0, "com.jobseeker.search → backend: python -m app.main"),
     Loop("collect", "방문 수집 8772", "launchd", "mac", "상주(KeepAlive)", 0, "com.jobseeker.collect → engagement.collect"),
 
     # ── 크롤 한 회차 안의 단계(차례대로) ──────────────────────────────

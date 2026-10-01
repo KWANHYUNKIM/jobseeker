@@ -13,12 +13,10 @@ trafilatura>=1.12
 # crawl_techblog 의 한국어 번역 — 없으면 영어 글은 본문 파일이 아예 안 만들어진다.
 # 패키지 이름은 하이픈, import 는 언더스코어(deep_translator).
 deep-translator>=1.11
-# 정본 DB(PostgreSQL) 접근 — store/ 전부와 8771 검색 API 가 이걸 쓴다.
-# 없으면 store.api.server 가 기동 즉시 죽고 setup-dashboards.sh 가 SQLite 판으로 되돌린다.
+# 정본 DB(PostgreSQL) 접근 — store/ 전부.
 psycopg[binary]>=3.2
-# 뷰어 API(store.api.main, 8771) — 공고 목록·상세·검색. 없으면 store.api.server 가 기동 즉시 죽고
-# setup-dashboards.sh 가 SQLite 판(semantic.server)으로 되돌린다 — 그때 뷰어는 공고
-# 전량 파일(all_jobs_enriched.json)로 물러선다.
+# 뷰어 API(backend/, 8771)도 이 venv 로 돈다(launchd 가 $VENV/bin/python -m app.main).
+# 의존성 목록의 원본은 backend/pyproject.toml — 거기를 고치면 여기도 맞춘다.
 fastapi>=0.115
 uvicorn>=0.30
 # 에이전트용 MCP 서버(agent_mcp/, 8790). 2.x 는 FastMCP 가 MCPServer 로 바뀌었다 — 1.x 코드와 안 맞는다.

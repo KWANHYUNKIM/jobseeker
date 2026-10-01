@@ -3,7 +3,7 @@
 #
 #   ops (8770)   : 크롤 파이프라인 실시간 운영 대시보드 — "지금 뭘 하는지"
 #   stats(8765)  : 통계 대시보드 — 공고 분류·집계
-#   search(8771) : 하이브리드 검색 API — 뷰어가 /api/ 로 부른다
+#   search(8771) : 뷰어 API(backend/) — 공고·회사·검색… 뷰어가 /api/ 로 부른다
 #   collect(8772): 행동 기록 수집 — 뷰어가 /collect 로 부른다
 #
 # ops·stats 는 dashboards 프로필의 터널로 외부에 직접 노출된다. search 는 다르다.
@@ -17,9 +17,8 @@
 #
 # --reschedule 이 있는 이유는 setup-crawler.sh 와 같다. launchd 는 등록 당시의
 # 인자를 계속 들고 돈다 — 이 파일에서 모듈을 바꿔 커밋해도 누가 손으로 다시
-# 등록하기 전까지 서버는 옛 모듈을 돌린다. 실제로 2026-09-07 에 검색 API 를
-# 정본 DB 판(store.api.server)으로 바꿔 배포했는데, 8771 에서는 그 뒤로도 옛
-# semantic.server(SQLite)가 돌고 있었다. 배포가 이걸 부르면 그 간격이 없어진다.
+# 등록하기 전까지 서버는 옛 모듈을 돌린다(2026-09-07 에 실제로 그랬다).
+# 배포가 이걸 부르면 그 간격이 없어진다.
 #
 # 터널은 docker-compose.prod.yml 의 dashboards 프로필이 담당한다.
 # 이 스크립트는 파이썬 서버(호스트 네이티브)만 관리한다. 크롤러와 같은 venv 를
@@ -40,29 +39,25 @@ log()  { printf '\033[1;34m▶\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33m!\033[0m %s\n' "$*"; }
 die()  { printf '\033[1;31m✗\033[0m %s\n' "$*" >&2; exit 1; }
 
-# 검색 API 는 정본 DB(PostgreSQL)를 읽는 store.api.server 다. 예전 SQLite 판은 지우지
-# 않고 되돌릴 자리로 남겨 둔다 — DB 컨테이너가 안 떠 있거나 psycopg 가 없는 머신에서
-# 새 서버는 기동 즉시 죽는다(health() 가 첫 줄에서 DB 를 친다). 그런 경우 아래
-# "기동 확인" 이 8771 만 예전 판으로 되돌린다. 검색이 반쪽으로 도는 편이 통째로
-# 죽어 뷰어의 /api/ 가 전부 502 가 되는 것보다 낫다.
-SEARCH_MODULE="${SEARCH_MODULE:-store.api.server}"
-SEARCH_FALLBACK="semantic.server"
-SEARCH_DSN="${JOBSEEKER_DSN:-postgresql://jobseeker:jobseeker@127.0.0.1:5433/jobseeker}"
+# 뷰어 API 는 backend/ 의 FastAPI 앱이다(크롤러와 같은 venv). DB 에 못 붙어도 죽지
+# 않고 503 을 돌려준다 — 그동안 뷰어는 정적 파일로 물러서고, DB 가 살아나면 다시
+# 등록하지 않아도 그대로 답한다. 예전처럼 옛 SQLite 판으로 되돌릴 자리는 없다.
+API_DSN="${JOBSEEKER_DSN:-postgresql://jobseeker:jobseeker@127.0.0.1:5433/jobseeker}"
 
-# label / 모듈·인자 / bind 환경변수 / 포트 / 그 서비스에만 주는 환경변수(선택, '|' 로 여럿)
-# 마지막 칸은 값에 ':' 가 들어갈 수 있어(DSN) 반드시 맨 뒤여야 한다.
+# label / 작업 폴더(ROOT 기준) / 모듈·인자 / bind 환경변수 / 포트 / 그 서비스에만 주는
+# 환경변수(선택, '|' 로 여럿). 마지막 칸은 값에 ':' 가 들어갈 수 있어(DSN) 반드시 맨 뒤여야 한다.
 SERVICES=(
-  "com.jobseeker.ops:monitoring.ops_server|--port|8770|--no-open:OPS_HOST:8770:"
-  "com.jobseeker.stats:dashboard/serve.py|--port|8765:DASH_HOST:8765:"
-  "com.jobseeker.search:$SEARCH_MODULE|--port|8771:SEARCH_HOST:8771:JOBSEEKER_DSN=$SEARCH_DSN"
-  "com.jobseeker.collect:engagement.collect|--port|8772:COLLECT_HOST:8772:"
+  "com.jobseeker.ops:catch_capture:monitoring.ops_server|--port|8770|--no-open:OPS_HOST:8770:"
+  "com.jobseeker.stats:catch_capture:dashboard/serve.py|--port|8765:DASH_HOST:8765:"
+  "com.jobseeker.search:backend:app.main|--port|8771:SEARCH_HOST:8771:JOBSEEKER_DSN=$API_DSN"
+  "com.jobseeker.collect:catch_capture:engagement.collect|--port|8772:COLLECT_HOST:8772:"
 )
 
-# entry 를 다섯 칸으로 가른다. read 는 마지막 변수에 나머지를 통째로 넣으므로
+# entry 를 여섯 칸으로 가른다. read 는 마지막 변수에 나머지를 통째로 넣으므로
 # DSN 안의 ':' 가 살아남는다. here-string 끝에서 read 가 1 을 돌려주는데
 # set -e 가 그걸 실패로 보므로 || true 로 받는다.
 split_entry() {
-  IFS=':' read -r S_LABEL S_ARGS S_BIND S_PORT S_ENV <<< "$1" || true
+  IFS=':' read -r S_LABEL S_DIR S_ARGS S_BIND S_PORT S_ENV <<< "$1" || true
 }
 
 uninstall() {
@@ -84,8 +79,8 @@ RESCHEDULE=0
 
 # plist 본문을 파일이 아니라 표준출력으로 만든다. --reschedule 이 "지금 걸려 있는
 # 것과 같은가" 를 문자열 비교 한 번으로 판정할 수 있어야 하기 때문이다.
-render_plist() {  # label argspec bindvar port extraenv
-  local label="$1" argspec="$2" bindvar="$3" extraenv="${5:-}"
+render_plist() {  # label workdir argspec bindvar port extraenv
+  local label="$1" workdir="$ROOT/$2" argspec="$3" bindvar="$4" extraenv="${6:-}"
   local prog_args="" extra_xml="" first a kv
 
   # argspec 을 <string> 배열로. '|' 구분, 첫 토큰이 -m 모듈이면 -m 을 앞에 붙인다.
@@ -116,7 +111,7 @@ render_plist() {  # label argspec bindvar port extraenv
   <array>
     <string>$VENV/bin/python</string>
 $prog_args  </array>
-  <key>WorkingDirectory</key><string>$CATCH</string>
+  <key>WorkingDirectory</key><string>$workdir</string>
   <key>EnvironmentVariables</key>
   <dict>
     <key>PATH</key><string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
@@ -162,7 +157,7 @@ install_service() {  # label plist 본문
 for entry in "${SERVICES[@]}"; do
   split_entry "$entry"
   plist="$HOME/Library/LaunchAgents/$S_LABEL.plist"
-  body="$(render_plist "$S_LABEL" "$S_ARGS" "$S_BIND" "$S_PORT" "$S_ENV")"
+  body="$(render_plist "$S_LABEL" "$S_DIR" "$S_ARGS" "$S_BIND" "$S_PORT" "$S_ENV")"
 
   # 배포가 부르는 경로다. 걸려 있는 plist 가 이 파일이 만들 것과 한 글자도 다르지
   # 않고 서비스가 실제로 떠 있으면 건드리지 않는다 — 배포마다 검색 API 를 끊었다
@@ -185,22 +180,6 @@ for entry in "${SERVICES[@]}"; do
   code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 "http://127.0.0.1:$S_PORT/" 2>/dev/null || echo 000)
   if [ "$code" = "200" ]; then
     log "  포트 $S_PORT → HTTP 200 ($S_LABEL)"
-    continue
-  fi
-
-  # 검색만 되돌릴 자리가 있다. store.api.server 는 기동하자마자 정본 DB 를 치므로
-  # DB 가 안 떠 있으면 KeepAlive 가 무한 재시작만 하고 포트는 영영 안 열린다.
-  # 그 상태로 두면 뷰어 검색이 통째로 죽으므로 예전 SQLite 판으로 내려 앉힌다.
-  if [ "$S_LABEL" = "com.jobseeker.search" ] && [ "$SEARCH_MODULE" != "$SEARCH_FALLBACK" ]; then
-    warn "  포트 $S_PORT → HTTP $code — $SEARCH_MODULE 가 못 떴다. $SEARCH_FALLBACK 로 되돌린다"
-    warn "  (정본 DB 를 먼저 띄울 것: docker compose -f db/docker-compose.db.yml up -d)"
-    plist="$HOME/Library/LaunchAgents/$S_LABEL.plist"
-    body="$(render_plist "$S_LABEL" "${S_ARGS/$SEARCH_MODULE/$SEARCH_FALLBACK}" "$S_BIND" "$S_PORT" "$S_ENV")"
-    install_service "$S_LABEL" "$plist" "$body"
-    sleep 3
-    code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 "http://127.0.0.1:$S_PORT/" 2>/dev/null || echo 000)
-    [ "$code" = "200" ] && log "  포트 $S_PORT → HTTP 200 ($SEARCH_FALLBACK 로 복구)" \
-                        || warn "  포트 $S_PORT → HTTP $code (되돌린 뒤에도 안 뜬다 — 로그 확인)"
     continue
   fi
 

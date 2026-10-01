@@ -5,13 +5,9 @@ DB 가 필요한 테스트는 `db` 마커를 달고, DB 에 못 붙으면 통째
 """
 from __future__ import annotations
 
-import os
 import shutil
 
 import pytest
-
-# 응답 캐시는 끈다 — 테스트끼리 서로의 답을 물려받으면 안 된다(캐시는 따로 시험한다).
-os.environ.setdefault("API_CACHE_TTL", "0")
 
 
 def _db_ok() -> bool:
@@ -38,9 +34,3 @@ def pytest_collection_modifyitems(config, items):
         if "node" in item.keywords and not shutil.which("node"):
             item.add_marker(pytest.mark.skip(reason="node 없음"))
 
-
-@pytest.fixture(scope="session")
-def client():
-    from fastapi.testclient import TestClient
-    from store.api.main import app
-    return TestClient(app)

@@ -43,73 +43,11 @@ OUT_DEFAULT = ROOT / "jd-viewer" / "public" / "all_jobs_enriched.json"
 MIN_RATIO = float(os.environ.get("EXPORT_MIN_RATIO", "0.5"))
 
 
-# 뷰어 Job 한 건을 만드는 데 필요한 v_job 컬럼. 공고 API(store.api.main)도 같은 목록을 쓴다.
-JOB_SELECT = """
-            SELECT site, pid, company, company_slug, title, url,
-                   career_text, location_text, tech_stack,
-                   main_tasks, qualifications, preferences, benefits, full_jd,
-                   status, status_source, deadline_on, dday, last_verified_at,
-                   region, source_board, overseas, deadline_text,
-                   employment, education, posted_on, first_seen_at
-"""
-
-
-def row_to_job(r: dict, idx: int) -> dict:
-    """v_job 한 행 → 뷰어의 Job. 필드 이름은 types.ts 를 따른다.
-
-    이 파일(전량 JSON)과 공고 API(store.api.main)가 같은 함수를 쓴다 — 두 벌로 두면
-    파일로 보던 화면과 API 로 보는 화면이 조용히 달라진다.
-    """
-    job = {
-        "site": r["site"],
-        "idx": idx,
-        "pid": r["pid"],
-        "company": r["company"],
-        "title": r["title"],
-        "url": r["url"],
-        "career": r["career_text"] or "",
-        "location": r["location_text"] or "",
-        "tech_stack": list(r["tech_stack"] or []),
-        "main_tasks": r["main_tasks"] or "",
-        "qualifications": r["qualifications"] or "",
-        "preferences": r["preferences"] or "",
-        "benefits": r["benefits"] or "",
-        "full_jd": r["full_jd"] or "",
-        "status": r["status"],
-        "deadline_date": r["deadline_on"].isoformat() if r["deadline_on"] else "",
-        "deadline": r["deadline_text"] or "",
-        # dday 는 저장값이 아니라 **지금 다시 계산한** 값이다. 지금까지는 크롤
-        # 시점 문자열('D-4')을 그대로 실어 보내서 하루만 지나도 틀렸다.
-        # build_calendar.py 와 build_reposts.py 가 이 필드를 파싱하므로 형식은
-        # 유지한다(빈 문자열 = 마감일을 모르거나 이미 지남).
-        "dday": _dday_text(r["dday"]),
-        # 판정 근거를 함께 내보낸다. 'unknown' 은 "모집중"이 아니라 "마감을 알
-        # 방법이 없어 열어둔 것"이다 — 화면이 그 둘을 구분해 보여줄 수 있다.
-        "status_source": r["status_source"],
-        "closed_reason": _reason(r),
-        # 공고가 올라온 날. 원본이 말한 값이라 없을 수 있다(saramin).
-        "posted_date": r["posted_on"].isoformat() if r["posted_on"] else "",
-        # 등록일이 없을 때 쓰는 대타 — "우리가 처음 본 날". 추정값이므로
-        # 화면은 둘을 구분해서 보여줘야 한다(같이 실어 보내는 이유가 그것이다).
-        # 날짜까지만 보낸다. 17,000건 × 시:분:초는 파일만 굵게 한다.
-        "first_seen_at": r["first_seen_at"].date().isoformat() if r["first_seen_at"] else "",
-        # 회사 주소 슬러그. 지금까지 화면이 company_stacks 를 뒤져 찾던 값이다.
-        "company_slug": r["company_slug"],
-    }
-    # build_role_insights.py 가 학력 분포를 세어 RoleInsights 화면에 그린다.
-    # 고용형태는 ENUM 이 걸러 낸 값만 남는다 — 지금 데이터는 공고 제목이 통째로
-    # 들어간 것이 대부분이라 대개 비어 있다(jobkorea txt 파서를 고쳐야 채워진다).
-    if r["education"]:
-        job["education"] = r["education"]
-    if r["employment"]:
-        job["employment"] = r["employment"]
-    if r["region"]:
-        job["region"] = r["region"]
-    if r["source_board"]:
-        job["source_board"] = r["source_board"]
-    if r["overseas"]:
-        job["overseas"] = True
-    return job
+# 공고 한 건이 뷰어에 어떻게 보이는가(v_job 컬럼 → Job)는 뷰어 API 가 정한다 —
+# 이 파일과 API 가 같은 함수를 써야 파일로 보던 화면과 API 로 보는 화면이 같다.
+# 방향은 언제나 파이프라인 → backend 다(backend 는 파이프라인을 import 하지 않는다).
+_sys.path.insert(0, str(ROOT / "backend"))
+from app.features.jobs.mapping import JOB_SELECT, row_to_job  # noqa: E402,F401
 
 
 def fetch_jobs() -> list[dict]:
@@ -135,33 +73,6 @@ def fetch_jobs() -> list[dict]:
         job = row_to_job(r, i)
         out.append(job)
     return out
-
-
-def _dday_text(dday: int | None) -> str:
-    """남은 일수 → 'D-4' / 'D-DAY'. 모르거나 이미 지났으면 빈 문자열.
-
-    지난 마감을 'D+3' 같은 형태로 내보내지 않는 이유: build_calendar 는 이 문자열을
-    미래 날짜로 되돌려 읽으므로, 지난 값을 주면 캘린더에 없는 일정이 생긴다.
-    지난 공고는 어차피 status='closed' 라 캘린더가 제외한다.
-    """
-    if dday is None or dday < 0:
-        return ""
-    return "D-DAY" if dday == 0 else f"D-{dday}"
-
-
-def _reason(r: dict) -> str:
-    """기존 closed_reason 문구를 최대한 유지한다(화면이 그대로 보여준다)."""
-    src, status, dl = r["status_source"], r["status"], r["deadline_on"]
-    if src == "override":
-        return "수동 보정"
-    if src == "always_open":
-        return "상시/수시 채용"
-    if src == "unknown":
-        return "마감일 정보 없음"
-    if src == "ledger":
-        return f"원본 확인: {'마감' if status == 'closed' else '모집중'}"
-    iso = dl.isoformat() if dl else ""
-    return f"마감일 경과({iso})" if status == "closed" else f"마감 {iso}"
 
 
 def write_atomic(path: _Path, payload: str) -> None:
