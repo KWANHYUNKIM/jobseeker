@@ -1,11 +1,11 @@
-"""에이전트용 MCP 서버의 데이터 계층 — 뷰어가 이미 서빙하는 산출물을 읽기만 한다.
+"""에이전트용 MCP 서버의 데이터 계층 — 뷰어 API(backend, 8771)를 읽기만 한다.
 
-원본(전부 jd-viewer/public/ 아래, 크롤·엔진이 만든다)
-  all_jobs_enriched.json   공고         → 필요한 칸만 남겨 메모리에 든다(본문은 잘라 둔다)
-  guide/                   취업 브리핑   (guide-engine)
-  reveng/                  기술 역설계   (engine)
-  company_stacks.json      기업 기술스택
-  freelance.json           외주·프리 프로젝트와 단가 분석
+출처(뷰어 화면과 같다. API 가 없으면 같은 이름의 jd-viewer/public/ 파일로 물러선다)
+  /api/jobs/all            공고 전량     → 필요한 칸만 남겨 메모리에 든다(본문은 잘라 둔다)
+  /api/docs/guide/…        취업 브리핑   (guide-engine)
+  /api/docs/reveng/…       기술 역설계   (engine)
+  /api/companies           기업 기술스택(목록 요약)
+  /api/freelance           외주·프리 프로젝트와 단가 분석
 공고 검색은 정본 DB 의 하이브리드 검색(FTS+pgvector)을 먼저 쓰고, DB 가 없으면
 제목·회사·기술 키워드 검색으로 물러선다.
 
@@ -17,12 +17,8 @@ from __future__ import annotations
 import json
 import os
 import re
-import threading
-from pathlib import Path
 from typing import Any
 
-ROOT = Path(__file__).resolve().parent.parent.parent.parent   # jobseeker/
-PUBLIC = ROOT / "jd-viewer" / "public"
 SITE_URL = os.environ.get("AGENT_SITE_URL", "http://localhost:5173").rstrip("/")
 
 SECTION_MAX = 400      # 공고 칸(주요업무·자격요건·우대) 하나당 글자 — 원문은 링크로
@@ -30,29 +26,26 @@ JOB_FIELDS = ("site", "pid", "company", "title", "url", "career", "location", "t
               "status", "deadline_date", "posted_date", "company_size")
 TEXT_FIELDS = ("main_tasks", "qualifications", "preferences")
 
-_lock = threading.Lock()
-_cache: dict[str, tuple[float, Any]] = {}
+# public 파일 이름 → 같은 내용을 주는 뷰어 API 경로. 나머지(guide/·reveng/ …)는 /api/docs/<이름>.
+API_PATHS = {
+    "all_jobs_enriched.json": "/api/jobs/all",     # 공고 전량(읽는 순간의 모집 상태)
+    "company_stacks.json": "/api/companies",       # 회사 목록 요약 — 여기서 쓰는 필드는 다 있다
+    "freelance.json": "/api/freelance",
+}
 
 
 def _load(name: str, build=None):
-    """파일을 읽어 두고 수정 시각이 바뀌면 다시 읽는다. build 가 있으면 가공한 결과를 캐시한다."""
-    path = PUBLIC / name
-    # 같은 파일을 원본으로도, 가공본으로도 읽는다(company_stacks → 회사 기술 / 회사 규모 표).
+    """뷰어 API 로 읽는다(안 되면 같은 이름의 public 파일). build 가 있으면 가공한 결과를 캐시한다.
+
+    뷰어 화면과 같은 출처를 보게 하려고 API 가 먼저다 — 파일은 크롤 회차마다 구운 사본이라
+    마감이 늦다. 캐시·ETag·파일 대체는 core.api 가 맡는다.
+    """
+    from core import api
+    # 같은 원본을 원본으로도, 가공본으로도 읽는다(company_stacks → 회사 기술 / 회사 규모 표).
     # 키에 build 를 넣지 않으면 먼저 읽은 쪽이 다른 쪽 자리를 차지한다.
     key = f"{name}#{build.__qualname__}" if build else name
-    try:
-        mtime = path.stat().st_mtime
-    except OSError:
-        return None
-    with _lock:
-        hit = _cache.get(key)
-        if hit and hit[0] == mtime:
-            return hit[1]
-    raw = json.loads(path.read_text(encoding="utf-8"))
-    value = build(raw) if build else raw
-    with _lock:
-        _cache[key] = (mtime, value)
-    return value
+    path = API_PATHS.get(name) or f"/api/docs/{name}"
+    return api.get(path, file=name, build=build, key=f"agent_mcp:{key}")
 
 
 def norm(name: str | None) -> str:

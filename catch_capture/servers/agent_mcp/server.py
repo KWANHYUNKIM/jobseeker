@@ -268,7 +268,8 @@ def main() -> None:
         return
     import uvicorn
     app = mcp.streamable_http_app(host=args.host)
-    print(f"[agent-mcp] http://{args.host}:{args.port}/mcp  (데이터: {data.PUBLIC})", flush=True)
+    from core.api import API_URL
+    print(f"[agent-mcp] http://{args.host}:{args.port}/mcp  (데이터: 뷰어 API {API_URL}, 없으면 public 파일)", flush=True)
     uvicorn.run(app, host=args.host, port=args.port, log_level="warning")
 
 

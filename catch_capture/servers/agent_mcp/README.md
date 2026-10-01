@@ -43,6 +43,7 @@
 
 ```bash
 cd catch_capture
+# 데이터는 뷰어 API(VIEWER_API_URL, 기본 http://127.0.0.1:8771)에서 읽는다 — 없으면 jd-viewer/public 파일.
 python -m servers.agent_mcp.server                  # http://127.0.0.1:8790/mcp  (streamable HTTP)
 python -m servers.agent_mcp.server --host 0.0.0.0   # LAN 에서 붙일 때
 python -m servers.agent_mcp.server --stdio          # 로컬 에이전트가 프로세스로 띄울 때
