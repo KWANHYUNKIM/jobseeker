@@ -128,3 +128,31 @@ def find_by_key(site: str, pid: str) -> dict | None:
 
 def find_key_by_url(url: str) -> dict | None:
     return fetch_one("SELECT site::text AS site, pid FROM job WHERE url = %s", (url,))
+
+
+# ── 전량(파일 내보내기와 같은 모양) — agent-mcp·admin 처럼 전량을 메모리에 올리는 쪽용 ──
+
+_ALL = JOB_SELECT + """
+      FROM v_job v
+     WHERE NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = v.id)
+     ORDER BY v.first_seen_at DESC, v.id DESC
+"""
+
+# 전량이 바뀌었는지 싸게 가늠하는 지문. 공고가 들어오거나(last_seen_at·건수) 닫히거나
+# (재확인·수동 보정) 날짜가 넘어가면(마감일 경과로 상태가 바뀐다) 달라진다.
+_FINGERPRINT = """
+    SELECT md5(concat_ws('|', (SELECT count(*) FROM job), (SELECT max(last_seen_at) FROM job),
+                         (SELECT max(gone_at) FROM job),
+                         (SELECT max(checked_at) FROM job_closure_check),
+                         (SELECT max(created_at) FROM job_override), current_date)) AS fp
+"""
+
+
+def fingerprint() -> str:
+    return fetch_one(_FINGERPRINT)["fp"]
+
+
+def all_rows() -> list[dict]:
+    with cursor() as cur:
+        cur.execute(_ALL)
+        return cur.fetchall()

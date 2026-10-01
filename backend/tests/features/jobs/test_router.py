@@ -186,3 +186,15 @@ def test_cache_serves_repeat_queries(client, monkeypatch):
     assert a == b and a != c
     assert len(calls) == 2, "같은 질의는 한 번만 계산한다"
     cache.clear()
+
+
+# ── 전량 ────────────────────────────────────────────────────────────────
+
+def test_all_matches_file_export_shape_and_etag(client):
+    r = client.get("/api/jobs/all")
+    assert r.status_code == 200 and r.headers.get("etag")
+    rows = r.json()
+    assert rows and rows[0]["idx"] == 1 and "full_jd" in rows[0]
+    assert len(rows) == jobs(client, closed="show")["all_total"]
+    again = client.get("/api/jobs/all", headers={"If-None-Match": r.headers["etag"]})
+    assert again.status_code == 304

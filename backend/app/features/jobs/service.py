@@ -111,3 +111,13 @@ def lookup(url: str) -> dict:
     if not r:
         raise NotFound("없는 공고")
     return {"key": f"{r['site']}-{r['pid']}", "site": r["site"], "pid": r["pid"]}
+
+
+def fingerprint() -> str:
+    """전량이 바뀌었는지의 지문 — /api/jobs/all 의 ETag."""
+    return repository.fingerprint()
+
+
+def all_jobs() -> list[dict]:
+    """공고 전량(본문 포함·중복 제외·최신순) — all_jobs_enriched.json 과 같은 모양."""
+    return [row_to_job(r, i) for i, r in enumerate(repository.all_rows(), start=1)]
