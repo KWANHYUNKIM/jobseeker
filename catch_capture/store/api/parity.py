@@ -87,13 +87,13 @@ def main() -> int:
         (t / "reg.mjs").write_text(
             f"import {{ register }} from 'node:module'\nregister('{(t / 'hooks.mjs').as_uri()}')\n",
             encoding="utf-8")
-        (t / "run.mjs").write_text(_RUNNER % {"viewer": VIEWER.as_posix()}, encoding="utf-8")
+        (t / "run.mjs").write_text(_RUNNER % {"viewer": VIEWER.as_uri()}, encoding="utf-8")
         (t / "jobs.json").write_text(json.dumps(jobs, ensure_ascii=False), encoding="utf-8")
         # 화면은 규모를 company_meta.json 에서 붙인다 — 같은 판정 함수로 만든 표를 준다.
         (t / "sizes.json").write_text(json.dumps(company_sizes(jobs), ensure_ascii=False),
                                       encoding="utf-8")
         (t / "cases.json").write_text(json.dumps(CASES, ensure_ascii=False), encoding="utf-8")
-        subprocess.run(["node", "--no-warnings", "--import", str(t / "reg.mjs"), str(t / "run.mjs"),
+        subprocess.run(["node", "--no-warnings", "--import", (t / "reg.mjs").as_uri(), str(t / "run.mjs"),
                         str(t / "jobs.json"), str(t / "sizes.json"), str(t / "cases.json"),
                         str(t / "out.json")], check=True)
         ts = json.loads((t / "out.json").read_text(encoding="utf-8"))

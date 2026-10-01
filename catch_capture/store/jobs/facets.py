@@ -419,7 +419,7 @@ def parity() -> int:
         slim = [{k: j.get(k) for k in ("title", "tech_stack", "qualifications", "location",
                                        "overseas", "career")} for j in jobs]
         src.write_text(json.dumps(slim, ensure_ascii=False), encoding="utf-8")
-        js.write_text(_PARITY_JS % {"viewer": viewer.as_posix()}, encoding="utf-8")
+        js.write_text(_PARITY_JS % {"viewer": viewer.as_uri()}, encoding="utf-8")
         subprocess.run(["node", "--no-warnings", str(js), str(src), str(dst)], check=True)
         ts = json.loads(dst.read_text(encoding="utf-8"))
     bad = 0
