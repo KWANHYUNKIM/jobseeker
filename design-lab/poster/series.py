@@ -12,6 +12,10 @@ templates/series.html 하나이고 시리즈마다 색만 다르다(CONTENT_PLAN
   python -m poster.series stack          # [데이터로 본 채용] 모집중 공고가 가장 많이 찾는 기술
   python -m poster.series rates          # [데이터로 본 채용] 외주 월 단가, 등급별
   python -m poster.series guide 쿠팡     # [들어가려면] 그 회사 공고 하나에서 뽑은 공부할 것
+  python -m poster.series pay            # [신입 초봉] 신입 연봉을 숫자로 적은 곳
+  python -m poster.series perk           # [이런 조건 되는 곳] 재택·주 4일·스톡옵션·주거 지원
+  python -m poster.series map "판교·분당:성수"   # [출근길 지도] 권역별 공고 + 두 곳 밸런스 게임
+  python -m poster.series welcome        # [신입 환영] 전환형 인턴·졸업예정자·신입 우대
 """
 from __future__ import annotations
 
@@ -50,10 +54,15 @@ THEMES = {
     "weekly": {"paper": "#111317", "ink": "#f5f5f0", "sub": "#9a9ca3", "accent": "#ffd43b", "line": "#2a2d33"},
     "signal": {"paper": "#f8f0fa", "ink": "#2a1233", "sub": "#6f5a77", "accent": "#862e9c", "line": "#e8d5ee"},
     "talent": {"paper": "#0e1a2b", "ink": "#f3f5f8", "sub": "#9aa6b8", "accent": "#5cc8ff", "line": "#22324a"},
+    "pay": {"paper": "#fbf6e9", "ink": "#1c1708", "sub": "#6e6450", "accent": "#e8a400", "line": "#eadfc2"},
+    "perk": {"paper": "#effaf3", "ink": "#0d2618", "sub": "#4e6b5a", "accent": "#12b886", "line": "#cdebd9"},
+    "map": {"paper": "#f1f3f9", "ink": "#121a2e", "sub": "#58627a", "accent": "#4263eb", "line": "#d6dcec"},
+    "welcome": {"paper": "#fff4f1", "ink": "#2b1310", "sub": "#7a5a54", "accent": "#f76707", "line": "#f3d9d1"},
 }
 SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", "term": "[IT 용어]",
           "interview": "[면접 예상 질문]", "qa": "[고민 상담소]", "jd": "[JD 번역기]",
-          "same": "[같은 직무 다른 회사]", "roadmap": "[공부 로드맵]", "weekly": "[주간 리포트]", "signal": "[채용 시그널]", "talent": "[인재상 해부]"}
+          "same": "[같은 직무 다른 회사]", "roadmap": "[공부 로드맵]", "weekly": "[주간 리포트]", "signal": "[채용 시그널]", "talent": "[인재상 해부]",
+          "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -64,7 +73,11 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "roadmap": ["백엔드로드맵", "개발공부", "백엔드개발자", "신입개발자", "개발자취업"],
         "weekly": ["주간리포트", "개발자채용", "채용트렌드", "IT채용", "개발자취업"],
         "signal": ["채용시그널", "기업분석", "개발자채용", "이직준비", "채용트렌드"],
-        "talent": ["인재상", "기업분석", "개발자채용", "이직준비", "면접준비"]}
+        "talent": ["인재상", "기업분석", "개발자채용", "이직준비", "면접준비"],
+        "pay": ["신입연봉", "개발자연봉", "초봉", "신입개발자", "개발자취업"],
+        "perk": ["재택근무", "주4일제", "스톡옵션", "개발자복지", "개발자채용"],
+        "map": ["판교", "성수", "개발자채용", "IT회사", "밸런스게임"],
+        "welcome": ["신입개발자", "전환형인턴", "졸업예정자", "개발자취업", "신입채용"]}
 
 
 # --- 재료 ---------------------------------------------------------------
@@ -811,6 +824,354 @@ def enrich(caption: str, name: str, *, before: str = "") -> str:
     return out
 
 
+# --- [신입 초봉] · [이런 조건 되는 곳] · [출근길 지도] · [신입 환영] --------------------
+# CONTENT_SERIES.md 의 2026-10-01 추가분. 공고 본문(복지·전문)을 봐야 해서 색인이 아니라 공고 전량
+# 원본(jobsource.SOURCE)을 읽는다. 기준일은 파일 수정 시각이 아니라 **공고 등록일 중 가장 늦은 날**이다 —
+# 파일은 복사·복원만 해도 시각이 바뀌어 '오늘 수집' 처럼 잘못 찍힌다.
+def _source() -> list[dict]:
+    return json.loads(jobsource.SOURCE.read_text(encoding="utf-8"))
+
+
+def _data_date(rows: list[dict]) -> str:
+    dates = [j.get("posted_date") for j in rows if j.get("posted_date")]
+    return max(dates) if dates else date.today().isoformat()
+
+
+def _open_dev(jobs: list[dict]) -> list[dict]:
+    today = date.today()
+    return [j for j in jobs if j.get("status") == "active" and not _not_dev(j)
+            and not ((d := _deadline(j, today)) and d < today)]
+
+
+def _text(j: dict) -> str:
+    return "\n".join(j.get(k) or "" for k in ("benefits", "full_jd", "preferences", "qualifications"))
+
+
+def _co(name: str) -> str:
+    return re.sub(r"\(.*?\)|㈜|주식회사|\s+$", "", name or "").strip()
+
+
+NO_CO = "회사명 없음"
+
+
+def _company(j: dict) -> str:
+    """회사 칸이 빈 공고는 제목의 [브랜드] 를 쓴다('[취팡] 프로덕트…'). '[부산/사상구]' 같은 근무지 머리는 회사가 아니다."""
+    if co := _co(j.get("company") or ""):
+        return co
+    t = j.get("title") or ""
+    if m := re.match(r"\s*(?:\(주\)|㈜)\s*([^\s\[\]()]{2,20})", t):
+        return m[1]
+    m = re.match(r"\s*\[([^\]]+)\]", t)
+    if m and not re.search(r"/|(시|구|군|동|역)$|서울|경기|부산|대구|인천|광주|대전|울산|세종|재택|원격", m[1]):
+        return m[1]
+    return NO_CO
+
+
+def _snip(s: str, n: int) -> str:
+    """한 줄 칸에 넣을 원문 — 앞의 글머리표를 떼고, 넘치면 낱말 경계에서 자른다."""
+    s = re.sub(r"^[\s\-–•·ㆍ‧∙・■□▶▷○●◦※*>]+", "", re.sub(r"\s+", " ", s or "")).strip()
+    if len(s) <= n:
+        return s
+    cut = s[:n].rsplit(" ", 1)[0]
+    return (cut if len(cut) > n * .6 else s[:n]).rstrip(" ,(·/-–") + "…"
+
+
+def _title(j: dict) -> str:
+    """제목에서 회사 이름 머리('[인라이플] …', '(주)유니언스 …')를 뗀다 — 회사 칸에 이미 있다."""
+    t = re.sub(r"^\s*\[[^\]]*\]\s*", "", j.get("title") or "")
+    co = _company(j)
+    t = re.sub(r"^\s*(\(주\)|㈜|주식회사)?\s*" + re.escape(co) + r"\s*", "", t) if co else t
+    return t.strip() or (j.get("title") or "")
+
+
+def _by_company(js: list[dict], limit: int = 8) -> list[dict]:
+    """같은 회사가 여러 공고를 올리면 한 줄로 — '넛지헬스케어 · 6건' 처럼."""
+    groups: dict[str, list[dict]] = {}
+    for j in js:
+        groups.setdefault(_company(j), []).append(j)
+    rows = []
+    for co, items in sorted(groups.items(), key=lambda kv: -len(kv[1]))[:limit]:
+        meta = _snip(_title(items[0]), 26) + (f" 외 {len(items) - 1}건" if len(items) > 1 else "")
+        rows.append({"role": co[:14], "meta": meta})
+    return rows
+
+
+def _rows(js: list[dict], limit: int = 8) -> list[dict]:
+    """회사가 셋 이상이면 회사별 한 줄, 적으면 공고별 한 줄(한 회사만 덩그러니 남지 않게)."""
+    if len({_company(j) for j in js}) >= 3:
+        return _by_company(js, limit)
+    seen, rows = set(), []
+    for j in js:
+        t = _snip(_title(j), 30)
+        if (_company(j), t) not in seen:
+            seen.add((_company(j), t))
+            rows.append({"role": _company(j)[:14], "meta": t})
+    return rows[:limit]
+
+
+def _companies(js: list[dict], limit: int = 8) -> str:
+    seen: list[str] = []
+    for j in js:
+        c = _company(j)
+        if c not in seen:
+            seen.append(c)
+    return ", ".join(seen[:limit]) + (f" 외 {len(seen) - limit}곳" if len(seen) > limit else "")
+
+
+def _parse_pay():
+    """연봉 문구 해석은 agent-mcp 의 salary_benchmark 와 같은 함수를 쓴다(두 벌이면 숫자가 갈린다)."""
+    sys.path.insert(0, str(ROOT / "catch_capture"))
+    from servers.agent_mcp.data import parse_pay
+    return parse_pay
+
+
+_MAN = lambda v: f"{v:,}만"  # noqa: E731
+
+
+def build_pay_newgrad() -> dict:
+    """[신입 초봉] 신입 연봉을 숫자로 적어 둔 공고 — 수집 기간 전체.
+
+    신입 연봉으로 볼 수 있는 것만 센다: 연봉 문구에 '신입' 이 있거나 경력 칸이 '신입'(무관) 하나뿐인 공고.
+    '신입·경력' 공고의 연봉은 경력자 값일 수 있어 뺀다. 달러 등 외화로 적은 해외 공고도 뺀다.
+    """
+    parse = _parse_pay()
+    allj = _source()
+    asof = _data_date(allj)
+    found: list[tuple[dict, dict, int]] = []
+    newgrad_jobs = 0
+    for j in allj:
+        if "신입" not in (j.get("career") or "") or _not_dev(j):
+            continue
+        newgrad_jobs += 1
+        p = parse("\n".join(j.get(k) or "" for k in ("benefits", "full_jd")))
+        if not p or re.search(r"\$|USD|달러|환율", p["text"]):
+            continue
+        if "신입" not in p["text"] and not re.fullmatch(r"\s*신입(/무관)?\s*", j.get("career") or ""):
+            continue
+        mid = (p["low"] + p["high"]) // 2 if p.get("high") else p["low"]
+        found.append((j, p, mid))
+    # 같은 회사의 같은 공고가 사이트마다 올라온다 — 회사·금액이 같으면 한 번만.
+    uniq: dict[tuple, tuple] = {}
+    # 회사를 알 수 없는 사본(회사 칸이 빈 사이트)은 뺀다 — 같은 공고가 회사 이름을 달고 따로 있다.
+    for j, p, mid in found:
+        if _company(j) != NO_CO:
+            uniq.setdefault((_company(j), mid), (j, p, mid))
+    rows = list(uniq.values())
+    n = len(rows)
+    mids = sorted(m for _, _, m in rows)
+    med = mids[n // 2]
+    p90 = mids[int(n * .9)]
+    bands = [("3,000 미만", 0, 3000), ("3,000–3,499", 3000, 3500), ("3,500–3,999", 3500, 4000),
+             ("4,000–4,499", 4000, 4500), ("4,500–4,999", 4500, 5000), ("5,000 이상", 5000, 10**6)]
+    cnt = [(lab, sum(1 for m in mids if lo <= m < hi)) for lab, lo, hi in bands]
+    open_now = [(j, p, m) for j, p, m in rows if j.get("status") == "active"]
+    top = sorted(rows, key=lambda r: -r[2])[:6]
+    note = (f"신입 가능 개발 공고 {newgrad_jobs:,}건 중 신입 연봉을 숫자로 적은 {n}곳(회사·금액 중복 제외) · "
+            f"수집 기간 전체 · 최신 공고 {_dot(asof)} · 범위는 가운데 값, '이상' 은 하한")
+    slides = [
+        {"type": "cover", "big": f"{med:,}", "big_unit": "만원",
+         "lines": ["신입 연봉,", "**숫자로 적은 곳**만 모았다"],
+         "sub": f"공고에 신입 연봉을 적은 {n}곳의 가운데 값", "note": note},
+        {"type": "bars", "title": "신입 연봉 구간", "sub": f"{n}곳 · 만원",
+         "rows": [{"label": lab, "value": c, "display": f"{c}", "unit": f"{round(100 * c / n)}%",
+                   "hi": lab.startswith("3,500")} for lab, c in cnt if c], "note": note},
+        {"type": "stat", "title": "숫자를 적은 곳은 이만큼", "num": f"{round(100 * len(found) / newgrad_jobs, 1)}",
+         "unit": "%", "label": f"신입 가능 공고 {newgrad_jobs:,}건 중 신입 연봉을 숫자로 적은 공고",
+         "explain": "대부분은 '회사 내규에 따름'이다. 그래서 이 값은 **적어 둔 곳들의 값**이지 시장 전체가 아니다. "
+                    f"상위 10% 는 **{p90:,}만 원 이상**.", "note": note},
+        {"type": "jobs", "title": "높게 적은 곳", "sub": "공고 원문의 신입 연봉(지난 공고 포함)",
+         "rows": [{"role": _company(j)[:14], "meta": _snip(p["text"], 32)} for j, p, _ in top], "note": note},
+    ]
+    if open_now:
+        slides.append({"type": "jobs", "title": "지금 모집중이면서 적어 둔 곳", "sub": f"{len(open_now)}곳",
+                       "rows": [{"role": f"{_company(j)[:12]} · {_snip(_title(j), 18)}", "meta": _MAN(m)}
+                                for j, p, m in sorted(open_now, key=lambda r: -r[2])[:7]], "note": note})
+    slides.append({"type": "end", "title": "읽는 법", "lines": [
+        "① 큰 회사일수록 숫자를 안 적는다 — 이 표에 없다고 낮은 게 아니다",
+        "② '이상'·'협의' 는 출발점이다. 면접에서 근거를 들고 이야기하자",
+        "③ 회사 평균연봉(공시)은 전 직군·전 연차 평균이라 **초봉이 아니다**",
+        SEND], "note": note})
+    caption = "\n\n".join([
+        f"[신입 초봉] 신입 연봉을 숫자로 적어 둔 곳 {n}곳 — 가운데 값 {med:,}만 원",
+        "우리가 모은 개발 공고에서 신입 연봉을 숫자로 적은 곳만 셌습니다(수집 기간 전체, 지난 공고 포함).",
+        "구간: " + " · ".join(f"{lab} {c}곳" for lab, c in cnt if c),
+        f"상위 10% 는 {p90:,}만 원 이상. 다만 신입 연봉을 적는 공고 자체가 {round(100 * len(found) / newgrad_jobs, 1)}% 뿐이고, "
+        "큰 회사일수록 적지 않습니다 — '적어 둔 곳들의 값' 으로 읽어 주세요.",
+        "세는 법: 연봉 문구에 '신입' 이 있거나 경력 칸이 '신입' 하나인 공고만. '신입·경력' 공고와 외화로 적은 해외 공고는 뺐습니다. "
+        f"범위는 가운데 값, '이상' 은 하한. 최신 공고 {_dot(asof)} 기준.",
+    ])
+    return {"kind": "pay", "id": f"pay-newgrad-{asof.replace('-', '')}", "title": "신입 초봉",
+            "slides": slides, "caption": caption,
+            "jobs": [{"key": f"{j['site']}-{j['pid']}", "company": j["company"], "role": j["title"]}
+                     for j, _, _ in open_now]}
+
+
+PERKS = [  # (이름, 공고 본문에서 찾는 말) — 회사가 공고에 직접 적은 것만 센다
+    ("재택·원격", r"(재택|원격\s*근무|리모트|remote)(?!\s*(근무\s*)?(불가|없음|미실시|불가능))"),
+    ("스톡옵션", r"스톡\s*옵션|RSU"),
+    ("주거·사택 지원", r"사택|기숙사|숙소\s*제공|주거\s*지원|주택\s*자금|전세\s*자금"),
+    ("주 4일·4.5일", r"주\s*4\s*일\s*(제|근무)|주\s*4\.5\s*일"),
+    ("자율 출퇴근", r"자율\s*출퇴근|유연\s*근무|시차\s*출퇴근"),
+]
+
+
+def build_perks() -> dict:
+    """[이런 조건 되는 곳] IT 사람들이 먼저 보는 조건 — 공고에 직접 적은 곳."""
+    allj = _source()
+    asof = _data_date(allj)
+    rows = _open_dev(allj)
+    n = len(rows)
+    has = {name: [j for j in rows if re.search(pat, _text(j), re.I)] for name, pat in PERKS}
+    four = has["주 4일·4.5일"]
+    remote_new = [j for j in has["재택·원격"] if "신입" in (j.get("career") or "")]
+    note = f"모집중 개발 공고 {n:,}건 · 공고 본문에 그 말을 직접 적은 곳만 · 최신 공고 {_dot(asof)}"
+    rare = four[0] if four else None
+    slides = [
+        {"type": "cover", "big": f"{len(four)}", "big_unit": "건",
+         "lines": ["주 4일 적어 둔 공고,", f"개발 공고 {n:,}건 중"],
+         "sub": "재택·스톡옵션·주거 지원까지 — 공고에 직접 적은 곳만 셌다", "note": note},
+        {"type": "bars", "title": "공고에 적힌 조건", "sub": f"모집중 {n:,}건",
+         "rows": [{"label": name, "value": len(v), "display": f"{len(v)}", "unit": f"{round(100 * len(v) / n)}%",
+                   "hi": name == "주 4일·4.5일"} for name, v in has.items()], "note": note},
+    ]
+    if four:
+        slides.append({"type": "jobs", "title": "주 4일·4.5일을 적은 곳", "sub": "공고 원문 기준",
+                       "rows": _by_company(four),
+                       "note": note})
+    if remote_new:
+        slides.append({"type": "jobs", "title": "재택 되고 신입도 받는 곳", "sub": f"{len(remote_new)}건 중",
+                       "rows": _by_company(remote_new),
+                       "note": note})
+    slides.append({"type": "end", "title": "확인할 것", "lines": [
+        "① '재택' 은 주 1회부터 전면까지 — 면접에서 **몇 회인지** 묻자",
+        "② 스톡옵션은 행사가·베스팅 기간이 핵심",
+        "③ 공고에 안 적어도 있는 회사가 많다 — 이 표는 '적어 둔 곳' 이다",
+        SEND], "note": note})
+    caption = "\n\n".join([
+        f"[이런 조건 되는 곳] 주 4일 적어 둔 공고 {len(four)}건 — 개발 공고 {n:,}건 중",
+        "회사가 공고 본문에 직접 적은 조건만 셌습니다: " + " · ".join(f"{name} {len(v)}건" for name, v in has.items()),
+        (f"주 4일·4.5일: {_companies(four)}") if four else "",
+        f"모집중 개발 공고 기준, 최신 공고 {_dot(asof)}. 공고에 안 적었다고 없는 건 아닙니다 — 면접에서 꼭 물어보세요.",
+    ])
+    caption = "\n\n".join(p for p in caption.split("\n\n") if p)
+    return {"kind": "perk", "id": f"perks-{asof.replace('-', '')}", "title": "이런 조건 되는 곳",
+            "slides": slides, "caption": caption,
+            "jobs": [{"key": f"{j['site']}-{j['pid']}", "company": j["company"], "role": j["title"]}
+                     for j in four[:8]]}
+
+
+AREAS = [  # (권역, 근무지 표기에서 찾는 말, 대표 역)
+    ("강남·역삼·선릉", r"강남|역삼|선릉|삼성동|테헤란", "강남·선릉역"),
+    ("을지로·종로", r"을지로|중구|종로|광화문", "을지로입구·광화문역"),
+    ("여의도·영등포", r"여의도|영등포", "여의도역"),
+    ("판교·분당", r"판교|분당", "판교역"),
+    ("구로·가산", r"구로|가산", "가산디지털단지역"),
+    ("성수", r"성수|성동", "성수역"),
+    ("마포·상암", r"마포|홍대|상암", "디지털미디어시티역"),
+]
+
+
+def build_commute(a: str = "판교·분당", b: str = "성수") -> dict:
+    """[출근길 지도] 권역별 IT 공고 + 두 권역 밸런스 게임(댓글 투표)."""
+    allj = _source()
+    asof = _data_date(allj)
+    rows = _open_dev(allj)
+    n = len(rows)
+    by = {name: [j for j in rows if re.search(pat, j.get("location") or "")] for name, pat, _ in AREAS}
+    station = {name: st for name, _, st in AREAS}
+    note = f"모집중 개발 공고 {n:,}건 · 근무지 표기로 묶음 · 최신 공고 {_dot(asof)}"
+
+    def profile(name: str) -> list:
+        js = by[name]
+        cos = collections.Counter(_company(j) for j in js).most_common(3)
+        st = collections.Counter(s for j in js for s in set(j.get("tech_stack") or [])).most_common(2)
+        newg = sum(1 for j in js if "신입" in (j.get("career") or ""))
+        # 표 칸은 좁아서 1위 회사만, 캡션에는 셋을 쓴다.
+        return [f"{len(js)}건", cos[0][0][:8] if cos else "-", " · ".join(s for s, _ in st) or "-",
+                f"{round(100 * newg / len(js)) if js else 0}%", " · ".join(c for c, _ in cos) or "-"]
+    pa, pb = profile(a), profile(b)
+    slides = [
+        {"type": "cover", "lines": [f"**{a.split('·')[0]}** vs **{b.split('·')[0]}**", "어디로 출근할래?"],
+         "sub": "개발 공고가 모인 곳을 근무지로 세 봤다", "note": note},
+        {"type": "bars", "title": "개발 공고가 모인 곳", "sub": f"모집중 {n:,}건 · 서울·판교",
+         "rows": [{"label": name, "value": len(v), "display": f"{len(v)}", "unit": "건",
+                   "hi": name in (a, b)} for name, v in sorted(by.items(), key=lambda kv: -len(kv[1]))],
+         "note": note},
+        {"type": "table", "title": f"{a.split('·')[0]} vs {b.split('·')[0]}", "sub": "모집중 개발 공고로 비교",
+         "head": ["", a.split("·")[0], b.split("·")[0]],
+         "rows": [["공고 수", pa[0], pb[0]], ["가장 많이 뽑는 곳", pa[1], pb[1]],
+                  ["많이 찾는 기술", pa[2], pb[2]], ["신입 가능", pa[3], pb[3]]], "note": note},
+    ]
+    for name in (a, b):
+        js = by[name]
+        if js:
+            cos = collections.Counter(_company(j) for j in js).most_common(7)
+            slides.append({"type": "jobs", "title": f"{name}에서 뽑는 곳", "sub": station[name],
+                           "rows": [{"role": c[:16], "meta": f"공고 {k}건"} for c, k in cos], "note": note})
+    slides.append({"type": "end", "title": "댓글로 골라 주세요", "lines": [
+        f"🅰 {a.split('·')[0]} — 공고 {pa[0]}", f"🅱 {b.split('·')[0]} — 공고 {pb[0]}",
+        "같이 고민하는 친구를 태그하고", SEND], "note": note})
+    caption = "\n\n".join([
+        f"[출근길 지도] {a.split('·')[0]} vs {b.split('·')[0]} — 어디로 출근할래요?",
+        "모집중 개발 공고를 근무지로 묶었습니다: " + " · ".join(f"{name} {len(v)}" for name, v in
+                                                     sorted(by.items(), key=lambda kv: -len(kv[1]))),
+        f"{a}: 공고 {pa[0]} · 많이 뽑는 곳 {pa[4]} · 신입 가능 {pa[3]}",
+        f"{b}: 공고 {pb[0]} · 많이 뽑는 곳 {pb[4]} · 신입 가능 {pb[3]}",
+        f"근무지 표기 기준이라 '서울' 처럼 구를 안 적은 공고는 빠졌습니다. 최신 공고 {_dot(asof)}. 댓글로 🅰/🅱 골라 주세요!",
+    ])
+    return {"kind": "map", "id": f"commute-{asof.replace('-', '')}", "title": f"{a} vs {b}",
+            "slides": slides, "caption": caption, "jobs": []}
+
+
+WELCOME = [  # (묶음, 찾는 말) — 회사가 신입을 '받는다' 가 아니라 '원한다' 고 쓴 곳
+    ("인턴 → 정규직 전환", r"전환형\s*인턴|인턴\s*(후|이후)?\s*(정규직\s*)?전환|채용\s*연계형"),
+    ("졸업예정자 지원 가능", r"졸업\s*예정자|기졸업자\s*및\s*졸업"),
+    ("신입 우대·환영", r"신입\s*(우대|환영)|주니어\s*환영"),
+]
+
+WELCOME_SHORT = {"인턴 → 정규직 전환": "전환형 인턴", "졸업예정자 지원 가능": "졸업예정자", "신입 우대·환영": "신입 우대"}
+
+
+def build_welcome() -> dict:
+    """[신입 환영] 신입을 '받는다' 가 아니라 '원한다' 고 공고에 적은 곳."""
+    allj = _source()
+    asof = _data_date(allj)
+    rows = _open_dev(allj)
+    groups = {name: [j for j in rows if re.search(pat, (j.get("title") or "") + "\n" + _text(j))]
+              for name, pat in WELCOME}
+    total = {f"{j['site']}-{j['pid']}" for v in groups.values() for j in v}
+    newgrad = sum(1 for j in rows if "신입" in (j.get("career") or ""))
+    note = f"모집중 개발 공고 {len(rows):,}건 · 제목·본문에 그 말을 직접 적은 곳 · 최신 공고 {_dot(asof)}"
+    slides = [
+        {"type": "cover", "big": f"{len(total)}", "big_unit": "건",
+         "lines": ["신입을 **원한다** 고", "적어 둔 공고"],
+         "sub": f"'신입 가능'({newgrad}건) 중에서도 전환형 인턴·졸업예정자·신입 우대를 직접 쓴 곳", "note": note},
+        {"type": "bars", "title": "어떻게 환영하나", "sub": "공고에 적은 말로 묶음(겹칠 수 있음)",
+         # 막대 이름 칸은 좁다 — 묶음 이름의 앞말만('인턴 → 정규직 전환' → '전환형 인턴').
+         "rows": [{"label": WELCOME_SHORT.get(name, name), "value": len(v), "display": f"{len(v)}", "hi": i == 0}
+                  for i, (name, v) in enumerate(groups.items())], "note": note},
+    ]
+    for name, v in groups.items():
+        if v:
+            slides.append({"type": "jobs", "title": name, "sub": f"{len(v)}건 중",
+                           "rows": _rows(v), "note": note})
+    slides.append({"type": "end", "title": "넣기 전에", "lines": [
+        "① 전환형 인턴은 **전환율·기간**을 꼭 확인",
+        "② 졸업예정자는 입사 가능 시점이 조건이다",
+        "③ '신입 우대' 는 경력자와 같이 본다는 뜻일 수도 — 자격요건을 읽자",
+        SEND], "note": note})
+    caption = "\n\n".join([
+        f"[신입 환영] 신입을 원한다고 적은 공고 {len(total)}건 — {len({_company(j) for v in groups.values() for j in v})}개 회사",
+        "'신입 가능' 보다 한 걸음 더 — 전환형 인턴·졸업예정자·신입 우대를 공고에 직접 쓴 곳만 모았습니다.",
+        "\n".join(f"· {name} {len(v)}건: {_companies(v, 6)}" for name, v in groups.items() if v),
+        f"모집중 개발 공고 기준, 최신 공고 {_dot(asof)}. 자세한 조건은 공고 원문에서 확인하세요.",
+    ])
+    return {"kind": "welcome", "id": f"welcome-{asof.replace('-', '')}", "title": "신입 환영",
+            "slides": slides, "caption": caption,
+            "jobs": [{"key": f"{j['site']}-{j['pid']}", "company": j["company"], "role": j["title"]}
+                     for j in {f"{j['site']}-{j['pid']}": j for v in groups.values() for j in v}.values()]}
+
+
 # --- 찍기 · 승인 ---------------------------------------------------------
 def render(post: dict) -> list[Path]:
     from .render import _page_maker
@@ -863,7 +1224,8 @@ def approve(post: dict, paths: list[Path]) -> Path:
 
 def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
-    ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap", "weekly", "signal", "talent"])
+    ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
+                                     "weekly", "signal", "talent", "pay", "perk", "map", "welcome"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     args = ap.parse_args()
@@ -880,6 +1242,11 @@ def main() -> int:
         post = build_qa_newgrad()
     elif args.kind == "talent":
         post = build_talent(args.company)
+    elif args.kind == "map":
+        a, _, b = (args.company or "판교·분당:성수").partition(":")
+        post = build_commute(a, b or "성수")
+    elif args.kind in ("pay", "perk", "welcome"):
+        post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome}[args.kind]()
     elif args.kind in ("jd", "same", "roadmap", "weekly", "signal"):
         post = {"jd": build_jd_translate, "same": build_same_role, "roadmap": build_roadmap,
                 "weekly": build_weekly, "signal": build_signals}[args.kind]()
