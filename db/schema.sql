@@ -1139,4 +1139,7 @@ ALTER TABLE hw_offer_day ADD COLUMN IF NOT EXISTS rank integer;
 -- 만들 수 없다 — 글 목록은 이 시각의 역순이다(crawl_techblog 가 파일을 그렇게 정렬한다).
 ALTER TABLE post ADD COLUMN IF NOT EXISTS published_at timestamptz;
 
+-- db/migrations/012_viewer_doc_hash.sql — 정적 문서 동기화(store.ingest.docs)가 바뀐 것만 쓰게.
+ALTER TABLE viewer_doc ADD COLUMN IF NOT EXISTS content_hash text;
+
 COMMIT;

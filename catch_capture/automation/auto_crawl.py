@@ -295,6 +295,13 @@ def refresh_vectors() -> None:
         log(f"[vectors] {what} {'완료' if rc == 0 else f'건너뜀(rc={rc})'} ({time.time() - t0:.0f}s)")
 
 
+def refresh_docs() -> None:
+    """정적 문서(빌더 산출물·역설계·브리핑·도서·하드웨어) → viewer_doc. 바뀐 것만 쓴다."""
+    t0 = time.time()
+    rc = subprocess.call([_python_executable(), "-m", "store.ingest.docs"], cwd=str(BASE_DIR))
+    log(f"[docs] 문서 동기화 {'완료' if rc == 0 else f'건너뜀(rc={rc})'} ({time.time() - t0:.0f}s)")
+
+
 def _gh_env() -> dict:
     """GITHUB_TOKEN 이 없으면 gh CLI 로 토큰을 실어 GitHub API 한도를 올린다(레이더 repo 검증)."""
     env = dict(os.environ)
@@ -524,6 +531,9 @@ def run_iteration(keyword: str, count: int) -> None:
         enrich_extras()  # 레이더 리파인 + 후기 데몬 보장 + 학습 재수집(크롤 결과와 무관)
     except Exception as e:
         log(f"[err] enrich 예외: {e!r}")
+    # 빌더 산출물·엔진 문서를 DB 로 옮긴다 — 뷰어 API 의 /api/docs 가 읽는다. 빌더가 다 돈 뒤라야
+    # 이번 회차 결과가 실린다. 실패해도 회차는 끝난다(뷰어는 정적 파일로 물러선다).
+    refresh_docs()
     # 디스크 유지보수도 한 회차의 일부다. loop 안에만 두었더니 운영(launchd → once)
     # 에서는 한 번도 돌지 않았고, 스냅샷 한 계열이 개당 ~250MB 라 결국 디스크가 차서
     # 데몬이 죽는다. SNAPSHOT_KEEP 을 8에서 3으로 줄여 둔 것도 여기가 돌아야 뜻이 있다.

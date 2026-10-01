@@ -61,6 +61,18 @@ jobs:
           # 컨테이너를 건드리지 않았다는 사실을 로그에 남긴다.
           echo "재빌드 없음 — nginx 가 /data 볼륨에서 JSON 을 직접 읽는다"
 
+      - name: 문서 → 정본 DB (뷰어 API /api/docs)
+        run: |
+          # 역설계·취업 브리핑·도서·하드웨어 원고는 다른 머신의 /loop 가 쓰고 git 으로 온다.
+          # 뷰어는 /api/docs 로 먼저 읽으므로 받자마자 DB 에도 옮긴다(바뀐 것만). DB 가 없으면
+          # 넘어간다 — 뷰어는 정적 파일로 물러선다.
+          set -uo pipefail
+          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+          REPO="${DEPLOY_DIR:-$HOME/jobseeker}"
+          PY="$REPO/catch_capture/.venv/bin/python"
+          [ -x "$PY" ] || PY=python3
+          ( cd "$REPO/catch_capture" && "$PY" -m store.ingest.docs ) || echo "::warning::문서 동기화 실패 — 정적 파일로 계속"
+
       - name: 반영 확인
         run: |
           set -euo pipefail
