@@ -18,3 +18,6 @@ reels/**/*.png
 reels/**/*.jpg
 reels/**/*.wav
 reels/**/*.mp3
+
+# OSM 타일 캐시 — 다시 배포하지 않는다(poster/maps.py)
+assets/maps/

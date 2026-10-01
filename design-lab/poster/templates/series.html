@@ -156,6 +156,23 @@
   .mag .grid { position:absolute; left:64px; right:64px; display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
   .mag .grid div { position:relative; aspect-ratio:4/3; border-radius:14px; background-size:cover; background-position:center; overflow:hidden; }
   .mag .grid span { position:absolute; left:10px; bottom:10px; background:var(--hi); color:#141218; font-size:22px; font-weight:900; padding:3px 12px; border-radius:999px; }
+  /* vs — 둘 중 하나(밸런스 게임). 위 A · 아래 B 사진, 가운데 VS. 질문은 맨 위, 고르는 건 댓글로 */
+  .vs .half { position:absolute; left:0; right:0; height:50%; background-size:cover; background-position:center; }
+  .vs .half::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.62)); }
+  .vs .half.a { top:0; } .vs .half.b { top:50%; }
+  .vs .lab { position:absolute; left:64px; right:64px; z-index:2; text-shadow:0 3px 16px rgba(0,0,0,.6); }
+  .vs .lab .k { display:inline-block; background:var(--hi); color:#141218; font-size:40px; font-weight:900; width:64px; height:64px;
+                border-radius:16px; text-align:center; line-height:64px; margin-right:16px; vertical-align:middle; }
+  .vs .lab .t { font-size:66px; font-weight:900; letter-spacing:-.04em; vertical-align:middle; }
+  .vs .lab .d { margin-top:12px; font-size:36px; font-weight:800; color:#fff; line-height:1.35; }
+  .vs .lab .d em { color:var(--hi); }
+  .vs .badge { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:3; width:150px; height:150px;
+               border-radius:50%; background:#141218; border:8px solid var(--hi); color:var(--hi); font-size:60px; font-weight:900;
+               display:flex; align-items:center; justify-content:center; letter-spacing:-.04em; }
+  .vs .q { position:absolute; left:64px; right:64px; z-index:2; font-size:80px; font-weight:900; letter-spacing:-.05em; line-height:1.1;
+           text-shadow:0 4px 24px rgba(0,0,0,.6); }
+  .vs .q em { color:var(--hi); }
+  .vs .cr2 { position:absolute; left:64px; right:64px; z-index:2; font-size:18px; color:rgba(255,255,255,.6); }
   .mag .pg { position:absolute; right:64px; font-size:22px; font-weight:700; opacity:.6; }
 </style>
 </head>
@@ -176,6 +193,25 @@ const D = JSON.parse(document.getElementById('data').textContent);
 
 
   if (S.type === 'mag') {   // 머리·줄·바닥글을 쓰지 않는 판 — 따로 그리고 끝낸다
+    if (S.vs) {   // 둘 중 하나: 위 A · 아래 B
+      sheet.classList.add('vs'); sheet.style.setProperty('--hi', (D.theme && D.theme.hi) || '#ffe066');
+      const em2 = (node, t) => { String(t || '').split(/(\*\*[^*]+\*\*)/).forEach(p =>
+        node.append(p.startsWith('**') ? el('em', '', p.slice(2, -2)) : p)); return node; };
+      const Hh2 = (D.size || [1080, 1350])[1], st = Hh2 > 1500;
+      S.vs.forEach((v, i) => {
+        const h = el('div', 'half ' + (i ? 'b' : 'a')); h.style.backgroundImage = `url("${v.image}")`; sheet.append(h);
+        const lab = el('div', 'lab'); const top = el('div'); top.append(el('span', 'k', i ? 'B' : 'A'), el('span', 't', v.title));
+        lab.append(top); (v.lines || []).forEach(l => lab.append(em2(el('div', 'd'), l)));
+        lab.style.bottom = i ? (st ? '480px' : '90px') : 'calc(50% + 100px)'; sheet.append(lab);
+      });
+      sheet.append(el('div', 'badge', 'VS'));
+      if (S.q) { const q = el('div', 'q'); S.q.forEach(l => q.append(em2(el('div'), l))); q.style.top = (st ? 230 : 110) + 'px'; sheet.append(q); }
+      if (S.credit) { const c = el('div', 'cr2', S.credit); c.style.bottom = (st ? 410 : 24) + 'px'; sheet.append(c); }
+      const top2 = el('div', 'top'); top2.style.top = (st ? 150 : 52) + 'px'; const tl2 = el('div'); const m2 = (D.series || '').match(/^\[(.+)\]/);
+      tl2.append('[', el('b', '', m2 ? m2[1] : D.series), ']'); top2.append(tl2, el('div', 'h', '@devjobseeker')); sheet.append(top2);
+      document.getElementById('root').append(sheet);
+      window.__overflow = false; window.__minBody = 99; window.__ready = true; return;
+    }
     const [W, Hh] = D.size || [1080, 1350];
     const story = Hh > 1500;
     sheet.style.setProperty('--hi', (D.theme && D.theme.hi) || '#ffe066');
