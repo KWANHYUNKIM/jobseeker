@@ -40,6 +40,8 @@ import time
 from datetime import datetime
 from pathlib import Path
 
+from sites import BY_KEY
+
 BASE_DIR = Path(__file__).resolve().parent.parent.resolve()
 PID_FILE = BASE_DIR / "crawl_all.pid"
 LOG_FILE = BASE_DIR / "crawl_all.log"
@@ -70,15 +72,8 @@ def _python_executable() -> str:
         return str(venv_py)
     return sys.executable
 
-SOURCES: dict[str, dict] = {
-    "dev":      {"script": "crawl_dev.py"},
-    "jobkorea": {"script": "crawl_jobkorea.py"},
-    "jumpit":   {"script": "crawl_jumpit.py"},
-    "saramin":  {"script": "crawl_saramin.py"},
-    "wanted":   {"script": "crawl_wanted.py"},
-    "remote":   {"script": "crawl_remote.py"},   # 해외/원격 보드(RemoteOK·WWR·Himalayas)
-    "ats":      {"script": "crawl_ats.py"},       # 회사 자체 채용페이지(Greenhouse·Lever·Ashby)
-}
+# 사이트 목록은 sites.py 하나다(크롤러 스크립트 이름까지).
+SOURCES: dict[str, dict] = {k: {"script": s.script} for k, s in BY_KEY.items()}
 
 BLOG_PER_FEED_DEFAULT = 20  # 기술 블로그 피드당 기본 수집 개수
 

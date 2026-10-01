@@ -30,7 +30,9 @@ from store.db.upsert import (  # noqa: E402
 CATCH = _Path(__file__).resolve().parent.parent.parent
 OVERRIDES = CATCH / "overrides.json"
 
-SITES = {"wanted", "jumpit", "jobkorea", "saramin", "dev", "remote", "ats"}
+from sites import SITE_KEYS  # noqa: E402
+
+SITES = frozenset(SITE_KEYS)
 
 # 사이트별 급감 가드. 이번 사이클에 본 건수가 DB 에 살아 있는 건수의 이 비율보다
 # 적으면 그 사이트의 gone_at 처리를 **건너뛴다**.

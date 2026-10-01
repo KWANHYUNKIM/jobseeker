@@ -29,10 +29,10 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-SITES = ["wanted", "jumpit", "jobkorea", "saramin", "dev", "remote", "ats"]
-# 키워드에 무관한 소스(해외 보드/회사 ATS): 폴더가 {site}_개발자 하나로 고정돼
+# 사이트 목록(순서 = 중복 대표 순서)은 sites.py 하나다. 키워드에 무관한 소스
+# (KEYWORD_AGNOSTIC — 해외 보드/회사 ATS)는 폴더가 {site}_개발자 하나로 고정돼
 # 있어 키워드별로 반복 집계하지 않고 1회만 집계한다.
-KEYWORD_AGNOSTIC = {"remote", "ats"}
+from sites import KEYWORD_AGNOSTIC, SITE_KEYS as SITES  # noqa: E402
 
 # 목록 기록(listed.json)을 "이번 사이클 것"으로 쳐 주는 나이. 크롤이 20개 키워드를
 # 도는 데 40분 남짓이고 주기가 1시간이라, 이보다 오래된 기록은 지난 사이클이거나

@@ -55,11 +55,10 @@ CLOSE_CHECK_LIMIT = int(os.environ.get("CLOSE_CHECK_LIMIT", "400"))
 CLOSE_CHECK_EVERY = int(os.environ.get("CLOSE_CHECK_EVERY", "600"))
 CLOSE_CHECK_BATCH = int(os.environ.get("CLOSE_CHECK_BATCH", "100"))
 
-# 키워드로 검색하는 국내 사이트. 사이클마다 키워드 수만큼 돈다.
-KEYWORD_SITES = ["dev", "jobkorea", "jumpit", "saramin", "wanted"]
-# 키워드와 무관한 소스(해외 원격 보드·회사 ATS). 보드 전체를 훑으므로 키워드마다
-# 돌 이유가 없다 — 기술 블로그와 같이 사이클당 1회(마지막 키워드)만 붙인다.
-AGNOSTIC_SITES = ["remote", "ats"]
+# 사이트 목록은 sites.py 하나다. KEYWORD_SITES(국내 사이트)는 키워드마다 돌고,
+# AGNOSTIC_SITES(해외 원격 보드·회사 ATS)는 보드 전체를 훑으므로 키워드마다 돌 이유가
+# 없다 — 기술 블로그와 같이 사이클당 1회(마지막 키워드)만 붙인다.
+from sites import AGNOSTIC_SITES, KEYWORD_SITES  # noqa: E402
 
 # 크롤 오케스트레이션이 함께 굴리는 부가 작업(흩어진 cron 을 여기로 통합)
 RADAR_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_company_tech_radar.py"

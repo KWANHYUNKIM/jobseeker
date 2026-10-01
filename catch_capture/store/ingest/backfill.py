@@ -42,7 +42,9 @@ ENRICHED = ROOT / "jd-viewer" / "public" / "all_jobs_enriched.json"
 CLOSURES = CATCH / "job_closures.json"
 OVERRIDES = CATCH / "overrides.json"
 
-SITES = {"wanted", "jumpit", "jobkorea", "saramin", "dev", "remote", "ats"}
+from sites import SITE_KEYS  # noqa: E402
+
+SITES = frozenset(SITE_KEYS)
 
 
 def load_closures() -> dict:
