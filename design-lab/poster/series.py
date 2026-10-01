@@ -64,12 +64,14 @@ THEMES = {
             "photo_accent": "#c0abff"},
     "balance": {"paper": "#141218", "ink": "#ffffff", "sub": "#b9b4c7", "accent": "#ffe066", "line": "#2c2833"},
     "tier": {"paper": "#141218", "ink": "#ffffff", "sub": "#b9b4c7", "accent": "#ffe066", "line": "#2c2833"},
+    "contra": {"paper": "#15171d", "ink": "#f4f2ec", "sub": "#9b9fa9", "accent": "#ffd43b", "line": "#2b2f38"},
 }
 SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", "term": "[IT 용어]",
           "interview": "[면접 예상 질문]", "qa": "[고민 상담소]", "jd": "[JD 번역기]",
           "same": "[같은 직무 다른 회사]", "roadmap": "[공부 로드맵]", "weekly": "[주간 리포트]", "signal": "[채용 시그널]", "talent": "[인재상 해부]",
           "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]",
-          "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]", "balance": "[둘 중 하나]", "tier": "[티어표]"}
+          "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]", "balance": "[둘 중 하나]", "tier": "[티어표]",
+          "contra": "[공고 원문]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -89,7 +91,8 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "lunch": ["판교맛집", "판교점심", "판교테크노밸리", "IT회사", "개발자채용"],
         "kit": ["웰컴키트", "신입사원", "첫출근", "IT회사", "개발자취업"],
         "balance": ["밸런스게임", "신입개발자", "개발자취업", "IT회사", "취업고민"],
-        "tier": ["신입연봉", "개발자연봉", "초봉", "신입개발자", "연봉티어"]}
+        "tier": ["신입연봉", "개발자연봉", "초봉", "신입개발자", "연봉티어"],
+        "contra": ["채용공고", "신입개발자", "자격요건", "개발자취업", "중고신입"]}
 
 
 # --- 재료 ---------------------------------------------------------------
@@ -1289,6 +1292,85 @@ def build_gongchae() -> dict:
             "reel_lead": "준비하는 8가지는 캡션에 정리했어요 — 저장해 두고 꺼내 보세요 📌"}
 
 
+#: 경력 칸이 '신입부터 N년까지' 범위인 공고 — 원티드식 표기('신입-경력 9년', '신입 이상')
+CONTRA_RANGE = re.compile(r"^\s*신입\s*([-–~]\s*경력|이상)")
+#: 자격요건 한 줄에 'N년 이상' 경력·경험 — '신입 / 경력 2년 이상' 처럼 두 갈래를 나눠 적은 줄은 뺀다
+CONTRA_REQ = re.compile(r"^[^\n]*((경력|경험)[^\n]{0,40}?\d+\s*년\s*이상|\d+\s*년\s*이상[^\n]{0,40}(경력|경험))[^\n]*", re.M)
+
+
+def _contra_short(q: str) -> str:
+    """자격요건 한 줄 → 화면 한 줄. 끝의 '있으신 분' 만 떼고 원문 그대로, 'N년 이상' 이 든 마디까지."""
+    q = re.sub(r"\s*(이\s*)?(있으신|이신|인|을\s*보유한|보유한)\s*분\.?$", "", q.strip(" •-ㆍ·\t."))
+    part = next((c for c in re.split(r",\s*", q) if re.search(r"\d+\s*년\s*이상", c)), q)
+    return _snip(part, 34)
+
+
+def build_contra() -> dict:
+    """[공고 원문] 경력 칸엔 '신입', 자격요건엔 'N년 이상' — 모집중 개발 공고에서 실제로 찾은 문장.
+
+    판단할 대상을 화면에 두고(playbook '댓글을 받고 싶다') 고르게 한다. 우리 해석('혹은 그에 준하는')은
+    정답처럼 캡션에서 공개한다. 회사 이름은 가린다 — 망신 주기가 아니라 읽는 법을 말하는 편이다.
+    """
+    allj = _source()
+    asof = _data_date(allj)
+    rows = _open_dev(allj)
+    newg = [j for j in rows if "신입" in (j.get("career") or "")]
+    rng = [j for j in newg if CONTRA_RANGE.search(j["career"])]
+    hits = []
+    for j in rng:
+        ms = [m.group(0) for m in CONTRA_REQ.finditer(j.get("qualifications") or "")
+              if not re.match(r"\s*[•\-ㆍ·]?\s*신입", m.group(0))]
+        if ms:
+            hits.append((j, ms[0].strip(" •-ㆍ·\t")))
+    # 표에는 회사마다 한 줄 — '그에 준하는' 이 붙은 줄은 캡션의 정답이라 표에서 아낀다
+    seen, table = set(), []
+    for j, q in sorted(hits, key=lambda h: "준하는" in h[1]):
+        co = _company(j)
+        if co in seen:
+            continue
+        seen.add(co)
+        table.append((j, q))
+    table = table[:3]
+    equiv = next((q for _, q in hits if "준하는" in q), "")
+    n_co = len({_company(j) for j, _ in hits})
+    note = f"모집중 개발 공고 {len(rows):,}건(최신 {_dot(asof)}) · 원문 그대로 · 회사 이름은 가렸습니다"
+    slides = [
+        {"type": "cover", "lines": ["경력 칸엔 **신입**,", "자격요건엔 **N년 이상**"],
+         "sub": "지금 모집중인 개발 공고에서 실제로 찾은 문장", "note": note},
+        {"type": "end", "title": "실제 공고 원문", "lines": [
+            f"{'ABC'[i]}사 · 경력 칸 「{j['career'].replace('-', '–')}」\n→ 자격요건 「**{_contra_short(q)}**」"
+            for i, (j, q) in enumerate(table)], "note": note},
+        {"type": "bars", "title": "이런 공고, 몇 건?", "sub": "모집중 개발 공고 · 경력 칸과 자격요건 기준",
+         "rows": [{"label": "신입 가능", "value": len(newg), "display": f"{len(newg)}", "unit": "건"},
+                  {"label": "신입–N년", "value": len(rng), "display": f"{len(rng)}", "unit": "건"},
+                  {"label": "+ N년 이상", "value": len(hits), "display": f"{len(hits)}", "unit": f"건 · {n_co}곳", "hi": True}],
+         "note": note},
+        {"type": "end", "title": "신입이라면 넣는다?", "lines": [
+            "**A 넣는다** — 경력 칸에 '신입'",
+            "**B 안 넣는다** — 자격요건에 'N년 이상'",
+            "댓글로 **A? B?** 👇 정답은 캡션에",
+            f"모든 공고가 이렇다는 게 아닙니다 · {len(rng)}건 중 {len(hits)}건"], "note": note},
+    ]
+    caption = "\n\n".join([
+        "경력 칸엔 '신입', 자격요건엔 'N년 이상' — 신입이라면 넣는다(A)? 안 넣는다(B)? 댓글로 👇",
+        "실제 원문(모집중 개발 공고, 회사 이름은 가림)\n" + "\n".join(
+            f"· 경력 칸 '{j['career']}' / 자격요건 \"{q}\"" for j, q in table),
+        f"이런 공고는 많지 않아요. 신입을 받는 모집중 개발 공고 {len(newg)}건 중 경력 칸이 '신입–N년' 범위인 게 {len(rng)}건, "
+        f"그중 자격요건에 'N년 이상' 을 적은 건 {len(hits)}건({n_co}곳)이었습니다.",
+        "정답(이 계정의 읽는 법): A 쪽에 가깝습니다. 경력 칸의 범위는 '이 범위면 지원 가능' 이라는 뜻일 때가 많고, "
+        + (f"같은 갈래의 다른 공고에는 \"{equiv}\" 라고 적은 곳도 있어요 — '그에 준하는 역량' 을 보여 줄 결과물이 있으면 넣어 볼 만합니다. "
+           if equiv else "")
+        + "다만 'N년 이상' 이 필수 칸에 있으면 서류에서 그 기간만큼의 일을 해 봤다는 근거(프로젝트·운영 경험)를 먼저 찾는다는 뜻이니, "
+          "지원서 첫 줄을 거기에 맞추세요.",
+        "이런 공고 본 적 있으면 원문 한 줄 댓글로 공유해 주세요 · 취준 중인 친구에게 보내 주세요",
+        f"세는 법: 우리가 모은 모집중 개발 공고 {len(rows):,}건(최신 {_dot(asof)}) 중 경력 칸에 '신입' 이 있는 공고에서, 자격요건(우대사항 제외)에 "
+        "'경력·경험 N년 이상' 이 있는 줄을 찾았습니다. '신입 / 경력 2년 이상' 처럼 두 갈래를 나눠 적은 줄은 뺐습니다.",
+    ])
+    return {"kind": "contra", "id": f"contra-newgrad-{asof.replace('-', '')}", "title": "경력 칸엔 신입, 자격요건엔 N년",
+            "slides": slides, "caption": caption, "jobs": [],
+            "reel_hold": [2.2, 3.6, 2.6, 4.0], "motion": 0.0, "audio": str(LAB_DIR / "assets" / "audio" / "bed_calm.wav")}
+
+
 # --- 사진이 들어가는 시리즈 — 원고는 content/*.json (출처·사진 저작자까지 거기에) ---------------
 CONTENT = LAB_DIR / "content"
 PHOTOS = LAB_DIR / "assets" / "photos"
@@ -1514,7 +1596,8 @@ def approve(post: dict, paths: list[Path]) -> Path:
 def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
-                                     "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit"])
+                                     "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit",
+                                     "contra"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
@@ -1542,9 +1625,9 @@ def main() -> int:
     elif args.kind == "kit":
         post = (build_kit_history("reel" if args.reel else "story" if args.story else "feed")
                 if args.company == "history" else build_welcomekit())
-    elif args.kind in ("pay", "perk", "welcome", "gongchae"):
+    elif args.kind in ("pay", "perk", "welcome", "gongchae", "contra"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
-                "gongchae": build_gongchae}[args.kind]()
+                "gongchae": build_gongchae, "contra": build_contra}[args.kind]()
     elif args.kind in ("jd", "same", "roadmap", "weekly", "signal"):
         post = {"jd": build_jd_translate, "same": build_same_role, "roadmap": build_roadmap,
                 "weekly": build_weekly, "signal": build_signals}[args.kind]()
