@@ -96,7 +96,9 @@ def test_role_filter_is_any_of(client):
 
 
 def test_text_query_ranks_company_matches_first(client):
-    d = jobs(client, q="현대자동차", limit=5)
+    # 마감 포함으로 본다 — 정렬 규칙을 시험하는 것이지, 지금 모집중인 현대자동차 공고가
+    # 있는지(데이터 상태)를 시험하는 게 아니다.
+    d = jobs(client, q="현대자동차", limit=5, closed="show")
     assert d["total"] > 0
     assert "현대자동차" in d["items"][0]["company"].lower() + d["items"][0]["title"].lower()
 
