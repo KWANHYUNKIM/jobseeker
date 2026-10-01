@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { BlogFile } from '../../../types'
+import { fetchBlogs } from '../api'
 
 interface State {
   data: BlogFile | null
@@ -21,12 +22,8 @@ export function useBlogs(): State {
 
   useEffect(() => {
     let cancelled = false
-    fetch('/tech_blogs.json')
-      .then((r) => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`)
-        return r.json()
-      })
-      .then((data: BlogFile) => {
+    fetchBlogs()
+      .then((data) => {
         if (!cancelled) setState({ data: data ?? EMPTY, loading: false, error: null })
       })
       .catch((e) => {

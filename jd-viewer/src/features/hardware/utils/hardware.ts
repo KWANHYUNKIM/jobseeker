@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { fetchPrices } from '../api'
 
 // PC 부품 화면(/hardware)이 함께 쓰는 모양·등급·시뮬레이션.
 //
@@ -190,7 +191,7 @@ function load(): Promise<HwData> {
     getJson<{ categories: CategoryDef[]; uses: UseDef[] }>('/hardware/index.json'),
     getJson<Bench>('/hardware/bench.json'),
     // 가격 원장은 크롤러가 한 번이라도 돌아야 생긴다. 없으면 가격 없이 보여 준다.
-    getJson<{ day?: string; parts: Record<string, PriceRec> }>('/hardware/prices.json', { parts: {} }),
+    fetchPrices(),
   ]).then(([p, idx, bench, prices]) => ({
     parts: p.parts,
     categories: idx.categories,

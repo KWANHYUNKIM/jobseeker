@@ -6,9 +6,9 @@ import {
   budgetLabel,
   budgetMove,
   todayKst,
-  useFreelance,
   type Project,
 } from '../utils/freelance'
+import { useFreelance } from '../hooks/useFreelance'
 import { FreelanceNav } from './FreelanceNav'
 import { EmptyState, ErrorState, Loader, Pagination, SearchInput, TechTag, hits } from '../../../components/ui'
 

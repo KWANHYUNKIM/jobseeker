@@ -50,10 +50,10 @@ export function JobDetail({ job, onOpenUrl }: Props) {
   // 남는다. App 이 key={job.url} 로 이 컴포넌트를 통째로 다시 마운트해서 그걸 막는다 —
   // 상태 하나하나를 useEffect 로 되돌리는 것보다 지워야 할 것을 빠뜨릴 일이 없다.
   const roles = classifyRoles(job.title, job.tech_stack, job.qualifications || '')
-  const { lookup } = useSimilarJobs()
+  const { items: similarItems } = useSimilarJobs(onOpenUrl ? job.url : null)
   const eng = useEngagement()
   // 유사도가 바닥을 잡고, 사람들이 실제로 그다음에 본 것이 순위를 조금 올린다.
-  const similar = onOpenUrl ? blendByEngagement(lookup(job.url), eng, job.url) : []
+  const similar = onOpenUrl ? blendByEngagement(similarItems, eng, job.url) : []
 
   // 무엇을 열었고 얼마나 머물렀나. 이 둘이 추천을 고칠 유일한 근거다.
   useDwell(job.url)

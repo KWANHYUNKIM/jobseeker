@@ -59,9 +59,9 @@ export function BlogDetail({
   const [content, setContent] = useState<BlogContent | null>(null)
   const [state, setState] = useState<'loading' | 'ready' | 'pending' | 'error'>('loading')
   const [view, setView] = useState<View>('ko')
-  const { lookup } = useSimilarPosts()
+  const { items: similarItems } = useSimilarPosts(onOpenUrl ? post.url : null)
   const eng = useEngagement()
-  const similar = onOpenUrl ? blendByEngagement(lookup(post.url), eng, post.url) : []
+  const similar = onOpenUrl ? blendByEngagement(similarItems, eng, post.url) : []
 
   useDwell(post.url)
   useEffect(() => {

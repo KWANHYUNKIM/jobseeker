@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 
 // 외주·프리 화면 두 개(프로젝트 목록 · 단가 분석)가 함께 쓰는 모양과 도구.
 // 데이터: public/freelance.json — catch_capture/crawlers/crawl_freelance.py 가 누적하고,
@@ -178,26 +177,4 @@ export function budgetMove(p: Project): { from: number; to: number; pct: number 
   const from = vals[0]
   const to = vals[vals.length - 1]
   return { from, to, pct: Math.round(((to - from) / from) * 1000) / 10 }
-}
-
-export function useFreelance() {
-  const [state, setState] = useState<{ data: FreelanceData | null; loading: boolean; error: string | null }>({
-    data: null,
-    loading: true,
-    error: null,
-  })
-  useEffect(() => {
-    let cancelled = false
-    fetch('/freelance.json')
-      .then((r) => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`)
-        return r.json() as Promise<FreelanceData>
-      })
-      .then((data) => !cancelled && setState({ data, loading: false, error: null }))
-      .catch((e) => !cancelled && setState({ data: null, loading: false, error: String(e) }))
-    return () => {
-      cancelled = true
-    }
-  }, [])
-  return state
 }

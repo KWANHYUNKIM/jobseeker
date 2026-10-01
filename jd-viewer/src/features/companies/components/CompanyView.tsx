@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useCompanies } from '../../../hooks/useCompanies'
+import { useCompanies, useCompanyDetail } from '../../../hooks/useCompanies'
 import { useLearning, type LearningVideo } from '../../../hooks/useLearning'
 import { Loader, ErrorState, EmptyState, SidePanel, MobileBar, TechIcon, CompanyMark, Pagination } from '../../../components/ui'
 import { usePaged, PAGE_SIZE } from '../../../hooks/usePaged'
@@ -79,25 +79,28 @@ export function CompanyView({
     [companies, selectedSlug, filtered],
   )
 
+  // 목록 항목은 API 모드에서 요약뿐이다 — 프로필·제목에 쓸 전체 프로필은 따로 받는다.
+  const { company: detail, loading: detailLoading } = useCompanyDetail(selected)
+
   // 주소로 회사가 지정된 화면의 제목·설명은 여기서 단다(App 은 이 데이터를 안 들고 있다).
   // 문구는 scripts/prerender.mjs 가 찍는 정적 HTML 과 같은 규칙이어야 한다.
-  const tech = (selected?.top_tech ?? []).slice(0, 15).map((t) => t.name)
+  const tech = (detail?.top_tech ?? []).slice(0, 15).map((t) => t.name)
   useSeo(
-    selectedSlug && selected
+    selectedSlug && detail
       ? {
-          title: `${selected.name} 기술스택·채용공고`,
+          title: `${detail.name} 기술스택·채용공고`,
           description: clip(
-            `${selected.name}의 채용공고 ${selected.posting_count}건에서 뽑은 기술스택: ${tech
+            `${detail.name}의 채용공고 ${detail.posting_count}건에서 뽑은 기술스택: ${tech
               .slice(0, 8)
-              .join(', ')}. ${selected.summary ?? ''}`,
+              .join(', ')}. ${detail.summary ?? ''}`,
           ),
-          canonical: absUrl(paths.company(slugOf(selected.norm))),
+          canonical: absUrl(paths.company(slugOf(detail.norm))),
           jsonLd: {
             '@context': 'https://schema.org',
             '@type': 'Organization',
-            name: selected.name,
-            ...(selected.homepage ? { url: selected.homepage } : {}),
-            description: clip(selected.summary, 300),
+            name: detail.name,
+            ...(detail.homepage ? { url: detail.homepage } : {}),
+            description: clip(detail.summary, 300),
             knowsAbout: tech,
           },
         }
@@ -108,9 +111,9 @@ export function CompanyView({
   if (error)
     return (
       <ErrorState
-        title="company_stacks.json 로드 실패"
+        title="회사 프로필을 불러오지 못했습니다"
         detail={error}
-        hint={<>생성: <code className="text-(--color-text)">python3 jd-viewer/bin/build_company_stacks.py</code></>}
+        hint={<>뷰어 API(/api/companies) 또는 company_stacks.json — 생성: <code className="text-(--color-text)">python3 jd-viewer/bin/build_company_stacks.py</code></>}
       />
     )
 
@@ -169,7 +172,11 @@ export function CompanyView({
         <MobileBar onMenu={() => setNavOpen(true)} label="회사 목록">
           {selected && <span className="ml-auto text-xs text-(--color-text) truncate">{selected.name}</span>}
         </MobileBar>
-        {selected ? <CompanyProfile c={selected} onStudyTech={onStudyTech} /> : (
+        {detail ? (
+          <CompanyProfile c={detail} onStudyTech={onStudyTech} />
+        ) : detailLoading ? (
+          <Loader label="회사 프로필 불러오는 중…" />
+        ) : (
           <EmptyState title="회사를 선택하세요" hint="‘회사 목록’에서 회사를 고르면 기술스택·취업 가이드가 표시됩니다." />
         )}
       </main>

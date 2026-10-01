@@ -1,13 +1,13 @@
 import {
   GRADES,
   SITE_KO,
-  useFreelance,
   type Analysis,
   type Grade,
   type MatrixRow,
   type Stat,
   type Trend,
 } from '../utils/freelance'
+import { useFreelance } from '../hooks/useFreelance'
 import { FreelanceNav } from './FreelanceNav'
 import { CurrentRateTable } from './FreelanceRateTable'
 import { RateTrend } from './FreelanceRateTrend'

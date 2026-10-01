@@ -70,7 +70,10 @@ export interface ExpansionIndex {
 const MIN_SUPPORT = 3 // 동시출현 최소 회사 수 (노이즈 컷)
 const MIN_LIFT = 1.2 // 연관도 하한 — 어디서나 쓰이는 기술(lift≈1) 제거
 
-export function buildExpansionIndex(companies: CompanyStack[]): ExpansionIndex {
+/** 확장 지도가 읽는 회사 필드 — 회사 목록의 요약(API)에 다 들어 있다. */
+export type ExpansionCompany = Pick<CompanyStack, 'name' | 'norm' | 'size' | 'tech_categories' | 'domains'>
+
+export function buildExpansionIndex(companies: ExpansionCompany[]): ExpansionIndex {
   const total = companies.length
   const categoryOf: Record<string, string> = {}
   const companyCount: Record<string, number> = {}
