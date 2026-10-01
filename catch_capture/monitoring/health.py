@@ -45,11 +45,13 @@ def _fill_rates(jobs: list[dict]) -> dict:
 STALE_RECORDS = 12
 
 
-def _recent_records(keyword: str, n: int) -> list[dict]:
-    """최근 n회차. 정본 DB 우선, 못 읽으면 health_history.jsonl.
+def history(keyword: str | None = None, n: int = 0) -> list[dict]:
+    """헬스 기록(오래된 것부터, 최근 n회차). 정본 DB 우선, 못 읽으면 health_history.jsonl.
 
-    이상 탐지가 "지난 몇 회차와 견주어" 판단하므로 기록이 머신마다 따로 놀면
-    같은 크롤이 한쪽에선 이상, 한쪽에선 정상이 된다(운영 568줄 / 로컬 548줄).
+    대시보드 둘(8765 통계·8770 운영)과 이상 탐지·report 가 모두 이 함수로 읽는다 —
+    예전에는 대시보드가 파일을 따로 파싱해서, 기록이 머신마다 따로 놀면(운영 568줄 /
+    로컬 548줄) 같은 크롤이 화면마다 다르게 보였다.
+    keyword 가 None 이면 모든 키워드를 섞는다.
     """
     try:
         import sys as _s
@@ -72,9 +74,14 @@ def _recent_records(keyword: str, n: int) -> list[dict]:
             r = json.loads(line)
         except Exception:
             continue
-        if r.get("keyword") == keyword:
+        if keyword is None or r.get("keyword") == keyword:
             out.append(r)
-    return out[-n:]
+    return out[-n:] if n else out
+
+
+def _recent_records(keyword: str, n: int) -> list[dict]:
+    """최근 n회차 — 이상 탐지가 "지난 몇 회차와 견주어" 판단할 재료."""
+    return history(keyword, n)
 
 
 def _crawled_ok_since(since: str | None, events_file: Path | None = None) -> set[str]:
@@ -197,20 +204,10 @@ def record(keyword, site_counts, all_jobs, active_jobs, closed_jobs,
 
 
 def report(n: int = 12) -> None:
-    records: list[dict] = []
-    try:
-        import sys as _s
-        _s.path.insert(0, str(BASE))
-        from store.db.ledgers import load_health
-        records = load_health(None, n)
-    except Exception:
-        records = []
+    records = history(None, n)
     if not records:
-        if not HISTORY.exists():
-            print("(헬스 기록 없음 — 아직 사이클이 안 돌았거나 health 미적용)")
-            return
-        lines = [l for l in HISTORY.read_text(encoding="utf-8").splitlines() if l.strip()][-n:]
-        records = [json.loads(l) for l in lines]
+        print("(헬스 기록 없음 — 아직 사이클이 안 돌았거나 health 미적용)")
+        return
 
     print(f"{'시각':19}  {'모집중':>5} {'마감':>4}  주요업무  | 사이트별")
     for r in records:

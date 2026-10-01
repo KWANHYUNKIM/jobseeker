@@ -1,4 +1,8 @@
-"""대시보드: 최신 all_jobs.json을 찾아 분류해서 data.json 생성 후 정적 서버 띄우기.
+"""통계 대시보드(8765): 모집중 공고를 분류해 data.json 을 만들고 정적 서버를 띄운다.
+
+공고는 정본 DB(v_job, 모집중·사이트 간 중복 제외)에서 읽는다 — 뷰어·뷰어 API 와 같은
+모집단이다. 직군·회사 규모도 뷰어 칩과 같은 값(job_facet)을 쓴다. DB 에 못 붙으면
+예전처럼 가장 최근 크롤 스냅샷(screenshots/all_<키워드>_*/all_jobs.json)으로 물러선다.
 
 사용법:
     python dashboard/serve.py                # 8765 포트, 키워드 자동
@@ -21,7 +25,6 @@ from pathlib import Path
 DASHBOARD_DIR = Path(__file__).parent.resolve()
 CATCH_DIR = DASHBOARD_DIR.parent
 SCREENSHOTS_DIR = CATCH_DIR / "screenshots"
-HISTORY_FILE = CATCH_DIR / "health_history.jsonl"
 
 sys.path.insert(0, str(DASHBOARD_DIR))
 from classifier import (
@@ -46,7 +49,25 @@ def find_latest_all_dir(keyword: str | None) -> Path | None:
     return matches[0] if matches else None
 
 
-def enrich_jobs(jobs: list[dict]) -> list[dict]:
+def load_db_jobs() -> tuple[list[dict], dict[tuple[str, str], dict]] | None:
+    """정본 DB 의 모집중 공고와 그 필터 축(직군·규모). 못 읽으면 None."""
+    try:
+        sys.path.insert(0, str(CATCH_DIR))
+        from store.db import conn
+        from store.jobs.export import fetch_jobs
+        jobs = [j for j in fetch_jobs() if j.get("status") == "active"]
+        with conn.cursor(autocommit=True) as cur:
+            cur.execute("SELECT j.site::text AS site, j.pid, f.roles, f.company_size "
+                        "FROM job j JOIN job_facet f ON f.job_id = j.id")
+            facets = {(r["site"], r["pid"]): r for r in cur.fetchall()}
+        return (jobs, facets) if jobs else None
+    except Exception as e:                                          # noqa: BLE001
+        print(f"[!] 정본 DB 를 못 읽어 크롤 스냅샷으로 물러섭니다: {e}", flush=True)
+        return None
+
+
+def enrich_jobs(jobs: list[dict], facets: dict[tuple[str, str], dict] | None = None) -> list[dict]:
+    """규모·직군·역량을 단다. facets(job_facet)가 있으면 직군·규모는 그 값 — 뷰어와 같은 판정."""
     out = []
     for j in jobs:
         company = (j.get("company") or "").strip()
@@ -71,6 +92,11 @@ def enrich_jobs(jobs: list[dict]) -> list[dict]:
             j.get("main_tasks") or "",
         ])
         competencies = extract_competencies(comp_text)
+        f = (facets or {}).get((j.get("site") or "", j.get("pid") or ""))
+        if f:
+            roles = list(f["roles"] or roles)
+            if f["company_size"]:
+                size, matched = f["company_size"], "job_facet"
         out.append({
             "site": j.get("site") or "",
             "company": company,
@@ -118,22 +144,16 @@ def compute_stats(jobs: list[dict]) -> dict:
 
 
 def load_history(limit: int = 200) -> list[dict]:
-    """health_history.jsonl 을 읽어 시계열 수집 이력으로 변환.
+    """수집 이력 — 정본 DB(crawl_run) 우선, 못 읽으면 health_history.jsonl.
 
-    같은 ts 가 여러 줄이면 마지막 것만 남긴다(중복 기록 정리).
-    대시보드 라인차트/표에 필요한 필드만 추려서 시간순으로 반환.
+    읽기는 monitoring.health.history 하나로 한다(8770 운영 대시보드와 같은 값).
+    같은 ts 가 여러 줄이면 마지막 것만 남기고, 차트·표에 필요한 필드만 추린다.
     """
-    if not HISTORY_FILE.exists():
-        return []
+    sys.path.insert(0, str(CATCH_DIR))
+    from monitoring.health import history
+
     by_ts: dict[str, dict] = {}
-    for line in HISTORY_FILE.read_text(encoding="utf-8").splitlines():
-        line = line.strip()
-        if not line:
-            continue
-        try:
-            r = json.loads(line)
-        except json.JSONDecodeError:
-            continue
+    for r in history(None, 0):
         ts = r.get("ts")
         if not ts:
             continue
@@ -152,6 +172,19 @@ def load_history(limit: int = 200) -> list[dict]:
 
 
 def build_data(keyword: str | None) -> dict:
+    db = load_db_jobs()
+    if db:
+        jobs = enrich_jobs(*db)
+        print(f"[*] 원본: 정본 DB — 모집중 {len(jobs):,}건", flush=True)
+        return {
+            "generated_at": datetime.now().isoformat(timespec="seconds"),
+            "source_dir": "정본 DB(v_job)",
+            "keyword": None,
+            "jobs": jobs,
+            "stats": compute_stats(jobs),
+            "history": load_history(),
+        }
+
     src = find_latest_all_dir(keyword)
     if not src:
         print(f"[!] all_{keyword or '*'}_* 폴더를 찾을 수 없음 (아직 크롤 미완?)", flush=True)

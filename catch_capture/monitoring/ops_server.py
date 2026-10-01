@@ -39,7 +39,6 @@ CATCH_DIR = Path(__file__).resolve().parent.parent     # catch_capture/
 OPS_DIR = Path(__file__).resolve().parent / "ops_dashboard"
 STATE_FILE = CATCH_DIR / "run_state.json"
 EVENTS_FILE = CATCH_DIR / "run_events.jsonl"
-HEALTH_HISTORY = CATCH_DIR / "health_history.jsonl"
 HEALTH_LATEST = CATCH_DIR / "health_latest.json"
 PID_FILE = CATCH_DIR / "auto_crawl.pid"
 
@@ -219,8 +218,10 @@ class Handler(http.server.BaseHTTPRequestHandler):
             return
 
         if path == "/api/health":
+            # 정본 DB 의 crawl_run 이 먼저다(monitoring.health.history) — 파일은 DB 가 없을 때만.
             n = self._query_int(qs, "n", 30)
-            self._send_json(_tail_jsonl(HEALTH_HISTORY, n))
+            from monitoring.health import history
+            self._send_json(history(None, n))
             return
 
         self._send(404, b"not found", "text/plain")
