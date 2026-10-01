@@ -12,26 +12,34 @@
           "company": "삼성전자",
           "items": "황금명함 + 꽃바구니 + 부모님께 보내는 경영진 편지",
           "src": "아시아투데이(2021-08-31)",
-          "url": "https://www.asiatoday.co.kr/kn/view.php?key=20210831010017578"
+          "url": "https://www.asiatoday.co.kr/kn/view.php?key=20210831010017578",
+          "short": "황금명함·꽃·부모님 편지"
         },
         {
           "company": "쿠팡페이",
           "items": "슬리퍼·3단 노트북 거치대·텀블러·명함 케이스",
           "src": "쿠팡 채용 사이트(2021-06-16)",
-          "url": "https://www.coupang.jobs/kr/life-at-coupang/employee-stories/"
+          "url": "https://www.coupang.jobs/kr/life-at-coupang/employee-stories/",
+          "short": "슬리퍼·노트북 거치대"
         },
         {
           "company": "크래프톤",
           "items": "굿즈 대신 온보딩 가이드북 중심 'Day 1' 키트로",
           "src": "크래프톤 블로그(2021-06-11)",
-          "url": "https://blog.krafton.com/5694/"
+          "url": "https://blog.krafton.com/5694/",
+          "short": "가이드북 중심 'Day 1'"
         },
         {
           "company": "넥슨",
           "items": "스테인리스 빨대·텀블러·대나무 칫솔 '에코 키트'",
           "src": "jobsN(2021-05-25)",
-          "url": "https://v.daum.net/v/cB3Ez4cEhE"
+          "url": "https://v.daum.net/v/cB3Ez4cEhE",
+          "short": "빨대·대나무 칫솔 에코 키트"
         }
+      ],
+      "head": [
+        "꽃·편지·",
+        "**황금명함**"
       ]
     },
     {
@@ -43,26 +51,34 @@
           "company": "배달의민족",
           "items": "노트북 가방·칫솔 살균기·보조배터리·배민 1만 원 쿠폰 30장",
           "src": "배민다움(2022-03-25)",
-          "url": "https://story.baemin.com/3020/"
+          "url": "https://story.baemin.com/3020/",
+          "short": "노트북 가방·**쿠폰 30장**"
         },
         {
           "company": "카카오스타일",
           "items": "장바구니 박스 — 입사 전에 모바일로 직접 골라 주문",
           "src": "카카오스타일(2022-06-17)",
-          "url": "https://partnerlounge.kakaostyle.com/story/1114"
+          "url": "https://partnerlounge.kakaostyle.com/story/1114",
+          "short": "입사 전에 **직접 골라** 주문"
         },
         {
           "company": "LINE",
           "items": "노트북 가방·웹캠 커버·텀블러·10주년 기념품",
           "src": "라인개발실록 유튜브(2022-04-08)",
-          "url": "https://www.youtube.com/watch?v=bvdJ1gFQndk"
+          "url": "https://www.youtube.com/watch?v=bvdJ1gFQndk",
+          "short": "노트북 가방·웹캠 커버"
         },
         {
           "company": "네이버클라우드",
           "items": "무선충전 마우스패드·슬로건 다이어리·피규어",
           "src": "소이정 뉴스레터(2023-06-19)",
-          "url": "https://www.soijeong.com/newsletter/view/381"
+          "url": "https://www.soijeong.com/newsletter/view/381",
+          "short": "무선충전 마우스패드"
         }
+      ],
+      "head": [
+        "굿즈 대신",
+        "**매일 쓰는 것**"
       ]
     },
     {
@@ -74,20 +90,27 @@
           "company": "카카오",
           "items": "미니 캐리어 레디백·접이식 텀블러·무릎담요·클린키트",
           "src": "썸띵 사례(프로젝트 2023)",
-          "url": "https://www.sumthing.co.kr/portfolio-kakaonewcrew"
+          "url": "https://www.sumthing.co.kr/portfolio-kakaonewcrew",
+          "short": "미니 **캐리어** 레디백"
         },
         {
           "company": "엔씨소프트",
           "items": "PUSH·PLAY 두 상자 — QR 로 AR 환영 메시지",
           "src": "서울경제TV(2023-03-09)",
-          "url": "https://www.sentv.co.kr/article/view/sentv202303090160"
+          "url": "https://www.sentv.co.kr/article/view/sentv202303090160",
+          "short": "QR 로 여는 **AR** 환영 메시지"
         },
         {
           "company": "삼성전자 DS",
           "items": "황금명함·꽃다발·본인용·부모님용 편지 2장",
           "src": "파이낸셜뉴스(2023-07-21)",
-          "url": "https://www.fnnews.com/news/202307211353282934"
+          "url": "https://www.fnnews.com/news/202307211353282934",
+          "short": "부모님께 가는 편지까지"
         }
+      ],
+      "head": [
+        "**콘셉트**가",
+        "생겼다"
       ]
     },
     {
@@ -99,20 +122,27 @@
           "company": "삼성전자 MX",
           "items": "후드집업·에코백·탁상 선풍기·애니콜 키링",
           "src": "썸띵 매거진(2024-11-08)",
-          "url": "https://www.sumthing.co.kr/magazine/?bmode=view&idx=125760864"
+          "url": "https://www.sumthing.co.kr/magazine/?bmode=view&idx=125760864",
+          "short": "후드집업·탁상 선풍기"
         },
         {
           "company": "카카오",
           "items": "'카카오행 탑승 티켓'·춘식이 실리콘 네임택·레디백",
           "src": "썸띵 매거진(2024-11-08)",
-          "url": "https://www.sumthing.co.kr/magazine/?bmode=view&idx=125760864"
+          "url": "https://www.sumthing.co.kr/magazine/?bmode=view&idx=125760864",
+          "short": "'카카오행 **탑승 티켓**'"
         },
         {
           "company": "현대오토에버",
           "items": "합격 후 꽃다발과 입사 축하 카드(합격자 후기)",
           "src": "velog 합격 후기(2024-01-06)",
-          "url": "https://velog.io/@qmflf556"
+          "url": "https://velog.io/@qmflf556",
+          "short": "꽃다발·축하 카드"
         }
+      ],
+      "head": [
+        "사업부 이름을",
+        "**입힌 옷**"
       ]
     },
     {
@@ -124,26 +154,34 @@
           "company": "현대오토에버",
           "items": "노트북 숄더백·7단 거치대·무선충전 마우스패드·미르 텀블러",
           "src": "썸띵 매거진(2025-09-10)",
-          "url": "https://www.sumthing.co.kr/magazine/?bmode=view&idx=167662673"
+          "url": "https://www.sumthing.co.kr/magazine/?bmode=view&idx=167662673",
+          "short": "숄더백·**무선충전** 패드"
         },
         {
           "company": "카카오",
           "items": "세 번째 시즌 — 레디백을 노트북 숄더백으로 바꿨다",
           "src": "썸띵 사례(프로젝트 2025)",
-          "url": "https://www.sumthing.co.kr/portfolio-kakaonewcrew2025"
+          "url": "https://www.sumthing.co.kr/portfolio-kakaonewcrew2025",
+          "short": "레디백 → 노트북 숄더백"
         },
         {
           "company": "카카오페이",
           "items": "무선 충전 스탠드·우산·칫솔과 텀블러·오피스 가이드",
           "src": "@kakaopay.design(2025-04-08)",
-          "url": "https://www.instagram.com/p/DIKz1GoPNyt/"
+          "url": "https://www.instagram.com/p/DIKz1GoPNyt/",
+          "short": "무선 충전 스탠드·우산"
         },
         {
           "company": "SK텔레콤",
           "items": "개인 노트북 지급 + 'SKT 탐험일지' 노트·보조배터리",
           "src": "SK채용 블로그(2025-02-11)",
-          "url": "https://www.skcareersjournal.com/3396"
+          "url": "https://www.skcareersjournal.com/3396",
+          "short": "**개인 노트북** 지급"
         }
+      ],
+      "head": [
+        "**노트북 가방**이",
+        "기본이 됐다"
       ]
     },
     {
@@ -155,20 +193,27 @@
           "company": "네이버페이",
           "items": "데일리 노트북 숄더백·킨토 텀블러·무릎담요·페이펫 키링",
           "src": "@naverpay.careers(2026-08-11)·썸띵 사례",
-          "url": "https://www.instagram.com/p/Db4azJQGYTa/"
+          "url": "https://www.instagram.com/p/Db4azJQGYTa/",
+          "short": "데일리백·**페이펫 키링**"
         },
         {
           "company": "카카오엔터",
           "items": "11종 — 노트북 거치대·칫솔 살균기·3단 자동 양우산",
           "src": "썸띵 사례(프로젝트 2026)",
-          "url": "https://www.sumthing.co.kr/portfolio-kakakoent"
+          "url": "https://www.sumthing.co.kr/portfolio-kakakoent",
+          "short": "11종 — 칫솔 살균기까지"
         },
         {
           "company": "토스",
           "items": "리브랜딩 키트 — 후드집업·노트북 슬리브·페트병 재활용 토트백",
           "src": "썸띵 매거진(2026-01-06)",
-          "url": "https://www.sumthing.co.kr/magazine/?bmode=view&idx=169337643"
+          "url": "https://www.sumthing.co.kr/magazine/?bmode=view&idx=169337643",
+          "short": "후드·재활용 토트백"
         }
+      ],
+      "head": [
+        "**출퇴근 가방**",
+        "+ 캐릭터 키링"
       ]
     }
   ],

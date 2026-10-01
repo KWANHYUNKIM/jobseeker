@@ -1378,42 +1378,68 @@ def _kit_photo(name: str) -> tuple[str, str]:
     return uri, f"{c['by']} · {c['where']}"
 
 
-def build_kit_history() -> dict:
+def build_kit_history(fmt: str = "feed") -> dict:
     """[첫 출근 웰컴키트] 2021→2026 변천사 — 해마다 그해 키트 사진 한 장 + 회사별 품목.
+
+    판은 큰 채용 계정(캐치·링커리어·공취사, 팔로워 10만+)의 사진 판을 따른다 — 사진이 판을 채우고,
+    노란 꼬리표 + 굵은 흰 제목 두 줄(핵심어 하나만 노랑) + 짧은 줄 몇 개. 자세한 품목은 캡션으로 뺀다.
+    fmt: feed(4:5 캐러셀) · reel(9:16, 해마다 두 곳만 — 2.8초에 읽히는 만큼) · story(9:16 세 장).
 
     품목은 출처 원문에 적힌 것만(content/welcome-kit-history.json). 사진은 회사 공식 글·제작사 사례에서
     그 키트를 찍은 것만 쓰고, 개인 인스타 사진은 쓰지 않는다(원작자 허락 없음 · 원본성 규칙).
     """
     doc = json.loads((CONTENT / "welcome-kit-history.json").read_text(encoding="utf-8"))
     years = doc["years"]
-    note = f"품목은 출처 원문에 적힌 것만 · 확인 {_dot(doc['checked'])}"
+    n_co = len({k["company"] for y in years for k in y["kits"]})
+    span = f"{years[0]['year']} → {years[-1]['year']}"
     cover_uri, cover_credit = _kit_photo(doc["cover_photo"])   # 해마다 판과 겹치지 않는 사진
-    slides = [{"type": "photo", "layout": "split", "image": cover_uri, "rank": f"{years[0]['year']} → {years[-1]['year']}",
-               "title": "입사하면 뭘 받을까", "meta": "웰컴키트 6년 변천사 — IT 회사 " + str(len({k['company'] for y in years for k in y['kits']})) + "곳",
-               "credit": f"사진: 2025 카카오 키트 — {cover_credit}"}]
+    rows = 2 if fmt == "reel" else 4
+    cover = {"type": "mag", "image": cover_uri, "tag": f"웰컴키트 변천사 {span}", "big": 124,
+             "head": ["입사하면", "**뭘 받을까?**"], "sub": f"IT 회사 {n_co}곳, 6년 동안 바뀐 것",
+             "credit": f"사진: 2025 카카오 키트 — {cover_credit}"}
+    year_slides = []
     for y in years:
         uri, credit = _kit_photo(y["photo"])
-        slides.append({"type": "photo", "layout": "split", "image": uri, "rank": y["year"], "title": y["hook"],
-                       "lines": [f"**{k['company']}** — {k['items']}" for k in y["kits"]],
-                       "credit": f"사진: {credit}"})
-    slides.append({"type": "end", "title": "6년 동안 바뀐 것", "lines": doc["trend"] + [doc["phone"]], "note": note})
-    slides.append({"type": "end", "title": "키트보다 먼저 볼 것", "lines": [
-        "① **온보딩** — 첫 주에 누가 무엇을 알려 주나",
-        "② **장비** — 노트북·모니터 사양은 물어봐도 되는 것",
-        "③ 계열사마다 다르다 — 카카오 ≠ 카카오페이 ≠ 카카오엔터",
-        "④ 제약·바이오 IT 는 품목 공개가 거의 없다 — 면접에서 '입사 첫 주' 를 묻자",
-        SEND], "note": note})
-    caption = "\n\n".join([
-        f"[첫 출근 웰컴키트] 입사하면 뭘 받을까 — {years[0]['year']}→{years[-1]['year']} 변천사",
-        "\n".join(f"{y['year']} {y['hook']} — " + " · ".join(k["company"] for k in y["kits"]) for y in years),
-        "\n".join(t.replace("**", "") for t in doc["trend"]),
-        "어느 해 키트가 제일 받고 싶나요? 받아 본 키트가 있다면 댓글로 알려 주세요.",
+        year_slides.append({"type": "mag", "image": uri, "tag": y["year"], "head": y["head"],
+                            "rows": [[k["company"], k["short"]] for k in y["kits"][:rows]], "credit": f"사진: {credit}"})
+    first_uri, _ = _kit_photo(years[0]["photo"])
+    last_uri, _ = _kit_photo(years[-1]["photo"])
+    grid = [[_kit_photo(y["photo"])[0], y["year"]] for y in years]   # 글만 있는 판도 6년 치 사진을 한눈에
+    trend = {"type": "mag", "image": last_uri, "pic": False, "grid": grid, "tag": "6년 동안 바뀐 것",
+             "head": ["꽃다발에서", "**노트북 가방**으로"], "lines": doc["trend"]}
+    ask = {"type": "mag", "image": first_uri, "pic": False, "grid": grid, "tag": "키트보다 먼저 볼 것",
+           "head": ["면접 끝에", "**이걸** 물어보자"], "lines": [
+               "**'입사 첫 주에 무엇을 하나요?'** — 온보딩이 키트보다 오래 간다",
+               "노트북·모니터 사양은 물어봐도 되는 것",
+               "계열사마다 다르다 — 카카오 ≠ 카카오페이 ≠ 카카오엔터",
+               "제약·바이오 IT 는 품목 공개가 거의 없다"]}
+    cta = {"type": "mag", "image": last_uri, "pic": False, "grid": grid, "tag": "댓글로 알려 주세요",
+           "head": ["어느 해 키트가", "**제일 탐나요?**"], "sub": "저장해 두고 · 취준 중인 친구에게 보내 주세요",
+           "lines": [f"품목은 출처 원문에 적힌 것만 · 확인 {_dot(doc['checked'])}"]}
+    if fmt == "story":
+        slides = [cover,
+                  {"type": "mag", "image": last_uri, "pic": False, "grid": grid, "tag": span,
+                   "head": ["6년 동안", "**뭐가 바뀌었을까?**"], "sub": "꽃다발에서 노트북 가방으로 — 새 게시물에서 다 보기"},
+                  {**cta, "head": ["어느 해 키트가", "**제일 탐나요?**"], "sub": "투표 · 질문 스티커로 답해 주세요", "lines": None}]
+    elif fmt == "reel":
+        slides = [cover, *year_slides, trend, cta]
+    else:
+        slides = [cover, *year_slides, trend, ask]
+    nl = chr(10)
+    caption = (nl * 2).join([
+        f"[첫 출근 웰컴키트] 입사하면 뭘 받을까? — {span} 변천사",
+        nl.join(f"{y['year']} " + " · ".join(f"{k['company']}({k['items']})" for k in y["kits"][:2]) for y in years),
+        nl.join(t.replace("**", "") for t in doc["trend"]),
+        "어느 해 키트가 제일 탐나요? 받아 본 키트가 있다면 댓글로 알려 주세요. 저장해 두고 취준 중인 친구에게도 보내 주세요.",
         "품목은 회사 공식 글·제작사 사례·기사에 적힌 것만 옮겼습니다. 연도는 입사 기수가 적힌 경우 그 해, "
         "아니면 게시·제작 연도입니다. 사진은 각 장에 출처를 적었습니다.",
-        "출처\n" + "\n".join(f"· {y['year']} {k['company']} — {k['src']}" for y in years for k in y["kits"]),
+        "출처" + nl + nl.join(f"· {y['year']} {k['company']} — {k['src']}" for y in years for k in y["kits"]),
     ])
-    return {"kind": "kit", "id": f"kithistory-{doc['checked'].replace('-', '')}", "title": doc["title"],
-            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 3.2}
+    suffix = {"feed": "", "reel": "-motion", "story": "-story"}[fmt]
+    return {"kind": "kit", "id": f"kithistory-{doc['checked'].replace('-', '')}{suffix}", "title": doc["title"],
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.8,
+            # 릴스는 장면마다 천천히 다가가고(정지 화면은 넘겨 버린다) 우리가 만든 소리를 깐다
+            **({"motion": 0.05, "audio": str(LAB_DIR / "assets" / "audio" / "bed_calm.wav")} if fmt == "reel" else {})}
 
 
 # --- 찍기 · 승인 ---------------------------------------------------------
@@ -1477,6 +1503,7 @@ def main() -> int:
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
                     help="9:16 으로 다시 찍어 릴스 mp4 를 만든다(같은 내용을 캐러셀로도 올리면 중복 게시다)")
+    ap.add_argument("--story", action="store_true", help="9:16 스토리 판으로 찍는다(영상 아님 · 승인함에 넣지 않는다)")
     args = ap.parse_args()
     from .render import shutdown
     if args.kind == "guide":
@@ -1497,7 +1524,8 @@ def main() -> int:
     elif args.kind == "lunch":
         post = build_lunch(args.company or "pangyo")
     elif args.kind == "kit":
-        post = build_kit_history() if args.company == "history" else build_welcomekit()
+        post = (build_kit_history("reel" if args.reel else "story" if args.story else "feed")
+                if args.company == "history" else build_welcomekit())
     elif args.kind in ("pay", "perk", "welcome", "gongchae"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae}[args.kind]()
@@ -1507,19 +1535,20 @@ def main() -> int:
     else:
         post = build_stack() if args.kind == "stack" else build_rates()
     try:
-        paths = render(post, REEL if args.reel else (1080, 1350))
+        paths = render(post, REEL if (args.reel or args.story) else (1080, 1350))
     finally:
         shutdown()
     if args.reel:
         from .video import build
         hold = post.get("reel_hold", 2.6)   # 데이터 판은 공고 판보다 글이 많다 — 1.8초면 못 읽는다
-        mp4 = build(paths, paths[0].parent / "reel.mp4", hold=hold)
+        mp4 = build(paths, paths[0].parent / "reel.mp4", hold=hold, motion=post.get("motion", 0.0),
+                    audio=Path(post["audio"]) if post.get("audio") else None)
         print(f"[series] 릴스 → {mp4}")
     print(f"[series] {post['id']} {len(paths)}장 → {paths[0].parent}")
     # 손으로 올릴 때(앱·웹) 붙여 넣을 캡션 — 승인함에 넣는 것과 같은 글.
     tags = " ".join(f"#{t}" for t in TAGS[post["kind"]])
     (paths[0].parent / "caption.txt").write_text(f"{post['caption']}\n\n{tags}", encoding="utf-8")
-    if not args.dry:
+    if not args.dry and not args.story:
         print(f"[series] 승인함 → {approve(post, paths)}")
     return 0
 

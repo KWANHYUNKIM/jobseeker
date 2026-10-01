@@ -125,6 +125,38 @@
   .brand .co { margin-top:auto; font-size:190px; font-weight:800; letter-spacing:-.06em; line-height:.95; white-space:nowrap; }
   .brand .one { margin-top:34px; font-size:36px; font-weight:700; line-height:1.45; letter-spacing:-.02em; }
   .brand .cnt { margin-top:30px; font-size:40px; font-weight:800; }
+
+  /* mag — 큰 채용 계정(캐치·링커리어·공취사, 10만+)식 사진 판: 흐린 사진 바탕 + 선명한 사진 + 노란 꼬리표
+     + 굵은 흰 제목 2줄(핵심어 하나만 노랑) + 짧은 줄 몇 개. 사진은 자르지 않고 폭에 맞춘다(물건이 잘리면 안 된다) */
+  .mag { padding:0; color:#fff; background:#0d0c10; }
+  .mag .blur { position:absolute; inset:-80px; background-size:cover; background-position:center;
+               filter:blur(48px) brightness(.38) saturate(1.25); }
+  .mag .pic { position:absolute; left:0; right:0; background-size:cover; background-position:center;
+              -webkit-mask-image:linear-gradient(180deg, transparent 0, #000 9%, #000 78%, transparent 100%); }
+  .mag .top { position:absolute; left:64px; right:64px; display:flex; justify-content:space-between; align-items:center;
+              font-size:26px; font-weight:800; text-shadow:0 2px 10px rgba(0,0,0,.6); }
+  .mag .top b { color:var(--hi); }
+  .mag .top .h { font-weight:700; opacity:.85; }
+  .mag .txt { position:absolute; left:64px; right:64px; display:flex; flex-direction:column; }
+  .mag .tag { align-self:flex-start; background:var(--hi); color:#141218; font-size:30px; font-weight:900;
+              padding:8px 22px; border-radius:999px; letter-spacing:-.01em; }
+  .mag .hd { margin-top:18px; font-size:92px; font-weight:900; letter-spacing:-.05em; line-height:1.1;
+             text-shadow:0 4px 24px rgba(0,0,0,.45); }
+  .mag .hd div { white-space:nowrap; }
+  .mag em { color:var(--hi); }
+  .mag .sb { margin-top:18px; font-size:34px; font-weight:700; color:rgba(255,255,255,.88); line-height:1.4; }
+  .mag ul { margin-top:26px; padding:0; }
+  .mag li { list-style:none; display:flex; gap:18px; align-items:baseline; padding:13px 0;
+            border-top:1px solid rgba(255,255,255,.16); font-size:32px; line-height:1.3; }
+  .mag li .co { flex:none; font-weight:900; color:#fff; }
+  .mag li .it { color:rgba(255,255,255,.78); font-weight:600; }
+  .mag li.solo { display:block; font-weight:700; color:rgba(255,255,255,.92); }
+  .mag .cr { margin-top:18px; font-size:19px; color:rgba(255,255,255,.55); font-weight:500; }
+  .mag .topshade { position:absolute; left:0; right:0; top:0; height:220px; background:linear-gradient(180deg, rgba(0,0,0,.5), rgba(0,0,0,0)); }
+  .mag .grid { position:absolute; left:64px; right:64px; display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .mag .grid div { position:relative; aspect-ratio:4/3; border-radius:14px; background-size:cover; background-position:center; overflow:hidden; }
+  .mag .grid span { position:absolute; left:10px; bottom:10px; background:var(--hi); color:#141218; font-size:22px; font-weight:900; padding:3px 12px; border-radius:999px; }
+  .mag .pg { position:absolute; right:64px; font-size:22px; font-weight:700; opacity:.6; }
 </style>
 </head>
 <body>
@@ -142,6 +174,51 @@ const D = JSON.parse(document.getElementById('data').textContent);
   if (D.size) { root.style.setProperty('--sheet-w', D.size[0] + 'px'); root.style.setProperty('--sheet-h', D.size[1] + 'px'); }
   const S = D.slide; const sheet = el('section', 'sheet ' + S.type + (S.layout ? ' ' + S.layout : '') + (D.size && D.size[1] > 1500 ? ' reel' : ''));
 
+
+  if (S.type === 'mag') {   // 머리·줄·바닥글을 쓰지 않는 판 — 따로 그리고 끝낸다
+    const [W, Hh] = D.size || [1080, 1350];
+    const story = Hh > 1500;
+    sheet.style.setProperty('--hi', (D.theme && D.theme.hi) || '#ffe066');
+    const em = (node, t) => { String(t || '').split(/(\*\*[^*]+\*\*)/).forEach(p =>
+      node.append(p.startsWith('**') ? el('em', '', p.slice(2, -2)) : p)); return node; };
+    const blur = el('div', 'blur'); blur.style.backgroundImage = `url("${S.image}")`; sheet.append(blur);
+    if (S.pic !== false) {
+      const pic = el('div', 'pic'); pic.style.backgroundImage = `url("${S.image}")`;
+      const ph = Math.round(W / (S.ratio || 4 / 3));
+      pic.style.top = (story ? 260 : 0) + 'px'; pic.style.height = ph + 'px'; sheet.append(pic);
+    }
+    if (S.grid) { const g = el('div', 'grid'); g.style.top = (story ? 330 : 140) + 'px';
+      S.grid.forEach(([img, lab]) => { const c = el('div'); c.style.backgroundImage = `url("${img}")`; c.append(el('span', '', lab)); g.append(c); });
+      sheet.append(g); }
+    sheet.append(el('div', 'topshade'));
+    const top = el('div', 'top'); top.style.top = (story ? 150 : 52) + 'px';
+    const tl = el('div'); const m = (D.series || '').match(/^\[(.+)\]/);
+    tl.append('[', el('b', '', m ? m[1] : D.series), ']'); top.append(tl, el('div', 'h', '@devjobseeker')); sheet.append(top);
+    const txt = el('div', 'txt'); txt.style.bottom = (story ? 400 : 84) + 'px';
+    if (S.tag) txt.append(el('div', 'tag', S.tag));
+    const hd = el('div', 'hd'); (S.head || []).forEach(l => hd.append(em(el('div'), l))); if (S.big) hd.style.fontSize = S.big + 'px';
+    txt.append(hd);
+    if (S.sub) txt.append(em(el('div', 'sb'), S.sub));
+    if (S.rows || S.lines) {
+      const ul = el('ul');
+      (S.rows || []).forEach(r => { const li = el('li'); li.append(el('span', 'co', r[0]), em(el('span', 'it'), r[1])); ul.append(li); });
+      (S.lines || []).forEach(l => ul.append(em(el('li', 'solo'), l)));
+      txt.append(ul);
+    }
+    if (S.credit) txt.append(el('div', 'cr', S.credit));
+    sheet.append(txt);
+    if (D.page && !story) { const pg = el('div', 'pg', D.page); pg.style.top = '56px'; pg.style.display = 'none'; sheet.append(pg); }
+    document.getElementById('root').append(sheet);
+    sheet.querySelectorAll('.hd div').forEach(n => { let z = parseFloat(getComputedStyle(n).fontSize);
+      while (z > 48 && n.scrollWidth > W - 128) { z -= 3; n.style.fontSize = z + 'px'; } });
+    sheet.querySelectorAll('li').forEach(n => { let z = parseFloat(getComputedStyle(n).fontSize);
+      while (z > 24 && n.scrollWidth > W - 128) { z -= 1; n.style.fontSize = z + 'px'; } });
+    const r = txt.getBoundingClientRect();
+    window.__overflow = r.top < (story ? 250 : 40);
+    window.__minBody = Math.min(...[...sheet.querySelectorAll('li, .sb')].map(n => parseFloat(getComputedStyle(n).fontSize)).concat([99]));
+    window.__ready = true;
+    return;
+  }
   const head = el('div', 'series');
   const m = (D.series || '').match(/^\[(.+)\]\s*(.*)$/);
   if (m) { head.append('['); head.append(el('b', '', m[1])); head.append('] ' + m[2]); } else head.append(D.series || '');

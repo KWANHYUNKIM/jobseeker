@@ -98,7 +98,7 @@ def duration_for(n_slides: int, *, hold: float = HOLD, fade: float = FADE) -> fl
     return n_slides * hold + fade
 
 
-def _filter_chain(n: int, hold: float, fade: float, size: tuple[int, int]) -> str:
+def _filter_chain(n: int, hold: float, fade: float, size: tuple[int, int], motion: float = 0.0) -> str:
     """장면 정규화 + xfade 사슬.
 
     **정규화를 먼저 한다.** xfade 는 크기가 다른 두 입력을 붙이지 못하고, 섞였을 때
@@ -114,6 +114,14 @@ def _filter_chain(n: int, hold: float, fade: float, size: tuple[int, int]) -> st
            f"in_range=full:out_range=tv,"
            f"pad={w}:{h}:(ow-iw)/2:(oh-ih)/2:color=black,"
            f"setsar=1,format=yuv420p")
+    if motion:
+        # 천천히 다가가기(켄 번스). zoompan 은 타임스탬프를 새로 매겨 xfade 가 첫 장면에서 멈춘다 —
+        # 시간(t)에 따라 키우고(eval=frame) 가운데를 잘라 낸다. 두 배 캔버스에서 해야 떨리지 않는다.
+        clip = hold + fade
+        fit = (f"fps={FPS},scale={w * 2}:{h * 2}:force_original_aspect_ratio=decrease:in_range=full:out_range=tv,"
+               f"pad={w * 2}:{h * 2}:(ow-iw)/2:(oh-ih)/2:color=black,"
+               f"scale=w='trunc({w * 2}*(1+{motion}*t/{clip:.3f})/2)*2':h=-2:eval=frame,"
+               f"crop={w * 2}:{h * 2},scale={w}:{h},setsar=1,format=yuv420p")
     parts = [f"[{k}:v]{fit}[s{k}]" for k in range(n)]
     prev = "[s0]"
     for k in range(1, n):
@@ -149,11 +157,12 @@ def _audio_chain(idx: int, seconds: float) -> str:
 
 def build(slides: list[Path], dest: Path, *, hold: float = HOLD, fade: float = FADE,
           fps: int = FPS, size: tuple[int, int] = REEL_SIZE, audio: Path | None = None,
-          quiet: bool = True) -> Path:
+          quiet: bool = True, motion: float = 0.0) -> Path:
     """장면들을 이어 붙여 mp4 를 만든다. 완성본 경로를 돌려준다.
 
     audio 를 주면 그 음원을 깐다(길이 맞춤 · 크기 고름 · 양끝 페이드).
     안 주면 무음 트랙을 깐다 — 권리 확인은 부르는 쪽 몫이다.
+    motion 을 주면(예 0.05) 장면마다 그만큼 천천히 다가간다 — 사진 판은 멈춰 있으면 넘겨 버린다.
     """
     if not slides:
         raise ValueError("장면이 없습니다")
@@ -185,7 +194,7 @@ def build(slides: list[Path], dest: Path, *, hold: float = HOLD, fade: float = F
     else:
         cmd += ["-f", "lavfi", "-t", f"{seconds:.3f}",
                 "-i", "anullsrc=channel_layout=stereo:sample_rate=44100"]
-    chain = _filter_chain(len(slides), hold, fade, size)
+    chain = _filter_chain(len(slides), hold, fade, size, motion)
     audio_map = f"{len(slides)}:a"
     if audio is not None:
         chain += ";" + _audio_chain(len(slides), seconds)
