@@ -20,7 +20,7 @@ VENV="$CATCH/.venv"
 LABEL="com.jobseeker.crawler"
 PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
 
-# 크롤 주기·규모 — 옛 서버(automation/start-auto-crawl.sh)와 같은 값을 쓴다.
+# 크롤 주기·규모.
 #
 # 여기를 단일 키워드("개발자")로 두면 안 된다. run_cycle 은 키워드가 하나면
 # all_통합_* 을 만들지 않고 all_개발자_* 만 남기는데, refresh-data.sh 는 통합
@@ -63,6 +63,24 @@ if [ "${1:-}" = "--uninstall" ]; then
 fi
 
 [ -d "$CATCH" ] || die "catch_capture 가 없습니다: $CATCH"
+
+# ── 옛 cron 경로 정리 ──────────────────────────────────────
+# launchd(once) 이전에는 crontab 이 매시 `auto_crawl start`(자체 데몬, 키워드 20개)를
+# 띄웠다(automation/install-auto-crawl-cron.sh — 지금은 지웠다). 그 줄이 남아 있으면
+# launchd 크롤과 데몬 크롤이 같이 돈다(once 는 데몬의 PID 파일을 보지 않는다).
+drop_legacy_cron() {
+  command -v crontab >/dev/null 2>&1 || return 0
+  local cur
+  cur="$(crontab -l 2>/dev/null || true)"
+  if printf '%s
+' "$cur" | grep -q 'jobseeker-auto-crawl'; then
+    printf '%s
+' "$cur" | grep -v 'jobseeker-auto-crawl' | crontab -
+    warn "옛 crontab(jobseeker-auto-crawl) 줄을 지웠다 — 이제 크롤은 launchd 하나만 돈다"
+    "$VENV/bin/python" -m automation.auto_crawl stop >/dev/null 2>&1 || true
+  fi
+}
+drop_legacy_cron
 
 # ── plist 생성·적용 ────────────────────────────────────────
 # 아래 두 함수는 --schedule 과 --reschedule 이 함께 쓴다. plist 내용을 한 곳에서만
