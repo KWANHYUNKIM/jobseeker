@@ -52,39 +52,42 @@
     백과사전·하드웨어)을 한 표로 모았다. `/loop` 엔진의 실행 프롬프트는 여기에만 있다 —
     다시 시작할 때 `python -m automation.loops prompt <키>` 출력을 `/loop` 에 준다. 상태는 산출물의 나이로 보고
     8770 대시보드 '반복 작업' 칸(`/api/loops`)에 뜬다. **새 반복 작업은 먼저 여기 한 줄을 더한다.**
-  - `dashboard/` : 통계 대시보드(serve.py, 8765)
-  - `semantic/` : 임베딩 기반 추천·검색 (SQLite+sqlite-vec 저장, Ollama bge-m3 증분 임베딩,
-    코사인 top-K → `public/similar_*.json`). 크롤 사이클 끝에 auto_crawl 이 자동 실행.
-    `search.py`(FTS5+벡터 RRF 하이브리드) / `server.py`(검색 API, 8771)
-    마감 공고는 색인에 남기되(지난 공고 통계·유사도의 재료) `meta.status` 로 표시해
-    검색·추천에서 뺀다. 검색은 `--include-closed` 로 열 수 있다.
+  - `sites.py` : 채용 사이트 등록부 — 사이트 목록의 단일 소스(순서 = 중복 대표 순서). 새 사이트는
+    여기 한 줄 + DB enum·close_check 판정기·뷰어 `Site` 타입 — `tests/test_sites.py` 가 넷을 대조한다.
+  - `dashboard/` : 통계 대시보드(serve.py, 8765). 공고는 정본 DB(v_job 모집중), 직군·규모는
+    뷰어 칩과 같은 `job_facet` 값. 헬스 이력은 8770 과 같이 `monitoring.health.history`
+    (DB 우선, 없으면 jsonl)로 읽는다. DB 가 없으면 크롤 스냅샷으로 물러선다.
   - `store/` : 정본 DB(PostgreSQL) 접근 계층 — **이관 중이다.** 지금까지 원본은
     `all_jobs_enriched.json` 한 덩어리였고 키도 제약도 없어서 회사 표기가 갈리고
     (`(주)클로봇` ≠ `클로봇`) `status` 가 계산 시점에 박제됐다. 스키마와 설계 근거는
     `db/schema.sql` · `db/README.md`. 기능별 하위 패키지로 나뉜다(테스트: `catch_capture/tests`,
     `python -m pytest` — DB·node 가 없으면 해당 테스트만 건너뛴다):
     · `db/` — `conn`(DSN) / `slug`(주소 슬러그 — 규칙 원본은
-      `jd-viewer/src/shared/lib/companySlug.js` 이고 여기서 읽어 쓴다) / `upsert`(쓰기 경로 —
+      `jd-viewer/src/utils/companySlug.js` 이고 여기서 읽어 쓴다) / `docs`(빌더가 계산한 화면용
+      문서를 `viewer_doc`(011)에 쓴다 — 회사 프로필·외주 분석 등) / `upsert`(쓰기 경로 —
       백필과 크롤이 같은 함수를 쓴다) / `ledgers`(파일로 쌓이던 원장 — `trends_history.jsonl`→
       `trend_day`/`trend_metric`, `job_history.jsonl`→`job_version`, `engagement/events.jsonl`→
       `engagement_event`. 지난 일은 다시 계산할 수 없는데 머신마다 따로 놀거나(트렌드가 로컬
       54일/운영 23일) 조용히 회전돼 버려지고 있었다. `build_trends`·`build_reposts`·
       `engagement.score` 가 여기서 읽고, 씨앗 뿌리기는 `python -m store.db.ledgers seed`)
     · `ingest/` — `crawl`(크롤 사이클→DB, aggregate 가 매번 부른다 — 회사 표기 재선정과
-      `mv_company_stack`·`job_facet` 갱신도 여기서 한다) / `posts`·`engines`(블로그 글·엔진
-      산출물) / `backfill`(JSON→DB — 이관·복구용 일회성. 사이클에서는 뺐다)
+      `mv_company_stack`·`job_facet` 갱신도 여기서 한다) / `posts`(블로그 글 — 크롤 회차마다
+      crawl_all 이 부른다) / `engines`(엔진 산출물) / `backfill`(JSON→DB — 이관·복구용 일회성)
     · `jobs/` — `facets`(필터 축 — 지역·직군·경력·규모·스택을 `job_facet` 에 채운다. **규칙
-      원본은 뷰어 TS**(`features/jobs/region.ts`·`career.ts`, `shared/lib/classify.ts`)이고 여기는
-      그 파이썬 판이다. 한쪽을 고치면 `python -m store.jobs.facets --parity` 와
-      `python -m store.api.parity` 로 대조한다) / `export`(DB→뷰어 JSON)
-    · `api/` — `main`(뷰어 API, FastAPI — 공고 목록·칩 건수·상세·검색을 DB 에서 답한다. 뷰어는
-      이게 있으면 184MB `all_jobs_enriched.json` 을 안 받고, 없으면 그 파일로 물러선다) /
-      `server`(8771 진입점, launchd 가 `-m store.api.server` 로 띄운다) / `parity`
-    · `vectors/` — `embed`·`similar`·`search`(pgvector 판 semantic) / `migrate`(sqlite-vec→pgvector)
+      원본은 뷰어 TS**(`features/jobs/utils/region.ts`·`career.ts`, `utils/classify.ts`)이고 여기는
+      그 파이썬 판이다. 한쪽을 고치면 `python -m store.jobs.facets --parity` 와 backend 의
+      `tests/features/jobs/test_parity.py` 로 대조한다) / `export`(DB→`all_jobs_enriched.json`.
+      공고 매핑은 `backend/app/features/jobs/mapping.py` 를 import 해 쓴다 — API 와 한 벌.
+      refresh-data.sh 가 회차마다 **한 번만** 쓰고, DB 에 못 붙을 때만 스냅샷으로 굽는다)
+    · `vectors/` — 벡터는 **pgvector 하나**다(예전 SQLite `semantic/` 은 지웠다). `embed`(Ollama
+      bge-m3 증분 → job/post_embedding) / `similar`(top-K → job/post_similar, `--dump` 로 정적
+      JSON 도) / `search`(FTS+벡터 RRF — agent-mcp 가 쓴다) / `load`(커리어 맵·블로그 가이드용 행렬) /
+      `config`·`text`(모델·임베딩 입력 텍스트). 마감 공고는 색인에 남기되 추천·검색에서 뺀다
+      (`job_state` 조인).
     · `market/` — `freelance`(외주 프로젝트)·`hardware`(PC 부품 가격)
     **status 는 컬럼이 아니라 `job_state` 뷰다** — 저장하지 않으면 낡을 수 없다.
     사이트 간 중복도 지우지 않고 `job_dup` 뷰가 대표를 가리킨다(모집중 → 사이트 순서).
-    `store.jobs.export` 가 사본을 걸러 뷰어·빌더에는 한 건만 간다.
+    `store.jobs.export`·backend 가 사본을 걸러 뷰어·빌더에는 한 건만 간다.
     `posted_on`(등록일)은 close_check 만 쓴다 — `JOB_COLUMNS` 에 없어서 크롤이
     NULL 로 덮지 못한다. 스키마를 고칠 때는 `db/migrations/` 에 번호순 ALTER 를
     남긴다(돌고 있는 DB 는 `schema.sql` 을 다시 못 돌린다).
@@ -97,14 +100,23 @@
     보드들에서 절반 넘게 안 보이면(`DB_GONE_MIN_RATIO`) 사이트째 보류한다 —
     파서가 깨진 것과 공고가 내려간 것은 다르다. 지우지는 않는다.
   - `paths.py` : 공통 경로(데이터/venv 위치) 단일 소스
-- `jd-viewer/` : React/Vite 기반 JD 뷰어 (5173, public 데이터 소비).
-  화면마다 진짜 경로를 쓴다(`/jobs/<사이트>-<번호>`, `/companies/<회사>` 등) —
-  `src/shared/lib/router.ts`(pushState) + `src/shared/lib/seo.ts`(라우트별 head) +
+- `backend/` : **뷰어 API(8771, FastAPI)** — 정본 DB 를 **읽기만** 한다(쓰는 쪽은 catch_capture).
+  `app/main.py`(라우터 등록·실행 `python -m app.main`) · `core/`(config·exceptions) · `db/`(session·
+  viewer_doc 읽기) · `features/<기능>/{router,service,repository,schemas}.py` · `utils/` · `tests/`.
+  기능: jobs(목록·칩 건수·상세) · search · similar · companies(목록 요약·회사 상세) · posts ·
+  freelance · hardware(가격) · health. 응답은 각 정적 파일과 같은 모양이고 상태는 읽는 순간의 것.
+  **backend 는 catch_capture 를 import 하지 않는다**(반대 방향만 — export 가 mapping 을 쓴다).
+  ORM 없음(SQL 은 repository 에만), 스키마 원본은 루트 `db/`(파이프라인과 같이 쓴다).
+  DB 에 못 붙어도 죽지 않고 503 — 뷰어는 정적 파일로 물러선다. 크롤러와 같은 venv, launchd 작업
+  폴더 `backend/`. 자세한 건 `backend/README.md`.
+- `jd-viewer/` : React/Vite 기반 JD 뷰어 (5173). 화면 데이터는 **API 먼저, 안 되면 정적 파일**
+  (`src/api/client.ts` 의 `apiOrFile`). 화면마다 진짜 경로를 쓴다(`/jobs/<사이트>-<번호>` 등) —
+  `src/utils/navigation.ts`(pushState) + `src/utils/seo.ts`(라우트별 head) +
   `scripts/prerender.mjs`(빌드 때 주소별 정적 HTML·sitemap·robots). 자세한 건 뷰어 README.
-  **폴더는 기능별이다** — `src/features/<기능>/`(jobs·companies·reveng·radar·blog·book·calendar·
-  trend·career·reposts·freelance·hardware)에 화면과 그 화면만 쓰는 훅·로직을 같이 두고,
-  두 기능 이상이 쓰는 것만 `src/shared/{ui,lib}` 로 올린다. 테스트(`*.test.ts`, `npm test`)는
-  대상 파일 옆에 둔다.
+  **폴더 규칙**: `app/`(App·router=경로→페이지·providers=전역 상태) · `pages/<경로>/XxxPage.tsx`
+  (주소 하나에 한 화면, 얇게) · `features/<기능>/{components,hooks,utils}/` + `api.ts`(그 기능의
+  요청) · 두 기능 이상이 쓰는 것만 `components/`·`hooks/`·`utils/`·`api/` 로 올린다 · `styles/`.
+  테스트(`*.test.ts`, `npm test`)는 대상 파일 옆에 둔다.
 - `engine/` : 기업 기술 역설계 엔진 (크롤이 아니라 공개 자료 재구성).
   `PROMPT.md`(사이클 절차) / `schema.json`(형식) / `state/`(대기열·진행) /
   `validate.py`(커밋 전 검증). 산출물은 `jd-viewer/public/reveng/` 에 쌓이고
@@ -235,15 +247,15 @@
 
 실행 예: `python -m automation.auto_crawl start 개발자 100 1800`,
 `python -m pipeline.aggregate 개발자`, `python -m pipeline.close_check --limit 300`, `python -m monitoring.health report`,
-`python -m semantic.ingest && python -m semantic.embed && python -m semantic.similar`,
-`python -m semantic.search "재택 되는 백엔드"`, `python -m semantic.server`
+`python -m store.vectors.embed && python -m store.vectors.similar --dump`,
+`python -m store.vectors.search "재택 되는 백엔드"`, `cd backend && python -m app.main`
 
 ## 로컬 서버 포트
-8765 stats(통계) / 8770 ops(크롤 운영) / 8771 뷰어 API(공고 목록·상세·검색, `/api/docs`) / 8910 admin(개인 이력, LAN 전용)
+8765 stats(통계) / 8770 ops(크롤 운영) / 8771 뷰어 API(backend — 공고·회사·글·외주·가격·검색, `/api/docs`) / 8910 admin(개인 이력, LAN 전용)
 / 8780 design-lab(레퍼런스·포스터 렌더·소셜 발행, 파이프라인과 분리된 실험용)
 / 8790 agent-mcp(사용자의 에이전트에 채용 데이터·절차를 붙이는 MCP 서버, `catch_capture/agent_mcp/`).
-검색 API 는 뷰어 nginx 가 `/api/` 로 프록시하므로 별도 터널이 필요 없다.
-agent-mcp 는 검색 API 와 일부러 뗐다 — 외부 에이전트의 호출량이 뷰어 검색을 느리게 하면 안 된다.
+뷰어 API 는 뷰어 nginx 가 `/api/` 로 프록시하므로 별도 터널이 필요 없다.
+agent-mcp 는 뷰어 API 와 일부러 뗐다 — 외부 에이전트의 호출량이 뷰어 검색을 느리게 하면 안 된다.
 **LLM 을 부르지 않는다** — 생각은 연결한 사람의 에이전트가 하고(토큰도 그쪽), 이 서버는 읽기 전용 도구
 (공고·회사 브리핑·기술·외주 단가·직군별 현실 점검·연봉 시세)와 절차 프롬프트(현실 점검·적합도·지원서 작성→검토→ATS·면접·단가 협상)만 준다.
 현실 점검(`market_check`)은 지원서를 쓰기 전에 "이 학력·지역·연차로 그 직군 문이 얼마나 열려 있나"를 직군끼리 견준다 —
@@ -255,14 +267,16 @@ ai-job-search 쪽 `/reality` 와 평가 관문이 이걸 부른다.
   할당에 실패한다. 전량 임베딩이 필요하면 `auto_crawl stop` 후 돌린다.
 - `screenshots/` 는 타임스탬프 스냅샷이 사이클마다 쌓인다(개당 ~250MB).
   `auto_crawl` 이 매 사이클 계열별 3개만 남기고 정리한다(`auto_crawl prune`으로 수동 실행).
-- 새 공고의 임베딩은 크롤 사이클 끝의 `refresh_semantic()` 이 증분으로 처리한다.
+- 새 공고·글의 임베딩은 크롤 사이클 끝의 `refresh_vectors()` 가 pgvector 에 증분으로 넣는다.
   그러려면 Ollama 가 늘 떠 있어야 한다 — `brew services start ollama`.
-  꺼져 있으면 사이클은 그대로 돌고 임베딩만 조용히 건너뛴다(추천·검색이 낡아간다).
-- 뷰어 API(8771)는 `./deploy/setup-dashboards.sh` 가 launchd 로 상시 등록한다.
-  이게 없으면 뷰어의 `/api/` 는 SPA 폴백으로 index.html 을 200 으로 돌려주고, 뷰어는
-  공고 전량 파일로 물러선다(느리고, 파일이 구워진 시점의 상태를 보여준다).
-  DB 가 안 떠 있을 때 등록하면 옛 SQLite 판(`semantic.server`)으로 되돌려지니,
-  DB 를 살린 뒤 `--reschedule` 로 다시 등록한다.
+  꺼져 있으면 사이클은 그대로 돌고 임베딩만 건너뛴다(추천·검색이 낡아간다).
+- 뷰어 API(8771, backend)는 `./deploy/setup-dashboards.sh` 가 launchd 로 상시 등록한다.
+  이게 없으면 뷰어의 `/api/` 는 502 이고, 뷰어는 화면마다 정적 파일로 물러선다(느리고, 파일이
+  구워진 시점의 상태를 보여준다). DB 가 내려가 있어도 서버는 떠서 503 을 주다가 DB 가 살아나면
+  그대로 답한다 — 예전의 SQLite 판 되돌리기는 없다.
+- **스키마 변경은 운영 DB 에 손으로 적용한다** — `docker exec -i jobseeker-db psql -U jobseeker -d
+  jobseeker -v ON_ERROR_STOP=1 < db/migrations/0NN_*.sql`. 새 코드가 새 표를 읽는데 마이그레이션이
+  없으면 그 API 만 실패하고 뷰어는 파일로 물러선다.
 
 ## Git 워크플로
 - 커밋 메시지는 Conventional Commits 형식을 따른다: `type(scope): subject`

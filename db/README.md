@@ -105,7 +105,11 @@ saramin 은 영영 NULL 이다. 그 자리는 `first_seen_at`(우리가 처음 �
 
 ## 벡터 연동 — sqlite-vec 를 pgvector 로 들인다
 
-지금 `semantic.db` 는 별도 SQLite 파일이다: `documents`(kind=job|post) + `vec_documents`
+> **끝났다(2026-10-01).** SQLite(`semantic/`, `semantic.db`)와 이관 도구(`store.vectors.migrate`)를
+> 지웠다. 임베딩·추천·검색은 전부 pgvector 이고, 사이클의 `refresh_vectors()` 가
+> `store.vectors.embed` → `store.vectors.similar --dump` 를 돈다. 아래는 이관할 때의 기록이다.
+
+당시 `semantic.db` 는 별도 SQLite 파일이다: `documents`(kind=job|post) + `vec_documents`
 (sqlite-vec) + `fts_documents`(FTS5). 공고와 **다른 파일**에 있어서 색인이 마감 여부를 알 수
 없고, 그래서 `meta` JSON 에 status 를 베껴 담는다. 그 사본은 공고가 마감돼도 다음 ingest
 전까지 낡은 채로 남는다 — 검색 결과에 마감 공고가 뜨는 경로다.
@@ -243,16 +247,17 @@ RETURNING id, (xmax = 0) AS inserted; -- inserted=true 면 job_event('appeared')
 | 빌더 입력 전환 | `jd-viewer/bin/jobs_filter.py` `load_jobs`/`load_posts` | ✅ 빌더 7개 · 운영에서 산출물 대조 |
 | 마감 재확인 대상 | `job_recheck_queue` → `pipeline.close_check` | ✅ 후보 10,496 → 12,548건 |
 | 행동 기록 이관 | `engagement/collect.py`·`score.py` | ✅ 409건 · DB↔파일 글자 그대로 일치 |
-| 검색 API | `catch_capture/store/api/server.py` | ✅ 8771, 뷰어 응답 형식 그대로 |
-| 공고 API | `catch_capture/store/api/main.py`(FastAPI) · `store/jobs/facets.py` · migrations/010 | ✅ 목록·칩·상세를 DB 에서. 화면 규칙과 18개 조합 대조 일치 |
+| 뷰어 API | `backend/`(FastAPI, 8771) · `store/jobs/facets.py` · migrations/010 | ✅ 공고 목록·칩·상세·검색을 DB 에서. 화면 규칙과 18개 조합 대조 일치 |
+| 회사·유사·글·외주·가격 API | `backend/app/features/*` · migrations/011(`viewer_doc`) | ✅ 각 정적 파일과 같은 모양, 상태는 읽는 순간 |
+| 벡터 단일화 | `store/vectors/*` | ✅ SQLite(semantic.db) 제거 — 임베딩·추천·검색 모두 pgvector |
 
 공통 기반: `store/db/conn.py`(DSN) · `store/db/slug.py`(주소 슬러그) · `store/db/upsert.py`(쓰기 경로).
-임베딩 입력 텍스트는 `semantic/text.py` 로 떼어내 SQLite·PostgreSQL 두 경로가 공유한다.
+임베딩 입력 텍스트는 `store/vectors/text.py` 하나다.
 
-### 서비스 연결 — 8771 검색 API
+### 서비스 연결 — 8771 뷰어 API(backend)
 
-`store/api/server.py` 가 `semantic/server.py` 를 대체한다. **응답 형식은 한 글자도 바뀌지
-않는다** — 뷰어의 `useHybridSearch.ts` 가 읽는 필드 그대로라 화면 쪽은 고칠 데가 없다.
+뷰어 API 는 `backend/`(FastAPI, `python -m app.main`)다. DB 를 읽기만 하고, 쓰는 쪽(파이프라인)을
+import 하지 않는다. 검색 응답 형식은 예전 SQLite 판(`semantic/server.py`, 지금은 지웠다) 그대로다.
 
 ```
 GET /api/search?q=재택+백엔드&kind=job&limit=20&include_closed=0
@@ -263,7 +268,7 @@ GET /api/health
 Ollama 가 없어도 서버는 죽지 않는다 — 검색이 반쪽으로라도 도는 편이 통째로 실패하는
 것보다 낫고, 대신 그 사실을 health 가 드러낸다.
 
-**띄울 때 출력을 파이프로 자르지 말 것.** `python -m store.api.server | head -6` 처럼 쓰면
+**띄울 때 출력을 파이프로 자르지 말 것.** `python -m app.main | head -6` 처럼 쓰면
 6줄 뒤 파이프가 닫히면서 이후 모든 쓰기가 BrokenPipe 가 되고 요청 처리 스레드가
 조용히 죽는다(health 는 되는데 search 만 무응답인 모양으로 나타난다). 실제로 그렇게
 30분을 썼다. `launchd`/`nohup` 으로 파일에 직접 리다이렉트할 것.
@@ -273,7 +278,7 @@ Ollama 가 없어도 서버는 죽지 않는다 — 검색이 반쪽으로라도
 뷰어는 첫 화면에서 공고 전량(`all_jobs_enriched.json`, 184MB)을 받아 필터·칩 건수를
 브라우저에서 셌다. 그 파일은 사이클마다 구워졌으므로 DB 에서 닫힌 공고가 다음 굽기까지
 화면에 모집중으로 남았고, 파이프라인이 멈추면(2026-09-30 Docker 가 열 시간 멎었다)
-그대로 굳었다. 지금은 같은 서버(8771, `store/api/main.py`)가 목록을 SQL 로 답한다.
+그대로 굳었다. 지금은 같은 서버(8771, `backend/app/features/jobs`)가 목록을 SQL 로 답한다.
 
 ```
 GET /api/jobs?region=서울&role=백엔드&stack=Java&closed=hide&page=1&limit=20
@@ -293,14 +298,15 @@ GET /api/docs                   OpenAPI
   대표 선정에 모집 상태가 들어가므로 상태를 바꾸는 쪽(크롤 사이클, `close_check`)이
   끝에 갱신한다.
 - 목록 응답은 gzip 8KB 남짓, 250ms 안팎이다.
-- API 가 없는 배포에서는 뷰어가 예전처럼 파일로 돈다(`useJobsApiAvailable`).
-  그래서 `store.jobs.export` 는 계속 파일을 쓴다 — 사전 렌더링(`prerender.mjs`)도 아직 파일을 읽는다.
+- API 가 없는 배포에서는 뷰어가 예전처럼 파일로 돈다(`features/jobs/api.ts` 의 `probeJobsApi`).
+  그래서 `store.jobs.export` 는 계속 파일을 쓴다(회차마다 한 번) — 사전 렌더링(`prerender.mjs`)도
+  파일을 읽는다. 공고 매핑은 `backend/app/features/jobs/mapping.py` 한 벌을 둘이 같이 쓴다.
 
 규칙을 고치면 두 대조를 돌린다(둘 다 node 로 TS 원본을 직접 실행한다).
 
 ```
 python -m store.jobs.facets --parity    # 공고별 지역·직군·경력 — 전량 대조
-python -m store.api.parity         # 목록 건수·첫 쪽 순서·칩 건수 — 필터 18조합
+cd backend && python -m pytest tests/features/jobs/test_parity.py   # 목록 건수·첫 쪽·칩 — 18조합
 ```
 
 ### 엔진 산출물 색인

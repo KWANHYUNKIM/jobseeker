@@ -14,26 +14,48 @@ npm run build      # tsc -b + vite build (타입체크 포함, 배포 산출물 
 npm run preview    # 빌드 결과 미리보기
 ```
 
-## 폴더 구조 — 기능별
+## 폴더 구조
 
 ```
 src/
-  App.tsx · main.tsx · types.ts · index.css     앱 뼈대(탭 라우팅·공통 타입)
-  features/<기능>/                              화면 + 그 화면만 쓰는 훅·로직·테스트
-    jobs/        공고 목록·상세·필터(filter·region·career)·공고 API(useJobsApi)
-    companies/   기업 기술스택            reveng/   기술 역설계
-    radar/       기업 100 레이더          blog/     기술 블로그
-    book/        기술도서(/wiki)          calendar/ 모집 캘린더
-    trend/       개발 트렌드·학습 경로    career/   커리어 마인드맵
-    reposts/     재공고 추적              freelance/ 외주·프리
-    hardware/    PC 하드웨어
-  shared/
-    ui/          공통 UI(ui.tsx·Md·ArchitectureDiagram)
-    lib/         두 기능 이상이 쓰는 것(router·seo·urls·usePaged·companySlug·classify …)
+  main.tsx · types.ts                시작점 · 공통 타입
+  app/
+    App.tsx                          껍데기(위쪽 탭 막대 + 주소에 맞는 페이지)
+    router.tsx                       페이지 경로 설정 — 경로 첫 세그먼트 → 탭 → 페이지
+    providers.tsx                    전역 상태(잡 리스트 — 헤더 건수와 JobsPage 가 같이 읽는다)
+  pages/<경로>/XxxPage.tsx           주소 하나에 한 화면. 얇게 — 기능 컴포넌트를 조립만 한다
+  features/<기능>/                   기능별 코드
+    components/                      이 기능의 UI
+    hooks/                           이 기능의 React 훅
+    utils/                           이 기능의 보조 함수(필터 규칙 등)
+    api.ts                           이 기능의 요청(뷰어 API → 안 되면 정적 파일)
+  components/                        두 기능 이상이 쓰는 UI(ui·Md·ArchitectureDiagram)
+  hooks/                             두 기능 이상이 쓰는 훅(useCompanies·useSimilar·usePaged …)
+  utils/                             공통 함수(navigation·seo·urls·companySlug·classify …)
+  api/client.ts                      공통 요청 설정 — API_BASE, getJson, apiOrFile
+  styles/global.css                  전역 스타일(Tailwind + 색 변수)
 ```
 
-새 파일은 쓰는 기능의 폴더에 둔다. 두 번째 기능이 가져다 쓰기 시작하면 그때 `shared/` 로
-올린다. 테스트는 `npm test`(vitest), 대상 파일 옆에 `*.test.ts` 로 둔다.
+기능: jobs(공고 목록·상세·필터) · companies · reveng · radar · blog · book(/wiki) · calendar ·
+trend · career(마인드맵) · reposts · freelance · hardware.
+
+규칙
+- 새 파일은 쓰는 기능의 폴더에 둔다. 두 번째 기능이 가져다 쓰기 시작하면 그때 공통 폴더로 올린다.
+  기능끼리는 서로 import 하지 않는다(페이지가 조립한다).
+- 요청(fetch)은 `features/<기능>/api.ts` 나 `api/` 에만 둔다. 훅은 상태(로딩·취소·디바운스)만.
+- 데이터는 **API 먼저, 안 되면 정적 파일**이다(`apiOrFile`). API(backend, 8771)는 정본 DB 를 읽는
+  순간의 상태를 주고, `public/*.json` 은 사전 렌더링과 API 가 없는 배포를 위해 남는다.
+- 테스트는 `npm test`(vitest), 대상 파일 옆에 `*.test.ts` 로 둔다.
+
+| 화면 데이터 | API | 대체 파일 |
+|---|---|---|
+| 공고 목록·상세·검색 | `/api/jobs`, `/api/jobs/{key}`, `/api/search` | `all_jobs_enriched.json` |
+| 유사 공고·관련 글 | `/api/similar?url=&kind=` | `similar_jobs.json`, `similar_posts.json` |
+| 기업 기술스택 | `/api/companies`(목록 요약), `/api/companies/{norm}` | `company_stacks.json` |
+| 기술블로그 글 목록 | `/api/posts` | `tech_blogs.json` |
+| 외주·프리 | `/api/freelance` | `freelance.json` |
+| 부품 가격 | `/api/hardware/prices` | `hardware/prices.json` |
+| 나머지(역설계·브리핑·책·레이더·트렌드…) | — | 정적 파일만(사람·엔진이 쓰는 문서이거나 빌더 산출물) |
 
 ## 주소와 검색 노출(SEO)
 
@@ -52,13 +74,13 @@ URL 의 일부로 보지 않아서, 공고가 1만 건이어도 색인되는 주
 
 구성 요소는 셋이다.
 
-- `src/shared/lib/router.ts` — pushState 라우터(60줄, 의존성 없음). 예전 해시 주소는
+- `src/utils/navigation.ts` — pushState 라우터(60줄, 의존성 없음). 예전 해시 주소는
   진입 시 새 경로로 리다이렉트한다.
-- `src/shared/lib/companySlug.js` — 한글 회사 이름을 ASCII 주소로. 영문 브랜드명 매핑
+- `src/utils/companySlug.js` — 한글 회사 이름을 ASCII 주소로. 영문 브랜드명 매핑
   (`쿠팡` → `coupang`)이 먼저고, 없으면 국어의 로마자 표기법으로 옮긴다. 앱과
   프리렌더가 같은 파일을 읽어야 주소가 갈라지지 않는다(그래서 `.js`).
   눈에 걸리는 회사가 있으면 `BRAND_SLUGS` 에 한 줄 추가하면 된다.
-- `src/shared/lib/seo.ts` + `src/shared/lib/urls.ts` — 라우트마다 제목·설명·정규 URL·오픈그래프·
+- `src/utils/seo.ts` + `src/utils/urls.ts` — 라우트마다 제목·설명·정규 URL·오픈그래프·
   구조화 데이터(JobPosting/Organization)를 `<head>` 에 갈아끼운다.
 - `scripts/prerender.mjs` — `npm run build` 끝에 주소별 정적 HTML 과 `sitemap.xml`,
   `robots.txt` 를 찍는다. 크롤러와 카카오톡·슬랙 미리보기 봇이 보는 게 이것이다.

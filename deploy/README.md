@@ -139,13 +139,15 @@ rsync -av <계정>@<옛서버>:jobseeker/catch_capture/screenshots/ \
 
 ## 관리 대시보드
 
-크롤 상태·통계를 보는 서버 2종. 호스트 네이티브(launchd)로 돌고, 각각 별도
-임시 터널로 외부에 노출한다.
+`setup-dashboards.sh` 가 호스트 네이티브(launchd)로 띄우는 서버 넷. 대시보드 둘(ops·stats)은
+각각 임시 터널로 외부에 노출하고, 뷰어 API·수집은 뷰어 nginx 가 같은 오리진으로 프록시한다.
 
 | 포트 | 서버 | 역할 |
 |---|---|---|
 | 8770 | ops (`monitoring.ops_server`) | 크롤 파이프라인 **실시간** 운영 대시보드 |
-| 8765 | stats (`dashboard/serve.py`) | 공고 분류·집계 통계 대시보드 |
+| 8765 | stats (`dashboard/serve.py`) | 공고 분류·집계 통계 대시보드(정본 DB) |
+| 8771 | search (`backend/` — `python -m app.main`) | 뷰어 API(공고·회사·글·외주·가격·검색). 뷰어 `/api/` |
+| 8772 | collect (`engagement.collect`) | 방문 기록 수집. 뷰어 `/collect` |
 
 소셜 자동 발행 데몬(인스타·페이스북 페이지, `com.jobseeker.publisher`, 포트 없음)은 `./deploy/setup-publisher.sh` 로
 launchd 에 5분 주기로 등록한다. 결과는 8770 의 '인스타 발행' 칸이 읽고, 발행 이미지는 뷰어
@@ -153,7 +155,7 @@ nginx 의 `/ig/`(볼륨 `design-lab/exposed`)로 나간다 — 인스타가 공�
 때문이고, 페이스북은 파일을 직접 올린다. 절차는 `design-lab/SOCIAL.md`.
 
 ```bash
-./deploy/setup-dashboards.sh              # 두 서버를 launchd 로 등록·기동
+./deploy/setup-dashboards.sh              # 네 서버를 launchd 로 등록·기동
 # .env 의 COMPOSE_PROFILES 에 dashboards 를 넣고 배포하면 터널이 함께 뜬다
 ./deploy/tunnel-url.sh                     # ops/stats 공개 주소 확인
 ./deploy/setup-dashboards.sh --uninstall   # 해제
