@@ -20,6 +20,8 @@ backend/
 └─ tests/features/<기능>/  기능별 테스트(conftest.py 가 DB 없으면 db 마커를 건너뛴다)
 ```
 
+- 기능: jobs · search · similar · companies · posts · freelance · hardware · docs(`/api/docs/<경로>` — 그 밖의
+  화면 문서 전부, 파이프라인 `store.ingest.docs` 가 DB 에 옮긴 것) · health.
 - 새 엔드포인트는 `features/<기능>/` 하나를 만들고 `main.py` 의 `ROUTERS` 에 더한다.
 - SQL 은 `repository.py` 에만 둔다. `router.py` 는 파라미터 검증과 호출만 한다.
 - ORM 은 쓰지 않는다(`models.py`·`db/base.py` 가 없는 이유). 스키마의 원본은 저장소 루트의

@@ -78,7 +78,8 @@
       `pipeline.engagement_score` 가 여기서 읽고, 씨앗 뿌리기는 `python -m store.db.ledgers seed`)
     · `ingest/` — `crawl`(크롤 사이클→DB, aggregate 가 매번 부른다 — 회사 표기 재선정과
       `mv_company_stack`·`job_facet` 갱신도 여기서 한다) / `posts`(블로그 글 — 크롤 회차마다
-      crawl_all 이 부른다) / `engines`(엔진 산출물) / `backfill`(JSON→DB — 이관·복구용 일회성)
+      crawl_all 이 부른다) / `engines`(엔진 산출물) / `docs`(public 의 빌더 산출물·엔진 원고 → viewer_doc,
+      `/api/docs` 가 읽는다) / `backfill`(JSON→DB — 이관·복구용 일회성)
     · `jobs/` — `facets`(필터 축 — 지역·직군·경력·규모·스택을 `job_facet` 에 채운다. **규칙
       원본은 뷰어 TS**(`features/jobs/utils/region.ts`·`career.ts`, `utils/classify.ts`)이고 여기는
       그 파이썬 판이다. 한쪽을 고치면 `python -m store.jobs.facets --parity` 와 backend 의
@@ -109,13 +110,16 @@
   `app/main.py`(라우터 등록·실행 `python -m app.main`) · `core/`(config·exceptions) · `db/`(session·
   viewer_doc 읽기) · `features/<기능>/{router,service,repository,schemas}.py` · `utils/` · `tests/`.
   기능: jobs(목록·칩 건수·상세) · search · similar · companies(목록 요약·회사 상세) · posts ·
-  freelance · hardware(가격) · health. 응답은 각 정적 파일과 같은 모양이고 상태는 읽는 순간의 것.
+  freelance · hardware(가격) · docs(`/api/docs/<경로>` — 역설계·브리핑·도서·레이더·트렌드·캘린더·재공고·
+  마인드맵·학습 경로·부품 스펙·데이터센터 등 그 밖의 화면 문서 전부) · health. **뷰어의 모든 화면이 API 로
+  먼저 읽는다.** docs 는 파이프라인 `store.ingest.docs` 가 회차 끝·git 동기화 때 public 문서를
+  `viewer_doc`(kind='file')로 옮긴 사본이다(바뀐 것만, 012 의 content_hash). 응답은 각 정적 파일과 같은 모양이고 상태는 읽는 순간의 것.
   **backend 는 catch_capture 를 import 하지 않는다**(반대 방향만 — export 가 mapping 을 쓴다).
   ORM 없음(SQL 은 repository 에만), 스키마 원본은 루트 `db/`(파이프라인과 같이 쓴다).
   DB 에 못 붙어도 죽지 않고 503 — 뷰어는 정적 파일로 물러선다. 크롤러와 같은 venv, launchd 작업
   폴더 `backend/`. 자세한 건 `backend/README.md`.
 - `jd-viewer/` : React/Vite 기반 JD 뷰어 (5173). 화면 데이터는 **API 먼저, 안 되면 정적 파일**
-  (`src/api/client.ts` 의 `apiOrFile`). 화면마다 진짜 경로를 쓴다(`/jobs/<사이트>-<번호>` 등) —
+  (`src/api/client.ts` 의 `apiOrFile`·`docFetch` — 정적 문서는 `fetch` 대신 `docFetch` 를 쓴다). 화면마다 진짜 경로를 쓴다(`/jobs/<사이트>-<번호>` 등) —
   `src/utils/navigation.ts`(pushState) + `src/utils/seo.ts`(라우트별 head) +
   `scripts/prerender.mjs`(빌드 때 주소별 정적 HTML·sitemap·robots). 자세한 건 뷰어 README.
   **폴더 규칙**: `app/`(App·router=경로→페이지·providers=전역 상태) · `pages/<경로>/XxxPage.tsx`

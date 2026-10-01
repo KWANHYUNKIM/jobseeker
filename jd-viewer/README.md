@@ -55,7 +55,10 @@ trend · career(마인드맵) · reposts · freelance · hardware.
 | 기술블로그 글 목록 | `/api/posts` | `tech_blogs.json` |
 | 외주·프리 | `/api/freelance` | `freelance.json` |
 | 부품 가격 | `/api/hardware/prices` | `hardware/prices.json` |
-| 나머지(역설계·브리핑·책·레이더·트렌드…) | — | 정적 파일만(사람·엔진이 쓰는 문서이거나 빌더 산출물) |
+| 그 밖의 문서 전부 — 역설계·취업 브리핑·기술도서·레이더·트렌드·캘린더·재공고·마인드맵·커리어 맵·학습 경로·부품 스펙·데이터센터·블로그 본문 | `/api/docs/<public 기준 경로>` (`docFetch`) | 같은 경로의 정적 파일 |
+
+`/api/docs` 는 파이프라인의 `store.ingest.docs` 가 public 의 문서를 DB(`viewer_doc`)에 옮겨 둔 것을
+돌려준다. 빌더·조사 엔진이 파일을 쓰는 방식은 그대로이고, 화면이 읽는 길만 API 로 모았다.
 
 ## 주소와 검색 노출(SEO)
 
