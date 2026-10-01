@@ -59,11 +59,14 @@ THEMES = {
     "map": {"paper": "#f1f3f9", "ink": "#121a2e", "sub": "#58627a", "accent": "#4263eb", "line": "#d6dcec"},
     "welcome": {"paper": "#fff4f1", "ink": "#2b1310", "sub": "#7a5a54", "accent": "#f76707", "line": "#f3d9d1"},
     "gongchae": {"paper": "#14161c", "ink": "#f4f2ec", "sub": "#9b9fa9", "accent": "#ff6b4a", "line": "#2b2f38"},
+    "lunch": {"paper": "#fff8ef", "ink": "#24170d", "sub": "#7b6a58", "accent": "#ffb02e", "line": "#f0e2cf"},
+    "kit": {"paper": "#f3f0ff", "ink": "#1b1533", "sub": "#655d80", "accent": "#7048e8", "line": "#ddd6f7"},
 }
 SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", "term": "[IT 용어]",
           "interview": "[면접 예상 질문]", "qa": "[고민 상담소]", "jd": "[JD 번역기]",
           "same": "[같은 직무 다른 회사]", "roadmap": "[공부 로드맵]", "weekly": "[주간 리포트]", "signal": "[채용 시그널]", "talent": "[인재상 해부]",
-          "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]"}
+          "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]",
+          "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -79,7 +82,9 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "perk": ["재택근무", "주4일제", "스톡옵션", "개발자복지", "개발자채용"],
         "map": ["판교", "성수", "개발자채용", "IT회사", "밸런스게임"],
         "welcome": ["신입개발자", "전환형인턴", "졸업예정자", "개발자취업", "신입채용"],
-        "gongchae": ["공채", "수시채용", "취업전략", "신입개발자", "중고신입", "개발자취업"]}
+        "gongchae": ["공채", "수시채용", "취업전략", "신입개발자", "중고신입"],
+        "lunch": ["판교맛집", "판교점심", "판교테크노밸리", "IT회사", "개발자채용"],
+        "kit": ["웰컴키트", "신입사원", "첫출근", "IT회사", "개발자취업"]}
 
 
 # --- 재료 ---------------------------------------------------------------
@@ -1269,18 +1274,116 @@ def build_gongchae() -> dict:
             "slides": slides, "caption": caption, "jobs": []}
 
 
+# --- 사진이 들어가는 시리즈 — 원고는 content/*.json (출처·사진 저작자까지 거기에) ---------------
+CONTENT = LAB_DIR / "content"
+PHOTOS = LAB_DIR / "assets" / "photos"
+
+
+def _photo(sub: str, name: str) -> tuple[str, str]:
+    """사진 → (data URI, 출처 한 줄). 출처는 Commons API 로 확인해 둔 credits.json 에서 — 판마다 적는다."""
+    import base64
+    p = PHOTOS / sub / name
+    credits = json.loads((PHOTOS / sub / "credits.json").read_text(encoding="utf-8"))
+    c = credits[name.replace("_", " ")]
+    uri = "data:image/jpeg;base64," + base64.b64encode(p.read_bytes()).decode()
+    return uri, f"{c['artist']} · {c['license']} · Wikimedia Commons"
+
+
+def build_lunch(area: str = "pangyo") -> dict:
+    """[점심 지도] IT 회사가 모인 동네의 점심 — 블로그·기사에 여러 번 나온 곳.
+
+    가게 사진은 쓰지 않는다(사용권이 없다). 대표 메뉴 종류의 Commons 사진을 '메뉴 예시' 로 깔고
+    판마다 '이 가게 사진 아님' 과 작가·라이선스를 적는다. 끝 장은 그 동네의 개발 공고로 잇는다.
+    """
+    doc = json.loads((CONTENT / f"lunch-{area}.json").read_text(encoding="utf-8"))
+    src = doc["sources"]
+    rows = _open_dev(_source())
+    pg = [j for j in rows if re.search(r"판교|분당|삼평|백현", j.get("location") or "")]
+    cos = collections.Counter(_company(j) for j in pg).most_common(4)
+    places = doc["places"]
+    first_uri, first_credit = _photo("lunch", places[0]["photo"])
+    slides = [{"type": "photo", "image": first_uri, "title": "판교 IT 직장인 점심 10곳",
+               "meta": "카카오·엔씨·NHN 근처 · 블로그·기사에 여러 번 나온 순",
+               "credit": f"사진: 메뉴 예시({places[0]['dish']}) — {first_credit}"}]
+    for i, pl in enumerate(places, 1):
+        uri, credit = _photo("lunch", pl["photo"])
+        years = sorted({src[k][1][:4] for k in pl["src"]})
+        slides.append({"type": "photo", "image": uri, "rank": f"{i:02d} · {pl['where']}", "title": pl["name"],
+                       "meta": pl["menu"] + (f" · {pl['price']}" if pl["price"] else ""),
+                       "lines": [f"가까운 곳: {pl['near']}", f"나온 곳: 블로그·기사 {len(pl['src'])}곳({'·'.join(years)})"],
+                       "credit": f"사진: 메뉴 예시({pl['dish']}) — 이 가게 사진 아님 · {credit}"})
+    slides.append({"type": "end", "title": "점심 먹고, 지원하기", "lines": [
+        f"판교·분당 모집중 개발 공고 **{len(pg)}건** — " + " · ".join(c for c, _ in cos),
+        "가기 전에 영업시간·휴무를 꼭 확인 — 가격은 출처 시점 기준",
+        "순서는 맛 순위가 아니라 **여러 출처에 나온 순**이다",
+        "여기 없는 판교 점심, 댓글로 알려 주세요",
+        SEND], "note": f"출처: 블로그·기사 {len(src)}곳(캡션) · 확인 {_dot(doc['checked'])}"})
+    caption = "\n\n".join([
+        "[점심 지도] 판교 IT 직장인 점심 10곳 — 카카오·엔씨·NHN 근처",
+        "\n".join(f"{i:02d} {pl['name']} — {pl['menu']}" + (f" ({pl['price']})" if pl['price'] else "")
+                  for i, pl in enumerate(places, 1)),
+        "고른 기준: 서로 다른 블로그·기사에 나온 횟수 순, 2024년 이후 출처가 있는 곳만. 미쉐린은 판교를 다루지 않아 "
+        "'순위' 가 아니라 '추천' 입니다. 가기 전에 영업시간을 확인하세요.",
+        f"판교·분당 모집중 개발 공고 {len(pg)}건 — 프로필 링크에서 볼 수 있어요.",
+        "사진은 메뉴 예시이고 각 가게 사진이 아닙니다(Wikimedia Commons, 작가·라이선스는 각 장에).",
+        "출처\n" + "\n".join(f"· {v[0]} ({v[1]})" for v in src.values()),
+    ])
+    return {"kind": "lunch", "id": f"lunch-{area}-{doc['checked'].replace('-', '')}", "title": doc["title"],
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.4}
+
+
+def build_welcomekit() -> dict:
+    """[첫 출근 웰컴키트] 입사하면 받는 것 — 회사가 공개한 품목만(연도 표기). 회사 사진은 쓰지 않는다."""
+    doc = json.loads((CONTENT / "welcome-kits.json").read_text(encoding="utf-8"))
+    kits, ph = doc["kits"], doc["pharma"]
+    note = f"품목은 출처 원문에 적힌 것만 · 웰컴키트는 입사 시기마다 바뀐다 · 확인 {_dot(doc['checked'])}"
+    slides = [{"type": "cover", "lines": ["입사하면", "**뭘 받을까**"],
+               "sub": " · ".join(k["company"] for k in kits) + " — 그리고 제약·바이오는?", "note": note}]
+    for k in kits:
+        lines = list(k["items"])
+        if k.get("quote"):
+            lines.append(k["quote"])
+        slides.append({"type": "end", "title": f"{k['company']} ({k['year']})", "lines": [f"**{k['hook']}**"] + lines,
+                       "note": f"출처: {k['src'][0]} · {k['kind']}"})
+    slides.append({"type": "end", "title": "제약·바이오 IT 는?", "lines": [
+        "**품목을 공개한 곳이 거의 없다**",
+        *[f"{f['company']} — {f['text']}" for f in ph["found"]],
+        f"{' · '.join(ph['none'][:4])} 등은 공개 자료를 찾지 못했다",
+        "면접 마지막 질문으로 **'입사 첫 주에 무엇을 하나요?'** 를 물어보자"], "note": note})
+    slides.append({"type": "end", "title": "키트보다 중요한 것", "lines": [
+        "① **온보딩** — 첫 주에 누가 무엇을 알려 주나(토스: 온보딩 세션, GC녹십자EM: 멘토링)",
+        "② **장비** — 노트북·모니터 사양은 공고·면접에서 물어봐도 되는 것",
+        "③ 계열사마다 다르다 — 카카오스타일 ≠ 카카오, 네이버클라우드 ≠ 네이버",
+        SEND], "note": note})
+    caption = "\n\n".join([
+        "[첫 출근 웰컴키트] 입사하면 뭘 받을까 — " + " · ".join(f"{k['company']}({k['year']})" for k in kits),
+        "\n".join(f"· {k['company']}: {k['hook']}" for k in kits),
+        "제약·바이오는 품목을 공개한 곳이 거의 없었습니다. GC녹십자 계열사 채용 페이지에 '직장생활 필수품 Kit' 정도만 "
+        "적혀 있어요. 면접에서 '입사 첫 주에 무엇을 하나요?' 를 물어보세요.",
+        "품목은 회사 공식 글(토스·배민·카카오스타일)과 2차 자료(네이버클라우드)에 적힌 것만 옮겼습니다. "
+        "웰컴키트는 입사 시기마다 바뀌니 연도를 같이 봐 주세요. 회사 사진은 사용권이 없어 싣지 않았습니다.",
+        "출처\n" + "\n".join(f"· {k['company']} — {k['src'][0]}" for k in kits)
+        + "\n" + "\n".join(f"· {f['company']} — 채용 페이지 복리후생" for f in ph["found"]),
+    ])
+    return {"kind": "kit", "id": f"welcomekit-{doc['checked'].replace('-', '')}", "title": doc["title"],
+            "slides": slides, "caption": caption, "jobs": []}
+
+
 # --- 찍기 · 승인 ---------------------------------------------------------
-def render(post: dict) -> list[Path]:
+REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
+
+
+def render(post: dict, size: tuple[int, int] = (1080, 1350)) -> list[Path]:
     from .render import _page_maker
     theme, series = THEMES[post["kind"]], SERIES[post["kind"]]
-    dest = OUT / post["id"]
+    dest = OUT / (post["id"] + ("-reel" if size == REEL else ""))
     dest.mkdir(parents=True, exist_ok=True)
     paths, n = [], len(post["slides"])
     for i, s in enumerate(post["slides"], 1):
-        data = {"theme": theme, "series": series, "page": f"{i} / {n}", "slide": s}
+        data = {"theme": theme, "series": series, "page": f"{i} / {n}", "slide": s, "size": list(size)}
         html = TEMPLATE.read_text(encoding="utf-8").replace(
             "/*__DATA__*/", json.dumps(data, ensure_ascii=False).replace("</", "<\\/"))
-        page = _page_maker().new_page(viewport={"width": 1080, "height": 1350})
+        page = _page_maker().new_page(viewport={"width": size[0], "height": size[1]})
         try:
             page.set_content(html, wait_until="load")
             page.wait_for_function("window.__ready === true", timeout=30000)
@@ -1322,9 +1425,11 @@ def approve(post: dict, paths: list[Path]) -> Path:
 def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
-                                     "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae"])
+                                     "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
+    ap.add_argument("--reel", action="store_true",
+                    help="9:16 으로 다시 찍어 릴스 mp4 를 만든다(같은 내용을 캐러셀로도 올리면 중복 게시다)")
     args = ap.parse_args()
     from .render import shutdown
     if args.kind == "guide":
@@ -1342,6 +1447,10 @@ def main() -> int:
     elif args.kind == "map":
         a, _, b = (args.company or "판교·분당:성수").partition(":")
         post = build_commute(a, b or "성수")
+    elif args.kind == "lunch":
+        post = build_lunch(args.company or "pangyo")
+    elif args.kind == "kit":
+        post = build_welcomekit()
     elif args.kind in ("pay", "perk", "welcome", "gongchae"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae}[args.kind]()
@@ -1351,9 +1460,14 @@ def main() -> int:
     else:
         post = build_stack() if args.kind == "stack" else build_rates()
     try:
-        paths = render(post)
+        paths = render(post, REEL if args.reel else (1080, 1350))
     finally:
         shutdown()
+    if args.reel:
+        from .video import build
+        hold = post.get("reel_hold", 2.6)   # 데이터 판은 공고 판보다 글이 많다 — 1.8초면 못 읽는다
+        mp4 = build(paths, paths[0].parent / "reel.mp4", hold=hold)
+        print(f"[series] 릴스 → {mp4}")
     print(f"[series] {post['id']} {len(paths)}장 → {paths[0].parent}")
     # 손으로 올릴 때(앱·웹) 붙여 넣을 캡션 — 승인함에 넣는 것과 같은 글.
     tags = " ".join(f"#{t}" for t in TAGS[post["kind"]])

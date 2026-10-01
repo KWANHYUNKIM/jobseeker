@@ -87,6 +87,33 @@
   .end ul { margin-top:34px; padding:0; }
   .end li { list-style:none; font-size:40px; font-weight:700; line-height:1.45; padding:24px 0; border-bottom:1px solid var(--line); }
 
+  /* photo — 사진이 판 전체를 덮고 글은 아래 어두운 띠 위에. 사진 출처(작가·라이선스)는 늘 판 안에 적는다 */
+  .photo { color:#fff; }
+  .photo .bg { position:absolute; inset:0; background-size:cover; background-position:center; }
+  .photo .shade { position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.18) 22%,
+                  rgba(0,0,0,.35) 36%, rgba(0,0,0,.78) 52%, rgba(0,0,0,.9) 100%); }
+  .photo > *:not(.bg):not(.shade) { position:relative; text-shadow:0 2px 12px rgba(0,0,0,.55); }
+  .photo h2 { margin-top:auto !important; }
+  .photo .rank + h2 { margin-top:10px !important; }
+  .photo .series, .photo footer { color:#fff; }
+  .photo .rule { background:#fff; }
+  .photo footer { border-top-color:#fff; }
+  .photo footer .pg, .photo .note { color:rgba(255,255,255,.75); }
+  .photo .rank { margin-top:auto; font-size:34px; font-weight:800; color:var(--accent); font-variant-numeric:tabular-nums; }
+  .photo h2 { margin-top:10px; font-size:84px; color:#fff; }
+  .photo .meta { margin-top:18px; font-size:32px; font-weight:700; color:rgba(255,255,255,.9); line-height:1.4; }
+  .photo ul { margin-top:22px; padding:0; }
+  .photo li { list-style:none; font-size:30px; font-weight:600; line-height:1.5; color:rgba(255,255,255,.92); }
+  .photo .credit { margin-top:20px; font-size:18px; color:rgba(255,255,255,.7); font-weight:500; }
+
+  /* reel(9:16) — 위 250px·아래 420px 는 릴스 화면의 이름·캡션·버튼이 덮는다. 본문은 가운데로 */
+  .sheet.reel { padding:230px 96px 400px; }
+  .reel.bars .bars, .reel.table table, .reel.jobs .jobs, .reel.end ul, .reel.stat .num { margin-top:auto; }
+  .reel.end h2 { margin-top:auto; }
+  .reel.end ul { margin-top:34px; }
+  .reel .note { margin-top:auto; }
+  .reel.photo { padding-bottom:420px; }
+
   /* brand cover (회사 해부) — 바탕이 그 회사의 색이다 */
   .brand .co { margin-top:auto; font-size:190px; font-weight:800; letter-spacing:-.06em; line-height:.95; white-space:nowrap; }
   .brand .one { margin-top:34px; font-size:36px; font-weight:700; line-height:1.45; letter-spacing:-.02em; }
@@ -103,7 +130,8 @@ const D = JSON.parse(document.getElementById('data').textContent);
   const T = D.theme || {};
   const root = document.documentElement;
   for (const k of ['paper','ink','sub','accent','line']) if (T[k]) root.style.setProperty('--' + k, T[k]);
-  const S = D.slide; const sheet = el('section', 'sheet ' + S.type);
+  if (D.size) { root.style.setProperty('--sheet-w', D.size[0] + 'px'); root.style.setProperty('--sheet-h', D.size[1] + 'px'); }
+  const S = D.slide; const sheet = el('section', 'sheet ' + S.type + (D.size && D.size[1] > 1500 ? ' reel' : ''));
 
   const head = el('div', 'series');
   const m = (D.series || '').match(/^\[(.+)\]\s*(.*)$/);
@@ -167,6 +195,14 @@ const D = JSON.parse(document.getElementById('data').textContent);
   } else if (S.type === 'end') {
     sheet.append(rich(el('h2'), S.title));
     const ul = el('ul'); (S.lines || []).forEach(l => ul.append(rich(el('li'), l))); sheet.append(ul);
+  } else if (S.type === 'photo') {
+    const bg = el('div', 'bg'); bg.style.backgroundImage = `url("${S.image}")`;
+    sheet.prepend(bg, el('div', 'shade'));
+    if (S.rank) sheet.append(el('div', 'rank', S.rank));
+    sheet.append(rich(el('h2'), S.title));
+    if (S.meta) sheet.append(rich(el('div', 'meta'), S.meta));
+    if (S.lines) { const ul = el('ul'); S.lines.forEach(l => ul.append(rich(el('li'), l))); sheet.append(ul); }
+    if (S.credit) sheet.append(el('div', 'credit', S.credit));
   }
   if (S.note) sheet.append(el('div', 'note', S.note));
   const foot = el('footer'); foot.append(el('div', '', '@devjobseeker'), el('div', 'pg', D.page || ''));

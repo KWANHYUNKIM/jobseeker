@@ -1,0 +1,27 @@
+{
+  "title": "판교 점심 지도",
+  "checked": "2026-10-01",
+  "basis": "서로 다른 블로그·기사에 나온 횟수 순(같은 글을 옮겨 실은 곳은 한 번), 2024년 이후 출처가 있는 곳만. 미쉐린은 판교를 다루지 않고 블루리본 등급은 공개 페이지로 확인하지 못해 순위가 아니라 '추천'이다.",
+  "sources": {
+    "A": ["여행톡톡", "2025-09-04", "https://www.tourtoctoc.com/news/articleView.html?idxno=10372"],
+    "B": ["핫플헌터", "2025-02-24", "https://hotplacehunter.co.kr/local/article/58257/"],
+    "C": ["forourtour", "2024-09-15", "https://forourtour.com/판교-맛집/"],
+    "D": ["비원뉴스", "2025-10-12", "https://gall.dcinside.com/board/view/?id=be1news&no=1119"],
+    "E": ["리뷰양", "2024-03-27", "https://reviewyang.com/판교-점심-맛집-추천/"],
+    "F": ["hawowyou", "2022-10-12", "https://hawowyou.com/entry/판교-숨은-맛집-베스트-10곳-모음"],
+    "G": ["travelforkorea", "2023-04-14", "https://travelforkorea.com/entry/판교-맛집-BEST-4"],
+    "H": ["picjjang", "2026-09-30", "https://picjjang.com/1046130/"]
+  },
+  "places": [
+    {"name": "제이스팟", "where": "알파돔타워 3동 3층", "menu": "미국식 중식 훠궈·샤브샤브", "price": "소고기 19,000원", "near": "카카오 판교아지트와 같은 판교역로", "src": ["F", "G", "H"], "photo": "Hot_pot_in_Taiwanese_restaurant.jpg", "dish": "훠궈"},
+    {"name": "정희 판교아브뉴프랑점", "where": "판교아브뉴프랑 1층", "menu": "고사리 크림 수제비 · 감태 타르타르", "price": "봉골레칼국수 11,900원", "near": "판교역 동쪽 아브뉴프랑", "src": ["C", "E"], "photo": "Korean.cuisine-Sujebi-01.jpg", "dish": "수제비"},
+    {"name": "인디테이블", "where": "판교아브뉴프랑 1층", "menu": "비프 라이스 볼 · 치킨 티카 마살라", "price": "14,900~15,900원", "near": "판교역 동쪽 아브뉴프랑", "src": ["C", "F"], "photo": "Chicken_tikka_masala.jpg", "dish": "치킨 티카 마살라"},
+    {"name": "차고145", "where": "알파리움 2동 라스트리트", "menu": "한우 차돌 관자 삼합", "price": "", "near": "카카오 판교아지트와 같은 판교역로", "src": ["F", "H"], "photo": "Korean.food-Galbi-03.jpg", "dish": "고기구이"},
+    {"name": "마키노차야 판교점", "where": "알파리움타워 2동 라스트리트 B1", "menu": "해산물 뷔페", "price": "주중 런치 45,000원", "near": "카카오 판교아지트와 같은 판교역로", "src": ["C", "G"], "photo": "Sakura_Seafood_Buffet_01.jpg", "dish": "해산물 뷔페"},
+    {"name": "르메콩", "where": "대왕판교로 670(유스페이스 쪽)", "menu": "소고기 쌀국수 · 나시고렝", "price": "10,900~11,900원 · 평일 점심만", "near": "엔씨소프트·NHN 과 같은 대왕판교로", "src": ["A"], "photo": "Pho_on_the_window_table.jpg", "dish": "쌀국수"},
+    {"name": "사위식당 판교점", "where": "알파돔타워 2층", "menu": "낙곱새 · 밀면", "price": "11,000~14,000원", "near": "카카오 판교아지트와 같은 판교역로", "src": ["B"], "photo": "Nakji-bokkeum_1.jpg", "dish": "낙지볶음"},
+    {"name": "호우섬 현대백화점판교점", "where": "현대백화점 판교점", "menu": "딤섬(블랙 하가우) · 우육탕면", "price": "", "near": "판교역 동쪽", "src": ["D"], "photo": "Three_dim_sum_in_steamer_basket.jpg", "dish": "딤섬"},
+    {"name": "카츠쇼쿠도우", "where": "알파돔", "menu": "로스카츠 정식", "price": "16,000원", "near": "카카오 판교아지트와 같은 판교역로", "src": ["A"], "photo": "Tonkatsu_003.jpg", "dish": "돈가스"},
+    {"name": "한와담", "where": "알파돔", "menu": "차돌된장", "price": "15,000원", "near": "카카오 판교아지트와 같은 판교역로", "src": ["A"], "photo": "Ssam_1.jpg", "dish": "한식 쌈 상차림"}
+  ]
+}
