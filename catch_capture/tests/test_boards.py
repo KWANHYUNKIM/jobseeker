@@ -123,3 +123,12 @@ def test_gojobs_title_filter():
     assert cb._GOJOBS_IT.search("외교부 일반직공무원(전산7급) 전입희망자 모집")
     assert cb._GOJOBS_NON_IT.search("개인정보보호위원회 전문임기제 다급(디자이너) 경력채용")
     assert cb._GOJOBS_NOTICE.search("출입국관리직 경채 서류전형 합격 공고")
+
+
+def test_rare_it_sources_filters():
+    # 지금은 IT 공고가 드문 곳 — 나오면 받고, 평소 공고는 거른다.
+    assert kp._NH_IT.search("데이터사업부 전문계약직 채용 공고")
+    assert not kp._NH_IT.search("NH농협은행 군산시청(출) 사무지원직 직원 채용공고")
+    assert kp._dev_kr("안전보건 시스템 개발 및 DATA 관리 담당자")
+    assert not kp._dev_kr("e편한세상 내포 에듀플라츠 현장 채용 공고(인부)")
+    assert kp._flatten([{"모집분야": [{"IT": [{"채용전형": ["신입"]}]}]}]) == ["모집분야: IT: 채용전형: 신입"]

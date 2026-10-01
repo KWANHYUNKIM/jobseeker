@@ -607,6 +607,41 @@
       "per_board": 10
     },
     {
+      "provider": "nonghyup",
+      "slug": "group",
+      "company": "범농협(NH농협은행·농협정보시스템 …)",
+      "region": "kr",
+      "per_board": 10
+    },
+    {
+      "provider": "kyobo",
+      "slug": "main",
+      "company": "교보생명",
+      "region": "kr",
+      "per_board": 10
+    },
+    {
+      "provider": "ibk",
+      "slug": "main",
+      "company": "IBK기업은행",
+      "region": "kr",
+      "per_board": 10
+    },
+    {
+      "provider": "dlenc",
+      "slug": "field",
+      "company": "DL이앤씨(현채직·PJT)",
+      "region": "kr",
+      "per_board": 10
+    },
+    {
+      "provider": "hoban",
+      "slug": "group",
+      "company": "호반그룹",
+      "region": "kr",
+      "per_board": 10
+    },
+    {
       "provider": "greenhouse",
       "slug": "anthropic",
       "company": "Anthropic",

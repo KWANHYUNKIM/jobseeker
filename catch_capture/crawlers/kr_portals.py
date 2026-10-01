@@ -1063,7 +1063,180 @@ def from_koreainvest(slug: str, company: str) -> list[dict]:
     return out
 
 
+# ── IT 공고가 드물게 나오는 곳(2026-10) ───────────────────────────────────────
+# 지금은 IT 공고가 0~1건이지만 나오면 받으려고 붙여 둔다. 개발직 판정이 비IT 를 거르므로
+# 평소에는 목록만 한 번 훑고 끝난다.
+
+# 범농협(NH농협은행·금융지주·농협생명·농협손보·계열사 — 농협정보시스템 포함). 목록 HTML,
+# 지난 공고도 섞여 접수기간 끝으로 거른다. 농·축협 탭(2)은 지역 조합 1천여 건이라 뺀다.
+_NH = "https://with.nonghyup.com/jbnf"
+_NH_TABS = {"1": "NH농협은행", "A": "농협금융지주", "C": "농협생명", "D": "농협손해보험", "Z": "농협 계열사"}
+_NH_PAGES = 15
+_NH_IT = re.compile(r"데이터|디지털|(?<![A-Za-z])(AI|IT|ICT)(?![A-Za-z])|전산|정보보호|정보시스템")
+
+
+def _nh_detail(sqno: str, opener) -> tuple[str, dict]:
+    raw = _req(f"{_NH}/jbnfDtl.do", opener=opener, data=f"jbnfSqno={sqno}".encode(),
+               headers={"Content-Type": "application/x-www-form-urlencoded"}).decode("utf-8", "ignore")
+    raw = re.sub(r"<(script|style|header|footer|nav)[^>]*>.*?</\1>", "", raw, flags=re.S | re.I)
+    i = raw.find('class="cont')
+    i = raw.find(">", i) + 1 if i > 0 else 0
+    return _text(raw[i:])[:16000], {}
+
+
+def from_nonghyup(slug: str, company: str) -> list[dict]:
+    from datetime import date
+    today = date.today().isoformat()
+    opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+    _req(f"{_NH}/jbnfLst.do", opener=opener)
+    out = []
+    for tab, name in _NH_TABS.items():
+        for page in range(1, _NH_PAGES + 1):
+            raw = _req(f"{_NH}/jbnfLst.do", opener=opener,
+                       data=f"srcAuthDsc={tab}&pageIndex={page}".encode(),
+                       headers={"Content-Type": "application/x-www-form-urlencoded"}).decode("utf-8", "ignore")
+            rows = [r for r in re.findall(r"<tr[^>]*>(.*?)</tr>", raw, re.S) if "fn_jbnfDtl" in r]
+            open_rows = 0
+            for r in rows:
+                sq = re.search(r"fn_jbnfDtl\('(\d+)'", r).group(1)
+                tds = [_text(x) for x in re.findall(r"<td[^>]*>(.*?)</td>", r, re.S)]
+                if len(tds) < 6:
+                    continue
+                end = tds[5].split("~")[-1].strip()
+                if end < today:
+                    continue
+                open_rows += 1
+                title = re.sub(r"\s*새글$", "", tds[1])
+                out.append(_cand(sq, title, tds[2] or name, f"{_NH}/jbnfLst.do?jbnfSqno={sq}",
+                                 location=tds[3], category=tds[0],
+                                 # 제목이 부서명뿐인 IT 공고가 있다('데이터사업부 전문계약직') — 부서 이름도 본다.
+                                 dev=_dev_kr(title) or bool(_NH_IT.search(title)),
+                                 detail=(lambda s=sq: _nh_detail(s, opener)), deadline=_mmdd(end)))
+            # 최신순이라 한 쪽이 통째로 지난 공고면 그 뒤도 지난 것이다.
+            if not rows or not open_rows:
+                break
+            _sleep(300)
+    return out
+
+
+# 교보생명 — 목록은 XML(XSheet). 상세는 같은 엔드포인트의 다른 호출인데 다시 부르면 오류 페이지라
+# 공고명만 싣는다. 대개 '경력사원 채용' 한 건에 여러 직무를 묶는다.
+def from_kyobo(slug: str, company: str) -> list[dict]:
+    form = ("S_DSCLASS=biz.rem.apply.recruit.Apply_list&S_DSMETHOD=search01&S_FORWARD=xsheetResultXML"
+            "&S_PAGE_NO=1&S_PAGE_CNT=1&S_TAB=tab_all&S_RE_CLASS=")
+    raw = _req("https://career.kyobo.co.kr/home", data=form.encode(),
+               headers={"ajax": "true", "Content-Type": "application/x-www-form-urlencoded"}).decode("utf-8", "ignore")
+    cell = lambda tr: re.findall(r"<TD><!\[CDATA\[(.*?)\]\]></TD>", tr, re.S)  # noqa: E731
+    head = cell((re.search(r"<HTR>(.*?)</HTR>", raw, re.S) or [None, ""])[1])
+    out = []
+    for tr in re.findall(r"<TR>(.*?)</TR>", raw, re.S):
+        row = dict(zip(head, (v.strip() for v in cell(tr))))
+        if row.get("STATUS") and "마감" in row["STATUS"]:
+            continue
+        title = re.sub(r"\s+", " ", row.get("TITLE") or "")
+        out.append(_cand(f"{row.get('RE_NO')}-{row.get('NOTI_SEQ_NO')}", title, row.get("COM_NM") or "교보생명",
+                         "https://career.kyobo.co.kr/", category=row.get("NOTI_CLASS_NM") or "",
+                         dev=_dev_kr(title), deadline=_mmdd(row.get("RCP_END_YMD")),
+                         career={"001": "신입", "003": "경력"}.get(row.get("RE_CLASS") or "", "")))
+    return out
+
+
+# IBK기업은행 — careerlink(inHR) 공개 API. 2026-10 기준 공고 0건이라 필드 이름을 실물로 못 봤다 —
+# 그래서 이름이 조금 달라도 받도록 후보 키를 여럿 본다.
+def _pick(d: dict, *keys: str) -> str:
+    for k in keys:
+        if d.get(k):
+            return str(d[k])
+    return ""
+
+
+def from_ibk(slug: str, company: str) -> list[dict]:
+    d = _post_json("https://api.inhr.co.kr/v1/recruit/jd/list",
+                   {"coNo": "CO202402230237", "grpCoNo": "CO202402230237"},
+                   headers={"Origin": "https://ibk.careerlink.kr", "Referer": "https://ibk.careerlink.kr/"})
+    out = []
+    for r in ((d.get("data") or {}).get("rcrtList")) or []:
+        rid = _pick(r, "rcrtNo", "rcrtSn", "id")
+        title = _pick(r, "rcrtTitl", "rcrtNm", "rcrtTitle", "title", "jdNm")
+        out.append(_cand(rid, title, "IBK기업은행", f"https://ibk.careerlink.kr/jobs/{rid}",
+                         category=_pick(r, "jobNm", "jobGbcdNm", "rcrtGbcdNm"), dev=_dev_kr(title),
+                         deadline=_mmdd(_pick(r, "rcptEndDtm", "rcrtEndDtm", "endDtm", "endDt"))))
+    return out
+
+
+# DL이앤씨 — 정규직은 recruiter(제외 호스트)지만 현채직·PJT 는 자기 홈페이지 HTML 이다.
+_DLENC = "https://www.dlenc.co.kr/careers/job"
+
+
+def _dlenc_detail(url: str) -> tuple[str, dict]:
+    raw = _req(url).decode("utf-8", "ignore")
+    raw = re.sub(r"<(script|style|header|footer|nav)[^>]*>.*?</\1>", "", raw, flags=re.S | re.I)
+    i = raw.find("공고내용")
+    return _text(raw[i if i > 0 else 0:])[:16000], {}
+
+
+def from_dlenc(slug: str, company: str) -> list[dict]:
+    out = []
+    for kind, lst, view in (("현채직", "FieldEmpList.do", "FieldEmpView.do"),
+                            ("PJT", "FieldEmpListPJ.do", "FieldEmpViewPJ.do")):
+        for page in range(1, 6):
+            raw = _req(f"{_DLENC}/{lst}?cd_mnu=KU097&currentPage={page}").decode("utf-8", "ignore")
+            rows = re.findall(r"<tr>(.*?)</tr>", raw, re.S)
+            rows = [r for r in rows if "no_empt_anct=" in r]
+            for r in rows:
+                no = re.search(r"no_empt_anct=(\d+)", r).group(1)
+                title = _text((re.search(r'class="btnView"[^>]*>(.*?)</a>', r, re.S) or [None, ""])[1])
+                period = _text((re.search(r'class="date"[^>]*>(.*?)</span>', r, re.S) or [None, ""])[1])
+                if "job_ing" not in r:
+                    continue
+                spans = [_text(x) for x in re.findall(r"<span[^>]*>(.*?)</span>",
+                                                       (re.search(r'jobetcBox">(.*?)</div>', r, re.S) or [None, ""])[1], re.S)]
+                url = f"{_DLENC}/{view}?cd_mnu=KU097&no_empt_anct={no}"
+                out.append(_cand(no, title, "DL이앤씨", url, category=f"{kind} {spans[0] if spans else ''}".strip(),
+                                 dev=_dev_kr(title), detail=(lambda u=url: _dlenc_detail(u)),
+                                 deadline=_mmdd(period.split("~")[-1]), career=spans[1] if len(spans) > 1 else ""))
+            if len(rows) < 10:
+                break
+            _sleep(300)
+    return out
+
+
+# 호반그룹(호반건설·대한전선 …) — 열린 JSON. 본문은 이미지(pearbranch)라 모집분야 트리(category)를
+# 펼쳐 본문으로 싣는다. IT 가 나오는 자리도 여기뿐이다.
+def _flatten(node) -> list[str]:
+    if isinstance(node, str):
+        return [node]
+    if isinstance(node, list):
+        return [x for n in node for x in _flatten(n)]
+    if isinstance(node, dict):
+        return [f"{k}: {v}" for k, vals in node.items() for v in _flatten(vals)]
+    return []
+
+
+def from_hoban(slug: str, company: str) -> list[dict]:
+    d = _get_json("https://recruit.ihoban.co.kr/i_hoban/api/user/content/recruit")
+    out = []
+    for j in ((d.get("data") or {}).get("list")) or []:
+        if j.get("openYn") == "N" or "모집" not in (j.get("status") or "지원자모집"):
+            continue
+        try:
+            fields = _flatten(json.loads(j.get("category") or "[]"))
+        except ValueError:
+            fields = []
+        it = [f for f in fields if "생산" not in f
+              and (_dev_kr(f.split(": ")[-1]) or re.search(r"(?<![A-Za-z])IT(?![A-Za-z])|전산|정보", f))]
+        title = j.get("title") or ""
+        out.append(_cand(j.get("id"), title, j.get("company") or "호반그룹",
+                         f"https://recruit.ihoban.co.kr/recruit/{j.get('id')}",
+                         category=", ".join(it[:5]) or (j.get("recTaskType") or ""),
+                         full_jd="[모집분야]\n" + "\n".join(fields), dev=bool(it) or _dev_kr(title),
+                         deadline=_mmdd(j.get("eDate")), career=j.get("recType") or ""))
+    return out
+
+
 PARSERS = {
+    "nonghyup": from_nonghyup, "kyobo": from_kyobo, "ibk": from_ibk, "dlenc": from_dlenc,
+    "hoban": from_hoban,
     "douzone": from_douzone, "koreainvest": from_koreainvest,
     "hd": from_hd,
     "ncsoft": from_ncsoft, "pearlabyss": from_pearlabyss, "mobis": from_mobis, "lotte": from_lotte,
