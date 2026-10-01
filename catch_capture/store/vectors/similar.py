@@ -133,7 +133,7 @@ def compute(kind: str) -> int:
 def _doc_id(url: str) -> str:
     """문서 id — semantic/ingest.doc_id 와 **같은 규칙이어야 한다**.
 
-    뷰어(`src/shared/lib/useSimilar.ts`)는 공고의 url 로 docs 를 뒤져 id 를 얻고, 그 id 로
+    뷰어(`src/hooks/useSimilar.ts`)는 공고의 url 로 docs 를 뒤져 id 를 얻고, 그 id 로
     similar 를 찾는다. 여기서 id 규칙이 갈리면 추천이 통째로 빈다.
     """
     return hashlib.sha1(url.encode("utf-8")).hexdigest()[:16]

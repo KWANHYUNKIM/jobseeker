@@ -1,6 +1,6 @@
 """뷰어 ↔ API 계약 — DB 없이 OpenAPI 명세만 본다.
 
-뷰어(jd-viewer/src/features/jobs/useJobsApi.ts 의 toParams)가 보내는 파라미터 이름을 서버가
+뷰어(jd-viewer/src/features/jobs/hooks/useJobsApi.ts 의 toParams)가 보내는 파라미터 이름을 서버가
 받는지. 이름이 한쪽에서만 바뀌면 필터가 조용히 무시된다(422 도 안 난다 — 모르는
 파라미터는 FastAPI 가 그냥 버린다). 뷰어 쪽 목록은 useJobsApi.test.ts 가 고정한다.
 """
@@ -12,7 +12,7 @@ from tests.conftest import VIEWER
 
 VIEWER_PARAMS = {"site", "career", "stack", "role", "region", "district", "size", "q",
                  "semantic", "closed", "unverified", "page", "limit"}
-TS = VIEWER / "src" / "features" / "jobs" / "useJobsApi.ts"
+TS = VIEWER / "src" / "features" / "jobs" / "api.ts"
 
 
 def _server_params() -> set[str]:

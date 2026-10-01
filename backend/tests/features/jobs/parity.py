@@ -45,7 +45,7 @@ export async function resolve(spec, ctx, next) {
 
 _RUNNER = r"""
 import { readFileSync, writeFileSync } from 'node:fs'
-import { applyFilter, computeFacets, emptyFilter } from '%(viewer)s/src/features/jobs/filter.ts'
+import { applyFilter, computeFacets, emptyFilter } from '%(viewer)s/src/features/jobs/utils/filter.ts'
 const [jobsPath, sizesPath, casesPath, outPath] = process.argv.slice(2)
 const jobs = JSON.parse(readFileSync(jobsPath, 'utf8'))
 const sizes = JSON.parse(readFileSync(sizesPath, 'utf8'))

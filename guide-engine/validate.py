@@ -49,7 +49,7 @@ SHOW_NEXT = 5          # --gaps 가 대상 말고 더 보여줄 건수 (루프�
 
 
 # ── 회사명 정규화 ────────────────────────────────────────────────────────
-# jd-viewer/src/shared/lib/companyMark.ts 의 normalizeCompany() 와 **같은 규칙**이어야 한다.
+# jd-viewer/src/utils/companyMark.ts 의 normalizeCompany() 와 **같은 규칙**이어야 한다.
 # 여기서 만든 aliases 로 뷰어가 공고와 브리핑을 잇기 때문에, 두 구현이 어긋나면
 # 데이터는 멀쩡한데 화면에만 아무것도 안 뜨는 상태가 된다.
 def norm_company(name: str) -> str:

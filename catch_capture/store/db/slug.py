@@ -1,6 +1,6 @@
 """주소 슬러그 — 회사(`/companies/<slug>`)와 기술(`/wiki/<slug>`).
 
-회사 슬러그의 규칙 원본은 **`jd-viewer/src/shared/lib/companySlug.js` 하나뿐이다.**
+회사 슬러그의 규칙 원본은 **`jd-viewer/src/utils/companySlug.js` 하나뿐이다.**
 브라우저(앱 라우팅)와 Node(scripts/prerender.mjs)가 이미 그 파일을 쓰고 있고,
 파이썬이 규칙을 따로 베껴 두면 셋 중 하나만 어긋나도 프리렌더한 정적 HTML 이
 통째로 안 잡힌다. 그래서 여기서는 규칙을 다시 쓰지 않고 그 파일의 BRAND_SLUGS 를
@@ -17,7 +17,7 @@ _sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 from normalize import company as norm_company  # noqa: E402,F401
 
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent.parent
-COMPANY_SLUG_JS = ROOT_DIR / "jd-viewer" / "src" / "shared" / "lib" / "companySlug.js"
+COMPANY_SLUG_JS = ROOT_DIR / "jd-viewer" / "src" / "utils" / "companySlug.js"
 
 # 국어의 로마자 표기 — companySlug.js 의 CHO/JUNG/JONG 과 같은 표다.
 _CHO = ['g','kk','n','d','tt','r','m','b','pp','s','ss','','j','jj','ch','k','t','p','h']

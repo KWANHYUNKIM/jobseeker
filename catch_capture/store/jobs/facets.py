@@ -1,7 +1,7 @@
 """공고의 필터 축(지역·시군구·직군·경력 구간) — 뷰어 규칙의 파이썬 판.
 
 지금까지 이 넷은 브라우저가 계산했다. 뷰어가 공고 전량(184MB)을 받아 놓고
-`src/features/jobs/region.ts`·`classify.ts`·`career.ts` 로 한 건씩 접어 필터와 칩 건수를 셌다.
+`src/features/jobs/utils/region.ts`·`classify.ts`·`career.ts` 로 한 건씩 접어 필터와 칩 건수를 셌다.
 필터를 서버(`store.api.main`)로 옮기면 같은 규칙이 SQL 쪽에도 있어야 한다.
 
 **규칙 원본은 여전히 TS 쪽이다.** 여기는 그걸 글자 그대로 옮긴 사본이고, 둘이
@@ -390,9 +390,9 @@ def refresh_dup(verbose: bool = False) -> bool:
 
 _PARITY_JS = r"""
 import { readFileSync, writeFileSync } from 'node:fs'
-import { placeOf } from '%(viewer)s/src/features/jobs/region.ts'
-import { classifyRoles } from '%(viewer)s/src/shared/lib/classify.ts'
-import { careerBucket } from '%(viewer)s/src/features/jobs/career.ts'
+import { placeOf } from '%(viewer)s/src/features/jobs/utils/region.ts'
+import { classifyRoles } from '%(viewer)s/src/utils/classify.ts'
+import { careerBucket } from '%(viewer)s/src/features/jobs/utils/career.ts'
 const jobs = JSON.parse(readFileSync(process.argv[2], 'utf8'))
 writeFileSync(process.argv[3], JSON.stringify(jobs.map((j) => {
   const p = placeOf(j)

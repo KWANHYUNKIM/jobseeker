@@ -1,6 +1,6 @@
 """공고 목록의 고정값.
 
-지역 목록의 원본은 뷰어 `src/features/jobs/lib/region.ts` 의 REGION_OPTIONS 이고, 값을
+지역 목록의 원본은 뷰어 `src/features/jobs/utils/region.ts` 의 REGION_OPTIONS 이고, 값을
 채우는 쪽은 파이프라인의 `store/jobs/facets.py` 다. 셋이 어긋나면 칩이 사라지므로
 `tests/features/jobs/test_constants.py` 가 TS 원본과 대조한다.
 """

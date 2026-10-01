@@ -6,7 +6,7 @@ import re
 from app.features.jobs.constants import REGION_OPTIONS, REGIONS
 from tests.conftest import VIEWER
 
-REGION_TS = VIEWER / "src" / "features" / "jobs" / "region.ts"
+REGION_TS = VIEWER / "src" / "features" / "jobs" / "utils" / "region.ts"
 
 
 def _ts_list(name: str, src: str) -> list[str]:
