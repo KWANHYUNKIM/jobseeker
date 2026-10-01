@@ -63,16 +63,23 @@ def planning_docs() -> list[dict]:
 
 
 def ready_reels() -> list[dict]:
-    """찍어 둔 릴스 — out/series/*/reel.mp4 와 caption.txt, 최근 것부터."""
+    """찍어 둔 릴스와 게시물 — out/series/*/ 에 reel.mp4(릴스)나 장면 jpg + caption.txt(게시물)가 있는 것, 최근 것부터."""
     out = []
-    for mp4 in (LAB_DIR / "out" / "series").glob("*/reel.mp4"):
-        d = mp4.parent
+    for d in (LAB_DIR / "out" / "series").iterdir():
         cap = d / "caption.txt"
+        if not d.is_dir() or not cap.is_file():
+            continue
+        mp4 = d / "reel.mp4"
         frames = sorted(f.name for f in d.glob("*.jpg"))
-        out.append({"id": d.name, "video": f"/out/series/{d.name}/reel.mp4",
+        if not mp4.is_file() and not frames:
+            continue
+        ref = mp4 if mp4.is_file() else cap
+        out.append({"id": d.name, "kind": "reel" if mp4.is_file() else "post",
+                    "video": f"/out/series/{d.name}/reel.mp4" if mp4.is_file() else "",
+                    "images": [f"/out/series/{d.name}/{f}" for f in frames],
                     "cover": f"/out/series/{d.name}/{frames[0]}" if frames else "",
-                    "caption": cap.read_text(encoding="utf-8") if cap.is_file() else "",
-                    "updated": mp4.stat().st_mtime, "mb": round(mp4.stat().st_size / 1e6, 1)})
+                    "caption": cap.read_text(encoding="utf-8"),
+                    "updated": ref.stat().st_mtime, "mb": round(mp4.stat().st_size / 1e6, 1) if mp4.is_file() else 0})
     out.sort(key=lambda r: -r["updated"])
     return out
 

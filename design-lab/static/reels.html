@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>찍어 둔 릴스 — design-lab</title>
+<title>찍어 둔 릴스·게시물 — design-lab</title>
 <style>
   :root { --bg:#f7f6f2; --ink:#16151a; --sub:#6b6875; --line:#e3e0d8; --card:#fff; --accent:#ff5a1f; }
   @media (prefers-color-scheme: dark) { :root { --bg:#131217; --ink:#ecebef; --sub:#9a97a3; --line:#2a2830; --card:#1a1920; --accent:#ffb02e; } }
@@ -15,6 +15,9 @@
   .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:20px; padding:16px 24px 60px; }
   .card { background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; display:flex; flex-direction:column; }
   video { width:100%; aspect-ratio:9/16; background:#000; display:block; }
+  .strip { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; background:#000; }
+  .strip img { width:100%; flex:none; aspect-ratio:4/5; object-fit:contain; scroll-snap-align:start; }
+  .kind { display:inline-block; font-size:11px; font-weight:800; padding:2px 8px; border-radius:99px; background:var(--accent); color:#fff; margin-right:6px; }
   .meta { padding:12px 14px 4px; font-size:13px; color:var(--sub); display:flex; justify-content:space-between; gap:8px; }
   .meta b { color:var(--ink); font-size:14px; word-break:break-all; }
   details { padding:4px 14px 14px; } summary { cursor:pointer; font-size:13px; color:var(--accent); }
@@ -24,7 +27,7 @@
 </style>
 </head>
 <body>
-<header><h1>찍어 둔 릴스</h1><span class="s" id="n"></span><a href="/planning">기획 →</a></header>
+<header><h1>찍어 둔 릴스·게시물</h1><span class="s" id="n"></span><a href="/planning">기획 →</a></header>
 <div class="grid" id="g">불러오는 중…</div>
 <script>
 const esc = s => s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
@@ -33,8 +36,9 @@ const esc = s => s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c
   document.getElementById('n').textContent = `${reels.length}편 · 최근 것부터`;
   document.getElementById('g').innerHTML = reels.map(r => `
     <div class="card">
-      <video src="${r.video}" poster="${r.cover}" controls loop playsinline preload="metadata"></video>
-      <div class="meta"><b>${esc(r.id)}</b><span>${new Date(r.updated * 1000).toLocaleString('ko-KR')} · ${r.mb}MB</span></div>
+      ${r.kind === 'reel' ? `<video src="${r.video}" poster="${r.cover}" controls loop playsinline preload="metadata"></video>`
+        : `<div class="strip">${r.images.map(u => `<img src="${u}" loading="lazy">`).join('')}</div>`}
+      <div class="meta"><b><span class="kind">${r.kind === 'reel' ? '릴스' : '게시물 ' + r.images.length + '장 →'}</span>${esc(r.id)}</b><span>${new Date(r.updated * 1000).toLocaleString('ko-KR')}${r.mb ? ' · ' + r.mb + 'MB' : ''}</span></div>
       <details><summary>캡션 보기</summary><pre>${esc(r.caption)}</pre>
         <button onclick="navigator.clipboard.writeText(this.previousElementSibling.textContent); this.textContent='복사됨'">캡션 복사</button></details>
     </div>`).join('');

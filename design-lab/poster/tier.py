@@ -11,6 +11,8 @@ from pathlib import Path
 
 from . import series as S
 
+NL = "\n"
+
 #: 개발 직무로 보는 공고 제목 — 공고 사이트의 '개발' 분류는 기획·영업·컨설팅까지 섞여 들어온다
 DEV_TITLE = re.compile(r"개발|엔지니어|engineer|developer|백엔드|프론트|풀스택|소프트웨어|\bSW\b|알고리즘|프로그래머|데브옵스|devops|클라우드", re.I)
 #: 신입 정규 연봉으로 보면 안 되는 것 — 인턴 월급을 연봉으로 바꾸면 부풀려진다
@@ -103,36 +105,99 @@ def freelance_rates(days: int = 90) -> tuple[dict[str, list[tuple[float, dict]]]
     return out, since, until
 
 
-def build_freelance() -> dict:
+def _med(xs: list[float]) -> int | None:
     import statistics
+    return round(statistics.median(xs)) if xs else None
+
+
+def build_freelance() -> dict:
+    """릴스: 질문(특급 가림) → 정답 → 산출 → 이유 둘. 게시물(캐러셀): 같은 주제를 7장으로 자세히."""
     from .balance import _photo
     rates, since, until = freelance_rates()
     n = sum(len(v) for v in rates.values())
     bg, _ = _photo("startup.jpg")
-    tiers, cap = [], []
+    period = f"{S._dot(since)}~{S._dot(until)}"
+    st: dict[str, dict] = {}
     for g in GRADES:
-        xs = sorted(v for v, _ in rates[g])
-        med = round(statistics.median(xs))
-        q = lambda f: round(xs[min(len(xs) - 1, int(round(f * (len(xs) - 1))))])  # noqa: E731
-        est = sum(1 for _, p in rates[g] if p.get("grade_basis") != "표기")
-        basis = "등급은 경력으로 추정" if est == len(xs) else f"표기 {len(xs) - est} · 추정 {est}"
-        tiers.append({"g": g[0], "range": g, "names": f"한 달 {med:,}만원", "hide": g == "특급",
-                      "note": (f"{len(xs)}건 · {basis}" if g == "특급" else f"가운데 절반 {q(.25):,}~{q(.75):,} · {len(xs)}건 · {basis}")})
-        cap.append(f"{g} — 한 달 {med:,}만원 (가운데 절반 {q(.25):,}~{q(.75):,}만원, {len(xs)}건, {basis})")
-    slide = {"type": "mag", "image": bg, "tiers": tiers, "rowh": 190, "head": ["프리랜서 개발자,", "**특급은 한 달에 얼마?**"],
-             "sub": f"최근 90일 개발 외주 {n}건 · 월 단가 가운데 값",
-             "foot": f"@devjobseeker 수집 외주(원티드 긱스·잡코리아·이랜서·프리모아·아임잡) · {S._dot(since)}~{S._dot(until)} 에 본 것 · "
-                     "등급은 공고 표기, 없으면 경력으로 추정 · 여러 등급을 한 공고에 적은 것·비개발 제외"}
-    caption = "\n\n".join([
-        "프리랜서 개발자 한 달 단가 — 특급은 얼마일까요? 댓글로 맞혀 보세요 👇",
-        "\n".join(cap[1:]),
-        f"정답: {cap[0]}",
-        f"세는 법: {S._dot(since)}~{S._dot(until)} 에 우리가 본 개발 외주 중 월 단가가 적힌 {n}건. 등급은 공고에 적힌 것, 없으면 요구 경력으로 "
-        "추정했습니다(특급은 표기된 공고가 없어 모두 추정). 범위로 적힌 단가는 가운데 값. 마케팅·기획·디자인 자리와 '초·중·고급' 을 "
-        "한 공고에 같이 적은 것은 뺐습니다. 실제 계약 단가가 아니라 공고에 적힌 금액입니다.",
+        rows = rates[g]
+        xs = sorted(v for v, _ in rows)
+        q = lambda f, xs=xs: round(xs[min(len(xs) - 1, int(round(f * (len(xs) - 1))))])  # noqa: E731
+        st[g] = {"n": len(xs), "med": _med(xs), "p25": q(.25), "p75": q(.75),
+                 "label": _med([v for v, p in rows if p.get("grade_basis") == "표기"]),
+                 "est": _med([v for v, p in rows if p.get("grade_basis") != "표기"]),
+                 "n_label": sum(1 for _, p in rows if p.get("grade_basis") == "표기"),
+                 "si": _med([v for v, p in rows if p.get("work_type") == "SI"]),
+                 "sm": _med([v for v, p in rows if p.get("work_type") == "SM"]),
+                 "n_si": sum(1 for _, p in rows if p.get("work_type") == "SI"),
+                 "n_sm": sum(1 for _, p in rows if p.get("work_type") == "SM")}
+
+    def basis(g):
+        x = st[g]
+        return "등급은 경력으로 추정" if x["n_label"] == 0 else f"표기 {x['n_label']} · 추정 {x['n'] - x['n_label']}"
+
+    def tiers(hide: bool):
+        return [{"g": g[0], "range": g, "names": f"한 달 {st[g]['med']:,}만원", "hide": hide and g == "특급", "hl": (not hide) and g == "특급",
+                 "note": (f"{st[g]['n']}건 · {basis(g)}" if hide and g == "특급"
+                          else f"가운데 절반 {st[g]['p25']:,}~{st[g]['p75']:,} · {st[g]['n']}건 · {basis(g)}")} for g in GRADES]
+
+    sp, go = st["특급"], st["고급"]
+    gap = sp["med"] - go["med"]
+    top = sorted(((v, p) for g in GRADES for v, p in rates[g]), key=lambda r: -r[0])[:4]
+    foot = f"@devjobseeker 수집 외주 · {period} 에 본 개발 외주 · 공고에 적힌 월 단가(계약 단가 아님)"
+    how = {"type": "mag", "image": bg, "pic": False, "tag": "어떻게 셌나", "head": ["공고 142건의", "**가운데 값**"] if n == 142 else [f"공고 {n}건의", "**가운데 값**"],
+           "rows": [["모은 곳", "원티드 긱스·잡코리아·이랜서·프리모아·아임잡"], ["기간", f"{period} · {n}건"],
+                    ["등급", "공고에 적힌 등급, 없으면 경력(3·7·10년)"], ["값", "월 단가 · 범위면 가운데 · 줄 세운 가운데"],
+                    ["뺀 것", "마케팅·기획·디자인, '초·중·고급' 한꺼번에"]]}
+    why1 = {"type": "mag", "image": bg, "pic": False, "tag": "왜 고급보다 +50뿐?",
+            "head": ["'특급' 이라고 적은", "공고는 **0건**"],
+            "rows": [["특급 11건", "전부 '경력 10년↑' 으로 추정"],
+                     ["고급 · 등급을 적은 공고", f"**{go['label']:,}만원** ({go['n_label']}건)"],
+                     ["고급 · 경력으로 추정", f"{go['est']:,}만원 ({go['n'] - go['n_label']}건)"],
+                     ["그래서", "**등급을 적는 자리가 더 준다**"]]}
+    why2 = {"type": "mag", "image": bg, "pic": False, "tag": "어디가 더 주나",
+            "head": ["같은 고급이라도", f"**SI {go['si']:,} vs SM {go['sm']:,}**"],
+            "rows": [["SI(새로 구축)", f"{go['si']:,}만원 · {go['n_si']}건"], ["SM(유지보수)", f"{go['sm']:,}만원 · {go['n_sm']}건"],
+                     ["가장 높은 공고", f"{round(top[0][0]):,}만원 — {S._snip(top[0][1]['title'], 22)}"],
+                     ["표본", "SI·SM 을 제목에 적은 것만 · 작다"]]}
+    reel = [
+        {"type": "mag", "image": bg, "tiers": tiers(True), "rowh": 190, "head": ["프리랜서 개발자,", "**특급은 한 달에 얼마?**"],
+         "sub": f"최근 90일 개발 외주 {n}건 · 월 단가 가운데 값", "foot": foot},
+        {"type": "mag", "image": bg, "tiers": tiers(False), "rowh": 190, "head": [f"특급 **{sp['med']:,}만원**", f"고급보다 +{gap}만원뿐"],
+         "sub": f"최근 90일 개발 외주 {n}건 · 월 단가 가운데 값", "foot": foot},
+        how, why1, why2,
+    ]
+    post = [
+        {"type": "mag", "image": bg, "tiers": tiers(True), "rowh": 150, "head": ["프리랜서 개발자,", "**특급은 한 달에 얼마?**"],
+         "sub": f"최근 90일 개발 외주 {n}건 · 월 단가 가운데 값 · 넘겨서 정답", "foot": foot},
+        {"type": "mag", "image": bg, "tiers": tiers(False), "rowh": 150, "head": ["등급별 월 단가", f"특급 **{sp['med']:,}만원**"],
+         "sub": f"{period} · {n}건 · 만원", "foot": foot},
+        how,
+        {"type": "mag", "image": bg, "pic": False, "tag": "등급은 이렇게", "head": ["공고 표기 먼저,", "**없으면 경력**"],
+         "rows": [["초급", "경력 3년 미만"], ["중급", "3~6년"], ["고급", "7~9년"], ["특급", "10년 이상"],
+                  ["주의", "시장에서 흔히 쓰는 구분 · KOSA 공식 등급과 다르다"]]},
+        why1, why2,
+        {"type": "mag", "image": bg, "pic": False, "tag": "단가가 높았던 공고", "head": ["월 단가", "**상위 4곳**"],
+         "rows": [[f"{round(v):,}만원", S._snip(p['title'], 26)] for v, p in top]},
+    ]
+    caption_reel = (NL * 2).join([
+        f"프리랜서 개발자 특급은 한 달에 얼마? — 정답 {sp['med']:,}만원, 고급({go['med']:,})보다 +{gap}만원뿐",
+        f"왜 차이가 작을까요? '특급' 이라고 적은 공고가 하나도 없어서 11건 모두 경력 10년↑ 으로 추정했어요. 같은 고급이라도 등급을 적은 공고는 "
+        f"{go['label']:,}만원, 경력으로 추정한 건 {go['est']:,}만원이었습니다.",
+        f"전체 표·산출 방법·단가 높은 공고는 프로필의 [프리랜서 단가] 게시물에 정리했어요. 여러분이 본 특급 단가는? 댓글로 👇",
+    ])
+    caption_post = (NL * 2).join([
+        f"[프리랜서 개발자 단가] 등급별 한 달 얼마? — {period} 개발 외주 {n}건",
+        NL.join(f"{g} {st[g]['med']:,}만원 (가운데 절반 {st[g]['p25']:,}~{st[g]['p75']:,}, {st[g]['n']}건, {basis(g)})" for g in GRADES),
+        f"특급이 고급보다 {gap}만원밖에 높지 않은 이유: '특급' 을 적은 공고가 0건이라 모두 경력 10년↑ 로 추정했고, 고급 안에서도 등급을 적은 공고({go['label']:,})가 "
+        f"추정한 공고({go['est']:,})보다 높았습니다. 같은 고급이라도 SI(새로 구축) {go['si']:,} · SM(유지보수) {go['sm']:,}만원(제목에 SI·SM 을 적은 공고만, 표본 작음).",
+        "단가가 높았던 공고: " + " · ".join(f"{S._snip(p['title'], 30)} {round(v):,}만원" for v, p in top),
+        "세는 법: 원티드 긱스·잡코리아·이랜서·프리모아·아임잡에서 본 개발 외주 중 월 단가가 적힌 것. 등급은 공고 표기, 없으면 요구 경력"
+        "(3년 미만 초급·3~6 중급·7~9 고급·10↑ 특급 — 시장 관행, KOSA 공식 등급과 다름). 범위는 가운데 값. 마케팅·기획·디자인과 여러 등급을 한꺼번에 "
+        "적은 공고는 뺐습니다. 공고에 적힌 금액이고 실제 계약 단가는 협상으로 달라집니다.",
         "저장해 두고 · 프리랜서 고민하는 친구에게 보내 주세요",
     ])
-    return {"kind": "tier", "id": f"tier-freelance-rate-{until.replace('-', '')}", "slides": [slide], "caption": caption,
+    return {"kind": "tier", "id": f"tier-freelance-rate-{until.replace('-', '')}", "slides": reel, "post": post,
+            "caption": caption_reel, "caption_post": caption_post,
             "tags": ["프리랜서개발자", "개발자단가", "SI", "외주", "개발자연봉"]}
 
 
@@ -145,9 +210,15 @@ def main() -> int:
     post = build_pay() if args.name == "pay" else build_freelance()
     try:
         paths = S.render(post, S.REEL)
+        if post.get("post"):   # 같은 주제의 캐러셀 게시물(4:5) — 자세한 표·산출·이유
+            feed = S.render({**post, "id": post["id"] + "-post", "slides": post["post"]})
+            (feed[0].parent / "caption.txt").write_text(
+                post["caption_post"] + NL * 2 + " ".join(f"#{t}" for t in post["tags"]), encoding="utf-8")
+            print(f"[tier] 게시물 {len(feed)}장 → {feed[0].parent}")
     finally:
         shutdown()
-    out = mp4(paths, paths[0].parent / "reel.mp4", hold=7.0, motion=0.03,
+    hold = 7.0 if len(paths) == 1 else 3.2   # 정보 장면(산출·이유)은 읽을 시간이 필요하다
+    out = mp4(paths, paths[0].parent / "reel.mp4", hold=hold, motion=0.03,
               audio=Path(S.LAB_DIR / "assets" / "audio" / "bed_calm.wav"))
     (paths[0].parent / "caption.txt").write_text(
         post["caption"] + "\n\n" + " ".join(f"#{t}" for t in post["tags"]), encoding="utf-8")
