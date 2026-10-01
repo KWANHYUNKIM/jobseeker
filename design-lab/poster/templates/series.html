@@ -105,6 +105,13 @@
   .photo ul { margin-top:22px; padding:0; }
   .photo li { list-style:none; font-size:30px; font-weight:600; line-height:1.5; color:rgba(255,255,255,.92); }
   .photo .credit { margin-top:20px; font-size:18px; color:rgba(255,255,255,.7); font-weight:500; }
+  /* photo.split — 물건 사진(키트)은 덮어 가리면 안 보인다: 사진은 위 58% 에 그대로, 글은 아래 어두운 판에 */
+  .photo { --accent:var(--photo-accent, var(--accent-base)); }
+  .photo.split { background:#141218; }
+  .photo.split .bg { bottom:auto; height:58%; }
+  .photo.split footer { margin-top:36px !important; }   /* 글은 아래 판으로 — 사진 위에 얹히지 않게 */
+  .photo.split .shade { background:linear-gradient(180deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,0) 13%, rgba(0,0,0,0) 46%,
+                        #141218 58%, #141218 100%); }
 
   /* reel(9:16) — 위 250px·아래 420px 는 릴스 화면의 이름·캡션·버튼이 덮는다. 본문은 가운데로 */
   .sheet.reel { padding:230px 96px 400px; }
@@ -130,8 +137,10 @@ const D = JSON.parse(document.getElementById('data').textContent);
   const T = D.theme || {};
   const root = document.documentElement;
   for (const k of ['paper','ink','sub','accent','line']) if (T[k]) root.style.setProperty('--' + k, T[k]);
+  root.style.setProperty('--accent-base', T.accent || getComputedStyle(root).getPropertyValue('--accent'));
+  if (T.photo_accent) root.style.setProperty('--photo-accent', T.photo_accent);   // 사진 위에서는 밝은 강조색
   if (D.size) { root.style.setProperty('--sheet-w', D.size[0] + 'px'); root.style.setProperty('--sheet-h', D.size[1] + 'px'); }
-  const S = D.slide; const sheet = el('section', 'sheet ' + S.type + (D.size && D.size[1] > 1500 ? ' reel' : ''));
+  const S = D.slide; const sheet = el('section', 'sheet ' + S.type + (S.layout ? ' ' + S.layout : '') + (D.size && D.size[1] > 1500 ? ' reel' : ''));
 
   const head = el('div', 'series');
   const m = (D.series || '').match(/^\[(.+)\]\s*(.*)$/);

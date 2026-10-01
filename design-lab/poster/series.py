@@ -60,7 +60,8 @@ THEMES = {
     "welcome": {"paper": "#fff4f1", "ink": "#2b1310", "sub": "#7a5a54", "accent": "#f76707", "line": "#f3d9d1"},
     "gongchae": {"paper": "#14161c", "ink": "#f4f2ec", "sub": "#9b9fa9", "accent": "#ff6b4a", "line": "#2b2f38"},
     "lunch": {"paper": "#fff8ef", "ink": "#24170d", "sub": "#7b6a58", "accent": "#ffb02e", "line": "#f0e2cf"},
-    "kit": {"paper": "#f3f0ff", "ink": "#1b1533", "sub": "#655d80", "accent": "#7048e8", "line": "#ddd6f7"},
+    "kit": {"paper": "#f3f0ff", "ink": "#1b1533", "sub": "#655d80", "accent": "#7048e8", "line": "#ddd6f7",
+            "photo_accent": "#c0abff"},
 }
 SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", "term": "[IT 용어]",
           "interview": "[면접 예상 질문]", "qa": "[고민 상담소]", "jd": "[JD 번역기]",
@@ -1369,6 +1370,52 @@ def build_welcomekit() -> dict:
             "slides": slides, "caption": caption, "jobs": []}
 
 
+def _kit_photo(name: str) -> tuple[str, str]:
+    """웰컴키트 사진 → (data URI, 출처 한 줄). 그 회사 그해 키트 사진이고, 누가 어디에 올린 것인지 판마다 적는다."""
+    import base64
+    c = json.loads((PHOTOS / "welcome" / "credits.json").read_text(encoding="utf-8"))[name]
+    uri = "data:image/jpeg;base64," + base64.b64encode((PHOTOS / "welcome" / name).read_bytes()).decode()
+    return uri, f"{c['by']} · {c['where']}"
+
+
+def build_kit_history() -> dict:
+    """[첫 출근 웰컴키트] 2021→2026 변천사 — 해마다 그해 키트 사진 한 장 + 회사별 품목.
+
+    품목은 출처 원문에 적힌 것만(content/welcome-kit-history.json). 사진은 회사 공식 글·제작사 사례에서
+    그 키트를 찍은 것만 쓰고, 개인 인스타 사진은 쓰지 않는다(원작자 허락 없음 · 원본성 규칙).
+    """
+    doc = json.loads((CONTENT / "welcome-kit-history.json").read_text(encoding="utf-8"))
+    years = doc["years"]
+    note = f"품목은 출처 원문에 적힌 것만 · 확인 {_dot(doc['checked'])}"
+    cover_uri, cover_credit = _kit_photo(doc["cover_photo"])   # 해마다 판과 겹치지 않는 사진
+    slides = [{"type": "photo", "layout": "split", "image": cover_uri, "rank": f"{years[0]['year']} → {years[-1]['year']}",
+               "title": "입사하면 뭘 받을까", "meta": "웰컴키트 6년 변천사 — IT 회사 " + str(len({k['company'] for y in years for k in y['kits']})) + "곳",
+               "credit": f"사진: 2025 카카오 키트 — {cover_credit}"}]
+    for y in years:
+        uri, credit = _kit_photo(y["photo"])
+        slides.append({"type": "photo", "layout": "split", "image": uri, "rank": y["year"], "title": y["hook"],
+                       "lines": [f"**{k['company']}** — {k['items']}" for k in y["kits"]],
+                       "credit": f"사진: {credit}"})
+    slides.append({"type": "end", "title": "6년 동안 바뀐 것", "lines": doc["trend"] + [doc["phone"]], "note": note})
+    slides.append({"type": "end", "title": "키트보다 먼저 볼 것", "lines": [
+        "① **온보딩** — 첫 주에 누가 무엇을 알려 주나",
+        "② **장비** — 노트북·모니터 사양은 물어봐도 되는 것",
+        "③ 계열사마다 다르다 — 카카오 ≠ 카카오페이 ≠ 카카오엔터",
+        "④ 제약·바이오 IT 는 품목 공개가 거의 없다 — 면접에서 '입사 첫 주' 를 묻자",
+        SEND], "note": note})
+    caption = "\n\n".join([
+        f"[첫 출근 웰컴키트] 입사하면 뭘 받을까 — {years[0]['year']}→{years[-1]['year']} 변천사",
+        "\n".join(f"{y['year']} {y['hook']} — " + " · ".join(k["company"] for k in y["kits"]) for y in years),
+        "\n".join(t.replace("**", "") for t in doc["trend"]),
+        "어느 해 키트가 제일 받고 싶나요? 받아 본 키트가 있다면 댓글로 알려 주세요.",
+        "품목은 회사 공식 글·제작사 사례·기사에 적힌 것만 옮겼습니다. 연도는 입사 기수가 적힌 경우 그 해, "
+        "아니면 게시·제작 연도입니다. 사진은 각 장에 출처를 적었습니다.",
+        "출처\n" + "\n".join(f"· {y['year']} {k['company']} — {k['src']}" for y in years for k in y["kits"]),
+    ])
+    return {"kind": "kit", "id": f"kithistory-{doc['checked'].replace('-', '')}", "title": doc["title"],
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 3.2}
+
+
 # --- 찍기 · 승인 ---------------------------------------------------------
 REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
 
@@ -1450,7 +1497,7 @@ def main() -> int:
     elif args.kind == "lunch":
         post = build_lunch(args.company or "pangyo")
     elif args.kind == "kit":
-        post = build_welcomekit()
+        post = build_kit_history() if args.company == "history" else build_welcomekit()
     elif args.kind in ("pay", "perk", "welcome", "gongchae"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae}[args.kind]()
