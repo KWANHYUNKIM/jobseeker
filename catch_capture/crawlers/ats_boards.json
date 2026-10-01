@@ -1,6 +1,138 @@
 {
-  "_comment": "회사 자체 채용페이지 크롤 대상(ATS 공개 API). provider ∈ greenhouse|lever|ashby. slug은 각 ATS 보드 식별자. crawl_ats.py가 소비. 새 회사는 여기에 한 줄 추가하면 됨.",
+  "_comment": "회사 자체 채용페이지 크롤 대상(ATS 공개 API). provider ∈ greenhouse|lever|ashby|skcareers 와 kr_portals.py 의 국내 포털(toss·kakao·lg·hkmc …). slug은 각 ATS 보드 식별자. crawl_ats.py가 소비. 새 회사는 여기에 한 줄 추가하면 됨.",
   "boards": [
+    {
+      "provider": "skcareers",
+      "slug": "sk",
+      "company": "SK그룹 (SK Careers)",
+      "region": "kr",
+      "per_board": 40
+    },
+    {
+      "provider": "toss",
+      "slug": "group",
+      "company": "토스 그룹",
+      "region": "kr",
+      "per_board": 60
+    },
+    {
+      "provider": "kakao",
+      "slug": "group",
+      "company": "카카오 그룹",
+      "region": "kr",
+      "per_board": 40
+    },
+    {
+      "provider": "line",
+      "slug": "kr",
+      "company": "LINE(국내)",
+      "region": "kr",
+      "per_board": 30
+    },
+    {
+      "provider": "nhn",
+      "slug": "group",
+      "company": "NHN 그룹",
+      "region": "kr",
+      "per_board": 40
+    },
+    {
+      "provider": "cj",
+      "slug": "group",
+      "company": "CJ 그룹",
+      "region": "kr",
+      "per_board": 40
+    },
+    {
+      "provider": "nexon",
+      "slug": "group",
+      "company": "넥슨 그룹",
+      "region": "kr",
+      "per_board": 30
+    },
+    {
+      "provider": "smilegate",
+      "slug": "group",
+      "company": "스마일게이트",
+      "region": "kr",
+      "per_board": 30
+    },
+    {
+      "provider": "lg",
+      "slug": "group",
+      "company": "LG 그룹",
+      "region": "kr",
+      "per_board": 40
+    },
+    {
+      "provider": "hkmc",
+      "slug": "hyundai",
+      "company": "현대자동차",
+      "region": "kr",
+      "per_board": 30
+    },
+    {
+      "provider": "hkmc",
+      "slug": "kia",
+      "company": "기아",
+      "region": "kr",
+      "per_board": 30
+    },
+    {
+      "provider": "hanwha",
+      "slug": "group",
+      "company": "한화 그룹",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "shinsegae",
+      "slug": "group",
+      "company": "신세계 그룹",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "naver",
+      "slug": "group",
+      "company": "네이버",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "kt",
+      "slug": "group",
+      "company": "KT 그룹",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "kakaobank",
+      "slug": "main",
+      "company": "카카오뱅크",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "netmarble",
+      "slug": "group",
+      "company": "넷마블",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "samsung",
+      "slug": "group",
+      "company": "삼성(계열사 통합)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "lever",
+      "slug": "neowiz",
+      "company": "네오위즈 (Neowiz)",
+      "region": "kr"
+    },
     {
       "provider": "greenhouse",
       "slug": "coupang",

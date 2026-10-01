@@ -1,4 +1,4 @@
-export type Site = 'wanted' | 'jumpit' | 'jobkorea' | 'saramin' | 'dev' | 'remote' | 'ats'
+export type Site = 'wanted' | 'jumpit' | 'jobkorea' | 'saramin' | 'dev' | 'remote' | 'ats' | 'boards'
 
 export interface Job {
   site: Site

@@ -36,7 +36,7 @@ END $$;
 -- ════════════════════════════════════════════════════════════════════
 -- ENUM 으로 두면 오타난 site 값이 INSERT 단계에서 죽는다. 새 소스를 붙일 때는
 -- ALTER TYPE ... ADD VALUE 한 줄이면 되고, 그 강제성이 오탈자보다 싸다.
-CREATE TYPE job_site        AS ENUM ('wanted','jumpit','jobkorea','saramin','dev','remote','ats');
+CREATE TYPE job_site        AS ENUM ('wanted','jumpit','jobkorea','saramin','dev','remote','ats','boards');
 CREATE TYPE job_status      AS ENUM ('active','closed');
 CREATE TYPE status_source   AS ENUM ('override','ledger','deadline','always_open','unknown');
 CREATE TYPE company_size    AS ENUM ('대기업','중견기업','중소기업','스타트업','공공','외국계','미분류');
@@ -411,7 +411,7 @@ WITH k AS (
     SELECT j.id, j.company_id,
            regexp_replace(lower(j.title), '\s+', '', 'g') AS title_key,
            s.status,
-           array_position(ARRAY['wanted','jumpit','jobkorea','saramin','dev','remote','ats'],
+           array_position(ARRAY['wanted','jumpit','jobkorea','saramin','dev','remote','ats','boards'],
                           j.site::text) AS site_rank,
            j.first_seen_at
       FROM job j

@@ -5,12 +5,13 @@ import { CareerIcon, RoleIcon, SizeIcon } from './ChipIcons'
 import { RegionIcon } from './RegionIcon'
 import { SidePanel, TechIcon } from '../../../components/ui'
 
-const SITES: Site[] = ['wanted', 'jumpit', 'jobkorea', 'saramin', 'dev', 'remote', 'ats']
+const SITES: Site[] = ['wanted', 'jumpit', 'jobkorea', 'saramin', 'dev', 'remote', 'ats', 'boards']
 
-// remote/ats 는 원문 그대로면 뜻이 안 통해 라벨을 붙인다.
+// remote/ats/boards 는 원문 그대로면 뜻이 안 통해 라벨을 붙인다.
 const SITE_LABEL: Partial<Record<Site, string>> = {
   remote: '해외·원격',
   ats: '자체채용',
+  boards: '기타 보드·공공',
 }
 
 interface Props {

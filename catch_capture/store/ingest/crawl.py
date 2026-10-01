@@ -110,8 +110,8 @@ def record_tech_daily(cur) -> int:
 
 
 def _scope(site: str, pid: str) -> str | None:
-    """목록을 끝까지 본 범위의 이름. ats 는 보드(`provider:slug`)다."""
-    if site == "ats":
+    """목록을 끝까지 본 범위의 이름. ats·boards 는 보드(`provider:slug`)다."""
+    if site in ("ats", "boards"):
         parts = pid.split(":")
         return ":".join(parts[:2]) if len(parts) >= 3 else None
     return None

@@ -7,6 +7,7 @@ import type { CalendarItem } from '../../../types'
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토']
 const SITE_LABEL: Record<string, string> = {
   wanted: '원티드', jumpit: '점핏', jobkorea: '잡코리아', saramin: '사람인', dev: '데보션',
+  ats: '자체채용', boards: '기타 보드·공공',
 }
 
 function iso(d: Date): string {

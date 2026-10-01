@@ -29,7 +29,8 @@ SITES: tuple[Site, ...] = (
     Site("saramin", "crawl_saramin.py", True, "사람인"),
     Site("dev", "crawl_dev.py", True, "캐치"),
     Site("remote", "crawl_remote.py", False, "해외 원격 보드(RemoteOK·WWR·Himalayas)"),
-    Site("ats", "crawl_ats.py", False, "회사 채용페이지(Greenhouse·Lever·Ashby)"),
+    Site("ats", "crawl_ats.py", False, "회사 채용페이지(Greenhouse·Lever·Ashby·그룹 포털)"),
+    Site("boards", "crawl_boards.py", False, "국내 채용 보드·공공(랠릿·슈퍼루키·인크루트·잡알리오)"),
 )
 
 SITE_KEYS: tuple[str, ...] = tuple(s.key for s in SITES)
@@ -37,7 +38,7 @@ BY_KEY: dict[str, Site] = {s.key: s for s in SITES}
 
 # 크롤 순서. 무거운 Playwright 사이트(캐치·잡코리아)를 앞에 둬 차단 백오프가 걸려도
 # 뒤 사이트가 굶지 않게 한다 — 예전 KEYWORD_SITES 순서 그대로다.
-_CRAWL_ORDER = ("dev", "jobkorea", "jumpit", "saramin", "wanted", "remote", "ats")
+_CRAWL_ORDER = ("dev", "jobkorea", "jumpit", "saramin", "wanted", "remote", "ats", "boards")
 KEYWORD_SITES: list[str] = [k for k in _CRAWL_ORDER if BY_KEY[k].keyword_based]
 AGNOSTIC_SITES: list[str] = [k for k in _CRAWL_ORDER if not BY_KEY[k].keyword_based]
 KEYWORD_AGNOSTIC: frozenset[str] = frozenset(AGNOSTIC_SITES)

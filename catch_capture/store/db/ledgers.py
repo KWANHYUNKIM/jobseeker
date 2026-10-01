@@ -47,7 +47,7 @@ HEALTH_JSONL = BASE / "health_history.jsonl"
 CLOSURES_JSON = BASE / "job_closures.json"
 # crawl_run_site.site 는 ENUM 이다. 표에 없는 이름이 오면 그 줄만 버린다 —
 # 사이트 하나가 사이클 기록 전체를 죽이면 안 된다(ingest_crawl 과 같은 판단).
-HEALTH_SITES = ("wanted", "jumpit", "jobkorea", "saramin", "dev", "remote", "ats")
+HEALTH_SITES = ("wanted", "jumpit", "jobkorea", "saramin", "dev", "remote", "ats", "boards")
 
 
 # ── 공통 ────────────────────────────────────────────────────────────

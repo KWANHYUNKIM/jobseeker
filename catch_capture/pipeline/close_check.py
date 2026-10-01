@@ -12,7 +12,8 @@
   jobkorea : 상세 페이지 JSON-LD 의 validThrough / datePosted
   saramin  : 상세 페이지의 "마감일:YYYY-MM-DD" (등록일 표기는 없다)
   dev      : catch 상세 JSON-LD 의 validThrough / datePosted, 제목의 "[마감]" 접두
-  ats      : greenhouse/lever API 404, ashby 보드 목록에서 사라짐
+  ats      : greenhouse/lever API 404, ashby·skcareers·국내 포털(kr_portals) 목록에서 사라짐
+  boards   : 랠릿 API 상태·마감일, 잡알리오 상세의 채용기간, 인크루트·슈퍼루키 JSON-LD validThrough
   remote   : 원본 URL 이 404/410
 
 ## 마감일만이 아니라 등록일도 받아 온다
@@ -382,6 +383,34 @@ def _ashby_board(slug: str, cache: dict) -> set[str] | None:
     return ids
 
 
+def _skcareers_board(cache: dict) -> dict[str, str | None] | None:
+    """SK Careers 는 목록 API 하나가 모집중 공고 전부(~100건)를 준다 — 회차당 한 번만 받는다.
+    {noticeID: 마감일 iso}. 폼 필드 7개를 빈 값까지 다 보내야 JSON 이 온다."""
+    key = "skcareers"
+    if key in cache:
+        return cache[key]
+    form = "sort=2&searchText=&corpCode=&jobRole=&recruitType=&workingType=&workingRegion="
+    req = urllib.request.Request(
+        "https://www.skcareers.com/Recruit/GetRecruitList", data=form.encode(),
+        headers={"User-Agent": UA, "Accept-Language": "ko-KR,ko;q=0.9",
+                 "X-Requested-With": "XMLHttpRequest"})
+    ids: dict[str, str | None] | None = None
+    try:
+        with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
+            data = json.loads(r.read().decode("utf-8", "ignore"))
+        if data.get("success") and data.get("list"):
+            ids = {}
+            for j in data["list"]:
+                m = re.search(r"(\d{4})\D+(\d{1,2})\D+(\d{1,2})", j.get("end") or "")
+                ids[str(j.get("noticeID"))] = (
+                    date(int(m.group(1)), int(m.group(2)), int(m.group(3))).isoformat()
+                    if m else None)
+    except Exception:                                               # noqa: BLE001
+        ids = None
+    cache[key] = ids
+    return ids
+
+
 def check_board(job: dict, today: date, cache: dict) -> Verdict:
     """ats/remote — 공고가 보드에 아직 있는지만 본다(마감일 개념이 없다)."""
     pid = str(job.get("pid") or "")
@@ -410,6 +439,24 @@ def check_board(job: dict, today: date, cache: dict) -> Verdict:
             return Verdict("active", "원본 확인: 모집중")
         return Verdict("closed", "ashby 보드에서 내려감")
 
+    if provider == "skcareers" and len(parts) == 3:
+        board = _skcareers_board(cache)
+        if board is None:
+            return Verdict("unknown", "skcareers 목록 조회 실패")
+        if parts[2] in board:
+            return _by_deadline(board[parts[2]], today, "원본 확인: 모집중")
+        return Verdict("closed", "skcareers 목록에서 내려감")
+
+    # 국내 대기업·IT 포털(crawlers/kr_portals.py) — 목록이 모집중 전부라 거기 없으면 내려간 것.
+    from crawlers import kr_portals
+    if provider in kr_portals.PARSERS and len(parts) >= 3:
+        ids = kr_portals.board_ids(provider, parts[1], cache)
+        if ids is None:
+            return Verdict("unknown", f"{provider} 목록 조회 실패")
+        if ":".join(parts[2:]) in ids:
+            return Verdict("active", "원본 확인: 모집중")
+        return Verdict("closed", f"{provider} 목록에서 내려감")
+
     # 스크랩 보드(remoteok/wwr/himalayas): 페이지가 살아 있으면 모집중으로 단정할 수
     # 없으니 사라진 경우만 닫는다.
     url = job.get("url") or ""
@@ -421,6 +468,51 @@ def check_board(job: dict, today: date, cache: dict) -> Verdict:
     return Verdict("unknown", f"페이지 생존(http={code}) — 마감 여부 불명")
 
 
+def verdict_rallit(payload: dict, today: date) -> Verdict:
+    d = payload.get("data") or {}
+    if (d.get("status") or {}).get("code") not in (None, "HIRING"):
+        return Verdict("closed", f"원본 확인: {(d.get('status') or {}).get('name') or '모집 종료'}")
+    ended = str(d.get("endedAt") or "")
+    posted = _iso(d.get("approvedAt"))
+    if ended.startswith("9999") or d.get("isAlwaysHiring"):
+        return Verdict("active", "원본 확인: 상시채용", None, posted)
+    return _by_deadline(_iso(ended), today, "원본 확인: 모집중", posted)
+
+
+def verdict_alio(html: str, today: date) -> Verdict:
+    """잡알리오 상세 — '채용기간 26.10.01 ~ 26.10.15'. 연도가 두 자리라 2000년대로 읽는다."""
+    text = re.sub(r"<[^>]+>", " ", html)
+    m = re.search(r"채용기간\s+(\d{2})\.(\d{2})\.(\d{2})\s*~\s*(\d{2})\.(\d{2})\.(\d{2})", text)
+    if not m:
+        return Verdict("unknown", "채용기간 표기를 찾지 못함")
+    posted = date(2000 + int(m.group(1)), int(m.group(2)), int(m.group(3))).isoformat()
+    end = date(2000 + int(m.group(4)), int(m.group(5)), int(m.group(6))).isoformat()
+    return _by_deadline(end, today, "원본 확인: 모집중", posted)
+
+
+def verdict_jsonld_only(html: str, today: date) -> Verdict:
+    """JSON-LD 의 validThrough 만 믿는다(인크루트·슈퍼루키). 없으면 판정 보류."""
+    posted, valid = jsonld_dates(html)
+    if valid:
+        return _by_deadline(valid, today, "원본 확인: 모집중", posted)
+    return Verdict("unknown", "validThrough 없음", None, posted)
+
+
+def check_kboard(job: dict, today: date, cache: dict) -> Verdict:
+    """boards — 국내 채용 보드·공공(crawlers/crawl_boards.py). pid = '<provider>:<slug>:<id>'."""
+    parts = str(job.get("pid") or "").split(":")
+    provider, ext = (parts[0], parts[-1]) if len(parts) >= 3 else ("", "")
+    if provider == "rallit":
+        return _json_verdict(f"https://www.rallit.com/client/api/v1/position/{ext}",
+                             verdict_rallit, today)
+    if provider == "alio":
+        return _html_verdict(f"https://job.alio.go.kr/recruitview.do?idx={ext}", verdict_alio, today)
+    url = job.get("url") or ""
+    if not url:
+        return Verdict("unknown", "URL 없음")
+    return _html_verdict(url, verdict_jsonld_only, today)
+
+
 CHECKERS = {
     "wanted": check_wanted,
     "jumpit": check_jumpit,
@@ -429,6 +521,7 @@ CHECKERS = {
     "dev": check_dev,
     "ats": check_board,
     "remote": check_board,
+    "boards": check_kboard,
 }
 
 

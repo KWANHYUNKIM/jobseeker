@@ -154,10 +154,12 @@ def normalize(job: dict) -> dict:
         raw_loc = (job.get("location") or "").strip()
         out["location"] = "" if CAREER_TEXT.search(raw_loc) else raw_loc
 
-    # 해외 보드(remote) / 회사 자체 채용페이지(ats): 위치·지역·해외여부 보존
-    if site in ("remote", "ats"):
+    # 해외 보드(remote) / 회사 자체 채용페이지(ats) / 국내 기타 보드·공공(boards): 위치·지역·해외여부 보존
+    if site in ("remote", "ats", "boards"):
         out["location"] = job.get("location", "")
-        out["career"] = ""  # 이 소스는 경력 표기가 없어 location 을 career 로 쓰지 않는다
+        # 이 소스는 대개 경력 표기가 없어 location 을 career 로 쓰지 않는다. 그룹 포털
+        # (skcareers 등)처럼 원본이 신입/경력을 따로 주면 그 값을 쓴다.
+        out["career"] = job.get("career", "")
         out["region"] = job.get("region", "") or ("global" if site == "remote" else "")
         out["source_board"] = job.get("source_board", "")
         out["overseas"] = out["region"] != "kr"
