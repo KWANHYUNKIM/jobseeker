@@ -220,7 +220,7 @@ const D = JSON.parse(document.getElementById('data').textContent);
       const COL = ['#ffe066', '#ffb36b', '#9be38a', '#7cc7ff', '#c4a8ff', '#b9b4c7'];
       const rows = el('div', 'rows'); rows.style.top = (st3 ? 510 : 370) + 'px';
       S.tiers.forEach((t, i) => {
-        const r = el('div', 'row' + (t.hide ? ' hide' : '')); const g = el('div', 'g', t.g); g.style.background = COL[i % COL.length];
+        const r = el('div', 'row' + (t.hide ? ' hide' : '')); if (S.rowh) r.style.minHeight = S.rowh + 'px'; const g = el('div', 'g', t.g); g.style.background = COL[i % COL.length];
         g.append(el('small', '', t.range)); const c = el('div', 'c', t.hide ? '? ? ?' : t.names);
         c.append(el('div', 'n', t.note)); r.append(g, c); rows.append(r);
       });

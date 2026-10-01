@@ -76,13 +76,73 @@ def build_pay() -> dict:
             "tags": ["신입연봉", "개발자연봉", "초봉", "신입개발자", "연봉티어"], "rows": rows}
 
 
+#: 외주 분석은 카테고리('개발')만 보는데 사이트가 마케팅·기획 자리를 '개발' 에 넣기도 한다 — 제목으로 한 번 더 거른다
+FL_NOT = re.compile(r"마케팅|홍보|디자인|디자이너|기획|영상|번역|회계|강사|교육|컨설팅|상담|운영자|PMO|\bPM\b", re.I)
+#: '초, 중, 고급' 처럼 여러 등급을 한 공고에 적은 것은 등급을 정할 수 없다
+FL_MULTI = re.compile(r"(초|중|고|특)\s*[,/·]\s*(초|중|고|특)")
+GRADES = ["특급", "고급", "중급", "초급"]
+
+
+def freelance_rates(days: int = 90) -> tuple[dict[str, list[tuple[float, dict]]], str, str]:
+    """최근 days 일에 본 개발 외주의 등급별 월 단가(만원) — 외주 분석(pipeline.freelance_rates)과 같은 단가 규칙 + 제목 거르기."""
+    import json
+    from datetime import date, timedelta
+    sys.path.insert(0, str(S.ROOT / "catch_capture"))
+    from pipeline import freelance_rates as F
+    doc = json.loads((S.ROOT / "jd-viewer" / "public" / "freelance.json").read_text(encoding="utf-8"))
+    until = doc["analysis"]["current"]["until"]
+    since = (date.fromisoformat(until) - timedelta(days=days)).isoformat()
+    out: dict[str, list[tuple[float, dict]]] = {g: [] for g in GRADES}
+    for p in doc["projects"]:
+        v, g, title = F._first_monthly(p), p.get("grade"), p.get("title") or ""
+        if v is None or g not in out or (p.get("last_seen_at") or "")[:10] < since:
+            continue
+        if FL_NOT.search(title) or FL_MULTI.search(title):
+            continue
+        out[g].append((v, p))
+    return out, since, until
+
+
+def build_freelance() -> dict:
+    import statistics
+    from .balance import _photo
+    rates, since, until = freelance_rates()
+    n = sum(len(v) for v in rates.values())
+    bg, _ = _photo("startup.jpg")
+    tiers, cap = [], []
+    for g in GRADES:
+        xs = sorted(v for v, _ in rates[g])
+        med = round(statistics.median(xs))
+        q = lambda f: round(xs[min(len(xs) - 1, int(round(f * (len(xs) - 1))))])  # noqa: E731
+        est = sum(1 for _, p in rates[g] if p.get("grade_basis") != "표기")
+        basis = "등급은 경력으로 추정" if est == len(xs) else f"표기 {len(xs) - est} · 추정 {est}"
+        tiers.append({"g": g[0], "range": g, "names": f"한 달 {med:,}만원", "hide": g == "특급",
+                      "note": (f"{len(xs)}건 · {basis}" if g == "특급" else f"가운데 절반 {q(.25):,}~{q(.75):,} · {len(xs)}건 · {basis}")})
+        cap.append(f"{g} — 한 달 {med:,}만원 (가운데 절반 {q(.25):,}~{q(.75):,}만원, {len(xs)}건, {basis})")
+    slide = {"type": "mag", "image": bg, "tiers": tiers, "rowh": 190, "head": ["프리랜서 개발자,", "**특급은 한 달에 얼마?**"],
+             "sub": f"최근 90일 개발 외주 {n}건 · 월 단가 가운데 값",
+             "foot": f"@devjobseeker 수집 외주(원티드 긱스·잡코리아·이랜서·프리모아·아임잡) · {S._dot(since)}~{S._dot(until)} 에 본 것 · "
+                     "등급은 공고 표기, 없으면 경력으로 추정 · 여러 등급을 한 공고에 적은 것·비개발 제외"}
+    caption = "\n\n".join([
+        "프리랜서 개발자 한 달 단가 — 특급은 얼마일까요? 댓글로 맞혀 보세요 👇",
+        "\n".join(cap[1:]),
+        f"정답: {cap[0]}",
+        f"세는 법: {S._dot(since)}~{S._dot(until)} 에 우리가 본 개발 외주 중 월 단가가 적힌 {n}건. 등급은 공고에 적힌 것, 없으면 요구 경력으로 "
+        "추정했습니다(특급은 표기된 공고가 없어 모두 추정). 범위로 적힌 단가는 가운데 값. 마케팅·기획·디자인 자리와 '초·중·고급' 을 "
+        "한 공고에 같이 적은 것은 뺐습니다. 실제 계약 단가가 아니라 공고에 적힌 금액입니다.",
+        "저장해 두고 · 프리랜서 고민하는 친구에게 보내 주세요",
+    ])
+    return {"kind": "tier", "id": f"tier-freelance-rate-{until.replace('-', '')}", "slides": [slide], "caption": caption,
+            "tags": ["프리랜서개발자", "개발자단가", "SI", "외주", "개발자연봉"]}
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.tier")
-    ap.add_argument("name", choices=["pay"])
+    ap.add_argument("name", choices=["pay", "freelance"])
     args = ap.parse_args()
     from .render import shutdown
     from .video import build as mp4
-    post = build_pay()
+    post = build_pay() if args.name == "pay" else build_freelance()
     try:
         paths = S.render(post, S.REEL)
     finally:
