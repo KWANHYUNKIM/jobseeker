@@ -1275,8 +1275,18 @@ def build_gongchae() -> dict:
         "⑥ 지원서는 공고 문장으로 다시\n⑦ 작은 회사 1~2년도 길\n⑧ 공채 남은 곳은 일정 따로",
         "출처\n" + "\n".join(f"· {t}" for t, _ in GONGCHAE_SRC) + f"\n· 공고 숫자는 최신 공고 {_dot(asof)} 기준",
     ])
+    # 릴스는 12초 예고만 — 9장을 2.6초씩 넘기면 24초짜리 글 읽기가 된다. 여덟 가지는 캡션에 두고 저장을 부른다
+    # (playbook '정보가 길다': 영상은 예고, 본문은 캡션 체크리스트 — 보내기·저장이 신호)
+    teaser = [slides[0], slides[1], slides[4], slides[5],
+              {"type": "end", "title": "그래서 뭘 하나 — 8가지", "lines": [
+                  "공채 달력 대신 **공고 알림** · 스펙보다 **결과물 하나**",
+                  "**'신입·경력' 공고도** 넣는다 · 지원서는 **공고 문장으로**",
+                  "나머지까지 **8가지는 캡션에** — 저장해 두세요",
+                  SEND], "note": note}]
     return {"kind": "gongchae", "id": f"gongchae-{asof.replace('-', '')}", "title": "공채는 끝났다",
-            "slides": slides, "caption": caption, "jobs": []}
+            "slides": slides, "caption": caption, "jobs": [],
+            "reel_slides": teaser, "reel_hold": 2.3, "motion": 0.03, "audio": str(LAB_DIR / "assets" / "audio" / "bed_calm.wav"),
+            "reel_lead": "준비하는 8가지는 캡션에 정리했어요 — 저장해 두고 꺼내 보세요 📌"}
 
 
 # --- 사진이 들어가는 시리즈 — 원고는 content/*.json (출처·사진 저작자까지 거기에) ---------------
@@ -1334,7 +1344,9 @@ def build_lunch(area: str = "pangyo") -> dict:
         "출처\n" + "\n".join(f"· {v[0]} ({v[1]})" for v in src.values()),
     ])
     return {"kind": "lunch", "id": f"lunch-{area}-{doc['checked'].replace('-', '')}", "title": doc["title"],
-            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.4}
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.0,
+            "motion": 0.05, "audio": str(LAB_DIR / "assets" / "audio" / "bed_calm.wav"),
+            "reel_lead": "가 본 곳 중 최고는? 여기 없는 판교 점심도 댓글로 👇"}
 
 
 def build_welcomekit() -> dict:
@@ -1538,6 +1550,10 @@ def main() -> int:
                 "weekly": build_weekly, "signal": build_signals}[args.kind]()
     else:
         post = build_stack() if args.kind == "stack" else build_rates()
+    if args.reel and post.get("reel_slides"):   # 릴스는 따로 줄인 판이 있으면 그것으로
+        post = {**post, "slides": post["reel_slides"]}
+    if args.reel and post.get("reel_lead"):     # 릴스 캡션 첫 줄 — 영상이 부른 행동(저장·댓글)을 캡션이 이어받는다
+        post = {**post, "caption": post["reel_lead"] + "\n\n" + post["caption"]}
     try:
         paths = render(post, REEL if (args.reel or args.story) else (1080, 1350))
     finally:

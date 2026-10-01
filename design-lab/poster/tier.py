@@ -62,11 +62,19 @@ def build_pay() -> dict:
         tiers.append({"g": g, "range": label, "names": names, "note": note, "hide": g == "S"})
         cap_lines.append(f"{g} ({label}) — " + " · ".join(f"{S._company(j)} {m:,}" for j, _, m in grp))
     s_top = rows[0]
-    slide = {"type": "mag", "image": bg, "tiers": tiers, "head": ["신입 개발자 연봉,", "**S티어는 어디?**"],
-             "sub": f"공고에 신입 연봉을 숫자로 적은 {n}곳 · 만원",
-             "foot": f"@devjobseeker 수집 개발 공고(마감 포함) · 회사마다 가장 높은 공고 · 범위는 하한 · 인턴·전환형 제외 · {S._dot(asof)}"}
+    base = {"type": "mag", "image": bg, "head": ["신입 개발자 연봉,", "**S티어는 어디?**"],
+            "sub": f"공고 기준 · 신입 연봉을 숫자로 적은 {n}곳 · 만원",
+            "foot": f"@devjobseeker 수집 개발 공고(마감 포함) · 회사마다 가장 높은 공고 · 범위는 하한 · 인턴·전환형 제외 · {S._dot(asof)}"}
+    # 한 칸씩 채운다 — 아래(E)부터 위로, S 는 끝까지 가린다. 결과를 늦게 보여 줘야 끝까지 본다(playbook '끝까지 보게')
+    order = [i for i, t in enumerate(tiers) if not t["hide"]][::-1]
+    slides = []
+    for k in range(len(order) + 1):
+        shown = set(order[:k])
+        slides.append({**base, "tiers": [{**t, "wait": (not t["hide"]) and i not in shown} for i, t in enumerate(tiers)]})
+    slides[-1]["ask"] = ["S티어는 **어느 회사?** 댓글로 👇"]   # 바닥글 위 한 줄 — '당신 회사는 몇 티어?' 는 캡션 첫 줄에
+    holds = [1.4] + [0.7] * (len(slides) - 2) + [4.5]   # 마지막 판은 다시 보게 오래 — 표를 한 번에 다 못 읽는다
     caption = "\n\n".join([
-        "신입 개발자 연봉 티어 — S티어는 어디일까요? 댓글로 맞혀 보세요 👇",
+        "신입 개발자 연봉 티어 — S티어는 어디일까요? 당신 회사는 몇 티어인지도 댓글로 👇",
         "\n".join(cap_lines[1:]),
         f"정답(S티어): {S._company(s_top[0])} — 공고 원문 \"{S._snip(s_top[1]['text'], 40)}\"",
         f"세는 법: 우리가 모은 개발 공고 중 경력 칸에 '신입'이 있고 신입 연봉을 숫자로 적은 {n}곳. 회사마다 가장 높은 공고 하나, "
@@ -74,7 +82,7 @@ def build_pay() -> dict:
         f"마감된 공고 포함, 최신 공고 {S._dot(asof)}. 큰 회사일수록 숫자를 안 적어서 이 표에 없다고 낮은 건 아닙니다.",
         "저장해 두고 · 연봉 협상 앞둔 친구에게 보내 주세요",
     ])
-    return {"kind": "tier", "id": f"tier-newgrad-pay-{asof.replace('-', '')}", "slides": [slide], "caption": caption,
+    return {"kind": "tier", "id": f"tier-newgrad-pay-{asof.replace('-', '')}", "slides": slides, "holds": holds, "caption": caption,
             "tags": ["신입연봉", "개발자연봉", "초봉", "신입개발자", "연봉티어"], "rows": rows}
 
 
@@ -164,7 +172,7 @@ def build_freelance() -> dict:
          "sub": f"최근 90일 개발 외주 {n}건 · 월 단가 가운데 값", "foot": foot},
         {"type": "mag", "image": bg, "tiers": tiers(False), "rowh": 190, "head": [f"특급 **{sp['med']:,}만원**", f"고급보다 +{gap}만원뿐"],
          "sub": f"최근 90일 개발 외주 {n}건 · 월 단가 가운데 값", "foot": foot},
-        how, why1, why2,
+        how, why1, {**why2, "ask": ["여러분이 본 **특급 단가는?**", "댓글로 👇"]},
     ]
     post = [
         {"type": "mag", "image": bg, "tiers": tiers(True), "rowh": 150, "head": ["프리랜서 개발자,", "**특급은 한 달에 얼마?**"],
@@ -217,8 +225,9 @@ def main() -> int:
             print(f"[tier] 게시물 {len(feed)}장 → {feed[0].parent}")
     finally:
         shutdown()
-    hold = 7.0 if len(paths) == 1 else 3.2   # 정보 장면(산출·이유)은 읽을 시간이 필요하다
-    out = mp4(paths, paths[0].parent / "reel.mp4", hold=hold, motion=0.03,
+    hold = post.get("holds") or 3.2   # 정보 장면(산출·이유)은 읽을 시간이 필요하다
+    # 한 칸씩 채우는 판은 다가가기를 끈다 — 장마다 확대가 처음으로 돌아가 표가 튄다
+    out = mp4(paths, paths[0].parent / "reel.mp4", hold=hold, motion=0.0 if post.get("holds") else 0.03,
               audio=Path(S.LAB_DIR / "assets" / "audio" / "bed_calm.wav"))
     (paths[0].parent / "caption.txt").write_text(
         post["caption"] + "\n\n" + " ".join(f"#{t}" for t in post["tags"]), encoding="utf-8")

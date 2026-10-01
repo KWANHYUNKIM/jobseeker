@@ -188,6 +188,14 @@
   .tier .row.hide .c { border:4px dashed var(--hi); border-left:0; border-radius:0 18px 18px 0; color:var(--hi); font-size:46px; letter-spacing:.1em; }
   .tier .row.hl { outline:5px solid var(--hi); outline-offset:-5px; }
   .tier .row.hl .c { color:var(--hi); }
+  /* 아직 안 연 칸 — 한 칸씩 채우는 릴스(아래 E 부터 위로). 글자 칸만 비워 두고 등급 색은 흐리게 */
+  .tier .row.wait { background:rgba(255,255,255,.03); }
+  .tier .row.wait .g { opacity:.35; }
+  .tier .row.wait .c { visibility:hidden; }
+  /* 화면 안 질문 한 줄 — 댓글은 질문이 있어야 온다(playbook '돈 표를 쓸 때') */
+  .ask { position:absolute; left:64px; right:64px; font-size:52px; font-weight:900; letter-spacing:-.04em; line-height:1.2; color:#fff; }
+  .ask em { color:var(--hi); }
+  .mag .txt .ask { position:static; margin-top:34px; }
   .tier .ft { position:absolute; left:64px; right:64px; font-size:19px; color:rgba(255,255,255,.55); line-height:1.4; }
   .mag .pg { position:absolute; right:64px; font-size:22px; font-weight:700; opacity:.6; }
 </style>
@@ -222,15 +230,19 @@ const D = JSON.parse(document.getElementById('data').textContent);
       const COL = ['#ffe066', '#ffb36b', '#9be38a', '#7cc7ff', '#c4a8ff', '#b9b4c7'];
       const rows = el('div', 'rows'); rows.style.top = (st3 ? 510 : 370) + 'px';
       S.tiers.forEach((t, i) => {
-        const r = el('div', 'row' + (t.hide ? ' hide' : '') + (t.hl ? ' hl' : '')); if (S.rowh) r.style.minHeight = S.rowh + 'px'; const g = el('div', 'g', t.g); g.style.background = COL[i % COL.length];
+        const r = el('div', 'row' + (t.hide ? ' hide' : '') + (t.hl ? ' hl' : '') + (t.wait ? ' wait' : '')); if (S.rowh) r.style.minHeight = S.rowh + 'px'; const g = el('div', 'g', t.g); g.style.background = COL[i % COL.length];
         g.append(el('small', '', t.range)); const c = el('div', 'c', t.hide ? '? ? ?' : t.names);
         c.append(el('div', 'n', t.note)); r.append(g, c); rows.append(r);
       });
       sheet.append(rows);
       if (S.foot) { const ft = el('div', 'ft', S.foot); ft.style.bottom = (st3 ? 430 : 40) + 'px'; sheet.append(ft); }
       document.getElementById('root').append(sheet);
-      const rb = rows.getBoundingClientRect(), fb = sheet.querySelector('.ft')?.getBoundingClientRect();
-      window.__overflow = !!(fb && rb.bottom > fb.top - 8); window.__minBody = 22; window.__ready = true; return;
+      const rb = rows.getBoundingClientRect();
+      let low = rb.bottom;
+      if (S.ask) { const a = el('div', 'ask'); S.ask.forEach(l => a.append(em3(el('div'), l))); a.style.top = (rb.bottom + 34) + 'px';
+        sheet.append(a); low = a.getBoundingClientRect().bottom; }
+      const fb = sheet.querySelector('.ft')?.getBoundingClientRect();
+      window.__overflow = !!(fb && low > fb.top - 8); window.__minBody = 22; window.__ready = true; return;
     }
     if (S.vs) {   // 둘 중 하나: 위 A · 아래 B
       sheet.classList.add('vs'); sheet.style.setProperty('--hi', (D.theme && D.theme.hi) || '#ffe066');
@@ -282,6 +294,7 @@ const D = JSON.parse(document.getElementById('data').textContent);
       (S.lines || []).forEach(l => ul.append(em(el('li', 'solo'), l)));
       txt.append(ul);
     }
+    if (S.ask) { const a = el('div', 'ask'); S.ask.forEach(l => a.append(em(el('div'), l))); txt.append(a); }
     if (S.credit) txt.append(el('div', 'cr', S.credit));
     sheet.append(txt);
     if (D.page && !story) { const pg = el('div', 'pg', D.page); pg.style.top = '56px'; pg.style.display = 'none'; sheet.append(pg); }
