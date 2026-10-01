@@ -1,0 +1,137 @@
+{
+  "title": "신입 공고에 Java보다 많이 나오는 언어",
+  "series": "[공고 N개 세 봤더니] #1",
+  "music": "bright",
+  "skew": 11,
+  "theme": {
+    "bg": "#0d1530",
+    "ink": "#ffffff",
+    "sub": "#9fb0d8",
+    "accent": "#5AD1FF",
+    "accent2": "#FFB454",
+    "line": "#1f2b52",
+    "card": "#16214a",
+    "onAccent": "#0d1530",
+    "dot": "#3d5aa8"
+  },
+  "cast": {},
+  "foot": "devjobseeker 공고 색인 · 2026-10-01 모집중 기준",
+  "scenes": [
+    {
+      "type": "hook",
+      "beats": 8,
+      "lines": [
+        "신입 공고에",
+        "**Java보다 많이** 나오는 언어"
+      ],
+      "size": 132,
+      "sub": "모집중 신입 공고를 직접 세 봤다"
+    },
+    {
+      "type": "count",
+      "beats": 12,
+      "title": "모집중인 **신입·경력무관** 공고",
+      "value": 1957,
+      "unit": "개",
+      "label": "기술 스택 칸을 전부 셌다",
+      "note": "사이트 간 같은 공고는 한 번만 셌다"
+    },
+    {
+      "type": "bars",
+      "beats": 20,
+      "title": "Java가 **1위**일까?",
+      "rows": [
+        {
+          "label": "Java",
+          "value": 394,
+          "display": "394"
+        },
+        {
+          "label": "AWS",
+          "value": 269,
+          "display": "269"
+        },
+        {
+          "label": "React",
+          "value": 266,
+          "display": "266"
+        },
+        {
+          "label": "Linux",
+          "value": 253,
+          "display": "253"
+        },
+        {
+          "label": "JavaScript",
+          "value": 252,
+          "display": "252"
+        }
+      ],
+      "note": "공고의 '기술 스택' 칸 기준"
+    },
+    {
+      "type": "count",
+      "beats": 12,
+      "title": "진짜 **1위**",
+      "value": 552,
+      "unit": "개",
+      "label": "**Python**",
+      "note": "Java보다 158개 많다"
+    },
+    {
+      "type": "lines",
+      "beats": 16,
+      "kicker": "왜 Python일까",
+      "lines": [
+        "Python 신입 공고 **절반 가까이**는",
+        "제목부터 **AI 자리**다"
+      ],
+      "size": 88,
+      "size2": 64,
+      "foot": "공고 제목에 AI·ML·LLM·머신러닝·딥러닝 등이 낱말로 들어간 수 262~268개 · 2026-10-01"
+    },
+    {
+      "type": "bars",
+      "beats": 12,
+      "title": "제목이 **'백엔드'**인 자리만 보면",
+      "rows": [
+        {
+          "label": "Java",
+          "value": 58,
+          "display": "58"
+        },
+        {
+          "label": "Python",
+          "value": 41,
+          "display": "41"
+        }
+      ],
+      "note": "노리는 자리에 따라 순위가 뒤집힌다 · 제목에 백엔드/서버 개발(보수값)"
+    },
+    {
+      "type": "lines",
+      "beats": 12,
+      "kicker": "경력이 쌓이면",
+      "lines": [
+        "연차마다 **1위가 바뀐다**",
+        "3~4년 Python · 5~7년 **AWS** · 8년+ Java"
+      ],
+      "size": 92,
+      "size2": 58,
+      "foot": "공고 경력 표기 구간별 기술 스택 칸 1위 · 2026-10-01"
+    },
+    {
+      "type": "cta",
+      "beats": 8,
+      "title": "Java만 붙잡고 있는",
+      "title2": "친구에게 보내기",
+      "sub": "기준: 2026-10-01 모집중 공고 · 기술은 '기술 스택' 칸, 직무는 공고 제목"
+    }
+  ],
+  "sources": [
+    "모집중 신입·경력무관 1,957 / 기술 스택 칸 Python 552·Java 394·AWS 269·React 266·Linux 253·JavaScript 252 — 공고 API /api/jobs?career=신입/무관 facets.stacks (2026-10-01 21:5x 조회)",
+    "Python 신입 공고 552 중 제목에 AI·ML·LLM(낱말 경계)·머신러닝·딥러닝·인공지능·컴퓨터비전·데이터사이언 포함 262(좁게)~268(머신비전·AIOps 포함) — 회사 이름에 걸린 '비전'·'AI' 제외. 2026-10-01",
+    "제목에 백엔드·서버 개발·backend/server(낱말) 포함: Java 58~59 · Python 36~41 — 화면엔 주장에 불리한 조합 58 vs 41. 2026-10-01",
+    "경력 구간별 기술 스택 1위: 3~4년 Python 577 · 5~7년 AWS 428 · 8년+ Java 116 — /api/jobs?career=… facets.stacks 2026-10-01"
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "title": "매일 5천만 명이 하는 게임이 73시간 멈췄다",
+  "series": "[그날 서비스가 멈췄다] #2",
+  "music": "drive",
+  "skew": 10,
+  "theme": {"bg": "#071c1c", "ink": "#ffffff", "sub": "#9cc9c6", "accent": "#2AC1BC", "accent2": "#FF8A65",
+            "line": "#163a39", "card": "#0f2d2c", "onAccent": "#071c1c", "dot": "#2f6f6c"},
+  "cast": {},
+  "foot": "출처: Roblox 장애 사후분석 (2022-01-20) · 번역",
+  "scenes": [
+    {"type": "hook", "beats": 8, "lines": ["매일 **5천만 명**이 하는 게임이", "**73시간** 멈췄다"], "size": 128,
+     "sub": "Roblox · 2021년 10월"},
+    {"type": "count", "beats": 12, "title": "그때 이미", "value": 18000, "unit": "대+", "size": 260,
+     "label": "서버 · 컨테이너 **17만 개**", "note": "작은 회사의 실수가 아니었다"},
+    {"type": "lines", "beats": 14, "kicker": "장애 하루 전, 오후 2시", "lines":
+      ["**새 기능 하나**를 켰다", "트래픽 라우팅 노드도 **50%** 늘렸다"], "size": 88, "size2": 62,
+     "foot": "Consul 스트리밍 기능 · 트래픽 라우팅 백엔드 — 원문 번역"},
+    {"type": "lines", "beats": 14, "kicker": "다음 날", "lines":
+      ["읽기·쓰기 **동시 폭주**에", "새 기능이 **병목**이 됐다"], "size": 88, "size2": 66,
+     "foot": "높은 읽기·쓰기 부하에서 스트리밍이 경합을 키워 쓰기가 막혔다 — 원문 요지"},
+    {"type": "count", "beats": 12, "title": "숨은 원인 하나 더 — 로그 저장소", "value": 489, "unit": "MB",
+     "label": "**4.2GB** 중 실제 데이터", "note": "나머지 3.8GB 는 빈 공간이었다"},
+    {"type": "lines", "beats": 14, "kicker": "더 아팠던 것", "lines":
+      ["원인을 볼 **감시 도구**가", "고장 난 그 시스템에 **기대고** 있었다"], "size": 84, "size2": 64,
+     "foot": "모니터링이 장애 난 Consul 에 의존 — 원문 번역"},
+    {"type": "list", "beats": 28, "title": "그래서 **바꾼 것**", "tsize": 104, "rows": [
+      {"main": "중요한 서비스는 **전용 클러스터**로", "sub": "한 곳이 무너져도 같이 안 무너지게"},
+      {"main": "**멀리 떨어진** 데이터센터를 하나 더", "sub": "서버·네트워크를 이미 지었다(2022-01)"},
+      {"main": "감시 도구의 **의존을 끊는다**", "sub": "고장 난 걸 보려면 따로 서 있어야 한다"}]},
+    {"type": "cta", "beats": 12, "title": "장애 회고 스터디 하는", "title2": "친구에게 보내기",
+     "sub": "출처: about.roblox.com 2022-01-20"}
+  ],
+  "sources": [
+    "'Starting October 28th and fully resolving on October 31st, Roblox experienced a 73-hour outage.' · 'Fifty million players regularly use Roblox every day' (=하루 사용자 수, 못 들어온 수 아님) — https://about.roblox.com/newsroom/2022/01/roblox-return-to-service-10-28-10-31-2021/ (22:26·22:29 원문 확인)",
+    "'over 18,000 servers and 170,000 containers' — 같은 글",
+    "'On October 27th at 14:00, one day before the outage, we enabled this feature on a backend service that is responsible for traffic routing… increased the number of nodes supporting traffic routing by 50%' — 같은 글",
+    "'Under very high load – specifically, both a very high read load and a very high write load – the design of streaming exacerbates the amount of contention on a single Go channel, which causes blocking during writes.' — 같은 글",
+    "'This 4.2GB log store is only storing 489MB of actual data… 3.8GB is empty space' — 같은 글",
+    "'Critical monitoring systems that would have provided better visibility … relied on affected systems, such as Consul.' — 같은 글",
+    "'split some critical services into their own dedicated clusters' · 'already built out the servers and networking for an additional, geographically distinct data center' — 같은 글",
+    "2023 셀 구조 글(about.roblox.com 2023-12)은 22:29 에 502 로 원문 확인 실패 → 화면에서 뺐다(숫자 원칙 9)"
+  ]
+}
