@@ -186,6 +186,22 @@ REGISTRY: list[Loop] = [
              "규칙 표(R…)·가설(H…)을 근거와 함께 고친다(규칙을 바꾸면 근거 회차를 적는다). 게시·댓글·팔로우 같은 "
              "계정 행동은 하지 않는다. docs(design-lab) 로 커밋하고 푸시는 하지 않는다. 무엇을 했는지 한두 줄로 보고한다."
              " 이 레인이 고치는 파일은 design-lab/GROWTH.md 와 design-lab/planning/01-research/ 뿐이다 — git add 도 이 경로만 준다.")),
+    # 경쟁 계정·마케팅 전략 학습 — 채용·취업·직장인 큰 계정을 회차마다 2~3곳씩 보고, 전략을 점수로 견준다.
+    Loop("insta-benchmark", "인스타 계정·전략 학습", "claude-loop", "any", "하루 1~2회(세션이 열려 있을 때)", 48,
+         "/loop <prompt>", ["design-lab/planning/01-research/accounts.md", "design-lab/planning/01-research/strategies.md"],
+         owns=["design-lab/planning/01-research/accounts.md", "design-lab/planning/01-research/strategies.md"],
+         prompt=(
+             "인스타 계정·전략 학습 한 회차: design-lab/planning/01-research/accounts.md 와 strategies.md 를 읽는다. "
+             "① 계정: 채용·취업·직장인·개발자 쪽에서 팔로워가 많은 계정 2~3곳을 고른다(비교표에 없는 곳 먼저, 있던 곳은 30일 넘게 안 본 곳). "
+             "로그인한 인스타 웹 탭에서 프로필(팔로워·게시물 수)과 최근 릴스·게시물의 조회·길이·형식·올리는 속도·시리즈 이름을 본다"
+             "(검색 API 는 planning/01-research/method.md 대로; 429 가 나면 그 회차는 웹 검색 자료로 대신한다). "
+             "비교표에 같은 칸으로 한 줄씩 채우고(본 날짜), '회차 기록' 에 한 단락을 더한다. "
+             "② 전략: 웹에서 채용·교육·커리어 브랜드의 인스타 마케팅 사례와 인스타 공식 크리에이터 자료를 찾아, 새 전략이면 S 번호로 카드를 더하고 "
+             "있던 전략이면 근거를 덧붙여 효과·맞음·비용 점수를 고친다 — 점수를 바꾸면 '바뀐 것' 에 날짜와 이유. "
+             "모든 주장에 출처(계정 주소·URL·숫자), 추측은 '?' 로 표시. 글·그림·영상은 옮기지 않고 형식만 적는다. "
+             "합계 상위 전략이 03-content.md 일감과 어긋나면 strategies.md '바뀐 것' 에 '03 반영 필요' 라고만 적는다(03 은 고치지 않는다). "
+             "팔로우·좋아요·댓글·게시 같은 계정 행동은 하지 않는다. docs(design-lab) 로 커밋하고 푸시는 하지 않는다. "
+             "무엇을 배웠는지 한두 줄로 보고한다. 이 레인이 고치는 파일은 위 두 파일뿐이다 — git add 도 이 경로만 준다.")),
 ]
 
 BY_KEY = {l.key: l for l in REGISTRY}
