@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { docFetch } from '../../../api/client'
 
 // 책 — public/book/ 아래의 서가·차례·본문을 읽는다.
 //
@@ -210,7 +211,7 @@ function useJson<T>(path: string | null) {
   useEffect(() => {
     if (path === null) return
     let cancelled = false
-    fetch(path)
+    docFetch(path)
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status} - ${path}`)
         return r.json()

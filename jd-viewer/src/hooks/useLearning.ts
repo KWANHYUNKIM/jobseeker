@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { docFetch } from '../api/client'
 
 // build_learning.py 가 만드는 learning_resources.json 의 영상 1건
 export type LearningStage = '입문' | '핵심' | '실전'
@@ -55,7 +56,7 @@ export function useLearning(): State {
 
   useEffect(() => {
     let cancelled = false
-    fetch('/learning_resources.json')
+    docFetch('/learning_resources.json')
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`)
         return r.json()

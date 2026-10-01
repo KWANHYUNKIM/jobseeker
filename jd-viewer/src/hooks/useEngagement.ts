@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { docFetch } from '../api/client'
 
 /**
  * 행동 점수 — engagement.score 가 만든 public/engagement.json 을 읽는다.
@@ -46,7 +47,7 @@ let cached: Promise<EngagementDoc | null> | null = null
 
 function load(): Promise<EngagementDoc | null> {
   if (cached) return cached
-  cached = fetch('/engagement.json')
+  cached = docFetch('/engagement.json')
     .then((r) => {
       if (!r.ok) throw new Error(`HTTP ${r.status}`)
       return r.json() as Promise<EngagementDoc>

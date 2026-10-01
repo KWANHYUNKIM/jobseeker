@@ -5,6 +5,7 @@ import { paths } from '../../../utils/urls'
 import { NOINDEX } from './HardwarePrices'
 import { MarketView, type Market } from './HardwareDcMarket'
 import { MoneyView, type Fx, type Money } from './HardwareDcMoney'
+import { docFetch } from '../../../api/client'
 
 // AI 데이터센터 — 회사별로 가진 칩과 거기서 나오는 성능 추정.
 //
@@ -211,7 +212,7 @@ export function HardwareDatacenter({ data }: { data: HwData }) {
   const [region, setRegion] = useState<string>('')
   const [view, setView] = useState<'chips' | 'money' | 'market'>('chips')
   useEffect(() => {
-    fetch('/hardware/datacenter.json')
+    docFetch('/hardware/datacenter.json')
       .then((r) => (r.ok ? r.json() : false))
       .then(setDoc)
       .catch(() => setDoc(false))

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { docFetch } from '../../../api/client'
 
 // public/reveng/index.json + public/reveng/companies/<slug>.json
 //   — engine/PROMPT.md 가 매 사이클 갱신, engine/schema.json 이 형식의 단일 소스.
@@ -296,7 +297,7 @@ function useJson<T>(path: string | null) {
     let cancelled = false
     setLoading(true)
     setError(null)
-    fetch(path)
+    docFetch(path)
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status} - ${path}`)
         return r.json()
@@ -357,7 +358,7 @@ export function useMarkdown(path: string | null) {
     let cancelled = false
     setLoading(true)
     setError(null)
-    fetch(path)
+    docFetch(path)
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status} - ${path}`)
         return r.text()

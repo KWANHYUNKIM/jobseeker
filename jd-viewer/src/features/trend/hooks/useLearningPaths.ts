@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { docFetch } from '../../../api/client'
 
 // public/blog_guides.json  — bin/build_blog_guides.py
 // public/inflearn_courses.json — bin/build_inflearn.py
@@ -86,7 +87,7 @@ function useJson<T>(path: string) {
 
   useEffect(() => {
     let cancelled = false
-    fetch(path)
+    docFetch(path)
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status} - ${path}`)
         return r.json()

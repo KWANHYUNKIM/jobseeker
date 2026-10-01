@@ -8,6 +8,7 @@ import { useSimilarPosts, type SimilarItem } from '../../../hooks/useSimilar'
 import { track, useDwell } from '../../../utils/track'
 import { paths } from '../../../utils/urls'
 import { CompanyMark } from '../../../components/ui'
+import { docFetch } from '../../../api/client'
 
 const COUNTRY_LABEL: Record<string, string> = {
   KR: '🇰🇷 한국', US: '🇺🇸 미국', JP: '🇯🇵 일본', DE: '🇩🇪 독일',
@@ -81,7 +82,7 @@ export function BlogDetail({
       return
     }
     setState('loading')
-    fetch(`/blog_content/${post.content_id}.json`)
+    docFetch(`/blog_content/${post.content_id}.json`)
       .then((r) => {
         // 본문 파일이 없으면 404 가 아니라 SPA 폴백(index.html, 200)이 온다 — vite 개발 서버도
         // 운영 nginx 도 그렇다. 그걸 JSON 으로 읽다 깨져 '불러오지 못했습니다'가 떴다.

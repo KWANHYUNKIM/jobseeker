@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { docFetch } from '../../../api/client'
 
 // 실무자 이야기 — 고성능 그래픽카드를 AI·ML 에 쓰는 사람들의 실측·경험을 요약한 참고 카드.
 //
@@ -41,7 +42,7 @@ let cache: Promise<Note[]> | null = null
 function useNotes(): Note[] | null {
   const [xs, setXs] = useState<Note[] | null>(null)
   useEffect(() => {
-    cache ??= fetch('/hardware/notes.json')
+    cache ??= docFetch('/hardware/notes.json')
       .then((r) => (r.ok ? r.json() : { notes: [] }))
       .then((d: { notes?: Note[] }) => d.notes ?? [])
       .catch(() => [])

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { normalizeCompany } from '../../../utils/companyMark'
+import { docFetch } from '../../../api/client'
 
 // public/guide/index.json + public/guide/companies/<slug>.json
 //   — guide-engine/PROMPT.md 가 매 사이클 갱신, guide-engine/schema.json 이 형식의 단일 소스.
@@ -253,7 +254,7 @@ const fileCache = new Map<string, Promise<CompanyGuide | null>>()
 
 function loadIndex(): Promise<IndexFile> {
   if (!indexPromise) {
-    indexPromise = fetch('/guide/index.json')
+    indexPromise = docFetch('/guide/index.json')
       .then((r) => (r.ok ? r.json() : { updated_at: '', companies: [] }))
       .catch(() => ({ updated_at: '', companies: [] }))
   }
@@ -263,7 +264,7 @@ function loadIndex(): Promise<IndexFile> {
 function loadCompany(slug: string): Promise<CompanyGuide | null> {
   let p = fileCache.get(slug)
   if (!p) {
-    p = fetch(`/guide/companies/${slug}.json`)
+    p = docFetch(`/guide/companies/${slug}.json`)
       .then((r) => (r.ok ? (r.json() as Promise<CompanyGuide>) : null))
       .catch(() => null)
     fileCache.set(slug, p)
@@ -278,7 +279,7 @@ const autoFileCache = new Map<string, Promise<AutoGuide | null>>()
 
 function loadAutoIndex(): Promise<AutoIndexEntry[]> {
   if (!autoIndexPromise) {
-    autoIndexPromise = fetch('/guide/auto/index.json')
+    autoIndexPromise = docFetch('/guide/auto/index.json')
       .then((r) => (r.ok ? r.json() : { companies: [] }))
       .then((d) => (d.companies || []) as AutoIndexEntry[])
       .catch(() => [])
@@ -289,7 +290,7 @@ function loadAutoIndex(): Promise<AutoIndexEntry[]> {
 function loadAuto(slug: string): Promise<AutoGuide | null> {
   let p = autoFileCache.get(slug)
   if (!p) {
-    p = fetch(`/guide/auto/companies/${slug}.json`)
+    p = docFetch(`/guide/auto/companies/${slug}.json`)
       .then((r) => (r.ok ? (r.json() as Promise<AutoGuide>) : null))
       .catch(() => null)
     autoFileCache.set(slug, p)

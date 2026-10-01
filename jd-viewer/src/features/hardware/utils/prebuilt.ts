@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { checkBuild, estimateBuildMin, estimateFps, estimateLlm, priceOf, systemWatts, tierOf, type Build, type HwData, type Part } from './hardware'
+import { docFetch } from '../../../api/client'
 
 // 완제품 조립PC 분석 — '누가 설계해 파는 조립PC' 가 왜 잘 만들어졌나 / 가성비가 왜 좋은가.
 //
@@ -49,7 +50,7 @@ let cache: Promise<{ day: string | null; items: Prebuilt[] }> | null = null
 export function usePrebuilt(): { day: string | null; items: Prebuilt[] } | null {
   const [d, setD] = useState<{ day: string | null; items: Prebuilt[] } | null>(null)
   useEffect(() => {
-    cache ??= fetch('/hardware/prebuilt.json')
+    cache ??= docFetch('/hardware/prebuilt.json')
       .then((r) => (r.ok ? r.json() : { items: {} }))
       .then((j: { day?: string; items?: Record<string, Omit<Prebuilt, 'key'>> }) => ({
         day: j.day ?? null,

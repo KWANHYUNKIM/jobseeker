@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { SearchInput } from '../../../components/ui'
 import { Transformer } from 'markmap-lib'
 import { Markmap, loadCSS, loadJS, globalCSS } from 'markmap-view'
+import { docFetch } from '../../../api/client'
 
 const transformer = new Transformer()
 
@@ -98,7 +99,7 @@ export function MindmapView() {
     ensureMarkmapStyles()
     async function load() {
       try {
-        const res = await fetch('/mindmap.md')
+        const res = await docFetch('/mindmap.md')
         if (!res.ok) throw new Error(`HTTP ${res.status} - mindmap.md`)
         const md = await res.text()
         const { root, features } = transformer.transform(md)

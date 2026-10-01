@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { SearchInput } from '../../../components/ui'
 import * as d3 from 'd3'
+import { docFetch } from '../../../api/client'
 
 // mindmap_tree.json 노드
 interface TreeNode {
@@ -58,7 +59,7 @@ export function ClusterView() {
     let cancelled = false
     async function load() {
       try {
-        const res = await fetch('/mindmap_tree.json')
+        const res = await docFetch('/mindmap_tree.json')
         if (!res.ok) throw new Error(`HTTP ${res.status} - mindmap_tree.json`)
         const data: TreeNode = await res.json()
         if (cancelled || !svgRef.current || !wrapRef.current) return

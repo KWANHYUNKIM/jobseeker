@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { docFetch } from '../../../api/client'
 
 // public/role_insights.json — bin/build_role_insights.py 가 생성
 export interface NameCount {
@@ -33,7 +34,7 @@ export function useRoleInsights() {
 
   useEffect(() => {
     let cancelled = false
-    fetch('/role_insights.json')
+    docFetch('/role_insights.json')
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status} - role_insights.json`)
         return r.json()

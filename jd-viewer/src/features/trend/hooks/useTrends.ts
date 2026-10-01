@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { TrendsFile } from '../../../types'
+import { docFetch } from '../../../api/client'
 
 interface State {
   data: TrendsFile | null
@@ -12,7 +13,7 @@ export function useTrends(): State {
 
   useEffect(() => {
     let cancelled = false
-    fetch('/trends.json')
+    docFetch('/trends.json')
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`)
         return r.json()

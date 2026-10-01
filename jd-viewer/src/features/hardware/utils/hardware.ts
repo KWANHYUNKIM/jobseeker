@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { fetchPrices } from '../api'
+import { docFetch } from '../../../api/client'
 
 // PC 부품 화면(/hardware)이 함께 쓰는 모양·등급·시뮬레이션.
 //
@@ -173,7 +174,7 @@ export interface HwData {
 let cache: Promise<HwData> | null = null
 
 async function getJson<T>(path: string, fallback?: T): Promise<T> {
-  const r = await fetch(path)
+  const r = await docFetch(path)
   if (!r.ok) {
     if (fallback !== undefined) return fallback
     throw new Error(`${path} ${r.status}`)
@@ -899,7 +900,7 @@ export function useModels(partId: string): Model[] | null {
     let p = modelCache.get(partId)
     if (!p) {
       // 아직 조사 안 한 부품은 파일이 없다 — 빈 목록으로 본다.
-      p = fetch(`/hardware/models/${partId}.json`)
+      p = docFetch(`/hardware/models/${partId}.json`)
         .then((r) => (r.ok ? r.json() : { models: [] }))
         .then((d: { models?: Model[] }) => d.models ?? [])
         .catch(() => [])
@@ -1007,7 +1008,7 @@ let guideCache: Promise<Guide> | null = null
 export function useGuide(): Guide | null {
   const [g, setG] = useState<Guide | null>(null)
   useEffect(() => {
-    guideCache ??= fetch('/hardware/guide.json')
+    guideCache ??= docFetch('/hardware/guide.json')
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => d ?? { forms: [], distributors: [], durability: [] })
       .catch(() => ({ forms: [], distributors: [], durability: [] }))

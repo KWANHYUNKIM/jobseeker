@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { docFetch } from '../../../api/client'
 
 // public/reposts.json — bin/build_reposts.py
 // 같은 자리가 마감됐다가 다시 올라온 것과, 그 사이 무엇이 바뀌었는지.
@@ -49,7 +50,7 @@ export function useReposts() {
 
   useEffect(() => {
     let cancelled = false
-    fetch('/reposts.json')
+    docFetch('/reposts.json')
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status} - reposts.json`)
         return r.json()

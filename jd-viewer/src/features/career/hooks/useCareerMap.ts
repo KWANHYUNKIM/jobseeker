@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { docFetch } from '../../../api/client'
 
 // public/career_map.json — bin/build_career_map.py 가 생성.
 // JD 임베딩(bge-m3)을 군집화한 결과이므로 라벨은 사람이 정한 직군명이 아니라
@@ -56,7 +57,7 @@ export function useCareerMap() {
 
   useEffect(() => {
     let cancelled = false
-    fetch('/career_map.json')
+    docFetch('/career_map.json')
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status} - career_map.json`)
         return r.json()

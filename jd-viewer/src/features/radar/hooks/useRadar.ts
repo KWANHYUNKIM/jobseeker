@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { RadarFile } from '../../../types'
+import { docFetch } from '../../../api/client'
 
 interface State {
   data: RadarFile | null
@@ -12,7 +13,7 @@ export function useRadar(): State {
 
   useEffect(() => {
     let cancelled = false
-    fetch('/company_tech_radar.json')
+    docFetch('/company_tech_radar.json')
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`)
         return r.json()

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { CalendarFile } from '../../../types'
+import { docFetch } from '../../../api/client'
 
 interface State {
   data: CalendarFile | null
@@ -12,7 +13,7 @@ export function useCalendar(): State {
 
   useEffect(() => {
     let cancelled = false
-    fetch('/job_calendar.json')
+    docFetch('/job_calendar.json')
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`)
         return r.json()

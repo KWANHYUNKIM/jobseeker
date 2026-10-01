@@ -54,3 +54,22 @@ export async function apiOrFile<T>(
     return { data: await getJson<T>(filePath, init), source: 'file' }
   }
 }
+
+/**
+ * 정적 문서(역설계·브리핑·도서·트렌드·캘린더·마인드맵 …)를 받는다 — `fetch(path)` 자리에 그대로 쓴다.
+ *
+ * 뷰어 API 의 `/api/docs/<경로>` 가 먼저다(파이프라인이 DB 에 옮겨 둔 같은 내용). 없거나(404),
+ * API 가 안 되거나, SPA 폴백(index.html)이 오면 원래 정적 파일을 받는다. 돌려주는 건 Response 라
+ * 호출부의 처리(ok·json·text)는 바꿀 필요가 없다.
+ */
+export async function docFetch(path: string, init?: RequestInit): Promise<Response> {
+  const rel = path.replace(/^\//, '').split('/').map(encodeURIComponent).join('/')
+  try {
+    const r = await fetch(`${API_BASE}/api/docs/${rel}`, init)
+    const type = r.headers.get('content-type') ?? ''
+    if (r.ok && (type.includes('json') || type.includes('markdown'))) return r
+  } catch (e) {
+    if ((e as Error).name === 'AbortError') throw e
+  }
+  return fetch(path, init)
+}
