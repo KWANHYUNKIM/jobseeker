@@ -13,7 +13,7 @@
   saramin  : 상세 페이지의 "마감일:YYYY-MM-DD" (등록일 표기는 없다)
   dev      : catch 상세 JSON-LD 의 validThrough / datePosted, 제목의 "[마감]" 접두
   ats      : greenhouse/lever API 404, ashby·skcareers·국내 포털(kr_portals) 목록에서 사라짐
-  boards   : 랠릿 API 상태·마감일, 잡알리오 상세의 채용기간, 인크루트·슈퍼루키 JSON-LD validThrough
+  boards   : 랠릿 API 상태·마감일, 잡알리오 채용기간·금융투자협회 접수기간, 인크루트·슈퍼루키 JSON-LD validThrough
   remote   : 원본 URL 이 404/410
 
 ## 마감일만이 아니라 등록일도 받아 온다
@@ -50,6 +50,7 @@ import json
 import random
 import re
 import time
+import http.client
 import urllib.error
 import urllib.request
 from datetime import date, datetime, timedelta
@@ -133,6 +134,10 @@ def _fetch(url: str, referer: str | None = None) -> tuple[int | None, str]:
             return r.status, r.read().decode("utf-8", "ignore")
     except urllib.error.HTTPError as e:
         return e.code, ""
+    except http.client.IncompleteRead as e:
+        # chunked 응답을 중간에 끊는 서버(금융투자협회)가 있다. 받은 데까지로 판정하고,
+        # 판정에 필요한 표기가 잘렸으면 각 판정기가 '판정 보류'로 돌려준다.
+        return 200, (e.partial or b"").decode("utf-8", "ignore")
     except Exception as e:                                          # noqa: BLE001
         return None, repr(e)
 
@@ -490,6 +495,16 @@ def verdict_alio(html: str, today: date) -> Verdict:
     return _by_deadline(end, today, "원본 확인: 모집중", posted)
 
 
+def verdict_kofia(html: str, today: date) -> Verdict:
+    """금융투자협회 채용안내 상세 — '접수기간 20260921~20261005'. 비어 있으면('~') 판정 보류."""
+    text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", html))
+    m = re.search(r"접수기간 (\d{8}) ?~ ?(\d{8})", text)
+    if not m:
+        return Verdict("unknown", "접수기간 표기 없음")
+    iso = lambda v: f"{v[:4]}-{v[4:6]}-{v[6:]}"                     # noqa: E731
+    return _by_deadline(iso(m.group(2)), today, "원본 확인: 모집중", iso(m.group(1)))
+
+
 def verdict_jsonld_only(html: str, today: date) -> Verdict:
     """JSON-LD 의 validThrough 만 믿는다(인크루트·슈퍼루키). 없으면 판정 보류."""
     posted, valid = jsonld_dates(html)
@@ -505,6 +520,8 @@ def check_kboard(job: dict, today: date, cache: dict) -> Verdict:
     if provider == "rallit":
         return _json_verdict(f"https://www.rallit.com/client/api/v1/position/{ext}",
                              verdict_rallit, today)
+    if provider == "kofia":
+        return _html_verdict(f"https://www.kofia.or.kr/brd/m_96/view.do?seq={ext}", verdict_kofia, today)
     if provider == "alio":
         return _html_verdict(f"https://job.alio.go.kr/recruitview.do?idx={ext}", verdict_alio, today)
     url = job.get("url") or ""

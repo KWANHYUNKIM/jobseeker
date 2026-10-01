@@ -10,10 +10,13 @@ crawl_ats.crawl 을 그대로 쓴다(site·boards·parsers 만 바꾼다).
   incruit    인크루트 — job.incruit.com 목록 HTML(EUC-KR, occ1=150 IT) + 본문 iframe.
              robots 의 * 는 jobpostcontpartner 만 막는다. 앞 몇 쪽만 본다.
   alio       잡알리오(공공기관) — 목록 HTML, NCS 정보통신(R600020) 진행중. robots 없음.
+  kofia      금융투자협회 회원사 채용안내 — 증권·자산운용사 공고가 모인다(recruiter 호스트라
+             못 받는 NH투자·키움·하나증권 공고도 여기 온다). 목록 HTML, 앞 몇 쪽만 본다.
+             마감일(접수기간)은 상세에만 있다. robots 없음.
 
 일부러 뺀 곳(2026-10 조사): 리멤버·로켓펀치(약관이 자동 수집 금지), 잡플래닛(잡코리아
-미러), 나인하이어·flex(약관 금지), 마이다스 recruiter(robots 가 API 차단), 그리팅(회사별
-채용 호스트 robots `Disallow: /`), 프로그래머스·블라인드 하이어(서비스 종료).
+미러), 나인하이어·flex(약관 금지), 마이다스 recruiter(robots 가 API 차단), 프로그래머스·
+블라인드 하이어(서비스 종료). 그리팅은 회사마다 robots 가 달라 kr_portals 가 허용된 곳만 받는다.
 나라일터는 본문이 첨부(hwp/pdf)에만 있어 아직 안 붙였다.
 
 사용법:
@@ -43,6 +46,8 @@ BOARDS: list[dict] = [
      "per_board": 40, "company_page": False, "label": "랠릿"},
     {"provider": "incruit", "slug": "it", "company": "인크루트", "region": "kr",
      "per_board": 30, "company_page": False, "label": "인크루트", "complete": False},
+    {"provider": "kofia", "slug": "recruit", "company": "금융투자협회 채용안내", "region": "kr",
+     "per_board": 20, "company_page": False, "label": "금융투자협회", "complete": False},
     {"provider": "superookie", "slug": "it", "company": "슈퍼루키", "region": "kr",
      "per_board": 20, "company_page": False, "label": "슈퍼루키"},
 ]
@@ -284,8 +289,72 @@ def _from_alio(slug: str, company: str) -> list[dict]:
     return out
 
 
+# ── 금융투자협회 회원사 채용안내 ──────────────────────────────────────────────
+KOFIA_LIST = "https://www.kofia.or.kr/brd/m_96/list.do?page={page}"
+KOFIA_VIEW = "https://www.kofia.or.kr/brd/m_96/view.do?seq={seq}"
+KOFIA_PAGES = 8   # 쪽당 10건, 하루 15건 남짓 올라온다 — 닷새 치쯤
+_KOFIA_ROW = re.compile(r'<td class="first num">\d+</td>\s*(?:<!--[^>]*-->)?\s*<td>(.*?)</td>(.*?)</tr>', re.S)
+# 영문 약어는 앞뒤가 영문이 아닐 때만(교보AIM 의 AIM 은 AI 가 아니다).
+_KOFIA_IT = re.compile(r"(?<![A-Za-z])(IT|AI|ICT)(?![A-Za-z])|전산|디지털|정보보호|보안|데이터")
+_KOFIA_PERIOD = re.compile(r"접수기간\s*(\d{8})\s*~\s*(\d{8})")
+
+
+def _kofia_get(url: str) -> str:
+    """이 서버는 chunked 응답을 자주 중간에 끊는다 — 세 번까지 다시 받고, 끝내 끊기면 받은 데까지 쓴다."""
+    import http.client
+    partial = b""
+    for _ in range(3):
+        try:
+            return http_get(url).decode("utf-8", "ignore")
+        except http.client.IncompleteRead as e:
+            partial = max(partial, e.partial or b"", key=len)
+            _sleep()
+    return partial.decode("utf-8", "ignore")
+
+
+def _kofia_detail(seq: str) -> tuple[str, dict[str, str], dict]:
+    raw = _kofia_get(KOFIA_VIEW.format(seq=seq))
+    text = _text(re.sub(r"<(script|style)[^>]*>.*?</>", "", raw, flags=re.S | re.I))
+    i = text.find("회원사 채용안내 상세보기")
+    body = text[i if i >= 0 else 0:]
+    j = body.find("목록")
+    body = body[:j if j > 0 else None]
+    m = _KOFIA_PERIOD.search(re.sub(r"\s+", " ", body))
+    extra = {"deadline": cb_mmdd(m.group(2))} if m else {}
+    return crawl_ats._clean(body), {}, extra
+
+
+def cb_mmdd(yyyymmdd: str) -> str:
+    return f"~ {yyyymmdd[4:6]}/{yyyymmdd[6:8]}"
+
+
+def _from_kofia(slug: str, company: str) -> list[dict]:
+    out = []
+    for page in range(1, KOFIA_PAGES + 1):
+        html = _kofia_get(KOFIA_LIST.format(page=page))
+        rows = _KOFIA_ROW.findall(html)
+        if not rows:
+            break
+        for firm, rest in rows:
+            seq = re.search(r"view\.do\?seq=(\d+)", rest)
+            title = re.search(r"</span>\s*(.*?)</a>", rest, re.S)
+            if not seq or not title:
+                continue
+            t = _text(title.group(1))
+            out.append({
+                "ext_id": seq.group(1), "title": t, "company": _text(firm),
+                "url": KOFIA_VIEW.format(seq=seq.group(1)), "location": "—",
+                "category": "금융투자", "full_jd": "",
+                "dev": kr_portals._dev(t) or bool(_KOFIA_IT.search(t)),
+                "detail": (lambda s=seq.group(1): _kofia_detail(s)),
+                "deadline": "", "career": "",
+            })
+        _sleep()
+    return out
+
+
 PARSERS = {"rallit": _from_rallit, "superookie": _from_superookie,
-           "incruit": _from_incruit, "alio": _from_alio}
+           "incruit": _from_incruit, "alio": _from_alio, "kofia": _from_kofia}
 
 
 def main() -> None:

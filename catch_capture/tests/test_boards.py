@@ -84,3 +84,26 @@ def test_board_verdicts():
     assert cc.verdict_alio("<th>채용기간</th><td>26.10.01 ~ 26.10.15</td>", t).status == "active"
     assert cc.verdict_jsonld_only('"validThrough": "2026-10-07T23:59:59+09:00"', t).status == "active"
     assert cc.verdict_jsonld_only("<html></html>", t).status == "unknown"
+
+
+def test_korean_only_it_titles():
+    assert kp._dev_kr("본사 IT 생산/품질 담당 경력 인재 채용")
+    assert kp._dev_kr("본사 영업데이터 자동화 개발 담당 경력 인재 채용")
+    assert kp._dev_kr("지주부문 Chief Cloud Architect 채용")
+    assert not kp._dev_kr("IT B2B 마케팅(계약직)")
+    assert not kp._dev_kr("시공현장 안전관리자 채용(대전/인천)")
+
+
+def test_greeting_skips_robots_blocked_host(monkeypatch):
+    import pytest
+    monkeypatch.setitem(kp._robots_cache, "kurly.career.greetinghr.com", False)
+    with pytest.raises(RuntimeError):
+        kp.from_greeting("kurly", "")
+
+
+def test_kofia():
+    t = date(2026, 10, 1)
+    assert not cb._KOFIA_IT.search("[교보AIM자산운용] 투자운용팀 채용")
+    assert cb._KOFIA_IT.search("[하나증권] AI전략실 경력직")
+    assert cc.verdict_kofia("<td>접수기간</td><td>20260921~20261005</td>", t).status == "active"
+    assert cc.verdict_kofia("<td>접수기간</td><td>~</td>", t).status == "unknown"

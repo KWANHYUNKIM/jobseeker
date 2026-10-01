@@ -88,6 +88,20 @@ def _dev(title: str, *more) -> bool:
     return is_developer_job(title, *[str(m or "") for m in more]) and not _NON_DEV_KO.search(blob)
 
 
+# 영문 직무 단어 없이 한국어로만 쓴 IT 공고("본사 IT 생산/품질 담당", "영업데이터 자동화 개발")를
+# 잡는다. 공용 판정이 모르는 그룹 포털(건설·제조)에 쓴다. 'IT 마케팅' 같은 비개발은 뺀다.
+_IT_KO = re.compile(r"(?<![A-Za-z])(IT|AI|DX|ICT|SW)(?![A-Za-z])|전산|자동화 ?개발|데이터 ?(엔지니어|플랫폼|분석|자동화)|"
+                    r"정보보(호|안)|보안관제|시스템 ?(개발|엔지니어)|인프라 ?엔지니어|클라우드|"
+                    r"Cloud|Architect|Smart ?Factory|Tech ?QA|ERP|MES")
+_NON_IT_ROLE = re.compile(r"마케팅|세일즈|B2B 영업|영업 담당|구매|회계|총무")
+
+
+def _dev_kr(title: str, *more) -> bool:
+    blob = " ".join([title or ""] + [str(m or "") for m in more])
+    return _dev(title, *more) or (bool(_IT_KO.search(blob)) and not _NON_IT_ROLE.search(title or "")
+                                  and not _NON_DEV_KO.search(blob))
+
+
 def _cand(ext_id, title, company, url, *, location="", category="", full_jd="",
           dev=None, detail=None, deadline="", career="") -> dict:
     c = {"ext_id": str(ext_id), "title": (title or "").strip(), "company": (company or "").strip(),
@@ -543,11 +557,276 @@ def from_samsung(slug: str, company: str) -> list[dict]:
     return out
 
 
+# ── 그리팅(greetinghr) — 회사마다 robots 가 다르다 ───────────────────────────
+# 한때 통째로 뺐지만 robots 는 회사(호스트)마다 다르다: 무신사·컬리·카카오페이는 공고 페이지를
+# 허용하고, 토스·롯데카드·카카오뱅크는 `Disallow: /` 다. 그래서 회차마다 그 회사 호스트의
+# robots 를 읽어 공고 페이지(/ko/o/<id>)가 허용될 때만 받는다. 목록·본문은 공개 API
+# (api.greetinghr.com, robots 없음)에서 받는다 — 목록에 제목·직군이 있어 개발직만 상세를 부른다.
+# slug → (workspaceId, 호스트, 회사명). workspaceId 는 회사 채용 홈 HTML 에만 있어 표로 둔다.
+GREETING: dict[str, tuple[int, str, str]] = {
+    "musinsa": (1455, "www.musinsacareers.com", "무신사"),
+    "kurly": (6012, "kurly.career.greetinghr.com", "컬리"),
+    "kakaopay": (9737, "kakaopay.career.greetinghr.com", "카카오페이"),
+    "kakaomobility": (14346, "kakaomobility.career.greetinghr.com", "카카오모빌리티"),
+    "kakaogames": (7144, "recruit.kakaogames.com", "카카오게임즈"),
+    "kakaoent": (5191, "careers.kakaoent.com", "카카오엔터테인먼트"),
+    "kakaoenterprise": (12556, "careers.kakaoenterprise.com", "카카오엔터프라이즈"),
+    "nextsecurities": (15545, "nextsecurities.career.greetinghr.com", "넥스트증권"),
+    "kbsec": (5652, "kbsec.career.greetinghr.com", "KB증권"),
+    "wooricard": (17669, "wooricard.career.greetinghr.com", "우리카드"),
+    "rebellions": (6706, "rebellions.career.greetinghr.com", "리벨리온"),
+    "cashwalk12": (4018, "cashwalk12.career.greetinghr.com", "넛지헬스케어(캐시워크)"),
+    "estfamily": (413, "estfamily.career.greetinghr.com", "이스트소프트"),
+    "xcena": (12659, "xcena.career.greetinghr.com", "엑시나"),
+    "wrtn": (5727, "career.wrtn.io", "뤼튼테크놀로지스"),
+    "gccompany": (3017, "gccompany.career.greetinghr.com", "여기어때"),
+    "enki": (11539, "enki.career.greetinghr.com", "엔키화이트햇"),
+    "mobilinthire": (6442, "mobilinthire.career.greetinghr.com", "모빌린트"),
+    "supercent": (2730, "supercent.career.greetinghr.com", "슈퍼센트"),
+    "pfct": (3907, "pfct.career.greetinghr.com", "PFCT"),
+    "linqalpha": (16435, "linqalpha.career.greetinghr.com", "링크알파"),
+    "ex-em": (15598, "ex-em.career.greetinghr.com", "엑셈"),
+    "medistream": (756, "medistream.career.greetinghr.com", "메디스트림"),
+    "mangoboost": (12290, "mangoboost.career.greetinghr.com", "망고부스트"),
+    "nuua": (4236, "nuua.career.greetinghr.com", "누아"),
+    "crowdworks": (15138, "crowdworks.career.greetinghr.com", "크라우드웍스"),
+    "gowid": (358, "gowid.career.greetinghr.com", "고위드"),
+    "sionicai": (16371, "sionicai.career.greetinghr.com", "사이오닉에이아이"),
+    "buzzvil": (2204, "buzzvil.career.greetinghr.com", "버즈빌"),
+    "sianalytics": (6387, "sianalytics.career.greetinghr.com", "에스아이에이"),
+    "zigbang": (1724, "zigbang.career.greetinghr.com", "직방"),
+    "moreh": (15374, "moreh.career.greetinghr.com", "모레"),
+    "storelink": (8458, "storelink.career.greetinghr.com", "스토어링크"),
+    "deepauto-ai": (17885, "deepauto-ai.career.greetinghr.com", "딥오토"),
+    "s2w": (3616, "s2w.career.greetinghr.com", "S2W"),
+    "kmong": (3430, "kmong.career.greetinghr.com", "크몽"),
+    "roai": (15355, "roai.career.greetinghr.com", "로아이"),
+    "enerzai": (6701, "enerzai.career.greetinghr.com", "에너자이"),
+    "hyundai-autoever": (13782, "career.hyundai-autoever.com", "현대오토에버"),
+}
+_GREETING_API = "https://api.greetinghr.com/ats"
+_GREETING_DEV = re.compile(r"Engineer|Develop|Software|Backend|Frontend|Server|Data|AI|ML|Infra|DevOps|"
+                           r"Security|QA|Tech|개발|엔지니어|데이터|보안|인프라|기술", re.I)
+_GREETING_CAREER = {"NEW_COMER": "신입", "NOT_MATTER": "경력무관"}
+_robots_cache: dict[str, bool] = {}
+
+
+def robots_allows(host: str, path: str) -> bool:
+    """그 호스트의 robots.txt 가 path 를 허용하나(회차당 호스트마다 한 번). 못 읽으면 막힌 것으로 본다."""
+    import urllib.robotparser
+    if host not in _robots_cache:
+        try:
+            rp = urllib.robotparser.RobotFileParser()
+            rp.parse(_req(f"https://{host}/robots.txt").decode("utf-8", "ignore").splitlines())
+            _robots_cache[host] = rp.can_fetch("*", f"https://{host}{path}")
+        except Exception:                                           # noqa: BLE001
+            _robots_cache[host] = False
+    return _robots_cache[host]
+
+
+def _greeting_detail(ws: int, oid) -> tuple[str, dict]:
+    d = _get_json(f"{_GREETING_API}/v3.5/career/workspaces/{ws}/openings/{oid}")
+    info = ((d.get("data") or {}).get("openingsInfo")) or {}
+    return _text(info.get("detail"))[:16000], {}
+
+
+def from_greeting(slug: str, company: str) -> list[dict]:
+    ws, host, name = GREETING[slug]
+    if not robots_allows(host, "/ko/o/1"):
+        raise RuntimeError(f"{host} robots 가 공고 페이지를 막는다")
+    d = _get_json(f"{_GREETING_API}/v1.1/career/workspaces/{ws}/openings?page=0&pageSize=500")
+    out = []
+    for j in (d.get("data") or {}).get("datas") or []:
+        title = j.get("title") or ""
+        if re.search(r"인재\s*pool|인재풀|talent pool", title, re.I):
+            continue
+        pos = (j.get("openingJobPosition") or {}).get("openingJobPositions") or []
+        occ = [((p.get("workspaceOccupation") or {}).get("occupation") or "") for p in pos]
+        jobs = [((p.get("workspaceJob") or {}).get("job") or "") for p in pos]
+        place = next(((p.get("workspacePlace") or {}).get("location")
+                      or (p.get("workspacePlace") or {}).get("place") or "" for p in pos), "")
+        car = next((p.get("jobPositionCareer") or {} for p in pos), {})
+        ctype = car.get("careerType") or ""
+        career = _GREETING_CAREER.get(ctype) or (
+            f"경력 {car['careerFrom']}년↑" if ctype == "EXPERIENCED" and car.get("careerFrom") else
+            "경력" if ctype == "EXPERIENCED" else "")
+        cat = ", ".join(x for x in dict.fromkeys(occ + jobs) if x)
+        oid = j.get("openingId")
+        is_dev = (_dev(title, cat) or bool(_GREETING_DEV.search(" ".join(occ + jobs)))) \
+            and not _NON_DEV_KO.search(title)
+        out.append(_cand(oid, title, (j.get("group") or {}).get("name") or name,
+                         f"https://{host}/ko/o/{oid}", location=place, category=cat, dev=is_dev,
+                         detail=(lambda w=ws, o=oid: _greeting_detail(w, o)),
+                         deadline=_mmdd(j.get("dueDate")) if j.get("dueDate") else "상시채용",
+                         career=career))
+    return out
+
+
+# ── KB금융(계열사 통합) ───────────────────────────────────────────────────
+# 목록에 본문(cn)까지 온다. jbClsfiCd 가 IT·DIGITAL_DATA 면 IT 직군이다.
+def from_kbfg(slug: str, company: str) -> list[dict]:
+    out, page, total = [], 1, 1
+    while page <= total:
+        d = _get_json(f"https://careers.kbfg.com/api/career/recruites?page={page}")["result"]
+        total = min(int((d.get("paging") or {}).get("totalPageCount") or 1), 20)
+        for j in d.get("recruties") or []:
+            eid = j.get("enggId")
+            cls = j.get("jbClsfiCd") or ""
+            out.append(_cand(eid, j.get("enggTitl"), j.get("affcomNm") or "KB금융",
+                             f"https://careers.kbfg.com/recruit/{eid}", category=j.get("jbClsfiNm") or "",
+                             full_jd=_text(j.get("cn"))[:16000],
+                             dev=cls in ("IT", "DIGITAL_DATA") or _dev(j.get("enggTitl")),
+                             deadline=_mmdd(j.get("enggEddt")), career=j.get("carrTypNm") or ""))
+        page += 1
+    return out
+
+
+# ── 신한투자증권 ─────────────────────────────────────────────────────────
+# 한 페이지에 지난 공고까지 다 온다 — 마감 표기가 붙은 줄은 뺀다.
+_SHINHANSEC = "https://recruit.shinhansec.com/recruit"
+
+
+def _shinhansec_detail(aid) -> tuple[str, dict]:
+    raw = _req(f"{_SHINHANSEC}/view.do?annoId={aid}").decode("utf-8", "ignore")
+    i = raw.find('class="cont')
+    i = raw.find(">", i) + 1 if i >= 0 else 0
+    j = raw.find("</section>", i)
+    return _text(raw[i:j if j > 0 else None])[:16000], {}
+
+
+def from_shinhansec(slug: str, company: str) -> list[dict]:
+    raw = _req(f"{_SHINHANSEC}/list.do").decode("utf-8", "ignore")
+    out = []
+    for m in re.finditer(r'<li class="recruit_list__item"(.*?)</li>', raw, re.S):
+        blk = m.group(1)
+        aid = re.search(r"goView\('(\d+)'\)", blk)
+        title = re.search(r'recruit_list__tit[^>]*>(.*?)</p>', blk, re.S)
+        when_m = re.search(r'recruit_list__date[^>]*>(.*?)</p>', blk, re.S)
+        if not aid or not title:
+            continue
+        when = _text(when_m.group(1)) if when_m else ""
+        if "마감" in when:
+            continue
+        kind = re.search(r'data-reqtypenm="([^"]*)"', blk)
+        out.append(_cand(aid.group(1), _text(title.group(1)), "신한투자증권",
+                         f"{_SHINHANSEC}/view.do?annoId={aid.group(1)}",
+                         detail=(lambda a=aid.group(1): _shinhansec_detail(a)),
+                         deadline=_mmdd(when), career=kind.group(1) if kind else ""))
+    return out
+
+
+# ── 건설·제조 그룹(2026-10 조사) ─────────────────────────────────────────────
+# 건설사는 IT 직무가 드물다. 시공 30위권 가운데 목록을 받을 수 있고 IT 공고가 실제로 있던 곳만
+# 붙였다. 두산건설·GS건설·현대엔지니어링·쌍용·금호·서희·대방은 마이다스 recruiter(API 호스트
+# robots 차단), 대우건설·HDC·부영은 자기 robots 가 막는다. 삼성물산·SK에코플랜트·한화 건설은
+# 그룹 포털로 이미 받는다.
+
+# 현대건설 — robots 가 /v1/ 을 막되 /v1/apply_list 만 연다. 상세(/v1/apply_view)는 막혀 있어
+# 제목·직무 키워드만 받는다. 상세는 목록 화면 안의 창이라 공고별 주소가 없다.
+def from_hdec(slug: str, company: str) -> list[dict]:
+    d = _get_json("https://recruit.hdec.co.kr/v1/apply_list/search01?reClass=&reDtlClass=")
+    out = []
+    for j in d.get("response") or []:
+        if j.get("STATUS_CD") not in (None, "A"):
+            continue
+        kw = _html.unescape(" ".join(x for x in (j.get("JOB_SRC_KEYWORD"), j.get("GDS_SRC_KEYWORD")) if x))
+        loc = _html.unescape(j.get("LOC_SRC_KEYWORD") or "").replace("#", "").strip()
+        title = j.get("TITLE") or ""
+        out.append(_cand(j.get("RE_NO"), title, "현대건설", "https://recruit.hdec.co.kr/JobPosting",
+                         location=loc, category=kw.replace("#", "").strip(),
+                         dev=_dev_kr(title, _html.unescape(j.get("JOB_SRC_KEYWORD") or "")),
+                         full_jd=f"[직무 키워드]\n{kw}\n[접수기간]\n{j.get('GIGANDETAIL') or ''}",
+                         deadline=_mmdd(j.get("RCP_END_YMD")), career=j.get("RE_CLASS_NM") or ""))
+    return out
+
+
+# KCC 그룹(KCC·KCC건설·KCC글라스·KCC실리콘 …) — 계열사 코드마다 목록을 받는다. robots 없음(410).
+_KCC = "https://recruit.kccworld.co.kr/recruit"
+_KCC_CORP = {"1": "KCC", "2": "KCC건설", "3": "KCC", "4": "KCC", "5": "KCC", "6": "KCC글라스", "7": "KCC실리콘"}
+
+
+def _kcc_detail(seq) -> tuple[str, dict]:
+    d = _post_json(f"{_KCC}/recruitInfoDtlAjax", {"SEQ_R_INFO": str(seq)})
+    body = ((d.get("recruitInfoDtl") or {}).get("CONTENTS")) or ""
+    return _text(_html.unescape(body))[:16000], {}   # 엔티티가 두 겹이다
+
+
+def from_kcc(slug: str, company: str) -> list[dict]:
+    out, seen = [], set()
+    for corp, name in _KCC_CORP.items():
+        d = _post_json(f"{_KCC}/recruitInfoListAjax", {"CORP": corp, "TYPE": ""})
+        for j in d.get("recruitInfoList") or []:
+            seq = j.get("SEQ_R_INFO")
+            if seq in seen or j.get("CODE_NM") not in (None, "서류접수"):
+                continue
+            seen.add(seq)
+            period = j.get("FROM_TO") or ""
+            end = period.split("~")[-1]
+            out.append(_cand(seq, _html.unescape(j.get("TITLE") or ""), name,
+                             f"{_KCC}/announce?SEQ_R_INFO={seq}", dev=_dev_kr(j.get("TITLE")),
+                             detail=(lambda s=seq: _kcc_detail(s)),
+                             deadline="상시채용" if "채용시" in end else _mmdd(end)))
+        _sleep(300)
+    return out
+
+
+# 코오롱 그룹(코오롱글로벌·코오롱베니트 …) — field_nm 에 모집 직무가 쉼표로 온다.
+_KOLON = "https://dream.kolon.com/RECRUIT_KOLON/hr/rec/recruit/jobopen/controller/candidate"
+
+
+def from_kolon(slug: str, company: str) -> list[dict]:
+    opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+    _req("https://dream.kolon.com/", opener=opener)
+    raw = _req(f"{_KOLON}/JobOpen310WebController/searchJobOpenByCandidate2018Renew.hr", opener=opener,
+               data=b"recruit_type=&order_by=CLOSE_DT&group_yn=Y",
+               headers={"Content-Type": "application/x-www-form-urlencoded",
+                        "X-Requested-With": "XMLHttpRequest", "Referer": "https://dream.kolon.com/"})
+    d = json.loads(raw.decode("utf-8", "ignore"))
+    out = []
+    for j in ((d.get("resultData") or {}).get("list")) or []:
+        if str(j.get("receive_div_cd")) == "99":   # 인재 등록(상시 풀)
+            continue
+        jid = j.get("jobopen_id")
+        field = j.get("field_nm") or ""
+        # 상세 화면도 본문 없이 모집분야만 다시 보여 준다 — 목록의 모집분야가 곧 본문이다.
+        out.append(_cand(jid, j.get("jobopen_nm"), j.get("unit_nm") or "코오롱",
+                         f"https://dream.kolon.com/?jobopen_id={jid}", category=field,
+                         full_jd=f"[모집분야]\n{field}", dev=_dev_kr(j.get("jobopen_nm"), field),
+                         deadline=_mmdd(j.get("receive_end_dt")),
+                         career={"01": "신입", "02": "경력", "03": "신입/경력"}.get(str(j.get("experience")), "")))
+    return out
+
+
+# 두산 그룹(두산에너빌리티·두산로보틱스·디지털이노베이션 …) — 목록 HTML 한 쪽에 전부 온다.
+# 상세는 화면 프레임워크 호출이라 아직 못 받는다 — 제목·계열사·마감만 싣는다.
+def from_doosan(slug: str, company: str) -> list[dict]:
+    raw = _req("https://career.doosan.com/dsp/sa/RecList.jsp").decode("utf-8", "ignore")
+    out = []
+    for blk in re.findall(r"<li>(.*?)</li>", raw, re.S):
+        m = re.search(r"goDetail\('([^']+)'", blk)
+        title = re.search(r"<strong[^>]*>(.*?)</strong>", blk, re.S)
+        if not m or not title or "접수마감" in blk:
+            continue
+        comp = re.search(r'class="company"[^>]*>\s*([^<]+)', blk)
+        kind = re.search(r'class="badge-type"[^>]*>(.*?)</span>', blk, re.S)
+        dl = re.search(r'class="deadline".*?</span>(.*?)</div>', blk, re.S)
+        end = _text(dl.group(1)).split("~")[-1] if dl else ""
+        t = _text(title.group(1))
+        out.append(_cand(m.group(1), t, _text(comp.group(1)) if comp else "두산",
+                         "https://career.doosan.com/dsp/sa/RecList.jsp",
+                         # 디지털이노베이션은 그룹 IT 계열사다 — 제목에 직무가 없는 수시채용도 IT 다.
+                         dev=_dev_kr(t) or "디지털이노베이션" in (comp.group(1) if comp else ""),
+                         deadline=_mmdd(end), career=_text(kind.group(1)) if kind else ""))
+    return out
+
+
 PARSERS = {
+    "hdec": from_hdec, "kcc": from_kcc, "kolon": from_kolon, "doosan": from_doosan,
     "toss": from_toss, "line": from_line, "kakao": from_kakao, "nhn": from_nhn, "cj": from_cj,
     "nexon": from_nexon, "smilegate": from_smilegate, "lg": from_lg, "hkmc": from_hkmc,
     "hanwha": from_hanwha, "shinsegae": from_shinsegae, "naver": from_naver, "kt": from_kt,
     "kakaobank": from_kakaobank, "netmarble": from_netmarble, "samsung": from_samsung,
+    "greeting": from_greeting, "kbfg": from_kbfg, "shinhansec": from_shinhansec,
 }
 
 

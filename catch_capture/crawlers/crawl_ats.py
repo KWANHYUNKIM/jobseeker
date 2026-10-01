@@ -258,9 +258,15 @@ def crawl(keyword: str, target: int, per_board: int, *, site: str = SITE,
     # 신규 목표를 채워 중간에 멈추면 뒤쪽 보드는 이번 회차에 안 본 것이라 빠진다.
     listed: list[str] = []
     complete_boards: list[str] = []
+    # 국내 보드가 70곳을 넘어 밀린 공고만으로 회차 목표를 다 쓰면 해외 보드가 굶는다 —
+    # 국내 몫을 목표의 70% 로 묶는다(국내만 도는 crawl_boards 는 region 이 다 kr 라 상관없다).
+    kr_quota = target if all(x.get("region") == "kr" for x in boards) else int(target * 0.7)
+    kr_new = 0
     for bi, b in enumerate(boards, 1):
         if len(collected) - base_count >= target:
             break
+        if b.get("region") == "kr" and kr_new >= kr_quota:
+            continue
         provider, slug, company = b["provider"], b["slug"], b["company"]
         try:
             candidates = parsers[provider](slug, company)
@@ -281,7 +287,8 @@ def crawl(keyword: str, target: int, per_board: int, *, site: str = SITE,
         # 그룹 포털(skcareers 등)은 보드 하나에 계열사 수십 곳이 모여 있어 회사당 상한이 따로다.
         board_cap = int(b.get("per_board") or per_board)
         for c in candidates:
-            if len(collected) - base_count >= target or board_new >= board_cap:
+            if (len(collected) - base_count >= target or board_new >= board_cap
+                    or (b.get("region") == "kr" and kr_new >= kr_quota)):
                 break
             scanned += 1
             pid = f"{provider}:{slug}:{c['ext_id']}"
@@ -297,8 +304,11 @@ def crawl(keyword: str, target: int, per_board: int, *, site: str = SITE,
             if c.get("detail"):
                 # 목록에 본문이 없는 곳은 개발직으로 골라진 것만 상세를 받는다.
                 # 실패하면 seen 에 안 넣어 다음 회차에 다시 받는다.
+                # 상세가 세 번째 값으로 목록에 없던 칸(마감일 등)을 돌려줄 수 있다.
                 try:
-                    full_jd, structured = c["detail"]()
+                    full_jd, structured, *more = c["detail"]()
+                    if more:
+                        c.update(more[0])
                 except Exception as exc:                            # noqa: BLE001
                     print(f"    상세 실패 {pid}: {type(exc).__name__}", flush=True)
                     continue
@@ -355,6 +365,8 @@ def crawl(keyword: str, target: int, per_board: int, *, site: str = SITE,
             })
             seen.add(pid)
             board_new += 1
+            if b.get("region") == "kr":
+                kr_new += 1
         if board_new:
             save_jobs_json(out_dir, collected)
             print(f"  [{bi}/{len(boards)}] {company:22s} ({provider}:{slug}) +{board_new} "

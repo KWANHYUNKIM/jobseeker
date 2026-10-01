@@ -194,6 +194,321 @@
       "region": "kr"
     },
     {
+      "provider": "kbfg",
+      "slug": "group",
+      "company": "KB금융(계열사 통합)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "shinhansec",
+      "slug": "main",
+      "company": "신한투자증권",
+      "region": "kr",
+      "per_board": 10
+    },
+    {
+      "provider": "hdec",
+      "slug": "main",
+      "company": "현대건설",
+      "region": "kr",
+      "per_board": 10
+    },
+    {
+      "provider": "kcc",
+      "slug": "group",
+      "company": "KCC 그룹",
+      "region": "kr",
+      "per_board": 10
+    },
+    {
+      "provider": "kolon",
+      "slug": "group",
+      "company": "코오롱 그룹",
+      "region": "kr",
+      "per_board": 10
+    },
+    {
+      "provider": "doosan",
+      "slug": "group",
+      "company": "두산 그룹",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "musinsa",
+      "company": "무신사 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "kurly",
+      "company": "컬리 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "kakaopay",
+      "company": "카카오페이 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "kakaomobility",
+      "company": "카카오모빌리티 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "kakaogames",
+      "company": "카카오게임즈 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "kakaoent",
+      "company": "카카오엔터테인먼트 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "kakaoenterprise",
+      "company": "카카오엔터프라이즈 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "nextsecurities",
+      "company": "넥스트증권 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "kbsec",
+      "company": "KB증권 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "wooricard",
+      "company": "우리카드 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "rebellions",
+      "company": "리벨리온 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "cashwalk12",
+      "company": "넛지헬스케어(캐시워크) (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "estfamily",
+      "company": "이스트소프트 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "xcena",
+      "company": "엑시나 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "wrtn",
+      "company": "뤼튼테크놀로지스 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "gccompany",
+      "company": "여기어때 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "enki",
+      "company": "엔키화이트햇 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "mobilinthire",
+      "company": "모빌린트 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "supercent",
+      "company": "슈퍼센트 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "pfct",
+      "company": "PFCT (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "linqalpha",
+      "company": "링크알파 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "ex-em",
+      "company": "엑셈 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "medistream",
+      "company": "메디스트림 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "mangoboost",
+      "company": "망고부스트 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "nuua",
+      "company": "누아 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "crowdworks",
+      "company": "크라우드웍스 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "gowid",
+      "company": "고위드 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "sionicai",
+      "company": "사이오닉에이아이 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "buzzvil",
+      "company": "버즈빌 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "sianalytics",
+      "company": "에스아이에이 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "zigbang",
+      "company": "직방 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "moreh",
+      "company": "모레 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "storelink",
+      "company": "스토어링크 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "deepauto-ai",
+      "company": "딥오토 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "s2w",
+      "company": "S2W (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "kmong",
+      "company": "크몽 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "roai",
+      "company": "로아이 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "enerzai",
+      "company": "에너자이 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
+      "provider": "greeting",
+      "slug": "hyundai-autoever",
+      "company": "현대오토에버 (그리팅)",
+      "region": "kr",
+      "per_board": 20
+    },
+    {
       "provider": "greenhouse",
       "slug": "anthropic",
       "company": "Anthropic",
