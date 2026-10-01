@@ -897,6 +897,20 @@ def _load_profiles() -> dict[str, dict]:
         return {}
 
 
+def write_db(out: dict) -> int | None:
+    """회사마다 한 문서 + 목록 메타 한 문서. DB 가 없으면 None(빌더는 계속)."""
+    sys.path.insert(0, str(ROOT / "catch_capture"))
+    from store.db import docs
+
+    meta = {k: v for k, v in out.items() if k != "companies"}
+    company_docs = {c["norm"]: c for c in out["companies"]}
+
+    def write() -> int:
+        docs.put("company_index", "", meta)
+        return docs.replace_kind("company", company_docs)
+    return docs.dual_write("회사 프로필", write)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--min", type=int, default=2, help="최소 공고 수 (기본 2)")
@@ -922,6 +936,11 @@ def main() -> None:
     OUTPUT.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[*] {OUTPUT.relative_to(ROOT)} 작성 — {len(companies)}개 회사 "
           f"({len(json.dumps(out, ensure_ascii=False)):,} bytes)", flush=True)
+    # 뷰어 API(backend)가 회사 한 곳씩 잘라서 답하도록 DB 에도 쓴다(viewer_doc, migrations/011).
+    # 파일은 사전 렌더링·API 없는 배포용으로 남는다.
+    n = write_db(out)
+    if n is not None:
+        print(f"[*] viewer_doc(company) {n:,}건 기록", flush=True)
     # 상위 5개 미리보기
     for c in companies[:5]:
         doms = ", ".join(d["name"] for d in c["domains"]) or "—"

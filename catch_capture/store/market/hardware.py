@@ -50,8 +50,9 @@ ON CONFLICT (day, part_id) DO UPDATE SET
 """
 
 OFFER_SQL = """
-INSERT INTO hw_offer_day (day, part_id, pcode, name, price) VALUES (%s, %s, %s, %s, %s)
-ON CONFLICT (day, part_id, pcode) DO UPDATE SET name = EXCLUDED.name, price = EXCLUDED.price
+INSERT INTO hw_offer_day (day, part_id, pcode, name, price, rank) VALUES (%s, %s, %s, %s, %s, %s)
+ON CONFLICT (day, part_id, pcode) DO UPDATE SET name = EXCLUDED.name, price = EXCLUDED.price,
+                                                rank = EXCLUDED.rank
 """
 
 
@@ -75,8 +76,20 @@ def ingest(parts: list[dict], prices: dict, only_day: str | None = None) -> dict
                 stats["days"] += 1
             if rec.get("day") and (not only_day or rec["day"] == only_day):
                 for o in rec.get("offers") or []:
-                    cur.execute(OFFER_SQL, (rec["day"], pid, o["pcode"], o["name"], o["price"]))
+                    cur.execute(OFFER_SQL, (rec["day"], pid, o["pcode"], o["name"], o["price"],
+                                            o.get("rank")))
                     stats["offers"] += 1
+    # 회차의 메타(마지막으로 받은 날·다 받았나) — 뷰어 API 가 prices.json 과 같은 모양을
+    # 만들 때 쓴다. 트랜잭션을 따로 둔다: viewer_doc(migrations/011)이 아직 없는 DB 에서도
+    # 가격 이력은 남아야 한다.
+    try:
+        with cursor() as cur:
+            cur.execute(
+                "INSERT INTO viewer_doc (kind, key, payload) VALUES ('hardware', 'meta', %s) "
+                "ON CONFLICT (kind, key) DO UPDATE SET payload = EXCLUDED.payload, built_at = now()",
+                (Jsonb({k: prices.get(k) for k in ("schema", "source", "day", "updated_at", "complete")}),))
+    except Exception as e:                                          # noqa: BLE001
+        print(f"  [db] 가격 메타 건너뜀: {e}", file=_sys.stderr)
     return stats
 
 

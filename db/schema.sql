@@ -1118,4 +1118,25 @@ CREATE MATERIALIZED VIEW IF NOT EXISTS mv_job_dup AS
 SELECT job_id, canonical_id FROM job_dup;
 CREATE UNIQUE INDEX IF NOT EXISTS mv_job_dup_pk ON mv_job_dup (job_id);
 
+-- ════════════════════════════════════════════════════════════════════
+-- 20. 화면용 문서 — 빌더가 계산한 결과를 API 가 잘라서 준다
+-- ════════════════════════════════════════════════════════════════════
+-- db/migrations/011_viewer_doc.sql 과 글자 그대로 같다(설계 근거는 그쪽 머리말).
+CREATE TABLE IF NOT EXISTS viewer_doc (
+    kind      text        NOT NULL,
+    key       text        NOT NULL DEFAULT '',
+    payload   jsonb       NOT NULL,
+    built_at  timestamptz NOT NULL DEFAULT now(),
+    PRIMARY KEY (kind, key)
+);
+COMMENT ON TABLE viewer_doc IS '빌더가 계산한 화면용 문서. 원본 데이터가 아니라 다시 계산할 수 있는 결과다';
+
+-- 하드웨어 매물의 다나와 인기상품순 순위. 화면이 '대표 제품'(가장 많이 팔리는 것)을
+-- 고를 때 쓴다 — prices.json 에만 있고 DB 에는 없어서 API 가 같은 모양을 못 만들었다.
+ALTER TABLE hw_offer_day ADD COLUMN IF NOT EXISTS rank integer;
+
+-- 글이 올라온 시각. published_on(날짜)만으로는 같은 날 글의 순서와 화면의 published_ts 를
+-- 만들 수 없다 — 글 목록은 이 시각의 역순이다(crawl_techblog 가 파일을 그렇게 정렬한다).
+ALTER TABLE post ADD COLUMN IF NOT EXISTS published_at timestamptz;
+
 COMMIT;

@@ -25,7 +25,7 @@ import argparse
 import hashlib
 import json
 import sys as _sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path as _Path
 
 _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent.parent))
@@ -61,6 +61,15 @@ def _published(p: dict):
         return datetime.fromisoformat(raw[:10]).date()
     except ValueError:
         return None
+
+
+def _published_at(p: dict):
+    """글 목록의 정렬 키(published_ts, 초)를 시각으로. 없으면 None."""
+    try:
+        ts = float(p.get("published_ts") or 0)
+    except (TypeError, ValueError):
+        return None
+    return datetime.fromtimestamp(ts, tz=timezone.utc) if ts > 0 else None
 
 
 def _strs(v) -> list[str]:
@@ -114,9 +123,9 @@ def ingest(dry_run: bool = False) -> dict:
                 cur.execute(
                     """
                     INSERT INTO post (url, content_id, company_id, blog_name, title,
-                                      body, published_on, content_hash,
+                                      body, published_on, published_at, content_hash,
                                       country, lang, summary, tags, tech_stack, categories)
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                     ON CONFLICT (url) DO UPDATE SET
                         content_id   = EXCLUDED.content_id,
                         company_id   = EXCLUDED.company_id,
@@ -124,6 +133,7 @@ def ingest(dry_run: bool = False) -> dict:
                         title        = EXCLUDED.title,
                         body         = EXCLUDED.body,
                         published_on = EXCLUDED.published_on,
+                        published_at = EXCLUDED.published_at,
                         content_hash = EXCLUDED.content_hash,
                         country      = EXCLUDED.country,
                         lang         = EXCLUDED.lang,
@@ -136,7 +146,7 @@ def ingest(dry_run: bool = False) -> dict:
                     """,
                     (p["url"].strip(), p.get("content_id") or None, cid,
                      p.get("company") or "", p["title"].strip(),
-                     body, _published(p), chash,
+                     body, _published(p), _published_at(p), chash,
                      p.get("country") or "", p.get("lang") or "",
                      p.get("summary") or "", _strs(p.get("tags")),
                      _strs(p.get("tech_stack")), _strs(p.get("categories"))),
@@ -144,6 +154,11 @@ def ingest(dry_run: bool = False) -> dict:
                 if cur.fetchone()["inserted"]:
                     stats["new"] += 1
         db.commit()
+    # 글 목록의 메타(주제 순서·태그 → 주제 대응표) — 표에 없는 값이라 화면용 문서로 둔다.
+    # 뷰어 API(/api/posts)가 post 표와 합친다. viewer_doc(migrations/011)이 없어도 글은 남는다.
+    from store.db import docs
+    docs.dual_write("글 목록 메타", docs.put, "blog", "meta",
+                    {k: data.get(k) for k in ("generated_at", "categories", "tag_categories")})
     return stats
 
 

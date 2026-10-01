@@ -7,7 +7,7 @@
 크롤러는 지금 JSON 을 직접 쓰고 여기로 **이중 쓰기** 한다(DB_DUAL_WRITE=0 으로 끈다).
 DB 가 없거나 실패해도 크롤 단계는 죽지 않는다 — job 쪽 ingest_crawl 과 같은 약속이다.
 
-    python -m store.market.freelance ingest                 # public/freelance.json → DB (백필·복구)
+    python -m store.market.freelance ingest                 # public/freelance.json → DB (백필·복구, 분석 문서 포함)
     python -m store.market.freelance export [경로]          # DB → freelance.json
     python -m store.market.freelance stats
 """
@@ -222,6 +222,18 @@ def dual_write_snapshot(snap: dict) -> int | None:
         return None
 
 
+CLASS_KEYS = ("grade", "grade_basis", "domain", "work_type", "role")
+
+
+def freelance_meta(doc: dict) -> dict:
+    """freelance.json 에서 DB 표에 없는 부분만 — 뷰어 API 가 project 표와 합친다."""
+    meta = {k: doc.get(k) for k in ("updated_at", "started_at", "sources", "trend", "analysis",
+                                     "rate_history")}
+    meta["classes"] = {p["id"]: {k: p.get(k) for k in CLASS_KEYS if p.get(k) is not None}
+                       for p in doc.get("projects") or []}
+    return meta
+
+
 def export(path: Path = JSON_PATH) -> int:
     """v_project → 뷰어 JSON. 크롤러가 쓰는 것과 같은 모양(site·pid·budget{…}·status…)."""
     with cursor(autocommit=True) as cur:
@@ -297,6 +309,8 @@ def main() -> None:
         src = Path(args[1]) if len(args) > 1 else JSON_PATH
         doc = json.loads(src.read_text(encoding="utf-8"))
         print(ingest(doc.get("projects") or []))
+        from store.db import docs
+        docs.put("freelance", "meta", freelance_meta(doc))
     elif cmd == "export":
         n = export(Path(args[1]) if len(args) > 1 else JSON_PATH)
         print(f"{n}건 → {args[1] if len(args) > 1 else JSON_PATH}")

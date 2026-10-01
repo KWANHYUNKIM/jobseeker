@@ -882,6 +882,11 @@ def run(pages: int = PAGES_DEFAULT, only: set[str] | None = None) -> dict:
     if db:
         stats["db"] = db
         print(f"[freelance] DB {db['upserted']}건 (신규 {db['inserted']}, 상태 변화 {db['checks']})", flush=True)
+        # 프로젝트 행은 위에서 표에 들어갔다. 표에 없는 계산 결과 — 추이·분석·단가 기록과
+        # 프로젝트별 분류(등급·유형·분야·직무) — 는 화면용 문서로 둔다. 뷰어 API 가 둘을 합쳐
+        # freelance.json 과 같은 모양을 만들되, 모집 상태는 project_state 가 읽는 순간 계산한다.
+        from store.db import docs as _docs
+        _docs.dual_write("외주 분석", _docs.put, "freelance", "meta", _db.freelance_meta(out))
     print(f"[freelance] 누적 {len(projects)}건 (모집중 {active}, 신규 {new}) → {OUT_PATH}", flush=True)
     return stats
 

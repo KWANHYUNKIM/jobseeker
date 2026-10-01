@@ -241,6 +241,15 @@ def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: 
             if orch:
                 orch.blog_finished(True, stats.get("total"), stats.get("new"),
                                    stats.get("sources"), elapsed)
+            # 정본 DB(post)에도 넣는다 — 뷰어 API 의 글 목록·관련 글·글 임베딩이 이 표를 읽는다.
+            # 예전에는 손으로만(db-migrate.yml) 돌아서 post 가 크롤과 따로 놀았다.
+            # 실패해도 사이클은 계속 간다(이중 쓰기 약속).
+            if os.environ.get("DB_DUAL_WRITE", "1") != "0":
+                try:
+                    from store.ingest.posts import ingest as _posts_ingest
+                    print(f"  [db] post {_posts_ingest()}", flush=True)
+                except Exception as e:                              # noqa: BLE001
+                    print(f"  [db] post 건너뜀: {e}", flush=True)
         except Exception as e:
             print(f"[!] 기술 블로그 크롤 실패: {e}", flush=True)
             failures.append("blog")
