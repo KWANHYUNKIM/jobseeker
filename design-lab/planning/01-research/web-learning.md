@@ -13,6 +13,7 @@
 | 2025 | Mosseri: 가장 중요한 신호 셋 — **시청 시간**, 도달 대비 **좋아요**, 도달 대비 **보내기(DM 공유)**. 좋아요는 팔로워에게, 보내기는 비팔로워에게 더 무겁다. 댓글은 세 가지에 없다 | (매체 요약 — 영상 원문 미확인) | [SocialMediaToday](https://www.socialmediatoday.com/news/instagram-shares-algorithm-insights-2025/738034/) |
 | 2023-05-31 | 공식 '도달 늘리기 팁' — 직접 만든 것·처음 올리는 것, 3분 이하, **검색되게 키워드를 넣어라**, 협업 기능, 재게시·눈에 띄는 워터마크 금지 | "Drive discovery through search with relevant keywords"(요지) | [Tips for Improving Your Reach](https://creators.instagram.com/blog/tips-for-improving-your-reach) |
 | 2026-06-10 | **Your Algorithm** — 보는 사람이 주제를 더하고 빼면 피드·릴스·탐색 추천이 함께 바뀐다, 추천 게시물에 'From ○○' 주제 꼬리표 | "one unified system"(요지) · 친구 탭·리포스트(친구·팔로워 피드에 추천) | [Control Your Reels Algorithm](https://about.instagram.com/blog/announcements/reels-algorithm-control) · [New features](https://about.instagram.com/blog/announcements/instagram-new-features-connect-friends) |
+| 2026-08-19 | Edits **다국어 캡션**(자동 번역 15개 언어) · Edits 인사이트에서 조회·시청 시간·팔로우·반응을 한곳에, **릴스 3편을 나란히 비교** | "언어 장벽…을 넘어 도달할 가치"(요지) | [다국어 캡션](https://creators.instagram.com/blog/multi-language-captions/) · [인사이트](https://creators.instagram.com/blog/video-insights/) |
 | — | 비연결(비팔로워) 추천은 **3분 이하** 영상 | 도움말·FAQ 요약 | [Creators FAQ](https://creators.instagram.com/faq?locale=en_US) |
 | 2024-04 · 2026-04-30 | 원본 우대, 남의 것을 주로 올리는 계정은 추천 제외(사진·캐러셀까지) | (strategies S12) | [TechCrunch 2026-04-30](https://techcrunch.com/2026/04/30/instagram-restricts-reach-of-content-aggregators-in-new-crackdown/) |
 | 2024-12 | 시험 릴스 — 비팔로워에게 먼저, 24시간 뒤 숫자 | (strategies S9) | [creators.instagram.com](https://creators.instagram.com/blog/instagram-trial-reels) |
@@ -48,6 +49,7 @@
 | 첫 3초 건너뛰기가 가장 큰 지렛대(?) | 회차 5 여섯 편 모두 0초에 제목이나 춤이 이미 있다 — 설명 없이 0초에 무엇인지 보인다 | 맞음 |
 | 추천이 **주제 단위**로 묶인다(공식, Your Algorithm) | 한 주제만 올린 계정이 큰다(아이린 1.4만) · 주제가 흩어진 계정은 112만 한 편 뒤에도 910(코딩 퀴즈) — accounts 회차 4 | 맞음 (간접) — '개발자 채용·연봉' 한 주제를 지킨다(strategies S14) |
 | 많이 올릴수록 발견된다(?) | 트렌디아는 하루 1편 272편에 팔로워 6천(조회만 꾸준) · 꼬딱지는 15편에 100만+ 3편 · 회차 7 조회 100만+ 여섯 편 중 다섯이 시리즈·같은 틀 반복 계정 | **일부 맞음** — 횟수보다 같은 틀의 질. 주 3~4편이면 우리 제작량으로 된다 |
+| 다국어 캡션이 도달을 넓힌다(공식) | 한·영 자막 두 편 — 구내식당 파트41(1,026만, 외국어 댓글 C17) · 재택 자리비움(137만, 영어 한 줄) | 맞음 — 우리도 제목 아래 영어 한 줄을 시험해 볼 만하다(?) |
 
 ## 회차 기록
 - 2026-10-02 처음: 인스타 공식 순위 설명(2023) 원문 확인, 2026 리포트 3곳·국내 가이드 1곳. 공식 신호 네 가지(공유·완주·좋아요·오디오 페이지)를 우리 관찰과 대조.
@@ -56,3 +58,4 @@
 - 2026-10-02 회차 5: 인사이트 '건너뛰기 비율'·유지 곡선(리포트) 추가 — 우리 회고에 쓸 숫자. 규정 뒤 재게시가 터진 반례 기록.
 - 2026-10-02 회차 6: 공식 'Your Algorithm'(2026-06-10, 주제 단위 추천·꼬리표)·리포스트 기능 추가 — 한 주제 계정 관찰과 같은 방향.
 - 2026-10-02 회차 7: 올리는 횟수(Mosseri 2차 인용) 추가 — 트렌디아·꼬딱지와 대조해 '일부 맞음'.
+- 2026-10-02 회차 8: 공식 Edits 다국어 캡션·인사이트(3편 나란히 비교) 추가 — 한·영 자막 두 편과 맞음. 06-review 는 3편씩 나란히 본다.
