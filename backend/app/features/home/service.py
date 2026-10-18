@@ -15,8 +15,10 @@ from app.features.home import repository
 from app.features.home.industry import INDUSTRIES, classify
 from app.utils.cache import cached
 
-SIZES = ("대기업", "중견기업", "중소기업")
-SIZE_RANK = {s: i for i, s in enumerate(SIZES)}
+SIZES = ("대기업", "중견기업", "중소기업", "해외 기업")
+# 주목순에서 큰 회사가 먼저. 해외 기업(OpenAI·SpaceX…)은 국내 규모 잣대가 안 맞아 따로 두되 중소보다 앞.
+SIZE_RANK = {"대기업": 0, "중견기업": 1, "해외 기업": 2, "중소기업": 3}
+OVERSEAS = "해외·원격"
 EXP_BUCKETS = ("1-2년", "3-4년", "5-7년", "8년+")
 ENTRY = "신입/무관"
 CAREER_ORDER = (ENTRY,) + EXP_BUCKETS
@@ -74,6 +76,10 @@ def _board() -> dict:
     companies, jobs = [], []
     for cid, rs in by_co.items():
         rs.sort(key=lambda r: r["first_seen_at"], reverse=True)
+        # 같은 공고가 사이트만 달리해 두 번 실린 것(쿠팡 채용페이지 + 사람인)을 하나로 — 새 것을 남긴다.
+        # 회사 단위로 묶을 때 처음 드러나는 중복이라(job_dup 은 같은 사이트 안·같은 제목을 본다) 여기서 거른다.
+        seen_t: set[str] = set()
+        rs[:] = [r for r in rs if not (_tkey(r["title"]) in seen_t or seen_t.add(_tkey(r["title"])))]
         # 대표 표기·슬러그는 공고가 가장 많은 쪽
         top = Counter((r["company"], r["company_slug"], r["logo_url"]) for r in rs).most_common()
         name = display_name(top[0][0][0])
@@ -82,6 +88,10 @@ def _board() -> dict:
         industry = classify(name)
         size = Counter(r["company_size"] for r in rs if r["company_size"]).most_common(1)
         size = size[0][0] if size else "중소기업"
+        # 해외 보드(Greenhouse·Ashby…)로 들어온 글로벌 회사는 직원 수를 모르니 규모 판정이 '중소'로
+        # 떨어진다(OpenAI·SpaceX 가 중소기업이었다). 공고 절반 이상이 해외 근무면 '해외 기업' 으로 둔다.
+        if size != "대기업" and sum(r["region"] == OVERSEAS for r in rs) * 2 >= len(rs):
+            size = "해외 기업"
         careers = Counter(r["career_bucket"] for r in rs)
         present = [b for b in CAREER_ORDER if careers.get(b)]
         ddays = [r["dday"] for r in rs if r["dday"] is not None and r["dday"] >= 0]
@@ -152,8 +162,12 @@ def home(size: str = "", industry: str = "", sort: str = "popular", limit: int =
     for r in jobs:
         by_bucket[r["career_bucket"]].append(r)
 
+    # 첫 화면 로고 띠 — 필터와 무관하게 지금 공고가 많은 큰 회사들
+    spotlight = sorted(cos, key=_sort_key("popular"), reverse=True)[:80]
     return {
         "generated_at": b["generated_at"],
+        "spotlight": [{"name": c["name"], "slug": c["slug"], "logo": c["logo"], "size": c["size"],
+                       "active": c["active"]} for c in spotlight],
         "totals": {"companies": len(picked), "jobs": len(jobs),
                    "entry": len(by_bucket[ENTRY]),
                    "experienced": sum(len(by_bucket[x]) for x in EXP_BUCKETS)},
@@ -168,6 +182,22 @@ def home(size: str = "", industry: str = "", sort: str = "popular", limit: int =
     }
 
 
+def _tkey(title: str) -> str:
+    return re.sub(r"\W+", "", _title(title).lower())[:24]
+
+
+def _dedupe(jobs: list[dict]) -> list[dict]:
+    """같은 공고가 사이트만 달리해 두 번 실린 것을 하나로 — 먼저 온(새) 것을 남긴다."""
+    seen, out = set(), []
+    for j in jobs:
+        key = _tkey(j["title"])
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(j)
+    return out
+
+
 def company(slug: str) -> dict:
     b = cached(("home_board",), _board)
     c = b["by_any_slug"].get(slug)
@@ -178,5 +208,5 @@ def company(slug: str) -> dict:
     return {
         "company": {k: v for k, v in c.items() if k not in ("id", "slugs")},
         "careers": [{"bucket": x, "n": careers.get(x, 0)} for x in CAREER_ORDER + ("정보없음",) if careers.get(x)],
-        "jobs": [_job(r, c["industry"]) for r in rows],
+        "jobs": _dedupe([_job(r, c["industry"]) for r in rows]),
     }

@@ -1,0 +1,32 @@
+"""메인 화면의 이름 규칙 — 업종 가르기·회사 표기 정리·같은 회사 판정(DB 없이 돈다)."""
+from app.features.home.industry import classify
+from app.features.home.service import company_key, display_name
+
+
+def test_industry_order_finance_before_platform():
+    # '카카오' 가 이름에 있어도 은행·페이는 금융, 이름이 정확히 카카오면 플랫폼
+    assert classify("카카오뱅크") == "금융"
+    assert classify("카카오페이") == "금융"
+    assert classify("카카오") == "IT·플랫폼"
+    assert classify("당근마켓") == "IT·플랫폼"     # '마켓' 이 커머스로 끌고 가지 않게
+    assert classify("무신사") == "유통·커머스"
+
+
+def test_industry_common_suffixes():
+    assert classify("NH투자증권") == "금융"
+    assert classify("크래프톤 (Krafton)") == "게임"
+    assert classify("DL이앤씨") == "건설·중공업"
+    assert classify("") == "기타"
+
+
+def test_display_name_strips_corp_marks():
+    assert display_name("(주)카카오") == "카카오"
+    assert display_name("주식회사스마일게이트") == "스마일게이트"
+    assert display_name("쿠팡 (Coupang)") == "쿠팡 (Coupang)"   # 영문 병기는 남긴다
+    assert display_name("R&amp;D랩") == "R&D랩"
+
+
+def test_company_key_merges_spellings():
+    assert company_key("(주)스마일게이트") == company_key("스마일게이트")
+    assert company_key("쿠팡 (Coupang)") == company_key("쿠팡")
+    assert company_key("토스") != company_key("토스뱅크")
