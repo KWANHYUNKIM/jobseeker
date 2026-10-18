@@ -371,6 +371,8 @@ export function CompanyMark({ name, size = 18, logo }: { name: string; size?: nu
         height={size}
         loading="lazy"
         onError={() => setFailed(true)}
+        // 구글 파비콘 서비스는 모르는 도메인에 16px 짜리 지구본을 준다 — 흐린 지구본보다 글자 마크가 낫다
+        onLoad={(e) => e.currentTarget.naturalWidth <= 16 && setFailed(true)}
         style={box}
         className="shrink-0 rounded-sm object-contain bg-white"
       />
