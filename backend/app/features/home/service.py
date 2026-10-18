@@ -103,6 +103,9 @@ def _board() -> dict:
         size = size[0][0] if size else "중소기업"
         # 해외 보드(Greenhouse·Ashby…)로 들어온 글로벌 회사는 직원 수를 모르니 규모 판정이 '중소'로
         # 떨어진다(OpenAI·SpaceX 가 중소기업이었다). 공고 절반 이상이 해외 근무면 '해외 기업' 으로 둔다.
+        # 헤드헌팅 회사는 이름이 큰 회사 명단 앞부분에 걸려(라인서치 → '라인') 대기업으로 잡히곤 한다
+        if industry == AGENCY:
+            size = "중소기업"
         if size != "대기업" and sum(r["region"] == OVERSEAS for r in rs) * 2 >= len(rs):
             size = "해외 기업"
             # 해외 ATS 보드로 오는 회사는 거의 소프트웨어 회사다(이름 규칙에 안 걸린 것만)

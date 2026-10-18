@@ -50,3 +50,9 @@ def test_same_entity_aliases_merge_but_affiliates_do_not():
     assert company_key("NHN Cloud") == company_key("엔에이치엔클라우드")
     assert company_key("씨제이올리브영(CJ올리브영)") == company_key("CJ올리브영")
     assert company_key("토스") != company_key("토스뱅크")       # 계열사는 법인이 달라 나눈다
+
+
+def test_search_firms_are_agencies_but_research_is_not():
+    assert classify("라인서치") == "채용대행·헤드헌팅"      # '라인' 으로 대기업 명단에 걸리던 헤드헌팅
+    assert classify("유니코써치") == "채용대행·헤드헌팅"
+    assert classify("리서치앤리서치") != "채용대행·헤드헌팅"
