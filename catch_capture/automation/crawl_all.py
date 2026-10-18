@@ -167,9 +167,10 @@ def run_extras(do_blog: bool = True, do_freelance: bool = True, do_hardware: boo
     # 회사 로고 — 메인 화면 카드용(company.logo_url). 공고 원문이 준 로고 주소만 읽고, 없는 회사만
     # 공고 많은 순으로 회차당 200곳까지 묻는다. 실패해도 회차는 계속 간다.
     try:
-        from crawlers.crawl_logos import run as _logo_run
+        from crawlers.crawl_logos import favicons as _favicons, run as _logo_run
         print(f"\n----- 회사 로고 -----", flush=True)
         _logo_run(int(os.environ.get("LOGO_LIMIT", "200")))
+        _favicons()                     # 도메인 표의 파비콘 — 없는 것·30일 지난 것만 받는다
     except Exception as e:                                          # noqa: BLE001
         print(f"[!] 회사 로고 실패: {e}", flush=True)
         failures.append("logos")
