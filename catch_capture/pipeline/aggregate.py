@@ -140,6 +140,24 @@ def aggregate(keyword: str, keywords: list[str] | None = None,
         kw_note = f"{len(srcs)}개 키워드" if len(srcs) > 1 else srcs[0]
         print(f"  [{site}] {kw_note} → {len(site_jobs)}건 (파일 {copied_files}개 복사)", flush=True)
 
+    # 본문(full_jd)은 있는데 주요업무·자격요건·우대사항이 빈 공고를 다시 나눈다. 크롤러는 받을 때 한 번
+    # 나누는데, 누적본(jobs.json)의 옛 공고는 그때 규칙(정확한 낱말만)으로 나눈 채 남는다 — 머리말을
+    # 말로 쓴 공고("이런 업무를 해요", "You will:")가 그렇게 비었다. 빈 칸만 채우고 있는 값은 건드리지 않는다.
+    from crawlers.jobs_common import build_jd_sections
+    refilled = 0
+    for j in all_jobs:
+        if not j.get("full_jd") or (j.get("main_tasks") and j.get("qualifications") and j.get("preferences")):
+            continue
+        parts = build_jd_sections(None, j["full_jd"])
+        hit = False
+        for k in ("main_tasks", "qualifications", "preferences", "benefits"):
+            if parts.get(k) and not j.get(k):
+                j[k] = parts[k]
+                hit = True
+        refilled += hit
+    if refilled:
+        print(f"  [sections] 본문에서 빈 칸을 다시 나눔 {refilled}건", flush=True)
+
     # 정본 DB(이관 2단계)에 넘길 원본. 아래의 (회사명+제목) 중복 제거를 **거치기 전**
     # 목록이다 — DB 는 URL 로 공고를 식별하므로 그 규칙이 필요 없고, 오히려 같은
     # 회사가 같은 제목으로 낸 다른 팀 공고를 뭉개던 자리다.
