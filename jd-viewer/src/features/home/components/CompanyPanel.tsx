@@ -82,14 +82,18 @@ export function CompanyPanel({ slug, onClose }: { slug: string; onClose: () => v
       )}
 
       <div data-scroll className="flex-1 min-h-0 overflow-auto p-2">
-        {err && <p className="p-4 text-sm text-(--color-red-400)">{err}</p>}
+        {err && (
+          <p className="p-4 text-sm leading-relaxed text-(--color-muted)">
+            이 회사 공고 목록을 지금 불러올 수 없어요(뷰어 API 응답 없음). 아래 잡 리스트에서 같은 회사 공고를 볼 수 있어요.
+          </p>
+        )}
         {!d && !err && <p className="p-4 text-sm text-(--color-faint)">불러오는 중…</p>}
         {jobs.map((j) => (
           <JobLine key={j.site + j.pid} j={j} showCompany={false} />
         ))}
       </div>
 
-      {c && (
+      {(c || err) && (
         <div className="p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] border-t border-(--color-border-soft) text-right">
           <a href={listTo} onClick={onLinkClick(listTo)} className="text-xs text-(--color-accent) hover:underline">
             잡 리스트에서 이 회사만 보기

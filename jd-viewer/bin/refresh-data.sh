@@ -113,6 +113,9 @@ elif [ "$EXPORT_RC" != 0 ]; then
   echo "  [경고] 정본 DB 에 못 붙었다 — 이번 회차는 스냅샷으로 굽습니다(enrich_jobs)." >&2
   "$PY" "$SCRIPT_DIR/enrich_jobs.py"
 fi
+# 메인(`/`) 스냅숏 — 뷰어 API 가 없을 때 home.json 으로 물러선다(store/jobs/home_export.py).
+# DB 에 못 붙으면 기존 파일을 둔다. 실패해도 갱신은 계속 간다.
+(cd "$ROOT_DIR/catch_capture" && "$PY" -m store.jobs.home_export) || echo "  [경고] 메인 스냅숏(home.json)을 못 구웠다 — 기존 파일을 둡니다." >&2
 "$PY" "$SCRIPT_DIR/build_mindmap.py"
 "$PY" "$SCRIPT_DIR/build_company_stacks.py"
 # 회사 규모 색인 — 잡 리스트의 "기업 규모" 필터가 읽는 얇은 파일(공고 1건 회사 포함)
