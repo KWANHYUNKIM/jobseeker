@@ -127,7 +127,7 @@ def fix_locations() -> None:
 
 def run_extras(do_blog: bool = True, do_freelance: bool = True, do_hardware: bool = True,
                blog_per_feed: int = BLOG_PER_FEED_DEFAULT) -> list[str]:
-    """키워드와 무관한 사이클당 1회 단계 — 외주 → 부품 가격·완제품 → 기술 블로그. 실패한 단계 이름을 돌려준다.
+    """키워드와 무관한 사이클당 1회 단계 — 외주 → 회사 로고 → 부품 가격·완제품 → 기술 블로그. 실패한 단계 이름을 돌려준다.
 
     공고 통합(DB 쓰기)보다 **뒤에** 돈다(auto_crawl.run_cycle). 예전에는 마지막 키워드 크롤에
     붙어 통합보다 먼저 돌아서, 블로그 LLM 번역(밀린 글이 많으면 한 시간 넘게)과 다나와 10초
@@ -163,6 +163,16 @@ def run_extras(do_blog: bool = True, do_freelance: bool = True, do_hardware: boo
             if orch:
                 orch.freelance_finished(False, None, None, None,
                                         (datetime.now() - fl_start).total_seconds())
+
+    # 회사 로고 — 메인 화면 카드용(company.logo_url). 공고 원문이 준 로고 주소만 읽고, 없는 회사만
+    # 공고 많은 순으로 회차당 200곳까지 묻는다. 실패해도 회차는 계속 간다.
+    try:
+        from crawlers.crawl_logos import run as _logo_run
+        print(f"\n----- 회사 로고 -----", flush=True)
+        _logo_run(int(os.environ.get("LOGO_LIMIT", "200")))
+    except Exception as e:                                          # noqa: BLE001
+        print(f"[!] 회사 로고 실패: {e}", flush=True)
+        failures.append("logos")
 
     if do_hardware:
         # PC 부품 가격. 하루 한 번만 실제로 돈다(crawlers/crawl_hardware.py 머리말) —
