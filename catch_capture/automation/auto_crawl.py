@@ -27,6 +27,7 @@ import sys as _sys
 from pathlib import Path as _Path
 _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_capture 루트를 import 경로에 추가
 
+import fcntl
 import json
 import os
 import re
@@ -45,6 +46,10 @@ ROOT_DIR = BASE_DIR.parent
 SCREENSHOTS_DIR = BASE_DIR / "screenshots"
 PID_FILE = BASE_DIR / "auto_crawl.pid"
 LOG_FILE = BASE_DIR / "auto_crawl.log"
+# 회차 잠금. launchd 는 같은 작업을 겹쳐 띄우지 않지만, 손으로 돌린 once(따라잡기 회차 등)나
+# start 데몬과 launchd 회차는 서로 모른다 — 둘이 겹치면 같은 jobs.json·원장을 동시에 쓴다.
+# 잠금은 프로세스가 끝나면 OS 가 푼다(죽어도 남지 않는다).
+RUN_LOCK = BASE_DIR / "auto_crawl.run.lock"
 REFRESH_SH = ROOT_DIR / "jd-viewer" / "bin" / "refresh-data.sh"
 # 사이클당 마감 재확인 건수(원본 사이트 조회). 올리면 한 바퀴가 빨라지지만 차단 위험도 오른다.
 CLOSE_CHECK_LIMIT = int(os.environ.get("CLOSE_CHECK_LIMIT", "400"))
@@ -519,6 +524,20 @@ def run_iteration(keyword: str, count: int) -> None:
     크롤 → 부가 빌더 → 디스크 유지보수까지가 한 회차다. 유지보수도 여기 둔다 —
     같은 이유로 loop 에만 있었고, 같은 결과(운영에서만 안 돎)를 낳고 있었다.
     """
+    lock = open(RUN_LOCK, "w")
+    try:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        log("[skip] 다른 회차가 돌고 있다 — 이번 회차는 건너뛴다")
+        lock.close()
+        return
+    try:
+        _run_iteration_locked(keyword, count)
+    finally:
+        lock.close()
+
+
+def _run_iteration_locked(keyword: str, count: int) -> None:
     try:
         run_cycle(keyword, count)
     except Exception as e:  # 한 회차 실패해도 부가 빌더는 돌려야 한다

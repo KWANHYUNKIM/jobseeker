@@ -20,3 +20,4 @@ semantic.db-wal
 job_closures.json
 job_closures.json.tmp
 job_closures.lock
+auto_crawl.run.lock
