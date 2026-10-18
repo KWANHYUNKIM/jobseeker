@@ -18,6 +18,7 @@ function App() {
 }
 
 const TABS: { tab: Tab; label: string; to: () => string; also?: Tab[] }[] = [
+  { tab: 'home', label: '기업별 채용', to: paths.home },
   { tab: 'jobs', label: '잡 리스트', to: paths.jobs },
   { tab: 'companies', label: '기업 기술스택', to: paths.companies },
   { tab: 'mindmap', label: '커리어 마인드맵', to: paths.mindmap },

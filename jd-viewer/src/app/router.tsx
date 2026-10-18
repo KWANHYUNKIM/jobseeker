@@ -4,6 +4,7 @@ import { BookPage } from '../pages/book/BookPage'
 import { CalendarPage } from '../pages/calendar/CalendarPage'
 import { CompaniesPage } from '../pages/companies/CompaniesPage'
 import { FreelancePage } from '../pages/freelance/FreelancePage'
+import { HomePage } from '../pages/home/HomePage'
 import { HardwarePage } from '../pages/hardware/HardwarePage'
 import { JobsPage } from '../pages/jobs/JobsPage'
 import { MindmapPage } from '../pages/mindmap/MindmapPage'
@@ -14,13 +15,13 @@ import { navigate, useRoute, type Route } from '../utils/navigation'
 import { useSeo, absUrl } from '../utils/seo'
 import { paths, TAB_SEO } from '../utils/urls'
 
-/** 페이지 경로 설정 — 경로 첫 세그먼트 → 탭 → 페이지. 루트(`/`)는 잡 리스트다. */
+/** 페이지 경로 설정 — 경로 첫 세그먼트 → 탭 → 페이지. 루트(`/`)는 회사별 메인, `/jobs` 가 잡 리스트다. */
 export type Tab =
-  | 'jobs' | 'companies' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend'
+  | 'home' | 'jobs' | 'companies' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend'
   | 'book' | 'reveng' | 'reposts' | 'freelance' | 'hardware'
 
 const TAB_BY_SEG: Record<string, Tab> = {
-  '': 'jobs',
+  '': 'home',
   jobs: 'jobs',
   companies: 'companies',
   mindmap: 'mindmap',
@@ -38,7 +39,7 @@ const TAB_BY_SEG: Record<string, Tab> = {
 }
 
 export function tabOf(route: Route): Tab {
-  return TAB_BY_SEG[route.seg[0] ?? ''] ?? 'jobs'
+  return TAB_BY_SEG[route.seg[0] ?? ''] ?? 'home'
 }
 
 /**
@@ -48,8 +49,7 @@ export function tabOf(route: Route): Tab {
  */
 function useLegacyRedirects(route: Route) {
   useEffect(() => {
-    if (route.path === '/jobs') navigate(paths.jobs(), { replace: true })
-    else if (route.seg[0] === 'reveng' && route.seg[1] === '문서') {
+    if (route.seg[0] === 'reveng' && route.seg[1] === '문서') {
       navigate(route.seg[2] ? paths.revengDoc(route.seg[2]) : paths.reveng(), { replace: true })
     }
   }, [route.path, route.seg])
@@ -67,6 +67,7 @@ function useTabSeo(route: Route, tab: Tab) {
     (!!detail && (tab === 'companies' || tab === 'radar' || tab === 'reveng' || tab === 'blog')) ||
     tab === 'book' ||
     tab === 'hardware' ||
+    tab === 'home' ||
     // 잡 리스트는 검색어가 걸렸을 때 noindex 를 다는 일까지 JobsPage 가 한다.
     tab === 'jobs'
   const t = TAB_SEO[tab === 'freelance' && detail === 'rates' ? 'freelanceRates' : tab] ?? TAB_SEO.jobs
@@ -104,5 +105,7 @@ export function RouteView() {
       return <MindmapPage />
     case 'jobs':
       return <JobsPage />
+    case 'home':
+      return <HomePage />
   }
 }

@@ -10,7 +10,10 @@ export function jobKey(j: Pick<Job, 'site' | 'pid'>): string {
 }
 
 export const paths = {
-  jobs: () => '/',
+  /** 메인 — 회사별로 묶은 화면. */
+  home: () => '/',
+  /** 공고 하나가 한 줄인 목록(필터·검색). 예전에는 `/` 였다. */
+  jobs: () => '/jobs',
   job: (j: Pick<Job, 'site' | 'pid'>) => `/jobs/${jobKey(j)}`,
   companies: () => '/companies',
   /** @param slug companySlug.js 가 만든 ASCII 슬러그(`coupang`). 한글 norm 이 아니다. */
@@ -56,6 +59,10 @@ export function blogKey(p: { content_id?: string; url: string }): string {
 // 단어가 앞에 오도록 쓴다("JD Viewer - 페이지" 같은 제목은 아무도 검색하지 않는다).
 
 export const TAB_SEO: Record<string, { title: string; desc: string }> = {
+  home: {
+    title: '기업별 IT 채용 — 대기업·중견·중소, 신입·경력 개발자 공고',
+    desc: `지금 모집중인 국내 IT·개발자 공고를 회사별로 묶어 규모(대기업·중견·중소)와 업종(금융·게임·제조…), 신입·경력 구간으로 나눠 봅니다. ${SITE_NAME}`,
+  },
   jobs: {
     title: '개발자 채용공고 모아보기',
     desc: `원티드·점핏·잡코리아·사람인·데보션과 해외 원격 보드의 개발자 채용공고를 한곳에서 기술스택·경력·직무로 걸러 봅니다. ${SITE_NAME}`,

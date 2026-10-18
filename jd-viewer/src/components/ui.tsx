@@ -356,8 +356,9 @@ export function TechTag({
 // 공고에 나오는 회사는 2천 곳 가까이 되는데 크롤 데이터에 로고가 없다.
 // 아는 회사는 로고를, 나머지는 이름에서 뽑은 색의 글자 마크를 쓴다 — 로고가
 // 없다고 자리를 비워 두면 목록이 들쭉날쭉해져서 오히려 읽기 어려워진다.
-export function CompanyMark({ name, size = 18 }: { name: string; size?: number }) {
-  const url = companyLogoUrl(name)
+export function CompanyMark({ name, size = 18, logo }: { name: string; size?: number; logo?: string | null }) {
+  // DB 의 로고(공고 원문이 준 것, company.logo_url) → 손으로 적은 도메인의 파비콘 → 글자 마크
+  const url = logo || companyLogoUrl(name)
   const [failed, setFailed] = useState(false)
   const box = { width: size, height: size }
 
