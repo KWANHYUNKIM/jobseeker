@@ -1,25 +1,25 @@
 import { describe, expect, it } from 'vitest'
-import { safeLogoUrl } from './companyMark'
+import { companyLogoUrl, safeLogoUrl } from './companyMark'
 
-describe('safeLogoUrl — 바깥에서 긁어 온 로고 주소 거르기', () => {
-  it('허용한 호스트의 https 만', () => {
-    expect(safeLogoUrl('https://board.catch.co.kr/Upload/Job/Company/CI/380954.jpg')).toBe(
-      'https://board.catch.co.kr/Upload/Job/Company/CI/380954.jpg',
-    )
-    expect(safeLogoUrl('https://cdn.jumpit.co.kr/images/a.png')).not.toBeNull()
+describe('safeLogoUrl — 우리 서버에 둔 로고 파일만', () => {
+  it('수집기가 둔 경로', () => {
+    expect(safeLogoUrl('/logos/c/30f5c8d6e7008a50.png')).toBe('/logos/c/30f5c8d6e7008a50.png')
   })
-  it('스킴이 다르면 버린다', () => {
+  it('바깥 주소는 이제 쓰지 않는다', () => {
+    expect(safeLogoUrl('https://board.catch.co.kr/Upload/Job/Company/CI/380954.jpg')).toBeNull()
     expect(safeLogoUrl('javascript:alert(1)')).toBeNull()
-    expect(safeLogoUrl('data:image/svg+xml,<svg onload=alert(1)>')).toBeNull()
-    expect(safeLogoUrl('http://board.catch.co.kr/x.jpg')).toBeNull()
+    expect(safeLogoUrl('//evil.example/logos/c/30f5c8d6e7008a50.png')).toBeNull()
   })
-  it('다른 호스트·호스트 흉내는 버린다', () => {
-    expect(safeLogoUrl('https://evil.example/x.png')).toBeNull()
-    expect(safeLogoUrl('https://board.catch.co.kr.evil.example/x.png')).toBeNull()
-    expect(safeLogoUrl('https://evil.example/?board.catch.co.kr')).toBeNull()
-  })
-  it('비었거나 너무 길면 버린다', () => {
+  it('다른 경로·형식은 버린다', () => {
+    expect(safeLogoUrl('/logos/c/../../index.html')).toBeNull()
+    expect(safeLogoUrl('/logos/c/30f5c8d6e7008a50.svg')).toBeNull()
     expect(safeLogoUrl(null)).toBeNull()
-    expect(safeLogoUrl('https://cdn.jumpit.co.kr/' + 'a'.repeat(600))).toBeNull()
   })
+})
+
+describe('companyLogoUrl — 파비콘도 우리 서버에서', () => {
+  it('표에 있는 회사는 /logos/d/<도메인>.png', () => {
+    expect(companyLogoUrl('쿠팡 (Coupang)')).toBe('/logos/d/coupang.com.png')
+  })
+  it('표에 없으면 null', () => expect(companyLogoUrl('없는회사이름')).toBeNull())
 })

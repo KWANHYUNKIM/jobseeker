@@ -136,6 +136,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_header("Cache-Control", "no-cache, must-revalidate")
         elif path.startswith("/assets/"):
             self.send_header("Cache-Control", "public, max-age=2592000, immutable")
+        elif path.startswith("/logos/"):
+            # 수집기가 둔 로고(public/logos). 이름이 원본 주소 해시라 그림이 바뀌면 이름도 바뀐다
+            self.send_header("Cache-Control", "public, max-age=604800")
         super().end_headers()
 
     def log_message(self, *args) -> None:  # 조용히

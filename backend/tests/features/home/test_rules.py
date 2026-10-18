@@ -58,12 +58,11 @@ def test_search_firms_are_agencies_but_research_is_not():
     assert classify("리서치앤리서치") != "채용대행·헤드헌팅"
 
 
-def test_safe_logo_only_allows_known_https_hosts():
+def test_safe_logo_only_allows_our_own_files():
     from app.features.home.service import safe_logo
-    assert safe_logo("https://board.catch.co.kr/Upload/Job/Company/CI/1.jpg")
-    assert safe_logo("https://cdn.jumpit.co.kr/images/a.png")
-    assert safe_logo("http://board.catch.co.kr/x.jpg") is None
+    assert safe_logo("/logos/c/30f5c8d6e7008a50.png") == "/logos/c/30f5c8d6e7008a50.png"
+    assert safe_logo("https://board.catch.co.kr/Upload/Job/Company/CI/1.jpg") is None   # 바깥 주소는 이제 안 낸다
     assert safe_logo("javascript:alert(1)") is None
-    assert safe_logo("https://board.catch.co.kr.evil.example/x.png") is None
-    assert safe_logo("https://user@board.catch.co.kr/x.png") is None
-    assert safe_logo("https://imgorg.catch.co.kr/job/site/tmp02.gif") is None   # 캐치 기본 그림
+    assert safe_logo("/logos/c/../../etc/passwd") is None
+    assert safe_logo("/logos/c/30f5c8d6e7008a50.svg") is None
+    assert safe_logo("//evil.example/logos/c/30f5c8d6e7008a50.png") is None

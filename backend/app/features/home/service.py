@@ -58,19 +58,13 @@ def _title(t: str) -> str:
     return re.sub(r"\s+", " ", html.unescape(t or "")).strip()
 
 
-# 바깥에서 긁어 온 로고 주소는 확인한 호스트의 https 만 내보낸다(수집기 crawl_logos.LOGO_HOSTS 와 같다).
-LOGO_HOSTS = {"board.catch.co.kr", "cdn.jumpit.co.kr", "static.wanted.co.kr"}
+# 로고는 우리 서버에 둔 파일 경로만 내보낸다(수집기 crawl_logos 가 받아 확인·재인코딩해 둔 것,
+# /logos/c/<16자 해시>.png). 바깥 주소가 DB 에 남아 있어도 화면으로 보내지 않는다.
+_LOGO_PATH = re.compile(r"^/logos/c/[0-9a-f]{16}\.png$")
 
 
 def safe_logo(url: str | None) -> str | None:
-    if not url or len(url) > 500:
-        return None
-    from urllib.parse import urlsplit
-    try:
-        u = urlsplit(url)
-    except ValueError:
-        return None
-    return url if u.scheme == "https" and u.hostname in LOGO_HOSTS and not u.username else None
+    return url if url and _LOGO_PATH.match(url) else None
 
 
 def _iso(v):

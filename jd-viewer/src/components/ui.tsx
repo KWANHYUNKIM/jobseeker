@@ -358,8 +358,8 @@ export function TechTag({
 // 아는 회사는 로고를, 나머지는 이름에서 뽑은 색의 글자 마크를 쓴다 — 로고가
 // 없다고 자리를 비워 두면 목록이 들쭉날쭉해져서 오히려 읽기 어려워진다.
 export function CompanyMark({ name, size = 18, logo }: { name: string; size?: number; logo?: string | null }) {
-  // DB 의 로고(공고 원문이 준 것, company.logo_url) → 손으로 적은 도메인의 파비콘 → 글자 마크.
-  // DB 로고는 바깥에서 긁어 온 주소라 허용한 호스트의 https 주소일 때만 쓴다(safeLogoUrl).
+  // DB 의 로고(수집기가 우리 서버에 둔 /logos/c/…) → 도메인 표의 파비콘(/logos/d/…) → 글자 마크.
+  // 둘 다 우리 서버 파일이라 방문자 브라우저가 바깥 이미지 서버에 가지 않는다.
   const url = safeLogoUrl(logo) || companyLogoUrl(name)
   const [failed, setFailed] = useState(false)
   const box = { width: size, height: size }

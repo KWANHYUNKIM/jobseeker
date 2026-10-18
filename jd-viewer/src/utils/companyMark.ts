@@ -137,10 +137,14 @@ export function normalizeCompany(name: string): string {
 const NORM: Record<string, string> = {}
 for (const [k, v] of Object.entries(DOMAIN)) if (v) NORM[normalizeCompany(k)] = v
 
-/** 그 회사의 로고 URL. 표에 없으면 null — 부르는 쪽이 글자 마크를 그린다. */
+/**
+ * 그 회사의 로고 URL. 표에 없으면 null — 부르는 쪽이 글자 마크를 그린다.
+ * 파비콘은 수집기(crawl_logos --favicons)가 구글에서 한 번 받아 우리 서버(/logos/d/)에 둔 것이다 —
+ * 방문자 브라우저가 구글에 직접 가지 않는다. 파일이 없으면(구글도 모르는 도메인) 404 → 글자 마크.
+ */
 export function companyLogoUrl(name: string): string | null {
   const dom = NORM[normalizeCompany(name)]
-  return dom ? `https://www.google.com/s2/favicons?domain=${dom}&sz=64` : null
+  return dom && /^[a-z0-9][a-z0-9.-]*\.[a-z]{2,}$/.test(dom) ? `/logos/d/${dom}.png` : null
 }
 
 // 이름에서 색을 뽑는다. 같은 회사는 어느 화면에서든 같은 색이라 눈이 기억한다.
@@ -159,18 +163,10 @@ export function companyInitial(name: string): string {
 }
 
 /**
- * 바깥에서 긁어 온 로고 주소 중 화면에 띄워도 되는 것만 — https 이고 로고를 주는 걸 확인한 호스트.
- * DB(company.logo_url)는 수집기가 이미 거르지만, 화면도 한 번 더 막는다(수집기가 바뀌거나 DB 가
- * 손으로 고쳐져도 엉뚱한 주소가 <img> 로 가지 않게). 수집기의 허용 목록(crawl_logos.LOGO_HOSTS)과 같다.
+ * DB 로고(company.logo_url) 중 화면에 띄워도 되는 것 — 수집기가 받아 확인·재인코딩해 우리 서버에 둔
+ * 파일 경로(/logos/c/<16자 해시>.png)뿐이다. API(home/service.py safe_logo)도 같은 규칙으로 거른다.
+ * 바깥 주소·다른 경로·다른 형식은 통과시키지 않는다.
  */
-const LOGO_HOSTS = new Set(['board.catch.co.kr', 'cdn.jumpit.co.kr', 'static.wanted.co.kr'])
-
 export function safeLogoUrl(url: string | null | undefined): string | null {
-  if (!url || url.length > 500) return null
-  try {
-    const u = new URL(url)
-    return u.protocol === 'https:' && LOGO_HOSTS.has(u.hostname) ? u.href : null
-  } catch {
-    return null
-  }
+  return url && /^\/logos\/c\/[0-9a-f]{16}\.png$/.test(url) ? url : null
 }
