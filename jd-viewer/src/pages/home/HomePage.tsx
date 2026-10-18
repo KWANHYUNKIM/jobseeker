@@ -1,37 +1,39 @@
 import { useCallback, useEffect, useState } from 'react'
 import { ErrorState, Loader } from '../../components/ui'
-import { fetchHome, type ExpBucket, type HomeBoard, type HomeSort } from '../../features/home/api'
+import { fetchHome, type HomeBoard, type HomeSection, type HomeSort } from '../../features/home/api'
 import { CompanyCard } from '../../features/home/components/CompanyCard'
 import { CompanyPanel } from '../../features/home/components/CompanyPanel'
-import { JobLine } from '../../features/home/components/JobLine'
 import { LogoMarquee } from '../../features/home/components/LogoMarquee'
+import { RankSection } from '../../features/home/components/RankSection'
 import { useCountUp } from '../../features/home/hooks/useCountUp'
 import { onLinkClick, useRoute, useSetQuery } from '../../utils/navigation'
 import { absUrl, useSeo } from '../../utils/seo'
 import { paths, TAB_SEO } from '../../utils/urls'
 
-const PAGE = 24
+const PAGE = 12
 const SORTS: { key: HomeSort; label: string }[] = [
   { key: 'popular', label: '주목순' },
   { key: 'new', label: '최신 공고순' },
   { key: 'count', label: '공고 많은 순' },
 ]
+// 맨 위 세 구역(경력 단계·새로움)과 그다음 세 구역(회사 성격). 나머지는 업종 구역.
+const LEAD = ['entry', 'experienced', 'today']
+const KIND = ['intern', 'midsmall', 'overseas']
 
 /**
- * `/` — 회사별로 묶은 메인. 캐치 첫 화면처럼 회사가 먼저, 그 아래 신입·경력 공고.
- *   첫 화면: 지금 뽑는 회사 로고가 흐르는 띠와 숫자(한 번 올라간다) — 이 화면의 유일한 '연출'.
- *   그다음: 규모 → 업종으로 좁히는 막대(위에 붙는다), 회사 카드, 신입·경력.
- *   카드를 누르면 오른쪽 패널(휴대폰은 아래 시트)에 그 회사의 IT 공고. 고른 회사는 `?company=`.
+ * `/` — 회사별 메인. 캐치 첫 화면처럼 위에서 아래로 내리며 본다.
+ *   ① 지금 뽑는 회사 로고 띠와 숫자(이 화면의 유일한 연출)
+ *   ② 회사 카드 — 규모로만 고른다. 누르면 오른쪽 패널(휴대폰은 아래 시트)에 그 회사 IT 공고
+ *   ③ 순위 구역 — 신입·경력·오늘 뜬 / 인턴·교육생·중견중소·해외 / 업종별(은행·금융·게임…).
+ *      업종을 칩으로 골라 갈아 끼우지 않고, 구역마다 TOP 50 을 늘어놓고 더보기로 편다.
  * 공고 하나하나를 거르는 화면은 `/jobs`.
  */
 export function HomePage() {
   const route = useRoute()
   const setQuery = useSetQuery()
   const [size, setSize] = useState('')
-  const [industry, setIndustry] = useState('')
   const [sort, setSort] = useState<HomeSort>('popular')
   const [limit, setLimit] = useState(PAGE)
-  const [bucket, setBucket] = useState<ExpBucket>('3-4년')
   const [d, setD] = useState<HomeBoard | null>(null)
   const [err, setErr] = useState<string | null>(null)
   const open = route.query.get('company')
@@ -40,16 +42,15 @@ export function HomePage() {
 
   useEffect(() => {
     const ctl = new AbortController()
-    fetchHome({ size, industry, sort, limit }, { signal: ctl.signal })
+    fetchHome({ size, industry: '', sort, limit }, { signal: ctl.signal })
       .then((x) => {
         setD(x)
         setErr(null)
       })
       .catch((e: Error) => e.name !== 'AbortError' && setErr(e.message))
     return () => ctl.abort()
-  }, [size, industry, sort, limit])
+  }, [size, sort, limit])
 
-  // 칸을 바꾸면 '더 보기' 로 늘린 개수는 처음으로
   const pick = (f: () => void) => {
     f()
     setLimit(PAGE)
@@ -72,29 +73,41 @@ export function HomePage() {
   }
   if (!d) return <Loader label="회사별 공고 묶는 중…" />
 
-  const exp = d.experienced.find((x) => x.bucket === bucket) ?? d.experienced[0]
   const allSizes = d.facets.sizes.reduce((a, x) => a + x.n, 0)
-  // 칸이 바뀔 때마다 카드 묶음을 새로 그려 차례로 자리 잡게 한다('더 보기'는 제외 — 아래에 이어 붙는다)
-  const gridKey = `${size}|${industry}|${sort}`
+  const byKey = (keys: string[]) => keys.map((k) => d.sections.find((s) => s.key === k)).filter(Boolean) as HomeSection[]
+  const lead = byKey(LEAD)
+  const kind = byKey(KIND)
+  const industries = d.sections.filter((s) => s.key.startsWith('ind:'))
 
   return (
     <div data-scroll className={'flex-1 min-h-0 overflow-auto jd-canvas ' + (open ? 'md:pr-[460px]' : '')}>
       <Hero d={d} onOpen={openCompany} />
 
-      <div className="mx-auto max-w-[1240px] px-4 sm:px-6 pb-12">
-        {/* 규모 → 업종 → 정렬. 스크롤해도 위에 붙어 있다 */}
-        <div className="sticky top-0 z-20 -mx-4 sm:-mx-6 px-4 sm:px-6 pt-3 pb-2.5 bg-(--color-bg) shadow-[0_8px_16px_-12px_rgba(0,0,0,0.18)] border-b border-(--color-border-soft)">
-          <div className="flex items-center gap-2">
-            <div role="tablist" aria-label="기업 규모" className="flex min-w-0 overflow-x-auto no-scrollbar rounded-xl border border-(--color-border) bg-(--color-panel) p-1">
-              <SizeTab on={!size} onClick={() => pick(() => setSize(''))} label="전체" n={allSizes} />
-              {d.facets.sizes.map((s) => (
-                <SizeTab key={s.name} on={size === s.name} onClick={() => pick(() => setSize(s.name))} label={s.name} n={s.n} />
-              ))}
+      {/* 구역으로 건너뛰는 막대 — 고르는 필터가 아니라 목차다. 스크롤해도 위에 붙어 있다 */}
+      <nav
+        aria-label="구역"
+        className="sticky top-0 z-20 bg-(--color-bg) border-b border-(--color-border-soft) shadow-[0_8px_16px_-12px_rgba(0,0,0,0.18)]"
+      >
+        <div className="mx-auto max-w-[1240px] px-4 sm:px-6 py-2.5 flex gap-1.5 overflow-x-auto no-scrollbar">
+          <Jump to="sec-companies">회사별</Jump>
+          {[...lead, ...kind, ...industries].map((s) => (
+            <Jump key={s.key} to={`sec-${s.key}`}>{s.title}</Jump>
+          ))}
+        </div>
+      </nav>
+
+      <div className="mx-auto max-w-[1240px] px-4 sm:px-6 pb-14">
+        {/* ② 회사 카드 */}
+        <section id="sec-companies" aria-label="회사" className="scroll-mt-16 pt-7">
+          <div className="flex flex-wrap items-end justify-between gap-3 mb-4">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-extrabold tracking-[-0.02em] text-(--color-text)">회사별로 보기</h2>
+              <p className="mt-1 text-[13px] text-(--color-muted)">카드를 누르면 그 회사가 지금 구하는 IT 공고가 열려요</p>
             </div>
             <select
               value={sort}
               onChange={(e) => pick(() => setSort(e.target.value as HomeSort))}
-              className="ml-auto shrink-0 text-sm rounded-xl border border-(--color-border) bg-(--color-panel) px-2.5 py-2"
+              className="text-sm rounded-xl border border-(--color-border) bg-(--color-panel) px-2.5 py-2"
               aria-label="정렬"
             >
               {SORTS.map((s) => (
@@ -102,46 +115,26 @@ export function HomePage() {
               ))}
             </select>
           </div>
-          <div className="mt-2 flex gap-1.5 overflow-x-auto no-scrollbar -mx-1 px-1" aria-label="업종">
-            <IndChip on={!industry} onClick={() => pick(() => setIndustry(''))}>모든 업종</IndChip>
-            {d.facets.industries.map((x) => (
-              <IndChip key={x.name} on={industry === x.name} onClick={() => pick(() => setIndustry(industry === x.name ? '' : x.name))}>
-                {x.name} <span className="tabular-nums opacity-60">{x.n}</span>
-              </IndChip>
+          <div role="tablist" aria-label="기업 규모" className="mb-4 flex overflow-x-auto no-scrollbar gap-1.5">
+            <SizeTab on={!size} onClick={() => pick(() => setSize(''))} label="전체" n={allSizes} />
+            {d.facets.sizes.map((s) => (
+              <SizeTab key={s.name} on={size === s.name} onClick={() => pick(() => setSize(s.name))} label={s.name} n={s.n} />
             ))}
           </div>
-        </div>
-
-        {/* 회사 카드 */}
-        <section aria-label="회사" className="mt-5">
-          <div className="flex items-baseline justify-between gap-3 mb-3">
-            <h2 className="text-lg sm:text-xl font-bold text-(--color-text)">
-              {size || '모든 규모'}
-              {industry ? ` ${industry}` : ''} 회사{' '}
-              <span className="tabular-nums text-(--color-accent)">{d.totals.companies.toLocaleString()}</span>
-            </h2>
-            <span className="hidden sm:inline text-xs text-(--color-faint)">카드를 누르면 그 회사 공고가 열려요</span>
+          <div key={`${size}|${sort}`} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-3">
+            {d.companies.map((c, i) => (
+              <CompanyCard key={c.slug} c={c} i={i % PAGE} active={open === c.slug} onOpen={() => openCompany(c.slug)} />
+            ))}
           </div>
-          {d.companies.length === 0 ? (
-            <p className="py-16 text-center text-sm text-(--color-faint)">
-              이 조건에 맞는 회사가 없습니다. 업종이나 규모를 하나 풀어 보세요.
-            </p>
-          ) : (
-            <div key={gridKey} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-3">
-              {d.companies.map((c, i) => (
-                <CompanyCard key={c.slug} c={c} i={i} active={open === c.slug} onOpen={() => openCompany(c.slug)} />
-              ))}
-            </div>
-          )}
           {d.companies.length < d.totals.companies && (
             <div className="mt-5 text-center">
               <button
                 type="button"
                 onClick={() => setLimit((n) => n + PAGE * 2)}
-                className="home-press px-6 py-2.5 rounded-full border border-(--color-border) bg-(--color-panel) text-sm font-medium hover:border-(--color-text)"
+                className="home-press px-6 py-2.5 rounded-full border border-(--color-border) bg-(--color-panel) text-sm font-semibold hover:border-(--color-text)"
               >
-                회사 더 보기
-                <span className="ml-2 text-(--color-faint) tabular-nums">
+                회사 더보기
+                <span className="ml-2 font-normal text-(--color-faint) tabular-nums">
                   {d.companies.length} / {d.totals.companies.toLocaleString()}
                 </span>
               </button>
@@ -149,51 +142,28 @@ export function HomePage() {
           )}
         </section>
 
-        {/* 신입 · 경력 */}
-        <div className="mt-12 grid gap-4 lg:grid-cols-2">
-          <section className="rounded-2xl border border-(--color-border) bg-(--color-panel) p-4 sm:p-5">
-            <SectionHead title="신입도 지원할 수 있는 공고" n={d.totals.entry} />
-            <div className="flex flex-col -mx-1">
-              {d.entry.map((j) => <JobLine key={j.site + j.pid} j={j} />)}
-              {d.entry.length === 0 && <Empty />}
-            </div>
-          </section>
+        {/* ③ 순위 구역 */}
+        <Group
+          title="지금 많이 보는 공고"
+          note="순위는 회사 규모, 그 회사가 이번 주에 낸 공고 수, 공고가 새것인지, 마감이 가까운지로 매겨요. 한 회사는 구역마다 두 건까지만."
+        >
+          {lead.map((s) => <RankSection key={s.key} s={s} />)}
+        </Group>
 
-          <section className="rounded-2xl border border-(--color-border) bg-(--color-panel) p-4 sm:p-5">
-            <SectionHead title="경력 공고" n={d.totals.experienced} />
-            <div role="tablist" aria-label="경력 구간" className="flex gap-1.5 mb-2 overflow-x-auto no-scrollbar">
-              {d.experienced.map((x) => (
-                <button
-                  key={x.bucket}
-                  type="button"
-                  role="tab"
-                  aria-selected={exp?.bucket === x.bucket}
-                  onClick={() => setBucket(x.bucket)}
-                  className={
-                    'shrink-0 px-3 py-1.5 rounded-full text-[13px] font-medium border transition-colors ' +
-                    (exp?.bucket === x.bucket
-                      ? 'bg-(--color-text) text-(--color-panel) border-(--color-text)'
-                      : 'border-(--color-border) text-(--color-muted) hover:border-(--color-text)')
-                  }
-                >
-                  {x.bucket === '8년+' ? '8년 이상' : x.bucket} <span className="tabular-nums opacity-60">{x.n.toLocaleString()}</span>
-                </button>
-              ))}
-            </div>
-            <div key={exp?.bucket} className="flex flex-col -mx-1 jd-fade-in">
-              {exp?.jobs.map((j) => <JobLine key={j.site + j.pid} j={j} />)}
-              {exp && exp.jobs.length === 0 && <Empty />}
-            </div>
-          </section>
-        </div>
+        <Group title="회사 성격별">
+          {kind.map((s) => <RankSection key={s.key} s={s} />)}
+        </Group>
 
-        <p className="mt-10 text-center text-xs leading-relaxed text-(--color-faint)">
+        <Group title="업종별" note="업종은 회사 이름으로 가른 추정이라, 어디에도 안 맞는 회사는 빠져 있어요.">
+          {industries.map((s) => <RankSection key={s.key} s={s} />)}
+        </Group>
+
+        <p className="mt-12 text-center text-xs leading-relaxed text-(--color-faint)">
           공고 하나하나를 기술스택·지역으로 거르려면{' '}
           <a href={paths.jobs()} onClick={onLinkClick(paths.jobs())} className="text-(--color-accent) hover:underline">
             잡 리스트
           </a>
           에서 볼 수 있어요.
-          <br className="sm:hidden" /> 규모는 공고와 명단으로, 업종은 회사 이름으로 가른 추정입니다.
         </p>
       </div>
 
@@ -206,7 +176,7 @@ export function HomePage() {
 function Hero({ d, onOpen }: { d: HomeBoard; onOpen: (slug: string) => void }) {
   const jobs = useCountUp(d.totals.jobs)
   const cos = useCountUp(d.totals.companies)
-  const entry = useCountUp(d.totals.entry)
+  const entry = useCountUp(d.sections.find((s) => s.key === 'entry')?.total ?? 0)
   return (
     <section className="relative overflow-hidden border-b border-(--color-border-soft) bg-(--color-panel)">
       <div
@@ -234,6 +204,33 @@ function Hero({ d, onOpen }: { d: HomeBoard; onOpen: (slug: string) => void }) {
   )
 }
 
+function Group({ title, note, children }: { title: string; note?: string; children: React.ReactNode }) {
+  return (
+    <div className="mt-14">
+      <div className="mb-4">
+        <h2 className="text-xl sm:text-2xl font-extrabold tracking-[-0.02em] text-(--color-text)">{title}</h2>
+        {note && <p className="mt-1 max-w-[62ch] text-[13px] leading-relaxed text-(--color-muted)">{note}</p>}
+      </div>
+      <div className="grid gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-3 items-start">{children}</div>
+    </div>
+  )
+}
+
+function Jump({ to, children }: { to: string; children: React.ReactNode }) {
+  return (
+    <a
+      href={`#${to}`}
+      onClick={(e) => {
+        e.preventDefault()
+        document.getElementById(to)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }}
+      className="home-press shrink-0 px-3 py-1.5 rounded-full text-[13px] font-medium border border-(--color-border) bg-(--color-panel) text-(--color-muted) hover:text-(--color-text) hover:border-(--color-text) whitespace-nowrap"
+    >
+      {children}
+    </a>
+  )
+}
+
 function Stat({ label, value, accent }: { label: string; value: number; accent?: boolean }) {
   return (
     <div>
@@ -253,42 +250,13 @@ function SizeTab({ on, onClick, label, n }: { on: boolean; onClick: () => void; 
       aria-selected={on}
       onClick={onClick}
       className={
-        'shrink-0 px-3 py-1.5 rounded-lg text-[13.5px] font-semibold transition-colors whitespace-nowrap ' +
-        (on ? 'bg-(--color-text) text-(--color-panel)' : 'text-(--color-muted) hover:text-(--color-text)')
+        'home-press shrink-0 px-3.5 py-2 rounded-full text-[13.5px] font-semibold border transition-colors whitespace-nowrap ' +
+        (on
+          ? 'bg-(--color-text) text-(--color-panel) border-(--color-text)'
+          : 'bg-(--color-panel) border-(--color-border) text-(--color-muted) hover:text-(--color-text)')
       }
     >
       {label} <span className="tabular-nums text-xs font-medium opacity-60">{n.toLocaleString()}</span>
     </button>
   )
-}
-
-function IndChip({ on, onClick, children }: { on: boolean; onClick: () => void; children: React.ReactNode }) {
-  return (
-    <button
-      type="button"
-      aria-pressed={on}
-      onClick={onClick}
-      className={
-        'home-press shrink-0 px-3 py-1.5 rounded-full text-[13px] border transition-colors whitespace-nowrap ' +
-        (on
-          ? 'bg-(--color-accent) text-(--color-on-accent) border-(--color-accent) font-semibold'
-          : 'bg-(--color-panel) border-(--color-border) text-(--color-muted) hover:border-(--color-accent)')
-      }
-    >
-      {children}
-    </button>
-  )
-}
-
-function SectionHead({ title, n }: { title: string; n: number }) {
-  return (
-    <div className="flex items-baseline justify-between mb-3 px-1">
-      <h2 className="text-lg font-bold text-(--color-text)">{title}</h2>
-      <span className="text-xs text-(--color-faint) tabular-nums">{n.toLocaleString()}건</span>
-    </div>
-  )
-}
-
-function Empty() {
-  return <p className="py-8 text-center text-sm text-(--color-faint)">이 조건에 맞는 공고가 없습니다. 위에서 규모나 업종을 풀어 보세요.</p>
 }

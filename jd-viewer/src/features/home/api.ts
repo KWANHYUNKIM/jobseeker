@@ -4,7 +4,6 @@ import type { Site } from '../../types'
 /** 메인 화면(`/`) — backend `/api/home`. 모집중인 국내 IT 공고를 회사별로 묶은 것. */
 
 export type HomeSize = '대기업' | '중견기업' | '중소기업' | '해외 기업'
-export type ExpBucket = '1-2년' | '3-4년' | '5-7년' | '8년+'
 
 export interface HomeCompany {
   name: string
@@ -52,8 +51,18 @@ export interface HomeBoard {
   totals: { companies: number; jobs: number; entry: number; experienced: number }
   facets: { sizes: { name: HomeSize; n: number }[]; industries: { name: string; n: number }[] }
   companies: HomeCompany[]
-  entry: HomeJob[]
-  experienced: { bucket: ExpBucket; n: number; jobs: HomeJob[] }[]
+  /** 아래로 내리며 보는 구역 — TOP 50 의 앞 10건. 나머지는 fetchSection */
+  sections: HomeSection[]
+}
+
+export interface HomeSection {
+  key: string
+  /** 구역 이름(신입·경력·은행·금융…) */
+  title: string
+  /** 순위 제목 앞말 — '신입 인기' → '신입 인기 TOP 50' */
+  lead: string
+  total: number
+  jobs: HomeJob[]
 }
 
 export interface HomeCompanyDetail {
@@ -76,4 +85,8 @@ export function fetchHome(
 
 export function fetchHomeCompany(slug: string, init?: RequestInit): Promise<HomeCompanyDetail> {
   return apiGet<HomeCompanyDetail>(`/api/home/company/${encodeURIComponent(slug)}`, init)
+}
+
+export function fetchSection(key: string, init?: RequestInit): Promise<HomeSection> {
+  return apiGet<HomeSection>(`/api/home/section/${encodeURIComponent(key)}`, init)
 }
