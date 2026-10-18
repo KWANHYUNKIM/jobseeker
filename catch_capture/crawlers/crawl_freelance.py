@@ -37,6 +37,7 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_captu
 
 import json
 import re
+import ssl
 import time
 import urllib.error
 import urllib.parse
@@ -61,6 +62,26 @@ PHONE_RE = re.compile(r"0\d{1,2}[-\s.]?\d{3,4}[-\s.]?\d{4}")
 
 # ── 공통 ──────────────────────────────────────────────────────────────
 
+def _ssl_context() -> ssl.SSLContext:
+    """certifi 루트 + 서버가 빠뜨리는 중간 인증서.
+
+    프리모아는 Sectigo DV CA 가 발급한 인증서에 COMODO 체인을 붙여 보낸다. 브라우저는 AIA 로
+    빠진 중간 인증서를 받아 와 넘어가지만 파이썬은 못 해서 CERTIFICATE_VERIFY_FAILED 로 회차마다
+    0건이었다(2026-10). 검증은 끄지 않는다 — 공개 중간 인증서를 신뢰 목록에 더할 뿐이다.
+    """
+    try:
+        import certifi
+        ctx = ssl.create_default_context(cafile=certifi.where())
+    except ImportError:
+        ctx = ssl.create_default_context()
+    for pem in (Path(__file__).resolve().parent / "certs").glob("*.pem"):
+        ctx.load_verify_locations(cafile=str(pem))
+    return ctx
+
+
+SSL_CTX = _ssl_context()
+
+
 def _request(url: str, data: dict | None = None, referer: str | None = None) -> bytes:
     headers = {"User-Agent": USER_AGENT, "Accept": "application/json, text/html;q=0.9"}
     if referer:
@@ -71,7 +92,7 @@ def _request(url: str, data: dict | None = None, referer: str | None = None) -> 
         headers["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8"
         headers["X-Requested-With"] = "XMLHttpRequest"
     req = urllib.request.Request(url, data=body, headers=headers)
-    with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
+    with urllib.request.urlopen(req, timeout=TIMEOUT, context=SSL_CTX) as resp:
         return resp.read()
 
 
