@@ -111,12 +111,97 @@ def _board() -> dict:
             "titles": [{"title": _title(r["title"]), "site": r["site"], "pid": r["pid"],
                         "career_bucket": r["career_bucket"], "dday": r["dday"]} for r in rs[:3]],
         })
+        new_7d = companies[-1]["new_7d"]
         for r in rs:
             r["_size"], r["_industry"] = size, industry
+            r["_score"] = _score(r, size, new_7d, industry)
             jobs.append(r)
     return {"companies": companies, "jobs": jobs, "by_slug": {c["slug"]: c for c in companies},
             "rows_by_co": by_co,
             "by_any_slug": {sl: c for c in companies for sl in c["slugs"]}, "generated_at": datetime.now().isoformat(timespec="seconds")}
+
+
+# ── 인기 점수 ─────────────────────────────────────────────────────────
+# 캐치의 '인기' 는 열람 수다. 우리 방문 기록은 아직 며칠치(열람 140건)라 그걸로 순위를 못 매긴다.
+# 그래서 공고가 들고 있는 신호로 매긴다 — 회사 규모, 그 회사가 이번 주에 낸 공고 수(지금 많이
+# 뽑는 중인가), 공고가 얼마나 새것인가, 마감이 가까운가. 화면에 이 기준을 그대로 적는다.
+SIZE_WEIGHT = {"대기업": 30, "중견기업": 18, "해외 기업": 14, "중소기업": 4}
+
+
+AGENCY = "채용대행·헤드헌팅"
+AGENCY_PENALTY = 25
+
+
+def _score(r: dict, size: str, co_new_7d: int, industry: str = "") -> float:
+    age_days = (datetime.now(timezone.utc) - r["first_seen_at"]).total_seconds() / 86400
+    fresh = max(0.0, 21 - age_days) * 1.2
+    soon = 6 if r["dday"] is not None and 0 <= r["dday"] <= 7 else 0
+    penalty = AGENCY_PENALTY if industry == AGENCY else 0
+    return SIZE_WEIGHT.get(size, 4) + fresh + min(co_new_7d, 15) + soon - penalty
+
+
+INTERN = re.compile(r"인턴|intern|교육생|아카데미|academy|부트캠프|채용연계|체험형|SSAFY|마에스트로|트레이니|trainee|견습", re.I)
+TOP_N = 50
+# 업종 구역의 제목 — 칩보다 길게 써도 되는 자리라 사람들이 부르는 말로
+SECTION_TITLE = {"금융": "은행·금융", "IT·플랫폼": "IT 플랫폼", "IT·소프트웨어": "IT·소프트웨어",
+                 "공공·기관": "공공기관·공기업"}
+
+
+def _rank(rows: list[dict], n: int = TOP_N) -> list[dict]:
+    """점수 순으로 n 건. 먼저 회사마다 가장 높은 한 건씩 줄 세우고, 자리가 남으면 두 번째 공고로
+    채운다 — 같은 회사가 1·2위를 연달아 차지하면 순위가 아니라 그 회사 목록처럼 보인다."""
+    ordered = sorted(rows, key=lambda r: r["_score"], reverse=True)
+    out, per = [], Counter()
+    for cap in (1, 2):
+        for r in ordered:
+            if per[r["company_id"]] >= cap or (cap == 2 and r.get("_taken")):
+                continue
+            if cap == 1 or not r.get("_taken"):
+                per[r["company_id"]] += 1
+                r["_taken"] = True
+                out.append(_job(r, r["_industry"]))
+            if len(out) >= n:
+                break
+        if len(out) >= n:
+            break
+    for r in ordered:
+        r.pop("_taken", None)
+    return out
+
+
+def _sections() -> list[dict]:
+    """아래로 내리며 보는 구역들 — 필터와 무관한 전체 기준. 구역마다 TOP 50."""
+    b = cached(("home_board",), _board)
+    jobs = b["jobs"]
+    now = datetime.now(timezone.utc)
+    today = [r for r in jobs if (now - r["first_seen_at"]).total_seconds() < 86400]
+    today_title = "오늘 뜬"
+    if len(today) < 10:                     # 크롤이 쉬었던 날 — 빈 구역보다 사흘치가 낫다
+        today = [r for r in jobs if (now - r["first_seen_at"]).total_seconds() < 3 * 86400]
+        today_title = "최근 사흘 새로 뜬"
+
+    def sec(key, title, lead, rows):
+        return {"key": key, "title": title, "lead": lead, "total": len(rows), "jobs": _rank(rows)}
+
+    out = [
+        sec("entry", "신입", "신입 인기", [r for r in jobs if r["career_bucket"] == ENTRY]),
+        sec("experienced", "경력", "경력 인기", [r for r in jobs if r["career_bucket"] in EXP_BUCKETS]),
+        sec("today", today_title, f"{today_title} 인기", today),
+        sec("intern", "인턴·교육생", "인턴·교육생", [r for r in jobs if INTERN.search(r["title"] or "")]),
+        sec("midsmall", "중견·중소", "중견·중소 인기",
+            [r for r in jobs if r["_size"] in ("중견기업", "중소기업") and r["_industry"] != AGENCY]),
+        sec("overseas", "해외 기업", "해외 기업 인기",
+            [r for r in jobs if r["_size"] == "해외 기업" and r["_industry"] != AGENCY]),
+    ]
+    by_ind: dict[str, list[dict]] = defaultdict(list)
+    for r in jobs:
+        if r["_industry"] not in ("기타", AGENCY):
+            by_ind[r["_industry"]].append(r)
+    for ind, rows in sorted(by_ind.items(), key=lambda kv: -len(kv[1])):
+        if len(rows) >= 5:
+            t = SECTION_TITLE.get(ind, ind)
+            out.append(sec(f"ind:{ind}", t, t, rows))
+    return [x for x in out if x["total"]]
 
 
 def _sort_key(sort: str):
@@ -126,22 +211,6 @@ def _sort_key(sort: str):
         return lambda c: (c["active"],)
     # 주목(기본): 큰 회사 먼저, 같은 규모면 공고가 많은 곳
     return lambda c: (-SIZE_RANK.get(c["size"], 9), c["active"], c["new_7d"])
-
-
-def _pick(rows: list[dict], n: int) -> list[dict]:
-    """큰 회사·새 공고 순으로 n 건 — 한 회사가 목록을 다 차지하지 않게 회사당 2건까지."""
-    rows = sorted(rows, key=lambda r: (SIZE_RANK.get(r["_size"], 9), -r["first_seen_at"].timestamp()))
-    out, per, seen = [], Counter(), set()
-    for r in rows:
-        key = (r["company_id"], re.sub(r"\W+", "", _title(r["title"]).lower())[:20])
-        if per[r["company_id"]] >= 2 or key in seen:    # 같은 공고가 사이트만 달리해 두 번 오는 것도 거른다
-            continue
-        seen.add(key)
-        per[r["company_id"]] += 1
-        out.append(_job(r, r["_industry"]))
-        if len(out) >= n:
-            break
-    return out
 
 
 def home(size: str = "", industry: str = "", sort: str = "popular", limit: int = 48, offset: int = 0) -> dict:
@@ -176,14 +245,20 @@ def home(size: str = "", industry: str = "", sort: str = "popular", limit: int =
             "industries": [{"name": i, "n": ind_counts[i]} for i in INDUSTRIES if ind_counts.get(i)],
         },
         "companies": [{k: v for k, v in c.items() if k not in ("id", "slugs")} for c in picked[offset:offset + limit]],
-        "entry": _pick(by_bucket[ENTRY], 12),
-        "experienced": [{"bucket": x, "n": len(by_bucket[x]), "jobs": _pick(by_bucket[x], 8)}
-                        for x in EXP_BUCKETS],
+        # 구역마다 앞 10건만 싣는다(첫 화면 무게). 더보기는 /api/home/section/{key} 가 50건.
+        "sections": [{**x, "jobs": x["jobs"][:10]} for x in cached(("home_sections",), _sections)],
     }
 
 
+def section(key: str) -> dict:
+    for x in cached(("home_sections",), _sections):
+        if x["key"] == key:
+            return x
+    raise NotFound(f"구역 {key} 이(가) 없습니다")
+
+
 def _tkey(title: str) -> str:
-    return re.sub(r"\W+", "", _title(title).lower())[:24]
+    return re.sub(r"\W+", "", _title(title).lower())[:20]
 
 
 def _dedupe(jobs: list[dict]) -> list[dict]:
