@@ -157,3 +157,20 @@ export function companyInitial(name: string): string {
   const n = normalizeCompany(name) || name
   return n.slice(0, 1).toUpperCase()
 }
+
+/**
+ * 바깥에서 긁어 온 로고 주소 중 화면에 띄워도 되는 것만 — https 이고 로고를 주는 걸 확인한 호스트.
+ * DB(company.logo_url)는 수집기가 이미 거르지만, 화면도 한 번 더 막는다(수집기가 바뀌거나 DB 가
+ * 손으로 고쳐져도 엉뚱한 주소가 <img> 로 가지 않게). 수집기의 허용 목록(crawl_logos.LOGO_HOSTS)과 같다.
+ */
+const LOGO_HOSTS = new Set(['board.catch.co.kr', 'cdn.jumpit.co.kr', 'static.wanted.co.kr'])
+
+export function safeLogoUrl(url: string | null | undefined): string | null {
+  if (!url || url.length > 500) return null
+  try {
+    const u = new URL(url)
+    return u.protocol === 'https:' && LOGO_HOSTS.has(u.hostname) ? u.href : null
+  } catch {
+    return null
+  }
+}

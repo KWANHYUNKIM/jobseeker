@@ -58,6 +58,21 @@ def _title(t: str) -> str:
     return re.sub(r"\s+", " ", html.unescape(t or "")).strip()
 
 
+# 바깥에서 긁어 온 로고 주소는 확인한 호스트의 https 만 내보낸다(수집기 crawl_logos.LOGO_HOSTS 와 같다).
+LOGO_HOSTS = {"board.catch.co.kr", "cdn.jumpit.co.kr", "static.wanted.co.kr"}
+
+
+def safe_logo(url: str | None) -> str | None:
+    if not url or len(url) > 500:
+        return None
+    from urllib.parse import urlsplit
+    try:
+        u = urlsplit(url)
+    except ValueError:
+        return None
+    return url if u.scheme == "https" and u.hostname in LOGO_HOSTS and not u.username else None
+
+
 def _iso(v):
     return v.isoformat() if hasattr(v, "isoformat") else v
 
@@ -65,7 +80,7 @@ def _iso(v):
 def _job(r: dict, industry: str) -> dict:
     return {
         "site": r["site"], "pid": r["pid"], "url": r["url"], "title": _title(r["title"]),
-        "company": display_name(r["company"]), "company_slug": r["company_slug"], "logo": r["logo_url"],
+        "company": display_name(r["company"]), "company_slug": r["company_slug"], "logo": safe_logo(r["logo_url"]),
         "size": r["company_size"], "industry": industry,
         "career": r["career_text"], "career_bucket": r["career_bucket"],
         "region": r["region"], "district": r["district"],
@@ -97,7 +112,7 @@ def _board() -> dict:
         top = Counter((r["company"], r["company_slug"], r["logo_url"]) for r in rs).most_common()
         name = display_name(top[0][0][0])
         slugs = list(dict.fromkeys(t[0][1] for t in top))
-        logo = next((t[0][2] for t in top if t[0][2]), None)
+        logo = next((safe_logo(t[0][2]) for t in top if safe_logo(t[0][2])), None)
         industry = classify(name)
         size = Counter(r["company_size"] for r in rs if r["company_size"]).most_common(1)
         size = size[0][0] if size else "중소기업"

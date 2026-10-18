@@ -56,3 +56,14 @@ def test_search_firms_are_agencies_but_research_is_not():
     assert classify("라인서치") == "채용대행·헤드헌팅"      # '라인' 으로 대기업 명단에 걸리던 헤드헌팅
     assert classify("유니코써치") == "채용대행·헤드헌팅"
     assert classify("리서치앤리서치") != "채용대행·헤드헌팅"
+
+
+def test_safe_logo_only_allows_known_https_hosts():
+    from app.features.home.service import safe_logo
+    assert safe_logo("https://board.catch.co.kr/Upload/Job/Company/CI/1.jpg")
+    assert safe_logo("https://cdn.jumpit.co.kr/images/a.png")
+    assert safe_logo("http://board.catch.co.kr/x.jpg") is None
+    assert safe_logo("javascript:alert(1)") is None
+    assert safe_logo("https://board.catch.co.kr.evil.example/x.png") is None
+    assert safe_logo("https://user@board.catch.co.kr/x.png") is None
+    assert safe_logo("https://imgorg.catch.co.kr/job/site/tmp02.gif") is None   # 캐치 기본 그림

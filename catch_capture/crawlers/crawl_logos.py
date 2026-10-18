@@ -92,6 +92,22 @@ def _from_wanted(page: str) -> str | None:
 
 PARSERS = {"dev": _from_dev, "jumpit": _from_jumpit, "wanted": _from_wanted}
 
+# 저장해도 되는 로고 주소 — 확인한 이미지 서버의 https 만. 원본 페이지가 바뀌거나 이상한 값을 줘도
+# 엉뚱한 주소(다른 호스트·javascript:·http)가 DB 를 거쳐 화면의 <img> 로 가지 않게 여기서 막는다.
+# 뷰어(utils/companyMark.ts safeLogoUrl)와 API(home/service.py safe_logo)도 같은 목록으로 한 번 더 거른다.
+LOGO_HOSTS = {"board.catch.co.kr", "cdn.jumpit.co.kr", "static.wanted.co.kr"}
+
+
+def _safe(url: str | None) -> str | None:
+    from urllib.parse import urlsplit
+    if not url or len(url) > 500:
+        return None
+    try:
+        u = urlsplit(url)
+    except ValueError:
+        return None
+    return url if u.scheme == "https" and u.hostname in LOGO_HOSTS and not u.username else None
+
 
 def find_logo(urls: list[str], sites: list[str]) -> tuple[str | None, str | None]:
     """사이트마다 공고 하나씩만 묻는다(같은 사이트 공고는 같은 회사 로고를 준다)."""
@@ -105,8 +121,9 @@ def find_logo(urls: list[str], sites: list[str]) -> tuple[str | None, str | None
         except Exception:                                   # noqa: BLE001 — 한 회사 실패가 회차를 죽이지 않게
             logo = None
         time.sleep(jitter(SLEEP_MS) / 1000)
+        logo = _safe(html.unescape(logo)) if logo else None
         if logo:
-            return html.unescape(logo), site
+            return logo, site
     return None, None
 
 
