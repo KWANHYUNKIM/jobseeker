@@ -65,6 +65,30 @@ _RULES: list[tuple[str, str]] = [
                     r"이노베이트|오토에버|CNS|INC|Inc|Corp|Co\., Ltd|코퍼레이션|컴퍼니|Company"),
 ]
 
+# 이름만으로는 업종이 안 드러나는 큰 회사 — 확인한 곳만 직접 적는다(키는 _key 로 정규화한 이름).
+_KNOWN: dict[str, str] = {
+    "비바리퍼블리카": "금융", "엔에이치엔케이씨피": "금융", "nhnkcp": "금융", "엔에이치엔페이코": "금융", "nhnpayco": "금융", "nhn페이코": "금융",
+    "글로벌머니익스프레스": "금융", "핑거": "금융", "robinhood": "금융", "coinbase": "금융", "chime": "금융", "affirm": "금융",
+    "ramp": "금융", "brex": "금융", "block": "금융", "n26": "금융", "zopa": "금융", "monzo": "금융", "adyen": "금융",
+    "mercury": "금융", "gemini": "금융", "sofi": "금융", "qonto": "금융", "gocardless": "금융", "melio": "금융",
+    "paytm": "금융", "bill.com": "금융", "alloy": "금융", "plaid": "금융", "stripe": "금융", "네오플": "게임", "넵튠": "게임",
+    "roblox": "게임", "scopely": "게임", "nhn": "IT·플랫폼", "엔에이치엔": "IT·플랫폼", "nhnjapan": "IT·플랫폼",
+    "화해글로벌": "IT·플랫폼", "알스퀘어": "IT·플랫폼", "카페24": "IT·플랫폼", "spotify": "IT·플랫폼", "pinterest": "IT·플랫폼",
+    "discord": "IT·플랫폼", "matchgroup": "IT·플랫폼", "suno": "IT·플랫폼", "seatgeek": "IT·플랫폼", "nextdoor": "IT·플랫폼",
+    "squarespace": "IT·플랫폼", "reddit": "IT·플랫폼", "airbnb": "IT·플랫폼", "twitch": "IT·플랫폼",
+    "엔에이치엔에이스": "IT·소프트웨어", "nhnace": "IT·소프트웨어", "업스테이지": "IT·소프트웨어", "베스핀글로벌": "IT·소프트웨어", "노타": "IT·소프트웨어",
+    "솔트룩스": "IT·소프트웨어", "소만사": "IT·소프트웨어", "메가존": "IT·소프트웨어", "다우데이타": "IT·소프트웨어", "유비벨록스": "IT·소프트웨어",
+    "디비아이엔씨": "IT·소프트웨어", "toast": "IT·소프트웨어", "mindbody": "IT·소프트웨어", "openai": "IT·소프트웨어",
+    "anthropic": "IT·소프트웨어", "cj4dplex": "미디어·콘텐츠", "cj포디플렉스": "미디어·콘텐츠", "팬딩": "미디어·콘텐츠",
+    "엔에이치엔링크": "미디어·콘텐츠", "nhnlink": "미디어·콘텐츠", "한화에어로스페이스": "제조", "한화그룹": "제조", "두산": "제조", "두산그룹": "제조",
+    "두산로보틱스": "제조", "레인보우로보틱스": "제조", "엠엑스로보틱스": "제조", "spacex": "제조", "한화비전": "반도체·전자", "lg이노텍": "반도체·전자",
+    "넥스트칩": "반도체·전자", "한컴유비마이크로": "반도체·전자", "cerebras": "반도체·전자", "한컴케어링크": "바이오·헬스케어", "비트컴퓨터": "바이오·헬스케어",
+    "nhncommerce": "유통·커머스", "cj푸드빌": "유통·커머스", "doordash": "유통·커머스", "instacart": "유통·커머스",
+    "waymo": "자동차·모빌리티", "nuro": "자동차·모빌리티", "motional": "자동차·모빌리티", "lucidmotors": "자동차·모빌리티",
+    "lyft": "자동차·모빌리티", "팀스파르타": "교육", "duolingo": "교육", "coursera": "교육", "udacity": "교육", "flexport": "물류",
+}
+
+
 _COMPILED = [(name, re.compile(rx, re.I)) for name, rx in _RULES]
 
 INDUSTRIES: tuple[str, ...] = tuple(dict.fromkeys(n for n, _ in _RULES)) + ("기타",)
@@ -73,10 +97,17 @@ INDUSTRIES: tuple[str, ...] = tuple(dict.fromkeys(n for n, _ in _RULES)) + ("기
 # 그런 이름은 뒤에 붙은 말이 업종을 말해 주므로 위 규칙이 먼저 잡는다.
 
 
+def _key(name: str) -> str:
+    return re.sub(r"\W+", "", re.sub(r"\(.*?\)", "", name)).lower()
+
+
 def classify(name: str | None) -> str:
     n = (name or "").strip()
     if not n:
         return "기타"
+    hit = _KNOWN.get(_key(n))
+    if hit:
+        return hit
     n = re.sub(r"^\(?(주|유|재|사)\)|\((주|유|재|사)\)$|^주식회사\s*|\s*주식회사$", "", n).strip()
     for industry, rx in _COMPILED:
         if rx.search(n):

@@ -92,6 +92,9 @@ def _board() -> dict:
         # 떨어진다(OpenAI·SpaceX 가 중소기업이었다). 공고 절반 이상이 해외 근무면 '해외 기업' 으로 둔다.
         if size != "대기업" and sum(r["region"] == OVERSEAS for r in rs) * 2 >= len(rs):
             size = "해외 기업"
+            # 해외 ATS 보드로 오는 회사는 거의 소프트웨어 회사다(이름 규칙에 안 걸린 것만)
+            if industry == "기타":
+                industry = "IT·소프트웨어"
         careers = Counter(r["career_bucket"] for r in rs)
         present = [b for b in CAREER_ORDER if careers.get(b)]
         ddays = [r["dday"] for r in rs if r["dday"] is not None and r["dday"] >= 0]

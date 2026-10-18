@@ -30,3 +30,16 @@ def test_company_key_merges_spellings():
     assert company_key("(주)스마일게이트") == company_key("스마일게이트")
     assert company_key("쿠팡 (Coupang)") == company_key("쿠팡")
     assert company_key("토스") != company_key("토스뱅크")
+
+
+def test_known_companies_beat_name_rules():
+    # 이름에 업종이 안 드러나는 큰 회사는 직접 적은 표가 먼저다
+    assert classify("비바리퍼블리카") == "금융"
+    assert classify("Block (Square)") == "금융"
+    assert classify("LG이노텍") == "반도체·전자"
+    assert classify("네오플") == "게임"
+
+
+def test_agencies_are_separated():
+    assert classify("에이치알포유") == "채용대행·헤드헌팅"
+    assert classify("원티드_일본 현지 채용") == "채용대행·헤드헌팅"
