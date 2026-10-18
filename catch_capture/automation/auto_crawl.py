@@ -461,7 +461,7 @@ def run_cycle(keyword: str, count: int) -> bool:
     keyword 는 콤마로 여러 개를 줄 수 있다("개발자,백엔드,프론트엔드").
     여러 개면 키워드별로 크롤한 뒤 한 통합 폴더(all_통합_*)로 병합한다.
     """
-    from automation.crawl_all import fix_locations, run_foreground
+    from automation.crawl_all import fix_locations, run_extras, run_foreground
     _reload_pipeline()
     from pipeline.aggregate import aggregate
 
@@ -476,10 +476,10 @@ def run_cycle(keyword: str, count: int) -> bool:
     rc_fail = 0
     for kw in kws:
         # 멀티 키워드면 키워드별 단일 통합은 생략하고 마지막에 1회만 통합한다.
-        # 기술 블로그·외주 프로젝트·부품 가격은 키워드와 무관 → 사이클당 1회(마지막 키워드)만 실행
+        # 기술 블로그·외주 프로젝트·부품 가격은 키워드와 무관 → 공고 통합 **뒤에** 한 번(run_extras)
         last = kw == kws[-1]
         rc = run_foreground(kw, count, KEYWORD_SITES + (AGNOSTIC_SITES if last else []),
-                            do_aggregate=not multi, do_blog=last, do_freelance=last, do_hardware=last)
+                            do_aggregate=not multi, do_blog=False, do_freelance=False, do_hardware=False)
         if rc != 0:
             rc_fail += 1
             log(f"[crawl] '{kw}' 일부 실패(rc={rc})")
@@ -504,6 +504,11 @@ def run_cycle(keyword: str, count: int) -> bool:
         refresh_data(label)
     else:
         log("[crawl] 새 데이터 없음 → 갱신 스킵")
+
+    # 공고가 DB·뷰어에 다 들어간 다음에 키워드 무관 단계를 돈다(느린 블로그 번역이 공고를 막지 않게).
+    extra_fail = run_extras()
+    if extra_fail:
+        log(f"[extras] 일부 실패: {extra_fail}")
     orch.cycle_finished(new_data, (datetime.now() - cycle_start).total_seconds())
     return new_data
 

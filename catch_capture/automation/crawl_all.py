@@ -125,6 +125,126 @@ def fix_locations() -> None:
         print(f"[!] 근무지 보수 실패(rc={rc}) — 기존 값으로 계속합니다.", flush=True)
 
 
+def run_extras(do_blog: bool = True, do_freelance: bool = True, do_hardware: bool = True,
+               blog_per_feed: int = BLOG_PER_FEED_DEFAULT) -> list[str]:
+    """키워드와 무관한 사이클당 1회 단계 — 외주 → 부품 가격·완제품 → 기술 블로그. 실패한 단계 이름을 돌려준다.
+
+    공고 통합(DB 쓰기)보다 **뒤에** 돈다(auto_crawl.run_cycle). 예전에는 마지막 키워드 크롤에
+    붙어 통합보다 먼저 돌아서, 블로그 LLM 번역(밀린 글이 많으면 한 시간 넘게)과 다나와 10초
+    간격을 다 기다린 뒤에야 공고가 DB 에 들어갔다(2026-10-18 따라잡기 회차에서 2시간 지연).
+    순서도 빠른 것부터다 — 외주는 몇 분이면 DB 까지 가고, 블로그 번역이 가장 느리다.
+    """
+    try:
+        from automation import orchestration as orch
+    except Exception:
+        orch = None
+    failures: list[str] = []
+    if do_freelance:
+        # 외주·프리랜서 프로젝트. 채용 공고와 섞지 않고 freelance.json 에 따로 쌓는다
+        # (crawlers/crawl_freelance.py 머리말). 실패해도 사이클은 계속 간다.
+        print(f"\n----- 외주·프리 프로젝트 크롤 -----", flush=True)
+        fl_start = datetime.now()
+        if orch:
+            orch.freelance_started()
+        try:
+            sys.path.insert(0, str(BASE_DIR))
+            from crawlers.crawl_freelance import run as _fl_run
+            stats = _fl_run()
+            elapsed = (datetime.now() - fl_start).total_seconds()
+            print(f"[OK] 외주·프리 완료({elapsed:.0f}s) — 누적 {stats.get('total')}건 "
+                  f"(모집중 {stats.get('active')}, 신규 {stats.get('new')}, 출처 {stats.get('sources')}곳) "
+                  f"→ jd-viewer/public/freelance.json", flush=True)
+            if orch:
+                orch.freelance_finished(bool(stats.get("sources")), stats.get("total"),
+                                        stats.get("new"), stats.get("active"), elapsed)
+        except Exception as e:
+            print(f"[!] 외주·프리 크롤 실패: {e}", flush=True)
+            failures.append("freelance")
+            if orch:
+                orch.freelance_finished(False, None, None, None,
+                                        (datetime.now() - fl_start).total_seconds())
+
+    if do_hardware:
+        # PC 부품 가격. 하루 한 번만 실제로 돈다(crawlers/crawl_hardware.py 머리말) —
+        # 그날 이미 받았으면 파일만 보고 바로 돌아온다. 실패해도 사이클은 계속 간다.
+        print(f"\n----- PC 부품 가격 크롤 -----", flush=True)
+        hw_start = datetime.now()
+        if orch:
+            orch.stage_started("hardware")
+        try:
+            sys.path.insert(0, str(BASE_DIR))
+            from crawlers.crawl_hardware import run as _hw_run
+            stats = _hw_run()
+            elapsed = (datetime.now() - hw_start).total_seconds()
+            if orch:
+                orch.stage_finished("hardware", not stats.get("failed"), elapsed, **stats)
+            if not stats.get("skipped"):
+                print(f"[OK] 부품 가격 완료({elapsed:.0f}s) — 부품 {stats.get('total')}개 중 "
+                      f"{stats.get('priced')}개 가격, 실패 {stats.get('failed')} "
+                      f"→ jd-viewer/public/hardware/prices.json", flush=True)
+            if stats.get("failed"):
+                failures.append("hardware")
+        except Exception as e:
+            print(f"[!] 부품 가격 크롤 실패: {e}", flush=True)
+            failures.append("hardware")
+            if orch:
+                orch.stage_finished("hardware", False, (datetime.now() - hw_start).total_seconds(), error=str(e)[:200])
+        # 완제품 조립PC — 부품 가격 다음에 돈다(구성을 그날 부품 목록에 잇는다). 역시 하루 한 번.
+        pb_start = datetime.now()
+        if orch:
+            orch.stage_started("prebuilt")
+        try:
+            from crawlers.crawl_prebuilt import run as _pb_run
+            stats = _pb_run()
+            if orch:
+                orch.stage_finished("prebuilt", not stats.get("failed"), (datetime.now() - pb_start).total_seconds(), **stats)
+            if not stats.get("skipped"):
+                print(f"[OK] 완제품 {stats.get('total')}개(오늘 {stats.get('seen_today')}) · 구성 새로 읽음 "
+                      f"{stats.get('specs_read')} · 목록에 없는 CPU·GPU {stats.get('unmapped_cpu_gpu')}"
+                      f" → jd-viewer/public/hardware/prebuilt.json", flush=True)
+            if stats.get("failed"):
+                failures.append("prebuilt")
+        except Exception as e:
+            print(f"[!] 완제품 크롤 실패: {e}", flush=True)
+            failures.append("prebuilt")
+            if orch:
+                orch.stage_finished("prebuilt", False, (datetime.now() - pb_start).total_seconds(), error=str(e)[:200])
+
+    if do_blog:
+        print(f"\n----- 기술 블로그 크롤 (LangGraph, 피드당 {blog_per_feed}개) -----", flush=True)
+        blog_start = datetime.now()
+        if orch:
+            orch.blog_started()
+        try:
+            sys.path.insert(0, str(BASE_DIR))
+            from crawlers.crawl_techblog_graph import run as _blog_run
+            stats = _blog_run(blog_per_feed, None)
+            elapsed = (datetime.now() - blog_start).total_seconds()
+            print(f"[OK] 기술 블로그 완료({elapsed:.0f}s) — 총 {stats.get('total')}건 "
+                  f"(신규 {stats.get('new')}, 출처 {stats.get('sources')}개) "
+                  f"→ jd-viewer/public/tech_blogs.json", flush=True)
+            if orch:
+                orch.blog_finished(True, stats.get("total"), stats.get("new"),
+                                   stats.get("sources"), elapsed)
+            # 정본 DB(post)에도 넣는다 — 뷰어 API 의 글 목록·관련 글·글 임베딩이 이 표를 읽는다.
+            # 예전에는 손으로만(db-migrate.yml) 돌아서 post 가 크롤과 따로 놀았다.
+            # 실패해도 사이클은 계속 간다(이중 쓰기 약속).
+            if os.environ.get("DB_DUAL_WRITE", "1") != "0":
+                try:
+                    from store.ingest.posts import ingest as _posts_ingest
+                    print(f"  [db] post {_posts_ingest()}", flush=True)
+                except Exception as e:                              # noqa: BLE001
+                    print(f"  [db] post 건너뜀: {e}", flush=True)
+        except Exception as e:
+            print(f"[!] 기술 블로그 크롤 실패: {e}", flush=True)
+            failures.append("blog")
+            if orch:
+                orch.blog_finished(False, None, None, None,
+                                   (datetime.now() - blog_start).total_seconds())
+
+    return failures
+
+
 def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: bool = True,
                    depth: int | None = None, do_blog: bool = True,
                    blog_per_feed: int = BLOG_PER_FEED_DEFAULT, do_freelance: bool = True,
@@ -233,108 +353,7 @@ def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: 
                 orch.aggregate_finished(False, None,
                                         (datetime.now() - agg_start).total_seconds())
 
-    if do_blog:
-        print(f"\n----- 기술 블로그 크롤 (LangGraph, 피드당 {blog_per_feed}개) -----", flush=True)
-        blog_start = datetime.now()
-        if orch:
-            orch.blog_started()
-        try:
-            sys.path.insert(0, str(BASE_DIR))
-            from crawlers.crawl_techblog_graph import run as _blog_run
-            stats = _blog_run(blog_per_feed, None)
-            elapsed = (datetime.now() - blog_start).total_seconds()
-            print(f"[OK] 기술 블로그 완료({elapsed:.0f}s) — 총 {stats.get('total')}건 "
-                  f"(신규 {stats.get('new')}, 출처 {stats.get('sources')}개) "
-                  f"→ jd-viewer/public/tech_blogs.json", flush=True)
-            if orch:
-                orch.blog_finished(True, stats.get("total"), stats.get("new"),
-                                   stats.get("sources"), elapsed)
-            # 정본 DB(post)에도 넣는다 — 뷰어 API 의 글 목록·관련 글·글 임베딩이 이 표를 읽는다.
-            # 예전에는 손으로만(db-migrate.yml) 돌아서 post 가 크롤과 따로 놀았다.
-            # 실패해도 사이클은 계속 간다(이중 쓰기 약속).
-            if os.environ.get("DB_DUAL_WRITE", "1") != "0":
-                try:
-                    from store.ingest.posts import ingest as _posts_ingest
-                    print(f"  [db] post {_posts_ingest()}", flush=True)
-                except Exception as e:                              # noqa: BLE001
-                    print(f"  [db] post 건너뜀: {e}", flush=True)
-        except Exception as e:
-            print(f"[!] 기술 블로그 크롤 실패: {e}", flush=True)
-            failures.append("blog")
-            if orch:
-                orch.blog_finished(False, None, None, None,
-                                   (datetime.now() - blog_start).total_seconds())
-
-    if do_freelance:
-        # 외주·프리랜서 프로젝트. 채용 공고와 섞지 않고 freelance.json 에 따로 쌓는다
-        # (crawlers/crawl_freelance.py 머리말). 실패해도 사이클은 계속 간다.
-        print(f"\n----- 외주·프리 프로젝트 크롤 -----", flush=True)
-        fl_start = datetime.now()
-        if orch:
-            orch.freelance_started()
-        try:
-            sys.path.insert(0, str(BASE_DIR))
-            from crawlers.crawl_freelance import run as _fl_run
-            stats = _fl_run()
-            elapsed = (datetime.now() - fl_start).total_seconds()
-            print(f"[OK] 외주·프리 완료({elapsed:.0f}s) — 누적 {stats.get('total')}건 "
-                  f"(모집중 {stats.get('active')}, 신규 {stats.get('new')}, 출처 {stats.get('sources')}곳) "
-                  f"→ jd-viewer/public/freelance.json", flush=True)
-            if orch:
-                orch.freelance_finished(bool(stats.get("sources")), stats.get("total"),
-                                        stats.get("new"), stats.get("active"), elapsed)
-        except Exception as e:
-            print(f"[!] 외주·프리 크롤 실패: {e}", flush=True)
-            failures.append("freelance")
-            if orch:
-                orch.freelance_finished(False, None, None, None,
-                                        (datetime.now() - fl_start).total_seconds())
-
-    if do_hardware:
-        # PC 부품 가격. 하루 한 번만 실제로 돈다(crawlers/crawl_hardware.py 머리말) —
-        # 그날 이미 받았으면 파일만 보고 바로 돌아온다. 실패해도 사이클은 계속 간다.
-        print(f"\n----- PC 부품 가격 크롤 -----", flush=True)
-        hw_start = datetime.now()
-        if orch:
-            orch.stage_started("hardware")
-        try:
-            sys.path.insert(0, str(BASE_DIR))
-            from crawlers.crawl_hardware import run as _hw_run
-            stats = _hw_run()
-            elapsed = (datetime.now() - hw_start).total_seconds()
-            if orch:
-                orch.stage_finished("hardware", not stats.get("failed"), elapsed, **stats)
-            if not stats.get("skipped"):
-                print(f"[OK] 부품 가격 완료({elapsed:.0f}s) — 부품 {stats.get('total')}개 중 "
-                      f"{stats.get('priced')}개 가격, 실패 {stats.get('failed')} "
-                      f"→ jd-viewer/public/hardware/prices.json", flush=True)
-            if stats.get("failed"):
-                failures.append("hardware")
-        except Exception as e:
-            print(f"[!] 부품 가격 크롤 실패: {e}", flush=True)
-            failures.append("hardware")
-            if orch:
-                orch.stage_finished("hardware", False, (datetime.now() - hw_start).total_seconds(), error=str(e)[:200])
-        # 완제품 조립PC — 부품 가격 다음에 돈다(구성을 그날 부품 목록에 잇는다). 역시 하루 한 번.
-        pb_start = datetime.now()
-        if orch:
-            orch.stage_started("prebuilt")
-        try:
-            from crawlers.crawl_prebuilt import run as _pb_run
-            stats = _pb_run()
-            if orch:
-                orch.stage_finished("prebuilt", not stats.get("failed"), (datetime.now() - pb_start).total_seconds(), **stats)
-            if not stats.get("skipped"):
-                print(f"[OK] 완제품 {stats.get('total')}개(오늘 {stats.get('seen_today')}) · 구성 새로 읽음 "
-                      f"{stats.get('specs_read')} · 목록에 없는 CPU·GPU {stats.get('unmapped_cpu_gpu')}"
-                      f" → jd-viewer/public/hardware/prebuilt.json", flush=True)
-            if stats.get("failed"):
-                failures.append("prebuilt")
-        except Exception as e:
-            print(f"[!] 완제품 크롤 실패: {e}", flush=True)
-            failures.append("prebuilt")
-            if orch:
-                orch.stage_finished("prebuilt", False, (datetime.now() - pb_start).total_seconds(), error=str(e)[:200])
+    failures += run_extras(do_blog, do_freelance, do_hardware, blog_per_feed)
 
     total = (datetime.now() - overall_start).total_seconds()
     print(f"\n========== 전체 완료 ({total:.0f}s) ==========", flush=True)
