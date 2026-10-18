@@ -43,3 +43,10 @@ def test_known_companies_beat_name_rules():
 def test_agencies_are_separated():
     assert classify("에이치알포유") == "채용대행·헤드헌팅"
     assert classify("원티드_일본 현지 채용") == "채용대행·헤드헌팅"
+
+
+def test_same_entity_aliases_merge_but_affiliates_do_not():
+    assert company_key("당근마켓") == company_key("당근 (Daangn)")
+    assert company_key("NHN Cloud") == company_key("엔에이치엔클라우드")
+    assert company_key("씨제이올리브영(CJ올리브영)") == company_key("CJ올리브영")
+    assert company_key("토스") != company_key("토스뱅크")       # 계열사는 법인이 달라 나눈다

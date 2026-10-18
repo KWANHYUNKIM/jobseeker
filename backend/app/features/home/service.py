@@ -35,10 +35,23 @@ def display_name(name: str) -> str:
     return n or (name or "")
 
 
+# 같은 법인의 다른 표기(한글/영문 표기·옛 이름). 계열사·자회사는 법인이 달라 합치지 않는다
+# (토스 ≠ 토스뱅크 ≠ 비바리퍼블리카 채용 브랜드라도 회사 카드는 나눈다 — 공고를 낸 법인이 다르다).
+_ALIASES = {
+    "당근마켓": "당근", "nhn": "엔에이치엔", "naver": "네이버", "navercloud": "네이버클라우드",
+    "nhncloud": "엔에이치엔클라우드", "nhn클라우드": "엔에이치엔클라우드", "nhnpayco": "엔에이치엔페이코",
+    "nhn페이코": "엔에이치엔페이코", "nhnlink": "엔에이치엔링크", "nhnace": "엔에이치엔에이스",
+    "nhnkcp": "엔에이치엔케이씨피", "nhncommerce": "엔에이치엔커머스", "씨제이올리브영": "cj올리브영",
+    "씨제이이엔엠": "cjenm", "cj포디플렉스": "cj4dplex", "신세계아이앤씨": "신세계ic",
+    "컬리채용": "컬리", "naverwebtoon": "네이버웹툰", "naverlabs": "네이버랩스",
+}
+
+
 def company_key(name: str) -> str:
-    """같은 회사 판정 키 — 법인 표기·괄호 병기·공백·기호를 뗀 소문자."""
+    """같은 회사 판정 키 — 법인 표기·괄호 병기·공백·기호를 뗀 소문자, 그리고 같은 법인의 다른 표기."""
     n = re.sub(r"\(.*?\)", "", display_name(name))
-    return re.sub(r"\W+", "", n).lower() or (name or "")
+    k = re.sub(r"\W+", "", n).lower() or (name or "")
+    return _ALIASES.get(k, k)
 
 
 def _title(t: str) -> str:
