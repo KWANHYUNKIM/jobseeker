@@ -13,6 +13,8 @@
 import http.server
 import os
 import re
+import threading
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -49,6 +51,39 @@ SECURITY_HEADERS = _security_headers()
 API_BLOCKED = {"/api/docs", "/api/docs/", "/api/openapi.json", "/api/redoc"}
 
 
+# ── 호출량 제한(뷰어 API) ───────────────────────────────────────────────
+# 밖(ngrok)에 열린 API 라 한 사람이 화면을 쓰는 속도보다 훨씬 빠른 호출은 막는다. 방문자마다
+# 초당 RATE 건이 차오르는 양동이(최대 BURST). 화면 한 장이 API 를 몇 번 부르는 정도는 넉넉히 통과한다.
+RATE = float(os.environ.get("API_RATE", "10"))
+BURST = float(os.environ.get("API_BURST", "40"))
+_buckets: dict[str, tuple[float, float]] = {}
+_bucket_lock = threading.Lock()
+
+
+def _client_key(handler) -> str:
+    """방문자 구분 키. ngrok 은 로컬(127.0.0.1)에서 들어오고 진짜 IP 를 X-Forwarded-For **끝에** 붙인다 —
+    앞쪽은 방문자가 마음대로 적을 수 있으니 마지막 값만 믿는다. 로컬이 아닌 연결은 그 주소 그대로."""
+    peer = handler.client_address[0]
+    xff = handler.headers.get("X-Forwarded-For", "")
+    if peer in ("127.0.0.1", "::1") and xff:
+        return xff.split(",")[-1].strip()[:64]
+    return peer
+
+
+def _allow(key: str) -> bool:
+    now = time.monotonic()
+    with _bucket_lock:
+        tokens, last = _buckets.get(key, (BURST, now))
+        tokens = min(BURST, tokens + (now - last) * RATE)
+        ok = tokens >= 1
+        _buckets[key] = (tokens - 1 if ok else tokens, now)
+        if len(_buckets) > 10000:                    # 오래 안 온 방문자는 잊는다
+            for k, (_, t) in list(_buckets.items()):
+                if now - t > 300:
+                    del _buckets[k]
+    return ok
+
+
 class Handler(http.server.SimpleHTTPRequestHandler):
     # 응답에 서버 종류·파이썬 버전을 싣지 않는다(기본은 'SimpleHTTP/0.6 Python/3.x')
     server_version = "jd-viewer"
@@ -58,6 +93,15 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         if self.path.startswith("/api/"):
             if self.path.split("?", 1)[0] in API_BLOCKED:
                 self.send_error(404)
+                return
+            if not _allow(_client_key(self)):
+                body = b'{"error":"too many requests"}'
+                self.send_response(429)
+                self.send_header("Retry-After", "2")
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
                 return
             self._proxy_search()
             return
