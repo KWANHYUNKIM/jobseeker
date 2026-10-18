@@ -34,22 +34,30 @@ export function CompanyPanel({ slug, onClose }: { slug: string; onClose: () => v
   const listTo = c ? `/jobs?q=${encodeURIComponent(c.name)}` : '/jobs'
 
   return (
+    <>
+    {/* 휴대폰: 아래에서 올라오는 시트 + 뒤를 누르면 닫히는 막. 넓은 화면: 오른쪽 패널(목록은 그대로 보인다) */}
+    <button type="button" aria-label="닫기" onClick={onClose} className="home-scrim md:hidden fixed inset-0 z-40 bg-black/35" />
     <aside
-      className="fixed inset-0 z-40 md:inset-auto md:top-14 md:right-0 md:bottom-0 md:w-[460px] flex flex-col bg-(--color-panel) md:border-l border-(--color-border) shadow-[-12px_0_32px_rgba(0,0,0,0.08)] jd-slide-in"
-      aria-label="회사 공고"
+      role="dialog"
+      aria-label={c ? `${c.name} 공고` : '회사 공고'}
+      className="home-sheet fixed z-50 inset-x-0 bottom-0 top-[10vh] rounded-t-3xl md:rounded-none md:inset-x-auto md:top-14 md:right-0 md:w-[460px] flex flex-col bg-(--color-panel) md:border-l border-(--color-border) shadow-[0_-12px_40px_rgba(0,0,0,0.18)] md:shadow-[-16px_0_40px_rgba(0,0,0,0.08)]"
     >
-      <div className="flex items-start gap-3 p-5 border-b border-(--color-border-soft)">
+      <div className="md:hidden pt-2.5 flex justify-center" aria-hidden>
+        <span className="w-10 h-1.5 rounded-full bg-(--color-border)" />
+      </div>
+      <div className="flex items-start gap-3 px-5 pt-3 pb-4 md:pt-5 border-b border-(--color-border-soft)">
         <span className="grid place-items-center w-14 h-14 shrink-0 rounded-lg border border-(--color-border-soft) bg-white overflow-hidden">
           {c ? <CompanyMark name={c.name} logo={c.logo} size={40} /> : null}
         </span>
         <div className="min-w-0 flex-1">
           <h2 className="text-lg font-bold text-(--color-text) truncate">{c?.name ?? (err ? '불러오지 못함' : '…')}</h2>
           {c && (
-            <p className="mt-0.5 text-xs text-(--color-muted)">
-              {SIZE_SHORT[c.size] ?? c.size}
-              {c.industry !== '기타' && ` · ${c.industry}`} · IT 공고 {c.active}건
-              {careerRange(c.career_from, c.career_to) && ` · ${careerRange(c.career_from, c.career_to)}`}
-            </p>
+            <div className="mt-1.5 flex flex-wrap gap-1 text-[11.5px]">
+              <Tag>{SIZE_SHORT[c.size] ?? c.size}</Tag>
+              {c.industry !== '기타' && <Tag>{c.industry}</Tag>}
+              <Tag strong>IT 공고 {c.active}건</Tag>
+              {careerRange(c.career_from, c.career_to) && <Tag>{careerRange(c.career_from, c.career_to)}</Tag>}
+            </div>
           )}
         </div>
         <button
@@ -82,13 +90,27 @@ export function CompanyPanel({ slug, onClose }: { slug: string; onClose: () => v
       </div>
 
       {c && (
-        <div className="p-3 border-t border-(--color-border-soft) text-right">
+        <div className="p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] border-t border-(--color-border-soft) text-right">
           <a href={listTo} onClick={onLinkClick(listTo)} className="text-xs text-(--color-accent) hover:underline">
-            잡 리스트에서 필터로 보기 →
+            잡 리스트에서 이 회사만 보기
           </a>
         </div>
       )}
     </aside>
+    </>
+  )
+}
+
+function Tag({ children, strong }: { children: React.ReactNode; strong?: boolean }) {
+  return (
+    <span
+      className={
+        'px-1.5 py-0.5 rounded-md ' +
+        (strong ? 'bg-(--color-accent-weak) text-(--color-accent-deep) font-semibold' : 'bg-(--color-band) text-(--color-muted)')
+      }
+    >
+      {children}
+    </span>
   )
 }
 

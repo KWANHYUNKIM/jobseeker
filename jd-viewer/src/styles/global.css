@@ -202,6 +202,40 @@ html, body, #root {
   .jd-fade-in, .jd-modal-in, .jd-slide-in, .jd-spinner { animation: none; }
 }
 
+/* ── 메인(회사별 채용) ─────────────────────────────────────────────
+   움직임은 두 가지만 — 지금 뽑는 회사 로고가 흐르는 띠(정보가 있는 움직임), 그리고 사람이
+   무언가를 바꿨을 때의 응답(칸을 바꾸면 카드가 차례로 자리 잡고, 회사를 고르면 패널이 열린다). */
+@keyframes home-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.home-marquee { display: flex; width: max-content; animation: home-marquee var(--dur, 70s) linear infinite; }
+.home-marquee.reverse { animation-direction: reverse; }
+.home-marquee-wrap:hover .home-marquee,
+.home-marquee-wrap:focus-within .home-marquee { animation-play-state: paused; }
+.home-marquee-wrap {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+@keyframes home-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.home-rise { animation: home-rise 0.36s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(min(var(--i, 0), 12) * 28ms); }
+
+/* 카드를 누르는 순간 살짝 눌린다 — 눌렀다는 확인 */
+.home-press { transition: transform .12s ease, border-color .15s ease, box-shadow .2s ease; }
+.home-press:active { transform: scale(.985); }
+
+@keyframes home-sheet-up { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes home-side-in { from { transform: translateX(100%); } to { transform: none; } }
+.home-sheet { animation: home-sheet-up .32s cubic-bezier(.2,.8,.2,1) both; }
+@media (min-width: 768px) { .home-sheet { animation-name: home-side-in; } }
+@keyframes home-fade { from { opacity: 0; } to { opacity: 1; } }
+.home-scrim { animation: home-fade .2s ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .home-marquee { animation: none; flex-wrap: wrap; width: auto; }
+  .home-marquee .home-dup { display: none; }
+  .home-rise, .home-sheet, .home-scrim { animation: none; }
+  .home-press:active { transform: none; }
+}
+
 /* 기술 블로그 본문 마크다운 렌더링 — 원문 형식 보존(제목/목록/표/코드) */
 .blog-md {
   font-size: 0.95rem;

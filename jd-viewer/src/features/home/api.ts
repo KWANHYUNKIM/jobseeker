@@ -3,7 +3,7 @@ import type { Site } from '../../types'
 
 /** 메인 화면(`/`) — backend `/api/home`. 모집중인 국내 IT 공고를 회사별로 묶은 것. */
 
-export type HomeSize = '대기업' | '중견기업' | '중소기업'
+export type HomeSize = '대기업' | '중견기업' | '중소기업' | '해외 기업'
 export type ExpBucket = '1-2년' | '3-4년' | '5-7년' | '8년+'
 
 export interface HomeCompany {
@@ -47,6 +47,8 @@ export interface HomeJob {
 
 export interface HomeBoard {
   generated_at: string
+  /** 첫 화면 로고 띠 — 필터와 무관하게 공고가 많은 큰 회사 */
+  spotlight: { name: string; slug: string; logo: string | null; size: HomeSize; active: number }[]
   totals: { companies: number; jobs: number; entry: number; experienced: number }
   facets: { sizes: { name: HomeSize; n: number }[]; industries: { name: string; n: number }[] }
   companies: HomeCompany[]

@@ -37,4 +37,4 @@ export function careerOf(career: string | null, bucket: string): string {
   return `경력 ${bucket}`
 }
 
-export const SIZE_SHORT: Record<string, string> = { 대기업: '대기업', 중견기업: '중견', 중소기업: '중소' }
+export const SIZE_SHORT: Record<string, string> = { 대기업: '대기업', 중견기업: '중견', 중소기업: '중소', '해외 기업': '해외' }
