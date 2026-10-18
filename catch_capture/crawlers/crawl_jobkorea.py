@@ -264,12 +264,38 @@ def fetch_company(gno: str, referer: str) -> str:
     return ""
 
 
+_TAG_RE = re.compile(r"<(/?)([a-zA-Z][a-zA-Z0-9]*)\b[^>]*?(/?)>")
+
+
+def _element_inner(raw: str, marker: str) -> str | None:
+    """marker(예: 'id="detail-content"')가 붙은 요소의 안쪽 HTML 을 **짝을 맞춰** 잘라낸다.
+
+    예전에는 `(.*?)</div>\\s*</td>` 로 처음 나오는 닫는 태그에서 멈췄다 — 회사가 직접 꾸민 표 모양
+    공고는 그 태그가 본문 중간에 있어 "채용분야 … 담당" 에서 잘렸고, 주요업무·자격요건·우대사항이
+    통째로 비었다(잡코리아 빈 공고의 대부분). 같은 이름의 태그를 열고 닫는 수를 세어 끝을 찾는다.
+    """
+    i = raw.find(marker)
+    if i < 0:
+        return None
+    start = raw.rfind("<", 0, i)
+    m = _TAG_RE.match(raw, start)
+    if not m:
+        return None
+    name, depth, pos = m.group(2).lower(), 1, m.end()
+    for t in _TAG_RE.finditer(raw, pos):
+        if t.group(2).lower() != name or t.group(3):
+            continue
+        depth += -1 if t.group(1) else 1
+        if depth == 0:
+            return raw[pos:t.start()]
+    return raw[pos:]                       # 닫는 태그가 없으면 끝까지(잘리는 것보다 낫다)
+
+
 def fetch_jd(gno: str, referer: str) -> tuple[str, str]:
     url = DETAIL_IFRAME_URL.format(gno=gno)
     raw = http_get(url, referer=referer).decode("utf-8", errors="replace")
     # 본문은 #detail-content 안에 있음; 못 찾으면 전체 HTML 사용
-    m = re.search(r'id="detail-content"[^>]*>(.*?)</div>\s*</td>', raw, re.DOTALL | re.IGNORECASE)
-    body = m.group(1) if m else raw
+    body = _element_inner(raw, 'id="detail-content"') or raw
     return body, html_to_text(body)
 
 
@@ -428,8 +454,17 @@ async def crawl(keyword: str, target: int, max_pages: int, use_ocr: bool) -> Non
         await browser.close()
 
 
+def refetch_short(min_len: int = 400, limit: int = 1000) -> dict:
+    """본문이 잘려 저장된 모집중 공고를 다시 받는다 — crawlers/refetch_bodies.py 가 본체다."""
+    from crawlers.refetch_bodies import run
+    return run("jobkorea", min_len=min_len, limit=limit)
+
+
 def main() -> None:
     args = sys.argv[1:]
+    if "--refetch-short" in args:
+        refetch_short()
+        return
     use_ocr = True
     if "--no-ocr" in args:
         use_ocr = False
