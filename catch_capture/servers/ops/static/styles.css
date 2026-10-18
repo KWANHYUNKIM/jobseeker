@@ -311,3 +311,9 @@ a.igpost:hover { border-color: var(--accent); }
 #guideTable td:first-child { color: var(--txt); }
 #guideTable th:nth-child(2), #guideTable td:nth-child(2) { text-align: left; font-weight: 400; color: var(--muted); }
 #guideTable .guidedetail td { text-align: left; }
+
+/* DB 저장 현황 */
+#dbSites td:nth-child(2), #dbSites th:nth-child(2), #dbTables td:nth-child(2), #dbTables th:nth-child(2) { text-align: left; }
+#dbRuns td:last-child { width: 30%; }
+.minibar { height: 6px; background: var(--accent-bg); border-radius: 3px; overflow: hidden; min-width: 60px; }
+.minibar > span { display: block; height: 100%; background: var(--accent); border-radius: 3px; }

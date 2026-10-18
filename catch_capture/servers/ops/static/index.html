@@ -35,6 +35,7 @@
       <div class="navgroup">운영</div>
       <a href="#overview">개요</a>
       <a href="#crawlers">크롤러 현황 <span class="navbadge" id="navCrawlBadge"></span></a>
+      <a href="#db">DB 저장 현황 <span class="navbadge" id="navDbBadge"></span></a>
       <a href="#pipeline">파이프라인</a>
       <a href="#quality">데이터 품질</a>
       <a href="#events">이벤트 로그</a>
@@ -95,6 +96,37 @@
         <div id="crawlGroups"></div>
         <h3 class="subhead" style="margin-top:18px">스케줄러</h3>
         <div class="tiles" id="crawlSched"></div>
+      </section>
+
+      <!-- DB 저장 현황: '받았나'(크롤러)가 아니라 '정본 DB 에 들어갔나'. 뷰어는 API 로 이 DB 를 읽는다. -->
+      <section id="db" class="card sec">
+        <div class="sechead">
+          <div>
+            <h2>DB 저장 현황</h2>
+            <p class="secdesc">뷰어가 실제로 보여주는 것. 공고는 회차의 통합 단계에서, 외주는 수집 직후에 들어간다.</p>
+          </div>
+          <span class="muted" id="dbSub">—</span>
+        </div>
+        <div id="dbBanner"></div>
+        <div class="tiles" id="dbTiles"></div>
+        <div class="grid2" style="margin-top:14px">
+          <div>
+            <h3 class="subhead">사이트별 공고</h3>
+            <div class="tablewrap"><table class="histtable" id="dbSites"><thead>
+              <tr><th>사이트</th><th>상태</th><th>모집중</th><th>전체</th><th>24시간 신규</th><th>마지막 적재</th></tr>
+            </thead><tbody></tbody></table></div>
+          </div>
+          <div>
+            <h3 class="subhead">그 밖의 데이터</h3>
+            <div class="tablewrap"><table class="histtable" id="dbTables"><thead>
+              <tr><th>데이터</th><th>상태</th><th>전체</th><th>24시간</th><th>마지막</th></tr>
+            </thead><tbody></tbody></table></div>
+          </div>
+        </div>
+        <h3 class="subhead" style="margin-top:16px">최근 적재 회차</h3>
+        <div class="tablewrap"><table class="histtable" id="dbRuns"><thead>
+          <tr><th>시각</th><th>결과</th><th>수집</th><th>반영</th><th>신규</th><th></th></tr>
+        </thead><tbody></tbody></table></div>
       </section>
 
       <!-- ③ 파이프라인 ──────────────────────────────────────────────── -->

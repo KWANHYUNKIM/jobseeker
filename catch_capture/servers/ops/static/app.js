@@ -24,13 +24,14 @@ const PHASE_LABEL = {
 };
 
 // 스텝퍼 정의: state.phase / cycle 데이터로 각 단계 상태를 도출
+// 회차 순서(auto_crawl.run_cycle): 공고가 먼저 DB·뷰어에 들어가고, 키워드 무관 단계는 그 뒤다.
 const STEPS = [
   { key: "crawling", name: "크롤", phases: ["crawling"] },
-  { key: "aggregating", name: "통합", phases: ["aggregating"] },
-  { key: "blog", name: "기술블로그", phases: ["blog"] },
-  { key: "freelance", name: "외주·프리", phases: ["freelance"] },
+  { key: "aggregating", name: "통합·DB", phases: ["aggregating"] },
   { key: "building", name: "대시보드", phases: ["building"] },
   { key: "refreshing", name: "뷰어", phases: ["refreshing"] },
+  { key: "freelance", name: "외주·프리", phases: ["freelance"] },
+  { key: "blog", name: "기술블로그", phases: ["blog"] },
   { key: "waiting", name: "대기", phases: ["waiting", "idle"] },
 ];
 
@@ -131,7 +132,8 @@ function renderPhase(s) {
   } else if (phase === "waiting" && cyc.finished_at) {
     const el = cyc.total_elapsed != null ? `${cyc.total_elapsed}s · ` : "";
     sub = `직전 사이클 ${el}${cyc.new_data ? "새 데이터 반영" : "변경 없음"}`;
-  } else if (s.last_error) {
+  } else if (s.last_error && Date.now() - (parseLocal(s.last_error.ts) || 0) < 24 * 3600 * 1000) {
+    // 하루 지난 오류는 지금 상태가 아니다 — 8월의 디스크 부족이 두 달 내내 떠 있었다
     sub = `최근 오류: ${s.last_error.msg}`;
   }
   $("phaseSub").textContent = sub || "—";
@@ -838,6 +840,62 @@ $("themeBtn").addEventListener("click", () => {
   byId.forEach((_, id) => { const el = document.getElementById(id); if (el) io.observe(el); });
 })();
 
+// DB 저장 현황 — 정본 DB 에 실제로 들어간 것. 뷰어 목록은 이 숫자를 보여준다.
+const SITE_LABEL = { wanted: "원티드", jumpit: "점핏", jobkorea: "잡코리아", saramin: "사람인", dev: "캐치",
+  remote: "해외 원격", ats: "회사 채용페이지", boards: "기타 보드·공공" };
+function cstBadge(state) { return `<span class="cst ${state}">${CST[state] || state}</span>`; }
+function agoH(h) { return h == null ? "—" : fmtAge(Math.round(h * 3600)) + " 전"; }
+function renderDb(d) {
+  const badge = $("navDbBadge");
+  if (!d || !d.ok) {
+    $("dbBanner").innerHTML = `<div class="banner bad">✕ DB 에 붙지 못했습니다 — ${esc((d && d.error) || "응답 없음")}. ` +
+      `<code>docker ps</code> 로 jobseeker-db 가 떠 있는지 확인하세요. 뷰어는 정적 파일로 물러섭니다.</div>`;
+    $("dbSub").textContent = "";
+    badge.textContent = "!"; badge.className = "navbadge bad";
+    return;
+  }
+  const j = d.jobs;
+  const lv = j.last_write_age_hours == null ? "unknown" : j.last_write_age_hours <= 3 ? "ok" : j.last_write_age_hours <= 24 ? "warn" : "stale";
+  const bad = d.sites.concat(d.tables).filter((r) => r.state === "stale" || r.state === "error").length;
+  badge.textContent = bad ? String(bad) : ""; badge.className = "navbadge " + (bad ? "warn" : "");
+  $("dbSub").textContent = `조회 ${d.generated_at.slice(11, 19)}`;
+  $("dbBanner").innerHTML = lv === "stale"
+    ? `<div class="banner bad">■ 공고가 DB 에 마지막으로 들어간 지 <b>${agoH(j.last_write_age_hours)}</b> — 뷰어 목록이 그때 상태입니다.</div>` : "";
+  const tiles = [
+    ["모집중 공고", j.active.toLocaleString(), `전체 ${j.total.toLocaleString()}건`],
+    ["24시간 신규", j.new_24h.toLocaleString(), "처음 본 공고"],
+    ["마지막 공고 적재", agoH(j.last_write_age_hours), j.last_write ? j.last_write.slice(5, 16).replace("T", " ") : "—"],
+  ];
+  const fl = d.tables.find((t) => t.key === "project");
+  if (fl && fl.total != null) tiles.push(["외주 프로젝트", (fl.sub ?? 0).toLocaleString(), `모집중 · 24시간 신규 ${fl.new_24h}`]);
+  $("dbTiles").innerHTML = tiles.map(([n, v, sub], i) =>
+    `<div class="site ${i === 2 ? (lv === "ok" ? "done" : "failed blocked") : "done"}"><div class="site-name">${n}</div>` +
+    `<div class="site-count">${v}</div><div class="site-status">${esc(sub)}</div></div>`).join("");
+
+  document.querySelector("#dbSites tbody").innerHTML = d.sites.map((s) =>
+    `<tr><td>${esc(SITE_LABEL[s.site] || s.site)}</td><td>${cstBadge(s.state)}</td>` +
+    `<td>${s.active.toLocaleString()}</td><td>${s.total.toLocaleString()}</td>` +
+    `<td>${s.new_24h ? "+" + s.new_24h.toLocaleString() : "0"}</td><td>${agoH(s.age_hours)}</td></tr>`).join("");
+
+  const SUB = { project: "모집중", job_state: "마감", hw_price_day: "부품" };
+  document.querySelector("#dbTables tbody").innerHTML = d.tables.map((t) => t.error
+    ? `<tr><td>${esc(t.name)}</td><td>${cstBadge("error")}</td><td colspan="3" class="muted">${esc(t.error)}</td></tr>`
+    : `<tr><td>${esc(t.name)}</td><td>${cstBadge(t.state)}</td>` +
+      `<td>${t.total.toLocaleString()}${t.sub != null && SUB[t.key] ? `<div class="muted" style="font-size:11.5px">${SUB[t.key]} ${t.sub.toLocaleString()}</div>` : ""}</td>` +
+      `<td>${t.new_24h.toLocaleString()}</td><td>${agoH(t.age_hours)}</td></tr>`).join("");
+
+  const maxNew = Math.max(1, ...d.runs.map((r) => r.n_new || 0));
+  document.querySelector("#dbRuns tbody").innerHTML = d.runs.map((r) =>
+    `<tr><td>${esc((r.started_at || "").slice(5, 16).replace("T", " "))}</td>` +
+    `<td>${r.ok ? cstBadge("ok") : cstBadge("error")}</td>` +
+    `<td>${(r.n_raw || 0).toLocaleString()}</td><td>${(r.n_upserted || 0).toLocaleString()}</td>` +
+    `<td><b>+${(r.n_new || 0).toLocaleString()}</b></td>` +
+    `<td><div class="minibar" title="신규 ${r.n_new}"><span style="width:${Math.round(100 * (r.n_new || 0) / maxNew)}%"></span></div></td></tr>`).join("");
+}
+async function pollDb() {
+  try { renderDb(await fetchJSON("/api/db")); } catch (e) { renderDb({ ok: false, error: e.message }); }
+}
+
 async function pollAutoguide() {
   try { renderAutoguide(await fetchJSON("/api/autoguide")); } catch (e) {}
 }
@@ -907,6 +965,7 @@ pollAutoguide();
 pollGuide();
 pollLoops();
 pollCrawlers();
+pollDb();
 pollPublish();
 setInterval(pollState, 2000);
 setInterval(pollEvents, 3000);
@@ -915,6 +974,7 @@ setInterval(pollAutoguide, 30000);
 setInterval(pollGuide, 30000);
 setInterval(pollLoops, 60000);
 setInterval(pollCrawlers, 30000);
+setInterval(pollDb, 30000);
 // 데몬이 5분마다 도니 15초면 충분하다.
 setInterval(pollPublish, 15000);
 setInterval(tickCountdown, 1000);

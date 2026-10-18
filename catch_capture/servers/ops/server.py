@@ -12,6 +12,7 @@
   GET /api/publish     → 인스타 자동 발행 원장 요약(design-lab/state/, 읽기 전용)
   GET /api/guide       → 취업 브리핑(guide-engine) 조사 완료 회사 + 대기열
   GET /api/crawlers    → 크롤러 전체 현황 — 채용 보드·ATS·기타 보드·외주·하드웨어 출처별 나이(servers/ops/crawlers.py)
+  GET /api/db          → DB 저장 현황 — 사이트별 공고·외주·글·임베딩·가격이 정본 DB 에 언제 들어갔나(servers/ops/dbstatus.py)
   GET /api/loops       → 반복 작업 등록부(automation/loops.py) + 산출물 나이로 본 상태
 
 사용법:
@@ -212,6 +213,11 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
         if path == "/api/publish":
             self._send_json(_publish_summary())
+            return
+
+        if path == "/api/db":
+            from servers.ops.dbstatus import summary as db_summary
+            self._send_json(db_summary())
             return
 
         if path == "/api/crawlers":
