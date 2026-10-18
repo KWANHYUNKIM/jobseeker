@@ -33,6 +33,15 @@
       </div>
     </section>
 
+    <!-- 크롤러 전체 현황: 산출물이 적은 시각으로 출처마다 나이를 잰다(servers/ops/crawlers.py).
+         사이트별 수집 칸은 이번 회차만 보여서 데몬이 죽어도 '완료'로 남는다. -->
+    <section class="card">
+      <h2>크롤러 전체 현황 <span class="muted" id="crawlSub">—</span></h2>
+      <div id="crawlBanner"></div>
+      <div class="sites" id="crawlSched" style="margin-bottom:12px"></div>
+      <div id="crawlGroups"></div>
+    </section>
+
     <!-- 파이프라인 스텝퍼 -->
     <section class="card">
       <h2>파이프라인</h2>

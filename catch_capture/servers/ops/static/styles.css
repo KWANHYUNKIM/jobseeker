@@ -193,3 +193,24 @@ a.igpost:hover { border-color: var(--accent); }
 
 /* 반복 작업 표 — 멈춘 줄 */
 #loopsTable td.warn { color: var(--amber); font-weight: 700; }
+
+/* 크롤러 전체 현황 */
+.cgroup { margin-top: 14px; }
+.cgroup h3 { font-size: 13px; margin: 0 0 6px; display: flex; gap: 8px; align-items: baseline; }
+.ctable { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.ctable td { padding: 5px 8px; border-top: 1px solid var(--line); vertical-align: top; }
+.ctable td.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ctable td.err { color: var(--red); font-size: 11.5px; word-break: break-all; }
+.cst { display: inline-block; min-width: 46px; text-align: center; font-size: 11px; font-weight: 700;
+       padding: 1px 7px; border-radius: 999px; white-space: nowrap; }
+.cst.ok { background: #dafbe1; color: var(--green); }
+.cst.warn { background: #fff8c5; color: var(--amber); }
+.cst.stale, .cst.error { background: #ffebe9; color: var(--red); }
+.cst.unknown { background: #eaeef2; color: var(--muted); }
+.cwrap { overflow-x: auto; }
+.ctable { table-layout: fixed; min-width: 640px; }
+.ctable td:nth-child(1) { width: 64px; }
+.ctable td:nth-child(2) { width: 26%; }
+.ctable td:nth-child(3) { width: 96px; }
+.ctable td:nth-child(4) { width: 76px; }
+.ctable td:nth-child(5) { width: 120px; }

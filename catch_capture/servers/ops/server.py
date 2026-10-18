@@ -11,6 +11,7 @@
   GET /api/engagement  → public/engagement.json (방문·유입·행동 점수)
   GET /api/publish     → 인스타 자동 발행 원장 요약(design-lab/state/, 읽기 전용)
   GET /api/guide       → 취업 브리핑(guide-engine) 조사 완료 회사 + 대기열
+  GET /api/crawlers    → 크롤러 전체 현황 — 채용 보드·ATS·기타 보드·외주·하드웨어 출처별 나이(servers/ops/crawlers.py)
   GET /api/loops       → 반복 작업 등록부(automation/loops.py) + 산출물 나이로 본 상태
 
 사용법:
@@ -211,6 +212,11 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
         if path == "/api/publish":
             self._send_json(_publish_summary())
+            return
+
+        if path == "/api/crawlers":
+            from servers.ops.crawlers import summary
+            self._send_json(summary())
             return
 
         if path == "/api/loops":

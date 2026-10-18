@@ -654,6 +654,65 @@ async function pollLoops() {
   try { renderLoops(await fetchJSON("/api/loops")); } catch (_) {}
 }
 
+// 크롤러 전체 현황 — 출처마다 '마지막으로 실제 받은 때'와 건수. 묶음별 표 + 스케줄러.
+const CST = { ok: "정상", warn: "늦음", stale: "멈춤", error: "실패", unknown: "모름" };
+function renderCrawlers(d) {
+  const c = d.counts || {};
+  const bad = (c.stale || 0) + (c.error || 0);
+  $("crawlSub").textContent =
+    `출처 ${d.total}개 · 정상 ${c.ok || 0} · 늦음 ${c.warn || 0} · 멈춤 ${c.stale || 0} · 실패 ${c.error || 0}`;
+  const newestAge = d.newest_at ? (Date.now() - new Date(d.newest_at).getTime()) / 1000 : null;
+  const sch = d.scheduler || {};
+  const dm = sch.daemon || {};
+  const lds = sch.launchd || [];
+  const crawlerLd = lds.find((l) => l.label === "com.jobseeker.crawler") || {};
+  let banner = "";
+  if (newestAge != null && newestAge > 3 * 3600) {
+    banner = `<div class="banner" style="background:#ffebe9;color:var(--red)">⛔ 마지막 크롤 수집이 <b>${fmtAge(Math.round(newestAge))} 전</b>입니다` +
+      (dm.cycle_finished_at ? ` (마지막 회차 끝 ${esc(dm.cycle_finished_at.replace("T", " "))})` : "") +
+      `. 크롤 데몬 ${dm.pid ? "살아 있음" : "꺼짐"} · launchd 크롤러 ${crawlerLd.loaded ? `등록됨(실행 ${esc(crawlerLd.runs)}회, ${esc(crawlerLd.state)})` : "미등록"}.</div>`;
+  } else if (bad) {
+    banner = `<div class="banner" style="background:#fff8c5;color:var(--amber)">${bad}개 출처 확인 필요 — 아래 빨간 줄</div>`;
+  } else {
+    banner = `<div class="banner" style="background:#dafbe1;color:var(--green)">모든 출처가 제때 받고 있습니다</div>`;
+  }
+  $("crawlBanner").innerHTML = banner;
+
+  const tiles = [
+    { name: "auto_crawl 데몬", val: dm.pid ? "살아 있음" : "꺼짐", sub: dm.pid ? `pid ${dm.pid} · ${dm.phase || ""}` : `마지막 갱신 ${ago(dm.updated_at)}`, ok: !!dm.pid },
+    ...lds.map((l) => ({
+      name: l.label.replace("com.jobseeker.", "launchd · "),
+      val: l.loaded ? (l.pid ? "실행 중" : "등록됨") : "미등록",
+      sub: l.loaded ? `실행 ${l.runs}회 · 종료코드 ${l.last_exit} · ${l.interval || ""}` : "setup 스크립트 필요",
+      ok: !!l.loaded && (l.last_exit === "0" || l.last_exit === "(never exited)"),
+    })),
+    { name: "가장 최근 수집", val: newestAge == null ? "—" : fmtAge(Math.round(newestAge)) + " 전", sub: d.newest_at ? esc(d.newest_at.slice(0, 16).replace("T", " ")) : "", ok: newestAge != null && newestAge <= 3 * 3600 },
+  ];
+  $("crawlSched").innerHTML = tiles.map((t) =>
+    `<div class="site ${t.ok ? "done" : "failed blocked"}"><div class="site-name">${esc(t.name)}</div>` +
+    `<div class="site-count" style="font-size:18px">${esc(t.val)}</div><div class="site-status">${t.sub}</div></div>`).join("");
+
+  $("crawlGroups").innerHTML = (d.groups || []).map((g) => {
+    const gb = g.rows.filter((r) => r.state === "stale" || r.state === "error").length;
+    const total = g.rows.reduce((a, r) => a + (r.count || 0), 0);
+    const body = g.rows.map((r) =>
+      `<tr><td><span class="cst ${r.state}">${CST[r.state] || r.state}</span></td>` +
+      `<td>${esc(r.name)}</td>` +
+      `<td class="n">${r.count == null ? "—" : r.count.toLocaleString()}<span class="muted"> 건</span></td>` +
+      `<td class="n">${r.age_hours == null ? "—" : fmtAge(Math.round(r.age_hours * 3600)) + " 전"}</td>` +
+      `<td class="muted">${esc(r.detail)}</td>` +
+      `<td class="err">${esc(r.error)}</td></tr>`).join("");
+    return `<div class="cgroup"><h3>${esc(g.name)} <span class="muted">${g.rows.length}곳 · ${total.toLocaleString()}건${gb ? ` · <b style="color:var(--red)">${gb}곳 문제</b>` : ""}</span></h3>` +
+      `<div class="cwrap"><table class="ctable"><tbody>${body}</tbody></table></div></div>`;
+  }).join("");
+}
+
+async function pollCrawlers() {
+  try { renderCrawlers(await fetchJSON("/api/crawlers")); } catch (e) {
+    $("crawlSub").textContent = "읽기 실패: " + e.message;
+  }
+}
+
 async function pollAutoguide() {
   try { renderAutoguide(await fetchJSON("/api/autoguide")); } catch (e) {}
 }
@@ -722,6 +781,7 @@ pollHealth();
 pollAutoguide();
 pollGuide();
 pollLoops();
+pollCrawlers();
 pollPublish();
 setInterval(pollState, 2000);
 setInterval(pollEvents, 3000);
@@ -729,6 +789,7 @@ setInterval(pollHealth, 10000);
 setInterval(pollAutoguide, 30000);
 setInterval(pollGuide, 30000);
 setInterval(pollLoops, 60000);
+setInterval(pollCrawlers, 30000);
 // 데몬이 5분마다 도니 15초면 충분하다.
 setInterval(pollPublish, 15000);
 setInterval(tickCountdown, 1000);
