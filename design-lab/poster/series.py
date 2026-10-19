@@ -68,6 +68,7 @@ THEMES = {
     "contra": {"paper": "#15171d", "ink": "#f4f2ec", "sub": "#9b9fa9", "accent": "#ffd43b", "line": "#2b2f38"},
     "game": {"paper": "#0b0d1a", "ink": "#f2f4ff", "sub": "#9aa0c0", "accent": "#5df2c1", "line": "#232845"},
     "security": {"paper": "#0f1420", "ink": "#f3f4f8", "sub": "#9ba3b4", "accent": "#ff4d5a", "line": "#26304a"},
+    "aitool": {"paper": "#0d1117", "ink": "#f0f3f6", "sub": "#9198a1", "accent": "#d2a8ff", "line": "#262c36"},
     "cert": {"paper": "#f4f1fb", "ink": "#17122b", "sub": "#615a78", "accent": "#5f3dc4", "line": "#ddd5f0"},
 }
 SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", "term": "[IT 용어]",
@@ -76,7 +77,7 @@ SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", 
           "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]",
           "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]", "balance": "[둘 중 하나]", "tier": "[티어표]",
           "contra": "[공고 원문]", "game": "[게임사 채용]", "security": "[보안 채용]",
-          "cert": "[자격증 우대]"}
+          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -100,6 +101,7 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "contra": ["채용공고", "신입개발자", "자격요건", "개발자취업", "중고신입"],
         "game": ["게임회사", "게임개발자", "게임스컴", "개발자채용", "게임업계취업"],
         "security": ["정보보안", "보안엔지니어", "보안채용", "개발자채용", "IT취업"],
+        "aitool": ["AI코딩", "ClaudeCode", "Cursor", "개발자채용", "코딩테스트"],
         "cert": ["자격증", "데브옵스", "인프라엔지니어", "AWS자격증", "개발자채용"]}
 
 
@@ -1833,6 +1835,82 @@ def build_cert() -> dict:
             "reel_lead": "자격증, 공고에는 몇 번이나 적혀 있을까 — 저장해 두세요"}
 
 
+#: 이름으로 적힌 AI 코딩 도구. 'Cursor' 는 페이지네이션 커서와 겹쳐 그 뜻일 때를 뺀다.
+#: 'AI 개발도구(pytorch…)' 같은 말은 코딩 도구가 아니라 일반 낱말에서 뺐다.
+_AI_TOOLS = {"Claude Code": r"Claude\s*Code", "Cursor": r"\bCursor\b(?![\s-]*(기반|based|pagination|페이지))",
+             "Codex": r"\bCodex\b", "ChatGPT": r"ChatGPT", "GitHub Copilot": r"Copilot",
+             "AI 코딩 도구": r"AI\s*(코딩|페어\s*프로그래밍)|코딩\s*(어시스턴트|에이전트)|AI\s+coding|AI[- ]assisted\s+(coding|development)"}
+
+
+def _all_rows() -> list[dict]:
+    """국내 근무 모집중 공고(사본 뺌) — 자격요건·우대사항·복지를 칸별로."""
+    sys.path.insert(0, str(ROOT / "catch_capture"))
+    from store.db.conn import cursor
+    with cursor(autocommit=True) as cur:
+        cur.execute("""SELECT co.display_name AS company, j.title, f.career_bucket,
+                              coalesce(j.qualifications, '') AS qual, coalesce(j.preferences, '') AS pref,
+                              coalesce(j.benefits, '') AS perk
+                         FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
+                         JOIN job_facet f ON f.job_id = j.id JOIN company co ON co.id = j.company_id
+                        WHERE coalesce(f.region, '') <> '해외·원격'
+                          AND NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = j.id)""")
+        return [r for r in cur.fetchall() if not _not_dev({"title": r["title"], "stack": ["x"]})]
+
+
+def build_aitool() -> dict:
+    """[AI 코딩 도구] 릴스 — 넥슨·크래프톤이 코딩테스트 대신 AI 활용 과정을 본다는 보도(데일리안 2026.10.19)를,
+    지금 국내 공고가 자격요건·우대사항에 AI 코딩 도구를 몇 번 적었는지로 받친다. 복지로 '도구를 대 준다' 는 따로 센다."""
+    rows = _all_rows()
+    rx = "|".join(f"(?:{v})" for v in _AI_TOOLS.values())
+    asked = [r for r in rows if re.search(rx, r["qual"] + "\n" + r["pref"], re.I)]
+    required = [r for r in asked if re.search(rx, r["qual"], re.I)]
+    perk = [r for r in rows if re.search(rx, r["perk"], re.I) and r not in asked]
+    entry = [r for r in asked if r["career_bucket"] == "신입/무관"]
+    by = collections.Counter(k for r in asked for k, v in _AI_TOOLS.items()
+                             if re.search(v, r["qual"] + "\n" + r["pref"], re.I)).most_common()
+    cos = collections.Counter(_co_name(r["company"]) for r in asked).most_common(3)
+    n, na = len(rows), len(asked)
+    asof = date.today().isoformat()
+    wj = "\u2060"
+    note = (f"JD Viewer 모집중 IT 공고 · 국내 근무 {n:,}건 · {_dot(asof)} · "
+            "자격요건·우대사항에 도구 이름이 적힌 공고만 셈")
+    slides = [
+        {"type": "cover", "big": f"{na}", "big_unit": "건",
+         "lines": ["코딩테스트 대신", "AI 쓰는 법을 본다"],
+         "sub": f"자격요건·우대사항에 AI 코딩 도구를 적은 국내 공고", "note": note},
+        {"type": "table", "title": "게임사가 먼저 바꿨다", "sub": "보도는 요약, 원문은 캡션의 링크",
+         "head": ["어디서", "무엇", "어떻게"],
+         "rows": [["넥슨", "인턴 넥토리얼", "코테 대신 AI 활용 평가"],
+                  ["크래프톤", "신입 100명+", "AI 와 푸는 과정 평가"],
+                  ["우리 공고", "AI 도구를 적은 곳", f"{na}{wj}건"]],
+         "hi_col": 2, "note": "데일리안 2026.10.19 보도 요약"},
+        {"type": "bars", "title": "공고에 적힌 도구", "sub": "자격요건·우대사항에 그 이름이 나온 공고 수",
+         "rows": [{"label": k, "value": v, "display": f"{v}", "unit": "건", "hi": i == 0}
+                  for i, (k, v) in enumerate(by[:6])], "note": note},
+        {"type": "stat", "title": "자격요건에 넣은 곳", "num": f"{len(required)}", "unit": "건",
+         "label": f"AI 도구를 적은 {na}건 중",
+         "explain": f"신입도 되는 공고 중 **{len(entry)}{wj}건**이 AI 도구를 적었다.\n복지로 도구를 대 주는 곳은 따로 {len(perk)}{wj}건.",
+         "note": note},
+        {"type": "end", "title": "저장해 두고", "lines": [
+            " · ".join(f"**{c}** {k}건" for c, k in cos),
+            "포트폴리오에 AI 를 어떻게 썼는지 남기자", "취준하는 친구에게 보내 주세요"], "note": note},
+    ]
+    caption = "\n\n".join([
+        f"코딩테스트 대신 AI 를 어떻게 쓰는지 본다 — 국내 IT 공고 {n:,}건에서 세 봤습니다.",
+        f"· 자격요건·우대사항에 AI 코딩 도구를 적은 공고 {na}건\n"
+        f"· 그중 자격요건에 넣은 곳 {len(required)}건, 신입도 되는 공고 {len(entry)}건\n"
+        "· 많이 적힌 도구: " + " · ".join(f"{k} {v}건" for k, v in by[:4]) + "\n"
+        f"· 복지로 도구를 대 주는 곳 {len(perk)}건(위 숫자와 겹치지 않게 셈)",
+        "데일리안은 넥슨이 인턴십 '넥토리얼'에서 코딩테스트를 없애고 AI 활용 역량 평가를 들였고, 크래프톤은 "
+        "AI 와 함께 문제를 정의하고 검증하는 과정을 보는 평가로 신입을 뽑는다고 전했습니다.",
+        "출처\nhttps://www.dailian.co.kr/news/view/1703201/",
+        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 도구 이름이나 'AI 코딩' 처럼 적힌 것만 셌습니다.",
+    ])
+    return {"kind": "aitool", "id": f"aitool-{asof.replace('-', '')}", "title": "AI 코딩 도구를 적은 공고",
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.2,
+            "reel_lead": "이제 코딩테스트 대신 AI 쓰는 법을 본다 — 저장해 두세요"}
+
+
 REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
 
 
@@ -1889,7 +1967,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
                                      "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit",
-                                     "contra", "ai-entry", "game", "security", "cert"])
+                                     "contra", "ai-entry", "game", "security", "cert", "aitool"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
@@ -1925,6 +2003,8 @@ def main() -> int:
         post = build_security()
     elif args.kind == "cert":
         post = build_cert()
+    elif args.kind == "aitool":
+        post = build_aitool()
     elif args.kind in ("pay", "perk", "welcome", "gongchae", "contra"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae, "contra": build_contra}[args.kind]()
