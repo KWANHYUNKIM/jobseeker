@@ -62,7 +62,7 @@ STYLE_FONTS = {
     "brandmag": ["Pretendard", "NanumMyeongjo"],
 }
 #: 원고마다 기본으로 찍을 틀
-DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"], "military": ["magazine"], "region": ["magazine"], "sme": ["magazine"], "fourday": ["magazine"], "secneed": ["magazine"], "db": ["magazine"], "k8s": ["magazine"], "linux": ["magazine"]}
+DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"], "military": ["magazine"], "region": ["magazine"], "sme": ["magazine"], "fourday": ["magazine"], "secneed": ["magazine"], "db": ["magazine"], "k8s": ["magazine"], "linux": ["magazine"], "nextjs": ["magazine"]}
 
 
 #: 회사 자산(assets/companies/…)이 없는 기계에서 쓰는 공용 글꼴 — 공식 배포본(OFL), 라이선스는 같은 폴더.
@@ -1147,7 +1147,69 @@ def build_linux(today: date | None = None) -> dict:
             "caption": caption}
 
 
-BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan, "military": build_military, "region": build_region, "sme": build_sme, "fourday": build_fourday, "secneed": build_secneed, "db": build_db, "k8s": build_k8s, "linux": build_linux}
+_FE = ("React", "Next.js", "Vue", "TypeScript", "Angular", "Svelte")
+
+
+def build_nextjs(today: date | None = None) -> dict:
+    """[카드뉴스] Next.js — Next.js 16.4(2026.10.6)와 보안 업데이트(10.14, nextjs.org/blog)를 계기로, 지금 국내 IT 공고 중
+    Next.js 를 적은 자리·프론트엔드 공고가 적은 기술·눈여겨볼 곳. 같은 자리 중복 게시는 하나로."""
+    from .collection import _group
+    from .series import _co_name, _it_rows
+    today = today or date.today()
+    rows = _it_rows()
+    total = len(rows)
+    nx = [r for r in rows if "Next.js" in (r["stacks"] or [])]
+    n = len(nx)
+    fe = [r for r in rows if "프론트엔드" in (r["roles"] or [])]
+    fe_by = sorted(((k, sum(1 for r in fe if k in (r["stacks"] or []))) for k in _FE), key=lambda kv: -kv[1])
+    entry = sum(1 for r in nx if r["career_bucket"] == "신입/무관")
+    pct = lambda a, b=n: round(100 * a / b) if b else 0
+    picks, seen = [], set()
+    for r in sorted(nx, key=lambda r: ({"대기업": 0, "중견기업": 1}.get(r["size"], 2), r["deadline_on"] is None, r["deadline_on"] or today)):
+        c = re.sub(r"\s*지점$", "", _co_name(r["company"]))
+        c = {"비바리퍼블리카": "토스"}.get(c, c)
+        d = (r["deadline_on"] - today).days if r["deadline_on"] else None
+        g = _group(c)
+        if g in seen or d == 0:
+            continue
+        seen.add(g)
+        picks.append({"co": c, "title": _short(re.sub(r"^\s*\[[^\]]*\]\s*", "", r["title"])),
+                      "meta": f"{r['size'] or ''} · {f'D-{d}' if d is not None else '상시'}"})
+        if len(picks) == 4:
+            break
+    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    slides = [
+        {"type": "cover", "photo": "pangyo.jpg", "kicker": f"Next.js · {today:%Y.%m.%d}",
+         "big": f"{n:,}", "unit": "개", "title": ["Next.js 를 적은", "국내 IT 자리"],
+         "sub": f"국내 IT 자리 {total:,}개 중 {pct(n, total)}% · 신입 가능 {entry}개"},
+        {"type": "stat", "photo": "hourglass.jpg", "kicker": "릴리스", "title": "16.4, 그리고 보안 업데이트",
+         "items": [{"num": "16.4", "unit": "", "label": "2026년 10월 6일"},
+                   {"num": "10.14", "unit": "", "label": "보안 업데이트 공지"}],
+         "explain": "nextjs.org 블로그 기준. 10월 14일 글은 Next.js 가 쓰는 다른 패키지의 취약점에 대한 업데이트다."},
+        {"type": "stat", "photo": "code.jpg", "kicker": "프론트엔드 공고로 보면", "title": f"프론트엔드 자리 {len(fe):,}개",
+         "items": [{"num": f"{pct(v, len(fe))}", "unit": "%", "label": k} for k, v in fe_by[:2]],
+         "explain": " · ".join(f"{k} {pct(v, len(fe))}%" for k, v in fe_by[2:]) + ". 프론트엔드 직군 공고 중 그 기술을 적은 비율."},
+        {"type": "picks", "photo": "typing.jpg", "kicker": "눈여겨볼 곳", "title": "Next.js 를 쓰는 곳",
+         "sub": "Next.js 를 적은 공고, 큰 회사 먼저 · 한 그룹 한 곳", "rows": picks},
+        {"type": "end", "photo": "seoul.jpg", "kicker": "저장해 두기", "title": "React 다음 한 걸음은\n공고가 정한다",
+         "lines": ["프론트엔드 공부하는 친구에게 보내 주세요", "공고 전체는 프로필 링크에서"]},
+    ]
+    for sl in slides:
+        sl["image"], sl["credit"] = _photo(sl.pop("photo"))
+        sl["note"] = note
+    caption = "\n\n".join([
+        f"Next.js 16.4 가 10월 6일 나왔습니다. 지금 국내 IT 자리 {total:,}개 중 Next.js 를 적은 자리는 {n:,}개({pct(n, total)}%), 신입 가능 {entry}개입니다.",
+        f"· 프론트엔드 직군 자리 {len(fe):,}개가 적은 기술: " + " · ".join(f"{k} {pct(v, len(fe))}%" for k, v in fe_by) + "\n"
+        "· 눈여겨볼 곳: " + " · ".join(p["co"] for p in picks),
+        "nextjs.org 블로그에 따르면 Next.js 16.4 는 10월 6일 나왔고, 10월 14일에는 Next.js 가 쓰는 다른 패키지의 취약점에 대한 보안 업데이트 글이 올라왔습니다.",
+        "출처\nhttps://nextjs.org/blog",
+        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+    ])
+    return {"id": f"nextjs-{today:%Y%m%d}", "series": "[Next.js]", "title": "Next.js 자리", "slides": slides,
+            "caption": caption}
+
+
+BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan, "military": build_military, "region": build_region, "sme": build_sme, "fourday": build_fourday, "secneed": build_secneed, "db": build_db, "k8s": build_k8s, "linux": build_linux, "nextjs": build_nextjs}
 
 
 # --- 렌더 ---------------------------------------------------------------
