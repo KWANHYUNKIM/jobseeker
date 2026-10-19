@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import collections
 import json
 import os
 import re
@@ -61,7 +62,7 @@ STYLE_FONTS = {
     "brandmag": ["Pretendard", "NanumMyeongjo"],
 }
 #: 원고마다 기본으로 찍을 틀
-DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"], "military": ["magazine"]}
+DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"], "military": ["magazine"], "region": ["magazine"]}
 
 
 #: 회사 자산(assets/companies/…)이 없는 기계에서 쓰는 공용 글꼴 — 공식 배포본(OFL), 라이선스는 같은 폴더.
@@ -566,12 +567,12 @@ def build_military(today: date | None = None) -> dict:
     today = today or date.today()
     with psycopg.connect(_dsn(), row_factory=dict_row) as conn:
         rows = conn.execute("""
-            SELECT c.display_name AS co, j.title, coalesce(j.full_jd, '') AS jd, f.career_bucket AS b, j.deadline_on
+            SELECT f.stacks, c.display_name AS co, j.title, coalesce(j.full_jd, '') AS jd, f.career_bucket AS b, j.deadline_on
               FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
               JOIN job_facet f ON f.job_id = j.id JOIN company c ON c.id = j.company_id
              WHERE coalesce(f.region, '') <> '해외·원격'
                AND NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = j.id)""").fetchall()
-    rows = [r for r in rows if not _not_dev({"title": r["title"], "stack": ["x"]}) and not _AGENCY.search(r["co"] + r["title"])
+    rows = [r for r in rows if not _not_dev({"title": r["title"], "stack": r.get("stacks") or []}) and not _AGENCY.search(r["co"] + r["title"])
             and not (r["deadline_on"] and r["deadline_on"] < today)]
     titled = [r for r in rows if _MIL.search(r["title"])]
     uniq = {}
@@ -634,7 +635,79 @@ def build_military(today: date | None = None) -> dict:
             "caption": caption}
 
 
-BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan, "military": build_military}
+_CAPITAL = ("서울", "경기", "인천")
+
+
+def build_region(today: date | None = None) -> dict:
+    """[카드뉴스] 수도권 쏠림 — R&D 비·인력 약 70% 가 수도권(SBS Biz 2025.9.30, 경성대 김종한 교수 보고서)을
+    지금 국내 IT 공고의 근무지로 확인한다. 근무지를 모르는 공고는 분모에서 뺀다."""
+    import psycopg
+    from psycopg.rows import dict_row
+    from .collection import _AGENCY, _not_dev
+    today = today or date.today()
+    with psycopg.connect(_dsn(), row_factory=dict_row) as conn:
+        rows = conn.execute("""
+            SELECT c.display_name AS co, j.title, f.region, f.district, f.company_size AS size, j.deadline_on, f.career_bucket AS b, f.stacks
+              FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
+              JOIN job_facet f ON f.job_id = j.id JOIN company c ON c.id = j.company_id
+             WHERE coalesce(f.region, '정보없음') NOT IN ('해외·원격', '정보없음')
+               AND NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = j.id)""").fetchall()
+    rows = [r for r in rows if not _not_dev({"title": r["title"], "stack": r["stacks"] or []}) and not _AGENCY.search(r["co"] + r["title"])
+            and not (r["deadline_on"] and r["deadline_on"] < today)]
+    n = len(rows)
+    cap = sum(1 for r in rows if r["region"] in _CAPITAL)
+    by = collections.Counter(r["region"] for r in rows if r["region"] not in _CAPITAL).most_common(3)
+    local = [r for r in rows if r["region"] not in _CAPITAL]
+    pct = lambda a: round(100 * a / n) if n else 0
+    picks, seen = [], set()
+    for r in sorted(local, key=lambda r: ({"대기업": 0, "중견기업": 1}.get(r["size"], 2),
+                                          r["deadline_on"] is None, r["deadline_on"] or today)):
+        c = _co(r["co"])
+        d = (r["deadline_on"] - today).days if r["deadline_on"] else None
+        if c in seen or d == 0:
+            continue
+        seen.add(c)
+        when = f"D-{d}" if d is not None else "상시"
+        place = r["region"] + (f" {r['district']}" if r["district"] else "")
+        picks.append({"co": c, "title": _short(re.sub(r"^\s*\[[^\]]*\]\s*", "", r["title"])),
+                      "meta": f"{place} · {when}"})
+        if len(picks) == 4:
+            break
+    note = f"JD Viewer 모집중 IT 공고 · 근무지를 적은 국내 공고 {n:,}건 · {today:%Y.%m.%d}"
+    slides = [
+        {"type": "cover", "photo": "seoul.jpg", "kicker": f"지역별 채용 · {today:%Y.%m.%d}",
+         "big": f"{pct(cap)}", "unit": "%", "title": [f"IT 공고 열에 {'일곱여덟아홉'[(round(pct(cap) / 10) - 7) * 2:(round(pct(cap) / 10) - 7) * 2 + 2]}은" if 7 <= round(pct(cap) / 10) <= 9 else "IT 공고 대부분은", "수도권에 있다"],
+         "sub": f"근무지가 서울·경기·인천인 모집중 IT 공고 {cap:,}건"},
+        {"type": "stat", "photo": "hourglass.jpg", "kicker": "보고서", "title": "연구개발도 수도권에 모였다",
+         "items": [{"num": "70", "unit": "%", "label": "연구개발비·연구인력 중 수도권"},
+                   {"num": "10", "unit": "년", "label": "좋은 일자리 격차를 본 기간"}],
+         "explain": "경성대 김종한 교수의 'R&D 지역인재정책' 보고서(한국고용정보원 계간지). 격차는 10년 동안 커졌다."},
+        {"type": "stat", "photo": "code.jpg", "kicker": "공고로 보면", "title": "수도권 밖에서 많은 곳",
+         "items": [{"num": f"{k:,}", "unit": "건", "label": name} for name, k in by[:2]],
+         "explain": f"수도권 밖 IT 공고는 모두 {len(local):,}건({100 - pct(cap)}%). 다음은 {by[2][0]} {by[2][1]}건." if len(by) > 2 else ""},
+        {"type": "picks", "photo": "typing.jpg", "kicker": "눈여겨볼 곳", "title": "수도권 밖 IT 자리",
+         "sub": "대기업·중견기업 먼저, 회사마다 한 건", "rows": picks},
+        {"type": "end", "photo": "pangyo.jpg", "kicker": "저장해 두기", "title": "고향에서 개발하고 싶다면\n지역 공고부터 보자",
+         "lines": ["지역에서 일자리 찾는 친구에게 보내 주세요", "지역별 공고는 프로필 링크에서"]},
+    ]
+    for sl in slides:
+        sl["image"], sl["credit"] = _photo(sl.pop("photo"))
+        sl["note"] = note
+    slides[1]["note"] = "SBS Biz 2025.9.30 보도(김종한 경성대 교수, '지역산업과 고용' 가을호) 요약"
+    caption = "\n\n".join([
+        f"IT 공고의 {pct(cap)}%는 수도권에 있습니다. 근무지를 적은 국내 IT 공고 {n:,}건 중 서울·경기·인천이 {cap:,}건이에요.",
+        "· 수도권 밖에서 많은 곳: " + " · ".join(f"{k} {v}건" for k, v in by) + "\n"
+        "· 눈여겨볼 곳: " + " · ".join(p["co"] for p in picks),
+        "SBS Biz 는 경성대 김종한 교수의 보고서를 인용해 연구개발비와 연구인력의 약 70%가 수도권에 모여 있고, "
+        "지난 10년 동안 좋은 일자리의 지역 격차가 커졌다고 전했습니다.",
+        "출처\nhttps://biz.sbs.co.kr/amp/article/20000263110",
+        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고 기준. 근무지를 적지 않은 공고와 해외·원격 공고는 뺐습니다.",
+    ])
+    return {"id": f"region-{today:%Y%m%d}", "series": "[지역별 채용]", "title": "수도권 밖 IT 자리", "slides": slides,
+            "caption": caption}
+
+
+BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan, "military": build_military, "region": build_region}
 
 
 # --- 렌더 ---------------------------------------------------------------

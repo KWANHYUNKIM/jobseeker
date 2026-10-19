@@ -1781,7 +1781,7 @@ def _infra_rows() -> list[dict]:
     sys.path.insert(0, str(ROOT / "catch_capture"))
     from store.db.conn import cursor
     with cursor(autocommit=True) as cur:
-        cur.execute("""SELECT co.display_name AS company, j.title, f.career_bucket,
+        cur.execute("""SELECT f.stacks, co.display_name AS company, j.title, f.career_bucket,
                               coalesce(j.qualifications, '') AS qual, coalesce(j.preferences, '') AS pref,
                               concat_ws(E'\\n', j.qualifications, j.preferences, j.full_jd) AS body
                          FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
@@ -1794,7 +1794,7 @@ def _infra_rows() -> list[dict]:
 def build_cert() -> dict:
     """[자격증 우대] 쇼츠 — 'IT 리더 87% 가 인프라·보안 인증 보유자를 우대'(로버트 하프 2026 연봉 가이드, 벤처스퀘어 보도)를
     지금 국내 인프라 공고 본문에서 자격증 이름이 몇 번 나오는지로 확인한다. 숫자는 만들 때 DB 에서 다시 센다."""
-    rows = [r for r in _infra_rows() if not _not_dev({"title": r["title"], "stack": ["x"]})]
+    rows = [r for r in _infra_rows() if not _not_dev({"title": r["title"], "stack": r.get("stacks") or []})]
     hits = [(r, [k for k, rx in _CERTS.items() if re.search(rx, r["body"] or "", re.I)]) for r in rows]
     named = [(r, h) for r, h in hits if h]
     n, nn = len(rows), len(named)
@@ -1860,14 +1860,14 @@ def _all_rows() -> list[dict]:
     sys.path.insert(0, str(ROOT / "catch_capture"))
     from store.db.conn import cursor
     with cursor(autocommit=True) as cur:
-        cur.execute("""SELECT co.display_name AS company, j.title, f.career_bucket,
+        cur.execute("""SELECT f.stacks, co.display_name AS company, j.title, f.career_bucket,
                               coalesce(j.qualifications, '') AS qual, coalesce(j.preferences, '') AS pref,
                               coalesce(j.benefits, '') AS perk
                          FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
                          JOIN job_facet f ON f.job_id = j.id JOIN company co ON co.id = j.company_id
                         WHERE coalesce(f.region, '') <> '해외·원격'
                           AND NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = j.id)""")
-        return [r for r in cur.fetchall() if not _not_dev({"title": r["title"], "stack": ["x"]})]
+        return [r for r in cur.fetchall() if not _not_dev({"title": r["title"], "stack": r.get("stacks") or []})]
 
 
 def build_aitool() -> dict:
@@ -1984,12 +1984,12 @@ def build_pangyo() -> dict:
     from store.db.conn import cursor
     from .collection import _AGENCY
     with cursor(autocommit=True) as cur:
-        cur.execute("""SELECT co.display_name AS company, j.title, f.career_bucket, f.stacks, f.region, f.district
+        cur.execute("""SELECT f.stacks, co.display_name AS company, j.title, f.career_bucket, f.region, f.district
                          FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
                          JOIN job_facet f ON f.job_id = j.id JOIN company co ON co.id = j.company_id
                         WHERE f.region IN ('경기', '서울')
                           AND NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = j.id)""")
-        allr = [r for r in cur.fetchall() if not _not_dev({"title": r["title"], "stack": ["x"]})
+        allr = [r for r in cur.fetchall() if not _not_dev({"title": r["title"], "stack": r.get("stacks") or []})
                 and not _AGENCY.search(r["company"] + " " + r["title"])]
     rows = [r for r in allr if r["region"] == "경기" and r["district"] == "성남시"]
     gangnam = sum(1 for r in allr if r["region"] == "서울" and r["district"] == "강남구")
@@ -2111,12 +2111,12 @@ def build_junior() -> dict:
     from store.db.conn import cursor
     from .collection import _AGENCY
     with cursor(autocommit=True) as cur:
-        cur.execute("""SELECT co.display_name AS company, j.title, f.career_bucket, f.company_size
+        cur.execute("""SELECT f.stacks, co.display_name AS company, j.title, f.career_bucket, f.company_size
                          FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
                          JOIN job_facet f ON f.job_id = j.id JOIN company co ON co.id = j.company_id
                         WHERE coalesce(f.region, '') <> '해외·원격' AND f.career_bucket IN ('신입/무관', '1-2년')
                           AND NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = j.id)""")
-        rows = [r for r in cur.fetchall() if not _not_dev({"title": r["title"], "stack": ["x"]})
+        rows = [r for r in cur.fetchall() if not _not_dev({"title": r["title"], "stack": r.get("stacks") or []})
                 and not _AGENCY.search(r["company"] + " " + r["title"])]
     n = len(rows)
     entry = sum(1 for r in rows if r["career_bucket"] == "신입/무관")
@@ -2174,12 +2174,12 @@ def build_usvs() -> dict:
     from store.db.conn import cursor
     from .collection import _AGENCY
     with cursor(autocommit=True) as cur:
-        cur.execute("""SELECT co.display_name AS company, j.title, f.career_bucket
+        cur.execute("""SELECT f.stacks, co.display_name AS company, j.title, f.career_bucket
                          FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
                          JOIN job_facet f ON f.job_id = j.id JOIN company co ON co.id = j.company_id
                         WHERE coalesce(f.region, '') <> '해외·원격'
                           AND NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = j.id)""")
-        rows = [r for r in cur.fetchall() if not _not_dev({"title": r["title"], "stack": ["x"]})
+        rows = [r for r in cur.fetchall() if not _not_dev({"title": r["title"], "stack": r.get("stacks") or []})
                 and not _AGENCY.search(r["company"] + " " + r["title"])]
     n = len(rows)
     c = collections.Counter(r["career_bucket"] for r in rows)
@@ -2233,7 +2233,7 @@ def build_gap() -> dict:
     home = json.loads(urllib.request.urlopen(base + "/api/home", timeout=30).read())
     sec = {x["key"]: x for x in home["sections"]}
     entry, exp = sec["entry"]["total"], sec["experienced"]["total"]
-    big = [j for j in sec["entry"]["jobs"] if j["size"] == "대기업" and not _not_dev({"title": j["title"], "stack": ["x"]})]
+    big = [j for j in sec["entry"]["jobs"] if j["size"] == "대기업" and not _not_dev({"title": j["title"], "stack": j.get("stacks") or []})]
     big_cos = list(dict.fromkeys(_co_name(j["company"]).replace(" Careers", "") for j in big))   # 센 수 그대로 — 자르지 않는다
     shown = len(sec["entry"]["jobs"])
     ratio = exp / entry if entry else 0

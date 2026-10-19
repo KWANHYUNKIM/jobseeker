@@ -44,12 +44,12 @@
 
   /* bars */
   .bars { margin-top:48px; display:flex; flex-direction:column; gap:16px; }
-  .bar { display:grid; grid-template-columns:230px 1fr 110px; align-items:center; gap:18px; }
+  .bar { display:grid; grid-template-columns:230px 1fr auto; align-items:center; gap:18px; }
   .bar .l { font-size:34px; font-weight:800; letter-spacing:-.02em; text-align:right; white-space:nowrap; }
   .bar .t { height:40px; background:var(--line); }
   .bar .t i { display:block; height:100%; background:var(--ink); }
   .bar.hi .t i { background:var(--accent); }
-  .bar .v { font-size:30px; font-weight:800; font-variant-numeric:tabular-nums; }
+  .bar .v { font-size:30px; font-weight:800; font-variant-numeric:tabular-nums; white-space:nowrap; }
   .bar .v small { font-size:18px; color:var(--sub); font-weight:600; margin-left:4px; }
 
   /* table */
