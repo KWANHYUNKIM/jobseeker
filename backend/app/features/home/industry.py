@@ -71,7 +71,7 @@ _KNOWN: dict[str, str] = {
     "글로벌머니익스프레스": "금융", "핑거": "금융", "robinhood": "금융", "coinbase": "금융", "chime": "금융", "affirm": "금융",
     "ramp": "금융", "brex": "금융", "block": "금융", "n26": "금융", "zopa": "금융", "monzo": "금융", "adyen": "금융",
     "mercury": "금융", "gemini": "금융", "sofi": "금융", "qonto": "금융", "gocardless": "금융", "melio": "금융",
-    "paytm": "금융", "bill.com": "금융", "alloy": "금융", "plaid": "금융", "stripe": "금융", "네오플": "게임", "넵튠": "게임",
+    "paytm": "금융", "bill.com": "금융", "alloy": "금융", "plaid": "금융", "stripe": "금융", "네오플": "게임", "엔씨": "게임", "넵튠": "게임",
     "roblox": "게임", "scopely": "게임", "nhn": "IT·플랫폼", "엔에이치엔": "IT·플랫폼", "nhnjapan": "IT·플랫폼",
     "화해글로벌": "IT·플랫폼", "알스퀘어": "IT·플랫폼", "카페24": "IT·플랫폼", "spotify": "IT·플랫폼", "pinterest": "IT·플랫폼",
     "discord": "IT·플랫폼", "matchgroup": "IT·플랫폼", "suno": "IT·플랫폼", "seatgeek": "IT·플랫폼", "nextdoor": "IT·플랫폼",
