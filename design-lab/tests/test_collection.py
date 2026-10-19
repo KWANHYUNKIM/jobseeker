@@ -385,6 +385,8 @@ class SameRoleTest(unittest.TestCase):
         # 한 낱말만 겹치는 다른 자리
         self.assertFalse(_same_role("Backend Developer", "Frontend Developer"))
         self.assertFalse(_same_role("Server Developer", "DevOps Engineer"))
+        # 짧아도 제목이 같으면 같은 자리
+        self.assertTrue(_same_role("Backend Developer", "Backend Developer"))
 
 
 if __name__ == "__main__":

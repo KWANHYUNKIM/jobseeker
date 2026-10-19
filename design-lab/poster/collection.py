@@ -427,6 +427,8 @@ def _same_role(a: str, b: str) -> bool:
     """두 제목이 같은 자리인가 — 낱말이 셋 이상 겹치고, 짧은 쪽 낱말의 60% 이상이 겹치면 같다고 본다.
     ('Backend Developer' 와 'Frontend Developer' 는 한 낱말만 겹쳐 다르다)"""
     wa, wb = (set(re.findall(r"[0-9A-Za-z가-힣]+", x.lower())) for x in (a, b))
+    if wa and wa == wb:                 # 제목이 같으면 짧아도 같은 자리('현대자동차'·'현대자동차그룹' Backend Developer)
+        return True
     common = len(wa & wb)
     return common >= 3 and common >= 0.6 * min(len(wa), len(wb))
 
