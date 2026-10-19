@@ -1,0 +1,92 @@
+<!doctype html>
+<!-- 카드뉴스 틀: 잡지. 사진이 판 전체를 덮고, 글은 아래쪽 어두운 그라디언트 위에 명조 제목으로.
+     표지처럼 위에 제호줄(호수·날짜)이 있고, 숫자는 명조로 크게. 강조색 없음 — 흰 글과 사진만. -->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<style>
+  /*__FONTS__*/
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:#000; }
+  .sheet { width:var(--w); height:var(--h); position:relative; overflow:hidden; color:#fff;
+           font-family:'Pretendard',sans-serif; display:flex; flex-direction:column; padding:72px 76px 64px;
+           -webkit-font-smoothing:antialiased; }
+  .bg { position:absolute; inset:0; background-size:cover; background-position:center; }
+  .shade { position:absolute; inset:0;
+           background:linear-gradient(180deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,.15) 45%, rgba(0,0,0,.88) 78%, #000 100%); }
+  .sheet > *:not(.bg):not(.shade) { position:relative; }
+  .mast { display:flex; justify-content:space-between; align-items:baseline; font-size:22px; font-weight:600;
+          letter-spacing:.18em; text-transform:uppercase; border-bottom:1.5px solid rgba(255,255,255,.7); padding-bottom:14px; }
+  .mast b { font-family:'NanumMyeongjo',serif; font-size:40px; letter-spacing:-.02em; text-transform:none; font-weight:700; }
+  .kicker { margin-top:auto; font-size:24px; font-weight:700; letter-spacing:.22em; opacity:.85; }
+  h1, h2 { font-family:'NanumMyeongjo',serif; font-weight:700; letter-spacing:-.04em; line-height:1.12; }
+  h1 { font-size:104px; margin-top:20px; }
+  h2 { font-size:72px; margin-top:16px; }
+  .sub { margin-top:22px; font-size:30px; font-weight:500; opacity:.88; line-height:1.45; }
+  .big { font-family:'NanumMyeongjo',serif; font-size:250px; line-height:.86; letter-spacing:-.05em; margin-top:18px; }
+  .big small { font-size:70px; margin-left:12px; letter-spacing:-.02em; }
+  .rows { margin-top:34px; border-top:1.5px solid rgba(255,255,255,.75); }
+  .row { display:grid; grid-template-columns:1fr auto; align-items:baseline; padding:18px 0;
+         border-bottom:1px solid rgba(255,255,255,.28); }
+  .row .l { font-size:36px; font-weight:700; letter-spacing:-.02em; }
+  .row .v { font-family:'NanumMyeongjo',serif; font-size:46px; font-variant-numeric:tabular-nums; }
+  .row .v small { font-family:'Pretendard'; font-size:22px; opacity:.7; margin-left:8px; }
+  .row .m { grid-column:1 / -1; font-size:24px; opacity:.78; margin-top:6px; font-weight:500; }
+  .pair { display:grid; grid-template-columns:1fr 1fr; gap:40px; margin-top:34px; border-top:1.5px solid rgba(255,255,255,.75); padding-top:26px; }
+  .pair .num { font-family:'NanumMyeongjo',serif; font-size:132px; line-height:1; letter-spacing:-.04em; }
+  .pair .num small { font-size:40px; margin-left:6px; }
+  .pair .lab { font-size:26px; margin-top:10px; font-weight:600; opacity:.88; }
+  .exp { margin-top:26px; font-size:26px; opacity:.8; line-height:1.5; }
+  .end li { list-style:none; font-size:30px; margin-top:14px; font-weight:600; opacity:.9; }
+  .end li::before { content:'— '; opacity:.6; }
+  .foot { margin-top:30px; display:flex; justify-content:space-between; gap:30px; font-size:18px; opacity:.72; line-height:1.4; }
+  .foot .pg { font-variant-numeric:tabular-nums; white-space:nowrap; letter-spacing:.1em; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+function draw(sheet, S, D) {
+  const bg = el('div', 'bg'); bg.style.backgroundImage = `url("${S.image}")`;
+  sheet.append(bg, el('div', 'shade'));
+  const mast = el('div', 'mast');
+  mast.append(lines(el('b'), 'devjobseeker'), el('span', '', S.type === 'cover' ? S.kicker : D.series));
+  sheet.append(mast);
+  sheet.append(el('div', 'kicker', S.type === 'cover' ? D.series : S.kicker));
+  if (S.type === 'cover') {
+    sheet.append(lines(el('h1', 'fit'), S.title.join('\n')));
+    const big = el('div', 'big fit', S.big); big.append(el('small', '', S.unit)); sheet.append(big);
+    sheet.append(el('div', 'sub body', S.sub));
+  } else {
+    sheet.append(lines(el('h2', 'fit'), S.title));
+    if (S.sub) sheet.append(el('div', 'sub body', S.sub));
+  }
+  if (S.type === 'bars' || S.type === 'picks') {
+    const box = el('div', 'rows');
+    S.rows.forEach(r => {
+      const row = el('div', 'row');
+      if (S.type === 'bars') {
+        const v = el('div', 'v', r.value.toLocaleString()); if (r.pct != null) v.append(el('small', '', r.pct + '%'));
+        row.append(el('div', 'l body', r.label), v);
+      } else {
+        row.append(el('div', 'l body', r.co), el('div', 'v'), el('div', 'm body', r.title + ' · ' + r.meta));
+      }
+      box.append(row);
+    });
+    sheet.append(box);
+  } else if (S.type === 'stat') {
+    const pair = el('div', 'pair');
+    S.items.forEach(it => { const c = el('div'); const n = el('div', 'num', it.num); n.append(el('small', '', it.unit));
+      c.append(n, el('div', 'lab body', it.label)); pair.append(c); });
+    sheet.append(pair, el('div', 'exp body', S.explain));
+  } else if (S.type === 'end') {
+    const ul = el('ul', 'end'); S.lines.forEach(l => ul.append(el('li', 'body', l))); sheet.append(ul);
+  }
+  const foot = el('div', 'foot');
+  foot.append(el('div', 'body', S.credit + ' · ' + S.note), el('div', 'pg', pad2(D.page) + ' / ' + pad2(D.total)));
+  sheet.append(foot);
+}
+/*__COMMON__*/
+</script>
+</body>
+</html>

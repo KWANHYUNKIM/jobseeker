@@ -1,0 +1,100 @@
+<!doctype html>
+<!-- 카드뉴스 틀: 신문 1면. 미색 종이 · 겹줄 제호 · 굵은 고딕 헤드라인 · 흑백 사진에 사진 설명.
+     숫자는 표로, 단은 두 개. 색은 먹 하나에 붉은 도장 하나(호외 표시)만. -->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<style>
+  /*__FONTS__*/
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:#ccc; }
+  .sheet { width:var(--w); height:var(--h); position:relative; overflow:hidden; color:#151412; background:#f3efe4;
+           font-family:'Pretendard',sans-serif; display:flex; flex-direction:column; padding:56px 64px 48px;
+           -webkit-font-smoothing:antialiased; }
+  .sheet::after { content:''; position:absolute; inset:0; pointer-events:none; opacity:.35;
+                  background:repeating-linear-gradient(0deg, rgba(0,0,0,.025) 0 1px, transparent 1px 3px); }
+  .mast { text-align:center; border-top:6px solid #151412; border-bottom:6px double #151412; padding:14px 0 12px; }
+  .mast .name { font-family:'NanumMyeongjo',serif; font-size:76px; font-weight:700; letter-spacing:-.02em; line-height:1; }
+  .dateline { display:flex; justify-content:space-between; font-size:19px; font-weight:600; padding:10px 2px;
+              border-bottom:1.5px solid #151412; letter-spacing:.02em; }
+  .photo { position:relative; }
+  .stamp { position:absolute; right:24px; top:22px; transform:rotate(8deg); border:4px solid #c8102e; color:#c8102e;
+           font-family:'GothicA1'; font-weight:900; font-size:30px; padding:6px 14px; letter-spacing:.1em; z-index:2; }
+  h1, h2 { font-family:'GothicA1',sans-serif; font-weight:900; letter-spacing:-.05em; line-height:1.08; margin-top:26px; }
+  h1 { font-size:96px; }
+  h2 { font-size:74px; }
+  .deck { font-family:'NanumMyeongjo',serif; font-size:32px; font-weight:700; margin-top:16px; line-height:1.35;
+          padding-bottom:20px; border-bottom:1.5px solid #151412; }
+  .photo { margin-top:24px; height:420px; background-size:cover; background-position:center; filter:grayscale(1) contrast(1.15); }
+  .cap { font-size:18px; color:#4b4842; margin-top:8px; line-height:1.35; }
+  .cols { margin-top:22px; display:grid; grid-template-columns:1fr 1fr; column-gap:40px; flex:1; min-height:0; }
+  .cols > div + div { border-left:1.5px solid #151412; padding-left:40px; }
+  .lead { font-family:'NanumMyeongjo',serif; font-size:27px; line-height:1.62; font-weight:700; }
+  .lead.drop::first-letter { font-family:'GothicA1'; font-size:92px; float:left; line-height:.82; margin:8px 10px 0 0; }
+  table { width:100%; border-collapse:collapse; }
+  th { text-align:left; font-size:19px; font-weight:700; border-bottom:2.5px solid #151412; padding-bottom:6px; }
+  th.r, td.r { text-align:right; }
+  td { font-size:28px; font-weight:700; padding:13px 0; border-bottom:1px solid #a8a296; font-variant-numeric:tabular-nums; }
+  td small { font-size:19px; color:#5a564e; margin-left:4px; }
+  .pk { padding:14px 0; border-bottom:1px solid #a8a296; }
+  .pk b { display:block; font-family:'GothicA1'; font-weight:900; font-size:32px; letter-spacing:-.03em; }
+  .pk span { font-size:22px; line-height:1.4; display:block; margin-top:4px; }
+  .num { font-family:'GothicA1'; font-weight:900; font-size:120px; letter-spacing:-.05em; line-height:1; }
+  .num small { font-size:36px; margin-left:4px; }
+  .lab { font-size:24px; font-weight:700; margin:8px 0 22px; }
+  .end li { list-style:none; font-family:'NanumMyeongjo',serif; font-weight:700; font-size:30px; line-height:1.5; margin-top:12px; }
+  .end li::before { content:'▸ '; }
+  .foot { margin-top:16px; border-top:1.5px solid #151412; padding-top:10px; display:flex; justify-content:space-between;
+          gap:24px; font-size:18px; color:#4b4842; line-height:1.4; }
+  .foot .pg { white-space:nowrap; font-weight:700; color:#151412; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+function draw(sheet, S, D) {
+  const mast = el('div', 'mast'); mast.append(el('div', 'name', '개발채용일보')); sheet.append(mast);
+  const dl = el('div', 'dateline');
+  dl.append(el('span', '', D.series + ' ' + (S.kicker || '')), el('span', '', S.type === 'cover' ? S.kicker : '@devjobseeker'));
+  sheet.append(dl);
+  if (S.type === 'cover') {
+    sheet.append(lines(el('h1', 'fit'), `${S.title.join(' ')}\n${S.big}${S.unit}`));
+    sheet.append(el('div', 'deck body', S.sub));
+  } else {
+    sheet.append(lines(el('h2', 'fit'), S.title));
+    if (S.sub) sheet.append(el('div', 'deck body', S.sub));
+  }
+  const ph = el('div', 'photo'); ph.style.backgroundImage = `url("${S.image}")`;
+  sheet.append(ph, el('div', 'cap body', S.credit));
+  const cols = el('div', 'cols'); const a = el('div'), b = el('div'); cols.append(a, b);
+  if (S.type === 'cover') {
+    ph.style.height = '380px'; ph.append(el('div', 'stamp', '이번 주'));
+    a.append(el('p', 'lead drop body', `한 주 동안 새로 잡힌 모집중 개발 공고는 ${S.big}${S.unit}이다.`));
+    b.append(el('p', 'lead body', '어느 직군이 늘었고 어떤 기술을 원하는지, 신입이 넣을 곳은 어디인지 다음 장부터 숫자로 본다.'));
+  } else if (S.type === 'bars') {
+    const half = Math.ceil(S.rows.length / 2);
+    [S.rows.slice(0, half), S.rows.slice(half)].forEach((part, k) => {
+      const t = el('table'); const h = el('tr'); h.append(el('th', '', '항목'), el('th', 'r', '건수')); t.append(h);
+      part.forEach(r => { const tr = el('tr'); const v = el('td', 'r body', r.value.toLocaleString());
+        if (r.pct != null) v.append(el('small', '', r.pct + '%')); tr.append(el('td', 'body', r.label), v); t.append(tr); });
+      (k ? b : a).append(t);
+    });
+  } else if (S.type === 'picks') {
+    S.rows.forEach((r, i) => { const p = el('div', 'pk'); p.append(el('b', 'body', r.co), el('span', 'body', r.title + ' — ' + r.meta));
+      (i % 2 ? b : a).append(p); });
+  } else if (S.type === 'stat') {
+    S.items.forEach((it, i) => { const c = i ? b : a; const n = el('div', 'num', it.num); n.append(el('small', '', it.unit));
+      c.append(n, el('div', 'lab body', it.label)); });
+    b.append(el('p', 'lead body', S.explain));
+  } else if (S.type === 'end') {
+    const ul = el('ul', 'end'); S.lines.forEach(l => ul.append(el('li', 'body', l))); a.append(ul);
+    b.append(el('p', 'lead body', '매주 월요일, 한 주 동안 새로 잡힌 공고를 같은 기준으로 센다.'));
+  }
+  sheet.append(cols);
+  const foot = el('div', 'foot'); foot.append(el('div', 'body', S.note), el('div', 'pg', `${D.page}면 / ${D.total}`));
+  sheet.append(foot);
+}
+/*__COMMON__*/
+</script>
+</body>
+</html>

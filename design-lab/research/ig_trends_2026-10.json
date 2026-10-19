@@ -1,0 +1,22 @@
+{
+ "observed_at": "2026-10-19",
+ "how": "로그인한 인스타 웹에서 공식 계정 프로필·피드를 직접 봄. 팔로워 수만 확인(게시물별 도달·저장은 볼 수 없다)",
+ "accounts": [
+  {"handle": "linkareer", "followers": "12.3만", "note": "매주 '10월 3주차' 라벨 + 신입 공고 LIST"},
+  {"handle": "catch.job", "followers": "10.7만", "note": "회사 공식 포스터, 릴스, 하이라이트로 코너 구분"},
+  {"handle": "jobkorea_albamon", "followers": "5.2만", "note": "광고 모델·이벤트"},
+  {"handle": "wantedjobs.kr", "followers": "4.2만", "note": "Weekly AI Career News vol.N — 시리즈 틀 + 답 가린 질문형"},
+  {"handle": "incruit1998", "followers": "4만", "note": "실제 회사 건물 사진 + 이번 주 마감"},
+  {"handle": "saramin_official", "followers": "2.9만", "note": "AI 생성 캐릭터 이미지"},
+  {"handle": "_remember_official", "followers": "1.1만", "note": "같은 오브젝트(전광판)로 직군만 바꿔 연재"},
+  {"handle": "newneek.official", "followers": "23.8만", "note": "사진 + 라벨 상자 질문형 제목"},
+  {"handle": "longblack.co", "followers": "18.7만", "note": "게시물마다 색이 바뀌고 고정 장치(점·로고 자리)는 그대로"}
+ ],
+ "rules": {
+  "weekly-corner": {"rule": "매주 같은 자리에 돌아오는 코너 — 코너마다 틀 하나", "from": ["linkareer", "incruit1998", "wantedjobs.kr"]},
+  "question-title": {"rule": "제목은 질문, 답은 다음 장", "from": ["wantedjobs.kr", "newneek.official"]},
+  "real-photo": {"rule": "표지는 실물 사진 한 장 — 장식 없이", "from": ["incruit1998", "longblack.co", "linkareer"]},
+  "one-object": {"rule": "같은 오브젝트 하나로 연재", "from": ["_remember_official"]},
+  "color-per-post": {"rule": "게시물마다 색은 바뀌고 고정 장치는 그대로", "from": ["longblack.co"]}
+ }
+}

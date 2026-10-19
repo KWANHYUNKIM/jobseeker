@@ -1,0 +1,109 @@
+<!doctype html>
+<!-- 카드뉴스 틀: 포스터. 판 전체가 원색 면 하나, 사진은 그 색의 이중톤으로 큰 사각에 잘라 넣는다.
+     숫자는 판 폭을 거의 채울 만큼 크게(Paperlogy Black). 장마다 면 색이 바뀐다 — 넘길 때 리듬. -->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<style>
+  /*__FONTS__*/
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:#111; }
+  .sheet { width:var(--w); height:var(--h); position:relative; overflow:hidden; color:var(--ink); background:var(--bg);
+           font-family:'Pretendard',sans-serif; display:flex; flex-direction:column; padding:64px 68px 56px;
+           -webkit-font-smoothing:antialiased; }
+  .top { display:flex; justify-content:space-between; align-items:center; font-family:'SpaceMono',monospace; font-size:22px;
+         font-weight:700; letter-spacing:.04em; }
+  .top .tag { background:var(--ink); color:var(--bg); padding:6px 14px; }
+  .pic { position:relative; margin-top:34px; height:470px; overflow:hidden; background:#0d0d0d; }
+  .pic i { position:absolute; inset:0; background-size:cover; background-position:center; filter:grayscale(1) contrast(1.25);
+           mix-blend-mode:screen; opacity:.9; }
+  .pic::after { content:''; position:absolute; inset:0; background:var(--tone); mix-blend-mode:multiply; }
+  .pic .k { position:absolute; left:22px; bottom:18px; z-index:2; font-family:'Paperlogy'; font-weight:900; font-size:44px;
+            color:var(--bg); background:var(--ink); padding:4px 16px; }
+  .big { font-family:'Paperlogy',sans-serif; font-weight:900; font-size:300px; line-height:.8; letter-spacing:-.06em;
+         margin-top:30px; white-space:nowrap; }
+  .big small { font-size:90px; letter-spacing:-.03em; }
+  h1, h2 { font-family:'Paperlogy',sans-serif; font-weight:900; letter-spacing:-.05em; line-height:1.02; }
+  h1 { font-size:96px; margin-top:52px; }
+  h2 { font-size:82px; margin-top:30px; }
+  .sub { font-size:28px; font-weight:600; margin-top:16px; line-height:1.4; }
+  .bars { margin-top:26px; display:flex; flex-direction:column; gap:12px; }
+  .bar { display:grid; grid-template-columns:200px 1fr 100px; gap:16px; align-items:center; }
+  .bar .l { font-size:30px; font-weight:800; white-space:nowrap; }
+  .bar .t { height:36px; border:3px solid var(--ink); }
+  .bar .t i { display:block; height:100%; background:var(--ink); }
+  .bar .v { font-family:'SpaceMono',monospace; font-size:30px; font-weight:700; text-align:right; }
+  .pk { display:grid; grid-template-columns:70px 1fr; gap:12px; padding:14px 0; border-top:3px solid var(--ink); }
+  .pk .n { font-family:'SpaceMono'; font-size:30px; font-weight:700; }
+  .pk b { font-family:'Paperlogy'; font-weight:900; font-size:38px; letter-spacing:-.03em; display:block; }
+  .pk span { font-size:23px; font-weight:600; display:block; margin-top:4px; line-height:1.35; }
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:24px; }
+  .two .num { font-family:'Paperlogy'; font-weight:900; font-size:150px; letter-spacing:-.05em; line-height:.9; }
+  .two .num small { font-size:46px; }
+  .two .lab { font-size:25px; font-weight:700; margin-top:10px; border-top:3px solid var(--ink); padding-top:10px; }
+  .exp { font-size:24px; font-weight:600; margin-top:22px; line-height:1.45; }
+  .end li { list-style:none; font-size:30px; font-weight:800; margin-top:14px; }
+  .end li::before { content:'→ '; }
+  .foot { margin-top:auto; padding-top:18px; display:flex; justify-content:space-between; gap:24px; font-size:18px;
+          font-weight:600; line-height:1.4; opacity:.85; }
+  .foot .pg { font-family:'SpaceMono'; white-space:nowrap; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+// 장마다 면 색: 글자색과 대비 4.5:1 이상인 짝만
+const FACES = [['#ff4f1f', '#120a06'], ['#1f3bff', '#f4f1ea'], ['#ffd400', '#141210'], ['#00b37e', '#0b1712'],
+               ['#f4f1ea', '#141210'], ['#141210', '#ffd400']];
+function draw(sheet, S, D) {
+  const [bg, ink] = FACES[(D.page - 1) % FACES.length];
+  sheet.style.setProperty('--bg', bg); sheet.style.setProperty('--ink', ink);
+  // 이중톤은 밝은 색으로 곱한다 — 면이 어두우면 글자색으로
+  const lum = h => [1, 3, 5].map(k => parseInt(h.slice(k, k + 2), 16)).reduce((a, b) => a + b) / 765;
+  sheet.style.setProperty('--tone', lum(bg) > .35 ? bg : ink);
+  const top = el('div', 'top'); top.append(el('span', 'tag', D.series), el('span', '', '@devjobseeker'));
+  sheet.append(top);
+  const pic = el('div', 'pic'); const i = el('i'); i.style.backgroundImage = `url("${S.image}")`; pic.append(i);
+  pic.append(el('div', 'k', S.type === 'cover' ? 'WEEKLY' : S.kicker));
+  if (S.type === 'cover') {
+    pic.style.height = '400px';
+    sheet.append(pic);
+    const big = el('div', 'big fit', S.big); big.append(el('small', '', S.unit)); sheet.append(big);
+    sheet.append(lines(el('h1', 'fit'), S.title.join('\n')));
+    sheet.append(el('div', 'sub body', S.sub));
+  } else if (S.type === 'end') {
+    sheet.append(pic);
+    sheet.append(lines(el('h2', 'fit'), S.title));
+    const ul = el('ul', 'end'); S.lines.forEach(l => ul.append(el('li', 'body', l))); sheet.append(ul);
+  } else {
+    pic.style.height = S.type === 'picks' ? '300px' : '360px';
+    sheet.append(pic);
+    sheet.append(lines(el('h2', 'fit'), S.title));
+    if (S.sub) sheet.append(el('div', 'sub body', S.sub));
+  }
+  if (S.type === 'bars') {
+    const max = Math.max(...S.rows.map(r => r.value));
+    const box = el('div', 'bars');
+    S.rows.forEach(r => { const b = el('div', 'bar'); const t = el('div', 't'); const f = el('i');
+      f.style.width = (100 * r.value / max) + '%'; t.append(f);
+      b.append(el('div', 'l body', r.label), t, el('div', 'v body', r.value.toLocaleString())); box.append(b); });
+    sheet.append(box);
+  } else if (S.type === 'picks') {
+    const box = el('div'); box.style.marginTop = '20px';
+    S.rows.forEach((r, k) => { const p = el('div', 'pk'); const c = el('div');
+      c.append(el('b', 'body', r.co), el('span', 'body', r.title + ' · ' + r.meta));
+      p.append(el('div', 'n', pad2(k + 1)), c); box.append(p); });
+    sheet.append(box);
+  } else if (S.type === 'stat') {
+    const two = el('div', 'two');
+    S.items.forEach(it => { const c = el('div'); const n = el('div', 'num', it.num); n.append(el('small', '', it.unit));
+      c.append(n, el('div', 'lab body', it.label)); two.append(c); });
+    sheet.append(two, el('div', 'exp body', S.explain));
+  }
+  const foot = el('div', 'foot'); foot.append(el('div', 'body', S.credit + ' · ' + S.note), el('div', 'pg', `${D.page}/${D.total}`));
+  sheet.append(foot);
+}
+/*__COMMON__*/
+</script>
+</body>
+</html>

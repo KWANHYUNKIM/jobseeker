@@ -239,6 +239,18 @@ REGISTRY: list[Loop] = [
              "docs(design-lab) 로 커밋, 푸시는 하지 않는다. 무엇을 배웠는지 한두 줄로 보고한다. "
              "웹에서 배운 것과 릴스에서 본 것이 같은 방향이면 playbook 의 근거에 둘 다 단다. "
              "고치는 파일은 reels-study.md · playbook.md · web-learning.md · data/reels-study.jsonl 뿐이다 — git add 도 이 경로만 준다.")),
+    # 디자인 에이전트 — 모으기(①)·교훈(②)·시안(③)만 한다. 판정(④)·점수(⑤)는 사람이 8780 /design 에서 매긴다.
+    # 디자인 판단은 .py·.json 이 아니라 DB(016 design_*)의 교훈과 점수로 쌓인다.
+    Loop("design-agent", "디자인 에이전트(카드뉴스 코너)", "claude-loop", "any", "하루 1회(세션이 열려 있을 때)", 48,
+         "/loop <prompt>", ["design-lab/research/design-rounds.jsonl"],
+         check="cd design-lab && python -m agent status && python -m agent eval",
+         owns=["design-lab/agent/", "design-lab/evals/", "design-lab/poster/corners.py", "design-lab/poster/direction.py",
+               "design-lab/assets/photos/season/", "design-lab/research/", "design-lab/tests/test_agent_knobs.py",
+               "design-lab/tests/test_cover_checks.py", ".claude/skills/card-cover/"],
+         prompt=(
+             "디자인 에이전트 한 회차 — `.claude/skills/design-round/SKILL.md` 를 읽고 그 순서 그대로 한다. "
+             "표지는 card-cover 스킬, 교훈을 더할 때는 writing-design-lessons 스킬(검사 먼저 — RED → GREEN)을 따른다. "
+             "판정·점수·릴리즈는 사람 몫이라 매기지 않는다. 게시·팔로우·댓글 같은 계정 행동도 하지 않는다. 푸시하지 않는다.")),
 ]
 
 BY_KEY = {l.key: l for l in REGISTRY}

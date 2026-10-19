@@ -1,0 +1,106 @@
+<!doctype html>
+<!-- 카드뉴스 틀: 스크랩. 모눈 종이 위에 폴라로이드 사진을 테이프로 붙이고, 핵심 숫자에 형광펜.
+     글은 바탕체(Gowun Batang) 제목 + 고딕 본문. 손글씨 흉내·이모지는 넣지 않는다. -->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<style>
+  /*__FONTS__*/
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:#ddd; }
+  .sheet { width:var(--w); height:var(--h); position:relative; overflow:hidden; color:#22201c; background-color:#fbf8f1;
+           background-image:linear-gradient(#e6e0d2 1px, transparent 1px), linear-gradient(90deg, #e6e0d2 1px, transparent 1px);
+           background-size:45px 45px; background-position:-1px -1px;
+           font-family:'Pretendard',sans-serif; display:flex; flex-direction:column; padding:66px 72px 56px;
+           -webkit-font-smoothing:antialiased; }
+  .top { display:flex; justify-content:space-between; font-size:23px; font-weight:700; color:#6b665c; }
+  .top b { color:#22201c; }
+  .polar { position:relative; align-self:flex-end; background:#fff; padding:18px 18px 64px; width:560px;
+           box-shadow:0 2px 0 rgba(0,0,0,.06), 0 14px 30px -12px rgba(0,0,0,.28); transform:rotate(3deg); margin:26px 10px 0 0; }
+  .polar i { display:block; height:420px; background-size:cover; background-position:center; }
+  .polar .c { position:absolute; left:20px; right:20px; bottom:14px; font-family:'GowunBatang'; font-size:24px; color:#4d4940;
+              white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .tape { position:absolute; width:170px; height:44px; background:rgba(242,214,120,.75); top:-20px; left:50%;
+          transform:translateX(-50%) rotate(-4deg); }
+  .t-cover .polar { position:absolute; right:56px; top:140px; width:430px; transform:rotate(4deg); }
+  .t-cover .polar i { height:470px; }
+  .t-cover h1 { max-width:520px; }
+  .kick { font-size:26px; font-weight:700; color:#6b665c; margin-top:30px; }
+  h1, h2 { font-family:'GowunBatang',serif; font-weight:700; letter-spacing:-.04em; line-height:1.2; }
+  h1 { font-size:92px; margin-top:auto; }
+  h2 { font-size:68px; margin-top:10px; }
+  mark { background:linear-gradient(transparent 52%, #ffe45c 52%, #ffe45c 92%, transparent 92%); color:inherit; padding:0 4px; }
+  .big { font-family:'GowunBatang'; font-weight:700; font-size:200px; line-height:1; letter-spacing:-.05em; margin-top:14px; }
+  .big small { font-size:60px; margin-left:6px; }
+  .sub { font-size:29px; font-weight:600; color:#4d4940; margin-top:16px; line-height:1.45; }
+  .note-card { margin-top:22px; background:#fff; border:1.5px solid #d9d2c2; padding:22px 30px; }
+  .li { display:grid; grid-template-columns:44px 1fr auto; gap:14px; align-items:baseline; padding:12px 0;
+        border-bottom:1.5px dashed #cfc7b5; }
+  .li:last-child { border-bottom:0; }
+  .li .n { font-family:'GowunBatang'; font-size:28px; color:#a39c8c; font-weight:700; }
+  .li .l { font-size:32px; font-weight:700; }
+  .li .v { font-size:32px; font-weight:800; font-variant-numeric:tabular-nums; }
+  .li .v small { font-size:20px; color:#6b665c; margin-left:4px; font-weight:600; }
+  .li .m { grid-column:2 / -1; font-size:23px; color:#4d4940; margin-top:2px; line-height:1.4; }
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:22px; }
+  .two > div { background:#fff; border:1.5px solid #d9d2c2; padding:22px 26px; }
+  .two .num { font-family:'GowunBatang'; font-weight:700; font-size:110px; line-height:1; letter-spacing:-.04em; }
+  .two .num small { font-size:36px; }
+  .two .lab { font-size:24px; font-weight:700; margin-top:8px; }
+  .exp { font-size:25px; color:#4d4940; margin-top:20px; line-height:1.5; }
+  .end li { list-style:none; font-size:30px; font-weight:700; margin-top:14px; }
+  .end li::before { content:'☐  '; color:#a39c8c; }
+  .foot { margin-top:auto; padding-top:16px; display:flex; justify-content:space-between; gap:24px; font-size:18px;
+          color:#6b665c; line-height:1.4; }
+  .foot .pg { white-space:nowrap; font-weight:700; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+// 가장 큰 값 하나에만 형광펜
+function hl(text) { const m = el('mark'); m.textContent = text; return m; }
+function draw(sheet, S, D) {
+  const top = el('div', 'top'); const s = el('span'); s.append(el('b', '', D.series)); top.append(s, el('span', '', '@devjobseeker'));
+  sheet.append(top);
+  const polar = el('div', 'polar'); const i = el('i'); i.style.backgroundImage = `url("${S.image}")`;
+  polar.append(el('div', 'tape'), i, el('div', 'c', S.type === 'cover' ? S.kicker : S.kicker + ' · ' + D.series));
+  if (S.type === 'cover') {
+    sheet.append(polar);
+    sheet.append(el('div', 'kick', S.kicker));
+    const h = el('h1', 'fit'); h.append(S.title[0], document.createElement('br'), hl(S.title[1])); sheet.append(h);
+    const big = el('div', 'big fit', S.big); big.append(el('small', '', S.unit)); sheet.append(big);
+    sheet.append(el('div', 'sub body', S.sub));
+  } else {
+    polar.querySelector('i').style.height = { end: '420px', picks: '200px' }[S.type] || '300px'; sheet.append(polar);
+    sheet.append(el('div', 'kick', S.kicker));
+    sheet.append(lines(el('h2', 'fit'), S.title));
+    if (S.sub) sheet.append(el('div', 'sub body', S.sub));
+  }
+  if (S.type === 'bars' || S.type === 'picks') {
+    const card = el('div', 'note-card');
+    S.rows.forEach((r, k) => { const li = el('div', 'li');
+      if (S.type === 'bars') {
+        const v = el('div', 'v body'); v.append(k ? r.value.toLocaleString() : hl(r.value.toLocaleString()));
+        if (r.pct != null) v.append(el('small', '', r.pct + '%'));
+        li.append(el('div', 'n', pad2(k + 1)), el('div', 'l body', r.label), v);
+      } else {
+        li.append(el('div', 'n', pad2(k + 1)), el('div', 'l body', r.co), el('div'), el('div', 'm body', r.title + ' · ' + r.meta));
+      }
+      card.append(li); });
+    sheet.append(card);
+  } else if (S.type === 'stat') {
+    const two = el('div', 'two');
+    S.items.forEach((it, k) => { const c = el('div'); const n = el('div', 'num');
+      n.append(k ? it.num : hl(it.num), el('small', '', it.unit)); c.append(n, el('div', 'lab body', it.label)); two.append(c); });
+    sheet.append(two, el('div', 'exp body', S.explain));
+  } else if (S.type === 'end') {
+    const ul = el('ul', 'end'); S.lines.forEach(l => ul.append(el('li', 'body', l))); sheet.append(ul);
+  }
+  const foot = el('div', 'foot'); foot.append(el('div', 'body', S.credit + ' · ' + S.note), el('div', 'pg', `${D.page} / ${D.total}`));
+  sheet.append(foot);
+}
+/*__COMMON__*/
+</script>
+</body>
+</html>
