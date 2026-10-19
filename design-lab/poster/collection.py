@@ -480,8 +480,10 @@ def build(kind: str, *, value: str = "", since: str = "", until: str = "",
     elif kind == "stack":
         kicker, title, sub = "기술별 채용", f"{value} 쓰는 곳", "모집중인 자리"
         needle = value.lower()
+        # 제목은 낱말로만 — 'Go' 가 'Mongo'·'Google'·'Algorithm' 안에서 맞아 Go 묶음에 스마일게이트가 들어왔다(2026-10-20)
+        word = re.compile(rf"(?<![a-z0-9]){re.escape(needle)}(?![a-z0-9])", re.I)
         rows = [j for j in rows
-                if needle in (j.get("title") or "").lower()
+                if word.search(j.get("title") or "")
                 or any(needle == (s or "").lower() for s in j.get("stack") or [])]
     elif kind == "newgrad":
         kicker, title, sub = "신입 가능", "신입도 되는 자리", "경력 조건에 신입이 있는 공고"
