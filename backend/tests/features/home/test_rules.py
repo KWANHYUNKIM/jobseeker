@@ -76,3 +76,10 @@ def test_bc_card_rule_does_not_catch_mbc():
 def test_pipe_names_and_silicon2():
     assert display_name("Rebellions | 리벨리온") == "리벨리온"
     assert classify("실리콘투") == "유통·커머스"     # 화장품 유통사 — '실리콘' 으로 반도체에 잡혔다
+
+
+def test_technologies_is_not_logistics():
+    assert classify("뤼튼테크놀로지스") != "물류"
+    assert classify("팔란티어테크놀로지스코리아") != "물류"
+    assert classify("CJ대한통운") == "물류"
+    assert classify("롯데글로벌로지스") == "물류"
