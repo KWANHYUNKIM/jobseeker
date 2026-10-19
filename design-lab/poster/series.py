@@ -69,6 +69,7 @@ THEMES = {
     "game": {"paper": "#0b0d1a", "ink": "#f2f4ff", "sub": "#9aa0c0", "accent": "#5df2c1", "line": "#232845"},
     "security": {"paper": "#0f1420", "ink": "#f3f4f8", "sub": "#9ba3b4", "accent": "#ff4d5a", "line": "#26304a"},
     "mobile": {"paper": "#f4f2fd", "ink": "#1a1533", "sub": "#615b7d", "accent": "#7f52ff", "line": "#dfdaf5"},
+    "youth": {"paper": "#fbf7ef", "ink": "#221a10", "sub": "#6f6252", "accent": "#e8590c", "line": "#ece2d2"},
     "testing": {"paper": "#f3f7f4", "ink": "#122318", "sub": "#566c5c", "accent": "#2ead33", "line": "#d8e6dc"},
     "cpp": {"paper": "#eef3f9", "ink": "#0f1d2e", "sub": "#4e6178", "accent": "#00599c", "line": "#d4e0ee"},
     "android": {"paper": "#f1f8f2", "ink": "#0f2414", "sub": "#55705c", "accent": "#2fa55a", "line": "#d6e9da"},
@@ -106,7 +107,7 @@ SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", 
           "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]",
           "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]", "balance": "[둘 중 하나]", "tier": "[티어표]",
           "contra": "[공고 원문]", "game": "[게임사 채용]", "security": "[보안 채용]",
-          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]", "wish": "[희망 초봉 vs 공고]", "robot": "[로봇 채용]", "spring": "[스프링 채용]", "vc": "[투자와 채용]", "agent": "[AI 에이전트 채용]", "lang": "[언어 순위 vs 공고]", "mobile": "[모바일 채용]", "python": "[파이썬 채용]", "node": "[Node.js 채용]", "rust": "[Rust 채용]", "java": "[Java 채용]", "swift": "[Swift 채용]", "docker": "[Docker 채용]", "kafka": "[Kafka 채용]", "terraform": "[Terraform 채용]", "search": "[검색 채용]", "nest": "[NestJS 채용]", "dotnet": "[.NET 채용]", "vllm": "[LLM 서빙 채용]", "android": "[Android 채용]", "cpp": "[C++ 채용]", "testing": "[테스트 자동화 채용]"}
+          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]", "wish": "[희망 초봉 vs 공고]", "robot": "[로봇 채용]", "spring": "[스프링 채용]", "vc": "[투자와 채용]", "agent": "[AI 에이전트 채용]", "lang": "[언어 순위 vs 공고]", "mobile": "[모바일 채용]", "python": "[파이썬 채용]", "node": "[Node.js 채용]", "rust": "[Rust 채용]", "java": "[Java 채용]", "swift": "[Swift 채용]", "docker": "[Docker 채용]", "kafka": "[Kafka 채용]", "terraform": "[Terraform 채용]", "search": "[검색 채용]", "nest": "[NestJS 채용]", "dotnet": "[.NET 채용]", "vllm": "[LLM 서빙 채용]", "android": "[Android 채용]", "cpp": "[C++ 채용]", "testing": "[테스트 자동화 채용]", "youth": "[청년 고용 vs 신입 문]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -131,6 +132,7 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "game": ["게임회사", "게임개발자", "게임스컴", "개발자채용", "게임업계취업"],
         "security": ["정보보안", "보안엔지니어", "보안채용", "개발자채용", "IT취업"],
         "mobile": ["모바일개발자", "안드로이드", "iOS개발자", "Kotlin", "Flutter"],
+        "youth": ["신입개발자", "청년고용", "취업준비", "IT취업", "개발자채용"],
         "testing": ["QA", "테스트자동화", "Playwright", "QA엔지니어", "개발자채용"],
         "cpp": ["Cpp", "임베디드", "펌웨어", "게임개발자", "개발자채용"],
         "android": ["안드로이드", "Android", "JetpackCompose", "Kotlin", "개발자채용"],
@@ -3649,6 +3651,52 @@ def build_testing() -> dict:
             "reel_lead": "Playwright 1.64 나온 달, 테스트 자동화 자리는 — 저장해 두세요"}
 
 
+def build_youth() -> dict:
+    """[청년 고용 vs 신입 문] 릴스 — 국가데이터처 '2026년 9월 고용동향'(10월 16일: 청년층 고용률 44.0%, 1.1%p 하락 · 청년 실업률 5.4%)
+    을 계기로, 지금 국내 IT 공고 중 신입도 되는 자리(신입/무관)와 직군별·회사 규모별 신입 문. 같은 자리 중복 게시는 하나로."""
+    today = date.today()
+    rows = _it_rows()
+    total = len(rows)
+    ent = lambda r: r["career_bucket"] == "신입/무관"
+    e = [r for r in rows if ent(r)]
+    rc = collections.Counter(x for r in rows for x in set(r["roles"] or []) if x != "기타")
+    re_ = collections.Counter(x for r in e for x in set(r["roles"] or []) if x != "기타")
+    by_role = sorted(((k, round(100 * re_[k] / rc[k]), re_[k]) for k in rc if rc[k] >= 100), key=lambda t: -t[1])[:6]
+    sizes = [(k, sum(1 for r in e if r["size"] == k), sum(1 for r in rows if r["size"] == k)) for k in ("대기업", "중견기업", "중소기업")]
+    pct = lambda a, b: round(100 * a / b) if b else 0
+    asof = today.isoformat()
+    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 신입=신입·경력무관 공고 · 같은 자리 중복 게시는 하나로"
+    slides = [
+        {"type": "cover", "big": f"{len(e):,}", "big_unit": "개", "lines": ["청년 고용률 44.0% 인 달", "신입도 되는 IT 자리는"],
+         "sub": f"국내 IT 자리 {total:,}개 중 {pct(len(e), total)}%", "note": note},
+        {"type": "table", "title": "9월 고용동향", "sub": "국가데이터처 · 2026.10.16 발표", "head": ["무엇", "9월", "작년 9월보다"],
+         "rows": [["청년(15~29세) 고용률", "44.0%", "1.1%p ↓"], ["청년 실업률", "5.4%", "0.6%p ↑"], ["전체 취업자", "2,926만 6천", "11만 3천 ↑"]],
+         "hi_col": 1, "note": "국가데이터처 「2026년 9월 고용동향」"},
+        {"type": "bars", "title": "직군별 신입 문", "sub": "그 직군 공고 중 신입도 되는 비율 · 100자리 넘는 직군만",
+         "rows": [{"label": k, "value": v, "display": f"{v}%", "unit": f"{c:,}개", "hi": i == 0} for i, (k, v, c) in enumerate(by_role)],
+         "note": note},
+        {"type": "bars", "title": "회사 규모별 신입 문", "sub": "그 규모 공고 중 신입도 되는 비율 · 규모를 모르는 회사는 중소기업",
+         "rows": [{"label": k, "value": pct(a, b), "display": f"{pct(a, b)}%", "unit": f"{a:,}/{b:,}", "hi": k == "대기업"} for k, a, b in sizes],
+         "note": note},
+        {"type": "end", "title": "저장해 두고", "lines": [
+            f"신입 문이 가장 넓은 직군 **{by_role[0][0]}** {by_role[0][1]}%",
+            "신입 공고 전체는 프로필 링크에서", "취업 준비하는 친구에게 보내 주세요"], "note": note},
+    ]
+    caption = "\n\n".join([
+        f"9월 청년층 고용률이 44.0%로 1년 전보다 1.1%p 낮아졌습니다. 지금 국내 IT 자리 {total:,}개 중 신입도 되는 자리는 {len(e):,}개({pct(len(e), total)}%)입니다.",
+        "· 직군별 신입 문: " + " · ".join(f"{k} {v}%" for k, v, c in by_role) + "\n"
+        "· 회사 규모별 신입 문: " + " · ".join(f"{k} {pct(a, b)}%({a:,}/{b:,})" for k, a, b in sizes),
+        "국가데이터처 「2026년 9월 고용동향」(10월 16일)에 따르면 취업자는 2,926만 6천 명으로 1년 전보다 11만 3천 명 늘었지만, "
+        "청년층(15~29세) 고용률은 44.0%로 1.1%p 내리고 청년 실업률은 5.4%로 0.6%p 올랐습니다.",
+        "출처\nhttps://eiec.kdi.re.kr/policy/materialView.do?num=288191",
+        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 신입은 '신입' 이나 '경력무관' 으로 낸 공고이고, 회사 규모를 모르는 곳은 중소기업으로 셌습니다. "
+        "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+    ])
+    return {"kind": "youth", "id": f"youth-{asof.replace('-', '')}", "title": "청년 고용 vs 신입 문",
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.2,
+            "reel_lead": "청년 고용률 44.0% 인 달, 신입도 되는 IT 자리는 — 저장해 두세요"}
+
+
 REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
 
 
@@ -3705,7 +3753,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
                                      "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit",
-                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud", "paywish", "robot", "spring", "vc", "agent", "lang", "mobile", "python", "node", "rust", "java", "swift", "docker", "kafka", "terraform", "search", "nest", "dotnet", "vllm", "android", "cpp", "testing"])
+                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud", "paywish", "robot", "spring", "vc", "agent", "lang", "mobile", "python", "node", "rust", "java", "swift", "docker", "kafka", "terraform", "search", "nest", "dotnet", "vllm", "android", "cpp", "testing", "youth"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
@@ -3801,6 +3849,8 @@ def main() -> int:
         post = build_cpp()
     elif args.kind == "testing":
         post = build_testing()
+    elif args.kind == "youth":
+        post = build_youth()
     elif args.kind in ("pay", "perk", "welcome", "gongchae", "contra"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae, "contra": build_contra}[args.kind]()
