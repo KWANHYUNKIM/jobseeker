@@ -68,6 +68,7 @@ THEMES = {
     "contra": {"paper": "#15171d", "ink": "#f4f2ec", "sub": "#9b9fa9", "accent": "#ffd43b", "line": "#2b2f38"},
     "game": {"paper": "#0b0d1a", "ink": "#f2f4ff", "sub": "#9aa0c0", "accent": "#5df2c1", "line": "#232845"},
     "security": {"paper": "#0f1420", "ink": "#f3f4f8", "sub": "#9ba3b4", "accent": "#ff4d5a", "line": "#26304a"},
+    "wish": {"paper": "#fdf7ee", "ink": "#22180c", "sub": "#76674f", "accent": "#c2410c", "line": "#efe2cc"},
     "cloud": {"paper": "#0f1b2d", "ink": "#f3f6fa", "sub": "#97a6ba", "accent": "#ff9900", "line": "#22334d"},
     "gap": {"paper": "#f6f4ef", "ink": "#181614", "sub": "#6b655c", "accent": "#d9480f", "line": "#e2ddd2"},
     "usvs": {"paper": "#10131a", "ink": "#f1f3f7", "sub": "#9aa1ae", "accent": "#7ee787", "line": "#262b36"},
@@ -84,7 +85,7 @@ SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", 
           "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]",
           "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]", "balance": "[둘 중 하나]", "tier": "[티어표]",
           "contra": "[공고 원문]", "game": "[게임사 채용]", "security": "[보안 채용]",
-          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]"}
+          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]", "wish": "[희망 초봉 vs 공고]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -108,6 +109,7 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "contra": ["채용공고", "신입개발자", "자격요건", "개발자취업", "중고신입"],
         "game": ["게임회사", "게임개발자", "게임스컴", "개발자채용", "게임업계취업"],
         "security": ["정보보안", "보안엔지니어", "보안채용", "개발자채용", "IT취업"],
+        "wish": ["신입연봉", "초봉", "희망연봉", "신입개발자", "개발자연봉"],
         "cloud": ["AWS", "클라우드엔지니어", "Azure", "GCP", "개발자채용"],
         "gap": ["신입개발자", "경력직", "개발자취업", "이직준비", "개발자채용"],
         "usvs": ["개발자채용", "AI개발자", "시니어개발자", "채용트렌드", "IT채용"],
@@ -2329,6 +2331,73 @@ def build_cloud() -> dict:
             "reel_lead": "AWS 가 12조 넣는 한국, AWS 쓰는 개발 자리 — 저장해 두세요"}
 
 
+def build_paywish() -> dict:
+    """[희망 초봉 vs 공고] 릴스 — 인크루트 설문(디지털데일리 2026.4.22, 504명: 희망 초봉 4,196만·마지노선 3,611만)과
+    지금 모집중인 신입 개발 공고가 숫자로 적은 신입 연봉을 견준다. 세는 법은 build_pay_newgrad 와 같고 모집중만 본다."""
+    parse = _parse_pay()
+    allj = _source()
+    today = date.today()
+    found = {}
+    for j in allj:
+        if j.get("status") != "active" or "신입" not in (j.get("career") or "") or _not_dev(j):
+            continue
+        if (d := _deadline(j, today)) and d < today:
+            continue
+        p = parse("\n".join(j.get(k) or "" for k in ("benefits", "full_jd")))
+        if not p or re.search(r"\$|USD|달러|환율", p["text"]):
+            continue
+        if "신입" not in p["text"] and not re.fullmatch(r"\s*신입(/무관)?\s*", j.get("career") or ""):
+            continue
+        mid = (p["low"] + p["high"]) // 2 if p.get("high") else p["low"]
+        if _company(j) != NO_CO and 1500 <= mid <= 15000:     # 월급·오타로 읽힌 값은 뺀다
+            found.setdefault((_company(j), mid), (j, mid))
+    rows = list(found.values())
+    n = len(rows)
+    mids = sorted(m for _, m in rows)
+    med = mids[n // 2] if n else 0
+    over_wish = sum(1 for m in mids if m >= 4196)
+    over_floor = sum(1 for m in mids if m >= 3611)
+    pct = lambda a: round(100 * a / n) if n else 0
+    top = sorted(rows, key=lambda r: -r[1])[:3]
+    asof = today.isoformat()
+    wj = "\u2060"
+    note = f"JD Viewer 모집중 신입 개발 공고 중 신입 연봉을 숫자로 적은 {n}곳(회사·금액 중복 제외) · {_dot(asof)} · 범위는 가운데 값"
+    slides = [
+        {"type": "cover", "big": f"{med:,}", "big_unit": "만원", "lines": ["바라는 초봉 4,196만", "공고에 적힌 신입 연봉은"],
+         "sub": f"지금 모집중, 신입 연봉을 숫자로 적은 {n}곳의 가운데 값", "note": note},
+        {"type": "table", "title": "신입이 바라는 연봉", "sub": "인크루트 설문 요약, 원문은 캡션의 링크",
+         "head": ["무엇", "평균", "작년보다"],
+         "rows": [["희망 초봉", f"4,196{wj}만", f"+56{wj}만"], ["마지노선", f"3,611{wj}만", f"−26{wj}만"]],
+         "hi_col": 1, "note": "인크루트 2026 신입 희망 초봉 설문(504명) · 디지털데일리 2026.4.22 보도"},
+        {"type": "bars", "title": "공고에 적힌 신입 연봉", "sub": f"{n}곳 · 설문의 두 선과 견줘",
+         "rows": [{"label": "희망 이상", "value": over_wish, "display": f"{over_wish}", "unit": f"{pct(over_wish)}%", "hi": True},
+                  {"label": "마지노선~희망", "value": over_floor - over_wish, "display": f"{over_floor - over_wish}",
+                   "unit": f"{pct(over_floor - over_wish)}%", "hi": False},
+                  {"label": "마지노선 미만", "value": n - over_floor, "display": f"{n - over_floor}",
+                   "unit": f"{pct(n - over_floor)}%", "hi": False}], "note": note},
+        {"type": "stat", "title": "희망 초봉을 넘게 적은 곳", "num": f"{over_wish}", "unit": "곳",
+         "label": f"숫자를 적은 {n}곳 중 {pct(over_wish)}%",
+         "explain": "높게 적은 곳: " + " · ".join(f"**{_company(j)}** {m:,}{wj}만" for j, m in top) +
+                    "\n큰 회사일수록 숫자를 안 적는다 — 적어 둔 곳들의 값이다.", "note": note},
+        {"type": "end", "title": "저장해 두고", "lines": [
+            f"공고 가운데 값 **{med:,}만** · 희망 **4,196만** · 마지노선 **3,611만**",
+            "연봉 적은 공고 전체는 프로필 링크에서", "취준하는 친구에게 보내 주세요"], "note": note},
+    ]
+    caption = "\n\n".join([
+        f"신입이 바라는 초봉은 4,196만 원. 지금 신입 개발 공고에 숫자로 적힌 신입 연봉의 가운데 값은 {med:,}만 원입니다.",
+        f"· 신입 연봉을 숫자로 적은 모집중 공고 {n}곳(회사·금액 중복 제외)\n· 희망 초봉 이상 {over_wish}곳({pct(over_wish)}%), "
+        f"마지노선 이상 {over_floor}곳({pct(over_floor)}%)",
+        "디지털데일리는 인크루트가 졸업 예정자와 구직자 504명에게 물은 결과 희망 초봉 평균이 4,196만 원(작년보다 56만 원 ↑), "
+        "마지노선은 3,611만 원(26만 원 ↓)이었다고 전했습니다.",
+        "큰 회사일수록 공고에 연봉을 적지 않습니다 — '적어 둔 곳들의 값' 으로 읽어 주세요.",
+        "출처\nhttps://www.ddaily.co.kr/page/view/2026042210565982915",
+        f"{_dot(asof)} JD Viewer 모집중 신입 개발 공고 기준. 범위는 가운데 값, '이상' 은 하한으로 셌습니다.",
+    ])
+    return {"kind": "wish", "id": f"paywish-{asof.replace('-', '')}", "title": "희망 초봉 vs 공고",
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.2,
+            "reel_lead": "바라는 초봉 4,196만, 공고에 적힌 신입 연봉은? — 저장해 두세요"}
+
+
 REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
 
 
@@ -2385,7 +2454,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
                                      "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit",
-                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud"])
+                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud", "paywish"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
@@ -2437,6 +2506,8 @@ def main() -> int:
         post = build_gap()
     elif args.kind == "cloud":
         post = build_cloud()
+    elif args.kind == "paywish":
+        post = build_paywish()
     elif args.kind in ("pay", "perk", "welcome", "gongchae", "contra"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae, "contra": build_contra}[args.kind]()
