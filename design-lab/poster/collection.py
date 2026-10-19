@@ -190,7 +190,8 @@ _STOP = re.compile(r"^(interview\s+process|hiring\s+process|additional\s+informa
 _FOREIGN_TAG = re.compile(r"\s*\[(베트남|중국|미국|인도|싱가포르|대만|필리핀|인도네시아|태국|말레이시아)[^\]]*\]")
 #: 헤드헌팅·서치펌 공고 — 고객사 이름을 숨기고 '유망 … 기업' 으로 쓴다
 #: 회사 이름을 가린 공고·영업 지사 공고('중소기업(300명이하)' · '유망 모바일 앱 및 게임 보안 솔루션 회사')도 헤드헌팅으로 본다.
-_AGENCY = re.compile(r"라인서치|커리어케어|휴먼파워|아웃소싱|헤드헌팅|헤드헌터|서치펌|고객사|유망\s*\S+(\s*\S+){0,6}\s*(기업|회사)"
+_AGENCY = re.compile(r"라인서치|커리어케어|휴먼파워|아웃소싱|헤드헌팅|헤드헌터|서치펌|고객사|에이치알비즈|"
+                     r"(개발사|제조사|기업)\s*/\s*상장사|유망\s*\S+(\s*\S+){0,6}\s*(기업|회사)"
                      r"|^\s*(중소|중견|대)기업(\s|\(|$)"
                      # 영업 지사가 올린 공고('미래에셋금융서비스특화사업지사' — 대기업으로 잡혔다)
                      r"|^\S*지사(\s|$)")
@@ -213,6 +214,9 @@ def _leaked_header(job: dict) -> str:
             t = re.sub(r"^[#\s\[【(•·*-]+|[\]】):：.!\s]+$", "", line or "")
             if len(t) <= 30 and (_STOP.match(t) or any(rx.match(t) for k, rx in _HEADS.items() if k != cell)):
                 return line
+    # 개인 휴대전화 번호가 본문에 있으면 판에 그대로 찍힌다(에이치알비즈코리아 'HP: 010-…', 2026-10-20) — 싣지 않는다
+    if re.search(r"01[016789][-.\s]?\d{3,4}[-.\s]?\d{4}", " ".join(l for v in cells.values() for l in v)):
+        return "개인 휴대전화 번호"
     # 숫자·물음표만 있는 줄('2', '1', '?')이나 'Database :'·'Cloud &' 처럼 머리만 남은 줄이 여럿이면 원문 구조가 깨진 것
     # (에스텍시스템·CJ대한통운, 2026-10-20)
     for cell, lines in cells.items():

@@ -411,6 +411,11 @@ class ShardedTitleTest(unittest.TestCase):
         job = {"title": "백엔드", "full": {"qualifications": ["Database :", "Cloud &", "Java 3년"]}}
         self.assertTrue(_leaked_header(job))
 
+    def test_personal_phone(self):
+        from poster.collection import _leaked_header
+        job = {"title": "HW 개발자", "full": {"preferences": ["HP: 010-1234-5678 로 연락"]}}
+        self.assertEqual(_leaked_header(job), "개인 휴대전화 번호")
+
     def test_corporate_prefix(self):
         from poster.collection import _core
         self.assertEqual(_core("(유)월터워커"), _core("유한회사 월터워커"))
