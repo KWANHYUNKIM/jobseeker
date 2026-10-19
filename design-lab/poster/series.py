@@ -67,13 +67,14 @@ THEMES = {
     "tier": {"paper": "#141218", "ink": "#ffffff", "sub": "#b9b4c7", "accent": "#ffe066", "line": "#2c2833"},
     "contra": {"paper": "#15171d", "ink": "#f4f2ec", "sub": "#9b9fa9", "accent": "#ffd43b", "line": "#2b2f38"},
     "game": {"paper": "#0b0d1a", "ink": "#f2f4ff", "sub": "#9aa0c0", "accent": "#5df2c1", "line": "#232845"},
+    "security": {"paper": "#0f1420", "ink": "#f3f4f8", "sub": "#9ba3b4", "accent": "#ff4d5a", "line": "#26304a"},
 }
 SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", "term": "[IT 용어]",
           "interview": "[면접 예상 질문]", "qa": "[고민 상담소]", "jd": "[JD 번역기]",
           "same": "[같은 직무 다른 회사]", "roadmap": "[공부 로드맵]", "weekly": "[주간 리포트]", "signal": "[채용 시그널]", "talent": "[인재상 해부]",
           "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]",
           "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]", "balance": "[둘 중 하나]", "tier": "[티어표]",
-          "contra": "[공고 원문]", "game": "[게임사 채용]"}
+          "contra": "[공고 원문]", "game": "[게임사 채용]", "security": "[보안 채용]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -95,7 +96,8 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "balance": ["밸런스게임", "신입개발자", "개발자취업", "IT회사", "취업고민"],
         "tier": ["신입연봉", "개발자연봉", "초봉", "신입개발자", "연봉티어"],
         "contra": ["채용공고", "신입개발자", "자격요건", "개발자취업", "중고신입"],
-        "game": ["게임회사", "게임개발자", "게임스컴", "개발자채용", "게임업계취업"]}
+        "game": ["게임회사", "게임개발자", "게임스컴", "개발자채용", "게임업계취업"],
+        "security": ["정보보안", "보안엔지니어", "보안채용", "개발자채용", "IT취업"]}
 
 
 # --- 재료 ---------------------------------------------------------------
@@ -1661,6 +1663,90 @@ def build_game() -> dict:
             "reel_lead": "게임스컴 나간 그 회사들, 지금 이만큼 뽑는다 — 저장해 두세요"}
 
 
+def _api_jobs_all(**q) -> list[dict]:
+    """뷰어 API 공고 목록을 끝까지(페이지당 200건). 칩 건수만으로 안 되는 회사별 집계에 쓴다."""
+    import urllib.parse
+    import urllib.request
+    base = os.environ.get("VIEWER_API", "http://127.0.0.1:8771")
+    out, page = [], 1
+    while True:
+        qs = urllib.parse.urlencode({**q, "limit": 200, "page": page})
+        with urllib.request.urlopen(f"{base}/api/jobs?{qs}", timeout=60) as r:
+            d = json.loads(r.read())
+        out += d["items"]
+        if len(out) >= d["total"] or not d["items"] or page >= 20:
+            return out
+        page += 1
+
+
+#: 같은 회사의 다른 표기 — 집계 전에 하나로(보안 공고에서 'SK쉴더스' 와 '에스케이쉴더스(주)' 가 갈렸다)
+_SAME_CO = {"에스케이쉴더스": "SK쉴더스", "hybecareers": "하이브", "쿠팡coupang": "쿠팡"}
+
+
+def _co_name(name: str) -> str:
+    k = re.sub(r"\(.*?\)|㈜|주식회사|\s+", "", name or "").lower()
+    shown = re.sub(r"\s+", " ", re.sub(r"\(.*?\)|㈜|^주식회사", " ", name or "")).strip()   # 'SK(주) AX' → 'SK AX'
+    return _SAME_CO.get(k, shown)
+
+
+_SEC_KINDS = {"정보보호·보안 담당": r"정보보호|정보보안|보안\s*담당|ISMS|컴플라이언스",
+              "관제": r"관제|SOC|모니터링", "취약점·모의해킹": r"취약점|모의해킹|침투|pentest|레드팀",
+              "클라우드 보안": r"클라우드|cloud|AWS"}
+
+
+def _security_mix(jobs: list[dict]) -> str:
+    """신입 보안 공고 제목에서 센 갈래 — 판에 적는 말은 센 숫자로만(어림 말 금지)."""
+    c = collections.Counter(k for j in jobs for k, rx in _SEC_KINDS.items() if re.search(rx, j["title"], re.I))
+    if not c:
+        return "공고 제목에 갈래가 드러나지 않은 곳이 많다."
+    (top, n), rest = c.most_common(1)[0], c.most_common()[1:3]
+    wj = "\u2060"   # 숫자와 '건' 사이에서 줄이 갈리지 않게(판에서 '관제 8 / 건' 으로 끊겼다)
+    tail = " · ".join(f"{k}\u00a0{v}{wj}건" for k, v in rest)
+    return f"**{top} {n}{wj}건**이 가장 많다." + (f"\n{tail}" if tail else "")
+
+
+def build_security() -> dict:
+    """[보안 채용] 릴스 — 2025 대형 해킹 사고를 '사람·관리 실패' 로 본 보도(보안뉴스)와, 지금 국내 보안 공고를 견준다.
+    해외 근무 공고는 뺀다. 숫자는 만들 때 API 에서 다시 센다."""
+    domestic = lambda j: (j.get("place") or {}).get("region") != "해외·원격"
+    jobs = [j for j in _api_jobs_all(role="보안") if domestic(j)]
+    entry = [j for j in _api_jobs_all(role="보안", career="신입/무관") if domestic(j)]
+    cos = collections.Counter(_co_name(j["company"]) for j in jobs).most_common(6)
+    n, ne = len(jobs), len(entry)
+    asof = date.today().isoformat()
+    note = f"JD Viewer 모집중 공고 중 보안 직군 · 국내 근무 {n:,}건 · {_dot(asof)} · 직군은 제목·본문으로 가른 것"
+    slides = [
+        {"type": "cover", "big": f"{n}", "big_unit": "건", "lines": ["해킹 사고 뒤", "지금 열린 보안 자리"],
+         "sub": "국내 근무 보안 직군 모집중 공고", "note": note},
+        {"type": "bars", "title": "보안을 가장 많이 뽑는 곳", "sub": "회사별 모집중 보안 공고",
+         "rows": [{"label": c, "value": k, "display": f"{k}", "unit": "건", "hi": i == 0} for i, (c, k) in enumerate(cos)],
+         "note": note},
+        {"type": "table", "title": "사고는 기술보다 사람에서", "sub": "보도는 요약, 원문은 캡션의 링크",
+         "head": ["어디서", "무엇", "숫자"],
+         "rows": [["보안뉴스", "2025 대형 사고의 원인", "사람·관리"],
+                  ["우리 공고", "국내 보안 직군 모집중", f"{n}건"],
+                  ["우리 공고", "그중 신입 가능", f"{ne}건"]],
+         "hi_col": 2, "note": "보안뉴스 '2026 보안 핫 키워드' 연재 요약"},
+        {"type": "stat", "title": "신입이 넣을 수 있는 보안 공고", "num": f"{ne}", "unit": "건",
+         "label": f"국내 보안 공고 {n}건 중 {round(100 * ne / n) if n else 0}%",
+         "explain": _security_mix(entry), "note": note},
+        {"type": "end", "title": "저장해 두고", "lines": [
+            " · ".join(f"**{c}** {k}건" for c, k in cos[:3]),
+            "회사별 공고 전체는 프로필 링크에서", "보안 쪽 준비하는 친구에게 보내 주세요"], "note": note},
+    ]
+    caption = "\n\n".join([
+        f"해킹 사고 뒤, 국내 보안 자리는 지금 {n}건 열려 있습니다(신입 가능 {ne}건).",
+        "가장 많이 뽑는 곳: " + " · ".join(f"{c} {k}건" for c, k in cos),
+        "보안뉴스는 2025년 대형 사고들을 고도화된 공격보다 사람과 관리의 실패로 봤고, 솔루션을 들이는 것만으로는 "
+        "부족하다고 짚었습니다. 사람을 뽑는 자리가 그만큼 중요하다는 뜻이기도 합니다.",
+        "출처\nhttps://m.boannews.com/html/detail.html?idx=141318",
+        f"{_dot(asof)} JD Viewer 모집중 공고 중 보안 직군(국내 근무) 기준. 직군은 공고 제목·본문으로 가른 것입니다.",
+    ])
+    return {"kind": "security", "id": f"security-{asof.replace('-', '')}", "title": "보안 채용",
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.4,
+            "reel_lead": "해킹 사고 뒤 보안 자리, 지금 이만큼 열려 있다 — 저장해 두세요"}
+
+
 REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
 
 
@@ -1717,7 +1803,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
                                      "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit",
-                                     "contra", "ai-entry", "game"])
+                                     "contra", "ai-entry", "game", "security"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
@@ -1749,6 +1835,8 @@ def main() -> int:
         post = build_ai_entry()
     elif args.kind == "game":
         post = build_game()
+    elif args.kind == "security":
+        post = build_security()
     elif args.kind in ("pay", "perk", "welcome", "gongchae", "contra"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae, "contra": build_contra}[args.kind]()
