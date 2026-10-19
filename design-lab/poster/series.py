@@ -68,6 +68,7 @@ THEMES = {
     "contra": {"paper": "#15171d", "ink": "#f4f2ec", "sub": "#9b9fa9", "accent": "#ffd43b", "line": "#2b2f38"},
     "game": {"paper": "#0b0d1a", "ink": "#f2f4ff", "sub": "#9aa0c0", "accent": "#5df2c1", "line": "#232845"},
     "security": {"paper": "#0f1420", "ink": "#f3f4f8", "sub": "#9ba3b4", "accent": "#ff4d5a", "line": "#26304a"},
+    "spring": {"paper": "#f2f8ef", "ink": "#14230f", "sub": "#5c6e55", "accent": "#4c9b2f", "line": "#d6e6cf"},
     "robot": {"paper": "#111418", "ink": "#f2f4f7", "sub": "#9aa2ad", "accent": "#36d399", "line": "#262c34"},
     "wish": {"paper": "#fdf7ee", "ink": "#22180c", "sub": "#76674f", "accent": "#c2410c", "line": "#efe2cc"},
     "cloud": {"paper": "#0f1b2d", "ink": "#f3f6fa", "sub": "#97a6ba", "accent": "#ff9900", "line": "#22334d"},
@@ -86,7 +87,7 @@ SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", 
           "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]",
           "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]", "balance": "[둘 중 하나]", "tier": "[티어표]",
           "contra": "[공고 원문]", "game": "[게임사 채용]", "security": "[보안 채용]",
-          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]", "wish": "[희망 초봉 vs 공고]", "robot": "[로봇 채용]"}
+          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]", "wish": "[희망 초봉 vs 공고]", "robot": "[로봇 채용]", "spring": "[스프링 채용]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -110,6 +111,7 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "contra": ["채용공고", "신입개발자", "자격요건", "개발자취업", "중고신입"],
         "game": ["게임회사", "게임개발자", "게임스컴", "개발자채용", "게임업계취업"],
         "security": ["정보보안", "보안엔지니어", "보안채용", "개발자채용", "IT취업"],
+        "spring": ["스프링", "SpringBoot", "자바", "백엔드개발자", "개발자채용"],
         "robot": ["로봇", "휴머노이드", "ROS", "로보틱스", "개발자채용"],
         "wish": ["신입연봉", "초봉", "희망연봉", "신입개발자", "개발자연봉"],
         "cloud": ["AWS", "클라우드엔지니어", "Azure", "GCP", "개발자채용"],
@@ -2461,6 +2463,60 @@ def build_robot() -> dict:
             "reel_lead": "휴머노이드 대학원 생기는 해, 로봇 개발 자리는 — 저장해 두세요"}
 
 
+def build_spring() -> dict:
+    """[스프링 채용] 릴스 — Spring Boot 4.0.0 정식판(spring.io 2025.11.20, 지금 4.1.1)이 나온 지 11달,
+    국내 공고는 어느 버전을 적나. 본문에 'Spring Boot N' 과 'Java N' 이 적힌 공고만 센다(대부분은 버전을 적지 않는다)."""
+    sys.path.insert(0, str(ROOT / "catch_capture"))
+    from store.db.conn import cursor
+    from .collection import _AGENCY
+    with cursor(autocommit=True) as cur:
+        cur.execute("""SELECT f.stacks, co.display_name AS company, j.title, f.career_bucket,
+                              concat_ws(' ', j.qualifications, j.preferences, j.full_jd) AS body
+                         FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
+                         JOIN job_facet f ON f.job_id = j.id JOIN company co ON co.id = j.company_id
+                        WHERE coalesce(f.region, '') <> '해외·원격'
+                          AND NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = j.id)""")
+        rows = [r for r in cur.fetchall() if not _not_dev({"title": r["title"], "stack": r.get("stacks") or []})
+                and not _AGENCY.search(r["company"] + " " + r["title"])]
+    spring = [r for r in rows if re.search(r"spring", r["body"] or "", re.I)]
+    boot = collections.Counter(v for r in spring for v in set(re.findall(r"Spring\s*Boot\s*([234])(?:\.\d+)?", r["body"] or "", re.I)))
+    java = collections.Counter(v for r in rows for v in set(re.findall(r"(?:Java|JDK|자바)\s*(8|11|17|21|25)(?!\d)", r["body"] or "", re.I)))
+    named = sum(boot.values())
+    entry = sum(1 for r in spring if r["career_bucket"] == "신입/무관")
+    n = len(spring)
+    asof = date.today().isoformat()
+    wj = "\u2060"
+    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 · 본문에 Spring 이 든 {n:,}건 · {_dot(asof)} · 버전은 본문에 적힌 것만"
+    slides = [
+        {"type": "cover", "big": f"{n:,}", "big_unit": "건", "lines": ["Spring Boot 4 나온 지 11달", "공고는 몇 버전을 쓸까"],
+         "sub": "본문에 Spring 이 든 국내 IT 공고", "note": note},
+        {"type": "table", "title": "Spring Boot 는 지금", "sub": "spring.io 발표", "head": ["무엇", "언제", ""],
+         "rows": [["4.0.0 정식판", f"2025.11.20", ""], ["지금 최신", f"4.1.1", ""]],
+         "hi_col": 1, "note": "spring.io 블로그 'Spring Boot 4.0.0 available now' · spring.io 프로젝트 페이지"},
+        {"type": "bars", "title": "공고에 적힌 Spring Boot 버전", "sub": f"버전을 적은 공고는 {named}{wj}건뿐",
+         "rows": [{"label": f"Boot {v}.x", "value": boot.get(v, 0), "display": f"{boot.get(v, 0)}", "unit": "건", "hi": v == "4"}
+                  for v in ("4", "3", "2")], "note": note},
+        {"type": "bars", "title": "공고에 적힌 Java 버전", "sub": "본문에 'Java N' 이 든 공고 수",
+         "rows": [{"label": f"Java {v}", "value": java.get(v, 0), "display": f"{java.get(v, 0)}", "unit": "건", "hi": v == "21"}
+                  for v in ("25", "21", "17", "11", "8") if java.get(v, 0)], "note": note},
+        {"type": "end", "title": "저장해 두고", "lines": [
+            f"Spring 공고 **{n:,}건** · 신입 가능 **{entry}건**",
+            f"버전을 적은 곳은 **Boot 3.x** 가 가장 많다({boot.get('3', 0)}건)", "스프링 공부하는 친구에게 보내 주세요"], "note": note},
+    ]
+    caption = "\n\n".join([
+        f"Spring Boot 4.0 정식판이 나온 지 11달. 국내 IT 공고 중 본문에 Spring 이 든 곳은 {n:,}건(신입 가능 {entry}건)입니다.",
+        f"· 버전을 적은 공고는 {named}건뿐: " + " · ".join(f"Boot {v}.x {boot.get(v, 0)}건" for v in ("4", "3", "2")) + "\n"
+        "· Java 버전: " + " · ".join(f"Java {v} {java[v]}건" for v in ("25", "21", "17", "11", "8") if java.get(v)),
+        "spring.io 는 2025년 11월 20일 Spring Boot 4.0.0 정식판을 발표했고, 지금 최신은 4.1.1 입니다. "
+        "공고 대부분은 버전을 적지 않으니, 면접에서 쓰는 버전을 물어보는 것도 방법입니다.",
+        "출처\nhttps://spring.io/blog/2025/11/20/spring-boot-4-0-0-available-now/",
+        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 버전은 공고 본문에 'Spring Boot N'·'Java N' 으로 적힌 것만 셌습니다.",
+    ])
+    return {"kind": "spring", "id": f"spring-{asof.replace('-', '')}", "title": "스프링 채용",
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.0,
+            "reel_lead": "Spring Boot 4 나온 지 11달, 공고는 몇 버전을 쓸까 — 저장해 두세요"}
+
+
 REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
 
 
@@ -2517,7 +2573,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
                                      "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit",
-                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud", "paywish", "robot"])
+                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud", "paywish", "robot", "spring"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
@@ -2573,6 +2629,8 @@ def main() -> int:
         post = build_paywish()
     elif args.kind == "robot":
         post = build_robot()
+    elif args.kind == "spring":
+        post = build_spring()
     elif args.kind in ("pay", "perk", "welcome", "gongchae", "contra"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae, "contra": build_contra}[args.kind]()
