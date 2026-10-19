@@ -61,7 +61,7 @@ STYLE_FONTS = {
     "brandmag": ["Pretendard", "NanumMyeongjo"],
 }
 #: 원고마다 기본으로 찍을 틀
-DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"]}
+DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"]}
 
 
 #: 회사 자산(assets/companies/…)이 없는 기계에서 쓰는 공용 글꼴 — 공식 배포본(OFL), 라이선스는 같은 폴더.
@@ -343,7 +343,58 @@ def build_finance(today: date | None = None) -> dict:
     return {"id": f"finance-{today:%Y%m%d}", "series": "[금융권 IT]", "title": "금융권 IT 자리", "slides": slides, "caption": caption}
 
 
-BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance}
+def build_intern(today: date | None = None) -> dict:
+    """[카드뉴스] 인턴·교육생 — 채용연계형 인턴 보도(교보증권 IT 인턴, 아시아경제)와 메인 '인턴·교육생' 구역을 견준다.
+    '전환형'·'채용연계' 는 공고 본문에서 찾은 건수라 그 말 그대로 적는다(인턴만 센 것이 아니다)."""
+    from urllib.parse import quote, urlencode
+    today = today or date.today()
+    sec = _home("/api/home/section/intern")
+    jobs = [j for j in sec["jobs"] if not _NOT_JOB.search(j["title"] + j["company"]) and j["size"] != "해외 기업"]
+    conv = _home("/api/jobs?" + urlencode({"q": "전환형", "limit": 1}))["total"]
+    link = _home("/api/jobs?" + urlencode({"q": "채용연계", "limit": 1}))["total"]
+    big = [j for j in jobs if j["size"] in ("대기업", "중견기업")]
+    picks, seen = [], set()
+    for j in big + jobs:
+        if j["company"] in seen:
+            continue
+        seen.add(j["company"])
+        d = j.get("dday")
+        when = "오늘 마감" if d == 0 else f"D-{d}" if d is not None and d > 0 else "상시"
+        meta = when + (f" · {j['size']}" if j.get("size") else "")
+        picks.append({"co": j["company"], "title": _short(j["title"]), "meta": meta})
+        if len(picks) == 4:
+            break
+    note = f"JD Viewer 모집중 IT 공고 · {today:%Y.%m.%d}"
+    slides = [
+        {"type": "cover", "photo": "pangyo.jpg", "kicker": f"인턴·교육생 · {today:%Y.%m.%d}",
+         "big": f"{sec['total']:,}", "unit": "건", "title": ["지금 열린", "IT 인턴·교육생 자리"],
+         "sub": "제목에 인턴·교육생·체험형·채용연계가 적힌 IT 공고"},
+        {"type": "stat", "photo": "hourglass.jpg", "kicker": "전환되는 자리", "title": "인턴 뒤에 정규직이 있나",
+         "items": [{"num": f"{conv}", "unit": "건", "label": "공고에 '전환형' 을 적은 곳"},
+                   {"num": f"{link}", "unit": "건", "label": "공고에 '채용연계' 를 적은 곳"}],
+         "explain": "교보증권은 IT 부문 채용연계형 인턴을 6주 동안 돌린 뒤 최종면접으로 정규직을 뽑았다(보도). 인턴 공고는 '전환' 여부부터 확인하자."},
+        {"type": "picks", "photo": "typing.jpg", "kicker": "눈여겨볼 곳", "title": "큰 회사의 IT 인턴",
+         "sub": "대기업·중견기업 먼저, 회사마다 한 건", "rows": picks},
+        {"type": "end", "photo": "seoul.jpg", "kicker": "저장해 두기", "title": "인턴 공고는 짧게 열린다\n보면 바로 넣으세요",
+         "lines": ["인턴 찾는 친구에게 보내 주세요", "공고 전체는 프로필 링크에서"]},
+    ]
+    for sl in slides:
+        sl["image"], sl["credit"] = _photo(sl.pop("photo"))
+        sl["note"] = note
+    caption = "\n\n".join([
+        f"지금 열린 IT 인턴·교육생 자리 {sec['total']:,}건.",
+        f"공고에 '전환형' 을 적은 곳 {conv}건, '채용연계' 를 적은 곳 {link}건 — 인턴 공고는 정규직 전환 여부부터 보세요.",
+        "교보증권은 IT 부문(시스템·DevOps·클라우드·보안) 채용연계형 인턴을 6주 동안 진행한 뒤 최종면접으로 정규직을 뽑았습니다"
+        "(아시아경제 보도, 2026.1).",
+        "큰 회사의 IT 인턴: " + " · ".join(p["co"] for p in picks),
+        "출처\nhttps://core.asiae.co.kr/article/2026011610121895195",
+        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고 기준. '전환형'·'채용연계' 는 공고 본문에서 찾은 건수입니다. 전체는 프로필 링크에서.",
+    ])
+    return {"id": f"intern-{today:%Y%m%d}", "series": "[인턴·교육생]", "title": "IT 인턴·교육생", "slides": slides,
+            "caption": caption}
+
+
+BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern}
 
 
 # --- 렌더 ---------------------------------------------------------------
