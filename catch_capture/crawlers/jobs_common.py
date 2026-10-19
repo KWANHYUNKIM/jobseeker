@@ -540,7 +540,7 @@ _HEADER_TO_KEY.sort(key=lambda kv: len(kv[0]), reverse=True)
 _HEADER_PATTERNS: list[tuple[str, re.Pattern]] = [(k, re.compile(rx, re.I)) for k, rx in [
     # 끊는 머리말(지원 절차·회사 소개·급여…) — 키 None. 아래 어느 것보다 먼저 본다.
     (None, r"합류\s*여정|채용\s*(절차|프로세스|과정)|전형\s*(절차|과정)|지원\s*(방법|서류|시|하는\s*방법)|"
-           r"이력서는|지원서는|유의\s*(사항|해)|꼭\s*확인|접수|제출\s*서류|회사\s*소개|기업\s*소개|팀\s*소개|"
+           r"이력서는|지원서는|유의\s*(사항|해)|안내\s*사항|꼭\s*확인|접수|제출\s*서류|회사\s*소개|기업\s*소개|팀\s*소개|"
            r"합류하게\s*될\s*팀|우리\s*팀은|동료를\s*위한\s*한마디|근무\s*(조건|환경|지|형태|요일|장소)|고용\s*형태|"
            r"급여|연봉|처우|^about\s+(us|the\s+team|the\s+company|[a-z][\w.&' -]{0,30})$|^who\s+we\s+are|"
            r"^our\s+(story|mission|values|commitment|culture|team)|diversity|equal\s+opportunity|"

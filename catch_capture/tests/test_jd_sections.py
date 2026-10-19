@@ -84,3 +84,13 @@ def test_long_exclaimed_sentence_is_still_body():
     t = "자격요건\n- 서버 3년\n이런 분과 함께라면 정말 즐겁게 오래오래 성장할 수 있을 거예요!\n- Kafka"
     p = _split(t)
     assert "Kafka" in p["qualifications"] and "preferences" not in p
+
+
+def test_guide_notice_header_ends_section_cj_style():
+    # CJ ENM — '기타 안내사항'·'■ 지원 안내사항' 을 끊는 머리말로 몰라서 전형 절차·지원서 유의사항이
+    # 우대사항·복지 칸에 붙었다(2026-10-20, 데이터 직군 묶음 판에서 보임)
+    t = ("우대사항\n- Airflow 경험\n기타 안내사항\n- 상시채용\n- 이력서 제출 필수\n"
+         "복지\n■ 지원 안내사항\n- 지원서 내용이 사실과 다르면 채용 취소")
+    p = split_jd_sections(t)
+    assert p["preferences"] == "- Airflow 경험"
+    assert p["benefits"] == ""

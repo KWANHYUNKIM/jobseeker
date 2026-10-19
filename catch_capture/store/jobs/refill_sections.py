@@ -9,12 +9,19 @@ crawlers/jobs_common.py 의 split_jd_sections 가 원본이고, 크롤 회차의
     python -m store.jobs.refill_sections            # 모집중 공고
     python -m store.jobs.refill_sections --all      # 마감 공고까지
     python -m store.jobs.refill_sections --dry-run
+    python -m store.jobs.refill_sections --trim     # 칸에 섞여 든 '기타 안내사항' 아래를 잘라 낸다
+
+`--trim`: 옛 규칙은 '기타 안내사항'·'■ 지원 안내사항' 을 끊는 머리말로 몰라서 그 아래(전형 절차·
+지원서 유의사항·'목록가기')가 우대사항·복지 칸에 붙었다(2026-10, CJ ENM 공고 판에서 보임). 규칙은
+split_jd_sections 에 고쳤고, 이미 저장된 칸은 그 줄에서 자른다 — 그 위의 내용은 건드리지 않는다.
 """
 from __future__ import annotations
 
 import sys as _sys
 from pathlib import Path as _Path
 _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent.parent))  # catch_capture 루트
+
+import re
 
 from crawlers.jobs_common import build_jd_sections
 from store.db.conn import cursor
@@ -51,6 +58,39 @@ def run(active_only: bool = True, dry_run: bool = False) -> dict:
     return {"candidates": len(rows), "updated": len(updates), **filled}
 
 
+#: 칸 안에 홀로 선 '…안내사항' 줄 — 앞뒤 기호·번호(■ @ © 9. [ ])와 '기타'·'지원'·'채용 절차 및' 같은 머리를 받는다
+_GUIDE_HEAD = re.compile(r"^\W{0,3}(?:\d+\.\s*)?[^\n]{0,10}안내\s*사항\W{0,3}$", re.M)
+
+
+def trim(dry_run: bool = False) -> dict:
+    with cursor(autocommit=True) as cur:
+        cur.execute(f"""SELECT id, {", ".join(FIELDS)} FROM job
+                         WHERE {" OR ".join(f"{k} ~ '안내\\s*사항'" for k in FIELDS)}""")
+        rows = cur.fetchall()
+    updates = []
+    for r in rows:
+        new = {}
+        for k in FIELDS:
+            m = _GUIDE_HEAD.search(r[k] or "")
+            if m:
+                new[k] = r[k][:m.start()].rstrip()
+        if new:
+            updates.append((r["id"], new))
+    cut = {k: sum(1 for _, n in updates if k in n) for k in FIELDS}
+    print(f"[trim] 안내사항 줄이 든 공고 {len(updates):,}건 {cut}", flush=True)
+    if dry_run or not updates:
+        return {"updated": 0, **cut}
+    with cursor() as cur:
+        for jid, new in updates:
+            sets = ", ".join(f"{k} = %({k})s" for k in new)
+            cur.execute(f"UPDATE job SET {sets} WHERE id = %(id)s", {**new, "id": jid})
+    print(f"[trim] {len(updates):,}건 잘라 냄", flush=True)
+    return {"updated": len(updates), **cut}
+
+
 if __name__ == "__main__":
     a = _sys.argv[1:]
-    run(active_only="--all" not in a, dry_run="--dry-run" in a)
+    if "--trim" in a:
+        trim(dry_run="--dry-run" in a)
+    else:
+        run(active_only="--all" not in a, dry_run="--dry-run" in a)
