@@ -416,6 +416,21 @@ class ShardedTitleTest(unittest.TestCase):
         job = {"title": "HW 개발자", "full": {"preferences": ["HP: 010-1234-5678 로 연락"]}}
         self.assertEqual(_leaked_header(job), "개인 휴대전화 번호")
 
+    def test_placeholder_and_contract(self):
+        from poster.collection import _leaked_header
+        self.assertTrue(_leaked_header({"title": "AI", "full": {"tasks": [{"title": "", "items": ["상세내용을 입력하세요"]}]}}))
+        self.assertTrue(_leaked_header({"title": "Java", "full": {"qualifications": ["2026년 10월 말 (약 6~7개월)"]}}))
+
+    def test_bracket_fragments(self):
+        from poster.collection import _leaked_header
+        self.assertTrue(_leaked_header({"title": "AI 서비스 기획자", "full": {"qualifications": ["인원", "[Timely", "AI]", "기획"]}}))
+
+    def test_planner_not_dev(self):
+        from poster.collection import _not_dev
+        self.assertTrue(_not_dev({"title": "AI 서비스 기획자", "stack": ["Python"]}))
+        self.assertFalse(_not_dev({"title": "AI 서비스 개발자", "stack": ["Python"]}))
+        self.assertTrue(_not_dev({"title": "Full-stack Product Manager", "stack": ["Python"]}))
+
     def test_corporate_prefix(self):
         from poster.collection import _core
         self.assertEqual(_core("(유)월터워커"), _core("유한회사 월터워커"))

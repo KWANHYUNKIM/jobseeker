@@ -138,6 +138,10 @@ def _not_dev(job: dict) -> bool:
     # 조선·소재 같은 IT 밖 연구직 — '함정성능연구' 의 '연구' 가 개발 신호로 잡혔다(한화오션, 2026-10-20)
     if _NON_IT_RND.search(title) and not _SW_WORD.search(title):
         return True
+    # 기획자·디자이너는 'AI' 같은 개발 신호가 제목에 있어도 IT 개발 자리가 아니다('AI 서비스 기획자', 업스테이지 2026-10-20)
+    if (re.search(r"기획자|기획\s*담당|디자이너|Product\s*Manager|\bPM\b|\bPO\b", title)
+            and not re.search(r"개발|엔지니어|Engineer|Developer", title, re.I)):
+        return True
     if _DEV_SIGNAL.search(title):
         return False
     if _NOT_DEV.search(title):
@@ -190,7 +194,7 @@ _STOP = re.compile(r"^(interview\s+process|hiring\s+process|additional\s+informa
 _FOREIGN_TAG = re.compile(r"\s*\[(베트남|중국|미국|인도|싱가포르|대만|필리핀|인도네시아|태국|말레이시아)[^\]]*\]")
 #: 헤드헌팅·서치펌 공고 — 고객사 이름을 숨기고 '유망 … 기업' 으로 쓴다
 #: 회사 이름을 가린 공고·영업 지사 공고('중소기업(300명이하)' · '유망 모바일 앱 및 게임 보안 솔루션 회사')도 헤드헌팅으로 본다.
-_AGENCY = re.compile(r"라인서치|커리어케어|휴먼파워|아웃소싱|헤드헌팅|헤드헌터|서치펌|고객사|에이치알비즈|"
+_AGENCY = re.compile(r"라인서치|커리어케어|휴먼파워|아웃소싱|헤드헌팅|헤드헌터|서치펌|고객사|에이치알|"
                      r"(개발사|제조사|기업)\s*/\s*상장사|유망\s*\S+(\s*\S+){0,6}\s*(기업|회사)"
                      r"|^\s*(중소|중견|대)기업(\s|\(|$)"
                      # 영업 지사가 올린 공고('미래에셋금융서비스특화사업지사' — 대기업으로 잡혔다)
@@ -214,6 +218,18 @@ def _leaked_header(job: dict) -> str:
             t = re.sub(r"^[#\s\[【(•·*-]+|[\]】):：.!\s]+$", "", line or "")
             if len(t) <= 30 and (_STOP.match(t) or any(rx.match(t) for k, rx in _HEADS.items() if k != cell)):
                 return line
+    allt = " ".join(l for v in cells.values() for l in v)
+    # 채용 사이트의 빈 칸 안내문이 그대로 남은 공고('상세내용을 입력하세요', 디비아이엔씨 2026-10-20)
+    if re.search(r"내용을\s*입력하세요", allt):
+        return "빈 칸 안내문"
+    # 기간을 정해 사람을 대는 SI 투입 공고('2026년 10월 말 (약 6~7개월)', 하이브릭스 2026-10-20)
+    if re.search(r"\(\s*약\s*\d+\s*(~|-)?\s*\d*\s*개월\s*\)", allt):
+        return "기간제 투입(약 N개월)"
+    # 짝이 안 맞는 괄호 조각 줄('[Timely', 'AI]')이 둘 이상이면 제목이 쪼개져 들어온 것
+    frag = sum(1 for l in (l2.strip() for v in cells.values() for l2 in v)
+               if 0 < len(l) <= 8 and " " not in l and (l.count("[") != l.count("]") or l.count("(") != l.count(")")))
+    if frag >= 2:
+        return f"괄호 조각 줄 {frag}개"
     # 개인 휴대전화 번호가 본문에 있으면 판에 그대로 찍힌다(에이치알비즈코리아 'HP: 010-…', 2026-10-20) — 싣지 않는다
     if re.search(r"01[016789][-.\s]?\d{3,4}[-.\s]?\d{4}", " ".join(l for v in cells.values() for l in v)):
         return "개인 휴대전화 번호"
