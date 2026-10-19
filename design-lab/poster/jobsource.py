@@ -16,7 +16,8 @@ SOURCE = ROOT_DIR / "jd-viewer" / "public" / "all_jobs_enriched.json"
 INDEX = LAB_DIR / "state" / "jobs_index.json"
 # 색인 필드가 바뀌면 올린다. 원본이 그대로여도 옛 색인을 다시 만든다.
 #   2 → 3: 모집 기간·모집 방식(period)을 원본 full_jd 에서 뽑아 넣는다
-SCHEMA = 4
+#   4 → 5: 본문을 이미지 OCR 로 읽은 공고(ocr)를 표시한다
+SCHEMA = 5
 
 # 불릿으로 쓸 수 있는 줄머리들. 사이트마다 제각각이라 넉넉히 받는다.
 _BULLET = re.compile(r"^\s*(?:[*\-•·▶▪◆■□○●]|└|\d+[.)])\s*")
@@ -159,6 +160,8 @@ def _slim(job: dict) -> dict | None:
         "dday": job.get("dday"),
         # 언제부터 언제까지 · 어떻게 모집하나. 판과 묶음 표지가 이걸 쓴다.
         "period": _period(job),
+        # 본문을 포스터 이미지에서 OCR 로 읽은 공고 — 글자가 깨져 있기 쉬워 판에 그대로 싣지 않는다
+        "ocr": "[이미지 OCR]" in (job.get("full_jd") or ""),
         "qualifications": _bullets(job.get("qualifications", ""), 5),
         "preferences": _bullets(job.get("preferences", ""), 4),
         "tasks": _bullets(job.get("main_tasks", ""), 5),

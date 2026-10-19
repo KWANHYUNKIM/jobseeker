@@ -146,6 +146,9 @@ def _family(job: dict) -> str:
     'SM 사업 관리' 처럼 직군이 안 적힌 공고까지 끌려온다. 묶음 표지에 '프론트엔드' 라고 써 놓고
     아닌 걸 넣으면 그게 제일 눈에 띈다 — 애매하면 빼는 쪽이 낫다.
     """
+    # 보안 자리는 따로 — 'Security Researcher (모의해킹/취약점 분석)' 가 '분석' 때문에 데이터·AI 묶음에 들어왔다
+    if re.search(r"보안|security|모의\s*해킹|취약점|침해\s*대응|pentest", job.get("title", ""), re.I):
+        return "security"
     return pick_palette({"title": job.get("title", ""), "stack": []})[0]
 
 
@@ -161,6 +164,37 @@ def _data_warning(job: dict) -> str:
             continue
         if not w.get("job") or w["job"] == job.get("key"):
             return w.get("note", "원본 데이터에 문제 있음")
+    return ""
+
+
+#: 칸 안에 홀로 선 '다른 칸의 머리말' — 옛 규칙으로 나눠 DB 에 남은 공고에서 보인다(네이버 주요업무 칸의
+#: 'Required Skills', 토스 자격요건 칸의 '# 이런 경험이 있으면 좋아요'). 판은 원문을 그대로 실으므로 뺀다.
+_HEADS = {
+    "tasks": re.compile(r"^(responsibilities|what\s+you('ll|\s+will)?\s+do|주요\s*업무|담당\s*업무)$", re.I),
+    "qualifications": re.compile(r"^(required\s+skills|requirements|(basic|minimum)\s+qualifications|qualifications|"
+                                 r"자격\s*요건|지원\s*자격|필수\s*(요건|사항)|이런\s*분(을|과)?\s*(찾|모십|함께).{0,12})$", re.I),
+    "preferences": re.compile(r"^(preferred(\s+qualifications)?|nice[- ]to[- ]have|bonus\s*points?|우대\s*사항|"
+                              r"이런\s*(경험|분)이\s*(있으면|있다면|이면)\s*(더\s*)?좋아요)$", re.I),
+}
+#: 어느 칸에도 있으면 안 되는 머리말 — 전형 절차·안내(42dot 우대사항 칸이 'INTERVIEW PROCESS' 부터 끝까지 이어졌다)
+_STOP = re.compile(r"^(interview\s+process|hiring\s+process|additional\s+information|a\s+message\s+to\b.*|"
+                   r"(채용|전형)\s*(절차|프로세스|과정)|(기타|지원)?\s*안내\s*사항)$", re.I)
+#: 경력 칸에 지역이 들어간 공고(토스·42dot 의 'Seoul', 'Pangyo …')
+_PLACE_IN_CAREER = re.compile(r"seoul|pangyo|korea|remote|서울|판교|경기", re.I)
+
+
+def _leaked_header(job: dict) -> str:
+    """한 칸에 다른 칸의 머리말이 줄로 섞여 있으면 그 줄. 없으면 빈 문자열."""
+    full = job.get("full") or {}
+    cells = {"tasks": [x for g in full.get("tasks") or [] for x in [g.get("title", ""), *g.get("items", [])]],
+             "qualifications": full.get("qualifications") or [], "preferences": full.get("preferences") or []}
+    for cell, lines in cells.items():
+        for line in lines:
+            t = re.sub(r"^[#\s\[【(•·*-]+|[\]】):：.!\s]+$", "", line or "")
+            if len(t) <= 30 and (_STOP.match(t) or any(rx.match(t) for k, rx in _HEADS.items() if k != cell)):
+                return line
+    if _PLACE_IN_CAREER.search(job.get("career") or ""):
+        return f"경력 칸: {job['career']}"
     return ""
 
 
@@ -390,6 +424,9 @@ def build(kind: str, *, value: str = "", since: str = "", until: str = "",
     # 원본 데이터가 깨진 공고를 뺀다 — 판은 원문을 한 글자도 바꾸지 않으므로 깨진 글이 그대로 실린다.
     # 회사 조사(brands/*.json)에서 발견하면 data_warning 에 적어 둔다(예: OCR 로 읽은 이미지 공고).
     rows = [j for j in rows if not _data_warning(j)]
+    # 본문을 이미지 OCR 로 읽은 공고도 뺀다 — 토스 Data Analyst 판에 'SQL Azle', '46[0106' 이 실렸다(2026-10-20)
+    rows = [j for j in rows if not j.get("ocr")]
+    rows = [j for j in rows if not _leaked_header(j)]
     # 개발 자리가 아닌 공고를 뺀다(제목 기준)
     rows = [j for j in rows if not _not_dev(j)]
     # 이미 내보낸 공고를 뺀다(publish.posted). 모집이 길게 열린 공고는 매주 같은 자리에 다시

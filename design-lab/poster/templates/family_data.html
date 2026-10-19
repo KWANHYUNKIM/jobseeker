@@ -229,7 +229,8 @@
     // ── 구조 판 ───────────────────────────────────────────────────────
     // 그림이 없는 회사. brands/<회사>.json 에 적힌 그 회사 물건의 '짜임' 을 원문 값으로 세운다.
     // 여기 들어가는 숫자는 공고의 경력이고, 'to' 는 그 회사 캠페인의 말이다(지어낸 값이 아니다).
-    const careerText = (D.career || (D.meta || [])[0] || '').replace(/^경력\s*/, '');
+    // 경력이 비면 meta[0] 이 지역이다(토스 'Seoul' 이 경력 칸에 섰다) — 경력처럼 생긴 것만 쓴다
+    const careerText = (D.career || (D.meta || []).find(m => /경력|신입|무관|\d\s*년/.test(m)) || '').replace(/^경력\s*/, '');
     const nums = (careerText.match(/\d+/g) || []).slice(0, 2);
     const sigId = (B.signature && B.signature.id) || '';
     const plate = el('div', 'plate');
@@ -257,7 +258,7 @@
   // 스키마 한 줄 — 값이 있는 필드만 세운다
   const fields = [
     // company 는 위 표 이름 줄에 이미 있다 — 두 번 쓰지 않는다
-    ['career', (D.career || (D.meta || [])[0] || '').replace(/^경력\s*/, '')],
+    ['career', (D.career || (D.meta || []).find(m => /경력|신입|무관|\d\s*년/.test(m)) || '').replace(/^경력\s*/, '')],
     ['location', (D.meta || []).find(m => !/^경력|^신입/.test(m)) || ''],
     ['stack', (D.stack || []).join(' · ')],
     ['period', D.until || ''],                                   // 모집 기간(없으면 칸도 없다)
