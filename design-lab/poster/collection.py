@@ -397,7 +397,11 @@ def _core(company: str) -> str:
     로 따로 올라와 신입 묶음에 두 장 실렸다 — 괄호·법인 표기를 떼고, 영문 표기는 한글로 바꿔 본다."""
     s = re.sub(r"\([^)]*\)|㈜|주식회사", "", company or "").lower()
     for en, ko in _EN_KO.items():
-        s = re.sub(rf"\b{en}\b", ko, s)
+        if en.isascii():
+            s = re.sub(rf"\b{en}\b", ko, s)
+        elif s.startswith(en):             # 한글 사이엔 낱말 경계가 없다 — '씨제이이엔엠' 은 앞머리로 바꾼다
+            s = ko + s[len(en):]
+    s = s.replace("이엔엠", "enm")          # 'CJ ENM' 과 '씨제이이엔엠' 을 한 회사로
     return re.sub(r"\s+", "", s)
 
 
