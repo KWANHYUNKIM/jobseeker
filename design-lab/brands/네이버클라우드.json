@@ -58,7 +58,17 @@
         "what": "CLOVA 3D 청록 그래픽 (navercloudcorp.com/img/clova_01.png)",
         "why_not": "음성 공고와는 이어지지만 클로바는 별 브랜드(회사 사이트 꼬리에 관계사로 따로 링크)이고, 이미지 자체가 로고 조형이다"
       }
-    ]
+    ],
+    "medium": {
+      "ground": "photo",
+      "text_load": "full",
+      "hand": "print",
+      "dominant": "데이터센터 '각' 서버실 일점투시 사진(머리) + 가운데 세로 선으로 나눈 2단 전문",
+      "why": "시그니처가 각 서버실 복도 사진이라서 사진 바탕과 '복도처럼 양쪽에 선 두 단, 랙 레일 같은 왼쪽 선'은 시그니처에서 나왔다. 그래도 사진은 위 4분의 1뿐이고 나머지는 흰 바탕 전문이다. 네이버 판과 매체 세 칸이 똑같다(photo/full/print).",
+      "observed": true,
+      "observed_from": "out/dev-558642/brand_ig_portrait.jpg",
+      "observed_at": "2026-10-19"
+    }
   },
   "points": [
     {
@@ -83,15 +93,36 @@
     "font": "'Hanken Grotesk','NanumSquare','Noto Sans KR','Malgun Gothic',sans-serif",
     "embed_fonts": {
       "Hanken Grotesk": [
-        { "src": "assets/companies/네이버클라우드/fonts/HankenGrotesk-400.woff2", "weight": 400 },
-        { "src": "assets/companies/네이버클라우드/fonts/HankenGrotesk-500.woff2", "weight": 500 },
-        { "src": "assets/companies/네이버클라우드/fonts/HankenGrotesk-600.woff2", "weight": 600 },
-        { "src": "assets/companies/네이버클라우드/fonts/HankenGrotesk-700.woff2", "weight": 700 },
-        { "src": "assets/companies/네이버클라우드/fonts/HankenGrotesk-800.woff2", "weight": 800 }
+        {
+          "src": "assets/companies/네이버클라우드/fonts/HankenGrotesk-400.woff2",
+          "weight": 400
+        },
+        {
+          "src": "assets/companies/네이버클라우드/fonts/HankenGrotesk-500.woff2",
+          "weight": 500
+        },
+        {
+          "src": "assets/companies/네이버클라우드/fonts/HankenGrotesk-600.woff2",
+          "weight": 600
+        },
+        {
+          "src": "assets/companies/네이버클라우드/fonts/HankenGrotesk-700.woff2",
+          "weight": 700
+        },
+        {
+          "src": "assets/companies/네이버클라우드/fonts/HankenGrotesk-800.woff2",
+          "weight": 800
+        }
       ],
       "NanumSquare": [
-        { "src": "assets/companies/네이버클라우드/fonts/NanumSquare_seR.woff2", "weight": 400 },
-        { "src": "assets/companies/네이버클라우드/fonts/NanumSquare_seB.woff2", "weight": 700 }
+        {
+          "src": "assets/companies/네이버클라우드/fonts/NanumSquare_seR.woff2",
+          "weight": 400
+        },
+        {
+          "src": "assets/companies/네이버클라우드/fonts/NanumSquare_seB.woff2",
+          "weight": 700
+        }
       ],
       "NanumSquare EB": "assets/companies/네이버클라우드/fonts/NanumSquareEB.woff"
     },
@@ -120,7 +151,14 @@
       "brand_font": "Calibre (Klim Type Foundry, 상용) — navercloudcorp.com 과 ncloud.com 이 둘 다 /font/Calibre/*.woff2 로 직접 서빙한다. 라틴 제목·숫자 전부 이 서체",
       "korean_seen": "navercloudcorp.com 은 Pretendard(본문) + 나눔스퀘어(NanumSquare_seR/seB, NanumSquareEB) 를 함께 로드한다. ncloud.com 은 Apple SD Gothic Neo 계열",
       "license": "Calibre 는 이용허락이 없다 — 판에 넣지 않는다. sources/04_fonts_compare/Calibre-*.woff2 는 비교 견본을 찍기 위해서만 받았다(assets/.../fonts/OFL-NOTE.md)",
-      "compared": ["Figtree", "Hanken Grotesk", "Manrope", "Plus Jakarta Sans", "Inter", "Public Sans"],
+      "compared": [
+        "Figtree",
+        "Hanken Grotesk",
+        "Manrope",
+        "Plus Jakarta Sans",
+        "Inter",
+        "Public Sans"
+      ],
       "specimen": "out/dev-558642/v1_font_specimen.jpg — 맨 위가 실제 Calibre(그 사이트 웹폰트), 아래가 무료 후보 6종. 같은 문장 'Audio Foundation Model Research' 와 'HyperCLOVA X · gag 2026 · 3 months · 0123456789'",
       "choice": "Hanken Grotesk (SIL OFL 1.1) — 라틴·숫자 / 나눔스퀘어(SIL OFL 1.1, NAVER) — 한글",
       "why": [

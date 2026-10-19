@@ -28,14 +28,32 @@
     "body_ink": "#2b2b2b",
     "embed_fonts": {
       "Kakao Big Sans": [
-        { "src": "assets/companies/카카오페이/fonts/KakaoBigSans-Regular.woff2", "weight": 400 },
-        { "src": "assets/companies/카카오페이/fonts/KakaoBigSans-Bold.woff2", "weight": 700 },
-        { "src": "assets/companies/카카오페이/fonts/KakaoBigSans-ExtraBold.woff2", "weight": 800 }
+        {
+          "src": "assets/companies/카카오페이/fonts/KakaoBigSans-Regular.woff2",
+          "weight": 400
+        },
+        {
+          "src": "assets/companies/카카오페이/fonts/KakaoBigSans-Bold.woff2",
+          "weight": 700
+        },
+        {
+          "src": "assets/companies/카카오페이/fonts/KakaoBigSans-ExtraBold.woff2",
+          "weight": 800
+        }
       ],
       "Kakao Small Sans": [
-        { "src": "assets/companies/카카오페이/fonts/KakaoSmallSans-Light.woff2", "weight": 300 },
-        { "src": "assets/companies/카카오페이/fonts/KakaoSmallSans-Regular.woff2", "weight": 400 },
-        { "src": "assets/companies/카카오페이/fonts/KakaoSmallSans-Bold.woff2", "weight": 700 }
+        {
+          "src": "assets/companies/카카오페이/fonts/KakaoSmallSans-Light.woff2",
+          "weight": 300
+        },
+        {
+          "src": "assets/companies/카카오페이/fonts/KakaoSmallSans-Regular.woff2",
+          "weight": 400
+        },
+        {
+          "src": "assets/companies/카카오페이/fonts/KakaoSmallSans-Bold.woff2",
+          "weight": 700
+        }
       ]
     },
     "display": "sans",
@@ -85,19 +103,70 @@
       ]
     },
     "palette_v1": [
-      { "hex": "#FF6868", "name": "송금봉투 코랄", "source": "story.kakaopay.com 송금봉투 모아보기 화면 PNG '내 마음' 봉투 몸통 최빈 픽셀(6,294px)", "use": "봉투 몸통 — 판의 바탕" },
-      { "hex": "#F24E4E", "name": "코랄 그늘", "source": "코랄에서 한 단계 어둡게(계산값 — 공식 색 아님)", "use": "봉투 접힘선·아래쪽 그늘" },
-      { "hex": "#FFFFFF", "name": "봉투 혀·편지", "source": "같은 화면의 흰 flap 픽셀", "use": "위쪽 혀(V 노치)와 본문 편지 카드" },
-      { "hex": "#F5F7F8", "name": "앱 배경 회색", "source": "송금봉투 화면 바깥 배경 최빈 픽셀(42,284px)", "use": "판 가장자리 — 봉투가 놓인 바닥" },
-      { "hex": "#FFEB00", "name": "카카오페이 옐로", "source": "Cobranding Guidelines PDF 4쪽·6쪽 150dpi 렌더 최빈 노랑(111,636px / 122,294px), kakaopay.com CSS 에 #ffeb00 11회", "use": "마감 칩 하나에만" },
-      { "hex": "#1A1A1A", "name": "글자 검정", "source": "가이드 본문 글자(추정 — 공식 표기값은 찾지 못함)", "use": "노란 칩 글자·편지 제목" },
-      { "hex": "#2B2B2B", "name": "본문 먹", "source": "추정값", "use": "편지 본문" }
+      {
+        "hex": "#FF6868",
+        "name": "송금봉투 코랄",
+        "source": "story.kakaopay.com 송금봉투 모아보기 화면 PNG '내 마음' 봉투 몸통 최빈 픽셀(6,294px)",
+        "use": "봉투 몸통 — 판의 바탕"
+      },
+      {
+        "hex": "#F24E4E",
+        "name": "코랄 그늘",
+        "source": "코랄에서 한 단계 어둡게(계산값 — 공식 색 아님)",
+        "use": "봉투 접힘선·아래쪽 그늘"
+      },
+      {
+        "hex": "#FFFFFF",
+        "name": "봉투 혀·편지",
+        "source": "같은 화면의 흰 flap 픽셀",
+        "use": "위쪽 혀(V 노치)와 본문 편지 카드"
+      },
+      {
+        "hex": "#F5F7F8",
+        "name": "앱 배경 회색",
+        "source": "송금봉투 화면 바깥 배경 최빈 픽셀(42,284px)",
+        "use": "판 가장자리 — 봉투가 놓인 바닥"
+      },
+      {
+        "hex": "#FFEB00",
+        "name": "카카오페이 옐로",
+        "source": "Cobranding Guidelines PDF 4쪽·6쪽 150dpi 렌더 최빈 노랑(111,636px / 122,294px), kakaopay.com CSS 에 #ffeb00 11회",
+        "use": "마감 칩 하나에만"
+      },
+      {
+        "hex": "#1A1A1A",
+        "name": "글자 검정",
+        "source": "가이드 본문 글자(추정 — 공식 표기값은 찾지 못함)",
+        "use": "노란 칩 글자·편지 제목"
+      },
+      {
+        "hex": "#2B2B2B",
+        "name": "본문 먹",
+        "source": "추정값",
+        "use": "편지 본문"
+      }
     ],
     "palette_unused": [
-      { "hex": "#3D5AEB", "name": "봉투 파랑", "why_not": "쏘카 판(남색)·오늘의집 판(파랑 포인트)과 색이 겹친다" },
-      { "hex": "#FFA800", "name": "봉투 주황", "why_not": "당근 판의 주황과 겹친다" },
-      { "hex": "#FFEB00", "name": "옐로를 바탕으로", "why_not": "카카오뱅크 판이 이미 노랑 바탕이고, 옐로는 로고 배경 몫이다" },
-      { "hex": "#FEE500", "name": "카카오톡 옐로", "why_not": "카카오 계열 색이지만 카카오페이 공식 값은 #FFEB00 이었다" }
+      {
+        "hex": "#3D5AEB",
+        "name": "봉투 파랑",
+        "why_not": "쏘카 판(남색)·오늘의집 판(파랑 포인트)과 색이 겹친다"
+      },
+      {
+        "hex": "#FFA800",
+        "name": "봉투 주황",
+        "why_not": "당근 판의 주황과 겹친다"
+      },
+      {
+        "hex": "#FFEB00",
+        "name": "옐로를 바탕으로",
+        "why_not": "카카오뱅크 판이 이미 노랑 바탕이고, 옐로는 로고 배경 몫이다"
+      },
+      {
+        "hex": "#FEE500",
+        "name": "카카오톡 옐로",
+        "why_not": "카카오 계열 색이지만 카카오페이 공식 값은 #FFEB00 이었다"
+      }
     ]
   },
   "points": [
@@ -153,7 +222,17 @@
         "what": "카카오페이 QR 결제 스탠드(오프라인 가맹점 사이니지)",
         "why_not": "가이드 PDF 에 사이니지 항목은 있지만 판에 쓸 원본 이미지를 구하지 못했다(미조사)"
       }
-    ]
+    ],
+    "medium": {
+      "ground": "flat",
+      "text_load": "full",
+      "hand": "print",
+      "dominant": "판 전체가 코랄 송금봉투 한 장(흰 혀 V) + 봉투 문구 자리의 큰 '신입'",
+      "why": "시그니처가 송금봉투(색 몸통·흰 혀·짧은 한 마디)라서 판 전체를 봉투 한 장으로 만든 것과 '신입' 한 마디를 크게 쓴 것은 시그니처에서 그대로 나왔다. 다만 봉투가 종이가 아니라 앱 화면의 평면 그래픽이라 바탕은 flat이다. 공고 전문은 흰 편지 카드에 담았는데, 이 공고가 짧아서 빽빽해 보이지 않을 뿐이다.",
+      "observed": true,
+      "observed_from": "out/saramin-54697109/brand_ig_portrait.jpg",
+      "observed_at": "2026-10-19"
+    }
   },
   "images": {
     "envelope3d": "assets/companies/카카오페이/v1/envelope_3d.jpg"

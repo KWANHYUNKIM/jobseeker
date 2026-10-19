@@ -60,7 +60,17 @@
         "what": "'Clear & Bold' 동심 둥근사각 고리(video_clear-bold-vertical, 스크린 무대)",
         "why_not": "같은 그래픽 시스템의 공식 모티프지만 가운데에 로고를 얹는 틀로 쓰인다(video_screen). '이동' 을 직접 보여 주는 건 Expand 도로 쪽이라 하나만 고름"
       }
-    ]
+    ],
+    "medium": {
+      "ground": "photo",
+      "text_load": "full",
+      "hand": "print",
+      "dominant": "리브랜딩 필름의 빛줄기 소실점 프레임(머리) + 남색 바탕 2단 전문",
+      "why": "시그니처가 'Expand' 필름의 빛 선 도로라서 필름 프레임을 머리에 깔고, 소실점 위에 직무명을 같은 그라디언트로 얹은 것은 시그니처에서 나왔다. 하지만 판의 3분의 2는 어두운 남색 바탕에 빽빽한 전문이다. 바탕색만 어두울 뿐 네이버·네이버클라우드와 같은 photo/full/print 조합이다.",
+      "observed": true,
+      "observed_from": "out/wanted-366327/brand_ig_portrait.jpg",
+      "observed_at": "2026-10-19"
+    }
   },
   "points": [
     {

@@ -24,11 +24,26 @@
     "font": "'NanumHuman','NanumSquareNeo','Noto Sans KR','Malgun Gothic',sans-serif",
     "embed_fonts": {
       "NanumHuman": [
-        { "src": "assets/companies/네이버/fonts/NanumHumanLight.woff", "weight": 300 },
-        { "src": "assets/companies/네이버/fonts/NanumHumanRegular.woff", "weight": 400 },
-        { "src": "assets/companies/네이버/fonts/NanumHumanBold.woff", "weight": 700 },
-        { "src": "assets/companies/네이버/fonts/NanumHumanEB.woff", "weight": 800 },
-        { "src": "assets/companies/네이버/fonts/NanumHumanHeavy.woff", "weight": 900 }
+        {
+          "src": "assets/companies/네이버/fonts/NanumHumanLight.woff",
+          "weight": 300
+        },
+        {
+          "src": "assets/companies/네이버/fonts/NanumHumanRegular.woff",
+          "weight": 400
+        },
+        {
+          "src": "assets/companies/네이버/fonts/NanumHumanBold.woff",
+          "weight": 700
+        },
+        {
+          "src": "assets/companies/네이버/fonts/NanumHumanEB.woff",
+          "weight": 800
+        },
+        {
+          "src": "assets/companies/네이버/fonts/NanumHumanHeavy.woff",
+          "weight": 900
+        }
       ]
     },
     "display": "sans",
@@ -153,7 +168,17 @@
         "evidence": "https://1784.navercorp.com/ 섹션 라벨·캡션",
         "how_used": "머리 라벨 줄과 섹션 이름을 같은 방식(작은 대문자·회색)으로. 초록 사각 하나를 라벨 앞에"
       }
-    ]
+    ],
+    "medium": {
+      "ground": "photo",
+      "text_load": "full",
+      "hand": "print",
+      "dominant": "1784 아트리움 사진(위 40%) + 아래 2단 전문",
+      "why": "시그니처가 1784 아트리움(사람과 로봇 Rookie가 한 바닥을 지나는 장면)이라는 실제 장소라서 사진 바탕을 부르는 건 맞다. 다만 사진은 머리에만 있고 판의 절반 넘게는 흰 바탕의 공고 전문이다. 그래서 '사진 머리를 얹은 문서'이고, 전문 분량은 시그니처에서 나온 게 아니다.",
+      "observed": true,
+      "observed_from": "out/saramin-54074254/brand_ig_portrait.jpg",
+      "observed_at": "2026-10-19"
+    }
   },
   "points": [
     {

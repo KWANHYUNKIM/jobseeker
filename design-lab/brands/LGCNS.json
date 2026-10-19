@@ -154,7 +154,17 @@
         "what": "LG 로고의 빨강 원·얼굴 심볼",
         "why_not": "로고 변형 금지. 로고는 시그니처가 될 수 없다"
       }
-    ]
+    ],
+    "medium": {
+      "ground": "flat",
+      "text_load": "full",
+      "hand": "print",
+      "dominant": "2단 공고 전문(머리의 AX·DX·RX 세 글자 코드)",
+      "why": "시그니처는 사업·채용 트랙 코드 'AX·DX·RX'라는 글자 표기라서 머리를 활자로 짜는 것까지만 정당하다. 물성을 부르지 않는 시그니처이고, 판은 흰 바탕에 OCR로 깨진 전문을 2단으로 빽빽하게 깐 문서다. 시그니처에서 나온 매체라기보다 '그 밖(flat/full/print)'에 그대로 몰려 있다.",
+      "observed": true,
+      "observed_from": "out/dev-555004/brand_ig_portrait.jpg",
+      "observed_at": "2026-10-19"
+    }
   },
   "data_warning": {
     "job": "dev-555004",

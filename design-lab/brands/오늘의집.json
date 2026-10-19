@@ -38,11 +38,26 @@
     "font": "'Pretendard','Noto Sans KR','Malgun Gothic',sans-serif",
     "embed_fonts": {
       "Pretendard": [
-        {"src": "assets/companies/오늘의집/fonts/Pretendard-Regular.woff2", "weight": 400},
-        {"src": "assets/companies/오늘의집/fonts/Pretendard-Medium.woff2", "weight": 500},
-        {"src": "assets/companies/오늘의집/fonts/Pretendard-SemiBold.woff2", "weight": 600},
-        {"src": "assets/companies/오늘의집/fonts/Pretendard-Bold.woff2", "weight": 700},
-        {"src": "assets/companies/오늘의집/fonts/Pretendard-ExtraBold.woff2", "weight": 800}
+        {
+          "src": "assets/companies/오늘의집/fonts/Pretendard-Regular.woff2",
+          "weight": 400
+        },
+        {
+          "src": "assets/companies/오늘의집/fonts/Pretendard-Medium.woff2",
+          "weight": 500
+        },
+        {
+          "src": "assets/companies/오늘의집/fonts/Pretendard-SemiBold.woff2",
+          "weight": 600
+        },
+        {
+          "src": "assets/companies/오늘의집/fonts/Pretendard-Bold.woff2",
+          "weight": 700
+        },
+        {
+          "src": "assets/companies/오늘의집/fonts/Pretendard-ExtraBold.woff2",
+          "weight": 800
+        }
       ]
     },
     "display": "sans",
@@ -54,22 +69,62 @@
     "accent": "#00a1ff",
     "line": "#e3eaf0",
     "palette_v1": [
-      {"hex": "#00A1FF", "name": "Primary (New)", "source": "https://ohstory.io/wp-content/uploads/2025/10/rebranding_brand-color.jpg — 'Primary Color / New #00A1FF' 표기, 픽셀 #01A1FF · 심볼 원본 Ohouse-Profile-SymbolCircle-RGB-Color.webp 픽셀 #00A1FF", "use": "사진 속 + 태그, 섹션 줄 수, 지원 버튼, 공고 카드의 회사명 — 좁은 자리에만"},
-      {"hex": "#F7FBFE", "name": "브랜드 비주얼 바탕", "source": "bucketplace.com 리브랜딩 비하인드 ② 2-6.webp (콘텐츠 카드 피드) 카드 사이 바탕 픽셀", "use": "판 바탕"},
-      {"hex": "#FFFFFF", "name": "콘텐츠 카드", "source": "같은 이미지의 카드 면", "use": "섹션 카드·공고 카드"},
-      {"hex": "#1F2326", "name": "글자 검정", "source": "미확인 — 2-6.webp 의 아이콘·가격 글자는 저해상도 안티에일리어싱이라 #343436~#4B4B4B 로만 잡힘. 거기서 한 단계 진한 중성 검정을 골랐다", "use": "제목·본문 강조"},
-      {"hex": "#828C94", "name": "보조 회색", "source": "미확인 — 카드의 'Creator.' 캡션 톤을 눈으로 맞춤", "use": "캡션·스택"}
+      {
+        "hex": "#00A1FF",
+        "name": "Primary (New)",
+        "source": "https://ohstory.io/wp-content/uploads/2025/10/rebranding_brand-color.jpg — 'Primary Color / New #00A1FF' 표기, 픽셀 #01A1FF · 심볼 원본 Ohouse-Profile-SymbolCircle-RGB-Color.webp 픽셀 #00A1FF",
+        "use": "사진 속 + 태그, 섹션 줄 수, 지원 버튼, 공고 카드의 회사명 — 좁은 자리에만"
+      },
+      {
+        "hex": "#F7FBFE",
+        "name": "브랜드 비주얼 바탕",
+        "source": "bucketplace.com 리브랜딩 비하인드 ② 2-6.webp (콘텐츠 카드 피드) 카드 사이 바탕 픽셀",
+        "use": "판 바탕"
+      },
+      {
+        "hex": "#FFFFFF",
+        "name": "콘텐츠 카드",
+        "source": "같은 이미지의 카드 면",
+        "use": "섹션 카드·공고 카드"
+      },
+      {
+        "hex": "#1F2326",
+        "name": "글자 검정",
+        "source": "미확인 — 2-6.webp 의 아이콘·가격 글자는 저해상도 안티에일리어싱이라 #343436~#4B4B4B 로만 잡힘. 거기서 한 단계 진한 중성 검정을 골랐다",
+        "use": "제목·본문 강조"
+      },
+      {
+        "hex": "#828C94",
+        "name": "보조 회색",
+        "source": "미확인 — 카드의 'Creator.' 캡션 톤을 눈으로 맞춤",
+        "use": "캡션·스택"
+      }
     ],
     "palette_not_used": [
-      {"hex": "#48CCF4", "why": "리브랜딩 전 옛 Primary(같은 보도자료 이미지의 'Old'). 앱 화면 캡처(170675059767545066.png)의 태그·버튼 #35C5F0 도 옛 색이라 쓰지 않는다"},
-      {"hex": "할인 빨강 (21%, 35%)", "why": "상품 카드의 할인율 색. 공고에 할인이 없으니 쓰지 않는다"},
-      {"hex": "하늘 그라데이션", "why": "리브랜딩 키 비주얼(rebranding_5/main)의 하늘 사진 — 심볼과 한 몸인 장면이라 심볼 없이 떼어 쓰면 일반 하늘 배경이 된다"}
+      {
+        "hex": "#48CCF4",
+        "why": "리브랜딩 전 옛 Primary(같은 보도자료 이미지의 'Old'). 앱 화면 캡처(170675059767545066.png)의 태그·버튼 #35C5F0 도 옛 색이라 쓰지 않는다"
+      },
+      {
+        "hex": "할인 빨강 (21%, 35%)",
+        "why": "상품 카드의 할인율 색. 공고에 할인이 없으니 쓰지 않는다"
+      },
+      {
+        "hex": "하늘 그라데이션",
+        "why": "리브랜딩 키 비주얼(rebranding_5/main)의 하늘 사진 — 심볼과 한 몸인 장면이라 심볼 없이 떼어 쓰면 일반 하늘 배경이 된다"
+      }
     ],
     "fonts_research": {
       "brand_font": "공개된 전용 서체 이름을 찾지 못함. 리브랜딩 비하인드 ② 는 '워드마크는 서비스명을 또렷하고 편하게 보여줄 수 있는 폰트를 선택'이라고만 적었다(서체명 미기재)",
       "web": "bucketplace.com(회사·채용) CSS: font-family Noto Sans JP, Noto Sans KR, Apple SD Gothic Neo, 맑은 고딕 — ohou.se 는 헤드리스 접근이 Access Denied 로 막혀 확인 못 함",
       "official_images": "보도자료 이미지 rebranding_4/5 의 '집을 변화시키는 과정이 더욱 쉬워집니다' 글자를 후보와 같은 문장으로 비교 — Pretendard 가 자모 비율·ㅈ·ㅝ 모양이 가장 가깝다(Noto Sans KR 은 더 무겁고 넓다). 정확한 원본 서체는 미확인(Apple SD Gothic Neo 계열일 가능성)",
-      "compared": ["Pretendard", "SUIT", "Spoqa Han Sans Neo", "Noto Sans KR", "Wanted Sans"],
+      "compared": [
+        "Pretendard",
+        "SUIT",
+        "Spoqa Han Sans Neo",
+        "Noto Sans KR",
+        "Wanted Sans"
+      ],
       "specimen": "out/wanted-364319/v1_font_specimen.jpg — 맨 윗줄이 공식 이미지 원본 크롭",
       "choice": "Pretendard (SIL OFL 1.1, github.com/orioncactus/pretendard)",
       "why": "공식 이미지 글자와 가장 가깝고, 채용 사이트의 Noto Sans KR 보다 앱 화면 인상(Apple SD Gothic Neo)에 가깝다. 무료·수정 가능"
@@ -88,12 +143,37 @@
     "how_used": "머리 전체 — 회사 공식 페이지에 실린 주방 선반 사진(사람 없음)에 실제 물건 자리마다 새 Primary #00A1FF + 태그. 한 태그가 '선택된' 상태로 흰 카드를 띄우고, 그 카드가 곧 공고 카드다: 파란 회사명 → 공고 제목 → 가격 자리에 '경력 2년 이상' → 파란 버튼 '원티드에서 지원'. 공고가 Frontend Engineer, Content — 바로 이 콘텐츠 인터페이스를 만드는 자리",
     "not_used": "사진 원본 위의 해시태그 칩(#수납의달인 등)은 잘라냈다. 로고·심볼·워드마크는 판에 넣지 않는다. 옛 색(#35C5F0) 태그가 박힌 앱 캡처는 쓰지 않고 태그를 새 색으로 CSS 로 찍었다",
     "alternatives": [
-      {"what": "새 집 모양 심볼 '빵빵이'", "why_not": "로고 그 자체 — 로고를 판의 중심 장식으로 쓰는 것은 금지(로고 변형·재그림 위험). 알아보기는 쉽지만 공고와 이어지는 이야기가 없다"},
-      {"what": "리브랜딩 키 비주얼 — 하늘 사진 속 흰 심볼 + '어서오세요 새로운 오늘의집'", "why_not": "심볼이 주인공이라 위와 같은 이유. 하늘만 떼면 오늘의집으로 안 보인다"},
-      {"what": "온라인 집들이 매거진 표지·해시태그 칩 사진(회사 소개 페이지 카드)", "why_not": "사진 자체는 인스타 인테리어 계정과 구별이 안 된다. 칩(# 수납의달인)은 인스타 문법이라 오늘의집 고유가 아님. 사진은 태그의 바탕으로만 쓴다"},
-      {"what": "오프라인 쇼룸·팝업", "why_not": "공식 고해상도 자료를 찾지 못했고 인지도가 앱의 태그만 못하다"},
-      {"what": "오늘의집 렌즈(이미지 검색)", "why_not": "2025.12 신기능이라 아직 '오늘의집 하면 떠오르는 것'이 아니다"}
-    ]
+      {
+        "what": "새 집 모양 심볼 '빵빵이'",
+        "why_not": "로고 그 자체 — 로고를 판의 중심 장식으로 쓰는 것은 금지(로고 변형·재그림 위험). 알아보기는 쉽지만 공고와 이어지는 이야기가 없다"
+      },
+      {
+        "what": "리브랜딩 키 비주얼 — 하늘 사진 속 흰 심볼 + '어서오세요 새로운 오늘의집'",
+        "why_not": "심볼이 주인공이라 위와 같은 이유. 하늘만 떼면 오늘의집으로 안 보인다"
+      },
+      {
+        "what": "온라인 집들이 매거진 표지·해시태그 칩 사진(회사 소개 페이지 카드)",
+        "why_not": "사진 자체는 인스타 인테리어 계정과 구별이 안 된다. 칩(# 수납의달인)은 인스타 문법이라 오늘의집 고유가 아님. 사진은 태그의 바탕으로만 쓴다"
+      },
+      {
+        "what": "오프라인 쇼룸·팝업",
+        "why_not": "공식 고해상도 자료를 찾지 못했고 인지도가 앱의 태그만 못하다"
+      },
+      {
+        "what": "오늘의집 렌즈(이미지 검색)",
+        "why_not": "2025.12 신기능이라 아직 '오늘의집 하면 떠오르는 것'이 아니다"
+      }
+    ],
+    "medium": {
+      "ground": "photo",
+      "text_load": "full",
+      "hand": "print",
+      "dominant": "+ 태그가 찍힌 주방 선반 사진과 상품 카드처럼 띄운 공고 카드(머리) + 흰 카드 넷에 담은 전문",
+      "why": "시그니처가 '사진 위 파란 + 태그를 누르면 뜨는 상품 카드'라서 사진과 앱 카드(사진 위 UI)를 부르는 것은 맞고, 머리는 그대로 따랐다. 하지만 판 면적의 3분의 2는 흰 카드 네 개의 전문이라서, 결국 사진 머리를 단 카드 문서다.",
+      "observed": true,
+      "observed_from": "out/wanted-364319/brand_ig_portrait.jpg",
+      "observed_at": "2026-10-19"
+    }
   },
   "points": [
     {
