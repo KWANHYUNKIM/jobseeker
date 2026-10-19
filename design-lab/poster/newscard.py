@@ -61,7 +61,7 @@ STYLE_FONTS = {
     "brandmag": ["Pretendard", "NanumMyeongjo"],
 }
 #: 원고마다 기본으로 찍을 틀
-DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"]}
+DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"], "military": ["magazine"]}
 
 
 #: 회사 자산(assets/companies/…)이 없는 기계에서 쓰는 공용 글꼴 — 공식 배포본(OFL), 라이선스는 같은 폴더.
@@ -552,7 +552,89 @@ def build_japan(today: date | None = None) -> dict:
             "caption": caption}
 
 
-BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan}
+_MIL = re.compile(r"병역\s*특[례레]|산업기능요원|전문연구요원")
+
+
+def build_military(today: date | None = None) -> dict:
+    """[카드뉴스] 병역특례 — 병무청 2026 배정(산업기능요원 3,200·전문연구요원 2,300, 뉴스서울 2025.6.2)과
+    AI 분야 대기업 전문연구요원 2027 재도입 보도(시대에듀 2026.9.20)를, 지금 병역특례를 제목에 건 IT 공고로 받친다.
+    같은 자리를 여러 사이트에 올린 것은 하나로 센다(series._role_key)."""
+    import psycopg
+    from psycopg.rows import dict_row
+    from .collection import _AGENCY, _not_dev
+    from .series import _role_key
+    today = today or date.today()
+    with psycopg.connect(_dsn(), row_factory=dict_row) as conn:
+        rows = conn.execute("""
+            SELECT c.display_name AS co, j.title, coalesce(j.full_jd, '') AS jd, f.career_bucket AS b, j.deadline_on
+              FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
+              JOIN job_facet f ON f.job_id = j.id JOIN company c ON c.id = j.company_id
+             WHERE coalesce(f.region, '') <> '해외·원격'
+               AND NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = j.id)""").fetchall()
+    rows = [r for r in rows if not _not_dev({"title": r["title"], "stack": ["x"]}) and not _AGENCY.search(r["co"] + r["title"])
+            and not (r["deadline_on"] and r["deadline_on"] < today)]
+    titled = [r for r in rows if _MIL.search(r["title"])]
+    uniq = {}
+    for r in titled:
+        uniq.setdefault((_co(r["co"]).split("(")[0], _role_key(r["title"])), r)
+    jobs = list(uniq.values())
+    n, body = len(jobs), sum(1 for r in rows if not _MIL.search(r["title"]) and _MIL.search(r["jd"]))
+    expert = sum(1 for r in jobs if "전문연구" in r["title"] + r["jd"])
+    industrial = sum(1 for r in jobs if "산업기능" in r["title"] + r["jd"])
+    picks, seen = [], set()
+    for r in sorted(jobs, key=lambda r: (r["deadline_on"] is None, r["deadline_on"] or today)):
+        c = _co(r["co"]).split("(")[0]
+        if c in seen:
+            continue
+        d = (r["deadline_on"] - today).days if r["deadline_on"] else None
+        if d == 0:          # 오늘 닫히는 자리는 올라갈 때쯤 이미 닫혀 있다
+            continue
+        seen.add(c)
+        when = f"D-{d}" if d is not None else "상시"
+        kind = ("전문연구요원" if "전문연구" in r["title"] else "산업기능요원" if "산업기능" in r["title"]
+                else "병역특례")   # '병역특례 가능' 만 적은 공고에 종류를 지어 붙이지 않는다
+        title = re.sub(r"^\s*\[[^\]]*\]\s*", "", r["title"])
+        picks.append({"co": c, "title": _short(title), "meta": f"{when} · {kind}"})
+        if len(picks) == 4:
+            break
+    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 · {today:%Y.%m.%d} · 같은 자리 중복 게시는 하나로"
+    slides = [
+        {"type": "cover", "photo": "typing.jpg", "kicker": f"병역특례 · {today:%Y.%m.%d}",
+         "big": f"{n}", "unit": "개", "title": ["군대 대신 개발", "병역특례 IT 자리"],
+         "sub": "제목에 산업기능요원·전문연구요원을 건 모집중 IT 공고"},
+        {"type": "stat", "photo": "hourglass.jpg", "kicker": "병무청 배정", "title": "2026년 자리는 정해져 있다",
+         "items": [{"num": "3,200", "unit": "명", "label": "산업기능요원"},
+                   {"num": "2,300", "unit": "명", "label": "전문연구요원"},
+                   {"num": "−200", "unit": "명", "label": "전체 배정, 전년보다"}],
+         "explain": "2027년부터는 AI 분야 대기업 연구소에도 전문연구요원을 한시로 다시 배정한다(14년 만)."},
+        {"type": "stat", "photo": "code.jpg", "kicker": "공고로 보면", "title": "어떤 특례를 적었나",
+         "items": [{"num": f"{industrial}", "unit": "개", "label": "산업기능요원을 적은 자리"},
+                   {"num": f"{expert}", "unit": "개", "label": "전문연구요원을 적은 자리"}],
+         "explain": f"둘 다 받는 자리는 양쪽에 셌다. 제목엔 없고 본문에만 적은 공고도 {body}건 더 있다."},
+        {"type": "picks", "photo": "seoul.jpg", "kicker": "눈여겨볼 곳", "title": "병역특례 IT 자리",
+         "sub": "마감이 가까운 순, 회사마다 한 건", "rows": picks},
+        {"type": "end", "photo": "pangyo.jpg", "kicker": "저장해 두기", "title": "편입 조건(현역·보충역)은\n공고마다 다르다",
+         "lines": ["입대 앞둔 친구에게 보내 주세요", "공고 전체는 프로필 링크에서"]},
+    ]
+    for sl in slides:
+        sl["image"], sl["credit"] = _photo(sl.pop("photo"))
+        sl["note"] = note
+    slides[1]["note"] = "병무청 2026년도 배정(뉴스서울 2025.6.2) · AI 전문연구요원 재도입(시대에듀 2026.9.20) 요약"
+    caption = "\n\n".join([
+        f"군대 대신 개발 — 지금 제목에 병역특례를 건 IT 자리는 {n}개입니다(같은 자리를 여러 사이트에 올린 것은 하나로).",
+        f"· 산업기능요원을 적은 자리 {industrial}개 · 전문연구요원 {expert}개\n· 본문에만 적은 공고도 {body}건\n"
+        "· 눈여겨볼 곳: " + " · ".join(p["co"] for p in picks),
+        "병무청은 2026년도 산업기능요원 3,200명, 전문연구요원 2,300명(승선근무예비역 포함 전체 6,300명, 전년보다 200명 감소)을 "
+        "배정했습니다(뉴스서울). 또 2027년부터 3년간 AI 분야 대기업 연구소에 전문연구요원을 한시로 다시 배정한다고 합니다"
+        "(2013년 폐지 뒤 14년 만, 시대에듀 보도).",
+        "출처\nhttps://www.newsseoul.co.kr/news/view/1065584418219013\nhttps://www.sidae.com/article/2026092013412756768",
+        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무) 기준. 편입 조건은 공고마다 다르니 원문을 확인하세요.",
+    ])
+    return {"id": f"military-{today:%Y%m%d}", "series": "[병역특례]", "title": "병역특례 IT 자리", "slides": slides,
+            "caption": caption}
+
+
+BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan, "military": build_military}
 
 
 # --- 렌더 ---------------------------------------------------------------
