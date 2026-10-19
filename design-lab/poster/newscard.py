@@ -16,6 +16,8 @@ import argparse
 import base64
 import json
 import os
+import re
+import sys
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -59,14 +61,25 @@ STYLE_FONTS = {
     "brandmag": ["Pretendard", "NanumMyeongjo"],
 }
 #: 원고마다 기본으로 찍을 틀
-DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"]}
+DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"]}
+
+
+#: 회사 자산(assets/companies/…)이 없는 기계에서 쓰는 공용 글꼴 — 공식 배포본(OFL), 라이선스는 같은 폴더.
+SHARED_FONTS = LAB_DIR / "assets" / "fonts"
 
 
 def _font_faces(families: list[str]) -> str:
+    """틀이 쓰는 글꼴을 data URI 로 — 회사 경로에 없으면 공용 폴더(assets/fonts)의 같은 이름, 거기도 없으면 그 굵기만
+    건너뛴다(브라우저가 다음 굵기·대체 글꼴로 그린다). 회사 자산은 판을 만드는 PC 에만 있어서 다른 기계에서 죽었다."""
     out = []
     for fam in families:
         for weight, rel in FONTS[fam]:
             p = LAB_DIR / rel
+            if not p.exists():
+                p = SHARED_FONTS / Path(rel).name
+            if not p.exists():
+                print(f"[newscard] 글꼴 없음, 건너뜀: {rel}", file=sys.stderr)
+                continue
             fmt, mime = ("woff2", "font/woff2") if p.suffix == ".woff2" else ("truetype", "font/ttf")
             b64 = base64.b64encode(p.read_bytes()).decode()
             out.append(f"@font-face{{font-family:'{fam}';font-weight:{weight};"
@@ -266,7 +279,71 @@ def build_brands(today: date | None = None) -> dict:
             "slides": slides, "caption": caption}
 
 
-BUILDERS = {"weekly": build_weekly, "brands": build_brands}
+def _home(path: str) -> dict:
+    """뷰어 API(정본 DB) — 메인 화면과 같은 숫자."""
+    import urllib.request
+    base = os.environ.get("VIEWER_API", "http://127.0.0.1:8771")
+    with urllib.request.urlopen(base + path, timeout=30) as r:
+        return json.loads(r.read())
+
+
+_NOT_JOB = re.compile(r"국비|교육생|훈련생|부트캠프|아카데미|수강생|무료\s*취업")
+
+
+def build_finance(today: date | None = None) -> dict:
+    """[카드뉴스] 금융권 IT — 은행 공채 보도(몇 명·짧은 접수)와 우리 메인의 '은행·금융' 구역(상시 공고)을 견준다.
+    바깥 보도는 요약과 출처만, 숫자는 만들 때 API 에서 다시 센다. 교육과정 모집은 공고가 아니라 뺀다."""
+    from urllib.parse import quote
+    today = today or date.today()
+    board = _home("/api/home?industry=" + quote("금융") + "&limit=200")
+    # 국내 금융권만 — 업종 필터에는 해외 핀테크(Stripe·Robinhood…)도 들어온다
+    cos = [c for c in board["companies"] if not _NOT_JOB.search(c["name"]) and c["size"] != "해외 기업"]
+    sec = _home("/api/home/section/" + quote("ind:금융"))
+    names = {c["name"] for c in cos}
+    jobs = [j for j in sec["jobs"] if not _NOT_JOB.search(j["title"] + j["company"]) and j["size"] != "해외 기업"]
+    total = sum(c["active"] for c in cos)
+    entry = [j for j in jobs if j["career_bucket"] == "신입/무관"]
+    top = sorted(cos, key=lambda c: -c["active"])[:6]
+    picks = []
+    for j in entry:
+        if j["company"] in {p["co"] for p in picks}:
+            continue
+        meta = "신입 가능" + (f" · D-{j['dday']}" if j.get("dday") is not None and j["dday"] >= 0 else " · 상시")
+        picks.append({"co": j["company"], "title": _short(j["title"]), "meta": meta})
+        if len(picks) == 4:
+            break
+    note = f"JD Viewer 모집중 공고 · {today:%Y.%m.%d} · 업종은 회사 이름으로 가른 추정"
+    slides = [
+        {"type": "cover", "photo": "seoul.jpg", "kicker": f"금융권 IT · {today:%Y.%m.%d}",
+         "big": f"{total:,}", "unit": "건", "title": ["지금 열려 있는", "금융권 IT 자리"],
+         "sub": f"국내 은행·증권·카드·핀테크 {len(cos)}곳"},
+        {"type": "stat", "photo": "hourglass.jpg", "kicker": "공채는", "title": "적게, 짧게 뽑는다",
+         "items": [{"num": "6", "unit": "명", "label": "IBK기업은행 하반기 디지털·IT 채용(9/4~9/21 접수)"},
+                   {"num": f"{total:,}", "unit": "건", "label": "같은 때 상시로 열려 있는 금융권 IT 공고(우리 사이트)"}],
+         "explain": "공채만 기다리면 기회가 몇 번 안 온다. 핀테크·증권 쪽은 수시로 연다."},
+        {"type": "bars", "photo": "typing.jpg", "kicker": "어디가", "title": f"가장 많이 뽑는 곳, {top[0]['name']}",
+         "sub": "회사별 모집중 IT 공고 수", "rows": [{"label": c["name"], "value": c["active"]} for c in top]},
+        {"type": "picks", "photo": "pangyo.jpg", "kicker": "신입이라면", "title": "신입도 넣을 수 있는 금융 IT",
+         "sub": f"금융권 IT 공고 중 신입 가능 {len(entry)}건에서", "rows": picks},
+        {"type": "end", "photo": "seoul.jpg", "kicker": "저장해 두기", "title": "공채 공지만 보지 말고\n상시 공고도 같이 보세요",
+         "lines": ["금융권 취업을 준비하는 친구에게 보내 주세요", "공고 전체는 프로필 링크에서"]},
+    ]
+    for sl in slides:
+        sl["image"], sl["credit"] = _photo(sl.pop("photo"))
+        sl["note"] = note
+    caption = "\n\n".join([
+        f"국내 금융권 IT 자리, 지금 {total:,}건이 열려 있습니다({len(cos)}곳).",
+        "은행 공채는 적게, 짧게 뽑습니다 — IBK기업은행 하반기 디지털·IT 채용은 6명, 접수는 9월 4일~21일이었습니다"
+        "(파이낸셜뉴스·스마트투데이 보도). 우리은행도 하반기 신입행원 TECH 부문을 따로 뽑았습니다.",
+        "가장 많이 뽑는 곳: " + " · ".join(f"{c['name']} {c['active']}건" for c in top[:5]),
+        "신입 가능: " + " · ".join(f"{p['co']}" for p in picks),
+        "출처\nhttps://www.fnnews.com/news/202609071416059562\nhttps://www.smarttoday.co.kr/ko-kr/articles/111273",
+        f"{today:%Y.%m.%d} JD Viewer 모집중 공고 기준. 업종은 회사 이름으로 가른 추정이고 교육과정 모집은 뺐습니다. 전체는 프로필 링크에서.",
+    ])
+    return {"id": f"finance-{today:%Y%m%d}", "series": "[금융권 IT]", "title": "금융권 IT 자리", "slides": slides, "caption": caption}
+
+
+BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance}
 
 
 # --- 렌더 ---------------------------------------------------------------
@@ -354,6 +431,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("what", choices=sorted(BUILDERS))
     ap.add_argument("--styles", nargs="*", choices=list(STYLES))
+    ap.add_argument("--approve", metavar="STYLE", help="이 틀로 찍은 장을 승인함(inbox)에 넣는다 — 고른 뒤에만")
     a = ap.parse_args()
     from .render import shutdown
 
@@ -366,7 +444,33 @@ def main() -> int:
         shutdown()
     print(board(post, shots))
     print(feed(post, shots))
+    if a.approve:
+        print(f"[newscard] 승인함 → {approve(post, shots[a.approve])}")
     return 0
+
+
+def approve(post: dict, paths: list[Path]) -> Path:
+    """고른 틀의 장들을 승인함에 넣는다 — series.approve 와 같은 모양(발행 데몬·'이미 낸 것' 판단이 이 모양을 읽는다)."""
+    import shutil
+    import socket
+    import uuid
+    from datetime import datetime
+    item = uuid.uuid4().hex[:8]
+    d = LAB_DIR / "inbox" / item
+    d.mkdir(parents=True)
+    shutil.copyfile(paths[0], d / "poster.jpg")
+    for i, p in enumerate(paths[1:], 1):
+        shutil.copyfile(p, d / f"slide_{i:02d}.jpg")
+    cap = post["caption"]
+    (d / "caption_instagram.txt").write_text(cap, encoding="utf-8")
+    bundle = {"id": item, "job_key": f"collection:{post['id']}", "company": post["series"], "role": post["title"],
+              "template": "newscard", "platforms": ["instagram"], "captions": {"instagram": cap}, "caption": cap,
+              "note": "newscard", "force": False,
+              "collection": {"id": post["id"], "kind": "newscard", "title": post["title"], "count": 0, "jobs": []},
+              "format": "carousel", "approved_on": socket.gethostname(),
+              "approved_at": datetime.now().isoformat(timespec="seconds")}
+    (d / "bundle.json").write_text(json.dumps(bundle, ensure_ascii=False, indent=2), encoding="utf-8")
+    return d
 
 
 if __name__ == "__main__":
