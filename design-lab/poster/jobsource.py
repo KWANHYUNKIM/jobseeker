@@ -18,7 +18,8 @@ INDEX = LAB_DIR / "state" / "jobs_index.json"
 #   2 → 3: 모집 기간·모집 방식(period)을 원본 full_jd 에서 뽑아 넣는다
 #   4 → 5: 본문을 이미지 OCR 로 읽은 공고(ocr)를 표시한다
 #   5 → 6: 지역에서 '지도보기·주소복사' 를 걷어낸다
-SCHEMA = 6
+#   6 → 7: 칸 글에서 마크다운 '**' 를 걷어낸다
+SCHEMA = 7
 
 # 불릿으로 쓸 수 있는 줄머리들. 사이트마다 제각각이라 넉넉히 받는다.
 _BULLET = re.compile(r"^\s*(?:[*\-•·▶▪◆■□○●]|└|\d+[.)])\s*")
@@ -59,7 +60,7 @@ def _groups(text: str) -> list[dict]:
     """자르지 않은 원문을 소제목(1. 2.) 단위로 묶는다. 캐러셀은 한 줄도 버리지 않는다."""
     groups: list[dict] = [{"title": "", "items": []}]
     for raw in (text or "").splitlines():
-        line = raw.strip()
+        line = raw.strip().replace("**", "")      # 마크다운 굵게 표시가 판에 그대로 섰다(하이브랩, 2026-10-20)
         if not line or _NOISE.match(line):
             continue
         head = _GROUP_HEAD.match(line)
