@@ -69,6 +69,7 @@ THEMES = {
     "game": {"paper": "#0b0d1a", "ink": "#f2f4ff", "sub": "#9aa0c0", "accent": "#5df2c1", "line": "#232845"},
     "security": {"paper": "#0f1420", "ink": "#f3f4f8", "sub": "#9ba3b4", "accent": "#ff4d5a", "line": "#26304a"},
     "mobile": {"paper": "#f4f2fd", "ink": "#1a1533", "sub": "#615b7d", "accent": "#7f52ff", "line": "#dfdaf5"},
+    "testing": {"paper": "#f3f7f4", "ink": "#122318", "sub": "#566c5c", "accent": "#2ead33", "line": "#d8e6dc"},
     "cpp": {"paper": "#eef3f9", "ink": "#0f1d2e", "sub": "#4e6178", "accent": "#00599c", "line": "#d4e0ee"},
     "android": {"paper": "#f1f8f2", "ink": "#0f2414", "sub": "#55705c", "accent": "#2fa55a", "line": "#d6e9da"},
     "vllm": {"paper": "#0d1117", "ink": "#eef2f7", "sub": "#8b97a8", "accent": "#30a2ff", "line": "#1f2733"},
@@ -105,7 +106,7 @@ SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", 
           "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]",
           "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]", "balance": "[둘 중 하나]", "tier": "[티어표]",
           "contra": "[공고 원문]", "game": "[게임사 채용]", "security": "[보안 채용]",
-          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]", "wish": "[희망 초봉 vs 공고]", "robot": "[로봇 채용]", "spring": "[스프링 채용]", "vc": "[투자와 채용]", "agent": "[AI 에이전트 채용]", "lang": "[언어 순위 vs 공고]", "mobile": "[모바일 채용]", "python": "[파이썬 채용]", "node": "[Node.js 채용]", "rust": "[Rust 채용]", "java": "[Java 채용]", "swift": "[Swift 채용]", "docker": "[Docker 채용]", "kafka": "[Kafka 채용]", "terraform": "[Terraform 채용]", "search": "[검색 채용]", "nest": "[NestJS 채용]", "dotnet": "[.NET 채용]", "vllm": "[LLM 서빙 채용]", "android": "[Android 채용]", "cpp": "[C++ 채용]"}
+          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]", "wish": "[희망 초봉 vs 공고]", "robot": "[로봇 채용]", "spring": "[스프링 채용]", "vc": "[투자와 채용]", "agent": "[AI 에이전트 채용]", "lang": "[언어 순위 vs 공고]", "mobile": "[모바일 채용]", "python": "[파이썬 채용]", "node": "[Node.js 채용]", "rust": "[Rust 채용]", "java": "[Java 채용]", "swift": "[Swift 채용]", "docker": "[Docker 채용]", "kafka": "[Kafka 채용]", "terraform": "[Terraform 채용]", "search": "[검색 채용]", "nest": "[NestJS 채용]", "dotnet": "[.NET 채용]", "vllm": "[LLM 서빙 채용]", "android": "[Android 채용]", "cpp": "[C++ 채용]", "testing": "[테스트 자동화 채용]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -130,6 +131,7 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "game": ["게임회사", "게임개발자", "게임스컴", "개발자채용", "게임업계취업"],
         "security": ["정보보안", "보안엔지니어", "보안채용", "개발자채용", "IT취업"],
         "mobile": ["모바일개발자", "안드로이드", "iOS개발자", "Kotlin", "Flutter"],
+        "testing": ["QA", "테스트자동화", "Playwright", "QA엔지니어", "개발자채용"],
         "cpp": ["Cpp", "임베디드", "펌웨어", "게임개발자", "개발자채용"],
         "android": ["안드로이드", "Android", "JetpackCompose", "Kotlin", "개발자채용"],
         "vllm": ["LLM", "vLLM", "MLOps", "AI엔지니어", "개발자채용"],
@@ -3590,6 +3592,63 @@ def build_cpp() -> dict:
             "reel_lead": "LLVM 23.1.3 나온 달, C++ 를 적은 자리는 — 저장해 두세요"}
 
 
+#: 공고 글에서 찾는 테스트 도구 — 기술 칩에는 칸이 없다
+_TEST_TOOLS = [("Playwright", r"Playwright"), ("Vitest", r"Vitest"), ("Jest", r"\bJest\b"), ("Selenium", r"Selenium"),
+               ("JUnit", r"JUnit"), ("Appium", r"Appium"), ("pytest", r"pytest"), ("Cypress", r"Cypress")]
+
+
+def build_testing() -> dict:
+    """[테스트 자동화 채용] 쇼츠 — Playwright 1.64.0(10월 7일)·1.64.1(10월 14일, GitHub 릴리스)을 계기로, 지금 국내 IT 공고 글에
+    적힌 테스트 도구와 '테스트 자동화' 를 적은 자리, QA 직군 자리. 같은 자리 중복 게시는 하나로."""
+    sys.path.insert(0, str(ROOT / "catch_capture"))
+    from store.db.conn import cursor
+    today = date.today()
+    rows = _it_rows()
+    total = len(rows)
+    with cursor(autocommit=True) as cur:
+        cur.execute("""SELECT id, concat_ws(' ', title, main_tasks::text, qualifications::text, preferences::text, full_jd) AS t
+                         FROM job WHERE id = ANY(%s)""", ([r["job_id"] for r in rows],))
+        text = {r["id"]: r["t"] or "" for r in cur.fetchall()}
+    t = lambda r: text.get(r["job_id"], "")
+    tools = sorted(((k, sum(1 for r in rows if re.search(rx, t(r), re.I))) for k, rx in _TEST_TOOLS), key=lambda kv: -kv[1])
+    auto = sum(1 for r in rows if re.search(r"테스트\s*자동화|test\s*automation", t(r), re.I))
+    qa = [r for r in rows if "QA" in (r["roles"] or [])]
+    qa_entry = sum(1 for r in qa if r["career_bucket"] == "신입/무관")
+    cos = collections.Counter(_co_name(r["company"]) for r in qa).most_common(3)
+    pw = dict(tools)["Playwright"]
+    pct = lambda a, b=total: round(100 * a / b) if b else 0
+    asof = today.isoformat()
+    wj = "\u2060"
+    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 공고 글에 적힌 낱말로 셈 · 같은 자리 중복 게시는 하나로"
+    slides = [
+        {"type": "cover", "big": f"{auto:,}", "big_unit": "개", "lines": ["Playwright 1.64 나온 달", "'테스트 자동화' 를 적은 자리는"],
+         "sub": f"국내 IT 자리 {total:,}개 중 {pct(auto)}% · Playwright 를 적은 자리 {pw}개", "note": note},
+        {"type": "table", "title": "Playwright 는 지금", "sub": "GitHub 릴리스 페이지", "head": ["판", "나온 날", ""],
+         "rows": [["v1.64.1", "10월 14일", ""], ["v1.64.0", "10월 7일", ""], ["v1.63.0", "9월 4일", ""]],
+         "hi_col": 1, "note": "github.com/microsoft/playwright/releases"},
+        {"type": "bars", "title": "공고 글에 적힌 테스트 도구", "sub": "그 낱말이 나온 국내 IT 자리",
+         "rows": [{"label": k, "value": v, "display": f"{v:,}", "unit": f"{pct(v)}%", "hi": i == 0} for i, (k, v) in enumerate(tools)],
+         "note": note},
+        {"type": "stat", "title": "QA 직군 자리", "num": f"{len(qa)}", "unit": "개", "label": f"그중 신입 가능 {qa_entry}개({pct(qa_entry, len(qa))}%)",
+         "explain": "많이 뽑는 곳: " + " · ".join(f"**{c}**\u00a0{k}{wj}개" for c, k in cos), "note": note},
+        {"type": "end", "title": "저장해 두고", "lines": [
+            " · ".join(f"**{k}**\u00a0{v}" for k, v in tools[:3]),
+            "QA 공고 전체는 프로필 링크에서", "테스트 공부하는 친구에게 보내 주세요"], "note": note},
+    ]
+    caption = "\n\n".join([
+        f"Playwright 1.64 가 10월에 나왔습니다(1.64.0 10월 7일 · 1.64.1 10월 14일). 지금 국내 IT 자리 {total:,}개 중 공고 글에 "
+        f"'테스트 자동화' 를 적은 자리는 {auto:,}개, QA 직군 자리는 {len(qa)}개(신입 가능 {qa_entry}개)입니다.",
+        "· 공고 글에 적힌 테스트 도구: " + " · ".join(f"{k} {v}개" for k, v in tools) + "\n"
+        "· QA 자리를 많이 낸 곳: " + " · ".join(f"{c} {k}개" for c, k in cos),
+        "Playwright GitHub 릴리스 페이지에 따르면 v1.64.0 은 10월 7일, v1.64.1 은 10월 14일 나왔습니다.",
+        "출처\nhttps://github.com/microsoft/playwright/releases",
+        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 공고 제목·본문에 그 낱말이 나온 자리를 셌고, 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+    ])
+    return {"kind": "testing", "id": f"testing-{asof.replace('-', '')}", "title": "테스트 자동화 채용",
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.0,
+            "reel_lead": "Playwright 1.64 나온 달, 테스트 자동화 자리는 — 저장해 두세요"}
+
+
 REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
 
 
@@ -3646,7 +3705,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
                                      "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit",
-                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud", "paywish", "robot", "spring", "vc", "agent", "lang", "mobile", "python", "node", "rust", "java", "swift", "docker", "kafka", "terraform", "search", "nest", "dotnet", "vllm", "android", "cpp"])
+                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud", "paywish", "robot", "spring", "vc", "agent", "lang", "mobile", "python", "node", "rust", "java", "swift", "docker", "kafka", "terraform", "search", "nest", "dotnet", "vllm", "android", "cpp", "testing"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
@@ -3740,6 +3799,8 @@ def main() -> int:
         post = build_android()
     elif args.kind == "cpp":
         post = build_cpp()
+    elif args.kind == "testing":
+        post = build_testing()
     elif args.kind in ("pay", "perk", "welcome", "gongchae", "contra"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae, "contra": build_contra}[args.kind]()
