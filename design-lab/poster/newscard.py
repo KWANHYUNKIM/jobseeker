@@ -62,7 +62,7 @@ STYLE_FONTS = {
     "brandmag": ["Pretendard", "NanumMyeongjo"],
 }
 #: 원고마다 기본으로 찍을 틀
-DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"], "military": ["magazine"], "region": ["magazine"], "sme": ["magazine"], "fourday": ["magazine"], "secneed": ["magazine"], "db": ["magazine"], "k8s": ["magazine"], "linux": ["magazine"], "nextjs": ["magazine"]}
+DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"], "military": ["magazine"], "region": ["magazine"], "sme": ["magazine"], "fourday": ["magazine"], "secneed": ["magazine"], "db": ["magazine"], "k8s": ["magazine"], "linux": ["magazine"], "nextjs": ["magazine"], "vue": ["magazine"]}
 
 
 #: 회사 자산(assets/companies/…)이 없는 기계에서 쓰는 공용 글꼴 — 공식 배포본(OFL), 라이선스는 같은 폴더.
@@ -1209,7 +1209,77 @@ def build_nextjs(today: date | None = None) -> dict:
             "caption": caption}
 
 
-BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan, "military": build_military, "region": build_region, "sme": build_sme, "fourday": build_fourday, "secneed": build_secneed, "db": build_db, "k8s": build_k8s, "linux": build_linux, "nextjs": build_nextjs}
+def build_vue(today: date | None = None) -> dict:
+    """[카드뉴스] Vue — vuejs/core GitHub 릴리스(3.5.44 최신 정식 10.13 · 3.6.0-rc.12 10.16)를 계기로, 지금 국내 IT 공고 중
+    Vue 를 적은 자리·프론트엔드 공고에서 React 와 견준 몫·Nuxt·눈여겨볼 곳. 같은 자리 중복 게시는 하나로."""
+    from .collection import _group
+    from .series import _co_name, _it_rows
+    today = today or date.today()
+    rows = _it_rows()
+    total = len(rows)
+    vu = [r for r in rows if "Vue" in (r["stacks"] or [])]
+    n = len(vu)
+    fe = [r for r in rows if "프론트엔드" in (r["roles"] or [])]
+    has = lambda r, k: k in (r["stacks"] or [])
+    react = sum(1 for r in fe if has(r, "React"))
+    vue_fe = sum(1 for r in fe if has(r, "Vue"))
+    both = sum(1 for r in fe if has(r, "React") and has(r, "Vue"))
+    nuxt = sum(1 for r in vu if has(r, "Nuxt"))
+    ts = sum(1 for r in vu if has(r, "TypeScript"))
+    entry = sum(1 for r in vu if r["career_bucket"] == "신입/무관")
+    pct = lambda a, b=n: round(100 * a / b) if b else 0
+    picks, seen = [], set()
+    for r in sorted(vu, key=lambda r: ({"대기업": 0, "중견기업": 1}.get(r["size"], 2), r["deadline_on"] is None, r["deadline_on"] or today)):
+        c = re.sub(r"\s*지점$", "", _co_name(r["company"]))
+        c = {"비바리퍼블리카": "토스"}.get(c, c)
+        d = (r["deadline_on"] - today).days if r["deadline_on"] else None
+        g = _group(c)
+        if g in seen or d == 0:
+            continue
+        seen.add(g)
+        picks.append({"co": c, "title": _short(re.sub(r"^\s*\[[^\]]*\]\s*", "", r["title"])),
+                      "meta": f"{r['size'] or ''} · {f'D-{d}' if d is not None else '상시'}"})
+        if len(picks) == 4:
+            break
+    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    slides = [
+        {"type": "cover", "photo": "pangyo.jpg", "kicker": f"Vue · {today:%Y.%m.%d}",
+         "big": f"{n:,}", "unit": "개", "title": ["Vue 를 적은", "국내 IT 자리"],
+         "sub": f"국내 IT 자리 {total:,}개 중 {pct(n, total)}% · 신입 가능 {entry}개"},
+        {"type": "stat", "photo": "hourglass.jpg", "kicker": "릴리스", "title": "3.6 이 후보 단계에",
+         "items": [{"num": "3.5.44", "unit": "", "label": "최신 정식(10월 13일)"},
+                   {"num": "3.6", "unit": "rc.12", "label": "릴리스 후보(10월 16일)"}],
+         "explain": "vuejs/core GitHub 릴리스 기준. rc 는 정식판 바로 전 단계다."},
+        {"type": "stat", "photo": "code.jpg", "kicker": "프론트엔드 공고로 보면", "title": f"프론트엔드 자리 {len(fe):,}개",
+         "items": [{"num": f"{pct(react, len(fe))}", "unit": "%", "label": "React"},
+                   {"num": f"{pct(vue_fe, len(fe))}", "unit": "%", "label": "Vue"}],
+         "explain": f"둘 다 적은 자리 {both:,}개({pct(both, len(fe))}%). 프론트엔드 직군 공고 중 그 기술을 적은 비율."},
+        {"type": "stat", "photo": "css.jpg", "kicker": "Vue 자리 안에서", "title": "같이 적은 것",
+         "items": [{"num": f"{pct(ts)}", "unit": "%", "label": "TypeScript"},
+                   {"num": f"{pct(nuxt)}", "unit": "%", "label": "Nuxt"}],
+         "explain": f"Vue 자리 {n:,}개 중. TypeScript {ts:,}개 · Nuxt {nuxt:,}개."},
+        {"type": "picks", "photo": "typing.jpg", "kicker": "눈여겨볼 곳", "title": "Vue 를 쓰는 곳",
+         "sub": "Vue 를 적은 공고, 큰 회사 먼저 · 한 그룹 한 곳", "rows": picks},
+        {"type": "end", "photo": "seoul.jpg", "kicker": "저장해 두기", "title": "React 만 있는 건\n아니다",
+         "lines": ["Vue 공부하는 친구에게 보내 주세요", "공고 전체는 프로필 링크에서"]},
+    ]
+    for sl in slides:
+        sl["image"], sl["credit"] = _photo(sl.pop("photo"))
+        sl["note"] = note
+    caption = "\n\n".join([
+        f"Vue 3.6 이 릴리스 후보(rc.12, 10월 16일) 단계에 있습니다. 지금 국내 IT 자리 {total:,}개 중 Vue 를 적은 자리는 {n:,}개({pct(n, total)}%), 신입 가능 {entry}개입니다.",
+        f"· 프론트엔드 직군 자리 {len(fe):,}개 중 React {pct(react, len(fe))}% · Vue {pct(vue_fe, len(fe))}% · 둘 다 {pct(both, len(fe))}%\n"
+        f"· Vue 자리 중 TypeScript {pct(ts)}% · Nuxt {pct(nuxt)}%\n"
+        "· 눈여겨볼 곳: " + " · ".join(p["co"] for p in picks),
+        "vuejs/core GitHub 릴리스 페이지에 따르면 최신 정식판은 10월 13일의 3.5.44 이고, 3.6.0-rc.12 가 10월 16일 나왔습니다.",
+        "출처\nhttps://github.com/vuejs/core/releases",
+        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+    ])
+    return {"id": f"vue-{today:%Y%m%d}", "series": "[Vue]", "title": "Vue 자리", "slides": slides,
+            "caption": caption}
+
+
+BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan, "military": build_military, "region": build_region, "sme": build_sme, "fourday": build_fourday, "secneed": build_secneed, "db": build_db, "k8s": build_k8s, "linux": build_linux, "nextjs": build_nextjs, "vue": build_vue}
 
 
 # --- 렌더 ---------------------------------------------------------------
