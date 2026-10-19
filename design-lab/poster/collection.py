@@ -116,7 +116,8 @@ def _role(job: dict) -> str:
 _NOT_DEV = re.compile(
     r"라벨링|레이블링|검수|사무\s*보조|보조\s*업무|데이터\s*입력|타이핑|전사\s*업무"
     r"|상담|고객\s*응대|CS\s*운영|세일즈|마케터|홍보|번역|통역"
-    r"|아르바이트|단기\s*알바|파견|도급|청소|경비|배송\s*기사|생산직")
+    r"|아르바이트|단기\s*알바|파견|도급|청소|경비|배송\s*기사|생산직"
+    r"|점포|매장|신선|판매직|영업직|물류센터|현장직")
 _DEV_SIGNAL = re.compile(
     r"개발|엔지니어|engineer|developer|programmer|프로그래머|devops|sre|아키텍|architect"
     r"|데이터\s*(엔지니어|사이언|분석가|플랫폼)|analyst|scientist|research|연구|서버|백엔드|프론트"
@@ -124,8 +125,17 @@ _DEV_SIGNAL = re.compile(
 
 
 def _not_dev(job: dict) -> bool:
+    """IT 직무가 아닌 공고 — 막는 낱말이 있거나, 제목에 개발 신호도 없고 기술 스택도 비었으면.
+
+    막는 낱말만 보던 때는 '이마트 / TRADERS 점포 신선직무' 가 신입 묶음에 들어갔다 — 목록에 없는
+    직무는 다 통과했다. 개발 신호(제목) 또는 기술 스택 중 하나는 있어야 IT 공고로 본다.
+    """
     title = job.get("title") or ""
-    return bool(_NOT_DEV.search(title)) and not _DEV_SIGNAL.search(title)
+    if _DEV_SIGNAL.search(title):
+        return False
+    if _NOT_DEV.search(title):
+        return True
+    return not (job.get("stack") or job.get("tech_stack"))
 
 
 def _family(job: dict) -> str:
