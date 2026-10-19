@@ -184,6 +184,13 @@ class OpenCheckTest(unittest.TestCase):
         got = collection.build("week", jobs=[job("a", "가"), job("b", "나")], limit=2)
         self.assertEqual([j["company"] for j in got["jobs"]], ["나"])
 
+    def test_stated_period_already_over_is_left_out(self):
+        # 마감란은 '채용시' 인데 공고 글의 접수 기간이 이미 끝났다 — 원본이 '열림' 이라 해도 싣지 않는다
+        old = job("a", "가", deadline="채용시")
+        old["period"] = {"end": "2020-01-01"}
+        got = collection.build("week", jobs=[old, job("b", "나")], limit=2)
+        self.assertEqual([j["company"] for j in got["jobs"]], ["나"])
+
     def test_verify_off_skips_the_network(self):
         called = []
         collection._verifier = lambda: (lambda job: called.append(job["key"]) or ("open", ""))

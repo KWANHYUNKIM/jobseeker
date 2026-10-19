@@ -590,6 +590,13 @@ def build(kind: str, *, value: str = "", since: str = "", until: str = "",
         rk = _role(j)
         if kind != "company" and any(_same_role(rk, o) for o in group_roles.get(_group(j["company"]), [])):
             continue
+        # 원본 다시 묻기(verifier)가 마감일을 못 찾아도, 공고 글에 적힌 접수 기간이 이미 끝났으면 뺀다
+        # ('접수기간 : 2026-09-22' 인데 마감란은 '채용시' — 베스핀글로벌, 2026-10-20 묶음 첫 마감이 9/22 로 섰다)
+        static_end = (j.get("period") or {}).get("end")
+        if static_end and date.fromisoformat(static_end) < date.today():
+            closed.append({"company": j["company"], "key": j["key"], "state": "closed",
+                           "why": f"공고 글의 접수 기간 {static_end} 지남"})
+            continue
         if kind != "company" and per_group.get(_group(j["company"]), 0) >= GROUP_CAP:
             continue
         if verifier:
