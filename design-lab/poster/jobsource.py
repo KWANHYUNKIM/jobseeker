@@ -17,7 +17,8 @@ INDEX = LAB_DIR / "state" / "jobs_index.json"
 # 색인 필드가 바뀌면 올린다. 원본이 그대로여도 옛 색인을 다시 만든다.
 #   2 → 3: 모집 기간·모집 방식(period)을 원본 full_jd 에서 뽑아 넣는다
 #   4 → 5: 본문을 이미지 OCR 로 읽은 공고(ocr)를 표시한다
-SCHEMA = 5
+#   5 → 6: 지역에서 '지도보기·주소복사' 를 걷어낸다
+SCHEMA = 6
 
 # 불릿으로 쓸 수 있는 줄머리들. 사이트마다 제각각이라 넉넉히 받는다.
 _BULLET = re.compile(r"^\s*(?:[*\-•·▶▪◆■□○●]|└|\d+[.)])\s*")
@@ -153,7 +154,8 @@ def _slim(job: dict) -> dict | None:
         "title": (job.get("title") or "").strip(),
         "url": job.get("url") or "",
         "career": (job.get("career") or "").strip(),
-        "location": (job.get("location") or "").strip(),
+        # 사이트 화면 글자('지도보기·주소복사')가 지역에 붙어 온 공고가 있다(스콥정보통신, 2026-10-20)
+        "location": re.sub(r"[\s·|]*(지도\s*보기|주소\s*복사)[\s·|]*", " ", job.get("location") or "").strip(" ·|"),
         "stack": [t for t in (job.get("tech_stack") or []) if t][:10],
         "status": job.get("status") or "active",
         "deadline": (job.get("deadline") or job.get("deadline_date") or "").strip(),

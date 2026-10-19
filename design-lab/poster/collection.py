@@ -179,6 +179,8 @@ _HEADS = {
 #: 어느 칸에도 있으면 안 되는 머리말 — 전형 절차·안내(42dot 우대사항 칸이 'INTERVIEW PROCESS' 부터 끝까지 이어졌다)
 _STOP = re.compile(r"^(interview\s+process|hiring\s+process|additional\s+information|a\s+message\s+to\b.*|"
                    r"(채용|전형)\s*(절차|프로세스|과정)|(기타|지원)?\s*안내\s*사항)$", re.I)
+#: 헤드헌팅·서치펌 공고 — 고객사 이름을 숨기고 '유망 … 기업' 으로 쓴다
+_AGENCY = re.compile(r"라인서치|커리어케어|헤드헌팅|헤드헌터|서치펌|고객사|유망\s*\S+(\s*\S+){0,3}\s*기업")
 #: 경력 칸에 지역이 들어간 공고(토스·42dot 의 'Seoul', 'Pangyo …')
 _PLACE_IN_CAREER = re.compile(r"seoul|pangyo|korea|remote|서울|판교|경기", re.I)
 
@@ -427,6 +429,8 @@ def build(kind: str, *, value: str = "", since: str = "", until: str = "",
     # 본문을 이미지 OCR 로 읽은 공고도 뺀다 — 토스 Data Analyst 판에 'SQL Azle', '46[0106' 이 실렸다(2026-10-20)
     rows = [j for j in rows if not j.get("ocr")]
     rows = [j for j in rows if not _leaked_header(j)]
+    # 헤드헌팅 공고 — 회사 이름 칸이 서치펌이라 판의 회사·규모가 틀린다(라인서치가 '대기업' 으로 섰다)
+    rows = [j for j in rows if not _AGENCY.search(f"{j.get('company', '')} {j.get('title', '')}")]
     # 개발 자리가 아닌 공고를 뺀다(제목 기준)
     rows = [j for j in rows if not _not_dev(j)]
     # 이미 내보낸 공고를 뺀다(publish.posted). 모집이 길게 열린 공고는 매주 같은 자리에 다시
