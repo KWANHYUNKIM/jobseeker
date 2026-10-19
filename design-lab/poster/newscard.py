@@ -61,7 +61,7 @@ STYLE_FONTS = {
     "brandmag": ["Pretendard", "NanumMyeongjo"],
 }
 #: 원고마다 기본으로 찍을 틀
-DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"]}
+DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"]}
 
 
 #: 회사 자산(assets/companies/…)이 없는 기계에서 쓰는 공용 글꼴 — 공식 배포본(OFL), 라이선스는 같은 폴더.
@@ -470,7 +470,89 @@ def build_midlevel(today: date | None = None) -> dict:
             "caption": caption}
 
 
-BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel}
+#: 근무지가 일본인 공고 — 지역 칸에 일본 지명이 있거나 제목에 '도쿄 근무'·'근무지 일본' 처럼 적은 것.
+#: '일본 IP 프로젝트'(서울 근무) 처럼 일본이 근무지가 아닌 제목은 뺀다.
+_JP_LOC = re.compile(r"일본|도쿄|東京|tokyo|japan|오사카|osaka|후쿠오카|fukuoka|사이타마|가나가와", re.I)
+_JP_TITLE = re.compile(r"도쿄|東京|tokyo|오사카|후쿠오카|근무지\s*일본|일본\s*(현지|근무|에서)|\[일본", re.I)
+
+
+def build_japan(today: date | None = None) -> dict:
+    """[카드뉴스] 일본 취업 — '일본이 미국을 제치고 해외취업 1위, 한국인 IT 종사자 1만여 명'(한국경제 2025.11.4,
+    한국노동연구원 노동리뷰 인용)과 지금 근무지가 일본인 모집중 IT 공고를 견준다."""
+    import psycopg
+    from psycopg.rows import dict_row
+    from .collection import _AGENCY
+    today = today or date.today()
+    with psycopg.connect(_dsn(), row_factory=dict_row) as conn:
+        rows = conn.execute("""
+            SELECT c.display_name AS co, j.title, coalesce(j.location_text, '') AS loc, f.career_bucket AS b,
+                   coalesce(j.full_jd, '') AS jd, j.deadline_on
+              FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
+              JOIN job_facet f ON f.job_id = j.id JOIN company c ON c.id = j.company_id
+             WHERE NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = j.id)""").fetchall()
+    jp = [r for r in rows if (_JP_LOC.search(r["loc"]) or _JP_TITLE.search(r["title"]))
+          and not re.search(r"일본\s*IP", r["title"]) and not _AGENCY.search(r["co"] + " " + r["title"])
+          and not (r["deadline_on"] and r["deadline_on"] < today)]
+    n = len(jp)
+    lang = sum(1 for r in jp if re.search(r"일본어|JLPT|日本語|Japanese", r["title"] + r["jd"], re.I))
+    entry = sum(1 for r in jp if r["b"] == "신입/무관")
+
+    def who(r):   # 원티드 '일본 현지 채용' 은 채널 이름이다 — 실제 회사는 제목 대괄호에 있다
+        m = re.match(r"\s*\[([^\]]+)\]", r["title"])
+        if "현지 채용" in r["co"] and m:
+            return re.sub(r"株式会社|\s+", "", m.group(1)) or m.group(1)
+        c = re.sub(r"\(영업소\)", "", _co(r["co"])).strip()
+        return c if len(c) > 1 else re.sub(r"\(영업소\)", "", r["co"]).strip()   # '칼' 한 글자는 '칼주식회사' 로
+    picks, seen = [], set()
+    for r in sorted(jp, key=lambda r: (r["deadline_on"] is None, r["deadline_on"] or today)):
+        c = who(r)
+        # 인력 소개 회사(마이나비·에이치알글로벌네트워크)는 건수에는 넣고 '눈여겨볼 곳' 에는 실제 고용주만 둔다
+        if c in seen or re.search(r"마이나비|에이치알|HR|인재|리크루트|파견|글로벌네트워크", c):
+            continue
+        seen.add(c)
+        d = (r["deadline_on"] - today).days if r["deadline_on"] else None
+        when = "오늘 마감" if d == 0 else f"D-{d}" if d is not None else "상시"
+        title = re.sub(r"^\s*\[[^\]]*\]\s*", "", r["title"])
+        picks.append({"co": c, "title": _short(title), "meta": when})
+        if len(picks) == 4:
+            break
+    note = f"JD Viewer 모집중 IT 공고 · {today:%Y.%m.%d}"
+    slides = [
+        {"type": "cover", "photo": "css.jpg", "kicker": f"일본 취업 · {today:%Y.%m.%d}",
+         "big": f"{n}", "unit": "건", "title": ["해외 취업 1위 일본", "지금 열린 IT 자리"],
+         "sub": "근무지가 일본인 모집중 IT 공고"},
+        {"type": "stat", "photo": "hourglass.jpg", "kicker": "보도", "title": "일본이 한국 IT 인재를 찾는다",
+         "items": [{"num": "1만", "unit": "여 명", "label": "일본에서 일하는 한국인 IT 종사자"},
+                   {"num": "13.4", "unit": "%", "label": "일본 내 한국인 취업자 중 IT 비중"},
+                   {"num": "3.45", "unit": "배", "label": "일본 IT 기술자 구인배율(2025)"}],
+         "explain": "고령화와 디지털 전환으로 일본 기업이 IT 인력을 찾으면서, 일본이 미국을 제치고 한국인 해외 취업 1위가 됐다."},
+        {"type": "stat", "photo": "code.jpg", "kicker": "공고로 보면", "title": "일본 근무 공고에 적힌 것",
+         "items": [{"num": f"{lang}", "unit": "건", "label": f"{n}건 중 일본어를 적은 공고"},
+                   {"num": f"{entry}", "unit": "건", "label": "신입도 되는 공고"}],
+         "explain": f"{round(100 * lang / n) if n else 0}%가 일본어를 적었다. 지원 전에 공고에서 요구 수준부터 확인하자."},
+        {"type": "picks", "photo": "typing.jpg", "kicker": "눈여겨볼 곳", "title": "근무지가 일본인 자리",
+         "sub": "마감이 가까운 순, 회사마다 한 건", "rows": picks},
+        {"type": "end", "photo": "pangyo.jpg", "kicker": "저장해 두기", "title": "해외 취업을 생각한다면\n일본 공고부터 보자",
+         "lines": ["일본 취업 준비하는 친구에게 보내 주세요", "공고 전체는 프로필 링크에서"]},
+    ]
+    for sl in slides:
+        sl["image"], sl["credit"] = _photo(sl.pop("photo"))
+        sl["note"] = note
+    slides[1]["note"] = "한국경제 2025.11.4 보도(한국노동연구원 노동리뷰 2025년 10월호 인용) 요약"
+    caption = "\n\n".join([
+        f"한국인 해외 취업 1위는 이제 일본입니다. 지금 근무지가 일본인 IT 공고는 {n}건이에요.",
+        f"· 일본어를 적은 공고 {lang}건 · 신입도 되는 공고 {entry}건\n· 눈여겨볼 곳: " + " · ".join(p["co"] for p in picks),
+        "한국경제는 한국노동연구원 자료를 인용해, 일본이 미국을 제치고 한국인 해외 취업 1위가 됐고 일본에서 일하는 "
+        "한국인 IT 종사자가 1만여 명(한국인 취업자의 13.4%)이라고 전했습니다. 일본의 IT 기술자 구인배율은 3.45배였습니다.",
+        "출처\nhttps://www.hankyung.com/article/202511042453i",
+        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고 기준. 근무지에 일본 지명이 있거나 제목에 일본 근무를 적은 공고만 셌고, "
+        "헤드헌팅 공고는 뺐습니다.",
+    ])
+    return {"id": f"japan-{today:%Y%m%d}", "series": "[일본 취업]", "title": "일본 근무 IT 공고", "slides": slides,
+            "caption": caption}
+
+
+BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan}
 
 
 # --- 렌더 ---------------------------------------------------------------
