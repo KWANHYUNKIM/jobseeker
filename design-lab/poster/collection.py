@@ -213,6 +213,13 @@ def _leaked_header(job: dict) -> str:
             t = re.sub(r"^[#\s\[【(•·*-]+|[\]】):：.!\s]+$", "", line or "")
             if len(t) <= 30 and (_STOP.match(t) or any(rx.match(t) for k, rx in _HEADS.items() if k != cell)):
                 return line
+    # 숫자·물음표만 있는 줄('2', '1', '?')이나 'Database :'·'Cloud &' 처럼 머리만 남은 줄이 여럿이면 원문 구조가 깨진 것
+    # (에스텍시스템·CJ대한통운, 2026-10-20)
+    for cell, lines in cells.items():
+        bare = sum(1 for l in lines if re.fullmatch(r"[\s\d?？·\-–]{1,3}", l or ""))
+        stub = sum(1 for l in lines if 0 < len((l or "").strip()) <= 16 and re.search(r"[:&]\s*$", l or ""))
+        if bare >= 2 or stub >= 2:
+            return f"구조가 깨진 줄({cell}): 숫자만 {bare}줄 · 머리만 {stub}줄"
     # 공고 제목이 낱말마다 한 줄로 쪼개져 칸에 들어간 것('인원 / [Timely / AI] / 백엔드 / 개발자', 업스테이지 2026-10-20)
     title = re.sub(r"\s+", " ", job.get("title") or "")
     for cell, lines in cells.items():

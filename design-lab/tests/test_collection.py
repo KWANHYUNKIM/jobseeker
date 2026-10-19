@@ -401,6 +401,16 @@ class ShardedTitleTest(unittest.TestCase):
         job = {"title": "백엔드 개발자", "full": {"qualifications": ["Python", "Java", "Spring", "AWS"]}}
         self.assertEqual(_leaked_header(job), "")
 
+    def test_bare_number_lines(self):
+        from poster.collection import _leaked_header
+        job = {"title": "C# 개발자", "full": {"qualifications": ["ASP.NET Core 능숙", "2", "1", "SQL 작성"]}}
+        self.assertTrue(_leaked_header(job))
+
+    def test_stub_heading_lines(self):
+        from poster.collection import _leaked_header
+        job = {"title": "백엔드", "full": {"qualifications": ["Database :", "Cloud &", "Java 3년"]}}
+        self.assertTrue(_leaked_header(job))
+
     def test_corporate_prefix(self):
         from poster.collection import _core
         self.assertEqual(_core("(유)월터워커"), _core("유한회사 월터워커"))
