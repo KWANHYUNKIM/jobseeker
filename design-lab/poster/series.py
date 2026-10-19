@@ -69,6 +69,7 @@ THEMES = {
     "game": {"paper": "#0b0d1a", "ink": "#f2f4ff", "sub": "#9aa0c0", "accent": "#5df2c1", "line": "#232845"},
     "security": {"paper": "#0f1420", "ink": "#f3f4f8", "sub": "#9ba3b4", "accent": "#ff4d5a", "line": "#26304a"},
     "mobile": {"paper": "#f4f2fd", "ink": "#1a1533", "sub": "#615b7d", "accent": "#7f52ff", "line": "#dfdaf5"},
+    "search": {"paper": "#0f1720", "ink": "#eef4f8", "sub": "#93a4b3", "accent": "#fec514", "line": "#22303c"},
     "terraform": {"paper": "#f4f1fb", "ink": "#1b1430", "sub": "#5f5778", "accent": "#7b42bc", "line": "#e2dcf1"},
     "kafka": {"paper": "#111111", "ink": "#f3f3f3", "sub": "#a3a3a3", "accent": "#7fd1ae", "line": "#2a2a2a"},
     "docker": {"paper": "#eef6fd", "ink": "#0b2236", "sub": "#4f6a80", "accent": "#1d63ed", "line": "#d3e5f4"},
@@ -99,7 +100,7 @@ SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", 
           "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]",
           "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]", "balance": "[둘 중 하나]", "tier": "[티어표]",
           "contra": "[공고 원문]", "game": "[게임사 채용]", "security": "[보안 채용]",
-          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]", "wish": "[희망 초봉 vs 공고]", "robot": "[로봇 채용]", "spring": "[스프링 채용]", "vc": "[투자와 채용]", "agent": "[AI 에이전트 채용]", "lang": "[언어 순위 vs 공고]", "mobile": "[모바일 채용]", "python": "[파이썬 채용]", "node": "[Node.js 채용]", "rust": "[Rust 채용]", "java": "[Java 채용]", "swift": "[Swift 채용]", "docker": "[Docker 채용]", "kafka": "[Kafka 채용]", "terraform": "[Terraform 채용]"}
+          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]", "wish": "[희망 초봉 vs 공고]", "robot": "[로봇 채용]", "spring": "[스프링 채용]", "vc": "[투자와 채용]", "agent": "[AI 에이전트 채용]", "lang": "[언어 순위 vs 공고]", "mobile": "[모바일 채용]", "python": "[파이썬 채용]", "node": "[Node.js 채용]", "rust": "[Rust 채용]", "java": "[Java 채용]", "swift": "[Swift 채용]", "docker": "[Docker 채용]", "kafka": "[Kafka 채용]", "terraform": "[Terraform 채용]", "search": "[검색 채용]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -124,6 +125,7 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "game": ["게임회사", "게임개발자", "게임스컴", "개발자채용", "게임업계취업"],
         "security": ["정보보안", "보안엔지니어", "보안채용", "개발자채용", "IT취업"],
         "mobile": ["모바일개발자", "안드로이드", "iOS개발자", "Kotlin", "Flutter"],
+        "search": ["RAG", "벡터DB", "Elasticsearch", "AI개발자", "개발자채용"],
         "terraform": ["Terraform", "DevOps", "인프라엔지니어", "IaC", "개발자채용"],
         "kafka": ["Kafka", "데이터엔지니어", "데이터파이프라인", "백엔드개발자", "개발자채용"],
         "docker": ["Docker", "도커", "DevOps", "백엔드개발자", "개발자채용"],
@@ -3241,6 +3243,69 @@ def build_terraform() -> dict:
             "reel_lead": "Terraform 1.17 RC 나온 주, Terraform 을 적은 자리는 — 저장해 두세요"}
 
 
+#: 공고 글에서 찾는 검색 엔진·벡터 DB — 기술 칩에는 Elasticsearch 만 있다
+_SEARCH_TOOLS = [("Elasticsearch", r"Elastic\s*search"), ("OpenSearch", r"OpenSearch"), ("Milvus", r"Milvus"),
+                 ("pgvector", r"pgvector"), ("Qdrant", r"Qdrant"), ("Pinecone", r"Pinecone"), ("Weaviate", r"Weaviate"),
+                 ("Chroma", r"ChromaDB|\bChroma\b")]
+_VECTOR_DB = re.compile(r"Vector\s*DB|벡터\s*DB|벡터\s*데이터베이스|vector\s*database", re.I)
+_RAG = re.compile(r"\bRAG\b")
+
+
+def build_search() -> dict:
+    """[검색 채용] 쇼츠 — Elasticsearch 9.5.5(10.6, GitHub 릴리스)를 계기로, 지금 국내 IT 공고 글에 적힌 검색 엔진과 벡터 DB,
+    그리고 RAG 를 적은 자리. 같은 자리 중복 게시는 하나로."""
+    sys.path.insert(0, str(ROOT / "catch_capture"))
+    from store.db.conn import cursor
+    today = date.today()
+    rows = _it_rows()
+    total = len(rows)
+    with cursor(autocommit=True) as cur:
+        cur.execute("""SELECT id, concat_ws(' ', title, main_tasks::text, qualifications::text, preferences::text, full_jd) AS t
+                         FROM job WHERE id = ANY(%s)""", ([r["job_id"] for r in rows],))
+        text = {r["id"]: r["t"] or "" for r in cur.fetchall()}
+    t = lambda r: text.get(r["job_id"], "")
+    tools = sorted(((k, sum(1 for r in rows if re.search(rx, t(r), re.I))) for k, rx in _SEARCH_TOOLS), key=lambda kv: -kv[1])
+    es = dict(tools)["Elasticsearch"]
+    vdb = sum(1 for r in rows if _VECTOR_DB.search(t(r)))
+    rag = [r for r in rows if _RAG.search(t(r))]
+    rag_entry = sum(1 for r in rag if r["career_bucket"] == "신입/무관")
+    cos = collections.Counter(_co_name(r["company"]) for r in rag).most_common(3)
+    pct = lambda a, b=total: round(100 * a / b) if b else 0
+    asof = today.isoformat()
+    wj = "\u2060"
+    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 공고 글에 적힌 낱말로 셈 · 같은 자리 중복 게시는 하나로"
+    slides = [
+        {"type": "cover", "big": f"{len(rag):,}", "big_unit": "개", "lines": ["Elasticsearch 를 적은 자리 " + f"{es:,}개,", "RAG 를 적은 자리는"],
+         "sub": f"국내 IT 자리 {total:,}개 중 {pct(len(rag))}%", "note": note},
+        {"type": "table", "title": "Elasticsearch 는 지금", "sub": "GitHub 릴리스 페이지", "head": ["판", "나온 날", ""],
+         "rows": [["9.5.5", "10월 6일", ""], ["9.4.8", "10월 6일", ""], ["8.19.23", "10월 6일", ""]],
+         "hi_col": 1, "note": "github.com/elastic/elasticsearch/releases"},
+        {"type": "bars", "title": "공고 글에 적힌 검색 도구", "sub": "검색 엔진과 벡터 DB, 그 낱말이 나온 자리",
+         "rows": [{"label": k, "value": v, "display": f"{v:,}", "unit": f"{pct(v)}%", "hi": i == 0} for i, (k, v) in enumerate(tools)],
+         "note": note},
+        {"type": "stat", "title": "'벡터 DB' 라고 적은 자리", "num": f"{vdb:,}", "unit": "개", "label": f"국내 IT 자리 {total:,}개 중 {pct(vdb)}%",
+         "explain": f"RAG 를 적은 자리 {len(rag):,}개 중 신입 가능 {rag_entry}개 · 많이 뽑는 곳: " + " · ".join(f"**{c}**\u00a0{k}{wj}개" for c, k in cos),
+         "note": note},
+        {"type": "end", "title": "저장해 두고", "lines": [
+            f"**RAG** {len(rag):,} · **벡터 DB** {vdb:,} · **Elasticsearch** {es:,}",
+            "AI 공고 전체는 프로필 링크에서", "검색·RAG 공부하는 친구에게 보내 주세요"], "note": note},
+    ]
+    caption = "\n\n".join([
+        f"Elasticsearch 9.5.5 가 10월 6일 나왔습니다. 지금 국내 IT 자리 {total:,}개 중 공고 글에 Elasticsearch 를 적은 자리는 {es:,}개, "
+        f"RAG 를 적은 자리는 {len(rag):,}개({pct(len(rag))}%)입니다.",
+        "· 공고 글에 적힌 검색 도구: " + " · ".join(f"{k} {v:,}개" for k, v in tools) + "\n"
+        f"· '벡터 DB' 라고 적은 자리: {vdb:,}개\n"
+        f"· RAG 자리 중 신입 가능 {rag_entry}개 · 많이 뽑는 곳: " + " · ".join(f"{c} {k}개" for c, k in cos),
+        "Elasticsearch GitHub 릴리스 페이지에 따르면 10월 6일 9.5.5 · 9.4.8 · 8.19.23 이 함께 나왔습니다.",
+        "출처\nhttps://github.com/elastic/elasticsearch/releases",
+        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 공고 제목·본문에 그 낱말이 나온 자리를 셌고, 한 자리에 여러 도구가 함께 나올 수 있습니다. "
+        "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+    ])
+    return {"kind": "search", "id": f"search-{asof.replace('-', '')}", "title": "검색 채용",
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.0,
+            "reel_lead": "검색 엔진보다 RAG — 공고 글로 세 봤어요, 저장해 두세요"}
+
+
 REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
 
 
@@ -3297,7 +3362,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
                                      "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit",
-                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud", "paywish", "robot", "spring", "vc", "agent", "lang", "mobile", "python", "node", "rust", "java", "swift", "docker", "kafka", "terraform"])
+                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud", "paywish", "robot", "spring", "vc", "agent", "lang", "mobile", "python", "node", "rust", "java", "swift", "docker", "kafka", "terraform", "search"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
@@ -3379,6 +3444,8 @@ def main() -> int:
         post = build_kafka()
     elif args.kind == "terraform":
         post = build_terraform()
+    elif args.kind == "search":
+        post = build_search()
     elif args.kind in ("pay", "perk", "welcome", "gongchae", "contra"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae, "contra": build_contra}[args.kind]()
