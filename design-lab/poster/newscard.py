@@ -62,7 +62,7 @@ STYLE_FONTS = {
     "brandmag": ["Pretendard", "NanumMyeongjo"],
 }
 #: 원고마다 기본으로 찍을 틀
-DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"], "military": ["magazine"], "region": ["magazine"], "sme": ["magazine"], "fourday": ["magazine"], "secneed": ["magazine"], "db": ["magazine"], "k8s": ["magazine"], "linux": ["magazine"], "nextjs": ["magazine"], "vue": ["magazine"], "fastapi": ["magazine"], "angular": ["magazine"]}
+DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"], "military": ["magazine"], "region": ["magazine"], "sme": ["magazine"], "fourday": ["magazine"], "secneed": ["magazine"], "db": ["magazine"], "k8s": ["magazine"], "linux": ["magazine"], "nextjs": ["magazine"], "vue": ["magazine"], "fastapi": ["magazine"], "angular": ["magazine"], "redis": ["magazine"]}
 
 
 #: 회사 자산(assets/companies/…)이 없는 기계에서 쓰는 공용 글꼴 — 공식 배포본(OFL), 라이선스는 같은 폴더.
@@ -1418,7 +1418,75 @@ def build_angular(today: date | None = None) -> dict:
             "caption": caption}
 
 
-BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan, "military": build_military, "region": build_region, "sme": build_sme, "fourday": build_fourday, "secneed": build_secneed, "db": build_db, "k8s": build_k8s, "linux": build_linux, "nextjs": build_nextjs, "vue": build_vue, "fastapi": build_fastapi, "angular": build_angular}
+def build_redis(today: date | None = None) -> dict:
+    """[카드뉴스] Redis — redis/redis GitHub 릴리스(8.10.2 · 8.8.3 · 8.6.7, 9월 17일)를 계기로, 지금 국내 IT 공고 중 Redis 를
+    적은 자리·같이 적은 DB·직군·눈여겨볼 곳. 같은 자리 중복 게시는 하나로."""
+    from .collection import _group
+    from .series import _co_name, _it_rows
+    today = today or date.today()
+    rows = _it_rows()
+    total = len(rows)
+    has = lambda r, k: k in (r["stacks"] or [])
+    rd = [r for r in rows if has(r, "Redis")]
+    n = len(rd)
+    dbs = sorted(((k, sum(1 for r in rd if set(r["stacks"] or []) & set(keys))) for k, keys in
+                  (("MySQL", ("MySQL", "MariaDB")), ("PostgreSQL", ("PostgreSQL",)), ("MongoDB", ("MongoDB",)), ("Kafka", ("Kafka",)))),
+                 key=lambda kv: -kv[1])
+    be = sum(1 for r in rd if "백엔드" in (r["roles"] or []))
+    entry = sum(1 for r in rd if r["career_bucket"] == "신입/무관")
+    pct = lambda a, b=n: round(100 * a / b) if b else 0
+    picks, seen = [], set()
+    for r in sorted(rd, key=lambda r: ({"대기업": 0, "중견기업": 1}.get(r["size"], 2), r["deadline_on"] is None, r["deadline_on"] or today)):
+        c = re.sub(r"\s*지점$", "", _co_name(r["company"]))
+        c = {"비바리퍼블리카": "토스"}.get(c, c)
+        d = (r["deadline_on"] - today).days if r["deadline_on"] else None
+        g = _group(c)
+        if g in seen or d == 0:
+            continue
+        seen.add(g)
+        picks.append({"co": c, "title": _short(re.sub(r"^\s*\[[^\]]*\]\s*", "", r["title"])),
+                      "meta": f"{r['size'] or ''} · {f'D-{d}' if d is not None else '상시'}"})
+        if len(picks) == 4:
+            break
+    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    slides = [
+        {"type": "cover", "photo": "pangyo.jpg", "kicker": f"Redis · {today:%Y.%m.%d}",
+         "big": f"{n:,}", "unit": "개", "title": ["Redis 를 적은", "국내 IT 자리"],
+         "sub": f"국내 IT 자리 {total:,}개 중 {pct(n, total)}% · 신입 가능 {entry}개"},
+        {"type": "stat", "photo": "hourglass.jpg", "kicker": "릴리스", "title": "9월 17일, 세 줄 동시 수정",
+         "items": [{"num": "8.10.2", "unit": "", "label": "최신"},
+                   {"num": "3", "unit": "줄", "label": "8.10 · 8.8 · 8.6 같은 날"}],
+         "explain": "redis/redis GitHub 릴리스 기준. 8.10.2 · 8.8.3 · 8.6.7 이 9월 17일 함께 나왔다."},
+        {"type": "stat", "photo": "code.jpg", "kicker": "Redis 자리 안에서", "title": "같이 적은 저장소",
+         "items": [{"num": f"{pct(v)}", "unit": "%", "label": k} for k, v in dbs[:2]],
+         "explain": " · ".join(f"{k} {pct(v)}%" for k, v in dbs[2:]) + f". Redis 자리 {n:,}개 중. MySQL 은 MariaDB 포함."},
+        {"type": "stat", "photo": "css.jpg", "kicker": "어느 직군", "title": "대부분 백엔드",
+         "items": [{"num": f"{pct(be)}", "unit": "%", "label": "백엔드 직군"},
+                   {"num": f"{pct(entry)}", "unit": "%", "label": "신입 가능"}],
+         "explain": f"Redis 자리 {n:,}개 중. 한 자리가 여러 직군이면 각각 셌다."},
+        {"type": "picks", "photo": "typing.jpg", "kicker": "눈여겨볼 곳", "title": "Redis 를 적은 곳",
+         "sub": "큰 회사 먼저 · 한 그룹 한 곳", "rows": picks},
+        {"type": "end", "photo": "seoul.jpg", "kicker": "저장해 두기", "title": "캐시 한 줄이\n공고에 적히는 이유",
+         "lines": ["백엔드 공부하는 친구에게 보내 주세요", "공고 전체는 프로필 링크에서"]},
+    ]
+    for sl in slides:
+        sl["image"], sl["credit"] = _photo(sl.pop("photo"))
+        sl["note"] = note
+    caption = "\n\n".join([
+        f"Redis 8.10.2 · 8.8.3 · 8.6.7 이 9월 17일 함께 나왔습니다. 지금 국내 IT 자리 {total:,}개 중 Redis 를 적은 자리는 {n:,}개({pct(n, total)}%), 신입 가능 {entry}개입니다.",
+        "· Redis 자리 중 같이 적은 저장소: " + " · ".join(f"{k} {pct(v)}%" for k, v in dbs) + "\n"
+        f"· 백엔드 직군 {pct(be)}%\n"
+        "· 눈여겨볼 곳: " + " · ".join(p["co"] for p in picks),
+        "redis/redis GitHub 릴리스 페이지에 따르면 8.10.2(최신), 8.8.3, 8.6.7 이 모두 9월 17일 나왔습니다.",
+        "출처\nhttps://github.com/redis/redis/releases",
+        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고 MySQL 은 MariaDB 를 함께 셌습니다. "
+        "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+    ])
+    return {"id": f"redis-{today:%Y%m%d}", "series": "[Redis]", "title": "Redis 자리", "slides": slides,
+            "caption": caption}
+
+
+BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan, "military": build_military, "region": build_region, "sme": build_sme, "fourday": build_fourday, "secneed": build_secneed, "db": build_db, "k8s": build_k8s, "linux": build_linux, "nextjs": build_nextjs, "vue": build_vue, "fastapi": build_fastapi, "angular": build_angular, "redis": build_redis}
 
 
 # --- 렌더 ---------------------------------------------------------------
