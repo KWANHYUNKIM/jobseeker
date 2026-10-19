@@ -70,3 +70,17 @@ def test_element_inner_balances_nested_tags():
 
 def test_doubled_image_url_is_repaired():
     assert extract_img_urls('<img src="https://a.kr/https://a.kr/r/x.jpg">') == ["https://a.kr/r/x.jpg"]
+
+
+def test_exclaimed_header_daangn_style():
+    # 당근(잡코리아) — 우대 머리말이 느낌표로 끝난다. 문장 끝(!)으로 보고 버려서 우대사항이 자격요건에 붙었다(2026-10-19)
+    t = "이런 일을 해요\nㆍAPI 설계\n이런 분과 함께하고 싶어요\nㆍ서버 5년\n이런 분이면 더 좋아요!\nㆍNode.js 경험"
+    p = _split(t)
+    assert p["qualifications"] == "ㆍ서버 5년"
+    assert p["preferences"] == "ㆍNode.js 경험"
+
+
+def test_long_exclaimed_sentence_is_still_body():
+    t = "자격요건\n- 서버 3년\n이런 분과 함께라면 정말 즐겁게 오래오래 성장할 수 있을 거예요!\n- Kafka"
+    p = _split(t)
+    assert "Kafka" in p["qualifications"] and "preferences" not in p

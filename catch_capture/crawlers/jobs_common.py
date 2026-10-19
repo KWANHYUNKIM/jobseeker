@@ -599,7 +599,10 @@ def _looks_like_header(raw: str, s: str) -> bool:
     # "자격증 : 정보처리기사" 처럼 항목 : 값 꼴은 본문이다(머리말은 콜론 뒤가 비어 있다)
     if re.search(r"[:：]\s*\S", t):
         return False
-    if re.search(r"[.!?。]$|(니다|어요|해요|세요|습니다)\.$", t):
+    if re.search(r"[.。]$|(니다|어요|해요|세요|습니다)\.$", t):
+        return False
+    # 느낌표·물음표는 짧으면 머리말이다 — 당근 "이런 분이면 더 좋아요!"(2026-10-19 우대사항이 자격요건에 붙었다)
+    if re.search(r"[!?]$", t) and len(s) > 25:
         return False
     return True
 
