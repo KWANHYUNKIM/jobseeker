@@ -68,6 +68,7 @@ THEMES = {
     "contra": {"paper": "#15171d", "ink": "#f4f2ec", "sub": "#9b9fa9", "accent": "#ffd43b", "line": "#2b2f38"},
     "game": {"paper": "#0b0d1a", "ink": "#f2f4ff", "sub": "#9aa0c0", "accent": "#5df2c1", "line": "#232845"},
     "security": {"paper": "#0f1420", "ink": "#f3f4f8", "sub": "#9ba3b4", "accent": "#ff4d5a", "line": "#26304a"},
+    "mobility": {"paper": "#0a1a2f", "ink": "#f2f6fb", "sub": "#94a7bf", "accent": "#00c2ff", "line": "#1d3352"},
     "aitool": {"paper": "#0d1117", "ink": "#f0f3f6", "sub": "#9198a1", "accent": "#d2a8ff", "line": "#262c36"},
     "cert": {"paper": "#f4f1fb", "ink": "#17122b", "sub": "#615a78", "accent": "#5f3dc4", "line": "#ddd5f0"},
 }
@@ -77,7 +78,7 @@ SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", 
           "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]",
           "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]", "balance": "[둘 중 하나]", "tier": "[티어표]",
           "contra": "[공고 원문]", "game": "[게임사 채용]", "security": "[보안 채용]",
-          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]"}
+          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -101,6 +102,7 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "contra": ["채용공고", "신입개발자", "자격요건", "개발자취업", "중고신입"],
         "game": ["게임회사", "게임개발자", "게임스컴", "개발자채용", "게임업계취업"],
         "security": ["정보보안", "보안엔지니어", "보안채용", "개발자채용", "IT취업"],
+        "mobility": ["모빌리티", "SDV", "현대자동차", "자율주행", "개발자채용"],
         "aitool": ["AI코딩", "ClaudeCode", "Cursor", "개발자채용", "코딩테스트"],
         "cert": ["자격증", "데브옵스", "인프라엔지니어", "AWS자격증", "개발자채용"]}
 
@@ -1911,6 +1913,59 @@ def build_aitool() -> dict:
             "reel_lead": "이제 코딩테스트 대신 AI 쓰는 법을 본다 — 저장해 두세요"}
 
 
+#: 같은 그룹 채용 포털의 긴 이름 — 판에서 줄인다
+_MOB_NAME = {"현대자동차그룹 (HYUNDAI)": "현대차그룹", "포티투닷 (42dot)": "42dot"}
+
+
+def build_mobility() -> dict:
+    """[모빌리티 채용] 쇼츠 — 현대차가 SDV·AI·로보틱스 인재를 찾는 전 부문 신입 공채(9.1~14, 92개 공고)를 했다는 보도
+    (사라경제 2026.8.24) 뒤, 지금 메인의 '자동차·모빌리티' 구역에 남은 국내 IT 공고를 센다."""
+    import urllib.parse
+    import urllib.request
+    base = os.environ.get("VIEWER_API", "http://127.0.0.1:8771")
+    q = urllib.parse.quote("자동차·모빌리티")
+    with urllib.request.urlopen(f"{base}/api/home?industry={q}&limit=200", timeout=30) as r:
+        cos = [c for c in json.loads(r.read())["companies"] if c["size"] != "해외 기업"]
+    cos.sort(key=lambda c: -c["active"])
+    total, entry = sum(c["active"] for c in cos), sum(c["entry"] for c in cos)
+    name = lambda c: _MOB_NAME.get(c["name"], c["name"])
+    entry_cos = sorted((c for c in cos if c["entry"]), key=lambda c: -c["entry"])
+    asof = date.today().isoformat()
+    wj = "\u2060"
+    note = f"JD Viewer 모집중 IT 공고 · 국내 자동차·모빌리티 {len(cos)}곳 · {_dot(asof)} · 업종은 회사 이름으로 가른 추정"
+    slides = [
+        {"type": "cover", "big": f"{total}", "big_unit": "건", "lines": ["현대차 공채 끝난 뒤", "모빌리티가 뽑는 개발자"],
+         "sub": f"국내 자동차·모빌리티 {len(cos)}곳의 모집중 IT 공고", "note": note},
+        {"type": "table", "title": "9월에 있었던 일", "sub": "보도는 요약, 원문은 캡션의 링크",
+         "head": ["무엇", "언제", "규모"],
+         "rows": [["현대차 전 부문 신입 공채", "9.1~9.14", f"92{wj}개 공고"],
+                  ["찾은 인재", "SDV·AI·로보틱스", "6개 부문"]],
+         "hi_col": 2, "note": "사라경제 2026.8.24 보도"},
+        {"type": "bars", "title": "지금 가장 많이 뽑는 곳", "sub": "회사별 모집중 IT 공고",
+         "rows": [{"label": name(c), "value": c["active"], "display": f"{c['active']}", "unit": "건", "hi": i == 0}
+                  for i, c in enumerate(cos[:6])], "note": note},
+        {"type": "stat", "title": "신입도 되는 공고", "num": f"{entry}", "unit": "건",
+         "label": f"{total}건 중 {round(100 * entry / total) if total else 0}%",
+         "explain": "공채가 끝나면 남는 건 **경력 자리**다.\n신입이라면 " + " · ".join(
+             f"{name(c)} {c['entry']}{wj}건" for c in entry_cos[:3]) + ".", "note": note},
+        {"type": "end", "title": "저장해 두고", "lines": [
+            " · ".join(f"**{name(c)}** {c['active']}건" for c in cos[:3]),
+            "회사별 공고 전체는 프로필 링크에서", "모빌리티 회사 가고 싶은 친구에게 보내 주세요"], "note": note},
+    ]
+    caption = "\n\n".join([
+        f"현대차 신입 공채는 끝났습니다. 그럼 지금 자동차·모빌리티 회사는 개발자를 얼마나 뽑고 있을까요?",
+        f"국내 자동차·모빌리티 {len(cos)}곳에서 모집중인 IT 공고는 {total}건, 신입도 되는 공고는 {entry}건입니다.",
+        "많이 뽑는 곳: " + " · ".join(f"{name(c)} {c['active']}건" for c in cos[:5]),
+        "사라경제는 현대차가 SDV·AI·로보틱스 인재를 찾으려 9월 1~14일 연구개발·IT 등 6개 부문 92개 공고로 "
+        "전 부문 신입 공채를 했다고 전했습니다.",
+        "출처\nhttps://sateconomy.co.kr/news/view/1065573166413873",
+        f"{_dot(asof)} JD Viewer 모집중 공고 기준. 업종은 회사 이름으로 가른 추정입니다.",
+    ])
+    return {"kind": "mobility", "id": f"mobility-{asof.replace('-', '')}", "title": "모빌리티 채용",
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 1.8,
+            "reel_lead": "현대차 공채 끝난 뒤, 모빌리티가 지금 뽑는 개발자 — 저장해 두세요"}
+
+
 REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
 
 
@@ -1967,7 +2022,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
                                      "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit",
-                                     "contra", "ai-entry", "game", "security", "cert", "aitool"])
+                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
@@ -2005,6 +2060,8 @@ def main() -> int:
         post = build_cert()
     elif args.kind == "aitool":
         post = build_aitool()
+    elif args.kind == "mobility":
+        post = build_mobility()
     elif args.kind in ("pay", "perk", "welcome", "gongchae", "contra"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae, "contra": build_contra}[args.kind]()
