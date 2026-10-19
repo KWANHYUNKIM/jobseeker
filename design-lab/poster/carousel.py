@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import base64
 import json
+import re
 from pathlib import Path
 
 from . import assets, brands, jobsource
@@ -151,6 +152,17 @@ def _brand_images(brand: dict | None) -> dict:
     return out
 
 
+_DARK_UI_KEYS = {"paper", "ink", "text", "sub", "line", "slot", "mint"}
+
+
+def _dark(color: str | None) -> bool:
+    """#rrggbb 가 어두운 색인가(상대 휘도 0.35 미만)."""
+    if not color or not re.fullmatch(r"#[0-9a-fA-F]{6}", color):
+        return False
+    r, g, b = (int(color[i:i + 2], 16) / 255 for i in (1, 3, 5))
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b < 0.35
+
+
 def html_for(job_key: str, fmt_id: str = "ig_portrait", *, palette: str = "",
              template: Path = TEMPLATE, variant: str = "") -> str:
     composed = compose(job_key, fmt_id, palette=palette)
@@ -162,6 +174,12 @@ def html_for(job_key: str, fmt_id: str = "ig_portrait", *, palette: str = "",
         if not brand.get("frame"):
             raise KeyError(f"브랜드 전용 판이 없다: {composed['company']} — brands/*.json 의 frame (brand-poster 스킬)")
         template = TEMPLATE.with_name(brand["frame"])
+    elif template.name.startswith("family_") and _dark(((composed.get("brand") or {}).get("ui") or {}).get("paper")):
+        # 직군 틀은 밝은 판을 제 손으로 깐다. 어두운 바탕 브랜드(빗썸: 흰 글자·옅은 회색 본문)의 글자색을
+        # 그대로 물리면 흰 바탕에 흰 글자가 된다(빗썸 프론트엔드 판, 2026-10-20). 서체·강조색만 빌린다.
+        brand = dict(composed["brand"])
+        brand["ui"] = {k: v for k, v in brand["ui"].items() if k not in _DARK_UI_KEYS}
+        composed["brand"] = brand
     composed["brand_images"] = _brand_images(composed.get("brand"))
     data = json.dumps(composed, ensure_ascii=False)
     html = template.read_text(encoding="utf-8").replace("/*__DATA__*/", data.replace("</", "<\\/"))

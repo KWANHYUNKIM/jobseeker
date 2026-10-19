@@ -66,7 +66,9 @@
   h1 span{display:block;font-size:.56em;font-weight:700;letter-spacing:-.02em;margin-top:calc(.4*var(--u))}
   .stack{margin-top:calc(.9*var(--u));font-family:var(--mono);font-size:calc(1.7*var(--u));
     font-weight:600;color:var(--HSUB)}
-  .car{text-align:right;white-space:nowrap;color:var(--HINK)}
+  .car{text-align:right;white-space:nowrap;color:var(--HINK);align-self:end;justify-self:end;
+    /* 브랜드가 없으면 오른쪽 띠가 거의 검정이라 검은 경력 숫자가 묻혔다(한컴즈 판) — 종이색 받침을 깐다 */
+    background:color-mix(in srgb,var(--paper) 86%,transparent);padding:calc(.7*var(--u)) calc(1.1*var(--u));border-radius:calc(.8*var(--u))}
   .car .k{font-size:calc(1.6*var(--u));font-weight:700;color:var(--HSUB)}
   .car .v{display:flex;align-items:baseline;justify-content:flex-end;gap:calc(.5*var(--u));margin-top:calc(.2*var(--u))}
   .car .n{font-size:var(--CAR);font-weight:800;letter-spacing:-.045em;line-height:.92}
@@ -147,7 +149,7 @@
   // 탭 줄
   const tabs = el('div', 'tabs');
   const tab = el('div', 'tab');
-  const fav = el('i', 'fav', (D.company || '?').trim()[0]);
+  const fav = el('i', 'fav', D.initial || (D.company || '?').replace(/^\s*(\(주\)|㈜|주식회사)\s*/, '').trim()[0] || '?');   // '(주)한컴즈' 의 '(' 가 로고 자리에 섰다
   tab.append(fav, el('span', 'co', D.company));
   const meta = el('div', 'meta');
   meta.append(el('span', 'vp', `${D.fmt.w} × ${D.fmt.h}`));
@@ -288,6 +290,12 @@
             for (const ic of [1, 2])
               out.push({ spans: [span, 12 - span], cut: [k], columns: 2, gut: 1.8,
                          TT, bc, ic, gap: 1.05 });
+    // 칸이 하나뿐인 공고(주요업무만 있는 것 등)는 두 단으로 가를 데가 없다 — 한 단으로 편다.
+    // 후보가 비면 Frame.fit 의 reduce 가 터져 판이 끝나지 않았다(한컴즈 공고, 2026-10-20).
+    if (!out.length)
+      for (const TT of ch.TT)
+        for (const ic of [1, 2])
+          out.push({ spans: [12], cut: [], columns: 1, gut: 1.8, TT, bc: 1, ic, gap: 1.05 });
     return out;
   };
   // 히어로 높이·제목·경력 크기를 세 단계로 둔다. 넉넉한 쪽으로 먼저 재고, 본문이 18px 을 못

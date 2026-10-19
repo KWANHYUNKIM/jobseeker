@@ -190,6 +190,11 @@ _STOP = re.compile(r"^(interview\s+process|hiring\s+process|additional\s+informa
 _FOREIGN_TAG = re.compile(r"\s*\[(베트남|중국|미국|인도|싱가포르|대만|필리핀|인도네시아|태국|말레이시아)[^\]]*\]")
 #: 헤드헌팅·서치펌 공고 — 고객사 이름을 숨기고 '유망 … 기업' 으로 쓴다
 _AGENCY = re.compile(r"라인서치|커리어케어|휴먼파워|아웃소싱|헤드헌팅|헤드헌터|서치펌|고객사|유망\s*\S+(\s*\S+){0,3}\s*기업")
+#: SI 인력 투입·프리랜서 공고 — 등급(초·중·고급)과 투입 기간을 제목에 단다('…/즉시/27.1월말/중.고급', 한컴즈).
+#: '[정규직](중·고급) 경력사원' 처럼 정규직이라 적은 공고는 등급을 써도 채용이다.
+_SI_STAFF = re.compile(r"프리랜서|[초중고특][.~·]?\s*[중고]급|즉시\s*(투입|~|/)|/즉시/")
+#: 사이트가 '–'·'·' 같은 문장부호를 '?' 로 깨뜨려 넘긴 글(잡코리아 빗썸 공고 '기획?설계?런칭', 2026-10-20)
+_MOJIBAKE = re.compile(r"[가-힣]\?[가-힣]")
 #: 경력 칸에 지역이 들어간 공고(토스·42dot 의 'Seoul', 'Pangyo …')
 _PLACE_IN_CAREER = re.compile(r"seoul|pangyo|korea|remote|서울|판교|경기", re.I)
 
@@ -204,6 +209,8 @@ def _leaked_header(job: dict) -> str:
             t = re.sub(r"^[#\s\[【(•·*-]+|[\]】):：.!\s]+$", "", line or "")
             if len(t) <= 30 and (_STOP.match(t) or any(rx.match(t) for k, rx in _HEADS.items() if k != cell)):
                 return line
+    if len(_MOJIBAKE.findall(" ".join(lines for v in cells.values() for lines in v))) >= 2:
+        return "글자 깨짐(? 로 바뀐 문장부호)"
     if _PLACE_IN_CAREER.search(job.get("career") or ""):
         return f"경력 칸: {job['career']}"
     return ""
@@ -448,6 +455,7 @@ def build(kind: str, *, value: str = "", since: str = "", until: str = "",
     rows = [j for j in rows if not _FOREIGN_TAG.match(j.get("title") or "")]
     # 헤드헌팅 공고 — 회사 이름 칸이 서치펌이라 판의 회사·규모가 틀린다(라인서치가 '대기업' 으로 섰다)
     rows = [j for j in rows if not _AGENCY.search(f"{j.get('company', '')} {j.get('title', '')}")]
+    rows = [j for j in rows if not (_SI_STAFF.search(j.get("title") or "") and "정규직" not in (j.get("title") or ""))]
     # 개발 자리가 아닌 공고를 뺀다(제목 기준)
     rows = [j for j in rows if not _not_dev(j)]
     # 이미 내보낸 공고를 뺀다(publish.posted). 모집이 길게 열린 공고는 매주 같은 자리에 다시
