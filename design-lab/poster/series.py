@@ -68,6 +68,7 @@ THEMES = {
     "contra": {"paper": "#15171d", "ink": "#f4f2ec", "sub": "#9b9fa9", "accent": "#ffd43b", "line": "#2b2f38"},
     "game": {"paper": "#0b0d1a", "ink": "#f2f4ff", "sub": "#9aa0c0", "accent": "#5df2c1", "line": "#232845"},
     "security": {"paper": "#0f1420", "ink": "#f3f4f8", "sub": "#9ba3b4", "accent": "#ff4d5a", "line": "#26304a"},
+    "robot": {"paper": "#111418", "ink": "#f2f4f7", "sub": "#9aa2ad", "accent": "#36d399", "line": "#262c34"},
     "wish": {"paper": "#fdf7ee", "ink": "#22180c", "sub": "#76674f", "accent": "#c2410c", "line": "#efe2cc"},
     "cloud": {"paper": "#0f1b2d", "ink": "#f3f6fa", "sub": "#97a6ba", "accent": "#ff9900", "line": "#22334d"},
     "gap": {"paper": "#f6f4ef", "ink": "#181614", "sub": "#6b655c", "accent": "#d9480f", "line": "#e2ddd2"},
@@ -85,7 +86,7 @@ SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", 
           "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]",
           "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]", "balance": "[둘 중 하나]", "tier": "[티어표]",
           "contra": "[공고 원문]", "game": "[게임사 채용]", "security": "[보안 채용]",
-          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]", "wish": "[희망 초봉 vs 공고]"}
+          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]", "wish": "[희망 초봉 vs 공고]", "robot": "[로봇 채용]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -109,6 +110,7 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "contra": ["채용공고", "신입개발자", "자격요건", "개발자취업", "중고신입"],
         "game": ["게임회사", "게임개발자", "게임스컴", "개발자채용", "게임업계취업"],
         "security": ["정보보안", "보안엔지니어", "보안채용", "개발자채용", "IT취업"],
+        "robot": ["로봇", "휴머노이드", "ROS", "로보틱스", "개발자채용"],
         "wish": ["신입연봉", "초봉", "희망연봉", "신입개발자", "개발자연봉"],
         "cloud": ["AWS", "클라우드엔지니어", "Azure", "GCP", "개발자채용"],
         "gap": ["신입개발자", "경력직", "개발자취업", "이직준비", "개발자채용"],
@@ -2398,6 +2400,67 @@ def build_paywish() -> dict:
             "reel_lead": "바라는 초봉 4,196만, 공고에 적힌 신입 연봉은? — 저장해 두세요"}
 
 
+_ROBOT = re.compile(r"로봇|로보틱스|robot|휴머노이드|humanoid|(?<![A-Za-z])ROS2?(?![A-Za-z])|매니퓰레이터|자율\s*주행\s*로봇|AMR", re.I)
+
+
+def build_robot() -> dict:
+    """[로봇 채용] 쇼츠 — 휴머노이드 특성화 대학원 하반기 신설(연 30억 원 안팎·최대 5년, 산업통상부 보도자료 2026.7.2)을
+    지금 제목에 로봇을 단 국내 IT 공고로 받친다. 같은 자리를 여러 사이트에 올린 것은 하나로 센다."""
+    sys.path.insert(0, str(ROOT / "catch_capture"))
+    from store.db.conn import cursor
+    from .collection import _AGENCY
+    from .newscard import _NOT_JOB          # 교육생·국비 과정은 일자리가 아니다
+    with cursor(autocommit=True) as cur:
+        cur.execute("""SELECT f.stacks, co.display_name AS company, j.title, f.career_bucket, f.region
+                         FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
+                         JOIN job_facet f ON f.job_id = j.id JOIN company co ON co.id = j.company_id
+                        WHERE coalesce(f.region, '') <> '해외·원격'
+                          AND NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = j.id)""")
+        rows = [r for r in cur.fetchall() if _ROBOT.search(r["title"])
+                and not _not_dev({"title": r["title"], "stack": r.get("stacks") or []})
+                and not _AGENCY.search(r["company"] + " " + r["title"]) and not _NOT_JOB.search(r["title"])]
+    uniq = {}
+    for r in rows:
+        uniq.setdefault((_co_name(r["company"]), _role_key(r["title"])), r)
+    rows = list(uniq.values())
+    n = len(rows)
+    entry = sum(1 for r in rows if r["career_bucket"] == "신입/무관")
+    cos = collections.Counter(_co_name(r["company"]) for r in rows).most_common(6)
+    stacks = collections.Counter(x for r in rows for x in (r["stacks"] or [])).most_common(4)
+    pct = lambda a: round(100 * a / n) if n else 0
+    asof = date.today().isoformat()
+    wj = "\u2060"
+    note = f"JD Viewer 모집중 IT 공고 중 제목에 로봇·로보틱스·ROS 가 든 국내 근무 자리 · {_dot(asof)} · 같은 자리 중복 게시는 하나로"
+    slides = [
+        {"type": "cover", "big": f"{n}", "big_unit": "개", "lines": ["휴머노이드 대학원 생기는 해", "로봇 개발 자리는"],
+         "sub": "제목에 로봇·로보틱스·ROS 가 든 모집중 IT 자리", "note": note},
+        {"type": "table", "title": "정부가 키우는 로봇 인재", "sub": "보도자료 요약, 원문은 캡션의 링크", "head": ["무엇", "규모", ""],
+         "rows": [["휴머노이드 특성화 대학원", f"올해 하반기 신설", ""], ["지원", f"연 30억{wj}원 안팎", ""],
+                  ["기간", f"최대 5{wj}년", ""]],
+         "hi_col": 1, "note": "산업통상부 보도자료 2026.7.2 요약"},
+        {"type": "bars", "title": "로봇 자리 많은 곳", "sub": "회사별 모집중 자리(중복 게시는 하나로)",
+         "rows": [{"label": c, "value": k, "display": f"{k}", "unit": "개", "hi": i == 0} for i, (c, k) in enumerate(cos)],
+         "note": note},
+        {"type": "stat", "title": "신입도 되는 로봇 자리", "num": f"{entry}", "unit": "개", "label": f"{n}개 중 {pct(entry)}%",
+         "explain": "많이 적힌 기술은 " + " · ".join(f"**{k}**" for k, _ in stacks) + ".", "note": note},
+        {"type": "end", "title": "저장해 두고", "lines": [
+            " · ".join(f"**{c}** {k}개" for c, k in cos[:3]),
+            "로봇 공고 전체는 프로필 링크에서", "로봇 만들고 싶은 친구에게 보내 주세요"], "note": note},
+    ]
+    caption = "\n\n".join([
+        f"휴머노이드 특성화 대학원이 올해 하반기 처음 생깁니다. 지금 로봇 개발 자리는 {n}개 열려 있어요.",
+        f"· 신입도 되는 자리 {entry}개\n· 많이 뽑는 곳: " + " · ".join(f"{c} {k}개" for c, k in cos[:5]) + "\n"
+        "· 많이 적힌 기술: " + " · ".join(k for k, _ in stacks),
+        "산업통상부는 국제로보컵·휴머노이드 챌린지에 맞춰, 올해 하반기 휴머노이드 특성화 대학원을 처음 만들고 연 30억 원 안팎을 "
+        "최대 5년 지원한다고 밝혔습니다.",
+        "출처\nhttps://www.motir.go.kr/kor/article/ATCL3f49a5a8c/171994/view",
+        f"{_dot(asof)} JD Viewer 모집중 IT 공고 중 제목에 로봇·로보틱스·ROS 가 든 국내 근무 자리. 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+    ])
+    return {"kind": "robot", "id": f"robot-{asof.replace('-', '')}", "title": "로봇 채용",
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 1.8,
+            "reel_lead": "휴머노이드 대학원 생기는 해, 로봇 개발 자리는 — 저장해 두세요"}
+
+
 REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
 
 
@@ -2454,7 +2517,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
                                      "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit",
-                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud", "paywish"])
+                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud", "paywish", "robot"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
@@ -2508,6 +2571,8 @@ def main() -> int:
         post = build_cloud()
     elif args.kind == "paywish":
         post = build_paywish()
+    elif args.kind == "robot":
+        post = build_robot()
     elif args.kind in ("pay", "perk", "welcome", "gongchae", "contra"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae, "contra": build_contra}[args.kind]()
