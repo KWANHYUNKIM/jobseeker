@@ -219,6 +219,22 @@ REGISTRY: list[Loop] = [
              "design-lab 테스트(python -m pytest tests)를 통과시키고 feat/docs(design-lab) 로 커밋, 푸시는 하지 않는다. "
              "무엇을 만들었는지 한두 줄로 보고한다. 고치는 곳은 design-lab/poster/ · assets/ · content/ · planning/03-content.md · "
              "planning/06-review.md 뿐이다 — git add 도 이 경로만 준다.")),
+    # 메인 화면(/) 정보로 게시물 계속 만들기 — 형식을 돌려 가며(캐러셀·릴스·카드뉴스·쇼츠) 만들고 휴대폰 미리보기
+    # 갤러리(Artifact)에 올린 뒤 인스타 대기열에 쌓는다. 계정 연결(accounts.json)·live 전에는 실제로 나가지 않는다.
+    Loop("insta-feed", "메인 정보로 게시물 계속 만들기", "claude-loop", "mac", "자율(한 편씩 바로바로)", 6,
+         "/loop <prompt>", ["design-lab/out/collections", "design-lab/out/series"],
+         owns=["design-lab/out/", "design-lab/poster/"],
+         prompt=(
+             "메인 정보 게시물 한 편: ① 형식을 지난 편과 다르게 고른다(캐러셀 → 릴스 → 카드뉴스 → 쇼츠 순환). "
+             "② 주제는 인터넷에서 지금 개발자 채용·IT 업계 이야기(뉴스·공식 발표)를 하나 찾고, 그걸 우리 메인 화면 데이터"
+             "(http://127.0.0.1:8771/api/home — 신입·경력·오늘 뜬·인턴·중견중소·해외·업종별 TOP, 회사 카드)로 받쳐 인용한다. "
+             "바깥 글은 요약·출처 URL 만, 원문을 옮기지 않는다. 숫자는 만들 때 우리 데이터에서 다시 센다. "
+             "③ design-lab/poster/ 의 빌더로 만든다(collection render·reel·newscard·series; 파이썬은 catch_capture/.venv/bin/python). "
+             "IT 직무가 아닌 공고·마감 지난 공고는 빼고, 찍은 장을 직접 열어 본다(8px 글자·빈 칸·잘린 글이면 고친다). "
+             f"④ /private/tmp/claude-501/-Users-kwanhyun-jobseeker/7959caac-b8c4-4efc-b38c-a0153fe3f004/scratchpad/gallery/add_post.py 로 갤러리에 더하고(형식 이름: 캐러셀·릴스·카드뉴스·쇼츠, --source 에 인용 출처), "
+             f"/private/tmp/claude-501/-Users-kwanhyun-jobseeker/7959caac-b8c4-4efc-b38c-a0153fe3f004/scratchpad/gallery/index.html 을 Artifact 로 같은 경로에 다시 올린다(files 에 새 파일만) — 사용자가 휴대폰으로 본다. "
+             "⑤ 인스타 계정 연결 전에는 게시·팔로우 같은 계정 행동을 하지 않는다. 빌더를 고쳤으면 design-lab 테스트를 통과시키고 "
+             "feat/fix(design-lab) 로 커밋, 푸시는 하지 않는다. 무엇을 만들었는지 한두 줄로 보고한다.")),
     # 터진 릴스 공부 — 회차마다 처음 보는 100만+ 릴스를 영상 장면·댓글까지 보고 기록, '이럴 땐 이렇게' 를 고친다.
     Loop("insta-reels", "터진 릴스 공부", "claude-loop", "any", "30분마다(세션이 열려 있을 때)", 24,
          "/loop 30m <prompt>", ["design-lab/planning/01-research/reels-study.md", "design-lab/planning/01-research/playbook.md"],
