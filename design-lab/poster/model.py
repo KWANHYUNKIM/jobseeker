@@ -120,6 +120,7 @@ def build_spec(job: dict, *, mark: str = "", palette: str = "") -> PosterSpec:
         preferences=(job.get("preferences") or [])[:2],
         tasks=(job.get("tasks") or [])[:3],
         mark=mark,
-        initial=(company[:1] or "?"),
+        # '(주)솔트룩스' 의 첫 글자 '(' 가 로고 자리에 섰다 — 법인격·기호를 걷고 첫 글자
+        initial=(re.sub(r"^\s*(\(주\)|㈜|주식회사|\(유\))\s*|^\W+", "", company)[:1] or company[:1] or "?"),
         generated_at=datetime.now().strftime("%Y-%m-%d"),
     )

@@ -124,6 +124,10 @@ _DEV_SIGNAL = re.compile(
     r"|풀스택|full[\s-]?stack|android|ios|모바일|인프라|보안|qa|테스트\s*자동화", re.I)
 
 
+_NON_IT_RND = re.compile(r"함정|침수|선체|조선해양|선박\s*설계|배터리\s*셀|소재\s*개발|화학\s*공정|바이오\s*공정")
+_SW_WORD = re.compile(r"소프트웨어|SW|S/W|software|개발자|데이터|\bAI\b|프로그래머|임베디드", re.I)
+
+
 def _not_dev(job: dict) -> bool:
     """IT 직무가 아닌 공고 — 막는 낱말이 있거나, 제목에 개발 신호도 없고 기술 스택도 비었으면.
 
@@ -131,6 +135,9 @@ def _not_dev(job: dict) -> bool:
     직무는 다 통과했다. 개발 신호(제목) 또는 기술 스택 중 하나는 있어야 IT 공고로 본다.
     """
     title = job.get("title") or ""
+    # 조선·소재 같은 IT 밖 연구직 — '함정성능연구' 의 '연구' 가 개발 신호로 잡혔다(한화오션, 2026-10-20)
+    if _NON_IT_RND.search(title) and not _SW_WORD.search(title):
+        return True
     if _DEV_SIGNAL.search(title):
         return False
     if _NOT_DEV.search(title):
@@ -179,6 +186,8 @@ _HEADS = {
 #: 어느 칸에도 있으면 안 되는 머리말 — 전형 절차·안내(42dot 우대사항 칸이 'INTERVIEW PROCESS' 부터 끝까지 이어졌다)
 _STOP = re.compile(r"^(interview\s+process|hiring\s+process|additional\s+information|a\s+message\s+to\b.*|"
                    r"(채용|전형)\s*(절차|프로세스|과정)|(기타|지원)?\s*안내\s*사항)$", re.I)
+#: 제목 머리표가 외국 지명인 현지 채용
+_FOREIGN_TAG = re.compile(r"\s*\[(베트남|중국|미국|인도|싱가포르|대만|필리핀|인도네시아|태국|말레이시아)[^\]]*\]")
 #: 헤드헌팅·서치펌 공고 — 고객사 이름을 숨기고 '유망 … 기업' 으로 쓴다
 _AGENCY = re.compile(r"라인서치|커리어케어|헤드헌팅|헤드헌터|서치펌|고객사|유망\s*\S+(\s*\S+){0,3}\s*기업")
 #: 경력 칸에 지역이 들어간 공고(토스·42dot 의 'Seoul', 'Pangyo …')
@@ -429,6 +438,8 @@ def build(kind: str, *, value: str = "", since: str = "", until: str = "",
     # 본문을 이미지 OCR 로 읽은 공고도 뺀다 — 토스 Data Analyst 판에 'SQL Azle', '46[0106' 이 실렸다(2026-10-20)
     rows = [j for j in rows if not j.get("ocr")]
     rows = [j for j in rows if not _leaked_header(j)]
+    # 외국 현지 채용 — '[베트남] 개발자 채용' 의 머리표를 판이 걷어 내 서울 공고처럼 보였다(솔트룩스, 2026-10-20)
+    rows = [j for j in rows if not _FOREIGN_TAG.match(j.get("title") or "")]
     # 헤드헌팅 공고 — 회사 이름 칸이 서치펌이라 판의 회사·규모가 틀린다(라인서치가 '대기업' 으로 섰다)
     rows = [j for j in rows if not _AGENCY.search(f"{j.get('company', '')} {j.get('title', '')}")]
     # 개발 자리가 아닌 공고를 뺀다(제목 기준)
