@@ -62,7 +62,7 @@ STYLE_FONTS = {
     "brandmag": ["Pretendard", "NanumMyeongjo"],
 }
 #: 원고마다 기본으로 찍을 틀
-DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"], "military": ["magazine"], "region": ["magazine"], "sme": ["magazine"], "fourday": ["magazine"]}
+DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"], "military": ["magazine"], "region": ["magazine"], "sme": ["magazine"], "fourday": ["magazine"], "secneed": ["magazine"]}
 
 
 #: 회사 자산(assets/companies/…)이 없는 기계에서 쓰는 공용 글꼴 — 공식 배포본(OFL), 라이선스는 같은 폴더.
@@ -867,7 +867,82 @@ def build_fourday(today: date | None = None) -> dict:
             "caption": caption}
 
 
-BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan, "military": build_military, "region": build_region, "sme": build_sme, "fourday": build_fourday}
+def build_secneed(today: date | None = None) -> dict:
+    """[카드뉴스] 보안 인력 — 과기정통부·KISIA 2024 사이버보안 인력수급 실태조사(이투데이 2025.4.10: 50인 이상 기업 27,785곳 중
+    91.3% 가 '보안 인력 필요 없다')와, 그래도 지금 보안 직군을 뽑는 국내 회사들. 같은 자리 중복 게시는 하나로."""
+    import psycopg
+    from psycopg.rows import dict_row
+    from .collection import _AGENCY, _FOREIGN_TAG, _not_dev
+    from .series import _role_key
+    today = today or date.today()
+    with psycopg.connect(_dsn(), row_factory=dict_row) as conn:
+        rows = conn.execute("""
+            SELECT f.stacks, c.display_name AS co, j.title, f.company_size AS size, f.career_bucket AS b, j.deadline_on
+              FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
+              JOIN job_facet f ON f.job_id = j.id JOIN company c ON c.id = j.company_id
+             WHERE '보안' = ANY(f.roles) AND coalesce(f.region, '') <> '해외·원격'
+               AND NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = j.id)""").fetchall()
+    rows = [r for r in rows if not _not_dev({"title": r["title"], "stack": r["stacks"] or []})
+            and not _AGENCY.search(r["co"] + r["title"]) and not _NOT_JOB.search(r["title"] + r["co"])
+            and not _FOREIGN_TAG.match(r["title"]) and not (r["deadline_on"] and r["deadline_on"] < today)]
+    uniq = {}
+    for r in rows:
+        uniq.setdefault((_co(r["co"]), _role_key(r["title"])), r)
+    rows = list(uniq.values())
+    n = len(rows)
+    cos = len({_co(r["co"]) for r in rows})
+    big = sum(1 for r in rows if r["size"] == "대기업")
+    entry = sum(1 for r in rows if r["b"] == "신입/무관")
+    picks, seen = [], set()
+    for r in sorted(rows, key=lambda r: ({"대기업": 0, "중견기업": 1}.get(r["size"], 2),
+                                         r["deadline_on"] is None, r["deadline_on"] or today)):
+        c = _co(r["co"])
+        d = (r["deadline_on"] - today).days if r["deadline_on"] else None
+        if c in seen or d == 0:
+            continue
+        seen.add(c)
+        when = f"D-{d}" if d is not None else "상시"
+        picks.append({"co": c, "title": _short(re.sub(r"^\s*\[[^\]]*\]\s*", "", r["title"])),
+                      "meta": f"{r['size'] or ''} · {when}"})
+        if len(picks) == 4:
+            break
+    note = f"JD Viewer 모집중 보안 직군 공고 · 국내 근무 · {today:%Y.%m.%d} · 같은 자리 중복 게시는 하나로 · 직군은 제목·본문으로 가른 것"
+    slides = [
+        {"type": "cover", "photo": "css.jpg", "kicker": f"보안 인력 · {today:%Y.%m.%d}",
+         "big": "91.3", "unit": "%", "title": ["보안 인력 필요 없다는", "기업들, 그런데"],
+         "sub": "50인 이상 민간기업 27,785곳 중 '필요 없다' 고 답한 비율"},
+        {"type": "stat", "photo": "hourglass.jpg", "kicker": "실태조사", "title": "필요하다는 곳은 열에 하나도 안 된다",
+         "items": [{"num": "8.7", "unit": "%", "label": "보안 인력이 필요하다고 답한 기업"},
+                   {"num": "27,785", "unit": "곳", "label": "조사한 50인 이상 민간기업"}],
+         "explain": "과기정통부·한국정보보호산업협회의 2024 사이버보안 인력수급 실태조사다."},
+        {"type": "stat", "photo": "seoul.jpg", "kicker": "공고로 보면", "title": "그래도 지금 뽑는 보안 자리",
+         "items": [{"num": f"{n}", "unit": "개", "label": f"보안 직군 자리 ({cos}개 회사)"},
+                   {"num": f"{entry}", "unit": "개", "label": "신입도 되는 자리"}],
+         "explain": f"대기업이 낸 자리는 {big}개다. 뽑는 곳은 뽑는다 — 회사가 어디냐가 갈린다."},
+        {"type": "picks", "photo": "typing.jpg", "kicker": "눈여겨볼 곳", "title": "지금 보안을 뽑는 곳",
+         "sub": "큰 회사 먼저, 회사마다 한 건", "rows": picks},
+        {"type": "end", "photo": "pangyo.jpg", "kicker": "저장해 두기", "title": "보안 쪽을 준비한다면\n뽑는 회사부터 보자",
+         "lines": ["보안 공부하는 친구에게 보내 주세요", "공고 전체는 프로필 링크에서"]},
+    ]
+    for sl in slides:
+        sl["image"], sl["credit"] = _photo(sl.pop("photo"))
+        sl["note"] = note
+    for i in (0, 1):
+        slides[i]["note"] = "과기정통부·KISIA 2024 사이버보안 인력수급 실태조사 · 이투데이 2025.4.10 보도 요약"
+    caption = "\n\n".join([
+        f"50인 이상 기업 열 곳 중 아홉은 '보안 인력이 필요 없다' 고 답했습니다. 그래도 지금 보안 직군 자리는 {n}개({cos}개 회사) 열려 있어요.",
+        f"· 신입도 되는 자리 {entry}개 · 대기업 자리 {big}개\n· 눈여겨볼 곳: " + " · ".join(p["co"] for p in picks),
+        "이투데이는 과기정통부와 한국정보보호산업협회의 2024 사이버보안 인력수급 실태조사를 인용해, 50인 이상 민간기업 27,785곳 중 "
+        "보안 인력이 필요하다고 답한 곳은 8.7%뿐이었다고 전했습니다.",
+        "출처\nhttps://www.etoday.co.kr/news/view/2460937",
+        f"{today:%Y.%m.%d} JD Viewer 모집중 보안 직군 공고(국내 근무) 기준. 직군은 공고 제목·본문으로 가른 것이고, "
+        "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+    ])
+    return {"id": f"secneed-{today:%Y%m%d}", "series": "[보안 인력]", "title": "보안 인력, 그래도 뽑는 곳", "slides": slides,
+            "caption": caption}
+
+
+BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan, "military": build_military, "region": build_region, "sme": build_sme, "fourday": build_fourday, "secneed": build_secneed}
 
 
 # --- 렌더 ---------------------------------------------------------------
