@@ -68,6 +68,7 @@ THEMES = {
     "contra": {"paper": "#15171d", "ink": "#f4f2ec", "sub": "#9b9fa9", "accent": "#ffd43b", "line": "#2b2f38"},
     "game": {"paper": "#0b0d1a", "ink": "#f2f4ff", "sub": "#9aa0c0", "accent": "#5df2c1", "line": "#232845"},
     "security": {"paper": "#0f1420", "ink": "#f3f4f8", "sub": "#9ba3b4", "accent": "#ff4d5a", "line": "#26304a"},
+    "usvs": {"paper": "#10131a", "ink": "#f1f3f7", "sub": "#9aa1ae", "accent": "#7ee787", "line": "#262b36"},
     "junior": {"paper": "#fff6ec", "ink": "#2a1a0c", "sub": "#77624f", "accent": "#f0620a", "line": "#f0dcc7"},
     "health": {"paper": "#f3f8fb", "ink": "#0f2230", "sub": "#566b7a", "accent": "#0b84c6", "line": "#d4e4ee"},
     "pangyo": {"paper": "#f1f6ee", "ink": "#14241a", "sub": "#5b6d60", "accent": "#1a9e5a", "line": "#d3e2d6"},
@@ -81,7 +82,7 @@ SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", 
           "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]",
           "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]", "balance": "[둘 중 하나]", "tier": "[티어표]",
           "contra": "[공고 원문]", "game": "[게임사 채용]", "security": "[보안 채용]",
-          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]"}
+          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -105,6 +106,7 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "contra": ["채용공고", "신입개발자", "자격요건", "개발자취업", "중고신입"],
         "game": ["게임회사", "게임개발자", "게임스컴", "개발자채용", "게임업계취업"],
         "security": ["정보보안", "보안엔지니어", "보안채용", "개발자채용", "IT취업"],
+        "usvs": ["개발자채용", "AI개발자", "시니어개발자", "채용트렌드", "IT채용"],
         "junior": ["주니어개발자", "신입개발자", "개발자취업", "취업준비", "개발자채용"],
         "health": ["헬스케어", "의료AI", "루닛", "디지털헬스", "개발자채용"],
         "pangyo": ["판교", "판교테크노밸리", "판교개발자", "IT회사", "개발자채용"],
@@ -2159,6 +2161,68 @@ def build_junior() -> dict:
             "reel_lead": "공고가 줄었다는 주니어, 지금 넣을 수 있는 곳 — 저장해 두세요"}
 
 
+_AI_TITLE = re.compile(r"(?<![A-Za-z])AI(?![A-Za-z])|인공지능|LLM|머신\s*러닝|딥\s*러닝|(?<![A-Za-z])ML(?![A-Za-z])|생성형", re.I)
+
+
+def build_usvs() -> dict:
+    """[미국 vs 우리] 쇼츠 — Indeed 미국 소프트웨어 개발 공고(CIO 2026.7.13: 팬데믹 전보다 27.5% 적고, 2025.2 이후 15% 늘었고,
+    늘어난 것의 71% 가 시니어, 37% 가 제목에 AI)를 지금 국내 모집중 IT 공고의 같은 두 잣대(5년 이상 비중·제목에 AI)로 견준다.
+    미국 숫자는 '늘어난 공고 중' 비중이고 우리 숫자는 '지금 열린 공고 중' 비중이라 같은 잣대가 아니다 — 판에 그렇게 적는다."""
+    sys.path.insert(0, str(ROOT / "catch_capture"))
+    from store.db.conn import cursor
+    from .collection import _AGENCY
+    with cursor(autocommit=True) as cur:
+        cur.execute("""SELECT co.display_name AS company, j.title, f.career_bucket
+                         FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
+                         JOIN job_facet f ON f.job_id = j.id JOIN company co ON co.id = j.company_id
+                        WHERE coalesce(f.region, '') <> '해외·원격'
+                          AND NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = j.id)""")
+        rows = [r for r in cur.fetchall() if not _not_dev({"title": r["title"], "stack": ["x"]})
+                and not _AGENCY.search(r["company"] + " " + r["title"])]
+    n = len(rows)
+    c = collections.Counter(r["career_bucket"] for r in rows)
+    order = ["신입/무관", "1-2년", "3-4년", "5-7년", "8년+"]
+    stated = sum(c.get(k, 0) for k in order)
+    senior = c.get("5-7년", 0) + c.get("8년+", 0)
+    ai = sum(1 for r in rows if _AI_TITLE.search(r["title"]))
+    pct = lambda a, b: round(100 * a / b) if b else 0
+    asof = date.today().isoformat()
+    wj = "\u2060"
+    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {n:,}건 · {_dot(asof)} · 경력 비중은 경력 조건을 적은 {stated:,}건 기준"
+    slides = [
+        {"type": "cover", "big": f"{pct(ai, n)}", "big_unit": "%", "lines": ["미국은 AI 자리가 늘었다", "우리 공고는?"],
+         "sub": f"국내 IT 공고 {n:,}건 중 제목에 AI 가 든 {ai:,}건", "note": note},
+        {"type": "table", "title": "미국 개발 공고(Indeed)", "sub": "보도 요약 · 미국 기준", "head": ["무엇", "숫자", ""],
+         "rows": [["팬데믹 전보다", f"−27.5{wj}%", ""], ["2025.2 이후", f"+15{wj}%", ""],
+                  ["늘어난 것 중 시니어", f"71{wj}%", ""], ["늘어난 것 중 제목에 AI", f"37{wj}%", ""]],
+         "hi_col": 1, "note": "CIO 2026.7.13 보도(Indeed Hiring Lab 데이터) 요약"},
+        {"type": "bars", "title": "우리 공고의 경력 조건", "sub": "지금 열린 국내 IT 공고",
+         "rows": [{"label": k.replace("/무관", "·무관"), "value": c.get(k, 0), "display": f"{c.get(k, 0):,}",
+                   "unit": f"{pct(c.get(k, 0), stated)}%", "hi": k in ("5-7년", "8년+")} for k in order], "note": note},
+        {"type": "stat", "title": "5년 이상을 찾는 공고", "num": f"{pct(senior, stated)}", "unit": "%",
+         "label": f"경력 조건을 적은 {stated:,}건 중 {senior:,}건",
+         "explain": f"미국 숫자는 '늘어난 공고' 중 비중이고 이건 '지금 열린 공고' 중 비중이다.\n제목에 AI 가 든 공고는 {ai:,}{wj}건({pct(ai, n)}%).",
+         "note": note},
+        {"type": "end", "title": "저장해 두고", "lines": [
+            f"제목에 AI **{pct(ai, n)}%** · 5년 이상 **{pct(senior, stated)}%**",
+            "경력별 공고 전체는 프로필 링크에서", "이직 고민하는 동료에게 보내 주세요"], "note": note},
+    ]
+    caption = "\n\n".join([
+        f"미국은 개발 공고가 다시 늘고 있고, 늘어난 자리의 37%가 제목에 AI 를 달았습니다. 우리 공고는 {pct(ai, n)}%입니다.",
+        f"· 국내 IT 공고 {n:,}건 중 제목에 AI 가 든 공고 {ai:,}건({pct(ai, n)}%)\n"
+        f"· 경력 조건을 적은 {stated:,}건 중 5년 이상 {senior:,}건({pct(senior, stated)}%), 신입 가능 {c.get('신입/무관', 0):,}건"
+        f"({pct(c.get('신입/무관', 0), stated)}%)",
+        "CIO 는 Indeed 데이터를 인용해 미국 소프트웨어 개발 공고가 팬데믹 이전보다 27.5% 적지만 2025년 2월 이후 15% 늘었고, "
+        "2025년 5월부터 1년 동안 늘어난 공고의 71%가 시니어, 37%가 제목에 AI 를 단 자리였다고 전했습니다.",
+        "미국 숫자는 '늘어난 공고' 중 비중, 우리 숫자는 '지금 열린 공고' 중 비중이라 같은 잣대는 아닙니다.",
+        "출처\nhttps://www.cio.com/article/4195780/",
+        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준.",
+    ])
+    return {"kind": "usvs", "id": f"usvs-{asof.replace('-', '')}", "title": "미국 vs 우리 개발 공고",
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.0,
+            "reel_lead": "미국은 AI 자리가 늘었다, 우리 공고는? — 저장해 두세요"}
+
+
 REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
 
 
@@ -2215,7 +2279,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
                                      "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit",
-                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior"])
+                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
@@ -2261,6 +2325,8 @@ def main() -> int:
         post = build_health()
     elif args.kind == "junior":
         post = build_junior()
+    elif args.kind == "usvs":
+        post = build_usvs()
     elif args.kind in ("pay", "perk", "welcome", "gongchae", "contra"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae, "contra": build_contra}[args.kind]()
