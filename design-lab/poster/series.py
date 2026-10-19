@@ -69,6 +69,7 @@ THEMES = {
     "game": {"paper": "#0b0d1a", "ink": "#f2f4ff", "sub": "#9aa0c0", "accent": "#5df2c1", "line": "#232845"},
     "security": {"paper": "#0f1420", "ink": "#f3f4f8", "sub": "#9ba3b4", "accent": "#ff4d5a", "line": "#26304a"},
     "mobile": {"paper": "#f4f2fd", "ink": "#1a1533", "sub": "#615b7d", "accent": "#7f52ff", "line": "#dfdaf5"},
+    "dotnet": {"paper": "#f5f2fc", "ink": "#1e1238", "sub": "#62567e", "accent": "#512bd4", "line": "#e2dbf3"},
     "nest": {"paper": "#fff5f6", "ink": "#2a0f15", "sub": "#7a5560", "accent": "#e0234e", "line": "#f3dbe0"},
     "search": {"paper": "#0f1720", "ink": "#eef4f8", "sub": "#93a4b3", "accent": "#fec514", "line": "#22303c"},
     "terraform": {"paper": "#f4f1fb", "ink": "#1b1430", "sub": "#5f5778", "accent": "#7b42bc", "line": "#e2dcf1"},
@@ -101,7 +102,7 @@ SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", 
           "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]",
           "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]", "balance": "[둘 중 하나]", "tier": "[티어표]",
           "contra": "[공고 원문]", "game": "[게임사 채용]", "security": "[보안 채용]",
-          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]", "wish": "[희망 초봉 vs 공고]", "robot": "[로봇 채용]", "spring": "[스프링 채용]", "vc": "[투자와 채용]", "agent": "[AI 에이전트 채용]", "lang": "[언어 순위 vs 공고]", "mobile": "[모바일 채용]", "python": "[파이썬 채용]", "node": "[Node.js 채용]", "rust": "[Rust 채용]", "java": "[Java 채용]", "swift": "[Swift 채용]", "docker": "[Docker 채용]", "kafka": "[Kafka 채용]", "terraform": "[Terraform 채용]", "search": "[검색 채용]", "nest": "[NestJS 채용]"}
+          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]", "wish": "[희망 초봉 vs 공고]", "robot": "[로봇 채용]", "spring": "[스프링 채용]", "vc": "[투자와 채용]", "agent": "[AI 에이전트 채용]", "lang": "[언어 순위 vs 공고]", "mobile": "[모바일 채용]", "python": "[파이썬 채용]", "node": "[Node.js 채용]", "rust": "[Rust 채용]", "java": "[Java 채용]", "swift": "[Swift 채용]", "docker": "[Docker 채용]", "kafka": "[Kafka 채용]", "terraform": "[Terraform 채용]", "search": "[검색 채용]", "nest": "[NestJS 채용]", "dotnet": "[.NET 채용]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -126,6 +127,7 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "game": ["게임회사", "게임개발자", "게임스컴", "개발자채용", "게임업계취업"],
         "security": ["정보보안", "보안엔지니어", "보안채용", "개발자채용", "IT취업"],
         "mobile": ["모바일개발자", "안드로이드", "iOS개발자", "Kotlin", "Flutter"],
+        "dotnet": ["닷넷", "CSharp", "백엔드개발자", "신입개발자", "개발자채용"],
         "nest": ["NestJS", "Nodejs", "백엔드개발자", "TypeScript", "개발자채용"],
         "search": ["RAG", "벡터DB", "Elasticsearch", "AI개발자", "개발자채용"],
         "terraform": ["Terraform", "DevOps", "인프라엔지니어", "IaC", "개발자채용"],
@@ -3362,6 +3364,58 @@ def build_nest() -> dict:
             "reel_lead": "NestJS 12.2 나온 날, NestJS 를 적은 자리는 — 저장해 두세요"}
 
 
+def build_dotnet() -> dict:
+    """[.NET 채용] 쇼츠 — .NET 8·9 지원 종료(2026.11.10)와 .NET 11 RC2(10.13, dotnet.microsoft.com 내려받기 페이지)를 계기로,
+    지금 국내 IT 공고 중 .NET 을 적은 자리·같이 적은 기술·신입 문(전체 평균과 견줌)·회사 규모. 같은 자리 중복 게시는 하나로."""
+    today = date.today()
+    rows = _it_rows()
+    total = len(rows)
+    dn = [r for r in rows if ".NET" in (r["stacks"] or [])]
+    n = len(dn)
+    cs = sum(1 for r in rows if "C#" in (r["stacks"] or []))
+    with_ = collections.Counter(x for r in dn for x in set(r["stacks"] or []) if x != ".NET").most_common(5)
+    entry = sum(1 for r in dn if r["career_bucket"] == "신입/무관")
+    all_entry = sum(1 for r in rows if r["career_bucket"] == "신입/무관")
+    sme = sum(1 for r in dn if r["size"] == "중소기업")
+    cos = collections.Counter(_co_name(r["company"]) for r in dn).most_common(3)
+    pct = lambda a, b=n: round(100 * a / b) if b else 0
+    asof = today.isoformat()
+    wj = "\u2060"
+    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    slides = [
+        {"type": "cover", "big": f"{n:,}", "big_unit": "개", "lines": [".NET 8·9 지원 끝나기 3주 전", ".NET 을 적은 자리는"],
+         "sub": f"국내 IT 자리 {total:,}개 중 {pct(n, total)}% · C# 을 적은 자리는 {cs:,}개", "note": note},
+        {"type": "table", "title": ".NET 은 지금", "sub": "dotnet.microsoft.com 내려받기 페이지", "head": ["판", "상태", ""],
+         "rows": [[".NET 11", "RC2 · 2026.10.13", ""], [".NET 10", "LTS · 2028.11.14 까지", ""],
+                  [".NET 9", "2026.11.10 지원 종료", ""], [".NET 8", "2026.11.10 지원 종료", ""]],
+         "hi_col": 1, "note": "dotnet.microsoft.com/download/dotnet"},
+        {"type": "bars", "title": ".NET 과 같이 적은 기술", "sub": f".NET 자리 {n:,}개 중",
+         "rows": [{"label": k, "value": v, "display": f"{v:,}", "unit": f"{pct(v)}%", "hi": i == 0} for i, (k, v) in enumerate(with_)],
+         "note": note},
+        {"type": "stat", "title": "신입 문이 넓은 편", "num": f"{entry}", "unit": "개", "label": f"{n:,}개 중 {pct(entry)}% · 전체 평균 {pct(all_entry, total)}%",
+         "explain": f"중소기업 자리가 {pct(sme)}%(규모를 모르는 회사 포함) · 많이 뽑는 곳: " + " · ".join(f"**{c}**\u00a0{k}{wj}개" for c, k in cos),
+         "note": note},
+        {"type": "end", "title": "저장해 두고", "lines": [
+            f"**.NET** {n:,} · **C#** {cs:,} · 신입 가능 **{entry}**",
+            ".NET 공고 전체는 프로필 링크에서", "C# 공부하는 친구에게 보내 주세요"], "note": note},
+    ]
+    caption = "\n\n".join([
+        f".NET 8 과 9 의 지원이 11월 10일 끝납니다. 지금 국내 IT 자리 {total:,}개 중 .NET 을 적은 자리는 {n:,}개({pct(n, total)}%)이고, "
+        f"신입 가능은 {entry}개({pct(entry)}%)로 전체 평균 {pct(all_entry, total)}%보다 넓습니다.",
+        "· .NET 과 같이 적은 기술: " + " · ".join(f"{k} {v:,}개({pct(v)}%)" for k, v in with_) + "\n"
+        f"· C# 을 적은 자리: {cs:,}개\n"
+        f"· .NET 자리 중 중소기업 {pct(sme)}%(규모를 모르는 회사 포함)\n"
+        "· 많이 뽑는 곳: " + " · ".join(f"{c} {k}개" for c, k in cos),
+        ".NET 내려받기 페이지에 따르면 .NET 11 은 10월 13일 RC2 가 나왔고, .NET 10 은 LTS 로 2028년 11월 14일까지, .NET 9 와 8 은 2026년 11월 10일까지 지원됩니다.",
+        "출처\nhttps://dotnet.microsoft.com/en-us/download/dotnet",
+        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 회사 규모를 알 수 없는 곳은 중소기업으로 셌습니다. "
+        "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+    ])
+    return {"kind": "dotnet", "id": f"dotnet-{asof.replace('-', '')}", "title": ".NET 채용",
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.0,
+            "reel_lead": ".NET 8·9 지원 끝나기 3주 전, .NET 을 적은 자리는 — 저장해 두세요"}
+
+
 REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
 
 
@@ -3418,7 +3472,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
                                      "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit",
-                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud", "paywish", "robot", "spring", "vc", "agent", "lang", "mobile", "python", "node", "rust", "java", "swift", "docker", "kafka", "terraform", "search", "nest"])
+                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud", "paywish", "robot", "spring", "vc", "agent", "lang", "mobile", "python", "node", "rust", "java", "swift", "docker", "kafka", "terraform", "search", "nest", "dotnet"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
@@ -3504,6 +3558,8 @@ def main() -> int:
         post = build_search()
     elif args.kind == "nest":
         post = build_nest()
+    elif args.kind == "dotnet":
+        post = build_dotnet()
     elif args.kind in ("pay", "perk", "welcome", "gongchae", "contra"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae, "contra": build_contra}[args.kind]()
