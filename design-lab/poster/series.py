@@ -68,6 +68,7 @@ THEMES = {
     "contra": {"paper": "#15171d", "ink": "#f4f2ec", "sub": "#9b9fa9", "accent": "#ffd43b", "line": "#2b2f38"},
     "game": {"paper": "#0b0d1a", "ink": "#f2f4ff", "sub": "#9aa0c0", "accent": "#5df2c1", "line": "#232845"},
     "security": {"paper": "#0f1420", "ink": "#f3f4f8", "sub": "#9ba3b4", "accent": "#ff4d5a", "line": "#26304a"},
+    "health": {"paper": "#f3f8fb", "ink": "#0f2230", "sub": "#566b7a", "accent": "#0b84c6", "line": "#d4e4ee"},
     "pangyo": {"paper": "#f1f6ee", "ink": "#14241a", "sub": "#5b6d60", "accent": "#1a9e5a", "line": "#d3e2d6"},
     "mobility": {"paper": "#0a1a2f", "ink": "#f2f6fb", "sub": "#94a7bf", "accent": "#00c2ff", "line": "#1d3352"},
     "aitool": {"paper": "#0d1117", "ink": "#f0f3f6", "sub": "#9198a1", "accent": "#d2a8ff", "line": "#262c36"},
@@ -79,7 +80,7 @@ SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", 
           "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]",
           "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]", "balance": "[둘 중 하나]", "tier": "[티어표]",
           "contra": "[공고 원문]", "game": "[게임사 채용]", "security": "[보안 채용]",
-          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]"}
+          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -103,6 +104,7 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "contra": ["채용공고", "신입개발자", "자격요건", "개발자취업", "중고신입"],
         "game": ["게임회사", "게임개발자", "게임스컴", "개발자채용", "게임업계취업"],
         "security": ["정보보안", "보안엔지니어", "보안채용", "개발자채용", "IT취업"],
+        "health": ["헬스케어", "의료AI", "루닛", "디지털헬스", "개발자채용"],
         "pangyo": ["판교", "판교테크노밸리", "판교개발자", "IT회사", "개발자채용"],
         "mobility": ["모빌리티", "SDV", "현대자동차", "자율주행", "개발자채용"],
         "aitool": ["AI코딩", "ClaudeCode", "Cursor", "개발자채용", "코딩테스트"],
@@ -2025,6 +2027,77 @@ def build_pangyo() -> dict:
             "reel_lead": "8만 3천 명이 일하는 판교, 지금 열린 개발 자리 — 저장해 두세요"}
 
 
+def _role_key(title: str) -> str:
+    """같은 자리를 여러 사이트에 조금씩 다른 제목으로 올린 것을 하나로 — 채용 형태(병역특례·인턴)는 남긴다.
+    넛지헬스케어는 같은 자리를 2~3곳에 올려 47건으로 잡혔다(2026-10-20)."""
+    kind = "병특" if re.search(r"병역|산업기능", title) else "인턴" if "인턴" in title else ""
+    t = re.sub(r"\[[^\]]*\]|\([^)]*\)", " ", title)
+    t = re.sub(r"병역\s*특[례레]|산업기능요원|대상자|모집|채용전환형|인턴|담당|채용|현역|보충역|개발자|개발|[/·\-]", " ", t)
+    return re.sub(r"\s+", "", t).lower() + "|" + kind
+
+
+def build_health() -> dict:
+    """[헬스케어 채용] 쇼츠 — TIME·스태티스타 '세계 최고 헬스테크 기업 2026'(500곳)에 루닛 등 국내 기업이 든 보도
+    (벤처스퀘어)와, 메인의 '바이오·헬스케어' 구역 국내 IT 공고. 같은 자리를 여러 사이트에 올린 것은 하나로 센다."""
+    import urllib.parse
+    import urllib.request
+    base = os.environ.get("VIEWER_API", "http://127.0.0.1:8771")
+    get = lambda path: json.loads(urllib.request.urlopen(base + path, timeout=30).read())
+    cos = [c for c in get(f"/api/home?industry={urllib.parse.quote('바이오·헬스케어')}&limit=200")["companies"]
+           if c["size"] != "해외 기업"]
+    per, raw = {}, 0
+    for c in cos:
+        roles = {}
+        for j in get(f"/api/home/company/{c['slug']}")["jobs"]:
+            if _not_dev({"title": j["title"], "stack": j.get("stacks") or []}):
+                continue
+            raw += 1
+            roles.setdefault(_role_key(j["title"]), j.get("career_bucket"))
+        if roles:
+            per[c["name"]] = roles
+    total = sum(len(v) for v in per.values())
+    entry = sum(1 for v in per.values() for b in v.values() if b == "신입/무관")
+    top = sorted(per.items(), key=lambda kv: -len(kv[1]))[:6]
+    name = lambda n: re.sub(r"에이아이$", "AI", _co_name(n))   # 막대 이름 칸에 '바이오리서치에이아이' 가 잘렸다
+    lunit = next((len(v) for n, v in per.items() if "루닛" in n), 0)
+    asof = date.today().isoformat()
+    wj = "\u2060"
+    note = (f"JD Viewer 모집중 IT 공고 · 국내 바이오·헬스케어 {len(per)}곳 · {_dot(asof)} · 같은 자리 중복 게시는 하나로 · "
+            "업종은 회사 이름으로 가른 추정")
+    slides = [
+        {"type": "cover", "big": f"{total}", "big_unit": "개", "lines": ["세계가 꼽은 헬스테크", "국내에서 뽑는 개발 자리"],
+         "sub": f"국내 바이오·헬스케어 {len(per)}곳의 모집중 IT 자리", "note": note},
+        {"type": "table", "title": "TIME 이 꼽은 한국 헬스테크", "sub": "보도는 요약, 원문은 캡션의 링크",
+         "head": ["회사", "분야", "지금 공고"],
+         "rows": [["루닛", "진단", f"{lunit}{wj}개" if lunit else "—"],
+                  ["스카이랩스", "의료기기·웨어러블", "—"],
+                  ["우리 공고", "바이오·헬스케어", f"{total}{wj}개"]],
+         "hi_col": 2, "note": "TIME·스태티스타 세계 최고 헬스테크 기업 2026(500곳) · 벤처스퀘어 2026.9.18·9.21 보도 · —는 우리 공고 없음"},
+        {"type": "bars", "title": "많이 뽑는 곳", "sub": "회사별 모집중 IT 자리(중복 게시는 하나로)",
+         "rows": [{"label": name(n), "value": len(v), "display": f"{len(v)}", "unit": "개", "hi": i == 0}
+                  for i, (n, v) in enumerate(top)], "note": note},
+        {"type": "stat", "title": "신입도 되는 자리", "num": f"{entry}", "unit": "개",
+         "label": f"{total}개 중 {round(100 * entry / total) if total else 0}%",
+         "explain": f"사이트마다 따로 센 공고는 {raw}{wj}건이었다.\n같은 자리를 여러 곳에 올린 것을 하나로 묶으면 {total}{wj}개.",
+         "note": note},
+        {"type": "end", "title": "저장해 두고", "lines": [
+            " · ".join(f"**{name(n)}** {len(v)}개" for n, v in top[:3]),
+            "회사별 공고 전체는 프로필 링크에서", "의료·헬스케어 쪽 가고 싶은 친구에게 보내 주세요"], "note": note},
+    ]
+    caption = "\n\n".join([
+        f"TIME 이 꼽은 세계 최고 헬스테크 기업에 루닛이 들었습니다. 그럼 국내 바이오·헬스케어 회사는 지금 개발자를 얼마나 뽑을까요?",
+        f"· 국내 바이오·헬스케어 {len(per)}곳의 모집중 IT 자리 {total}개(같은 자리를 여러 사이트에 올린 것은 하나로)\n"
+        f"· 신입도 되는 자리 {entry}개\n· 많이 뽑는 곳: " + " · ".join(f"{name(n)} {len(v)}개" for n, v in top[:5]),
+        "벤처스퀘어는 TIME 과 스태티스타가 30여 개국 500개 기업을 꼽은 '세계 최고 헬스테크 기업 2026'에 루닛이 진단 분야로 "
+        "선정됐다고 전했습니다. 의료기기·웨어러블 분야에는 스카이랩스가 한국 기업으로 유일하게 들었습니다.",
+        "출처\nhttps://www.venturesquare.net/1115045/\nhttps://www.venturesquare.net/1115416/",
+        f"{_dot(asof)} JD Viewer 모집중 공고 기준. 업종은 회사 이름으로 가른 추정이고, 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+    ])
+    return {"kind": "health", "id": f"health-{asof.replace('-', '')}", "title": "헬스케어 채용",
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 1.8,
+            "reel_lead": "TIME 이 꼽은 헬스테크, 국내에서 뽑는 개발 자리 — 저장해 두세요"}
+
+
 REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
 
 
@@ -2081,7 +2154,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
                                      "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit",
-                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo"])
+                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
@@ -2123,6 +2196,8 @@ def main() -> int:
         post = build_mobility()
     elif args.kind == "pangyo":
         post = build_pangyo()
+    elif args.kind == "health":
+        post = build_health()
     elif args.kind in ("pay", "perk", "welcome", "gongchae", "contra"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae, "contra": build_contra}[args.kind]()
