@@ -560,7 +560,8 @@ _HEADER_PATTERNS: list[tuple[str, re.Pattern]] = [(k, re.compile(rx, re.I)) for 
                        r"requirements|qualifications|must[- ]haves?|^you\s+have|^about\s+you|who\s+you\s+are|"
                        r"what\s+(you|we)('|’)?\s*(ll\s+)?(bring|need|look\s+for|re\s+looking\s+for|are\s+looking\s+for)|"
                        r"you('|’)?ll\s+(bring|need)|your\s+(background|experience|skills|profile)|"
-                       r"to\s+be\s+successful|kind\s+of\s+(person|builder)"),
+                       r"to\s+be\s+successful|kind\s+of\s+(person|builder)|^required(\s+(skills|experience|qualifications))?$|"
+                       r"^(basic|minimum)\s+qualifications|what\s+you\s+need|skills\s*(&|and)\s*experience"),
     ("main_tasks", r"주요\s*업무|담당\s*업무|업무\s*내용|수행\s*업무|직무\s*(내용|소개)|역할과\s*책임|"
                    r"이런\s*(업무|일)|합류하면.*(업무|일)|함께\s*할\s*업무|하게\s*될\s*(업무|일)|담당하게|담당합니다|"
                    r"업무를\s*해요|하는\s*일|"
