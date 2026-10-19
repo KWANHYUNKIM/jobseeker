@@ -23,6 +23,7 @@ import argparse
 import ast
 import collections
 import json
+import os
 import re
 import shutil
 import socket
@@ -1541,6 +1542,78 @@ def build_kit_history(fmt: str = "feed") -> dict:
 
 
 # --- 찍기 · 승인 ---------------------------------------------------------
+def _api_facets(**q) -> dict:
+    """뷰어 API(정본 DB) 의 칩 건수 — 메인·잡 리스트와 같은 숫자. 색인 파일이 아니라 DB 를 읽는 순간의 값."""
+    import urllib.parse
+    import urllib.request
+    qs = urllib.parse.urlencode({"limit": 1, **q})
+    with urllib.request.urlopen(f"{os.environ.get('VIEWER_API', 'http://127.0.0.1:8771')}/api/jobs?{qs}", timeout=30) as r:
+        d = json.loads(r.read())
+    return {"total": d["total"], "career": d["facets"]["careerCount"],
+            "roles": {x["name"]: x["count"] for x in d["facets"]["roles"]}}
+
+
+def _share_words(p: int) -> str:
+    """비율을 말로 — 실제 값에 가까울 때만 'N 중 하나' 를 쓴다(36% 를 '절반' 이라 부르지 않게)."""
+    for n, word in ((2, "둘"), (3, "셋"), (4, "넷"), (5, "다섯")):
+        if abs(p - 100 / n) <= 4:
+            return f"{word} 중 하나는"
+    return f"{p}%가"
+
+
+def build_ai_entry() -> dict:
+    """[데이터로 본 채용] 신입 자리와 AI — 바깥 보도(신입 감소·AI 역량 요구)를 우리 모집중 공고로 확인한다.
+    바깥 숫자는 출처를 판에 적고 원문을 옮기지 않는다. 우리 숫자는 만들 때 API 에서 다시 센다."""
+    every, ai = _api_facets(), _api_facets(role="AI/ML")
+    asof = date.today().isoformat()
+    c = every["career"]
+    order = ["신입/무관", "1-2년", "3-4년", "5-7년", "8년+"]
+    stated = sum(c.get(k, 0) for k in order)
+    entry, ai_entry = c.get("신입/무관", 0), ai["career"].get("신입/무관", 0)
+    senior = sum(c.get(k, 0) for k in ("3-4년", "5-7년", "8년+"))
+    pct = lambda a, b: round(100 * a / b) if b else 0
+    note = (f"모집중 공고 {every['total']:,}건(해외 포함) · 경력 조건을 적은 {stated:,}건 기준 · {_dot(asof)} · "
+            "AI/ML 은 제목·본문으로 가른 직군")
+    src = "바깥 숫자: SPRi 보고서(잡플래닛 2026.9 인용) · 트위그 2026.1 보도(2024년 기준)"
+    slides = [
+        {"type": "cover", "big": f"{pct(ai_entry, entry)}", "big_unit": "%",
+         "lines": ["신입 공고", _share_words(pct(ai_entry, entry)) + " AI 자리"],
+         "sub": f"신입도 되는 공고 {entry:,}건 중 {ai_entry:,}건", "note": note},
+        {"type": "bars", "title": "경력 조건별 공고 수", "sub": "경력 조건을 적은 공고만",
+         "rows": [{"label": k.replace("/무관", "·무관"), "value": c.get(k, 0), "display": f"{c.get(k, 0):,}",
+                   "unit": f"{pct(c.get(k, 0), stated)}%", "hi": k == "신입/무관"} for k in order], "note": note},
+        {"type": "stat", "title": "경력 3년 이상을 요구하는 공고", "num": f"{pct(senior, stated)}", "unit": "%",
+         "label": f"경력 조건을 적은 {stated:,}건 중 {senior:,}건",
+         "explain": f"신입이 지원할 수 있는 곳은 **{pct(entry, stated)}%** 다. 그 신입 자리의 **{pct(ai_entry, entry)}%** 가 AI/ML 쪽이다.",
+         "note": note},
+        {"type": "table", "title": "밖에서 본 숫자와 우리 공고", "sub": "보도는 요약, 원문은 캡션의 링크",
+         "head": ["어디서", "무엇", "숫자"],
+         "rows": [["SPRi", "국내 SW 인력 1년 증가", "+0.2%"],
+                  ["트위그", "3년 미만 개발자", "−9천 명"],
+                  ["트위그", "3년 이상 개발자", "+4.2만 명"],
+                  ["우리 공고", "신입 가능 비율", f"{pct(entry, stated)}%"],
+                  ["우리 공고", "신입 자리 중 AI/ML", f"{pct(ai_entry, entry)}%"]],
+         "hi_col": 2, "note": src},
+        {"type": "end", "title": "신입이라면", "lines": [
+            f"신입 자리는 **{entry:,}곳** — 줄었지만 없지 않다",
+            f"그중 **{ai_entry:,}곳**이 AI/ML — 프로젝트에 AI 를 써 본 흔적을 남기자",
+            "저장해 두고 지원할 때 다시 보세요"], "note": note},
+    ]
+    caption = "\n\n".join([
+        f"신입 공고 {_share_words(pct(ai_entry, entry))} AI 자리 — 모집중 {every['total']:,}건으로 확인했습니다.",
+        f"· 경력 조건을 적은 {stated:,}건 중 신입 가능 {entry:,}건({pct(entry, stated)}%)\n"
+        f"· 경력 3년 이상 요구 {senior:,}건({pct(senior, stated)}%)\n"
+        f"· 신입 자리 중 AI/ML {ai_entry:,}건({pct(ai_entry, entry)}%)",
+        "밖에서 나온 숫자도 같은 쪽을 가리킵니다 — 국내 SW 인력은 1년에 0.2% 느는 데 그쳤고(SPRi, 잡플래닛 인용), "
+        "3년 미만 개발자는 9천 명 줄고 3년 이상은 4만 2천 명 늘었습니다(트위그).",
+        "출처\nhttps://www.jobplanet.co.kr/contents/news-8452\nhttps://www.twig24.com/news/2026/01/07/20260107014003",
+        f"{_dot(asof)} 우리 사이트(JD Viewer) 모집중 공고 기준. 전체 목록은 프로필 링크에서.",
+    ])
+    return {"kind": "insight", "id": f"insight-ai-entry-{asof.replace('-', '')}", "title": "신입 공고와 AI",
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 3.0,
+            "reel_lead": f"신입 공고 {_share_words(pct(ai_entry, entry))} AI 자리였다 — 저장해 두고 지원할 때 보세요"}
+
+
 REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
 
 
@@ -1597,7 +1670,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
                                      "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit",
-                                     "contra"])
+                                     "contra", "ai-entry"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
@@ -1625,6 +1698,8 @@ def main() -> int:
     elif args.kind == "kit":
         post = (build_kit_history("reel" if args.reel else "story" if args.story else "feed")
                 if args.company == "history" else build_welcomekit())
+    elif args.kind == "ai-entry":
+        post = build_ai_entry()
     elif args.kind in ("pay", "perk", "welcome", "gongchae", "contra"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae, "contra": build_contra}[args.kind]()
