@@ -377,6 +377,16 @@ class InstagramCarouselTest(unittest.TestCase):
         self.assertEqual([s["step"] for s in res.steps],
                          ["create_items", "create_carousel", "publish_media"])
 
+class SameRoleTest(unittest.TestCase):
+    def test_affiliates_posting_one_role(self):
+        from poster.collection import _same_role
+        # 그룹과 계열사가 같은 자리를 따로 올린 것
+        self.assertTrue(_same_role("드론사업단_드론 지상통제 SW 개발", "경력사원 대규모 - 드론 지상통제 SW 개발"))
+        # 한 낱말만 겹치는 다른 자리
+        self.assertFalse(_same_role("Backend Developer", "Frontend Developer"))
+        self.assertFalse(_same_role("Server Developer", "DevOps Engineer"))
+
 
 if __name__ == "__main__":
     unittest.main()
+

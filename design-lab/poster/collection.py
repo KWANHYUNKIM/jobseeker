@@ -423,6 +423,14 @@ def _group(company: str) -> str:
     return next((g for g in _GROUPS if c.startswith(g)), c)
 
 
+def _same_role(a: str, b: str) -> bool:
+    """두 제목이 같은 자리인가 — 낱말이 셋 이상 겹치고, 짧은 쪽 낱말의 60% 이상이 겹치면 같다고 본다.
+    ('Backend Developer' 와 'Frontend Developer' 는 한 낱말만 겹쳐 다르다)"""
+    wa, wb = (set(re.findall(r"[0-9A-Za-z가-힣]+", x.lower())) for x in (a, b))
+    common = len(wa & wb)
+    return common >= 3 and common >= 0.6 * min(len(wa), len(wb))
+
+
 def _posted() -> dict:
     """이미 내보냈거나 내보내기로 한 공고 {키: 행}. publish 쪽 원장을 읽는다."""
     from publish.posted import posted
@@ -536,8 +544,14 @@ def build(kind: str, *, value: str = "", since: str = "", until: str = "",
     # 올린 공고(토스 Node.js Developer)를 한 장만 싣는다.
     once = (lambda j: re.sub(r"\W+", "", _role(j)).lower()) if kind == "company" else (lambda j: _core(j["company"]))
     per_group: dict[str, int] = {}
+    group_roles: dict[str, list[str]] = {}
     for j in rows:
         if once(j) in seen:
+            continue
+        # 같은 그룹이 같은 자리를 계열사 이름으로 한 번 더 올린 것('한화그룹 드론사업단_드론 지상통제 SW 개발' 과
+        # '한화에어로스페이스 경력사원 대규모 - 드론 지상통제 SW 개발')은 한 장만
+        rk = _role(j)
+        if kind != "company" and any(_same_role(rk, o) for o in group_roles.get(_group(j["company"]), [])):
             continue
         if kind != "company" and per_group.get(_group(j["company"]), 0) >= GROUP_CAP:
             continue
@@ -557,6 +571,7 @@ def build(kind: str, *, value: str = "", since: str = "", until: str = "",
         seen.add(once(j))
         if kind != "company":
             per_group[_group(j["company"])] = per_group.get(_group(j["company"]), 0) + 1
+            group_roles.setdefault(_group(j["company"]), []).append(rk)
         picked.append(j)
         if len(picked) >= limit + SPARES:
             break
