@@ -20,12 +20,21 @@ INDEX = LAB_DIR / "state" / "jobs_index.json"
 #   5 → 6: 지역에서 '지도보기·주소복사' 를 걷어낸다
 #   6 → 7: 칸 글에서 마크다운 '**' 를 걷어낸다
 #   7 → 8: 'ㆍ' 머리표를 걷는다(판에 '■ ㆍ임무계획' 처럼 두 겹으로 찍혔다)
-SCHEMA = 8
+SCHEMA = 9
 
 # 불릿으로 쓸 수 있는 줄머리들. 사이트마다 제각각이라 넉넉히 받는다.
 _BULLET = re.compile(r"^\s*(?:[*\-•·ㆍ・‧∙▶▪◆■□○●]|└|\d+[.)])\s*")   # ㆍ(U+318D)는 한글 공고의 흔한 머리표
 _NOISE = re.compile(r"^\s*[#=\-]{2,}\s*$")
 
+
+
+def _career(job: dict) -> str:
+    """경력 칸. 공고 제목을 통째로 붙여 온 사이트가 있다('AI Platform 추론 최적화 Engineer(경력)', 카카오
+    2026-10-20) — 제목을 떼고 괄호 안 경력만 남긴다."""
+    c, t = (job.get("career") or "").strip(), (job.get("title") or "").strip()
+    if t and len(t) >= 6 and t in c:
+        c = c.replace(t, "").strip(" ()·-")
+    return c
 
 def _bullets(text: str, limit: int) -> list[str]:
     """긴 문단에서 '읽을 수 있는 한 줄'만 골라낸다."""
@@ -155,7 +164,7 @@ def _slim(job: dict) -> dict | None:
         "company": (job.get("company") or "").strip(),
         "title": (job.get("title") or "").strip(),
         "url": job.get("url") or "",
-        "career": (job.get("career") or "").strip(),
+        "career": _career(job),
         # 사이트 화면 글자('지도보기·주소복사')가 지역에 붙어 온 공고가 있다(스콥정보통신, 2026-10-20)
         "location": re.sub(r"[\s·|]*(지도\s*보기|주소\s*복사)[\s·|]*", " ", job.get("location") or "").strip(" ·|"),
         "stack": [t for t in (job.get("tech_stack") or []) if t][:10],
