@@ -56,7 +56,16 @@
         "what": "브랜드 필름 '함께 사는 방법' 애니메이션 장면",
         "why_not": "사람·캐릭터가 중심이라 쓸 수 없고, 한 장 공고에서는 본문 자리를 너무 먹는다"
       }
-    ]
+    ],
+    "medium": {
+      "ground": "heart",
+      "text_load": "one-word",
+      "hand": "tone-on-tone",
+      "dominant": "판 전체를 덮는 초록 하트 하나(#3FBB68) — 그 안에 기울여 잘린 한 단어(밝은 초록 #6DD270)",
+      "why": "당근 하트는 '하트 안에 굵은 한 단어'다(브랜드 사이트의 '함께', BI 영상의 '나와'·'이웃이'). 단어가 하트를 꽉 채우고 가장자리에서 잘려야 그 그래픽이 되므로 글은 한 단어뿐이고, 글자는 하트와 같은 초록의 밝은 톤으로 얹힌다(톤 온 톤). v1 처럼 하트를 귀퉁이에 두고 전문을 싣으면 시그니처가 장식이 된다 — 표지는 하트가 판 전체, 전문은 다음 장(full).",
+      "chosen_at": "2026-10-19"
+    },
+    "how_used_v2": "표지(v2, 2026-10-19): 흰 바탕(사이트 그 칸) 위에 하트 하나를 판 폭의 110% 로 — 왼쪽 볼록·오른쪽·위가 판 밖으로 잘린다. 사이트 '함께' 자리에 공고 제목 괄호 속 팀 이름의 첫 낱말(jobkorea-49225067 은 'Identity')을 -24° 로 기울여 하트 폭 86% 크기로. 공고 제목 전체·경력·기술은 하트 아래 흰 띠에 판 폭 두 줄로 읽히는 크기로, 출처 줄에 '공고 제목 「…」 중에서'. 본문은 v1 판 그대로 full 갈래."
   },
   "points": [
     {
@@ -231,12 +240,14 @@
   "images": {
     "heart": "assets/companies/당근/v1/heart_shape.png",
     "field_green_pink": "assets/companies/당근/v1/field_green_pink.png",
-    "field_yellow": "assets/companies/당근/v1/field_yellow.png"
+    "field_yellow": "assets/companies/당근/v1/field_yellow.png",
+    "heart_big": "assets/companies/당근/v2/heart_mask.png"
   },
   "images_note": {
     "heart": "brandnew.daangn.com 모바일 캡처(scroll_12.png, 2x) 의 '함께' 초록 하트 영역에서 #3FBB68·#6DD270 픽셀만 골라 실루엣 마스크로 뜸(손으로 그리지 않음). 판에서는 CSS mask 로 하트 모양 상자를 만든다. 당근 로고 구성요소(잎)에서 온 모양 — 공개 게시 전 사용 허락 확인",
     "field_green_pink": "brandnew.daangn.com /static/.../mobile.webp (1312×1760) 의 (420,0)-(1312,640) 영역에서 연두 하트 #A5E999·겹침 그늘 #8DE086·분홍 #FFABEE 픽셀만 크림 바탕을 빼고 알파로 떠냄(모양·색 원본 그대로, 원본 가장자리에서 잘린 분홍은 판 모서리 밖으로 내보냄). 공개 게시 전 사용 허락 확인",
-    "field_yellow": "같은 mobile.webp (0,830)-(440,1560) 노랑 하트 #FFF2AB 를 같은 방법으로. 원본 왼쪽 가장자리에서 잘린 쪽을 판 왼쪽 밖으로. 공개 게시 전 사용 허락 확인"
+    "field_yellow": "같은 mobile.webp (0,830)-(440,1560) 노랑 하트 #FFF2AB 를 같은 방법으로. 원본 왼쪽 가장자리에서 잘린 쪽을 판 왼쪽 밖으로. 공개 게시 전 사용 허락 확인",
+    "heart_big": "brandnew.daangn.com 모바일 캡처 sources/02_brandnew_site/scroll_12.png(860×1800, 2x)의 (20,585)-(840,1295) — 초록 하트 #3FBB68 와 그 안 글자 #6DD270 — 에서 흰 바탕과의 거리로 알파를 떠 3배 키움 → 가우스 흐림 4px → 128 문턱 → 1891px 폭으로 줄여 가장자리만 매끈하게 한 마스크(1891×1645). 모양은 원본 그대로, 손으로 그리지 않음. v1/heart_shape.png 는 아래·위가 평평하게 잘려 있어(판 폭 크기로 키우면 직선이 보인다) 다시 떴다. 당근 로고 구성요소(잎)에서 온 모양 — 공개 게시 전 사용 허락 확인"
   },
   "sources": [
     "https://brandnew.daangn.com/",

@@ -1,7 +1,13 @@
-<!-- brand_daangn — 당근(당근서비스) 전용 판 v1. brands/당근.json 의 signature 를 판의 얼굴로 쓴다.
+<!-- brand_daangn — 당근 전용 판 v2(2026-10-19, brand-poster 스킬).
+     갈래: 기본 = 표지 — 판 전체가 당근 하트 하나(매체 heart / one-word / tone-on-tone).
+              브랜드 사이트(brandnew.daangn.com)가 초록 하트 #3FBB68 안에 '함께' 를 밝은 초록 #6DD270 으로 기울여
+              가장자리가 잘리게 채운 그 방식 그대로, 그 자리에 공고 제목의 한 단어(괄호 속 팀 이름의 첫 낱말).
+              하트 모양은 사이트 캡처 scroll_12.png 픽셀에서 다시 뜬 마스크(v2/heart_mask.png — v1 실루엣은 아래가 평평하게 잘려 있었다, 다시 그리지 않음).
+           full* = 본문 — v1 의 전문 판 그대로. full-a = 주요업무·자격요건, full-b = 우대사항·복지(post.py 가 18px 아래면 부른다).
+     v1 은 하트가 귀퉁이 장식이고 판 대부분이 파스텔 상자 전문이었다(flat/full/print — 아홉 곳과 같은 판).
+     --- 아래는 v1 설명(본문 갈래) ---
+     brand_daangn v1. brands/당근.json 의 signature 를 판의 얼굴로 쓴다.
      signature  carrot-heart-word  로고의 초록 잎을 떼어 키운 '당근 하트' 안에 한 단어를 밝은 초록으로 기울여 꽉 채운다.
-                                   브랜드 사이트의 '함께' 자리에 공고 경력의 '3년'. 원문 경력은 옆에 따로 읽히게.
-                                   하트 실루엣은 사이트 캡처 픽셀에서 뜬 마스크(D.brand_images.heart).
      supporting pastel-heart-field 원본 mobile.webp 파스텔 하트 구름 — 머리 뒤 가장자리에만
                 rounded-tint-cards 사이트 서비스 소개의 크게 둥근 파스텔 카드 — 섹션마다 한 색
      안 쓰는 것: 주황 핀·로고타입·캐릭터 당근이·매너온도 UI·'당근이세요?'
@@ -52,6 +58,20 @@
   .apply .lab{font-size:calc(2*var(--u));font-weight:600;color:var(--sub)}
   .apply .url{margin-top:calc(.3*var(--u));font-size:calc(2.6*var(--u));font-weight:800;color:var(--ink)}
   .apply .url i{font-style:normal;color:var(--accent);margin-left:calc(.7*var(--u))}
+  /* 표지 — 판 전체가 하트 하나. 바탕은 사이트 그 칸의 흰색 */
+  .sheet.cover{background:#fff}
+  .cover .big{position:absolute;z-index:1;left:calc(var(--BL)*var(--u));top:calc(var(--BT)*var(--u));width:calc(var(--BW)*var(--u));aspect-ratio:1891/1645;background:var(--heart);
+    -webkit-mask:var(--big-mask) center/100% 100% no-repeat;mask:var(--big-mask) center/100% 100% no-repeat;overflow:hidden}
+  .cover .big b{position:absolute;left:var(--WX);top:var(--WY);transform:translate(-50%,-50%) rotate(calc(1deg*var(--rot)));transform-origin:center;
+    font-size:var(--WS);font-weight:800;letter-spacing:-.045em;line-height:1;color:var(--heart-word);white-space:nowrap}
+  .cover .co{position:absolute;z-index:2;left:calc(5*var(--u));top:calc(4.4*var(--u));font-size:calc(2.6*var(--u));font-weight:800;color:var(--accent);letter-spacing:-.01em}
+  .cover .ttl{position:absolute;z-index:2;left:calc(5*var(--u));right:calc(5*var(--u));bottom:calc(10.5*var(--u));color:var(--ink)}
+  .cover .ttl h1{font-size:var(--T);font-weight:800;letter-spacing:-.03em;line-height:1.12;text-wrap:pretty}
+  .cover .ttl .car{margin-top:calc(1.4*var(--u));font-size:calc(2.6*var(--u));font-weight:700;color:var(--sub)}
+  .cover .ttl .car b{color:var(--ink);font-weight:800}
+  .cover .foot{position:absolute;z-index:2;left:calc(5*var(--u));right:calc(5*var(--u));bottom:calc(3.4*var(--u));display:flex;align-items:flex-end;justify-content:space-between;gap:calc(2*var(--u))}
+  .cover .src{font-size:calc(1.45*var(--u));font-weight:500;color:var(--sub);line-height:1.4;white-space:pre-line}
+  .cover .apply{flex:none;text-align:right;white-space:nowrap}
 </style>
 <div id="root"></div>
 <script id="data" type="application/json">/*__DATA__*/</script>
@@ -71,6 +91,7 @@
   // 섹션 → 카드. 카드 안은 조각(소제목 ✔ / [대괄호] 또는 줄) 단위로 나눠 두고, 단 나누기는 조각 사이 어디서든 한다
   const cards = [];
   const addCard = (title, lines) => {
+    if (!lines || !lines.length) return;
     const card = { title, tint: tints[title] || '#ffffff', rows: [] };
     for (const raw of lines) {
       const t = typeof raw === 'string' ? raw : raw.text;
@@ -81,10 +102,10 @@
     }
     cards.push(card);
   };
-  addCard('주요업무', S.tasks.flatMap(g => g.items));
-  addCard('자격요건', S.qualifications);
-  addCard('우대사항', S.preferences);
-  addCard('복지 / 혜택', S.benefits);
+  const VV = (D.variant || '').trim();
+  const half = VV.endsWith('-a') ? 'a' : VV.endsWith('-b') ? 'b' : '';   // full-a = 주요업무·자격요건 / full-b = 우대사항·복지
+  if (half !== 'b') { addCard('주요업무', S.tasks.flatMap(g => g.items)); addCard('자격요건', S.qualifications); }
+  if (half !== 'a') { addCard('우대사항', S.preferences); addCard('복지 / 혜택', S.benefits); }
   // 흐름 = [카드i, 줄j] 목록. 소제목 바로 뒤에서는 끊지 않는다
   const flow = [];
   cards.forEach((c, i) => c.rows.forEach((r, j) => flow.push({ i, j })));
@@ -97,12 +118,51 @@
   }
 
   const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+  const V = (D.variant || '').trim();
+  const title = D.title || D.role;
+  // 한 단어 — 공고 제목 안의 단어 그대로. 괄호 속 팀 이름(예: Identity Service)의 첫 낱말
+  const WORD = ((title.match(/\(([^)]+)\)\s*$/) || [])[1] || title).trim().split(/\s+/)[0];
+
+  // 갈래 — 기본은 표지, 'full' 로 시작하면 본문(전문). 표지와 본문을 나눈다(brand-poster 4단계)
+  if (!V.startsWith('full')) {
+    sheet.classList.add('cover');
+    if (IMG.heart_big || IMG.heart) F.set('big-mask', `url(${IMG.heart_big || IMG.heart})`);
+    F.set('BL', -8); F.set('BT', -2); F.set('BW', 110); F.set('rot', -24); F.set('WX', '51%'); F.set('WY', '51%');
+    const big = el('div', 'big'); const bw = el('b', '', WORD); big.append(bw); sheet.append(big);
+    sheet.append(el('div', 'co', D.company));
+    const ttl = el('div', 'ttl'); const h1 = el('h1', '', title); ttl.append(h1);
+    const car = el('div', 'car'); car.append(el('b', '', D.meta[0] || D.career || ''));
+    if (D.stack.length) car.append(document.createTextNode('  ·  ' + [...new Set(D.stack)].join(' · ')));
+    ttl.append(car); sheet.append(ttl);
+    const foot = el('div', 'foot');
+    foot.append(el('div', 'src', `‘${WORD}’ — 공고 제목 「${title}」 중에서\n하트: 당근 브랜드 사이트 brandnew.daangn.com 의 ‘함께’ 하트 모양 그대로 · 넘기면 공고 전문`));
+    foot.append(el('div', 'apply')); sheet.append(foot);   // .apply 는 Frame.period 가 마감을 넣는 자리
+    // 한 단어 — 하트 폭 안에서 가장 크게(사이트처럼 가장자리는 조금 잘려도 된다)
+    const hw = big.clientWidth;
+    let WS = 10;
+    for (const t of [30, 28, 26, 24, 22, 20, 18, 16, 14, 12, 10]) {
+      F.set('WS', `calc(${t}*var(--u))`);
+      if (bw.scrollWidth <= hw * 0.86) { WS = t; break; }
+    }
+    // 제목 — 하트 아래 흰 띠에 두 줄 이내로
+    let T = 3.6;
+    for (const t of [5.6, 5.2, 4.8, 4.4, 4, 3.6]) {
+      F.set('T', `calc(${t}*var(--u))`);
+      const fs = parseFloat(getComputedStyle(h1).fontSize);
+      if (h1.clientHeight <= fs * 1.12 * 2 + 2 && h1.scrollWidth <= h1.clientWidth + 1) { T = t; break; }
+    }
+    Frame.period(F);
+    window.__layout = { variant: 'cover', columns: 1, word: WORD, word_u: WS, title_u: T,
+                        font_px: Math.round(parseFloat(getComputedStyle(h1).fontSize)) };
+    window.__paged = true;
+    return;
+  }
   for (const [k, cls] of [['field_green_pink', 'gp'], ['field_yellow', 'yl']])
     if (IMG[k]) { const im = el('img', 'field ' + cls); im.src = IMG[k]; im.alt = ''; sheet.append(im); }
 
   const header = el('header');
   const info = el('div', 'info');
-  info.append(el('div', 'who', B.wordmark || D.company));
+  info.append(el('div', 'who', D.company || B.wordmark));
   const h1 = el('h1');
   h1.textContent = D.title || D.role;
   info.append(h1);
@@ -146,10 +206,13 @@
     for (const H of [25, 23])
       for (const ratio of [1, 1.12, 0.9])
         for (const k of breaks.filter(n => n > flow.length * .3 && n < flow.length * .62)) cands.push({ T, H, ratio, k, columns: 2 });
+  // 전문이 없거나 짧아 끊을 자리가 없으면 한 단으로 — 후보가 비면 fit 이 멈춘다
+  if (!cands.length) for (const H of [25, 23]) cands.push({ T: 5.2, H, ratio: 1, k: flow.length, columns: 1 });
   Frame.fit(F, cands, c => {
     F.set('T', c.T); F.set('H', `calc(${c.H}*var(--u))`);
-    main.style.gridTemplateColumns = `minmax(0,${c.ratio}fr) minmax(0,1fr)`;
+    main.style.gridTemplateColumns = c.columns === 1 ? 'minmax(0,1fr)' : `minmax(0,${c.ratio}fr) minmax(0,1fr)`;
     const L = build(0, c.k), R = build(c.k, flow.length);
+    if (c.columns === 1) { main.replaceChildren(L); return !Frame.overflows(main); }
     main.replaceChildren(L, R);
     // 오른쪽 단은 하트 아래에서 시작한다 — 하트 모양(끝 뾰족한 곳까지)이 다 보이게
     const u = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--u'));

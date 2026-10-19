@@ -1,4 +1,11 @@
-<!-- brand_toss — 토스(비바리퍼블리카) 전용 판 v3. brands/토스.json 의 signature 를 판의 얼굴로 쓴다.
+<!-- brand_toss — 토스(비바리퍼블리카) 전용 판 v4(2026-10-19, brand-poster 스킬).
+     갈래 셋: 기본 = 표지 — 판 전체가 검정 바탕, 아래 절반에 토스 10주년 '10 to 100' 데이터 리포트의 흩어진 흰 숫자 더미
+              (원본 이미지, brands/토스.json signature 'data-report-numerals'). 매체 black-field / one-line / scattered-numerals.
+              글은 공고 제목 한 줄 + 경력.
+              full* = 본문 — v3 판 그대로(숫자 상자 머리 + 해요체 카드). full-a = 주요업무·자격요건, full-b = 우대사항·복지.
+     v3 은 판 대부분이 둥근 카드에 담은 전문이라 flat/full/print 아홉 곳과 같은 판이었다(references/history.md 2026-10-19).
+     --- 아래는 v3 설명(본문 갈래) ---
+     brand_toss v3. brands/토스.json 의 signature 를 판의 얼굴로 쓴다.
      signature  10to100-lockup  토스 10주년 캠페인 '10 to 100' 의 검정 정사각·원·정사각 숫자 조합.
                                 경력 'A-B년' 을 [A] (to) [B] 로 — 이 공고의 '2-10년' 이 캠페인과 같은 모양이다.
                                 아래 캡션은 원문 경력 그대로. 흰 바탕 검정 한 색.
@@ -40,6 +47,8 @@
   .card h2 sup{color:var(--accent);font-size:.62em;font-weight:800;margin-left:.18em;vertical-align:super;line-height:0}
   .it{font-family:var(--body);font-size:var(--f);line-height:var(--body-lh,1.5);color:var(--body-ink,var(--text));font-weight:var(--body-w,500);padding-left:calc(var(--f)*.85);text-indent:calc(var(--f)*-.85);margin-bottom:calc(var(--f)*.4)}
   .it::before{content:var(--bullet,'');display:inline-block;width:calc(var(--f)*.85);text-indent:0;color:var(--black)}
+  .list .it{break-inside:avoid}
+  .list{column-gap:calc(var(--f)*1.4)}
   .kv{margin-bottom:calc(var(--f)*.7)}
   .kv b{display:block;font-size:var(--f);font-weight:700;color:var(--ink);line-height:1.4;margin-bottom:calc(var(--f)*.15)}
   .kv p{font-family:var(--body);font-size:calc(var(--f)*.95);line-height:1.55;color:var(--body-ink,var(--text));font-weight:var(--body-w,500)}
@@ -52,6 +61,20 @@
   .apply .lab{font-size:calc(2.1*var(--u));font-weight:600;color:var(--sub)}
   .apply .url{margin-top:calc(.3*var(--u));font-size:calc(2.6*var(--u));font-weight:700;color:var(--black)}
   .apply .url i{font-style:normal;color:var(--accent);margin-left:calc(.8*var(--u))}
+
+  /* 표지 — 판 전체가 데이터 리포트의 검정. 숫자 더미는 원본 이미지를 판 폭 그대로 아래에 둔다(검정은 원본 #000 이라 이음매가 없다) */
+  .sheet.cover{position:relative;background:#000;color:#fff}
+  .cover .pile{position:absolute;left:0;right:0;bottom:0;height:calc(var(--w)*975/1734);background:var(--pile) center bottom/100% 100% no-repeat}
+  .cover .row{position:absolute;left:calc(5.6*var(--u));right:calc(5.6*var(--u));top:calc(5*var(--u));display:flex;justify-content:space-between;align-items:flex-start;gap:calc(2*var(--u))}
+  .cover .blk{position:absolute;left:calc(5.6*var(--u));right:calc(5.6*var(--u));bottom:calc(var(--w)*975/1734 + 3*var(--u))}
+  .cover .co{font-size:calc(2.3*var(--u));font-weight:800;letter-spacing:-.02em}
+  .cover .src{margin-top:calc(.5*var(--u));font-size:calc(1.4*var(--u));font-weight:500;color:#8b95a1;line-height:1.4}
+  .cover .apply{text-align:right;white-space:nowrap;color:#fff}
+  .cover .one{overflow-wrap:normal;font-weight:800;color:#fff;letter-spacing:-.035em;line-height:1.02;font-size:var(--T)}
+  .cover .one .k{display:block;font-size:calc(3.4*var(--u));font-weight:700;letter-spacing:-.02em;color:#b0b8c1;margin-bottom:calc(1.4*var(--u))}
+  .cover .car{margin-top:calc(3.4*var(--u));display:flex;align-items:baseline;gap:calc(1.4*var(--u))}
+  .cover .car .lab{font-size:calc(2.6*var(--u));font-weight:700;color:#b0b8c1}
+  .cover .car b{font-size:calc(6.4*var(--u));font-weight:800;letter-spacing:-.03em;line-height:1}
 </style>
 <div id="root"></div>
 <script id="data" type="application/json">/*__DATA__*/</script>
@@ -73,9 +96,14 @@
   F.set('bullet', ui.body_bullet ? JSON.stringify(ui.body_bullet) : "''");
   F.set('chip-bg', ui.chip_bg || '#f2f4f6'); F.set('chip-ink', ui.chip_ink || ui.text);
 
+  // 갈래 — 기본은 표지, 'full' 로 시작하면 본문(전문). full-a·full-b 는 post.py 가 본문이 18px 아래일 때 부르는 반쪽
+  const V = (D.variant || '').trim();
+  const HALF = V === 'full-a' ? 'a' : V === 'full-b' ? 'b' : '';
+
   // 원문을 대괄호 소제목 단위 카드로. 대괄호가 없는 섹션은 기본 이름을 붙인다
   const cards = [];
-  const split = (lines, fallback, kv = false) => {
+  const split = (lines, fallback, kv = false, half = 'a') => {
+    if (HALF && HALF !== half) return;
     let cur = null;
     for (const raw of lines) {
       const head = (typeof raw === 'string' ? raw : raw.text).match(/^\[(.+)\]$/);
@@ -84,12 +112,41 @@
       cur.items.push(raw);
     }
   };
-  split(S.tasks.flatMap(g => g.items), '주요업무');
-  split(S.qualifications, '자격요건');
-  split(S.preferences, '우대사항');
-  split(S.benefits, '복지', true);
+  split(S.tasks.flatMap(g => g.items), '주요업무', false, 'a');
+  split(S.qualifications, '자격요건', false, 'a');
+  split(S.preferences, '우대사항', false, 'b');
+  split(S.benefits, '복지', true, 'b');
 
   const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+
+  if (!V.startsWith('full')) {
+    sheet.classList.add('cover');
+    if (IMG.numerals) { F.set('pile', `url(${IMG.numerals})`); sheet.append(el('div', 'pile')); }
+    const row = el('div', 'row'); const l = el('div');
+    l.append(el('div', 'co', D.company),
+      el('div', 'src', "공고 제목 그대로 · 숫자는 토스 10주년 '10 to 100' 데이터 리포트 원본 이미지(toss.im/10to100) · 넘기면 공고 전문"));
+    row.append(l, el('div', 'apply')); sheet.append(row);              // .apply 는 Frame.period 가 마감을 넣는 자리
+    // 한 줄 — 공고 제목 그대로. 대괄호 계열사 이름은 같은 줄의 앞머리로 작게(글자는 안 바꾼다)
+    const title = D.title || D.role; const tm = title.match(/^(\[[^\]]+\])\s*(.+)$/);
+    const one = el('div', 'one');
+    if (tm) { one.append(el('span', 'k', tm[1]), tm[2]); } else one.append(title);
+    const blk = el('div', 'blk'); sheet.append(blk); blk.append(one);
+    const car = el('div', 'car');
+    const cm = (D.meta[0] || '').match(/^(경력)\s*(.+)$/);
+    if (cm) car.append(el('span', 'lab', cm[1]), el('b', '', cm[2])); else car.append(el('b', '', D.meta.join(' · ')));
+    blk.append(car);
+    // 제목은 숫자 더미 바로 위에 아래를 맞추고 위로 자란다 — 낱말을 쪼개지 않고, 머리 줄과 띄운다
+    let T = 6;
+    for (const t of [12, 11, 10.5, 10, 9.5, 9, 8.5, 8, 7.5, 7, 6.5, 6]) {
+      F.set('T', `calc(${t}*var(--u))`);
+      const u = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--u'));
+      if (one.scrollWidth <= one.clientWidth + 1 && blk.getBoundingClientRect().top >= row.getBoundingClientRect().bottom + 10 * u) { T = t; break; }
+    }
+    Frame.period(F);
+    window.__layout = { variant: V || 'cover', columns: 1, title_u: T, font_px: Math.round(parseFloat(getComputedStyle(one).fontSize)) };
+    window.__paged = true;
+    return;
+  }
 
   // 머리 — [A] (to) [B] + 원문 경력 캡션
   const header = el('header');
@@ -118,25 +175,32 @@
   const apply = el('div', 'apply');
   footer.append(left, apply); sheet.append(footer);
 
-  const cardEl = c => {
+  const cardEl = (c, bc = 1) => {
     const d = el('div', 'card');
     const key = (B.emoji_map || {})[c.title]; const hd = el('div', 'hd');
     if (key && IMG[key]) { const im = el('img', 'emo'); im.src = IMG[key]; im.alt = ''; hd.append(im); }
     const h = el('h2', '', c.title); h.append(el('sup', '', String(c.items.length))); hd.append(h); d.append(hd);
+    let list = null;   // 라벨 없는 짧은 줄은 bc 단으로(복지)
     c.items.forEach(it => {
-      if (c.kv && typeof it !== 'string' && it.label) { const k = el('div', 'kv'); k.append(el('b', '', it.label), el('p', '', it.text)); d.append(k); }
-      else d.append(el('div', 'it', typeof it === 'string' ? it : it.text));
+      if (c.kv && typeof it !== 'string' && it.label) { const k = el('div', 'kv'); k.append(el('b', '', it.label), el('p', '', it.text)); d.append(k); list = null; }
+      else {
+        if (!list) { list = el('div', 'list'); if (bc > 1) list.style.columnCount = bc; d.append(list); }
+        list.append(el('div', 'it', typeof it === 'string' ? it : it.text));
+      }
     });
     return d;
   };
   const cands = [];
   for (const S_ of [17, 15, 13])
-    for (let k = 1; k < cards.length; k++) cands.push({ k, S: S_, columns: 2 });
+    for (let k = 1; k < Math.max(cards.length, 2); k++) cands.push({ k, S: S_, columns: 2 });
+  // 반쪽 장은 카드가 둘뿐이라 두 단이면 한쪽이 빈다 — 한 단(복지 줄은 두 단) 후보를 더한다
+  if (HALF) for (const S_ of [17, 15]) cands.push({ k: cards.length, S: S_, columns: 1, bc: 2 });
   Frame.fit(F, cands, c => {
     F.set('S', `calc(${c.S}*var(--u))`);
     const L = el('div', 'col'), R = el('div', 'col');
-    cards.slice(0, c.k).forEach(x => L.append(cardEl(x))); cards.slice(c.k).forEach(x => R.append(cardEl(x)));
-    main.replaceChildren(L, R);
+    cards.slice(0, c.k).forEach(x => L.append(cardEl(x, c.bc || 1))); cards.slice(c.k).forEach(x => R.append(cardEl(x, c.bc || 1)));
+    main.style.gridTemplateColumns = c.columns === 1 ? 'minmax(0,1fr)' : '';
+    if (c.columns === 1) main.replaceChildren(L); else main.replaceChildren(L, R);
     return !Frame.overflows(main);
   }, { lo: 10, hi: 40 });
 })();

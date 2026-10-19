@@ -1,4 +1,9 @@
-<!-- brand_kurly v3 — 컬리 전용 판. 중심은 '샛별배송' 하나(brands/컬리.json 의 signature).
+<!-- brand_kurly v4(2026-10-19, brand-poster 스킬) — 갈래 둘:
+     기본 = 표지 — 판 전체가 샛별배송 새벽 도로 사진 한 장(매체 photo / one-line / print). 글은 공식 문구 + 공고 제목 한 줄 + 경력.
+     full = 본문 — v3 판 그대로(머리 사진 띠 + 배송 안내 모듈 + 시간표 꼬리).
+     v3 는 사진이 머리 3분의 1뿐이고 나머지가 전문 문서라 다른 다섯 곳(photo/full/print)과 같은 판이었다.
+     --- 아래는 v3 설명(본문 갈래) ---
+     brand_kurly v3 — 컬리 전용 판. 중심은 '샛별배송' 하나(brands/컬리.json 의 signature).
      saetbyeol-dawn      머리 = 컬리 배송 안내 공식 메인 비주얼(새벽 하늘 + 고속도로의 보라 컬리 트럭 행렬) 실사진 전면.
                           원본 이미지 속 글('컬리 샛별 & 하루배송…')이 있는 왼쪽은 잘라냈다(images.saetbyeol_dawn)
      saetbyeol-copy      공식 문구 '샛별이 뜰 때가 가장 신선할 때' 를 머리 첫 줄에 그대로
@@ -49,6 +54,44 @@
   td{padding:calc(.75*var(--u)) calc(1.6*var(--u));border-bottom:1px solid #d9d9d9;text-align:center;color:var(--ink);font-weight:600}
   td.k{color:var(--violet);font-weight:700;width:22%}
   td.url{font-weight:800;color:var(--purple);font-size:calc(2.3*var(--u));letter-spacing:-.01em}
+
+  /* 표지 — 판 전체가 새벽 한 장면. 사진(2:1)은 원래 폭 그대로 아래에 두고, 그 하늘을 위로 이어 그린다.
+     사진을 세로 판에 꽉 채우면 선두 트럭의 'Kurly' 로고가 판의 초점이 된다(6절: 로고가 초점이 되지 않게) */
+  .sheet.cover{position:relative;background:linear-gradient(180deg,#cbbfdc 0%,#e2d6e4 38%,#f0eaed 60%)}
+  .cover .scene{position:absolute;left:0;right:0;bottom:0;aspect-ratio:2/1;background:var(--dawn) no-repeat center/cover}
+  .cover .scene::before{content:'';position:absolute;left:0;right:0;top:0;height:18%;background:linear-gradient(180deg,#f0eaed 0%,rgba(240,234,237,0) 100%)}
+  .cover .scene::after{content:'';position:absolute;left:0;right:0;bottom:0;height:34%;background:linear-gradient(0deg,rgba(26,14,34,.78) 0%,rgba(26,14,34,0) 100%)}
+  .cover .copy{position:absolute;left:calc(6*var(--u));top:calc(6.4*var(--u));font-size:calc(2.6*var(--u));font-weight:700;color:var(--purple);letter-spacing:-.01em}
+  .cover .one{position:absolute;left:calc(6*var(--u));right:calc(6*var(--u));top:calc(11.4*var(--u));font-size:var(--T);font-weight:800;line-height:1.06;letter-spacing:-.04em;color:var(--ink2)}
+  .cover .car{position:absolute;right:calc(6*var(--u));bottom:calc(var(--w)/2 + 3*var(--u));color:var(--purple);line-height:1;text-align:right}
+  .cover .car .lab{font-size:calc(2.4*var(--u));font-weight:700;color:var(--violet)}
+  .cover .car b{display:inline-block;margin-top:calc(.6*var(--u));font-size:calc(10*var(--u));font-weight:800;letter-spacing:-.04em}
+  .cover .car span{font-size:calc(3.6*var(--u));font-weight:700;margin-left:calc(.5*var(--u))}
+  .cover .foot{position:absolute;left:calc(6*var(--u));right:calc(6*var(--u));bottom:calc(3*var(--u));display:flex;align-items:flex-end;gap:calc(2*var(--u));color:#fff}
+  .cover .foot .l{flex:1;min-width:0}
+  .cover .foot .co{font-size:calc(2.6*var(--u));font-weight:800;color:#fff}
+  .cover .foot .src{margin-top:calc(.3*var(--u));font-size:calc(1.35*var(--u));color:rgba(255,255,255,.8);font-weight:500}
+  .cover .apply{white-space:nowrap;font-size:calc(2.2*var(--u));font-weight:700;color:#fff}
+
+  /* 표지 box 갈래 — 판 전체가 막 도착한 컬리 크라프트 박스 앞면(매체 kraft / one-line / flexo).
+     색은 CFC '박스 적재' 사진에서 떴다: 크라프트 #a79682(조명 아래) → 판 #ad9d88, 잉크 라벤더 보라 #7f5c9d(크라프트에 섞인 값) */
+  .sheet.boxc{position:relative;background:#ad9d88;color:var(--inkbox)}
+  .boxc .fiber{position:absolute;inset:0;mix-blend-mode:multiply;opacity:.35;background-image:var(--fiber)}
+  .boxc .seam{position:absolute;left:0;right:0;top:21%;height:calc(.35*var(--u));background:rgba(70,55,40,.35);box-shadow:0 calc(.3*var(--u)) calc(.6*var(--u)) rgba(70,55,40,.18)}
+  .boxc .tape{position:absolute;left:43%;width:14%;top:0;height:29%;background:rgba(176,142,104,.38);mix-blend-mode:multiply;
+    box-shadow:inset calc(.2*var(--u)) 0 0 rgba(255,255,255,.12),inset calc(-.2*var(--u)) 0 0 rgba(0,0,0,.08)}
+  .boxc .ink{filter:url(#flexo);color:var(--inkbox);mix-blend-mode:multiply}   /* 라벤더 잉크가 크라프트에 먹는다 — 곱하면 실물처럼 탁해진다 */
+  .boxc .allp{position:absolute;right:calc(4.4*var(--u));top:calc(28*var(--u));writing-mode:vertical-rl;font-weight:800;font-size:calc(2.6*var(--u));letter-spacing:.06em;line-height:1}
+  .boxc .one{position:absolute;left:calc(6*var(--u));right:calc(12*var(--u));top:31%;font-size:var(--T);font-weight:800;line-height:1.08;letter-spacing:-.035em}
+  .boxc .lab{position:absolute;left:calc(6*var(--u));bottom:calc(16*var(--u))}
+  .boxc .lab .k{font-size:calc(2.6*var(--u));font-weight:700;padding-bottom:calc(.6*var(--u));border-bottom:calc(.3*var(--u)) solid currentColor;display:inline-block;min-width:calc(16*var(--u))}
+  .boxc .lab .v{margin-top:calc(1*var(--u));font-size:calc(8.6*var(--u));font-weight:800;letter-spacing:-.04em;line-height:1}
+  .boxc .icons{position:absolute;right:calc(6*var(--u));bottom:calc(14*var(--u));width:38%;aspect-ratio:360/130;background:var(--inkbox);-webkit-mask:var(--icons) center/contain no-repeat;mask:var(--icons) center/contain no-repeat;mix-blend-mode:multiply;filter:url(#flexo)}
+  .boxc .foot{position:absolute;left:calc(6*var(--u));right:calc(6*var(--u));bottom:calc(3.4*var(--u));display:flex;align-items:flex-end;gap:calc(2*var(--u))}
+  .boxc .foot .l{flex:1;min-width:0}
+  .boxc .foot .co{font-size:calc(2.4*var(--u));font-weight:800;color:var(--inkbox)}
+  .boxc .foot .src{margin-top:calc(.3*var(--u));font-size:calc(1.35*var(--u));font-weight:600;opacity:.85}
+  .boxc .apply{white-space:nowrap;font-size:calc(2.1*var(--u));font-weight:700}
 </style>
 <div id="root"></div>
 <script id="data" type="application/json">/*__DATA__*/</script>
@@ -72,6 +115,64 @@
   if (IMG.saetbyeol_dawn) F.set('dawn', `url(${IMG.saetbyeol_dawn})`);
 
   const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+
+  // 갈래 — 기본은 표지, 'full' 은 본문(전문). 표지와 본문을 나눈다(brand-poster 4단계)
+  const V = (D.variant || '').trim();
+
+  // box 갈래 — 같은 컬리, 다른 물건: 샛별배송 사진 대신 '도착한 박스' 한 상자. (signature 대안 — 크라프트 ALL PAPER 박스)
+  if (V === 'box') {
+    sheet.classList.add('boxc');
+    F.set('inkbox', ui.box_ink || '#a07ad6');
+    const N = "<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9 .06' numOctaves='3' seed='7'/><feColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .3 0 0 0 .55 0'/></filter><rect width='300' height='300' filter='url(%23n)'/></svg>";
+    F.set('fiber', `url("data:image/svg+xml,${N}")`);
+    document.body.insertAdjacentHTML('afterbegin', "<svg width='0' height='0' style='position:absolute'><filter id='flexo'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' seed='3'/><feDisplacementMap in='SourceGraphic' scale='2.2'/></filter></svg>");
+    sheet.append(el('div', 'fiber'), el('div', 'seam'), el('div', 'tape'));
+    const allp = el('div', 'allp ink', 'ALL PAPER CHALLENGE'); sheet.append(allp);          // 박스 옆면에 인쇄된 문구 그대로
+    const one = el('div', 'one ink', D.title || D.role); sheet.append(one);                 // 공고 제목 그대로 — 한 줄
+    const lab = el('div', 'lab ink'); lab.append(el('div', 'k', '경력'), el('div', 'v', F.career || D.meta.join(' · '))); sheet.append(lab);   // 박스 온도 라벨 형식
+    if (IMG.box_icons_row) { F.set('icons', `url(${IMG.box_icons_row})`); sheet.append(el('div', 'icons')); }   // 원본 아이콘 줄의 모양을 판의 잉크로
+    const foot = el('div', 'foot ink'); const l = el('div', 'l');
+    l.append(el('div', 'co', B.wordmark || D.company), el('div', 'src', '공고 제목 그대로 · 아이콘 줄은 컬리 박스 실물 사진에서 · 넘기면 공고 전문'));
+    foot.append(l, el('div', 'apply')); sheet.append(foot);
+    let T = 6;
+    for (const t of [11, 10, 9, 8, 7, 6]) {
+      F.set('T', `calc(${t}*var(--u))`);
+      const fs = parseFloat(getComputedStyle(one).fontSize);
+      if (one.clientHeight <= fs * 1.08 * 2 + 2 && one.getBoundingClientRect().bottom <= lab.getBoundingClientRect().top - fs * .5) { T = t; break; }
+    }
+    Frame.period(F);
+    window.__layout = { variant: 'box', columns: 1, title_u: T, font_px: Math.round(parseFloat(getComputedStyle(one).fontSize)) };
+    window.__paged = true;
+    return;
+  }
+  // full-a·full-b 는 post.py 가 본문이 18px 아래로 깎일 때 부르는 반쪽(원문 순서: a = 주요업무·자격요건, b = 우대사항·복지)
+  const HALF = V === 'full-a' ? 'a' : V === 'full-b' ? 'b' : '';
+  if (!V.startsWith('full')) {
+    sheet.classList.add('cover');
+    F.set('ink2', ui.dawn_ink || '#2e1a36');
+    sheet.append(el('div', 'scene'));
+    if (SIG.copy) sheet.append(el('div', 'copy', SIG.copy));                 // 회사가 쓴 문장 그대로
+    const one = el('div', 'one', D.title || D.role); sheet.append(one);       // 공고 제목 그대로 — 한 줄
+    const cm = F.career.match(/^(\d+(?:\s*[-~–]\s*\d+)?)\s*(.*)$/);
+    const car = el('div', 'car'); car.append(el('div', 'lab', '경력'));
+    if (cm) { const v = el('div'); v.append(el('b', '', cm[1].replace(/\s*[-~]\s*/, '–')), el('span', '', cm[2])); car.append(v); }
+    else car.append(el('b', '', D.meta.join(' · ')));
+    sheet.append(car);
+    const foot = el('div', 'foot'); const l = el('div', 'l');
+    l.append(el('div', 'co', B.wordmark || D.company), el('div', 'src', '공고 제목 그대로 · 사진 컬리 배송 안내 공식 비주얼(샛별배송) · 넘기면 공고 전문'));
+    foot.append(l, el('div', 'apply')); sheet.append(foot);   // .apply 는 Frame.period 가 마감을 넣는 자리
+    // 제목은 하늘 안에서 가장 크게 — 두 줄까지, 판 높이 절반 위에서 멈춘다(경력·사진 자리)
+    let T = 6;
+    for (const t of [12, 11, 10, 9, 8, 7, 6]) {
+      F.set('T', `calc(${t}*var(--u))`);
+      const fs = parseFloat(getComputedStyle(one).fontSize);
+      if (one.clientHeight <= fs * 1.06 * 2 + 2 && one.getBoundingClientRect().bottom <= sheet.clientHeight * .5) { T = t; break; }
+    }
+    Frame.period(F);
+    window.__layout = { variant: 'cover', columns: 1, title_u: T, font_px: Math.round(parseFloat(getComputedStyle(one).fontSize)) };
+    window.__paged = true;
+    return;
+  }
 
   // 머리
   F.set('sky', (ui.dawn && ui.dawn.sky) || '#f6e2db');
@@ -124,17 +225,21 @@
 
   const tasks = S.tasks.flatMap(g => g.items);
   const cands = [];
-  for (const hh of [24, 21]) for (const tc of [2, 1]) for (const qp of ['side', 'stack']) for (const bc of [2, 1])
+  // 반쪽 장은 사진 띠를 가는 띠로 — 머리가 판의 40% 를 먹어 우대·복지 반쪽이 11px 까지 깎였다(2026-10-19)
+  const HHS = HALF ? [8, 6] : [24, 21];
+  for (const hh of HHS) for (const tc of [2, 1]) for (const qp of ['side', 'stack']) for (const bc of [2, 1])
     cands.push({ hh, tc, qp, bc, columns: 2 });
   Frame.fit(F, cands, c => {
-    F.set('ph', `calc(${c.hh}*var(--u))`); F.set('py', `calc(${-(c.hh === 24 ? 20 : 22)}*var(--u))`);
+    F.set('ph', `calc(${c.hh}*var(--u))`); F.set('py', `calc(${c.hh >= 21 ? -(c.hh === 24 ? 20 : 22) : -24}*var(--u))`);   // 가는 띠는 트럭 지붕 높이를 보여 준다
     const mods = [];
-    mods.push(mod('주요업무', 'purple', c.tc, box => listInto(box, tasks, c.tc)));
-    const q = mod('자격요건', 'violet', 1, box => listInto(box, S.qualifications, 1));
-    const p = mod('우대사항', 'violet', 1, box => listInto(box, S.preferences, 1));
-    if (c.qp === 'side') { const r = el('div', 'row'); r.style.gridTemplateColumns = '1fr 1fr'; r.append(q, p); mods.push(r); }
-    else { mods.push(q, p); }
-    mods.push(mod('복지', 'kraft', c.bc, box => {
+    const A = HALF !== 'b', Bh = HALF !== 'a';
+    if (A) mods.push(mod('주요업무', 'purple', c.tc, box => listInto(box, tasks, c.tc)));
+    const qc = HALF ? c.tc : 1;   // 반쪽 장은 자격·우대도 두 단까지(줄이 짧아 한 단이면 폭의 절반이 빈다)
+    const q = A ? mod('자격요건', 'violet', qc, box => listInto(box, S.qualifications, qc)) : null;
+    const p = Bh ? mod('우대사항', 'violet', qc, box => listInto(box, S.preferences, qc)) : null;
+    if (q && p && c.qp === 'side') { const r = el('div', 'row'); r.style.gridTemplateColumns = '1fr 1fr'; r.append(q, p); mods.push(r); }
+    else { if (q) mods.push(q); if (p) mods.push(p); }
+    if (Bh) mods.push(mod('복지', 'kraft', c.bc, box => {
       const groups = c.bc > 1 ? benefitGroups : benefitGroups;
       groups.forEach(g => { const gr = el('div', 'grp'); if (g.title) gr.append(el('div', 'sub', g.title)); g.items.forEach(t => gr.append(item(t))); box.append(gr); });
     }));

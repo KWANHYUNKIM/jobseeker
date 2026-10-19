@@ -1,4 +1,12 @@
-<!-- brand_musinsa v3 — 무신사 전용 판. 중심은 brands/무신사.json 의 signature 하나:
+<!-- brand_musinsa v4 (2026-10-19, brand-poster 스킬) — 갈래 둘:
+     기본 = 표지: 판 전체가 무신사 2022 만우절 공식 키 비주얼 '무진장 신발 사진이 많은 곳'(2001 픽셀 도시) 한 장.
+            매체 pixel-city / one-line / pixel. 그림 속 세 줄 제목(무·신·사)은 원본 그대로 두고, 공고 제목 한 줄을
+            키 비주얼이 제목을 세운 방식(검정 글자 + 흰 윤곽)으로 도시 위쪽에, 경력은 'Back to the 2001' 노란 픽셀 줄
+            자리에(그 문구는 옮기지 않는다 — 우리 포스터는 2001 이벤트가 아니다). 키 비주얼 아래 MUSINSA 로고와
+            광고판 두 개(실존 모델 초상)는 crop 밖.
+     full(·full-a·full-b) = 본문: v3 의 전문 판 그대로. a = 주요업무·자격요건, b = 우대사항·복지(post.py 가 18px 아래면 부른다).
+     --- 아래는 v3 설명(본문 갈래) ---
+     brand_musinsa v3 — 무신사 전용 판. 중심은 brands/무신사.json 의 signature 하나:
      '무진장 신발 사진이 많은 곳' — 무신사라는 이름이 나온 2001년 프리챌 커뮤니티 이름.
      무신사가 2022 만우절에 이 시절을 픽셀 도시로 재현한 공식 키 비주얼('Back to the 2001')을 그대로 가져온다.
        acrostic       머리 왼쪽: 세 줄 '무진장 / 신발 / 사진이 많은 곳' 에서 첫 글자 무·신·사만 흰색, 나머지는 윤곽 — 키 비주얼 제목 조판
@@ -62,6 +70,25 @@
   .apply{text-align:right;white-space:nowrap}
   .apply .px{font-size:calc(2*var(--u));color:var(--yellow);line-height:1}
   .apply .url{margin-top:calc(.6*var(--u));font-size:calc(2.1*var(--u));font-weight:700}
+
+  /* 표지 — 판 전체가 키 비주얼 한 장. 원본 720px 을 1.5배 nearest(픽셀 그대로) */
+  .sheet.cover{position:relative;background:var(--night)}
+  .cover .scene{position:absolute;inset:0;background:var(--cover) 0 0/100% 100% no-repeat;image-rendering:pixelated}
+  .cover .top{position:absolute;left:calc(5.2*var(--u));right:calc(4*var(--u));top:calc(4.6*var(--u))}
+  .cover .kick{display:inline-block;background:var(--night);color:var(--yellow);font-size:calc(2.4*var(--u));line-height:1;padding:calc(.7*var(--u)) calc(1*var(--u)) calc(.6*var(--u))}
+  .cover .one{margin-top:calc(1.6*var(--u));font-family:var(--display);font-weight:900;font-size:var(--T);line-height:1.02;letter-spacing:-.025em;
+    color:var(--night);-webkit-text-stroke:calc(var(--T)*.075) #fff;paint-order:stroke fill;text-wrap:balance}
+  /* 'Back to the 2001' 줄(판 x 84–440 · y 776–804)을 덮는다 — 아래 끝을 그 줄 아래(814px)에 맞춘다 */
+  .cover .car{position:absolute;left:calc(6.6*var(--u));bottom:calc(var(--h) - 75.4*var(--u));min-width:calc(35.5*var(--u));background:var(--night);color:var(--yellow);
+    padding:calc(1*var(--u)) calc(1.4*var(--u)) calc(.9*var(--u));white-space:nowrap;line-height:1}
+  .cover .car .k{font-size:calc(2.4*var(--u));margin-right:calc(1.1*var(--u))}
+  .cover .car .v{font-size:calc(5*var(--u))}
+  .cover .foot{position:absolute;left:0;right:0;bottom:0;height:calc(5.1*var(--u));background:var(--night);color:#fff;
+    display:flex;align-items:center;justify-content:space-between;gap:calc(2*var(--u));padding:0 calc(2.4*var(--u)) 0 calc(5.2*var(--u))}
+  .cover .foot .src{font-size:calc(1.35*var(--u));color:#b4b4b6;font-weight:500;line-height:1.3;min-width:0}
+  .cover .foot .src b{color:#fff;font-weight:700;margin-right:calc(.8*var(--u))}
+  .cover .apply{color:var(--yellow);text-align:right}
+  .cover .apply .period{font-size:calc(1.9*var(--u));padding:calc(.45*var(--u)) calc(1.2*var(--u))}
 </style>
 <div id="root"></div>
 <script id="data" type="application/json">/*__DATA__*/</script>
@@ -96,6 +123,43 @@
   ].filter(s => s.items.length);
 
   const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+  const V = (D.variant || '').trim();
+
+  // 표지 — 판 전체가 키 비주얼. 글은 공고 제목 한 줄과 경력뿐(brand-poster 2-1절)
+  if (!V.startsWith('full')) {
+    sheet.classList.add('cover');
+    if (IMG.cover) F.set('cover', `url(${IMG.cover})`);
+    sheet.append(el('div', 'scene'));
+    const top = el('div', 'top');
+    top.append(el('div', 'kick px', B.wordmark || D.company));          // 채용 사이트가 스스로 부르는 이름 그대로
+    const one = el('div', 'one', D.title || D.role); top.append(one);   // 공고 제목 그대로 — 한 줄
+    sheet.append(top);
+    // 경력 — 키 비주얼의 노란 픽셀 줄('Back to the 2001') 자리를 같은 노랑·픽셀로 덮는다
+    const car = el('div', 'car px'); car.append(el('span', 'k', '경력'), el('span', 'v', F.career || D.meta.join(' · ')));
+    sheet.append(car);
+    const foot = el('div', 'foot'); const src = el('div', 'src');
+    src.append(el('b', '', D.company), '공고 제목 그대로(원티드) · 그림: 무신사 2022 만우절 공식 키 비주얼 ‘무진장 신발 사진이 많은 곳’ · 넘기면 공고 전문');
+    foot.append(src, el('div', 'apply')); sheet.append(foot);           // .apply 는 Frame.period 가 마감을 넣는 자리
+    // 제목은 도시 위쪽에서 가장 크게 — 세 줄까지, 판 높이 42% 위에서 멈춘다(그 아래는 거리와 세 줄 제목)
+    let T = 6;
+    for (const t of [12, 11, 10, 9.5, 9, 8.5, 8, 7, 6]) {
+      F.set('T', `calc(${t}*var(--u))`);
+      const fs = parseFloat(getComputedStyle(one).fontSize);
+      if (one.clientHeight <= fs * 1.02 * 3 + 2 && one.scrollWidth <= one.clientWidth + 1
+          && one.getBoundingClientRect().bottom <= sheet.clientHeight * .42) { T = t; break; }
+    }
+    Frame.period(F);
+    window.__layout = { variant: 'cover', columns: 1, title_u: T, font_px: Math.round(parseFloat(getComputedStyle(one).fontSize)) };
+    window.__paged = true;
+    return;
+  }
+  // full-a·full-b 는 본문이 18px 아래로 깎일 때 post.py 가 부르는 반쪽(a = 주요업무·자격요건, b = 우대사항·복지)
+  const HALF = V === 'full-a' ? 'a' : V === 'full-b' ? 'b' : '';
+  if (HALF) {
+    const keep = HALF === 'a' ? ['주요업무', '자격요건'] : ['우대사항', '복지'];
+    for (let i = secs.length - 1; i >= 0; i--) if (!keep.includes(secs[i].name)) secs.splice(i, 1);
+    if (HALF === 'b') intro = '';
+  }
 
   // 머리 — 이름의 시작(2001) 키 비주얼 + 제목
   const kv = el('div', 'kv'); const txt = el('div', 'txt');

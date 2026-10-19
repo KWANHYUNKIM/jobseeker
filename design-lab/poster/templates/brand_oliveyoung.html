@@ -1,4 +1,9 @@
-<!-- brand_oliveyoung — CJ올리브영 전용 판 v1. brands/올리브영.json 의 signature 를 판의 얼굴로 쓴다.
+<!-- brand_oliveyoung — CJ올리브영 전용 판 v2(2026-10-19, brand-poster 스킬).
+     갈래 둘: 기본 = 표지 — 판 전체가 매장 입구 라이트박스 한 장(매체 lightbox / one-line / print). 글은 공고 제목 한 줄과 경력.
+              full = 본문 — v1 의 전문 판 그대로(머리 스크린 + 두 단).
+     v1 은 머리만 스크린이고 나머지가 전문 문서라 다른 회사 판 아홉과 같은 판이었다(references/history.md 2026-10-19).
+     --- 아래는 v1 설명(본문 갈래) ---
+     brand_oliveyoung v1. brands/올리브영.json 의 signature 를 판의 얼굴로 쓴다.
      signature  hello-screen   매장 입구 연두 라이트박스 스크린. 흰 바탕에 13° 기울어진 2:3 타원(연두 셋·코럴 하나),
                                13° 기울인 짙은 초록 인사 'HELLO WE ARE OLIVE YOUNG'. 머리 전체를 회색 매장 벽에 끼운 그 스크린으로.
                                공고 제목은 스크린 글자 자리에, 경력은 코럴 타원 안에. 꼬리에 실제 매장 정면 사진.
@@ -56,6 +61,24 @@
   .apply .lab{font-size:calc(2*var(--u));font-weight:600;color:var(--sub)}
   .apply .url{margin-top:calc(.3*var(--u));font-size:calc(2.5*var(--u));font-weight:700;color:var(--ink)}
   .apply .url i{font-style:normal;color:var(--point);margin-left:calc(.7*var(--u))}
+
+  /* 표지 — 판 전체가 매장 벽에 끼운 라이트박스. 빛은 안쪽에서(가장자리로 갈수록 아주 조금 어둡다) */
+  .sheet.cover{background:var(--wall);padding:calc(2.6*var(--u))}
+  .box{position:relative;flex:1;min-height:0;overflow:hidden;background:radial-gradient(ellipse at 50% 45%,#fff 62%,#f3f5f2 100%);
+    box-shadow:inset 0 0 0 calc(.4*var(--u)) #c9cdd1,0 calc(.5*var(--u)) calc(1.6*var(--u)) rgba(0,0,0,.18)}
+  .box .ov{position:absolute;border-radius:50%;transform:rotate(calc(1deg*var(--slant)))}
+  .box .hello{position:absolute;left:calc(6*var(--u));top:calc(6*var(--u));color:var(--ink);font-family:var(--display);font-weight:800;
+    font-size:calc(5.6*var(--u));line-height:1.02;letter-spacing:-.01em;white-space:pre-line}
+  .box .one{position:absolute;left:calc(6*var(--u));right:calc(6*var(--u));top:42%;color:var(--ink);font-family:var(--display);font-weight:900;
+    font-size:var(--T);line-height:.98;letter-spacing:-.04em;transform:skewX(calc(-1deg*var(--slant)));transform-origin:0 100%}
+  .box .car{position:absolute;display:grid;place-items:center;text-align:center;color:var(--ink);font-family:var(--display)}
+  .box .car .k{font-weight:800;font-size:calc(3.2*var(--u));line-height:1}
+  .box .car .v{font-weight:900;font-size:calc(5.6*var(--u));letter-spacing:-.04em;line-height:.95;margin-top:calc(.6*var(--u))}
+  .cover .foot{flex:none;display:flex;align-items:flex-end;gap:calc(2*var(--u));padding:calc(1.6*var(--u)) calc(.6*var(--u)) 0;color:var(--ink)}
+  .cover .foot .l{flex:1;min-width:0}
+  .cover .foot .co{font-size:calc(2.3*var(--u));font-weight:800;font-family:var(--display)}
+  .cover .foot .src{margin-top:calc(.4*var(--u));font-size:calc(1.4*var(--u));color:var(--sub);font-weight:500}
+  .cover .apply{text-align:right;white-space:nowrap;font-size:calc(2.2*var(--u));font-weight:700}
 </style>
 <div id="root"></div>
 <script id="data" type="application/json">/*__DATA__*/</script>
@@ -75,6 +98,39 @@
   if (ui.body_line_height) F.set('body-lh', ui.body_line_height);
 
   const sheet = el('section', 'sheet'); document.getElementById('root').append(sheet);
+
+  // 갈래 — 기본은 표지, 'full' 은 본문(전문). 표지와 본문을 나눈다(brand-poster 4단계)
+  if ((D.variant || '').trim() !== 'full') {
+    sheet.classList.add('cover');
+    const box = el('div', 'box'); sheet.append(box);
+    // 타원 — 표준 매장 스크린 사진처럼 연두 셋·코럴 하나가 화면 밖으로 잘린다. x,y = 중심(%), h = 높이(판 폭 %), 폭은 2:3
+    const ov = (bg, x, y, h) => { const o = el('div', 'ov'); o.style.cssText =
+      `background:${bg};left:calc(${x}% - ${h / 3}*var(--W));top:calc(${y}% - ${h / 2}*var(--W));width:calc(${h * 2 / 3}*var(--W));height:calc(${h}*var(--W))`; box.append(o); };
+    F.set('W', 'calc(var(--w)/100)');
+    ov('var(--accent)', 94, 8, 46); ov('var(--accent)', 4, 86, 52); ov('var(--accent)', 58, 104, 34); ov('var(--accent)', 108, 62, 40);
+    ov('var(--coral)', 76, 76, 38);
+    const hello = el('div', 'hello'); hello.append(el('span', 'sl', 'HELLO WE ARE\nOLIVE YOUNG')); box.append(hello);
+    // 한 줄 — 공고 제목 그대로(원문을 자르거나 바꾸지 않는다)
+    const one = el('div', 'one'); one.textContent = D.title || D.role; box.append(one);   // 13° 는 블록째(줄이 바뀌어도 기울기가 같다)
+    const cm = (D.meta[0] || '').match(/^(경력)\s*(.+)$/);
+    const car = el('div', 'car'); car.style.cssText = 'left:calc(76% - 12*var(--W));top:calc(76% - 8*var(--W));width:calc(24*var(--W));height:calc(16*var(--W));transform:rotate(calc(1deg*var(--slant)))';
+    if (cm) car.append(el('div', 'k', cm[1]), el('div', 'v', cm[2])); else car.append(el('div', 'v', D.meta.join(' · ')));
+    box.append(car);
+    const foot = el('div', 'foot'); const l = el('div', 'l');
+    l.append(el('div', 'co', D.company), el('div', 'src', `공고 제목 그대로 · 매장 입구 스크린(corp.oliveyoung.com 표준 매장)을 따라 그림 · 넘기면 공고 전문`));
+    foot.append(l, el('div', 'apply')); sheet.append(foot);   // .apply 는 Frame.period 가 마감을 넣는 자리
+    // 제목은 판 폭 안에서 가장 크게 — 두 줄을 넘지 않게
+    let T = 5.8;
+    for (const t of [12, 11, 10, 9, 8, 7, 6.4, 5.8]) {
+      F.set('T', `calc(${t}*var(--u))`);
+      const fs = parseFloat(getComputedStyle(one).fontSize);
+      if (one.clientHeight <= fs * 0.98 * 2 + 2 && one.scrollWidth <= one.clientWidth + 1) { T = t; break; }
+    }
+    Frame.period(F);
+    window.__layout = { variant: 'cover', columns: 1, title_u: T, font_px: Math.round(parseFloat(getComputedStyle(one).fontSize)) };
+    window.__paged = true;
+    return;
+  }
 
   // 머리 — 스크린. 타원 자리는 표준 매장 스크린 사진(연두 셋 · 코럴 하나 · 흰 틈)을 따른다. 단위는 스크린 높이 H
   const wall = el('div', 'wall'); const scr = el('div', 'screen'); wall.append(scr);
