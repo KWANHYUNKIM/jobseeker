@@ -62,7 +62,7 @@ STYLE_FONTS = {
     "brandmag": ["Pretendard", "NanumMyeongjo"],
 }
 #: 원고마다 기본으로 찍을 틀
-DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"], "military": ["magazine"], "region": ["magazine"]}
+DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"], "military": ["magazine"], "region": ["magazine"], "sme": ["magazine"]}
 
 
 #: 회사 자산(assets/companies/…)이 없는 기계에서 쓰는 공용 글꼴 — 공식 배포본(OFL), 라이선스는 같은 폴더.
@@ -707,7 +707,83 @@ def build_region(today: date | None = None) -> dict:
             "caption": caption}
 
 
-BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan, "military": build_military, "region": build_region}
+def build_sme(today: date | None = None) -> dict:
+    """[카드뉴스] 중견·중소 신입 — 2026 청년일자리도약장려금(복지로 안내: 만 15~34세 정규직 채용·6개월 유지 시 기업 월 60만·
+    최대 720만, 비수도권 청년 본인 480~720만)과 지금 중견·중소기업의 신입 IT 공고를 견준다. 숫자는 정본 DB 에서."""
+    import psycopg
+    from psycopg.rows import dict_row
+    from .collection import _AGENCY, _FOREIGN_TAG, _not_dev
+    from .series import _role_key
+    today = today or date.today()
+    with psycopg.connect(_dsn(), row_factory=dict_row) as conn:
+        rows = conn.execute("""
+            SELECT f.stacks, c.display_name AS co, j.title, f.region, f.district, f.company_size AS size, j.deadline_on
+              FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
+              JOIN job_facet f ON f.job_id = j.id JOIN company c ON c.id = j.company_id
+             WHERE f.career_bucket = '신입/무관' AND coalesce(f.region, '') <> '해외·원격'
+               AND NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = j.id)""").fetchall()
+    rows = [r for r in rows if not _not_dev({"title": r["title"], "stack": r["stacks"] or []})
+            and not _AGENCY.search(r["co"] + r["title"]) and not _NOT_JOB.search(r["title"] + r["co"])
+            and not _FOREIGN_TAG.match(r["title"])
+            and not (r["deadline_on"] and r["deadline_on"] < today)]
+    uniq = {}
+    for r in rows:
+        uniq.setdefault((_co(r["co"]), _role_key(r["title"])), r)
+    rows = list(uniq.values())
+    n = len(rows)
+    sme = [r for r in rows if r["size"] in ("중견기업", "중소기업")]
+    mid = sum(1 for r in sme if r["size"] == "중견기업")
+    local = sum(1 for r in sme if r["region"] and r["region"] not in ("서울", "경기", "인천", "정보없음"))
+    pct = lambda a: round(100 * a / n) if n else 0
+    picks, seen = [], set()
+    for r in sorted(sme, key=lambda r: (r["size"] != "중견기업", r["deadline_on"] is None, r["deadline_on"] or today)):
+        c = _co(r["co"])
+        d = (r["deadline_on"] - today).days if r["deadline_on"] else None
+        if c in seen or d == 0:
+            continue
+        seen.add(c)
+        when = f"D-{d}" if d is not None else "상시"
+        picks.append({"co": c, "title": _short(re.sub(r"^\s*\[[^\]]*\]\s*", "", r["title"])),
+                      "meta": f"{r['size']} · {r['region'] or ''} · {when}"})
+        if len(picks) == 4:
+            break
+    note = f"JD Viewer 모집중 신입 IT 공고 · 국내 근무 · {today:%Y.%m.%d} · 같은 자리 중복 게시는 하나로 · 규모를 모르는 회사는 중소로 셈"
+    slides = [
+        {"type": "cover", "photo": "pangyo.jpg", "kicker": f"중견·중소 신입 · {today:%Y.%m.%d}",
+         "big": f"{len(sme):,}", "unit": "개", "title": ["신입 IT 자리의", f"{pct(len(sme))}%는 중견·중소"],
+         "sub": f"신입이 넣을 수 있는 국내 IT 자리 {n:,}개 중"},
+        {"type": "stat", "photo": "hourglass.jpg", "kicker": "정부 지원", "title": "2026 청년일자리도약장려금",
+         "items": [{"num": "720", "unit": "만", "label": "기업 지원 최대(월 60만 × 12)"},
+                   {"num": "720", "unit": "만", "label": "비수도권 청년 본인 최대(지역별 480~720만)"}],
+         "explain": "만 15~34세를 정규직으로 뽑아 6개월 넘게 고용하면 받는다. 비수도권은 산업단지 중견기업까지 대상이다."},
+        {"type": "stat", "photo": "code.jpg", "kicker": "공고로 보면", "title": "중견·중소 신입 자리",
+         "items": [{"num": f"{mid}", "unit": "개", "label": "중견기업"},
+                   {"num": f"{local}", "unit": "개", "label": "수도권 밖"}],
+         "explain": "지원금은 회사가 신청해야 받는다. 면접에서 장려금 참여 여부를 물어봐도 된다."},
+        {"type": "picks", "photo": "typing.jpg", "kicker": "눈여겨볼 곳", "title": "중견·중소 신입 IT 자리",
+         "sub": "중견기업 먼저, 회사마다 한 건", "rows": picks},
+        {"type": "end", "photo": "seoul.jpg", "kicker": "저장해 두기", "title": "대기업만 보지 말고\n지원금 받는 자리도 보자",
+         "lines": ["취준하는 친구에게 보내 주세요", "신입 공고 전체는 프로필 링크에서"]},
+    ]
+    for sl in slides:
+        sl["image"], sl["credit"] = _photo(sl.pop("photo"))
+        sl["note"] = note
+    slides[1]["note"] = "복지로 '2026년 청년일자리도약장려금 한눈에 알아보기' 요약 · 자세한 조건은 고용24 공고"
+    caption = "\n\n".join([
+        f"신입이 넣을 수 있는 국내 IT 자리 {n:,}개 중 {len(sme):,}개({pct(len(sme))}%)가 중견·중소기업입니다.",
+        f"· 중견기업 {mid}개 · 수도권 밖 {local}개\n· 눈여겨볼 곳: " + " · ".join(p["co"] for p in picks),
+        "2026 청년일자리도약장려금은 만 15~34세 청년을 정규직으로 뽑아 6개월 넘게 고용한 기업에 월 60만 원씩 최대 720만 원을 "
+        "지원합니다. 비수도권에 취업한 청년 본인도 지역에 따라 480만~720만 원을 받을 수 있습니다(복지로 안내). "
+        "지원 조건은 고용24 공고에서 꼭 확인하세요.",
+        "출처\nhttps://www.bokjiro.go.kr/ssis-tbu/cms/pc/news/promotion/1309561_1118.html",
+        f"{today:%Y.%m.%d} JD Viewer 모집중 신입 IT 공고(국내 근무) 기준. 같은 자리를 여러 사이트에 올린 것은 하나로, "
+        "규모를 모르는 회사는 중소기업으로 셌습니다.",
+    ])
+    return {"id": f"sme-{today:%Y%m%d}", "series": "[중견·중소 신입]", "title": "중견·중소 신입 IT 자리", "slides": slides,
+            "caption": caption}
+
+
+BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan, "military": build_military, "region": build_region, "sme": build_sme}
 
 
 # --- 렌더 ---------------------------------------------------------------
