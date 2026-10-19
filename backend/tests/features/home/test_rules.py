@@ -66,3 +66,8 @@ def test_safe_logo_only_allows_our_own_files():
     assert safe_logo("/logos/c/../../etc/passwd") is None
     assert safe_logo("/logos/c/30f5c8d6e7008a50.svg") is None
     assert safe_logo("//evil.example/logos/c/30f5c8d6e7008a50.png") is None
+
+
+def test_bc_card_rule_does_not_catch_mbc():
+    assert classify("BC카드") == "금융"
+    assert classify("엠비씨(MBC)아카데미 컴퓨터교육센터") != "금융"
