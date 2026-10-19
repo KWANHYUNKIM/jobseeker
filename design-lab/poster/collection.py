@@ -213,6 +213,14 @@ def _leaked_header(job: dict) -> str:
             t = re.sub(r"^[#\s\[【(•·*-]+|[\]】):：.!\s]+$", "", line or "")
             if len(t) <= 30 and (_STOP.match(t) or any(rx.match(t) for k, rx in _HEADS.items() if k != cell)):
                 return line
+    # 공고 제목이 낱말마다 한 줄로 쪼개져 칸에 들어간 것('인원 / [Timely / AI] / 백엔드 / 개발자', 업스테이지 2026-10-20)
+    title = re.sub(r"\s+", " ", job.get("title") or "")
+    for cell, lines in cells.items():
+        short = [(l or "").strip() for l in lines]
+        for i in range(len(short) - 2):
+            w = short[i:i + 3]
+            if all(0 < len(x) <= 7 and " " not in x for x in w) and " ".join(w) in title:
+                return f"제목이 줄로 쪼개짐: {' / '.join(w)}"
     if len(_MOJIBAKE.findall(" ".join(lines for v in cells.values() for lines in v))) >= 2:
         return "글자 깨짐(? 로 바뀐 문장부호)"
     if _PLACE_IN_CAREER.search(job.get("career") or ""):
@@ -408,7 +416,7 @@ GROUP_CAP = 2
 def _core(company: str) -> str:
     """회사 한 번씩을 가를 때 쓰는 이름. 같은 회사가 '넛지헬스케어(주)' 와 '넛지헬스케어(캐시워크)'
     로 따로 올라와 신입 묶음에 두 장 실렸다 — 괄호·법인 표기를 떼고, 영문 표기는 한글로 바꿔 본다."""
-    s = re.sub(r"\([^)]*\)|㈜|주식회사", "", company or "").lower()
+    s = re.sub(r"\([^)]*\)|㈜|주식회사|유한회사|유한책임회사|재단법인|사단법인", "", company or "").lower()
     for en, ko in _EN_KO.items():
         if en.isascii():
             s = re.sub(rf"\b{en}\b", ko, s)

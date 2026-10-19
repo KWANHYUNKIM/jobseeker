@@ -389,6 +389,23 @@ class SameRoleTest(unittest.TestCase):
         self.assertTrue(_same_role("Backend Developer", "Backend Developer"))
 
 
+class ShardedTitleTest(unittest.TestCase):
+    def test_title_split_into_lines(self):
+        from poster.collection import _leaked_header
+        job = {"title": "[Timely AI] 백엔드 개발자",
+               "full": {"qualifications": ["인원", "[Timely", "AI]", "백엔드", "개발자"]}}
+        self.assertTrue(_leaked_header(job))
+
+    def test_short_skill_list_is_fine(self):
+        from poster.collection import _leaked_header
+        job = {"title": "백엔드 개발자", "full": {"qualifications": ["Python", "Java", "Spring", "AWS"]}}
+        self.assertEqual(_leaked_header(job), "")
+
+    def test_corporate_prefix(self):
+        from poster.collection import _core
+        self.assertEqual(_core("(유)월터워커"), _core("유한회사 월터워커"))
+
+
 if __name__ == "__main__":
     unittest.main()
 
