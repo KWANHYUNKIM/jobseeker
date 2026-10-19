@@ -62,7 +62,7 @@ STYLE_FONTS = {
     "brandmag": ["Pretendard", "NanumMyeongjo"],
 }
 #: 원고마다 기본으로 찍을 틀
-DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"], "military": ["magazine"], "region": ["magazine"], "sme": ["magazine"], "fourday": ["magazine"], "secneed": ["magazine"], "db": ["magazine"], "k8s": ["magazine"], "linux": ["magazine"], "nextjs": ["magazine"], "vue": ["magazine"], "fastapi": ["magazine"], "angular": ["magazine"], "redis": ["magazine"], "finance": ["magazine"]}
+DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"], "military": ["magazine"], "region": ["magazine"], "sme": ["magazine"], "fourday": ["magazine"], "secneed": ["magazine"], "db": ["magazine"], "k8s": ["magazine"], "linux": ["magazine"], "nextjs": ["magazine"], "vue": ["magazine"], "fastapi": ["magazine"], "angular": ["magazine"], "redis": ["magazine"], "finance": ["magazine"], "semi": ["magazine"]}
 
 
 #: 회사 자산(assets/companies/…)이 없는 기계에서 쓰는 공용 글꼴 — 공식 배포본(OFL), 라이선스는 같은 폴더.
@@ -1564,7 +1564,77 @@ def build_finance(today: date | None = None) -> dict:
             "caption": caption}
 
 
-BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan, "military": build_military, "region": build_region, "sme": build_sme, "fourday": build_fourday, "secneed": build_secneed, "db": build_db, "k8s": build_k8s, "linux": build_linux, "nextjs": build_nextjs, "vue": build_vue, "fastapi": build_fastapi, "angular": build_angular, "redis": build_redis, "finance": build_finance}
+def build_semi(today: date | None = None) -> dict:
+    """[카드뉴스] 반도체 IT — 산업통상부·과기정통부 '2026년 9월 ICT 수출입 동향'(10월 14일: ICT 수출 751.5억 달러, 반도체 603.3억 달러)을
+    계기로, 지금 국내 IT 공고 중 반도체·전자 회사(메인 화면 업종 분류)의 자리·직군·적은 기술·신입 문·눈여겨볼 곳. 같은 자리 중복 게시는 하나로."""
+    from .collection import _group
+    from .series import _co_name, _it_rows
+    classify = _industry_classify()
+    today = today or date.today()
+    rows = _it_rows()
+    total = len(rows)
+    sm = [r for r in rows if classify(r["company"]) == "반도체·전자"]
+    n = len(sm)
+    cos_n = len({_co_name(r["company"]) for r in sm})
+    roles = collections.Counter(x for r in sm for x in set(r["roles"] or []) if x != "기타").most_common(4)
+    stacks = collections.Counter(x for r in sm for x in {"C++" if t == "C/C++" else t for t in (r["stacks"] or [])}).most_common(4)
+    entry = sum(1 for r in sm if r["career_bucket"] == "신입/무관")
+    all_entry = sum(1 for r in rows if r["career_bucket"] == "신입/무관")
+    pct = lambda a, b=n: round(100 * a / b) if b else 0
+    picks, seen = [], set()
+    for r in sorted(sm, key=lambda r: ({"대기업": 0, "중견기업": 1}.get(r["size"], 2), r["deadline_on"] is None, r["deadline_on"] or today)):
+        c = re.sub(r"\s*지점$", "", _co_name(r["company"]))
+        d = (r["deadline_on"] - today).days if r["deadline_on"] else None
+        g = _group(c)
+        if g in seen or d == 0:
+            continue
+        seen.add(g)
+        picks.append({"co": c, "title": _short(re.sub(r"^\s*\[[^\]]*\]\s*", "", r["title"])),
+                      "meta": f"{r['size'] or ''} · {f'D-{d}' if d is not None else '상시'}"})
+        if len(picks) == 4:
+            break
+    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 업종은 메인 화면 분류 · 같은 자리 중복 게시는 하나로"
+    slides = [
+        {"type": "cover", "photo": "typing.jpg", "kicker": f"반도체 IT · {today:%Y.%m.%d}",
+         "big": f"{n:,}", "unit": "개", "title": ["반도체·전자 회사가 낸", "IT 자리"],
+         "sub": f"{cos_n}개 회사 · 삼성전자·SK하이닉스 공고는 빠져 있다"},
+        {"type": "stat", "photo": "hourglass.jpg", "kicker": "9월 ICT 수출", "title": "반도체가 80%",
+         "items": [{"num": "751.5", "unit": "억$", "label": "ICT 수출(1년 전보다 195.8%↑)"},
+                   {"num": "603.3", "unit": "억$", "label": "반도체(262.8%↑)"}],
+         "explain": "산업통상부·과기정통부 10월 14일 발표. 반도체가 ICT 수출의 80.3%."},
+        {"type": "stat", "photo": "code.jpg", "kicker": "어느 직군", "title": "반도체 회사 IT 자리는",
+         "items": [{"num": f"{pct(v)}", "unit": "%", "label": k} for k, v in roles[:2]],
+         "explain": " · ".join(f"{k} {pct(v)}%" for k, v in roles[2:]) + ". 한 자리가 여러 직군이면 각각 셌다."},
+        {"type": "stat", "photo": "css.jpg", "kicker": "많이 적은 기술", "title": "신입 문도 보면",
+         "items": [{"num": f"{pct(stacks[0][1])}", "unit": "%", "label": stacks[0][0]},
+                   {"num": f"{pct(entry)}", "unit": "%", "label": f"신입 가능(전체 {pct(all_entry, total)}%)"}],
+         "explain": " · ".join(f"{k} {pct(v)}%" for k, v in stacks[1:]) + f". 반도체·전자 IT 자리 {n:,}개 중."},
+        {"type": "picks", "photo": "pangyo.jpg", "kicker": "눈여겨볼 곳", "title": "반도체·전자 IT 자리",
+         "sub": "큰 회사 먼저 · 한 그룹 한 곳", "rows": picks},
+        {"type": "end", "photo": "seoul.jpg", "kicker": "저장해 두기", "title": "수출이 커지면\n소프트웨어 자리도",
+         "lines": ["반도체 쪽 준비하는 친구에게 보내 주세요", "공고 전체는 프로필 링크에서"]},
+    ]
+    for sl in slides:
+        sl["image"], sl["credit"] = _photo(sl.pop("photo"))
+        sl["note"] = note
+    caption = "\n\n".join([
+        f"9월 ICT 수출이 751.5억 달러로 1년 전보다 195.8% 늘었고, 그중 반도체가 603.3억 달러(80.3%)였습니다. 지금 국내 IT 자리 {total:,}개 중 "
+        f"반도체·전자 회사가 낸 자리는 {n:,}개({cos_n}개 회사)입니다. 지금 우리 데이터에는 삼성전자·SK하이닉스 공고가 없어서, 이 수는 그 밖의 회사 몫입니다.",
+        "· 직군: " + " · ".join(f"{k} {pct(v)}%" for k, v in roles) + "\n"
+        "· 많이 적은 기술: " + " · ".join(f"{k} {pct(v)}%" for k, v in stacks) + "\n"
+        f"· 신입 가능: {entry}개({pct(entry)}%, 전체 평균 {pct(all_entry, total)}%)\n"
+        "· 눈여겨볼 곳: " + " · ".join(p["co"] for p in picks),
+        "산업통상부·과학기술정보통신부 「2026년 9월 ICT 수출입 동향」(10월 14일)에 따르면 ICT 수출은 751.5억 달러(+195.8%), "
+        "반도체 수출은 603.3억 달러(+262.8%)로 ICT 수출의 80.3%를 차지했습니다.",
+        "출처\nhttps://eiec.kdi.re.kr/policy/materialView.do?num=288070",
+        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무) 기준. 반도체·전자 회사는 메인 화면의 업종 분류를 따랐고, 한 자리가 여러 직군에 걸치면 각각 셌습니다. "
+        "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+    ])
+    return {"id": f"semi-{today:%Y%m%d}", "series": "[반도체 IT]", "title": "반도체 IT 자리", "slides": slides,
+            "caption": caption}
+
+
+BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan, "military": build_military, "region": build_region, "sme": build_sme, "fourday": build_fourday, "secneed": build_secneed, "db": build_db, "k8s": build_k8s, "linux": build_linux, "nextjs": build_nextjs, "vue": build_vue, "fastapi": build_fastapi, "angular": build_angular, "redis": build_redis, "finance": build_finance, "semi": build_semi}
 
 
 # --- 렌더 ---------------------------------------------------------------
