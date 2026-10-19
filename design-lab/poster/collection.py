@@ -189,7 +189,7 @@ _STOP = re.compile(r"^(interview\s+process|hiring\s+process|additional\s+informa
 #: 제목 머리표가 외국 지명인 현지 채용
 _FOREIGN_TAG = re.compile(r"\s*\[(베트남|중국|미국|인도|싱가포르|대만|필리핀|인도네시아|태국|말레이시아)[^\]]*\]")
 #: 헤드헌팅·서치펌 공고 — 고객사 이름을 숨기고 '유망 … 기업' 으로 쓴다
-_AGENCY = re.compile(r"라인서치|커리어케어|헤드헌팅|헤드헌터|서치펌|고객사|유망\s*\S+(\s*\S+){0,3}\s*기업")
+_AGENCY = re.compile(r"라인서치|커리어케어|휴먼파워|아웃소싱|헤드헌팅|헤드헌터|서치펌|고객사|유망\s*\S+(\s*\S+){0,3}\s*기업")
 #: 경력 칸에 지역이 들어간 공고(토스·42dot 의 'Seoul', 'Pangyo …')
 _PLACE_IN_CAREER = re.compile(r"seoul|pangyo|korea|remote|서울|판교|경기", re.I)
 

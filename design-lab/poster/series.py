@@ -68,6 +68,7 @@ THEMES = {
     "contra": {"paper": "#15171d", "ink": "#f4f2ec", "sub": "#9b9fa9", "accent": "#ffd43b", "line": "#2b2f38"},
     "game": {"paper": "#0b0d1a", "ink": "#f2f4ff", "sub": "#9aa0c0", "accent": "#5df2c1", "line": "#232845"},
     "security": {"paper": "#0f1420", "ink": "#f3f4f8", "sub": "#9ba3b4", "accent": "#ff4d5a", "line": "#26304a"},
+    "junior": {"paper": "#fff6ec", "ink": "#2a1a0c", "sub": "#77624f", "accent": "#f0620a", "line": "#f0dcc7"},
     "health": {"paper": "#f3f8fb", "ink": "#0f2230", "sub": "#566b7a", "accent": "#0b84c6", "line": "#d4e4ee"},
     "pangyo": {"paper": "#f1f6ee", "ink": "#14241a", "sub": "#5b6d60", "accent": "#1a9e5a", "line": "#d3e2d6"},
     "mobility": {"paper": "#0a1a2f", "ink": "#f2f6fb", "sub": "#94a7bf", "accent": "#00c2ff", "line": "#1d3352"},
@@ -80,7 +81,7 @@ SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", 
           "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]",
           "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]", "balance": "[둘 중 하나]", "tier": "[티어표]",
           "contra": "[공고 원문]", "game": "[게임사 채용]", "security": "[보안 채용]",
-          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]"}
+          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -104,6 +105,7 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "contra": ["채용공고", "신입개발자", "자격요건", "개발자취업", "중고신입"],
         "game": ["게임회사", "게임개발자", "게임스컴", "개발자채용", "게임업계취업"],
         "security": ["정보보안", "보안엔지니어", "보안채용", "개발자채용", "IT취업"],
+        "junior": ["주니어개발자", "신입개발자", "개발자취업", "취업준비", "개발자채용"],
         "health": ["헬스케어", "의료AI", "루닛", "디지털헬스", "개발자채용"],
         "pangyo": ["판교", "판교테크노밸리", "판교개발자", "IT회사", "개발자채용"],
         "mobility": ["모빌리티", "SDV", "현대자동차", "자율주행", "개발자채용"],
@@ -2098,6 +2100,65 @@ def build_health() -> dict:
             "reel_lead": "TIME 이 꼽은 헬스테크, 국내에서 뽑는 개발 자리 — 저장해 두세요"}
 
 
+def build_junior() -> dict:
+    """[주니어 채용] 릴스 — 잡코리아 '주니어 편' 설문(1,000명, 2026.7.28: 공고가 줄었다 76.4%·서류에서 막힌다 67.5%)과
+    지금 신입·1~2년차가 넣을 수 있는 국내 공고를 회사 규모로 나눠 센다. 헤드헌팅·인력 파견 공고는 뺀다."""
+    sys.path.insert(0, str(ROOT / "catch_capture"))
+    from store.db.conn import cursor
+    from .collection import _AGENCY
+    with cursor(autocommit=True) as cur:
+        cur.execute("""SELECT co.display_name AS company, j.title, f.career_bucket, f.company_size
+                         FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
+                         JOIN job_facet f ON f.job_id = j.id JOIN company co ON co.id = j.company_id
+                        WHERE coalesce(f.region, '') <> '해외·원격' AND f.career_bucket IN ('신입/무관', '1-2년')
+                          AND NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = j.id)""")
+        rows = [r for r in cur.fetchall() if not _not_dev({"title": r["title"], "stack": ["x"]})
+                and not _AGENCY.search(r["company"] + " " + r["title"])]
+    n = len(rows)
+    entry = sum(1 for r in rows if r["career_bucket"] == "신입/무관")
+    size = collections.Counter(r["company_size"] or "규모 모름" for r in rows)
+    order = ["대기업", "중견기업", "중소기업"]
+    big = [r for r in rows if r["company_size"] == "대기업"]
+    big_cos = collections.Counter(_co_name(r["company"]) for r in big).most_common(3)
+    pct = lambda a: round(100 * a / n) if n else 0
+    asof = date.today().isoformat()
+    wj = "\u2060"
+    note = (f"JD Viewer 모집중 IT 공고 · 국내 근무 · 경력 조건 신입·1~2년 · {_dot(asof)} · 헤드헌팅·파견 공고 뺌 · "
+            "규모를 모르는 회사는 중소기업으로 셈")
+    slides = [
+        {"type": "cover", "big": f"{n:,}", "big_unit": "건", "lines": ["공고가 줄었다는 주니어", "지금 넣을 수 있는 곳"],
+         "sub": f"신입 {entry:,}건 · 1~2년차 {n - entry:,}건", "note": note},
+        {"type": "table", "title": "주니어가 느끼는 시장", "sub": "잡코리아 설문 요약, 원문은 캡션의 링크",
+         "head": ["무엇", "응답", ""],
+         "rows": [["공고 자체가 줄었다", f"76.4{wj}%", ""],
+                  ["서류에서 막힌다", f"67.5{wj}%", ""],
+                  ["면접까지 간 곳이 없다", f"35.0{wj}%", ""]],
+         "hi_col": 1, "note": "잡코리아 2026 하반기 개발자 취업 현황 리포트 · 주니어 편(2026.7.28, 1,000명)"},
+        {"type": "bars", "title": "어디에 열려 있나", "sub": "회사 규모별 주니어 공고",
+         "rows": [{"label": k, "value": size.get(k, 0), "display": f"{size.get(k, 0):,}", "unit": f"{pct(size.get(k, 0))}%",
+                   "hi": k == "중소기업"} for k in order], "note": note},
+        {"type": "stat", "title": "대기업 주니어 자리", "num": f"{len(big)}", "unit": "건",
+         "label": f"{n:,}건 중 {pct(len(big))}%",
+         "explain": "서류에서 막힌다면 **중견·중소** 공고까지 넓혀 보자.\n대기업 쪽은 " + " · ".join(
+             f"{c} {k}{wj}건" for c, k in big_cos) + ".", "note": note},
+        {"type": "end", "title": "저장해 두고", "lines": [
+            f"신입 **{entry:,}건** · 1~2년차 **{n - entry:,}건**",
+            "규모별 공고 전체는 프로필 링크에서", "취준하는 친구에게 보내 주세요"], "note": note},
+    ]
+    caption = "\n\n".join([
+        f"주니어 4명 중 3명은 '공고 자체가 줄었다'고 느낍니다. 그래도 지금 신입·1~2년차가 넣을 수 있는 국내 IT 공고는 {n:,}건입니다.",
+        f"· 신입 {entry:,}건 · 1~2년차 {n - entry:,}건\n· 회사 규모: " + " · ".join(f"{k} {size.get(k, 0):,}건" for k in order) + "\n"
+        "· 대기업에서 주니어를 많이 뽑는 곳: " + " · ".join(f"{c} {k}건" for c, k in big_cos),
+        "잡코리아가 경력 3년 이하 개발자 1,000명에게 물었더니 76.4%가 공고 자체가 줄었다고 했고, 67.5%는 서류에서 가장 많이 "
+        "막힌다고 답했습니다. 면접까지 간 곳이 한 곳도 없다는 응답도 35.0%였습니다.",
+        "출처\nhttps://www.jobkorea.co.kr/recruit/careers/articles/junior-developer-2026",
+        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무, 경력 조건 신입·1~2년) 기준. 헤드헌팅·파견 공고는 뺐습니다.",
+    ])
+    return {"kind": "junior", "id": f"junior-{asof.replace('-', '')}", "title": "주니어 채용",
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.2,
+            "reel_lead": "공고가 줄었다는 주니어, 지금 넣을 수 있는 곳 — 저장해 두세요"}
+
+
 REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
 
 
@@ -2154,7 +2215,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
                                      "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit",
-                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health"])
+                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
@@ -2198,6 +2259,8 @@ def main() -> int:
         post = build_pangyo()
     elif args.kind == "health":
         post = build_health()
+    elif args.kind == "junior":
+        post = build_junior()
     elif args.kind in ("pay", "perk", "welcome", "gongchae", "contra"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae, "contra": build_contra}[args.kind]()
