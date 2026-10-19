@@ -68,6 +68,7 @@ THEMES = {
     "contra": {"paper": "#15171d", "ink": "#f4f2ec", "sub": "#9b9fa9", "accent": "#ffd43b", "line": "#2b2f38"},
     "game": {"paper": "#0b0d1a", "ink": "#f2f4ff", "sub": "#9aa0c0", "accent": "#5df2c1", "line": "#232845"},
     "security": {"paper": "#0f1420", "ink": "#f3f4f8", "sub": "#9ba3b4", "accent": "#ff4d5a", "line": "#26304a"},
+    "gap": {"paper": "#f6f4ef", "ink": "#181614", "sub": "#6b655c", "accent": "#d9480f", "line": "#e2ddd2"},
     "usvs": {"paper": "#10131a", "ink": "#f1f3f7", "sub": "#9aa1ae", "accent": "#7ee787", "line": "#262b36"},
     "junior": {"paper": "#fff6ec", "ink": "#2a1a0c", "sub": "#77624f", "accent": "#f0620a", "line": "#f0dcc7"},
     "health": {"paper": "#f3f8fb", "ink": "#0f2230", "sub": "#566b7a", "accent": "#0b84c6", "line": "#d4e4ee"},
@@ -82,7 +83,7 @@ SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", 
           "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]",
           "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]", "balance": "[둘 중 하나]", "tier": "[티어표]",
           "contra": "[공고 원문]", "game": "[게임사 채용]", "security": "[보안 채용]",
-          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]"}
+          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -106,6 +107,7 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "contra": ["채용공고", "신입개발자", "자격요건", "개발자취업", "중고신입"],
         "game": ["게임회사", "게임개발자", "게임스컴", "개발자채용", "게임업계취업"],
         "security": ["정보보안", "보안엔지니어", "보안채용", "개발자채용", "IT취업"],
+        "gap": ["신입개발자", "경력직", "개발자취업", "이직준비", "개발자채용"],
         "usvs": ["개발자채용", "AI개발자", "시니어개발자", "채용트렌드", "IT채용"],
         "junior": ["주니어개발자", "신입개발자", "개발자취업", "취업준비", "개발자채용"],
         "health": ["헬스케어", "의료AI", "루닛", "디지털헬스", "개발자채용"],
@@ -2223,6 +2225,50 @@ def build_usvs() -> dict:
             "reel_lead": "미국은 AI 자리가 늘었다, 우리 공고는? — 저장해 두세요"}
 
 
+def build_gap() -> dict:
+    """[신입 vs 경력] 릴스 — 산업부 '산업기술인력 수급 실태조사'(경향신문 2025.12.31: 2026 채용 예상 경력 +3.7%·신입 −5.2%)를
+    우리 메인 화면의 신입·경력 구역 숫자와 대기업 신입 자리로 받친다. 숫자는 /api/home 의 메인 화면 그대로."""
+    import urllib.request
+    base = os.environ.get("VIEWER_API", "http://127.0.0.1:8771")
+    home = json.loads(urllib.request.urlopen(base + "/api/home", timeout=30).read())
+    sec = {x["key"]: x for x in home["sections"]}
+    entry, exp = sec["entry"]["total"], sec["experienced"]["total"]
+    big = [j for j in sec["entry"]["jobs"] if j["size"] == "대기업" and not _not_dev({"title": j["title"], "stack": ["x"]})]
+    big_cos = list(dict.fromkeys(_co_name(j["company"]).replace(" Careers", "") for j in big))   # 센 수 그대로 — 자르지 않는다
+    shown = len(sec["entry"]["jobs"])
+    ratio = exp / entry if entry else 0
+    asof = date.today().isoformat()
+    wj = "\u2060"
+    note = f"JD Viewer 메인 화면 '신입'·'경력' 구역 · 모집중 IT 공고 · {_dot(asof)}"
+    slides = [
+        {"type": "cover", "big": f"1 : {ratio:.1f}", "big_unit": "", "lines": ["신입 한 자리에", "경력 자리는 이만큼"],
+         "sub": f"신입 {entry:,}건 · 경력 {exp:,}건", "note": note},
+        {"type": "table", "title": "2026년 채용 계획", "sub": "산업부 실태조사 요약, 원문은 캡션의 링크",
+         "head": ["누구", "작년보다", "인원"],
+         "rows": [["경력자", f"+3.7{wj}%", f"+1,338{wj}명"], ["신입", f"−5.2{wj}%", f"−1,430{wj}명"]],
+         "hi_col": 1, "note": "산업통상부 산업기술인력 수급 실태조사 · 경향신문 2025.12.31 보도"},
+        {"type": "bars", "title": "지금 열린 자리", "sub": "메인 화면 구역별 모집중 IT 공고",
+         "rows": [{"label": "경력", "value": exp, "display": f"{exp:,}", "unit": "건", "hi": False},
+                  {"label": "신입", "value": entry, "display": f"{entry:,}", "unit": "건", "hi": True}], "note": note},
+        {"type": "stat", "title": "그래도 대기업 신입 자리는 있다", "num": f"{len(big_cos)}", "unit": "곳",
+         "label": f"메인 '신입 인기' TOP {shown} 에 든 대기업",
+         "explain": " · ".join(f"**{c}**" for c in big_cos[:3]) + "\n" + " · ".join(big_cos[3:6]), "note": note},
+        {"type": "end", "title": "저장해 두고", "lines": [
+            f"신입 **{entry:,}건** · 경력 **{exp:,}건**", "신입 공고 전체는 프로필 링크에서", "취준하는 친구에게 보내 주세요"], "note": note},
+    ]
+    caption = "\n\n".join([
+        f"신입 한 자리에 경력 자리는 {ratio:.1f}개. 지금 열린 IT 공고는 신입 {entry:,}건, 경력 {exp:,}건입니다.",
+        "산업부의 '산업기술인력 수급 실태조사'에 따르면 2026년 채용 예상 인원은 경력자가 3.7%(1,338명) 늘고 신입은 "
+        "5.2%(1,430명) 줄어듭니다(경향신문 보도).",
+        f"그래도 메인 '신입 인기' TOP {shown} 에 대기업 {len(big_cos)}곳이 있습니다: " + " · ".join(big_cos),
+        "출처\nhttps://www.khan.co.kr/article/202512312007015/",
+        f"{_dot(asof)} JD Viewer 메인 화면 '신입'·'경력' 구역 기준.",
+    ])
+    return {"kind": "gap", "id": f"gap-{asof.replace('-', '')}", "title": "신입 vs 경력",
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.0,
+            "reel_lead": "신입 한 자리에 경력 자리는 이만큼 — 저장해 두세요"}
+
+
 REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
 
 
@@ -2279,7 +2325,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
                                      "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit",
-                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs"])
+                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
@@ -2327,6 +2373,8 @@ def main() -> int:
         post = build_junior()
     elif args.kind == "usvs":
         post = build_usvs()
+    elif args.kind == "gap":
+        post = build_gap()
     elif args.kind in ("pay", "perk", "welcome", "gongchae", "contra"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae, "contra": build_contra}[args.kind]()
