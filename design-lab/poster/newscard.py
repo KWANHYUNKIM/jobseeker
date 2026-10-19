@@ -62,7 +62,7 @@ STYLE_FONTS = {
     "brandmag": ["Pretendard", "NanumMyeongjo"],
 }
 #: 원고마다 기본으로 찍을 틀
-DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"], "military": ["magazine"], "region": ["magazine"], "sme": ["magazine"], "fourday": ["magazine"], "secneed": ["magazine"], "db": ["magazine"], "k8s": ["magazine"]}
+DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"], "military": ["magazine"], "region": ["magazine"], "sme": ["magazine"], "fourday": ["magazine"], "secneed": ["magazine"], "db": ["magazine"], "k8s": ["magazine"], "linux": ["magazine"]}
 
 
 #: 회사 자산(assets/companies/…)이 없는 기계에서 쓰는 공용 글꼴 — 공식 배포본(OFL), 라이선스는 같은 폴더.
@@ -1082,7 +1082,72 @@ def build_k8s(today: date | None = None) -> dict:
             "caption": caption}
 
 
-BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan, "military": build_military, "region": build_region, "sme": build_sme, "fourday": build_fourday, "secneed": build_secneed, "db": build_db, "k8s": build_k8s}
+def build_linux(today: date | None = None) -> dict:
+    """[카드뉴스] 리눅스 — kernel.org(메인라인 7.3 2026.10.18 · 안정판 7.2.11)를 계기로, 지금 국내 IT 공고 중 Linux 를
+    적은 자리·직군·같이 적은 기술·눈여겨볼 곳(임베디드·인프라). 같은 자리 중복 게시는 하나로."""
+    from .collection import _group
+    from .series import _co_name, _it_rows
+    today = today or date.today()
+    rows = _it_rows()
+    total = len(rows)
+    lx = [r for r in rows if "Linux" in (r["stacks"] or [])]
+    n = len(lx)
+    roles = collections.Counter(x for r in lx for x in set(r["roles"] or []) if x != "기타").most_common(4)
+    with_ = collections.Counter(x for r in lx for x in set(r["stacks"] or []) if x not in ("Linux", "C/C++")).most_common(5)
+    entry = sum(1 for r in lx if r["career_bucket"] == "신입/무관")
+    pct = lambda a, b=n: round(100 * a / b) if b else 0
+    picks, seen = [], set()
+    for r in sorted((r for r in lx if {"펌웨어/임베디드", "DevOps/인프라"} & set(r["roles"] or [])),
+                    key=lambda r: ({"대기업": 0, "중견기업": 1}.get(r["size"], 2), r["deadline_on"] is None, r["deadline_on"] or today)):
+        c = re.sub(r"\s*지점$", "", _co_name(r["company"]))
+        c = {"비바리퍼블리카": "토스"}.get(c, c)   # 법인명보다 서비스 이름이 읽힌다
+        d = (r["deadline_on"] - today).days if r["deadline_on"] else None
+        g = _group(c)                    # 한 그룹 한 곳 — 한화·현대가 두 칸씩 차지했다
+        if g in seen or d == 0:
+            continue
+        seen.add(g)
+        picks.append({"co": c, "title": _short(re.sub(r"^\s*\[[^\]]*\]\s*", "", r["title"])),
+                      "meta": f"{r['size'] or ''} · {f'D-{d}' if d is not None else '상시'}"})
+        if len(picks) == 4:
+            break
+    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    slides = [
+        {"type": "cover", "photo": "code.jpg", "kicker": f"리눅스 · {today:%Y.%m.%d}",
+         "big": f"{n:,}", "unit": "개", "title": ["Linux 를 적은", "국내 IT 자리"],
+         "sub": f"국내 IT 자리 {total:,}개 중 {pct(n, total)}% · 신입 가능 {entry}개"},
+        {"type": "stat", "photo": "hourglass.jpg", "kicker": "릴리스", "title": "커널 7.3, 10월 18일",
+         "items": [{"num": "7.3", "unit": "", "label": "메인라인(2026.10.18)"},
+                   {"num": "7.2.11", "unit": "", "label": "안정판(2026.10.15)"}],
+         "explain": "kernel.org 첫 화면 기준. 메인라인은 새 기능이 들어가는 줄기, 안정판은 수정만 받는 판이다."},
+        {"type": "stat", "photo": "typing.jpg", "kicker": "어느 직군", "title": "Linux 자리는",
+         "items": [{"num": f"{v:,}", "unit": "개", "label": k} for k, v in roles[:2]],
+         "explain": " · ".join(f"{k} {v:,}개" for k, v in roles[2:]) + ". 한 자리가 여러 직군이면 각각 셌다."},
+        {"type": "stat", "photo": "css.jpg", "kicker": "같이 적은 기술", "title": "함께 적힌 것",
+         "items": [{"num": f"{pct(v)}", "unit": "%", "label": k} for k, v in with_[:2]],
+         "explain": " · ".join(f"{k} {pct(v)}%" for k, v in with_[2:]) + f". Linux 자리 {n:,}개 중."},
+        {"type": "picks", "photo": "pangyo.jpg", "kicker": "눈여겨볼 곳", "title": "임베디드·인프라 자리",
+         "sub": "Linux 를 적은 임베디드·인프라 공고, 큰 회사 먼저", "rows": picks},
+        {"type": "end", "photo": "seoul.jpg", "kicker": "저장해 두기", "title": "터미널이 익숙하면\n문이 하나 더 열린다",
+         "lines": ["리눅스 공부하는 친구에게 보내 주세요", "공고 전체는 프로필 링크에서"]},
+    ]
+    for sl in slides:
+        sl["image"], sl["credit"] = _photo(sl.pop("photo"))
+        sl["note"] = note
+    caption = "\n\n".join([
+        f"리눅스 커널 7.3 이 10월 18일 나왔습니다. 지금 국내 IT 자리 {total:,}개 중 Linux 를 적은 자리는 {n:,}개({pct(n, total)}%), 신입 가능 {entry}개입니다.",
+        "· 어느 직군: " + " · ".join(f"{k} {v:,}개({pct(v)}%)" for k, v in roles) + "\n"
+        "· 같이 적은 기술: " + " · ".join(f"{k} {pct(v)}%" for k, v in with_) + "\n"
+        "· 눈여겨볼 곳: " + " · ".join(p["co"] for p in picks),
+        "kernel.org 첫 화면에 따르면 메인라인 7.3 은 10월 18일, 안정판 7.2.11 은 10월 15일 나왔습니다.",
+        "출처\nhttps://www.kernel.org/",
+        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 한 자리가 여러 직군에 걸치면 각각 셌습니다. "
+        "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+    ])
+    return {"id": f"linux-{today:%Y%m%d}", "series": "[리눅스]", "title": "Linux 자리", "slides": slides,
+            "caption": caption}
+
+
+BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan, "military": build_military, "region": build_region, "sme": build_sme, "fourday": build_fourday, "secneed": build_secneed, "db": build_db, "k8s": build_k8s, "linux": build_linux}
 
 
 # --- 렌더 ---------------------------------------------------------------
