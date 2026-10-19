@@ -113,7 +113,8 @@ def build_collection(col: dict, platform: str) -> str:
             t = _TAG_CLEAN.sub("", s)
             if 1 < len(t) <= 18 and t not in stacks:
                 stacks.append(t)
-    extra = [col["value"]] if col.get("kind") == "company" and col.get("value") else []
+    # 기술 묶음은 그 기술 이름부터 — Go 묶음 태그가 공고에 먼저 나온 #AWS #Apache 였다
+    extra = [col["value"]] if col.get("kind") in ("company", "stack") and col.get("value") else []
     tags = COLLECTION_TAGS.get(col.get("kind", ""), []) + extra + stacks[:2] + BASE_TAGS[:1]
     seen, out = set(), []
     for t in tags:
