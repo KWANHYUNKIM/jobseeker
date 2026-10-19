@@ -2794,7 +2794,8 @@ def _it_rows() -> list[dict]:
     from .newscard import _NOT_JOB
     today = date.today()
     with cursor(autocommit=True) as cur:
-        cur.execute("""SELECT f.stacks, f.roles, co.display_name AS company, j.title, f.career_bucket, j.deadline_on
+        cur.execute("""SELECT f.stacks, f.roles, co.display_name AS company, j.title, f.career_bucket, j.deadline_on,
+                              f.company_size AS size
                          FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
                          JOIN job_facet f ON f.job_id = j.id JOIN company co ON co.id = j.company_id
                         WHERE coalesce(f.region, '') <> '해외·원격'
