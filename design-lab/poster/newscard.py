@@ -62,7 +62,7 @@ STYLE_FONTS = {
     "brandmag": ["Pretendard", "NanumMyeongjo"],
 }
 #: 원고마다 기본으로 찍을 틀
-DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"], "military": ["magazine"], "region": ["magazine"], "sme": ["magazine"], "fourday": ["magazine"], "secneed": ["magazine"], "db": ["magazine"], "k8s": ["magazine"], "linux": ["magazine"], "nextjs": ["magazine"], "vue": ["magazine"], "fastapi": ["magazine"], "angular": ["magazine"], "redis": ["magazine"]}
+DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"], "military": ["magazine"], "region": ["magazine"], "sme": ["magazine"], "fourday": ["magazine"], "secneed": ["magazine"], "db": ["magazine"], "k8s": ["magazine"], "linux": ["magazine"], "nextjs": ["magazine"], "vue": ["magazine"], "fastapi": ["magazine"], "angular": ["magazine"], "redis": ["magazine"], "finance": ["magazine"]}
 
 
 #: 회사 자산(assets/companies/…)이 없는 기계에서 쓰는 공용 글꼴 — 공식 배포본(OFL), 라이선스는 같은 폴더.
@@ -1486,7 +1486,85 @@ def build_redis(today: date | None = None) -> dict:
             "caption": caption}
 
 
-BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan, "military": build_military, "region": build_region, "sme": build_sme, "fourday": build_fourday, "secneed": build_secneed, "db": build_db, "k8s": build_k8s, "linux": build_linux, "nextjs": build_nextjs, "vue": build_vue, "fastapi": build_fastapi, "angular": build_angular, "redis": build_redis}
+def _industry_classify():
+    """메인 화면의 업종 분류(backend/app/features/home/industry.py)를 그대로 쓴다 — 판과 화면의 '금융' 이 같아야 한다."""
+    import importlib.util
+    path = Path(__file__).resolve().parents[2] / "backend" / "app" / "features" / "home" / "industry.py"
+    spec = importlib.util.spec_from_file_location("_home_industry", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod.classify
+
+
+def build_finance(today: date | None = None) -> dict:
+    """[카드뉴스] 금융권 IT — 국가데이터처 '2026년 9월 고용동향'(10월 16일, 금융및보험업 취업자 증가)을 계기로, 지금 국내 IT 공고 중
+    금융 회사(메인 화면 업종 분류 '금융')의 자리·적은 기술·신입 문·눈여겨볼 곳. 같은 자리 중복 게시는 하나로."""
+    from .collection import _group
+    from .series import _co_name, _it_rows
+    classify = _industry_classify()
+    today = today or date.today()
+    rows = _it_rows()
+    total = len(rows)
+    fin = [r for r in rows if classify(r["company"]) == "금융"]
+    n = len(fin)
+    cos_n = len({_co_name(r["company"]) for r in fin})
+    stacks = collections.Counter(x for r in fin for x in set(r["stacks"] or [])).most_common(4)
+    entry = sum(1 for r in fin if r["career_bucket"] == "신입/무관")
+    all_entry = sum(1 for r in rows if r["career_bucket"] == "신입/무관")
+    pct = lambda a, b=n: round(100 * a / b) if b else 0
+    picks, seen = [], set()
+    for r in sorted(fin, key=lambda r: ({"대기업": 0, "중견기업": 1}.get(r["size"], 2), r["deadline_on"] is None, r["deadline_on"] or today)):
+        c = re.sub(r"\s*지점$", "", _co_name(r["company"]))
+        c = {"비바리퍼블리카": "토스"}.get(c, c)
+        d = (r["deadline_on"] - today).days if r["deadline_on"] else None
+        g = _group(c)
+        if g in seen or d == 0:
+            continue
+        seen.add(g)
+        picks.append({"co": c, "title": _short(re.sub(r"^\s*\[[^\]]*\]\s*", "", r["title"])),
+                      "meta": f"{r['size'] or ''} · {f'D-{d}' if d is not None else '상시'}"})
+        if len(picks) == 4:
+            break
+    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 업종은 메인 화면 분류 · 같은 자리 중복 게시는 하나로"
+    slides = [
+        {"type": "cover", "photo": "seoul.jpg", "kicker": f"금융권 IT · {today:%Y.%m.%d}",
+         "big": f"{n:,}", "unit": "개", "title": ["금융 회사가 낸", "IT 자리"],
+         "sub": f"{cos_n}개 회사 · 국내 IT 자리 {total:,}개 중 {pct(n, total)}%"},
+        {"type": "stat", "photo": "hourglass.jpg", "kicker": "9월 고용동향", "title": "금융·보험업 취업자 증가",
+         "items": [{"num": "11.3", "unit": "만", "label": "전체 취업자 증가(1년 전보다)"},
+                   {"num": "44.0", "unit": "%", "label": "청년층 고용률"}],
+         "explain": "국가데이터처 10월 16일 발표. 늘어난 업종으로 보건·사회복지, 운수·창고, 금융·보험 등을 꼽았다."},
+        {"type": "stat", "photo": "code.jpg", "kicker": "금융권 IT 자리 안에서", "title": "많이 적은 기술",
+         "items": [{"num": f"{pct(v)}", "unit": "%", "label": k} for k, v in stacks[:2]],
+         "explain": " · ".join(f"{k} {pct(v)}%" for k, v in stacks[2:]) + f". 금융권 IT 자리 {n:,}개 중."},
+        {"type": "stat", "photo": "css.jpg", "kicker": "신입 문", "title": "금융권은 좁다",
+         "items": [{"num": f"{pct(entry)}", "unit": "%", "label": "금융권 신입 가능"},
+                   {"num": f"{pct(all_entry, total)}", "unit": "%", "label": "전체 평균"}],
+         "explain": f"금융권 IT 자리 {n:,}개 중 신입도 되는 곳 {entry}개."},
+        {"type": "picks", "photo": "typing.jpg", "kicker": "눈여겨볼 곳", "title": "금융권 IT 자리",
+         "sub": "큰 회사 먼저 · 한 그룹 한 곳", "rows": picks},
+        {"type": "end", "photo": "pangyo.jpg", "kicker": "저장해 두기", "title": "은행·증권·카드도\n개발자를 뽑는다",
+         "lines": ["금융권 준비하는 친구에게 보내 주세요", "공고 전체는 프로필 링크에서"]},
+    ]
+    for sl in slides:
+        sl["image"], sl["credit"] = _photo(sl.pop("photo"))
+        sl["note"] = note
+    caption = "\n\n".join([
+        f"9월 고용동향에서 금융·보험업 취업자가 늘었습니다. 지금 국내 IT 자리 {total:,}개 중 금융 회사가 낸 자리는 {n:,}개({cos_n}개 회사)이고, "
+        f"신입 가능은 {pct(entry)}%로 전체 평균 {pct(all_entry, total)}%보다 좁습니다.",
+        "· 금융권 IT 자리가 적은 기술: " + " · ".join(f"{k} {pct(v)}%" for k, v in stacks) + "\n"
+        "· 눈여겨볼 곳: " + " · ".join(p["co"] for p in picks),
+        "국가데이터처 「2026년 9월 고용동향」(10월 16일)에 따르면 취업자는 1년 전보다 11만 3천 명 늘었고, 산업별로는 보건업및사회복지서비스업, "
+        "운수및창고업, 금융및보험업 등에서 늘었습니다.",
+        "출처\nhttps://eiec.kdi.re.kr/policy/materialView.do?num=288191",
+        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무) 기준. 금융 회사는 메인 화면의 업종 분류(은행·증권·카드·보험·핀테크 등)를 따랐고, "
+        "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+    ])
+    return {"id": f"finance-{today:%Y%m%d}", "series": "[금융권 IT]", "title": "금융권 IT 자리", "slides": slides,
+            "caption": caption}
+
+
+BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan, "military": build_military, "region": build_region, "sme": build_sme, "fourday": build_fourday, "secneed": build_secneed, "db": build_db, "k8s": build_k8s, "linux": build_linux, "nextjs": build_nextjs, "vue": build_vue, "fastapi": build_fastapi, "angular": build_angular, "redis": build_redis, "finance": build_finance}
 
 
 # --- 렌더 ---------------------------------------------------------------
