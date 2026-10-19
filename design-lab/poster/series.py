@@ -69,6 +69,7 @@ THEMES = {
     "game": {"paper": "#0b0d1a", "ink": "#f2f4ff", "sub": "#9aa0c0", "accent": "#5df2c1", "line": "#232845"},
     "security": {"paper": "#0f1420", "ink": "#f3f4f8", "sub": "#9ba3b4", "accent": "#ff4d5a", "line": "#26304a"},
     "mobile": {"paper": "#f4f2fd", "ink": "#1a1533", "sub": "#615b7d", "accent": "#7f52ff", "line": "#dfdaf5"},
+    "industry": {"paper": "#f2f6f6", "ink": "#0f2424", "sub": "#4f6b6b", "accent": "#0c8599", "line": "#d6e4e4"},
     "weekrel": {"paper": "#fdf8f3", "ink": "#24170c", "sub": "#73604f", "accent": "#d9480f", "line": "#efe3d6"},
     "aiinfra": {"paper": "#0b0f0a", "ink": "#eef5ea", "sub": "#93a58c", "accent": "#76b900", "line": "#1c2618"},
     "postpace": {"paper": "#f4f6fb", "ink": "#141a2b", "sub": "#5a6278", "accent": "#3b5bdb", "line": "#dde2ef"},
@@ -111,7 +112,7 @@ SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", 
           "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]",
           "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]", "balance": "[둘 중 하나]", "tier": "[티어표]",
           "contra": "[공고 원문]", "game": "[게임사 채용]", "security": "[보안 채용]",
-          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]", "wish": "[희망 초봉 vs 공고]", "robot": "[로봇 채용]", "spring": "[스프링 채용]", "vc": "[투자와 채용]", "agent": "[AI 에이전트 채용]", "lang": "[언어 순위 vs 공고]", "mobile": "[모바일 채용]", "python": "[파이썬 채용]", "node": "[Node.js 채용]", "rust": "[Rust 채용]", "java": "[Java 채용]", "swift": "[Swift 채용]", "docker": "[Docker 채용]", "kafka": "[Kafka 채용]", "terraform": "[Terraform 채용]", "search": "[검색 채용]", "nest": "[NestJS 채용]", "dotnet": "[.NET 채용]", "vllm": "[LLM 서빙 채용]", "android": "[Android 채용]", "cpp": "[C++ 채용]", "testing": "[테스트 자동화 채용]", "youth": "[청년 고용 vs 신입 문]", "careermix": "[연차별 공고]", "postpace": "[공고 올라오는 속도]", "aiinfra": "[AI 인프라 채용]", "weekrel": "[지난주 릴리스 vs 공고]"}
+          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]", "wish": "[희망 초봉 vs 공고]", "robot": "[로봇 채용]", "spring": "[스프링 채용]", "vc": "[투자와 채용]", "agent": "[AI 에이전트 채용]", "lang": "[언어 순위 vs 공고]", "mobile": "[모바일 채용]", "python": "[파이썬 채용]", "node": "[Node.js 채용]", "rust": "[Rust 채용]", "java": "[Java 채용]", "swift": "[Swift 채용]", "docker": "[Docker 채용]", "kafka": "[Kafka 채용]", "terraform": "[Terraform 채용]", "search": "[검색 채용]", "nest": "[NestJS 채용]", "dotnet": "[.NET 채용]", "vllm": "[LLM 서빙 채용]", "android": "[Android 채용]", "cpp": "[C++ 채용]", "testing": "[테스트 자동화 채용]", "youth": "[청년 고용 vs 신입 문]", "careermix": "[연차별 공고]", "postpace": "[공고 올라오는 속도]", "aiinfra": "[AI 인프라 채용]", "weekrel": "[지난주 릴리스 vs 공고]", "industry": "[업종별 IT 자리]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -136,6 +137,7 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "game": ["게임회사", "게임개발자", "게임스컴", "개발자채용", "게임업계취업"],
         "security": ["정보보안", "보안엔지니어", "보안채용", "개발자채용", "IT취업"],
         "mobile": ["모바일개발자", "안드로이드", "iOS개발자", "Kotlin", "Flutter"],
+        "industry": ["업종별채용", "IT취업", "개발자채용", "금융IT", "취업준비"],
         "weekrel": ["릴리스노트", "개발자뉴스", "기술스택", "IT취업", "개발자채용"],
         "aiinfra": ["GPU", "AI인프라", "반도체", "AI엔지니어", "개발자채용"],
         "postpace": ["채용공고", "구직팁", "IT취업", "개발자채용", "이직준비"],
@@ -3918,6 +3920,59 @@ def build_weekrel() -> dict:
             "reel_lead": "지난주 새 판이 나온 기술, 공고에선 누가 많을까 — 저장해 두세요"}
 
 
+def build_industry() -> dict:
+    """[업종별 IT 자리] 쇼츠 — 국가데이터처 '2026년 9월 고용동향'(10월 16일: 보건·사회복지, 운수·창고, 금융·보험 등에서 취업자 증가)을
+    계기로, 지금 국내 IT 공고를 낸 회사의 업종(메인 화면 업종 분류)별 자리 수. 업종을 못 가른 회사와 채용대행은 순위에서 뺀다."""
+    import importlib.util
+    path = ROOT / "backend" / "app" / "features" / "home" / "industry.py"
+    spec = importlib.util.spec_from_file_location("_home_industry", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    today = date.today()
+    rows = _it_rows()
+    total = len(rows)
+    c = collections.Counter(mod.classify(r["company"]) for r in rows)
+    unknown = c.pop("기타", 0)
+    c.pop("채용대행·헤드헌팅", None)
+    known = sum(c.values())
+    top = c.most_common(8)
+    grew = {"금융": c.get("금융", 0), "바이오·헬스케어": c.get("바이오·헬스케어", 0), "물류": c.get("물류", 0)}
+    pct = lambda a, b=known: round(100 * a / b) if b else 0
+    asof = today.isoformat()
+    note = (f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 업종은 메인 화면 분류(회사 이름으로 가름) · "
+            "같은 자리 중복 게시는 하나로")
+    slides = [
+        {"type": "cover", "big": f"{top[0][1]:,}", "big_unit": "개", "lines": ["IT 자리를 가장 많이 낸 업종", f"{top[0][0]}"],
+         "sub": f"업종을 가른 IT 자리 {known:,}개 중 {pct(top[0][1])}%", "note": note},
+        {"type": "table", "title": "9월 고용동향", "sub": "국가데이터처 · 2026.10.16 발표", "head": ["업종", "9월 취업자", ""],
+         "rows": [["보건·사회복지", "증가", ""], ["운수·창고", "증가", ""], ["금융·보험", "증가", ""], ["숙박·음식점", "감소", ""]],
+         "hi_col": 1, "note": "국가데이터처 「2026년 9월 고용동향」"},
+        {"type": "bars", "title": "업종별 IT 자리", "sub": f"업종을 가른 IT 자리 {known:,}개",
+         "rows": [{"label": k, "value": v, "display": f"{v:,}", "unit": f"{pct(v)}%", "hi": i == 0} for i, (k, v) in enumerate(top)],
+         "note": note},
+        {"type": "stat", "title": "취업자가 는 업종과 가까운 IT 자리", "num": f"{sum(grew.values()):,}", "unit": "개",
+         "label": " · ".join(f"{k} {v}" for k, v in grew.items()),
+         "explain": f"보건→바이오·헬스케어, 금융·보험→금융, 운수·창고→물류 로 맞춰 셌다. 회사 이름만으로 업종을 못 가른 자리 {unknown:,}개는 뺐다.", "note": note},
+        {"type": "end", "title": "저장해 두고", "lines": [
+            " · ".join(f"**{k}**\u00a0{v:,}" for k, v in top[:3]),
+            "업종별 공고는 프로필 링크에서", "업종 고민하는 친구에게 보내 주세요"], "note": note},
+    ]
+    caption = "\n\n".join([
+        f"9월 고용동향에서 보건·사회복지, 운수·창고, 금융·보험 업종 취업자가 늘었습니다. 지금 국내 IT 공고를 업종으로 나눠 보면 가장 많은 업종은 "
+        f"{top[0][0]}({top[0][1]:,}개)입니다 — 업종을 가른 {known:,}자리 중.",
+        "· 업종별: " + " · ".join(f"{k} {v:,}개" for k, v in top) + "\n"
+        "· 취업자가 는 업종과 가까운 IT 자리(보건→바이오·헬스케어, 금융·보험→금융, 운수·창고→물류): " + " · ".join(f"{k} {v}개" for k, v in grew.items()),
+        "국가데이터처 「2026년 9월 고용동향」(10월 16일)에 따르면 산업별로 보건업및사회복지서비스업, 운수및창고업, 금융및보험업 등에서 늘고 "
+        "숙박및음식점업, 농림어업, 교육서비스업 등에서 줄었습니다.",
+        "출처\nhttps://eiec.kdi.re.kr/policy/materialView.do?num=288191",
+        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 업종은 메인 화면의 분류(회사 이름으로 가름)를 따랐고, 업종을 못 가른 {unknown:,}자리와 "
+        "채용대행 공고는 순위에서 뺐습니다. 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+    ])
+    return {"kind": "industry", "id": f"industry-{asof.replace('-', '')}", "title": "업종별 IT 자리",
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.2,
+            "reel_lead": "IT 자리를 가장 많이 낸 업종은 — 저장해 두세요"}
+
+
 REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
 
 
@@ -3974,7 +4029,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
                                      "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit",
-                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud", "paywish", "robot", "spring", "vc", "agent", "lang", "mobile", "python", "node", "rust", "java", "swift", "docker", "kafka", "terraform", "search", "nest", "dotnet", "vllm", "android", "cpp", "testing", "youth", "careermix", "postpace", "aiinfra", "weekrel"])
+                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud", "paywish", "robot", "spring", "vc", "agent", "lang", "mobile", "python", "node", "rust", "java", "swift", "docker", "kafka", "terraform", "search", "nest", "dotnet", "vllm", "android", "cpp", "testing", "youth", "careermix", "postpace", "aiinfra", "weekrel", "industry"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
@@ -4080,6 +4135,8 @@ def main() -> int:
         post = build_aiinfra()
     elif args.kind == "weekrel":
         post = build_weekrel()
+    elif args.kind == "industry":
+        post = build_industry()
     elif args.kind in ("pay", "perk", "welcome", "gongchae", "contra"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae, "contra": build_contra}[args.kind]()
