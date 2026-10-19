@@ -20,7 +20,7 @@ INDEX = LAB_DIR / "state" / "jobs_index.json"
 #   5 → 6: 지역에서 '지도보기·주소복사' 를 걷어낸다
 #   6 → 7: 칸 글에서 마크다운 '**' 를 걷어낸다
 #   7 → 8: 'ㆍ' 머리표를 걷는다(판에 '■ ㆍ임무계획' 처럼 두 겹으로 찍혔다)
-SCHEMA = 9
+SCHEMA = 10
 
 # 불릿으로 쓸 수 있는 줄머리들. 사이트마다 제각각이라 넉넉히 받는다.
 _BULLET = re.compile(r"^\s*(?:[*\-•·ㆍ・‧∙▶▪◆■□○●]|└|\d+[.)])\s*")   # ㆍ(U+318D)는 한글 공고의 흔한 머리표
@@ -78,6 +78,7 @@ def _groups(text: str) -> list[dict]:
             groups.append({"title": re.sub(r"\s+", " ", head.group(2)).strip(), "items": []})
             continue
         line = re.sub(r"\s+", " ", _BULLET.sub("", line)).strip()
+        line = re.sub(r"^[:：]\s*", "", line)     # 머리표 뒤에 남은 콜론(': 전국 센터 운영', CJ대한통운 2026-10-20)
         if line and line not in groups[-1]["items"]:
             groups[-1]["items"].append(line)
     return [g for g in groups if g["title"] or g["items"]]
