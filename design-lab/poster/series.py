@@ -69,6 +69,7 @@ THEMES = {
     "game": {"paper": "#0b0d1a", "ink": "#f2f4ff", "sub": "#9aa0c0", "accent": "#5df2c1", "line": "#232845"},
     "security": {"paper": "#0f1420", "ink": "#f3f4f8", "sub": "#9ba3b4", "accent": "#ff4d5a", "line": "#26304a"},
     "mobile": {"paper": "#f4f2fd", "ink": "#1a1533", "sub": "#615b7d", "accent": "#7f52ff", "line": "#dfdaf5"},
+    "vllm": {"paper": "#0d1117", "ink": "#eef2f7", "sub": "#8b97a8", "accent": "#30a2ff", "line": "#1f2733"},
     "dotnet": {"paper": "#f5f2fc", "ink": "#1e1238", "sub": "#62567e", "accent": "#512bd4", "line": "#e2dbf3"},
     "nest": {"paper": "#fff5f6", "ink": "#2a0f15", "sub": "#7a5560", "accent": "#e0234e", "line": "#f3dbe0"},
     "search": {"paper": "#0f1720", "ink": "#eef4f8", "sub": "#93a4b3", "accent": "#fec514", "line": "#22303c"},
@@ -102,7 +103,7 @@ SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", 
           "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]",
           "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]", "balance": "[둘 중 하나]", "tier": "[티어표]",
           "contra": "[공고 원문]", "game": "[게임사 채용]", "security": "[보안 채용]",
-          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]", "wish": "[희망 초봉 vs 공고]", "robot": "[로봇 채용]", "spring": "[스프링 채용]", "vc": "[투자와 채용]", "agent": "[AI 에이전트 채용]", "lang": "[언어 순위 vs 공고]", "mobile": "[모바일 채용]", "python": "[파이썬 채용]", "node": "[Node.js 채용]", "rust": "[Rust 채용]", "java": "[Java 채용]", "swift": "[Swift 채용]", "docker": "[Docker 채용]", "kafka": "[Kafka 채용]", "terraform": "[Terraform 채용]", "search": "[검색 채용]", "nest": "[NestJS 채용]", "dotnet": "[.NET 채용]"}
+          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]", "wish": "[희망 초봉 vs 공고]", "robot": "[로봇 채용]", "spring": "[스프링 채용]", "vc": "[투자와 채용]", "agent": "[AI 에이전트 채용]", "lang": "[언어 순위 vs 공고]", "mobile": "[모바일 채용]", "python": "[파이썬 채용]", "node": "[Node.js 채용]", "rust": "[Rust 채용]", "java": "[Java 채용]", "swift": "[Swift 채용]", "docker": "[Docker 채용]", "kafka": "[Kafka 채용]", "terraform": "[Terraform 채용]", "search": "[검색 채용]", "nest": "[NestJS 채용]", "dotnet": "[.NET 채용]", "vllm": "[LLM 서빙 채용]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -127,6 +128,7 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "game": ["게임회사", "게임개발자", "게임스컴", "개발자채용", "게임업계취업"],
         "security": ["정보보안", "보안엔지니어", "보안채용", "개발자채용", "IT취업"],
         "mobile": ["모바일개발자", "안드로이드", "iOS개발자", "Kotlin", "Flutter"],
+        "vllm": ["LLM", "vLLM", "MLOps", "AI엔지니어", "개발자채용"],
         "dotnet": ["닷넷", "CSharp", "백엔드개발자", "신입개발자", "개발자채용"],
         "nest": ["NestJS", "Nodejs", "백엔드개발자", "TypeScript", "개발자채용"],
         "search": ["RAG", "벡터DB", "Elasticsearch", "AI개발자", "개발자채용"],
@@ -3416,6 +3418,64 @@ def build_dotnet() -> dict:
             "reel_lead": ".NET 8·9 지원 끝나기 3주 전, .NET 을 적은 자리는 — 저장해 두세요"}
 
 
+#: 공고 글에서 찾는 LLM 추론·서빙 도구 — 기술 칩에는 칸이 없다
+_SERVE_TOOLS = [("TensorRT", r"TensorRT"), ("ONNX", r"\bONNX"), ("vLLM", r"\bvLLM\b"), ("양자화", r"양자화|Quantization"),
+                ("Triton", r"\bTriton\b"), ("SGLang", r"SGLang"), ("Ollama", r"Ollama")]
+
+
+def build_vllm() -> dict:
+    """[LLM 서빙 채용] 릴스 — vLLM v0.32.0(10월 18일, GitHub 릴리스)을 계기로, 지금 국내 IT 공고 글에 적힌 LLM 추론·서빙 도구와
+    LLM 을 적은 자리. 같은 자리 중복 게시는 하나로."""
+    sys.path.insert(0, str(ROOT / "catch_capture"))
+    from store.db.conn import cursor
+    today = date.today()
+    rows = _it_rows()
+    total = len(rows)
+    with cursor(autocommit=True) as cur:
+        cur.execute("""SELECT id, concat_ws(' ', title, main_tasks::text, qualifications::text, preferences::text, full_jd) AS t
+                         FROM job WHERE id = ANY(%s)""", ([r["job_id"] for r in rows],))
+        text = {r["id"]: r["t"] or "" for r in cur.fetchall()}
+    t = lambda r: text.get(r["job_id"], "")
+    tools = sorted(((k, sum(1 for r in rows if re.search(rx, t(r), re.I))) for k, rx in _SERVE_TOOLS), key=lambda kv: -kv[1])
+    vl = [r for r in rows if re.search(r"\bvLLM\b", t(r), re.I)]
+    n = len(vl)
+    llm = sum(1 for r in rows if re.search(r"\bLLM", t(r)))
+    entry = sum(1 for r in vl if r["career_bucket"] == "신입/무관")
+    cos = collections.Counter(_co_name(r["company"]) for r in vl).most_common(3)
+    pct = lambda a, b=total: round(100 * a / b) if b else 0
+    asof = today.isoformat()
+    wj = "\u2060"
+    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 공고 글에 적힌 낱말로 셈 · 같은 자리 중복 게시는 하나로"
+    slides = [
+        {"type": "cover", "big": f"{n:,}", "big_unit": "개", "lines": ["vLLM 0.32 나온 주", "vLLM 을 적은 자리는"],
+         "sub": f"LLM 을 적은 자리는 {llm:,}개 · 국내 IT 자리 {total:,}개 중", "note": note},
+        {"type": "table", "title": "vLLM 은 지금", "sub": "GitHub 릴리스 페이지", "head": ["판", "나온 날", ""],
+         "rows": [["v0.32.0", "10월 18일", ""], ["v0.31.0", "10월 5일", ""], ["v0.30.0", "9월 22일", ""]],
+         "hi_col": 1, "note": "github.com/vllm-project/vllm/releases"},
+        {"type": "bars", "title": "공고 글에 적힌 추론·서빙 도구", "sub": "그 낱말이 나온 국내 IT 자리",
+         "rows": [{"label": k, "value": v, "display": f"{v:,}", "unit": f"{pct(v)}%", "hi": k == "vLLM"} for k, v in tools],
+         "note": note},
+        {"type": "stat", "title": "신입도 되는 vLLM 자리", "num": f"{entry}", "unit": "개", "label": f"{n:,}개 중 {pct(entry, n)}%",
+         "explain": "많이 뽑는 곳: " + " · ".join(f"**{c}**\u00a0{k}{wj}개" for c, k in cos), "note": note},
+        {"type": "end", "title": "저장해 두고", "lines": [
+            " · ".join(f"**{k}**\u00a0{v}" for k, v in tools[:3]),
+            "AI 공고 전체는 프로필 링크에서", "LLM 서빙 공부하는 친구에게 보내 주세요"], "note": note},
+    ]
+    caption = "\n\n".join([
+        f"vLLM 0.32.0 이 10월 18일 나왔습니다. 지금 국내 IT 자리 {total:,}개 중 공고 글에 LLM 을 적은 자리는 {llm:,}개({pct(llm)}%), "
+        f"vLLM 을 적은 자리는 {n:,}개(신입 가능 {entry}개)입니다.",
+        "· 공고 글에 적힌 추론·서빙 도구: " + " · ".join(f"{k} {v:,}개" for k, v in tools) + "\n"
+        "· vLLM 자리를 많이 낸 곳: " + " · ".join(f"{c} {k}개" for c, k in cos),
+        "vLLM GitHub 릴리스 페이지에 따르면 v0.32.0 은 10월 18일, v0.31.0 은 10월 5일 나왔습니다.",
+        "출처\nhttps://github.com/vllm-project/vllm/releases",
+        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 공고 제목·본문에 그 낱말이 나온 자리를 셌고(Triton 은 NVIDIA 추론 서버와 "
+        "OpenAI 커널 언어를 가리지 않았습니다), 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+    ])
+    return {"kind": "vllm", "id": f"vllm-{asof.replace('-', '')}", "title": "LLM 서빙 채용",
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.0,
+            "reel_lead": "vLLM 0.32 나온 주, LLM 서빙 자리는 — 저장해 두세요"}
+
+
 REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
 
 
@@ -3472,7 +3532,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
                                      "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit",
-                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud", "paywish", "robot", "spring", "vc", "agent", "lang", "mobile", "python", "node", "rust", "java", "swift", "docker", "kafka", "terraform", "search", "nest", "dotnet"])
+                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud", "paywish", "robot", "spring", "vc", "agent", "lang", "mobile", "python", "node", "rust", "java", "swift", "docker", "kafka", "terraform", "search", "nest", "dotnet", "vllm"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
@@ -3560,6 +3620,8 @@ def main() -> int:
         post = build_nest()
     elif args.kind == "dotnet":
         post = build_dotnet()
+    elif args.kind == "vllm":
+        post = build_vllm()
     elif args.kind in ("pay", "perk", "welcome", "gongchae", "contra"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae, "contra": build_contra}[args.kind]()
