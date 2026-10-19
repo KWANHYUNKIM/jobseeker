@@ -337,10 +337,26 @@ def _family_frame(job: dict) -> str:
     return name if name in FRAMES else ""
 
 
+#: 영문 표기 → 한글. 'NAVER WEBTOON' 과 '네이버웹툰(유)' 가 같은 묶음에 두 장 실렸다.
+_EN_KO = {"naver": "네이버", "webtoon": "웹툰", "cloud": "클라우드", "kakao": "카카오", "toss": "토스",
+          "line": "라인", "coupang": "쿠팡", "nexon": "넥슨", "krafton": "크래프톤", "daangn": "당근"}
+#: 같은 그룹 회사는 묶음 하나에 두 장까지 — 대기업 묶음 10장 중 다섯 장이 네이버 계열이었다.
+_GROUPS = ("네이버", "카카오", "토스", "쿠팡", "라인", "삼성", "엘지", "lg", "sk", "현대", "롯데", "cj", "한화", "nhn", "넥슨")
+GROUP_CAP = 2
+
+
 def _core(company: str) -> str:
     """회사 한 번씩을 가를 때 쓰는 이름. 같은 회사가 '넛지헬스케어(주)' 와 '넛지헬스케어(캐시워크)'
-    로 따로 올라와 신입 묶음에 두 장 실렸다 — 괄호·법인 표기를 떼고 본다."""
-    return re.sub(r"\([^)]*\)|㈜|주식회사|\s+", "", company or "")
+    로 따로 올라와 신입 묶음에 두 장 실렸다 — 괄호·법인 표기를 떼고, 영문 표기는 한글로 바꿔 본다."""
+    s = re.sub(r"\([^)]*\)|㈜|주식회사", "", company or "").lower()
+    for en, ko in _EN_KO.items():
+        s = re.sub(rf"\b{en}\b", ko, s)
+    return re.sub(r"\s+", "", s)
+
+
+def _group(company: str) -> str:
+    c = _core(company)
+    return next((g for g in _GROUPS if c.startswith(g)), c)
 
 
 def _posted() -> dict:
@@ -445,8 +461,11 @@ def build(kind: str, *, value: str = "", since: str = "", until: str = "",
     # 한 회사 묶음은 '회사 한 번씩' 이 아니라 '같은 자리 한 번씩' 이다 — 같은 제목을 번호 둘로
     # 올린 공고(토스 Node.js Developer)를 한 장만 싣는다.
     once = (lambda j: re.sub(r"\W+", "", _role(j)).lower()) if kind == "company" else (lambda j: _core(j["company"]))
+    per_group: dict[str, int] = {}
     for j in rows:
         if once(j) in seen:
+            continue
+        if kind != "company" and per_group.get(_group(j["company"]), 0) >= GROUP_CAP:
             continue
         if verifier:
             state, why = verifier(j)
@@ -462,6 +481,8 @@ def build(kind: str, *, value: str = "", since: str = "", until: str = "",
                                "why": f"원본 마감일 {end} 지남 ({j['period_live'].get('source', '')})"})
                 continue
         seen.add(once(j))
+        if kind != "company":
+            per_group[_group(j["company"])] = per_group.get(_group(j["company"]), 0) + 1
         picked.append(j)
         if len(picked) >= limit + SPARES:
             break
