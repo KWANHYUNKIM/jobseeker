@@ -62,7 +62,7 @@ STYLE_FONTS = {
     "brandmag": ["Pretendard", "NanumMyeongjo"],
 }
 #: 원고마다 기본으로 찍을 틀
-DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"], "military": ["magazine"], "region": ["magazine"], "sme": ["magazine"], "fourday": ["magazine"], "secneed": ["magazine"]}
+DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"], "military": ["magazine"], "region": ["magazine"], "sme": ["magazine"], "fourday": ["magazine"], "secneed": ["magazine"], "db": ["magazine"]}
 
 
 #: 회사 자산(assets/companies/…)이 없는 기계에서 쓰는 공용 글꼴 — 공식 배포본(OFL), 라이선스는 같은 폴더.
@@ -942,7 +942,85 @@ def build_secneed(today: date | None = None) -> dict:
             "caption": caption}
 
 
-BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan, "military": build_military, "region": build_region, "sme": build_sme, "fourday": build_fourday, "secneed": build_secneed}
+_DBS = [("MySQL", ("MySQL", "MariaDB")), ("PostgreSQL", ("PostgreSQL",)), ("Oracle", ("Oracle",)),
+        ("Redis", ("Redis",)), ("MongoDB", ("MongoDB",)), ("MSSQL", ("MSSQL",))]
+_DBA = re.compile(r"(?<![A-Za-z])DBA(?![A-Za-z])|데이터베이스\s*(관리자|엔지니어|운영)|DB\s*(관리자|엔지니어|운영|담당)|Database\s*(Admin|Engineer)", re.I)
+
+
+def build_db(today: date | None = None) -> dict:
+    """[카드뉴스] 데이터베이스 — PostgreSQL 19 RC 1(postgresql.org 2026.10.15)을 계기로, 지금 국내 IT 공고가 적은 DB 와
+    DB 를 직접 맡는 자리(DBA·DB 엔지니어). MySQL 은 MariaDB 를 함께 센다. 같은 자리 중복 게시는 하나로."""
+    import psycopg
+    from psycopg.rows import dict_row
+    from .collection import _AGENCY, _FOREIGN_TAG, _SI_STAFF, _not_dev
+    from .series import _role_key
+    today = today or date.today()
+    with psycopg.connect(_dsn(), row_factory=dict_row) as conn:
+        rows = conn.execute("""
+            SELECT f.stacks, c.display_name AS co, j.title, f.company_size AS size, f.career_bucket AS b, j.deadline_on
+              FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
+              JOIN job_facet f ON f.job_id = j.id JOIN company c ON c.id = j.company_id
+             WHERE coalesce(f.region, '') <> '해외·원격'
+               AND NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = j.id)""").fetchall()
+    rows = [r for r in rows if not _not_dev({"title": r["title"], "stack": r["stacks"] or []})
+            and not _AGENCY.search(r["co"] + r["title"]) and not _NOT_JOB.search(r["title"] + r["co"])
+            and not _FOREIGN_TAG.match(r["title"]) and not (_SI_STAFF.search(r["title"]) and "정규직" not in r["title"])
+            and not (r["deadline_on"] and r["deadline_on"] < today)]
+    uniq = {}
+    for r in rows:
+        uniq.setdefault((_co(r["co"]), _role_key(r["title"])), r)
+    rows = list(uniq.values())
+    n = len(rows)
+    by = sorted(((k, sum(1 for r in rows if set(r["stacks"] or []) & set(keys))) for k, keys in _DBS), key=lambda kv: -kv[1])
+    rest = [kv for kv in by[1:] if kv[0] != "PostgreSQL"]
+    dba = [r for r in rows if _DBA.search(r["title"])]
+    picks, seen = [], set()
+    for r in sorted(dba, key=lambda r: ({"대기업": 0, "중견기업": 1}.get(r["size"], 2),
+                                        r["deadline_on"] is None, r["deadline_on"] or today)):
+        c = _co(r["co"])
+        d = (r["deadline_on"] - today).days if r["deadline_on"] else None
+        if c in seen or d == 0:
+            continue
+        seen.add(c)
+        when = f"D-{d}" if d is not None else "상시"
+        picks.append({"co": c, "title": _short(re.sub(r"^\s*\[[^\]]*\]\s*", "", r["title"])), "meta": f"{r['size'] or ''} · {when}"})
+        if len(picks) == 4:
+            break
+    pct = lambda a: round(100 * a / n) if n else 0
+    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {n:,}자리 · {today:%Y.%m.%d} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    slides = [
+        {"type": "cover", "photo": "pangyo.jpg", "kicker": f"데이터베이스 · {today:%Y.%m.%d}",
+         "big": f"{by[0][1]:,}", "unit": "개", "title": [f"공고가 가장 많이 적은 DB", f"{by[0][0]}"],
+         "sub": f"국내 IT 자리 {n:,}개 중 {pct(by[0][1])}%"},
+        {"type": "stat", "photo": "hourglass.jpg", "kicker": "릴리스", "title": "PostgreSQL 19, 정식판 직전",
+         "items": [{"num": "19", "unit": "RC 1", "label": "2026년 10월 15일 공개"},
+                   {"num": f"{dict(by)['PostgreSQL']:,}", "unit": "개", "label": "PostgreSQL 을 적은 국내 IT 자리"}],
+         "explain": "RC(릴리스 후보)는 정식판 바로 전 단계다. 큰 문제가 없으면 이 판이 그대로 정식판이 된다."},
+        {"type": "stat", "photo": "code.jpg", "kicker": "공고로 보면", "title": "DB 별로 세면",
+         "items": [{"num": f"{v:,}", "unit": "개", "label": k} for k, v in rest[:2]],
+         "explain": " · ".join(f"{k} {v:,}개" for k, v in rest[2:]) + ". MySQL 은 MariaDB 를 함께 셌다."},
+        {"type": "picks", "photo": "typing.jpg", "kicker": "눈여겨볼 곳", "title": f"DB 를 맡는 자리 {len(dba)}개",
+         "sub": "제목에 DBA·DB 엔지니어를 단 공고, 큰 회사 먼저", "rows": picks},
+        {"type": "end", "photo": "seoul.jpg", "kicker": "저장해 두기", "title": "쓰는 DB 를 알면\n공고가 좁혀진다",
+         "lines": ["DB 공부하는 친구에게 보내 주세요", "공고 전체는 프로필 링크에서"]},
+    ]
+    for sl in slides:
+        sl["image"], sl["credit"] = _photo(sl.pop("photo"))
+        sl["note"] = note
+    caption = "\n\n".join([
+        f"PostgreSQL 19 RC 1 이 10월 15일 나왔습니다. 국내 IT 공고 {n:,}자리가 적은 DB 를 세 봤습니다.",
+        "· " + " · ".join(f"{k} {v:,}개({pct(v)}%)" for k, v in by) + f"\n· 제목에 DBA·DB 엔지니어를 단 자리 {len(dba)}개\n"
+        "· 눈여겨볼 곳: " + " · ".join(p["co"] for p in picks),
+        "postgresql.org 는 10월 15일 PostgreSQL 19 의 첫 릴리스 후보(RC 1)를 공개했습니다. RC 는 정식판 바로 전 단계입니다.",
+        "출처\nhttps://www.postgresql.org/about/newsarchive/",
+        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, MySQL 은 MariaDB 를 함께 셌습니다. "
+        "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+    ])
+    return {"id": f"db-{today:%Y%m%d}", "series": "[데이터베이스]", "title": "공고가 적은 DB", "slides": slides,
+            "caption": caption}
+
+
+BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan, "military": build_military, "region": build_region, "sme": build_sme, "fourday": build_fourday, "secneed": build_secneed, "db": build_db}
 
 
 # --- 렌더 ---------------------------------------------------------------
