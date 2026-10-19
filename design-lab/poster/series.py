@@ -69,6 +69,7 @@ THEMES = {
     "game": {"paper": "#0b0d1a", "ink": "#f2f4ff", "sub": "#9aa0c0", "accent": "#5df2c1", "line": "#232845"},
     "security": {"paper": "#0f1420", "ink": "#f3f4f8", "sub": "#9ba3b4", "accent": "#ff4d5a", "line": "#26304a"},
     "mobile": {"paper": "#f4f2fd", "ink": "#1a1533", "sub": "#615b7d", "accent": "#7f52ff", "line": "#dfdaf5"},
+    "weekrel": {"paper": "#fdf8f3", "ink": "#24170c", "sub": "#73604f", "accent": "#d9480f", "line": "#efe3d6"},
     "aiinfra": {"paper": "#0b0f0a", "ink": "#eef5ea", "sub": "#93a58c", "accent": "#76b900", "line": "#1c2618"},
     "postpace": {"paper": "#f4f6fb", "ink": "#141a2b", "sub": "#5a6278", "accent": "#3b5bdb", "line": "#dde2ef"},
     "careermix": {"paper": "#0f1a24", "ink": "#eef3f8", "sub": "#93a3b5", "accent": "#ffb02e", "line": "#1f2e3d"},
@@ -110,7 +111,7 @@ SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", 
           "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]",
           "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]", "balance": "[둘 중 하나]", "tier": "[티어표]",
           "contra": "[공고 원문]", "game": "[게임사 채용]", "security": "[보안 채용]",
-          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]", "wish": "[희망 초봉 vs 공고]", "robot": "[로봇 채용]", "spring": "[스프링 채용]", "vc": "[투자와 채용]", "agent": "[AI 에이전트 채용]", "lang": "[언어 순위 vs 공고]", "mobile": "[모바일 채용]", "python": "[파이썬 채용]", "node": "[Node.js 채용]", "rust": "[Rust 채용]", "java": "[Java 채용]", "swift": "[Swift 채용]", "docker": "[Docker 채용]", "kafka": "[Kafka 채용]", "terraform": "[Terraform 채용]", "search": "[검색 채용]", "nest": "[NestJS 채용]", "dotnet": "[.NET 채용]", "vllm": "[LLM 서빙 채용]", "android": "[Android 채용]", "cpp": "[C++ 채용]", "testing": "[테스트 자동화 채용]", "youth": "[청년 고용 vs 신입 문]", "careermix": "[연차별 공고]", "postpace": "[공고 올라오는 속도]", "aiinfra": "[AI 인프라 채용]"}
+          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]", "wish": "[희망 초봉 vs 공고]", "robot": "[로봇 채용]", "spring": "[스프링 채용]", "vc": "[투자와 채용]", "agent": "[AI 에이전트 채용]", "lang": "[언어 순위 vs 공고]", "mobile": "[모바일 채용]", "python": "[파이썬 채용]", "node": "[Node.js 채용]", "rust": "[Rust 채용]", "java": "[Java 채용]", "swift": "[Swift 채용]", "docker": "[Docker 채용]", "kafka": "[Kafka 채용]", "terraform": "[Terraform 채용]", "search": "[검색 채용]", "nest": "[NestJS 채용]", "dotnet": "[.NET 채용]", "vllm": "[LLM 서빙 채용]", "android": "[Android 채용]", "cpp": "[C++ 채용]", "testing": "[테스트 자동화 채용]", "youth": "[청년 고용 vs 신입 문]", "careermix": "[연차별 공고]", "postpace": "[공고 올라오는 속도]", "aiinfra": "[AI 인프라 채용]", "weekrel": "[지난주 릴리스 vs 공고]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -135,6 +136,7 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "game": ["게임회사", "게임개발자", "게임스컴", "개발자채용", "게임업계취업"],
         "security": ["정보보안", "보안엔지니어", "보안채용", "개발자채용", "IT취업"],
         "mobile": ["모바일개발자", "안드로이드", "iOS개발자", "Kotlin", "Flutter"],
+        "weekrel": ["릴리스노트", "개발자뉴스", "기술스택", "IT취업", "개발자채용"],
         "aiinfra": ["GPU", "AI인프라", "반도체", "AI엔지니어", "개발자채용"],
         "postpace": ["채용공고", "구직팁", "IT취업", "개발자채용", "이직준비"],
         "careermix": ["경력개발자", "신입개발자", "이직준비", "IT취업", "개발자채용"],
@@ -3863,6 +3865,59 @@ def build_aiinfra() -> dict:
             "reel_lead": "반도체 수출 603억 달러, 공고 글에 GPU 를 적은 자리는 — 저장해 두세요"}
 
 
+#: 지난주(10.12~10.19) 정식·후보판이 나온 기술 — 판과 날짜는 각 공식 릴리스 페이지에서 확인한 것(같은 날 이 세션에서 열어 봄)
+_WEEK_RELEASES = [  # (공고 기술 칩, 보이는 이름, 판, 날짜, 출처)
+    (("Docker",), "Docker", "Engine 29.9.1", "10.14", "docs.docker.com/engine/release-notes"),
+    (("Linux",), "Linux", "커널 7.3", "10.18", "kernel.org"),
+    (("Next.js",), "Next.js", "보안 업데이트", "10.14", "nextjs.org/blog"),
+    (("Terraform",), "Terraform", "1.16.6", "10.14", "github.com/hashicorp/terraform/releases"),
+    (("FastAPI",), "FastAPI", "0.149.0", "10.19", "github.com/fastapi/fastapi/releases"),
+    (("Vue",), "Vue", "3.6.0-rc.12", "10.16", "github.com/vuejs/core/releases"),
+    ((".NET",), ".NET", "11 RC2", "10.13", "dotnet.microsoft.com/download/dotnet"),
+    (("NestJS",), "NestJS", "12.2.0", "10.19", "github.com/nestjs/nest/releases"),
+    (("Angular",), "Angular", "22.2.3", "10.14", "github.com/angular/angular/releases"),
+]
+
+
+def build_weekrel() -> dict:
+    """[지난주 릴리스 vs 공고] 릴스 — 지난주(10월 12~19일) 새 판이 나온 기술들(각 공식 릴리스 페이지)을 모아, 지금 국내 IT 공고 중
+    그 기술을 적은 자리 수로 줄 세운다. 같은 자리 중복 게시는 하나로."""
+    today = date.today()
+    rows = _it_rows()
+    total = len(rows)
+    ranked = sorted(((name, ver, day, src, sum(1 for r in rows if set(r["stacks"] or []) & set(keys)))
+                     for keys, name, ver, day, src in _WEEK_RELEASES), key=lambda t: -t[4])
+    pct = lambda a, b=total: round(100 * a / b) if b else 0
+    asof = today.isoformat()
+    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    top = ranked[0]
+    slides = [
+        {"type": "cover", "big": f"{len(ranked)}", "big_unit": "개", "lines": ["지난주 새 판이 나온 기술", "공고에선 누가 많을까"],
+         "sub": "10.12 ~ 10.19 · 각 공식 릴리스 페이지 기준", "note": note},
+        {"type": "table", "title": "지난주 나온 판", "sub": "공식 릴리스 페이지", "head": ["기술", "판", "날짜"],
+         "rows": [[n, v, d] for n, v, d, _, _ in sorted(ranked, key=lambda t: t[2])][:6],
+         "hi_col": 1, "note": "각 프로젝트 공식 릴리스 페이지"},
+        {"type": "bars", "title": "그 기술을 적은 IT 자리", "sub": f"국내 IT 자리 {total:,}개 중",
+         "rows": [{"label": n, "value": c, "display": f"{c:,}", "unit": f"{pct(c)}%", "hi": i == 0} for i, (n, _, _, _, c) in enumerate(ranked)],
+         "note": note},
+        {"type": "stat", "title": f"1위는 {top[0]}", "num": f"{top[4]:,}", "unit": "개", "label": f"국내 IT 자리 중 {pct(top[4])}% · {top[1]} ({top[2]})",
+         "explain": f"2위 {ranked[1][0]} {ranked[1][4]:,}개 · 가장 적은 쪽은 {ranked[-1][0]} {ranked[-1][4]:,}개.", "note": note},
+        {"type": "end", "title": "저장해 두고", "lines": [
+            " · ".join(f"**{n}**\u00a0{c:,}" for n, _, _, _, c in ranked[:3]),
+            "기술별 공고는 프로필 링크에서", "릴리스 챙기는 친구에게 보내 주세요"], "note": note},
+    ]
+    caption = "\n\n".join([
+        f"지난주(10월 12~19일) 새 판이 나온 기술 {len(ranked)}개를, 지금 국내 IT 공고에 적힌 자리 수로 줄 세웠습니다. 1위는 {top[0]}({top[4]:,}개)입니다.",
+        "· 공고 수: " + " · ".join(f"{n} {c:,}개" for n, _, _, _, c in ranked) + "\n"
+        "· 지난주 나온 판: " + " · ".join(f"{n} {v}({d})" for n, v, d, _, _ in sorted(ranked, key=lambda t: t[2])),
+        "출처(각 공식 릴리스 페이지)\n" + "\n".join(f"{n}: https://{src}" for n, _, _, src, _ in ranked),
+        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+    ])
+    return {"kind": "weekrel", "id": f"weekrel-{asof.replace('-', '')}", "title": "지난주 릴리스 vs 공고",
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.2,
+            "reel_lead": "지난주 새 판이 나온 기술, 공고에선 누가 많을까 — 저장해 두세요"}
+
+
 REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
 
 
@@ -3919,7 +3974,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
                                      "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit",
-                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud", "paywish", "robot", "spring", "vc", "agent", "lang", "mobile", "python", "node", "rust", "java", "swift", "docker", "kafka", "terraform", "search", "nest", "dotnet", "vllm", "android", "cpp", "testing", "youth", "careermix", "postpace", "aiinfra"])
+                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud", "paywish", "robot", "spring", "vc", "agent", "lang", "mobile", "python", "node", "rust", "java", "swift", "docker", "kafka", "terraform", "search", "nest", "dotnet", "vllm", "android", "cpp", "testing", "youth", "careermix", "postpace", "aiinfra", "weekrel"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
@@ -4023,6 +4078,8 @@ def main() -> int:
         post = build_postpace()
     elif args.kind == "aiinfra":
         post = build_aiinfra()
+    elif args.kind == "weekrel":
+        post = build_weekrel()
     elif args.kind in ("pay", "perk", "welcome", "gongchae", "contra"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae, "contra": build_contra}[args.kind]()
