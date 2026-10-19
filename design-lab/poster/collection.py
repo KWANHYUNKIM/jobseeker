@@ -592,8 +592,11 @@ def build(kind: str, *, value: str = "", since: str = "", until: str = "",
             continue
         # 원본 다시 묻기(verifier)가 마감일을 못 찾아도, 공고 글에 적힌 접수 기간이 이미 끝났으면 뺀다
         # ('접수기간 : 2026-09-22' 인데 마감란은 '채용시' — 베스핀글로벌, 2026-10-20 묶음 첫 마감이 9/22 로 섰다)
-        static_end = (j.get("period") or {}).get("end")
-        if static_end and date.fromisoformat(static_end) < date.today():
+        # 단, '접수기간 : 2026-09-22' 처럼 날짜 하나만 적힌 것은 시작일일 수도 있다('~ 채용시') — 범위이거나 '~ 날짜'·'까지' 일 때만 믿는다
+        per = j.get("period") or {}
+        static_end = per.get("end")
+        sure = bool(per.get("start")) or "~" in (per.get("quote") or "") or "까지" in (per.get("quote") or "")
+        if static_end and sure and date.fromisoformat(static_end) < date.today():
             closed.append({"company": j["company"], "key": j["key"], "state": "closed",
                            "why": f"공고 글의 접수 기간 {static_end} 지남"})
             continue

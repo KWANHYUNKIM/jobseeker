@@ -187,9 +187,16 @@ class OpenCheckTest(unittest.TestCase):
     def test_stated_period_already_over_is_left_out(self):
         # 마감란은 '채용시' 인데 공고 글의 접수 기간이 이미 끝났다 — 원본이 '열림' 이라 해도 싣지 않는다
         old = job("a", "가", deadline="채용시")
-        old["period"] = {"end": "2020-01-01"}
+        old["period"] = {"start": "2019-12-01", "end": "2020-01-01", "quote": "접수기간 2019.12.01 ~ 2020.01.01"}
         got = collection.build("week", jobs=[old, job("b", "나")], limit=2)
         self.assertEqual([j["company"] for j in got["jobs"]], ["나"])
+
+    def test_single_date_period_is_not_a_deadline(self):
+        # '접수기간 : 2020-01-01' 하나만 있으면 시작일일 수 있다(~ 채용시) — 빼지 않는다
+        one = job("a", "가", deadline="채용시")
+        one["period"] = {"end": "2020-01-01", "quote": "접수기간 : 2020-01-01"}
+        got = collection.build("week", jobs=[one, job("b", "나")], limit=2)
+        self.assertEqual(sorted(j["company"] for j in got["jobs"]), ["가", "나"])
 
     def test_verify_off_skips_the_network(self):
         called = []
