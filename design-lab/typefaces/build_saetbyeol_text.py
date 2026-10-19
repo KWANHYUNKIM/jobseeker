@@ -1,6 +1,6 @@
 """Saetbyeol Text — 컬리 공고 포스터(샛별배송 판) 본문용 파생 서체.
 
-무료 서체를 바탕으로 우리 판에 맞게 고친다. 처음부터 그리지 않는다(BRAND_RESEARCH.md 4절).
+무료 서체를 바탕으로 우리 판에 맞게 고친다. 처음부터 그리지 않는다(brand-poster 스킬 4절).
 LOCA Batang(날카로운 명조 + Garamond + 가는 나침반 별)과 성격이 반대가 되게 잡았다.
 
   바탕       나눔스퀘어라운드(NanumSquareRound) R / B — 획 끝이 둥근 고딕. 16.5px 흰 모듈 상자에서

@@ -198,7 +198,7 @@ class OpenCheckTest(unittest.TestCase):
 
 
 class BrandGateTest(unittest.TestCase):
-    """묶음은 회사 전용 판(BRAND_RESEARCH.md)이 있는 회사만 넣는다 — 기본 틀 판이 섞이면 안 된다."""
+    """묶음은 회사 전용 판(brand-poster 스킬)이 있는 회사만 넣는다 — 기본 틀 판이 섞이면 안 된다."""
 
     def setUp(self):
         self.saved = (collection.brands.find, collection._sizes, collection._verifier, collection._dates)

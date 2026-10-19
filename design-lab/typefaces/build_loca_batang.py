@@ -1,6 +1,6 @@
 """LOCA Batang — 롯데카드 공고 포스터 본문용 파생 서체.
 
-무료 서체(SIL OFL)를 바탕으로 우리 판에 맞게 고친다. 처음부터 그리지 않는다(BRAND_RESEARCH.md 4절).
+무료 서체(SIL OFL)를 바탕으로 우리 판에 맞게 고친다. 처음부터 그리지 않는다(brand-poster 스킬 4절).
 
   한글       Hahmlet(함렛) wght 460 — 17px 폰 화면에서 명조가 흐려지지 않는 굵기
   숫자·영문  EB Garamond wght 480 ×1.2 — 롯데카드 'ESSENCE OF CREDIT CARD' 캠페인의 고전 로마자 세리프 계열.

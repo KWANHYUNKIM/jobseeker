@@ -159,7 +159,7 @@ def _gaps(rows: list[dict], already: set[str]) -> list[dict]:
 
     줄 세우는 기준은 **알아보는 회사 먼저**다(회사 규모 → 모집중 공고 수). 공고 수만 보면 공고를
     수십 건 뿌리는 모르는 회사가 위로 올라오는데, 묶음에 필요한 건 사람들이 아는 회사다.
-    BRAND_RESEARCH.md 의 절차를 여기 위에서부터 돌리면 묶음이 채워진다.
+    brand-poster 스킬 의 절차를 여기 위에서부터 돌리면 묶음이 채워진다.
     """
     sizes = _sizes()
     rank = {"대기업": 0, "중견기업": 1}
@@ -350,7 +350,7 @@ def build(kind: str, *, value: str = "", since: str = "", until: str = "",
           brand_only: bool = True, verify: bool = True, repost: bool = False) -> dict:
     """카테고리 하나를 묶음 데이터로. brand_only 면 **회사 전용 판이 있는 회사만** 넣는다.
 
-    전용 판은 BRAND_RESEARCH.md 절차로 회사마다 만든 것이다(대표 물건 → 실제 서체 → 공식 색 →
+    전용 판은 brand-poster 스킬 절차로 회사마다 만든 것이다(대표 물건 → 실제 서체 → 공식 색 →
     원본 이미지). 기본 틀 판을 섞으면 묶음 전체가 '색만 바꾼 판' 으로 보인다 — 그래서 기본값이
     True 다. 전용 판이 모자라면 `gaps()` 가 다음에 만들 회사를 알려 준다.
     """
@@ -625,7 +625,7 @@ def main() -> int:
         if not col["gaps"]:
             print("전용 판이 없는 회사가 없다 — 이 카테고리는 다 덮었다")
             return 0
-        print("다음에 만들 판 (모집중 공고 수 순) — BRAND_RESEARCH.md 절차로:")
+        print("다음에 만들 판 (모집중 공고 수 순) — brand-poster 스킬 절차로:")
         for row in col["gaps"]:
             print(f"  {row['postings']:>3}건  {row['company']:<26} {row['size']}")
         return 0

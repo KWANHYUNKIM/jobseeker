@@ -20,7 +20,7 @@ TPL_DIR = Path(__file__).resolve().parent / "templates"
 #
 # 2026-09-17: 처음 네 틀(role_hero/swiss_white/info_grid/point_cards)을 여기서 뺐다.
 # 레퍼런스를 그대로 옮긴 범용 판이라 회사가 색·글꼴로만 남았고, 그건 이 랩이
-# "너무 AI 스럽다" 로 이미 한 번 버린 판이다(BRAND_RESEARCH.md 0절). 스튜디오에는
+# "너무 AI 스럽다" 로 이미 한 번 버린 판이다(brand-poster 스킬 0절). 스튜디오에는
 # 그 절차를 끝까지 밟은 회사 전용 판만 올린다. HTML 파일은 templates/ 에 그대로 두었다.
 # engine:"frame" 은 /*__DATA__*/ + _frame.js 로 그리는 판이다. 치환기로는 못 그리므로
 # render.html_for 가 carousel 로 넘긴다. company 는 이 판을 쓸 수 있는 공고의 회사 표기

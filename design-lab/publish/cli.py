@@ -303,7 +303,7 @@ def cmd_approve_collection(args) -> int:
         print(f"  ! 전용 판이 없어 {col['short_by']}자리 비었다 — 다음에 만들 판:")
         for row in col.get("gaps", [])[:5]:
             print(f"      {row['postings']:>3}건  {row['company']} {row['size']}")
-        print("      BRAND_RESEARCH.md 절차로 만든 뒤 다시 묶으면 채워진다"
+        print("      brand-poster 스킬 절차로 만든 뒤 다시 묶으면 채워진다"
               " (급하면 --allow-generic 으로 기본 틀 판을 섞는다)")
     # 릴스는 9:16 이다. 4:5 판으로 영상을 만들면 위아래에 검은 띠가 남거나
     # 인스타가 잘라내 글자가 날아간다. 같은 템플릿을 크기만 바꿔 다시 찍는다.

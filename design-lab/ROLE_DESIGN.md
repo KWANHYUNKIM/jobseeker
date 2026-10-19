@@ -1,6 +1,6 @@
 # 직군 틀 — 그 자리가 무슨 일인지 판이 말한다
 
-회사 전용 판(BRAND_RESEARCH.md)은 **누가 뽑는지**를 말한다. 그런데 판을 보는 사람이 먼저
+회사 전용 판(brand-poster 스킬)은 **누가 뽑는지**를 말한다. 그런데 판을 보는 사람이 먼저
 알고 싶은 것은 **무슨 일을 하는 자리인지**다. 지금 판들은 회사만 다르고 자리는 다 똑같이
 생겼다 — 데이터 엔지니어 공고와 프론트엔드 공고가 같은 칸에 같은 글씨로 들어간다.
 
@@ -9,7 +9,7 @@
 
 ## 규칙 하나 — 장식이 아니라 그 직군이 실제로 보는 것
 
-이 랩이 이미 배운 것이 있다(BRAND_RESEARCH.md 0절): 장식 SVG·수치 카드·색 사각 불릿은
+이 랩이 이미 배운 것이 있다(brand-poster 스킬 0절): 장식 SVG·수치 카드·색 사각 불릿은
 'AI 티' 로 판정돼 전부 버려졌다. 직군 틀도 같은 함정에 빠질 수 있다 — '개발자스러움' 을
 터미널 그림이나 `</>` 아이콘으로 흉내 내면 그게 장식이다.
 
@@ -86,7 +86,7 @@ poster/templates/collection_cover.html  묶음 차례 — 같음(메인이 관�
 
 ```
 You are a fork. Make the <직군> family frame: poster/templates/family_<직군>.html.
-Read design-lab/ROLE_DESIGN.md and BRAND_RESEARCH.md (sections 7–8) first.
+Read design-lab/ROLE_DESIGN.md and brand-poster 스킬 (sections 7–8) first.
 Your files: poster/templates/family_<직군>.html and out/<공고키>/ for the jobs you render.
 Do NOT touch carousel.py, _frame.js, collection.py, other templates, brands/*.json, shared docs.
 Render at least three jobs of that family from different companies (one with a brand json, one

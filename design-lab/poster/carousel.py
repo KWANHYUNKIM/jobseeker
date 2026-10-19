@@ -23,7 +23,7 @@ from .render import LAB_DIR, OUT, _page_maker, shutdown
 
 TEMPLATE = Path(__file__).resolve().parent / "templates" / "carousel.html"
 ONEPAGE = TEMPLATE.with_name("onepage.html")
-# 한 장짜리 틀. onepage 말고는 전부 refs.json 의 사람이 만든 공고에서 구조를 옮겼다(ONEPAGE.md).
+# 한 장짜리 틀. onepage 말고는 전부 refs.json 의 사람이 만든 공고에서 구조를 옮겼다(brand-poster 스킬(references/records.md)).
 FRAMES = {
     "onepage": ONEPAGE,                                      # 첫 시안 — 'AI 스럽다' 판정
     "label_sheet": TEMPLATE.with_name("label_sheet.html"),   # hire-17 엠쓰리디자인: 라벨 – 값
@@ -31,7 +31,7 @@ FRAMES = {
     "swiss_grid": TEMPLATE.with_name("swiss_grid.html"),     # web-03 GREENERY CAVE: 텍스트 격자
     "dark_split": TEMPLATE.with_name("dark_split.html"),     # latam-03 AURE: 어두운 바탕, 제공|조건 마주보기
     "two_col": TEMPLATE.with_name("two_col.html"),           # eu-08 Tout Y Est: 업무는 깊게, 사람은 얕게
-    # 회사 전용 판 — brands/<회사>.json 의 frame. 조사한 포인트를 자리로 옮긴 것(BRAND_RESEARCH.md)
+    # 회사 전용 판 — brands/<회사>.json 의 frame. 조사한 포인트를 자리로 옮긴 것(brand-poster 스킬)
     "brand": TEMPLATE.with_name("_brand"),
     # 직군 틀 — 그 자리가 무슨 일인지 판이 말한다. 회사 색·서체·대표 물건은 brands 에서 오고
     # 칸을 짜는 방식만 직군에서 온다(ROLE_DESIGN.md).
@@ -160,7 +160,7 @@ def html_for(job_key: str, fmt_id: str = "ig_portrait", *, palette: str = "",
     if template == BRAND_FRAME:
         brand = composed.get("brand") or {}
         if not brand.get("frame"):
-            raise KeyError(f"브랜드 전용 판이 없다: {composed['company']} — brands/*.json 의 frame (BRAND_RESEARCH.md)")
+            raise KeyError(f"브랜드 전용 판이 없다: {composed['company']} — brands/*.json 의 frame (brand-poster 스킬)")
         template = TEMPLATE.with_name(brand["frame"])
     composed["brand_images"] = _brand_images(composed.get("brand"))
     data = json.dumps(composed, ensure_ascii=False)

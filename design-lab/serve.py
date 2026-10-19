@@ -24,7 +24,7 @@ from pathlib import Path
 LAB_DIR = Path(__file__).parent.resolve()
 sys.path.insert(0, str(LAB_DIR))
 
-from poster import assets, jobsource, process, render as renderer, templates   # noqa: E402
+from poster import assets, jobsource, render as renderer, templates   # noqa: E402
 from poster.model import FORMATS, PALETTES                            # noqa: E402
 from publish import caption as captions                               # noqa: E402
 from publish import queue                                             # noqa: E402
@@ -39,7 +39,7 @@ WORKER_PY = str(VENV_PY if VENV_PY.is_file() else sys.executable)
 SERVED_DIRS = {"refs": LAB_DIR / "refs", "out": LAB_DIR / "out", "assets": LAB_DIR / "assets"}
 MIME = {".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png",
         ".webp": "image/webp", ".svg": "image/svg+xml", ".md": "text/markdown; charset=utf-8",
-        ".mp4": "video/mp4", ".txt": "text/plain; charset=utf-8"}
+        ".mp4": "video/mp4", ".txt": "text/plain; charset=utf-8", ".html": "text/html; charset=utf-8"}
 
 
 PLANNING = LAB_DIR / "planning"
@@ -131,8 +131,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 })
             if path == "/api/assets":
                 return self._json({"companies": assets.have()})
-            if path == "/api/process":
-                return self._json(process.snapshot())
+            if path == "/api/design":
+                from agent import web as design_web
+                return self._json(design_web.snapshot())
+            if path in ("/", "/index.html", "/design", "/design/"):   # 첫 화면은 디자인 판정
+                return self._body((LAB_DIR / "static" / "design.html").read_bytes(), "text/html; charset=utf-8")
             if path == "/api/planning":
                 return self._json({"docs": planning_docs()})
             if path == "/api/planning/doc":
@@ -172,6 +175,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     palette=payload.get("palette", ""),
                     note=payload.get("note", ""))
                 return self._json({"item": item})
+            if self.path.startswith("/api/design/"):
+                from agent import web as design_web
+                return self._json(design_web.post(self.path, payload))
             if self.path == "/api/queue/delete":
                 return self._json({"removed": queue.remove(payload["id"])})
             if self.path == "/api/render":

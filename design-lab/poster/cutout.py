@@ -1,7 +1,7 @@
 """사진 한 장에서 배경을 떼어 투명 PNG 로 — 표지에 쓸 물건 이미지를 만든다.
 
 표지의 물건을 CSS 로 다시 그릴 필요가 없다. 원본 사진이 있으면 배경만 떼서 얹는 편이
-깔끔하고, 이 랩이 이미 배운 것과도 맞는다 — **흉내보다 원본**(BRAND_RESEARCH 0절 4번).
+깔끔하고, 이 랩이 이미 배운 것과도 맞는다 — **흉내보다 원본**(brand-poster 스킬 0절 4번).
 
     python -m poster.cutout 원본.jpg 토스플레이스 front2
     → assets/companies/토스플레이스/cutout/front2.png  (배경 투명)

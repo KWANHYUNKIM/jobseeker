@@ -1,6 +1,6 @@
 """Checkcard Sans — 카카오뱅크 공고 포스터(세로형 체크카드 판) 본문용 파생 서체.
 
-무료 서체(SIL OFL)를 바탕으로 판에 맞게 고친다(BRAND_RESEARCH.md 4절, LOCA Batang 과 같은 방식).
+무료 서체(SIL OFL)를 바탕으로 판에 맞게 고친다(brand-poster 스킬 4절, LOCA Batang 과 같은 방식).
 카카오뱅크 공식 서체가 아니다 — 이름에 회사명을 넣지 않는다.
 
   한글·영문  Kakao Small Sans(카카오 작은글씨) — 카카오가 2025 공개(OFL 1.1). 작은 화면용으로 자간·속공간이 넓어

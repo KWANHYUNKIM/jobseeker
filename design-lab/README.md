@@ -87,9 +87,9 @@ python -m poster.carousel wanted-364849 --one --frame label_sheet    # 한 장, 
 ```
 
 한 장짜리를 만드는 절차(내용 → 회사 UI 조사 → 레퍼런스 틀)와 'AI 티'로 판정해 뺀 목록,
-작업 기록은 **[ONEPAGE.md](ONEPAGE.md)**. 회사 조사는 `brands/<회사>.json` 에 남는다 —
-회사 전용 판 자동화 절차(대표 물건 → 실제 서체 → 공식 픽셀 색 → 원본 이미지 → 검증, 병렬 작업자 지시문 포함)는 **[BRAND_RESEARCH.md](BRAND_RESEARCH.md)**,
-포인트를 옮긴 회사 전용 판은 `--frame brand`. 그 판을 밑그림으로 나노바나나에게 다듬게 하는 법은 **[NANOBANANA.md](NANOBANANA.md)**.
+작업 기록은 **[brand-poster 스킬(references/records.md)](brand-poster 스킬(references/records.md))**. 회사 조사는 `brands/<회사>.json` 에 남는다 —
+회사 전용 판 자동화 절차(대표 물건 → 실제 서체 → 공식 픽셀 색 → 원본 이미지 → 검증, 병렬 작업자 지시문 포함)는 **[brand-poster 스킬](brand-poster 스킬)**,
+포인트를 옮긴 회사 전용 판은 `--frame brand`. 그 판을 밑그림으로 나노바나나에게 다듬게 하는 법은 **[brand-poster 스킬(references/nanobanana.md)](brand-poster 스킬(references/nanobanana.md))**.
 
 ## 회사 이미지
 
