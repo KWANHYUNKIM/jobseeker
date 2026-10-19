@@ -14,6 +14,10 @@
   :root { --paper:#f5f2ea; --ink:#111317; --sub:#5d6068; --accent:#ff5a1f; --line:#d8d3c7; }
   * { box-sizing:border-box; margin:0; }
   body { background:#222; }
+  /* 한국어는 낱말 사이에서만 줄을 바꾼다(기본은 아무 글자에서나 끊어 '관/제', '모의/해킹' 이 됐다).
+     한 낱말이 칸보다 길 때만 그 안에서 끊는다. 설명 글의 줄바꿈(\n)은 그대로 살린다. */
+  .sheet { word-break: keep-all; overflow-wrap: anywhere; }
+  .exp { white-space: pre-line; }
   .sheet { width:var(--sheet-w,1080px); height:var(--sheet-h,1350px); background:var(--paper); color:var(--ink);
            font-family:'Pretendard','Noto Sans KR','Malgun Gothic',sans-serif; padding:84px 80px 70px;
            display:flex; flex-direction:column; position:relative; overflow:hidden; -webkit-font-smoothing:antialiased; }
