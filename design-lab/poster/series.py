@@ -68,13 +68,15 @@ THEMES = {
     "contra": {"paper": "#15171d", "ink": "#f4f2ec", "sub": "#9b9fa9", "accent": "#ffd43b", "line": "#2b2f38"},
     "game": {"paper": "#0b0d1a", "ink": "#f2f4ff", "sub": "#9aa0c0", "accent": "#5df2c1", "line": "#232845"},
     "security": {"paper": "#0f1420", "ink": "#f3f4f8", "sub": "#9ba3b4", "accent": "#ff4d5a", "line": "#26304a"},
+    "cert": {"paper": "#f4f1fb", "ink": "#17122b", "sub": "#615a78", "accent": "#5f3dc4", "line": "#ddd5f0"},
 }
 SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", "term": "[IT 용어]",
           "interview": "[면접 예상 질문]", "qa": "[고민 상담소]", "jd": "[JD 번역기]",
           "same": "[같은 직무 다른 회사]", "roadmap": "[공부 로드맵]", "weekly": "[주간 리포트]", "signal": "[채용 시그널]", "talent": "[인재상 해부]",
           "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]",
           "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]", "balance": "[둘 중 하나]", "tier": "[티어표]",
-          "contra": "[공고 원문]", "game": "[게임사 채용]", "security": "[보안 채용]"}
+          "contra": "[공고 원문]", "game": "[게임사 채용]", "security": "[보안 채용]",
+          "cert": "[자격증 우대]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -97,7 +99,8 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "tier": ["신입연봉", "개발자연봉", "초봉", "신입개발자", "연봉티어"],
         "contra": ["채용공고", "신입개발자", "자격요건", "개발자취업", "중고신입"],
         "game": ["게임회사", "게임개발자", "게임스컴", "개발자채용", "게임업계취업"],
-        "security": ["정보보안", "보안엔지니어", "보안채용", "개발자채용", "IT취업"]}
+        "security": ["정보보안", "보안엔지니어", "보안채용", "개발자채용", "IT취업"],
+        "cert": ["자격증", "데브옵스", "인프라엔지니어", "AWS자격증", "개발자채용"]}
 
 
 # --- 재료 ---------------------------------------------------------------
@@ -1747,6 +1750,89 @@ def build_security() -> dict:
             "reel_lead": "해킹 사고 뒤 보안 자리, 지금 이만큼 열려 있다 — 저장해 두세요"}
 
 
+#: 이름으로 적힌 자격증만 센다 — '관련 자격증 우대' 같은 말이나 복지의 '자격증 취득 지원' 은 세지 않는다.
+#: 'SAA' 는 SaaS 에, 'AWS 자격' 은 'AWS 자격요건' 에 걸려 낱말 경계를 둔다.
+_CERTS = {"보안 자격증": r"정보보안\s*기사|CISSP|\bCISA\b|\bCISM\b",
+          "정보처리기사": r"정보처리\s*기사",
+          "CCNA·CCNP": r"CCNA|CCNP|CCIE|네트워크관리사",
+          "CKA·CKAD": r"\bCKA\b|\bCKAD\b|\bCKS\b",
+          "AWS 자격증": r"AWS\s*(공인|자격증|Certified)|Solutions?\s*Architect\s*(Associate|Professional)|\bSAA(-C0\d)?\b",
+          "리눅스 자격증": r"리눅스\s*마스터|RHCSA|RHCE|LPIC",
+          "Azure·GCP 자격증": r"\bAZ-\d{3}\b|Azure\s*(자격증|Certified)|Google\s*Cloud\s*(자격증|Certified)|Professional\s*Cloud"}
+
+
+def _infra_rows() -> list[dict]:
+    """국내 근무 DevOps/인프라 모집중 공고(사이트 간 사본 뺌) — 본문까지 봐야 해서 API 가 아니라 정본 DB 에서."""
+    sys.path.insert(0, str(ROOT / "catch_capture"))
+    from store.db.conn import cursor
+    with cursor(autocommit=True) as cur:
+        cur.execute("""SELECT co.display_name AS company, j.title, f.career_bucket,
+                              coalesce(j.qualifications, '') AS qual, coalesce(j.preferences, '') AS pref,
+                              concat_ws(E'\\n', j.qualifications, j.preferences, j.full_jd) AS body
+                         FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
+                         JOIN job_facet f ON f.job_id = j.id JOIN company co ON co.id = j.company_id
+                        WHERE 'DevOps/인프라' = ANY(f.roles) AND coalesce(f.region, '') <> '해외·원격'
+                          AND NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = j.id)""")
+        return cur.fetchall()
+
+
+def build_cert() -> dict:
+    """[자격증 우대] 쇼츠 — 'IT 리더 87% 가 인프라·보안 인증 보유자를 우대'(로버트 하프 2026 연봉 가이드, 벤처스퀘어 보도)를
+    지금 국내 인프라 공고 본문에서 자격증 이름이 몇 번 나오는지로 확인한다. 숫자는 만들 때 DB 에서 다시 센다."""
+    rows = [r for r in _infra_rows() if not _not_dev({"title": r["title"], "stack": ["x"]})]
+    hits = [(r, [k for k, rx in _CERTS.items() if re.search(rx, r["body"] or "", re.I)]) for r in rows]
+    named = [(r, h) for r, h in hits if h]
+    n, nn = len(rows), len(named)
+    entry = [r for r in rows if r["career_bucket"] == "신입/무관"]
+    entry_named = [r for r, h in named if r["career_bucket"] == "신입/무관"]
+    by = collections.Counter(k for _, h in named for k in h).most_common()
+    any_rx = "|".join(f"(?:{v})" for v in _CERTS.values())
+    required = sum(1 for r, _ in named if re.search(any_rx, r["qual"], re.I))       # 자격요건 칸에 적은 곳
+    pref_only = sum(1 for r, _ in named if re.search(any_rx, r["pref"], re.I) and not re.search(any_rx, r["qual"], re.I))
+    cos = collections.Counter(_co_name(r["company"]) for r, _ in named).most_common(3)
+    pct = lambda a, b: round(100 * a / b) if b else 0
+    asof = date.today().isoformat()
+    note = (f"JD Viewer 모집중 DevOps/인프라 공고 · 국내 근무 {n:,}건 · {_dot(asof)} · "
+            "자격증 이름이 본문에 적힌 공고만 셈")
+    src = "로버트 하프 2026 연봉 가이드(벤처스퀘어 2026.3.16 보도) · 조사 범위는 보도에 없음"
+    slides = [
+        {"type": "cover", "big": f"{pct(nn, n)}", "big_unit": "%",
+         "lines": ["자격증, 정말 우대될까", "인프라 공고에서 세 봤다"],
+         "sub": f"국내 인프라 공고 {n:,}건 중 자격증 이름을 적은 {nn}건", "note": note},
+        {"type": "table", "title": "말과 공고는 달랐다", "sub": "보도는 요약, 원문은 캡션의 링크",
+         "head": ["어디서", "무엇", "숫자"],
+         "rows": [["로버트 하프", "인증 보유자 우대 IT 리더", "87%"],
+                  ["우리 공고", "자격증 이름을 적은 공고", f"{pct(nn, n)}%"],
+                  ["우리 공고", "신입 공고 중", f"{pct(len(entry_named), len(entry))}%"]],
+         "hi_col": 2, "note": src},
+        {"type": "bars", "title": "가장 많이 적힌 자격증", "sub": "그 자격증 이름이 나온 공고 수",
+         "rows": [{"label": k, "value": v, "display": f"{v}", "unit": "건", "hi": i == 0}
+                  for i, (k, v) in enumerate(by[:6])], "note": note},
+        {"type": "stat", "title": "자격증을 적은 공고", "num": f"{nn}", "unit": "건",
+         "label": f"국내 인프라 공고 {n:,}건 중",
+         "explain": f"**{pref_only}건({pct(pref_only, nn)}%)**은 우대사항에만 적었다.\n자격요건에 적은 곳은 {required}\u2060건.",
+         "note": note},
+        {"type": "end", "title": "저장해 두고", "lines": [
+            " · ".join(f"**{c}** {k}건" for c, k in cos),
+            "자격증을 적은 공고 전체는 프로필 링크에서", "자격증 고민하는 친구에게 보내 주세요"], "note": note},
+    ]
+    caption = "\n\n".join([
+        f"인프라·보안 자격증, 정말 우대될까요? 국내 인프라 공고 {n:,}건을 세 봤습니다.",
+        f"· 자격증 이름을 본문에 적은 공고 {nn}건({pct(nn, n)}%)\n"
+        f"· 신입도 되는 공고 {len(entry)}건 중 {len(entry_named)}건({pct(len(entry_named), len(entry))}%)\n"
+        f"· 그중 우대사항에만 적은 곳 {pref_only}건, 자격요건에 적은 곳 {required}건\n"
+        "· 많이 나온 자격증: " + " · ".join(f"{k} {v}건" for k, v in by[:4]),
+        "벤처스퀘어는 로버트 하프 2026 연봉 가이드를 인용해 IT 리더의 87%가 인프라·보안 공인 인증 보유자에게 "
+        "우대 점수를 준다고 전했습니다. 다만 공고에 자격증 이름까지 적는 곳은 그보다 훨씬 적었습니다.",
+        "출처\nhttps://www.venturesquare.net/1054188/",
+        f"{_dot(asof)} JD Viewer 모집중 공고 중 DevOps/인프라 직군(국내 근무) 기준. '관련 자격증 우대' 처럼 "
+        "이름 없이 적은 것과 복지의 '자격증 취득 지원' 은 세지 않았습니다.",
+    ])
+    return {"kind": "cert", "id": f"cert-infra-{asof.replace('-', '')}", "title": "인프라 자격증 우대",
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.0,
+            "reel_lead": "자격증, 공고에는 몇 번이나 적혀 있을까 — 저장해 두세요"}
+
+
 REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
 
 
@@ -1803,7 +1889,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
                                      "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit",
-                                     "contra", "ai-entry", "game", "security"])
+                                     "contra", "ai-entry", "game", "security", "cert"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
@@ -1837,6 +1923,8 @@ def main() -> int:
         post = build_game()
     elif args.kind == "security":
         post = build_security()
+    elif args.kind == "cert":
+        post = build_cert()
     elif args.kind in ("pay", "perk", "welcome", "gongchae", "contra"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae, "contra": build_contra}[args.kind]()
