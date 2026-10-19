@@ -27,6 +27,7 @@ import sys as _sys
 from pathlib import Path as _Path
 _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_capture 루트를 import 경로에 추가
 
+import fcntl
 import json
 import os
 import re
@@ -45,6 +46,10 @@ ROOT_DIR = BASE_DIR.parent
 SCREENSHOTS_DIR = BASE_DIR / "screenshots"
 PID_FILE = BASE_DIR / "auto_crawl.pid"
 LOG_FILE = BASE_DIR / "auto_crawl.log"
+# 회차 잠금. launchd 는 같은 작업을 겹쳐 띄우지 않지만, 손으로 돌린 once(따라잡기 회차 등)나
+# start 데몬과 launchd 회차는 서로 모른다 — 둘이 겹치면 같은 jobs.json·원장을 동시에 쓴다.
+# 잠금은 프로세스가 끝나면 OS 가 푼다(죽어도 남지 않는다).
+RUN_LOCK = BASE_DIR / "auto_crawl.run.lock"
 REFRESH_SH = ROOT_DIR / "jd-viewer" / "bin" / "refresh-data.sh"
 # 사이클당 마감 재확인 건수(원본 사이트 조회). 올리면 한 바퀴가 빨라지지만 차단 위험도 오른다.
 CLOSE_CHECK_LIMIT = int(os.environ.get("CLOSE_CHECK_LIMIT", "400"))
@@ -456,7 +461,7 @@ def run_cycle(keyword: str, count: int) -> bool:
     keyword 는 콤마로 여러 개를 줄 수 있다("개발자,백엔드,프론트엔드").
     여러 개면 키워드별로 크롤한 뒤 한 통합 폴더(all_통합_*)로 병합한다.
     """
-    from automation.crawl_all import fix_locations, run_foreground
+    from automation.crawl_all import fix_locations, run_extras, run_foreground
     _reload_pipeline()
     from pipeline.aggregate import aggregate
 
@@ -471,10 +476,10 @@ def run_cycle(keyword: str, count: int) -> bool:
     rc_fail = 0
     for kw in kws:
         # 멀티 키워드면 키워드별 단일 통합은 생략하고 마지막에 1회만 통합한다.
-        # 기술 블로그·외주 프로젝트·부품 가격은 키워드와 무관 → 사이클당 1회(마지막 키워드)만 실행
+        # 기술 블로그·외주 프로젝트·부품 가격은 키워드와 무관 → 공고 통합 **뒤에** 한 번(run_extras)
         last = kw == kws[-1]
         rc = run_foreground(kw, count, KEYWORD_SITES + (AGNOSTIC_SITES if last else []),
-                            do_aggregate=not multi, do_blog=last, do_freelance=last, do_hardware=last)
+                            do_aggregate=not multi, do_blog=False, do_freelance=False, do_hardware=False)
         if rc != 0:
             rc_fail += 1
             log(f"[crawl] '{kw}' 일부 실패(rc={rc})")
@@ -499,6 +504,11 @@ def run_cycle(keyword: str, count: int) -> bool:
         refresh_data(label)
     else:
         log("[crawl] 새 데이터 없음 → 갱신 스킵")
+
+    # 공고가 DB·뷰어에 다 들어간 다음에 키워드 무관 단계를 돈다(느린 블로그 번역이 공고를 막지 않게).
+    extra_fail = run_extras()
+    if extra_fail:
+        log(f"[extras] 일부 실패: {extra_fail}")
     orch.cycle_finished(new_data, (datetime.now() - cycle_start).total_seconds())
     return new_data
 
@@ -519,6 +529,20 @@ def run_iteration(keyword: str, count: int) -> None:
     크롤 → 부가 빌더 → 디스크 유지보수까지가 한 회차다. 유지보수도 여기 둔다 —
     같은 이유로 loop 에만 있었고, 같은 결과(운영에서만 안 돎)를 낳고 있었다.
     """
+    lock = open(RUN_LOCK, "w")
+    try:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        log("[skip] 다른 회차가 돌고 있다 — 이번 회차는 건너뛴다")
+        lock.close()
+        return
+    try:
+        _run_iteration_locked(keyword, count)
+    finally:
+        lock.close()
+
+
+def _run_iteration_locked(keyword: str, count: int) -> None:
     try:
         run_cycle(keyword, count)
     except Exception as e:  # 한 회차 실패해도 부가 빌더는 돌려야 한다

@@ -1,7 +1,7 @@
 // 모든 탭이 공유하는 상태 컴포넌트 — 로딩/에러/빈 화면을 일관되게 표시.
 import { useEffect, useState, type ReactNode } from 'react'
 import { techIconUrl } from '../utils/techIcon'
-import { companyLogoUrl, companyMarkColor, companyInitial } from '../utils/companyMark'
+import { companyInitial, companyLogoUrl, companyMarkColor, safeLogoUrl } from '../utils/companyMark'
 
 // 반응형 사이드 패널.
 // - 데스크톱(md+): 일반 정적 컬럼으로 표시(기존 레이아웃 유지)
@@ -328,6 +328,7 @@ export function TechIcon({ tech, size = 12 }: { tech: string; size?: number }) {
       width={size}
       height={size}
       loading="lazy"
+      referrerPolicy="no-referrer"
       onError={() => setFailed(true)}
       style={{ width: size, height: size }}
       className="shrink-0 object-contain"
@@ -356,8 +357,10 @@ export function TechTag({
 // 공고에 나오는 회사는 2천 곳 가까이 되는데 크롤 데이터에 로고가 없다.
 // 아는 회사는 로고를, 나머지는 이름에서 뽑은 색의 글자 마크를 쓴다 — 로고가
 // 없다고 자리를 비워 두면 목록이 들쭉날쭉해져서 오히려 읽기 어려워진다.
-export function CompanyMark({ name, size = 18 }: { name: string; size?: number }) {
-  const url = companyLogoUrl(name)
+export function CompanyMark({ name, size = 18, logo }: { name: string; size?: number; logo?: string | null }) {
+  // DB 의 로고(수집기가 우리 서버에 둔 /logos/c/…) → 도메인 표의 파비콘(/logos/d/…) → 글자 마크.
+  // 둘 다 우리 서버 파일이라 방문자 브라우저가 바깥 이미지 서버에 가지 않는다.
+  const url = safeLogoUrl(logo) || companyLogoUrl(name)
   const [failed, setFailed] = useState(false)
   const box = { width: size, height: size }
 
@@ -369,7 +372,11 @@ export function CompanyMark({ name, size = 18 }: { name: string; size?: number }
         width={size}
         height={size}
         loading="lazy"
+        // 바깥 이미지 서버에 지금 보고 있는 주소(Referer)를 넘기지 않는다
+        referrerPolicy="no-referrer"
         onError={() => setFailed(true)}
+        // 구글 파비콘 서비스는 모르는 도메인에 16px 짜리 지구본을 준다 — 흐린 지구본보다 글자 마크가 낫다
+        onLoad={(e) => e.currentTarget.naturalWidth <= 16 && setFailed(true)}
         style={box}
         className="shrink-0 rounded-sm object-contain bg-white"
       />

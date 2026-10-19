@@ -188,7 +188,13 @@ def http_get(url: str, timeout: int = 30, referer: str | None = None) -> bytes:
 
 
 def extract_img_urls(html: str) -> list[str]:
-    return [m.group(1) for m in IMG_SRC_RE.finditer(html)]
+    out = []
+    for m in IMG_SRC_RE.finditer(html):
+        url = m.group(1)
+        # 원문 HTML 에 주소 앞부분이 두 번 붙은 경우가 있다("https://pds…/https://pds…/x.jpg") — 마지막 완전한 주소만
+        last = max(url.rfind("https://"), url.rfind("http://"))
+        out.append(url[last:] if last > 0 else url)
+    return out
 
 
 def ocr_images(img_urls: list[str], lang: str = "kor+eng", referer: str | None = None) -> str:
@@ -253,10 +259,22 @@ def sanitize_filename(name: str) -> str:
 
 
 def is_image_only(html: str, text: str, min_text_len: int = 30) -> bool:
-    """JD가 사실상 이미지로만 구성됐는지 판정."""
-    has_img = "<img " in (html or "").lower()
+    """JD 내용이 사실상 이미지에 있는지 판정 — 그러면 OCR 을 돌린다.
+
+    예전에는 글자가 30자 미만일 때만 이미지 공고로 봤다. 그런데 포스터 한 장에 '유의사항'·검색 키워드·
+    블로그 주소 같은 짧은 글이 붙은 공고가 많아(사람인 본문 60~160자) OCR 을 건너뛰었고, 주요업무·
+    자격요건·우대사항이 통째로 비었다. 그림이 있고 글이 짧은데(400자 미만) 그 글에서 세 칸 중
+    하나도 안 나뉘면 내용은 그림 안에 있다고 본다.
+    """
+    if "<img " not in (html or "").lower():
+        return False
     trimmed_len = len(re.sub(r"\s+", "", text or ""))
-    return has_img and trimmed_len < min_text_len
+    if trimmed_len < min_text_len:
+        return True
+    if trimmed_len < 400:
+        parts = split_jd_sections(text or "")
+        return not any(parts[k] for k in ("main_tasks", "qualifications", "preferences"))
+    return False
 
 
 BROWSER_STATE_FILE = Path(__file__).resolve().parent.parent / ".browser_state.json"
@@ -514,19 +532,96 @@ _HEADER_TO_KEY: list[tuple[str, str]] = [
 _HEADER_TO_KEY.sort(key=lambda kv: len(kv[0]), reverse=True)
 
 
+# 머리말을 말로 쓰는 공고 — "이런 업무를 해요", "# 이런 분과 함께하고 싶어요"(토스),
+# "✔ 이런 역량을 갖춘 분을 찾습니다"(그리팅), "You will:", "Bonus Points"(Greenhouse) 따위.
+# 정확히 같은 낱말만 알아보던 때는 이런 공고의 주요업무·자격요건·우대사항이 통째로 비었다
+# (2026-10: 토스 100%·Lever 93%·NHN 89%·Greenhouse 46% 가 셋 다 빈 공고). 위에서부터 처음 맞는 줄이 이긴다 —
+# '우대'·'더 좋아요' 가 '자격'보다 먼저 와야 "자격요건 및 우대사항" 이 아닌 "이런 분이면 더 좋아요" 가 우대로 간다.
+_HEADER_PATTERNS: list[tuple[str, re.Pattern]] = [(k, re.compile(rx, re.I)) for k, rx in [
+    # 끊는 머리말(지원 절차·회사 소개·급여…) — 키 None. 아래 어느 것보다 먼저 본다.
+    (None, r"합류\s*여정|채용\s*(절차|프로세스|과정)|전형\s*(절차|과정)|지원\s*(방법|서류|시|하는\s*방법)|"
+           r"이력서는|지원서는|유의\s*(사항|해)|꼭\s*확인|접수|제출\s*서류|회사\s*소개|기업\s*소개|팀\s*소개|"
+           r"합류하게\s*될\s*팀|우리\s*팀은|동료를\s*위한\s*한마디|근무\s*(조건|환경|지|형태|요일|장소)|고용\s*형태|"
+           r"급여|연봉|처우|^about\s+(us|the\s+team|the\s+company|[a-z][\w.&' -]{0,30})$|^who\s+we\s+are|"
+           r"^our\s+(story|mission|values|commitment|culture|team)|diversity|equal\s+opportunity|"
+           r"salary|pay\s+(range|transparency)|compensation|interview\s+process|how\s+to\s+apply|"
+           r"^location|^the\s+team$|^your\s+future\s+team|accommodation|privacy|#li-"),
+    ("preferences", r"우대|더\s*좋아요|더욱?\s*좋(습니다|아요|겠)|이면\s*좋|있다면\s*좋|있으면\s*좋|"
+                    r"preferred|nice[- ]to[- ]have|bonus|we\s+prefer|(it'?s\s+a\s+)?plus(es)?:?$|good\s+to\s+have|"
+                    r"extra\s+credit|stand\s+out"),
+    # 기술 스택은 머리말 전체가 그 말일 때만 — "[실무 경험 및 기술 스택]" 같은 우대사항 안의 소제목이
+    # 우대사항을 통째로 기술 스택 칸으로 끌고 가지 않게.
+    ("tech_stack_raw", r"^((기술|개발)\s*(스택|환경)|사용\s*(하는\s*)?기술|.{0,12}에서\s*사용하는\s*기술|이런\s*기술이\s*필요해요|"
+                       r"tech(nology)?\s*stack|our\s+stack(\s*&\s*practices)?|tools\s+we\s+use)$"),
+    ("benefits", r"복지|혜택|복리\s*후생|좋은\s*점|이런\s*점들?이\s*좋|benefits|perks|what\s+we\s+offer|we\s+offer"),
+    ("qualifications", r"자격|필수\s*(요건|사항|기준|역량|조건)|지원\s*(자격|대상)|요구\s*(사항|역량|조건)|"
+                       r"필요\s*(역량|기술|경험)|이런\s*분(을|과|들을|들과)?\s*(찾|함께|기다|모십|모셔)|이런\s*역량|"
+                       r"이런\s*동료를|찾고\s*있어요|모십니다|이런\s*경험을\s*가진|"
+                       r"requirements|qualifications|must[- ]haves?|^you\s+have|^about\s+you|who\s+you\s+are|"
+                       r"what\s+(you|we)('|’)?\s*(ll\s+)?(bring|need|look\s+for|re\s+looking\s+for|are\s+looking\s+for)|"
+                       r"you('|’)?ll\s+(bring|need)|your\s+(background|experience|skills|profile)|"
+                       r"to\s+be\s+successful|kind\s+of\s+(person|builder)"),
+    ("main_tasks", r"주요\s*업무|담당\s*업무|업무\s*내용|수행\s*업무|직무\s*(내용|소개)|역할과\s*책임|"
+                   r"이런\s*(업무|일)|합류하면.*(업무|일)|함께\s*할\s*업무|하게\s*될\s*(업무|일)|담당하게|담당합니다|"
+                   r"업무를\s*해요|하는\s*일|"
+                   r"what\s+you('|’)?ll\s+(do|own|be\s+doing|work\s+on)|what\s+you\s+will\s+(do|be\s+doing|own)|"
+                   r"^you\s+will|in\s+this\s+role|responsibilit|day[- ]to[- ]day|your\s+(role|impact|mission)|"
+                   r"the\s+role\s+involves|key\s+duties|tasks\s+and\s+deliverables"),
+]]
+# 줄글 공고의 문단 첫마디 → 칸
+_PROSE_LEADS: list[tuple[str, re.Pattern]] = [(k, re.compile(rx)) for k, rx in [
+    ("preferences", r"^(우대\s*(사항|조건|요건)|.{0,40}(우대한다|우대된다|우대하며|우대 대상))"),
+    ("qualifications", r"^(자격\s*요건|지원\s*자격|필수\s*(요건|조건|자격)|.{0,20}(요구된다|요구하며|필요하다|갖춘\s*인재|지원할\s*수\s*있다))"),
+    ("main_tasks", r"^(주요\s*업무|담당\s*업무|맡게\s*될\s*업무|.{0,30}(업무는|역할은|일을\s*맡|담당하게|맡는다|수행한다))"),
+]]
+# "About the Role" 류는 역할 소개 문단이라 업무와 겹친다 — 주요업무가 따로 없을 때만 그 자리에 쓴다.
+_ABOUT_ROLE = re.compile(r"^(about\s+(the|this)\s+(role|position|job|opportunity)|the\s+role|the\s+opportunity|"
+                         r"role\s+overview|position\s+overview|포지션\s*소개|직무\s*개요)$", re.I)
+
+
+def _clean_header(line: str) -> str:
+    s = line.strip()
+    s = re.sub(r"^#{1,6}\s*", "", s)                      # 마크다운 머리말(토스 "# 이런 분과…")
+    s = s.strip("[]【】■◆●▶▷✔✓☑-·•:：*_ ").strip()
+    s = re.sub(r"^\W+", "", s, flags=re.UNICODE)
+    s = re.sub(r"\W+$", "", s, flags=re.UNICODE)
+    return s
+
+
+def _looks_like_header(raw: str, s: str) -> bool:
+    """본문 문장이 아니라 머리말 모양인가 — 짧고, 글머리표로 시작하지 않고, 문장으로 끝나지 않는다."""
+    t = raw.strip()
+    if not s or len(s) > 60 or len(s.split()) > 9:
+        return False
+    # 글머리표로 시작하는 줄은 본문이다(한국 공고의 'ㆍ'·'○'·'1.' 포함)
+    if re.match(r"^([-•·ㆍ○◦▪▸→*]|\d+[.)]|[①-⑳])\s*", t) and not t.startswith("**"):
+        return False
+    # "자격증 : 정보처리기사" 처럼 항목 : 값 꼴은 본문이다(머리말은 콜론 뒤가 비어 있다)
+    if re.search(r"[:：]\s*\S", t):
+        return False
+    if re.search(r"[.!?。]$|(니다|어요|해요|세요|습니다)\.$", t):
+        return False
+    return True
+
+
 def _header_match(line: str) -> str | None:
-    """라인이 섹션 헤더인 경우 정규화된 key 반환, 아니면 None."""
+    """라인이 섹션 헤더인 경우 정규화된 key 반환, 아니면 None. (끊는 머리말은 _is_stop_header 가 본다)"""
     s = line.strip().strip("[]【】■◆●▶▷-·•:：").strip()
     # leading/trailing 이모지·기호 제거 (예: "📋 주요업무" → "주요업무", "🔥자격요건:" → "자격요건")
     s = re.sub(r"^\W+", "", s, flags=re.UNICODE)
     s = re.sub(r"\W+$", "", s, flags=re.UNICODE)
-    if not s or len(s) > 40:
+    if not s or len(s) > 60:
         return None
     s_low = s.lower()
     for header, key in _HEADER_TO_KEY:
         h_low = header.lower()
         if s_low == h_low or s_low.startswith(h_low + " ") or s_low.rstrip(":：") == h_low:
             return key
+    c = _clean_header(line)
+    if _looks_like_header(line, c):
+        for key, rx in _HEADER_PATTERNS:
+            if rx.search(c):
+                return key            # None(끊는 머리말)이면 여기서 None — _is_stop_header 가 따로 잡는다
     # OCR로 prefix가 깨진 경우 (예: "를 자격요건"): "짧은 prefix + 공백 + 헤더" 패턴 인정
     parts = s.split()
     if len(parts) == 2 and len(parts[0]) <= 2:
@@ -550,6 +645,9 @@ _STOP_HEADERS = [
 
 
 def _is_stop_header(line: str) -> bool:
+    c = _clean_header(line)
+    if _looks_like_header(line, c) and _HEADER_PATTERNS[0][1].search(c):
+        return True
     s = line.strip().strip("[]【】■◆●▶▷-·•:：").strip()
     s = re.sub(r"^\W+", "", s, flags=re.UNICODE)
     s = re.sub(r"\W+$", "", s, flags=re.UNICODE)
@@ -578,12 +676,18 @@ def split_jd_sections(text: str) -> dict[str, str]:
     lines = text.splitlines()
     current: str | None = None
     buf: dict[str, list[str]] = {k: [] for k in SECTION_HEADERS}
-    inline_re = re.compile(r"^\s*[\[【(]([^\]\)】]{1,30})[\]\)】]\s*(.*)$")
+    about_role: list[str] = []
+    # 괄호 종류마다 짝을 맞춘다 — "[이런 업무를 해요 (주요 업무)]" 안의 ')' 에서 끊기면 ']' 가 본문으로 샌다
+    inline_re = re.compile(r"^\s*(?:\[([^\]]{1,60})\]|【([^】]{1,60})】|\(([^)]{1,60})\))\s*(.*)$")
     for raw in lines:
+        if _ABOUT_ROLE.match(_clean_header(raw)):
+            current = "_about_role"
+            continue
         # "[헤더] 본문" 또는 "(헤더) 본문" 처럼 한 줄에 헤더+본문이 있는 경우 분리 (사람인/캐치)
         m = inline_re.match(raw)
         if m:
-            cand, rest = m.group(1).strip(), m.group(2).strip()
+            cand = (m.group(1) or m.group(2) or m.group(3)).strip()
+            rest = m.group(4).strip()
             inline_key = _header_match(cand)
             if inline_key:
                 current = inline_key
@@ -600,8 +704,21 @@ def split_jd_sections(text: str) -> dict[str, str]:
         if _is_stop_header(raw):
             current = None
             continue
-        if current:
+        if current == "_about_role":
+            about_role.append(raw)
+        elif current:
             buf[current].append(raw)
+    if not any(x.strip() for x in buf["main_tasks"]) and about_role:
+        buf["main_tasks"] = about_role
+    # 머리말이 하나도 없는 줄글 공고(인크루트 등 기사체: "주요 업무는 …이다. 자격 요건은 …") —
+    # 문단 첫마디로 가른다. 머리말로 나눈 결과가 하나라도 있으면 쓰지 않는다.
+    if not any(any(x.strip() for x in buf[k]) for k in ("main_tasks", "qualifications", "preferences")):
+        for para in lines:
+            p = para.strip()
+            for key, rx in _PROSE_LEADS:
+                if rx.match(p):
+                    buf[key].append(p)
+                    break
     for k, ls in buf.items():
         body = "\n".join(ls).strip("\n").strip()
         body = re.sub(r"\n{3,}", "\n\n", body)

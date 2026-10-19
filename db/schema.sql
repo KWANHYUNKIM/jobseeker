@@ -72,6 +72,11 @@ CREATE TABLE company (
     domains       text[]      NOT NULL DEFAULT '{}',   -- 사업 도메인 태그(핀테크, 물류…)
     -- 홈페이지에서 긁힌 기술 흔적. crawl_company 가 채운다(company_profiles.json 대체).
     homepage_tech text[]      NOT NULL DEFAULT '{}',
+    -- 로고(014). 공고 원문이 준 것 — 메인 화면 회사 카드가 쓴다.
+    logo_url        text,          -- 우리 서버 경로(/logos/c/…png, 015)
+    logo_source     text,
+    logo_checked_at timestamptz,
+    logo_origin     text,          -- 원본 이미지 주소(015)
 
     -- 나중에 같은 회사로 판명났을 때. 행을 지우면 job.company_id 가 끊기므로
     -- 지우는 대신 여기로 넘긴다 — 옛 슬러그 주소도 리다이렉트로 살릴 수 있다.

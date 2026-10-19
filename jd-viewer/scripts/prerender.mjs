@@ -171,7 +171,7 @@ function write(path, html) {
 }
 
 // 모든 정적 본문에 공통으로 붙는 머리 — 크롤러가 여기서 다른 탭으로 건너간다.
-const NAV = `<nav><a href="/">개발자 채용공고</a> · <a href="/companies">기업 기술스택</a> · <a href="/blog">기술블로그</a> · <a href="/radar">기술 레이더</a> · <a href="/calendar">모집 캘린더</a> · <a href="/trend">기술 트렌드</a> · <a href="/reveng">기술 역설계</a> · <a href="/mindmap">커리어 마인드맵</a> · <a href="/reposts">재공고</a> · <a href="/freelance">외주·프리</a> · <a href="/hardware">PC 하드웨어</a></nav>`
+const NAV = `<nav><a href="/">기업별 IT 채용</a> · <a href="/jobs">개발자 채용공고</a> · <a href="/companies">기업 기술스택</a> · <a href="/blog">기술블로그</a> · <a href="/radar">기술 레이더</a> · <a href="/calendar">모집 캘린더</a> · <a href="/trend">기술 트렌드</a> · <a href="/reveng">기술 역설계</a> · <a href="/mindmap">커리어 마인드맵</a> · <a href="/reposts">재공고</a> · <a href="/freelance">외주·프리</a> · <a href="/hardware">PC 하드웨어</a></nav>`
 
 const section = (h, text, max = 1200) =>
   text ? `<section><h2>${esc(h)}</h2><p>${esc(clip(text, max))}</p></section>` : ''
@@ -201,6 +201,10 @@ const add = (loc, lastmod, changefreq, priority) => urls.push({ loc, lastmod, ch
 // 문구는 src/utils/urls.ts 의 TAB_SEO 와 같아야 한다.
 const TAB_SEO = {
   '/': {
+    title: '기업별 IT 채용 — 대기업·중견·중소, 신입·경력 개발자 공고',
+    desc: '지금 모집중인 국내 IT·개발자 공고를 회사별로 묶어 규모(대기업·중견·중소)와 업종(금융·게임·제조…), 신입·경력 구간으로 나눠 봅니다.',
+  },
+  '/jobs': {
     title: '개발자 채용공고 모아보기',
     desc: '원티드·점핏·잡코리아·사람인·데보션과 해외 원격 보드의 개발자 채용공고를 한곳에서 기술스택·경력·직무로 걸러 봅니다.',
   },
@@ -306,7 +310,8 @@ const hwHub = (hwIndex?.categories ?? [])
 const HUB_LINKS = {
   '/hardware': hwHub,
   '/hardware/parts': hwHub,
-  '/': `<h2>최근 채용공고</h2><ul>${jobLinks}</ul>`,
+  '/': `<h2>최근 채용공고</h2><ul>${jobLinks}</ul><p><a href="/jobs">전체 채용공고 목록</a></p>`,
+  '/jobs': `<h2>최근 채용공고</h2><ul>${jobLinks}</ul>`,
   '/companies': `<h2>회사 목록</h2><ul>${companyLinks}</ul>`,
   '/radar': `<h2>기업 목록</h2><ul>${radarLinks}</ul>`,
   '/reveng': `<h2>역설계한 회사</h2><ul>${revengLinks}</ul>`,
@@ -395,7 +400,7 @@ for (const j of jobPages) {
     section('우대 사항', j.preferences) +
     section('복지', j.benefits, 600) +
     (j.url ? `<p><a href="${esc(j.url)}" rel="nofollow noopener">원본 공고 보기</a></p>` : '') +
-    `<p><a href="/">전체 개발자 채용공고</a></p>` +
+    `<p><a href="/jobs">전체 개발자 채용공고</a></p>` +
     `</article></main>`
 
   write(

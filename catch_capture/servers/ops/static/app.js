@@ -24,13 +24,14 @@ const PHASE_LABEL = {
 };
 
 // 스텝퍼 정의: state.phase / cycle 데이터로 각 단계 상태를 도출
+// 회차 순서(auto_crawl.run_cycle): 공고가 먼저 DB·뷰어에 들어가고, 키워드 무관 단계는 그 뒤다.
 const STEPS = [
   { key: "crawling", name: "크롤", phases: ["crawling"] },
-  { key: "aggregating", name: "통합", phases: ["aggregating"] },
-  { key: "blog", name: "기술블로그", phases: ["blog"] },
-  { key: "freelance", name: "외주·프리", phases: ["freelance"] },
+  { key: "aggregating", name: "통합·DB", phases: ["aggregating"] },
   { key: "building", name: "대시보드", phases: ["building"] },
   { key: "refreshing", name: "뷰어", phases: ["refreshing"] },
+  { key: "freelance", name: "외주·프리", phases: ["freelance"] },
+  { key: "blog", name: "기술블로그", phases: ["blog"] },
   { key: "waiting", name: "대기", phases: ["waiting", "idle"] },
 ];
 
@@ -95,10 +96,21 @@ function renderDaemon(s) {
     pill.textContent = `데몬 응답 없음 (PID ${s.daemon_pid})${since}`;
     $("cfgSub").textContent = "살아있지만 진행이 멈춤 — 로그 확인 / 재시작 필요할 수 있음";
   } else {
-    dot.className = "dot off";
-    pill.className = "pill pill-off";
-    pill.textContent = "데몬 중지됨";
-    $("cfgSub").textContent = "python -m automation.auto_crawl start 으로 시작";
+    // 운영은 상주 데몬이 아니라 launchd 가 매시간 `once` 를 띄운다 — 그때는 데몬이 꺼진 게 정상이다.
+    const ld = ((lastCrawlers || {}).scheduler || {}).launchd || [];
+    const cr = ld.find((l) => l.label === "com.jobseeker.crawler");
+    if (cr && cr.loaded) {
+      const busy = !["waiting", "idle"].includes(s.phase || "idle");
+      dot.className = busy ? "dot on" : "dot";
+      pill.className = "pill " + (busy ? "pill-on" : "pill-muted");
+      pill.textContent = busy ? "회차 실행 중" : "launchd 매시간 실행";
+      $("cfgSub").textContent = `launchd · ${(cr.interval || "").replace(" seconds", "초")} 주기 · 실행 ${cr.runs}회`;
+    } else {
+      dot.className = "dot off";
+      pill.className = "pill pill-off";
+      pill.textContent = "크롤 스케줄 없음";
+      $("cfgSub").textContent = "deploy/setup-crawler.sh 로 launchd 등록";
+    }
   }
   $("updated").textContent = s.updated_at ? `갱신 ${ago(s.updated_at)}` : "";
 }
@@ -120,7 +132,8 @@ function renderPhase(s) {
   } else if (phase === "waiting" && cyc.finished_at) {
     const el = cyc.total_elapsed != null ? `${cyc.total_elapsed}s · ` : "";
     sub = `직전 사이클 ${el}${cyc.new_data ? "새 데이터 반영" : "변경 없음"}`;
-  } else if (s.last_error) {
+  } else if (s.last_error && Date.now() - (parseLocal(s.last_error.ts) || 0) < 24 * 3600 * 1000) {
+    // 하루 지난 오류는 지금 상태가 아니다 — 8월의 디스크 부족이 두 달 내내 떠 있었다
     sub = `최근 오류: ${s.last_error.msg}`;
   }
   $("phaseSub").textContent = sub || "—";
@@ -237,7 +250,7 @@ function renderSites(s) {
     wrap.appendChild(div);
   }
   const cyc = s.cycle || {};
-  $("cycleClock").textContent = cyc.started_at ? `· 시작 ${fmtClockISO(cyc.started_at)}` : "";
+  $("cycleClock").textContent = cyc.started_at ? `회차 시작 ${cyc.started_at.slice(5, 16).replace("T", " ")}` : "";
 }
 function fmtClockISO(iso) {
   const d = parseLocal(iso);
@@ -368,6 +381,10 @@ function renderHealth(s) {
     banner.innerHTML = "";
   }
 
+  $("kpiActive").textContent = h.active != null ? h.active.toLocaleString() : "—";
+  $("kpiActiveSub").textContent = h.ts
+    ? `수집 ${(h.raw_total ?? 0).toLocaleString()} · ${anomalies.length ? "이상 " + anomalies.length + "건" : "이상 없음"}`
+    : "기록 없음";
   const el = $("health");
   if (!h.fill_rates) {
     el.innerHTML = `<div class="muted">health 기록이 아직 없습니다.</div>`;
@@ -375,10 +392,10 @@ function renderHealth(s) {
   }
   const fr = h.fill_rates;
   const stat = `<div class="hstat">
-      <div><div class="num">${h.raw_total ?? "—"}</div><div class="lbl">수집(raw)</div></div>
-      <div><div class="num">${h.active ?? "—"}</div><div class="lbl">모집중</div></div>
-      <div><div class="num">${h.cross_dups ?? 0}</div><div class="lbl">교차중복</div></div>
-      <div><div class="num">${h.closed ?? 0}</div><div class="lbl">마감</div></div>
+      <div><div class="num">${(h.raw_total ?? 0).toLocaleString()}</div><div class="lbl">수집(raw)</div></div>
+      <div><div class="num">${(h.active ?? 0).toLocaleString()}</div><div class="lbl">모집중</div></div>
+      <div><div class="num">${(h.cross_dups ?? 0).toLocaleString()}</div><div class="lbl">교차중복</div></div>
+      <div><div class="num">${(h.closed ?? 0).toLocaleString()}</div><div class="lbl">마감</div></div>
     </div>`;
   const rows = [
     ["주요업무", fr.main_tasks], ["자격요건", fr.qualifications],
@@ -398,10 +415,10 @@ function renderHistory(hist) {
     const vals = Object.values(fr);
     const avg = vals.length ? Math.round((vals.reduce((a, b) => a + b, 0) / vals.length) * 100) : 0;
     return `<tr>
-      <td>${fmtClockISO(h.ts)}</td>
-      <td>${h.raw_total ?? "—"}</td>
-      <td>${h.active ?? "—"}</td>
-      <td>${h.cross_dups ?? 0}</td>
+      <td>${h.ts ? h.ts.slice(5, 16).replace("T", " ") : "—"}</td>
+      <td>${(h.raw_total ?? 0).toLocaleString()}</td>
+      <td>${(h.active ?? 0).toLocaleString()}</td>
+      <td>${(h.cross_dups ?? 0).toLocaleString()}</td>
       <td>${avg}%</td>
     </tr>`;
   }).join("");
@@ -460,7 +477,7 @@ async function pollState() {
     }
     $("connState").textContent = "연결됨";
   } catch (e) {
-    $("connState").textContent = "서버 연결 끊김 — ops_server.py 실행 중인지 확인";
+    $("connState").textContent = "서버 연결 끊김 — python -m servers.ops.server 가 떠 있는지 확인";
   }
 }
 async function pollEvents() {
@@ -633,6 +650,9 @@ function renderLoops(rows) {
   const KIND = { launchd: "launchd", cycle: "크롤 단계", "claude-loop": "/loop 엔진" };
   const STATE = { ok: "정상", stale: "멈춤?", stopped: "꺼짐", unknown: "모름" };
   const bad = rows.filter((r) => r.state === "stale" || r.state === "stopped");
+  const lb = $("navLoopsBadge");
+  lb.textContent = bad.length ? String(bad.length) : "";
+  lb.className = "navbadge " + (bad.length ? "warn" : "");
   $("loopsSub").textContent = bad.length ? `${bad.length}개 확인 필요 · 전체 ${rows.length}` : `전체 ${rows.length} · 모두 정상`;
   tb.innerHTML = "";
   for (const r of rows) {
@@ -652,6 +672,228 @@ function renderLoops(rows) {
 
 async function pollLoops() {
   try { renderLoops(await fetchJSON("/api/loops")); } catch (_) {}
+}
+
+// 크롤러 현황 — 출처마다 '마지막으로 실제 받은 때'와 건수.
+// 묶음 타일(한눈에) → 펼치는 표(드릴다운). 문제 있는 묶음은 펼쳐서, 문제 줄은 위로 올려 보인다.
+const CST = { ok: "정상", warn: "늦음", stale: "멈춤", error: "실패", unknown: "모름" };
+const SEVERITY = { error: 0, stale: 1, warn: 2, unknown: 3, ok: 4 };
+const groupOpen = {};      // 사람이 펼치고 접은 것은 30초마다 다시 그려도 지킨다
+let lastCrawlers = null;
+
+function groupLevel(rows) {
+  if (rows.some((r) => r.state === "stale" || r.state === "error")) return "bad";
+  if (rows.some((r) => r.state === "warn")) return "warn";
+  return rows.length ? "ok" : "";
+}
+
+function renderCrawlers(d) {
+  lastCrawlers = d;
+  const c = d.counts || {};
+  const bad = (c.stale || 0) + (c.error || 0);
+  $("crawlSub").textContent = `출처 ${d.total}곳 · 정상 ${c.ok || 0} · 늦음 ${c.warn || 0} · 멈춤 ${c.stale || 0} · 실패 ${c.error || 0}`;
+
+  // ── 판정: 가장 최근 수집의 나이가 1순위다(전부 멈췄으면 개별 출처는 의미가 없다)
+  const newestAge = d.newest_at ? Math.max(0, (Date.now() - new Date(d.newest_at).getTime()) / 1000) : null;
+  const sch = d.scheduler || {};
+  const dm = sch.daemon || {};
+  const lds = sch.launchd || [];
+  const crawlerLd = lds.find((l) => l.label === "com.jobseeker.crawler") || {};
+  const running = dm.phase && !["waiting", "idle"].includes(dm.phase) &&
+    dm.updated_at && (Date.now() - new Date(dm.updated_at).getTime()) < 20 * 60 * 1000;
+  let level = "ok";
+  if (newestAge == null || newestAge > 24 * 3600) level = "bad";
+  else if (newestAge > 3 * 3600 || bad) level = "warn";
+
+  const verdict = $("verdictPill");
+  verdict.className = "verdict " + level;
+  verdict.textContent = { ok: "✓ 크롤 정상", warn: `! 확인 필요 ${bad ? bad + "곳" : ""}`.trim(), bad: "■ 크롤 멈춤" }[level];
+
+  const hero = $("heroKpi");
+  hero.className = "kpi hero-kpi " + level;
+  $("heroAge").textContent = newestAge == null ? "기록 없음" : fmtAge(Math.round(newestAge)) + " 전";
+  $("heroSub").textContent = running ? `지금 수집 중 · ${PHASE_LABEL[dm.phase] || dm.phase}`
+    : level === "bad" ? "하루 넘게 새로 받은 것이 없습니다"
+    : level === "warn" ? (bad ? `${bad}곳 확인 필요 — 아래 크롤러 현황` : "3시간 넘게 새 수집 없음")
+    : "제때 받고 있습니다";
+
+  const total = d.total || 0;
+  $("kpiSources").textContent = `${c.ok || 0} / ${total}`;
+  $("kpiSourcesSub").textContent = bad ? `멈춤·실패 ${bad}곳` : (c.warn ? `늦음 ${c.warn}곳` : "모두 제때");
+
+  const badge = $("navCrawlBadge");
+  badge.textContent = bad ? String(bad) : "";
+  badge.className = "navbadge " + (bad ? "bad" : "");
+
+  // ── 배너: 전부 멈춘 경우만 크게. 원인 후보(데몬·launchd)를 같이 적는다
+  let banner = "";
+  if (level === "bad" && !running) {
+    banner = `<div class="banner bad">■ 마지막 수집이 <b>${fmtAge(Math.round(newestAge || 0))} 전</b>입니다` +
+      (dm.cycle_finished_at ? ` · 마지막 회차 끝 ${esc(dm.cycle_finished_at.replace("T", " "))}` : "") +
+      ` · 크롤 데몬 ${dm.pid ? "살아 있음" : "꺼짐"} · launchd 크롤러 ` +
+      (crawlerLd.loaded ? `등록됨(실행 ${esc(crawlerLd.runs)}회, ${esc(crawlerLd.state)})` : "<b>미등록</b> — deploy/setup-crawler.sh") + `</div>`;
+  }
+  $("crawlBanner").innerHTML = banner;
+
+  // ── 묶음 타일
+  const groups = d.groups || [];
+  $("crawlGroupTiles").innerHTML = groups.map((g) => {
+    const lv = groupLevel(g.rows);
+    const nb = g.rows.filter((r) => r.state === "stale" || r.state === "error").length;
+    const nOk = g.rows.filter((r) => r.state === "ok").length;
+    const sum = g.rows.reduce((a, r) => a + (r.count || 0), 0);
+    const ages = g.rows.map((r) => r.age_hours).filter((x) => x != null);
+    const age = ages.length ? Math.min(...ages) : null;
+    const word = { ok: "✓ 정상", warn: "! 늦음", bad: `■ ${nb}곳 문제` }[lv] || "—";
+    return `<button type="button" class="gtile ${lv}" data-g="${esc(g.key)}">` +
+      `<div class="g-name">${esc(g.name)}</div>` +
+      `<div class="g-main">${word}</div>` +
+      `<div class="g-sub">${nOk}/${g.rows.length}곳 정상 · ${sum.toLocaleString()}건` +
+      `${age != null ? " · " + fmtAge(Math.round(age * 3600)) + " 전" : ""}</div></button>`;
+  }).join("");
+
+  // ── 펼치는 표
+  $("crawlGroups").innerHTML = groups.map((g) => {
+    const lv = groupLevel(g.rows);
+    const open = g.key in groupOpen ? groupOpen[g.key] : lv === "bad" && g.rows.length <= 12;
+    const rows = g.rows.slice().sort((a, b) =>
+      (SEVERITY[a.state] ?? 9) - (SEVERITY[b.state] ?? 9) || (b.count || 0) - (a.count || 0));
+    const nb = rows.filter((r) => r.state === "stale" || r.state === "error").length;
+    const body = rows.map((r) =>
+      `<tr class="${r.state === "stale" || r.state === "error" ? "row-bad" : ""}">` +
+      `<td><span class="cst ${r.state}">${CST[r.state] || r.state}</span></td>` +
+      `<td>${esc(r.name)}</td>` +
+      `<td class="n">${r.count == null ? "—" : r.count.toLocaleString()}</td>` +
+      `<td class="n">${r.age_hours == null ? "—" : fmtAge(Math.round(r.age_hours * 3600)) + " 전"}</td>` +
+      `<td class="muted">${esc(r.detail)}</td>` +
+      `<td class="err">${esc(r.error)}</td></tr>`).join("");
+    return `<details class="cgroup" data-g="${esc(g.key)}"${open ? " open" : ""}>` +
+      `<summary><span class="cst ${lv === "bad" ? "stale" : lv || "unknown"}">${lv === "bad" ? nb + "곳" : lv === "warn" ? "늦음" : "정상"}</span>` +
+      `${esc(g.name)}<span class="g-meta">${g.rows.length}곳 · ${g.rows.reduce((a, r) => a + (r.count || 0), 0).toLocaleString()}건</span></summary>` +
+      `<div class="cwrap"><table class="ctable">` +
+      `<colgroup><col class="c-st"><col class="c-nm"><col class="c-n"><col class="c-age"><col class="c-dt"><col></colgroup>` +
+      `<thead><tr><th>상태</th><th>출처</th><th class="n">건수</th><th class="n">마지막</th><th>세부</th><th>오류</th></tr></thead>` +
+      `<tbody>${body}</tbody></table></div></details>`;
+  }).join("");
+
+  // ── 스케줄러
+  const tiles = [
+    { name: "auto_crawl 데몬", val: dm.pid ? "살아 있음" : "꺼짐",
+      sub: dm.pid ? `pid ${dm.pid} · ${esc(dm.phase || "")}` : "launchd 가 회차를 띄운다",
+      cls: dm.pid ? "done" : "pending" },
+    ...lds.map((l) => {
+      const fine = !!l.loaded && (l.last_exit === "0" || l.last_exit === "(never exited)");
+      return {
+        name: l.label.replace("com.jobseeker.", "launchd · "),
+        val: l.loaded ? (l.pid ? "실행 중" : "등록됨") : "미등록",
+        sub: l.loaded ? `실행 ${esc(l.runs)}회 · 종료코드 ${esc(l.last_exit)} · ${esc((l.interval || "").replace(" seconds", "초 주기"))}` : "setup 스크립트 필요",
+        cls: fine ? "done" : "failed blocked",
+      };
+    }),
+  ];
+  $("crawlSched").innerHTML = tiles.map((t) =>
+    `<div class="site ${t.cls}"><div class="site-name">${esc(t.name)}</div>` +
+    `<div class="site-count" style="font-size:18px">${esc(t.val)}</div><div class="site-status">${t.sub}</div></div>`).join("");
+
+  if (lastState) renderDaemon(lastState);
+}
+
+$("crawlGroups").addEventListener("toggle", (e) => {
+  const el = e.target.closest && e.target.closest("details.cgroup");
+  if (el) groupOpen[el.dataset.g] = el.open;
+}, true);
+$("crawlGroupTiles").addEventListener("click", (e) => {
+  const t = e.target.closest(".gtile");
+  if (!t) return;
+  const det = $("crawlGroups").querySelector(`details[data-g="${t.dataset.g}"]`);
+  if (!det) return;
+  det.open = true;
+  groupOpen[t.dataset.g] = true;
+  det.scrollIntoView({ block: "start" });
+});
+
+async function pollCrawlers() {
+  try { renderCrawlers(await fetchJSON("/api/crawlers")); } catch (e) {
+    $("crawlSub").textContent = "읽기 실패: " + e.message;
+  }
+}
+
+// ── 테마 전환 · 목차 강조 ────────────────────────────────────────────
+$("themeBtn").addEventListener("click", () => {
+  const root = document.documentElement;
+  const dark = root.dataset.theme ? root.dataset.theme === "dark"
+    : window.matchMedia("(prefers-color-scheme: dark)").matches;
+  root.dataset.theme = dark ? "light" : "dark";
+  try { localStorage.setItem("ops-theme", root.dataset.theme); } catch (_) {}
+});
+(() => {
+  const links = [...document.querySelectorAll("#sidenav a")];
+  const byId = new Map(links.map((a) => [a.getAttribute("href").slice(1), a]));
+  const io = new IntersectionObserver((ents) => {
+    for (const en of ents) {
+      if (!en.isIntersecting) continue;
+      links.forEach((a) => a.classList.remove("active"));
+      const a = byId.get(en.target.id);
+      if (a) a.classList.add("active");
+    }
+  }, { rootMargin: "-80px 0px -70% 0px" });
+  byId.forEach((_, id) => { const el = document.getElementById(id); if (el) io.observe(el); });
+})();
+
+// DB 저장 현황 — 정본 DB 에 실제로 들어간 것. 뷰어 목록은 이 숫자를 보여준다.
+const SITE_LABEL = { wanted: "원티드", jumpit: "점핏", jobkorea: "잡코리아", saramin: "사람인", dev: "캐치",
+  remote: "해외 원격", ats: "회사 채용페이지", boards: "기타 보드·공공" };
+function cstBadge(state) { return `<span class="cst ${state}">${CST[state] || state}</span>`; }
+function agoH(h) { return h == null ? "—" : fmtAge(Math.round(h * 3600)) + " 전"; }
+function renderDb(d) {
+  const badge = $("navDbBadge");
+  if (!d || !d.ok) {
+    $("dbBanner").innerHTML = `<div class="banner bad">✕ DB 에 붙지 못했습니다 — ${esc((d && d.error) || "응답 없음")}. ` +
+      `<code>docker ps</code> 로 jobseeker-db 가 떠 있는지 확인하세요. 뷰어는 정적 파일로 물러섭니다.</div>`;
+    $("dbSub").textContent = "";
+    badge.textContent = "!"; badge.className = "navbadge bad";
+    return;
+  }
+  const j = d.jobs;
+  const lv = j.last_write_age_hours == null ? "unknown" : j.last_write_age_hours <= 3 ? "ok" : j.last_write_age_hours <= 24 ? "warn" : "stale";
+  const bad = d.sites.concat(d.tables).filter((r) => r.state === "stale" || r.state === "error").length;
+  badge.textContent = bad ? String(bad) : ""; badge.className = "navbadge " + (bad ? "warn" : "");
+  $("dbSub").textContent = `조회 ${d.generated_at.slice(11, 19)}`;
+  $("dbBanner").innerHTML = lv === "stale"
+    ? `<div class="banner bad">■ 공고가 DB 에 마지막으로 들어간 지 <b>${agoH(j.last_write_age_hours)}</b> — 뷰어 목록이 그때 상태입니다.</div>` : "";
+  const tiles = [
+    ["모집중 공고", j.active.toLocaleString(), `전체 ${j.total.toLocaleString()}건`],
+    ["24시간 신규", j.new_24h.toLocaleString(), "처음 본 공고"],
+    ["마지막 공고 적재", agoH(j.last_write_age_hours), j.last_write ? j.last_write.slice(5, 16).replace("T", " ") : "—"],
+  ];
+  const fl = d.tables.find((t) => t.key === "project");
+  if (fl && fl.total != null) tiles.push(["외주 프로젝트", (fl.sub ?? 0).toLocaleString(), `모집중 · 24시간 신규 ${fl.new_24h}`]);
+  $("dbTiles").innerHTML = tiles.map(([n, v, sub], i) =>
+    `<div class="site ${i === 2 ? (lv === "ok" ? "done" : "failed blocked") : "done"}"><div class="site-name">${n}</div>` +
+    `<div class="site-count">${v}</div><div class="site-status">${esc(sub)}</div></div>`).join("");
+
+  document.querySelector("#dbSites tbody").innerHTML = d.sites.map((s) =>
+    `<tr><td>${esc(SITE_LABEL[s.site] || s.site)}</td><td>${cstBadge(s.state)}</td>` +
+    `<td>${s.active.toLocaleString()}</td><td>${s.total.toLocaleString()}</td>` +
+    `<td>${s.new_24h ? "+" + s.new_24h.toLocaleString() : "0"}</td><td>${agoH(s.age_hours)}</td></tr>`).join("");
+
+  const SUB = { project: "모집중", job_state: "마감", hw_price_day: "부품" };
+  document.querySelector("#dbTables tbody").innerHTML = d.tables.map((t) => t.error
+    ? `<tr><td>${esc(t.name)}</td><td>${cstBadge("error")}</td><td colspan="3" class="muted">${esc(t.error)}</td></tr>`
+    : `<tr><td>${esc(t.name)}</td><td>${cstBadge(t.state)}</td>` +
+      `<td>${t.total.toLocaleString()}${t.sub != null && SUB[t.key] ? `<div class="muted" style="font-size:11.5px">${SUB[t.key]} ${t.sub.toLocaleString()}</div>` : ""}</td>` +
+      `<td>${t.new_24h.toLocaleString()}</td><td>${agoH(t.age_hours)}</td></tr>`).join("");
+
+  const maxNew = Math.max(1, ...d.runs.map((r) => r.n_new || 0));
+  document.querySelector("#dbRuns tbody").innerHTML = d.runs.map((r) =>
+    `<tr><td>${esc((r.started_at || "").slice(5, 16).replace("T", " "))}</td>` +
+    `<td>${r.ok ? cstBadge("ok") : cstBadge("error")}</td>` +
+    `<td>${(r.n_raw || 0).toLocaleString()}</td><td>${(r.n_upserted || 0).toLocaleString()}</td>` +
+    `<td><b>+${(r.n_new || 0).toLocaleString()}</b></td>` +
+    `<td><div class="minibar" title="신규 ${r.n_new}"><span style="width:${Math.round(100 * (r.n_new || 0) / maxNew)}%"></span></div></td></tr>`).join("");
+}
+async function pollDb() {
+  try { renderDb(await fetchJSON("/api/db")); } catch (e) { renderDb({ ok: false, error: e.message }); }
 }
 
 async function pollAutoguide() {
@@ -722,6 +964,8 @@ pollHealth();
 pollAutoguide();
 pollGuide();
 pollLoops();
+pollCrawlers();
+pollDb();
 pollPublish();
 setInterval(pollState, 2000);
 setInterval(pollEvents, 3000);
@@ -729,6 +973,8 @@ setInterval(pollHealth, 10000);
 setInterval(pollAutoguide, 30000);
 setInterval(pollGuide, 30000);
 setInterval(pollLoops, 60000);
+setInterval(pollCrawlers, 30000);
+setInterval(pollDb, 30000);
 // 데몬이 5분마다 도니 15초면 충분하다.
 setInterval(pollPublish, 15000);
 setInterval(tickCountdown, 1000);

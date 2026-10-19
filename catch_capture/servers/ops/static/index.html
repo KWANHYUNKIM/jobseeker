@@ -5,160 +5,267 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>크롤 오케스트레이션</title>
   <link rel="stylesheet" href="/styles.css" />
+  <!-- 테마를 첫 그리기 전에 정한다(깜빡임 방지). 저장소가 막혀 있으면 OS 설정을 따른다. -->
+  <script>
+    try { const t = localStorage.getItem("ops-theme"); if (t) document.documentElement.dataset.theme = t; } catch (_) {}
+  </script>
 </head>
 <body>
+  <!--
+    읽는 순서(Grafana 대시보드 가이드의 Z 패턴 — 왼쪽 위가 가장 중요하다):
+      ① 개요: 한 줄 판정 + 핵심 숫자  ② 크롤러: 출처별 상태(문제 줄 위로, 세부는 펼쳐 본다)
+      ③ 파이프라인 → 품질 → 산출물 → 로그 (데이터가 흐르는 순서)  ④ 콘텐츠 · 성과
+    상태는 색만으로 말하지 않는다 — 언제나 아이콘 + 글자가 같이 붙는다.
+  -->
   <header class="topbar">
     <div class="brand">
-      <span class="dot" id="liveDot"></span>
+      <span class="dot" id="liveDot" aria-hidden="true"></span>
       <h1>크롤 오케스트레이션</h1>
+      <span class="verdict" id="verdictPill">상태 확인 중…</span>
     </div>
     <div class="topmeta">
       <span id="daemonPill" class="pill pill-muted">데몬 상태 확인 중…</span>
       <span id="updated" class="updated">—</span>
+      <button class="iconbtn" id="themeBtn" type="button" aria-label="밝게/어둡게 전환" title="밝게/어둡게 전환">◐</button>
     </div>
   </header>
 
-  <main>
-    <!-- 현재 단계 + 카운트다운 -->
-    <section class="card hero">
-      <div class="hero-left">
-        <div class="hero-label">현재 단계</div>
-        <div class="hero-phase" id="phaseLabel">—</div>
-        <div class="hero-sub" id="phaseSub">—</div>
-      </div>
-      <div class="hero-right">
-        <div class="hero-label">다음 크롤까지</div>
-        <div class="countdown" id="countdown">—</div>
-        <div class="hero-sub" id="cfgSub">—</div>
-      </div>
-    </section>
+  <div class="shell">
+    <nav class="sidenav" id="sidenav" aria-label="구역">
+      <div class="navgroup">운영</div>
+      <a href="#overview">개요</a>
+      <a href="#crawlers">크롤러 현황 <span class="navbadge" id="navCrawlBadge"></span></a>
+      <a href="#db">DB 저장 현황 <span class="navbadge" id="navDbBadge"></span></a>
+      <a href="#pipeline">파이프라인</a>
+      <a href="#quality">데이터 품질</a>
+      <a href="#events">이벤트 로그</a>
+      <div class="navgroup">산출물</div>
+      <a href="#builders-sec">뷰어 데이터 빌더</a>
+      <a href="#loops">반복 작업 <span class="navbadge" id="navLoopsBadge"></span></a>
+      <div class="navgroup">콘텐츠</div>
+      <a href="#autoguide">자동 브리핑</a>
+      <a href="#guide">취업 브리핑</a>
+      <div class="navgroup">성과</div>
+      <a href="#visits">방문·유입</a>
+      <a href="#social">소셜 발행</a>
+    </nav>
 
-    <!-- 파이프라인 스텝퍼 -->
-    <section class="card">
-      <h2>파이프라인</h2>
-      <ol class="stepper" id="stepper"></ol>
-    </section>
-
-    <!-- 사이트별 크롤 현황 -->
-    <section class="card">
-      <h2>사이트별 수집 <span class="muted" id="cycleClock"></span></h2>
-      <div class="sites" id="sites"></div>
-    </section>
-
-    <!-- 뷰어 데이터 빌더: 사이클마다 도는 산출물 갱신 상태 -->
-    <!-- 방문·유입: 방문자가 만든 데이터. 크롤 상태와 성격이 달라 따로 둔다. -->
-    <section class="card">
-      <h2>방문·유입 <span class="muted" id="visitSub"></span></h2>
-      <div class="sites" id="visitStats"></div>
-      <div class="grid2" style="margin-top:12px">
-        <div>
-          <h3 class="subhead">어디서 들어오나</h3>
-          <table class="histtable" id="srcTable"><tbody></tbody></table>
+    <main>
+      <!-- ① 개요 ─────────────────────────────────────────────────────── -->
+      <section id="overview" class="sec">
+        <div class="kpis">
+          <div class="kpi hero-kpi" id="heroKpi">
+            <div class="kpi-label">마지막 수집</div>
+            <div class="kpi-hero" id="heroAge">—</div>
+            <div class="kpi-sub" id="heroSub">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">현재 단계</div>
+            <div class="kpi-value hero-phase" id="phaseLabel">—</div>
+            <div class="kpi-sub" id="phaseSub">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">다음 크롤까지</div>
+            <div class="kpi-value countdown" id="countdown">—</div>
+            <div class="kpi-sub" id="cfgSub">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">정상 출처</div>
+            <div class="kpi-value" id="kpiSources">—</div>
+            <div class="kpi-sub" id="kpiSourcesSub">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">모집중 공고</div>
+            <div class="kpi-value" id="kpiActive">—</div>
+            <div class="kpi-sub" id="kpiActiveSub">—</div>
+          </div>
         </div>
-        <div>
-          <h3 class="subhead">첫 화면</h3>
-          <table class="histtable" id="landTable"><tbody></tbody></table>
-        </div>
-      </div>
-    </section>
-
-    <!-- 소셜 자동 발행(인스타·페이스북): 승인한 포스터가 언제 올라갔고 무엇이 실패했나. 읽기 전용 -->
-    <section class="card">
-      <h2>소셜 발행 · 인스타 · 페이스북 <span class="muted" id="igSub">—</span></h2>
-      <div id="igBanner"></div>
-      <div class="sites" id="igStats"></div>
-      <div class="grid2" style="margin-top:12px">
-        <div>
-          <h3 class="subhead">다음 예약</h3>
-          <table class="histtable" id="igScheduled"><tbody></tbody></table>
-        </div>
-        <div>
-          <h3 class="subhead">확인할 것</h3>
-          <table class="histtable" id="igProblems"><tbody></tbody></table>
-        </div>
-      </div>
-      <h3 class="subhead" style="margin-top:14px">최근 게시</h3>
-      <div class="igposts" id="igRecent"></div>
-      <h3 class="subhead" style="margin-top:14px">데몬 기록</h3>
-      <div class="eventlog" id="igLog" style="max-height:160px"></div>
-    </section>
-
-    <section class="card">
-      <h2>뷰어 데이터 빌더 <span class="muted" id="builderSub"></span></h2>
-      <div class="sites" id="builders"></div>
-    </section>
-
-    <!-- 반복 작업 등록부: launchd · 크롤 단계 · /loop 엔진을 한 표에 (automation/loops.py) -->
-    <section class="card">
-      <h2>반복 작업 <span class="muted" id="loopsSub">—</span></h2>
-      <table class="histtable" id="loopsTable">
-        <thead>
-          <tr><th>상태</th><th>종류</th><th>이름</th><th>주기</th><th>마지막</th><th>실행</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <div class="muted" style="margin-top:6px;font-size:12px">/loop 엔진은 세션이 닫히면 멈춘다 — 다시 시작할 때는 <code>python -m automation.loops prompt &lt;키&gt;</code> 의 출력을 <code>/loop</code> 에 준다.</div>
-    </section>
-
-    <!-- 자동 브리핑: 크롤 산출물에서 기계가 확정한 것만 -->
-    <section class="card">
-      <h2>자동 브리핑 <span class="muted" id="autoguideSub">—</span></h2>
-      <div class="sites" id="autoguideStats"></div>
-      <table class="histtable" id="autoguideTable">
-        <thead>
-          <tr><th>회사</th><th>모집중</th><th>실제 자리</th><th>본문 있음</th><th>규모</th><th>연봉</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </section>
-
-    <!-- 취업 브리핑: guide-engine 이 사람 손으로 조사를 마친 회사 -->
-    <section class="card">
-      <h2>취업 브리핑 <span class="muted" id="guideSub">—</span></h2>
-      <div class="sites" id="guideStats"></div>
-      <div class="muted" id="guideQueue" style="margin:10px 0"></div>
-      <input id="guideFilter" class="guidefilter" placeholder="회사명·한 줄 요약 검색" />
-      <div class="guidewrap">
-      <table class="histtable" id="guideTable">
-        <thead>
-          <tr><th>회사</th><th>한 줄 요약</th><th>공고</th><th>학습</th><th>연봉</th><th>갱신</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      </div>
-    </section>
-
-    <div class="grid2">
-      <!-- 직전 사이클 품질(health) -->
-      <section class="card">
-        <h2>데이터 품질 (최신 사이클)</h2>
-        <div id="anomalyBanner"></div>
-        <div class="health" id="health"></div>
       </section>
 
-      <!-- 사이클 히스토리 추이 -->
-      <section class="card">
-        <h2>사이클 추이</h2>
-        <table class="histtable" id="histTable">
-          <thead>
-            <tr><th>시각</th><th>수집</th><th>모집중</th><th>중복</th><th>채움률</th></tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+      <!-- ② 크롤러 현황 ─────────────────────────────────────────────── -->
+      <section id="crawlers" class="card sec">
+        <div class="sechead">
+          <div>
+            <h2>크롤러 현황</h2>
+            <p class="secdesc">출처마다 마지막으로 실제 받은 때. 매시간 출처는 3시간 안이면 정상, 하루 넘으면 멈춤.</p>
+          </div>
+          <span class="muted" id="crawlSub">—</span>
+        </div>
+        <div id="crawlBanner"></div>
+        <div class="tiles" id="crawlGroupTiles"></div>
+        <div id="crawlGroups"></div>
+        <h3 class="subhead" style="margin-top:18px">스케줄러</h3>
+        <div class="tiles" id="crawlSched"></div>
       </section>
-    </div>
 
-    <!-- 이벤트 로그 -->
-    <section class="card">
-      <h2>이벤트 로그</h2>
-      <div class="eventlog" id="eventlog"></div>
-    </section>
-  </main>
+      <!-- DB 저장 현황: '받았나'(크롤러)가 아니라 '정본 DB 에 들어갔나'. 뷰어는 API 로 이 DB 를 읽는다. -->
+      <section id="db" class="card sec">
+        <div class="sechead">
+          <div>
+            <h2>DB 저장 현황</h2>
+            <p class="secdesc">뷰어가 실제로 보여주는 것. 공고는 회차의 통합 단계에서, 외주는 수집 직후에 들어간다.</p>
+          </div>
+          <span class="muted" id="dbSub">—</span>
+        </div>
+        <div id="dbBanner"></div>
+        <div class="tiles" id="dbTiles"></div>
+        <div class="grid2" style="margin-top:14px">
+          <div>
+            <h3 class="subhead">사이트별 공고</h3>
+            <div class="tablewrap"><table class="histtable" id="dbSites"><thead>
+              <tr><th>사이트</th><th>상태</th><th>모집중</th><th>전체</th><th>24시간 신규</th><th>마지막 적재</th></tr>
+            </thead><tbody></tbody></table></div>
+          </div>
+          <div>
+            <h3 class="subhead">그 밖의 데이터</h3>
+            <div class="tablewrap"><table class="histtable" id="dbTables"><thead>
+              <tr><th>데이터</th><th>상태</th><th>전체</th><th>24시간</th><th>마지막</th></tr>
+            </thead><tbody></tbody></table></div>
+          </div>
+        </div>
+        <h3 class="subhead" style="margin-top:16px">최근 적재 회차</h3>
+        <div class="tablewrap"><table class="histtable" id="dbRuns"><thead>
+          <tr><th>시각</th><th>결과</th><th>수집</th><th>반영</th><th>신규</th><th></th></tr>
+        </thead><tbody></tbody></table></div>
+      </section>
 
-  <footer class="foot">
-    <span id="connState">연결 확인 중…</span>
-    · 자동 갱신 2s · <code>python ops_server.py</code>
-  </footer>
+      <!-- ③ 파이프라인 ──────────────────────────────────────────────── -->
+      <section id="pipeline" class="card sec">
+        <div class="sechead">
+          <div>
+            <h2>파이프라인</h2>
+            <p class="secdesc">한 회차가 지나가는 단계와 이번 회차의 사이트별 수집량.</p>
+          </div>
+          <span class="muted" id="cycleClock"></span>
+        </div>
+        <ol class="stepper" id="stepper"></ol>
+        <h3 class="subhead" style="margin-top:16px">이번 회차 사이트별 수집</h3>
+        <div class="tiles" id="sites"></div>
+      </section>
+
+      <div class="grid2" id="quality">
+        <section class="card sec">
+          <div class="sechead"><div><h2>데이터 품질</h2><p class="secdesc">직전 회차 기준 — 건수와 필드 채움률.</p></div></div>
+          <div id="anomalyBanner"></div>
+          <div class="health" id="health"></div>
+        </section>
+        <section class="card sec">
+          <div class="sechead"><div><h2>회차 추이</h2><p class="secdesc">최근 10회차.</p></div></div>
+          <div class="tablewrap">
+            <table class="histtable" id="histTable">
+              <thead><tr><th>시각</th><th>수집</th><th>모집중</th><th>중복</th><th>채움률</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <section id="events" class="card sec">
+        <div class="sechead"><div><h2>이벤트 로그</h2><p class="secdesc">최근 80건, 새것이 위.</p></div></div>
+        <div class="eventlog" id="eventlog"></div>
+      </section>
+
+      <!-- 산출물 ───────────────────────────────────────────────────── -->
+      <section id="builders-sec" class="card sec">
+        <div class="sechead">
+          <div><h2>뷰어 데이터 빌더</h2><p class="secdesc">뷰어가 읽는 파일의 나이. 6시간 넘으면 빨갛게.</p></div>
+          <span class="muted" id="builderSub"></span>
+        </div>
+        <div class="tiles" id="builders"></div>
+      </section>
+
+      <section id="loops" class="card sec">
+        <div class="sechead">
+          <div><h2>반복 작업</h2><p class="secdesc">launchd · 크롤 단계 · /loop 엔진 — 산출물 나이로 판정.</p></div>
+          <span class="muted" id="loopsSub">—</span>
+        </div>
+        <div class="tablewrap">
+          <table class="histtable" id="loopsTable">
+            <thead><tr><th>상태</th><th>종류</th><th>이름</th><th>주기</th><th>마지막</th><th>실행</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="secdesc" style="margin-top:8px">/loop 엔진은 세션이 닫히면 멈춘다 — 다시 시작할 때는 <code>python -m automation.loops prompt &lt;키&gt;</code> 의 출력을 <code>/loop</code> 에 준다.</p>
+      </section>
+
+      <!-- 콘텐츠 ───────────────────────────────────────────────────── -->
+      <section id="autoguide" class="card sec">
+        <div class="sechead">
+          <div><h2>자동 브리핑</h2><p class="secdesc">크롤 산출물에서 기계가 확정한 것만.</p></div>
+          <span class="muted" id="autoguideSub">—</span>
+        </div>
+        <div class="tiles" id="autoguideStats"></div>
+        <div class="tablewrap" style="margin-top:12px">
+          <table class="histtable" id="autoguideTable">
+            <thead><tr><th>회사</th><th>모집중</th><th>실제 자리</th><th>본문 있음</th><th>규모</th><th>연봉</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="guide" class="card sec">
+        <div class="sechead">
+          <div><h2>취업 브리핑</h2><p class="secdesc">guide-engine 이 조사를 마친 회사. 줄을 누르면 다룬 공고가 펼쳐진다.</p></div>
+          <span class="muted" id="guideSub">—</span>
+        </div>
+        <div class="tiles" id="guideStats"></div>
+        <div class="muted" id="guideQueue" style="margin:10px 0"></div>
+        <input id="guideFilter" class="guidefilter" placeholder="회사명·한 줄 요약 검색" />
+        <div class="guidewrap">
+          <table class="histtable" id="guideTable">
+            <thead><tr><th>회사</th><th>한 줄 요약</th><th>공고</th><th>학습</th><th>연봉</th><th>갱신</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 성과 ─────────────────────────────────────────────────────── -->
+      <section id="visits" class="card sec">
+        <div class="sechead">
+          <div><h2>방문·유입</h2><p class="secdesc">방문자가 만든 숫자 — 크롤 상태와 따로 본다.</p></div>
+          <span class="muted" id="visitSub"></span>
+        </div>
+        <div class="tiles" id="visitStats"></div>
+        <div class="grid2" style="margin-top:14px">
+          <div>
+            <h3 class="subhead">어디서 들어오나</h3>
+            <table class="histtable" id="srcTable"><tbody></tbody></table>
+          </div>
+          <div>
+            <h3 class="subhead">첫 화면</h3>
+            <table class="histtable" id="landTable"><tbody></tbody></table>
+          </div>
+        </div>
+      </section>
+
+      <section id="social" class="card sec">
+        <div class="sechead">
+          <div><h2>소셜 발행 · 인스타 · 페이스북</h2><p class="secdesc">승인한 포스터가 언제 올라갔고 무엇이 실패했나. 읽기 전용.</p></div>
+          <span class="muted" id="igSub">—</span>
+        </div>
+        <div id="igBanner"></div>
+        <div class="tiles" id="igStats"></div>
+        <div class="grid2" style="margin-top:14px">
+          <div>
+            <h3 class="subhead">다음 예약</h3>
+            <table class="histtable" id="igScheduled"><tbody></tbody></table>
+          </div>
+          <div>
+            <h3 class="subhead">확인할 것</h3>
+            <table class="histtable" id="igProblems"><tbody></tbody></table>
+          </div>
+        </div>
+        <h3 class="subhead" style="margin-top:16px">최근 게시</h3>
+        <div class="igposts" id="igRecent"></div>
+        <h3 class="subhead" style="margin-top:16px">데몬 기록</h3>
+        <div class="eventlog" id="igLog" style="max-height:160px"></div>
+      </section>
+
+      <footer class="foot">
+        <span id="connState">연결 확인 중…</span> · 상태 2초 · 출처 30초마다 갱신
+      </footer>
+    </main>
+  </div>
 
   <script src="/app.js"></script>
 </body>

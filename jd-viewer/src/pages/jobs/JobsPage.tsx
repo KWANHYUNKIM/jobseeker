@@ -8,7 +8,7 @@ import { onLinkClick, useRoute } from '../../utils/navigation'
 import { absUrl, SITE_NAME, useSeo } from '../../utils/seo'
 import { breadcrumbJsonLd, jobDescription, jobJsonLd, jobTitle, paths, TAB_SEO } from '../../utils/urls'
 
-/** `/` · `/jobs/<사이트>-<번호>` — 잡 리스트와 공고 상세. 상태는 app/providers 의 JobBoard. */
+/** `/jobs` · `/jobs/<사이트>-<번호>` — 잡 리스트와 공고 상세. 상태는 app/providers 의 JobBoard. */
 export function JobsPage() {
   const b = useJobBoardContext()
   const route = useRoute()
@@ -39,7 +39,7 @@ export function JobsPage() {
     return {
       title: TAB_SEO.jobs.title,
       description: TAB_SEO.jobs.desc,
-      canonical: absUrl(route.path === '/jobs' ? '/' : route.path),
+      canonical: absUrl(route.path),
       robots: b.filter.query && b.isJobList ? 'noindex, follow' : undefined,
     }
   }, [b.selected, b.filter.query, b.isJobList, route.path])
@@ -78,7 +78,7 @@ export function JobsPage() {
         title="없는 공고입니다"
         detail={`공고 ${b.detail} 을(를) 찾지 못했습니다.`}
         hint={
-          <a href="/" onClick={onLinkClick('/')} className="text-(--color-accent) underline">
+          <a href="/jobs" onClick={onLinkClick('/jobs')} className="text-(--color-accent) underline">
             전체 공고 목록으로
           </a>
         }

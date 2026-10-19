@@ -22,7 +22,8 @@ export function useJobBoard() {
   const { jobs, loading: fileLoading, error: fileError } = useJobs(api === 'no')
   const route = useRoute()
   const setQueryParam = useSetQuery()
-  const onJobsTab = route.seg[0] === undefined || route.seg[0] === '' || route.seg[0] === 'jobs'
+  // `/` 는 회사별 메인이라 잡 리스트 상태(검색어를 주소에 쓰기 등)는 `/jobs` 에서만 돈다.
+  const onJobsTab = route.seg[0] === 'jobs'
   // 주소의 두 번째 세그먼트가 공고 키다(`/jobs/<사이트>-<번호>`).
   const detail = onJobsTab ? (route.seg[1] ?? null) : null
 

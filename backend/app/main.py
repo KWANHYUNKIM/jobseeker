@@ -27,10 +27,11 @@ from app.features.health.router import router as health_router
 from app.features.jobs.router import router as jobs_router
 from app.features.posts.router import router as posts_router
 from app.features.search.router import router as search_router
+from app.features.home.router import router as home_router
 from app.features.similar.router import router as similar_router
 
 ROUTERS = [health_router, jobs_router, search_router, similar_router, companies_router,
-           posts_router, freelance_router, hardware_router, docs_router]
+           posts_router, freelance_router, hardware_router, docs_router, home_router]
 
 
 def create_app() -> FastAPI:
