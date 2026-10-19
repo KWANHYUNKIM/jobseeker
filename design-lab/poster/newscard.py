@@ -62,7 +62,7 @@ STYLE_FONTS = {
     "brandmag": ["Pretendard", "NanumMyeongjo"],
 }
 #: 원고마다 기본으로 찍을 틀
-DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"], "military": ["magazine"], "region": ["magazine"], "sme": ["magazine"]}
+DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"], "japan": ["magazine"], "military": ["magazine"], "region": ["magazine"], "sme": ["magazine"], "fourday": ["magazine"]}
 
 
 #: 회사 자산(assets/companies/…)이 없는 기계에서 쓰는 공용 글꼴 — 공식 배포본(OFL), 라이선스는 같은 폴더.
@@ -783,7 +783,91 @@ def build_sme(today: date | None = None) -> dict:
             "caption": caption}
 
 
-BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan, "military": build_military, "region": build_region, "sme": build_sme}
+#: 짧게 일하는 제도 — '주 4일'·'주 4.5일'·'격주 주4일'·'주 35시간'. '4일 이상 근무' 같은 문장은 '주' 가 붙어야만 센다.
+_SHORT_WEEK = {"주 4.5일": r"주\s*4\.5\s*일|4\.5\s*일\s*(제|근무)",
+               # '주 4일 출근 + 주 1일 재택' 은 주 5일이다 — 출근은 세지 않는다
+               "주 4일": r"주\s*4\s*일\s*(제|근무)|주\s*4\s*일제|4\s*day\s*work",
+               "격주 주 4일": r"격주\s*(로\s*)?(주\s*)?4\s*일|격주\s*(금요일|월요일)\s*휴무|격주\s*놀금|놀금",
+               "주 35시간": r"주\s*3[56]\s*시간\s*(근무|제)"}
+
+
+def build_fourday(today: date | None = None) -> dict:
+    """[카드뉴스] 주 4일·4.5일 — 경기도 주 4.5일제 시범사업(한국경제 2026.3.4: 97개 기업 참여, 1인당 월 최대 27만 원 임금 보전)과
+    지금 공고 본문에 짧은 근무 제도를 적은 국내 IT 공고. 같은 자리 중복 게시는 하나로."""
+    import psycopg
+    from psycopg.rows import dict_row
+    from .collection import _AGENCY, _FOREIGN_TAG, _not_dev
+    from .series import _role_key
+    today = today or date.today()
+    with psycopg.connect(_dsn(), row_factory=dict_row) as conn:
+        rows = conn.execute("""
+            SELECT f.stacks, c.display_name AS co, j.title, f.region, f.company_size AS size, j.deadline_on,
+                   concat_ws(' ', j.benefits, j.full_jd) AS body
+              FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
+              JOIN job_facet f ON f.job_id = j.id JOIN company c ON c.id = j.company_id
+             WHERE coalesce(f.region, '') <> '해외·원격'
+               AND NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = j.id)""").fetchall()
+    rows = [r for r in rows if not _not_dev({"title": r["title"], "stack": r["stacks"] or []})
+            and not _AGENCY.search(r["co"] + r["title"]) and not _NOT_JOB.search(r["title"] + r["co"])
+            and not _FOREIGN_TAG.match(r["title"]) and not (r["deadline_on"] and r["deadline_on"] < today)]
+    uniq = {}
+    for r in rows:
+        uniq.setdefault((_co(r["co"]), _role_key(r["title"])), r)
+    rows = list(uniq.values())
+    n = len(rows)
+    hits = [(r, [k for k, rx in _SHORT_WEEK.items() if re.search(rx, r["body"] or "", re.I)]) for r in rows]
+    hits = [(r, h) for r, h in hits if h]
+    by = collections.Counter(k for _, h in hits for k in h)
+    gg = sum(1 for r, _ in hits if r["region"] == "경기")
+    cos = len({_co(r["co"]) for r, _ in hits})
+    picks, seen = [], set()
+    for r, h in sorted(hits, key=lambda x: ({"대기업": 0, "중견기업": 1}.get(x[0]["size"], 2),
+                                            x[0]["deadline_on"] is None, x[0]["deadline_on"] or today)):
+        c = _co(r["co"])
+        d = (r["deadline_on"] - today).days if r["deadline_on"] else None
+        if c in seen or d == 0:
+            continue
+        seen.add(c)
+        when = f"D-{d}" if d is not None else "상시"
+        picks.append({"co": c, "title": _short(re.sub(r"^\s*\[[^\]]*\]\s*", "", r["title"])),
+                      "meta": f"{h[0]} · {when}"})
+        if len(picks) == 4:
+            break
+    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {n:,}자리 · {today:%Y.%m.%d} · 같은 자리 중복 게시는 하나로 · 본문에 제도를 적은 것만"
+    slides = [
+        {"type": "cover", "photo": "seoul.jpg", "kicker": f"주 4일·4.5일 · {today:%Y.%m.%d}",
+         "big": f"{len(hits)}", "unit": "개", "title": ["주 5일보다 짧게", "일하는 IT 자리"],
+         "sub": f"주 4일·4.5일·격주 4일·주 35시간을 적은 국내 IT 자리 ({cos}개 회사)"},
+        {"type": "stat", "photo": "hourglass.jpg", "kicker": "경기도 시범사업", "title": "주 4.5일제, 지자체가 돈을 댄다",
+         "items": [{"num": "97", "unit": "곳", "label": "작년에 뽑혀 참여 중인 기업"},
+                   {"num": "27", "unit": "만", "label": "노동자 1인당 월 임금 보전(최대)"}],
+         "explain": "경기도 300인 미만 중소·중견기업이 대상이고, 컨설팅도 기업당 1,500만 원까지 지원한다."},
+        {"type": "stat", "photo": "code.jpg", "kicker": "공고로 보면", "title": "어떤 제도를 적었나",
+         "items": [{"num": f"{by.get(k, 0)}", "unit": "개", "label": k} for k, _ in by.most_common(2)],
+         "explain": f"근무지가 경기도인 자리는 {gg}개. 제도는 회사마다 다르니 면접에서 꼭 확인하자."},
+        {"type": "picks", "photo": "typing.jpg", "kicker": "눈여겨볼 곳", "title": "짧게 일하는 IT 자리",
+         "sub": "큰 회사 먼저, 회사마다 한 건", "rows": picks},
+        {"type": "end", "photo": "pangyo.jpg", "kicker": "저장해 두기", "title": "연봉만큼 중요한 건\n일하는 시간",
+         "lines": ["워라밸 찾는 친구에게 보내 주세요", "공고 전체는 프로필 링크에서"]},
+    ]
+    for sl in slides:
+        sl["image"], sl["credit"] = _photo(sl.pop("photo"))
+        sl["note"] = note
+    slides[1]["note"] = "한국경제 2026.3.4 보도(경기도 2026 주 4.5일제 시범사업) 요약"
+    caption = "\n\n".join([
+        f"공고 본문에 주 4일·4.5일·격주 4일·주 35시간 같은 짧은 근무 제도를 적은 국내 IT 자리는 {len(hits)}개({cos}개 회사)입니다.",
+        "· 적힌 제도: " + " · ".join(f"{k} {v}개" for k, v in by.most_common()) + f"\n· 근무지가 경기도인 자리 {gg}개\n"
+        "· 눈여겨볼 곳: " + " · ".join(p["co"] for p in picks),
+        "한국경제는 경기도가 주 4.5일제 시범사업 신규 기업을 모집한다며, 지난해 뽑힌 97개 기업과 1개 공공기관이 참여 중이고 "
+        "노동자 1인당 월 최대 27만 원의 임금 보전 장려금과 기업당 최대 1,500만 원의 컨설팅을 지원한다고 전했습니다.",
+        "출처\nhttps://www.hankyung.com/article/202603049160h",
+        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무) 기준. 같은 자리를 여러 사이트에 올린 것은 하나로, 공고 본문에 제도를 적은 것만 셌습니다.",
+    ])
+    return {"id": f"fourday-{today:%Y%m%d}", "series": "[주 4일·4.5일]", "title": "짧게 일하는 IT 자리", "slides": slides,
+            "caption": caption}
+
+
+BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel, "japan": build_japan, "military": build_military, "region": build_region, "sme": build_sme, "fourday": build_fourday}
 
 
 # --- 렌더 ---------------------------------------------------------------
