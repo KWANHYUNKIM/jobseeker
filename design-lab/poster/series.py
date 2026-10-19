@@ -69,6 +69,7 @@ THEMES = {
     "game": {"paper": "#0b0d1a", "ink": "#f2f4ff", "sub": "#9aa0c0", "accent": "#5df2c1", "line": "#232845"},
     "security": {"paper": "#0f1420", "ink": "#f3f4f8", "sub": "#9ba3b4", "accent": "#ff4d5a", "line": "#26304a"},
     "mobile": {"paper": "#f4f2fd", "ink": "#1a1533", "sub": "#615b7d", "accent": "#7f52ff", "line": "#dfdaf5"},
+    "nest": {"paper": "#fff5f6", "ink": "#2a0f15", "sub": "#7a5560", "accent": "#e0234e", "line": "#f3dbe0"},
     "search": {"paper": "#0f1720", "ink": "#eef4f8", "sub": "#93a4b3", "accent": "#fec514", "line": "#22303c"},
     "terraform": {"paper": "#f4f1fb", "ink": "#1b1430", "sub": "#5f5778", "accent": "#7b42bc", "line": "#e2dcf1"},
     "kafka": {"paper": "#111111", "ink": "#f3f3f3", "sub": "#a3a3a3", "accent": "#7fd1ae", "line": "#2a2a2a"},
@@ -100,7 +101,7 @@ SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", 
           "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]",
           "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]", "balance": "[둘 중 하나]", "tier": "[티어표]",
           "contra": "[공고 원문]", "game": "[게임사 채용]", "security": "[보안 채용]",
-          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]", "wish": "[희망 초봉 vs 공고]", "robot": "[로봇 채용]", "spring": "[스프링 채용]", "vc": "[투자와 채용]", "agent": "[AI 에이전트 채용]", "lang": "[언어 순위 vs 공고]", "mobile": "[모바일 채용]", "python": "[파이썬 채용]", "node": "[Node.js 채용]", "rust": "[Rust 채용]", "java": "[Java 채용]", "swift": "[Swift 채용]", "docker": "[Docker 채용]", "kafka": "[Kafka 채용]", "terraform": "[Terraform 채용]", "search": "[검색 채용]"}
+          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]", "wish": "[희망 초봉 vs 공고]", "robot": "[로봇 채용]", "spring": "[스프링 채용]", "vc": "[투자와 채용]", "agent": "[AI 에이전트 채용]", "lang": "[언어 순위 vs 공고]", "mobile": "[모바일 채용]", "python": "[파이썬 채용]", "node": "[Node.js 채용]", "rust": "[Rust 채용]", "java": "[Java 채용]", "swift": "[Swift 채용]", "docker": "[Docker 채용]", "kafka": "[Kafka 채용]", "terraform": "[Terraform 채용]", "search": "[검색 채용]", "nest": "[NestJS 채용]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -125,6 +126,7 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "game": ["게임회사", "게임개발자", "게임스컴", "개발자채용", "게임업계취업"],
         "security": ["정보보안", "보안엔지니어", "보안채용", "개발자채용", "IT취업"],
         "mobile": ["모바일개발자", "안드로이드", "iOS개발자", "Kotlin", "Flutter"],
+        "nest": ["NestJS", "Nodejs", "백엔드개발자", "TypeScript", "개발자채용"],
         "search": ["RAG", "벡터DB", "Elasticsearch", "AI개발자", "개발자채용"],
         "terraform": ["Terraform", "DevOps", "인프라엔지니어", "IaC", "개발자채용"],
         "kafka": ["Kafka", "데이터엔지니어", "데이터파이프라인", "백엔드개발자", "개발자채용"],
@@ -3306,6 +3308,60 @@ def build_search() -> dict:
             "reel_lead": "검색 엔진보다 RAG — 공고 글로 세 봤어요, 저장해 두세요"}
 
 
+#: 백엔드 프레임워크 — Spring 은 Spring Boot 를 함께 센다
+_BACKEND_FW = [("Spring", ("Spring", "Spring Boot")), ("FastAPI", ("FastAPI",)), (".NET", (".NET",)), ("NestJS", ("NestJS",)),
+               ("Django", ("Django",)), ("Flask", ("Flask",))]
+
+
+def build_nest() -> dict:
+    """[NestJS 채용] 릴스 — NestJS v12.2.0(2026.10.19, GitHub 릴리스)을 계기로, 지금 국내 IT 공고 중 NestJS 를 적은 자리·
+    백엔드 프레임워크별 자리·같이 적은 기술·신입 가능. 같은 자리 중복 게시는 하나로."""
+    today = date.today()
+    rows = _it_rows()
+    total = len(rows)
+    fw = sorted(((k, sum(1 for r in rows if set(r["stacks"] or []) & set(keys))) for k, keys in _BACKEND_FW), key=lambda kv: -kv[1])
+    ns = [r for r in rows if "NestJS" in (r["stacks"] or [])]
+    n = len(ns)
+    with_ = collections.Counter(x for r in ns for x in set(r["stacks"] or []) if x != "NestJS").most_common(5)
+    entry = sum(1 for r in ns if r["career_bucket"] == "신입/무관")
+    cos = collections.Counter(_co_name(r["company"]) for r in ns).most_common(3)
+    pct = lambda a, b=n: round(100 * a / b) if b else 0
+    asof = today.isoformat()
+    wj = "\u2060"
+    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    slides = [
+        {"type": "cover", "big": f"{n:,}", "big_unit": "개", "lines": ["NestJS 12.2 나온 날", "NestJS 를 적은 자리는"],
+         "sub": f"국내 IT 자리 {total:,}개 중 {pct(n, total)}%", "note": note},
+        {"type": "table", "title": "NestJS 는 지금", "sub": "GitHub 릴리스 페이지", "head": ["판", "나온 날", ""],
+         "rows": [["v12.2.0", "2026.10.19", ""], ["v12.1.3", "2026.10.12", ""], ["v12.1.1", "2026.9.28", ""]],
+         "hi_col": 1, "note": "github.com/nestjs/nest/releases"},
+        {"type": "bars", "title": "백엔드 프레임워크별 자리", "sub": "그 프레임워크를 적은 국내 IT 자리 · Spring 은 Spring Boot 포함",
+         "rows": [{"label": k, "value": v, "display": f"{v:,}", "unit": f"{pct(v, total)}%", "hi": k == "NestJS"} for k, v in fw],
+         "note": note},
+        {"type": "bars", "title": "NestJS 와 같이 적은 기술", "sub": f"NestJS 자리 {n:,}개 중",
+         "rows": [{"label": k, "value": v, "display": f"{v:,}", "unit": f"{pct(v)}%", "hi": i == 0} for i, (k, v) in enumerate(with_)],
+         "note": note},
+        {"type": "stat", "title": "신입도 되는 NestJS 자리", "num": f"{entry}", "unit": "개", "label": f"{n:,}개 중 {pct(entry)}%",
+         "explain": "많이 뽑는 곳: " + " · ".join(f"**{c}**\u00a0{k}{wj}개" for c, k in cos), "note": note},
+        {"type": "end", "title": "저장해 두고", "lines": [
+            " · ".join(f"**{k}**\u00a0{v:,}" for k, v in fw[:3]),
+            "백엔드 공고 전체는 프로필 링크에서", "TS 백엔드 공부하는 친구에게 보내 주세요"], "note": note},
+    ]
+    caption = "\n\n".join([
+        f"NestJS 12.2.0 이 10월 19일 나왔습니다. 지금 국내 IT 자리 {total:,}개 중 NestJS 를 적은 자리는 {n:,}개({pct(n, total)}%), 신입 가능 {entry}개입니다.",
+        "· 백엔드 프레임워크별 자리: " + " · ".join(f"{k} {v:,}개" for k, v in fw) + "\n"
+        "· NestJS 와 같이 적은 기술: " + " · ".join(f"{k} {v:,}개({pct(v)}%)" for k, v in with_) + "\n"
+        "· 많이 뽑는 곳: " + " · ".join(f"{c} {k}개" for c, k in cos),
+        "NestJS GitHub 릴리스 페이지에 따르면 v12.2.0 은 10월 19일, v12.1.3 은 10월 12일 나왔습니다.",
+        "출처\nhttps://github.com/nestjs/nest/releases",
+        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, Spring 은 Spring Boot 를 함께 셌습니다. "
+        "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+    ])
+    return {"kind": "nest", "id": f"nest-{asof.replace('-', '')}", "title": "NestJS 채용",
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.0,
+            "reel_lead": "NestJS 12.2 나온 날, NestJS 를 적은 자리는 — 저장해 두세요"}
+
+
 REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
 
 
@@ -3362,7 +3418,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
                                      "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit",
-                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud", "paywish", "robot", "spring", "vc", "agent", "lang", "mobile", "python", "node", "rust", "java", "swift", "docker", "kafka", "terraform", "search"])
+                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud", "paywish", "robot", "spring", "vc", "agent", "lang", "mobile", "python", "node", "rust", "java", "swift", "docker", "kafka", "terraform", "search", "nest"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
@@ -3446,6 +3502,8 @@ def main() -> int:
         post = build_terraform()
     elif args.kind == "search":
         post = build_search()
+    elif args.kind == "nest":
+        post = build_nest()
     elif args.kind in ("pay", "perk", "welcome", "gongchae", "contra"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae, "contra": build_contra}[args.kind]()
