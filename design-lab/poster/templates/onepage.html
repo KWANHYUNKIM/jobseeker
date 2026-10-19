@@ -120,7 +120,8 @@
   const co = el('div', 'co'); co.append(mark(), D.company);
   top.append(k, co);
   const meta = el('div', 'meta');
-  D.meta.forEach(m => meta.append(el('span', '', m)));
+  // 지역을 모르면 '—' 만 든 빈 알약이 섰다(스마일게이트) — 빈 값은 싣지 않는다
+  D.meta.filter(m => m && !/^[\s—–-]*$/.test(m)).forEach(m => meta.append(el('span', '', m)));
   D.stack.forEach(s => meta.append(el('b', '', '#' + s)));
   header.append(top, el('h1', '', D.role));
   const B = D.brand;
