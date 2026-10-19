@@ -68,6 +68,7 @@ THEMES = {
     "contra": {"paper": "#15171d", "ink": "#f4f2ec", "sub": "#9b9fa9", "accent": "#ffd43b", "line": "#2b2f38"},
     "game": {"paper": "#0b0d1a", "ink": "#f2f4ff", "sub": "#9aa0c0", "accent": "#5df2c1", "line": "#232845"},
     "security": {"paper": "#0f1420", "ink": "#f3f4f8", "sub": "#9ba3b4", "accent": "#ff4d5a", "line": "#26304a"},
+    "pangyo": {"paper": "#f1f6ee", "ink": "#14241a", "sub": "#5b6d60", "accent": "#1a9e5a", "line": "#d3e2d6"},
     "mobility": {"paper": "#0a1a2f", "ink": "#f2f6fb", "sub": "#94a7bf", "accent": "#00c2ff", "line": "#1d3352"},
     "aitool": {"paper": "#0d1117", "ink": "#f0f3f6", "sub": "#9198a1", "accent": "#d2a8ff", "line": "#262c36"},
     "cert": {"paper": "#f4f1fb", "ink": "#17122b", "sub": "#615a78", "accent": "#5f3dc4", "line": "#ddd5f0"},
@@ -78,7 +79,7 @@ SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", 
           "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]",
           "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]", "balance": "[둘 중 하나]", "tier": "[티어표]",
           "contra": "[공고 원문]", "game": "[게임사 채용]", "security": "[보안 채용]",
-          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]"}
+          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -102,6 +103,7 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "contra": ["채용공고", "신입개발자", "자격요건", "개발자취업", "중고신입"],
         "game": ["게임회사", "게임개발자", "게임스컴", "개발자채용", "게임업계취업"],
         "security": ["정보보안", "보안엔지니어", "보안채용", "개발자채용", "IT취업"],
+        "pangyo": ["판교", "판교테크노밸리", "판교개발자", "IT회사", "개발자채용"],
         "mobility": ["모빌리티", "SDV", "현대자동차", "자율주행", "개발자채용"],
         "aitool": ["AI코딩", "ClaudeCode", "Cursor", "개발자채용", "코딩테스트"],
         "cert": ["자격증", "데브옵스", "인프라엔지니어", "AWS자격증", "개발자채용"]}
@@ -1687,7 +1689,8 @@ def _api_jobs_all(**q) -> list[dict]:
 
 
 #: 같은 회사의 다른 표기 — 집계 전에 하나로(보안 공고에서 'SK쉴더스' 와 '에스케이쉴더스(주)' 가 갈렸다)
-_SAME_CO = {"에스케이쉴더스": "SK쉴더스", "hybecareers": "하이브", "쿠팡coupang": "쿠팡"}
+_SAME_CO = {"에스케이쉴더스": "SK쉴더스", "hybecareers": "하이브", "쿠팡coupang": "쿠팡",
+            "엔에이치엔클라우드": "NHN클라우드", "nhn클라우드": "NHN클라우드", "엔씨": "엔씨소프트"}
 
 
 def _co_name(name: str) -> str:
@@ -1966,6 +1969,62 @@ def build_mobility() -> dict:
             "reel_lead": "현대차 공채 끝난 뒤, 모빌리티가 지금 뽑는 개발자 — 저장해 두세요"}
 
 
+def build_pangyo() -> dict:
+    """[판교 채용] 릴스 — 경기도 2025 판교테크노밸리 실태조사(입주 1,780곳·임직원 약 8만 3천 명, 경기일보 2025.12.25)와
+    지금 성남시(판교·분당) 근무 모집중 IT 공고. 근무지를 '경기 성남시' 로만 적은 회사가 많아 구가 아니라 시로 센다."""
+    sys.path.insert(0, str(ROOT / "catch_capture"))
+    from store.db.conn import cursor
+    from .collection import _AGENCY
+    with cursor(autocommit=True) as cur:
+        cur.execute("""SELECT co.display_name AS company, j.title, f.career_bucket, f.stacks, f.region, f.district
+                         FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
+                         JOIN job_facet f ON f.job_id = j.id JOIN company co ON co.id = j.company_id
+                        WHERE f.region IN ('경기', '서울')
+                          AND NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = j.id)""")
+        allr = [r for r in cur.fetchall() if not _not_dev({"title": r["title"], "stack": ["x"]})
+                and not _AGENCY.search(r["company"] + " " + r["title"])]
+    rows = [r for r in allr if r["region"] == "경기" and r["district"] == "성남시"]
+    gangnam = sum(1 for r in allr if r["region"] == "서울" and r["district"] == "강남구")
+    n, entry = len(rows), sum(1 for r in rows if r["career_bucket"] == "신입/무관")
+    cos = collections.Counter(_co_name(r["company"]) for r in rows).most_common(6)
+    stacks = collections.Counter(x for r in rows for x in (r["stacks"] or [])).most_common(3)
+    asof = date.today().isoformat()
+    wj = "\u2060"
+    note = f"JD Viewer 모집중 IT 공고 · 근무지 경기 성남시(판교·분당) {n:,}건 · {_dot(asof)} · 헤드헌팅 공고 뺌"
+    slides = [
+        {"type": "cover", "big": f"{n}", "big_unit": "건", "lines": ["8만 3천 명이 일하는 판교", "지금 열린 개발 자리"],
+         "sub": "근무지가 성남시(판교·분당)인 모집중 IT 공고", "note": note},
+        {"type": "table", "title": "판교는 지금", "sub": "경기도 실태조사 요약, 원문은 캡션의 링크",
+         "head": ["무엇", "숫자", "변화"],
+         "rows": [["입주 기업", f"1,780{wj}곳", "−23곳"],
+                  ["임직원", f"약 8.3만{wj}명", "+6%"],
+                  ["우리 공고(성남시)", f"{n}{wj}건", "지금"]],
+         "hi_col": 1, "note": "경기도 2025 판교테크노밸리 실태조사 · 경기일보 2025.12.25 보도"},
+        {"type": "bars", "title": "판교에서 많이 뽑는 곳", "sub": "회사별 모집중 IT 공고",
+         "rows": [{"label": c, "value": k, "display": f"{k}", "unit": "건", "hi": i == 0} for i, (c, k) in enumerate(cos)],
+         "note": note},
+        {"type": "stat", "title": "신입도 되는 공고", "num": f"{entry}", "unit": "건",
+         "label": f"{n}건 중 {round(100 * entry / n) if n else 0}%",
+         "explain": "많이 적힌 기술은 " + " · ".join(f"**{k}**" for k, _ in stacks) + f".\n서울 강남구는 {gangnam:,}{wj}건이다.",
+         "note": note},
+        {"type": "end", "title": "저장해 두고", "lines": [
+            " · ".join(f"**{c}** {k}건" for c, k in cos[:3]),
+            "회사별 공고 전체는 프로필 링크에서", "판교 출근 꿈꾸는 친구에게 보내 주세요"], "note": note},
+    ]
+    caption = "\n\n".join([
+        f"판교에서 일하는 사람은 약 8만 3천 명. 지금 근무지가 성남시(판교·분당)인 IT 공고는 {n}건입니다.",
+        f"· 신입도 되는 공고 {entry}건\n· 많이 뽑는 곳: " + " · ".join(f"{c} {k}건" for c, k in cos[:5]) + "\n"
+        "· 많이 적힌 기술: " + " · ".join(k for k, _ in stacks) + f"\n· 견줘 보면 서울 강남구 {gangnam:,}건",
+        "경기도의 2025 판교테크노밸리 실태조사에 따르면 제1·2판교 입주 기업은 1,780곳으로 23곳 줄었지만, 임직원은 "
+        "약 8만 3천 명으로 6% 늘었습니다(경기일보 보도). 기업 수가 준 건 일부 앵커 기업이 신사옥으로 옮긴 영향이라고 합니다.",
+        "출처\nhttps://www.kyeonggi.com/article/20251225580045",
+        f"{_dot(asof)} JD Viewer 모집중 IT 공고 기준. 근무지는 공고에 적힌 시·구로 셌고 헤드헌팅 공고는 뺐습니다.",
+    ])
+    return {"kind": "pangyo", "id": f"pangyo-{asof.replace('-', '')}", "title": "판교 채용",
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.2,
+            "reel_lead": "8만 3천 명이 일하는 판교, 지금 열린 개발 자리 — 저장해 두세요"}
+
+
 REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
 
 
@@ -2022,7 +2081,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
                                      "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit",
-                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility"])
+                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
@@ -2062,6 +2121,8 @@ def main() -> int:
         post = build_aitool()
     elif args.kind == "mobility":
         post = build_mobility()
+    elif args.kind == "pangyo":
+        post = build_pangyo()
     elif args.kind in ("pay", "perk", "welcome", "gongchae", "contra"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae, "contra": build_contra}[args.kind]()
