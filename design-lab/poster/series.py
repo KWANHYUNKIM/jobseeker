@@ -69,6 +69,7 @@ THEMES = {
     "game": {"paper": "#0b0d1a", "ink": "#f2f4ff", "sub": "#9aa0c0", "accent": "#5df2c1", "line": "#232845"},
     "security": {"paper": "#0f1420", "ink": "#f3f4f8", "sub": "#9ba3b4", "accent": "#ff4d5a", "line": "#26304a"},
     "mobile": {"paper": "#f4f2fd", "ink": "#1a1533", "sub": "#615b7d", "accent": "#7f52ff", "line": "#dfdaf5"},
+    "node": {"paper": "#f3f8ef", "ink": "#16240f", "sub": "#566b4c", "accent": "#3c873a", "line": "#dbe8d3"},
     "python": {"paper": "#0f1b2d", "ink": "#eef3fb", "sub": "#95a6bf", "accent": "#ffd43b", "line": "#20314d"},
     "lang": {"paper": "#0e1626", "ink": "#eef3fb", "sub": "#94a3bc", "accent": "#ffd23f", "line": "#1f2c44"},
     "agent": {"paper": "#faf6f1", "ink": "#1f1a14", "sub": "#6f6457", "accent": "#d97706", "line": "#ece2d5"},
@@ -92,7 +93,7 @@ SERIES = {"insight": "[데이터로 본 채용]", "guide": "[들어가려면]", 
           "pay": "[신입 초봉]", "perk": "[이런 조건 되는 곳]", "map": "[출근길 지도]", "welcome": "[신입 환영]", "gongchae": "[공채는 끝났다]",
           "lunch": "[점심 지도]", "kit": "[첫 출근 웰컴키트]", "balance": "[둘 중 하나]", "tier": "[티어표]",
           "contra": "[공고 원문]", "game": "[게임사 채용]", "security": "[보안 채용]",
-          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]", "wish": "[희망 초봉 vs 공고]", "robot": "[로봇 채용]", "spring": "[스프링 채용]", "vc": "[투자와 채용]", "agent": "[AI 에이전트 채용]", "lang": "[언어 순위 vs 공고]", "mobile": "[모바일 채용]", "python": "[파이썬 채용]"}
+          "cert": "[자격증 우대]", "aitool": "[AI 코딩 도구]", "mobility": "[모빌리티 채용]", "pangyo": "[판교 채용]", "health": "[헬스케어 채용]", "junior": "[주니어 채용]", "usvs": "[미국 vs 우리]", "gap": "[신입 vs 경력]", "cloud": "[클라우드 채용]", "wish": "[희망 초봉 vs 공고]", "robot": "[로봇 채용]", "spring": "[스프링 채용]", "vc": "[투자와 채용]", "agent": "[AI 에이전트 채용]", "lang": "[언어 순위 vs 공고]", "mobile": "[모바일 채용]", "python": "[파이썬 채용]", "node": "[Node.js 채용]"}
 TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT채용", "데이터"],
         "guide": ["개발자취업", "취업준비", "개발자채용", "이직준비", "기업분석"],
         "term": ["IT용어", "개발자면접", "백엔드개발자", "Kafka", "개발공부"],
@@ -117,6 +118,7 @@ TAGS = {"insight": ["개발자채용", "채용트렌드", "개발자취업", "IT
         "game": ["게임회사", "게임개발자", "게임스컴", "개발자채용", "게임업계취업"],
         "security": ["정보보안", "보안엔지니어", "보안채용", "개발자채용", "IT취업"],
         "mobile": ["모바일개발자", "안드로이드", "iOS개발자", "Kotlin", "Flutter"],
+        "node": ["Nodejs", "NestJS", "백엔드개발자", "자바스크립트", "개발자채용"],
         "python": ["파이썬", "Python", "개발자채용", "데이터엔지니어", "AI개발자"],
         "lang": ["프로그래밍언어", "TIOBE", "Python", "Java", "개발자채용"],
         "agent": ["AI에이전트", "MCP", "RAG", "LLM", "개발자채용"],
@@ -2784,9 +2786,8 @@ def build_mobile() -> dict:
             "reel_lead": "Kotlin 2.4.21 나온 달, 모바일 개발 자리는 — 저장해 두세요"}
 
 
-def build_python() -> dict:
-    """[파이썬 채용] 쇼츠 — Python 3.15.0(python.org 2026.10.9)을 계기로, 지금 국내 IT 공고 중 Python 을 적은 자리와
-    그 자리가 어느 직군인가(한 자리가 여러 직군이면 각각 센다). 같은 자리 중복 게시는 하나로."""
+def _it_rows() -> list[dict]:
+    """지금 모집중인 국내 근무 IT 공고(헤드헌팅·SI 투입·비 IT·마감 지난 것 빼고, 같은 자리 중복은 하나로)."""
     sys.path.insert(0, str(ROOT / "catch_capture"))
     from store.db.conn import cursor
     from .collection import _AGENCY, _FOREIGN_TAG, _SI_STAFF
@@ -2807,6 +2808,14 @@ def build_python() -> dict:
     for r in rows:
         uniq.setdefault((_co_name(r["company"]), _role_key(r["title"])), r)
     rows = list(uniq.values())
+    return rows
+
+
+def build_python() -> dict:
+    """[파이썬 채용] 쇼츠 — Python 3.15.0(python.org 2026.10.9)을 계기로, 지금 국내 IT 공고 중 Python 을 적은 자리와
+    그 자리가 어느 직군인가(한 자리가 여러 직군이면 각각 센다). 같은 자리 중복 게시는 하나로."""
+    today = date.today()
+    rows = _it_rows()
     total = len(rows)
     py = [r for r in rows if "Python" in (r["stacks"] or [])]
     n = len(py)
@@ -2844,6 +2853,59 @@ def build_python() -> dict:
     return {"kind": "python", "id": f"python-{asof.replace('-', '')}", "title": "파이썬 채용",
             "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.0,
             "reel_lead": "Python 3.15 나온 달, Python 을 적은 자리는 — 저장해 두세요"}
+
+
+_NODE = ("Node.js", "NestJS", "Express")
+_JS_SIDE = {"JavaScript", "TypeScript", "React", "Vue.js", "Vue", "Next.js", "Nuxt", "React Native", "GraphQL", "Angular", "Svelte"}
+
+
+def build_node() -> dict:
+    """[Node.js 채용] 릴스 — Node.js 릴리스 표(nodejs.org: 26 Current 2026.5.5 · 24·22 LTS)를 계기로, 지금 국내 IT 공고 중
+    Node.js(NestJS·Express 포함)를 적은 자리와 직군·같이 적은 기술. 같은 자리 중복 게시는 하나로."""
+    today = date.today()
+    rows = _it_rows()
+    total = len(rows)
+    # 'PCI Express' 를 Express 로 뽑은 반도체 공고(엑시나 SoC 설계·CXL, 2026-10-20)가 10건 섞였다.
+    # Express 는 Node.js 나 JS 쪽 기술과 같이 적었을 때만 센다.
+    nd = [r for r in rows if set(r["stacks"] or []) & {"Node.js", "NestJS"}
+          or ("Express" in (r["stacks"] or []) and set(r["stacks"] or []) & _JS_SIDE)]
+    n = len(nd)
+    roles = collections.Counter(x for r in nd for x in set(r["roles"] or []) if x != "기타").most_common(5)
+    with_ = collections.Counter(x for r in nd for x in set(r["stacks"] or []) if x not in _NODE).most_common(5)
+    entry = sum(1 for r in nd if r["career_bucket"] == "신입/무관")
+    cos = collections.Counter(_co_name(r["company"]) for r in nd).most_common(3)
+    pct = lambda a, b=n: round(100 * a / b) if b else 0
+    asof = today.isoformat()
+    wj = "\u2060"
+    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    bars = lambda rs: [{"label": k, "value": v, "display": f"{v:,}", "unit": f"{pct(v)}%", "hi": i == 0} for i, (k, v) in enumerate(rs)]
+    slides = [
+        {"type": "cover", "big": f"{n:,}", "big_unit": "개", "lines": ["Node.js 26 시대", "Node.js 를 적은 자리는"],
+         "sub": f"국내 IT 자리 {total:,}개 중 {pct(n, total)}% · NestJS·Express 포함", "note": note},
+        {"type": "table", "title": "Node.js 는 지금", "sub": "nodejs.org 릴리스 표", "head": ["판", "상태", ""],
+         "rows": [["26", "Current · 2026.5.5 첫 출시", ""], ["24 Krypton", "LTS", ""], ["22 Jod", "LTS", ""]],
+         "hi_col": 1, "note": "nodejs.org/en/about/previous-releases"},
+        {"type": "bars", "title": "Node.js 자리는 어느 직군", "sub": "한 자리가 여러 직군이면 각각 셌다", "rows": bars(roles), "note": note},
+        {"type": "bars", "title": "같이 적은 기술", "sub": f"Node.js 자리 {n:,}개 중", "rows": bars(with_), "note": note},
+        {"type": "stat", "title": "신입도 되는 Node.js 자리", "num": f"{entry}", "unit": "개", "label": f"{n:,}개 중 {pct(entry)}%",
+         "explain": "많이 뽑는 곳: " + " · ".join(f"**{c}**\u00a0{k}{wj}개" for c, k in cos), "note": note},
+        {"type": "end", "title": "저장해 두고", "lines": [
+            " · ".join(f"**{k}** {v:,}" for k, v in with_[:3]),
+            "Node.js 공고 전체는 프로필 링크에서", "JS 백엔드 공부하는 친구에게 보내 주세요"], "note": note},
+    ]
+    caption = "\n\n".join([
+        f"지금 국내 IT 자리 {total:,}개 중 Node.js(NestJS·Express 포함)를 적은 자리는 {n:,}개({pct(n, total)}%), 신입 가능 {entry}개입니다.",
+        "· 어느 직군: " + " · ".join(f"{k} {v:,}개({pct(v)}%)" for k, v in roles) + "\n"
+        "· 같이 적은 기술: " + " · ".join(f"{k} {v:,}개({pct(v)}%)" for k, v in with_) + "\n"
+        "· 많이 뽑는 곳: " + " · ".join(f"{c} {k}개" for c, k in cos),
+        "nodejs.org 릴리스 표에 따르면 지금 Current 는 2026년 5월 5일 처음 나온 Node.js 26 이고, 24(Krypton)·22(Jod)가 LTS 입니다.",
+        "출처\nhttps://nodejs.org/en/about/previous-releases",
+        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 한 자리가 여러 직군에 걸치면 각각 셌습니다. "
+        "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+    ])
+    return {"kind": "node", "id": f"node-{asof.replace('-', '')}", "title": "Node.js 채용",
+            "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.0,
+            "reel_lead": "Node.js 26 시대, Node.js 를 적은 자리는 — 저장해 두세요"}
 
 
 REEL = (1080, 1920)   # 릴스는 9:16 으로 다시 찍는다 — 4:5 판을 영상에 얹으면 위아래가 검은 띠가 된다
@@ -2902,7 +2964,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="poster.series")
     ap.add_argument("kind", choices=["stack", "rates", "guide", "term", "interview", "qa", "jd", "same", "roadmap",
                                      "weekly", "signal", "talent", "pay", "perk", "map", "welcome", "gongchae", "lunch", "kit",
-                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud", "paywish", "robot", "spring", "vc", "agent", "lang", "mobile", "python"])
+                                     "contra", "ai-entry", "game", "security", "cert", "aitool", "mobility", "pangyo", "health", "junior", "usvs", "gap", "cloud", "paywish", "robot", "spring", "vc", "agent", "lang", "mobile", "python", "node"])
     ap.add_argument("company", nargs="?", default="")
     ap.add_argument("--dry", action="store_true", help="찍기만 하고 승인함에 넣지 않는다")
     ap.add_argument("--reel", action="store_true",
@@ -2970,6 +3032,8 @@ def main() -> int:
         post = build_mobile()
     elif args.kind == "python":
         post = build_python()
+    elif args.kind == "node":
+        post = build_node()
     elif args.kind in ("pay", "perk", "welcome", "gongchae", "contra"):
         post = {"pay": build_pay_newgrad, "perk": build_perks, "welcome": build_welcome,
                 "gongchae": build_gongchae, "contra": build_contra}[args.kind]()
