@@ -71,3 +71,8 @@ def test_safe_logo_only_allows_our_own_files():
 def test_bc_card_rule_does_not_catch_mbc():
     assert classify("BC카드") == "금융"
     assert classify("엠비씨(MBC)아카데미 컴퓨터교육센터") != "금융"
+
+
+def test_pipe_names_and_silicon2():
+    assert display_name("Rebellions | 리벨리온") == "리벨리온"
+    assert classify("실리콘투") == "유통·커머스"     # 화장품 유통사 — '실리콘' 으로 반도체에 잡혔다

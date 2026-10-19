@@ -30,6 +30,10 @@ _CORP = re.compile(r"^\s*(\(?(주|유|재|사)\)|주식회사|㈜)\s*|\s*(\(?(�
 def display_name(name: str) -> str:
     """카드에 쓰는 이름 — '(주)', '주식회사' 를 뗀다. 영문 병기 '쿠팡 (Coupang)' 은 둔다."""
     n = html.unescape(name or "").strip()
+    # 'Rebellions | 리벨리온' 처럼 영문 | 한글 로 온 이름은 한글 쪽만
+    if "|" in n:
+        parts = [p.strip() for p in n.split("|") if p.strip()]
+        n = next((p for p in parts if re.search(r"[가-힣]", p)), parts[0] if parts else n)
     for _ in range(2):
         n = _CORP.sub("", n).strip()
     return n or (name or "")
