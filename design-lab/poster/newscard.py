@@ -61,7 +61,7 @@ STYLE_FONTS = {
     "brandmag": ["Pretendard", "NanumMyeongjo"],
 }
 #: 원고마다 기본으로 찍을 틀
-DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"]}
+DEFAULT_STYLES = {"weekly": ["magazine", "paper", "poster", "scrap"], "brands": ["brandmag"], "finance": ["magazine"], "intern": ["magazine"], "midlevel": ["magazine"]}
 
 
 #: 회사 자산(assets/companies/…)이 없는 기계에서 쓰는 공용 글꼴 — 공식 배포본(OFL), 라이선스는 같은 폴더.
@@ -394,7 +394,83 @@ def build_intern(today: date | None = None) -> dict:
             "caption": caption}
 
 
-BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern}
+def _is_mid(career: str) -> bool:
+    """3~7년차 자리로 볼 경력 표기 — 첫 숫자(최소 연차)가 3~7. '2~5년'·'5년↓'(이하)는 아니다."""
+    m = re.search(r"\d+", career or "")
+    return bool(m) and 3 <= int(m.group()) <= 7 and not re.search(r"↓|이하", career)
+
+
+def build_midlevel(today: date | None = None) -> dict:
+    """[카드뉴스] 3~8년차 — 잡코리아 '미들급 편' 설문(체감 난이도·TO 있어도 안 뽑는다·서류 탈락)과
+    지금 경력 조건이 3~7년인 국내 공고 수를 견준다. 설문 숫자는 출처를 적고 원문을 옮기지 않는다."""
+    import psycopg
+    from psycopg.rows import dict_row
+    from .collection import _DEV_SIGNAL
+    today = today or date.today()
+    with psycopg.connect(_dsn(), row_factory=dict_row) as conn:
+        rows = conn.execute("""
+            SELECT f.career_bucket AS b, count(*) AS n
+              FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
+              JOIN job_facet f ON f.job_id = j.id
+             WHERE coalesce(f.region, '') <> '해외·원격'
+               AND NOT EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = j.id)
+             GROUP BY 1""").fetchall()
+    c = {r["b"]: r["n"] for r in rows}
+    stated = sum(n for b, n in c.items() if b != "정보없음")
+    mid = c.get("3-4년", 0) + c.get("5-7년", 0)
+    entry = c.get("신입/무관", 0)
+    pct = lambda a: round(100 * a / stated) if stated else 0
+    sec = _home("/api/home/section/experienced")
+    picks, seen = [], set()
+    for j in sec["jobs"]:
+        t = j["title"]
+        if (j["company"] in seen or j["size"] not in ("대기업", "중견기업") or not _is_mid(j.get("career"))
+                or not _DEV_SIGNAL.search(t) or re.search(r"\bPM\b|기획|함정", t)):
+            continue
+        seen.add(j["company"])
+        d = j.get("dday")
+        when = "오늘 마감" if d == 0 else f"D-{d}" if d is not None and 0 < d <= 365 else "상시"
+        picks.append({"co": j["company"], "title": _short(re.sub(r"^\[[^\]]*\]\s*", "", t)),
+                      "meta": f"{when} · {j['career']}"})
+        if len(picks) == 4:
+            break
+    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 · {today:%Y.%m.%d}"
+    slides = [
+        {"type": "cover", "photo": "seoul.jpg", "kicker": f"3~8년차 · {today:%Y.%m.%d}",
+         "big": f"{mid:,}", "unit": "건", "title": ["어렵다는 3~8년차", "지금 열린 자리"],
+         "sub": "경력 조건이 3~7년인 국내 IT 모집중 공고"},
+        {"type": "stat", "photo": "hourglass.jpg", "kicker": "설문", "title": "3~8년차가 느끼는 시장",
+         "items": [{"num": "93", "unit": "%", "label": "2년 전보다 어려워졌다"},
+                   {"num": "48", "unit": "%", "label": "자리가 있어도 안 뽑는다"},
+                   {"num": "56", "unit": "%", "label": "서류에서 막힌다"}],
+         "explain": "잡코리아가 3~8년차 개발자 1,000명에게 물었다(2026.7). 주니어·시니어보다 '어려워졌다' 가 많았다."},
+        {"type": "stat", "photo": "code.jpg", "kicker": "공고로 보면", "title": "자리는 경력자 쪽에 더 많다",
+         "items": [{"num": f"{pct(mid)}", "unit": "%", "label": f"경력 3~7년 공고 {mid:,}건"},
+                   {"num": f"{pct(entry)}", "unit": "%", "label": f"신입 가능 공고 {entry:,}건"}],
+         "explain": f"경력 조건을 적은 {stated:,}건 기준. 문은 열려 있다 — 막히는 곳은 서류다."},
+        {"type": "picks", "photo": "typing.jpg", "kicker": "눈여겨볼 곳", "title": "큰 회사의 3~7년차 자리",
+         "sub": "대기업·중견기업, 회사마다 한 건", "rows": picks},
+        {"type": "end", "photo": "pangyo.jpg", "kicker": "저장해 두기", "title": "서류에서 막힌다면\n공고 문장부터 맞추자",
+         "lines": ["이직 준비하는 동료에게 보내 주세요", "공고 전체는 프로필 링크에서"]},
+    ]
+    for sl in slides:
+        sl["image"], sl["credit"] = _photo(sl.pop("photo"))
+        sl["note"] = note
+    slides[1]["note"] = "잡코리아 '2026 하반기 개발자 취업 현황 리포트 · 미들급 편'(2026.7.30) 요약"
+    caption = "\n\n".join([
+        f"3~8년차는 어렵다고 합니다. 그런데 지금 경력 조건이 3~7년인 국내 IT 공고는 {mid:,}건입니다.",
+        f"· 경력 조건을 적은 {stated:,}건 중 3~7년 {mid:,}건({pct(mid)}%), 신입 가능 {entry:,}건({pct(entry)}%)",
+        "잡코리아가 3~8년차 개발자 1,000명에게 물었더니 93%가 2년 전보다 어려워졌다고 했고, 48%는 자리가 있어도 "
+        "안 뽑는다고 느꼈으며, 가장 많이 막히는 단계는 서류(56%)였습니다.",
+        "큰 회사의 3~7년차 자리: " + " · ".join(p["co"] for p in picks),
+        "출처\nhttps://www.jobkorea.co.kr/recruit/careers/articles/midlevel-developer",
+        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무, 사이트 간 중복 제외) 기준. 경력은 공고에 적힌 최소 연차로 나눴습니다.",
+    ])
+    return {"id": f"midlevel-{today:%Y%m%d}", "series": "[3~8년차]", "title": "3~8년차 자리", "slides": slides,
+            "caption": caption}
+
+
+BUILDERS = {"weekly": build_weekly, "brands": build_brands, "finance": build_finance, "intern": build_intern, "midlevel": build_midlevel}
 
 
 # --- 렌더 ---------------------------------------------------------------
