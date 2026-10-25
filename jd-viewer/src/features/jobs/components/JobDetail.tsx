@@ -15,6 +15,7 @@ import { goBack } from '../../../utils/navigation'
 import { paths } from '../../../utils/urls'
 import { TechTag, CompanyMark } from '../../../components/ui'
 import { JobGuide } from './JobGuide'
+import { parseJdText, type JdBlock } from '../utils/jdText'
 
 interface Props {
   job: Job
@@ -77,10 +78,29 @@ export function JobDetail({ job, onOpenUrl }: Props) {
     if (q && window.innerWidth < 1024) setPane('guide')
   }
 
+  // 캐치(catch.co.kr) 공고 상세처럼 — 회색 바탕 가운데에 공고 종이와 가이드 칸을 나란히
+  // 모은다. 종이는 A4 폭(210mm ≈ 794px)의 흰 면에 검은 테두리, 제목부터 본문까지 한 장에
+  // 담는다. 화면 끝까지 늘어난 두 단은 눈이 어디를 읽어야 할지 잡지 못했다.
   return (
-    <div className="flex flex-col flex-1 min-h-0">
+    <div data-scroll className="flex-1 min-h-0 overflow-auto bg-(--color-bg)">
+      <div className="mx-auto w-fit max-w-full px-3 sm:px-6 py-5 sm:py-8 lg:flex lg:items-start lg:gap-5">
+      {/* 좁은 화면 전용 단 전환 */}
+      <div className="lg:hidden mb-3 inline-flex rounded-md border border-(--color-border) overflow-hidden bg-(--color-panel)">
+        <PaneBtn active={pane === 'jd'} onClick={() => setPane('jd')}>
+          공고
+        </PaneBtn>
+        <PaneBtn active={pane === 'guide'} onClick={() => setPane('guide')}>
+          취업 가이드
+        </PaneBtn>
+      </div>
+      <article
+        className={
+          'w-full lg:w-[794px] lg:shrink-0 bg-white border border-black ' +
+          (pane === 'jd' ? '' : 'hidden lg:block')
+        }
+      >
       {/* 헤더 */}
-      <div className="border-b border-(--color-border) bg-(--color-panel) px-4 sm:px-6 py-3 shrink-0">
+      <div className="border-b border-(--color-border) px-5 sm:px-12 pt-8 pb-6">
         <div className="flex items-start gap-3">
           <a
             href={paths.jobs()}
@@ -144,7 +164,7 @@ export function JobDetail({ job, onOpenUrl }: Props) {
                 )
               })()}
             </div>
-            <h2 className="text-(--color-text) text-lg sm:text-xl leading-snug">{job.title}</h2>
+            <h2 className="text-(--color-text) text-xl sm:text-2xl font-bold leading-snug">{job.title}</h2>
             <p className="text-(--color-muted) text-sm mt-0.5 flex items-center gap-1.5">
               <CompanyMark name={job.company} size={16} />
               {job.company}
@@ -163,26 +183,10 @@ export function JobDetail({ job, onOpenUrl }: Props) {
           )}
         </div>
 
-        {/* 좁은 화면 전용 단 전환 */}
-        <div className="lg:hidden mt-3 inline-flex rounded-md border border-(--color-border) overflow-hidden">
-          <PaneBtn active={pane === 'jd'} onClick={() => setPane('jd')}>
-            공고
-          </PaneBtn>
-          <PaneBtn active={pane === 'guide'} onClick={() => setPane('guide')}>
-            취업 가이드
-          </PaneBtn>
-        </div>
       </div>
 
-      {/* 두 단 */}
-      <div className="flex flex-1 min-h-0">
-        <div
-          data-scroll
-          className={
-            'flex-1 min-w-0 overflow-auto px-4 sm:px-6 py-5 space-y-5 text-sm ' +
-            (pane === 'jd' ? '' : 'hidden lg:block')
-          }
-        >
+          {/* 본문 — 내용이 짧아도 종이 한 장처럼 보이게 높이를 잡아 둔다 */}
+          <div className="min-h-[900px] px-5 sm:px-12 py-8 sm:py-10 space-y-9 text-sm">
           {job.tech_stack && job.tech_stack.length > 0 && (
             <Section title="기술 스택">
               <div className="flex flex-wrap gap-1.5">
@@ -230,7 +234,7 @@ export function JobDetail({ job, onOpenUrl }: Props) {
 
           {job.benefits && (
             <Section title="복지 / 혜택">
-              <Pre text={job.benefits} />
+              <JdBody text={job.benefits} />
             </Section>
           )}
 
@@ -302,14 +306,15 @@ export function JobDetail({ job, onOpenUrl }: Props) {
               <span className="text-xs text-(--color-muted)">원본 URL 없음</span>
             )}
           </div>
-        </div>
+          </div>
+      </article>
 
+        {/* 가이드 — 종이 옆에 붙어 따라 내려온다 */}
         <aside
-          data-scroll
           className={
-            'overflow-auto bg-(--color-bg)/40 px-4 sm:px-5 py-5 ' +
-            'lg:w-[420px] xl:w-[460px] lg:shrink-0 lg:border-l lg:border-(--color-border) ' +
-            (pane === 'guide' ? 'flex-1 min-w-0' : 'hidden lg:block')
+            'lg:w-[380px] lg:shrink-0 lg:sticky lg:top-0 lg:max-h-[calc(100dvh-8rem)] lg:overflow-auto ' +
+            'bg-(--color-panel) border border-(--color-border) rounded-lg px-4 sm:px-5 py-5 ' +
+            (pane === 'guide' ? 'block' : 'hidden lg:block')
           }
         >
           <JobGuide
@@ -358,7 +363,7 @@ function Section({
 }) {
   return (
     <section>
-      <h3 className="flex items-center gap-2 text-xs tracking-wider text-(--color-muted) mb-2 font-medium">
+      <h3 className="flex items-center gap-2 text-[17px] font-bold text-(--color-text) mb-3">
         {title}
         {marks > 0 && (
           <span
@@ -406,7 +411,117 @@ function FieldOrPlaceholder({
       </div>
     )
   }
-  return <Pre text={trimmed} marks={marks} activeQuote={activeQuote} onQuote={onQuote} />
+  return <JdBody text={trimmed} marks={marks} activeQuote={activeQuote} onQuote={onQuote} />
+}
+
+// ── 본문 ────────────────────────────────────────────────────────────────
+// 원문 줄바꿈을 <pre> 로 그대로 그리면 사이트마다 다른 글머리표·소제목·구분선이 한
+// 무게로 섞여 글자벽이 된다. parseJdText 가 가른 덩어리를 번호 붙은 줄(구분선으로
+// 나뉜) · 소제목 · 하위 항목 · ※ 안내로 각자 그린다. 번호는 소제목마다 01 부터.
+type Row = { no: number; text: string; subs: string[] }
+type Group =
+  | { kind: 'list'; rows: Row[] }
+  | { kind: 'heading' | 'note' | 'para'; text: string }
+
+function groupBlocks(blocks: JdBlock[]): Group[] {
+  const out: Group[] = []
+  let no = 0
+  for (const b of blocks) {
+    if (b.kind !== 'item') {
+      if (b.kind === 'heading') no = 0
+      out.push({ kind: b.kind, text: b.text })
+      continue
+    }
+    const last = out[out.length - 1]
+    if (b.depth === 1 && last?.kind === 'list') {
+      last.rows[last.rows.length - 1].subs.push(b.text)
+    } else if (last?.kind === 'list') {
+      last.rows.push({ no: ++no, text: b.text, subs: [] })
+    } else {
+      out.push({ kind: 'list', rows: [{ no: ++no, text: b.text, subs: [] }] })
+    }
+  }
+  return out
+}
+
+function JdBody({
+  text,
+  marks,
+  activeQuote,
+  onQuote,
+}: {
+  text: string
+  marks?: HighlightMark[]
+  activeQuote?: string | null
+  onQuote?: (q: string | null) => void
+}) {
+  const groups = useMemo(() => groupBlocks(parseJdText(text)), [text])
+  // 하이라이트는 덩어리마다 다시 찾는다. 인용이 줄을 넘나들면 못 찾는데, 그때는
+  // 밑줄만 빠지고 글은 그대로 보인다.
+  const t = (s: string) =>
+    marks && marks.length > 0 ? (
+      <Highlighted text={s} marks={marks} activeQuote={activeQuote} onQuote={onQuote} />
+    ) : (
+      s
+    )
+  return (
+    <div className="text-[14px] leading-relaxed text-(--color-text)">
+      {groups.map((g, gi) => {
+        if (g.kind === 'heading') {
+          return (
+            <h4
+              key={gi}
+              className="mt-6 first:mt-0 mb-2 flex items-center gap-2 text-[13px] font-semibold text-(--color-text)"
+            >
+              <span className="w-1 h-3.5 rounded-sm bg-(--color-accent)" aria-hidden />
+              {g.text}
+            </h4>
+          )
+        }
+        if (g.kind === 'note') {
+          return (
+            <p key={gi} className="mt-2 text-xs text-(--color-muted)">
+              ※ {t(g.text)}
+            </p>
+          )
+        }
+        if (g.kind !== 'list') {
+          return (
+            <p key={gi} className="my-2 first:mt-0">
+              {t(g.text)}
+            </p>
+          )
+        }
+        return (
+          <ol key={gi} className="border-t border-(--color-text)/50">
+            {g.rows.map((r, ri) => (
+              <li
+                key={ri}
+                className="grid grid-cols-[2.25rem_1fr] gap-x-2 py-3 border-b border-(--color-border)"
+              >
+                <span className="pt-px text-xs font-semibold tabular-nums text-(--color-accent)">
+                  {String(r.no).padStart(2, '0')}
+                </span>
+                <div className="min-w-0">
+                  <div>{t(r.text)}</div>
+                  {r.subs.length > 0 && (
+                    <ul className="mt-1.5 space-y-1 text-[13px] text-(--color-muted)">
+                      {r.subs.map((sub, si) => (
+                        <li key={si} className="flex gap-1.5">
+                          <span aria-hidden>–</span>
+                          <span className="min-w-0">{t(sub)}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ol>
+        )
+      })}
+    </div>
+  )
 }
 
 function Pre({
