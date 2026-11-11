@@ -107,7 +107,7 @@ export function JobsPage() {
             {b.filteredCount.toLocaleString()}건
           </span>
         </MobileBar>
-        <JobList jobs={b.filtered} server={b.page} />
+        <JobList jobs={b.filtered} server={b.page} noData={b.noData} />
       </main>
     </div>
   )

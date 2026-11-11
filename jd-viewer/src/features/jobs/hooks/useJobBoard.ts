@@ -116,9 +116,13 @@ export function useJobBoard() {
     // 헤더·사이드바의 건수. API 모드에서는 목록이 한 쪽뿐이라 서버가 센 값을 쓴다.
     totalCount: apiMode ? remote.allTotal : jobs.length,
     filteredCount: apiMode ? remote.total : filtered.length,
-    loading: api === 'unknown' || (apiMode ? remote.loading && remote.allTotal === 0 && !detail : fileLoading),
+    // '받았나' 는 건수가 아니라 첫 응답으로 본다. 건수(allTotal > 0)로 보면 DB 가 비어 있는
+    // 동안(첫 크롤 전) 헤더가 영영 '…' 이고, 칩을 누를 때마다 화면 전체가 로더로 바뀐다.
+    loading: api === 'unknown' || (apiMode ? !remote.received && !detail : fileLoading),
     error: apiMode ? remote.error : fileError,
-    countsReady: apiMode ? remote.allTotal > 0 : !fileLoading,
+    countsReady: apiMode ? remote.received : !fileLoading,
+    /** 수집된 공고가 하나도 없다(필터 탓이 아니라). 첫 크롤 전 빈 DB. */
+    noData: (apiMode ? remote.received : !fileLoading) && (apiMode ? remote.allTotal : jobs.length) === 0,
     searchState: {
       loading: apiMode ? remote.loading : searching,
       engines: apiMode ? remote.engines : engines,

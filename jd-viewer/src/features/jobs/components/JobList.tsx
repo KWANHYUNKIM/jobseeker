@@ -15,13 +15,15 @@ interface Props {
    * 전체 건수와 쪽 번호는 여기서 온다. 없으면 예전처럼 `jobs` 전량을 화면에서 자른다.
    */
   server?: { page: number; total: number; onChange: (page: number) => void }
+  /** 수집된 공고 자체가 없다(첫 크롤 전). 이때 "필터를 줄이라" 는 엉뚱한 안내다. */
+  noData?: boolean
 }
 
 
 // 공고 제목은 목록 안에서 유일하게 '진짜 링크'다. 줄 전체를 <a> 로 감싸면 안에 든
 // 원본 링크와 앵커가 겹쳐 잘못된 마크업이 되므로, 제목만 링크로 두고 줄 클릭은
 // 그대로 살린다. 크롤러는 이 제목 링크를 따라 공고 상세로 들어온다.
-export function JobList({ jobs, server }: Props) {
+export function JobList({ jobs, server, noData }: Props) {
   const local = usePaged(jobs, PAGE_SIZE)
   const page = server ? server.page : local.page
   const setPage = server ? server.onChange : local.setPage
@@ -41,6 +43,14 @@ export function JobList({ jobs, server }: Props) {
     [slice],
   )
 
+  if (total === 0 && noData) {
+    return (
+      <EmptyState
+        title="아직 수집된 공고가 없습니다"
+        hint="크롤링이 돌고 있으면 첫 회차가 끝나는 대로 여기에 공고가 뜹니다."
+      />
+    )
+  }
   if (total === 0) {
     return (
       <EmptyState

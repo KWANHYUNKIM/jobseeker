@@ -25,6 +25,8 @@ export function useJobsApiAvailable(): ApiState {
 interface PageState extends JobPage {
   loading: boolean
   error: string | null
+  /** 첫 응답(성공이든 실패든)을 받았는가. 공고가 0건인 DB 와 "아직 모름" 을 가른다. */
+  received: boolean
 }
 
 const EMPTY_PAGE: JobPage = { items: [], total: 0, allTotal: 0, facets: EMPTY_FACETS, engines: null }
@@ -64,6 +66,7 @@ export function useJobPage(filter: FilterState, semantic: boolean, page: number,
     ...(done?.data ?? EMPTY_PAGE),
     loading: enabled && done?.qs !== qs,
     error: done?.qs === qs ? done.error : null,
+    received: done !== null,
   }
 }
 

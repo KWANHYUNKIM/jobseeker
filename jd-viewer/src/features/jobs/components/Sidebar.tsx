@@ -1,3 +1,4 @@
+import { Children } from 'react'
 import { emptyFilter, type FilterState, type Facets } from '../utils/filter'
 import type { Site } from '../../../types'
 import { CAREER_BUCKETS } from '../../../types'
@@ -220,7 +221,7 @@ export function Sidebar({ filter, setFilter, facets, totalCount, filteredCount, 
         ))}
       </FilterGroup>
 
-      <FilterGroup title={`기술스택 (상위 ${Math.min(40, stacks.length)})`}>
+      <FilterGroup title={stacks.length ? `기술스택 (상위 ${Math.min(40, stacks.length)})` : '기술스택'}>
         {stacks.slice(0, 40).map((s) => (
           <Chip
             key={s.name}
@@ -258,7 +259,12 @@ function FilterGroup({ title, children }: { title: string; children: React.React
   return (
     <div>
       <h3 className="text-xs uppercase tracking-wider text-(--color-muted) mb-2">{title}</h3>
-      <div className="flex flex-wrap gap-1.5">{children}</div>
+      {/* 칩이 하나도 없으면(빈 DB) 제목만 덩그러니 남지 않게 한 줄 남긴다. */}
+      {Children.count(children) === 0 ? (
+        <p className="text-xs text-(--color-muted)">아직 집계된 항목이 없습니다</p>
+      ) : (
+        <div className="flex flex-wrap gap-1.5">{children}</div>
+      )}
     </div>
   )
 }
