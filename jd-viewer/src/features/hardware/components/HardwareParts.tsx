@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { CATEGORY_ORDER, SPEC_COLUMNS, fmtSpec, priceOf, tierOf, won, type Category, type HwData, type Part } from '../utils/hardware'
+import { CATEGORY_ORDER, SPEC_COLUMNS, fmtSpec, priceOf, priceSuspect, tierOf, won, type Category, type HwData, type Part } from '../utils/hardware'
 import { navigate, onLinkClick, useRoute, useSetQuery } from '../../../utils/navigation'
 import { absUrl, useSeo } from '../../../utils/seo'
 import { paths } from '../../../utils/urls'
@@ -8,7 +8,7 @@ import { GameCompare, PerfLadder, VendorBench } from './HardwareCharts'
 import { OfficialImage } from './OfficialImage'
 import { DurabilityNotes, ModelTable, SaleForms } from './HardwareModels'
 import { TIER_COLOR, TierBadge } from './HardwareView'
-import { NameGuide, PopularPick } from './HardwarePopular'
+import { NameGuide, PopularPick, SameTierCard } from './HardwarePopular'
 import { FieldNotes } from './HardwareNotes'
 
 // 부품 비교 — 전문가용.
@@ -303,40 +303,81 @@ function PartDetail({ data, part }: { data: HwData; part: Part }) {
   const def = data.categories.find((c) => c.key === part.category)
   const tier = tierOf(part, data.categories)
   const rec = data.prices[part.id]
-  const peers = data.parts
-    .filter((p) => p.category === part.category && p.id !== part.id && tierOf(p, data.categories)?.tier === tier?.tier)
-    .map((p) => ({ p, price: priceOf(p, data.prices) }))
+  // 등급 안에서 성능 1점이 몇 번째로 싼가 — 값을 아는 부품끼리
+  const ranked = data.parts
+    .filter((p) => p.category === part.category && tierOf(p, data.categories)?.tier === tier?.tier)
+    .map((p) => ({ id: p.id, v: valueOf(p, data) }))
+    .filter((x): x is { id: string; v: number } => x.v != null)
+    .sort((a, b) => a.v - b.v)
+  const rank = ranked.findIndex((x) => x.id === part.id)
+  const tone = TIER_COLOR[tier?.tier ?? ''] ?? '#9aa1a8'
+  const listTo = `${paths.hardwareParts()}?cat=${part.category}`
   return (
-    <div className="max-w-[1500px] mx-auto p-4 flex flex-col gap-4">
-      <a
-        href={`${paths.hardwareParts()}?cat=${part.category}`}
-        onClick={(e) => {
-          e.preventDefault()
-          navigate(`${paths.hardwareParts()}?cat=${part.category}`)
-        }}
-        className="text-xs text-(--color-accent) hover:underline"
-      >
-        ← {def?.name} 비교로
-      </a>
-      <header className="flex flex-wrap items-center gap-3">
-        {part.image && (
-          <a href={part.image.page} target="_blank" rel="noreferrer" title={`사진: ${part.image.credit} 공식 페이지`}>
-            <OfficialImage image={part.image} alt={part.name} className="w-28 h-20 rounded border border-(--color-border-soft)" />
-          </a>
-        )}
-        {tier && <TierBadge tier={tier.tier} />}
-        <h1 className="text-xl font-bold">{part.name}</h1>
-        <span className="text-sm text-(--color-muted)">
-          {part.maker}
-          {part.released && ` · ${part.released} 출시`}
-        </span>
+    <div className="flex flex-col">
+      <nav aria-label="경로" className="text-sm text-[#777]">
+        <a href={paths.hardware()} onClick={onLinkClick(paths.hardware())} className="hover:text-[#272727]">
+          PC 하드웨어
+        </a>
+        {' › '}
+        <a
+          href={listTo}
+          onClick={(e) => {
+            e.preventDefault()
+            navigate(listTo)
+          }}
+          className="hover:text-[#272727]"
+        >
+          부품 비교
+        </a>
+        {` › ${def?.name ?? ''}`}
+      </nav>
+
+      <header className="mt-5 flex flex-col lg:flex-row lg:items-center gap-6 rounded-[30px] bg-[#f7f9fa] px-[34px] py-[30px]">
+        <div className="flex items-center gap-[26px] min-w-0 flex-1">
+          {tier ? (
+            <span className="shrink-0 grid place-items-center w-[84px] h-[84px] rounded-[22px] text-[42px] font-bold text-white" style={{ background: tone }}>
+              {tier.tier}
+            </span>
+          ) : null}
+          <div className="min-w-0">
+            <h1 className="text-[32px] font-bold leading-[47px] tracking-[-0.6px] text-[#272727]">{part.name}</h1>
+            <div className="text-sm text-[#888]">
+              {part.maker}
+              {part.released && ` · ${part.released} 출시`}
+            </div>
+            {tier && (
+              <p className="mt-2 text-[17px] font-medium leading-[25px]" style={{ color: tone }}>
+                {tier.tier} 등급 — {tier.plain}
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="flex gap-2.5 shrink-0">
+          {[
+            ['성능 지수', String(part.perf.index)],
+            ['등급 내 가성비', rank >= 0 ? `${ranked.length}개 중 ${rank + 1}위` : '—'],
+            ['최저가', won(priceOf(part, data.prices))],
+          ].map(([k, v]) => (
+            <div key={k} className="w-[140px] h-[87px] rounded-2xl bg-white px-5 pt-4" data-nosnippet={k === '최저가' || undefined}>
+              <div className="text-[13px] text-[#777]">{k}</div>
+              <div className="mt-1 text-[22px] font-bold leading-8 text-[#272727] tabular-nums">{v}</div>
+            </div>
+          ))}
+        </div>
       </header>
-      {tier && (
-        <p className="text-sm">
-          <b>{tier.tier} 등급</b> — {tier.plain}
-        </p>
-      )}
-      {(part.category === 'gpu' || part.category === 'cpu' || part.category === 'case') && <PopularPick data={data} part={part} />}
+
+      <div className="mt-[49px] flex flex-col lg:flex-row gap-7 items-start">
+        <div className="w-full lg:flex-1 min-w-0">
+          {part.category === 'gpu' || part.category === 'cpu' || part.category === 'case' ? (
+            <PopularPick data={data} part={part} />
+          ) : null}
+        </div>
+        <aside className="w-full lg:w-[348px] shrink-0 flex flex-col gap-4">
+          <SameTierCard data={data} part={part} />
+        </aside>
+      </div>
+
+      <div className="mt-10 flex flex-col gap-4">
       {part.category === 'gpu' && (
         <div className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4 empty:hidden">
           <FieldNotes gpus={[part.id]} limit={4} title={`${part.name.replace('GeForce ', '').replace('Radeon ', '')} 를 AI 에 쓰는 사람들 이야기`} />
@@ -395,18 +436,7 @@ function PartDetail({ data, part }: { data: HwData; part: Part }) {
       )}
       <DurabilityNotes part={part} />
       {part.category === 'cpu' ? <SaleForms data={data} part={part} /> : <ModelTable data={data} part={part} />}
-      {peers.length > 0 && (
-        <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4">
-          <h2 className="text-sm font-semibold mb-2">같은 {tier?.tier} 등급</h2>
-          <div className="flex flex-wrap gap-2">
-            {peers.map(({ p, price }) => (
-              <a key={p.id} href={paths.hardwarePart(p.id)} onClick={onLinkClick(paths.hardwarePart(p.id))} className="px-2.5 py-1.5 rounded-md bg-(--color-band) text-sm hover:bg-(--color-border-soft)">
-                {p.name} <span className="text-xs text-(--color-muted)">지수 {p.perf.index} · {won(price)}</span>
-              </a>
-            ))}
-          </div>
-        </section>
-      )}
+      </div>
     </div>
   )
 }
@@ -438,7 +468,7 @@ function TierLadder({ data, cat, measure = 'index' }: { data: HwData; cat: Categ
       <ol className="mt-3.5">
         {shown.map(({ p, v, t, price }) => {
           const to = paths.hardwarePart(p.id)
-          const check = p.status === 'legacy' || price == null
+          const check = priceSuspect(p, price)
           return (
             <li key={p.id} className="border-b border-[#f1f3f5]">
               <a href={to} onClick={onLinkClick(to)} className="group flex items-center h-[51px] hover:bg-[#fafbfc]">

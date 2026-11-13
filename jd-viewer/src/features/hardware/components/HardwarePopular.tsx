@@ -4,7 +4,9 @@ import {
   namesIn,
   pickOf,
   priceOf,
+  priceSuspect,
   shopLinks,
+  tierOf,
   useGuide,
   useModels,
   variantsOf,
@@ -122,40 +124,124 @@ export function PopularPick({ data, part }: { data: HwData; part: Part }) {
     ...namesIn(part.name, guide?.names ?? [], [part.category === 'cpu' ? 'cpu' : 'gpu']),
     ...(part.category === 'gpu' ? namesIn(pick.name, guide?.names ?? [], ['product']) : []),
   ]
+  const H2 = 'text-[20px] font-bold leading-[29px] tracking-[-0.2px] text-[#272727]'
   return (
-    <section className="rounded-lg border border-(--color-accent)/40 bg-(--color-panel) p-4 flex flex-col gap-3">
-      <div className="flex flex-wrap items-baseline gap-2">
-        <h2 className="text-sm font-semibold">가장 많이 쓰는 {part.name}</h2>
-        <span className="text-xs text-(--color-muted)">{data.prices[part.id]?.day ?? ''} 다나와 인기상품순 기준 · 그날 검색에 걸린 제품 {vs.length}종</span>
-      </div>
-      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <span className="text-lg font-bold">{pick.name}</span>
-        <span className="text-base font-semibold tabular-nums" data-nosnippet>
-          {won(pick.price)}
+    <div className="flex flex-col">
+      <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+        <h2 className={H2}>가장 많이 쓰는 {part.name}</h2>
+        <span className="text-[13px] text-[#999]">
+          {data.prices[part.id]?.day ?? ''} 다나와 인기상품순 · 그날 검색에 걸린 제품 {vs.length}종
         </span>
-        <span className="text-xs text-(--color-muted)">
-          {part.category === 'case' ? '기본 팬' : '성능 지수'} {perfCell(pick, part)}
-        </span>
-        <ShopLinks v={pick} guide={guide} />
       </div>
-      <div>
-        <div className="text-xs font-semibold text-(--color-muted) mb-1">왜 많이 쓰나</div>
-        <ul className="text-sm flex flex-col gap-0.5 list-disc pl-5">
-          {why.map((w) => (
-            <li key={w}>{w}</li>
-          ))}
-        </ul>
-      </div>
-      {names.length > 0 && (
-        <div>
-          <div className="text-xs font-semibold text-(--color-muted) mb-1">이름에 붙은 말</div>
-          <NameCards data={data} notes={names} />
+      <section className="mt-[19px] rounded-[24px] border-2 border-(--color-accent) bg-white px-7 pt-[23px] pb-6">
+        <div className="flex items-start gap-4">
+          <h3 className="min-w-0 flex-1 text-[20px] font-bold leading-[29px] text-[#272727]">{pick.name}</h3>
+          {pick.pop != null && (
+            <span className="shrink-0 mt-0.5 rounded-[13px] bg-(--color-accent) px-3 text-[13px] font-bold leading-[26px] text-white">인기 {pick.pop}위</span>
+          )}
         </div>
+        <div className="mt-2 flex flex-wrap items-center gap-2.5">
+          <span className="text-[26px] font-bold leading-[37px] text-(--color-accent) tabular-nums" data-nosnippet>
+            {won(pick.price)}
+          </span>
+          <span className="rounded bg-[#f4f4f4] px-[7px] text-[13px] leading-[22px] text-[#474747]">
+            {part.category === 'case' ? '기본 팬' : '성능 지수'} {perfCell(pick, part)}
+          </span>
+        </div>
+        <div className="mt-4 flex flex-wrap gap-1.5" data-nosnippet>
+          {shopLinks(pick, guide).map((l) => (
+            <a
+              key={l.label}
+              href={l.url}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="inline-flex items-center h-8 px-[15px] rounded-2xl border border-[#ddd] bg-white text-[13px] text-[#474747] hover:border-[#272727]"
+            >
+              {l.label}
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <h2 className={'mt-[39px] ' + H2}>왜 많이 쓰나</h2>
+      <ul className="mt-4 rounded-[20px] bg-[#f7f9fa] px-[26px] py-2">
+        {why.map((w) => (
+          <li key={w} className="flex gap-2.5 border-b border-[#e8ecef] py-[13px] last:border-0 text-base leading-6 text-[#272727]">
+            <span className="shrink-0 font-bold text-(--color-accent)" aria-hidden>
+              ✓
+            </span>
+            <span>{w}</span>
+          </li>
+        ))}
+      </ul>
+
+      {names.length > 0 && (
+        <>
+          <h2 className={'mt-[39px] ' + H2}>이름에 붙은 말</h2>
+          <div className="mt-3 flex flex-col gap-3">
+            {names.map((n) => (
+              <div key={n.key} className="rounded-[20px] border border-[#e2e8ec] bg-white px-[23px] pt-6 pb-[22px]">
+                <span className="rounded bg-[#f1efff] px-[7px] text-[13px] leading-[22px] text-[#5b4fd6]">{n.token}</span>
+                <div className="mt-2 text-[17px] font-bold leading-[25px] text-[#272727]">{n.title.replace(/^.*?\s—\s(?=.)/, (m) => (m.includes(n.token) ? '' : m))}</div>
+                <p className="mt-[7px] text-[15px] leading-[21px] text-[#555]">{n.plain}</p>
+              </div>
+            ))}
+          </div>
+        </>
       )}
-      <div>
-        <div className="text-xs font-semibold text-(--color-muted) mb-1">{part.category === 'case' ? '같은 급의 다른 제품' : '같은 칩의 다른 제품'}</div>
+
+      <h2 className={'mt-[39px] ' + H2}>{part.category === 'case' ? '같은 급의 다른 제품' : '같은 칩의 다른 제품'}</h2>
+      <div className="mt-3 rounded-[20px] border border-[#e2e8ec] bg-white px-5 py-4">
         <VariantList data={data} part={part} limit={12} />
       </div>
+    </div>
+  )
+}
+
+/** 부품 상세 오른쪽 '같은 급 비교' — 이름 읽는 법이 견주는 부품과 같은 등급 부품 넷 */
+export function SameTierCard({ data, part }: { data: HwData; part: Part }) {
+  const guide = useGuide()
+  const notes = namesIn(part.name, guide?.names ?? [], [part.category === 'cpu' ? 'cpu' : 'gpu'])
+  const noted = notes.flatMap((n) => n.compare ?? [])
+  const tier = tierOf(part, data.categories)?.tier
+  const peers = data.parts.filter((p) => p.category === part.category && p.id !== part.id && !priceSuspect(p, priceOf(p, data.prices)) && tierOf(p, data.categories)?.tier === tier).sort((a, b) => b.perf.index - a.perf.index)
+  const ids = [...new Set([...noted, ...peers.map((p) => p.id)])].filter((id) => id !== part.id).slice(0, 4)
+  const ps = ids.map((id) => data.parts.find((p) => p.id === id)).filter((p): p is Part => !!p)
+  if (!ps.length) return null
+  const keys = DIFF_KEYS[part.category] ?? []
+  const fmt = (v: unknown, unit?: string) => (v == null ? null : typeof v === 'boolean' ? (v ? '있음' : '없음') : `${v}${unit ?? ''}`)
+  const source = notes.find((n) => n.compare?.length)?.sources[0]
+  return (
+    <section className="rounded-[22px] border border-[#e2e8ec] bg-white px-[23px] pt-[23px] pb-5">
+      <h3 className="text-[17px] font-bold text-[#272727]">같은 급 비교</h3>
+      <ul className="mt-3">
+        {ps.map((p) => {
+          const price = priceOf(p, data.prices)
+          const check = priceSuspect(p, price)
+          const specs = noted.includes(p.id) ? keys.map((k) => (fmt(p.specs[k.key], k.unit) ? `${k.label} ${fmt(p.specs[k.key], k.unit)}` : null)).filter(Boolean) : []
+          return (
+            <li key={p.id} className="border-b border-[#f1f3f5]">
+              <a href={paths.hardwarePart(p.id)} onClick={onLinkClick(paths.hardwarePart(p.id))} className="group flex items-start gap-3 py-3.5">
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[15px] font-bold leading-[21px] text-[#272727] group-hover:underline underline-offset-2">
+                    {p.name.replace('GeForce ', '').replace('Radeon ', '')}
+                  </span>
+                  <span className="mt-1 block text-xs text-[#888] tabular-nums">{[`지수 ${p.perf.index}`, ...specs].join(' · ')}</span>
+                </span>
+                <span className="shrink-0 flex flex-col items-end gap-0.5" data-nosnippet>
+                  <span className="text-base font-bold leading-6 text-[#272727] tabular-nums">{won(price)}</span>
+                  {check && <span className="rounded bg-[#f67979] px-[7px] text-[11px] leading-5 text-white">가격 확인 필요</span>}
+                </span>
+              </a>
+            </li>
+          )
+        })}
+      </ul>
+      {source && (
+        <a href={source.url} target="_blank" rel="noreferrer" className="mt-2.5 block text-xs text-[#999] hover:underline">
+          {source.title}
+        </a>
+      )}
     </section>
   )
 }
