@@ -237,11 +237,12 @@ export function priceOf(part: Part, prices: Record<string, PriceRec>): number | 
 }
 
 /**
- * 이 가격을 그대로 믿으면 안 되는가 — 단품 판매가 끝났거나(남은 매물은 중고·오매칭), 값이 없거나,
- * 성능 1점에 1,000원도 안 되는 값(검색이 케이블·브래킷 같은 다른 상품을 잡은 것)이면 '가격 확인 필요'.
+ * 이 가격을 그대로 믿으면 안 되는가 — 값이 없거나, 중급(지수 45, B 등급) 이상 그래픽카드인데
+ * 10만원 밑으로 잡힌 값(검색이 쿨링 팬·브래킷 같은 부속 상품을 잡은 것)이면 '가격 확인 필요'.
  */
 export function priceSuspect(part: Part, price: number | null): boolean {
-  return part.status === 'legacy' || price == null || (part.perf.index > 0 && price < part.perf.index * 1000)
+  if (price == null) return true
+  return part.category === 'gpu' && part.perf.index >= 45 && price < 100_000
 }
 
 export function won(n: number | null | undefined): string {

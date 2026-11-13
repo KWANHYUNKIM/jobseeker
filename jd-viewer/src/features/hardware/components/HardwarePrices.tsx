@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { CATEGORY_ORDER, priceMove, priceOf, tierOf, won, type Category, type HwData, type PricePoint, type PriceRec } from '../utils/hardware'
+import { CATEGORY_ORDER, priceMove, priceOf, priceSuspect, tierOf, won, type Category, type HwData, type PricePoint, type PriceRec } from '../utils/hardware'
 import { onLinkClick } from '../../../utils/navigation'
 import { absUrl, useSeo } from '../../../utils/seo'
 import { paths } from '../../../utils/urls'
@@ -101,7 +101,13 @@ export function PriceChart({ history, height = 180 }: { history: PricePoint[]; h
 
 function Spark({ rec }: { rec?: PriceRec }) {
   const h = rec?.history ?? []
-  if (h.length < 2) return <span className="text-[10px] text-(--color-faint)">기록 {h.length}일</span>
+  if (h.length < 2)
+    return (
+      <span className="inline-flex items-center text-[11.7px] text-[#999]">
+        <span className="inline-block w-20 h-0.5 bg-[#ddd]" aria-hidden />
+        기록 {h.length}일
+      </span>
+    )
   const W = 90
   const H = 24
   const vs = h.map((p) => p.min)
@@ -117,7 +123,7 @@ function Spark({ rec }: { rec?: PriceRec }) {
 
 export function MoveBadge({ rec }: { rec?: PriceRec }) {
   const m = priceMove(rec)
-  if (!m || m.days < 3) return <span className="text-[11px] text-(--color-faint)">판단 이르다</span>
+  if (!m || m.days < 3) return <span className="text-sm text-[#999]">판단 이르다</span>
   const pct = Math.round(m.pct * 10) / 10
   const [word, cls] =
     pct <= -3 ? ['싸다', 'text-(--color-accent) font-semibold'] : pct >= 3 ? ['비싸다', 'text-(--color-red-400) font-semibold'] : ['평소', 'text-(--color-muted)']
@@ -127,6 +133,11 @@ export function MoveBadge({ rec }: { rec?: PriceRec }) {
       {pct}%
     </span>
   )
+}
+
+/** 가격 원장에 쌓인 날 수 — 모든 부품의 기록 날짜를 합친 것 */
+export function priceDays(data: HwData): number {
+  return new Set(Object.values(data.prices).flatMap((r) => r.history.map((h) => h.d))).size
 }
 
 export function HardwarePrices({ data }: { data: HwData }) {
@@ -140,63 +151,79 @@ export function HardwarePrices({ data }: { data: HwData }) {
         .sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity)),
     [data, cat],
   )
-  const days = new Set(Object.values(data.prices).flatMap((r) => r.history.map((h) => h.d))).size
+  const days = priceDays(data)
+  const suspects = rows.filter((r) => priceSuspect(r.p, r.price)).length
+  const th = 'bg-[#fafafa] px-3 h-12 text-left text-sm font-bold text-[#272727] border-b border-[#e2e2e2]'
   return (
-    <div className="max-w-[1200px] mx-auto p-4 flex flex-col gap-4">
-      <header className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-        <h1 className="text-lg font-bold">PC 부품 가격 추이</h1>
-        <span className="text-xs text-(--color-muted)">
-          다나와 최저가를 하루 한 번 찍어 쌓는다 · 기록 {days}일 · 중고·병행수입·해외구매는 뺐다
-        </span>
-      </header>
-      <div className="flex flex-wrap gap-1">
+    <div className="flex flex-col">
+      <div className="flex flex-wrap gap-2">
         {CATEGORY_ORDER.map((c) => (
           <button
             key={c}
+            type="button"
+            aria-pressed={c === cat}
             onClick={() => setCat(c)}
-            className={`px-2.5 py-1 rounded-md text-sm ${c === cat ? 'bg-(--color-accent) text-(--color-on-accent) font-semibold' : 'bg-(--color-band) hover:bg-(--color-border-soft)'}`}
+            className={
+              'h-9 px-4 rounded-[18px] border text-sm font-medium tracking-[-0.3px] ' +
+              (c === cat ? 'border-(--color-accent) bg-(--color-accent) text-white' : 'border-[#d8d8d8] bg-white text-[#272727] hover:border-[#272727]')
+            }
           >
             {data.categories.find((d) => d.key === c)?.name ?? c}
           </button>
         ))}
       </div>
-      <div className="rounded-lg border border-(--color-border) bg-(--color-panel) overflow-x-auto">
-        <table className="w-full text-sm min-w-[640px]" data-nosnippet>
+      {(days < 3 || suspects > 0) && (
+        <p className="mt-[18px] rounded-[14px] bg-[#fff8e6] px-[18px] py-3.5 text-sm leading-[21px] text-[#8a6100]">
+          ⚠ {days < 3 && `기록이 아직 ${days}일이라 흐름은 판단이 일러요. `}
+          {suspects > 0 && (
+            <>
+              {days < 3 ? '또 ' : ''}10만원 미만으로 잡힌 상위 그래픽카드는 부품(쿨링 팬 등)이 섞인 값일 수 있어{' '}
+              <b className="font-bold text-(--color-accent)">가격 확인 필요</b>로 표시했어요.
+            </>
+          )}
+        </p>
+      )}
+      <div className="mt-[19px] overflow-x-auto">
+        <table className="w-full min-w-[900px] border-collapse" data-nosnippet>
           <thead>
-            <tr className="text-[11px] text-(--color-muted) text-left border-b border-(--color-border)">
-              <th className="font-normal px-3 py-2">부품</th>
-              <th className="font-normal px-3 py-2 text-right">오늘</th>
-              <th className="font-normal px-3 py-2">지난 30일 대비</th>
-              <th className="font-normal px-3 py-2">흐름</th>
-              <th className="font-normal px-3 py-2 text-right">매물</th>
+            <tr>
+              <th className={th + ' w-[85px]'}>등급</th>
+              <th className={th + ' w-[344px]'}>부품</th>
+              <th className={th + ' w-[295px]'}>오늘</th>
+              <th className={th + ' w-[190px]'}>지난 30일 대비</th>
+              <th className={th + ' w-[253px]'}>흐름</th>
+              <th className={th}>매물</th>
             </tr>
           </thead>
           <tbody>
             {rows.map(({ p, price, rec, tier }) => (
-              <tr key={p.id} className="border-t border-(--color-border-soft) hover:bg-(--color-band)">
-                <td className="px-3 py-2">
-                  <a href={paths.hardwarePart(p.id)} onClick={onLinkClick(paths.hardwarePart(p.id))} className="flex items-center gap-2 hover:underline">
-                    {tier && <TierBadge tier={tier.tier} />}
-                    <span className="font-medium">{p.name}</span>
+              <tr key={p.id} className="h-[53px] border-b border-[#e2e2e2] hover:bg-[#fafbfc]">
+                <td className="px-3">{tier && <TierBadge tier={tier.tier} size={26} />}</td>
+                <td className="px-3">
+                  <a href={paths.hardwarePart(p.id)} onClick={onLinkClick(paths.hardwarePart(p.id))} className="text-[15px] font-medium text-[#272727] hover:underline underline-offset-2">
+                    {p.name}
                   </a>
                 </td>
-                <td className="px-3 py-2 text-right font-bold tabular-nums">
-                  {won(price)}
-                  {p.price_basis === 'median' && <div className="text-[10px] font-normal text-(--color-faint)">급 가운데 값</div>}
+                <td className="px-3 whitespace-nowrap">
+                  <span className="text-[15px] font-bold text-[#272727] tabular-nums">{won(price)}</span>
+                  {priceSuspect(p, price) && price != null && (
+                    <span className="ml-[3px] rounded bg-[#f67979] px-[7px] text-[13px] leading-[22px] text-white">가격 확인 필요</span>
+                  )}
+                  {p.price_basis === 'median' && <span className="ml-1.5 text-xs text-[#999]">급 가운데 값</span>}
                 </td>
-                <td className="px-3 py-2">
+                <td className="px-3">
                   <MoveBadge rec={rec} />
                 </td>
-                <td className="px-3 py-2">
+                <td className="px-3">
                   <Spark rec={rec} />
                 </td>
-                <td className="px-3 py-2 text-right text-(--color-muted) tabular-nums">{rec?.n ?? '—'}</td>
+                <td className="px-3 text-sm text-[#474747] tabular-nums">{rec?.n != null ? `${rec.n}개` : '—'}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <p className="text-[11px] text-(--color-faint)">
+      <p className="mt-4 text-xs text-[#999]">
         가격은 다나와 통합검색에 잡힌 매물 중 부품 조건에 맞는 것의 최저가다. 급(쿨러·케이스)은 한 상품이 아니라 그 급 매물의 가운데 값이다. 상세에서 매물을 누르면 다나와 원문으로 간다.
       </p>
     </div>

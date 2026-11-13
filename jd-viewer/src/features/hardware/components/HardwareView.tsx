@@ -30,7 +30,7 @@ import { FacetPanel } from './HardwareFacets'
 import { HardwareParts } from './HardwareParts'
 import { PrebuiltPicks } from './HardwarePicks'
 import { HardwarePrebuilt } from './HardwarePrebuilt'
-import { HardwarePrices } from './HardwarePrices'
+import { HardwarePrices, priceDays } from './HardwarePrices'
 import { HardwareDatacenter } from './HardwareDatacenter'
 import { ErrorState, Loader } from '../../../components/ui'
 import { SiteFooter } from '../../../components/SiteFooter'
@@ -79,7 +79,7 @@ const TITLE: Record<Sub, string> = {
   build: 'PC 조립 · 성능 예측',
   parts: '부품 비교',
   prebuilt: '완제품 분석',
-  prices: '가격 추이',
+  prices: 'PC 부품 가격 추이',
   datacenter: 'AI 데이터센터',
 }
 
@@ -99,6 +99,11 @@ export function HardwareView({ seg }: { seg: string[] }) {
             <b className="font-bold text-(--color-accent)">성능 1점당 가격</b>으로 줄 세웠어요.
           </p>
         )}
+        {sub === 'prices' && (
+          <p className="mt-1 text-base leading-6 tracking-[-0.16px] text-[#666]">
+            다나와 최저가를 하루 한 번 찍어 쌓아요 · 기록 {priceDays(data)}일 · 중고·병행수입·해외구매는 뺐어요.
+          </p>
+        )}
         {sub === 'build' && (
           <p className="mt-1 text-base leading-6 tracking-[-0.16px] text-[#666]">
             용도와 예산을 고르면 부품 조합과 <b className="font-bold text-(--color-accent)">"그래서 무엇이 얼마나 돌아가나"</b>를 보여 드려요. 숫자는 추정이고 근거를
@@ -110,7 +115,7 @@ export function HardwareView({ seg }: { seg: string[] }) {
             <HardwareNav current={sub} />
           </div>
         )}
-      <main className={(detail ? '' : sub === 'parts' ? 'mt-[23px]' : 'mt-[34px]') + ' min-w-0'}>
+      <main className={(detail ? '' : sub === 'parts' || sub === 'prices' ? 'mt-[23px]' : 'mt-[34px]') + ' min-w-0'}>
         {sub === 'parts' ? (
           <HardwareParts data={data} partId={seg[1] ?? null} />
         ) : sub === 'prebuilt' ? (
