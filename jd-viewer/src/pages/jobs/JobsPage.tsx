@@ -68,7 +68,7 @@ export function JobsPage() {
     // 공고를 고르면 목록을 통째로 갈아끼운다. 모달로 띄우면 오른쪽 취업 가이드가
     // 들어갈 폭이 안 나오고, 좁은 칸에 겹쳐 둔 JD 와 가이드는 둘 다 안 읽힌다.
     return (
-      <div key="jobdetail" className="flex flex-1 min-h-0 jd-fade-in jd-canvas">
+      <div key="jobdetail" className="flex flex-1 min-h-0 jd-fade-in">
         <JobDetail key={b.selected.url} job={b.selected} onOpenUrl={b.openJobByUrl} />
       </div>
     )
