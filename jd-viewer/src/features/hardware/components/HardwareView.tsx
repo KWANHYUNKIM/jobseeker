@@ -88,7 +88,7 @@ export function HardwareView({ seg }: { seg: string[] }) {
   const sub: Sub = seg[0] === 'parts' ? 'parts' : seg[0] === 'prices' ? 'prices' : seg[0] === 'prebuilt' ? 'prebuilt' : seg[0] === 'datacenter' ? 'datacenter' : 'build'
   if (error) return <ErrorState title="부품 데이터를 불러오지 못했습니다" detail={error} hint={<>public/hardware/parts.json 이 있는지 확인하세요.</>} />
   if (!data) return <Loader label="부품 데이터 불러오는 중…" />
-  const detail = sub === 'parts' && !!seg[1]
+  const detail = (sub === 'parts' || sub === 'prebuilt') && !!seg[1]
   return (
     <div data-scroll className="flex-1 min-h-0 overflow-auto bg-white">
       <div className="jd-container pt-[43px] pb-[90px]">
@@ -97,6 +97,11 @@ export function HardwareView({ seg }: { seg: string[] }) {
           <p className="mt-1 text-base leading-6 tracking-[-0.16px] text-[#666]">
             그래픽카드·CPU·메모리·SSD·메인보드·파워·쿨러·케이스를 성능 지수로 등급을 매기고, 같은 등급 안에서{' '}
             <b className="font-bold text-(--color-accent)">성능 1점당 가격</b>으로 줄 세웠어요.
+          </p>
+        )}
+        {sub === 'prebuilt' && !detail && (
+          <p className="mt-1 text-base leading-6 tracking-[-0.16px] text-[#666]">
+            누가 설계해 파는 조립PC 를 부품으로 뜯어, <b className="font-bold text-(--color-accent)">부품값 합계·균형·예상 성능</b>으로 가성비를 봐요.
           </p>
         )}
         {sub === 'prices' && (
@@ -115,7 +120,7 @@ export function HardwareView({ seg }: { seg: string[] }) {
             <HardwareNav current={sub} />
           </div>
         )}
-      <main className={(detail ? '' : sub === 'parts' || sub === 'prices' ? 'mt-[23px]' : 'mt-[34px]') + ' min-w-0'}>
+      <main className={(detail ? '' : sub === 'parts' || sub === 'prices' || sub === 'prebuilt' ? 'mt-[23px]' : 'mt-[34px]') + ' min-w-0'}>
         {sub === 'parts' ? (
           <HardwareParts data={data} partId={seg[1] ?? null} />
         ) : sub === 'prebuilt' ? (

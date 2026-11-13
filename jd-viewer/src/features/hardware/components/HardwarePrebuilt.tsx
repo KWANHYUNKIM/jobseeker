@@ -62,48 +62,49 @@ function List({ data, items, day }: { data: HwData; items: Prebuilt[]; day: stri
   )
   const useDef = PERF_USES.find((u) => u.key === use)!
   const th = (k: SortKey, label: string) => (
-    <button onClick={() => setSort(k)} className={sort === k ? 'text-(--color-accent) font-semibold' : 'hover:text-(--color-text)'}>
+    <button type="button" onClick={() => setSort(k)} className={sort === k ? 'text-(--color-accent)' : 'hover:text-(--color-accent)'}>
       {label}
       {sort === k && ' ↓'}
     </button>
   )
   return (
-    <div className="max-w-[1500px] mx-auto p-4 flex flex-col gap-4">
-      <header className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-        <h1 className="text-lg font-bold">완제품 조립PC 분석</h1>
-        <span className="text-xs text-(--color-muted)">
-          누가 설계해 파는 조립PC 를 부품으로 뜯어, 부품값 합계·균형·예상 성능으로 가성비를 본다 · {day ?? '—'} 기준 {rows.length}개
-        </span>
-      </header>
-      <div className="flex flex-wrap items-center gap-2 text-sm">
-        <div className="inline-flex rounded-md border border-(--color-border) overflow-hidden" role="tablist">
+    <div className="flex flex-col gap-[18px]">
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="flex gap-2" role="tablist">
           {MODES.map(([k, label]) => (
             <button
               key={k}
               role="tab"
               aria-selected={mode === k}
               onClick={() => setMode(k)}
-              className={`px-3 py-1 ${mode === k ? 'bg-(--color-accent) text-(--color-on-accent) font-semibold' : 'bg-(--color-panel) hover:bg-(--color-band)'}`}
+              className={`h-9 px-4 rounded-[18px] border text-sm font-medium tracking-[-0.3px] ${mode === k ? 'border-(--color-accent) bg-(--color-accent) text-white' : 'border-[#d8d8d8] bg-white text-[#272727] hover:border-[#272727]'}`}
             >
               {label}
             </button>
           ))}
         </div>
+        {mode === 'perf' && <span className="mx-1.5 h-5 w-px bg-[#e2e2e2]" aria-hidden />}
         {mode === 'perf' &&
           PERF_USES.map((u) => (
             <button
               key={u.key}
               onClick={() => setUse(u.key)}
-              className={`px-2.5 py-1 rounded-md ${u.key === use ? 'bg-(--color-text) text-(--color-panel) font-semibold' : 'bg-(--color-band) hover:bg-(--color-border-soft)'}`}
+              className={`h-9 px-4 rounded-[18px] border text-sm font-medium tracking-[-0.3px] ${u.key === use ? 'border-[#272727] bg-[#272727] text-white' : 'border-[#d8d8d8] bg-white text-[#272727] hover:border-[#272727]'}`}
             >
               {u.label}
             </button>
           ))}
       </div>
       {mode === 'perf' && <PerfTop rows={perfRows} useDef={useDef} total={today.length} />}
-      <div className="flex flex-wrap items-center gap-3 text-sm">
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="이름·부품으로 찾기 (예: 5070, 9800X3D)" className="border border-(--color-border) rounded px-2 py-1 bg-(--color-panel) w-72" />
-        <span className="text-xs text-(--color-muted)">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="이름·부품으로 찾기 (예: 5070, 9800X3D)"
+          className="h-10 w-[320px] rounded-[20px] border border-[#d8d8d8] bg-white px-[18px] text-sm text-[#272727] placeholder:text-[#999] outline-none focus:border-[#272727]"
+        />
+        <span className="text-sm text-[#666]">
+          <b className="font-bold text-[#272727]">{day ?? '—'}</b> 기준 <b className="font-bold text-(--color-accent)">{rows.length}개</b> ·{' '}
           {mode === 'value'
             ? '가성비 = 예상 QHD 평균 fps 1 당 가격(낮을수록 좋다) · 원가 = 같은 날 부품 최저가 합계 · 남기는 돈 = 판매가 − 원가'
             : `성능 = ${useDef.plain} · 가격은 줄 세우는 데 쓰지 않는다(같은 성능이면 싼 쪽이 위)`}
@@ -112,28 +113,28 @@ function List({ data, items, day }: { data: HwData; items: Prebuilt[]; day: stri
       {mode === 'perf' ? (
         <PerfTable rows={perfRows} data={data} useDef={useDef} />
       ) : (
-      <div className="rounded-lg border border-(--color-border) bg-(--color-panel) overflow-x-auto">
-        <table className="w-full text-sm min-w-[1200px]" data-nosnippet>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm min-w-[1200px] border-collapse" data-nosnippet>
           <thead>
-            <tr className="text-[11px] text-(--color-muted) text-left border-b border-(--color-border)">
-              <th className="font-normal px-3 py-2">{th('value', '가성비 순위')}</th>
-              <th className="font-normal px-3 py-2">상품</th>
-              <th className="font-normal px-3 py-2">CPU · 그래픽</th>
-              <th className="font-normal px-3 py-2">메모리 · SSD</th>
-              <th className="font-normal px-3 py-2 text-right">{th('price', '가격')}</th>
-              <th className="font-normal px-3 py-2 text-right">원가(부품값)</th>
-              <th className="font-normal px-3 py-2 text-right">{th('premium', '남기는 돈')}</th>
-              <th className="font-normal px-3 py-2 text-right">{th('fps', 'QHD 예상')}</th>
-              <th className="font-normal px-3 py-2">의견</th>
-              <th className="font-normal px-3 py-2">판매처</th>
+            <tr className="text-left [&>th]:bg-[#fafafa] [&>th]:h-12 [&>th]:border-b [&>th]:border-[#e2e2e2] [&>th]:text-sm [&>th]:font-bold [&>th]:text-[#272727] [&>th]:whitespace-nowrap">
+              <th className="px-3 w-[110px]">{th('value', '가성비 순위')}</th>
+              <th className="px-3">상품</th>
+              <th className="px-3">CPU · 그래픽</th>
+              <th className="px-3">메모리 · SSD</th>
+              <th className="px-3 text-right">{th('price', '가격')}</th>
+              <th className="px-3 text-right">원가(부품값)</th>
+              <th className="px-3 text-right">{th('premium', '남기는 돈')}</th>
+              <th className="px-3 text-right">{th('fps', 'QHD 예상')}</th>
+              <th className="px-3">의견</th>
+              <th className="px-3">판매처</th>
             </tr>
           </thead>
           <tbody>
             {rows.map(({ it, a, r }) => (
-              <tr key={it.key} className="border-t border-(--color-border-soft) hover:bg-(--color-band)">
+              <tr key={it.key} className="border-b border-[#e2e2e2] hover:bg-[#fafbfc] [&>td]:py-3.5">
                 <td className="px-3 py-2 tabular-nums">{r ? <b>{r.rank}</b> : <span className="text-(--color-faint)">—</span>}{r && <span className="text-[10px] text-(--color-faint)"> / {r.of}</span>}</td>
                 <td className="px-3 py-2 max-w-80">
-                  <a href={paths.hardwarePrebuiltItem(it.key)} onClick={onLinkClick(paths.hardwarePrebuiltItem(it.key))} className="font-medium hover:underline">
+                  <a href={paths.hardwarePrebuiltItem(it.key)} onClick={onLinkClick(paths.hardwarePrebuiltItem(it.key))} className="text-[15px] font-medium text-[#272727] hover:underline underline-offset-2">
                     {it.name}
                   </a>
                   <div className="text-[10px] text-(--color-faint)">{it.source === 'naver' ? `네이버 · ${it.mall ?? ''}` : '다나와'}{it.comp?.purpose && ` · ${it.comp.purpose}`}</div>
@@ -147,7 +148,7 @@ function List({ data, items, day }: { data: HwData; items: Prebuilt[]; day: stri
                   <br />
                   {it.comp?.storage_gb ? (it.comp.storage_gb >= 1000 ? `${it.comp.storage_gb / 1000}TB` : `${it.comp.storage_gb}GB`) : '—'}
                 </td>
-                <td className="px-3 py-2 text-right font-bold tabular-nums">{won(it.price)}</td>
+                <td className="px-3 py-2 text-right text-[15px] font-bold text-[#272727] tabular-nums">{won(it.price)}</td>
                 <td className="px-3 py-2 text-right tabular-nums text-(--color-muted)">{a.sum != null ? won(a.sum) : '—'}</td>
                 <td className={`px-3 py-2 text-right tabular-nums ${a.premiumPct == null ? 'text-(--color-faint)' : a.premiumPct >= 25 ? 'text-(--color-red-400)' : a.premiumPct <= 10 ? 'text-(--color-accent) font-semibold' : ''}`}>
                   {a.premium == null ? (
@@ -174,9 +175,14 @@ function List({ data, items, day }: { data: HwData; items: Prebuilt[]; day: stri
             ))}
           </tbody>
         </table>
+        {rows.length === 0 && (
+          <p className="rounded-b-[14px] bg-[#f7f9fa] px-6 py-10 text-center text-sm text-[#666]">
+            {q ? `'${q}' 에 맞는 상품이 없어요.` : '오늘 받은 완제품이 아직 없어요 — 다음 크롤에서 채워져요.'}
+          </p>
+        )}
       </div>
       )}
-      <p className="text-[11px] text-(--color-faint)">
+      <p className="text-xs text-[#999]">
         구성은 상품 페이지의 부품 모델명만 뽑았다. 사용자 의견은 별점·리뷰 수만 싣고 글은 원문에서 본다. 부품값 합계는 같은 날 우리가 받은 부품 최저가로 다시 맞춘 값이고, 표기가 없는 칸(쿨러·SSD 제조사 등)은 가정을 상세에 적었다.
       </p>
     </div>
@@ -201,12 +207,12 @@ function Detail({ data, item, all }: { data: HwData; item: Prebuilt; all: Prebui
   const r = valueRanks(all, data).get(item.key)
   const hist = item.history.map((h) => ({ d: h.d, min: h.price, median: h.price, n: 1 }))
   return (
-    <div className="max-w-[1300px] mx-auto p-4 flex flex-col gap-4">
-      <a href={paths.hardwarePrebuilt()} onClick={onLinkClick(paths.hardwarePrebuilt())} className="text-xs text-(--color-accent) hover:underline">
+    <div className="flex flex-col gap-5">
+      <a href={paths.hardwarePrebuilt()} onClick={onLinkClick(paths.hardwarePrebuilt())} className="text-sm text-[#777] hover:text-[#272727]">
         ← 완제품 목록
       </a>
       <header className="flex flex-wrap items-baseline gap-3">
-        <h1 className="text-xl font-bold">{item.name}</h1>
+        <h1 className="text-[32px] font-bold leading-[47px] tracking-[-0.6px] text-[#272727]">{item.name}</h1>
         <a href={item.url} target="_blank" rel="noreferrer nofollow" className="text-xs text-(--color-sky-400) hover:underline">
           {item.source === 'naver' ? (item.mall ?? '네이버') : '다나와'} 판매 페이지 ↗{item.rating ? ` · ★ ${item.rating.avg.toFixed(1)} 리뷰 ${item.rating.count}건` : ' · 상품의견은 원문에서'}
         </a>
@@ -224,8 +230,8 @@ function Detail({ data, item, all }: { data: HwData; item: Prebuilt; all: Prebui
       <PerfPanel data={data} item={item} all={all} />
       {a.sum != null && <PriceSplit item={item} a={a} />}
       <div className="grid gap-4 lg:grid-cols-2">
-        <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4">
-          <h2 className="text-sm font-semibold mb-2">왜 이런 값인가</h2>
+        <section className="rounded-[22px] border border-[#e2e8ec] bg-white px-6 pt-[22px] pb-5">
+          <h2 className="mb-3 text-[17px] font-bold text-[#272727]">왜 이런 값인가</h2>
           {a.errors.length > 0 && (
             <div className="mb-2 text-sm text-(--color-red-400)">
               {a.errors.map((e) => (
@@ -249,8 +255,8 @@ function Detail({ data, item, all }: { data: HwData; item: Prebuilt; all: Prebui
           </ul>
           <p className="text-[11px] text-(--color-faint) mt-3">잘한 점·아쉬운 점은 부품값·급·전력·용량으로 계산한 규칙이다. 설계자의 의도나 사용 후기는 원문에서 확인한다.</p>
         </section>
-        <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4" data-nosnippet>
-          <h2 className="text-sm font-semibold mb-2">부품으로 뜯어 보면</h2>
+        <section className="rounded-[22px] border border-[#e2e8ec] bg-white px-6 pt-[22px] pb-5" data-nosnippet>
+          <h2 className="mb-3 text-[17px] font-bold text-[#272727]">부품으로 뜯어 보면</h2>
           <table className="w-full text-sm">
             <tbody>
               {a.lines.map((l) => {
@@ -286,8 +292,8 @@ function Detail({ data, item, all }: { data: HwData; item: Prebuilt; all: Prebui
           )}
         </section>
       </div>
-      <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4" data-nosnippet>
-        <h2 className="text-sm font-semibold mb-2">가격 추이</h2>
+      <section className="rounded-[22px] border border-[#e2e8ec] bg-white px-6 pt-[22px] pb-5" data-nosnippet>
+        <h2 className="mb-3 text-[17px] font-bold text-[#272727]">가격 추이</h2>
         <PriceChart history={hist} height={160} />
       </section>
     </div>
@@ -296,9 +302,9 @@ function Detail({ data, item, all }: { data: HwData; item: Prebuilt; all: Prebui
 
 function Stat({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="rounded-lg border border-(--color-border) bg-(--color-panel) p-3">
-      <div className="text-[11px] text-(--color-muted)">{label}</div>
-      <div className="text-xl font-bold tabular-nums">{value}</div>
+    <div className="rounded-[20px] border border-[#e2e8ec] bg-white px-[21px] pt-[18px] pb-4">
+      <div className="text-[13px] text-[#777]">{label}</div>
+      <div className="mt-1 text-[22px] font-bold leading-8 text-[#272727] tabular-nums">{value}</div>
       {sub && <div className="text-[11px] text-(--color-faint)">{sub}</div>}
     </div>
   )
@@ -314,9 +320,9 @@ function PriceSplit({ item, a }: { item: Prebuilt; a: Analysis }) {
   const margin = a.premium ?? 0
   const grey = (i: number) => `color-mix(in srgb, var(--color-muted) ${70 - (i % 2) * 25}%, var(--color-panel))`
   return (
-    <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4" data-nosnippet>
+    <section className="rounded-[22px] border border-[#e2e8ec] bg-white px-6 pt-[22px] pb-5" data-nosnippet>
       <div className="flex flex-wrap items-baseline gap-2 mb-2">
-        <h2 className="text-sm font-semibold">판매가 {won(item.price)} 는 이렇게 나뉜다</h2>
+        <h2 className="text-[17px] font-bold text-[#272727]">판매가 {won(item.price)} 는 이렇게 나뉜다</h2>
         <span className="text-xs text-(--color-muted)">{tip ?? '칸에 마우스를 올리면 부품과 값이 나온다'}</span>
       </div>
       <div className="flex h-8 w-full gap-[2px]" role="img" aria-label={`원가 ${won(a.sum)} + 남기는 돈 ${won(margin)}`}>
@@ -375,29 +381,29 @@ const stepText = (gainPct: number, extra: number) =>
 
 /** 맨 위 요약 — 성능 1위와, 1위의 90% 이상을 가장 싸게 내는 것 */
 function PerfTop({ rows, useDef, total }: { rows: PerfRow[]; useDef: UseDef; total: number }) {
-  if (!rows.length) return <div className="text-sm text-(--color-muted)">이 용도로 잴 수 있는 완제품이 없다.</div>
+  if (!rows.length) return <p className="rounded-[14px] bg-[#f7f9fa] px-6 py-8 text-center text-sm text-[#666]">이 용도로 잴 수 있는 완제품이 없어요.</p>
   const top = rows[0]
   const near = rows.filter((r) => r.p.rel >= 90).sort((x, y) => x.it.price - y.it.price)[0]
   return (
-    <section className="rounded-lg border border-(--color-accent)/40 bg-(--color-panel) p-4 flex flex-col gap-2" data-nosnippet>
-      <div className="text-xs text-(--color-muted)">
+    <section className="rounded-[26px] bg-[#272727] px-[30px] pt-[26px] pb-6 flex flex-col gap-2 text-white" data-nosnippet>
+      <div className="text-[13px] text-[#bbb]">
         {useDef.label} 성능 1위 — 잴 수 있는 {rows.length}개 중
         {total > rows.length && ` (나머지 ${total - rows.length}개는 그래픽카드·CPU 를 몰라 뺐다)`}
       </div>
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <ItemLink it={top.it} className="text-lg font-bold hover:underline" />
-        <span className="text-lg font-bold tabular-nums text-(--color-accent)">{top.p.score.display}</span>
+        <ItemLink it={top.it} className="text-[26px] font-bold leading-[38px] hover:underline" />
+        <span className="text-[26px] font-bold tabular-nums text-[#ff9a9a]">{top.p.score.display}</span>
         <span className="tabular-nums">{won(top.it.price)}</span>
       </div>
-      <p className="text-sm">
-        <span className="text-(--color-muted)">천장: </span>
+      <p className="text-[15px] text-[#ddd]">
+        <span className="text-[#999]">천장: </span>
         {top.p.score.bottleneck}
       </p>
       {near && near.it.key !== top.it.key && (
-        <p className="text-sm">
-          <span className="text-(--color-muted)">1위의 90% 이상을 가장 싸게: </span>
+        <p className="text-[15px] text-[#ddd]">
+          <span className="text-[#999]">1위의 90% 이상을 가장 싸게: </span>
           <ItemLink it={near.it} /> — {near.p.score.display}({Math.round(near.p.rel)}%) · {won(near.it.price)}
-          <span className="text-(--color-muted)"> · 1위보다 {won(top.it.price - near.it.price)} 싸다</span>
+          <span className="text-[#999]"> · 1위보다 {won(top.it.price - near.it.price)} 싸다</span>
         </p>
       )}
     </section>
@@ -414,25 +420,25 @@ function PerfBar({ rel }: { rel: number }) {
 
 function PerfTable({ rows, data, useDef }: { rows: PerfRow[]; data: HwData; useDef: UseDef }) {
   return (
-    <div className="rounded-lg border border-(--color-border) bg-(--color-panel) overflow-x-auto">
-      <table className="w-full text-sm min-w-[1100px]" data-nosnippet>
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm min-w-[1100px] border-collapse" data-nosnippet>
         <thead>
-          <tr className="text-[11px] text-(--color-muted) text-left border-b border-(--color-border)">
-            <th className="font-normal px-3 py-2">성능 순위</th>
-            <th className="font-normal px-3 py-2">상품</th>
-            <th className="font-normal px-3 py-2">CPU · 그래픽</th>
-            <th className="font-normal px-3 py-2 w-40">
+          <tr className="text-left [&>th]:bg-[#fafafa] [&>th]:h-12 [&>th]:border-b [&>th]:border-[#e2e2e2] [&>th]:text-sm [&>th]:font-bold [&>th]:text-[#272727] [&>th]:whitespace-nowrap">
+            <th className="px-3">성능 순위</th>
+            <th className="px-3">상품</th>
+            <th className="px-3">CPU · 그래픽</th>
+            <th className="px-3 w-40">
               {useDef.label} ({useDef.unit})
             </th>
-            <th className="font-normal px-3 py-2">천장 — 여기가 막는다</th>
-            <th className="font-normal px-3 py-2">한 단계 위로</th>
-            <th className="font-normal px-3 py-2 text-right">가격</th>
-            <th className="font-normal px-3 py-2">판매처</th>
+            <th className="px-3">천장 — 여기가 막는다</th>
+            <th className="px-3">한 단계 위로</th>
+            <th className="px-3 text-right">가격</th>
+            <th className="px-3">판매처</th>
           </tr>
         </thead>
         <tbody>
           {rows.map(({ it, p }) => (
-            <tr key={it.key} className="border-t border-(--color-border-soft) hover:bg-(--color-band) align-top">
+            <tr key={it.key} className="border-b border-[#e2e2e2] hover:bg-[#fafbfc] align-top [&>td]:py-3.5">
               <td className="px-3 py-2 tabular-nums">
                 <b>{p.rank}</b>
                 <span className="text-[10px] text-(--color-faint)"> / {p.of}</span>
@@ -489,9 +495,9 @@ function PerfPanel({ data, item, all }: { data: HwData; item: Prebuilt; all: Pre
   }, [all, data, item.key])
   if (per.every((x) => !x.r)) return null
   return (
-    <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4" data-nosnippet>
+    <section className="rounded-[22px] border border-[#e2e8ec] bg-white px-6 pt-[22px] pb-5" data-nosnippet>
       <div className="flex flex-wrap items-baseline gap-2 mb-2">
-        <h2 className="text-sm font-semibold">성능 — 돈보다 성능이 먼저일 때</h2>
+        <h2 className="text-[17px] font-bold text-[#272727]">성능 — 돈보다 성능이 먼저일 때</h2>
         <span className="text-xs text-(--color-muted)">가격을 빼고 용도별 성능만으로 오늘 완제품 목록에서 몇 위인가</span>
       </div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
