@@ -5,7 +5,7 @@ import { paths } from '../../utils/urls'
 /** `/trend?tech=<기술>` — 개발 트렌드. */
 export function TrendPage({ focusTech }: { focusTech: string | null }) {
   return (
-    <div key="trend" className="flex flex-1 min-h-0 jd-fade-in jd-canvas">
+    <div key="trend" className="flex flex-1 min-h-0 jd-fade-in">
       <TrendView onOpenCompany={(slug) => navigate(paths.company(slug))} focusTech={focusTech} />
     </div>
   )
