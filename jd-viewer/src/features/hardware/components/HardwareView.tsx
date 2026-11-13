@@ -92,6 +92,12 @@ export function HardwareView({ seg }: { seg: string[] }) {
     <div data-scroll className="flex-1 min-h-0 overflow-auto bg-white">
       <div className="jd-container pt-[43px] pb-[90px]">
         <h1 className="text-[28px] font-bold leading-10 tracking-[-0.6px] text-[#272727]">{TITLE[sub]}</h1>
+        {sub === 'parts' && !seg[1] && (
+          <p className="mt-1 text-base leading-6 tracking-[-0.16px] text-[#666]">
+            그래픽카드·CPU·메모리·SSD·메인보드·파워·쿨러·케이스를 성능 지수로 등급을 매기고, 같은 등급 안에서{' '}
+            <b className="font-bold text-(--color-accent)">성능 1점당 가격</b>으로 줄 세웠어요.
+          </p>
+        )}
         {sub === 'build' && (
           <p className="mt-1 text-base leading-6 tracking-[-0.16px] text-[#666]">
             용도와 예산을 고르면 부품 조합과 <b className="font-bold text-(--color-accent)">"그래서 무엇이 얼마나 돌아가나"</b>를 보여 드려요. 숫자는 추정이고 근거를
@@ -101,7 +107,7 @@ export function HardwareView({ seg }: { seg: string[] }) {
         <div className="mt-[34px]">
           <HardwareNav current={sub} />
         </div>
-      <main className="mt-[34px] min-w-0">
+      <main className={(sub === 'parts' && !seg[1] ? 'mt-[23px]' : 'mt-[34px]') + ' min-w-0'}>
         {sub === 'parts' ? (
           <HardwareParts data={data} partId={seg[1] ?? null} />
         ) : sub === 'prebuilt' ? (
@@ -576,13 +582,13 @@ function PartPicker({ cat, data, build, onChange }: { cat: Category; data: HwDat
   )
 }
 
-const TIER_COLOR: Record<string, string> = { S: '#f45757', A: '#2bb673', B: '#4f7cf0', C: '#f2a93b', D: '#999999' }
+export const TIER_COLOR: Record<string, string> = { S: '#8b5cf6', A: '#2bb673', B: '#4f7cf0', C: '#f2a93b', D: '#9aa1a8' }
 
-export function TierBadge({ tier }: { tier: string }) {
+export function TierBadge({ tier, size = 24 }: { tier: string; size?: number }) {
   return (
     <span
-      className="inline-flex items-center justify-center w-6 h-6 rounded-md text-[13px] font-bold text-white shrink-0"
-      style={{ background: TIER_COLOR[tier] ?? '#999999' }}
+      className="inline-flex items-center justify-center font-bold text-white shrink-0"
+      style={{ background: TIER_COLOR[tier] ?? '#9aa1a8', width: size, height: size, borderRadius: Math.round(size * 0.28), fontSize: size >= 30 ? 16 : 13 }}
       title={`${tier} 등급`}
     >
       {tier}

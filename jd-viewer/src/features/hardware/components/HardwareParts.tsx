@@ -2,12 +2,12 @@ import { useMemo, useState } from 'react'
 import { CATEGORY_ORDER, SPEC_COLUMNS, fmtSpec, priceOf, tierOf, won, type Category, type HwData, type Part } from '../utils/hardware'
 import { navigate, onLinkClick, useRoute, useSetQuery } from '../../../utils/navigation'
 import { absUrl, useSeo } from '../../../utils/seo'
-import { paths, TAB_SEO } from '../../../utils/urls'
+import { paths } from '../../../utils/urls'
 import { MoveBadge, NOINDEX, PriceChart } from './HardwarePrices'
 import { GameCompare, PerfLadder, VendorBench } from './HardwareCharts'
 import { OfficialImage } from './OfficialImage'
 import { DurabilityNotes, ModelTable, SaleForms } from './HardwareModels'
-import { TierBadge } from './HardwareView'
+import { TIER_COLOR, TierBadge } from './HardwareView'
 import { NameGuide, PopularPick } from './HardwarePopular'
 import { FieldNotes } from './HardwareNotes'
 
@@ -93,21 +93,22 @@ function PartTable({ data }: { data: HwData }) {
   )
 
   return (
-    <div className="max-w-[1600px] mx-auto p-4 flex flex-col gap-4">
-      <header className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-        <h1 className="text-lg font-bold">부품 비교</h1>
-        <span className="text-xs text-(--color-muted)">{TAB_SEO.hardwareParts.desc}</span>
-      </header>
-      <div className="flex flex-wrap gap-1">
+    <div className="flex flex-col">
+      <div className="flex flex-wrap gap-2">
         {CATEGORY_ORDER.map((c) => (
           <button
             key={c}
+            type="button"
+            aria-pressed={c === cat}
             onClick={() => {
               setQuery('cat', c)
               setMaker('')
               setPicked([])
             }}
-            className={`px-2.5 py-1 rounded-md text-sm ${c === cat ? 'bg-(--color-accent) text-(--color-on-accent) font-semibold' : 'bg-(--color-band) hover:bg-(--color-border-soft)'}`}
+            className={
+              'h-9 px-4 rounded-[18px] border text-sm font-medium tracking-[-0.3px] ' +
+              (c === cat ? 'border-(--color-accent) bg-(--color-accent) text-white' : 'border-[#d8d8d8] bg-white text-[#272727] hover:border-[#272727]')
+            }
           >
             {data.categories.find((d) => d.key === c)?.name ?? c}
           </button>
@@ -115,33 +116,26 @@ function PartTable({ data }: { data: HwData }) {
       </div>
 
       {def && (
-        <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4 flex flex-col gap-2">
-          <p className="text-sm">{def.why}</p>
-          <div className="grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
+        <>
+          <p className="mt-4 text-base leading-6 tracking-[-0.16px] text-[#474747]">{def.why}</p>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-[repeat(var(--n),minmax(0,1fr))]" style={{ '--n': def.tiers.length } as React.CSSProperties}>
             {def.tiers.map((t) => (
-              <div key={t.tier} className="flex items-start gap-2 text-xs">
-                <TierBadge tier={t.tier} />
-                <div>
-                  <span className="text-(--color-muted)">
-                    {def.index_label} {t.min}+{' '}
-                  </span>
-                  {t.plain}
+              <div key={t.tier} className="rounded-[20px] border border-[#e2e8ec] bg-white px-[21px] pt-[19px] pb-4">
+                <TierBadge tier={t.tier} size={32} />
+                <div className="mt-2.5 text-[15px] font-bold leading-[21px] text-[#272727]">
+                  {def.index_label} {t.min}+
                 </div>
+                <p className="mt-1 text-[13px] leading-[19px] text-[#666]">{t.plain}</p>
               </div>
             ))}
           </div>
-          <p className="text-[11px] text-(--color-faint)">
-            {def.index_label}: {def.index_basis}
-          </p>
-        </section>
+        </>
       )}
 
-      {(cat === 'gpu' || cat === 'cpu') && (
-        <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4 grid gap-6 lg:grid-cols-2">
-          <PerfLadder data={data} cat={cat} />
-          {cat === 'cpu' ? <PerfLadder data={data} cat="cpu" measure="multi" /> : <LadderHelp />}
-        </section>
-      )}
+      <TierLadder data={data} cat={cat} />
+      {cat === 'cpu' && <TierLadder data={data} cat="cpu" measure="multi" />}
+
+      <div className="mt-6 flex flex-col gap-4">
       {(cat === 'gpu' || cat === 'cpu') && <NameGuide data={data} cat={cat} />}
       <div className="flex flex-wrap items-center gap-2 text-sm">
         {makers.length > 1 && (
@@ -222,6 +216,7 @@ function PartTable({ data }: { data: HwData }) {
       </div>
 
       {picked.length >= 2 && <Compare data={data} ids={picked} cat={cat} />}
+      </div>
     </div>
   )
 }
@@ -416,19 +411,82 @@ function PartDetail({ data, part }: { data: HwData; part: Part }) {
   )
 }
 
-function LadderHelp() {
+// ── 성능 사다리 카드(Penpot 28) ─────────────────────────────────────────
+// 줄마다 등급 · 이름 · 등급 색 막대(안에 지수) · 오늘 최저가 · 가격 꼬리표 · 상세로. 처음엔 12줄,
+// 아래 검은 단추로 전부 편다. 단품 판매가 끝난 칩은 매물이 남은 중고·오매칭 값이라 '가격 확인 필요'.
+const LADDER_FIRST = 12
+
+function TierLadder({ data, cat, measure = 'index' }: { data: HwData; cat: Category; measure?: 'index' | 'multi' }) {
+  const [all, setAll] = useState(false)
+  const def = data.categories.find((c) => c.key === cat)
+  const rows = data.parts
+    .filter((p) => p.category === cat && (measure === 'index' || p.perf.multi != null))
+    .map((p) => ({ p, v: measure === 'multi' ? (p.perf.multi ?? 0) : p.perf.index, t: tierOf(p, data.categories)?.tier, price: priceOf(p, data.prices) }))
+    .sort((a, b) => b.v - a.v)
+  if (rows.length === 0) return null
+  const max = Math.max(...rows.map((r) => r.v), 1)
+  const shown = all ? rows : rows.slice(0, LADDER_FIRST)
+  const label = measure === 'multi' ? '멀티 지수' : def?.index_label
   return (
-    <div className="text-sm text-(--color-muted) flex flex-col gap-2 justify-center">
-      <p>
-        <b className="text-(--color-text)">읽는 법</b> — 막대 길이가 성능 지수다. RTX 4090 을 100 으로 두고 QHD 게임에서 몇 % 나오나를 잰 값이라, 50 이면
-        4090 의 절반쯤 프레임이 나온다.
-      </p>
-      <p>막대 색이 진할수록 높은 등급이다. 오른쪽 숫자는 오늘 최저가 — 막대가 비슷한데 값이 크게 다르면 싼 쪽이 가성비다.</p>
-      <p>막대를 누르면 그 카드의 게임별 예상 fps·제조사 공개 측정·제품별 사진과 스펙으로 간다.</p>
-      <p>
-        줄 끝의 <b className="text-(--color-text)">▾</b> 를 누르면 같은 칩을 얹은 제품들(MSI·GALAX·ZOTAC…)이 다나와 인기순으로 펼쳐진다 — 제품마다
-        성능 지수와 최저가, 다나와·네이버쇼핑·쿠팡 링크가 붙는다. 맨 위 '대표' 가 가장 많이 팔리는 제품이다.
-      </p>
-    </div>
+    <section className="mt-6 rounded-[30px] border border-[#e2e8ec] bg-white px-[31px] pt-[26px] pb-[29px]">
+      <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+        <h2 className="text-[20px] font-bold leading-[29px] tracking-[-0.2px] text-[#272727]">
+          성능 사다리 — {def?.name} {label}
+        </h2>
+        <span className="ml-auto text-[13px] text-[#999]">{measure === 'multi' ? '9950X = 100 · 멀티스레드 상대 성능' : def?.index_basis}</span>
+      </div>
+      <ol className="mt-3.5">
+        {shown.map(({ p, v, t, price }) => {
+          const to = paths.hardwarePart(p.id)
+          const check = p.status === 'legacy' || price == null
+          return (
+            <li key={p.id} className="border-b border-[#f1f3f5]">
+              <a href={to} onClick={onLinkClick(to)} className="group flex items-center h-[51px] hover:bg-[#fafbfc]">
+                {t ? <TierBadge tier={t} size={26} /> : <span className="w-[26px] shrink-0" />}
+                <span className="ml-3.5 w-[184px] shrink-0 truncate text-base font-bold text-[#272727] group-hover:underline underline-offset-2">
+                  {p.name.replace('GeForce ', '').replace('Radeon ', '')}
+                </span>
+                <span className="relative flex-1 min-w-0 h-[22px] rounded-md bg-[#f4f5f7]">
+                  <span
+                    className="absolute inset-y-0 left-0 flex items-center rounded-md pl-2.5 text-[13px] font-bold text-white tabular-nums"
+                    style={{ width: `${Math.max((v / max) * 100, 4)}%`, background: TIER_COLOR[t ?? ''] ?? '#9aa1a8' }}
+                  >
+                    {v}
+                  </span>
+                </span>
+                <span className="w-[115px] shrink-0 text-right text-base font-bold text-[#272727] tabular-nums" data-nosnippet>
+                  {won(price)}
+                </span>
+                <span
+                  className={
+                    'ml-[13px] w-[100px] shrink-0 rounded text-center text-[13px] leading-[22px] tracking-[-0.13px] ' +
+                    (check ? 'bg-[#f67979] text-white' : 'bg-[#f4f4f4] text-[#474747]')
+                  }
+                  data-nosnippet
+                >
+                  {check ? '가격 확인 필요' : '최저가'}
+                </span>
+                <svg width="8" height="10" viewBox="0 0 8 10" fill="none" stroke="#bbb" strokeWidth="1.5" strokeLinecap="round" aria-hidden className="ml-3.5 shrink-0">
+                  <path d="M2.5 1.5 6 5l-3.5 3.5" />
+                </svg>
+              </a>
+            </li>
+          )
+        })}
+      </ol>
+      {rows.length > LADDER_FIRST && (
+        <button
+          type="button"
+          onClick={() => setAll((x) => !x)}
+          aria-expanded={all}
+          className="mt-[22px] w-full h-11 rounded-[22px] bg-[#272727] text-base font-medium text-white hover:bg-black inline-flex items-center justify-center gap-2"
+        >
+          {all ? '접기' : `${def?.name} 전체 보기 (${rows.length}종)`}
+          <svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" aria-hidden className={all ? 'rotate-180' : ''}>
+            <path d="M1 1l4 4 4-4" />
+          </svg>
+        </button>
+      )}
+    </section>
   )
 }
