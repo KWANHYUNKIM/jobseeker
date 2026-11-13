@@ -58,7 +58,7 @@ export function TrendView({
           ) : mode === 'learn' ? (
             '기술을 고르면 함께 쓰는 기술 확장 추천과 학습 커리큘럼을 보여 드려요.'
           ) : (
-            '우대사항이 요구하는 것 → 읽을 기술 블로그 글 + 돈 주고 볼 만한 강의'
+            '우대사항이 요구하는 것 → 읽을 기술 블로그 글 + 돈 주고 볼 만한 강의로 이어 드려요.'
           )}
         </p>
 
@@ -80,9 +80,7 @@ export function TrendView({
 
         <div className="mt-[22px]">
       {mode === 'paths' ? (
-        <Framed>
-          <LearningView />
-        </Framed>
+        <LearningView />
       ) : mode === 'learn' ? (
         <ExpansionView onOpenCompany={onOpenCompany} focusTech={focusTech} />
       ) : mode === 'trend' ? (
@@ -111,10 +109,6 @@ export function TrendView({
   )
 }
 
-/** 직군 분석 밖의 세 보기는 안쪽에서 스크롤하는 두 칸짜리라 높이를 정한 카드에 담는다. */
-function Framed({ children }: { children: React.ReactNode }) {
-  return <div className="relative flex h-[780px] rounded-[30px] border border-[#e2e8ec] overflow-hidden">{children}</div>
-}
 
 function ModeBtn({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
