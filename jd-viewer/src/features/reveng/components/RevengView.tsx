@@ -7,7 +7,9 @@ import { CompanyTeardown } from './CompanyTeardown'
 import { goBack, onLinkClick } from '../../../utils/navigation'
 import { paths } from '../../../utils/urls'
 import { absUrl, clip, useSeo } from '../../../utils/seo'
-import { Loader, ErrorState, EmptyState, Pagination, SearchInput, hits } from '../../../components/ui'
+import { Loader, ErrorState, EmptyState, hits } from '../../../components/ui'
+import { Pager } from '../../../components/Pager'
+import { SiteFooter } from '../../../components/SiteFooter'
 
 // 카드 3열 × 4줄. 회사가 계속 쌓이는 탭이라 한 화면에 다 밀어 넣으면 곧 통 스크롤이 된다.
 
@@ -28,6 +30,7 @@ export function RevengView({ seg = [] }: { seg?: string[] }) {
   const [country, setCountry] = useState<string | null>(null)
   const [category, setCategory] = useState<string | null>(null)
   const [query, setQuery] = useState('')
+  const [sort, setSort] = useState<'recent' | 'name'>('recent')
   // 무엇을 보고 있는지는 주소가 정한다. 회사 하나하나가 공유·색인 가능한 페이지다.
   const slug = seg[0] === 'docs' ? null : (seg[0] ?? null)
   const docSlug = seg[0] === 'docs' ? (seg[1] ?? null) : null
@@ -50,8 +53,10 @@ export function RevengView({ seg = [] }: { seg?: string[] }) {
           // 회사 이름만으로는 '메시징을 파는 곳' 같은 질문에 답할 수 없다.
           // 한 줄 요약과 분류까지 걸어야 주제로 찾는 것이 된다.
           hits(query, c.name, c.name_en, c.one_liner, c.category, c.slug),
+      ).sort((a, b) =>
+        sort === 'name' ? (a.name_en || a.name).localeCompare(b.name_en || b.name) : a.updated_at < b.updated_at ? 1 : a.updated_at > b.updated_at ? -1 : 0,
       ),
-    [companies, country, category, query],
+    [companies, country, category, query, sort],
   )
   // 훅이라 아래의 조기 반환들보다 위에 있어야 한다(호출 순서가 렌더마다 같아야 한다).
   const paged = usePaged(shown, PAGE_SIZE)
@@ -96,134 +101,189 @@ export function RevengView({ seg = [] }: { seg?: string[] }) {
       />
     )
 
+  const done = companies.filter((c) => c.status === 'done').length
+  const countOf = (pick: (c: IndexEntry) => string) =>
+    companies.reduce<Record<string, number>>((m, c) => ((m[pick(c)] = (m[pick(c)] ?? 0) + 1), m), {})
+  const byCountry = countOf((c) => c.country)
+  const byCategory = countOf((c) => c.category)
+  const countryLabel = (k: string) => data?.countries?.[k] ?? k
+  // 칩은 두 곳 이상인 나라·분야만 — 한 곳짜리까지 늘어놓으면 줄이 넘쳐 고르기가 더 어렵다(검색으로 찾으면 된다).
+  // 이번 달 깊게 판 회사 — 다 판(완료) 회사 가운데 가장 최근에 갱신된 셋
+  const recent = [...companies].filter((c) => c.status === 'done').sort((a, b) => (a.updated_at < b.updated_at ? 1 : -1)).slice(0, 3)
+
   return (
-    <div data-scroll className="flex flex-col flex-1 min-h-0 min-w-0 overflow-y-auto jd-panel">
-      <header className="px-4 py-3 border-b border-(--color-border) bg-(--color-panel)/60">
-        <h2 className="text-base font-semibold text-(--color-text)"><span className="jd-head jd-head-lg">기술 역설계</span></h2>
-        <p className="text-xs text-(--color-muted) mt-0.5">
-          비즈니스 모델 → 도메인 → 기능 구현 → 시스템 연결. 공개 자료만으로 재구성하고,
-          회사가 직접 말한 것과 추정한 것을 구분해 표시합니다.
-          {data?.updated_at && <span className="ml-1">· 갱신 {data.updated_at}</span>}
+    <div data-scroll className="flex-1 min-h-0 overflow-auto bg-white">
+      <div className="jd-container pt-[43px] pb-[90px]">
+        <h1 className="text-[28px] font-bold leading-10 tracking-[-0.6px] text-[#272727]">기술 역설계</h1>
+        <p className="mt-1 text-base leading-6 tracking-[-0.16px] text-[#666]">
+          비즈니스 모델 → 도메인 → 기능 구현 → 시스템 연결. 공개 자료만으로 재구성하고,{' '}
+          <b className="font-bold text-(--color-accent)">회사가 직접 말한 것과 추정한 것을 구분</b>해 표시해요.
         </p>
-      </header>
 
-      {companies.length === 0 ? (
-        <EmptyState
-          title="아직 공개된 회사가 없습니다"
-          hint={
-            <>
-              엔진이 사이클을 돌면 여기에 쌓입니다. 대기열:{' '}
-              <code className="text-(--color-text)">engine/state/QUEUE.md</code>
-            </>
-          }
-        />
-      ) : (
-        <>
-          <div className="px-4 pt-3">
-            <SearchInput
-              value={query}
-              onChange={setQuery}
-              placeholder="회사·한 줄 요약·분류 검색"
-              className="w-full sm:w-96"
-            />
-          </div>
-          <div className="flex flex-wrap items-center gap-1.5 px-4 py-2 border-b border-(--color-border)">
-            <FilterChip active={!country && !category} onClick={() => { setCountry(null); setCategory(null) }}>
-              전체 {companies.length}
-            </FilterChip>
-            <span className="w-px h-4 bg-(--color-border) mx-1" />
-            {countries.map((k) => (
-              <FilterChip key={k} active={country === k} onClick={() => setCountry(country === k ? null : k)}>
-                {data?.countries?.[k] ?? k}
+        {companies.length === 0 ? (
+          <EmptyState
+            title="아직 공개된 회사가 없습니다"
+            hint={
+              <>
+                엔진이 사이클을 돌면 여기에 쌓입니다. 대기열: <code className="text-(--color-text)">engine/state/QUEUE.md</code>
+              </>
+            }
+          />
+        ) : (
+          <>
+            <div className="mt-[27px] grid grid-cols-2 lg:grid-cols-4 gap-[14px]">
+              <Stat label="분석한 회사" value={`${companies.length}곳`} accent />
+              <Stat label="분석 완료" value={`${done}곳`} />
+              <Stat label="나라" value={`${countries.length}개`} />
+              <Stat label="갱신" value={data?.updated_at ?? '-'} />
+            </div>
+
+            <form role="search" onSubmit={(e) => e.preventDefault()} className="mt-[26px] flex gap-2.5">
+              <label className="flex-1 min-w-0 flex items-center gap-2.5 h-[52px] rounded-[26px] border border-[#c4c4c4] pl-[23px] pr-5 focus-within:border-[#272727]">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#272727" strokeWidth="2" aria-hidden className="shrink-0">
+                  <circle cx="8.5" cy="8.5" r="5.5" />
+                  <path d="M12.5 12.5 16 16" strokeLinecap="round" />
+                </svg>
+                <input
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="회사·서비스·기술로 찾아보세요"
+                  aria-label="회사 검색"
+                  className="flex-1 min-w-0 bg-transparent text-[15px] tracking-[-0.16px] text-[#272727] placeholder:text-[#999] outline-none"
+                />
+              </label>
+              <button type="submit" className="shrink-0 w-[110px] h-[52px] rounded-[26px] border-2 border-(--color-accent) text-base font-bold text-(--color-accent) hover:bg-(--color-accent-weak)">
+                검색
+              </button>
+            </form>
+
+            <ChipRow label="나라">
+              <FilterChip active={!country} count={companies.length} onClick={() => setCountry(null)}>
+                전체
               </FilterChip>
-            ))}
-            <span className="w-px h-4 bg-(--color-border) mx-1" />
-            {categories.map((k) => (
-              <FilterChip key={k} active={category === k} onClick={() => setCategory(category === k ? null : k)}>
-                {k}
+              {[...countries].filter((k) => (byCountry[k] ?? 0) > 1 || k === country).sort((a, b) => (byCountry[b] ?? 0) - (byCountry[a] ?? 0)).map((k) => (
+                <FilterChip key={k} active={country === k} count={byCountry[k] ?? 0} onClick={() => setCountry(country === k ? null : k)}>
+                  {countryLabel(k)}
+                </FilterChip>
+              ))}
+            </ChipRow>
+            <ChipRow label="분야">
+              <FilterChip active={!category} onClick={() => setCategory(null)}>
+                전체
               </FilterChip>
-            ))}
-          </div>
+              {[...categories].filter((k) => (byCategory[k] ?? 0) > 1 || k === category).sort((a, b) => (byCategory[b] ?? 0) - (byCategory[a] ?? 0)).map((k) => (
+                <FilterChip key={k} active={category === k} count={byCategory[k] ?? 0} onClick={() => setCategory(category === k ? null : k)}>
+                  {k}
+                </FilterChip>
+              ))}
+            </ChipRow>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 p-4">
-            {paged.slice.map((c) => (
-              <CompanyCard key={c.slug} c={c} countryLabel={data?.countries?.[c.country] ?? c.country} />
-            ))}
-          </div>
-          {shown.length === 0 ? (
-            <p className="px-4 pb-4 text-sm text-(--color-muted)">조건에 맞는 회사가 없습니다.</p>
-          ) : (
-            // 아래에 비교 문서·도메인 목록이 이어지므로 바닥에 고정하지 않는다 —
-            // 고정하면 그 절들 위에 계속 떠 있게 된다.
-            <Pagination
-              page={paged.page}
-              totalPages={paged.totalPages}
-              total={shown.length}
-              pageSize={PAGE_SIZE}
-              unit="곳"
-              sticky={false}
-              onChange={paged.setPage}
-            />
-          )}
+            {recent.length > 0 && (
+              <section className="mt-[47px]">
+                <h2 className="text-[22px] font-bold leading-8 tracking-[-0.22px] text-[#272727]">
+                  이번 달 <span className="font-black text-(--color-accent)">깊게 판</span> 회사
+                </h2>
+                <div className="mt-5 grid md:grid-cols-3 gap-4">
+                  {recent.map((c, i) => (
+                    <FeatureCard key={c.slug} c={c} bg={FEATURE_BG[i % 3]} countryLabel={countryLabel(c.country)} />
+                  ))}
+                </div>
+              </section>
+            )}
 
-          {domainDocs && domainDocs.docs.length > 0 && (
-            <section className="px-4 pb-4">
-              <h3 className="text-sm font-semibold text-(--color-text) mb-2">
-                도메인 비교{' '}
-                <span className="text-xs font-normal text-(--color-muted)">
-                  회사 페이지가 한 회사를 세로로 읽는다면, 여기는 한 문제를 가로로 읽는다
-                </span>
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {domainDocs.docs.map((doc) => (
-                  <a
-                    key={doc.slug}
-                    href={paths.revengDoc(doc.slug)}
-                    onClick={onLinkClick(paths.revengDoc(doc.slug))}
-                    className="block text-left rounded-lg border border-(--color-border) bg-(--color-panel) p-3 hover:border-(--color-accent) transition-colors"
+            <section className="mt-[58px]">
+              <div className="flex items-center justify-between pb-4 border-b-2 border-[#272727]">
+                <h2 className="text-[22px] font-bold leading-8 tracking-[-0.22px] text-[#272727]">전체 회사</h2>
+                <label className="relative inline-flex items-center h-9 rounded-md border border-[#d8d8d8] bg-white">
+                  <select
+                    aria-label="정렬"
+                    value={sort}
+                    onChange={(e) => setSort(e.target.value as 'recent' | 'name')}
+                    className="appearance-none h-full bg-transparent pl-[15px] pr-[33px] text-sm tracking-[-0.16px] text-[#272727] outline-none cursor-pointer"
                   >
-                    <div className="text-sm font-medium text-(--color-text)">{doc.title}</div>
-                    {doc.question && (
-                      <p className="text-xs text-(--color-muted) mt-1 leading-relaxed">{doc.question}</p>
+                    <option value="recent">최근 갱신순</option>
+                    <option value="name">이름순</option>
+                  </select>
+                  <svg className="pointer-events-none absolute right-[14px]" width="10" height="8" viewBox="0 0 10 8" fill="none" stroke="#272727" strokeWidth="1.5" strokeLinecap="round" aria-hidden>
+                    <path d="M1.5 2.5 5 6l3.5-3.5" />
+                  </svg>
+                </label>
+              </div>
+              <div data-reveng-top className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 scroll-mt-4">
+                {paged.slice.map((c) => (
+                  <CompanyCard key={c.slug} c={c} countryLabel={countryLabel(c.country)} />
+                ))}
+              </div>
+              {shown.length === 0 ? (
+                <p className="py-12 text-center text-sm text-[#999]">조건에 맞는 회사가 없어요.</p>
+              ) : (
+                <Pager page={paged.page} totalPages={paged.totalPages} onChange={paged.setPage} scrollTo="[data-reveng-top]" />
+              )}
+            </section>
+
+            <section className="rounded-[30px] border border-[#e2e8ec] px-[35px] pt-[31px] pb-[31px]">
+              <h2 className="text-xl font-bold leading-[29px] tracking-[-0.16px] text-[#272727]">이렇게 읽어요</h2>
+              <ol className="mt-5 flex flex-col md:flex-row md:items-center gap-3">
+                {(
+                  [
+                    ['비즈니스 모델', '누구에게 무엇을 팔아 돈을 버는가'],
+                    ['도메인', '그 사업이 다루는 데이터와 규칙'],
+                    ['기능 구현', '핵심 기능 3개를 골라 구현을 재구성'],
+                    ['시스템 연결', '기능들이 어떤 구조로 이어지는가'],
+                  ] as const
+                ).map(([t, d], i) => (
+                  <li key={t} className="contents">
+                    {i > 0 && (
+                      <span aria-hidden className="hidden md:block text-xl text-[#c4c4c4]">
+                        →
+                      </span>
                     )}
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {doc.features.map((f) => (
-                        <span
-                          key={f}
-                          className="text-xs px-1.5 py-0.5 rounded bg-(--color-bg) border border-(--color-border) text-(--color-muted)"
-                        >
-                          {f}
-                        </span>
-                      ))}
+                    <div className="flex-1 min-h-[113px] rounded-[18px] bg-[#f7f9fa] px-5 pt-[21px] pb-4">
+                      <div className="text-sm font-bold text-(--color-accent)">{i + 1}</div>
+                      <div className="mt-1 text-[17px] font-bold leading-[25px] text-[#272727]">{t}</div>
+                      <div className="mt-1 text-sm text-[#666]">{d}</div>
                     </div>
-                  </a>
+                  </li>
                 ))}
+              </ol>
+              <div className="mt-[18px] flex flex-wrap gap-2">
+                <span className="rounded bg-[#eaf8f0] px-[7px] text-[13px] leading-[22px] text-[#1e9e5a]">회사가 직접 말한 것</span>
+                <span className="rounded bg-[#f1efff] px-[7px] text-[13px] leading-[22px] text-[#5b4fd6]">공개 자료로 추정한 것</span>
               </div>
             </section>
-          )}
 
-          {data && data.domains.length > 0 && (
-            <section className="px-4 pb-6">
-              <h3 className="text-sm font-semibold text-(--color-text) mb-2">
-                지금까지 나온 도메인{' '}
-                <span className="text-xs font-normal text-(--color-muted)">
-                  비교 문서가 아직 없는 축은 여기서 후보로 쌓인다
-                </span>
-              </h3>
-              <div className="flex flex-wrap gap-1.5">
-                {data.domains.map((d) => (
-                  <span
-                    key={d}
-                    className="px-2 py-0.5 rounded border border-(--color-border) text-xs text-(--color-muted)"
-                  >
-                    {d}
-                  </span>
-                ))}
-              </div>
-            </section>
-          )}
-        </>
-      )}
+            {domainDocs && domainDocs.docs.length > 0 && (
+              <section className="mt-[47px]">
+                <h2 className="text-[22px] font-bold leading-8 tracking-[-0.22px] text-[#272727]">
+                  도메인 비교 <span className="ml-2 text-sm font-normal text-[#999]">회사 페이지가 한 회사를 세로로 읽는다면, 여기는 한 문제를 가로로 읽어요</span>
+                </h2>
+                <div className="mt-5 grid sm:grid-cols-2 gap-4">
+                  {domainDocs.docs.map((doc) => (
+                    <a
+                      key={doc.slug}
+                      href={paths.revengDoc(doc.slug)}
+                      onClick={onLinkClick(paths.revengDoc(doc.slug))}
+                      className="block rounded-[24px] border border-[#e2e8ec] px-6 py-5 hover:border-[#999]"
+                    >
+                      <div className="text-[17px] font-bold text-[#272727]">{doc.title}</div>
+                      {doc.question && <p className="mt-1.5 text-sm leading-relaxed text-[#666]">{doc.question}</p>}
+                      <div className="mt-3 flex flex-wrap gap-1.5">
+                        {doc.features.map((f) => (
+                          <span key={f} className="rounded bg-[#f4f4f4] px-[7px] text-[13px] leading-[22px] text-[#474747]">
+                            {f}
+                          </span>
+                        ))}
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </section>
+            )}
+          </>
+        )}
+      </div>
+      <SiteFooter updated={data?.updated_at} sources="각 사 공개 자료(엔지니어링 블로그·발표·문서)" />
     </div>
   )
 }
@@ -304,69 +364,109 @@ export function CompanyLogo({
   )
 }
 
-// 카드는 버튼이 아니라 링크다 — 회사마다 주소가 있어야 공유도 되고 색인도 된다.
-function CompanyCard({ c, countryLabel }: { c: IndexEntry; countryLabel: string }) {
+const FEATURE_BG = ['#fff1e8', '#eef3ff', '#eaf7f0']
+
+/** 카드 머리 — 영문 이름을 크게, 다르면 원래 이름을 작게(데브시스터즈 · Devsisters). */
+const titleOf = (c: IndexEntry) => c.name_en || c.name
+const subOf = (c: IndexEntry) => (c.name_en && c.name_en !== c.name ? c.name : '')
+
+function StatusPill({ done }: { done: boolean }) {
+  return (
+    <span
+      className={'shrink-0 rounded px-[7px] text-[13px] leading-[22px] ' + (done ? 'bg-[#eaf8f0] text-[#1e9e5a]' : 'bg-[#eef4ff] text-[#3d6ae0]')}
+      title={done ? '도메인이 모두 채워짐' : '아직 파는 중'}
+    >
+      {done ? '완료' : '진행 중'}
+    </span>
+  )
+}
+
+function Stat({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+  return (
+    <div className={'h-[108px] rounded-[20px] border px-[25px] pt-[21px] ' + (accent ? 'bg-(--color-accent-weak) border-[#ffd5d5]' : 'border-[#e2e8ec]')}>
+      <div className="text-sm text-[#777]">{label}</div>
+      <div className={'mt-1 text-[28px] font-bold leading-10 tracking-[-0.16px] tabular-nums ' + (accent ? 'text-(--color-accent)' : 'text-[#272727]')}>{value}</div>
+    </div>
+  )
+}
+
+function ChipRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="mt-4 flex items-start gap-[28px]">
+      <span className="shrink-0 pt-[7px] text-[15px] font-bold text-[#272727]">{label}</span>
+      <div className="flex flex-wrap gap-2">{children}</div>
+    </div>
+  )
+}
+
+/** 이번 달 깊게 판 회사 — 색 바탕 큰 카드. */
+function FeatureCard({ c, bg, countryLabel }: { c: IndexEntry; bg: string; countryLabel: string }) {
   const to = paths.revengCompany(c.slug)
   return (
-    <a
-      href={to}
-      onClick={onLinkClick(to)}
-      className="block text-left rounded-lg border border-(--color-border) bg-(--color-panel) p-3 hover:border-(--color-accent) transition-colors"
-    >
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <CompanyLogo domain={c.domain} name={c.name} />
-          <div className="min-w-0">
-            <div className="font-semibold text-(--color-text) truncate">{c.name}</div>
-            <div className="text-xs text-(--color-muted) truncate">{c.name_en}</div>
-          </div>
-        </div>
-        <span
-          className={
-            'shrink-0 px-1.5 py-0.5 rounded text-xs border ' +
-            (c.status === 'done'
-              ? 'border-(--color-accent)/40 text-(--color-accent)'
-              : 'border-(--color-border) text-(--color-muted)')
-          }
-          title={c.status === 'done' ? '도메인이 모두 채워짐' : '아직 파는 중'}
-        >
-          {c.status === 'done' ? '완료' : '진행 중'}
+    <a href={to} onClick={onLinkClick(to)} className="home-press flex flex-col h-[280px] rounded-[26px] px-7 pt-7 pb-6" style={{ background: bg }}>
+      <span className="flex items-start gap-[14px]">
+        <span className="grid place-items-center w-14 h-14 rounded-[14px] bg-white overflow-hidden shrink-0">
+          <CompanyLogo domain={c.domain} name={c.name} size={56} />
         </span>
-      </div>
-      <p className="text-xs text-(--color-muted) mt-2 line-clamp-2">{c.one_liner}</p>
-      <div className="flex items-center gap-1.5 mt-2.5 text-xs text-(--color-muted)">
-        <span className="px-1.5 py-0.5 rounded bg-(--color-bg) border border-(--color-border)">
-          {countryLabel}
+        <span className="min-w-0 flex-1 pt-[3px]">
+          <span className="block text-xl font-bold leading-[29px] text-[#272727] truncate">{titleOf(c)}</span>
+          <span className="block text-sm text-[#666]">
+            {countryLabel} · {c.category}
+          </span>
         </span>
-        <span className="px-1.5 py-0.5 rounded bg-(--color-bg) border border-(--color-border)">
-          {c.category}
+        <span className="mt-4">
+          <StatusPill done={c.status === 'done'} />
         </span>
-        <span className="ml-auto tabular-nums">기능 {c.features_done}</span>
-      </div>
+      </span>
+      <span className="mt-5 line-clamp-3 text-base leading-[25px] tracking-[-0.16px] text-[#272727]">{c.one_liner}</span>
+      <span className="mt-auto flex justify-between text-[13px] text-[#777] tabular-nums">
+        <span>기능 {c.features_done}개 분석</span>
+        <span>{c.updated_at}</span>
+      </span>
     </a>
   )
 }
 
-function FilterChip({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean
-  onClick: () => void
-  children: React.ReactNode
-}) {
+// 카드는 버튼이 아니라 링크다 — 회사마다 주소가 있어야 공유도 되고 색인도 된다.
+function CompanyCard({ c, countryLabel }: { c: IndexEntry; countryLabel: string }) {
+  const to = paths.revengCompany(c.slug)
+  return (
+    <a href={to} onClick={onLinkClick(to)} className="block h-[210px] rounded-3xl border border-[#e2e8ec] bg-white px-[25px] pt-[23px] hover:border-[#999] transition-colors">
+      <div className="flex items-start gap-3">
+        <span className="grid place-items-center w-12 h-12 rounded-xl overflow-hidden shrink-0">
+          <CompanyLogo domain={c.domain} name={c.name} size={48} />
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-baseline gap-1.5 min-w-0">
+            <span className="text-[17px] font-bold leading-[25px] text-[#272727] truncate">{titleOf(c)}</span>
+            {subOf(c) && <span className="text-xs text-[#999] truncate">{subOf(c)}</span>}
+          </div>
+          <div className="mt-0.5 text-[13px] text-[#777]">
+            {countryLabel} · {c.category} · 기능 {c.features_done}
+          </div>
+        </div>
+        <span className="mt-[13px]">
+          <StatusPill done={c.status === 'done'} />
+        </span>
+      </div>
+      <p className="mt-[19px] line-clamp-3 text-sm leading-[22px] tracking-[-0.16px] text-[#474747]">{c.one_liner}</p>
+    </a>
+  )
+}
+
+function FilterChip({ active, count, onClick, children }: { active: boolean; count?: number; onClick: () => void; children: React.ReactNode }) {
   return (
     <button
+      type="button"
+      aria-pressed={active}
       onClick={onClick}
       className={
-        'px-2 py-0.5 rounded text-xs border transition-colors ' +
-        (active
-          ? 'border-(--color-accent) text-(--color-accent)'
-          : 'border-(--color-border) text-(--color-muted) hover:text-(--color-text)')
+        'inline-flex items-center gap-1.5 h-9 px-[17px] rounded-[18px] border text-sm font-medium tracking-[-0.3px] ' +
+        (active ? 'bg-(--color-accent) border-(--color-accent) text-white' : 'bg-white border-[#d8d8d8] text-[#272727] hover:border-[#272727]')
       }
     >
       {children}
+      {count != null && <span className={'text-xs font-normal tabular-nums ' + (active ? 'text-[#ffd9d9]' : 'text-[#999]')}>{count}</span>}
     </button>
   )
 }
