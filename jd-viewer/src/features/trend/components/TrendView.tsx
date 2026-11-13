@@ -56,7 +56,7 @@ export function TrendView({
           ) : mode === 'relations' ? (
             '함께 쓰이는 기술(스택 레이어)과 어디서·왜 쓰이는지'
           ) : mode === 'learn' ? (
-            '기술 선택 → 함께 쓰는 기술 확장 추천 + 학습 커리큘럼'
+            '기술을 고르면 함께 쓰는 기술 확장 추천과 학습 커리큘럼을 보여 드려요.'
           ) : (
             '우대사항이 요구하는 것 → 읽을 기술 블로그 글 + 돈 주고 볼 만한 강의'
           )}
@@ -84,9 +84,7 @@ export function TrendView({
           <LearningView />
         </Framed>
       ) : mode === 'learn' ? (
-        <Framed>
-          <ExpansionView onOpenCompany={onOpenCompany} focusTech={focusTech} />
-        </Framed>
+        <ExpansionView onOpenCompany={onOpenCompany} focusTech={focusTech} />
       ) : mode === 'trend' ? (
         <RoleInsights data={roleInsights.data} loading={roleInsights.loading} error={roleInsights.error} />
       ) : loading ? (
