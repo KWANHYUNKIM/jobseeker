@@ -1,3 +1,4 @@
+import { SiteFooter } from '../../../components/SiteFooter'
 import { useEffect, useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -53,10 +54,8 @@ export function BookView({ seg }: { seg: string[] }) {
 }
 
 // ── 서가 ────────────────────────────────────────────────────────────────
-// 책이 열 권을 넘어가면서 카드를 한 줄로 늘어놓는 것만으로는 안 됐다.
-// 「스프링 DB 2편」 다음에 「Practical Testing」 이 오는 이유가 화면에 안 보이고,
-// 도커·쿠버네티스처럼 스프링과 아무 상관 없는 책이 같은 줄에 섞이기 시작했다.
-// 그래서 서가에도 왼쪽 차례를 뒀다 — 갈래(track)로 묶고, 갈래마다 얼마나 찼는지를 같이 보인다.
+// 책이 열 권을 넘어가면서 카드를 한 줄로 늘어놓는 것만으로는 안 됐다 — 갈래(track)로 묶는다.
+// 캐치형(Penpot 10 기술도서): 숫자 칸 넷, 갈래 밑줄 탭, 갈래마다 머리줄 + 4열 책 카드(갈래 색 표지).
 function Shelf() {
   const { data, loading, error } = useShelf()
   const [track, setTrack] = useState<string | null>(null)
@@ -81,55 +80,97 @@ function Shelf() {
   const all = tally(data.books)
 
   return (
-    <div className="flex flex-1 min-h-0">
-      <ShelfNav groups={groups} all={all} picked={picked} onPick={setTrack} />
+    <div data-scroll className="flex-1 min-h-0 overflow-auto bg-white">
+      <div className="jd-container pt-[43px] pb-[90px]">
+        <h1 className="text-[28px] font-bold leading-10 tracking-[-0.6px] text-[#272727]">기술도서</h1>
+        {data.note && <p className="mt-1 text-base leading-6 tracking-[-0.16px] text-[#666]">{data.note}</p>}
 
-      <div className="flex-1 min-w-0 overflow-y-auto p-4 sm:p-8">
-        <div>
-          <h1 className="text-2xl font-bold text-(--color-text) tracking-tight">기술도서</h1>
-          {data.note && <p className="text-sm text-(--color-muted) mt-1.5 leading-relaxed">{data.note}</p>}
-          <div className="mt-2 text-xs text-(--color-muted) tabular-nums">
-            {data.books.length}권 · {all.sections}절 · 본문 {all.written}절
-          </div>
+        <div className="mt-[27px] grid grid-cols-2 lg:grid-cols-4 gap-[14px]">
+          <ShelfStat label="책" value={`${data.books.length}권`} />
+          <ShelfStat label="절" value={`${all.sections.toLocaleString()}절`} />
+          <ShelfStat label="완성" value={`${pctOf(all.written, all.sections)}%`} accent />
+          <ShelfStat label="트랙" value={`${groups.length}개`} />
+        </div>
 
-          {/* 모바일에는 왼쪽 차례가 없다. 가로로 훑는 칩으로 대신한다 */}
-          <div className="lg:hidden mt-4 -mx-4 px-4 flex gap-2 overflow-x-auto pb-1">
-            <TrackChip label="전체" count={data.books.length} on={picked === null} onClick={() => setTrack(null)} />
-            {groups.map((g) => (
-              <TrackChip
-                key={g.id}
-                label={`${g.emoji ?? ''} ${g.label}`.trim()}
-                count={g.books.length}
-                on={picked === g.id}
-                onClick={() => setTrack(g.id)}
-              />
-            ))}
-          </div>
+        {/* 갈래 탭 */}
+        <div role="tablist" className="mt-[42px] flex overflow-x-auto no-scrollbar border-b border-[#e2e2e2]">
+          <ShelfTab on={picked === null} label="전체" count={data.books.length} onClick={() => setTrack(null)} />
+          {groups.map((g) => (
+            <ShelfTab
+              key={g.id}
+              on={picked === g.id}
+              label={`${g.emoji ?? ''} ${g.label}`.trim()}
+              count={g.books.length}
+              onClick={() => setTrack(g.id)}
+            />
+          ))}
+        </div>
 
-          <div className="mt-6 flex flex-col gap-8">
-            {shown.map((g) => (
+        <div className="mt-12 flex flex-col gap-[50px]">
+          {shown.map((g) => {
+            const tone = TRACK_TONE[groups.indexOf(g) % TRACK_TONE.length]
+            return (
               <section key={g.id}>
-                <div className="flex items-baseline gap-2">
-                  <h2 className="text-sm font-bold text-(--color-text)">
+                <div className="flex flex-wrap items-baseline gap-x-[14px] gap-y-1 pb-[17px] border-b-2 border-[#272727]">
+                  <h2 className="text-[22px] font-bold leading-8 tracking-[-0.22px] text-[#272727]">
                     {g.emoji && <span className="mr-1.5">{g.emoji}</span>}
                     {g.label}
                   </h2>
-                  <span className="text-[11px] text-(--color-muted) tabular-nums">
-                    {g.books.length}권 · {g.written}/{g.sections}절
+                  <span className="text-[15px] text-[#999] tabular-nums">
+                    {g.books.length}권 · {g.sections}절
                   </span>
+                  {g.note && <span className="text-[15px] text-[#666]">{g.note}</span>}
                 </div>
-                {g.note && <p className="text-xs text-(--color-muted) mt-1 leading-relaxed">{g.note}</p>}
-                <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+                <div className="mt-[22px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {g.books.map((b) => (
-                    <BookCard key={b.id} book={b} />
+                    <BookCard key={b.id} book={b} tone={tone} track={g.label} />
                   ))}
                 </div>
               </section>
-            ))}
-          </div>
+            )
+          })}
         </div>
       </div>
+      <SiteFooter />
     </div>
+  )
+}
+
+/** 갈래 색 — 서가에 적힌 갈래 순서대로(기반 지식·스프링·데이터 접근·실전 프로젝트·품질과 보안·인프라와 배포). */
+const TRACK_TONE: { bg: string; fg: string }[] = [
+  { bg: '#eef1ff', fg: '#3d5afe' },
+  { bg: '#eaf8f0', fg: '#2bb673' },
+  { bg: '#fff3e8', fg: '#f2994a' },
+  { bg: '#f3eeff', fg: '#8b5cf6' },
+  { bg: '#fff0f0', fg: '#f45757' },
+  { bg: '#e8f6fd', fg: '#0ea5e9' },
+  { bg: '#f4f4f4', fg: '#64748b' },
+]
+
+function ShelfStat({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+  return (
+    <div className={'h-[108px] rounded-[20px] border px-[25px] pt-[21px] ' + (accent ? 'bg-(--color-accent-weak) border-[#ffd5d5]' : 'border-[#e2e8ec]')}>
+      <div className="text-sm text-[#777]">{label}</div>
+      <div className={'mt-1 text-[28px] font-bold leading-10 tracking-[-0.16px] tabular-nums ' + (accent ? 'text-(--color-accent)' : 'text-[#272727]')}>{value}</div>
+    </div>
+  )
+}
+
+function ShelfTab({ on, label, count, onClick }: { on: boolean; label: string; count: number; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      role="tab"
+      aria-selected={on}
+      onClick={onClick}
+      className={
+        'relative shrink-0 px-[18px] pb-[13px] text-base leading-6 tracking-[-0.16px] ' +
+        (on ? 'font-bold text-(--color-accent) after:absolute after:inset-x-0 after:-bottom-px after:h-[3px] after:bg-(--color-accent)' : 'font-medium text-[#777] hover:text-[#272727]')
+      }
+    >
+      {label}
+      <span className={'ml-1.5 text-[13px] tabular-nums text-[#aaa] ' + (on ? 'font-bold' : 'font-medium')}>{count}</span>
+    </button>
   )
 }
 
@@ -166,168 +207,49 @@ function shelfGroups(shelf: ReturnType<typeof useShelf>['data']): ShelfGroup[] {
   return groups
 }
 
-function ShelfNav({
-  groups,
-  all,
-  picked,
-  onPick,
-}: {
-  groups: ShelfGroup[]
-  all: { sections: number; written: number }
-  picked: string | null
-  onPick: (id: string | null) => void
-}) {
-  return (
-    <aside className="hidden lg:flex flex-col w-60 shrink-0 border-r border-(--color-border) bg-(--color-panel) overflow-y-auto">
-      <div className="px-4 py-3 border-b border-(--color-border)">
-        <div className="text-[13px] font-bold text-(--color-text)">서가</div>
-        <div className="mt-2 flex items-center gap-2 text-[11px] text-(--color-muted)">
-          <div className="flex-1 h-1 rounded-full bg-(--color-band) overflow-hidden">
-            <div className="h-full bg-(--color-accent)" style={{ width: `${pctOf(all.written, all.sections)}%` }} />
-          </div>
-          <span className="tabular-nums shrink-0">
-            {all.written}/{all.sections}
-          </span>
-        </div>
-      </div>
-
-      <nav className="py-2">
-        <TrackRow label="전체" emoji="📚" count={groups.reduce((n, g) => n + g.books.length, 0)} pct={pctOf(all.written, all.sections)} on={picked === null} onClick={() => onPick(null)} />
-        {groups.map((g) => (
-          <TrackRow
-            key={g.id}
-            label={g.label}
-            emoji={g.emoji}
-            count={g.books.length}
-            pct={pctOf(g.written, g.sections)}
-            on={picked === g.id}
-            onClick={() => onPick(g.id)}
-          >
-            {g.books.map((b) => (
-              <a
-                key={b.id}
-                href={paths.book(b.id)}
-                onClick={onLinkClick(paths.book(b.id))}
-                className="flex gap-1.5 pl-9 pr-3 py-1 text-xs leading-snug text-(--color-muted) hover:text-(--color-text) hover:bg-(--hover)"
-                title={b.subtitle}
-              >
-                <span className="min-w-0 flex-1 truncate">{b.title}</span>
-                {b.status === 'writing' && <span className="text-(--color-accent) shrink-0 text-[10px]">쓰는 중</span>}
-              </a>
-            ))}
-          </TrackRow>
-        ))}
-      </nav>
-    </aside>
-  )
-}
-
 function pctOf(a: number, b: number) {
   return b ? Math.round((a / b) * 100) : 0
 }
 
-function TrackRow({
-  label,
-  emoji,
-  count,
-  pct,
-  on,
-  onClick,
-  children,
-}: {
-  label: string
-  emoji?: string
-  count: number
-  pct: number
-  on: boolean
-  onClick: () => void
-  children?: React.ReactNode
-}) {
-  return (
-    <div>
-      <button
-        onClick={onClick}
-        className={`w-full text-left px-4 py-1.5 flex items-baseline gap-2 border-l-2 transition ${
-          on
-            ? 'border-(--color-accent) bg-(--color-accent-weak) text-(--color-accent-deep) font-semibold'
-            : 'border-transparent text-(--color-text) hover:bg-(--hover)'
-        }`}
-      >
-        <span className="shrink-0 text-xs w-4">{emoji}</span>
-        <span className="text-xs leading-snug min-w-0 flex-1">{label}</span>
-        <span className="text-[10px] text-(--color-muted) tabular-nums shrink-0">{count}권</span>
-        <span className="text-[10px] text-(--color-faint) tabular-nums shrink-0 w-8 text-right">{pct}%</span>
-      </button>
-      {on && children}
-    </div>
-  )
-}
-
-function TrackChip({ label, count, on, onClick }: { label: string; count: number; on: boolean; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`shrink-0 px-3 py-1.5 text-xs rounded-full border transition ${
-        on
-          ? 'border-(--color-accent) bg-(--color-accent-weak) text-(--color-accent-deep) font-semibold'
-          : 'border-(--color-border) text-(--color-muted)'
-      }`}
-    >
-      {label} <span className="tabular-nums opacity-70">{count}</span>
-    </button>
-  )
-}
-
-function BookCard({ book }: { book: ShelfBook }) {
+function BookCard({ book, tone, track }: { book: ShelfBook; tone: { bg: string; fg: string }; track: string }) {
   const to = paths.book(book.id)
   const last = useLastRead(book.id)
-
   const pct = pctOf(book.written, book.sections)
 
   return (
-    <div className="rounded-lg border border-(--color-border) bg-(--color-panel) p-5 flex flex-col">
-      <a href={to} onClick={onLinkClick(to)} className="group">
-        <div className="text-3xl leading-none">{book.emoji ?? '📘'}</div>
-        <h2 className="mt-3 text-lg font-bold text-(--color-text) group-hover:text-(--color-accent) transition leading-snug">
+    <div className="rounded-3xl border border-[#e2e8ec] bg-white p-[15px] flex flex-col hover:border-[#999] transition">
+      <a href={to} onClick={onLinkClick(to)} className="group flex flex-col">
+        <span className="h-[150px] rounded-2xl px-5 pt-3 flex flex-col" style={{ background: tone.bg }}>
+          <span className="text-[54px] leading-[79px]" aria-hidden>
+            {book.emoji ?? '📘'}
+          </span>
+          <span className="mt-auto mb-4 text-[13px] font-bold" style={{ color: tone.fg }}>
+            {track}
+          </span>
+        </span>
+        <span className="mt-4 px-1.5 block text-lg font-bold leading-[26px] tracking-[-0.3px] text-[#272727] truncate group-hover:underline underline-offset-2">
           {book.title}
-        </h2>
-        {book.subtitle && <div className="text-sm text-(--color-muted) mt-1">{book.subtitle}</div>}
-        {book.blurb && <p className="text-sm text-(--color-text) mt-3 leading-relaxed">{book.blurb}</p>}
+        </span>
+        {book.subtitle && <span className="mt-1 px-1.5 block text-sm text-(--color-accent) truncate">{book.subtitle}</span>}
+        {book.blurb && <span className="mt-2 px-1.5 line-clamp-3 text-sm leading-[21px] text-[#666]">{book.blurb}</span>}
       </a>
-
-      <div className="mt-4 pt-3 border-t border-(--color-border-soft) text-xs text-(--color-muted)">
-        <div className="flex items-center gap-2">
-          <span className="tabular-nums">
+      <div className="mt-auto px-1.5 pt-4">
+        <div className="flex items-center gap-2 text-[13px] text-[#777] tabular-nums">
+          <span>
             {book.chapters}장 · {book.sections}절
           </span>
-          <span className="text-(--color-faint)">·</span>
-          <span className="tabular-nums">
-            본문 {book.written}/{book.sections}
+          {last && (
+            <a href={paths.bookPage(book.id, last)} onClick={onLinkClick(paths.bookPage(book.id, last))} className="font-medium hover:underline" style={{ color: tone.fg }}>
+              이어 읽기 →
+            </a>
+          )}
+          <span className="ml-auto font-bold" style={{ color: tone.fg }}>
+            {pct}%
           </span>
-          <span className="ml-auto tabular-nums text-(--color-accent) font-medium">{pct}%</span>
         </div>
-        <div className="mt-1.5 h-1 rounded-full bg-(--color-band) overflow-hidden">
-          <div className="h-full bg-(--color-accent)" style={{ width: `${pct}%` }} />
+        <div className="mt-2 h-1.5 rounded-[3px] bg-[#f1f3f5] overflow-hidden">
+          <div className="h-full rounded-[3px]" style={{ width: `${pct}%`, background: tone.fg }} />
         </div>
-      </div>
-
-      <div className="mt-3 flex gap-2">
-        <a
-          href={to}
-          onClick={onLinkClick(to)}
-          className="px-3 py-1.5 text-xs font-medium rounded-md border border-(--color-border) text-(--color-text) hover:border-(--color-accent) transition"
-        >
-          차례 보기
-        </a>
-        {last && (
-          <a
-            href={paths.bookPage(book.id, last)}
-            onClick={onLinkClick(paths.bookPage(book.id, last))}
-            className="px-3 py-1.5 text-xs font-medium rounded-md bg-(--color-accent) text-(--color-on-accent) hover:bg-(--color-accent-deep) transition"
-          >
-            이어 읽기 →
-          </a>
-        )}
       </div>
     </div>
   )
