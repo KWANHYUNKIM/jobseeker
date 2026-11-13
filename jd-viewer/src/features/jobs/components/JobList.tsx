@@ -1,12 +1,12 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { Job } from '../../../types'
-import { classifyRoles, roleColor } from '../../../utils/classify'
+import { classifyRoles } from '../../../utils/classify'
 import { placeOf, UNKNOWN_REGION } from '../utils/region'
 import { usePaged, PAGE_SIZE_DENSE as PAGE_SIZE } from '../../../hooks/usePaged'
 import { onLinkClick } from '../../../utils/navigation'
 import { paths } from '../../../utils/urls'
-import { EmptyState, TechTag, CompanyMark, Pagination } from '../../../components/ui'
-import { postedOf, postedText, recruitBadge, type RecruitTone } from '../utils/recruit'
+import { EmptyState } from '../../../components/ui'
+import { daysUntil } from '../utils/recruit'
 
 interface Props {
   jobs: Job[]
@@ -19,18 +19,23 @@ interface Props {
   noData?: boolean
 }
 
+/** 마감까지 이만큼 남으면 줄을 붉게 칠하고 '지원 서두르기' 를 단다. */
+const HURRY_DAYS = 14
 
-// 공고 제목은 목록 안에서 유일하게 '진짜 링크'다. 줄 전체를 <a> 로 감싸면 안에 든
-// 원본 링크와 앵커가 겹쳐 잘못된 마크업이 되므로, 제목만 링크로 두고 줄 클릭은
-// 그대로 살린다. 크롤러는 이 제목 링크를 따라 공고 상세로 들어온다.
+/**
+ * 공고 목록(캐치형 잡 리스트) — 한 공고가 한 줄: 회사 | 제목·직군·기술 | 경력·지역·출처 | 마감 | 별.
+ * 마감이 2주 안이면 줄 전체를 옅은 분홍으로 칠한다. 공고 제목은 목록 안에서 유일한 '진짜 링크'다 —
+ * 줄 전체를 <a> 로 감싸면 안의 별 단추와 겹쳐 잘못된 마크업이 되므로 제목만 링크로 두고
+ * 줄 클릭은 그대로 살린다. 크롤러는 이 제목 링크를 따라 공고 상세로 들어온다.
+ */
 export function JobList({ jobs, server, noData }: Props) {
   const local = usePaged(jobs, PAGE_SIZE)
   const page = server ? server.page : local.page
   const setPage = server ? server.onChange : local.setPage
   const total = server ? server.total : jobs.length
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
-  const start = page * PAGE_SIZE
   const slice = server ? jobs : local.slice
+  const stars = useStars()
 
   const rows = useMemo(
     () =>
@@ -39,247 +44,236 @@ export function JobList({ jobs, server, noData }: Props) {
         // 공고 API 는 직군을 서버에서 계산해 보낸다(목록 응답엔 자격요건 본문이 없다).
         roles: j.roles ?? classifyRoles(j.title, j.tech_stack, j.qualifications || ''),
         place: placeText(j),
+        left: j.status === 'closed' ? null : daysUntil(j.deadline_date),
       })),
     [slice],
   )
 
   if (total === 0 && noData) {
-    return (
-      <EmptyState
-        title="아직 수집된 공고가 없습니다"
-        hint="크롤링이 돌고 있으면 첫 회차가 끝나는 대로 여기에 공고가 뜹니다."
-      />
-    )
+    return <EmptyState title="아직 수집된 공고가 없습니다" hint="크롤링이 돌고 있으면 첫 회차가 끝나는 대로 여기에 공고가 뜹니다." />
   }
   if (total === 0) {
-    return (
-      <EmptyState
-        title="조건에 맞는 공고가 없습니다"
-        hint="필터를 줄이거나 검색어를 바꿔보세요."
-      />
-    )
+    return <EmptyState title="조건에 맞는 공고가 없습니다" hint="필터를 줄이거나 검색어를 바꿔보세요." />
   }
 
   return (
     <div className="flex flex-col">
-      {/* 모바일: 카드 리플로우 (표는 좁은 화면에서 잘리므로) */}
-      <ul className="md:hidden divide-y divide-(--color-border)">
-        {rows.map(({ job: j, roles, place }, i) => {
+      <ul>
+        {rows.map(({ job: j, roles, place, left }) => {
           const to = paths.job(j)
+          const hurry = left != null && left >= 0 && left <= HURRY_DAYS
+          const key = `${j.site}-${j.pid}`
           return (
             <li
-              key={`${j.site}-${j.pid}-${j.idx}`}
+              key={`${key}-${j.idx}`}
               onClick={onLinkClick(to)}
-              className="px-4 py-3 cursor-pointer transition hover:bg-(--hover)"
+              className={
+                'group cursor-pointer flex flex-col md:flex-row md:items-center gap-2 md:gap-0 border-b px-4 md:px-0 py-4 md:py-0 ' +
+                (hurry ? 'bg-[#feecec]/93 border-(--color-accent) md:min-h-[130px]' : 'border-[#e2e2e2] hover:bg-[#fafafa] md:min-h-[117px]') +
+                (j.status === 'closed' ? ' opacity-60' : '')
+              }
             >
-              <div className="flex items-center gap-2 text-xs text-(--color-muted) mb-1">
-                <span className="tabular-nums">{start + i + 1}</span>
-                <CompanyMark name={j.company} size={16} />
-                <span className="text-(--color-accent) truncate">{j.company}</span>
-                <SizeBadge size={j.company_size} />
-                <span className="ml-auto shrink-0 flex items-center gap-1.5">
-                  <PostedText job={j} />
-                  {place && <span>{place}</span>}
-                  {j.career && <span>{j.career}</span>}
-                </span>
+              <div className="md:w-[226px] md:shrink-0 md:pl-5 min-w-0">
+                <div className="text-lg leading-[26px] tracking-[-0.16px] text-[#272727] truncate">{companyText(j.company)}</div>
+                <div className="text-sm leading-[21px] tracking-[-0.16px] text-[#666]">{j.company_size ?? ''}</div>
+                {hurry && <div className="mt-[5px] text-[11px] leading-4 text-[#f89a9a]">마감 임박</div>}
               </div>
-              <a href={to} onClick={onLinkClick(to)} className="block text-(--color-text) text-sm leading-snug line-clamp-2 mb-1.5">
-                <StatusBadge job={j} />
-                {j.title}
-              </a>
-              {roles.length > 0 && (
-                <div className="flex flex-wrap gap-1 mb-1.5">
-                  {roles.map((r) => (
-                    <span key={r} className="text-[10px] px-1.5 py-0.5 rounded border"
-                      style={{ borderColor: roleColor(r), color: roleColor(r) }}>{r}</span>
-                  ))}
+              <div className="md:w-[640px] md:shrink-0 md:pl-5 md:pr-6 min-w-0">
+                {hurry && (
+                  <span className="mb-[6px] inline-block rounded bg-[#f67979] px-[7px] text-[13px] leading-[22px] tracking-[-0.13px] text-white tabular-nums">
+                    ⏰ {left === 0 ? '오늘 마감' : `D-${left} 마감`}
+                  </span>
+                )}
+                <a
+                  href={to}
+                  onClick={onLinkClick(to)}
+                  className="block text-lg font-medium leading-[26px] tracking-[-0.16px] text-[#272727] line-clamp-1 group-hover:underline underline-offset-2"
+                >
+                  {j.title}
+                </a>
+                <div className="mt-1.5 text-[15px] leading-[21px] tracking-[-0.16px] truncate">
+                  <span className="text-[#474747]">{roles.length ? roles.join(' · ') : '기타'}</span>
+                  {j.tech_stack?.length > 0 && <span className="text-[#999]"> | {j.tech_stack.slice(0, 5).join(', ')}</span>}
                 </div>
-              )}
-              <div className="flex flex-wrap items-center gap-1">
-                {(j.tech_stack || []).slice(0, 6).map((t) => (
-                  <TechTag key={t} tech={t} />
-                ))}
-                {j.tech_stack && j.tech_stack.length > 6 && (
-                  <span className="text-[10px] text-(--color-muted)">+{j.tech_stack.length - 6}</span>
-                )}
-                {j.url && (
-                  <a href={j.url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}
-                    className="ml-auto shrink-0 text-xs px-2 py-0.5 rounded border border-(--color-border) text-(--color-muted) hover:text-(--color-accent) hover:border-(--color-accent)">원본 ↗</a>
-                )}
+              </div>
+              <ul className="md:w-[200px] md:shrink-0 md:pl-5 flex md:flex-col gap-x-4 gap-y-[3px] text-sm leading-[21px] tracking-[-0.16px] text-[#474747]">
+                <Meta icon="career">{j.career || '경력 무관'}</Meta>
+                <Meta icon="place">{place || '지역 미표기'}</Meta>
+                <Meta icon="site">{sourceText(j)}</Meta>
+              </ul>
+              <Deadline job={j} left={left} hurry={hurry} />
+              <div className="hidden md:flex md:w-[50px] md:shrink-0">
+                <StarButton on={stars.has(key)} onClick={() => stars.toggle(key)} />
               </div>
             </li>
           )
         })}
       </ul>
-
-      {/* 데스크톱: 표.
-          여기에 overflow-x-auto 를 주면 이 div 가 sticky 의 기준(스크롤 조상)이 되어
-          머리 줄이 바깥 main 을 따라 붙지 못하고 표와 같이 밀려 올라간다.
-          가로가 넘칠 때는 바깥 main(overflow-auto)이 대신 받는다. */}
-      <div className="hidden md:block">
-        <table className="w-full text-sm border-collapse">
-          <thead className="jd-panel-head sticky top-0 z-10">
-            <tr className="text-left text-(--color-muted) font-medium">
-              <th className="px-3 py-2 font-medium w-10">#</th>
-              <th className="px-3 py-2 font-medium w-48">회사</th>
-              <th className="px-3 py-2 font-medium">공고 제목</th>
-              <th className="px-3 py-2 font-medium w-44">분류 직군</th>
-              <th className="px-3 py-2 font-medium w-28">지역</th>
-              <th className="px-3 py-2 font-medium w-24">경력</th>
-              <th className="px-3 py-2 font-medium w-24">등록</th>
-              <th className="px-3 py-2 font-medium w-80">기술스택</th>
-              <th className="px-3 py-2 font-medium w-16">원본</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map(({ job: j, roles, place }, i) => {
-              const to = paths.job(j)
-              return (
-                <tr
-                  key={`${j.site}-${j.pid}-${j.idx}`}
-                  onClick={onLinkClick(to)}
-                  className="border-b border-(--color-border) cursor-pointer transition hover:bg-(--hover)"
-                >
-                  <td className="px-3 py-2 text-(--color-muted) tabular-nums">{start + i + 1}</td>
-                  <td className="px-3 py-2 text-(--color-muted) max-w-[12rem]" title={j.company}>
-                    <span className="flex items-center gap-1.5 min-w-0">
-                      <CompanyMark name={j.company} size={16} />
-                      <span className="truncate">{j.company}</span>
-                      <SizeBadge size={j.company_size} />
-                    </span>
-                  </td>
-                  <td className="px-3 py-2 text-(--color-text)">
-                    <a href={to} onClick={onLinkClick(to)} className="line-clamp-2 leading-snug hover:text-(--color-accent)">
-                      <StatusBadge job={j} />
-                      {j.title}
-                    </a>
-                  </td>
-                  <td className="px-3 py-2">
-                    <div className="flex flex-wrap gap-1">
-                      {roles.map((r) => (
-                        <span
-                          key={r}
-                          className="text-[10px] px-1.5 py-0.5 rounded border"
-                          style={{ borderColor: roleColor(r), color: roleColor(r) }}
-                        >
-                          {r}
-                        </span>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="px-3 py-2 text-(--color-muted) text-xs" title={j.location || undefined}>
-                    {place || '-'}
-                  </td>
-                  <td className="px-3 py-2 text-(--color-muted) text-xs">{j.career || '-'}</td>
-                  <td className="px-3 py-2 text-(--color-muted) text-xs"><PostedText job={j} /></td>
-                  <td className="px-3 py-2">
-                    <div className="flex flex-wrap gap-1">
-                      {(j.tech_stack || []).slice(0, 8).map((t) => (
-                        <TechTag key={t} tech={t} />
-                      ))}
-                      {j.tech_stack && j.tech_stack.length > 8 && (
-                        <span className="text-[10px] text-(--color-muted)">
-                          +{j.tech_stack.length - 8}
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-3 py-2">
-                    {j.url && (
-                      <a
-                        href={j.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="text-xs px-2 py-1 rounded border border-(--color-border) text-(--color-muted) hover:text-(--color-accent) hover:border-(--color-accent)"
-                        title="원본 공고 새 창으로 열기"
-                      >
-                        ↗
-                      </a>
-                    )}
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
-      <Pagination
-        page={page}
-        totalPages={totalPages}
-        total={total}
-        pageSize={PAGE_SIZE}
-        onChange={setPage}
-      />
+      <Pager page={page} totalPages={totalPages} onChange={setPage} />
     </div>
   )
 }
 
-// 모집 상태 배지. 마감 공고를 목록에서 지우지 않고 표시로 구분하는 이유는, 지운 순간
-// "예전에 이런 자리가 있었다"가 사라지기 때문이다. 검색·색인·재공고 추적은 마감 공고를
-// 계속 필요로 한다. 대신 기본 필터는 모집중만 보여주므로, 지원할 수 없는 자리를 모르고
-// 클릭하는 일은 없다.
-//
-// 배지가 '마감' 하나였을 때는 모집중이 전부 같은 얼굴이었다. 마감일까지 아는 공고와,
-// 원본에 마감 표기가 없어 그냥 열어 둔 공고가 구분되지 않았다 — 후자가 모집중의
-// 절반을 넘는다. 무엇을 근거로 열려 있다고 말하는지를 배지가 말한다.
-const TONE: Record<RecruitTone, string> = {
-  closed: 'bg-(--color-muted)/20 text-(--color-muted) border-(--color-border)',
-  urgent: 'bg-(--color-accent)/15 text-(--color-accent) border-(--color-accent)/40',
-  open: 'bg-transparent text-(--color-muted) border-(--color-border)',
-  always: 'bg-transparent text-(--color-muted) border-(--color-border)',
-  unverified: 'bg-transparent text-(--color-muted) border-dashed border-(--color-border)',
-}
-
-function StatusBadge({ job }: { job: Job }) {
-  const b = recruitBadge(job)
-  if (!b) return null
+function Meta({ icon, children }: { icon: 'career' | 'place' | 'site'; children: React.ReactNode }) {
   return (
-    <span
-      title={b.title}
-      className={`mr-1.5 align-middle inline-block px-1.5 py-0.5 text-[10px] font-medium rounded border tabular-nums ${TONE[b.tone]}`}
-    >
-      {b.label}
-    </span>
+    <li className="flex items-center gap-[7px] min-w-0">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#474747" strokeWidth="1.3" aria-hidden className="shrink-0">
+        {icon === 'career' && (
+          <>
+            <circle cx="7" cy="7" r="5.5" />
+            <path d="M7 4v3.2l2 1.2" strokeLinecap="round" />
+          </>
+        )}
+        {icon === 'place' && (
+          <>
+            <path d="M7 12.5s4-3.6 4-6.6a4 4 0 0 0-8 0c0 3 4 6.6 4 6.6Z" />
+            <circle cx="7" cy="5.8" r="1.5" />
+          </>
+        )}
+        {icon === 'site' && (
+          <>
+            <rect x="1.5" y="4" width="11" height="8" rx="1.5" />
+            <path d="M5 4V2.5h4V4" />
+          </>
+        )}
+      </svg>
+      <span className="truncate">{children}</span>
+    </li>
   )
 }
 
-// 등록일. 원본이 말한 값이 없으면 '처음 본 날' 로 대신하고, 그 사실을 title 로 밝힌다.
-// 추정값을 확정값처럼 적으면 "9월 2일 등록" 이 사실은 "9월 2일에 우리가 처음 봤다" 가 된다.
-function PostedText({ job }: { job: Job }) {
-  const p = postedOf(job)
-  if (!p) return <span className="text-(--color-muted)">-</span>
+/** 마감 칸 — 2주 안이면 붉은 '지원 서두르기' 알약 + 날짜 + D-day, 아니면 날짜·D-day 또는 상시/채용시. */
+function Deadline({ job, left, hurry }: { job: Job; left: number | null; hurry: boolean }) {
+  const date = job.deadline_date ? `~${job.deadline_date.slice(5, 7)}/${job.deadline_date.slice(8, 10)}` : null
   return (
-    <span
-      className={p.estimated ? 'text-(--color-muted) opacity-70' : 'text-(--color-muted)'}
-      title={p.estimated ? `원본에 등록일이 없어 처음 수집한 날로 대신했습니다 (${p.iso})` : `등록 ${p.iso}`}
-    >
-      {postedText(p.iso)}
-      {p.estimated && '~'}
-    </span>
+    <div className="md:w-[140px] md:shrink-0 flex md:flex-col items-center gap-x-2 gap-y-[2px] text-[13px] leading-[19px] tracking-[-0.16px] text-[#272727] tabular-nums">
+      {job.status === 'closed' ? (
+        <span className="text-[#999]">마감</span>
+      ) : left != null && left >= 0 ? (
+        <>
+          {hurry && <span className="mb-[4px] h-[25px] px-[10px] rounded-[13px] bg-(--color-accent) text-xs leading-[25px] text-white">지원 서두르기</span>}
+          {date && <span>{date}</span>}
+          <span className="font-medium text-(--color-accent)">{left === 0 ? '오늘 마감' : `D-${left}`}</span>
+        </>
+      ) : (
+        <span>{job.status_source === 'always_open' ? '상시' : '채용시'}</span>
+      )}
+    </div>
   )
 }
 
-// 목록에 보일 근무지 — '서울 강남구' 처럼 시도+시군구까지만. 원본 주소는 title 로 남긴다.
+function StarButton({ on, onClick }: { on: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      aria-label={on ? '관심 공고에서 빼기' : '관심 공고로 담기'}
+      aria-pressed={on}
+      onClick={(e) => {
+        e.stopPropagation()
+        e.preventDefault()
+        onClick()
+      }}
+      className="w-6 h-6 grid place-items-center"
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill={on ? '#f45757' : 'none'} stroke={on ? '#f45757' : '#c4c4c4'} strokeWidth="1.5" strokeLinejoin="round">
+        <path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.2-4.1 5.8-.8Z" />
+      </svg>
+    </button>
+  )
+}
+
+const STAR_KEY = 'jd-stars'
+
+/** 관심 공고(별) — 이 브라우저에만 남는 편의 기능이다. 저장소가 막혀 있으면 이번 방문 동안만 기억한다. */
+function useStars() {
+  const [set, setSet] = useState<Set<string>>(() => {
+    try {
+      return new Set(JSON.parse(localStorage.getItem(STAR_KEY) || '[]') as string[])
+    } catch {
+      return new Set()
+    }
+  })
+  useEffect(() => {
+    try {
+      localStorage.setItem(STAR_KEY, JSON.stringify([...set]))
+    } catch {
+      /* 저장소가 막힌 브라우저 — 기억만 못 할 뿐 동작은 같다 */
+    }
+  }, [set])
+  return {
+    has: (k: string) => set.has(k),
+    toggle: (k: string) =>
+      setSet((s) => {
+        const n = new Set(s)
+        if (n.has(k)) n.delete(k)
+        else n.add(k)
+        return n
+      }),
+  }
+}
+
+/** 쪽 번호 — ‹ 1 2 3 4 5 6 7 … 61 ›. 지금 쪽은 검은 동그라미. */
+function Pager({ page, totalPages, onChange }: { page: number; totalPages: number; onChange: (p: number) => void }) {
+  if (totalPages <= 1) return null
+  const go = (p: number) => {
+    onChange(Math.max(0, Math.min(totalPages - 1, p)))
+    document.querySelector('[data-jobs-top]')?.scrollIntoView({ block: 'start' })
+  }
+  // 앞 일곱 쪽(지금 쪽이 넘어가면 지금 쪽 둘레 일곱) + 마지막 쪽.
+  const from = Math.max(0, Math.min(page - 3, totalPages - 7))
+  const nums = Array.from({ length: Math.min(7, totalPages) }, (_, k) => from + k)
+  const last = totalPages - 1
+  return (
+    <nav aria-label="쪽" className="mt-[34px] mb-[90px] flex items-center justify-center gap-[6px] text-sm text-[#666] tabular-nums">
+      <PageBtn onClick={() => go(page - 1)} label="이전 쪽">‹</PageBtn>
+      {from > 0 && (
+        <>
+          <PageBtn onClick={() => go(0)}>1</PageBtn>
+          <span className="w-[34px] text-center">…</span>
+        </>
+      )}
+      {nums.map((p) => (
+        <PageBtn key={p} on={p === page} onClick={() => go(p)}>
+          {p + 1}
+        </PageBtn>
+      ))}
+      {nums[nums.length - 1] < last && (
+        <>
+          <span className="w-[34px] text-center">…</span>
+          <PageBtn onClick={() => go(last)}>{last + 1}</PageBtn>
+        </>
+      )}
+      <PageBtn onClick={() => go(page + 1)} label="다음 쪽">›</PageBtn>
+    </nav>
+  )
+}
+
+function PageBtn({ on, onClick, label, children }: { on?: boolean; onClick: () => void; label?: string; children: React.ReactNode }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      aria-current={on ? 'page' : undefined}
+      className={'w-[34px] h-[34px] rounded-full ' + (on ? 'bg-[#272727] font-bold text-white' : 'hover:text-[#272727]')}
+    >
+      {children}
+    </button>
+  )
+}
+
+// 회사 이름의 법인 표기 — '(주)펄어비스' → '펄어비스'. 목록에서는 이름만 읽힌다.
+function companyText(name: string): string {
+  return name.replace(/\(주\)|㈜|주식회사/g, '').trim() || name
+}
+
+// 출처 — 보드 이름만('gamejob:dev' → 'gamejob'), 보드가 없으면 사이트 이름.
+function sourceText(j: Job): string {
+  return j.source_board ? j.source_board.split(/[.:]/)[0] : j.site
+}
+
+// 목록에 보일 근무지 — 시도만('서울'). 시군구까지 적으면 메타 칸이 넘친다.
 function placeText(job: Job): string {
   const p = job.place ?? placeOf(job)
-  if (p.region === UNKNOWN_REGION) return ''
-  return p.district ? `${p.region} ${p.district}` : p.region
-}
-
-// 기업 규모 배지. 중소기업은 붙이지 않는다 — 열에 아홉이 그 값이라, 다 붙이면
-// 배지가 아니라 배경이 된다. 눈에 띄어야 하는 건 그 나머지다.
-function SizeBadge({ size }: { size?: Job['company_size'] }) {
-  if (!size || size === '중소기업') return null
-  return (
-    <span
-      className={`shrink-0 px-1 py-0.5 text-[10px] rounded border ${
-        size === '대기업'
-          ? 'border-(--color-accent)/50 text-(--color-accent)'
-          : 'border-(--color-border) text-(--color-muted)'
-      }`}
-    >
-      {size}
-    </span>
-  )
+  return p.region === UNKNOWN_REGION ? '' : p.region
 }

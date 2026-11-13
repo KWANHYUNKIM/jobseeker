@@ -1,8 +1,21 @@
+const SOURCES = '사람인 · 잡코리아 · 인크루트 · 게임잡 · 각 사 채용 페이지'
+
 /**
  * 화면 맨 아래 띠(캐치형 디자인) — 이름·안내 낱말·출처·갱신 시각, 오른쪽에 맨 위로 단추.
  * 안내 낱말(서비스 소개 등)은 아직 따로 된 화면이 없어서 글자만 둔다.
  */
-export function SiteFooter({ updated, jobs, companies }: { updated?: string | null; jobs?: number; companies?: number }) {
+export function SiteFooter({
+  updated,
+  jobs,
+  companies,
+  sources = SOURCES,
+}: {
+  updated?: string | null
+  jobs?: number
+  companies?: number
+  /** 공고 출처 줄 — 화면마다 실린 출처가 다르다(잡 리스트는 원티드·점핏까지). */
+  sources?: string
+}) {
   const meta = [
     updated ? `마지막 갱신 ${updated.slice(0, 16).replace('T', ' ')}` : null,
     jobs != null ? `공고 ${jobs.toLocaleString()}건` : null,
@@ -27,7 +40,7 @@ export function SiteFooter({ updated, jobs, companies }: { updated?: string | nu
               <li>고객센터</li>
             </ul>
             <p className="mt-[9px] text-[11px] leading-4 text-[#777]">
-              공고 출처 : 사람인 · 잡코리아 · 인크루트 · 게임잡 · 각 사 채용 페이지 | 매일 06시 갱신
+              공고 출처 : {sources} | 매일 06시 갱신
             </p>
             <p className="mt-[2px] text-[11px] leading-4 text-[#777]">Copyright © JD Viewer. All rights reserved.</p>
           </div>
