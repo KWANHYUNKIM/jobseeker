@@ -557,6 +557,17 @@ html, body, #root {
 }
 .book-code-plain { border: 0; border-radius: 0; }
 
+/* 도서 본문(캐치형 25) — 17px 본문, 굵은 글 강조 없이, 코드는 검은 칸 */
+.book-reader .book-md { font-size: 17px; line-height: 1.76; color: #333; }
+.book-reader strong, .book-reader .book-md strong { background: none; box-shadow: none; padding: 0; }
+.book-reader .book-code { background: #272727; color: #f1f1f1; border: 0; border-radius: 20px; padding: 22px 24px; font-size: 14px; line-height: 1.7; }
+.book-reader .book-code-plain { border-radius: 0; }
+.book-reader .book-code .tk-cm { color: #9aa1a8; }
+.book-reader .book-code .tk-st { color: #ffb4a2; }
+.book-reader .book-code .tk-an { color: #9fe3be; }
+.book-reader .book-code .tk-kw { color: #9cc3ff; }
+.book-reader .book-code .tk-nu { color: #ffd59a; }
+
 /* 그림(ASCII) — 칸이 어긋나면 그림이 아니게 되므로 등폭 고정에 줄바꿈 금지 */
 .book-ascii {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;

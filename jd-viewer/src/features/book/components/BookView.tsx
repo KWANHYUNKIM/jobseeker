@@ -557,75 +557,56 @@ function Reader({ bookId, pageId }: { bookId: string; pageId: string }) {
   )
 
   return (
-    <div className="flex flex-1 min-h-0">
-      <TocSidebar
-        bookId={bookId}
-        toc={toc}
-        current={pageId}
-        read={read}
-        open={tocOpen}
-        onClose={() => setTocOpen(false)}
-      />
+    <div data-book-scroll className="flex-1 min-h-0 overflow-y-auto bg-white">
+      <div className="jd-container pt-[30px] pb-[90px] flex gap-10 items-start">
+        <TocSidebar bookId={bookId} toc={toc} current={pageId} read={read} open={tocOpen} onClose={() => setTocOpen(false)} />
 
-      <main data-book-scroll className="flex-1 min-w-0 overflow-y-auto">
-        {/* 모바일 상단 바 — 차례를 열 유일한 통로 */}
-        <div className="lg:hidden sticky top-0 z-10 flex items-center gap-2 px-4 h-11 border-b border-(--color-border) bg-(--color-panel)">
-          <button onClick={() => setTocOpen(true)} className="text-xs font-medium text-(--color-text) px-2 py-1 rounded border border-(--color-border)">
-            ☰ 차례
-          </button>
-          <span className="text-xs text-(--color-muted) truncate">{toc?.title}</span>
-        </div>
+        <main className="flex-1 min-w-0">
+          {/* 좁은 화면 — 차례를 여는 단추 */}
+          <div className="lg:hidden mb-4 flex items-center gap-2">
+            <button type="button" onClick={() => setTocOpen(true)} className="h-9 px-4 rounded-[18px] border border-[#d8d8d8] text-sm font-medium text-[#272727]">
+              ☰ 차례
+            </button>
+            <span className="text-sm text-[#999] truncate">{toc?.title}</span>
+          </div>
 
-        {loading ? (
-          <Loader label="본문 불러오는 중…" />
-        ) : error || !page ? (
-          <ErrorState
-            title="아직 안 쓴 절이다"
-            detail={error ?? ''}
-            hint={
-              <a href={paths.book(bookId)} onClick={onLinkClick(paths.book(bookId))} className="text-(--color-accent) underline">
-                차례로 돌아가기
-              </a>
-            }
-          />
-        ) : (
-          // 본문을 화면 끝까지 늘리면 문단은 짧아서 오른쪽이 비고 코드 상자만 길어진다.
-          // 읽는 폭(1200px)은 지키고, 남는 자리에 이 절의 소제목 목차를 둔다.
-          <article className="px-4 sm:px-8 py-6 sm:py-10 pb-24 flex justify-center gap-10">
-            <div className="min-w-0 flex-1 max-w-[1200px]">
-              <PageBody page={page} bookId={bookId} />
+          {loading ? (
+            <Loader label="본문 불러오는 중…" />
+          ) : error || !page ? (
+            <ErrorState
+              title="아직 안 쓴 절이다"
+              detail={error ?? ''}
+              hint={
+                <a href={paths.book(bookId)} onClick={onLinkClick(paths.book(bookId))} className="text-(--color-accent) underline">
+                  차례로 돌아가기
+                </a>
+              }
+            />
+          ) : (
+            <article className="book-reader max-w-[880px]">
+              <PageBody page={page} bookId={bookId} bookTitle={toc?.title} />
 
               {/* 읽음 표시 + 이전/다음 */}
-              <div className="mt-12 pt-6 border-t border-(--color-border)">
+              <div className="mt-14 flex flex-wrap items-center gap-3">
+                {nav.prev && <NavLink book={bookId} to={nav.prev.id} dir="prev" no={nav.prev.no} title={nav.prev.title} />}
                 <button
+                  type="button"
                   onClick={() => toggle(pageId)}
-                  className={`w-full py-2.5 text-sm font-medium rounded-md border transition ${
-                    read.has(pageId)
-                      ? 'border-(--color-accent) bg-(--color-accent-weak) text-(--color-accent-deep)'
-                      : 'border-(--color-border) text-(--color-muted) hover:border-(--color-accent) hover:text-(--color-text)'
-                  }`}
+                  aria-pressed={read.has(pageId)}
+                  className={
+                    'mx-auto h-11 px-5 rounded-[22px] border text-sm font-medium ' +
+                    (read.has(pageId) ? 'border-(--color-accent) bg-(--color-accent-weak) text-(--color-accent)' : 'border-[#d8d8d8] text-[#666] hover:border-[#272727]')
+                  }
                 >
                   {read.has(pageId) ? '✓ 읽음' : '읽음으로 표시'}
                 </button>
-
-                <div className="mt-4 grid grid-cols-2 gap-3">
-                  {nav.prev ? (
-                    <NavLink book={bookId} to={nav.prev.id} dir="prev" no={nav.prev.no} title={nav.prev.title} />
-                  ) : (
-                    <span />
-                  )}
-                  {nav.next ? (
-                    <NavLink book={bookId} to={nav.next.id} dir="next" no={nav.next.no} title={nav.next.title} />
-                  ) : (
-                    <span />
-                  )}
-                </div>
+                {nav.next && <NavLink book={bookId} to={nav.next.id} dir="next" no={nav.next.no} title={nav.next.title} />}
               </div>
-            </div>
-            <PageOutline key={pageId} page={page} />
-          </article>
-        )}
-      </main>
+            </article>
+          )}
+        </main>
+      </div>
+      <SiteFooter />
     </div>
   )
 }
@@ -636,15 +617,18 @@ function NavLink({ book, to, dir, no, title }: { book: string; to: string; dir: 
     <a
       href={href}
       onClick={onLinkClick(href)}
-      className={`rounded-md border border-(--color-border) bg-(--color-panel) p-3 hover:border-(--color-accent) transition ${
-        dir === 'next' ? 'text-right col-start-2' : ''
-      }`}
+      title={title}
+      className={
+        'inline-flex items-center gap-1.5 h-11 max-w-[320px] px-5 rounded-[22px] text-[15px] font-medium ' +
+        (dir === 'next' ? 'bg-[#272727] text-white hover:bg-black' : 'border border-[#d8d8d8] text-[#272727] hover:border-[#272727]')
+      }
     >
-      <div className="text-[11px] text-(--color-muted)">{dir === 'prev' ? '← 이전' : '다음 →'}</div>
-      <div className="text-sm font-medium text-(--color-text) mt-0.5 leading-snug">
-        <span className="text-(--color-faint) tabular-nums mr-1">{no}</span>
+      {dir === 'prev' && <span aria-hidden>‹</span>}
+      <span className="truncate">
+        <span className="tabular-nums mr-1">{no}</span>
         {title}
-      </div>
+      </span>
+      {dir === 'next' && <span aria-hidden>›</span>}
     </a>
   )
 }
@@ -670,73 +654,72 @@ function TocSidebar({
   const currentChapter = flat.find((s) => s.id === current)?.chapter ?? 1
 
   const body = (
-    <>
-      <div className="px-4 py-3 border-b border-(--color-border)">
-        <a href={paths.book(bookId)} onClick={onLinkClick(paths.book(bookId))} className="block group">
-          <div className="text-[13px] font-bold text-(--color-text) group-hover:text-(--color-accent) leading-snug">
-            {toc?.title ?? '…'}
-          </div>
-        </a>
-        <div className="mt-2 flex items-center gap-2 text-[11px] text-(--color-muted)">
-          <div className="flex-1 h-1 rounded-full bg-(--color-band) overflow-hidden">
-            <div className="h-full bg-(--color-accent)" style={{ width: `${pct}%` }} />
-          </div>
-          <span className="tabular-nums shrink-0">
-            {doneCount}/{flat.length}
-          </span>
-        </div>
+    <div className="rounded-3xl border border-[#e2e8ec] bg-white px-[21px] pt-6 pb-5">
+      <a href={paths.book(bookId)} onClick={onLinkClick(paths.book(bookId))} className="block text-base font-bold leading-6 text-[#272727] hover:underline underline-offset-2">
+        {toc?.title ?? '…'}
+      </a>
+      <div className="mt-3 h-1.5 rounded-[3px] bg-[#f1f3f5] overflow-hidden">
+        <div className="h-full bg-(--color-accent)" style={{ width: `${pct}%` }} />
       </div>
-
-      <nav className="flex-1 overflow-y-auto py-2">
-        {(toc?.chapters ?? []).map((c) => (
-          <details key={c.no} open={c.no === currentChapter} className="group">
-            <summary className="px-4 py-1.5 cursor-pointer list-none flex items-baseline gap-2 hover:bg-(--hover)">
-              <span className="text-[11px] text-(--color-faint) tabular-nums shrink-0 w-6">{c.no}장</span>
-              <span className="text-xs font-semibold text-(--color-text) leading-snug">{c.title}</span>
-            </summary>
-            <ul className="pb-1">
-              {c.sections.map((s) => {
-                const on = s.id === current
-                const to = paths.bookPage(bookId, s.id)
-                const cls = `flex gap-1.5 pl-[3.25rem] pr-3 py-1 text-xs leading-snug border-l-2 ${
-                  on
-                    ? 'border-(--color-accent) bg-(--color-accent-weak) text-(--color-accent-deep) font-semibold'
-                    : 'border-transparent'
-                }`
-                if (s.status === 'todo')
-                  return (
-                    <li key={s.id} className={`${cls} text-(--color-faint)`} title="아직 안 쓴 절">
-                      <span className="tabular-nums shrink-0">{s.no}</span>
-                      <span className="min-w-0">{s.title}</span>
-                    </li>
-                  )
-                return (
-                  <li key={s.id}>
-                    <a
-                      href={to}
-                      onClick={onLinkClick(to)}
-                      className={`${cls} ${on ? '' : 'text-(--color-muted) hover:text-(--color-text) hover:bg-(--hover)'}`}
-                    >
-                      <span className="tabular-nums shrink-0">{s.no}</span>
-                      <span className="min-w-0 flex-1">{s.title}</span>
-                      {read.has(s.id) && <span className="text-(--color-accent) shrink-0">✓</span>}
-                    </a>
-                  </li>
-                )
-              })}
-            </ul>
-          </details>
-        ))}
+      <div className="mt-1.5 text-xs text-[#999] tabular-nums">
+        {doneCount} / {flat.length}절 읽음
+      </div>
+      <nav className="mt-5 flex flex-col gap-1">
+        {(toc?.chapters ?? []).map((c) => {
+          const cur = c.no === currentChapter
+          return (
+            <div key={c.no}>
+              {cur ? (
+                <div className="py-2 text-sm font-bold text-[#272727]">
+                  {c.no}장 {c.title}
+                </div>
+              ) : (
+                <a
+                  href={paths.bookPage(bookId, c.sections.find((s) => s.status !== 'todo')?.id ?? c.sections[0]?.id ?? '')}
+                  onClick={onLinkClick(paths.bookPage(bookId, c.sections.find((s) => s.status !== 'todo')?.id ?? c.sections[0]?.id ?? ''))}
+                  className="block py-2.5 text-sm font-medium text-[#666] hover:text-[#272727] truncate"
+                >
+                  {c.no}장 {c.title}
+                </a>
+              )}
+              {cur && (
+                <ul className="mb-2 flex flex-col gap-0.5">
+                  {c.sections.map((s) => {
+                    const on = s.id === current
+                    const to = paths.bookPage(bookId, s.id)
+                    const cls = 'flex gap-3 h-[34px] items-center rounded-[10px] px-2.5 text-sm ' + (on ? 'bg-(--color-accent-weak) font-medium text-(--color-accent)' : 'text-[#474747]')
+                    if (s.status === 'todo')
+                      return (
+                        <li key={s.id} className={cls + ' text-[#c4c4c4]'} title="아직 안 쓴 절">
+                          <span className="w-7 shrink-0 tabular-nums text-[#c4c4c4]">{s.no}</span>
+                          <span className="truncate">{s.title}</span>
+                        </li>
+                      )
+                    return (
+                      <li key={s.id}>
+                        <a href={to} onClick={onLinkClick(to)} className={cls + (on ? '' : ' hover:bg-[#f7f9fa]')}>
+                          <span className="w-7 shrink-0 tabular-nums text-[#999]">{s.no}</span>
+                          <span className="min-w-0 flex-1 truncate">{s.title}</span>
+                          {read.has(s.id) && <span className="shrink-0 text-xs text-(--color-accent)">✓</span>}
+                        </a>
+                      </li>
+                    )
+                  })}
+                </ul>
+              )}
+            </div>
+          )
+        })}
       </nav>
-    </>
+    </div>
   )
 
   return (
     <>
-      <aside className="hidden lg:flex flex-col w-72 shrink-0 border-r border-(--color-border) bg-(--color-panel)">{body}</aside>
+      <aside className="hidden lg:block w-[300px] shrink-0 sticky top-4 max-h-[calc(100dvh-10rem)] overflow-y-auto">{body}</aside>
       {open && (
         <div className="lg:hidden fixed inset-0 z-40 flex">
-          <div className="w-72 max-w-[85%] bg-(--color-panel) flex flex-col shadow-xl">{body}</div>
+          <div className="w-[300px] max-w-[85%] overflow-y-auto bg-white p-3 shadow-xl">{body}</div>
           <div className="flex-1 bg-black/30" onClick={onClose} />
         </div>
       )}
@@ -745,33 +728,35 @@ function TocSidebar({
 }
 
 // ── 절 하나 ─────────────────────────────────────────────────────────────
-function PageBody({ page, bookId }: { page: Page; bookId: string }) {
+function PageBody({ page, bookId, bookTitle }: { page: Page; bookId: string; bookTitle?: string }) {
   return (
     <>
-      <div className="text-xs text-(--color-muted)">
-        <a href={paths.book(bookId)} onClick={onLinkClick(paths.book(bookId))} className="hover:text-(--color-accent)">
-          차례
+      <nav aria-label="경로" className="text-sm text-[#777]">
+        <a href={paths.wiki()} onClick={onLinkClick(paths.wiki())} className="hover:text-[#272727]">
+          기술도서
         </a>
-        <span className="mx-1.5 text-(--color-faint)">›</span>
-        <span>{page.chapter}장</span>
-      </div>
+        {' › '}
+        <a href={paths.book(bookId)} onClick={onLinkClick(paths.book(bookId))} className="hover:text-[#272727]">
+          {bookTitle ?? '차례'}
+        </a>
+        {' › '}
+        {page.chapter}장
+      </nav>
 
-      <h1 className="mt-2 text-[26px] sm:text-3xl font-bold text-(--color-text) tracking-tight leading-tight">
-        <span className="text-(--color-accent) tabular-nums mr-2">{page.no}</span>
-        {page.title}
-      </h1>
-      <p className="mt-3 text-[15px] text-(--color-muted) leading-relaxed">{page.summary}</p>
-      <div className="mt-2 text-xs text-(--color-faint)">
+      <div className="mt-5 text-base font-bold text-(--color-accent) tabular-nums">{page.no}</div>
+      <h1 className="mt-1 text-[36px] font-bold leading-[52px] tracking-[-0.8px] text-[#272727]">{page.title}</h1>
+      <p className="mt-2.5 text-[19px] leading-[27px] text-[#474747]">{page.summary}</p>
+      <div className="mt-2 text-[13px] text-[#999]">
         {page.minutes ? `읽는 데 약 ${page.minutes}분 · ` : ''}
         {page.updated_at}
       </div>
 
       {!!page.goals?.length && (
-        <div className="mt-6 rounded-lg border border-(--color-accent)/35 bg-(--color-accent-weak)/50 p-4">
-          <div className="text-xs font-bold text-(--color-accent-deep)">이 절을 덮을 때 할 수 있어야 하는 것</div>
-          <ul className="mt-2 flex flex-col gap-1.5">
+        <div className="mt-[27px] rounded-[20px] bg-[#f7f9fa] px-[26px] py-[22px]">
+          <div className="text-[15px] font-bold text-[#272727]">이 절을 덮을 때 할 수 있어야 하는 것</div>
+          <ul className="mt-3 flex flex-col gap-1.5">
             {page.goals.map((g, i) => (
-              <li key={i} className="text-sm text-(--color-text) leading-relaxed flex gap-2">
+              <li key={i} className="text-base text-[#272727] leading-[26px] flex gap-2.5">
                 <span className="text-(--color-accent) shrink-0">□</span>
                 <span>
                   <Md>{g}</Md>
@@ -833,55 +818,6 @@ function anchorOf(b: Block, i: number) {
 }
 
 // 넓은 화면 오른쪽의 '이 절에서'. 지금 읽는 소제목을 따라 불이 옮겨 간다.
-function PageOutline({ page }: { page: Page }) {
-  const items = useMemo(
-    () =>
-      page.blocks.flatMap((b, i) => (b.type === 'heading' ? [{ id: anchorOf(b, i)!, text: b.text }] : [])),
-    [page],
-  )
-  const [active, setActive] = useState<string | null>(null)
-
-  useEffect(() => {
-    const box = document.querySelector('[data-book-scroll]')
-    if (!box || !items.length) return
-    const onScroll = () => {
-      const top = box.getBoundingClientRect().top + 120
-      let cur: string | null = null
-      for (const it of items) {
-        const el = document.getElementById(it.id)
-        if (el && el.getBoundingClientRect().top <= top) cur = it.id
-      }
-      setActive(cur)
-    }
-    onScroll()
-    box.addEventListener('scroll', onScroll, { passive: true })
-    return () => box.removeEventListener('scroll', onScroll)
-  }, [items])
-
-  if (items.length < 2) return null
-  return (
-    <nav className="hidden 2xl:block w-60 shrink-0 sticky top-6 self-start max-h-[calc(100vh-8rem)] overflow-y-auto">
-      <div className="text-[11px] font-bold text-(--color-muted) tracking-wide">이 절에서</div>
-      <ol className="mt-2 border-l border-(--color-border)">
-        {items.map((it) => (
-          <li key={it.id}>
-            <button
-              onClick={() => document.getElementById(it.id)?.scrollIntoView({ behavior: 'smooth' })}
-              className={`block w-full text-left -ml-px pl-3 py-1 text-[13px] leading-snug border-l-2 transition ${
-                active === it.id
-                  ? 'border-(--color-accent) text-(--color-accent) font-medium'
-                  : 'border-transparent text-(--color-muted) hover:text-(--color-text)'
-              }`}
-            >
-              {it.text}
-            </button>
-          </li>
-        ))}
-      </ol>
-    </nav>
-  )
-}
-
 function Drills({ drills }: { drills: Drill[] }) {
   return (
     <section className="mt-10">
@@ -975,7 +911,7 @@ function BlockView({ block: b, anchor }: { block: Block; anchor?: string }) {
   switch (b.type) {
     case 'heading':
       return (
-        <h2 id={anchor} className="mt-10 mb-1 text-xl font-bold text-(--color-text) tracking-tight scroll-mt-16">
+        <h2 id={anchor} className="mt-11 mb-1 text-[23px] font-bold leading-[34px] tracking-[-0.4px] text-[#272727] scroll-mt-16">
           {b.text}
         </h2>
       )
@@ -1012,12 +948,12 @@ function BlockView({ block: b, anchor }: { block: Block; anchor?: string }) {
       return (
         <figure className="mt-6">
           {b.caption && <figcaption className="text-sm font-semibold text-(--color-text) mb-1.5">{b.caption}</figcaption>}
-          <div className="overflow-x-auto rounded-lg border border-(--color-border)">
-            <table className="w-full text-sm border-collapse">
-              <thead className="bg-(--color-band)">
-                <tr>
+          <div className="overflow-x-auto">
+            <table className="w-full text-[15px] border-collapse">
+              <thead className="bg-[#fafafa]">
+                <tr className="border-b border-[#e2e2e2]">
                   {b.columns.map((c, i) => (
-                    <th key={i} className="text-left font-semibold text-(--color-muted) px-3 py-2 whitespace-nowrap text-xs">
+                    <th key={i} className="text-left font-bold text-[#272727] px-3 py-4 whitespace-nowrap">
                       {c}
                     </th>
                   ))}
@@ -1025,10 +961,15 @@ function BlockView({ block: b, anchor }: { block: Block; anchor?: string }) {
               </thead>
               <tbody>
                 {b.rows.map((row, i) => (
-                  <tr key={i} className="border-t border-(--color-border-soft) align-top">
+                  <tr key={i} className="border-b border-[#e2e2e2] align-top">
                     {row.map((cell, k) => (
-                      <td key={k} className={`px-3 py-2 leading-relaxed ${k === 0 ? 'text-(--color-text)' : 'text-(--color-muted)'}`}>
-                        <Md>{cell}</Md>
+                      <td key={k} className={`px-3 py-[15px] leading-relaxed ${k === 0 ? 'font-bold text-[#272727]' : 'text-[#474747]'}`}>
+                        {/* 절 번호만 적힌 칸(8.10 · 9.2·9.8)은 분홍 칩으로 — 책 안의 다른 절을 가리킨다 */}
+                        {/^[\d.·,\s~–-]+$/.test(cell.trim()) ? (
+                          <span className="rounded bg-(--color-accent-weak) px-[7px] text-[13px] leading-[22px] text-(--color-accent) tabular-nums whitespace-nowrap">{cell}</span>
+                        ) : (
+                          <Md>{cell}</Md>
+                        )}
                       </td>
                     ))}
                   </tr>
@@ -1052,17 +993,17 @@ function BlockView({ block: b, anchor }: { block: Block; anchor?: string }) {
             {[b.left, b.right].map((side, i) => (
               <div
                 key={i}
-                className={`rounded-lg border p-3 ${
-                  side.bad ? 'border-red-400/45 bg-red-400/5' : 'border-(--color-border) bg-(--color-panel)'
+                className={`rounded-[20px] px-6 py-5 ${
+                  graded ? (side.bad ? 'bg-(--color-accent-weak)' : 'bg-[#eaf8f0]') : 'border border-[#e2e8ec] bg-white'
                 }`}
               >
-                <div className={`text-xs font-bold ${side.bad ? 'text-red-500' : 'text-(--color-accent-deep)'}`}>
+                <div className={`text-base font-bold ${graded ? (side.bad ? 'text-(--color-accent)' : 'text-[#1e9e5a]') : 'text-[#272727]'}`}>
                   {graded ? (side.bad ? '✗ ' : '✓ ') : ''}
                   {side.title}
                 </div>
                 {side.code && <Pre lang={side.lang} code={side.code} className="mt-2" />}
                 {side.md && (
-                  <p className="text-xs text-(--color-muted) mt-2 leading-relaxed">
+                  <p className="text-[15px] text-[#272727] mt-2 leading-[24px]">
                     <Md>{side.md}</Md>
                   </p>
                 )}
@@ -1148,11 +1089,11 @@ function CodeBlock({
           {caption}
         </figcaption>
       )}
-      <div className={`rounded-lg border overflow-hidden ${bad ? 'border-red-400/50' : 'border-(--color-border)'}`}>
+      <div className={`rounded-[20px] overflow-hidden bg-[#272727] ${bad ? 'ring-2 ring-red-400/70' : ''}`}>
         {(file || bad) && (
           <div
             className={`px-3 py-1.5 text-[11px] font-medium border-b flex items-center gap-2 ${
-              bad ? 'bg-red-400/8 border-red-400/30 text-red-500' : 'bg-(--color-band) border-(--color-border-soft) text-(--color-muted)'
+              bad ? 'bg-red-500/20 border-white/10 text-[#ffb4b4]' : 'bg-white/5 border-white/10 text-[#bbb]'
             }`}
           >
             {bad && <span className="font-bold">✗ 이렇게 하면 안 된다</span>}
