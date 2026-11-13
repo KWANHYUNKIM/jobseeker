@@ -4,7 +4,7 @@ import { docFetch } from '../../../api/client'
 import { CompanyMark, ErrorState, Loader } from '../../../components/ui'
 
 // mindmap_tree.json — 루트 → 도메인 → 회사 → 직군(value = 공고 수). bin/build_mindmap_tree.py 가 만든다.
-interface TreeNode {
+export interface TreeNode {
   name: string
   type: 'root' | 'domain' | 'company' | 'role'
   value?: number
@@ -26,13 +26,13 @@ export interface MindmapSummary {
 const COLORS = ['#f45757', '#4f7cf0', '#2bb673', '#f2a93b', '#8b5cf6', '#0ea5e9', '#e05fb4', '#64748b', '#14b8a6', '#f97316', '#6366f1', '#84cc16', '#94a3b8', '#ef4444', '#a855f7', '#10b981']
 const ETC = '기타/미상'
 
-interface Company {
+export interface Company {
   name: string
   size: string
   jobs: number
   roles: { name: string; n: number }[]
 }
-interface Domain {
+export interface Domain {
   name: string
   color: string
   companies: Company[]
@@ -40,7 +40,7 @@ interface Domain {
   roles: { name: string; n: number }[]
 }
 
-function toDomains(root: TreeNode): Domain[] {
+export function toDomains(root: TreeNode): Domain[] {
   const ds = (root.children ?? []).map((d) => {
     const companies: Company[] = (d.children ?? [])
       .map((c) => ({

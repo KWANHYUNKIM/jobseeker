@@ -1,7 +1,7 @@
 import { useCallback, useState, type ReactNode } from 'react'
 import { SiteFooter } from '../../../components/SiteFooter'
 import { DomainMap, type MindmapSummary } from './DomainMap'
-import { MindmapView } from './MindmapView'
+import { TreeView } from './TreeView'
 import { PathwayView } from './PathwayView'
 
 type View = 'cluster' | 'tree' | 'pathway'
@@ -11,7 +11,11 @@ type View = 'cluster' | 'tree' | 'pathway'
  * 클러스터는 사업 도메인 원 그림 + 오른쪽 도메인 칸(DomainMap), 트리·이동 경로는 예전 그림을 카드에 담는다.
  */
 export function CareerMap() {
-  const [view, setView] = useState<View>('cluster')
+  // ?view=tree|pathway 로 바로 그 보기를 연다(주소로 공유·새로고침해도 같은 보기)
+  const [view, setView] = useState<View>(() => {
+    const v = new URLSearchParams(window.location.search).get('view')
+    return v === 'tree' || v === 'pathway' ? v : 'cluster'
+  })
   const [query, setQuery] = useState('')
   const [sum, setSum] = useState<MindmapSummary | null>(null)
   const onSummary = useCallback((s: MindmapSummary) => setSum(s), [])
@@ -21,7 +25,9 @@ export function CareerMap() {
       <div className="jd-container pt-[47px] pb-[240px]">
         <h1 className="text-[28px] font-bold leading-10 tracking-[-0.6px] text-[#272727]">커리어 마인드맵</h1>
         <p className="mt-1 text-base leading-6 tracking-[-0.16px] text-[#666]">
-          {view === 'pathway' ? (
+          {view === 'tree' ? (
+            '누가 어떤 직군을 뽑고 있는지 — 도메인 → 회사 → 직군 순서로 펼쳐 보세요.'
+          ) : view === 'pathway' ? (
             'JD 임베딩 군집 — 어디로 갈 수 있고, 가려면 무엇이 비는지'
           ) : (
             <>
@@ -42,7 +48,7 @@ export function CareerMap() {
           <ViewButton on={view === 'pathway'} onClick={() => setView('pathway')}>
             ⇄ 이동 경로
           </ViewButton>
-          {view === 'cluster' && (
+          {view !== 'pathway' && (
             <label className="ml-auto flex items-center gap-2 w-full sm:w-[280px] h-10 rounded-[20px] border border-[#c4c4c4] pl-[17px] pr-4 focus-within:border-[#272727]">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#272727" strokeWidth="2" aria-hidden className="shrink-0">
                 <circle cx="8.5" cy="8.5" r="5.5" />
@@ -63,9 +69,11 @@ export function CareerMap() {
         <div className="mt-[22px]">
           {view === 'cluster' ? (
             <DomainMap query={query} onSummary={onSummary} />
+          ) : view === 'tree' ? (
+            <TreeView query={query} />
           ) : (
             <div className="relative flex h-[760px] rounded-[30px] border border-[#e2e8ec] overflow-hidden">
-              {view === 'tree' ? <MindmapView /> : <PathwayView />}
+              <PathwayView />
             </div>
           )}
         </div>
