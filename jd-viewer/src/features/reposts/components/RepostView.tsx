@@ -1,6 +1,10 @@
 import { useMemo, useState } from 'react'
 import { useReposts, type RepostChange } from '../hooks/useReposts'
+import type { ReactNode } from 'react'
 import { Loader, ErrorState, SearchInput, hits } from '../../../components/ui'
+import { SiteFooter } from '../../../components/SiteFooter'
+import { onLinkClick } from '../../../utils/navigation'
+import { paths } from '../../../utils/urls'
 
 // 재공고 — 마감됐다 다시 올라온 자리와 그 사이의 변경 로그.
 //
@@ -77,37 +81,28 @@ export function RepostView() {
         }
       />
     )
-  if (!data || rows.length === 0)
-    return <div className="p-8 text-(--color-muted)">재공고로 판정된 공고가 없습니다.</div>
+  if (!data) return null
+  if (rows.length === 0)
+    return (
+      <Shell data={data}>
+        <EmptyCard tracked={data.tracked_positions} />
+      </Shell>
+    )
 
   // 검색으로 목록이 줄면 고른 번호가 목록 밖을 가리킬 수 있다 — 첫 줄로 되돌린다.
   const cur = shown.length > 0 ? shown[Math.min(picked, shown.length - 1)] : null
-  const moves = data.summary.career_moves || {}
-
   return (
-    <div className="flex flex-col flex-1 min-h-0 min-w-0">
-      <div className="px-4 py-2 border-b border-(--color-border) bg-(--color-panel)/60 flex flex-wrap items-baseline gap-x-4 gap-y-1">
-        <span className="text-sm text-(--color-text)">
-          재공고 <b>{data.summary.count}</b>건
-        </span>
-        <span className="text-xs text-(--color-muted)">
-          추적 자리 {data.tracked_positions.toLocaleString()} · 누적 {data.history_versions.toLocaleString()}판
-        </span>
-        <span className="text-xs text-(--color-muted)">
-          경력 요구 <b className="text-(--color-accent)">낮춤 {moves['낮춤'] ?? 0}</b> ·
-          높임 {moves['높임'] ?? 0} · 동일 {moves['동일'] ?? 0}
-        </span>
-        <span className="text-xs text-(--color-muted) ml-auto">
-          자주 바뀌는 항목{' '}
-          {data.summary.changed_fields
-            .filter(([f]) => !TRIVIAL.has(f))
-            .slice(0, 4)
-            .map(([f, n]) => `${FIELD_KO[f] ?? f} ${n}`)
-            .join(' · ')}
-        </span>
+    <Shell data={data}>
+      <div className="rounded-[30px] border border-[#e2e8ec] overflow-hidden">
+      <div className="px-[29px] py-4 border-b border-[#e2e8ec] text-[13px] text-[#777]">
+        자주 바뀌는 항목{' '}
+        {data.summary.changed_fields
+          .filter(([f]) => !TRIVIAL.has(f))
+          .slice(0, 4)
+          .map(([f, n]) => `${FIELD_KO[f] ?? f} ${n}`)
+          .join(' · ') || '없음'}
       </div>
-
-      <div className="flex flex-col md:flex-row flex-1 min-h-0 overflow-y-auto md:overflow-hidden">
+      <div className="flex flex-col md:flex-row md:h-[640px]">
         <aside className="w-full md:w-80 shrink-0 md:overflow-auto border-b md:border-b-0 md:border-r border-(--color-border) bg-(--color-panel) p-2">
           <div className="px-1 pb-2 flex flex-col gap-1">
             <SearchInput
@@ -217,6 +212,109 @@ export function RepostView() {
           </>
           )}
         </main>
+      </div>
+      </div>
+    </Shell>
+  )
+}
+
+type RepostData = NonNullable<ReturnType<typeof useReposts>['data']>
+
+/**
+ * 재공고 화면 껍데기(캐치형 07) — 제목·설명, 숫자 칸 셋(추적 중·변경 이력·재공고 판정),
+ * 본문(목록 또는 빈 상태), '이렇게 판정해요' 세 단계, 경력 조건 변화 줄, 바닥 띠.
+ */
+function Shell({ data, children }: { data: RepostData; children: ReactNode }) {
+  const moves = data.summary.career_moves || {}
+  return (
+    <div data-scroll className="flex-1 min-h-0 overflow-auto bg-white">
+      <div className="jd-container pt-[43px] pb-[90px]">
+        <h1 className="text-[28px] font-bold leading-10 tracking-[-0.6px] text-[#272727]">재공고</h1>
+        <p className="mt-1 text-base leading-6 tracking-[-0.16px] text-[#666]">
+          한 번 닫혔다가 다시 열린 공고를 찾아 드려요. 다시 열린 회사는 아직 사람을 못 구했다는 신호예요.
+        </p>
+        <div className="mt-[29px] grid sm:grid-cols-3 gap-4">
+          <Stat label="추적 중인 공고" n={data.tracked_positions} />
+          <Stat label="저장된 변경 이력" n={data.history_versions} />
+          <Stat label="재공고로 판정" n={data.summary.count} accent />
+        </div>
+        <div className="mt-6">{children}</div>
+
+        <h2 className="mt-[55px] text-[22px] font-bold leading-8 tracking-[-0.22px] text-[#272727]">
+          이렇게 <span className="font-black text-(--color-accent)">판정</span>해요
+        </h2>
+        <ol className="mt-5 grid sm:grid-cols-3 gap-4">
+          {[
+            ['같은 공고 찾기', '회사·직무·근무지가 같은 공고를 이전 기록과 묶어요.'],
+            ['닫힘 → 열림 확인', '마감·삭제됐던 공고가 다시 올라왔는지 확인해요.'],
+            ['바뀐 조건 비교', '경력·연봉·기술스택이 낮아졌는지 높아졌는지 함께 보여줘요.'],
+          ].map(([t, d], i) => (
+            <li key={t} className="min-h-[169px] rounded-[22px] bg-[#f7f9fa] px-7 pt-[30px] pb-6">
+              <div className="text-[15px] font-bold text-(--color-accent) tabular-nums">{String(i + 1).padStart(2, '0')}</div>
+              <div className="mt-[11px] text-[19px] font-bold leading-[27px] tracking-[-0.16px] text-[#272727]">{t}</div>
+              <p className="mt-2 text-[15px] leading-[22px] tracking-[-0.16px] text-[#666]">{d}</p>
+            </li>
+          ))}
+        </ol>
+        <div className="mt-4 flex flex-wrap items-center gap-x-[37px] gap-y-2 min-h-[75px] rounded-[30px] border border-[#e2e8ec] px-[29px] py-4">
+          <span className="text-[17px] font-bold tracking-[-0.16px] text-[#272727]">경력 조건 변화</span>
+          {(['낮춤', '동일', '높임'] as const).map((k) => (
+            <span key={k} className="text-base tracking-[-0.16px] text-[#666]">
+              {k} <b className="ml-1.5 font-bold text-[#272727] tabular-nums">{moves[k] ?? 0}건</b>
+            </span>
+          ))}
+        </div>
+      </div>
+      <SiteFooter updated={data.generated_at} />
+    </div>
+  )
+}
+
+function Stat({ label, n, accent }: { label: string; n: number; accent?: boolean }) {
+  return (
+    <div className={'h-32 rounded-[22px] border px-[29px] pt-[25px] ' + (accent ? 'bg-(--color-accent-weak) border-[#ffd5d5]' : 'border-[#e2e8ec]')}>
+      <div className="text-[15px] tracking-[-0.16px] text-[#777]">{label}</div>
+      <div className="mt-1">
+        <span className={'text-[34px] font-bold leading-[49px] tracking-[-0.6px] tabular-nums ' + (accent ? 'text-(--color-accent)' : 'text-[#272727]')}>
+          {n.toLocaleString()}
+        </span>
+        <span className="ml-0.5 text-base text-[#474747]">건</span>
+      </div>
+    </div>
+  )
+}
+
+/** 아직 판정된 재공고가 없을 때 — 무엇을 지켜보고 있는지와 갈 곳을 알려 준다. */
+function EmptyCard({ tracked }: { tracked: number }) {
+  return (
+    <div className="flex flex-col items-center rounded-[30px] border border-[#e2e8ec] px-6 pt-[71px] pb-[61px] text-center">
+      <span className="grid place-items-center w-[84px] h-[84px] rounded-full bg-[#f3f6f8] text-[40px] text-[#9aa1a8]" aria-hidden>
+        ↻
+      </span>
+      <h2 className="mt-[22px] text-2xl font-bold leading-9 tracking-[-0.4px] text-[#272727]">아직 재공고로 판정된 공고가 없어요</h2>
+      <p className="mt-[9px] max-w-[560px] text-base leading-[25px] tracking-[-0.16px] text-[#666]">
+        공고 {tracked.toLocaleString()}건의 변경 이력을 매일 비교하고 있어요. 같은 회사·같은 직무가 다시 올라오면 여기에 바로 보여 드릴게요.
+      </p>
+      <div className="mt-[29px] flex flex-wrap justify-center gap-2.5">
+        <a
+          href={paths.jobs()}
+          onClick={onLinkClick(paths.jobs())}
+          className="inline-flex items-center gap-2 h-11 px-[50px] rounded-[30px] bg-[#272727] text-base font-medium text-white hover:bg-black"
+        >
+          잡 리스트 보러가기
+          <svg width="8" height="10" viewBox="0 0 8 10" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" aria-hidden>
+            <path d="M2.5 1.5 6 5l-3.5 3.5" />
+          </svg>
+        </a>
+        {/* 알림은 아직 없다 — 자리만 잡아 두고 눌러도 아무 일이 없다는 걸 숨기지 않는다. */}
+        <button
+          type="button"
+          disabled
+          title="재공고 알림은 준비 중이에요"
+          className="h-11 px-[17px] rounded-[18px] border border-(--color-accent) bg-white text-sm font-medium text-(--color-accent) disabled:cursor-not-allowed"
+        >
+          알림 받기
+        </button>
       </div>
     </div>
   )
