@@ -7,6 +7,7 @@ import { onLinkClick } from '../../../utils/navigation'
 import { paths } from '../../../utils/urls'
 import { EmptyState } from '../../../components/ui'
 import { Pager } from '../../../components/Pager'
+import { plainCompany } from '../../../utils/companyName'
 import { daysUntil } from '../utils/recruit'
 
 interface Props {
@@ -75,7 +76,7 @@ export function JobList({ jobs, server, noData }: Props) {
               }
             >
               <div className="md:w-[226px] md:shrink-0 md:pl-5 min-w-0">
-                <div className="text-lg leading-[26px] tracking-[-0.16px] text-[#272727] truncate">{companyText(j.company)}</div>
+                <div className="text-lg leading-[26px] tracking-[-0.16px] text-[#272727] truncate">{plainCompany(j.company)}</div>
                 <div className="text-sm leading-[21px] tracking-[-0.16px] text-[#666]">{j.company_size ?? ''}</div>
                 {hurry && <div className="mt-[5px] text-[11px] leading-4 text-[#f89a9a]">마감 임박</div>}
               </div>
@@ -211,11 +212,6 @@ function useStars() {
         return n
       }),
   }
-}
-
-// 회사 이름의 법인 표기 — '(주)펄어비스' → '펄어비스'. 목록에서는 이름만 읽힌다.
-function companyText(name: string): string {
-  return name.replace(/\(주\)|㈜|주식회사/g, '').trim() || name
 }
 
 // 출처 — 보드 이름만('gamejob:dev' → 'gamejob'), 보드가 없으면 사이트 이름.
