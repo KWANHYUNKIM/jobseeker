@@ -31,7 +31,7 @@ import { HardwareParts } from './HardwareParts'
 import { PrebuiltPicks } from './HardwarePicks'
 import { HardwarePrebuilt } from './HardwarePrebuilt'
 import { HardwarePrices, priceDays } from './HardwarePrices'
-import { HardwareDatacenter } from './HardwareDatacenter'
+import { DatacenterLead, HardwareDatacenter } from './HardwareDatacenter'
 import { ErrorState, Loader } from '../../../components/ui'
 import { SiteFooter } from '../../../components/SiteFooter'
 import { AiUses, DevUses, VideoSim } from './HardwareWorkloads'
@@ -80,7 +80,7 @@ const TITLE: Record<Sub, string> = {
   parts: '부품 비교',
   prebuilt: '완제품 분석',
   prices: 'PC 부품 가격 추이',
-  datacenter: 'AI 데이터센터',
+  datacenter: 'AI 회사 데이터센터',
 }
 
 export function HardwareView({ seg }: { seg: string[] }) {
@@ -99,6 +99,7 @@ export function HardwareView({ seg }: { seg: string[] }) {
             <b className="font-bold text-(--color-accent)">성능 1점당 가격</b>으로 줄 세웠어요.
           </p>
         )}
+        {sub === 'datacenter' && <DatacenterLead />}
         {sub === 'prebuilt' && !detail && (
           <p className="mt-1 text-base leading-6 tracking-[-0.16px] text-[#666]">
             누가 설계해 파는 조립PC 를 부품으로 뜯어, <b className="font-bold text-(--color-accent)">부품값 합계·균형·예상 성능</b>으로 가성비를 봐요.
@@ -120,7 +121,7 @@ export function HardwareView({ seg }: { seg: string[] }) {
             <HardwareNav current={sub} />
           </div>
         )}
-      <main className={(detail ? '' : sub === 'parts' || sub === 'prices' || sub === 'prebuilt' ? 'mt-[23px]' : 'mt-[34px]') + ' min-w-0'}>
+      <main className={(detail ? '' : sub === 'parts' || sub === 'prices' || sub === 'prebuilt' || sub === 'datacenter' ? 'mt-[23px]' : 'mt-[34px]') + ' min-w-0'}>
         {sub === 'parts' ? (
           <HardwareParts data={data} partId={seg[1] ?? null} />
         ) : sub === 'prebuilt' ? (

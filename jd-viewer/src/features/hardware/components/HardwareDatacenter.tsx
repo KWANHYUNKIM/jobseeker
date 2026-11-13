@@ -90,6 +90,68 @@ interface Doc {
   usage: Usage[]
 }
 
+let docCache: Promise<Doc | false> | null = null
+function useDcDoc(): Doc | null | false {
+  const [doc, setDoc] = useState<Doc | null | false>(null)
+  useEffect(() => {
+    if (!docCache)
+      docCache = docFetch('/hardware/datacenter.json')
+        .then((r): Promise<Doc | false> | false => (r.ok ? (r.json() as Promise<Doc>) : false))
+        .catch((): false => false)
+    const pending = docCache
+    let alive = true
+    pending.then((d) => alive && setDoc(d))
+    return () => {
+      alive = false
+    }
+  }, [])
+  return doc
+}
+
+/** 제목 아래 한 줄 — 공개 자료 기준일과 '한 가지 잣대' */
+export function DatacenterLead() {
+  const doc = useDcDoc()
+  return (
+    <p className="mt-1 text-base leading-6 tracking-[-0.16px] text-[#666]">
+      누가 얼마나 가졌고 얼마나 나오나 — 공개 자료 {doc ? doc.updated_at : '—'} 기준 · 성능은{' '}
+      <b className="font-bold text-(--color-accent)">한 가지 잣대(H100 환산)</b>로 셈한 추정이에요.
+    </p>
+  )
+}
+
+const MARK_TONE = ['#5b6cf0', '#64748b', '#f25c54', '#8b5cf6', '#2bb673', '#f2a93b', '#0ea5e9', '#ec4899', '#14b8a6']
+function Mark({ name, size }: { name: string; size: number }) {
+  let h = 0
+  for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) >>> 0
+  return (
+    <span
+      className="shrink-0 grid place-items-center font-bold text-white"
+      style={{ width: size, height: size, borderRadius: size / 4, background: MARK_TONE[h % MARK_TONE.length], fontSize: size >= 40 ? 21 : 14 }}
+      aria-hidden
+    >
+      {name.replace(/^[^A-Za-z가-힣0-9]+/, '').slice(0, 1)}
+    </span>
+  )
+}
+
+/** 칩 이름 줄 — 'TPU v5p · TPU v5e' 처럼 앞말이 같으면 'TPU v5p · v5e' 로 줄인다 */
+function chipLine(cs: Cluster[]): string {
+  const names = [...new Set(cs.flatMap((c) => (c.chip ?? '').split(/\s*(?:\+|,|·)\s*/)).map((x) => x.trim()).filter(Boolean))]
+  let prev = ''
+  return names
+    .map((n) => {
+      const [head, ...rest] = n.split(' ')
+      const out = head === prev && rest.length ? rest.join(' ') : n
+      prev = head
+      return out
+    })
+    .join(' · ')
+}
+
+const watt = (mw: number | null) => (mw == null ? '—' : mw >= 1000 ? `${(mw / 1000).toFixed(2)}GW` : `${Math.round(mw)}MW`)
+const eflops = (eq: number) => Math.round((eq * H100_FP8_TFLOPS) / 1e6)
+const FIRST = 10
+
 const H100_FP8_TFLOPS = 1979
 const USER_TPS = 25 // 한 사람에게 '말하는 속도보다 빠르게' 주는 초당 토큰(bench.json comfortable_tps 와 같은 값)
 const MONTH_S = 30 * 86400
@@ -207,137 +269,187 @@ export function HardwareDatacenter({ data }: { data: HwData }) {
     canonical: absUrl(paths.hardwareDatacenter()),
   })
   void data
-  const [doc, setDoc] = useState<Doc | null | false>(null)
+  const doc = useDcDoc()
   const [open, setOpen] = useState<string | null>(null)
   const [region, setRegion] = useState<string>('')
   const [view, setView] = useState<'chips' | 'money' | 'market'>('chips')
-  useEffect(() => {
-    docFetch('/hardware/datacenter.json')
-      .then((r) => (r.ok ? r.json() : false))
-      .then(setDoc)
-      .catch(() => setDoc(false))
-  }, [])
+  const [all, setAll] = useState(false)
   if (doc === null) return <div className="p-8 text-sm text-(--color-muted)">불러오는 중…</div>
   if (doc === false) return <div className="p-8 text-sm text-(--color-muted)">데이터센터 자료를 준비하고 있다.</div>
 
-  const all = rows(doc)
-  const regions = [...new Set(all.map((r) => r.region))]
-  const rs = all.filter((r) => !region || r.region === region)
+  const every = rows(doc)
+  const count = (k: string) => every.filter((r) => r.region === k).length
+  const regions = [...new Set(every.map((r) => r.region))].sort((x, y) => count(y) - count(x))
+  const rs = every.filter((r) => !region || r.region === region)
   const tps = doc.basis.h100_tps
-  const maxEq = Math.max(...rs.map((r) => r.h100eq ?? r.implied?.h100eq ?? 0), 1)
+  const eqOfRow = (r: Row) => r.h100eq ?? r.implied?.h100eq ?? null
+  const maxEq = Math.max(...rs.map((r) => eqOfRow(r) ?? 0), 1)
+  const top = rs.filter((r) => eqOfRow(r) != null).slice(0, 3)
+  const shownRows = all ? rs : rs.slice(0, FIRST)
+  const pill = (on: boolean, accentOutline = false) =>
+    'inline-flex items-center gap-[5px] h-9 px-4 rounded-[18px] border text-sm font-medium tracking-[-0.3px] ' +
+    (on
+      ? accentOutline
+        ? 'border-(--color-accent) bg-white text-(--color-accent)'
+        : 'border-(--color-accent) bg-(--color-accent) text-white'
+      : 'border-[#d8d8d8] bg-white text-[#272727] hover:border-[#272727]')
+  const card = 'rounded-[22px] border border-[#e2e8ec] bg-white px-6 pt-[22px] pb-5'
+  const h2 = 'text-[17px] font-bold text-[#272727]'
 
   return (
-    <div className="max-w-[1400px] mx-auto p-4 flex flex-col gap-4">
-      <header className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-        <h1 className="text-lg font-bold">AI 회사 데이터센터 — 누가 얼마나 가졌고 얼마나 나오나</h1>
-        <span className="text-xs text-(--color-muted)">공개 자료 {doc.updated_at} 기준 · 성능은 한 가지 잣대로 셈한 추정</span>
-      </header>
-      <div className="inline-flex self-start rounded-md border border-(--color-border) overflow-hidden text-sm" role="tablist">
-        {(
-          [
-            ['chips', '보유 칩·성능'],
-            ['money', '금액'],
-            ['market', '시장 조사'],
-          ] as const
-        ).map(([k, label]) => (
-          <button
-            key={k}
-            role="tab"
-            aria-selected={view === k}
-            onClick={() => setView(k)}
-            className={`px-3 py-1.5 ${view === k ? 'bg-(--color-accent) text-(--color-on-accent) font-semibold' : 'bg-(--color-panel) hover:bg-(--color-band)'}`}
-          >
-            {label}
-          </button>
-        ))}
+    <div className="flex flex-col gap-5">
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="flex gap-2" role="tablist">
+          {(
+            [
+              ['chips', '보유 칩·성능'],
+              ['money', '금액'],
+              ['market', '시장 조사'],
+            ] as const
+          ).map(([k, label]) => (
+            <button key={k} type="button" role="tab" aria-selected={view === k} onClick={() => setView(k)} className={pill(view === k)}>
+              {label}
+            </button>
+          ))}
+        </div>
+        {view === 'chips' && (
+          <div className="ml-auto flex flex-wrap justify-end gap-2">
+            {['', ...regions].map((k) => (
+              <button key={k || 'all'} type="button" aria-pressed={region === k} onClick={() => setRegion(k)} className={pill(region === k, true)}>
+                {k ? REGION[k] ?? k : '전체'}
+                <span className="text-xs font-normal text-[#999]">{k ? count(k) : every.length}</span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
       {view === 'market' && doc.market && <MarketView m={doc.market} />}
       {view === 'money' && doc.money && <MoneyView clusters={doc.clusters} m={doc.money} fx={doc.fx} />}
       {view === 'chips' && (
       <>
+      {top.length > 0 && (
+        <div className="grid gap-[14px] md:grid-cols-3">
+          {top.map((r, i) => {
+            const eq = eqOfRow(r)!
+            const t = eq * tps
+            const dark = i === 0
+            const v = dark ? 'font-bold text-white' : 'font-bold text-[#272727]'
+            return (
+              <button
+                key={r.company}
+                type="button"
+                onClick={() => setOpen(open === r.company ? null : r.company)}
+                className={'text-left rounded-[24px] border px-[25px] pt-[23px] pb-6 ' + (dark ? 'border-[#272727] bg-[#272727]' : 'border-[#e2e8ec] bg-white hover:border-[#999]')}
+              >
+                <div className="flex items-center gap-3">
+                  <Mark name={r.company} size={48} />
+                  <span className="min-w-0 flex-1">
+                    <span className={'block truncate text-lg font-bold leading-[26px] ' + (dark ? 'text-white' : 'text-[#272727]')}>{r.company}</span>
+                    <span className="block text-xs text-[#999]">
+                      {REGION[r.region] ?? r.region} · 가동 {r.live.length}곳
+                    </span>
+                  </span>
+                  <span className="shrink-0 text-sm font-bold text-(--color-accent)">{i + 1}위</span>
+                </div>
+                <div className="mt-4 flex items-baseline gap-1">
+                  <span className={'text-[34px] font-bold leading-[49px] tracking-[-0.6px] tabular-nums ' + (dark ? 'text-white' : 'text-[#272727]')}>{kor(eq)}</span>
+                  <span className="text-sm text-[#999]">H100 환산{r.implied ? ' · 역산 하한' : ''}</span>
+                </div>
+                <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5 text-[13px] text-[#999] tabular-nums">
+                  <div>
+                    연산 <b className={v}>{eflops(eq)} EFLOPS</b>
+                  </div>
+                  <div>
+                    초당 토큰 <b className={v}>{kor(t)}</b>
+                  </div>
+                  <div>
+                    동시 응대 <b className={v}>{kor(t / USER_TPS)}명</b>
+                  </div>
+                  <div>
+                    전력 <b className={v}>{watt(r.mw)}</b>
+                  </div>
+                </dl>
+              </button>
+            )
+          })}
+        </div>
+      )}
 
-      <div className="flex flex-wrap items-center gap-1.5 text-sm">
-        {['', ...regions].map((k) => (
-          <button
-            key={k || 'all'}
-            onClick={() => setRegion(k)}
-            className={`px-2.5 py-1 rounded-md ${region === k ? 'bg-(--color-accent) text-(--color-on-accent) font-semibold' : 'bg-(--color-band) hover:bg-(--color-border-soft)'}`}
-          >
-            {k ? REGION[k] ?? k : '전체'} <span className="text-[10px] opacity-70">{k ? all.filter((r) => r.region === k).length : all.length}</span>
-          </button>
-        ))}
-      </div>
-      <div className="rounded-lg border border-(--color-border) bg-(--color-panel) overflow-x-auto">
-        <table className="w-full text-sm min-w-[1100px]">
+      <div>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[1150px] border-collapse">
           <thead>
-            <tr className="text-[11px] text-(--color-muted) text-left border-b border-(--color-border)">
-              <th className="font-normal px-3 py-2">회사</th>
-              <th className="font-normal px-3 py-2">가동 중인 칩</th>
-              <th className="font-normal px-3 py-2 w-56">H100 환산</th>
-              <th className="font-normal px-3 py-2 text-right">연산(FP8)</th>
-              <th className="font-normal px-3 py-2 text-right">초당 토큰(70B 급)</th>
-              <th className="font-normal px-3 py-2 text-right">하루 토큰</th>
-              <th className="font-normal px-3 py-2 text-right">동시 응대 인원</th>
-              <th className="font-normal px-3 py-2 text-right">전력(IT)</th>
-              <th className="font-normal px-3 py-2">계획</th>
+            <tr className="text-left [&>th]:bg-[#fafafa] [&>th]:h-12 [&>th]:px-3 [&>th]:border-b [&>th]:border-[#e2e2e2] [&>th]:text-sm [&>th]:font-bold [&>th]:text-[#272727] [&>th]:whitespace-nowrap">
+              <th className="w-[211px]">회사</th>
+              <th className="w-[234px]">가동 중인 칩</th>
+              <th className="w-[127px]">H100 환산</th>
+              <th className="w-[99px]">연산 (FP8)</th>
+              <th className="w-[150px]">초당 토큰 (70B 급)</th>
+              <th className="w-[87px]">하루 토큰</th>
+              <th className="w-[93px]">동시 응대</th>
+              <th className="w-[85px]">전력 (IT)</th>
+              <th>계획</th>
             </tr>
           </thead>
           <tbody>
-            {rs.map((r) => {
-              const eq = r.h100eq ?? r.implied?.h100eq ?? null
+            {shownRows.map((r) => {
+              const eq = eqOfRow(r)
               const t = eq != null ? eq * tps : null
               const shown = open === r.company
-              const chipTypes = [...new Set(r.live.map((c) => c.chip).filter(Boolean))].join(' · ')
+              const chips = chipLine(r.live)
+              const plan =
+                r.planned
+                  .filter((c) => c.status === 'planned')
+                  .map((c) => `${c.name}${c.count ? ` ${kor(c.count)}장` : ''}${c.mw ? ` ${c.mw >= 1000 ? `${c.mw / 1000}GW` : `${c.mw}MW`}` : ''}`)
+                  .join(' · ') || '—'
               return (
                 <Fragment key={r.company}>
                   <tr
-                    className={`border-t border-(--color-border-soft) align-top cursor-pointer ${shown ? 'bg-(--color-accent)/6' : 'hover:bg-(--color-band)'}`}
+                    className={'border-b border-[#e2e2e2] cursor-pointer [&>td]:px-3 [&>td]:py-3 ' + (shown ? 'bg-(--color-accent-weak)' : 'hover:bg-[#fafbfc]')}
                     onClick={() => setOpen(shown ? null : r.company)}
+                    aria-expanded={shown}
                   >
-                    <td className="px-3 py-2">
-                      <div className="font-semibold">
-                        <span className="text-(--color-muted) mr-1">{shown ? '▾' : '▸'}</span>
-                        {r.company}
-                      </div>
-                      <div className="text-[10px] text-(--color-faint)">
-                        {REGION[r.region] ?? r.region} · 가동 {r.live.length}곳
+                    <td>
+                      <div className="flex items-center gap-2.5">
+                        <Mark name={r.company} size={32} />
+                        <span className="min-w-0">
+                          <span className="block text-[15px] font-bold leading-[21px] text-[#272727]">{r.company}</span>
+                          <span className="block text-xs text-[#999]">
+                            {REGION[r.region] ?? r.region} · 가동 {r.live.length}곳
+                          </span>
+                        </span>
                       </div>
                     </td>
-                    <td className="px-3 py-2 text-xs">
-                      {r.chips != null ? <b className="tabular-nums">{kor(r.chips)}장</b> : r.implied ? <span className="text-(--color-muted)">공개 수 없음</span> : '—'}
-                      {chipTypes && <div className="text-[10px] text-(--color-muted)">{chipTypes}</div>}
+                    <td>
+                      <div className="text-sm font-bold text-[#272727] tabular-nums">
+                        {r.chips != null ? `${kor(r.chips)}장` : r.implied ? <span className="font-normal text-[#999]">공개 수 없음</span> : '—'}
+                      </div>
+                      {chips && <div className="text-xs text-[#999] line-clamp-1" title={chips}>{chips}</div>}
                     </td>
-                    <td className="px-3 py-2 tabular-nums">
+                    <td title={r.methods.map((m) => BY[m]).join(' + ')}>
                       {eq != null ? (
                         <>
-                          <b>{kor(eq)}</b>
-                          {r.implied && <span className="text-[10px] text-(--color-amber-400)"> 역산 하한</span>}
-                          {r.methods.length > 0 && <div className="text-[10px] text-(--color-muted)">{r.methods.map((m) => BY[m]).join(' + ')}</div>}
-                          <div className="h-1.5 rounded bg-(--color-band) mt-1">
-                            <div
-                              className={`h-full rounded ${r.implied ? 'bg-(--color-amber-400)/70' : 'bg-(--color-accent)'}`}
-                              style={{ width: `${(eq / maxEq) * 100}%` }}
-                            />
+                          <div className="text-[15px] font-bold text-(--color-accent) tabular-nums">
+                            {kor(eq)}
+                            {r.implied && <span className="ml-1 text-[11px] font-normal text-[#c98a00]">역산 하한</span>}
+                          </div>
+                          <div className="mt-1 h-1.5 w-[90px] rounded-[3px] bg-[#f1f3f5]">
+                            <div className={'h-full rounded-[3px] ' + (r.implied ? 'bg-[#f2a93b]' : 'bg-(--color-accent)')} style={{ width: `${(eq / maxEq) * 100}%` }} />
                           </div>
                         </>
                       ) : (
-                        <span className="text-(--color-faint)">—</span>
+                        <span className="text-[#bbb]">—</span>
                       )}
                     </td>
-                    <td className="px-3 py-2 text-right tabular-nums">{eq != null ? `${((eq * H100_FP8_TFLOPS) / 1e6).toFixed(eq * H100_FP8_TFLOPS >= 1e7 ? 0 : 1)} EFLOPS` : '—'}</td>
-                    <td className="px-3 py-2 text-right tabular-nums font-semibold">{t != null ? kor(t) : '—'}</td>
-                    <td className="px-3 py-2 text-right tabular-nums">{t != null ? kor(t * 86400) : '—'}</td>
-                    <td className="px-3 py-2 text-right tabular-nums">{t != null ? `${kor(t / USER_TPS)}명` : '—'}</td>
-                    <td className="px-3 py-2 text-right tabular-nums">{r.mw != null ? (r.mw >= 1000 ? `${(r.mw / 1000).toFixed(2)}GW` : `${Math.round(r.mw)}MW`) : '—'}</td>
-                    <td className="px-3 py-2 text-xs text-(--color-muted) max-w-72">
-                      {r.planned
-                        .filter((c) => c.status === 'planned')
-                        .map((c) => `${c.name}${c.count ? ` ${kor(c.count)}장` : ''}${c.mw ? ` ${c.mw >= 1000 ? `${c.mw / 1000}GW` : `${c.mw}MW`}` : ''}`)
-                        .join(' · ') || '—'}
-                    </td>
+                    <td className="text-sm text-[#474747] tabular-nums">{eq != null ? `${eflops(eq)} EF` : '—'}</td>
+                    <td className="text-sm text-[#474747] tabular-nums">{t != null ? kor(t) : '—'}</td>
+                    <td className="text-sm text-[#474747] tabular-nums">{t != null ? kor(t * 86400) : '—'}</td>
+                    <td className="text-sm text-[#474747] tabular-nums">{t != null ? `${kor(t / USER_TPS)}명` : '—'}</td>
+                    <td className="text-sm text-[#474747] tabular-nums">{watt(r.mw)}</td>
+                    <td className="text-xs leading-[18px] text-[#474747]"><span className="line-clamp-2" title={plan}>{plan}</span></td>
                   </tr>
                   {shown && (
-                    <tr className="bg-(--color-accent)/4">
+                    <tr className="bg-[#fafbfc] border-b border-[#e2e2e2]">
                       <td colSpan={9} className="px-4 py-3">
                         <p className="text-xs text-(--color-muted) mb-2">{r.note}</p>
                         {r.implied && (
@@ -407,10 +519,25 @@ export function HardwareDatacenter({ data }: { data: HwData }) {
           </tbody>
         </table>
       </div>
+      {rs.length > FIRST && (
+        <button
+          type="button"
+          onClick={() => setAll((x) => !x)}
+          aria-expanded={all}
+          className="mt-5 w-full h-11 rounded-[22px] bg-[#272727] text-base font-medium text-white hover:bg-black"
+        >
+          {all ? '접기' : `전체 보기 (${rs.length}곳)`}
+        </button>
+      )}
+      <p className="mt-4 text-[13px] text-[#999]">
+        H100 환산 = 출처가 밝힌 환산 또는 칩 수 × 사양비. 토큰·응대 인원은 70B 급 모델 기준의 이론 추정이라 실제 서비스 수치와 달라요. 줄을 누르면 데이터센터별
+        근거와 출처가 펼쳐져요.
+      </p>
+      </div>
 
       {doc.national && doc.national.length > 0 && (
-        <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4">
-          <h2 className="text-sm font-semibold">나라·정부 단위</h2>
+        <section className={card}>
+          <h2 className={h2}>나라·정부 단위</h2>
           <p className="text-[11px] text-(--color-muted) mb-2">위 회사 줄의 합이거나 겹치는 숫자라 표에 더하지 않고 따로 싣는다.</p>
           <ul className="text-xs flex flex-col gap-1.5">
             {doc.national.map((n) => (
@@ -425,8 +552,8 @@ export function HardwareDatacenter({ data }: { data: HwData }) {
         </section>
       )}
 
-      <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4 text-xs flex flex-col gap-1.5">
-        <h2 className="text-sm font-semibold">어떻게 셌나</h2>
+      <section className={card + ' text-[13px] leading-5 text-[#474747] flex flex-col gap-1.5'}>
+        <h2 className={h2}>어떻게 셌나</h2>
         <p>
           <b>H100 환산</b> — {doc.basis.h100eq_text}
         </p>
@@ -450,8 +577,8 @@ export function HardwareDatacenter({ data }: { data: HwData }) {
       </section>
 
       {doc.ratios && doc.ratios.length > 0 && (
-        <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4">
-          <h2 className="text-sm font-semibold">칩 사양비 — H100 한 장을 1 로 두면</h2>
+        <section className={card}>
+          <h2 className={h2}>칩 사양비 — H100 한 장을 1 로 두면</h2>
           <p className="text-[11px] text-(--color-muted) mb-2">
             FP8 밀집 성능 비(FP8 이 없는 칩은 BF16). 공식 사양을 확인하지 못한 칩(Huawei Ascend 910B · Baidu Kunlun P800 · Intel GPU Max 1550 · 자체 설계 칩)은 싣지 않아 그 데이터센터는 칩 수만 보인다.
           </p>
@@ -470,8 +597,8 @@ export function HardwareDatacenter({ data }: { data: HwData }) {
       )}
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4">
-          <h2 className="text-sm font-semibold mb-2">칩 한 장 — 공식 사양과 MLPerf 토큰</h2>
+        <section className={card}>
+          <h2 className={h2 + ' mb-2'}>칩 한 장 — 공식 사양과 MLPerf 토큰</h2>
           <table className="w-full text-xs">
             <thead>
               <tr className="text-[10px] text-(--color-muted) text-left">
@@ -501,8 +628,8 @@ export function HardwareDatacenter({ data }: { data: HwData }) {
           </table>
           <p className="text-[10px] text-(--color-faint) mt-2">70B 초당 토큰은 MLPerf Inference Llama 2 70B 오프라인 결과를 GPU 수로 나눈 값(H100·H200 v5.0, B200·GB200 v5.1).</p>
         </section>
-        <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4">
-          <h2 className="text-sm font-semibold mb-2">실제로 처리한다고 밝힌 양</h2>
+        <section className={card}>
+          <h2 className={h2 + ' mb-2'}>실제로 처리한다고 밝힌 양</h2>
           <ul className="text-xs flex flex-col gap-1.5">
             {doc.usage.map((u) => (
               <li key={u.org + u.as_of}>
