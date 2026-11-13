@@ -587,3 +587,18 @@ html, body, #root {
 /* details 의 기본 삼각형 제거 — 차례·퀴즈에서 직접 그린다 */
 .book-md summary::-webkit-details-marker,
 details > summary.list-none::-webkit-details-marker { display: none; }
+
+/* 역설계 비교 문서(Penpot 27) — 17px 본문, 굵은 글은 빨강, 표는 옅은 머리·가는 줄 */
+.blog-md.reveng-doc { font-size: 17px; line-height: 1.76; color: #333; }
+.blog-md.reveng-doc strong { color: var(--color-accent); font-weight: 700; }
+.blog-md.reveng-doc h2 { font-size: 23px; line-height: 1.45; margin: 1.7em 0 0.7em; color: #272727; scroll-margin-top: 16px; }
+.blog-md.reveng-doc h3 { font-size: 19px; color: #272727; }
+.blog-md.reveng-doc h2 strong, .blog-md.reveng-doc h3 strong, .blog-md.reveng-doc th strong { color: inherit; }
+.blog-md.reveng-doc table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.6; margin: 1.2em 0; border-top: 1px solid #e2e2e2; }
+.blog-md.reveng-doc th { background: #fafafa; text-align: left; padding: 14px 16px; font-size: 15px; font-weight: 700; color: #272727; border-bottom: 1px solid #e2e2e2; vertical-align: top; }
+.blog-md.reveng-doc td { padding: 14px 16px; color: #474747; border-bottom: 1px solid #e2e2e2; vertical-align: top; }
+.blog-md.reveng-doc td:first-child { font-weight: 700; color: #272727; white-space: nowrap; }
+.blog-md.reveng-doc td strong { color: inherit; font-weight: 500; }
+.blog-md.reveng-doc blockquote { border: none; border-radius: 14px; background: #f1efff; color: #474747; padding: 14px 18px; font-size: 15px; }
+.blog-md.reveng-doc code { background: #f4f4f4; border: none; }
+.blog-md.reveng-doc a { color: inherit; text-decoration-color: #c4c4c4; text-underline-offset: 3px; }

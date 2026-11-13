@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { useDomainDocs, useMarkdown, useRevengIndex, type IndexEntry } from '../hooks/useReveng'
+import { useDomainDocs, useMarkdown, useRevengIndex, type DomainDoc, type IndexEntry } from '../hooks/useReveng'
 import { usePaged, PAGE_SIZE_GRID as PAGE_SIZE } from '../../../hooks/usePaged'
 import { CompanyTeardown } from './CompanyTeardown'
 import { goBack, onLinkClick } from '../../../utils/navigation'
@@ -84,7 +84,7 @@ export function RevengView({ seg = [] }: { seg?: string[] }) {
   if (slug) return <CompanyTeardown slug={slug} onBack={() => goBack(paths.reveng())} />
   if (docSlug) {
     const doc = domainDocs?.docs.find((d) => d.slug === docSlug)
-    if (doc) return <DomainDocView file={doc.file} title={doc.title} onBack={() => goBack(paths.reveng())} />
+    if (doc) return <DomainDocView doc={doc} docs={domainDocs?.docs ?? []} companies={companies} />
   }
   if (loading) return <Loader label="역설계 데이터 불러오는 중…" />
   if (error)
@@ -288,38 +288,156 @@ export function RevengView({ seg = [] }: { seg?: string[] }) {
   )
 }
 
-function DomainDocView({
-  file,
-  title,
-  onBack,
-}: {
-  file: string
-  title: string
-  onBack: () => void
-}) {
-  const { text, loading, error } = useMarkdown(`/reveng/domains/${file}`)
-  // 파일은 단독으로도 읽히도록 H1 을 갖고 있다. 화면에서는 헤더가 이미 제목을 보여주므로
-  // 첫 H1 한 줄만 걷어낸다.
-  const body = text?.replace(/^#\s.*\n/, '') ?? ''
+// CommonMark 의 강조 규칙은 '**"잘못됐을 때"**에' 처럼 닫는 별표 앞이 문장부호이고 뒤가 한글이면
+// 강조로 안 본다(한국어 문서에서 흔하다). 링크 문법은 그 규칙이 없어서, 굵은 글을 '#strong' 링크로
+// 바꿔 넘기고 a 렌더러가 다시 strong 으로 그린다. 코드 블록 안은 건드리지 않는다.
+const STRONG = '#strong'
+function strongAsLink(md: string): string {
+  return md
+    .split(/(```[\s\S]*?```)/)
+    .map((part, i) => (i % 2 ? part : part.replace(/\*\*([^*\n]+?)\*\*/g, (_, x: string) => `[${x}](${STRONG})`)))
+    .join('')
+}
+
+function DomainDocView({ doc, docs, companies }: { doc: DomainDoc; docs: DomainDoc[]; companies: IndexEntry[] }) {
+  const { text, loading, error } = useMarkdown(`/reveng/domains/${doc.file}`)
+  // 파일은 단독으로도 읽히도록 H1 과 '비교 대상' 인용을 갖고 있다. 화면에서는 위 띠가 둘을
+  // 대신 보여주므로 첫 H1 과 바로 뒤 인용 한 덩어리를 걷어낸다.
+  const raw = strongAsLink((text ?? '').replace(/\r\n/g, '\n'))
+  const lead = raw.match(/^#\s.*\n+((?:>.*\n)+)/)
+  const body = raw.replace(/^#\s.*\n+/, '').replace(/^(?:>.*\n)+/, '')
+  const heads = useMemo(() => [...body.matchAll(/^##\s+(.+)$/gm)].map((m) => m[1].replace(/[*`]/g, '').trim()), [body])
+  const others = useMemo(() => {
+    const i = docs.findIndex((d) => d.slug === doc.slug)
+    return [...docs.slice(i + 1), ...docs.slice(0, Math.max(i, 0))].slice(0, 2)
+  }, [docs, doc.slug])
+  const cards = doc.companies.map((slug) => {
+    const c = companies.find((x) => x.slug === slug)
+    const name = c?.name ?? slug
+    // 인용의 '토스 `payment-approval`' 에서 그 회사의 첫 기능을 읽는다. 없으면 비워 둔다.
+    const esc = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const feat = lead?.[1].match(new RegExp(esc + '\\s*`([^`]+)`'))?.[1] ?? ''
+    return { slug, name, domain: c?.domain, feat }
+  })
+  const featOf = new Map(cards.map((c) => [c.name, c.feat]))
+  const plain = (n: React.ReactNode): string => (Array.isArray(n) ? n.map(plain).join('') : typeof n === 'string' ? n : n && typeof n === 'object' && 'props' in n ? plain((n.props as { children?: React.ReactNode }).children) : '')
+  const jump = (i: number) => document.getElementById(`doc-h-${i}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+
   return (
-    <div className="flex flex-col flex-1 min-h-0 min-w-0 overflow-y-auto">
-      <header className="px-4 py-3 border-b border-(--color-border) bg-(--color-panel) sticky top-0 z-10">
-        <button onClick={onBack} className="text-xs text-(--color-muted) hover:text-(--color-accent) mb-1">
-          ← 회사 목록
-        </button>
-        <h2 className="text-lg font-semibold text-(--color-text)"><span className="jd-head">{title}</span></h2>
-      </header>
-      <div className="p-4 max-w-3xl">
-        {loading ? (
-          <Loader label="비교 문서 불러오는 중…" />
-        ) : error ? (
-          <ErrorState title={`reveng/domains/${file} 로드 실패`} detail={error} />
-        ) : (
-          <div className="blog-md text-sm text-(--color-text)">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{body}</ReactMarkdown>
+    <div data-scroll className="flex-1 min-h-0 overflow-y-auto bg-white">
+      <div className="jd-container pt-11 pb-[90px]">
+        <nav aria-label="경로" className="text-sm text-[#777]">
+          <a href={paths.reveng()} onClick={onLinkClick(paths.reveng())} className="hover:text-[#272727]">
+            기술 역설계
+          </a>
+          {' › 도메인 비교'}
+        </nav>
+
+        <header className="mt-5 rounded-[30px] bg-[#f7f9fa] px-[38px] pt-[38px] pb-[34px]">
+          <span className="inline-block rounded bg-[#f67979] px-2 text-[13px] leading-[22px] font-medium text-white">도메인 비교 문서</span>
+          <h1 className="mt-2 text-[34px] font-bold leading-[50px] tracking-[-0.6px] text-[#272727] break-keep">{doc.title}</h1>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {cards.map((c) => (
+              <a
+                key={c.slug}
+                href={paths.revengCompany(c.slug)}
+                onClick={onLinkClick(paths.revengCompany(c.slug))}
+                className="flex items-center gap-3 h-[76px] rounded-[18px] bg-white px-4 hover:shadow-[0_2px_10px_rgba(0,0,0,0.06)]"
+              >
+                <CompanyLogo domain={c.domain} name={c.name} size={40} />
+                <span className="min-w-0">
+                  <span className="block truncate text-base font-bold leading-6 text-[#272727]">{c.name}</span>
+                  {c.feat && <span className="block truncate text-xs text-[#888]">{c.feat}</span>}
+                </span>
+              </a>
+            ))}
           </div>
-        )}
+          <p className="mt-5 text-sm text-[#666]">
+            각 회사 페이지에서 <span className="rounded bg-[#eaf8f0] px-[7px] text-[13px] leading-[22px] text-[#1e9e5a]">확인</span> 으로 정리한 사실만
+            엮었어요. 비교에서 나오는 해석은 <span className="rounded bg-[#f1efff] px-[7px] text-[13px] leading-[22px] text-[#5b4fd6]">추정</span> 으로
+            표시했어요.
+          </p>
+        </header>
+
+        <div className="mt-9 flex flex-col lg:flex-row gap-7 items-start">
+          <article className="w-full lg:flex-1 min-w-0">
+            {loading ? (
+              <Loader label="비교 문서 불러오는 중…" />
+            ) : error ? (
+              <ErrorState title={`reveng/domains/${doc.file} 로드 실패`} detail={error} />
+            ) : (
+              <div className="blog-md reveng-doc">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    a: ({ href, children }) =>
+                      href === STRONG ? <strong>{children}</strong> : <a href={href} target="_blank" rel="noreferrer noopener">{children}</a>,
+                    h2: ({ children }) => <h2 id={`doc-h-${heads.indexOf(plain(children).trim())}`}>{children}</h2>,
+                    // 표 머리의 '토스 `payment-approval`' 은 이름과 기능을 두 줄로 나눠 띠의 카드와 맞춘다.
+                    th: ({ children }) => {
+                      const parts = Array.isArray(children) ? children : [children]
+                      const name = typeof parts[0] === 'string' ? parts[0].trim() : null
+                      if (name && featOf.has(name))
+                        return (
+                          <th>
+                            <span className="block">{name}</span>
+                            <span className="block text-xs font-normal text-[#999]">{featOf.get(name)}</span>
+                          </th>
+                        )
+                      return <th>{children}</th>
+                    },
+                  }}
+                >
+                  {body}
+                </ReactMarkdown>
+              </div>
+            )}
+          </article>
+
+          <aside className="w-full lg:w-[348px] shrink-0 flex flex-col gap-4 lg:sticky lg:top-6">
+            {heads.length > 0 && (
+              <section className="rounded-[22px] border border-[#e2e8ec] bg-white px-[23px] pt-[23px] pb-4">
+                <h3 className="text-[17px] font-bold text-[#272727]">이 문서의 차례</h3>
+                <ol className="mt-3 flex flex-col gap-1">
+                  {heads.map((h, i) => (
+                    <li key={i}>
+                      <button
+                        type="button"
+                        onClick={() => jump(i)}
+                        className={'w-full text-left pl-3.5 py-1.5 text-sm ' + (i === 0 ? 'font-medium text-(--color-accent)' : 'text-[#666] hover:text-[#272727]')}
+                      >
+                        {h}
+                      </button>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            )}
+            {others.length > 0 && (
+              <section className="rounded-[22px] border border-[#e2e8ec] bg-white px-[23px] pt-[23px] pb-2">
+                <h3 className="text-[17px] font-bold text-[#272727]">다른 도메인 비교</h3>
+                <ul className="mt-2">
+                  {others.map((d) => (
+                    <li key={d.slug} className="border-b border-[#f1f3f5] last:border-0">
+                      <a
+                        href={paths.revengDoc(d.slug)}
+                        onClick={onLinkClick(paths.revengDoc(d.slug))}
+                        className="flex items-center gap-3 py-3.5 text-sm font-medium leading-5 text-[#272727] hover:underline underline-offset-2"
+                      >
+                        <span className="min-w-0 flex-1">{d.title}</span>
+                        <svg width="8" height="10" viewBox="0 0 8 10" fill="none" stroke="#272727" strokeWidth="1.5" strokeLinecap="round" aria-hidden className="shrink-0">
+                          <path d="M2.5 1.5 6 5l-3.5 3.5" />
+                        </svg>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+          </aside>
+        </div>
       </div>
+      <SiteFooter sources="각 사 공개 자료(엔지니어링 블로그·발표·문서)" />
     </div>
   )
 }
