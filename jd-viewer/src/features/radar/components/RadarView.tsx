@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { goBack, navigate } from '../../../utils/navigation'
+import { goBack, navigate, onLinkClick } from '../../../utils/navigation'
 import { paths } from '../../../utils/urls'
 import { absUrl, clip, useSeo } from '../../../utils/seo'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { useRadar } from '../hooks/useRadar'
 import { ArchitectureDiagram } from '../../../components/ArchitectureDiagram'
-import { Loader, ErrorState, SidePanel, MobileBar, Pagination } from '../../../components/ui'
-import { usePaged, PAGE_SIZE } from '../../../hooks/usePaged'
+import { Loader, ErrorState, CompanyMark } from '../../../components/ui'
+import { Pager } from '../../../components/Pager'
+import { SiteFooter } from '../../../components/SiteFooter'
+import { usePaged, PAGE_SIZE_GRID as PAGE_SIZE } from '../../../hooks/usePaged'
 import type {
   Debate,
   DeepDiveSection,
@@ -45,7 +47,6 @@ export function RadarView({ companyKey }: { companyKey?: string | null }) {
   const [langs, setLangs] = useState<Set<string>>(new Set())
   const [flags, setFlags] = useState<Set<string>>(new Set())
   const [sort, setSort] = useState<'default' | 'name' | 'country'>('default')
-  const [navOpen, setNavOpen] = useState(false)
 
   // 매 렌더마다 새 배열이 되면 아래 useMemo 들이 전부 다시 돈다(회사 100곳 × 필터).
   const companies = useMemo(() => data?.companies ?? [], [data])
@@ -124,12 +125,6 @@ export function RadarView({ companyKey }: { companyKey?: string | null }) {
     else next.add(name)
     setLangs(next)
   }
-  const toggleFlag = (name: string) => {
-    const next = new Set(flags)
-    if (next.has(name)) next.delete(name)
-    else next.add(name)
-    setFlags(next)
-  }
 
   if (loading) return <Loader label="기술 스택 레이더 불러오는 중…" />
   if (error)
@@ -141,133 +136,89 @@ export function RadarView({ companyKey }: { companyKey?: string | null }) {
       />
     )
 
+  const githubCount = companies.filter((c) => c.github?.repos?.length).length
+  const anyFilter = query.trim() !== '' || country !== null || domain !== null || langs.size > 0
+
   return (
-    <div className="flex flex-col flex-1 min-h-0 min-w-0">
-      {/* 보기 전환: 회사별 ↔ 도메인별 공통 스택 */}
-      <div className="flex items-center gap-3 px-4 py-2 border-b border-(--color-border) bg-(--color-panel)/60">
-        <div className="inline-flex rounded-md border border-(--color-border) overflow-hidden">
-          <ModeBtn active={mode === 'company'} onClick={() => setMode('company')}>
-            회사별
-          </ModeBtn>
-          <ModeBtn active={mode === 'domain'} onClick={() => setMode('domain')}>
-            도메인별
-          </ModeBtn>
-        </div>
-        <span className="text-xs text-(--color-muted)">
-          {mode === 'domain'
-            ? `${data?.domain_groups?.length ?? 0}개 산업 도메인 · 도메인이 어떤 기술스택으로 이루어지는지 집계`
-            : '회사별 기술 스택 · 아키텍처 다이어그램'}
-        </span>
-      </div>
+    <div data-scroll className="flex-1 min-h-0 overflow-auto bg-white">
+      <div className="jd-container pt-[43px] pb-[90px]">
+        <h1 className="text-[28px] font-bold leading-10 tracking-[-0.6px] text-[#272727]">
+          글로벌 IT 기업 <span className="font-black text-(--color-accent)">{data?.total ?? companies.length}곳</span> 기술 레이더
+        </h1>
+        <p className="mt-1 text-base leading-6 tracking-[-0.16px] text-[#666]">
+          언어·기술스택·아키텍처 다이어그램·기술 심화·전형까지, 회사 하나를 끝까지 파고들어요.
+          {data?.generated_at ? ` 갱신 ${data.generated_at.slice(0, 10)}` : ''}
+        </p>
 
-      {mode === 'domain' ? (
-        <DomainView
-          data={data}
-          onOpenCompany={(name) => {
-            const c = byName.get(name)
-            if (c) openCompany(c)
-          }}
-          onPickTech={(tech) => {
-            setMode('company')
-            setQuery(tech)
-          }}
-        />
-      ) : (
-        <div className="flex flex-1 min-h-0 min-w-0">
-          {/* 사이드바: 검색 + 국가 + 도메인 + 언어 (모바일=드로어) */}
-          <SidePanel side="left" desktopWidth="md:w-80" open={navOpen} onClose={() => setNavOpen(false)}>
-       <div className="overflow-auto p-4 flex flex-col gap-4">
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="검색 (회사·도메인·언어·아키텍처)"
-          className="w-full px-3 py-2 text-sm rounded bg-(--color-bg) border border-(--color-border) text-(--color-text) placeholder:text-(--color-muted)"
-        />
+        {/* 블로그 글 ↔ 기업 100 — 기술 블로그 화면과 오가는 탭 */}
+        <nav className="mt-[34px] flex border-b border-[#e2e2e2]">
+          <a href={paths.blog()} onClick={onLinkClick(paths.blog())} className="shrink-0 px-[22px] pb-[13px] text-[17px] font-medium text-[#777] hover:text-[#272727]">
+            블로그 글
+          </a>
+          <span aria-current="page" className="relative shrink-0 px-[22px] pb-[13px] text-[17px] font-bold text-(--color-accent) after:absolute after:inset-x-0 after:-bottom-px after:h-[3px] after:bg-(--color-accent)">
+            기업 100 (레이더)
+          </span>
+        </nav>
 
-        <div>
-          <div className="text-xs text-(--color-muted) mb-2">국가</div>
-          <div className="flex flex-wrap gap-1.5">
-            <Chip active={country === null} onClick={() => setCountry(null)}>
-              전체
-            </Chip>
-            {(data?.countries ?? []).map((c) => (
-              <Chip
-                key={c.code}
-                active={country === c.code}
-                onClick={() => setCountry(country === c.code ? null : c.code!)}
-              >
-                {COUNTRY_LABEL[c.code!] ?? c.code} {c.count}
-              </Chip>
-            ))}
-          </div>
+        <div className="mt-[26px] grid grid-cols-2 lg:grid-cols-4 gap-[14px]">
+          <RadarStat label="회사" value={`${data?.total ?? companies.length}곳`} accent />
+          <RadarStat label="나라" value={`${data?.countries.length ?? 0}개국`} />
+          <RadarStat label="도메인" value={`${data?.domains.length ?? 0}개`} />
+          <RadarStat label="공개 코드" value={`${githubCount}곳`} />
         </div>
 
-        <div>
-          <div className="text-xs text-(--color-muted) mb-2">도메인</div>
-          <div className="flex flex-wrap gap-1.5">
-            <Chip active={domain === null} onClick={() => setDomain(null)}>
-              전체
-            </Chip>
-            {(data?.domains ?? []).map((d) => (
-              <Chip
-                key={d.name}
-                active={domain === d.name}
-                onClick={() => setDomain(domain === d.name ? null : d.name!)}
-              >
-                {d.name} <span className="opacity-60">{d.count}</span>
-              </Chip>
-            ))}
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between text-xs text-(--color-muted)">
-          <span>언어</span>
-          {langs.size > 0 && (
-            <button onClick={() => setLangs(new Set())} className="text-(--color-accent) hover:underline">
-              초기화 ({langs.size})
-            </button>
-          )}
-        </div>
-        <div className="flex flex-wrap gap-1.5 -mt-2">
-          {langCount.map(([name, n]) => (
-            <Chip key={name} active={langs.has(name)} onClick={() => toggleLang(name)}>
-              {name} <span className="opacity-60">{n}</span>
+        <RadarChipRow label="국가">
+          <Chip active={country === null} count={companies.length} onClick={() => setCountry(null)}>
+            전체
+          </Chip>
+          {(data?.countries ?? []).map((c) => (
+            <Chip key={c.code} active={country === c.code} onClick={() => setCountry(country === c.code ? null : c.code!)}>
+              {COUNTRY_LABEL[c.code!] ?? c.code}
+              <span className={country === c.code ? 'text-[#ffd9d9]' : 'text-[#999]'}>{c.count}</span>
             </Chip>
           ))}
-        </div>
-
-        <div>
-          <div className="text-xs text-(--color-muted) mb-2">콘텐츠</div>
-          <div className="flex flex-wrap gap-1.5">
-            {([
-              ['debate', '토론', companies.filter((c) => c.debate).length],
-              ['interview', '전형', companies.filter((c) => c.interview).length],
-              ['github', '⌥ 공개코드', companies.filter((c) => c.github?.repos?.length).length],
-              ['refined', 'AI갱신', companies.filter((c) => c.research_status === 'llm-refined').length],
-            ] as const).map(([key, label, n]) => (
-              <Chip key={key} active={flags.has(key)} onClick={() => toggleFlag(key)}>
-                {label} <span className="opacity-60">{n}</span>
-              </Chip>
-            ))}
-          </div>
-        </div>
-       </div>
-      </SidePanel>
-
-      {/* 본문: 회사 카드 목록 */}
-      <main data-scroll className="flex-1 min-w-0 overflow-auto">
-        <MobileBar onMenu={() => setNavOpen(true)} label="검색·필터">
-          <span className="ml-auto text-xs text-(--color-muted)">{filtered.length}개사</span>
-        </MobileBar>
-        <div className="px-5 py-3 border-b border-(--color-border) text-xs text-(--color-muted) flex items-center gap-3">
-          <span>
-            {data?.total ?? 0}개사 중 <b className="text-(--color-text)">{filtered.length}개사</b>
-            {' · '}
-            {data?.countries.length ?? 0}개국 · {data?.domains.length ?? 0}개 도메인
-            {data && data.refined > 0 && <span> · AI 갱신 {data.refined}</span>}
+          <span className="ml-auto flex gap-2">
+            <Chip outline active={mode === 'company'} onClick={() => setMode('company')}>
+              회사별
+            </Chip>
+            <Chip outline active={mode === 'domain'} onClick={() => setMode('domain')}>
+              도메인별
+            </Chip>
           </span>
-          {(query.trim() !== '' || country !== null || domain !== null || langs.size > 0 || flags.size > 0) && (
+        </RadarChipRow>
+        <RadarChipRow label="도메인">
+          <Chip active={domain === null} onClick={() => setDomain(null)}>
+            전체
+          </Chip>
+          {/* 칩은 큰 도메인 열한 개까지(고른 것은 늘 남긴다) — 서른여섯 개를 다 늘어놓으면 네 줄이 된다. 나머지는 '도메인별' 보기에서 본다. */}
+          {(data?.domains ?? []).filter((d, i) => i < 11 || d.name === domain).map((d) => (
+            <Chip key={d.name} active={domain === d.name} onClick={() => setDomain(domain === d.name ? null : d.name!)}>
+              {d.name}
+              <span className={domain === d.name ? 'text-[#ffd9d9]' : 'text-[#999]'}>{d.count}</span>
+            </Chip>
+          ))}
+        </RadarChipRow>
+        <RadarChipRow label="언어">
+          {langCount.slice(0, 12).map(([name, n]) => (
+            <Chip key={name} active={langs.has(name)} onClick={() => toggleLang(name)}>
+              {name}
+              <span className={langs.has(name) ? 'text-[#ffd9d9]' : 'text-[#999]'}>{n}</span>
+            </Chip>
+          ))}
+        </RadarChipRow>
+        {anyFilter && (
+          <div className="mt-3 flex items-center gap-3 text-sm text-[#666]">
+            {query.trim() && (
+              <span className="rounded bg-[#f4f4f4] px-2 leading-[26px]">
+                검색: {query}
+                <button type="button" onClick={() => setQuery('')} aria-label="검색어 지우기" className="ml-1.5 text-[#999] hover:text-[#272727]">
+                  ✕
+                </button>
+              </span>
+            )}
+            <span className="tabular-nums">{filtered.length}곳</span>
             <button
+              type="button"
               onClick={() => {
                 setQuery('')
                 setCountry(null)
@@ -279,38 +230,57 @@ export function RadarView({ companyKey }: { companyKey?: string | null }) {
             >
               필터 초기화
             </button>
-          )}
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value as 'default' | 'name' | 'country')}
-            className="ml-auto bg-(--color-bg) border border-(--color-border) rounded px-1.5 py-0.5 text-(--color-text)"
-            title="정렬"
-          >
-            <option value="default">기본순</option>
-            <option value="name">이름순</option>
-            <option value="country">국가순</option>
-          </select>
-          {data?.generated_at && <span>갱신 {data.generated_at.slice(0, 10)}</span>}
-        </div>
-        <ul className="divide-y divide-(--color-border)">
-          {paged.slice.map((c) => (
-            <CompanyRow key={c.key} company={c} onPickLang={toggleLang} onOpen={openCompany} />
-          ))}
-          {filtered.length === 0 && (
-            <li className="p-8 text-(--color-muted)">조건에 맞는 회사가 없습니다.</li>
-          )}
-        </ul>
-        <Pagination
-          page={paged.page}
-          totalPages={paged.totalPages}
-          total={filtered.length}
-          pageSize={PAGE_SIZE}
-          unit="곳"
-          onChange={paged.setPage}
-        />
-      </main>
-        </div>
-      )}
+          </div>
+        )}
+
+        {mode === 'domain' ? (
+          <div className="mt-[50px] rounded-[30px] border border-[#e2e8ec] overflow-hidden flex">
+            <DomainView
+              data={data}
+              onOpenCompany={(name) => {
+                const c = byName.get(name)
+                if (c) openCompany(c)
+              }}
+              onPickTech={(tech) => {
+                setMode('company')
+                setQuery(tech)
+              }}
+            />
+          </div>
+        ) : (
+          <section className="mt-[50px]">
+            <div className="flex items-center justify-between pb-4 border-b-2 border-[#272727]">
+              <h2 className="text-[22px] font-bold leading-8 tracking-[-0.22px] text-[#272727]">회사별 기술 스택 · 아키텍처</h2>
+              <label className="relative inline-flex items-center h-9 rounded-md border border-[#d8d8d8] bg-white">
+                <select
+                  aria-label="정렬"
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value as 'default' | 'name' | 'country')}
+                  className="appearance-none h-full bg-transparent pl-[15px] pr-[33px] text-sm text-[#272727] outline-none cursor-pointer"
+                >
+                  <option value="default">기본순</option>
+                  <option value="name">이름순</option>
+                  <option value="country">국가순</option>
+                </select>
+                <svg className="pointer-events-none absolute right-[14px]" width="10" height="8" viewBox="0 0 10 8" fill="none" stroke="#272727" strokeWidth="1.5" strokeLinecap="round" aria-hidden>
+                  <path d="M1.5 2.5 5 6l3.5-3.5" />
+                </svg>
+              </label>
+            </div>
+            <div data-radar-top className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 scroll-mt-4">
+              {paged.slice.map((c) => (
+                <CompanyCard key={c.key} company={c} onPickLang={toggleLang} onOpen={openCompany} />
+              ))}
+            </div>
+            {filtered.length === 0 ? (
+              <p className="py-12 text-center text-sm text-[#999]">조건에 맞는 회사가 없어요.</p>
+            ) : (
+              <Pager page={paged.page} totalPages={paged.totalPages} onChange={paged.setPage} scrollTo="[data-radar-top]" />
+            )}
+          </section>
+        )}
+      </div>
+      <SiteFooter updated={data?.generated_at} sources="각 사 엔지니어링 블로그·공개 저장소·발표 자료" />
 
       {selected && (() => {
         // 현재 필터 목록 안에서 이전/다음 회사로 이동(딥링크 유지). 목록 밖이면 비활성.
@@ -335,6 +305,88 @@ export function RadarView({ companyKey }: { companyKey?: string | null }) {
           />
         )
       })()}
+    </div>
+  )
+}
+
+function RadarStat({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+  return (
+    <div className={'h-[108px] rounded-[20px] border px-[25px] pt-[21px] ' + (accent ? 'bg-(--color-accent-weak) border-[#ffd5d5]' : 'border-[#e2e8ec]')}>
+      <div className="text-sm text-[#777]">{label}</div>
+      <div className={'mt-1 text-[28px] font-bold leading-10 tracking-[-0.16px] tabular-nums ' + (accent ? 'text-(--color-accent)' : 'text-[#272727]')}>{value}</div>
+    </div>
+  )
+}
+
+function RadarChipRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="mt-4 flex items-start gap-4">
+      <span className="w-11 shrink-0 pt-[7px] text-[15px] font-bold text-[#272727]">{label}</span>
+      <div className="flex-1 flex flex-wrap items-center gap-2">{children}</div>
+    </div>
+  )
+}
+
+/** 회사 카드(캐치형 15) — 로고·이름·나라·도메인·AI 갱신, 한 줄 요약, 언어 칩, 자료 알약. */
+function CompanyCard({
+  company,
+  onPickLang,
+  onOpen,
+}: {
+  company: RadarCompany
+  onPickLang: (s: string) => void
+  onOpen: (c: RadarCompany) => void
+}) {
+  const to = paths.radarCompany(company.key)
+  const pills: string[] = []
+  if (company.diagram) pills.push('구조도')
+  if (company.deep_dive?.length) pills.push(`심화 ${company.deep_dive.length}`)
+  if (company.debate) pills.push('토론')
+  if (company.interview) pills.push('전형')
+  if (company.github?.repos?.length) pills.push(`⌥ 코드 ${company.github.repos.length}`)
+  return (
+    <div className="flex flex-col min-h-[268px] rounded-3xl border border-[#e2e8ec] bg-white px-[25px] pt-[25px] pb-[21px] hover:border-[#999] transition-colors">
+      <a
+        href={to}
+        onClick={(e) => {
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
+          e.preventDefault()
+          onOpen(company)
+        }}
+        className="group block"
+      >
+        <span className="flex items-start gap-3">
+          <span className="grid place-items-center w-[52px] h-[52px] rounded-[14px] overflow-hidden shrink-0">
+            <CompanyMark name={company.name} size={52} />
+          </span>
+          <span className="min-w-0 flex-1 pt-0.5">
+            <span className="block text-[19px] font-bold leading-[27px] text-[#272727] truncate group-hover:underline underline-offset-2">{company.name}</span>
+            <span className="block text-[13px] text-[#777]">
+              {COUNTRY_LABEL[company.country] ?? company.country} · {company.domain}
+            </span>
+          </span>
+          {company.research_status === 'llm-refined' && (
+            <span className="mt-3.5 shrink-0 rounded bg-[#eaf8f0] px-[7px] text-[13px] leading-[22px] text-[#1e9e5a]">AI 갱신</span>
+          )}
+        </span>
+        {company.summary && <span className="mt-[17px] line-clamp-2 text-[15px] leading-[23px] text-[#474747]">{company.summary}</span>}
+      </a>
+      <div className="mt-3 flex flex-wrap gap-1.5">
+        {company.languages.slice(0, 5).map((l) => (
+          <button key={l} type="button" onClick={() => onPickLang(l)} className="rounded bg-[#f1efff] px-[7px] text-[13px] leading-[22px] text-[#5b4fd6] hover:underline">
+            {l}
+          </button>
+        ))}
+      </div>
+      {pills.length > 0 && (
+        <div className="mt-auto pt-[18px] grid grid-cols-4 gap-1.5">
+          {pills.slice(0, 4).map((p) => (
+            <span key={p} className="h-8 rounded-2xl bg-[#f7f9fa] text-center text-[13px] leading-8 text-[#474747] truncate">
+              {p}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
@@ -501,100 +553,6 @@ function TechTag({
     </button>
   ) : (
     <span className={cls}>{inner}</span>
-  )
-}
-
-function ModeBtn({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean
-  onClick: () => void
-  children: React.ReactNode
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`px-3 py-1 text-xs font-medium transition ${
-        active
-          ? 'bg-(--color-accent) text-(--color-on-accent)'
-          : 'bg-(--color-bg) text-(--color-muted) hover:text-(--color-text)'
-      }`}
-    >
-      {children}
-    </button>
-  )
-}
-
-function CompanyRow({
-  company,
-  onPickLang,
-  onOpen,
-}: {
-  company: RadarCompany
-  onPickLang: (s: string) => void
-  onOpen: (c: RadarCompany) => void
-}) {
-  return (
-    <li className="px-5 py-4 hover:bg-(--color-panel) transition">
-      <div className="flex items-center gap-2 text-xs text-(--color-muted) mb-1">
-        <span>{COUNTRY_LABEL[company.country] ?? company.country}</span>
-        <span className="px-1.5 rounded bg-(--color-bg) border border-(--color-border)">
-          {company.domain}
-        </span>
-        {company.research_status === 'llm-refined' && (
-          <span className="px-1.5 rounded bg-(--color-accent)/15 text-(--color-accent) border border-(--color-accent)/40">
-            AI 갱신
-          </span>
-        )}
-        <span className="ml-auto">{company.architecture.join(' · ')}</span>
-      </div>
-      <a
-        href={paths.radarCompany(company.key)}
-        onClick={(e) => {
-          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
-          e.preventDefault()
-          onOpen(company)
-        }}
-        className="text-left text-(--color-text) font-medium hover:text-(--color-accent) hover:underline"
-      >
-        {company.name}
-      </a>
-      {company.summary && (
-        <p className="mt-1 text-sm text-(--color-muted) line-clamp-2">{company.summary}</p>
-      )}
-      <div className="mt-2 flex flex-wrap gap-1.5">
-        {company.languages.map((l) => (
-          <button
-            key={l}
-            onClick={() => onPickLang(l)}
-            className="px-2 py-0.5 text-xs rounded bg-(--color-bg) border border-(--color-border) text-(--color-muted) hover:border-(--color-accent) hover:text-(--color-accent)"
-          >
-            {l}
-          </button>
-        ))}
-      </div>
-      <ContentBadges company={company} />
-    </li>
-  )
-}
-
-// 카드 하단 콘텐츠 보유 표시 — 어떤 회사가 풍부한 자료(구조도·심화·토론·코드)를 가졌는지 한눈에
-function ContentBadges({ company }: { company: RadarCompany }) {
-  const items: string[] = []
-  if (company.diagram) items.push('구조도')
-  if (company.deep_dive?.length) items.push(`심화 ${company.deep_dive.length}`)
-  if (company.debate) items.push('토론')
-  if (company.interview) items.push('전형')
-  if (company.github?.repos?.length) items.push(`⌥ 코드 ${company.github.repos.length}`)
-  if (!items.length) return null
-  return (
-    <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-(--color-muted)">
-      {items.map((t) => (
-        <span key={t}>{t}</span>
-      ))}
-    </div>
   )
 }
 
@@ -1156,22 +1114,34 @@ function Tag({ children, accent }: { children: React.ReactNode; accent?: boolean
 function Chip({
   active,
   onClick,
+  count,
+  outline,
   children,
 }: {
   active: boolean
   onClick: () => void
+  /** 칩 뒤의 건수 */
+  count?: number
+  /** 켜졌을 때 칠하지 않고 붉은 테두리만(보기 전환 단추) */
+  outline?: boolean
   children: React.ReactNode
 }) {
   return (
     <button
+      type="button"
+      aria-pressed={active}
       onClick={onClick}
-      className={`px-2 py-1 text-xs rounded transition border ${
-        active
-          ? 'bg-(--color-accent) text-(--color-on-accent) border-(--color-accent) font-medium'
-          : 'bg-(--color-bg) text-(--color-text) border-(--color-border) hover:border-(--color-accent)'
-      }`}
+      className={
+        'inline-flex items-center gap-1.5 h-9 px-[17px] rounded-[18px] border text-sm font-medium tracking-[-0.3px] ' +
+        (active
+          ? outline
+            ? 'bg-white border-(--color-accent) text-(--color-accent)'
+            : 'bg-(--color-accent) border-(--color-accent) text-white'
+          : 'bg-white border-[#d8d8d8] text-[#272727] hover:border-[#272727]')
+      }
     >
       {children}
+      {count != null && <span className={'text-xs font-normal tabular-nums ' + (active && !outline ? 'text-[#ffd9d9]' : 'text-[#999]')}>{count}</span>}
     </button>
   )
 }
