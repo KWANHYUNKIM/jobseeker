@@ -23,7 +23,8 @@ const CHIP_COUNT = 15 // 회사 칩 두 줄
 export function BlogView({ postId }: { postId?: string | null }) {
   const { data, loading, error } = useBlogs()
   const [query, setQuery] = useState('')
-  const [company, setCompany] = useState<string | null>(null)
+  // ?company=AWS 로 들어오면 그 회사 글만 고른 채로 연다(글 상세의 '이 회사 글 전체 보기').
+  const [company, setCompany] = useState<string | null>(() => new URLSearchParams(window.location.search).get('company'))
   const [cat, setCat] = useState<string | null>(null)
   const [stacks, setStacks] = useState<Set<string>>(new Set())
   const [oldest, setOldest] = useState(false)
@@ -105,6 +106,7 @@ export function BlogView({ postId }: { postId?: string | null }) {
       <BlogDetail
         key={selected.url}
         post={selected}
+        allPosts={posts}
         onClose={() => goBack(paths.blog())}
         onOpenUrl={(url) => {
           // 추천 JSON 은 url 만 들고 있다. 필터에 걸려 목록에 없는 글도 열려야 하므로 posts 전체에서 찾는다.

@@ -247,6 +247,14 @@ html, body, #root {
   line-height: 1.75;
   word-break: break-word;
 }
+/* 글 상세(캐치형 17) — 본문을 17px 로 크게, 코드는 테두리 없는 옅은 회색 칸 */
+.blog-md.blog-md-lg { font-size: 17px; line-height: 1.76; }
+.blog-md.blog-md-lg h1, .blog-md.blog-md-lg h2 { font-size: 22px; margin-top: 1.6em; scroll-margin-top: 16px; }
+.blog-md.blog-md-lg h3 { font-size: 19px; scroll-margin-top: 16px; }
+.blog-md.blog-md-lg pre { background: #f4f4f4; border: none; border-radius: 12px; padding: 14px 16px; }
+.blog-md.blog-md-lg code { background: #f4f4f4; border: none; }
+.blog-md.blog-md-lg a { color: inherit; text-decoration-color: #c4c4c4; text-underline-offset: 3px; }
+.blog-md.blog-md-lg pre code { font-size: 14px; white-space: pre-wrap; }
 .blog-md h1, .blog-md h2, .blog-md h3, .blog-md h4 {
   font-weight: 700;
   line-height: 1.3;
