@@ -28,12 +28,12 @@ import { paths, TAB_SEO } from '../../../utils/urls'
 import { allowedBy, buildFacets, optionStates, type Picked } from '../utils/hwFacets'
 import { FacetPanel } from './HardwareFacets'
 import { HardwareParts } from './HardwareParts'
-import { HardwareUseIcon } from './HardwareUseIcon'
 import { PrebuiltPicks } from './HardwarePicks'
 import { HardwarePrebuilt } from './HardwarePrebuilt'
 import { HardwarePrices } from './HardwarePrices'
 import { HardwareDatacenter } from './HardwareDatacenter'
 import { ErrorState, Loader } from '../../../components/ui'
+import { SiteFooter } from '../../../components/SiteFooter'
 import { AiUses, DevUses, VideoSim } from './HardwareWorkloads'
 import { MemorySlots } from './HardwareMemory'
 import { BuyRow } from './HardwareBuy'
@@ -52,22 +52,35 @@ export function HardwareNav({ current }: { current: Sub }) {
     <a
       href={to}
       onClick={onLinkClick(to)}
-      className={`px-3 py-1.5 text-sm rounded-md transition ${
-        current === key ? 'bg-(--color-accent)/12 text-(--color-accent) font-semibold' : 'text-(--color-muted) hover:text-(--color-text)'
-      }`}
+      aria-current={current === key ? 'page' : undefined}
+      className={
+        'relative shrink-0 px-[22px] pb-[13px] text-[17px] leading-[25px] tracking-[-0.16px] ' +
+        (current === key
+          ? 'font-bold text-(--color-accent) after:absolute after:inset-x-0 after:-bottom-px after:h-[3px] after:bg-(--color-accent)'
+          : 'font-medium text-[#777] hover:text-[#272727]')
+      }
     >
       {label}
     </a>
   )
   return (
-    <div className="flex items-center gap-1 px-4 pt-2 pb-1 border-b border-(--color-border) bg-(--color-panel)">
+    <nav aria-label="PC 하드웨어" className="flex overflow-x-auto no-scrollbar border-b border-[#e2e2e2]">
       {item('build', paths.hardware(), '조립·성능 예측')}
       {item('parts', paths.hardwareParts(), '부품 비교')}
       {item('prebuilt', paths.hardwarePrebuilt(), '완제품 분석')}
       {item('prices', paths.hardwarePrices(), '가격 추이')}
       {item('datacenter', paths.hardwareDatacenter(), 'AI 데이터센터')}
-    </div>
+    </nav>
   )
+}
+
+/** 화면마다 머리 제목 — 조립 화면이 탭의 첫 화면이라 그 설명이 가장 길다. */
+const TITLE: Record<Sub, string> = {
+  build: 'PC 조립 · 성능 예측',
+  parts: '부품 비교',
+  prebuilt: '완제품 분석',
+  prices: '가격 추이',
+  datacenter: 'AI 데이터센터',
 }
 
 export function HardwareView({ seg }: { seg: string[] }) {
@@ -76,9 +89,19 @@ export function HardwareView({ seg }: { seg: string[] }) {
   if (error) return <ErrorState title="부품 데이터를 불러오지 못했습니다" detail={error} hint={<>public/hardware/parts.json 이 있는지 확인하세요.</>} />
   if (!data) return <Loader label="부품 데이터 불러오는 중…" />
   return (
-    <div className="flex flex-col flex-1 min-h-0 min-w-0">
-      <HardwareNav current={sub} />
-      <main data-scroll className="flex-1 min-h-0 overflow-auto jd-panel">
+    <div data-scroll className="flex-1 min-h-0 overflow-auto bg-white">
+      <div className="jd-container pt-[43px] pb-[90px]">
+        <h1 className="text-[28px] font-bold leading-10 tracking-[-0.6px] text-[#272727]">{TITLE[sub]}</h1>
+        {sub === 'build' && (
+          <p className="mt-1 text-base leading-6 tracking-[-0.16px] text-[#666]">
+            용도와 예산을 고르면 부품 조합과 <b className="font-bold text-(--color-accent)">"그래서 무엇이 얼마나 돌아가나"</b>를 보여 드려요. 숫자는 추정이고 근거를
+            같이 적었어요.{data.priceDay ? ` · 가격 ${data.priceDay} 다나와 최저가` : ''}
+          </p>
+        )}
+        <div className="mt-[34px]">
+          <HardwareNav current={sub} />
+        </div>
+      <main className="mt-[34px] min-w-0">
         {sub === 'parts' ? (
           <HardwareParts data={data} partId={seg[1] ?? null} />
         ) : sub === 'prebuilt' ? (
@@ -91,6 +114,8 @@ export function HardwareView({ seg }: { seg: string[] }) {
           <Builder data={data} />
         )}
       </main>
+      </div>
+      <SiteFooter updated={data.priceDay} sources="다나와 최저가(가격) · 제조사 공식 자료(스펙·성능)" />
     </div>
   )
 }
@@ -179,98 +204,133 @@ function Builder({ data }: { data: HwData }) {
     storeSaved(next)
   }
 
-  return (
-    <div className="max-w-[1600px] mx-auto p-4 flex flex-col gap-4">
-      <header className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-        <h1 className="text-lg font-bold text-(--color-text)">PC 조립 · 성능 예측</h1>
-        <span className="text-xs text-(--color-muted)">
-          용도와 예산을 고르면 부품 조합과 "그래서 무엇이 얼마나 돌아가나"를 보여 준다. 숫자는 추정이고 근거를 같이 적었다.
-        </span>
-        {data.priceDay && <span className="text-xs text-(--color-muted) ml-auto">가격 {data.priceDay} 다나와 최저가</span>}
-      </header>
+  const llm8 = data.bench.llm.models.find((m) => m.key === '8b') ?? data.bench.llm.models[0]
+  const ramBw = ram ? Number(ram.specs.dual_bandwidth_gbs) : null
+  const tileGames = ['pubg', 'cyberpunk', 'valorant'].map((k) => data.bench.games.find((g) => g.key === k)).filter(Boolean) as HwData['bench']['games']
+  const over = total - budget
 
-      <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4 flex flex-col gap-3">
-        <div className="flex flex-wrap gap-2">
-          {data.uses.map((u) => (
+  return (
+    <div className="flex flex-col">
+      <h2 className="text-[22px] font-bold leading-8 tracking-[-0.22px] text-[#272727]">어디에 쓰실 건가요?</h2>
+      <div className="mt-[18px] grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-[10px]">
+        {data.uses.map((u) => {
+          const on = u.key === useKey
+          return (
             <button
               key={u.key}
+              type="button"
+              aria-pressed={on}
               onClick={() => choose(u.key, u.budget ?? budget)}
-              className={`px-3 py-2 rounded-lg border text-left transition flex items-center gap-2.5 ${
-                u.key === useKey ? 'border-(--color-accent) bg-(--color-accent)/10' : 'border-(--color-border) hover:border-(--color-muted)'
-              }`}
+              className={'h-[132px] rounded-[20px] px-[17px] pt-[15px] text-left transition ' + (on ? 'bg-[#fff7f7] border-2 border-(--color-accent)' : 'bg-white border border-[#e2e8ec] hover:border-[#999]')}
             >
-              <HardwareUseIcon
-                useKey={u.key}
-                className={`w-8 h-8 shrink-0 ${u.key === useKey ? 'text-(--color-accent)' : 'text-(--color-muted)'}`}
-              />
-              <div>
-                <div className="text-sm font-semibold text-(--color-text)">{u.name}</div>
-                <div className="text-[11px] text-(--color-muted)">{u.plain}</div>
-              </div>
+              <span className="block text-[28px] leading-[41px]" aria-hidden>
+                {USE_EMOJI[u.key] ?? '🖥'}
+              </span>
+              <span className={'mt-2 block text-base font-bold leading-6 ' + (on ? 'text-(--color-accent)' : 'text-[#272727]')}>{u.name}</span>
+              <span className="mt-[3px] block text-[13px] leading-[19px] text-[#777] truncate" title={u.plain}>
+                {USE_SHORT[u.key] ?? u.plain}
+              </span>
             </button>
-          ))}
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm text-(--color-muted)">예산</span>
-          {BUDGETS.map((b) => (
-            <button
-              key={b}
-              onClick={() => choose(useKey, b)}
-              className={`px-2.5 py-1 rounded-md text-sm tabular-nums ${
-                b === budget ? 'bg-(--color-accent) text-(--color-on-accent) font-semibold' : 'bg-(--color-band) text-(--color-text) hover:bg-(--color-border-soft)'
-              }`}
-            >
-              {won(b)}
-            </button>
-          ))}
-          <input
-            type="range"
-            min={1_000_000}
-            max={13_000_000}
-            step={100_000}
-            value={budget}
-            onChange={(e) => choose(useKey, Number(e.target.value))}
-            className="flex-1 min-w-40 accent-(--color-accent)"
-            aria-label="예산"
-          />
-          <span className="text-sm font-semibold tabular-nums w-20 text-right">{won(budget)}</span>
-        </div>
-      </section>
+          )
+        })}
+      </div>
+      <div className="mt-[22px] flex flex-wrap items-center gap-2">
+        <span className="mr-[18px] text-base font-bold text-[#272727]">예산</span>
+        {BUDGETS.map((b) => (
+          <button
+            key={b}
+            type="button"
+            aria-pressed={b === budget}
+            onClick={() => choose(useKey, b)}
+            className={
+              'h-9 px-[17px] rounded-[18px] border text-sm font-medium tracking-[-0.3px] tabular-nums ' +
+              (b === budget ? 'bg-(--color-accent) border-(--color-accent) text-white' : 'bg-white border-[#d8d8d8] text-[#272727] hover:border-[#272727]')
+            }
+          >
+            {won(b)}
+          </button>
+        ))}
+        <input
+          type="range"
+          min={1_000_000}
+          max={13_000_000}
+          step={100_000}
+          value={budget}
+          onChange={(e) => choose(useKey, Number(e.target.value))}
+          className="ml-4 flex-1 min-w-40 accent-(--color-accent)"
+          aria-label="예산"
+        />
+        <span className="w-[72px] text-right text-base font-bold text-(--color-accent) tabular-nums">{won(budget)}</span>
+      </div>
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] 2xl:grid-cols-[minmax(0,6fr)_minmax(0,5fr)_minmax(0,4fr)] items-start">
+      <div className="mt-[30px] grid gap-6 lg:grid-cols-[380px_minmax(0,1fr)] items-start">
         <FacetPanel facets={facets} picked={picked} states={states} onToggle={toggle} onReset={() => replan(useKey, budget, {})} />
-        <section className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4 flex flex-col gap-3 min-w-0">
-          <div className="flex items-baseline gap-2">
-            <h2 className="text-base font-bold">부품 조합</h2>
-            <span className="ml-auto text-lg font-bold tabular-nums" data-nosnippet>
-              {won(total)}
-            </span>
-          </div>
-          <div className="text-[11px] text-(--color-muted) -mt-2 text-right" data-nosnippet>
-            {total > budget ? `예산보다 ${won(total - budget)} 많다` : `예산 안 · ${won(budget - total)} 남음`}
-            {missing.length > 0 && ` · 가격 모름 ${missing.length}개 제외`}
-          </div>
-          {build === plan.build && plan.stretched && (
-            <div className="rounded-md border border-(--color-border) bg-(--color-band) px-3 py-2 text-xs text-(--color-muted)">
-              예산 안에서는 {won(plan.stretched.within)}짜리까지만 짜진다(부품 급이 띄엄띄엄이다) — {won(budget)}대로 보고 한 급 위를 넣었다.
+        <section className="flex flex-col gap-4 min-w-0">
+          {/* 부품 조합 합계 — 검은 띠 */}
+          <div className="rounded-[30px] bg-[#272727] px-[34px] py-[30px] flex flex-col lg:flex-row gap-5" data-nosnippet>
+            <div className="shrink-0">
+              <div className="text-sm text-[#bbb]">부품 조합 합계</div>
+              <div className="text-white">
+                <span className="text-[48px] font-bold leading-[70px] tracking-[-1px] tabular-nums">{Math.round(total / 10_000).toLocaleString()}</span>
+                <span className="ml-0.5 text-xl font-medium">만원</span>
+              </div>
+              <div className="text-[15px] text-[#ddd]">
+                {over > 0 ? (
+                  <>
+                    예산보다 <b className="font-bold text-[#ff9a9a]">{won(over)}</b> 많아요
+                  </>
+                ) : (
+                  <>
+                    예산 안 · <b className="font-bold text-[#9fe3be]">{won(-over)}</b> 남아요
+                  </>
+                )}
+                {missing.length > 0 && ` · 가격 모름 ${missing.length}개 제외`}
+              </div>
             </div>
-          )}
-          {build === plan.build && !plan.stretched && total < budget * 0.9 && (
-            <div className="rounded-md border border-(--color-border) bg-(--color-band) px-3 py-2 text-xs text-(--color-muted)">
-              {plan.next
-                ? `${won(budget - total)} 남겼다 — 이 용도에서 더 빨라지는 다음 급은 ${won(plan.next.cost)}부터다.`
-                : `이 용도에서는 이보다 돈을 더 써도 빨라지지 않는다 — 가장 빠른 부품까지 다 넣었다.`}
+            <div className="min-w-0 flex-1 flex flex-col gap-3 lg:pl-6">
+              {build === plan.build && plan.stretched && (
+                <p className="text-sm leading-[22px] text-[#ccc]">
+                  예산 안에서는 {won(plan.stretched.within)}짜리까지만 짜져요(부품 급이 띄엄띄엄이에요) — {won(budget)}대로 보고 한 급 위를 넣었어요.
+                </p>
+              )}
+              {build === plan.build && !plan.stretched && total < budget * 0.9 && (
+                <p className="text-sm leading-[22px] text-[#ccc]">
+                  {plan.next
+                    ? `${won(budget - total)} 남겼어요 — 이 용도에서 더 빨라지는 다음 급은 ${won(plan.next.cost)}부터예요.`
+                    : '이 용도에서는 이보다 돈을 더 써도 빨라지지 않아요 — 가장 빠른 부품까지 다 넣었어요.'}
+                </p>
+              )}
+              {build === plan.build && plan.next && (
+                <button
+                  type="button"
+                  onClick={() => choose(useKey, Math.ceil(plan.next!.cost / 100_000) * 100_000)}
+                  className="self-start text-left rounded-[20px] bg-white/10 hover:bg-white/15 px-4 py-2.5 text-sm font-medium text-white"
+                >
+                  한 단계 위 ↑ {won(plan.next.cost)} — {[plan.next.gpu, plan.next.cpu].filter(Boolean).join(' + ')} · {use.key.startsWith('game') ? '예상 fps' : '성능'} +
+                  {Math.round(plan.next.gainPct)}% ›
+                </button>
+              )}
             </div>
-          )}
-          {build === plan.build && plan.next && (
-            <button
-              onClick={() => choose(useKey, Math.ceil(plan.next!.cost / 100_000) * 100_000)}
-              className="text-left rounded-md border border-(--color-accent)/40 px-3 py-2 text-xs hover:bg-(--color-accent)/8"
-            >
-              <b className="text-(--color-accent)">한 단계 위 ↑</b> {won(plan.next.cost)} — {[plan.next.gpu, plan.next.cpu].filter(Boolean).join(' + ')} ·{' '}
-              {use.key.startsWith('game') ? '예상 fps' : '성능'} +{Math.round(plan.next.gainPct)}%
-            </button>
-          )}
+          </div>
+          {/* 그래서 무엇이 얼마나 — 게임 셋 + 로컬 LLM */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-[10px]" data-nosnippet>
+            {gpu &&
+              tileGames.map((g) => {
+                const e = estimateFps(g, use.res, gpu, cpu ?? null)
+                return <Tile key={g.key} title={g.name} sub={`${RES_LABEL[use.res]} · ${g.preset}`} value={String(e.fps)} unit="fps" />
+              })}
+            {gpu && llm8 && (
+              <Tile
+                title={`로컬 LLM ${llm8.key.toUpperCase()}`}
+                sub="4비트 양자화"
+                value={(() => {
+                  const e = estimateLlm(data.bench, llm8, gpu, ramBw)
+                  return String(e.tps >= 10 ? Math.round(e.tps) : e.tps.toFixed(1))
+                })()}
+                unit="tok/s"
+              />
+            )}
+          </div>
           {empty.length > 0 && (
             <div role="alert" className="rounded-md border border-(--color-red-400) bg-(--color-red-400)/8 px-3 py-2 text-sm text-(--color-red-400)">
               <b>{empty.join(' · ')} 을(를) 못 골랐다</b> — 왼쪽에서 고른 조건에 맞는 부품이 없다. 빨갛게 표시된 조건을 풀면 다시 짠다.
@@ -281,7 +341,7 @@ function Builder({ data }: { data: HwData }) {
               <b>호환 안 됨 {errors}건</b> — 이대로는 조립이 안 된다. 빨간 칸을 바꾸면 풀린다.
             </div>
           )}
-          <div className="flex flex-col divide-y divide-(--color-border-soft)">
+          <div className="flex flex-col divide-y divide-[#eef1f3] border-y border-[#e2e2e2]">
             {CATEGORY_ORDER.map((cat) => (
               <PartPicker key={cat} cat={cat} data={data} build={build} onChange={(id) => setBuild({ ...build, [cat]: id || undefined })} />
             ))}
@@ -347,14 +407,9 @@ function Builder({ data }: { data: HwData }) {
               ))}
             </div>
           )}
-        </section>
-        {/* 같은 용도·예산의 완제품 — 넓은 화면에선 조합 옆, 좁으면 조합 아래 */}
-        <div className="lg:col-span-2 2xl:col-span-1">
+          {/* 같은 용도·예산의 완제품 */}
           <PrebuiltPicks data={data} use={use} budget={budget} build={build} buildCost={total} />
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-4 min-w-0">
+          <div className="flex flex-col gap-4 min-w-0">
           {errors > 0 && (
             <div className="rounded-md border border-(--color-red-400) bg-(--color-panel) px-3 py-2 text-sm text-(--color-red-400)">
               지금 조합은 조립이 안 된다 — 아래 숫자는 호환 문제를 고쳤다고 치고 계산한 값이다.
@@ -382,6 +437,33 @@ function Builder({ data }: { data: HwData }) {
               </>
             )
           })()}
+          </div>
+          <p className="text-[13px] text-[#999]">등급 A·B·C는 같은 용도·예산에서 부품 급의 위치예요. 가격은 다나와 최저가 기준이고 매물이 바뀌면 달라져요.</p>
+        </section>
+      </div>
+    </div>
+  )
+}
+
+const USE_EMOJI: Record<string, string> = { office: '🗂', 'game-fhd': '🎮', 'game-qhd': '🖥', 'game-4k': '📺', dev: '💻', llm: '🧠', video: '🎬' }
+const USE_SHORT: Record<string, string> = {
+  office: '내장 그래픽으로',
+  'game-fhd': '1920×1080',
+  'game-qhd': '2560×1440 고옵션',
+  'game-4k': '3840×2160',
+  dev: 'IDE·도커·빌드',
+  llm: '모델을 내 PC에서',
+  video: '4K 편집·인코딩',
+}
+
+function Tile({ title, sub, value, unit }: { title: string; sub: string; value: string; unit: string }) {
+  return (
+    <div className="h-[123px] rounded-[18px] bg-[#f7f9fa] px-5 pt-[18px]">
+      <div className="text-[15px] font-bold leading-[21px] text-[#272727] truncate">{title}</div>
+      <div className="mt-0.5 text-[13px] text-[#888] truncate">{sub}</div>
+      <div className="mt-2">
+        <span className="text-[26px] font-bold leading-[37px] text-(--color-accent) tabular-nums">{value}</span>
+        <span className="ml-1 text-sm font-medium text-[#474747]">{unit}</span>
       </div>
     </div>
   )
@@ -447,8 +529,8 @@ function PartPicker({ cat, data, build, onChange }: { cat: Category; data: HwDat
     return `${p.name} ${pr != null ? `· ${won(pr)}` : '· 가격 모름'}`
   }
   return (
-    <div className={`py-2 grid grid-cols-[5.5rem_minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 ${bad ? 'bg-(--color-red-400)/6 -mx-2 px-2 rounded' : ''}`}>
-      <div className="text-xs font-semibold text-(--color-muted)" title={def?.why}>
+    <div className={`py-[14px] px-2 grid grid-cols-[4.5rem_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 ${bad ? 'bg-(--color-red-400)/6 rounded' : ''}`}>
+      <div className="text-[15px] font-bold text-[#272727]" title={def?.why}>
         {def?.name ?? cat}
       </div>
       <div className="min-w-0 flex items-center gap-2">
@@ -457,8 +539,8 @@ function PartPicker({ cat, data, build, onChange }: { cat: Category; data: HwDat
           value={value ?? ''}
           onChange={(e) => onChange(e.target.value)}
           aria-invalid={bad}
-          className={`min-w-0 flex-1 bg-transparent text-sm text-(--color-text) border rounded px-1.5 py-1 ${
-            bad ? 'border-(--color-red-400)' : 'border-(--color-border-soft)'
+          className={`min-w-0 flex-1 bg-transparent text-[15px] font-medium text-[#272727] border rounded-md px-2 py-1.5 ${
+            bad ? 'border-(--color-red-400)' : 'border-transparent hover:border-[#e2e2e2]'
           }`}
         >
           <option value="">{cat === 'hdd' ? '없음' : '고르기'}</option>
@@ -478,7 +560,7 @@ function PartPicker({ cat, data, build, onChange }: { cat: Category; data: HwDat
           )}
         </select>
       </div>
-      <div className="text-sm tabular-nums text-right w-20" data-nosnippet>
+      <div className="text-[17px] font-bold text-[#272727] tabular-nums text-right w-24" data-nosnippet>
         {price != null ? won(price * (cat === 'ram' ? 2 : 1)) : '—'}
         {cat === 'ram' && price != null && <div className="text-[10px] text-(--color-faint)">두 장</div>}
       </div>
@@ -494,16 +576,13 @@ function PartPicker({ cat, data, build, onChange }: { cat: Category; data: HwDat
   )
 }
 
+const TIER_COLOR: Record<string, string> = { S: '#f45757', A: '#2bb673', B: '#4f7cf0', C: '#f2a93b', D: '#999999' }
+
 export function TierBadge({ tier }: { tier: string }) {
-  const shade: Record<string, number> = { S: 100, A: 80, B: 58, C: 38, D: 22 }
-  const s = shade[tier] ?? 30
   return (
     <span
-      className="inline-flex items-center justify-center w-6 h-6 rounded text-xs font-bold shrink-0"
-      style={{
-        background: `color-mix(in srgb, var(--color-accent) ${s}%, var(--color-panel))`,
-        color: s >= 58 ? 'var(--color-on-accent)' : 'var(--color-text)',
-      }}
+      className="inline-flex items-center justify-center w-6 h-6 rounded-md text-[13px] font-bold text-white shrink-0"
+      style={{ background: TIER_COLOR[tier] ?? '#999999' }}
       title={`${tier} 등급`}
     >
       {tier}

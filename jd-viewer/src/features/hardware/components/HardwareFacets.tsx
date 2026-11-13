@@ -29,15 +29,17 @@ export function FacetPanel({
   const any = Object.values(picked).some((v) => v.length)
 
   return (
-    <section className="rounded-lg border border-(--color-border) bg-(--color-panel) overflow-hidden">
-      <div className="flex items-center gap-2 px-4 py-2.5 border-b border-(--color-border) bg-(--color-band)">
-        <h2 className="text-sm font-bold">조건으로 고르기</h2>
-        <span className="text-xs text-(--color-muted)">한 줄 안은 '또는', 줄끼리는 '그리고' · 안 맞는 항목은 ✕ 와 이유가 붙는다</span>
-        {any && (
-          <button onClick={onReset} className="ml-auto text-xs text-(--color-accent) hover:underline">
-            선택 초기화
-          </button>
-        )}
+    <section className="rounded-[30px] border border-[#e2e8ec] bg-white overflow-hidden">
+      <div className="px-[25px] pt-[26px] pb-3">
+        <div className="flex items-center gap-2">
+          <h2 className="text-[19px] font-bold leading-[27px] text-[#272727]">조건으로 고르기</h2>
+          {any && (
+            <button type="button" onClick={onReset} className="ml-auto text-[13px] text-(--color-accent) hover:underline">
+              선택 초기화
+            </button>
+          )}
+        </div>
+        <p className="mt-1 text-[13px] leading-[19px] text-[#999]">한 줄 안은 '또는', 줄끼리는 '그리고' · 안 맞는 항목은 ✕와 이유가 붙어요</p>
       </div>
       {conflicts.length > 0 && (
         <div role="alert" className="px-4 py-2 text-sm text-(--color-red-400) bg-(--color-red-400)/8 border-b border-(--color-red-400)/30">
@@ -49,7 +51,7 @@ export function FacetPanel({
           ))}
         </div>
       )}
-      <div className="divide-y divide-(--color-border-soft)">
+      <div className="px-[25px] pb-6 flex flex-col gap-[22px]">
         {facets.map((f) => {
           const expanded = open[f.key]
           const shown = expanded ? f.options : f.options.slice(0, SHOW)
@@ -60,13 +62,22 @@ export function FacetPanel({
             if (st?.disabled && st.reason) why.set(`${st.against}|${st.reason}`, [...(why.get(`${st.against}|${st.reason}`) ?? []), o.label])
           }
           return (
-            <div key={f.key} className="grid grid-cols-[7.5rem_minmax(0,1fr)_auto] gap-x-3 px-4 py-2.5 items-start">
-              <div className="text-sm font-bold pt-0.5" title={f.hint}>
-                {f.label}
-                <div className="text-[10px] font-normal text-(--color-faint) leading-snug mt-0.5 hidden xl:block">{f.hint}</div>
+            <div key={f.key} className="min-w-0">
+              <div className="flex items-baseline gap-2">
+                <div className="text-[15px] font-bold text-[#272727]">{f.label}</div>
+                {f.options.length > SHOW && (
+                  <button
+                    type="button"
+                    onClick={() => setOpen({ ...open, [f.key]: !expanded })}
+                    className="ml-auto text-xs text-[#999] hover:text-[#272727] whitespace-nowrap"
+                  >
+                    {expanded ? '접기 −' : `${f.options.length - SHOW}개 +`}
+                  </button>
+                )}
               </div>
-              <div className="min-w-0">
-                <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-x-3 gap-y-1.5">
+              {f.hint && <div className="mt-0.5 text-xs leading-[18px] text-[#999]">{f.hint}</div>}
+              <div className="min-w-0 mt-2.5">
+                <div className="flex flex-wrap gap-1.5">
                   {shown.map((o) => {
                     const st = states.get(`${f.key}:${o.value}`)
                     const checked = !!picked[f.key]?.includes(o.value)
@@ -75,19 +86,26 @@ export function FacetPanel({
                       <label
                         key={o.value}
                         title={off ? `호환 안 됨 — ${st!.against} 와(과): ${st!.reason}` : undefined}
-                        className={`flex items-start gap-1.5 text-sm leading-snug cursor-pointer select-none min-w-0 ${
-                          off ? (checked ? 'text-(--color-red-400)' : 'text-(--color-faint) line-through decoration-(--color-faint)/50') : ''
-                        }`}
+                        className={
+                          'inline-flex items-center gap-1 h-8 px-3 rounded-2xl border text-[13px] cursor-pointer select-none ' +
+                          (checked
+                            ? off
+                              ? 'border-(--color-red-400) text-(--color-red-400)'
+                              : 'bg-(--color-accent) border-(--color-accent) text-white font-medium'
+                            : off
+                              ? 'border-[#eee] text-[#bbb] line-through'
+                              : 'border-[#d8d8d8] text-[#272727] hover:border-[#272727]')
+                        }
                       >
                         <input
                           type="checkbox"
                           checked={checked}
                           onChange={() => onToggle(f.key, o.value)}
-                          className="accent-(--color-accent) shrink-0 mt-0.5"
+                          className="sr-only"
                           aria-describedby={off ? `why-${f.key}` : undefined}
                         />
-                        {off && <span className="text-(--color-red-400) no-underline shrink-0">✕</span>}
-                        <span className={`break-keep ${checked && !off ? 'text-(--color-accent) font-semibold' : ''}`}>{o.label}</span>
+                        {off && <span className="no-underline">✕</span>}
+                        <span className="break-keep">{o.label}</span>
                       </label>
                     )
                   })}
@@ -105,16 +123,7 @@ export function FacetPanel({
                   </div>
                 )}
               </div>
-              {f.options.length > SHOW ? (
-                <button
-                  onClick={() => setOpen({ ...open, [f.key]: !expanded })}
-                  className="text-xs text-(--color-muted) hover:text-(--color-text) whitespace-nowrap pt-0.5"
-                >
-                  {expanded ? '접기 −' : `${f.options.length - SHOW}개 +`}
-                </button>
-              ) : (
-                <span />
-              )}
+
             </div>
           )
         })}
