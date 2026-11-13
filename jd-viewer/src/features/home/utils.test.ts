@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { careerOf, careerRange, ddayLabel } from './utils'
+import { careerOf, careerRange, ddayLabel, shortTitle } from './utils'
 
 describe('careerRange', () => {
   it('신입부터 위까지', () => {
@@ -25,4 +25,13 @@ describe('ddayLabel', () => {
   it('마감일 없음은 상시', () => expect(ddayLabel(null)).toBe('상시'))
   it('오늘', () => expect(ddayLabel(0)).toBe('오늘 마감'))
   it('남은 날', () => expect(ddayLabel(5)).toBe('D-5'))
+  it('1년 넘게 남으면 상시', () => expect(ddayLabel(355430)).toBe('상시'))
+})
+
+describe('shortTitle', () => {
+  it('부서 꼬리표를 뗀다', () => expect(shortTitle('[PUBG STUDIOS] DevOps Engineer (1~3년)')).toBe('DevOps Engineer (1~3년)'))
+  it('영문 병기를 뗀다', () => expect(shortTitle('서버 개발자 (Product) (Server Developer)')).toBe('서버 개발자 (Product)'))
+  it('길면 괄호를 거듭 뗀다', () =>
+    expect(shortTitle('LLM Research Engineer (Pre-training) (신입/경력)')).toBe('LLM Research Engineer'))
+  it('짧으면 그대로', () => expect(shortTitle('백엔드 개발자')).toBe('백엔드 개발자'))
 })

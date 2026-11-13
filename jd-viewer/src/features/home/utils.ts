@@ -1,7 +1,8 @@
 /** 메인 화면 표기 — D-day·경력 구간. */
 
 export function ddayLabel(d: number | null | undefined): string {
-  if (d == null) return '상시'
+  // 1년 넘게 남은 마감일은 원본이 '채용시 마감'을 먼 날짜로 적은 것이다(D-355430 같은) — 상시로 본다.
+  if (d == null || d > 365) return '상시'
   if (d <= 0) return '오늘 마감'
   return `D-${d}`
 }
@@ -38,3 +39,18 @@ export function careerOf(career: string | null, bucket: string): string {
 }
 
 export const SIZE_SHORT: Record<string, string> = { 대기업: '대기업', 중견기업: '중견', 중소기업: '중소', '해외 기업': '해외' }
+
+/**
+ * 짧은 공고 제목 — 앞의 [부서] 꼬리표를 떼고, 길면 끝의 괄호(영문 병기·경력 표기)를 하나씩 뗀다.
+ * '[PUBG STUDIOS] DevOps Engineer (1~3년)' → 'DevOps Engineer (1~3년)',
+ * '서버 개발자 (Product) (Server Developer)' → '서버 개발자 (Product)'.
+ */
+export function shortTitle(t: string): string {
+  let s = t.replace(/^\s*\[[^\]]*\]\s*/, '').trim() || t
+  while (s.length > 22) {
+    const m = s.match(/^(.*\S)\s*\([^()]*\)$/)
+    if (!m) break
+    s = m[1]
+  }
+  return s
+}
