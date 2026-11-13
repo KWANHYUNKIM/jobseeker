@@ -1,35 +1,40 @@
 @import "tailwindcss";
 
 /* ── 팔레트 ────────────────────────────────────────────────────────────────
-   한빛+(hanbit.co.kr)의 배색을 따른다. **테마 전환은 없다** — 흰 바탕 하나로 간다.
-   그 사이트에서 실측한 값: 바탕 흰색, 본문 #030712, 보조 글자 rgba(62,74,92,.61),
-   구분선 rgba(92,102,118,.16), 브랜드색 teal #03AEA0, 모서리 12px, 그림자는 거의 없음. */
+   Penpot「JD Viewer」의 캐치형 보드에서 실측한 값이다(2026-11). 흰 바탕 하나에
+   본문 #272727, 보조 #474747·#666·#999, 구분선 #e2e2e2, 브랜드색 코랄 #f45757,
+   보조 강조는 남색 #3c377a. 칸은 그림자보다 선과 옅은 회색 띠(#f7f9fa)로 나눈다. */
 @theme {
-  /* 회색을 쓰기로 했으면 바탕이 완전한 흰색이면 안 된다 — 흰 카드가 떠 보이지 않는다.
-     캔버스(bg)는 옅은 회색, 그 위에 흰 패널(panel)을 올려 칸을 잡는다.
-     다크 때와 위계가 같다: bg 가 뒤로 물러나고 panel 이 앞으로 나온다. */
-  --color-bg: #eef1f4;        /* 캔버스 — 페이지 바탕 */
-  --color-panel: #ffffff;     /* 카드·패널 — 캔버스 위에 올라앉는 면 */
-  --color-band: #f5f7f9;      /* 패널 안에서 구역을 나누는 띠 */
-  --color-border: #d3d8de;    /* 구분선 — 흐리면 칸이 안 잡혀서 또렷하게 */
-  --color-border-soft: #e6e9ed;
-  --color-text: #000000;      /* 본문 — 완전한 검정 */
-  --color-muted: #4a515e;     /* 보조 글자 — 부제·메타. 회색이 아니라 짙은 먹빛 */
-  --color-faint: #737b88;     /* 더 뒤로 물린 글자 */
-  --color-accent: #00897B;    /* 브랜드 teal — 한빛보다 한 단계 진하게 */
-  --color-accent-deep: #00695C;
-  --color-accent-weak: #d6efec;
+  --color-bg: #ffffff;        /* 캔버스 — 캐치형은 바탕이 흰색이다 */
+  --color-panel: #ffffff;     /* 카드·패널 */
+  --color-band: #f7f9fa;      /* 패널 안에서 구역을 나누는 띠 */
+  --color-border: #e2e2e2;    /* 구분선 */
+  --color-border-soft: #eeeeee;
+  --color-text: #272727;      /* 본문 */
+  --color-muted: #666666;     /* 보조 글자 — 부제·메타 */
+  --color-faint: #999999;     /* 더 뒤로 물린 글자 */
+  --color-accent: #f45757;    /* 브랜드 코랄 */
+  --color-accent-deep: #e04343;
+  --color-accent-weak: #fff5f5;
   --color-on-accent: #ffffff;
+  --color-navy: #3c377a;      /* 보조 강조 — 필터 건수 알약 등 */
+  --color-violet: #5b4fd6;
+  --color-violet-weak: #f1efff;
 
-  /* 모서리 — 한빛에서 실측하면 12px 가 압도적(162회)이고 칩은 pill, 작은 것만 8px.
-     Tailwind 의 radius 눈금을 그 값으로 덮어써서 rounded-lg / rounded-md 를 쓰는
-     기존 컴포넌트가 그대로 따라오게 한다. */
   --radius-lg: 12px;
   --radius-md: 8px;
   --radius-sm: 6px;
 }
 
 html { color-scheme: light; }
+
+/* 본문 폭 — 캐치형 보드는 1920 화면에 1256px 를 가운데 둔다(좌우 332). 좁으면 16px 여백. */
+.jd-container {
+  width: 100%;
+  max-width: 1288px;
+  margin-inline: auto;
+  padding-inline: 16px;
+}
 
 /* 카드가 살짝 떠 보이게 하는 그림자 — 평소엔 없고 hover 에만 준다.
    한빛도 그림자를 거의 안 쓰고 선으로 칸을 나눈다. */
@@ -42,8 +47,8 @@ html, body, #root {
   height: 100%;
   background: var(--color-bg);
   color: var(--color-text);
-  font-family: 'Pretendard', 'Pretendard Variable', -apple-system, BlinkMacSystemFont,
-    'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', system-ui, sans-serif;
+  font-family: 'Noto Sans KR', 'Pretendard', -apple-system, BlinkMacSystemFont,
+    'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
   font-size: 16px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
