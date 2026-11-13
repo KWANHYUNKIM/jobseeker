@@ -12,6 +12,7 @@ import { FreelanceNav } from './FreelanceNav'
 import { CurrentRateTable } from './FreelanceRateTable'
 import { RateTrend } from './FreelanceRateTrend'
 import { ErrorState, Loader } from '../../../components/ui'
+import { SiteFooter } from '../../../components/SiteFooter'
 
 // 외주·프리 단가 분석 — 몸값은 중간값 하나로 말할 수 없다.
 //
@@ -212,10 +213,10 @@ function TrendPanel({ trend }: { trend: Trend }) {
 
 function Card({ title, sub, children, className = '' }: { title: string; sub?: string; children: React.ReactNode; className?: string }) {
   return (
-    <section className={`rounded-lg border border-(--color-border) bg-(--color-panel) p-4 ${className}`}>
-      <h2 className="text-sm font-semibold text-(--color-text)">{title}</h2>
-      {sub && <p className="text-[11px] text-(--color-muted) mt-0.5 mb-3">{sub}</p>}
-      {!sub && <div className="mb-3" />}
+    <section className={`rounded-[22px] border border-[#e2e8ec] bg-white px-6 pt-[22px] pb-6 ${className}`}>
+      <h2 className="text-[19px] font-bold text-[#272727]">{title}</h2>
+      {sub && <p className="mt-1 mb-4 text-[13px] text-[#999]">{sub}</p>}
+      {!sub && <div className="mb-4" />}
       {children}
     </section>
   )
@@ -229,7 +230,7 @@ export function FreelanceRatesView() {
   const a = data.analysis
   if (!a)
     return (
-      <div className="flex flex-col flex-1 min-h-0">
+      <div className="flex flex-col flex-1 min-h-0 jd-container pt-[43px]">
         <FreelanceNav current="rates" />
         <div className="p-8 text-sm text-(--color-muted)">
           아직 분석이 없습니다. 크롤러가 한 번 더 돌면 채워집니다(<code>python -m crawlers.crawl_freelance</code>).
@@ -239,29 +240,24 @@ export function FreelanceRatesView() {
   const m = a.meta
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 min-w-0">
-      <FreelanceNav current="rates" />
-      <main data-scroll className="flex-1 min-h-0 overflow-auto jd-panel">
-        <div className="max-w-[1600px] mx-auto p-4 flex flex-col gap-4">
-          <header className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-            <h1 className="text-lg font-bold text-(--color-text)">외주·프리 단가 분석</h1>
-            <span className="text-xs text-(--color-muted)">
-              월 단가 있는 프로젝트 {m.monthly.toLocaleString()}건 · 등급 확인 {m.graded.toLocaleString()}건 ·{' '}
-              {Object.entries(m.sites)
-                .map(([s, n]) => `${SITE_KO[s] ?? s} ${n}`)
-                .join(' · ')}
-            </span>
-            <span className="text-xs text-(--color-muted) ml-auto">갱신 {data.updated_at.slice(0, 16).replace('T', ' ')}</span>
-          </header>
+    <div data-scroll className="flex-1 min-h-0 overflow-auto bg-white">
+      <div className="jd-container pt-[43px] pb-[90px]">
+        <h1 className="text-[28px] font-bold leading-10 tracking-[-0.6px] text-[#272727]">
+          외주·프리 <span className="text-(--color-accent)">단가 분석</span>
+        </h1>
+        <p className="mt-1 text-base leading-6 tracking-[-0.16px] text-[#666]">
+          월 단가 있는 프로젝트 <b className="font-bold text-(--color-accent)">{m.monthly.toLocaleString()}건</b> · 등급 확인 {m.graded.toLocaleString()}건 ·{' '}
+          {Object.entries(m.sites)
+            .map(([s, n]) => `${SITE_KO[s] ?? s} ${n}`)
+            .join(' · ')}{' '}
+          · 갱신 {data.updated_at.slice(0, 16).replace('T', ' ')}
+        </p>
+        <div className="mt-[34px]">
+          <FreelanceNav current="rates" />
+        </div>
 
-          {a.current && (
-            <Card
-              title="현재 단가표 (월 단가, 만원)"
-              sub="칸을 누르면 그 숫자를 만든 프로젝트가 아래에 나옵니다 — 원문 링크와 등급을 어떻게 정했는지까지. CSV 로 내려받아 직접 다시 셀 수 있습니다."
-            >
-              <CurrentRateTable cur={a.current} projects={data.projects} />
-            </Card>
-          )}
+        <div className="mt-[38px] flex flex-col gap-6">
+          {a.current && <CurrentRateTable cur={a.current} projects={data.projects} />}
 
           <Card title="요약" sub="아래 표에서 읽어 낸 것. 표본이 3건 미만인 칸은 문장에 쓰지 않았습니다.">
             <ul className="flex flex-col gap-1.5 text-sm text-(--color-text) list-disc pl-5">
@@ -326,7 +322,8 @@ export function FreelanceRatesView() {
             </ul>
           </Card>
         </div>
-      </main>
+      </div>
+      <SiteFooter updated={data.updated_at} sources="원티드 긱스 · 프리모아 · 이랜서 · 잡코리아 · 사람인 · 아임잡 · SISM" />
     </div>
   )
 }

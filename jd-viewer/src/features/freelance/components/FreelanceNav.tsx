@@ -8,19 +8,21 @@ export function FreelanceNav({ current }: { current: 'list' | 'rates' }) {
     <a
       href={to}
       onClick={onLinkClick(to)}
-      className={`px-3 py-1.5 text-sm rounded-md transition ${
-        current === key
-          ? 'bg-(--color-accent)/12 text-(--color-accent) font-semibold'
-          : 'text-(--color-muted) hover:text-(--color-text)'
-      }`}
+      aria-current={current === key ? 'page' : undefined}
+      className={
+        'relative shrink-0 px-[22px] pb-[13px] text-[17px] leading-[25px] tracking-[-0.16px] ' +
+        (current === key
+          ? 'font-bold text-(--color-accent) after:absolute after:inset-x-0 after:-bottom-px after:h-[3px] after:bg-(--color-accent)'
+          : 'font-medium text-[#777] hover:text-[#272727]')
+      }
     >
       {label}
     </a>
   )
   return (
-    <div className="flex items-center gap-1 px-4 pt-2 pb-1 border-b border-(--color-border) bg-(--color-panel)">
+    <nav aria-label="외주·프리" className="flex border-b border-[#e2e2e2]">
       {item('list', paths.freelance(), '프로젝트 목록')}
       {item('rates', paths.freelanceRates(), '단가 분석')}
-    </div>
+    </nav>
   )
 }
