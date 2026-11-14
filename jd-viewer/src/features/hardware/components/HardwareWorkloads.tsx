@@ -37,7 +37,7 @@ function PartLink({ p }: { p: Part }) {
 /** 판정 줄(캐치형) — 왼쪽 동그란 아이콘 + 할 일·조건, 오른쪽 색 띠에 결과. 됨 / 조건부 / 어려움 */
 const VERDICT: Record<Verdict, { icon: string; dot: string; tag: string; band: string; label: string }> = {
   good: { icon: '✓', dot: 'bg-[#1e8a3c]', tag: 'bg-[#1e8a3c]', band: 'bg-[#eef8f1]', label: '됨' },
-  ok: { icon: '!', dot: 'bg-[#f08c00]', tag: 'bg-[#f08c00]', band: 'bg-[#fff4e6]', label: '조건부' },
+  ok: { icon: '△', dot: 'bg-[#f08c00]', tag: 'bg-[#f08c00]', band: 'bg-[#fff4e6]', label: '조건부' },
   bad: { icon: '✕', dot: 'bg-[#e03131]', tag: 'bg-[#e03131]', band: 'bg-[#fff0f0]', label: '어려움' },
 }
 
@@ -73,13 +73,13 @@ function SubHead({ title, note }: { title: string; note?: React.ReactNode }) {
 }
 
 /** 급 카드 — 지금 고른 급은 빨간 테두리와 위에 걸친 딱지 */
-export function TierCard({ mine, title, why, children }: { mine: boolean; title: string; why: string; children: React.ReactNode }) {
+export function TierCard({ mine, title, why, badge = '지금 고른 급', children }: { mine: boolean; title: string; why: string; badge?: string; children: React.ReactNode }) {
   return (
     <div className={'relative rounded-[22px] bg-white px-[23px] pt-[24px] pb-[22px] ' + (mine ? 'border-2 border-(--color-accent) bg-[#fffafa]' : 'border border-[#e2e8ec]')}>
       {mine && (
-        <span className="absolute -top-[12px] left-1/2 -translate-x-1/2 rounded-full bg-(--color-accent) px-[10px] text-xs font-bold leading-[23px] text-white whitespace-nowrap">지금 고른 급</span>
+        <span className="absolute -top-[12px] left-1/2 -translate-x-1/2 rounded-full bg-(--color-accent) px-[10px] text-xs font-bold leading-[23px] text-white whitespace-nowrap">{badge}</span>
       )}
-      <div className="text-[20px] font-bold leading-[29px] text-[#272727]">{title}</div>
+      <div className="text-[20px] font-bold leading-[29px] tracking-[-0.4px] text-[#272727]">{title}</div>
       <p className="mt-[7px] min-h-[66px] text-sm leading-[22px] text-[#555]">{why}</p>
       {children}
     </div>
@@ -269,10 +269,10 @@ export function DevUses({ data, cpu, ram }: { data: HwData; cpu: Part; ram?: Par
   const wait = (m: number) => m * BUILDS_PER_DAY
 
   return (
-    <div className="flex flex-col gap-3 border-t border-(--color-border-soft) pt-3">
+    <div className="mt-[34px] flex flex-col">
       <div>
-        <h3 className="text-sm font-semibold mb-1">하루에 기다리는 시간</h3>
-        <ul className="flex flex-col">
+        <SubHead title="하루에 기다리는 시간" />
+        <ul className="mt-[13px] flex flex-col">
           <Row
             v={mins <= 15 ? 'good' : mins <= 30 ? 'ok' : 'bad'}
             task={`풀 빌드 하루 ${BUILDS_PER_DAY}번`}
@@ -303,8 +303,8 @@ export function DevUses({ data, cpu, ram }: { data: HwData; cpu: Part; ram?: Par
           />
         </ul>
         {step && step.p.id !== cpu.id && (
-          <p className="text-xs mt-1">
-            <span className="text-(--color-muted)">한 단계 위: </span>
+          <p className="mt-3 text-sm text-[#555]">
+            <span>한 단계 위: </span>
             <PartLink p={step.p} /> — 빌드 {fmtMin(mins)}분 → {fmtMin(step.min)}분(하루 {Math.round(wait(mins) - wait(step.min))}분 절약) ·{' '}
             {won(step.price)}
             {myPrice != null && ` (지금보다 ${step.price >= myPrice ? '+' : '−'}${won(Math.abs(step.price - myPrice))})`}
@@ -313,38 +313,50 @@ export function DevUses({ data, cpu, ram }: { data: HwData; cpu: Part; ram?: Par
         )}
       </div>
 
-      <div>
-        <h3 className="text-sm font-semibold">이럴 때 이 CPU 를 산다</h3>
-        <p className="text-[11px] text-(--color-muted) mb-1">
-          빌드는 코어 수(멀티 지수)에, 게임은 캐시·싱글 성능(게임 지수)에 달렸다. 구분 문턱(멀티 지수 40·70)은 우리 것이고 값은 오늘 정품 최저가다.
-        </p>
-        <div className="grid gap-2 sm:grid-cols-2">
+      <div className="mt-[34px]">
+        <SubHead
+          title="이럴 때 이 CPU 를 산다"
+          note="빌드는 코어 수(멀티 지수)에, 게임은 캐시·싱글 성능(게임 지수)에 달렸다. 구분 문턱(멀티 지수 40·70)은 우리 것이고 값은 오늘 정품 최저가다."
+        />
+        <div className="mt-[14px] grid gap-[13px] sm:grid-cols-2 lg:grid-cols-4 items-stretch">
           {DEV_TIERS.map((t) => {
             const xs = cpus.filter((x) => t.pick(x.p)).sort((a, c) => a.price - c.price)
             if (!xs.length) return null
             const mine = t === myTier
             return (
-              <div key={t.key} className={`rounded-md p-2.5 text-xs ${mine ? 'border-2 border-(--color-accent) bg-(--color-accent)/5' : 'border border-(--color-border-soft)'}`}>
-                <div className="flex items-baseline gap-2">
-                  <b className="text-sm">{t.label}</b>
-                  {mine && <span className="text-[10px] px-1 rounded bg-(--color-accent) text-(--color-on-accent)">지금 고른 CPU</span>}
-                </div>
-                <p className="text-(--color-muted) mt-0.5">{t.why}</p>
-                <ul className="mt-1 flex flex-col gap-0.5">
-                  {xs.slice(0, 4).map((x) => (
-                    <li key={x.p.id} className="flex flex-wrap gap-x-2 tabular-nums">
-                      <PartLink p={x.p} />
-                      <span className="text-(--color-muted)">빌드 {fmtMin(x.min)}분 · 게임 지수 {x.p.perf.index}</span>
-                      <span className="ml-auto">{won(x.price)}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <TierCard key={t.key} mine={mine} title={t.label} why={t.why} badge="지금 고른 CPU">
+                <table className="mt-[14px] w-full text-sm" data-nosnippet>
+                  <thead>
+                    <tr className="text-xs text-[#737373]">
+                      <th className="text-left font-normal" />
+                      <th className="w-[40px] pb-[10px] text-right font-normal">빌드</th>
+                      <th className="w-[34px] pb-[10px] text-right font-normal whitespace-nowrap">게임</th>
+                      <th className="w-[64px] pb-[10px] text-right font-normal">값</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {xs.slice(0, 4).map((x) => {
+                      const me = x.p.id === cpu.id
+                      return (
+                        <tr key={x.p.id} className={me ? 'text-(--color-accent) font-bold' : 'text-[#272727]'}>
+                          <td className="py-[8px] pr-1 leading-5 tracking-[-0.3px]">
+                            <PartLink p={x.p} />
+                          </td>
+                          <td className="text-right tabular-nums">{fmtMin(x.min)}분</td>
+                          <td className="text-right tabular-nums">{x.p.perf.index}</td>
+                          <td className="text-right font-bold tabular-nums whitespace-nowrap">{won(x.price)}</td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </TierCard>
             )
           })}
         </div>
-        <p className="text-[11px] text-(--color-faint) mt-1">
-          빌드 시간은 '{b.dev.name}' 을 {b.dev.anchor_minutes}분(9950X)으로 둔 추정이다 — {b.dev.model}
+        <p className="mt-[17px] rounded-[14px] bg-[#f7f9fa] px-5 py-[15px] text-[13px] leading-[22px] text-[#555]">
+          빌드 시간은 9950X 가 {b.dev.anchor_minutes}분 걸리는 빌드를 기준으로 둔 추정이다 —{' '}
+          {b.dev.model.replace(/^암달의 법칙 — /, '암달의 법칙: ').replace(/\s*9950X 가 \d+분 걸리는 빌드를 기준으로 잡는다\./, '')}
         </p>
       </div>
     </div>

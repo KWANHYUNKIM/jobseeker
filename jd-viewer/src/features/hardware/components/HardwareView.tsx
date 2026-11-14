@@ -816,29 +816,36 @@ function AiSim({ data, gpu, ram }: { data: HwData; gpu: Part; ram?: Part }) {
 function DevSim({ data, cpu, ram }: { data: HwData; cpu: Part; ram?: Part }) {
   const mins = estimateBuildMin(data.bench, cpu)
   const gb = ram ? Number(ram.specs.capacity_gb) * 2 : null
+  const [lead, plain] = gb == null
+    ? ['메모리를 고르면 나온다', '']
+    : gb >= 64
+      ? ['IDE 여러 개 + 도커 컨테이너 10개 이상 + 로컬 쿠버네티스', '무거운 개발도 여유']
+      : gb >= 32
+        ? ['IDE 두어 개 + 도커 컨테이너 몇 개 + 브라우저 탭 많이', '대부분의 개발에 충분']
+        : ['IDE 하나 + 브라우저', '도커를 여러 개 띄우면 스왑이 난다']
+  const devName = data.bench.dev.name.replace(/^빌드 시간\s*\((.*)\)$/, '$1')
   return (
-    <div className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4 flex flex-col gap-2">
-      <h2 className="text-base font-bold">개발 작업은</h2>
-      <div className="grid sm:grid-cols-2 gap-3 text-sm">
-        <div className="rounded-lg bg-(--color-band) p-3">
-          <div className="text-[11px] text-(--color-muted)">{data.bench.dev.name}</div>
-          <div className="text-xl font-bold tabular-nums">약 {mins < 10 ? mins.toFixed(1) : Math.round(mins)}분</div>
-          <div className="text-[11px] text-(--color-faint)">
-            {cpu.name} 멀티 지수 {cpu.perf.multi} · {cpu.specs.cores}코어 {cpu.specs.threads}스레드
+    <div className="flex flex-col">
+      <UseHead no="03" title="개발 작업은" />
+      <div className="mt-[9px] grid gap-4 md:grid-cols-2" data-nosnippet>
+        <section className="min-h-[160px] rounded-[24px] border border-[#e2e8ec] bg-white px-[27px] pt-[24px] pb-[26px]">
+          <div className="flex items-baseline gap-[6px]">
+            <h3 className="text-[15px] font-bold leading-[22px] text-[#555]">빌드 시간</h3>
+            <span className="text-[13px] text-[#555]">{devName}</span>
           </div>
-        </div>
-        <div className="rounded-lg bg-(--color-band) p-3">
-          <div className="text-[11px] text-(--color-muted)">메모리 {gb ?? '—'}GB 로 동시에 띄우는 것</div>
-          <div className="text-xs mt-1">
-            {gb == null
-              ? '메모리를 고르면 나온다'
-              : gb >= 64
-                ? 'IDE 여러 개 + 도커 컨테이너 10개 이상 + 로컬 쿠버네티스까지 여유'
-                : gb >= 32
-                  ? 'IDE 두어 개 + 도커 컨테이너 몇 개 + 브라우저 탭 많이 — 대부분의 개발에 충분'
-                  : 'IDE 하나 + 브라우저. 도커를 여러 개 띄우면 스왑이 난다'}
+          <div className="mt-[6px]">
+            <span className="text-[40px] font-bold leading-[52px] tracking-[-1px] text-[#272727] tabular-nums">약 {mins < 10 ? mins.toFixed(1) : Math.round(mins)}</span>
+            <span className="ml-2 text-[15px] text-[#474747]">분</span>
           </div>
-        </div>
+          <div className="mt-[6px] text-sm leading-5 text-[#555]">
+            {cpu.name} · 멀티 지수 {cpu.perf.multi} · {cpu.specs.cores}코어 {cpu.specs.threads}스레드
+          </div>
+        </section>
+        <section className="min-h-[160px] rounded-[24px] border border-[#e2e8ec] bg-white px-[27px] pt-[24px] pb-[26px]">
+          <h3 className="text-[15px] font-bold leading-[22px] text-[#555]">메모리 {gb ?? '—'}GB 로 동시에 띄우는 것</h3>
+          <div className="mt-[10px] text-[20px] font-bold leading-[29px] text-[#272727]">{lead}</div>
+          {plain && <div className="mt-[6px] text-sm leading-5 text-[#555]">{plain}</div>}
+        </section>
       </div>
       <DevUses data={data} cpu={cpu} ram={ram} />
     </div>
