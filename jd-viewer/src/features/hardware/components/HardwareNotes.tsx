@@ -24,9 +24,9 @@ export interface Note {
 }
 
 const EVIDENCE: Record<Note['evidence'], { label: string; cls: string }> = {
-  measurement: { label: '실측', cls: 'bg-(--color-accent)/12 text-(--color-accent)' },
-  official: { label: '공식', cls: 'bg-(--color-sky-400)/12 text-(--color-sky-400)' },
-  experience: { label: '경험담', cls: 'bg-(--color-amber-400)/12 text-(--color-amber-400)' },
+  measurement: { label: '실측', cls: 'bg-[#fff0f0] text-[#e03131]' },
+  official: { label: '공식', cls: 'bg-[#eef8f1] text-[#1e8a3c]' },
+  experience: { label: '경험담', cls: 'bg-[#fff4e6] text-[#d9480f]' },
 }
 const USE: Record<string, string> = {
   'llm-inference': '언어 모델 추론',
@@ -72,42 +72,42 @@ export function FieldNotes({ gpus, limit, title = '실무자 이야기' }: { gpu
     .sort((a, b) => fit(a) - fit(b) || trust[a.confidence] - trust[b.confidence] || b.as_of.localeCompare(a.as_of))
   const cut = limit && !more ? xs.slice(0, limit) : xs
   return (
-    <section className="flex flex-col gap-2">
-      <div className="flex flex-wrap items-baseline gap-2">
-        <h3 className="text-sm font-semibold">{title}</h3>
-        <span className="text-[11px] text-(--color-muted)">
-          AI·ML 에 쓰는 사람들의 실측·경험 요약 — <b>참고용</b>이다. 조건(모델·양자화·드라이버)에 따라 다르고 원문은 링크로 본다.
-        </span>
-      </div>
+    <section className="flex flex-col">
+      <h3 className="text-[20px] font-bold leading-[29px] tracking-[-0.2px] text-[#555]">{title}</h3>
+      <p className="mt-[3px] text-[13px] leading-[19px] text-[#555]">실측·경험 요약 — 참고용. 조건(모델·양자화·드라이버)에 따라 다르고 원문은 링크로 본다.</p>
       {uses.length > 1 && (
-        <div className="flex flex-wrap gap-1 text-xs">
+        <div className="mt-4 flex flex-wrap gap-[6px]">
           {['', ...uses].map((u) => (
             <button
               key={u || 'all'}
+              type="button"
+              aria-pressed={use === u}
               onClick={() => setUse(u)}
-              className={`px-2 py-0.5 rounded ${use === u ? 'bg-(--color-text) text-(--color-panel) font-semibold' : 'bg-(--color-band) hover:bg-(--color-border-soft)'}`}
+              className={'h-8 px-[14px] rounded-2xl text-sm ' + (use === u ? 'bg-[#272727] text-white' : 'border border-[#d8d8d8] bg-white text-[#272727] hover:border-[#272727]')}
             >
               {u ? (USE[u] ?? u) : '전체'}
             </button>
           ))}
         </div>
       )}
-      <div className="grid gap-2 md:grid-cols-2">
+      <div className="mt-[14px] grid gap-[15px] md:grid-cols-2">
         {cut.map((n) => (
-          <article key={n.topic + n.as_of} className="rounded-md border border-(--color-border-soft) p-3 text-xs flex flex-col gap-1.5">
-            <div className="flex flex-wrap items-baseline gap-1.5">
-              <span className={`text-[10px] px-1.5 rounded font-semibold ${EVIDENCE[n.evidence].cls}`}>{EVIDENCE[n.evidence].label}</span>
-              <b className="text-sm">{n.topic}</b>
-              <span className="text-[10px] text-(--color-faint)">
+          <article key={n.topic + n.as_of} className="rounded-[22px] border border-[#e2e8ec] bg-white px-6 pt-5 pb-[22px] flex flex-col">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className={`rounded px-[7px] text-[13px] leading-[22px] ${EVIDENCE[n.evidence].cls}`}>{EVIDENCE[n.evidence].label}</span>
+              <span className="text-[13px] text-[#555]">
                 {USE[n.use] ?? n.use} · {n.as_of} · 신뢰도 {CONF[n.confidence]}
               </span>
             </div>
-            <p>{n.summary}</p>
-            {n.numbers && <p className="text-(--color-muted) tabular-nums">{n.numbers}</p>}
-            <div className="text-[10px] flex flex-wrap gap-x-2">
+            <h4 className="mt-[10px] text-[18px] font-bold leading-[27px] text-[#272727]">{n.topic}</h4>
+            <p className="mt-[6px] text-[15px] leading-[25px] text-[#333]">{n.summary}</p>
+            {n.numbers && (
+              <p className="mt-[10px] self-start rounded-md bg-[#f1f4f8] px-[9px] py-[2px] text-[13px] leading-5 text-[#272727] tabular-nums">{n.numbers}</p>
+            )}
+            <div className="mt-[10px] flex flex-wrap gap-x-3 text-sm font-medium">
               {n.sources.map((s) => (
-                <a key={s.url} href={s.url} target="_blank" rel="noreferrer" className="text-(--color-sky-400) hover:underline">
-                  {s.title}
+                <a key={s.url} href={s.url} target="_blank" rel="noreferrer" className="text-(--color-accent) hover:underline">
+                  {s.title} ↗
                 </a>
               ))}
             </div>
@@ -115,7 +115,11 @@ export function FieldNotes({ gpus, limit, title = '실무자 이야기' }: { gpu
         ))}
       </div>
       {limit && xs.length > limit && (
-        <button onClick={() => setMore(!more)} className="self-start text-xs text-(--color-accent) hover:underline">
+        <button
+          type="button"
+          onClick={() => setMore(!more)}
+          className="mt-[13px] h-[46px] rounded-xl border border-[#e2e8ec] bg-white text-sm font-bold text-[#272727] hover:border-[#999]"
+        >
           {more ? '접기' : `${xs.length - limit}개 더 보기`}
         </button>
       )}
