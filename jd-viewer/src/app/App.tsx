@@ -84,10 +84,11 @@ function TopNav() {
           <a
             href="/"
             onClick={onLinkClick('/')}
-            className="flex items-baseline shrink-0 select-none text-[22px] font-bold leading-8"
+            aria-label="devgonggo 홈"
+            className="flex items-center shrink-0 select-none"
           >
-            <span className="text-[#272727]">JD</span>
-            <span className="ml-[5px] text-(--color-accent)">Viewer</span>
+            {/* 로고 — 공고를 물어다 주는 까치 + devgonggo(시안 1번). 347×112 를 2배 밀도로 그린다 */}
+            <img src="/brand-logo.png" alt="devgonggo" width={174} height={56} className="h-[52px] w-auto" decoding="async" />
           </a>
           <button
             type="button"
