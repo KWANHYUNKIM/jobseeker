@@ -1,11 +1,9 @@
 import { useState, type ReactNode } from 'react'
-import { CompanyMark } from '../../../components/ui'
 import { onLinkClick } from '../../../utils/navigation'
 import { paths } from '../../../utils/urls'
-import { companyLogoUrl, safeLogoUrl } from '../../../utils/companyMark'
 import type { HomeBoard } from '../api'
 
-/** 첫 줄 — 왼쪽 바로가기 넷, 오른쪽 남색 배너(넘겨 보는 판). 캐치형 1920 의 y=156~437. */
+/** 첫 줄 — 왼쪽 바로가기 넷, 오른쪽 남색 배너(넘겨 보는 판, 장마다 배경 그림). 캐치형 1920 의 y=156~437. */
 export function HeroRow({ d }: { d: HomeBoard }) {
   return (
     <div className="flex flex-col lg:flex-row gap-6">
@@ -88,62 +86,36 @@ function QuickLinks() {
   )
 }
 
-/** 로고 타일 여섯 칸의 자리(배너 오른쪽·위에서 잰 거리) — 캐치형 보드 그대로. */
-const TILE_AT: [number, number][] = [
-  [320, 104],
-  [232, 42],
-  [224, 152],
-  [136, 90],
-  [56, 34],
-  [56, 160],
-]
+/** 장마다 배경 그림과 글자색 — 그림은 오른쪽에 그려져 있고 왼쪽은 글자 자리로 비어 있다(1440×432). */
+const ART: Record<string, { img: string; fg: string }> = {
+  all: { img: '/home/banner/all.jpg', fg: '#fff' },
+  entry: { img: '/home/banner/entry.jpg', fg: '#0b3b2c' },
+  experienced: { img: '/home/banner/experienced.jpg', fg: '#fff' },
+  intern: { img: '/home/banner/intern.jpg', fg: '#fff' },
+  midsmall: { img: '/home/banner/midsmall.jpg', fg: '#fff' },
+  overseas: { img: '/home/banner/overseas.jpg', fg: '#fff' },
+}
 
-type Slide = { kicker: string; head: [string, string]; tags: [string, string]; logos: { name: string; logo: string | null }[] }
+type Slide = { key: string; kicker: string; head: [string, string]; tag: string }
 
 /** 넘겨 보는 판 — 첫 장은 전체 숫자, 다음 장들은 순위 구역(신입·경력·인턴…) 하나씩. */
 function slidesOf(d: HomeBoard): Slide[] {
-  const sizes = Object.fromEntries(d.facets.sizes.map((s) => [s.name, s.n]))
   const entry = d.sections.find((s) => s.key === 'entry')?.total ?? d.totals.entry
   const first: Slide = {
+    key: 'all',
     kicker: '오늘 개발자를 찾는 회사',
     head: [`모집중인 IT 공고 ${d.totals.jobs.toLocaleString()}건,`, '큰 곳부터 보여드려요'],
-    tags: [
-      `#회사 ${d.totals.companies.toLocaleString()}곳 #신입 지원 가능 ${entry.toLocaleString()}건`,
-      `#대기업 ${sizes['대기업'] ?? 0} · 중견 ${sizes['중견기업'] ?? 0} · 중소 ${sizes['중소기업'] ?? 0} · 해외 ${sizes['해외 기업'] ?? 0}`,
-    ],
-    logos: distinctLogos([...d.spotlight, ...d.companies]),
+    tag: `#회사 ${d.totals.companies.toLocaleString()}곳 #신입 지원 가능 ${entry.toLocaleString()}건`,
   }
   const rest = d.sections
     .filter((s) => !s.key.startsWith('ind:') && s.key !== 'today')
-    .map((s): Slide => {
-      const cos = [...new Map(s.jobs.map((j) => [j.company, { name: j.company, logo: j.logo }])).values()]
-      return {
-        kicker: `${s.title} 공고 모아보기`,
-        head: [`${s.title} 공고 ${s.total.toLocaleString()}건,`, '인기 순으로 골라봤어요'],
-        tags: [`#${s.title} #TOP ${Math.min(50, s.total)}`, cos.slice(0, 3).map((c) => `#${c.name}`).join(' ')],
-        logos: distinctLogos(cos),
-      }
-    })
+    .map((s): Slide => ({
+      key: s.key,
+      kicker: `${s.title} 공고 모아보기`,
+      head: [`${s.title} 공고 ${s.total.toLocaleString()}건,`, '인기 순으로 골라봤어요'],
+      tag: `#${s.title} #TOP ${Math.min(50, s.total)}`,
+    }))
   return [first, ...rest]
-}
-
-/** 로고 타일 여섯 — 같은 그림(토스·토스증권·토스뱅크…)이 겹치지 않게 한 번씩만. */
-function distinctLogos(cos: { name: string; logo: string | null }[]): { name: string; logo: string | null }[] {
-  // 계열사(카카오페이 → 카카오, 토스증권 → 토스)는 로고가 같거나 비슷해서 목록에 있는 모회사 하나로 접는다.
-  const rootOf = (c: { name: string }) =>
-    cos.filter((o) => c.name.startsWith(o.name)).sort((x, y) => x.name.length - y.name.length)[0] ?? c
-  const seen = new Set<string>()
-  const out: { name: string; logo: string | null }[] = []
-  for (const c0 of cos) {
-    const c = rootOf(c0)
-    const key = safeLogoUrl(c.logo) || companyLogoUrl(c.name) || c.name
-    if (seen.has(key) || seen.has(c.name)) continue
-    seen.add(key)
-    seen.add(c.name)
-    out.push({ name: c.name, logo: c.logo })
-    if (out.length === 6) break
-  }
-  return out
 }
 
 function Banner({ d }: { d: HomeBoard }) {
@@ -151,54 +123,44 @@ function Banner({ d }: { d: HomeBoard }) {
   const [i, setI] = useState(0)
   const s = slides[i % slides.length]
   const go = (k: number) => setI((n) => (n + k + slides.length) % slides.length)
+  const art = ART[s.key] ?? ART.all
+  const dark = art.fg !== '#fff'
   return (
     <section
       aria-roledescription="carousel"
       aria-label="오늘의 채용"
-      className="relative flex-1 min-w-0 h-[281px] overflow-hidden rounded-[30px] bg-[#000b4b] text-white"
+      className="relative flex-1 min-w-0 h-[281px] overflow-hidden rounded-[30px] bg-[#000b4b] bg-cover bg-right"
+      style={{ backgroundImage: `url(${art.img})`, color: art.fg }}
     >
-      <div className="absolute left-6 sm:left-[94px] top-[47px] right-6">
+      <div className="absolute left-6 sm:left-[9%] top-[16%] right-6 sm:right-[40%]">
         <p className="text-lg font-bold leading-[26px] tracking-[-0.18px]">{s.kicker}</p>
-        <h2 className="-mt-[5px] text-[24px] sm:text-[32px] font-bold leading-[1.19] tracking-[-1.6px]">
+        <h2 className="mt-0.5 text-[24px] sm:text-[32px] font-bold leading-[1.19] tracking-[-1.6px]">
           {s.head[0]}
           <br />
           {s.head[1]}
         </h2>
-        <p className="mt-[12px] text-sm sm:text-base font-medium leading-6 tracking-[-0.16px]">
-          {s.tags[0]}
-          <br />
-          {s.tags[1]}
-        </p>
+        <p className="mt-2.5 text-sm sm:text-base font-medium leading-6 tracking-[-0.16px] opacity-90">{s.tag}</p>
       </div>
-      <div aria-hidden className="hidden xl:block">
-        {s.logos.map((c, k) => (
-          <span
-            key={c.name}
-            style={{ right: TILE_AT[k][0], top: TILE_AT[k][1] }}
-            className="absolute grid place-items-center w-[76px] h-[76px] rounded-[22px] bg-white shadow-[0_10px_24px_rgba(0,0,0,0.35)]"
-          >
-            <CompanyMark name={c.name} logo={c.logo} size={46} />
-          </span>
-        ))}
-      </div>
-      <Arrow side="left" onClick={() => go(-1)} />
-      <Arrow side="right" onClick={() => go(1)} />
-      <span className="absolute right-8 bottom-8 h-[25px] px-3 rounded-full bg-white/14 text-xs leading-[25px] tabular-nums">
-        {i + 1} / {slides.length} +
+      <Arrow side="left" dark={dark} onClick={() => go(-1)} />
+      <Arrow side="right" dark={dark} onClick={() => go(1)} />
+      <span className={`absolute right-[3%] bottom-[9%] h-[25px] px-3 rounded-full ${dark ? 'bg-black/10' : 'bg-white/14'} text-xs leading-[25px] tabular-nums`}>
+        {i + 1} / {slides.length}
       </span>
+      {/* 다음 장 그림을 미리 받아 둔다 — 넘길 때 깜빡이지 않게 */}
+      <link rel="prefetch" as="image" href={(ART[slides[(i + 1) % slides.length].key] ?? ART.all).img} />
     </section>
   )
 }
 
-function Arrow({ side, onClick }: { side: 'left' | 'right'; onClick: () => void }) {
+function Arrow({ side, dark, onClick }: { side: 'left' | 'right'; dark: boolean; onClick: () => void }) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-label={side === 'left' ? '이전' : '다음'}
-      className={`absolute top-[127px] ${side === 'left' ? 'left-8' : 'right-8'} w-7 h-7 rounded-full bg-white/18 grid place-items-center hover:bg-white/30`}
+      className={`absolute top-[127px] ${side === 'left' ? 'left-8' : 'right-8'} w-7 h-7 rounded-full ${dark ? 'bg-black/10 hover:bg-black/20' : 'bg-white/18 hover:bg-white/30'} grid place-items-center`}
     >
-      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#fff" strokeWidth="1.6" strokeLinecap="round">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
         <path d={side === 'left' ? 'M6.5 1.5 3 5l3.5 3.5' : 'M3.5 1.5 7 5 3.5 8.5'} />
       </svg>
     </button>
