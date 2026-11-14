@@ -17,3 +17,17 @@ def test_shape_matches_file(client):
     assert p["status"] in ("active", "closed")
     assert "classes" not in d, "분류는 프로젝트마다 펼쳐 싣는다"
     assert any("grade" in x for x in d["projects"])
+
+
+def test_project_detail(client):
+    r = client.get("/api/freelance")
+    if r.status_code == 404:
+        pytest.skip("외주 분석 문서 없음(store.market.freelance ingest)")
+    p = r.json()["projects"][0]
+    d = client.get(f"/api/freelance/projects/{p['site']}/{p['pid']}").json()
+    assert d["id"] == p["id"] and d["title"] == p["title"]
+    assert "body" in d and (d["body"] is None or d["body"].strip())
+
+
+def test_project_detail_missing(client):
+    assert client.get("/api/freelance/projects/freemoa/__없음__").status_code in (404, 503)

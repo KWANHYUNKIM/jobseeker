@@ -44,6 +44,25 @@ def to_project(r: dict, hist: list[dict], reason: str | None, cls: dict) -> dict
     }
 
 
+def project(site: str, pid: str) -> dict:
+    """한 건 + 본문. 본문이 없으면(SISM·아직 못 받음) body 가 null 이고 화면은 목록 요약을 보인다."""
+    return cached(("freelance", site, pid), lambda: _project(site, pid))
+
+
+def _project(site: str, pid: str) -> dict:
+    got = repository.project(site, pid)
+    if got is None:
+        raise NotFound(f"외주 프로젝트 없음: {site}:{pid}")
+    row, hist, reason, body = got
+    meta = repository.meta()
+    cls = ((meta or {}).get("payload") or {}).get("classes", {}).get(f"{site}:{pid}", {})
+    return {
+        **to_project(row, hist, reason, cls),
+        "body": body["body"] if body else None,
+        "body_at": body["fetched_at"].isoformat() if body else None,
+    }
+
+
 def freelance() -> dict:
     return cached(("freelance",), _freelance)
 
