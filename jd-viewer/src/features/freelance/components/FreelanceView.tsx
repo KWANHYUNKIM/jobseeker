@@ -298,6 +298,8 @@ function Box({ children }: { children: ReactNode }) {
 
 function ProjectRow({ p, starred, onStar }: { p: Project; starred: boolean; onStar: () => void }) {
   const priced = !!p.budget && !!(p.budget.min || p.budget.max)
+  // 원본 사이트로 내보내지 않는다 — 우리 상세 화면에서 본문을 읽고, 지원만 원문에서 한다.
+  const to = paths.freelanceProject(p.site, p.pid ?? p.id.slice(p.id.indexOf(':') + 1))
   return (
     <li className="flex flex-col md:flex-row md:items-center gap-3 border-b border-[#e2e2e2] py-[22px] md:py-0 md:min-h-[126px]">
       <div className="md:w-[480px] md:shrink-0 min-w-0 px-[14px]">
@@ -312,7 +314,7 @@ function ProjectRow({ p, starred, onStar }: { p: Project; starred: boolean; onSt
             </span>
           )}
         </div>
-        <a href={p.url} target="_blank" rel="noopener noreferrer" className="mt-2 block truncate text-[17px] font-medium leading-[25px] tracking-[-0.16px] text-[#272727] hover:underline underline-offset-2">
+        <a href={to} onClick={onLinkClick(to)} className="mt-2 block truncate text-[17px] font-medium leading-[25px] tracking-[-0.16px] text-[#272727] hover:underline underline-offset-2">
           {p.title}
         </a>
         <div className="mt-2 flex flex-wrap gap-x-[14px] text-[13px] leading-[19px] text-[#666]">

@@ -68,6 +68,8 @@ function useTabSeo(route: Route, tab: Tab) {
     tab === 'book' ||
     tab === 'hardware' ||
     tab === 'home' ||
+    // 외주 프로젝트 한 건은 상세 화면이 제 제목·noindex 를 단다(남의 글을 옮긴 화면이다).
+    (tab === 'freelance' && !!detail && detail !== 'rates') ||
     // 잡 리스트는 검색어가 걸렸을 때 noindex 를 다는 일까지 JobsPage 가 한다.
     tab === 'jobs'
   const t = TAB_SEO[tab === 'freelance' && detail === 'rates' ? 'freelanceRates' : tab] ?? TAB_SEO.jobs

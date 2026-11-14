@@ -23,6 +23,7 @@ export const GRADES: Grade[] = ['초급', '중급', '고급', '특급']
 export interface Project {
   id: string
   site: string
+  pid?: string
   url: string
   title: string
   category: string
@@ -49,6 +50,24 @@ export interface Project {
   domain?: string
   work_type?: 'SI' | 'SM' | null
   role?: string | null
+}
+
+/** 상세 화면 — 목록 행에 본문을 더한 것(`GET /api/freelance/projects/{site}/{pid}`). */
+export interface ProjectDetail extends Project {
+  /** 원본 상세 본문(텍스트, 연락처 지움). 없으면 null — SISM(약관)이거나 아직 못 받았다. */
+  body: string | null
+  body_at: string | null
+}
+
+/** 본문을 받지 않는 출처 — 약관이 복제를 금지한다. */
+export const BODY_BLOCKED: Record<string, string> = {
+  sism: 'SISM 은 약관이 글의 복제를 금지해서 본문을 옮겨 오지 않아요.',
+}
+
+/** `jobkorea-50346332` → ['jobkorea', '50346332']. 사이트 이름에는 '-' 가 없다. */
+export function splitProjectSlug(slug: string): [string, string] | null {
+  const i = slug.indexOf('-')
+  return i > 0 ? [slug.slice(0, i), decodeURIComponent(slug.slice(i + 1))] : null
 }
 
 export interface Trend {

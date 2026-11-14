@@ -27,6 +27,8 @@ export const paths = {
   reposts: () => '/reposts',
   freelance: () => '/freelance',
   freelanceRates: () => '/freelance/rates',
+  /** 외주 프로젝트 한 건 — `/freelance/jobkorea-50346332`. 사이트 이름에는 '-' 가 없다. */
+  freelanceProject: (site: string, pid: string) => `/freelance/${site}-${encodeURIComponent(pid)}`,
   trend: (tech?: string) => (tech ? `/trend?tech=${encodeURIComponent(tech)}` : '/trend'),
   /** 책장. 예전 기술 백과사전이 쓰던 경로를 그대로 물려받았다(북마크가 안 깨지게). */
   wiki: () => '/wiki',
