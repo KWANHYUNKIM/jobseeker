@@ -37,6 +37,7 @@ import { SiteFooter } from '../../../components/SiteFooter'
 import { AiUses, DevUses, VideoSim } from './HardwareWorkloads'
 import { MemorySlots } from './HardwareMemory'
 import { BuyRow } from './HardwareBuy'
+import { UseSection } from './HardwareUse'
 
 // PC 부품 — 기술 역설계가 "그 회사가 무엇으로 만들어졌나"라면 여기는 "내 책상 위 기계가 무엇으로
 // 만들어졌나"다. 화면 셋:
@@ -429,38 +430,33 @@ function Builder({ data }: { data: HwData }) {
           )}
           {/* 같은 용도·예산의 완제품 */}
           <PrebuiltPicks data={data} use={use} budget={budget} build={build} buildCost={total} />
-          <div className="flex flex-col gap-4 min-w-0">
-          {errors > 0 && (
-            <div className="rounded-md border border-(--color-red-400) bg-(--color-panel) px-3 py-2 text-sm text-(--color-red-400)">
-              지금 조합은 조립이 안 된다 — 아래 숫자는 호환 문제를 고쳤다고 치고 계산한 값이다.
-            </div>
-          )}
-          {/* 고른 용도의 성능이 맨 위 — 영상·개발·AI 는 게임 fps 보다 '이 일이 되나'가 먼저다 */}
-          {(() => {
-            const game = gpu ? <GameSim key={use.res} data={data} gpu={gpu} cpu={cpu ?? null} defaultRes={use.res} /> : null
-            const ai = gpu ? <AiSim data={data} gpu={gpu} ram={ram} /> : null
-            const dev = cpu ? <DevSim data={data} cpu={cpu} ram={ram} /> : null
-            const video = gpu ? <VideoSim data={data} gpu={gpu} cpu={cpu} ram={ram} /> : null
-            const lead = use.key === 'video' ? video : use.key === 'dev' ? dev : use.key === 'llm' ? ai : game
-            const rest = [game, ai, dev, video].filter((x) => x && x !== lead)
-            return (
-              <>
-                {!gpu && <div className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4 text-sm text-(--color-muted)">그래픽카드가 없다(내장 그래픽) — 게임·AI·영상 예측은 그래픽카드를 고르면 나온다.</div>}
-                {lead}
-                <div className="grid gap-4 xl:grid-cols-2 items-start">
-                  {rest.map((x, i) => (
-                    <div key={i} className={`min-w-0 ${x === game ? 'xl:col-span-2' : ''}`}>
-                      {x}
-                    </div>
-                  ))}
-                </div>
-              </>
-            )
-          })()}
-          </div>
           <p className="text-[13px] text-[#999]">등급 A·B·C는 같은 용도·예산에서 부품 급의 위치예요. 가격은 다나와 최저가 기준이고 매물이 바뀌면 달라져요.</p>
         </section>
       </div>
+
+      {/* 아래쪽 전체 — 이 조합으로 무엇을 할 수 있나(01 게임 · 02 AI · 03 개발 · 04 영상 편집) */}
+      {errors > 0 && (
+        <div className="mt-6 rounded-md border border-(--color-red-400) bg-(--color-panel) px-3 py-2 text-sm text-(--color-red-400)">
+          지금 조합은 조립이 안 된다 — 아래 숫자는 호환 문제를 고쳤다고 치고 계산한 값이다.
+        </div>
+      )}
+      <UseSection
+        data={data}
+        useName={use.name}
+        budget={budget}
+        res={use.res}
+        gpu={gpu}
+        cpu={cpu}
+        ram={ram}
+        sections={{
+          game: gpu ? <GameSim key={use.res} data={data} gpu={gpu} cpu={cpu ?? null} defaultRes={use.res} /> : (
+            <div className="rounded-[22px] border border-[#e2e8ec] bg-white p-6 text-sm text-[#666]">그래픽카드가 없다(내장 그래픽) — 게임·AI·영상 예측은 그래픽카드를 고르면 나온다.</div>
+          ),
+          ai: gpu ? <AiSim data={data} gpu={gpu} ram={ram} /> : null,
+          dev: cpu ? <DevSim data={data} cpu={cpu} ram={ram} /> : null,
+          video: gpu ? <VideoSim data={data} gpu={gpu} cpu={cpu} ram={ram} /> : null,
+        }}
+      />
     </div>
   )
 }
