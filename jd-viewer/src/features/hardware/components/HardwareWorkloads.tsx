@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   estimateBuildMin,
   estimateImageSec,
@@ -26,9 +27,13 @@ const fmtTps = (t: number) => (t >= 10 ? Math.round(t) : t.toFixed(1))
 const fmtMin = (m: number) => (m < 10 ? m.toFixed(1) : String(Math.round(m)))
 const short = (p: Part) => p.name.replace('GeForce ', '').replace('Radeon ', '')
 
-function PartLink({ p }: { p: Part }) {
+function PartLink({ p, big }: { p: Part; big?: boolean }) {
   return (
-    <a href={paths.hardwarePart(p.id)} onClick={onLinkClick(paths.hardwarePart(p.id))} className="hover:underline">
+    <a
+      href={paths.hardwarePart(p.id)}
+      onClick={onLinkClick(paths.hardwarePart(p.id))}
+      className={big ? 'text-[24px] font-bold leading-[35px] text-white hover:underline' : 'hover:underline'}
+    >
       {short(p)}
     </a>
   )
@@ -44,7 +49,7 @@ const VERDICT: Record<Verdict, { icon: string; dot: string; tag: string; band: s
 function Row({ v, task, need, result }: { v: Verdict; task: string; need: string; result: string }) {
   const s = VERDICT[v]
   return (
-    <li className="grid lg:grid-cols-[minmax(0,1fr)_612px] items-center gap-x-6 gap-y-2 py-[19px] border-b border-[#e8ecef]">
+    <li className="grid lg:grid-cols-[minmax(0,1fr)_612px] items-start gap-x-6 gap-y-2 py-[19px] border-b border-[#e8ecef]">
       <div className="flex items-start gap-[14px] min-w-0">
         <span className={'mt-[3px] shrink-0 grid place-items-center w-[26px] h-[26px] rounded-full text-sm font-bold text-white ' + s.dot} aria-label={s.label}>
           {s.icon}
@@ -339,7 +344,7 @@ export function DevUses({ data, cpu, ram }: { data: HwData; cpu: Part; ram?: Par
                       const me = x.p.id === cpu.id
                       return (
                         <tr key={x.p.id} className={me ? 'text-(--color-accent) font-bold' : 'text-[#272727]'}>
-                          <td className="py-[8px] pr-1 leading-5 tracking-[-0.3px]">
+                          <td className="py-[9px] pr-1 leading-5 tracking-[-0.3px]">
                             <PartLink p={x.p} />
                           </td>
                           <td className="text-right tabular-nums">{fmtMin(x.min)}분</td>
@@ -377,6 +382,7 @@ const VIDEO_TIERS: { key: string; label: string; why: string; min: number }[] = 
 ]
 
 export function VideoSim({ data, gpu, cpu, ram }: { data: HwData; gpu: Part; cpu?: Part; ram?: Part }) {
+  const [how, setHow] = useState(false)
   const vb = data.bench.video
   if (!vb) return null
   const s: VideoScore | undefined = vb.gpu[gpu.id]
@@ -397,42 +403,55 @@ export function VideoSim({ data, gpu, cpu, ram }: { data: HwData; gpu: Part; cpu
   // 한 단계 위 — 효과 점수가 25% 넘게 오르는 카드 중 가장 싼 것
   const step = s ? cards.filter((x) => x.v.effects >= s.effects * 1.25).sort((a, c) => a.price - c.price)[0] : undefined
 
+  const chip = 'inline-flex items-center h-[30px] rounded-[15px] bg-[#f1f4f8] px-3 text-sm text-[#272727]'
+  const card = 'rounded-[24px] border border-[#e2e8ec] bg-white px-[27px] pt-[24px] pb-[24px]'
+  const big = 'mt-[6px] text-[40px] font-bold leading-[52px] tracking-[-1px] text-[#272727] tabular-nums'
   return (
-    <div className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4 flex flex-col gap-3">
-      <div className="flex flex-wrap items-baseline gap-2">
-        <h2 className="text-base font-bold">영상 편집은 얼마나 되나</h2>
-        <span className="text-xs text-(--color-muted)">{vb.name} · 추정이 아니라 실측 점수</span>
+    <div className="flex flex-col">
+      <div className="flex flex-wrap items-center gap-3 min-h-10">
+        <span className="grid place-items-center w-[35px] h-[25px] rounded-lg bg-(--color-accent) text-[15px] font-bold text-white tabular-nums">04</span>
+        <h2 className="text-[26px] font-bold leading-[37px] tracking-[-0.5px] text-[#272727]">영상 편집은 얼마나 되나</h2>
+        <div className="ml-auto flex flex-wrap items-center gap-2">
+          <span className={chip}>{vb.name.replace(/^영상 편집\s*\((.*)\)$/, '$1')}</span>
+          <span className={chip}>추정이 아니라 실측 점수</span>
+        </div>
       </div>
-      <div className="grid sm:grid-cols-3 gap-3 text-sm">
-        <div className="rounded-lg bg-(--color-band) p-3">
-          <div className="text-[11px] text-(--color-muted)">효과 점수(색보정·노이즈 제거)</div>
-          <div className="text-xl font-bold tabular-nums">{s ? s.effects.toFixed(0) : '측정 없음'}</div>
+      <div className="mt-[9px] grid gap-4 md:grid-cols-3" data-nosnippet>
+        <section className={card}>
+          <h3 className="text-[15px] leading-[22px] text-[#555]">
+            <b className="font-bold">효과 점수</b> <span className="text-[13px]">색보정·노이즈 제거</span>
+          </h3>
+          <div className={big}>{s ? s.effects.toFixed(0) : '측정 없음'}</div>
           {pct != null && (
             <>
-              <div className="h-1.5 rounded bg-(--color-border-soft) mt-1">
-                <div className="h-full rounded bg-(--color-accent)/70" style={{ width: `${Math.min(100, pct)}%` }} />
+              <div className="mt-[8px] h-2 rounded bg-[#f1f4f8]">
+                <div className="h-full rounded bg-(--color-accent)" style={{ width: `${Math.min(100, pct)}%` }} />
               </div>
-              <div className="text-[11px] text-(--color-faint) mt-0.5">
+              <div className="mt-[8px] text-sm leading-5 text-[#555]">
                 RTX 5090({vb.effects_top.toFixed(0)})의 {pct}%
               </div>
             </>
           )}
-        </div>
-        <div className="rounded-lg bg-(--color-band) p-3">
-          <div className="text-[11px] text-(--color-muted)">카메라 원본 재생(LongGOP)</div>
-          <div className="text-xl font-bold tabular-nums">{s ? s.longgop.toFixed(0) : '—'}</div>
-          <div className="text-[11px] text-(--color-faint)">H.264·HEVC 원본을 편집하며 재생하는 힘</div>
-        </div>
-        <div className="rounded-lg bg-(--color-band) p-3">
-          <div className="text-[11px] text-(--color-muted)">총점(Standard)</div>
-          <div className="text-xl font-bold tabular-nums">{s ? Math.round(s.overall).toLocaleString() : '—'}</div>
-          <div className="text-[11px] text-(--color-faint)">제출자마다 CPU 가 달라 CPU 몫이 섞여 있다</div>
-        </div>
+        </section>
+        <section className={card}>
+          <h3 className="text-[15px] leading-[22px] text-[#555]">
+            <b className="font-bold">카메라 원본 재생</b> <span className="text-[13px]">LongGOP</span>
+          </h3>
+          <div className={big}>{s ? s.longgop.toFixed(0) : '—'}</div>
+          <div className="mt-[8px] text-sm leading-5 text-[#555]">H.264·HEVC 원본을 편집하며 재생하는 힘</div>
+        </section>
+        <section className={card}>
+          <h3 className="text-[15px] leading-[22px] text-[#555]">
+            <b className="font-bold">총점</b> <span className="text-[13px]">Standard</span>
+          </h3>
+          <div className={big}>{s ? Math.round(s.overall).toLocaleString() : '—'}</div>
+          <div className="mt-[8px] text-sm leading-5 text-[#555]">제출자마다 CPU 가 달라 CPU 몫이 섞여 있다</div>
+        </section>
       </div>
 
-      <div>
-        <h3 className="text-sm font-semibold mb-1">이 조합으로 실제 하는 일</h3>
-        <ul className="flex flex-col">
+      <div className="mt-[34px]">
+        <SubHead title="이 조합으로 실제 하는 일" />
+        <ul className="mt-[13px] flex flex-col">
           <Row
             v={decV}
             task="미러리스 카메라 4K 원본을 바로 편집"
@@ -502,49 +521,66 @@ export function VideoSim({ data, gpu, cpu, ram }: { data: HwData; gpu: Part; cpu
         </ul>
       </div>
 
-      <div>
-        <h3 className="text-sm font-semibold">이럴 때 이 급을 산다</h3>
-        <p className="text-[11px] text-(--color-muted) mb-1">
-          효과 점수로 나눴다(문턱 55·100 은 우리 것). <b>4:2:2</b> 는 카메라 원본을 하드웨어로 푸는 카드다. 값은 오늘 최저가.
-        </p>
-        <div className="grid gap-2 sm:grid-cols-3">
+      <div className="mt-[34px]">
+        <SubHead title="이럴 때 이 급을 산다" note="효과 점수로 나눴다(문턱 55·100 은 우리 것). 4:2:2 는 카메라 원본을 하드웨어로 푸는 카드다. 값은 오늘 최저가." />
+        <div className="mt-[14px] grid gap-[13px] md:grid-cols-3 items-stretch">
           {VIDEO_TIERS.map((t, i) => {
             const upper = VIDEO_TIERS[i - 1]?.min ?? Infinity
             const xs = cards.filter((x) => x.v.effects >= t.min && x.v.effects < upper).sort((a, c) => a.price - c.price)
             if (!xs.length) return null
             const mine = t === myTier
             return (
-              <div key={t.key} className={`rounded-md p-2.5 text-xs ${mine ? 'border-2 border-(--color-accent) bg-(--color-accent)/5' : 'border border-(--color-border-soft)'}`}>
-                <div className="flex items-baseline gap-2">
-                  <b className="text-sm">{t.label}</b>
-                  {mine && <span className="text-[10px] px-1 rounded bg-(--color-accent) text-(--color-on-accent)">지금 고른 급</span>}
-                </div>
-                <p className="text-(--color-muted) mt-0.5">{t.why}</p>
-                <ul className="mt-1 flex flex-col gap-0.5">
-                  {xs.slice(0, 4).map((x) => (
-                    <li key={x.p.id} className="flex flex-wrap gap-x-2 tabular-nums">
-                      <PartLink p={x.p} />
-                      <span className="text-(--color-muted)">
-                        효과 {x.v.effects.toFixed(0)} · {String(x.p.specs.vram_gb)}GB{x.v.dec422.length ? ' · 4:2:2' : ''}
-                      </span>
-                      <span className="ml-auto">{won(x.price)}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <TierCard key={t.key} mine={mine} title={t.label} why={t.why}>
+                <table className="mt-[14px] w-full text-sm" data-nosnippet>
+                  <thead>
+                    <tr className="text-xs text-[#737373]">
+                      <th className="text-left font-normal" />
+                      <th className="w-[44px] pb-[10px] text-right font-normal">효과</th>
+                      <th className="w-[56px] pb-[10px] text-right font-normal">VRAM</th>
+                      <th className="w-[56px] pb-[10px] text-right font-normal">4:2:2</th>
+                      <th className="w-[84px] pb-[10px] text-right font-normal">값</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {xs.slice(0, 4).map((x) => (
+                      <tr key={x.p.id} className="text-[#272727]">
+                        <td className="py-[9px] pr-1 leading-5 tracking-[-0.3px]">
+                          <PartLink p={x.p} />
+                        </td>
+                        <td className="text-right tabular-nums">{x.v.effects.toFixed(0)}</td>
+                        <td className="text-right tabular-nums">{String(x.p.specs.vram_gb)}GB</td>
+                        <td className="text-right text-[#555]">{x.v.dec422.length ? '✓' : '—'}</td>
+                        <td className="text-right font-bold tabular-nums whitespace-nowrap">{won(x.price)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </TierCard>
             )
           })}
         </div>
         {s && step && (
-          <p className="text-xs mt-2">
-            <span className="text-(--color-muted)">효과가 25% 넘게 오르는 가장 싼 카드: </span>
-            <PartLink p={step.p} /> — 효과 {s.effects.toFixed(0)} → {step.v.effects.toFixed(0)} · {won(step.price)}
-            {myPrice != null && ` (지금보다 ${step.price >= myPrice ? '+' : '−'}${won(Math.abs(step.price - myPrice))})`}
-          </p>
+          <div className="mt-[18px] flex flex-wrap items-center gap-x-4 gap-y-1 rounded-[16px] bg-[#272727] px-[27px] py-[22px] text-white" data-nosnippet>
+            <span className="text-sm text-[#bbb]">효과가 25% 넘게 오르는 가장 싼 카드</span>
+            <PartLink p={step.p} big />
+            <span className="text-base">
+              효과 {s.effects.toFixed(0)} → {step.v.effects.toFixed(0)} · {won(step.price)}
+              {myPrice != null && (
+                <span className="ml-2 text-[#ff9a9a]">
+                  (지금보다 {step.price >= myPrice ? '+' : '−'}
+                  {won(Math.abs(step.price - myPrice))})
+                </span>
+              )}
+            </span>
+            <button type="button" onClick={() => setHow((v) => !v)} aria-expanded={how} className="ml-auto text-sm text-[#ff9a9a] hover:underline">
+              어디서 온 숫자인가 ›
+            </button>
+          </div>
         )}
       </div>
 
-      <details className="text-xs text-(--color-muted)">
+      {(how || !step) && (
+      <details open={how} className="mt-3 rounded-xl bg-[#f7f9fa] px-4 py-3 text-[13px] leading-5 text-[#555]">
         <summary className="cursor-pointer">어디서 온 숫자인가</summary>
         <p className="mt-1">{vb.model}</p>
         {s?.note && (
@@ -571,6 +607,7 @@ export function VideoSim({ data, gpu, cpu, ram }: { data: HwData; gpu: Part; cpu
           ))}
         </ul>
       </details>
+      )}
     </div>
   )
 }
