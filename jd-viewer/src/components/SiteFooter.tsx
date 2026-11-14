@@ -29,7 +29,8 @@ export function SiteFooter({
     <footer className="bg-[#f3f6f8]">
       <div className="jd-container relative pt-[31px] pb-[40px] min-h-[167px]">
         <div className="flex flex-col md:flex-row md:justify-between gap-4">
-          <div className="text-[22px] font-bold leading-8 tracking-[-1px] text-[#9aa1a8]">JD Viewer</div>
+          {/* 헤더와 같은 로고를 흐리게 — 바닥 띠에서 눈을 끌지 않게 */}
+          <img src="/brand-logo.png" alt="devgonggo" width={149} height={48} className="h-[48px] w-auto self-start opacity-60 grayscale" loading="lazy" decoding="async" />
           <div className="md:text-right">
             <ul className="flex flex-wrap md:justify-end gap-x-[21px] gap-y-1 pt-1 text-xs leading-[18px] text-[#474747]">
               <li>서비스 소개</li>
@@ -42,7 +43,7 @@ export function SiteFooter({
             <p className="mt-[9px] text-[11px] leading-4 text-[#777]">
               공고 출처 : {sources} | 매일 06시 갱신
             </p>
-            <p className="mt-[2px] text-[11px] leading-4 text-[#777]">Copyright © JD Viewer. All rights reserved.</p>
+            <p className="mt-[2px] text-[11px] leading-4 text-[#777]">Copyright © devgonggo. All rights reserved.</p>
           </div>
         </div>
         {meta.length > 0 && <p className="mt-[29px] md:-mt-[2px] text-xs leading-[18px] text-[#999]">{meta.join(' · ')}</p>}
