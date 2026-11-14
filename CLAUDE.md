@@ -74,6 +74,9 @@
     백과사전·하드웨어)을 한 표로 모았다. `/loop` 엔진의 실행 프롬프트는 여기에만 있다 —
     다시 시작할 때 `python -m automation.loops prompt <키>` 출력을 `/loop` 에 준다. 상태는 산출물의 나이로 보고
     8770 대시보드 '반복 작업' 칸(`/api/loops`)에 뜬다. **새 반복 작업은 먼저 여기 한 줄을 더한다.**
+    **세션을 키우지 않는다** — 열어 둔 세션의 `/loop` 는 반복마다 대화가 쌓여 한없이 커진다. 대신
+    `python -m automation.loops repeat <키> --every 20m`(한 번은 `run <키>`)이 회차마다 새 `claude -p` 를 띄우고 끝나면 버린다
+    (`automation/loop_runner.py` — 잠금·시간 제한·`git push` 금지, 기록은 `var/loops/<키>/`).
   - `core/sites.py` : 채용 사이트 등록부 — 사이트 목록의 단일 소스(순서 = 중복 대표 순서). 새 사이트는
     여기 한 줄 + DB enum·close_check 판정기·뷰어 `Site` 타입 — `tests/test_sites.py` 가 넷을 대조한다.
   - `servers/` : 사람·에이전트가 붙는 서버 — 서버마다 `server.py`(+ 화면은 `static/`).

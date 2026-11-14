@@ -13,6 +13,8 @@ claude-loop 은 **실행 프롬프트가 어디에도 적혀 있지 않아서** 
     python -m automation.loops show hw-engine      # 한 줄 자세히
     python -m automation.loops prompt hw-engine    # /loop 에 붙일 프롬프트만
     python -m automation.loops status --json       # 상태(ops_server /api/loops 가 같은 것을 낸다)
+    python -m automation.loops run hw-engine        # claude-loop 한 회차를 새 claude 프로세스로(automation/loop_runner.py)
+    python -m automation.loops repeat hw-engine --every 20m [--times 3]   # 주기 반복 — 세션이 자라지 않는다
 
 새 반복 작업을 만들면 **먼저 여기 한 줄을 더한다.** 등록부에 없는 루프는 없는 것으로 본다.
 """
@@ -391,7 +393,13 @@ def status(l: Loop) -> dict:
         backlog = BACKLOG[l.backlog]() if l.backlog else None
     except Exception:
         backlog = None
-    return {**asdict(l), "backlog": backlog, "last": last.isoformat(timespec="minutes") if last else None,
+    run = None
+    if l.kind == "claude-loop":
+        from automation.loop_runner import last_run
+        r = last_run(l.key)
+        run = {k: r.get(k) for k in ("started", "ok", "exit", "seconds", "cost_usd", "summary", "skipped")} if r else None
+    return {**asdict(l), "backlog": backlog, "last_run": run,
+            "last": last.isoformat(timespec="minutes") if last else None,
             "age_hours": round(age_h, 1) if age_h is not None else None, "launchd_alive": alive, "state": state}
 
 
@@ -419,6 +427,20 @@ def main(argv: list[str]) -> int:
             print(l.prompt)
             return 0
         print(json.dumps(status(l), ensure_ascii=False, indent=2))
+        return 0
+    if cmd in ("run", "repeat"):
+        if len(argv) < 2 or argv[1] not in BY_KEY:
+            print(f"키: {', '.join(k for k, l in BY_KEY.items() if l.prompt)}")
+            return 2
+        from automation import loop_runner as lr
+        l = BY_KEY[argv[1]]
+        opt = lambda name, d=None: argv[argv.index(name) + 1] if name in argv else d   # noqa: E731
+        timeout_s = lr.parse_every(opt("--timeout", "45m"))
+        if cmd == "run":
+            rec = lr.run_once(l, ROOT, timeout_s, dry_run="--dry-run" in argv)
+            return 0 if rec.get("ok") or rec.get("dry_run") or rec.get("skipped") else 1
+        times = opt("--times")
+        lr.repeat(l, ROOT, lr.parse_every(opt("--every", "20m")), int(times) if times else None, timeout_s)
         return 0
     if cmd == "status":
         print(json.dumps(status_all(), ensure_ascii=False, indent=None if "--json" in argv else 2))
