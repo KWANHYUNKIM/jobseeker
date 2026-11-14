@@ -611,54 +611,93 @@ function Tone({ tone, children }: { tone: 'good' | 'ok' | 'bad'; children: React
   return <span className={c}>{children}</span>
 }
 
+/** 구역 머리 — 빨간 번호 딱지 + 26px 제목(이 조합으로 무엇을 할 수 있나의 01~04) */
+function UseHead({ no, title, children }: { no: string; title: string; children?: React.ReactNode }) {
+  return (
+    <div className="flex flex-wrap items-center gap-3 min-h-10">
+      <span className="grid place-items-center w-[35px] h-[25px] rounded-lg bg-(--color-accent) text-[15px] font-bold text-white tabular-nums">{no}</span>
+      <h2 className="text-[26px] font-bold leading-[37px] tracking-[-0.5px] text-[#272727]">{title}</h2>
+      {children && <div className="ml-auto flex flex-wrap items-center gap-2">{children}</div>}
+    </div>
+  )
+}
+
+const FPS_COLOR = (fps: number) => (fps >= 144 ? '#f45757' : fps >= 100 ? '#f59e9e' : '#c9d1d8')
+
 function GameSim({ data, gpu, cpu, defaultRes }: { data: HwData; gpu: Part; cpu: Part | null; defaultRes: Res }) {
   // 용도가 바뀌면 key 가 바뀌어 새로 그려진다 — 해상도는 그 용도의 기본값에서 다시 시작한다.
   const [res, setRes] = useState<Res>(defaultRes)
+  const [how, setHow] = useState(false)
   const rows = data.bench.games.map((g) => ({ g, e: estimateFps(g, res, gpu, cpu) }))
-  const max = Math.max(...rows.map((r) => Math.min(r.e.fps, 400)), 60)
+  const max = Math.max(...rows.map((r) => r.e.fps), 60)
   return (
-    <div className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4 flex flex-col gap-3">
-      <div className="flex flex-wrap items-baseline gap-2">
-        <h2 className="text-base font-bold">게임은 얼마나 돌아가나</h2>
-        <div className="ml-auto inline-flex rounded-md border border-(--color-border) overflow-hidden">
+    <div className="flex flex-col">
+      <UseHead no="01" title="게임은 얼마나 돌아가나">
+        <div className="inline-flex items-center gap-1 h-10 rounded-xl bg-[#f1f4f8] p-1">
           {(Object.keys(RES_LABEL) as Res[]).map((r) => (
-            <button key={r} onClick={() => setRes(r)} className={`px-2.5 py-1 text-xs ${r === res ? 'bg-(--color-accent) text-(--color-on-accent) font-semibold' : 'text-(--color-muted)'}`}>
+            <button
+              key={r}
+              type="button"
+              aria-pressed={r === res}
+              onClick={() => setRes(r)}
+              className={'h-8 px-4 rounded-[9px] text-sm font-medium ' + (r === res ? 'bg-[#272727] text-white' : 'text-[#555] hover:text-[#272727]')}
+            >
               {RES_LABEL[r]}
             </button>
           ))}
         </div>
+      </UseHead>
+      <div className="mt-0 rounded-[24px] border border-[#e2e8ec] bg-white px-[27px] pt-[24px] pb-[26px]" data-nosnippet>
+        <div className="flex flex-col">
+          {rows.map(({ g, e }) => {
+            const w = fpsWord(e.fps)
+            return (
+              <div key={g.key} className="grid grid-cols-[minmax(0,1fr)_auto] sm:grid-cols-[278px_478px_125px_minmax(0,1fr)] items-center gap-x-0 h-[76px] border-b border-[#eef1f3] last:border-0">
+                <div className="min-w-0">
+                  <div className="text-[17px] font-bold leading-[25px] text-[#272727] truncate">{g.name}</div>
+                  <div className="mt-1 text-[13px] leading-[19px] text-[#737373] truncate">{g.preset}</div>
+                </div>
+                <div className="hidden sm:block relative h-3 rounded-md bg-[#f1f4f8]">
+                  <div className="absolute inset-y-0 left-0 rounded-md" style={{ width: `${(e.fps / max) * 100}%`, background: FPS_COLOR(e.fps) }} />
+                </div>
+                <div className="text-right whitespace-nowrap">
+                  <span className="text-[24px] font-bold leading-[35px] tracking-[-0.5px] text-[#272727] tabular-nums">{e.fps}</span>
+                  <span className="ml-0.5 text-sm text-[#555]">fps</span>
+                </div>
+                <div className="hidden sm:block pl-[21px] text-sm leading-5 text-[#474747] truncate">
+                  {w.word}
+                  {e.bound === 'cpu' && ' · CPU가 천장'}
+                  {e.vramShort > 0 && <span className="text-(--color-red-400)"> · VRAM {e.vramShort}GB 부족</span>}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+        <div className="mt-[26px] flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] leading-[19px] text-[#555]">
+          {[
+            ['#f45757', '144 fps 이상 — 고주사율 모니터'],
+            ['#f59e9e', '100~143'],
+            ['#c9d1d8', '100 미만 — 부드럽다'],
+          ].map(([c, t]) => (
+            <span key={t} className="inline-flex items-center gap-1.5">
+              <span className="inline-block w-[14px] h-2 rounded" style={{ background: c }} aria-hidden />
+              {t}
+            </span>
+          ))}
+          <button type="button" onClick={() => setHow((v) => !v)} aria-expanded={how} className="ml-auto font-medium text-(--color-accent) hover:underline">
+            어떻게 계산했나 ›
+          </button>
+        </div>
+        {how && (
+          <div className="mt-3 rounded-xl bg-[#f7f9fa] px-4 py-3 text-[13px] leading-5 text-[#555]">
+            <p>{data.bench.model}</p>
+            <p className="mt-1">
+              {gpu.name} 성능 지수 {gpu.perf.index}
+              {cpu && ` · ${cpu.name} 게임 지수 ${cpu.perf.index}`}. 기준값은 {data.bench.games.every((g) => g.confidence === 'seed') ? '아직 초기 추정값이라 실측 리뷰로 바꾸는 중이다' : '리뷰 실측에서 잡았다'}.
+            </p>
+          </div>
+        )}
       </div>
-      <div className="flex flex-col gap-1.5">
-        {rows.map(({ g, e }) => {
-          const w = fpsWord(e.fps)
-          return (
-            <div key={g.key} className="grid grid-cols-[8.5rem_minmax(0,1fr)_3.5rem] sm:grid-cols-[10rem_minmax(0,1fr)_3.5rem_13rem] items-center gap-2 text-sm">
-              <div className="min-w-0">
-                <div className="truncate font-medium">{g.name}</div>
-                <div className="text-[10px] text-(--color-faint) truncate">{g.preset}</div>
-              </div>
-              <div className="relative h-4 rounded bg-(--color-band)">
-                <div className="absolute inset-y-0 left-0 rounded bg-(--color-accent)/70" style={{ width: `${(Math.min(e.fps, 400) / max) * 100}%` }} />
-                <div className="absolute inset-y-0 w-px bg-(--color-text)/40" style={{ left: `${(60 / max) * 100}%` }} title="60fps" />
-              </div>
-              <div className="text-right font-bold tabular-nums">{e.fps}</div>
-              <div className="hidden sm:block text-xs">
-                <Tone tone={w.tone}>{w.word}</Tone>
-                {e.bound === 'cpu' && <span className="text-(--color-faint)"> · CPU 가 천장</span>}
-                {e.vramShort > 0 && <span className="text-(--color-red-400)"> · VRAM {e.vramShort}GB 부족</span>}
-              </div>
-            </div>
-          )
-        })}
-      </div>
-      <details className="text-xs text-(--color-muted)">
-        <summary className="cursor-pointer">어떻게 계산했나</summary>
-        <p className="mt-1">{data.bench.model}</p>
-        <p className="mt-1">
-          {gpu.name} 성능 지수 {gpu.perf.index}
-          {cpu && ` · ${cpu.name} 게임 지수 ${cpu.perf.index}`}. 세로선은 60fps. 기준값은 아직 {data.bench.games.every((g) => g.confidence === 'seed') ? '초기 추정값이라 실측 리뷰로 바꾸는 중이다' : '리뷰 실측에서 잡았다'}.
-        </p>
-      </details>
     </div>
   )
 }
