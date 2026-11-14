@@ -5,6 +5,11 @@
 
 ## 지금
 
+- **2026-11-14: validate.py 가 옛 뷰어 경로를 봐서 죽는다**(REQUESTS). 고쳐지기 전엔 `VIEWER_LIB` 만
+  `jd-viewer/src/features/hardware/utils/hardware.ts` 로 바꿔 끼운 래퍼로 돌린다(validate.py 는 고치지 않는다).
+- **섞인 매물(3번)은 크롤러 요청을 기다린다** — 다나와 RSC 이후 숫자 아닌 pcode(오픈마켓·해외구매)가 섞인다(REQUESTS).
+  부품 `not` 은 이름으로 갈리는 것만 더했다(LOG 11-14). 7900 XTX · 5300G · 9070 XT · WD Red Plus 가 남아도 `not` 을 더 쌓지 말고 4번 이하로 넘어간다.
+
 - 2026-09-29 씨앗 69개(9분류)를 넣었다. **전부 `confidence: seed`** — 사양은 기억에서 넣은 값이라
   공식 페이지로 하나씩 확인해야 한다. GPU 부터(시뮬레이션이 가장 크게 기대는 값).
 - 게임 기준값(`bench.json` games)도 전부 seed. 실측 리뷰 한 곳을 정해 RTX 4090 기준 fps 를 잡는다.
