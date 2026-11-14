@@ -252,7 +252,7 @@ export function JobDetail({ job, onOpenUrl }: Props) {
               ))}
             </SideList>
           )}
-          <div className="rounded-[22px] bg-[#f3f6f8] px-6 py-6">
+          <div className="rounded-[22px] bg-[#f3f6f8] px-6 py-6 empty:hidden">
             <JobGuide company={job.company} url={job.url} activeQuote={activeQuote} onQuote={setActiveQuote} />
           </div>
         </aside>

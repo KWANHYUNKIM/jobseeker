@@ -78,11 +78,10 @@ function PanelShell({ children }: { children: React.ReactNode }) {
 }
 
 // ── 브리핑이 아직 없을 때 ────────────────────────────────────────────────
-// 빈 패널을 그냥 두지 않는 이유: 이 화면에서 "왜 비었는지"와 "어떻게 채우는지"를
-// 안 알려주면, 며칠 뒤엔 이 자리가 원래 비어 있는 자리인 줄 알게 된다.
+// 예전에는 "아직 조사하지 않은 회사입니다" 상자와 엔진을 돌리는 명령(/loop /hireguide)을 보여 줬다.
+// 방문자에게는 쓸모없는 운영 안내라 뺐다(2026-11-14) — 이 자리는 다른 내용으로 채울 예정이다.
+// 지금은 자동 브리핑과 회사 정보가 있으면 그것만, 없으면 아무것도 그리지 않는다.
 function NotYet({
-  company,
-  kind,
   guide,
   auto,
   autoPosting,
@@ -93,32 +92,9 @@ function NotYet({
   auto: AutoGuide | null
   autoPosting: AutoPosting | null
 }) {
+  if (!auto && !guide) return null
   return (
     <PanelShell>
-      <div className="border border-dashed border-(--color-border) rounded-lg p-4">
-        <h3 className="text-sm font-medium text-(--color-text) mb-1.5">
-          {kind === 'company' ? '아직 조사하지 않은 회사입니다' : '이 공고는 아직입니다'}
-        </h3>
-        <p className="text-xs text-(--color-muted) leading-relaxed">
-          {kind === 'company' ? (
-            <>
-              <span className="text-(--color-text)">{company}</span> 의 학습 로드맵·연봉·인물
-              조사가 아직 없습니다. 취업 브리핑 엔진이 대기열 순서대로 한 사이클에 한 곳씩
-              채웁니다.
-            </>
-          ) : (
-            <>
-              <span className="text-(--color-text)">{company}</span> 회사 브리핑은 있지만 이
-              공고는 아직 안 채웠습니다. 아래 회사 정보는 지금도 볼 수 있습니다.
-            </>
-          )}
-        </p>
-        <pre className="mt-3 text-[11px] bg-(--color-bg) border border-(--color-border) rounded px-2.5 py-2 overflow-x-auto text-(--color-muted)">
-          {kind === 'company'
-            ? `# guide-engine/state/QUEUE.md 의 "## 대기" 에 추가한 뒤\n/loop 30m /hireguide`
-            : `/loop 30m /hireguide`}
-        </pre>
-      </div>
       {auto && (
         <AutoBrief auto={auto} posting={autoPosting} />
       )}
