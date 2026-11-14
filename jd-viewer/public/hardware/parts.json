@@ -5838,6 +5838,46 @@
    "specs_verified": "2026-09-29"
   },
   {
+   "id": "mb-b660-ddr4",
+   "category": "mainboard",
+   "name": "Intel B660 (DDR4)",
+   "maker": "칩셋 Intel",
+   "released": "2022-01",
+   "specs": {
+    "socket": "LGA1700",
+    "mem": "DDR4",
+    "pcie_gpu": "PCIe 4.0(보드에 따라 5.0)",
+    "pcie_m2": "PCIe 4.0(CPU) · 칩셋 4.0/3.0",
+    "cpu_oc": false,
+    "usb4": false,
+    "forms": "ATX · M-ATX",
+    "note": "Intel 공식: 칩셋 PCIe 4.0·3.0 최대 14레인(H610 은 3.0 8레인) · CPU 그래픽 포트 PCIe 5.0 1x16 + 4.0 1x4 · 채널당 DIMM 2개(보드에 따라 슬롯 2~4) · 메모리 오버클럭 지원(H610 은 불가) · SATA 최대 4 · USB 3.2 최대 6(20Gbps 최대 2) · 2022년 1분기. CPU 배수 오버클럭은 Z690 몫이다. 600 시리즈라 13·14세대 CPU 는 BIOS 업데이트가 필요할 수 있다 — 칩셋 급 규칙 점수에는 안 드러난다."
+   },
+   "perf": {
+    "index": 32,
+    "basis": "칩셋 급 = 규칙 점수(0~100, 공식 스펙에서 계산) — 기본 10 + DDR5 10 + 그래픽 슬롯(5.0 20 · 보드 선택 5.0 12 · 4.0 10 · 3.0 0) + M.2(같은 방식) + CPU 오버클럭 20 + USB4(표준 15 · 보드 선택 5). 성능 실측이 아니라 '무엇이 열려 있나'의 점수다",
+    "confidence": "medium"
+   },
+   "price_query": {
+    "q": "B660M",
+    "cate": "메인보드",
+    "must": [
+     "B660",
+     "DDR4|D4"
+    ],
+    "not": []
+   },
+   "sources": [
+    {
+     "title": "Intel 공식 — B660 칩셋 사양",
+     "url": "https://www.intel.com/content/www/us/en/products/sku/218832/intel-b660-chipset/specifications.html"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-11-14",
+   "specs_verified": "2026-11-14"
+  },
+  {
    "id": "mb-h610-ddr4",
    "category": "mainboard",
    "name": "Intel H610 (DDR4)",
