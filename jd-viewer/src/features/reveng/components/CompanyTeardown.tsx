@@ -288,49 +288,71 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
           ))}
 
         {c.domains && c.domains.length > 0 && (
-          <Section id="domains" title="도메인" sub="조직도가 아니라 문제의 경계로 나눈 단위">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {c.domains.map((d) => {
-                const n = (c.features ?? []).filter((f) => f.domain === d.name).length
-                const on = domain === d.name
+          <section id="domains" className="scroll-mt-28 mt-[42px]">
+            <BigHead title="도메인" sub="조직도가 아니라 문제의 경계로 나눈 단위" />
+            <div className="mt-[22px] flex flex-col gap-4">
+              {c.domains.map((d, i) => {
+                const [head, ...rest] = d.name.split(' — ')
+                const feats = (c.features ?? []).map((f, k) => ({ f, no: k + 1 })).filter((x) => x.f.domain === d.name)
                 return (
-                  <button
-                    key={d.name}
-                    onClick={() => setDomain(on ? null : d.name)}
-                    className={
-                      'text-left rounded border p-2.5 transition-colors ' +
-                      (on
-                        ? 'border-(--color-accent) bg-(--color-accent)/5'
-                        : 'border-(--color-border) hover:border-(--color-accent)/50')
-                    }
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-(--color-text)">{d.name}</span>
-                      <span className="ml-auto text-xs text-(--color-muted) tabular-nums">
-                        기능 {n}
-                      </span>
-                    </div>
-                    <MdBlock className="text-xs text-(--color-muted) mt-1 leading-relaxed reveng-prose">{d.why}</MdBlock>
-                    {d.tech && d.tech.length > 0 && (
-                      <ul className="mt-2 flex flex-col gap-1.5 border-t border-(--color-border) pt-2">
-                        {d.tech.map((t) => (
-                          <li key={t.tech} className="text-xs leading-relaxed">
-                            <span className="text-(--color-accent)"><Md>{t.tech}</Md></span>
-                            <ConfBadge c={t.confidence} />
-                            <span className="text-(--color-muted)"> — <Md>{t.solves}</Md></span>
-                            <div className="text-(--color-muted) opacity-80">
-                              <span className="opacity-70">못 하는 것 </span>
-                              <Md>{t.limits}</Md>
-                            </div>
-                          </li>
+                  <article key={d.name} id={`dom-${i + 1}`} className="scroll-mt-28 rounded-[24px] border border-[#e2e8ec] bg-white px-7 pt-[24px] pb-[22px]">
+                    <div className="flex items-start gap-[14px]">
+                      <span className="mt-[2px] grid place-items-center w-8 h-8 shrink-0 rounded-full bg-[#272727] text-sm font-bold text-white">{i + 1}</span>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-[20px] font-bold leading-[29px] text-[#272727]">{head}</h3>
+                        {rest.length > 0 && <p className="mt-[2px] text-[15px] text-[#555]">{rest.join(' — ')}</p>}
+                      </div>
+                      <div className="flex shrink-0 gap-1">
+                        {feats.map((x) => (
+                          <a
+                            key={x.f.key}
+                            href={`#feat-${x.f.key}`}
+                            onClick={(ev) => {
+                              ev.preventDefault()
+                              document.getElementById('features')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                            }}
+                            className="rounded bg-[#f67979] px-[7px] text-[13px] leading-[22px] text-white hover:bg-(--color-accent)"
+                          >
+                            기능 {x.no}
+                          </a>
                         ))}
-                      </ul>
+                      </div>
+                    </div>
+                    <div className="mt-[18px] text-sm font-bold text-(--color-accent)">왜 어려운가</div>
+                    <MdBlock className="reveng-biz mt-[6px] text-base leading-[28px] text-[#333] [&_span.block]:inline [&_span.block]:mt-0 [&_span.block+span.block]:ml-1">{d.why}</MdBlock>
+                    {d.tech && d.tech.length > 0 && (
+                      <div className={'mt-[18px] grid gap-3 ' + (d.tech.length > 1 ? 'md:grid-cols-2' : '')}>
+                        {d.tech.map((t) => (
+                          <div key={t.tech} className="rounded-[20px] bg-[#f7f9fa] px-[22px] pt-[20px] pb-[18px]">
+                            <h4 className="text-base font-bold leading-6 text-[#272727]">
+                              <Md>{t.tech}</Md>
+                              <span className="ml-[10px] align-[1px] font-normal">
+                                <ConfTag c={t.confidence} />
+                              </span>
+                            </h4>
+                            <div className="mt-[14px] grid grid-cols-2 gap-x-6">
+                              <div>
+                                <div className="text-[13px] font-bold text-[#1e8a3c]">해결한 것</div>
+                                <p className="mt-[6px] text-sm leading-6 text-[#474747]">
+                                  <Md>{t.solves}</Md>
+                                </p>
+                              </div>
+                              <div>
+                                <div className="text-[13px] font-bold text-[#d9480f]">한계</div>
+                                <p className="mt-[6px] text-sm leading-6 text-[#474747]">
+                                  <Md>{t.limits}</Md>
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     )}
-                  </button>
+                  </article>
                 )
               })}
             </div>
-          </Section>
+          </section>
         )}
 
         {/* 구조를 본 뒤에 온다 — 도메인 이름을 알고 나서 읽어야 "이 시기에 그게
