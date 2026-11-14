@@ -53,7 +53,6 @@ export function JobGuide({ company, url, activeQuote, onQuote }: Props) {
       <InterviewSection posting={posting} />
       <SalarySection guide={guide} />
       <PeopleSection guide={guide} />
-      <CompanySection guide={guide} />
       {guide.open_questions && guide.open_questions.length > 0 && (
         <Block title="아직 모르는 것" icon="❓">
           <ul className="space-y-1">
@@ -102,7 +101,6 @@ function NotYet({
         <>
           <SalarySection guide={guide} />
           <PeopleSection guide={guide} />
-          <CompanySection guide={guide} />
         </>
       )}
     </PanelShell>
@@ -823,110 +821,8 @@ function PeopleSection({ guide }: { guide: CompanyGuide }) {
 }
 
 // ── 회사·도메인 ─────────────────────────────────────────────────────────
-function CompanySection({ guide }: { guide: CompanyGuide }) {
-  const co = guide.company
-  if (!co) return null
-  const empty =
-    !co.business && !(co.revenue || []).length && !(co.domains || []).length && !(co.signals || []).length
-  if (empty) return null
-  return (
-    <Block title="회사와 도메인" icon="◆">
-      {co.business && (
-        <>
-          <p className="text-[13px] text-(--color-text) leading-relaxed"><Md>{co.business}</Md></p>
-          <div className="flex items-center gap-1.5 mt-1.5">
-            {co.business_confidence === 'inferred' && <Badge>추정</Badge>}
-            <Sources sources={co.business_sources} inline />
-          </div>
-        </>
-      )}
-
-      {co.scale && co.scale.length > 0 && (
-        <div className="flex flex-wrap gap-x-4 gap-y-1.5 mt-3 pt-3 border-t border-(--color-border)">
-          {co.scale.map((s, i) => (
-            <span key={i} className="text-xs">
-              <span className="text-(--color-faint)">{s.label} </span>
-              <span className="text-(--color-text) tabular-nums"><Md>{s.value}</Md></span>
-            </span>
-          ))}
-        </div>
-      )}
-
-      {co.revenue && co.revenue.length > 0 && (
-        <div className="mt-3 pt-3 border-t border-(--color-border) space-y-2.5">
-          <FieldLabel>돈이 나오는 곳 → 그걸 떠받치는 도메인</FieldLabel>
-          {co.revenue.map((rv, i) => (
-            <div key={i} className="border border-(--color-border) rounded-md px-3 py-2.5">
-              <div className="flex items-baseline gap-2 flex-wrap">
-                <span className="text-[13px] text-(--color-text)">{rv.name}</span>
-                {rv.weight && (
-                  <span className="text-[11px] text-(--color-accent) tabular-nums">{rv.weight}</span>
-                )}
-                {rv.confidence === 'inferred' && <Badge>추정</Badge>}
-              </div>
-              <p className="text-xs text-(--color-muted) leading-relaxed mt-1"><Md>{rv.how}</Md></p>
-              {rv.domains && rv.domains.length > 0 && (
-                <div className="flex flex-wrap items-center gap-1.5 mt-2">
-                  <span className="text-[10px] text-(--color-faint) shrink-0">↳</span>
-                  {rv.domains.map((d) => (
-                    <span
-                      key={d}
-                      className="text-[10px] px-1.5 py-0.5 rounded bg-(--color-accent)/12 text-(--color-accent) border border-(--color-accent)/30"
-                    >
-                      {d}
-                    </span>
-                  ))}
-                </div>
-              )}
-              <Sources sources={rv.sources} />
-            </div>
-          ))}
-        </div>
-      )}
-
-      {co.domains && co.domains.length > 0 && (
-        <div className="mt-3 pt-3 border-t border-(--color-border) space-y-2.5">
-          <FieldLabel>이 회사가 푸는 문제</FieldLabel>
-          {co.domains.map((d, i) => (
-            <div key={i}>
-              <p className="text-[13px] text-(--color-text)">
-                {d.name}
-                {d.confidence === 'inferred' && <Badge className="ml-1.5">추정</Badge>}
-              </p>
-              <p className="text-xs text-(--color-muted) leading-relaxed mt-0.5"><Md>{d.why}</Md></p>
-              {d.what_to_know && d.what_to_know.length > 0 && (
-                <ul className="mt-1 space-y-0.5">
-                  {d.what_to_know.map((k, m) => (
-                    <li key={m} className="text-xs text-(--color-muted) leading-relaxed">
-                      · <Md>{k}</Md>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {co.signals && co.signals.length > 0 && (
-        <div className="mt-3 pt-3 border-t border-(--color-border) space-y-2.5">
-          <FieldLabel>공고에서 읽히는 것 (전부 추정)</FieldLabel>
-          {co.signals.map((s, i) => (
-            <div key={i}>
-              <p className="text-[13px] text-(--color-text) leading-snug"><Md>{s.reading}</Md></p>
-              <p className="text-[11px] text-(--color-faint) leading-relaxed mt-0.5 italic">
-                근거: <Md>{s.evidence}</Md>
-              </p>
-              {s.so_what && (
-                <p className="text-xs text-(--color-muted) leading-relaxed mt-1">→ <Md>{s.so_what}</Md></p>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-    </Block>
-  )
-}
+// '회사와 도메인' 블록(사업 설명·숫자·돈이 나오는 곳·푸는 문제·공고에서 읽히는 것)은 뺐다(2026-11-14,
+// 사용자 요청). 데이터(guide.company)는 브리핑 파일에 그대로 있다 — 이 자리는 다른 콘텐츠로 채운다.
 
 // ── 조각 ────────────────────────────────────────────────────────────────
 function Block({
