@@ -11,7 +11,6 @@ import {
 import { onLinkClick } from '../../../utils/navigation'
 import { paths } from '../../../utils/urls'
 import { ArchitectureDiagram } from '../../../components/ArchitectureDiagram'
-import { CompanyLogo } from './RevengView'
 import { UiSketch } from './UiSketch'
 import { ConfBadge, SourceLinks } from './RevengBits'
 import { RevenueSplit } from './RevenueSplit'
@@ -42,6 +41,7 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
   const { data: c, loading, error } = useCompany(slug)
   const { data: index } = useRevengIndex()
   const [domain, setDomain] = useState<string | null>(null)
+  const [step, setStep] = useState('biz')
 
   const features = useMemo(
     () => (c?.features ?? []).filter((f) => !domain || f.domain === domain),
@@ -84,32 +84,92 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
       />
     )
 
+  const country = index?.countries?.[c.country] ?? c.country
+  const steps: { id: string; label: string }[] = [
+    { id: 'biz', label: '비즈니스 모델' },
+    { id: c.ui_map ? 'ui' : 'map', label: '도메인 지도' },
+    { id: 'domains', label: '도메인' },
+    { id: 'features', label: '기능' },
+  ]
+  const go = (id: string) => {
+    setStep(id)
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   return (
-    <div data-reveng-scroll className="flex flex-col flex-1 min-h-0 min-w-0 overflow-y-auto">
-      <header className="px-4 py-3 border-b border-(--color-border) bg-(--color-panel) sticky top-0 z-10">
-        <button
-          onClick={onBack}
-          className="text-xs text-(--color-muted) hover:text-(--color-accent) mb-1"
-        >
-          ← 회사 목록
-        </button>
-        <div className="flex items-baseline gap-2 flex-wrap">
-          <span className="self-center">
-            <CompanyLogo domain={c.domain} name={c.name} size={32} />
-          </span>
-          <h2 className="text-lg font-semibold text-(--color-text)"><span className="jd-head jd-head-lg">{c.name}</span></h2>
-          <span className="text-sm text-(--color-muted)">{c.name_en}</span>
-          <span className="text-xs px-1.5 py-0.5 rounded border border-(--color-border) text-(--color-muted)">
-            {c.category}
-          </span>
-          <span className="ml-auto text-xs text-(--color-muted)">갱신 {c.updated_at}</span>
+    <div data-reveng-scroll className="flex flex-col flex-1 min-h-0 min-w-0 overflow-y-auto bg-white">
+      {/* 머리(캐치형 1920 · 34 역설계 상세 개요) — 경로 · 글자 로고 · 이름 · 태그 · 한 줄 · 1~4 단계 */}
+      <header className="relative pb-[30px] after:absolute after:bottom-0 after:left-1/2 after:h-px after:w-screen after:-translate-x-1/2 after:bg-[#e2e8ec]">
+        <div className="jd-container pt-[16px]">
+          <nav aria-label="경로" className="text-[13px] leading-[19px] text-[#777]">
+            <button type="button" onClick={onBack} className="hover:text-[#272727]">
+              기술 역설계
+            </button>
+            {' › '}
+            <b className="font-bold text-(--color-accent)">{c.name}</b>
+          </nav>
+          <div className="mt-[18px] flex items-start gap-7">
+            <span
+              aria-hidden
+              className="shrink-0 grid place-items-center w-[104px] h-[104px] rounded-[22px] bg-[#2bb673] text-[34px] font-bold text-white shadow-[0_10px_24px_rgba(43,182,115,0.25)]"
+            >
+              {c.name.trim().charAt(0).toUpperCase()}
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-baseline gap-x-4">
+                <h1 className="text-[34px] font-bold leading-[49px] tracking-[-0.8px] text-[#272727]">{c.name}</h1>
+                {c.name_en && <span className="text-[17px] text-[#777]">{c.name_en}</span>}
+              </div>
+              <div className="mt-[3px] flex flex-wrap gap-[6px] text-[13px] leading-6 text-[#474747]">
+                {[country, c.category, `갱신 ${c.updated_at}`, `기능 ${c.features?.length ?? 0}개 · 자료 ${c.sources?.length ?? 0}개`].filter(Boolean).map((t) => (
+                  <span key={t} className="rounded bg-[#f1f4f8] px-2">
+                    {t}
+                  </span>
+                ))}
+              </div>
+              <p className="mt-[12px] max-w-[1040px] text-[17px] leading-[28px] tracking-[-0.16px] text-[#272727]">
+                <Md>{c.one_liner}</Md>
+              </p>
+            </div>
+          </div>
+          <ol className="mt-[30px] flex items-center gap-0">
+            {steps.map((st, i) => {
+              const on = step === st.id
+              return (
+                <li key={st.id} className="flex items-center flex-1 min-w-0">
+                  {i > 0 && (
+                    <span aria-hidden className="w-10 shrink-0 text-center text-[#bbb]">
+                      →
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => go(st.id)}
+                    aria-current={on ? 'step' : undefined}
+                    className={
+                      'flex-1 min-w-0 h-[60px] rounded-[14px] bg-white px-5 flex items-center gap-3 text-left ' +
+                      (on ? 'border border-(--color-accent)' : 'border border-[#e2e8ec] hover:border-[#999]')
+                    }
+                  >
+                    <span
+                      className={
+                        'grid place-items-center w-[22px] h-[22px] rounded-full text-xs font-bold ' + (on ? 'bg-(--color-accent) text-white' : 'bg-[#f1f4f8] text-[#555]')
+                      }
+                    >
+                      {i + 1}
+                    </span>
+                    <span className={'text-[15px] font-bold ' + (on ? 'text-(--color-accent)' : 'text-[#272727]')}>{st.label}</span>
+                  </button>
+                </li>
+              )
+            })}
+          </ol>
         </div>
-        <p className="text-xs text-(--color-muted) mt-1">{c.one_liner}</p>
       </header>
 
       {/* 본문 줄길이는 .reveng-prose(74ch)가 잡는다. 바깥 폭까지 좁히면 그림이
           화면 절반만 쓰게 되므로, 컨테이너는 넓게 두고 글만 좁힌다. */}
-      <div className="p-4 flex gap-8 max-w-[1600px]">
+      <div className="jd-container py-[40px] flex gap-8">
        <div className="flex-1 min-w-0 flex flex-col gap-7">
         <Section id="biz" title="비즈니스 모델" sub="이 회사는 무엇을 팔아 돈을 버는가">
           <MdBlock className="reveng-prose text-sm text-(--color-text)">{c.business_model}</MdBlock>
