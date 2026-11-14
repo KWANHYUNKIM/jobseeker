@@ -75,6 +75,9 @@ def ingest(parts: list[dict], prices: dict, only_day: str | None = None) -> dict
                 cur.execute(PRICE_SQL, (h["d"], pid, h["min"], h["median"], h["n"]))
                 stats["days"] += 1
             if rec.get("day") and (not only_day or rec["day"] == only_day):
+                # 그날 매물은 마지막으로 거른 목록 그대로다 — 같은 날 다시 쓰면(재수집·--refilter) 빠진
+                # 매물(액세서리)이 남지 않게 지우고 쓴다.
+                cur.execute("DELETE FROM hw_offer_day WHERE day = %s AND part_id = %s", (rec["day"], pid))
                 for o in rec.get("offers") or []:
                     cur.execute(OFFER_SQL, (rec["day"], pid, o["pcode"], o["name"], o["price"],
                                             o.get("rank")))
@@ -91,6 +94,18 @@ def ingest(parts: list[dict], prices: dict, only_day: str | None = None) -> dict
     except Exception as e:                                          # noqa: BLE001
         print(f"  [db] 가격 메타 건너뜀: {e}", file=_sys.stderr)
     return stats
+
+
+def forget(rows: list[tuple[str, str]]) -> int:
+    """(day, part_id) 의 가격·매물을 지운다 — 받아 둔 매물이 전부 액세서리였던 날(crawl_hardware
+    --refilter). 남겨 두면 API 가 그 값(9,970원 같은)을 계속 최저가로 낸다."""
+    n = 0
+    with cursor() as cur:
+        for day, pid in rows:
+            cur.execute("DELETE FROM hw_offer_day WHERE day = %s AND part_id = %s", (day, pid))
+            cur.execute("DELETE FROM hw_price_day WHERE day = %s AND part_id = %s", (day, pid))
+            n += cur.rowcount
+    return n
 
 
 def history() -> dict[str, list[dict]]:

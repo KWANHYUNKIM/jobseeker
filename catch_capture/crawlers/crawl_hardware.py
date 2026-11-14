@@ -27,6 +27,7 @@
     python -m crawlers.crawl_hardware --force
     python -m crawlers.crawl_hardware --only gpu-rtx-5070,cpu-ryzen-7-9800x3d --dry-run
     python -m crawlers.crawl_hardware --selftest     # 파서 점검(네트워크 없이)
+    python -m crawlers.crawl_hardware --refilter     # 받아 둔 매물에 거름(액세서리)만 다시 — 네트워크 없이
 """
 from __future__ import annotations
 
@@ -155,6 +156,36 @@ def match(items: list[dict], rule: dict) -> list[dict]:
     return got
 
 
+# 다나와는 오픈마켓의 GPU 액세서리(라이저 케이블·지지대·전원 어댑터·교체 팬)를 '그래픽카드' 분류에
+# 그대로 넣는다(진짜 카드 이름에도 "트리플 팬 쿨러"가 붙어 "쿨러"·"팬" 은 금지어로 못 쓴다). 이름에 'RTX 4090' 이 들어 있어 규칙의 must 도 통과한다 — 단종 칩(4090)은 진짜 카드
+# 매물이 적어 인기순 1~19위가 전부 이런 물건이었고, 최저가가 9,970원으로 찍혔다(2026-11).
+ACCESSORY = {
+    "gpu": ["라이저", "케이블", "어댑터", "젠더", "커넥터", "홀더", "지지대", "받침대", "브래킷|브라켓",
+            "마운트", "베젤", "배플", "도킹", "교체", "수리", "블럭|블록", "수냉", "쿨링팬|냉각팬",
+            "팬용|선풍기", "라디에이터", "라이트보드", "사이드패널",
+            "도크|확장독", "게이밍pc|gamingpc|미니pc"],   # 외장 GPU 독·완제품 PC 도 같은 분류로 온다
+}
+# 이름으로 못 거른 것(이름에 부품 종류가 안 적힌 교체 팬 등)은 값으로 거른다.
+#   ① 뷰어의 '가격 확인 필요'(priceSuspect)와 같은 문턱 — 성능 지수 45 이상 GPU 가 10만원 미만이면 카드가 아니다.
+#   ② 매물이 GPU_REL_MIN_N 개 이상이면 남은 것의 중앙값 × GPU_REL_FLOOR 미만도 뺀다 — 진짜 카드가 같은 칩
+#      카드값의 1/3 아래로 팔리지 않는다(7900 XTX 중앙 133만원인데 16만원짜리 '헬하운드' 같은 것).
+GPU_FLOOR, GPU_FLOOR_INDEX = 100_000, 45
+GPU_REL_FLOOR, GPU_REL_MIN_N = 0.3, 5
+
+
+def drop_accessories(offers: list[dict], part: dict) -> list[dict]:
+    """부품이 아닌 매물(액세서리)을 뺀다. 부품 분류마다의 금지어 + GPU 값 문턱."""
+    words = ACCESSORY.get(part.get("category", ""), [])
+    floor = (GPU_FLOOR if part.get("category") == "gpu"
+             and ((part.get("perf") or {}).get("index") or 0) >= GPU_FLOOR_INDEX else 0)
+    kept = [o for o in offers
+            if o["price"] >= floor and not any(_has(_norm(o["name"]), w) for w in words)]
+    if part.get("category") == "gpu" and len(kept) >= GPU_REL_MIN_N:
+        cut = statistics.median(o["price"] for o in kept) * GPU_REL_FLOOR
+        kept = [o for o in kept if o["price"] >= cut]
+    return kept
+
+
 def summarize(offers: list[dict]) -> dict:
     prices = sorted(o["price"] for o in offers)
     return {"min": prices[0], "median": int(statistics.median(prices)), "n": len(prices)}
@@ -178,6 +209,7 @@ def run(force: bool = False, only: set[str] | None = None, dry_run: bool = False
     targets = [p for p in parts if p.get("price_query") and (not only or p["id"] in only)]
     book = prev.setdefault("parts", {})
     priced = failed = empty = 0
+    junk_days: list[tuple[str, str]] = []     # 받아 둔 값이 전부 액세서리라 지운 (날, 부품)
     for i, p in enumerate(targets):
         if i:
             time.sleep(jitter(CRAWL_DELAY_MS, ratio=0.1, floor_ms=CRAWL_DELAY_MS) / 1000)
@@ -188,7 +220,7 @@ def run(force: bool = False, only: set[str] | None = None, dry_run: bool = False
             failed += 1
             print(f"  [!] {p['id']} — {e}", flush=True)
             continue
-        offers = sorted(match(items, rule), key=lambda o: o["price"])
+        offers = sorted(drop_accessories(match(items, rule), p), key=lambda o: o["price"])
         # 묶음으로만 파는 부품(메모리 '32Gx2' 패키지) — 한 개 값으로 나눠 부품의 단위와 맞춘다
         per = int(rule.get("per") or 1)
         if per > 1:
@@ -197,6 +229,9 @@ def run(force: bool = False, only: set[str] | None = None, dry_run: bool = False
         if not offers:
             empty += 1
             rec["last_empty"] = today
+            day = _forget_junk(rec, p)
+            if day:
+                junk_days.append((day, p["id"]))
             print(f"  [ ] {p['id']:<32} 검색 {len(items)}건 중 맞는 매물 없음 — q={rule['q']!r}", flush=True)
             continue
         s = summarize(offers)
@@ -222,7 +257,69 @@ def run(force: bool = False, only: set[str] | None = None, dry_run: bool = False
             _db.ingest(parts, prev, today)
     except Exception as e:
         print(f"[hardware] DB 이중 쓰기 건너뜀: {e}", flush=True)
+    _db_forget(junk_days)
     print(f"[hardware] {stats} → {OUT_PATH}", flush=True)
+    return stats
+
+
+def _forget_junk(rec: dict, part: dict) -> str | None:
+    """지난번에 받아 둔 매물이 지금 거름으로 보면 전부 액세서리였으면 그 값을 지운다 — 남겨 두면
+    매물이 안 잡히는 날마다 그 값(9,970원 같은)이 계속 최저가로 뜬다. 지웠으면 그날(DB 에서도 지운다)."""
+    if rec.get("offers") and not drop_accessories(rec["offers"], part):
+        day = rec.get("day")
+        for k in ("offers", "min", "median", "n", "day"):
+            rec.pop(k, None)
+        rec["history"] = [h for h in rec.get("history", []) if h.get("d") != day]
+        return day or ""
+    return None
+
+
+def _db_forget(rows: list[tuple[str, str]]) -> None:
+    if not rows:
+        return
+    try:  # 이중 쓰기 — 실패해도 크롤 단계는 죽지 않는다
+        from store.market import hardware as _db
+        if _db.enabled():
+            _db.forget(rows)
+    except Exception as e:
+        print(f"[hardware] DB 에서 액세서리 값 지우기 건너뜀: {e}", flush=True)
+
+
+def refilter() -> dict:
+    """받아 둔 매물에 지금의 거름(drop_accessories)을 다시 적용한다. 거름을 고친 날, 하루치 크롤
+    (부품 ~70개 × 10초)을 기다리지 않고 화면의 엉터리 값을 걷어 낸다. 그날 줄(history)도 다시 센다.
+    지난날 줄은 매물이 남아 있지 않아 다시 셀 수 없다 — 그대로 둔다."""
+    parts = {p["id"]: p for p in _load(PARTS_PATH, {}).get("parts", [])}
+    doc = _load(OUT_PATH, {"parts": {}})
+    changed = 0
+    cleared: list[tuple[str, str]] = []
+    for pid, rec in (doc.get("parts") or {}).items():
+        p = parts.get(pid)
+        if not p or not rec.get("offers"):
+            continue
+        day = _forget_junk(rec, p)
+        if day is not None:
+            cleared.append((day, pid))
+            print(f"  [-] {pid:<32} 받아 둔 매물이 전부 액세서리 — 값을 지움", flush=True)
+            continue
+        kept = drop_accessories(rec["offers"], p)
+        if len(kept) == len(rec["offers"]):
+            continue
+        s = summarize(kept)
+        rec.update(offers=kept, **s)
+        rec["history"] = [{**h, **s} if h.get("d") == rec.get("day") else h for h in rec.get("history", [])]
+        changed += 1
+        print(f"  [~] {pid:<32} {s['min']:>10,}원 (중앙 {s['median']:,} · {s['n']}건)", flush=True)
+    OUT_PATH.write_text(json.dumps(doc, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
+    try:  # 이중 쓰기 — run() 과 같다
+        from store.market import hardware as _db
+        if _db.enabled() and doc.get("day"):
+            _db.ingest(list(parts.values()), doc, doc["day"])
+    except Exception as e:
+        print(f"[hardware] DB 이중 쓰기 건너뜀: {e}", flush=True)
+    _db_forget(cleared)
+    stats = {"changed": changed, "cleared": len(cleared)}
+    print(f"[hardware] refilter {stats} → {OUT_PATH}", flush=True)
     return stats
 
 
@@ -264,6 +361,9 @@ def selftest() -> int:
 def main(argv: list[str]) -> int:
     if "--selftest" in argv:
         return selftest()
+    if "--refilter" in argv:
+        refilter()
+        return 0
     only = None
     if "--only" in argv:
         only = set(argv[argv.index("--only") + 1].split(","))
