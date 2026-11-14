@@ -4,6 +4,7 @@ import { navigate, onLinkClick, useRoute } from '../utils/navigation'
 import { paths } from '../utils/urls'
 import { Providers } from './providers'
 import { RouteView, tabOf, type Tab } from './router'
+import { BrandLogo } from '../components/BrandLogo'
 
 /** 앱 껍데기 — 위쪽 메뉴(두 단)와, 주소에 맞는 페이지(app/router.tsx). */
 function App() {
@@ -87,8 +88,7 @@ function TopNav() {
             aria-label="devgonggo 홈"
             className="flex items-center shrink-0 select-none"
           >
-            {/* 로고 — 공고를 물어다 주는 까치 + devgonggo(시안 1번). 347×112 를 2배 밀도로 그린다 */}
-            <img src="/brand-logo.png" alt="devgonggo" width={174} height={56} className="h-[52px] w-auto" decoding="async" />
+            <BrandLogo />
           </a>
           <button
             type="button"
