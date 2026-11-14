@@ -606,11 +606,6 @@ export function TierBadge({ tier, size = 24 }: { tier: string; size?: number }) 
   )
 }
 
-function Tone({ tone, children }: { tone: 'good' | 'ok' | 'bad'; children: React.ReactNode }) {
-  const c = tone === 'good' ? 'text-(--color-accent)' : tone === 'ok' ? 'text-(--color-text)' : 'text-(--color-red-400)'
-  return <span className={c}>{children}</span>
-}
-
 /** 구역 머리 — 빨간 번호 딱지 + 26px 제목(이 조합으로 무엇을 할 수 있나의 01~04) */
 function UseHead({ no, title, children }: { no: string; title: string; children?: React.ReactNode }) {
   return (
@@ -673,7 +668,7 @@ function GameSim({ data, gpu, cpu, defaultRes }: { data: HwData; gpu: Part; cpu:
             )
           })}
         </div>
-        <div className="mt-[26px] flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] leading-[19px] text-[#555]">
+        <div className="mt-[17px] flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] leading-[19px] text-[#555]">
           {[
             ['#f45757', '144 fps 이상 — 고주사율 모니터'],
             ['#f59e9e', '100~143'],
@@ -703,74 +698,116 @@ function GameSim({ data, gpu, cpu, defaultRes }: { data: HwData; gpu: Part; cpu:
 }
 
 function AiSim({ data, gpu, ram }: { data: HwData; gpu: Part; ram?: Part }) {
+  const [how, setHow] = useState(false)
   const ramBw = ram ? Number(ram.specs.dual_bandwidth_gbs) : null
   const img = estimateImageSec(data.bench, gpu, data.parts)
   const vram = Number(gpu.specs.vram_gb)
+  const rows = data.bench.llm.models.map((m) => ({ m, e: estimateLlm(data.bench, m, gpu, ramBw) }))
+  const top = Math.max(...rows.map((r) => r.e.tps), 1)
+  // '8B (Llama 3.1 8B 급)' → 크게 '8B', 작게 'Llama 3.1 8B 급'
+  const split = (name: string) => {
+    const m = name.match(/^(\S+)\s*\((.*)\)$/)
+    return m ? [m[1], m[2]] : [name, '']
+  }
+  const imgName = data.bench.image.name.replace(/^이미지 생성\s*\((.*)\)$/, '$1')
+  const chip = 'inline-flex items-center h-[30px] rounded-[15px] bg-[#f1f4f8] px-3 text-sm text-[#272727]'
   return (
-    <div className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4 flex flex-col gap-3">
-      <div className="flex items-baseline gap-2">
-        <h2 className="text-base font-bold">AI 는 얼마나 돌아가나</h2>
-        <span className="text-xs text-(--color-muted)">
-          VRAM {vram}GB · 대역폭 {Number(gpu.specs.bandwidth_gbs).toLocaleString()}GB/s · {String(gpu.specs.stack)}
-        </span>
-      </div>
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="text-[11px] text-(--color-muted) text-left">
-            <th className="font-normal pb-1">언어 모델(4비트 양자화)</th>
-            <th className="font-normal pb-1 text-right">토큰/초</th>
-            <th className="font-normal pb-1 pl-3 hidden sm:table-cell">체감</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.bench.llm.models.map((m) => {
-            const e = estimateLlm(data.bench, m, gpu, ramBw)
-            const w = tpsWord(data.bench, e.tps)
-            return (
-              <tr key={m.key} className="border-t border-(--color-border-soft)">
-                <td className="py-1.5">
-                  <div className="font-medium">{m.name}</div>
-                  <div className="text-[10px] text-(--color-faint)">
-                    {m.size_gb}GB · {m.plain}
+    <div className="flex flex-col">
+      <UseHead no="02" title="AI 는 얼마나 돌아가나">
+        <span className={chip}>VRAM {vram}GB</span>
+        <span className={chip}>대역폭 {Number(gpu.specs.bandwidth_gbs).toLocaleString()}GB/s</span>
+        <span className={chip}>{String(gpu.specs.stack)}</span>
+      </UseHead>
+      <div className="mt-[9px] grid gap-4 lg:grid-cols-[minmax(0,1fr)_380px] items-start" data-nosnippet>
+        <section className="rounded-[24px] border border-[#e2e8ec] bg-white px-[27px] pt-[26px] pb-[22px]">
+          <div className="flex items-baseline gap-3">
+            <h3 className="text-[17px] font-bold leading-[25px] text-[#272727]">언어 모델 (4비트 양자화)</h3>
+            <span className="text-[13px] text-[#737373]">토큰/초 · 체감</span>
+          </div>
+          <div className="mt-[10px] flex flex-col">
+            {rows.map(({ m, e }) => {
+              const [big, small] = split(m.name)
+              const w = tpsWord(data.bench, e.tps)
+              const bad = !e.fits
+              return (
+                <div
+                  key={m.key}
+                  className={
+                    'grid grid-cols-[166px_minmax(0,1fr)_auto] items-center gap-x-0 min-h-[88px] ' +
+                    (bad ? 'my-1 -mx-3 px-3 rounded-[14px] bg-[#fff5f5]' : 'border-b border-[#eef1f3]')
+                  }
+                >
+                  <div className="min-w-0">
+                    <div className="text-[20px] font-bold leading-[29px] text-[#272727]">{big}</div>
+                    <div className="text-[13px] leading-[19px] text-[#737373] truncate">{small}</div>
                   </div>
-                </td>
-                <td className="text-right font-bold tabular-nums">{e.tps >= 10 ? Math.round(e.tps) : e.tps.toFixed(1)}</td>
-                <td className="pl-3 text-xs hidden sm:table-cell">
-                  <Tone tone={w.tone}>{w.word}</Tone>
-                  {!e.fits && <div className="text-[10px] text-(--color-faint)">{e.note}</div>}
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-      <div className="grid sm:grid-cols-2 gap-3 text-sm">
-        <div className="rounded-lg bg-(--color-band) p-3">
-          <div className="text-[11px] text-(--color-muted)">{data.bench.image.name}</div>
-          <div className="text-xl font-bold tabular-nums">{img == null ? '못 돌린다' : `${img.toFixed(1)}초 / 장`}</div>
-          {img == null && <div className="text-[11px] text-(--color-faint)">VRAM {data.bench.image.min_vram_gb}GB 이상 필요</div>}
-        </div>
-        <div className="rounded-lg bg-(--color-band) p-3">
-          <div className="text-[11px] text-(--color-muted)">미세조정(학습)</div>
-          <ul className="text-xs flex flex-col gap-0.5 mt-1">
-            {data.bench.finetune.map((f) => (
-              <li key={f.key}>
-                <Tone tone={vram >= f.vram_gb ? 'good' : 'bad'}>{vram >= f.vram_gb ? '✓' : '✕'}</Tone> {f.name}
-                <span className="text-(--color-faint)"> · {f.vram_gb}GB</span>
-              </li>
-            ))}
-          </ul>
+                  <div className="min-w-0 pr-[60px]">
+                    <div className="text-sm leading-5 text-[#474747] truncate">
+                      {m.size_gb}GB · {m.plain}
+                    </div>
+                    <div className="mt-[7px] relative h-2.5 rounded-[5px] bg-[#eef3f8] max-w-[454px]">
+                      <div
+                        className="absolute inset-y-0 left-0 rounded-[5px]"
+                        style={{ width: `${Math.max(3, (e.tps / top) * 100)}%`, background: bad ? '#e03131' : '#272727' }}
+                      />
+                    </div>
+                    {bad && <div className="mt-[7px] text-[13px] leading-[19px] text-[#e03131]">⚠ {e.note.replace('% 가', '%가')}</div>}
+                  </div>
+                  <div className="text-right">
+                    <div className="text-[24px] font-bold leading-[35px] text-[#272727] tabular-nums">{e.tps >= 10 ? Math.round(e.tps) : e.tps.toFixed(1).replace(/\.0$/, '')}</div>
+                    <div className={'text-[13px] leading-[19px] ' + (w.tone === 'bad' ? 'font-bold text-[#e03131]' : 'text-[#555]')}>{w.word}</div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+          <button type="button" onClick={() => setHow((v) => !v)} aria-expanded={how} className="mt-[14px] text-[13px] font-medium text-(--color-accent) hover:underline">
+            어떻게 계산했나 ›
+          </button>
+          {how && (
+            <div className="mt-2 rounded-xl bg-[#f7f9fa] px-4 py-3 text-[13px] leading-5 text-[#555]">
+              <p>{data.bench.llm.model}</p>
+              <p className="mt-1">
+                효율 {data.bench.llm.efficiency} · 소프트웨어 보정 {String(gpu.specs.stack)} {data.bench.llm.stack_factor[String(gpu.specs.stack)] ?? 0.8}(CUDA = 1). 넘친 부분은 메모리{' '}
+                {ram ? `${ram.name} 두 장(${ramBw}GB/s)` : '60GB/s 가정'}에서 읽는다.
+              </p>
+              <p className="mt-1">{data.bench.image.model}</p>
+            </div>
+          )}
+        </section>
+        <div className="flex flex-col gap-4">
+          <section className="rounded-[24px] border border-[#e2e8ec] bg-white px-[27px] pt-[24px] pb-[26px]">
+            <h3 className="text-[15px] font-bold leading-[22px] text-[#272727]">이미지 생성</h3>
+            {img == null ? (
+              <div className="mt-2 text-[22px] font-bold text-[#e03131]">못 돌린다</div>
+            ) : (
+              <div className="mt-[6px]">
+                <span className="text-[40px] font-bold leading-[52px] tracking-[-1px] text-[#272727] tabular-nums">{img.toFixed(1)}</span>
+                <span className="ml-1 text-[17px] text-[#474747]">초 / 장</span>
+              </div>
+            )}
+            <div className="mt-[6px] text-sm leading-5 text-[#555]">{img == null ? `VRAM ${data.bench.image.min_vram_gb}GB 이상 필요` : imgName}</div>
+          </section>
+          <section className="rounded-[24px] border border-[#e2e8ec] bg-white px-[27px] pt-[24px] pb-[20px]">
+            <h3 className="text-[15px] font-bold leading-[22px] text-[#272727]">미세조정(학습)</h3>
+            <ul className="mt-2">
+              {data.bench.finetune.map((f) => {
+                const ok = vram >= f.vram_gb
+                return (
+                  <li key={f.key} className="flex items-center gap-[10px] h-[45px] border-b border-[#eef1f3]">
+                    <span className={'grid place-items-center w-[26px] h-[26px] rounded-full text-white text-sm font-bold ' + (ok ? 'bg-[#1e8a3c]' : 'bg-[#e03131]')} aria-label={ok ? '된다' : '안 된다'}>
+                      {ok ? '✓' : '✕'}
+                    </span>
+                    <span className="min-w-0 flex-1 text-[15px] text-[#272727] truncate">{f.name}</span>
+                    <span className="text-sm font-bold text-[#272727] tabular-nums">{f.vram_gb}GB</span>
+                  </li>
+                )
+              })}
+            </ul>
+            <p className="mt-[10px] text-[13px] text-[#737373]">{vram}GB 안에 들어가는 것까지 된다</p>
+          </section>
         </div>
       </div>
-      <details className="text-xs text-(--color-muted)">
-        <summary className="cursor-pointer">어떻게 계산했나</summary>
-        <p className="mt-1">{data.bench.llm.model}</p>
-        <p className="mt-1">
-          효율 {data.bench.llm.efficiency} · 소프트웨어 보정 {String(gpu.specs.stack)} {data.bench.llm.stack_factor[String(gpu.specs.stack)] ?? 0.8}(CUDA = 1).
-          넘친 부분은 메모리 {ram ? `${ram.name} 두 장(${ramBw}GB/s)` : '60GB/s 가정'}에서 읽는다.
-        </p>
-        <p className="mt-1">{data.bench.image.model}</p>
-      </details>
       <AiUses data={data} gpu={gpu} ram={ram} />
     </div>
   )
