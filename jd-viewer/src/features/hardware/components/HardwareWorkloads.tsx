@@ -21,12 +21,6 @@ import { paths } from '../../../utils/urls'
 // 멀티 지수 40·70)은 우리가 정한 구분이고 화면에 그렇게 적는다.
 
 type Verdict = 'good' | 'ok' | 'bad'
-const MARK: Record<Verdict, string> = { good: '✓', ok: '△', bad: '✕' }
-const TONE: Record<Verdict, string> = {
-  good: 'text-(--color-accent)',
-  ok: 'text-(--color-amber-400)',
-  bad: 'text-(--color-red-400)',
-}
 
 const fmtTps = (t: number) => (t >= 10 ? Math.round(t) : t.toFixed(1))
 const fmtMin = (m: number) => (m < 10 ? m.toFixed(1) : String(Math.round(m)))
@@ -40,17 +34,55 @@ function PartLink({ p }: { p: Part }) {
   )
 }
 
+/** 판정 줄(캐치형) — 왼쪽 동그란 아이콘 + 할 일·조건, 오른쪽 색 띠에 결과. 됨 / 조건부 / 어려움 */
+const VERDICT: Record<Verdict, { icon: string; dot: string; tag: string; band: string; label: string }> = {
+  good: { icon: '✓', dot: 'bg-[#1e8a3c]', tag: 'bg-[#1e8a3c]', band: 'bg-[#eef8f1]', label: '됨' },
+  ok: { icon: '!', dot: 'bg-[#f08c00]', tag: 'bg-[#f08c00]', band: 'bg-[#fff4e6]', label: '조건부' },
+  bad: { icon: '✕', dot: 'bg-[#e03131]', tag: 'bg-[#e03131]', band: 'bg-[#fff0f0]', label: '어려움' },
+}
+
 function Row({ v, task, need, result }: { v: Verdict; task: string; need: string; result: string }) {
+  const s = VERDICT[v]
   return (
-    <li className="grid grid-cols-[1.2rem_minmax(0,1fr)] gap-x-1 py-1 border-t border-(--color-border-soft) first:border-t-0">
-      <span className={`font-bold ${TONE[v]}`}>{MARK[v]}</span>
-      <div>
-        <div className="text-sm">
-          <b>{task}</b> <span className="text-[11px] text-(--color-faint)">— {need}</span>
+    <li className="grid lg:grid-cols-[minmax(0,1fr)_612px] items-center gap-x-6 gap-y-2 py-[19px] border-b border-[#e8ecef]">
+      <div className="flex items-start gap-[14px] min-w-0">
+        <span className={'mt-[3px] shrink-0 grid place-items-center w-[26px] h-[26px] rounded-full text-sm font-bold text-white ' + s.dot} aria-label={s.label}>
+          {s.icon}
+        </span>
+        <div className="min-w-0">
+          <div className="text-[17px] font-bold leading-[25px] text-[#272727]">{task}</div>
+          <div className="mt-[3px] text-[13px] leading-[19px] text-[#555]">{need}</div>
         </div>
-        <div className="text-xs text-(--color-muted)">{result}</div>
+      </div>
+      <div className={'flex items-center gap-3 min-h-12 rounded-[10px] px-4 py-[11px] ' + s.band}>
+        <span className={'shrink-0 rounded px-[6px] text-[13px] font-bold leading-[19px] text-white ' + s.tag}>{s.label}</span>
+        <span className="text-[15px] leading-[22px] text-[#272727]">{result}</span>
       </div>
     </li>
+  )
+}
+
+/** 작은 회색 소제목(캐치형) — '이 카드로 실제 하는 일' · '이럴 때 이 급을 산다' */
+function SubHead({ title, note }: { title: string; note?: React.ReactNode }) {
+  return (
+    <div>
+      <h3 className="text-[20px] font-bold leading-[29px] tracking-[-0.2px] text-[#555]">{title}</h3>
+      {note && <p className="mt-[3px] text-[13px] leading-[19px] text-[#555]">{note}</p>}
+    </div>
+  )
+}
+
+/** 급 카드 — 지금 고른 급은 빨간 테두리와 위에 걸친 딱지 */
+export function TierCard({ mine, title, why, children }: { mine: boolean; title: string; why: string; children: React.ReactNode }) {
+  return (
+    <div className={'relative rounded-[22px] bg-white px-[23px] pt-[24px] pb-[22px] ' + (mine ? 'border-2 border-(--color-accent) bg-[#fffafa]' : 'border border-[#e2e8ec]')}>
+      {mine && (
+        <span className="absolute -top-[12px] left-1/2 -translate-x-1/2 rounded-full bg-(--color-accent) px-[10px] text-xs font-bold leading-[23px] text-white whitespace-nowrap">지금 고른 급</span>
+      )}
+      <div className="text-[20px] font-bold leading-[29px] text-[#272727]">{title}</div>
+      <p className="mt-[7px] min-h-[66px] text-sm leading-[22px] text-[#555]">{why}</p>
+      {children}
+    </div>
   )
 }
 
@@ -99,10 +131,10 @@ export function AiUses({ data, gpu, ram }: { data: HwData; gpu: Part; ram?: Part
   const myPrice = priceOf(gpu, data.prices)
 
   return (
-    <div className="flex flex-col gap-3 border-t border-(--color-border-soft) pt-3">
+    <div className="mt-[22px] flex flex-col">
       <div>
-        <h3 className="text-sm font-semibold mb-1">이 카드로 실제 하는 일</h3>
-        <ul className="flex flex-col">
+        <SubHead title="이 카드로 실제 하는 일" />
+        <ul className="mt-[13px] flex flex-col">
           {e8 && (
             <Row
               v={e8.tps >= b.llm.comfortable_tps ? 'good' : v(e8.tps, e8.fits)}
@@ -158,44 +190,43 @@ export function AiUses({ data, gpu, ram }: { data: HwData; gpu: Part; ram?: Part
         </ul>
       </div>
 
-      <div>
-        <h3 className="text-sm font-semibold">이럴 때 이 급을 산다</h3>
-        <p className="text-[11px] text-(--color-muted) mb-1">
-          로컬 AI 는 속도보다 <b>그래픽 메모리(VRAM)</b>가 먼저다 — 모델이 안 들어가면 빠른 카드도 느려진다. 급 구분은 우리 것이고 값은 오늘 최저가다.
-        </p>
-        <div className="grid gap-2 sm:grid-cols-2">
+      <div className="mt-[32px]">
+        <SubHead
+          title="이럴 때 이 급을 산다"
+          note="로컬 AI 는 속도보다 그래픽 메모리(VRAM)가 먼저다 — 모델이 안 들어가면 빠른 카드도 느려진다. 급 구분은 우리 것이고 값은 오늘 최저가다."
+        />
+        <div className="mt-[14px] grid gap-[13px] sm:grid-cols-2 lg:grid-cols-4 items-stretch">
           {tiers
             .filter((x) => x.xs.length)
             .map(({ t, xs, fitMax, top }) => {
               const mine = t === myTier
               return (
-                <div key={t.label} className={`rounded-md p-2.5 text-xs ${mine ? 'border-2 border-(--color-accent) bg-(--color-accent)/5' : 'border border-(--color-border-soft)'}`}>
-                  <div className="flex items-baseline gap-2">
-                    <b className="text-sm">{t.label}</b>
-                    {mine && <span className="text-[10px] px-1 rounded bg-(--color-accent) text-(--color-on-accent)">지금 고른 급</span>}
+                <TierCard key={t.label} mine={mine} title={t.label} why={t.why}>
+                  <div className="mt-[22px] rounded-[14px] bg-[#f7f9fa] px-[14px] pt-[11px] pb-[10px]">
+                    <div className="text-xs leading-[18px] text-[#737373]">통째로 올라가는 가장 큰 모델</div>
+                    <div className="text-base font-bold leading-6 text-[#272727]">{fitMax?.name ?? '없음'}</div>
+                    <div className="text-xs leading-[18px] text-[#737373]">{top}GB 카드 기준</div>
                   </div>
-                  <p className="text-(--color-muted) mt-0.5">{t.why}</p>
-                  <p className="mt-1">
-                    통째로 올라가는 가장 큰 모델: <b>{fitMax?.name ?? '없음'}</b>
-                    <span className="text-(--color-faint)"> ({top}GB 카드 기준)</span>
-                  </p>
-                  <p className="mt-1">
-                    {xs.slice(0, 4).map((x, i) => (
-                      <span key={x.p.id}>
-                        {i > 0 && ' · '}
-                        <PartLink p={x.p} /> <span className="text-(--color-muted) tabular-nums">{won(x.price)}</span>
-                        {x.p.specs.stack !== 'CUDA' && <span className="text-(--color-faint)">({String(x.p.specs.stack)})</span>}
-                      </span>
+                  <ul className="mt-[10px]">
+                    {xs.slice(0, 4).map((x) => (
+                      <li key={x.p.id} className="flex items-center gap-2 h-[37px] border-b border-[#eef1f3] text-sm">
+                        <span className="min-w-0 flex-1 truncate text-[#272727]">
+                          <PartLink p={x.p} />
+                          {x.p.specs.stack !== 'CUDA' && <span className="ml-[6px] rounded bg-[#f1efff] px-[6px] text-[11px] leading-[18px] text-[#5b4fd6]">{String(x.p.specs.stack)}</span>}
+                        </span>
+                        <span className="font-bold text-[#272727] tabular-nums" data-nosnippet>
+                          {won(x.price)}
+                        </span>
+                      </li>
                     ))}
-                  </p>
-                </div>
+                  </ul>
+                </TierCard>
               )
             })}
         </div>
         {nextTier && (
-          <p className="text-xs mt-2">
-            <span className="text-(--color-muted)">한 급 위({nextTier.t.label})로 가면: </span>
-            가장 싼 <PartLink p={nextTier.xs[0].p} /> 가 {won(nextTier.xs[0].price)}
+          <p className="mt-3 text-sm text-[#555]">
+            한 급 위({nextTier.t.label})로 가면: 가장 싼 <PartLink p={nextTier.xs[0].p} /> 가 {won(nextTier.xs[0].price)}
             {myPrice != null && ` (지금보다 ${nextTier.xs[0].price >= myPrice ? '+' : '−'}${won(Math.abs(nextTier.xs[0].price - myPrice))})`} — {nextTier.fitMax?.name ?? '더 큰 모델'} 까지 통째로 올라간다.
           </p>
         )}
