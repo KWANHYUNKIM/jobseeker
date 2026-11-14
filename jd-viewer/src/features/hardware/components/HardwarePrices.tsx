@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { CATEGORY_ORDER, priceMove, priceOf, priceSuspect, tierOf, won, type Category, type HwData, type PricePoint, type PriceRec } from '../utils/hardware'
+import { CATEGORY_ORDER, priceMove, priceOf, priceSuspect, tierOf, usedPrice, won, type Category, type HwData, type PricePoint, type PriceRec } from '../utils/hardware'
 import { onLinkClick } from '../../../utils/navigation'
 import { absUrl, useSeo } from '../../../utils/seo'
 import { paths } from '../../../utils/urls'
@@ -210,6 +210,11 @@ export function HardwarePrices({ data }: { data: HwData }) {
                     <span className="ml-[3px] rounded bg-[#f67979] px-[7px] text-[13px] leading-[22px] text-white">가격 확인 필요</span>
                   )}
                   {p.price_basis === 'median' && <span className="ml-1.5 text-xs text-[#999]">급 가운데 값</span>}
+                  {usedPrice(data.prices[p.id]) && (
+                    <span className="ml-1.5 rounded bg-[#f4f4f4] px-[7px] text-[13px] leading-[22px] text-[#474747]" title="새 제품이 없어 다나와 중고 시세로 대신했어요">
+                      중고 시세
+                    </span>
+                  )}
                 </td>
                 <td className="px-3">
                   <MoveBadge rec={rec} />

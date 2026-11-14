@@ -223,6 +223,11 @@ export function tierOf(part: Part, cats: CategoryDef[]): TierDef | null {
 }
 
 /** 부품의 오늘 가격 — 급(級) 부품은 중앙값, 상품 부품은 최저가. 모르면 null */
+/** 새 제품이 없어 다나와 중고 시세로 물러선 가격인가 — 크롤러(match_used)가 단종 칩에만 그렇게 받는다. */
+export function usedPrice(rec?: PriceRec): boolean {
+  return !!rec?.offers?.length && rec.offers.every((o) => o.name.includes('(중고)'))
+}
+
 export function priceOf(part: Part, prices: Record<string, PriceRec>): number | null {
   const r = prices[part.id]
   if (!r || r.min == null) return null

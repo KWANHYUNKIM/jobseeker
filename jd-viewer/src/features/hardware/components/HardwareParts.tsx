@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { CATEGORY_ORDER, SPEC_COLUMNS, fmtSpec, priceOf, priceSuspect, tierOf, won, type Category, type HwData, type Part } from '../utils/hardware'
+import { CATEGORY_ORDER, SPEC_COLUMNS, fmtSpec, priceOf, priceSuspect, tierOf, usedPrice, won, type Category, type HwData, type Part } from '../utils/hardware'
 import { navigate, onLinkClick, useRoute, useSetQuery } from '../../../utils/navigation'
 import { absUrl, useSeo } from '../../../utils/seo'
 import { paths } from '../../../utils/urls'
@@ -356,9 +356,9 @@ function PartDetail({ data, part }: { data: HwData; part: Part }) {
           {[
             ['성능 지수', String(part.perf.index)],
             ['등급 내 가성비', rank >= 0 ? `${ranked.length}개 중 ${rank + 1}위` : '—'],
-            ['최저가', won(priceOf(part, data.prices))],
+            [usedPrice(data.prices[part.id]) ? '중고 시세' : '최저가', won(priceOf(part, data.prices))],
           ].map(([k, v]) => (
-            <div key={k} className="w-[140px] h-[87px] rounded-2xl bg-white px-5 pt-4" data-nosnippet={k === '최저가' || undefined}>
+            <div key={k} className="w-[140px] h-[87px] rounded-2xl bg-white px-5 pt-4" data-nosnippet={k === '최저가' || k === '중고 시세' || undefined}>
               <div className="text-[13px] text-[#777]">{k}</div>
               <div className="mt-1 text-[22px] font-bold leading-8 text-[#272727] tabular-nums">{v}</div>
             </div>
