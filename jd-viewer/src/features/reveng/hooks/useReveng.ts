@@ -211,6 +211,8 @@ export interface UiSketchData {
 export interface Feature {
   key: string
   name: string
+  /** 개요의 '기능별 상세' 카드에 쓰는 짧은 이름(없으면 name 의 ' — ' 앞) */
+  short?: string
   domain: string
   updated_at?: string
   /** 지금이 되기까지의 세대 교체. 한 번도 안 바뀐 기능은 없다 */

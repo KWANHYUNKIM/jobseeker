@@ -220,6 +220,7 @@
     {
       "key": "cloud-cost-program",
       "name": "서버비를 '월 몇 만 엔' 으로 말한다 — 모든 클라우드 비용을 BigQuery 에 모아 기능별로 주석을 달고 매일 Slack 에 올린 뒤, 큰 것부터: Datadog 은 청구서 밖의 지표 수집 비용까지 합쳐 60% 이상, BigQuery 스토리지는 데이터셋별 압축률로 손익을 따져 물리 바이트 과금으로",
+      "short": "클라우드 비용 줄이기",
       "domain": "쌓이기만 하는 데이터와 감시 비용을 줄인다 — BigQuery 물리 과금 · Datadog 지표 수집",
       "updated_at": "2026-09-30",
       "business": {
@@ -627,6 +628,7 @@
     {
       "key": "aws-to-gcp-no-downtime",
       "name": "재해 속보를 멈추지 않고 옮긴다 — DB 는 DMS 레플리카로 읽기 계통을 먼저 무중단 전환하고 쓰기는 공지한 5 분씩 두 번, 접속은 VPN · 도메인으로 재배포 없이 바꾸고, API 는 셀프 관리형 인증서 + 가중 CNAME 10% 로 조금씩, 옮긴 DB 는 Datastream CDC 로 BigQuery 에",
+      "short": "AWS → GCP 무중단 이행",
       "domain": "앱을 멈추지 않고 AWS 에서 Google Cloud 로 — API · DB 무중단 이행",
       "updated_at": "2026-09-30",
       "business": {
@@ -1055,6 +1057,7 @@
     {
       "key": "jma-xml-event-cancel",
       "name": "지진 하나에 전문 여러 장 — 기상청 방재 XML 을 PULL 피드로 받아 종류마다 다른 발표 조건 · 순서를 알고, 14 자리 EventID 로 같은 지진을 묶고, 오보를 되돌리는 취소 전문을 DB 롤백으로 받아 내고, 그 결과를 다루기 쉬운 API 로 방송사 · 자사 서비스에 준다",
+      "short": "기상청 XML · 취소 전문",
       "domain": "기상청 전문을 틀리지 않게 — 지진 · 쓰나미 XML 의 묶음과 취소",
       "updated_at": "2026-09-30",
       "business": {

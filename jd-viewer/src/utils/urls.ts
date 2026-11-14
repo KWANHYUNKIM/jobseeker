@@ -38,6 +38,8 @@ export const paths = {
   bookPage: (id: string, pageId: string) => `/wiki/${encodeURIComponent(id)}/${encodeURIComponent(pageId)}`,
   reveng: () => '/reveng',
   revengCompany: (slug: string) => `/reveng/${encodeURIComponent(slug)}`,
+  /** 회사 개요의 '기능별 상세' 카드가 여는 한 기능 — `/reveng/jxpress/f/cloud-cost-program` */
+  revengFeature: (slug: string, key: string) => `/reveng/${encodeURIComponent(slug)}/f/${encodeURIComponent(key)}`,
   revengDoc: (slug: string) => `/reveng/docs/${encodeURIComponent(slug)}`,
   hardware: () => '/hardware',
   hardwareParts: () => '/hardware/parts',

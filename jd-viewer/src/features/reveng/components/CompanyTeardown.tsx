@@ -16,6 +16,7 @@ import { ConfBadge, SourceLinks } from './RevengBits'
 import { RevenueSplit } from './RevenueSplit'
 import { Md, MdBlock } from '../../../components/Md'
 import { Loader, ErrorState } from '../../../components/ui'
+import { SiteFooter } from '../../../components/SiteFooter'
 
 // 엔티티는 스키마상 {name, what} 이지만 초기 사이클들이 "이름 — 설명" 한 문자열로
 // 적어 둔 것이 남아 있다. 객체만 읽으면 그쪽이 통째로 빈 줄이 되므로 둘 다 받는다.
@@ -37,16 +38,12 @@ function normEntity(e: { name: string; what: string } | string): { name: string;
 // 다음 회사를 뒀다(`BookView` 와 같은 뼈대다 — 저쪽이 먼저 이 문제를 풀었다).
 
 
-export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => void }) {
+export function CompanyTeardown({ slug, featureKey = null, onBack }: { slug: string; featureKey?: string | null; onBack: () => void }) {
   const { data: c, loading, error } = useCompany(slug)
   const { data: index } = useRevengIndex()
-  const [domain, setDomain] = useState<string | null>(null)
   const [step, setStep] = useState('biz')
 
-  const features = useMemo(
-    () => (c?.features ?? []).filter((f) => !domain || f.domain === domain),
-    [c, domain],
-  )
+  const feature = featureKey ? (c?.features ?? []).find((f) => f.key === featureKey) ?? null : null
 
   // 이전/다음 회사 — 목록(index.json)의 차례를 그대로 따른다.
   const nav = useMemo(() => {
@@ -151,8 +148,10 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
 
       {/* 본문 줄길이는 .reveng-prose(74ch)가 잡는다. 바깥 폭까지 좁히면 그림이
           화면 절반만 쓰게 되므로, 컨테이너는 넓게 두고 글만 좁힌다. */}
-      <div className="jd-container pt-[58px] pb-[40px] flex gap-8">
+      <div className="jd-container pt-[58px] pb-[40px] flex gap-8 w-full">
        <div className="flex-1 min-w-0 flex flex-col gap-7">
+        {!feature && (
+        <>
         <section id="biz" className="scroll-mt-28">
           <BigHead title="비즈니스 모델" sub="이 회사는 무엇을 팔아 돈을 버는가" />
           <div className="mt-[22px] flex flex-col lg:flex-row gap-[38px] items-start">
@@ -231,7 +230,7 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
             같은 일을 두 번 하게 되므로 접어 둔다(지우지는 않는다 — 관계는 저쪽이 정확하다). */}
         {c.ui_map && (
           <Section id="ui" title="화면에서 시작하기" sub={c.ui_map.question ?? '사용자가 보는 이 부분이 어느 도메인인가'}>
-            <UiSketch ui={c.ui_map} idKey={`reveng-${c.slug}-uimap`} onPickDomain={setDomain} />
+            <UiSketch ui={c.ui_map} idKey={`reveng-${c.slug}-uimap`} onPickDomain={() => document.getElementById('domains')?.scrollIntoView({ behavior: 'smooth', block: 'start' })} />
           </Section>
         )}
 
@@ -355,32 +354,62 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
           </section>
         )}
 
-        {/* 구조를 본 뒤에 온다 — 도메인 이름을 알고 나서 읽어야 "이 시기에 그게
-            생겼다"가 붙들린다. 갈아엎은 적 없는 회사는 이 섹션이 아예 안 뜬다. */}
-        {c.eras && c.eras.length > 0 && (
-          <Section id="eras" title="연표" sub="지금 구조에 오기까지 무엇을 버렸는가 — 기술이 바뀐 지점으로 자른다">
-            <EraTimeline eras={c.eras} />
-          </Section>
+        {/* 기능별 상세 — 개요는 여기서 끝난다(캐치형 34). 기능 하나하나는 자기 주소에서 끝까지 읽는다 */}
+        {(c.features ?? []).length > 0 && (
+          <section id="features" className="scroll-mt-28 mt-[44px] rounded-[30px] bg-[#272727] px-8 pt-8 pb-8">
+            <h2 className="text-[22px] font-bold leading-8 text-white">
+              기능별 상세 <span className="text-[#ff9a9a]">{(c.features ?? []).length}개</span>
+            </h2>
+            <p className="mt-1 text-sm text-[#ccc]">각 기능의 도메인 모델 · 흐름 · 그림 · 결정과 대가 · 출처를 따로 정리했어요.</p>
+            <div className="mt-[22px] grid gap-3 md:grid-cols-3">
+              {(c.features ?? []).map((f, i) => {
+                const to = paths.revengFeature(c.slug, f.key)
+                const [head] = f.name.split(' — ')
+                return (
+                  <a key={f.key} href={to} onClick={onLinkClick(to)} className="group block rounded-[20px] bg-white px-[22px] pt-[22px] pb-5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.25)]">
+                    <span className="rounded bg-[#f67979] px-[7px] text-[13px] leading-[22px] text-white">기능 {i + 1}</span>
+                    <h3 className="mt-[10px] text-[20px] font-bold leading-[29px] text-[#272727] truncate">{f.short ?? head}</h3>
+                    <p className="mt-1 text-[15px] text-[#555] truncate">{f.short ? head : f.domain.split(' — ')[0]}</p>
+                    <span className="mt-[10px] inline-flex items-center gap-1 text-sm font-medium text-(--color-accent) group-hover:underline">
+                      상세 보기 <span aria-hidden>›</span>
+                    </span>
+                  </a>
+                )
+              })}
+            </div>
+          </section>
+        )}
+        </>
         )}
 
-        <Section
-          id="features"
-          title={domain ? `기능 — ${domain}` : '기능'}
-          sub="왜 존재하는가 → 도메인 규칙 → 구현과 트레이드오프 → 다른 시스템과의 연결"
-        >
-          {features.length === 0 ? (
-            <p className="text-sm text-(--color-muted)">
-              아직 채워진 기능이 없습니다. 엔진이 사이클을 돌면 하나씩 쌓입니다.
-            </p>
-          ) : (
-            <div className="flex flex-col gap-8">
-              {features.map((f, i) => (
-                <FeatureBlock key={f.key} f={f} no={i + 1} />
-              ))}
-            </div>
-          )}
-        </Section>
-
+        {feature && (
+          <>
+            <nav aria-label="기능" className="flex flex-wrap items-center gap-2 text-sm">
+              <a href={paths.revengCompany(c.slug)} onClick={onLinkClick(paths.revengCompany(c.slug))} className="text-[#777] hover:text-[#272727]">
+                ← {c.name} 개요
+              </a>
+              {(c.features ?? []).map((f, i) => {
+                const to = paths.revengFeature(c.slug, f.key)
+                const on = f.key === feature.key
+                return (
+                  <a
+                    key={f.key}
+                    href={to}
+                    onClick={onLinkClick(to)}
+                    aria-current={on ? 'page' : undefined}
+                    className={'h-8 px-[14px] rounded-2xl inline-flex items-center ' + (on ? 'bg-[#272727] text-white' : 'border border-[#d8d8d8] text-[#272727] hover:border-[#272727]')}
+                  >
+                    기능 {i + 1}
+                  </a>
+                )
+              })}
+            </nav>
+            <FeatureBlock f={feature} no={(c.features ?? []).findIndex((f) => f.key === feature.key) + 1} />
+            {c.eras && c.eras.length > 0 && (
+              <Section id="eras" title="연표" sub="지금 구조에 오기까지 무엇을 버렸는가 — 기술이 바뀐 지점으로 자른다">
+                <EraTimeline eras={c.eras} />
+              </Section>
+            )}
         {c.open_questions && c.open_questions.length > 0 && (
           <Section id="unknown" title="확인 못 한 것" sub="공개 자료로 닿지 못한 부분 — 그럴듯하게 채우지 않는다">
             <ul className="list-disc pl-5 text-sm text-(--color-muted) flex flex-col gap-1">
@@ -398,8 +427,13 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
         )}
 
         <CompanyNav prev={nav.prev} next={nav.next} />
+          </>
+        )}
        </div>
 
+      </div>
+      <div className="mt-auto pt-[40px]">
+        <SiteFooter />
       </div>
     </div>
   )

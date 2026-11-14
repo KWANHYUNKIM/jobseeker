@@ -81,7 +81,7 @@ export function RevengView({ seg = [] }: { seg?: string[] }) {
         : null,
   )
 
-  if (slug) return <CompanyTeardown slug={slug} onBack={() => goBack(paths.reveng())} />
+  if (slug) return <CompanyTeardown slug={slug} featureKey={seg[1] === 'f' ? (seg[2] ?? null) : null} onBack={() => goBack(paths.reveng())} />
   if (docSlug) {
     const doc = domainDocs?.docs.find((d) => d.slug === docSlug)
     if (doc) return <DomainDocView doc={doc} docs={domainDocs?.docs ?? []} companies={companies} />
