@@ -29,6 +29,8 @@ export interface RevenueStream extends Claim {
   share?: number
   /** 표시용 금액 문자열 — 단위가 회사마다 달라(조·억·$B) 계산하지 않고 그대로 적는다 */
   amount?: string
+  /** 이 돈이 기대는 도메인(domains[].name 그대로) — 화면이 번호 동그라미로 잇는다 */
+  domains?: string[]
 }
 
 export interface DomainTech extends Claim {

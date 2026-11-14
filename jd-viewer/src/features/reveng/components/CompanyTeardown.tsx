@@ -48,24 +48,6 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
     [c, domain],
   )
 
-  // 차례 — 실제로 그려지는 절만 담는다. 없는 절을 차례에 남기면 눌러도 안 움직인다.
-  const outline = useMemo(() => {
-    if (!c) return []
-    const it: { id: string; text: string; sub?: boolean }[] = []
-    it.push({ id: 'biz', text: '비즈니스 모델' })
-    if (c.ui_map) it.push({ id: 'ui', text: '화면에서 시작하기' })
-    if (c.domain_map?.code && !c.ui_map) it.push({ id: 'map', text: '도메인 지도' })
-    if (c.domains?.length) it.push({ id: 'domains', text: '도메인' })
-    if (c.eras?.length) it.push({ id: 'eras', text: '연표' })
-    if (features.length) {
-      it.push({ id: 'features', text: domain ? `기능 — ${domain}` : '기능' })
-      for (const f of features) it.push({ id: `feat-${f.key}`, text: f.name, sub: true })
-    }
-    if (c.open_questions?.length) it.push({ id: 'unknown', text: '확인 못 한 것' })
-    if (c.sources?.length) it.push({ id: 'sources', text: '근거' })
-    return it
-  }, [c, features, domain])
-
   // 이전/다음 회사 — 목록(index.json)의 차례를 그대로 따른다.
   const nav = useMemo(() => {
     const list = index?.companies ?? []
@@ -169,35 +151,80 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
 
       {/* 본문 줄길이는 .reveng-prose(74ch)가 잡는다. 바깥 폭까지 좁히면 그림이
           화면 절반만 쓰게 되므로, 컨테이너는 넓게 두고 글만 좁힌다. */}
-      <div className="jd-container py-[40px] flex gap-8">
+      <div className="jd-container pt-[58px] pb-[40px] flex gap-8">
        <div className="flex-1 min-w-0 flex flex-col gap-7">
-        <Section id="biz" title="비즈니스 모델" sub="이 회사는 무엇을 팔아 돈을 버는가">
-          <MdBlock className="reveng-prose text-sm text-(--color-text)">{c.business_model}</MdBlock>
-          {c.products?.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mt-2">
-              {c.products.map((p) => (
-                <span key={p} className="px-2 py-0.5 rounded bg-(--color-bg) border border-(--color-border) text-xs text-(--color-muted)">
-                  {p}
-                </span>
+        <section id="biz" className="scroll-mt-28">
+          <BigHead title="비즈니스 모델" sub="이 회사는 무엇을 팔아 돈을 버는가" />
+          <div className="mt-[22px] flex flex-col lg:flex-row gap-[38px] items-start">
+            <div className="reveng-biz min-w-0 flex-1 pt-[20px] text-[17px] leading-[30px] tracking-[-0.2px] text-[#333] break-keep">
+              {(c.business_model ?? '').split(/\n{2,}/).filter((x) => x.trim()).map((para, i) => (
+                <p key={i} className={i ? 'mt-[16px]' : ''}>
+                  <Md>{para}</Md>
+                </p>
               ))}
             </div>
-          )}
+            <aside className="w-full lg:w-[360px] shrink-0 rounded-[20px] bg-[#f7f9fa] px-6 py-[24px]">
+              {c.products?.length > 0 && (
+                <>
+                  <h3 className="text-[15px] font-bold text-[#272727]">제품</h3>
+                  <div className="mt-[10px] flex flex-wrap gap-[6px]">
+                    {c.products.map((p) => (
+                      <span key={p} className="rounded-md border border-[#e2e8ec] bg-white px-2 text-[13px] leading-[22px] text-[#474747]">
+                        {p}
+                      </span>
+                    ))}
+                  </div>
+                </>
+              )}
+              <h3 className="mt-[24px] text-[15px] font-bold text-[#272727]">매출 규모</h3>
+              <p className="mt-[8px] text-sm leading-5 text-[#555]">{c.revenue_total ? <Md>{String(c.revenue_total)}</Md> : '공개 자료에서 확인하지 못했어요'}</p>
+            </aside>
+          </div>
+          {c.revenue_streams && c.revenue_streams.some((r) => r.share != null) && <RevenueSplit streams={c.revenue_streams} total={c.revenue_total} />}
           {c.revenue_streams && c.revenue_streams.length > 0 && (
-            <RevenueSplit streams={c.revenue_streams} total={c.revenue_total} />
+            <div className="mt-[44px]">
+              <h3 className="text-[17px] font-bold text-[#272727]">
+                돈이 들어오는 곳 <span className="text-(--color-accent)">{c.revenue_streams.length}</span>
+              </h3>
+              <div className="mt-[14px] grid gap-4 md:grid-cols-3">
+                {c.revenue_streams.map((r) => {
+                  const nos = (r.domains ?? []).map((d) => {
+                    const i = (c.domains ?? []).findIndex((x) => x.name === d)
+                    return { no: i + 1, short: d.split(' — ')[0] }
+                  })
+                  return (
+                    <article key={r.name} className="flex flex-col rounded-[22px] border border-[#e2e8ec] bg-white px-6 pt-6 pb-[22px]">
+                      <div className="flex items-start gap-3">
+                        <h4 className="min-w-0 flex-1 text-[18px] font-bold leading-[27px] text-[#272727]">
+                          <Md>{r.name}</Md>
+                        </h4>
+                        <ConfTag c={r.confidence} />
+                      </div>
+                      <p className="mt-[10px] text-[15px] leading-[25px] text-[#474747]">
+                        <Md>{r.how}</Md>
+                      </p>
+                      {nos.length > 0 && (
+                        <div className="mt-auto pt-[24px]">
+                          <div className="flex items-center gap-[6px] text-[13px] text-[#777]">
+                            연결된 도메인
+                            <span className="ml-1 flex gap-1">
+                              {nos.map((d) => (
+                                <span key={d.no} className="grid place-items-center w-[22px] h-[22px] rounded-full bg-[#272727] text-xs font-bold text-white">
+                                  {d.no > 0 ? d.no : '?'}
+                                </span>
+                              ))}
+                            </span>
+                          </div>
+                          <p className="mt-[8px] text-[13px] leading-[19px] text-[#474747]">{nos.map((d) => d.short).join(' · ')}</p>
+                        </div>
+                      )}
+                    </article>
+                  )
+                })}
+              </div>
+            </div>
           )}
-          {c.revenue_streams && c.revenue_streams.length > 0 && (
-            <ul className="mt-3 flex flex-col gap-2">
-              {c.revenue_streams.map((r) => (
-                <li key={r.name} className="text-sm">
-                  <span className="text-(--color-text) font-medium"><Md>{r.name}</Md></span>
-                  <ConfBadge c={r.confidence} />
-                  <span className="text-(--color-muted)"> — <Md>{r.how}</Md></span>
-                  <SourceLinks sources={r.sources} />
-                </li>
-              ))}
-            </ul>
-          )}
-        </Section>
+        </section>
 
         {/* 화면 도해가 있으면 그쪽이 입구다 — 사용자가 실제로 누르는 것에서 시작하는 편이
             추상적인 네모에서 시작하는 것보다 붙들기 쉽다. 그때 mermaid 도메인 지도는
@@ -316,7 +343,6 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
         <CompanyNav prev={nav.prev} next={nav.next} />
        </div>
 
-       <TeardownOutline items={outline} />
       </div>
     </div>
   )
@@ -368,7 +394,7 @@ function CompanyNavLink({
 
 // 오른쪽 차례. 긴 글에서 '지금 어디쯤인가'가 안 보이면 읽다가 놓친다 —
 // `BookView` 의 PageOutline 과 같은 일을 하고, 같은 스크롤 상자를 듣는다.
-function TeardownOutline({ items }: { items: { id: string; text: string; sub?: boolean }[] }) {
+export function TeardownOutline({ items }: { items: { id: string; text: string; sub?: boolean }[] }) {
   const [active, setActive] = useState<string | null>(null)
 
   useEffect(() => {
@@ -915,6 +941,27 @@ function SourceList({ sources }: { sources: Source[] }) {
       ))}
     </ul>
   )
+}
+
+/** 큰 절 머리(캐치형) — 26px 제목 + 회색 부제 */
+function BigHead({ title, sub }: { title: string; sub?: string }) {
+  return (
+    <div className="flex flex-wrap items-baseline gap-x-4">
+      <h2 className="text-[26px] font-bold leading-[37px] tracking-[-0.5px] text-[#272727]">{title}</h2>
+      {sub && <span className="text-sm text-[#777]">{sub}</span>}
+    </div>
+  )
+}
+
+/** 확인 · 추정 딱지 — 확인은 초록, 추정은 보라, 미확인은 회색 */
+function ConfTag({ c }: { c?: string }) {
+  const m: Record<string, [string, string]> = {
+    confirmed: ['확인', 'bg-[#eef8f1] text-[#1e8a3c]'],
+    inferred: ['추정', 'bg-[#f1efff] text-[#5b4fd6]'],
+    unverified: ['미확인', 'bg-[#f1f4f8] text-[#555]'],
+  }
+  const [label, cls] = m[c ?? 'confirmed'] ?? m.confirmed
+  return <span className={'shrink-0 rounded px-[7px] text-[13px] leading-[22px] ' + cls}>{label}</span>
 }
 
 function Section({

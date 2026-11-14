@@ -599,3 +599,6 @@ details > summary.list-none::-webkit-details-marker { display: none; }
 .blog-md.reveng-doc blockquote { border: none; border-radius: 14px; background: #f1efff; color: #474747; padding: 14px 18px; font-size: 15px; }
 .blog-md.reveng-doc code { background: #f4f4f4; border: none; }
 .blog-md.reveng-doc a { color: inherit; text-decoration-color: #c4c4c4; text-underline-offset: 3px; }
+
+/* 역설계 회사 개요의 비즈니스 모델 — 강조는 형광펜이 아니라 굵은 글자(캐치형 34 보드) */
+.reveng-biz .md-mark { background: none; box-shadow: none; padding: 0; color: #272727; font-weight: 700; }
