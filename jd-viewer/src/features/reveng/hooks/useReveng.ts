@@ -52,6 +52,8 @@ export interface Diagram {
   question?: string
   kind?: 'flow' | 'sequence' | 'state' | 'failure'
   code: string
+  /** 이 그림이 어디서 왔나 — 사이트의 해석이면 그렇게 적는다(화면에 '해석' 딱지로 뜬다) */
+  _note?: string
 }
 
 // 결정이 '무엇을 골랐나'라면 이건 '고르기 전에 무엇이 걸렸나'다.

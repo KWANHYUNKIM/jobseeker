@@ -141,7 +141,11 @@ function normalize(svg: string): { html: string; w: number; h: number } {
   return { html, w, h }
 }
 
-export function ArchitectureDiagram({ code, idKey }: { code: string; idKey: string }) {
+/**
+ * soft — 역설계 회사 개요의 도메인 지도(캐치형 34 보드). 위에서 아래로 흐르고, 상자는 옅은 회색 면에
+ * 회색 테두리, 선은 부드러운 곡선이다. 기본(잉크) 도판은 그대로 둔다 — 기능 도판은 여전히 그쪽이 읽기 쉽다.
+ */
+export function ArchitectureDiagram({ code, idKey, soft }: { code: string; idKey: string; soft?: boolean }) {
   const [svg, setSvg] = useState('')
   const [dim, setDim] = useState({ w: 900, h: 600 })
   const [error, setError] = useState<string | null>(null)
@@ -158,7 +162,7 @@ export function ArchitectureDiagram({ code, idKey }: { code: string; idKey: stri
         mermaid.initialize({
           startOnLoad: false,
           theme: 'base',
-          layout: 'elk',
+          layout: soft ? 'dagre' : 'elk',
           elk: {
             // 되돌이 화살표(결과 → 다시 질의)가 있는 그림이 많다. GREEDY 로 끊으면
             // 위→아래 순서가 통째로 뒤집히므로, 필자가 쓴 순서를 따라가는 DFS 로 끊는다.
@@ -173,11 +177,11 @@ export function ArchitectureDiagram({ code, idKey }: { code: string; idKey: stri
             htmlLabels: true,
             // 인쇄 도판은 곡선을 쓰지 않는다. 선이 어디서 어디로 가는지가
             // 모양보다 중요해서 직선이 읽기 쉽다.
-            curve: 'linear',
+            curve: soft ? 'basis' : 'linear',
             // ELK 가 꺾어 놓은 선을 그대로 쓴다 — 곡선으로 뭉개면 어디서 갈라지는지 흐려진다
             // 여백이 곧 위계다 — 상자를 붙여 놓으면 묶음도 흐름도 안 보인다
-            nodeSpacing: 46,
-            rankSpacing: 80,
+            nodeSpacing: soft ? 34 : 46,
+            rankSpacing: soft ? 56 : 80,
             padding: 16,
             // 기본값(200px)은 한국어에서 '…아니 / 다' 처럼 낱말을 잘라 놓는다.
             // 줄바꿈은 필자가 <br/> 로 정하게 두고, 자동 줄바꿈은 넉넉히 뒤로 민다.
@@ -187,7 +191,22 @@ export function ArchitectureDiagram({ code, idKey }: { code: string; idKey: stri
           sequence: { useMaxWidth: false, actorMargin: 70, boxMargin: 14 },
           // 도판 양식: 종이 위의 잉크. 상자는 전부 같은 무게로 두고,
           // 색은 한 곳(:::accent)에만 쓴다 — 색이 여러 개면 강조가 사라진다.
-          themeVariables: {
+          themeVariables: soft
+            ? {
+                background: '#ffffff',
+                fontSize: '14px',
+                primaryColor: '#f7f9fa',
+                primaryTextColor: '#272727',
+                primaryBorderColor: '#cfd6dd',
+                mainBkg: '#f7f9fa',
+                nodeBorder: '#cfd6dd',
+                lineColor: '#8f9aa5',
+                textColor: '#272727',
+                edgeLabelBackground: '#ffffff',
+                clusterBkg: '#ffffff',
+                clusterBorder: '#e2e8ec',
+              }
+            : {
             darkMode: !p.isLight,
             background: p.paper,
             fontSize: '13px',
@@ -227,7 +246,25 @@ export function ArchitectureDiagram({ code, idKey }: { code: string; idKey: stri
           },
         })
         const id = `mmd-${idKey.replace(/[^a-zA-Z0-9]/g, '')}-${seq++}`
-        return mermaid.render(id, withStandardClasses(code, p))
+        // 전역 설정(initialize)만으로는 앞서 그린 그림의 설정이 남는다 — soft 는 그림마다 init 지시문으로 못 박는다
+        const SOFT_INIT = {
+          layout: 'dagre',
+          flowchart: { curve: 'basis', nodeSpacing: 34, rankSpacing: 56, padding: 18, htmlLabels: true, useMaxWidth: false },
+          themeVariables: {
+            fontSize: '14px',
+            primaryColor: '#f7f9fa',
+            primaryTextColor: '#272727',
+            primaryBorderColor: '#cfd6dd',
+            mainBkg: '#f7f9fa',
+            nodeBorder: '#cfd6dd',
+            lineColor: '#8f9aa5',
+            edgeLabelBackground: '#ffffff',
+          },
+        }
+        const src = soft
+          ? `%%{init: ${JSON.stringify(SOFT_INIT)}}%%\n` + code.replace(/^(\s*)(flowchart|graph)\s+LR\b/m, '$1$2 TB')
+          : withStandardClasses(code, p)
+        return mermaid.render(id, src)
       })
       .then(({ svg }) => {
         if (cancelled) return
@@ -244,7 +281,7 @@ export function ArchitectureDiagram({ code, idKey }: { code: string; idKey: stri
     return () => {
       cancelled = true
     }
-  }, [code, idKey])
+  }, [code, idKey, soft])
 
   if (error) {
     return (
@@ -257,9 +294,9 @@ export function ArchitectureDiagram({ code, idKey }: { code: string; idKey: stri
 
   return (
     <>
-      <div className="rounded-lg border border-(--color-border) bg-(--color-bg) relative group">
+      <div className={soft ? 'relative group' : 'rounded-lg border border-(--color-border) bg-(--color-bg) relative group'}>
         {loading && <div className="p-6 text-xs text-(--color-muted)">다이어그램 그리는 중…</div>}
-        {!loading && (
+        {!loading && !soft && (
           <button
             onClick={() => setZoomOpen(true)}
             className="absolute top-2 right-2 z-10 px-2.5 py-1 text-xs rounded-md bg-(--color-panel)/90 backdrop-blur border border-(--color-border) text-(--color-muted) hover:text-(--color-accent) hover:border-(--color-accent) transition-colors"
@@ -271,10 +308,10 @@ export function ArchitectureDiagram({ code, idKey }: { code: string; idKey: stri
             높이로 맞추면 이번엔 글자가 7px 로 줄어든다 — 그래서 폭에만 맞추고
             높이는 그림이 필요한 만큼 준다. 글자 크기는 원본(13px) 그대로다. */}
         {!loading && (
-          <div className="mmd p-4 flex justify-center">
+          <div className={soft ? 'mmd flex justify-center' : 'mmd p-4 flex justify-center'}>
             <div
               style={{
-                width: `min(100%, ${dim.w}px)`,
+                width: soft ? '88%' : `min(100%, ${dim.w}px)`,
                 aspectRatio: `${dim.w} / ${dim.h}`,
               }}
               dangerouslySetInnerHTML={{ __html: svg }}

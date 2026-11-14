@@ -247,9 +247,44 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
               </div>
             </details>
           ) : (
-            <Section id="map" title="도메인 지도" sub={c.domain_map.question ?? '도메인들이 어떻게 맞물리는가'}>
-              <DiagramBlock d={c.domain_map} idKey={`reveng-${c.slug}-map`} />
-            </Section>
+            <section id="map" className="scroll-mt-28 mt-[24px]">
+              <BigHead title="도메인 지도" sub={c.domain_map.question ?? '도메인들이 어떻게 맞물리는가'} />
+              <div className="mt-[22px] grid gap-6 lg:grid-cols-[minmax(0,1fr)_454px] items-stretch">
+                <div className="rounded-[24px] border border-[#e2e8ec] bg-[#f9fafb] p-[30px]">
+                  <div className="bg-white py-2">
+                    <ArchitectureDiagram code={c.domain_map.code} idKey={`reveng-${c.slug}-map`} soft />
+                  </div>
+                </div>
+                <aside className="rounded-[24px] bg-[#f7f9fa] px-7 pt-[30px] pb-7">
+                  <h3 className="text-[20px] font-bold leading-[29px] text-[#272727]">
+                    <Md>{c.domain_map.title}</Md>
+                  </h3>
+                  {c.domain_map.question && <p className="mt-1 text-[15px] text-[#555]">{c.domain_map.question}</p>}
+                  {c.domains && c.domains.length > 0 && (
+                    <ol className="mt-[22px] flex flex-col gap-3">
+                      {c.domains.map((d, i) => (
+                        <li key={d.name}>
+                          <button
+                            type="button"
+                            onClick={() => document.getElementById(`dom-${i + 1}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                            className="w-full h-[52px] rounded-[14px] bg-white px-4 flex items-center gap-3 text-left hover:shadow-sm"
+                          >
+                            <span className="grid place-items-center w-[22px] h-[22px] shrink-0 rounded-full bg-[#272727] text-xs font-bold text-white">{i + 1}</span>
+                            <span className="min-w-0 truncate text-[15px] font-medium text-[#272727]">{d.name.split(' — ')[0]}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ol>
+                  )}
+                  {c.domain_map._note && (
+                    <p className="mt-[22px] text-[13px] leading-[21px] text-[#555]">
+                      <span className="mr-[6px] rounded bg-[#f1efff] px-[6px] text-[#5b4fd6]">해석</span>
+                      {c.domain_map._note}
+                    </p>
+                  )}
+                </aside>
+              </div>
+            </section>
           ))}
 
         {c.domains && c.domains.length > 0 && (
