@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { SiteFooter } from '../../components/SiteFooter'
 import { ErrorState, Loader } from '../../components/ui'
 import { fetchHome, type HomeBoard, type HomeSection } from '../../features/home/api'
@@ -18,10 +18,12 @@ const FETCH_MIN = 48
 // 위 줄 셋(경력 단계·새로움)과 아래 줄 셋(회사 성격). 업종 구역은 '전체 카테고리 보기' 로 편다.
 const LEAD = ['entry', 'experienced', 'today']
 const KIND = ['intern', 'midsmall', 'overseas']
+/** 회사 카드가 놓인 구역 — 펼친 칸이 어느 구역 아래에 들어가나 */
+type Where = 'cos' | 'trend' | 'picks'
 
 /**
  * `/` — 회사별 메인(Penpot「JD Viewer」01 캐치형 1920). 위에서 아래로:
- *   ① 바로가기 넷 + 남색 배너   ② 가장 주목받는 회사 카드(4열, 누르면 회사 패널)
+ *   ① 바로가기 넷 + 남색 배너   ② 가장 주목받는 회사 카드(4열, 누르면 그 줄 아래로 공고가 펼쳐진다)
  *   ③ 오늘의 트렌드 Pick(회색 띠)   ④ 카테고리별 인기 TOP 50(3열 × 2줄)
  *   ⑤ 추천공고 — 업종별 1위 공고(회색 띠)   ⑥ 바닥 띠
  * 공고 하나하나를 거르는 화면은 `/jobs`.
@@ -34,6 +36,8 @@ export function HomePage() {
   const [d, setD] = useState<HomeBoard | null>(null)
   const [err, setErr] = useState<string | null>(null)
   const open = route.query.get('company')
+  // 같은 회사가 여러 구역(주목 회사·트렌드·추천)에 나온다 — 누른 구역 아래에 펼친다.
+  const [openIn, setOpenIn] = useState<Where | null>(null)
   const { countsReady, totalCount } = useJobBoardContext()
 
   useSeo({ title: TAB_SEO.home.title, description: TAB_SEO.home.desc, canonical: absUrl('/') })
@@ -49,7 +53,10 @@ export function HomePage() {
     return () => ctl.abort()
   }, [limit])
 
-  const openCompany = (slug: string) => setQuery('company', open === slug ? null : slug, { push: true })
+  const openCompany = (slug: string, where: Where) => {
+    setOpenIn(where)
+    setQuery('company', open === slug && openIn === where ? null : slug, { push: true })
+  }
   const closePanel = useCallback(() => setQuery('company', null, { push: true }), [setQuery])
 
   if (err && !d) {
@@ -73,9 +80,15 @@ export function HomePage() {
   const shownCos = d.companies.slice(0, limit)
   // 추천공고 — 주목 회사 16곳 다음부터, 이번 주 새 공고가 많은 순으로 여덟 곳.
   const picks = [...d.companies.slice(PAGE)].sort((a, b) => b.new_7d - a.new_7d).slice(0, 8)
+  // 주소(?company=)로 바로 들어왔으면 누른 구역을 모른다 — 카드가 있는 구역, 없으면 주목 회사 아래.
+  const where: Where | null = !open
+    ? null
+    : (openIn ?? (shownCos.some((c) => c.slug === open) ? 'cos' : picks.some((c) => c.slug === open) ? 'picks' : 'cos'))
+  const unfold = (w: Where) => (open && where === w ? <CompanyPanel key={open} slug={open} onClose={closePanel} /> : null)
+  const orphan = where === 'cos' && !shownCos.some((c) => c.slug === open)
 
   return (
-    <div data-scroll className={'flex-1 min-h-0 overflow-auto bg-white ' + (open ? 'md:pr-[460px]' : '')}>
+    <div data-scroll className="flex-1 min-h-0 overflow-auto bg-white">
       <div className="jd-container pt-[38px]">
         <HeroRow d={d} />
 
@@ -84,19 +97,23 @@ export function HomePage() {
           <h2 className="pl-[10px] text-[22px] font-bold leading-8 tracking-[-0.22px] text-[#272727]">
             지금, JD Viewer에서 가장 주목받는 회사예요!
           </h2>
-          <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+          {/* grid-flow-dense — 펼친 칸(전체 너비)을 누른 카드 뒤에 꽂아도 같은 줄의 나머지 카드가 제자리를 지킨다 */}
+          <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 grid-flow-dense gap-2">
             {shownCos.map((c, i) => (
-              <PickCard
-                key={c.slug}
-                name={c.name}
-                logo={c.logo}
-                dday={c.soonest_dday}
-                chip={`${PICK_ICONS[i % 4]} 이번 주 +${c.new_7d}${c.industry !== '기타' ? ` · ${c.industry}` : ''}`}
-                title={c.titles[0]?.title ?? ''}
-                active={open === c.slug}
-                onOpen={() => openCompany(c.slug)}
-              />
+              <Fragment key={c.slug}>
+                <PickCard
+                  name={c.name}
+                  logo={c.logo}
+                  dday={c.soonest_dday}
+                  chip={`${PICK_ICONS[i % 4]} 이번 주 +${c.new_7d}${c.industry !== '기타' ? ` · ${c.industry}` : ''}`}
+                  title={c.titles[0]?.title ?? ''}
+                  active={open === c.slug && where === 'cos'}
+                  onOpen={() => openCompany(c.slug, 'cos')}
+                />
+                {open === c.slug && unfold('cos')}
+              </Fragment>
             ))}
+            {orphan && unfold('cos')}
           </div>
           {shownCos.length < d.totals.companies && (
             <div className="mt-[14px] text-center">
@@ -122,8 +139,9 @@ export function HomePage() {
           <h2 className="text-[22px] font-bold leading-8 tracking-[-0.22px] text-[#272727]">회원님을 위한 오늘의 트렌드 Pick!</h2>
           <p className="text-base leading-6 tracking-[-0.16px] text-[#666]">이번 주 새로 뜬 공고를 기반으로 채용정보를 큐레이션 해드려요.</p>
           <div className="mt-[25px]">
-            <TrendPick d={d} onOpen={openCompany} />
+            <TrendPick d={d} onOpen={(slug) => openCompany(slug, 'trend')} />
           </div>
+          {where === 'trend' && <div className="mt-6">{unfold('trend')}</div>}
         </div>
       </section>
 
@@ -157,18 +175,20 @@ export function HomePage() {
             <p className="text-[13px] font-medium leading-[19px] text-(--color-accent)">› JD Viewer 추천공고</p>
             <h2 className="mt-[3px] text-[22px] font-bold leading-8 tracking-[-0.22px] text-[#272727]">적극 채용중인 기업이에요</h2>
             <p className="mt-0.5 text-base leading-6 tracking-[-0.16px] text-[#666]">업종별 1위 공고를, 마감 전에 빠르게 확인해 보세요!</p>
-            <div className="mt-[26px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+            <div className="mt-[26px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 grid-flow-dense gap-2">
               {picks.map((c, i) => (
-                <PickCard
-                  key={c.slug}
-                  name={c.name}
-                  logo={c.logo}
-                  dday={c.soonest_dday}
-                  chip={`${PICK_ICONS[(i + 1) % 4]} 이번 주 +${c.new_7d}${c.industry !== '기타' ? ` · ${c.industry}` : ''}`}
-                  title={c.titles[0]?.title ?? ''}
-                  active={open === c.slug}
-                  onOpen={() => openCompany(c.slug)}
-                />
+                <Fragment key={c.slug}>
+                  <PickCard
+                    name={c.name}
+                    logo={c.logo}
+                    dday={c.soonest_dday}
+                    chip={`${PICK_ICONS[(i + 1) % 4]} 이번 주 +${c.new_7d}${c.industry !== '기타' ? ` · ${c.industry}` : ''}`}
+                    title={c.titles[0]?.title ?? ''}
+                    active={open === c.slug && where === 'picks'}
+                    onOpen={() => openCompany(c.slug, 'picks')}
+                  />
+                  {open === c.slug && unfold('picks')}
+                </Fragment>
               ))}
             </div>
           </div>
@@ -177,7 +197,6 @@ export function HomePage() {
 
       <SiteFooter updated={d.generated_at} jobs={countsReady ? totalCount : d.totals.jobs} companies={d.totals.companies} />
 
-      {open && <CompanyPanel key={open} slug={open} onClose={closePanel} />}
     </div>
   )
 }

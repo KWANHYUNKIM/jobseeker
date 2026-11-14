@@ -227,17 +227,14 @@ html, body, #root {
 .home-press { transition: transform .12s ease, border-color .15s ease, box-shadow .2s ease; }
 .home-press:active { transform: scale(.985); }
 
-@keyframes home-sheet-up { from { transform: translateY(100%); } to { transform: none; } }
-@keyframes home-side-in { from { transform: translateX(100%); } to { transform: none; } }
-.home-sheet { animation: home-sheet-up .32s cubic-bezier(.2,.8,.2,1) both; }
-@media (min-width: 768px) { .home-sheet { animation-name: home-side-in; } }
-@keyframes home-fade { from { opacity: 0; } to { opacity: 1; } }
-.home-scrim { animation: home-fade .2s ease both; }
+/* 회사 카드를 누르면 그 줄 아래로 공고가 펼쳐진다(예전 오른쪽 패널 대신) */
+@keyframes home-unfold { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+.home-unfold { animation: home-unfold .24s cubic-bezier(.2,.8,.2,1) both; }
 
 @media (prefers-reduced-motion: reduce) {
   .home-marquee { animation: none; flex-wrap: wrap; width: auto; }
   .home-marquee .home-dup { display: none; }
-  .home-rise, .home-sheet, .home-scrim { animation: none; }
+  .home-rise, .home-unfold { animation: none; }
   .home-press:active { transform: none; }
 }
 
