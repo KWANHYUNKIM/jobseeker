@@ -8,6 +8,7 @@
 DB 가 없거나 실패해도 크롤 단계는 죽지 않는다 — job 쪽 ingest_crawl 과 같은 약속이다.
 
     python -m store.market.freelance ingest                 # public/freelance.json → DB (백필·복구, 분석 문서 포함)
+    python -m store.market.freelance bodies [경로]          # var/freelance/bodies.json → project_body(017)
     python -m store.market.freelance export [경로]          # DB → freelance.json
     python -m store.market.freelance stats
 """
@@ -222,6 +223,44 @@ def dual_write_snapshot(snap: dict) -> int | None:
         return None
 
 
+BODY_SQL = """
+INSERT INTO project_body (project_id, body, fetched_at, content_hash)
+SELECT id, %(body)s, %(at)s, %(hash)s FROM project WHERE site = %(site)s::project_site AND pid = %(pid)s
+ON CONFLICT (project_id) DO UPDATE SET
+    body = EXCLUDED.body, fetched_at = EXCLUDED.fetched_at, content_hash = EXCLUDED.content_hash
+WHERE project_body.content_hash <> EXCLUDED.content_hash
+"""
+
+
+def write_bodies(bodies: dict) -> int:
+    """{'<site>:<pid>': {'body','at'}} → project_body(017). 표에 없는 프로젝트는 건너뛴다.
+    반환: 쓰거나 바꾼 행 수(같은 본문이면 세지 않는다)."""
+    n = 0
+    with cursor() as cur:
+        for key, b in bodies.items():
+            site, _, pid = key.partition(":")
+            body = (b.get("body") or "").strip()
+            if site not in SITES or not pid or not body:
+                continue
+            cur.execute(BODY_SQL, {"body": body, "at": b.get("at") or datetime.now().astimezone(),
+                                   "hash": hashlib.sha1(body.encode("utf-8")).hexdigest(),
+                                   "site": site, "pid": pid})
+            n += cur.rowcount
+    return n
+
+
+def dual_write_bodies(bodies: dict) -> int | None:
+    if not enabled() or not bodies:
+        return None
+    try:
+        n = write_bodies(bodies)
+        print(f"[freelance] DB 본문 {n}건", flush=True)
+        return n
+    except Exception as e:                                           # noqa: BLE001
+        print(f"  [freelance] 본문 DB 기록 실패 — var 원장에는 남았습니다: {str(e)[:160]}", flush=True)
+        return None
+
+
 CLASS_KEYS = ("grade", "grade_basis", "domain", "work_type", "role")
 
 
@@ -311,6 +350,11 @@ def main() -> None:
         print(ingest(doc.get("projects") or []))
         from store.db import docs
         docs.put("freelance", "meta", freelance_meta(doc))
+    elif cmd == "bodies":
+        # 본문 원장(var/freelance/bodies.json) → project_body. 마이그레이션 017 직후·복구용.
+        from core.paths import VAR_DIR
+        src = Path(args[1]) if len(args) > 1 else VAR_DIR / "freelance" / "bodies.json"
+        print(f"{write_bodies(json.loads(src.read_text(encoding='utf-8')))}건 → project_body")
     elif cmd == "export":
         n = export(Path(args[1]) if len(args) > 1 else JSON_PATH)
         print(f"{n}건 → {args[1] if len(args) > 1 else JSON_PATH}")

@@ -1246,3 +1246,14 @@ SELECT l.id AS lesson_id, l.area, l.rule, l.status,
   LEFT JOIN design_verdict v ON v.trial_id = tl.trial_id
  GROUP BY l.id;
 
+-- ════════════════════════════════════════════════════════════════════
+-- 외주 프로젝트 본문 — db/migrations/017_project_body.sql 과 같다(설계 근거는 그쪽 머리말)
+-- ════════════════════════════════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS project_body (
+    project_id   bigint      PRIMARY KEY REFERENCES project(id) ON DELETE CASCADE,
+    body         text        NOT NULL,
+    fetched_at   timestamptz NOT NULL DEFAULT now(),
+    content_hash text        NOT NULL,
+    CONSTRAINT project_body_not_blank CHECK (btrim(body) <> '')
+);
+

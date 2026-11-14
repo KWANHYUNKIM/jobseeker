@@ -27,7 +27,10 @@
     모은다 — 원티드 긱스(API)·프리모아(목록 JSON, 의뢰인 이메일 필드는 버린다)·이랜서(사이트맵 →
     상세 JSON-LD)·잡코리아(jobtype=6)·사람인(job_type=9)·아임잡·SISM(약관상 목록 요약과 링크만).
     all_jobs 와 섞지 않고 `public/freelance.json` 에 누적하며, 사이클 끝의 별도 단계로 돈다
-    (crawl_all `--no-freelance` 로 끈다). 뷰어 `/freelance` 탭이 읽는다. DB 는 `project` 계열
+    (crawl_all `--no-freelance` 로 끈다). 뷰어 `/freelance` 탭이 읽는다. **본문은 우리 화면에서 읽는다** — 목록을 누르면 원본으로 나가던 것을 `/freelance/<사이트>-<번호>`
+    상세로 바꿨다. 크롤러가 모집중 프로젝트의 상세 본문(연락처 지움)을 `var/freelance/bodies.json`·DB `project_body`(017)에
+    두고(잡코리아·사람인·아임잡은 회차당 60건씩 상세를 더 받는다, SISM 은 약관상 받지 않는다) `GET /api/freelance/projects/{site}/{pid}`
+    가 붙여 준다. 지원은 원문에서만 한다. DB 는 `project` 계열
     (`db/migrations/005`, `store/market/freelance.py` 로 이중 쓰기) — job 과 따로 두되 tech 사전은 공유한다.
     **사람을 구하면 닫힌다** — 목록에서 빠진 모집중 프로젝트를 회차당 60건씩 원본에 다시 묻는다
     (긱스 상세 API·이랜서 JSON-LD·잡코리아/사람인은 close_check 판정기·아임잡 상세 상태·SISM 은

@@ -18,6 +18,14 @@
 뺀 곳: 위시켓(약관이 크롤링을 명시적으로 금지), OKKY 구인(robots 전면 Disallow),
       크몽(스크래핑 금지 문구 + robots), 숨고(요청서 비공개), 인크루트·피플앤잡(robots 전면 차단).
 
+본문(상세):
+  목록 화면을 누르면 원본 사이트로 나가던 것을 우리 화면에서 읽게 하려고, 모집중 프로젝트의
+  상세 본문을 받아 var/freelance/bodies.json 과 DB project_body(017)에 둔다 — freelance.json
+  에는 싣지 않는다(목록 전량이 무거워진다). 원티드 긱스·프리모아·이랜서는 목록·상세를 받을 때
+  이미 손에 있는 글을 쓰고, 잡코리아·사람인·아임잡은 상세 페이지를 회차당 BODY_LIMIT 건씩
+  더 받는다(채용 크롤러가 같은 iframe 을 받는다 — robots 허용). 이메일·전화는 지운다.
+  SISM 은 약관상 본문을 받지 않는다.
+
 누적 규칙:
   - 키는 "<site>:<pid>". 처음 본 날(first_seen_at)과 마지막으로 본 날(last_seen_at)을 남긴다.
   - 원본이 모집 종료라고 하면(모집상태·마감일) status=closed.
@@ -35,6 +43,7 @@ import sys as _sys
 from pathlib import Path as _Path
 _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_capture 루트
 
+import html as _html
 import json
 import re
 import ssl
@@ -45,6 +54,7 @@ import urllib.request
 from datetime import date, datetime
 from pathlib import Path
 
+from core.paths import VAR_DIR
 from crawlers.jobs_common import USER_AGENT, extract_tech_stack, html_to_text, jitter
 
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
@@ -54,6 +64,9 @@ PAGES_DEFAULT = 15          # 원티드 긱스 300건, 프리모아 150건, 이�
 ELANCER_PER_PAGE = 4        # 이랜서는 상세를 한 건씩 받으므로 쪽수×4 건만
 SLEEP_MS = 1200
 SUMMARY_MAX = 700
+BODY_MAX = 8000             # 상세 본문 상한(글자). 넘는 글은 거의 없고, 넘으면 원문 링크로 이어 읽는다
+BODY_LIMIT = 60             # 회차당 따로 받는 상세 본문 수(잡코리아·사람인·아임잡·원티드 긱스)
+BODY_PATH = VAR_DIR / "freelance" / "bodies.json"
 TIMEOUT = 20
 
 EMAIL_RE = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
@@ -100,14 +113,15 @@ def _sleep() -> None:
     time.sleep(jitter(SLEEP_MS) / 1000)
 
 
-def _scrub(text: str | None) -> str:
-    """본문 요약. 연락처는 지운다 — 프로젝트 글에 담당자 이메일·전화가 흔하다."""
+def _scrub(text: str | None, limit: int = SUMMARY_MAX) -> str:
+    """본문 요약(limit 을 키우면 본문). 연락처는 지운다 — 프로젝트 글에 담당자 이메일·전화가 흔하다."""
     t = html_to_text(text) if text and "<" in text else (text or "")
     t = EMAIL_RE.sub("[이메일]", t)
     t = PHONE_RE.sub("[연락처]", t)
-    t = re.sub(r"[ \t]+", " ", t)
+    t = re.sub(r"[^\S\n]+", " ", t)                 # 줄바꿈 아닌 공백(\r·nbsp·전각 공백 포함)은 하나로
+    t = re.sub(r" ?\n ?", "\n", t)                  # 공백뿐인 줄은 빈 줄로(표 모양 공고에 많다)
     t = re.sub(r"\n{3,}", "\n\n", t).strip()
-    return t[:SUMMARY_MAX]
+    return t[:limit]
 
 
 def _int(v) -> int | None:
@@ -198,6 +212,7 @@ def _wg_detail(p: dict) -> None:
     body = "\n".join(f"[{k}] {v.strip()}" for k, v in parts if isinstance(v, str) and v.strip())
     if body:
         p["summary"] = _scrub(body)
+        p["_body"] = _scrub(body, BODY_MAX)
     if _int(d.get("expert_number")):
         p["headcount"] = _int(d.get("expert_number"))
     p["detail_at"] = datetime.now().astimezone().isoformat(timespec="seconds")
@@ -309,6 +324,7 @@ def fetch_freemoa(pages: int) -> list[dict]:
                 deadline=edate,
                 applicants=_int(r.get("ALL_APPLY_COUNT")),
                 summary=_scrub(text),
+                _body=_scrub(text, BODY_MAX),
                 tags=_tags(title, text),
                 status="active" if open_ else "closed",
             ))
@@ -380,6 +396,7 @@ def fetch_elancer(limit: int, known: set[str]) -> list[dict]:
             posted_date=(ld.get("datePosted") or "")[:10] or None,
             deadline=valid,
             summary=_scrub(desc),
+            _body=_scrub(desc, BODY_MAX),
             tags=_tags(title, desc),
             status="closed" if valid and valid < today else "active",
         ))
@@ -640,6 +657,109 @@ def fetch_sism(pages: int) -> list[dict]:
     return out
 
 
+# ── 상세 본문 ─────────────────────────────────────────────────────────
+# 목록이 본문을 주지 않는 곳만 상세를 한 건씩 받는다. 채용 크롤러(crawl_jobkorea·crawl_saramin)가
+# 받는 것과 같은 iframe 이다 — 그 모듈은 playwright·bs4 를 들여와서 여기서는 같은 일을 직접 한다.
+
+JK_BODY = "https://www.jobkorea.co.kr/Recruit/GI_Read_Comt_Ifrm?Gno={pid}&isHiringCenter=false&hideMapView=false"
+SR_BODY = "https://www.saramin.co.kr/zf_user/jobs/relay/view-detail?rec_idx={pid}&rec_seq=0"
+_TAG_RE = re.compile(r"<(/?)([a-zA-Z][a-zA-Z0-9]*)\b[^>]*?(/?)>")
+
+
+def _element_inner(raw: str, marker: str) -> str | None:
+    """marker 가 붙은 요소의 안쪽 HTML — 같은 이름 태그의 열고 닫음을 세어 끝을 찾는다
+    (crawl_jobkorea._element_inner 와 같은 일. 첫 닫는 태그에서 멈추면 표 모양 공고가 잘린다)."""
+    i = raw.find(marker)
+    if i < 0:
+        return None
+    start = raw.rfind("<", 0, i)
+    m = _TAG_RE.match(raw, start)
+    if not m:
+        return None
+    name, depth, pos = m.group(2).lower(), 1, m.end()
+    for t in _TAG_RE.finditer(raw, pos):
+        if t.group(2).lower() != name or t.group(3):
+            continue
+        depth += -1 if t.group(1) else 1
+        if depth == 0:
+            return raw[pos:t.start()]
+    return raw[pos:]
+
+
+def _body_jobkorea(p: dict) -> str:
+    raw = _request(JK_BODY.format(pid=p["pid"]), referer=p["url"]).decode("utf-8", "replace")
+    return _element_inner(raw, 'id="detail-content"') or ""
+
+
+def _body_saramin(p: dict) -> str:
+    raw = _request(SR_BODY.format(pid=p["pid"]), referer=p["url"]).decode("utf-8", "replace")
+    m = re.search(r'<div[^>]*class="[^"]*user_content[^"]*"[^>]*>(.*?)</div>\s*<script', raw, re.S | re.I)
+    return m.group(1) if m else ""
+
+
+def _body_imjob(p: dict) -> str:
+    raw = _request(p["url"], referer=IM_LIST).decode("cp949", "replace")
+    # 본문 HTML 이 숨긴 textarea 에 들어 있고 화면 스크립트가 꺼내 그린다.
+    m = re.search(r'<textarea id="employ_detail_textarea"[^>]*>(.*?)</textarea>', raw, re.S)
+    return _html.unescape(m.group(1)) if m else ""
+
+
+def _body_wanted(p: dict) -> str:
+    _wg_detail(p)
+    return p.pop("_body", "")
+
+
+BODY_FETCH = {"jobkorea": _body_jobkorea, "saramin": _body_saramin, "imjob": _body_imjob,
+              "wanted_gigs": _body_wanted}
+BODY_NONE = {"sism"}        # 약관 — 본문을 받지 않는다
+
+
+def _load_bodies() -> dict:
+    try:
+        return json.loads(BODY_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
+def collect_bodies(by_id: dict, now: str, only: set[str] | None,
+                   limit: int = BODY_LIMIT) -> dict:
+    """본문 원장을 갱신하고 이번 회차에 바뀐 것만 돌려준다({id: {body, at}}).
+
+    ① 목록·상세를 받으며 이미 손에 든 본문(_body) — 추가 요청 없음.
+    ② 본문이 아직 없는 모집중 프로젝트 — 새로 본 것부터 limit 건까지 상세를 받는다.
+    """
+    bodies = _load_bodies()
+    changed: dict = {}
+    for p in by_id.values():                 # freelance.json 에는 싣지 않는다
+        b = p.pop("_body", None)
+        if b and p["site"] not in BODY_NONE and (bodies.get(p["id"]) or {}).get("body") != b:
+            bodies[p["id"]] = changed[p["id"]] = {"body": b, "at": now}
+    need = [p for p in by_id.values()
+            if p["status"] == "active" and p["site"] in BODY_FETCH and p["id"] not in bodies
+            and (not only or p["site"] in only)]
+    need.sort(key=lambda p: p.get("first_seen_at") or "", reverse=True)
+    got = failed = 0
+    for p in need[:limit]:
+        _sleep()
+        try:
+            b = _scrub(BODY_FETCH[p["site"]](dict(p)), BODY_MAX)
+        except Exception as e:                                       # noqa: BLE001
+            failed += 1
+            if failed <= 3:
+                print(f"  [freelance] 본문 {p['id']} 실패: {str(e)[:80]}", flush=True)
+            continue
+        if b:
+            bodies[p["id"]] = changed[p["id"]] = {"body": b, "at": now}
+            got += 1
+    if changed:
+        BODY_PATH.parent.mkdir(parents=True, exist_ok=True)
+        tmp = BODY_PATH.with_suffix(".json.tmp")
+        tmp.write_text(json.dumps(bodies, ensure_ascii=False), encoding="utf-8")
+        tmp.replace(BODY_PATH)
+    print(f"[freelance] 본문 {len(changed)}건 갱신(상세 {got}건 받음, 실패 {failed}) · 누적 {len(bodies)}건", flush=True)
+    return changed
+
+
 # ── 누적·저장 ─────────────────────────────────────────────────────────
 
 SOURCES = {
@@ -866,6 +986,7 @@ def run(pages: int = PAGES_DEFAULT, only: set[str] | None = None) -> dict:
                          if p["status"] == "active" and p["id"] not in seen_now
                          and (not only or p["site"] in only)], now)
     touched.extend(rechecked)
+    bodies = collect_bodies(by_id, now, only)
 
     projects = sorted(by_id.values(),
                       key=lambda p: (p.get("posted_date") or p.get("first_seen_at") or ""), reverse=True)
@@ -897,6 +1018,7 @@ def run(pages: int = PAGES_DEFAULT, only: set[str] | None = None) -> dict:
         db = _db.dual_write(touched)
         if db is not None:
             _db.dual_write_snapshot(snap)
+            _db.dual_write_bodies(bodies)
     except ImportError as e:
         db = None
         print(f"  [freelance] DB 모듈 없음 — JSON 만 씁니다: {e}", flush=True)
