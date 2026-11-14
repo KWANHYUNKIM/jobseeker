@@ -28,6 +28,9 @@
     python -m crawlers.crawl_hardware --only gpu-rtx-5070,cpu-ryzen-7-9800x3d --dry-run
     python -m crawlers.crawl_hardware --selftest     # 파서 점검(네트워크 없이)
     python -m crawlers.crawl_hardware --refilter     # 받아 둔 매물에 거름(액세서리)만 다시 — 네트워크 없이
+
+매물을 꼭 찾는다: 거르고 나서 진짜 매물이 MIN_REAL 개 미만이면 보조 검색어(price_query.alt, GPU 는
+'지포스 RTX 4090' 처럼 다나와가 정식 카드에 붙이는 이름 꼴)로 더 찾는다.
 """
 from __future__ import annotations
 
@@ -186,6 +189,24 @@ def drop_accessories(offers: list[dict], part: dict) -> list[dict]:
     return kept
 
 
+def match_used(items: list[dict], rule: dict) -> list[dict]:
+    """다나와 중고 시세 항목만 — match 와 같은 규칙에서 '중고' 금지만 푼다. 이름이 '… (중고)' 인 것."""
+    nots = [t for t in list(rule.get("not", [])) + ALWAYS_NOT if t != "중고"]
+    cate = rule.get("cate", "")
+    out, seen = [], set()
+    for it in items:
+        n = _norm(it["name"])
+        if "(중고)" not in it["name"] or it["pcode"] in seen or it["price"] <= 0:
+            continue
+        if cate and cate not in it["cate"]:
+            continue
+        if not all(_has(n, t) for t in rule.get("must", [])) or any(_has(n, t) for t in nots):
+            continue
+        seen.add(it["pcode"])
+        out.append(it)
+    return out
+
+
 def summarize(offers: list[dict]) -> dict:
     prices = sorted(o["price"] for o in offers)
     return {"min": prices[0], "median": int(statistics.median(prices)), "n": len(prices)}
@@ -215,12 +236,12 @@ def run(force: bool = False, only: set[str] | None = None, dry_run: bool = False
             time.sleep(jitter(CRAWL_DELAY_MS, ratio=0.1, floor_ms=CRAWL_DELAY_MS) / 1000)
         rule = p["price_query"]
         try:
-            items = parse(fetch(rule["q"]))
+            items, offers = search_offers(p)
         except Exception as e:  # 한 부품이 실패해도 나머지는 받는다
             failed += 1
             print(f"  [!] {p['id']} — {e}", flush=True)
             continue
-        offers = sorted(drop_accessories(match(items, rule), p), key=lambda o: o["price"])
+        offers = sorted(offers, key=lambda o: o["price"])
         # 묶음으로만 파는 부품(메모리 '32Gx2' 패키지) — 한 개 값으로 나눠 부품의 단위와 맞춘다
         per = int(rule.get("per") or 1)
         if per > 1:
@@ -260,6 +281,60 @@ def run(force: bool = False, only: set[str] | None = None, dry_run: bool = False
     _db_forget(junk_days)
     print(f"[hardware] {stats} → {OUT_PATH}", flush=True)
     return stats
+
+
+# 거르고 나서 진짜 매물이 이만큼도 안 남으면 다른 검색어로 더 찾는다.
+MIN_REAL = 3
+# 다나와는 국내 정식 카드 이름을 '<제조사> 지포스 RTX 4090 …' · '<제조사> 라데온 RX 7600 …' 꼴로 적는다.
+# 'RTX 4090' 으로만 찾으면 단종 칩은 이런 카드보다 이름에 4090 을 넣은 액세서리가 먼저 온다.
+FAMILY_KO = {"geforce": "지포스", "radeon": "라데온", "arc": "인텔 아크"}
+
+
+def fallback_queries(part: dict) -> list[str]:
+    """기본 검색어로 진짜 매물이 모자랄 때 차례로 더 찾을 검색어. 부품에 적은 것(price_query.alt)이 먼저."""
+    rule = part.get("price_query") or {}
+    out = list(rule.get("alt") or [])
+    if part.get("category") == "gpu":
+        name = part.get("name", "")
+        low = name.lower()
+        for fam, ko in FAMILY_KO.items():
+            if low.startswith(fam):
+                out.append(f"{ko} {name[len(fam):].strip()}")      # 'GeForce RTX 4090' → '지포스 RTX 4090'
+                break
+        else:
+            out.append(name)
+    q = rule.get("q", "")
+    return [x for x in dict.fromkeys(out) if x and x != q]
+
+
+def search_offers(part: dict) -> tuple[list[dict], list[dict]]:
+    """부품 하나의 매물 — 기본 검색어로 받고 액세서리를 거른다. 진짜 매물이 MIN_REAL 개 미만이면
+    보조 검색어(fallback_queries)로 더 받아 합친다(pcode 로 겹침 제거, 인기 순위는 기본 검색이 앞).
+    보조 검색마다 Crawl-delay 를 지킨다. 반환: (기본 검색의 원 결과, 거른 매물)."""
+    rule = part["price_query"]
+    items = parse(fetch(rule["q"]))
+    pool = [items]
+    offers = drop_accessories(match(items, rule), part)
+    for k, q in enumerate(fallback_queries(part), 1):
+        if len(offers) >= MIN_REAL:
+            break
+        time.sleep(jitter(CRAWL_DELAY_MS, ratio=0.1, floor_ms=CRAWL_DELAY_MS) / 1000)
+        got = parse(fetch(q))
+        pool.append([{**o, "rank": o["rank"] + 1000 * k} for o in got])
+        more = match(pool[-1], rule)
+        seen = {o["pcode"] for o in offers}
+        # 순위는 검색마다 1부터다 — 보조 검색의 것은 뒤로 민다(기본 검색 1위가 늘 대표 제품 후보)
+        offers += [o for o in more if o["pcode"] not in seen]
+        offers = drop_accessories(offers, part)
+        print(f"      + 보조 검색 {q!r} → 진짜 매물 {len(offers)}건", flush=True)
+    if not offers:
+        # 새 제품이 하나도 없다 — 국내 판매가 끝난 단종 칩(RTX 4070). 다나와가 따로 매기는 중고 시세
+        # ('지포스 RTX 4070 D6X 12GB (중고)')로 물러선다. 이름의 '(중고)' 로 화면이 '중고 시세' 라고 적는다.
+        used = drop_accessories(match_used([o for got in pool for o in got], rule), part)
+        if used:
+            print(f"      + 새 제품이 없어 중고 시세 {len(used)}건으로 물러섬", flush=True)
+        offers = used
+    return items, offers
 
 
 def _forget_junk(rec: dict, part: dict) -> str | None:

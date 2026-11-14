@@ -45,3 +45,24 @@ def test_forget_junk_clears_all_accessory_record():
 def test_relative_floor_drops_far_below_median():
     offers = [_o(f"RX 7900 XTX 24GB {i}", 1_300_000 + i * 10_000) for i in range(5)] + [_o("RX 7900 XTX 헬하운드", 163_190)]
     assert all(o["price"] > 1_000_000 for o in drop_accessories(offers, GPU))
+
+
+def test_fallback_queries_use_korean_family_names():
+    from crawlers.crawl_hardware import fallback_queries
+    p = {"category": "gpu", "name": "GeForce RTX 4090", "price_query": {"q": "RTX 4090"}}
+    assert fallback_queries(p) == ["지포스 RTX 4090"]
+    amd = {"category": "gpu", "name": "Radeon RX 7600", "price_query": {"q": "RX 7600", "alt": ["RX7600 8GB"]}}
+    assert fallback_queries(amd) == ["RX7600 8GB", "라데온 RX 7600"]
+    assert fallback_queries({"category": "cpu", "name": "Ryzen 7 9800X3D", "price_query": {"q": "9800X3D"}}) == []
+
+
+def test_match_used_takes_only_danawa_used_quotes():
+    from crawlers.crawl_hardware import match_used
+    rule = {"q": "RTX 4070", "must": ["4070"], "not": ["Ti", "SUPER", "슈퍼"]}
+    items = [
+        {**_o("지포스 RTX 4070 D6X 12GB (중고)", 870_000), "pcode": "a", "cate": "그래픽카드_중고"},
+        {**_o("지포스 RTX 4070 SUPER D6X 12GB (중고)", 1_080_000), "pcode": "b"},
+        {**_o("지포스 RTX 4070 Ti D6X 12GB (중고)", 990_000), "pcode": "c"},
+        {**_o("MSI 지포스 RTX 4070 벤투스 2X", 900_000), "pcode": "d"},   # 새 제품은 match 의 몫
+    ]
+    assert [o["pcode"] for o in match_used(items, rule)] == ["a"]
