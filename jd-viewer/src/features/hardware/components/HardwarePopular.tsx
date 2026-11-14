@@ -116,9 +116,21 @@ export function VariantList({ data, part, limit = 8 }: { data: HwData; part: Par
 
 export function PopularPick({ data, part }: { data: HwData; part: Part }) {
   const { vs, guide } = useVariants(data, part)
-  if (!vs?.length) return null
-  const pick = pickOf(vs)
-  if (!pick) return null
+  if (vs == null) return null
+  const pick = vs.length ? pickOf(vs) : null
+  if (!pick) {
+    // 매물이 하나도 안 걸렸다 — 단종 칩(RTX 4090)은 다나와 검색이 액세서리뿐이라 거름이 다 걸러 낸다.
+    // 왼쪽 칸을 비워 두면 화면이 깨진 것처럼 보여서 이유를 적는다.
+    return (
+      <section className="rounded-[24px] bg-[#f7f9fa] px-7 py-8">
+        <h2 className="text-[20px] font-bold leading-[29px] tracking-[-0.2px] text-[#272727]">지금 살 수 있는 {part.name} 제품을 못 찾았어요</h2>
+        <p className="mt-2 text-[15px] leading-6 text-[#555]">
+          다나와 검색에 이 칩을 얹은 {part.category === 'gpu' ? '그래픽카드' : '제품'}가 안 잡혔어요.
+          {part.status === 'legacy' ? ' 단종된 칩이라 새 제품이 거의 없고, 검색에는 라이저 케이블·지지대 같은 액세서리만 걸려서 모두 걸러 냈어요.' : ' 다음 가격 수집 때 다시 찾아요.'}
+        </p>
+      </section>
+    )
+  }
   const why = whyPopular(pick, vs, part, data)
   const names = [
     ...namesIn(part.name, guide?.names ?? [], [part.category === 'cpu' ? 'cpu' : 'gpu']),
