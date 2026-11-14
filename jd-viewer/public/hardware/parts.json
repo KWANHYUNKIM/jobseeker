@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "updated_at": "2026-09-29",
+ "updated_at": "2026-11-14",
  "parts": [
   {
    "id": "gpu-rtx-5090",
@@ -4821,6 +4821,58 @@
     "page": "https://www.samsung.com/us/memory-storage/nvme-ssd/990-pro-pcie-4-0-nvme-ssd-2tb-sku-mz-v9p1t0b-am/"
    },
    "specs_verified": "2026-09-29"
+  },
+  {
+   "id": "ssd-samsung-9100-pro-1tb",
+   "category": "ssd",
+   "name": "삼성 9100 PRO 1TB",
+   "maker": "삼성전자",
+   "released": "2025-03",
+   "specs": {
+    "interface": "PCIe 5.0 x4",
+    "form": "M.2 2280",
+    "capacity_gb": 1000,
+    "seq_read_mbs": 14700,
+    "seq_write_mbs": 13300,
+    "tbw": 600,
+    "dram": true,
+    "nand": "TLC"
+   },
+   "perf": {
+    "index": 147,
+    "basis": "순차 읽기 MB/s ÷ 100 (제조사 표기 — 1TB 는 14,700. 머리글의 14,800 은 4TB·8TB 값)",
+    "confidence": "high"
+   },
+   "price_query": {
+    "q": "9100 PRO 1TB",
+    "cate": "SSD",
+    "must": [
+     "9100 PRO",
+     "1TB"
+    ],
+    "not": [
+     "히트싱크",
+     "해외",
+     "PM9E1",
+     "PS5",
+     "2TB",
+     "4TB",
+     "8TB"
+    ]
+   },
+   "sources": [
+    {
+     "title": "삼성전자 공식 제품 페이지 — 9100 PRO 1TB (MZ-VAP1T0BW) 사양",
+     "url": "https://www.samsung.com/au/business/memory-storage/nvme-ssd/9100-pro-1tb-nvme-pcie-gen-5-mz-vap1t0bw"
+    },
+    {
+     "title": "삼성 뉴스룸 — 9100 PRO 출시(2025-03-18, 1·2·4TB)",
+     "url": "https://news.samsung.com/au/samsung-brings-the-new-ssd-9100-pro-series-to-australia"
+    }
+   ],
+   "status": "current",
+   "checked_at": "2026-11-14",
+   "specs_verified": "2026-11-14"
   },
   {
    "id": "ssd-samsung-990-evo-plus-1tb",
