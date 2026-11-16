@@ -53,15 +53,21 @@ def _blank(v: str | None) -> bool:
 def run(site: str, min_len: int = 400, limit: int = 1000, use_ocr: bool = True) -> dict:
     from store.db.conn import cursor
     db_site, pid_prefix, folder, fetch_jd = _fetcher(site)
-    with cursor(autocommit=True) as cur:
-        cur.execute("""SELECT j.id, j.pid, j.url, coalesce(j.full_jd,'') AS jd
-                         FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
-                        WHERE j.site = %s AND j.pid LIKE %s AND length(coalesce(j.full_jd,'')) < %s
+    # 게임잡 그림 공고는 칸이 비어 있지 않을 수 있다 — 그림 옆 지원 링크 몇 줄이 '주요업무' 칸을
+    # 차지했다. 그래서 칸 조건 없이 아직 OCR 안 한 공고를 다 보고, 그림 공고로 판정돼 OCR 이 된 것만
+    # 고치되 칸은 OCR 글로 갈아 끼운다(redo). 글로 된 게임잡 공고는 건드리지 않는다.
+    redo = site == "gamejob"
+    sections_blank = "" if redo else """
                           AND coalesce(j.main_tasks,'') = ''
                           AND btrim(coalesce(j.qualifications,''), '- ') = ''
-                          AND coalesce(j.preferences,'') = ''
-                        ORDER BY j.first_seen_at DESC LIMIT %s""",
-                    (db_site, pid_prefix + "%", min_len, limit))
+                          AND coalesce(j.preferences,'') = ''"""
+    with cursor(autocommit=True) as cur:
+        cur.execute(f"""SELECT j.id, j.pid, j.url, coalesce(j.full_jd,'') AS jd
+                          FROM job j JOIN job_state s ON s.job_id = j.id AND s.status = 'active'
+                         WHERE j.site = %s AND j.pid LIKE %s AND length(coalesce(j.full_jd,'')) < %s
+                           AND coalesce(j.full_jd,'') NOT LIKE '%%[이미지 OCR]%%'{sections_blank}
+                         ORDER BY j.first_seen_at DESC LIMIT %s""",
+                    (db_site, pid_prefix + "%", max(min_len, 1500) if redo else min_len, limit))
         rows = cur.fetchall()
     base = Path(__file__).resolve().parent.parent / "screenshots"
     files = {f: json.loads(f.read_text(encoding="utf-8")) for f in base.glob(f"{folder}_*/jobs.json")}
@@ -75,29 +81,36 @@ def run(site: str, min_len: int = 400, limit: int = 1000, use_ocr: bool = True) 
             time.sleep(jitter(1500) / 1000)
             continue
         full = text or ""
+        ocred = False
         if use_ocr and OCR_AVAILABLE and is_image_only(html, text):
             ocr = ocr_images(extract_img_urls(html), referer=r["url"])
             if ocr:
                 full = (full + "\n\n[이미지 OCR]\n" + ocr).strip()
                 ocr_n += 1
+                ocred = True
         time.sleep(jitter(1500) / 1000)
+        if redo and not ocred:
+            continue
         parts = build_jd_sections(None, full)
-        new = {k: parts[k] for k in SECTIONS if parts.get(k)}
-        if len(full) <= len(r["jd"]) + 50 and not new:
+        if redo:
+            new = {k: parts.get(k) or "" for k in SECTIONS}     # 링크가 차지한 칸까지 OCR 글로 갈아 끼운다
+        else:
+            new = {k: parts[k] for k in SECTIONS if parts.get(k)}
+        if not redo and len(full) <= len(r["jd"]) + 50 and not new:
             continue
         with cursor() as cur:
-            if len(full) > len(r["jd"]):
+            if redo or len(full) > len(r["jd"]):
                 cur.execute("UPDATE job SET full_jd = %s WHERE id = %s", (full, r["id"]))
             for k, v in new.items():
-                cur.execute(f"UPDATE job SET {k} = %s WHERE id = %s AND btrim(coalesce({k}, ''), '- ') = ''",
-                            (v, r["id"]))
+                only_blank = "" if redo else f" AND btrim(coalesce({k}, ''), '- ') = ''"
+                cur.execute(f"UPDATE job SET {k} = %s WHERE id = %s{only_blank}", (v, r["id"]))
         for f, jobs in files.items():
             for j in jobs:
                 if str(j.get("pid") or j.get("gno") or j.get("rec_idx")) == str(r["pid"]):
-                    if len(full) > len(j.get("full_jd") or ""):
+                    if redo or len(full) > len(j.get("full_jd") or ""):
                         j["full_jd"] = full
                     for k, v in new.items():
-                        if _blank(j.get(k)):
+                        if redo or _blank(j.get(k)):
                             j[k] = v
                     dirty.add(f)
         fixed += 1

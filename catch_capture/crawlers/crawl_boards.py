@@ -393,22 +393,24 @@ def _gamejob_text(parts: dict[str, str]) -> str:
 
 
 def gamejob_fetch_jd(no: str, referer: str | None = None) -> tuple[str, str]:
-    """(원문 HTML, 글) — refetch_bodies 가 잡코리아·사람인의 fetch_jd 와 같은 모양으로 부른다.
-    no 는 게임잡 번호이거나 우리 pid('gamejob:dev:286066')다."""
+    """(원문 HTML, 본문 글) — refetch_bodies 가 잡코리아·사람인의 fetch_jd 와 같은 모양으로 부른다.
+    no 는 게임잡 번호이거나 우리 pid('gamejob:dev:286066')다. 글에 '[주요업무]' 같은 머리를 달지 않는다 —
+    달면 그림 옆의 지원 링크 몇 줄이 '주요업무 칸이 있는 글'로 읽혀 그림 공고 판정에서 빠진다."""
     html, parts = _gamejob_iframes(no.rsplit(":", 1)[-1], referer)
-    return html, _gamejob_text(parts)
+    return html, "\n\n".join(parts.values())
 
 
 def _gamejob_detail(no: str) -> tuple[str, dict[str, str]]:
-    # 본문이 그림이면(글이 비었거나 짧고 세 칸이 안 나뉜다) 잡코리아·사람인처럼 OCR 로 글을 얻는다 —
-    # 그래야 우리 상세 화면에서 읽히고 기술 스택·자격요건도 뽑힌다.
+    # 본문이 그림이면(글이 비었거나, 지원 링크 같은 짧은 글뿐이고 세 칸이 안 나뉜다) 잡코리아·사람인처럼
+    # OCR 로 글을 얻는다 — 그래야 우리 상세 화면에서 읽히고 기술 스택·자격요건도 뽑힌다.
     html, parts = _gamejob_iframes(no)
-    full = _gamejob_text(parts)
-    if OCR_AVAILABLE and is_image_only(html, full):
+    body = "\n\n".join(parts.values())
+    if OCR_AVAILABLE and is_image_only(html, body):
         ref = f"{GAMEJOB}/GI_Read/View?GI_No={no}"
         if (ocr := ocr_images(extract_img_urls(html), referer=ref)):
-            full = (full + "\n\n[이미지 OCR]\n" + ocr).strip()
-    return crawl_ats._clean(full), parts
+            # 칸 나누기는 OCR 글로 한다 — iframe 글('주요업무' 자리의 지원 링크)을 칸에 넣지 않는다.
+            return crawl_ats._clean((body + "\n\n[이미지 OCR]\n" + ocr).strip()), {}
+    return crawl_ats._clean(_gamejob_text(parts)), parts
 
 
 def _from_gamejob(slug: str, company: str) -> list[dict]:

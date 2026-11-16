@@ -169,3 +169,41 @@ def test_gamejob_text_body_skips_ocr(monkeypatch):
     monkeypatch.setattr(cb, "ocr_images", lambda *a, **k: (_ for _ in ()).throw(AssertionError("OCR 불필요")))
     full, parts = cb._gamejob_detail("1")
     assert set(parts) == {"주요업무", "자격요건"} and "C++ 능숙" in full
+
+
+def test_gamejob_image_with_apply_links_still_ocr(monkeypatch):
+    """GI_No=286190 꼴 — 그림 위에 '바로 지원하기' 링크 몇 줄이 글로 붙어 있어도 본문은 그림이다.
+    링크가 '주요업무' 칸을 차지하지 않고 칸은 OCR 글로 나뉜다."""
+    links = ("● [[AD-Tech] 백엔드 개발자(4~7년)] 바로 지원하기↓ ↓ ↓ ↓<br>"
+             "https://supercent.career.greetinghr.com/ko/o/213168<br>"
+             "● 다른 포지션 더 보기↓ ↓ ↓ ↓<br>https://supercent.career.greetinghr.com/position")
+    monkeypatch.setattr(cb, "http_get", lambda url, referer=None: (
+        f'<body><img src="https://file.gamejob.co.kr/x.jpg" alt="배너 이미지">{links}</body>'
+        if "Comt_Ifrm" in url else "<body>-</body>").encode())
+    monkeypatch.setattr(cb, "OCR_AVAILABLE", True)
+    monkeypatch.setattr(cb, "ocr_images", lambda urls, referer=None: "담당업무\n- 광고 서버 개발\n자격요건\n- Go 4년")
+    full, parts = cb._gamejob_detail("286190")
+    assert parts == {}
+    assert "광고 서버 개발" in full and "greetinghr" in full
+
+
+def test_ocr_tiles_cut_tall_image_on_blank_rows():
+    pytest = __import__("pytest")
+    Image = pytest.importorskip("PIL.Image")
+    from PIL import ImageDraw
+
+    from crawlers import jobs_common as jc
+    w, h = 900, 10000
+    img = Image.new("RGB", (w, h), "white")
+    d = ImageDraw.Draw(img)
+    for y in range(40, h - 40, 60):                 # 글줄 높이 30, 사이 여백 30
+        d.rectangle((50, y, w - 50, y + 30), fill="black")
+    tiles = jc.ocr_tiles(img)
+    assert len(tiles) >= 3 and sum(t.size[1] for t in tiles) == h
+    y = 0
+    for t in tiles[:-1]:
+        y += t.size[1]
+        assert (y - 40) % 60 >= 30 or y < 40, f"글줄 한가운데서 잘렸다: {y}"
+    assert jc.ocr_tiles(Image.new("RGB", (900, 2000))) and len(jc.ocr_tiles(Image.new("RGB", (900, 2000)))) == 1
+    wide = jc.ocr_tiles(Image.new("RGB", (4000, 3000)))
+    assert wide[0].size[0] == jc.OCR_MAX_W

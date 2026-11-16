@@ -197,9 +197,58 @@ def extract_img_urls(html: str) -> list[str]:
     return out
 
 
+OCR_TILE_H = 2400     # 세로로 긴 상세 그림을 이 높이 안팎으로 잘라 읽는다
+OCR_MAX_W = 2000      # 이보다 넓으면 줄인다 — 글자 크기는 충분하고 읽는 시간만 는다
+OCR_MAX_PIXELS = 300_000_000   # 상세 그림 한 장이 1800×3만 px 도 된다(PIL 기본 상한 8천9백만)
+
+
+def _quiet_row(gray, lo: int, hi: int) -> int:
+    """[lo, hi) 에서 가장 고른 가로줄 — 글자가 없는 여백이라 거기서 자르면 글줄이 반으로 안 갈린다."""
+    try:
+        import numpy as np
+    except ImportError:
+        return hi
+    score = np.asarray(gray.crop((0, lo, gray.width, hi)), dtype=np.int16).std(axis=1)
+    quiet = score <= score.min() + 1.0
+    # 가장 고른 줄들 중 가장 긴 연속 구간의 한가운데 — 첫 빈 줄에서 자르면 윗글자 꼬리에 바짝 붙는다.
+    best, run_start, best_len = int(score.argmin()), None, 0
+    for i, q in enumerate([*quiet, False]):
+        if q and run_start is None:
+            run_start = i
+        elif not q and run_start is not None:
+            if i - run_start > best_len:
+                best_len, best = i - run_start, (run_start + i) // 2
+            run_start = None
+    return lo + best
+
+
+def ocr_tiles(img) -> list:
+    """OCR 에 넣을 조각들. 채용 상세는 폭 900~1800 에 높이 1만~3만 px 짜리 한 장이 흔한데, 통째로 넣으면
+    tesseract 가 판을 못 나눠 몇 줄밖에 못 읽는다. 여백 줄에서 OCR_TILE_H 안팎으로 자른다."""
+    w, h = img.size
+    if w > OCR_MAX_W:
+        img = img.resize((OCR_MAX_W, max(1, round(h * OCR_MAX_W / w))))
+        w, h = img.size
+    if h <= OCR_TILE_H * 1.5:
+        return [img]
+    gray = img.convert("L")
+    tiles, y = [], 0
+    while y < h:
+        end = min(h, y + OCR_TILE_H)
+        if h - end < OCR_TILE_H // 3:          # 남는 꼬리가 짧으면 이번 조각에 붙인다
+            end = h
+        else:
+            end = _quiet_row(gray, end - OCR_TILE_H // 4, end)
+        tiles.append(img.crop((0, y, w, end)))
+        y = end
+    return tiles
+
+
 def ocr_images(img_urls: list[str], lang: str = "kor+eng", referer: str | None = None) -> str:
     if not OCR_AVAILABLE or not img_urls:
         return ""
+    if Image.MAX_IMAGE_PIXELS is not None and Image.MAX_IMAGE_PIXELS < OCR_MAX_PIXELS:
+        Image.MAX_IMAGE_PIXELS = OCR_MAX_PIXELS
     chunks: list[str] = []
     for src in img_urls:
         try:
@@ -207,10 +256,10 @@ def ocr_images(img_urls: list[str], lang: str = "kor+eng", referer: str | None =
             img = Image.open(io.BytesIO(data))
             if img.mode not in ("L", "RGB"):
                 img = img.convert("RGB")
-            text = pytesseract.image_to_string(img, lang=lang)
-            text = text.strip()
-            if text:
-                chunks.append(text)
+            for tile in ocr_tiles(img):
+                text = pytesseract.image_to_string(tile, lang=lang).strip()
+                if text:
+                    chunks.append(text)
         except Exception as e:
             print(f"       (OCR 실패 {src[:60]}: {e})", flush=True)
     return "\n\n".join(chunks)
