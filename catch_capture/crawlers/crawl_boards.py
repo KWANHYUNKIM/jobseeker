@@ -38,7 +38,9 @@ import sys
 import time
 
 from crawlers import crawl_ats, kr_portals
-from crawlers.jobs_common import html_to_text, http_get, is_developer_job, jitter
+from crawlers.jobs_common import (
+    OCR_AVAILABLE, extract_img_urls, html_to_text, http_get, is_developer_job, is_image_only, jitter, ocr_images,
+)
 
 SITE = "boards"
 
@@ -371,15 +373,41 @@ _GJ_ROW = re.compile(r"<tr>(.*?)</tr>", re.S)
 _GJ_DEV = re.compile(r"프로그래머|프로그래밍|개발자|엔지니어|서버|클라이언트|DBA|보안|데브옵스|DevOps|TA\b", re.I)
 
 
-def _gamejob_detail(no: str) -> tuple[str, dict[str, str]]:
-    ref = f"{GAMEJOB}/GI_Read/View?GI_No={no}"
-    parts = {}
+def _gamejob_iframes(no: str, referer: str | None = None) -> tuple[str, dict[str, str]]:
+    """상세의 iframe 두 개(담당업무·자격조건) → (원문 HTML, {머리: 본문}).
+
+    회사가 그림 한 장으로 올린 공고가 많아 글이 '-' 하나뿐인 칸이 흔하다 — 자리표시라 버린다."""
+    ref = referer or f"{GAMEJOB}/GI_Read/View?GI_No={no}"
+    htmls, parts = [], {}
     for head, path in (("주요업무", "GI_Read_Comt_Ifrm"), ("자격요건", "GI_Read_GI_Comment_Ifrm")):
         raw = http_get(f"{GAMEJOB}/{path}?gno={no}&v1", referer=ref).decode("utf-8", "ignore")
         raw = re.sub(r"<(script|style|title)[^>]*>.*?</\1>", "", raw, flags=re.S | re.I)
-        if (t := _text(raw)):
+        htmls.append(raw)
+        if (t := _text(raw)) and t.strip("-–· \n"):
             parts[head] = t
-    full = "\n\n".join(f"[{k}]\n{v}" for k, v in parts.items())
+    return "\n".join(htmls), parts
+
+
+def _gamejob_text(parts: dict[str, str]) -> str:
+    return "\n\n".join(f"[{k}]\n{v}" for k, v in parts.items())
+
+
+def gamejob_fetch_jd(no: str, referer: str | None = None) -> tuple[str, str]:
+    """(원문 HTML, 글) — refetch_bodies 가 잡코리아·사람인의 fetch_jd 와 같은 모양으로 부른다.
+    no 는 게임잡 번호이거나 우리 pid('gamejob:dev:286066')다."""
+    html, parts = _gamejob_iframes(no.rsplit(":", 1)[-1], referer)
+    return html, _gamejob_text(parts)
+
+
+def _gamejob_detail(no: str) -> tuple[str, dict[str, str]]:
+    # 본문이 그림이면(글이 비었거나 짧고 세 칸이 안 나뉜다) 잡코리아·사람인처럼 OCR 로 글을 얻는다 —
+    # 그래야 우리 상세 화면에서 읽히고 기술 스택·자격요건도 뽑힌다.
+    html, parts = _gamejob_iframes(no)
+    full = _gamejob_text(parts)
+    if OCR_AVAILABLE and is_image_only(html, full):
+        ref = f"{GAMEJOB}/GI_Read/View?GI_No={no}"
+        if (ocr := ocr_images(extract_img_urls(html), referer=ref)):
+            full = (full + "\n\n[이미지 OCR]\n" + ocr).strip()
     return crawl_ats._clean(full), parts
 
 

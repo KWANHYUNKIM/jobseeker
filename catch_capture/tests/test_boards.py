@@ -132,3 +132,40 @@ def test_rare_it_sources_filters():
     assert kp._dev_kr("안전보건 시스템 개발 및 DATA 관리 담당자")
     assert not kp._dev_kr("e편한세상 내포 에듀플라츠 현장 채용 공고(인부)")
     assert kp._flatten([{"모집분야": [{"IT": [{"채용전형": ["신입"]}]}]}]) == ["모집분야: IT: 채용전형: 신입"]
+
+
+def test_gamejob_image_body_goes_through_ocr(monkeypatch):
+    """게임잡 그림 공고 — 글은 자리표시 '-' 뿐이라 버리고, 그림을 OCR 해 본문을 채운다."""
+    pages = {
+        "GI_Read_Comt_Ifrm": r'<body><img src="https://file.gamejob.co.kr/net/Help/NoticeImg/View?FN=\Tong_1_.png"'
+                             ' width="100%"></body>',
+        "GI_Read_GI_Comment_Ifrm": "<body class='giworkTable'>\n  -\n</body>",
+    }
+    monkeypatch.setattr(cb, "http_get", lambda url, referer=None: next(
+        v for k, v in pages.items() if f"/{k}?" in url).encode())
+    seen = {}
+
+    def fake_ocr(urls, referer=None):
+        seen["urls"], seen["referer"] = urls, referer
+        return "[주요업무]\n- 게임 서버 개발\n[자격요건]\n- C++ 3년 이상"
+
+    monkeypatch.setattr(cb, "OCR_AVAILABLE", True)
+    monkeypatch.setattr(cb, "ocr_images", fake_ocr)
+    full, parts = cb._gamejob_detail("286066")
+    assert parts == {}
+    assert "C++ 3년 이상" in full and "[이미지 OCR]" in full
+    assert seen["urls"] == [r"https://file.gamejob.co.kr/net/Help/NoticeImg/View?FN=\Tong_1_.png"]
+    assert seen["referer"].endswith("GI_No=286066")
+    # refetch_bodies 는 우리 pid 를 그대로 넘긴다
+    _, text = cb.gamejob_fetch_jd("gamejob:dev:286066")
+    assert text == ""
+
+
+def test_gamejob_text_body_skips_ocr(monkeypatch):
+    monkeypatch.setattr(cb, "http_get", lambda url, referer=None: (
+        "<body>담당업무<br>- 언리얼 클라이언트 개발<br>- 전투 시스템 구현 및 최적화, 툴 개발과 유지보수</body>"
+        if "Comt_Ifrm" in url else "<body>자격요건<br>- C++ 능숙</body>").encode())
+    monkeypatch.setattr(cb, "OCR_AVAILABLE", True)
+    monkeypatch.setattr(cb, "ocr_images", lambda *a, **k: (_ for _ in ()).throw(AssertionError("OCR 불필요")))
+    full, parts = cb._gamejob_detail("1")
+    assert set(parts) == {"주요업무", "자격요건"} and "C++ 능숙" in full
