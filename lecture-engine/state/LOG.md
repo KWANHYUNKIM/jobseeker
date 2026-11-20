@@ -36,3 +36,4 @@
 - 2026-11-20 · xveNBYVTrqw · CS229 · 강화학습 기초와 정책 경사 — MDP·가치 함수·벨만 방정식에서 REINFORCE 유도까지 (영상 제목 'GMM (EM), PCA' 는 오기) · 챕터 12 · 본문 15819자
 - 2026-11-20 · J7CossjMvEg · CS229 · 정책 경사 마무리·PPO·CISPO 와 LLM 추론 강화학습 — 보상-투-고, 클리핑, 그룹 평균 베이스라인 (유튜브 제목 'GMM (EM), PCA' 는 오기) · 챕터 14 · 본문 17538자
 - 2026-11-20 · kuYAsz7zspQ · CS336 · PyTorch 와 자원 회계 — 텐서 메모리, einops, FLOPs, 산술 강도, 6ND · 챕터 15 · 본문 20910자
+- 2026-11-20 · cKSwj_qZ8Jg · CS336 · 어텐션 대안과 전문가 혼합(MoE) — 선형 어텐션·Mamba-2·Gated DeltaNet·DSA, 그리고 top-k 라우팅과 부하 균형 · 챕터 15 · 본문 22015자
