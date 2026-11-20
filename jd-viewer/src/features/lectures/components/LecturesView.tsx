@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { useLectureIndex, useLecture, hms, at, type LectureCard, type Lecture, type Chapter } from '../hooks/useLectures'
+import { useLectureIndex, useLecture, hms, at, type LectureCard, type Lecture, type Chapter, type Series } from '../hooks/useLectures'
 import { ArchitectureDiagram } from '../../../components/ArchitectureDiagram'
 import { goBack, onLinkClick } from '../../../utils/navigation'
 import { paths } from '../../../utils/urls'
@@ -19,7 +19,8 @@ const LEVEL_TONE: Record<string, string> = {
 }
 
 export function LecturesView({ seg = [] }: { seg?: string[] }) {
-  const id = seg[0] ?? null
+  const seriesKey = seg[0] === 'course' ? (seg[1] ?? null) : null
+  const id = seg[0] === 'course' ? null : (seg[0] ?? null)
   const { data, loading, error } = useLectureIndex()
   const [topic, setTopic] = useState<string | null>(null)
   const [query, setQuery] = useState('')
@@ -44,7 +45,11 @@ export function LecturesView({ seg = [] }: { seg?: string[] }) {
       : null,
   )
 
-  if (id) return <LectureDetail id={id} />
+  if (id) return <LectureDetail id={id} series={data?.series ?? []} />
+  if (seriesKey) {
+    const sr = data?.series?.find((x) => x.key === seriesKey)
+    if (sr) return <SeriesView s={sr} />
+  }
   if (loading) return <Loader label="강의 노트 불러오는 중…" />
   if (error)
     return (
@@ -78,7 +83,20 @@ export function LecturesView({ seg = [] }: { seg?: string[] }) {
               <Stat label="갱신" value={data?.generated_at.slice(0, 10) ?? '-'} />
             </div>
 
-            <label className="mt-[26px] flex items-center gap-2.5 h-[52px] rounded-[26px] border border-[#c4c4c4] pl-[23px] pr-5 focus-within:border-[#272727]">
+            {!!data?.series?.length && (
+              <section className="mt-[40px]">
+                <h2 className="text-[22px] font-bold text-[#272727]">과목별로 1강부터</h2>
+                <p className="mt-1 text-sm text-[#888]">공식 재생목록 순서 그대로 묶었어요. 아직 정리 안 된 강의는 차례대로 채워집니다.</p>
+                <div className="mt-5 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {data.series.map((sr) => (
+                    <SeriesCard key={sr.key} s={sr} />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            <h2 className="mt-[48px] text-[22px] font-bold text-[#272727]">정리한 강의 전체</h2>
+            <label className="mt-[16px] flex items-center gap-2.5 h-[52px] rounded-[26px] border border-[#c4c4c4] pl-[23px] pr-5 focus-within:border-[#272727]">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#272727" strokeWidth="2" aria-hidden className="shrink-0">
                 <circle cx="8.5" cy="8.5" r="5.5" />
                 <path d="M12.5 12.5 16 16" strokeLinecap="round" />
@@ -173,8 +191,9 @@ function Card({ c }: { c: LectureCard }) {
 
 // ── 상세 ─────────────────────────────────────────────────────
 
-function LectureDetail({ id }: { id: string }) {
+function LectureDetail({ id, series }: { id: string; series: Series[] }) {
   const { data: d, loading, error } = useLecture(id)
+  const sr = series.find((x) => x.lectures.some((l) => l.id === id))
   if (loading) return <Loader label="노트 불러오는 중…" />
   if (error || !d) return <ErrorState title="노트를 찾을 수 없습니다" detail={error ?? id} />
   return (
@@ -186,6 +205,7 @@ function LectureDetail({ id }: { id: string }) {
           ← 강의 노트
         </button>
         <Head d={d} />
+        {sr && <SeriesNav s={sr} id={id} />}
         <Section title="한눈에">
           <div className="space-y-3 text-[15px] leading-7 text-[#333]">
             {d.summary.map((p, i) => (
@@ -310,6 +330,8 @@ function LectureDetail({ id }: { id: string }) {
           </Section>
         )}
 
+        {sr && <SeriesNav s={sr} id={id} bottom />}
+
         <p className="mt-12 text-xs leading-5 text-[#999]">
           이 노트는 원본 영상의 {d.materials.transcript === 'official' ? '공식' : d.materials.transcript === 'auto' ? '자동' : ''} 자막
           {d.materials.frames ? `과 ${d.materials.every_sec}초 간격 장면 ${d.materials.frames}장` : ''}을 읽고 직접 다시 쓴 요약입니다(작성 {d.written_at}).
@@ -428,7 +450,10 @@ function ChapterView({ c, n, url, id }: { c: Chapter; n: number; url: string; id
       {c.diagram && (
         <figure className="mt-5 rounded-xl border border-[#e5e5e5] p-3">
           {c.diagram.title && <figcaption className="mb-2 text-sm font-bold text-[#272727]">{c.diagram.title}</figcaption>}
-          <ArchitectureDiagram code={c.diagram.code} idKey={`lec-${id}-${n}`} soft />
+          {/* 세로 흐름도(TD)는 본문 폭을 다 쓰면 한 화면을 넘는다 — 폭을 줄여 높이도 같이 줄인다 */}
+          <div className="mx-auto max-w-[520px]">
+            <ArchitectureDiagram code={c.diagram.code} idKey={`lec-${id}-${n}`} soft />
+          </div>
         </figure>
       )}
 
@@ -474,5 +499,124 @@ function ChapterView({ c, n, url, id }: { c: Chapter; n: number; url: string; id
         </div>
       )}
     </section>
+  )
+}
+
+function SeriesCard({ s }: { s: Series }) {
+  const href = paths.lectureSeries(s.key)
+  const pct = s.total ? Math.round((s.done / s.total) * 100) : 0
+  return (
+    <a href={href} onClick={onLinkClick(href)} className="group rounded-xl border border-[#e5e5e5] px-5 py-4 hover:border-[#272727] transition">
+      <div className="text-xs font-bold text-[#888]">{[s.school, s.code, s.term].filter(Boolean).join(' · ')}</div>
+      <div className="mt-1 text-[16px] font-bold leading-6 text-[#272727] group-hover:text-(--color-accent)">{s.title}</div>
+      <div className="mt-3 h-1.5 rounded-full bg-[#eee] overflow-hidden">
+        <div className="h-full bg-(--color-accent)" style={{ width: `${pct}%` }} />
+      </div>
+      <div className="mt-1.5 text-[13px] text-[#666]">
+        {s.total}강 중 <b className="text-[#272727]">{s.done}강</b> 정리
+      </div>
+    </a>
+  )
+}
+
+/** 재생목록 제목에서 과목·학기 머리말을 걷어 강의 이름만 — 'Stanford CS229 … | Spring 2026 | Lecture 1: Introduction' → 'Lecture 1: Introduction' */
+function shortTitle(t: string): string {
+  const parts = t.split(/\s[|I]\s/)
+  const lec = parts.find((p) => /^(Lecture|Guest)/i.test(p.trim()))
+  return (lec ?? parts[parts.length - 1] ?? t).trim()
+}
+
+/** 과목 페이지 — 1강부터 N강까지. 정리된 강의는 노트로, 아직인 강의는 원본으로 잇는다. */
+function SeriesView({ s }: { s: Series }) {
+  useSeo({
+    title: `${s.title} — 강의 노트`,
+    description: clip(`${s.title} ${s.total}강을 1강부터 차례대로 정리한 노트.`),
+    canonical: absUrl(paths.lectureSeries(s.key)),
+  })
+  return (
+    <div data-scroll className="flex-1 min-h-0 overflow-auto bg-white">
+      <div className="jd-container pt-[34px] pb-[90px]">
+        <div className="max-w-[860px] mx-auto">
+          <button type="button" onClick={() => goBack(paths.lectures())} className="text-sm text-[#666] hover:text-[#272727]">
+            ← 강의 노트
+          </button>
+          <div className="mt-4 text-sm font-bold text-[#888]">{[s.school, s.code, s.term].filter(Boolean).join(' · ')}</div>
+          <h1 className="mt-1 text-[28px] font-bold leading-10 text-[#272727]">{s.title}</h1>
+          <p className="mt-2 text-[15px] text-[#666]">
+            {s.total}강 중 {s.done}강 정리 ·{' '}
+            <a href={s.playlist} target="_blank" rel="noreferrer" className="text-(--color-accent) hover:underline">
+              공식 재생목록 ↗
+            </a>
+          </p>
+          <ol className="mt-6 divide-y divide-[#eee] border-y border-[#eee]">
+            {s.lectures.map((l) => {
+              const href = paths.lecture(l.id)
+              const name = shortTitle(l.title)
+              return (
+                <li key={l.id} className="flex items-center gap-4 py-3">
+                  <span
+                    className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold ${
+                      l.done ? 'bg-(--color-accent) text-white' : 'bg-[#f2f2f2] text-[#999]'
+                    }`}
+                  >
+                    {l.no}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    {l.done ? (
+                      <a href={href} onClick={onLinkClick(href)} className="text-[15px] font-bold text-[#272727] hover:text-(--color-accent)">
+                        {name}
+                      </a>
+                    ) : (
+                      <span className="text-[15px] text-[#888]">{name}</span>
+                    )}
+                    <div className="text-xs text-[#999]">
+                      {hms(l.duration_sec)} {l.done ? '· 노트 있음' : '· 준비 중'}
+                    </div>
+                  </div>
+                  {!l.done && (
+                    <a
+                      href={`https://www.youtube.com/watch?v=${l.id}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="shrink-0 text-xs text-[#888] hover:text-(--color-accent)"
+                    >
+                      원본 ↗
+                    </a>
+                  )}
+                </li>
+              )
+            })}
+          </ol>
+        </div>
+      </div>
+      <SiteFooter />
+    </div>
+  )
+}
+
+/** 노트 안에서 같은 과목의 앞뒤 강의로 — 정리 안 된 강의는 '준비 중'으로 보인다. */
+function SeriesNav({ s, id, bottom }: { s: Series; id: string; bottom?: boolean }) {
+  const i = s.lectures.findIndex((l) => l.id === id)
+  const prev = s.lectures[i - 1]
+  const next = s.lectures[i + 1]
+  const link = (l: Series['lectures'][number] | undefined, label: string) =>
+    !l ? (
+      <span />
+    ) : l.done ? (
+      <a href={paths.lecture(l.id)} onClick={onLinkClick(paths.lecture(l.id))} className="text-sm text-[#444] hover:text-(--color-accent)">
+        {label === '←' ? `← ${l.no}강` : `${l.no}강 →`}
+      </a>
+    ) : (
+      <span className="text-sm text-[#bbb]">{label === '←' ? `← ${l.no}강 (준비 중)` : `${l.no}강 (준비 중) →`}</span>
+    )
+  const href = paths.lectureSeries(s.key)
+  return (
+    <nav className={`${bottom ? 'mt-12 pt-5 border-t' : 'mt-4 pb-4 border-b'} border-[#eee] flex items-center justify-between gap-3`}>
+      {link(prev, '←')}
+      <a href={href} onClick={onLinkClick(href)} className="text-sm font-bold text-[#272727] hover:text-(--color-accent)">
+        {s.code ?? s.title} · {s.lectures[i]?.no}/{s.total}강 차례
+      </a>
+      {link(next, '→')}
+    </nav>
   )
 }

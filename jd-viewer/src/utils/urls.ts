@@ -38,6 +38,9 @@ export const paths = {
   book: (id: string) => `/wiki/${encodeURIComponent(id)}`,
   /** @param pageId 절 id(`sql-pain`). 차례의 no(`2.1`)가 아니라 슬러그다 — 순서가 바뀌어도 주소는 안 바뀐다. */
   bookPage: (id: string, pageId: string) => `/wiki/${encodeURIComponent(id)}/${encodeURIComponent(pageId)}`,
+  /** 기술도서 › 취업 — 합격·이직 후기(정본 DB career_*). 책 id 'careers' 는 이 화면이 쓴다. */
+  careers: () => '/wiki/careers',
+  careersStory: (id: string) => `/wiki/careers/${encodeURIComponent(id)}`,
   reveng: () => '/reveng',
   revengCompany: (slug: string) => `/reveng/${encodeURIComponent(slug)}`,
   /** 회사 개요의 '기능별 상세' 카드가 여는 한 기능 — `/reveng/jxpress/f/cloud-cost-program` */
@@ -46,6 +49,8 @@ export const paths = {
   /** 강의 노트 — 공개 강의 영상을 읽고 다시 쓴 요약·공부 순서. `/lectures/9vM4p9NN0Ts` */
   lectures: () => '/lectures',
   lecture: (id: string) => `/lectures/${encodeURIComponent(id)}`,
+  /** 과목 하나의 1강~N강 차례 — `/lectures/course/cs229-2026` */
+  lectureSeries: (key: string) => `/lectures/course/${encodeURIComponent(key)}`,
   hardware: () => '/hardware',
   hardwareParts: () => '/hardware/parts',
   hardwarePart: (id: string) => `/hardware/parts/${encodeURIComponent(id)}`,

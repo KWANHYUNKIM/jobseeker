@@ -25,12 +25,29 @@ export interface LectureCard {
   thumbnail?: string | null
   chapters: number
   written_at: string
+  /** 속한 과목(series.json 의 key)과 그 과목에서의 차례 */
+  series?: string
+  no?: number
+}
+
+/** 과목 — 공식 재생목록을 1강부터 N강까지 굳힌 것. 노트가 없는 강의도 '준비 중'으로 들어 있다. */
+export interface Series {
+  key: string
+  title: string
+  school?: string
+  code?: string
+  term?: string
+  playlist: string
+  total: number
+  done: number
+  lectures: { no: number; id: string; title: string; duration_sec?: number; done: boolean }[]
 }
 
 export interface LectureIndex {
   generated_at: string
   count: number
   topics: { key: string; label: string; count: number }[]
+  series?: Series[]
   items: LectureCard[]
 }
 

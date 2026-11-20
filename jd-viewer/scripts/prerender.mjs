@@ -535,6 +535,17 @@ for (const c of lectureList) {
   add(abs(path), c.written_at ?? today, 'monthly', '0.6')
 }
 
+// 과목 차례(1강~N강) — 정리된 강의는 노트로, 아직인 강의는 제목만.
+for (const sr of lectureIndex?.series ?? []) {
+  const path = `/lectures/course/${encodeURIComponent(sr.key)}`
+  const items = sr.lectures
+    .map((l) => (l.done ? `<li><a href="/lectures/${encodeURIComponent(l.id)}">${l.no}. ${esc(l.title)}</a></li>` : `<li>${l.no}. ${esc(l.title)}</li>`))
+    .join('')
+  const body = `${NAV}<main><article><h1>${esc(sr.title)}</h1><p>${sr.total}강 중 ${sr.done}강 정리</p><ol>${items}</ol><p><a href="/lectures">전체 강의 노트</a></p></article></main>`
+  write(path, page({ path, title: `${sr.title} — 강의 노트`, description: clip(`${sr.title} ${sr.total}강을 1강부터 차례대로 정리한 노트.`), body }))
+  add(abs(path), today, 'weekly', '0.6')
+}
+
 // ── 책(/wiki) ───────────────────────────────────────────────────────────
 // 정적 HTML 을 만들지 않는다. 혼자 읽으려고 쓰는 책이라 색인될 이유가 없고,
 // 절 하나가 30KB 라 정적 본문을 두 벌로 두는 비용도 크다. 허브(`/wiki`)만
