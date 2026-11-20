@@ -1,320 +1,1135 @@
 {
-  "id": "9vM4p9NN0Ts",
-  "source": {
-    "platform": "youtube",
-    "url": "https://www.youtube.com/watch?v=9vM4p9NN0Ts",
-    "channel": "Stanford Online",
-    "published": "2024-08-27",
-    "duration_sec": 6271,
-    "views": 3223549
-  },
-  "course": {
-    "school": "Stanford",
-    "code": "CS229",
-    "term": "Summer 2024",
-    "lecture_no": "초청 강연",
-    "speaker": "Yann Dubois (Stanford PhD, Percy Liang·Tatsu Hashimoto 연구실)"
-  },
-  "title": "Stanford CS229 I Machine Learning I Building Large Language Models (LLMs)",
-  "title_ko": "ChatGPT 같은 LLM 은 어떻게 만드나 — 사전학습부터 RLHF·시스템까지",
-  "topic": "llm",
-  "tags": ["PyTorch", "Python", "CUDA", "LLM", "Transformer", "RLHF", "DPO", "Hugging Face", "GPU"],
-  "level": "중급",
-  "one_line": "아키텍처보다 데이터·평가·시스템이 승부를 가른다 — LLM 제작 전 과정을 숫자로 훑는 105분",
-  "summary": [
-    "Alpaca·AlpacaFarm·AlpacaEval 을 만든 Yann Dubois 가 CS229 에 초청돼 ChatGPT 같은 모델이 만들어지는 전 과정을 한 번에 훑는다. LLM 을 좌우하는 요소를 아키텍처·손실과 학습 알고리즘·데이터·평가·시스템 다섯 가지로 나누고, 트랜스포머 구조는 일부러 건너뛴다. 이유는 학계가 아키텍처와 손실에 몰두하는 동안 실제 산업 현장의 승부처는 데이터·평가·시스템이라는 것이 강사의 판단이기 때문이다. 강의는 '사전학습(GPT-3 의 세계)'과 '사후학습(ChatGPT 의 세계)' 두 덩어리로 짜여 있다.",
-    "사전학습 파트는 자기회귀 언어 모델의 정의(연쇄법칙으로 p(x1..xL) 을 다음 토큰 조건부확률의 곱으로 분해)에서 출발해, 다음 토큰 분류 문제로서의 교차 엔트로피 손실, 단어·문자 단위 대신 서브워드를 쓰는 이유와 BPE 학습 절차, 그리고 perplexity(2^평균 토큰 손실, 1~어휘 크기 범위)를 설명한다. perplexity 는 2017년 약 70 에서 2023년 10 미만으로 떨어졌지만, 토크나이저·평가 데이터에 따라 값이 달라져 지금은 학계 비교용보다 개발 중 내부 지표로 쓰인다. 학계 비교는 HELM·Hugging Face Open LLM Leaderboard·MMLU 같은 묶음 벤치마크로 하는데, 같은 MMLU 라도 평가 방식에 따라 LLaMA-65B 가 0.637(HELM)과 0.488(Harness)로 크게 갈리고, 학습 데이터에 시험 문제가 섞였는지(train-test contamination)도 문제가 된다.",
-    "데이터 파트가 이 강의의 핵심이다. Common Crawl 기준 약 2,500억 페이지·1PB 이상의 웹을 받아 HTML 에서 본문 추출 → 유해·개인정보 필터 → URL·문서·줄 단위 중복 제거 → 규칙 기반 저품질 제거 → 위키백과가 인용한 페이지를 닮았는지 판정하는 분류기 필터 → 코드·책은 올리고 오락은 낮추는 도메인 비율 조정 → 학습 끝에 학습률을 낮추며 고품질 데이터(위키백과 등)로 마무리하는 단계를 거친다. 공개 데이터셋은 C4(1,500억 토큰, 800GB)·The Pile(2,800억)·Dolma(3조)·FineWeb(15조) 순으로 커졌고, LLaMA 2 는 2조, LLaMA 3 는 15조, GPT-4 는 유출 정보로 약 13조 토큰으로 추정된다. 70명 남짓한 LLaMA 팀에서 15명 정도가 데이터를 맡는다는 감도 준다.",
-    "스케일링 법칙 파트에서는 Kaplan 2020 의 세 그래프(연산량·데이터·파라미터를 로그-로그로 놓으면 테스트 손실이 직선으로 준다)를 근거로 '작은 모델 여러 크기에서 하이퍼파라미터를 맞추고 외삽해 큰 모델 하나를 오래 학습'하는 새 개발 방식을 소개한다. Chinchilla 의 isoFLOP 실험은 파라미터 1개당 토큰 20개가 학습 연산 최적이라 했지만, 추론 비용까지 따지면 실무에서는 150:1 이상을 쓴다. LLaMA 3 405B(15.6조 토큰, 약 40:1)를 예로 6NP 공식으로 3.8e25 FLOPs, H100 1만6천 장으로 약 70일·2,600만 GPU 시간, 임대료 5,200만 달러 + 인건비 2,500만 달러 ≈ 7,500만 달러, 탄소 약 4,400t 이라는 봉투 뒷면 계산을 보여 준다. 미국 행정명령의 1e26 FLOPs 규제선 바로 아래라는 점도 짚는다.",
-    "사후학습 파트는 '언어 모델링은 사용자를 돕는 일이 아니다'에서 출발한다. SFT 는 사전학습과 똑같은 다음 토큰 손실로 사람이 쓴 모범 답변을 학습하는 것이고, Alpaca 는 사람이 쓴 175개 예시로 text-davinci-003 에게 5만2천 개를 만들게 해 LLaMA 7B 를 튜닝했다. LIMA 결과처럼 SFT 데이터는 2천~3만2천 개 사이에서 품질 차이가 거의 없어, SFT 는 지식을 넣는 게 아니라 '어떤 사용자처럼 답할지'를 고르는 단계라고 본다. 행동 복제의 한계(사람 실력에 묶임, 모델이 모르는 사실을 따라 쓰면 환각을 배움, 비쌈) 때문에 RLHF 로 넘어가고, Bradley-Terry 보상 모델 + PPO(InstructGPT/ChatGPT 방식)와 이를 최대우도 하나로 단순화한 DPO 를 비교한다. 오픈소스에서는 DPO 가 표준이 됐고, 선호 라벨도 사람(1천 건에 약 300달러, 사람끼리 일치율 약 66%) 대신 LLM 으로 매기는 흐름이다.",
-    "마지막으로 정렬된 모델은 확률이 보정되지 않아 perplexity 로 평가할 수 없으므로 Chatbot Arena(사람의 블라인드 비교)와 AlpacaEval(GPT-4 판정, Arena 와 상관 98%, 10달러·3분 미만)을 쓰되 '긴 답 선호' 같은 편향을 길이 통제로 보정해야 한다고 정리한다. 남은 몇 분에는 시스템을 다룬다 — GPU 는 처리량 지향이고 연산 성능이 메모리·통신보다 빨리 늘어 MFU 50% 면 잘한 편(LLaMA 약 45%)이며, bf16 혼합 정밀도(가중치는 fp32 보관, 행렬곱은 bf16)와 torch.compile 로 하는 연산자 융합(약 2배 빨라짐)을 소개한다. 타일링·병렬화·MoE·추론은 시간 관계상 생략하고, 더 깊이 가려면 CS224N·CS324·CS336 을 권한다."
-  ],
-  "why_now": "강사는 학계가 아키텍처 미세 조정에 시간을 쓰는 사이 산업은 데이터 정제·평가 체계·GPU 활용률로 경쟁한다고 본다. 15조 토큰급 데이터, 7천만 달러대 학습비, 세대마다 FLOPs 10배 증가라는 숫자는 LLM 일자리가 모델 설계보다 데이터 파이프라인·평가·학습 인프라 쪽에 몰리는 이유를 설명한다. 또 SFT→RLHF/DPO, 사람 라벨→LLM 라벨, 사람 평가→LLM 판정이라는 사후학습 흐름은 지금 기업에서 파인튜닝·평가 업무가 실제로 돌아가는 방식이다.",
-  "chapters": [
+ "id": "9vM4p9NN0Ts",
+ "source": {
+  "platform": "youtube",
+  "url": "https://www.youtube.com/watch?v=9vM4p9NN0Ts",
+  "channel": "Stanford Online",
+  "published": "2024-08-27",
+  "duration_sec": 6271,
+  "views": 3223549
+ },
+ "course": {
+  "school": "Stanford",
+  "code": "CS229",
+  "term": "Summer 2024",
+  "lecture_no": "초청 강연",
+  "speaker": "Yann Dubois (Stanford PhD, Percy Liang·Tatsu Hashimoto 연구실)"
+ },
+ "title": "Stanford CS229 I Machine Learning I Building Large Language Models (LLMs)",
+ "title_ko": "ChatGPT 같은 LLM 은 어떻게 만드나 — 사전학습부터 RLHF·시스템까지",
+ "topic": "llm",
+ "tags": [
+  "PyTorch",
+  "Python",
+  "CUDA",
+  "LLM",
+  "Transformer",
+  "RLHF",
+  "DPO",
+  "Hugging Face",
+  "GPU"
+ ],
+ "level": "중급",
+ "one_line": "아키텍처보다 데이터·평가·시스템이 승부를 가른다 — LLM 제작 전 과정을 숫자로 훑는 105분",
+ "summary": [
+  "Alpaca·AlpacaFarm·AlpacaEval 을 만든 Yann Dubois 가 CS229 에 초청돼 ChatGPT 같은 모델이 만들어지는 전 과정을 한 번에 훑는다. LLM 을 좌우하는 요소를 아키텍처·손실과 학습 알고리즘·데이터·평가·시스템 다섯 가지로 나누고, 트랜스포머 구조는 일부러 건너뛴다. 이유는 학계가 아키텍처와 손실에 몰두하는 동안 실제 산업 현장의 승부처는 데이터·평가·시스템이라는 것이 강사의 판단이기 때문이다. 강의는 '사전학습(GPT-3 의 세계)'과 '사후학습(ChatGPT 의 세계)' 두 덩어리로 짜여 있다.",
+  "사전학습 파트는 자기회귀 언어 모델의 정의(연쇄법칙으로 p(x1..xL) 을 다음 토큰 조건부확률의 곱으로 분해)에서 출발해, 다음 토큰 분류 문제로서의 교차 엔트로피 손실, 단어·문자 단위 대신 서브워드를 쓰는 이유와 BPE 학습 절차, 그리고 perplexity(2^평균 토큰 손실, 1~어휘 크기 범위)를 설명한다. perplexity 는 2017년 약 70 에서 2023년 10 미만으로 떨어졌지만, 토크나이저·평가 데이터에 따라 값이 달라져 지금은 학계 비교용보다 개발 중 내부 지표로 쓰인다. 학계 비교는 HELM·Hugging Face Open LLM Leaderboard·MMLU 같은 묶음 벤치마크로 하는데, 같은 MMLU 라도 평가 방식에 따라 LLaMA-65B 가 0.637(HELM)과 0.488(Harness)로 크게 갈리고, 학습 데이터에 시험 문제가 섞였는지(train-test contamination)도 문제가 된다.",
+  "데이터 파트가 이 강의의 핵심이다. Common Crawl 기준 약 2,500억 페이지·1PB 이상의 웹을 받아 HTML 에서 본문 추출 → 유해·개인정보 필터 → URL·문서·줄 단위 중복 제거 → 규칙 기반 저품질 제거 → 위키백과가 인용한 페이지를 닮았는지 판정하는 분류기 필터 → 코드·책은 올리고 오락은 낮추는 도메인 비율 조정 → 학습 끝에 학습률을 낮추며 고품질 데이터(위키백과 등)로 마무리하는 단계를 거친다. 공개 데이터셋은 C4(1,500억 토큰, 800GB)·The Pile(2,800억)·Dolma(3조)·FineWeb(15조) 순으로 커졌고, LLaMA 2 는 2조, LLaMA 3 는 15조, GPT-4 는 유출 정보로 약 13조 토큰으로 추정된다. 70명 남짓한 LLaMA 팀에서 15명 정도가 데이터를 맡는다는 감도 준다.",
+  "스케일링 법칙 파트에서는 Kaplan 2020 의 세 그래프(연산량·데이터·파라미터를 로그-로그로 놓으면 테스트 손실이 직선으로 준다)를 근거로 '작은 모델 여러 크기에서 하이퍼파라미터를 맞추고 외삽해 큰 모델 하나를 오래 학습'하는 새 개발 방식을 소개한다. Chinchilla 의 isoFLOP 실험은 파라미터 1개당 토큰 20개가 학습 연산 최적이라 했지만, 추론 비용까지 따지면 실무에서는 150:1 이상을 쓴다. LLaMA 3 405B(15.6조 토큰, 약 40:1)를 예로 6NP 공식으로 3.8e25 FLOPs, H100 1만6천 장으로 약 70일·2,600만 GPU 시간, 임대료 5,200만 달러 + 인건비 2,500만 달러 ≈ 7,500만 달러, 탄소 약 4,400t 이라는 봉투 뒷면 계산을 보여 준다. 미국 행정명령의 1e26 FLOPs 규제선 바로 아래라는 점도 짚는다.",
+  "사후학습 파트는 '언어 모델링은 사용자를 돕는 일이 아니다'에서 출발한다. SFT 는 사전학습과 똑같은 다음 토큰 손실로 사람이 쓴 모범 답변을 학습하는 것이고, Alpaca 는 사람이 쓴 175개 예시로 text-davinci-003 에게 5만2천 개를 만들게 해 LLaMA 7B 를 튜닝했다. LIMA 결과처럼 SFT 데이터는 2천~3만2천 개 사이에서 품질 차이가 거의 없어, SFT 는 지식을 넣는 게 아니라 '어떤 사용자처럼 답할지'를 고르는 단계라고 본다. 행동 복제의 한계(사람 실력에 묶임, 모델이 모르는 사실을 따라 쓰면 환각을 배움, 비쌈) 때문에 RLHF 로 넘어가고, Bradley-Terry 보상 모델 + PPO(InstructGPT/ChatGPT 방식)와 이를 최대우도 하나로 단순화한 DPO 를 비교한다. 오픈소스에서는 DPO 가 표준이 됐고, 선호 라벨도 사람(1천 건에 약 300달러, 사람끼리 일치율 약 66%) 대신 LLM 으로 매기는 흐름이다.",
+  "마지막으로 정렬된 모델은 확률이 보정되지 않아 perplexity 로 평가할 수 없으므로 Chatbot Arena(사람의 블라인드 비교)와 AlpacaEval(GPT-4 판정, Arena 와 상관 98%, 10달러·3분 미만)을 쓰되 '긴 답 선호' 같은 편향을 길이 통제로 보정해야 한다고 정리한다. 남은 몇 분에는 시스템을 다룬다 — GPU 는 처리량 지향이고 연산 성능이 메모리·통신보다 빨리 늘어 MFU 50% 면 잘한 편(LLaMA 약 45%)이며, bf16 혼합 정밀도(가중치는 fp32 보관, 행렬곱은 bf16)와 torch.compile 로 하는 연산자 융합(약 2배 빨라짐)을 소개한다. 타일링·병렬화·MoE·추론은 시간 관계상 생략하고, 더 깊이 가려면 CS224N·CS324·CS336 을 권한다."
+ ],
+ "why_now": "강사는 학계가 아키텍처 미세 조정에 시간을 쓰는 사이 산업은 데이터 정제·평가 체계·GPU 활용률로 경쟁한다고 본다. 15조 토큰급 데이터, 7천만 달러대 학습비, 세대마다 FLOPs 10배 증가라는 숫자는 LLM 일자리가 모델 설계보다 데이터 파이프라인·평가·학습 인프라 쪽에 몰리는 이유를 설명한다. 또 SFT→RLHF/DPO, 사람 라벨→LLM 라벨, 사람 평가→LLM 판정이라는 사후학습 흐름은 지금 기업에서 파인튜닝·평가 업무가 실제로 돌아가는 방식이다.",
+ "chapters": [
+  {
+   "title": "도입 — LLM 을 이루는 다섯 요소",
+   "start": 0,
+   "points": [
+    "ChatGPT·Claude·Gemini·Llama 같은 챗봇이 모두 LLM 이며, 오늘은 '어떻게 만드나'를 한 강의에 압축한다.",
+    "중요한 요소는 아키텍처, 손실·학습 알고리즘, 데이터, 평가, 시스템 다섯 가지. 모델이 거대해져 시스템의 비중이 어느 때보다 크다.",
+    "트랜스포머 구조는 자료가 넘치므로 생략. 강사는 학계가 아키텍처·손실에 몰두하지만 실무에서 결정적인 것은 데이터·평가·시스템이라고 강조한다.",
+    "강의 구성: 사전학습(GPT-2·GPT-3 계열) → 사후학습(ChatGPT 이후 등장한 어시스턴트화)."
+   ],
+   "on_screen": "첫 슬라이드 'LLMs' — ChatGPT·Anthropic·Gemini·Llama 로고와 'How do they work?', 오른쪽에 ChatGPT 가 자신을 소개하는 대화 캡처.",
+   "explain": [
+    "식당 하나를 차린다고 생각해 보자. 손님이 기억하는 건 요리법의 세련됨보다 재료의 신선도, 맛을 꾸준히 확인하는 습관, 그리고 주방 설비가 한꺼번에 몰린 주문을 버티느냐다. 이 강의는 LLM 을 그런 눈으로 본다. ChatGPT(OpenAI)·Claude(Anthropic)·Gemini(Google)·Llama(Meta) 같은 챗봇 뒤에 있는 대형 언어 모델이 '어떻게 동작하나'보다 '어떻게 만들어지나'를 105분 안에 처음부터 끝까지 훑는 것이 목표다. 강의 하나에 다 넣기는 어렵다는 것을 강사 스스로 인정하고, 대신 모든 부품을 한 번씩은 만지고 지나간다.",
+    "강사는 LLM 학습에서 중요한 것을 다섯 가지로 나눈다. ① 아키텍처: 어떤 신경망 구조를 쓰나(지금은 거의 모두 트랜스포머 계열). ② 손실 함수와 학습 알고리즘: 무엇을 최소화하도록 어떻게 학습시키나. ③ 데이터: 무엇으로 학습시키나. ④ 평가: 우리가 목표에 다가가고 있는지 어떻게 아나. ⑤ 시스템: 거대한 모델을 실제 하드웨어에서 어떻게 빠르게 돌리나. 모델이 커질수록 마지막 '시스템'의 비중이 예전보다 훨씬 커졌다는 점을 강조한다.",
+    "이 다섯 중에서 아키텍처는 일부러 뺀다. 이유는 둘이다. 하나는 몇 주 전에 트랜스포머 강의를 따로 했고 인터넷에 자료가 넘친다는 것, 다른 하나가 더 중요한데 실무에서 승패를 가르는 것은 데이터·평가·시스템이라는 강사의 판단이다. 학계(강사 본인도 오래 그랬다고 한다)는 새 구조와 새 손실을 만드는 데 끌리지만, 산업은 나머지 셋에 힘을 쏟는다. 이 주장의 근거는 뒤의 스케일링 법칙 장에서 나온다 — 구조의 작은 차이는 성능 곡선을 조금 위아래로 옮길 뿐이고, 데이터의 질은 곡선의 기울기 자체를 바꾼다.",
+    "강의는 두 덩어리다. 첫째는 사전학습(pretraining)으로, 인터넷 전체에 가까운 텍스트를 흉내 내도록 언어 모델을 학습시키는 고전적인 단계다. GPT-2·GPT-3 가 이 세계에 속한다. 둘째는 사후학습(post-training)으로, 그렇게 얻은 모델을 사람의 질문에 답하는 AI 어시스턴트로 바꾸는 단계이며 ChatGPT 이후 본격화됐다. 이 노트는 그 순서를 그대로 따르되, 각 장에서 직관 → 정의와 식 → 작은 숫자 예 → 직접 돌려 볼 코드 → 헷갈리는 점 → 확인 문제 순으로 풀어 쓴다. 아래 그림이 전체 지도다."
+   ],
+   "diagram": {
+    "title": "LLM 제작 전 과정 — 이 강의의 지도",
+    "code": "flowchart LR\n  W[\"웹 크롤 (Common Crawl)\"] --> D[\"데이터 정제·중복 제거·믹스\"]\n  D --> T[\"토크나이저 학습 (BPE)\"]\n  T --> P[\"사전학습: 다음 토큰 예측\"]\n  S[\"스케일링 법칙: 크기·토큰 수 결정\"] -.-> P\n  P --> E1[\"평가: perplexity · MMLU\"]\n  P --> F[\"SFT: 모범 답변으로 미세조정\"]\n  F --> R[\"선호 학습: RLHF(PPO) 또는 DPO\"]\n  R --> E2[\"평가: Chatbot Arena · AlpacaEval\"]\n  SYS[\"시스템: bf16 · 연산자 융합 · MFU\"] -.-> P\n  SYS -.-> R"
+   },
+   "pitfalls": [
+    "'아키텍처는 중요하지 않다'는 강사의 의견이다. 트랜스포머가 LSTM 보다 낫다는 것처럼 큰 구조 차이는 분명 중요하고, 강사가 말하는 것은 활성함수 교체 같은 작은 변경이다.",
+    "사전학습과 사후학습은 손실 함수가 다른 것이 아니다(SFT 는 같은 손실). 데이터를 모으는 방식과 하이퍼파라미터가 다르다 — 뒤의 SFT 장에서 다시 나온다."
+   ],
+   "check": [
     {
-      "start": 0,
-      "title": "도입 — LLM 을 이루는 다섯 요소",
-      "points": [
-        "ChatGPT·Claude·Gemini·Llama 같은 챗봇이 모두 LLM 이며, 오늘은 '어떻게 만드나'를 한 강의에 압축한다.",
-        "중요한 요소는 아키텍처, 손실·학습 알고리즘, 데이터, 평가, 시스템 다섯 가지. 모델이 거대해져 시스템의 비중이 어느 때보다 크다.",
-        "트랜스포머 구조는 자료가 넘치므로 생략. 강사는 학계가 아키텍처·손실에 몰두하지만 실무에서 결정적인 것은 데이터·평가·시스템이라고 강조한다.",
-        "강의 구성: 사전학습(GPT-2·GPT-3 계열) → 사후학습(ChatGPT 이후 등장한 어시스턴트화)."
-      ],
-      "on_screen": "첫 슬라이드 'LLMs' — ChatGPT·Anthropic·Gemini·Llama 로고와 'How do they work?', 오른쪽에 ChatGPT 가 자신을 소개하는 대화 캡처."
+     "q": "강사가 꼽은 LLM 의 다섯 요소는 무엇이고, 그중 산업이 주로 경쟁하는 셋은?",
+     "a": "아키텍처, 손실·학습 알고리즘, 데이터, 평가, 시스템. 산업의 승부처는 데이터·평가·시스템이라고 본다."
     },
     {
-      "start": 182,
-      "title": "언어 모델링·자기회귀 모델·교차 엔트로피 손실",
-      "points": [
-        "언어 모델은 토큰 열에 대한 확률분포 p(x1..xL). 문법이 틀린 문장(구문 지식)이나 '치즈가 쥐를 먹었다'(의미 지식)는 확률이 낮아야 한다. 분포에서 샘플링할 수 있으니 생성 모델이다.",
-        "자기회귀(AR) 모델은 연쇄법칙으로 '앞 문맥이 주어졌을 때 다음 토큰' 확률의 곱으로 분해한다 — 근사가 아니다. 단점은 생성이 토큰마다 도는 for 루프라 길수록 느리다는 것.",
-        "절차: 토큰화 → 임베딩 → 신경망(트랜스포머) → 문맥 벡터를 선형층으로 어휘 크기 |V| 차원에 사상 → softmax. 샘플링·역토큰화는 추론 때만 필요하다.",
-        "학습은 다음 토큰의 인덱스를 맞히는 분류이므로 교차 엔트로피 손실을 쓰며, 이를 최소화하는 것은 텍스트 로그우도 최대화와 같다.",
-        "출력 차원이 어휘 크기와 같아서 나중에 토큰을 추가하기는 사실상 어렵다 — 그래서 토크나이저 설계가 중요하다."
-      ],
-      "on_screen": "'Language Modeling' 슬라이드: P(the, mouse, ate, the, cheese)=0.02, 'the the mouse…'=0.0001(Syntactic knowledge), 'the cheese ate the mouse'=0.001(Semantic knowledge), p(x1..xL)=p(x1)p(x2|x1)p(x3|x2,x1)…, 'No approx: chain rule of probability'. 'AR Language Models' 그림(She likely prefers → dogs, tokenize/forward/predict), 'AR Neural Language Models' 도식(입력 임베딩 → Neural network → d차원 벡터 → Linear layer → |V| tok), 'Loss' 슬라이드: 'I saw a cat on a mat', Loss = -log(p(cat)), max ∏p(xi|x1:i-1) = min(-Σ log p) = min L."
-    },
-    {
-      "start": 600,
-      "title": "토크나이저 — 왜 필요하고 BPE 는 어떻게 학습하나",
-      "points": [
-        "단어 단위는 오타·띄어쓰기 없는 언어(태국어)를 다루지 못하고, 문자 단위는 시퀀스가 너무 길어져 어텐션의 이차 비용이 커진다. 서브워드 토큰은 평균 3~4글자.",
-        "BPE 학습: 큰 말뭉치에서 글자마다 토큰 하나로 시작 → 가장 자주 붙어 나오는 쌍을 합쳐 새 토큰 → 원하는 어휘 크기까지 반복. 작은 토큰도 남겨 오타를 표현할 수 있게 한다.",
-        "공백·구두점에서 병합을 막는 pre-tokenizer 는 계산을 줄이려는 최적화. 적용할 때는 가능한 가장 긴 토큰을 고른다. 같은 철자의 다른 뜻(bank)은 토크나이저가 아니라 트랜스포머가 문맥으로 가른다.",
-        "숫자가 통째로 토큰이 되면(예: 327) 자릿수 연산을 일반화하기 어렵다. GPT-4 는 파이썬 들여쓰기 공백 처리를 바꿔 코드 성능을 올렸다.",
-        "강사 의견: 시퀀스 길이에 이차로 늘지 않는 아키텍처가 나오면 5~10년 뒤 바이트 단위로 돌아갈 수도 있다."
-      ],
-      "on_screen": "'Tokenizer' 슬라이드: Why? More general than words(eg typos) / Shorter sequences than with characters, 'Idea: tokens as common subsequences (~3 letters)', BPE 학습 4단계(Take large corpus → one token per character → merge common pairs → repeat), 색으로 쪼갠 'tokenizer: text to token index' 예시."
-    },
-    {
-      "start": 1140,
-      "title": "평가 1 — perplexity",
-      "points": [
-        "perplexity 는 검증 손실을 해석하기 쉽게 바꾼 것: 토큰 평균 손실(길이에 무관)을 지수화(로그 밑에 무관)한다. 범위는 1(완벽)~|Vocab|(무작위).",
-        "직관: 모델이 매 토큰 '몇 개 후보 사이에서 망설이나'. 표준 데이터셋에서 2017→2023 사이 약 70 에서 10 미만으로 떨어졌다.",
-        "토크나이저와 평가 데이터에 따라 값이 달라져(어휘 1만 vs 10만이면 상한이 다르다) 학계 비교에는 잘 쓰지 않지만, 직접 모델을 학습할 때는 여전히 핵심 지표다."
-      ],
-      "on_screen": "PPL(x1:L) = 2^{(1/L)·L(x1:L)} = ∏ p(xi|x1:i-1)^{-1/L} 수식과 'between 1 and |Vocab|', 연도별 test perplexity 그래프(Grave 2016 LSTM ≈ 70 → AWD-LSTM → GPT-2 → SparseGPT 175B 2023 ≈ 10 이하) 아래 '2017-2023 사이 ~70 → <10 토큰'."
-    },
-    {
-      "start": 1290,
-      "title": "평가 2 — HELM·MMLU 와 평가의 함정",
-      "points": [
-        "학계는 자동 채점이 가능한 NLP 벤치마크를 모아 평균 낸다 — Stanford HELM 과 Hugging Face Open LLM Leaderboard 가 대표적이다.",
-        "MMLU(Hendrycks 2020)는 천문학·대학 의학 등 수십 분야 4지선다 문제. 각 보기의 생성 확률을 비교하거나, A/B/C/D 중 다음 토큰을 고르게 제한해 채점한다.",
-        "같은 MMLU 도 채점 방식이 기관마다 달라 LLaMA-65B 가 HELM 0.637, Harness 0.488, 원 논문 방식 0.636 으로 갈렸다 — 프롬프트 차이는 별개 문제다.",
-        "train-test contamination: 기업은 무엇을 학습했는지 알지만 외부 연구자는 모른다. 테스트셋 예제를 원래 순서로 생성할 확률이 섞은 순서보다 높으면 학습에 들어갔다고 의심하는 요령을 소개한다."
-      ],
-      "on_screen": "'LLM Evaluation: agg. std NLP benchmarks' — HELM-lite[Liang+ 2022] 과제 표(NarrativeQA·NaturalQuestions·OpenbookQA·MMLU·GSM8K·MATH·LegalBench·MedQA·WMT14). 'eg MMLU' — 천문학 Type-Ia 초신성 문제와 과목별 GPT-3/UnifiedQA/Random 막대그래프. 'Evaluation: challenges' 표 — llama-65b 0.637/0.488/0.636, falcon-40b 0.571/0.527/0.558, llama-30b 0.583/0.457/0.584, gpt-neox-20b 0.256/0.333/0.262, llama-7b 0.339/0.342/0.351."
-    },
-    {
-      "start": 1700,
-      "title": "데이터 — '깨끗한 인터넷 전부'의 실제 공정",
-      "points": [
-        "Common Crawl 은 매달 새 웹페이지를 모으며 약 2,500억 페이지·1PB 이상(1e6 GB). 무작위 페이지를 열어 보면 문장도 끝나지 않은 광고 HTML 이다.",
-        "공정: ① 다운로드 ② HTML 본문 추출(수식·반복 머리말이 난제) ③ NSFW·유해·PII 필터(차단 사이트 목록, 작은 분류 모델) ④ URL·문서·줄 단위 중복 제거 ⑤ 규칙 기반 필터(토큰 분포 이상치, 단어 길이, 너무 짧거나 긴 문서) ⑥ 위키백과가 링크한 페이지인지 맞히는 분류기로 품질 필터 ⑦ 도메인 분류 후 비율 조정 — 코드·책은 올리고 오락은 내린다.",
-        "학습 막바지에 학습률을 낮추며 위키백과 같은 고품질 데이터에 '과적합'시키고, 긴 문맥을 위한 continual pretraining 도 한다.",
-        "유해 데이터를 지우지 말고 벌점을 주자는 질문에는 — 그 일은 사후학습에서 한다고 답한다. 사전학습의 목적은 사람이 쓰는 말의 분포를 배우는 것."
-      ],
-      "on_screen": "'Data' 슬라이드 7단계 목록: Download all of internet. Common crawl: 250 billion pages, >1PB(>1e6 GB) / Text extraction from HTML(challenges: math, boiler plate) / Filter undesirable content(NSFW, harmful, PII) / Deduplicate(url/document/line) / Heuristic filtering / Model based filtering(Wikipedia 참조 여부) / Data mix(code/books/entertainment, scaling laws 로 재가중). 실제 Common Crawl HTML 원문 캡처."
-    },
-    {
-      "start": 2220,
-      "title": "데이터셋 규모와 비밀주의",
-      "points": [
-        "데이터 인력 감: 70명가량인 LLaMA 팀에서 약 15명이 데이터를 맡고, 사람보다 CPU 연산이 많이 든다.",
-        "남은 연구 과제: 대규모 처리 효율, 도메인 균형, 합성 데이터(인터넷 데이터가 모자라기 시작), 멀티모달 데이터가 텍스트 성능을 올리는가.",
-        "기업이 데이터 공정을 숨기는 이유는 경쟁과 저작권 소송 위험(책을 학습했다고 말하지 않는다).",
-        "공개 데이터셋 규모: C4 1,500억 토큰(800GB) → The Pile 2,800억 → Dolma 3조 → FineWeb 15조. 폐쇄 모델은 LLaMA 2 2조, LLaMA 3 15조, GPT-4 약 13조(유출 기준). Common Crawl 대비 100~1000배 걸러낸 셈이다."
-      ],
-      "on_screen": "'Data' 슬라이드: Collecting well data is a huge part of practical LLM(~the key), 연구 과제·비밀주의(Competitive dynamics, Copyright liability), Common academic datasets: C4(150B tokens|800GB), The Pile(280B), Dolma(3T), FineWeb(15T), Closed: LLaMA 2(2T), LLaMA 3(15T), GPT-4(~13T?). The Pile 구성 트리맵(Pile-CC·PubMed Central·ArXiv·GitHub·FreeLaw·StackExchange·USPTO·Wikipedia·OpenWebText2 등)."
-    },
-    {
-      "start": 2440,
-      "title": "스케일링 법칙",
-      "points": [
-        "2020년 무렵부터 실증된 사실: 데이터와 모델이 클수록 성능이 좋아진다. 수업에서 배우는 과적합이 LLM 규모에서는 나타나지 않는다(데이터를 반복하지 않고 1 epoch 미만으로 돈다).",
-        "Kaplan 2020: 연산량·데이터 크기·파라미터 수를 각각 로그 축에 놓으면 테스트 손실이 직선으로 내려간다 — 몇 년 뒤 성능을 연산 투자로 예측할 수 있다는 뜻.",
-        "아직 정체 조짐은 보이지 않지만 이론적 근거는 없다. 대부분은 언젠가 꺾일 것으로 본다."
-      ],
-      "on_screen": "'Scaling laws' — 'Large models ≠> overfitting', Kaplan+ 2020 세 그래프: Compute(PF-days) 대 Test Loss L=(C_min/2.3·10^8)^-0.050, Dataset Size L=(D/5.4·10^13)^-0.095, Parameters L=(N/8.8·10^13)^-0.076, 'It works for many things!'."
-    },
-    {
-      "start": 2700,
-      "title": "스케일링 법칙으로 개발하기 — 새 파이프라인과 LSTM 대 트랜스포머",
-      "points": [
-        "GPU 1만 장을 한 달 쓴다면? 옛 방식은 큰 모델 30개를 하루씩 학습해 최고를 고르는 것(최종 모델은 하루치 학습).",
-        "새 방식: 크기가 커질 때 학습률을 낮추는 식의 스케일링 레시피를 찾고, 3일 이내로 여러 크기의 작은 모델에서 하이퍼파라미터를 맞춘 뒤 법칙을 적합·외삽해 최종 대형 모델을 27일 동안 학습한다.",
-        "트랜스포머와 LSTM 을 여러 크기로 학습해 보면 트랜스포머가 절편(시작점)과 기울기(스케일링 속도) 모두 낫다.",
-        "강사 의견: 활성함수 같은 사소한 구조 변경은 절편만 조금 바꿀 뿐이라 결국 중요하지 않다. 좋은 데이터는 기울기 자체를 바꾼다."
-      ],
-      "on_screen": "'Scaling laws: tuning' — Old pipeline(30 models, final model 1 day) / New pipeline(Find scaling recipes eg lr decrease with size, tune on small models <3 days, extrapolate). 'eg LSTM' — 파라미터 대 Test Loss 그래프에서 Transformers 선이 LSTMs(1·2·4 Layers) 아래, 'A: Transformers have a better constant and scaling rate (slope)'."
-    },
-    {
-      "start": 2960,
-      "title": "Chinchilla 최적 배분과 Bitter lesson",
-      "points": [
-        "isoFLOP 곡선: 같은 연산량에서 모델 크기와 토큰 수를 바꿔 가며 손실 최저점을 찾고, 그 최적점들을 다시 로그-로그로 적합하면 '이 연산량이면 파라미터 몇 개·토큰 몇 개'가 나온다(예: 1e23 FLOPs → 약 100B 파라미터).",
-        "Chinchilla 결론은 파라미터당 20 토큰. 단 학습 비용만 본 값이고 추론 비용을 넣으면 작은 모델을 더 오래 학습하는 쪽이 낫다 — 실서비스 모델은 150:1 이상.",
-        "스케일링 법칙으로 답할 수 있는 질문: 더 오래 vs 더 크게, 데이터 수집 vs GPU 구매, 데이터 반복·혼합 비율, 너비 vs 깊이.",
-        "Sutton 의 Bitter lesson(2019): 장기적으로는 연산을 잘 활용하는 방법만 남는다. 강사는 '단순한 것을 잘, 그리고 크게'가 OpenAI 가 GPT 시리즈로 보여 준 교훈이라고 정리한다."
-      ],
-      "on_screen": "'Scaling laws: eg Chinchilla' [Hoffmann+ 2022] — 6e18~3e21 FLOPs isoFLOP 곡선(100M~30B 파라미터 대 학습 손실), FLOPs 대 최적 파라미터·최적 토큰 직선, 'A: Use 20:1 tokens for each parameter', '*doesn't consider inference cost ⇒ in practice use larger (>150:1)'. 'Bitter lesson' — 'only thing that matters in the long run is the leveraging of computation' [Sutton 2019]."
-    },
-    {
-      "start": 3300,
-      "title": "SOTA 모델 학습비 봉투 뒷면 계산 — LLaMA 3 405B",
-      "points": [
-        "데이터 15.6조 토큰, 파라미터 405B → 파라미터당 약 40 토큰(Chinchilla 보다 많고 추론 최적보다 적은 학습 최적 쪽).",
-        "FLOPs ≈ 6·N·P = 3.8e25. 1e26 FLOPs 부터 추가 심사를 받게 한 미국 행정명령 기준의 절반쯤 — 규제선 바로 아래로 맞춘 것으로 본다.",
-        "H100 1만6천 장, 평균 400 TFLOPS 로 약 70일·2,600만 GPU 시간(논문 공시는 약 3,000만).",
-        "비용: H100 임대 시간당 약 2달러 × 2,600만 = 5,200만 달러 + 인건비 50명 × 50만 달러 = 2,500만 달러 → 약 7,500만 달러(6,500만~8,500만). 탄소 약 4,400t CO2eq 로 JFK–런던 왕복 2천 회분.",
-        "다음 세대 모델은 FLOPs 를 약 10배씩 늘리려 한다 — 전력과 GPU 확보가 제약이다."
-      ],
-      "on_screen": "'Training a SOTA model' 슬라이드 계산식: Data 15.6T tokens, Parameters 405B(~40 tok/param ⇒ train compute optimal), FLOPs: 6NP = 6·15.6e12·405e9 = 3.8e25(~2x less than executive order), Compute: 16K H100 with average throughput of 400 TFLOPS, Time: 3.8e25/(400e12·3600) = 26M GPU hour/(16e3·24) = 70 days(From paper ~30M), Cost: $2/h·26M + 500k/y·50employee = $52M+$25M = ~$75M, Carbon: 26Mh·0.7kW·0.24kg/kWh = 4400 tCO2eq(~2k return tickets JFK-LHR), Next model? ~10x more FLOPs."
-    },
-    {
-      "start": 3570,
-      "title": "사후학습 — 정렬, SFT, Alpaca, LIMA",
-      "points": [
-        "순수 언어 모델 GPT-3 에 '6살에게 달 착륙을 설명해 줘'를 주면 비슷한 질문 목록을 이어 쓴다. 정렬은 사용자 지시와 설계자의 의도(유해 요청 거절 등)를 따르게 만드는 단계다.",
-        "원하는 데이터(질문-모범답변)는 비싸고 적고, 사전학습 데이터는 많지만 원하는 형태가 아니다 → 사전학습 모델을 소량 데이터로 파인튜닝한다. SFT 의 손실은 사전학습과 똑같은 다음 토큰 예측이고 학습률 등 하이퍼파라미터만 다르다(1e-5 수준).",
-        "Alpaca: 사람이 쓴 175개 시드로 text-davinci-003 이 5만2천 개 지시-응답을 만들고 LLaMA 7B 를 SFT. 합성 데이터 분야의 출발점이 됐다.",
-        "LIMA: SFT 데이터를 2천→3만2천 개로 늘려도 품질이 거의 그대로. 강사 해석은 SFT 가 새 지식이 아니라 사전학습이 이미 본 여러 '사용자 유형' 중 하나를 고르게 하는 것이라는 것.",
-        "합성 데이터 반복의 한계를 묻는 질문에, 강사는 LLM 이 초안을 쓰고 사람이 고치는 human-in-the-loop·능동학습 쪽으로 갈 것이라는 의견을 낸다."
-      ],
-      "on_screen": "'Language Modeling ≠ assisting users' — GPT-3 의 엉뚱한 완성 예시. 'Task: alignment' — 정상 답변과 혐오 트윗 거절 캡처, Background(desired data scarce and expensive / pretraining data scales but not what we want). 'Supervised finetuning (SFT)' — Open Assistant 의 monopsony 예시, 'This was the key to GPT-3 → ChatGPT model!'. 'Scalable data for SFT: eg Alpaca'[Taori+ 2023] 도식(175 self-instruct seed → text-davinci-003 → 52K → LLaMA 7B → Alpaca 7B). 'quantity?' — LIMA[Zhou+ 2023] 2K~32K 학습 예제에서 생성 품질 ≈3.8 로 평평한 그래프."
-    },
-    {
-      "start": 4170,
-      "title": "RLHF — 보상 모델·PPO 에서 DPO 로",
-      "points": [
-        "행동 복제(SFT)의 문제: ① 사람의 생성 능력에 묶임(평가는 생성보다 쉽다) ② 모델이 모르는 정답(예: 실제 존재하는 참고문헌)을 따라 쓰게 하면 그럴듯하게 지어내는 법, 즉 환각을 배울 수 있음 ③ 모범답안 작성 비용.",
-        "RLHF 파이프라인: 지시마다 SFT 모델로 답 두 개 생성 → 라벨러가 더 나은 쪽 선택 → 선호되는 답을 더 내도록 튜닝.",
-        "보상: 기준 대비 이겼나(이진, 정보가 적음) 대신 Bradley-Terry 로지스틱 손실로 보상 모델을 학습해 연속값(logit)을 쓴다. 그 보상에서 KL 정규화항을 빼 과최적화를 막으며 PPO 로 최적화 — InstructGPT/ChatGPT 의 3단계.",
-        "PPO 는 롤아웃·클리핑 등 구현이 지저분하다. DPO(Stanford, 2023)는 선호 답의 확률은 올리고 비선호 답은 내리는 최대우도 하나로 바꾼 것이며 가정하에 전역 최적이 같다. 성능도 비슷해 오픈소스의 표준이 됐다.",
-        "RL 로 다듬은 모델은 분포가 아니라 정책이 되어, 출력 확률(우도)이 더 이상 의미 있는 분포가 아니다."
-      ],
-      "on_screen": "'RLHF' 파이프라인 그림(Instruction → 모델 → 답 2개 → 초록/빨강 선택). 'RLHF: PPO' — p(i>j) = exp(R(x,ŷi)) / (exp(R(x,ŷi)) + exp(R(x,ŷj))) [Bradley-Terry 1952], 'Use logits R(...) as reward ⇒ continuous information', Optimize E[R(x,ŷ) − β log(pθ(ŷ|x)/p_ref(ŷ|x))] using PPO. 'PPO → ChatGPT' InstructGPT 3단계 도식[Ouyang+ 2022]. 'RLHF: DPO' — L_DPO = −E[log σ(β log πθ(yw|x)/πref(yw|x) − β log πθ(yl|x)/πref(yl|x))] [Rafailov+ 2023], RLHF(보상모델+RL) 대 DPO(최대우도) 비교 도식, '≈ equivalent(same global minima)'."
-    },
-    {
-      "start": 4980,
-      "title": "RLHF 의 효과와 선호 데이터 — 사람 대신 LLM",
-      "points": [
-        "요약 과제(Stiennon 2020)에서 사전학습 → SFT → 사람 피드백 순으로 좋아져 사람이 쓴 요약을 넘기도 한다. AlpacaFarm 에서도 PPO 와 DPO 가 같은 수준으로 SFT 를 넘었다.",
-        "사람 라벨링의 문제: 느리고 비쌈, 정확성보다 형식(길이)에 끌림 — RLHF 를 많이 할수록 답이 길어진다. 라벨러 분포가 모델의 관점을 바꾸고, 저임금·유해 데이터 노출이라는 크라우드소싱 윤리 문제도 있다.",
-        "AlpacaFarm: 사람 라벨은 1천 건에 약 300달러(Mechanical Turk)인데 사람끼리 다수 의견 일치율은 약 66%(저자들 직접 해도 67~68%). LLM 판정은 훨씬 싸면서 일치율이 더 높다 — 분산이 작아서다.",
-        "강사는 지금은 사람보다 약 50배 싸고 일치율도 나은 수준이라며, 오픈소스는 LLM 선호 데이터가 표준이고 업계도 사람과 LLM 을 섞어 쓴다고 본다. 데이터 규모 감: SFT 5천~5만, RLHF 선호 데이터 100만 단위."
-      ],
-      "on_screen": "'RLHF: gains' — Learn to summarize[Stiennon+ 2020] 모델 크기(1.3B~12.9B) 대 선호 비율 그래프(Human feedback > Reference summaries > Supervised > Pretrain only)와 AlpacaFarm 시뮬레이션 승률 표(GPT-4 79.0, ChatGPT 61.4, PPO 46.8, DPO 46.8, Best-of-1024 45.0 … LLaMA 7B 11.3). 'challenges of human data' — 출력 길이 대 보상 히트맵[Singhal+ 2024], LLM Opinion[Santurkar+ 2023] 라벨러 분포 표. 'RLHF: LLM data' — $/1000 examples(로그 축) 대 Human mode agreement(0.57~0.66) 산점도, 'Works surprisingly well! ⇒ Standard in open community'."
-    },
-    {
-      "start": 5260,
-      "title": "정렬된 모델의 평가 — Chatbot Arena 와 AlpacaEval",
-      "points": [
-        "어려운 이유: 방법마다 검증 손실을 비교할 수 없고, 정렬 모델은 보정되지 않은 정책이라 perplexity 를 못 쓰며, 질문 유형이 넓고(InstructGPT API 기준 생성 45.6%, 열린 QA 12.4%, 브레인스토밍 11.2% …) 열린 답이라 자동화가 어렵다.",
-        "Chatbot Arena: 일반 사용자가 이름을 가린 두 챗봇과 대화하고 더 나은 쪽을 고른다. 수십만 건이 쌓여 가장 신뢰받지만, 이용자가 기술 질문에 쏠려 있고 개발 중에 쓰기엔 느리고 비싸다.",
-        "AlpacaEval: 같은 지시에 기준 모델과 평가 모델이 답하고 GPT-4 가 승자를 고른 뒤 평균 승률을 낸다. Arena 와 상관 98%, 3분 미만·10달러 미만.",
-        "편향: LLM 판정자는 긴 답을 선호한다. GPT-4 를 자기 자신과 비교하면 50% 인데 '장황하게' 지시하면 64.4%, '간결하게'면 20%. 회귀 기반 길이 통제(Length-Controlled AlpacaEval)로 보정한다.",
-        "질문 답변: 산업에서는 전체 가중치를 튜닝하고, LoRA 는 주로 오픈소스 쪽 기법. 소량 데이터가 큰 영향을 주는 것은 사전학습을 '초기화'로 보고 그 위에서 높은 학습률로 다시 학습하기 때문(Alpaca 는 3 epoch)."
-      ],
-      "on_screen": "'Evaluation: aligned LLM' — InstructGPT 사용 사례 분포 표(Generation 45.6%, Open QA 12.4%, Brainstorming 11.2%, Chat 8.4%, Rewrite 6.6%, Summarization 4.2% …), 'Some aligned LLMs are policies!'. 'Human evaluation: eg ChatBot Arena'[Chiang+ 2024] 화면과 질문 군집 막대(소프트웨어 오류 논의 10.43%, AI 도구 문의 7.29% …). 'LLM evaluation: eg AlpacaEval'[Li+ 2023] 절차 그림. 'spurious correlation' — AlpacaEval 길이 표(gpt4_1106_preview concise/standard/verbose 22.9/50.0/64.3, Mixtral-8x7B 13.7/18.3/24.6, claude-2.1 9.2/15.7/24.4, alpaca-7b 2.0/2.6/2.9)."
-    },
-    {
-      "start": 5820,
-      "title": "시스템 — GPU 기초, 저정밀도, 연산자 융합, 그리고 다음 공부",
-      "points": [
-        "모두가 연산에 묶여 있다. GPU 는 비싸고 구하기 어려우며(1천만 달러가 있어도 최신 GPU 를 바로 못 산다), 여러 장을 쓰면 통신이 병목이다 → 자원 배분(스케일링 법칙)과 파이프라인 최적화가 중요.",
-        "GPU 는 처리량 지향(SM 위에서 같은 명령을 여러 데이터에), 행렬곱이 다른 연산보다 10배쯤 빠르다. 연산 성능이 메모리·통신보다 빨리 늘어 데이터 공급이 못 따라간다. 메모리 계층은 코어에 가까울수록 작고 빠르다.",
-        "지표는 MFU(관측 처리량 / 이론 최대). 50% 면 아주 잘한 것이고 LLaMA 도 약 45% 수준.",
-        "자동 혼합 정밀도(AMP): 가중치 원본은 fp32, 계산 직전 bf16 으로 바꿔 행렬곱·활성값·기울기를 bf16 으로, 갱신은 fp32 로 — 작은 학습률의 미세한 갱신도 살린다.",
-        "연산자 융합: PyTorch 한 줄마다 전역 메모리(DRAM)를 왕복하므로, 한 번 보내 연산을 몰아 하고 한 번 돌려받는다. torch.compile 이 이를 해 주며 약 2배 빨라진다. 타일링·병렬화·MoE·추론·멀티모달·데이터 고갈·데이터 수집 합법성은 다루지 못했고, CS224N(배경)·CS324(심화 읽기)·CS336(LLM 직접 구현, 과제량 많음)을 권한다."
-      ],
-      "on_screen": "'Systems' — Problem: everyone is bottlenecked by compute, Why not buy more GPUs?(expensive & scarce, physical limitations). 'Systems 101: GPUs' — CPU(저지연) 대 GPU(고처리량) 도식과 SM, 연도별 HW FLOPS 60000x/20yrs vs DRAM BW 100x vs Interconnect BW 30x 그래프, BERT 연산 비중 표(Tensor contraction 99.80% flop·61.0% runtime, Stat. normalization 0.17%·25.5%, Element-wise 0.03%·13.5%)[Ivanov+ 2020], 메모리 지연 표(Global memory 290 사이클, L2 200, L1 33, Shared 23/19). 'low precision' AMP 항목. 'operator fusion' — x1 = x.cos(); x2 = x1.cos() 코드와 Naive(non-fused) 대 Fused kernel 그림, 'torch.compile'. 'architecture sparsity' — Mixture of Experts. 'Outlook' — MoE & SSM, Decoding & inference, Multimodality, Data wall, Legality of data collection, CS224N·CS324·CS336."
+     "q": "GPT-3 와 ChatGPT 는 각각 강의의 어느 덩어리에 속하나?",
+     "a": "GPT-3 는 사전학습(인터넷 텍스트를 흉내 내는 언어 모델), ChatGPT 는 사후학습(SFT·RLHF 로 어시스턴트화)까지 거친 모델이다."
     }
-  ],
-  "concepts": [
-    {"term": "자기회귀 언어 모델 (Autoregressive LM)", "explain": "문장 확률을 '앞 토큰들이 주어졌을 때 다음 토큰' 확률의 곱으로 쪼개는 모델. 연쇄법칙이라 근사가 없지만, 생성할 때 토큰을 하나씩 만들어야 해서 길수록 느리다.", "at": 315},
-    {"term": "교차 엔트로피 손실", "explain": "다음 토큰을 어휘 크기만큼의 클래스 중 하나로 맞히는 분류 손실. 정답 토큰의 -log 확률이며, 이를 줄이는 것은 텍스트 로그우도를 최대화하는 것과 같다.", "at": 560},
-    {"term": "BPE (Byte Pair Encoding)", "explain": "글자 단위에서 시작해 가장 자주 붙어 나오는 토큰 쌍을 반복해 합치는 토크나이저 학습법. 단어 단위의 오타 문제와 문자 단위의 길이 문제를 절충하며 토큰 하나가 평균 3~4글자다.", "at": 720},
-    {"term": "Perplexity", "explain": "토큰당 평균 손실을 지수화한 값으로, 모델이 매 토큰 몇 개 후보 사이에서 망설이는지로 읽는다. 1 이 완벽, 어휘 크기가 최악. 토크나이저에 따라 값이 달라 모델 간 비교에는 부적합하다.", "at": 1150},
-    {"term": "MMLU", "explain": "57개 분야 4지선다 문제로 된 대표 사전학습 벤치마크. 보기별 생성 확률을 비교하거나 A~D 토큰만 고르게 해 채점하는데, 방식에 따라 같은 모델 점수가 10%p 넘게 달라진다.", "at": 1350},
-    {"term": "Train-test contamination", "explain": "평가 문제가 학습 데이터에 섞여 점수가 부풀려지는 문제. 테스트셋을 원래 순서로 생성할 확률이 뒤섞은 순서보다 높으면 학습됐다고 의심할 수 있다.", "at": 1630},
-    {"term": "Common Crawl", "explain": "매달 웹을 긁어 공개하는 크롤 데이터. 약 2,500억 페이지·1PB 이상으로 대부분 LLM 사전학습 데이터의 원료다. 실제로는 추출·필터·중복 제거로 100~1000배 줄여 쓴다.", "at": 1770},
-    {"term": "모델 기반 품질 필터", "explain": "위키백과가 링크한 페이지와 무작위 웹 페이지를 가르는 가벼운 분류기를 학습해, 위키백과 참조 페이지를 닮은 문서를 더 남기는 방식. 수천억 페이지에 돌려야 해서 단순한 모델을 쓴다.", "at": 2020},
-    {"term": "데이터 믹스 / 도메인 재가중", "explain": "문서를 코드·책·오락 등 도메인으로 나누고 비율을 조정하는 것. 코드를 늘리면 추론력이 좋아진다는 경험칙이 있으며, 요즘은 스케일링 법칙으로 비율을 정한다.", "at": 2060},
-    {"term": "스케일링 법칙 (Scaling laws)", "explain": "연산량·데이터·파라미터를 로그 축에 놓으면 손실이 직선으로 줄어드는 경험 법칙. 작은 모델 실험으로 큰 모델 성능을 예측해 하이퍼파라미터·아키텍처·자원 배분을 정한다.", "at": 2460},
-    {"term": "Chinchilla 최적 (20:1)", "explain": "주어진 학습 연산에서 손실을 최소로 하려면 파라미터 1개당 약 20 토큰을 학습하라는 결론. 추론 비용까지 보면 더 작은 모델을 더 오래 학습하는 것이 유리해 실무는 150:1 이상이다.", "at": 2990},
-    {"term": "FLOPs ≈ 6NP", "explain": "학습 연산량 근사식(토큰 수 × 파라미터 수 × 6). LLaMA 3 405B 는 6 × 15.6e12 × 405e9 ≈ 3.8e25 FLOPs 다.", "at": 3360},
-    {"term": "SFT (Supervised Fine-Tuning)", "explain": "사람이 쓴 질문-모범답변으로 사전학습 모델을 같은 다음 토큰 손실로 미세조정하는 것. 수천 개면 충분하며, 지식이 아니라 답하는 형식·사용자 유형을 고르게 한다.", "at": 3740},
-    {"term": "합성 데이터 (Alpaca 방식)", "explain": "사람이 쓴 소수 예시를 강한 LLM 에게 주고 비슷한 지시-응답을 대량 생성해 학습 데이터로 쓰는 방식. Alpaca 는 175개 시드에서 5만2천 개를 만들었다.", "at": 3840},
-    {"term": "보상 모델 (Bradley-Terry)", "explain": "두 답 중 사람이 고른 쪽의 보상이 더 크도록 로지스틱 손실로 학습한 분류기. 출력 logit 을 연속 보상으로 써서 이진 승패보다 많은 정보를 준다.", "at": 4440},
-    {"term": "PPO (RLHF)", "explain": "보상 모델 점수에서 원래 모델과의 KL 거리를 뺀 값을 강화학습으로 최대화하는 방법. InstructGPT·ChatGPT 가 썼지만 롤아웃·클리핑 등 구현이 복잡하다.", "at": 4620},
-    {"term": "DPO (Direct Preference Optimization)", "explain": "보상 모델과 RL 없이 선호 답의 확률은 올리고 비선호 답은 내리는 최대우도 손실 하나로 선호를 학습한다. 가정하에 RLHF 와 최적해가 같고 성능도 비슷해 오픈소스 표준이 됐다.", "at": 4770},
-    {"term": "LLM-as-a-judge / AlpacaEval", "explain": "GPT-4 같은 모델이 두 답 중 나은 것을 고르게 해 승률로 모델 순위를 매기는 자동 평가. Chatbot Arena 와 상관 98% 지만 긴 답을 선호하는 편향이 있어 길이 통제가 필요하다.", "at": 5460},
-    {"term": "MFU (Model FLOP Utilization)", "explain": "관측된 연산 처리량을 GPU 이론 최대치로 나눈 값. 메모리·통신 병목 때문에 50% 면 매우 좋은 편이고 LLaMA 학습도 약 45% 였다.", "at": 5960},
-    {"term": "혼합 정밀도(AMP)와 연산자 융합", "explain": "가중치는 fp32 로 보관하고 행렬곱은 bf16 으로 해 메모리·통신을 줄이는 기법, 그리고 여러 연산을 한 커널로 묶어 GPU 전역 메모리 왕복을 줄이는 기법(torch.compile 로 약 2배).", "at": 6000}
-  ],
-  "trends": [
-    {"claim": "업계의 승부처는 아키텍처가 아니라 데이터·평가·시스템이다 (강사 의견)", "evidence": "작은 구조 변경은 스케일링 곡선의 절편만 조금 바꾸지만 좋은 데이터는 기울기를 바꾼다. 학계는 아키텍처·손실에, 산업은 나머지 셋에 집중한다고 설명.", "at": 120},
-    {"claim": "사전학습 데이터는 15조 토큰 규모로 커졌고 공정은 각사 비밀이다", "evidence": "C4 1,500억 → FineWeb 15조 토큰, LLaMA 3 15조, GPT-4 약 13조(유출 추정). 경쟁과 저작권 소송 위험 때문에 수집 방법을 공개하지 않는다.", "at": 2280},
-    {"claim": "인터넷 데이터가 바닥나 가며 합성 데이터·멀티모달 데이터가 주요 연구 주제다", "evidence": "데이터 슬라이드의 미해결 과제로 합성 데이터와 멀티모달 데이터를 꼽고, Outlook 에 'Data wall' 을 적었다.", "at": 2290},
-    {"claim": "개발 방식이 '작은 모델로 스케일링 법칙을 적합해 큰 모델을 한 번에 학습'으로 바뀌었다", "evidence": "GPU 1만 장·30일 예시에서 3일은 여러 크기의 작은 모델 튜닝, 27일은 최종 모델 학습에 쓴다.", "at": 2730},
-    {"claim": "실서비스 모델은 추론 비용 때문에 Chinchilla 최적보다 훨씬 많은 토큰을 학습한다", "evidence": "Chinchilla 20:1 대비 실무는 150:1 이상, LLaMA 3 405B 는 약 40:1.", "at": 3120},
-    {"claim": "최첨단 모델 학습비는 수천만 달러대이고 세대마다 연산량이 약 10배 늘어난다", "evidence": "LLaMA 3 405B: 3.8e25 FLOPs, H100 1만6천 장 70일, 약 7,500만 달러. 1e26 FLOPs 규제선 바로 아래로 맞췄다는 해석.", "at": 3330},
-    {"claim": "선호 학습은 PPO 에서 DPO 로 단순화되어 오픈소스 표준이 됐다", "evidence": "AlpacaFarm 에서 PPO·DPO 모두 46.8% 승률로 같았고, DPO 는 최대우도만으로 학습한다. 강사는 업계에서도 표준일 것이라 본다.", "at": 4950},
-    {"claim": "라벨링과 평가 모두 사람에서 LLM 으로 옮겨 가고 있다", "evidence": "사람 라벨 1천 건 약 300달러·사람끼리 일치율 66% 대비 LLM 판정이 더 싸고 일치율도 높다. AlpacaEval 은 Arena 와 상관 98%, 10달러 미만.", "at": 5130},
-    {"claim": "RLHF 와 LLM 판정자 때문에 답변이 길어지는 편향이 생긴다", "evidence": "RLHF 를 할수록 출력이 길어지고, GPT-4 판정은 장황한 답에 64.4%, 간결한 답에 20% 승률을 준다 → 길이 통제 평가가 필요.", "at": 5570},
-    {"claim": "GPU 연산 성능이 메모리·통신보다 빨리 늘어 시스템 최적화 인력의 가치가 커진다", "evidence": "20년간 HW FLOPS 6만 배 대 DRAM 대역폭 100배·인터커넥트 30배. 대기업도 MFU 45% 수준이라 저정밀도·연산자 융합·병렬화가 필수.", "at": 5880}
-  ],
-  "study": {
-    "prereq": [
-      "Python 과 PyTorch 기본(텐서, autograd, nn.Module, 학습 루프)",
-      "확률의 연쇄법칙, 로그우도, softmax·교차 엔트로피",
-      "신경망 학습 기초(SGD/Adam, 학습률, 과적합) — CS229 수준",
-      "트랜스포머·어텐션의 대략적인 구조(이 강의는 다루지 않음)"
-    ],
-    "steps": [
-      {"do": "자기회귀 언어 모델과 교차 엔트로피·perplexity 를 직접 코드로 계산해 본다", "why": "강의 전체가 '다음 토큰 예측 손실' 하나 위에 서 있다. SFT 도 같은 손실이고, perplexity 는 학습 중 가장 먼저 보는 지표다."},
-      {"do": "BPE 토크나이저를 처음부터 구현하고 tiktoken·Hugging Face tokenizers 와 결과를 비교한다", "why": "어휘 크기가 출력층 크기를 정하고, 숫자·코드 토큰화가 성능을 좌우한다. 토크나이저는 나중에 바꾸기 어렵다."},
-      {"do": "FineWeb·Dolma 같은 공개 데이터 처리 파이프라인을 읽고 작은 웹 덤프에 추출·중복 제거·품질 필터를 직접 걸어 본다", "why": "강사가 가장 강조한 실무 영역이자 LLM 팀 인력의 큰 몫이 데이터다."},
-      {"do": "Kaplan·Chinchilla 논문을 읽고 작은 모델 3~4개 크기로 스케일링 곡선을 그려 외삽해 본다", "why": "자원 배분·하이퍼파라미터 결정을 스케일링 법칙으로 하는 것이 현재 개발 방식이다. 6NP 로 비용을 어림하는 습관도 같이 든다."},
-      {"do": "작은 오픈 모델로 SFT → DPO 를 직접 돌려 본다(Hugging Face TRL 등)", "why": "산업 파인튜닝 업무의 실제 순서다. InstructGPT 로 PPO 의 3단계를, DPO 논문으로 그 단순화를 이해한다."},
-      {"do": "AlpacaEval·Chatbot Arena 방식으로 LLM 판정 평가를 만들고 길이 편향을 측정한다", "why": "정렬된 모델은 perplexity 로 평가할 수 없다. 평가 설계는 기업 LLM 팀의 핵심 역량이다."},
-      {"do": "PyTorch 프로파일러로 학습 스텝을 재고 bf16 AMP·torch.compile 전후 처리량과 MFU 를 비교한다", "why": "모두가 연산에 묶여 있고 MFU 50% 도 어렵다. 저정밀도와 연산자 융합은 가장 먼저 쓰는 시스템 최적화다."}
-    ],
-    "practice": [
-      "문자 단위 데이터(예: 셰익스피어)로 작은 GPT 를 학습하고 검증 perplexity 곡선을 그린다.",
-      "BPE 를 직접 구현해 한국어·영어·파이썬 코드 각각의 토큰당 평균 글자 수를 비교한다.",
-      "LLaMA 3 405B 계산(6NP, H100 400 TFLOPS, 시간당 2달러)을 따라 한 뒤, 8B·70B 모델의 학습 FLOPs·GPU 시간·비용을 스스로 어림한다.",
-      "같은 모델을 MMLU 에서 '보기별 우도 비교'와 'A~D 다음 토큰' 두 방식으로 채점해 점수 차이를 확인한다.",
-      "1B 이하 오픈 모델에 공개 선호 데이터셋으로 DPO 를 돌리고, 튜닝 전후 답변 길이와 LLM 판정 승률을 비교한다.",
-      "간단한 트랜스포머 블록을 fp32 / bf16 AMP / torch.compile 세 설정으로 돌려 스텝당 시간과 메모리를 표로 만든다."
-    ],
-    "resources": [
-      {"title": "Stanford CS229 Machine Learning 과목 홈페이지", "url": "https://cs229.stanford.edu/"},
-      {"title": "Stanford CS336 Language Modeling from Scratch", "url": "https://stanford-cs336.github.io/"},
-      {"title": "Stanford CS324 Large Language Models", "url": "https://stanford-cs324.github.io/winter2022/"},
-      {"title": "Scaling Laws for Neural Language Models (Kaplan et al., 2020)", "url": "https://arxiv.org/abs/2001.08361"},
-      {"title": "Training Compute-Optimal Large Language Models — Chinchilla (Hoffmann et al., 2022)", "url": "https://arxiv.org/abs/2203.15556"},
-      {"title": "Training language models to follow instructions with human feedback — InstructGPT (Ouyang et al., 2022)", "url": "https://arxiv.org/abs/2203.02155"},
-      {"title": "Direct Preference Optimization (Rafailov et al., 2023)", "url": "https://arxiv.org/abs/2305.18290"},
-      {"title": "LIMA: Less Is More for Alignment (Zhou et al., 2023)", "url": "https://arxiv.org/abs/2305.11206"},
-      {"title": "AlpacaFarm (Dubois et al., 2023)", "url": "https://arxiv.org/abs/2305.14387"},
-      {"title": "Chatbot Arena (Chiang et al., 2024)", "url": "https://arxiv.org/abs/2403.04132"},
-      {"title": "The Bitter Lesson (Rich Sutton, 2019)", "url": "http://www.incompleteideas.net/IncIdeas/BitterLesson.html"},
-      {"title": "FineWeb 데이터셋 (Hugging Face)", "url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb"},
-      {"title": "PyTorch torch.compile 문서", "url": "https://pytorch.org/docs/stable/generated/torch.compile.html"}
-    ]
+   ]
   },
-  "jobs": {
-    "roles": [
-      "LLM 엔지니어 / 파인튜닝 엔지니어",
-      "머신러닝 엔지니어 (사전학습·사후학습)",
-      "AI 리서치 엔지니어",
-      "LLM 데이터 엔지니어 (학습 데이터 파이프라인)",
-      "LLM 평가(Evaluation) 엔지니어",
-      "ML 인프라 / 분산 학습 엔지니어"
-    ],
-    "skills": [
-      "Python",
-      "PyTorch",
-      "CUDA",
-      "Hugging Face",
-      "Transformers",
-      "LLM",
-      "RLHF",
-      "Spark",
-      "Distributed Training",
-      "GPU",
-      "Deep Learning",
-      "NLP"
-    ]
+  {
+   "title": "언어 모델링·자기회귀 모델·교차 엔트로피 손실",
+   "start": 182,
+   "points": [
+    "언어 모델은 토큰 열에 대한 확률분포 p(x1..xL). 문법이 틀린 문장(구문 지식)이나 '치즈가 쥐를 먹었다'(의미 지식)는 확률이 낮아야 한다. 분포에서 샘플링할 수 있으니 생성 모델이다.",
+    "자기회귀(AR) 모델은 연쇄법칙으로 '앞 문맥이 주어졌을 때 다음 토큰' 확률의 곱으로 분해한다 — 근사가 아니다. 단점은 생성이 토큰마다 도는 for 루프라 길수록 느리다는 것.",
+    "절차: 토큰화 → 임베딩 → 신경망(트랜스포머) → 문맥 벡터를 선형층으로 어휘 크기 |V| 차원에 사상 → softmax. 샘플링·역토큰화는 추론 때만 필요하다.",
+    "학습은 다음 토큰의 인덱스를 맞히는 분류이므로 교차 엔트로피 손실을 쓰며, 이를 최소화하는 것은 텍스트 로그우도 최대화와 같다.",
+    "출력 차원이 어휘 크기와 같아서 나중에 토큰을 추가하기는 사실상 어렵다 — 그래서 토크나이저 설계가 중요하다."
+   ],
+   "on_screen": "'Language Modeling' 슬라이드: P(the, mouse, ate, the, cheese)=0.02, 'the the mouse…'=0.0001(Syntactic knowledge), 'the cheese ate the mouse'=0.001(Semantic knowledge), p(x1..xL)=p(x1)p(x2|x1)p(x3|x2,x1)…, 'No approx: chain rule of probability'. 'AR Language Models' 그림(She likely prefers → dogs, tokenize/forward/predict), 'AR Neural Language Models' 도식(입력 임베딩 → Neural network → d차원 벡터 → Linear layer → |V| tok), 'Loss' 슬라이드: 'I saw a cat on a mat', Loss = -log(p(cat)), max ∏p(xi|x1:i-1) = min(-Σ log p) = min L.",
+   "explain": [
+    "휴대폰 자판의 다음 단어 추천을 떠올리면 언어 모델의 직관이 잡힌다. '오늘 저녁에'까지 치면 '뭐 먹지'가 뜨고 '고양이가 하늘을'은 잘 뜨지 않는다. 언어 모델은 이것을 문장 전체로 넓힌 것으로, 토큰(단어나 단어 조각)의 나열 x₁…x_L 하나하나에 '사람이 이런 문장을 쓰거나 인터넷에 이런 문장이 있을 확률' p(x₁,…,x_L) 을 매기는 함수다. 강의 슬라이드는 'the mouse ate the cheese' 에 0.02, 같은 말을 문법이 틀리게 늘어놓은 'the the mouse ate cheese' 에 0.0001, 문법은 맞지만 치즈가 쥐를 먹는 이상한 문장에 0.001 을 준다. 앞의 차이는 구문 지식, 뒤의 차이는 의미 지식(세상에 대한 상식)이 확률에 녹아 있다는 뜻이다.",
+    "확률분포를 갖고 있으면 그 분포에서 표본을 뽑을 수 있고, 표본이 곧 새 문장이다. 그래서 언어 모델을 생성 모델이라 부른다. 지금 쓰이는 모델은 거의 모두 자기회귀(autoregressive, AR) 방식으로 분포를 표현한다. 확률의 연쇄법칙에 따라 p(x₁…x_L) = p(x₁)·p(x₂|x₁)·p(x₃|x₁,x₂)… 로 쓰면, 문장 전체의 확률은 '앞 문맥이 주어졌을 때 다음 토큰의 확률'을 차례로 곱한 것과 정확히 같다. 이건 근사가 아니라 항등식이다 — 어떤 분포든 이렇게 쓸 수 있다. 대가는 생성 속도다. 토큰을 하나 뽑고, 그것을 문맥에 붙여 다음 것을 뽑는 for 루프를 돌아야 하므로 긴 답일수록 오래 걸린다.",
+    "신경망 언어 모델의 한 스텝은 이렇게 흐른다. 'She likely prefers' 같은 문맥을 토큰으로 쪼개 정수 ID 로 바꾸고, 각 ID 를 임베딩 벡터로 바꿔 신경망(트랜스포머)에 넣는다. 신경망은 문맥 전체를 요약한 d 차원 벡터 h 를 내놓고, 선형층이 h 를 어휘 크기 |V| 만큼의 점수(logit)로 늘린 뒤 softmax 가 이를 확률분포로 만든다. 추론할 때는 이 분포에서 토큰을 하나 뽑아(예: dogs) 다시 글자로 되돌리지만, 학습할 때는 뽑을 필요 없이 실제 다음 토큰의 확률만 보면 된다. 출력 차원이 곧 어휘 크기라서, 나중에 토큰을 추가하려면 출력층을 바꿔야 한다 — 방법은 있지만 실무에서는 거의 하지 않으므로 토크나이저를 처음부터 잘 설계해야 한다는 강사의 답이 여기서 나온다.",
+    "학습은 결국 '다음 토큰이 어휘 중 몇 번인가'를 맞히는 |V|-클래스 분류다. 그래서 분류의 표준 손실인 교차 엔트로피를 쓴다. 강의 예 'I saw a cat on a mat' 에서 'I saw a' 다음 정답이 cat 이면 타깃은 cat 자리만 1 인 원-핫 분포이고, 손실은 −log p(cat | I saw a) 하나로 줄어든다. 이 손실을 줄이면 cat 의 확률은 올라가고 나머지 토큰의 확률은 함께 내려간다(softmax 의 합이 1 이므로). 모든 위치의 손실을 더하면 −Σ log p(x_i|x_<i) 인데, 이는 문장 확률 ∏p 의 로그에 마이너스를 붙인 것이므로 '손실 최소화 = 텍스트 로그우도 최대화'가 된다. 덧붙이면, 트랜스포머는 미래 토큰을 가리는 마스크 덕분에 한 번의 순전파로 문장 안 모든 위치의 다음 토큰 손실을 동시에 계산한다 — 생성은 느리지만 학습은 병렬로 빠르다."
+   ],
+   "formulas": [
+    {
+     "expr": "p(x₁,…,x_L) = ∏_{i=1}^{L} p(x_i | x₁,…,x_{i−1})",
+     "meaning": "연쇄법칙에 의한 자기회귀 분해. x_i 는 i 번째 토큰, L 은 문장 길이, p(x_i|x_<i) 는 앞 토큰들이 주어졌을 때 i 번째 토큰의 조건부확률. 근사가 아니라 항등식이다."
+    },
+    {
+     "expr": "p(v | x_<i) = softmax(W·h + b)_v = exp(z_v) / Σ_{u∈V} exp(z_u)",
+     "meaning": "h 는 신경망이 만든 d 차원 문맥 벡터, W 는 |V|×d 선형층, b 는 편향, z = W·h + b 는 토큰별 점수(logit), V 는 어휘 집합. 출력 차원이 |V| 라서 어휘 크기가 곧 출력층 크기다."
+    },
+    {
+     "expr": "L(θ) = −Σ_{i=1}^{L} log p_θ(x_i | x_<i),  max_θ ∏ p_θ = min_θ L(θ)",
+     "meaning": "θ 는 모델 파라미터. 각 위치에서 정답 토큰의 음의 로그확률(교차 엔트로피)을 더한 것. 로그는 단조증가라 곱을 최대화하는 것과 −log 합을 최소화하는 것이 같다."
+    }
+   ],
+   "example": {
+    "title": "어휘 4개짜리 장난감 모델로 교차 엔트로피 계산",
+    "body": "어휘 V = {cat, dog, mat, the}, 문맥 'I saw a' 에서 모델의 logit 이 z = [2, 1, 0, −1] 이라 하자. exp 를 취하면 [7.389, 2.718, 1.000, 0.368], 합 11.475. 확률은 cat 0.644, dog 0.237, mat 0.087, the 0.032. 정답이 cat 이면 손실 = −ln 0.644 ≈ 0.44 nat, 정답이 mat 이었다면 −ln 0.087 ≈ 2.44 nat 로 다섯 배 넘게 커진다. 경사하강은 정답 logit 을 올리고 나머지를 내리는 쪽으로 움직인다 — softmax+교차엔트로피의 logit 기울기는 (p − one_hot) 이므로 cat 이 정답일 때 기울기는 [0.644−1, 0.237, 0.087, 0.032] = [−0.356, 0.237, 0.087, 0.032] 다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import torch\nimport torch.nn.functional as F\n\nvocab = [\"cat\", \"dog\", \"mat\", \"the\"]\nlogits = torch.tensor([[2.0, 1.0, 0.0, -1.0]], requires_grad=True)\ntarget = torch.tensor([0])            # 정답 = cat\n\np = logits.softmax(-1)\nmanual = -torch.log(p[0, target])     # 손으로 쓴 교차 엔트로피\nbuiltin = F.cross_entropy(logits, target)\nprint(p.detach().numpy().round(3))    # [[0.644 0.237 0.087 0.032]]\nprint(manual.item(), builtin.item())  # 둘 다 약 0.440\n\nbuiltin.backward()\nprint(logits.grad)                    # p - one_hot = [-0.356, 0.237, 0.087, 0.032]\n\n# 문장 전체 손실 = 위치별 손실의 합 = -log(문장 확률)\nstep_probs = torch.tensor([0.2, 0.5, 0.644])   # 위치별 정답 확률(가상)\nnll = -step_probs.log().sum()\nprint(nll.item(), -torch.log(step_probs.prod()).item())  # 같은 값",
+    "note": "softmax 와 교차 엔트로피를 손으로 계산한 값이 F.cross_entropy 와 같고, logit 기울기가 p − one_hot 임을 확인한다."
+   },
+   "diagram": {
+    "title": "자기회귀 신경 언어 모델의 한 스텝",
+    "code": "flowchart LR\n  A[\"문맥 'She likely prefers'\"] --> B[\"토큰화 → ID\"]\n  B --> C[\"임베딩\"]\n  C --> D[\"트랜스포머\"]\n  D --> E[\"문맥 벡터 h (d차원)\"]\n  E --> F[\"선형층 → |V| logit\"]\n  F --> G[\"softmax → 다음 토큰 분포\"]\n  G -->|학습| H[\"정답 토큰의 -log p\"]\n  G -->|추론| I[\"샘플링 → 역토큰화 → 문맥에 붙이고 반복\"]"
+   },
+   "pitfalls": [
+    "자기회귀 분해 자체는 근사가 아니다. 근사가 들어가는 곳은 '조건부확률을 신경망으로 표현한다'는 부분이다.",
+    "학습 때는 샘플링·역토큰화가 필요 없다. 정답 토큰 확률만 쓰며, 트랜스포머는 마스크로 모든 위치를 한 번에 학습한다. 느린 for 루프는 생성(추론)의 문제다.",
+    "로그 밑을 바꾸면 손실 값의 단위(bit·nat)가 바뀐다. 비교할 때 밑을 맞추자 — 다음 장의 perplexity 가 이 문제를 없앤다."
+   ],
+   "check": [
+    {
+     "q": "정답 토큰 확률이 0.5 에서 0.25 로 떨어지면 그 위치의 교차 엔트로피(자연로그)는 얼마나 늘어나나?",
+     "a": "−ln 0.5 ≈ 0.693 에서 −ln 0.25 ≈ 1.386 으로 약 0.693(= ln 2) 늘어난다. 확률이 절반이 될 때마다 같은 만큼 늘어난다."
+    },
+    {
+     "q": "어휘가 5만 개인 모델의 출력층(선형층) 크기는? 토큰을 하나 더하면 무엇을 바꿔야 하나?",
+     "a": "d×50,000 행렬(+편향). 토큰을 추가하면 이 행렬과 임베딩 표에 행을 새로 붙이고 그 부분을 다시 학습해야 한다 — 그래서 실무에서는 토크나이저를 처음에 잘 정한다."
+    }
+   ]
   },
-  "materials": {
-    "transcript": "official",
-    "frames": 209,
-    "every_sec": 30
+  {
+   "title": "토크나이저 — 왜 필요하고 BPE 는 어떻게 학습하나",
+   "start": 600,
+   "points": [
+    "단어 단위는 오타·띄어쓰기 없는 언어(태국어)를 다루지 못하고, 문자 단위는 시퀀스가 너무 길어져 어텐션의 이차 비용이 커진다. 서브워드 토큰은 평균 3~4글자.",
+    "BPE 학습: 큰 말뭉치에서 글자마다 토큰 하나로 시작 → 가장 자주 붙어 나오는 쌍을 합쳐 새 토큰 → 원하는 어휘 크기까지 반복. 작은 토큰도 남겨 오타를 표현할 수 있게 한다.",
+    "공백·구두점에서 병합을 막는 pre-tokenizer 는 계산을 줄이려는 최적화. 적용할 때는 가능한 가장 긴 토큰을 고른다. 같은 철자의 다른 뜻(bank)은 토크나이저가 아니라 트랜스포머가 문맥으로 가른다.",
+    "숫자가 통째로 토큰이 되면(예: 327) 자릿수 연산을 일반화하기 어렵다. GPT-4 는 파이썬 들여쓰기 공백 처리를 바꿔 코드 성능을 올렸다.",
+    "강사 의견: 시퀀스 길이에 이차로 늘지 않는 아키텍처가 나오면 5~10년 뒤 바이트 단위로 돌아갈 수도 있다."
+   ],
+   "on_screen": "'Tokenizer' 슬라이드: Why? More general than words(eg typos) / Shorter sequences than with characters, 'Idea: tokens as common subsequences (~3 letters)', BPE 학습 4단계(Take large corpus → one token per character → merge common pairs → repeat), 색으로 쪼갠 'tokenizer: text to token index' 예시.",
+   "explain": [
+    "토크나이저는 레고 블록의 크기를 정하는 일과 비슷하다. 블록이 너무 크면(단어 하나 = 블록 하나) 처음 보는 모양을 만들 수 없고, 너무 작으면(글자 하나 = 블록 하나) 같은 성을 쌓는 데 블록이 너무 많이 든다. 단어 단위 토큰화는 오타가 난 단어처럼 사전에 없는 단어를 표현할 방법이 없고, 태국어처럼 띄어쓰기가 없는 언어에서는 단어를 자를 기준부터 없다. 반대로 글자 단위로 자르면 무엇이든 표현은 되지만 문장이 수천 토큰으로 길어지고, 트랜스포머의 어텐션 비용은 길이의 제곱으로 늘어난다. 그래서 자주 함께 나오는 글자 묶음에 토큰 하나를 주는 서브워드 방식이 표준이 됐고, 강사는 토큰 하나가 평균 3~4 글자라는 감을 준다.",
+    "가장 널리 쓰이는 두 방식 중 하나인 BPE(Byte Pair Encoding)의 학습 절차는 놀랄 만큼 단순하다. ① 큰 말뭉치를 준비한다 — 이건 언어 모델 학습이 아니라 토크나이저만을 위한 단계다. ② 모든 글자를 각각 하나의 토큰으로 시작한다. ③ 말뭉치 전체에서 가장 자주 붙어 나오는 인접 토큰 쌍을 찾아 새 토큰 하나로 합친다. ④ 원하는 어휘 크기에 이를 때까지(또는 더 합칠 것이 없을 때까지) 반복한다. 강의의 작은 예에서는 t 와 o 가 세 번 붙어 나와 'to' 가 먼저 생기고, 이어 'tok'(3번), 'toke'(2번), 'token'(2번), 'ex'(2번) 이 차례로 만들어진다. 실제 GPT 계열 토크나이저에 'tokenizer' 를 넣으면 'token' + 'izer' 두 조각이 된다.",
+    "질문에서 나온 세부도 알아 둘 만하다. 첫째, 공백·구두점을 넘어서는 병합을 막는 사전 토큰화(pre-tokenizer) 단계가 있다. 이론적으로는 공백도 글자처럼 다룰 수 있지만, 모든 쌍을 세는 학습이 오래 걸리므로 계산을 줄이려는 최적화이며 상당히 영어 중심적인 규칙이다. 둘째, 병합한 뒤에도 작은 토큰(글자 하나짜리 등)은 지우지 않는다. 오타나 처음 보는 단어를 글자 단위로라도 표현해야 하기 때문이다. 셋째, 학습이 끝난 토크나이저를 적용할 때는 쓸 수 있는 가장 긴 토큰을 고른다고 강사는 설명한다('token' 이 있으면 t·o·k… 로 쪼개지 않는다). 넷째, 토큰 ID 는 철자마다 하나뿐이다. 돈의 bank 와 강둑의 bank 는 같은 토큰이고, 둘을 가르는 것은 주변 단어를 보는 트랜스포머의 몫이다.",
+    "토크나이저가 성능을 직접 좌우하는 예로 강사는 숫자와 코드를 든다. 327 같은 수가 통째로 한 토큰이 되면 모델은 자릿수를 따로 보지 못해, 사람이 자리별로 더하고 올림하는 식의 조합적 일반화를 배우기 어렵다. 그래서 숫자에는 별도 토큰화 규칙을 쓰기도 한다. 또 GPT-4 의 큰 변화 하나가 파이썬 코드 앞의 들여쓰기 공백 네 칸을 다루는 방식을 바꾼 것이었고, 그 전에는 모델이 코드를 다루는 데 애를 먹었다고 한다. 강사의 의견으로는 언젠가 길이에 제곱으로 늘지 않는 구조가 나오면(5~10년 뒤쯤) 토크나이저를 버리고 바이트 단위로 돌아갈 수도 있다."
+   ],
+   "formulas": [
+    {
+     "expr": "어텐션 비용 ∝ L²,  L_token ≈ L_char / c  (c ≈ 3~4 글자/토큰)",
+     "meaning": "L 은 시퀀스 길이(토큰 수), L_char 는 글자 수, c 는 토큰 하나가 평균으로 덮는 글자 수. 토큰이 c 글자를 묶으면 어텐션 비용은 대략 c² 배 줄어든다."
+    },
+    {
+     "expr": "(a, b)* = argmax_{(a,b)} count(a 바로 뒤에 b),  새 토큰 ab 를 어휘에 추가",
+     "meaning": "BPE 한 번의 병합 규칙. a, b 는 현재 어휘의 토큰, count 는 말뭉치 전체에서 둘이 인접해 나온 횟수. 이를 원하는 어휘 크기 |V| 가 될 때까지 반복한다."
+    }
+   ],
+   "example": {
+    "title": "글자 단위 vs 서브워드 — 어텐션 비용 어림",
+    "body": "글자 1,200 개짜리 문서를 생각하자. 글자 단위면 L = 1,200, 어텐션 쌍의 수는 L² = 1,440,000. 토큰 하나가 평균 4 글자라면 L = 300, L² = 90,000 으로 16 배(= 4²) 줄어든다. 반대로 단어 단위는 더 짧지만 'tokenzier' 같은 오타 하나를 어휘에서 못 찾는다. BPE 는 'token'+'z'+'ier' 처럼 작은 조각으로라도 표현할 수 있다 — 작은 토큰을 지우지 않는 이유다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "from collections import Counter\n\ndef train_bpe(words, num_merges):\n    seqs = [list(w) for w in words]           # 글자 하나 = 토큰 하나로 시작\n    merges = []\n    for _ in range(num_merges):\n        pairs = Counter()\n        for s in seqs:\n            pairs.update(zip(s, s[1:]))         # 인접 쌍 세기\n        if not pairs:\n            break\n        (a, b), n = pairs.most_common(1)[0]\n        merges.append((a + b, n))\n        for s in seqs:                          # 모든 곳에서 a,b -> ab 로 합치기\n            i = 0\n            while i < len(s) - 1:\n                if s[i] == a and s[i + 1] == b:\n                    s[i:i + 2] = [a + b]\n                else:\n                    i += 1\n    return merges, seqs\n\nwords = [\"token\", \"token\", \"tokenizer\", \"text\", \"to\", \"index\"]\nmerges, seqs = train_bpe(words, 6)\nprint(merges)  # [('to',4) ('tok',3) ('toke',3) ('token',3) ('ex',2) ('tokeni',1)]\nprint(seqs)    # tokenizer -> ['tokeni','z','e','r'], index -> ['i','n','d','ex']",
+    "note": "공백으로 미리 자른 단어 목록에서 시작한다(사전 토큰화). 동률일 때는 먼저 센 쌍이 뽑힌다. 병합 횟수를 늘려 가며 어휘가 어떻게 자라는지 보자."
+   },
+   "pitfalls": [
+    "실제 BPE 구현은 적용할 때 학습한 병합 목록을 순서대로 다시 적용하는 경우가 많다. 결과는 대개 '가능한 긴 토큰'이 되지만, 강사의 '가장 긴 토큰을 고른다'는 설명은 단순화다.",
+    "토크나이저 학습과 언어 모델 학습은 별개 단계다. 토크나이저는 먼저, 따로, 보통 더 작은 말뭉치로 만든다.",
+    "같은 문장이라도 토크나이저가 다르면 토큰 수가 달라진다 — 다음 장의 perplexity 비교를 어렵게 만드는 원인이다."
+   ],
+   "check": [
+    {
+     "q": "말뭉치 'aaab aab' 에서 BPE 첫 병합은 무엇인가?",
+     "a": "인접 쌍을 세면 (a,a) 가 aaab 에서 2번, aab 에서 1번으로 3번, (a,b) 가 2번이다. 가장 잦은 (a,a) 가 먼저 'aa' 로 합쳐진다."
+    },
+    {
+     "q": "병합 후에도 글자 하나짜리 토큰을 남겨 두는 이유는?",
+     "a": "학습 때 못 본 단어나 오타를 글자 조각으로라도 표현할 수 있어야 하기 때문이다. 다 지우면 어휘 밖 단어를 입력할 방법이 없다."
+    },
+    {
+     "q": "숫자 327 이 한 토큰일 때 산수에 불리한 이유는?",
+     "a": "자리(3·2·7)를 따로 보지 못해 자리별 덧셈·올림 같은 조합 규칙을 배우기 어렵다. 다른 수는 전혀 다른 토큰이 되어 규칙성이 드러나지 않는다."
+    }
+   ]
   },
-  "written_at": "2026-11-20"
+  {
+   "title": "평가 1 — perplexity",
+   "start": 1140,
+   "points": [
+    "perplexity 는 검증 손실을 해석하기 쉽게 바꾼 것: 토큰 평균 손실(길이에 무관)을 지수화(로그 밑에 무관)한다. 범위는 1(완벽)~|Vocab|(무작위).",
+    "직관: 모델이 매 토큰 '몇 개 후보 사이에서 망설이나'. 표준 데이터셋에서 2017→2023 사이 약 70 에서 10 미만으로 떨어졌다.",
+    "토크나이저와 평가 데이터에 따라 값이 달라져(어휘 1만 vs 10만이면 상한이 다르다) 학계 비교에는 잘 쓰지 않지만, 직접 모델을 학습할 때는 여전히 핵심 지표다."
+   ],
+   "on_screen": "PPL(x1:L) = 2^{(1/L)·L(x1:L)} = ∏ p(xi|x1:i-1)^{-1/L} 수식과 'between 1 and |Vocab|', 연도별 test perplexity 그래프(Grave 2016 LSTM ≈ 70 → AWD-LSTM → GPT-2 → SparseGPT 175B 2023 ≈ 10 이하) 아래 '2017-2023 사이 ~70 → <10 토큰'.",
+   "explain": [
+    "객관식 시험에서 학생이 매 문제마다 '보기 몇 개 사이에서 망설였나'를 세어 본다고 하자. 완벽히 아는 학생은 하나만 보고, 전혀 모르는 학생은 모든 보기 사이에서 헤맨다. perplexity 는 언어 모델에 대해 바로 이 숫자를 잰다 — 모델이 매 토큰을 고를 때 평균적으로 몇 개 후보 사이에서 망설이는가. 근본은 검증 데이터에서의 손실(교차 엔트로피)이지만, 사람이 읽기 쉽게 두 번 손질한 값이다.",
+    "손질 하나는 평균이다. 문장 전체 손실은 길이에 비례해 커지므로 토큰당 평균 손실로 바꿔 길이와 무관하게 만든다. 손질 둘은 지수화다. 사람은 로그 공간의 숫자에 감이 약하고, 로그 값은 밑(2 인지 e 인지)에 따라 달라진다. 평균 손실을 같은 밑으로 지수화하면 밑에 무관한 '토큰 개수' 단위가 된다. 식으로는 PPL = 2^{(1/L)·Σ −log₂ p(x_i|x_<i)} 이고, 이는 각 토큰 확률의 기하평균의 역수 ∏ p(x_i|x_<i)^{−1/L} 과 같다.",
+    "범위도 이 정의에서 바로 나온다. 모델이 매번 정답에 확률 1 을 주면 손실이 0 이라 PPL = 2⁰ = 1, 즉 망설임이 없다. 아무것도 모르고 어휘 전체에 고르게 1/|V| 씩 주면 손실은 log₂|V|, PPL 은 |V| 다 — 어휘 전부 사이에서 망설인다. 그래서 강사는 perplexity 가 1 과 어휘 크기 사이에 있다고 설명한다. 표준 데이터셋에서 이 값은 2017년 무렵 약 70 에서 2023년 10 미만으로 떨어졌다. 슬라이드 그래프에는 Grave 2016 의 LSTM(캐시 포인터)에서 AWD-LSTM, GPT-2 를 거쳐 SparseGPT(175B) 까지 내려가는 선이 있다. 매 토큰 70 개 후보 사이에서 망설이던 모델이 10 개 미만으로 좁혔다는 뜻이다.",
+    "그런데도 지금 학계 벤치마크에서는 perplexity 를 거의 쓰지 않는다. 값이 토크나이저와 평가 데이터에 따라 달라지기 때문이다. 강사의 예로, 한 회사 토크나이저는 어휘가 1만 개이고 다른 회사는 10만 개라면 최악의 PPL 상한부터 열 배 차이 나고, 토큰 하나가 덮는 글자 수도 달라 같은 문장의 L 이 다르다(실제로는 이보다 복잡하다고 덧붙인다). 반면 직접 모델을 만들 때는 토크나이저와 검증 데이터를 고정할 수 있으므로 perplexity 가 여전히 가장 먼저, 가장 자주 보는 지표다. 뒤에 나올 스케일링 법칙의 세로축 '테스트 손실'도 결국 log perplexity 다."
+   ],
+   "formulas": [
+    {
+     "expr": "PPL(x_{1:L}) = 2^{(1/L)·Σ_{i=1}^{L} −log₂ p(x_i | x_<i)} = ∏_{i=1}^{L} p(x_i | x_<i)^{−1/L}",
+     "meaning": "L 은 토큰 수, p(x_i|x_<i) 는 모델이 정답 토큰에 준 확률. 지수 안은 토큰당 평균 손실(bit). 자연로그로 계산했다면 2 대신 e 를 쓰면 같은 값이 나온다(밑에 무관)."
+    },
+    {
+     "expr": "1 ≤ PPL ≤ |V|  (균등분포보다 나쁘지 않은 모델일 때)",
+     "meaning": "|V| 는 어휘 크기. 완벽한 모델(p=1)이 1, 균등 추측(p=1/|V|)이 |V|. 정답에 균등보다도 작은 확률을 주는 '자신 있게 틀리는' 모델은 |V| 를 넘을 수도 있다."
+    }
+   ],
+   "example": {
+    "title": "세 토큰짜리 문장의 perplexity 를 손으로",
+    "body": "정답 토큰에 모델이 준 확률이 0.5, 0.25, 0.125 라 하자. 손실(bit)은 −log₂ 로 1, 2, 3, 평균 2 bit. PPL = 2² = 4. 기하평균으로 확인하면 0.5×0.25×0.125 = 1/64, (1/64)^{−1/3} = 4. 자연로그로 해도 평균 손실 (0.693+1.386+2.079)/3 = 1.386 nat, e^{1.386} = 4 로 같다. 해석: 이 모델은 매 토큰 평균 4 개 후보 사이에서 망설인다. 어휘 1만 개 모델이 균등 추측을 하면 PPL 10,000, 어휘 10만 개면 100,000 — 토크나이저가 다르면 숫자의 눈금 자체가 다르다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import math\nimport torch\nimport torch.nn.functional as F\n\nprobs = [0.5, 0.25, 0.125]                      # 정답 토큰 확률\nbits = sum(-math.log2(p) for p in probs) / len(probs)\nnats = sum(-math.log(p) for p in probs) / len(probs)\nprint(2 ** bits, math.exp(nats))                # 4.0 4.0  (밑에 무관)\n\n# 실제 학습 코드에서는: 검증 손실(nat, 평균) -> exp\nV = 10_000\nlogits = torch.zeros(5, V)                      # 아무것도 모르는 모델 = 균등분포\ntargets = torch.randint(0, V, (5,))\nloss = F.cross_entropy(logits, targets)         # 평균 nat\nprint(loss.exp().item())                        # 약 10000 = |V|",
+    "note": "PyTorch 의 cross_entropy 는 자연로그 평균이라 exp 를 취하면 바로 perplexity 다. 균등분포는 정확히 |V| 가 나온다."
+   },
+   "pitfalls": [
+    "토크나이저나 평가 데이터가 다른 두 모델의 perplexity 를 직접 비교하면 안 된다. 같은 토크나이저·같은 검증셋 안에서만 의미가 있다.",
+    "perplexity 는 '사전학습된 언어 모델'에만 잘 맞는다. RLHF 를 거친 모델은 확률이 보정되지 않아 perplexity 로 평가하지 않는다(정렬 모델 평가 장 참고).",
+    "평균 손실 0.1 차이가 작아 보여도 PPL 로는 e^{0.1} ≈ 1.105 배, 즉 약 10% 차이다. 로그 공간의 작은 차이를 무시하지 말자."
+   ],
+   "check": [
+    {
+     "q": "검증 손실이 토큰당 2.3 nat 이면 perplexity 는 대략 얼마인가?",
+     "a": "e^{2.3} ≈ 10. 매 토큰 약 10 개 후보 사이에서 망설이는 수준이다."
+    },
+    {
+     "q": "모든 토큰에서 정답 확률이 0.1 이면 PPL 은? 어휘 크기와 상관있나?",
+     "a": "(0.1)^{−1} = 10. 정답 확률만으로 정해지므로 어휘 크기와 무관하다. 다만 균등분포 기준선(|V|)은 어휘 크기에 따라 다르다."
+    }
+   ]
+  },
+  {
+   "title": "평가 2 — HELM·MMLU 와 평가의 함정",
+   "start": 1290,
+   "points": [
+    "학계는 자동 채점이 가능한 NLP 벤치마크를 모아 평균 낸다 — Stanford HELM 과 Hugging Face Open LLM Leaderboard 가 대표적이다.",
+    "MMLU(Hendrycks 2020)는 천문학·대학 의학 등 수십 분야 4지선다 문제. 각 보기의 생성 확률을 비교하거나, A/B/C/D 중 다음 토큰을 고르게 제한해 채점한다.",
+    "같은 MMLU 도 채점 방식이 기관마다 달라 LLaMA-65B 가 HELM 0.637, Harness 0.488, 원 논문 방식 0.636 으로 갈렸다 — 프롬프트 차이는 별개 문제다.",
+    "train-test contamination: 기업은 무엇을 학습했는지 알지만 외부 연구자는 모른다. 테스트셋 예제를 원래 순서로 생성할 확률이 섞은 순서보다 높으면 학습에 들어갔다고 의심하는 요령을 소개한다."
+   ],
+   "on_screen": "'LLM Evaluation: agg. std NLP benchmarks' — HELM-lite[Liang+ 2022] 과제 표(NarrativeQA·NaturalQuestions·OpenbookQA·MMLU·GSM8K·MATH·LegalBench·MedQA·WMT14). 'eg MMLU' — 천문학 Type-Ia 초신성 문제와 과목별 GPT-3/UnifiedQA/Random 막대그래프. 'Evaluation: challenges' 표 — llama-65b 0.637/0.488/0.636, falcon-40b 0.571/0.527/0.558, llama-30b 0.583/0.457/0.584, gpt-neox-20b 0.256/0.333/0.262, llama-7b 0.339/0.342/0.351.",
+   "explain": [
+    "학생의 실력을 재는 가장 손쉬운 방법은 정답이 정해진 객관식 시험이다. LLM 학계도 같은 길을 택했다. 자동으로 채점할 수 있는 고전 NLP 과제를 최대한 많이 모아 각각 점수를 매기고 평균을 낸다. 대표가 Stanford 의 HELM 과 Hugging Face 의 Open LLM Leaderboard 다. 슬라이드의 HELM-lite 표에는 이야기 독해(NarrativeQA), 열린·닫힌 질의응답(NaturalQuestions), 상식 객관식(OpenbookQA), MMLU, 초등 수학 서술형(GSM8K), 경시 수학(MATH), 법률(LegalBench), 의학(MedQA), 번역(WMT14) 이 나온다. 공통점은 '금(gold) 정답'이 있다는 것이고, 그래서 모델이 정답을 내놓을 가능성을 다른 보기와 견주어 채점할 수 있다.",
+    "MMLU(Hendrycks 2020)는 그중 가장 많이 인용되고 강사도 '사전학습 모델용으로는 가장 신뢰받는' 벤치마크라 부른다. 대학 의학·대학 물리·천문학·고교 생물 등 여러 학문 분야의 4지선다 문제 모음이다. 예를 들어 천문학 문제는 'Ia형 초신성에 대해 옳은 것은?' 에 보기 넷을 준다. 채점 방식은 크게 둘이다. (가) 생성하지 않고, 질문 뒤에 각 보기 문장이 이어질 우도 p(보기|질문)을 언어 모델로 계산해 가장 큰 보기를 고른다. 언어 모델은 문장에 확률을 매기는 함수이므로 샘플링이 전혀 필요 없다. (나) 질문과 함께 'A, B, C, D 중 하나로 답하라'고 지시하고, 다음 토큰을 A·B·C·D 네 개로만 제한해 그중 확률이 가장 큰 것을 답으로 본다.",
+    "문제는 이 '방식'이 기관마다 달랐다는 것이다. 같은 MMLU, 같은 모델인데도 LLaMA-65B 는 HELM 방식으로 0.637, EleutherAI Harness 방식으로 0.488, 원 논문 방식으로 0.636 을 받았다. falcon-40b 도 0.571·0.527·0.558, gpt-neox-20b 는 0.256·0.333·0.262 로 순위까지 뒤집힌다. 강사가 강조하듯 이건 프롬프트 문구 차이를 따지기 전의 순수한 채점 절차 차이다. 일반적으로 알려진 원인으로는 보기 글자만 보느냐 보기 문장 전체를 보느냐, 긴 보기가 불리하지 않도록 길이로 나누느냐 같은 선택이 있다. 숫자 하나만 보고 모델을 비교하면 안 되는 이유다. 자유 서술형 답(같은 뜻, 다른 단어)을 어떻게 채점하느냐는 질문에는 사후학습 평가 장에서 다룬다고 미룬다.",
+    "두 번째 함정은 학습-평가 오염(train-test contamination)이다. 시험 문제가 학습 데이터에 섞여 있으면 점수는 실력이 아니라 암기다. 회사는 자기가 무엇을 학습시켰는지 알지만 외부 연구자는 모른다. Tatsu Hashimoto 연구실이 찾은 요령이 소개된다. 인터넷에 올라간 데이터셋은 대개 정해진 순서로 저장돼 있고, 언어 모델은 본 것을 그대로 이어 쓰는 데 능하다. 그러니 시험 세트의 예제들을 원래 순서대로 생성할 확률과 뒤섞은 순서로 생성할 확률을 비교해, 원래 순서 쪽이 뚜렷하게 높으면(원래 순서에 의미가 없는데도) 학습 데이터에 들어 있었다고 의심할 수 있다. 강사는 이 문제가 모델 개발자에게는 덜 중요하지만 학계 비교에는 매우 중요하다고 정리한다."
+   ],
+   "formulas": [
+    {
+     "expr": "ŷ = argmax_{k∈{A,B,C,D}} log p_θ(보기_k | 질문)",
+     "meaning": "(가) 방식. 보기_k 는 k 번째 보기 문장, log p_θ 는 그 토큰들의 로그확률 합. 긴 보기는 토큰이 많아 로그확률 합이 불리하므로 길이로 나눠 정규화하는 변형도 쓰인다 — 이런 선택이 점수 차이를 만든다."
+    },
+    {
+     "expr": "Δ = log p_θ(D_원래순서) − 평균_π log p_θ(D_π)",
+     "meaning": "오염 검사 요령. D 는 시험 세트 예제들을 이어 붙인 텍스트, π 는 무작위 순열. 순서에 의미가 없는데 Δ 가 뚜렷하게 양수면 원래 순서를 외웠다는(학습 데이터에 있었다는) 신호다."
+    }
+   ],
+   "example": {
+    "title": "두 채점 방식이 다른 답을 내는 경우",
+    "body": "질문 하나에 대해 보기 문장 전체의 로그확률이 A −12, B −9, C −15, D −11 이라면 (가) 방식은 B 를 고른다. 그런데 보기 B 가 3 토큰, D 가 6 토큰이면 토큰당 평균은 B −3.0, D −1.83 이라 길이 정규화를 하면 D 가 이긴다. (나) 방식에서는 다음 토큰 확률이 A 0.30, B 0.25, C 0.05, D 0.40 이라면 D 를 고른다. 같은 모델·같은 문제에서 절차만 바꿔도 정답 여부가 갈리고, 이것이 1만 4천여 문제에 쌓이면 0.637 과 0.488 같은 차이가 된다(숫자는 설명용 가상값)."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import math\n\ndef pick(choice_logprobs, choice_lens, normalize=False):\n    scores = {}\n    for k, lp in choice_logprobs.items():\n        scores[k] = lp / choice_lens[k] if normalize else lp\n    return max(scores, key=scores.get)\n\nlp   = {\"A\": -12.0, \"B\": -9.0, \"C\": -15.0, \"D\": -11.0}   # 보기 문장 로그확률 합\nlens = {\"A\": 4, \"B\": 3, \"C\": 5, \"D\": 6}                 # 보기 토큰 수\nprint(pick(lp, lens))                  # B  (합 기준)\nprint(pick(lp, lens, normalize=True))  # D  (토큰당 평균 기준)\n\n# (나) 방식: 다음 토큰을 A~D 로 제한\nnext_tok = {\"A\": 0.30, \"B\": 0.25, \"C\": 0.05, \"D\": 0.40}\nprint(max(next_tok, key=next_tok.get))  # D\n\n# 오염 검사 아이디어(의사코드): 원래 순서 vs 섞은 순서의 로그우도 차이\ndef contamination_gap(logp_fn, examples, shuffles):\n    base = logp_fn(\"\\n\".join(examples))\n    others = [logp_fn(\"\\n\".join(s)) for s in shuffles]\n    return base - sum(others) / len(others)   # 크게 양수면 의심",
+    "note": "logp_fn 은 텍스트의 로그우도를 돌려주는 함수(실제 모델)를 넣는 자리다."
+   },
+   "pitfalls": [
+    "논문·리더보드의 MMLU 점수를 나란히 놓기 전에 채점 방식(보기 우도 vs 다음 토큰, 길이 정규화, few-shot 개수)이 같은지 확인하자.",
+    "오염 검사에서 '원래 순서가 더 그럴듯하다'는 것은 의심의 신호일 뿐 증명이 아니다. 데이터셋 순서 자체에 패턴이 있으면 오탐이 날 수 있다."
+   ],
+   "check": [
+    {
+     "q": "MMLU 를 '보기 우도 비교' 방식으로 채점할 때 모델이 텍스트를 생성해야 하나?",
+     "a": "아니다. 질문 뒤에 각 보기가 올 확률 p(보기|질문)만 계산해 비교한다. 언어 모델이 문장에 확률을 매기는 함수라서 가능하다."
+    },
+    {
+     "q": "LLaMA-65B 의 MMLU 점수가 0.637 과 0.488 로 갈린 원인은 무엇인가?",
+     "a": "평가 기관(HELM vs Harness)마다 채점 절차가 달랐기 때문이다. 프롬프트 문구 차이와는 별개의 문제다."
+    },
+    {
+     "q": "회사 내부 개발자보다 외부 연구자에게 오염 문제가 더 심각한 이유는?",
+     "a": "회사는 학습 데이터를 알아 시험 문제를 직접 걸러낼 수 있지만 외부 연구자는 무엇이 학습됐는지 모르기 때문이다."
+    }
+   ]
+  },
+  {
+   "title": "데이터 — '깨끗한 인터넷 전부'의 실제 공정",
+   "start": 1700,
+   "points": [
+    "Common Crawl 은 매달 새 웹페이지를 모으며 약 2,500억 페이지·1PB 이상(1e6 GB). 무작위 페이지를 열어 보면 문장도 끝나지 않은 광고 HTML 이다.",
+    "공정: ① 다운로드 ② HTML 본문 추출(수식·반복 머리말이 난제) ③ NSFW·유해·PII 필터(차단 사이트 목록, 작은 분류 모델) ④ URL·문서·줄 단위 중복 제거 ⑤ 규칙 기반 필터(토큰 분포 이상치, 단어 길이, 너무 짧거나 긴 문서) ⑥ 위키백과가 링크한 페이지인지 맞히는 분류기로 품질 필터 ⑦ 도메인 분류 후 비율 조정 — 코드·책은 올리고 오락은 내린다.",
+    "학습 막바지에 학습률을 낮추며 위키백과 같은 고품질 데이터에 '과적합'시키고, 긴 문맥을 위한 continual pretraining 도 한다.",
+    "유해 데이터를 지우지 말고 벌점을 주자는 질문에는 — 그 일은 사후학습에서 한다고 답한다. 사전학습의 목적은 사람이 쓰는 말의 분포를 배우는 것."
+   ],
+   "on_screen": "'Data' 슬라이드 7단계 목록: Download all of internet. Common crawl: 250 billion pages, >1PB(>1e6 GB) / Text extraction from HTML(challenges: math, boiler plate) / Filter undesirable content(NSFW, harmful, PII) / Deduplicate(url/document/line) / Heuristic filtering / Model based filtering(Wikipedia 참조 여부) / Data mix(code/books/entertainment, scaling laws 로 재가중). 실제 Common Crawl HTML 원문 캡처.",
+   "explain": [
+    "강물을 그대로 마시는 사람은 없다. 취수 → 침전 → 여과 → 소독을 거쳐야 수돗물이 된다. 'LLM 은 인터넷 전체로 학습한다'는 말도 마찬가지로, 실제로는 거대한 정수 공정을 뜻한다. 사람들은 흔히 '깨끗한 인터넷 전체'라고 말하지만 강사는 그 말부터 정의가 안 된다고 지적한다. 인터넷은 지저분하고, 우리가 원하는 글의 분포를 대표하지도 않는다. 실제로 Common Crawl 에서 무작위로 뽑은 페이지를 열어 보면 HTML 태그와 광고 문구 사이로 'Test King World 는 서버 시스템의 최고 공급원…' 하다가 문장이 끝나지도 않은 채 말줄임표로 끊긴다. 위키백과 같은 글은 소수다.",
+    "공정의 앞 절반은 다음과 같다. ① 다운로드: 각 회사가 크롤러를 따로 쓰기보다 Common Crawl 같은 공개 크롤을 쓴다. 매달 새로 발견된 웹페이지를 덧붙이며, 강의 시점에 약 2,500억 페이지·1PB(10⁶GB) 이상이다. ② HTML 에서 본문 추출: 올바른 태그를 골라 글만 꺼내는데, 수식을 살려 내기가 특히 어렵고(그런데 수식은 학습에 중요하다) 포럼마다 반복되는 머리말·꼬리말·메뉴 같은 보일러플레이트를 걷어내야 한다. ③ 원치 않는 내용 거르기: 성인물·유해 내용·개인정보(PII). 회사마다 학습에 쓰지 않을 사이트의 아주 긴 차단 목록을 갖고 있고, 개인정보를 찾아 지우는 작은 분류 모델을 따로 학습시키기도 한다. ④ 중복 제거: URL 은 다른데 내용은 같은 페이지, 포럼마다 똑같은 머리말, 유명한 책 구절이 인터넷에 수천~수만 번 복제된 것을 URL·문서·줄 단위로 지운다. 모두 규모 때문에 어렵다.",
+    "뒤 절반은 품질을 끌어올리는 단계다. ⑤ 규칙 기반(휴리스틱) 필터: 토큰 분포가 평범한 글과 크게 다르면 이상치, 단어 길이가 비정상적으로 길면 뭔가 이상한 페이지, 단어가 세 개뿐이면 학습할 가치가 없고 천만 단어짜리도 수상하다. ⑥ 모델 기반 필터: 강사가 '귀여운 요령'이라 부르는 방법으로, 위키백과 문서들이 참고 링크로 건 페이지는 품질이 높을 것이라 가정하고 '위키백과가 인용한 페이지 vs 무작위 웹페이지'를 가르는 분류기를 학습시킨 뒤 위키백과 참고문헌을 닮은 문서를 더 남긴다. 2,500억 페이지에 돌려야 하므로 분류기는 아주 단순한 모델이다. ⑦ 데이터 믹스: 문서를 코드·책·오락 같은 도메인으로 분류하고 비중을 조절한다. 코드를 많이 넣으면 추론이 좋아진다는 경험칙이 있어 코드와 책은 올리고 오락은 낮춘다. 예전엔 손으로 정했지만 지금은 스케일링 법칙으로 하류 성능이 가장 좋은 비율을 찾는 파이프라인이 있다.",
+    "학습 일정에도 데이터 단계가 숨어 있다. 전체 데이터로 학습한 뒤, 마지막에 학습률을 낮추면서 위키백과나 사람이 모은 데이터 같은 최고 품질 데이터로 마무리한다. 강사는 이를 고품질 데이터에 일부러 '과적합'시키는 것이라 표현한다. 긴 문맥을 다루기 위한 추가 사전학습(continual pretraining)도 있다. 한 학생이 '혐오 표현을 지우지 말고 학습 데이터에 남긴 채 벌점을 주면 어떤가'라고 묻자, 강사는 바로 그것을 하되 이 단계가 아니라 사후학습에서 한다고 답한다. 사전학습의 목표는 사람이 실제로 쓰는 말의 분포를 배우는 것이고, 머리말·메뉴 같은 잡음은 그 분포가 아니어서 지운다는 구분이다. 강사는 데이터 수집을 '실용 LLM 의 핵심이라 할 만한 큰 몫'이라 부르며 아직 다 풀린 문제가 아니라고 강조한다."
+   ],
+   "formulas": [
+    {
+     "expr": "keep(d) = 1[ q(d) > τ ],  q(d) = P(위키백과가 인용한 페이지 | d)",
+     "meaning": "d 는 문서, q(d) 는 '위키백과 참고 링크 vs 무작위 웹'으로 학습한 분류기가 낸 확률, τ 는 남길 문턱값. 실제로는 문턱 대신 q 에 비례해 표본을 뽑기도 한다."
+    },
+    {
+     "expr": "w'_k ∝ α_k · w_k,  Σ_k w'_k = 1",
+     "meaning": "데이터 믹스 재가중. w_k 는 도메인 k(코드·책·오락…)의 원래 비중, α_k 는 올리거나 내리는 배수(코드·책 >1, 오락 <1), w'_k 는 정규화한 새 비중. 요즘은 α 를 작은 모델의 스케일링 실험으로 정한다."
+    }
+   ],
+   "example": {
+    "title": "가상의 문서 1,000개로 공정을 따라가 보기",
+    "body": "(설명용 가상 숫자) 크롤한 1,000 문서 중 본문 추출에 실패하거나 빈 문서 150, 차단 목록·유해 필터 100, 중복 제거 300, 휴리스틱(세 단어짜리·이상 토큰) 150 을 걸러 300 이 남는다. 품질 분류기 점수 상위 절반만 남기면 150. 도메인을 보니 코드 15·책 15·오락 60·기타 60 이고, 코드×3·책×2·오락×0.5 로 재가중하면 가중 개수는 코드 45·책 30·오락 30·기타 60(합 165)이고, 비중은 코드 10%→27%, 책 10%→18%, 오락 40%→18%, 기타 40%→36% 로 바뀐다. 이렇게 원본의 몇 분의 일만 남는 것이 정상이다 — 실제 규모에서는 강사 어림으로 100~1000 배가 줄어든다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import hashlib, re\n\ndef norm(line):                      # 공백·대소문자 차이는 같은 줄로 본다\n    return re.sub(r\"\\s+\", \" \", line.strip().lower())\n\ndef clean(docs, seen_lines=None, min_words=50, max_words=100_000):\n    seen_docs, seen_lines = set(), seen_lines or set()\n    out = []\n    for d in docs:\n        h = hashlib.md5(norm(d).encode()).hexdigest()\n        if h in seen_docs:                       # 문서 단위 중복\n            continue\n        seen_docs.add(h)\n        lines = []\n        for ln in d.splitlines():                # 줄 단위 중복(머리말·꼬리말)\n            k = hashlib.md5(norm(ln).encode()).hexdigest()\n            if norm(ln) and k not in seen_lines:\n                seen_lines.add(k)\n                lines.append(ln)\n        words = \" \".join(lines).split()\n        if not (min_words <= len(words) <= max_words):   # 너무 짧거나 긴 문서\n            continue\n        mean_len = sum(map(len, words)) / len(words)\n        if mean_len > 15:                        # 비정상적으로 긴 '단어' = 이상한 페이지\n            continue\n        out.append(\"\\n\".join(lines))\n    return out",
+    "note": "실제 파이프라인은 MinHash 같은 근사 중복 탐지와 분산 처리(Spark 등)를 쓰지만, 단계의 뜻은 같다."
+   },
+   "diagram": {
+    "title": "사전학습 데이터 공정",
+    "code": "flowchart TD\n  A[\"① Common Crawl 다운로드 (약 2,500억 페이지 · 1PB+)\"] --> B[\"② HTML → 본문 추출 (수식·보일러플레이트)\"]\n  B --> C[\"③ 유해·성인물·개인정보 필터 (차단 목록·작은 분류기)\"]\n  C --> D[\"④ 중복 제거 (URL·문서·줄)\"]\n  D --> E[\"⑤ 휴리스틱 필터 (길이·이상 토큰)\"]\n  E --> F[\"⑥ 모델 기반 필터 (위키백과 인용 페이지와 닮았나)\"]\n  F --> G[\"⑦ 도메인 분류·재가중 (코드·책↑ 오락↓)\"]\n  G --> H[\"사전학습\"]\n  H --> I[\"마무리: 낮은 학습률 + 고품질 데이터\"]"
+   },
+   "pitfalls": [
+    "유해 데이터를 사전학습에서 지우는 것과, 유해한 응답을 하지 않도록 가르치는 것은 다른 단계다. 후자는 사후학습(SFT·RLHF)의 일이다.",
+    "각 단계는 '한 줄짜리 규칙'처럼 보여도 수천억 페이지 규모에서는 CPU 와 엔지니어링이 많이 드는 별도의 문제다. 강사도 각 항목이 큰 작업이라고 강조한다.",
+    "'코드가 추론을 돕는다'는 강사도 손을 흔들며 말한 경험칙이다. 정량적 근거 없이 비율을 정하지 말고 작은 모델 실험(스케일링 법칙)으로 확인하는 것이 요즘 방식이다."
+   ],
+   "check": [
+    {
+     "q": "모델 기반 품질 필터에서 '좋은 문서'의 정답 라벨은 어디서 나오나?",
+     "a": "위키백과 문서가 참고 링크로 인용한 웹페이지를 양성, 무작위 웹페이지를 음성으로 삼는다. 인용됐다는 사실을 품질의 대리 지표로 쓰는 것이다."
+    },
+    {
+     "q": "학습 막바지에 고품질 데이터를 따로 쓰는 이유와 그때 학습률은?",
+     "a": "최종 모델의 행동을 고품질 분포 쪽으로 끌어오기 위해서다. 학습률을 낮춰 가며 그 데이터에 사실상 맞춰 넣는다(강사 표현으로는 의도적 과적합)."
+    }
+   ]
+  },
+  {
+   "title": "데이터셋 규모와 비밀주의",
+   "start": 2220,
+   "points": [
+    "데이터 인력 감: 70명가량인 LLaMA 팀에서 약 15명이 데이터를 맡고, 사람보다 CPU 연산이 많이 든다.",
+    "남은 연구 과제: 대규모 처리 효율, 도메인 균형, 합성 데이터(인터넷 데이터가 모자라기 시작), 멀티모달 데이터가 텍스트 성능을 올리는가.",
+    "기업이 데이터 공정을 숨기는 이유는 경쟁과 저작권 소송 위험(책을 학습했다고 말하지 않는다).",
+    "공개 데이터셋 규모: C4 1,500억 토큰(800GB) → The Pile 2,800억 → Dolma 3조 → FineWeb 15조. 폐쇄 모델은 LLaMA 2 2조, LLaMA 3 15조, GPT-4 약 13조(유출 기준). Common Crawl 대비 100~1000배 걸러낸 셈이다."
+   ],
+   "on_screen": "'Data' 슬라이드: Collecting well data is a huge part of practical LLM(~the key), 연구 과제·비밀주의(Competitive dynamics, Copyright liability), Common academic datasets: C4(150B tokens|800GB), The Pile(280B), Dolma(3T), FineWeb(15T), Closed: LLaMA 2(2T), LLaMA 3(15T), GPT-4(~13T?). The Pile 구성 트리맵(Pile-CC·PubMed Central·ArXiv·GitHub·FreeLaw·StackExchange·USPTO·Wikipedia·OpenWebText2 등).",
+   "explain": [
+    "데이터 일을 하는 사람이 얼마나 되느냐는 질문에 강사는 확실히 모른다고 전제한 뒤 감을 준다. 70명 남짓인 Llama 팀이라면 데이터를 맡는 사람이 15명쯤일 것이고, 사전학습 모델을 튜닝하는 사람보다 데이터 쪽이 더 많을 수도 있다. 사람보다 더 많이 드는 것은 계산 자원, 특히 CPU 다 — 수천억 페이지를 추출·필터·중복 제거하는 일은 GPU 가 아니라 대량의 CPU 작업이다. LLM 일자리가 모델 설계보다 데이터 파이프라인 쪽에 많은 이유를 짐작할 수 있다.",
+    "강사는 사전학습 데이터가 '전혀 해결되지 않은' 문제라고 말하며 남은 연구 과제를 넷 꼽는다. 첫째, 이 모든 처리를 어떻게 매우 효율적으로 하나. 둘째, 여러 도메인의 균형을 어떻게 잡나. 셋째, 합성 데이터를 만들어 쓸 수 있나 — 인터넷에 있는 데이터만으로는 모자라기 시작했기 때문에 지금 가장 큰 주제 중 하나다. 넷째, 텍스트 대신 이미지·음성 같은 멀티모달 데이터를 쓰면 텍스트 성능까지 좋아지나. 마지막 장의 전망 슬라이드에도 '데이터 벽(Data wall)' 이 따로 적혀 있다.",
+    "회사들이 데이터 공정을 공개하지 않는 이유도 둘이다. 하나는 경쟁이다 — 데이터가 사전학습 성능의 핵심이므로 비법을 내놓지 않는다. 다른 하나는 저작권 책임이다. 강사의 표현으로는, 책으로 학습했더라도 그렇다고 말하면 소송을 당할 수 있으니 말하지 않는다. 그래서 공개된 학계 데이터셋이 공정을 배우는 거의 유일한 창구가 된다.",
+    "공개 데이터셋은 빠르게 커졌다. C4 가 약 1,500억 토큰(800GB), The Pile 이 2,800억 토큰, Dolma 가 3조, FineWeb 이 15조 토큰이다. The Pile 의 구성 그림을 보면 Pile-CC(정제한 Common Crawl), PubMed Central(생명과학 논문), ArXiv, GitHub, FreeLaw, StackExchange, USPTO(특허), Wikipedia, OpenWebText2 등으로 나뉘는데, 강사는 이것이 작은 규모라서 가능한 구성이라고 짚는다. 100배 큰 데이터를 만들려면 GitHub 나 위키백과 같은 고품질 원천이 그만큼 있지 않으므로 웹 비중이 커질 수밖에 없다. 폐쇄 모델 쪽은 Llama 2 가 2조, Llama 3 가 15조 토큰이고, GPT-4 는 유출된 정보가 맞다면 약 13조 토큰으로 추정된다. 15조 토큰이 지금 최고 모델들의 규모이며 강사는 이것이 Common Crawl 원본을 100~1000 배 걸러 낸 것쯤이라고 어림한다."
+   ],
+   "formulas": [
+    {
+     "expr": "바이트/토큰 ≈ 데이터 크기(바이트) ÷ 토큰 수",
+     "meaning": "토큰 하나가 평균 몇 바이트를 덮는지. 토크나이저·언어에 따라 다르지만, 데이터셋 크기를 토큰 수와 바이트 수 사이에서 바꿔 볼 때 쓰는 어림이다."
+    }
+   ],
+   "example": {
+    "title": "강의 숫자로 15조 토큰의 크기를 어림하기",
+    "body": "C4 는 1,500억 토큰에 800GB 이므로 800×10⁹ ÷ 150×10⁹ ≈ 5.3 바이트/토큰. 같은 비율이면 15조 토큰은 15×10¹² × 5.3 ≈ 8×10¹³ 바이트 = 약 80TB(8만 GB) — 강사가 말한 '80E3 기가바이트'와 맞는다. Common Crawl 원본 1PB(100만 GB)와 바이트로만 견주면 약 12분의 1 이지만, 원본은 HTML 태그가 대부분이라 단위가 다르다. 강사는 텍스트 기준으로 100~1000 배를 걸러 낸 셈이라고 어림하면서 틀릴 수 있다고 덧붙였다. Llama 2(2조) → Llama 3(15조)는 한 세대 만에 7.5 배다."
+   },
+   "pitfalls": [
+    "공개 데이터셋 구성(The Pile 의 높은 GitHub·위키 비중)을 15조 토큰 규모에 그대로 옮길 수는 없다. 고품질 원천의 절대량이 모자란다.",
+    "GPT-4 의 약 13조 토큰은 유출 정보에 근거한 추정이다. 공식 수치가 아니다."
+   ],
+   "check": [
+    {
+     "q": "회사들이 사전학습 데이터 공정을 숨기는 두 가지 이유는?",
+     "a": "경쟁(데이터가 성능의 핵심)과 저작권 책임(무엇으로 학습했는지 밝히면 소송 위험)."
+    },
+    {
+     "q": "강사가 꼽은 데이터 쪽 미해결 과제 넷은?",
+     "a": "대규모 처리의 효율, 도메인 균형, 합성 데이터 생성(인터넷 데이터 부족), 멀티모달 데이터가 텍스트 성능에 도움이 되는지."
+    }
+   ]
+  },
+  {
+   "title": "스케일링 법칙 — 그리고 그것으로 개발하는 법",
+   "start": 2440,
+   "points": [
+    "2020년 무렵부터 실증된 사실: 데이터와 모델이 클수록 성능이 좋아진다. 수업에서 배우는 과적합이 LLM 규모에서는 나타나지 않는다(데이터를 반복하지 않고 1 epoch 미만으로 돈다).",
+    "Kaplan 2020: 연산량·데이터 크기·파라미터 수를 각각 로그 축에 놓으면 테스트 손실이 직선으로 내려간다 — 몇 년 뒤 성능을 연산 투자로 예측할 수 있다는 뜻.",
+    "아직 정체 조짐은 보이지 않지만 이론적 근거는 없다. 대부분은 언젠가 꺾일 것으로 본다.",
+    "GPU 1만 장을 한 달 쓴다면? 옛 방식은 큰 모델 30개를 하루씩 학습해 최고를 고르는 것(최종 모델은 하루치 학습).",
+    "새 방식: 크기가 커질 때 학습률을 낮추는 식의 스케일링 레시피를 찾고, 3일 이내로 여러 크기의 작은 모델에서 하이퍼파라미터를 맞춘 뒤 법칙을 적합·외삽해 최종 대형 모델을 27일 동안 학습한다.",
+    "트랜스포머와 LSTM 을 여러 크기로 학습해 보면 트랜스포머가 절편(시작점)과 기울기(스케일링 속도) 모두 낫다.",
+    "강사 의견: 활성함수 같은 사소한 구조 변경은 절편만 조금 바꿀 뿐이라 결국 중요하지 않다. 좋은 데이터는 기울기 자체를 바꾼다."
+   ],
+   "on_screen": "'Scaling laws' — 'Large models ≠> overfitting', Kaplan+ 2020 세 그래프: Compute(PF-days) 대 Test Loss L=(C_min/2.3·10^8)^-0.050, Dataset Size L=(D/5.4·10^13)^-0.095, Parameters L=(N/8.8·10^13)^-0.076, 'It works for many things!'. 'Scaling laws: tuning' — Old pipeline(30 models, final model 1 day) / New pipeline(Find scaling recipes eg lr decrease with size, tune on small models <3 days, extrapolate). 'eg LSTM' — 파라미터 대 Test Loss 그래프에서 Transformers 선이 LSTMs(1·2·4 Layers) 아래, 'A: Transformers have a better constant and scaling rate (slope)'.",
+   "explain": [
+    "머신러닝 수업은 과적합을 경계하라고 가르친다. 모델이 너무 크면 학습 데이터를 외우고 새 데이터에서 나빠진다는 것이다. 그런데 LLM 규모에서는 이 그림이 맞지 않는다. 강사는 '시험에는 과적합이 나온다'고 농담하면서, 데이터를 더 많이 넣고 모델을 더 키우면 성능이 계속 좋아진다는 사실이 오래전부터 보였고 2020년 무렵부터 실증됐다고 말한다. 핵심 이유 하나는 같은 데이터를 여러 번 돌리지 않는다는 점이다. 데이터가 충분해서 아직 아무도 여러 epoch 을 돌지 않으므로, 모델이 같은 예제를 반복해서 외울 기회가 거의 없다.",
+    "스케일링 법칙은 여기서 한 걸음 더 나아가 '얼마나' 좋아지는지를 예측한다. OpenAI 의 Kaplan 2020 논문 세 그래프는 가로축에 각각 학습 연산량(PF-days), 데이터 크기(토큰), 파라미터 수(임베딩 제외), 세로축에 테스트 손실(= log perplexity)을 놓는다. 둘 다 로그 축으로 그리면 점들이 직선 위에 놓인다. 로그-로그 직선은 멱법칙 L = (X/X₀)^{−α} 이므로, 연산을 몇 배 늘리면 손실이 얼마나 줄지 미리 말할 수 있다. 강사가 '미친 일'이라고 부르는 이유는, 2~3년 뒤 연산 투자 계획만으로 그때 모델의 성능을 예측할 수 있다는 뜻이기 때문이다. 다만 이론적 근거는 없다. 정체 조짐도 아직 보이지 않는데, 로그 축이라 수학적으로 꼭 멈출 필요는 없으며 그래도 대부분은 언젠가 꺾일 것이라 본다.",
+    "이 법칙은 개발 방식 자체를 바꿨다. GPU 1만 장을 한 달 쓸 수 있다면 무엇을 학습시키나? 예전 방식은 큰 모델에서 직접 하이퍼파라미터를 고르는 것이었다. 30일이면 큰 모델 30개를 하루씩 학습해 가장 좋은 것을 배포한다 — 결국 최종 모델은 하루치 학습만 받았다. 새 방식은 먼저 '크기를 키우면 학습률을 낮춘다' 같은 스케일링 레시피를 정하고, 30일 중 3일 이내로 여러 크기의 작은 모델들에서 하이퍼파라미터를 맞춘 뒤, 그 결과에 스케일링 법칙을 적합해 큰 모델에서 무엇이 가장 좋을지 외삽하고, 남은 27일 동안 최종 거대 모델 하나를 학습한다. 실제 규모에서 실험하지 않고 여러 작은 규모에서 실험해 큰 규모를 예측하는 것이 핵심이다.",
+    "구체적인 예가 트랜스포머 대 LSTM 이다. 둘을 여러 크기로 학습해 파라미터 수 대 테스트 손실을 그리면 각각 대략 직선이 나온다(LSTM 쪽은 덜 곧다). 이때 볼 것은 둘이다. 절편(같은 크기에서 어디서 시작하나)과 기울기(크기를 키울 때 얼마나 빨리 좋아지나). 처음엔 나빠도 기울기가 가파르면 어느 규모부터 역전되므로, 두 직선을 외삽하면 '이 예산에서는 무엇을 써야 하나'를 판단할 수 있다. 이 그림에서는 트랜스포머가 절편과 기울기 모두에서 낫다. 강사의 의견은 여기서 나온다 — 학계가 새 활성함수를 GELU 와 비교하듯 내놓는 작은 구조 변경은 대개 절편을 조금 움직일 뿐이라, 10시간 더 학습하거나 다음 세대 GPU 를 기다리면 따라잡히는 이차적인 차이다. 반면 좋은 데이터는 기울기 자체를 바꾼다."
+   ],
+   "formulas": [
+    {
+     "expr": "L(X) = (X / X₀)^{−α}  ⇔  log L = −α·log X + α·log X₀",
+     "meaning": "X 는 연산량 C·데이터 D·파라미터 N 중 하나(나머지가 병목이 아닐 때), L 은 테스트 손실, α 는 기울기(스케일링 속도), X₀ 는 절편을 정하는 상수. 로그-로그 평면에서 기울기 −α 인 직선이다."
+    },
+    {
+     "expr": "L(C) = (C_min / 2.3·10⁸)^{−0.050},  L(D) = (D / 5.4·10¹³)^{−0.095},  L(N) = (N / 8.8·10¹³)^{−0.076}",
+     "meaning": "슬라이드에 나온 Kaplan 2020 의 적합값. C_min 은 PF-days 단위 연산량, D 는 토큰 수, N 은 임베딩 제외 파라미터 수. 지수가 작아 보여도 로그 축 전체에서 꾸준히 작동한다."
+    }
+   ],
+   "example": {
+    "title": "파라미터를 2배·10배 늘리면 손실은?",
+    "body": "L(N) ∝ N^{−0.076} 이므로 N 을 2 배로 하면 손실은 2^{−0.076} ≈ 0.949 배(약 5% 감소), 10 배로 하면 10^{−0.076} ≈ 0.839 배(약 16% 감소)가 된다. 연산량을 10 배 늘리면 10^{−0.050} ≈ 0.891 배. 예를 들어 손실 3.0 인 모델에 연산 10 배를 쏟으면 약 2.67, 다시 10 배면 약 2.38 로 예측한다. 손실 0.3 차이는 perplexity 로 e^{0.3} ≈ 1.35 배 차이다 — 작아 보이는 지수가 큰 차이를 만든다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\n\n# 작은 모델 5개의 (파라미터 수, 검증 손실) — 가상 실험값\nN = np.array([1e7, 3e7, 1e8, 3e8, 1e9])\nL = 5.0 * (N / 1e7) ** -0.076 * np.exp(np.random.default_rng(0).normal(0, 0.005, 5))\n\nslope, intercept = np.polyfit(np.log(N), np.log(L), 1)   # 로그-로그 직선 적합\nalpha = -slope\nprint(f\"alpha = {alpha:.3f}\")                             # 약 0.076\n\ndef predict(n):\n    return np.exp(intercept + slope * np.log(n))\n\nfor n in [1e10, 1e11]:                                    # 10배, 100배 바깥으로 외삽\n    print(f\"N={n:.0e}  예측 손실 {predict(n):.3f}\")\n\n# 두 구조 비교: 절편과 기울기를 각각 적합해 어느 규모에서 역전되는지 본다\ndef crossover(a1, b1, a2, b2):        # log L = a + b log N 인 두 직선\n    return np.exp((a2 - a1) / (b1 - b2)) if b1 != b2 else None\nprint(crossover(np.log(6.0), -0.09, np.log(5.0), -0.07))  # 기울기가 가파른 쪽이 앞서는 N",
+    "note": "새 파이프라인의 '작은 모델로 적합 → 큰 모델로 외삽'을 그대로 흉내 낸다. 실제로는 학습률 등도 크기별로 맞춘 뒤 적합한다."
+   },
+   "diagram": {
+    "title": "GPU 1만 장 · 30일 — 옛 방식과 새 방식",
+    "code": "flowchart LR\n  subgraph 옛 방식\n    O1[\"큰 모델 30개를 하루씩\"] --> O2[\"가장 좋은 것 선택\"] --> O3[\"최종 모델 = 하루치 학습\"]\n  end\n  subgraph 새 방식\n    N1[\"스케일링 레시피 (크기↑ → 학습률↓)\"] --> N2[\"작은 모델 여러 크기 튜닝 (3일 이내)\"]\n    N2 --> N3[\"스케일링 법칙 적합·외삽\"] --> N4[\"최종 거대 모델 27일 학습\"]\n  end"
+   },
+   "pitfalls": [
+    "'LLM 은 과적합하지 않는다'는 데이터를 반복하지 않는 지금의 학습 방식에서의 관찰이다. 같은 작은 데이터를 여러 번 돌리면 LLM 도 외운다(사후학습 장의 '한 문장을 반복하면 그 문장만 낸다' 참고).",
+    "멱법칙은 다른 요소가 병목이 아닐 때만 깨끗하다. 데이터는 그대로 두고 파라미터만 키우면 직선에서 벗어난다 — 그래서 다음 장의 최적 배분 문제가 생긴다.",
+    "스케일링 법칙은 경험칙이다. 몇 자릿수 바깥으로 외삽할수록 불확실성이 커진다."
+   ],
+   "check": [
+    {
+     "q": "로그-로그 그래프에서 두 모델의 직선이 '절편은 A 가 낫고 기울기는 B 가 가파르다'면 무엇을 알 수 있나?",
+     "a": "작은 규모에서는 A 가 낫지만 어느 규모 이상에서는 B 가 역전한다. 두 직선이 만나는 지점을 외삽해 예산에 맞는 쪽을 고른다."
+    },
+    {
+     "q": "옛 파이프라인에서 최종 모델이 '하루치'만 학습되는 이유는?",
+     "a": "30일을 큰 모델 30개의 하이퍼파라미터 탐색에 하루씩 나눠 쓰고, 그중 가장 좋은 것을 그대로 쓰기 때문이다."
+    }
+   ]
+  },
+  {
+   "title": "Chinchilla 최적 배분과 Bitter lesson",
+   "start": 2960,
+   "points": [
+    "isoFLOP 곡선: 같은 연산량에서 모델 크기와 토큰 수를 바꿔 가며 손실 최저점을 찾고, 그 최적점들을 다시 로그-로그로 적합하면 '이 연산량이면 파라미터 몇 개·토큰 몇 개'가 나온다(예: 1e23 FLOPs → 약 100B 파라미터).",
+    "Chinchilla 결론은 파라미터당 20 토큰. 단 학습 비용만 본 값이고 추론 비용을 넣으면 작은 모델을 더 오래 학습하는 쪽이 낫다 — 실서비스 모델은 150:1 이상.",
+    "스케일링 법칙으로 답할 수 있는 질문: 더 오래 vs 더 크게, 데이터 수집 vs GPU 구매, 데이터 반복·혼합 비율, 너비 vs 깊이.",
+    "Sutton 의 Bitter lesson(2019): 장기적으로는 연산을 잘 활용하는 방법만 남는다. 강사는 '단순한 것을 잘, 그리고 크게'가 OpenAI 가 GPT 시리즈로 보여 준 교훈이라고 정리한다."
+   ],
+   "on_screen": "'Scaling laws: eg Chinchilla' [Hoffmann+ 2022] — 6e18~3e21 FLOPs isoFLOP 곡선(100M~30B 파라미터 대 학습 손실), FLOPs 대 최적 파라미터·최적 토큰 직선, 'A: Use 20:1 tokens for each parameter', '*doesn't consider inference cost ⇒ in practice use larger (>150:1)'. 'Bitter lesson' — 'only thing that matters in the long run is the leveraging of computation' [Sutton 2019].",
+   "explain": [
+    "예산이 정해져 있을 때 큰 엔진을 달고 연료를 조금 넣을지, 작은 엔진에 연료를 가득 넣을지 고르는 문제와 같다. 모델을 키워도 좋아지고 데이터를 늘려도 좋아지는데, 학습 연산량 C 는 대략 파라미터 수 N 과 토큰 수 D 의 곱에 비례하므로 둘을 동시에 무한히 늘릴 수는 없다. 같은 연산이면 큰 모델을 적은 데이터로 학습하는 것과 작은 모델을 많은 데이터로 학습하는 것 중 무엇이 손실을 더 낮추나? 이것을 처음 체계적으로 보인 것이 DeepMind 의 Chinchilla 논문(Hoffmann 2022)이다.",
+    "방법은 isoFLOP 곡선이다. 연산량을 6×10¹⁸, 10¹⁹, 3×10¹⁹ … 3×10²¹ FLOPs 처럼 몇 단계로 고정하고, 각 단계 안에서 모델 크기(1억~300억)와 토큰 수를 서로 반대로 바꿔 가며(곱이 일정하게) 여러 모델을 학습한다. 각 연산량마다 '파라미터 수 대 학습 손실' 그래프가 U 자를 그리는데, 너무 작은 모델은 용량이 모자라고 너무 큰 모델은 데이터가 모자라서다. 각 U 의 바닥을 골라 (연산량, 최적 파라미터 수), (연산량, 최적 토큰 수) 쌍을 만들고, 이를 다시 로그-로그에 그려 직선을 적합한다. 그러면 '이 연산량이면 파라미터 몇 개, 토큰 몇 개'가 나온다. 슬라이드 그래프의 보조선은 약 630억 파라미터와 1.4조 토큰을 가리킨다. 강사는 실제로는 임베딩 파라미터를 셀지 같은 작은 결정이 많지만 잘하면 이 관계가 정말 성립한다고 말한다.",
+    "결론은 '파라미터 1개당 토큰 약 20개'다. 파라미터를 하나 늘리면 토큰을 20개 더 학습시키는 것이 학습 연산 대비 최적이다. 그러나 이 별표에는 단서가 붙는다 — 학습 비용만 따진 값이다. 실제 회사는 추론 비용을 내야 한다. 사용자가 수억 명인 서비스(강사는 ChatGPT 를 예로 든다)라면 작은 모델이 평생 돌아가며 아끼는 돈이 크므로, 같은 품질을 낼 수 있다면 작은 모델을 훨씬 더 오래 학습시키는 편이 낫다. 추론 비용까지 넣은 연구들에 따르면 파라미터당 150 토큰 이상이 적절하고, 강사는 실서비스에 쓰이는 최고 모델들이 대략 그쯤으로 학습된다고 말한다. 스케일링 법칙으로 답할 수 있는 질문은 이 밖에도 많다 — 더 오래 학습할까 더 크게 할까, 데이터를 더 모을까 GPU 를 더 살까, 데이터를 반복해도 되나, 데이터 믹스 비율, LSTM 대 트랜스포머, 너비 대 깊이.",
+    "강사는 이 장을 Rich Sutton 의 2019년 글 'Bitter Lesson' 으로 마무리한다. 스케일링 법칙이 있으니 연산이 많을수록 좋은 모델이 나오고, 무어의 법칙 계열의 추세로 연산은 계속 싸진다. 그렇다면 장기적으로 남는 것은 연산을 잘 활용하는 방법뿐이고, 사람이 공들여 넣은 영리한 구조는 결국 규모에 밀린다. 그래서 중요한 것은 시스템과 데이터이고 작은 구조 차이(활성함수 등)는 덜 중요하다는 것이 강사의 해석이다. 그는 본인도 그런 연구를 오래 했다고 인정하면서, OpenAI 가 GPT 시리즈로 보여 준 교훈을 '복잡하게 만들지 말고 단순한 것을 잘, 그리고 크게 하라'로 요약한다."
+   ],
+   "formulas": [
+    {
+     "expr": "C ≈ 6·N·D",
+     "meaning": "C 는 학습 FLOPs, N 은 파라미터 수, D 는 학습 토큰 수. 토큰 하나당 순전파에 약 2N(곱셈+덧셈), 역전파에 약 4N FLOPs 가 들어 합이 6N 이라는 표준 어림이다."
+    },
+    {
+     "expr": "D* ≈ 20·N*  ⇒  C ≈ 6·N*·20·N* = 120·N*²  ⇒  N* ≈ √(C/120)",
+     "meaning": "Chinchilla 최적 배분. N*, D* 는 연산 C 에서 손실을 최소로 하는 파라미터 수·토큰 수. 연산을 4 배 늘리면 N*, D* 를 각각 2 배씩 늘린다는 뜻이다."
+    },
+    {
+     "expr": "D ≈ 150·N 이상 (추론 비용 고려)",
+     "meaning": "추론까지 포함한 총비용을 줄이려면 같은 품질을 더 작은 N 으로 내야 하므로 토큰을 더 많이 먹인다. 강사가 말한 실서비스 경향."
+    }
+   ],
+   "example": {
+    "title": "10²³ FLOPs 가 있으면 몇 B 모델을 몇 토큰으로?",
+    "body": "20:1 규칙으로 N* = √(10²³/120) = √(8.33×10²⁰) ≈ 2.9×10¹⁰ → 약 290억 파라미터, D* = 20×2.9×10¹⁰ ≈ 5.8×10¹¹ → 약 5,800억 토큰. 검산: 6×2.9×10¹⁰×5.8×10¹¹ ≈ 1.0×10²³. 같은 연산을 150:1 로 쓰면 N = √(10²³/900) ≈ 1.05×10¹⁰ → 약 105억 파라미터를 1.6조 토큰으로 학습한다. 학습 손실은 조금 손해지만 추론할 때마다 약 2.8 배 싼 모델이 된다. 슬라이드 보조선의 630억 파라미터라면 20:1 로 1.26조 토큰, 연산은 약 4.8×10²³ FLOPs 다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import math\n\ndef allocate(C, tokens_per_param=20):\n    # C = 6 N D,  D = r N  ->  N = sqrt(C / (6 r))\n    N = math.sqrt(C / (6 * tokens_per_param))\n    return N, tokens_per_param * N\n\nfor C in [1e21, 1e23, 1e25]:\n    for r in [20, 150]:\n        N, D = allocate(C, r)\n        print(f\"C={C:.0e} r={r:>3}  N={N/1e9:7.1f}B  D={D/1e12:7.2f}T\")\n\n# 연산 4배 -> N, D 각 2배인지 확인\nn1, d1 = allocate(1e23); n4, d4 = allocate(4e23)\nprint(round(n4 / n1, 3), round(d4 / d1, 3))   # 2.0 2.0",
+    "note": "'연산을 4배 늘리면 모델과 데이터를 각각 2배'라는 Chinchilla 의 균형 성질을 숫자로 확인한다."
+   },
+   "pitfalls": [
+    "20:1 은 '학습 연산 대비' 최적이다. 서비스할 모델이라면 추론 비용 때문에 그보다 훨씬 많은 토큰(150:1 이상)을 쓰는 것이 합리적이다.",
+    "Kaplan 2020 과 Chinchilla 2022 는 최적 배분에 대해 다른 결론을 냈었다(Kaplan 은 모델을 더 키우는 쪽). 강의는 Chinchilla 쪽을 표준으로 소개한다 — 논문을 읽을 때 연도와 설정을 확인하자.",
+    "Bitter lesson 은 '구조 연구는 무의미하다'가 아니라 '연산을 잘 활용하는 방법이 결국 이긴다'는 주장이다. 트랜스포머 자체가 연산을 잘 활용하는 구조였다."
+   ],
+   "check": [
+    {
+     "q": "isoFLOP 곡선이 U 자가 되는 이유는?",
+     "a": "연산량이 고정이면 모델이 너무 작을 땐 용량이 모자라고, 너무 클 땐 그만큼 토큰을 적게 봐서 데이터가 모자라기 때문이다. 그 사이 어딘가가 최적이다."
+    },
+    {
+     "q": "연산 예산이 9배가 되면 Chinchilla 최적 모델 크기와 토큰 수는 각각 몇 배가 되나?",
+     "a": "N* ∝ √C 이고 D* ∝ √C 이므로 각각 3배."
+    }
+   ]
+  },
+  {
+   "title": "SOTA 모델 학습비 봉투 뒷면 계산 — LLaMA 3 405B",
+   "start": 3300,
+   "points": [
+    "데이터 15.6조 토큰, 파라미터 405B → 파라미터당 약 40 토큰(Chinchilla 보다 많고 추론 최적보다 적은 학습 최적 쪽).",
+    "FLOPs ≈ 6·N·P = 3.8e25. 1e26 FLOPs 부터 추가 심사를 받게 한 미국 행정명령 기준의 절반쯤 — 규제선 바로 아래로 맞춘 것으로 본다.",
+    "H100 1만6천 장, 평균 400 TFLOPS 로 약 70일·2,600만 GPU 시간(논문 공시는 약 3,000만).",
+    "비용: H100 임대 시간당 약 2달러 × 2,600만 = 5,200만 달러 + 인건비 50명 × 50만 달러 = 2,500만 달러 → 약 7,500만 달러(6,500만~8,500만). 탄소 약 4,400t CO2eq 로 JFK–런던 왕복 2천 회분.",
+    "다음 세대 모델은 FLOPs 를 약 10배씩 늘리려 한다 — 전력과 GPU 확보가 제약이다."
+   ],
+   "on_screen": "'Training a SOTA model' 슬라이드 계산식: Data 15.6T tokens, Parameters 405B(~40 tok/param ⇒ train compute optimal), FLOPs: 6NP = 6·15.6e12·405e9 = 3.8e25(~2x less than executive order), Compute: 16K H100 with average throughput of 400 TFLOPS, Time: 3.8e25/(400e12·3600) = 26M GPU hour/(16e3·24) = 70 days(From paper ~30M), Cost: $2/h·26M + 500k/y·50employee = $52M+$25M = ~$75M, Carbon: 26Mh·0.7kW·0.24kg/kWh = 4400 tCO2eq(~2k return tickets JFK-LHR), Next model? ~10x more FLOPs.",
+   "explain": [
+    "봉투 뒷면 계산은 정확한 값이 아니라 자릿수를 맞히는 계산이다. 몇 배 틀려도 '수백만 달러인가 수억 달러인가'를 아는 것만으로 의사결정에 충분하다. 강사는 강의 당시 가장 좋은 공개 모델이던 Llama 3 405B 를 예로, 공개된 숫자 몇 개만으로 학습 연산·기간·비용·탄소를 차례로 어림한다. 스스로 '몇 배쯤 틀릴 수 있다'고 전제한다.",
+    "출발점은 데이터 15.6조 토큰과 파라미터 4,050억 개다. 나누면 파라미터당 약 40 토큰으로, Chinchilla 의 20 보다는 많고 추론 최적의 150 보다는 적다 — 슬라이드 표현으로 '학습 연산 최적' 쪽을 택한 셈이다. 학습 연산은 앞 장의 6NP 근사로 6 × 15.6×10¹² × 405×10⁹ ≈ 3.8×10²⁵ FLOPs 다. 이 숫자가 흥미로운 이유는 미국 행정명령(바이든 정부)이 10²⁶ FLOPs 이상 학습한 모델을 특별 심사 대상으로 삼았기 때문이다. 3.8×10²⁵ 는 그 기준의 약 절반 아래라서, 강사는 규제선 바로 아래로 맞춘 것으로 해석한다.",
+    "기간은 GPU 수와 실효 처리량으로 나눠 구한다. H100 1만 6천 장을 썼고 평균 처리량을 장당 400 TFLOPS 로 잡으면, 3.8×10²⁵ ÷ (400×10¹² × 3,600초) ≈ 2,600만 GPU 시간이고, 이를 1만 6천 장 × 24시간으로 나누면 약 70일이다. 논문이 공개한 값은 약 3,000만 GPU 시간이라 어림보다 조금 더 걸렸는데, 강사는 학습 중 문제가 있었을 수 있다고만 말한다. 비용은 임대료로 어림한다. H100 임대 하한을 시간당 2달러로 잡으면 2,600만 시간 × 2달러 = 5,200만 달러. 임대 업체도 마진이 크지 않으니 실제 자체 비용도 크게 낮지는 않을 것이다. 여기에 인건비 50명 × 연 50만 달러 = 2,500만 달러를 더해 약 7,500만 달러, 범위로는 6,500만~8,500만 달러다.",
+    "탄소 배출도 계산한다. 2,600만 GPU 시간 × 장당 0.7kW × kWh 당 0.24kg CO₂ ≈ 4,400톤 CO₂ 환산으로, JFK–런던 왕복 항공권 약 2천 장 분량이다. 강사는 지금 규모에서는 거대하지만 결정적인 문제는 아니고, 100배쯤 커질 GPT-6·7 무렵에는 실제 문제가 될 수 있다고 본다. 마지막으로 다음 세대 모델은 대체로 FLOPs 를 10배씩 늘리려 하며, 그 한계는 전력을 충분히 확보하느냐와 GPU 를 살 수 있느냐다. 사전학습 파트는 여기서 끝나고, 시스템 최적화는 시간이 남으면 마지막에 다루겠다며 사후학습으로 넘어간다."
+   ],
+   "formulas": [
+    {
+     "expr": "FLOPs = 6·N·P",
+     "meaning": "슬라이드 표기. N 은 학습 토큰 수(데이터), P 는 파라미터 수. 앞 장의 C ≈ 6ND 와 같은 식이며 근사다."
+    },
+    {
+     "expr": "GPU 시간 = FLOPs ÷ (실효 처리량[FLOP/s] × 3,600),  일수 = GPU 시간 ÷ (GPU 수 × 24)",
+     "meaning": "실효 처리량은 이론 최대가 아니라 실제 평균(여기선 400 TFLOPS). 3,600 은 초→시간, 24 는 시간→일 변환."
+    },
+    {
+     "expr": "비용 = 시간당 임대료 × GPU 시간 + 인원 × 연봉,  CO₂ = GPU 시간 × 장당 전력(kW) × 배출계수(kg/kWh)",
+     "meaning": "강의의 가정값은 시간당 2달러, 50명 × 50만 달러, 0.7kW, 0.24kg/kWh."
+    }
+   ],
+   "example": {
+    "title": "Llama 3 405B 계산을 한 줄씩 따라가기",
+    "body": "① 6 × 15.6e12 × 405e9 = 3.79e25 FLOPs. ② 400e12 FLOP/s × 3,600 = 1.44e18 FLOP/GPU시간 → 3.79e25 ÷ 1.44e18 ≈ 2.63e7 = 2,630만 GPU 시간. ③ 2.63e7 ÷ (16,000 × 24 = 384,000) ≈ 68.5 일 ≈ 70 일. ④ 2.63e7 × 2달러 ≈ 5,260만 달러, + 2,500만 = 약 7,700만(강의는 반올림해 7,500만). ⑤ 2.63e7 × 0.7 × 0.24 ≈ 4.4e6 kg = 약 4,400톤. 연습 삼아 같은 15.6조 토큰으로 80억 파라미터 모델을 학습하면 6×15.6e12×8e9 ≈ 7.5e23 FLOPs, 같은 처리량에서 약 52만 GPU 시간, 임대료 약 104만 달러다(강의 밖 연습 계산)."
+   },
+   "code": {
+    "lang": "python",
+    "src": "def envelope(tokens, params, n_gpu, tflops, usd_per_h=2.0,\n             staff=50, salary=500_000, kw=0.7, kg_per_kwh=0.24):\n    flops = 6 * tokens * params\n    gpu_h = flops / (tflops * 1e12 * 3600)\n    days = gpu_h / (n_gpu * 24)\n    cost = usd_per_h * gpu_h + staff * salary\n    co2_t = gpu_h * kw * kg_per_kwh / 1000\n    return dict(flops=f\"{flops:.2e}\", gpu_h=f\"{gpu_h/1e6:.1f}M\",\n                days=round(days), cost=f\"${cost/1e6:.0f}M\", co2_t=round(co2_t))\n\nprint(envelope(15.6e12, 405e9, 16_000, 400))\n# {'flops': '3.79e+25', 'gpu_h': '26.3M', 'days': 69, 'cost': '$78M', 'co2_t': 4423}\nprint(envelope(15.6e12, 8e9, 16_000, 400, staff=0))\nprint(6 * 15.6e12 * 405e9 / 1e26)   # 행정명령 기준선 대비 약 0.38",
+    "note": "가정값을 바꿔 가며 어느 항이 비용을 좌우하는지 본다(GPU 임대료가 대부분)."
+   },
+   "pitfalls": [
+    "400 TFLOPS 는 H100 의 이론 최대가 아니라 실제 평균 처리량 가정이다. 이론 최대로 나누면 기간이 크게 과소추정된다(시스템 장의 MFU 참고).",
+    "임대료 기반 비용은 하한에 가까운 어림이다. 실패한 실험, 데이터 처리 CPU, 사후학습, 추론 비용은 포함되지 않았다.",
+    "슬라이드의 '~2x less than executive order' 는 3.8e25 가 1e26 의 약 0.38배라는 뜻이다. 정확히 절반이 아니다."
+   ],
+   "check": [
+    {
+     "q": "Llama 3 405B 의 파라미터당 토큰 수는 약 얼마이고, Chinchilla·추론 최적과 비교하면?",
+     "a": "15.6조 ÷ 4,050억 ≈ 38.5, 약 40. Chinchilla(20)보다 많고 추론 최적(150 이상)보다 적다."
+    },
+    {
+     "q": "같은 모델을 처리량 200 TFLOPS 로만 돌렸다면 기간은?",
+     "a": "처리량이 절반이면 GPU 시간이 두 배(약 5,300만)라 약 140일이 걸린다."
+    }
+   ]
+  },
+  {
+   "title": "사후학습 — 정렬, SFT, Alpaca, LIMA",
+   "start": 3570,
+   "points": [
+    "순수 언어 모델 GPT-3 에 '6살에게 달 착륙을 설명해 줘'를 주면 비슷한 질문 목록을 이어 쓴다. 정렬은 사용자 지시와 설계자의 의도(유해 요청 거절 등)를 따르게 만드는 단계다.",
+    "원하는 데이터(질문-모범답변)는 비싸고 적고, 사전학습 데이터는 많지만 원하는 형태가 아니다 → 사전학습 모델을 소량 데이터로 파인튜닝한다. SFT 의 손실은 사전학습과 똑같은 다음 토큰 예측이고 학습률 등 하이퍼파라미터만 다르다(1e-5 수준).",
+    "Alpaca: 사람이 쓴 175개 시드로 text-davinci-003 이 5만2천 개 지시-응답을 만들고 LLaMA 7B 를 SFT. 합성 데이터 분야의 출발점이 됐다.",
+    "LIMA: SFT 데이터를 2천→3만2천 개로 늘려도 품질이 거의 그대로. 강사 해석은 SFT 가 새 지식이 아니라 사전학습이 이미 본 여러 '사용자 유형' 중 하나를 고르게 하는 것이라는 것.",
+    "합성 데이터 반복의 한계를 묻는 질문에, 강사는 LLM 이 초안을 쓰고 사람이 고치는 human-in-the-loop·능동학습 쪽으로 갈 것이라는 의견을 낸다.",
+    "사전학습은 '초기화'다 — 산업은 전체 가중치를 튜닝하고 LoRA 는 주로 오픈소스 기법. 적은 데이터가 크게 작용하는 건 높은 학습률로 그것만 다시 학습하기 때문(Alpaca 는 3 epoch)."
+   ],
+   "on_screen": "'Language Modeling ≠ assisting users' — GPT-3 의 엉뚱한 완성 예시. 'Task: alignment' — 정상 답변과 혐오 트윗 거절 캡처, Background(desired data scarce and expensive / pretraining data scales but not what we want). 'Supervised finetuning (SFT)' — Open Assistant 의 monopsony 예시, 'This was the key to GPT-3 → ChatGPT model!'. 'Scalable data for SFT: eg Alpaca'[Taori+ 2023] 도식(175 self-instruct seed → text-davinci-003 → 52K → LLaMA 7B → Alpaca 7B). 'quantity?' — LIMA[Zhou+ 2023] 2K~32K 학습 예제에서 생성 품질 ≈3.8 로 평평한 그래프.",
+   "explain": [
+    "도서관의 책을 전부 읽은 사람이 있다고 하자. 아는 건 많지만, 질문을 받으면 답하는 대신 그 질문이 실린 책의 다음 쪽을 읊을지도 모른다. 사전학습만 마친 언어 모델이 정확히 그렇다. 강의 슬라이드에서 GPT-3 에 '여섯 살 아이에게 달 착륙을 몇 문장으로 설명해 줘'를 넣으면, 답 대신 '여섯 살에게 중력 이론을 설명해 줘', '상대성 이론을 설명해 줘', '빅뱅을 설명해 줘'… 같은 비슷한 질문 목록을 이어 쓴다. 인터넷에서는 질문 하나 뒤에 비슷한 질문 목록이 오는 경우가 많았기 때문이다. 언어 모델링은 사용자를 돕는 일과 같지 않다.",
+    "그래서 사후학습의 과제를 정렬(alignment)이라 부른다. 목표는 모델이 사용자의 지시를 따르고, 동시에 설계자의 바람(예: 모더레이션 — 특정 집단을 비하하는 트윗을 써 달라면 거절)을 지키게 하는 것이다. 배경에는 데이터의 비대칭이 있다. 원하는 행동을 담은 데이터(질문과 모범 답)는 무엇인지 분명하지만 사람에게 받아야 하므로 비싸고 적다. 사전학습 데이터는 원하는 형태가 아니지만 얼마든지 많다. 해법은 둘을 이어 붙이는 것이다 — 인터넷 전체로 사전학습해 언어와 지식을 갖춘 모델을 만든 뒤, 적은 양의 원하는 데이터로 가중치를 조금만 바꾼다(파인튜닝).",
+    "그 첫 단계가 SFT(supervised fine-tuning)다. 이름의 'fine-tuning' 은 다음 토큰 예측이라는 똑같은 언어 모델링 손실로 계속 학습한다는 뜻이고, 'supervised' 는 그 대상이 사람이 써 준 모범 답이라는 뜻이다. 강의 예는 Open Assistant 에 모인 '수요독점(monopsony)이라는 용어의 의미를 짧게 소개해 달라'와 사람이 쓴 답이다. 강사는 이 단계가 GPT-3(연구자들만 알던 모델)를 ChatGPT(모두가 아는 서비스)로 바꾼 열쇠였다고 말한다. 손실이 같다면 사전학습과 무엇이 다른가? 데이터를 모으는 방식이 다르고 하이퍼파라미터가 다르다. 사전학습은 끝에 학습률이 거의 0 까지 내려가는데, SFT 에서는 1e-5 수준으로 다시 올린다. 사전학습을 '초기화'로 보면 이해가 쉽다 — 한 문장만 큰 학습률로 계속 반복해도 결국 모델은 그 문장만 내뱉게 되듯, 수천 개의 예제도 충분한 학습률과 반복이면 모델의 행동을 크게 바꾼다. Alpaca 는 3 epoch 을 돌았고, 강사는 중요한 것은 반복 횟수보다 실효 학습률이라고 덧붙인다. 산업에서는 보통 모든 가중치를 바꾸고, 일부 층의 출력에 작은 보정만 더하는 LoRA 는 주로 오픈소스 쪽에서 쓴다.",
+    "사람이 쓴 데이터는 느리고 비싸므로 LLM 으로 데이터를 늘리는 생각이 자연스럽다. 강사 팀의 Alpaca(Taori 2023)가 그 예다. 사람이 쓴 지시-응답 175개를 시드로 당시 최고 모델 text-davinci-003 에게 '이런 식의 질문과 답을 더 만들어 달라'고 해 5만 2천 개를 얻고, 당시 최고 사전학습 모델 LLaMA 7B 를 그것으로 SFT 해 Alpaca 7B 를 만들었다. ChatGPT 의 학계판 재현으로 시작했지만 지금은 합성 데이터라는 큰 분야가 됐다. 더 놀라운 것은 양의 문제다. LIMA(Zhou 2023)는 SFT 데이터를 2천 개에서 3만 2천 개로 늘려도 생성 품질이 약 3.8 로 거의 그대로임을 보였다. 강사의 해석은 이렇다 — 사전학습 모델은 이미 인터넷의 온갖 '사용자 유형'(글머리표로 쓰는 사람, 질문에 답을 다는 사람…)의 분포를 갖고 있고, SFT 는 새 지식을 넣는 게 아니라 그중 어떤 유형처럼 말할지를 골라 줄 뿐이다. 합성 데이터만 대를 이어 쓰면 결국 정체하지 않느냐는 질문에는, 모델이 초안을 쓰고 사람이 고치는 협업(편집은 처음부터 쓰는 것보다 훨씬 빠르다)과 사람의 입력이 꼭 필요한 예제만 묻는 능동학습 쪽으로 갈 것이라는 의견을 낸다."
+   ],
+   "formulas": [
+    {
+     "expr": "L_SFT(θ) = −Σ_{t=1}^{|y|} log p_θ(y_t | x, y_<t)",
+     "meaning": "x 는 지시(프롬프트), y 는 사람이 쓴 모범 답, y_t 는 답의 t 번째 토큰. 사전학습과 같은 다음 토큰 손실이며, 흔히 프롬프트 토큰은 손실에서 빼고 답 토큰에만 건다."
+    }
+   ],
+   "example": {
+    "title": "답 토큰 3개짜리 SFT 손실",
+    "body": "프롬프트 5 토큰 뒤에 답 3 토큰이 오고, 모델이 답 토큰에 준 확률이 0.5, 0.8, 0.9 라 하자. 손실 = −(ln 0.5 + ln 0.8 + ln 0.9) = 0.693 + 0.223 + 0.105 = 1.021, 토큰당 평균 0.340. 프롬프트 토큰 5개의 손실은 세지 않는다(마스킹). 학습률을 1e-5 로 두고 이 예제를 여러 번 보면 세 확률이 모두 1 에 가까워지며 손실이 0 으로 내려간다 — 적은 데이터라도 반복과 학습률로 행동을 바꿀 수 있다는 뜻이다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import torch\nimport torch.nn.functional as F\n\nV = 8\nprompt = torch.tensor([1, 4, 2, 7, 3])          # 지시 5 토큰\nanswer = torch.tensor([5, 6, 0])                # 모범 답 3 토큰\ntokens = torch.cat([prompt, answer])\n\nlogits = torch.randn(len(tokens) - 1, V)        # 모델 출력 자리(가상): 위치 t 가 t+1 을 예측\nlabels = tokens[1:].clone()\nlabels[: len(prompt) - 1] = -100                # 프롬프트 쪽 정답은 손실에서 제외\n\nloss = F.cross_entropy(logits, labels, ignore_index=-100)\nn = (labels != -100).sum().item()\nprint(n, loss.item())                           # 답 토큰 3개에만 손실이 걸린다\n\n# 확률 0.5, 0.8, 0.9 를 주는 경우의 손실을 직접 확인\np = torch.tensor([0.5, 0.8, 0.9])\nprint((-p.log()).sum().item(), (-p.log()).mean().item())   # 1.021, 0.340",
+    "note": "ignore_index=-100 은 Hugging Face 계열에서도 쓰는 관례다. 프롬프트까지 손실에 넣는 변형도 있다."
+   },
+   "pitfalls": [
+    "SFT 는 사전학습과 '손실이 다른' 단계가 아니다. 같은 다음 토큰 손실을 다른 데이터·다른 학습률로 이어 돌리는 것이다.",
+    "LIMA 결과는 SFT 데이터의 양이 덜 중요하다는 것이지 질이 중요하지 않다는 뜻이 아니다. 뒤의 RLHF 에서는 데이터 양이 훨씬 커진다(선호 데이터 100만 단위).",
+    "합성 데이터를 만든 원래 모델의 이용약관·라이선스 문제는 강의가 다루지 않았다. 실무에서는 별도로 확인해야 한다."
+   ],
+   "check": [
+    {
+     "q": "GPT-3 가 '달 착륙을 설명해 줘'에 비슷한 질문 목록을 이어 쓴 이유는?",
+     "a": "사전학습은 인터넷 텍스트의 다음 토큰을 흉내 내는 것이고, 인터넷에서는 질문 뒤에 다른 질문 목록이 오는 일이 흔했기 때문이다. 답하도록 학습된 적이 없다."
+    },
+    {
+     "q": "Alpaca 데이터는 어떻게 만들어졌나?",
+     "a": "사람이 쓴 175개 지시-응답을 시드로 text-davinci-003 이 5만 2천 개를 생성했고, 이것으로 LLaMA 7B 를 SFT 했다."
+    },
+    {
+     "q": "LIMA 그래프가 평평하다는 것에 대한 강사의 해석은?",
+     "a": "SFT 는 지식을 넣는 게 아니라, 사전학습 모델이 이미 아는 여러 사용자 유형 중 어떤 방식으로 답할지를 고르게 하는 것이라서 수천 개면 충분하다."
+    }
+   ]
+  },
+  {
+   "title": "RLHF — 보상 모델·PPO 에서 DPO 로",
+   "start": 4170,
+   "points": [
+    "행동 복제(SFT)의 문제: ① 사람의 생성 능력에 묶임(평가는 생성보다 쉽다) ② 모델이 모르는 정답(예: 실제 존재하는 참고문헌)을 따라 쓰게 하면 그럴듯하게 지어내는 법, 즉 환각을 배울 수 있음 ③ 모범답안 작성 비용.",
+    "RLHF 파이프라인: 지시마다 SFT 모델로 답 두 개 생성 → 라벨러가 더 나은 쪽 선택 → 선호되는 답을 더 내도록 튜닝.",
+    "보상: 기준 대비 이겼나(이진, 정보가 적음) 대신 Bradley-Terry 로지스틱 손실로 보상 모델을 학습해 연속값(logit)을 쓴다. 그 보상에서 KL 정규화항을 빼 과최적화를 막으며 PPO 로 최적화 — InstructGPT/ChatGPT 의 3단계.",
+    "PPO 는 롤아웃·클리핑 등 구현이 지저분하다. DPO(Stanford, 2023)는 선호 답의 확률은 올리고 비선호 답은 내리는 최대우도 하나로 바꾼 것이며 가정하에 전역 최적이 같다. 성능도 비슷해 오픈소스의 표준이 됐다.",
+    "RL 로 다듬은 모델은 분포가 아니라 정책이 되어, 출력 확률(우도)이 더 이상 의미 있는 분포가 아니다."
+   ],
+   "on_screen": "'RLHF' 파이프라인 그림(Instruction → 모델 → 답 2개 → 초록/빨강 선택). 'RLHF: PPO' — p(i>j) = exp(R(x,ŷi)) / (exp(R(x,ŷi)) + exp(R(x,ŷj))) [Bradley-Terry 1952], 'Use logits R(...) as reward ⇒ continuous information', Optimize E[R(x,ŷ) − β log(pθ(ŷ|x)/p_ref(ŷ|x))] using PPO. 'PPO → ChatGPT' InstructGPT 3단계 도식[Ouyang+ 2022]. 'RLHF: DPO' — L_DPO = −E[log σ(β log πθ(yw|x)/πref(yw|x) − β log πθ(yl|x)/πref(yl|x))] [Rafailov+ 2023], RLHF(보상모델+RL) 대 DPO(최대우도) 비교 도식, '≈ equivalent(same global minima)'.",
+   "explain": [
+    "책 한 권을 직접 쓰는 것과 두 권 중 더 좋은 것을 고르는 것은 난이도가 전혀 다르다. 강사는 자기가 읽고 싶은 책을 직접 쓸 수는 없지만 어느 책이 나은지는 말할 수 있다고 예를 든다. SFT 는 사람이 쓴 답을 그대로 따라 하는 행동 복제(behavior cloning)라서 이 차이를 활용하지 못하고, 세 가지 문제를 안는다. ① 사람의 생성 능력에 묶인다. 사람은 고르는 데는 더 능하다. ② 환각을 가르칠 수 있다. 사람이 쓴 답에 실제로 존재하는 참고문헌이 들어 있어도, 모델이 사전학습 중 그 문헌을 본 적이 없다면 모델 입장에서는 '그럴듯한 참고문헌을 지어내라'는 신호가 된다(슬라이드의 수요독점 답에 달린 2013년 논문 인용 예). ③ 모범 답을 처음부터 쓰게 하는 것은 비싸다.",
+    "RLHF(인간 피드백 강화학습)는 사람의 행동을 복제하는 대신 사람의 선호를 최대화한다. 절차는 지시마다 꽤 좋은 모델(보통 SFT 를 마친 모델)로 답을 두 개 만들고, 라벨러에게 어느 쪽이 나은지 고르게 한 뒤, 선택된 쪽을 더 내도록 모델을 조정하는 것이다. 문제는 마지막 단계를 '어떻게' 하느냐이고, 커뮤니티에서 주로 쓰는 방법이 PPO 와 DPO 둘이다. 강화학습을 쓰려면 먼저 보상을 정해야 한다. 가장 단순한 선택은 기준 모델의 답과 비교해 이기면 +1, 지면 −1 인 이진 보상인데, 조금 나은지 훨씬 나은지를 알려 주지 못해 정보가 희박하다. 그래서 보상 모델을 학습시킨다. 보상 모델 R 은 입력과 출력 전체를 받아 숫자 하나를 내는 큰 분류기이고, Bradley-Terry 모델 — 두 답의 보상을 softmax 의 logit 처럼 써서 '사람이 i 를 j 보다 선호할 확률'을 만드는 로지스틱 손실 — 로 사람의 선택에 맞춘다. 학습이 끝나면 logit 자체가 연속적인 보상이 되어 '얼마나 더 좋은지'까지 담는다.",
+    "그다음 언어 모델을 정책으로 보고 강화학습으로 보상을 최대화한다. 모델이 답을 생성하면 보상 모델이 점수를 매기는데, 보상만 무작정 키우면 보상 모델의 허점을 파고드는 과최적화가 일어나므로(보상 모델은 사람 선호의 불완전한 근사다) 원래 모델 p_ref 에서 너무 멀어지지 않게 하는 KL 정규화 항을 뺀다. 이 목적을 PPO 알고리즘으로 최적화한 것이 InstructGPT·ChatGPT 의 방식이고, OpenAI 블로그 그림의 세 단계가 바로 ① SFT ② 비교 데이터로 보상 모델 학습 ③ PPO, 그리고 새 데이터를 모아 반복하는 것이다. 강사가 짚는 중요한 결과가 하나 있다. 이렇게 학습된 모델은 더 이상 최대우도로 분포를 모델링하지 않는 정책이 되어, 엔트로피를 유지할 유인이 없다. 그래서 그 모델이 주는 텍스트 확률은 분포로서 의미를 잃는다(정렬 모델 평가 장에서 다시 나온다). 또 PPO 는 이론은 깔끔하지만 롤아웃, 바깥 루프, 곳곳의 클리핑 등 구현이 지저분하고 문서도 부족하다.",
+    "DPO(Direct Preference Optimization, Rafailov 2023, Stanford)는 이것을 크게 단순화했다. 아이디어는 '좋아한 답의 확률은 올리고 싫어한 답의 확률은 내린다'는 것이고, 손실은 정책 모델과 기준 모델의 로그확률 비를 선호 답(y_w)과 비선호 답(y_l)에 대해 각각 구해 그 차이에 로지스틱 손실을 거는 형태다. 나머지 항들은 PPO 목적의 전역 최적해와 DPO 손실의 전역 최적해가 (몇 가지 가정하에) 같아지도록 고른 것이라, 수학적으로도 맞는 일이다. 과정은 '선호 데이터 수집 → 보상 모델 최대우도 학습 → 강화학습'에서 '선호 데이터 → 최대우도' 하나로 줄어든다. 왜 처음부터 이렇게 하지 않았냐는 질문에, 강사는 ChatGPT 를 만든 사람들이 PPO 저자(John Schulman)를 포함한 강화학습 전문가였고 그들에게는 그쪽이 직관적이었을 것이라고 답한다. 보상 모델은 라벨 없는 데이터에 점수를 매겨 쓸 수 있다는 잠재적 이점도 있지만 실제로는 차이가 없었다고 한다. 성능이 비슷하고 훨씬 단순해서, 지금은 오픈소스의 표준이고 강사는 업계에서도 표준일 것이라고 본다."
+   ],
+   "formulas": [
+    {
+     "expr": "p(i ≻ j | x) = exp(R(x,ŷ_i)) / (exp(R(x,ŷ_i)) + exp(R(x,ŷ_j))) = σ(R(x,ŷ_i) − R(x,ŷ_j))",
+     "meaning": "Bradley-Terry(1952). x 는 지시, ŷ_i·ŷ_j 는 두 답, R 은 보상 모델이 낸 점수(logit), σ 는 시그모이드. 보상 모델은 사람이 고른 쪽의 이 확률을 최대화하도록(로지스틱 손실) 학습한다."
+    },
+    {
+     "expr": "max_θ E_{ŷ∼p_θ(·|x)} [ R(x,ŷ) − β·log( p_θ(ŷ|x) / p_ref(ŷ|x) ) ]",
+     "meaning": "RLHF 목적. p_θ 는 학습 중인 정책(언어 모델), p_ref 는 기준 모델(보통 SFT 모델), β 는 KL 정규화 세기. 보상은 키우되 기준 모델에서 너무 멀어지지 않게 한다. 이를 PPO 로 최적화한다."
+    },
+    {
+     "expr": "L_DPO = −E_{(x,y_w,y_l)} [ log σ( β·log(π_θ(y_w|x)/π_ref(y_w|x)) − β·log(π_θ(y_l|x)/π_ref(y_l|x)) ) ]",
+     "meaning": "y_w 는 선호된 답, y_l 은 비선호 답, π_θ 는 학습 중인 모델, π_ref 는 기준 모델, β 는 위와 같은 세기. β·log(π_θ/π_ref) 가 암묵적인 보상 역할을 하며, 선호 답의 이 값이 비선호 답보다 커지도록 밀어 준다."
+    }
+   ],
+   "example": {
+    "title": "Bradley-Terry 확률과 DPO 손실을 숫자로",
+    "body": "보상 모델이 두 답에 R_i = 2, R_j = 1 을 주면 p(i≻j) = σ(1) ≈ 0.731. 사람이 i 를 골랐다면 보상 모델 손실은 −ln 0.731 ≈ 0.313. DPO 쪽: β = 0.1, 학습 전에는 π_θ = π_ref 라 두 로그비가 모두 0, 손실 = −ln σ(0) = ln 2 ≈ 0.693. 학습이 진행돼 선호 답의 로그비가 +2, 비선호 답의 로그비가 −1 이 되면 안쪽 값은 0.1×(2 − (−1)) = 0.3, σ(0.3) ≈ 0.574, 손실 ≈ 0.554 로 줄어든다. β 가 작을수록 같은 손실을 얻으려면 기준 모델에서 더 멀리 움직여야 한다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import torch\nimport torch.nn.functional as F\n\ndef dpo_loss(pi_w, pi_l, ref_w, ref_l, beta=0.1):\n    # 각 인자는 답 전체의 로그확률 합(토큰 로그확률을 더한 값), shape [batch]\n    margin = beta * ((pi_w - ref_w) - (pi_l - ref_l))\n    return -F.logsigmoid(margin).mean()\n\nref_w = torch.tensor([-40.0]); ref_l = torch.tensor([-38.0])\nprint(dpo_loss(ref_w, ref_l, ref_w, ref_l).item())          # 0.693 (= ln 2, 시작점)\nprint(dpo_loss(ref_w + 2, ref_l - 1, ref_w, ref_l).item())  # 약 0.554\n\ndef bt_loss(r_chosen, r_rejected):                          # 보상 모델 학습 손실\n    return -F.logsigmoid(r_chosen - r_rejected).mean()\nprint(bt_loss(torch.tensor([2.0]), torch.tensor([1.0])).item())  # 약 0.313\n\n# 기울기 방향 확인: 선호 답 로그확률은 올리고, 비선호 답은 내리는 쪽\npi_w = ref_w.clone().requires_grad_(); pi_l = ref_l.clone().requires_grad_()\ndpo_loss(pi_w, pi_l, ref_w, ref_l).backward()\nprint(pi_w.grad.item() < 0, pi_l.grad.item() > 0)          # True True",
+    "note": "손실을 줄이는 방향(기울기의 반대)이 선호 답 확률↑·비선호 답 확률↓ 인지 확인한다. 보상 모델도 강화학습도 필요 없다."
+   },
+   "diagram": {
+    "title": "RLHF(PPO) 와 DPO 의 흐름 비교",
+    "code": "flowchart LR\n  subgraph RLHF[\"RLHF (PPO) — InstructGPT·ChatGPT\"]\n    A1[\"SFT 모델로 답 2개 생성\"] --> A2[\"라벨러가 선호 선택\"]\n    A2 --> A3[\"보상 모델 학습 (Bradley-Terry)\"]\n    A3 --> A4[\"PPO: 보상 − β·KL 최대화\"]\n    A4 -->|새 데이터 모아 반복| A1\n  end\n  subgraph DPO[\"DPO — 오픈소스 표준\"]\n    B1[\"선호 데이터 (x, y_w, y_l)\"] --> B2[\"로지스틱 손실로 최대우도 학습\"]\n    B2 --> B3[\"정렬된 모델\"]\n  end"
+   },
+   "pitfalls": [
+    "RLHF 의 'RL' 은 사람이 매 스텝 보상을 주는 것이 아니다. 사람의 비교로 보상 모델을 먼저 학습하고, 강화학습은 그 보상 모델을 상대로 한다.",
+    "KL 항을 빼면 모델이 보상 모델의 약점을 파고들어 점수만 높고 이상한 답(과최적화)을 낸다.",
+    "DPO 와 PPO 가 '같다'는 것은 가정하에 전역 최적해가 같다는 뜻이다. 데이터·최적화 경로가 다르면 결과는 달라질 수 있다."
+   ],
+   "check": [
+    {
+     "q": "행동 복제(SFT)가 환각을 가르칠 수 있다는 논리를 설명하라.",
+     "a": "사람이 쓴 정답에 모델이 사전학습 중 본 적 없는 사실(예: 실제 참고문헌)이 있으면, 모델 입장에선 모르는 것을 그럴듯하게 만들어 내라는 학습 신호가 되기 때문이다."
+    },
+    {
+     "q": "이진 보상(+1/−1) 대신 보상 모델을 쓰는 이유는?",
+     "a": "이진 보상은 얼마나 나은지 알려 주지 않아 정보가 희박하다. 보상 모델의 logit 은 연속값이라 선호의 정도까지 전달한다."
+    },
+    {
+     "q": "DPO 학습 시작 시점(π_θ = π_ref)의 손실값은?",
+     "a": "두 로그비가 0 이라 −log σ(0) = ln 2 ≈ 0.693."
+    }
+   ]
+  },
+  {
+   "title": "RLHF 의 효과와 선호 데이터 — 사람 대신 LLM",
+   "start": 4980,
+   "points": [
+    "요약 과제(Stiennon 2020)에서 사전학습 → SFT → 사람 피드백 순으로 좋아져 사람이 쓴 요약을 넘기도 한다. AlpacaFarm 에서도 PPO 와 DPO 가 같은 수준으로 SFT 를 넘었다.",
+    "사람 라벨링의 문제: 느리고 비쌈, 정확성보다 형식(길이)에 끌림 — RLHF 를 많이 할수록 답이 길어진다. 라벨러 분포가 모델의 관점을 바꾸고, 저임금·유해 데이터 노출이라는 크라우드소싱 윤리 문제도 있다.",
+    "AlpacaFarm: 사람 라벨은 1천 건에 약 300달러(Mechanical Turk)인데 사람끼리 다수 의견 일치율은 약 66%(저자들 직접 해도 67~68%). LLM 판정은 훨씬 싸면서 일치율이 더 높다 — 분산이 작아서다.",
+    "강사는 지금은 사람보다 약 50배 싸고 일치율도 나은 수준이라며, 오픈소스는 LLM 선호 데이터가 표준이고 업계도 사람과 LLM 을 섞어 쓴다고 본다. 데이터 규모 감: SFT 5천~5만, RLHF 선호 데이터 100만 단위."
+   ],
+   "on_screen": "'RLHF: gains' — Learn to summarize[Stiennon+ 2020] 모델 크기(1.3B~12.9B) 대 선호 비율 그래프(Human feedback > Reference summaries > Supervised > Pretrain only)와 AlpacaFarm 시뮬레이션 승률 표(GPT-4 79.0, ChatGPT 61.4, PPO 46.8, DPO 46.8, Best-of-1024 45.0 … LLaMA 7B 11.3). 'challenges of human data' — 출력 길이 대 보상 히트맵[Singhal+ 2024], LLM Opinion[Santurkar+ 2023] 라벨러 분포 표. 'RLHF: LLM data' — $/1000 examples(로그 축) 대 Human mode agreement(0.57~0.66) 산점도, 'Works surprisingly well! ⇒ Standard in open community'.",
+   "explain": [
+    "RLHF 가 실제로 효과가 있느냐부터 확인하자. 요약 과제를 다룬 Stiennon 2020('Learning to summarize') 그래프는 모델 크기(13억~129억) 별로 사람이 쓴 참고 요약 대비 선호 비율을 그린다. 사전학습만 한 모델이 가장 낮고 크기에 따라 조금씩 오르며, 지도 학습(SFT)을 하면 한 단계 오르고, 사람 피드백으로 학습한 모델은 사람이 쓴 참고 요약(점선)마저 넘는다. 강사 팀의 AlpacaFarm 시뮬레이션 승률 표도 같은 이야기를 한다 — LLaMA 7B 11.3%, SFT 계열이 30%대 후반, PPO 와 DPO 가 나란히 46.8%, Best-of-1024 45.0%, ChatGPT 61.4%, GPT-4 79.0%. 결론은 둘이다. RLHF 는 효과가 있고, DPO 는 PPO 만큼 잘하면서 단순하다.",
+    "선호 데이터를 모으는 첫 번째 방법은 사람이다. 하지만 라벨링 지침은 복잡하고 실제로 해 보면 매우 어렵다. 강사가 확대해 보여 준 예는 '자율주행차에 대해 알려 줘'에 대한 두 답으로, 둘 다 그럴듯해서 한눈에 무엇이 나은지 말하기 어렵다. 그러면 사람은 정확성처럼 중요한 것 대신 길이 같은 겉모양에 끌린다 — 강사는 대부분이 더 긴 두 번째 답을 고를 것이라고 장담한다. 그래서 사람 데이터의 문제는 ① 느리고 비싸다 ② 정확성보다 형식(길이)에 집중하기 쉽다 — RLHF 를 많이 할수록 출력이 길어진다(Singhal 2024; ChatGPT 의 긴 답이 거슬렸다면 이 때문이다) ③ 라벨러 집단의 분포가 모델의 관점을 바꾼다(Santurkar 2023 의 의견 분석; 모델이 누구의 선호를 대표해야 하나) ④ 크라우드소싱 윤리 — 낮은 임금, 그리고 모델이 유해한 말을 피하도록 가르치려면 라벨러가 유해한 글을 대량으로 봐야 한다는 점.",
+    "두 번째 방법은 Alpaca 와 같은 발상으로 사람의 선호를 LLM 의 선호로 바꾸는 것이다. AlpacaFarm 그림의 가로축은 1천 개 예제당 비용(로그 축), 세로축은 사람들의 다수 의견(최빈값)과의 일치율이다. Mechanical Turk 의 사람 라벨은 1천 개에 약 300달러인데, 사람끼리의 일치율이 이진 과제에서 약 66% 에 불과하다. 라벨러가 못해서가 아니다 — 논문 주저자 다섯 명이 세 시간 동안 기준을 논의한 뒤 직접 해도 67~68% 였다. 반면 여러 LLM 판정자는 훨씬 싸면서 사람의 최빈값과 더 잘 일치했다. 이유는 편향-분산 관점에서 설명된다. 사람은 분산이 크고(같은 사람도 매번 다르게 고른다) 모델은 분산이 거의 없다. 모델은 약간의 편향이 있을 수 있지만, 일치율에서는 분산이 작은 쪽이 유리하다.",
+    "강사는 이 방식이 '놀랄 만큼 잘 된다'며 오픈소스 커뮤니티에서는 표준이 됐고, 업계도 사람과 LLM 을 함께 써서 RLHF 데이터를 모은다고 본다. 논문은 1년 전 것이고, 지금은 LLM 판정이 사람보다 대략 50배 싸면서 일치율도 더 낫다는 것이 그의 감이다. 데이터 규모 감도 준다. SFT 는 5천~1만, 많아야 5만 개 정도인데 RLHF 선호 데이터는 100만 개 단위로 훨씬 많이 모은다. 그래도 수조 토큰의 사전학습에 비하면 한 방울에도 못 미친다. 앞 장에서 본 대로 사전학습은 초기화이고, 사후학습 데이터는 그 위에서 따로, 큰 학습률로 학습되기 때문에 적은 양으로도 행동을 크게 바꾼다."
+   ],
+   "formulas": [
+    {
+     "expr": "일치율 = (1/n)·Σ_i 1[ 판정_i = 최빈값_i ]",
+     "meaning": "n 은 비교 문항 수, 판정_i 는 한 라벨러(사람 또는 LLM)의 선택, 최빈값_i 는 여러 사람 라벨러의 다수 의견. 1[·] 은 맞으면 1, 틀리면 0."
+    },
+    {
+     "expr": "E[(판정 − 진짜 선호)²] = 편향² + 분산",
+     "meaning": "오차의 편향-분산 분해(일반적인 통계 사실). 사람 라벨러는 분산이 크고 LLM 판정자는 분산이 작다. 강사가 LLM 이 더 잘 일치하는 이유로 든 직관을 식으로 쓴 것이다."
+    }
+   ],
+   "example": {
+    "title": "일치율 66% 를 작은 예로 느껴 보기",
+    "body": "(설명용 가상 예) 비교 10개에 사람 5명이 라벨을 달았다. 문항마다 다수 의견을 정하고, 한 사람을 골라 그 사람의 선택이 다수 의견과 같은 비율을 보니 7/10. 그런데 이 사람에게 같은 10개를 다음 날 다시 시키면 3개를 다르게 고른다 — 분산이다. 한편 어떤 LLM 은 매번 같은 답을 내고, '조금 더 긴 답'을 선호하는 편향 때문에 다수 의견과 2개가 어긋나 8/10. 편향이 있어도 분산이 없어서 일치율은 더 높다. 비용은 사람 1천 개 300달러 기준으로 10개 3달러, LLM 은 그 몇십 분의 일이다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nrng = np.random.default_rng(0)\n\nn = 2000\ntrue_pref = rng.random(n) < 0.5                   # 문항별 '진짜' 선호 (A 가 낫다?)\nsignal = np.where(true_pref, 1.0, -1.0)\n\ndef human():                                       # 편향 없음, 분산 큼\n    return (signal + rng.normal(0, 1.6, n)) > 0\n\ndef llm(bias=0.3):                                 # 같은 쪽으로 약간 치우침, 분산 작음\n    return (signal + bias + rng.normal(0, 0.4, n)) > 0\n\nhumans = np.stack([human() for _ in range(5)])\nmode = humans.sum(0) >= 3                          # 사람 5명의 다수 의견\n\nh_new = human()                                    # 새 사람 한 명\nprint(\"사람 vs 다수:\", (h_new == mode).mean().round(3))\nprint(\"LLM  vs 다수:\", (llm() == mode).mean().round(3))",
+    "note": "분산이 큰 판정자보다, 약간 치우쳤어도 일관된 판정자가 다수 의견과 더 잘 맞는 상황을 흉내 낸다. 숫자는 설정에 따라 달라지는 장난감 시뮬레이션이다."
+   },
+   "pitfalls": [
+    "LLM 판정자의 '높은 일치율'은 분산이 작아서이고, 편향(긴 답 선호 등)이 사라진 것은 아니다. 그 편향은 학습 과정에서 계속 증폭될 수 있다(다음 장).",
+    "사람 일치율 66% 는 라벨러가 무능하다는 뜻이 아니라 과제가 본질적으로 모호하다는 뜻이다. 전문가인 저자들도 67~68% 였다."
+   ],
+   "check": [
+    {
+     "q": "AlpacaFarm 승률 표에서 PPO 와 DPO 의 결과는 어땠나?",
+     "a": "둘 다 46.8% 로 같았고 SFT 보다 높았다. DPO 가 더 단순하면서 성능이 같다는 근거다."
+    },
+    {
+     "q": "사람 라벨이 RLHF 모델의 답을 길게 만드는 경로는?",
+     "a": "라벨러가 판단하기 어려운 비교에서 더 긴 답을 고르는 경향이 있고, 모델이 그 선호를 최대화하도록 학습되면서 출력 길이가 점점 늘어난다."
+    },
+    {
+     "q": "LLM 판정자가 사람보다 사람의 다수 의견과 더 잘 일치하는 이유를 강사는 무엇으로 설명했나?",
+     "a": "사람은 분산이 크고 모델은 분산이 거의 없기 때문이다. 모델은 약간의 편향이 있을 수 있지만 일관성이 높다."
+    }
+   ]
+  },
+  {
+   "title": "정렬된 모델의 평가 — Chatbot Arena 와 AlpacaEval",
+   "start": 5260,
+   "points": [
+    "어려운 이유: 방법마다 검증 손실을 비교할 수 없고, 정렬 모델은 보정되지 않은 정책이라 perplexity 를 못 쓰며, 질문 유형이 넓고(InstructGPT API 기준 생성 45.6%, 열린 QA 12.4%, 브레인스토밍 11.2% …) 열린 답이라 자동화가 어렵다.",
+    "Chatbot Arena: 일반 사용자가 이름을 가린 두 챗봇과 대화하고 더 나은 쪽을 고른다. 수십만 건이 쌓여 가장 신뢰받지만, 이용자가 기술 질문에 쏠려 있고 개발 중에 쓰기엔 느리고 비싸다.",
+    "AlpacaEval: 같은 지시에 기준 모델과 평가 모델이 답하고 GPT-4 가 승자를 고른 뒤 평균 승률을 낸다. Arena 와 상관 98%, 3분 미만·10달러 미만.",
+    "편향: LLM 판정자는 긴 답을 선호한다. GPT-4 를 자기 자신과 비교하면 50% 인데 '장황하게' 지시하면 64.4%, '간결하게'면 20%. 회귀 기반 길이 통제(Length-Controlled AlpacaEval)로 보정한다."
+   ],
+   "on_screen": "'Evaluation: aligned LLM' — InstructGPT 사용 사례 분포 표(Generation 45.6%, Open QA 12.4%, Brainstorming 11.2%, Chat 8.4%, Rewrite 6.6%, Summarization 4.2% …), 'Some aligned LLMs are policies!'. 'Human evaluation: eg ChatBot Arena'[Chiang+ 2024] 화면과 질문 군집 막대(소프트웨어 오류 논의 10.43%, AI 도구 문의 7.29% …). 'LLM evaluation: eg AlpacaEval'[Li+ 2023] 절차 그림. 'spurious correlation' — AlpacaEval 길이 표(gpt4_1106_preview concise/standard/verbose 22.9/50.0/64.3, Mixtral-8x7B 13.7/18.3/24.6, claude-2.1 9.2/15.7/24.4, alpaca-7b 2.0/2.6/2.9).",
+   "explain": [
+    "객관식 시험은 기계가 채점할 수 있지만 논술은 그렇지 않다. ChatGPT 같은 모델의 답은 사실상 끝이 열려 있고, 정답이 하나가 아니라 똑같이 좋은 답이 여러 개다. 강사는 정렬된 모델 평가가 어려운 이유를 넷으로 정리한다. ① 검증 손실로 비교할 수 없다 — 한 방법은 PPO, 다른 방법은 DPO 로 학습했다면 손실의 의미가 다르다. ② perplexity 를 쓸 수 없다 — 정렬된 모델은 보정되지 않았고 일부는 분포가 아닌 정책이다. ③ 질문이 매우 다양하다 — InstructGPT 의 API 프롬프트 통계로 보면 생성 45.6%, 열린 질의응답 12.4%, 브레인스토밍 11.2%, 대화 8.4%, 고쳐 쓰기 6.6%, 요약 4.2% … 처럼 넓게 퍼져 있다. ④ 열린 과제라 자동화가 어렵다.",
+    "②를 조금 더 풀어 보자. RLHF 는 결국 보상이 가장 높은 답 하나를 내도록 최적화하므로, PPO 의 이상적인 최적해는 질문마다 답 하나에 확률을 몰아주는 델타 분포에 가깝다. 그러면 의미는 같은데 표현이 조금 다른 좋은 답에는 확률 0 에 가까운 값을 줘서, 그 답으로 perplexity 를 재면 터무니없이 나쁘게 나온다. 실제로는 그렇게 극단적이지 않고 여전히 분포를 출력하지만, '최대우도로 학습되지 않은 정책'의 확률로 평가하는 것 자체가 근본적으로 맞지 않는다는 것이 강사의 답이다. 그래서 대안은 자동 채점 벤치마크를 억지로 만드는 대신, 사용자들이 실제로 묻는 질문을 놓고 두 모델 중 어느 답이 나은지를 묻는 것이다 — RLHF 데이터 수집과 똑같은 절차를 평가에 쓰는 셈이다.",
+    "가장 신뢰받는 방식이 Chatbot Arena(Chiang 2024)다. 인터넷의 일반 사용자가 이름을 가린 두 챗봇과 대화하며 아무 질문이나 하고, 두 답을 보고 더 나은 쪽을 고른다. 수십만 명의 투표가 쌓이면 모델 순위가 나온다(투표들을 Elo 나 Bradley-Terry 같은 쌍대 비교 모형으로 점수화한다). 지금도 누구나 들어가 써 볼 수 있다. 한계도 있다. 이런 사이트를 찾는 사람은 기술에 밝은 편이라 질문이 쏠린다 — 질문 군집 막대를 보면 소프트웨어 오류 논의가 10.43%, AI 도구 문의가 7.29% 로 맨 위다. 그리고 개발 중에 쓰기엔 너무 느리고 비싸다. 수많은 사람에게 매번 비용을 치러야 하기 때문이다.",
+    "그래서 다시 '사람 대신 LLM' 이다. AlpacaEval(Li 2023)은 지시마다 기준 모델과 평가할 모델이 답을 내고, GPT-4 에게 어느 쪽이 나은지 물어, 그 승리 확률을 데이터셋 전체에서 평균해 승률을 만든다. Chatbot Arena 순위와의 상관이 98% 이고, 돌리는 데 3분 미만·10달러 미만이 든다. 단점은 허위 상관(spurious correlation)이다. 대표가 길이로, LLM 판정자는 긴 답을 선호한다. 사람도 그렇지만 차이가 있다 — 사람은 간단한 질문에 다섯 쪽짜리 답을 받으면 싫어하는데, 편향을 가진 LLM 은 계속 긴 답을 선호하고 그 편향이 학습을 거치며 증폭된다. 실험이 이를 보여 준다. GPT-4 를 GPT-4 자신과 비교하면 정의상 50% 인데, 프롬프트에 '장황하게 답하라'만 넣으면 64.4%, '간결하게'면 20% 로 요동친다(슬라이드 표의 gpt4_1106_preview 는 간결 22.9 / 기본 50.0 / 장황 64.3). 강사 팀은 회귀 분석 — 인과추론 도구 — 으로 길이의 영향을 통제한 Length-Controlled AlpacaEval 을 만들었고, 지금은 장황하게 해도 이득이 훨씬 작다."
+   ],
+   "formulas": [
+    {
+     "expr": "승률 = (1/n)·Σ_{i=1}^{n} P_judge( 모델 답_i ≻ 기준 답_i | x_i )",
+     "meaning": "x_i 는 i 번째 지시, P_judge 는 판정 LLM(GPT-4)이 평가 모델의 답을 더 낫다고 볼 확률(또는 0/1 판정), n 은 지시 수. AlpacaEval 의 기본 지표."
+    },
+    {
+     "expr": "logit P(모델 ≻ 기준) ≈ θ_모델 − θ_기준 + φ·g(len_모델 − len_기준)",
+     "meaning": "길이 통제의 아이디어를 단순화한 형태. θ 는 모델의 실력 항, φ·g(·) 는 길이 차이가 판정에 주는 영향. 회귀로 φ 를 추정한 뒤 길이 차이를 0 으로 두고 승률을 다시 계산한다(실제 LC-AlpacaEval 은 항이 더 있다)."
+    }
+   ],
+   "example": {
+    "title": "질문 4개짜리 AlpacaEval",
+    "body": "판정 LLM 이 평가 모델의 답을 기준보다 낫다고 볼 확률이 질문별로 0.9, 0.6, 0.3, 0.7 이면 승률 = (0.9+0.6+0.3+0.7)/4 = 0.625. 그런데 평가 모델의 답이 매번 기준보다 두 배 길었고, 회귀로 '길이가 길면 logit 이 +0.4' 라는 효과를 찾았다면, 그만큼 빼고 다시 계산한다. 예를 들어 0.9 는 logit 2.197 → 1.797 → 0.858 로 내려가는 식이다. 길이만으로 얻은 이득을 덜어 낸 승률이 길이 통제 승률이다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\n\ndef win_rate(p):                       # 판정자가 준 '모델이 낫다' 확률들\n    return float(np.mean(p))\n\np = np.array([0.9, 0.6, 0.3, 0.7])\nprint(win_rate(p))                     # 0.625\n\n# 길이 통제(단순화): 알려진 길이 효과 phi 를 logit 에서 빼고 다시 평균\ndef length_controlled(p, len_diff, phi):\n    logit = np.log(p / (1 - p))\n    adj = logit - phi * len_diff       # 길이 차이를 0 으로 둔 반사실\n    return float(np.mean(1 / (1 + np.exp(-adj))))\n\nlen_diff = np.ones(4)                  # 모델 답이 매번 '길다'(표준화된 차이 1)\nprint(round(length_controlled(p, len_diff, phi=0.4), 3))   # 0.625 보다 낮아진다",
+    "note": "실제 LC-AlpacaEval 은 φ 를 데이터에서 회귀로 추정한다. 여기서는 효과가 이미 추정됐다고 가정했다."
+   },
+   "pitfalls": [
+    "Chatbot Arena 순위는 그 사이트 사용자의 질문 분포(기술 쏠림)를 반영한다. 내 서비스 사용자의 분포와 다를 수 있다.",
+    "LLM 판정 벤치마크로 모델을 계속 튜닝하면 판정자의 편향(긴 답 선호)에 맞춰 최적화하게 된다. 길이 통제나 사람 평가로 교차 확인하자.",
+    "정렬된 모델에서도 확률은 계산된다. 문제는 그 값이 보정된 분포가 아니라 비교 지표로 믿을 수 없다는 것이다."
+   ],
+   "check": [
+    {
+     "q": "정렬된 모델을 perplexity 로 평가하면 안 되는 이유를 PPO 의 최적해로 설명하라.",
+     "a": "PPO 의 이상적 최적해는 보상이 가장 높은 답 하나에 확률을 몰아주는 정책이라, 뜻이 같은 다른 좋은 답에 거의 0 의 확률을 준다. 확률이 보정된 분포가 아니므로 perplexity 가 품질을 반영하지 못한다."
+    },
+    {
+     "q": "GPT-4 대 GPT-4 비교에서 '장황하게' 지시만으로 승률이 50% → 64.4% 가 된 것은 무엇을 보여 주나?",
+     "a": "LLM 판정자가 답의 질과 무관하게 길이를 선호하는 허위 상관이 있다는 것이다. 그래서 길이 통제가 필요하다."
+    }
+   ]
+  },
+  {
+   "title": "시스템 — GPU 기초, 저정밀도, 연산자 융합, 그리고 다음 공부",
+   "start": 5820,
+   "points": [
+    "모두가 연산에 묶여 있다. GPU 는 비싸고 구하기 어려우며(1천만 달러가 있어도 최신 GPU 를 바로 못 산다), 여러 장을 쓰면 통신이 병목이다 → 자원 배분(스케일링 법칙)과 파이프라인 최적화가 중요.",
+    "GPU 는 처리량 지향(SM 위에서 같은 명령을 여러 데이터에), 행렬곱이 다른 연산보다 10배쯤 빠르다. 연산 성능이 메모리·통신보다 빨리 늘어 데이터 공급이 못 따라간다. 메모리 계층은 코어에 가까울수록 작고 빠르다.",
+    "지표는 MFU(관측 처리량 / 이론 최대). 50% 면 아주 잘한 것이고 LLaMA 도 약 45% 수준.",
+    "자동 혼합 정밀도(AMP): 가중치 원본은 fp32, 계산 직전 bf16 으로 바꿔 행렬곱·활성값·기울기를 bf16 으로, 갱신은 fp32 로 — 작은 학습률의 미세한 갱신도 살린다.",
+    "연산자 융합: PyTorch 한 줄마다 전역 메모리(DRAM)를 왕복하므로, 한 번 보내 연산을 몰아 하고 한 번 돌려받는다. torch.compile 이 이를 해 주며 약 2배 빨라진다. 타일링·병렬화·MoE·추론·멀티모달·데이터 고갈·데이터 수집 합법성은 다루지 못했고, CS224N(배경)·CS324(심화 읽기)·CS336(LLM 직접 구현, 과제량 많음)을 권한다."
+   ],
+   "on_screen": "'Systems' — Problem: everyone is bottlenecked by compute, Why not buy more GPUs?(expensive & scarce, physical limitations). 'Systems 101: GPUs' — CPU(저지연) 대 GPU(고처리량) 도식과 SM, 연도별 HW FLOPS 60000x/20yrs vs DRAM BW 100x vs Interconnect BW 30x 그래프, BERT 연산 비중 표(Tensor contraction 99.80% flop·61.0% runtime, Stat. normalization 0.17%·25.5%, Element-wise 0.03%·13.5%)[Ivanov+ 2020], 메모리 지연 표(Global memory 290 사이클, L2 200, L1 33, Shared 23/19). 'low precision' AMP 항목. 'operator fusion' — x1 = x.cos(); x2 = x1.cos() 코드와 Naive(non-fused) 대 Fused kernel 그림, 'torch.compile'. 'architecture sparsity' — Mixture of Experts. 'Outlook' — MoE & SSM, Decoding & inference, Multimodality, Data wall, Legality of data collection, CS224N·CS324·CS336.",
+   "explain": [
+    "공장의 기계가 해마다 훨씬 빨라지는데 원자재를 나르는 컨베이어는 그만큼 빨라지지 않는다면, 기계는 대부분의 시간을 재료를 기다리며 논다. 지금의 GPU 가 그렇다. 강사는 남은 몇 분 동안 시스템을 다룬다. 출발점은 '모두가 연산에 묶여 있다'는 것이다. 그럼 GPU 를 더 사면 되지 않나? GPU 는 비싸고 귀하다 — 1천만 달러가 있어도 지금 당장 최신 GPU 를 살 수 없다. 또 물리적 한계가 있어서, 여러 장을 쓰면 그 사이의 통신에 시간이 든다. 그래서 자원을 어떻게 배분할지(스케일링 법칙)와 파이프라인을 어떻게 최적화할지가 중요해진다.",
+    "GPU 기초부터 보자. CPU 는 지연(latency) 최소화를, GPU 는 처리량(throughput) 최대화를 위해 설계됐다. GPU 에는 스트리밍 멀티프로세서(SM)라 부르는 코어 묶음이 아주 많고, 같은 명령을 서로 다른 데이터에 동시에 적용한다. 특히 행렬곱에 최적화돼 있어서, 같은 일을 행렬곱으로 할 수 있다면 다른 방식보다 10배쯤 빠르다. 그런데 연산 성능이 메모리·통신보다 훨씬 빨리 늘었다. 슬라이드 그래프로 20년간 하드웨어 FLOPS 는 6만 배, DRAM 대역폭은 100배, 인터커넥트 대역폭은 30배 늘었다. BERT 의 연산 비중 표가 결과를 보여 준다 — 행렬곱(텐서 수축)은 FLOP 의 99.80% 인데 실행 시간은 61.0% 이고, 정규화는 FLOP 0.17% 로 시간 25.5%, 원소별 연산은 FLOP 0.03% 로 시간 13.5% 를 쓴다. 계산이 거의 없는 연산들이 메모리를 오가느라 시간의 40% 가까이를 먹는다. 메모리 계층도 있다. 코어에 가까울수록 작고 빠르다(공유 메모리 약 20사이클, L1 33, L2 200, 전역 메모리 290). 지표로는 MFU(model FLOP utilization) — 관측한 처리량을 이론 최대로 나눈 값 — 를 쓰는데, 50% 면 매우 잘한 것이고 Meta 의 Llama 도 약 45% 였다. 대기업도 데이터를 충분히 빨리 공급하지 못한다는 뜻이다.",
+    "강사가 소개하는 첫 요령은 저정밀도다. 숫자를 적은 비트로 표현하면 GPU 로 보낼 비트가 줄어 통신이 빨라지고 메모리도 덜 든다. 딥러닝에서는 소수점 아래 정밀도가 생각보다 덜 중요하다 — SGD 자체가 잡음이 많아서 0.01 을 더하나 0.015 를 더하나 큰 차이가 없다. 그래서 예전처럼 숫자 하나에 32비트(다른 분야에선 64비트)를 쓰는 대신 행렬곱은 16비트(bf16)로 한다. 학습에서는 자동 혼합 정밀도(AMP)를 쓴다. 가중치 원본은 fp32 로 저장하고, 계산 직전에 bf16 으로 바꿔 행렬곱·활성값·기울기를 bf16 으로 처리하며(속도와 메모리 이득), 갱신은 fp32 원본에 한다. 갱신만 fp32 로 하는 이유는 학습률이 아주 작을 때 미세한 변화가 bf16 의 반올림에 묻혀 사라지지 않게 하기 위해서다. bf16 은 fp32 와 같은 8비트 지수를 써서 표현 범위는 같지만 가수가 7비트뿐이라 1 근처의 눈금이 약 0.0078 이다.",
+    "두 번째 요령은 연산자 융합이다. PyTorch 코드 한 줄을 실행할 때마다 변수가 GPU 전역 메모리(DRAM)로 옮겨진다. 'x1 = x.cos(); x2 = x1.cos()' 를 실행하면 x 를 DRAM 에서 연산 장치로 보내 cos 를 하고 결과를 DRAM 에 돌려놓은 뒤, 다음 줄에서 다시 x1 을 보내 cos 를 하고 또 돌려놓는다. 줄마다 왕복하는 셈이라 낭비가 크다. 융합은 한 번 보내 연산을 몰아서 하고 한 번만 돌려받는 것이며, 이렇게 묶인 것을 융합 커널(fused kernel)이라 부른다. PyTorch 에서는 모델에 torch.compile 을 거는 것만으로 코드를 이렇게 다시 써 주고(내부적으로 GPU 커널을 생성), 강사 말로는 대략 2배 빨라진다. 시간이 없어 다루지 못한 것은 타일링, 병렬화, 그리고 혼합 전문가(MoE: 선택 층이 일부 전문가만 쓰게 해 같은 FLOPs 로 더 많은 파라미터를 갖는 구조)다. 전망 슬라이드는 다루지 못한 주제로 MoE·SSM 같은 구조, 디코딩과 추론, ChatGPT 같은 UI·도구, 멀티모달, 오용, 문맥 길이, 데이터 벽, 데이터 수집의 합법성을 꼽고, 더 공부하려면 CS224N(배경과 역사), CS324(LLM 심화 읽기와 강의), CS336(LLM 을 직접 만드는 수업, 과제량이 많다)을 권한다."
+   ],
+   "formulas": [
+    {
+     "expr": "MFU = 관측 처리량(FLOP/s) ÷ 이론 최대 처리량(FLOP/s)",
+     "meaning": "관측 처리량은 (6·파라미터·초당 처리 토큰 수)처럼 모델이 실제로 한 유효 연산, 이론 최대는 GPU 사양의 최대 FLOPS. 강의 기준 50% 면 매우 좋고 Llama 약 45%."
+    },
+    {
+     "expr": "w_fp32 ← w_fp32 − η·g,  g = ∇L 를 bf16 로 계산",
+     "meaning": "혼합 정밀도의 갱신. w_fp32 는 fp32 원본 가중치, η 는 학습률, g 는 bf16 연산으로 구한 기울기. 원본이 fp32 라서 η·g 가 작아도 반올림으로 사라지지 않는다."
+    },
+    {
+     "expr": "전송량: 비융합 ≈ 4·n,  융합 ≈ 2·n (원소 n 개, cos 두 번)",
+     "meaning": "비융합은 x 읽기·x1 쓰기·x1 읽기·x2 쓰기, 융합은 x 읽기·x2 쓰기. 메모리 대역폭이 병목인 연산에서는 전송량이 곧 시간이라 약 2배 차이가 난다."
+    }
+   ],
+   "example": {
+    "title": "MFU·bf16 반올림·융합을 숫자로",
+    "body": "① Llama 3 계산의 400 TFLOPS 를 H100(SXM) 의 bf16 밀집 연산 이론 최대 약 989 TFLOPS 로 나누면 MFU ≈ 40% — 강의가 말한 '45% 안팎'과 같은 자릿수다. ② 가중치 1.0 에 학습률×기울기 = 0.0001 을 더하면, bf16 은 1 근처 눈금이 2⁻⁷ ≈ 0.0078 이라 1.0001 이 그냥 1.0 으로 반올림된다. 1만 번 갱신해도 가중치가 그대로다. fp32(눈금 약 1.2×10⁻⁷)에 갱신하면 1만 번 뒤 약 2.0 이 된다. ③ 원소 1억 개 텐서에 cos 를 두 번 하면 비융합은 4억 원소, 융합은 2억 원소를 옮긴다 — torch.compile 이 주는 약 2배와 같은 비율이다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import torch\n\n# 1) bf16 에서 작은 갱신이 사라지는 현상\nw16 = torch.tensor(1.0, dtype=torch.bfloat16)\nw32 = torch.tensor(1.0, dtype=torch.float32)\nfor _ in range(10_000):\n    w16 = w16 + torch.tensor(1e-4, dtype=torch.bfloat16)\n    w32 = w32 + 1e-4\nprint(w16.item(), w32.item())          # 1.0  vs  약 2.0\n\n# 2) 자동 혼합 정밀도: 원본은 fp32, 계산만 bf16\nmodel = torch.nn.Linear(512, 512)      # 가중치 fp32\nopt = torch.optim.SGD(model.parameters(), lr=1e-3)\nx = torch.randn(64, 512)\nwith torch.autocast(device_type=\"cpu\", dtype=torch.bfloat16):\n    y = model(x)                       # 행렬곱은 bf16\n    loss = y.float().pow(2).mean()\nloss.backward(); opt.step()\nprint(y.dtype, model.weight.dtype)     # torch.bfloat16 torch.float32\n\n# 3) 연산자 융합: 같은 함수를 컴파일하면 cos 두 번이 커널 하나로 묶인다\ndef f(x):\n    return x.cos().cos()\nfused = torch.compile(f)               # GPU 에서 비교하면 차이가 크다",
+    "note": "CPU 에서도 1)·2) 는 바로 확인된다. 3) 의 속도 차이는 GPU 에서 torch.cuda.synchronize() 로 시간을 재 보자."
+   },
+   "diagram": {
+    "title": "연산자 융합 — 줄마다 왕복 vs 한 번에",
+    "code": "sequenceDiagram\n  participant D as GPU 전역 메모리(DRAM)\n  participant C as 연산 장치(SM)\n  Note over D,C: 비융합 (PyTorch 한 줄씩)\n  D->>C: x 보내기\n  C->>D: x1 = cos(x) 돌려놓기\n  D->>C: x1 보내기\n  C->>D: x2 = cos(x1) 돌려놓기\n  Note over D,C: 융합 커널 (torch.compile)\n  D->>C: x 보내기\n  C->>C: cos → cos (레지스터·공유 메모리 안에서)\n  C->>D: x2 돌려놓기"
+   },
+   "pitfalls": [
+    "'저정밀도 = 정확도 손해'가 아니다. 계산만 bf16 이고 원본 가중치와 갱신은 fp32 라서, 작은 학습률의 갱신도 살아남는다.",
+    "fp16 과 bf16 은 다르다. fp16 은 지수 비트가 적어 범위가 좁아 손실 스케일링이 필요할 때가 많고, bf16 은 fp32 와 범위가 같아 더 다루기 쉽다.",
+    "FLOP 비중이 작다고 시간이 작은 것은 아니다. 정규화·원소별 연산처럼 계산은 적고 메모리 이동이 많은 연산이 실행 시간의 큰 몫을 차지한다."
+   ],
+   "check": [
+    {
+     "q": "GPU 연산 성능이 메모리·통신보다 빨리 늘었다는 사실이 학습에 주는 결과는?",
+     "a": "연산 장치에 데이터를 충분히 빨리 공급하지 못해 GPU 가 자주 논다. 그래서 MFU 50% 도 어렵고, 저정밀도·연산자 융합처럼 데이터 이동을 줄이는 최적화가 중요해진다."
+    },
+    {
+     "q": "AMP 에서 가중치 원본을 fp32 로 두는 이유는?",
+     "a": "학습률이 작아 갱신량이 매우 작을 때 bf16 에서는 반올림으로 갱신이 사라질 수 있기 때문이다. fp32 원본에 갱신해야 미세한 변화가 누적된다."
+    },
+    {
+     "q": "x.cos().cos() 를 융합하면 메모리 전송이 얼마나 줄어드나?",
+     "a": "원소 n 개 기준 약 4n(읽기·쓰기 두 번씩)에서 2n(읽기 한 번·쓰기 한 번)으로 절반이 된다."
+    }
+   ]
+  }
+ ],
+ "concepts": [
+  {
+   "term": "자기회귀 언어 모델 (Autoregressive LM)",
+   "explain": "문장 확률을 '앞 토큰들이 주어졌을 때 다음 토큰' 확률의 곱으로 쪼개는 모델. 연쇄법칙이라 근사가 없지만, 생성할 때 토큰을 하나씩 만들어야 해서 길수록 느리다.",
+   "at": 315
+  },
+  {
+   "term": "교차 엔트로피 손실",
+   "explain": "다음 토큰을 어휘 크기만큼의 클래스 중 하나로 맞히는 분류 손실. 정답 토큰의 -log 확률이며, 이를 줄이는 것은 텍스트 로그우도를 최대화하는 것과 같다.",
+   "at": 560
+  },
+  {
+   "term": "BPE (Byte Pair Encoding)",
+   "explain": "글자 단위에서 시작해 가장 자주 붙어 나오는 토큰 쌍을 반복해 합치는 토크나이저 학습법. 단어 단위의 오타 문제와 문자 단위의 길이 문제를 절충하며 토큰 하나가 평균 3~4글자다.",
+   "at": 720
+  },
+  {
+   "term": "Perplexity",
+   "explain": "토큰당 평균 손실을 지수화한 값으로, 모델이 매 토큰 몇 개 후보 사이에서 망설이는지로 읽는다. 1 이 완벽, 어휘 크기가 최악. 토크나이저에 따라 값이 달라 모델 간 비교에는 부적합하다.",
+   "at": 1150
+  },
+  {
+   "term": "MMLU",
+   "explain": "57개 분야 4지선다 문제로 된 대표 사전학습 벤치마크. 보기별 생성 확률을 비교하거나 A~D 토큰만 고르게 해 채점하는데, 방식에 따라 같은 모델 점수가 10%p 넘게 달라진다.",
+   "at": 1350
+  },
+  {
+   "term": "Train-test contamination",
+   "explain": "평가 문제가 학습 데이터에 섞여 점수가 부풀려지는 문제. 테스트셋을 원래 순서로 생성할 확률이 뒤섞은 순서보다 높으면 학습됐다고 의심할 수 있다.",
+   "at": 1630
+  },
+  {
+   "term": "Common Crawl",
+   "explain": "매달 웹을 긁어 공개하는 크롤 데이터. 약 2,500억 페이지·1PB 이상으로 대부분 LLM 사전학습 데이터의 원료다. 실제로는 추출·필터·중복 제거로 100~1000배 줄여 쓴다.",
+   "at": 1770
+  },
+  {
+   "term": "모델 기반 품질 필터",
+   "explain": "위키백과가 링크한 페이지와 무작위 웹 페이지를 가르는 가벼운 분류기를 학습해, 위키백과 참조 페이지를 닮은 문서를 더 남기는 방식. 수천억 페이지에 돌려야 해서 단순한 모델을 쓴다.",
+   "at": 2020
+  },
+  {
+   "term": "데이터 믹스 / 도메인 재가중",
+   "explain": "문서를 코드·책·오락 등 도메인으로 나누고 비율을 조정하는 것. 코드를 늘리면 추론력이 좋아진다는 경험칙이 있으며, 요즘은 스케일링 법칙으로 비율을 정한다.",
+   "at": 2060
+  },
+  {
+   "term": "스케일링 법칙 (Scaling laws)",
+   "explain": "연산량·데이터·파라미터를 로그 축에 놓으면 손실이 직선으로 줄어드는 경험 법칙. 작은 모델 실험으로 큰 모델 성능을 예측해 하이퍼파라미터·아키텍처·자원 배분을 정한다.",
+   "at": 2460
+  },
+  {
+   "term": "Chinchilla 최적 (20:1)",
+   "explain": "주어진 학습 연산에서 손실을 최소로 하려면 파라미터 1개당 약 20 토큰을 학습하라는 결론. 추론 비용까지 보면 더 작은 모델을 더 오래 학습하는 것이 유리해 실무는 150:1 이상이다.",
+   "at": 2990
+  },
+  {
+   "term": "FLOPs ≈ 6NP",
+   "explain": "학습 연산량 근사식(토큰 수 × 파라미터 수 × 6). LLaMA 3 405B 는 6 × 15.6e12 × 405e9 ≈ 3.8e25 FLOPs 다.",
+   "at": 3360
+  },
+  {
+   "term": "SFT (Supervised Fine-Tuning)",
+   "explain": "사람이 쓴 질문-모범답변으로 사전학습 모델을 같은 다음 토큰 손실로 미세조정하는 것. 수천 개면 충분하며, 지식이 아니라 답하는 형식·사용자 유형을 고르게 한다.",
+   "at": 3740
+  },
+  {
+   "term": "합성 데이터 (Alpaca 방식)",
+   "explain": "사람이 쓴 소수 예시를 강한 LLM 에게 주고 비슷한 지시-응답을 대량 생성해 학습 데이터로 쓰는 방식. Alpaca 는 175개 시드에서 5만2천 개를 만들었다.",
+   "at": 3840
+  },
+  {
+   "term": "보상 모델 (Bradley-Terry)",
+   "explain": "두 답 중 사람이 고른 쪽의 보상이 더 크도록 로지스틱 손실로 학습한 분류기. 출력 logit 을 연속 보상으로 써서 이진 승패보다 많은 정보를 준다.",
+   "at": 4440
+  },
+  {
+   "term": "PPO (RLHF)",
+   "explain": "보상 모델 점수에서 원래 모델과의 KL 거리를 뺀 값을 강화학습으로 최대화하는 방법. InstructGPT·ChatGPT 가 썼지만 롤아웃·클리핑 등 구현이 복잡하다.",
+   "at": 4620
+  },
+  {
+   "term": "DPO (Direct Preference Optimization)",
+   "explain": "보상 모델과 RL 없이 선호 답의 확률은 올리고 비선호 답은 내리는 최대우도 손실 하나로 선호를 학습한다. 가정하에 RLHF 와 최적해가 같고 성능도 비슷해 오픈소스 표준이 됐다.",
+   "at": 4770
+  },
+  {
+   "term": "LLM-as-a-judge / AlpacaEval",
+   "explain": "GPT-4 같은 모델이 두 답 중 나은 것을 고르게 해 승률로 모델 순위를 매기는 자동 평가. Chatbot Arena 와 상관 98% 지만 긴 답을 선호하는 편향이 있어 길이 통제가 필요하다.",
+   "at": 5460
+  },
+  {
+   "term": "MFU (Model FLOP Utilization)",
+   "explain": "관측된 연산 처리량을 GPU 이론 최대치로 나눈 값. 메모리·통신 병목 때문에 50% 면 매우 좋은 편이고 LLaMA 학습도 약 45% 였다.",
+   "at": 5960
+  },
+  {
+   "term": "혼합 정밀도(AMP)와 연산자 융합",
+   "explain": "가중치는 fp32 로 보관하고 행렬곱은 bf16 으로 해 메모리·통신을 줄이는 기법, 그리고 여러 연산을 한 커널로 묶어 GPU 전역 메모리 왕복을 줄이는 기법(torch.compile 로 약 2배).",
+   "at": 6000
+  }
+ ],
+ "trends": [
+  {
+   "claim": "업계의 승부처는 아키텍처가 아니라 데이터·평가·시스템이다 (강사 의견)",
+   "evidence": "작은 구조 변경은 스케일링 곡선의 절편만 조금 바꾸지만 좋은 데이터는 기울기를 바꾼다. 학계는 아키텍처·손실에, 산업은 나머지 셋에 집중한다고 설명.",
+   "at": 120
+  },
+  {
+   "claim": "사전학습 데이터는 15조 토큰 규모로 커졌고 공정은 각사 비밀이다",
+   "evidence": "C4 1,500억 → FineWeb 15조 토큰, LLaMA 3 15조, GPT-4 약 13조(유출 추정). 경쟁과 저작권 소송 위험 때문에 수집 방법을 공개하지 않는다.",
+   "at": 2280
+  },
+  {
+   "claim": "인터넷 데이터가 바닥나 가며 합성 데이터·멀티모달 데이터가 주요 연구 주제다",
+   "evidence": "데이터 슬라이드의 미해결 과제로 합성 데이터와 멀티모달 데이터를 꼽고, Outlook 에 'Data wall' 을 적었다.",
+   "at": 2290
+  },
+  {
+   "claim": "개발 방식이 '작은 모델로 스케일링 법칙을 적합해 큰 모델을 한 번에 학습'으로 바뀌었다",
+   "evidence": "GPU 1만 장·30일 예시에서 3일은 여러 크기의 작은 모델 튜닝, 27일은 최종 모델 학습에 쓴다.",
+   "at": 2730
+  },
+  {
+   "claim": "실서비스 모델은 추론 비용 때문에 Chinchilla 최적보다 훨씬 많은 토큰을 학습한다",
+   "evidence": "Chinchilla 20:1 대비 실무는 150:1 이상, LLaMA 3 405B 는 약 40:1.",
+   "at": 3120
+  },
+  {
+   "claim": "최첨단 모델 학습비는 수천만 달러대이고 세대마다 연산량이 약 10배 늘어난다",
+   "evidence": "LLaMA 3 405B: 3.8e25 FLOPs, H100 1만6천 장 70일, 약 7,500만 달러. 1e26 FLOPs 규제선 바로 아래로 맞췄다는 해석.",
+   "at": 3330
+  },
+  {
+   "claim": "선호 학습은 PPO 에서 DPO 로 단순화되어 오픈소스 표준이 됐다",
+   "evidence": "AlpacaFarm 에서 PPO·DPO 모두 46.8% 승률로 같았고, DPO 는 최대우도만으로 학습한다. 강사는 업계에서도 표준일 것이라 본다.",
+   "at": 4950
+  },
+  {
+   "claim": "라벨링과 평가 모두 사람에서 LLM 으로 옮겨 가고 있다",
+   "evidence": "사람 라벨 1천 건 약 300달러·사람끼리 일치율 66% 대비 LLM 판정이 더 싸고 일치율도 높다. AlpacaEval 은 Arena 와 상관 98%, 10달러 미만.",
+   "at": 5130
+  },
+  {
+   "claim": "RLHF 와 LLM 판정자 때문에 답변이 길어지는 편향이 생긴다",
+   "evidence": "RLHF 를 할수록 출력이 길어지고, GPT-4 판정은 장황한 답에 64.4%, 간결한 답에 20% 승률을 준다 → 길이 통제 평가가 필요.",
+   "at": 5570
+  },
+  {
+   "claim": "GPU 연산 성능이 메모리·통신보다 빨리 늘어 시스템 최적화 인력의 가치가 커진다",
+   "evidence": "20년간 HW FLOPS 6만 배 대 DRAM 대역폭 100배·인터커넥트 30배. 대기업도 MFU 45% 수준이라 저정밀도·연산자 융합·병렬화가 필수.",
+   "at": 5880
+  }
+ ],
+ "study": {
+  "prereq": [
+   "Python 과 PyTorch 기본(텐서, autograd, nn.Module, 학습 루프)",
+   "확률의 연쇄법칙, 로그우도, softmax·교차 엔트로피",
+   "신경망 학습 기초(SGD/Adam, 학습률, 과적합) — CS229 수준",
+   "트랜스포머·어텐션의 대략적인 구조(이 강의는 다루지 않음)"
+  ],
+  "steps": [
+   {
+    "do": "자기회귀 언어 모델과 교차 엔트로피·perplexity 를 직접 코드로 계산해 본다",
+    "why": "강의 전체가 '다음 토큰 예측 손실' 하나 위에 서 있다. SFT 도 같은 손실이고, perplexity 는 학습 중 가장 먼저 보는 지표다."
+   },
+   {
+    "do": "BPE 토크나이저를 처음부터 구현하고 tiktoken·Hugging Face tokenizers 와 결과를 비교한다",
+    "why": "어휘 크기가 출력층 크기를 정하고, 숫자·코드 토큰화가 성능을 좌우한다. 토크나이저는 나중에 바꾸기 어렵다."
+   },
+   {
+    "do": "FineWeb·Dolma 같은 공개 데이터 처리 파이프라인을 읽고 작은 웹 덤프에 추출·중복 제거·품질 필터를 직접 걸어 본다",
+    "why": "강사가 가장 강조한 실무 영역이자 LLM 팀 인력의 큰 몫이 데이터다."
+   },
+   {
+    "do": "Kaplan·Chinchilla 논문을 읽고 작은 모델 3~4개 크기로 스케일링 곡선을 그려 외삽해 본다",
+    "why": "자원 배분·하이퍼파라미터 결정을 스케일링 법칙으로 하는 것이 현재 개발 방식이다. 6NP 로 비용을 어림하는 습관도 같이 든다."
+   },
+   {
+    "do": "작은 오픈 모델로 SFT → DPO 를 직접 돌려 본다(Hugging Face TRL 등)",
+    "why": "산업 파인튜닝 업무의 실제 순서다. InstructGPT 로 PPO 의 3단계를, DPO 논문으로 그 단순화를 이해한다."
+   },
+   {
+    "do": "AlpacaEval·Chatbot Arena 방식으로 LLM 판정 평가를 만들고 길이 편향을 측정한다",
+    "why": "정렬된 모델은 perplexity 로 평가할 수 없다. 평가 설계는 기업 LLM 팀의 핵심 역량이다."
+   },
+   {
+    "do": "PyTorch 프로파일러로 학습 스텝을 재고 bf16 AMP·torch.compile 전후 처리량과 MFU 를 비교한다",
+    "why": "모두가 연산에 묶여 있고 MFU 50% 도 어렵다. 저정밀도와 연산자 융합은 가장 먼저 쓰는 시스템 최적화다."
+   }
+  ],
+  "practice": [
+   "문자 단위 데이터(예: 셰익스피어)로 작은 GPT 를 학습하고 검증 perplexity 곡선을 그린다.",
+   "BPE 를 직접 구현해 한국어·영어·파이썬 코드 각각의 토큰당 평균 글자 수를 비교한다.",
+   "LLaMA 3 405B 계산(6NP, H100 400 TFLOPS, 시간당 2달러)을 따라 한 뒤, 8B·70B 모델의 학습 FLOPs·GPU 시간·비용을 스스로 어림한다.",
+   "같은 모델을 MMLU 에서 '보기별 우도 비교'와 'A~D 다음 토큰' 두 방식으로 채점해 점수 차이를 확인한다.",
+   "1B 이하 오픈 모델에 공개 선호 데이터셋으로 DPO 를 돌리고, 튜닝 전후 답변 길이와 LLM 판정 승률을 비교한다.",
+   "간단한 트랜스포머 블록을 fp32 / bf16 AMP / torch.compile 세 설정으로 돌려 스텝당 시간과 메모리를 표로 만든다."
+  ],
+  "resources": [
+   {
+    "title": "Stanford CS229 Machine Learning 과목 홈페이지",
+    "url": "https://cs229.stanford.edu/"
+   },
+   {
+    "title": "Stanford CS336 Language Modeling from Scratch",
+    "url": "https://stanford-cs336.github.io/"
+   },
+   {
+    "title": "Stanford CS324 Large Language Models",
+    "url": "https://stanford-cs324.github.io/winter2022/"
+   },
+   {
+    "title": "Scaling Laws for Neural Language Models (Kaplan et al., 2020)",
+    "url": "https://arxiv.org/abs/2001.08361"
+   },
+   {
+    "title": "Training Compute-Optimal Large Language Models — Chinchilla (Hoffmann et al., 2022)",
+    "url": "https://arxiv.org/abs/2203.15556"
+   },
+   {
+    "title": "Training language models to follow instructions with human feedback — InstructGPT (Ouyang et al., 2022)",
+    "url": "https://arxiv.org/abs/2203.02155"
+   },
+   {
+    "title": "Direct Preference Optimization (Rafailov et al., 2023)",
+    "url": "https://arxiv.org/abs/2305.18290"
+   },
+   {
+    "title": "LIMA: Less Is More for Alignment (Zhou et al., 2023)",
+    "url": "https://arxiv.org/abs/2305.11206"
+   },
+   {
+    "title": "AlpacaFarm (Dubois et al., 2023)",
+    "url": "https://arxiv.org/abs/2305.14387"
+   },
+   {
+    "title": "Chatbot Arena (Chiang et al., 2024)",
+    "url": "https://arxiv.org/abs/2403.04132"
+   },
+   {
+    "title": "The Bitter Lesson (Rich Sutton, 2019)",
+    "url": "http://www.incompleteideas.net/IncIdeas/BitterLesson.html"
+   },
+   {
+    "title": "FineWeb 데이터셋 (Hugging Face)",
+    "url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb"
+   },
+   {
+    "title": "PyTorch torch.compile 문서",
+    "url": "https://pytorch.org/docs/stable/generated/torch.compile.html"
+   }
+  ]
+ },
+ "jobs": {
+  "roles": [
+   "LLM 엔지니어 / 파인튜닝 엔지니어",
+   "머신러닝 엔지니어 (사전학습·사후학습)",
+   "AI 리서치 엔지니어",
+   "LLM 데이터 엔지니어 (학습 데이터 파이프라인)",
+   "LLM 평가(Evaluation) 엔지니어",
+   "ML 인프라 / 분산 학습 엔지니어"
+  ],
+  "skills": [
+   "Python",
+   "PyTorch",
+   "CUDA",
+   "Hugging Face",
+   "Transformers",
+   "LLM",
+   "RLHF",
+   "Spark",
+   "Distributed Training",
+   "GPU",
+   "Deep Learning",
+   "NLP"
+  ]
+ },
+ "materials": {
+  "transcript": "official",
+  "frames": 209,
+  "every_sec": 30
+ },
+ "written_at": "2026-11-20"
 }
