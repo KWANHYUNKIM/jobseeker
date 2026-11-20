@@ -261,6 +261,11 @@
   실전 프로젝트 · 품질과 보안 · 인프라와 배포. `index.json` 의 `tracks` 가
   원본이고 화면 왼쪽 차례가 이걸로 그린다. 새 책에 `track` 을 안 적으면
   '그 밖의' 로 모인다(사라지지는 않는다).
+  **서가 탭 끝의 '💼 취업'(`/wiki/careers`)은 책이 아니다** — `catch_capture/careers/` 가 모은 합격·이직·전환
+  후기를 정본 DB(`career_post` 원문 · `career_story` 경험담 · `career_roster` 합격자 명단, 019)에서 읽어 연도·회사·
+  회사 유형별로 스펙·이직 경로·전형·지원 결과·서류를 센다(backend `features/careers`, `/api/careers`). 적재는
+  `python -m store.ingest.careers`(careers.cycle 이 회차 끝에 부른다) — 회사 유형·경력직 출발지 판정은 여기에만 있다.
+  원문은 남의 글이라 공개 API 로 안 나가고 `CAREERS_KEY` 열쇠(X-Careers-Key)를 아는 요청에만 붙는다. 정적 사본은 굽지 않는다.
   **혼자 읽는 책이라 색인하지 않는다** — noindex + sitemap/prerender 제외 + robots
   Disallow. 형식과 집필 규칙(특히 ASCII 그림에서 한글을 테두리 왼쪽에 두지 않는 규칙)은
   `jd-viewer/public/book/README.md`.
