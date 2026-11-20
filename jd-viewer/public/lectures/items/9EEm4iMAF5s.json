@@ -1,0 +1,1010 @@
+{
+ "id": "9EEm4iMAF5s",
+ "source": {
+  "platform": "youtube",
+  "url": "https://www.youtube.com/watch?v=9EEm4iMAF5s",
+  "channel": "Stanford Online",
+  "published": "2026-06-05",
+  "duration_sec": 4300,
+  "views": 25146
+ },
+ "course": {
+  "school": "Stanford",
+  "code": "CS336",
+  "term": "Spring 2026",
+  "lecture_no": "Guest",
+  "speaker": "Dan Fu (UCSD · Together AI)"
+ },
+ "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Guest Lecture: Dan Fu",
+ "title_ko": "추론, 전기를 지능으로 — 토큰의 일생, 메가커널, 루프 트랜스포머 Parcae (CS336 초청 강연)",
+ "topic": "systems",
+ "tags": [
+  "LLM",
+  "Inference",
+  "GPU",
+  "CUDA",
+  "Triton",
+  "PyTorch",
+  "vLLM",
+  "SGLang",
+  "KV Cache",
+  "MoE",
+  "Distributed Systems",
+  "Transformer",
+  "Python"
+ ],
+ "level": "심화",
+ "one_line": "요청 하나가 토큰이 되기까지의 서빙 공정, decode 를 빛의 속도로 만드는 메가커널, 안정된 루프 트랜스포머",
+ "summary": [
+  "이 과목이 줄곧 '모델을 어떻게 학습하나'를 다뤘다면, Dan Fu(UCSD·Together AI)의 초청 강연은 반대편 — 다 만든 모델을 수많은 사용자에게 서빙하는 추론 — 을 다룬다. 강사의 비유로 GPU 가 새 시대의 석유라면 추론 엔진과 GPU 커널은 그 석유를 운동으로 바꾸는 엔진이다. 강연 전체를 꿰는 주장은 하나다. 추론과 GPU 커널을 바닥까지 이해하면 라우팅·커널·모델 구조 어느 층에서든 새로운 ML 알고리즘을 만들 수 있다.",
+  "첫 부분 '토큰의 일생'은 추론 엔진의 지도다. 요청은 스케줄링(continuous batching, chunked prefill)과 KV 캐시 조회(radix tree 프리픽스 공유)를 거쳐 prefill 과 decode 로 실행되고, 큰 모델은 텐서 병렬·전문가 병렬로 쪼개진다. 최적화 목표는 워크로드 모양(입출력 길이, 턴 수, 턴 간격)에 따라 정해지는 SLA — TTFT·TBT·GPU 당 QPS — 다. 결정적인 관찰은 prefill 은 계산 한계, decode 는 메모리 대역폭 한계라는 성질 차이이고, 그래서 둘을 다른 기계(나아가 다른 칩)에 나누는 분리가 표준이 됐다.",
+  "운영 현장의 이야기도 이어진다. 하루 수조 토큰 규모에서는 0.001% 확률의 버그가 매일 터진다 — 커널 하나의 off-by-one 이 모델을 중국어로 말하게 만들고, 도구 호출 처리 변경이 수만 토큰짜리 루프를 만든다. KV 캐시는 GPU HBM → CPU 메모리 → NVMe 로 계층을 이루고 LRU 축출과 프리페치로 관리되며, 이는 운영체제의 스와핑과 같은 문제다. 캐시 적중률로 요청을 가르는 라우터(CPD) 하나로 장기 문맥 서빙이 최대 40% 빨라졌다.",
+  "둘째 부분은 decode 를 위한 메가커널이다. 연산마다 커널을 하나씩 짜면 커널 런치·메모리 왕복·tail effect 로 GPU 가 놀게 된다. 모델 전체를 한 커널로 묶고 GPU 를 작은 분산 시스템처럼 스케줄하면, 앞 연산이 끝나기 전에 다음 연산의 가중치와 KV 를 미리 읽을 수 있다. ThunderKittens 위에 지은 이 메가커널은 Llama-1B 배치 1 decode 에서 H100 대역폭의 72% 를 써 vLLM·SGLang 을 앞섰다. 대가는 엄청난 엔지니어링 노력이다.",
+  "셋째 부분 Parcae 는 하드웨어 관점에서 모델 구조를 다시 본다. 같은 블록을 반복하는 루프 트랜스포머는 파라미터를 고정한 채 연산을 늘리지만 학습이 쉽게 폭주했다. 팀은 반복 상태를 선형 동역학계로 보고, 폭주의 원인이 상태 전이 행렬의 스펙트럴 반경임을 밝혀 이를 1 보다 작게 묶는 매개화(음의 대각 + ZOH)로 안정화했다. 그 결과 같은 크기 트랜스포머보다 퍼플렉서티가 낮았고, 스케일링 실험은 '데이터가 늘면 반복 횟수도 함께 늘려라'는 거듭제곱 법칙을 보였다.",
+  "질의응답은 공동 설계로 마무리된다. 서빙할 칩의 메모리부터 보고 모델 크기를 정하고, 양자화 형식(NVFP4·MXFP4)도 칩을 따른다. 에이전트처럼 턴이 이어지는 작업은 KV 캐시 압축(MLA)이, 일괄 처리·검색은 양방향 모델이 맞는다. 어떤 일을 어떤 칩에서 어떤 트래픽으로 돌리느냐가 모델 구조까지 거슬러 올라간다는 것이 강연의 결론이다."
+ ],
+ "why_now": "추론은 이제 AI 비용의 중심이다. 강사가 말하듯 서빙 규모가 하루 수조 토큰에 이르면서 학습 때 보이지 않던 문제 — prefill 과 decode 의 성질 차이, KV 캐시 용량, 희귀 버그, 장애 허용 — 가 시스템 설계를 좌우하게 됐다. 코딩 에이전트처럼 입력이 수만 토큰이고 턴이 이어지는 워크로드가 늘면서 KV 캐시 계층(CPU 메모리·SSD 수요까지)과 캐시를 아는 라우팅이 직접적인 경쟁력이 됐고, NVIDIA 의 decode 전용 칩 도입이나 OpenAI–Cerebras 제휴처럼 하드웨어 시장도 prefill/decode 분리에 맞춰 재편되고 있다는 것이 강연의 설명이다. 동시에 메가커널 같은 저수준 최적화가 같은 GPU 에서 처리량을 두 배 가까이 끌어올리고, Parcae 처럼 '서빙 메모리'를 고려한 모델 구조 연구가 나오면서, 모델·커널·하드웨어를 함께 이해하는 사람의 가치가 커지고 있다. 국내에서도 LLM 서빙 플랫폼, GPU 클라우드, 온디바이스·NPU 추론 쪽에서 vLLM·CUDA·Triton 을 다루는 추론 최적화 엔지니어 수요가 늘고 있다.",
+ "chapters": [
+  {
+   "start": 0,
+   "title": "왜 추론인가 — 전기를 토큰으로 바꾸는 엔진",
+   "points": [
+    "이 과목이 '학습'을 다뤘다면 이번 초청 강연은 다 만든 모델을 '서빙'하는 반대편 이야기다.",
+    "모델 규모는 2018년 1억 파라미터 급에서 지금 오픈 모델 1조 파라미터 이상으로 커졌고, 변화 속도는 예상보다 빠르다.",
+    "말 → 자동차 전환(1902년 맨해튼 말 13만 마리, 1912년 자동차가 말을 추월)에 빗대, 강사 본인에게는 코드 대부분을 LLM 으로 쓰기 시작한 2025년이 '1912년'이었다.",
+    "GPU 가 석유라면 추론 엔진·GPU 커널은 그 석유를 운동으로 바꾸는 엔진이다. 모델은 연산의 DAG 이고, 그것을 실제 하드웨어에 옮기는 일이 추론 시스템이다.",
+    "강연의 결론 한 줄: 추론과 GPU 커널을 이해하면 ML 알고리즘을 스택 전체에서 새로 짤 수 있다."
+   ],
+   "on_screen": "표지 'Inference: Turning Electricity into Intelligence' — Dan Fu, UCSD · Together AI, danfu.org. 'The New Industrial Revolution' 네 칸(Human-Level Text Generation(GPT-4), Art Generation(Midjourney), Understanding New Modalities), 'What has made these advances possible? How can we improve them?'. 'Scaling in Model Size: 100M to 500B in Four Years' 로그 축 그래프(ELMo·BERT-Large·GPT-2·T5·Megatron-LM·Turing-NLG·GPT-3 175B·Megatron-Turing NLG 530B, 2018~2022)와 New Capabilities 목록(Human-like chat, 코드 작성 — 이 발표의 커널 포함, 복잡한 텍스트 분석). 1902년 마차 사진 '130,000 horses working in Manhattan… 22 pounds of manure a day', 1912년 'cars outnumber horses', 'For me (writing code) — 1912 was 2025'. 'GPUs Are the New Oil' — Stargate 발표, OpenAI $500B 투자. 'Inference: The Engine Turning Electricity into Intelligence' — 트랜스포머 블록 그림과 'ML Models are DAGs of Operations'. 'Takeaway from today's talk: Understanding inference and GPU kernels enables full-stack innovation in ML algorithms'. 목차 세 칸: Lifetime of a token / Fast LLM Inference with Megakernels / Something new: Parcae. 'The AI Native Cloud' 그림(사전학습·SFT·RL·추론·코드 샌드박스).",
+   "explain": [
+    "이 과목의 다른 강의들은 대부분 '어떻게 모델을 학습하나'를 다룬다. 이 초청 강연은 방향을 뒤집어, 학습이 끝난 모델을 수많은 사용자에게 실제로 돌려주는 쪽, 즉 추론(inference)과 서빙(serving)을 다룬다. 강사 Dan Fu 는 UCSD 에서 작은 연구실을 이끌면서 Together AI(GPU 클라우드·추론·파인튜닝을 파는 회사)에서도 일하고 있고, FlashAttention 계열 연구로 알려진 사람이다. 그래서 강연 전체가 '연구실의 아이디어'와 '수조 토큰을 매일 처리하는 운영 현장'을 오가며 진행된다.",
+    "동기 부분의 논지는 단순하다. 지난 몇 년간 능력이 좋아진 가장 큰 이유는 규모였다. 강사가 박사 과정을 시작한 2018년에는 수억 파라미터가 '거대' 모델이었고, 2019년의 GPT-2 는 공개하기 위험하다는 말까지 들었지만 지금은 이 수업 과제로 그 정도 모델을 학습할 수 있다. 오늘날 오픈 모델은 1조 파라미터를 넘고, 최전선 폐쇄 모델은 5~10조 파라미터 정도일 것이라고 강사는 추측한다(추측이라는 단서를 단다). 그리고 이 변화는 생각보다 빠르다. 강사는 1898년 뉴욕에서 열린 '말똥 문제' 학회 이야기를 꺼낸다. 맨해튼에 일하는 말이 13만 마리나 있어 배설물이 도시 문제였고, 학회의 결론은 '어쩔 수 없으니 참자'였다. 그런데 불과 10여 년 뒤인 1912년에 자동차 수가 말을 넘어섰다. 수백 년 이어진 것이 10년 만에 바뀐 것이다. 강사 개인에게는 코드 대부분을 언어 모델로 쓰기 시작한 작년이 그 '1912년'이었다고 한다.",
+    "그렇다면 이 규모를 무엇이 떠받치나. 강사의 비유는 'GPU 는 새로운 석유'다. 수천억 달러 규모의 GPU 데이터센터 투자가 이어지고 국가 단위 펀드까지 뛰어든다. 하지만 석유는 엔진이 있어야 차를 움직인다. 같은 이치로 GPU 라는 자원을 쓸모 있는 '지능'으로 바꾸는 엔진이 바로 추론 엔진과 GPU 커널이다. 머신러닝 모델은 수학적으로는 연산들의 방향성 비순환 그래프(DAG)일 뿐이고, 그 그래프를 실제 칩 위의 명령으로 옮기고 수많은 요청 사이에서 자원을 나눠 쓰게 만드는 일은 전부 사람이 프로그래밍해야 한다. 학습 쪽에서 FlashAttention 을 직접 짜 본 수강생이라면 감이 있겠지만, 추론 쪽에는 그보다 훨씬 넓은 복잡성의 세계가 있다는 것이 강사의 말이다.",
+    "강연 구성은 세 부분이다. 첫째, '토큰의 일생' — 요청 하나가 들어와 토큰으로 나가기까지 추론 시스템의 모든 부품과 선택지를 훑는다. 둘째, 그중 decode 단계를 빠르게 하는 '메가커널' 연구(Stanford·Together 협업). 셋째, 하드웨어 관점에서 거꾸로 모델 구조를 다시 생각한 루프 트랜스포머 'Parcae'(UCSD 연구실). 강연 내내 반복되는 핵심 주장은 하나다 — 추론과 GPU 커널을 바닥까지 이해하면 라우팅·커널·모델 구조 어느 층에서든 새로운 알고리즘을 만들 수 있다. 이 노트도 그 세 부분을 차례로 따라가되, 강연이 빠르게 넘어간 계산(산술 강도, KV 캐시 크기, 대역폭 한계, 스펙트럴 반경)을 작은 숫자로 직접 풀어 보며 보충한다."
+   ],
+   "pitfalls": [
+    "'추론은 학습의 forward 만 떼어 낸 쉬운 일'이라고 생각하기 쉽다. prefill 은 학습과 닮았지만 decode·캐시·스케줄링은 학습에 없는 별개의 문제다.",
+    "최전선 모델 파라미터 수(5~10조)는 강사의 추측이다. 사실처럼 인용하지 않는다."
+   ],
+   "check": [
+    {
+     "q": "강사가 'GPU 는 석유, 추론 엔진은 엔진'이라고 비유한 이유는?",
+     "a": "GPU 자체는 원자재일 뿐이고, 모델이라는 연산 DAG 을 하드웨어 명령으로 옮기고 여러 요청에 자원을 배분해 실제 토큰(지능)으로 바꾸는 것은 추론 엔진과 커널이기 때문이다. 엔진이 좋아야 같은 석유로 더 멀리 간다."
+    }
+   ]
+  },
+  {
+   "start": 450,
+   "title": "토큰의 일생 — 추론 엔진의 부품 지도",
+   "points": [
+    "요청 → 스케줄링(continuous batching, chunked prefill) → KV 캐시(radix tree 프리픽스 공유, 오프로드·프리페치) → 실행(prefill, decode 루프, CUDA graphs) → 병렬화(TP, wide EP, attention DP) → 토큰.",
+    "prefill 과 decode 를 서로 다른 기계에 나누는 '분리(disaggregation)'와 그 사이의 비동기 RDMA 전송이 곁가지로 붙는다.",
+    "다음 과제: NVL72 위의 장애 허용, 100만 토큰 이상 문맥의 병렬화. 그리고 운영에서 터지는 버그(NaN, KV 손상)와 관측성.",
+    "엔진은 결국 '스케줄 → 실행 → 샘플링 → 반복'을 도는 루프다."
+   ],
+   "on_screen": "'What's in an Inference Engine' — 왼쪽에서 오른쪽으로 이어진 노선도: Request In → Scheduling(continuous batching, chunked prefill) → KV Cache(radix tree, prefix sharing, offload + prefetch) → Execution(prefill, decode loop, CUDA graphs) → Parallelism(TP, wide EP, attention DP) → Tokens Out. 아래 갈래 Disaggregation(prefill/decode split, async RDMA transfer), 위 갈래 What's Next(fault tolerance on NVL72, 1M+ context parallelism), 왼쪽 아래 Bug Stories(NaNs, KV corruption, observability). 슬라이드는 이미지 생성 모델로 만든 것이라 세부 글자가 틀린 곳이 있다고 강사가 미리 말한다.",
+   "explain": [
+    "추론 엔진을 공항에 비유해 보자. 승객(요청)이 도착하면 먼저 어느 게이트(GPU)로 보낼지 정하고(스케줄링), 이미 수속을 마친 단골이면 그 기록을 꺼내 쓰고(KV 캐시), 비행기에 태워 보낸 뒤(실행), 큰 비행기는 여러 활주로를 나눠 쓴다(병렬화). 이 모든 과정이 동시에 수천 명에게 일어난다. 강사가 띄운 노선도는 바로 이 공정을 한 줄로 그린 것이다. 이 슬라이드는 강사 학생이 Together 에서의 경험을 정리한 자료에서 가져왔다.",
+    "부품을 하나씩 정의해 두자. 스케줄링은 들어온 요청을 어느 GPU 묶음에서 언제 돌릴지 정하는 일이다. 여기서 continuous batching(요청이 끝나는 대로 빈자리에 새 요청을 끼워 넣는 묶음 처리)과 chunked prefill(긴 프롬프트를 조각으로 잘라 decode 와 번갈아 처리)이 쓰인다. KV 캐시는 어텐션 계산에 필요한 과거 토큰들의 Key·Value 텐서를 저장해 둔 것으로, 같은 앞부분(프리픽스)을 가진 요청끼리 나눠 쓰도록 radix tree 로 관리하고 GPU 메모리가 모자라면 CPU·디스크로 내렸다가(offload) 필요해지기 전에 다시 올린다(prefetch). 실행 단계는 prefill(프롬프트 전체를 한 번에 처리)과 decode(토큰을 하나씩 생성하는 루프)이며, 작은 커널을 반복 호출하는 비용을 줄이려고 CUDA graphs 로 호출 순서를 녹화해 재생한다. 병렬화는 모델이 GPU 한 장에 안 들어갈 때 텐서 병렬(TP), 전문가 병렬(EP), 어텐션 데이터 병렬(DP) 등으로 쪼개는 방식이다.",
+    "왜 이렇게 부품이 많을까. 학습은 '같은 모양의 배치를 정해진 순서로 계속 돌리는' 일이라 비교적 균일하다. 반면 서빙은 길이도 도착 시각도 제각각인 요청이 끝없이 들어오고, 응답 시간 약속(SLA)까지 지켜야 한다. 그래서 같은 행렬곱이라도 '언제, 어디서, 무엇과 같이' 돌릴지를 정하는 부분이 시스템의 절반을 차지한다. 노선도 아래 'Disaggregation' 갈래는 prefill 과 decode 를 아예 다른 기계 묶음에서 돌리고 그 사이에 KV 캐시를 RDMA(CPU 를 거치지 않는 원격 메모리 직접 접근)로 넘기는 구조이고, 위쪽 'What's Next' 는 72개 GPU 를 한 덩어리로 묶은 NVL72 랙에서 장애를 견디는 법, 100만 토큰 이상 문맥을 여러 GPU 에 나누는 법 같은 아직 풀리는 중인 문제들이다.",
+    "강사는 이 지도를 이후 20분 동안 하나씩 확대한다. 이 노트도 같은 순서를 따른다: 워크로드와 SLA(무엇을 최적화하나) → prefill 과 decode 의 성질 차이 → 배칭과 KV 캐시 → 병렬화와 분리 → 운영 버그 → 캐시 계층과 차세대 하드웨어 → 캐시를 아는 라우터(CPD). 마지막에 엔진이 하는 일을 다시 요약하면 '요청을 기다린다 → 스케줄한다 → 실행한다 → 토큰을 샘플링한다 → 반복한다'는 루프다. 이 루프의 각 단계에서 몇 밀리초를 줄이느냐가 GPU 한 장이 초당 몇 개의 요청을 감당하느냐를 결정한다."
+   ],
+   "diagram": {
+    "title": "추론 엔진의 공정(노선도 슬라이드를 옮긴 것)",
+    "code": "flowchart LR\n  A[요청 도착] --> B[스케줄링<br/>continuous batching<br/>chunked prefill]\n  B --> C[KV 캐시 조회<br/>radix tree 프리픽스 공유<br/>offload / prefetch]\n  C --> D[실행<br/>prefill · decode 루프<br/>CUDA graphs]\n  D --> E[병렬화<br/>TP · wide EP · attention DP]\n  E --> F[토큰 출력]\n  D -.-> G[분리<br/>prefill/decode 다른 기계<br/>RDMA 로 KV 전송]\n  F -.-> B"
+   },
+   "pitfalls": [
+    "CUDA graphs 는 '그래프 신경망'이 아니다. 커널 호출 순서를 미리 녹화해 CPU 의 호출 비용을 줄이는 CUDA 기능이다.",
+    "KV 캐시는 모델 가중치 캐시가 아니라 '이미 본 토큰들의 어텐션 Key/Value'다. 요청마다, 토큰마다 커진다."
+   ],
+   "check": [
+    {
+     "q": "chunked prefill 이 필요한 이유를 한 문장으로?",
+     "a": "아주 긴 프롬프트의 prefill 이 GPU 를 오래 독점하면 그동안 다른 요청들의 decode 가 멈춰 응답이 끊기므로, prefill 을 조각내 decode 단계 사이사이에 끼워 넣기 위해서다."
+    }
+   ]
+  },
+  {
+   "start": 570,
+   "title": "워크로드의 모양과 SLA — 무엇을 최적화하나",
+   "points": [
+    "실제 트래픽은 학습 데이터와도, 머릿속으로 상상한 부하와도 다르다. 입력·출력 길이 분포, 세션당 턴 수, 턴 사이 간격이 워크로드를 정의한다.",
+    "코딩 에이전트는 입력 수만 토큰 + 짧거나 생각 토큰이 섞인 출력, 책 요약은 거대한 입력, 일반 채팅은 짧은 입력처럼 모양이 다르다.",
+    "SLA 목표 세 가지: TTFT(첫 토큰까지 — prefill 속도), TBT(토큰 사이 간격 — decode 속도), GPU 당 QPS(처리 효율).",
+    "같은 지연 목표도 워크로드에 따라 쉽기도, 불가능하기도 하다. 턴 사이 간격은 KV 캐시를 얼마나 오래 들고 있을지 정한다."
+   ],
+   "on_screen": "'SLA — What Are We Optimizing For?' 왼쪽 Workload Shape: input/output token lengths + cache hit rate 분포(p1~p99, 예시 값 32/64, 256/128, 512/256, 1024/512, 4096/1024 와 캐시 적중률 5%~98%), turns per session(N) 분포 — 'multi-turn agent conversations', time between turns 분포(0.5s~300s) — 'informs cache sizing — how long do we hold KV?'. 오른쪽 SLA Targets: 'TTFT < 500 ms'(time to first token — prefill speed), 'TBT < 30 ms'(time between tokens — decode speed), 'target QPS per GPU'(throughput efficiency). 하단 'SLA depends on workload — same latency target is easy or impossible depending on ISL, OSL, cache hit rate, N, and time between turns.'",
+   "explain": [
+    "식당을 떠올려 보자. 점심 직장인 손님(빨리 먹고 나감), 코스 요리 손님(오래 앉아 여러 접시), 단체 예약 손님은 같은 주방이라도 전혀 다른 운영을 요구한다. LLM 서빙도 같다. 강사는 '우리가 실제로 받는 트래픽은 학습 때 본 토큰과도 다르고, 머릿속으로 지어낸 부하와도 다르다'는 점을 강조한다. 그래서 최적화를 시작하기 전에 먼저 워크로드의 모양을 재야 한다.",
+    "워크로드를 정의하는 축은 다섯 가지다. ① 입력 길이(ISL, input sequence length)와 ② 출력 길이(OSL)의 분포, ③ 캐시 적중률(이번 입력 중 이미 계산해 둔 앞부분의 비율), ④ 세션당 턴 수 N, ⑤ 턴 사이 시간. 예를 들어 Cursor 같은 코딩 도구는 코드베이스를 통째로 넣어 입력이 수만 토큰이지만 출력은 짧거나, 모델에 따라 '생각 토큰'이 길게 붙는다. 책 한 권을 붙여 넣고 대화하는 요약 작업은 입력이 극단적으로 크다. '미적분 설명해 줘' 같은 일반 채팅은 입력도 출력도 짧다. 에이전트는 도구를 불러 grep·검색 결과를 다시 모델에 넣으며 여러 턴을 돈다. 턴 사이 시간도 제각각이다 — 음성 대화는 거의 즉시, 혼자 일하도록 맡긴 에이전트는 사람 확인을 기다리느라 몇 분, 강사가 운동 계획을 상담하는 채팅방은 2주에 한 번 열린다.",
+    "이 분포가 왜 중요한가. 오른쪽의 SLA 목표 세 개가 서로 다른 단계를 압박하기 때문이다. TTFT(time to first token)는 요청을 보내고 첫 토큰이 나오기까지의 시간으로, 사실상 prefill 이 얼마나 빨리 끝나느냐다. 슬라이드 예시는 500 ms 미만이다. TBT(time between tokens)는 생성되는 토큰 사이의 간격으로 decode 한 단계의 시간이다. 예시 30 ms 미만이면 초당 33 토큰 이상이 흘러나와 사람이 읽는 속도보다 빠르다. GPU 당 QPS 는 GPU 한 장이 초당 몇 개 요청을 처리하느냐, 즉 비용 효율이다. 지연을 줄이려면 배치를 작게 해야 하고 효율을 높이려면 배치를 크게 해야 하므로, 앞의 둘과 마지막 하나는 늘 줄다리기를 한다.",
+    "슬라이드 하단 문장이 이 장의 요점이다. 같은 'TTFT 500 ms' 목표라도 입력 300 토큰짜리 채팅에서는 쉽고, 캐시 적중 없는 10만 토큰 입력에서는 사실상 불가능하다. 반대로 캐시 적중률이 높으면 긴 입력도 대부분 재계산할 필요가 없어 목표가 쉬워진다. 그리고 '턴 사이 시간' 분포는 캐시를 얼마나 오래 붙들고 있어야 하는지를 알려 준다. 사용자가 30초 안에 다음 질문을 하는 경우가 대부분이라면 그만큼만 GPU 에 두면 되고, 몇 시간 뒤에 돌아오는 사용자가 많다면 더 싼 저장소로 내려 둘 계획이 필요하다(뒤의 캐시 계층 장). 결국 엔진 설계는 '내 워크로드 분포 위에서 이 세 숫자를 동시에 만족시키는 배치·캐시·병렬화 조합 찾기'다."
+   ],
+   "formulas": [
+    {
+     "expr": "전체 응답 시간 ≈ TTFT + (출력 토큰 수 − 1) × TBT",
+     "meaning": "TTFT 는 prefill(과 대기열) 시간, TBT 는 decode 한 걸음의 시간. 출력이 길수록 TBT 가 전체 시간을 지배한다."
+    },
+    {
+     "expr": "QPS/GPU = 처리한 요청 수 / (초 × GPU 수)",
+     "meaning": "같은 SLA 를 지키면서 이 값을 올리는 것이 서빙 비용을 낮추는 길이다."
+    }
+   ],
+   "example": {
+    "title": "500 토큰 답변이 몇 초 걸리나",
+    "body": "TTFT = 0.4 s, TBT = 25 ms, 출력 500 토큰이라면 0.4 + 499 × 0.025 ≈ 0.4 + 12.5 = 12.9 s. 같은 답을 TBT 15 ms 로 만들면 0.4 + 7.5 = 7.9 s. 출력이 긴 응답에서는 TTFT 를 100 ms 줄이는 것보다 TBT 를 10 ms 줄이는 쪽이 체감 시간을 훨씬 크게 줄인다. 반대로 출력 20 토큰짜리 분류 요청이면 0.4 + 19 × 0.025 ≈ 0.9 s 로 TTFT 가 절반 가까이를 차지한다."
+   },
+   "pitfalls": [
+    "평균 길이만 보고 설계하면 안 된다. 슬라이드가 p1~p99 분포를 그린 이유는 꼬리(p99)의 긴 요청이 지연 목표를 깨기 때문이다.",
+    "TTFT 에는 prefill 연산 시간뿐 아니라 대기열에서 기다린 시간도 들어간다."
+   ],
+   "check": [
+    {
+     "q": "TBT 를 30 ms 아래로 지키라는 목표는 엔진의 어느 단계에 대한 요구인가?",
+     "a": "decode 한 걸음(토큰 하나 생성)에 대한 요구다. TTFT 는 prefill, TBT 는 decode 속도를 본다."
+    },
+    {
+     "q": "'턴 사이 시간' 분포가 캐시 설계에 주는 정보는?",
+     "a": "같은 세션의 다음 요청이 언제 올지를 알려 주므로, KV 캐시를 GPU 에 얼마나 오래 들고 있을지, 언제 CPU·디스크로 내릴지를 정하는 근거가 된다."
+    }
+   ]
+  },
+  {
+   "start": 810,
+   "title": "prefill 과 decode — 계산이 막히는 곳과 메모리가 막히는 곳",
+   "points": [
+    "요청 흐름: 토크나이즈 → 스케줄(캐시 조회) → prefill → decode 루프(한 걸음에 한 토큰) → 디토크나이즈 → 스트리밍 출력.",
+    "prefill 은 1만 토큰을 넣고 1토큰을 내는 일 — 학습의 forward 와 닮은 계산 한계(compute-bound) 작업.",
+    "decode 는 토큰 하나 만들 때마다 모델 전체를 다시 읽는 일 — 연산은 적고 메모리 대역폭이 한계(memory-bandwidth-bound).",
+    "출력 뒤에는 정지 토큰 확인, 안전 검사 같은 후처리가 붙는다."
+   ],
+   "on_screen": "'From Request to Token' — REQUEST → TOKENIZE → SCHEDULE → PREFILL(위에 'compute-bound') → DECODE LOOP(위에 'memory-bandwidth-bound', 아래 'one token per step') → DETOKENIZER → STREAMING OUTPUT TOKENS. 하단 'the engine is a loop: schedule → execute → sample → repeat'.",
+   "explain": [
+    "추론의 두 단계를 시험 보기에 비유하면 쉽다. prefill 은 시험지를 처음 받아 전체를 한 번에 훑는 시간이다. 문제 1만 개를 동시에 읽으니 머리(연산 장치)가 쉴 틈이 없다. decode 는 답을 한 글자씩 쓰는 시간이다. 한 글자를 쓸 때마다 참고서 전체(모델 가중치)를 책장에서 꺼내 펼쳐야 하는데, 정작 그 참고서로 하는 계산은 한 글자 분량뿐이다. 그러면 시간 대부분이 책을 꺼내는 데(메모리 읽기) 들어간다.",
+    "정의로 옮기면 이렇다. prefill 은 프롬프트의 모든 토큰을 한 번의 forward 로 처리해 각 층의 KV 캐시를 채우고 첫 출력 토큰의 로짓을 얻는 단계다. 토큰 수가 많으므로 가중치 행렬 하나를 읽어 와서 수천~수만 개 토큰에 재사용한다. 이것은 학습 때 하는 일과 거의 같고(역전파만 없다) GPU 의 행렬곱 장치를 꽉 채울 수 있다. decode 는 직전에 만든 토큰 하나(배치가 있다면 요청당 하나씩)만 넣어 다음 토큰을 만드는 단계다. 가중치 전체를 HBM(그래픽 메모리)에서 읽어 와야 하는 것은 같은데 그것을 곱할 상대가 토큰 하나뿐이므로, 읽은 바이트당 연산이 극히 적다. speculative decoding(작은 모델이 몇 토큰을 미리 추측하고 큰 모델이 한 번에 검증)을 쓰면 한 걸음에 3~4 토큰을 얻을 수 있지만 근본 성질은 같다.",
+    "이 차이를 재는 잣대가 산술 강도(arithmetic intensity) — 메모리에서 읽은 1바이트당 몇 번의 연산을 하느냐 — 다(노트 보충: 루프라인 모델). GPU 에는 두 개의 천장이 있다. 초당 최대 연산량(H100 BF16 밀집 약 990 TFLOP/s)과 초당 최대 메모리 대역폭(H100 HBM3 약 3.35 TB/s). 둘을 나누면 약 300 FLOP/바이트라는 '능선(ridge point)'이 나온다. 산술 강도가 이보다 낮은 작업은 아무리 연산 장치가 많아도 메모리를 기다리느라 놀고(대역폭 한계), 높은 작업은 연산 장치가 바쁘다(계산 한계). 아래 예에서 보듯 배치 1 decode 의 산술 강도는 약 1 이라 능선보다 300배 낮고, 1만 토큰 prefill 은 1만 근처라 능선을 훌쩍 넘는다.",
+    "강사는 decode 를 두고 '거대한 병렬 기계를 그럴듯한 메모리 로더로 만들어 버린다'고 표현한다(뒤 메가커널 장의 출발점). 그래서 decode 를 빠르게 하는 방법은 크게 두 갈래다. 하나는 한 번 읽은 가중치를 더 많은 토큰에 쓰는 것 — 여러 요청을 묶어 배치를 키우거나(continuous batching), 추측 토큰을 같이 검증하거나(speculative decoding). 다른 하나는 읽는 바이트 자체를 줄이는 것 — 가중치·KV 를 FP8·FP4 로 양자화하거나 KV 캐시 구조를 압축하는 것(뒤 Q&A 의 MLA). 출력 토큰이 나온 뒤에는 정지 토큰 확인, 안전 필터 같은 가벼운 후처리를 거쳐 문자열로 바뀌어 사용자에게 흘러간다."
+   ],
+   "formulas": [
+    {
+     "expr": "산술 강도 I = FLOPs / 메모리에서 옮긴 바이트",
+     "meaning": "읽은 1바이트로 몇 번 계산하는가. I 가 GPU 의 능선 I* = 최대 FLOP/s ÷ 최대 바이트/s 보다 작으면 대역폭 한계, 크면 계산 한계."
+    },
+    {
+     "expr": "달성 가능 성능 = min(최대 FLOP/s, I × 대역폭)",
+     "meaning": "루프라인 모델(노트 보충). 대역폭 한계 구간에서는 성능이 I 에 비례해 오른다."
+    },
+    {
+     "expr": "decode(배치 B, BF16): I ≈ 2·P·B / (2·P) = B",
+     "meaning": "P 는 파라미터 수. 파라미터 하나당 곱셈+덧셈 2 FLOP 을 토큰마다 하고, 가중치는 2바이트씩 한 번 읽는다. 그래서 산술 강도 ≈ 배치 크기 B(KV 읽기는 무시한 근사)."
+    }
+   ],
+   "example": {
+    "title": "Llama 1B 급 모델로 decode 의 속도 한계 계산",
+    "body": "파라미터 P = 1.2×10⁹, BF16 이면 가중치 2.4 GB. H100 대역폭 3.35 TB/s 로 한 번 다 읽는 데 2.4 / 3350 ≈ 0.72 ms. 배치 1 이면 토큰 하나에 최소 0.72 ms → 초당 약 1,400 토큰이 '빛의 속도'(물리 한계)다. 이때 연산은 2P = 2.4 GFLOP, 0.72 ms 동안이면 약 3.3 TFLOP/s — H100 연산 능력(약 990)의 0.3% 만 쓴다. 같은 모델로 1만 토큰 prefill 을 하면 연산 2P×10⁴ = 24 TFLOP, 읽는 가중치는 그대로 2.4 GB 라 산술 강도 ≈ 10,000 → 계산 한계. 시간은 최소 24/990 ≈ 24 ms."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 루프라인으로 prefill / decode 판정 (H100 근사값)\nPEAK_FLOPS = 990e12   # BF16 밀집 FLOP/s\nPEAK_BW = 3.35e12     # HBM 바이트/s\nRIDGE = PEAK_FLOPS / PEAK_BW\n\ndef step_time(params, tokens, bytes_per_param=2):\n    flops = 2 * params * tokens          # 토큰마다 파라미터당 2 FLOP\n    moved = params * bytes_per_param     # 가중치는 한 번만 읽는다고 가정\n    intensity = flops / moved\n    t = max(flops / PEAK_FLOPS, moved / PEAK_BW)\n    kind = 'compute' if intensity > RIDGE else 'memory'\n    return intensity, t * 1e3, kind\n\nprint(f'ridge = {RIDGE:.0f} FLOP/B')\nfor name, tok in [('decode B=1', 1), ('decode B=64', 64),\n                  ('prefill 10k', 10_000)]:\n    i, ms, k = step_time(1.2e9, tok)\n    print(f'{name:12s} I={i:7.0f}  {ms:6.2f} ms  {k}-bound')",
+    "note": "decode B=1 은 0.72 ms 로 메모리 한계, B=64 도 아직 능선(약 296) 아래라 시간이 거의 같다 — 배치를 키우면 토큰이 공짜로 늘어나는 구간이다. KV 캐시 읽기는 뺐다."
+   },
+   "pitfalls": [
+    "decode 가 느린 이유를 '연산이 많아서'로 오해하기 쉽다. 연산은 오히려 적고, 매 걸음 가중치 전체를 메모리에서 끌어오는 것이 병목이다.",
+    "배치를 키우면 decode 처리량은 거의 공짜로 늘지만, 요청마다 KV 캐시 읽기가 따로 붙으므로 문맥이 길면 산술 강도가 생각만큼 오르지 않는다."
+   ],
+   "check": [
+    {
+     "q": "H100 의 능선이 약 300 FLOP/바이트일 때, 배치 32 decode 는 어느 쪽 한계인가?",
+     "a": "산술 강도 ≈ 32 로 300 보다 작으므로 여전히 메모리 대역폭 한계다. 배치 수백이 돼야 계산 한계에 가까워진다."
+    },
+    {
+     "q": "prefill 이 '학습과 비슷하다'는 말의 뜻은?",
+     "a": "많은 토큰을 한 번에 넣고 같은 가중치를 재사용하는 계산 한계 forward 라는 점에서 학습의 forward 와 같고, 역전파만 없다는 뜻이다."
+    }
+   ]
+  },
+  {
+   "start": 975,
+   "title": "continuous batching 과 KV 캐시 프리픽스 공유",
+   "points": [
+    "continuous batching: 걸음(step)마다 끝난 요청의 자리를 비우고 새 요청을 끼운다. 긴 요청과 짧은 요청이 같은 걸음에 섞인다.",
+    "자원은 연산뿐 아니라 KV 캐시 메모리다. 메모리가 모자라면 새 요청은 대기열에서 기다린다.",
+    "KV 캐시 프리픽스 공유: 시스템 프롬프트나 이전 턴처럼 이미 본 토큰열은 radix tree 로 찾아 재계산하지 않는다.",
+    "운영체제의 페이지·트리 자료구조 같은 고전적 기법이 그대로 쓰인다."
+   ],
+   "on_screen": "'Continuous Batching' — 시간이 아래로 흐르는 표(Step 1~6, 각 줄 왼쪽에 Scheduler 톱니). Step 1 Req A(Long, Active) + Req B(Short, Active), Step 2 'new request joins mid-flight' Req C(New, Active)와 'done — slot freed', Step 3 'capacity check: enough KV blocks?', Step 4 'microbatch check: under max tokens?' Req D(New, Active), Step 5~6 Req C·D 진행. 하단 'chunked prefill: long prompts split into chunks, interleaved with decode'. 'KV Cache — Radix Tree Prefix Sharing' — 맨 위 system prompt(shared) 블록 세 개에서 session 1·2·3 으로 갈라지는 트리, 'traverse → match hashes → reuse', 'cache hit', 아래 분홍 'new tokens (cache miss)'. 범례 '□ = 32 tokens, shape [layers, 32, hidden], block hash = f(content, parent)'.",
+   "explain": [
+    "버스를 생각해 보자. 정류장마다 내리는 사람이 생기면 그 자리에 바로 새 승객을 태운다. 종점까지 모든 승객이 내려야 새 승객을 태우는 버스보다 훨씬 효율적이다. continuous batching(반복 단위 배칭)이 바로 이것이다. 예전 방식(정적 배칭)은 한 배치의 모든 요청이 생성을 끝낼 때까지 기다렸다가 다음 배치를 시작했기 때문에, 짧은 요청이 끝난 자리가 긴 요청이 끝날 때까지 놀았다.",
+    "슬라이드의 표를 따라가 보자. 1단계에서 긴 문서 분석 요청 A 와 짧은 요청 B 가 같이 돈다. 2단계에서 B 가 끝나 자리가 비자 새 요청 C 가 '도중에' 합류한다. 3단계에서 스케줄러는 '새 요청을 받을 만큼 KV 블록이 남았나'를 점검한다 — 자원은 연산만이 아니라 GPU 메모리에 올려 둘 KV 캐시 공간이기 때문이다. 4단계에서 A 가 끝나고 또 다른 긴 요청 D 가 들어오는데, 이번에는 '한 걸음에 처리할 토큰이 상한 아래인가'(마이크로배치 점검)도 본다. 메모리가 모자라면 새 요청은 대기열에서 기다리고, 긴 요청이 끝나야 들어간다. 이 그림 하나에서 이미 '여러 요청이 한 시스템에 살면서 생기는 복잡성'이 드러난다. 표 아래에 적힌 chunked prefill 은 긴 프롬프트를 조각내 decode 사이사이에 끼워 넣어, 한 요청의 거대한 prefill 이 다른 요청들의 TBT 를 망치지 않게 하는 기법이다.",
+    "두 번째 슬라이드는 KV 캐시 재사용이다. 수많은 사용자가 같은 시스템 프롬프트('당신은 도움이 되는 비서입니다…')로 시작하고, 같은 사용자의 다음 턴은 이전 대화 전체를 앞부분으로 그대로 가진다. 그 앞부분의 Key·Value 는 이미 계산된 적이 있으니 다시 계산할 이유가 없다. 이를 찾는 자료구조가 radix tree(접두사 트리)다. 토큰열을 32 토큰 단위 블록으로 자르고, 각 블록의 해시를 '내용 + 부모 블록 해시'로 만든다. 그러면 같은 해시는 곧 '같은 앞부분 전체'를 뜻한다. 새 요청이 오면 트리를 루트부터 따라 내려가며 해시가 맞는 블록까지는 저장된 KV 를 재사용(캐시 적중)하고, 처음 갈라지는 지점 이후의 새 토큰만 prefill 한다. 슬라이드에서는 세 세션이 시스템 프롬프트 블록을 공유하고 각자의 가지로 갈라지며, 맨 아래 분홍 블록이 새로 계산해야 할 부분이다.",
+    "강사가 이 대목에서 강조하는 것은 이 기법들이 새로운 발명이 아니라는 점이다. 블록 단위 할당은 운영체제의 페이지 관리(vLLM 의 PagedAttention 이 이 발상), 프리픽스 공유는 오래된 트리 자료구조다. 차이는 데이터가 GPU 위의 거대한 텐서라는 것뿐이다. 그리고 캐시 적중은 공짜 성능이다 — 1만 토큰 대화의 다음 턴에서 새로 들어온 토큰이 200개라면, 적중 시 prefill 비용은 200 토큰 분량으로 줄어든다. 앞 장의 TTFT 목표를 지키는 가장 값싼 방법이 캐시 적중률을 올리는 것인 이유다. 다만 KV 캐시는 크다. 아래 계산처럼 8B 모델에서도 토큰 하나에 100KB 를 넘으므로, 무엇을 얼마나 오래 들고 있을지가 곧 다음 장들의 주제가 된다."
+   ],
+   "formulas": [
+    {
+     "expr": "KV 바이트/토큰 = 2 × L × H_kv × d_head × b",
+     "meaning": "2 는 Key 와 Value, L 은 층 수, H_kv 는 KV 헤드 수(GQA 면 쿼리 헤드보다 적다), d_head 는 헤드 차원, b 는 원소당 바이트(BF16=2). 노트 보충."
+    },
+    {
+     "expr": "블록 해시 h_i = hash(토큰들_i, h_{i−1})",
+     "meaning": "부모 해시를 섞기 때문에 같은 h_i 는 '맨 앞부터 i번째 블록까지 전부 같다'는 뜻이 된다. 그래서 해시 하나로 프리픽스 전체를 비교한다."
+    }
+   ],
+   "example": {
+    "title": "8B 모델의 KV 캐시와 적중의 값어치",
+    "body": "Llama-3-8B 급(L=32, H_kv=8, d_head=128, BF16): 2×32×8×128×2 = 131,072 바이트 = 128 KiB/토큰. 1만 토큰 대화 하나에 약 1.3 GB, 80 GB GPU 에서 가중치 16 GB 를 빼면 남은 64 GB 로 이런 대화를 약 49개만 들고 있을 수 있다. 다음 턴에 새 토큰이 200개라면 캐시 적중 시 prefill 은 200 토큰, 미스 시 10,200 토큰 — 계산량이 약 50배 차이 난다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import hashlib\n\nBLOCK = 4  # 슬라이드는 32, 손으로 보려고 4\n\ndef block_hashes(tokens):\n    out, parent = [], ''\n    for i in range(0, len(tokens) - len(tokens) % BLOCK, BLOCK):\n        h = hashlib.sha1((parent + str(tokens[i:i+BLOCK])).encode()).hexdigest()[:8]\n        out.append(h); parent = h\n    return out\n\ncache = set()\ndef prefill(tokens):\n    hs = block_hashes(tokens)\n    hit = 0\n    for h in hs:            # 앞에서부터 이어지는 적중만 쓴다\n        if h not in cache: break\n        hit += 1\n    cache.update(hs)\n    return hit * BLOCK, len(tokens) - hit * BLOCK  # (재사용, 새로 계산)\n\nsys = list(range(8))        # 공유 시스템 프롬프트 8 토큰\nprint(prefill(sys + [100, 101, 102, 103]))   # (0, 12)\nprint(prefill(sys + [200, 201, 202, 203]))   # (8, 4)\nprint(prefill(sys + [100, 101, 102, 103, 9, 9, 9, 9]))  # (12, 4)",
+    "note": "부모 해시를 섞으므로 중간 블록만 같아도 적중으로 치지 않는다 — 어텐션은 앞 토큰 전부에 의존하기 때문이다."
+   },
+   "pitfalls": [
+    "프리픽스가 '중간부터' 같다고 KV 를 재사용할 수는 없다. 앞 토큰이 하나라도 다르면 그 뒤 모든 토큰의 K·V 가 달라진다.",
+    "continuous batching 의 한계는 연산보다 KV 메모리인 경우가 많다. 그래서 스케줄러가 매 걸음 'KV 블록이 남았나'를 본다."
+   ],
+   "check": [
+    {
+     "q": "정적 배칭과 continuous batching 의 차이를 '빈자리' 관점에서 설명하라.",
+     "a": "정적 배칭은 배치의 가장 긴 요청이 끝날 때까지 먼저 끝난 요청의 자리가 비어 놀고, continuous batching 은 걸음마다 끝난 자리를 새 요청으로 바로 채운다."
+    },
+    {
+     "q": "KV 헤드 8개, 층 32개, 헤드 차원 128, FP8(1바이트)이면 토큰당 KV 크기는?",
+     "a": "2×32×8×128×1 = 65,536 바이트 = 64 KiB. BF16 의 절반이다."
+    }
+   ]
+  },
+  {
+   "start": 1140,
+   "title": "병렬화와 prefill/decode 분리 — 그리고 전용 칩",
+   "points": [
+    "1조 파라미터 모델은 80 GB GPU 한 장에 안 들어간다. 텐서 병렬(TP)은 모든 행렬을 GPU 들에 쪼개고, 전문가 병렬(EP)은 MoE 전문가들을 GPU 마다 나눠 맡긴다.",
+    "어떻게 쪼개느냐가 병목, 필요한 GPU 수, 동시 세션 수를 정한다.",
+    "prefill(연산 위주, 오래 걸리지만 요청당 한 번)과 decode(대역폭 위주, 짧지만 토큰마다)를 다른 기계 묶음에 두는 분리가 이제 표준이다.",
+    "분리하면 칩도 달리 고를 수 있다 — 강사 설명으로는 NVIDIA 가 decode 용 LPU(Groq)를 들이고, OpenAI 는 Cerebras 와 손잡았다."
+   ],
+   "on_screen": "'Tensor Parallel + Expert Parallel' 두 칸. 왼쪽 TENSOR PARALLELISM — WEIGHT MATRIX 를 세로 네 조각으로 잘라 GPU 0~3 에 두고 'allreduce activations', 'every GPU has a shard of all layers'. 오른쪽 EXPERT PARALLELISM — 가운데 LEARNED ROUTER 가 'route tokens to experts across GPUs', 전문가 E0~E7 이 GPU 0~3 에 흩어져 있고 'each GPU owns full experts'. 'Prefill / Decode Disaggregation' — 왼쪽 Prefill Worker(TP4 — compute-bound, maximize FLOPS, prefill loop — async, 'KV ready — holding buffer'), 가운데 router node('route request + source location'), 오른쪽 Decode Worker(initiate RDMA fetch, decode loop — async, 'poll: KV received?', wide EP — experts sharded across many GPUs, attention DP — attention sharded along batch dim, no → continue loop / yes → begin decoding). 하단 'disaggregation enables different parallelism strategies — prefill optimizes for compute, decode optimizes for throughput.'",
+   "explain": [
+    "거대한 책 한 권을 여러 사람이 나눠 읽는 방법은 두 가지다. 모든 페이지를 세로로 잘라 각자 한 단씩 읽고 마지막에 합치거나(텐서 병렬), 장(chapter)별 전문가를 두고 질문이 오면 그 장의 담당자에게 보내거나(전문가 병렬). 1조 파라미터 모델은 BF16 으로 2 TB 이니 80 GB GPU 한 장에는 턱없이 안 들어간다. 그래서 반드시 쪼개야 하고, 어떻게 쪼개느냐가 시스템의 성격을 정한다.",
+    "텐서 병렬(TP)은 각 가중치 행렬을 열이나 행 방향으로 잘라 N 개 GPU 에 나눠 두는 것이다. 모든 GPU 가 모든 층의 조각을 갖고, 층마다 부분 결과를 합치는 allreduce 통신이 필요하다. 통신이 잦아서 보통 NVLink 로 묶인 한 노드(8장) 안에서 쓴다. 전문가 병렬(EP)은 MoE(mixture of experts) 모델에서 쓴다. MoE 는 FFN 층을 여러 '전문가' FFN 으로 나누고, 학습된 라우터가 토큰마다 몇 개 전문가만 골라 계산한다. EP 는 전문가들을 통째로 GPU 마다 나눠 맡기고, 토큰을 해당 전문가가 있는 GPU 로 보냈다가 결과를 다시 모으는 all-to-all 통신을 쓴다. 강사는 이 선택이 '무엇이 병목이 되는지, GPU 가 몇 장 필요한지, 동시에 몇 세션을 받을 수 있는지'를 결정한다고 정리한다.",
+    "여기서 중요한 한 걸음이 prefill/decode 분리(disaggregation)다. 앞 장에서 본 대로 prefill 은 연산을 꽉 채우는 계산 한계 작업이고, decode 는 대역폭 한계 작업이다. 시간 패턴도 다르다 — prefill 한 번은 decode 한 걸음보다 훨씬 오래 걸리지만 요청당 한 번뿐이고, decode 는 짧지만 출력 토큰 수만큼 반복된다. 둘을 같은 GPU 에서 섞어 돌리면 긴 prefill 이 decode 를 밀어내 TBT 가 튀고, 두 작업에 최적인 병렬화도 다르다. 그래서 요즘 서빙은 prefill 전용 워커와 decode 전용 워커를 따로 둔다. 슬라이드에서 prefill 워커는 TP4 로 연산을 최대로 쓰고, 다 만든 KV 를 버퍼에 들고 있다가, 라우터가 지정한 decode 워커가 RDMA 로 그 KV 를 당겨 가면 decode 를 시작한다. decode 쪽은 전문가를 많은 GPU 에 넓게 펼치는 wide EP 와 배치 방향으로 어텐션을 나누는 attention DP 를 쓴다 — 배치를 크게 모아 산술 강도를 올리려는 배치다.",
+    "분리는 하드웨어 선택지도 연다. 강사의 설명으로는 NVIDIA 가 추론 칩 회사 Groq 의 LPU 를 들여와 차세대 시스템에서 prefill 은 GPU, decode 는 LPU 로 나누려 하고, OpenAI 는 decode 에 강한 Cerebras 웨이퍼 칩과 연산 제휴를 맺었으며, SambaNova 같은 회사도 이 틈을 노린다. decode 는 결국 '가중치를 얼마나 빨리 읽느냐'의 싸움이라, 칩 위 SRAM 에 가중치를 올려 두는 설계가 유리할 수 있기 때문이다(노트 보충). 즉 '두 단계의 성질이 다르다'는 관찰 하나가 소프트웨어 구조(워커 분리)와 하드웨어 시장(전용 칩)까지 바꾸고 있다."
+   ],
+   "formulas": [
+    {
+     "expr": "GPU 당 가중치 = P × b / N_TP",
+     "meaning": "P 파라미터, b 바이트/원소, N_TP 텐서 병렬 수. 남는 메모리(용량 − 가중치)가 KV 캐시에 쓸 수 있는 공간이다."
+    },
+    {
+     "expr": "MoE 토큰당 연산 ≈ 2 × P_active",
+     "meaning": "P_active 는 토큰마다 실제로 켜지는 파라미터(공유 층 + 고른 전문가). 연산은 P_active, 메모리는 전체 P 에 비례한다는 점이 MoE 서빙의 핵심 비대칭이다."
+    }
+   ],
+   "example": {
+    "title": "1조 파라미터 MoE 를 몇 장에 올리나",
+    "body": "P = 1×10¹² 를 FP8(1바이트)로 두면 1 TB. 80 GB GPU 8장(640 GB)으로는 모자라고, 16장(1.28 TB)이면 가중치 62.5 GB/장으로 들어가지만 KV 캐시에 남는 건 장당 17.5 GB. 32장으로 넓히면 가중치 31 GB/장, KV 공간 49 GB/장 — GPU 를 늘리는 이유는 연산보다 '동시 세션을 받을 KV 공간'인 경우가 많다. 토큰당 켜지는 파라미터가 320억(32B)이라면 토큰당 연산은 약 64 GFLOP 로, 같은 크기 밀집 모델의 3% 수준이다."
+   },
+   "diagram": {
+    "title": "prefill/decode 분리 구조",
+    "code": "flowchart LR\n  R[라우터 노드] -->|새 요청| P[Prefill 워커<br/>TP4, 연산 최대]\n  P -->|KV 완성, 버퍼 보관| BUF[(KV 버퍼)]\n  R -->|요청 + KV 위치| D[Decode 워커<br/>wide EP + attention DP]\n  D -->|RDMA 로 KV 당김| BUF\n  D -->|토큰 스트림| U[사용자]"
+   },
+   "pitfalls": [
+    "TP 는 모든 층에 통신이 끼므로 느린 연결(노드 사이)에서 쓰면 오히려 느려진다. 노드 안에서 쓰는 것이 보통이다.",
+    "MoE 는 연산이 작아도 메모리는 전체 파라미터만큼 필요하다. '활성 32B 니까 32B 모델처럼 서빙된다'는 생각은 틀린다."
+   ],
+   "check": [
+    {
+     "q": "prefill 과 decode 를 다른 기계로 나누는 근본 이유 두 가지는?",
+     "a": "① 병목이 다르다(prefill 은 연산, decode 는 대역폭)라 최적 병렬화·하드웨어가 다르다. ② 같이 돌리면 긴 prefill 이 decode 걸음을 막아 TBT 가 튄다."
+    },
+    {
+     "q": "EP 에서 GPU 사이에 오가는 것은 무엇이고 어떤 통신 패턴인가?",
+     "a": "라우터가 고른 전문가에게 보낼 토큰 활성값과 그 결과다. 모든 GPU 가 모든 GPU 와 주고받는 all-to-all 통신이다."
+    }
+   ]
+  },
+  {
+   "start": 1310,
+   "title": "규모에서만 보이는 버그 — 운영 디버깅 이야기",
+   "points": [
+    "하루 수조 토큰을 처리하면 0.001% 확률의 사건도 매일 일어난다. 작은 규모에서 멀쩡하던 것이 반드시 깨진다.",
+    "NaN 버그: 드물게 잘못 동작하는 커널이 로짓을 NaN 으로 만들면 모델이 같은 토큰('hi hi hi', 느낌표)만 반복한다.",
+    "도구 호출 병합 버그: 엔진이 tool call 처리를 바꾼 뒤 응답 길이가 치솟았다 — 모델이 끝맺지 못하고 수만 토큰 루프에 빠졌다.",
+    "KV 길이 off-by-one: 초기화 안 된 메모리 한 칸을 읽어 갑자기 중국어 글자가 튀어나오고, 모델은 그 뒤로 중국어로 대답했다. 처음엔 양자화 탓으로 오인됐다.",
+    "교훈: 단위 테스트가 놓치는 것을 운영 관측성(출력 유효율, 응답 길이, 토큰 분포 모니터링)이 잡는다."
+   ],
+   "on_screen": "'Bug Stories — Production Debugging' — 가운데 Completion Length 시계열(09:00~12:00)에 빨간 급등 'tool call merge bug — completion length shift'. 왼쪽 작은 그래프 Valid Output % 가 100 에서 0 근처로 뚝 떨어지는 구간 'NaN bug — silent corruption from early kernel launch'. 오른쪽 Token Value Distribution 에 정상 종 모양 옆으로 튀는 빨간 봉우리 'KV length bug — random Chinese characters'. 하단 'production observability catches what unit tests miss'.",
+   "explain": [
+    "비행기 부품의 고장률이 백만 번에 한 번이라도, 하루에 수백만 편이 뜨면 매일 고장이 난다. 강사가 들려주는 운영 버그 이야기의 요지가 이것이다. 서빙 규모가 하루 수조 토큰에 이르면 0.001% 이하의 확률로만 일어나는 조건도 끊임없이 발생한다. 그리고 이런 버그는 대부분 '오류'로 터지지 않고 모델이 이상한 말을 하는 형태로 조용히 나타난다. 슬라이드의 세 그래프는 최근 오픈소스 추론 엔진들에서 실제로 있었던 세 사례를 각각 어떤 지표로 잡았는지 보여 준다.",
+    "첫째는 NaN 버그다. 어떤 커널이 아주 드문 조건에서 약간 틀리게 동작해(슬라이드 설명으로는 커널이 너무 일찍 시작되어 데이터가 준비되기 전에 읽는 문제) 계산 중간에 로짓 일부가 NaN 이 된다. NaN 이 섞인 분포에서 샘플링하면 모델은 같은 토큰만 계속 고르게 되고, 출력이 'hi, hi, hi…'나 느낌표 행렬이 된다. 지표로는 '유효한 출력 비율'이 갑자기 꺼지는 모양으로 보인다. 둘째는 도구 호출 버그다. 도구 호출이란 모델이 '인터넷 검색을 해 달라'는 특별한 출력을 내면 바깥의 하네스(harness, 모델을 감싼 실행 코드)가 실제 검색을 하고 결과를 다시 넣어 주는 구조다. 한 엔진이 이 처리 방식을 바꾼 뒤 결과가 제대로 돌아가지 않자, 모델은 검색을 요청하고 결과가 없으니 또 요청하는 '파멸 루프'에 빠져 수만 토큰을 쏟아냈다. 이것은 응답 길이 그래프의 빨간 급등으로 잡혔다.",
+    "셋째가 가장 교묘하다. 몇몇 서비스 제공자들이 동시에 겪은 문제로, 모델이 영어 질문에 갑자기 중국어 글자를 섞더니 그 뒤로는 아예 중국어로 대답했다. 사람들은 '중국 모델로 파인튜닝한 것 아니냐', '양자화 문제다'라고 추측했지만, 실제 원인은 커널 하나의 off-by-one 오류였다. KV 길이를 하나 더 세는 바람에 GPU 메모리에서 초기화되지 않은 한 칸을 읽어 어텐션에 넣었고, 그 쓰레기 값이 무작위 중국어 토큰을 뽑게 만들었다. 그러면 모델은 '사용자가 중국어로 물었나 보다'라고 스스로 이어 가며 중국어로 넘어간다. 언어 모델은 자기 출력을 다시 입력으로 받기 때문에 작은 오류 하나가 그럴듯한 행동 변화로 증폭된다는 점이 무섭다.",
+    "이 사례들의 공통점은 단위 테스트로는 잡히지 않는다는 것이다. 조건이 드물어 테스트 입력에 걸리지 않고, 잡혀도 '출력이 조금 이상하다' 수준이라 자동 판정이 어렵다. 그래서 슬라이드의 결론은 운영 관측성이다 — 유효 출력 비율, 응답 길이 분포, 출력 토큰의 분포(언어·문자 종류) 같은 통계를 시간대별로 감시하다가 모양이 틀어지면 알람을 울린다. 노트 보충으로, 모델 품질 회귀를 잡기 위해 고정된 프롬프트 세트에 대한 출력 분포를 배포 전후로 비교하는 것도 흔한 방법이다. 강사가 덧붙인 말도 기억할 만하다. 모델이 갑자기 다른 언어로 생각하는 이유는 정말 그렇게 학습됐기 때문일 수도, 그냥 누군가의 코드에 1 차이 오류가 있기 때문일 수도 있다."
+   ],
+   "formulas": [
+    {
+     "expr": "하루 발생 횟수 ≈ 하루 처리 단위 × 사건 확률",
+     "meaning": "확률이 아무리 작아도 처리량이 크면 기대 횟수는 크다. 서빙 규모의 디버깅은 '일어나느냐'가 아니라 '하루 몇 번이냐'의 문제다."
+    }
+   ],
+   "example": {
+    "title": "0.001% 는 하루 몇 번인가",
+    "body": "하루 1조(10¹²) 토큰을 처리하고, 평균 응답이 500 토큰이면 하루 응답 수는 2×10⁹. 응답 단위 사건 확률이 0.001%(10⁻⁵)면 하루 2×10⁴ = 2만 번 발생한다. 확률이 0.000001%(10⁻⁸)로 천 배 더 드물어도 하루 20번이다. 개발자 PC 에서 하루 1만 번 시험해서는 10⁻⁵ 사건을 0.1번, 즉 열흘에 한 번 볼까 말까다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import collections, statistics\n\ndef health(outputs, baseline_len):\n    \"\"\"운영 출력 묶음에서 세 가지 이상 신호를 센다.\"\"\"\n    alerts = []\n    valid = sum(1 for o in outputs if o and 'nan' not in o) / len(outputs)\n    if valid < 0.99:\n        alerts.append(f'valid {valid:.1%}')            # NaN 류\n    med = statistics.median(len(o.split()) for o in outputs)\n    if med > 3 * baseline_len:\n        alerts.append(f'length {med} vs {baseline_len}')  # 도구 루프 류\n    cjk = sum(any('\\u4e00' <= ch <= '\\u9fff' for ch in o) for o in outputs)\n    if cjk / len(outputs) > 0.01:\n        alerts.append(f'cjk {cjk}/{len(outputs)}')      # KV 오프바이원 류\n    rep = collections.Counter(w for o in outputs for w in o.split())\n    return alerts, rep.most_common(1)\n\nprint(health(['hello world'] * 98 + ['hi hi hi hi', '你好 hi'], baseline_len=2))",
+    "note": "실제 시스템은 영어 서비스인지 등 맥락에 맞춰 문턱을 정한다. 요점은 '정답 비교' 대신 분포를 감시한다는 것."
+   },
+   "pitfalls": [
+    "모델이 이상하게 말하면 학습 데이터·양자화부터 의심하기 쉽지만, 서빙 커널의 인덱스 오류일 수도 있다. 같은 가중치를 다른 엔진에서 돌려 비교하는 것이 빠른 분리 진단이다.",
+    "NaN 은 예외를 던지지 않고 조용히 퍼진다. 샘플링 전에 로짓의 유한성 검사를 두지 않으면 반복 출력으로만 드러난다."
+   ],
+   "check": [
+    {
+     "q": "KV 길이 off-by-one 이 '중국어로 대답하기'라는 큰 행동 변화로 커진 이유는?",
+     "a": "쓰레기 값 때문에 중국어 토큰이 하나 샘플링되면, 언어 모델은 자기 출력을 다음 입력으로 받으므로 그 토큰을 근거로 '중국어 대화'라고 해석해 계속 중국어로 이어 가기 때문이다(자기회귀적 증폭)."
+    }
+   ]
+  },
+  {
+   "start": 1520,
+   "title": "KV 캐시 계층 — GPU 에서 CPU, 디스크까지, 그리고 NVL72",
+   "points": [
+    "KV 캐시는 클수록 좋다 — 더 많은 사용자·세션을 적중시킨다. GPU HBM(뜨거운 블록) → 고정 CPU 메모리(따뜻한) → NVMe 디스크(차가운)로 계층을 둔다.",
+    "내려보낼 때는 LRU, 올릴 때는 프리페치. 목표는 요청이 실행될 때 KV 가 이미 GPU 에 있게 하는 것.",
+    "prefill 워커끼리 RDMA 로 캐시를 나눠 인기 프리픽스의 중복 prefill 을 피한다. CPU·DRAM·SSD 수요가 커지는 이유다.",
+    "운영체제의 스와핑과 같은 문제다. 미래를 예측할 수 있으면(예: 오래된 대화를 다시 열면) 미리 올린다.",
+    "NVL72(72 GPU 고속 연결 랙): 모델을 64장 이상에 펼칠 때의 장애 허용, 100만 토큰 문맥의 문맥 병렬화가 새 숙제다."
+   ],
+   "on_screen": "'KV Cache — Offload, Prefetch, Share' — 왼쪽 'Memory hierarchy — single worker': GPU HBM(hot blocks) ↔ pinned CPU memory(warm blocks) ↔ NVMe disk(cold blocks), 아래 방향 'evict (LRU)', 위 방향 'prefetch'. 가운데 Scheduler Queue(waiting requests)와 'prefetch ahead: load KV blocks before request is scheduled'. 오른쪽 Prefill Worker A·B 사이 'cache sharing — RDMA between prefill workers', 'avoid redundant prefill for popular prefixes'. 하단 'goal: KV cache is already in GPU memory by the time the request runs'. 'Wide EP — Fault Tolerance on NVL72': Wide EP Forward Pass(E0-E3 … E32-E35 전문가 묶음, learned router, 'all-to-all: tokens routed to expert-owning GPUs', 'wide EP = high batch size + high arithmetic intensity on decode'), Node Failure(node dies — experts lost, in-flight KV cache lost → cancel affected requests, re-prefill from cache or scratch / redistribute orphaned experts to remaining GPUs + hot spare / drain in-flight requests from failed node), 'at 32+ GPUs per worker, failures are routine — need automated detection, expert migration, and request replay'. '1M+ Context — Context Parallelism': 1,000,000+ tokens 를 GPU 0~5 에 나누고 각자 local KV cache, 'cross-partition attention', 'sequence-parallel split avoids pipeline bubble overhead'.",
+   "explain": [
+    "집 안 물건 정리를 생각해 보자. 매일 쓰는 것은 책상 위(GPU HBM), 가끔 쓰는 것은 서랍(CPU 메모리), 거의 안 쓰는 것은 창고(디스크)에 둔다. 책상이 꽉 차면 가장 오래 안 쓴 것부터 서랍으로 보내고(LRU 축출), 내일 쓸 것을 알면 오늘 밤에 미리 책상에 꺼내 둔다(프리페치). KV 캐시 계층이 정확히 이것이다. 운영에서는 많은 사용자·많은 세션의 캐시를 들고 있을수록 적중률이 오르고 prefill 이 줄어드니, 캐시는 클수록 좋다. 그런데 GPU 메모리는 금방 찬다.",
+    "그래서 첫 번째 확장은 CPU DRAM 이다. 'pinned'(고정) CPU 메모리는 운영체제가 다른 곳으로 옮기지 않도록 고정한 메모리로, GPU 가 DMA 로 직접 빠르게 복사할 수 있다. 강사는 여기서 흥미로운 업계 이야기를 덧붙인다. NVIDIA 의 CEO 가 최근 CPU 성능을 자주 강조하는데, 그 이유 중 하나가 KV 캐시를 CPU 메모리에 두면 그것을 다시 읽어 오는 속도가 CPU 쪽에 묶이기 때문이라는 것이다. 수십만 달러짜리 GPU 서버가 그 위에 얹은 저렴한 CPU 때문에 병목에 걸리면 곤란하다. 다음 단계는 NVMe SSD 다. 강사는 OpenAI 가 세계의 DRAM·SSD 를 대거 사들인다는 소문의 배경에도 이런 캐시 수요가 있다고 본다. 슬라이드 오른쪽은 또 다른 축이다 — prefill 워커 A 가 계산해 둔 인기 프리픽스를 워커 B 가 RDMA 로 받아 쓰면, 같은 시스템 프롬프트를 워커마다 다시 prefill 하는 낭비가 사라진다.",
+    "수강생이 '이런 오프로딩은 특정 종류의 워크로드만 하느냐, SSD 접근은 너무 느리지 않느냐'고 묻자, 강사는 이것이 운영체제 수업에서 배우는 고전 문제와 똑같다고 답한다. 앱을 너무 많이 열면 메모리가 모자라 디스크로 스왑하던 70~80년대 그림에서 오른쪽 GPU 부분만 빼면 이 슬라이드가 된다. 이미지 생성 모델이 그린 슬라이드에 우연히 들어간 LRU(가장 오래 안 쓴 것부터 내보내기)도 꽤 괜찮은 휴리스틱이고, 최적(미래를 아는 축출)과 크게 차이 나지 않는다는 분석이 있다. 가장 좋은 것은 미래 예측이다. 예를 들어 사용자가 한 달 전 대화를 화면에 다시 열면 곧 질문할 것이 거의 확실하니, 그 순간 KV 를 디스크에서 GPU 로 올리기 시작하면 된다. 슬라이드 하단의 목표 문장 — 요청이 실행되는 시점에 KV 가 이미 GPU 에 있게 하라 — 가 이 모든 장치의 존재 이유다. 그리고 누구도 GPU 에 트래픽을 덜 싣고 싶어 하지 않으니, 캐시를 잘 다룰수록 같은 GPU 로 더 많은 트래픽을 SLA 안에서 받을 수 있다.",
+    "마지막으로 차세대 하드웨어가 여는 문제들이다. Blackwell 세대의 NVL72 는 GPU 72장을 아주 빠른 NVLink 로 묶은 한 랙이다. 이제 1조 파라미터 모델을 72장 전체에 펼칠 수 있는데, 그러면 그중 한 장만 죽어도 전체가 멈춘다. 강사는 커넥터가 금속이 아니라 플라스틱이라 무리하게 꽂으면 휘어 NVLink 가 불안정해지는 현실적인 고장 원인까지 언급한다. 슬라이드는 해법의 윤곽을 보여 준다 — 장애 노드의 요청은 취소하고 캐시나 처음부터 다시 prefill, 주인을 잃은 전문가는 남은 GPU 와 예비 GPU 로 재배치, 진행 중 요청은 빼낸다. 워커당 GPU 가 32장을 넘으면 장애는 '사고'가 아니라 '일상'이라 자동 감지·전문가 이동·요청 재실행이 필요하다. 또 문맥이 100만 토큰을 넘으면 그 KV 자체를 여러 GPU 에 나눠 두고 각 조각끼리 어텐션을 주고받는 문맥 병렬화가 필요하다."
+   ],
+   "diagram": {
+    "title": "KV 캐시 3계층과 이동",
+    "code": "flowchart TB\n  G[GPU HBM<br/>뜨거운 블록 · 수십 GB] -- LRU 축출 --> C[고정 CPU 메모리<br/>따뜻한 블록 · 수백 GB~TB]\n  C -- 프리페치 --> G\n  C -- LRU 축출 --> N[NVMe SSD<br/>차가운 블록 · 수십 TB]\n  N -- 프리페치 --> C\n  Q[스케줄러 대기열] -. 실행 전에 미리 올림 .-> G\n  G <-. RDMA 캐시 공유 .-> G2[다른 prefill 워커]"
+   },
+   "formulas": [
+    {
+     "expr": "캐시를 다시 읽는 비용 = 블록 크기 / 계층 대역폭 vs 다시 계산하는 비용 = prefill FLOPs / 연산 속도",
+     "meaning": "어느 계층에서 읽어 오는 것이 재계산보다 빠르면 그 계층에 둘 가치가 있다(노트 보충)."
+    }
+   ],
+   "example": {
+    "title": "1만 토큰 대화: 디스크에서 읽을까, 다시 계산할까",
+    "body": "앞 장의 8B 모델 기준 1만 토큰 KV ≈ 1.3 GB. ① NVMe(초당 약 7 GB 가정)에서 읽기: 1.3/7 ≈ 0.19 s. ② PCIe 로 CPU 메모리에서 GPU 로(약 50 GB/s 가정): 1.3/50 ≈ 0.026 s. ③ 다시 prefill: 2 × 8×10⁹ × 10⁴ = 1.6×10¹⁴ FLOP, H100 실효 500 TFLOP/s 로 잡으면 0.32 s(+어텐션 몫). 즉 CPU 메모리에 두면 재계산보다 10배 이상 빠르고, 디스크도 재계산보다는 낫다 — 단 프리페치로 그 0.19 s 를 사용자가 타이핑하는 동안 숨길 수 있을 때 이야기다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "from collections import OrderedDict\n\nclass Tier:\n    def __init__(self, name, cap): self.name, self.cap, self.d = name, cap, OrderedDict()\n\ndef access(tiers, key):\n    \"\"\"tiers[0]=GPU. 찾으면 GPU 로 올리고 넘치는 것은 아래로 LRU 축출.\"\"\"\n    where = next((t.name for t in tiers if key in t.d), 'miss(prefill)')\n    for t in tiers: t.d.pop(key, None)\n    tiers[0].d[key] = True\n    for upper, lower in zip(tiers, tiers[1:]):\n        while len(upper.d) > upper.cap:\n            old, _ = upper.d.popitem(last=False)   # 가장 오래 안 쓴 것\n            lower.d[old] = True\n    tiers[-1].d = OrderedDict(list(tiers[-1].d.items())[-tiers[-1].cap:])\n    return where\n\ntiers = [Tier('GPU', 2), Tier('CPU', 3), Tier('NVMe', 10)]\nfor s in ['a', 'b', 'c', 'a', 'd', 'e', 'b', 'f', 'a']:\n    print(s, access(tiers, s))",
+    "note": "세션 a 는 자주 돌아와 GPU·CPU 에서 적중하고, 한동안 안 쓴 b 는 CPU 로 내려가 있다가 올라온다. 실제 엔진은 여기에 '곧 올 요청' 예측 프리페치를 더한다."
+   },
+   "pitfalls": [
+    "pinned 메모리를 무작정 늘리면 운영체제가 쓸 메모리가 줄어 호스트 전체가 불안정해질 수 있다.",
+    "LRU 는 '자주'가 아니라 '최근'만 본다. 매일 아침 한 번 오는 대량 시스템 프롬프트처럼 주기적인 패턴에는 약하다."
+   ],
+   "check": [
+    {
+     "q": "KV 캐시 계층 설계의 목표를 한 문장으로?",
+     "a": "요청이 실제로 실행되는 순간에 그 요청의 KV 가 이미 GPU 메모리에 올라와 있게 하는 것."
+    },
+    {
+     "q": "NVL72 로 모델을 72장에 펼치면 생기는 새 문제는?",
+     "a": "한 장의 장애가 전체 서빙을 멈추게 하므로, 장애 감지·잃은 전문가 재배치·영향받은 요청 재실행 같은 장애 허용 장치가 필수가 된다."
+    }
+   ]
+  },
+  {
+   "start": 1880,
+   "title": "캐시를 아는 prefill/decode 분리(CPD) — 라우터 두 줄로 40%",
+   "points": [
+    "평균 대화가 10턴이면 요청의 약 10% 만 처음 보는 '차가운' 요청이고 나머지는 이전 턴을 캐시로 가진 '따뜻한' 요청이다.",
+    "차가운 요청은 prefill 이 무겁다. 이것이 따뜻한 짧은 요청과 같은 GPU 에서 돌면 짧은 요청이 기다린다.",
+    "CPD: 캐시 적중률이 낮은 요청은 pre-prefill 노드로, 높은 요청은 prefill 노드로 보내고, KV 는 분산 캐시(RDMA)로 공유한다.",
+    "결과: 장기 문맥 서빙에서 최대 40% 빠름(2P1D 대비 35~40%).",
+    "강사 의견: 지금 연구는 아주 초기다. 10~20년 뒤에는 당연해 보일 것들을 지금 막 발견하는 중이다."
+   ],
+   "on_screen": "'Cache-aware prefill-decode disaggregation (CPD)' — 위 Cache-aware router 에서 세 갈래: Cold requests(low cache hit) → Pre-prefill nodes, Warm requests(high cache hit) → Prefill nodes, Decode scheduling → Decode nodes. Prefill 노드와 아래 Distributed KV cache(Store 1~4) 사이 'Async read & write', 'High-speed RDMA'. 'CPD: Up to 40% faster long-context LLM serving' 막대그래프(세로축 queries per second 0~1.5): 2P1D vs CPD 1D — Baseline 약 0.75, CPD 약 1.12 '40% faster'; 2P2D vs CPD 2D — Baseline 약 1.12, CPD 약 1.5 '35% faster'. 범례 '2P = 2 prefill nodes, 1D/2D = decode nodes'.",
+   "explain": [
+    "병원 응급실을 떠올리면 이 아이디어가 바로 이해된다. 큰 수술이 필요한 환자와 진료 기록이 이미 있는 재진 환자를 같은 진료실 줄에 세우면, 재진 환자가 5분이면 끝날 일을 수술이 끝날 때까지 기다린다. 그래서 병원은 줄을 나눈다. CPD 는 이 상식을 서빙 라우터에 넣은 것이다. 강사는 '라우팅 계층에 코드 두 줄'이라고 할 만큼 단순하지만 효과가 크다고 소개한다.",
+    "출발점은 트래픽 관찰이다. 대부분의 요청은 이미 진행 중인 대화의 다음 턴이다. 평균 대화가 10턴이라면 열 번 중 한 번만 처음 보는 요청이고, 나머지 아홉은 이전 턴의 KV 를 캐시로 가진다. 처음 보는 요청(차가운 요청, 캐시 적중률 낮음)은 수만 토큰을 처음부터 prefill 해야 하니 무겁고, 따뜻한 요청은 새로 붙은 몇백 토큰만 계산하면 된다. 강사의 예를 빌리면, 한쪽은 책 한 권을 붙여 넣고 '이 책 이야기를 해 보자'는 요청이고, 다른 쪽은 대화 중간에 '1 더하기 1 이 왜 2 야?'라고 되묻는 요청이다. 이 둘을 같은 prefill GPU 에서 같은 때에 돌리면 짧은 질문의 TTFT 가 긴 prefill 뒤에 묶여 버린다.",
+    "CPD 의 구조는 슬라이드 그대로다. 캐시를 아는 라우터가 요청이 들어오면 먼저 분산 KV 캐시에서 적중률을 확인한다. 적중률이 낮은 차가운 요청은 'pre-prefill' 노드 묶음으로 보내 그들끼리 무거운 계산을 하게 하고, 결과 KV 는 분산 캐시에 비동기로 써 둔다. 적중률이 높은 따뜻한 요청은 일반 prefill 노드로 보내, 캐시에서 앞부분 KV 를 RDMA 로 읽고 새 부분만 계산한다. decode 는 따로 스케줄된다. 분산 KV 캐시(Store 1~4)는 고속 RDMA 로 묶여 어느 노드에서든 같은 캐시를 볼 수 있다. 핵심은 '비용이 비슷한 일끼리 모은다'는 것이다 — 계산 시간이 비슷한 요청끼리 배치를 이루면 tail effect(가장 긴 일을 기다리는 시간)가 줄어든다.",
+    "결과 그래프에서 prefill 노드 2개 + decode 노드 1개(2P1D) 기준선은 초당 약 0.75 질의를, 같은 자원을 CPD 로 쓰면 약 1.12 질의를 처리해 40% 빨랐다. 2P2D 에서도 35% 향상이다. 강사는 이 결과를 들어 지금의 상황을 평가한다. 이런 기법들은 10~20년 뒤에 보면 '이걸 왜 따로 이야기했지, 당연한 것 아닌가' 싶을 것이고, 그만큼 우리는 아주 초기에 있다. 실제 운영 트래픽을 새로운 방식으로 보게 되면서 비로소 이런 최적화가 보이기 시작했다는 것이다(강사 의견). 학생 입장에서는 '운영 데이터를 볼 수 있는 자리에 가면 연구 거리가 널려 있다'는 메시지로 읽을 수 있다."
+   ],
+   "code": {
+    "lang": "python",
+    "src": "def route(req, kv_index, cold_pool, warm_pool, threshold=0.5):\n    \"\"\"CPD 의 핵심: 캐시 적중률로 prefill 줄을 가른다.\"\"\"\n    cached = kv_index.longest_prefix(req.tokens)      # 분산 KV 캐시 조회\n    hit_rate = cached / len(req.tokens)\n    pool = warm_pool if hit_rate >= threshold else cold_pool\n    return pool.least_loaded(), cached\n\n# 장난감 비교: 10턴 대화 100개가 동시에 돌 때 prefill 토큰 수\nturns, first, follow = 10, 20_000, 300\ncold = 100 // turns              # 처음 보는 요청 10개\nwarm = 100 - cold                # 이어지는 요청 90개\nprint('차가운 요청 prefill 토큰:', cold * first)       # 200,000\nprint('따뜻한 요청 prefill 토큰:', warm * follow)     # 27,000\nprint('따뜻한 요청이 섞여 기다리던 몫이 사라진다')",
+    "note": "앞 네 줄이 라우터의 전부다(longest_prefix·least_loaded 는 엔진이 이미 가진 기능이라고 가정). 아래는 왜 갈라야 하는지 보이는 숫자: 요청 수로는 10% 인 차가운 요청이 prefill 계산의 88% 를 차지한다."
+   },
+   "formulas": [
+    {
+     "expr": "차가운 요청 비율 ≈ 1 / 평균 턴 수",
+     "meaning": "세션마다 첫 턴만 캐시가 없으므로. 10턴이면 10%."
+    }
+   ],
+   "example": {
+    "title": "계산의 88% 를 요청의 10% 가 만든다",
+    "body": "첫 턴 2만 토큰, 이후 턴은 새 토큰 300개, 평균 10턴. 요청 100개 중 차가운 10개의 prefill 은 20만 토큰, 따뜻한 90개는 2.7만 토큰. 합 22.7만 중 20만/22.7만 ≈ 88%. 같은 줄에 섞이면 따뜻한 요청 90개가 차가운 10개의 계산을 기다린다. 줄을 나누면 따뜻한 줄은 배치당 계산이 작고 고르게 되어 TTFT 가 짧아진다."
+   },
+   "pitfalls": [
+    "'분리하면 GPU 가 놀지 않나?' — 각 줄의 노드 수를 트래픽 비율에 맞춰야 한다. 차가운 줄을 너무 작게 잡으면 그쪽 대기열이 길어진다.",
+    "적중률은 토큰 수 기준이다. 요청 개수 기준 비율(10%)과 계산량 기준 비율(88%)을 혼동하지 말 것."
+   ],
+   "check": [
+    {
+     "q": "CPD 가 차가운 요청과 따뜻한 요청을 다른 노드로 보내면 왜 빨라지는가?",
+     "a": "계산 비용이 비슷한 요청끼리 배치를 이루게 되어, 짧은 따뜻한 요청이 긴 prefill 뒤에서 기다리는 시간(tail effect)이 사라지고, 무거운 요청은 그들끼리 GPU 를 꽉 채워 효율적으로 돌기 때문이다."
+    }
+   ]
+  },
+  {
+   "start": 2040,
+   "title": "decode 의 숙제와 커널 경계 — 스트래글러와 커널 런치",
+   "points": [
+    "decode 는 토큰 하나를 위해 모델 전체를 돌린다 — 거대한 병렬 기계가 '메모리 로더'가 된다.",
+    "보통 커널을 연산 하나씩 짠다(RMSNorm, QKV 행렬곱, RoPE, 어텐션, O 투영, MLP…). 짜기 쉽지만 커널 사이마다 빈 시간이 생긴다.",
+    "빈 시간의 원인: 커널 런치·해체, 메모리에서 읽고 쓰기, 그리고 tail effect(가장 늦은 SM 을 모두가 기다림).",
+    "H100 은 SM 132개, B200 은 148개. 프로파일에서 막대는 일하는 시간, 빈칸은 기다리는 시간이다."
+   ],
+   "on_screen": "'Fast LLM Decode with Megakernels'(Stanford · together.ai). 'The Decode Challenge: One Token at a Time'. 'Kernel Boundaries' — 'Example Kernel Boundaries for a Llama-1B Block': Input → RMS Norm → QKV Matmul → RoPE → Attention → O Proj → + → RMS Norm → Up Proj / Gate Proj → SiLU → Down Proj → + , 각 상자가 빨간 테두리(커널 하나)로 둘러싸임. 'Challenge: Stragglers and Kernel Launch' — 가로축 Time, 세로축 Processor ID 의 막대 그림: 초록 막대(작업)가 프로세서마다 끝나는 시점이 들쭉날쭉하고 오른쪽 일부만 분홍 다음 작업을 한다. 확대판에 Kernel Launch / Load from Memory / Write to Memory / Tail Effects(stragglers) / Kernel Teardown 구간이 표시됨.",
+   "explain": [
+    "공장 조립 라인을 상상해 보자. 공정마다 작업자 132명이 한꺼번에 투입되는데, 한 공정이 끝나야 다음 공정 재료가 준비되므로 매 공정 사이에 '모두 손 놓고 기다리는' 시간이 생긴다. 게다가 한 공정 안에서도 가장 늦게 끝나는 작업자를 다 같이 기다려야 한다. 작업 하나하나가 길면 이 대기 시간은 무시할 만하지만, 작업이 아주 짧으면 대기 시간이 작업 시간과 맞먹게 된다. 배치 1 decode 가 바로 그런 상황이다.",
+    "강연의 두 번째 부분은 이 문제에서 시작한다. decode 는 토큰 하나를 만들려고 모델 전체를 통과해야 한다. prefill 이나 학습처럼 수천 토큰으로 GPU 의 병렬성을 가득 채우는 대신, 토큰 하나 분량의 일을 위해 가중치를 읽어 오는 '그럴듯한 메모리 로더'가 된다. 문제를 키우는 것은 우리가 커널을 짜는 방식이다. 커널은 짜기가 어렵기 때문에 보통 연산 하나에 커널 하나를 짠다 — RMSNorm 커널, QKV 행렬곱 커널, RoPE 커널, 어텐션 커널, O 투영 커널, 잔차 덧셈, 다시 RMSNorm, Up/Gate 투영, SiLU, Down 투영. 슬라이드의 Llama-1B 블록 그림에서 빨간 테두리 하나하나가 커널 경계다. 이렇게 하면 프로그래밍은 쉽지만 경계마다 시스템이 쉬는 시간이 끼어든다.",
+    "프로파일 그림 읽는 법을 알아 두자. 가로축은 시간, 세로축은 GPU 의 스트리밍 멀티프로세서(SM) — GPU 안의 독립된 작은 프로세서로 H100 에는 132개, B200 에는 148개가 있다. 막대가 있는 곳은 그 SM 이 실제로 일하는 시간이고 빈칸은 기다리는 시간이다. 빈칸의 원인은 셋이다. ① 커널 런치와 해체 — CPU 가 커널을 띄우고 GPU 가 준비하는 데 수 마이크로초가 들고, 커널이 끝날 때 정리하는 데도 시간이 든다. ② 메모리 왕복 — 커널 경계에서 중간 결과를 HBM 에 썼다가 다음 커널이 다시 읽는다. ③ tail effect(스트래글러) — 같은 커널 안에서 일이 고르지 않으면 가장 늦은 SM 을 모두가 기다린다. 앞서 짧은 요청이 긴 요청을 기다리던 현상이 커널 내부에서도 똑같이 일어나는 셈이다. 배치 안에 짧은 입력과 긴 입력이 섞여 있으면 어텐션 커널에서 긴 입력을 맡은 SM 만 오래 일한다.",
+    "아래 계산이 보여 주듯 배치 1 decode 에서는 이 오버헤드가 치명적이다. Llama-1B 는 층이 16개라 토큰 하나에 커널이 백 개 넘게 뜨는데, 각 커널의 '이상적인' 실행 시간은 수 마이크로초에 불과하다. 커널마다 몇 마이크로초씩 빈 시간이 붙으면 전체 시간이 두 배로 늘 수 있다. CUDA graphs 는 CPU 쪽 런치 비용은 줄여 주지만 커널 경계의 메모리 왕복과 tail effect 는 그대로 둔다. 그래서 강사 팀은 경계 자체를 없애는 쪽, 즉 모델 전체를 한 커널로 만드는 메가커널로 갔다."
+   ],
+   "formulas": [
+    {
+     "expr": "토큰당 시간 ≈ Σ_k (t_실행,k + t_경계,k)",
+     "meaning": "k 는 커널. t_경계 는 런치·해체·HBM 왕복·tail 대기의 합. 커널 하나의 실행 시간이 짧을수록 경계 비용의 비중이 커진다."
+    },
+    {
+     "expr": "커널 k 의 이상 시간 ≈ 읽는 바이트_k / 대역폭",
+     "meaning": "decode 커널은 대부분 대역폭 한계이므로 가중치 크기로 최소 시간을 어림할 수 있다."
+    }
+   ],
+   "example": {
+    "title": "Llama-1B 한 토큰에서 경계 비용이 차지하는 몫",
+    "body": "16층 × 층당 커널 약 10개 = 160개(+ 임베딩·LM head). 가중치 2.4 GB 를 3.35 TB/s 로 읽는 이상 시간은 0.72 ms, 커널당 평균 0.72/160 ≈ 4.5 μs. 커널마다 런치·해체·꼬리 대기로 3 μs 가 붙는다고 하면 160 × 3 = 0.48 ms 추가 → 1.2 ms, 이상 속도의 60% 만 낸다. 경계 비용 5 μs 면 0.72 + 0.8 = 1.52 ms 로 47%. 커널 수를 1개로 줄이면 이 몫이 거의 사라진다(수치는 어림이며 노트 보충)."
+   },
+   "pitfalls": [
+    "GPU 사용률(nvidia-smi 의 utilization)이 100% 라고 SM 이 다 일하는 것이 아니다. 그 숫자는 '어떤 커널이 돌고 있었나'일 뿐이라 프로파일러로 SM 별 활동을 봐야 한다.",
+    "커널 융합은 이론상 늘 이득 같지만, 융합한 커널이 레지스터·공유 메모리를 더 써서 동시에 도는 블록 수(occupancy)가 줄면 느려질 수도 있다."
+   ],
+   "check": [
+    {
+     "q": "프로파일 그림에서 'tail effect' 는 어떤 모양으로 보이는가?",
+     "a": "커널이 끝나는 시점에 대부분의 SM 막대는 이미 끝났는데 몇몇 SM 의 막대만 길게 남아 있고, 나머지는 빈칸으로 그것을 기다리는 모양이다."
+    },
+    {
+     "q": "왜 배치 1 decode 에서 커널 경계 비용이 특히 문제인가?",
+     "a": "커널 하나가 하는 일(읽는 바이트)이 작아 실행 시간이 수 마이크로초에 불과하므로, 고정된 수 마이크로초의 런치·해체·대기 비용이 실행 시간과 맞먹는 비중을 차지하기 때문이다."
+    }
+   ]
+  },
+  {
+   "start": 2240,
+   "title": "메가커널과 ThunderKittens — 빛의 속도에 가까운 decode",
+   "points": [
+    "메가커널: 연산마다 커널을 짜는 대신 여러 연산(끝내는 모델 전체)을 한 커널로. FlashAttention 의 융합을 훨씬 공격적으로 한 것.",
+    "GPU 를 '하나의 장치'가 아니라 '분산 시스템'으로 본다 — 의존성이 있는 작업들을 SM 에 스케줄해 사용률을 최대로.",
+    "어텐션 추론 커널만 바꿔도 1.3~1.7배. Llama-1B 한 층(나아가 전체)을 한 커널로 만들면 다음 연산의 가중치·KV 읽기를 앞 연산과 겹칠 수 있다.",
+    "명령어(opcode) 기반 하위 커널 + 가상화된 공유 메모리. 기반은 ThunderKittens(Triton 보다 낮은 수준의 커널 라이브러리).",
+    "H100 에서 대역폭 활용 72% — 물리 한계('빛의 속도')에 가깝게, vLLM·SGLang 보다 빠르다."
+   ],
+   "on_screen": "'Hazy Megakernels (ThunderGQA)': A) 'Unfused, Unscheduled, and Unloved' — 들쭉날쭉한 막대 BAD, B) 'Fused, Scheduled, and Loved' — 촘촘한 막대 GOOD. 오른쪽 'Single Megakernel to schedule workloads end-to-end', 'Overlap workloads with fine-grained control between SMs (using HBM as backing semaphore)', 'Eliminates kernel launch overheads', 'Attention inference kernel: 1.3-1.7x faster'. 'Llama-1B — all in one kernel' 색 막대 프로파일. 'Fine-grained Overlapping of Workloads' — Blue: QKV + RoPE, Orange: Attention partial(first part of ThunderGQA), 'Attention starts loading KV cache before QKV is finished'. 'Megakernel Framework' — #define OPCODE_RMS_QKV_MatVecRopeAppend 1, OPCODE_PartialAttention 2, OPCODE_AttentionReduction 3, OPCODE_O_ProjResidual 4, OPCODE_RMS_DoubleMatVecSiLU 5, OPCODE_DownProjResidual 6, OPCODE_RMS_LM_Head 7; 'Instruction-based abstraction: individual sub-kernels', 'Virtualized shared memory: mechanism for different sub-kernels to overlap I/O'. 'ThunderKittens: Abstractions for Performant Kernels' — 메모리 피라미드: Reg(수십 KB, 약 130 TB/s, 'Tensor core register tiles', In TK as rt<M,N>) / Shared 227 KB 33 TB/s('Swizzled shared tiles', st<M,N>) / L2 Cache 50 MB 12 TB/s / HBM 80 GB 3 TB/s('Global Tensors'); Load and store workers ↔ Shared Buffers(Inputs 0·1·2, Output 0·1·2) ↔ Compute workers(PyTorch-like operations on shared and register memory tiles); 'What are the right abstractions to capture these hardware patterns?'. 'Speed-of-Light Decoding Inference' — Llama-1B (BF16) Batch-Size 1, Decoding Throughput(tok/s): H100 에서 vLLM 약 480, SGLang 약 690, Megakernel 약 1,000; B200 에서 vLLM 약 420, SGLang 약 980, Megakernel 약 1,500. 'Megakernel achieves 72% bandwidth utilization on H100 — near GPU speed of light!'. 'Deep Kernel Control and Understanding Enables Different Compute Paradigms'.",
+   "explain": [
+    "앞 장의 조립 라인 비유로 돌아가면, 메가커널은 '공정마다 작업자를 불러 모았다 해산시키는' 방식을 버리고, 작업자 132명이 공장에 계속 머물면서 작업 지시서(명령어 목록)를 보고 다음 일을 스스로 집어 드는 방식이다. 앞 공정이 완전히 끝나지 않았어도 자기 재료가 준비된 작업자는 바로 다음 일을 시작한다. 이렇게 하면 공정 사이의 빈 시간이 사라진다. 강사는 이를 'GPU 를 단일 장치가 아니라 거대한 분산 시스템으로 보기'라고 표현한다 — 해야 할 일들이 있고, 그중 일부는 다른 일에 의존하며, 이를 SM 들에 어떻게 배분해야 사용률이 최대가 되는가의 스케줄링 문제다.",
+    "정의하자면 메가커널은 여러 연산(극단적으로는 모델 전체의 forward)을 하나의 GPU 커널로 묶은 것이다. FlashAttention 이 어텐션의 행렬곱·소프트맥스·행렬곱을 한 커널로 융합해 중간 결과를 HBM 에 쓰지 않게 한 것과 같은 발상인데, 범위를 훨씬 넓혔다. 먼저 어텐션 추론 커널(GQA 어텐션)에만 적용해도 30~70%(1.3~1.7배) 빨라졌고, 이어 Llama-1B 한 층 전체, 그리고 모델 전체를 한 커널에 넣었다. 프로파일이 흥미롭다. 이제 막대들이 기묘하게 겹치는데, 다음 층(또는 다음 연산)의 가중치를 앞 연산이 끝나기 전에 미리 읽기 시작하고, 어텐션이 다 끝나기 전에 리덕션 일부를 시작하기 때문이다. 대표적인 두 예가 있다. ① QKV 투영과 RoPE 가 아직 돌고 있는 동안 어텐션 쪽 SM 들이 KV 캐시 읽기를 먼저 시작한다 — decode 에서 KV 캐시는 이미 있는 값이라 새 쿼리를 기다릴 필요가 없다. ② 어텐션이 끝나기 전에 O 투영의 가중치를 미리 읽어 둔다.",
+    "구현 방식도 알아 두자. 하위 커널마다 opcode 번호를 붙인다(RMSNorm+QKV+RoPE+KV추가 = 1, 부분 어텐션 = 2, 어텐션 리덕션 = 3, O 투영+잔차 = 4, RMSNorm+Up/Gate+SiLU = 5, Down 투영+잔차 = 6, RMSNorm+LM head = 7). 각 SM 은 명령어 목록을 받아 순서대로 실행하고, 의존성은 HBM 에 둔 카운터(세마포어)로 확인한다. 하위 커널들은 '가상화된 공유 메모리'에서 페이지를 빌려 써서, 한 명령어가 계산하는 동안 다음 명령어의 입력을 미리 불러올 수 있다. 이 모든 것은 ThunderKittens 라는 커널 작성 라이브러리 위에 지었다. Triton 과 비슷한 목적이지만 더 낮은 수준이라 세밀하게 제어할 수 있다. ThunderKittens 의 슬라이드는 GPU 메모리 계층을 피라미드로 보여 준다 — 레지스터(가장 작고 가장 빠름), SM 마다 227 KB 의 공유 메모리(약 33 TB/s), 50 MB 의 L2 캐시(약 12 TB/s), 80 GB 의 HBM(약 3 TB/s). 위로 갈수록 10배쯤 빠르고 작아지므로, 좋은 커널은 데이터를 HBM 에서 한 번만 꺼내 위층에서 최대한 재사용한다. 라이브러리는 이를 '타일'(레지스터 타일 rt, 공유 메모리 타일 st) 단위로 다루고, 읽기/쓰기 담당 워커와 계산 담당 워커를 나눠 공유 버퍼로 파이프라인을 만든다.",
+    "성과는 '빛의 속도'라는 말로 요약된다. 빛의 속도란 소프트웨어 복잡성을 다 지우고 '하드웨어가 물리적으로 이 일을 얼마나 빨리 할 수 있나'의 한계, 여기서는 가중치를 한 번 다 읽는 시간이다. Llama-1B BF16 배치 1 decode 에서 메가커널은 H100 에서 초당 약 1,000 토큰, B200 에서 약 1,500 토큰으로 vLLM·SGLang 보다 크게 빨랐고, H100 메모리 대역폭의 72% 를 썼다(지금은 숫자가 더 좋아졌다고 강사는 덧붙인다). 강사가 뽑은 교훈은 '커널을 깊이 통제하고 하드웨어를 이해하면 전혀 다른 계산 방식이 가능해진다, 그리고 이것은 추론을 깊게 만져 봐야만 보인다'는 것이다. 다만 대가가 크다 — Q&A 에서 보겠지만 메가커널은 사람 손이 엄청나게 드는 작업이다."
+   ],
+   "formulas": [
+    {
+     "expr": "대역폭 활용률 = (토큰당 꼭 읽어야 할 바이트 × 초당 토큰) / 최대 대역폭",
+     "meaning": "빛의 속도 대비 몇 % 로 달리는지. 꼭 읽어야 할 바이트는 가중치 + 그 토큰이 보는 KV."
+    },
+    {
+     "expr": "계층 간 속도비 ≈ 33 : 12 : 3 (TB/s, 공유 메모리 : L2 : HBM)",
+     "meaning": "슬라이드 수치. 같은 데이터를 HBM 에서 두 번 읽느니 공유 메모리에 두고 재사용하는 편이 열 배 빠르다."
+    }
+   ],
+   "example": {
+    "title": "72% 가 맞는지 손으로 검산",
+    "body": "Llama 3.2 1B 의 파라미터는 약 1.24×10⁹, BF16 이면 약 2.47 GB. H100 SXM 대역폭 3.35 TB/s 에서 빛의 속도는 3350 / 2.47 ≈ 1,356 토큰/s. 72% 면 1,356 × 0.72 ≈ 976 토큰/s — 그래프의 H100 메가커널 막대(약 1,000)와 맞는다. 같은 계산을 vLLM 막대 약 480 에 하면 480 / 1,356 ≈ 35% 활용. 즉 나머지 65% 는 앞 장에서 본 경계 비용과 겹치지 못한 대기로 사라지고 있던 시간이다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import torch, time\n\n# 융합 전/후의 HBM 왕복 차이를 PyTorch 로 체감: y = silu(x @ Wg) * (x @ Wu)\ndef unfused(x, wg, wu):\n    g = x @ wg            # 커널 1: 결과를 HBM 에 씀\n    u = x @ wu            # 커널 2\n    g = torch.nn.functional.silu(g)  # 커널 3: 읽고 다시 씀\n    return g * u          # 커널 4\n\nfused = torch.compile(unfused)       # 원소별 연산을 묶어 왕복을 줄인다\n\ndef bench(f, *a, n=50):\n    f(*a); torch.cuda.synchronize(); t = time.perf_counter()\n    for _ in range(n): f(*a)\n    torch.cuda.synchronize(); return (time.perf_counter() - t) / n * 1e6\n\nif torch.cuda.is_available():\n    d, h = 2048, 8192\n    x = torch.randn(1, d, device='cuda', dtype=torch.bfloat16)   # 배치 1 decode\n    wg, wu = (torch.randn(d, h, device='cuda', dtype=torch.bfloat16) for _ in range(2))\n    print(f'unfused {bench(unfused, x, wg, wu):.1f} us, compiled {bench(fused, x, wg, wu):.1f} us')",
+    "note": "torch.compile 은 원소별 연산만 묶고 행렬곱 경계는 남긴다. 메가커널은 그 경계까지 없애고 다음 연산의 가중치 읽기를 겹친다는 점이 다르다. GPU 가 없으면 아무것도 출력하지 않는다."
+   },
+   "diagram": {
+    "title": "GPU 메모리 계층(ThunderKittens 슬라이드 수치)",
+    "code": "flowchart TB\n  R[레지스터<br/>SM 당 수백 KB · 가장 빠름<br/>텐서 코어 타일 rt] --> S[공유 메모리<br/>SM 당 227 KB · 약 33 TB/s<br/>공유 타일 st]\n  S --> L[L2 캐시<br/>50 MB · 약 12 TB/s]\n  L --> H[HBM<br/>80 GB · 약 3 TB/s<br/>가중치·KV 캐시]\n  H -. 메가커널: 다음 연산 가중치를 미리 적재 .-> S"
+   },
+   "pitfalls": [
+    "메가커널은 '더 많은 연산'이 아니라 '같은 연산을 빈틈없이'다. 빛의 속도 이상은 불가능하고, 이득은 경계 비용이 클수록(배치가 작을수록) 크다.",
+    "그래프의 배치 1 결과를 큰 배치 서빙 처리량으로 일반화하면 안 된다. 큰 배치에서는 기존 엔진과의 차이가 줄어든다."
+   ],
+   "check": [
+    {
+     "q": "메가커널에서 'QKV 가 끝나기 전에 어텐션이 KV 캐시 읽기를 시작'할 수 있는 이유는?",
+     "a": "decode 에서 KV 캐시의 대부분은 이전 토큰들의 값으로 이미 HBM 에 있고 새 쿼리에 의존하지 않으므로, 새 Q·K·V 계산과 무관하게 먼저 불러올 수 있기 때문이다."
+    },
+    {
+     "q": "가중치 2.47 GB, 대역폭 3.35 TB/s 에서 초당 670 토큰이면 대역폭 활용률은?",
+     "a": "670 × 2.47 GB = 1,655 GB/s ÷ 3,350 GB/s ≈ 49%."
+    }
+   ]
+  },
+  {
+   "start": 2520,
+   "title": "Parcae ① — 규모 말고 다른 축: 루프 트랜스포머",
+   "points": [
+    "질문: 파라미터·데이터를 키우는 것만이 품질을 올리는 길인가?",
+    "루프 트랜스포머: 블록 몇 개(R)를 여러 번 반복 통과시킨다. 구조는 앞부분 P(prelude) → 반복 블록 R × T → 뒷부분 C(coda).",
+    "장점: 파라미터는 그대로 두고 FLOPs 를 늘리는 다이얼, 같은 파라미터로 표현 못 하던 것을 표현(표현력).",
+    "선행 연구(Maryland, recurrent depth)의 유망한 결과와 트위터 소문이 겹쳐 관심이 커졌다.",
+    "문제: 학습률을 조금만 바꿔도 폭주 — NaN, 손실 급등. 학습률 스윕 대부분이 수렴하지 않는다."
+   ],
+   "on_screen": "'Scaling in Parameters and Data…' 그래프 재등장. 'Parcae: Principled Looped Transformers' — 왼쪽 'Stable Looping with SSM Theory'(h_t 에 A, e 에 B, Δ, R: Transformer Blocks(Multi-Head Attention, Feed Forward) → h_{t+1}), 오른쪽 'The Scaling Laws: Scale Recurrence with Data'(IsoFLOP Scaling Laws of Looping — Recurrence 대 Validation Loss, FLOPs 대 Optimal Recurrence). 저자 Hayden Prairie, Zachary Novak, Taylor Berg-Kirkpatrick. 'Looping: Pass the Activations Back' — \"Looped\": P → h₀ → R → h₁ → R → h₂ … R → h_T → C → \"Models\", 각 R 에 e 주입. Advantages: Increase FLOPs, keep parameters constant / Higher expressivity, 논문 'Looped Transformers are Better at Learning Learning Algorithms'. 'Promising Early Results…' 표(Non-Recurrent Baseline 0.18T 토큰 ARC-E 46.42 ARC-C 26.96, 루프 r=32 0.8T 토큰 69.91 / 38.23 등)와 'Scaling up Test-Time Compute with Latent Reasoning: A Recurrent Depth Approach'. 'On the Looped Transformers Controversy' 트윗 캡처. 'Hyperparameter Instability!' 표 LR 2e-4: Base ✓ Res.Norm ✓ / 4e-4: ✗ ✓ / 6e-4·8e-4·1e-3: ✗ ✗ — 'RDMs with Different Norm Strategies Unstable', Training Loss(LR = 6e-4) 그래프 'Loss Spikes! (Red is Parcae)'. 'Part 2: Stabilization - How to Loop?'",
+   "explain": [
+    "같은 교과서를 한 번 읽는 학생과 세 번 곱씹어 읽는 학생을 생각해 보자. 책(파라미터)은 같지만 들인 생각의 양(연산)이 다르고, 여러 번 읽은 쪽이 더 깊이 이해할 수 있다. 루프 트랜스포머는 모델에게 이 '곱씹기'를 시키는 구조다. 강연의 세 번째 부분은 강사의 UCSD 연구실(Hayden Prairie 주도, Zachary Novak·Taylor Berg-Kirkpatrick 협업)의 Parcae 다. 출발 질문은 이렇다 — 지금까지 능력은 파라미터와 데이터를 키워서 얻었는데, 그것만이 유일한 축인가? 다른 방식으로 품질을 얻을 수는 없나?",
+    "구조를 정의하자. 보통 트랜스포머는 토큰이 1층, 2층, … 마지막 층을 한 번씩 지나간다. 루프 트랜스포머는 앞쪽 몇 층(prelude, P)을 지난 뒤, 가운데 블록 묶음 R 을 같은 가중치로 T 번 반복 통과한다. 반복할 때마다 처음 입력에서 나온 신호 e 를 다시 주입하고(그림의 e 화살표), 마지막 상태 h_T 를 뒤쪽 층(coda, C)에 넘겨 출력을 만든다. 장점은 두 가지다. 첫째, 파라미터 수를 고정한 채 연산량(FLOPs)을 늘리는 다이얼이 생긴다. '연산이 많을수록 품질이 좋다'고 믿는다면 파라미터 비용 없이 품질을 살 수 있다. 둘째, 같은 파라미터로 보통 트랜스포머가 표현할 수 없는 것을 표현할 수 있다는 이론 연구가 있다(루프 트랜스포머가 학습 알고리즘 자체를 더 잘 배운다는 논문). 연구실의 질문은 '파라미터당(그리고 데이터당) 지능을 최대로 하려면?'이었다.",
+    "선행 결과도 유망했다. Maryland 의 Tom Goldstein 그룹이 낸 recurrent depth 모델(RDM)은 반복 횟수를 늘리면 ARC 같은 추론 과제 점수가 크게 오르는 결과를 보였다(슬라이드 표에서 반복 32회 모델이 ARC-E 69.91, 반복 없는 기준선은 46.42 — 다만 학습 토큰 수도 달라 직접 비교는 아니다). 여기에 Parcae 공개 직전 한 연구자가 트위터에 '어떤 최신 상용 모델이 루프 언어 모델이다'라는 추측을 올렸다가 나중에 근거 없는 말이었다고 철회한 일이 겹쳐 관심이 폭발했다. 강사는 그 추측은 틀렸다고 보지만, 연구실은 그 전부터 이 주제를 다루고 있었다.",
+    "문제는 학습 안정성이었다. 기존 루프 모델은 학습 설정을 조금만 바꿔도 폭주했다. 슬라이드 표를 보면 기본형(Base)은 학습률 2e-4 에서만 수렴하고 4e-4 부터 실패, 잔차에 정규화를 더한 변형(Res. Norm)도 6e-4 부터 실패한다. 학습률 스윕을 하면 열에 아홉은 수렴하지 않고 NaN 이나 큰 손실 급등이 나온다. 이전 연구들은 층마다 정규화를 넣거나 '학습률 2e-4 만 쓰라' 같은 땜질로 넘어갔다. 강사는 여기서 연구자의 태도를 강조한다 — 규모를 키우는 학습에서 큰 손실 급등이 보이면 뭔가 근본적으로 잘못됐다는 신호이니 깊이 들여다봐야 한다. 그래서 팀은 상태공간모델(SSM) 이론으로 이 반복 과정을 수학적으로 분석했다. 그것이 다음 장이다."
+   ],
+   "formulas": [
+    {
+     "expr": "h₀ = P(x),  e = 주입 신호,  h_{t+1} = R(h_t, e)  (t = 0…T−1),  y = C(h_T)",
+     "meaning": "P·R·C 는 각각 앞·반복·뒤 블록. R 의 가중치는 T 번 모두 같다. 파라미터는 P+R+C 지만 연산은 P + T·R + C 만큼."
+    },
+    {
+     "expr": "유효 깊이 = L_P + T × L_R + L_C",
+     "meaning": "L 은 각 부분의 층 수. 반복 횟수 T 가 '깊이'를 파라미터 증가 없이 늘린다."
+    }
+   ],
+   "example": {
+    "title": "파라미터와 FLOPs 를 따로 움직이기",
+    "body": "층마다 파라미터가 같은 24층 트랜스포머를 P 2층 + R 4층 + C 2층(파라미터는 8층 분량)으로 바꾸고 T = 4 로 돌리면 유효 깊이 2 + 16 + 2 = 20층, 파라미터는 원래의 8/24 = 1/3. T = 6 이면 유효 깊이 28층으로 원래보다 깊으면서 파라미터는 여전히 1/3 이다. 토큰당 연산은 대략 유효 깊이에 비례하므로 T 는 '파라미터를 고정한 FLOPs 다이얼'이다."
+   },
+   "diagram": {
+    "title": "루프 트랜스포머의 흐름",
+    "code": "flowchart LR\n  X[입력 임베딩] --> P[Prelude P]\n  P --> H0((h₀))\n  P --> E((e))\n  H0 --> R1[R]\n  E --> R1\n  R1 --> H1((h₁)) --> R2[R] --> H2((h₂)) --> RT[… R × T] --> HT((h_T))\n  E --> R2\n  E --> RT\n  HT --> C[Coda C] --> Y[로짓]"
+   },
+   "pitfalls": [
+    "루프 모델은 파라미터가 적다고 '싸게' 도는 것이 아니다. 연산은 T 배로 늘어난다 — 메모리와 통신이 이득이고 연산은 손해다.",
+    "슬라이드의 RDM 결과 표는 학습 토큰 수가 다른 행이 섞여 있어 반복의 효과만 따로 읽으면 과장된다."
+   ],
+   "check": [
+    {
+     "q": "루프 트랜스포머가 '파라미터를 고정한 채 FLOPs 를 늘리는 다이얼'이라는 말의 뜻은?",
+     "a": "같은 블록 R 을 T 번 반복하므로 T 를 키우면 토큰당 연산(유효 깊이)은 늘지만 가중치는 하나뿐이라 파라미터 수는 변하지 않는다는 뜻이다."
+    }
+   ]
+  },
+  {
+   "start": 2790,
+   "title": "Parcae ② — 잔차의 동역학과 스펙트럴 반경으로 안정화",
+   "points": [
+    "관찰: 반복 블록을 지날 때 잔차 상태 h 는 조금씩만 변한다 → 상태 h 의 동역학계로 쓸 수 있다.",
+    "h_{t+1} = Ā h_t + B̄ e + R̄(h_t, e). 비선형 R̄ 을 떼면 선형 시불변(LTI) 계 — 닫힌 해가 고등학교 수학으로 나온다.",
+    "핵심 양은 Ā 의 스펙트럴 반경 ρ(Ā). 1 보다 크면 Āᵗ 이 폭발(손실 급등), 1 이면 경계 안정, 1 보다 작으면 안정.",
+    "기존 방식: 덧셈(Ā = I, ρ = 1, 경계 안정), 연결(학습 가능한 Ā, 불안정). Parcae: Ā 를 음의 대각으로 매개화(ZOH 이산화 → ρ < 1), e 에 정규화.",
+    "결과: 학습률 6e-4 에서도 안정, 상태 노름 억제, RDM·같은 크기 트랜스포머보다 낮은 퍼플렉서티."
+   ],
+   "on_screen": "'It's All About the Residual' — 루프 그림에서 h₁ 을 빨간 상자로 표시하고 'How does this h change?'. 'Dynamical System over Residual (SSM)': h_{t+1} = Āh_t + B̄e + R̄(h_t, e); 표 Previous Looped Transformers — Addition: Ā = I, B̄ = I / Concatenation: Ā ∈ ℝ^{d_h×d_h}, B̄ ∈ ℝ^{d_h×d_e}. 'Linearize the System!': h_{t+1} = Āh_t + B̄e, 'Residual Dominates Magnitude', 'Closed Form Solution (High School Math): h_{t+1} = Āᵗh₁ + (Σ_{n=0}^{t−1} Āⁿ)B̄e', 'Key Quantity: Spectral Radius ρ(Ā)'; 표에 ρ(Ā) 와 LTI Stability — Addition ρ(Ā) = 1 marginally-stable, Concatenation ρ(Ā) ∈ ℝ unstable. 'Parcae: Constrain A, B for Stability' — Ā 에 'Negative Diagonal', e 에 'Norm'; PARCAE(ours): Ā = ZOH(Diag(−exp(ℝ^{d_h}))), B̄ = Euler(ℝ^{d_h×d_e}). 'Parcae, Stable Loss Curves': Training Loss(LR = 6e-4) — Res Norm(파랑) 0.4B 토큰 부근 급등, Parcae(빨강) 매끄럽게 감소; Recurrent State Norm(LR = 6e-4) — Baseline(주황) 10¹⁹ 까지 폭주, Res Norm·Parcae 낮게 유지; 'Parcae Stabilizes the Recurrent Residual (without Residual Norm), Stabilizes Training'. 'Parcae, Higher Quality' 표: RDM 대 Parcae(100M·350M 급, WikiText·Hellaswag·ARC·PIQA·BoolQ·SciQ 평균 — Parcae 가 높음), Transformer 대 Parcae 검증 퍼플렉서티 140M 21.48 → 19.06, 370M 15.79 → 14.49, 770M 13.08 → 12.49, 1.3B 11.95 → 11.42 — 'And Strong Transformer Baselines!'.",
+   "explain": [
+    "그네를 밀어 주는 상황을 생각해 보자. 매번 같은 박자로 조금씩 밀면 진폭이 점점 커져 결국 그네가 한 바퀴 돈다. 반대로 매번 진폭이 조금씩 줄어드는 공기 저항이 있으면 아무리 밀어도 일정한 크기에서 멈춘다. 루프 트랜스포머의 상태 h 도 같은 블록을 반복 통과하며 매번 '밀린다'. 이 반복이 진폭을 키우는 쪽이면 폭주하고, 줄이는 쪽이면 안정된다. Parcae 의 핵심은 이 '진폭 배율'을 수식으로 찾아내 1 보다 작게 묶어 둔 것이다.",
+    "분석의 첫 단계는 관찰이다. 반복 블록 R 은 어텐션·GELU·RoPE·소프트맥스가 얽힌 거대한 비선형 함수라 그대로 분석하기는 불가능하다. 그런데 팀이 실제로 재 보니 블록을 한 번 지날 때 잔차 상태 h 는 크게 바뀌지 않고 조금씩만 변했다. 그래서 상태 h 에 대한 동역학계를 적었다: h_{t+1} = Ā h_t + B̄ e + R̄(h_t, e). 여기서 Ā 는 이전 상태를 다음 반복으로 넘길 때의 변환, B̄ 는 주입 신호 e 를 섞는 변환, R̄ 은 복잡한 비선형 부분 전부를 담은 상자다. 이 틀에 놓고 보면 기존 루프 모델들은 Ā·B̄ 를 무심코 정한 셈이다. '덧셈' 방식은 Ā = I, B̄ = I(그냥 더하기)이고, '연결(concatenation)' 방식은 h 와 e 를 이어 붙여 선형층에 넣으니 Ā·B̄ 가 아무 제약 없는 학습 행렬이다.",
+    "다음은 선형화다. 실측해 보니 크기(노름)는 Ā·B̄ 항이 지배했으므로 R̄ 을 떼어 내면 h_{t+1} = Ā h_t + B̄ e 라는 선형 시불변 계가 남는다. 이건 고등학교 수열 문제처럼 풀린다. 한 번씩 대입하면 h_{t+1} = Āᵗ h₁ + (Ā⁰ + Ā¹ + … + Ā^{t−1}) B̄ e. 이 식에서 운명을 가르는 것은 Ā 의 거듭제곱이다. 행렬을 반복해서 곱할 때 결국 커지느냐 작아지느냐는 고윳값 크기의 최댓값, 즉 스펙트럴 반경 ρ(Ā) 가 정한다. 강사의 스칼라 예로, Ā 가 2 이고 반복이 16번이면 h 는 2¹⁶ = 65,536 배가 된다 — 손실 급등의 정체다. ρ = 1 이면 Āᵗ 은 커지지 않지만 합 Σ Āⁿ 이 t 에 비례해 계속 자라므로 '경계 안정(marginally stable)'이고, ρ < 1 이면 Āᵗ 은 0 으로 줄고 합은 1/(1−ρ) 근처로 수렴해 안정이다. 덧셈 방식은 ρ = 1 로 경계 안정, 연결 방식은 ρ 가 아무 값이나 될 수 있어 불안정이다.",
+    "Parcae 의 처방은 그래서 간단하다. Ā 와 B̄ 가 폭주할 수 없도록 구조로 묶는다. Ā 는 '음의 대각 행렬'로 매개화한다 — 연속 시간 행렬 A = Diag(−exp(w)) 로 두면 대각 원소가 늘 음수이고, 이를 상태공간모델(Mamba 등)에서 쓰는 영차 유지(ZOH) 방식으로 이산화하면 Ā = exp(Δ·A) 의 원소가 모두 0 과 1 사이에 놓인다(노트 보충: ZOH 이산화의 표준 형태). 그래서 ρ(Ā) < 1 이 학습 중 어떤 가중치에서도 보장된다. B̄ 는 한 번만 곱해지니 폭주 원인이 아니지만, 주입 신호 e 에 정규화를 걸어 크기를 묶는다. 결과는 슬라이드의 그래프 그대로다. 다른 모델을 망가뜨리던 학습률 6e-4 에서도 Parcae 의 손실은 매끄럽게 내려가고, 상태 노름은 아무 제약 없는 기준선(10¹⁹ 까지 폭주)과 달리 낮게 유지된다. 흥미로운 것은 잔차에 정규화를 거는 기존 처방(Res Norm)이다. 노름 자체는 잡히지만 손실이 여전히 튄다 — 모델은 표현 공간을 넓히려고 활성값을 키우고, 정규화는 다시 1 로 누르니 두 힘이 싸우며 급등이 생긴다는 것이 강사의 해석이다. Parcae 는 안정적일 뿐 아니라 품질도 좋았다. 같은 조건의 RDM 보다 여러 벤치마크 평균이 높았고, 빨리 학습되도록 다듬은 강한 트랜스포머 기준선(nanochat 계열)을 같은 크기에서 루프로 바꾸고 안정화했더니 140M 에서 1.3B 까지 모든 크기에서 검증 퍼플렉서티가 낮아졌다."
+   ],
+   "formulas": [
+    {
+     "expr": "h_{t+1} = Ā h_t + B̄ e + R̄(h_t, e)",
+     "meaning": "h_t: t번째 반복의 잔차 상태, e: 매 반복 주입하는 입력 신호, Ā: 상태 전이 행렬, B̄: 주입 행렬, R̄: 어텐션·FFN 등 비선형 블록 전체."
+    },
+    {
+     "expr": "h_{t+1} = Āᵗ h₁ + (Σ_{n=0}^{t−1} Āⁿ) B̄ e",
+     "meaning": "R̄ 을 뗀 선형 근사의 닫힌 해. 첫 항은 초기 상태가 Āᵗ 배로 변하는 몫, 둘째 항은 주입이 쌓인 몫."
+    },
+    {
+     "expr": "ρ(Ā) = max_i |λ_i(Ā)|",
+     "meaning": "스펙트럴 반경 — Ā 의 고윳값 λ_i 의 절댓값 중 최댓값. ρ > 1 폭주, ρ = 1 경계 안정(합이 선형 증가), ρ < 1 안정(합 ≤ 1/(1−ρ) 배)."
+    },
+    {
+     "expr": "A = Diag(−exp(w)),  Ā = exp(Δ·A),  B̄ ≈ Δ·B",
+     "meaning": "Parcae 의 매개화. w 는 학습 파라미터, Δ>0 은 학습되는 간격. exp(w) > 0 이므로 A 의 대각은 음수, Ā 의 대각은 exp(−Δ·exp(w)) ∈ (0, 1). B̄ 는 오일러 근사(슬라이드의 Euler)."
+    }
+   ],
+   "example": {
+    "title": "스칼라로 보는 세 가지 운명(T = 16, h₁ = 1, B̄e = 1)",
+    "body": "① Ā = 2 (ρ>1): Āᵗh₁ = 2¹⁶ = 65,536, 합 Σ2ⁿ(n=0..15) = 65,535 → h ≈ 131,071. 폭주. ② Ā = 1 (덧셈 방식, ρ=1): 1 + 16 = 17. 반복 64번이면 65 — 반복 수에 비례해 계속 자란다. ③ Ā = 0.9 (ρ<1): 0.9¹⁶ ≈ 0.185, 합 (1 − 0.9¹⁶)/(1 − 0.9) ≈ 8.15 → h ≈ 8.3. 반복을 1,000번으로 늘려도 합은 10 을 넘지 않는다. Parcae 는 w = 0, Δ = 0.1 이면 Ā = exp(−0.1) ≈ 0.905 로 ③ 의 영역에 들어간다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import torch\n\ntorch.manual_seed(0)\nd, T = 64, 32\ne = torch.randn(d)\n\ndef run(A_bar, B_bar):\n    h = torch.zeros(d)\n    for _ in range(T):\n        h = A_bar @ h + B_bar @ e      # 비선형 R 을 뗀 선형 루프\n    return h.norm().item()\n\nI = torch.eye(d)\nfree = torch.randn(d, d) / d**0.5 * 1.3          # 제약 없는 학습 행렬(연결 방식)\nw, delta = torch.randn(d), torch.tensor(0.1)\nparcae = torch.diag(torch.exp(delta * -torch.exp(w)))  # ZOH(Diag(-exp(w)))\n\nfor name, A in [('addition', I), ('concat', free), ('parcae', parcae)]:\n    rho = torch.linalg.eigvals(A).abs().max().item()\n    print(f'{name:9s} rho={rho:5.2f}  |h_T|={run(A, I):10.1f}')",
+    "note": "addition 은 ρ=1 이라 |h| 가 T 에 비례해 자라고, 스케일 1.3 의 무작위 행렬은 ρ>1 이 되기 쉬워 폭주하며, parcae 는 어떤 w 에서도 ρ<1 이라 유한한 값에 머문다."
+   },
+   "pitfalls": [
+    "'음의 대각 행렬을 거듭제곱하면 0 으로 간다'는 말은 이산화 후 Ā 의 원소가 (0,1) 에 있다는 뜻이다. 음수 원소 자체를 거듭제곱하면 부호가 번갈아 바뀌고, 절댓값이 1 을 넘으면 폭주한다.",
+    "선형화는 분석 도구다. 실제 모델에서 R̄ 은 그대로 남아 있고, Parcae 가 바꾼 것은 Ā·B̄ 의 매개화뿐이다.",
+    "잔차 정규화로 노름을 잡아도 손실 급등은 남을 수 있다 — 노름 그래프가 평평하다고 학습이 건강한 것은 아니다."
+   ],
+   "check": [
+    {
+     "q": "덧셈 방식(Ā = I)이 '경계 안정'인 이유를 닫힌 해로 설명하라.",
+     "a": "Āᵗ = I 라 초기 항은 커지지 않지만 Σ Āⁿ = t·I 라 주입 항 B̄e 가 반복마다 그대로 쌓여 상태가 반복 수에 비례해 계속 자란다. 폭발은 아니지만 수렴도 아니다."
+    },
+    {
+     "q": "Parcae 가 ρ(Ā) < 1 을 '학습 중 항상' 보장할 수 있는 이유는?",
+     "a": "Ā 를 직접 학습하지 않고 w 를 학습해 Ā = exp(−Δ·exp(w)) 로 만들기 때문에, w 가 어떤 값이 되든 대각 원소가 0 과 1 사이에 놓이기 때문이다."
+    }
+   ]
+  },
+  {
+   "start": 3210,
+   "title": "Parcae ③ — 스케일링 법칙: 데이터가 늘면 루프도 늘려라",
+   "points": [
+    "기존 스케일링 법칙: 파라미터 N 과 데이터 D 를 함께 키워야 한다(IsoFLOP 곡선의 최적점이 오른쪽 아래로).",
+    "Parcae 실험: 파라미터 고정(140M, 370M), FLOPs 고정 곡선마다 반복 횟수 × 데이터를 바꿔 본다.",
+    "결과: FLOPs 가 클수록 최적 반복 횟수도 커진다 — μ_rec ∝ C^0.40(140M), C^0.38(370M), 최적 토큰 D ∝ C^0.77~0.78.",
+    "지금의 대형 모델은 반복이 0(곡선 맨 왼쪽)에 데이터는 많다 → 모델 크기를 고정한다면 루프를 넣는 편이 나을 수 있다.",
+    "같은 FLOPs 에서 반복 + 데이터를 같이 늘린 쪽이 데이터만 늘린 고정 깊이 모델보다 검증 손실이 낮다."
+   ],
+   "on_screen": "'Part 3: Scaling Laws - When to Loop?'. 'How to Scale Training FLOPs?' — L̂(N, D) = E + X·N^{−x} + Y·D^{−y}, 'Traditional Scaling Laws: params N, tokens D', 'What to Scale: Model size(parameters) / Data / Recurrence?', 'Traditional Scaling Laws: Scale Parameters and Data Jointly'. 'Parcae Scaling Laws: To Loop or Not To Loop?' — 140M·370M 두 칸, 가로축 Recurrence(2~12), 세로축 Validation Loss, FLOPs 1e18~128e18 색 곡선마다 별표(최적점)가 FLOPs 가 커질수록 오른쪽 아래로 이동(빨간 화살표). Setup: ISO-param, ISO-FLOP curves / Varying: recurrence × training data / 'More data → more recurrence is optimal!', 'Down and to the right: Scale both'. 'Recurrences Follow the Power Law' — μ_rec Power Law: 140M μ_rec ∝ C^0.40, 370M ∝ C^0.38; Token Power Law: 140M D ∝ C^0.77, 370M ∝ C^0.78; 'FLOP-Optimal Scaling Laws Scale Recurrences and Tokens jointly!'. 'Scaling Recurrences > No Recurrence, More Data' — Parcae Small(140M)·Medium(370M) Val. Loss 대 FLOPs(주황 Predicted Fixed-Depth, 파랑 Predicted Optimal Looping), Downstream Core Scores 표 140M: FLOPs(×10¹⁸) 1·4·16·64 에서 Optimal Looping 7.6·11.2·14.6·16.2 대 Fixed-Depth 7.9·10.7·13.0·15.0; 370M: 32·64·128 에서 15.2·18.1·20.1 대 16.8·18.1·18.1. 'Takeaway from today's talk' 재등장.",
+   "explain": [
+    "요리에 비유하면, 재료(데이터)를 두 배로 늘렸을 때 냄비(파라미터)만 키울지, 같은 냄비로 더 오래 끓일지(반복)를 정하는 문제다. 몇 년 전 스케일링 법칙 연구들은 '연산 예산이 늘면 모델을 키울까, 데이터를 늘릴까'를 물었고, 답은 '둘 다 함께'였다. 슬라이드의 식 L̂(N, D) = E + X·N^{−x} + Y·D^{−y} 가 그 결과다. 손실은 줄일 수 없는 바닥 E 에, 파라미터가 모자라서 생기는 몫과 데이터가 모자라서 생기는 몫을 더한 것이고, 두 몫 모두 거듭제곱으로 줄어든다. 그래서 1조 파라미터 모델을 35조 토큰으로 학습하는 식의 '함께 키우기'가 표준이 됐다(이 과목 앞 강의의 Chinchilla 이야기와 같다).",
+    "IsoFLOP 그림 읽는 법을 정리해 두자. 그림의 곡선 하나는 '총 연산량이 같은' 실험들이다. 같은 연산을 어떻게 나눠 쓰느냐(가로축)에 따라 손실(세로축)이 U 자를 그리고, 바닥(별표)이 그 예산에서의 최적 배분이다. 예산을 키운 곡선으로 갈수록 별표가 어느 방향으로 움직이는지가 답이다. 강사의 설명대로, 별표가 곧장 아래로 내려가면 '그 축은 그대로 두고 다른 축만 키워라', 곧장 오른쪽이면 '그 축만 키워라', 오른쪽 아래로 비스듬히 가면 '둘 다 함께 키워라'다.",
+    "Parcae 팀은 여기에 세 번째 축, 반복 횟수를 넣었다. 파라미터를 140M 과 370M 으로 고정하고(ISO-param), 연산 예산마다(ISO-FLOP) 반복 횟수와 학습 데이터를 맞바꿔 가며 학습했다. 반복을 늘리면 토큰당 연산이 커지므로 같은 예산에서 볼 수 있는 토큰은 줄어든다. 결과는 두 크기 모두 별표가 오른쪽 아래로 이동했다 — 예산이 커질수록 최적 반복 횟수도 커진다. 즉 '데이터가 늘면 반복도 늘려라'. 최적점들은 깔끔한 거듭제곱 법칙을 따랐다. 최적 반복 수는 연산 C 의 0.40 제곱(140M), 0.38 제곱(370M)에 비례하고, 최적 토큰 수는 C 의 0.77~0.78 제곱에 비례했다. 질문자가 '파라미터까지 함께 바꾸면?'이라고 묻자 강사는 세 축을 모두 그린 3차원 그림도 있는데 보기가 너무 어려워 뺐을 뿐, 그 그림 역시 셋을 함께 키우라는 방향을 가리켰다고 답했다.",
+    "강사가 이 결과에서 끌어내는 함의는 도발적이다. 지금의 거의 모든 대형 모델은 반복이 전혀 없다 — 그림의 맨 왼쪽에 있다. 그리고 데이터는 아주 많이 쓴다. 만약 이 법칙이 큰 규모에도 이어진다면, 모델 크기를 정해 두고 데이터를 늘리는 상황에서는 반복을 같이 늘리는 편이 더 나을 수 있다는 뜻이다. 마지막 슬라이드가 이를 직접 비교한다. 같은 크기, 같은 FLOPs 에서 데이터만 늘린 고정 깊이 모델(주황)보다 반복과 데이터를 함께 늘린 모델(파랑)의 검증 손실이 더 낮았고, 하류 과제 점수도 대체로 높았다(140M 의 가장 작은 예산에서는 고정 깊이가 7.9 대 7.6 으로 조금 앞서고, 370M 의 6.4×10¹⁹ 에서는 18.1 로 같다 — 차이는 예산이 커질수록 벌어진다). 강사는 '어쩌면 모든 대형 사전학습을 루프로 해야 할지도 모른다'고까지 말하지만, 실험은 1.3B 이하 규모라는 점에서 이것은 가설로 읽어야 한다(강사 의견)."
+   ],
+   "formulas": [
+    {
+     "expr": "L̂(N, D) = E + X·N^{−x} + Y·D^{−y}",
+     "meaning": "N 파라미터 수, D 학습 토큰 수, E 줄일 수 없는 손실, X·Y·x·y 는 실험으로 맞추는 상수. 둘째 항은 모델이 작아서, 셋째 항은 데이터가 적어서 생기는 손실."
+    },
+    {
+     "expr": "μ_rec* ∝ C^0.40 (140M), C^0.38 (370M)",
+     "meaning": "μ_rec* 는 연산 예산 C 에서 최적인 평균 반복 횟수. 예산이 10배면 최적 반복은 약 10^0.4 ≈ 2.5배."
+    },
+    {
+     "expr": "D* ∝ C^0.77 (140M), C^0.78 (370M)",
+     "meaning": "같은 예산에서 최적 토큰 수. 지수 합(0.40+0.77)이 1 보다 큰 것은 반복이 모델 일부(R 블록)에만 걸려 토큰당 연산이 반복 수에 정확히 비례하지 않기 때문이다(노트 보충)."
+    }
+   ],
+   "example": {
+    "title": "예산을 10배, 100배로 늘리면",
+    "body": "140M 모델, 지금 예산 C₀ 에서 최적 반복 4회·토큰 10억 개라고 하자. 예산 10배: 반복 4 × 10^0.40 ≈ 4 × 2.51 ≈ 10회, 토큰 10억 × 10^0.77 ≈ 10억 × 5.9 ≈ 59억. 예산 100배: 반복 4 × 10^0.8 ≈ 25회, 토큰 10억 × 10^1.54 ≈ 347억. 반복을 0 에 묶어 두면 늘어난 예산을 모두 토큰에 써야 하고, 법칙에 따르면 그것은 최적 배분에서 벗어난다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\n\n# IsoFLOP 실험의 최적점들(가상의 값)로 거듭제곱 지수를 맞춘다\nC = np.array([1e18, 2e18, 4e18, 8e18, 16e18, 32e18, 64e18])\nmu_opt = np.array([2.1, 2.7, 3.5, 4.6, 6.0, 7.9, 10.5])   # 최적 반복 수\n\nslope, intercept = np.polyfit(np.log10(C), np.log10(mu_opt), 1)\nprint(f'mu_rec* ∝ C^{slope:.2f}')\n\ndef predict(c):\n    return 10 ** (intercept + slope * np.log10(c))\n\nfor c in [1e20, 1e21]:\n    print(f'C={c:.0e}: 최적 반복 ≈ {predict(c):.1f}')",
+    "note": "로그-로그 축에서 직선이면 거듭제곱 법칙이다. 이 가상 데이터는 지수 약 0.39 를 낸다. 외삽(1e21)은 실험 범위를 크게 벗어나므로 참고로만 본다."
+   },
+   "pitfalls": [
+    "'최적 반복 수가 커진다'는 것은 연산 예산을 고정했을 때의 이야기다. 추론 비용(반복만큼 연산 증가)까지 따지면 결론이 달라질 수 있다.",
+    "실험은 140M~1.3B 규모다. 1조 파라미터 규모에서도 같은 지수가 유지된다는 증거는 아직 없다."
+   ],
+   "check": [
+    {
+     "q": "IsoFLOP 그림에서 최적점(별표)이 예산이 커질수록 '오른쪽 아래'로 가면 무슨 뜻인가?",
+     "a": "가로축의 양(여기서는 반복 횟수)과 다른 축(데이터)을 둘 다 함께 키우는 것이 최적이라는 뜻이다. 곧장 아래였다면 가로축은 고정하고 다른 축만 키워야 한다."
+    },
+    {
+     "q": "μ_rec* ∝ C^0.4 일 때 예산이 16배가 되면 최적 반복 수는 몇 배?",
+     "a": "16^0.4 = 2^1.6 ≈ 3.03배."
+    }
+   ]
+  },
+  {
+   "start": 3615,
+   "title": "질의응답 — 사전학습 모델 루프, 메가커널의 대가, 하드웨어와 모델의 공동 설계",
+   "points": [
+    "사전학습된 모델에 학습 없이 층 몇 개를 반복시켰더니 수학 점수가 올랐다는 사례가 있다. 이유는 아직 모른다 — 후속 연구 중.",
+    "루프의 추론 이점: 파라미터가 적으면 KV 캐시 공간이 늘고 GPU 간 통신이 준다. 반복 블록을 칩 위 메모리(LPU 약 250 MB 급)에 올리는 꿈도 있다.",
+    "메가커널의 대가: 숙련 엔지니어 1명이 1년에 하드웨어 하나, 모델 2~3개, 배치 1~16 정도. 배치 17이면 처음부터. 컴파일러로 자동화를 시도 중.",
+    "공동 설계: 서빙 칩의 메모리부터 보고 모델 크기를 정한다. 양자화 형식도 칩 따라 — NVIDIA 는 NVFP4, AMD 는 MXFP4.",
+    "워크로드별 구조: 에이전트 루프는 KV 캐시 크기가 중요(DeepSeek MLA, FP8/FP4 KV). 일괄 처리·검색은 양방향(BERT) 모델로 충분. 멀티 GPU 통신(NCCL)도 메가커널에 융합할 수 있다."
+   ],
+   "on_screen": "대부분 강사 화면. 'Thank you!' 슬라이드에 세 부분(Lifetime of a token / Fast LLM Inference with Megakernels / Something new: Parcae)이 다시 뜬다.",
+   "explain": [
+    "질의응답은 강연 본문보다 오히려 현장의 감각을 많이 담고 있다. 첫 질문은 'Parcae 는 처음부터 학습해야 하나, 이미 학습된 모델을 루프로 만들 수는 없나'였다. 강사는 누군가 학습을 전혀 하지 않고 공개 모델(Qwen)의 층 두세 개를 반복시켰더니 수학 문제 점수가 올라 리더보드에서 이겼다는, 반쯤 장난 같은 블로그 글을 소개한다. 강사 스스로도 왜 그런지 모르겠고 불편할 정도로 이상하다고 말하며, 연구실에서 가중치를 직접 들여다보는 후속 연구를 하고 있다고 했다. 이어진 질문은 루프의 추론상 이점이었다. 답은 메모리다. 추론의 가장 큰 병목 중 하나가 GPU 메모리이므로 파라미터가 적으면 그만큼 KV 캐시를 더 들고 있을 수 있고, 모델을 더 적은 GPU 에 나눠 담아 통신이 줄어든다. 강사의 꿈은 반복 블록을 아주 작게 만들어 작은 메가커널 하나로 반복을 빠르게 도는 것, 또는 칩 위 메모리가 수백 MB 정도인 LPU 에 반복 블록을 통째로 올려 가중치를 계속 칩 위에 두고 활성값만 흘려보내는 것이다. 아직 블록을 그만큼 작게 만들지는 못했지만, 이런 문턱을 넘으면 비선형적인 이득이 생긴다고 본다.",
+    "메가커널의 단점을 묻자 강사는 '사람의 피, 땀, 눈물'이라고 답한다. 숙련된 커널 엔지니어 한 명이 1년 동안 하드웨어 한 종류에 대해 모델 두세 개, 배치 크기 1~16 정도의 메가커널을 짤 수 있고, 배치 17이 필요하면 처음부터 다시 해야 할 정도라는 것이다. 그래서 Together 에서는 이를 자동화하는 컴파일러를 만들고 있다. 메가커널이라는 발상 자체는 GPU 프로그래밍 역사에서 수십 년간 유행과 쇠퇴를 반복해 왔고, 해내기만 하면 그보다 빠를 수는 없지만 엄청난 노력이 든다. 마지막 질문인 '여러 GPU 사이의 통신이 끼면 메가커널은 어떻게 하나'에 대해서는, NCCL(NVIDIA 의 GPU 간 집합 통신 라이브러리) 호출도 메가커널 안에 융합할 수 있다는 초기 결과가 있지만 통신 지연 자체가 병목인 경우가 많아 아직 결정적인 쓰임새는 못 찾았다고 했다. 강사 설명으로는 DeepSeek 가 MoE 추론 층용 메가커널을 공개하며 통신까지 융합했는데, 앞으로는 모델 전체가 아니라 '계산의 한 부분용 작은 메가커널'이 늘어날 것으로 본다.",
+    "강의 담당 교수가 던진 공동 설계(co-design) 질문은 이 강연의 주제를 압축한다. 특정 서빙 칩(예: Cerebras)을 염두에 두고 모델을 설계한다면 무엇을 바꿔야 하나? 강사의 답은 '먼저 메모리'다. 그 칩(웨이퍼)에 메모리가 얼마나 있는지 보고, KV 캐시 여유를 남기고 들어가도록 모델 크기를 정한다. 최근 중국 모델들의 선택에서도 화웨이 칩을 염두에 둔 흔적이 보인다고 한다. 양자화 형식도 하드웨어를 따른다. NVIDIA GPU 에서 돌릴 모델이면 NVIDIA 고유의 4비트 형식 NVFP4 로 학습하고(Nemotron 처럼), AMD 라면 MXFP4 를 쓴다. 각자 장단점이 있고, 이런 미묘한 선택이 하드웨어에 따라 갈린다. '연산 최적만 따진다면 파라미터를 늘리는 대신 루프를 고를 이유가 있나'라는 질문에는, 연산 최적이라는 개념 자체가 '연산 예산을 정해 두고'라는 다소 인위적인 전제라고 답한다. 품질을 원하면 예산을 늘리면 되고, 크기가 정해졌으면 더 오래 학습하고, 크기가 묶여 있으면 더 많이 반복하고, 데이터가 바닥나면 그에 맞는 크기를 고른다. 실제 결정은 '누가 쓸까, 어떻게 서빙할까, 오픈소스라면 노트북에서 돌아갈 크기인가' 같은 설계 지점에 따라 내린다.",
+    "마지막으로 '사용처에 따라 최적 구조가 얼마나 달라지나'라는 질문에 강사는 두 가지 축을 짚는다. 첫째는 KV 캐시다. 에이전트처럼 턴을 오가는 작업은 KV 캐시를 최대한 뜨겁게 유지하는 것이 중요하므로, KV 를 크게 압축하는 DeepSeek 의 MLA(multi-head latent attention, KV 를 저차원 잠재 벡터로 압축해 저장)나 KV 를 FP8·FP4 로 처리할 수 있는 모델이 큰 차이를 만든다. 문서를 한 번씩만 보고 번역하는 일괄 처리라면 KV 캐시는 덜 중요하다. 둘째는 인과(causal) 어텐션이냐 양방향 어텐션이냐다. 많은 토큰을 생성할 필요가 없는 일괄 처리·검색에서는 양방향 모델(BERT)로 한 번 인코딩해 벡터를 데이터베이스에 넣으면 충분하고, 강사는 구글 검색이 오래 BERT 계열을 써 왔다고 말한다. 반면 채팅은 언제나 decode 가 붙는다. T5 처럼 앞부분은 양방향으로 읽고 뒷부분은 생성하는 중간 형태도 한때 쓰였다. 결국 '어떤 일을, 어떤 칩에서, 어떤 트래픽으로' 돌릴지가 모델 구조까지 거슬러 올라가 영향을 준다는 것 — 이것이 강연이 처음부터 말한 '스택 전체의 혁신'이다."
+   ],
+   "formulas": [
+    {
+     "expr": "MLA 의 토큰당 KV ≈ L × (d_c + d_r) × b  vs  GQA 의 2 × L × H_kv × d_head × b",
+     "meaning": "d_c 는 압축된 잠재 차원, d_r 은 RoPE 용 작은 차원. 헤드 수와 무관하게 저장하므로 KV 가 크게 준다(노트 보충, DeepSeek-V2 논문 기준의 형태)."
+    }
+   ],
+   "example": {
+    "title": "KV 형식이 에이전트 서빙에 주는 차이",
+    "body": "61층 모델에서 GQA(H_kv=8, d_head=128, BF16)는 토큰당 2×61×8×128×2 ≈ 250 KB. MLA 형태(d_c=512, d_r=64, BF16)는 61×576×2 ≈ 70 KB 로 약 3.5배 작다. FP8 로 저장하면 다시 절반인 35 KB. 남은 KV 공간이 40 GB 라면 10만 토큰 세션을 GQA-BF16 은 약 1.6개, MLA-FP8 은 약 11개 동시에 GPU 에 붙들고 있을 수 있다 — 에이전트처럼 같은 세션이 계속 돌아오는 워크로드에서는 이 차이가 캐시 적중률로 직결된다(수치는 어림)."
+   },
+   "pitfalls": [
+    "'Grok' 과 'Groq' 를 헷갈리기 쉽다. 추론 칩(LPU)을 만드는 회사는 Groq 이고, Grok 은 xAI 의 모델 이름이다.",
+    "LPU 의 칩 위 메모리 크기(약 250 MB)는 강사가 '그 정도'라고 말한 어림값이다.",
+    "NVFP4 와 MXFP4 는 둘 다 4비트 부동소수점이지만 블록 크기와 스케일 형식이 달라 서로 바꿔 쓸 수 없다."
+   ],
+   "check": [
+    {
+     "q": "루프 모델이 '추론'에서 유리할 수 있는 이유를 메모리 관점에서 두 가지 들어라.",
+     "a": "① 파라미터가 적어 같은 GPU 에 KV 캐시를 더 많이 둘 수 있다. ② 모델을 더 적은 GPU 에 나눠 담을 수 있어 GPU 간 통신이 준다. (나아가 반복 블록이 칩 위 메모리에 들어가면 가중치 읽기 자체가 사라진다.)"
+    },
+    {
+     "q": "검색용 임베딩 같은 일괄 처리에 양방향(BERT) 모델이 충분한 이유는?",
+     "a": "토큰을 생성할 필요 없이 입력 전체를 한 번 인코딩해 벡터만 얻으면 되므로, decode 단계와 그를 위한 KV 캐시가 필요 없기 때문이다."
+    }
+   ]
+  }
+ ],
+ "concepts": [
+  {
+   "term": "추론 엔진(inference engine)",
+   "explain": "학습된 모델을 받아 요청을 스케줄하고 KV 캐시를 관리하며 prefill·decode 를 실행해 토큰을 돌려주는 서빙 소프트웨어. vLLM·SGLang 이 대표적인 오픈소스다.",
+   "at": 300
+  },
+  {
+   "term": "TTFT / TBT",
+   "explain": "TTFT(time to first token)는 요청 후 첫 토큰까지의 시간으로 prefill 속도를, TBT(time between tokens)는 생성 토큰 사이 간격으로 decode 속도를 본다. 서빙 SLA 의 두 축.",
+   "at": 600
+  },
+  {
+   "term": "prefill",
+   "explain": "프롬프트 전체를 한 번의 forward 로 처리해 KV 캐시를 채우고 첫 토큰 로짓을 얻는 단계. 많은 토큰이 같은 가중치를 재사용하므로 계산 한계 작업이다.",
+   "at": 840
+  },
+  {
+   "term": "decode",
+   "explain": "토큰을 하나씩 생성하는 반복 단계. 매 걸음 가중치 전체를 메모리에서 읽지만 연산은 적어 메모리 대역폭 한계 작업이다.",
+   "at": 870
+  },
+  {
+   "term": "산술 강도(arithmetic intensity)",
+   "explain": "메모리에서 옮긴 1바이트당 연산 수. GPU 의 최대 FLOP/s ÷ 최대 대역폭(능선)보다 작으면 대역폭 한계, 크면 계산 한계. 배치 1 decode 는 약 1 이다(노트 보충: 루프라인 모델).",
+   "at": 900
+  },
+  {
+   "term": "continuous batching",
+   "explain": "생성 걸음마다 끝난 요청의 자리를 비우고 새 요청을 끼워 넣는 배칭. 배치 전체가 끝나기를 기다리던 정적 배칭의 빈자리를 없앤다.",
+   "at": 990
+  },
+  {
+   "term": "chunked prefill",
+   "explain": "긴 프롬프트의 prefill 을 조각내 decode 걸음 사이사이에 끼워 넣는 기법. 한 요청의 큰 prefill 이 다른 요청의 TBT 를 망치지 않게 한다.",
+   "at": 1000
+  },
+  {
+   "term": "KV 캐시 / radix tree 프리픽스 공유",
+   "explain": "과거 토큰의 어텐션 Key·Value 를 저장해 재계산을 피하는 것이 KV 캐시이고, 같은 앞부분을 가진 요청끼리 블록 해시 트리(radix tree)로 찾아 재사용하는 것이 프리픽스 공유다.",
+   "at": 1080
+  },
+  {
+   "term": "텐서 병렬(TP) / 전문가 병렬(EP)",
+   "explain": "TP 는 모든 가중치 행렬을 GPU 들에 잘라 두고 층마다 allreduce 로 합친다. EP 는 MoE 의 전문가를 GPU 마다 통째로 맡기고 토큰을 all-to-all 로 보낸다.",
+   "at": 1150
+  },
+  {
+   "term": "prefill/decode 분리(disaggregation)",
+   "explain": "성질이 다른 두 단계를 서로 다른 기계 묶음에서 돌리고 KV 를 RDMA 로 넘기는 구조. 단계마다 다른 병렬화·하드웨어를 쓸 수 있다.",
+   "at": 1200
+  },
+  {
+   "term": "KV 캐시 오프로드·프리페치",
+   "explain": "GPU HBM 이 모자라면 덜 쓰는 KV 를 CPU 메모리·NVMe 로 LRU 순으로 내리고, 곧 쓰일 것을 미리 올린다. 목표는 요청 실행 시점에 KV 가 GPU 에 있는 것.",
+   "at": 1530
+  },
+  {
+   "term": "NVL72",
+   "explain": "NVIDIA Blackwell 세대의 GPU 72장을 고속 NVLink 로 묶은 랙. 거대 모델을 한 덩어리로 펼칠 수 있지만 장애 허용이 새 과제가 된다.",
+   "at": 1800
+  },
+  {
+   "term": "CPD(캐시를 아는 prefill/decode 분리)",
+   "explain": "캐시 적중률이 낮은 차가운 요청과 높은 따뜻한 요청을 다른 prefill 노드로 보내는 라우팅. 장기 문맥 서빙에서 최대 40% 향상.",
+   "at": 1890
+  },
+  {
+   "term": "SM(streaming multiprocessor)",
+   "explain": "GPU 안의 독립된 프로세서 단위. H100 132개, B200 148개. 커널 프로파일은 SM 별로 일한 시간과 기다린 시간을 보여 준다.",
+   "at": 2165
+  },
+  {
+   "term": "tail effect(스트래글러)",
+   "explain": "작업이 고르지 않아 가장 늦게 끝나는 SM 을 나머지가 기다리며 노는 현상. 커널 경계마다 반복된다.",
+   "at": 2220
+  },
+  {
+   "term": "메가커널(megakernel)",
+   "explain": "여러 연산, 극단적으로는 모델 forward 전체를 한 GPU 커널로 묶어 커널 경계의 런치·메모리 왕복·대기를 없애고 다음 연산의 읽기를 앞당겨 겹치는 기법.",
+   "at": 2250
+  },
+  {
+   "term": "ThunderKittens",
+   "explain": "Stanford Hazy Research 의 GPU 커널 작성 라이브러리. 레지스터·공유 메모리 타일 단위의 추상화로 Triton 보다 낮은 수준의 세밀한 제어를 준다.",
+   "at": 2425
+  },
+  {
+   "term": "빛의 속도(speed of light)",
+   "explain": "소프트웨어 비용을 모두 지운 하드웨어의 물리 한계. decode 에서는 가중치(와 KV)를 한 번 다 읽는 시간이며, 대역폭 활용률로 얼마나 가까운지 잰다.",
+   "at": 2470
+  },
+  {
+   "term": "루프 트랜스포머(looped transformer)",
+   "explain": "블록 묶음을 같은 가중치로 여러 번 반복 통과시키는 구조. 파라미터를 고정한 채 연산(유효 깊이)을 늘린다.",
+   "at": 2550
+  },
+  {
+   "term": "스펙트럴 반경 ρ(Ā)",
+   "explain": "행렬 고윳값 절댓값의 최댓값. 반복 상태 h_{t+1}=Āh_t+B̄e 에서 ρ>1 이면 폭주, ρ=1 경계 안정, ρ<1 안정. Parcae 는 이를 구조적으로 1 미만으로 묶는다.",
+   "at": 3000
+  },
+  {
+   "term": "IsoFLOP 스케일링 법칙",
+   "explain": "총 연산이 같은 실험들 중 최적 배분을 찾고, 예산이 커질 때 그 최적점이 어떻게 움직이는지 거듭제곱 법칙으로 맞추는 방법. Parcae 는 최적 반복 수 ∝ C^0.4 를 얻었다.",
+   "at": 3300
+  }
+ ],
+ "trends": [
+  {
+   "claim": "prefill/decode 분리가 업계 표준이 됐고, 하드웨어도 단계별로 갈라진다",
+   "evidence": "강사는 거의 모두가 두 단계를 다른 워커에서 돌린다고 말하고, 강사 설명에 따르면 NVIDIA 는 차세대에서 prefill 은 GPU, decode 는 Groq LPU 로 나눌 계획이며 OpenAI 는 decode 에 강한 Cerebras 와 제휴했다. SambaNova 등도 이 틈을 노린다.",
+   "at": 1200
+  },
+  {
+   "claim": "KV 캐시 수요가 CPU·DRAM·SSD 시장까지 끌어올린다",
+   "evidence": "KV 를 CPU 메모리·NVMe 로 내리면서 저렴한 CPU 가 비싼 GPU 서버의 병목이 되고, NVIDIA 가 CPU 성능을 강조하기 시작했다는 설명. OpenAI 가 DRAM·SSD 를 대량 확보한다는 소문의 배경도 이것이라고 본다(강사 의견).",
+   "at": 1560
+  },
+  {
+   "claim": "서빙 규모에서는 희귀 버그가 일상이고, 관측성이 테스트를 대신한다",
+   "evidence": "최근 오픈소스 엔진들의 NaN 반복 출력, 도구 호출 루프, KV off-by-one 으로 인한 중국어 출력 사례. 슬라이드 결론 '운영 관측성이 단위 테스트가 놓친 것을 잡는다'.",
+   "at": 1320
+  },
+  {
+   "claim": "추론 시스템 연구는 아주 초기다 — 운영 트래픽을 보면 단순한 최적화로도 큰 이득이 난다 (강사 의견)",
+   "evidence": "라우터 두 줄짜리 CPD 로 35~40% 향상. 10~20년 뒤엔 당연해 보일 것들을 지금 발견하는 중이라고 평가.",
+   "at": 2010
+  },
+  {
+   "claim": "작은 배치 decode 는 메가커널처럼 커널 경계를 없애는 방향으로 간다",
+   "evidence": "Llama-1B 배치 1 에서 H100 대역폭 72%, vLLM·SGLang 대비 큰 향상. DeepSeek 도 MoE 층용 메가커널(통신 융합)을 공개했다는 설명. 다만 모델 전체보다는 '부분용 작은 메가커널'이 늘 것이라 전망(강사 의견).",
+   "at": 2470
+  },
+  {
+   "claim": "연산을 늘리는 새 축으로서 루프(반복) 구조가 다시 주목받는다",
+   "evidence": "Maryland 의 recurrent depth 결과, 루프 모델 표현력 이론, Parcae 의 안정화와 '데이터가 늘면 반복도 늘려라' 스케일링 법칙. 강사는 대형 사전학습도 루프를 써야 할지 모른다고 말하지만 실험은 1.3B 이하(강사 의견).",
+   "at": 3540
+  },
+  {
+   "claim": "모델 설계가 서빙 하드웨어를 따라간다(공동 설계)",
+   "evidence": "서빙 칩 메모리에 맞춘 모델 크기, NVIDIA 용 NVFP4·AMD 용 MXFP4 양자화 형식, 중국 모델들의 화웨이 칩 고려 흔적, 에이전트 워크로드용 KV 압축(MLA·FP8 KV).",
+   "at": 3900
+  }
+ ],
+ "study": {
+  "prereq": [
+   "트랜스포머 forward 구조(어텐션, MLP, RMSNorm, RoPE)와 자기회귀 생성",
+   "PyTorch 텐서 연산과 GPU 의 기본(HBM, SM, 커널)",
+   "행렬의 고윳값과 거듭제곱(스펙트럴 반경 장 이해용)",
+   "로그-로그 그래프와 거듭제곱 법칙(스케일링 법칙 장)"
+  ],
+  "steps": [
+   {
+    "do": "H100·A100 사양표로 능선(FLOP/s ÷ 바이트/s)을 계산하고, 자주 쓰는 모델의 prefill·decode 산술 강도를 손으로 구한다",
+    "why": "강연의 모든 최적화가 '계산 한계냐 대역폭 한계냐'에서 출발한다. 이 감각 없이는 메가커널·분리·배칭의 이유가 보이지 않는다."
+   },
+   {
+    "do": "vLLM 이나 SGLang 을 설치해 작은 모델(1B 급)을 서빙하고, 동시 요청 수·입력 길이를 바꿔 TTFT·TBT·처리량을 측정한다",
+    "why": "continuous batching, 프리픽스 캐시, chunked prefill 의 효과를 숫자로 확인할 수 있다."
+   },
+   {
+    "do": "PagedAttention(vLLM)·RadixAttention(SGLang)·DistServe 논문을 읽고 KV 캐시 관리와 분리 구조를 정리한다",
+    "why": "강연의 '토큰의 일생' 부품들이 각각 어떤 논문에서 나왔는지 알면 지도가 단단해진다."
+   },
+   {
+    "do": "FlashAttention 논문으로 커널 융합과 메모리 계층(HBM↔SRAM)을 익히고, Triton 으로 융합 커널(예: RMSNorm+행렬곱 앞뒤 원소별 연산)을 하나 짠다",
+    "why": "메가커널은 FlashAttention 의 융합을 극단까지 밀어붙인 것이다. 작은 융합부터 직접 해 봐야 경계 비용이 손에 잡힌다."
+   },
+   {
+    "do": "Nsight Systems 나 PyTorch profiler 로 배치 1 decode 의 커널 타임라인을 찍어 커널 수·빈 시간을 센다",
+    "why": "강연의 SM 프로파일 그림을 자기 손으로 재현하면 '대역폭 활용률 몇 %'를 스스로 계산할 수 있다."
+   },
+   {
+    "do": "ThunderKittens 저장소의 예제를 읽고, 타일·워커 추상화가 CUDA·Triton 과 어떻게 다른지 비교한다",
+    "why": "더 낮은 수준의 제어가 무엇을 가능하게 하는지(로드와 계산의 겹치기) 이해한다."
+   },
+   {
+    "do": "작은 루프 트랜스포머를 PyTorch 로 만들어 Ā 를 덧셈·자유 행렬·Parcae 매개화로 바꿔 학습률 스윕을 돌려 본다",
+    "why": "스펙트럴 반경과 손실 급등의 관계를 직접 확인한다."
+   }
+  ],
+  "practice": [
+   "Llama-3-8B 를 H100 1장에 BF16 으로 올렸을 때, 1만 토큰 세션을 동시에 몇 개 들 수 있는지 KV 크기 식으로 계산하라. FP8 KV 면?",
+   "배치 1·8·64·256 에서 decode 산술 강도와 토큰당 시간을 루프라인 계산기로 구하고, 처리량이 거의 공짜로 늘어나는 구간을 찾아라.",
+   "radix tree 프리픽스 캐시를 파이썬으로 구현하고, 시스템 프롬프트 공유·다중 턴 대화 트래픽을 만들어 적중률을 재라.",
+   "KV 캐시 3계층(LRU) 시뮬레이터를 만들고, '턴 사이 시간' 분포를 바꿔 가며 GPU 적중률이 어떻게 변하는지 그래프로 그려라.",
+   "선형 루프 h ← Āh + B̄e 를 스칼라 Ā = 0.5, 0.9, 1.0, 1.1 로 100번 돌려 |h| 를 그리고, 닫힌 해와 비교하라."
+  ],
+  "resources": [
+   {
+    "title": "CS336 과목 홈페이지",
+    "url": "https://cs336.stanford.edu/"
+   },
+   {
+    "title": "Dan Fu 홈페이지(논문 목록)",
+    "url": "https://www.danfu.org/"
+   },
+   {
+    "title": "ThunderKittens (GitHub)",
+    "url": "https://github.com/HazyResearch/ThunderKittens"
+   },
+   {
+    "title": "FlashAttention 논문 (Dao et al., 2022)",
+    "url": "https://arxiv.org/abs/2205.14135"
+   },
+   {
+    "title": "vLLM / PagedAttention 논문 (Kwon et al., 2023)",
+    "url": "https://arxiv.org/abs/2309.06180"
+   },
+   {
+    "title": "SGLang / RadixAttention 논문 (Zheng et al., 2023)",
+    "url": "https://arxiv.org/abs/2312.07104"
+   },
+   {
+    "title": "DistServe — prefill/decode 분리 (Zhong et al., 2024)",
+    "url": "https://arxiv.org/abs/2401.09670"
+   },
+   {
+    "title": "Triton 공식 문서",
+    "url": "https://triton-lang.org/"
+   },
+   {
+    "title": "CUDA C++ Programming Guide",
+    "url": "https://docs.nvidia.com/cuda/cuda-c-programming-guide/"
+   }
+  ]
+ },
+ "jobs": {
+  "roles": [
+   "LLM 추론 최적화 엔지니어(Inference Engineer)",
+   "ML 시스템 / 서빙 플랫폼 엔지니어",
+   "GPU 커널 엔지니어(CUDA·Triton)",
+   "AI 인프라 / GPU 클라우드 엔지니어",
+   "NPU·AI 가속기 소프트웨어 엔지니어",
+   "LLM 사전학습·모델 구조 연구원"
+  ],
+  "skills": [
+   "CUDA",
+   "Triton",
+   "PyTorch",
+   "Python",
+   "C++",
+   "vLLM",
+   "SGLang",
+   "TensorRT",
+   "NCCL",
+   "Kubernetes",
+   "Distributed Systems",
+   "Profiling"
+  ]
+ },
+ "related": [
+  "JuoVZkPBiKk",
+  "9vM4p9NN0Ts",
+  "pwQ0l4hFCVI",
+  "NDdc39KYqDU"
+ ],
+ "materials": {
+  "transcript": "official",
+  "frames": 143,
+  "every_sec": 30
+ },
+ "written_at": "2026-11-20"
+}
