@@ -31,6 +31,33 @@ const FIELD_KO: Record<string, string> = {
 // 세지 않는다. 이걸 같이 세면 모든 재공고가 똑같이 2건 변경으로 보인다.
 const TRIVIAL = new Set(['url', 'deadline', 'dday', 'site'])
 
+// 이유 코드의 짧은 이름 — 머리 줄의 '다시 올린 이유' 집계에 쓴다(build_reposts.explain).
+const REASON_KO: Record<string, string> = {
+  career_down: '경력 문턱 낮춤',
+  career_up: '경력 문턱 올림',
+  career_changed: '경력 조건 변경',
+  stack_added: '기술 요구 늘림',
+  stack_removed: '기술 요구 줄임',
+  stack_changed: '기술 요구 변경',
+  qualifications_shrunk: '자격요건 줄임',
+  qualifications_grown: '자격요건 늘림',
+  qualifications_edited: '자격요건 수정',
+  main_tasks_shrunk: '업무 범위 줄임',
+  main_tasks_grown: '업무 범위 넓힘',
+  main_tasks_edited: '업무 설명 수정',
+  preferences_shrunk: '우대사항 줄임',
+  preferences_grown: '우대사항 늘림',
+  preferences_edited: '우대사항 수정',
+  benefits_shrunk: '복지 설명 줄임',
+  benefits_grown: '복지 내세움',
+  benefits_edited: '복지 설명 수정',
+  location: '근무지 변경',
+  site_moved: '사이트 옮김',
+  same_quick: '기간 연장',
+  same_later: '같은 조건 재모집',
+  repeat: '반복 모집',
+}
+
 export function RepostView() {
   const { data, loading, error } = useReposts()
   const [picked, setPicked] = useState<number>(0)
@@ -60,6 +87,7 @@ export function RepostView() {
           r.title,
           r.site,
           ...meaningful.map((c) => FIELD_KO[c.field] ?? c.field),
+          ...(r.reasons ?? []).map((x) => REASON_KO[x.code] ?? x.label),
         ),
       ),
     [rows, query],
@@ -94,13 +122,26 @@ export function RepostView() {
   return (
     <Shell data={data}>
       <div className="rounded-[30px] border border-[#e2e8ec] overflow-hidden">
-      <div className="px-[29px] py-4 border-b border-[#e2e8ec] text-[13px] text-[#777]">
-        자주 바뀌는 항목{' '}
-        {data.summary.changed_fields
-          .filter(([f]) => !TRIVIAL.has(f))
-          .slice(0, 4)
-          .map(([f, n]) => `${FIELD_KO[f] ?? f} ${n}`)
-          .join(' · ') || '없음'}
+      <div className="px-[29px] py-4 border-b border-[#e2e8ec] text-[13px] text-[#777] flex flex-col gap-1">
+        {(data.summary.top_reasons?.length ?? 0) > 0 && (
+          <div>
+            다시 올린 이유{' '}
+            <b className="font-medium text-[#272727]">
+              {data.summary
+                .top_reasons!.slice(0, 5)
+                .map(([c, n]) => `${REASON_KO[c] ?? c} ${n}`)
+                .join(' · ')}
+            </b>
+          </div>
+        )}
+        <div>
+          자주 바뀌는 항목{' '}
+          {data.summary.changed_fields
+            .filter(([f]) => !TRIVIAL.has(f))
+            .slice(0, 4)
+            .map(([f, n]) => `${FIELD_KO[f] ?? f} ${n}`)
+            .join(' · ') || '없음'}
+        </div>
       </div>
       <div className="flex flex-col md:flex-row md:h-[640px]">
         <aside className="w-full md:w-80 shrink-0 md:overflow-auto border-b md:border-b-0 md:border-r border-(--color-border) bg-(--color-panel) p-2">
@@ -129,12 +170,17 @@ export function RepostView() {
                   <div className="flex items-baseline gap-2">
                     <span className="text-xs text-(--color-accent) truncate">{r.company || r.site}</span>
                     <span className="ml-auto text-[10px] text-(--color-muted) shrink-0">
-                      {r.rounds}판
+                      {r.rounds}번째 모집
                     </span>
                   </div>
                   <div className="text-xs text-(--color-text) line-clamp-2">{r.title}</div>
-                  <div className="mt-0.5 text-[10px] text-(--color-muted)">
-                    변경 {meaningful.length}곳
+                  <div className="mt-0.5 text-[10px] text-(--color-muted) truncate">
+                    {r.reasons?.[0] ? (
+                      <span className="text-(--color-accent)">
+                        {REASON_KO[r.reasons[0].code] ?? r.reasons[0].label}
+                      </span>
+                    ) : null}
+                    {r.reasons?.[0] ? ' · ' : ''}변경 {meaningful.length}곳
                   </div>
                 </button>
               </li>
@@ -171,8 +217,42 @@ export function RepostView() {
             <span className="px-2 py-1 rounded border border-(--color-accent)/40 bg-(--color-accent)/10 text-(--color-accent)">
               재공고 {cur.r.now_deadline || '표기 없음'}
             </span>
-            <span className="text-(--color-muted)">· 기록된 판 {cur.r.rounds}개</span>
+            <span className="text-(--color-muted)">
+              · {cur.r.rounds}번째 모집
+              {cur.r.gap_days != null && ` · ${cur.r.gap_days}일 만에 다시`}
+            </span>
+            {cur.r.prev_url && cur.r.prev_url !== cur.r.url && (
+              <a
+                href={cur.r.prev_url}
+                target="_blank"
+                rel="noreferrer"
+                className="text-(--color-muted) hover:text-(--color-text) underline"
+              >
+                이전 공고 ↗
+              </a>
+            )}
           </div>
+
+          {(cur.r.reasons?.length ?? 0) > 0 && (
+            <section className="mt-5 rounded-[18px] border border-[#ffd5d5] bg-(--color-accent-weak) px-4 py-3.5">
+              <h3 className="text-sm font-semibold text-(--color-text)">
+                왜 다시 올렸나 <span className="ml-1 text-[11px] font-normal text-(--color-muted)">추정</span>
+              </h3>
+              <ul className="mt-2 flex flex-col gap-2">
+                {cur.r.reasons!.map((x) => (
+                  <li key={x.code}>
+                    <div className="text-[13px] font-medium text-(--color-text)">{x.label}</div>
+                    <p className="text-xs text-[#666]">{x.why}</p>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-2.5 text-[11px] text-(--color-muted)">
+                회사가 밝힌 이유가 아니라, 이전 공고와 비교해 바뀐 내용으로 읽은 것이에요.
+                {cur.r.basis === 'history' &&
+                  ' 이전 공고의 본문이 남아 있지 않아 길이 변화만 비교했어요.'}
+              </p>
+            </section>
+          )}
 
           <h3 className="mt-5 text-sm font-semibold text-(--color-text)">변경 로그</h3>
           <p className="text-xs text-(--color-muted) mb-2">
@@ -245,9 +325,9 @@ function Shell({ data, children }: { data: RepostData; children: ReactNode }) {
         </h2>
         <ol className="mt-5 grid sm:grid-cols-3 gap-4">
           {[
-            ['같은 공고 찾기', '회사·직무·근무지가 같은 공고를 이전 기록과 묶어요.'],
+            ['같은 공고 찾기', '회사와 공고 제목이 같은 공고를 이전 기록과 묶어요.'],
             ['닫힘 → 열림 확인', '마감·삭제됐던 공고가 다시 올라왔는지 확인해요.'],
-            ['바뀐 조건 비교', '경력·연봉·기술스택이 낮아졌는지 높아졌는지 함께 보여줘요.'],
+            ['왜 다시 올렸나', '경력·기술스택·자격요건이 어떻게 바뀌었는지 비교해, 다시 올린 이유를 읽어 드려요.'],
           ].map(([t, d], i) => (
             <li key={t} className="min-h-[169px] rounded-[22px] bg-[#f7f9fa] px-7 pt-[30px] pb-6">
               <div className="text-[15px] font-bold text-(--color-accent) tabular-nums">{String(i + 1).padStart(2, '0')}</div>
@@ -293,7 +373,7 @@ function EmptyCard({ tracked }: { tracked: number }) {
       </span>
       <h2 className="mt-[22px] text-2xl font-bold leading-9 tracking-[-0.4px] text-[#272727]">아직 재공고로 판정된 공고가 없어요</h2>
       <p className="mt-[9px] max-w-[560px] text-base leading-[25px] tracking-[-0.16px] text-[#666]">
-        공고 {tracked.toLocaleString()}건의 변경 이력을 매일 비교하고 있어요. 같은 회사·같은 직무가 다시 올라오면 여기에 바로 보여 드릴게요.
+        공고 {tracked.toLocaleString()}건의 변경 이력을 매일 비교하고 있어요. 같은 회사·같은 직무가 다시 올라오면 여기에 바로 보여 드릴게요 — 경력 문턱을 낮췄는지, 기술 요구를 바꿨는지, 같은 조건 그대로인지로 왜 다시 올렸는지도 함께 읽어 드려요.
       </p>
       <div className="mt-[29px] flex flex-wrap justify-center gap-2.5">
         <a
@@ -358,8 +438,17 @@ function ChangeRow({ c }: { c: RepostChange }) {
           <span className="tabular-nums">
             {c.from_len}자 → {c.to_len}자
           </span>
-          {c.to_excerpt && (
-            <p className="mt-1 text-(--color-text) line-clamp-3">{c.to_excerpt}</p>
+          {(c.added_lines?.length || c.removed_lines?.length) ? (
+            <ul className="mt-1 flex flex-col gap-0.5">
+              {c.added_lines?.map((t) => (
+                <li key={`a-${t}`} className="text-(--color-accent) break-all">+ {t}</li>
+              ))}
+              {c.removed_lines?.map((t) => (
+                <li key={`r-${t}`} className="text-(--color-muted) line-through break-all">− {t}</li>
+              ))}
+            </ul>
+          ) : (
+            c.to_excerpt && <p className="mt-1 text-(--color-text) line-clamp-3">{c.to_excerpt}</p>
           )}
         </div>
       )}

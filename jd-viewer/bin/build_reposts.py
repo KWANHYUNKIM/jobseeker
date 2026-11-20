@@ -92,12 +92,239 @@ def diff(old: dict, new: dict, live: dict | None = None) -> list[dict]:
         # 실제로 텍스트 변경 121건 중 81건(66%)이 이 경우였다 — 그대로 세면
         # "재공고하면서 자격요건을 통째로 지웠다"는 잘못된 트렌드가 만들어진다.
         missing = (alen == 0) != (blen == 0)
-        changes.append({
+        ch = {
             "field": f, "kind": "text", "missing": missing,
             "from_len": alen, "to_len": blen,
             "to_excerpt": (live.get(f) or "")[:180] if live else "",
-        })
+        }
+        # 옛 판의 전문이 있을 때(아직 DB 에 남은 마감 공고와 짝지은 경우)만 줄 단위로 본다.
+        # 히스토리 판본은 (길이, 해시)만 들고 있어 무엇이 빠졌는지까지는 모른다.
+        a, b = old.get(f), new.get(f)
+        if not missing and isinstance(a, str) and isinstance(b, str):
+            ch["added_lines"], ch["removed_lines"] = _lines_delta(a, b)
+        changes.append(ch)
     return changes
+
+
+def _lines(t: str) -> list[str]:
+    out = []
+    for ln in re.split(r"[\n•▪■◦]", t):
+        ln = re.sub(r"\s+", " ", ln).strip(" -*·")
+        if len(ln) >= 4:
+            out.append(ln)
+    return out
+
+
+def _lines_delta(a: str, b: str, cap: int = 4) -> tuple[list[str], list[str]]:
+    """(더해진 줄, 빠진 줄). 공백만 다른 줄은 같은 줄로 본다."""
+    la, lb = _lines(a), _lines(b)
+    ka, kb = {nk(x) for x in la}, {nk(x) for x in lb}
+    added = [x[:120] for x in lb if nk(x) not in ka][:cap]
+    removed = [x[:120] for x in la if nk(x) not in kb][:cap]
+    return added, removed
+
+
+# ── 왜 다시 올렸나 ─────────────────────────────────────────────────
+# 회사는 이유를 말해 주지 않는다. 대신 무엇을 바꿨는지가 남는다 — 바꾼 것은 사실이고,
+# 그로부터 읽는 이유는 추정이다. 화면도 둘을 갈라 보여 준다(label = 사실, why = 추정).
+# weight 는 '이유로서 얼마나 강한 신호인가' — 경력 문턱을 낮춘 것은 사람을 못 구했다는
+# 가장 직접적인 증거이고, 복지 문구를 다듬은 것은 가장 약하다.
+_YEARS = re.compile(r"(\d+)\s*년")
+
+
+def career_years(s: str | None) -> int | None:
+    """'경력3년↑' → 3, '신입'·'경력무관' → 0, 모르면 None."""
+    s = s or ""
+    if "신입" in s or "무관" in s:
+        return 0        # '신입~3년' 처럼 신입을 같이 받으면 문턱은 0 이다
+    m = _YEARS.search(s)
+    return int(m.group(1)) if m else None
+
+
+def explain(changes: list[dict], *, rounds: int = 2, gap_days: int | None = None) -> list[dict]:
+    """바뀐 것(changes)에서 '왜 다시 올렸나' 를 읽는다. 강한 이유가 앞이다."""
+    reasons: list[dict] = []
+
+    def add(code: str, label: str, why: str, weight: int) -> None:
+        reasons.append({"code": code, "label": label, "why": why, "weight": weight})
+
+    by = {c["field"]: c for c in changes if not c.get("missing")}
+
+    c = by.get("career")
+    if c and c["kind"] == "value":
+        a, b = career_years(c["from"]), career_years(c["to"])
+        span = f"{c['from'] or '표기 없음'} → {c['to'] or '표기 없음'}"
+        if a is not None and b is not None and b < a:
+            add("career_down", f"경력 요구를 낮췄어요 ({span})",
+                "처음 기준으로는 지원자가 모자랐다는 신호예요. 문턱을 낮춰 지원자 폭을 넓혔어요.", 100)
+        elif a is not None and b is not None and b > a:
+            add("career_up", f"경력 요구를 올렸어요 ({span})",
+                "지난 모집에서 맞는 사람을 못 만났거나, 더 숙련된 사람이 필요해졌어요.", 90)
+        else:
+            add("career_changed", f"경력 조건을 바꿨어요 ({span})",
+                "지원 자격의 범위를 다시 정했어요.", 60)
+
+    c = by.get("tech_stack")
+    if c:
+        plus, minus = c.get("added") or [], c.get("removed") or []
+        if plus and not minus:
+            add("stack_added", "요구 기술을 늘렸어요 (" + ", ".join("+" + t for t in plus[:4]) + ")",
+                "맡길 일이 넓어졌거나, 지난 지원자에게서 이 기술이 아쉬웠을 수 있어요.", 70)
+        elif minus and not plus:
+            add("stack_removed", "요구 기술을 줄였어요 (" + ", ".join("−" + t for t in minus[:4]) + ")",
+                "요구를 덜어 지원자 폭을 넓혔어요.", 75)
+        else:
+            add("stack_changed", "요구 기술을 바꿨어요",
+                "같은 자리지만 쓰는 기술이나 맡길 일이 달라졌어요.", 65)
+
+    def text(field: str, name: str, w: int, shrink: str, grow: str, edit: str) -> None:
+        c = by.get(field)
+        if not c or c["kind"] != "text":
+            return
+        a, b = c["from_len"], c["to_len"]
+        span = f"{a:,}자 → {b:,}자"
+        if b < a * 0.8:
+            add(f"{field}_shrunk", f"{name}을 줄였어요 ({span})", shrink, w + 10)
+        elif b > a * 1.2:
+            add(f"{field}_grown", f"{name}을 늘렸어요 ({span})", grow, w)
+        else:
+            add(f"{field}_edited", f"{name}을 고쳐 썼어요", edit, w - 20)
+
+    text("qualifications", "자격요건", 70,
+         "필수 조건을 덜어 지원 문턱을 낮췄어요.",
+         "지난 지원자들에게 부족했던 조건을 더 구체적으로 적었어요.",
+         "원하는 사람을 더 정확히 그리려고 조건을 다듬었어요.")
+    text("main_tasks", "주요업무", 60,
+         "맡길 일을 좁혔어요 — 자리의 범위가 줄었어요.",
+         "맡길 일을 넓혔어요 — 지원자가 생각한 일과 실제 일이 달랐을 수 있어요.",
+         "자리의 역할을 다시 설명했어요.")
+    text("preferences", "우대사항", 45,
+         "우대 조건을 덜어 더 많은 사람이 지원하게 했어요.",
+         "원하는 사람의 모습을 더 자세히 적었어요.",
+         "우대 조건을 다듬었어요.")
+    text("benefits", "복지", 35,
+         "복지 설명을 덜었어요.",
+         "처우·복지를 더 내세웠어요 — 조건 때문에 지원이 적었을 수 있어요.",
+         "복지 설명을 다듬었어요.")
+
+    c = by.get("location")
+    if c and c["kind"] == "value":
+        add("location", f"근무지가 바뀌었어요 ({c['from'] or '표기 없음'} → {c['to'] or '표기 없음'})",
+            "근무지 때문에 지원이 적었거나, 일할 곳 자체가 바뀌었어요.", 60)
+
+    c = by.get("site")
+    if c and c["kind"] == "value":
+        add("site_moved", f"다른 사이트에 올렸어요 ({c['from']} → {c['to']})",
+            "같은 곳에서는 사람이 안 모여 노출할 곳을 바꿨어요.", 40)
+
+    if not any(r["code"] != "site_moved" for r in reasons):
+        if gap_days is not None and gap_days <= 7:
+            add("same_quick", "마감 직후 같은 조건으로 다시 올렸어요",
+                "모집 기간 안에 뽑지 못해 기간만 이어 붙인 것으로 보여요.", 50)
+        else:
+            after = f" ({gap_days}일 만에)" if gap_days is not None else ""
+            add("same_later", f"같은 조건으로 다시 올렸어요{after}",
+                "그때 뽑지 못했거나, 뽑은 사람이 나가 자리가 다시 비었어요.", 50)
+
+    if rounds >= 3:
+        add("repeat", f"{rounds}번째 모집이에요",
+            "여러 번 올려도 못 채우는 자리예요 — 조건이나 처우에 걸리는 게 있을 수 있어요.", 85)
+
+    reasons.sort(key=lambda r: -r["weight"])
+    return reasons
+
+
+def _day(s) -> datetime | None:
+    try:
+        return datetime.strptime(str(s or "")[:10], "%Y-%m-%d")
+    except ValueError:
+        return None
+
+
+def _gap(old_end, new_start) -> int | None:
+    a, b = _day(old_end), _day(new_start)
+    return max(0, (b - a).days) if a and b else None
+
+
+def _start(j: dict) -> str:
+    """공고가 올라온 날 — 원본 등록일이 있으면 그것, 없으면 우리가 처음 본 날."""
+    return str(j.get("posted_date") or j.get("first_seen_at") or "")[:10]
+
+
+def fetch_hidden_closed() -> list[dict]:
+    """`job_dup` 가 사본으로 숨긴 **마감** 공고.
+
+    job_dup 는 (회사, 제목)으로 묶어 모집중 한 건만 대표로 남긴다 — 재공고 판정 키와 같은
+    키다. 그래서 새 공고가 올라오는 순간 옛 마감 공고는 사본이 되어 `load_jobs()` 에서
+    빠지고, 이 빌더는 '마감 → 다시 열림' 의 앞쪽을 못 봤다(마감과 재공고 사이에 회차가
+    한 번이라도 돌아 마감 판이 먼저 기록된 경우만 잡혔다). 여기서 따로 읽어 짝을 짓는다.
+    """
+    try:
+        from store.db import conn as store_conn
+        from store.jobs.export import JOB_SELECT, row_to_job
+        with store_conn.cursor(autocommit=True) as cur:
+            cur.execute(JOB_SELECT + """
+                  FROM v_job v
+                 WHERE v.status = 'closed'
+                   AND EXISTS (SELECT 1 FROM job_dup d WHERE d.job_id = v.id)
+            """)
+            return [row_to_job(r, i) for i, r in enumerate(cur.fetchall(), start=1)]
+    except Exception as e:                                          # noqa: BLE001
+        print(f"  [reposts] 숨겨진 마감 사본을 못 읽었습니다 — 히스토리로만 봅니다: {e}")
+        return []
+
+
+def _rounds(starts: list[str], upto: str) -> int:
+    """upto 까지 몇 번 모집했나. 사흘 안에 올라온 것은 같은 모집(사이트만 다른 사본)으로 본다."""
+    days = sorted({d for d in (_day(s) for s in starts if s and s <= upto) if d})
+    n, last = 0, None
+    for d in days:
+        if last is None or (d - last).days > 3:
+            n += 1
+        last = d
+    return max(n, 2)
+
+
+def pair_reposts(postings: list[dict]) -> dict[tuple[str, str], dict]:
+    """같은 자리의 옛 마감 공고와 새 모집중 공고를 직접 짝짓는다. 둘 다 전문이 있다."""
+    groups: dict[tuple[str, str], list[dict]] = {}
+    for j in postings:
+        groups.setdefault(key_of(j), []).append(j)
+    out: dict[tuple[str, str], dict] = {}
+    for k, js in groups.items():
+        live = [j for j in js if (j.get("status") or "active") == "active"]
+        closed = [j for j in js if j.get("status") == "closed"]
+        if not live or not closed:
+            continue
+        new = max(live, key=_start)
+        ns = _start(new)
+        # 새 공고보다 **먼저** 올라온 마감 공고만 '이전 모집' 이다. 같은 날 올라온 것은
+        # 사이트만 다른 사본이 먼저 닫힌 것이지 재공고가 아니다.
+        older = [j for j in closed if _start(j) and ns and _start(j) < ns]
+        if not older:
+            continue
+        old = max(older, key=_start)
+        changes = diff(old, new, new)
+        gap = _gap(old.get("deadline_date") or _start(old), ns)
+        rounds = _rounds([_start(j) for j in js], ns)
+        out[k] = {
+            "company": new.get("company") or old.get("company") or "",
+            "title": new.get("title") or "",
+            "url": new.get("url") or "",
+            "prev_url": old.get("url") or "",
+            "site": new.get("site") or "",
+            "rounds": rounds,
+            "prev_deadline": old.get("deadline") or old.get("deadline_date") or "",
+            "now_deadline": new.get("deadline") or new.get("deadline_date") or "",
+            "prev_seen": _start(old),
+            "now_seen": ns,
+            "gap_days": gap,
+            "changes": changes,
+            "reasons": explain(changes, rounds=rounds, gap_days=gap),
+            "tech_stack": new.get("tech_stack") or [],
+            "basis": "pair",
+        }
+    return out
 
 
 def load_history() -> tuple[dict[str, list[dict]], bool]:
@@ -251,11 +478,17 @@ def main() -> None:
     for j in jobs:
         by_key_now.setdefault(key_of(j), []).append(j)
 
-    reposts = []
+    # 1) 아직 DB 에 남은 옛 마감 공고와 짝지은 것 — 두 판의 전문이 다 있다
+    paired = pair_reposts(list(jobs) + fetch_hidden_closed())
+    reposts = list(paired.values())
+
+    # 2) 옛 공고가 DB 에서도 사라진 자리는 히스토리 판본(길이·해시)으로 본다
     for ks, versions in hist.items():
         if len(versions) < 2:
             continue
         comp, title = ks.split("\t", 1)
+        if (comp, title) in paired:
+            continue
         live = [v for v in versions if v["data"].get("status") == "active"]
         closed = [v for v in versions if v["data"].get("status") == "closed"]
         if not live or not closed:
@@ -270,37 +503,51 @@ def main() -> None:
         if not changes:
             continue
         cur = cur_live or {}
+        # 판 수는 '몇 번째 모집' 이 아니다 — D-day 표기만 바뀌어도 판이 하나 쌓인다.
+        # 마감 → 모집중으로 넘어간 횟수를 센다.
+        st = [v["data"].get("status") for v in versions]
+        rounds = max(2, 1 + sum(1 for a, b in zip(st, st[1:]) if a == "closed" and b == "active"))
+        gap = _gap(prev_closed.get("seen"), latest.get("seen"))
         reposts.append({
             "company": cur.get("company") or prev_closed["data"].get("site") or "",
             "title": cur.get("title") or latest["data"].get("title") or "",
             "url": latest["data"].get("url") or "",
+            "prev_url": prev_closed["data"].get("url") or "",
             "site": latest["data"].get("site") or "",
-            "rounds": len(versions),
+            "rounds": rounds,
             "prev_deadline": prev_closed["data"].get("deadline") or "",
             "now_deadline": latest["data"].get("deadline") or "",
             "prev_seen": prev_closed.get("seen") or "",
             "now_seen": latest.get("seen") or "",
+            "gap_days": gap,
             "changes": changes,
+            "reasons": explain(changes, rounds=rounds, gap_days=gap),
             "tech_stack": latest["data"].get("tech_stack") or [],
+            "basis": "history",
         })
 
-    # 변화가 많은 순 — 읽을 가치가 큰 순서다
-    reposts.sort(key=lambda r: (-sum(1 for c in r["changes"] if not c.get("missing")),
+    # 이유가 강한 순 → 변화가 많은 순 — 읽을 가치가 큰 순서다
+    reposts.sort(key=lambda r: (-(r["reasons"][0]["weight"] if r["reasons"] else 0),
+                                -sum(1 for c in r["changes"] if not c.get("missing")),
                                 -r["rounds"]))
 
-    # 집계: 무엇이 자주 바뀌는가 (트렌드 분석의 재료)
+    # 집계: 무엇이 자주 바뀌는가 (트렌드 분석의 재료), 자리마다 가장 강한 이유는 무엇인가
+    reason_counts: dict[str, int] = {}
+    for r in reposts:
+        if r["reasons"]:
+            top = r["reasons"][0]
+            reason_counts[top["code"]] = reason_counts.get(top["code"], 0) + 1
     field_counts: dict[str, int] = {}
     career_moves = {"낮춤": 0, "높임": 0, "동일": 0}
-    YEARS = re.compile(r"(\d+)\s*년")
     for r in reposts:
         for c in r["changes"]:
             if c.get("missing"):
                 continue        # 비교 불가는 '바뀐 항목'으로 세지 않는다
             field_counts[c["field"]] = field_counts.get(c["field"], 0) + 1
             if c["field"] == "career" and c["kind"] == "value":
-                fa, fb = YEARS.search(c["from"] or ""), YEARS.search(c["to"] or "")
-                if fa and fb:
-                    a, b = int(fa.group(1)), int(fb.group(1))
+                # '신입' 도 0년으로 센다 — explain() 과 같은 규칙이어야 칸의 숫자와 이유가 맞는다
+                a, b = career_years(c["from"]), career_years(c["to"])
+                if a is not None and b is not None:
                     career_moves["낮춤" if b < a else "높임" if b > a else "동일"] += 1
 
     doc = {
@@ -312,6 +559,8 @@ def main() -> None:
             "count": len(reposts),
             "changed_fields": sorted(field_counts.items(), key=lambda kv: -kv[1]),
             "career_moves": career_moves,
+            # 자리마다 가장 강한 이유 하나씩 센 것 — 화면 머리의 '왜 다시 올렸나' 줄
+            "top_reasons": sorted(reason_counts.items(), key=lambda kv: -kv[1]),
         },
     }
     OUT.write_text(json.dumps(doc, ensure_ascii=False), encoding="utf-8")
