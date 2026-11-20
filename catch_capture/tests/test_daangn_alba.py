@@ -199,3 +199,28 @@ def test_plan_recheck_order():
     assert order == ["gone00000001", "chg000000001", "old000000001"]
     # 사이트맵이 깨져 보이면 '사라짐' 으로 묻지 않는다.
     assert "gone00000001" not in da.plan_recheck(posts, entries, seen, sitemap_ok=False, skip=set())
+
+
+# ── 회차 사이 재확인(launchd albacheck) ───────────────────────────────
+
+def test_run_skips_when_another_holds_the_lock(tmp_path, monkeypatch):
+    """회차 안과 회차 사이가 겹치면 뒤에 온 쪽이 건너뛴다 — alba.json 을 덮어 마감 판정을 지우지 않게."""
+    lock = tmp_path / "alba.lock"
+    monkeypatch.setattr(da, "LOCK_PATH", lock)
+    monkeypatch.setattr(da, "_run", lambda *a, **k: pytest.fail("잠금을 못 잡았는데 돌았다"))
+    with open(lock, "a+") as fh:
+        assert da._try_lock(fh)
+        res = da.run()
+    assert res["skipped"] is True and res["ok"] is True
+
+
+def test_check_fetches_no_new_posts(tmp_path, monkeypatch):
+    """--check 는 새 공고를 받지 않고(new_limit=0) 재확인만 한다."""
+    seen = {}
+    monkeypatch.setattr(da, "LOCK_PATH", tmp_path / "alba.lock")
+    monkeypatch.setattr(da, "_run", lambda new_limit, recheck_limit: seen.update(new=new_limit, re=recheck_limit)
+                        or {"ok": True, "total": 1, "open": 1, "new": 0, "closed_now": 0})
+    import store.ingest.docs as docs
+    monkeypatch.setattr(docs, "sync", lambda *a, **k: {})
+    da.check(42)
+    assert seen == {"new": 0, "re": 42}

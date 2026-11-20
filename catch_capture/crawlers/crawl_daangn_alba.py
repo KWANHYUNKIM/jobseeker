@@ -63,6 +63,10 @@ BASE = "https://jobs.daangn.com"
 SITEMAP_INDEX = f"{BASE}/sitemap.xml"
 OUT_PATH = VIEWER_PUBLIC / "alba.json"
 STATE_PATH = VAR_DIR / "alba" / "state.json"
+# 회차 안(crawl_all)과 회차 사이(launchd com.jobseeker.albacheck) 두 곳에서 돈다. 둘 다 alba.json 을
+# 통째로 읽고 쓰므로 겹치면 늦게 끝난 쪽이 먼저 끝난 쪽의 마감 판정을 지운다 — 못 잡은 쪽이 건너뛴다.
+LOCK_PATH = VAR_DIR / "alba" / "alba.lock"
+CHECK_LIMIT = 60          # 회차 사이 재확인 한 번에 묻는 수(사라진 것은 GONE_LIMIT 까지 따로)
 
 NEW_LIMIT = 150            # 회차당 새로 받는 상세 수. 사이트맵 lastmod 최신순
 RECHECK_LIMIT = 100        # 회차당 모집중 재확인 수(오래 안 물어본 것부터)
@@ -477,7 +481,52 @@ def plan_recheck(posts: dict[str, dict], entries: dict[str, dict], seen_lastmod:
     return gone[:GONE_LIMIT] + changed[:limit] + rest[:budget]
 
 
+def _try_lock(fh) -> bool:
+    """비차단 잠금. 이미 누가 잡고 있으면 False(close_check 와 같은 방식)."""
+    try:
+        if _sys.platform == "win32":
+            import msvcrt
+            msvcrt.locking(fh.fileno(), msvcrt.LK_NBLCK, 1)
+        else:
+            import fcntl
+            fcntl.flock(fh.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        return True
+    except OSError:
+        return False
+
+
 def run(new_limit: int = NEW_LIMIT, recheck_limit: int = RECHECK_LIMIT) -> dict:
+    """한 회차. 잠금을 못 잡으면(다른 쪽이 도는 중) 건너뛴다 — 다음 주기에 다시 온다."""
+    LOCK_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(LOCK_PATH, "a+") as fh:
+        if not _try_lock(fh):
+            print("[alba] 다른 회차가 alba.json 을 쓰는 중 — 이번엔 건너뜀", flush=True)
+            return {"ok": True, "skipped": True, "total": None, "open": None, "new": 0, "closed_now": 0}
+        return _run(new_limit, recheck_limit)
+
+
+def check(limit: int = CHECK_LIMIT) -> dict:
+    """회차 사이 재확인 — 새 공고는 받지 않고 마감만 본다(launchd albacheck 가 부른다).
+
+    사람을 구하면 당근에서 공고가 닫히는데, 크롤 회차(1시간)만 기다리면 그만큼 늦게 닫힌다.
+    결과는 뷰어 API(viewer_doc)에도 바로 옮긴다 — 회차 끝의 문서 동기화를 기다리지 않게.
+    """
+    stats = run(new_limit=0, recheck_limit=limit)
+    if stats.get("ok") and not stats.get("skipped"):
+        try:
+            from store.ingest.docs import sync
+            sync()
+        except Exception as e:                                   # noqa: BLE001 — DB 가 없어도 파일은 이미 갱신됐다
+            print(f"[alba] 뷰어 문서 동기화 건너뜀: {str(e)[:120]}", flush=True)
+    try:
+        from automation import orchestration as orch
+        orch.emit("alba_check", **stats)
+    except Exception:                                            # noqa: BLE001
+        pass
+    return stats
+
+
+def _run(new_limit: int, recheck_limit: int) -> dict:
     now = datetime.now().astimezone().isoformat(timespec="seconds")
     doc = _load_json(OUT_PATH, {"posts": []})
     state = _load_json(STATE_PATH, {})
@@ -585,9 +634,12 @@ def main() -> None:
             if is_candidate(e["slug"]):
                 print(pid, e["lastmod"][:10], e["slug"])
         return
+    recheck = int(args[args.index("--recheck") + 1]) if "--recheck" in args else None
+    if "--check" in args:                                        # 회차 사이 재확인(launchd albacheck)
+        stats = check(recheck or CHECK_LIMIT)
+        _sys.exit(0 if stats["ok"] else 1)
     new_limit = int(args[args.index("--new") + 1]) if "--new" in args else NEW_LIMIT
-    recheck = int(args[args.index("--recheck") + 1]) if "--recheck" in args else RECHECK_LIMIT
-    stats = run(new_limit, recheck)
+    stats = run(new_limit, recheck or RECHECK_LIMIT)
     _sys.exit(0 if stats["ok"] else 1)
 
 
