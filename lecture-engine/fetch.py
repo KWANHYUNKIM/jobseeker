@@ -60,7 +60,7 @@ def fetch_meta(vid: str, out: Path) -> dict:
                                      "view_count", "description", "license", "language")}
     meta["chapters"] = [{"start": c.get("start_time"), "title": c.get("title")} for c in raw.get("chapters") or []]
     meta["subs"] = sorted((raw.get("subtitles") or {}).keys())
-    meta["auto_subs"] = sorted(k for k in (raw.get("automatic_captions") or {}) if "-" not in k)[:40]
+    meta["auto_subs"] = sorted(k for k in (raw.get("automatic_captions") or {}) if k.endswith("-orig") or k in ("en", "ko"))
     (out / "meta.json").write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
     return meta
 
@@ -90,11 +90,12 @@ def vtt_to_lines(path: Path) -> list[tuple[int, str]]:
 
 
 def fetch_subs(vid: str, out: Path, meta: dict) -> Path | None:
-    langs = "en.*,ko.*" if meta["subs"] else "en,ko"
+    # 자동 자막은 원어 트랙이 '<언어>-orig' 다(한국어 영상은 ko-orig). 번역 트랙보다 원어를 먼저 쓴다.
+    langs = "en.*,ko.*" if meta["subs"] else "en-orig,ko-orig,en,ko"
     flag = "--write-subs" if meta["subs"] else "--write-auto-subs"
     ytdlp("--skip-download", flag, "--sub-langs", langs, "--sub-format", "vtt",
           "-o", str(out / "subs.%(ext)s"), f"https://www.youtube.com/watch?v={vid}")
-    vtts = sorted(glob.glob(str(out / "subs*.vtt")), key=lambda p: ("ko" in p, p))
+    vtts = sorted(glob.glob(str(out / "subs*.vtt")), key=lambda p: ("-orig" not in p, "ko" in p, p))
     if not vtts:
         return None
     lines = vtt_to_lines(Path(vtts[0]))
