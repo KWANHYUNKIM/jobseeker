@@ -534,6 +534,21 @@ CREATE TABLE job_embedding (
     embedded_at  timestamptz  NOT NULL DEFAULT now()
 );
 
+-- 블로그 글 번역(018) — 로컬 모델로 한국어가 아닌 글을 한국어로. src_lang 은 본문으로 다시 판정한
+-- 언어(post.lang 은 피드 설정값이라 일본 블로그도 'en'). 한국어 글도 한 줄(번역 칸 비움). store/ingest/translate.py.
+CREATE TABLE post_translation (
+    post_id       bigint      PRIMARY KEY REFERENCES post(id) ON DELETE CASCADE,
+    src_lang      text        NOT NULL,
+    title_ko      text        NOT NULL DEFAULT '',
+    summary_ko    text        NOT NULL DEFAULT '',
+    body_ko       text        NOT NULL DEFAULT '',
+    content_ko    text        NOT NULL DEFAULT '',   -- blog_content/<id>.json 전체 본문 번역
+    source_hash   text        NOT NULL,              -- 번역한 원문의 해시 — 바뀌면 다시
+    model         text        NOT NULL DEFAULT '',
+    translated_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX post_translation_lang_idx ON post_translation (src_lang);
+
 CREATE TABLE post_embedding (
     post_id      bigint       PRIMARY KEY REFERENCES post(id) ON DELETE CASCADE,
     model        text         NOT NULL,
