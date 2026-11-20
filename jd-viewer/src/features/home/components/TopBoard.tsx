@@ -5,7 +5,8 @@ import { absUrl, useSeo } from '../../../utils/seo'
 import { paths } from '../../../utils/urls'
 import { fetchSection, type HomeJob, type HomeSection } from '../api'
 import { BANNER_ART } from '../banner'
-import { careerOf, ddayLabel, ddayUrgent } from '../utils'
+import { careerOf, ddayLabel, ddayUrgent, scoreText } from '../utils'
+import { RankRule } from './RankRule'
 
 /**
  * `/top/<구역>` — 메인 배너 한 장(신입·경력·인턴…)을 누르면 들어오는 화면. 그 구역의 인기 TOP 50 을
@@ -79,6 +80,10 @@ export function TopBoard({ sectionKey }: { sectionKey: string }) {
           </div>
         </header>
 
+        <div className="mt-5">
+          <RankRule kind="jobs" />
+        </div>
+
         {jobs.length === 0 ? (
           <p className="mt-10 text-center text-[#999]">지금 이 구역에 모집중인 공고가 없습니다.</p>
         ) : (
@@ -130,6 +135,7 @@ function TopRow({ j, rank }: { j: HomeJob; rank: number }) {
             {j.roles.slice(0, 2).map((r) => (
               <span key={r}>#{r}</span>
             ))}
+            {j.score != null && <span title={scoreText(j.score, j.score_parts)}>점수 {j.score}</span>}
           </span>
         </span>
         <span

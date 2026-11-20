@@ -96,6 +96,8 @@ def _job(r: dict, industry: str) -> dict:
         "dday": r["dday"], "deadline": _iso(r["effective_deadline"]),
         "first_seen_at": _iso(r["first_seen_at"]),
         "roles": [x for x in (r["roles"] or []) if x != "기타"], "stacks": (r["stacks"] or [])[:5],
+        # 인기 점수와 그 내역(score_parts) — 순위 화면이 '왜 이 순위인가'로 보여 준다
+        "score": r.get("_score"), "score_parts": r.get("_parts"),
     }
 
 
@@ -179,12 +181,22 @@ AGENCY = "채용대행·헤드헌팅"
 AGENCY_PENALTY = 25
 
 
-def _score(r: dict, size: str, co_new_7d: int, industry: str = "") -> float:
+def score_parts(r: dict, size: str, co_new_7d: int, industry: str = "") -> dict:
+    """인기 점수의 항목별 값 — 화면이 합계와 함께 그대로 보여 준다(왜 이 순위인지 사람이 알 수 있게).
+    규칙을 바꾸면 뷰어의 설명(features/home/components/RankRule.tsx)도 같이 고친다."""
     age_days = (datetime.now(timezone.utc) - r["first_seen_at"]).total_seconds() / 86400
-    fresh = max(0.0, 21 - age_days) * 1.2
-    soon = 6 if r["dday"] is not None and 0 <= r["dday"] <= 7 else 0
-    penalty = AGENCY_PENALTY if industry == AGENCY else 0
-    return SIZE_WEIGHT.get(size, 4) + fresh + min(co_new_7d, 15) + soon - penalty
+    return {
+        "size": SIZE_WEIGHT.get(size, 4),                                  # 회사 규모
+        "fresh": round(max(0.0, 21 - age_days) * 1.2, 1),                  # 새 공고(21일 안, 하루 1.2점씩 준다)
+        "hiring": min(co_new_7d, 15),                                      # 그 회사가 이번 주 낸 공고 수(최대 15)
+        "soon": 6 if r["dday"] is not None and 0 <= r["dday"] <= 7 else 0,  # 마감 7일 안
+        "agency": -AGENCY_PENALTY if industry == AGENCY else 0,            # 채용대행·헤드헌팅
+    }
+
+
+def _score(r: dict, size: str, co_new_7d: int, industry: str = "") -> float:
+    r["_parts"] = score_parts(r, size, co_new_7d, industry)
+    return round(sum(r["_parts"].values()), 1)
 
 
 INTERN = re.compile(r"인턴|intern|교육생|아카데미|academy|부트캠프|채용연계|체험형|SSAFY|마에스트로|트레이니|trainee|견습", re.I)

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { careerOf, careerRange, ddayLabel, shortTitle } from './utils'
+import { careerOf, careerRange, ddayLabel, scoreText, shortTitle } from './utils'
 
 describe('careerRange', () => {
   it('신입부터 위까지', () => {
@@ -38,4 +38,16 @@ describe('shortTitle', () => {
   it('길면 괄호를 거듭 뗀다', () =>
     expect(shortTitle('LLM Research Engineer (Pre-training) (신입/경력)')).toBe('LLM Research Engineer'))
   it('짧으면 그대로', () => expect(shortTitle('백엔드 개발자')).toBe('백엔드 개발자'))
+})
+
+describe('scoreText — 순위 점수 내역', () => {
+  it('0 인 항목은 빼고 더한 값을 적는다', () => {
+    expect(scoreText(69, { size: 30, fresh: 24, hiring: 15, soon: 0, agency: 0 })).toBe('규모 30 + 새 공고 24 + 적극 채용 15 = 69')
+  })
+  it('채용대행 감점은 빼기로 적는다', () => {
+    expect(scoreText(-11, { size: 4, fresh: 10, hiring: 0, soon: 0, agency: -25 })).toBe('규모 4 + 새 공고 10 − 채용대행 25 = -11')
+  })
+  it('점수가 없으면 빈 글', () => {
+    expect(scoreText(null, null)).toBe('')
+  })
 })

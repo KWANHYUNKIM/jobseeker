@@ -100,3 +100,13 @@ def test_far_deadlines_count_as_always_open():
     assert is_always(91)
     assert not is_always(90)
     assert not is_always(72)
+
+
+def test_score_parts_add_up_and_explain():
+    from datetime import datetime, timedelta, timezone
+    from app.features.home.service import AGENCY, _score, score_parts
+    r = {"first_seen_at": datetime.now(timezone.utc) - timedelta(days=1), "dday": 3}
+    p = score_parts(r, "대기업", 20)
+    assert p == {"size": 30, "fresh": 24.0, "hiring": 15, "soon": 6, "agency": 0}
+    assert _score(r, "대기업", 20) == round(sum(p.values()), 1) and r["_parts"] == p
+    assert score_parts(r, "중소기업", 0, AGENCY)["agency"] == -25

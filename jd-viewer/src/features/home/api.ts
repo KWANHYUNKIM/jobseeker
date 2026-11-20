@@ -49,6 +49,17 @@ export interface HomeJob {
   first_seen_at: string
   roles: string[]
   stacks: string[]
+  /** 인기 점수와 내역(backend home.service.score_parts) — 순위 구역에만 있다 */
+  score?: number | null
+  score_parts?: ScoreParts | null
+}
+
+export interface ScoreParts {
+  size: number
+  fresh: number
+  hiring: number
+  soon: number
+  agency: number
 }
 
 export interface HomeBoard {

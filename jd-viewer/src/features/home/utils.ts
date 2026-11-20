@@ -1,3 +1,5 @@
+import type { ScoreParts } from './api'
+
 /** 메인 화면 표기 — D-day·경력 구간. */
 
 /** 이보다 멀리 남은 마감일은 상시로 본다 — 진짜 마감은 거의 60일 안이고, 먼 날짜는 원본이 '채용시 마감'을
@@ -56,4 +58,19 @@ export function shortTitle(t: string): string {
     s = m[1]
   }
   return s
+}
+
+const PART_LABEL: [keyof ScoreParts, string][] = [
+  ['size', '규모'],
+  ['fresh', '새 공고'],
+  ['hiring', '적극 채용'],
+  ['soon', '마감 임박'],
+]
+
+/** 인기 점수 내역 한 줄 — '규모 30 + 새 공고 24 + 적극 채용 15 = 69'. 0 인 항목은 뺀다(RankRule 이 규칙을 적는다). */
+export function scoreText(score: number | null | undefined, p: ScoreParts | null | undefined): string {
+  if (score == null || !p) return ''
+  const plus = PART_LABEL.filter(([k]) => p[k]).map(([k, l]) => `${l} ${p[k]}`)
+  const minus = p.agency ? ` − 채용대행 ${-p.agency}` : ''
+  return `${plus.join(' + ') || '0'}${minus} = ${score}`
 }

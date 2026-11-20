@@ -3,7 +3,8 @@ import { CompanyMark } from '../../../components/ui'
 import { onLinkClick } from '../../../utils/navigation'
 import { paths } from '../../../utils/urls'
 import { fetchSection, type HomeJob, type HomeSection } from '../api'
-import { careerOf, ddayLabel, ddayUrgent } from '../utils'
+import { careerOf, ddayLabel, ddayUrgent, scoreText } from '../utils'
+import { RankRule } from './RankRule'
 
 const FIRST = 6 // 1위 카드 + 다섯 줄 — 캐치형 카드 한 장의 높이(664)에 꼭 맞는다
 const STEP = 10
@@ -57,6 +58,11 @@ export function RankSection({ s, ranked }: { s: HomeSection; ranked: boolean }) 
         </h3>
         <span className="shrink-0 text-[13px] tracking-[-0.13px] text-[#999] tabular-nums">{s.total.toLocaleString()}건 중</span>
       </header>
+      {ranked && (
+        <div className="mt-1 px-3">
+          <RankRule kind="jobs" />
+        </div>
+      )}
 
       <Featured j={first} />
 
@@ -90,6 +96,7 @@ function Featured({ j }: { j: HomeJob }) {
     <a
       href={to}
       onClick={onLinkClick(to)}
+      title={scoreText(j.score, j.score_parts) || undefined}
       className="home-press group mt-[29px] flex gap-10 min-h-[130px] rounded-[30px] border border-[#e2e8ec] pl-[25px] pr-[19px] pt-[15px] pb-3 hover:border-[#272727]"
     >
       <span className="mt-[19px] grid place-items-center w-16 h-16 shrink-0">
@@ -115,7 +122,7 @@ function RankRow({ j, rank }: { j: HomeJob; rank: number }) {
   const to = paths.job(j)
   return (
     <li>
-      <a href={to} onClick={onLinkClick(to)} className="group flex items-center gap-[18px] h-[75.5px] pl-[18px] pr-0">
+      <a href={to} onClick={onLinkClick(to)} title={scoreText(j.score, j.score_parts) || undefined} className="group flex items-center gap-[18px] h-[75.5px] pl-[18px] pr-0">
         <span className="w-3 shrink-0 flex flex-col items-center text-[#272727]">
           <span className="text-lg font-medium leading-[26px] tabular-nums">{rank}</span>
           <span className="-mt-1 text-xs leading-[18px]">—</span>

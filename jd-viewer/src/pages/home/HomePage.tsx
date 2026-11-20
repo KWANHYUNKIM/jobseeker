@@ -5,8 +5,10 @@ import { fetchHome, type HomeBoard, type HomeSection } from '../../features/home
 import { PICK_ICONS, PickCard } from '../../features/home/components/CompanyCard'
 import { CompanyPanel } from '../../features/home/components/CompanyPanel'
 import { HeroRow } from '../../features/home/components/HeroBanner'
+import { RankRule } from '../../features/home/components/RankRule'
 import { RankSection } from '../../features/home/components/RankSection'
 import { TrendPick } from '../../features/home/components/TrendPick'
+import { SIZE_SHORT } from '../../features/home/utils'
 import { useJobBoardContext } from '../../features/jobs/hooks/useJobBoard'
 import { onLinkClick, useRoute, useSetQuery } from '../../utils/navigation'
 import { absUrl, useSeo } from '../../utils/seo'
@@ -25,7 +27,7 @@ type Where = 'cos' | 'trend' | 'picks'
  * `/` — 회사별 메인(Penpot「JD Viewer」01 캐치형 1920). 위에서 아래로:
  *   ① 바로가기 넷 + 남색 배너   ② 가장 주목받는 회사 카드(4열, 누르면 그 줄 아래로 공고가 펼쳐진다)
  *   ③ 오늘의 트렌드 Pick(회색 띠)   ④ 카테고리별 인기 TOP 50(3열 × 2줄)
- *   ⑤ 추천공고 — 업종별 1위 공고(회색 띠)   ⑥ 바닥 띠
+ *   ⑤ 추천공고 — 주목 회사 다음 순위에서 이번 주 새 공고가 많은 곳(회색 띠)   ⑥ 바닥 띠
  * 공고 하나하나를 거르는 화면은 `/jobs`.
  */
 export function HomePage() {
@@ -110,6 +112,9 @@ export function HomePage() {
               </a>
             )}
           </div>
+          <div className="mt-1 pl-[10px]">
+            <RankRule kind="companies" />
+          </div>
           {/* grid-flow-dense — 펼친 칸(전체 너비)을 누른 카드 뒤에 꽂아도 같은 줄의 나머지 카드가 제자리를 지킨다 */}
           <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 grid-flow-dense gap-2">
             {shownCos.map((c, i) => (
@@ -118,7 +123,8 @@ export function HomePage() {
                   name={c.name}
                   logo={c.logo}
                   dday={c.soonest_dday}
-                  chip={`${PICK_ICONS[i % 4]} 이번 주 +${c.new_7d}${c.industry !== '기타' ? ` · ${c.industry}` : ''}`}
+                  // 순위를 만든 값 그대로 — 규모 → 모집중 공고 수 → 이번 주 새 공고(RankRule 이 규칙을 적는다)
+                  chip={`${i + 1}위 · ${SIZE_SHORT[c.size] ?? c.size} · 모집 ${c.active}건 · 이번 주 +${c.new_7d}`}
                   title={c.titles[0]?.title ?? ''}
                   active={open === c.slug && where === 'cos'}
                   onOpen={() => openCompany(c.slug, 'cos')}
@@ -181,13 +187,13 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ⑤ 추천공고 — 업종별 1위 */}
+      {/* ⑤ 추천공고 — 주목 회사 다음 순위에서 이번 주 새 공고가 많은 여덟 곳 */}
       {picks.length > 0 && (
         <section aria-label="추천공고" className="bg-[#f3f6f8] pt-[52px] pb-[80px]">
           <div className="jd-container">
             <p className="text-[13px] font-medium leading-[19px] text-(--color-accent)">› JD Viewer 추천공고</p>
             <h2 className="mt-[3px] text-[22px] font-bold leading-8 tracking-[-0.22px] text-[#272727]">적극 채용중인 기업이에요</h2>
-            <p className="mt-0.5 text-base leading-6 tracking-[-0.16px] text-[#666]">업종별 1위 공고를, 마감 전에 빠르게 확인해 보세요!</p>
+            <p className="mt-0.5 text-base leading-6 tracking-[-0.16px] text-[#666]">위 주목 회사 다음 순위에서, 이번 주 새 공고를 가장 많이 낸 여덟 곳이에요.</p>
             <div className="mt-[26px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 grid-flow-dense gap-2">
               {picks.map((c, i) => (
                 <Fragment key={c.slug}>
@@ -195,7 +201,7 @@ export function HomePage() {
                     name={c.name}
                     logo={c.logo}
                     dday={c.soonest_dday}
-                    chip={`${PICK_ICONS[(i + 1) % 4]} 이번 주 +${c.new_7d}${c.industry !== '기타' ? ` · ${c.industry}` : ''}`}
+                    chip={`${PICK_ICONS[(i + 1) % 4]} 이번 주 +${c.new_7d} · 모집 ${c.active}건${c.industry !== '기타' ? ` · ${c.industry}` : ''}`}
                     title={c.titles[0]?.title ?? ''}
                     active={open === c.slug && where === 'picks'}
                     onOpen={() => openCompany(c.slug, 'picks')}
