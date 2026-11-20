@@ -221,6 +221,8 @@ def test_check_fetches_no_new_posts(tmp_path, monkeypatch):
     monkeypatch.setattr(da, "_run", lambda new_limit, recheck_limit: seen.update(new=new_limit, re=recheck_limit)
                         or {"ok": True, "total": 1, "open": 1, "new": 0, "closed_now": 0})
     import store.ingest.docs as docs
+    from automation import orchestration as orch
     monkeypatch.setattr(docs, "sync", lambda *a, **k: {})
+    monkeypatch.setattr(orch, "emit", lambda *a, **k: None)      # 진짜 run_events.jsonl 에 쓰지 않게
     da.check(42)
     assert seen == {"new": 0, "re": 42}
