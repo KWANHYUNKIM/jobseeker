@@ -1,0 +1,999 @@
+{
+ "id": "izZba4UA7iY",
+ "source": {
+  "platform": "youtube",
+  "url": "https://www.youtube.com/watch?v=izZba4UA7iY",
+  "channel": "Stanford Online",
+  "published": "2026-04-20",
+  "duration_sec": 4719,
+  "views": 38773
+ },
+ "course": {
+  "school": "Stanford",
+  "code": "CS336",
+  "term": "Spring 2026",
+  "lecture_no": "5",
+  "speaker": "Tatsunori Hashimoto (공동 강사 Percy Liang)"
+ },
+ "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 5: GPUs, TPUs",
+ "title_ko": "GPU 와 TPU — 메모리 계층, 여섯 가지 가속 기법, FlashAttention 다시 만들기",
+ "topic": "systems",
+ "tags": [
+  "GPU",
+  "CUDA",
+  "TPU",
+  "PyTorch",
+  "JAX",
+  "Triton",
+  "FlashAttention",
+  "Mixed Precision",
+  "FP8",
+  "LLM",
+  "Deep Learning",
+  "Python"
+ ],
+ "level": "중급",
+ "one_line": "SM·워프·HBM 계층에서 출발해 융합·재계산·병합·타일링으로 FlashAttention 까지 — GPU 가 언제 왜 느린지 세는 법",
+ "summary": [
+  "CS336 시스템 단원의 첫 강의로, 강사 Tatsunori Hashimoto 가 'GPU 를 마법이 아닌 것으로 만들기'를 목표로 GPU 하드웨어 모델, GPU 를 빠르게 쓰는 기법들, 그리고 그 기법들로 FlashAttention 을 다시 조립하는 세 부분으로 진행한다. 출발점은 정사각 행렬곱 크기에 따른 처리량 그래프다. 크기가 커질수록 빨라지긴 하지만 선이 여러 갈래로 갈라지고 주기적으로 급락하는데, 강의가 끝나면 이 무늬를 산술 강도·타일 정렬·웨이브 양자화로 모두 설명할 수 있게 된다. 2강의 루프라인을 전제로 하고 다시 유도하지는 않는다.",
+  "1부는 하드웨어다. 클럭을 올리던 Dennard scaling 이 멈춘 뒤 성능은 병렬 확장에서 왔고, GPU 는 지연이 아니라 처리량을 최적화하는 장치다. GPU 의 단위는 독립적으로 블록을 실행하는 SM 이고(A100 108개, H100 132개), 메모리는 레지스터 → SM 안의 공유 메모리/L1 → 칩 위의 L2 → 칩 옆의 HBM 으로 갈수록 크고 느리다(A100 측정 지연 약 20 → 33 → 200 → 290 사이클). 실행 모델은 스레드·블록·워프(32 스레드)와 SIMT 이며, 블록 안에서만 공유 메모리를 함께 쓸 수 있어 블록 간 정보는 느린 전역 메모리를 거쳐야 한다.",
+  "TPU 는 같은 결론에 다른 크기로 도착한 가속기다. 행렬곱 유닛(MXU)·벡터 유닛·가벼운 제어·HBM 과 온칩 메모리라는 구조는 같고, 텐서 코어와 MXU 는 모두 시스톨릭 배열이다. 차이는 H100 이 작은 행렬곱 유닛 528개를, TPU v5p 는 큰 MXU 8개를 갖는다는 것과 칩 간 네트워크다. V100 의 텐서 코어 이후 행렬곱은 다른 연산보다 10배 넘게 빠른 특권 연산이 되었고, 20년간 FLOPs 는 6만 배 늘었지만 메모리 대역폭은 100배만 늘어 최적화의 중심이 데이터 이동으로 옮겨 갔다.",
+  "2부는 여섯 기법이다. ① 제어 분기: 워프 안에서 if 가 갈리면 두 갈래를 모두 실행한다. ② 저정밀도: 비트를 줄이면 옮길 바이트가 줄고, 텐서 코어는 16비트 입력을 FP32 로 누산한다. 최전선인 MXFP8 은 32개마다 E8M0 배율을 두는데, 그 때문에 전치가 공짜가 아니어서 원본·전치 두 벌을 양자화해 둔다. ③ 연산 융합: sin²+cos² 의 다섯 커널을 하나로 합치면 HBM 왕복이 11 → 2. ④ 재계산: 활성값을 버리고 다시 계산하면 접근이 8 → 5. ⑤ 병합: DRAM 은 버스트로 읽히므로 워프의 주소가 한 버스트에 모여야 한다. ⑥ 타일링: T×T 타일을 공유 메모리에 올려 재사용하면 전역 읽기가 T 배 줄고 산술 강도가 T/2(bf16) 가 된다.",
+  "이 기법들로 행렬 미스터리가 풀린다. 1·2 로만 나눠지는 크기는 버스트 정렬이 깨져 느리고(Karpathy 의 어휘 50257 → 50304 패딩으로 25% 가속), 1792 → 1793 에서는 256×128 타일이 98 → 120 개가 되어 A100 의 SM 108개를 넘으면서 두 번째 웨이브가 생긴다. 3부의 FlashAttention 은 새로운 것이 아니라 타일링(Q·K·V 타일), 융합(행렬곱·exp·정규화를 한 커널에), 온라인 softmax(최댓값과 합을 보정해 가며 타일 단위로), 재계산(역전파 때 n×n 을 다시 계산)의 조합이며, FLOPs 는 조금 늘지만 HBM 트래픽이 10분의 1 로 줄어 빨라진다.",
+  "노트는 강의의 숫자를 손으로 따라가도록 구성했다: 1GB 이동 시간과 지연 숨기기, 세대별 루프라인 꺾이는 점, 시스톨릭 배열 흉내, bf16 누산 오차, MXFP8 의 행·열 블록 차이, 융합·재계산의 바이트 수, 버스트 수, 4096 행렬곱의 바이트 대 FLOPs, 웨이브 수, 온라인 softmax 를 직접 돌려 본 코드가 각 장에 있다. 강의 중 A100 의 SM 수를 128·132 로 말한 대목과 FP4 슬라이드의 규격 표기 등은 바로잡아 각 장의 주의점에 적었다."
+ ],
+ "why_now": "강의가 보여 준 대로 하드웨어 FLOPs 는 2년마다 3배, 메모리 대역폭은 1.6배씩 늘어 연산 한계에 닿는 데 필요한 산술 강도가 계속 오른다. 그래서 같은 모델을 같은 GPU 에서 돌려도 융합·타일링·저정밀도를 아느냐에 따라 처리량이 몇 배씩 갈리고, 이 차이가 곧 학습·추론 비용이다. FlashAttention 같은 하드웨어 인지 커널은 이미 모든 LLM 스택의 기본이 되었고, Blackwell 세대의 MXFP8·FP4 학습, 추론에서의 prefill/decode 분리처럼 메모리 계층을 의식한 설계가 업계의 주된 경쟁 지점이 되고 있다. 시스템 전공자가 아니어도 아키텍처를 고르는 사람이라면 '이 연산이 GPU 에서 어떻게 실행되나'를 셀 수 있어야 한다는 것이 강사의 주장이다.",
+ "chapters": [
+  {
+   "start": 0,
+   "title": "도입 — 시스템 단원의 시작, 그리고 '이상한 행렬곱 그래프'",
+   "points": [
+    "4강까지가 신경망 쪽이었다면 5강부터는 GPU·병렬화·추론으로 이어지는 시스템 단원이다.",
+    "목표 두 가지: GPU 가 언제 느려지는지 이해하기, 빠른 알고리즘을 직접 설계할 수 있게 되기.",
+    "출발 그림: 정사각 행렬곱 크기(x)에 따른 처리량(y). 크면 대체로 빨라지지만 들쭉날쭉한 줄무늬와 주기적 급락이 있다 — 강의 끝에 전부 설명된다.",
+    "구성: ① GPU 하드웨어·프로그래밍 모델(+TPU) ② GPU 를 빠르게 만드는 여섯 가지 기법 ③ FlashAttention 을 그 기법들로 다시 조립하기.",
+    "Dennard scaling(클럭이 빨라지던 시대)은 2000년대에 멈췄고, 그 뒤의 연산 증가는 거의 전부 병렬 확장(GPU)에서 왔다."
+   ],
+   "on_screen": "'Outline and goals — Make CUDA and GPUs less magic': 왼쪽 'Understand when GPUs get slow' 그래프(정사각 행렬곱 TFLOP/s 대 크기 0~4096, 손글씨로 'Compute Intensity', 'Tiling!', 'Wave Quantization' 표시), 오른쪽 'Understand how to make fast algorithms' — FlashAttention 논문 그림 1(바깥/안쪽 루프, SRAM 으로 블록 복사)과 GPT-2 어텐션 시간 막대(PyTorch 대 FlashAttention). 참고 자료 슬라이드: Horace He 블로그, CUDA(GPU) Mode, 'How to Scale Your Model'(TPU 와 이제 GPU 책). 'Setting the stage: compute leads to predictable perf' 스케일링 곡선, 'Dennard scaling' 42년 프로세서 데이터 그래프, 'Parallel scaling continues' — Bill Dally 의 단일 칩 추론 성능 1000배/10년 그래프('There is no LLM scaling without GPU scaling').",
+   "explain": [
+    "이 강의는 CS336 의 두 번째 단원, 시스템의 첫 시간이다. 1강에서 '정확도 = 효율 × 자원'이라는 렌즈를 세웠고, 2강에서는 텐서 한 개의 바이트·행렬곱의 FLOPs·산술 강도·루프라인을 손으로 세는 법을 배웠다. 그때 루프라인은 '이 연산이 메모리를 기다리는지 계산을 기다리는지'를 가르는 도구였는데, 왜 GPU 가 그런 모양의 한계를 갖는지, 그 한계를 어떻게 피하는지는 비워 두었다. 이번 강의가 그 빈칸이다. 강사(Tatsunori Hashimoto)는 시스템이 이 과목에서 가장 '추론 가능한' 부분이라고 말한다. 모델의 성능은 실험을 해 봐야 알지만, 커널의 속도는 바이트와 FLOPs 를 세면 대부분 미리 짐작할 수 있다는 뜻이다.",
+    "강의는 그래프 하나로 시작한다. 두 정사각 행렬을 곱할 때 크기를 512, 1024, …, 4096 으로 키우며 초당 처리한 연산량(TFLOP/s)을 찍은 그림이다. 순진하게 생각하면 일이 많을수록 하드웨어를 꽉 채우기 쉬우니 오른쪽으로 갈수록 매끈하게 올라가야 한다. 실제로는 같은 크기 근처에서도 선이 여러 갈래로 갈라지고, 어떤 크기에서는 갑자기 뚝 떨어졌다가 다시 오른다. 강사는 강의가 끝날 때 이 그림의 모든 무늬를 설명할 수 있게 해 주겠다고 약속하고, 실제로 13장에서 세 가지 원인(산술 강도, 타일 정렬, 웨이브 양자화)으로 풀어낸다.",
+    "왜 GPU 이야기를 해야 하는가. 1990년대까지 컴퓨터를 빠르게 만드는 방법은 트랜지스터를 작게 만들어 클럭을 올리는 것이었다. 명령을 하나씩 차례로 실행하는 CPU 가 해마다 빨라졌고, 이것이 Dennard scaling 이다. 2000년대 들어 이 흐름이 멈췄다. 트랜지스터 수는 계속 늘었지만 작아진다고 더 빨리 스위칭하지는 않게 되었다(전력 밀도와 누설 전류 때문이다 — 노트 보충). 그래서 한 줄을 빨리 도는 대신 여러 줄을 동시에 도는 쪽, 즉 수평 확장으로 길이 바뀌었다. GPU 는 그 수평 확장의 대표이고, 7·8강의 병렬화도 같은 생각의 연장이다.",
+    "슬라이드의 Bill Dally 그래프는 K20·M40 시절에는 완만하던 GPU 연산량이 P100·V100 무렵부터 가파르게 치솟아 10년 동안 단일 칩 추론 성능이 1000배 넘게 늘었다는 내용이다. 그 증가분을 쪼개 보면 숫자 표현(FP32→FP16→Int8, 대략 16배), 복잡한 명령(행렬곱 전용 명령, 대략 12.5배), 공정 미세화(대략 2.5배), 희소성(2배)이 들어 있다. 공정보다 '숫자를 몇 비트로 쓰나'와 '행렬곱 전용 회로'가 훨씬 큰 몫이라는 점이 이 강의의 뒷부분(저정밀도, 텐서 코어)으로 이어진다. 강사는 시스템 전공이 아니더라도 아키텍처를 설계하려면 모델이 하드웨어에서 어떻게 실행되는지의 그림이 머릿속에 있어야 한다고 강조한다."
+   ],
+   "pitfalls": [
+    "'트랜지스터가 늘었으니 칩이 빨라졌다'는 반만 맞다. 개수는 늘었지만 클럭은 2000년대 이후 거의 제자리이고, 늘어난 트랜지스터는 병렬 유닛과 전용 회로(텐서 코어)로 쓰였다.",
+    "1000배 성능 향상 그래프의 대부분은 정밀도 축소와 전용 명령에서 왔다. FP32 기준으로 같은 비교를 하면 증가폭이 훨씬 작다 — 스펙 시트의 'TFLOPS' 를 볼 때는 늘 어떤 정밀도인지 확인한다."
+   ],
+   "check": [
+    {
+     "q": "Dennard scaling 이 멈춘 뒤 연산 성능을 계속 늘린 주된 방법은 무엇인가?",
+     "a": "클럭을 올리는 대신 많은 연산 유닛을 동시에 돌리는 병렬 확장(GPU, 다중 칩)과 행렬곱 전용 회로·저정밀도 숫자 형식이다."
+    }
+   ]
+  },
+  {
+   "start": 420,
+   "title": "CPU 와 GPU — 지연 대 처리량, 그리고 SM 이라는 단위",
+   "points": [
+    "CPU 는 한 스레드를 빨리 끝내는 지연(latency) 최적화: 큰 제어 장치·큰 캐시·소수의 ALU, 복잡한 분기에 강하다.",
+    "GPU 는 전체 처리량(throughput) 최적화: 아주 많은 가벼운 연산 유닛, 분기·캐시 지원은 작다. 개별 작업은 늦게 끝나도 합계가 크다.",
+    "GPU 의 기본 단위는 SM(streaming multiprocessor) — 독립적으로 일을 받는 '코어' 하나. 그 안에 여러 SP 가 스레드를 병렬로 돈다.",
+    "A100 칩(GA100) 전체 설계에는 SM 이 128개 그려져 있지만 실제 제품에 켜진 것은 108개다(H100 SXM 은 132개)."
+   ],
+   "on_screen": "'How is a GPU different from a CPU? — CPUs optimize for a few, fast threads while GPUs optimize for many many threads': CPU 그림(큰 Control, 큰 Cache, ALU 4개, DRAM) 대 GPU 그림(초록 ALU 격자, DRAM), 'Many tiny compute units (ALUs). Much less support for branching (control, cache)', 'CPUs optimize for latency (each thread finishes quickly) / GPUs optimize for throughput (total processed data)', 오른쪽에 GPU 고처리량 대 CPU 저지연 타임라인. 'Anatomy of a GPU (execution units)': SM 확대 그림과 'GA100 Full GPU with 128 SMs', 'Each SM further contains many SPs (streaming processor) that can execute threads in parallel', 'GPUs have many SM (streaming multiprocessors) that independently execute blocks (jobs)'.",
+   "explain": [
+    "비유로 시작하자. CPU 는 손이 아주 빠른 요리사 몇 명이 있는 주방이다. 주문마다 레시피가 다르고 중간에 '손님이 알레르기가 있으면 이렇게' 같은 분기가 많아도, 각 요리를 최대한 빨리 내보낸다. GPU 는 같은 동작을 똑같이 반복하는 수천 명의 조리 보조가 있는 공장이다. 한 접시가 나오기까지는 오래 걸릴 수 있지만 한 시간에 나오는 접시 수는 압도적이다. 전자가 지연 최적화, 후자가 처리량 최적화다. 슬라이드 그림에서 CPU 는 칩 면적의 대부분을 제어 장치와 캐시에 쓰고 ALU 는 몇 개뿐인 반면, GPU 는 면적을 거의 다 작은 연산 유닛의 격자로 채운다.",
+    "처리량 설계의 핵심은 '기다리는 동안 다른 일을 한다'이다. GPU 에서 한 작업이 메모리를 기다리며 멈추면 스케줄러가 곧바로 다른 작업으로 갈아탄다. 각 작업의 완료 시간은 길어지지만, 연산 유닛은 쉬지 않는다. CPU 는 반대로 큰 캐시와 분기 예측으로 한 스레드가 멈추지 않게 만드는 데 투자한다. 신경망 학습은 똑같은 곱셈·덧셈을 수십억 번 반복하는 일이라 GPU 의 철학과 잘 맞는다.",
+    "GPU 를 하드웨어로 떠올릴 때의 단위는 SM 이다. SM 은 독립적으로 일감(블록)을 받아 실행하는 계산 단위로, 사실상 GPU 의 '코어'라고 생각해도 된다. SM 하나 안에는 다시 여러 개의 SP(streaming processor, CUDA 코어)와 텐서 코어, 레지스터 파일, 공유 메모리가 들어 있어 여러 스레드를 동시에 돌린다. SM 들은 서로 독립이라 다른 일을 할 수 있고, 모두 칩 바깥의 전역 메모리(HBM)에 접근한다. 성능을 키우는 가장 단순한 방법이 SM 을 더 붙이는 것이고, 메모리 대역폭이 따라오는 한 처리량은 SM 수에 비례해 는다.",
+    "숫자 하나는 바로잡고 가자. 강의 중 A100 의 SM 수를 128 또는 132 라고 말하는 대목이 있는데, 128 은 GA100 칩 설계 전체(슬라이드의 'GA100 Full GPU with 128 SMs')이고 실제 A100 제품은 수율 때문에 108개만 켜져 있다. 132 는 H100 SXM 의 SM 수다. 강의 후반 웨이브 양자화 설명은 올바르게 108을 쓴다. SM 수는 13장에서 '한 번에 몇 개의 타일을 동시에 처리할 수 있나'를 정하는 숫자가 되므로 정확히 기억해 둘 가치가 있다."
+   ],
+   "diagram": {
+    "title": "GPU 의 계층 — 칩에서 스레드까지",
+    "code": "flowchart TB\n  G[\"GPU 칩 (A100: SM 108개)\"] --> L2[\"L2 캐시 (칩 위, 모든 SM 공유)\"]\n  G --> HBM[\"HBM 전역 메모리 (칩 옆 메모리 칩)\"]\n  G --> SM1[\"SM 0\"]\n  G --> SM2[\"SM 1 … SM 107\"]\n  SM1 --> TC[\"텐서 코어 4개\"]\n  SM1 --> SP[\"CUDA 코어(SP) 다수\"]\n  SM1 --> SMEM[\"공유 메모리 / L1 (SRAM)\"]\n  SM1 --> RF[\"레지스터 파일\"]"
+   },
+   "pitfalls": [
+    "SM 수는 칩 설계와 판매 제품이 다르다: GA100 전체 128 / A100 108, GH100 전체 144 / H100 SXM 132. 강의 중 A100 을 128·132 로 말한 부분은 108 이 맞다.",
+    "GPU '코어 수'로 광고되는 CUDA 코어 수천 개는 CPU 코어와 같은 뜻이 아니다. 독립적으로 다른 프로그램을 도는 단위에 가까운 것은 SM 이다."
+   ],
+   "check": [
+    {
+     "q": "같은 일을 CPU 보다 GPU 에서 돌렸는데 한 요청의 완료 시간은 오히려 길었다. 그래도 GPU 가 '빠르다'고 말할 수 있는 이유는?",
+     "a": "GPU 는 지연이 아니라 처리량을 최적화한다. 개별 작업은 느릴 수 있어도 동시에 수많은 작업을 처리해 단위 시간당 끝낸 총량이 훨씬 크다."
+    }
+   ]
+  },
+  {
+   "start": 600,
+   "title": "메모리 계층 — 가까울수록 빠르고, 빠를수록 비싸다",
+   "points": [
+    "레지스터 → 공유 메모리/L1(SM 안, SRAM) → L2(칩 위) → 전역 메모리 HBM(칩 옆 메모리 칩). 바깥으로 갈수록 크고 느리다.",
+    "A100 측정 지연: 전역 290 사이클, L2 200, L1 33, 공유 메모리 약 19~23 사이클.",
+    "'H200 메모리 141GB' 같은 광고 숫자는 전역 메모리(HBM) 얘기다. 빠른 SRAM 은 SM 하나에 수백 KB 뿐이다.",
+    "SRAM 은 DRAM 보다 비트당 100배 정도 비싸고 전력도 많이 먹는다 — 그래서 계층을 두고, 계층을 존중하는 코드를 짜야 한다.",
+    "공유 메모리는 프로그래머가 직접 넣고 빼는 저장소, L1 캐시는 하드웨어가 알아서 관리하는 캐시다(물리적으로는 같은 SRAM 을 나눠 쓴다)."
+   ],
+   "on_screen": "'Anatomy of a GPU (memory) — The closer the memory to the SM, the faster it is – L1 and shared memory is inside the SM. L2 cache is on die, and global memory are the memory chips next to the GPU'. 'TABLE IV The memory accesses latencies': Global memory 290, L2 cache 200, L1 cache 33, Shared Memory (ld/st) (23/19) CPI(cycles). GA100 다이 사진(가운데 L2, 양옆 초록 SM 블록, 가장자리 HBM2 메모리 컨트롤러)과 'Nvidia GA100, 7nm TSMC, 8 GPC, 64 TPC, 128x SM, 40MB L2 Cache, 6144-Bit HBM2(e), Die size ~826mm²', 그래픽 카드 보드 사진. 하단 'SRAM (shared/cache memory) is much more expensive (100x) but ~8x faster than DRAM (Global memory)'.",
+   "explain": [
+    "책상과 도서관을 떠올리면 쉽다. 손에 쥔 메모지(레지스터)는 즉시 읽고, 책상 위 책(공유 메모리·L1)은 고개만 돌리면 되며, 같은 층 서가(L2)는 몇 걸음, 지하 서고(HBM)는 다녀오는 데 한참 걸린다. 대신 책상은 좁고 서고는 넓다. GPU 의 메모리도 정확히 이렇게 생겼다. L1·공유 메모리는 SM 안에 붙어 있고, L2 는 칩 한가운데에 모든 SM 이 함께 쓰는 형태로 있으며, 전역 메모리는 칩 바깥에 붙은 HBM 메모리 칩이다. 물리적 거리가 곧 지연이다.",
+    "슬라이드의 측정표(A100)는 이를 숫자로 보여 준다. 공유 메모리는 20 사이클 안팎, L1 은 33, L2 는 200, 전역 메모리는 290 사이클이다. 전역 메모리는 공유 메모리보다 열 배 넘게 느리다. 우리가 흔히 'GPU 메모리 80GB' 라고 부르는 것은 이 가장 느린 층, 전역 메모리다. 반면 SM 하나의 공유 메모리는 A100 에서 최대 164KB, H100 에서 228KB 수준이다(노트 보충). 80GB 대 수백 KB, 수십만 배 차이다.",
+    "그렇다면 칩 전체를 빠른 SRAM 으로 만들면 되지 않을까? 슬라이드는 SRAM 이 DRAM 보다 비트당 100배쯤 비싸다고 적는다. 강사는 이유를 셋으로 든다. 첫째 면적·비용, 둘째 연산 유닛 가까이 두어야 의미가 있는데 가까운 자리는 한정되어 있고 신호 전달도 어렵다, 셋째 SRAM 은 값을 유지하려면 계속 전력을 먹는다. Groq 처럼 SRAM 을 아주 많이 쓰는 추론 칩도 있지만, 대부분의 가속기는 계층을 두고 잘 쓰는 쪽을 택했다.",
+    "학생 질문에서 나온 구분도 기억해 두자. L1 캐시와 공유 메모리는 같은 SRAM 을 나눠 쓰지만 성격이 다르다. 캐시는 하드웨어가 최근에 읽은 것을 알아서 보관하는 장치라 프로그래머가 직접 조정하지 않는다. 공유 메모리는 프로그래머가 '이 타일을 여기 올려 두고 여러 스레드가 반복해서 읽자'라고 명시적으로 쓰는 작업대다. 뒤에 나올 타일링은 바로 이 작업대를 의도적으로 쓰는 기법이다. 강의의 결론 문장이 여기서 나온다: 이 계층을 존중하지 않으면 어떤 것도 빨리 돌지 않는다."
+   ],
+   "formulas": [
+    {
+     "expr": "t_전송 ≈ 지연 + 바이트 / 대역폭",
+     "meaning": "데이터를 옮기는 시간은 첫 바이트가 도착하기까지의 지연(latency, 사이클 또는 ns)과 나머지를 흘려보내는 시간(바이트 수 ÷ 대역폭 B/s)의 합이다. 작은 요청은 지연이, 큰 요청은 대역폭이 시간을 정한다."
+    },
+    {
+     "expr": "동시 요청량 = 대역폭 × 지연   (Little 의 법칙)",
+     "meaning": "대역폭을 꽉 채우려면 지연 동안 그만큼의 바이트가 이미 요청되어 '날아가고' 있어야 한다. GPU 가 수많은 스레드·워프를 동시에 띄우는 이유다. (노트 보충)"
+    }
+   ],
+   "example": {
+    "title": "A100 에서 1GB 를 옮기는 시간과 지연 숨기기",
+    "body": "A100 80GB SXM 의 HBM 대역폭은 약 2.0TB/s. 1GB 를 읽는 데 1e9 / 2e12 = 0.5ms. 80GB 전체를 한 번 훑으면 40ms 다. 지연 290 사이클은 클럭 1.41GHz 에서 290 / 1.41e9 ≈ 206ns. Little 의 법칙으로 2e12 B/s × 206e-9 s ≈ 411KB 가 늘 요청 중이어야 대역폭을 다 쓴다. 128바이트 요청으로 치면 약 3,200개가 동시에 떠 있어야 한다 — 스레드 하나로는 불가능하고 수만 개의 스레드가 필요하다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 계층별로 같은 1 GB 를 옮기는 시간과 지연(사이클)을 어림한다 (A100 80GB SXM 기준 대략값)\nGB = 1e9\nbw = {\"HBM(global)\": 2.0e12, \"L2(대략)\": 5.0e12, \"SMEM 합계(대략)\": 19e12}\nlat = {\"global\": 290, \"L2\": 200, \"L1\": 33, \"shared\": 23}   # 강의 표(사이클)\nclock = 1.41e9                                            # A100 부스트 클럭(Hz)\nfor k, b in bw.items():\n    print(f\"{k:16s} 1GB 이동 {GB / b * 1e3:7.3f} ms\")\nfor k, c in lat.items():\n    print(f\"{k:7s} 지연 {c:4d} cycle = {c / clock * 1e9:6.1f} ns\")\n# 지연을 숨기려면 동시에 몇 바이트가 '날아가고' 있어야 하나 (Little's law)\nneed = 2.0e12 * (290 / clock)\nprint(f\"HBM 을 꽉 채우려면 동시에 {need / 1e3:.0f} KB 가 요청 중이어야 한다\")",
+    "note": "실행 결과: HBM 1GB 0.500ms, L2(대략값) 0.200ms, SMEM 합계(대략값) 0.053ms. 지연 global 205.7ns, L2 141.8ns, L1 23.4ns, shared 16.3ns. 'HBM 을 꽉 채우려면 동시에 411 KB'. L2·SMEM 대역폭은 공개 측정치 수준의 어림값이다."
+   },
+   "pitfalls": [
+    "'GPU 메모리 80GB' 는 가장 느린 층(HBM) 크기다. 커널 성능을 좌우하는 빠른 메모리는 SM 당 수백 KB 에 불과하다.",
+    "L1 캐시와 공유 메모리를 같은 것으로 생각하면 타일링의 요점을 놓친다. 공유 메모리는 프로그래머가 명시적으로 채우고 재사용하는 저장소다."
+   ],
+   "check": [
+    {
+     "q": "공유 메모리 지연이 약 20 사이클, 전역 메모리가 약 290 사이클이다. 같은 값을 32번 읽어야 한다면 '전역에서 한 번 읽어 공유 메모리에 두고 32번 읽기'와 '전역에서 32번 읽기'의 지연 합은 대략 얼마인가?",
+     "a": "앞의 방법: 290 + 32×20 ≈ 930 사이클. 뒤의 방법: 32×290 = 9,280 사이클. 약 10배 차이다(대역폭 소모 차이는 별도로 더 크다)."
+    }
+   ]
+  },
+  {
+   "start": 790,
+   "title": "실행 모델 — 스레드, 블록, 워프와 SIMT",
+   "points": [
+    "스레드: 일을 하는 가장 작은 단위. SIMT — 같은 명령을 서로 다른 입력에 대해 실행한다.",
+    "블록: 스레드 묶음. 한 블록은 반드시 한 SM 에서 돌고, 그 SM 의 공유 메모리를 함께 쓴다(타일링의 바탕).",
+    "워프: 번호가 연속인 32개 스레드. 스케줄러가 명령을 내리는 실제 단위이며, 같은 명령을 같은 박자에 실행한다.",
+    "메모리 모델: 스레드별 레지스터·로컬 메모리, 블록별 공유 메모리, 그리드 전체의 전역·상수 메모리, 호스트(CPU) 메모리와의 전송.",
+    "블록 사이에 정보를 주고받으려면 느린 전역 메모리를 거쳐야 한다 — 가능한 한 블록 안에서 끝내는 것이 게임의 규칙이다."
+   ],
+   "on_screen": "'Execution model of a GPU': 스케줄러·SM·블록·스레드 그림과 'There are 3 important players in the execution model — Threads: Threads do the work in parallel – all threads execute the same instructions but with different inputs (SIMT). Blocks: Blocks are groups of threads. Each block runs on a SM w/ its own shared memory. Warp: Threads always execute in a warp of 32 consecutively numbered threads each.' 'Memory model of a GPU': Device code can R/W per-thread registers, R/W per-thread local memory, R/W per-block shared memory, R/W per-grid global memory, Read only per-grid constant memory; Host code can transfer data to/from per grid global and constant memories. Grid 그림(Block(0,0), Block(0,1), 각자 Shared Memory·Registers·Thread(0,0)(1,0)). 하단 'Information that goes across blocks need to be read/written to global memory (slow)'.",
+   "explain": [
+    "GPU 프로그램(커널)을 쓸 때 우리는 '스레드 하나가 할 일'을 적는다. 그리고 그 코드를 수천~수백만 개의 스레드가 각자 다른 인덱스로 동시에 실행한다. 이것이 SIMT(single instruction, multiple threads)다. 모든 스레드가 같은 명령열을 따라가지만, 입력(예: 자기 담당 원소의 위치)이 다르므로 각자 쓸모 있는 일을 한다. 강사는 이를 함수형 프로그래밍의 map 과 비슷하다고 설명한다. 스레드마다 다른 프로그램을 짜는 것이 아니라 '이 명령을 모든 입력에 적용하라'고 말하는 것이므로, 의외로 프로그래밍이 쉽다.",
+    "스레드는 블록으로 묶인다. 블록이 중요한 이유는 하나의 블록은 반드시 하나의 SM 에서 실행된다는 보장 때문이다. 같은 SM 에 있으니 블록 안의 스레드들은 그 SM 의 공유 메모리를 함께 읽고 쓸 수 있다. 그래서 '여러 스레드가 같은 데이터를 반복해서 쓰는' 계산은 블록 안에 모아야 한다. 반대로 블록끼리는 서로의 공유 메모리를 볼 수 없어서, 정보를 넘기려면 느린 전역 메모리에 썼다가 다시 읽어야 한다.",
+    "실제로 하드웨어가 명령을 내리는 단위는 워프, 번호가 연속인 32개 스레드다. 스케줄러는 스레드 하나하나가 아니라 워프 단위로 '다음에 어느 워프의 명령을 실행할지'를 고른다. 이렇게 묶으면 스케줄링 비용이 32분의 1이 된다. 워프 안의 32개 스레드는 같은 박자에 같은 명령을 실행한다 — 다음 장의 제어 분기 문제와 뒤의 메모리 병합(coalescing)이 모두 이 사실에서 나온다. 스레드와 워프는 가벼워서 언제든 멈추고 바꿔 끼울 수 있다. 한 워프가 메모리를 기다리면 스케줄러가 준비된 다른 워프로 즉시 넘어가 지연을 숨긴다.",
+    "메모리 모델을 정리하면 다음과 같다. 각 스레드는 자기 레지스터(가장 빠르고, 배열 시작 주소 같은 작은 값을 둔다)와 로컬 메모리를 갖는다. 블록은 공유 메모리를 함께 쓴다. 그리드(커널 하나가 띄운 모든 블록) 전체는 전역 메모리와 읽기 전용 상수 메모리를 본다. 호스트, 즉 CPU 쪽 코드는 전역·상수 메모리로 데이터를 보내고 받아 올 수 있다(GPU 메모리를 넘는 것을 CPU 메모리로 내리는 오프로드도 이 경로다). 이 강의 전체를 관통하는 규칙은 하나다: 공유 메모리를 벗어나는 순간 느려진다. 그러니 블록 단위로 일을 묶어 전역 메모리 왕복을 줄이는 것이 이 게임의 이름이다."
+   ],
+   "diagram": {
+    "title": "커널 하나가 실행되는 구조",
+    "code": "flowchart LR\n  K[\"커널 launch: grid = 블록 여러 개\"] --> B0[\"블록 (0,0) → SM 하나에 배정\"]\n  K --> B1[\"블록 (0,1) → 다른 SM\"]\n  B0 --> W0[\"워프 0: 스레드 0~31\"]\n  B0 --> W1[\"워프 1: 스레드 32~63\"]\n  B0 --> S0[(\"블록 공유 메모리\")]\n  W0 --> R0[\"스레드별 레지스터\"]\n  B0 -. 블록 간 통신 .-> GM[(\"전역 메모리 HBM\")]\n  B1 -. 블록 간 통신 .-> GM"
+   },
+   "code": {
+    "lang": "python",
+    "src": "# CUDA 의 인덱스 계산을 파이썬으로 흉내: 스레드 하나가 원소 하나를 맡는 벡터 덧셈\nimport numpy as np\nn, BLOCK = 1000, 256\nx, y = np.arange(n, dtype=np.float32), np.ones(n, np.float32)\nout = np.zeros(n, np.float32)\ngrid = (n + BLOCK - 1) // BLOCK                 # 블록 수 = ceil(n / 블록 크기)\nfor blockIdx in range(grid):                    # 실제로는 여러 SM 이 동시에\n    for threadIdx in range(BLOCK):              # 실제로는 워프 단위로 32개씩 동시에\n        i = blockIdx * BLOCK + threadIdx        # 전역 인덱스\n        if i < n:                               # 마지막 블록의 남는 스레드는 쉰다\n            out[i] = x[i] + y[i]\nprint(grid, \"블록,\", grid * BLOCK // 32, \"워프,\", grid * BLOCK - n, \"스레드가 놀았다\")\nprint(np.array_equal(out, x + y))",
+    "note": "실행 결과: '4 블록, 32 워프, 24 스레드가 놀았다', True. 마지막 블록에서 남는 스레드가 생기는 것이 뒤 장의 타일 경계 낭비의 가장 작은 형태다."
+   },
+   "pitfalls": [
+    "'모든 스레드가 같은 명령을 실행한다'는 정확히는 '한 워프 안의 32 스레드가 같은 박자에 같은 명령'이다. 서로 다른 워프는 프로그램의 다른 위치에 있을 수 있다.",
+    "블록 크기는 32의 배수로 잡는 것이 기본이다. 100 스레드짜리 블록은 워프 4개(128 스레드)를 차지하고 28개는 놀게 된다.",
+    "블록 하나에 워프가 몇 개인지는 하드웨어 상수가 아니라 프로그래머가 정하는 블록 크기/32 이다(블록당 최대 1024 스레드 = 32 워프 — 노트 보충)."
+   ],
+   "check": [
+    {
+     "q": "두 블록이 중간 결과를 주고받아야 하는 알고리즘은 왜 느려지기 쉬운가?",
+     "a": "블록마다 다른 SM 에서 돌 수 있고 공유 메모리는 블록 안에서만 보이므로, 블록 간 정보 교환은 전역 메모리(HBM)에 쓰고 다시 읽는 수밖에 없기 때문이다."
+    },
+    {
+     "q": "n = 1000 원소에 블록 크기 256 이면 블록·워프는 몇 개이고 노는 스레드는 몇 개인가?",
+     "a": "블록 ceil(1000/256) = 4, 스레드 1024 → 워프 32개, 노는 스레드 24개."
+    }
+   ]
+  },
+  {
+   "start": 1038,
+   "title": "TPU — 같은 결론에 다른 크기로 도착한 가속기",
+   "points": [
+    "TPU 도 큰 그림은 같다: 행렬곱 전용 유닛(MXU), 벡터 연산 유닛(VPU), 가벼운 제어(스칼라 유닛), 느린 HBM 과 빠른 온칩 메모리(VMEM).",
+    "차이는 크기와 유연성: H100 은 SM 132개·텐서 코어 528개, TPU v5p 는 TensorCore 2개·MXU 8개 — 크고 적은 행렬곱 유닛.",
+    "GPU 의 텐서 코어와 TPU 의 MXU 는 둘 다 시스톨릭 배열 구조다.",
+    "이름 함정: TPU 의 'TensorCore' 는 GPU 의 SM 에 해당하는 프로세서, GPU 의 '텐서 코어'는 행렬곱 유닛이다.",
+    "큰 MXU 는 작은 행렬을 싫어한다 — 강사의 실험에서 배치 크기를 64 아래로 내릴 수 없었다. 진짜 큰 차이는 칩이 아니라 칩 사이 네트워크다."
+   ],
+   "on_screen": "'Side thread – What about TPUs? GPUs, TPUs, and many other accelerators are at a high level, similar': TPU TensorCore 추상도(Scalar Unit 은 CPU 처럼 VPU·MXU 에 명령을 나눠 준다, VPU 는 활성화 같은 원소별 연산, MXU 는 행렬곱 — 칩 FLOPs 의 주역, HBM 은 가중치·활성값·옵티마이저 상태 저장, HBM 대역폭이 데이터가 연산 유닛을 오가는 속도를 정한다). 'A GPU has more SMs, TPUs has fewer TCs (but similar matmul perf)'. 'Core structure – lightweight control, fast (big) matmul unit, fast memory. Differences – how the accelerators are networked (in the parallelism lecture), no warps (just blocks – tradeoffs in matmul vs non-matmul)'. JAX scaling book 의 대응표: SM ↔ Tensor Core, Warp Scheduler ↔ VPU, CUDA Core ↔ VPU ALU, SMEM(L1) ↔ VMEM, Tensor Core ↔ MXU, HBM ↔ HBM. 개수표: H100 # / TPU v5p # — SM 132 / TensorCore 2, Warp Scheduler 528 / VPU slots 8, SMEM 32MB / VMEM 128MB, Registers 32MB / Vector Registers 256MB, Tensor Core 528 / MXU 8.",
+   "explain": [
+    "강사는 TPU 를 '평행 진화'의 예로 소개한다. 에너지 효율 좋은 머신러닝 가속기를 만들려고 하면 결국 같은 곳에 도착한다는 것이다. TPU 코어에도 명령을 나눠 주는 스칼라 유닛(GPU 의 제어부), 원소별 연산을 하는 벡터 유닛 VPU(GPU 의 CUDA 코어 무리), 행렬곱을 하는 MXU(GPU 의 텐서 코어)가 있고, 메모리도 느리고 큰 HBM 과 빠르고 작은 온칩 메모리 VMEM 의 두 층이다. 그러니 이 강의에서 GPU 에 대해 배우는 내용(메모리 계층 존중, 행렬곱 중심 설계)은 거의 그대로 TPU 로 옮겨진다.",
+    "차이는 '얼마나 크게, 몇 개로' 나누었냐다. JAX scaling book 표에 따르면 H100 은 SM 132개에 텐서 코어 528개(SM 당 4개)를 갖고, TPU v5p 칩은 TensorCore 2개에 MXU 8개뿐이다. 두 칩의 행렬곱 성능은 비슷한 수준이므로, TPU 의 MXU 하나하나는 GPU 텐서 코어보다 훨씬 크다(노트 보충: v5p 의 MXU 는 128×128 시스톨릭 배열이다). 작은 유닛이 많으면 이런저런 모양의 일을 유연하게 나눌 수 있고, 큰 유닛이 적으면 큰 행렬곱에 최적이지만 작은 일에는 낭비가 생긴다. 강사는 자신의 논문에서 배치 크기 탐색이 64에서 멈춘 이유가 TPU 가 그보다 작은 차원의 입력을 받지 않았기 때문이라고 일화를 들려준다. 또 TPU 에는 워프 개념이 없고 블록만 있어, 행렬곱이 아닌 연산에서는 GPU 보다 불리한 절충을 한다. 반대로 TPU 의 L2 에 해당하는 층은 더 빠르게 설계되어 있다는 것이 장점으로 언급된다.",
+    "용어 함정 하나: TPU 문서에서 'TensorCore' 는 SM 에 해당하는 프로세서 전체를 말하고, NVIDIA 문서에서 '텐서 코어'는 SM 안의 행렬곱 회로를 말한다. 같은 이름이 서로 다른 층을 가리키니 문맥으로 구분해야 한다. 그리고 GPU 텐서 코어와 TPU MXU 는 바닥 회로가 같은 계열, 시스톨릭 배열이다. 시스톨릭 배열은 곱셈-덧셈 유닛(PE)을 격자로 깔고, 한쪽에서 A 의 값을, 다른 쪽에서 B 의 값을 박자마다 한 칸씩 흘려보내는 구조다. 각 PE 는 지나가는 두 값을 곱해 자기 누산기에 더하고 값을 이웃에게 넘긴다. 메모리에서 한 번 꺼낸 값이 격자를 지나가며 여러 번 쓰이므로, 메모리 접근 대비 연산이 매우 많다 — 바로 이것이 행렬곱 전용 회로가 빠른 이유다.",
+    "강사가 마지막으로 강조하는 차이는 칩 안이 아니라 칩 사이다. GPU 와 TPU 의 가장 큰 차이는 가속기들을 어떻게 네트워크로 엮느냐(TPU 의 토러스 연결 대 GPU 의 NVLink·스위치)이고, 이는 병렬화 강의(7·8강)에서 다룬다. 칩 하나만 놓고 보면 둘 다 결국 '빠른 메모리를 아껴 쓰며 행렬을 곱하는 기계'다."
+   ],
+   "formulas": [
+    {
+     "expr": "C[i,j] = Σ_k A[i,k]·B[k,j],  PE(i,j) 는 박자 t 에 A[i, t−i−j]·B[t−i−j, j] 를 받아 누산",
+     "meaning": "출력 고정형 시스톨릭 배열에서 PE(i,j) 는 C[i,j] 를 쥐고 있다. A 의 i 번째 행은 i 박자 늦게, B 의 j 번째 열은 j 박자 늦게 비스듬히 넣으면 같은 k 를 가진 두 값이 정확히 같은 박자에 PE(i,j) 에서 만난다. n×k 와 k×m 을 곱하는 데 n+m+k−2 박자가 걸린다."
+    }
+   ],
+   "example": {
+    "title": "2×3 와 3×4 를 시스톨릭 배열로",
+    "body": "A = [[0,1,2],[3,4,5]], B = 0~11 을 3×4 로 채운 행렬. PE 는 2×4 = 8개. 박자 수 = 2 + 4 + 3 − 2 = 7. 예를 들어 PE(0,0) 은 박자 0,1,2 에 (0·0), (1·4), (2·8) 을 받아 0+4+16 = 20 을 만든다. PE(1,3) 은 i+j = 4 박자 늦게 시작해 박자 4,5,6 에 (3·3), (4·7), (5·11) 을 받아 9+28+55 = 92. 결과 [[20,23,26,29],[56,68,80,92]] 는 A@B 와 같다. A 의 원소 하나는 메모리에서 한 번 읽히고 격자의 한 행(4개 PE)을 지나며 4번 쓰인다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\ndef systolic(A, B):\n    \"\"\"출력 고정(output-stationary) 시스톨릭 배열 흉내: PE(i,j)가 C[i,j]를 쥐고,\n    A 는 왼쪽에서 오른쪽으로, B 는 위에서 아래로 한 칸씩 흘러간다.\"\"\"\n    n, k = A.shape; _, m = B.shape\n    C = np.zeros((n, m)); a_reg = np.zeros((n, m)); b_reg = np.zeros((n, m))\n    for t in range(n + m + k - 2):               # 박자(cycle)\n        a_reg = np.roll(a_reg, 1, axis=1); b_reg = np.roll(b_reg, 1, axis=0)\n        for i in range(n):                        # 왼쪽 가장자리로 A 를 비스듬히 넣는다\n            s = t - i; a_reg[i, 0] = A[i, s] if 0 <= s < k else 0\n        for j in range(m):                        # 위쪽 가장자리로 B 를 비스듬히 넣는다\n            s = t - j; b_reg[0, j] = B[s, j] if 0 <= s < k else 0\n        C += a_reg * b_reg                        # 모든 PE 가 같은 박자에 곱하고 더한다\n    return C, t + 1\nA = np.arange(6.).reshape(2, 3); B = np.arange(12.).reshape(3, 4)\nC, cycles = systolic(A, B)\nprint(C); print(\"일치:\", np.allclose(C, A @ B), \"박자 수:\", cycles)",
+    "note": "실행 결과: [[20,23,26,29],[56,68,80,92]], '일치: True 박자 수: 7'. np.roll 로 값이 오른쪽·아래로 한 칸씩 흐르는 것을 흉내 냈다(실제 MXU 는 가중치 고정형 등 다른 변형도 쓴다)."
+   },
+   "pitfalls": [
+    "'TensorCore' 라는 말은 TPU 에서는 프로세서(SM 급), GPU 에서는 행렬곱 유닛이다. 표를 읽을 때 반드시 어느 쪽 문서인지 확인한다.",
+    "표의 H100 'SMEM 32MB' 는 SM 하나가 아니라 132개 SM 의 합(SM 당 약 228KB)이다. TPU 의 VMEM 128MB 와 비교하려고 합계를 적은 것이다."
+   ],
+   "check": [
+    {
+     "q": "MXU 가 크고 적은 TPU 에서 배치 크기 16 짜리 작은 행렬곱을 돌리면 어떤 일이 생기나?",
+     "a": "큰 시스톨릭 배열의 대부분이 채워지지 않아 놀게 되고(또는 구현이 최소 차원을 요구해 아예 거부), 행렬곱 유닛 활용률이 크게 떨어진다. 작은 유닛이 많은 GPU 가 이런 모양에 더 유연하다."
+    }
+   ]
+  },
+  {
+   "start": 1357,
+   "title": "텐서 코어 이후 — 행렬곱만 특별히 빠르고, 메모리는 뒤처진다",
+   "points": [
+    "GPU 모델의 강점: SM 을 더해 쉽게 확장, SIMT 덕분에 비교적 쉬운 프로그래밍, 가볍게 갈아끼우는 스레드로 지연 숨기기.",
+    "초기에는 그래픽 셰이더를 해킹해 행렬곱을 했다. V100(2017)부터 텐서 코어가 행렬곱을 하드웨어로 한다.",
+    "그 결과 행렬곱 FLOPs 가 다른 부동소수점 연산보다 10배 넘게 빠르다 — 계산량을 키우는 아키텍처는 행렬곱 중심일 수밖에 없다.",
+    "20년간 하드웨어 FLOPs 60000배(2년에 3.0배), DRAM 대역폭 100배(1.6배), 인터커넥트 30배(1.4배).",
+    "연산과 메모리의 격차가 계속 벌어지므로 최적화의 대부분은 메모리 최적화가 된다. 추론에서는 prefill·decode 를 다른 칩에 나누는 일까지 생겼다."
+   ],
+   "on_screen": "'Strengths of the GPU model': Easily scales up hard workloads (by adding more SMs), Easy (?) to program due to the SIMT model(Instruction Decoder and Warp Scheduler 아래 스레드 줄), Threads are 'lightweight' and can be stopped and started(GPU 고처리량 대 CPU 저지연 타임라인). 'GPUs as fast matrix multipliers' — Larsen & McAllister 'Fast Matrix Multiplies using Graphics Hardware', 'Early days of NVIDIA GPUs – programmable shaders. Researchers hacked this to do matmuls'. 'New matmul hardware means matmuls are fast and special': Matmul vs non-matmul FLOPS across GPUs(K80, M60, P100, V100, A100, H100, 로그 축 TFLOPS — matmul 선이 V100 부터 급등), 'Tensor cores (introduced in V, T series) are specialized matrix multiplication circuits. Matmuls are >10x faster than other floating point ops!'. 'Compute scaling is faster than memory scaling': Scaling of Peak hardware FLOPS, and Memory/Interconnect Bandwidth — HW FLOPS 60000x/20yrs(3.0x/2yrs), DRAM BW 100x/20yrs(1.6x/2yrs), Interconnect BW 30x/20yrs(1.4x/2yrs), 점: R10000, Pentium II Xeon, GTX 580, K40, TPUv3, A100, H100, GDDR3~HBM2E, PCIe 1.0a~5.0, NVLink 1.0~4.0. 'FLOPs scale faster than memory – it's hard to keep our compute units fed with data!' Recap: GPUs are massively parallel / Compute(esp matmuls) scaled faster than memory / respect the memory hierarchy.",
+   "explain": [
+    "GPU 가 성공한 이유를 강사는 세 가지로 정리한다. 확장이 쉽다(SM 을 더 붙이면 된다). 프로그래밍이 생각보다 쉽다(SIMT 라서 스레드 하나의 코드만 쓰면 된다). 스레드가 가벼워서 멈춘 일을 다른 일로 즉시 바꿔 끼우며 처리량을 유지한다. 흥미로운 역사도 있다. 텐서 코어가 생기기 전, 연구자들은 그래픽용 셰이더 프로그램을 교묘하게 짜서 GPU 로 행렬곱을 했다. 그래픽 하드웨어가 대규모 병렬 계산에 쓸모 있다는 걸 사람들이 먼저 알아낸 것이다.",
+    "판이 바뀐 것은 V100 이다. NVIDIA 가 행렬곱만 하는 회로, 텐서 코어를 넣으면서 행렬곱은 머신러닝에서 '특권을 가진 연산'이 되었다. 슬라이드 그래프에서 K80·P100 까지는 행렬곱과 다른 연산의 FLOPs 가 비슷하다가 V100 부터 행렬곱 선만 위로 꺾여 H100 에서는 10배 넘게 벌어진다. 결론은 분명하다: 계산을 키워서 성능을 얻는 미래의 아키텍처라면 어떤 형태든 핵심에 행렬곱이 있을 것이다. 4강의 어텐션 대안(선형 어텐션, SSM)들도 결국 행렬곱으로 다시 쓸 수 있어야 실제로 빨라지는 이유가 여기 있다.",
+    "두 번째 그래프는 이 강의 후반 전체의 동기다. 20년 동안 하드웨어 최고 FLOPs 는 6만 배(2년마다 3배) 늘었는데, DRAM 대역폭은 100배(2년마다 1.6배), 칩 사이 연결 대역폭은 30배(1.4배) 늘었을 뿐이다. 2강의 언어로 말하면 루프라인의 '꺾이는 점(ridge)', 즉 연산 한계에 닿기 위해 필요한 산술 강도가 해마다 높아진다는 뜻이다. 예전에는 메모리를 별로 신경 쓰지 않아도 됐지만, 그래프 오른쪽으로 갈수록 같은 커널이 메모리를 기다리는 시간이 커진다. 그래서 오늘 배울 기법 대부분이 메모리 기법이다.",
+    "질의응답에서 이 격차가 칩 설계와 운영에 미치는 영향도 나온다. 추론에서는 이미 prefill(긴 프롬프트를 한꺼번에 처리 — 행렬곱이 무거움)과 decode(토큰을 하나씩 생성 — 메모리 대역폭에 묶임)를 서로 다른 칩에 나눠 돌리는 prefill/decode 분리가 쓰인다. 강사는 StepFun 의 Step-3 처럼 어텐션과 MLP 를 다른 가속기에 보내는 설계까지 소개하며, 빠른 메모리를 영리하게 쓰는 기법의 가치가 점점 커진다고 말한다. 이 주제는 초청 강연(9EEm4iMAF5s)의 prefill·decode 이야기와 바로 이어진다."
+   ],
+   "formulas": [
+    {
+     "expr": "ridge = P_peak / BW   [FLOP/byte]",
+     "meaning": "P_peak 은 칩의 최고 연산 속도(FLOP/s), BW 는 HBM 대역폭(byte/s). 산술 강도가 이 값보다 낮으면 메모리 한계, 높으면 연산 한계다. 2강 루프라인의 꺾이는 점이다."
+    },
+    {
+     "expr": "ridge(t) ∝ (3.0 / 1.6)^(t/2)",
+     "meaning": "강의 그래프의 기울기를 그대로 쓰면 꺾이는 점은 2년마다 약 1.9배씩 오른다. t 는 연도 수. 같은 커널이 해가 갈수록 '더 메모리 한계 쪽으로' 밀려난다는 뜻이다."
+    }
+   ],
+   "example": {
+    "title": "세대별 꺾이는 점을 손으로",
+    "body": "bf16 밀집 피크와 HBM 대역폭(스펙 시트): V100 125 TFLOP/s ÷ 0.9 TB/s ≈ 139, A100 312 ÷ 2.04 ≈ 153, H100 989 ÷ 3.35 ≈ 295 FLOP/byte. H100 에서 연산 한계에 닿으려면 HBM 에서 1바이트 읽을 때마다 약 300번 연산해야 한다. 2강의 ReLU(bf16 이면 4바이트당 1 FLOP, 강도 0.25)는 이 기준의 1/1000 이다. 20년 기울기로는 FLOPs 3^10 ≈ 59,000배, DRAM 1.6^10 ≈ 110배 → 필요한 산술 강도는 약 540배 올랐다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 강의 그래프의 기울기: 연산 3.0x/2년, DRAM 대역폭 1.6x/2년, 인터커넥트 1.4x/2년\nfor yrs in (2, 10, 20):\n    f, m, i = 3.0 ** (yrs / 2), 1.6 ** (yrs / 2), 1.4 ** (yrs / 2)\n    print(f\"{yrs:2d}년: FLOPs x{f:9.0f}  DRAM x{m:6.1f}  링크 x{i:5.1f}  -> ridge(필요 산술강도) x{f/m:7.1f}\")\n# 실제 칩의 ridge = 피크 FLOP/s ÷ HBM 대역폭 (bf16 밀집, 스펙 시트)\nfor name, peak, bw in ((\"V100\", 125e12, 0.9e12), (\"A100\", 312e12, 2.04e12), (\"H100\", 989e12, 3.35e12)):\n    print(f\"{name}: ridge {peak / bw:5.0f} FLOP/byte\")",
+    "note": "실행 결과: 10년 FLOPs ×243, DRAM ×10.5, 링크 ×5.4 → ridge ×23.2. 20년 ×59049, ×110, ×28.9 → ×537. V100 139, A100 153, H100 295 FLOP/byte."
+   },
+   "pitfalls": [
+    "'행렬곱이 10배 빠르다'는 FLOP 당 속도 얘기다. 행렬곱이 아닌 연산(softmax, LayerNorm, 활성화)은 FLOPs 가 적어도 시간을 많이 먹을 수 있고, 대개 메모리 한계다.",
+    "텐서 코어는 V100(Volta)에서 처음 나왔고 T4(Turing)에도 있다. 슬라이드의 'V, T series' 는 이 두 세대를 말한다."
+   ],
+   "check": [
+    {
+     "q": "연산은 2년에 3배, 메모리 대역폭은 1.6배씩 는다면, 지금 연산 한계에 겨우 닿는 커널은 4년 뒤 어떻게 되나?",
+     "a": "꺾이는 점이 (3/1.6)² ≈ 3.5배 올라가므로, 같은 산술 강도의 커널은 메모리 한계 쪽으로 밀려나 피크의 약 30% 정도만 쓰게 된다."
+    }
+   ]
+  },
+  {
+   "start": 1809,
+   "title": "루프라인으로 보는 목표, 그리고 기법 1: 제어 분기",
+   "points": [
+    "목표: 루프라인의 비스듬한 부분(메모리 한계)을 벗어나 평평한 부분(연산 한계)에 올라서는 것 — 즉 산술 강도 높이기.",
+    "기법 여섯: ① 제어 분기 피하기 ② 저정밀도 ③ 연산 융합 ④ 재계산 ⑤ 메모리 병합 ⑥ 타일링. ①만 메모리와 무관하다.",
+    "SIMT 에서 if/else 는 워프가 두 갈래를 차례로 모두 실행하고, 해당하지 않는 스레드는 마스크된 채 논다(control divergence).",
+    "그래서 GPU 코드는 분기 대신 마스크 곱셈을 쓴다(ReLU 를 if 가 아니라 0/1 마스크로)."
+   ],
+   "on_screen": "'Part 2: Making ML workloads fast on a GPU' — FLOPs achieved for square matmuls 그래프와 'Performance on a GPU can be complex, even for something as simple as a square matmul'. 'What makes ML workloads fast? The roofline model': Throughput(GFLOP/s) 대 Operational Intensity(flops/byte) 로그 그래프 — GPU registers / GPU shared memory / GPU main memory / CPU main memory 의 기울어진 선, GPU ALU throughput·CPU ALU throughput 의 평평한 선, Dense matrix multiply(◆)와 Sparse matrix multiply(●) 점. 'Key to this section: how do we avoid being memory bound?'. 'How do we make GPUs go fast? 1. Control divergence (not a memory bottleneck..) 2. Low precision computation 3. Operator fusion 4. Recomputation 5. Coalescing memory 6. Tiling'. 'Control divergence (not a memory issue)': 코드 if (threadIdx.x < 4) { A; B; } else { X; Y; } Z; 와 시간축 그림 — 일부 스레드가 A·B 를 하는 동안 나머지는 멈추고, 그다음 X·Y, 다시 합쳐 Z. 'Conditionals are fine, but lead to significant overhead from the execution model'.",
+   "explain": [
+    "2강에서 유도한 루프라인을 이번에는 '목표 지점'으로 쓴다. 산술 강도(읽고 쓴 바이트 하나당 연산 수)가 낮은 구간에서는 처리량이 강도에 비례해 오르는 비스듬한 선 위에 있고, 강도가 꺾이는 점을 넘으면 연산 유닛이 포화되어 평평해진다. 평평한 구간에 올라서면 더 할 일이 없다 — 하드웨어가 낼 수 있는 최대치다. 슬라이드의 그림은 레지스터·공유 메모리·주 메모리마다 기울어진 선이 따로 있음을 보여 준다. 같은 연산이라도 데이터를 어느 층에서 가져오느냐에 따라 다른 선 위에 놓인다는 뜻이고, 이것이 뒤의 타일링이 노리는 점이다. 그러니 이 단원의 질문은 하나로 줄어든다: 어떻게 메모리 한계를 피하나?",
+    "여섯 기법 중 첫째만 결이 다르다. 제어 분기(control divergence)는 메모리가 아니라 SIMT 실행 모델에서 나오는 문제다. CPU 에서 if 문은 둘 중 한 갈래만 실행하고 끝난다. GPU 에서는 한 워프의 32 스레드가 같은 명령을 같은 박자에 실행해야 하므로, 스레드 일부는 if 쪽, 나머지는 else 쪽이면 워프는 두 갈래를 차례로 모두 걷는다. if 쪽을 실행하는 동안 else 스레드는 마스크된 채 아무것도 하지 않고, 그다음 else 쪽을 실행하는 동안 if 스레드가 논다. 두 갈래가 합쳐진 뒤(Z)에야 다시 모두 함께 움직인다.",
+    "그래서 분기가 갈리는 워프의 효율은 최대 절반 이하로 떨어진다. 단 한 스레드만 다른 쪽으로 가도 나머지 31개가 그 갈래를 기다려야 한다. 반대로 워프의 32 스레드가 모두 같은 쪽으로 가면 비용이 없다 — 분기 자체가 아니라 '워프 안에서 갈리는 것'이 문제다. 실무 GPU 코드에서 ReLU 를 'if x < 0 이면 0' 으로 쓰지 않고 x 에 (x > 0) 마스크를 곱하는 식으로 쓰는 이유다. 곱셈은 모든 스레드가 한 번에 하므로 갈라짐이 없다. 강사는 이 기법을 메모리 이야기와 따로 떼어 짧게 다루고 넘어간다.",
+    "코드의 두 번째 부분은 2강의 숫자를 H100 으로 다시 놓아 본다. ReLU 는 강도 0.25 로 피크의 0.1%, 융합한 원소별 연산도 0.4%다. 행렬곱조차 타일을 128×128 로 잡고 모든 타일을 HBM 에서 읽는다고 가정하면 강도 64 로 꺾이는 점(295)에 못 미친다. 실제 행렬곱 커널이 피크에 가까이 가는 것은 더 큰 타일, 이웃 블록끼리 L2 캐시에서 같은 타일을 나눠 읽기, 레지스터 수준의 재사용이 겹쳐 HBM 트래픽이 이 가정보다 훨씬 적기 때문이다(노트 보충). 이 숫자들이 '왜 메모리 기법이 다섯 개나 되나'에 대한 답이다."
+   ],
+   "formulas": [
+    {
+     "expr": "도달 FLOP/s = min(P_peak, I × BW)",
+     "meaning": "I 는 산술 강도(FLOP/byte), BW 는 데이터를 가져오는 층의 대역폭. 작은 쪽이 실제 상한이다. 2강의 루프라인 식 그대로."
+    },
+    {
+     "expr": "워프 효율 = (실제로 일한 스레드·박자) / (32 × 실행한 박자)",
+     "meaning": "if 쪽 비용 c₁, else 쪽 비용 c₂, if 비율 p 일 때 갈라지면 실행 박자는 c₁ + c₂, 일한 양은 32(p·c₁ + (1−p)·c₂). c₁ = c₂ 이면 효율은 정확히 50%."
+    }
+   ],
+   "example": {
+    "title": "한 스레드만 달라도 반이 사라진다",
+    "body": "if·else 양쪽이 10 박자씩인 코드. 32 스레드가 모두 if 쪽이면 10 박자, 효율 100%. 1 스레드만 else 쪽이면 워프는 if 10 + else 10 = 20 박자를 쓰고, 일한 양은 31×10 + 1×10 = 320 스레드·박자 → 320 / (32×20) = 50%. 16:16 으로 갈려도 같은 50%. 갈라짐의 비용은 '몇 개가 갈리나'가 아니라 '갈리느냐 마느냐'에 달렸다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 루프라인: 도달 가능한 FLOP/s = min(피크, 산술강도 × 대역폭)\nPEAK, BW = 989e12, 3.35e12            # H100 SXM bf16 밀집, HBM3 (스펙 시트 값)\nridge = PEAK / BW\ndef attain(I): return min(PEAK, I * BW)\nops = {\"ReLU bf16 (2B 읽고 2B 쓰기, 1 FLOP)\": 1 / 4,\n       \"sin²+cos² 융합 bf16 (~5 FLOP / 4B)\": 5 / 4,\n       \"행렬곱 타일 128x128 (T/2)\": 64,\n       \"행렬곱 타일 256x128\": 256 * 128 / (256 + 128),\n       \"행렬곱 4096³ 이상적(A,B,C 한 번씩)\": 2 * 4096**3 / (3 * 4096**2 * 2)}\nprint(f\"ridge = {ridge:.0f} FLOP/byte\")\nfor k, I in ops.items():\n    print(f\"{k:38s} I={I:8.2f}  {attain(I)/1e12:7.1f} TFLOP/s  ({attain(I)/PEAK:5.1%})\")\n# 워프 분기: 32 스레드 중 p 만 if 쪽이면 두 갈래를 차례로 돈다\ndef warp_eff(cost_if, cost_else, p):\n    used = 32 * (p * cost_if + (1 - p) * cost_else)\n    spent = 32 * (cost_if * (p > 0) + cost_else * (p < 1))\n    return used / spent\nfor p in (0, 1/32, 0.5, 1):\n    print(f\"if 비율 {p:5.3f} -> 워프 효율 {warp_eff(10, 10, p):.0%}\")",
+    "note": "실행 결과: ridge 295. ReLU bf16 I=0.25 → 0.8 TFLOP/s(0.1%), 융합 원소별 I=1.25 → 0.4%, 타일 128×128 I=64 → 21.7%, 256×128 I=85.3 → 28.9%, 4096³ 이상적 I=1365 → 100%. 분기 비율 0 → 100%, 1/32 → 50%, 0.5 → 50%, 1 → 100%."
+   },
+   "pitfalls": [
+    "if 문을 쓰면 안 된다는 뜻이 아니다. 워프 전체가 같은 쪽으로 가는 분기(예: 블록 번호에 따른 분기)는 비용이 거의 없다. 문제는 워프 안에서 갈리는 분기다.",
+    "루프라인의 '메모리 선'은 하나가 아니다. 같은 연산도 데이터를 HBM 에서 읽느냐 공유 메모리에서 읽느냐에 따라 다른 기울기의 선 위에 있다."
+   ],
+   "check": [
+    {
+     "q": "threadIdx.x < 4 인 스레드만 A 를 하고 나머지는 X 를 하는 코드에서, 워프 0(스레드 0~31)과 워프 1(스레드 32~63) 중 분기 손해를 보는 것은?",
+     "a": "워프 0 만 갈라진다(0~3 은 A, 4~31 은 X). 워프 1 의 스레드는 모두 X 쪽이라 손해가 없다."
+    }
+   ]
+  },
+  {
+   "start": 2070,
+   "title": "기법 2: 저정밀도 — 비트를 줄이면 옮길 것이 준다",
+   "points": [
+    "Bill Dally 그래프의 1000배 중 상당 부분이 숫자 표현(FP32 → FP16/BF16 → Int8)에서 왔다.",
+    "ReLU 예: FP32 는 읽기 4B + 쓰기 4B 로 FLOP 당 8바이트, FP16 은 4바이트 — 비트를 반으로 줄이면 산술 강도가 2배.",
+    "텐서 코어는 16비트 입력을 받아 곱은 정확히, 합은 FP32 누산기에 모은다(혼합 정밀도).",
+    "어려운 부분은 '어떤 연산을 어떤 형식으로'를 고르는 것: 행렬곱은 16비트로, 큰 합·softmax·exp·손실은 FP32 로.",
+    "FP8 부터는 표준 하나가 없다 — E4M3(해상도)와 E5M2(범위)를 자리에 따라 쓴다."
+   ],
+   "on_screen": "'Trick 1: Low precision computation' — Single-Chip Inference Performance 1000X in 10 years 그래프, Gains from: Number Representation(FP32, FP16, Int8, (TF32, BF16) ~16x), Complex Instructions(DP4, HMMA, IMMA ~12.5x), Process(28nm, 16nm, 7nm, 5nm ~2.5x), Sparsity(~2x), 'Model efficiency has also improved – overall gain > 1000x'; 'If you have fewer bits, you have fewer bits to move'. 'Low precision improves arithmetic intensity — Example: elementwise ReLU (x = max(0,x)) on a vector of size n. (Float 32 case) Memory access: 1 read (x), 1 write (if x<0), float 32 = 4 bytes per op. Operations: 1 comparison op, 1 FLOP. Intensity: 8 bytes / FLOP. (Float 16) … float 16 = 2 bytes per op … Intensity: 4 bytes / FLOP'. 'Low precision drives faster matrix multiplies': Tensor cores 그림 — 16-bit input 두 개 → Full precision product → Sum with FP32 accumulator → FP32. 'Operations that can use 16-bit storage (FP16/BF16): Matrix multiplications, Most pointwise operations (e.g. relu, tanh, add, sub, mul). Operations that need more precision (FP32/FP16): Adding small values to large sums can lead to rounding errors, Reduction operations (e.g. sum, softmax, normalization). Operations that need more range (FP32/BF16): Pointwise operations where |f(x)| >> |x| (e.g. exp, log, pow), Loss functions'.",
+   "explain": [
+    "가장 손이 덜 가면서 효과가 큰 기법이 저정밀도다. 강사는 NVIDIA 가 하드웨어에서 가장 많이 투자하는 곳도 여기라고 말한다. 원리는 단순하다. 숫자 하나를 32비트 대신 16비트로 쓰면 옮겨야 할 바이트가 절반이 된다. 메모리 한계 연산이라면 그대로 2배 빨라진다. 2강에서 bf16·fp16·fp8 의 비트 배분과 혼합 정밀도를 이미 배웠으므로, 여기서는 '시스템 관점에서 왜 효과가 있나'와 '하드웨어가 실제로 어떻게 계산하나'에 집중한다.",
+    "슬라이드의 ReLU 예는 단순하지만 요점을 정확히 찌른다. 길이 n 벡터에 ReLU 를 적용하면 원소마다 한 번 읽고 한 번 쓰고, 연산은 비교 하나다. FP32 면 원소당 8바이트를 옮기고 1 FLOP 을 하니 'FLOP 당 8바이트'(산술 강도로 뒤집으면 0.125), FP16 이면 4바이트(0.25)다. 강사도 강의 중에 이 표기가 산술 강도의 역수라고 바로잡는다. 비트를 반으로 줄이면 같은 대역폭으로 두 배의 원소를 처리하므로 루프라인의 비스듬한 선 위에서 한 칸 오른쪽으로 옮겨 가는 셈이다.",
+    "행렬곱에서는 더 정교한 일이 벌어진다. 텐서 코어는 16비트(또는 8비트) 입력 두 개를 받아 곱셈은 손실 없이 하고, 그 곱들을 FP32 누산기에 더한다. 결과도 FP32 로 낸다. 왜 누산만 넓게 할까? 큰 합에 작은 값을 계속 더하면 좁은 형식에서는 작은 값이 반올림으로 사라지기 때문이다. bf16 의 가수는 7비트라 합이 커질수록 한 칸의 간격이 커지고, 수천 개 곱을 더하는 내적에서는 오차가 눈에 띄게 쌓인다. 아래 코드는 4096 길이 내적을 bf16 누산으로 하면 답이 −18.35 가 아니라 −13.94 가 됨을 보여 준다.",
+    "강사가 저정밀도를 '흑마술'이라고 부르는 이유는 비트를 줄이는 것 자체가 아니라 '어느 연산을 어느 형식으로 둘지'를 고르는 일 때문이다. 슬라이드 표에 따르면 행렬곱과 대부분의 원소별 연산(relu, tanh, 덧셈·곱셈)은 16비트 저장으로 충분하다. 큰 합에 작은 값을 더하는 연산, 합·softmax·정규화 같은 축소 연산은 정밀도가 더 필요하고, exp·log·pow 처럼 출력이 입력보다 훨씬 커질 수 있는 연산과 손실 함수는 범위가 더 필요하다. 이 목록은 수년간의 경험적 시행착오로 쌓였다. FP8 로 가면 표준 형식조차 하나가 아니다. 지수 4·가수 3 의 E4M3 는 해상도 쪽, 지수 5·가수 2 의 E5M2 는 범위 쪽이라 쓰는 자리가 다르다."
+   ],
+   "formulas": [
+    {
+     "expr": "산술 강도 I = FLOPs / (읽은 바이트 + 쓴 바이트),  ReLU: I = 1 / (2·b)",
+     "meaning": "b 는 원소 하나의 바이트 수(FP32 4, BF16 2, FP8 1). ReLU 는 원소당 1 FLOP, 읽기 b + 쓰기 b. FP32 0.125, BF16 0.25, FP8 0.5 FLOP/byte."
+    },
+    {
+     "expr": "c = Σ_k a_k·b_k,  a_k, b_k ∈ bf16,  곱은 정확, 누산 c 는 fp32",
+     "meaning": "텐서 코어의 혼합 정밀도 내적. 두 bf16 가수(8비트)의 곱은 16비트 가수로 fp32(24비트 가수)에 손실 없이 들어가므로 곱셈 오차가 없고, 덧셈 반올림만 fp32 수준으로 생긴다."
+    }
+   ],
+   "example": {
+    "title": "bf16 누산이 왜 위험한가 — 손으로 한 번",
+    "body": "bf16 은 가수 7비트라 [256, 512) 구간에서 표현 간격이 2 다(256 × 2⁻⁷). 누산값이 300 일 때 0.9 를 더하면 300.9 → 가장 가까운 bf16 은 300 이므로 그대로 300. 0.9 를 100번 더해도 300 에 머문다(fp32 면 390). 내적처럼 수천 개를 더하면 작은 기여가 통째로 사라지는 일이 반복된다. 그래서 텐서 코어는 입력만 16비트로 받고 누산은 fp32 로 한다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\ndef bf16(x):                                  # float32 -> bf16 (최근접 짝수 반올림) -> float32\n    b = np.asarray(x, np.float32).view(np.uint32)\n    b = (b + 0x7FFF + ((b >> 16) & 1)) & 0xFFFF0000\n    return b.view(np.float32)\nrng = np.random.default_rng(0)\nK = 4096\na = bf16(rng.normal(size=K)); b = bf16(rng.normal(size=K))   # 입력은 16비트\nexact = float(np.dot(a.astype(np.float64), b.astype(np.float64)))\nacc32 = np.float32(0); acc16 = np.float32(0)\nfor x, y in zip(a, b):\n    p = np.float32(x) * np.float32(y)                         # 곱은 정확하게\n    acc32 = np.float32(acc32 + p)                             # 텐서 코어: fp32 누산\n    acc16 = bf16(acc16 + p)                                   # 누산까지 bf16 이면\nprint(f\"정답 {exact:.4f} | fp32 누산 {acc32:.4f} | bf16 누산 {float(acc16):.4f}\")\nprint(\"ReLU 바이트/FLOP: fp32\", (4 + 4) / 1, \" bf16\", (2 + 2) / 1, \" fp8\", (1 + 1) / 1)",
+    "note": "실행 결과: '정답 -18.3537 | fp32 누산 -18.3536 | bf16 누산 -13.9375', ReLU 바이트/FLOP fp32 8.0, bf16 4.0, fp8 2.0. bf16 변환은 비트 연산으로 최근접 짝수 반올림을 흉내 냈다."
+   },
+   "pitfalls": [
+    "슬라이드의 '8 bytes / FLOP' 은 산술 강도가 아니라 그 역수다(강사도 강의 중 바로잡는다). 강도로는 FP32 0.125, FP16 0.25 FLOP/byte.",
+    "16비트 학습이란 모든 것이 16비트라는 뜻이 아니다. 누산·축소·exp·손실은 대개 FP32 로 남는다. 2강(kuYAsz7zspQ)의 혼합 정밀도 표와 함께 본다."
+   ],
+   "check": [
+    {
+     "q": "메모리 한계인 원소별 커널을 FP32 에서 BF16 으로 바꾸면 이론상 얼마나 빨라지나? 연산 한계인 큰 행렬곱은?",
+     "a": "원소별 커널은 옮기는 바이트가 절반이라 약 2배. 큰 행렬곱은 텐서 코어의 BF16 피크가 FP32(비-텐서코어) 피크보다 훨씬 높아 그 이상 빨라질 수 있다 — 이유가 다르다(대역폭 대 연산 피크)."
+    }
+   ]
+  },
+  {
+   "start": 2280,
+   "title": "저정밀도의 최전선 — MXFP8 의 블록 배율과 전치 문제, 그리고 FP4",
+   "points": [
+    "기존 FP8 학습: 텐서 하나에 FP32 배율 하나. 한 행렬 안에서도 크기가 크게 다르면 범위가 모자란다.",
+    "MXFP8(Blackwell): 32개 원소마다 배율 하나, 배율 자체도 8비트 E8M0(2의 거듭제곱). 배율이 많아진 덕분에 원소는 E4M3 로 가수를 더 쓴다.",
+    "문제: 행 방향으로 묶은 블록은 전치하면 열 방향이 된다 → 전치를 그냥 쓸 수 없고 다시 양자화해야 한다. 그래서 행렬마다 원본·전치 두 벌을 따로 양자화해 둔다.",
+    "모든 층을 내리지 않는다 — 안전한 행렬곱만 MXFP8, 나머지는 BF16. 행렬곱이 20~30% 정도 빨라지지만 양자화 비용 때문에 2배는 아니다.",
+    "FP4(블록 16개당 E4M3 배율, 값은 −6~6 의 격자)는 다음 세대 후보 — 강사는 아직 큰 실전 모델의 FP4 학습은 못 봤다고 말한다."
+   ],
+   "on_screen": "'Frontiers in low precision': 왼쪽 'Very low precision (FP8) with different tradeoffs' — FP16(1·5·10), BF16(1·8·7), FP8 E4M3, FP8 E5M2 비트 그림과 최소 간격(≈0.00098, ≈0.0078, 0.125, 0.25 수준). 오른쪽 'Multiple scaling factors MXFP8 (Blackwell)' — FP8 은 데이터 격자에 배율 하나, MXFP8 은 색으로 나뉜 블록마다 배율. 'MXFP8 has many interesting things about it: Uses E4M3 (more mantissa) due to more scale factors; Scale factors themselves are FP8 (E8M0), 1 per 32; Transposes are now nontrivial!'. 'MXFP8 training in practice' — Transformer block(Layer Norm, BMM, Softmax, Projection, FC1, Act, FC2) 중 초록(MXFP8)·회색(BF16) 구분, Weight/Activation 이 quantize → MXFP8 → FPROP, transpose & quantize → DGRAD·WGRAD, 'Notice – not all weights in MXFP8, transposes also separately quantized' (arxiv 2506.08027). 'Frontiers in low precision: MXFP4..' 4비트 값 표(0, ±0.5, ±1, ±1.5, ±2, ±3, ±4, ±6), 'This is all the values you can represent! 1 per 16 scaling, E4M3 scaling factors.'",
+   "explain": [
+    "FP8 의 지수는 4~5비트뿐이라 표현 범위가 좁다. 그래서 FP8 학습은 텐서마다 FP32 배율(scale)을 하나 두고, 값을 배율로 나눠 FP8 범위 안에 넣었다가 계산 뒤에 다시 곱한다. 문제는 한 행렬 안에서도 크기가 크게 다를 수 있다는 점이다. 어떤 토큰의 활성값은 다른 토큰보다 수백 배 클 수 있는데, 배율이 하나면 큰 값에 맞추느라 작은 값들이 바닥 아래로 사라진다. 해결책은 배율을 여러 개로 나누는 것이다. 2강에서 본 NVFP4 의 블록 배율과 같은 생각이다.",
+    "Blackwell 세대가 지원하는 MXFP8 은 연속된 32개 원소마다 배율을 하나씩 둔다. 배율이 많아졌으니 배율 자체는 싸야 한다. 그래서 배율은 지수만 8비트인 E8M0, 즉 2의 거듭제곱이다. 범위 걱정을 배율이 떠맡으니 원소는 범위 대신 해상도를 고를 수 있어, 그래디언트에도 E5M2 대신 가수가 하나 더 많은 E4M3 를 쓴다. 강사는 여기서 청중에게 이 설계의 약점을 물어본다. 답은 전치다. 행 방향으로 32개씩 묶어 양자화한 행렬을 전치하면 블록이 열 방향으로 놓이게 되어, 역전파에서 필요한 '전치 행렬의 행 방향 블록'과 맞지 않는다. 예전에는 전치가 공짜였지만 이제는 다시 양자화해야 한다.",
+    "실제 구현(슬라이드의 MXFP8 학습 레시피, arXiv 2506.08027)은 이 문제를 무식하지만 확실하게 푼다. 양자화하는 행렬마다 원본 방향과 전치 방향 두 벌을 각각 따로 양자화해 둔다. 순전파(FPROP)는 원본을, 입력 그래디언트(DGRAD)와 가중치 그래디언트(WGRAD)는 전치 쪽을 쓴다. 그리고 모든 층을 내리지도 않는다 — 트랜스포머 블록에서 사영(projection)과 FC 층의 행렬곱만 MXFP8 이고, 어텐션 BMM·softmax·LayerNorm 은 BF16 으로 남는다. 어느 층을 내려도 안전한지는 다시 시행착오로 정한다. 결과적으로 행렬곱 크기에 따라 20~30% 남짓 빨라지지만, 양자화·역양자화 비용 때문에 2배에는 못 미친다. 질문에서 나온 배율 결정 방식도 정리해 두자: 배율은 학습되는 파라미터가 아니라 블록의 최댓값이나 과거 통계로 정하는 규칙이고, 경사로 학습하지 않는다.",
+    "그다음 단계가 FP4 다. 슬라이드 한 장에 표현 가능한 값이 모두 들어간다: 0, ±0.5, ±1, ±1.5, ±2, ±3, ±4, ±6. 16개 원소마다 E4M3 배율 하나를 둔다. 강사는 FP4 로 학습한 논문은 있지만 큰 실전 모델을 FP4 로 학습했다는 얘기는 아직 못 들었다며, 다음 세대 모델은 아마 FP4 일 것이라고 전망한다(강사 의견). 질의응답에서는 마지막 층은 손실에 직접 영향이 커서 양자화하면 불안정해지기 쉽다는 이야기와, 실무에서는 큰 모델을 학습한 뒤 양자화하되 양자화 인지 학습과 사후 양자화를 섞는다는 이야기, 구조적 희소성은 많이 연구됐지만 표현 손실 대비 이득이 아직 뚜렷하지 않다는 강사 의견이 나온다."
+   ],
+   "formulas": [
+    {
+     "expr": "x̂_i = E4M3(x_i · 2^{k_b}) / 2^{k_b},   k_b = ⌊log₂(448 / max_{i∈b}|x_i|)⌋",
+     "meaning": "블록 b(연속 32개) 안의 원소 x_i 에 공통 2의 거듭제곱 배율 2^{k_b}(E8M0 로 저장)를 곱해 FP8 E4M3 로 반올림한 뒤 다시 나눈다. k_b 는 블록 최댓값이 E4M3 최대 448 안에 들도록 고른다. 같은 x_i 라도 어떤 블록에 묶이느냐(행 대 열)에 따라 k_b 가 달라져 결과가 달라질 수 있다."
+    },
+    {
+     "expr": "Q_row(Xᵀ) ≠ (Q_row(X))ᵀ",
+     "meaning": "행 방향 블록으로 양자화한 X 를 전치한 것과, Xᵀ 를 행 방향 블록(= X 의 열 방향 블록)으로 새로 양자화한 것은 일반적으로 다르다. 그래서 두 벌을 따로 만든다."
+    }
+   ],
+   "example": {
+    "title": "같은 숫자가 블록에 따라 0 이 된다",
+    "body": "행 하나는 크기 100 근처, 다른 행은 0.001 근처라고 하자. 행 방향 블록이면 작은 행은 자기 블록의 최댓값(0.001)에 맞춘 배율을 받아 E4M3 의 가수 3비트로 상대오차 몇 % 안에서 표현된다. 열 방향 블록이면 한 블록 안에 100 과 0.001 이 섞여 배율이 100 에 맞춰지고(2^2 = 4 배 확대), 0.001 × 4 = 0.004 는 E4M3 최소 서브노멀 간격 2⁻⁹ ≈ 0.00195 의 두 칸(0.0039)으로만 표현되어 유효 비트가 1~2개로 줄고, 0.0002 보다 작은 값은 아예 0 이 된다. 아래 코드에서 행마다 크기를 10⁻⁴~10² 로 흩뜨린 64×64 행렬을 두 방식으로 양자화하면 28% 원소의 값이 서로 다르고, 열 방향 쪽은 9.6% 가 0 이 된다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\ndef e4m3(x):                         # FP8 E4M3 근사: 가수 3비트, 최대 448, 2^-6 아래는 2^-9 간격\n    x = np.clip(x, -448, 448); m, e = np.frexp(x)\n    normal = np.ldexp(np.round(m * 16) / 16, e)\n    sub = np.round(x * 2**9) / 2**9                      # 서브노멀 구간\n    return np.where(np.abs(x) < 2**-6, sub, normal)\ndef mxfp8_rows(X, blk=32):           # 행 방향 32개마다 E8M0(2의 거듭제곱) 배율 하나\n    R, C = X.shape; Xb = X.reshape(R, C // blk, blk)\n    amax = np.abs(Xb).max(-1, keepdims=True)\n    s = 2.0 ** np.floor(np.log2(448 / amax))             # 블록 최댓값이 448 안에 들게\n    return (e4m3(Xb * s) / s).reshape(R, C)\nrng = np.random.default_rng(0)\nX = rng.normal(size=(64, 64)) * 10.0 ** rng.uniform(-4, 2, size=(64, 1))  # 행(토큰)마다 크기가 다르다\nQ_fwd = mxfp8_rows(X)                # 순전파: X 를 행 블록으로\nQ_bwd = mxfp8_rows(X.T).T            # 역전파에 쓸 Xᵀ: 열 블록으로 다시 양자화\nprint(\"전치로 재사용 가능?\", np.array_equal(Q_fwd, Q_bwd))\nprint(\"값이 다른 원소 비율:\", round(float(np.mean(Q_fwd != Q_bwd)), 3))\nfor name, A in ((\"행 블록\", Q_fwd), (\"열 블록\", Q_bwd)):\n    rel = np.abs(A - X) / np.abs(X)\n    print(f\"{name}: 원소 상대오차 중앙값 {np.median(rel):.4f}, 0 이 된 원소 {np.mean(A == 0):.1%}\")",
+    "note": "실행 결과: '전치로 재사용 가능? False', '값이 다른 원소 비율: 0.281', 행 블록 상대오차 중앙값 0.0219·0 이 된 원소 0.0%, 열 블록 0.0299·9.6%. E4M3 반올림·서브노멀을 단순화한 흉내다. 서브노멀(언더플로)을 빼면 2의 거듭제곱 배율에서는 두 결과가 같아진다 — 차이는 블록 안의 크기 차이가 범위 끝을 넘칠 때 생긴다."
+   },
+   "pitfalls": [
+    "강의 중 '이 슬라이드에 MXFP8 의 모든 값이 있다'고 말한 장면은 FP4 슬라이드다. 슬라이드 제목은 'MXFP4' 이지만 '16개당 E4M3 배율'은 NVIDIA 의 NVFP4 규격이다. OCP 표준 MXFP4 는 32개당 E8M0 배율을 쓴다(노트 보충).",
+    "'FP8 학습이면 2배 빠르다'는 기대는 틀리기 쉽다. 양자화·전치 사본 생성 비용과 BF16 으로 남는 층 때문에 실측 이득은 행렬곱에서 20~30% 수준이다.",
+    "배율(scale)은 경사로 학습하는 값이 아니다. 블록 최댓값이나 과거 최댓값 통계로 매번 정하는 규칙이다."
+   ],
+   "check": [
+    {
+     "q": "MXFP8 에서 원소 형식으로 그래디언트에도 E5M2 대신 E4M3 를 쓸 수 있게 된 이유는?",
+     "a": "32개마다 배율을 두어 범위 문제를 배율이 맡게 되었으므로, 원소는 범위(지수 비트)보다 해상도(가수 비트)를 택할 수 있다."
+    },
+    {
+     "q": "MXFP8 학습에서 가중치 행렬을 두 번 양자화해 두는 이유는?",
+     "a": "블록이 행 방향으로 묶여 있어 전치하면 블록 구조가 맞지 않는다. 순전파용(원본)과 역전파용(전치) 양자화본을 따로 만들어 두어야 매번 다시 양자화하지 않는다."
+    }
+   ]
+  },
+  {
+   "start": 2840,
+   "title": "기법 3: 연산 융합 — 창고와 공장 사이를 한 번만 오가기",
+   "points": [
+    "비유: 메모리는 창고, 연산은 공장, 그 사이 컨베이어(대역폭)가 병목. 연산마다 원료를 왕복시키면 컨베이어가 막힌다.",
+    "sin²x + cos²x 를 순진하게 돌리면 CUDA 커널 5개가 각각 HBM 을 읽고 쓴다.",
+    "융합 커널은 x 를 한 번 읽어 SM 안에서 다섯 연산을 끝내고 결과를 한 번 쓴다.",
+    "이런 '쉬운' 융합은 torch.compile·JAX(XLA) 같은 컴파일러가 자동으로 한다. 어려운 융합(어텐션)은 손이 필요하다."
+   ],
+   "on_screen": "'Operator fusion to minimize memory access — What if we have to do many operations? Shipping back and forth is somewhat silly': 손그림 — Naïve(non-fused): Memory 와 Compute 사이를 화살표가 여러 번 왕복, Fused kernel: 한 번 들어가 한 번 나온다. 'Example – sines and cosines': FX graph IR 코드와 Graph viz(x → sin(x), cos(x) → sin²(x), cos²(x) → sin²(x)+cos²(x)), 'Computing sin²x + cos²x naively launches 5 CUDA kernels (back and forth)'. 'Fusion example': Before operator fusion(빨간 상자 5개) 대 TorchInductor operator fusion(하나), 'All 5 pointwise operations can be fused into a single CUDA kernel call. Easy fusions like this can be done automatically by compilers (torch.compile)'.",
+   "explain": [
+    "강사의 비유를 따라가 보자. GPU 를 공장으로 보면, 메모리는 원료와 완제품을 쌓아 두는 창고이고 연산 유닛은 작업장이며, 둘 사이를 컨베이어 벨트(메모리 대역폭)가 잇는다. 작업장의 기계가 아무리 빨라도 컨베이어가 느리면 기계는 논다. 공정이 다섯 단계인데 단계마다 반제품을 창고에 넣었다가 다시 꺼내 오면, 컨베이어는 같은 물건을 열 번 실어 나른다. 차라리 커다란 작업장 하나에서 원료를 받아 다섯 단계를 다 끝내고 완제품만 돌려보내면 컨베이어는 두 번만 일한다. 이것이 연산 융합(operator fusion)이다.",
+    "PyTorch 에서 sin(x)**2 + cos(x)**2 를 그냥 쓰면 계산 그래프는 sin, cos, 제곱 두 번, 덧셈의 다섯 노드가 되고, 아무 조치 없이 실행하면 노드마다 CUDA 커널이 하나씩 뜬다. 각 커널은 입력을 HBM 에서 읽어 SM 으로 가져오고, 계산하고, 결과를 HBM 에 쓴다. 다음 커널은 그 결과를 다시 HBM 에서 읽는다. 원소별 연산은 원래 산술 강도가 바닥이라(앞 장의 ReLU 처럼) 시간 거의 전부가 이 왕복에 쓰인다. 융합 커널은 x 를 한 번 읽어 레지스터에 둔 채 sin·cos·제곱·덧셈을 다 하고 결과만 한 번 쓴다.",
+    "이런 융합은 그래프가 단순한 원소별 연산의 사슬이라 기계적으로 합칠 수 있다. 그래서 torch.compile(내부 TorchInductor)이나 JAX 의 XLA 컴파일러가 자동으로 해 준다. 슬라이드의 그림이 TorchInductor 가 다섯 상자를 하나로 합친 결과다. 강사는 이 정도의 쉬운 융합은 '컴파일하면 해결된다'고 생각해도 된다고 말한다. 다만 행렬곱과 softmax 가 섞인 어텐션처럼, 중간에 전역 연산이 끼어 있어 단순히 이어 붙일 수 없는 경우는 컴파일러가 잘 못 한다. 그때 필요한 것이 15장의 FlashAttention 같은 손으로 설계한 융합 커널이고, 6강(커널·Triton·XLA)에서 직접 써 보게 된다.",
+    "숫자로 감을 잡자. 원소 6,710만 개(2²⁶)짜리 bf16 텐서면 텐서 하나가 약 134MB 다. 순진한 실행은 sin(읽기·쓰기), cos(읽기·쓰기), 제곱 두 번(각각 읽기·쓰기), 덧셈(읽기 둘·쓰기 하나)으로 텐서 11개 분량, 약 1.48GB 를 옮긴다. H100 의 3.35TB/s 로 약 441μs 다. 융합하면 x 읽기 하나, 결과 쓰기 하나로 0.27GB, 약 80μs 다. 연산량은 같고 시간만 5.5배 줄었다. 게다가 커널 실행 자체의 고정 비용(launch overhead, 커널당 수 μs — 노트 보충)도 다섯 번에서 한 번으로 준다."
+   ],
+   "formulas": [
+    {
+     "expr": "바이트(순진) = Σ_kernel (읽기 텐서 수 + 쓰기 텐서 수) × n × b,   바이트(융합) = (입력 수 + 출력 수) × n × b",
+     "meaning": "n 은 원소 수, b 는 원소당 바이트. 순진한 실행은 중간 결과가 매번 HBM 을 왕복하고, 융합은 그래프 바깥과 맞닿은 입력·출력만 옮긴다."
+    }
+   ],
+   "example": {
+    "title": "sin²x + cos²x 의 바이트를 손으로 세기",
+    "body": "커널별 (읽기, 쓰기) 텐서 수: sin (1,1), cos (1,1), sq (1,1), sq (1,1), add (2,1) → 합 11개. n = 2²⁶ ≈ 6.71e7, bf16 b = 2 → 11 × 6.71e7 × 2 ≈ 1.48e9 B. 3.35e12 B/s 로 나누면 441μs. 융합: (1 + 1) × 6.71e7 × 2 ≈ 2.68e8 B → 80μs. 비율 11 / 2 = 5.5 배."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# sin²x + cos²x 를 커널 다섯 개로 돌릴 때와 하나로 융합할 때 HBM 을 오가는 바이트\nn, B = 1 << 26, 2                     # 원소 6,710만 개, bf16\nkernels = [(\"sin\", 1, 1), (\"cos\", 1, 1), (\"sq\", 1, 1), (\"sq\", 1, 1), (\"add\", 2, 1)]\nunfused = sum(r + w for _, r, w in kernels) * n * B\nfused = (1 + 1) * n * B               # x 한 번 읽고 결과 한 번 쓰기\nbw = 3.35e12\nprint(f\"융합 전 {unfused/1e9:.2f} GB -> {unfused/bw*1e6:.0f} us, 커널 {len(kernels)}번\")\nprint(f\"융합 후 {fused/1e9:.2f} GB -> {fused/bw*1e6:.0f} us, 커널 1번, {unfused/fused:.1f}배 적다\")\n# 재계산: 시그모이드 3단 순전파·역전파의 메모리 접근 횟수 (텐서 단위)\nstore = {\"fwd\": 1 + 3, \"bwd\": 3 + 1}  # 읽기 x / 쓰기 s2,s1,out | 읽기 s2,s1,dout / 쓰기 dx\nrecomp = {\"fwd\": 1 + 1, \"bwd\": 2 + 1} # 읽기 x / 쓰기 out | 읽기 x,dout / 쓰기 dx\nprint(\"저장:\", sum(store.values()), \"재계산:\", sum(recomp.values()),\n      f\"-> {sum(recomp.values())}/{sum(store.values())} 로 줄고 순전파 시그모이드 3번을 더 한다\")",
+    "note": "실행 결과: '융합 전 1.48 GB -> 441 us, 커널 5번', '융합 후 0.27 GB -> 80 us, 커널 1번, 5.5배 적다'. 뒷부분은 다음 장(재계산)의 접근 횟수 8 대 5 를 센다."
+   },
+   "diagram": {
+    "title": "융합 전후의 데이터 흐름",
+    "code": "flowchart LR\n  subgraph 순진한 실행\n    H1[(HBM x)] --> K1[sin] --> H2[(HBM)] --> K3[sq] --> H4[(HBM)]\n    H1 --> K2[cos] --> H3[(HBM)] --> K4[sq] --> H5[(HBM)]\n    H4 --> K5[add]\n    H5 --> K5 --> H6[(HBM out)]\n  end\n  subgraph 융합 커널\n    G1[(HBM x)] --> F[\"sin·cos·sq·sq·add\\nSM 레지스터 안에서\"] --> G2[(HBM out)]\n  end"
+   },
+   "pitfalls": [
+    "융합은 FLOPs 를 줄이지 않는다. 줄이는 것은 HBM 왕복 바이트와 커널 실행 횟수다. 그래서 메모리 한계 연산에서만 크게 효과가 난다.",
+    "torch.compile 이 모든 것을 융합해 주지는 않는다. 축소(softmax 의 합)나 행렬곱을 사이에 둔 연산은 자동 융합이 제한적이다."
+   ],
+   "check": [
+    {
+     "q": "y = gelu(x @ W + b) 에서 어떤 부분이 쉽게 융합되고 어떤 부분이 어려운가?",
+     "a": "+b 와 gelu 는 원소별이라 행렬곱 결과에 바로 이어 붙이는 '에필로그 융합'으로 쉽게 합칠 수 있다. 행렬곱 자체는 타일링된 별도 알고리즘이라 원소별 연산과 단순히 합쳐지지 않고 행렬곱 커널 안에 에필로그로 끼워 넣는 형태가 된다."
+    }
+   ]
+  },
+  {
+   "start": 2995,
+   "title": "기법 4: 재계산 — 메모리가 비싸면 다시 계산하는 편이 싸다",
+   "points": [
+    "역전파는 순전파 때 저장한 활성값을 쓴다. 시스템 관점에서 이 저장·읽기는 메모리 접근 비용이다.",
+    "시그모이드 3단: 활성값을 저장하면 순전파 읽기 1·쓰기 3, 역전파 읽기 3·쓰기 1 = 8회.",
+    "버리고 역전파 때 x 에서 다시 계산하면 순전파 읽기 1·쓰기 1, 역전파 읽기 2·쓰기 1 = 5회 — 연산은 조금 늘고 접근은 5/8.",
+    "연산이 남아돌고 메모리가 귀한 시대에는 이 교환이 이득이다. 2강의 활성 체크포인팅과 같은 아이디어를 '대역폭' 관점에서 본 것."
+   ],
+   "on_screen": "'Trick 3: recomputation' — CS221 의 계산 그래프 그림, Loss(x,y,w) = (w·φ(x) − y)², 'Definition: Forward/backward values — Forward: f_i is value for subexpression rooted at i, Backward: g_i = ∂out/∂f_i is how f_i influences loss', 'Algorithm: backpropagation algorithm — Forward pass: compute each f_i (from leaves to root), Backward pass: compute each g_i (from root to leaves)', 'In backpropagation, we store the activations (yellow) and compute Jacobians (green)'. 'Storing (and retrieving) activations can be expensive! Let's say we stack 3 sigmoids on top of each other': Old Fwd pass(x → sigmoid → s2 → sigmoid → s1 → sigmoid → out, 1 mem read, 3 mem writes), Old Bwd pass(Backward graph 이 s2, s1, dout 을 받아 dx, 3 mem reads, 1 mem write), 'This is really terrible for perf – 8 mem read/writes, very low arithmetic intensity'. 'Throw away the activations, re-compute them!': New Fwd pass(1 mem read, 1 mem write), New Bwd pass(x 에서 sigmoid 세 번을 다시 하고 Original Backward graph, 2 mem reads, 1 mem write), 'Throwing away computation can actually be optimal, w/ 5/8th the memory accesses!'.",
+   "explain": [
+    "역전파를 수학이 아니라 시스템의 눈으로 다시 보자. 순전파는 그래프의 잎에서 뿌리로 올라가며 각 노드의 값을 계산하고, 역전파는 뿌리에서 잎으로 내려오며 그 값들을 써서 기울기를 계산한다. 그러려면 순전파 때 중간값(활성값)을 어딘가에 저장해 두어야 하는데, 그 '어딘가'는 크기 때문에 대개 HBM 이다. 즉 활성값 하나마다 순전파에서 한 번 쓰고 역전파에서 한 번 읽는 HBM 왕복이 생긴다. 2강에서는 이것을 '메모리 용량' 문제로 보았다면, 여기서는 '메모리 대역폭' 문제로 본다.",
+    "슬라이드의 예는 시그모이드 세 개를 쌓은 것이다. 저장하는 방식이면 순전파는 x 를 한 번 읽고 s2, s1, out 을 세 번 쓴다. 역전파는 s2, s1, dout 을 읽고 dx 를 쓴다. 합계 8번의 메모리 접근에 연산은 시그모이드 세 번과 그 미분뿐이라 산술 강도가 형편없다. 다른 방식은 활성값을 아예 버리는 것이다. 순전파는 x 를 읽고 out 만 쓴다(그래프의 출력이니 써야 한다). 역전파는 x 와 dout 을 읽고, 커널 안에서 x 로부터 시그모이드 세 번을 다시 계산해 필요한 활성값을 그 자리에서 만들어 쓰고, dx 를 쓴다. 접근은 5번, 8의 5/8 이다.",
+    "보통은 이미 계산한 것을 다시 계산하는 게 낭비처럼 들린다. 하지만 앞 장들에서 본 세계, 즉 연산은 남아돌고 메모리 왕복은 비싼 세계에서는 연산을 조금 더 쓰고 메모리를 아끼는 교환이 이득이 된다. 시그모이드 세 번을 더 하는 비용은 메모리 한계 커널에서 거의 공짜다 — 어차피 연산 유닛이 놀고 있었기 때문이다. 이 장의 재계산은 앞 장의 융합과 짝을 이룬다. 재계산된 값이 HBM 으로 나가지 않으려면 역전파 커널 안에서 다시 계산하고 바로 써야 하므로, 사실상 '역전파 커널에 순전파를 융합'하는 것이다.",
+    "2강에서 본 활성 체크포인팅(torch.utils.checkpoint)은 같은 생각을 메모리 용량을 아끼는 용도로 쓴 것이다. 층 경계의 일부 활성값만 저장하고 나머지는 역전파 때 다시 순전파한다. 목적은 다르지만 '저장 대신 재계산'이라는 원리는 같고, FlashAttention 은 이 원리를 대역폭 쪽으로 극단까지 밀어붙인다 — n×n 어텐션 행렬을 역전파를 위해 저장하지 않고 타일마다 다시 계산한다(15장)."
+   ],
+   "formulas": [
+    {
+     "expr": "σ(z) = 1 / (1 + e^{−z}),   σ'(z) = σ(z)(1 − σ(z))",
+     "meaning": "시그모이드의 미분은 출력 σ(z) 만 있으면 계산된다. 그래서 저장 방식에서는 s2, s1 같은 출력을 저장해 역전파에 쓴다. 재계산 방식은 x 에서 σ 를 다시 계산해 같은 값을 얻는다."
+    },
+    {
+     "expr": "dx = dout · σ'(z₃) · σ'(z₂) · σ'(z₁)",
+     "meaning": "z₁ = x, z₂ = σ(z₁), z₃ = σ(z₂), out = σ(z₃). 연쇄 법칙으로 세 시그모이드의 미분을 곱한다. 필요한 σ 값 세 개를 저장해 읽을지, x 에서 다시 만들지가 이 장의 선택이다."
+    }
+   ],
+   "example": {
+    "title": "메모리 접근 8 대 5, 시간으로 바꾸면",
+    "body": "원소 n = 2²⁶, bf16 이면 텐서 하나 134MB. 저장 방식 8회 × 134MB = 1.07GB → H100 3.35TB/s 에서 320μs. 재계산 방식 5회 = 0.67GB → 200μs. 추가 연산은 원소당 시그모이드 3번(exp 하나, 나눗셈 하나 정도) × 6.7e7 ≈ 수억 FLOP 수준으로, H100 비텐서 코어 FP32 피크(약 67 TFLOP/s — 노트 보충)로 해도 수 μs 다. 메모리에서 120μs 를 아끼고 연산에 몇 μs 를 쓴다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nsig = lambda z: 1 / (1 + np.exp(-z))\nx = np.random.default_rng(0).normal(size=5); dout = np.ones(5)\n# (가) 저장: 순전파에서 s 값을 남긴다 -> 역전파는 읽기만\ns1 = sig(x); s2 = sig(s1); out = sig(s2); saved = (s1, s2, out)\ng_saved = dout * out * (1 - out) * s2 * (1 - s2) * s1 * (1 - s1)\n# (나) 재계산: out 만 남기고, 역전파에서 x 로부터 다시 만든다\ndef backward_recompute(x, dout):\n    a = sig(x); b = sig(a); c = sig(b)           # 커널 안에서 다시 계산\n    return dout * c * (1 - c) * b * (1 - b) * a * (1 - a)\ng_re = backward_recompute(x, dout)\nprint(np.allclose(g_saved, g_re))\nprint(\"메모리 접근(텐서 수): 저장\", 1 + 3 + 3 + 1, \"/ 재계산\", 1 + 1 + 2 + 1)",
+    "note": "실행 결과: True, '메모리 접근(텐서 수): 저장 8 / 재계산 5'. 두 방식의 기울기는 같고 접근 횟수만 다르다."
+   },
+   "pitfalls": [
+    "재계산이 늘 이득은 아니다. 재계산하는 부분이 행렬곱처럼 연산 한계라면 그대로 시간이 늘어난다. 메모리 한계 구간(원소별 연산, softmax)에서 특히 유리하다.",
+    "재계산의 대역폭 이득은 재계산이 역전파 커널 안에서 일어나 중간값이 HBM 으로 나가지 않을 때만 생긴다. 별도 커널로 다시 순전파하면 용량은 아끼지만 왕복은 그대로다."
+   ],
+   "check": [
+    {
+     "q": "연산 피크가 2배가 되고 HBM 대역폭은 그대로인 새 GPU 에서 재계산의 매력은 어떻게 바뀌나?",
+     "a": "커진다. 재계산에 드는 연산은 상대적으로 더 싸지고, 아끼는 메모리 접근의 가치는 그대로이거나 더 귀해지기 때문이다."
+    }
+   ]
+  },
+  {
+   "start": 3170,
+   "title": "기법 5: 메모리 병합 — DRAM 은 덩어리로 읽힌다",
+   "points": [
+    "DRAM(전역 메모리)은 버스트 모드로 읽힌다: 한 주소를 읽으면 같은 버스트 구간(실제로는 128바이트 수준)의 이웃 주소가 공짜로 딸려 온다.",
+    "이유: 셀 한 줄을 감지 증폭기로 옮기는 것이 느리고, 일단 옮긴 줄에서 여러 값을 꺼내는 것은 싸다.",
+    "병합(coalesced): 한 워프의 32 스레드가 읽는 주소가 같은 버스트 안에 모이면 DRAM 요청 하나로 끝난다.",
+    "행 우선 행렬에서 스레드들이 '한 행의 이웃 열'을 나눠 읽으면 병합, '각자 다른 행'을 읽으면 스레드마다 다른 버스트를 건드린다."
+   ],
+   "on_screen": "'Trick (?) 4: Memory coalescing and DRAM — DRAM (global memory) is read in burst mode – each read gives you many bytes!': 주소 0~15 를 4개씩 노랑·빨강·파랑·초록 Burst section 으로 나눈 띠, 'Each address space is partitioned into burst sections – Whenever a location is accessed, all other locations in the same section are also delivered to the processor. Basic example: a 16-byte address space, 4-byte burst sections – In practice, we have at least 4GB address space, burst section sizes of 128-bytes or more'. 왼쪽 DRAM 셀 격자 그림과 'Burst mode comes from the slow per-row copy to the sense amplifier'. 'Memory coalescing — Memory accesses are coalesced if all the threads (in a warp) fall within the same burst': Coalesced Loads T0~T3 가 한 버스트 구간을 읽는 그림, — 워프의 모든 스레드가 로드를 실행할 때 접근 위치가 모두 같은 버스트 구간이면 DRAM 요청은 하나뿐이고 완전히 병합된다는 설명. 'Reminder: a warp is a set of 32 consecutively numbered threads that execute together in a block'. 'Coalescing for matrix multiplication': not coalesced(A, Thread 1·Thread 2 가 각자 행을 따라 감) 대 coalesced(B), 오른쪽 4×4 행 우선 행렬의 메모리 순서 그림, 'For row-major matrices – threads that move along rows are not coalesced. Note how the second diagram reads the entire vector at each step!'.",
+   "explain": [
+    "이번 기법은 DRAM 의 물리적 구조에서 나온다. DRAM 셀은 격자로 깔려 있고, 값을 읽으려면 먼저 한 줄(row)을 통째로 감지 증폭기(sense amplifier)로 옮겨야 한다. 이 옮기는 과정이 느리다. 대신 일단 옮겨 온 줄에서 여러 값을 꺼내는 것은 빠르다. 그래서 DRAM 은 주소 하나를 요청받으면 그 주변의 연속된 구간을 한꺼번에 내보내는데, 이 구간을 버스트 구간(burst section)이라 한다. 슬라이드의 장난감 예는 16바이트 주소 공간을 4바이트 버스트 4개로 나눈 것이고, 실제 GPU 에서는 128바이트 정도가 한 덩어리다(32바이트 섹터 네 개 — 노트 보충).",
+    "여기에 워프가 겹친다. 워프의 32 스레드는 같은 박자에 로드 명령을 실행한다. 그때 32개 주소가 모두 같은 버스트 구간 안에 있으면 DRAM 요청 하나로 전부 해결된다. 이것을 '병합되었다(coalesced)'고 한다. 반대로 32개 주소가 제각각 다른 구간에 흩어져 있으면 요청이 32개가 되고, 각 요청이 128바이트를 실어 오는데 그중 4바이트만 쓰고 나머지는 버린다. 같은 데이터를 읽어도 대역폭의 3%만 쓸모 있게 쓰는 셈이다. 전역 메모리 대역폭이 가장 귀한 자원인 시대에 이 차이는 치명적이다.",
+    "행렬에서는 이것이 '어느 방향으로 스레드를 배치하나'의 문제가 된다. 행 우선(row-major) 행렬은 한 행의 원소들이 메모리에 연속으로 놓인다. 스레드 t 가 열 t 를 맡아 모두 같은 행을 동시에 읽으면, 32개 주소가 나란히 붙어 있어 버스트 하나로 끝난다(병합). 스레드 t 가 행 t 를 맡아 각자 자기 행을 따라 걸어가면, 매 박자에 32개 스레드가 32개의 서로 다른 행 — 메모리상 한 행 길이만큼씩 떨어진 주소 — 를 읽는다. 버스트가 32개 필요하다. 슬라이드의 '행을 따라 움직이는 스레드는 병합되지 않는다'는 말은 이 후자, 즉 각 스레드가 자기 행을 따라 진행하는 배치를 가리킨다. 강사가 오른쪽 그림에서 '열 하나를 읽으려 했는데 행렬 전체를 읽은 꼴'이라고 말하는 것도 같은 상황이다.",
+    "강사는 '왜 DRAM 잡학까지 알아야 하나'에 대해, 행렬 연산은 큰 덩어리로 읽어야 하고 어떤 접근 순서는 다른 순서보다 구조적으로 유리하기 때문이라고 답한다. 실제로 행렬곱에서 한쪽 행렬을 전치해 저장하거나, 다음 장의 타일을 '버스트 경계에 맞게' 잡는 것은 모두 병합을 얻으려는 선택이다. 그리고 13장의 행렬 크기 미스터리 중 '크기가 2·4 의 배수가 아니면 느린' 현상도 여기서 설명된다."
+   ],
+   "formulas": [
+    {
+     "expr": "주소(r, c) = (r · C + c) · b    (행 우선)",
+     "meaning": "C 는 열 수, b 는 원소 바이트. 같은 행의 이웃 열은 b 바이트 차이, 이웃 행의 같은 열은 C·b 바이트 차이다. C·b 가 버스트 크기(128B)보다 크면 행이 다른 두 원소는 반드시 다른 버스트에 있다."
+    },
+    {
+     "expr": "유효 대역폭 비율 = 실제로 쓴 바이트 / (건드린 버스트 수 × 버스트 크기)",
+     "meaning": "병합되면 32×4B / (1×128B) = 100%, 완전히 흩어지면 128B / (32×128B) ≈ 3%."
+    }
+   ],
+   "example": {
+    "title": "1024×1024 fp32 행렬에서 워프 한 번의 로드",
+    "body": "한 행은 1024 × 4B = 4096B. (가) 스레드 t 가 (0, t) 를 읽으면 주소 0, 4, 8, …, 124 → 모두 0~127 버스트 하나. (나) 스레드 t 가 (t, 0) 을 읽으면 주소 0, 4096, 8192, …, 126976 → 4096B 간격이라 버스트 32개. 실어 온 바이트 32 × 128 = 4096B 중 쓴 것은 128B, 3%. 같은 작업을 (나) 방식으로 짜면 메모리 한계 커널은 최악의 경우 30배 넘게 느려질 수 있다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 행 우선(row-major) fp32 행렬에서 한 워프(32 스레드)가 한 번에 읽을 때 건드리는 128B 버스트 수\nimport numpy as np\nR = C = 1024; E = 4; BURST = 128\ndef bursts(addrs): return len(set(a // BURST for a in addrs))\ndef addr(r, c): return (r * C + c) * E\nt = np.arange(32)\n# (가) 스레드 t 가 열 t 를 맡아 같은 행 r=0 을 읽는다 -> 이웃 주소\nprint(\"스레드가 열을 따라 나란히:\", bursts(addr(0, t)), \"버스트\")\n# (나) 스레드 t 가 행 t 를 맡아 각자 자기 행의 c=0 을 읽는다 -> 4KB 씩 떨어진 주소\nprint(\"스레드가 행마다 하나씩  :\", bursts(addr(t, 0)), \"버스트\")\nneed = 32 * E\nfor case, b in ((\"가\", 1), (\"나\", 32)):\n    print(f\"({case}) 쓸모 있는 바이트 비율 {need / (b * BURST):.0%}\")",
+    "note": "실행 결과: '스레드가 열을 따라 나란히: 1 버스트', '스레드가 행마다 하나씩: 32 버스트', 쓸모 있는 바이트 비율 (가) 100% (나) 3%. 실제 하드웨어는 L1/L2 캐시가 일부 낭비를 흡수하지만 원리는 같다."
+   },
+   "pitfalls": [
+    "'행을 따라 움직이는 스레드는 병합되지 않는다'는 말을 '행 방향 읽기가 나쁘다'로 오해하기 쉽다. 정확히는 같은 박자에 워프의 스레드들이 서로 다른 행에 있으면 나쁘고, 같은 행의 이웃 열에 있으면 좋다.",
+    "병합 여부는 한 스레드의 순차 접근이 아니라 같은 순간 워프 32 스레드의 주소 분포로 정해진다. CPU 의 캐시 지역성 직관(한 스레드가 연속으로 읽기)과 축이 다르다."
+   ],
+   "check": [
+    {
+     "q": "열 우선(column-major) 행렬에서 워프가 병합 로드를 하려면 스레드를 어떻게 배치해야 하나?",
+     "a": "같은 열의 이웃 행들을 스레드들이 나눠 읽어야 한다. 열 우선에서는 한 열의 원소가 메모리에 연속이기 때문이다."
+    }
+   ]
+  },
+  {
+   "start": 3470,
+   "title": "기법 6: 타일링 — 공유 메모리에 올려 두고 여러 번 쓰기",
+   "points": [
+    "가장 영향이 큰 기법. 행렬을 타일로 잘라 공유 메모리에 올리고, 올린 타일을 가능한 한 많이 재사용한다.",
+    "순진한 N×N 행렬곱은 각 입력 원소를 전역 메모리에서 N 번 읽는다.",
+    "T×T 타일이면 전역에서 N/T 번, 타일 안(공유 메모리)에서 T 번 — 전역 접근이 T 배 준다.",
+    "T = N 이면 한 번만 읽는다(전부 SRAM 에 들어가는 칩의 경우). 라이브러리 행렬곱은 이미 타일링되어 있다.",
+    "데이터 병렬·텐서 병렬도 행렬을 축 따라 자르는 일이라 타일링과 닮았다(7·8강)."
+   ],
+   "on_screen": "'Trick 5 (the big one): tiling — Tiling is the idea of grouping and ordering threads to minimize global memory access. Let's go back to matrix multiplication..' 4×4 M·N·P 격자와 Access order 표(Thread 0,0 … 이 M0,0·N0,0, M0,1·N1,0 … 순으로 접근), 'Note that memory access is not coalesced, and repeated (M0,0 and N1,0)'. 'Tiling – store and reuse information in shared memory — Cut up the matrix into smaller tiles, and load this into shared memory': 2×2 타일로 색칠한 M, N, P 와 'Compute the matrix multiply in phases: 1. Load M0,0 and N0,0 tiles into SHM 2. Compute partial sums for P (Done with one tile) 3. Load the M0,0 and N2,0 tile into SHM 4. …', 'Advantages: repeated reads now access shared, not global memory and memory access can be coalesced'. 'Tiling math': Matrix A·B=C 그림(tile size T, matrix size N, Outer loop over tiles, Current tile in outer loop, Inner loop over elements, Temporary result tile), 'Non-tiled matrix multiply: each input is read N times from global memory. Tiled matrix multiply: each input is read N/T times from global memory, and T times within each tile. This is a factor of T reduction in global memory access'.",
+   "explain": [
+    "강사가 '가장 큰 것'이라고 아껴 둔 기법이다. 생각은 이렇다. 행렬곱 C = A·B 에서 C[i,j] 를 계산하려면 A 의 i 번째 행 전체와 B 의 j 번째 열 전체가 필요하다. 그런데 A 의 i 번째 행은 C 의 i 번째 행 N 개를 계산할 때마다 다시 필요하다. 순진하게 출력 원소 하나당 스레드 하나를 두고 각자 전역 메모리에서 읽게 하면, A 의 원소 하나가 N 번, B 의 원소 하나도 N 번 전역 메모리에서 읽힌다. 슬라이드의 접근 순서표가 이것을 보여 준다 — 같은 M₀,₀ 와 N₁,₀ 가 여러 스레드에서 반복해 읽히고, 그 읽기들은 병합도 안 된다.",
+    "같은 원소를 여러 번 읽을 거라면, 한 번만 전역에서 가져와 빠른 곳에 두고 여러 번 쓰면 된다. 행렬은 그렇게 묶기에 아주 자연스러운 구조다. 행렬을 T×T 부분행렬(타일)로 자른다. 출력 타일 C_{I,J} 하나를 블록 하나가 맡는다. 블록은 A 의 타일 A_{I,0} 과 B 의 타일 B_{0,J} 를 공유 메모리에 올리고, 그 둘을 곱해 출력 타일의 부분합에 더한다. 다음엔 A_{I,1} 과 B_{1,J} 를 올려 또 더한다. N/T 번 반복하면 출력 타일이 완성되고, 그때 한 번만 전역에 쓴다. 출력 타일은 그동안 블록 안(레지스터·공유 메모리)에 머문다.",
+    "읽기 횟수를 세어 보자. A 의 원소 하나는 그 원소가 속한 타일이 올라갈 때만 전역에서 읽힌다. 그 타일은 같은 행 띠의 출력 타일 N/T 개가 각각 한 번씩 필요로 하므로 전역 읽기는 N/T 번이다. 일단 공유 메모리에 올라간 뒤에는 타일 곱 안에서 T 번 쓰인다. 곱하면 N/T × T = N 으로 쓰임새 총량은 같지만, 비싼 전역 읽기가 N 에서 N/T 로 T 배 줄었다. 극단적으로 T = N 이면 전역에서 한 번만 읽는다. 강사는 칩 전체가 SRAM 인 가속기라면 행렬 통째로 그렇게 할 수 있지만 매우 비싸다고 덧붙인다. 또 타일 하나를 올릴 때 T 개 원소가 연속된 행 조각들을 함께 읽으므로 병합도 자연스럽게 얻는다.",
+    "이것을 2강의 산술 강도로 옮기면 타일링의 가치가 분명해진다. 전역 읽기 총량은 두 행렬 합쳐 2N³/T 원소이고, 연산은 2N³ FLOP 이다. bf16(2바이트)이면 강도는 2N³ / (2 × 2N³/T) = T/2 FLOP/byte. 타일이 16이면 8, 64 면 32, 128 이면 64 — 타일 크기가 곧 강도다. 실제 커널은 정사각이 아닌 256×128 같은 타일을 쓰며 강도는 T_m·T_n/(T_m+T_n) 이 된다. 공유 메모리 크기가 타일 크기의 상한을 정하므로, SM 의 SRAM 이 클수록 강도를 높일 수 있다. 질문에 답하며 강사는 PyTorch 의 행렬곱은 이미 이렇게 타일링되어 있으니 직접 짤 일은 드물지만, 특이한 연산을 만들 때는 '읽은 것을 국소적으로 재사용하는가'를 늘 생각해야 한다고 말한다."
+   ],
+   "formulas": [
+    {
+     "expr": "전역 읽기(순진) = 2N³ 원소,   전역 읽기(타일) = 2N³ / T 원소",
+     "meaning": "N×N 두 행렬 A, B 의 원소 각 N² 개가 순진하면 N 번, 타일이면 N/T 번 전역에서 읽힌다. T 는 타일 한 변. 출력 쓰기 N² 은 둘 다 같다."
+    },
+    {
+     "expr": "I_tile = 2N³ / (b · 2N³/T) = T / b   →  bf16: T/2,   직사각 타일: I = 2·T_m·T_n / (b·(T_m + T_n))",
+     "meaning": "b 는 원소 바이트. 타일 크기가 곧 산술 강도를 정한다. T_m×T_n 출력 타일은 k 방향 한 칸마다 (T_m + T_n) 원소를 읽고 2·T_m·T_n FLOP 을 한다."
+    },
+    {
+     "expr": "공유 메모리 사용 ≈ (T_m + T_n) · T_k · b  (× 2, 이중 버퍼링 시)",
+     "meaning": "T_k 는 k 방향으로 한 번에 올리는 깊이. SM 의 공유 메모리(A100 최대 164KB, H100 228KB)가 타일 크기의 상한을 정한다. (노트 보충)"
+    }
+   ],
+   "example": {
+    "title": "N = 4096 bf16 행렬곱을 손으로 — 바이트 대 FLOPs",
+    "body": "FLOPs = 2 × 4096³ ≈ 1.37e11. 순진: 전역 읽기 2N³ = 1.37e11 원소 × 2B = 2.75e11 B → 강도 0.5, H100 3.35TB/s 로 읽기만 82ms. 타일 T = 128: 2N³/128 = 1.07e9 원소 × 2B = 2.15e9 B → 강도 64, 읽기 0.64ms. 연산은 989 TFLOP/s 로 0.139ms. 이 가정(모든 타일을 HBM 에서)이라면 타일 128 로도 메모리 한계(0.64 > 0.14)다. 실제로 피크 근처가 나오는 이유는 이웃 블록들이 같은 A·B 타일을 L2(H100 50MB)에서 나눠 읽어 HBM 트래픽이 이보다 훨씬 작기 때문이다. 이상적 최소치(A, B 를 한 번씩 읽고 C 를 한 번 쓰기: 3 × 4096² × 2B ≈ 101MB)면 30μs 로 연산 시간보다 훨씬 짧다. 4×4 장난감(T = 2)으로 보면: 순진하면 원소당 4번, 타일이면 2번 전역에서 읽는다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\ndef tiled_matmul(A, B, T):\n    \"\"\"C = A @ B 를 T×T 타일로. '전역 메모리 읽기'를 원소 단위로 센다.\"\"\"\n    N = A.shape[0]; C = np.zeros((N, N)); g_reads = 0\n    for i in range(0, N, T):              # 출력 타일 (i, j) 하나 = 블록 하나\n        for j in range(0, N, T):\n            acc = np.zeros((T, T))        # 출력 타일은 블록 안(레지스터/SMEM)에 둔다\n            for k in range(0, N, T):\n                a = A[i:i+T, k:k+T].copy(); b = B[k:k+T, j:j+T].copy()  # 전역 -> SMEM\n                g_reads += a.size + b.size\n                acc += a @ b              # SMEM 안에서 T 번씩 재사용\n            C[i:i+T, j:j+T] = acc\n    return C, g_reads\nN = 256\nA = np.random.rand(N, N); B = np.random.rand(N, N)\nfor T in (16, 64, 256):\n    C, g = tiled_matmul(A, B, T)\n    assert np.allclose(C, A @ B)\n    print(f\"T={T:3d}  전역 읽기 {g:>11,d} 원소 = 2N³/T ({2*N**3//T:,d})\"\n          f\"  원소당 {g // (2*N*N)}번  강도(bf16) {2*N**3 / (2*g):6.1f} FLOP/B\")",
+    "note": "실행 결과(N = 256): T=16 전역 읽기 2,097,152 원소(원소당 16번, 강도 8.0), T=64 524,288(4번, 32.0), T=256 131,072(1번, 128.0) — 모두 2N³/T 와 정확히 같고 결과는 A@B 와 일치한다."
+   },
+   "diagram": {
+    "title": "타일 행렬곱의 한 블록이 하는 일",
+    "code": "flowchart TB\n  S[\"블록 = 출력 타일 C(I,J) 담당\"] --> L{\"k = 0 .. N/T-1\"}\n  L --> A[\"A(I,k) 타일 HBM → 공유 메모리 (병합 로드)\"]\n  L --> B[\"B(k,J) 타일 HBM → 공유 메모리\"]\n  A --> M[\"공유 메모리 안에서 T×T 곱, 부분합 누적 (각 원소 T 번 재사용)\"]\n  B --> M\n  M --> L\n  L -->|끝| W[\"C(I,J) 를 HBM 에 한 번 쓰기\"]"
+   },
+   "pitfalls": [
+    "'타일링 = 공유 메모리 사용'만으로는 부족하다. 이득은 '올린 데이터를 몇 번 재사용하나'에서 나온다. 재사용이 없는 원소별 연산은 타일링해도 빨라지지 않는다.",
+    "강도 T/2 는 모든 타일을 HBM 에서 읽는다는 보수적 계산이다. 실제 HBM 트래픽은 L2 재사용 덕분에 더 적고, 그래서 블록 실행 순서(스위즐링)도 성능에 영향을 준다(노트 보충)."
+   ],
+   "check": [
+    {
+     "q": "공유 메모리가 2배가 되어 타일 한 변을 √2 배로 키울 수 있다면 전역 메모리 읽기는 어떻게 되나?",
+     "a": "전역 읽기는 2N³/T 이므로 1/√2 ≈ 0.71 배로 줄고, 산술 강도는 √2 배 오른다."
+    },
+    {
+     "q": "T = N 인 타일링은 무엇을 의미하고 왜 보통 불가능한가?",
+     "a": "두 행렬 전체를 한 번에 빠른 메모리에 올려 각 원소를 전역에서 한 번만 읽는 것이다. SM 하나의 공유 메모리가 수백 KB 라 큰 행렬은 들어가지 않는다."
+    }
+   ]
+  },
+  {
+   "start": 3710,
+   "title": "타일의 복잡성과 행렬 미스터리 풀이 — 나눠떨어짐, 정렬, 웨이브 양자화",
+   "points": [
+    "타일 128×128 에 행렬 256 이면 타일 4개로 딱 맞지만, 257 이면 거의 빈 얇은 타일이 생긴다 — 타일 크기는 최적화 대상이다(torch.compile max-autotune 이 이를 벤치마크로 찾는다).",
+    "행렬 크기가 버스트 경계와 어긋나면 타일 하나를 읽는 데 버스트를 두 배로 건드린다 → 패딩으로 정렬한다.",
+    "Karpathy: nanoGPT 어휘 크기를 50257 → 50304(64의 배수)로 늘리자 약 25% 빨라졌다.",
+    "미스터리 ①: 크기가 1·2 로만 나눠지면 느리고, 8·16·32 의 배수면 정렬되어 빠르다.",
+    "미스터리 ②: 1792 → 1793 에서 급락 — 256×128 타일 수가 98 → 120 이 되고, A100 의 SM 108개를 넘어 두 번째 웨이브가 생긴다(웨이브 양자화)."
+   ],
+   "on_screen": "'Complexities with tiling — Tile sizes may not divide the matrix size and lead to low utilization': NVIDIA 문서 그림 — (a) 256×256 을 128×128 타일 4개로 나눈 경우, (b) 257×257 이면 가장자리에 얇은 타일이 생기는 경우. 'Factors affecting tile sizes: Coalesced memory access, Shared memory size, Divisibility of the matrix dim'. 'Complexities with tiling 2 – memory alignment': 'Memory comes in bursts', 손글씨 'Aligned Layout — One Nice Tile' 대 'Unaligned Layout — Two Bad Tiles', 'Loading tiles are fast if bursts align with the matrix', 'Coalesced accesses may be impossible depending on the dimension of the matrix.. (have to do padding)'. 'Putting it together: understanding a matrix mystery' — Andrej Karpathy 트윗: 'The most dramatic optimization to nanoGPT so far (~25% speedup) is to simply increase vocab size from 50257 to 50304 (nearest multiple of 64)…', 'Why is it faster to have bigger matrices?'. 'Part 1: tiling' — 나눠떨어지는 수(K=1,2,8,16,32)로 색칠한 처리량 그래프, 'Tiling has a major impact through alignment'. 'Part 2: wave quantization — What's with the periodic behavior? This happens at 1792 to 1793 size. Why? Using a tile size of 256×128, there are 1792/256 × 1792/128 = 7×14 = 98 tiles. If we increase this to 1793, we have 8×15 = 120 tiles. An A100 has 108 SMs, so it cannot execute all 120'. Recap: Reduce memory accesses(Coalescing, Fusion), Move memory to shared memory(Tiling), Trade memory for compute/accuracy(Quantization, Recomputation).",
+   "explain": [
+    "타일링은 강력하지만 단순하지 않다. 첫 번째 복잡성은 나눠떨어짐이다. 타일을 128×128 로 정했는데 행렬이 256×256 이면 타일 네 개로 깔끔히 덮인다. 행렬을 257×257 로 한 칸만 키우면 가장자리에 폭 1짜리 타일들이 생긴다. 이 타일들도 블록 하나를 차지하고 공유 메모리에 128 폭 공간을 잡지만 안에 든 일은 거의 없다. 그래서 타일 크기는 행렬 크기에 맞춰 고르는 최적화 대상이다. 병합 조건, 공유 메모리 크기, 행렬 차원의 나눠떨어짐이 모두 영향을 준다. torch.compile 의 max-autotune 옵션을 켜면 한동안 여러 타일 크기를 직접 벤치마크해 가장 빠른 것을 고르는데, 강사는 이것으로 무시할 수 없는 이득을 얻는다고 말한다.",
+    "두 번째 복잡성은 정렬이다. 행 길이가 버스트 크기의 배수이면 각 행의 시작이 버스트 경계에 맞아, 타일 하나를 읽는 데 버스트가 행마다 딱 필요한 만큼만 든다('좋은 타일 하나'). 행 길이가 한 칸 어긋나면 두 번째 행부터 시작점이 밀려 타일의 각 행이 버스트 두 개에 걸친다('나쁜 타일 둘'). 같은 데이터를 읽는데 메모리 요청이 두 배가 된다. 해결책은 패딩 — 행렬 차원을 적당한 배수로 늘려 경계를 맞추는 것이다. Karpathy 의 유명한 일화가 이것이다. nanoGPT 의 어휘 크기 50257 은 64 로 나누면 17이 남는다. 64의 배수인 50304 로 늘리자(쓰이지 않는 47개 행을 추가) 학습이 약 25% 빨라졌다. 일을 더 하는데 빨라진 것이다.",
+    "이제 강의 첫 그래프를 풀 수 있다. 첫째, 전체적으로 오른쪽 위로 오르는 추세는 산술 강도다 — 행렬이 클수록 읽은 바이트당 연산이 많아 루프라인의 비스듬한 구간에서 평평한 구간으로 다가간다. 둘째, 같은 크기 근처에서 선이 여러 갈래로 갈라지는 것은 나눠떨어짐이다. 크기를 나누는 가장 큰 2의 거듭제곱으로 점을 색칠하면 1(홀수)이나 2로만 나눠지는 크기는 아래쪽에, 8·16·32 의 배수는 위쪽에 모인다. 16과 32 가 똑같이 좋은 것은 2의 거듭제곱이 마법이라서가 아니라 그 정도면 버스트 정렬 조건을 만족하기 때문이고, 그 이상 큰 배수는 이 효과에서는 더 이득이 없다(나눠떨어짐 성질이다).",
+    "셋째, 주기적인 급락은 웨이브 양자화(wave quantization)다. 1792 에서 1793 으로 한 칸 늘렸을 뿐인데 처리량이 크게 떨어진다. 타일 256×128 을 쓰면 1792 에서는 ⌈1792/256⌉ × ⌈1792/128⌉ = 7 × 14 = 98개, 1793 에서는 8 × 15 = 120개의 타일이 생긴다. A100 의 SM 은 108개다. 98개는 한 번에(한 웨이브) 모두 처리되지만, 120개는 108개를 처리한 뒤 남은 12개를 위해 두 번째 웨이브를 돌아야 하고, 그동안 SM 96개가 논다. 일은 1.25배 남짓 늘었는데 시간은 거의 2배가 된다. 2부의 정리는 이렇다. 메모리 접근 줄이기(병합, 융합), 공유 메모리로 옮겨 재사용(타일링), 메모리를 연산·정확도와 맞바꾸기(양자화, 재계산). 강사는 이런 숫자를 이유도 모르고 따라 하는 '화물 숭배'가 되지 말라고 당부한다."
+   ],
+   "formulas": [
+    {
+     "expr": "타일 수 = ⌈M / T_m⌉ · ⌈N / T_n⌉,   웨이브 수 = ⌈타일 수 / SM 수⌉",
+     "meaning": "M×N 출력을 T_m×T_n 타일로 덮을 때의 블록 수와, SM 이 한 번에 블록 하나씩 처리한다고 볼 때 필요한 차례 수. (실제로는 SM 당 블록 여러 개가 상주할 수 있어 'SM 수 × 상주 블록 수'로 나눈다 — 노트 보충)"
+    },
+    {
+     "expr": "활용률 = M·N / (웨이브 수 · SM 수 · T_m · T_n)",
+     "meaning": "모든 웨이브에서 SM 들이 처리할 수 있었던 타일 칸 중 실제 출력 원소의 비율. 가장자리 빈 칸과 마지막 웨이브의 노는 SM 을 함께 센다."
+    }
+   ],
+   "example": {
+    "title": "1792 와 1793, 손으로 세기",
+    "body": "n = 1792: 1792/256 = 7, 1792/128 = 14 → 98 타일 ≤ 108 → 1 웨이브. 활용률 1792² / (1 × 108 × 256 × 128) = 3,211,264 / 3,538,944 ≈ 90.7%. n = 1793: ⌈7.004⌉ = 8, ⌈14.008⌉ = 15 → 120 타일 > 108 → 2 웨이브. 활용률 1793² / (2 × 3,538,944) ≈ 45.4%. 원소는 0.1% 늘었는데 처리 시간은 약 2배. 어휘 크기: 50257 = 64 × 785 + 17 → 다음 64의 배수는 64 × 786 = 50304."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import math\nSMS = 108                                  # A100 의 SM 수\ndef waves(M, N, tm=256, tn=128):\n    tiles = math.ceil(M / tm) * math.ceil(N / tn)\n    w = math.ceil(tiles / SMS)\n    useful = M * N / (w * SMS * tm * tn)  # 돌린 타일 칸 중 진짜 일의 비율\n    return tiles, w, useful\nfor n in (1536, 1664, 1792, 1793, 1920, 2048, 2049):\n    t, w, u = waves(n, n)\n    print(f\"n={n}: 타일 {t:4d}개, 웨이브 {w}, 활용률 {u:5.1%}\")\nprint(\"50257 % 64 =\", 50257 % 64, \"-> 다음 64 배수\", math.ceil(50257 / 64) * 64)",
+    "note": "실행 결과: 1536 → 72 타일 1 웨이브 66.7%, 1664 → 91·1·78.2%, 1792 → 98·1·90.7%, 1793 → 120·2·45.4%, 1920 → 120·2·52.1%, 2048 → 128·2·59.3%, 2049 → 153·2·59.3%. '50257 % 64 = 17 -> 다음 64 배수 50304'. SM 당 블록 하나만 상주한다는 단순화다."
+   },
+   "pitfalls": [
+    "'2의 거듭제곱이 빠르다'는 미신에 가깝다. 필요한 것은 버스트·텐서 코어 정렬을 만족하는 배수(대개 8~64)이고, 그보다 큰 배수는 이 효과에서 추가 이득이 없다. 웨이브 양자화는 오히려 2048 같은 '예쁜' 수에서도 일어난다(128 타일 > 108 SM).",
+    "웨이브 계산은 SM 하나에 블록 하나만 올라간다고 단순화한 것이다. 실제로는 공유 메모리·레지스터가 허락하면 SM 당 여러 블록이 상주하고, 라이브러리는 이를 피하려고 split-K·stream-K 같은 분할을 쓴다(노트 보충).",
+    "어휘 크기 패딩으로 늘린 행은 쓰이지 않는 토큰이다. 출력 로짓에서 그 칸을 무시하거나 −∞ 로 막아야 손실이 바뀌지 않는다."
+   ],
+   "check": [
+    {
+     "q": "H100(SM 132개)에서 256×128 타일로 2048×2048 행렬곱을 하면 웨이브는 몇 번인가? A100 과 비교하면?",
+     "a": "타일 8 × 16 = 128개. H100 은 128 ≤ 132 라 1 웨이브, A100 은 128 > 108 이라 2 웨이브다. 같은 크기도 칩에 따라 웨이브 양자화 여부가 달라진다."
+    },
+    {
+     "q": "어휘 크기 50257 을 64의 배수로 패딩하면 몇 개의 행이 추가되나?",
+     "a": "50304 − 50257 = 47개."
+    }
+   ]
+  },
+  {
+   "start": 4311,
+   "title": "FlashAttention — 배운 기법들로 다시 조립하기",
+   "points": [
+    "FlashAttention 은 순수한 시스템 개선이다: PyTorch 의 순진한 어텐션을 잘 융합된 커널 하나로 바꿨다. 이득 대부분은 HBM 읽기·쓰기 감소에서 온다.",
+    "어텐션 = 행렬곱 3개(QKᵀ, ·V 등)와 softmax 하나. 행렬곱은 타일링하면 되지만, softmax 가 행 전체에 걸친 전역 연산이라 문제다.",
+    "열쇠는 온라인 softmax(Milakov & Gimelshein 2018): 지금까지의 최댓값 m 과 합 l 을 들고 다니며, 새 최댓값이 나오면 이전 값을 e^{m_old − m_new} 로 고친다.",
+    "그래서 타일 단위로 S = QKᵀ 를 SRAM 에서 만들고, exp 를 융합하고, 부분합을 고쳐 가며 V 와 곱한 뒤 마지막에 한 번 나눈다 — n×n 행렬은 HBM 에 나가지 않는다.",
+    "역전파는 n×n 활성값을 저장하지 않고 타일마다 다시 계산한다(재계산). 타일링 + 융합 + 재계산 = FlashAttention."
+   ],
+   "on_screen": "'Part 3: Using what we know to understand Flash Attention — Flash attention [Dao et al] dramatically accelerates attention.. But how?': Attention on GPT-2 시간 막대(PyTorch 의 Matmul·Dropout·Softmax·Mask·Matmul 대 FlashAttention 의 Fused Kernel), Attention GFLOPs·HBM R/W(GB)·Runtime(ms) 표(Standard 66.6·40.3·41.7 대 FlashAttention 75.2·4.4·7.3), 블록 크기 효과 그래프, 'Technique from paper: We apply two established techniques (tiling, recomputation) to overcome the technical challenge of computing exact attention in sub-quadratic HBM accesses'. 'Recap of attention computation — Attention computation: 3 matrix multiplies (K, Q, V) with a softmax in between': XQ·KᵀXᵀ = XQKᵀXᵀ ∈ ℝ^{3×n×n}, softmax(XQKᵀXᵀ)·XV = P(mix) → output ∈ ℝ^{n×d}. 'Tiling part 1: tiling for the KQV matrix multiply' — 메모리 계층 피라미드(SRAM 19TB/s (20MB), HBM 1.5TB/s (40GB), DRAM 12.8GB/s (>1TB))와 FlashAttention 그림 1(Outer Loop, Copy Block to SRAM, Inner Loop, Compute Block on SRAM, Output to HBM), 'This figure 1 from the paper is literally just tiling for a KQV matrix multiply.. But what do we do about the softmax?'. 'Tiling part 2: incremental computation of the softmax — From Milakov and Gimelshein 2018': Normal softmax(Algorithm 2 Safe softmax) 대 Online softmax(Algorithm 3 Safe softmax with online normalizer calculation: m_j ← max(m_{j−1}, x_j), d_j ← d_{j−1}·e^{m_{j−1}−m_j} + e^{x_j−m_j}), 'To keep track of the max, incrementally update the max, and set up a telescoping sum. This lets you compute the softmax tile-by-tile'. 'Putting it all together – the forward pass of flash attention' (Dao 2023 그림: S = QKᵀ 타일, A = exp(S), 출력 rescaling): Tile-wise computation of the inner products (S), Fusion of the exponential operator, Tile-wise computation of the softmax via the online, telescoping sum trick, '(We won't cover the backward pass – but they recompute tile-by-tile..)'. 'Recap for the whole lecture': Hardware powers scale, and low-level details determine what scales or doesn't / Current GPU based compute strongly encourages thinking about matmul + data movement / Thinking carefully about the GPU (coalescing, tiling, fusion) leads to good performance.",
+   "explain": [
+    "마지막 부분은 '승리의 한 바퀴'다. 지금까지 배운 기법만으로 FlashAttention 을 다시 발명해 본다. 4강에서 FlashAttention 을 메모리 효율적으로 어텐션을 계산하는 방법으로 잠깐 만났다면, 여기서는 왜 그것이 빠른지를 하드웨어 수준에서 본다. 논문의 표가 핵심을 말해 준다. GPT-2 어텐션에서 FLOPs 는 오히려 FlashAttention 쪽이 조금 더 많은데(66.6 대 75.2 GFLOPs — 재계산 때문), HBM 읽기·쓰기는 40.3GB 에서 4.4GB 로 줄고 실행 시간은 41.7ms 에서 7.3ms 로 준다. 연산을 줄인 것이 아니라 메모리 왕복을 줄인 것이다. 논문 스스로도 '두 가지 기존 기법, 타일링과 재계산을 썼다'고 말한다.",
+    "어텐션은 Q·K·V 를 만든 뒤 S = QKᵀ(행렬곱), P = softmax(S)(행별 정규화), O = PV(행렬곱)로 이루어진다. 순진한 구현은 n×n 크기의 S 와 P 를 HBM 에 쓰고 다시 읽는다. 시퀀스가 길면 이 n² 크기 왕복이 시간을 지배한다. 행렬곱 둘은 13장의 타일링으로 다룰 수 있다 — 논문의 그림 1은 말 그대로 타일 행렬곱 그림이다. 걸림돌은 softmax 다. softmax 는 한 행의 모든 점수를 본 뒤 최댓값을 빼고 지수를 취해 합으로 나누는 전역 연산이라, 한 타일만 보고는 최종 값을 알 수 없다.",
+    "해결의 열쇠가 온라인 softmax 다. 행을 왼쪽부터 조각조각 읽으며 두 숫자만 들고 다닌다: 지금까지 본 최댓값 m 과, 그 최댓값 기준으로 정규화한 지수 합 l. 새 조각에서 더 큰 최댓값 m_new 가 나오면 지금까지의 합은 옛 최댓값 기준이었으므로 e^{m − m_new} 를 곱해 새 기준으로 고친 뒤 새 조각의 지수 합을 더한다. 이 보정이 계속 이어 붙는 '망원경 합'이 되어 마지막에는 처음부터 전체를 보고 계산한 것과 정확히 같은 값이 나온다. 출력도 마찬가지로, 누적 중인 PV 부분합 acc 에 같은 보정 계수를 곱하고 새 조각의 p·V 를 더한다. 끝에서 acc 를 l 로 한 번 나누면 된다. 들고 다니는 상태는 행마다 숫자 두 개와 d 차원 벡터 하나뿐이라 레지스터·공유 메모리에 충분히 들어간다.",
+    "이제 조립하면 이렇다. Q 의 타일 하나를 블록 하나가 맡아 SRAM 에 올린다(타일링). K·V 타일을 차례로 올려 S 타일 = q·kᵀ 를 SRAM 에서 계산하고, 그 자리에서 exp 를 취하고(융합), 온라인 softmax 로 m·l·acc 를 고쳐 간다. n×n 의 S·P 는 어떤 순간에도 HBM 에 존재하지 않는다. 역전파에 필요한 P 도 저장하지 않고, 저장해 둔 m·l(행마다 숫자 두 개)로 역전파 때 타일마다 다시 계산한다(재계산). 결국 FlashAttention 은 이 강의의 타일링·융합·재계산 세 기법의 조합이다. 강사의 마무리는 세 줄이다. 하드웨어가 규모를 떠받치고, 낮은 수준의 세부가 무엇이 확장되는지를 정한다. 지금의 GPU 는 행렬곱과 데이터 이동을 중심으로 생각하게 만든다. 하드웨어를 의식한 아키텍처 설계가 앞으로 점점 중요해진다. 다음 6강(커널·Triton·XLA)에서 이 기법들을 실제 코드로 짠다."
+   ],
+   "formulas": [
+    {
+     "expr": "O = softmax(Q Kᵀ / √d) V,   Q, K, V ∈ ℝ^{n×d},  S = QKᵀ/√d ∈ ℝ^{n×n}",
+     "meaning": "n 은 시퀀스 길이, d 는 헤드 차원. S·P 가 n×n 이라 순진하게 HBM 에 쓰면 메모리 트래픽이 n² 으로 는다."
+    },
+    {
+     "expr": "m_new = max(m, max_j s_j),   l_new = l·e^{m − m_new} + Σ_j e^{s_j − m_new},   acc_new = acc·e^{m − m_new} + Σ_j e^{s_j − m_new}·v_j,   O = acc / l",
+     "meaning": "온라인 softmax 와 출력 누산. s_j 는 이번 K 타일과의 점수, v_j 는 대응하는 V 행. e^{m − m_new} 는 이전 최댓값 기준의 합을 새 기준으로 옮기는 보정 계수다. 최댓값을 빼는 것은 exp 오버플로를 막는 '안전한 softmax' 이고, 마지막 나눗셈 한 번으로 정규화가 끝난다."
+    }
+   ],
+   "example": {
+    "title": "점수 한 행 [1, 3 | 2, 5] 를 두 타일로",
+    "body": "한 번에 하면 최댓값 5, Σ e^{s−5} = e^{−4} + e^{−2} + e^{−3} + e⁰ ≈ 0.0183 + 0.1353 + 0.0498 + 1 = 1.2034. 타일 1 [1, 3]: m = 3, l = e^{−2} + e⁰ = 1.1353. 타일 2 [2, 5]: m_new = 5, 보정 e^{3−5} = 0.1353 → l = 1.1353 × 0.1353 + (e^{−3} + e⁰) = 0.1536 + 1.0498 = 1.2034. 같은 값이다. 메모리 계산(4강·2강 연결): n = 8192, bf16 이면 헤드 하나의 S 는 8192² × 2B = 134MB, P 까지 쓰고 읽으면 헤드·층마다 수백 MB 를 왕복한다. FlashAttention 은 이 왕복을 0 으로 만들고, 행마다 m·l 두 숫자(8192 × 2 × 4B = 64KB)만 남긴다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\ndef naive_attn(Q, K, V):\n    S = Q @ K.T / np.sqrt(Q.shape[1])                  # n×n 전체를 만든다\n    P = np.exp(S - S.max(1, keepdims=True))\n    return (P / P.sum(1, keepdims=True)) @ V\ndef flash_attn(Q, K, V, Br=16, Bc=16):\n    n, d = Q.shape; O = np.zeros_like(Q)\n    for i in range(0, n, Br):                          # Q 타일 하나 = 블록 하나\n        q = Q[i:i+Br]\n        m = np.full(len(q), -np.inf); l = np.zeros(len(q)); acc = np.zeros((len(q), d))\n        for j in range(0, n, Bc):                      # K,V 타일을 차례로 SRAM 에\n            s = q @ K[j:j+Bc].T / np.sqrt(d)           # Br×Bc 만 존재한다\n            m_new = np.maximum(m, s.max(1))\n            corr = np.exp(m - m_new)                   # 예전 최댓값 기준 값을 고친다\n            p = np.exp(s - m_new[:, None])\n            l = l * corr + p.sum(1)\n            acc = acc * corr[:, None] + p @ V[j:j+Bc]\n            m = m_new\n        O[i:i+Br] = acc / l[:, None]                   # 마지막에 한 번 나눈다\n    return O\nrng = np.random.default_rng(0)\nn, d = 128, 32\nQ, K, V = (rng.normal(size=(n, d)) * 3 for _ in range(3))\nprint(\"최대 차이:\", np.abs(naive_attn(Q, K, V) - flash_attn(Q, K, V)).max())\nprint(\"naive 가 HBM 에 쓰는 S,P:\", 2 * n * n * 2, \"bytes(bf16) / flash: 0\")",
+    "note": "실행 결과: '최대 차이: 3.86e-14', 'naive 가 HBM 에 쓰는 S,P: 65536 bytes(bf16) / flash: 0'(n = 128). 점수에 3을 곱해 최댓값 보정이 실제로 여러 번 일어나게 했다. 실제 커널은 이 두 루프를 블록·워프로 나누고 SRAM 크기에 맞춰 Br·Bc 를 고른다."
+   },
+   "diagram": {
+    "title": "FlashAttention 순전파 — 블록 하나(Q 타일 하나)의 일",
+    "code": "flowchart TB\n  Q[\"Q 타일 → SRAM\"] --> INIT[\"m = -inf, l = 0, acc = 0\"]\n  INIT --> LOOP{\"K, V 타일 j = 1..n/Bc\"}\n  LOOP --> KV[\"K_j, V_j → SRAM\"]\n  KV --> S[\"S = q K_jᵀ (SRAM 안, Br×Bc)\"]\n  S --> E[\"m_new, p = exp(S - m_new) (융합)\"]\n  E --> FIX[\"l, acc 에 exp(m - m_new) 보정 후 누적\"]\n  FIX --> LOOP\n  LOOP -->|끝| OUT[\"O = acc / l → HBM, m·l 저장(역전파 재계산용)\"]"
+   },
+   "pitfalls": [
+    "FlashAttention 은 근사가 아니다. 온라인 softmax 는 수학적으로 정확히 같은 값을 낸다(부동소수점 반올림 차이만 있다). 근사 어텐션(희소·저랭크)과 구분해야 한다.",
+    "FLOPs 는 오히려 조금 늘어난다(역전파 재계산). 빨라지는 이유는 HBM 트래픽 감소다 — 'FLOPs 가 적어서 빠르다'고 설명하면 틀린다.",
+    "슬라이드의 메모리 계층 피라미드 숫자(SRAM 19TB/s 20MB, HBM 1.5TB/s 40GB)는 A100 40GB 기준이고, SRAM 20MB 는 모든 SM 의 합이다."
+   ],
+   "check": [
+    {
+     "q": "온라인 softmax 에서 새 타일의 최댓값이 이전 최댓값보다 작으면 보정 계수는 얼마인가?",
+     "a": "m_new = m 이므로 e^{m − m_new} = e⁰ = 1, 이전 합과 누산값은 그대로 두고 새 항만 더한다."
+    },
+    {
+     "q": "FlashAttention 이 이 강의의 여섯 기법 중 어떤 것들의 조합인지 말하고 각각이 맡은 역할을 적어라.",
+     "a": "타일링(Q·K·V 를 타일로 SRAM 에 올려 재사용), 연산 융합(행렬곱·exp·정규화·PV 를 한 커널에서), 재계산(역전파 때 S·P 를 저장 대신 타일마다 다시 계산). 보통 저정밀도(bf16/fp8)와 병합 로드도 함께 쓴다."
+    }
+   ]
+  }
+ ],
+ "concepts": [
+  {
+   "term": "Dennard scaling",
+   "explain": "트랜지스터가 작아질수록 같은 전력 밀도에서 클럭을 올릴 수 있던 경향. 2000년대에 멈춰 성능 향상이 병렬화로 옮겨 갔다.",
+   "at": 290
+  },
+  {
+   "term": "SM (streaming multiprocessor)",
+   "explain": "GPU 의 독립 실행 단위. 블록을 받아 실행하며 CUDA 코어·텐서 코어·레지스터·공유 메모리를 갖는다. A100 108개, H100 SXM 132개.",
+   "at": 540
+  },
+  {
+   "term": "HBM (전역 메모리)",
+   "explain": "칩 옆에 붙은 고대역폭 DRAM. 'GPU 메모리 80GB' 의 그 메모리이며, 계층에서 가장 크고 가장 느리다(A100 약 290 사이클).",
+   "at": 620
+  },
+  {
+   "term": "공유 메모리(SMEM) / L1",
+   "explain": "SM 안의 SRAM. 공유 메모리는 프로그래머가 명시적으로 채워 블록 안 스레드가 함께 재사용하고, L1 은 하드웨어가 관리하는 캐시다.",
+   "at": 650
+  },
+  {
+   "term": "SIMT",
+   "explain": "한 명령을 여러 스레드가 서로 다른 데이터로 실행하는 GPU 실행 방식. 스레드 하나의 코드만 쓰면 된다.",
+   "at": 820
+  },
+  {
+   "term": "워프(warp)",
+   "explain": "번호가 연속인 32 스레드 묶음. 스케줄러가 명령을 내리는 실제 단위로, 같은 박자에 같은 명령을 실행한다.",
+   "at": 880
+  },
+  {
+   "term": "블록(thread block)",
+   "explain": "한 SM 에서 실행이 보장되는 스레드 묶음. 블록 안에서만 공유 메모리를 함께 쓸 수 있다.",
+   "at": 850
+  },
+  {
+   "term": "MXU / 시스톨릭 배열",
+   "explain": "TPU 의 행렬곱 유닛. 곱셈-덧셈 셀 격자에 두 행렬 값을 박자마다 흘려보내 메모리에서 한 번 읽은 값을 여러 번 쓴다. GPU 텐서 코어도 같은 계열이다.",
+   "at": 1190
+  },
+  {
+   "term": "텐서 코어",
+   "explain": "V100 부터 들어간 행렬곱 전용 회로. 16·8·4비트 입력을 받아 FP32 로 누산하며, 행렬곱을 다른 연산보다 10배 넘게 빠르게 만든다.",
+   "at": 420
+  },
+  {
+   "term": "제어 분기(control divergence)",
+   "explain": "워프 안 스레드가 if/else 로 갈리면 두 갈래를 차례로 모두 실행하고 해당하지 않는 스레드는 노는 현상.",
+   "at": 1980
+  },
+  {
+   "term": "MXFP8",
+   "explain": "32개 원소마다 E8M0(2의 거듭제곱) 배율을 두는 FP8 형식. 원소는 E4M3. 블록 구조 때문에 전치하면 다시 양자화해야 한다.",
+   "at": 2310
+  },
+  {
+   "term": "연산 융합(operator fusion)",
+   "explain": "여러 연산을 커널 하나로 합쳐 중간 결과가 HBM 을 오가지 않게 하는 기법. 원소별 연산 사슬은 torch.compile 이 자동으로 한다.",
+   "at": 2840
+  },
+  {
+   "term": "재계산(recomputation)",
+   "explain": "역전파에 필요한 활성값을 저장하지 않고 다시 계산하는 기법. 연산을 조금 더 쓰고 메모리 접근을 줄인다.",
+   "at": 3000
+  },
+  {
+   "term": "버스트 / 메모리 병합(coalescing)",
+   "explain": "DRAM 은 한 번에 연속된 구간(약 128B)을 읽는다. 워프의 32 스레드 주소가 한 구간에 모이면 요청 하나로 끝나는 것이 병합이다.",
+   "at": 3180
+  },
+  {
+   "term": "타일링(tiling)",
+   "explain": "행렬을 타일로 잘라 공유 메모리에 올리고 재사용해 전역 메모리 읽기를 타일 크기 배만큼 줄이는 기법.",
+   "at": 3480
+  },
+  {
+   "term": "웨이브 양자화(wave quantization)",
+   "explain": "타일(블록) 수가 SM 수를 조금 넘으면 마지막 웨이브에서 대부분의 SM 이 놀아 처리량이 급락하는 현상. A100 의 1792 → 1793.",
+   "at": 4050
+  },
+  {
+   "term": "패딩(padding)",
+   "explain": "행렬 차원을 8·64 등의 배수로 늘려 버스트·타일 경계를 맞추는 일. nanoGPT 어휘 50257 → 50304.",
+   "at": 3900
+  },
+  {
+   "term": "온라인 softmax",
+   "explain": "최댓값과 지수 합을 들고 다니며 새 최댓값이 나오면 e^{m_old − m_new} 로 보정해 softmax 를 조각 단위로 정확히 계산하는 방법(Milakov & Gimelshein 2018).",
+   "at": 4440
+  },
+  {
+   "term": "FlashAttention",
+   "explain": "타일링·융합·온라인 softmax·재계산으로 n×n 어텐션 행렬을 HBM 에 쓰지 않고 정확한 어텐션을 계산하는 커널. 빠른 이유는 HBM 트래픽 감소다.",
+   "at": 4311
+  }
+ ],
+ "trends": [
+  {
+   "claim": "연산 성능이 메모리·인터커넥트 대역폭보다 훨씬 빠르게 늘어 최적화의 중심이 데이터 이동이 되었다",
+   "evidence": "슬라이드: 20년간 하드웨어 FLOPs 60000배(2년에 3.0배), DRAM 대역폭 100배(1.6배), 인터커넥트 30배(1.4배)",
+   "at": 1530
+  },
+  {
+   "claim": "텐서 코어 이후 행렬곱이 다른 부동소수점 연산보다 10배 넘게 빨라, 계산을 키우는 아키텍처는 행렬곱 중심일 수밖에 없다",
+   "evidence": "슬라이드: K80~H100 matmul 대 non-matmul FLOPS 그래프, 'Matmuls are >10x faster than other floating point ops'. 결론 부분은 강사 의견",
+   "at": 1450
+  },
+  {
+   "claim": "GPU 성능 1000배 향상의 큰 몫은 공정이 아니라 숫자 표현(저정밀도)과 전용 명령에서 왔다",
+   "evidence": "Bill Dally 슬라이드: 숫자 표현 ~16배, 복잡한 명령 ~12.5배, 공정 ~2.5배, 희소성 ~2배",
+   "at": 2090
+  },
+  {
+   "claim": "프런티어 연구소들은 FP8 로 학습하고 있으며 다음 세대 모델은 FP4 가 될 것이다",
+   "evidence": "강사 의견. MXFP8 학습으로 행렬곱이 20~30% 빨라지지만, 큰 실전 모델의 FP4 학습 사례는 아직 못 봤다고 덧붙인다",
+   "at": 2620
+  },
+  {
+   "claim": "추론 하드웨어는 prefill 과 decode, 심지어 어텐션과 MLP 를 서로 다른 칩에 나누는 방향으로 가고 있다",
+   "evidence": "질의응답에서 강사가 prefill/decode 분리와 Step-3 의 층별 분리를 예로 들었다",
+   "at": 1740
+  },
+  {
+   "claim": "Groq 처럼 SRAM 을 대량으로 쓰는 칩은 추론 같은 특정 작업에 유리하지만, 대부분의 가속기는 메모리 계층을 유지한다",
+   "evidence": "강사 설명. SRAM 은 DRAM 보다 비트당 약 100배 비싸고 전력 소모가 크다(슬라이드)",
+   "at": 730
+  },
+  {
+   "claim": "하드웨어를 의식한 아키텍처 설계가 미래 시스템 성능의 핵심이다",
+   "evidence": "강사 의견(마무리 슬라이드 'Hardware powers scale, and low-level details determine what scales or doesn't')",
+   "at": 4660
+  }
+ ],
+ "study": {
+  "prereq": [
+   "CS336 2강(kuYAsz7zspQ) — 텐서 바이트 수, FLOPs, 산술 강도, 루프라인, 혼합 정밀도",
+   "행렬곱의 정의와 블록(부분행렬) 곱셈",
+   "softmax 와 어텐션 수식(4강 cKSwj_qZ8Jg 의 FlashAttention 소개 부분)",
+   "Python·NumPy 와 PyTorch 기본, 역전파의 연쇄 법칙"
+  ],
+  "steps": [
+   {
+    "do": "자신이 쓰는 GPU(A100·H100·RTX 등)의 SM 수, SM 당 공유 메모리, L2 크기, HBM 대역폭, 정밀도별 피크 FLOP/s 를 스펙 시트에서 찾아 표로 만들고 꺾이는 점(피크 ÷ 대역폭)을 계산한다",
+    "why": "이 강의의 모든 계산(웨이브 수, 타일 강도, 루프라인)이 이 숫자들에서 시작한다."
+   },
+   {
+    "do": "CUDA C 프로그래밍 가이드의 프로그래밍 모델·메모리 계층 장을 읽고 스레드·블록·워프·공유 메모리 용어를 자기 말로 정리한다",
+    "why": "6강 이후 Triton·CUDA 커널을 쓸 때 기본 어휘다."
+   },
+   {
+    "do": "Horace He 의 'Making Deep Learning Go Brrrr' 를 읽고 자기 모델의 연산을 연산 한계·메모리 한계·오버헤드 한계로 분류한다",
+    "why": "어느 기법(융합인가 타일링인가 배치 키우기인가)을 써야 할지 진단하는 틀이다."
+   },
+   {
+    "do": "노트의 타일 행렬곱·웨이브 계산 코드를 돌리고, GPU 가 있으면 n = 1536~2304 를 한 칸씩 바꿔 가며 torch.matmul 처리량을 재서 강의 그래프를 재현한다",
+    "why": "웨이브 양자화와 정렬 효과를 직접 보면 '배수로 맞춰라'를 이유와 함께 기억한다."
+   },
+   {
+    "do": "torch.compile 로 sin²+cos² 같은 원소별 사슬을 융합하고 torch.profiler 로 커널 수와 시간을 비교한다. mode='max-autotune' 도 켜 본다",
+    "why": "자동 융합이 어디까지 되는지, 오토튜닝이 무엇을 찾는지 체감한다."
+   },
+   {
+    "do": "온라인 softmax 를 손으로 유도하고 NumPy 로 FlashAttention 순전파를 짠 뒤 FlashAttention 1·2 논문의 알고리즘과 대조한다",
+    "why": "과제에서 FlashAttention 을 Triton 으로 구현하기 전에 수학과 상태 관리를 확실히 한다."
+   },
+   {
+    "do": "JAX scaling book 의 GPU 장과 연습 문제를 풀어 GPU·TPU 대응표를 숫자로 확인한다",
+    "why": "강사가 과제가 이 연습 문제와 비슷하다고 예고했다."
+   }
+  ],
+  "practice": [
+   "H100 에서 8192×8192×8192 bf16 행렬곱의 FLOPs, 순진한 전역 읽기 바이트, 128×128·256×128 타일의 전역 읽기 바이트와 산술 강도를 손으로 계산하고 루프라인 위에 찍는다.",
+   "A100(108 SM)과 H100(132 SM)에서 256×128 타일로 n = 1024~4096 정사각 행렬곱의 웨이브 수와 활용률을 표로 만들고, 급락 지점이 어디서 갈리는지 찾는다.",
+   "레이어 정규화(평균·분산·정규화·스케일·바이어스)를 순진하게 커널 5개로 돌릴 때와 융합할 때의 HBM 바이트를 세어 본다.",
+   "1024×1024 fp32 행렬을 전치하는 두 방법(읽기를 병합/쓰기를 병합)의 워프당 버스트 수를 세고, 공유 메모리 타일을 거치면 둘 다 병합되는 이유를 설명한다.",
+   "NumPy FlashAttention 에 인과 마스크를 추가하고, 마스크로 완전히 가려진 타일은 건너뛰도록 고친 뒤 naive 결과와 비교한다."
+  ],
+  "resources": [
+   {
+    "title": "CS336 Spring 2026 과목 홈페이지",
+    "url": "https://cs336.stanford.edu/"
+   },
+   {
+    "title": "How to Scale Your Model (JAX scaling book) — GPU 장",
+    "url": "https://jax-ml.github.io/scaling-book/gpus/"
+   },
+   {
+    "title": "How to Scale Your Model — 전체 목차(TPU 장 포함)",
+    "url": "https://jax-ml.github.io/scaling-book/"
+   },
+   {
+    "title": "Horace He — Making Deep Learning Go Brrrr From First Principles",
+    "url": "https://horace.io/brrr_intro.html"
+   },
+   {
+    "title": "Horace He — What Shapes Do Matrix Multiplications Like? (강의의 행렬 미스터리 출처)",
+    "url": "https://www.thonking.ai/p/what-shapes-do-matrix-multiplications"
+   },
+   {
+    "title": "NVIDIA — Matrix Multiplication Background User's Guide(타일·웨이브 양자화)",
+    "url": "https://docs.nvidia.com/deeplearning/performance/dl-performance-matrix-multiplication/index.html"
+   },
+   {
+    "title": "NVIDIA — CUDA C++ Programming Guide",
+    "url": "https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html"
+   },
+   {
+    "title": "Dao et al. 2022 — FlashAttention",
+    "url": "https://arxiv.org/abs/2205.14135"
+   },
+   {
+    "title": "Dao 2023 — FlashAttention-2",
+    "url": "https://arxiv.org/abs/2307.08691"
+   },
+   {
+    "title": "Milakov & Gimelshein 2018 — Online normalizer calculation for softmax",
+    "url": "https://arxiv.org/abs/1805.02867"
+   },
+   {
+    "title": "MXFP8 학습 레시피(강의 슬라이드 인용, arXiv 2506.08027)",
+    "url": "https://arxiv.org/abs/2506.08027"
+   },
+   {
+    "title": "GPU MODE (구 CUDA MODE) 강의 자료",
+    "url": "https://github.com/gpu-mode/lectures"
+   }
+  ]
+ },
+ "jobs": {
+  "roles": [
+   "GPU 커널·추론 최적화 엔지니어",
+   "ML 시스템 / ML 인프라 엔지니어",
+   "LLM 엔지니어 (사전학습)",
+   "AI 가속기·NPU 소프트웨어 엔지니어",
+   "AI 리서치 엔지니어"
+  ],
+  "skills": [
+   "CUDA",
+   "GPU",
+   "Triton",
+   "PyTorch",
+   "JAX",
+   "TPU",
+   "FlashAttention",
+   "Mixed Precision",
+   "C++",
+   "Python",
+   "LLM"
+  ]
+ },
+ "related": [
+  "kuYAsz7zspQ",
+  "cKSwj_qZ8Jg",
+  "9EEm4iMAF5s",
+  "JuoVZkPBiKk"
+ ],
+ "materials": {
+  "transcript": "official",
+  "frames": 157,
+  "every_sec": 30
+ },
+ "written_at": "2026-11-21"
+}
