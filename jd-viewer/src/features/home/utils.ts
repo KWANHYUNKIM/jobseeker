@@ -1,8 +1,11 @@
 /** 메인 화면 표기 — D-day·경력 구간. */
 
+/** 이보다 멀리 남은 마감일은 상시로 본다 — 진짜 마감은 거의 60일 안이고, 먼 날짜는 원본이 '채용시 마감'을
+ *  먼 날로 적은 것이다(잡코리아 기본 게재 1년 → D-346, 9999년 → D-355430). backend home.service.ALWAYS_DDAY 와 같다. */
+export const ALWAYS_DDAY = 90
+
 export function ddayLabel(d: number | null | undefined): string {
-  // 1년 넘게 남은 마감일은 원본이 '채용시 마감'을 먼 날짜로 적은 것이다(D-355430 같은) — 상시로 본다.
-  if (d == null || d > 365) return '상시'
+  if (d == null || d > ALWAYS_DDAY) return '상시'
   if (d <= 0) return '오늘 마감'
   return `D-${d}`
 }

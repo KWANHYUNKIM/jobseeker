@@ -89,6 +89,14 @@ def test_always_open_threshold():
     from app.features.home.service import is_always
     assert is_always(None)            # 마감일 없음
     assert is_always(355430)          # '채용시 마감'을 먼 날짜로 적은 것
-    assert not is_always(365)
+    assert is_always(365)
     assert not is_always(3)
     assert not is_always(0)
+
+
+def test_far_deadlines_count_as_always_open():
+    from app.features.home.service import is_always
+    assert is_always(346)             # 잡코리아 기본 게재 1년
+    assert is_always(91)
+    assert not is_always(90)
+    assert not is_always(72)

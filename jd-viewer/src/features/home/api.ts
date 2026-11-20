@@ -1,5 +1,6 @@
 import { apiGet, getJson } from '../../api/client'
 import type { Site } from '../../types'
+import { ALWAYS_DDAY } from './utils'
 
 /**
  * 메인 화면(`/`) — backend `/api/home`. 모집중인 IT 공고를 회사별로 묶은 것.
@@ -90,7 +91,7 @@ const SIZE_RANK: Record<string, number> = { 대기업: 0, 중견기업: 1, '해�
 
 /** 상시 공고만 있는 회사(backend `is_always` 와 같은 문턱 — 마감일 없음이거나 1년 넘게 남음). */
 export const isAlwaysCompany = (c: HomeCompany): boolean =>
-  c.always ?? (c.soonest_dday == null || c.soonest_dday > 365)
+  c.always ?? (c.soonest_dday == null || c.soonest_dday > ALWAYS_DDAY)
 
 /** exclude = 메인(상시만 있는 회사를 뺀다), only = 상시 채용만. */
 export type HomeAlways = '' | 'exclude' | 'only'

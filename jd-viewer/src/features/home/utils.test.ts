@@ -25,7 +25,11 @@ describe('ddayLabel', () => {
   it('마감일 없음은 상시', () => expect(ddayLabel(null)).toBe('상시'))
   it('오늘', () => expect(ddayLabel(0)).toBe('오늘 마감'))
   it('남은 날', () => expect(ddayLabel(5)).toBe('D-5'))
-  it('1년 넘게 남으면 상시', () => expect(ddayLabel(355430)).toBe('상시'))
+  it('먼 날짜는 상시', () => expect(ddayLabel(355430)).toBe('상시'))
+  it('90일 넘게 남으면 상시 — 잡코리아 기본 게재 1년', () => {
+    expect(ddayLabel(346)).toBe('상시')
+    expect(ddayLabel(90)).toBe('D-90')
+  })
 })
 
 describe('shortTitle', () => {
