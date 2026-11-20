@@ -246,10 +246,14 @@ def _roster() -> dict | None:
         return {"error": str(e)}
 
 
-def build() -> dict:
+def load_rows(raw: dict[str, dict] | None = None, *, match: bool = True, idx=None) -> list[dict]:
+    """집계에 넣는 경험담 — 원문으로 다시 본 학력·전환, 서류 항목·나이·(공고 대조)까지 붙인 줄.
+
+    보고서와 DB 적재(store.ingest.careers)가 같은 줄을 쓴다 — 화면과 보고서의 숫자가 갈리지 않게."""
     from careers.extract import read_apps
     apps = read_apps()
-    raw = {r["id"]: r for r in store.raw_items() if r.get("id")}
+    if raw is None:
+        raw = {r["id"]: r for r in store.raw_items() if r.get("id")}
     rows = []
     for r in store.read_paths():                     # 읽을 때마다 원문으로 다시 본다 — 예전에 뽑은 줄도 같은 규칙을 받는다
         if not r.get("is_story"):
@@ -262,22 +266,31 @@ def build() -> dict:
     for r in rows:                                   # 나중에 덧붙인 서류 항목(application.jsonl)을 합친다
         if not isinstance(r.get("application"), dict) or not any(r["application"].values()):
             r["application"] = apps.get(r["id"]) if isinstance(apps.get(r["id"]), dict) else {}
-    jobs = store.load_json(store.JOBS, [])
-    open_by = Counter(norm(j.get("company", "")) for j in jobs if j.get("status") in (None, "active", "모집중", "open"))
-    names = {norm(c): c for c in store.companies()}
 
     from careers import age as ag
     ages = ag.read_ages()
     for r in rows:
         r["age"] = ag.of(r, ages)
 
+    if match:
+        from careers import match as mt
+        idx = idx or mt.build_index()
+        for r in rows:
+            try:
+                r["match"] = mt.match_story(r, idx)
+            except Exception:  # noqa: BLE001 — 한 건 모양이 이상해도 보고서는 만든다
+                r["match"] = None
+    return rows
+
+
+def build() -> dict:
+    from careers import age as ag
     from careers import match as mt
     idx = mt.build_index()
-    for r in rows:
-        try:
-            r["match"] = mt.match_story(r, idx)
-        except Exception:  # noqa: BLE001 — 한 건 모양이 이상해도 보고서는 만든다
-            r["match"] = None
+    rows = load_rows(idx=idx)
+    jobs = store.load_json(store.JOBS, [])
+    open_by = Counter(norm(j.get("company", "")) for j in jobs if j.get("status") in (None, "active", "모집중", "open"))
+    names = {norm(c): c for c in store.companies()}
 
     by_co: dict[str, list] = defaultdict(list)
     by_prog: dict[str, list] = defaultdict(list)

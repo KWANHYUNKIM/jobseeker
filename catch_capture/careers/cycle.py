@@ -136,6 +136,11 @@ def once(a) -> None:
     except Exception as e:  # noqa: BLE001
         print(f"블로그 번역 건너뜀: {e}", flush=True)
     report.build()
+    try:                                   # 원문·경험담·명단 → 정본 DB(019). 뷰어 기술도서 › 취업 이 읽는다
+        from store.ingest import careers as careers_db
+        print(f"DB: {careers_db.sync()}", flush=True)
+    except Exception as e:  # noqa: BLE001 — DB 가 없어도 회차는 끝난다
+        print(f"DB 적재 건너뜀: {e}", flush=True)
     print(f"대기 {len(q['pending'])} · 끝난 검색어 {len(q['done'])} · 바퀴 {q.get('rounds', 0)}")
 
 

@@ -1272,3 +1272,66 @@ CREATE TABLE IF NOT EXISTS project_body (
     CONSTRAINT project_body_not_blank CHECK (btrim(body) <> '')
 );
 
+
+-- ════════════════════════════════════════════════════════════════════
+-- 커리어 경로(합격·이직 후기) — db/migrations/019_career.sql 과 같다(설계 근거는 그쪽 머리말)
+-- ════════════════════════════════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS career_post (
+    id            text        PRIMARY KEY,            -- careers.store.rid — '<출처>-<해시>'
+    source        text        NOT NULL,               -- velog · instagram · devto · medium · tistory · inbox
+    url           text,
+    title         text,
+    posted_on     date,
+    tags          text[]      NOT NULL DEFAULT '{}',
+    query         text,                               -- 어떤 검색어로 찾았나
+    body          text        NOT NULL DEFAULT '',
+    collected_at  timestamptz,
+    content_hash  text        NOT NULL,
+    stored_at     timestamptz NOT NULL DEFAULT now(),
+    updated_at    timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS career_post_source_idx ON career_post (source);
+
+CREATE TABLE IF NOT EXISTS career_story (
+    post_id         text        PRIMARY KEY REFERENCES career_post(id) ON DELETE CASCADE,
+    is_story        boolean     NOT NULL,             -- 커리어 경험담인가(아니면 아래는 비어 있다)
+    counted         boolean     NOT NULL DEFAULT false, -- 집계에 넣나(경험담 + IT 이야기 — report.py 와 같은 규칙)
+    kind            text,                             -- 합격·이직·첫취업·불합격·교육과정·직무전환·회고…
+    year            int,                              -- 사건 연도(글에 밝힌 것, 없으면 게시 연도)
+    period          text,                             -- '2024 상반기'
+    company         text,                             -- 간 곳(대표 표기)
+    company_key     text,                             -- core.normalize.company
+    program         text,                             -- 회사가 아니라 교육과정·동아리면 그 이름
+    company_type    text,                             -- 빅테크·플랫폼 · 대기업 · 금융 · 공공 · 게임 · 외국계 · 중견·중소 · 스타트업 · 교육과정 · 미분류
+    company_size    text,                             -- core.classifier 화이트리스트(대기업·중견기업) — 모르면 NULL
+    role            text,
+    level           text,                             -- 신입·경력·인턴…
+    years_before    numeric,                          -- 그 일 전 경력(년)
+    transition      text,                             -- 모델이 적은 원래 문장
+    transition_cat  text,                             -- 비개발→개발 · SI→서비스 · 스타트업→대기업 …
+    origin          text,                             -- 경력직이 떠나 온 곳의 갈래(SI·SM · 스타트업 · 대기업 …)
+    education       text,                             -- 원문 근거가 없으면 '확인되지 않음'
+    age             int,
+    data            jsonb       NOT NULL,             -- 추출 결과 전체(spec·path·selection·application·advice…)
+    extracted_by    text,
+    content_hash    text        NOT NULL,
+    updated_at      timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS career_story_year_idx    ON career_story (year)         WHERE counted;
+CREATE INDEX IF NOT EXISTS career_story_company_idx ON career_story (company_key)  WHERE counted;
+CREATE INDEX IF NOT EXISTS career_story_type_idx    ON career_story (company_type) WHERE counted;
+CREATE INDEX IF NOT EXISTS career_story_level_idx   ON career_story (level)        WHERE counted;
+
+CREATE TABLE IF NOT EXISTS career_roster (
+    post          text        PRIMARY KEY,            -- 캡처 폴더 이름
+    url           text,
+    tag           text,
+    posted_on     date,
+    poster        text,                               -- 학원 · 대학·학과 · 개인 …
+    list_kind     text,
+    it            boolean     NOT NULL DEFAULT false,
+    rows          jsonb       NOT NULL DEFAULT '[]',  -- [{school, major, major_cs, org, org_type, role, it, age, year, count}]
+    content_hash  text        NOT NULL,
+    updated_at    timestamptz NOT NULL DEFAULT now()
+);
+
