@@ -120,8 +120,12 @@ def test_slug_id_noise_is_ignored():
 
 def test_ambiguous_title_uses_content_only_in_memory():
     assert da.classify("컴퓨터 잘 다루시는 분") == "PC·기기 지원"
-    assert da.classify("온라인 사무 직원") is None
-    assert da.classify("온라인 사무 직원", "네이버 스마트스토어 상품 등록과 관리를 맡아요") == "홈페이지·쇼핑몰 운영"
+    assert da.classify("컴퓨터 사무 직원") is None
+    assert da.classify("컴퓨터 사무 직원", "네이버 스마트스토어 상품 등록과 관리를 맡아요") == "홈페이지·쇼핑몰 운영"
+    # 본문으로 '강사'는 정하지 않는다('교육'·'선생님'은 어느 본문에나 있다).
+    assert da.classify("AI 시대 함께할 분", "AI 교육 플랫폼에서 선생님을 모십니다") is None
+    # '온라인'만으로는 본문까지 보지 않는다.
+    assert da.classify("온라인 쇼핑몰 정직원 모집", "스마트스토어 상품 등록 관리") is None
     assert da.is_candidate("컴퓨터-작업")                      # 모호하면 상세까지 본다
     assert not da.is_candidate("주방보조-구합니다")
 
