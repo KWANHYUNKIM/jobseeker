@@ -31,6 +31,8 @@ export const paths = {
   freelanceRates: () => '/freelance/rates',
   /** 외주 프로젝트 한 건 — `/freelance/jobkorea-50346332`. 사이트 이름에는 '-' 가 없다. */
   freelanceProject: (site: string, pid: string) => `/freelance/${site}-${encodeURIComponent(pid)}`,
+  /** 당근알바 IT 공고 — 요약·링크만 싣는 목록(상세 없음, 색인 안 함). */
+  alba: () => '/alba',
   trend: (tech?: string) => (tech ? `/trend?tech=${encodeURIComponent(tech)}` : '/trend'),
   /** 책장. 예전 기술 백과사전이 쓰던 경로를 그대로 물려받았다(북마크가 안 깨지게). */
   wiki: () => '/wiki',
@@ -112,6 +114,10 @@ export const TAB_SEO: Record<string, { title: string; desc: string }> = {
   freelance: {
     title: '외주·프리랜서 프로젝트',
     desc: 'SI/SM 상주, 외주 도급, 부업으로 할 만한 IT 프로젝트를 단가·기간·상주 여부로 모아 봅니다.',
+  },
+  alba: {
+    title: '당근알바 IT 공고',
+    desc: '당근알바에 올라온 동네 IT 일감 — 웹·앱 제작, 코딩 강사, 영상 편집, 엑셀 자동화, PC 설치를 분류·지역·급여로 모아 봅니다.',
   },
   trend: {
     title: '개발 기술 트렌드',

@@ -56,7 +56,13 @@ const GROUPS: { label: string; items: Item[] }[] = [
       { tab: 'book', label: '기술도서', to: paths.wiki },
     ],
   },
-  { label: '외주·프리', items: [{ tab: 'freelance', label: '외주·프리', to: paths.freelance }] },
+  {
+    label: '외주·프리',
+    items: [
+      { tab: 'freelance', label: '외주·프리', to: paths.freelance },
+      { tab: 'alba', label: 'IT 알바', to: paths.alba },
+    ],
+  },
   { label: 'PC 하드웨어', items: [{ tab: 'hardware', label: 'PC 하드웨어', to: paths.hardware }] },
 ]
 

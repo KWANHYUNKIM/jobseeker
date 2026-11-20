@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { AlbaPage } from '../pages/alba/AlbaPage'
 import { BlogPage } from '../pages/blog/BlogPage'
 import { BookPage } from '../pages/book/BookPage'
 import { CalendarPage } from '../pages/calendar/CalendarPage'
@@ -20,7 +21,7 @@ import { paths, TAB_SEO } from '../utils/urls'
 /** 페이지 경로 설정 — 경로 첫 세그먼트 → 탭 → 페이지. 루트(`/`)는 회사별 메인, `/jobs` 가 잡 리스트다. */
 export type Tab =
   | 'home' | 'jobs' | 'companies' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend'
-  | 'book' | 'reveng' | 'lectures' | 'reposts' | 'freelance' | 'hardware' | 'top'
+  | 'book' | 'reveng' | 'lectures' | 'reposts' | 'freelance' | 'alba' | 'hardware' | 'top'
 
 const TAB_BY_SEG: Record<string, Tab> = {
   '': 'home',
@@ -38,6 +39,7 @@ const TAB_BY_SEG: Record<string, Tab> = {
   lectures: 'lectures',
   reposts: 'reposts',
   freelance: 'freelance',
+  alba: 'alba',
   hardware: 'hardware',
   // 메인 배너 한 장이 여는 구역 TOP 50 — `/top/entry`
   top: 'top',
@@ -77,6 +79,8 @@ function useTabSeo(route: Route, tab: Tab) {
     tab === 'top' ||
     // 외주 프로젝트 한 건은 상세 화면이 제 제목·noindex 를 단다(남의 글을 옮긴 화면이다).
     (tab === 'freelance' && !!detail && detail !== 'rates') ||
+    // 당근알바 IT 공고는 남의 목록을 다시 보여 주는 화면이라 AlbaView 가 noindex 를 단다.
+    tab === 'alba' ||
     // 잡 리스트는 검색어가 걸렸을 때 noindex 를 다는 일까지 JobsPage 가 한다.
     tab === 'jobs'
   const t = TAB_SEO[tab === 'freelance' && detail === 'rates' ? 'freelanceRates' : tab] ?? TAB_SEO.jobs
@@ -102,6 +106,8 @@ export function RouteView() {
       return <RepostsPage />
     case 'freelance':
       return <FreelancePage sub={detail} />
+    case 'alba':
+      return <AlbaPage />
     case 'trend':
       return <TrendPage focusTech={route.query.get('tech')} />
     case 'book':
