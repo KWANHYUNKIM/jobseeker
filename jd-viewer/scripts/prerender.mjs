@@ -45,7 +45,7 @@ const SITE_URL = (
 // canonical 은 상대경로로 두고(문서 주소 기준으로 해석된다), 절대 URL 이 필수인
 // og:url·sitemap·robots 는 아예 만들지 않는다.
 const abs = (path) => (SITE_URL ? SITE_URL + path : path)
-const SITE_NAME = 'JD Viewer'
+const SITE_NAME = 'devgonggo'
 const JOB_LIMIT = Number(process.env.PRERENDER_JOBS || 0) || Infinity
 
 // ── 유틸 ────────────────────────────────────────────────────────────────

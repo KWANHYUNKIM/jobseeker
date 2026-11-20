@@ -725,7 +725,7 @@ function FullJd({ text }: { text: string }) {
         aria-expanded={open}
         className="w-full inline-flex items-center justify-center gap-2 h-11 rounded-[30px] bg-[#272727] text-base font-medium text-white hover:bg-black"
       >
-        {open ? '원문 접기' : '전체 JD 원문 보기'}
+        {open ? '원문 접기' : '공고 원문 전체 보기'}
         <svg width="10" height="8" viewBox="0 0 10 8" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" aria-hidden>
           <path d={open ? 'M1.5 5.5 5 2l3.5 3.5' : 'M1.5 2.5 5 6l3.5-3.5'} />
         </svg>

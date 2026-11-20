@@ -1686,7 +1686,7 @@ def build_ai_entry() -> dict:
         "밖에서 나온 숫자도 같은 쪽을 가리킵니다 — 국내 SW 인력은 1년에 0.2% 느는 데 그쳤고(SPRi, 잡플래닛 인용), "
         "3년 미만 개발자는 9천 명 줄고 3년 이상은 4만 2천 명 늘었습니다(트위그).",
         "출처\nhttps://www.jobplanet.co.kr/contents/news-8452\nhttps://www.twig24.com/news/2026/01/07/20260107014003",
-        f"{_dot(asof)} 우리 사이트(JD Viewer) 모집중 공고 기준. 전체 목록은 프로필 링크에서.",
+        f"{_dot(asof)} 우리 사이트(devgonggo) 모집중 공고 기준. 전체 목록은 프로필 링크에서.",
     ])
     return {"kind": "insight", "id": f"insight-ai-entry-{asof.replace('-', '')}", "title": "신입 공고와 AI",
             "slides": slides, "caption": caption, "jobs": [], "reel_hold": 3.0,
@@ -1705,7 +1705,7 @@ def build_game() -> dict:
     total, entry = sum(c["active"] for c in cos), sum(c["entry"] for c in cos)
     by = {c["name"]: c for c in cos}
     asof = date.today().isoformat()
-    note = f"JD Viewer 모집중 IT 공고 · 국내 게임사 {len(cos)}곳 · {_dot(asof)} · 업종은 회사 이름으로 가른 추정"
+    note = f"devgonggo 모집중 IT 공고 · 국내 게임사 {len(cos)}곳 · {_dot(asof)} · 업종은 회사 이름으로 가른 추정"
     gs = [("크래프톤", "신작 포함 5종 출품"), ("엔씨", "B2B 부스"), ("펄어비스", "연사 참여")]
     slides = [
         {"type": "cover", "big": f"{total}", "big_unit": "건",
@@ -1731,7 +1731,7 @@ def build_game() -> dict:
         "게임스컴 2026(8월, 쾰른)에는 크래프톤이 신작을 포함해 5종을 냈고, 엔씨는 B2B 부스를, 펄어비스는 연사로 참여했습니다"
         "(머니투데이방송 보도).",
         "출처\nhttps://news.mtn.co.kr/news-detail/2026062514114422335",
-        f"{_dot(asof)} JD Viewer 모집중 공고 기준. 업종은 회사 이름으로 가른 추정입니다.",
+        f"{_dot(asof)} devgonggo 모집중 공고 기준. 업종은 회사 이름으로 가른 추정입니다.",
     ])
     return {"kind": "game", "id": f"game-gamescom-{asof.replace('-', '')}", "title": "게임사 채용",
             "slides": slides, "caption": caption, "jobs": [], "reel_hold": 1.8,
@@ -1794,7 +1794,7 @@ def build_security() -> dict:
     cos = collections.Counter(_co_name(j["company"]) for j in jobs).most_common(6)
     n, ne = len(jobs), len(entry)
     asof = date.today().isoformat()
-    note = f"JD Viewer 모집중 공고 중 보안 직군 · 국내 근무 {n:,}건 · {_dot(asof)} · 직군은 제목·본문으로 가른 것"
+    note = f"devgonggo 모집중 공고 중 보안 직군 · 국내 근무 {n:,}건 · {_dot(asof)} · 직군은 제목·본문으로 가른 것"
     slides = [
         {"type": "cover", "big": f"{n}", "big_unit": "건", "lines": ["해킹 사고 뒤", "지금 열린 보안 자리"],
          "sub": "국내 근무 보안 직군 모집중 공고", "note": note},
@@ -1820,7 +1820,7 @@ def build_security() -> dict:
         "보안뉴스는 2025년 대형 사고들을 고도화된 공격보다 사람과 관리의 실패로 봤고, 솔루션을 들이는 것만으로는 "
         "부족하다고 짚었습니다. 사람을 뽑는 자리가 그만큼 중요하다는 뜻이기도 합니다.",
         "출처\nhttps://m.boannews.com/html/detail.html?idx=141318",
-        f"{_dot(asof)} JD Viewer 모집중 공고 중 보안 직군(국내 근무) 기준. 직군은 공고 제목·본문으로 가른 것입니다.",
+        f"{_dot(asof)} devgonggo 모집중 공고 중 보안 직군(국내 근무) 기준. 직군은 공고 제목·본문으로 가른 것입니다.",
     ])
     return {"kind": "security", "id": f"security-{asof.replace('-', '')}", "title": "보안 채용",
             "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.4,
@@ -1869,7 +1869,7 @@ def build_cert() -> dict:
     cos = collections.Counter(_co_name(r["company"]) for r, _ in named).most_common(3)
     pct = lambda a, b: round(100 * a / b) if b else 0
     asof = date.today().isoformat()
-    note = (f"JD Viewer 모집중 DevOps/인프라 공고 · 국내 근무 {n:,}건 · {_dot(asof)} · "
+    note = (f"devgonggo 모집중 DevOps/인프라 공고 · 국내 근무 {n:,}건 · {_dot(asof)} · "
             "자격증 이름이 본문에 적힌 공고만 셈")
     src = "로버트 하프 2026 연봉 가이드(벤처스퀘어 2026.3.16 보도) · 조사 범위는 보도에 없음"
     slides = [
@@ -1902,7 +1902,7 @@ def build_cert() -> dict:
         "벤처스퀘어는 로버트 하프 2026 연봉 가이드를 인용해 IT 리더의 87%가 인프라·보안 공인 인증 보유자에게 "
         "우대 점수를 준다고 전했습니다. 다만 공고에 자격증 이름까지 적는 곳은 그보다 훨씬 적었습니다.",
         "출처\nhttps://www.venturesquare.net/1054188/",
-        f"{_dot(asof)} JD Viewer 모집중 공고 중 DevOps/인프라 직군(국내 근무) 기준. '관련 자격증 우대' 처럼 "
+        f"{_dot(asof)} devgonggo 모집중 공고 중 DevOps/인프라 직군(국내 근무) 기준. '관련 자격증 우대' 처럼 "
         "이름 없이 적은 것과 복지의 '자격증 취득 지원' 은 세지 않았습니다.",
     ])
     return {"kind": "cert", "id": f"cert-infra-{asof.replace('-', '')}", "title": "인프라 자격증 우대",
@@ -1947,7 +1947,7 @@ def build_aitool() -> dict:
     n, na = len(rows), len(asked)
     asof = date.today().isoformat()
     wj = "\u2060"
-    note = (f"JD Viewer 모집중 IT 공고 · 국내 근무 {n:,}건 · {_dot(asof)} · "
+    note = (f"devgonggo 모집중 IT 공고 · 국내 근무 {n:,}건 · {_dot(asof)} · "
             "자격요건·우대사항에 도구 이름이 적힌 공고만 셈")
     slides = [
         {"type": "cover", "big": f"{na}", "big_unit": "건",
@@ -1979,7 +1979,7 @@ def build_aitool() -> dict:
         "데일리안은 넥슨이 인턴십 '넥토리얼'에서 코딩테스트를 없애고 AI 활용 역량 평가를 들였고, 크래프톤은 "
         "AI 와 함께 문제를 정의하고 검증하는 과정을 보는 평가로 신입을 뽑는다고 전했습니다.",
         "출처\nhttps://www.dailian.co.kr/news/view/1703201/",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 도구 이름이나 'AI 코딩' 처럼 적힌 것만 셌습니다.",
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 도구 이름이나 'AI 코딩' 처럼 적힌 것만 셌습니다.",
     ])
     return {"kind": "aitool", "id": f"aitool-{asof.replace('-', '')}", "title": "AI 코딩 도구를 적은 공고",
             "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.2,
@@ -2005,7 +2005,7 @@ def build_mobility() -> dict:
     entry_cos = sorted((c for c in cos if c["entry"]), key=lambda c: -c["entry"])
     asof = date.today().isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 IT 공고 · 국내 자동차·모빌리티 {len(cos)}곳 · {_dot(asof)} · 업종은 회사 이름으로 가른 추정"
+    note = f"devgonggo 모집중 IT 공고 · 국내 자동차·모빌리티 {len(cos)}곳 · {_dot(asof)} · 업종은 회사 이름으로 가른 추정"
     slides = [
         {"type": "cover", "big": f"{total}", "big_unit": "건", "lines": ["현대차 공채 끝난 뒤", "모빌리티가 뽑는 개발자"],
          "sub": f"국내 자동차·모빌리티 {len(cos)}곳의 모집중 IT 공고", "note": note},
@@ -2032,7 +2032,7 @@ def build_mobility() -> dict:
         "사라경제는 현대차가 SDV·AI·로보틱스 인재를 찾으려 9월 1~14일 연구개발·IT 등 6개 부문 92개 공고로 "
         "전 부문 신입 공채를 했다고 전했습니다.",
         "출처\nhttps://sateconomy.co.kr/news/view/1065573166413873",
-        f"{_dot(asof)} JD Viewer 모집중 공고 기준. 업종은 회사 이름으로 가른 추정입니다.",
+        f"{_dot(asof)} devgonggo 모집중 공고 기준. 업종은 회사 이름으로 가른 추정입니다.",
     ])
     return {"kind": "mobility", "id": f"mobility-{asof.replace('-', '')}", "title": "모빌리티 채용",
             "slides": slides, "caption": caption, "jobs": [], "reel_hold": 1.8,
@@ -2060,7 +2060,7 @@ def build_pangyo() -> dict:
     stacks = collections.Counter(x for r in rows for x in (r["stacks"] or [])).most_common(3)
     asof = date.today().isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 IT 공고 · 근무지 경기 성남시(판교·분당) {n:,}건 · {_dot(asof)} · 헤드헌팅 공고 뺌"
+    note = f"devgonggo 모집중 IT 공고 · 근무지 경기 성남시(판교·분당) {n:,}건 · {_dot(asof)} · 헤드헌팅 공고 뺌"
     slides = [
         {"type": "cover", "big": f"{n}", "big_unit": "건", "lines": ["8만 3천 명이 일하는 판교", "지금 열린 개발 자리"],
          "sub": "근무지가 성남시(판교·분당)인 모집중 IT 공고", "note": note},
@@ -2088,7 +2088,7 @@ def build_pangyo() -> dict:
         "경기도의 2025 판교테크노밸리 실태조사에 따르면 제1·2판교 입주 기업은 1,780곳으로 23곳 줄었지만, 임직원은 "
         "약 8만 3천 명으로 6% 늘었습니다(경기일보 보도). 기업 수가 준 건 일부 앵커 기업이 신사옥으로 옮긴 영향이라고 합니다.",
         "출처\nhttps://www.kyeonggi.com/article/20251225580045",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고 기준. 근무지는 공고에 적힌 시·구로 셌고 헤드헌팅 공고는 뺐습니다.",
+        f"{_dot(asof)} devgonggo 모집중 IT 공고 기준. 근무지는 공고에 적힌 시·구로 셌고 헤드헌팅 공고는 뺐습니다.",
     ])
     return {"kind": "pangyo", "id": f"pangyo-{asof.replace('-', '')}", "title": "판교 채용",
             "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.2,
@@ -2130,7 +2130,7 @@ def build_health() -> dict:
     lunit = next((len(v) for n, v in per.items() if "루닛" in n), 0)
     asof = date.today().isoformat()
     wj = "\u2060"
-    note = (f"JD Viewer 모집중 IT 공고 · 국내 바이오·헬스케어 {len(per)}곳 · {_dot(asof)} · 같은 자리 중복 게시는 하나로 · "
+    note = (f"devgonggo 모집중 IT 공고 · 국내 바이오·헬스케어 {len(per)}곳 · {_dot(asof)} · 같은 자리 중복 게시는 하나로 · "
             "업종은 회사 이름으로 가른 추정")
     slides = [
         {"type": "cover", "big": f"{total}", "big_unit": "개", "lines": ["세계가 꼽은 헬스테크", "국내에서 뽑는 개발 자리"],
@@ -2159,7 +2159,7 @@ def build_health() -> dict:
         "벤처스퀘어는 TIME 과 스태티스타가 30여 개국 500개 기업을 꼽은 '세계 최고 헬스테크 기업 2026'에 루닛이 진단 분야로 "
         "선정됐다고 전했습니다. 의료기기·웨어러블 분야에는 스카이랩스가 한국 기업으로 유일하게 들었습니다.",
         "출처\nhttps://www.venturesquare.net/1115045/\nhttps://www.venturesquare.net/1115416/",
-        f"{_dot(asof)} JD Viewer 모집중 공고 기준. 업종은 회사 이름으로 가른 추정이고, 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+        f"{_dot(asof)} devgonggo 모집중 공고 기준. 업종은 회사 이름으로 가른 추정이고, 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "health", "id": f"health-{asof.replace('-', '')}", "title": "헬스케어 채용",
             "slides": slides, "caption": caption, "jobs": [], "reel_hold": 1.8,
@@ -2189,7 +2189,7 @@ def build_junior() -> dict:
     pct = lambda a: round(100 * a / n) if n else 0
     asof = date.today().isoformat()
     wj = "\u2060"
-    note = (f"JD Viewer 모집중 IT 공고 · 국내 근무 · 경력 조건 신입·1~2년 · {_dot(asof)} · 헤드헌팅·파견 공고 뺌 · "
+    note = (f"devgonggo 모집중 IT 공고 · 국내 근무 · 경력 조건 신입·1~2년 · {_dot(asof)} · 헤드헌팅·파견 공고 뺌 · "
             "규모를 모르는 회사는 중소기업으로 셈")
     slides = [
         {"type": "cover", "big": f"{n:,}", "big_unit": "건", "lines": ["공고가 줄었다는 주니어", "지금 넣을 수 있는 곳"],
@@ -2218,7 +2218,7 @@ def build_junior() -> dict:
         "잡코리아가 경력 3년 이하 개발자 1,000명에게 물었더니 76.4%가 공고 자체가 줄었다고 했고, 67.5%는 서류에서 가장 많이 "
         "막힌다고 답했습니다. 면접까지 간 곳이 한 곳도 없다는 응답도 35.0%였습니다.",
         "출처\nhttps://www.jobkorea.co.kr/recruit/careers/articles/junior-developer-2026",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무, 경력 조건 신입·1~2년) 기준. 헤드헌팅·파견 공고는 뺐습니다.",
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무, 경력 조건 신입·1~2년) 기준. 헤드헌팅·파견 공고는 뺐습니다.",
     ])
     return {"kind": "junior", "id": f"junior-{asof.replace('-', '')}", "title": "주니어 채용",
             "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.2,
@@ -2252,7 +2252,7 @@ def build_usvs() -> dict:
     pct = lambda a, b: round(100 * a / b) if b else 0
     asof = date.today().isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {n:,}건 · {_dot(asof)} · 경력 비중은 경력 조건을 적은 {stated:,}건 기준"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {n:,}건 · {_dot(asof)} · 경력 비중은 경력 조건을 적은 {stated:,}건 기준"
     slides = [
         {"type": "cover", "big": f"{pct(ai, n)}", "big_unit": "%", "lines": ["미국은 AI 자리가 늘었다", "우리 공고는?"],
          "sub": f"국내 IT 공고 {n:,}건 중 제목에 AI 가 든 {ai:,}건", "note": note},
@@ -2280,7 +2280,7 @@ def build_usvs() -> dict:
         "2025년 5월부터 1년 동안 늘어난 공고의 71%가 시니어, 37%가 제목에 AI 를 단 자리였다고 전했습니다.",
         "미국 숫자는 '늘어난 공고' 중 비중, 우리 숫자는 '지금 열린 공고' 중 비중이라 같은 잣대는 아닙니다.",
         "출처\nhttps://www.cio.com/article/4195780/",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준.",
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준.",
     ])
     return {"kind": "usvs", "id": f"usvs-{asof.replace('-', '')}", "title": "미국 vs 우리 개발 공고",
             "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.0,
@@ -2301,7 +2301,7 @@ def build_gap() -> dict:
     ratio = exp / entry if entry else 0
     asof = date.today().isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 메인 화면 '신입'·'경력' 구역 · 모집중 IT 공고 · {_dot(asof)}"
+    note = f"devgonggo 메인 화면 '신입'·'경력' 구역 · 모집중 IT 공고 · {_dot(asof)}"
     slides = [
         {"type": "cover", "big": f"1 : {ratio:.1f}", "big_unit": "", "lines": ["신입 한 자리에", "경력 자리는 이만큼"],
          "sub": f"신입 {entry:,}건 · 경력 {exp:,}건", "note": note},
@@ -2324,7 +2324,7 @@ def build_gap() -> dict:
         "5.2%(1,430명) 줄어듭니다(경향신문 보도).",
         f"그래도 메인 '신입 인기' TOP {shown} 에 대기업 {len(big_cos)}곳이 있습니다: " + " · ".join(big_cos),
         "출처\nhttps://www.khan.co.kr/article/202512312007015/",
-        f"{_dot(asof)} JD Viewer 메인 화면 '신입'·'경력' 구역 기준.",
+        f"{_dot(asof)} devgonggo 메인 화면 '신입'·'경력' 구역 기준.",
     ])
     return {"kind": "gap", "id": f"gap-{asof.replace('-', '')}", "title": "신입 vs 경력",
             "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.0,
@@ -2356,7 +2356,7 @@ def build_cloud() -> dict:
     pct = lambda a, b: round(100 * a / b) if b else 0
     asof = date.today().isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {n:,}건 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {n:,}건 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것"
     slides = [
         {"type": "cover", "big": f"{len(aws):,}", "big_unit": "건", "lines": ["AWS 가 12조 넣는 한국", "AWS 를 쓰는 개발 자리"],
          "sub": f"국내 IT 공고 {n:,}건 중 {pct(len(aws), n)}%", "note": note},
@@ -2382,7 +2382,7 @@ def build_cloud() -> dict:
         "아이뉴스24 는 AWS 서밋 서울에서 AWS 가 2018~2031년 한국 누적 투자 규모를 12조 6천억 원으로 밝혔고, 이 투자가 "
         "신규 일자리 1만 2,300명과 30만 명 이상의 AI·클라우드 교육으로 이어진다고 전했습니다.",
         "출처\nhttps://inews24.com/view/1970128",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것입니다.",
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것입니다.",
     ])
     return {"kind": "cloud", "id": f"cloud-{asof.replace('-', '')}", "title": "클라우드 채용",
             "slides": slides, "caption": caption, "jobs": [], "reel_hold": 1.8,
@@ -2419,7 +2419,7 @@ def build_paywish() -> dict:
     top = sorted(rows, key=lambda r: -r[1])[:3]
     asof = today.isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 신입 개발 공고 중 신입 연봉을 숫자로 적은 {n}곳(회사·금액 중복 제외) · {_dot(asof)} · 범위는 가운데 값"
+    note = f"devgonggo 모집중 신입 개발 공고 중 신입 연봉을 숫자로 적은 {n}곳(회사·금액 중복 제외) · {_dot(asof)} · 범위는 가운데 값"
     slides = [
         {"type": "cover", "big": f"{med:,}", "big_unit": "만원", "lines": ["바라는 초봉 4,196만", "공고에 적힌 신입 연봉은"],
          "sub": f"지금 모집중, 신입 연봉을 숫자로 적은 {n}곳의 가운데 값", "note": note},
@@ -2449,7 +2449,7 @@ def build_paywish() -> dict:
         "마지노선은 3,611만 원(26만 원 ↓)이었다고 전했습니다.",
         "큰 회사일수록 공고에 연봉을 적지 않습니다 — '적어 둔 곳들의 값' 으로 읽어 주세요.",
         "출처\nhttps://www.ddaily.co.kr/page/view/2026042210565982915",
-        f"{_dot(asof)} JD Viewer 모집중 신입 개발 공고 기준. 범위는 가운데 값, '이상' 은 하한으로 셌습니다.",
+        f"{_dot(asof)} devgonggo 모집중 신입 개발 공고 기준. 범위는 가운데 값, '이상' 은 하한으로 셌습니다.",
     ])
     return {"kind": "wish", "id": f"paywish-{asof.replace('-', '')}", "title": "희망 초봉 vs 공고",
             "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.2,
@@ -2486,7 +2486,7 @@ def build_robot() -> dict:
     pct = lambda a: round(100 * a / n) if n else 0
     asof = date.today().isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 IT 공고 중 제목에 로봇·로보틱스·ROS 가 든 국내 근무 자리 · {_dot(asof)} · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 중 제목에 로봇·로보틱스·ROS 가 든 국내 근무 자리 · {_dot(asof)} · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "big": f"{n}", "big_unit": "개", "lines": ["휴머노이드 대학원 생기는 해", "로봇 개발 자리는"],
          "sub": "제목에 로봇·로보틱스·ROS 가 든 모집중 IT 자리", "note": note},
@@ -2510,7 +2510,7 @@ def build_robot() -> dict:
         "산업통상부는 국제로보컵·휴머노이드 챌린지에 맞춰, 올해 하반기 휴머노이드 특성화 대학원을 처음 만들고 연 30억 원 안팎을 "
         "최대 5년 지원한다고 밝혔습니다.",
         "출처\nhttps://www.motir.go.kr/kor/article/ATCL3f49a5a8c/171994/view",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고 중 제목에 로봇·로보틱스·ROS 가 든 국내 근무 자리. 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+        f"{_dot(asof)} devgonggo 모집중 IT 공고 중 제목에 로봇·로보틱스·ROS 가 든 국내 근무 자리. 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "robot", "id": f"robot-{asof.replace('-', '')}", "title": "로봇 채용",
             "slides": slides, "caption": caption, "jobs": [], "reel_hold": 1.8,
@@ -2540,7 +2540,7 @@ def build_spring() -> dict:
     n = len(spring)
     asof = date.today().isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 · 본문에 Spring 이 든 {n:,}건 · {_dot(asof)} · 버전은 본문에 적힌 것만"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 · 본문에 Spring 이 든 {n:,}건 · {_dot(asof)} · 버전은 본문에 적힌 것만"
     slides = [
         {"type": "cover", "big": f"{n:,}", "big_unit": "건", "lines": ["Spring Boot 4 나온 지 11달", "공고는 몇 버전을 쓸까"],
          "sub": "본문에 Spring 이 든 국내 IT 공고", "note": note},
@@ -2564,7 +2564,7 @@ def build_spring() -> dict:
         "spring.io 는 2025년 11월 20일 Spring Boot 4.0.0 정식판을 발표했고, 지금 최신은 4.1.1 입니다. "
         "공고 대부분은 버전을 적지 않으니, 면접에서 쓰는 버전을 물어보는 것도 방법입니다.",
         "출처\nhttps://spring.io/blog/2025/11/20/spring-boot-4-0-0-available-now/",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 버전은 공고 본문에 'Spring Boot N'·'Java N' 으로 적힌 것만 셌습니다.",
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 버전은 공고 본문에 'Spring Boot N'·'Java N' 으로 적힌 것만 셌습니다.",
     ])
     return {"kind": "spring", "id": f"spring-{asof.replace('-', '')}", "title": "스프링 채용",
             "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.0,
@@ -2600,7 +2600,7 @@ def build_vc() -> dict:
     pct = lambda a: round(100 * a / n) if n else 0
     asof = date.today().isoformat()
     wj = "\u2060"
-    note = (f"JD Viewer 모집중 IT 공고 · 국내 근무 중소·중견기업 {n:,}자리 · {_dot(asof)} · 같은 자리 중복 게시는 하나로 · "
+    note = (f"devgonggo 모집중 IT 공고 · 국내 근무 중소·중견기업 {n:,}자리 · {_dot(asof)} · 같은 자리 중복 게시는 하나로 · "
             "직군은 제목·본문으로 가른 것(한 자리가 여러 직군일 수 있음)")
     slides = [
         {"type": "cover", "big": f"{pct(len(ai))}", "big_unit": "%", "lines": ["투자 절반이 AI 로 갔다", "중소·중견 채용은?"],
@@ -2627,7 +2627,7 @@ def build_vc() -> dict:
         "뉴시스는 중소벤처기업부 발표를 인용해 상반기 신규 벤처투자가 8조 8,676억 원으로 작년보다 54.3% 늘었고, "
         "그중 51.2%가 AI 업종에 쏠린 반면 게임 업종은 76.3% 줄었다고 전했습니다.",
         "출처\nhttps://www.newsis.com/view/NISX20260819_0003754109",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무, 중소·중견기업) 기준. 직군은 공고 제목·본문으로 가른 것이고, "
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무, 중소·중견기업) 기준. 직군은 공고 제목·본문으로 가른 것이고, "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "vc", "id": f"vc-{asof.replace('-', '')}", "title": "투자와 채용",
@@ -2671,7 +2671,7 @@ def build_agent() -> dict:
     pct = lambda a: round(100 * a / n) if n else 0
     asof = date.today().isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {n:,}자리 · {_dot(asof)} · 제목·업무·자격·우대에 적힌 것만 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {n:,}자리 · {_dot(asof)} · 제목·업무·자격·우대에 적힌 것만 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "big": f"{len(anyr):,}", "big_unit": "개", "lines": ["에이전트 표준이 생긴 해", "에이전트 개발 자리"],
          "sub": f"AI 에이전트·RAG·MCP·LangChain 을 적은 국내 IT 자리 ({pct(len(anyr))}%)", "note": note},
@@ -2694,7 +2694,7 @@ def build_agent() -> dict:
         "리눅스재단은 2025년 12월 9일 Anthropic 의 MCP, Block 의 goose, OpenAI 의 AGENTS.md 를 창립 프로젝트로 하는 "
         "Agentic AI Foundation 을 세운다고 발표했습니다. 에이전트를 만드는 방식에 공통 표준이 생기기 시작한 셈입니다.",
         "출처\nhttps://linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 제목·주요업무·자격요건·우대사항에 적힌 것만, 같은 자리 중복 게시는 하나로 셌습니다.",
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 제목·주요업무·자격요건·우대사항에 적힌 것만, 같은 자리 중복 게시는 하나로 셌습니다.",
     ])
     return {"kind": "agent", "id": f"agent-{asof.replace('-', '')}", "title": "AI 에이전트 채용",
             "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.0,
@@ -2731,7 +2731,7 @@ def build_lang() -> dict:
     pct = lambda a: round(100 * a / n) if n else 0
     asof = date.today().isoformat()
     wj = "\u2060"
-    note = (f"JD Viewer 모집중 IT 공고 · 국내 근무 {n:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · "
+    note = (f"devgonggo 모집중 IT 공고 · 국내 근무 {n:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · "
             "JavaScript 는 TypeScript 포함 · 같은 자리 중복 게시는 하나로")
     slides = [
         {"type": "cover", "big": "19.23", "big_unit": "%", "lines": ["인기 1위 Python", "국내 공고에서는?"],
@@ -2756,7 +2756,7 @@ def build_lang() -> dict:
         "· TIOBE 2026년 10월: " + " · ".join(f"{i}. {name} {score}%" for i, (name, score, _) in enumerate(_TIOBE, 1)),
         "TIOBE 는 검색 엔진 결과로 매기는 인기 지수라 채용 수요와는 다릅니다. 이달 TIOBE 는 Julia 가 다시 20위 안에 들었다고 짚었습니다.",
         "출처\nhttps://www.tiobe.com/tiobe-index/",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, JavaScript 는 TypeScript 를 함께, "
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, JavaScript 는 TypeScript 를 함께, "
         "C·C++ 는 'C/C++' 표기를 양쪽에 셌습니다.",
     ])
     return {"kind": "lang", "id": f"lang-{asof.replace('-', '')}", "title": "언어 순위 vs 공고",
@@ -2798,7 +2798,7 @@ def build_mobile() -> dict:
     pct = lambda a: round(100 * a / n) if n else 0
     asof = date.today().isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 모바일 직군 공고 · 국내 근무 {n:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 모바일 직군 공고 · 국내 근무 {n:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "big": f"{n:,}", "big_unit": "개", "lines": ["Kotlin 2.4.21 나온 달", "모바일 개발 자리는"],
          "sub": "국내 근무 모바일 직군 모집중 자리", "note": note},
@@ -2820,7 +2820,7 @@ def build_mobile() -> dict:
         "· 많이 뽑는 곳: " + " · ".join(f"{c} {k}개" for c, k in cos),
         "kotlinlang.org 릴리스 기록에 따르면 지금 최신 안정판은 2.4.21(2.4.20 의 버그 수정판)입니다.",
         "출처\nhttps://kotlinlang.org/docs/releases.html",
-        f"{_dot(asof)} JD Viewer 모집중 모바일 직군 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고 Android 는 Kotlin, iOS 는 Swift, Flutter 는 Dart 를 함께 셌습니다. "
+        f"{_dot(asof)} devgonggo 모집중 모바일 직군 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고 Android 는 Kotlin, iOS 는 Swift, Flutter 는 Dart 를 함께 셌습니다. "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "mobile", "id": f"mobile-{asof.replace('-', '')}", "title": "모바일 채용",
@@ -2868,7 +2868,7 @@ def build_python() -> dict:
     pct = lambda a, b=n: round(100 * a / b) if b else 0
     asof = today.isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "big": f"{n:,}", "big_unit": "개", "lines": ["Python 3.15 나온 달", "Python 을 적은 자리는"],
          "sub": f"국내 IT 자리 {total:,}개 중 {pct(n, total)}%", "note": note},
@@ -2890,7 +2890,7 @@ def build_python() -> dict:
         "· 많이 뽑는 곳: " + " · ".join(f"{c} {k}개" for c, k in cos),
         "python.org 내려받기 페이지에 따르면 3.15.0 은 10월 9일 나왔고, 3.14 줄은 9월 30일 3.14.8 이 최신입니다.",
         "출처\nhttps://www.python.org/downloads/",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 한 자리가 여러 직군에 걸치면 각각 셌습니다. "
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 한 자리가 여러 직군에 걸치면 각각 셌습니다. "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "python", "id": f"python-{asof.replace('-', '')}", "title": "파이썬 채용",
@@ -2920,7 +2920,7 @@ def build_node() -> dict:
     pct = lambda a, b=n: round(100 * a / b) if b else 0
     asof = today.isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
     bars = lambda rs: [{"label": k, "value": v, "display": f"{v:,}", "unit": f"{pct(v)}%", "hi": i == 0} for i, (k, v) in enumerate(rs)]
     slides = [
         {"type": "cover", "big": f"{n:,}", "big_unit": "개", "lines": ["Node.js 26 시대", "Node.js 를 적은 자리는"],
@@ -2943,7 +2943,7 @@ def build_node() -> dict:
         "· 많이 뽑는 곳: " + " · ".join(f"{c} {k}개" for c, k in cos),
         "nodejs.org 릴리스 표에 따르면 지금 Current 는 2026년 5월 5일 처음 나온 Node.js 26 이고, 24(Krypton)·22(Jod)가 LTS 입니다.",
         "출처\nhttps://nodejs.org/en/about/previous-releases",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 한 자리가 여러 직군에 걸치면 각각 셌습니다. "
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 한 자리가 여러 직군에 걸치면 각각 셌습니다. "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "node", "id": f"node-{asof.replace('-', '')}", "title": "Node.js 채용",
@@ -2970,7 +2970,7 @@ def build_rust() -> dict:
     pct = lambda a, b=n: round(100 * a / b) if b else 0
     asof = today.isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
     bars = lambda xs, base: [{"label": k, "value": v, "display": f"{v:,}", "unit": f"{pct(v, base)}%", "hi": k == "Rust" or (base == n and i == 0)}
                              for i, (k, v) in enumerate(xs)]
     slides = [
@@ -2994,7 +2994,7 @@ def build_rust() -> dict:
         "· 많이 뽑는 곳: " + " · ".join(f"{c} {k}개" for c, k in cos),
         "Rust 공식 블로그에 따르면 1.99.0 은 10월 1일, 1.99.1 은 10월 15일 나왔습니다.",
         "출처\nhttps://blog.rust-lang.org/releases/",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, C++ 는 C/C++ 표기를 함께 셌습니다. "
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, C++ 는 C/C++ 표기를 함께 셌습니다. "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "rust", "id": f"rust-{asof.replace('-', '')}", "title": "Rust 채용",
@@ -3018,7 +3018,7 @@ def build_java() -> dict:
     pct = lambda a, b=n: round(100 * a / b) if b else 0
     asof = today.isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
     bars = lambda xs: [{"label": k, "value": v, "display": f"{v:,}", "unit": f"{pct(v)}%", "hi": i == 0} for i, (k, v) in enumerate(xs)]
     slides = [
         {"type": "cover", "big": f"{n:,}", "big_unit": "개", "lines": ["JDK 27 나온 가을", "Java 를 적은 자리는"],
@@ -3042,7 +3042,7 @@ def build_java() -> dict:
         "· 많이 뽑는 곳: " + " · ".join(f"{c} {k}개" for c, k in cos),
         "OpenJDK 프로젝트 페이지에 따르면 JDK 27 은 2026년 9월 15일 정식판(GA)이 됐고, 지금은 JDK 28 을 만들고 있습니다.",
         "출처\nhttps://openjdk.org/projects/jdk/",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 한 자리가 여러 직군에 걸치면 각각 셌습니다. "
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 한 자리가 여러 직군에 걸치면 각각 셌습니다. "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "java", "id": f"java-{asof.replace('-', '')}", "title": "Java 채용",
@@ -3078,7 +3078,7 @@ def build_swift() -> dict:
     pct = lambda a, b=n: round(100 * a / b) if b else 0
     asof = today.isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 공고 글에 적힌 낱말로 셈 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 공고 글에 적힌 낱말로 셈 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "big": f"{n:,}", "big_unit": "개", "lines": ["Swift 6.4 나온 가을", "Swift 를 적은 자리는"],
          "sub": f"국내 IT 자리 {total:,}개 중 {pct(n, total)}%", "note": note},
@@ -3100,7 +3100,7 @@ def build_swift() -> dict:
         "· 많이 뽑는 곳: " + " · ".join(f"{c} {k}개" for c, k in cos),
         "swift.org 블로그에 따르면 Swift 6.4 는 9월 15일 나왔고, 10월 8일에 9월 소식 정리 글이 올라왔습니다.",
         "출처\nhttps://www.swift.org/blog/",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 공고 제목·본문이나 기술 칩에 Swift 가 있는 자리만 셌고(기술 칩에 iOS 만 붙은 "
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 공고 제목·본문이나 기술 칩에 Swift 가 있는 자리만 셌고(기술 칩에 iOS 만 붙은 "
         "크로스플랫폼·SDK 공고는 뺐습니다), 도구는 공고 글에 그 낱말이 나온 자리입니다. 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "swift", "id": f"swift-{asof.replace('-', '')}", "title": "Swift 채용",
@@ -3124,7 +3124,7 @@ def build_docker() -> dict:
     pct = lambda a, b=n: round(100 * a / b) if b else 0
     asof = today.isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
     bars = lambda xs: [{"label": k, "value": v, "display": f"{v:,}", "unit": f"{pct(v)}%", "hi": i == 0} for i, (k, v) in enumerate(xs)]
     slides = [
         {"type": "cover", "big": f"{n:,}", "big_unit": "개", "lines": ["Docker 29.9 나온 달", "Docker 를 적은 자리는"],
@@ -3148,7 +3148,7 @@ def build_docker() -> dict:
         "· 많이 뽑는 곳: " + " · ".join(f"{c} {k}개" for c, k in cos),
         "Docker 릴리스 노트에 따르면 Engine 29.9.0 은 10월 8일, 29.9.1 은 10월 14일 나왔습니다.",
         "출처\nhttps://docs.docker.com/engine/release-notes/",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 한 자리가 여러 직군에 걸치면 각각 셌습니다. "
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 한 자리가 여러 직군에 걸치면 각각 셌습니다. "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "docker", "id": f"docker-{asof.replace('-', '')}", "title": "Docker 채용",
@@ -3187,7 +3187,7 @@ def build_kafka() -> dict:
     pct = lambda a, b=n: round(100 * a / b) if b else 0
     asof = today.isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "big": f"{n:,}", "big_unit": "개", "lines": ["Kafka 4.2.2 나온 가을", "Kafka 를 적은 자리는"],
          "sub": f"국내 IT 자리 {total:,}개 중 {pct(n, total)}%", "note": note},
@@ -3210,7 +3210,7 @@ def build_kafka() -> dict:
         "· 많이 뽑는 곳: " + " · ".join(f"{c} {k}개" for c, k in cos),
         "kafka.apache.org 내려받기 페이지에 따르면 4.2 줄의 수정판 4.2.2 는 9월 29일 나왔고, 가장 높은 판은 6월 25일의 4.3.1 입니다.",
         "출처\nhttps://kafka.apache.org/community/downloads/",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. Kafka 자리는 기술 칩으로, 도구는 제목이 데이터 일(데이터·Data·ETL·DW·분석 플랫폼 등)인 공고 글에 그 낱말이 나온 자리로 셌습니다. "
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. Kafka 자리는 기술 칩으로, 도구는 제목이 데이터 일(데이터·Data·ETL·DW·분석 플랫폼 등)인 공고 글에 그 낱말이 나온 자리로 셌습니다. "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "kafka", "id": f"kafka-{asof.replace('-', '')}", "title": "Kafka 채용",
@@ -3237,7 +3237,7 @@ def build_terraform() -> dict:
     pct = lambda a, b=n: round(100 * a / b) if b else 0
     asof = today.isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "big": f"{n:,}", "big_unit": "개", "lines": ["Terraform 1.17 RC 나온 주", "Terraform 을 적은 자리는"],
          "sub": f"국내 IT 자리 {total:,}개 중 {pct(n, total)}%", "note": note},
@@ -3264,7 +3264,7 @@ def build_terraform() -> dict:
         "· 많이 뽑는 곳: " + " · ".join(f"{c} {k}개" for c, k in cos),
         "GitHub 릴리스 페이지에 따르면 10월 14일 1.16.6(최신 정식판)과 1.17.0-rc2(릴리스 후보)가 함께 나왔습니다.",
         "출처\nhttps://github.com/hashicorp/terraform/releases",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "terraform", "id": f"terraform-{asof.replace('-', '')}", "title": "Terraform 채용",
             "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.0,
@@ -3301,7 +3301,7 @@ def build_search() -> dict:
     pct = lambda a, b=total: round(100 * a / b) if b else 0
     asof = today.isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 공고 글에 적힌 낱말로 셈 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 공고 글에 적힌 낱말로 셈 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "big": f"{len(rag):,}", "big_unit": "개", "lines": ["Elasticsearch 를 적은 자리 " + f"{es:,}개,", "RAG 를 적은 자리는"],
          "sub": f"국내 IT 자리 {total:,}개 중 {pct(len(rag))}%", "note": note},
@@ -3326,7 +3326,7 @@ def build_search() -> dict:
         f"· RAG 자리 중 신입 가능 {rag_entry}개 · 많이 뽑는 곳: " + " · ".join(f"{c} {k}개" for c, k in cos),
         "Elasticsearch GitHub 릴리스 페이지에 따르면 10월 6일 9.5.5 · 9.4.8 · 8.19.23 이 함께 나왔습니다.",
         "출처\nhttps://github.com/elastic/elasticsearch/releases",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 공고 제목·본문에 그 낱말이 나온 자리를 셌고, 한 자리에 여러 도구가 함께 나올 수 있습니다. "
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 공고 제목·본문에 그 낱말이 나온 자리를 셌고, 한 자리에 여러 도구가 함께 나올 수 있습니다. "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "search", "id": f"search-{asof.replace('-', '')}", "title": "검색 채용",
@@ -3354,7 +3354,7 @@ def build_nest() -> dict:
     pct = lambda a, b=n: round(100 * a / b) if b else 0
     asof = today.isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "big": f"{n:,}", "big_unit": "개", "lines": ["NestJS 12.2 나온 날", "NestJS 를 적은 자리는"],
          "sub": f"국내 IT 자리 {total:,}개 중 {pct(n, total)}%", "note": note},
@@ -3380,7 +3380,7 @@ def build_nest() -> dict:
         "· 많이 뽑는 곳: " + " · ".join(f"{c} {k}개" for c, k in cos),
         "NestJS GitHub 릴리스 페이지에 따르면 v12.2.0 은 10월 19일, v12.1.3 은 10월 12일 나왔습니다.",
         "출처\nhttps://github.com/nestjs/nest/releases",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, Spring 은 Spring Boot 를 함께 셌습니다. "
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, Spring 은 Spring Boot 를 함께 셌습니다. "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "nest", "id": f"nest-{asof.replace('-', '')}", "title": "NestJS 채용",
@@ -3405,7 +3405,7 @@ def build_dotnet() -> dict:
     pct = lambda a, b=n: round(100 * a / b) if b else 0
     asof = today.isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "big": f"{n:,}", "big_unit": "개", "lines": [".NET 8·9 지원 끝나기 3주 전", ".NET 을 적은 자리는"],
          "sub": f"국내 IT 자리 {total:,}개 중 {pct(n, total)}% · C# 을 적은 자리는 {cs:,}개", "note": note},
@@ -3432,7 +3432,7 @@ def build_dotnet() -> dict:
         "· 많이 뽑는 곳: " + " · ".join(f"{c} {k}개" for c, k in cos),
         ".NET 내려받기 페이지에 따르면 .NET 11 은 10월 13일 RC2 가 나왔고, .NET 10 은 LTS 로 2028년 11월 14일까지, .NET 9 와 8 은 2026년 11월 10일까지 지원됩니다.",
         "출처\nhttps://dotnet.microsoft.com/en-us/download/dotnet",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 회사 규모를 알 수 없는 곳은 중소기업으로 셌습니다. "
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 회사 규모를 알 수 없는 곳은 중소기업으로 셌습니다. "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "dotnet", "id": f"dotnet-{asof.replace('-', '')}", "title": ".NET 채용",
@@ -3467,7 +3467,7 @@ def build_vllm() -> dict:
     pct = lambda a, b=total: round(100 * a / b) if b else 0
     asof = today.isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 공고 글에 적힌 낱말로 셈 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 공고 글에 적힌 낱말로 셈 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "big": f"{n:,}", "big_unit": "개", "lines": ["vLLM 0.32 나온 주", "vLLM 을 적은 자리는"],
          "sub": f"LLM 을 적은 자리는 {llm:,}개 · 국내 IT 자리 {total:,}개 중", "note": note},
@@ -3490,7 +3490,7 @@ def build_vllm() -> dict:
         "· vLLM 자리를 많이 낸 곳: " + " · ".join(f"{c} {k}개" for c, k in cos),
         "vLLM GitHub 릴리스 페이지에 따르면 v0.32.0 은 10월 18일, v0.31.0 은 10월 5일 나왔습니다.",
         "출처\nhttps://github.com/vllm-project/vllm/releases",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 공고 제목·본문에 그 낱말이 나온 자리를 셌고(Triton 은 NVIDIA 추론 서버와 "
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 공고 제목·본문에 그 낱말이 나온 자리를 셌고(Triton 은 NVIDIA 추론 서버와 "
         "OpenAI 커널 언어를 가리지 않았습니다), 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "vllm", "id": f"vllm-{asof.replace('-', '')}", "title": "LLM 서빙 채용",
@@ -3528,7 +3528,7 @@ def build_android() -> dict:
     pct = lambda a, b=n: round(100 * a / b) if b else 0
     asof = today.isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 공고 글에 적힌 낱말로 셈 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 공고 글에 적힌 낱말로 셈 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "big": f"{n:,}", "big_unit": "개", "lines": ["Compose 1.13 베타 나온 달", "Android 개발 자리는"],
          "sub": f"국내 IT 자리 {total:,}개 중 {pct(n, total)}%", "note": note},
@@ -3550,7 +3550,7 @@ def build_android() -> dict:
         "· 많이 뽑는 곳: " + " · ".join(f"{c} {k}개" for c, k in cos),
         "Android 개발자 사이트의 Compose 릴리스 표에 따르면 10월 7일 1.12.1(정식)과 1.13.0-beta01 이 올라왔습니다.",
         "출처\nhttps://developer.android.com/jetpack/androidx/releases/compose",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 모바일 직군 중 공고 글에 Android 와 Kotlin·Java 가 함께 나온 자리를 셌고, "
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 모바일 직군 중 공고 글에 Android 와 Kotlin·Java 가 함께 나온 자리를 셌고, "
         "도구는 그 공고 글에 낱말이 나온 자리입니다('Docker Compose' 는 빼고 셌습니다). 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "android", "id": f"android-{asof.replace('-', '')}", "title": "Android 채용",
@@ -3573,7 +3573,7 @@ def build_cpp() -> dict:
     pct = lambda a, b=n: round(100 * a / b) if b else 0
     asof = today.isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
     bars = lambda xs: [{"label": k, "value": v, "display": f"{v:,}", "unit": f"{pct(v)}%", "hi": i == 0} for i, (k, v) in enumerate(xs)]
     slides = [
         {"type": "cover", "big": f"{n:,}", "big_unit": "개", "lines": ["LLVM 23.1.3 나온 달", "C++ 를 적은 자리는"],
@@ -3596,7 +3596,7 @@ def build_cpp() -> dict:
         "· 많이 뽑는 곳: " + " · ".join(f"{c} {k}개" for c, k in cos),
         "LLVM GitHub 릴리스 페이지에 따르면 23.1.3 은 10월 6일, 23.1.2 는 9월 22일 나왔습니다.",
         "출처\nhttps://github.com/llvm/llvm-project/releases",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고 C++ 는 'C/C++' 표기를 함께 셌습니다. "
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고 C++ 는 'C/C++' 표기를 함께 셌습니다. "
         "한 자리가 여러 직군에 걸치면 각각 셌고, 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "cpp", "id": f"cpp-{asof.replace('-', '')}", "title": "C++ 채용",
@@ -3631,7 +3631,7 @@ def build_testing() -> dict:
     pct = lambda a, b=total: round(100 * a / b) if b else 0
     asof = today.isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 공고 글에 적힌 낱말로 셈 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 공고 글에 적힌 낱말로 셈 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "big": f"{auto:,}", "big_unit": "개", "lines": ["Playwright 1.64 나온 달", "'테스트 자동화' 를 적은 자리는"],
          "sub": f"국내 IT 자리 {total:,}개 중 {pct(auto)}% · Playwright 를 적은 자리 {pw}개", "note": note},
@@ -3654,7 +3654,7 @@ def build_testing() -> dict:
         "· QA 자리를 많이 낸 곳: " + " · ".join(f"{c} {k}개" for c, k in cos),
         "Playwright GitHub 릴리스 페이지에 따르면 v1.64.0 은 10월 7일, v1.64.1 은 10월 14일 나왔습니다.",
         "출처\nhttps://github.com/microsoft/playwright/releases",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 공고 제목·본문에 그 낱말이 나온 자리를 셌고, 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 공고 제목·본문에 그 낱말이 나온 자리를 셌고, 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "testing", "id": f"testing-{asof.replace('-', '')}", "title": "테스트 자동화 채용",
             "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.0,
@@ -3675,7 +3675,7 @@ def build_youth() -> dict:
     sizes = [(k, sum(1 for r in e if r["size"] == k), sum(1 for r in rows if r["size"] == k)) for k in ("대기업", "중견기업", "중소기업")]
     pct = lambda a, b: round(100 * a / b) if b else 0
     asof = today.isoformat()
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 신입=신입·경력무관 공고 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 신입=신입·경력무관 공고 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "big": f"{len(e):,}", "big_unit": "개", "lines": ["청년 고용률 44.0% 인 달", "신입도 되는 IT 자리는"],
          "sub": f"국내 IT 자리 {total:,}개 중 {pct(len(e), total)}%", "note": note},
@@ -3699,7 +3699,7 @@ def build_youth() -> dict:
         "국가데이터처 「2026년 9월 고용동향」(10월 16일)에 따르면 취업자는 2,926만 6천 명으로 1년 전보다 11만 3천 명 늘었지만, "
         "청년층(15~29세) 고용률은 44.0%로 1.1%p 내리고 청년 실업률은 5.4%로 0.6%p 올랐습니다.",
         "출처\nhttps://eiec.kdi.re.kr/policy/materialView.do?num=288191",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 신입은 '신입' 이나 '경력무관' 으로 낸 공고이고, 회사 규모를 모르는 곳은 중소기업으로 셌습니다. "
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 신입은 '신입' 이나 '경력무관' 으로 낸 공고이고, 회사 규모를 모르는 곳은 중소기업으로 셌습니다. "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "youth", "id": f"youth-{asof.replace('-', '')}", "title": "청년 고용 vs 신입 문",
@@ -3721,7 +3721,7 @@ def build_careermix() -> dict:
     mid = c["3-4년"] + c["5-7년"]
     pct = lambda a, b=known: round(100 * a / b) if b else 0
     asof = today.isoformat()
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 연차는 공고가 적은 최소 경력 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 연차는 공고가 적은 최소 경력 · 같은 자리 중복 게시는 하나로"
     label = {"신입/무관": "신입·무관", "8년+": "8년 이상"}
     slides = [
         {"type": "cover", "big": f"{pct(mid)}", "big_unit": "%", "lines": ["29세 이하 가입자 줄어든 달", "절반 가까이 3~7년차"],
@@ -3745,7 +3745,7 @@ def build_careermix() -> dict:
         "고용노동부 「2026년 9월 고용행정 통계로 본 노동시장 동향」(10월 14일, 잠정)에 따르면 고용보험 상시가입자는 1,593만 명으로 1년 전보다 "
         "28만 8천 명 늘었고, 나이별로는 29세 이하 5만 5천 명 감소, 30대 8만 8천 명 증가, 60세 이상 20만 7천 명 증가였습니다.",
         "출처\nhttps://eiec.kdi.re.kr/policy/materialView.do?num=288091",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 연차는 공고가 적은 최소 경력이고, 연차를 적지 않은 공고 {c['정보없음']:,}개는 비율에서 뺐습니다. "
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 연차는 공고가 적은 최소 경력이고, 연차를 적지 않은 공고 {c['정보없음']:,}개는 비율에서 뺐습니다. "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "careermix", "id": f"careermix-{asof.replace('-', '')}", "title": "연차별 공고",
@@ -3777,7 +3777,7 @@ def build_postpace() -> dict:
     openended = sum(1 for r in rows if meta[r["job_id"]]["always_open"] or not r["deadline_on"])
     pct = lambda a, b=total: round(100 * a / b) if b else 0
     asof = today.isoformat()
-    note = (f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 날짜별은 등록일을 아는 {len(posted):,}자리만 · "
+    note = (f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 날짜별은 등록일을 아는 {len(posted):,}자리만 · "
             "같은 자리 중복 게시는 하나로")
     slides = [
         {"type": "cover", "big": f"{wd_sum:,}", "big_unit": "개", "lines": ["구인배수 0.48 인 달", "지난주 평일에 올라온 IT 공고"],
@@ -3802,7 +3802,7 @@ def build_postpace() -> dict:
         "고용노동부 「2026년 9월 고용행정 통계로 본 노동시장 동향」(10월 14일, 잠정)에 따르면 고용24 구인배수는 0.48 로 7개월 연속 올랐고, "
         "고용보험 상시가입자는 1,593만 명으로 1년 전보다 28만 8천 명 늘었습니다.",
         "출처\nhttps://eiec.kdi.re.kr/policy/materialView.do?num=288091",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 날짜별 수는 공고에 등록일이 적힌 {len(posted):,}자리만 셌고(전체 {total:,}자리), "
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 날짜별 수는 공고에 등록일이 적힌 {len(posted):,}자리만 셌고(전체 {total:,}자리), "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "postpace", "id": f"postpace-{asof.replace('-', '')}", "title": "공고 올라오는 속도",
@@ -3835,7 +3835,7 @@ def build_aiinfra() -> dict:
     pct = lambda a, b=total: round(100 * a / b) if b else 0
     asof = today.isoformat()
     wj = "\u2060"
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 공고 글에 적힌 낱말로 셈 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 공고 글에 적힌 낱말로 셈 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "big": f"{len(gpu):,}", "big_unit": "개", "lines": ["반도체 수출 603억 달러 달", "공고 글에 GPU 를 적은 자리"],
          "sub": f"국내 IT 자리 {total:,}개 중 {pct(len(gpu))}%", "note": note},
@@ -3859,7 +3859,7 @@ def build_aiinfra() -> dict:
         "산업통상부·과학기술정보통신부 「2026년 9월 ICT 수출입 동향」(10월 14일)에 따르면 ICT 수출은 751.5억 달러(+195.8%), "
         "반도체 수출은 603.3억 달러(+262.8%)였습니다.",
         "출처\nhttps://eiec.kdi.re.kr/policy/materialView.do?num=288070",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 공고 제목·본문에 그 낱말이 나온 자리를 셌고, 한 자리에 여러 낱말이 함께 나올 수 있습니다. "
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 공고 제목·본문에 그 낱말이 나온 자리를 셌고, 한 자리에 여러 낱말이 함께 나올 수 있습니다. "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "aiinfra", "id": f"aiinfra-{asof.replace('-', '')}", "title": "AI 인프라 채용",
@@ -3891,7 +3891,7 @@ def build_weekrel() -> dict:
                      for keys, name, ver, day, src in _WEEK_RELEASES), key=lambda t: -t[4])
     pct = lambda a, b=total: round(100 * a / b) if b else 0
     asof = today.isoformat()
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
     top = ranked[0]
     slides = [
         {"type": "cover", "big": f"{len(ranked)}", "big_unit": "개", "lines": ["지난주 새 판이 나온 기술", "공고에선 누가 많을까"],
@@ -3913,7 +3913,7 @@ def build_weekrel() -> dict:
         "· 공고 수: " + " · ".join(f"{n} {c:,}개" for n, _, _, _, c in ranked) + "\n"
         "· 지난주 나온 판: " + " · ".join(f"{n} {v}({d})" for n, v, d, _, _ in sorted(ranked, key=lambda t: t[2])),
         "출처(각 공식 릴리스 페이지)\n" + "\n".join(f"{n}: https://{src}" for n, _, _, src, _ in ranked),
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "weekrel", "id": f"weekrel-{asof.replace('-', '')}", "title": "지난주 릴리스 vs 공고",
             "slides": slides, "caption": caption, "jobs": [], "reel_hold": 2.2,
@@ -3939,7 +3939,7 @@ def build_industry() -> dict:
     grew = {"금융": c.get("금융", 0), "바이오·헬스케어": c.get("바이오·헬스케어", 0), "물류": c.get("물류", 0)}
     pct = lambda a, b=known: round(100 * a / b) if b else 0
     asof = today.isoformat()
-    note = (f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 업종은 메인 화면 분류(회사 이름으로 가름) · "
+    note = (f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {_dot(asof)} · 업종은 메인 화면 분류(회사 이름으로 가름) · "
             "같은 자리 중복 게시는 하나로")
     slides = [
         {"type": "cover", "big": f"{top[0][1]:,}", "big_unit": "개", "lines": ["IT 자리를 가장 많이 낸 업종", f"{top[0][0]}"],
@@ -3965,7 +3965,7 @@ def build_industry() -> dict:
         "국가데이터처 「2026년 9월 고용동향」(10월 16일)에 따르면 산업별로 보건업및사회복지서비스업, 운수및창고업, 금융및보험업 등에서 늘고 "
         "숙박및음식점업, 농림어업, 교육서비스업 등에서 줄었습니다.",
         "출처\nhttps://eiec.kdi.re.kr/policy/materialView.do?num=288191",
-        f"{_dot(asof)} JD Viewer 모집중 IT 공고(국내 근무) 기준. 업종은 메인 화면의 분류(회사 이름으로 가름)를 따랐고, 업종을 못 가른 {unknown:,}자리와 "
+        f"{_dot(asof)} devgonggo 모집중 IT 공고(국내 근무) 기준. 업종은 메인 화면의 분류(회사 이름으로 가름)를 따랐고, 업종을 못 가른 {unknown:,}자리와 "
         "채용대행 공고는 순위에서 뺐습니다. 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"kind": "industry", "id": f"industry-{asof.replace('-', '')}", "title": "업종별 IT 자리",

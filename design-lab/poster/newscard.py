@@ -313,7 +313,7 @@ def build_finance(today: date | None = None) -> dict:
         picks.append({"co": j["company"], "title": _short(j["title"]), "meta": meta})
         if len(picks) == 4:
             break
-    note = f"JD Viewer 모집중 공고 · {today:%Y.%m.%d} · 업종은 회사 이름으로 가른 추정"
+    note = f"devgonggo 모집중 공고 · {today:%Y.%m.%d} · 업종은 회사 이름으로 가른 추정"
     slides = [
         {"type": "cover", "photo": "seoul.jpg", "kicker": f"금융권 IT · {today:%Y.%m.%d}",
          "big": f"{total:,}", "unit": "건", "title": ["지금 열려 있는", "금융권 IT 자리"],
@@ -339,7 +339,7 @@ def build_finance(today: date | None = None) -> dict:
         "가장 많이 뽑는 곳: " + " · ".join(f"{c['name']} {c['active']}건" for c in top[:5]),
         "신입 가능: " + " · ".join(f"{p['co']}" for p in picks),
         "출처\nhttps://www.fnnews.com/news/202609071416059562\nhttps://www.smarttoday.co.kr/ko-kr/articles/111273",
-        f"{today:%Y.%m.%d} JD Viewer 모집중 공고 기준. 업종은 회사 이름으로 가른 추정이고 교육과정 모집은 뺐습니다. 전체는 프로필 링크에서.",
+        f"{today:%Y.%m.%d} devgonggo 모집중 공고 기준. 업종은 회사 이름으로 가른 추정이고 교육과정 모집은 뺐습니다. 전체는 프로필 링크에서.",
     ])
     return {"id": f"finance-{today:%Y%m%d}", "series": "[금융권 IT]", "title": "금융권 IT 자리", "slides": slides, "caption": caption}
 
@@ -365,7 +365,7 @@ def build_intern(today: date | None = None) -> dict:
         picks.append({"co": j["company"], "title": _short(j["title"]), "meta": meta})
         if len(picks) == 4:
             break
-    note = f"JD Viewer 모집중 IT 공고 · {today:%Y.%m.%d}"
+    note = f"devgonggo 모집중 IT 공고 · {today:%Y.%m.%d}"
     slides = [
         {"type": "cover", "photo": "pangyo.jpg", "kicker": f"인턴·교육생 · {today:%Y.%m.%d}",
          "big": f"{sec['total']:,}", "unit": "건", "title": ["지금 열린", "IT 인턴·교육생 자리"],
@@ -389,7 +389,7 @@ def build_intern(today: date | None = None) -> dict:
         "(아시아경제 보도, 2026.1).",
         "큰 회사의 IT 인턴: " + " · ".join(p["co"] for p in picks),
         "출처\nhttps://core.asiae.co.kr/article/2026011610121895195",
-        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고 기준. '전환형'·'채용연계' 는 공고 본문에서 찾은 건수입니다. 전체는 프로필 링크에서.",
+        f"{today:%Y.%m.%d} devgonggo 모집중 IT 공고 기준. '전환형'·'채용연계' 는 공고 본문에서 찾은 건수입니다. 전체는 프로필 링크에서.",
     ])
     return {"id": f"intern-{today:%Y%m%d}", "series": "[인턴·교육생]", "title": "IT 인턴·교육생", "slides": slides,
             "caption": caption}
@@ -435,7 +435,7 @@ def build_midlevel(today: date | None = None) -> dict:
                       "meta": f"{when} · {j['career']}"})
         if len(picks) == 4:
             break
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 · {today:%Y.%m.%d}"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 · {today:%Y.%m.%d}"
     slides = [
         {"type": "cover", "photo": "seoul.jpg", "kicker": f"3~8년차 · {today:%Y.%m.%d}",
          "big": f"{mid:,}", "unit": "건", "title": ["어렵다는 3~8년차", "지금 열린 자리"],
@@ -465,7 +465,7 @@ def build_midlevel(today: date | None = None) -> dict:
         "안 뽑는다고 느꼈으며, 가장 많이 막히는 단계는 서류(56%)였습니다.",
         "큰 회사의 3~7년차 자리: " + " · ".join(p["co"] for p in picks),
         "출처\nhttps://www.jobkorea.co.kr/recruit/careers/articles/midlevel-developer",
-        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무, 사이트 간 중복 제외) 기준. 경력은 공고에 적힌 최소 연차로 나눴습니다.",
+        f"{today:%Y.%m.%d} devgonggo 모집중 IT 공고(국내 근무, 사이트 간 중복 제외) 기준. 경력은 공고에 적힌 최소 연차로 나눴습니다.",
     ])
     return {"id": f"midlevel-{today:%Y%m%d}", "series": "[3~8년차]", "title": "3~8년차 자리", "slides": slides,
             "caption": caption}
@@ -517,7 +517,7 @@ def build_japan(today: date | None = None) -> dict:
         picks.append({"co": c, "title": _short(title), "meta": when})
         if len(picks) == 4:
             break
-    note = f"JD Viewer 모집중 IT 공고 · {today:%Y.%m.%d}"
+    note = f"devgonggo 모집중 IT 공고 · {today:%Y.%m.%d}"
     slides = [
         {"type": "cover", "photo": "css.jpg", "kicker": f"일본 취업 · {today:%Y.%m.%d}",
          "big": f"{n}", "unit": "건", "title": ["해외 취업 1위 일본", "지금 열린 IT 자리"],
@@ -546,7 +546,7 @@ def build_japan(today: date | None = None) -> dict:
         "한국경제는 한국노동연구원 자료를 인용해, 일본이 미국을 제치고 한국인 해외 취업 1위가 됐고 일본에서 일하는 "
         "한국인 IT 종사자가 1만여 명(한국인 취업자의 13.4%)이라고 전했습니다. 일본의 IT 기술자 구인배율은 3.45배였습니다.",
         "출처\nhttps://www.hankyung.com/article/202511042453i",
-        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고 기준. 근무지에 일본 지명이 있거나 제목에 일본 근무를 적은 공고만 셌고, "
+        f"{today:%Y.%m.%d} devgonggo 모집중 IT 공고 기준. 근무지에 일본 지명이 있거나 제목에 일본 근무를 적은 공고만 셌고, "
         "헤드헌팅 공고는 뺐습니다.",
     ])
     return {"id": f"japan-{today:%Y%m%d}", "series": "[일본 취업]", "title": "일본 근무 IT 공고", "slides": slides,
@@ -598,7 +598,7 @@ def build_military(today: date | None = None) -> dict:
         picks.append({"co": c, "title": _short(title), "meta": f"{when} · {kind}"})
         if len(picks) == 4:
             break
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 · {today:%Y.%m.%d} · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 · {today:%Y.%m.%d} · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "photo": "typing.jpg", "kicker": f"병역특례 · {today:%Y.%m.%d}",
          "big": f"{n}", "unit": "개", "title": ["군대 대신 개발", "병역특례 IT 자리"],
@@ -629,7 +629,7 @@ def build_military(today: date | None = None) -> dict:
         "배정했습니다(뉴스서울). 또 2027년부터 3년간 AI 분야 대기업 연구소에 전문연구요원을 한시로 다시 배정한다고 합니다"
         "(2013년 폐지 뒤 14년 만, 시대에듀 보도).",
         "출처\nhttps://www.newsseoul.co.kr/news/view/1065584418219013\nhttps://www.sidae.com/article/2026092013412756768",
-        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무) 기준. 편입 조건은 공고마다 다르니 원문을 확인하세요.",
+        f"{today:%Y.%m.%d} devgonggo 모집중 IT 공고(국내 근무) 기준. 편입 조건은 공고마다 다르니 원문을 확인하세요.",
     ])
     return {"id": f"military-{today:%Y%m%d}", "series": "[병역특례]", "title": "병역특례 IT 자리", "slides": slides,
             "caption": caption}
@@ -673,7 +673,7 @@ def build_region(today: date | None = None) -> dict:
                       "meta": f"{place} · {when}"})
         if len(picks) == 4:
             break
-    note = f"JD Viewer 모집중 IT 공고 · 근무지를 적은 국내 공고 {n:,}건 · {today:%Y.%m.%d}"
+    note = f"devgonggo 모집중 IT 공고 · 근무지를 적은 국내 공고 {n:,}건 · {today:%Y.%m.%d}"
     slides = [
         {"type": "cover", "photo": "seoul.jpg", "kicker": f"지역별 채용 · {today:%Y.%m.%d}",
          "big": f"{pct(cap)}", "unit": "%", "title": [f"IT 공고 열에 {'일곱여덟아홉'[(round(pct(cap) / 10) - 7) * 2:(round(pct(cap) / 10) - 7) * 2 + 2]}은" if 7 <= round(pct(cap) / 10) <= 9 else "IT 공고 대부분은", "수도권에 있다"],
@@ -701,7 +701,7 @@ def build_region(today: date | None = None) -> dict:
         "SBS Biz 는 경성대 김종한 교수의 보고서를 인용해 연구개발비와 연구인력의 약 70%가 수도권에 모여 있고, "
         "지난 10년 동안 좋은 일자리의 지역 격차가 커졌다고 전했습니다.",
         "출처\nhttps://biz.sbs.co.kr/amp/article/20000263110",
-        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고 기준. 근무지를 적지 않은 공고와 해외·원격 공고는 뺐습니다.",
+        f"{today:%Y.%m.%d} devgonggo 모집중 IT 공고 기준. 근무지를 적지 않은 공고와 해외·원격 공고는 뺐습니다.",
     ])
     return {"id": f"region-{today:%Y%m%d}", "series": "[지역별 채용]", "title": "수도권 밖 IT 자리", "slides": slides,
             "caption": caption}
@@ -747,7 +747,7 @@ def build_sme(today: date | None = None) -> dict:
                       "meta": f"{r['size']} · {r['region'] or ''} · {when}"})
         if len(picks) == 4:
             break
-    note = f"JD Viewer 모집중 신입 IT 공고 · 국내 근무 · {today:%Y.%m.%d} · 같은 자리 중복 게시는 하나로 · 규모를 모르는 회사는 중소로 셈"
+    note = f"devgonggo 모집중 신입 IT 공고 · 국내 근무 · {today:%Y.%m.%d} · 같은 자리 중복 게시는 하나로 · 규모를 모르는 회사는 중소로 셈"
     slides = [
         {"type": "cover", "photo": "pangyo.jpg", "kicker": f"중견·중소 신입 · {today:%Y.%m.%d}",
          "big": f"{len(sme):,}", "unit": "개", "title": ["신입 IT 자리의", f"{pct(len(sme))}%는 중견·중소"],
@@ -776,7 +776,7 @@ def build_sme(today: date | None = None) -> dict:
         "지원합니다. 비수도권에 취업한 청년 본인도 지역에 따라 480만~720만 원을 받을 수 있습니다(복지로 안내). "
         "지원 조건은 고용24 공고에서 꼭 확인하세요.",
         "출처\nhttps://www.bokjiro.go.kr/ssis-tbu/cms/pc/news/promotion/1309561_1118.html",
-        f"{today:%Y.%m.%d} JD Viewer 모집중 신입 IT 공고(국내 근무) 기준. 같은 자리를 여러 사이트에 올린 것은 하나로, "
+        f"{today:%Y.%m.%d} devgonggo 모집중 신입 IT 공고(국내 근무) 기준. 같은 자리를 여러 사이트에 올린 것은 하나로, "
         "규모를 모르는 회사는 중소기업으로 셌습니다.",
     ])
     return {"id": f"sme-{today:%Y%m%d}", "series": "[중견·중소 신입]", "title": "중견·중소 신입 IT 자리", "slides": slides,
@@ -833,7 +833,7 @@ def build_fourday(today: date | None = None) -> dict:
                       "meta": f"{h[0]} · {when}"})
         if len(picks) == 4:
             break
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {n:,}자리 · {today:%Y.%m.%d} · 같은 자리 중복 게시는 하나로 · 본문에 제도를 적은 것만"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {n:,}자리 · {today:%Y.%m.%d} · 같은 자리 중복 게시는 하나로 · 본문에 제도를 적은 것만"
     slides = [
         {"type": "cover", "photo": "seoul.jpg", "kicker": f"주 4일·4.5일 · {today:%Y.%m.%d}",
          "big": f"{len(hits)}", "unit": "개", "title": ["주 5일보다 짧게", "일하는 IT 자리"],
@@ -861,7 +861,7 @@ def build_fourday(today: date | None = None) -> dict:
         "한국경제는 경기도가 주 4.5일제 시범사업 신규 기업을 모집한다며, 지난해 뽑힌 97개 기업과 1개 공공기관이 참여 중이고 "
         "노동자 1인당 월 최대 27만 원의 임금 보전 장려금과 기업당 최대 1,500만 원의 컨설팅을 지원한다고 전했습니다.",
         "출처\nhttps://www.hankyung.com/article/202603049160h",
-        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무) 기준. 같은 자리를 여러 사이트에 올린 것은 하나로, 공고 본문에 제도를 적은 것만 셌습니다.",
+        f"{today:%Y.%m.%d} devgonggo 모집중 IT 공고(국내 근무) 기준. 같은 자리를 여러 사이트에 올린 것은 하나로, 공고 본문에 제도를 적은 것만 셌습니다.",
     ])
     return {"id": f"fourday-{today:%Y%m%d}", "series": "[주 4일·4.5일]", "title": "짧게 일하는 IT 자리", "slides": slides,
             "caption": caption}
@@ -906,7 +906,7 @@ def build_secneed(today: date | None = None) -> dict:
                       "meta": f"{r['size'] or ''} · {when}"})
         if len(picks) == 4:
             break
-    note = f"JD Viewer 모집중 보안 직군 공고 · 국내 근무 · {today:%Y.%m.%d} · 같은 자리 중복 게시는 하나로 · 직군은 제목·본문으로 가른 것"
+    note = f"devgonggo 모집중 보안 직군 공고 · 국내 근무 · {today:%Y.%m.%d} · 같은 자리 중복 게시는 하나로 · 직군은 제목·본문으로 가른 것"
     slides = [
         {"type": "cover", "photo": "css.jpg", "kicker": f"보안 인력 · {today:%Y.%m.%d}",
          "big": "91.3", "unit": "%", "title": ["보안 인력 필요 없다는", "기업들, 그런데"],
@@ -935,7 +935,7 @@ def build_secneed(today: date | None = None) -> dict:
         "이투데이는 과기정통부와 한국정보보호산업협회의 2024 사이버보안 인력수급 실태조사를 인용해, 50인 이상 민간기업 27,785곳 중 "
         "보안 인력이 필요하다고 답한 곳은 8.7%뿐이었다고 전했습니다.",
         "출처\nhttps://www.etoday.co.kr/news/view/2460937",
-        f"{today:%Y.%m.%d} JD Viewer 모집중 보안 직군 공고(국내 근무) 기준. 직군은 공고 제목·본문으로 가른 것이고, "
+        f"{today:%Y.%m.%d} devgonggo 모집중 보안 직군 공고(국내 근무) 기준. 직군은 공고 제목·본문으로 가른 것이고, "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"id": f"secneed-{today:%Y%m%d}", "series": "[보안 인력]", "title": "보안 인력, 그래도 뽑는 곳", "slides": slides,
@@ -987,7 +987,7 @@ def build_db(today: date | None = None) -> dict:
         if len(picks) == 4:
             break
     pct = lambda a: round(100 * a / n) if n else 0
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {n:,}자리 · {today:%Y.%m.%d} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {n:,}자리 · {today:%Y.%m.%d} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "photo": "pangyo.jpg", "kicker": f"데이터베이스 · {today:%Y.%m.%d}",
          "big": f"{by[0][1]:,}", "unit": "개", "title": [f"공고가 가장 많이 적은 DB", f"{by[0][0]}"],
@@ -1013,7 +1013,7 @@ def build_db(today: date | None = None) -> dict:
         "· 눈여겨볼 곳: " + " · ".join(p["co"] for p in picks),
         "postgresql.org 는 10월 15일 PostgreSQL 19 의 첫 릴리스 후보(RC 1)를 공개했습니다. RC 는 정식판 바로 전 단계입니다.",
         "출처\nhttps://www.postgresql.org/about/newsarchive/",
-        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, MySQL 은 MariaDB 를 함께 셌습니다. "
+        f"{today:%Y.%m.%d} devgonggo 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, MySQL 은 MariaDB 를 함께 셌습니다. "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"id": f"db-{today:%Y%m%d}", "series": "[데이터베이스]", "title": "공고가 적은 DB", "slides": slides,
@@ -1045,7 +1045,7 @@ def build_k8s(today: date | None = None) -> dict:
                       "meta": f"{r['size'] or ''} · {f'D-{d}' if d is not None else '상시'}"})
         if len(picks) == 4:
             break
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "photo": "pangyo.jpg", "kicker": f"쿠버네티스 · {today:%Y.%m.%d}",
          "big": f"{n:,}", "unit": "개", "title": ["Kubernetes 를 적은", "국내 IT 자리"],
@@ -1075,7 +1075,7 @@ def build_k8s(today: date | None = None) -> dict:
         "· 눈여겨볼 곳: " + " · ".join(p["co"] for p in picks),
         "kubernetes.io 릴리스 표에 따르면 지금 최신은 1.37.1(9월 15일)이고, 지원 중인 판 가운데 1.34 는 10월 27일 지원이 끝납니다.",
         "출처\nhttps://kubernetes.io/releases/",
-        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 한 자리가 여러 직군에 걸치면 각각 셌습니다. "
+        f"{today:%Y.%m.%d} devgonggo 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 한 자리가 여러 직군에 걸치면 각각 셌습니다. "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"id": f"k8s-{today:%Y%m%d}", "series": "[쿠버네티스]", "title": "Kubernetes 자리", "slides": slides,
@@ -1110,7 +1110,7 @@ def build_linux(today: date | None = None) -> dict:
                       "meta": f"{r['size'] or ''} · {f'D-{d}' if d is not None else '상시'}"})
         if len(picks) == 4:
             break
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "photo": "code.jpg", "kicker": f"리눅스 · {today:%Y.%m.%d}",
          "big": f"{n:,}", "unit": "개", "title": ["Linux 를 적은", "국내 IT 자리"],
@@ -1140,7 +1140,7 @@ def build_linux(today: date | None = None) -> dict:
         "· 눈여겨볼 곳: " + " · ".join(p["co"] for p in picks),
         "kernel.org 첫 화면에 따르면 메인라인 7.3 은 10월 18일, 안정판 7.2.11 은 10월 15일 나왔습니다.",
         "출처\nhttps://www.kernel.org/",
-        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 한 자리가 여러 직군에 걸치면 각각 셌습니다. "
+        f"{today:%Y.%m.%d} devgonggo 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 한 자리가 여러 직군에 걸치면 각각 셌습니다. "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"id": f"linux-{today:%Y%m%d}", "series": "[리눅스]", "title": "Linux 자리", "slides": slides,
@@ -1177,7 +1177,7 @@ def build_nextjs(today: date | None = None) -> dict:
                       "meta": f"{r['size'] or ''} · {f'D-{d}' if d is not None else '상시'}"})
         if len(picks) == 4:
             break
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "photo": "pangyo.jpg", "kicker": f"Next.js · {today:%Y.%m.%d}",
          "big": f"{n:,}", "unit": "개", "title": ["Next.js 를 적은", "국내 IT 자리"],
@@ -1203,7 +1203,7 @@ def build_nextjs(today: date | None = None) -> dict:
         "· 눈여겨볼 곳: " + " · ".join(p["co"] for p in picks),
         "nextjs.org 블로그에 따르면 Next.js 16.4 는 10월 6일 나왔고, 10월 14일에는 Next.js 가 쓰는 다른 패키지의 취약점에 대한 보안 업데이트 글이 올라왔습니다.",
         "출처\nhttps://nextjs.org/blog",
-        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+        f"{today:%Y.%m.%d} devgonggo 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"id": f"nextjs-{today:%Y%m%d}", "series": "[Next.js]", "title": "Next.js 자리", "slides": slides,
             "caption": caption}
@@ -1241,7 +1241,7 @@ def build_vue(today: date | None = None) -> dict:
                       "meta": f"{r['size'] or ''} · {f'D-{d}' if d is not None else '상시'}"})
         if len(picks) == 4:
             break
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "photo": "pangyo.jpg", "kicker": f"Vue · {today:%Y.%m.%d}",
          "big": f"{n:,}", "unit": "개", "title": ["Vue 를 적은", "국내 IT 자리"],
@@ -1273,7 +1273,7 @@ def build_vue(today: date | None = None) -> dict:
         "· 눈여겨볼 곳: " + " · ".join(p["co"] for p in picks),
         "vuejs/core GitHub 릴리스 페이지에 따르면 최신 정식판은 10월 13일의 3.5.44 이고, 3.6.0-rc.12 가 10월 16일 나왔습니다.",
         "출처\nhttps://github.com/vuejs/core/releases",
-        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+        f"{today:%Y.%m.%d} devgonggo 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"id": f"vue-{today:%Y%m%d}", "series": "[Vue]", "title": "Vue 자리", "slides": slides,
             "caption": caption}
@@ -1310,7 +1310,7 @@ def build_fastapi(today: date | None = None) -> dict:
                       "meta": f"{r['size'] or ''} · {f'D-{d}' if d is not None else '상시'}"})
         if len(picks) == 4:
             break
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "photo": "pangyo.jpg", "kicker": f"FastAPI · {today:%Y.%m.%d}",
          "big": f"{n:,}", "unit": "개", "title": ["FastAPI 를 적은", "국내 IT 자리"],
@@ -1343,7 +1343,7 @@ def build_fastapi(today: date | None = None) -> dict:
         "· 눈여겨볼 곳: " + " · ".join(p["co"] for p in picks),
         "FastAPI GitHub 릴리스 페이지에 따르면 0.147.0 · 0.148.0 · 0.149.0 이 모두 10월 19일 나왔습니다.",
         "출처\nhttps://github.com/fastapi/fastapi/releases",
-        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 한 자리가 여러 직군에 걸치면 각각 셌습니다. "
+        f"{today:%Y.%m.%d} devgonggo 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 한 자리가 여러 직군에 걸치면 각각 셌습니다. "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"id": f"fastapi-{today:%Y%m%d}", "series": "[FastAPI]", "title": "FastAPI 자리", "slides": slides,
@@ -1380,7 +1380,7 @@ def build_angular(today: date | None = None) -> dict:
                       "meta": f"{r['size'] or ''} · {f'D-{d}' if d is not None else '상시'}"})
         if len(picks) == 4:
             break
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "photo": "pangyo.jpg", "kicker": f"Angular · {today:%Y.%m.%d}",
          "big": f"{n:,}", "unit": "개", "title": ["Angular 를 적은", "국내 IT 자리"],
@@ -1412,7 +1412,7 @@ def build_angular(today: date | None = None) -> dict:
         "· 눈여겨볼 곳: " + " · ".join(p["co"] for p in picks),
         "angular/angular GitHub 릴리스 페이지에 따르면 10월 14일 22.2.3(최신), 22.3.0-next.2(미리보기), 20.3.34 가 함께 나왔습니다.",
         "출처\nhttps://github.com/angular/angular/releases",
-        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
+        f"{today:%Y.%m.%d} devgonggo 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고, 같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"id": f"angular-{today:%Y%m%d}", "series": "[Angular]", "title": "Angular 자리", "slides": slides,
             "caption": caption}
@@ -1448,7 +1448,7 @@ def build_redis(today: date | None = None) -> dict:
                       "meta": f"{r['size'] or ''} · {f'D-{d}' if d is not None else '상시'}"})
         if len(picks) == 4:
             break
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 기술은 공고 본문에서 뽑은 것 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "photo": "pangyo.jpg", "kicker": f"Redis · {today:%Y.%m.%d}",
          "big": f"{n:,}", "unit": "개", "title": ["Redis 를 적은", "국내 IT 자리"],
@@ -1479,7 +1479,7 @@ def build_redis(today: date | None = None) -> dict:
         "· 눈여겨볼 곳: " + " · ".join(p["co"] for p in picks),
         "redis/redis GitHub 릴리스 페이지에 따르면 8.10.2(최신), 8.8.3, 8.6.7 이 모두 9월 17일 나왔습니다.",
         "출처\nhttps://github.com/redis/redis/releases",
-        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고 MySQL 은 MariaDB 를 함께 셌습니다. "
+        f"{today:%Y.%m.%d} devgonggo 모집중 IT 공고(국내 근무) 기준. 기술은 공고 본문에서 뽑은 것이고 MySQL 은 MariaDB 를 함께 셌습니다. "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"id": f"redis-{today:%Y%m%d}", "series": "[Redis]", "title": "Redis 자리", "slides": slides,
@@ -1525,7 +1525,7 @@ def build_finance(today: date | None = None) -> dict:
                       "meta": f"{r['size'] or ''} · {f'D-{d}' if d is not None else '상시'}"})
         if len(picks) == 4:
             break
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 업종은 메인 화면 분류 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 업종은 메인 화면 분류 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "photo": "seoul.jpg", "kicker": f"금융권 IT · {today:%Y.%m.%d}",
          "big": f"{n:,}", "unit": "개", "title": ["금융 회사가 낸", "IT 자리"],
@@ -1557,7 +1557,7 @@ def build_finance(today: date | None = None) -> dict:
         "국가데이터처 「2026년 9월 고용동향」(10월 16일)에 따르면 취업자는 1년 전보다 11만 3천 명 늘었고, 산업별로는 보건업및사회복지서비스업, "
         "운수및창고업, 금융및보험업 등에서 늘었습니다.",
         "출처\nhttps://eiec.kdi.re.kr/policy/materialView.do?num=288191",
-        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무) 기준. 금융 회사는 메인 화면의 업종 분류(은행·증권·카드·보험·핀테크 등)를 따랐고, "
+        f"{today:%Y.%m.%d} devgonggo 모집중 IT 공고(국내 근무) 기준. 금융 회사는 메인 화면의 업종 분류(은행·증권·카드·보험·핀테크 등)를 따랐고, "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"id": f"finance-{today:%Y%m%d}", "series": "[금융권 IT]", "title": "금융권 IT 자리", "slides": slides,
@@ -1593,7 +1593,7 @@ def build_semi(today: date | None = None) -> dict:
                       "meta": f"{r['size'] or ''} · {f'D-{d}' if d is not None else '상시'}"})
         if len(picks) == 4:
             break
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 업종은 메인 화면 분류 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 업종은 메인 화면 분류 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "photo": "typing.jpg", "kicker": f"반도체 IT · {today:%Y.%m.%d}",
          "big": f"{n:,}", "unit": "개", "title": ["반도체·전자 회사가 낸", "IT 자리"],
@@ -1627,7 +1627,7 @@ def build_semi(today: date | None = None) -> dict:
         "산업통상부·과학기술정보통신부 「2026년 9월 ICT 수출입 동향」(10월 14일)에 따르면 ICT 수출은 751.5억 달러(+195.8%), "
         "반도체 수출은 603.3억 달러(+262.8%)로 ICT 수출의 80.3%를 차지했습니다.",
         "출처\nhttps://eiec.kdi.re.kr/policy/materialView.do?num=288070",
-        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무) 기준. 반도체·전자 회사는 메인 화면의 업종 분류를 따랐고, 한 자리가 여러 직군에 걸치면 각각 셌습니다. "
+        f"{today:%Y.%m.%d} devgonggo 모집중 IT 공고(국내 근무) 기준. 반도체·전자 회사는 메인 화면의 업종 분류를 따랐고, 한 자리가 여러 직군에 걸치면 각각 셌습니다. "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"id": f"semi-{today:%Y%m%d}", "series": "[반도체 IT]", "title": "반도체 IT 자리", "slides": slides,
@@ -1660,7 +1660,7 @@ def build_logistics(today: date | None = None) -> dict:
                       "meta": f"{r['size'] or ''} · {f'D-{d}' if d is not None else '상시'}"})
         if len(picks) == 4:
             break
-    note = f"JD Viewer 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 업종은 메인 화면 분류 · 같은 자리 중복 게시는 하나로"
+    note = f"devgonggo 모집중 IT 공고 · 국내 근무 {total:,}자리 · {today:%Y.%m.%d} · 업종은 메인 화면 분류 · 같은 자리 중복 게시는 하나로"
     slides = [
         {"type": "cover", "photo": "seoul.jpg", "kicker": f"물류 IT · {today:%Y.%m.%d}",
          "big": f"{n:,}", "unit": "개", "title": ["물류 회사가 낸", "IT 자리"],
@@ -1692,7 +1692,7 @@ def build_logistics(today: date | None = None) -> dict:
         "국가데이터처 「2026년 9월 고용동향」(10월 16일)에 따르면 취업자는 1년 전보다 11만 3천 명 늘었고, 산업별로는 보건업및사회복지서비스업, "
         "운수및창고업, 금융및보험업 등에서 늘었습니다.",
         "출처\nhttps://eiec.kdi.re.kr/policy/materialView.do?num=288191",
-        f"{today:%Y.%m.%d} JD Viewer 모집중 IT 공고(국내 근무) 기준. 물류 회사는 메인 화면의 업종 분류(물류·택배·해운 등)를 따랐고, 한 자리가 여러 직군에 걸치면 각각 셌습니다. "
+        f"{today:%Y.%m.%d} devgonggo 모집중 IT 공고(국내 근무) 기준. 물류 회사는 메인 화면의 업종 분류(물류·택배·해운 등)를 따랐고, 한 자리가 여러 직군에 걸치면 각각 셌습니다. "
         "같은 자리를 여러 사이트에 올린 것은 하나로 셌습니다.",
     ])
     return {"id": f"logistics-{today:%Y%m%d}", "series": "[물류 IT]", "title": "물류 IT 자리", "slides": slides,

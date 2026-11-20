@@ -11,7 +11,7 @@ import { useEffect } from 'react'
 // 두 곳의 문구 규칙이 어긋나면 프리렌더와 실제 화면의 메타가 달라지므로,
 // 제목/설명 문구를 고칠 땐 반드시 양쪽을 같이 고친다.
 
-export const SITE_NAME = 'JD Viewer'
+export const SITE_NAME = 'devgonggo'
 export const SITE_DESC =
   '국내외 개발자 채용공고를 한곳에 모아 기술스택·기업·트렌드로 분석하는 채용 정보 뷰어'
 

@@ -57,7 +57,7 @@ export function PathwayView({ query = '' }: { query?: string }) {
           일자리 군집 <span className="ml-1 text-[13px] font-normal text-[#999]">{data.k}개</span>
         </h3>
         <p className="mt-1 px-2 text-xs leading-[18px] text-[#999]">
-          공고 {data.jobs.toLocaleString()}건을 JD 내용으로 나눈 결과예요. 직군명이 아니라 임베딩이 정한 경계예요.
+          공고 {data.jobs.toLocaleString()}건을 공고 내용으로 나눈 결과예요. 직군명이 아니라 임베딩이 정한 경계예요.
         </p>
         {query && (
           <p className="mt-2 px-2 text-xs text-[#777]">
@@ -144,7 +144,7 @@ export function PathwayView({ query = '' }: { query?: string }) {
       <aside className="min-w-0">
         <h3 className="text-[19px] font-bold text-[#272727]">여기서 갈 수 있는 자리</h3>
         <p className="mt-1 text-[13px] leading-[19px] text-[#999]">
-          JD 내용이 가장 가까운 군집들. <b className="font-medium text-[#666]">더 필요한 것</b>은 그쪽엔 흔한데 여기엔 드문 기술 — 그게 이동에 드는 학습 비용이에요.
+          공고 내용이 가장 가까운 군집들. <b className="font-medium text-[#666]">더 필요한 것</b>은 그쪽엔 흔한데 여기엔 드문 기술 — 그게 이동에 드는 학습 비용이에요.
         </p>
         <div className="mt-4 flex flex-col gap-3">
           {current.neighbors?.map((e) => (

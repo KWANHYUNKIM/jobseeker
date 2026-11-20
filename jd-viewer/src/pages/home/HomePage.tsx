@@ -100,7 +100,7 @@ export function HomePage() {
         <section id="sec-companies" aria-label="회사" className="scroll-mt-16 mt-[39px]">
           <div className="flex flex-wrap items-baseline justify-between gap-2 pl-[10px]">
             <h2 className="text-[22px] font-bold leading-8 tracking-[-0.22px] text-[#272727]">
-              지금, JD Viewer에서 가장 주목받는 회사예요!
+              지금, devgonggo에서 가장 주목받는 회사예요!
             </h2>
             {always && (
               <a
@@ -191,7 +191,7 @@ export function HomePage() {
       {picks.length > 0 && (
         <section aria-label="추천공고" className="bg-[#f3f6f8] pt-[52px] pb-[80px]">
           <div className="jd-container">
-            <p className="text-[13px] font-medium leading-[19px] text-(--color-accent)">› JD Viewer 추천공고</p>
+            <p className="text-[13px] font-medium leading-[19px] text-(--color-accent)">› devgonggo 추천공고</p>
             <h2 className="mt-[3px] text-[22px] font-bold leading-8 tracking-[-0.22px] text-[#272727]">적극 채용중인 기업이에요</h2>
             <p className="mt-0.5 text-base leading-6 tracking-[-0.16px] text-[#666]">위 주목 회사 다음 순위에서, 이번 주 새 공고를 가장 많이 낸 여덟 곳이에요.</p>
             <div className="mt-[26px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 grid-flow-dense gap-2">
