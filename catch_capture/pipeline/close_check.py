@@ -133,7 +133,12 @@ def _fetch(url: str, referer: str | None = None) -> tuple[int | None, str]:
         with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
             return r.status, r.read().decode("utf-8", "ignore")
     except urllib.error.HTTPError as e:
-        return e.code, ""
+        # 오류 응답의 본문도 넘긴다 — jumpit 은 내려간 공고에 404 가 아니라 400 + "Entity Not Found"
+        # 를 준다. 본문을 버리면 '확인 실패'와 '없는 공고'를 가를 수 없다.
+        try:
+            return e.code, e.read(4096).decode("utf-8", "ignore")
+        except Exception:                                           # noqa: BLE001
+            return e.code, ""
     except http.client.IncompleteRead as e:
         # chunked 응답을 중간에 끊는 서버(금융투자협회)가 있다. 받은 데까지로 판정하고,
         # 판정에 필요한 표기가 잘렸으면 각 판정기가 '판정 보류'로 돌려준다.
@@ -344,10 +349,28 @@ def check_wanted(job: dict, today: date, cache: dict) -> Verdict:
     return merge_dates(v, html, today)
 
 
+_JUMPIT_GONE = re.compile(r'"code"\s*:\s*"C003"|Entity Not Found')
+
+
+def jumpit_gone(code: int | None, body: str) -> bool:
+    """jumpit 은 내려간 공고에 400 + {"message":"Entity Not Found","code":"C003"} 를 준다.
+    404 가 아니라서 예전에는 '확인 실패(http=400)' 로 남아 영영 닫히지 않았다(2026-11-20 확인)."""
+    return code == 400 and bool(_JUMPIT_GONE.search(body or ""))
+
+
 def check_jumpit(job: dict, today: date, cache: dict) -> Verdict:
     pid = str(job.get("pid") or job.get("position_id") or "")
-    return _json_verdict(f"https://jumpit.saramin.co.kr/api/position/{pid}",
-                         verdict_jumpit, today)
+    url = f"https://jumpit.saramin.co.kr/api/position/{pid}"
+    code, body = _fetch(url)
+    if code in (404, 410) or jumpit_gone(code, body):
+        return Verdict("closed", f"원본 삭제(HTTP {code})")
+    if code != 200 or not body:
+        return Verdict("unknown", f"확인 실패(http={code})")
+    try:
+        payload = json.loads(body)
+    except Exception:                                               # noqa: BLE001
+        return Verdict("unknown", "응답 파싱 실패")
+    return verdict_jumpit(payload, today)
 
 
 def check_jobkorea(job: dict, today: date, cache: dict) -> Verdict:
@@ -975,6 +998,11 @@ def _selftest() -> int:
         ("jumpit-상시",
          verdict_jumpit({"result": {"alwaysOpen": True}}, t), "active"),
         ("jumpit-내려감", verdict_jumpit({"result": None}, t), "closed"),
+        ("jumpit-400-C003",
+         Verdict("closed", "") if jumpit_gone(400, '{"message":" Entity Not Found","status":400,"code":"C003"}')
+         else Verdict("unknown", ""), "closed"),
+        ("jumpit-400-다른오류",
+         Verdict("closed", "") if jumpit_gone(400, '{"message":"Bad Request"}') else Verdict("unknown", ""), "unknown"),
         ("jobkorea-validThrough",
          verdict_jobkorea('x validThrough": "2026-06-07T23:59" y', t), "closed"),
         ("jobkorea-마감일표기",
