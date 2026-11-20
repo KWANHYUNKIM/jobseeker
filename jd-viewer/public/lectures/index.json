@@ -1,11 +1,26 @@
 {
- "generated_at": "2026-11-20T21:38:02",
- "count": 8,
+ "generated_at": "2026-11-21T07:56:53",
+ "count": 22,
  "topics": [
+  {
+   "key": "ml-basics",
+   "label": "머신러닝 기초",
+   "count": 7
+  },
+  {
+   "key": "deep-learning",
+   "label": "딥러닝",
+   "count": 4
+  },
   {
    "key": "llm",
    "label": "LLM",
-   "count": 3
+   "count": 4
+  },
+  {
+   "key": "vision",
+   "label": "컴퓨터 비전",
+   "count": 2
   },
   {
    "key": "agents",
@@ -18,8 +33,8 @@
    "count": 1
   },
   {
-   "key": "ml-basics",
-   "label": "머신러닝 기초",
+   "key": "systems",
+   "label": "AI 시스템·인프라",
    "count": 1
   },
   {
@@ -28,8 +43,8 @@
    "count": 1
   },
   {
-   "key": "vision",
-   "label": "컴퓨터 비전",
+   "key": "nlp",
+   "label": "자연어 처리",
    "count": 1
   }
  ],
@@ -42,7 +57,7 @@
    "term": "Spring 2026",
    "playlist": "https://www.youtube.com/playlist?list=PLaqpC4kq8Gpw",
    "total": 17,
-   "done": 2,
+   "done": 11,
    "lectures": [
     {
      "no": 1,
@@ -56,56 +71,56 @@
      "id": "cmNIMjPYdgM",
      "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 2: Supervised Learning Setup",
      "duration_sec": 4690,
-     "done": false
+     "done": true
     },
     {
      "no": 3,
      "id": "uJF_gL3jhxI",
      "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 3: Weighted Least Squares",
      "duration_sec": 3734,
-     "done": false
+     "done": true
     },
     {
      "no": 4,
      "id": "8gVi4Rk21Eg",
      "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 4: Exponential Family, GLMs Classification",
      "duration_sec": 4452,
-     "done": false
+     "done": true
     },
     {
      "no": 5,
      "id": "zRdE8A4UZes",
      "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 5: Gaussian Discriminant Analysis",
      "duration_sec": 4898,
-     "done": false
+     "done": true
     },
     {
      "no": 6,
      "id": "llnEgyyuYkQ",
      "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 6: Dataset Split, ML Advice",
      "duration_sec": 4707,
-     "done": false
+     "done": true
     },
     {
      "no": 7,
      "id": "fRM41w9jzQo",
      "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 7: Neural Networks 1 (Architecture)",
      "duration_sec": 4828,
-     "done": false
+     "done": true
     },
     {
      "no": 8,
      "id": "ne2ngVAoMG8",
      "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 8: Neural Networks 2 (Backprop)",
      "duration_sec": 3733,
-     "done": false
+     "done": true
     },
     {
      "no": 9,
      "id": "bSmIGBCoffA",
      "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 9: K-Means and GMM (non-EM)",
      "duration_sec": 4590,
-     "done": false
+     "done": true
     },
     {
      "no": 10,
@@ -119,7 +134,7 @@
      "id": "dqUMCzWjZSI",
      "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 11: Diffusion Models",
      "duration_sec": 4951,
-     "done": false
+     "done": true
     },
     {
      "no": 12,
@@ -173,7 +188,7 @@
    "term": "Spring 2026",
    "playlist": "https://www.youtube.com/playlist?list=PLoROMvodv4rMqXOcazWaTUHhq-yembLCV",
    "total": 18,
-   "done": 1,
+   "done": 2,
    "lectures": [
     {
      "no": 1,
@@ -299,7 +314,7 @@
      "id": "9EEm4iMAF5s",
      "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Guest Lecture: Dan Fu",
      "duration_sec": 4301,
-     "done": false
+     "done": true
     }
    ]
   },
@@ -311,7 +326,7 @@
    "term": "Spring 2025",
    "playlist": "https://www.youtube.com/playlist?list=PLoROMvodv4rOmsNzYBMe0gJY2XS8AQg16",
    "total": 18,
-   "done": 1,
+   "done": 2,
    "lectures": [
     {
      "no": 1,
@@ -402,7 +417,7 @@
      "id": "zbHXQRUNlH0",
      "title": "Stanford CS231N Deep Learning for Computer Vision | Spring 2025 | Lecture 13: Generative Models 1",
      "duration_sec": 4351,
-     "done": false
+     "done": true
     },
     {
      "no": 14,
@@ -833,21 +848,21 @@
    "term": "V6",
    "playlist": "https://www.youtube.com/playlist?list=PLoROMvodv4rNiJRchCzutFw5ItR_Z27CM",
    "total": 9,
-   "done": 1,
+   "done": 3,
    "lectures": [
     {
      "no": 1,
      "id": "bHSDPgZYie0",
      "title": "Stanford CS25: Transformers United V6 I Overview of Transformers",
      "duration_sec": 4606,
-     "done": false
+     "done": true
     },
     {
      "no": 2,
      "id": "GBd7iuJkW08",
      "title": "Stanford CS25: Transformers United V6 I From Representation Learning to World Modeling",
      "duration_sec": 4263,
-     "done": false
+     "done": true
     },
     {
      "no": 3,
@@ -1038,6 +1053,66 @@
    "no": 1
   },
   {
+   "id": "bSmIGBCoffA",
+   "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 9: K-Means and GMM (non-EM)",
+   "title_ko": "k-means 와 가우시안 혼합 모델 — 첫 비지도 학습: 왜곡도, k-means++, 잠재변수, 책임도, 젠센 부등식과 EM 의 그림",
+   "school": "Stanford",
+   "code": "CS229",
+   "term": "Spring 2026",
+   "speaker": "Chris Ré (Stanford 컴퓨터과학과)",
+   "topic": "ml-basics",
+   "tags": [
+    "Python",
+    "NumPy",
+    "scikit-learn",
+    "Machine Learning",
+    "Statistics"
+   ],
+   "level": "중급",
+   "one_line": "라벨 없이 무리를 찾는다 — k-means 의 두 단계와 그 확률판 GMM, 책임도와 가중 추정, 그리고 EM 으로 가는 젠센 부등식",
+   "duration_sec": 4590,
+   "published": "2026-07-31",
+   "views": 4998,
+   "url": "https://www.youtube.com/watch?v=bSmIGBCoffA",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/bSmIGBCoffA/mqdefault.jpg",
+   "chapters": 15,
+   "written_at": "2026-11-20",
+   "series": "cs229-2026",
+   "no": 9
+  },
+  {
+   "id": "dqUMCzWjZSI",
+   "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 11: Diffusion Models",
+   "title_ko": "스탠퍼드 CS229 머신러닝 (2026 봄) 11강 — 확산 모델",
+   "school": "Stanford",
+   "code": "CS229",
+   "term": "Spring 2026",
+   "speaker": "Tengyu Ma (Stanford 컴퓨터과학과)",
+   "topic": "deep-learning",
+   "tags": [
+    "PyTorch",
+    "Python",
+    "NumPy",
+    "Deep Learning",
+    "Generative AI",
+    "Diffusion Models",
+    "Computer Vision"
+   ],
+   "level": "심화",
+   "one_line": "잡음을 조금씩 넣는 고정된 과정을 거꾸로 배우는 생성 모델 — 닫힌 식 q(x_t|x_0), 역방향 가우시안, ELBO·KL 분해로 손실까지 판서로 유도",
+   "duration_sec": 4950,
+   "published": "2026-07-31",
+   "views": 8298,
+   "url": "https://www.youtube.com/watch?v=dqUMCzWjZSI",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/dqUMCzWjZSI/mqdefault.jpg",
+   "chapters": 14,
+   "written_at": "2026-11-20",
+   "series": "cs229-2026",
+   "no": 11
+  },
+  {
    "id": "pwQ0l4hFCVI",
    "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 14: Transformers, In-Context Learning",
    "title_ko": "트랜스포머를 칠판으로 유도하기 — 토큰화부터 자기회귀 확률모델, 셀프 어텐션·마스킹·멀티헤드까지",
@@ -1097,6 +1172,189 @@
    "written_at": "2026-11-20"
   },
   {
+   "id": "fRM41w9jzQo",
+   "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 7: Neural Networks 1 (Architecture)",
+   "title_ko": "신경망 1 (구조) — 비선형 모델의 학습 틀, ReLU 뉴런에서 MLP·ResNet·LayerNorm 까지",
+   "school": "Stanford",
+   "code": "CS229",
+   "term": "Spring 2026",
+   "speaker": "Tengyu Ma (Stanford 컴퓨터과학과 교수)",
+   "topic": "deep-learning",
+   "tags": [
+    "Python",
+    "NumPy",
+    "PyTorch",
+    "Deep Learning",
+    "Machine Learning",
+    "Neural Network"
+   ],
+   "level": "입문",
+   "one_line": "선형 모델의 틀에 ReLU 를 끼워 신경망을 만들고, 행렬·MLP·잔차·정규화까지 부품을 하나씩 쌓는 강의",
+   "duration_sec": 4827,
+   "published": "2026-07-30",
+   "views": 20251,
+   "url": "https://www.youtube.com/watch?v=fRM41w9jzQo",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/fRM41w9jzQo/mqdefault.jpg",
+   "chapters": 15,
+   "written_at": "2026-11-20",
+   "series": "cs229-2026",
+   "no": 7
+  },
+  {
+   "id": "llnEgyyuYkQ",
+   "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 6: Dataset Split, ML Advice",
+   "title_ko": "데이터 나누기와 ML 조언 — 과적합·과소적합, 편향–분산 분해, 릿지 정규화, 이중 하강, 교차검증과 연속 반감",
+   "school": "Stanford",
+   "code": "CS229",
+   "term": "Spring 2026",
+   "speaker": "Chris Ré (Stanford 컴퓨터과학과)",
+   "topic": "ml-basics",
+   "tags": [
+    "Python",
+    "NumPy",
+    "scikit-learn",
+    "Machine Learning",
+    "PyTorch",
+    "Deep Learning"
+   ],
+   "level": "중급",
+   "one_line": "편향–분산 분해로 과적합을 수식화하고, 릿지·dev 집합·교차검증·연속 반감으로 일반화하는 모델을 고르는 법",
+   "duration_sec": 4706,
+   "published": "2026-07-30",
+   "views": 7195,
+   "url": "https://www.youtube.com/watch?v=llnEgyyuYkQ",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/llnEgyyuYkQ/mqdefault.jpg",
+   "chapters": 15,
+   "written_at": "2026-11-20",
+   "series": "cs229-2026",
+   "no": 6
+  },
+  {
+   "id": "ne2ngVAoMG8",
+   "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 8: Neural Networks 2 (Backprop)",
+   "title_ko": "신경망 2 — 역전파: 미분 가능한 회로, 연쇄법칙의 합성, 행렬곱·활성화 층의 backward",
+   "school": "Stanford",
+   "code": "CS229",
+   "term": "Spring 2026",
+   "speaker": "Tengyu Ma (Stanford 컴퓨터과학과 교수)",
+   "topic": "deep-learning",
+   "tags": [
+    "Python",
+    "NumPy",
+    "PyTorch",
+    "JAX",
+    "Deep Learning",
+    "Machine Learning"
+   ],
+   "level": "중급",
+   "one_line": "기울기가 왜 순전파와 같은 비용으로 나오는지부터 Wᵀδ·δzᵀ·σ′⊙δ 까지, 역전파를 칠판으로 유도하는 62분",
+   "duration_sec": 3733,
+   "published": "2026-07-30",
+   "views": 6819,
+   "url": "https://www.youtube.com/watch?v=ne2ngVAoMG8",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/ne2ngVAoMG8/mqdefault.jpg",
+   "chapters": 14,
+   "written_at": "2026-11-20",
+   "series": "cs229-2026",
+   "no": 8
+  },
+  {
+   "id": "zRdE8A4UZes",
+   "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 5: Gaussian Discriminant Analysis",
+   "title_ko": "가우시안 판별 분석(GDA) — 첫 생성 모델, 로지스틱 회귀와의 관계, 나이브 베이즈",
+   "school": "Stanford",
+   "code": "CS229",
+   "term": "Spring 2026",
+   "speaker": "Chris Ré (Stanford 컴퓨터과학과)",
+   "topic": "ml-basics",
+   "tags": [
+    "Python",
+    "NumPy",
+    "scikit-learn",
+    "Machine Learning",
+    "Statistics",
+    "NLP"
+   ],
+   "level": "중급",
+   "one_line": "클래스마다 가우시안을 맞추고 베이즈 규칙으로 뒤집는 첫 생성 모델 — 닫힌 해, 직선 경계, 로지스틱 회귀와의 관계, 스팸 필터까지",
+   "duration_sec": 4897,
+   "published": "2026-07-30",
+   "views": 10234,
+   "url": "https://www.youtube.com/watch?v=zRdE8A4UZes",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/zRdE8A4UZes/mqdefault.jpg",
+   "chapters": 15,
+   "written_at": "2026-11-20",
+   "series": "cs229-2026",
+   "no": 5
+  },
+  {
+   "id": "8gVi4Rk21Eg",
+   "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 4: Exponential Family, GLMs Classification",
+   "title_ko": "지수족과 일반화 선형 모델(GLM) — 최소제곱·로지스틱 회귀를 한 틀로 묶고 softmax 다중 분류까지",
+   "school": "Stanford",
+   "code": "CS229",
+   "term": "Spring 2026",
+   "speaker": "Chris Ré (Stanford 컴퓨터과학과 교수)",
+   "topic": "ml-basics",
+   "tags": [
+    "Python",
+    "Numpy",
+    "PyTorch",
+    "Machine Learning",
+    "Statistics",
+    "scikit-learn",
+    "Deep Learning",
+    "LLM"
+   ],
+   "level": "중급",
+   "one_line": "분포 하나를 고르고 η = θᵀx 로 두면 추론·학습·SGD 가 따라온다 — 시그모이드와 softmax 가 어디서 오는지 보는 74분",
+   "duration_sec": 4452,
+   "published": "2026-07-29",
+   "views": 12190,
+   "url": "https://www.youtube.com/watch?v=8gVi4Rk21Eg",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/8gVi4Rk21Eg/mqdefault.jpg",
+   "chapters": 15,
+   "written_at": "2026-11-20",
+   "series": "cs229-2026",
+   "no": 4
+  },
+  {
+   "id": "cmNIMjPYdgM",
+   "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 2: Supervised Learning Setup",
+   "title_ko": "지도학습의 기본 틀 — 선형 회귀, 최소제곱, 경사하강법·SGD, 정규방정식",
+   "school": "Stanford",
+   "code": "CS229",
+   "term": "Spring 2026",
+   "speaker": "Chris Ré (Stanford 컴퓨터과학과)",
+   "topic": "ml-basics",
+   "tags": [
+    "Python",
+    "NumPy",
+    "Machine Learning",
+    "PyTorch",
+    "scikit-learn",
+    "Pandas",
+    "Deep Learning"
+   ],
+   "level": "입문",
+   "one_line": "집값 데이터로 가설·비용·경사하강법·SGD·정규방정식까지, 모든 학습 알고리즘의 뼈대를 세우는 강의",
+   "duration_sec": 4690,
+   "published": "2026-07-29",
+   "views": 39573,
+   "url": "https://www.youtube.com/watch?v=cmNIMjPYdgM",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/cmNIMjPYdgM/mqdefault.jpg",
+   "chapters": 15,
+   "written_at": "2026-11-20",
+   "series": "cs229-2026",
+   "no": 2
+  },
+  {
    "id": "DATnpGoGhM8",
    "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 1: Introduction",
    "title_ko": "기계학습이란 무엇인가 — 지도·비지도·강화학습으로 그리는 CS229 의 지도",
@@ -1126,6 +1384,68 @@
    "written_at": "2026-11-20",
    "series": "cs229-2026",
    "no": 1
+  },
+  {
+   "id": "uJF_gL3jhxI",
+   "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 3: Weighted Least Squares",
+   "title_ko": "CS229 3강 — 최소제곱의 확률적 해석, 로지스틱 회귀, 뉴턴법 (가중 최소제곱 보충)",
+   "school": "Stanford",
+   "code": "CS229",
+   "term": "Spring 2026",
+   "speaker": "Chris Ré (Stanford 컴퓨터과학과 교수)",
+   "topic": "ml-basics",
+   "tags": [
+    "Python",
+    "Numpy",
+    "Machine Learning",
+    "Statistics",
+    "Scikit-learn",
+    "PyTorch"
+   ],
+   "level": "입문",
+   "one_line": "가우시안 잡음에서 최소제곱을, 베르누이 레이블에서 로지스틱 회귀를 최대우도로 유도하고 뉴턴법과 SGD 를 견준다",
+   "duration_sec": 3734,
+   "published": "2026-07-29",
+   "views": 16179,
+   "url": "https://www.youtube.com/watch?v=uJF_gL3jhxI",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/uJF_gL3jhxI/mqdefault.jpg",
+   "chapters": 15,
+   "written_at": "2026-11-20",
+   "series": "cs229-2026",
+   "no": 3
+  },
+  {
+   "id": "9EEm4iMAF5s",
+   "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Guest Lecture: Dan Fu",
+   "title_ko": "추론, 전기를 지능으로 — 토큰의 일생, 메가커널, 루프 트랜스포머 Parcae (CS336 초청 강연)",
+   "school": "Stanford",
+   "code": "CS336",
+   "term": "Spring 2026",
+   "speaker": "Dan Fu (UCSD · Together AI)",
+   "topic": "systems",
+   "tags": [
+    "LLM",
+    "Inference",
+    "GPU",
+    "CUDA",
+    "Triton",
+    "PyTorch",
+    "vLLM",
+    "SGLang"
+   ],
+   "level": "심화",
+   "one_line": "요청 하나가 토큰이 되기까지의 서빙 공정, decode 를 빛의 속도로 만드는 메가커널, 안정된 루프 트랜스포머",
+   "duration_sec": 4300,
+   "published": "2026-06-05",
+   "views": 25146,
+   "url": "https://www.youtube.com/watch?v=9EEm4iMAF5s",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/9EEm4iMAF5s/mqdefault.jpg",
+   "chapters": 15,
+   "written_at": "2026-11-20",
+   "series": "cs336-2026",
+   "no": 18
   },
   {
    "id": "NDdc39KYqDU",
@@ -1158,6 +1478,70 @@
    "written_at": "2026-11-20",
    "series": "cs25-v6",
    "no": 9
+  },
+  {
+   "id": "bHSDPgZYie0",
+   "title": "Stanford CS25: Transformers United V6 I Overview of Transformers",
+   "title_ko": "스탠퍼드 CS25 V6 1강 — 트랜스포머 총정리: 기원·작동·사전학습·사후학습·남은 과제",
+   "school": "Stanford",
+   "code": "CS25",
+   "term": "V6",
+   "speaker": "Steven Feng(CS 박사과정)·Karan P. Singh(EE 박사과정) — 과목 교수진 Michael C. Frank·Christopher Manning",
+   "topic": "llm",
+   "tags": [
+    "Transformer",
+    "LLM",
+    "Attention",
+    "RAG",
+    "RLHF",
+    "DPO",
+    "GRPO",
+    "AI Agent"
+   ],
+   "level": "입문",
+   "one_line": "임베딩에서 트랜스포머까지, 데이터 연구 4편, 사후학습·에이전트, 환각 재정의, 트랜스포머 이후까지 한 번에 그리는 지도",
+   "duration_sec": 4606,
+   "published": "2026-04-22",
+   "views": 13690,
+   "url": "https://www.youtube.com/watch?v=bHSDPgZYie0",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/bHSDPgZYie0/mqdefault.jpg",
+   "chapters": 15,
+   "written_at": "2026-11-20",
+   "series": "cs25-v6",
+   "no": 1
+  },
+  {
+   "id": "GBd7iuJkW08",
+   "title": "Stanford CS25: Transformers United V6 I From Representation Learning to World Modeling",
+   "title_ko": "표현 학습에서 세계 모델로 — JEPA 세계 모델, Causal-JEPA 의 물체 마스킹과 LeWorldModel 의 SIGReg",
+   "school": "Stanford",
+   "code": "CS25",
+   "term": "V6",
+   "speaker": "Hazel(Heejeong) Nam (Brown University 석사과정, Randall Balestriero 연구실) · Lucas Maes (Mila·Université de Montréal 박사과정) — 2026-04-09 강연",
+   "topic": "deep-learning",
+   "tags": [
+    "Transformer",
+    "JEPA",
+    "World Model",
+    "Self-Supervised Learning",
+    "Slot Attention",
+    "Model Predictive Control",
+    "Robotics",
+    "PyTorch"
+   ],
+   "level": "심화",
+   "one_line": "픽셀이 아니라 표현을 예측하는 세계 모델 — 물체 마스킹으로 상호작용을 배우고(C-JEPA), 가우시안 정규화 하나로 붕괴 없이 끝까지 학습한다(LeWM)",
+   "duration_sec": 4263,
+   "published": "2026-04-22",
+   "views": 108678,
+   "url": "https://www.youtube.com/watch?v=GBd7iuJkW08",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/GBd7iuJkW08/mqdefault.jpg",
+   "chapters": 15,
+   "written_at": "2026-11-20",
+   "series": "cs25-v6",
+   "no": 2
   },
   {
    "id": "JuoVZkPBiKk",
@@ -1221,6 +1605,68 @@
    "written_at": "2026-11-20",
    "series": "cs231n-2025",
    "no": 1
+  },
+  {
+   "id": "zbHXQRUNlH0",
+   "title": "Stanford CS231N Deep Learning for Computer Vision | Spring 2025 | Lecture 13: Generative Models 1",
+   "title_ko": "생성 모델 1 — 판별·생성·조건부 생성의 차이, 최대우도와 자기회귀 모델, 오토인코더에서 VAE 의 ELBO 까지",
+   "school": "Stanford",
+   "code": "CS231N",
+   "term": "Spring 2025",
+   "speaker": "Justin Johnson (University of Michigan 조교수, Facebook AI Research 연구원)",
+   "topic": "vision",
+   "tags": [
+    "PyTorch",
+    "Python",
+    "Deep Learning",
+    "Computer Vision",
+    "Generative AI",
+    "VAE",
+    "Transformer",
+    "Numpy"
+   ],
+   "level": "중급",
+   "one_line": "'모든 이미지가 확률을 두고 경쟁한다' 에서 출발해 자기회귀 우도와 VAE 의 ELBO 를 손으로 유도하는 72분",
+   "duration_sec": 4350,
+   "published": "2025-09-02",
+   "views": 31638,
+   "url": "https://www.youtube.com/watch?v=zbHXQRUNlH0",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/zbHXQRUNlH0/mqdefault.jpg",
+   "chapters": 15,
+   "written_at": "2026-11-20",
+   "series": "cs231n-2025",
+   "no": 13
+  },
+  {
+   "id": "DzpHeXVSC5I",
+   "title": "Stanford CS224N: NLP with Deep Learning | Spring 2024 | Lecture 1 - Intro and Word Vectors",
+   "title_ko": "Stanford CS224N 1강 — 과목 소개와 단어 벡터(word2vec)",
+   "school": "Stanford",
+   "code": "CS224N",
+   "term": "Spring 2024",
+   "speaker": "Christopher Manning (Stanford 언어학·컴퓨터과학, SAIL 소장)",
+   "topic": "nlp",
+   "tags": [
+    "Python",
+    "NumPy",
+    "PyTorch",
+    "NLP",
+    "Deep Learning",
+    "Word2Vec",
+    "Embedding",
+    "LLM"
+   ],
+   "level": "입문",
+   "one_line": "단어의 뜻을 실수 벡터로 — 원-핫의 한계에서 word2vec 의 softmax·기울기 유도까지",
+   "duration_sec": 4817,
+   "published": "2025-03-04",
+   "views": 328641,
+   "url": "https://www.youtube.com/watch?v=DzpHeXVSC5I",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/DzpHeXVSC5I/mqdefault.jpg",
+   "chapters": 14,
+   "written_at": "2026-11-20"
   },
   {
    "id": "9vM4p9NN0Ts",
