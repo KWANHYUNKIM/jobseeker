@@ -38,6 +38,7 @@ book/
 | `steps` | 번호가 의미 있는 순서 |
 | `figure` | ASCII 그림 |
 | `terms` | 본문 중간의 낱말 상자 |
+| `image` | 그림·사진·차트. `src` 는 `/book/<책>/img/<파일>`, `alt` 필수, 한 장 600KB 이하. 직접 그린 SVG·직접 돌린 코드의 차트가 기본이고, 남의 그림은 자유 이용 허락이 있을 때만 `credit` 에 출처를 단다 |
 
 `sql` 블록의 `lang` 은 책마다 다르다 — 기본값 `sql`(JPA), `text`(실행 결과·로그),
 `http`(오간 HTTP). 이름이 `sql` 로 남은 것은 56절이 이미 그 이름으로 쓰여 있어서다.
@@ -129,3 +130,8 @@ docs(book): 서가에 <제목> 을 올리고 1장을 연다                # 새
 
 책 데이터만 담는다. 뷰어 코드 변경은 섞지 않는다 — `git add -A` 를 쓰지 않고 파일을
 지정한다. `git push` 는 사용자가 명시적으로 말할 때만 한다(CLAUDE.md).
+
+## 데이터·AI 서가(`track: datasci`)
+
+`book-engine/` 의 루프가 쓴다(`python -m automation.loops show book-engine`). 절차는 `book-engine/PROMPT.md` —
+같은 형식에 두 가지를 더한다: **절마다 그림 3장 이상**, 그리고 **쉽게 먼저(초등학생 비유 → 그림 → 손으로 해 보기) 깊게 나중(전문 용어를 앞의 비유와 짝지어)**.

@@ -101,3 +101,6 @@ guide-engine/state/.jobs_cache.json
 # 손으로 쓴 브리핑(jd-viewer/public/guide/companies/)은 그대로 추적한다. 저쪽은
 # 사람이 판단해서 쓴 글이라 되살릴 수 없고, 여기는 --all 한 번이면 56초에 다시 난다.
 jd-viewer/public/guide/auto/
+
+# 기술도서 엔진 예제 작업 폴더(book-engine/run.py)
+book-engine/work/

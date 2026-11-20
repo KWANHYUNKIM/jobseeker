@@ -135,6 +135,21 @@ REGISTRY: list[Loop] = [
     Loop("guide-engine", "취업 브리핑", "claude-loop", "any", "2시간마다(홀수 시 :47, 세션 cron)", 72,
          "/loop <prompt>", ["guide-engine/state", "jd-viewer/public/guide"],
          check="python guide-engine/validate.py --gaps", prompt=_engine_prompt("guide-engine", "취업 브리핑 엔진")),
+    # 데이터·AI 기술도서 — 인프런 강의의 공개 차례만 뼈대로, 본문·그림·예제는 직접. 쉽게 먼저(초등학생 비유·그림)
+    # 깊게 나중. 유튜브·블로그·커뮤니티는 링크와 한 줄 요약으로만 단다(받아 적지 않는다).
+    Loop("book-engine", "데이터·AI 기술도서", "claude-loop", "any", "30분마다(repeat)", 48,
+         "python -m automation.loops repeat book-engine --every 30m",
+         ["book-engine/state/LOG.md", "jd-viewer/public/book/index.json"],
+         check="python jd-viewer/scripts/book_check.py --check",
+         owns=["jd-viewer/public/book/", "book-engine/state/"],
+         prompt=(
+             "데이터·AI 기술도서 한 사이클: book-engine/PROMPT.md 절차를 그대로 따른다(먼저 jd-viewer/public/book/README.md 와 "
+             "PROMPT.md 를 읽는다). 쓰고 있는 datasci 책이 있으면 다음 2~3절, 없으면 book-engine/state/QUEUE.md 의 첫 강의로 "
+             "새 책을 연다. 절마다 초등학생 비유 → 그림 → 손으로 해 보기 → 전문 용어 순서, 그림은 직접 그린 SVG 와 직접 돌린 "
+             "코드의 차트로 3장 이상. 인프런은 차례만 쓰고, 유튜브·블로그·커뮤니티는 링크와 한 줄 요약으로만 단다 — 영상·음성·"
+             "자막을 받거나 글을 옮기지 않는다. 지어낸 출력은 싣지 않는다. jd-viewer/scripts/book_check.py 가 통과하면 "
+             "state/LOG.md 를 쓰고 Conventional Commits 로 커밋한다(git add 는 이 사이클의 파일만, git add -A 금지). "
+             "푸시하지 않는다. 무엇을 했는지 한두 줄로 보고한다.")),
     # 강의 노트 — 공개 강의 영상(Stanford CS229·CS336·CS25 …)을 자막(말)과 30초 간격 장면(슬라이드·판서)으로
     # 읽고 우리 말로 다시 쓴다. 재료(대본·장면)는 var/lectures/ 에만 두고 공개하지 않는다 — 나가는 건 노트와 원본 링크뿐.
     Loop("lecture-engine", "강의 노트", "claude-loop", "any", "1시간마다(repeat)", 72,
