@@ -26,6 +26,7 @@ fi
 # venv 파이썬을 쓴다 — build_learning.py 가 httpx 등 venv 의존성을 필요로 하므로
 # 시스템 python3 로 돌리면 ModuleNotFoundError 로 실패한다.
 VENV_PY="$ROOT_DIR/catch_capture/.venv/bin/python"
+[ -x "$VENV_PY" ] || VENV_PY="$ROOT_DIR/catch_capture/.venv/Scripts/python.exe"  # Windows venv
 PY="$([ -x "$VENV_PY" ] && echo "$VENV_PY" || echo python3)"
 
 # ── 급감 가드 ───────────────────────────────────────────────
@@ -84,7 +85,15 @@ if [ -n "$OLD_COUNT" ] && [ "$OLD_COUNT" -gt 0 ] && [ "${REFRESH_FORCE:-0}" != "
   exit 3
 fi
 
-ln -sfn "$LATEST" all_개발자_latest
+# Windows(Git Bash)의 ln -s 는 기본이 '디렉터리 통째 복사'다 — 스냅샷이 회차마다 복제된다.
+# nativestrict 로 진짜 심링크만 만들게 하고, 권한이 없으면(개발자 모드 꺼짐) 건너뛴다.
+# 이 링크를 읽는 것은 DB 가 없을 때의 enrich_jobs.py 뿐이라, 아래 DB 내보내기는 그대로 간다.
+case "$(uname -s)" in
+  MINGW*|MSYS*|CYGWIN*)
+    MSYS="${MSYS:-} winsymlinks:nativestrict" ln -sfn "$LATEST" all_개발자_latest 2>/dev/null \
+      || echo "  [참고] 심링크를 만들 권한이 없다(Windows) — all_개발자_latest 는 건너뛴다." >&2 ;;
+  *) ln -sfn "$LATEST" all_개발자_latest ;;
+esac
 echo "latest -> $LATEST (${NEW_COUNT}건 = 모집중 ${ACTIVE_COUNT} + 마감 ${CLOSED_COUNT:-0}${OLD_COUNT:+, 기존 ${OLD_COUNT}건})"
 
 # ── 공고 전량 JSON — 정본 DB 에서 한 번만 쓴다 ─────────────────

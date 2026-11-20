@@ -27,7 +27,10 @@ import sys as _sys
 from pathlib import Path as _Path
 _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_capture 루트를 import 경로에 추가
 
-import fcntl
+try:
+    import fcntl
+except ImportError:  # Windows — 잠금은 msvcrt 로 한다(_lock_nb)
+    fcntl = None  # type: ignore[assignment]
 import json
 import os
 import re
@@ -99,8 +102,35 @@ _TS_RE = re.compile(r"_\d{8}_\d{6}$")  # <prefix>_YYYYMMDD_HHMMSS 접미사
 
 
 def _python_executable() -> str:
-    venv_py = BASE_DIR / ".venv" / "bin" / "python"
-    return str(venv_py) if venv_py.exists() else sys.executable
+    for venv_py in (BASE_DIR / ".venv" / "bin" / "python", BASE_DIR / ".venv" / "Scripts" / "python.exe"):
+        if venv_py.exists():
+            return str(venv_py)
+    return sys.executable
+
+
+def _bash() -> str:
+    """bash 스크립트(refresh-data.sh 등)를 돌릴 셸. Windows 의 `bash` 는 PATH 상 WSL
+    (system32\\bash.exe)이 먼저 잡혀 리눅스 쪽에서 돌아 버리므로 Git Bash 를 찾아 쓴다."""
+    if sys.platform != "win32":
+        return "bash"
+    for p in (Path(os.environ.get("ProgramFiles", r"C:\Program Files")) / "Git" / "bin" / "bash.exe",
+              Path(os.environ.get("LOCALAPPDATA", "")) / "Programs" / "Git" / "bin" / "bash.exe"):
+        if p.exists():
+            return str(p)
+    return "bash"
+
+
+def _lock_nb(fh) -> bool:
+    """회차 잠금(비차단). 이미 누가 잡고 있으면 False. close_check._try_lock 과 같은 방식."""
+    try:
+        if fcntl is None:
+            import msvcrt
+            msvcrt.locking(fh.fileno(), msvcrt.LK_NBLCK, 1)
+        else:
+            fcntl.flock(fh, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        return True
+    except OSError:  # BlockingIOError 포함
+        return False
 
 
 def _process_alive(pid: int) -> bool:
@@ -227,7 +257,7 @@ def refresh_data(keyword: str) -> None:
 
     log("[refresh] jd-viewer enrich + mindmap")
     orch.refresh_started("viewer")
-    rc = subprocess.call(["bash", str(REFRESH_SH)], cwd=str(ROOT_DIR))
+    rc = subprocess.call([_bash(), str(REFRESH_SH)], cwd=str(ROOT_DIR))
     orch.refresh_finished("viewer", rc == 0)
     log(f"[refresh] jd-viewer {'완료' if rc == 0 else f'실패(rc={rc})'}")
 
@@ -361,7 +391,7 @@ def enrich_radar() -> None:
 def ensure_reviews_daemon() -> None:
     """공개 면접 후기 적응형 수집 데몬이 살아있도록 보장(멱등). 죽었으면 재시작."""
     try:
-        subprocess.call(["bash", str(REVIEWS_LOOP_SH), "start"], cwd=str(ROOT_DIR))
+        subprocess.call([_bash(), str(REVIEWS_LOOP_SH), "start"], cwd=str(ROOT_DIR))
     except Exception as e:
         log(f"[reviews] 데몬 보장 실패: {e!r}")
 
@@ -559,9 +589,7 @@ def run_iteration(keyword: str, count: int) -> None:
     같은 이유로 loop 에만 있었고, 같은 결과(운영에서만 안 돎)를 낳고 있었다.
     """
     lock = open(RUN_LOCK, "w")
-    try:
-        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except BlockingIOError:
+    if not _lock_nb(lock):
         log("[skip] 다른 회차가 돌고 있다 — 이번 회차는 건너뛴다")
         lock.close()
         return
@@ -696,7 +724,7 @@ def cmd_stop() -> None:
     PID_FILE.unlink(missing_ok=True)
     # 오케스트레이션의 일부인 후기 적응형 데몬도 함께 중지
     try:
-        subprocess.call(["bash", str(REVIEWS_LOOP_SH), "stop"], cwd=str(ROOT_DIR))
+        subprocess.call([_bash(), str(REVIEWS_LOOP_SH), "stop"], cwd=str(ROOT_DIR))
     except Exception:
         pass
     print("[*] 종료 완료 (후기 데몬 포함)", flush=True)
