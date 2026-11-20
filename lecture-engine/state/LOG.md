@@ -15,3 +15,4 @@
 - 2026-11-20 · NDdc39KYqDU · CS25 · 언어 모델에서 네이티브 멀티모달 지능으로 — Chameleon·Transfusion·Mixture-of-Transformers 와 남은 문제 · 챕터 15 · 본문 19694자
 - 2026-11-20 · DGI4vucR71w · CS329Z · AI 에이전트란 무엇인가 — 역사·구성 요소·컴파운드 AI·남은 과제 · 챕터 15 · 본문 22441자
 - 2026-11-20 · 2fq9wYslV0A · CS231N · 컴퓨터 비전은 어디서 왔나 — 5억 년의 눈에서 AlexNet, 그리고 CS231n 의 지도 · 챕터 15 · 본문 17076자
+- 2026-11-20 · DzpHeXVSC5I · CS224N · Stanford CS224N 1강 — 과목 소개와 단어 벡터(word2vec) · 챕터 14 · 본문 18940자
