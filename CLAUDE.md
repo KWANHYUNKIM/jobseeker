@@ -58,6 +58,9 @@
     원본의 closed·closedAt·deleted·hidden·비공개·status≠ACCEPTED 또는 404·다른 주소로 넘어감. 사이트맵에서
     빠지면 그 회차에 바로 다시 묻고, 나머지 모집중은 오래 안 물어본 것부터 회차당 100건(JSON-LD 의
     validThrough 는 유료 노출 끝이라 안 쓴다). 외주 다음 단계로 돌고(`--no-alba`), 뷰어 `/alba`(noindex) 가 읽는다.
+    회차 사이에는 launchd `com.jobseeker.albacheck`(30분마다 60건, `--check` — 새 공고 없이 마감만)가 돌고
+    결과를 viewer_doc 에도 바로 옮긴다. 회차 쪽과 `var/alba/alba.lock` 을 나눠 써서 겹치면 뒤에 온 쪽이 건너뛴다.
+    8770 대시보드 단계 표에 '당근알바' 칸이 있다.
     `crawl_hardware` 는 PC 부품 가격이다(`hw-engine/` 참조).
   - `pipeline/` : 통합/중복제거/마감분류(aggregate, job_status), 수동보정(overrides)
     마감 판정은 두 겹이다 — 공고가 들고 온 텍스트(`job_status`)와, 원본 사이트에
