@@ -178,7 +178,9 @@ function LectureDetail({ id }: { id: string }) {
   if (error || !d) return <ErrorState title="노트를 찾을 수 없습니다" detail={error ?? id} />
   return (
     <div data-scroll className="flex-1 min-h-0 overflow-auto bg-white">
-      <article className="jd-container max-w-[920px] pt-[34px] pb-[90px]">
+      <div className="jd-container pt-[34px] pb-[90px]">
+      {/* jd-container 가 폭을 넓게 잡는다 — 읽는 글이라 안쪽에서 한 줄 길이를 다시 줄인다 */}
+      <article className="max-w-[860px] mx-auto">
         <button type="button" onClick={() => goBack(paths.lectures())} className="text-sm text-[#666] hover:text-[#272727]">
           ← 강의 노트
         </button>
@@ -331,6 +333,7 @@ function LectureDetail({ id }: { id: string }) {
           강의의 저작권은 {d.source.channel}에 있으며, 정확한 내용은 원본을 확인하세요.
         </p>
       </article>
+      </div>
       <SiteFooter />
     </div>
   )
