@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-20T21:34:50",
- "count": 7,
+ "generated_at": "2026-11-20T21:38:02",
+ "count": 8,
  "topics": [
   {
    "key": "llm",
@@ -25,6 +25,11 @@
   {
    "key": "multimodal",
    "label": "멀티모달",
+   "count": 1
+  },
+  {
+   "key": "vision",
+   "label": "컴퓨터 비전",
    "count": 1
   }
  ],
@@ -306,14 +311,14 @@
    "term": "Spring 2025",
    "playlist": "https://www.youtube.com/playlist?list=PLoROMvodv4rOmsNzYBMe0gJY2XS8AQg16",
    "total": 18,
-   "done": 0,
+   "done": 1,
    "lectures": [
     {
      "no": 1,
      "id": "2fq9wYslV0A",
      "title": "Stanford CS231N Deep Learning for Computer Vision | Spring 2025 | Lecture 1: Introduction",
      "duration_sec": 3773,
-     "done": false
+     "done": true
     },
     {
      "no": 2,
@@ -1184,6 +1189,37 @@
    "chapters": 15,
    "written_at": "2026-11-20",
    "series": "cs336-2026",
+   "no": 1
+  },
+  {
+   "id": "2fq9wYslV0A",
+   "title": "Stanford CS231N Deep Learning for Computer Vision | Spring 2025 | Lecture 1: Introduction",
+   "title_ko": "컴퓨터 비전은 어디서 왔나 — 5억 년의 눈에서 AlexNet, 그리고 CS231n 의 지도",
+   "school": "Stanford",
+   "code": "CS231N",
+   "term": "Spring 2025",
+   "speaker": "Fei-Fei Li · Ehsan Adeli (공동 강사 Zane Durante)",
+   "topic": "vision",
+   "tags": [
+    "Python",
+    "NumPy",
+    "PyTorch",
+    "Deep Learning",
+    "Computer Vision",
+    "CNN",
+    "Machine Learning"
+   ],
+   "level": "입문",
+   "one_line": "캄브리아기의 눈부터 ImageNet·AlexNet 까지 비전의 역사와 CS231n 이 다룰 과제·모델의 지도",
+   "duration_sec": 3772,
+   "published": "2025-09-02",
+   "views": 830556,
+   "url": "https://www.youtube.com/watch?v=2fq9wYslV0A",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/2fq9wYslV0A/mqdefault.jpg",
+   "chapters": 15,
+   "written_at": "2026-11-20",
+   "series": "cs231n-2025",
    "no": 1
   },
   {
