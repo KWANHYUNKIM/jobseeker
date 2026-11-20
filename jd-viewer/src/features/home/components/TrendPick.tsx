@@ -13,7 +13,8 @@ export function TrendPick({ d, onOpen }: { d: HomeBoard; onOpen: (slug: string) 
   const pool = useMemo(() => {
     const seen = new Set<string>()
     const out: HomeJob[] = []
-    for (const s of d.sections)
+    // 상시 채용 구역은 메인에 안 섞는다(`/top/always` 몫)
+    for (const s of d.sections.filter((x) => x.key !== 'always'))
       for (const j of s.jobs) {
         const k = j.site + j.pid
         if (!seen.has(k)) {

@@ -22,6 +22,15 @@ OVERSEAS = "해외·원격"
 EXP_BUCKETS = ("1-2년", "3-4년", "5-7년", "8년+")
 ENTRY = "신입/무관"
 CAREER_ORDER = (ENTRY,) + EXP_BUCKETS
+# 상시 — 마감일이 없거나 1년 넘게 남은 공고(원본이 '채용시 마감'을 먼 날짜로 적는다, D-355430).
+# 큰 회사 채용페이지(토스·카카오·크래프톤…)의 상시 공고는 늘 열려 있고 고경력 위주라, 메인에 두면
+# 카드가 그것으로 도배된다. 메인 구역·카드에서는 빼고 '상시 채용' 구역(/top/always)으로 따로 모은다.
+# 뷰어의 ddayLabel(features/home/utils.ts)과 같은 문턱이다.
+ALWAYS_DDAY = 365
+
+
+def is_always(dday: int | None) -> bool:
+    return dday is None or dday > ALWAYS_DDAY
 
 
 _CORP = re.compile(r"^\s*(\(?(주|유|재|사)\)|주식회사|㈜)\s*|\s*(\(?(주|유|재|사)\)|주식회사|㈜)\s*$")
@@ -127,12 +136,15 @@ def _board() -> dict:
                 industry = "IT·소프트웨어"
         careers = Counter(r["career_bucket"] for r in rs)
         present = [b for b in CAREER_ORDER if careers.get(b)]
-        ddays = [r["dday"] for r in rs if r["dday"] is not None and r["dday"] >= 0]
+        ddays = [r["dday"] for r in rs if not is_always(r["dday"]) and r["dday"] >= 0]
+        dated = [r for r in rs if not is_always(r["dday"])]
         roles = Counter(x for r in rs for x in (r["roles"] or []) if x != "기타")
         companies.append({
             "id": cid, "name": name, "slug": slugs[0], "slugs": slugs, "logo": logo,
             "size": size, "industry": industry,
             "active": len(rs),
+            # 마감일이 있는 공고가 하나도 없는 회사 — 메인 카드에서 빠지고 상시 채용으로 간다
+            "always": not dated,
             "entry": careers.get(ENTRY, 0),
             "experienced": sum(careers.get(b, 0) for b in EXP_BUCKETS),
             "career_from": present[0] if present else None,
@@ -142,7 +154,8 @@ def _board() -> dict:
             "soonest_dday": min(ddays) if ddays else None,
             "roles": [k for k, _ in roles.most_common(3)],
             "titles": [{"title": _title(r["title"]), "site": r["site"], "pid": r["pid"],
-                        "career_bucket": r["career_bucket"], "dday": r["dday"]} for r in rs[:3]],
+                        "career_bucket": r["career_bucket"], "dday": r["dday"]}
+                       for r in (dated + [r for r in rs if is_always(r["dday"])])[:3]],   # 마감 있는 공고가 먼저
         })
         new_7d = companies[-1]["new_7d"]
         for r in rs:
@@ -205,7 +218,8 @@ def _rank(rows: list[dict], n: int = TOP_N) -> list[dict]:
 def _sections() -> list[dict]:
     """아래로 내리며 보는 구역들 — 필터와 무관한 전체 기준. 구역마다 TOP 50."""
     b = cached(("home_board",), _board)
-    jobs = b["jobs"]
+    always = [r for r in b["jobs"] if is_always(r["dday"])]
+    jobs = [r for r in b["jobs"] if not is_always(r["dday"])]
     now = datetime.now(timezone.utc)
     today = [r for r in jobs if (now - r["first_seen_at"]).total_seconds() < 86400]
     today_title = "오늘 뜬"
@@ -225,6 +239,8 @@ def _sections() -> list[dict]:
             [r for r in jobs if r["_size"] in ("중견기업", "중소기업") and r["_industry"] != AGENCY]),
         sec("overseas", "해외 기업", "해외 기업 인기",
             [r for r in jobs if r["_size"] == "해외 기업" and r["_industry"] != AGENCY]),
+        # 메인 구역에서 뺀 상시 공고 — 메인에는 안 그리고 배너 한 장과 /top/always 가 연다
+        sec("always", "상시 채용", "상시 채용 인기", [r for r in always if r["_industry"] != AGENCY]),
     ]
     by_ind: dict[str, list[dict]] = defaultdict(list)
     for r in jobs:
@@ -246,9 +262,12 @@ def _sort_key(sort: str):
     return lambda c: (-SIZE_RANK.get(c["size"], 9), c["active"], c["new_7d"])
 
 
-def home(size: str = "", industry: str = "", sort: str = "popular", limit: int = 48, offset: int = 0) -> dict:
+def home(size: str = "", industry: str = "", sort: str = "popular", limit: int = 48, offset: int = 0,
+         always: str = "") -> dict:
+    """always: "" 전부 · "exclude" 상시 공고만 있는 회사를 뺀다(메인 카드) · "only" 그 회사만."""
     b = cached(("home_board",), _board)
-    cos = b["companies"]
+    cos = [c for c in b["companies"]
+           if not always or (always == "only") == c["always"]]
 
     def ok(c, skip=""):
         return ((skip == "size" or not size or c["size"] == size) and
@@ -265,7 +284,7 @@ def home(size: str = "", industry: str = "", sort: str = "popular", limit: int =
         by_bucket[r["career_bucket"]].append(r)
 
     # 첫 화면 로고 띠 — 필터와 무관하게 지금 공고가 많은 큰 회사들
-    spotlight = sorted(cos, key=_sort_key("popular"), reverse=True)[:80]
+    spotlight = sorted(b["companies"], key=_sort_key("popular"), reverse=True)[:80]   # 상시 필터와도 무관
     return {
         "generated_at": b["generated_at"],
         "spotlight": [{"name": c["name"], "slug": c["slug"], "logo": c["logo"], "size": c["size"],
@@ -311,6 +330,18 @@ def company(slug: str) -> dict:
     c = b["by_any_slug"].get(slug)
     if not c:
         raise NotFound(f"모집중인 IT 공고가 있는 회사 중에 {slug} 가 없습니다")
+    return _company_detail(b, c)
+
+
+def company_details() -> dict:
+    """회사 패널 전부 — API 가 없을 때 뷰어가 읽는 스냅숏(store/jobs/home_export.py)용.
+    {"companies": {대표 슬러그: 패널}, "aliases": {다른 슬러그: 대표 슬러그}}"""
+    b = cached(("home_board",), _board)
+    return {"companies": {c["slug"]: _company_detail(b, c) for c in b["companies"]},
+            "aliases": {sl: c["slug"] for c in b["companies"] for sl in c["slugs"] if sl != c["slug"]}}
+
+
+def _company_detail(b: dict, c: dict) -> dict:
     rows = b["rows_by_co"][c["id"]]
     careers = Counter(r["career_bucket"] for r in rows)
     return {

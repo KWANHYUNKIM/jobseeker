@@ -106,7 +106,7 @@ export function CompanyPanel({ slug, onClose }: { slug: string; onClose: () => v
       <div className="mt-3 border-t border-[#e2e2e2] pt-2">
         {err && (
           <p className="p-3 text-sm leading-relaxed text-[#666]">
-            이 회사 공고 목록을 지금 불러올 수 없어요(뷰어 API 응답 없음). 아래 링크의 잡 리스트에서 같은 회사 공고를 볼 수 있어요.
+            이 회사 공고 목록을 지금 불러오지 못했어요. 아래 링크의 잡 리스트에서 같은 회사 공고를 볼 수 있어요.
           </p>
         )}
         {!d && !err && <p className="p-3 text-sm text-[#999]">불러오는 중…</p>}

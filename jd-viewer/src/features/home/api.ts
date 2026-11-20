@@ -4,7 +4,7 @@ import type { Site } from '../../types'
 /**
  * 메인 화면(`/`) — backend `/api/home`. 모집중인 IT 공고를 회사별로 묶은 것.
  * API 가 없으면 회차마다 구운 `/home.json`(catch_capture store/jobs/home_export.py)으로 물러선다 —
- * 그 파일 하나로 규모·정렬·더보기를 화면에서 흉내 낸다. 회사 패널만은 파일에 없어 잡 리스트로 안내한다.
+ * 그 파일 하나로 규모·정렬·더보기를 화면에서 흉내 낸다. 회사 패널은 `/home_companies.json`(같은 회차에 굽는다).
  */
 
 export type HomeSize = '대기업' | '중견기업' | '중소기업' | '해외 기업'
@@ -16,6 +16,8 @@ export interface HomeCompany {
   size: HomeSize
   industry: string
   active: number
+  /** 마감일 있는 공고가 하나도 없다(상시만) — 메인 카드에서 빠지고 `/top/always` 로 간다. 옛 스냅숏엔 없다. */
+  always?: boolean
   entry: number
   experienced: number
   career_from: string | null
@@ -86,9 +88,18 @@ const loadSnapshot = (init?: RequestInit) => (snapshot ??= getJson<HomeBoard>('/
 
 const SIZE_RANK: Record<string, number> = { 대기업: 0, 중견기업: 1, '해외 기업': 2, 중소기업: 3 }
 
+/** 상시 공고만 있는 회사(backend `is_always` 와 같은 문턱 — 마감일 없음이거나 1년 넘게 남음). */
+export const isAlwaysCompany = (c: HomeCompany): boolean =>
+  c.always ?? (c.soonest_dday == null || c.soonest_dday > 365)
+
+/** exclude = 메인(상시만 있는 회사를 뺀다), only = 상시 채용만. */
+export type HomeAlways = '' | 'exclude' | 'only'
+
 /** 스냅숏으로 `/api/home` 을 흉내 낸다 — 규모로 거르고, 정렬하고, limit 만큼. */
-function fromSnapshot(d: HomeBoard, q: { size: string; sort: HomeSort; limit: number }): HomeBoard {
-  const cos = d.companies.filter((c) => !q.size || c.size === q.size)
+function fromSnapshot(d: HomeBoard, q: { size: string; sort: HomeSort; limit: number; always?: HomeAlways }): HomeBoard {
+  const cos = d.companies.filter(
+    (c) => (!q.size || c.size === q.size) && (!q.always || (q.always === 'only') === isAlwaysCompany(c)),
+  )
   const by = {
     popular: (a: HomeCompany, b: HomeCompany) =>
       (SIZE_RANK[a.size] ?? 9) - (SIZE_RANK[b.size] ?? 9) || b.active - a.active || b.new_7d - a.new_7d,
@@ -104,11 +115,12 @@ function fromSnapshot(d: HomeBoard, q: { size: string; sort: HomeSort; limit: nu
 }
 
 export async function fetchHome(
-  q: { size: string; industry: string; sort: HomeSort; limit: number },
+  q: { size: string; industry: string; sort: HomeSort; limit: number; always?: HomeAlways },
   init?: RequestInit,
 ): Promise<HomeBoard> {
   const p = new URLSearchParams({ sort: q.sort, limit: String(q.limit) })
   if (q.size) p.set('size', q.size)
+  if (q.always) p.set('always', q.always)
   if (q.industry) p.set('industry', q.industry)
   try {
     return await apiGet<HomeBoard>(`/api/home?${p}`, init)
@@ -118,8 +130,28 @@ export async function fetchHome(
   }
 }
 
-export function fetchHomeCompany(slug: string, init?: RequestInit): Promise<HomeCompanyDetail> {
-  return apiGet<HomeCompanyDetail>(`/api/home/company/${encodeURIComponent(slug)}`, init)
+/** 회사 패널 스냅숏 — `{ companies: {대표 슬러그: 패널}, aliases: {다른 슬러그: 대표} }`. 카드를 눌러야 받는다. */
+interface PanelSnapshot {
+  companies: Record<string, HomeCompanyDetail>
+  aliases: Record<string, string>
+}
+let panels: Promise<PanelSnapshot> | null = null
+const loadPanels = (init?: RequestInit) => (panels ??= getJson<PanelSnapshot>('/home_companies.json', init).catch((e) => {
+  panels = null
+  throw e
+}))
+
+export async function fetchHomeCompany(slug: string, init?: RequestInit): Promise<HomeCompanyDetail> {
+  try {
+    return await apiGet<HomeCompanyDetail>(`/api/home/company/${encodeURIComponent(slug)}`, init)
+  } catch (e) {
+    if ((e as Error).name === 'AbortError') throw e
+    // API 가 없으면 같은 회차에 구운 패널 파일로 — 예전엔 여기서 '불러오지 못함'이었다.
+    const snap = await loadPanels(init)
+    const hit = snap.companies[slug] ?? snap.companies[snap.aliases[slug] ?? '']
+    if (!hit) throw e
+    return hit
+  }
 }
 
 export async function fetchSection(key: string, init?: RequestInit): Promise<HomeSection> {

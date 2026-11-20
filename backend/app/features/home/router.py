@@ -1,7 +1,7 @@
 """메인 화면 API.
 
     GET /api/home                      회사 카드(규모 칩 건수 포함) + 로고 띠 + 구역(TOP 50 의 앞 10건)
-        ?size=대기업&industry=금융&sort=popular|new|count&limit=48&offset=0
+        ?size=대기업&industry=금융&sort=popular|new|count&limit=48&offset=0&always=exclude|only
     GET /api/home/company/{slug}       회사 하나의 모집중 IT 공고 — 오른쪽 패널
     GET /api/home/section/{key}        구역 하나의 TOP 50(신입·경력·오늘 뜬·인턴·업종…) — 더보기
 
@@ -23,13 +23,15 @@ Size = Literal["", "대기업", "중견기업", "중소기업", "해외 기업"]
 Sort = Literal["popular", "new", "count"]
 Industry = Literal[("",) + INDUSTRIES]  # type: ignore[valid-type]
 SLUG = r"^[a-z0-9][a-z0-9-]{0,79}$"                       # store/db/slug.py 가 만드는 ASCII 슬러그
-SECTION = r"^(entry|experienced|today|intern|midsmall|overseas|ind:[^/]{1,20})$"
+SECTION = r"^(entry|experienced|today|intern|midsmall|overseas|always|ind:[^/]{1,20})$"
+Always = Literal["", "exclude", "only"]
 
 
 @router.get("")
 def home(size: Size = "", industry: Industry = "", sort: Sort = "popular",
-         limit: int = Query(48, ge=1, le=200), offset: int = Query(0, ge=0, le=5000)) -> dict:
-    return service.home(size=size, industry=industry, sort=sort, limit=limit, offset=offset)
+         limit: int = Query(48, ge=1, le=200), offset: int = Query(0, ge=0, le=5000),
+         always: Always = "") -> dict:
+    return service.home(size=size, industry=industry, sort=sort, limit=limit, offset=offset, always=always)
 
 
 @router.get("/company/{slug}")

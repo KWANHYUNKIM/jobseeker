@@ -83,3 +83,12 @@ def test_technologies_is_not_logistics():
     assert classify("팔란티어테크놀로지스코리아") != "물류"
     assert classify("CJ대한통운") == "물류"
     assert classify("롯데글로벌로지스") == "물류"
+
+
+def test_always_open_threshold():
+    from app.features.home.service import is_always
+    assert is_always(None)            # 마감일 없음
+    assert is_always(355430)          # '채용시 마감'을 먼 날짜로 적은 것
+    assert not is_always(365)
+    assert not is_always(3)
+    assert not is_always(0)

@@ -44,7 +44,8 @@ export function HomePage() {
 
   useEffect(() => {
     const ctl = new AbortController()
-    fetchHome({ size: '', industry: '', sort: 'popular', limit: Math.max(limit, FETCH_MIN) }, { signal: ctl.signal })
+    // 상시 공고만 있는 회사(큰 회사 채용페이지의 늘 열린 공고)는 메인 카드에서 뺀다 — `/top/always` 에 따로 모은다.
+    fetchHome({ size: '', industry: '', sort: 'popular', limit: Math.max(limit, FETCH_MIN), always: 'exclude' }, { signal: ctl.signal })
       .then((x) => {
         setD(x)
         setErr(null)
@@ -76,6 +77,7 @@ export function HomePage() {
 
   const byKey = (keys: string[]) => keys.map((k) => d.sections.find((s) => s.key === k)).filter(Boolean) as HomeSection[]
   const industries = d.sections.filter((s) => s.key.startsWith('ind:'))
+  const always = d.sections.find((s) => s.key === 'always')
   const cats = [...byKey(LEAD), ...byKey(KIND), ...(allCats ? industries : [])]
   const shownCos = d.companies.slice(0, limit)
   // 추천공고 — 주목 회사 16곳 다음부터, 이번 주 새 공고가 많은 순으로 여덟 곳.
@@ -94,9 +96,20 @@ export function HomePage() {
 
         {/* ② 가장 주목받는 회사 */}
         <section id="sec-companies" aria-label="회사" className="scroll-mt-16 mt-[39px]">
-          <h2 className="pl-[10px] text-[22px] font-bold leading-8 tracking-[-0.22px] text-[#272727]">
-            지금, JD Viewer에서 가장 주목받는 회사예요!
-          </h2>
+          <div className="flex flex-wrap items-baseline justify-between gap-2 pl-[10px]">
+            <h2 className="text-[22px] font-bold leading-8 tracking-[-0.22px] text-[#272727]">
+              지금, JD Viewer에서 가장 주목받는 회사예요!
+            </h2>
+            {always && (
+              <a
+                href={paths.top('always')}
+                onClick={onLinkClick(paths.top('always'))}
+                className="text-[13px] text-[#777] hover:text-[#272727]"
+              >
+                마감 없는 상시 채용 {always.total.toLocaleString()}건은 따로 모았어요 ›
+              </a>
+            )}
+          </div>
           {/* grid-flow-dense — 펼친 칸(전체 너비)을 누른 카드 뒤에 꽂아도 같은 줄의 나머지 카드가 제자리를 지킨다 */}
           <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 grid-flow-dense gap-2">
             {shownCos.map((c, i) => (

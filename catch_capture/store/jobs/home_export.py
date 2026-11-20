@@ -6,7 +6,8 @@
 화면이 달라진다(store.jobs.export 가 공고 매핑을 backend 에서 가져오는 것과 같은 이유).
 
 파일에는 회사 300곳과 구역마다 TOP 50 전부를 싣는다 — API 가 없으면 '더보기'도 파일에서 편다.
-회사 패널(그 회사 공고 전부)은 싣지 않는다(뷰어가 잡 리스트로 안내한다).
+회사 패널(그 회사 공고 전부)은 따로 `home_companies.json` 에 굽는다 — 카드를 눌렀을 때만 받는다.
+예전에는 싣지 않아서 API 가 없으면 패널이 '불러오지 못함'으로 떴다.
 
     python -m store.jobs.home_export          # refresh-data.sh 가 공고 내보내기 다음에 부른다
 """
@@ -26,6 +27,7 @@ _sys.path.insert(0, str(ROOT_DIR / "backend"))
 os.environ.setdefault("API_CACHE_TTL", "0")      # 한 번 굽고 끝나는 프로세스라 캐시가 필요 없다
 
 OUT = VIEWER_PUBLIC / "home.json"
+OUT_COMPANIES = VIEWER_PUBLIC / "home_companies.json"
 COMPANIES = 300
 
 
@@ -37,16 +39,24 @@ def build() -> dict:
     return d
 
 
+def _write(path, d: dict) -> None:
+    tmp = path.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps(d, ensure_ascii=False, default=str), encoding="utf-8")
+    tmp.replace(path)
+
+
 def main() -> int:
     try:
         d = build()
     except Exception as e:                                  # noqa: BLE001 — DB 가 없으면 기존 파일을 둔다
         print(f"[home_export] 건너뜀: {e}", file=_sys.stderr)
         return 1
-    tmp = OUT.with_suffix(".json.tmp")
-    tmp.write_text(json.dumps(d, ensure_ascii=False, default=str), encoding="utf-8")
-    tmp.replace(OUT)
-    print(f"[home_export] 회사 {len(d['companies'])} · 구역 {len(d['sections'])} → {OUT}", flush=True)
+    from app.features.home import service
+    panels = service.company_details()
+    _write(OUT, d)
+    _write(OUT_COMPANIES, panels)
+    print(f"[home_export] 회사 {len(d['companies'])} · 구역 {len(d['sections'])} → {OUT}"
+          f" · 패널 {len(panels['companies'])} → {OUT_COMPANIES.name}", flush=True)
     return 0
 
 

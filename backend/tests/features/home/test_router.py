@@ -19,3 +19,7 @@ def test_rejects_bad_slugs_and_section_keys():
     assert client.get("/api/home/company/..%2F..%2Fetc").status_code in (404, 422)
     assert client.get("/api/home/company/<img>").status_code == 422
     assert client.get("/api/home/section/whatever").status_code == 422
+
+
+def test_rejects_unknown_always_filter():
+    assert client.get("/api/home?always=maybe").status_code == 422
