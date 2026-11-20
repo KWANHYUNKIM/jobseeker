@@ -1051,6 +1051,29 @@ function BlockView({ block: b, anchor }: { block: Block; anchor?: string }) {
         </figure>
       )
 
+    case 'image':
+      return (
+        <figure className="mt-6">
+          {b.caption && <figcaption className="text-sm font-semibold text-(--color-text) mb-1.5">{b.caption}</figcaption>}
+          <div className="rounded-lg border border-(--color-border) bg-white p-3 flex justify-center">
+            <img
+              src={b.src}
+              alt={b.alt}
+              loading="lazy"
+              decoding="async"
+              className="max-w-full h-auto"
+              style={b.width ? { width: b.width } : undefined}
+            />
+          </div>
+          {(b.note || b.credit) && (
+            <p className="text-xs text-(--color-faint) mt-1.5 leading-relaxed">
+              {b.note && <Md>{b.note}</Md>}
+              {b.credit && <span className="block">출처: <Md>{b.credit}</Md></span>}
+            </p>
+          )}
+        </figure>
+      )
+
     case 'terms':
       return (
         <div className="mt-6">

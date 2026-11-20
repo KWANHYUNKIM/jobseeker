@@ -50,6 +50,11 @@ export type Block =
   | { type: 'steps'; caption?: string; items: { title: string; md?: string; lang?: string; code?: string }[] }
   /** 글로 설명하면 안 읽히는 것 — 영속성 컨텍스트 안의 상태 변화 같은 것 */
   | { type: 'figure'; caption?: string; ascii: string; note?: string }
+  /**
+   * 그림·사진·차트. `src` 는 `/book/<책>/img/<파일>`(svg·png·webp·jpg). 직접 그린 SVG 와 직접 돌린
+   * 코드가 그린 차트가 기본이고, 남의 그림은 자유 이용 허락(CC 등)이 있을 때만 `credit` 에 출처·허락을 단다.
+   */
+  | { type: 'image'; src: string; alt: string; caption?: string; note?: string; credit?: string; width?: number }
   | { type: 'terms'; caption?: string; items: Term[] }
 
 export interface Term {

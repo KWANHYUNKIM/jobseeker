@@ -58,6 +58,35 @@ def check_figures(pages_dir: Path) -> list[str]:
     return bad
 
 
+IMG_EXT = {".svg", ".png", ".webp", ".jpg", ".jpeg"}
+IMG_MAX = 600_000      # 한 장 600KB — 절 하나가 사진 열 장이면 6MB 다
+
+
+def check_images(bid: str, pages_dir: Path) -> list[str]:
+    """image 블록: 파일이 실제로 있고(`/book/<책>/img/…`), 대체 글(alt)이 있고, 너무 크지 않은가.
+    alt 가 없으면 화면 낭독기와 그림이 안 뜬 사람에게 그 자리가 빈다."""
+    bad: list[str] = []
+    for f in sorted(pages_dir.glob("*.json")):
+        for b in load(f).get("blocks", []):
+            if b.get("type") != "image":
+                continue
+            src = b.get("src") or ""
+            cap = b.get("caption") or src
+            if not src.startswith(f"/book/{bid}/img/"):
+                bad.append(f"{f.name} · {cap} · src 는 /book/{bid}/img/ 아래여야 한다")
+                continue
+            p = BOOK.parent / src.lstrip("/")
+            if p.suffix.lower() not in IMG_EXT:
+                bad.append(f"{f.name} · {cap} · 그림 형식이 아니다({p.suffix})")
+            elif not p.exists():
+                bad.append(f"{f.name} · {cap} · 파일이 없다: {src}")
+            elif p.stat().st_size > IMG_MAX:
+                bad.append(f"{f.name} · {cap} · 너무 크다({p.stat().st_size // 1000}KB > {IMG_MAX // 1000}KB)")
+            if not (b.get("alt") or "").strip():
+                bad.append(f"{f.name} · {cap} · alt(그림 설명)가 비었다")
+    return bad
+
+
 def main() -> int:
     problems: list[str] = []
     shelf_path = BOOK / "index.json"
@@ -103,6 +132,7 @@ def main() -> int:
             dump(shelf_path, shelf)
 
         problems += check_figures(pages_dir)
+        problems += check_images(bid, pages_dir)
 
         done = [s["no"] for s in sections if s["status"] == "done"]
         print(f"[{bid}] {len(toc['chapters'])}장 {len(sections)}절 · 본문 {written}")
