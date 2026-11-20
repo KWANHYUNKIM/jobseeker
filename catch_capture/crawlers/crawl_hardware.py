@@ -72,7 +72,8 @@ NAME_RE = re.compile(r'<p class="prod_name">\s*<a[^>]*>(.*?)</a>', re.S)
 OPT_PRICE_RE = re.compile(r'<strong>([\d,]+)</strong>\s*원')
 OPT_LABEL_RE = re.compile(r'<p class="memory_sect">.*?<span class="text">(.*?)</span>', re.S)
 # 보증·상태가 다른 매물은 같은 물건의 가격으로 치지 않는다 — 최저가가 늘 중고·병행이 된다.
-ALWAYS_NOT = ["중고", "리퍼", "해외구매", "병행수입", "전시", "반품"]
+# '[호환품]' 은 정품 이름을 빌린 다른 물건이다(990 PRO 2TB 를 찾으면 정품의 반값에 섞여 나온다).
+ALWAYS_NOT = ["중고", "리퍼", "해외구매", "병행수입", "전시", "반품", "호환품"]
 
 
 def _norm(s: str) -> str:
@@ -92,14 +93,74 @@ def _text(s: str) -> str:
     return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", "", s))).strip()
 
 
+# 2026-11 다나와 통합검색이 Next.js 로 바뀌었다 — 상품 목록이 HTML 이 아니라 RSC 페이로드
+# (self.__next_f.push([1,"…"]))의 "products":[…] 배열에 실려 온다. 옛 마크업(productItem)은
+# 사라져서 옛 파서는 모든 부품에 '검색 0건' 을 냈다. 필드는 그대로 대응된다:
+#   productSeq=pcode · productName(<b> 강조 포함)=상품명 · minPrice=최저가 · categoryNameList=분류
+#   bundleList=용량 옵션(옵션마다 productSeq·minPrice·bundleName)
+RSC_CHUNK_RE = re.compile(r'self\.__next_f\.push\(\[1,"(.*?)"\]\)</script>', re.S)
+RSC_PRODUCTS_RE = re.compile(r'"products":\[\{')
+
+
+def _rsc_products(page: str) -> list[dict] | None:
+    """RSC 페이로드에서 상품 배열을 꺼낸다. 새 마크업이 아니면 None(옛 파서로 간다)."""
+    chunks = RSC_CHUNK_RE.findall(page)
+    if not chunks:
+        return None
+    try:
+        txt = "".join(json.loads(f'"{c}"') for c in chunks)
+    except ValueError:
+        return None
+    m = RSC_PRODUCTS_RE.search(txt)
+    if not m:
+        return None
+    try:
+        arr, _ = json.JSONDecoder().raw_decode(txt, m.end() - 2)
+    except ValueError:
+        return None
+    return arr if isinstance(arr, list) else None
+
+
+def _parse_rsc(products: list[dict]) -> list[dict]:
+    out, seen = [], set()
+    for rank, p in enumerate(products, 1):
+        name = _text(str(p.get("productName") or ""))
+        if not name:
+            continue
+        cate = "_".join(str(c) for c in (p.get("categoryNameList") or []))
+        opts = [(str(b.get("productSeq") or ""), b.get("minPrice"), str(b.get("bundleName") or ""))
+                for b in (p.get("bundleList") or []) if isinstance(b, dict)]
+        if not opts:
+            # 옵션이 하나뿐인 상품은 용량 표기가 상품 자신의 bundleName 에 있다('32GB(16Gx2)').
+            # 이걸 안 붙이면 메모리 상품명에 용량이 없어 'DDR5-6000 16GB' 같은 규칙에 하나도 안 걸린다.
+            opts = [(str(p.get("productSeq") or ""), p.get("minPrice"), str(p.get("bundleName") or ""))]
+        for pcode, price, label in opts:
+            label = _text(label)
+            try:
+                price = int(str(price).replace(",", ""))
+            except (TypeError, ValueError):
+                continue
+            if not pcode or pcode in seen or price <= 0:
+                continue
+            seen.add(pcode)
+            out.append({"cate": cate, "pcode": pcode, "price": price, "rank": rank,
+                        "name": f"{name} {label}".strip() if label and label not in name else name})
+    return out
+
+
 def parse(page: str) -> list[dict]:
     """검색 결과 한 쪽 → [{pcode, cate, price, name}]. 가격이 없는 상품(단종·품절)은 뺀다.
+
+    새 마크업(Next.js RSC)이 먼저고, 없으면 옛 HTML(productItem)로 읽는다.
 
     다나와는 용량만 다른 상품(16GB·32GB, 1TB·2TB)을 한 줄로 묶고 옵션마다 상품번호와
     가격을 따로 단다. 대표가(min_price)는 옵션 중 가장 싼 값이라 그대로 쓰면 16GB 를 찾는데
     8GB 값이 잡힌다 — 그래서 옵션이 있으면 옵션마다 한 건으로 펼치고, 옵션 글자(용량)를
     상품명 뒤에 붙여 거름 규칙이 볼 수 있게 한다.
     """
+    products = _rsc_products(page)
+    if products is not None:
+        return _parse_rsc(products)
     out, seen = [], set()
     # rank: 쪽 안에서 몇 번째 상품이었나(1부터). 기본 정렬이 인기순이라 곧 인기 순위다.
     # 옵션으로 펼친 매물(16GB·32GB)은 같은 줄의 순위를 나눠 가진다.
@@ -429,6 +490,29 @@ def selftest() -> int:
     psu = match(items, {"cate": "파워", "must": ["850W", "GOLD|골드"]})
     assert [i["price"] for i in psu] == [148840], psu  # 한글 '골드' 도 GOLD 로 본다
     assert summarize(ram16) == {"min": 349900, "median": 349900, "n": 1}
+
+    # 새 마크업(2026-11~, Next.js RSC) — 같은 상품을 같은 결과로 읽어야 한다
+    products = [
+        {"productSeq": 100, "productName": "삼성전자 <b>DDR5</b>-5600", "minPrice": 180000,
+         "categoryNameList": ["PC 주요 부품", "RAM"],
+         "bundleList": [{"productSeq": "101", "minPrice": 790390, "bundleName": "32GB"},
+                        {"productSeq": "102", "minPrice": 349900, "bundleName": "16GB"},
+                        {"productSeq": "103", "minPrice": 338510, "bundleName": "16GB 중고"}]},
+        {"productSeq": 200, "productName": "마이크로닉스 Classic II 850W 80PLUS골드 풀모듈러 ATX3.1",
+         "minPrice": 148840, "categoryNameList": ["PC 주요 부품", "파워"], "bundleList": []},
+        # 옵션이 하나뿐인 메모리 — 용량은 상품 자신의 bundleName 에 있다
+        {"productSeq": 300, "productName": "KLEVV DDR5-6000 CL30 패키지", "minPrice": 189000,
+         "categoryNameList": ["PC 주요 부품", "RAM", "DDR5"], "bundleName": "<b>16GB</b>", "bundleList": []},
+    ]
+    # 실제 페이로드처럼 공백 없이(separators) — "products":[{ 로 찾는다
+    payload = json.dumps(json.dumps({"x": 1, "products": products}, ensure_ascii=False,
+                                    separators=(",", ":")))[1:-1]
+    rsc = f'<script>self.__next_f.push([1,"{payload}"])</script>'
+    items2 = parse(rsc)
+    assert [i["pcode"] for i in items2] == ["101", "102", "103", "200", "300"], items2
+    assert [i["pcode"] for i in match(items2, {"cate": "RAM", "must": ["DDR5-6000", "16GB"]})] == ["300"]
+    assert [i["pcode"] for i in match(items2, {"cate": "RAM", "must": ["DDR5-5600", "16GB"]})] == ["102"]
+    assert [i["price"] for i in match(items2, {"cate": "파워", "must": ["850W", "GOLD|골드"]})] == [148840]
     print("[hardware] selftest ok")
     return 0
 
