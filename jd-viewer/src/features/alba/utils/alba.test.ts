@@ -26,8 +26,9 @@ describe('alba', () => {
     post({ id: 'd', posted_at: null, first_seen_at: '2026-11-21T01:00:00Z', sido: '부산' }),
   ]
 
-  it('기본은 모집중만, 등록일 최신순', () => {
-    expect(filterPosts(rows, ALL_FILTER).map((p) => p.id)).toEqual(['d', 'b', 'a'])
+  it('기본은 전체 — 모집중이 먼저(등록일 최신순), 마감은 뒤에 남는다', () => {
+    expect(filterPosts(rows, ALL_FILTER).map((p) => p.id)).toEqual(['d', 'b', 'a', 'c'])
+    expect(filterPosts(rows, { ...ALL_FILTER, status: 'open' }).map((p) => p.id)).toEqual(['d', 'b', 'a'])
     expect(filterPosts(rows, { ...ALL_FILTER, status: 'closed' }).map((p) => p.id)).toEqual(['c'])
   })
 
@@ -37,9 +38,10 @@ describe('alba', () => {
   })
 
   it('칩 건수는 다른 축의 선택 안에서 센다', () => {
-    const f = { ...ALL_FILTER, sido: '부산' }
+    const f = { ...ALL_FILTER, status: 'open' as const, sido: '부산' }
     expect(Object.fromEntries(countBy(rows, 'category', f))).toEqual({ '웹·앱 제작': 1, '코딩·IT 강사': 1 })
-    expect(Object.fromEntries(countBy(rows, 'sido', ALL_FILTER))).toEqual({ 서울: 1, 부산: 2 })
+    expect(Object.fromEntries(countBy(rows, 'sido', { ...ALL_FILTER, status: 'open' }))).toEqual({ 서울: 1, 부산: 2 })
+    expect(Object.fromEntries(countBy(rows, 'sido', ALL_FILTER))).toEqual({ 서울: 2, 부산: 2 })
   })
 
   it('급여·날짜 표기', () => {

@@ -59,7 +59,7 @@ export function AlbaView() {
         <section data-alba-top className="mt-[29px] scroll-mt-4">
           <div className="flex flex-wrap items-center gap-2">
             <div role="group" aria-label="모집 상태" className="inline-flex h-9 rounded-[18px] border border-[#d8d8d8] p-[3px]">
-              {(['open', 'closed'] as const).map((s) => (
+              {(['all', 'open', 'closed'] as const).map((s) => (
                 <button
                   key={s}
                   type="button"
@@ -70,7 +70,7 @@ export function AlbaView() {
                     (f.status === s ? 'bg-[#272727] text-white' : 'text-[#474747] hover:text-[#272727]')
                   }
                 >
-                  {s === 'open' ? '모집중' : '마감'}
+                  {s === 'all' ? '전체' : s === 'open' ? '모집중' : '마감'}
                 </button>
               ))}
             </div>
@@ -148,12 +148,12 @@ function AlbaRow({ p }: { p: AlbaPost }) {
           <span className="rounded bg-[#f1efff] px-[7px] text-[13px] leading-[22px] text-[#5b4fd6]">{p.category}</span>
           {p.employment && <span className="rounded bg-[#f4f4f4] px-[7px] text-[13px] leading-[22px] text-[#474747]">{p.employment}</span>}
           {p.status === 'closed' && (
-            <span className="rounded bg-[#f4f4f4] px-[7px] text-[13px] leading-[22px] text-[#999]" title={p.closed_reason}>
+            <span className="rounded bg-[#fdecec] px-[7px] text-[13px] font-bold leading-[22px] text-[#b42318]" title={p.closed_reason}>
               마감 {dayLabel(p.closed_at)}
             </span>
           )}
         </div>
-        <div className="mt-2 truncate text-[17px] font-medium leading-[25px] tracking-[-0.16px] text-[#272727]">{p.title}</div>
+        <div className={`mt-2 truncate text-[17px] font-medium leading-[25px] tracking-[-0.16px] ${p.status === 'closed' ? 'text-[#999]' : 'text-[#272727]'}`}>{p.title}</div>
         <div className="mt-1 flex flex-wrap gap-x-[14px] text-[13px] leading-[19px] text-[#666]">
           {where && <span>{where}</span>}
           {p.hours && <span>{p.hours}</span>}

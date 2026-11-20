@@ -33,17 +33,23 @@ export type AlbaData = {
   posts: AlbaPost[]
 }
 
-export type StatusFilter = 'open' | 'closed'
+/** 'all' 이 기본이다 — 마감된 공고도 목록에 남기고 옆에 '마감'만 붙인다(사용자 요청 2026-11-21). */
+export type StatusFilter = 'all' | 'open' | 'closed'
 
 export type AlbaFilter = { status: StatusFilter; category: string | null; sido: string | null }
 
-export const ALL_FILTER: AlbaFilter = { status: 'open', category: null, sido: null }
+export const ALL_FILTER: AlbaFilter = { status: 'all', category: null, sido: null }
 
-/** 걸러 낸 공고 — 상태 → 분류 → 시/도. 순서는 등록일 최신순(없으면 처음 본 날). */
+const statusOk = (p: AlbaPost, s: StatusFilter) => s === 'all' || p.status === s
+
+/** 걸러 낸 공고 — 상태 → 분류 → 시/도. 모집중이 먼저, 그 안에서 등록일 최신순(없으면 처음 본 날). */
 export function filterPosts(posts: AlbaPost[], f: AlbaFilter): AlbaPost[] {
   return posts
-    .filter((p) => p.status === f.status && (!f.category || p.category === f.category) && (!f.sido || p.sido === f.sido))
-    .sort((a, b) => postedKey(b).localeCompare(postedKey(a)))
+    .filter((p) => statusOk(p, f.status) && (!f.category || p.category === f.category) && (!f.sido || p.sido === f.sido))
+    .sort(
+      (a, b) =>
+        Number(a.status === 'closed') - Number(b.status === 'closed') || postedKey(b).localeCompare(postedKey(a)),
+    )
 }
 
 export const postedKey = (p: AlbaPost) => p.posted_at ?? p.first_seen_at
@@ -52,7 +58,7 @@ export const postedKey = (p: AlbaPost) => p.posted_at ?? p.first_seen_at
 export function countBy(posts: AlbaPost[], key: 'category' | 'sido', f: AlbaFilter): Map<string, number> {
   const m = new Map<string, number>()
   for (const p of posts) {
-    if (p.status !== f.status) continue
+    if (!statusOk(p, f.status)) continue
     if (key === 'category' && f.sido && p.sido !== f.sido) continue
     if (key === 'sido' && f.category && p.category !== f.category) continue
     const k = p[key] || '지역 미상'
