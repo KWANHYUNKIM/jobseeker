@@ -1,0 +1,173 @@
+{
+ "generated_at": "2026-11-20T14:51:00",
+ "count": 5,
+ "topics": [
+  {
+   "key": "llm",
+   "label": "LLM",
+   "count": 3
+  },
+  {
+   "key": "agents",
+   "label": "AI 에이전트",
+   "count": 1
+  },
+  {
+   "key": "multimodal",
+   "label": "멀티모달",
+   "count": 1
+  }
+ ],
+ "items": [
+  {
+   "id": "DGI4vucR71w",
+   "title": "What Are AI Agents? Agentic Systems Explained | Stanford CS329Z Lecture 1 with Diyi Yang",
+   "title_ko": "AI 에이전트란 무엇인가 — 역사·구성 요소·컴파운드 AI·남은 과제",
+   "school": "Stanford",
+   "code": "CS329Z",
+   "term": "Fall 2026",
+   "speaker": "Diyi Yang (Stanford CS 조교수, Stanford NLP·HCI·HAI) — 공동 강의 Michael Ryan·John Yang",
+   "topic": "agents",
+   "tags": [
+    "LLM",
+    "AI Agent",
+    "ReAct",
+    "RAG",
+    "MCP",
+    "Function Calling",
+    "Multi-Agent",
+    "Python"
+   ],
+   "level": "입문",
+   "one_line": "LLM 코어·추론·메모리·도구·환경 다섯 칸으로 에이전트를 해부하고, '가장 강한 에이전트가 가장 믿을 만하진 않다'로 끝나는 첫 강의",
+   "duration_sec": 4176,
+   "published": "2026-11-09",
+   "views": 402434,
+   "url": "https://www.youtube.com/watch?v=DGI4vucR71w",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/DGI4vucR71w/mqdefault.jpg",
+   "chapters": 17,
+   "written_at": "2026-11-20"
+  },
+  {
+   "id": "pwQ0l4hFCVI",
+   "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 14: Transformers, In-Context Learning",
+   "title_ko": "트랜스포머를 칠판으로 유도하기 — 토큰화부터 자기회귀 확률모델, 셀프 어텐션·마스킹·멀티헤드까지",
+   "school": "Stanford",
+   "code": "CS229",
+   "term": "Spring 2026",
+   "speaker": "Tengyu Ma (Stanford 컴퓨터과학과 교수)",
+   "topic": "llm",
+   "tags": [
+    "PyTorch",
+    "Python",
+    "Transformer",
+    "LLM",
+    "Attention",
+    "Tokenizer",
+    "Deep Learning",
+    "NLP"
+   ],
+   "level": "중급",
+   "one_line": "텍스트가 토큰 ID 가 되고, 확률이 되고, 어텐션 행렬이 되는 과정을 수식 하나하나로 쌓는 77분",
+   "duration_sec": 4651,
+   "published": "2026-07-31",
+   "views": 194886,
+   "url": "https://www.youtube.com/watch?v=pwQ0l4hFCVI",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/pwQ0l4hFCVI/mqdefault.jpg",
+   "chapters": 16,
+   "written_at": "2026-11-20"
+  },
+  {
+   "id": "NDdc39KYqDU",
+   "title": "Stanford CS25: Transformers United V6 I From Language Models to Native Multimodal Intelligence",
+   "title_ko": "언어 모델에서 네이티브 멀티모달 지능으로 — Chameleon·Transfusion·Mixture-of-Transformers 와 남은 문제",
+   "school": "Stanford",
+   "code": "CS25",
+   "term": "V6 (Spring 2026, 2026-05-21 강연)",
+   "speaker": "Victoria Lin (Thinking Machines Lab MTS, 전 Meta AI·Salesforce AI Research, UW 박사)",
+   "topic": "multimodal",
+   "tags": [
+    "Transformer",
+    "Multimodal",
+    "LLM",
+    "Diffusion",
+    "VQ-VAE",
+    "MoE",
+    "VLM",
+    "VLA"
+   ],
+   "level": "심화",
+   "one_line": "모든 모달리티를 토큰으로 바꿔 LLM 처럼 학습한다 — 이산 토큰(Chameleon)·확산 결합(Transfusion)·모달리티별 파라미터(MoT)까지, 그리고 아직 안 풀린 것들",
+   "duration_sec": 3879,
+   "published": "2026-06-04",
+   "views": 142095,
+   "url": "https://www.youtube.com/watch?v=NDdc39KYqDU",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/NDdc39KYqDU/mqdefault.jpg",
+   "chapters": 15,
+   "written_at": "2026-11-20"
+  },
+  {
+   "id": "JuoVZkPBiKk",
+   "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 1: Overview, Tokenization",
+   "title_ko": "언어 모델을 바닥부터 — CS336 첫 강의: 과목 전체 지도와 토크나이저",
+   "school": "Stanford",
+   "code": "CS336",
+   "term": "Spring 2026",
+   "speaker": "Percy Liang (공동 강사 Tatsunori Hashimoto)",
+   "topic": "llm",
+   "tags": [
+    "Python",
+    "PyTorch",
+    "LLM",
+    "Transformer",
+    "Tokenizer",
+    "BPE",
+    "Triton",
+    "CUDA"
+   ],
+   "level": "중급",
+   "one_line": "정확도 = 효율 × 자원 — 다섯 과제로 LLM 을 직접 짓는 과목의 지도와 BPE 토크나이저 구현",
+   "duration_sec": 4762,
+   "published": "2026-04-14",
+   "views": 406858,
+   "url": "https://www.youtube.com/watch?v=JuoVZkPBiKk",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/JuoVZkPBiKk/mqdefault.jpg",
+   "chapters": 15,
+   "written_at": "2026-11-20"
+  },
+  {
+   "id": "9vM4p9NN0Ts",
+   "title": "Stanford CS229 I Machine Learning I Building Large Language Models (LLMs)",
+   "title_ko": "ChatGPT 같은 LLM 은 어떻게 만드나 — 사전학습부터 RLHF·시스템까지",
+   "school": "Stanford",
+   "code": "CS229",
+   "term": "Summer 2024",
+   "speaker": "Yann Dubois (Stanford PhD, Percy Liang·Tatsu Hashimoto 연구실)",
+   "topic": "llm",
+   "tags": [
+    "PyTorch",
+    "Python",
+    "CUDA",
+    "LLM",
+    "Transformer",
+    "RLHF",
+    "DPO",
+    "Hugging Face"
+   ],
+   "level": "중급",
+   "one_line": "아키텍처보다 데이터·평가·시스템이 승부를 가른다 — LLM 제작 전 과정을 숫자로 훑는 105분",
+   "duration_sec": 6271,
+   "published": "2024-08-27",
+   "views": 3223549,
+   "url": "https://www.youtube.com/watch?v=9vM4p9NN0Ts",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/9vM4p9NN0Ts/mqdefault.jpg",
+   "chapters": 16,
+   "written_at": "2026-11-20"
+  }
+ ]
+}

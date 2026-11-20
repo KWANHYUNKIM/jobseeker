@@ -4,11 +4,11 @@
 줄 형식: `- [ ] <유튜브 id> | 과목 | 제목` — 새 영상은 아래에 덧붙인다.
 
 ## 1차 — Stanford ML·AI (2026-11-20 시작)
-- [ ] 9vM4p9NN0Ts | CS229 | Building Large Language Models (LLMs)
-- [ ] DGI4vucR71w | CS329Z L1 | What Are AI Agents? Agentic Systems Explained
-- [ ] JuoVZkPBiKk | CS336 2026 L1 | Overview, Tokenization
-- [ ] NDdc39KYqDU | CS25 V6 | From Language Models to Native Multimodal Intelligence
-- [ ] pwQ0l4hFCVI | CS229 2026 L14 | Transformers, In-Context Learning
+- [x] 9vM4p9NN0Ts | CS229 | Building Large Language Models (LLMs)
+- [x] DGI4vucR71w | CS329Z L1 | What Are AI Agents? Agentic Systems Explained
+- [x] JuoVZkPBiKk | CS336 2026 L1 | Overview, Tokenization
+- [x] NDdc39KYqDU | CS25 V6 | From Language Models to Native Multimodal Intelligence
+- [x] pwQ0l4hFCVI | CS229 2026 L14 | Transformers, In-Context Learning
 
 ## 다음 후보 — Stanford
 - [ ] DATnpGoGhM8 | CS229 2026 L1 | Introduction
