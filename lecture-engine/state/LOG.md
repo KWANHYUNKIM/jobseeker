@@ -39,3 +39,4 @@
 - 2026-11-20 · cKSwj_qZ8Jg · CS336 · 어텐션 대안과 전문가 혼합(MoE) — 선형 어텐션·Mamba-2·Gated DeltaNet·DSA, 그리고 top-k 라우팅과 부하 균형 · 챕터 15 · 본문 22015자
 - 2026-11-20 · lVynu4bo1rY · CS336 · LLM 아키텍처 총정리 — pre-norm·RMSNorm·SwiGLU·RoPE, 하이퍼파라미터 경험칙, 안정화 기법과 GQA·슬라이딩 윈도 · 챕터 15 · 본문 24312자
 - 2026-11-20 · izZba4UA7iY · CS336 · GPU 와 TPU — 메모리 계층, 여섯 가지 가속 기법, FlashAttention 다시 만들기 · 챕터 15 · 본문 19256자
+- 2026-11-20 · SzpOcwdIL0Y · CS336 · 병렬화 1 — 집합 통신(all-reduce·reduce-scatter·all-gather), GPU 연결망, NCCL, 데이터·텐서·파이프라인 병렬 · 챕터 14 · 본문 21578자
