@@ -1,0 +1,1044 @@
+{
+ "id": "Q15rhEWZPQ4",
+ "source": {
+  "platform": "youtube",
+  "url": "https://www.youtube.com/watch?v=Q15rhEWZPQ4",
+  "channel": "Stanford Online",
+  "published": "2026-04-30",
+  "duration_sec": 4677,
+  "views": 19581
+ },
+ "course": {
+  "school": "Stanford",
+  "code": "CS336",
+  "term": "Spring 2026",
+  "lecture_no": "9",
+  "speaker": "Tatsunori Hashimoto (공동 강사 Percy Liang — 10강 추론 담당)"
+ },
+ "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 9: Scaling Laws",
+ "title_ko": "스케일링 법칙 기초 — 로그-로그 직선, 데이터·아키텍처·배치·학습률 법칙, Kaplan 대 Chinchilla 와 IsoFLOP",
+ "topic": "llm",
+ "tags": [
+  "LLM",
+  "Deep Learning",
+  "PyTorch",
+  "Python",
+  "NumPy",
+  "Transformer",
+  "MoE",
+  "Distributed Training",
+  "Machine Learning"
+ ],
+ "level": "심화",
+ "one_line": "작은 모델로 법칙을 맞추고 큰 학습을 예측하기 — 로그-로그 직선부터 IsoFLOP·Chinchilla 20:1 과 그 뒷이야기까지",
+ "summary": [
+  "CS336 아홉째 시간이자 스케일링 법칙 2부작의 기초편이다. 강사 Tatsunori Hashimoto 는 '부자 친구가 B200 1만 장을 한 달 빌려 주며 좋은 오픈 모델을 만들라고 하면 무엇을 하나'로 시작한다. 인프라(과제 2)와 데이터(과제 4)가 있다고 쳐도 어떤 모델을 어떤 설정으로 돌릴지가 남는다. 남의 설정을 베끼면 남보다 나아질 수 없고, 수백만 달러짜리 학습을 여러 번 해 볼 수도 없다. 그래서 작은 모델 여러 개로 규칙을 세우고 큰 규모를 외삽하는 것, 즉 스케일링 법칙을 공학의 도구로 다룬다. 영상 제목대로 내용도 스케일링 법칙이며, 두 강의 뒤(11강)에 μP·최신 기술 보고서·옵티마이저를 다루는 심화편이 이어진다.",
+  "첫 부분은 뿌리다. 일반화 경계는 '표본이 늘면 오차가 얼마나 주나'의 이론판 답이고, Cortes·Vapnik(1993)은 이미 작은 표본의 학습 곡선을 맞춰 외삽했다. Banko & Brill, Kolachina(2012)를 거쳐 Hestness(2017)는 여러 영역의 거듭제곱 법칙과 창발·연산 스케일링을 예견했다. 왜 거듭제곱인가? 평균 추정 오차 σ²/n 은 기울기 −1 짜리 법칙이고, d 차원 비모수 회귀는 n^(−1/d) 다. 언어 모델의 지수(−0.095 안팎)는 '약 10차원짜리 비모수 학습'처럼 느리다는 해석이 나온다.",
+  "데이터 부분에서는 공학 질문으로 넘어간다. 데이터 구성은 대개 법칙의 절편만 바꾸고 기울기는 그대로 둬서, 작은 규모에서 가장 좋은 혼합을 그대로 키우는 것이 잘 통한다(DataDecide). 반복은 약 4 epoch 까지 거의 손해가 없고 그 뒤 실효 데이터 식 D′ 로 포화된다. 최적 필터 강도는 연산이 커질수록 느슨해진다. 모델 공학 부분에서는 LSTM 대 트랜스포머, 여러 아키텍처(Tay 2022), Adam 대 SGD, 층 수와 aspect ratio, '무엇을 파라미터로 셀까'(임베딩, MoE 의 총·활성)를 모두 로그-로그 직선의 절편과 기울기로 비교한다. 배치는 McCandlish 의 임계 배치 B_crit = E_min/S_min 이 손실에 대해 거듭제곱으로 커지고, 학습률은 규모에 따라 움직이는 최적점을 법칙으로 예측하거나 μP 로 고정하는 두 철학이 있다. 퍼플렉서티 법칙은 깨끗하지만 하류 벤치마크로의 전이는 불확실하다는 경고도 붙는다.",
+  "마지막 부분은 '데이터냐 모델이냐'다. 학습 FLOPs ≈ 6ND 제약 아래 결합 법칙 L(N, D) 를 최소화하면 Kaplan 은 N ∝ C^0.73 을, Chinchilla 는 세 방법(아래 껍질·IsoFLOP·모수 적합)으로 N ∝ C^0.5, 파라미터당 약 20 토큰을 얻었다. 강사는 이 차이를 세부로 푼다. Porian 외는 출력층 파라미터 세기·워밍업·배치 조율만으로 Kaplan 을 Chinchilla 로 옮겼고, Pearce & Song 은 작은 규모와 비임베딩 계산의 휨으로 설명했으며, Epoch AI 는 Chinchilla 방법 3이 과소적합이었음을 재적합으로 보였다. 법칙은 '이 레시피를 키우면 얻는 것'의 하한이고, 세부가 결론을 바꾼다는 것이 교훈이다.",
+  "끝으로 학습 최적이 제품 최적이 아니라는 점을 짚는다. 연산 대부분이 서빙에 쓰이니 작은 모델을 더 오래 학습하는 과학습이 맞다(Llama 3 70B 는 파라미터당 215 토큰). Chinchilla 가 중요한 것은 20:1 때문이 아니라 법칙을 어떻게 맞추는지를 보여 줬기 때문이고, IsoFLOP 은 확산 모델·MoE 까지 쓰이는 기본 도구로 남았다. 노트는 로그-로그 기울기 계산, 임계 배치의 '2배', 실효 데이터, 닫힌 꼴 최적 배분, 과학습 손익분기를 손으로 풀고, IsoFLOP 전체 절차를 numpy 로 재현해 지수 0.51 을 되찾는다."
+ ],
+ "why_now": "프런티어 학습 한 번이 수천만~수억 달러가 되면서, 큰 학습을 돌리기 전에 손실을 숫자로 예측하는 능력이 사전학습 팀의 핵심 역량이 됐다. 강의가 보인 것처럼 모델 크기와 토큰 배분(Kaplan 의 거대 모델 시대 → Chinchilla 20:1 → Llama 3 의 215:1 과학습)은 스케일링 법칙 해석에 따라 업계 전체의 방향이 바뀌어 왔고, 데이터가 연산만큼 늘지 않는 지금은 반복·필터링 강도·혼합 비율도 규모의 함수로 정해야 한다. MoE 가 대세가 된 뒤 '파라미터'의 정의(총·활성)와 희소도 선택도 IsoFLOP 실험으로 정한다. 국내에서도 파운데이션 모델을 직접 사전학습하는 팀이 늘면서, 작은 모델 스윕으로 학습률·배치·모델 크기를 정하고 큰 학습의 손실을 예측하는 일이 LLM 사전학습·AI 리서치 엔지니어 공고의 실제 업무가 됐다.",
+ "chapters": [
+  {
+   "start": 0,
+   "title": "왜 스케일링 법칙인가 — B200 1만 장을 한 달 받았다면",
+   "points": [
+    "이번 강의와 두 강의 뒤(심화편)는 스케일링 법칙 2부작이다. 오늘은 기초 — 고전 연구와 머신러닝 101 과의 연결.",
+    "시나리오: 부자 친구가 B200 1만 장을 한 달 빌려 주며 좋은 오픈 모델을 만들라고 한다. 인프라(과제 2)와 데이터(과제 4)는 있다고 치면 남는 질문은 '어떤 모델을 돌리나'.",
+    "남의 설정을 베끼면(cargo cult) 남보다 나아질 수 없다. 최전선에 서려면 직접 최적화해야 한다.",
+    "옛 방식은 큰 모델에서 하이퍼파라미터를 고르는 것(비싸고 낭비), 새 방식은 작은 모델에서 고르고 단순한 규칙으로 큰 규모를 외삽하는 것.",
+    "스케일링 법칙 = 작은 규모의 성능·행동을 큰 규모로 이어 주는 단순한 예측 규칙. 강사는 이것을 '공학의 도구'로 다룬다."
+   ],
+   "on_screen": "제목 'Lecture 9 — Scaling laws - basics'. 'Taking scaling seriously — Your friend has given you ten thousand B200s for a month, and asked you to build a good open source LM. What do you do? · Put together your infra team and distributed training framework (A2) · Put together a great pretraining dataset (A4) · Run a big model (but which one??) <- we are here.' 'Scaling isn't easy — Wide or deep? How many heads? Which nonlinearity?' 아래에 여러 LLM 의 아키텍처 선택표(3강 표), 'We could cargo cult things from existing LMs… but how do these get optimized in the first place?'. 'Today: simple, predictive laws for behaviors of LMs — Old and unpleasant: tune hyperparameters on big models / New (over?) optimism: tune on small models, extrapolate to large ones' 와 Kaplan 2020 의 연산량–손실 곡선 묶음(초록 학습 곡선들의 아래 껍질), 층 수별 파라미터–손실 직선.",
+   "explain": [
+    "스케일링 법칙이 왜 필요한지는 돈 문제로 보면 바로 보인다. GPU 1만 장을 한 달 쓰는 학습은 수백만 달러짜리 단 한 번의 실험이다. 그런데 그 한 번을 돌리기 전에 정해야 할 것이 수십 가지다 — 너비와 깊이, 헤드 수, 활성 함수, 옵티마이저, 학습률, 배치 크기, 그리고 무엇보다 '모델을 얼마나 크게 하고 토큰을 얼마나 넣을지'. 큰 모델을 여러 번 돌려 보며 이것들을 고르는 것은 예산이 허락하지 않는다. 한 번 실패하면 한 달과 수백만 달러가 날아간다.",
+    "3강(아키텍처)에서는 이 질문들에 '다른 연구실이 무엇을 골랐나'로 답했다. pre-norm, SwiGLU, RoPE, 너비 대 깊이 비율 같은 것을 업계 관행에서 가져오는 것이다. 그것으로 충분히 좋은 모델은 만들 수 있다. 하지만 강사가 지적하듯 남의 선택을 그대로 베껴서는 남보다 나은 모델을 만들 수 없다. 그리고 애초에 그 선택들은 누군가 어떻게 최적화했는가? 그 답이 오늘의 주제다.",
+    "스케일링 법칙의 발상은 간단하다. 큰 규모에서 직접 조율하는 대신 작은 모델 여러 개로 실험하고, 작은 규모와 큰 규모를 잇는 단순하고 튼튼한 규칙(규칙성)을 찾아서 그 규칙을 따라 큰 규모의 결과를 미리 계산한다. 규칙이 믿을 만하면 작은 실험 비용만으로 큰 학습의 설정을 고를 수 있다. 강사는 이것을 '새로운(어쩌면 지나친) 낙관'이라고 부르면서도, 대형 연구실 사람들에게는 거의 신념이자 생활 방식에 가깝다고 말한다. 동시에 오늘 강의 곳곳에서 이 규칙이 얼마나 까다롭게 만들어지는 물건인지도 보여 준다.",
+    "슬라이드의 두 그래프가 오늘의 약속을 요약한다. 왼쪽은 여러 크기 모델의 학습 곡선을 연산량(x, 로그)과 손실(y, 로그) 위에 겹친 것으로, 곡선들의 아래 껍질이 하나의 직선을 이룬다. 오른쪽은 층 수가 다른 모델들의 파라미터 수와 손실이 역시 로그-로그 직선 위에 놓인다는 그림이다. 이 직선들이 작은 규모에서 큰 규모로 계속 이어진다고 믿을 수 있다면, 맨 오른쪽(아직 돌려 보지 않은 큰 학습)의 손실을 미리 읽을 수 있다. 오늘 강의의 흐름은 ① 역사와 이론적 뿌리 → ② 데이터 스케일링 → ③ 모델 공학(아키텍처·옵티마이저·깊이·배치·학습률) → ④ 데이터냐 모델이냐(Kaplan 과 Chinchilla)다. 2강(kuYAsz7zspQ)에서 배운 '학습 FLOPs ≈ 6 × 파라미터 × 토큰'이 마지막 부분의 출발점이 된다."
+   ],
+   "example": {
+    "title": "B200 1만 장 한 달은 FLOPs 로 얼마인가 (노트 보충)",
+    "body": "가정: B200 한 장의 BF16 밀집 연산 성능을 약 2.25 PFLOP/s(=2.25×10¹⁵), 실제 활용률 MFU 40% 로 둔다(2강의 MFU). 한 달 = 30일 × 86,400초 = 2.592×10⁶ 초. 총 연산 C = 10⁴ 장 × 2.25×10¹⁵ × 0.4 × 2.592×10⁶ ≈ 2.33×10²⁵ FLOPs. 이 숫자가 뒤 장(Chinchilla)의 '연산 예산 C'이다. 같은 예산을 파라미터와 토큰에 어떻게 나눌지에 따라 400B 모델을 9T 토큰 학습할 수도, 2T 모델을 2T 토큰 학습할 수도 있다 — 어느 쪽이 나은지 미리 아는 것이 오늘의 목표다."
+   },
+   "pitfalls": [
+    "스케일링 법칙은 물리 법칙이 아니라 경험적 곡선 맞춤(curve fitting)이다. 강사도 질문에 '순수한 곡선 맞춤'이라고 답한다. 믿을 만한 범위에서만 쓴다.",
+    "'작은 모델에서 고른다'는 것이 '작은 모델에서 제일 좋았던 값을 그대로 쓴다'와 같지는 않다. 최적값이 규모에 따라 움직이는 하이퍼파라미터(학습률·배치)는 그 움직임 자체를 법칙으로 잡아야 한다(뒤의 배치·학습률 장)."
+   ],
+   "check": [
+    {
+     "q": "큰 학습에서 하이퍼파라미터를 직접 고르지 않고 스케일링 법칙을 쓰는 가장 큰 이유는?",
+     "a": "큰 학습은 한 번에 수백만 달러가 드는 단일 실험이라 여러 번 시도할 수 없다. 작은 모델 여러 개로 규칙을 세우고 외삽하면 작은 비용으로 큰 학습의 설정과 결과를 미리 정할 수 있다."
+    },
+    {
+     "q": "남의 모델 설정을 그대로 가져오는 방식의 한계를 강의는 어떻게 말하나?",
+     "a": "무난한 모델은 만들 수 있지만 그 설정보다 나은 모델은 만들 수 없다. 최전선을 넘으려면 선택을 스스로 최적화해야 하고, 그 도구가 스케일링 법칙이다."
+    }
+   ]
+  },
+  {
+   "start": 242,
+   "title": "스케일링 법칙의 뿌리 — 일반화 경계에서 Hestness 2017 까지",
+   "points": [
+    "이론가는 오래전부터 '표본 n 이 늘면 오차가 얼마나 줄까'를 물었다 — 일반화 경계는 n 에 대한 오차의 상한이다.",
+    "Cortes·Vapnik 등(Bell Labs, 1993): 큰 데이터로 분류기를 학습하기 비싸니 작은 표본으로 학습 곡선을 맞추고 외삽하자 — 사실상 첫 데이터 스케일링 법칙.",
+    "Banko & Brill(2001): 알고리즘 개발보다 데이터를 더 모으는 편이 낫다는 로그-선형 그림. Kolachina 외(2012): 기계번역 BLEU 에 여러 함수 꼴을 맞춰 보니 거듭제곱 꼴(pow3, pow4)이 잘 맞았다.",
+    "Hestness 외(2017, Baidu): 번역·언어 모델·음성 인식 전반에서 데이터 크기에 대한 거듭제곱 법칙을 보였고, 창발·연산에 의한 스케일링·'속도 = 정확도'까지 예견했다.",
+    "강사의 요지: 스케일링 법칙은 LLM 시대에 갑자기 생긴 것이 아니라 경험적 표본 복잡도라는 오래된 생각의 연장이다."
+   ],
+   "on_screen": "'Part 1. Scaling laws, history and background — Data scaling as empirical sample complexities / Initial forays into understanding neural scaling with data'. 'Sample complexity and rates': ε(ĥ) ≤ (min_{h∈H} ε(h)) + 2√((1/m) log(2k/δ)) (learning in a finite set of k hypotheses), 매끄러운 밀도의 생성 모델링 수렴률 ψ_n = n^{−β/(2β+1)} 정리(generative modeling for smooth densities), 'But these are upper bounds, not actual, realized loss values.' 'Earliest (data) scaling law paper – 1993' — Cortes, Jackel, Solla, Vapnik, Denker 'Learning Curves: Asymptotic Values and Rate of Convergence', test error 와 training error 가 training set size 2560~15360 에서 a 로 수렴하는 곡선, ε_test = a + b/n^α 꼴. 'Log-linear scaling with data [Banko and Brill '01]'. Kolachina 외 2012 'Table 1: Curve families' — Exp3 y=c−e^{−ax+b}, Exp4, ExpP3, Pow3 y=c−ax^{−α}, Pow4 y=c−(−ax+b)^{−α}, ILog2 y=c−(a/log x). 'Hestness et al 2017 — Earliest large scale neural scaling work, predictable scaling on many tasks (MT, LM, Speech)', 일반화 오차 곡선의 세 구간(Small Data Region / Power-law Region / Irreducible Error Region). 'Hestness II — Very ahead of its time.. Emergence / Scaling by compute / Speed = accuracy'.",
+   "explain": [
+    "머신러닝 이론 수업을 들었다면 일반화 경계(generalization bound)를 본 적이 있을 것이다. 가설 k개짜리 유한 집합에서 표본 m개로 학습하면, 고른 가설의 진짜 오차는 '그 집합에서 가장 좋은 가설의 오차'에 √(log k / m) 정도를 더한 값을 넘지 않는다는 식이다. 이 식은 결국 '데이터를 늘리면 오차가 어떤 속도로 줄어드는가'를 말한다. 데이터 스케일링 법칙과 같은 질문이다. 차이는 이론의 답이 상한(upper bound)이라는 점이다. 실제 손실이 그 속도로 줄어든다는 보장은 없고, 실제 값은 대개 경계보다 훨씬 좋다. 스케일링 법칙은 이 질문에 경계 대신 실측 곡선으로 답한다 — 그래서 '경험적 표본 복잡도'라고 부를 만하다.",
+    "강사가 꼽는 첫 데이터 스케일링 논문은 1993년 Bell Labs 의 Cortes·Vapnik 등이다. 그들의 동기는 오늘날과 똑같았다. 아주 큰 데이터로 분류기를 학습하는 것은 비싸니, 작은 표본들로 학습해서 오류율이 줄어드는 곡선을 맞추고 그 곡선으로 큰 데이터에서의 성능을 미리 가늠하자. 슬라이드의 그림에서 시험 오차는 위에서, 학습 오차는 아래에서 같은 점근값 a 로 다가가며, 시험 오차는 a + b/n^α 꼴로 맞춰진다. 상수(바닥) + 거듭제곱으로 줄어드는 항 — 이 모양이 오늘 강의 내내 반복된다.",
+    "그 뒤로도 같은 관찰이 이어졌다. Banko & Brill(2001)은 자연어 처리에서 데이터 양에 따라 여러 학습기의 성능이 로그-선형으로 좋아지는 것을 보이고, 알고리즘에 돈을 쓰기보다 말뭉치를 키우는 편이 낫지 않냐고 물었다. Kolachina 외(2012)는 기계번역의 BLEU 점수에 지수형·거듭제곱형·로그형 여러 함수 가족을 맞춰 보고, 거듭제곱형(pow3: y = c − a·x^(−α), pow4)이 잘 맞는다는 것을 확인했다. 강사는 오늘 나오는 법칙들도 결국 이 pow3·pow4 꼴이라고 짚는다. 함수 꼴 자체는 2010년대에 이미 알려져 있었다.",
+    "강사가 특히 강조하는 것은 Baidu 의 Hestness 외(2017)다. 트랜스포머 이전 시대에 번역·언어 모델·음성 인식 등 여러 영역에서 데이터 크기에 대한 거듭제곱 법칙을 체계적으로 보였고, 일반화 오차 곡선을 세 구간으로 나눴다 — 데이터가 너무 적어 추측 수준인 구간, 직선(거듭제곱)으로 내려가는 구간, 더는 줄지 않는 비가역 오차 구간. 그리고 오늘날의 논점들을 미리 말했다. 정확도처럼 불연속적인 지표에서는 능력이 갑자기 나타나는 듯 보일 수 있다(창발), 성능이 데이터에 따라 예측 가능하게 늘면 결국 연산이 관건이 된다, 그러니 시스템 속도가 곧 정확도가 된다. 강사는 이 논문이 덜 인용된다며, 2017년에 이것을 진지하게 읽었다면 지금의 시대를 미리 알 수 있었을 것이라고 말한다. 질문에 대한 답으로는, 이 법칙들이 이론에서 유도된 것이 아니라 곡선 맞춤이지만 이론(오차 감소율)과 물리(극한의 거동)가 함수 꼴의 후보를 공급해 준다고 덧붙인다."
+   ],
+   "formulas": [
+    {
+     "expr": "ε(ĥ) ≤ min_{h∈H} ε(h) + 2·√((1/m)·log(2k/δ))",
+     "meaning": "ĥ: 학습으로 고른 가설, ε: 진짜(일반화) 오차, H: 가설 k개짜리 집합, m: 표본 수, δ: 경계가 틀릴 확률. 오차의 상한이 1/√m 속도로 줄어든다는 '이론판 스케일링 법칙'. 상한일 뿐 실제 값이 아니다."
+    },
+    {
+     "expr": "ε_test(n) ≈ a + b·n^(−α)",
+     "meaning": "Cortes 외(1993)의 학습 곡선 꼴. n: 학습 표본 수, a: 데이터를 무한히 늘려도 남는 점근 오차(바닥), b: 규모 상수, α: 줄어드는 속도. 오늘 나오는 법칙 대부분이 이 꼴이다."
+    },
+    {
+     "expr": "pow3: y = c − a·x^(−α)",
+     "meaning": "Kolachina 외(2012)가 BLEU(높을수록 좋음)에 맞춘 꼴. c 는 도달 가능한 최고 점수, 나머지는 위와 같다. 오차 쪽으로 뒤집으면 위 식과 같은 모양."
+    }
+   ],
+   "example": {
+    "title": "1/√m 경계는 데이터 4배에 몇 배 줄어드나",
+    "body": "k = 1000, δ = 0.05 이면 log(2k/δ) = log(40000) ≈ 10.6. m = 10,000 일 때 여유항 = 2√(10.6/10000) = 2 × 0.0326 = 0.065. m = 40,000 이면 2√(10.6/40000) = 2 × 0.0163 = 0.033. 데이터를 4배로 늘리면 여유항이 정확히 절반이 된다 — 로그-로그 그림에서 기울기 −1/2 직선이다. 뒤에서 보듯 신경망 언어 모델의 실제 기울기는 이보다 훨씬 완만한 −0.1 안팎이다."
+   },
+   "pitfalls": [
+    "일반화 경계는 상한이고 스케일링 법칙은 실측값이다. 경계가 1/√m 이라고 실제 손실이 그 속도로 줄지는 않는다.",
+    "'창발'은 모델이 갑자기 능력을 얻었다기보다 정확도 같은 불연속 지표가 매끄러운 손실 개선을 계단처럼 보이게 만든 것일 수 있다 — Hestness 가 이미 지적한 점."
+   ],
+   "check": [
+    {
+     "q": "Cortes 외(1993)가 학습 곡선을 맞춘 이유는 오늘날 LLM 의 스케일링 법칙과 어떤 점에서 같은가?",
+     "a": "큰 데이터로 직접 학습하는 비용을 피하려고 작은 표본에서 오차 곡선을 맞추고 외삽해 큰 규모 성능을 예측했다. 작은 실험 → 법칙 → 외삽이라는 절차가 같다."
+    },
+    {
+     "q": "Hestness 외(2017)가 미리 말한 세 가지 논점은?",
+     "a": "① 정확도 같은 불연속 지표에서는 능력이 갑자기 나타나는 듯한 창발, ② 성능이 데이터에 따라 예측 가능하게 늘면 연산이 관건이 된다(연산에 의한 스케일링), ③ 따라서 시스템 속도 최적화가 곧 정확도가 된다."
+    }
+   ]
+  },
+  {
+   "start": 682,
+   "title": "로그-로그 직선 읽기 — 연산·데이터·파라미터 세 축과 데이터 스케일링 법칙",
+   "points": [
+    "로그 연산량·로그 데이터·로그 파라미터 어느 것을 x 로 놓아도 로그 테스트 손실이 직선이 된다(Kaplan 2020).",
+    "하류 벤치마크에서는 연산에 대해 시그모이드 모양이 나오고, 날짜를 x 축에 둔 예측 그림까지 있다.",
+    "데이터 스케일링 법칙: 학습 절차를 고정하고 모델을 데이터보다 충분히 크게 둔 채 데이터만 늘린다. 기대 모양은 단조 감소 + 로지스틱 비슷한 세 구간.",
+    "로그-로그 직선 = 거듭제곱 법칙(scale-free): 오차가 다항식 속도로 줄어든다. 직선이라는 것은 아직 바닥(점근값)에서 멀다는 뜻이기도 하다.",
+    "Kaplan 의 데이터 법칙: L(D) = (D / 5.4×10¹³)^(−0.095)."
+   ],
+   "on_screen": "'Part 2. Neural (LLM) scaling behaviors — 1. Data vs performance / 2. Data vs model size / 3. Hyper-parameters vs performance'. 'Scaling laws – power law relationships for many factors': L = (C_min/2.3·10⁸)^(−0.050) (Compute, PF-days, non-embedding), L = (D/5.4·10¹³)^(−0.095) (Dataset Size, tokens), L = (N/8.8·10¹³)^(−0.076) (Parameters, non-embedding) [Kaplan+ 2020]. 'They even hold in non standard settings' — 하류 과제(Word Unscramble, Persian QA)의 시그모이드 꼴 곡선, 날짜 축 산점도. 'Data vs performance — Data scaling laws: simple formula that maps dataset size (n) to error', Hestness 의 세 구간 곡선(Small Data Region / Power-law Region / Irreducible Error Region), 'Monotonic, logistic-like curves'. 'Data scaling laws for language models — Loss and dataset size is linear on a log-log plot', 'Scale-free or Power law'.",
+   "explain": [
+    "스케일링 법칙의 그래프는 거의 언제나 양쪽 축이 로그다. x 축에는 우리가 쏟는 자원 — 연산량(FLOPs), 데이터(토큰 수), 파라미터 수 — 이 로그로, y 축에는 테스트 손실이 로그로 놓인다. Kaplan 외(2020, OpenAI)의 대표 그림에서 이 세 축 모두에 대해 점들이 거의 완벽한 직선을 이룬다. 각각 L ∝ C^(−0.050), L ∝ D^(−0.095), L ∝ N^(−0.076) 이다. 같은 규칙성이 덜 표준적인 곳에서도 보인다. 하류 과제의 정확도는 연산에 대해 직선이 아니라 S 자(시그모이드)를 그리고, 최근에는 날짜를 x 축에 놓고 능력의 위쪽 껍질이 직선이라는 예측 그림까지 나온다. 강사는 이런 이색 법칙이 꼭 성립해야 할 이유는 없지만, 언어 모델 성능은 처음 보기보다 규모에 대해 훨씬 규칙적이라고 말한다.",
+    "가장 단순한 것은 데이터 스케일링 법칙이다. 학습 절차를 고정하고, 모델은 데이터에 비해 충분히 크게(대략 열 배 이상) 두고, 데이터 양만 규칙적으로 늘리며 오차를 잰다. 무엇을 기대해야 하나? 하이퍼파라미터를 잘 맞췄다면 데이터가 많을수록 나아져야 하므로 단조 감소다. 그리고 처음에는 거의 찍기 수준(데이터가 너무 적은 구간), 중간에는 꾸준히 내려가는 구간, 끝에는 과제 자체의 잡음 때문에 더 내려갈 수 없는 바닥(비가역 오차, 다음 토큰 예측이라면 엔트로피) 구간이 있다. 전체로 보면 뒤집힌 로지스틱 모양이다. 우리가 법칙을 맞추는 곳은 가운데 거듭제곱 구간이다.",
+    "로그-로그 그림에서 직선이 무엇을 뜻하는지 정확히 해 두자. log L = a − α·log D 이면 L = e^a · D^(−α), 즉 오차가 D 의 거듭제곱(다항식 속도)으로 줄어든다. 이런 관계를 척도 불변(scale-free)이라고도 부른다 — D 를 몇 배로 하든 L 이 줄어드는 비율이 늘 같기 때문이다. D 를 10배 하면 어디서 시작하든 L 은 10^(−α) 배가 된다. α = 0.095 면 10배마다 손실이 약 20% 줄어든다. 또 하나, 직선이 보인다는 것은 아직 바닥에서 멀다는 뜻이다. 바닥 E 에 가까워지면 L 이 E 쪽으로 눕기 시작해 직선이 휜다. 질문에 대한 강사의 답처럼, 모델이 데이터보다 너무 작아지면 그 모델 크기로 낼 수 있는 최선에 걸려서 이 휜 구간으로 들어간다. 그래서 법칙을 맞출 때는 거듭제곱 구간에만 맞추거나, 바닥 E 를 함께 맞춘 뒤 빼고 본다.",
+    "실제로 법칙을 맞추는 일은 두 점 사이 기울기를 재는 것만큼 단순하다. 아래 예와 코드는 Kaplan 의 데이터 법칙에서 점을 뽑아 log-log 직선을 맞추고, 그 직선으로 훨씬 큰 데이터의 손실을 외삽해 본다. 그리고 바닥이 있는 곡선(L = 1.7 + 400·D^(−0.3))을 그대로 로그-로그로 맞추면 기울기가 −0.10 처럼 엉뚱하게 작게 나오고, 바닥 E 를 빼고 맞춰야 진짜 지수 −0.3 이 나온다는 것을 보인다. 과제 3에서 직접 이런 그림을 그리게 된다고 강사가 예고한다."
+   ],
+   "formulas": [
+    {
+     "expr": "L(D) = (D / D_c)^(−α_D),  D_c ≈ 5.4×10¹³ 토큰, α_D ≈ 0.095",
+     "meaning": "Kaplan 외(2020)의 데이터 법칙. D: 학습 토큰 수, L: 테스트 손실(nats/token), D_c: 법칙을 맞춰 얻은 규모 상수, α_D: 지수. 모델이 충분히 크고 조기 종료할 때의 관계다."
+    },
+    {
+     "expr": "log L = −α·log D + α·log D_c",
+     "meaning": "위 식에 로그를 씌운 것. 기울기가 −α, 절편이 α·log D_c 인 직선 — 그래서 로그-로그 그림에서 직선으로 보인다. 직선을 맞추는 것(최소제곱)이 곧 α 와 D_c 를 추정하는 것이다."
+    },
+    {
+     "expr": "L(D) = E + A·D^(−α)",
+     "meaning": "바닥이 있는 일반형. E: 비가역 손실(데이터 무한에서의 손실), A: 규모 상수. E 를 무시하고 log L 을 맞추면 큰 D 쪽에서 직선이 휘어 기울기가 작게 추정된다. log(L − E) 가 직선이다."
+    }
+   ],
+   "example": {
+    "title": "기울기를 손으로 재고 외삽하기 — Kaplan 데이터 법칙",
+    "body": "식 L = (D/5.4×10¹³)^(−0.095) 에 두 점을 넣는다. D = 10⁸: D/D_c = 1.85×10⁻⁶, ln = −13.20, × (−0.095) = 1.254, L = e^1.254 ≈ 3.50. D = 10¹⁰: D/D_c = 1.85×10⁻⁴, ln = −8.59, × (−0.095) = 0.816, L ≈ 2.26. 로그-로그 기울기 = (log₁₀ 2.26 − log₁₀ 3.50) / (10 − 8) = (0.354 − 0.544)/2 = −0.095 — 식의 지수가 그대로 나온다. 외삽: D = 10¹² 이면 손실은 10¹⁰ 일 때보다 (100)^(−0.095) = 10^(−0.19) = 0.646 배, 즉 2.26 × 0.646 ≈ 1.46. 데이터 100배에 손실 35% 감소. 10배마다 10^(−0.095) = 0.80 배다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\n# Kaplan 데이터 법칙 L(D) = (D / 5.4e13)^(-0.095) 에서 점 5개를 뽑고 잡음 1% 를 얹는다\nrng = np.random.default_rng(1)\nD = np.logspace(7, 11, 5)                       # 1e7 ~ 1e11 토큰\nL = (D / 5.4e13) ** -0.095 * np.exp(rng.normal(0, 0.01, D.size))\nb, a = np.polyfit(np.log(D), np.log(L), 1)      # log L = a + b log D\nalpha, Dc = -b, np.exp(a / -b)                  # L = (D/Dc)^(-alpha)\nprint(\"점:\", [f\"{d:.0e}->{l:.3f}\" for d, l in zip(D, L)])\nprint(f\"alpha={alpha:.4f}  Dc={Dc:.2e}\")\nprint(f\"1e13 토큰 외삽 L={(1e13/Dc)**-alpha:.3f}  (참값 {(1e13/5.4e13)**-0.095:.3f})\")\n# 바닥(E)이 있으면 직선이 휜다: L = E + A D^-a 를 E 격자로 찾는다\nL2 = 1.7 + 400 * D ** -0.3\nbest = min((np.sum((np.polyfit(np.log(D), np.log(L2 - E), 1, full=True)[1])), E)\n           for E in np.linspace(0, 1.69, 170))\nE = best[1]; b2, _ = np.polyfit(np.log(D), np.log(L2 - E), 1)\nprint(f\"E 무시 기울기 {np.polyfit(np.log(D), np.log(L2),1)[0]:.3f} / E={E:.2f} 빼고 {b2:.3f}\")",
+    "note": "필자 실행 결과: 점 1e7→4.376, 1e8→3.533, 1e9→2.825, 1e10→2.233, 1e11→1.834(잡음 1%). 맞춘 값 alpha=0.0954, Dc=5.26e+13 — 참값 0.095, 5.4e13 과 거의 같다. 1e13 토큰 외삽 1.172(참값 1.174). 바닥이 있는 곡선은 E 를 무시하면 기울기 −0.101, E=1.69 를 빼면 −0.295(참값 −0.3)."
+   },
+   "pitfalls": [
+    "로그-로그 직선의 기울기는 '손실이 몇 % 줄어드나'의 비율이지 절대량이 아니다. 기울기 −0.095 는 데이터 10배마다 손실 약 20% 감소다.",
+    "바닥 E 가 있는 곡선을 log L 로 그대로 맞추면 지수가 작게(완만하게) 나온다. 큰 규모로 갈수록 직선이 휘기 시작하면 바닥을 함께 맞춘다.",
+    "Kaplan 의 C 축 단위는 PF-days(10¹⁵ FLOP/s × 하루 = 8.64×10¹⁹ FLOPs)이고 파라미터는 임베딩을 뺀 수다. 다른 논문의 상수와 섞어 쓰면 틀린다."
+   ],
+   "check": [
+    {
+     "q": "로그-로그 기울기가 −0.095 이면 데이터를 1000배 늘릴 때 손실은 몇 배가 되나?",
+     "a": "1000^(−0.095) = 10^(−0.285) ≈ 0.52배. 데이터 1000배로 손실이 절반 남짓 된다."
+    },
+    {
+     "q": "로그-로그 그림에서 큰 D 쪽 점들이 직선 위로 휘어 오르면 무엇을 의심해야 하나?",
+     "a": "비가역 손실(바닥) E 에 가까워진 것. 또는 모델이 데이터에 비해 작아져 모델 크기 한계에 걸린 것. E 를 함께 맞추거나 그 구간을 빼고 맞춘다."
+    }
+   ]
+  },
+  {
+   "start": 930,
+   "title": "왜 거듭제곱인가 — 평균 추정의 σ²/n 과 비모수 회귀의 n^(−1/d)",
+   "points": [
+    "평균 추정: x_i ~ N(μ, σ²) 의 표본 평균 오차는 E[(μ̂−μ)²] = σ²/n. 로그를 취하면 log 오차 = −log n + 2 log σ — 기울기 −1 짜리 스케일링 법칙이다.",
+    "일반적으로 1/n^α + 상수 꼴이면 무엇이든 로그-로그 직선이 된다. 고전적 모수 모델(회귀 등)은 대부분 1/n 속도.",
+    "그런데 신경망의 실측 지수는 −0.1, −0.3, −0.095 정도로 훨씬 완만하다 — 모수 추정보다 훨씬 느리게 배운다.",
+    "d 차원의 매끄러운 함수를 칸 나누기로 추정하면 오차 ≈ n^(−1/d). 기울기 −1/d 이니 −0.1 은 '10차원 비모수 회귀'처럼 배운다는 뜻.",
+    "Bahri 외(2021): 지수가 데이터의 내재 차원과 연결된다는 주장. 강사는 내재 차원 추정이 허술해 완전히 믿지는 않는다고 말한다."
+   ],
+   "on_screen": "'Conceptual foundations of data scaling laws — Q: Why do scaling laws show up? We know error should be monotone. But why is it a power law / linear in log-log? A (?): Estimation error naturally decays polynomially.' 'Toy example: mean estimation — Input: x₁…x_n ~ N(μ, σ²), Task: estimate the average as μ̂ = Σᵢxᵢ/n. What's the error? E[(μ̂ − μ)²] = σ²/n. This is a scaling law: log(Error) = −log n + 2 log σ. More generally, any polynomial rate 1/n^α is a scaling law.' 'Scaling law exponents: an intriguing mystery — Fact: … classical models have 1/n scaling. This means we should see y = −x + C' — 기계번역·음성·언어 모델의 실측 직선 그림(지수 대략 −0.1~−0.3), 'Very different from predictions.. Why might this be?'. 'Detour: scaling laws for (nonparametric) learning — Input: x₁…x_n uniform in 2D unit box, yᵢ = f(xᵢ) + N(0,1). Approach: cut up the 2D space into boxes with length n^(−1/4). Informally, we have √n boxes, each box gets √n samples. Error ≈ 1/√n + (other smoothness terms). In d-dimensions, this becomes Error = n^(−1/d) – This means scaling is y = −(1/d)x + C. Takeaway: flexible nonparametric learning has dimension dependent scaling laws.' 'Intrinsic dimensionality theory of data scaling laws (Bahri 2021) … But estimators of intrinsic dimension are sketchy, and this is not airtight..'",
+   "explain": [
+    "데이터를 늘리면 오차가 줄어든다는 것은 당연하다. 그런데 왜 하필 거듭제곱 꼴(로그-로그 직선)일까? 강사는 '추정 오차는 원래 다항식 속도로 줄어든다'는 답을 가장 단순한 통계 문제로 보여 준다. 정규분포 N(μ, σ²) 에서 n 개를 뽑아 평균 μ 를 표본 평균 μ̂ = (x₁+…+x_n)/n 으로 추정하자. μ̂ 도 정규분포를 따르고 분산은 σ²/n 이므로 평균제곱오차 E[(μ̂−μ)²] = σ²/n 이다. 로그를 씌우면 log 오차 = −log n + 2 log σ. x 축이 log n 일 때 기울기 −1, 절편 2 log σ 인 직선 — 이것이 바로 스케일링 법칙이다. 더 일반적으로 오차가 c + b/n^α 꼴이기만 하면(상수 c 를 빼고 보면) 로그-로그 직선이 된다.",
+    "고전 통계의 모수 모델은 거의 다 이 1/n 속도를 갖는다. 선형 회귀도 대략 (차원)/n 이다. 그렇다면 언어 모델의 스케일링 법칙도 기울기 −1 이어야 할 것 같다. 그런데 실측은 그렇지 않다. Hestness 의 번역·음성 곡선과 Kaplan 의 언어 모델 곡선에서 지수는 대략 −0.1, −0.3, −0.095 다. 기울기 −1 이라면 데이터 10배에 오차가 10분의 1이 돼야 하는데, −0.1 이면 겨우 0.8배다. 신경망은 평균이나 선형 회귀를 추정하는 것보다 훨씬, 훨씬 느리게 배운다. 여전히 다항식 속도이긴 하지만 지수가 작다. 왜일까?",
+    "강사의 설명은 비모수 추정이다. 이번에는 평균 하나가 아니라 임의의 매끄러운 함수 f 를 추정한다고 하자. 입력이 2차원 단위 정사각형에 고르게 흩어져 있고 y = f(x) + 잡음이다. 가장 단순한 추정법은 공간을 한 변 n^(−1/4) 인 작은 칸으로 자르고 칸마다 y 의 평균을 내는 것이다. 칸은 (n^(1/4))² = √n 개이고 칸마다 표본이 √n 개씩 들어가므로, 칸 안 평균의 오차는 대략 1/√n 이다(매끄러움에서 오는 항은 생략). 같은 계산을 d 차원으로 하면 오차는 대략 n^(−1/d) 이 되고, 로그-로그 기울기는 −1/d 이다. 차원이 높을수록 공간을 채우는 데 데이터가 기하급수적으로 많이 필요해서 배우는 속도가 느려진다 — 차원의 저주의 스케일링 법칙판이다.",
+    "이 관점에서 신경망의 지수 −0.1 을 다시 읽으면, 신경망이 '10차원짜리 비모수 회귀기(가까운 이웃 같은 것)'처럼 데이터로부터 배운다는 해석이 된다. Bahri 외(2021) 등은 더 강하게, 지수 α 가 데이터의 내재 차원(intrinsic dimension) d 와 α ≈ 4/d 같은 관계로 이어진다고 주장했다(슬라이드의 그림은 여러 데이터셋의 차원 추정치와 4/α 가 대각선 근처에 놓인다는 것). 강사는 흥미롭지만 완전히 믿지는 않는다고 한다. 내재 차원을 추정하는 방법 자체가 허술하기 때문이다. 그래도 '지수는 이 모델이 얼마나 빨리 배우는가를 말해 준다'는 감각은 가져갈 만하다. 아래 코드는 평균 추정을 실제로 시뮬레이션해 기울기 −1 이 나오는지 확인한다."
+   ],
+   "formulas": [
+    {
+     "expr": "E[(μ̂ − μ)²] = σ²/n  →  log E = −log n + 2·log σ",
+     "meaning": "μ̂: 표본 평균, μ: 참 평균, σ²: 한 표본의 분산, n: 표본 수. 평균제곱오차는 n 에 반비례하고, 로그-로그 기울기는 −1, 절편은 2 log σ."
+    },
+    {
+     "expr": "칸 한 변 h = n^(−1/4) → 칸 수 1/h² = √n, 칸당 표본 √n → 오차 ≈ 1/√n",
+     "meaning": "2차원 단위 상자를 칸으로 나눠 칸마다 평균을 내는 비모수 추정. 칸 수와 칸당 표본을 같은 크기로 맞춘 것이다(매끄러움 오차 항 생략)."
+    },
+    {
+     "expr": "오차 ≈ n^(−1/d)  →  기울기 = −1/d",
+     "meaning": "d: 입력 차원. 차원이 높을수록 지수가 작아져 느리게 배운다. 실측 지수 −0.1 이면 d ≈ 10 에 해당한다는 해석이 나온다."
+    }
+   ],
+   "example": {
+    "title": "기울기 −1 과 −0.095 의 차이를 숫자로",
+    "body": "σ = 2 인 평균 추정: n = 100 이면 MSE = 4/100 = 0.04, n = 10,000 이면 0.0004 — 데이터 100배에 오차 100분의 1. 언어 모델(지수 0.095): 데이터 100배면 손실이 100^(−0.095) = 0.646 배, 35% 줄 뿐이다. 같은 100배 개선(오차 1/100)을 지수 0.095 로 얻으려면 데이터를 100^(1/0.095) = 10^21 배 늘려야 한다. 비모수 해석: n^(−1/d) 에서 1/d = 0.095 면 d ≈ 10.5 — '약 10차원 함수를 칸 나누기로 배우는 속도'."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nrng = np.random.default_rng(0)\nmu, sigma = 3.0, 2.0\nns = np.array([10, 100, 1000, 10000])\nmse = []\nfor n in ns:                                   # 시행 2000번으로 E[(mu_hat-mu)^2] 추정\n    est = rng.normal(mu, sigma, size=(2000, n)).mean(axis=1)\n    mse.append(np.mean((est - mu) ** 2))\nmse = np.array(mse)\nprint(\"MSE      \", np.round(mse, 5))\nprint(\"sigma^2/n\", sigma**2 / ns)\nslope, icpt = np.polyfit(np.log10(ns), np.log10(mse), 1)\nprint(f\"log-log 기울기 {slope:.3f}, 절편 {icpt:.3f} (이론: -1, log10 4 = 0.602)\")",
+    "note": "필자 실행 결과: MSE [0.39095 0.04161 0.00406 0.00041] 대 σ²/n [0.4 0.04 0.004 0.0004], 로그-로그 기울기 −0.994, 절편 0.594(이론 −1, log₁₀4 = 0.602). 스케일링 법칙이 시뮬레이션에서도 그대로 나온다."
+   },
+   "pitfalls": [
+    "'지수 = 내재 차원'은 강사도 완전히 믿지 않는 가설이다. 직관용으로 쓰고, 지수로부터 데이터의 차원을 '측정'했다고 말하지 않는다.",
+    "슬라이드의 2차원 예에서 오차 1/√n 은 분산(표준오차) 쪽만 센 대략값이다. 칸이 커서 생기는 편향(매끄러움 항)까지 균형을 맞추면 지수는 매끄러움 정도에 따라 달라진다(노트 보충)."
+   ],
+   "check": [
+    {
+     "q": "오차가 0.3 + 5·n^(−0.5) 인 추정기를 로그-로그로 그리면 그대로 직선이 되나?",
+     "a": "아니다. 상수 0.3 때문에 큰 n 에서 휜다. 오차 − 0.3 을 로그-로그로 그려야 기울기 −0.5 직선이 된다."
+    },
+    {
+     "q": "d 차원 비모수 추정의 오차가 n^(−1/d) 인 이유를 한 문장으로?",
+     "a": "한 변 h 인 칸으로 d 차원을 채우려면 칸이 h^(−d) 개 필요하고, 칸마다 표본이 충분해야 하므로 같은 정밀도에 필요한 표본이 차원에 따라 기하급수로 늘기 때문이다."
+    }
+   ]
+  },
+  {
+   "start": 1227,
+   "title": "데이터 구성 — 섞는 비율은 절편을 바꾸고 기울기는 그대로 둔다",
+   "points": [
+    "데이터 스케일링 법칙 하나로는 예측 말고 할 일이 적다. 공학 질문은 '무엇을 섞을까·반복할까·얼마나 거를까'다.",
+    "고전 모델의 직관: 데이터 구성은 법칙의 오프셋(절편)을 바꾸고, 기울기는 모델 클래스가 정한다(Hashimoto 2021).",
+    "두 출처를 섞는 선형 회귀 장난감 문제에서 기대 오차 절편은 U 자 — 한쪽만 쓰면 나쁘고 섞어야 좋다. 다양한 데이터를 모을 이유.",
+    "데이터 혼합 법칙(Data Mixing Laws): 작은 모델·작은 데이터로 비율별 성능 함수를 맞추고 외삽해 최적 비율을 고른다.",
+    "현실은 시끄럽다. DataDecide 같은 대규모 연구에서는 법칙 없이 '작은 규모에서 가장 좋은 혼합을 그대로 키우기'가 잘 통했다 — 기울기가 같다면 당연한 결과."
+   ],
+   "on_screen": "'Other data scaling laws — Data scaling thus far: how does dataset size relate to performance? Related question: how does dataset composition affect performance' 목록: Picking optimal data mixture using small scale models / Deciding whether to repeat data or not / Combining the two and balancing quality with repetition rate. 'Other advanced data scaling law: distribution shift — A: Data composition affects the offset, not the slope. These distribution shift scaling laws can tell us about the importance of collecting diverse data!' 왼쪽: 학습 데이터 크기 대 초과 오차(excess error) 로그-로그 평행선 세 개(q = 0.00, 0.22, 0.56), 오른쪽: 'Expected error intercept' 대 데이터 출처 비율(0~1) U 자 곡선 [Hashimoto 2021]. 'In practice: data mixture selection via scaling is hard' — 'Data Mixing Laws: Optimizing Data Mixtures by Predicting Language Modeling Performance'(작은 단계·작은 모델로 혼합 법칙을 맞추고 큰 모델로 외삽하는 3단 파이프라인 그림) 'Natural idea – build data scaling laws' 와 'DataDecide: How to Predict Best Pretraining Data with Small Experiments' 'Empirical eval – just take the best small dataset'.",
+   "explain": [
+    "데이터 스케일링 법칙은 '데이터를 더 넣으면 얼마나 좋아지나'를 알려 주므로 예측에는 쓸모가 있다. 하지만 엔지니어가 실제로 마주치는 질문은 다르다. 뉴스와 위키백과를 몇 대 몇으로 섞을까? 데이터를 여러 번 돌려 쓸까, 아니면 그 연산을 다른 데 쓸까? 고품질 데이터만 반복하고 저품질은 한 번만 볼까? 품질 필터를 얼마나 세게 걸까? 이 장과 다음 장은 스케일링 법칙이 이런 결정에 어떻게 쓰이는지를 다룬다.",
+    "출발점이 되는 직관은 고전 모델에서 온다. 데이터 스케일링 법칙을 일반화 경계의 경험판으로 보면, 데이터셋의 구성은 법칙의 오프셋(절편)을 바꾸지만 기울기는 모델 클래스가 결정한다. 즉 어떤 데이터를 섞든 로그-로그 그림의 직선들이 서로 평행하게 위아래로만 움직인다. 강사 자신의 2021년 연구(Hashimoto 2021)가 이것을 보였다. 두 출처에서 표본을 뽑아 선형 회귀를 하는 장난감 모델에서, 섞는 비율 q 를 바꾸면 초과 오차 직선들이 평행하게 이동하고, 그 절편을 비율의 함수로 그리면 U 자가 된다. 한 출처만 쓰면(q = 0 또는 1) 절편이 높고 둘을 섞은 중간에서 가장 낮다. 데이터 다양성이 왜 중요한지를 식으로 보여 주는 결과다.",
+    "이것을 실제 사전학습에 쓰는 방법은 자연스럽다. 아주 작은 모델을 적은 데이터로 여러 혼합 비율에 대해 학습하고, '비율 → 성능' 함수를 맞춘다. 모델을 조금씩 키우며 이 함수가 어떻게 변하는지 보고, 데이터 법칙을 외삽하듯 이것도 외삽해 본 학습 규모에서의 최적 비율을 고른다. Data Mixing Laws(Ye 외 2024) 같은 논문이 이 파이프라인을 제안했다. 작은 규모에서 함수 꼴을 맞추고, 최솟값을 찾고, 그것을 키우는 것 — 오늘 강의 전체에 반복되는 패턴이다.",
+    "그런데 강사는 현실이 이 이상보다 훨씬 시끄럽다고 경고한다. 데이터 혼합 일을 많이 해 본 사람들의 말로는, 실제로 많이 쓰이는 방법은 작은 모델을 잔뜩 학습해 가장 좋은 혼합을 고르고 그대로 키우는 것이다. 스케일링 법칙은 필요 없다. AI2 의 DataDecide 는 이것을 대규모로 실험해, 법칙을 맞추지 않고 작은 규모의 최고 데이터셋을 고르는 것이 잘 통한다는 것을 보였다. 강사는 이것이 앞의 직관과 맞아떨어진다고 짚는다. 혼합이 절편만 바꾸고 기울기를 바꾸지 않는다면, 작은 규모에서 가장 아래 있던 직선은 큰 규모에서도 가장 아래 있다. 직선들이 평행하면 교차하지 않으니, 순위가 규모에 따라 뒤집히지 않는다."
+   ],
+   "formulas": [
+    {
+     "expr": "L_q(n) ≈ E + A(q)·n^(−α)",
+     "meaning": "q: 두 출처를 섞는 비율(0~1), n: 학습 데이터 크기, α: 모델 클래스가 정하는 지수(q 와 무관), A(q): 혼합이 바꾸는 절편. 로그-로그에서 기울기는 같고 높이만 다른 평행선들."
+    },
+    {
+     "expr": "q* = argmin_q A(q)",
+     "meaning": "기울기가 같으면 모든 n 에서 최적 혼합이 같다 — 그래서 작은 규모의 최고 혼합을 그대로 키워도 된다. A(q) 는 대개 U 자(양 끝에서 높다)."
+    }
+   ],
+   "example": {
+    "title": "평행선이면 순위가 뒤집히지 않는다",
+    "body": "두 혼합 X, Y 의 손실이 L_X = 3n^(−0.1), L_Y = 3.3n^(−0.1) 라 하자(절편만 다름). n = 10⁶: L_X = 3 × 10^(−0.6) = 3 × 0.251 = 0.754, L_Y = 0.829. n = 10¹²: L_X = 3 × 10^(−1.2) = 0.189, L_Y = 0.208. 비율 L_Y/L_X 는 어디서나 1.1 이고 X 가 늘 낫다. 반대로 L_Y = 4n^(−0.12) 처럼 기울기가 다르면 n = 10⁶ 에서는 L_Y = 4 × 10^(−0.72) = 0.762 > 0.754 로 X 가 낫지만, n = 10¹² 에서는 L_Y = 4 × 10^(−1.44) = 0.145 < 0.189 로 Y 가 낫다 — 이때만 작은 규모의 승자를 그대로 키우면 틀린다."
+   },
+   "pitfalls": [
+    "'구성은 절편만 바꾼다'는 경향이지 정리가 아니다. 기울기가 다른 혼합이 있으면 작은 규모의 승자가 큰 규모에서 진다. 적어도 두세 규모에서 순위가 유지되는지 확인한다.",
+    "Hashimoto 2021 의 U 자는 장난감 선형 회귀 결과다. 실제 LLM 혼합의 최적점은 평가 분포(무엇을 잘하고 싶은가)에 달려 있다."
+   ],
+   "check": [
+    {
+     "q": "DataDecide 가 '법칙 없이 작은 규모의 최고 혼합을 고르기'가 잘 통한다고 보인 것이 기울기에 대해 무엇을 시사하나?",
+     "a": "혼합에 따라 기울기가 거의 같고 절편만 다르다는 것. 평행선이면 순위가 규모에 따라 바뀌지 않아 작은 규모의 1등이 큰 규모에서도 1등이다."
+    },
+    {
+     "q": "Hashimoto 2021 의 '기대 오차 절편 대 출처 비율' 곡선이 U 자라는 것은 무엇을 뜻하나?",
+     "a": "한 출처만 쓰는 것보다 섞는 것이 절편(같은 데이터 양에서의 오차)을 낮춘다 — 데이터 다양성의 가치."
+    }
+   ]
+  },
+  {
+   "start": 1530,
+   "title": "반복과 필터링 — 데이터는 유한하고, 최적 필터는 규모에 따라 느슨해진다",
+   "points": [
+    "연산은 계속 늘지만 데이터는 그만큼 늘지 않는다 — 같은 데이터를 몇 번 돌려도 되나가 중요한 질문이 됐다.",
+    "Scaling Data-Constrained LMs(Muennighoff 외 2023): 표준 레시피에서 약 4 epoch 까지는 새 데이터와 거의 같고, 그 너머에서는 실현된 법칙이 새 데이터 가정보다 크게 나빠진다. 실효 데이터 D′ 식으로 예측 가능.",
+    "연산 무한 실험(Percy·강사의 공동 지도 학생 연구): epoch 반복·모델 확대는 수확 체감, 앙상블·정규화가 더 짜낸다. 그래도 개입들은 기울기를 거의 안 바꾸고 절편만 바꾼다.",
+    "데이터 필터링은 규모에 따라 달라진다(Goyal 외 2024): 연산이 적으면 아주 세게 걸러 최고 품질만, 연산이 많으면 반복을 피하려 필터를 느슨하게.",
+    "로그 축이 좁으면 거듭제곱인지 지수인지 구별하기 어렵다 — 테일러 근사로 무엇이든 확대하면 직선."
+   ],
+   "on_screen": "'Scaling laws under data repetition — In practice, we have finite data – how does repeating examples affect scaling?' 'Return on compute when repeating'(epoch 수 대 최종 손실: 1~4 epoch 는 새 데이터와 거의 같고 그 뒤 벌어짐), 'Allocating compute when repeating'(토큰·파라미터 효율 경계, Loss 2.376 대 2.359), 식 D′ = U_D + U_D·R*_D·(1 − e^(−R_D/R*_D)), 'D′ = Effective data, U_D = Unique tokens, R*_D = Constant, R_D = Repetition' [Scaling Data-Constrained Language Models]. 'Scaling laws in compute unbounded settings — Important notes: 1. Scaling laws can break if you blindly apply it 2. Scaling laws are lower bounds so you can always potentially do better'(epoch·파라미터 대 손실 U 자, 정규화·앙상블별 평행 직선). 'Data selection scaling and accounting for finiteness — Given that repeated data is less valuable.. Data selection should then be adaptive to scale!' — 품질 등급 E~A 칸 그림(Web Data is Non-Homogenous / Quality-Quantity Tradeoff (QQT) for Data Filtering / Best Data Pool Changes with Total Compute), 추정 스케일링 곡선(Small Compute: Highly aggressive filtering is best / Medium Compute: Mildly aggressive / Large Compute: Less aggressive filtering is best). 'Recap: data scaling laws — Remarkably linear relationship between log-data size and log-error / Holds across domains and models / Theory understanding: similar to generalization bounds: mean estimation example / Applications: data collection / curation'.",
+   "explain": [
+    "지금까지는 데이터를 원하는 만큼 새로 뽑을 수 있다고 가정했다. 하지만 현실에서 연산은 해마다 늘어나는데 쓸 만한 텍스트는 그만큼 늘지 않는다. 그래서 '같은 데이터를 여러 번 학습하면 어떻게 되나'가 중요한 질문이 됐다. Muennighoff 외(2023)의 Scaling Data-Constrained Language Models 는 표준 학습 레시피에서 대략 4 epoch 까지는 반복해도 거의 손해가 없다는 것을 보였다. 같은 데이터를 네 번 보는 것이 새 데이터를 네 배 보는 것과 거의 같다. 그 너머로 가면 실제로 얻는 곡선이 '새 데이터라면 갔을 곡선'(점선)보다 눈에 띄게 나빠진다.",
+    "그들은 이것을 예측하는 수정된 법칙도 제시했다. 고유 토큰 U_D 를 R_D 번 더 반복할 때 실효 데이터량 D′ = U_D + U_D·R*_D·(1 − e^(−R_D/R*_D)) 로 본다. 반복할수록 한 번 더 보는 가치가 지수적으로 줄어들고, 아무리 반복해도 실효 데이터는 U_D·(1 + R*_D) 를 넘지 못한다. 논문이 맞춘 R*_D 는 약 15 다. 이 D′ 를 원래 데이터 법칙에 넣으면 반복 상황의 손실을 예측할 수 있다. 아래 예에서 4 epoch 는 실효 93%, 40 epoch 는 38% 로 떨어지는 것을 손으로 계산한다.",
+    "강사는 이 생각을 극단으로 민 연구도 소개한다(Percy Liang 과 공동 지도하는 학생의 연구 — Pre-training under infinite compute). 연산이 무한하다면, 즉 원하는 만큼 epoch 를 돌릴 수 있다면 고정된 데이터에서 최대 얼마나 짜낼 수 있을까? 결과는, epoch 를 무작정 늘리는 것도 모델을 무작정 키우는 것도 수확이 체감하고, 강한 정규화나 모델 앙상블 같은 다른 수단에 손을 뻗어야 한다는 것이다. 슬라이드에 적힌 교훈 두 가지 — 스케일링 법칙을 맹목적으로 적용하면 깨질 수 있다, 그리고 법칙은 하한이라 언제든 더 잘할 여지가 있다. 그리고 여기서도 같은 현상이 보인다. 정규화·앙상블 같은 개입은 성능을 올리지만 직선의 기울기는 놀랄 만큼 비슷하고 절편만 내린다. 강사는 직접 법칙을 맞춰 보면 '기울기는 잘 안 바뀌고 개입은 대부분 절편을 바꾼다'는 교훈을 자주 얻게 된다고 말한다. 학생 질문에 답하며, 그 그림의 축이 선형처럼 보이지만 실제로는 두 배씩 늘어나는 로그 축이었다는 것, 그리고 연산 범위가 좁으면 거듭제곱과 지수를 구별하기 어렵다는 것(어떤 곡선이든 충분히 확대하면 직선처럼 보인다)도 덧붙인다.",
+    "마지막으로 데이터 필터링이 규모에 따라 달라진다는 점(Goyal 외 2024, Scaling Laws for Data Filtering — Data Curation cannot be Compute Agnostic)을 짚는다. 연산이 적은 우리 같은 사람은 어차피 인터넷 전체를 학습할 수 없으니 최고 품질만 남기도록 아주 세게 거르는 것이 낫다. 연산이 많으면 이야기가 다르다. 작은 고품질 풀을 수십 번 반복하느니 품질이 조금 낮은 데이터까지 받아들여 새 토큰을 보는 편이 낫다. 연산이 커질수록 최적 필터가 느슨해진다. 품질과 양의 균형점이 규모에 따라 움직이는 것이다. 데이터 품질처럼 정적으로 생각하기 쉬운 것도 사실은 규모의 함수라는 것, 그래서 '나머지 데이터는 어디서 구하나'를 늘 생각해야 한다는 것이 강사의 정리다."
+   ],
+   "formulas": [
+    {
+     "expr": "D′ = U_D + U_D·R*_D·(1 − e^(−R_D / R*_D))",
+     "meaning": "U_D: 고유 토큰 수, R_D: 추가 반복 횟수(epoch − 1), R*_D: 반복 가치가 1/e 로 줄어드는 척도 상수(논문 적합값 약 15.4), D′: 실효 데이터량. R_D 가 작으면 D′ ≈ U_D(1+R_D) 로 새 데이터와 같고, R_D → ∞ 이면 D′ → U_D(1 + R*_D) 에서 포화."
+    }
+   ],
+   "example": {
+    "title": "100B 고유 토큰을 몇 번 돌리면 실효 몇 토큰인가 (R* = 15.4)",
+    "body": "4 epoch: R_D = 3, 3/15.4 = 0.195, e^(−0.195) = 0.823, 1 − 0.823 = 0.177, 15.4 × 0.177 = 2.73. D′ = 100B × (1 + 2.73) = 373B — 원래 400B 의 93%. 10 epoch: R_D = 9, e^(−0.584) = 0.557, 15.4 × 0.443 = 6.82 → D′ = 782B(78%). 40 epoch: R_D = 39, e^(−2.53) = 0.080, 15.4 × 0.920 = 14.18 → D′ = 1,518B(38%). 아무리 돌려도 상한은 100B × 16.4 = 1.64T."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nU, Rs = 100e9, 15.4                    # 고유 토큰, Muennighoff 의 R*\nfor ep in (1, 4, 10, 40):\n    R = ep - 1                          # 첫 번째 통과 뒤의 반복 횟수\n    Dp = U + U * Rs * (1 - np.exp(-R / Rs))\n    print(f\"{ep:2d} epoch: 원본 {U*ep/1e9:5.0f}B -> 실효 {Dp/1e9:6.0f}B ({Dp/(U*ep):.0%})\")",
+    "note": "필자 실행 결과: 1 epoch 100B→100B(100%), 4 epoch 400B→373B(93%), 10 epoch 1000B→782B(78%), 40 epoch 4000B→1518B(38%)."
+   },
+   "pitfalls": [
+    "'4 epoch 까지 안전'은 그 논문의 표준 레시피·규모에서의 결과다. 모델이 데이터에 비해 아주 크거나 데이터가 아주 작으면 더 일찍 손해가 난다.",
+    "연산이 적을 때의 최적 필터를 큰 학습에 그대로 쓰면 고품질 소량 데이터를 지나치게 반복하게 된다. 필터 강도도 규모와 함께 다시 정한다.",
+    "슬라이드 일부 그림의 x 축이 선형처럼 보이지만 두 배 간격의 로그 축이다(강사가 질문에 답하며 정정). 축 눈금을 먼저 읽는다."
+   ],
+   "check": [
+    {
+     "q": "실효 데이터 식에서 반복을 무한히 해도 넘을 수 없는 상한은?",
+     "a": "U_D·(1 + R*_D). R*_D ≈ 15 이면 고유 토큰의 약 16배."
+    },
+    {
+     "q": "연산 예산이 커질수록 데이터 필터를 느슨하게 하는 이유는?",
+     "a": "세게 거른 고품질 풀은 작아서 큰 예산을 채우려면 여러 번 반복해야 하는데 반복 가치는 줄어든다. 품질이 조금 낮아도 새 토큰을 보는 편이 실효 데이터가 더 크다."
+    }
+   ]
+  },
+  {
+   "start": 1816,
+   "title": "모델 공학 1 — 트랜스포머 대 LSTM, 여러 아키텍처, Adam 대 SGD",
+   "points": [
+    "질문: 자원이 한정될 때 LSTM 대 트랜스포머, Adam 대 SGD, 더 오래 대 더 크게, 데이터 수집 대 GPU 구매를 어떻게 정하나.",
+    "무식한 방법은 LSTM 판 GPT-3 를 수천만 달러 들여 학습하는 것, 스케일링 법칙 방법은 여러 크기의 작은 모델로 두 직선을 그리는 것.",
+    "LSTM 은 절편이 높고 기울기도 더 나쁘다 — 키울수록 격차가 커지니 트랜스포머를 키운다. 새 아키텍처 논문(Mamba, Gated DeltaNet)은 모두 이런 그림을 싣는다.",
+    "Tay 외(2022)의 T5 아키텍처 스케일링: Performer 같은 효율 어텐션은 잘 안 늘고, GLU·Switch(MoE)는 잘 는다 — 오늘 프런티어 모델이 쓰는 것과 일치.",
+    "Hestness 의 Adam 대 SGD: 절편은 다르지만 기울기는 거의 같다. 강사가 볼 때마다 놀라는 현상."
+   ],
+   "on_screen": "'Scaling laws for model engineering — Our motivation: how can we efficiently design huge LMs? LSTMs vs Transformers / Adam vs SGD. How should we allocate our limited resources? Train models longer vs train bigger models / Collect more data vs get more GPUs? Scaling laws provide a simple procedure to answer these.' 'Hyperparameter questions — Architecture / Optimizer / Aspect ratio / depth / Batch size [Kaplan+ 2021]'. '1. Architecture: transformers vs LSTMs — Q: Are transformers better than LSTMs? Brute force way: spend tens of millions to train a LSTM GPT-3. Scaling law way:' 파라미터(non-embedding) 대 Test Loss — Transformers(파랑) 직선 아래, LSTMs 1·2·4 Layers(빨강) 위쪽. '1. Many architectures — Cross-architecture scaling in Tay et al 2022' FLOPs 대 Negative Log-Perplexity 산점도와 (a) ALBERT (b) DConv (c) Evolved (d) Funnel (e) Transformer-GLU (f) LConv (g) MLP Mixer (h) MoS Transformer (i) Performer (j) Switch Transformer (k) Universal Transformer 작은 그림들. '2. Optimizer choice — What about ADAM vs SGD?' Depth-10 RHNs SGD/Adam, ε(m) ≈ 5.37·m^(−0.094) 와 ≈ 5.25·m^(−0.095) 두 거의 평행한 직선 [Hestness+ 2017] '(Note, this is in 2017, so pre-transformers. RHN is recurrent highway nets)'.",
+   "explain": [
+    "이제 데이터에서 모델로 넘어간다. 강사는 장난스럽게 묻는다. LSTM 이 미래라고 믿는 급진주의자라면, B200 1만 장을 LSTM 에 쏟아도 되지 않나? SGD 로 학습하면 안 되나? 이런 질문에 답하는 무식한 방법은 LSTM 으로 GPT-3 급 모델을 수천만 달러 들여 실제로 학습해 보는 것이다. 스케일링 법칙의 방법은 다르다. 트랜스포머와 LSTM(층 수 여러 가지)을 각각 여러 연산 규모에서 학습해 로그-로그 그림에 두 직선을 그린다. 그러면 큰 학습을 하지 않고도 결론을 낼 수 있다.",
+    "Kaplan 의 그림에서 LSTM 직선은 트랜스포머보다 위에 있고(절편이 나쁘고), 기울기도 더 완만해 보인다. 기울기가 나쁘다는 것은 결정적이다. 절편만 나쁘면 '같은 손실을 얻는 데 몇 배 더 든다' 정도지만, 기울기가 나쁘면 규모를 키울수록 격차가 계속 벌어진다. 그러니 이 그림 하나로 트랜스포머를 키우는 쪽이 정당화된다. 강사는 요즘 아키텍처 논문들 — Mamba, Gated DeltaNet(4강 cKSwj_qZ8Jg 에서 본 것들) — 이 모두 이런 그림을 싣는다고 말한다. 기준선 트랜스포머와 '우리의 멋진 모델'을 같은 축에 그리고, 우리 모델이 아래에 있음(손실이 낮음)을 보이는 것이다. 피해야 할 것은 기울기가 나쁜 모델이다. 지금은 좋아 보여도 키우면 언젠가 진다.",
+    "아키텍처 스케일링 연구로 강사가 좋아하는 것은 Google 의 Tay 외(2022, Scaling Laws vs Model Architectures)다. T5 스타일 모델의 여러 변형을 점점 크게 학습해 비교했는데, 그 결론이 오늘 프런티어 모델의 선택과 정확히 맞는다. Performer 같은 효율적 어텐션은 규모에 따라 잘 늘지 않았고 지금 아무도 쓰지 않는다. 반면 게이트 선형 유닛(GLU)은 모든 규모에서 기본 트랜스포머보다 나았고, Switch Transformer(MoE)도 좋은 경향을 보였다(가장 큰 실행은 이상했지만). Mixture of Softmaxes 도 좋은 개입이었지만 지금은 쓰이지 않는다. 지금보다 훨씬 작은 연산 규모의 연구였는데도 앞으로의 아키텍처 흐름을 잡아냈다는 점에서, 많은 사람이 '스케일링 법칙에서 안 보이면 좋은 개입이 아니다'를 거의 원칙처럼 쓴다.",
+    "옵티마이저도 같은 방식으로 볼 수 있다. Hestness 외(2017)는 순환 하이웨이 네트워크(RHN, 트랜스포머 이전) 언어 모델을 SGD 와 Adam 으로 학습해 데이터 크기에 대한 직선을 그렸다. 두 직선의 절편은 다르지만 기울기는 거의 같다(약 −0.094 대 −0.095). 학습시키는 사람 입장에서 SGD 에서 Adam 으로 바꾸는 것은 엄청난 변화로 느껴지는데도 스케일링 경향은 그대로다. 강사는 데이터와 모델을 고정했을 때 기울기가 매우 비슷하게 나오는 현상을 볼 때마다 놀란다고 말한다. 앞 장의 '데이터 구성은 절편만 바꾼다'와 같은 맥락이다. 그러니 대부분의 개입은 '같은 손실을 몇 배 싸게 얻나'(절편 이동)로 평가하면 되고, 기울기를 바꾸는 개입은 드물고 귀하다."
+   ],
+   "formulas": [
+    {
+     "expr": "log L = a_k − α_k·log C   (k = 모델 종류)",
+     "meaning": "a_k: 절편, α_k: 기울기. 두 방법의 비교는 (a_k, α_k) 두 숫자의 비교다. 절편만 다르면 일정한 '연산 배수' 차이, 기울기가 다르면 큰 규모에서 순위가 뒤집힐 수 있다."
+    },
+    {
+     "expr": "연산 배수 = (L_A 와 같은 손실을 B 가 내는 데 필요한 C) / C = 10^((a_B − a_A)/α)",
+     "meaning": "기울기가 α 로 같을 때 절편 차이를 '몇 배 연산을 아끼는가'로 바꾼 것(노트 보충). 개입의 가치를 연산 등가 배수로 말할 때 쓴다."
+    }
+   ],
+   "example": {
+    "title": "절편 차이를 연산 배수로 바꾸기",
+    "body": "트랜스포머 L_T = 10·C^(−0.05), 대안 L_X = 10.5·C^(−0.05)(로그-로그 기울기 같음, 절편 5% 나쁨)라 하자. X 가 트랜스포머와 같은 손실을 내려면 10.5·C_X^(−0.05) = 10·C^(−0.05) → C_X/C = 1.05^(1/0.05) = 1.05^20 = 2.65. 손실 5% 차이가 연산 2.65배 차이다 — 지수가 작을수록 작은 손실 차이가 큰 연산 차이가 된다. 반대로 대안이 L_X = 12·C^(−0.06) 처럼 기울기가 더 가파르면 12·C^(−0.06) = 10·C^(−0.05) 에서 C^(0.01) = 1.2, C = 1.2^100 ≈ 8.3×10⁷ 배 지점에서 교차해 그 뒤로는 대안이 이긴다."
+   },
+   "pitfalls": [
+    "기울기를 잘못 읽기 쉽다. 연산 범위가 한두 자릿수뿐이면 기울기 차이는 잡음 안에 있을 수 있다. 기울기가 다르다고 말하려면 충분히 넓은 범위가 필요하다.",
+    "'스케일링에서 안 보이면 좋은 개입이 아니다'는 경험칙이다. 큰 규모에서만 이득이 나는 개입(예: 일정 크기 이상에서만 유효한 것)을 작은 규모 실험으로 놓칠 수 있다."
+   ],
+   "check": [
+    {
+     "q": "새 아키텍처가 지금 규모에서 트랜스포머보다 손실이 조금 낮지만 로그-로그 기울기가 더 완만하다. 키워도 되나?",
+     "a": "위험하다. 기울기가 완만하면 규모를 키울수록 격차가 줄다가 어느 지점에서 트랜스포머가 앞선다. 교차 지점이 목표 규모보다 아래면 쓰지 않는다."
+    },
+    {
+     "q": "Hestness 의 SGD 대 Adam 결과에서 '기울기가 같고 절편이 다르다'는 것을 실무 언어로 바꾸면?",
+     "a": "어느 규모에서나 Adam 이 같은 손실을 일정 배수만큼 적은 데이터(또는 연산)로 낸다. 규모에 따라 이득이 커지거나 줄지 않는다."
+    }
+   ]
+  },
+  {
+   "start": 2130,
+   "title": "모델 공학 2 — 깊이·너비, 규모 불변량(aspect ratio), 무엇을 '파라미터'로 셀까, MoE",
+   "points": [
+    "층 수: 1층은 형편없고 2층부터 경쟁력이 생긴다. 1천만 파라미터 아래에서는 층을 더 쌓는 이득이 줄어든다.",
+    "층 수는 규모 불변량이 아니다(모델이 크면 층도 늘려야). 대신 너비/깊이 비(aspect ratio)처럼 규모가 바뀌어도 최적값이 그대로인 양을 찾는다.",
+    "Kaplan: 여러 크기에서 손실이 aspect ratio 의 넓은 범위에서 몇 %만 바뀌고, 최솟값은 층당 d_model 100 안팎(큰 모델일수록 살짝 오른쪽).",
+    "'모든 파라미터가 같지 않다' — 임베딩 파라미터를 포함하면 층 수별 곡선이 지저분해서 Kaplan 은 비임베딩 파라미터만 셌다. 이 선택이 나중에 Chinchilla 와의 차이를 만든다.",
+    "MoE(Abnar 외 2025): 총 파라미터와 활성 파라미터를 나눠 IsoFLOP 면을 그리면, 커질수록 더 희소한 모델이 최적이고 쉬는 전문가 파라미터도 손실을 낮춘다."
+   ],
+   "on_screen": "'3. Depth/Width: Number of layers — Does depth or width make a huge difference?' 파라미터(non-embedding) 대 Test Loss, 1·2·3·6·>6 Layers 직선 '1 vs 2 layers makes a huge difference. More layers have diminishing returns below 10⁷ params'. '3. Depth/Width: and other Transformer hypers — Do hyperparameters like the aspect ratio depend on scale?' Kaplan Figure 5: Feed-Forward Ratio (d_ff/d_model), Aspect Ratio (d_model/n_layer), Attention Head Dimension (d_model/n_head) 대 Loss Increase(%), 'A wide range of architectures achieve similar performance', '22% additional compute compensates for 1% loss increase', 캡션 'an (n_layer, d_model) = (6, 4288) reaches a loss within 3% of the (48, 1600) model used in [RW+19]'. '3. Depth/Width: But not all parameters are made equal' — 왼쪽 Parameters (with embedding) 대 손실(0 Layer 포함, 곡선이 갈라짐), 오른쪽 Parameters (non-embedding) 대 손실(곡선이 한 직선으로 모임), 'Embedding layer parameters don't behave the same! Related: recent papers on scaling laws for mixtures of experts.' 'Side note – Value of parameters — With MoEs, we expect parameter scaling to change' — Abnar 외 'Parameters vs FLOPs: Scaling Laws for Optimal Sparsity for Mixture-of-Experts Language Models'(Apple·MIT), (b) Optimal Total Parameters N*, (c) Optimal Active Parameters N_a* 그래프(MoE Sparsity S 색상 0%~98%), 3D IsoFLOP surface over sparsity and active parameters.",
+   "explain": [
+    "3강(lVynu4bo1rY)에서는 너비 대 깊이 비율을 '업계가 대략 이 정도로 쓴다'로 정했다. 스케일링 분석을 하면 이것을 훨씬 정밀하게 볼 수 있다. 첫째, 층 수별로 파라미터–손실 직선을 그리면 1층짜리 모델은 직선이 확연히 위에 있다 — 어디로도 못 간다. 2층 이상은 놀랄 만큼 경쟁력이 있지만, 모든 연산 수준에서 층이 많은 쪽이 조금씩 낫고, 1천만 파라미터 아래에서는 층을 더 쌓는 이득이 줄어든다.",
+    "더 정교한 방법은 Kaplan 이 한 것처럼 '규모 불변량(scale-invariant quantity)'을 찾는 것이다. 층 수 자체는 규모 불변량이 아니다. 모델이 커지면 층도 늘어나야 한다. 하지만 너비 대 깊이 비(aspect ratio = d_model / n_layer)는 다를 수 있다. 모델이 커져도 최적 비율이 그대로라면, '비율을 고정하고 키운다'는 단순한 규칙으로 큰 모델의 모양을 정할 수 있다. Kaplan 의 그림에서 여러 모델 크기의 손실을 aspect ratio 에 대해 그리면, 아주 넓은 범위(수십 배)에 걸쳐 손실이 몇 %만 바뀌고, 최솟값은 층당 d_model 100 안팎으로 크기에 상관없이 비슷하다(큰 모델일수록 약간 오른쪽으로 옮겨 간다). 피드포워드 비율(d_ff/d_model), 헤드 차원(d_model/n_head)도 같은 방식으로 볼 수 있다. 이런 그림을 그려 두면 '비율을 고정하고 키우는' 전략에 자신을 가질 수 있다 — 최적점이 크게 움직이지 않으니까.",
+    "그리고 강사가 '아주 큰 벌레 통조림'이라고 부르며 여러 번 돌아오겠다고 예고한 주제가 있다. 모든 파라미터가 같은 대접을 받을 자격이 없다는 것이다. Kaplan 은 임베딩 파라미터까지 센 파라미터 수로 층 수별 곡선을 그렸더니 0층·1층 곡선이 따로 놀며 지저분했다. 그래서 임베딩 파라미터를 빼고, 계산을 하는 파라미터만 세기로 했다(non-embedding). 그러자 곡선이 하나의 직선으로 깔끔하게 모였다. 그럴듯한 결정이지만 강사는 이것이 뒤에서 결과의 타당성에 사소하지 않은 영향을 준다고 예고한다(Kaplan 대 Chinchilla 장). 요점은 스케일링 법칙이 마법이 아니라는 것이다. Percy 가 즐겨 말하듯 규모에 걸친 예측 가능성은 저절로 생기지 않고 설계된다 — 올바른 x 축을 고르고, 하이퍼파라미터를 제대로 맞춘 조건에서만 여러 자릿수에 걸친 깔끔한 스케일링이 나온다.",
+    "같은 문제가 지금 대세인 MoE(4강 cKSwj_qZ8Jg)에서 더 날카로워진다. MoE 에서는 총 파라미터와 토큰당 실제로 쓰는 활성 파라미터가 따로 논다. 무엇이 '파라미터'인가? Apple·MIT 의 Abnar 외(2025)는 연산을 고정한 채 희소도(sparsity)와 활성 파라미터를 바꿔 가는 IsoFLOP 설계로 이것을 깔끔하게 분석했다. 큰 모델을 학습할수록 최적점은 더 희소한 쪽(색이 진해지는 쪽)으로 가고, 활성 파라미터 수는 희소도에 따라 줄어든다. 그리고 활성 파라미터를 고정한 채 총 파라미터(쉬는 전문가)를 늘리면 손실이 계속 내려간다. 즉 매 토큰에 쓰이지 않는 파라미터도 손실을 낮추는 데 기여한다. 연산을 거의 늘리지 않고 희소도를 바꿀 수 있으니, '이 연산을 활성 파라미터에 얼마나, 희소도에 얼마나 쓸까'가 예측 가능한 최적화 문제가 된다."
+   ],
+   "formulas": [
+    {
+     "expr": "aspect ratio = d_model / n_layer",
+     "meaning": "d_model: 은닉 너비, n_layer: 층 수. 규모가 바뀌어도 최적값이 거의 그대로인 '규모 불변량' 후보. Kaplan 에서 최적은 대략 100 안팎이고 넓은 범위에서 손실 차이가 몇 %."
+    },
+    {
+     "expr": "N_non-emb ≈ 12·n_layer·d_model²",
+     "meaning": "Kaplan 이 쓴 비임베딩 파라미터 수(어텐션 4d² + MLP 8d², d_ff = 4d 일 때). 임베딩 V·d_model 은 뺀다. 2강의 파라미터 회계와 같은 계산."
+    },
+    {
+     "expr": "희소도 S = 1 − (활성 전문가 수 / 전체 전문가 수)",
+     "meaning": "MoE 에서 토큰당 쉬는 전문가의 비율. 총 파라미터 N 과 활성 파라미터 N_a 가 S 로 이어진다. Abnar 외는 C 고정에서 (S, N_a) 면 위의 최소를 찾는다."
+    }
+   ],
+   "example": {
+    "title": "임베딩을 세느냐에 따라 '파라미터 수'가 얼마나 달라지나",
+    "body": "어휘 V = 50,000, d_model = 768, n_layer = 12(GPT-2 small 급). 비임베딩: 12 × 12 × 768² = 144 × 589,824 ≈ 84.9M. 입력 임베딩 V·d = 38.4M, 출력층까지 따로 세면 또 38.4M. 임베딩을 넣으면 123M, 입출력 둘 다면 162M — 같은 모델이 '85M'도 '162M'도 된다. 반면 d_model = 8192, n_layer = 80(대형)이면 비임베딩 12 × 80 × 8192² ≈ 64.4B 에 임베딩 2 × 50,000 × 8192 ≈ 0.82B 로 1% 남짓이다. 작은 모델에서는 이 차이가 크고 큰 모델에서는 사라지므로, 어느 쪽으로 세느냐가 로그-로그 직선의 기울기를 바꾼다."
+   },
+   "pitfalls": [
+    "aspect ratio 최적이 '100' 이라는 숫자 자체보다, 넓은 범위에서 손실이 평평하다는 점이 중요하다. 시스템 효율(텐서 병렬·파이프라인)에 맞춰 이 평평한 구간 안에서 고르면 된다.",
+    "파라미터를 어떻게 세었는지(임베딩·출력층 포함 여부) 확인하지 않고 두 논문의 지수를 비교하면 안 된다. 다음 장들의 Kaplan–Chinchilla 차이가 바로 여기서 일부 나온다.",
+    "MoE 의 '파라미터 수'를 말할 때는 총·활성을 꼭 나눠 적는다. 학습·추론 FLOPs 는 활성 파라미터를, 메모리는 총 파라미터를 따른다."
+   ],
+   "check": [
+    {
+     "q": "층 수 대신 aspect ratio 를 고정하고 키우는 전략이 정당화되려면 어떤 그림이 필요한가?",
+     "a": "여러 모델 크기에서 손실 대 aspect ratio 곡선을 그렸을 때 최솟값의 위치가 크기에 따라 거의 움직이지 않는다는 그림."
+    },
+    {
+     "q": "Abnar 외의 결과 '활성 파라미터를 고정하고 총 파라미터를 늘리면 손실이 준다'는 무엇을 뜻하나?",
+     "a": "토큰마다 쓰이지 않는 전문가 파라미터도 모델의 용량으로 기여한다는 것. 연산(활성)을 거의 늘리지 않고 희소도를 올려 손실을 낮출 수 있다."
+    }
+   ]
+  },
+  {
+   "start": 2455,
+   "title": "임계 배치 크기 — 완벽한 확장에서 수확 체감으로 넘어가는 점",
+   "points": [
+    "새 큰 모델에서 아키텍처는 대개 검증된 것(예: DeepSeek-V4 풍 MoE)을 고르지만, 배치 크기와 학습률은 다시 정해야 한다. 둘은 함께 움직인다.",
+    "시스템 쪽에서는 배치가 클수록 좋다(데이터 병렬, 7강). 질문은 '얼마나 키워야 손해가 나기 시작하나'.",
+    "잡음 제한 구간: 배치를 늘리면 그래디언트 분산이 줄어 그만큼 이득(완벽한 확장). 편향 제한 구간: 국소 방향과 전역 최적의 불일치가 남아 이득이 체감.",
+    "McCandlish 외(2018): 목표 손실에 도달하는 스텝 S 와 예제 E 사이에 (S/S_min − 1)(E/E_min − 1) = 1. B_crit = E_min/S_min 이고, 거기서 스텝도 예제도 최소의 2배.",
+    "목표 손실이 낮을수록 임계 배치가 커진다: Kaplan 의 B_crit ≈ 2.1×10⁸ 토큰 · L^(−4.8) — 또 하나의 거듭제곱 법칙."
+   ],
+   "on_screen": "'4. Batch size: Critical batch size' — McCandlish, Kaplan, Amodei 'An Empirical Model of Large-Batch Training'. 등고선(0.02~1.00) 위의 경사 방향 그림(Smaller batch 빨강 / Larger batch 파랑, X 표), 'Predicted Training Speed' — Batch Size / Noise Scale (B/𝓑) 대 ε_opt(B)/ε_max, 'Perfect scaling' 구간과 'Ineffective scaling' 구간. 'Batch size – known to have strong diminishing returns past a certain point. Critical batch = min number of examples before diminishing returns (what does that mean?)'. '4. Critical batch size definitions.. What is critical batch size, more precisely? · Pick a target loss and train 1). Steps needed (S), 2). Examples needed. · Sweep over batches. The curve should follow roughly.. S/S_min − 1 = (E/E_min − 1)^(−1). Fit for S_min, E_min on this curve and pick 𝓑_crit = E_min/S_min. This balances both sides of the equation, giving roughly 2x the steps / passes optimal (this is claimed to be close to the ratio of the trace of the gradient covariance and squared norm of the gradient)'. '4. Batch size: critical batch size — Critical Batch Size vs. Performance' WebText2 Train Loss(6×10⁰~3×10⁰) 대 Critical Batch Size (Tokens) 10³~10⁶ — Empirical B_crit N=3M, N=85M, B_crit = 2.1×10⁸ tokens · L^(−4.8), Noise Scale Measurement. 'The smaller the loss target, The bigger the batch', C_min(C) ≡ C / (1 + B/B_crit(L)) (minimum compute, at B ≪ B_crit).",
+   "explain": [
+    "큰 모델을 새로 학습할 때 아키텍처 대부분은 검증된 것을 고른다. 강사 말로 여러분은 LSTM 으로 갈아탈 만큼 급진적이지 않고, DeepSeek-V4 풍의 MoE 같은 것을 고를 것이다. 하지만 배치 크기와 학습률만은 매번 새로 정해야 한다. 둘은 짝이라 하나를 바꾸면 다른 하나도 바꿔야 한다. 게다가 배치 크기에는 시스템 쪽 사정도 있다. 7강(SzpOcwdIL0Y)의 데이터 병렬은 GPU 마다 배치를 나눠 맡기므로, GPU 가 많을수록 큰 배치가 필요하다. 그래서 실제로 묻고 싶은 것은 '배치를 얼마나 키워도 손해를 안 보나', 그리고 '그 한계가 모델 규모에 따라 어떻게 변하나'다.",
+    "여기서 임계 배치 크기(critical batch size)라는 개념이 나온다. 배치가 작을 때는 예제를 하나 더 넣을 때마다 SGD 그래디언트의 잡음(분산)이 줄어든다. 분산이 학습을 제한하는 '잡음 제한' 구간이므로 이 감소가 그대로 이득이 된다 — 배치를 두 배로 하면 필요한 스텝이 거의 절반이 되는 완벽한 확장이다. 그런데 어느 지점을 넘으면 잡음은 이미 충분히 작고, 남은 문제는 경사하강이 국소 정보만 본다는 것이다. 잡음이 0 이어도 현재 위치의 내리막 방향과 진짜 최적점 방향은 어긋나 있다(슬라이드의 등고선 그림에서 파란 화살표). 이 '편향 제한' 구간에서는 배치를 키워도 스텝 수가 별로 줄지 않는다. 임계 배치는 이 두 구간이 갈리는 지점, 즉 효율 손실 없이 쓸 수 있는 가장 큰 배치의 경험칙이다.",
+    "McCandlish 외(2018)는 이것을 재는 절차를 줬다. 먼저 목표 손실을 정한다. 배치 크기를 여러 값으로 바꿔 가며, 각각 목표 손실에 도달하는 데 필요한 스텝 수 S 와 본 예제 수 E(= 배치 × 스텝)를 기록한다. 그들은 이 점들이 (S/S_min − 1)(E/E_min − 1) = 1 이라는 쌍곡선을 따른다고 주장한다. S_min 은 배치를 무한히 키웠을 때의 최소 스텝, E_min 은 배치를 아주 작게 했을 때의 최소 예제 수다. 스텝을 줄이려면 예제를 더 써야 하고 예제를 아끼려면 스텝이 늘어나는 맞교환이다. 데이터에 이 곡선을 맞춰 S_min, E_min 을 얻고 B_crit = E_min/S_min 으로 둔다. 이 배치에서는 스텝이 최소의 2배, 예제도 최소의 2배가 된다(아래 예에서 손으로 확인한다) — 양쪽을 균형 있게 조금씩 손해 보는 지점이다. 논문은 B_crit 이 그래디언트 공분산의 대각합을 그래디언트 노름 제곱으로 나눈 '잡음 척도'와 가깝다고도 주장해, 큰 실험 없이 그래디언트 통계로 어림할 수 있게 했다.",
+    "이것이 왜 스케일링 강의에 있나? 임계 배치가 목표 손실에 따라 거듭제곱 법칙으로 움직이기 때문이다. Kaplan 의 그림에서 목표 손실 L 이 낮아질수록 임계 배치가 커지고, B_crit ≈ 2.1×10⁸ 토큰 · L^(−4.8) 로 맞춰진다. 목표 손실은 결국 연산 규모의 대리 변수이므로, 더 좋은 모델을 원할수록 더 큰 배치를 써도 된다는 뜻이다. 직관적으로도 맞다. 최적점에 가까워질수록 아주 미세한 차이를 줄이는 중이라 잡음이 더 큰 문제가 되고, 그래서 분산 감소(큰 배치)의 가치가 커진다. 이것은 시스템 입장에서 좋은 소식이다. 큰 학습일수록 데이터 병렬을 더 넓게 펼칠 수 있다."
+   ],
+   "formulas": [
+    {
+     "expr": "(S/S_min − 1)·(E/E_min − 1) = 1,  E = B·S",
+     "meaning": "S: 목표 손실까지 스텝 수, E: 본 예제 수, B: 배치 크기. S_min: 배치 무한대에서의 최소 스텝, E_min: 배치 극소에서의 최소 예제. 스텝과 예제 사이의 쌍곡선 맞교환(McCandlish 외 2018)."
+    },
+    {
+     "expr": "B_crit = E_min / S_min",
+     "meaning": "임계 배치. 이 배치에서 S = 2S_min, E = 2E_min. 그래디언트 잡음 척도 B_noise = tr(Σ)/|G|² 와 비슷하다고 주장된다(Σ: 예제별 그래디언트 공분산, G: 참 그래디언트)."
+    },
+    {
+     "expr": "B_crit(L) ≈ 2.1×10⁸ 토큰 · L^(−4.8)",
+     "meaning": "Kaplan 외(2020)가 WebText2 에서 맞춘 관계. L: 목표 학습 손실(nats/token). 손실이 낮을수록 임계 배치가 커진다. 로그-로그 기울기 −4.8."
+    },
+    {
+     "expr": "C_min(C) = C / (1 + B/B_crit(L))",
+     "meaning": "배치 B 로 쓴 연산 C 를, 배치가 B_crit 보다 훨씬 작을 때의 최소 연산으로 환산한 것. B = B_crit 이면 C_min = C/2 — 연산을 2배 쓰는 대신 스텝을 줄인다."
+    }
+   ],
+   "example": {
+    "title": "쌍곡선에서 B_crit 의 '2배' 확인과 B_crit(L) 계산",
+    "body": "s = S/S_min, e = E/E_min 으로 두자. E = B·S 이므로 e = B·S/E_min = s·(B·S_min/E_min). B = B_crit = E_min/S_min 을 넣으면 e = s. 그러면 (s − 1)(s − 1) = 1 → s = 2, e = 2 — 스텝도 예제도 최소의 정확히 2배다. B = B_crit/4 이면 e = s/4, (s − 1)(s/4 − 1) = 1 → s² − 5s = 0 → s = 5, e = 1.25: 예제는 거의 최소지만 스텝이 5배. B = 4B_crit 이면 대칭으로 s = 1.25, e = 5. Kaplan 식: L = 3.0 → 3^4.8 = e^(4.8 × 1.0986) = e^5.27 ≈ 195, B_crit = 2.1×10⁸/195 ≈ 1.08×10⁶ 토큰(시퀀스 2048 이면 약 530개). L = 2.5 → 2.5^4.8 ≈ 81.3, B_crit ≈ 2.58×10⁶. L = 2.0 → 2^4.8 ≈ 27.9, B_crit ≈ 7.5×10⁶ 토큰."
+   },
+   "code": {
+    "lang": "python",
+    "src": "Smin, Emin = 1000, 4e6                  # 가상의 측정값: 최소 스텝, 최소 예제\nBcrit = Emin / Smin\nfor B in (Bcrit / 4, Bcrit, 4 * Bcrit):\n    # (S/Smin-1)(B*S/Emin-1)=1 을 풀면 S = Smin + Emin/B (닫힌 꼴)\n    S = Smin + Emin / B\n    print(f\"B={B:6.0f}  S={S:5.0f} ({S/Smin:.2f}x)  E={B*S:.2e} ({B*S/Emin:.2f}x)\")\nfor L in (3.0, 2.5, 2.0):\n    print(f\"L={L}: B_crit = {2.1e8 * L**-4.8:.2e} tokens\")",
+    "note": "필자 실행 결과: B=1000 → S=5000(5.00x), E=5.00e+06(1.25x) / B=4000 → S=2000(2.00x), E=8.00e+06(2.00x) / B=16000 → S=1250(1.25x), E=2.00e+07(5.00x). L=3.0 → 1.08e+06, L=2.5 → 2.58e+06, L=2.0 → 7.54e+06 토큰."
+   },
+   "pitfalls": [
+    "B_crit 의 2배는 '스텝·예제 둘 다 최소의 2배'라는 균형점이지 최적점이 아니다. 시간(스텝)이 중요하면 더 크게, 데이터·연산이 아까우면 더 작게 고른다.",
+    "임계 배치는 고정값이 아니라 목표 손실(학습 진행)에 따라 커진다. 학습 초반엔 작은 배치, 후반엔 큰 배치가 맞을 수 있다(배치 워밍업의 근거).",
+    "배치 단위를 섞지 않는다 — Kaplan 식의 B_crit 은 토큰 수다. 시퀀스 수로 쓰려면 시퀀스 길이로 나눈다."
+   ],
+   "check": [
+    {
+     "q": "배치를 B_crit 의 1/4 로 쓰면 스텝과 예제는 각각 최소의 몇 배가 되나?",
+     "a": "(s−1)(s/4−1) = 1 을 풀면 s = 5, e = 1.25. 스텝 5배, 예제 1.25배 — 데이터는 아끼지만 오래 걸린다."
+    },
+    {
+     "q": "목표 손실이 낮아질수록 임계 배치가 커지는 직관적 이유는?",
+     "a": "최적점 근처에서는 아주 작은 차이를 줄이는 중이라 그래디언트 잡음의 영향이 상대적으로 커진다. 그래서 큰 배치로 분산을 줄이는 가치가 커지고, 편향 제한 구간이 더 큰 배치에서 시작된다."
+    }
+   ]
+  },
+  {
+   "start": 2880,
+   "title": "학습률과 μP — 최적점을 예측할까, 최적점이 안 움직이게 다시 매개화할까",
+   "points": [
+    "너비만 키우는 MLP 를 생각하면, 모델이 클수록 최적 학습률이 작아진다 — 한꺼번에 바꾸는 파라미터가 많으니 덜 움직여야 한다. 경험칙: 학습률 ∝ 1/너비.",
+    "표준 매개화(SP)에서는 너비별 '손실 대 log 학습률' 곡선의 최솟점이 너비에 따라 왼쪽으로 밀린다(optimum shifts).",
+    "μP(Yang 외 2022): 층별 초기화 크기와 학습률 배율을 너비에 맞춰 바꿔서 최적 학습률이 너비에 상관없이 같은 자리에 오게 한다(optimum stable).",
+    "두 철학: ① 최적 학습률이 규모에 따라 움직이는 법칙을 맞춰 예측한다, ② 다시 매개화해 최적점을 고정하고 작은 모델에서 고른 값을 그대로 쓴다. 둘 다 대형 학습에서 성공 사례가 있다.",
+    "강사 의견: 일화적으로는 법칙 쪽을 택하는 곳이 조금 더 많아 보인다. 자세한 것은 심화편(11강)에서."
+   ],
+   "on_screen": "'5. Learning rates: muP and scale-aware LR choices' — 왼쪽 'Standard Practice' 너비 128·256·512·1024·2048·4096·8192 별 log₂LearningRate(−20~−10) 대 Training Loss 곡선, 최솟점이 너비에 따라 이동('optimum shifts'), 가운데 'Our Work' 곡선들의 최솟점이 한 자리('optimum stable') [Yang et al 2022]. 오른쪽 Table 2 'μP function for a model M′ that is r times the widths of M': Hyperparameter (weight) | M | M′ ~ r — AdamW learning rate (matrix-like) l → l/r, AdamW learning rate (others) l → l, Initialization variance (matrix-like) σ → σ/r, Initialization variance (others) σ → σ, Multiplier (output) τ → τ/r, Multiplier (others) τ → τ [Yao et al 2024]. 'If we naively scale up – optimal learning rate depends on scale. We need scaling aware initialization and learning rate scaling.'",
+   "explain": [
+    "배치와 짝을 이루는 학습률도 규모에 따라 움직인다. 가장 단순한 그림으로, 깊이는 그대로 두고 너비만 키우는 MLP 를 생각하자. 너비가 커지면 한 번의 갱신에서 동시에 바뀌는 파라미터가 많아지고, 각 뉴런의 출력은 더 많은 입력의 합이 된다. 그러면 같은 학습률로 같은 크기만큼 움직여도 출력이 훨씬 크게 흔들린다. 그래서 모델이 클수록 최적 학습률은 작아진다. 널리 알려진 경험칙은 학습률을 너비에 반비례(∝ 1/너비)로 줄이는 것이다. 슬라이드의 왼쪽 그림(표준 매개화)에서 너비 128 부터 8192 까지 곡선을 겹치면, 손실이 가장 낮은 학습률이 너비가 커질수록 왼쪽(작은 쪽)으로 밀려나는 것이 보인다.",
+    "이것을 다루는 철학은 둘이다. 첫째는 스케일링 법칙의 방식이다. 여러 너비에서 최적 학습률을 찾아 '너비(또는 파라미터 수) → 최적 학습률'의 거듭제곱 법칙을 맞추고, 큰 모델의 최적 학습률을 외삽한다. 강사 말로 최솟점이 움직이는 방식은 꽤 예측 가능해서 미친 생각이 아니다. 둘째는 모델을 다시 매개화하는 방식이다. 초기화 크기와 옵티마이저 걸음 크기를 네트워크의 부분마다 너비에 맞춰 바꿔서, 최적 학습률이 너비에 상관없이 같은 자리에 오도록 강제한다. 그러면 작은 모델에서 고른 학습률을 그대로 큰 모델에 쓸 수 있다. 이것이 μP(maximal update parametrization, Yang 외 2022 Tensor Programs V)와 그 친척들이다. 오른쪽 그림에서 μP 로 학습한 모든 너비의 곡선 최솟점이 한 줄로 모인다.",
+    "슬라이드의 μP 표가 구체적인 규칙이다. 기준 모델 M 보다 너비가 r 배인 M′ 을 만들 때, 행렬처럼 생긴(양쪽 차원이 모두 너비에 비례하는, 은닉층 가중치 같은) 파라미터는 AdamW 학습률을 l/r 로, 초기화 분산을 σ/r 로 줄이고, 그 밖의 파라미터(편향, 정규화 이득, 임베딩 같은 벡터형)는 그대로 둔다. 출력층에는 곱하는 배율 τ 를 τ/r 로 줄인다. 직관은 '너비가 커져도 각 층 활성값과 그 갱신량의 크기가 일정하게 유지되도록' 맞추는 것이다. 그러면 학습 동역학이 너비에 대해 같은 모양을 유지하고, 그 결과 최적 하이퍼파라미터가 너비를 넘어 전이된다(hyperparameter transfer).",
+    "강사는 두 방식 모두 대형 학습에서 성공적으로 쓰였다고 말한다. μP 로 큰 성공을 보고한 곳도 있고, 덜 성공적이었다는 보고도 있다. 일화적으로는 법칙을 맞춰 최적점을 예측하는 쪽을 택하는 사람이 조금 더 많아 보인다는 것이 강사의 인상이다. 두 방식의 자세한 비교, 최근 공개 모델 기술 보고서들의 실제 선택, 옵티마이저 관련 내용은 두 강의 뒤의 심화편에서 다룬다고 예고한다. 여기서 기억할 것은 학습률이 '한 번 정하면 끝'인 상수가 아니라 규모의 함수이며, 그 함수를 법칙으로 잡거나 매개화로 평평하게 만들어야 큰 학습에서 하이퍼파라미터를 맞출 수 있다는 점이다."
+   ],
+   "formulas": [
+    {
+     "expr": "η*(w) ≈ η*(w₀)·(w₀/w)",
+     "meaning": "표준 매개화에서의 경험칙. η*: 최적 학습률, w: 너비, w₀: 기준 너비. 너비가 r 배면 최적 학습률은 약 1/r. 실제 지수는 법칙으로 맞춰 정한다(철학 ①)."
+    },
+    {
+     "expr": "μP (Adam): 행렬형 가중치 η → η/r, 초기화 분산 σ² → σ²/r, 출력 배율 τ → τ/r, 그 밖 그대로",
+     "meaning": "r: 너비 배수. 행렬형 = 입력·출력 차원이 모두 너비에 비례하는 은닉층 가중치. 벡터형(편향·LayerNorm 이득)은 바꾸지 않는다. 이렇게 하면 최적 η 가 너비와 무관해진다(철학 ②)."
+    }
+   ],
+   "example": {
+    "title": "너비 256 에서 고른 학습률을 4096 으로 옮기기",
+    "body": "너비 256 짜리 프록시 모델에서 Adam 학습률을 훑어 최적 η = 2⁻⁸ ≈ 3.9×10⁻³ 을 찾았다고 하자. 목표 너비 4096 이면 r = 4096/256 = 16. 표준 매개화 + 1/너비 경험칙: η ≈ 3.9×10⁻³/16 ≈ 2.4×10⁻⁴(log₂ 로 −8 → −12, 그림에서 최솟점이 왼쪽으로 4칸 이동). μP: '기본 학습률' 2⁻⁸ 은 그대로 두고, 은닉 행렬 가중치에만 1/16 을 곱해 2.4×10⁻⁴ 을 적용하고 임베딩·편향·LayerNorm 은 3.9×10⁻³ 그대로, 은닉 초기화 분산은 1/16, 출력 로짓 배율은 1/16. 차이는 '모든 파라미터를 똑같이 줄이느냐, 행렬형만 골라 줄이느냐'다."
+   },
+   "pitfalls": [
+    "μP 는 너비 전이를 보장하는 것이고 깊이 전이는 따로 다룬다(depth-μP 등, 노트 보충). 깊이도 바꾸면 추가 규칙이 필요하다.",
+    "μP 로 바꿔 놓고 일부 층(예: 출력 배율, 어텐션 1/d 스케일)을 빠뜨리면 최적점이 다시 움직인다. 너비 2~3개에서 '최솟점이 정말 고정되나'를 꼭 그려 확인한다.",
+    "1/너비 규칙은 대략적 경험칙이다. 실제 지수는 아키텍처·옵티마이저에 따라 다르므로 직접 맞춘다."
+   ],
+   "check": [
+    {
+     "q": "표준 매개화에서 모델을 넓힐수록 최적 학습률이 작아지는 직관은?",
+     "a": "너비가 커지면 한 뉴런이 더 많은 입력을 합하고 동시에 더 많은 파라미터가 바뀌어, 같은 학습률로도 출력 변화가 커진다. 그래서 덜 움직여야 안정적이다."
+    },
+    {
+     "q": "학습률을 정하는 두 철학의 차이를 한 줄씩?",
+     "a": "① 법칙 방식: 여러 규모에서 최적 학습률을 찾아 규모에 대한 법칙을 맞춘 뒤 외삽. ② 재매개화(μP): 초기화와 층별 학습률을 너비에 맞게 바꿔 최적점이 움직이지 않게 하고, 작은 모델의 최적값을 그대로 쓴다."
+    }
+   ]
+  },
+  {
+   "start": 3060,
+   "title": "상류와 하류 — 퍼플렉서티는 깔끔하지만 벤치마크는 따로 놀 수 있다",
+   "points": [
+    "Tay 외(2023): 파라미터 수와 음의 퍼플렉서티는 아주 예쁜 직선인데, 하류(SuperGLUE) 정확도 1등은 퍼플렉서티가 훨씬 나쁜 NL32-XL 이었다(NL12 가 아니라).",
+    "스케일링 법칙은 퍼플렉서티 쪽에 쓰는 것이 깨끗하다. 퍼플렉서티 → 하류 전이는 생각보다 불확실하다.",
+    "사후학습 쪽 불만: '사전학습 팀이 퍼플렉서티 좋다며 넘겨주고 나머지는 네 일이라 한다' — 문제는 사전학습에서 시작될 때가 많다.",
+    "스케일링 기반 설계 절차: 작은 모델 몇 개 학습 → 법칙 수립(예: Adam 대 SGD) → 법칙 예측으로 하이퍼파라미터 선택. 큰 학습의 결과를 미리 거의 숫자로 예측할 수 있어야 한다.",
+    "질의응답: 점마다 보통 한 번만 돌린다(퍼플렉서티는 분산이 아주 작다). 단 학습률·임계 배치 법칙은 지독하게 시끄럽다. 1 epoch 학습이라 학습 손실과 검증 손실이 거의 같다."
+   ],
+   "on_screen": "'Caution – scaling behaviors can differ downstream — Thus far: scaling is predictable and depends mainly on parameters. Catch: downstream scaling can often be much less predictable' — 왼쪽 Params 대 Negative Log-Perplexity(NL12 가 맨 위, NL6-XXL, NL12-XXL, NL32-XL … NL24, NL32 아래), 오른쪽 Params 대 SuperGlue Accuracy(NL32-XL 이 맨 위, XL, NL12 … NL32 아래) [Tay et al 2023]. 'Some surprising takeaways — The effect of hyperparameters on big LMs can be predicted before training! Optimizer choice / Model depth / Architecture choice. The scaling law based design procedure. 1. Train a few smaller models 2. Establish a scaling law (e.g. ADAM vs SGD scaling law) 3. Select optimal hyperparam based on the scaling law prediction.'",
+   "explain": [
+    "지금까지의 법칙들은 모두 손실(퍼플렉서티)에 관한 것이었다. 그런데 우리가 결국 원하는 것은 벤치마크와 실제 사용에서의 성능이다. 강사는 Tay 외(Scale Efficiently 논문)의 그림으로 경고한다. 여러 모양(층 수 NL, 너비 XL·XXL)의 모델을 파라미터 수에 대해 음의 로그 퍼플렉서티로 그리면 아주 예쁜 직선이 나온다. 파라미터가 많을수록 예측대로 좋아진다. 그 그림만 보면 NL12 가 최고 모델이니 그것을 내보내면 될 것 같다. 그런데 같은 모델들을 SuperGLUE 정확도로 그리면 1등은 NL32-XL 이고, 이 모델은 퍼플렉서티로는 훨씬 나빴다. 강사는 이것이 자신이 본 상류–하류 상관 중 가장 나쁜 사례 중 하나라면서도, 이런 일이 실제로 흔히 일어난다고 말한다.",
+    "그래서 강사의 철학은 이렇다. 스케일링 법칙은 퍼플렉서티 쪽에 세우는 것이 깨끗하다. 퍼플렉서티는 매우 규칙적이고 예측 가능하다. 반면 퍼플렉서티에서 하류 성능으로의 전이는 처음 생각보다 불확실하니 조심해야 한다. 강사의 옛 학생 중 사후학습을 하는 사람들은 늘 불평한다고 한다. 사전학습 사람들이 '퍼플렉서티는 좋으니 이제 네 문제'라며 모델을 넘기는데, 문제는 사전학습 단계에서 시작된 경우가 많다는 것이다. 퍼플렉서티만 보지 말고 전이까지 생각하라는 당부다. 하류 지표에 직접 법칙을 맞추는 사람도 있지만(질문에 대한 답), 같은 문제 — 하류 지표가 시끄럽고 불연속적이라는 것 — 를 피할 수 없다. 권하는 순서는 '분산이 작은 측정(퍼플렉서티)에서 규칙성을 먼저 확실히 세우고, 하류로의 전이는 따로 확인하거나 믿음으로 다룬다'이다.",
+    "이 장의 요약 슬라이드가 지금까지의 모델 공학 부분을 정리한다. 큰 LM 에서 하이퍼파라미터(옵티마이저, 깊이, 아키텍처)의 효과는 학습 전에 예측할 수 있다. 절차는 셋이다. 작은 모델 몇 개를 학습한다 → 스케일링 법칙을 세운다(예: Adam 법칙과 SGD 법칙) → 법칙의 예측으로 최적 하이퍼파라미터를 고른다. 강사는 큰 학습을 돌리기 전에 '학습이 되긴 하나' 수준이 아니라 결과의 숫자를 거의 정확히 예측할 수 있어야 한다고 강조한다. 옵티마이저를 바꾸면 얼마나 좋아지는지도 미리 말할 수 있어야 한다. 그 밖에 무엇을 하겠나 — 아무 근거 없이 큰 학습을 돌릴 수는 없지 않나, 하고 묻는다.",
+    "질의응답에서 두 가지 실무 정보가 나온다. 첫째, 법칙의 각 점은 거의 언제나 한 번씩만 돌린 결과다. 퍼플렉서티는 학습 데이터가 균질하고 많으며 평가 집합이 커서, 다시 돌려도 둘째 자리 정도만 흔들릴 만큼 분산이 작기 때문이다. 하지만 학습률이나 임계 배치 같은 하이퍼파라미터 법칙에서는 '정말 끔찍한' 잡음을 보게 되며, 분산을 줄이는 노력을 하는 곳도 있지만 마땅히 해야 할 만큼 흔하지는 않다. 둘째, 학습 손실과 검증 손실 중 무엇으로 맞추나? 좋은 과학적 관행은 테스트 손실이지만, 반복 연구를 빼면 거의 모든 사전학습이 데이터를 한 번만 보는 1 epoch SGD 라 일반화 격차가 아주 작다. 검증 손실이 아예 없는 사전학습 코드베이스도 봤다고 한다. 그래서 많은 그림이 둘을 섞어 쓴다."
+   ],
+   "diagram": {
+    "title": "스케일링 법칙 기반 설계 절차",
+    "code": "flowchart LR\n  A[선택지 후보\\n옵티마이저·깊이·아키텍처] --> B[작은 모델 여러 개\\n연산 3~5 규모]\n  B --> C[퍼플렉서티로\\n로그-로그 법칙 맞춤]\n  C --> D{기울기·절편 비교\\n외삽 신뢰 구간}\n  D --> E[큰 학습의 손실을\\n숫자로 예측]\n  E --> F[하류 벤치마크 전이\\n따로 확인]\n  F --> G[큰 학습 실행]"
+   },
+   "example": {
+    "title": "퍼플렉서티 순위와 하류 순위가 갈리는 경우",
+    "body": "가상의 두 모델: A(깊이 12, 넓음)는 검증 손실 2.10, B(깊이 32, 좁음)는 2.14. 손실 차이 0.04 nats 는 퍼플렉서티로 e^2.10 = 8.17 대 e^2.14 = 8.50, 약 4% 차이다. 그런데 미세조정 후 SuperGLUE 가 A 74, B 77 이라면 하류에서는 B 가 이긴다. Tay 외의 실제 그림이 이런 모양이다 — 같은 파라미터라면 깊은 모델이 퍼플렉서티 대비 하류 성능이 좋았다. 결론: 법칙으로 '손실 2.10 이 나온다'는 예측은 믿되, '그래서 A 가 더 좋은 제품이다'는 별도로 확인한다."
+   },
+   "pitfalls": [
+    "퍼플렉서티가 좋다고 하류 성능이 좋다는 보장은 없다. 모양(깊이·너비)이나 데이터가 다른 모델을 비교할 때 특히 그렇다.",
+    "하이퍼파라미터 법칙(학습률·배치)은 점 하나하나가 시끄럽다. 한 번씩만 돌린 점으로 기울기를 단정하지 말고, 가능하면 시드를 바꿔 반복하거나 최솟점을 포물선 맞춤으로 안정화한다."
+   ],
+   "check": [
+    {
+     "q": "법칙을 퍼플렉서티로 세우고 하류 지표는 따로 확인하라는 이유는?",
+     "a": "퍼플렉서티는 분산이 작고 규모에 대해 매우 규칙적이라 외삽이 믿을 만하다. 하류 지표는 시끄럽고 불연속적이며 퍼플렉서티와의 상관이 모델 모양에 따라 깨질 수 있다."
+    },
+    {
+     "q": "사전학습 스케일링 그림에서 학습 손실과 검증 손실을 섞어 써도 큰 문제가 없는 이유는?",
+     "a": "대부분 데이터를 한 번만 보는 1 epoch 학습이라 학습 중 처음 보는 데이터에 대한 손실이 곧 검증 손실과 같아 일반화 격차가 거의 없다. 데이터를 반복하는 실험에서는 성립하지 않는다."
+    }
+   ]
+  },
+  {
+   "start": 3420,
+   "title": "데이터냐 모델이냐 — 결합 스케일링 법칙과 Kaplan 의 C^0.73",
+   "points": [
+    "자원은 연산이고, 학습 FLOPs ≈ 6·N·D(2강). 같은 C 를 큰 모델·적은 토큰과 작은 모델·많은 토큰 중 어디에 쓸까.",
+    "작은 모델에 데이터를 들이부으면 곡선이 일찍 평평해져 낭비다 — 같은 연산이면 큰 모델이 낫다.",
+    "결합 법칙: Rosenfeld(2020) Error = n^(−α) + m^(−β) + C, Kaplan(2020) Error = [m^(−α) + n^(−1)]^β. 한 변수를 무한대로 보내면 다른 변수 하나짜리 법칙이 된다.",
+    "작은 모델·작은 데이터 구석에서 맞춘 법칙이 큰 모델·큰 데이터 영역의 오차를 잘 예측한다(Rosenfeld).",
+    "연산 제약 C = 6ND 아래 최소화하면 Kaplan: N_opt ∝ C^0.73, D_opt ∝ C^0.27 — 연산이 늘수록 토큰/파라미터 비가 줄어든다 → GPT-3 시대의 거대 모델 경쟁."
+   ],
+   "on_screen": "'One important use of scaling laws — Q: Do we need more data or bigger models? Clearly, lots of data is wasted on small models' — 'Loss vs Model and Dataset Size'(Tokens in Dataset 10⁷~10¹⁰ 대 Loss, Params 708M~393K 곡선이 작은 모델일수록 일찍 평평). 'Joint data-model scaling laws describe how the two relate. From Rosenfeld+ 2020, Error = n^(−α) + m^(−β) + C. From Kaplan+ 2020, Error = [m^(−α) + n^(−1)]^β. Provides surprisingly good fits to model-data joint error.' (Wiki103 error (cross entropy) landscape 3D 곡면). 'Model-data joint scaling is accurate — From Rosenfeld – fit scaling exponents on small data, small models. Predict rest.' (a) Illustration(데이터 비율 log2 대 모델 비율 log2 격자, 초록 점 = fit, 빨강 = extrapolated) (b) Extrapolation on ImageNet (c) Extrapolation on WikiText-103 — 측정 대 예측 대각선. 'Trading off data size and model size: optimize n^(−α) + m^(−β) + C with your costs.' 'Optimal compute and data tradeoffs as a case study. Rosenfeld, Kaplan both predict relationship of data, model and perf. Kaplan claims: N_opt = C^0.73, D_opt = C^0.27 (tokens per param decreases w/ C). Chinchilla [Hoffman et al] argue these fits are quite off.' FLOPs 대 Parameters 그림: Approach 1·2·3, Kaplan et al (2020) 점선, Chinchilla (70B) 청록 별, Gopher (280B), GPT-3 (175B), Megatron-Turing NLG (530B) 별.",
+   "explain": [
+    "이제 오늘 강의에서 가장 유명한 스케일링 법칙의 용도로 간다. 직접 이 계산을 해 보지 않았더라도 '파라미터당 토큰 20개' 같은 경험칙은 누구나 써 봤을 것이다. 질문은 간단하다. 누군가 연산(FLOPs) 예산을 준다. 2강(kuYAsz7zspQ)에서 배운 대로 학습 FLOPs 는 대략 6 × 파라미터 수 N × 토큰 수 D 다. 그러면 같은 예산을 '큰 모델을 적은 토큰으로'와 '작은 모델을 많은 토큰으로' 중 어떻게 나눠야 할까? 극단은 분명히 나쁘다. 슬라이드의 그림에서 아주 작은 모델(맨 위 보라색 곡선)에 엄청난 데이터를 넣으면 곡선이 일찍 평평해진 뒤 아무리 넣어도 내려가지 않는다. 그 연산은 완전히 낭비이고, 같은 연산이면 큰 모델(노란 곡선)을 같은 토큰까지, 아니 더 적은 토큰까지만 학습하는 편이 훨씬 낫다.",
+    "이것을 정밀하게 최적화하려면 손실이 N 과 D 에 함께 어떻게 의존하는지 알아야 한다. 거의 같은 시기에 Rosenfeld 외(2020)와 Kaplan 외(2020)가 결합 스케일링 법칙을 제안했다. Rosenfeld 의 꼴은 단순하다. 데이터 법칙과 모델 법칙 두 개를 그냥 더한 Error = n^(−α) + m^(−β) + C 다(n 은 데이터, m 은 모델 크기). Kaplan 은 조금 복잡한 [m^(−α) + n^(−1)]^β 꼴이지만(슬라이드 표기, 원 논문은 상수가 붙은 L(N,D) = [(N_c/N)^(α_N/α_D) + D_c/D]^α_D) 생각은 같다. 강사는 법칙을 받으면 늘 변수를 극한으로 보내 보라고 권한다. 데이터가 무한하면 데이터 항이 0 이 되고 모델 크기만의 법칙이 남는다 — 모델 크기가 한계다. 모델이 무한하면 데이터만의 법칙이 남는다. 양 끝에서 앞 장들의 단일 변수 법칙으로 돌아가니 말이 된다.",
+    "놀라운 것은 이 결합 법칙이 외삽에서도 잘 맞는다는 점이다. Rosenfeld 의 실험에서는 데이터 비율과 모델 비율 격자 중 작은 쪽 구석(초록 점, 작은 데이터·작은 모델)에서만 법칙을 맞추고, 큰 데이터·큰 모델 영역(빨간 점)의 오차를 예측했는데, 측정값과 예측값이 대각선 위에 놓였다(ImageNet·WikiText-103). 큰 실험을 한 번도 보지 않고 큰 영역을 맞힌 것이다. 이런 법칙이 있으면 남은 일은 단순한 비선형 최적화다. FLOPs 제약 C = 6ND 아래 L(N, D) 를 최소화하는 N, D 를 풀면 된다. 비용 구조가 다르면(예: 데이터 수집에 돈이 든다) 그 비용을 넣어 최적화하면 된다.",
+    "Kaplan 이 이렇게 풀어서 낸 답이 N_opt ∝ C^0.73, D_opt ∝ C^0.27 이다. 연산을 10배 늘리면 모델은 10^0.73 ≈ 5.4배, 토큰은 10^0.27 ≈ 1.9배만 늘린다. 즉 토큰/파라미터 비율이 연산이 커질수록 줄어든다 — 더 크고 더 크고 더 큰 모델을 학습하라는 처방이다. 강사는 GPT-3 시대를 기억하는 사람이라면 수천억 파라미터, 심지어 1조 파라미터 밀집 모델을 앞다투어 학습하던 시기를 알 것이라고 말한다. 그 경쟁의 일부가 이 처방에서 나왔다. 그러나 2022년 DeepMind 의 Hoffmann 외(Chinchilla)가 이 예측이 크게 틀렸다고 주장했다. 슬라이드의 그림에서 GPT-3(175B)·Gopher(280B)·MT-NLG(530B) 별은 Kaplan 의 점선 위에 있고, Chinchilla 의 세 접근법 직선은 훨씬 아래로 지나간다 — 같은 연산이면 훨씬 작은 모델(청록 별, 70B)을 더 많은 토큰으로 학습했어야 한다는 것이다. (강의 중 강사가 '지수가 뒤바뀌었나?' 하며 잠시 헷갈리지만 슬라이드 표기 N ∝ C^0.73, D ∝ C^0.27 이 맞다.)"
+   ],
+   "formulas": [
+    {
+     "expr": "C ≈ 6·N·D",
+     "meaning": "C: 학습 FLOPs, N: 파라미터 수, D: 학습 토큰 수. 토큰 하나에 순전파 2N + 역전파 4N FLOPs(2강). 이 제약이 N 과 D 를 맞교환 관계로 묶는다."
+    },
+    {
+     "expr": "L(N, D) = E + A/N^α + B/D^β   (Rosenfeld 꼴, Chinchilla 의 방법 3)",
+     "meaning": "E: 비가역 손실, A/N^α: 모델이 유한해서 생기는 손실, B/D^β: 데이터가 유한해서 생기는 손실. D → ∞ 이면 E + A/N^α(모델 법칙), N → ∞ 이면 E + B/D^β(데이터 법칙)."
+    },
+    {
+     "expr": "L(N, D) = [(N_c/N)^(α_N/α_D) + D_c/D]^α_D   (Kaplan)",
+     "meaning": "N_c, D_c: 규모 상수, α_N ≈ 0.076, α_D ≈ 0.095. 슬라이드의 [m^(−α) + n^(−1)]^β 는 상수를 지운 표기. 역시 양 극한에서 단일 변수 법칙으로 돌아간다."
+    },
+    {
+     "expr": "Kaplan: N_opt ∝ C^0.73, D_opt ∝ C^0.27  → D/N ∝ C^(−0.46)",
+     "meaning": "연산이 늘수록 모델에 훨씬 많이 배분하라는 처방. 토큰/파라미터 비는 연산의 −0.46 승으로 줄어든다."
+    }
+   ],
+   "example": {
+    "title": "Kaplan 처방으로 연산 100배를 나누면",
+    "body": "기준: N = 1B, D = 20B 토큰, C = 6 × 10⁹ × 2×10¹⁰ = 1.2×10²⁰ FLOPs, D/N = 20. 연산 100배(1.2×10²²): Kaplan 은 N × 100^0.73 = 10^1.46 = 28.8배 → 28.8B, D × 100^0.27 = 10^0.54 = 3.47배 → 69B 토큰. 확인: 28.8 × 3.47 = 100 ✓. D/N = 69/28.8 = 2.4 — 토큰/파라미터가 20 에서 2.4 로 줄었다(GPT-3 의 175B·300B 토큰, D/N ≈ 1.7 과 비슷한 영역). 같은 100배를 Chinchilla 식(0.5:0.5)으로 나누면 N, D 모두 10배 → 10B·200B, D/N = 20 유지."
+   },
+   "pitfalls": [
+    "강의 중 강사가 Kaplan 지수가 뒤바뀌었다고 잠시 말하지만 슬라이드가 맞다: N_opt ∝ C^0.73(모델), D_opt ∝ C^0.27(데이터). 토큰/파라미터가 연산에 따라 줄어든다는 결론과 맞는 쪽이 이것이다.",
+    "슬라이드의 Kaplan 결합 법칙 [m^(−α) + n^(−1)]^β 는 상수를 지운 모양이다. 실제로 맞출 때는 N_c, D_c 와 지수 비 α_N/α_D 가 들어간 원식을 쓴다.",
+    "6ND 는 어텐션 FLOPs 를 뺀 근사다. 문맥이 아주 길면 어텐션 항(토큰당 대략 6·n_layer·n_ctx·d_model)이 커져 보정이 필요하다(노트 보충)."
+   ],
+   "check": [
+    {
+     "q": "결합 법칙 L = E + A/N^α + B/D^β 에서 N → ∞ 극한은 무엇을 뜻하나?",
+     "a": "모델 크기 한계가 사라져 L = E + B/D^β, 즉 데이터만의 스케일링 법칙이 남는다. 이때 성능은 데이터 양으로만 제한된다."
+    },
+    {
+     "q": "Kaplan 처방에서 연산을 1000배 늘리면 토큰/파라미터 비는 몇 배가 되나?",
+     "a": "D/N ∝ C^(−0.46) 이므로 1000^(−0.46) = 10^(−1.38) ≈ 0.042배. 약 24분의 1로 줄어든다."
+    }
+   ]
+  },
+  {
+   "start": 3720,
+   "title": "Chinchilla 의 세 방법 — 아래 껍질, IsoFLOP, 모수 적합",
+   "points": [
+    "Hoffmann 외(2022)는 같은 질문을 세 가지 독립된 방법으로 풀었다 — 모델링 가정에 대한 견고성 확보.",
+    "방법 1(아래 껍질): 모든 학습 곡선의 FLOP 별 최저 손실 점을 모으고, 그 점들의 모델 크기를 FLOPs 에 대해 직선으로 맞춘다 → Gopher 예산에 67B.",
+    "방법 2(IsoFLOP): FLOP 예산 몇 개를 고정하고 각 예산에서 N 을 훑어(D = C/6N) 손실 골짜기를 그린 뒤, 포물선 꼭짓점들을 FLOPs 에 대해 직선으로 → 63B. 강사가 가장 좋아하는 방법.",
+    "방법 3(모수 적합): L(N, D) = E + A/N^α + B/D^β 를 모든 실행에 곡면 맞춤 → 40B. 지수가 0.46/0.54 로 다른 두 방법과 어긋났다.",
+    "결론 계수 a(N_opt ∝ C^a)·b: 방법 1 0.50·0.50, 방법 2 0.49·0.51, 방법 3 0.46·0.54, Kaplan 0.73·0.27 → 파라미터당 약 20 토큰."
+   ],
+   "on_screen": "'Chinchilla in depth – 3 methods' 표: Approach | Coeff. a where N_opt ∝ C^a | Coeff. b where D_opt ∝ C^b — 1. Minimum over training curves 0.50 (0.488, 0.502) | 0.50 (0.501, 0.512); 2. IsoFLOP profiles 0.49 (0.462, 0.534) | 0.51 (0.483, 0.529); 3. Parametric modelling of the loss 0.46 (0.454, 0.455) | 0.54 (0.542, 0.543); Kaplan et al. (2020) 0.73 | 0.27. 'The chinchilla authors suggest 3 ways of fitting scaling laws – we'll go over each. They mostly (minus method 3) suggest similar constants.' 'Method 1 – minimum over runs. Similar to the FLOPS figure on Kaplan – the minimum over the union of all training curves is a power law' (Figure 2 Training curve envelope, 70M~10B 모델, FLOPs 대 Parameters·Tokens 직선). 'Method 2 – IsoFLOPS. Pick a range of FLOP budgets, vary the total parameter count, take the min over these convex shapes.'(예산 여러 개, 총 파라미터를 바꿔 볼록한 골짜기의 최솟값) — 'The minima form a power law' (Figure 3 IsoFLOP curves, 6e18~3e21 FLOPs 골짜기, 최적 모델 크기·토큰 직선, Gopher 예산 녹색 점). 'Method 3 – Joint fits. Run a bunch of models on the size-data grid. Use least squares to fit a joint scaling law' (Figure 4 Parametric fit — IsoLoss contours, Efficient frontier, IsoFLOPs slices, Gopher budget 에 40B).",
+   "explain": [
+    "강사는 Chinchilla 논문을 자세히 걷는다. 결론 '파라미터당 20 토큰'은 모두 알지만, Kaplan 과 왜 어긋났는지를 이해하려면 어떻게 맞췄는지부터 알아야 하기 때문이다. 이 논문의 좋은 점은 같은 질문을 서로 다른 세 방법으로 푼 것이다. 각 방법은 서로 다른 가정에 기대므로, 셋이 같은 답을 내면 결론이 특정 가정의 산물이 아니라는 확신이 생긴다. 표를 보면 방법 1·2 는 N 과 D 의 지수가 거의 0.5 대 0.5 로 같고, 방법 3 만 0.46 대 0.54 로 조금 다르다. Kaplan 은 0.73 대 0.27 이니 크게 다르다.",
+    "방법 1은 아래 껍질(lower envelope) 방법으로, Kaplan 도 부분적으로 쓴 방식이다. 크기가 다른 모델들(7천만~100억+ 파라미터)을 각각 여러 학습 길이로 돌린 학습 곡선을 FLOPs–손실 그림에 모두 겹친다. 어떤 FLOP 값에서 가장 낮은 손실을 낸 곡선의 점은 '그 연산으로 얻은 최선의 손실'이다. 이런 아래 껍질 점들을 모으면 각 점이 어떤 크기의 모델에서 나왔는지 알 수 있고, 그 모델 크기를 FLOPs 에 대해 로그-로그로 그리면 직선이 나온다. 그 직선이 연산별 최적 모델 크기다. Gopher 예산(5.76×10²³ FLOPs)에 대해 67B 라는 답이 나왔다. 단순하지만 '아래 껍질'을 어떻게 정의하느냐(곡선 사이 어디를 잡느냐) 같은 까다로운 부분이 있다.",
+    "방법 2는 IsoFLOP 이다. 강사가 개인적으로 가장 좋아하고 요즘 가장 많이 쓰이는, 쉽고 튼튼한 방법이다. 먼저 FLOP 예산 몇 개(예: 6×10¹⁸ 부터 3×10²¹ 까지 몇 배 간격)를 고른다. 각 예산에서 FLOPs 를 고정한 채 모델 크기를 바꾼다 — 모델을 절반으로 줄이면 토큰을 두 배로 늘리는 식이다(D = C/6N). 각 실행의 최종 손실을 모델 크기(로그)에 대해 그리면 예산마다 골짜기(볼록한 U 자)가 생긴다. 너무 작은 모델은 용량이 부족하고 너무 큰 모델은 토큰이 부족하기 때문이다. 각 골짜기의 최솟값을 찾거나 포물선을 맞춰 꼭짓점을 구하고, 그 꼭짓점들의 모델 크기를 FLOPs 에 대해 로그-로그로 그리면 직선이 나온다. Gopher 예산에서 63B — 방법 1 과 아주 가깝다. 아래 코드는 이 절차를 처음부터 끝까지 재현한다.",
+    "방법 3은 가장 '자연스러운' 방법이다. Rosenfeld·Kaplan 처럼 손실의 함수 꼴 L(N, D) = E + A/N^α + B/D^β 를 가정하고, 지금까지 돌린 모든 실행(크기–데이터 격자)에 최소제곱으로 곡면을 맞춰 다섯 상수를 추정한다. 그러면 C = 6ND 제약 아래 최적 N, D 를 닫힌 꼴로 풀 수 있다. 가장 무식하고 직접적이지만, 변수가 많은 곡면을 맞추는 것은 까다롭다 — 어떤 손실 함수(Chinchilla 는 Huber 손실)로, 어떤 초기값에서, 어떻게 최적화하느냐가 결과를 바꾼다. 실제로 방법 3은 Gopher 예산에 40B 를 냈고, 지수 0.46/0.54 는 다른 두 방법과 어긋났다. 이 어긋남의 정체는 다음 장에서 밝혀진다. 강사가 덧붙이는 요점: 이렇게 보면 Chinchilla 가 Kaplan 과 본질적으로 다른 일을 한 것도 아니다. 둘 다 합리적인 일을 했는데 결론이 크게 달랐다. 왜일까?"
+   ],
+   "formulas": [
+    {
+     "expr": "N_opt ∝ C^a,  D_opt ∝ C^b,  a + b = 1",
+     "meaning": "C = 6ND 이므로 두 지수의 합은 1. a = b = 0.5 이면 N 과 D 를 같은 비율로 키우고 D/N 이 상수 — 그것이 '파라미터당 약 20 토큰'이다."
+    },
+    {
+     "expr": "IsoFLOP: 고정 C 에서 L(log N) ≈ c₂(log N)² + c₁ log N + c₀,  log N* = −c₁ / (2c₂)",
+     "meaning": "한 예산의 골짜기를 log N 에 대한 포물선으로 맞추고 꼭짓점을 최적 크기로 삼는다. 점이 시끄러워도 꼭짓점이 안정적이다. 여러 C 의 N* 을 log-log 직선으로 맞추면 지수 a 가 나온다."
+    },
+    {
+     "expr": "N_opt = G·(C/6)^(β/(α+β)),  G = (αA / βB)^(1/(α+β))",
+     "meaning": "L = E + A/N^α + B/D^β 를 C = 6ND 아래 최소화한 닫힌 꼴(라그랑주 승수 또는 D = C/6N 대입 후 미분 = 0). 지수 a = β/(α+β). α 와 β 가 같으면 a = 0.5."
+    }
+   ],
+   "example": {
+    "title": "닫힌 꼴로 a 를 손으로 — 원논문 상수 대 재적합 상수",
+    "body": "Hoffmann 원논문 방법 3: E = 1.69, A = 406.4, B = 410.7, α = 0.34, β = 0.28. a = β/(α+β) = 0.28/0.62 = 0.452 → 표의 0.46. 재적합(Epoch AI 2024): α = 0.3478, β = 0.3658, a = 0.3658/0.7136 = 0.513 → 방법 1·2 의 0.5 와 일치. D/N 비의 연산 의존도 = C^(b−a): 원논문이면 C^(0.548−0.452) = C^0.096 으로 연산 10배마다 토큰/파라미터가 10^0.096 = 1.25배씩 커지고, 재적합이면 C^(−0.026) 으로 거의 일정. 방법 1·2 의 결론('N 과 D 를 함께 키운다')은 후자와 같다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nE_, A, B, al, be = 1.82, 482.01, 2085.43, 0.3478, 0.3658   # Epoch AI(2024) 재적합 Chinchilla 법칙\nloss = lambda N, D: E_ + A / N**al + B / D**be\nrng = np.random.default_rng(0)\nCs = np.array([1e18, 1e19, 1e20, 1e21, 1e22])\nNopt = []\nfor C in Cs:                                   # IsoFLOP: C 고정, N 을 훑고 D = C/(6N)\n    N = np.logspace(np.log10(C) / 2 - 2.0, np.log10(C) / 2 + 0.5, 9)\n    L = loss(N, C / (6 * N)) + rng.normal(0, 0.003, N.size)\n    c2, c1, c0 = np.polyfit(np.log10(N), L, 2)  # 포물선의 꼭짓점 = 최적 log N\n    Nopt.append(10 ** (-c1 / (2 * c2)))\nNopt = np.array(Nopt)\na, k = np.polyfit(np.log10(Cs), np.log10(Nopt), 1)\nprint(\"C       \", Cs)\nprint(\"N_opt   \", np.round(Nopt / 1e6, 1), \"M\")\nprint(\"D/N     \", np.round(Cs / (6 * Nopt) / Nopt, 1))\nprint(f\"N_opt ∝ C^{a:.3f}   (닫힌 꼴 β/(α+β) = {be/(al+be):.3f})\")\nG = (al * A / (be * B)) ** (1 / (al + be))     # 닫힌 꼴로 C=5.76e23(Gopher 예산)\nC = 5.76e23; N = G * (C / 6) ** (be / (al + be)); D = C / (6 * N)\nprint(f\"C=5.76e23 -> N={N/1e9:.1f}B, D={D/1e12:.2f}T, D/N={D/N:.1f}, L={loss(N,D):.3f}\")",
+    "note": "필자 실행 결과: N_opt [78.7 256.2 835.0 2686.9 8631.2] M, D/N [26.9 25.4 23.9 23.1 22.4], N_opt ∝ C^0.510(닫힌 꼴 0.513). C=5.76e23(Gopher 예산) → N=72.2B, D=1.33T, D/N=18.4, L=1.977. IsoFLOP 포물선 맞춤이 잡음 0.003 아래서도 지수를 0.003 오차로 되찾는다."
+   },
+   "diagram": {
+    "title": "IsoFLOP 절차",
+    "code": "flowchart TD\n  A[FLOP 예산 C1..Ck 선택\\n로그 간격] --> B[각 C 에서 N 을 훑음\\nD = C / 6N]\n  B --> C[최종 손실 대 log N\\n골짜기 U 자]\n  C --> D[포물선 맞춤\\n꼭짓점 N*]\n  D --> E[log N* 대 log C\\n직선 맞춤 -> 지수 a]\n  E --> F[목표 예산으로 외삽\\nN_opt, D_opt = C / 6N_opt]"
+   },
+   "pitfalls": [
+    "IsoFLOP 에서 훑는 N 의 범위가 최솟점을 가운데 두지 않으면(골짜기 한쪽 벽만 보면) 포물선 꼭짓점이 엉뚱한 곳에 생긴다. 최솟점 양쪽에 점이 충분한지 먼저 본다.",
+    "각 IsoFLOP 점은 그 길이에 맞춘 학습률 스케줄(코사인을 그 토큰 수에서 끝나게)로 따로 학습해야 한다. 긴 학습의 중간 체크포인트를 쓰면 손실이 과대평가된다(Chinchilla 가 Kaplan 과 달라진 이유 중 하나, 노트 보충).",
+    "방법 3의 곡면 맞춤은 손실 함수·초기값·최적화기 선택에 민감하다. 맞춘 뒤 잔차가 0 근처에 고르게 퍼졌는지 확인한다(다음 장)."
+   ],
+   "check": [
+    {
+     "q": "IsoFLOP 곡선이 U 자가 되는 이유는?",
+     "a": "FLOPs 를 고정하면 N 을 키울수록 D 가 줄어든다. 너무 작은 N 은 모델 용량이 부족해 손실이 높고, 너무 큰 N 은 토큰이 부족해 덜 학습돼 손실이 높다. 그 사이에 최적이 있다."
+    },
+    {
+     "q": "L = E + A/N^α + B/D^β 에서 α > β 이면 최적 배분은 N 과 D 중 어느 쪽에 더 가나?",
+     "a": "a = β/(α+β) < 0.5 이므로 N_opt 는 C 보다 느리게(0.5 승 미만), D_opt 는 더 빠르게 는다 — 데이터 쪽에 더 배분. 모델 항이 빨리 줄어드니(α 큼) 모델은 덜 키워도 된다."
+    }
+   ]
+  },
+  {
+   "start": 4020,
+   "title": "왜 어긋났나 — 파라미터 세기·워밍업·배치, 작은 규모의 휨, 그리고 방법 3의 맞춤 실수",
+   "points": [
+    "Porian 외(2024, Resolving Discrepancies…): Kaplan 설정으로 Kaplan 결과를 재현한 뒤, ① 마지막 층 파라미터·FLOPs 를 세고 ② 워밍업을 고치고 ③ 옵티마이저(배치·학습률)를 조율하자 정확히 Chinchilla 결과가 나왔다.",
+    "Kaplan 은 임베딩뿐 아니라 출력(소프트맥스) 층까지 뺐고, 작은 모델에 워밍업이 너무 길었고, 고정된 큰 배치가 작은 모델에 맞지 않았다. 학습률 감쇠 자체는 배치·LR 을 잘 맞추면 덜 중요.",
+    "Pearce & Song(2024): 모델을 하나도 학습하지 않고 Chinchilla 법칙으로 Kaplan 규모(1k~1.5B)의 곡선을 만들어, 비임베딩 파라미터로 세면 국소 지수가 0.73 근처, 총 파라미터로 세면 0.51 이 나옴을 보였다 — 작은 연산 규모 + 비임베딩 계산의 미세한 비선형.",
+    "Besiroglu 외(Epoch AI, 2024): 그림에서 데이터를 뽑아 방법 3을 다시 맞추니 원논문이 과소적합이었다. 재적합 결과는 D/N ≈ 20 으로 방법 1·2 와 일치 — '저자들이 아는 것보다 더 옳았다'.",
+    "교훈: 스케일링 법칙은 '이 레시피를 그대로 키우면 얻는 것'의 하한이다. 사소해 보이는 세부가 결론을 크게 바꾼다."
+   ],
+   "on_screen": "'Why do we have this big difference? Kaplan claims: N_opt = C^0.73, D_opt = C^0.27 … Why such a big difference (when both fit joint scaling laws)?' 'Explanation 1' — Porian(Wortsman, Jitsev, Schmidt, Carmon) 'Resolving Discrepancies in Compute-Optimal Scaling of Language Models': (a) Reproducing Kaplan et al. → (b) Counting last layer FLOPs → (c) Correcting warmup → (d) Cosine decay (no tuning) / (e) Optimizer tuning (no decay), 각 칸의 Compute C (FLOPs) 대 N*(C) 직선과 지수 a 가 a 의 0.8 대에서 (e) 의 0.5 근처로 내려감, 범례 95% confidence region / Power law fit / Hoffmann law / Kaplan law / Observations. '· Kaplan removed last layer param from the count · Warmup at very small compute budgets was too high · (Decay itself is maybe not critical if batch / LR is properly tuned)'. 'Explanation 2' — Pearce(Microsoft Research)·Song(MIT) 'Reconciling Kaplan and Chinchilla Scaling Laws': 'Start from fitted model of Chinchilla's training curves Loss(N_T, D) = 482/N_T^0.35 + 2085/D^0.37 + 1.82 → Generate training curves for model sizes used in Kaplan's study (1k to 1.5B params)' → 총 파라미터로 'Find power law scaling coefficient of 0.51, close to Chinchilla's 0.50, N*_T ∝ C_T^0.51' / 비임베딩으로 'Find local power law scaling coefficient of 0.78, close to Kaplan's 0.73, N*_{\\E} ∝ C_{\\E}^0.78'. 'Non-embedding vs total param choice + small nonlinearities'. 'Fun addendum – errors in chinchilla method 3 — Note that this method three was likely flawed in the original paper.'(원논문 방법 3은 아마 결함이 있었다) — 'Some authors did data forensics, recovered the raw data, and re-did the fit'(데이터 포렌식으로 원 데이터를 복원해 다시 맞춤) → 'results more consistent with methods 1 and 2' — 잔차 분포(Hoffmann et al. 은 0 에서 벗어난 초록, Ours 는 0 중심), Training compute (FLOP) 대 Optimal tokens per parameter ratio(Optimal policy (ours) 거의 평평 ~20, Hoffmann et al. 은 상승, Chinchilla model 점) [Besiroglu et al 2024].",
+   "explain": [
+    "두 연구 모두 합리적인 방법으로 결합 법칙을 맞췄는데 왜 0.73 과 0.5 라는 큰 차이가 났을까? 강사는 여기서 '스케일링 법칙이 실제로 어떻게 만들어지는가의 지저분한 현실'로 들어간다고 말한다. 법칙은 구현의 세부, 하이퍼파라미터 설정, 심지어 x 축을 무엇으로 잡느냐에 따라 크게 달라진다. 첫 번째 설명은 Porian 외(2024, 마지막 저자 Yair Carmon 은 강사의 옛 학생)의 Resolving Discrepancies in Compute-Optimal Scaling of Language Models 다. 이들은 먼저 Kaplan 의 설정 그대로 Kaplan 의 결과(지수 약 0.8 대)를 재현했다. 그다음 세부를 하나씩 고쳤다. 파라미터를 세는 방식을 바꾸자 곡선이 조금 움직였고, 학습률 워밍업을 고치자 더 움직였고, 옵티마이저를 조금 더 조율하자 정확히 Chinchilla 의 결과(약 0.5)에 도달했다. 하나하나는 아주 사소해 보이는 결정들이 쌓여 큰 격차를 만들었다는 것이다.",
+    "각 단계의 내용은 이렇다. ① 파라미터 세기: Kaplan 은 임베딩 파라미터를 뺐는데(앞 장에서 본 것처럼 그 자체는 괜찮다), 동시에 마지막 층(소프트맥스 출력 행렬)도 뺐다. 입력 임베딩은 어휘 × 은닉 차원, 출력 행렬은 은닉 차원 × 어휘로 모양이 대칭이라 둘 다 빼 버린 것이다. 그런데 출력층은 실제로 매 토큰 계산을 하는 층이고, 이것을 넣느냐 빼느냐가 법칙의 모양을 크게 바꾼다. ② 워밍업: Kaplan 의 작은 모델들은 너무 작아서 학습률 워밍업이 끝날 무렵에도 수렴하지 못했다. 학습률이 아주 비최적으로 설정돼 작은 모델이 덜 학습된 것이다. ③ 배치: Kaplan 은 큰 배치 하나를 고정해 썼는데, 그 배치는 작은 모델에게는 너무 컸다(앞의 임계 배치 장). 모델 크기에 맞춰 배치를 바꾸면 Chinchilla 와 정확히 맞는다. 한편 Chinchilla 가 강조했던 학습률 감쇠(코사인을 학습 길이에 맞추기) 자체는 배치·학습률을 제대로 맞추면 덜 결정적일 수 있다는 것이 슬라이드의 메모다. 강사가 강조하는 요점: 스케일링 법칙은 어떤 의미에서 하한이다. '이 레시피를 그대로 키우면 이만큼 얻는다'는 말이므로, 워밍업이나 배치가 이상한 레시피를 키우면 나쁜 법칙이 나온다. 법칙을 맞출 작은 실험은 최종 큰 학습과 최대한 같은 조건이어야 한다.",
+    "두 번째 설명은 Pearce & Song(2024, Reconciling Kaplan and Chinchilla Scaling Laws)이다. 강사가 영리하다고 평하는 이 연구는 모델을 하나도 학습하지 않는다. Chinchilla 의 (재적합된) 손실 법칙 L = 482/N^0.35 + 2085/D^0.37 + 1.82 로 Kaplan 이 연구한 모델 크기(1천~15억 파라미터)의 학습 곡선을 시뮬레이션하고, 그 곡선에 Kaplan 식 분석을 해 본다. 총 파라미터로 세면 지수 0.51(Chinchilla 와 같음)이 나오고, 임베딩을 뺀 파라미터로 세면 국소 지수 0.78(Kaplan 의 0.73 근처)이 나온다. 즉 진짜 법칙은 하나인데 ① Kaplan 이 훨씬 작은 연산 규모에서 일했고 ② 그 규모에서는 임베딩 파라미터가 전체의 큰 비중이라 비임베딩으로 세면 관계가 살짝 휘며(비선형) 국소 기울기가 달라진다는 것이다. 앞 장의 예에서 본 것처럼 작은 모델일수록 임베딩 비중이 크다. Porian 의 설명과 강조점은 다르지만(이쪽은 연산 규모 + 비임베딩 계산의 비선형), 둘 다 '세부가 결론을 바꾼다'는 같은 교훈을 준다.",
+    "마지막으로 강사가 재미있어하는 후일담이 있다. Chinchilla 는 Kaplan 을 바로잡은 논문인데, 정작 스스로도 풀리지 않은 수수께끼를 남겼다. 방법 3이 방법 1·2 와 맞지 않았던 것이다. 숫자 차이(0.46 대 0.50)는 작아 보이지만 의미는 크다. 방법 1·2 는 N 과 D 를 일정한 비율로 함께 키우라고 한다(그래서 20 이라는 고정 비율이 나온다). 방법 3처럼 지수가 다르면 연산을 키울수록 토큰/파라미터 비가 계속 커져, 점근적으로 전혀 다른 결론이 된다. Epoch AI 의 Besiroglu 외(2024)는 원 데이터도 코드도 구할 수 없자 논문 그림에서 데이터 점을 뽑아내 방법 3의 회귀를 다시 했다. 그 결과 원논문의 맞춤이 과소적합이었다는 것을 보였다. 원논문 법칙의 잔차는 0 에서 한쪽으로 치우쳐 있었고, 다시 맞추니 잔차가 0 중심으로 모였으며 손실도 훨씬 낮았다. 재적합한 법칙을 따르면 거의 정확히 D/N ≈ 20 이 나온다. 강사의 표현으로 '저자들은 자신들이 아는 것보다 더 옳았다' — 방법 3이 어긋난 이유는 맞춤 실수 하나뿐이었고, 세 방법 접근은 결국 튼튼했던 것이다."
+   ],
+   "diagram": {
+    "title": "Kaplan 0.73 에서 Chinchilla 0.5 로 — Porian 외(2024)의 단계",
+    "code": "flowchart LR\n  K[Kaplan 설정 재현\\nN* 지수 ~0.8대] --> P[출력층 파라미터·FLOPs 포함]\n  P --> W[작은 모델 워밍업 단축]\n  W --> O[배치·학습률·β2 조율\\n모델 크기별]\n  O --> C[Chinchilla 와 일치\\nN* 지수 ~0.5]"
+   },
+   "example": {
+    "title": "Gopher 예산에서 원논문 법칙과 재적합 법칙의 답 차이",
+    "body": "C = 5.76×10²³ FLOPs, 닫힌 꼴 N_opt = G·(C/6)^(β/(α+β)), G = (αA/βB)^(1/(α+β)). 원논문(E=1.69, A=406.4, B=410.7, α=0.34, β=0.28): 필자 계산 N ≈ 32B, D ≈ 3.0T, D/N ≈ 93(논문은 같은 예산에 40B 를 보고 — 상수 반올림 차이). 재적합(E=1.82, A=482.01, B=2085.43, α=0.3478, β=0.3658): N ≈ 72B, D ≈ 1.33T, D/N ≈ 18.4 — 실제 Chinchilla(70B, 1.4T, D/N = 20)와 거의 같다. 연산을 10²⁶ 으로 키우면 원논문 법칙은 D/N ≈ 153, 재적합은 ≈ 16 — 같은 '방법 3'인데 맞춤 하나로 점근 결론이 갈린다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "def opt(E, A, B, al, be, C):                 # L=E+A/N^al+B/D^be, C=6ND 최적점\n    G = (al * A / (be * B)) ** (1 / (al + be))\n    N = G * (C / 6) ** (be / (al + be)); return N, C / (6 * N)\nfor name, p in [(\"Hoffmann 원논문\", (1.69, 406.4, 410.7, 0.34, 0.28)),\n                (\"Epoch 재적합  \", (1.82, 482.01, 2085.43, 0.3478, 0.3658))]:\n    for C in (1e21, 5.76e23, 1e26):\n        N, D = opt(*p, C)\n        print(f\"{name} C={C:.0e}: N={N/1e9:8.2f}B D={D/1e12:8.2f}T D/N={D/N:6.1f}\")",
+    "note": "필자 실행 결과: 원논문 C=1e21 → N=1.82B D=0.09T D/N=50.1 / C=5.76e23 → 32.19B, 2.98T, 92.6 / C=1e26 → 330.48B, 50.43T, 152.6. 재적합 C=1e21 → 2.78B, 0.06T, 21.6 / 5.76e23 → 72.25B, 1.33T, 18.4 / 1e26 → 1015.93B, 16.41T, 16.1."
+   },
+   "pitfalls": [
+    "'Chinchilla 가 옳고 Kaplan 이 틀렸다'로만 기억하면 교훈을 놓친다. 둘 다 합리적이었고, 파라미터 세기·워밍업·배치·연산 범위·맞춤 방법 같은 세부가 결론을 갈랐다.",
+    "법칙을 맞추는 작은 실험의 레시피가 큰 학습의 레시피와 다르면(고정 배치, 과한 워밍업) 그 법칙은 큰 학습을 예측하지 못한다. 법칙은 '그 레시피'의 하한이다.",
+    "곡면 맞춤 결과는 잔차를 꼭 본다. 잔차가 0 에서 한쪽으로 치우쳐 있으면 과소적합이다 — Chinchilla 방법 3의 실수가 이것이었다."
+   ],
+   "check": [
+    {
+     "q": "Porian 외가 Kaplan 결과를 Chinchilla 로 옮긴 세 가지 수정은?",
+     "a": "① 마지막(출력) 층의 파라미터·FLOPs 를 세기, ② 작은 모델에 너무 길었던 워밍업 고치기, ③ 모델 크기에 맞춘 배치·학습률 등 옵티마이저 조율."
+    },
+    {
+     "q": "Pearce & Song 이 모델을 학습하지 않고도 Kaplan 의 0.73 을 재현할 수 있었던 핵심 이유는?",
+     "a": "작은 연산 규모에서는 임베딩 파라미터 비중이 커서, 비임베딩 파라미터로 세면 Chinchilla 법칙에서 만든 곡선도 국소 기울기가 0.78 쯤으로 휘어 보인다. 총 파라미터로 세면 0.51."
+    }
+   ]
+  },
+  {
+   "start": 4440,
+   "title": "학습 최적은 원하는 답이 아니다 — 과학습, IsoFLOP 은 어디서나, 정리",
+   "points": [
+    "Chinchilla 는 '학습 연산 고정'의 최적이다. 실제 연산 대부분은 학습이 아니라 R&D 와 서빙에 쓰이므로, 서빙이 싼 작은 모델을 더 오래 학습하는 '과학습'이 맞는 양이다.",
+    "토큰/파라미터: GPT-3 약 2(강사는 3이라 말함), Chinchilla 20, LLaMA 65B 22, Llama 2 70B 29, Mistral 7B 110, Llama 3 70B 215 — 사용량이 클수록 선불 학습 비용을 더 낼 가치가 있다.",
+    "Chinchilla 가 중요한 이유는 20:1 이라는 황금비가 아니라, 법칙을 어떻게 맞추고 생각해야 하는지를 보여 줬기 때문이다(강사 의견).",
+    "IsoFLOP 은 연구 도구로 살아남았다 — 확산 모델(Gulrajani 2023), MoE 희소도(Abnar 2025) 등. 어떤 맞교환이든 기본값으로 좋다.",
+    "정리: 자원과 성능 사이의 로그-선형 규칙성이 파라미터·연산·희소도까지 이어져, 큰 학습 없이 근거 있는 공학을 가능하게 한다."
+   ],
+   "on_screen": "'Important note – train-optimal is likely not what you want — Chinchilla aims to tell you what gives the best model for fixed training compute..'(고정 학습 연산의 최적) / 'But most of the compute in a real deployment is inference.. So we should over train.' · GPT3 – 2 tokens / param · Chinchilla – 20 tokens / param · LLaMA65B – 22 tokens / param · Llama 2 70B – 29 tokens / param · Mistral 7B – 110 tokens / param · Llama 3 70B – 215 tokens / param … etc etc. The more usage we expect, the more it becomes worth it to pay the upfront cost.' 'Isoflops everywhere — Methods like IsoFLOPS are pretty easy to execute and usually pretty clean' — Figure 5: IsoFLOP profiles for autoregressive models (left) and diffusion models (right), Diffusion – Gulrajani+ 2023; MoE IsoFLOP surface over sparsity – Abnar+ 2025. 'Scaling laws for models and compute — Log-linearity extends to model parameters and compute! Lets us set the following based on small models – Pick optimizer – Pick architecture and model sizes. Also lets us make smart resource tradeoffs – Big models vs more data?' 'Recap: scaling laws – surprising and useful! – Data scaling: understand how data affects models, clean theory – Model scaling: dramatically reduce costs for training – Scaling as prediction: understand what problems can be brute forced'.",
+   "explain": [
+    "Chinchilla 이야기를 마치며 강사는 중요한 단서를 붙인다. 실제 제품 모델을 학습한다면 아마 Chinchilla 비율을 원하지 않을 것이다. Chinchilla 가 답하는 질문은 '학습 연산이 고정일 때 가장 좋은 모델'이다. 하지만 프런티어 연구실의 연산 사용을 조사한 여러 외부 자료를 보면, 연산 대부분은 최종 학습 실행이 아니라 R&D(실험)와 서빙(추론)에 들어간다. 특히 서빙을 생각하면 원하는 것은 작으면서 유능한 모델이다. 학습 비용을 최소화하더라도 서빙 비용이 큰 거대한 모델은 원하지 않는다. 그래서 Chinchilla 비율보다 훨씬 많은 토큰으로 작은 모델을 학습하는데, 이것을 흔히 '과학습(overtraining)'이라 부른다. 강사는 따옴표를 친다 — 사실 그것이 원하는 바이고 '알맞은 양의 학습'이기 때문이다.",
+    "역사로 보면 이 흐름이 뚜렷하다. GPT-3 는 확실히 덜 학습됐다(슬라이드 기준 파라미터당 2 토큰, 175B 에 300B 토큰이면 약 1.7). Chinchilla 가 20 이라는 현대의 비율에 도달했고 한동안 모두 20 근처였다(LLaMA 65B 22, Llama 2 70B 29). 강사는 이 시기가 모델이 멋지긴 했지만 아직 대규모로 서빙되지는 않던 때라고 본다. 서빙이 현실이 되자 과학습이 시작됐다 — Mistral 7B 는 110, Llama 3 70B 는 215. 그리고 MoE 로 넘어가며 추론 서빙 최적화를 위한 온갖 맞교환을 하게 됐다. 슬라이드의 결론 문장대로, 사용량이 클 것으로 예상될수록 선불 학습 비용을 더 치를 가치가 있다. 아래 예에서 같은 손실을 70B·1.4T 대신 30B·5T 로 내면 학습 연산은 1.5배 더 들지만 토큰당 추론 비용은 2.3배 싸진다는 것을 법칙으로 계산한다.",
+    "그렇다면 Chinchilla 는 왜 중요한가? 강사의 의견은 20:1 이 유일한 황금비라서가 아니다(연구용이라면 그럴 수도 있다). Kaplan 과의 불일치, 세 방법, 방법 3의 실수와 재적합까지의 이야기 전체가 스케일링 법칙을 어떻게 맞추고 어떻게 생각해야 하는지를 가르쳐 주기 때문이다. 그리고 그 이야기에서 살아남은 연구 도구가 IsoFLOP 이다. 실행하기 쉽고 대체로 깨끗하다. FLOPs 예산을 고정하고 나머지 자유도를 모두 훑어 곡면이 어떻게 생겼는지 본다. 강사의 학생은 이것을 확산 모델에 적용했고(Gulrajani 외 2023, 자기회귀 모델과 확산 모델의 IsoFLOP 골짜기를 나란히 비교), 앞에서 본 MoE 희소도 연구도 IsoFLOP 설계였다. 강사의 조언: 이런 맞교환을 어떻게 정할지 고민된다면 IsoFLOP 이 언제나 좋은 기본값이다.",
+    "강의 전체를 정리하면 이렇다. 우리가 쏟는 자원(데이터, 파라미터, 연산, MoE 희소도까지)과 얻는 성능 사이에는 로그-선형 규칙성이 있다. 이 덕분에 3강에서 '임의의 선택'처럼 다뤘던 것들 — 옵티마이저, 아키텍처, 모델 크기, 데이터 대 모델 배분 — 을 작은 모델 실험과 법칙으로 근거 있게 정할 수 있고, 큰 학습을 여러 번 하지 않고도 큰 규모의 공학을 할 수 있다. 데이터 스케일링은 이론(표본 복잡도)과 잘 맞는 자연스러운 대상이지만 지수가 이상하게 작다. 모델 스케일링은 학습 비용을 극적으로 줄여 준다. 그리고 스케일링은 '무엇을 힘으로 밀어붙여 풀 수 있는가'를 예측하는 도구다. 다음 강의(10강)는 Percy Liang 의 추론이고, 그 뒤 11강에서 μP·최신 공개 모델 보고서·옵티마이저를 다루는 심화편으로 돌아온다."
+   ],
+   "formulas": [
+    {
+     "expr": "총비용 ≈ 6·N·D (학습) + 2·N·T_serve (추론)",
+     "meaning": "T_serve: 평생 서빙할 토큰 수, 2N: 토큰당 순전파 FLOPs(노트 보충). 서빙량이 크면 두 번째 항이 지배해, 같은 손실을 내는 더 작은 N(더 많은 D)이 총비용을 줄인다 — 과학습의 근거."
+    },
+    {
+     "expr": "같은 손실 조건: E + A/N₁^α + B/D₁^β = E + A/N₂^α + B/D₂^β",
+     "meaning": "더 작은 N₂ 로 같은 손실을 내는 데 필요한 D₂ 를 이 식으로 푼다. A/N₂^α 가 목표 손실 − E 보다 크면 아무리 학습해도 불가능 — 너무 작은 모델에는 바닥이 있다."
+    }
+   ],
+   "example": {
+    "title": "70B·1.4T 와 같은 손실을 30B 로 내려면 (Epoch 재적합 법칙)",
+    "body": "목표 손실: 1.82 + 482/(70×10⁹)^0.3478 + 2085/(1.4×10¹²)^0.3658 = 1.82 + 0.0815 + 0.0752 = 1.9767. N₂ = 30B: 모델 항 482/(3×10¹⁰)^0.3478 = 0.1094. 남은 데이터 항 = 1.9767 − 1.82 − 0.1094 = 0.0473 → D₂ = (2085/0.0473)^(1/0.3658) ≈ 4.98×10¹² 토큰(D/N ≈ 166). 학습 FLOPs: 70B 는 6 × 7×10¹⁰ × 1.4×10¹² = 5.88×10²³, 30B 는 6 × 3×10¹⁰ × 4.98×10¹² = 8.97×10²³ — 1.53배. 추론은 토큰당 2N 이라 1.4×10¹¹ 대 6×10¹⁰, 2.3배 싸다. 서빙 토큰 T 에 대해 추가 학습비 3.1×10²³ 를 되찾는 지점은 (1.4×10¹¹ − 6×10¹⁰)·T = 3.1×10²³ → T ≈ 3.9×10¹² 토큰. 그보다 많이 서빙하면 30B 가 이득. 이 법칙에서 70B 의 손실을 낼 수 있는 가장 작은 모델은 약 10.7B(그 아래는 데이터가 무한해도 불가)."
+   },
+   "code": {
+    "lang": "python",
+    "src": "E_, A, B, al, be = 1.82, 482.01, 2085.43, 0.3478, 0.3658\nt = E_ + A / 70e9**al + B / 1.4e12**be          # 70B·1.4T 의 손실\nfor N2 in (50e9, 40e9, 30e9, 25e9):\n    r = t - E_ - A / N2**al                     # 데이터 항이 채워야 할 몫\n    D2 = (B / r) ** (1 / be)\n    print(f\"{N2/1e9:.0f}B D={D2/1e12:.2f}T D/N={D2/N2:.0f} 학습비 {6*N2*D2/5.88e23:.2f}배\")\nprint(\"가능한 최소 N:\", round((A / (t - E_)) ** (1 / al) / 1e9, 1), \"B\")",
+    "note": "필자 실행 결과: 목표 손실 1.9767. 50B D=2.08T D/N=42 1.06배 / 40B 2.89T 72 1.18배 / 30B 4.98T 166 1.53배 / 25B 7.81T 312 1.99배. 가능한 최소 N 10.7B."
+   },
+   "pitfalls": [
+    "'Chinchilla 비율 = 최적'은 학습 연산만 셀 때의 이야기다. 서빙량이 크면 더 작은 모델을 더 오래 학습하는 것이 총비용 최적이다.",
+    "과학습에도 한계가 있다. 법칙상 A/N^α 가 목표와 바닥의 차이보다 크면 토큰을 아무리 넣어도 그 손실에 못 간다. 또 토큰이 고유 데이터보다 많아지면 앞의 반복 효과가 붙는다.",
+    "슬라이드의 'GPT3 – 2 tokens/param' 과 강사의 말('세 개')이 다르다. 175B 파라미터·300B 토큰이면 약 1.7 이므로 슬라이드 쪽이 가깝다."
+   ],
+   "check": [
+    {
+     "q": "Mistral 7B(파라미터당 110 토큰)가 Chinchilla 비율보다 훨씬 많은 토큰으로 학습된 이유는?",
+     "a": "많이 서빙될 모델이라 추론 비용(토큰당 약 2N)이 총비용을 지배한다. 학습 연산을 더 쓰더라도 작은 모델로 같은 성능을 내는 편이 평생 비용이 싸다."
+    },
+    {
+     "q": "새로운 맞교환(예: 어텐션 헤드 수 대 층 수)을 정해야 할 때 강의가 권하는 기본 실험 설계는?",
+     "a": "IsoFLOP — FLOPs 예산 몇 개를 고정하고 각 예산에서 그 자유도를 훑어 손실 골짜기의 최솟점을 찾은 뒤, 최솟점이 예산에 따라 어떻게 움직이는지 법칙으로 맞춘다."
+    }
+   ]
+  }
+ ],
+ "concepts": [
+  {
+   "term": "스케일링 법칙 (Scaling law)",
+   "explain": "자원(데이터·파라미터·연산)과 손실 사이의 단순한 경험 규칙, 대개 거듭제곱 꼴. 작은 실험에서 맞추고 큰 규모로 외삽해 설정을 고른다.",
+   "at": 180
+  },
+  {
+   "term": "거듭제곱 법칙 / 로그-로그 직선",
+   "explain": "L = A·x^(−α) 이면 log L 이 log x 의 직선(기울기 −α). x 를 10배 할 때마다 L 이 10^(−α) 배 — 척도 불변(scale-free).",
+   "at": 900
+  },
+  {
+   "term": "비가역 손실 (Irreducible error, E)",
+   "explain": "자원을 무한히 늘려도 남는 손실 바닥(다음 토큰 예측이면 텍스트의 엔트로피). 바닥에 가까워지면 로그-로그 직선이 휜다.",
+   "at": 840
+  },
+  {
+   "term": "일반화 경계 (Generalization bound)",
+   "explain": "표본 수에 따른 진짜 오차의 이론적 상한. 스케일링 법칙의 '이론판'이지만 실제 손실값이 아니라 상한이다.",
+   "at": 300
+  },
+  {
+   "term": "내재 차원과 지수",
+   "explain": "d 차원 비모수 회귀의 오차는 n^(−1/d). 신경망 지수 −0.1 을 '약 10차원 비모수 학습'으로 읽는 해석(Bahri 2021) — 강사는 반신반의.",
+   "at": 1110
+  },
+  {
+   "term": "절편 대 기울기",
+   "explain": "로그-로그 직선 두 개를 비교할 때 절편 차이는 일정한 연산 배수, 기울기 차이는 규모에 따라 벌어지거나 뒤집히는 격차. 개입 대부분은 절편만 바꾼다.",
+   "at": 1350
+  },
+  {
+   "term": "실효 데이터 (Effective data, D′)",
+   "explain": "반복된 토큰의 가치를 깎아 센 데이터량. D′ = U + U·R*(1 − e^(−R/R*)), R* ≈ 15 — 약 4 epoch 까지는 새 데이터와 거의 같다(Muennighoff 2023).",
+   "at": 1530
+  },
+  {
+   "term": "규모 불변량 (Scale-invariant quantity)",
+   "explain": "모델을 키워도 최적값이 그대로인 양. 층 수는 아니고 aspect ratio(d_model/n_layer) 같은 비율이 후보.",
+   "at": 2160
+  },
+  {
+   "term": "비임베딩 파라미터",
+   "explain": "임베딩(과 Kaplan 의 경우 출력층)을 뺀 파라미터 수. Kaplan 이 깔끔한 곡선을 위해 썼지만 작은 규모에서 Chinchilla 와의 차이를 만든 원인 중 하나.",
+   "at": 2260
+  },
+  {
+   "term": "임계 배치 크기 (Critical batch size)",
+   "explain": "배치 확대가 완벽한 확장(잡음 제한)에서 수확 체감(편향 제한)으로 넘어가는 지점. B_crit = E_min/S_min, 손실이 낮을수록 커진다.",
+   "at": 2520
+  },
+  {
+   "term": "μP (Maximal update parametrization)",
+   "explain": "너비에 맞춰 층별 초기화와 학습률을 바꿔(행렬형 η → η/r 등) 최적 하이퍼파라미터가 너비를 넘어 전이되게 하는 매개화.",
+   "at": 2990
+  },
+  {
+   "term": "결합 스케일링 법칙",
+   "explain": "손실을 N 과 D 의 함수로 함께 쓴 것. L = E + A/N^α + B/D^β(Rosenfeld·Chinchilla) 또는 Kaplan 의 [(N_c/N)^(α_N/α_D) + D_c/D]^α_D.",
+   "at": 3480
+  },
+  {
+   "term": "연산 최적 (Compute-optimal) 배분",
+   "explain": "C ≈ 6ND 제약 아래 손실을 최소화하는 N, D. Kaplan N ∝ C^0.73, Chinchilla N ∝ C^0.5(파라미터당 약 20 토큰).",
+   "at": 3630
+  },
+  {
+   "term": "IsoFLOP",
+   "explain": "FLOPs 를 고정하고 다른 자유도(예: N 대 D)를 훑어 손실 골짜기의 최솟점을 찾은 뒤, 최솟점이 예산에 따라 움직이는 법칙을 맞추는 실험 설계.",
+   "at": 3870
+  },
+  {
+   "term": "아래 껍질 방법 (Lower envelope)",
+   "explain": "모든 학습 곡선에서 FLOP 별 최저 손실 점을 모아, 그 점의 모델 크기를 FLOPs 에 대해 맞추는 Chinchilla 방법 1.",
+   "at": 3780
+  },
+  {
+   "term": "과학습 (Overtraining)",
+   "explain": "서빙 비용을 줄이려 Chinchilla 비율보다 훨씬 많은 토큰으로 작은 모델을 학습하는 것. 강사는 그것이 사실상 '알맞은 학습'이라 본다.",
+   "at": 4470
+  },
+  {
+   "term": "상류 대 하류 지표",
+   "explain": "퍼플렉서티(상류)는 매끄럽고 예측 가능하지만 벤치마크(하류) 성능과의 상관은 모델 모양에 따라 깨질 수 있다.",
+   "at": 3070
+  }
+ ],
+ "trends": [
+  {
+   "claim": "스케일링 법칙은 대형 연구실에서 거의 신념이자 생활 방식처럼 쓰인다",
+   "evidence": "강사 의견 — 큰 연구실의 스케일링 연구자들이 법칙을 '믿는다'고 말할 정도라고 전하면서, 동시에 법칙이 까다로운 물건임을 강의 내내 보인다.",
+   "at": 170
+  },
+  {
+   "claim": "새 아키텍처 논문은 모두 트랜스포머 대비 스케일링 그림을 싣는다",
+   "evidence": "Mamba·Gated DeltaNet 등은 기준선 트랜스포머와 같은 로그-로그 축에 자기 모델을 그려 절편·기울기 우위를 보인다. Tay 2022 의 결론(GLU·MoE 는 잘 늘고 Performer 는 안 는다)이 지금 프런티어 모델의 선택과 일치한다.",
+   "at": 1950
+  },
+  {
+   "claim": "데이터 혼합은 법칙 맞춤보다 '작은 규모의 최고 혼합을 그대로 키우기'가 실무 표준이다",
+   "evidence": "강사가 전하는 데이터 혼합 실무자들의 말과 DataDecide 의 대규모 실험 — 기울기가 같으면 작은 규모의 순위가 유지된다.",
+   "at": 1450
+  },
+  {
+   "claim": "연산은 늘지만 데이터는 늘지 않는다 — 반복·필터링·앙상블 연구가 늘고 있다",
+   "evidence": "Scaling Data-Constrained LMs(4 epoch 까지 무해), 무한 연산 사전학습 연구, 규모에 따라 느슨해지는 최적 필터(Goyal 2024).",
+   "at": 1530
+  },
+  {
+   "claim": "학습률 설정에서는 μP 보다 '최적점 법칙 외삽'을 택하는 곳이 조금 더 많아 보인다",
+   "evidence": "강사 의견 — 두 방식 모두 대형 학습에서 성공 사례가 있지만 일화적으로 법칙 방식이 조금 더 선호된다.",
+   "at": 3020
+  },
+  {
+   "claim": "모델 배분은 Kaplan 의 거대 모델 → Chinchilla 20:1 → 서빙을 위한 과학습으로 옮겨 왔다",
+   "evidence": "슬라이드의 토큰/파라미터: GPT-3 2, Chinchilla 20, LLaMA 65B 22, Llama 2 70B 29, Mistral 7B 110, Llama 3 70B 215. 연산 대부분이 학습이 아니라 R&D 와 서빙에 쓰인다는 외부 조사.",
+   "at": 4470
+  },
+  {
+   "claim": "IsoFLOP 은 언어 모델을 넘어 확산 모델·MoE 희소도까지 기본 실험 설계로 쓰인다",
+   "evidence": "Gulrajani 외 2023(확산 대 자기회귀), Abnar 외 2025(MoE 희소도 IsoFLOP 곡면). 강사는 맞교환 결정의 기본값으로 권한다.",
+   "at": 4580
+  }
+ ],
+ "study": {
+  "prereq": [
+   "CS336 2강(kuYAsz7zspQ) — 학습 FLOPs ≈ 6ND, 파라미터 회계, MFU",
+   "CS336 3강(lVynu4bo1rY) — 너비·깊이·헤드 등 하이퍼파라미터 경험칙(오늘 이것을 법칙으로 다시 정한다)",
+   "CS336 4강(cKSwj_qZ8Jg)의 MoE 와 7강(SzpOcwdIL0Y)의 데이터 병렬 — 희소도와 배치 크기의 시스템 쪽 사정",
+   "로그·지수 계산, 최소제곱 직선 맞춤, 편미분으로 제약 최적화 풀기",
+   "CS229 6강(llnEgyyuYkQ)의 편향–분산 직관 — 잡음 제한과 편향 제한 구간을 이해하는 데 쓰인다"
+  ],
+  "steps": [
+   {
+    "do": "Kaplan 의 세 법칙(C·D·N)을 식으로 적고, 두 점에서 로그-로그 기울기를 손으로 재 지수가 그대로 나오는지 확인한다. 바닥 E 가 있는 곡선에서 E 를 빼야 직선이 되는 것도 그려 본다",
+    "why": "모든 스케일링 작업의 기본 동작이 '로그-로그 직선 맞추기'다. 기울기 −0.095 가 '10배마다 20% 감소'라는 감각이 있어야 결과를 읽을 수 있다."
+   },
+   {
+    "do": "평균 추정 σ²/n 과 d 차원 칸 나누기 추정 n^(−1/d) 을 시뮬레이션해 기울기 −1 과 −1/d 를 확인한다",
+    "why": "왜 거듭제곱 꼴인지, 왜 신경망 지수가 작은지에 대한 이론적 직관을 얻는다."
+   },
+   {
+    "do": "작은 트랜스포머(수백만~수천만 파라미터)를 3~5 크기로 학습해 파라미터–손실 로그-로그 직선을 그리고, 옵티마이저나 활성 함수 하나를 바꿔 절편·기울기 변화를 비교한다",
+    "why": "'개입은 대부분 절편만 바꾼다'를 직접 경험하고, 절편 차이를 연산 배수로 환산하는 법을 익힌다."
+   },
+   {
+    "do": "IsoFLOP 실험을 설계한다 — FLOP 예산 3~4개, 예산마다 모델 크기 5~7개(D = C/6N), 각 실행을 그 길이에 맞춘 코사인 스케줄로 학습, 포물선 꼭짓점 → log N* 대 log C 직선",
+    "why": "Chinchilla 방법 2이자 과제 3의 핵심. 가장 튼튼하고 어디에나 쓰이는 도구다."
+   },
+   {
+    "do": "L = E + A/N^α + B/D^β 의 닫힌 꼴 최적점을 유도하고, 원논문 상수와 Epoch 재적합 상수로 Gopher 예산의 답을 비교한다",
+    "why": "a = β/(α+β) 라는 한 줄이 Kaplan·Chinchilla·재적합 논쟁 전체를 꿰뚫는다. 상수 맞춤의 작은 차이가 점근 결론을 바꾸는 것을 숫자로 본다."
+   },
+   {
+    "do": "임계 배치 쌍곡선 (S/S_min − 1)(E/E_min − 1) = 1 에서 B = B_crit/4, B_crit, 4B_crit 의 스텝·예제 배수를 계산하고, μP 표를 보고 너비 4배 모델의 층별 학습률·초기화를 직접 적어 본다",
+    "why": "배치와 학습률은 큰 학습에서 매번 새로 정해야 하는 두 하이퍼파라미터다. 다음 심화편(11강)의 준비이기도 하다."
+   },
+   {
+    "do": "과학습 손익분기 계산: 목표 손실을 고정하고 작은 모델에 필요한 토큰, 추가 학습비, 그것을 되찾는 서빙 토큰 수를 구한다",
+    "why": "학습 최적과 제품 최적이 왜 다른지, 실제 모델의 토큰/파라미터 비(20 → 215)를 설명할 수 있게 된다."
+   }
+  ],
+  "practice": [
+   "c2 코드를 고쳐 잡음을 5% 로 키우고, 점 개수(3·5·10)와 x 범위(1자리·4자리)에 따라 추정 지수의 오차가 어떻게 변하는지 기록하라.",
+   "IsoFLOP 코드에서 각 예산의 N 훑기 범위를 최솟점 한쪽으로 치우치게 바꿔 보고(예: 오른쪽 벽만), 꼭짓점과 최종 지수가 얼마나 틀어지는지 확인하라.",
+   "Muennighoff 의 D′ 식을 데이터 법칙 L = E + B/D′^β 에 넣어, 고유 토큰 1T 로 연산 예산을 계속 키울 때 손실이 어디서 포화하는지 그려라.",
+   "Kaplan 식 비임베딩 파라미터 수와 총 파라미터 수를 d_model 256~8192 모델들에 대해 계산하고, Chinchilla 법칙으로 만든 손실을 두 x 축으로 각각 그려 국소 기울기가 달라지는지 확인하라(Pearce & Song 재현).",
+   "임계 배치 Kaplan 식으로 손실 3.0 → 2.0 학습 동안 B_crit 이 어떻게 커지는지 표로 만들고, 이에 맞춘 배치 워밍업 스케줄을 설계하라."
+  ],
+  "resources": [
+   {
+    "title": "CS336 과목 홈페이지 (강의 자료·과제 3)",
+    "url": "https://cs336.stanford.edu/"
+   },
+   {
+    "title": "Kaplan 외 2020 — Scaling Laws for Neural Language Models",
+    "url": "https://arxiv.org/abs/2001.08361"
+   },
+   {
+    "title": "Hoffmann 외 2022 — Training Compute-Optimal Large Language Models (Chinchilla)",
+    "url": "https://arxiv.org/abs/2203.15556"
+   },
+   {
+    "title": "Hestness 외 2017 — Deep Learning Scaling is Predictable, Empirically",
+    "url": "https://arxiv.org/abs/1712.00409"
+   },
+   {
+    "title": "Rosenfeld 외 2019 — A Constructive Prediction of the Generalization Error Across Scales",
+    "url": "https://arxiv.org/abs/1909.12673"
+   },
+   {
+    "title": "McCandlish 외 2018 — An Empirical Model of Large-Batch Training",
+    "url": "https://arxiv.org/abs/1812.06162"
+   },
+   {
+    "title": "Yang 외 2022 — Tensor Programs V (μP, 하이퍼파라미터 전이)",
+    "url": "https://arxiv.org/abs/2203.03466"
+   },
+   {
+    "title": "Muennighoff 외 2023 — Scaling Data-Constrained Language Models",
+    "url": "https://arxiv.org/abs/2305.16264"
+   },
+   {
+    "title": "Porian 외 2024 — Resolving Discrepancies in Compute-Optimal Scaling of Language Models",
+    "url": "https://arxiv.org/abs/2406.19146"
+   },
+   {
+    "title": "Pearce & Song 2024 — Reconciling Kaplan and Chinchilla Scaling Laws",
+    "url": "https://arxiv.org/abs/2406.12907"
+   },
+   {
+    "title": "Besiroglu 외 2024 — Chinchilla Scaling: A replication attempt",
+    "url": "https://arxiv.org/abs/2404.10102"
+   }
+  ]
+ },
+ "jobs": {
+  "roles": [
+   "LLM 엔지니어 (사전학습)",
+   "AI 리서치 엔지니어 / 리서치 사이언티스트",
+   "ML 엔지니어 (학습 인프라·실험 설계)",
+   "데이터 엔지니어 (사전학습 데이터 큐레이션)",
+   "MLOps 엔지니어"
+  ],
+  "skills": [
+   "PyTorch",
+   "Python",
+   "NumPy",
+   "LLM",
+   "Deep Learning",
+   "Transformer",
+   "MoE",
+   "Distributed Training",
+   "Machine Learning",
+   "CUDA"
+  ]
+ },
+ "related": [
+  "kuYAsz7zspQ",
+  "lVynu4bo1rY",
+  "cKSwj_qZ8Jg",
+  "SzpOcwdIL0Y",
+  "JuoVZkPBiKk",
+  "9vM4p9NN0Ts",
+  "llnEgyyuYkQ"
+ ],
+ "materials": {
+  "transcript": "official",
+  "frames": 156,
+  "every_sec": 30
+ },
+ "written_at": "2026-11-21"
+}

@@ -41,3 +41,4 @@
 - 2026-11-20 · izZba4UA7iY · CS336 · GPU 와 TPU — 메모리 계층, 여섯 가지 가속 기법, FlashAttention 다시 만들기 · 챕터 15 · 본문 19256자
 - 2026-11-20 · SzpOcwdIL0Y · CS336 · 병렬화 1 — 집합 통신(all-reduce·reduce-scatter·all-gather), GPU 연결망, NCCL, 데이터·텐서·파이프라인 병렬 · 챕터 14 · 본문 21578자
 - 2026-11-20 · xnDHaNUvHBg · CS336 · 커널과 Triton — GPU 하드웨어 감각, 벤치마크·프로파일링, 커널 융합, 그리고 GeLU·softmax·행 합·타일 행렬곱 직접 쓰기 · 챕터 15 · 본문 23122자
+- 2026-11-20 · Q15rhEWZPQ4 · CS336 · 스케일링 법칙 기초 — 로그-로그 직선, 데이터·아키텍처·배치·학습률 법칙, Kaplan 대 Chinchilla 와 IsoFLOP · 챕터 15 · 본문 23556자
