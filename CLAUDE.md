@@ -275,6 +275,9 @@
   회사 유형별로 스펙·이직 경로·전형·지원 결과·서류를 센다(backend `features/careers`, `/api/careers`). 적재는
   `python -m store.ingest.careers`(careers.cycle 이 회차 끝에 부른다) — 회사 유형·경력직 출발지 판정은 여기에만 있다.
   원문은 남의 글이라 공개 API 로 안 나가고 `CAREERS_KEY` 열쇠(X-Careers-Key)를 아는 요청에만 붙는다. 정적 사본은 굽지 않는다.
+  **사람 없이 계속 돈다** — GPU·DB 가 있는 윈도우 PC 의 작업 스케줄러가 로그온 때 `careers.cycle --forever`(수집 → 로컬 qwen3:14b
+  추출 → 보고서 → DB)와 뷰어 API 를 띄운다(`careers/install-windows-tasks.ps1`, 등록부 키 `careers`·`careers-api`). 새 검색어는
+  `cycle._auto_queries` 가 보고서 빈칸(후기 없는 회사)·직무·경로·연도 틀로 만든다 — 예전엔 루프 에이전트가 손으로 넣었다.
   **혼자 읽는 책이라 색인하지 않는다** — noindex + sitemap/prerender 제외 + robots
   Disallow. 형식과 집필 규칙(특히 ASCII 그림에서 한글을 테두리 왼쪽에 두지 않는 규칙)은
   `jd-viewer/public/book/README.md`.

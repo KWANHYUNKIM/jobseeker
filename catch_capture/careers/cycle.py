@@ -31,13 +31,45 @@ def _query_name(name: str) -> str:
     return re.sub(r"\s+", " ", s).strip(" ,.")
 
 
+# 사람(루프 에이전트)이 보고서를 읽고 넣던 검색어를 규칙으로 만든다 — 회차가 사람 없이 계속 새 글을 찾게.
+ROLES = ["백엔드", "프론트엔드", "안드로이드", "iOS", "데이터 엔지니어", "데이터 분석가", "머신러닝 엔지니어", "DevOps",
+         "SRE", "보안", "게임 클라이언트", "임베디드", "QA", "풀스택", "웹 퍼블리셔"]
+ROLE_SUFFIX = ["신입 합격 후기", "이직 후기", "취업 회고", "면접 후기"]
+PATHS = ["비전공 개발자 취업", "SI 탈출 이직", "SI 에서 서비스 회사", "스타트업에서 대기업 이직", "대기업에서 스타트업 이직",
+         "공무원 개발자 전향", "디자이너 프론트엔드 전향", "기획자 개발자 전향", "마케터 개발자 전향", "병역특례 개발자 후기",
+         "산업기능요원 개발자", "전문연구요원 개발자", "고졸 개발자 취업", "전문대 개발자 취업", "30대 개발자 전향",
+         "40대 개발자 취업", "부트캠프 수료 취업", "국비지원 취업 후기", "육아 후 개발자 복귀", "경력 공백 개발자 재취업",
+         "권고사직 개발자 재취업", "해외 개발자 취업", "일본 개발자 취업", "외국계 개발자 이직", "프리랜서에서 정규직",
+         "금융권 IT 합격", "공기업 전산직 합격", "게임회사 개발자 합격", "개발자 연봉 협상 이직", "개발자 첫 이직"]
+YEAR_SUFFIX = ["상반기 공채 후기", "하반기 신입 합격", "이직 회고", "취업 회고"]
+CO_SUFFIX_KO = ["면접 후기", "코딩테스트", "개발자 후기"]
+CO_SUFFIX_EN = ["interview", "offer"]
+
+
+def _auto_queries() -> list[str]:
+    """보고서의 빈칸(후기 없는 회사) + 직무·경로·연도 틀로 검색어를 만든다."""
+    rep = store.load_json(store.REPORT_JSON, {})
+    gaps = [c for c in (rep.get("gaps") or {}).get("companies_without_stories") or [] if c]
+    out = []
+    for c in gaps:
+        name = _query_name(c)
+        en = bool(re.fullmatch(r"[A-Za-z0-9 .&'-]+", name))
+        out += [f"{name} {s}" for s in (CO_SUFFIX_EN if en else CO_SUFFIX_KO)]
+    out += [f"{r} {s}" for r in ROLES for s in ROLE_SUFFIX]
+    out += PATHS
+    y = datetime.now().year
+    out += [f"{yy} {s}" for yy in range(y - 4, y + 1) for s in YEAR_SUFFIX]
+    return list(dict.fromkeys(out))
+
+
 def _fill(q: dict) -> None:
     q["pending"] = list(dict.fromkeys(_query_name(k) for k in q["pending"]))   # 예전에 '(주)…' 로 넣은 것도 고친다
     have = set(q["pending"]) | set(q["done"])
     new_generic = [k for k in collect.GENERIC if k not in have]          # 새로 넣은 일반 검색어는 줄 맨 앞
     per_co = [_query_name(f"{c} {s}") for c in store.companies() for s in collect.PER_COMPANY]
     per_co = list(dict.fromkeys(per_co))
-    q["pending"] = new_generic + q["pending"] + [k for k in per_co if k not in have]
+    auto = [k for k in _auto_queries() if k not in have]                 # 빈칸·직무·경로·연도 — 회사 검색어보다 앞
+    q["pending"] = new_generic + auto + q["pending"] + [k for k in per_co if k not in have]
     if not q["pending"]:                       # 한 바퀴 다 돌았다 → 새 글을 찾아 다시 돈다
         q["pending"], q["done"] = q["done"], []
         q["rounds"] = q.get("rounds", 0) + 1

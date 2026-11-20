@@ -4,6 +4,7 @@
   launchd       맥이 주기로 부르는 작업·상주 서버(deploy/setup-*.sh 가 깐다)
   cycle         크롤 한 회차 안에서 차례로 도는 단계(automation/crawl_all.run_foreground)
   claude-loop   Claude Code 의 `/loop` 로 도는 조사 엔진(engine/·guide-engine/·hw-engine/ …)
+  task          윈도우 작업 스케줄러가 로그온 때 띄우는 상주 작업(GPU 가 있는 PC — careers/install-windows-tasks.ps1)
 
 claude-loop 은 **실행 프롬프트가 어디에도 적혀 있지 않아서** 세션이 닫히면 무엇을 어떻게
 돌렸는지가 사라졌다. 그래서 여기 적는다 — 다시 시작할 때는 `prompt` 를 그대로 `/loop` 에 준다.
@@ -40,7 +41,7 @@ PUBLIC = ROOT / "jd-viewer" / "public"
 class Loop:
     key: str
     name: str
-    kind: str                    # launchd | cycle | claude-loop
+    kind: str                    # launchd | cycle | claude-loop | task
     where: str                   # mac | any
     cadence: str                 # 사람이 읽는 주기
     stale_hours: float           # 산출물이 이보다 오래되면 '멈춤' 으로 본다
@@ -306,10 +307,12 @@ REGISTRY: list[Loop] = [
              "디자인 에이전트 한 회차 — `.claude/skills/design-round/SKILL.md` 를 읽고 그 순서 그대로 한다. "
              "표지는 card-cover 스킬, 교훈을 더할 때는 writing-design-lessons 스킬(검사 먼저 — RED → GREEN)을 따른다. "
              "판정·점수·릴리즈는 사람 몫이라 매기지 않는다. 게시·팔로우·댓글 같은 계정 행동도 하지 않는다. 푸시하지 않는다.")),
-    # 커리어 경로 — 개발자 합격·이직·전환 경험담을 모아 '어떤 길로 어디에 갔나'를 센다(개인 도구, 화면에 싣지 않는다).
-    # 데이터는 var/careers/ 에만 쌓이고 커밋하지 않는다. 사람이 아니라 경로를 모은다(careers/__init__.py).
-    Loop("careers", "커리어 경로 수집", "claude-loop", "any", "30분마다(repeat)", 24,
-         "python -m automation.loops repeat careers --every 30m", ["catch_capture/var/careers/report.json"],
+    # 커리어 경로 — 개발자 합격·이직·전환 경험담을 모아 '어떤 길로 어디에 갔나'를 센다(뷰어 학습 › 취업후기, noindex).
+    # 데이터는 var/careers/ 와 정본 DB(career_*, 019)에 쌓이고 커밋하지 않는다. 사람이 아니라 경로를 모은다(careers/__init__.py).
+    # 사람 없이 계속 돈다 — 검색어는 cycle._auto_queries 가 보고서 빈칸·직무·경로·연도 틀로 만들고, 회차 끝에 DB 에 쓴다.
+    # 아래 prompt 는 사람이 검색어를 더 다양하게 넣고 싶을 때 한 번 돌리는 덤이다(`loops run careers`).
+    Loop("careers", "커리어 경로 수집(취업후기)", "task", "windows", "상주(--forever, 회차 사이 60초)", 6,
+         "jobseeker-careers → careers.cycle --forever --queries 80", ["catch_capture/var/careers/report.json"],
          check="cd catch_capture && python -m careers.report",
          owns=["catch_capture/var/careers/"],
          prompt=(
@@ -328,6 +331,11 @@ REGISTRY: list[Loop] = [
              "인스타그램·페이스북·링크드인·블라인드·잡플래닛은 자동으로 긁지 않는다(약관). 글쓴이를 다른 계정과 엮거나 개인을 추적하지 않는다. "
              "코드를 고치지 않고 커밋·푸시하지 않는다. 경험담 수·새로 넣은 검색어를 한두 줄로 보고한다.")),
 ]
+
+REGISTRY.append(
+    Loop("careers-api", "뷰어 API 8771(윈도우)", "task", "windows", "상주(로그온 때)", 0,
+         "jobseeker-viewer-api → backend: python -m app.main",
+         note="취업후기(/careers)를 이 PC 에서 보려고 띄운다. CAREERS_KEY 는 install-windows-tasks.ps1 -CareersKey 로 준다."))
 
 BY_KEY = {l.key: l for l in REGISTRY}
 
@@ -429,6 +437,18 @@ def _launchd_alive(label: str) -> bool | None:
         return None
 
 
+def _task_alive(name: str) -> bool | None:
+    """윈도우 작업 스케줄러의 작업이 돌고 있나. 윈도우가 아니면 모른다(None)."""
+    if not shutil.which("schtasks"):
+        return None
+    try:
+        r = subprocess.run(["schtasks", "/query", "/tn", name, "/fo", "csv", "/nh"], capture_output=True, timeout=5)
+        out = r.stdout.decode("utf-8", "replace") + r.stdout.decode("cp949", "replace")
+        return r.returncode == 0 and ("Running" in out or "실행 중" in out)
+    except Exception:
+        return None
+
+
 def status(l: Loop) -> dict:
     last = None
     if l.kind == "claude-loop":
@@ -438,8 +458,9 @@ def status(l: Loop) -> dict:
         ts = [t for t in (_mtime(o) for o in l.outputs) if t]
         last = max(ts) if ts else None
     age_h = (datetime.now() - last).total_seconds() / 3600 if last else None
-    alive = _launchd_alive(l.run.split(" ")[0]) if l.kind == "launchd" else None
-    if l.kind == "launchd" and alive is False:
+    alive = (_launchd_alive(l.run.split(" ")[0]) if l.kind == "launchd"
+             else _task_alive(l.run.split(" ")[0]) if l.kind == "task" else None)
+    if l.kind in ("launchd", "task") and alive is False:
         state = "stopped"
     elif l.stale_hours and age_h is not None and age_h > l.stale_hours:
         state = "stale"
