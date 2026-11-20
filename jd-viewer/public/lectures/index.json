@@ -1,21 +1,31 @@
 {
- "generated_at": "2026-11-21T07:56:53",
- "count": 22,
+ "generated_at": "2026-11-21T08:22:01",
+ "count": 29,
  "topics": [
   {
    "key": "ml-basics",
    "label": "머신러닝 기초",
-   "count": 7
-  },
-  {
-   "key": "deep-learning",
-   "label": "딥러닝",
-   "count": 4
+   "count": 8
   },
   {
    "key": "llm",
    "label": "LLM",
-   "count": 4
+   "count": 6
+  },
+  {
+   "key": "deep-learning",
+   "label": "딥러닝",
+   "count": 5
+  },
+  {
+   "key": "rl",
+   "label": "강화학습",
+   "count": 2
+  },
+  {
+   "key": "systems",
+   "label": "AI 시스템·인프라",
+   "count": 2
   },
   {
    "key": "vision",
@@ -30,11 +40,6 @@
   {
    "key": "career",
    "label": "커리어·공부법",
-   "count": 1
-  },
-  {
-   "key": "systems",
-   "label": "AI 시스템·인프라",
    "count": 1
   },
   {
@@ -57,7 +62,7 @@
    "term": "Spring 2026",
    "playlist": "https://www.youtube.com/playlist?list=PLaqpC4kq8Gpw",
    "total": 17,
-   "done": 11,
+   "done": 17,
    "lectures": [
     {
      "no": 1,
@@ -127,7 +132,7 @@
      "id": "sUS-eTa0l6s",
      "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 10: GMM (EM), PCA",
      "duration_sec": 4806,
-     "done": false
+     "done": true
     },
     {
      "no": 11,
@@ -141,14 +146,14 @@
      "id": "_kREM2UAiJ8",
      "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 12: Representation Learning",
      "duration_sec": 4557,
-     "done": false
+     "done": true
     },
     {
      "no": 13,
      "id": "lNTajqxxOn4",
      "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 13: LLMs, Next-Word Prediction Loss",
      "duration_sec": 3642,
-     "done": false
+     "done": true
     },
     {
      "no": 14,
@@ -162,21 +167,21 @@
      "id": "hHC-SF3utxg",
      "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 16: Basic Concept in RL, Policy Gradient",
      "duration_sec": 4399,
-     "done": false
+     "done": true
     },
     {
      "no": 16,
      "id": "xveNBYVTrqw",
      "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 18: GMM (EM), PCA",
      "duration_sec": 4585,
-     "done": false
+     "done": true
     },
     {
      "no": 17,
      "id": "J7CossjMvEg",
      "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 20: GMM (EM), PCA",
      "duration_sec": 4736,
-     "done": false
+     "done": true
     }
    ]
   },
@@ -188,7 +193,7 @@
    "term": "Spring 2026",
    "playlist": "https://www.youtube.com/playlist?list=PLoROMvodv4rMqXOcazWaTUHhq-yembLCV",
    "total": 18,
-   "done": 2,
+   "done": 3,
    "lectures": [
     {
      "no": 1,
@@ -202,7 +207,7 @@
      "id": "kuYAsz7zspQ",
      "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 2: PyTorch (einops)",
      "duration_sec": 4645,
-     "done": false
+     "done": true
     },
     {
      "no": 3,
@@ -1021,6 +1026,100 @@
  ],
  "items": [
   {
+   "id": "J7CossjMvEg",
+   "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 20: GMM (EM), PCA",
+   "title_ko": "정책 경사 마무리·PPO·CISPO 와 LLM 추론 강화학습 — 보상-투-고, 클리핑, 그룹 평균 베이스라인 (유튜브 제목 'GMM (EM), PCA' 는 오기)",
+   "school": "Stanford",
+   "code": "CS229",
+   "term": "Spring 2026",
+   "speaker": "Tengyu Ma (Stanford 컴퓨터과학과 교수)",
+   "topic": "rl",
+   "tags": [
+    "Python",
+    "NumPy",
+    "PyTorch",
+    "Reinforcement Learning",
+    "LLM",
+    "Machine Learning"
+   ],
+   "level": "심화",
+   "one_line": "과거 보상 지우기·베이스라인으로 정책 경사를 다듬고, PPO·CISPO 클리핑을 거쳐 정답 보상 RL 로 추론 LLM 을 만든다",
+   "duration_sec": 4736,
+   "published": "2026-07-31",
+   "views": 15096,
+   "url": "https://www.youtube.com/watch?v=J7CossjMvEg",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/J7CossjMvEg/mqdefault.jpg",
+   "chapters": 14,
+   "written_at": "2026-11-21",
+   "series": "cs229-2026",
+   "no": 17
+  },
+  {
+   "id": "xveNBYVTrqw",
+   "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 18: GMM (EM), PCA",
+   "title_ko": "강화학습 기초와 정책 경사 — MDP·가치 함수·벨만 방정식에서 REINFORCE 유도까지 (영상 제목 'GMM (EM), PCA' 는 오기)",
+   "school": "Stanford",
+   "code": "CS229",
+   "term": "Spring 2026",
+   "speaker": "Tengyu Ma (Stanford 컴퓨터과학과 교수)",
+   "topic": "rl",
+   "tags": [
+    "Reinforcement Learning",
+    "Python",
+    "NumPy",
+    "PyTorch",
+    "Machine Learning",
+    "Deep Learning",
+    "LLM",
+    "Robotics"
+   ],
+   "level": "중급",
+   "one_line": "MDP 다섯 쌍으로 세상을 적고, 벨만 방정식을 맛본 뒤, 로그 미분 트릭으로 REINFORCE 정책 경사를 칠판에서 유도한다",
+   "duration_sec": 4585,
+   "published": "2026-07-31",
+   "views": 6224,
+   "url": "https://www.youtube.com/watch?v=xveNBYVTrqw",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/xveNBYVTrqw/mqdefault.jpg",
+   "chapters": 12,
+   "written_at": "2026-11-21",
+   "series": "cs229-2026",
+   "no": 16
+  },
+  {
+   "id": "kuYAsz7zspQ",
+   "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 2: PyTorch (einops)",
+   "title_ko": "PyTorch 와 자원 회계 — 텐서 메모리, einops, FLOPs, 산술 강도, 6ND",
+   "school": "Stanford",
+   "code": "CS336",
+   "term": "Spring 2026",
+   "speaker": "Percy Liang (공동 강사 Tatsunori Hashimoto)",
+   "topic": "systems",
+   "tags": [
+    "PyTorch",
+    "Python",
+    "einops",
+    "NumPy",
+    "GPU",
+    "CUDA",
+    "LLM",
+    "Mixed Precision"
+   ],
+   "level": "중급",
+   "one_line": "텐서 한 개의 바이트부터 6ND·MFU·루프라인까지 — LLM 학습 비용을 손으로 세는 법",
+   "duration_sec": 4645,
+   "published": "2026-04-14",
+   "views": 89372,
+   "url": "https://www.youtube.com/watch?v=kuYAsz7zspQ",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/kuYAsz7zspQ/mqdefault.jpg",
+   "chapters": 15,
+   "written_at": "2026-11-21",
+   "series": "cs336-2026",
+   "no": 2
+  },
+  {
    "id": "DGI4vucR71w",
    "title": "What Are AI Agents? Agentic Systems Explained | Stanford CS329Z Lecture 1 with Diyi Yang",
    "title_ko": "AI 에이전트란 무엇인가 — 역사·구성 요소·컴파운드 AI·남은 과제",
@@ -1051,6 +1150,38 @@
    "written_at": "2026-11-20",
    "series": "cs329z-2026",
    "no": 1
+  },
+  {
+   "id": "_kREM2UAiJ8",
+   "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 12: Representation Learning",
+   "title_ko": "표현 학습 — 확산 모델의 잡음 예측 손실 마무리, 파운데이션 모델, 선형 프로브·파인튜닝·LP-FT·LoRA",
+   "school": "Stanford",
+   "code": "CS229",
+   "term": "Spring 2026",
+   "speaker": "Tengyu Ma (Stanford 컴퓨터과학과 교수)",
+   "topic": "deep-learning",
+   "tags": [
+    "PyTorch",
+    "Python",
+    "NumPy",
+    "Deep Learning",
+    "Machine Learning",
+    "LLM",
+    "Fine-tuning",
+    "LoRA"
+   ],
+   "level": "중급",
+   "one_line": "확산의 ε-예측 손실을 끝내고, 사전학습된 표현을 선형 프로브·파인튜닝·LP-FT·LoRA 로 과제에 맞추는 법",
+   "duration_sec": 4557,
+   "published": "2026-07-31",
+   "views": 12692,
+   "url": "https://www.youtube.com/watch?v=_kREM2UAiJ8",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/_kREM2UAiJ8/mqdefault.jpg",
+   "chapters": 15,
+   "written_at": "2026-11-20",
+   "series": "cs229-2026",
+   "no": 12
   },
   {
    "id": "bSmIGBCoffA",
@@ -1113,6 +1244,70 @@
    "no": 11
   },
   {
+   "id": "hHC-SF3utxg",
+   "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 16: Basic Concept in RL, Policy Gradient",
+   "title_ko": "어텐션 변형(GQA·슬라이딩 윈도·QK 정규화)·Mixture of Experts·인컨텍스트 학습·지시 튜닝 — 제목은 'RL·정책 경사'지만 실제 내용은 14강의 다음 시간",
+   "school": "Stanford",
+   "code": "CS229",
+   "term": "Spring 2026",
+   "speaker": "Tengyu Ma (Stanford 컴퓨터과학과 교수)",
+   "topic": "llm",
+   "tags": [
+    "LLM",
+    "Transformer",
+    "Attention",
+    "MoE",
+    "PyTorch",
+    "Python",
+    "NumPy",
+    "Deep Learning"
+   ],
+   "level": "중급",
+   "one_line": "KV 캐시를 줄이는 GQA, T² 를 깎는 슬라이딩 윈도, 매개변수와 연산을 떼는 MoE, 그리고 ICL·제로샷·SFT 까지 — LLM 을 싸게 돌리고 쓰는 법 73분",
+   "duration_sec": 4399,
+   "published": "2026-07-31",
+   "views": 11966,
+   "url": "https://www.youtube.com/watch?v=hHC-SF3utxg",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/hHC-SF3utxg/mqdefault.jpg",
+   "chapters": 15,
+   "written_at": "2026-11-20",
+   "series": "cs229-2026",
+   "no": 15
+  },
+  {
+   "id": "lNTajqxxOn4",
+   "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 13: LLMs, Next-Word Prediction Loss",
+   "title_ko": "대조 학습으로 임베딩 만들기 — 지도 사전학습에서 SimCLR 손실, 시맨틱 검색과 RAG 까지",
+   "school": "Stanford",
+   "code": "CS229",
+   "term": "Spring 2026",
+   "speaker": "Tengyu Ma (Stanford 컴퓨터과학과 교수)",
+   "topic": "llm",
+   "tags": [
+    "PyTorch",
+    "Python",
+    "Numpy",
+    "Embedding",
+    "Contrastive Learning",
+    "Vector Database",
+    "RAG",
+    "LLM"
+   ],
+   "level": "중급",
+   "one_line": "라벨 없이 '같은 것은 가깝게, 다른 것은 멀게' 배운 임베딩이 검색과 RAG 가 되기까지",
+   "duration_sec": 3642,
+   "published": "2026-07-31",
+   "views": 6537,
+   "url": "https://www.youtube.com/watch?v=lNTajqxxOn4",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/lNTajqxxOn4/mqdefault.jpg",
+   "chapters": 15,
+   "written_at": "2026-11-20",
+   "series": "cs229-2026",
+   "no": 13
+  },
+  {
    "id": "pwQ0l4hFCVI",
    "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 14: Transformers, In-Context Learning",
    "title_ko": "트랜스포머를 칠판으로 유도하기 — 토큰화부터 자기회귀 확률모델, 셀프 어텐션·마스킹·멀티헤드까지",
@@ -1143,6 +1338,36 @@
    "written_at": "2026-11-20",
    "series": "cs229-2026",
    "no": 14
+  },
+  {
+   "id": "sUS-eTa0l6s",
+   "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 10: GMM (EM), PCA",
+   "title_ko": "EM 알고리즘과 PCA — 젠슨 부등식·ELBO 로 GMM 을 유도하고, 공분산 고유벡터로 주성분 찾기",
+   "school": "Stanford",
+   "code": "CS229",
+   "term": "Spring 2026",
+   "speaker": "Chris Ré (Stanford 컴퓨터과학과)",
+   "topic": "ml-basics",
+   "tags": [
+    "Python",
+    "NumPy",
+    "scikit-learn",
+    "Machine Learning",
+    "Statistics",
+    "Data Analysis"
+   ],
+   "level": "중급",
+   "one_line": "젠슨 부등식 하나로 ELBO·EM 을 세워 GMM 갱신식을 되찾고, 공분산의 고유벡터로 PCA 를 유도한다",
+   "duration_sec": 4805,
+   "published": "2026-07-31",
+   "views": 5023,
+   "url": "https://www.youtube.com/watch?v=sUS-eTa0l6s",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/sUS-eTa0l6s/mqdefault.jpg",
+   "chapters": 15,
+   "written_at": "2026-11-20",
+   "series": "cs229-2026",
+   "no": 10
   },
   {
    "id": "EETpft-TDWw",

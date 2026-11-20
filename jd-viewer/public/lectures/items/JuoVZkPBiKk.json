@@ -310,7 +310,7 @@
         "AI 정책: 에이전트에게 PDF 를 넣으면 다 풀리지만 배우는 게 없다. AI 를 쓰려면 과목의 AGENTS.md(교육적으로 답하라는 프롬프트)를 반드시 쓴다.",
         "연산은 올해 Modal 크레딧 — 작년의 SSH 클러스터 대신 API 방식."
       ],
-      "on_screen": "def course_logistics(): 'All information online: https://stanford-cs336.github.io/spring2026/', 'This is a 5-unit class', 2024 수강평 인용, Why you should / should not take this course, How you can follow along at home(CGOE 녹화), Assignments 4줄(5 assignments, No scaffolding code but unit tests and adapter interfaces, Implement locally then run on cluster, Leaderboard), AI policy 4줄(You must use our provided AGENTS.md file…), Compute: Thanks to Modal.",
+      "on_screen": "def course_logistics(): 'All information online: https://cs336.stanford.edu/', 'This is a 5-unit class', 2024 수강평 인용, Why you should / should not take this course, How you can follow along at home(CGOE 녹화), Assignments 4줄(5 assignments, No scaffolding code but unit tests and adapter interfaces, Implement locally then run on cluster, Leaderboard), AI policy 4줄(You must use our provided AGENTS.md file…), Compute: Thanks to Modal.",
       "explain": [
         "이 장은 '이 과목이 나에게 맞나'를 판단하는 안내다. 과목은 5학점이고 과제가 다섯 개다. 화면에 띄운 2024년 수강 평가에는 '첫 과제 하나가 CS224N 과제 다섯 개와 기말 프로젝트를 합친 양이었다'는 말이 있다. 강사는 과장일 수 있지만 보수적으로 예상하는 편이 낫다고 덧붙인다. 들어야 할 사람은 어떻게 돌아가는지 알고 싶어 견딜 수 없는 사람, 연구 엔지니어링 근육을 키우고 싶은 사람이다. 강사는 자신이 예전에 만든 통계적 학습 이론 과목이 논문의 수학을 읽게 해 줬듯, 분야가 시스템·실험 쪽으로 옮겨 간 지금 이 과목이 그 역할을 해서 '다른 것은 다 쉬워 보이게' 만들고 싶다고 말한다.",
         "듣지 말아야 할 사람도 분명히 적었다. 이번 학기에 연구 성과를 내야 하는 사람(지도교수와 먼저 상의할 것), 멀티모달·RAG·에이전트 같은 최신 기법을 배우고 싶은 사람(이 과목은 그런 것을 깊이 다루지 않으니 세미나 과목이 낫다), 자기 응용 분야에서 좋은 결과만 내고 싶은 사람이다. 마지막 경우에 강사가 늘 권하는 순서가 있다 — 먼저 프롬프트, 안 되면 파인튜닝, 최후의 수단으로 사전학습. 사전학습은 고통스럽고 비싸기 때문이다(재미는 있다고 덧붙인다). 수강하지 않는 사람도 홈페이지의 자료와 녹화 영상으로 따라올 수 있지만, 진짜 배움은 과제를 할 때 생긴다.",
@@ -952,7 +952,7 @@
     "resources": [
       {
         "title": "CS336 Spring 2026 과목 홈페이지(강의 코드·과제·일정)",
-        "url": "https://stanford-cs336.github.io/spring2026/"
+        "url": "https://cs336.stanford.edu/"
       },
       {
         "title": "CS336 과제 저장소(GitHub stanford-cs336)",
