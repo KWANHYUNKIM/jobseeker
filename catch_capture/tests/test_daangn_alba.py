@@ -226,3 +226,24 @@ def test_check_fetches_no_new_posts(tmp_path, monkeypatch):
     monkeypatch.setattr(orch, "emit", lambda *a, **k: None)      # 진짜 run_events.jsonl 에 쓰지 않게
     da.check(42)
     assert seen == {"new": 0, "re": 42}
+
+
+# ── 범위 넓힘(규칙 2판) — 컴퓨터로 하는 디자인·문서 일까지 ─────────────
+
+@pytest.mark.parametrize("title, cat", [
+    ("로고제작 많이 해보신분 도움부탁드려요", "디자인·영상"),
+    ("인테리어 도면 스케치업 및 cad 가능하신분", "디자인·영상"),
+    ("온쉐입 3D 모델링 대신 만들어주실 분", "디자인·영상"),
+    ("사진 누끼따기", "디자인·영상"),
+    ("리플렛 디자인작업 도와주실분", "디자인·영상"),
+    ("스케치업 가르쳐 주실 선생님 구해요", "코딩·IT 강사"),
+    ("오토캐드 꼼꼼히 기초부터 알려주실분 구합니다", "코딩·IT 강사"),
+    ("한글 hwp 문서 편집 도와주실 분 구합니다", "데이터·사무자동화"),
+])
+def test_rules_v2_design_and_docs(title, cat):
+    assert da.classify(title) == cat
+
+
+@pytest.mark.parametrize("title", ["문서정리 서류정리 직원 모집", "웨딩 촬영 보조", "모델 촬영 알바"])
+def test_rules_v2_still_rejects_offline_work(title):
+    assert da.classify(title) is None

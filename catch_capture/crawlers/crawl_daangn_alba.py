@@ -63,6 +63,8 @@ BASE = "https://jobs.daangn.com"
 SITEMAP_INDEX = f"{BASE}/sitemap.xml"
 OUT_PATH = VIEWER_PUBLIC / "alba.json"
 STATE_PATH = VAR_DIR / "alba" / "state.json"
+# 분류 규칙을 넓히면 올린다 — 판이 바뀌면 '아니다' 판정 기록(rejected)을 비우고 다시 본다.
+RULES_VERSION = 2          # 2: 디자인(로고·편집·CAD·3D·보정·웹툰)·문서 작업까지(2026-11-21)
 # 회차 안(crawl_all)과 회차 사이(launchd com.jobseeker.albacheck) 두 곳에서 돈다. 둘 다 alba.json 을
 # 통째로 읽고 쓰므로 겹치면 늦게 끝난 쪽이 먼저 끝난 쪽의 마감 판정을 지운다 — 못 잡은 쪽이 건너뛴다.
 LOCK_PATH = VAR_DIR / "alba" / "alba.lock"
@@ -99,7 +101,9 @@ _CODING = r"(?<!레)코딩"   # '홈레코딩'
 TEACH_TOPIC = re.compile(
     rf"{_CODING}|프로그래밍|파이썬|{_E}python{_Z}|{_E}java{_Z}|자바(?!칩|라)|c언어|{_E}c\+\+|스크래치|엔트리|아두이노|{_E}plc{_Z}|디지털\s*포렌식|"
     rf"{_E}unity{_Z}|유니티|{_E}ai{_Z}|인공지능|챗\s*gpt|{_E}gpt{_Z}|클로드|컴퓨터|컴활|엑셀|{_E}excel{_Z}|"
-    rf"파워\s*포인트|{_E}ppt{_Z}|{_E}oa{_Z}|{_E}it{_Z}")
+    rf"파워\s*포인트|{_E}ppt{_Z}|{_E}oa{_Z}|{_E}it{_Z}|"
+    rf"{_E}cad{_Z}|캐드|스케치업|라이노|포토샵|일러스트레이터|프리미어|{_E}3d{_Z}|모델링|클립\s*스튜디오|캔바|디지털\s*드로잉|"
+    rf"사진\s*(?:편집|보정)|영상\s*편집|{_E}gtq{_Z}")
 TEACH_ACT = re.compile(r"강사|선생님|쌤|과외|교사|가르쳐|가르치|가르칠|배우|배울|레슨|수업|(?<!평생)교육(?!청|원)|교습|튜터|멘토|알려\s*주|코칭|강의")
 
 WEBAPP = re.compile(
@@ -118,7 +122,12 @@ DESIGN = re.compile(
     rf"배너\s*디자인|(?<!신문)편집자|프리미어\s*프로|어도비|애프터\s*이펙트|캡컷|모션\s*그래픽|{_E}3d{_Z}|블렌더|"
     rf"(?:웹|{_E}ui|{_E}ux|그래픽|편집|시각|영상|콘텐츠|컨텐츠|상세|쇼핑몰|온라인)\s*디자이너|"
     rf"(?:영상|유튜브|유트브|쇼츠|숏폼|릴스|동영상|컷)\S*\s*(?:\S+\s+){{0,3}}?\S*편집|"
-    rf"(?:영상|숏츠|쇼츠|{_E}shorts{_Z}|숏폼)\s*(?:제작|만들|만드|작업)")
+    rf"(?:영상|숏츠|쇼츠|{_E}shorts{_Z}|숏폼)\s*(?:제작|만들|만드|작업)|"
+    rf"로고\s*(?:디자인|제작|작업|만들)|(?:그래픽|편집|시각|브랜드|패키지|포스터|전단지?|명함|카드\s*뉴스|인스타|{_E}sns|"
+    rf"배너|현수막|메뉴판|굿즈|브로셔|리플렛|책자|표지|피피티|{_E}ppt)\s*디자인|카드\s*뉴스|캔바|{_E}canva{_Z}|미리\s*캔버스|"
+    rf"{_E}cad{_Z}|캐드|오토\s*캐드|스케치업|라이노|{_E}rhino{_Z}|3d\s*(?:모델링|프린팅|스캔|작업)|모델링\s*(?:작업|외주)|렌더링|"
+    rf"사진\s*(?:보정|리터칭|편집)|리터칭|누끼|웹툰\s*(?:어시|채색|배경|작업)|클립\s*스튜디오|"
+    rf"디지털\s*(?:드로잉|일러스트|작화)|일러스트\s*(?:작업|외주|제작|그려)|자막\s*(?:작업|제작|번역)")
 OPS = re.compile(
     r"(?:홈\s*페이지|블로그|스마트\s*스토어|쇼핑몰|자사몰|오픈\s*마켓|네이버\s*스토어|카페24|아마존|쇼피|큐텐|플레이오토|사방넷)"
     r"[^\n]{0,20}?(?:관리|운영|등록|업로드|올리|세팅|셋팅|사용|{seo}|상위\s*노출)".replace("{seo}", rf"{_E}seo{_Z}"))
@@ -126,7 +135,8 @@ DATA = re.compile(
     rf"(?:엑셀|{_E}excel{_Z}|스프레드\s*시트|구글\s*시트)\s*\S{{0,3}}?\s*(?:작업|정리|자동화|함수|매크로|데이터|문서|입력|만들|작성)|"
     rf"{_E}vba{_Z}|업무\s*자동화|사무\s*자동화|자동화\s*(?:{_E}ai{_Z}|프로그램)|"
     rf"(?:{_E}ai|{_E}gpt|챗\s*gpt|클로드)\s*(?:활용|자동화)|데이터\s*(?:입력|정리|수집|라벨링|분석|작업|파일)|"
-    rf"라벨링|라벨러|전산\s*입력|노션|{_E}ppt\s*제작|파워\s*포인트\s*제작")
+    rf"라벨링|라벨러|전산\s*입력|노션|{_E}ppt\s*제작|파워\s*포인트\s*제작|"
+    rf"타이핑|문서\s*(?:작업|작성|편집)|한글\s*(?:문서|파일)|{_E}hwp{_Z}|{_E}pdf\s*(?:편집|변환|작업)|녹취\s*(?:록|작업)?")
 PC = re.compile(
     rf"(?:컴퓨터|컴터|{_E}pc{_Z}|노트북|맥북|공유기|와이파이|{_E}wifi{_Z}|네트워크|인터넷|{_E}cctv{_Z}|프린터|모니터|윈도우|"
     rf"{_E}nas{_Z}|하드|갤럭시|아이폰|스마트폰|태블릿)"
@@ -145,7 +155,8 @@ HARD_NON_IT = re.compile(r"{b}bmw|벤츠|아우디|클럽맨|카플레이|안드
 # 현장 일 낱말이 있어도 IT 일이 분명한 것(‘쇼핑몰 MD 겸 웹디자이너’, ‘유튜브 촬영 및 편집’).
 STRONG = re.compile(
     rf"개발자|프로그래머|{_CODING}|웹\s*디자이너|웹디|홈\s*페이지\s*(?:제작|개발)|웹\s*사이트\s*제작|앱\s*개발|"
-    rf"영상\s*편집|편집자|컴퓨터\s*(?:수리|조립)")
+    rf"영상\s*편집|편집자|컴퓨터\s*(?:수리|조립)|3d\s*모델링|모델링\s*(?:작업|외주)|{_E}cad{_Z}|캐드|스케치업|"
+    rf"로고\s*디자인|사진\s*(?:보정|리터칭)|웹툰\s*(?:어시|채색)")
 # 촬영만 하는 일은 IT 가 아니다 — 편집이 같이 있으면 STRONG/DESIGN 이 건진다.
 SHOOT_ONLY = re.compile(r"촬영(?!.*편집)")
 # 제목만으로 모호한 것 — 이게 있으면 상세 본문까지 보고 판정한다.
@@ -532,6 +543,8 @@ def _run(new_limit: int, recheck_limit: int) -> dict:
     state = _load_json(STATE_PATH, {})
     posts: dict[str, dict] = {p["id"]: p for p in doc.get("posts") or []}
     rejected: dict[str, str] = state.get("rejected") or {}       # id → 판정했을 때의 슬러그
+    if state.get("rules_version") != RULES_VERSION:
+        rejected = {}                                            # 규칙이 바뀌었다 — 버린 것도 다시 본다
     seen_lastmod: dict[str, str] = state.get("lastmod") or {}    # 싣고 있는 공고의 사이트맵 lastmod
     report = {"ok": False, "at": now}
     t0 = time.time()
@@ -619,7 +632,8 @@ def _run(new_limit: int, recheck_limit: int) -> dict:
     out = {"updated_at": now, "started_at": doc.get("started_at") or now, "source": report,
            "categories": CATEGORIES, "posts": rows}
     _write_json(OUT_PATH, out)
-    _write_json(STATE_PATH, {"rejected": rejected, "lastmod": seen_lastmod, "sitemap_count": len(entries)})
+    _write_json(STATE_PATH, {"rejected": rejected, "lastmod": seen_lastmod, "sitemap_count": len(entries),
+                             "rules_version": RULES_VERSION})
     open_n = sum(p["status"] == "open" for p in rows)
     print(f"[alba] 사이트맵 {len(entries)}건 · 후보 {len(cands)} · 상세 {fetched}(실패 {failed}) · 신규 {new} · "
           f"재확인 {len(todo)} → 마감 {closed_now} · 누적 {len(rows)}건(모집중 {open_n}) → {OUT_PATH}", flush=True)
