@@ -1,0 +1,1059 @@
+{
+ "id": "kuYAsz7zspQ",
+ "source": {
+  "platform": "youtube",
+  "url": "https://www.youtube.com/watch?v=kuYAsz7zspQ",
+  "channel": "Stanford Online",
+  "published": "2026-04-14",
+  "duration_sec": 4645,
+  "views": 89372
+ },
+ "course": {
+  "school": "Stanford",
+  "code": "CS336",
+  "term": "Spring 2026",
+  "lecture_no": "2",
+  "speaker": "Percy Liang (공동 강사 Tatsunori Hashimoto)"
+ },
+ "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 2: PyTorch (einops)",
+ "title_ko": "PyTorch 와 자원 회계 — 텐서 메모리, einops, FLOPs, 산술 강도, 6ND",
+ "topic": "systems",
+ "tags": [
+  "PyTorch",
+  "Python",
+  "einops",
+  "NumPy",
+  "GPU",
+  "CUDA",
+  "LLM",
+  "Mixed Precision",
+  "Deep Learning"
+ ],
+ "level": "중급",
+ "one_line": "텐서 한 개의 바이트부터 6ND·MFU·루프라인까지 — LLM 학습 비용을 손으로 세는 법",
+ "summary": [
+  "CS336 둘째 시간이다. 유튜브 제목은 'PyTorch (einops)' 지만 einops 는 20분 남짓이고, 강의의 실제 주제는 자원 회계(resource accounting)다 — 학습에 드는 메모리와 연산을 텐서 단위에서부터 세는 법. 강사 Percy Liang 은 두 질문으로 시작한다. 70B 모델을 15T 토큰으로 H100 1024장에서 학습하면 며칠인가(6ND = 6.3e24 FLOPs, MFU 0.5 로 약 144일), H100 8장에 AdamW 로 올릴 수 있는 최대 모델은(파라미터당 2+2+4+4 = 12바이트, 약 533억 개). 강의가 끝나면 이 숫자들의 출처를 모두 설명할 수 있게 된다. 도입부에서는 지난 시간 소개한 Marin 1e23 FLOPs 학습이 스케일링 법칙 예측과 손실 0.05 안쪽으로 맞았다는 소식도 전한다.",
+  "앞부분은 메모리다. 학습의 모든 것(파라미터·그래디언트·옵티마이저 상태·활성값·데이터)은 텐서이고, 텐서의 메모리는 원소 수 × 원소 크기다. float32(1·8·23 비트)는 넉넉하지만 크고, float16(1·5·10)은 범위가 좁아 1e-8 이 0이 되는 언더플로로 학습이 불안정하며, bfloat16(1·8·7)은 같은 2바이트로 float32 의 범위를 얻고 해상도를 내준다. 그래서 파라미터·활성값·그래디언트는 bf16, 옵티마이저 상태는 fp32 로 두는 혼합 정밀도가 관행이다. 더 내려가면 fp8(E4M3 ±448, E5M2 ±57344)과 2025년의 NVFP4(값 15개 + 블록마다 스케일)가 있고, Nemotron 3 Super 는 NVFP4 로 학습됐다.",
+  "중간에 einops 를 다룬다. 축에 이름을 붙여 x @ y.transpose(-2, -1) 같은 숫자 인덱스 코드를 \"batch seq1 hidden, batch seq2 hidden -> batch seq1 seq2\" 로 바꾸는 라이브러리다. einsum(출력에 없는 축은 합쳐진다, ... 로 배치 축을 몇 개든), reduce(sum·mean·max·min 일반화), rearrange(\"(heads hidden1)\" 처럼 한 축을 쪼개고 다시 붙이기) 세 도구를 본다. einsum 관점은 뒤에서 FLOPs 를 셀 때도 그대로 쓰인다 — 나온 모든 축 길이의 곱 × 2.",
+  "연산 쪽에서는 FLOPs(일의 양)와 FLOP/s(하드웨어 속도)를 구분하고, B×D 와 D×K 의 행렬곱이 2·B·D·K FLOPs 이며 이것이 '2 × 토큰 × 파라미터' 로 읽힌다는 것을 보인다. H100 스펙의 1979 teraFLOP/s 는 희소성 가정이라 밀집은 절반이고, 실제 속도 ÷ 약속 속도가 MFU 다(0.5 면 양호). MFU 가 낮은 이유는 산술 강도로 설명된다. 연산 시간 ≈ max(바이트 / 대역폭, FLOPs / 피크)이고, H100 은 바이트당 약 295 FLOPs 를 할 수 있다. ReLU(0.25)·GELU(5)·점곱(0.5)·행렬-벡터(1)는 모두 메모리 병목이고, 정사각 행렬곱만 강도가 n/3 으로 커져 n=1024 에서 341 로 연산 병목이 된다. 학습이 큰 행렬곱으로 GPU 를 채우는 반면 토큰을 하나씩 만드는 추론은 행렬-벡터 곱이라 메모리 병목이다. 루프라인 그림이 이를 한 장으로 보여 준다.",
+  "마지막은 학습 한 스텝이다. 선형층의 역전파는 입력 쪽 그래디언트와 파라미터 쪽 그래디언트 두 행렬곱이라 순전파의 두 배이고, 합쳐서 6 × 토큰 × 파라미터 — 6ND 의 정체다(트랜스포머도 문맥이 짧으면 근사가 맞는다). AdaGrad 구현으로 옵티마이저 상태를 보고, 메모리를 파라미터 2P + 그래디언트 2P + 상태(AdaGrad 4P, Adam 8P) + 활성값 2BDL 로 정리한다. 메모리 절약법으로 그래디언트 누적(마이크로배치로 나눠 더하기)과 활성 체크포인팅(√L 층마다 저장하면 메모리·재계산 모두 O(√L))을 소개하며 끝난다.",
+  "노트에는 강의 화면의 몇 가지 오류를 바로잡아 두었다 — 질문 문장의 'B100s' 는 H100 으로 계산됐고, '8 H100s for 2 weeks' 의 숫자는 1주 값이며, ReLU 강도 주석 '~1/2' 은 0.25, 옵티마이저 메모리의 '4 * parameter_memory' 는 '4 * num_parameters' 가 맞다. 손으로 따라 할 수 있도록 각 장에 작은 숫자 예제와 numpy·einops 로 직접 돌린 코드를 붙였다."
+ ],
+ "why_now": "LLM 학습·서빙 비용은 결국 GPU 시간이고, GPU 시간은 FLOPs 와 바이트로 정해진다. 강사가 첫머리에 던진 '며칠 걸리나·몇 B 까지 올라가나' 같은 질문은 실무에서 실험 계획, 클러스터 예약, 모델 크기 결정의 첫 단계다. bf16·fp8·NVFP4 로 정밀도가 계속 내려가고(강의는 Nemotron 3 Super 의 NVFP4 학습을 예로 든다), 하드웨어의 계산 속도가 메모리 대역폭보다 빨리 늘면서 '메모리 병목인가 연산 병목인가'를 가르는 산술 강도 감각이 커널 융합·FlashAttention·배치 서빙 같은 최적화의 출발점이 됐다. MFU 0.5 를 기준선으로 삼는 감각, 6ND 로 학습비를 어림하는 습관은 국내 LLM 사전학습·추론 최적화 직무 면접에서도 자주 묻는 기본기다.",
+ "trends": [
+  {
+   "claim": "작은 실험으로 맞춘 스케일링 법칙이 1e23 FLOPs 규모 학습의 손실을 맞혔다",
+   "evidence": "Marin 프로젝트의 1e23 FLOPs 학습이 isoFLOP 곡선으로 맞춘 예측과 손실 0.05 이내로 일치(Delphi Scaling Suite 그래프). GPT-5 급 연산으로의 외삽은 법칙의 정확도에 달렸다는 단서.",
+   "at": 0
+  },
+  {
+   "claim": "학습 정밀도는 fp32 → bf16 → fp8 → fp4 로 계속 내려가고 있다",
+   "evidence": "혼합 정밀도(2017) 이후 fp8 표준화(2022), NVIDIA NVFP4(2025), Nemotron 3 Super 가 NVFP4 로 학습. 이 과목은 bf16 까지 다룬다.",
+   "at": 780
+  },
+  {
+   "claim": "1비트로 처음부터 학습한 믿을 만한 언어 모델은 아직 없다 (강사 의견)",
+   "evidence": "높은 정밀도로 학습 후 1~2비트로 양자화하는 것은 흔하지만, 1비트 학습으로 신뢰할 만한 모델이 나온 사례는 모른다고 답변.",
+   "at": 960
+  },
+  {
+   "claim": "하드웨어는 저정밀 연산에 최적화되고 fp32 는 상대적으로 느려지고 있다",
+   "evidence": "스펙 시트의 FLOP/s 가 dtype 마다 크게 다르고 '요즘 fp32 는 정말 느리다, 그 작업을 최적화하지 않기 때문'이라는 설명. 요약 슬라이드: B200 ≫ H100, bfloat16 ≫ float32.",
+   "at": 2380
+  },
+  {
+   "claim": "현대 모델 학습에서 MFU 0.5 면 잘한 것이다 (강사 의견)",
+   "evidence": "순수 행렬곱은 0.8 근처도 가능, 0.1 이면 무언가 잘못된 것. 원인은 메모리 병목 구간.",
+   "at": 2250
+  },
+  {
+   "claim": "트랜스포머는 높은 산술 강도를 얻도록 설계됐고, 추론은 본질적으로 메모리 병목이다",
+   "evidence": "학습은 큰 행렬곱(n=1024 에서 강도 341 > H100 295), 추론의 토큰별 생성은 행렬-벡터 곱(강도 ≈ 1).",
+   "at": 3180
+  }
+ ],
+ "concepts": [
+  {
+   "term": "자원 회계 (Resource accounting)",
+   "explain": "계산 하나가 메모리(바이트)와 연산(FLOPs)을 얼마나 쓰는지 세는 습관. 효율을 올리려면 먼저 비용을 셀 줄 알아야 한다는 것이 이 강의의 사고방식이다.",
+   "at": 60
+  },
+  {
+   "term": "MFU (Model FLOPs Utilization)",
+   "explain": "모델이 논리적으로 필요로 하는 FLOPs 를 측정 시간으로 나눈 실제 FLOP/s 를, dtype 별 약속된 피크 FLOP/s 로 나눈 값. 0.5 면 양호.",
+   "at": 120
+  },
+  {
+   "term": "float32 / fp32",
+   "explain": "부호 1·지수 8·가수 23 비트의 단정밀도. PyTorch 텐서의 기본형으로 원소당 4바이트.",
+   "at": 340
+  },
+  {
+   "term": "float16 / fp16",
+   "explain": "부호 1·지수 5·가수 10. 지수가 짧아 최대 65504, 1e-8 같은 작은 값은 0이 된다(언더플로). 학습이 불안정해지기 쉽다.",
+   "at": 500
+  },
+  {
+   "term": "bfloat16 / bf16",
+   "explain": "부호 1·지수 8·가수 7. 2018년 Google Brain. fp16 과 같은 2바이트로 float32 의 범위를 얻고 해상도(1 근처 2⁻⁷)를 내준다. 현재 학습의 표준.",
+   "at": 580
+  },
+  {
+   "term": "혼합 정밀도 학습 (Mixed precision)",
+   "explain": "파라미터·활성값·그래디언트는 bf16, 옵티마이저 상태는 fp32 처럼 계산마다 다른 정밀도를 쓴다. PyTorch AMP 가 안전한 연산(행렬곱)만 bf16 으로 자동 변환한다.",
+   "at": 690
+  },
+  {
+   "term": "fp8 (E4M3 / E5M2)",
+   "explain": "8비트 부동소수점 두 변형. E4M3 는 ±448 로 해상도 쪽, E5M2 는 ±57344 로 범위 쪽. 2022년 표준화, H100 지원.",
+   "at": 790
+  },
+  {
+   "term": "NVFP4 와 블록 스케일링",
+   "explain": "값 하나에 4비트(−6~6 의 15개 값)만 쓰고, 블록마다 별도 배율을 둬 범위를 넓히는 형식. 같은 블록의 값은 비슷한 자릿수여야 한다.",
+   "at": 830
+  },
+  {
+   "term": "einops einsum",
+   "explain": "축 이름으로 쓰는 일반화된 행렬곱. 출력에 없는 축은 합쳐지고, ... 는 배치 축을 몇 개든 받는다. FLOPs = 나온 모든 축 길이의 곱 × 2.",
+   "at": 1140
+  },
+  {
+   "term": "rearrange",
+   "explain": "\"... (heads hidden1) -> ... heads hidden1\" 처럼 한 축을 여러 축으로 쪼개거나 다시 붙이는 einops 함수. 괄호 안 순서가 펼치는 순서다.",
+   "at": 1440
+  },
+  {
+   "term": "FLOPs vs FLOP/s",
+   "explain": "FLOPs 는 부동소수점 연산의 개수(일의 양), FLOP/s 는 초당 연산(하드웨어 속도). H100 bf16 밀집 피크 989.5e12 FLOP/s(스펙의 1979 는 희소성 가정).",
+   "at": 1660
+  },
+  {
+   "term": "산술 강도 (Arithmetic intensity)",
+   "explain": "알고리즘이 옮긴 바이트당 수행하는 FLOPs. 가속기 강도(피크 FLOP/s ÷ 대역폭, H100 ≈ 295)보다 작으면 메모리 병목, 크면 연산 병목.",
+   "at": 2410
+  },
+  {
+   "term": "메모리 병목 / 연산 병목",
+   "explain": "통신 시간(바이트 ÷ 대역폭)이 계산 시간(FLOPs ÷ 피크)보다 길면 메모리 병목, 반대면 연산 병목. 원소별 연산·점곱·행렬-벡터는 메모리 병목, 큰 행렬곱은 연산 병목.",
+   "at": 2700
+  },
+  {
+   "term": "루프라인 (Roofline)",
+   "explain": "x축 산술 강도, y축 실현 FLOP/s 의 로그 그림. 대역폭에 비례하는 기울기 구간과 피크의 평평한 구간이 가속기 강도에서 꺾인다.",
+   "at": 3300
+  },
+  {
+   "term": "6ND",
+   "explain": "학습 FLOPs ≈ 6 × 파라미터 × 토큰. 순전파 2, 역전파 4(입력 쪽 그래디언트 2 + 파라미터 쪽 그래디언트 2). 문맥이 짧은 트랜스포머에도 근사가 맞는다.",
+   "at": 3700
+  },
+  {
+   "term": "옵티마이저 상태",
+   "explain": "옵티마이저가 스텝 사이에 파라미터마다 기억하는 값. AdaGrad 는 그래디언트 제곱 누적(fp32 4바이트), Adam 은 1·2차 모멘트(8바이트).",
+   "at": 4080
+  },
+  {
+   "term": "그래디언트 누적",
+   "explain": "큰 배치를 마이크로배치로 나눠 그래디언트를 지우지 않고 더한 뒤 batch/micro_batch 스텝마다 한 번 갱신. 활성값 메모리를 줄인다(연산량은 같다).",
+   "at": 4350
+  },
+  {
+   "term": "활성 체크포인팅 (재물질화)",
+   "explain": "순전파 때 일부 층의 활성값만 저장하고 역전파 때 나머지를 다시 계산해 메모리와 연산을 맞바꾼다. √L 층마다 저장하면 메모리·재계산 모두 O(√L).",
+   "at": 4420
+  }
+ ],
+ "study": {
+  "prereq": [
+   "Python·NumPy 배열 다루기(모양, 축, 브로드캐스팅)",
+   "PyTorch 기본 — 텐서, requires_grad, loss.backward(), nn.Module, torch.optim",
+   "행렬곱과 연쇄 법칙(역전파)을 손으로 쓸 수 있는 정도의 선형대수·미적분",
+   "CS336 1강(JuoVZkPBiKk) — 과목 지도와 6ND·효율 렌즈"
+  ],
+  "steps": [
+   {
+    "do": "부동소수점 형식(fp32·fp16·bf16·fp8)의 비트 배분을 외우고, torch.finfo 와 직접 쓴 bf16 변환으로 언더플로·오버플로·반올림을 확인한다",
+    "why": "어떤 텐서를 어떤 정밀도로 둘지, 학습이 왜 NaN 으로 터지는지 판단하는 바탕이다."
+   },
+   {
+    "do": "einops 튜토리얼을 따라 einsum·reduce·rearrange 로 어텐션(쪼개기 → 점수 → 합치기)을 숫자 인덱스 없이 다시 쓴다",
+    "why": "과제 1의 트랜스포머 구현과 이후 모든 코드에서 축 실수를 줄이고, einsum 을 FLOPs 계산 도구로 쓰게 된다."
+   },
+   {
+    "do": "행렬곱 2BDK, 순전파 2NP·학습 6ND 를 유도하고, 작은 MLP 에서 손으로 쓴 역전파를 autograd 결과와 대조한다",
+    "why": "'역전파 = 순전파 2배'를 직접 확인해야 6ND 를 외우지 않고 쓸 수 있다."
+   },
+   {
+    "do": "GPU 에서 synchronize 를 넣어 행렬곱을 여러 크기로 재고 MFU 를 계산한다(정밀도별 약속값 사용)",
+    "why": "측정 실수(동기화 누락, 희소성 피크)를 한 번 겪어 봐야 벤치마크 숫자를 믿을 수 있다."
+   },
+   {
+    "do": "ReLU·GELU·점곱·행렬-벡터·행렬곱의 산술 강도를 손으로 세고 루프라인 그래프를 그려 측정값과 겹쳐 본다",
+    "why": "메모리 병목/연산 병목 진단은 커널(5·6강), 병렬화, 추론 최적화 강의 전체의 공통 언어다."
+   },
+   {
+    "do": "파라미터·그래디언트·옵티마이저 상태·활성값 메모리 계산서를 만들고 torch.cuda.max_memory_allocated 로 맞는지 확인한 뒤 그래디언트 누적·torch.utils.checkpoint 를 적용해 차이를 잰다",
+    "why": "'몇 B 모델이 몇 장에 들어가나'를 어림하고, 메모리가 모자랄 때 쓸 수단의 비용을 숫자로 안다."
+   }
+  ],
+  "practice": [
+   "70B·15T 계산을 B200(bf16 밀집 피크는 스펙 시트에서 직접 찾기), MFU 0.4 로 다시 해 본다. 스펙 각주의 희소성 표기도 확인한다.",
+   "einops 만으로 멀티헤드 어텐션 순전파를 짜고(쪼개기·QKᵀ·softmax·V·합치기), 각 einsum 의 FLOPs 를 '축 길이의 곱 × 2'로 세어 합계를 낸다.",
+   "numpy 로 2층 선형망의 역전파를 einsum 으로 직접 쓰고 유한차분으로 검산한 뒤, 순전파·역전파 FLOPs 비율이 1:2 인지 센다.",
+   "GPU 가 있다면 n = 128, 256, …, 8192 의 bf16 정사각 행렬곱과 같은 크기의 ReLU 를 재서 실현 FLOP/s 를 로그 그래프로 그리고, 루프라인(피크·대역폭) 선과 겹친다.",
+   "D=1024, L=16 MLP 를 Adam 으로 학습할 때 배치를 바꿔 가며 최대 메모리를 재고, 계산서(2P+2P+8P+활성값)와 비교한 뒤 체크포인팅을 켜고 다시 잰다."
+  ],
+  "resources": [
+   {
+    "title": "CS336 Spring 2026 과목 홈페이지(강의 코드·과제·일정)",
+    "url": "https://cs336.stanford.edu/"
+   },
+   {
+    "title": "CS336 과제 저장소(GitHub stanford-cs336)",
+    "url": "https://github.com/stanford-cs336"
+   },
+   {
+    "title": "einops 공식 문서·튜토리얼",
+    "url": "https://einops.rocks/"
+   },
+   {
+    "title": "einops GitHub 저장소",
+    "url": "https://github.com/arogozhnikov/einops"
+   },
+   {
+    "title": "Micikevicius et al. 2017 — Mixed Precision Training",
+    "url": "https://arxiv.org/abs/1710.03740"
+   },
+   {
+    "title": "Micikevicius et al. 2022 — FP8 Formats for Deep Learning",
+    "url": "https://arxiv.org/abs/2209.05433"
+   },
+   {
+    "title": "Chen et al. 2016 — Training Deep Nets with Sublinear Memory Cost(√L 체크포인팅)",
+    "url": "https://arxiv.org/abs/1604.06174"
+   },
+   {
+    "title": "PyTorch 문서 — Automatic Mixed Precision(torch.amp)",
+    "url": "https://pytorch.org/docs/stable/amp.html"
+   },
+   {
+    "title": "PyTorch 문서 — torch.utils.checkpoint",
+    "url": "https://pytorch.org/docs/stable/checkpoint.html"
+   },
+   {
+    "title": "How to Scale Your Model (Google DeepMind, 루프라인·산술 강도)",
+    "url": "https://jax-ml.github.io/scaling-book/"
+   }
+  ]
+ },
+ "jobs": {
+  "roles": [
+   "LLM 엔지니어 (사전학습)",
+   "ML 인프라 / 분산 학습 엔지니어",
+   "GPU 커널·추론 최적화 엔지니어",
+   "AI 리서치 엔지니어",
+   "MLOps 엔지니어 (GPU 클러스터 용량 계획)"
+  ],
+  "skills": [
+   "PyTorch",
+   "Python",
+   "NumPy",
+   "CUDA",
+   "GPU",
+   "LLM",
+   "Deep Learning",
+   "Mixed Precision",
+   "Distributed Training",
+   "Triton"
+  ]
+ },
+ "related": [
+  "JuoVZkPBiKk",
+  "9EEm4iMAF5s"
+ ],
+ "materials": {
+  "transcript": "official",
+  "frames": 155,
+  "every_sec": 30
+ },
+ "written_at": "2026-11-21",
+ "chapters": [
+  {
+   "start": 0,
+   "title": "도입 — Marin 예측 적중과 오늘의 두 질문",
+   "points": [
+    "지난 시간에 띄운 Marin 1e23 FLOPs 학습이 끝났고, 작은 모델들로 맞춘 스케일링 법칙 예측과 손실 차이가 0.05 안쪽이었다.",
+    "오늘 주제는 자원 회계 — 같은 계산이 메모리를 얼마나, 연산을 얼마나 먹는지 세는 법이다.",
+    "질문 ①: 70B 모델을 15T 토큰으로 H100 1024장에서 학습하면 며칠? → 6ND = 6.3e24 FLOPs, 하루 4.38e22 FLOPs, 약 144일.",
+    "질문 ②: H100 8장에 AdamW 로 올릴 수 있는 가장 큰 모델은? → 파라미터당 2+2+4+4 = 12바이트, 약 533억 개.",
+    "배울 것: 원리(PyTorch·텐서 동작), 사고방식(코드 한 줄마다 비용을 떠올리기), 직관(자원이 어디에 쓰이나)."
+   ],
+   "on_screen": "공지(CS336 Slack, Modal 가입, AI 정책·클러스터 안내)와 'Marin 1e23 FLOPs run finished and matched forecasts'. Delphi Scaling Suite Results 그래프 — x축 학습 토큰(10⁹~10¹⁴, 로그), y축 Paloma macro loss, 연산량별 isoFLOP 곡선과 compute-optimal frontier, Δloss=+0.011/+0.005/+0.005 표시, 'FLOP Equivalent to Marin 32B'·'Estimated FLOP Equivalent to GPT-5' 점. 이어서 motivating_questions() 코드: total_flops = 6*70e9*15e12 = 6.300e+24, h100_flop_per_sec = 1979e12/2, mfu = 0.5, flops_per_day = 4.377e+22, days = 143.9266. 두 번째 질문: h100_bytes = 80e9, bytes_per_parameter = 2+2+(4+4) = 12, num_parameters = 53,333,333,333.",
+   "explain": [
+    "강의는 지난 시간의 후일담으로 시작한다. Marin 프로젝트가 1e23 FLOPs 규모 학습을 끝냈는데, 그보다 훨씬 작은 모델 여러 개를 연산 예산별로 돌려 isoFLOP 곡선을 그리고, 각 예산의 최적점을 이어 스케일링 법칙을 맞춘 다음 '이 예산이면 손실이 얼마'라고 미리 적어 둔 값과 실제 손실이 0.05 안쪽으로 맞았다는 소식이다. 강사는 같은 선을 더 밀면 GPT-5 급 연산에서 기대되는 손실도 그릴 수 있다고 덧붙이지만, 외삽은 법칙이 얼마나 잘 맞느냐에 달렸다고 단서를 붙인다. 1강에서 '모델이 아니라 레시피를 설계한다'고 한 말이 실제 숫자로 확인된 장면이다.",
+    "본론은 자원 회계다. 이 과목의 목표는 정해진 자원(연산·메모리, 때로는 데이터)으로 가장 좋은 모델을 만드는 것이고, 그러려면 먼저 '이 계산이 얼마짜리인가'를 셀 줄 알아야 한다. 가계부를 쓰지 않고 절약할 수 없듯, FLOPs 와 바이트를 세지 않고는 효율을 올릴 수 없다. 강사는 오늘 배울 것을 1강의 세 갈래로 다시 나눈다. 원리는 PyTorch 와 텐서가 어떻게 도는지로 마법이 없다. 사고방식은 코드 한 줄을 쓸 때마다 그 줄의 메모리·연산 비용을 떠올리는 습관이다. 직관은 자원이 실제로 어디에 쓰이는지에 대한 감이다. 오늘은 머신러닝 기법 이야기는 없고 순수한 셈만 있다.",
+    "맛보기로 두 질문을 던진다. 첫째, 700억 파라미터 모델을 15조 토큰으로 H100 1024장에서 학습하면 며칠 걸리나. 학습 FLOPs 는 6 × 파라미터 × 토큰이라는 공식(이 강의 끝에서 유도한다)으로 6.3e24 이고, H100 한 장은 bf16 밀집 연산으로 초당 약 9.9e14 FLOPs 를 약속하지만 실제로는 그 절반(MFU 0.5) 정도만 쓴다고 보면 1024장이 하루에 4.38e22 FLOPs 를 해낸다. 나누면 약 144일이다. 둘째, H100 8장(각 80GB)에 AdamW 로 올릴 수 있는 가장 큰 모델은? 파라미터 하나가 bf16 가중치 2바이트, bf16 그래디언트 2바이트, fp32 Adam 1차·2차 모멘트 4+4바이트를 먹으니 12바이트이고, 640GB 를 12로 나누면 약 533억 개다.",
+    "강사는 이 숫자들이 '정답'이 아니라 어림셈이라고 못 박는다. 두 번째 계산은 활성값(activation)을 빼먹었는데, 활성값은 배치 크기와 시퀀스 길이에 따라 달라지기 때문이다. 목표는 모든 것을 정확히 세는 것이 아니라 크기의 자릿수와 모양을 머릿속에 갖는 것이다. 오늘 강의를 끝까지 따라가면 6, 0.5, 2+2+4+4 같은 숫자가 각각 어디서 왔는지 설명할 수 있게 된다."
+   ],
+   "formulas": [
+    {
+     "expr": "days = 6·N·D / (peak × MFU × G × 86400)",
+     "meaning": "N 은 파라미터 수(70e9), D 는 학습 토큰 수(15e12), 6ND 는 학습 전체 FLOPs. peak 는 GPU 한 장의 약속된 초당 FLOPs(H100 bf16 밀집 989.5e12), MFU 는 그중 실제로 쓰는 비율(0.5), G 는 GPU 장수(1024), 86400 은 하루의 초."
+    },
+    {
+     "expr": "N_max ≈ HBM_total / bytes_per_param = (8 × 80e9) / (2+2+4+4)",
+     "meaning": "HBM_total 은 GPU 메모리 합계(바이트). bytes_per_param 은 파라미터 하나가 차지하는 바이트로 bf16 가중치 2 + bf16 그래디언트 2 + fp32 Adam 1차 모멘트 4 + 2차 모멘트 4. 활성값은 빠져 있다."
+    }
+   ],
+   "example": {
+    "title": "144일을 손으로",
+    "body": "6 × 70e9 × 15e12 = 6.3e24 FLOPs. 한 장의 실효 속도 = 989.5e12 × 0.5 ≈ 4.95e14 FLOP/s. 1024장이면 5.07e17 FLOP/s, 하루(86,400초)면 4.38e22 FLOPs. 6.3e24 / 4.38e22 ≈ 143.9일. 같은 계산으로 GPU 를 2048장으로 늘리면 72일, MFU 가 0.4 로 떨어지면 180일이 된다 — MFU 0.1 차이가 한 달이다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 강의 첫머리의 두 질문을 그대로 어림한다\nP, D = 70e9, 15e12                  # 파라미터, 학습 토큰\ntotal_flops = 6 * P * D             # 6ND\nh100 = 1979e12 / 2                  # bf16 밀집(희소성 2배 뺀 값) FLOP/s\nmfu, gpus = 0.5, 1024\nflops_per_day = h100 * mfu * gpus * 24 * 3600\nprint(f\"total={total_flops:.3e}  per_day={flops_per_day:.3e}  days={total_flops/flops_per_day:.1f}\")\n\nhbm = 80e9 * 8                      # H100 8장의 HBM 바이트\nfor name, bpp in [(\"bf16 param+grad, fp32 Adam m,v\", 2 + 2 + 4 + 4),\n                  (\"+ fp32 master weight\", 2 + 2 + 4 + 4 + 4)]:\n    print(f\"{name:32s} {bpp:2d} B/param -> {hbm / bpp / 1e9:.1f}B params\")",
+    "note": "실행 결과: days=143.9, 12 B/param → 53.3B, 16 B/param → 40.0B. 마지막 줄의 fp32 원본 가중치(+4바이트)는 강의에 없는 노트 보충이다."
+   },
+   "pitfalls": [
+    "슬라이드의 질문 문장은 '1024 B100s' 라고 적혀 있지만 코드는 H100 의 1979e12/2 를 쓰고 강사도 말로 H100 이라고 고쳤다. 계산은 H100 기준이다.",
+    "노트 보충: 실제 혼합 정밀도 학습은 bf16 가중치 옆에 fp32 원본(master) 가중치를 따로 두는 경우가 많아 파라미터당 16바이트 이상이 든다. 그러면 같은 8장에 400억 개 정도가 한계이고, 활성값까지 넣으면 더 줄어든다.",
+    "메모리 계산은 GPU 8장의 메모리를 하나로 합친 값이다. 실제로 그렇게 쓰려면 파라미터·상태를 장마다 나눠 담는 샤딩(이후 병렬화 강의)이 필요하다."
+   ],
+   "check": [
+    {
+     "q": "같은 70B·15T 학습을 MFU 0.5, H100 4096장으로 하면 며칠인가?",
+     "a": "GPU 가 4배이므로 143.9 / 4 ≈ 36일."
+    },
+    {
+     "q": "옵티마이저를 상태가 없는 SGD 로 바꾸면 H100 8장에 이론상 몇 개의 파라미터까지 들어가나(활성값 무시)?",
+     "a": "파라미터당 2+2 = 4바이트이므로 640e9 / 4 = 1.6e11, 약 1600억 개."
+    }
+   ]
+  },
+  {
+   "start": 286,
+   "title": "텐서와 메모리 — 원소 수 × 원소 크기, 그리고 float32",
+   "points": [
+    "파라미터·그래디언트·옵티마이저 상태·데이터·활성값 — 학습에 쓰이는 거의 모든 것이 텐서다.",
+    "텐서의 메모리 = 원소 수 × 원소 하나의 바이트. torch.zeros(4, 8) 은 기본 float32 라 32 × 4 = 128바이트.",
+    "float32 는 부호 1비트 · 지수 8비트(범위) · 가수 23비트(정밀도). 과학 계산에선 '단정밀도'가 기본이지만 딥러닝은 이것도 넉넉하다.",
+    "GPT-3 FFN 행렬 하나(49152 × 12288)가 float32 로 약 2.4GB — 텐서는 금방 커진다.",
+    "DeepSeek V3.2 체크포인트를 열면 텐서마다 모양과 정밀도(BF16·F32·F8_E4M3)가 섞여 있다."
+   ],
+   "on_screen": "tensors_basics(): torch.zeros(4) 벡터 / (4, 8) 행렬 / (4, 8, 2?) 3차 텐서. Hugging Face 의 DeepSeek-V3.2 텐서 목록 — model.embed_tokens.weight [129 280, 7 168] BF16, input_layernorm.weight [7 168] F32, mlp.down_proj.weight [7 168, 18 432] F8_E4M3, weight_scale_inv [56, 144] F32 등. IEEE 754 float32 비트 그림(부호 1, exponent 8 bit, fraction 23 bit). 코드: assert x.numel() == 4*8, x.element_size() == 4, get_memory_usage(x) == 4*8*4 # 128 bytes, GPT-3 FFN: get_memory_usage(torch.empty(12288*4, 12288)) == 2304*1024*1024 # 2.3 GB.",
+   "explain": [
+    "강의는 바닥에서부터 쌓아 올린다. 가장 아래에 있는 것은 텐서다. 모델의 가중치, 역전파가 만든 그래디언트, Adam 같은 옵티마이저가 들고 다니는 상태, 입력 데이터, 층과 층 사이를 흐르는 활성값 — 학습에서 메모리를 차지하는 것은 사실상 모두 텐서다. 그래서 메모리 회계는 '텐서 하나가 몇 바이트인가'에서 출발한다. 실제 공개 모델을 열어 보면 이 말이 실감 난다. 강사가 띄운 DeepSeek V3.2 의 텐서 목록에는 임베딩 [129280, 7168] 은 BF16, 정규화 가중치 [7168] 은 F32, MLP 의 큰 행렬은 F8_E4M3 처럼 텐서마다 모양과 정밀도가 다르게 적혀 있다. 모양이 원소 수를, 정밀도가 원소 하나의 크기를 정한다.",
+    "정의는 단순하다. 텐서의 메모리 = 원소 수(numel) × 원소 하나의 바이트(element_size). torch.zeros(4, 8) 은 32개의 원소를 갖고, PyTorch 는 따로 말하지 않으면 float32 로 만들기 때문에 원소당 4바이트, 합계 128바이트다. 다른 형을 원하면 dtype 을 명시해야 한다. 이 셈법을 GPT-3 에 대 보면 FFN 의 첫 행렬 하나가 (4 × 12288) × 12288 ≈ 6억 개 원소이고, float32 로 약 2.4GB(2304MiB)다. 이것도 GPT-3 에서 가장 큰 텐서가 아니다. 모델 하나에 이런 행렬이 층마다 몇 개씩 있으니 원소 크기를 4바이트에서 2바이트로 줄이는 것만으로도 수백 GB 가 오간다.",
+    "원소 크기는 부동소수점 형식이 정한다. float32(fp32, 단정밀도)는 32비트를 부호 1, 지수 8, 가수(fraction) 23 으로 나눈다. 지수는 수의 '크기의 자릿수', 즉 표현할 수 있는 범위(dynamic range)를 정하고, 가수는 그 자릿수 안에서 얼마나 촘촘하게 값을 구분하는지(해상도)를 정한다. 과학 계산에서 float32 는 '최소한 이 정도는 돼야 하는' 기본값이었고 더 필요하면 float64(배정밀도)를 썼다. 딥러닝은 반대 방향으로 간다. 확률적 경사 하강 자체가 잡음이 많은 과정이라 그렇게 높은 정밀도가 필요 없기 때문이다.",
+    "정밀도를 낮추면 얻는 것이 두 가지다. 첫째는 저장 공간이고, 둘째는 시간이다. 16비트 연산은 대략 32비트보다 빠르고(하드웨어가 그쪽에 최적화돼 있다), 이 강의 후반에서 보듯 옮겨야 할 바이트가 줄어드는 것 자체가 속도를 올린다. 강사는 '메모리를 줄이면 시간도 준다'는 말이 지금은 덜 당연해 보여도 산술 강도를 배우고 나면 분명해질 것이라고 예고한다."
+   ],
+   "formulas": [
+    {
+     "expr": "bytes(T) = numel(T) × element_size(dtype)",
+     "meaning": "numel 은 모양의 각 축 길이를 모두 곱한 원소 수, element_size 는 dtype 하나의 바이트(float32·int32 = 4, bf16·fp16 = 2, fp8 = 1, fp4 = 0.5 + 블록 스케일)."
+    },
+    {
+     "expr": "value = (−1)^s × 2^(e − 127) × 1.f   (float32)",
+     "meaning": "s 는 부호 비트, e 는 8비트 지수(편향 127을 뺀다), f 는 23비트 가수. 지수 비트 수가 범위를, 가수 비트 수가 해상도를 정한다."
+    }
+   ],
+   "example": {
+    "title": "0.15625 를 float32 비트로",
+    "body": "0.15625 = 0.00101₂ = 1.01₂ × 2⁻³. 부호 s = 0, 지수 e = −3 + 127 = 124 = 01111100₂, 가수는 소수점 뒤 '01' 뒤에 0을 채운 0100…0(23비트). 그래서 0 | 01111100 | 01000000000000000000000. 강의 화면의 float32 그림도 같은 수를 예로 쓴다. 이 수를 bf16 으로 바꾸면 가수 뒷자리 16비트를 버리지만 여기서는 버려지는 비트가 모두 0 이라 값이 그대로 남는다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nx = np.zeros((4, 8), dtype=np.float32)\nprint(x.size, x.itemsize, x.nbytes)          # 32 4 128\nffn = (12288 * 4, 12288)                      # GPT-3 FFN 행렬 한 장\nn = ffn[0] * ffn[1]\nfor dt in (np.float32, np.float16):\n    b = n * np.dtype(dt).itemsize\n    print(dt.__name__, f\"{b:,} B = {b/2**30:.2f} GiB = {b/1e9:.2f} GB\")\n# float32 비트 들여다보기: 부호 1 | 지수 8 | 가수 23\nbits = np.array([0.15625], dtype=np.float32).view(np.uint32)[0]\ns = f\"{bits:032b}\"\nprint(s[0], s[1:9], s[9:])",
+    "note": "실행 결과: 32 4 128 / float32 2,415,919,104 B = 2.25 GiB = 2.42 GB / float16 이면 절반 / 0 01111100 01000000000000000000000. torch 대신 numpy 로 돌렸다(nbytes = numel × itemsize 는 같다)."
+   },
+   "pitfalls": [
+    "슬라이드의 '2.3 GB' 는 2304 × 1024 × 1024 바이트(= 2304MiB = 2.25GiB)를 대충 부른 것이다. 십진 GB 로는 2.42GB 다. GiB 와 GB 를 섞으면 수 퍼센트씩 어긋난다.",
+    "torch.tensor([1, 2]) 처럼 정수로 만들면 int64(8바이트)가 된다. dtype 을 명시하지 않은 텐서가 예상보다 두 배 크게 잡히는 흔한 원인이다."
+   ],
+   "check": [
+    {
+     "q": "모양 (32, 2048, 4096) 인 bf16 활성값 텐서는 몇 MiB 인가?",
+     "a": "32 × 2048 × 4096 = 268,435,456 원소 × 2바이트 = 536,870,912 바이트 = 512MiB."
+    },
+    {
+     "q": "float32 의 지수와 가수 중 '아주 작은 수가 0이 되어 버리는' 문제와 관련된 것은?",
+     "a": "지수다. 지수 비트가 표현 가능한 크기의 범위(가장 작은·큰 자릿수)를 정한다. 가수는 같은 자릿수 안에서의 해상도다."
+    }
+   ]
+  },
+  {
+   "start": 486,
+   "title": "fp16 과 bf16 — 같은 16비트, 다른 나눔",
+   "points": [
+    "float16 은 부호 1 · 지수 5 · 가수 10. 지수가 5비트뿐이라 범위가 좁아 1e-8 은 0이 되고(언더플로) 65504 를 넘으면 inf.",
+    "fp16 으로 학습하면 언더플로·오버플로·NaN 이 잦아 불안정했다.",
+    "bfloat16(Google Brain, 2018)은 부호 1 · 지수 8 · 가수 7 — 메모리는 fp16 과 같고 범위는 float32 와 같다.",
+    "대가는 해상도: bf16 은 1 근처에서 2⁻⁷ ≈ 0.0078 간격. 딥러닝은 원래 잡음이 많아 이 정도는 감수할 만하다.",
+    "torch.finfo 로 형식별 최댓값·최솟값·eps 를 직접 비교할 수 있다."
+   ],
+   "on_screen": "IEEE half-precision 16-bit float 그림(sign, exponent 5 bit, fraction 10 bit). 코드: x = torch.zeros(4, 8, dtype=torch.float16); assert x.element_size() == 2 / x = torch.tensor([1e-8], dtype=torch.float16); assert x == 0 # Underflow! / 'If this happens when you train, you can get instability.' bfloat16 그림(sign, exponent 8 bit, fraction 7 bit), 'Google Brain developed bfloat (brain floating point) in 2018', 'bfloat16 uses the same memory as float16 but has the same dynamic range as float32!', 'The only catch is that the resolution is worse'. torch.tensor([1e-8], dtype=torch.bfloat16) → assert x != 0 # No underflow!. float32_info / float16_info / bfloat16_info = torch.finfo(...).",
+   "explain": [
+    "메모리를 줄이는 가장 쉬운 방법은 비트를 반으로 자르는 것이다. 그렇게 나온 것이 float16(fp16, 반정밀도)으로, 부호 1·지수 5·가수 10 비트다. 문제는 지수가 8비트에서 5비트로 줄면서 표현 범위가 크게 좁아진다는 점이다. fp16 이 나타낼 수 있는 가장 큰 수는 65504 이고, 정규화된 가장 작은 양수는 약 6.1e-5, 비정규 수까지 쳐도 6e-8 근처가 끝이다. 그래서 1e-8 을 fp16 텐서로 만들면 그냥 0이 된다. 작은 그래디언트가 이렇게 0으로 사라지는 것이 언더플로, 큰 값이 inf 로 튀는 것이 오버플로이고, 둘이 섞이면 손실이 NaN 이 된다. 예전에 fp16 으로 학습하던 시절에는 이 때문에 손실 스케일링 같은 요령이 필요했고 그래도 자주 불안정했다.",
+    "bfloat16(bf16, brain floating point)은 2018년 Google Brain 이 이 문제를 풀려고 만든 형식이다. 아이디어는 비트 수는 16 그대로 두되 가수에서 비트를 덜어 지수로 옮기는 것이다. 부호 1·지수 8·가수 7. 지수가 float32 와 똑같이 8비트이므로 표현 범위가 float32 와 같다(최댓값 약 3.4e38, 최소 정규 수 약 1.2e-38). 실제로 bf16 은 float32 의 위쪽 16비트를 그대로 잘라 낸 모양이라 변환도 간단하다. 대신 공짜 점심은 없다. 가수가 7비트뿐이라 1 근처에서 표현 가능한 다음 수가 1 + 1/128 이고, 1 + 1/256 같은 값은 1로 뭉개진다. fp16 의 해상도(1/1024)보다 8배 거칠다.",
+    "그런데도 딥러닝에서 bf16 이 이긴 이유는 두 실패의 비용이 다르기 때문이다. 범위를 벗어나면 값이 0이나 inf 가 되어 학습이 통째로 망가지지만, 해상도가 거친 것은 값에 작은 반올림 잡음을 더할 뿐이다. 확률적 경사 하강은 미니배치 표본 추출 자체가 이미 큰 잡음을 갖고 있으니 그 위에 얹힌 0.4% 남짓의 반올림 잡음은 대개 묻힌다. 그래서 '범위는 넉넉하게, 해상도는 적당히'라는 bf16 의 거래가 이득이 된다. 강사는 형식별 수치를 torch.finfo 로 찍어 비교해 보라고 하고, 다음 장의 결론으로 넘어간다.",
+    "직관으로 정리하면 이렇다. 지수 비트는 자의 길이, 가수 비트는 자의 눈금이다. fp16 은 눈금은 촘촘하지만 자가 짧아서 아주 작거나 큰 것은 아예 잴 수 없다. bf16 은 자가 float32 만큼 길지만 눈금이 성기다. 학습 중에는 그래디언트처럼 크기가 여러 자릿수에 걸쳐 흩어진 값을 다루니, 짧은 자보다 성긴 눈금이 낫다."
+   ],
+   "formulas": [
+    {
+     "expr": "범위 ≈ 2^(2^(E−1)) ,  해상도(1 근처) = 2^(−M)",
+     "meaning": "E 는 지수 비트 수, M 은 가수 비트 수. fp32(E=8, M=23): 최대 ~3.4e38, eps 1.2e-7. fp16(E=5, M=10): 최대 65504, eps 9.8e-4. bf16(E=8, M=7): 최대 ~3.4e38, eps 7.8e-3."
+    },
+    {
+     "expr": "bf16(x) = round_to_nearest_even(x_fp32 의 위 16비트)",
+     "meaning": "float32 비트열의 위쪽 16비트(부호 1, 지수 8, 가수 상위 7)만 남기고 아래 16비트는 반올림해 버린다. 그래서 float32 ↔ bf16 변환이 값싸다."
+    }
+   ],
+   "example": {
+    "title": "세 수를 두 형식에 넣어 보기",
+    "body": "1e-8: fp16 → 0(언더플로), bf16 → 1.0012e-8(범위 안이라 살아남는다). 70000: fp16 → inf(최대 65504 초과), bf16 → 70144(가까운 표현 가능 값으로 반올림, 오차 0.2%). 1 + 1/256 = 1.00390625: fp16 → 그대로(해상도 1/1024 라 표현 가능), bf16 → 1.0(해상도 1/128 보다 작은 차이라 사라짐). 범위 문제는 fp16 이, 해상도 문제는 bf16 이 진다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\ndef to_bf16(a):\n    \"\"\"float32 의 아래 16비트를 반올림해 버린다 = bf16 (1|8|7)\"\"\"\n    u = np.asarray(a, np.float32).reshape(-1).view(np.uint32).astype(np.uint64)\n    u = (u + 0x7FFF + ((u >> 16) & 1)) & 0xFFFF0000   # round-to-nearest-even\n    return u.astype(np.uint32).view(np.float32)[0]\n\nfor v in [1e-8, 1e-5, 70000.0, 1.0 + 1/256, 3.14159]:\n    with np.errstate(over=\"ignore\"): f16 = np.float16(v)\n    print(f\"{v:<10g} fp16={float(f16):<12g} bf16={float(to_bf16(v)):<12g}\")\nf16 = np.finfo(np.float16)\nprint(\"fp16 max\", f16.max, \"tiny\", f16.tiny, \"eps\", f16.eps)\nprint(\"bf16 eps\", 2.0**-7, \"max ~\", float(to_bf16(3.38e38)))",
+    "note": "numpy 에는 bf16 형이 없어 float32 비트를 직접 잘라 흉내 냈다. 실행 결과는 예제의 숫자와 같다(1e-8 → fp16 0, bf16 1.00117e-08 / 70000 → fp16 inf, bf16 70144 / fp16 max 65504, tiny 6.104e-05, eps 0.000977 / bf16 eps 0.0078125)."
+   },
+   "pitfalls": [
+    "'bf16 이 fp16 보다 정밀하다'는 틀린 말이다. bf16 은 범위가 넓고 해상도는 fp16 보다 나쁘다. 작은 값들을 많이 더하는 누적(합계·평균)은 bf16 에서 오차가 쌓이기 쉬워 fp32 로 한다.",
+    "fp16 의 언더플로는 비정규 수 덕분에 6e-8 근처까지는 천천히 일어나지만, 그 구간에선 유효 자릿수가 급격히 줄어든다. '0이 안 됐으니 괜찮다'가 아니다."
+   ],
+   "check": [
+    {
+     "q": "bf16 과 fp16 은 같은 2바이트다. 학습 안정성 측면에서 bf16 을 고르는 이유를 한 문장으로?",
+     "a": "지수가 8비트라 float32 와 같은 범위를 가져 작은 그래디언트가 0으로 사라지거나 큰 값이 inf 로 튀는 일이 거의 없기 때문이다(대신 해상도는 희생한다)."
+    },
+    {
+     "q": "bf16 에서 1000 다음으로 표현 가능한 수는 대략 얼마인가?",
+     "a": "1000 ≈ 1.95 × 2⁹ 이므로 간격은 2⁹ × 2⁻⁷ = 4. 다음 수는 1004 다."
+    }
+   ]
+  },
+  {
+   "start": 661,
+   "title": "혼합 정밀도, fp8, fp4 — 어디까지 내려갈 수 있나",
+   "points": [
+    "float32 로 학습은 확실히 되지만 메모리가 많이 든다. fp8·fp16·bf16 은 불안정할 수 있다 — bf16 이 현실적인 균형점.",
+    "혼합 정밀도(Micikevicius 2017): 파라미터·활성값·그래디언트는 bf16, 옵티마이저 상태는 fp32.",
+    "PyTorch AMP 는 안전한 곳(행렬곱)은 bf16 으로, 위험한 곳(exp 등)은 fp32 로 자동 변환한다.",
+    "fp8 은 두 가지: E4M3(±448, 해상도 쪽)과 E5M2(±57344, 범위 쪽). H100 이 둘 다 지원한다.",
+    "NVFP4(2025): 값은 −6~6 의 15개뿐, 대신 블록마다 따로 스케일을 둔다. Nemotron 3 Super 가 NVFP4 로 학습됐다."
+   ],
+   "on_screen": "'Implications on training: Training with float32 works, but requires lots of memory. Training with fp8, float16 and even bfloat16 is risky, and you can get instability.' Mixed precision training [Micikevicius+ 2017] — Use bf16 for parameters, activations, and gradients / Use fp32 for optimizer states. 'Pytorch has an automatic mixed precision (AMP) library' — 'Tries to cast things into bf16 when safe (matmuls, not exp)'. fp8: 'In 2022, fp8 was standardized', E4M3·E5M2 비트 그림, 'H100s support two variants of FP8: E4M3 (range [-448, 448]) and E5M2 ([-57344, 57344])' [Micikevicius+ 2022]. fp4: 'In 2025, NVIDIA developed nvfp4', 'Only 4 bits per value!', 'Values: -6, -4, -3, -2, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2, 3, 4, 6', 'Use a separate scale factor per block', 'Nemotron 3 Super was trained in NVFP4 [NVIDIA+ 2025]', 'Some of this is done in NVIDIA libraries outside of user control.'",
+   "explain": [
+    "정밀도 이야기의 결론은 '한 가지 형식으로 다 하지 않는다'다. 작은 모델이라 신경 쓰기 싫다면 float32 로 학습해도 아무 문제가 없다. 다만 값 하나에 4바이트라 메모리가 빨리 찬다. fp16 은 앞 장에서 본 범위 문제 때문에 위험하고, bf16 이 실용적인 균형점이지만 그것도 경우에 따라 불안해질 수 있다. 그래서 자리 잡은 관행이 혼합 정밀도 학습이다. 계산의 종류마다 다른 정밀도를 쓰자는 것으로, 대체로 파라미터·활성값·그래디언트는 bf16 으로 두고 옵티마이저 상태는 fp32 로 둔다. 옵티마이저 상태를 fp32 로 두는 이유는 뒤 장(메모리 회계)에서 다시 나오는데, 제곱을 하고 여러 스텝에 걸쳐 평균을 내는 값이라 해상도가 거칠면 쌓이는 오차가 커지기 때문이다.",
+    "직접 다 고를 필요는 없다. PyTorch 의 AMP(automatic mixed precision)는 코드를 감싸 주면 연산마다 bf16 으로 내려도 안전한지 판단해서 바꿔 준다. 행렬곱처럼 곱한 값을 더하는 연산은 하드웨어가 내부적으로 넓은 누산기를 쓰기 때문에 bf16 입력이어도 안전하고, 지수 함수처럼 값의 범위를 크게 키우는 연산은 fp32 로 남겨 둔다. 이 과목에서는 대체로 bf16 까지가 다루는 범위라고 강사는 말한다.",
+    "더 모험하고 싶다면 그 아래도 있다. fp8 은 2022년에 표준화됐고 두 변형이 있다. E4M3(지수 4·가수 3)는 해상도를 더 갖고 범위가 ±448 이며, E5M2(지수 5·가수 2)는 범위가 ±57344 로 넓은 대신 해상도가 더 거칠다. 쓰임새에 따라 고르는데, 노트 보충으로 덧붙이면 보통 순전파의 가중치·활성값엔 E4M3, 크기 변동이 큰 그래디언트엔 E5M2 를 쓰는 조합이 알려져 있다. NVIDIA 의 Transformer Engine 이 fp8 을 지원한다. 그리고 2025년 NVIDIA 는 값 하나에 4비트만 쓰는 NVFP4 를 내놓았다. 4비트로 표현할 수 있는 값은 −6, −4, −3, −2, −1.5, −1, −0.5, 0, 0.5, 1, 1.5, 2, 3, 4, 6 — 칠판 한 줄에 다 적힐 만큼 적다.",
+    "이걸로 어떻게 학습이 되나? 비결은 블록 스케일이다. 값들을 작은 블록으로 묶고 블록마다 따로 배율(scale)을 둔다. 블록 안의 각 값은 4비트 격자 위의 한 점이지만, 블록 전체를 위아래로 늘이고 줄일 수 있으니 값 하나만 놓고 보면 4비트보다 넓은 범위를 갖는다. 대신 이웃한 두 값이 아주 다른 자릿수에 있을 수는 없다 — 같은 블록이면 같은 배율을 공유하기 때문이다. 질의응답에서도 이 점이 다시 확인됐다. 강사는 2026년 공개된 Nemotron 3 Super 가 NVFP4 로 학습됐다고 소개하면서, 이런 형식은 사용자가 텐서를 만들고 dtype 을 고르는 수준이 아니라 NVIDIA 소프트웨어 스택 안쪽에서 처리된다고 덧붙인다.",
+    "1비트는 어떠냐는 질문에는 학습과 추론을 구분해 답한다. 높은 정밀도(bf16 등)로 학습한 모델을 나중에 1~2비트로 양자화하는 것은 비교적 쉽고 실제로 많이 한다. 반면 처음부터 1비트로 학습해서 믿을 만한 언어 모델을 만든 사례는 자신이 아는 한 없다는 것이 강사의 의견이다."
+   ],
+   "formulas": [
+    {
+     "expr": "x̂_i = s_b × q_i ,  q_i ∈ {0, ±0.5, ±1, ±1.5, ±2, ±3, ±4, ±6},  s_b = max_{i∈b} |x_i| / 6",
+     "meaning": "블록 b 안의 원래 값 x_i 를 4비트 격자값 q_i 와 블록 공통 배율 s_b 의 곱으로 근사한다. s_b 는 블록에서 가장 큰 절댓값이 격자 끝(6)에 오도록 정한다(가장 단순한 선택). 노트 보충: NVFP4 는 16개 원소 블록마다 FP8(E4M3) 배율을, 텐서 전체에 FP32 배율을 하나 더 둔다."
+    }
+   ],
+   "example": {
+    "title": "블록 하나를 손으로 FP4 양자화",
+    "body": "블록 x = [0.30, −0.12, 0.05, 0.90]. 최대 절댓값 0.90 → s = 0.90/6 = 0.15. x/s = [2.0, −0.8, 0.33, 6.0] → 가장 가까운 격자값 [2, −1, 0.5, 6] → 복원 [0.30, −0.15, 0.075, 0.90]. 큰 값은 정확하지만 작은 값 0.05 는 0.075 로 50% 틀렸다. 만약 이 블록에 9.0 같은 이상치가 섞이면 s = 1.5 가 되어 0.05·−0.12 는 모두 0이 된다 — 블록을 작게 잡는 이유다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nPOS = np.array([0, .5, 1, 1.5, 2, 3, 4, 6])              # FP4(E2M1) 양수 쪽 값\nGRID = np.concatenate([-POS[:0:-1], POS])                  # -6 ... 6, 15개\ndef quant_fp4(x, block=16):\n    x = x.reshape(-1, block)\n    scale = np.abs(x).max(axis=1, keepdims=True) / 6.0     # 블록 최댓값이 6 에 오게\n    scale[scale == 0] = 1\n    y = x / scale\n    idx = np.abs(y[..., None] - GRID).argmin(-1)           # 가장 가까운 격자점\n    return (GRID[idx] * scale).reshape(-1)\n\nrng = np.random.default_rng(0)\nw = rng.normal(0, 0.02, 4096).astype(np.float32)\nw[::512] *= 50                                             # 큰 값 몇 개(이상치)\nfor blk in (4096, 16):\n    err = np.abs(quant_fp4(w, blk) - w).mean() / np.abs(w).mean()\n    print(f\"block={blk:5d}  상대오차={err:.3f}\")",
+    "note": "실행 결과: 4096개를 한 블록으로 묶으면 상대오차 0.925(이상치 때문에 대부분이 0으로 뭉개짐), 16개 블록이면 0.093. 실제 NVFP4 의 FP8 배율·반올림 규칙은 단순화했다."
+   },
+   "diagram": {
+    "title": "혼합 정밀도 학습 한 스텝에서 정밀도가 바뀌는 자리",
+    "code": "flowchart LR\n  W[\"가중치 bf16\"] --> F[\"순전파 행렬곱 bf16\\n(누산은 내부 fp32)\"]\n  X[\"입력·활성값 bf16\"] --> F\n  F --> L[\"손실·softmax·exp fp32\"]\n  L --> B[\"역전파 그래디언트 bf16\"]\n  B --> O[\"옵티마이저 상태 m, v fp32\"]\n  O --> U[\"파라미터 갱신\"]\n  U --> W"
+   },
+   "pitfalls": [
+    "'fp4 로 학습했다'는 말은 모든 텐서가 4비트라는 뜻이 아니다. 블록 배율은 더 높은 정밀도이고, 누산·옵티마이저 상태·민감한 층은 대개 더 높은 정밀도로 남는다.",
+    "AMP 를 켰다고 옵티마이저 상태까지 자동으로 bf16 이 되지는 않는다. 상태의 정밀도는 옵티마이저 구현이 정한다.",
+    "슬라이드는 fp8 이 '2022년 표준화', 강사는 '4년 전 도입'이라고 말한다 — 같은 시점(2022)을 가리킨다."
+   ],
+   "check": [
+    {
+     "q": "혼합 정밀도에서 옵티마이저 상태만 fp32 로 남기는 이유는?",
+     "a": "Adam 의 2차 모멘트처럼 그래디언트를 제곱하고 여러 스텝에 걸쳐 평균 내는 값은 작은 갱신이 계속 더해지는데, bf16 의 거친 해상도에선 그 작은 갱신이 반올림으로 사라지거나 오차가 쌓여 학습이 불안정해지기 때문이다."
+    },
+    {
+     "q": "E4M3 와 E5M2 중 그래디언트에 더 맞는 쪽과 그 이유는?",
+     "a": "E5M2. 지수 비트가 하나 더 있어 범위(±57344)가 넓다. 그래디언트는 크기가 여러 자릿수에 흩어져 범위가 해상도보다 중요하다(노트 보충의 관행)."
+    }
+   ]
+  },
+  {
+   "start": 1020,
+   "title": "텐서를 GPU 로, 그리고 einops 가 필요한 이유",
+   "points": [
+    "PyTorch 텐서는 기본적으로 CPU 메모리에 만들어진다. GPU 의 병렬성을 쓰려면 .to('cuda') 로 옮기거나 device='cuda:0' 로 바로 만든다.",
+    "torch.cuda.memory_allocated() 차이로 실제 할당량을 확인: 32×32 float32 두 개 = 2 × 4096 = 8192바이트.",
+    "x @ y.transpose(-2, -1) 같은 코드는 −2, −1 이 무슨 축인지 기억해야 해서 틀리기 쉽다.",
+    "einops 는 축에 이름을 붙여 텐서를 다루는 라이브러리 — Einstein 합 표기(1916)에서 왔다."
+   ],
+   "on_screen": "tensors_on_gpus(): 'By default, tensors are stored in CPU memory.' x = torch.zeros(32, 32); assert x.device == torch.device('cpu'). GPU 그림. num_gpus = torch.cuda.device_count(), get_device_properties(i), memory_allocated = torch.cuda.memory_allocated(), y = x.to('cuda:0'), z = torch.zeros(32, 32, device='cuda:0'), assert memory_used == 2 * (32 * 32 * 4) # 2 32x32 matrices of 4-byte floats. einops_motivation(): x = torch.ones(2, 2, 3) # batch seq hidden, y = torch.ones(2, 2, 3) # batch seq hidden, z = x @ y.transpose(-2, -1) # batch seq seq, 'Easy to mess up the dimensions (what is -2, -1?)...' 'Einops is a library for manipulating tensors where dimensions are named. It is inspired by Einstein summation notation (Einstein, 1916).' [Einops tutorial].",
+   "explain": [
+    "텐서를 만들면 PyTorch 는 따로 말하지 않는 한 CPU 메모리에 둔다. 빠른 계산을 원한다면 GPU 메모리(HBM)로 옮겨야 한다. 방법은 둘이다. 이미 있는 텐서를 x.to('cuda:0') 로 복사하거나, 처음부터 torch.zeros(32, 32, device='cuda:0') 처럼 GPU 에 만든다. 뒤쪽이 CPU 에서 만들고 PCIe 로 복사하는 단계를 건너뛰니 더 낫다. 강사는 노트북에서 강의를 실행하고 있어 이 부분은 실행하지 않고 코드만 보여 줬는데, 요점은 단순하다 — 옮기는 걸 잊으면 아무리 계산을 줄여도 빨라지지 않는다.",
+    "GPU 에서 메모리 회계가 맞는지는 torch.cuda.memory_allocated() 로 확인할 수 있다. 할당 전후 값을 빼면 실제로 잡힌 바이트가 나온다. 화면의 예에서는 32×32 float32 행렬 두 개(y 는 옮긴 것, z 는 새로 만든 것)를 만들었으니 2 × 32 × 32 × 4 = 8192바이트가 늘어야 한다. 노트 보충으로 덧붙이면 PyTorch 의 캐싱 할당기는 블록 단위로 메모리를 잡기 때문에 아주 작은 텐서는 반올림된 크기로 잡힐 수 있고, nvidia-smi 가 보여 주는 값(예약된 메모리 포함)은 memory_allocated 보다 크다.",
+    "이제 메모리에서 연산으로 넘어가기 전에 강사는 einops 라는 우회로를 하나 든다. 동기는 이런 코드다. x 와 y 가 둘 다 (batch, seq, hidden) 모양일 때 x @ y.transpose(-2, -1) 은 무엇을 하는가? −2 와 −1 이 각각 seq 와 hidden 이라는 것을 머릿속에서 짚어야 하고, 축이 하나 더 붙거나 순서가 바뀌면 조용히 엉뚱한 계산을 한다. 모양이 우연히 맞으면 오류도 안 난다. 숫자 인덱스 대신 축에 이름을 붙이면 이런 실수가 크게 줄어든다는 것이 einops 의 출발점이다.",
+    "einops 는 차원에 이름을 붙여 텐서를 조작하는 라이브러리로, 아인슈타인이 1916년 상대성 이론 논문에서 쓴 합 표기법(같은 첨자가 두 번 나오면 그 첨자로 합한다)에서 영감을 받았다. 강사가 손을 들어 보게 하니 수강생 3분의 2 정도가 이미 써 봤다고 한다. 과제에서도 쓰이니 공식 튜토리얼을 한 번 따라가 보라고 권한다. 다음 두 장에서 einsum, reduce, rearrange 세 가지를 차례로 본다."
+   ],
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nfrom einops import einsum\nx = np.ones((2, 3, 4)); y = np.ones((2, 3, 4))       # batch seq hidden\nz_old = x @ np.swapaxes(y, -2, -1)                   # -2,-1 이 무엇인지 기억해야 한다\nz_new = einsum(x, y, \"batch seq1 hidden, batch seq2 hidden -> batch seq1 seq2\")\nprint(z_old.shape, np.allclose(z_old, z_new), z_new[0, 0, 0])   # (2,3,3) True 4.0\n# 이름을 잘못 붙이면(hidden 자리에 3, seq2 자리에 4) einops 가 바로 오류를 낸다\ntry:\n    einsum(x, y, \"batch seq1 hidden, batch hidden seq2 -> batch seq1 seq2\")\nexcept Exception as e:\n    print(\"잡힌 오류:\", type(e).__name__)",
+    "note": "numpy 위에서 einops 0.8 로 실행. 결과: (2, 3, 3) True 4.0 / 축 이름을 바꿔 쓴 두 번째 호출은 ValueError 로 잡힌다(hidden 이 x 에선 4, y 에선 3 이라 모순). 숫자 인덱스 코드는 모양이 맞으면 이런 오류 없이 지나간다."
+   },
+   "pitfalls": [
+    "GPU 시간을 재기 전에 텐서가 정말 cuda 에 있는지(x.device) 확인하자. 모델은 GPU 에 있는데 입력이 CPU 면 오류가 나지만, 둘 다 CPU 면 그냥 느리게 돈다.",
+    "torch.cuda.memory_allocated 는 텐서가 차지한 양이고 nvidia-smi 의 사용량은 캐시·CUDA 컨텍스트까지 포함한다. 둘을 비교하면 수백 MB 차이가 나는 게 정상이다(노트 보충)."
+   ],
+   "check": [
+    {
+     "q": "bf16 으로 (4096, 4096) 텐서 3개를 GPU 에 만들면 memory_allocated 는 얼마나 늘어나야 하나?",
+     "a": "3 × 4096 × 4096 × 2 = 100,663,296 바이트 = 96MiB."
+    },
+    {
+     "q": "x, y 가 (batch, seq, hidden) 일 때 x @ y.transpose(-2, -1) 의 결과 모양을 축 이름으로 말하면?",
+     "a": "(batch, seq_x, seq_y). hidden 축이 곱해지고 합쳐져 사라진다 — 어텐션 점수 행렬과 같은 모양이다."
+    }
+   ]
+  },
+  {
+   "start": 1140,
+   "title": "einsum — 이름 붙인 축으로 쓰는 일반화된 행렬곱",
+   "points": [
+    "einsum(x, y, \"seq1 hidden, hidden seq2 -> seq1 seq2\"): 출력에 없는 축(hidden)은 합쳐 사라진다.",
+    "동작은 '모든 축 값의 조합을 돌며 곱해서 출력 칸에 더한다' — 반복문 세 겹과 같다.",
+    "배치 행렬곱도 이름만 바꾸면 된다. transpose 를 쓸 필요가 없다 — 이름 붙이기가 곧 전치다.",
+    "... 는 앞쪽 배치 축이 몇 개든(batch, seq, head …) 받아 준다 — 입력 모양을 몰라도 되는 모듈식 코드.",
+    "einops 는 같은 기본 연산으로 바뀌는 문법 설탕이라 속도 손해가 없다."
+   ],
+   "on_screen": "einops_einsum(): 'Einsum is generalized matrix multiplication with good bookkeeping.' x = torch.ones(3, 4) # seq1 hidden, y = torch.ones(4, 3) # hidden seq2, # Old way z = x @ y, # New (einops) way z = einsum(x, y, \"seq1 hidden, hidden seq2 -> seq1 seq2\"). 결과 창: y 는 1로 채운 4×3, z 는 모두 4인 3×3. 더 복잡한 예: x = torch.ones(2, 3, 4) # batch seq1 hidden, y = torch.ones(2, 3, 4) # batch seq2 hidden, z = x @ y.transpose(-2, -1), z = einsum(x, y, \"batch seq1 hidden, batch seq2 hidden -> batch seq1 seq2\"), 'Dimensions that are not named in the output are summed over.' '# Or can use ... to represent broadcasting over any number of dimensions' z = einsum(x, y, \"... seq1 hidden, ... seq2 hidden -> ... seq1 seq2\").",
+   "explain": [
+    "강사는 einsum 을 '장부 정리가 잘 된 일반화 행렬곱'이라고 부른다. 3×4 행렬 x 와 4×3 행렬 y 의 곱을 einops 로 쓰면 이렇다. x 의 두 축에 seq1, hidden 이라는 이름을, y 의 두 축에 hidden, seq2 라는 이름을 붙이고, 결과는 seq1 seq2 축을 갖는다고 적는다. 규칙은 하나다 — 화살표 오른쪽에 나오지 않는 축은 합쳐서 없앤다. 그래서 hidden 이 합쳐지고, 이것이 바로 행렬곱이다. 문자열이 곧 모양에 대한 주석이라 코드를 읽는 사람이 각 축의 의미를 따로 추적할 필요가 없다.",
+    "동작을 정확히 말하면, einsum 은 문자열에 나온 모든 축 이름(seq1, hidden, seq2)의 가능한 값 조합을 하나씩 돌면서 x 의 해당 칸과 y 의 해당 칸을 곱하고, 그 곱을 출력 z 의 (seq1, seq2) 칸에 누적한다. 반복문 세 겹과 정확히 같은 계산이다. 이 관점이 뒤에서 FLOPs 를 셀 때 아주 쓸모 있다. 축 조합 하나마다 곱셈 하나와 덧셈 하나가 일어나니, einsum 의 FLOPs 는 '나온 모든 축 길이의 곱 × 2'다. 어느 축이 남고 어느 축이 합쳐지는지는 결과 모양만 바꿀 뿐 FLOPs 에는 영향이 없다.",
+    "이 표기의 진가는 차원이 늘어날 때 드러난다. x 와 y 가 (2, 3, 4) 모양이고 각각 batch seq1 hidden, batch seq2 hidden 이라면, 기존 방식은 y 의 뒤 두 축을 전치한 뒤 @ 를 쓰고 @ 가 앞쪽 축을 자동으로 배치 처리한다는 사실에 기대야 한다. einops 로는 \"batch seq1 hidden, batch seq2 hidden -> batch seq1 seq2\" 한 줄이다. 전치가 없다. 이름을 hidden 위치에 붙인 것 자체가 전치 역할을 하기 때문이다. 만약 y 가 이미 (batch, hidden, seq2) 였다면 이름만 그 순서로 적으면 된다. 강사는 전치 방향을 늘 헷갈리는데 생각할 필요가 없어져서 좋다고 말한다. 여기서 batch 는 양쪽 입력과 출력 모두에 나오므로 합쳐지지 않고 그대로 남는다.",
+    "한 걸음 더 나가면 배치 축들을 ... 로 묶을 수 있다. \"... seq1 hidden, ... seq2 hidden -> ... seq1 seq2\" 라고 쓰면 앞에 batch 가 있든, batch 와 head 가 있든, 축이 여덟 개 더 붙은 10차 텐서든 똑같이 동작한다. 언어 모델에서는 배치·시퀀스·헤드 축이 자주 겹쳐 나오는데, 이렇게 쓰면 들어오는 텐서의 정확한 모양을 몰라도 되는 재사용 가능한 함수를 짤 수 있다. 질의응답에서 속도를 묻자 강사는 einops 가 결국 같은 기본 연산으로 바뀌는 문법 설탕이라 성능은 같다고 답한다."
+   ],
+   "formulas": [
+    {
+     "expr": "z[s1, s2] = Σ_h x[s1, h] · y[h, s2]",
+     "meaning": "einsum \"seq1 hidden, hidden seq2 -> seq1 seq2\" 의 뜻. s1, s2 는 출력에 남는 축, h(hidden)는 출력에 없어 합쳐지는 축."
+    },
+    {
+     "expr": "FLOPs(einsum) ≈ 2 × Π_{모든 축 a} |a|",
+     "meaning": "|a| 는 축 a 의 길이. 문자열에 나온 모든 축 길이를 곱한 것이 '곱하고 더하기' 쌍의 개수다. 합쳐지는 축이든 남는 축이든 똑같이 곱한다(정확히는 덧셈이 하나 적지만 무시)."
+    }
+   ],
+   "example": {
+    "title": "화면의 3×4 · 4×3 예를 손으로",
+    "body": "x, y 가 모두 1로 차 있으니 z[s1, s2] = Σ_{h=1..4} 1·1 = 4. 그래서 3×3 결과의 모든 칸이 4다(화면의 z 창과 같다). 축 길이는 seq1=3, hidden=4, seq2=3 이므로 곱하고-더하기 쌍이 3·4·3 = 36개, FLOPs 는 72다. 배치 예(2, 3, 4)는 batch=2 가 곱해져 2·3·4·3 × 2 = 144 FLOPs."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nfrom einops import einsum\nrng = np.random.default_rng(0)\nx = rng.normal(size=(3, 4)); y = rng.normal(size=(4, 3))\nz = einsum(x, y, \"seq1 hidden, hidden seq2 -> seq1 seq2\")\n# 같은 일을 반복문으로: 모든 (i,k,j) 를 돌며 곱해서 출력 칸에 더한다\nref = np.zeros((3, 3)); flops = 0\nfor i in range(3):\n    for k in range(4):\n        for j in range(3):\n            ref[i, j] += x[i, k] * y[k, j]; flops += 2\nprint(np.allclose(z, ref), flops, 2 * 3 * 4 * 3)     # True 72 72\n# ... 는 앞쪽 배치 축을 몇 개든 받아 준다\na = rng.normal(size=(2, 5, 3, 4)); b = rng.normal(size=(2, 5, 6, 4))\nc = einsum(a, b, \"... s1 h, ... s2 h -> ... s1 s2\")\nprint(c.shape)                                        # (2, 5, 3, 6)",
+    "note": "실행 결과: True 72 72 / (2, 5, 3, 6). 반복문으로 직접 센 FLOPs 와 2×(축 길이의 곱)이 일치한다."
+   },
+   "pitfalls": [
+    "같은 이름의 축은 길이가 같아야 한다. 출력에 없는 이름이 한쪽 입력에만 나오면 그 축은 그냥 합쳐진다(reduce 처럼) — 의도치 않은 합산이 될 수 있으니 출력 이름을 꼼꼼히 적자.",
+    "einops.einsum 은 torch.einsum 과 문법이 다르다. torch.einsum 은 'ij,jk->ik' 처럼 한 글자 첨자와 문자열을 앞에 두고, einops.einsum 은 텐서를 먼저 받고 여러 글자 이름을 공백으로 나눈다."
+   ],
+   "check": [
+    {
+     "q": "q 가 (batch, head, seq_q, d), k 가 (batch, head, seq_k, d) 일 때 어텐션 점수를 einops einsum 문자열로 쓰면?",
+     "a": "\"batch head seq_q d, batch head seq_k d -> batch head seq_q seq_k\" (또는 \"... seq_q d, ... seq_k d -> ... seq_q seq_k\")."
+    },
+    {
+     "q": "위 einsum 의 FLOPs 는? batch=8, head=16, seq_q=seq_k=1024, d=64.",
+     "a": "2 × 8 × 16 × 1024 × 1024 × 64 ≈ 1.72e10 FLOPs."
+    }
+   ]
+  },
+  {
+   "start": 1370,
+   "title": "reduce 와 rearrange — 합치기, 쪼개기, 다시 붙이기",
+   "points": [
+    "reduce(x, \"... hidden -> ...\", \"sum\") 은 x.sum(dim=-1) 과 같다. sum 자리에 mean·max·min 을 넣을 수 있다.",
+    "rearrange 는 한 축이 사실 두 축을 펼쳐 놓은 것일 때 쓴다: \"... (heads hidden1) -> ... heads hidden1\", heads=2.",
+    "쪼갠 뒤 einsum 으로 hidden1 → hidden2 변환을 하고, \"... heads hidden2 -> ... (heads hidden2)\" 로 다시 붙인다.",
+    "괄호 안의 순서가 곧 펼치는 순서(행 우선)다 — (heads hidden1) 과 (hidden1 heads) 는 다른 값을 묶는다.",
+    "익숙해지는 데 시간이 걸리지만, 전치·합산을 '이름'으로 생각하게 되면 코드가 훨씬 유연해진다."
+   ],
+   "on_screen": "einops_reduce(): 'You can reduce a single tensor via some operation (e.g., sum, mean, max, min).' x = torch.ones(2, 3, 4) # batch seq hidden, # Old way y = x.sum(dim=-1), # New y = reduce(x, \"... hidden -> ...\", \"sum\") — 결과 창의 y 는 모두 4인 2×3. einops_rearrange(): 'Sometimes, a dimension represents two dimensions ...and you want to operate on one of them.' x = torch.ones(3, 8) # seq total_hidden, '...where total_hidden is a flattened representation of heads * hidden1', w = torch.ones(4, 4) # hidden1 hidden2, x = rearrange(x, \"... (heads hidden1) -> ... heads hidden1\", heads=2), x = einsum(x, w, \"... hidden1, hidden1 hidden2 -> ... hidden2\"), x = rearrange(x, \"... heads hidden2 -> ... (heads hidden2)\"). 결과 창: 3×8 이 3×2×4 로 나뉜 모습.",
+   "explain": [
+    "reduce 는 sum·mean·max·min 을 일반화한 것이다. x.sum(dim=-1) 은 마지막 축을 합친다는 뜻인데, 이것도 −1 이 무슨 축인지 기억해야 한다. einops 로는 reduce(x, \"... hidden -> ...\", \"sum\") — 앞의 배치 축들은 그대로 두고 hidden 축을 합친다. 화살표 오른쪽에서 사라진 이름이 줄어드는 축이고, 세 번째 인자가 줄이는 방법이다. \"sum\" 자리에 \"mean\", \"max\", \"min\" 을 넣으면 된다. 1로 찬 (2, 3, 4) 텐서에 적용하면 모든 칸이 4인 (2, 3) 이 나온다. 이것도 PyTorch 의 기본 연산으로 그대로 옮겨지니 속도는 같다.",
+    "rearrange 는 강사가 '꽤 강력하다'고 꼽은 도구다. 상황은 이렇다. 어떤 축 하나가 사실은 두 축을 일렬로 펼쳐 놓은 것이고, 그중 한 축에 대해서만 연산을 하고 싶다. 멀티헤드 어텐션이 대표적이다. 은닉 차원 8 이 사실은 '헤드 2개 × 헤드당 4차원'을 펼친 것이고, 헤드마다 따로 4×4 변환을 걸고 싶다. 이때 rearrange(x, \"... (heads hidden1) -> ... heads hidden1\", heads=2) 라고 쓴다. 괄호는 '이 축은 이 두 축의 곱'이라는 뜻이고, 8 을 2×4 로 볼지 4×2 로 볼지는 모호하므로 heads=2 를 알려 주면 hidden1 = 4 는 자동으로 정해진다. (3, 8) 이 (3, 2, 4) 가 된다.",
+    "그다음은 이미 아는 einsum 이다. \"... hidden1, hidden1 hidden2 -> ... hidden2\" 로 헤드마다 4차원을 4차원으로 바꾼다. heads 는 ... 에 포함되어 배치처럼 취급된다. 마지막으로 rearrange(x, \"... heads hidden2 -> ... (heads hidden2)\") 로 두 축을 다시 한 축으로 붙이면 원래처럼 (3, 8) 모양이 된다. 쪼개기 → 변환 → 붙이기, 이 세 단계가 트랜스포머 코드에서 헤드를 다루는 정석이고 과제에서도 한 번은 나온다고 강사는 말한다.",
+    "수강생 질문이 핵심을 짚었다. 2차원을 1차원으로 펼치는 방법은 행 우선과 열 우선 두 가지가 있는데 어느 쪽인가? 답은 괄호 안에 적은 순서다. (heads hidden1) 은 heads 가 바깥, hidden1 이 안쪽이라 원소 0~3 이 첫 헤드, 4~7 이 둘째 헤드가 된다. (hidden1 heads) 로 쓰면 0, 2, 4, 6 이 첫 헤드가 된다. 모양은 똑같이 (3, 2, 4) 라 오류가 나지 않으니, 저장된 가중치의 배치 규칙과 맞춰 써야 한다. 강사는 처음엔 적응에 시간이 들지만, 일단 이렇게 생각하기 시작하면 전치와 합산이 훨씬 자연스럽게 느껴진다고 마무리한다."
+   ],
+   "formulas": [
+    {
+     "expr": "flat[(a, b)] = a · |b| + b   (괄호 (A B) 의 펼침)",
+     "meaning": "a 는 바깥 축 A 의 인덱스, b 는 안쪽 축 B 의 인덱스, |b| 는 B 의 길이. 괄호 안 왼쪽이 바깥(느리게 변함), 오른쪽이 안쪽(빠르게 변함)이다 — C 언어식 행 우선."
+    }
+   ],
+   "example": {
+    "title": "x[0] = [0..7] 을 두 방법으로 쪼개기",
+    "body": "(heads hidden1), heads=2: 헤드 0 = [0,1,2,3], 헤드 1 = [4,5,6,7]. 1로 찬 4×4 w 를 곱하면 각 출력은 헤드 안 합이라 헤드 0 → 6, 헤드 1 → 22, 다시 붙이면 [6,6,6,6,22,22,22,22]. (hidden1 heads), heads=2: 헤드 0 = [0,2,4,6](합 12), 헤드 1 = [1,3,5,7](합 16) — 같은 모양, 다른 답."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nfrom einops import rearrange, reduce, einsum\nx = np.arange(3 * 8, dtype=float).reshape(3, 8)       # seq (heads*hidden1)\nw = np.ones((4, 4))                                   # hidden1 hidden2\nh = rearrange(x, \"... (heads hidden1) -> ... heads hidden1\", heads=2)\nprint(h.shape, h[0].tolist())                         # (3,2,4) [[0..3],[4..7]]\nh = einsum(h, w, \"... hidden1, hidden1 hidden2 -> ... hidden2\")\nout = rearrange(h, \"... heads hidden2 -> ... (heads hidden2)\")\nprint(out.shape, out[0].tolist())                     # (3,8) [6,6,6,6,22,22,22,22]\n# 괄호 안 순서가 곧 펼치는 순서다: (hidden1 heads) 로 쓰면 다른 값이 묶인다\nprint(rearrange(x, \"s (hidden1 heads) -> s heads hidden1\", heads=2)[0].tolist())\nprint(reduce(x, \"s hidden -> s\", \"sum\"), reduce(x, \"s hidden -> s\", \"max\"))",
+    "note": "실행 결과: (3, 2, 4) [[0,1,2,3],[4,5,6,7]] / (3, 8) [6,6,6,6,22,22,22,22] / 순서를 바꾼 쪼개기는 [[0,2,4,6],[1,3,5,7]] / reduce sum [28, 92, 156], max [7, 15, 23]."
+   },
+   "diagram": {
+    "title": "멀티헤드 변환의 세 단계",
+    "code": "flowchart LR\n  A[\"x: seq × (heads·hidden1)\\n(3, 8)\"] -->|rearrange 쪼개기| B[\"seq × heads × hidden1\\n(3, 2, 4)\"]\n  B -->|einsum hidden1→hidden2| C[\"seq × heads × hidden2\\n(3, 2, 4)\"]\n  C -->|rearrange 붙이기| D[\"seq × (heads·hidden2)\\n(3, 8)\"]"
+   },
+   "pitfalls": [
+    "rearrange 의 괄호 순서를 바꿔도 모양이 같으면 오류 없이 다른 값이 나온다. 체크포인트를 불러올 때 헤드 배치 규칙이 다르면 이 실수가 조용히 성능을 망친다.",
+    "rearrange 는 가능하면 view(복사 없음)를 돌려주지만, 축 순서를 바꾸는 경우에는 메모리 배치가 연속적이지 않아 뒤따르는 연산에서 복사가 일어날 수 있다(노트 보충)."
+   ],
+   "check": [
+    {
+     "q": "(batch, seq, heads·d) 텐서를 (batch, heads, seq, d) 로 바꾸는 rearrange 문자열은? heads=16.",
+     "a": "rearrange(x, \"batch seq (heads d) -> batch heads seq d\", heads=16)."
+    },
+    {
+     "q": "reduce(x, \"b s h -> b h\", \"mean\") 은 PyTorch 기본 연산으로 무엇과 같은가?",
+     "a": "x.mean(dim=1) — 시퀀스 축 평균."
+    }
+   ]
+  },
+  {
+   "start": 1640,
+   "title": "FLOP 과 FLOP/s — 연산량의 단위와 규모 감각",
+   "points": [
+    "FLOP = 덧셈이나 곱셈 같은 부동소수점 연산 하나. 다른 연산도 있지만 이 둘이 시간 대부분을 먹는다.",
+    "FLOPs(소문자 s) = 연산의 양, FLOP/s = 초당 연산(하드웨어 속도). 강사는 혼동을 피하려 늘 /s 를 붙인다.",
+    "GPT-3(2020) 학습 3.14e23 FLOPs, GPT-4(2023) 추정 2e25 FLOPs.",
+    "H100 스펙 1979 teraFLOP/s(bf16)는 희소성 가정 — 밀집 행렬은 절반인 989.5e12.",
+    "H100 8장(한 노드)을 1주일 돌리면 약 4.8e21 FLOPs."
+   ],
+   "on_screen": "tensor_operations_flops(): 'A floating-point operation (FLOP) is a basic operation like addition (x + y) or multiplication (x y).' 'Two terribly confusing acronyms (pronounced the same!): FLOPs: floating-point operations (measure of computation done) / FLOP/s: floating-point operations per second (also written as FLOPS), which is used to measure the speed of hardware.' Intuitions: Training GPT-3 (2020) took 3.14e23 FLOPs [article], Training GPT-4 (2023) is speculated to take 2e25 FLOPs [article], 'H100 has a peak performance of 1979 teraFLOP/s with sparsity, 50% without' [spec], h100_flop_per_sec = 1979e12 / 2. '8 H100s for 2 weeks:' total_flops = 8 * (60 * 60 * 24 * 7) * h100_flop_per_sec → 4.788e+21.",
+   "explain": [
+    "이제 연산 쪽 회계다. 계산 비용을 재는 단위로 FLOP, 곧 부동소수점 연산 하나를 쓴다. 두 수를 더하거나 곱하는 것이 하나다. GPU 는 다른 일(비교, 지수 함수, 정수 연산 등)도 하지만 딥러닝 시간의 대부분은 곱셈과 덧셈이 차지하므로 나머지는 대체로 무시한다. 강사가 꼭 짚고 넘어가는 혼동이 하나 있다. FLOPs 라고 쓰면 두 가지 뜻이 섞인다. 소문자 s 의 FLOPs 는 '연산의 개수', 즉 일의 양이다. FLOP/s(또는 대문자 FLOPS)는 '초당 연산 수', 즉 하드웨어의 속도다. 강사는 늘 /s 를 붙여 둘을 구분하겠다고 한다. 'H100 은 989 teraFLOP/s' 는 속도이고, 'GPT-3 는 3.14e23 FLOPs' 는 양이다.",
+    "규모 감각을 잡기 위한 숫자들이 이어진다. GPT-3(2020) 학습에 3.14e23 FLOPs, GPT-4(2023)는 2e25 FLOPs 로 추정된다. 1e22, 1e23, 1e25 같은 숫자가 나오면 그것은 모델 학습에 든 총 연산량, 곧 그 모델의 '규모'를 암묵적으로 가리킨다. 하드웨어 쪽에서는 H100 의 스펙 시트가 bf16 으로 1979 teraFLOP/s 를 적어 두었다. 그런데 직접 벤치마크를 돌리면 그 근처도 안 나온다. 각주를 읽으면 이유가 있다 — 이 숫자는 2:4 구조적 희소성(4개 중 2개가 0인 행렬)을 가정한 값이라 일반적인 밀집 행렬에서는 절반이다. 그래서 강의 코드 곳곳에 1979e12 / 2 가 나온다.",
+    "이 숫자들을 엮으면 간단한 어림이 된다. H100 8장짜리 노드 하나를 1주일(604,800초) 돌리면 8 × 604,800 × 989.5e12 ≈ 4.8e21 FLOPs 다. GPT-3 학습량(3.14e23)은 그 65배쯤이니, 한 노드로는 1년이 넘는다. 이렇게 '어떤 하드웨어가 얼마의 연산을 내고, 어떤 모델이 얼마의 연산을 요구하는가'를 나란히 놓는 것이 이 장의 목적이다. 강사 말대로 특별한 것은 없고 냅킨 위 계산일 뿐이지만, 이 계산을 빨리 할 수 있어야 실험 계획이 현실적인지 판단할 수 있다.",
+    "노트 보충: 정밀도마다 FLOP/s 가 다르다는 점도 기억해 두자. 같은 H100 이라도 fp8 은 bf16 의 두 배쯤이고 fp32(텐서 코어 없이)는 훨씬 느리다. 다음 장들에서 보듯 '약속된 FLOP/s' 는 데이터 형식과 희소성 가정에 따라 몇 배씩 달라지므로, 스펙 숫자를 쓸 때는 어느 조건의 숫자인지부터 확인해야 한다."
+   ],
+   "formulas": [
+    {
+     "expr": "총 FLOPs = G × T × peak",
+     "meaning": "G 는 GPU 장수, T 는 초 단위 시간, peak 는 한 장의 초당 FLOPs(여기선 효율 100% 가정). MFU 를 곱하면 실제 해낸 양이 된다."
+    }
+   ],
+   "example": {
+    "title": "H100 노드 하나로 GPT-3 를?",
+    "body": "노드 1주 = 8 × 7 × 86,400 × 989.5e12 = 4.79e21 FLOPs. GPT-3 = 3.14e23 → 3.14e23 / 4.79e21 ≈ 66주 ≈ 15개월(효율 100% 가정). MFU 0.5 라면 2년 반. 같은 GPT-3 를 H100 1024장·MFU 0.5 로 돌리면 3.14e23 / (1024 × 4.95e14 × 86,400) ≈ 7일. GPT-4 추정치 2e25 는 같은 조건에서 457일이다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "h100 = 1979e12 / 2                     # FLOP/s (bf16, 밀집)\nweek = 7 * 24 * 3600\nprint(f\"H100 8장 x 1주 = {8 * week * h100:.3e} FLOPs\")\nprint(f\"H100 8장 x 2주 = {8 * 2 * week * h100:.3e} FLOPs\")\nprint(f\"GPT-3 6ND = {6 * 175e9 * 300e9:.3e} FLOPs (공개값 3.14e23)\")\nfor name, f in [(\"GPT-3\", 3.14e23), (\"GPT-4(추정)\", 2e25)]:\n    days = f / (1024 * h100 * 0.5) / 86400\n    print(f\"{name}: H100 1024장, MFU 0.5 로 {days:,.0f}일\")",
+    "note": "실행 결과: 1주 4.788e+21, 2주 9.575e+21 / GPT-3 6ND = 3.150e+23(공개값 3.14e23과 거의 같다 — 175B 파라미터 × 300B 토큰) / H100 1024장·MFU 0.5 로 GPT-3 7일, GPT-4 추정 457일."
+   },
+   "pitfalls": [
+    "슬라이드 제목은 '8 H100s for 2 weeks' 지만 코드는 60*60*24*7, 즉 1주일이고 4.788e21 도 1주 값이다. 강사도 '1주처럼 보인다'고 말로 고쳤다. 2주면 9.6e21 이다.",
+    "스펙 시트의 1979 teraFLOP/s 를 그대로 분모로 쓰면 MFU 가 실제의 절반으로 계산된다. 희소성 각주를 확인하고 밀집 값(÷2)을 쓰자."
+   ],
+   "check": [
+    {
+     "q": "'이 GPU 는 1 PFLOPS 다'와 '이 모델은 1e24 FLOPs 다'에서 각각 무엇을 말하나?",
+     "a": "앞은 속도(초당 1e15 연산), 뒤는 학습 전체에 든 일의 양(1e24 번의 연산)이다."
+    },
+    {
+     "q": "1e24 FLOPs 를 H100 1024장, MFU 0.4 로 돌리면 며칠?",
+     "a": "1024 × 989.5e12 × 0.4 ≈ 4.05e17 FLOP/s → 1e24 / 4.05e17 ≈ 2.47e6 초 ≈ 28.6일."
+    }
+   ]
+  },
+  {
+   "start": 1830,
+   "title": "행렬곱의 FLOPs = 2·B·D·K, 그리고 '2 × 토큰 × 파라미터'",
+   "points": [
+    "B×D 입력 x 와 D×K 가중치 w 의 곱 x @ w 는 (i, j, k) 세 쌍마다 곱셈 1 + 덧셈 1 → 2·B·D·K FLOPs.",
+    "원소별 연산은 원소 수만큼: m×n 행렬에 원소별 연산 O(mn), 두 행렬 덧셈 mn FLOPs.",
+    "충분히 큰 행렬에서는 딥러닝의 어떤 연산도 행렬곱만큼 비싸지 않다 — 그래서 행렬곱만 세면 된다.",
+    "B 를 토큰 수, D·K 를 파라미터 수로 보면 순전파 FLOPs = 2 × 토큰 × 파라미터. 트랜스포머에도 1차 근사로 통한다.",
+    "Strassen 류의 점근적으로 빠른 알고리즘보다 하드웨어와 함께 설계하는 최적화가 실무의 관심사다."
+   ],
+   "on_screen": "'Linear model — As motivation, suppose you have a linear model. We have n points / Each point is d-dimsional / The linear model maps each d-dimensional vector to a k outputs.' if torch.cuda.is_available(): B = 16384 # Number of points, D = 32768 # Dimension, K = 8192 # Number of outputs, else: B = 1024, D = 256, K = 64. x = torch.ones(B, D), w = torch.randn(D, K), y = x @ w, 'We have one multiplication (x[i][j] * w[j][k]) and one addition per (i, j, k) triple.' actual_num_flops = 2 * B * D * K. 'FLOPs of other operations' 절 — 원소별 연산은 O(m n), m×n 두 행렬의 덧셈은 m n FLOPs, 충분히 큰 행렬이면 딥러닝의 어떤 연산도 행렬곱만큼 비싸지 않다는 문장. Interpretation 절 — B 는 데이터 점 수, (D K) 는 파라미터 수, 순전파 FLOPs = 2 (# tokens) (# parameters), 트랜스포머에도 1차 근사로 일반화된다는 문장.",
+   "explain": [
+    "이제 기계적으로 세어 본다. 놀랍게도 FLOPs 계산의 핵심은 거의 다 선형 행렬곱으로 환원되므로, 선형 모델 하나만 제대로 세면 일반성을 크게 잃지 않는다. 설정은 이렇다. 데이터 점이 B 개 있고 각 점은 D 차원 벡터다. 이것을 K 차원 출력으로 보내는 선형 사상을 생각한다. 데이터 행렬 x 는 B×D, 가중치 w 는 D×K, 결과 y = x @ w 는 B×K 다. GPU 에서는 B=16384, D=32768, K=8192 라는 꽤 큰 값을, CPU 에서는 B=1024, D=256, K=64 를 쓴다.",
+    "이 곱이 몇 FLOPs 인가? 출력 y[i, k] 하나는 Σ_j x[i, j]·w[j, k] 이므로, (i, j, k) 세 쌍 하나마다 곱셈 하나와 덧셈 하나가 있다. 세 쌍의 개수는 B·D·K 이니 FLOPs 는 2·B·D·K 다. 엄밀히는 D 개를 더하려면 덧셈이 D−1 번이라 조금 적지만 큰 D 에서는 무시한다. 앞 장의 einsum 관점과 정확히 같다 — 나온 모든 축 길이의 곱에 2를 곱한다. 원소별 연산은 훨씬 싸다. m×n 행렬에 ReLU 를 씌우거나 두 행렬을 더하는 일은 원소 수 mn 에 비례한다. 행렬곱이 '세 축의 곱'인 반면 원소별 연산은 '두 축의 곱'이니, 행렬이 커질수록 차이는 D 배씩 벌어진다. 그래서 충분히 큰 행렬에서는 딥러닝에서 만나는 어떤 연산도 행렬곱만큼 비싸지 않고, FLOPs 를 셀 때는 행렬곱에 집중하면 된다. 다만 이것은 연산량 이야기이고, 메모리 이동을 따지면 사정이 달라진다는 단서를 강사는 미리 달아 둔다(산술 강도 장).",
+    "이 공식을 다르게 읽으면 중요한 해석이 나온다. B 는 데이터 점, 언어 모델에서는 토큰의 수다. D·K 는 가중치 행렬의 원소 수, 곧 파라미터 수다. 따라서 순전파 FLOPs = 2 × (토큰 수) × (파라미터 수). 이 관계는 트랜스포머에도 1차 근사로 성립한다. 트랜스포머의 대부분이 결국 토큰마다 가중치 행렬을 곱하는 일이기 때문이다. 강의 끝에 나올 6ND 공식의 '2'가 여기서 이미 모양을 드러낸다.",
+    "질의응답에서 Strassen 같은 점근적으로 더 빠른 행렬곱 알고리즘을 묻자, 강사는 실무의 최적화는 그런 알고리즘보다 하드웨어와 함께 설계하는(co-design) 쪽에 있다고 답한다. 덧셈이 곱셈보다 싸지 않으냐는 질문에는, 직관적으로는 그렇지만 하드웨어 구조상 둘은 사실상 같은 비용(융합 곱셈-덧셈, FMA 한 번)이라고 답한다."
+   ],
+   "formulas": [
+    {
+     "expr": "FLOPs(x @ w) = 2 · B · D · K",
+     "meaning": "x 는 B×D, w 는 D×K. B 는 데이터 점(토큰) 수, D 는 입력 차원, K 는 출력 차원. 2 는 (i, j, k) 세 쌍마다 곱셈 1 + 덧셈 1."
+    },
+    {
+     "expr": "순전파 FLOPs ≈ 2 · (#토큰) · (#파라미터)",
+     "meaning": "D·K 가 파라미터 수이므로 위 식을 다시 쓴 것. 트랜스포머에서는 문맥 길이가 너무 길지 않을 때 1차 근사로 성립한다."
+    },
+    {
+     "expr": "FLOPs(원소별, m×n) = O(m·n)",
+     "meaning": "덧셈·ReLU 같은 원소별 연산은 원소 수에 비례. 행렬곱 대비 D 분의 1 수준이다."
+    }
+   ],
+   "example": {
+    "title": "강의의 두 설정을 세어 보기",
+    "body": "CPU 설정 B=1024, D=256, K=64: 2 × 1024 × 256 × 64 = 33,554,432 ≈ 3.4e7 FLOPs. 파라미터 수 256×64 = 16,384, 토큰 1024 → 2 × 1024 × 16,384 로도 같은 값. GPU 설정 B=16384, D=32768, K=8192: 2 × 16384 × 32768 × 8192 ≈ 8.8e12 FLOPs, H100 밀집 피크(989.5e12 FLOP/s)로 이상적이면 8.9ms. 같은 크기 출력(16384×8192)에 덧셈 한 번은 1.3e8 FLOPs 로 행렬곱의 6만 분의 1이다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np, time\ndef matmul_flops(B, D, K):\n    return 2 * B * D * K            # 곱 1 + 덧셈 1, (i,j,k) 하나당\nB, D, K = 1024, 1024, 1024\nx = np.ones((B, D), np.float32); w = np.ones((D, K), np.float32)\nx @ w                                # 예열(처음 한 번은 느리다)\nts = []\nfor _ in range(5):\n    t = time.perf_counter(); x @ w; ts.append(time.perf_counter() - t)\nt = sum(ts) / len(ts)\nprint(f\"FLOPs={matmul_flops(B, D, K):.3e}  {t*1e3:.2f} ms  \"\n      f\"{matmul_flops(B, D, K)/t/1e9:.1f} GFLOP/s\")\n# 원소별 연산은 원소 수만큼: 같은 크기의 덧셈은 B*K FLOPs\nprint(\"add FLOPs\", B * K, \" 비율 matmul/add =\", matmul_flops(B, D, K) // (B * K))",
+    "note": "필자 노트북 CPU 실행 예: FLOPs=2.147e+09, 약 2.25 ms, 약 957 GFLOP/s(기계마다 다르다) / 같은 크기 덧셈 대비 2048배. 2048 = 2·D 이다."
+   },
+   "pitfalls": [
+    "곱셈-덧셈 한 쌍을 FLOP 1개로 세는 관행(MAC/FMA 단위)도 있다. 그 경우 숫자가 절반이 된다. 스펙 시트와 논문이 어느 쪽인지 확인하자 — 이 강의는 곱과 합을 따로 센다.",
+    "2·(토큰)·(파라미터)는 임베딩 조회처럼 곱셈이 없는 파라미터, 어텐션의 시퀀스 길이 제곱 항을 무시한 근사다."
+   ],
+   "check": [
+    {
+     "q": "(4096 × 1024) @ (1024 × 4096) 의 FLOPs 는?",
+     "a": "2 × 4096 × 1024 × 4096 ≈ 3.44e10 FLOPs."
+    },
+    {
+     "q": "파라미터 1B 짜리 모델에 토큰 2048개를 순전파하면 대략 몇 FLOPs 인가?",
+     "a": "2 × 2048 × 1e9 ≈ 4.1e12 FLOPs."
+    }
+   ]
+  },
+  {
+   "start": 2043,
+   "title": "시간 재기와 MFU — 약속된 속도 중 얼마를 쓰나",
+   "points": [
+    "FLOPs 는 하드웨어와 무관한 '일의 양'. 실제 시간은 재야 안다.",
+    "GPU 는 비동기로 돌기 때문에 연산 전후에 torch.cuda.synchronize() 를 불러야 한다. 빼먹으면 터무니없이 빠른 시간이 나온다.",
+    "여러 번 돌려 평균을 낸다. 실제 FLOP/s = FLOPs / 측정 시간.",
+    "MFU = 실제 FLOP/s / 약속된 FLOP/s (통신·오버헤드 무시). 약속값은 데이터 형식마다 다르다.",
+    "현대 모델에서 MFU 0.5 면 만족, 순수 행렬곱만이면 0.8 근처도 가능, 0.1 이면 뭔가 잘못된 것."
+   ],
+   "on_screen": "'How do our FLOPs calculations translate to wall-clock time (seconds)? Let us time it!' actual_time = time_matmul(x, w), actual_flop_per_sec = actual_num_flops / actual_time. time_matmul 코드: '# Wait until previous CUDA threads are done' if torch.cuda.is_available(): torch.cuda.synchronize(), def run(): a @ b, synchronize 다시, num_trials = 5 로 반복해 평균. 'Each GPU has a specification sheet that reports the peak performance. Example: [H100 spec] Note that the FLOP/s depends heavily on the data type!' promised_flop_per_sec = get_promised_flop_per_sec(x.dtype). Model FLOPs utilization (MFU): 'Definition: (actual FLOP/s) / (promised FLOP/s) [ignore communication/overhead]', mfu = actual_flop_per_sec / promised_flop_per_sec, 'Usually, MFU of >= 0.5 is quite good (and will be higher if matmuls dominate)'. Summary: Matrix multiplications dominate: (2 m n p) FLOPs / FLOP/s depends on hardware (B200 >> H100) and data type (bfloat16 >> float32) / MFU.",
+   "explain": [
+    "지금까지 센 FLOPs 는 하드웨어와 상관없는 '일의 양'이다. 그 일이 실제로 몇 초 걸리는지는 하드웨어 위에서 재 봐야 안다. 가장 단순한 방법은 시간을 재는 것인데, GPU 에서는 함정이 있다. CPU 가 GPU 에 연산을 맡기는 호출은 비동기라서, 명령을 큐에 넣자마자 바로 돌아온다. 그래서 a @ b 앞뒤로 시계만 보면 실제 계산이 아니라 '주문서를 넣는 시간'을 재게 되고, 놀랄 만큼 빠른 숫자가 나온다. 이를 막으려면 재기 전에 torch.cuda.synchronize() 로 앞선 작업이 다 끝나길 기다리고, 연산 뒤에도 다시 동기화해서 그 연산이 정말 끝난 시점을 잡아야 한다. 그리고 한 번이 아니라 여러 번 돌려 평균을 내는 것이 좋다. 첫 실행에는 커널 준비 같은 일회성 비용이 섞이기 때문이다. 벤치마크는 이후 강의에서 더 자세히 다룬다.",
+    "이렇게 잰 시간으로 실제 FLOP/s = FLOPs / 시간을 구한다(강사는 말로 '곱한다'고 했지만 나누는 것이 맞다). 한편 GPU 제조사는 스펙 시트에 약속된 최고 속도를 적어 둔다. 이 값은 데이터 형식에 크게 좌우된다 — bf16 과 fp8 은 텐서 코어 덕에 매우 빠르고, 요즘 하드웨어에서 float32 는 최적화 대상이 아니라 아주 느리다. 그래서 측정과 비교할 약속값도 텐서의 dtype 에 맞춰 골라야 한다.",
+    "둘 사이의 간극을 하나의 숫자로 요약한 것이 MFU(Model FLOPs Utilization)다. 정의는 실제 FLOP/s 를 약속된 FLOP/s 로 나눈 것으로, 통신과 기타 오버헤드는 따로 따지지 않는다. 여기서 '실제 FLOP/s' 의 분자는 모델이 논리적으로 해야 하는 FLOPs(예: 6ND)이지, 하드웨어가 재계산 등으로 실제 수행한 연산 수가 아니다. 약속보다 더 받는 일은 없고 대개 덜 받는다. 강사의 감각으로는 현대 모델에서 0.5 정도면 스스로 만족해도 되고, 순수한 큰 행렬곱이라면 0.8 가까이도 나오며, 0.1 같은 숫자가 나오면 뭔가 손봐야 한다는 신호다.",
+    "그렇다면 왜 0.5 밖에 안 될까? 이 질문이 강의 후반의 다리가 된다. 강사는 답을 메모리 병목 이야기로 미룬다. 계산 장치가 아무리 빨라도 데이터가 메모리에서 제때 도착하지 않으면 놀게 되고, 그 노는 시간만큼 MFU 가 깎인다. 그 구조를 설명하는 개념이 다음 장의 산술 강도다."
+   ],
+   "formulas": [
+    {
+     "expr": "MFU = (모델 FLOPs / 측정 시간) / 약속된 FLOP/s",
+     "meaning": "모델 FLOPs 는 모델이 논리적으로 필요로 하는 연산량(학습 스텝이면 6 × 토큰 × 파라미터), 측정 시간은 동기화를 포함한 벽시계 시간, 약속된 FLOP/s 는 스펙 시트의 dtype 별 밀집 피크(장수만큼 곱함). 0~1 사이 값."
+    }
+   ],
+   "example": {
+    "title": "MFU 를 손으로",
+    "body": "7B 모델, 한 스텝에 토큰 100만 개 → 6 × 7e9 × 1e6 = 4.2e16 FLOPs. H100 256장에서 0.25초 걸렸다면 실제 = 4.2e16 / 0.25 = 1.68e17 FLOP/s. 약속 = 256 × 989.5e12 = 2.53e17. MFU = 1.68 / 2.53 ≈ 0.66. 만약 분모에 희소성 숫자 1979e12 를 쓰면 0.33 으로 반토막 — 같은 실험이 '나빠 보이는' 착시다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "def mfu(model_flops, seconds, peak):\n    return model_flops / seconds / peak\npeak = 1979e12 / 2\n# 7B 모델, 배치 1M 토큰 한 스텝(6ND)이 H100 256장에서 0.25초 걸렸다면?\nstep = 6 * 7e9 * 1e6\nprint(f\"MFU = {mfu(step, 0.25, 256 * peak):.2f}\")\n# 같은 측정을 '스펙의 희소성 숫자'에 대면 MFU 가 반토막으로 보인다\nprint(f\"(잘못) 1979e12 기준 = {mfu(step, 0.25, 256 * 1979e12):.2f}\")",
+    "note": "실행 결과: MFU = 0.66 / (잘못) 1979e12 기준 = 0.33."
+   },
+   "pitfalls": [
+    "synchronize 없이 GPU 시간을 재는 것은 가장 흔한 벤치마크 실수다. 첫 번째 실행(예열)은 평균에서 빼자.",
+    "강사가 말로 '실제 FLOP/s 는 FLOPs 곱하기 시간'이라고 한 부분은 말실수다. 화면 코드대로 actual_num_flops / actual_time 이다.",
+    "활성 체크포인팅으로 순전파를 다시 계산하면 하드웨어는 더 많은 연산을 하지만 MFU 의 분자(모델 FLOPs)는 그대로다. 재계산까지 센 지표는 HFU(Hardware FLOPs Utilization)라고 따로 부른다(노트 보충)."
+   ],
+   "check": [
+    {
+     "q": "어떤 학습 스텝이 측정상 MFU 0.12 가 나왔다. 가장 먼저 의심할 것 두 가지는?",
+     "a": "(1) 행렬곱이 작아 메모리 병목인 연산(원소별 연산, 작은 배치)이 시간을 지배하는지, (2) 측정이 잘못됐는지(동기화 누락, 데이터 로딩·통신 대기 포함, 약속값을 dtype 과 다르게 잡음)."
+    },
+    {
+     "q": "같은 코드를 float32 에서 bf16 으로 바꿨더니 시간이 4배 줄었다. MFU 도 4배 올랐나?",
+     "a": "아니다. 약속된 FLOP/s 도 dtype 에 따라 바뀌므로 bf16 의 (훨씬 큰) 약속값으로 나눠야 한다. MFU 는 오히려 내려갈 수도 있다."
+    }
+   ]
+  },
+  {
+   "start": 2400,
+   "title": "산술 강도 — ReLU 는 왜 계산이 아니라 기다림인가",
+   "points": [
+    "연산 하나 = 입력을 HBM 에서 계산 장치로 보내고, 계산하고, 결과를 다시 HBM 으로 보내는 일.",
+    "시간은 계산 속도(H100 989.5e12 FLOP/s)와 메모리 대역폭(3.35e12 B/s) 둘에 달렸고, 겹쳐서 돈다고 보면 총 시간 = max(통신, 계산).",
+    "ReLU(bf16, n=2²⁰): 4n 바이트를 옮기고 n FLOPs → 통신 1.25e-6초 vs 계산 1.06e-9초, 메모리 병목.",
+    "가속기 강도 = 피크 FLOP/s ÷ 대역폭 ≈ 295 FLOP/바이트. 알고리즘의 산술 강도 = FLOPs ÷ 옮긴 바이트.",
+    "산술 강도 < 295 이면 메모리 병목, > 295 이면 연산 병목. GELU(≈5)도 여전히 메모리 병목이라 ReLU 와 걸리는 시간이 같다."
+   ],
+   "on_screen": "Compute(분홍 상자) — Memory(파란 상자)를 잇는 초록 선 그림. 'How to compute a thing: 1. Send inputs from memory to accelerator 2. Perform computation 3. Send outputs from accelerator to memory'. 'Depends on two things: 1. Accelerator speed (FLOP/s) 1. Memory bandwidth (bytes/s)' assert h100_flop_per_sec == 1979e12 / 2 # Half without sparsity, assert h100_bytes_per_sec == 3.35e12. arithmetic_intensity_relu(): n = 1024 * 1024, x = torch.ones(n, dtype=torch.bfloat16), y = torch.relu(x), bytes = (2 * n) + (2 * n) # Read x, write y, flops = n # n comparisons, communication_time = 1.252e-6, computation_time = 1.060e-9, total_time = max(...) = 1.252e-6. 'Memory-bound: communication time > computation time'. h100_accelerator_intensity = 295.3731, arithmetic_intensity = 0.25(코드 주석은 '# ~1/2'). arithmetic_intensity_gelu(): GELU(x) = 0.5 x (1 + tanh(sqrt(2/pi) (x + 0.044715 x^3))), n = 1024, flops = 20 * n, arithmetic_intensity = 5, 그리고 'GeLU 는 옮긴 바이트당 ReLU 보다 일을 더 해 강도가 높지만 여전히 memory-bound — 따로 돌리면 ReLU 가 GeLU 보다 빠르지 않다'는 요지의 문장.",
+   "explain": [
+    "MFU 가 0.5 에 머무는 이유를 설명하려면 하드웨어를 아주 거칠게라도 그려야 한다. 강사의 만화 그림은 상자 두 개다. 아래에 고대역 메모리(HBM)가 있고 텐서들이 거기 산다. 위에 계산 코어가 있다. 무언가를 계산하려면 ① 입력을 메모리에서 계산 장치로 보내고 ② 계산하고 ③ 결과를 메모리로 돌려보내야 한다. 그러니 걸리는 시간은 두 가지에 달렸다. 하나는 지금까지 이야기한 계산 속도(FLOP/s), 다른 하나는 아직 이야기하지 않은 메모리 대역폭(바이트/s)이다. H100 은 bf16 밀집 989.5e12 FLOP/s 에 대역폭 3.35e12 B/s 다. 앞에서 텐서 크기를 열심히 센 이유가 여기서 하나 더 생긴다 — 큰 텐서는 메모리에 안 들어가는 문제만이 아니라, 옮기는 데 시간이 든다.",
+    "예로 원소 2²⁰ 개(약 100만)의 bf16 벡터에 ReLU 를 씌운다. ReLU 는 원소마다 max(x, 0) 이다. 옮기는 바이트는 x 읽기 2n, y 쓰기 2n 으로 4n ≈ 4.2MB. FLOPs 는 원소마다 0과 비교 한 번이라 n. 통신 시간 = 4.2e6 / 3.35e12 ≈ 1.25e-6초, 계산 시간 = 1.05e6 / 989.5e12 ≈ 1.06e-9초. 계산이 천 배 넘게 빠르다. 여기에 중요한 가정을 하나 둔다. 통신과 계산을 겹쳐 돌린다 — 데이터가 도착하는 대로 계산하고 결과를 내보내므로, 이상적으로는 총 시간이 둘의 합이 아니라 둘 중 큰 쪽이다. 실제로는 완벽히 겹치지 않지만 어림에는 충분하다. 그래서 ReLU 의 총 시간은 1.25e-6초, 거의 전부가 데이터를 기다리는 시간이다. 통신 시간이 더 길면 메모리 병목(memory-bound), 계산 시간이 더 길면 연산 병목(compute-bound)이라고 부른다.",
+    "같은 판단을 비율 하나로 할 수 있다. 가속기 강도(accelerator intensity)는 하드웨어가 '바이트 하나를 옮기는 동안 할 수 있는 연산 수'로, 피크 FLOP/s ÷ 대역폭이다. H100 은 989.5e12 / 3.35e12 ≈ 295. 머릿속에 '약 300' 으로 넣어 두면 된다. 알고리즘 쪽의 산술 강도(arithmetic intensity)는 '이 작업이 바이트당 실제로 하는 연산 수', 곧 FLOPs ÷ 옮긴 바이트다. ReLU 는 n / 4n = 0.25. 산술 강도가 가속기 강도보다 작으면 메모리 병목, 크면 연산 병목이다. 앞의 시간 비교와 수학적으로 같은 조건이다(분수 두 개의 분모·분자를 바꿔 쓴 것뿐이다). 누가 '산술 강도 0.25' 라고 하면 '아, 아주 나쁘다'고 반응하면 된다.",
+    "직관을 하나 더 얻는 예가 GELU 다. GELU 는 tanh 와 세제곱이 들어간 복잡한 식이라 원소당 대략 20 FLOPs 를 쓴다(근사 방식에 따라 다르다). 옮기는 바이트는 ReLU 와 같은 4n 이니 산술 강도는 20n / 4n = 5. ReLU 보다 20배 '일을 많이 하지만' 5 는 여전히 295 에 한참 못 미친다. 따라서 메모리 병목이고, 걸리는 시간은 ReLU 와 똑같이 1.25e-6초다. 'GELU 는 복잡하니 비쌀 것'이라는 직관은 틀렸다 — 병목이 계산에 있지 않으니 계산을 더 해도 공짜다. 이 관찰이 나중에 커널 융합(여러 원소별 연산을 한 번의 메모리 왕복으로 묶기)의 근거가 된다(노트 보충, 커널 강의에서 다룬다)."
+   ],
+   "formulas": [
+    {
+     "expr": "T ≈ max( bytes / BW , FLOPs / peak )",
+     "meaning": "bytes 는 HBM 과 계산 장치 사이에 옮기는 바이트(읽기 + 쓰기), BW 는 메모리 대역폭(H100 3.35e12 B/s), FLOPs 는 연산 수, peak 는 피크 FLOP/s(989.5e12). 통신과 계산이 완벽히 겹친다는 가정."
+    },
+    {
+     "expr": "AI_alg = FLOPs / bytes ,  AI_acc = peak / BW ≈ 295 (H100, bf16)",
+     "meaning": "AI_alg 는 알고리즘의 산술 강도(바이트당 연산), AI_acc 는 가속기 강도. AI_alg < AI_acc 면 메모리 병목, 크면 연산 병목."
+    }
+   ],
+   "example": {
+    "title": "ReLU 와 GELU 를 같은 표에",
+    "body": "n = 1,048,576(bf16). ReLU: bytes = 4n = 4,194,304, FLOPs = 1,048,576 → 통신 1.252e-6 s, 계산 1.060e-9 s, AI 0.25. GELU: bytes 동일, FLOPs = 20n = 20,971,520 → 통신 1.252e-6 s, 계산 2.12e-8 s, AI 5. 둘 다 총 시간 1.252e-6 s. GELU 가 연산 병목이 되려면 원소당 FLOPs 가 295 × 4 ≈ 1180 을 넘어야 한다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "PEAK, BW = 1979e12 / 2, 3.35e12            # H100: FLOP/s, HBM 바이트/s\ndef analyze(name, flops, nbytes):\n    t_mem, t_cmp = nbytes / BW, flops / PEAK\n    ai = flops / nbytes\n    bound = \"memory\" if ai < PEAK / BW else \"compute\"\n    print(f\"{name:5s} AI={ai:6.2f}  mem={t_mem:.3e}s  cmp={t_cmp:.3e}s\"\n          f\"  total={max(t_mem, t_cmp):.3e}s  {bound}-bound\")\nn = 1024 * 1024\nprint(f\"accelerator intensity = {PEAK / BW:.1f} FLOP/byte\")\nanalyze(\"relu\", n, 2 * n + 2 * n)          # bf16 읽기 + 쓰기, 비교 n 번\nanalyze(\"gelu\", 20 * n, 2 * n + 2 * n)     # 원소당 ~20 FLOPs(근사)",
+    "note": "실행 결과: accelerator intensity = 295.4 / relu AI 0.25, mem 1.252e-06 s, cmp 1.060e-09 s, memory-bound / gelu AI 5.00, cmp 2.119e-08 s, 총 시간 같음."
+   },
+   "diagram": {
+    "title": "연산 하나의 시간 모형",
+    "code": "flowchart TB\n  HBM[\"HBM (텐서가 사는 곳)\\n대역폭 3.35e12 B/s\"] -->|① 입력 읽기 bytes_in| CORE[\"계산 코어\\n989.5e12 FLOP/s\"]\n  CORE -->|③ 출력 쓰기 bytes_out| HBM\n  CORE -->|② 계산 FLOPs| CORE\n  CORE -.-> T[\"시간 ≈ max(통신, 계산)\\nAI = FLOPs / bytes 와 295 비교\"]"
+   },
+   "pitfalls": [
+    "화면 코드의 ReLU 주석은 '# ~1/2' 이지만 실제 값은 0.25 다(강사도 말로 고쳤다). 읽기 2n + 쓰기 2n = 4n 바이트에 n FLOPs 이기 때문이다.",
+    "가속기 강도 295 는 bf16 밀집 피크 기준이다. fp8 피크나 다른 GPU(B200 등)에서는 다른 값이 나온다 — 계산 속도가 대역폭보다 빨리 늘어 이 값은 세대마다 커지는 추세다(노트 보충).",
+    "'ReLU 가 GELU 보다 빠르다'는 원소별 연산을 따로 돌릴 때는 틀린 직관이다. 둘 다 같은 바이트를 옮기므로 같은 시간이 든다."
+   ],
+   "check": [
+    {
+     "q": "fp32 벡터 두 개를 원소별로 더하는 연산(z = x + y)의 산술 강도는?",
+     "a": "읽기 4n + 4n, 쓰기 4n = 12n 바이트, FLOPs n → 1/12 ≈ 0.083. 아주 깊은 메모리 병목이다."
+    },
+    {
+     "q": "산술 강도 100 인 연산은 H100 에서 피크의 몇 % 까지 낼 수 있나(이상적 겹침 가정)?",
+     "a": "도달 가능한 FLOP/s = min(peak, 100 × 3.35e12) = 3.35e14 → 3.35e14 / 989.5e12 ≈ 34%."
+    }
+   ]
+  },
+  {
+   "start": 2950,
+   "title": "점곱 → 행렬-벡터 → 행렬곱, 그리고 루프라인",
+   "points": [
+    "점곱(n=1024): 바이트 4n+2, FLOPs 2n−1 → 산술 강도 ≈ 0.5, 메모리 병목.",
+    "행렬-벡터(n×n · n): 바이트 2n²+4n, FLOPs n(2n−1) → ≈ 1, 여전히 메모리 병목 — 추론(토큰 하나씩 생성)이 이 모양이다.",
+    "행렬곱(n×n · n×n): 바이트 6n², FLOPs n²(2n−1) → ≈ n/3. n=1024 에서 341 > 295, 드디어 연산 병목.",
+    "큰 배치·큰 행렬이 필요한 이유: n² 을 옮겨 n³ 을 계산하므로 행렬이 클수록 강도가 오른다. 트랜스포머는 이 성질을 노리고 설계됐다.",
+    "루프라인 그림: x축 산술 강도, y축 실현 FLOP/s. 기울어진 대역폭 구간과 평평한 피크 구간이 꺾이는 지점이 가속기 강도."
+   ],
+   "on_screen": "arithmetic_intensity_dot_product(): n = 1024, x·w bf16, bytes = (2 * n) + (2 * n) + 2 # Read x, read w, write y, flops = 2 * n - 1 # n multiplications, n-1 additions, arithmetic_intensity # ~1/2, Memory-bound!. matrix_vector_product(): w = torch.ones(n, n), bytes = (2 * n) + (2 * n * n) + (2 * n), flops = n * (2 * n - 1) # n dot-products, arithmetic_intensity = 0.9976 # ~1. matmul(): bytes = (2 * n * n) + (2 * n * n) + (2 * n * n), flops = n * n * (2 * n - 1) # n^2 dot products, arithmetic_intensity = 341.1667 # ~n/3, h100_accelerator_intensity = 295.3731, 'Finally, compute-bound!' 'As long as we have large matrices, we're compute-bound (saturating the accelerator). Training Transformers involves big matrix multiplications. Matrix-vector product is what happens during inference, which is why inference is memory-bound.' 'Note: arithmetic/accelerator intensity depends on the precision (bf16 versus fp32)'. 루프라인 그림: y축 'FLOPs / s (realized, log-scale)', x축 'Arithmetic intensity (log-scale)', 기울기 BW1·BW2 두 선, 영역 'Bandwidth Bound at BW1 & 2' / 'Bandwidth Bound at BW1, Compute Bound at BW2' / 'Compute Bound at BW1 & 2', Algo 1·Algo 2 위치, 'Critical hardware intensity for BW1 (hardware FLOPs/s / BW)'.",
+   "explain": [
+    "산술 강도를 올리는 방법은 '옮긴 바이트당 일을 더 하는 것'이다. 강사는 선형 연산을 차례로 키워 가며 이를 보여 준다. 먼저 점곱. 길이 n 인 bf16 벡터 x, w 를 읽고(2n + 2n 바이트) 스칼라 하나를 쓴다(2바이트). FLOPs 는 곱셈 n 번과 덧셈 n−1 번으로 2n−1. 강도는 (2n−1)/(4n+2) ≈ 0.5 로 ReLU 보다 조금 나을 뿐 형편없다. 다음은 행렬-벡터 곱. n 벡터 x 와 n×n 행렬 w 를 곱한다. 읽는 바이트는 2n + 2n², 쓰는 바이트 2n 이고 FLOPs 는 점곱 n 번이라 n(2n−1). 강도는 겨우 1 근처(n=1024 에서 0.9976). 강사가 손을 들게 했을 때 연산 병목일 거라 답한 학생도 있었지만, 행렬의 원소 하나를 읽어서 곱셈-덧셈 한 번만 쓰고 버리니 여전히 메모리 병목이다.",
+    "행렬곱에서 판이 바뀐다. n×n 두 개를 읽고(2n² + 2n²) n×n 을 쓰니(2n²) 옮기는 바이트는 6n², FLOPs 는 점곱 n² 번이라 n²(2n−1). 강도는 대략 2n³ / 6n² = n/3 이고, n = 1024 에서 341 로 가속기 강도 295 를 넘는다. 마침내 연산 병목이다. 직관은 이렇다. n² 개의 수를 옮겨서 n³ 번 계산하니, 옮긴 것 대비 계산이 n 에 비례해 늘어난다. 행렬이 클수록 좋아진다. 큰 배치, 큰 행렬을 쓰라는 말의 정체가 이것이다. 그리고 그 반대도 중요하다. 이미 가속기 강도 아래(메모리 병목)에 있다면 행렬을 줄여도 시간이 줄지 않는다 — 어차피 데이터를 기다리는 중이었으니까. 반대로 강도가 문턱을 넘으면 GPU 를 꽉 채워 쓰게 된다.",
+    "이것이 트랜스포머에 갖는 의미는 두 가지다. 학습에서 트랜스포머는 본질적으로 큰 행렬곱 사이사이에 몇 가지 연산을 뿌려 놓은 구조이고, 높은 산술 강도를 얻도록 의도적으로 설계됐다. 시퀀스 전체를 한꺼번에 처리하니 토큰 수가 행렬의 한 변이 되어 강도가 높다. 반면 추론에서는 토큰을 하나씩 생성하므로 매 스텝이 '벡터 하나 × 큰 가중치 행렬', 곧 행렬-벡터 곱이다. 그래서 추론은 메모리 병목이고, 이것이 추론 강의에서 다시 나올 이야기의 복선이다. 덧붙여 강도는 정밀도에 따라 달라진다. 같은 행렬곱을 fp32 로 하면 바이트가 두 배라 강도가 절반(n=1024 에서 171)이 되고, 그러면 같은 크기의 행렬곱도 문턱 아래로 떨어질 수 있다. 질의응답에서 MFU 가 왜 낮은지 다시 묻자 강사는 이 연결을 짚는다 — 모델에 메모리 병목 구간이 많으면, 약속된 FLOP/s 는 '병목이 없었다면'의 숫자이므로 MFU 가 떨어진다. 왜 가속기를 이렇게 대역폭에 비해 크게 만드느냐는 질문에는 GPU 강의에서 이야기하자며, 좋은 답이 있으면 Jensen(NVIDIA CEO)에게 알려 주라고 농담한다.",
+    "이 모든 것을 한 장으로 보여 주는 것이 루프라인(roofline) 그림이다. x축은 산술 강도(로그), y축은 실제로 낼 수 있는 FLOP/s(로그)다. 하드웨어마다 선이 하나씩 있는데, 왼쪽은 대역폭에 비례해 기울어진 직선(실현 FLOP/s = 강도 × 대역폭)이고 오른쪽은 피크에서 평평해진다. 지붕선처럼 꺾인다고 해서 루프라인이다. 꺾이는 지점의 x 좌표가 그 하드웨어의 가속기 강도다. 어떤 알고리즘을 그 x 위치에 세로로 세우면, 그 높이가 그 하드웨어에서 낼 수 있는 상한이다. ReLU·점곱은 왼쪽 바닥에 붙어 피크에 한참 못 미치고, 강도가 오를수록 선을 따라 올라가다가 꺾인 뒤에는 연산 병목이 되어 피크를 넘을 수 없다. 화면 그림에는 대역폭이 다른 두 하드웨어(BW1, BW2)를 겹쳐, 같은 알고리즘이 한쪽에선 대역폭 병목이고 다른 쪽에선 연산 병목일 수 있음을 보여 준다."
+   ],
+   "formulas": [
+    {
+     "expr": "AI_dot = (2n−1)/(4n+2) ≈ 1/2,  AI_mv = n(2n−1)/(2n²+4n) ≈ 1,  AI_mm = n²(2n−1)/(6n²) ≈ n/3",
+     "meaning": "n 은 벡터 길이·행렬 한 변, 바이트는 bf16(원소당 2) 기준 읽기 + 쓰기. 점곱·행렬-벡터는 n 이 커져도 상수에 머물고, 행렬곱만 n 에 비례해 커진다."
+    },
+    {
+     "expr": "attainable FLOP/s = min( peak , AI × BW )",
+     "meaning": "루프라인 식. AI 는 알고리즘 산술 강도, BW 는 대역폭, peak 는 피크 FLOP/s. AI = peak/BW(≈295) 에서 꺾인다."
+    }
+   ],
+   "example": {
+    "title": "n 을 바꿔 가며 행렬곱이 문턱을 넘는 지점",
+    "body": "AI_mm ≈ n/3 > 295 ↔ n > 885. n=256: AI ≈ 85 → 도달 가능 85 × 3.35e12 = 2.85e14 → 피크의 29%. n=1024: AI ≈ 341 → 피크 100%(연산 병목). n=4096: AI ≈ 1365. 같은 n=1024 라도 fp32 로 바꾸면 바이트가 12n² 이 되어 AI ≈ 171, 피크(이때는 fp32 피크) 대비로 다시 따져야 한다. 행렬-벡터는 n 을 아무리 키워도 AI ≈ 1 → 피크의 0.3%."
+   },
+   "code": {
+    "lang": "python",
+    "src": "PEAK, BW = 1979e12 / 2, 3.35e12\ndef ai(kind, n, b=2):                      # b = 원소당 바이트(bf16=2)\n    if kind == \"dot\":    return (2*n - 1) / (b*n + b*n + b)\n    if kind == \"matvec\": return n*(2*n - 1) / (b*n + b*n*n + b*n)\n    if kind == \"matmul\": return n*n*(2*n - 1) / (3 * b*n*n)\nprint(\"n     dot   matvec   matmul | 피크 대비 도달 비율\")\nfor n in (64, 256, 1024, 4096):\n    row = [ai(k, n) for k in (\"dot\", \"matvec\", \"matmul\")]\n    roof = [min(PEAK, a * BW) / PEAK for a in row]   # 루프라인\n    print(n, \" \".join(f\"{a:8.2f}\" for a in row), \" |\",\n          \" \".join(f\"{r:6.1%}\" for r in roof))\nprint(\"fp32 로 바꾸면 n=1024 matmul AI =\", round(ai(\"matmul\", 1024, 4), 1))",
+    "note": "실행 결과(표): n=64 → dot 0.49, matvec 0.96, matmul 21.17(피크의 7.2%) / n=256 → matmul 85.17(28.8%) / n=1024 → 341.17(100%) / n=4096 → 1365.17. fp32 n=1024 matmul AI = 170.6."
+   },
+   "diagram": {
+    "title": "루프라인 위의 연산들(개념도)",
+    "code": "flowchart LR\n  A[\"ReLU AI 0.25\"] --> B[\"점곱 AI 0.5\"] --> C[\"행렬-벡터 AI 1\\n(추론 디코딩)\"] --> D[\"GELU AI 5\"] --> K{\"가속기 강도 ≈ 295\"}\n  K -->|왼쪽: 메모리 병목| M[\"시간 = 바이트 / 대역폭\"]\n  K -->|오른쪽: 연산 병목| E[\"큰 행렬곱 AI ≈ n/3\\n(학습 순전파·역전파)\"]"
+   },
+   "pitfalls": [
+    "강사는 말로 '여기서는 모두 fp16' 이라 했지만 화면 코드는 bfloat16 이다. 둘 다 원소당 2바이트라 숫자는 같다.",
+    "행렬곱 강도 n/3 은 정사각 행렬 기준이다. (B×D)·(D×K) 에서 B 가 작으면(작은 배치, 추론) 강도는 대략 B 에 비례해 낮아진다 — 배치 크기가 곧 강도다(노트 보충: 2BDK / 2(BD+DK+BK) ≈ B, D·K ≫ B 일 때).",
+    "루프라인은 '완벽한 겹침'과 '데이터를 한 번만 읽는다'를 가정한 상한이다. 캐시 적중, 커널 실행 오버헤드, 통신은 들어 있지 않다."
+   ],
+   "check": [
+    {
+     "q": "bf16 정사각 행렬곱이 H100 에서 연산 병목이 되려면 n 이 대략 얼마 이상이어야 하나?",
+     "a": "n/3 > 295 → n > 약 886."
+    },
+    {
+     "q": "토큰 하나씩 생성하는 디코딩에서 배치 크기를 1에서 64로 늘리면 가중치 행렬곱의 산술 강도는 어떻게 되나?",
+     "a": "가중치(D×K)를 한 번 읽어 64개 벡터에 쓰므로 강도가 대략 1에서 64 근처로 오른다(가중치가 바이트 대부분일 때). 그래서 서빙에서 배치를 묶는다."
+    }
+   ]
+  },
+  {
+   "start": 3420,
+   "title": "깊은 망의 역전파 FLOPs — 6ND 가 나오는 자리",
+   "points": [
+    "예제 망: B×D 입력, D×D 선형층 + ReLU 를 L 번 반복. 파라미터 수 = D²·L (D=8, L=3 → 192).",
+    "PyTorch 기본: loss.backward() 후 requires_grad 인 텐서에 .grad 가 채워진다(x=[1,2,3], w=[1,1,1] → w.grad=[1,2,3]).",
+    "층 하나의 순전파 h2 = h1·w2 는 2·B·D·D FLOPs (B=1024, D=256 → 134,217,728).",
+    "역전파는 두 개를 계산한다: 입력 쪽 h1.grad = h2.grad·w2ᵀ, 파라미터 쪽 w2.grad = h1ᵀ·h2.grad. 각각 순전파와 같은 FLOPs → 역전파 = 2배.",
+    "합치면 순전파 2·B·P + 역전파 4·B·P = 6·B·P — 6ND. 트랜스포머도 문맥이 너무 길지 않으면 이 근사가 맞는다."
+   ],
+   "on_screen": "deep_linear_network(): 블록 그림 — input(B) → [D×D linear] → B → ReLU → B … 세 번 → output. 'Consider a deep network with L layers and D-dimensional inputs, activations, and outputs.' D = 8, L = 3, model = DeepNetwork(dim=D, num_layers=L), num_parameters = 192, assert num_parameters == (D * D) * L. gradients_basics(): x = torch.tensor([1., 2, 3]), w = torch.tensor([1., 1, 1], requires_grad=True), pred_y = x @ w, loss = 0.5 * (pred_y - 5).pow(2), loss.backward(), assert w.grad == [1, 2, 3]. gradients_flops(): B = 1024, D = 256, w1, w2 = torch.randn(D, D, requires_grad=True), h1 = einsum(x, w1, \"batch in, in out -> batch out\"), h2 = einsum(h1, w2, ...), loss = (h2.mean() - 0)**2 # Regress everything to 0 (arbitrary), h1.retain_grad(), h2.retain_grad(). 'Zoom in on one layer: h1 --w2--> h2', num_forward_flops = 2 * B * D * D = 134,217,728. h1_grad = einsum(h2.grad, w2, \"batch out, in out -> batch in\"), w2_grad = einsum(h2.grad, h1, \"batch out, batch in -> in out\"), num_backward_flops = (2 * B * D * D) + (2 * B * D * D) = 268,435,456. 'Note that the backward pass is 2x more expensive than the forward pass.' 'Putting it togther: Forward pass: 2 (# data points) (# parameters) FLOPs / Backward pass: 4 (...) / Total: 6 (...)' 'This is for multilayer perceptrons (MLPs) ...but it turns out to be a good approximation for Transformers for short context lengths as well.'",
+   "explain": [
+    "이제 학습 한 스텝 전체를 센다. 예제는 D 차원 입력을 받아 D×D 선형층과 원소별 ReLU 를 L 번 반복하는 깊은 망이다. 층마다 가중치 행렬 하나라 파라미터 수는 D²·L 이고, D=8, L=3 이면 192 다. 순전파는 층을 차례로 지나며 선형 변환 후 ReLU 를 적용한다. 그래디언트 쪽은 PyTorch 의 기본 동작부터 확인한다. x = [1, 2, 3], w = [1, 1, 1](requires_grad=True)로 예측 x·w = 6, 손실 0.5(6 − 5)² = 0.5 를 만들고 loss.backward() 를 부르면 w.grad 에 (6 − 5)·x = [1, 2, 3] 이 채워진다. 계산 그래프에서 그래디언트가 필요한 잎(leaf) 텐서만 .grad 를 받고, 중간값은 retain_grad() 를 따로 불러야 남는다.",
+    "FLOPs 를 세기 위해 ReLU 를 빼고 두 층짜리 선형망 x → w1 → h1 → w2 → h2 로 단순화한다. 강사는 일부러 einsum 으로 쓴다. h1 = einsum(x, w1, \"batch in, in out -> batch out\"). 손실은 h2 평균을 0으로 보내는 아무 함수나 쓴다. 이제 두 번째 층 h2 = h1·w2 만 확대해 본다. 순전파 FLOPs 는 세 축(batch, in, out)의 곱의 2배, 2·B·D·D 이고 B=1024, D=256 이면 134,217,728 이다. 역전파에서 이 층이 할 일은 두 가지다. 위에서 내려온 dL/dh2(= h2.grad, 모양 batch×out)를 받아서 ① 아래층으로 보낼 메시지 dL/dh1 과 ② 자기 파라미터의 그래디언트 dL/dw2 를 만든다.",
+    "einsum 으로 쓰면 둘 다 바로 보인다. h1.grad = einsum(h2.grad, w2, \"batch out, in out -> batch in\") — out 축을 합친다. w2.grad = einsum(h2.grad, h1, \"batch out, batch in -> in out\") — batch 축을 합친다. 미적분 시간에 어느 쪽에 전치가 붙는지 늘 헷갈리던 것도 이름으로 쓰면 사라진다고 강사는 말한다. 스칼라라면 h1 의 그래디언트가 h2 의 그래디언트 × w2 꼴이어야 한다는 것만 기억하고, 나머지는 축 이름을 맞추면 된다. 그리고 FLOPs 는 einsum 규칙대로 나온 축의 곱 × 2 다. 두 식 모두 batch, in, out 세 축이 등장하니 각각 2·B·D·D 이다. 어느 축을 합치느냐만 다를 뿐 비용은 순전파와 같다. 그래서 역전파는 정확히 순전파의 두 배, 268,435,456 FLOPs 다. 강의는 손으로 쓴 식이 PyTorch 가 계산한 h1.grad, w2.grad 와 같은지 torch.allclose 로 확인한다.",
+    "이것을 모든 층에 적용하면 결론이 나온다. 순전파는 2 × (데이터 점 수) × (파라미터 수), 역전파는 4 × (데이터 점 수) × (파라미터 수), 합쳐서 6 × (데이터 점 수) × (파라미터 수). 1강부터 써 온 6ND 의 정체가 이것이다. N 은 파라미터, D 는 토큰(데이터 점)이다. 한 학습 스텝이라면 D 자리에 배치 크기(토큰 수)가 온다. 이 유도는 MLP 에 대한 것이지만 트랜스포머에도 좋은 근사다 — 단, 문맥 길이가 너무 길지 않을 때. 문맥이 길면 어텐션의 시퀀스 길이 제곱 항이 커지는데, 그 FLOPs 는 이 회계에 들어 있지 않다. 트랜스포머의 정확한 셈은 과제 1에서 직접 한다."
+   ],
+   "formulas": [
+    {
+     "expr": "h1.grad[b, i] = Σ_o h2.grad[b, o] · w2[i, o]",
+     "meaning": "입력 쪽 메시지(dL/dh1). b 는 batch, i 는 in, o 는 out 축. out 축을 합친다. 행렬로는 h2.grad · w2ᵀ."
+    },
+    {
+     "expr": "w2.grad[i, o] = Σ_b h1[b, i] · h2.grad[b, o]",
+     "meaning": "파라미터 그래디언트(dL/dw2). batch 축을 합친다. 행렬로는 h1ᵀ · h2.grad. 두 식 모두 축 b, i, o 가 다 나오므로 FLOPs 는 각 2·B·D·D."
+    },
+    {
+     "expr": "학습 FLOPs ≈ (2 + 4) · N · D = 6ND",
+     "meaning": "N 은 파라미터 수, D 는 처리한 토큰(데이터 점) 수. 2 는 순전파, 4 는 역전파(입력 쪽 2 + 파라미터 쪽 2)."
+    }
+   ],
+   "example": {
+    "title": "숫자로 6ND 를 확인",
+    "body": "한 층(D=256), B=1024: 순전파 2·1024·256·256 = 134,217,728. 역전파: h1.grad 134,217,728 + w2.grad 134,217,728 = 268,435,456. 합 402,653,184 = 6 × 1024 × 65,536(파라미터) — 정확히 6·B·P. 첫 층 w1 은 아래로 보낼 메시지(dL/dx)가 필요 없으니 실제로는 2·B·P 를 아낄 수 있지만, 층이 많으면 무시할 만한 차이다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nfrom einops import einsum\nrng = np.random.default_rng(0)\nB, D = 4, 3\nx = rng.normal(size=(B, D)); w1 = rng.normal(size=(D, D)); w2 = rng.normal(size=(D, D))\nh1 = einsum(x, w1, \"batch i, i o -> batch o\")\nh2 = einsum(h1, w2, \"batch i, i o -> batch o\")\nloss = h2.mean() ** 2\nh2_grad = np.full_like(h2, 2 * h2.mean() / h2.size)        # dL/dh2\nh1_grad = einsum(h2_grad, w2, \"batch o, i o -> batch i\")   # 입력 쪽 메시지\nw2_grad = einsum(h2_grad, h1, \"batch o, batch i -> i o\")   # 파라미터 쪽\n# 유한차분으로 w2_grad[0,1] 검산\neps = 1e-6; w2p = w2.copy(); w2p[0, 1] += eps\nlp = einsum(h1, w2p, \"b i, i o -> b o\").mean() ** 2\nprint(np.isclose((lp - loss) / eps, w2_grad[0, 1], atol=1e-4))\nBb, Dd = 1024, 256\nfwd = 2 * Bb * Dd * Dd; bwd = 2 * (2 * Bb * Dd * Dd)\nprint(fwd, bwd, bwd / fwd)                 # 134217728 268435456 2.0",
+    "note": "numpy + einops 로 손으로 역전파를 쓰고 유한차분으로 w2.grad[0,1] 을 검산했다. 실행 결과: True / 134217728 268435456 2.0."
+   },
+   "diagram": {
+    "title": "한 층의 순전파·역전파와 FLOPs",
+    "code": "flowchart LR\n  H1[\"h1 (B×D)\"] -->|\"순전파 2BD²\"| H2[\"h2 (B×D)\"]\n  W2[\"w2 (D×D)\"] --> H2\n  G2[\"h2.grad\"] -->|\"× w2ᵀ : 2BD²\"| G1[\"h1.grad → 아래층으로\"]\n  G2 -->|\"h1ᵀ × : 2BD²\"| GW[\"w2.grad → 옵티마이저로\"]"
+   },
+   "pitfalls": [
+    "강사가 말로 '파라미터 D×D×L, FLOPs 는 D × 토큰 × 파라미터' 라고 한 대목은 말실수다. 화면은 flops = 6 * B * num_parameters 다.",
+    "6ND 는 문맥이 짧을 때의 근사다. 시퀀스 길이 T 가 모델 차원에 비해 크면 어텐션 항(층마다 대략 T·d 에 비례하는 토큰당 FLOPs)이 무시할 수 없게 된다.",
+    "활성 체크포인팅을 쓰면 하드웨어는 순전파를 한 번 더 해서 약 8ND 를 수행한다. 그래도 MFU 계산에는 6ND 를 쓴다."
+   ],
+   "check": [
+    {
+     "q": "왜 역전파는 순전파의 정확히 2배인가?",
+     "a": "각 선형층이 입력 쪽 그래디언트(dL/dh)와 파라미터 쪽 그래디언트(dL/dw) 두 개를 만들어야 하고, 각각이 순전파와 같은 세 축을 도는 행렬곱이라 FLOPs 가 같기 때문이다."
+    },
+    {
+     "q": "1B 파라미터 모델을 배치 0.5M 토큰으로 한 스텝 학습하면 FLOPs 는?",
+     "a": "6 × 1e9 × 5e5 = 3e15 FLOPs."
+    }
+   ]
+  },
+  {
+   "start": 4010,
+   "title": "옵티마이저 상태와 메모리 회계 — 2 + 2 + 4 + 4 의 출처",
+   "points": [
+    "AdaGrad(Duchi 2011)로 옵티마이저 구조를 본다: momentum = SGD + 그래디언트 지수 평균, AdaGrad = SGD + grad² 누적, RMSProp = AdaGrad + 지수 평균, Adam = RMSProp + momentum.",
+    "옵티마이저 상태(state)는 파라미터마다 붙는 추가 저장소. AdaGrad 는 g2 하나, Adam 은 m·v 둘.",
+    "메모리: 파라미터 2·P(bf16), 활성값 2·B·D·L, 그래디언트 2·P, 옵티마이저 상태 AdaGrad 4·P · Adam 8·P(fp32).",
+    "상태를 fp32 로 두는 이유: 제곱하고 여러 스텝 평균을 내는 값이라 bf16 에선 불안정하다.",
+    "옵티마이저 상태는 속도 병목은 아니지만, 큰 모델이 메모리에 들어가느냐를 정한다."
+   ],
+   "on_screen": "optimizer(): 'Let's define the AdaGrad optimizer: momentum = SGD + exponential averaging of grad / AdaGrad = SGD + averaging by grad^2 / RMSProp = AdaGrad + exponentially averaging of grad^2 / Adam = RMSProp + momentum', AdaGrad [Duchi+ 2011], optimizer = AdaGrad(model.parameters(), lr=0.01), state = model.state_dict() — layers.0/1/2.weight 의 8×8 값 창. class AdaGrad(torch.optim.Optimizer): step() 안에서 for group in self.param_groups / for p in group['params']: state = self.state[p], grad = p.grad.data, '# Get squared gradients g2 = sum_{i<t} g_i^2' g2 = state.get('g2', torch.zeros_like(grad)), g2 += torch.square(grad), state['g2'] = g2, (이어서 p.data -= lr * grad / torch.sqrt(g2 + 1e-5)). Memory: parameter_memory = 2 * (D * D * L) # (2 bytes for bf16), activation_memory = 2 * B * D * L, gradient_memory = 2 * parameter_memory, optimizer_state_memory = 4 * parameter_memory # (4 bytes for fp32), 'Customary to use fp32 for stability (accumulating averages over powers over many steps)', '4 bytes/parameter for storing second moments, Adam requires 8 bytes/parameter for storing first and second moments', total_memory = parameter + activation + gradient + optimizer_state. Compute (for one step): num_parameters = D * D * L, flops = 6 * B * num_parameters.",
+   "explain": [
+    "학습의 마지막 조각은 최적화다. 과제 1에서 Adam 을 구현하게 되므로 강사는 일부러 AdaGrad(2011)를 예로 든다. 옵티마이저 계보를 한 줄씩 정리하면 이렇다. 모멘텀은 SGD 에 그래디언트의 지수 이동 평균(1차 모멘트)을 더한 것, AdaGrad 는 SGD 에 그래디언트 제곱의 누적(2차 모멘트)으로 나누는 것을 더한 것, RMSProp 은 AdaGrad 의 누적을 지수 이동 평균으로 바꾼 것, Adam 은 RMSProp 에 모멘텀을 합친 것이다. AdaGrad 는 SGD 와 Adam 사이 어딘가에 있다.",
+    "구현을 보면 '옵티마이저 상태'가 무엇인지 분명해진다. step() 은 파라미터 그룹을 돌며 각 파라미터 p 에 대해 self.state[p] 라는 사전을 꺼낸다. 이것이 옵티마이저가 스텝과 스텝 사이에 기억해 두는 저장소다. AdaGrad 는 여기에 지금까지의 그래디언트 제곱합 g2 를 두고, 이번 그래디언트의 제곱을 더해 다시 저장한 뒤, p 를 lr × grad / √g2 만큼 움직인다. g2 는 파라미터와 같은 모양이니 파라미터 수만큼의 원소를 갖는다. Adam 은 1차·2차 모멘트 두 개를 둔다. 옵티마이저를 바꾸면 메모리가 바뀌는 이유가 이것이다.",
+    "이제 메모리를 모두 더한다. 파라미터는 D²·L 개이고 bf16 이면 2바이트씩. 활성값은 층마다 B×D 하나를 보관한다고 보면 2·B·D·L 바이트. 그래디언트는 파라미터와 같은 모양의 사본이라 2바이트씩. 옵티마이저 상태는 관행적으로 fp32 로 둔다 — 그래디언트를 제곱하고 여러 스텝에 걸쳐 평균을 내는 값이라 bf16 으로 시도해 보면 안정적이지 않기 때문이다. AdaGrad 는 파라미터당 4바이트, Adam 은 1차·2차 모멘트로 8바이트다. 강의 첫머리 질문의 2 + 2 + 4 + 4 가 바로 이것이다(bf16 파라미터 + bf16 그래디언트 + fp32 m + fp32 v). 이렇게 놓고 보면 옵티마이저 상태가 메모리의 상당 부분, Adam 이면 절반 이상을 차지한다.",
+    "강사는 메모리의 두 얼굴을 다시 짚는다. 메모리는 HBM 에 '담아 둘 수 있느냐'의 문제이기도 하고, 계산 장치로 '옮기는 시간'의 문제이기도 하다. 옵티마이저 상태는 스텝마다 한 번 읽고 쓰는 정도라 속도 병목은 아니다. 그러나 큰 모델을 아예 올릴 수 있느냐를 정한다. 마지막으로 한 스텝의 연산은 6 × B × 파라미터 수로 정리된다. 트랜스포머는 이보다 복잡하지만 같은 생각으로 셀 수 있고, 그것이 과제 1의 일이다."
+   ],
+   "formulas": [
+    {
+     "expr": "g2_t = g2_{t−1} + g_t² ,  θ_t = θ_{t−1} − η · g_t / √(g2_t + ε)",
+     "meaning": "AdaGrad. g_t 는 이번 스텝 그래디언트, g2 는 원소별 제곱 누적(옵티마이저 상태), η 는 학습률(코드 lr=0.01), ε 은 0으로 나눔을 막는 작은 수(코드 1e-5). 그래디언트가 컸던 좌표일수록 걸음이 작아진다."
+    },
+    {
+     "expr": "M_total = 2P (파라미터) + 2P (그래디언트) + s·P (옵티마이저 상태) + 2·B·D·L (활성값)",
+     "meaning": "P = D²·L 은 파라미터 수, s 는 파라미터당 상태 바이트(SGD 0, AdaGrad 4, Adam 8), B·D·L 은 배치 × 차원 × 층 수(층당 활성값 하나, bf16). 노트 보충: fp32 원본 가중치를 두면 4P 가 더해진다."
+    }
+   ],
+   "example": {
+    "title": "D=1024, L=16, B=1024 의 메모리 계산서",
+    "body": "P = 1024² × 16 = 16,777,216. 파라미터 2P = 32MiB, 그래디언트 32MiB, 활성값 2 × 1024 × 1024 × 16 = 32MiB. AdaGrad 상태 4P = 64MiB → 합 160MiB. Adam 이면 상태 8P = 128MiB → 합 224MiB 로, 상태 하나가 전체의 57%. 70B 모델로 키우면 Adam 상태만 560GB — H100 7장 분량이다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "def train_memory(P, B, D, L, opt=\"adam\", master=False):\n    param = 2 * P                          # bf16\n    grad = 2 * P                           # bf16\n    state = {\"sgd\": 0, \"adagrad\": 4, \"adam\": 8}[opt] * P   # fp32 상태\n    master_w = 4 * P if master else 0      # fp32 원본 가중치(노트 보충)\n    act = 2 * B * D * L                    # 층마다 활성값 하나(bf16), 강의의 단순 모형\n    return dict(param=param, grad=grad, state=state, master=master_w, act=act)\n\nD, L, B = 1024, 16, 1024\nP = D * D * L\nfor opt in (\"adagrad\", \"adam\"):\n    m = train_memory(P, B, D, L, opt)\n    print(opt, {k: f\"{v/2**20:.0f}MiB\" for k, v in m.items()},\n          f\"합계 {sum(m.values())/2**20:.0f}MiB\")",
+    "note": "실행 결과: adagrad 합계 160MiB(state 64MiB) / adam 합계 224MiB(state 128MiB)."
+   },
+   "pitfalls": [
+    "화면 코드의 optimizer_state_memory = 4 * parameter_memory 는 오타다. parameter_memory 가 이미 바이트(2 × 파라미터 수)라서 이렇게 쓰면 8바이트/파라미터가 된다. 강사가 말로 고쳤듯 4 * num_parameters(AdaGrad), Adam 이면 8 * num_parameters 가 맞다.",
+    "gradient_memory = 2 * parameter_memory 도 같은 식으로 읽으면 두 배가 된다. 화면 주석의 의도는 '그래디언트도 파라미터당 2바이트(bf16)'다.",
+    "활성값 2·B·D·L 은 층마다 하나만 저장한다는 단순화다. 실제로는 ReLU 앞·뒤 값을 다 보관해 두 배가 들고(다음 장), 트랜스포머는 층마다 훨씬 많은 중간값을 남긴다."
+   ],
+   "check": [
+    {
+     "q": "13B 모델을 bf16 파라미터·그래디언트, fp32 Adam 상태로 학습할 때 활성값을 뺀 메모리는?",
+     "a": "12 × 13e9 = 156GB. fp32 원본 가중치까지 두면 16 × 13e9 = 208GB."
+    },
+    {
+     "q": "AdaGrad 와 Adam 중 파라미터당 상태 메모리가 더 큰 쪽과 그 이유는?",
+     "a": "Adam(8바이트). 1차 모멘트(평균)와 2차 모멘트(제곱 평균) 두 개를 fp32 로 들고 있기 때문이다. AdaGrad 는 제곱 누적 하나(4바이트)."
+    }
+   ]
+  },
+  {
+   "start": 4320,
+   "title": "메모리 줄이기 — 그래디언트 누적, 활성 체크포인팅, 그리고 정리",
+   "points": [
+    "큰 배치는 안정성을 높이지만(임계 배치 크기까지) 활성값 메모리는 배치에 비례한다.",
+    "그래디언트 누적: 마이크로배치마다 그래디언트를 계산해 0으로 지우지 않고 더하고, batch/micro_batch 스텝마다 한 번 갱신한다.",
+    "활성 체크포인팅(= 그래디언트 체크포인팅 = 재물질화): 일부 층의 활성값만 남기고 역전파 때 나머지를 다시 계산한다 — 메모리와 연산의 교환.",
+    "매 층 저장: 메모리 O(L), 재계산 없음 / 하나도 저장 안 함: 메모리 O(1), 연산 O(L²) / √L 층마다 저장: 둘 다 O(√L) 로 균형.",
+    "정리: 모든 것은 텐서, einops 로 생각하기, 학습 스텝 6·B·P FLOPs, 루프라인으로 병목 진단, 행렬곱만 연산 병목."
+   ],
+   "on_screen": "gradient_accumulation(): 'Large batch sizes: improve training stability / However, activation memory scales with batch size, so might run out.' B = 1024, L = 16, D = 1024, activation_memory = B * L * D. 'Gradient accumulation: Compute gradient on micro batches / Accumulate the gradients (don't zero it out) / Every batch_size / micro_batch_size steps, update the parameters and zero out the gradients', micro_batch_size = 256. activation_checkpointing(): 'For training, we need to store the activations of all layers / For inference, we don't compute gradients, so we only need to store the current layer's activations.' B = 64, L = 16, D = 1024, activation_memory = B * D * 2 * L. 'Activation checkpointing = gradient checkpointing = rematerialization / Key idea: Forward pass: keep only activations at subset of layers / Backward pass: recompute the missing activations from the last checkpoint / Philosophy: tradeoff memory for compute'. '# Store all activations: x g1 h1 g2 h2 g3 h3 g4 h4 / # Activation checkpointing: x h1 h2 h3 h4'. class DeepNetworkCheckpointed: x = torch.utils.checkpoint.checkpoint(layer, x). '# Store all layers: | h1 h2 h3 h4 h5 h6 h7 h8 h9 | / # Store no layers: | | / # Store some layers: | h3 h6 h9 |'. How frequently to checkpoint? O(L) and no recomputation / O(1) and O(L^2) / every sqrt(L) layers → O(sqrt(L)) and O(sqrt(L)), balanced. 최종 Summary 목록.",
+   "explain": [
+    "앞에서 본 것처럼 메모리는 큰 모델을 담을 수 있느냐와 속도 양쪽에 영향을 주니, 줄일 수 있으면 줄이는 게 좋다. 강사는 흔히 쓰는 두 가지 기법을 마지막으로 소개한다. 첫째는 그래디언트 누적이다. 학습 안정성을 위해서는 배치가 어느 정도 커야 한다(어디까지 키워야 이득인지 — 임계 배치 크기 — 는 이후 Tatsu 강의에서 다룬다). 그런데 활성값 메모리는 배치에 비례하므로 배치를 키우면 메모리가 모자란다. 해법은 큰 배치를 작은 마이크로배치로 나눠 차례로 순전파·역전파하고, 그래디언트를 0으로 지우지 않고 계속 더하는 것이다. batch_size / micro_batch_size 번마다 한 번 옵티마이저 스텝을 밟고 그때 그래디언트를 지운다. 수학적으로는 큰 배치 한 번과 같은 갱신이고(손실을 평균으로 맞춰 준다면), 코드는 몇 줄만 바뀐다. B=1024 를 마이크로배치 256 으로 나누면 한 번에 들고 있는 활성값이 4분의 1이 된다. 대신 시간이 줄지는 않는다 — 같은 연산을 네 번에 나눠 할 뿐이다.",
+    "둘째는 활성 체크포인팅이다. 학습에서는 역전파 때 쓰려고 모든 층의 활성값을 저장한다. 이것이 PyTorch 의 기본 동작이다. 반면 추론은 그래디언트가 필요 없으니 현재 층의 활성값만 있으면 된다. 학습의 활성값 메모리는 B × D × 2 × L 원소인데, 2 는 층마다 ReLU 앞의 값과 뒤의 값을 둘 다 남기기 때문이다. 활성 체크포인팅(그래디언트 체크포인팅, 재물질화라고도 한다)의 아이디어는, 순전파 때 일부 층의 활성값만 남기고 역전파에서 필요해지면 가장 가까운 체크포인트부터 다시 계산하는 것이다. 메모리를 줄이고 싶으면 다시 계산하면 된다는, 시스템 분야 곳곳에 나오는 교환이다. 구현도 간단하다. 같은 모델에서 층을 부를 때 torch.utils.checkpoint.checkpoint(layer, x) 로 감싸면 그 블록 안의 중간 활성값은 저장하지 않는다. 선형층 + ReLU 블록마다 이렇게 하면 ReLU 앞 값(g)은 버리고 블록 출력(h)만 남기니 메모리가 절반이 된다. 역전파에서 g3 가 필요하면 h2 에서 쉽게 다시 계산한다.",
+    "어디까지 갈 수 있을까? 극단적으로 아무 층도 저장하지 않으면 메모리는 최소(O(1))지만, 역전파에서 각 층의 활성값이 필요할 때마다 입력부터 다시 계산해야 하므로 연산이 O(L²) 이 된다. 매 층을 저장하면 메모리 O(L) 에 재계산은 없다. 그 사이의 균형점이 √L 층마다 체크포인트를 두는 것이다. 체크포인트가 √L 개, 역전파 때 한 구간을 다시 펼치는 데 √L 개가 필요하니 메모리가 O(√L) 이고, 재계산은 구간마다 한 번씩이라 추가 연산은 순전파 한 번 정도로 묶인다. L=16 이면 4층마다 저장해 체크포인트 4개 + 구간 하나 3개, 동시에 들고 있는 활성값이 16에서 7로 준다.",
+    "강의는 오늘의 정리로 끝난다. 파라미터·그래디언트·활성값·옵티마이저 상태·데이터 모두 텐서 연산이다. einops 는 텐서 연산을 생각하는 더 나은 방법이다. 학습 스텝 하나의 FLOPs 는 6 × (데이터 점 수) × (파라미터 수)이고, 한 스텝이라면 데이터 점 수 자리에 배치 크기가 온다. 산술 강도와 루프라인 분석으로 계산이 메모리 병목인지 연산 병목인지 진단할 수 있고, 행렬곱은 연산 병목, 사실상 나머지는 다 메모리 병목이다. 그래디언트 누적과 활성 체크포인팅으로 메모리를 줄이면 더 큰 배치를 쓸 수 있다. 다음 주에는 Tatsu 가 아키텍처를 다룬다 — 오늘 센 숫자들이 트랜스포머의 각 부품에 어떻게 붙는지 보게 된다."
+   ],
+   "formulas": [
+    {
+     "expr": "∇θ (1/B) Σ_{i=1..B} ℓ_i = (1/k) Σ_{j=1..k} ∇θ (1/m) Σ_{i∈mb_j} ℓ_i ,  k = B/m",
+     "meaning": "그래디언트 누적이 큰 배치와 같은 이유. B 는 전체 배치, m 은 마이크로배치 크기, k 는 누적 횟수, ℓ_i 는 표본 i 의 손실. 마이크로배치 손실을 k 로 나눠(또는 평균으로) 더해야 같아진다."
+    },
+    {
+     "expr": "M_act ∝ L/c + c ,  최소 at c = √L",
+     "meaning": "c 는 체크포인트 간격(몇 층마다 저장하나), L/c 는 저장된 체크포인트 수, c 는 역전파 때 다시 펼치는 한 구간의 길이. 합이 최소가 되는 c = √L 에서 메모리 O(√L)."
+    }
+   ],
+   "example": {
+    "title": "L=16 에서 세 전략 비교",
+    "body": "매 층 저장: 활성 16개 보관, 재계산 0. 4층마다 저장(√16=4): 체크포인트 4개 + 구간 재펼침 3개 = 최대 7개 보관, 재계산 12층(순전파 약 0.75번 추가). 아무것도 저장 안 함: 1개 보관, 역전파 때 각 층마다 처음부터 다시 → 15+14+…+1 = 120층 재계산(L²/2). 그래디언트 누적 쪽: B=1024, L=16, D=1024 의 활성값 B·L·D = 1,677만 원소(bf16 32MiB) → 마이크로배치 256 이면 8MiB."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import math\ndef checkpoint_cost(L, every):\n    \"\"\"every 층마다 하나씩 저장 -> (저장 활성 수, 재계산 층 수, 역전파 중 최대 보유)\"\"\"\n    if every == 0:                         # 아무것도 저장 안 함: 매번 처음부터\n        return 1, L * (L - 1) // 2, 1\n    saved = math.ceil(L / every)\n    recompute = L - saved                  # 구간마다 버린 층을 한 번씩 다시 계산\n    peak = saved + every - 1               # 체크포인트 + 다시 펼친 한 구간\n    return saved, recompute, peak\nL = 16\nfor every in (1, 4, 16, 0):\n    print(f\"every={every:2d}\", checkpoint_cost(L, every))",
+    "note": "실행 결과: every=1 → (16, 0, 16) / every=4 → (4, 12, 7) / every=16 → (1, 15, 16) / 저장 없음 → (1, 120, 1). 튜플은 (저장 체크포인트 수, 재계산 층 수, 역전파 중 최대 보유 활성 수). 단순화한 모형이다."
+   },
+   "diagram": {
+    "title": "√L 체크포인팅(L=9, 3층마다 저장)",
+    "code": "flowchart LR\n  X[\"x\"] --> A1[\"h1\"] --> A2[\"h2\"] --> C3[\"h3 저장\"] --> A4[\"h4\"] --> A5[\"h5\"] --> C6[\"h6 저장\"] --> A7[\"h7\"] --> A8[\"h8\"] --> C9[\"h9 저장\"]\n  C6 -.역전파 때 h7·h8 재계산.-> A7\n  C3 -.역전파 때 h4·h5 재계산.-> A4"
+   },
+   "pitfalls": [
+    "그래디언트 누적은 메모리만 줄이고 속도는 늘리지 않는다. 마이크로배치가 너무 작으면 행렬곱의 산술 강도가 떨어져 오히려 느려질 수 있다.",
+    "누적할 때 손실을 누적 횟수로 나누지 않으면 그래디언트가 k 배 커져 사실상 학습률이 k 배가 된다.",
+    "강사는 그래디언트 누적이 '연산을 아끼는' 코드 변경이라고 말했지만, 아끼는 것은 메모리다(연산량은 같다).",
+    "BatchNorm 처럼 배치 통계를 쓰는 층은 마이크로배치로 나누면 결과가 달라진다. 트랜스포머의 LayerNorm·RMSNorm 은 토큰별이라 영향이 없다(노트 보충)."
+   ],
+   "check": [
+    {
+     "q": "배치 2048 이 메모리에 안 들어가고 512 까지만 들어간다. 그래디언트 누적으로 같은 학습을 하려면?",
+     "a": "마이크로배치 512 로 4번 순전파·역전파하며 그래디언트를 더하고(손실을 4로 나눔), 4번째 뒤에 optimizer.step() 과 zero_grad() 를 한다."
+    },
+    {
+     "q": "L=64 층 망에서 √L 체크포인팅을 쓰면 동시에 보관하는 활성값 수는 대략 몇 개인가?",
+     "a": "8층마다 저장해 체크포인트 8개 + 한 구간 재펼침 7개 ≈ 15개(매 층 저장 64개 대비 약 4분의 1)."
+    }
+   ]
+  }
+ ]
+}
