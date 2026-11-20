@@ -71,5 +71,11 @@ export async function docFetch(path: string, init?: RequestInit): Promise<Respon
   } catch (e) {
     if ((e as Error).name === 'AbortError') throw e
   }
-  return fetch(path, init)
+  const f = await fetch(path, init)
+  // 정적 파일도 없으면 개발 서버·nginx 가 SPA 폴백(index.html)을 200 으로 준다. 그대로 넘기면
+  // 호출부의 r.json() 이 "Unexpected token '<'" 로 터진다 — 없는 것은 없다(404)고 말한다.
+  if (f.ok && (f.headers.get('content-type') ?? '').includes('text/html') && !/\.html?$/i.test(path)) {
+    return new Response(null, { status: 404, statusText: 'Not Found' })
+  }
+  return f
 }
