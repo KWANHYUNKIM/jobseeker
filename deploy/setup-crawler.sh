@@ -47,6 +47,15 @@ CC_PLIST="$HOME/Library/LaunchAgents/$CC_LABEL.plist"
 CC_INTERVAL="${CLOSE_CHECK_INTERVAL:-600}"
 CC_LIMIT="${CLOSE_CHECK_LIMIT:-100}"
 
+# 당근알바 IT 공고 마감 확인 — 위 closecheck 의 알바판. 크롤 회차 끝에서도 새 공고 수집과
+# 모집중 100건 재확인을 하지만, 회차(1시간) 사이에 사람을 구해 닫힌 공고가 그만큼 늦게 닫힌다.
+# 새 공고는 받지 않고 재확인만 한다(crawl_daangn_alba --check). 회차 쪽과는 alba.lock 을 나눠 써서
+# 겹치면 뒤에 온 쪽이 건너뛴다.
+AC_LABEL="com.jobseeker.albacheck"
+AC_PLIST="$HOME/Library/LaunchAgents/$AC_LABEL.plist"
+AC_INTERVAL="${ALBA_CHECK_INTERVAL:-1800}"
+AC_LIMIT="${ALBA_CHECK_LIMIT:-60}"
+
 log()  { printf '\033[1;34m▶\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33m!\033[0m %s\n' "$*"; }
 die()  { printf '\033[1;31m✗\033[0m %s\n' "$*" >&2; exit 1; }
@@ -58,6 +67,8 @@ if [ "${1:-}" = "--uninstall" ]; then
   rm -f "$PLIST"
   launchctl bootout "gui/$(id -u)/$CC_LABEL" 2>/dev/null || true
   rm -f "$CC_PLIST"
+  launchctl bootout "gui/$(id -u)/$AC_LABEL" 2>/dev/null || true
+  rm -f "$AC_PLIST"
   log "해제 완료 (venv 와 데이터는 그대로 둔다)"
   exit 0
 fi
@@ -201,6 +212,63 @@ sync_cc_plist() {
   log "마감 재확인 등록 — ${CC_INTERVAL}초마다 ${CC_LIMIT}건 ($CC_LABEL)"
 }
 
+# 당근알바 마감 확인 plist — closecheck 와 같은 꼴. 등록 즉시 한 번 돈다.
+write_ac_plist() {  # $1 = 쓸 경로
+  cat > "$1" <<PLIST_EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>$AC_LABEL</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>$VENV/bin/python</string>
+    <string>-m</string>
+    <string>crawlers.crawl_daangn_alba</string>
+    <string>--check</string>
+    <string>--recheck</string>
+    <string>$AC_LIMIT</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>$CATCH</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    <key>PYTHONUNBUFFERED</key>
+    <string>1</string>
+  </dict>
+  <key>StartInterval</key>
+  <integer>$AC_INTERVAL</integer>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>$HOME/Library/Logs/jobseeker-albacheck.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>$HOME/Library/Logs/jobseeker-albacheck.err.log</string>
+</dict>
+</plist>
+PLIST_EOF
+  plutil -lint "$1" >/dev/null || die "albacheck plist 문법 오류"
+}
+
+sync_ac_plist() {
+  local tmp
+  tmp="$(mktemp -t jobseeker-albacheck-plist)"
+  write_ac_plist "$tmp"
+  if [ -f "$AC_PLIST" ] && cmp -s "$tmp" "$AC_PLIST"; then
+    rm -f "$tmp"
+    log "당근알바 마감 확인 스케줄 최신 상태"
+    return
+  fi
+  mv "$tmp" "$AC_PLIST"
+  launchctl bootout "gui/$(id -u)/$AC_LABEL" 2>/dev/null || true
+  launchctl bootstrap "gui/$(id -u)" "$AC_PLIST"
+  launchctl print "gui/$(id -u)/$AC_LABEL" >/dev/null 2>&1 || die "albacheck launchd 등록 실패"
+  log "당근알바 마감 확인 등록 — ${AC_INTERVAL}초마다 ${AC_LIMIT}건 ($AC_LABEL)"
+}
+
 # 실행 여부는 launchd 에 직접 묻는다. pgrep -f 는 명령줄에 이 문자열이 들어간
 # 아무 셸이나(모니터링 one-liner, 이 스크립트를 논하는 파이프라인) 함께 잡는다.
 crawl_running() {
@@ -220,6 +288,7 @@ if [ "${1:-}" = "--reschedule" ]; then
   # 마감 재확인은 크롤이 돌고 있어도 갱신한다(원장 잠금이 겹침을 막는다).
   # 크롤 스케줄이 있는 머신이면 이것도 있어야 한다 — 없으면 여기서 새로 깐다.
   sync_cc_plist
+  sync_ac_plist
 
   tmp="$(mktemp -t jobseeker-crawler-plist)"
   trap 'rm -f "$tmp"' EXIT
@@ -297,6 +366,7 @@ write_plist "$PLIST"
 reload_plist
 log "등록 완료 — ${INTERVAL}초마다 '${KEYWORD}' ${COUNT}건 크롤"
 sync_cc_plist
+sync_ac_plist
 
 echo
 echo "  상태 :  launchctl print gui/\$(id -u)/$LABEL | head -20"

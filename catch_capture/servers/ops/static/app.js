@@ -18,6 +18,7 @@ const PHASE_LABEL = {
   aggregating: "통합 중",
   blog: "기술 블로그 수집",
   freelance: "외주·프리 수집",
+  alba: "당근알바 수집",
   building: "대시보드 빌드",
   refreshing: "뷰어 갱신",
   waiting: "다음 주기 대기",
@@ -31,6 +32,7 @@ const STEPS = [
   { key: "building", name: "대시보드", phases: ["building"] },
   { key: "refreshing", name: "뷰어", phases: ["refreshing"] },
   { key: "freelance", name: "외주·프리", phases: ["freelance"] },
+  { key: "alba", name: "당근알바", phases: ["alba"] },
   { key: "blog", name: "기술블로그", phases: ["blog"] },
   { key: "waiting", name: "대기", phases: ["waiting", "idle"] },
 ];
@@ -191,6 +193,13 @@ function stepStateFor(step, s) {
     const f = cyc.freelance || {};
     if (f.status === "done") return { cls: "done", label: `완료 · 모집중 ${f.active ?? "?"}건(신규 ${f.new ?? "?"})${secs(f.elapsed)}` };
     if (f.status === "failed") return { cls: "failed", label: "실패" };
+    return { cls: "", label: "대기" };
+  }
+  if (step.key === "alba") {
+    const a = cyc.alba || {};
+    if (a.status === "done") return { cls: "done", label: a.skipped ? "건너뜀(마감 확인 중)" : `완료 · 모집중 ${a.open ?? "?"}건(신규 ${a.new ?? "?"}, 마감 ${a.closed_now ?? 0})${secs(a.elapsed)}` };
+    if (a.status === "failed") return { cls: "failed", label: "실패" };
+    if (a.status === "running") return { cls: "active", label: "수집 중" };
     return { cls: "", label: "대기" };
   }
   if (step.key === "building" || step.key === "refreshing") {
@@ -438,6 +447,9 @@ function evMessage(e) {
     case "blog_done": return `기술 블로그 ${e.ok ? "완료" : "실패"} · ${e.total ?? "?"}건(신규 ${e.new ?? "?"}, 출처 ${e.sources ?? "?"})${secs(e.elapsed)}`;
     case "freelance_start": return `외주·프리 프로젝트 수집 시작`;
     case "freelance_done": return `외주·프리 ${e.ok ? "완료" : "실패"} · 누적 ${e.total ?? "?"}건(모집중 ${e.active ?? "?"}, 신규 ${e.new ?? "?"})${secs(e.elapsed)}`;
+    case "alba_start": return `당근알바 IT 공고 수집 시작`;
+    case "alba_done": return `당근알바 ${e.ok ? "완료" : "실패"} · 누적 ${e.total ?? "?"}건(모집중 ${e.open ?? "?"}, 신규 ${e.new ?? "?"}, 마감 ${e.closed_now ?? 0})${secs(e.elapsed)}`;
+    case "alba_check": return e.skipped ? `당근알바 마감 확인 — 회차가 도는 중이라 건너뜀` : `당근알바 마감 확인 · 모집중 ${e.open ?? "?"}건, 이번에 마감 ${e.closed_now ?? 0}건`;
     case "refresh_start": return `${e.target === "dashboard" ? "대시보드" : "뷰어"} 갱신 시작`;
     case "refresh_done": return `${e.target === "dashboard" ? "대시보드" : "뷰어"} 갱신 ${e.ok ? "완료" : "실패"}`;
     case "cycle_done": return `사이클 완료 · ${e.new_data ? "새 데이터 반영" : "변경 없음"}${secs(e.elapsed)}`;
