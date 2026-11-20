@@ -1,0 +1,293 @@
+{
+  "id": "JuoVZkPBiKk",
+  "source": {
+    "platform": "youtube",
+    "url": "https://www.youtube.com/watch?v=JuoVZkPBiKk",
+    "channel": "Stanford Online",
+    "published": "2026-04-14",
+    "duration_sec": 4762,
+    "views": 406858
+  },
+  "course": {
+    "school": "Stanford",
+    "code": "CS336",
+    "term": "Spring 2026",
+    "lecture_no": "1",
+    "speaker": "Percy Liang (공동 강사 Tatsunori Hashimoto)"
+  },
+  "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 1: Overview, Tokenization",
+  "title_ko": "언어 모델을 바닥부터 — CS336 첫 강의: 과목 전체 지도와 토크나이저",
+  "topic": "llm",
+  "tags": ["Python", "PyTorch", "LLM", "Transformer", "Tokenizer", "BPE", "Triton", "CUDA", "GPU", "Distributed Training", "DPO", "GRPO", "MoE"],
+  "level": "중급",
+  "one_line": "정확도 = 효율 × 자원 — 다섯 과제로 LLM 을 직접 짓는 과목의 지도와 BPE 토크나이저 구현",
+  "summary": [
+    "Percy Liang 과 Tatsu Hashimoto 가 세 번째로 여는 CS336 의 첫 시간이다. 강의의 절반은 과목 전체의 지도이고 나머지는 첫 단원인 토큰화다. 출발점은 '연구자가 기술에서 멀어졌다'는 문제의식이다 — 2016년엔 연구자가 모델을 직접 학습했고, 2018년엔 BERT 를 내려받아 파인튜닝했고, 지금은 GPT·Claude·Gemini API 에 프롬프트를 넣는다. 추상화는 생산성을 올리지만 프로그래밍 언어나 OS 와 달리 새는 추상화라서, 근본 연구를 하려면 스택 전체를 뜯어볼 수 있어야 하고 그 이해는 직접 지어 봐야 생긴다는 것이 과목의 철학이다. 올해는 MoE·긴 문맥·에이전트를 위한 재료를 더 다루고, '시간 대비 가치가 높은 개념'만 바닥부터 짓도록 다듬었다고 한다.",
+    "다만 최전선 모델은 손에 닿지 않는다. GPT-4 학습비가 약 1억 달러로 알려졌고(지금은 10억 달러 단위로 추정), xAI 는 Grok 학습용으로 GPU 23만 장 클러스터를 지었으며, GPT-4 보고서는 모델 크기·데이터·학습법을 공개하지 않겠다고 못 박았다. 게다가 작은 모델은 큰 모델을 대표하지 못한다 — OPT 표에서 MLP(FFN)가 차지하는 FLOPs 비중은 760M 에서 44% 남짓이지만 175B 에서는 80% 가까이로 커지고, few-shot 능력은 일정 규모를 넘어야 갑자기 나타난다. 그래서 강사는 배울 것을 셋으로 가른다: 작동 원리(mechanics)와 사고방식(mindset)은 규모를 넘어 전이되므로 가르칠 수 있지만, 어떤 데이터·모델 결정이 좋은지에 대한 직관(intuitions)은 실험으로만 얻고 규모마다 다를 수 있다. SwiGLU 논문이 결론에서 '설명은 못 하겠고 신의 은총 덕분'이라고 쓴 것이 그 예다.",
+    "과목을 꿰는 한 줄은 '정확도 = 효율 × 자원'이다. Bitter lesson 을 '규모만 중요하고 알고리즘은 상관없다'로 읽는 것은 오해이고, '규모가 커질수록 잘 늘어나는 알고리즘이 중요하다'로 읽어야 한다는 것이 강사 의견이다. 실험 하나가 수억 달러인 규모에서는 5% 효율 개선도 큰돈이며, OpenAI 의 Hernandez 2020 은 2012~2019년 ImageNet 에서 알고리즘만으로 44배 효율이 올랐다고 보였다. 그래서 질문은 늘 '주어진 데이터·연산 예산으로 만들 수 있는 최선의 모델은?'이다. 시스템은 연산 효율, 토큰화는 바이트를 그대로 쓰면 연산이 낭비되니 효율, 아키텍처 변경 상당수는 메모리·FLOPs(특히 추론) 절감, 데이터 필터링은 나쁜 데이터에 연산을 쓰지 않기, 스케일링 법칙은 작은 모델로 하이퍼파라미터를 정하기 — 모든 단원을 이 렌즈로 본다. 지금은 연산이 병목이지만 언젠가 데이터가 병목이 되면 셈법이 바뀐다는 단서도 붙인다.",
+    "다섯 과제가 다섯 단원과 짝을 이룬다. ① basics: BPE 토크나이저·트랜스포머·교차 엔트로피·AdamW·학습 루프를 직접 짜고 FLOPs·메모리를 세어(6ND 공식, 70B 모델에 1T 토큰이면 4.2e23 FLOPs) TinyStories·OpenWebText 로 학습, B200 45분 안에 perplexity 를 최대한 낮추는 리더보드. ② systems: Triton 으로 fused RMSNorm 커널, 분산 데이터 병렬, 옵티마이저 상태 샤딩, 벤치마크·프로파일링. ③ scaling laws: 하이퍼파라미터를 주면 손실을 돌려주는 학습 API(미리 학습해 둔 캐시)에 FLOPs 예산 안에서 실험을 던지고 스케일링 법칙을 적합해 목표 규모 손실을 예측. ④ data: Common Crawl HTML 을 텍스트로 바꾸고 품질·유해성 분류기로 거르고 MinHash 로 중복 제거, 토큰 예산 안에서 perplexity 최소화. ⑤ alignment: DPO 와 GRPO 구현(올해는 더 현실적인 설정을 검토 중). 뼈대 코드는 주지 않고 단위 테스트와 어댑터 인터페이스만 주며, 노트북에서 정확성을 맞춘 뒤 Modal 이 후원한 클러스터에서 학습·벤치마크한다.",
+    "올해 새로 생긴 규칙은 AI 정책이다. 코딩 에이전트가 과제를 다 풀 수 있지만 그러면 아무것도 배우지 못하므로, AI 를 쓰려면 과목이 주는 AGENTS.md(교육적으로 굴도록 지시하는 프롬프트)를 반드시 붙여 써야 한다 — 질문에는 답하되 숙제인 트랜스포머를 대신 써 주지는 않게. 듣지 말아야 할 사람도 분명히 말한다: 이번 학기 연구 성과가 급한 사람, 멀티모달·RAG·에이전트 같은 최신 기법을 원하는 사람, 자기 도메인에서 결과만 내고 싶은 사람(그럴 땐 프롬프트 → 파인튜닝 → 최후에야 사전학습). 첫 과제 하나가 CS224N 과제 다섯 개와 기말 프로젝트를 합친 분량이었다는 수강 평가도 화면에 띄웠다.",
+    "마지막 15분은 토큰화다. 토크나이저는 문자열과 정수열 사이를 왕복(round trip)하는 encode/decode 쌍이고, 품질은 압축률(바이트/토큰)로 본다. GPT-5 토크나이저(tiktoken, 어휘 약 20만)는 'Hello, 🌍! 你好!' 20바이트를 8토큰으로 만들어 압축률 2.5 다. 문자 단위(어휘 약 15만, 희귀 문자가 어휘를 낭비), 바이트 단위(어휘 256, 압축률 1), 단어 단위(어휘가 무한히 늘고 처음 보는 단어는 UNK) 모두 한계가 있어, 자주 붙는 바이트 쌍을 반복해 합치는 BPE 를 쓴다. 'the cat in the hat' 으로 (116,104)→256 병합을 직접 실행해 보이고, 과제에서는 느린 참조 구현을 필요한 병합만 도는 인덱스, 특수 토큰(<|endoftext|>) 보존, GPT-2 정규식 사전 토큰화, Rust·C 구현까지 가며 빠르게 만들라고 한다. 강사는 매년 토큰화를 그만 가르치길 바라지만 바이트 직접 모델은 아직 최전선 규모로 검증되지 않았고, 무엇이 대체하든 '덩어리(추상화) 위에서 모델링'과 '덩어리 크기가 가변(흥미로운 곳에 연산을 더)'이라는 두 성질은 지켜야 한다고 정리한다."
+  ],
+  "why_now": "에이전트 시대라 해도 바닥은 GPU·커널·확률적 경사법·트랜스포머로 그대로이고, 달라진 것은 더 긴 문맥과 더 비싼 추론이라는 스펙이다. 그래서 강사는 '효율을 세는 습관'(FLOPs·메모리·대역폭 회계, 루프라인, 스케일링 레시피)을 규모를 넘어 전이되는 거의 유일한 역량으로 꼽는다. 오픈 웨이트 모델(Llama·Qwen·DeepSeek·Kimi·GLM)이 폐쇄 모델에 근접하고 OLMo·Nemotron·Marin 처럼 데이터·코드까지 공개하는 흐름 덕에 프런티어 구성을 역추적할 수 있게 됐다는 점도, 국내에서 오픈 모델을 사전·사후학습하거나 서빙 효율을 다루는 일자리가 늘어나는 배경이다.",
+  "chapters": [
+    {
+      "start": 0,
+      "title": "도입 — 세 번째 CS336 과 올해 달라진 점",
+      "points": [
+        "강사 Percy Liang·Tatsu Hashimoto 와 조교 셋을 소개한다. 작년(2025 봄) 강의는 이미 유튜브에 공개돼 있다.",
+        "바뀌지 않은 것은 '바닥부터' 철학. 다만 한 학기에 전부를 짓지는 못하므로 2년간 '직접 지어 볼 가치가 가장 큰 부분'을 골라 왔다.",
+        "올해는 MoE 비중을 늘리고, 에이전트가 요구하는 긴 문맥을 다룬다. Tatsu 의 아키텍처 강의는 해마다 거의 새로 쓴다."
+      ],
+      "on_screen": "실행형 강의 코드 def welcome(): 아래 'CS336: Language Models From Scratch (Spring 2026)' 와 강사·조교 사진, 'Lectures from 2nd offering (Spring 2025) are on YouTube', What's new: Same 'from scratch' philosophy / Prioritize high value-per-time concepts / More coverage of modern LM ingredients (mixture of experts, long-context, agents)."
+    },
+    {
+      "start": 205,
+      "title": "왜 이 과목인가 — 새는 추상화와 손에 닿지 않는 프런티어",
+      "points": [
+        "연구자가 기술과 멀어졌다: 2016 직접 학습 → 2018 BERT 파인튜닝 → 지금은 API 프롬프트. 추상화는 생산성을 주지만 '새는' 추상화라 막히면 손쓸 데가 없다.",
+        "근본 연구에는 전체 이해가 필요하고, 이해는 짓기로 얻는다.",
+        "문제는 산업화: GPT-4 학습비 약 1억 달러(2023), xAI 의 GPU 23만 장 클러스터(2025), 그리고 GPT-4 보고서의 비공개 선언.",
+        "작은 모델은 대표성이 없다 — FFN 이 차지하는 FLOPs 비중이 규모에 따라 달라지고, 여러 과제의 능력이 일정 연산량을 넘어야 갑자기 나타난다(창발)."
+      ],
+      "on_screen": "'Why did we make this course?' — 2016/2018/Today 세 줄과 'These abstractions are leaky (in contrast to programming languages or operating systems)', 'Full understanding of this technology is necessary for fundamental research'. 정유공장 사진과 'Frontier models are really expensive: 2023 GPT-4 supposedly cost $100M / 2025 xAI builds cluster with 230K GPUs', GPT-4 기술보고서의 비공개 문단 캡처, 'We could build small language models (<1B parameters), but this might not be representative'. Stephen Roller 트윗의 OPT 표(760M~175B, FLOPs/update, %FLOPS MHA·FFN·attn·logit — FFN 이 44%대에서 80%까지), Wei+ 2022 창발 그래프 8개(Mod. arithmetic·IPA transliterate·Word unscramble·Persian QA·TruthfulQA·Grounded mappings·Multi-task NLU·Word in context, x축 training FLOPs 1e18~1e24)."
+    },
+    {
+      "start": 420,
+      "title": "무엇이 전이되나 — 원리·사고방식·직관",
+      "points": [
+        "Mechanics(트랜스포머·모델 병렬이 어떻게 도는가)와 Mindset(하드웨어를 끝까지 짜내고 스케일링을 진지하게 대하기)은 큰 규모로 전이된다.",
+        "Intuitions(어떤 데이터·모델 결정이 좋은가)는 부분적으로만 가르칠 수 있다 — 규모를 넘어 전이되지 않을 수 있고 실험으로만 얻는다.",
+        "Shazeer 2020 SwiGLU 논문 결론의 '설명은 하지 않는다, 신의 은총 덕분' 문장을 예로 든다.",
+        "모든 것을 프로파일링·벤치마크하는 습관을 과목 전체에서 강조한다."
+      ],
+      "on_screen": "'What can we learn in this class that transfers to frontier models?' — Mechanics / Mindset / Intuitions 세 줄, 'We can teach mechanics and mindset (these do transfer). We can only partially teach intuitions'. 'Intuitions? 🤷' 아래 Shazeer 2020 '4 Conclusions' 문단에서 divine benevolence 문장에 형광 표시."
+    },
+    {
+      "start": 540,
+      "title": "Bitter lesson 바로 읽기 — 정확도 = 효율 × 자원",
+      "points": [
+        "틀린 해석은 '규모만 중요, 알고리즘은 무관'. 맞는 해석은 '규모와 함께 잘 늘어나는 알고리즘이 중요'.",
+        "규모가 클수록 효율이 더 중요하다 — 작은 실험은 두 배 기다리면 그만이지만 큰 실험은 수억 달러라 5% 개선도 크다.",
+        "Hernandez 2020: 2012~2019 ImageNet 에서 알고리즘 효율 44배. 하드웨어 개선과 곱해져 큰 도약이 된다.",
+        "과목의 질문: 주어진 연산·데이터 예산으로 만들 수 있는 최선의 모델. 사전학습은 데이터보다 연산이 모자란 상황을 가정한다."
+      ],
+      "on_screen": "'The bitter lesson' — Wrong interpretation / Right interpretation: algorithms that scale are what matter, 굵은 글씨 'accuracy = efficiency x resources', 'In fact, efficiency is way more important at larger scales', '[Hernandez+ 2020] showed 44x algorithmic efficiency on ImageNet between 2012 and 2019', 'Framing: what is the best model one can build given a certain compute and data budget? In other words, maximize efficiency!'"
+    },
+    {
+      "start": 690,
+      "title": "언어 모델의 짧은 역사 — Shannon 에서 오픈 모델 생태계까지",
+      "points": [
+        "신경망 이전: Shannon 1950 영어 엔트로피 측정, 기계번역·음성인식 속 N-gram. 2010년대 재료: LSTM, Bengio 2003 첫 신경 LM(피드포워드), Seq2Seq, Adam, 어텐션, 트랜스포머(모두 기계번역 출신), MoE, 모델 병렬.",
+        "ELMo·BERT·T5 의 '사전학습 후 파인튜닝' → GPT-2 · Kaplan 2020 스케일링 법칙 · GPT-3 의 in-context learning → 학습이 부족했던 PaLM 540B 와 연산 최적을 찾은 Chinchilla 70B.",
+        "GPT-3 재현 시도(EleutherAI 의 The Pile·GPT-J, Meta OPT 175B — 하드웨어 문제 다수, BigScience BLOOM)는 약했지만, 이후 Llama·Mistral·DeepSeek·Qwen·Kimi·GLM·MiniMax·Xiaomi MiMo 같은 오픈 웨이트가 폐쇄 모델에 근접했다.",
+        "가중치를 넘어 논문·코드·데이터까지 여는 쪽: AI2 OLMo, NVIDIA Nemotron, 강사가 참여하는 Marin. 이런 공개 덕에 이 과목이 가능하다 — 다만 데이터 믹스는 Qwen 논문에도 없다."
+      ],
+      "on_screen": "def current_lm_landscape(): 아래 Pre-neural (before 2010s) / Neural ingredients (2010s) / Early foundation models (late 2010s) / Embracing scaling / Open models 목록과 인용 [Shannon 1950][Bengio+ 2003][Vaswani+ 2017][Kaplan+ 2020][Hoffmann+ 2022] 등. 'Credible open-weight models (weights + paper)'에 Meta Llama·Mistral·DeepSeek·Alibaba Qwen·Moonshot Kimi·Z.ai GLM(GLM-4.5, GLM-5)·MiniMax M2.5·Xiaomi MIMO v2, 'Open-source models (weights + paper + code + data)'에 AI2 Olmo·NVIDIA Nemotron·Marin 8B/32B retro, 'Openness is important for trust and innovation [Kapoor+ 2024]'."
+    },
+    {
+      "start": 1050,
+      "title": "언어 모델의 정의가 바뀌어 왔다 — 그러나 바닥은 같다",
+      "points": [
+        "2018 BERT 는 파인튜닝하는 것, 2020 GPT-3 는 프롬프트하는 것, 2022 ChatGPT 는 대화하는 것, 2026 에이전트는 스스로 행동하는 것.",
+        "한 쪽짜리 지시로 복잡한 에이전트 코딩을 해내는 수준이지만, 바닥(GPU·커널, 경사 기반 최적화, 트랜스포머·어텐션)은 크게 변하지 않았다.",
+        "달라진 건 스펙: 더 긴 문맥을 요구하니 추론 효율이 훨씬 더 중요해졌다."
+      ],
+      "on_screen": "'What is a language model?' — 2018 (BERT): something you fine-tune / 2020 (GPT-3): something you prompt / 2022 (ChatGPT): something you talk to [example conversation] / 2026 (agents): something that acts autonomously [example trace]. 'The fundamentals are the same (attention, kernels, optimization). The specs are different (longer context, inference efficiency matters even more).'"
+    },
+    {
+      "start": 1167,
+      "title": "실행형 강의 — 강의 자체가 파이썬 프로그램",
+      "points": [
+        "슬라이드처럼 보이는 화면은 실제로 실행되는 파이썬 프로그램을 렌더링한 것이다. 한 줄씩 실행하며 변수 값을 띄운다.",
+        "함수 계층이 곧 강의 목차라 구조를 따라가기 쉽고, 뒤의 토크나이저 코드도 이 방식으로 단계별로 돌려 본다."
+      ],
+      "on_screen": "def main(): 아래 welcome() / why_this_course_exists() / current_lm_landscape() 호출 목록, 'This is an executable lecture, a program whose execution delivers the content of a lecture.' 와 예시 total = 0; for x in [1, 2, 3]: total += x."
+    },
+    {
+      "start": 1214,
+      "title": "수강 안내 — 누가 들어야 하나, 과제 방식, AI 정책, 연산 자원",
+      "points": [
+        "5학점, 과제 5개. 2024 수강 평가: 첫 과제 하나가 CS224N 과제 5개 + 기말 프로젝트 분량.",
+        "들어야 할 사람: 작동 원리를 집요하게 알고 싶은 사람, 연구 엔지니어링 근육을 키우려는 사람. 듣지 말아야 할 사람: 이번 학기 연구 성과가 급하거나, 멀티모달·RAG 같은 최신 기법을 원하거나, 자기 도메인 결과만 원하는 사람 — 그럴 땐 프롬프트 → 파인튜닝 → 마지막 수단으로 사전학습.",
+        "뼈대 코드 없이 단위 테스트·어댑터 인터페이스만 준다. 노트북에서 정확성 확인 → 클러스터에서 정확도·성능 측정, 일부 과제는 학습 예산 안 perplexity 리더보드(NanoGPT speedrun 과 비슷).",
+        "AI 정책: 에이전트에게 PDF 를 넣으면 다 풀리지만 배우는 게 없다. AI 를 쓰려면 과목의 AGENTS.md(교육적으로 답하라는 프롬프트)를 반드시 쓴다.",
+        "연산은 올해 Modal 크레딧 — 작년의 SSH 클러스터 대신 API 방식."
+      ],
+      "on_screen": "def course_logistics(): 'All information online: https://stanford-cs336.github.io/spring2026/', 'This is a 5-unit class', 2024 수강평 인용, Why you should / should not take this course, How you can follow along at home(CGOE 녹화), Assignments 4줄(5 assignments, No scaffolding code but unit tests and adapter interfaces, Implement locally then run on cluster, Leaderboard), AI policy 4줄(You must use our provided AGENTS.md file…), Compute: Thanks to Modal."
+    },
+    {
+      "start": 1644,
+      "title": "단원 1 Basics — 토크나이저·아키텍처·학습",
+      "points": [
+        "목표는 첫 2주 안에 언어 모델 하나를 바닥부터 학습하는 것. 구성은 토큰화 → 아키텍처 → 학습.",
+        "트랜스포머 개선점: 활성화(ReLU→SwiGLU), 위치 인코딩(sinusoidal→RoPE), 정규화(LayerNorm·RMSNorm·QK norm, pre/post-norm), 어텐션(sparse/local, GQA, multi-head latent attention), 선형 어텐션·상태공간 모델(Mamba, Gated DeltaNet — 어텐션과 섞은 하이브리드가 잘 된다), MLP 의 MoE 화, 그리고 모양(층 수·헤드 수·은닉 차원·전문가 수).",
+        "학습 쪽 결정: 다중 토큰 예측 손실, 옵티마이저(AdamW 에서 Kimi K2 등이 쓰는 Muon 으로), 초기화 스케일(Xavier, muP), 학습률 스케줄(cosine, WSD), 정규화, critical batch size, MoE 부하 분산.",
+        "과제 1: BPE·트랜스포머·교차 엔트로피·AdamW·학습 루프 구현, 자원 회계, TinyStories·OpenWebText 학습, B200 45분 OpenWebText perplexity 리더보드.",
+        "큰 원칙: 표현력·안정성(파라미터·그래디언트 노름을 골디락스 구간에)·효율의 균형. LM 학습의 상당 부분은 결국 안정성 싸움이다."
+      ],
+      "on_screen": "def basics(): Goal / Components, BPE 슬라이드(Sennrich+ 2015, Efficiency lens: Reduce context length (1000 bytes → ~250 tokens), Adaptive computation, 'The dream: tokenizer-free model architectures… promising, but have not yet been scaled up to the frontier'). 원조 트랜스포머 블록 그림(Token Embedding·Absolute Position Embeddings·Norm·Causal Multi-Head Self-Attention·Dropout, Input tensor with shape (batch_size, seq_len, d_model)) 과 Refinements·Training 목록(Optimizer e.g. AdamW, SOAP, Muon / Initialization scale e.g. Xavier init, muP / Learning rate schedule e.g. cosine, WSD / Batch size e.g. critical batch size). Assignment 1 (basics) 5줄과 High-level principle: Expressivity / Stability / Efficiency."
+    },
+    {
+      "start": 2153,
+      "title": "단원 2 Systems — 자원 회계·커널·병렬·추론",
+      "points": [
+        "자원 회계: 70B 모델을 1T 토큰으로 학습하면 6 × 70e9 × 1e12 = 4.2e23 FLOPs. 이 6ND 가 어디서 나오는지 다음 강의에서 유도한다.",
+        "메모리와 연산은 떨어져 있어 HBM ↔ SM 데이터 이동이 대개 병목이다. B200 은 bf16 2.25 PFLOP/s, 메모리 대역폭 8TB/s. 루프라인 분석으로 연산·메모리 병목을 가른다 — 대개 메모리다.",
+        "커널: PyTorch 연산마다 표준 커널이 뜬다. 원칙은 데이터 이동 최소화 — A·B 두 연산을 HBM 왕복 두 번 대신 한 번에(fusion), 더 정교하게는 tiling(FlashAttention). CUDA·Triton·CUTLASS·ThunderKittens 로 쓴다.",
+        "병렬: GPU 간 이동은 더 비싸다. all-reduce 등 집합 통신으로 파라미터·활성값·그래디언트·옵티마이저 상태를 샤딩하고, data·tensor·pipeline·sequence·expert 병렬의 장단을 비교한다.",
+        "추론: RL 롤아웃·test-time compute·합성 데이터·평가에도 필요해 비중이 커진다. prefill(연산 병목) / decode(메모리 병목), 가속 수단은 가지치기·양자화·증류, speculative decoding, fused 커널·continuous batching. 과제 2: Triton fused RMSNorm, DDP, 옵티마이저 상태 샤딩, 벤치마크. 추천서: Google 의 'How to Scale Your Model'."
+      ],
+      "on_screen": "def systems(): Goal: squeeze the most out of the hardware (GPU or TPU), total_flops = 6 * 70e9 * 1e12 # = 4.2e23, Compute ↔ Memory 막대 그림과 'Example: B200 can perform 2.25 PFLOP/sec (bf16) with 8TB/sec memory bandwidth', 'Roofline analysis'. DGX B200 구성도(GPU 8장, NVLink/NVSwitch, CPU, PCIe, NIC). Kernels: 'Naive: read HBM; compute A; write HBM; read HBM; compute B; write HBM / Fused: read HBM; compute A and B; write HBM', 'Warp divergence, memory coalescing, bank conflicts, occupancy, bulk-async memory transfers'. Parallelism: 'How to split computation: {data,tensor,pipeline,sequence,expert} parallelism'. Inference: Prefill Phase / Decoding Phase 와 KV-Cache 그림('Computer science is' → discipline → . → <EOS>). Assignment 2 (systems) 4줄, Recommended book: How to Scale Your Model."
+    },
+    {
+      "start": 2711,
+      "title": "단원 3 Scaling laws — 모델이 아니라 '스케일링 레시피'를 설계한다",
+      "points": [
+        "1e25 FLOPs(수천만 달러)를 쓴다면 어떤 모델을 학습할까? 그 규모에서는 한 번밖에 못 돌리니 하이퍼파라미터 튜닝이 불가능하다.",
+        "발상 전환: 단일 모델 대신 '예산(FLOPs) → 하이퍼파라미터(설정 파일)' 대응표인 스케일링 레시피를 만든다. 1e24 까지 작은 실험으로 손실을 재고 스케일링 법칙을 적합해 1e25 손실을 예측한다 — 투자 유치에도 쓰인다.",
+        "스케일링 법칙은 자연법칙이 아니라 '만들어 내는 것'이다. 규모가 바뀌어도 하이퍼파라미터가 그대로이거나 예측 가능하게 변하도록 모델을 파라미터화(hyperparameter transfer, muP)해야 하고, 예측 가능성이 최적성만큼 중요하다.",
+        "고전 결과: Kaplan 2020·Chinchilla(Hoffmann 2022) isoFLOP 곡선 — 6e18~3e21 FLOPs 마다 모델 크기를 쓸어 최적 N 을 찾고 직선으로 외삽. 대략 D = 20N(70B → 1.4T 토큰). 단, 추론 비용 때문에 요즘 모델은 작게 만들고 훨씬 오래 학습한다.",
+        "Marin 은 1e22 FLOPs 결과를 미리 등록(pre-registration)해 두고 실제 학습으로 맞혀 보는 중이다. 과제 3: 학습 API 에 FLOPs 예산 안에서 실험을 던지고 외삽한 하이퍼파라미터·손실 예측을 제출, '예산 안 최소 손실' 리더보드."
+      ],
+      "on_screen": "def scaling_laws(): 'Setting: if you had 1e25 FLOPs of compute, what hyperparameters would you use to train a good model?', 'Key conceptual shift: instead of a single scale, think of a scaling recipe (FLOPs → hyperparameters)', 'Scaling laws don't happen automatically', 'hyperparameter transfer [Yang+ 2022]', 'Predictability is at least as important as optimality!', 'Question: given a FLOPs budget (C = 6 N D), use a bigger model (N) or train on more tokens (D)?'. Chinchilla isoFLOP 그림 3장(6e18~3e21 별 Training Loss vs Parameters U자 곡선, FLOPs 대비 최적 Parameters·Tokens 직선 외삽 — 67B·1.5T 표시), 'TL;DR: D = 20 N is roughly optimal (e.g., 70B parameter model should be trained on ~1.4T tokens)'. Marin 'Delphi Scaling Suite Results' 그래프(Compute-Optimal Frontier, Forecast, 1e21·1e22 'Currently training!'). Assignment 3 (scaling laws) 5줄."
+    },
+    {
+      "start": 3222,
+      "title": "단원 4 Data — 평가가 목표를 정하고, 데이터는 직접 만든다",
+      "points": [
+        "데이터가 모델이 무엇을 할지를 정한다(다국어? 대화? 긴 에이전트 코딩?). 그래서 평가부터 정한다.",
+        "평가의 두 목적: 내부 개발용(규모에 따라 매끄럽고 상대 비교가 중요 — perplexity, 인터넷에 없는 비공개 문서로 오염 회피)과 외부 보고용(실사용 타당성 — GPQA·HLE·SWE-Bench·Terminal-Bench). 둘을 섞지 말 것, 평균 하나로 뭉개지 말 것.",
+        "데이터는 하늘에서 떨어지지 않는다: 웹 크롤·책·arXiv·GitHub. 저작권 공정 이용 논쟁, 라이선스 계약(Google–Reddit), 라이선스 없는 GitHub 코드 해석 같은 법적 문제가 따른다.",
+        "처리 단계: 변환(HTML/PDF → 본문), 필터(분류기로 품질·유해성), 중복 제거(Bloom filter·MinHash — 연산 절약·암기 방지), 믹스 비율, 재작성·합성 데이터. 데이터 종류는 사전학습(크고 다양) / 미드트레이닝(고품질·긴 문맥) / 사후학습(대화·도구 호출 에이전트 궤적).",
+        "과제 4: Common Crawl HTML 을 텍스트로, 품질·유해성 분류기 학습, MinHash 중복 제거, 토큰 예산 안 perplexity 리더보드. 강사는 '지저분한 일'이지만 전 과정을 겪어야 한다고 말한다."
+      ],
+      "on_screen": "def data(): 'Question: What capabilities do we want the model to have? Multilingual? Good at conversation? Agentic coding capabilities?', Evaluation: 1. Internal: guide model development (smoothness across scales, relative performance matters) / 2. External: measure absolute quality of a real use case (ecological validity matters), Examples: Perplexity: ideally run on private documents not on Internet (avoid contamination) / Advanced use cases: GPQA, HLE, SWE-Bench, Terminal-Bench. The Pile 구성 트리맵(Pile-CC, PubMed Central, ArXiv, FreeLaw, USPTO, StackExchange, Github, Wikipedia, PG-19, OpenWebText2, DM Math 등), 'Appeal to fair use [Henderson+ 2023]', 'Might have to license data (e.g., Google with Reddit data)'. Data processing 5줄, Types of data 3줄, Assignment 4 (data) 4줄."
+    },
+    {
+      "start": 3600,
+      "title": "단원 5 Alignment, 그리고 효율이라는 하나의 렌즈",
+      "points": [
+        "지금까지는 다음 토큰이라는 완전 지도. 이제는 '만들기보다 평가하기가 쉬울 때' 쓰는 약한 지도로 더 끌어올린다.",
+        "기본 틀: 모델이 답을 생성 → 사람·검증기·LM 판정자가 점수 → 더 나은 답을 선호하도록 갱신. 알고리즘은 PPO, 선호 데이터용으로 더 단순한 DPO, 가치 함수를 없앤 GRPO.",
+        "RL 은 불안정하고 튜닝이 어렵다(강사는 지도학습으로 버틸 수 있는 만큼 버티는 쪽). 규모를 키우면 추론 서버·학습 서버·비동기 롤아웃·코드 실행 환경을 엮는 시스템 문제가 되고, 처리량과 on-policy 성을 계속 맞바꾼다.",
+        "과제 5: 작년엔 DPO·GRPO 를 구현해 수학 벤치마크에 맞췄고, 올해는 더 현실적인 설정을 검토 중.",
+        "정리: 자원은 데이터 + 하드웨어(연산·메모리·통신 대역폭). 시스템·토큰화·아키텍처(KV 캐시 공유, sliding window attention)·데이터 필터링·스케일링 법칙이 모두 '주어진 자원으로 최선의 모델'이라는 같은 최적화다. 내일 데이터가 병목이 되면 결정도 달라진다."
+      ],
+      "on_screen": "def alignment(): 'Now that the model should be reasonable, we can improve it further from weak supervision. Why weak supervision? When it is easier to critique than to generate.', Basic template 3단계(Generate responses / Score responses with a {human, verifier, LM judge} / Update the model to prefer better responses), Algorithms: PPO [Schulman+ 2017][Ouyang+ 2022] / DPO [Rafailov+ 2023] / GRPO [Shao+ 2024], Challenges(RL algorithms are unstable and hard to tune / inference with async rollouts / trading off systems efficiency and on-policyness), Assignment 5 (alignment): Implement DPO / Implement GRPO. def course_syllabus(): basics()·systems()·scaling_laws()·data()·alignment() 와 과제 주석, 'Remember it's all about efficiency' 아래 Systems / Tokenization / Model architecture / Data filtering / Scaling laws 다섯 줄, 'Tomorrow, we will become data-constrained…'."
+    },
+    {
+      "start": 3906,
+      "title": "토큰화 1 — 왕복, 압축률, 그리고 순진한 세 가지 토크나이저",
+      "points": [
+        "토크나이저 = 유니코드 문자열 ↔ 정수열의 encode/decode. 반드시 왕복해야 한다. Karpathy 의 토큰화 영상에서 영감을 받은 단원이다.",
+        "관찰: 단어와 앞 공백이 한 토큰(' world'), 문장 처음과 중간의 같은 단어가 다른 토큰, 숫자는 몇 자리씩 끊긴다(한 자리씩 끊으면 토큰 수가 폭증).",
+        "GPT-5 토크나이저(tiktoken): 'Hello, 🌍! 你好!' → 8토큰, 압축률(바이트/토큰) 2.5, 어휘 200,019. 압축률이 높을수록 시퀀스가 짧아 이차 비용의 어텐션에 유리하지만, 어휘를 키우면 희소해진다. 다국어 토크나이저는 어휘 10만~20만.",
+        "문자 단위: ord() 로 코드포인트, 어휘 약 15만에 희귀 문자 낭비. 바이트 단위(UTF-8): 어휘 256 이지만 압축률 1. 단어 단위(정규식 분할): 토큰이 의미 있지만 어휘가 무한, 처음 보는 단어는 UNK 로 perplexity 계산까지 망친다."
+      ],
+      "on_screen": "def tokenization(): 'This unit was inspired by Andrej Karpathy's video on tokenization', intro_to_tokenization() / tokenization_examples() / character_tokenizer() / byte_tokenizer() / word_tokenizer() / bpe_tokenizer() 목차. indices = [15496, 11, 995, 0]. Observations 3줄. 디버그 창: string = 'Hello, 🌍! 你好!', indices = 13225 11 130321 235 0 220 177519 0, compression_ratio = 2.5, vocabulary_size = 200019. 문자 토크나이저 indices 72 101 108 108 111 44 32 127757 …, vocabulary_size = 127758, 'There are approximately 150K Unicode characters', 'Problem 1: this is a very large vocabulary'. 바이트 토크나이저 indices 72 101 108 108 111 44 32 240 159 140 141 …, 단어 토크나이저 chunks 'I' ''' 'll' ' say' ' supercalifragilisticexpialidocious' '!', compression_ratio = 5.5, 'New words we haven't seen during training get a special UNK token'."
+    },
+    {
+      "start": 4320,
+      "title": "토큰화 2 — BPE 를 직접 돌려 보기와 과제 1 의 숙제",
+      "points": [
+        "BPE 는 Philip Gage 1994 데이터 압축 알고리즘 → Sennrich 2015 신경 기계번역 → Radford 2019 GPT-2 로 LLM 에 들어왔다. 말뭉치에 맞춘 어휘를 학습하고, 흔한 바이트열은 한 토큰, 드문 것은 여러 토큰으로 쪼개져 UNK 가 없다.",
+        "'the cat in the hat' 실행: 바이트열에서 인접 쌍을 세면 (116,104)=th 가 2회로 최다 → 토큰 256 으로 병합 → (256,101)→257 → 258. 시퀀스는 줄고 어휘는 늘며, 장난감 예의 압축률은 1.5.",
+        "인코딩은 학습한 병합을 순서대로 적용, 디코딩은 어휘의 바이트를 이어 붙인다('the quick brown fox' 왕복 확인).",
+        "참조 구현은 매우 느리다(병합 수 = 어휘 − 256 만큼 전체를 훑음). 과제 1: 관련 병합만 도는 인덱스, 특수 토큰 <|endoftext|> 보존, GPT-2 정규식 사전 토큰화로 덩어리별 처리, 필요하면 Rust·C 로.",
+        "강사 의견: 언젠가 바이트에서 바로 끝까지 학습하길 바라지만 아직 최전선에서 검증되지 않았다. 무엇으로 대체하든 '덩어리(추상화) 위에서 모델링'과 '가변 길이 덩어리로 흥미로운 곳에 연산을 더'는 지켜야 한다. 다음 시간은 자원 회계."
+      ],
+      "on_screen": "def bpe_tokenizer(): 'The BPE algorithm was introduced by Philip Gage in 1994 for data compression', [Sennrich+ 2015], [Radford+ 2019], 'Intuition: common sequences of bytes are represented by a single token, rare sequences are represented by many tokens', 'Sketch: start with each byte as a token, and successively merge the most common pair of adjacent tokens'. 디버그 창: num_merges = 3, indices = 116 104 101 32 99 97 116 32 105 110 32 116 104 101 32 104 97 116, counts (116,104):2 (104,101):2 (101,32):2 …, pair = 116 104, new_index = 256, merges = (116,104): 256, 병합 후 indices = 256 101 32 99 97 116 …. train_bpe(string, num_merges) 코드(indices = list(map(int, string.encode('utf-8'))), merges: dict[tuple[int,int], int], vocab: dict[int, bytes] = {x: bytes([x]) for x in range(256)}), encode 의 'Note: this is a very slow implementation' 루프. 'In Assignment 1, you will go beyond this' 4줄. Summary: Character-based, byte-based, word-based tokenization are highly suboptimal / BPE is an effective heuristic that is data-driven / Tokenization is a separate step, maybe one day do it end-to-end from bytes… / But whatever solution needs to satisfy: 1. Model should operate on chunks (abstractions) 2. Chunks should be variable."
+    }
+  ],
+  "concepts": [
+    {"term": "새는 추상화 (Leaky abstraction)", "explain": "API 프롬프트로 모델을 쓰는 것은 편하지만, 원하는 동작이 안 될 때 아래층으로 내려가 고칠 길이 없다. 강사가 '바닥부터 짓기'를 정당화하는 핵심 근거다.", "at": 240},
+    {"term": "Mechanics · Mindset · Intuitions", "explain": "규모를 넘어 전이되는 지식(작동 원리, 하드웨어를 짜내고 스케일링을 진지하게 보는 사고방식)과 전이가 보장되지 않는 지식(어떤 데이터·구조 결정이 좋은가에 대한 직관)을 가르는 이 과목의 틀.", "at": 435},
+    {"term": "창발 (Emergent behavior)", "explain": "작은 모델에서는 무작위 수준이던 few-shot 과제 정확도가 일정 학습 FLOPs 를 넘으면 갑자기 오르는 현상(Wei 2022). 작은 실험의 결론이 큰 모델에 그대로 통하지 않는 이유 중 하나.", "at": 380},
+    {"term": "정확도 = 효율 × 자원", "explain": "Bitter lesson 의 바른 해석을 식 하나로 줄인 것. 자원(데이터·연산·메모리·대역폭)이 같다면 효율을 올리는 알고리즘이 이기고, 규모가 클수록 효율 1% 의 값이 커진다.", "at": 575},
+    {"term": "자원 회계 (Resource accounting)", "explain": "학습·추론에서 FLOPs 와 메모리가 어디에 쓰이는지 세는 일. 학습 FLOPs ≈ 6 × 파라미터 수 N × 토큰 수 D 로, 70B·1T 토큰이면 4.2e23 FLOPs. 과제 1 부터 요구된다.", "at": 2180},
+    {"term": "루프라인 분석 (Roofline analysis)", "explain": "연산 강도(바이트당 FLOPs)를 하드웨어의 연산 성능·메모리 대역폭과 견줘 연산 병목인지 메모리 병목인지 판정하는 방법. B200(bf16 2.25 PFLOP/s, 8TB/s)에서도 대개 메모리가 병목이다.", "at": 2250},
+    {"term": "커널 융합 (Operator fusion) · Tiling", "explain": "HBM 에서 읽고-계산-쓰기를 연산마다 반복하지 않고 한 번 읽어 여러 연산을 끝낸 뒤 쓰는 것. tiling 은 이를 블록 단위로 정교하게 한 것으로 FlashAttention 이 대표 예.", "at": 2340},
+    {"term": "집합 통신 · 샤딩", "explain": "all-gather·reduce-scatter·all-reduce 같은 연산으로 파라미터·활성값·그래디언트·옵티마이저 상태를 여러 GPU 에 나눠 두는 것. data·tensor·pipeline·sequence·expert 병렬은 무엇을 어떻게 나누느냐의 차이다.", "at": 2430},
+    {"term": "Prefill / Decode", "explain": "추론의 두 단계. prefill 은 프롬프트 전체를 한 번에 넣어 KV 캐시를 만드는 단계로 학습과 비슷하게 연산 병목, decode 는 토큰을 하나씩 만드는 단계로 메모리 병목이라 추론이 어렵다.", "at": 2540},
+    {"term": "Speculative decoding", "explain": "싼 초안(draft) 모델이 토큰 여러 개를 먼저 추측하고, 큰 모델이 그것을 한 번에 병렬로 검증해 맞은 만큼 받아들이는 기법. 결과 분포는 큰 모델과 정확히 같다.", "at": 2600},
+    {"term": "스케일링 레시피 (Scaling recipe)", "explain": "FLOPs 예산을 받아 하이퍼파라미터 묶음(설정 파일)을 내주는 대응표. 작은 예산들에서 손실을 재고 스케일링 법칙을 적합해 목표 예산의 손실을 미리 예측하고, 레시피 자체를 작은 실험으로 최적화한다.", "at": 2775},
+    {"term": "Hyperparameter transfer (muP)", "explain": "모델 크기를 바꿔도 최적 학습률 등이 그대로이거나 예측 가능한 함수로 변하도록 파라미터화하는 방법(Yang 2022). 이것이 있어야 스케일링 법칙이 '만들어진다'.", "at": 2910},
+    {"term": "Chinchilla 법칙 (D ≈ 20N)", "explain": "isoFLOP 곡선으로 찾은 연산 최적 비율 — 파라미터 1개당 토큰 약 20개(70B → 1.4T). 추론 비용을 고려하지 않은 값이라 실서비스 모델은 더 작게 만들고 더 오래 학습한다.", "at": 2990},
+    {"term": "내부 평가 vs 외부 평가", "explain": "내부 평가는 개발 방향을 잡는 용도로 규모에 따라 매끄럽고 상대 비교가 되면 충분하다(perplexity). 외부 평가는 고객·심사자에게 보이는 용도로 실사용 타당성이 중요하다(GPQA·HLE·SWE-Bench·Terminal-Bench).", "at": 3260},
+    {"term": "MinHash 중복 제거", "explain": "문서를 n-gram 집합으로 보고 해시 서명을 비교해 거의 같은 문서를 싸게 찾는 기법. 중복을 지우면 연산이 절약되고 암기가 줄어든다. 과제 4 의 핵심 단계.", "at": 3510},
+    {"term": "미드트레이닝 (Mid-training)", "explain": "사전학습 끝 무렵에 넣는 고품질 데이터 단계. 큰 코드 저장소·책 같은 긴 문맥 데이터가 여기에 들어간다.", "at": 3545},
+    {"term": "GRPO", "explain": "PPO 에서 가치 함수를 없애고 같은 프롬프트에 대한 여러 답의 상대 점수로 이점을 계산하는 RL 알고리즘(Shao 2024). 과제 5 에서 DPO 와 함께 구현한다.", "at": 3680},
+    {"term": "압축률 (bytes per token)", "explain": "원문 바이트 수 ÷ 토큰 수. 높을수록 시퀀스가 짧아 어텐션 비용이 준다. GPT-5 토크나이저 예에서 20바이트/8토큰 = 2.5, 바이트 토크나이저는 1.", "at": 4040},
+    {"term": "BPE (Byte-Pair Encoding)", "explain": "바이트 하나를 토큰 하나로 시작해 가장 자주 인접한 쌍을 새 토큰(256, 257, …)으로 병합하기를 반복하는 데이터 기반 토크나이저 학습법. 인코딩은 병합을 학습 순서대로 적용한다.", "at": 4320},
+    {"term": "사전 토큰화 (Pre-tokenization)", "explain": "GPT-2 정규식 등으로 텍스트를 먼저 단어 덩어리로 자른 뒤 덩어리마다 BPE 를 적용하는 것. 덩어리 경계를 넘는 병합을 막고 처리 속도를 크게 올린다.", "at": 4600}
+  ],
+  "trends": [
+    {"claim": "최전선 모델은 비용·비공개로 학계의 손을 벗어났다", "evidence": "GPT-4 학습비 약 1억 달러(지금은 10억 달러 단위로 추정 — 강사도 추측이라 단서), xAI 의 GPU 23만 장 클러스터, GPT-4 보고서가 크기·데이터·학습법 비공개를 명시.", "at": 300},
+    {"claim": "오픈 웨이트 모델이 폐쇄 모델에 근접했고, 그 중심에 중국 모델들이 있다", "evidence": "Llama·Mistral 다음으로 DeepSeek·Qwen·Kimi·GLM·MiniMax·Xiaomi MiMo 를 나열. 벤치마크에 따라 조금 뒤지거나 비슷하며 업계에서 널리 쓰인다고 평가.", "at": 930},
+    {"claim": "가중치만이 아니라 데이터·코드까지 여는 '완전 공개' 흐름이 연구 교육의 토대다 (강사 의견)", "evidence": "AI2 OLMo, NVIDIA Nemotron, Marin 을 들며 이 과목이 이런 공개 덕에 가능하다고 말한다. 다만 Qwen 논문에도 데이터 믹스는 빠져 있어 재현은 못 한다.", "at": 990},
+    {"claim": "에이전트 시대에도 기초는 그대로이고, 긴 문맥 때문에 추론 효율이 더 중요해졌다", "evidence": "'fine-tune → prompt → talk to → acts autonomously' 로 정의가 바뀌었지만 GPU·커널·최적화·어텐션은 같다고 정리. 올해 커리큘럼에 긴 문맥과 MoE 비중을 늘렸다.", "at": 1080},
+    {"claim": "MoE 가 계산 효율적인 트랜스포머의 지배적 구조가 됐고, 선형 어텐션 하이브리드가 늘고 있다", "evidence": "MLP 를 dense 에서 mixture of experts 로 바꾸는 것이 주류이며 학습 기법도 달라진다고 설명. Mamba·Gated DeltaNet 같은 상태공간/선형 어텐션을 어텐션과 섞은 하이브리드가 잘 된다.", "at": 1860},
+    {"claim": "옵티마이저가 AdamW 에서 Muon 으로 옮겨 가는 중이다", "evidence": "최근 오픈 모델, 특히 Kimi K2 가 Muon 을 쓴다고 언급. 화면에는 SOAP 도 함께 나열.", "at": 1940},
+    {"claim": "추론은 서빙만이 아니라 RL 롤아웃·test-time compute·합성 데이터·평가의 엔진이라 비중이 커진다", "evidence": "decode 가 메모리 병목이라 어렵고, 가지치기·양자화·증류·speculative decoding·continuous batching 이 주요 가속 수단이라고 정리.", "at": 2490},
+    {"claim": "대규모 RL 은 알고리즘보다 시스템 문제다", "evidence": "추론 서버와 학습 서버, 비동기 롤아웃, 코드 실행 환경을 엮어야 하고, 뒤처진 워커 때문에 off-policy 문제가 생겨 처리량과 on-policy 성을 계속 맞바꾼다. 강사 의견으로는 가능하면 지도학습으로 버티는 쪽을 선호.", "at": 3700},
+    {"claim": "외부 평가의 중심은 GPQA·HLE·SWE-Bench·Terminal-Bench 같은 고급 실사용 벤치마크다", "evidence": "평가 슬라이드의 'Advanced use cases' 예시. 모델이 범용이라 다양한 평가를 두고 평균 하나로 뭉개지 말라고 권한다.", "at": 3330},
+    {"claim": "토크나이저 없는 바이트 직접 모델은 유망하지만 아직 최전선에 오르지 못했다 (강사 의견)", "evidence": "Xue 2021 이후 여러 연구(2024~2025)를 언급하며 매년 토큰화를 빼고 싶지만 최전선 모델이 여전히 토크나이저를 써서 가르친다고 말한다.", "at": 1740}
+  ],
+  "study": {
+    "prereq": [
+      "Python 숙련 — 클래스·타입 힌트·프로파일링, 느린 코드를 빠르게 고쳐 본 경험",
+      "PyTorch 기본(텐서, autograd, nn.Module) — 다만 과제 1 은 nn.Linear 같은 고수준 모듈 없이 직접 짠다",
+      "선형대수·확률(행렬곱 FLOPs 세기, softmax·교차 엔트로피, 로그우도)",
+      "트랜스포머·어텐션의 대략적 구조 — CS224N 또는 9vM4p9NN0Ts 노트 수준",
+      "GPU 가 HBM·SM 으로 이뤄졌다는 정도의 하드웨어 상식"
+    ],
+    "steps": [
+      {"do": "BPE 토크나이저를 바이트 단위로 직접 구현하고 tiktoken(GPT-2/GPT-4 계열)과 같은 문장의 토큰·압축률을 비교한다", "why": "과제 1 의 첫 관문이자 모든 연산량의 단위가 토큰이다. 한국어는 바이트가 많아 압축률이 영어와 크게 달라, 국내 서비스 비용 계산에 바로 쓰인다."},
+      {"do": "6ND 공식과 행렬곱 FLOPs(2·m·n·k)로 작은 GPT 의 학습 FLOPs·메모리(파라미터·그래디언트·AdamW 상태·활성값)를 손으로 세어 본다", "why": "강사가 이 과목의 핵심 사고방식으로 꼽은 '자원 회계'다. 면접에서도 '7B 모델 학습에 GPU 몇 장·며칠?'을 어림하는 능력으로 직결된다."},
+      {"do": "RMSNorm·RoPE·SwiGLU·pre-norm 을 넣은 트랜스포머와 AdamW·cosine 스케줄 학습 루프를 바닥부터 짜서 TinyStories 로 학습한다", "why": "현대 LLM(Llama·Qwen 계열)의 표준 부품이 이것이고, 학습이 터지는 경험을 통해 '안정성'이 무엇인지 몸으로 안다."},
+      {"do": "'How to Scale Your Model' 로 루프라인과 병렬화를 익힌 뒤 Triton 으로 fused RMSNorm 이나 softmax 커널을 짜고 PyTorch 버전과 처리량을 비교한다", "why": "데이터 이동 최소화라는 원칙을 직접 측정해야 커널·FlashAttention·양자화 서빙 같은 시스템 업무가 이해된다."},
+      {"do": "DDP 와 옵티마이저 상태 샤딩(ZeRO-1 개념)을 직접 구현하고 torch.distributed 의 all-reduce 통신량을 재 본다", "why": "실무 분산 학습(FSDP·DeepSpeed·Megatron)의 바닥이다. 무엇을 쪼개면 메모리와 통신이 어떻게 바뀌는지 알아야 설정을 고를 수 있다."},
+      {"do": "Kaplan 2020·Chinchilla 를 읽고, 작은 모델 3~4개 크기 × 예산 몇 개로 isoFLOP 곡선을 그려 한 단계 큰 예산의 손실을 예측·검증한다", "why": "'모델이 아니라 레시피를 설계한다'는 업계 개발 방식의 핵심. 예측이 빗나가는 경험이 muP 같은 파라미터화의 필요성을 알려 준다."},
+      {"do": "Common Crawl WARC 몇 개로 본문 추출 → 언어·품질 분류기 필터 → MinHash 중복 제거 파이프라인을 만들고, 그 데이터로 작은 모델의 perplexity 가 어떻게 변하는지 본다. 이어서 DPO·GRPO 를 작은 모델에 적용한다", "why": "강사가 '모델이 무엇을 할지는 데이터가 정한다'고 했다. 데이터 정제와 사후학습은 국내 LLM 팀에서 인력이 가장 많이 붙는 영역이다."}
+    ],
+    "practice": [
+      "과제 1 따라 하기: BPE(특수 토큰·GPT-2 정규식 사전 토큰화 포함) → 트랜스포머 → AdamW → 학습 루프를 단위 테스트에 맞춰 구현하고, 제한 시간 안에 OpenWebText 검증 perplexity 를 최대한 낮춰 본다.",
+      "'the cat in the hat' 을 손으로 3번 병합해 강의의 256·257·258 결과를 재현한 뒤, 같은 코드로 한국어 문단을 학습해 병합 순서와 압축률을 영어와 비교한다.",
+      "과제 2 따라 하기: Triton fused RMSNorm 커널(순전파·역전파)을 작성해 torch 구현 대비 속도를 재고, 2 GPU DDP 와 옵티마이저 상태 샤딩의 메모리 사용량을 비교한다.",
+      "70B·1T 토큰(4.2e23 FLOPs)을 B200(bf16 2.25 PFLOP/s) 1,000장, MFU 40% 로 학습하면 며칠인지 계산하고, 같은 예산의 Chinchilla 최적 N·D 를 구해 본다.",
+      "과제 4 따라 하기: Common Crawl HTML 을 텍스트로 바꾸고 fastText 류 품질 분류기와 MinHash 로 거른 뒤, 거르기 전후 데이터로 작은 모델을 학습해 perplexity 를 비교한다.",
+      "과제 5 따라 하기: 작은 오픈 모델(예: Qwen 계열 소형)에 GSM8K 같은 수학 문제로 GRPO 를 돌리고, DPO 와 학습 안정성·정답률을 비교한다."
+    ],
+    "resources": [
+      {"title": "CS336 Spring 2026 과목 홈페이지(강의 코드·과제·일정)", "url": "https://stanford-cs336.github.io/spring2026/"},
+      {"title": "CS336 과제 저장소(GitHub stanford-cs336)", "url": "https://github.com/stanford-cs336"},
+      {"title": "How to Scale Your Model (Google DeepMind, 루프라인·병렬화)", "url": "https://jax-ml.github.io/scaling-book/"},
+      {"title": "Andrej Karpathy — Let's build the GPT Tokenizer", "url": "https://www.youtube.com/watch?v=zduSFxRajkE"},
+      {"title": "Sennrich et al. 2015 — Neural Machine Translation of Rare Words with Subword Units (BPE)", "url": "https://arxiv.org/abs/1508.07909"},
+      {"title": "Kaplan et al. 2020 — Scaling Laws for Neural Language Models", "url": "https://arxiv.org/abs/2001.08361"},
+      {"title": "Hoffmann et al. 2022 — Training Compute-Optimal Large Language Models (Chinchilla)", "url": "https://arxiv.org/abs/2203.15556"},
+      {"title": "Shazeer 2020 — GLU Variants Improve Transformer (SwiGLU)", "url": "https://arxiv.org/abs/2002.05202"},
+      {"title": "tiktoken (OpenAI 토크나이저)", "url": "https://github.com/openai/tiktoken"},
+      {"title": "Triton 튜토리얼", "url": "https://triton-lang.org/main/getting-started/tutorials/index.html"}
+    ]
+  },
+  "jobs": {
+    "roles": [
+      "LLM 엔지니어 (사전학습·사후학습)",
+      "AI 리서치 엔지니어",
+      "ML 인프라 / 분산 학습 엔지니어",
+      "GPU 커널·추론 최적화 엔지니어",
+      "LLM 데이터 엔지니어 (학습 데이터 파이프라인)",
+      "LLM 평가 엔지니어"
+    ],
+    "skills": ["Python", "PyTorch", "CUDA", "Triton", "LLM", "Transformer", "Distributed Training", "DeepSpeed", "Megatron-LM", "vLLM", "GPU", "Hugging Face", "Spark", "RLHF", "Deep Learning", "NLP"]
+  },
+  "related": ["9vM4p9NN0Ts", "DGI4vucR71w"],
+  "materials": {
+    "transcript": "official",
+    "frames": 159,
+    "every_sec": 30
+  },
+  "written_at": "2026-11-20"
+}

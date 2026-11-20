@@ -1,0 +1,266 @@
+{
+  "id": "NDdc39KYqDU",
+  "source": {
+    "platform": "youtube",
+    "url": "https://www.youtube.com/watch?v=NDdc39KYqDU",
+    "channel": "Stanford Online",
+    "published": "2026-06-04",
+    "duration_sec": 3879,
+    "views": 142095
+  },
+  "course": {
+    "school": "Stanford",
+    "code": "CS25",
+    "term": "V6 (Spring 2026, 2026-05-21 강연)",
+    "lecture_no": "초청 강연",
+    "speaker": "Victoria Lin (Thinking Machines Lab MTS, 전 Meta AI·Salesforce AI Research, UW 박사)"
+  },
+  "title": "Stanford CS25: Transformers United V6 I From Language Models to Native Multimodal Intelligence",
+  "title_ko": "언어 모델에서 네이티브 멀티모달 지능으로 — Chameleon·Transfusion·Mixture-of-Transformers 와 남은 문제",
+  "topic": "multimodal",
+  "tags": ["Transformer", "Multimodal", "LLM", "Diffusion", "VQ-VAE", "MoE", "VLM", "VLA", "PyTorch", "Python"],
+  "level": "심화",
+  "one_line": "모든 모달리티를 토큰으로 바꿔 LLM 처럼 학습한다 — 이산 토큰(Chameleon)·확산 결합(Transfusion)·모달리티별 파라미터(MoT)까지, 그리고 아직 안 풀린 것들",
+  "summary": [
+    "Stanford CS25(Transformers United) V6 의 초청 강연으로, Thinking Machines Lab 에서 네이티브 멀티모달을 연구하는 Victoria Lin 이 Meta 시절 자기 그룹이 만든 모델들을 중심으로 '언어 모델의 설계·학습 원리를 멀티모달로 어디까지 옮길 수 있나'를 정리한다. 출발점은 단순하다. 오늘의 LLM 은 기호(텍스트) 위의 다음 토큰 예측으로 지식·지시 따르기·추론·계획을 얻었지만, 인터넷과 물리 세계는 이미지·소리·영상으로 가득하므로 텍스트만으로는 부족하다는 것이다. 강의 자체는 약 40분, 나머지 20여 분은 질의응답이다.",
+    "네이티브 멀티모달 LLM 의 정의는 두 줄이다 — ① 모든 입력을 토큰으로 바꾼다(텍스트는 BPE, 이미지는 16×16 픽셀 패치로 잘라 인코더에 통과, 오디오는 스펙트로그램 프레임, 영상은 프레임마다 패치를 만들어 시간 순으로 이어 붙인다), ② 그 섞인 시퀀스 전체를 하나의 트랜스포머로 자기회귀 모델링한다. 여기서 '토큰'은 이산 ID 일 필요가 없고 밀집 벡터여도 된다. 이렇게 보면 프롬프트·지시 따르기, 멀티모달 위의 추론·계획, 데이터·모델 규모를 키우면 성능이 오르는 스케일링, MoE 같은 효율 기법이 그대로 따라온다. 다만 텍스트처럼 정밀한 멀티모달 스케일링 법칙은 아직 아무도 제대로 맞추지 않았다고 짚는다.",
+    "모델은 두 부류로 갈린다. 입력은 멀티모달이지만 손실은 텍스트 토큰에만 거는 '이해형'(슬라이드의 Gemini 3.1·Qwen 3.7·Kimi K2.6)과, 이미지·오디오까지 출력하는 'Omni' 모델이다. 강의의 몸통은 Omni 쪽 세 가지 설계다. Chameleon(2024)은 VQ-VAE 코드북으로 이미지를 이산 토큰으로 만들어 텍스트와 교차 배열한 뒤 교차 엔트로피 하나로 처음부터 학습한다 — 텍스트·이미지를 아무 순서로 섞어 생성하지만, 이산화 때문에 이해 성능이 SigLIP 같은 연속 인코더보다 떨어지고 생성에도 토큰이 많이 든다. Transfusion 은 텍스트는 자기회귀, 이미지 구간은 VAE 잠재 공간에서 확산(diffusion)으로 한 트랜스포머 안에서 처리하고(텍스트는 causal, 같은 이미지 패치끼리는 양방향 어텐션), 훨씬 적은 토큰으로 더 좋은 이미지를 만든다. 대신 생성에 좋은 VAE 표현이 이해에는 약하다는 딜레마가 남아, 최신 Omni 모델들은 이해용·생성용 인코딩을 따로 둔다.",
+    "세 번째는 강사 그룹의 Mixture-of-Transformers(MoT)다. 모달리티마다 정보 밀도가 다르니 QKV 투영과 FFN 파라미터를 모달리티별로 따로 두고, 토큰이 어느 모달리티인지에 따라 결정적으로 라우팅하되 어텐션은 전체 토큰에 대해 함께 계산한다. 163M~7B 규모 실험에서 텍스트 성능은 dense 와 비슷하게 유지하면서 이미지 생성 손실이 크게 낮아졌고, dense 손실에 도달하는 데 필요한 스텝 비율이 MoT 0.309, 같은 총 파라미터의 MoE-4x 는 0.784 였다. 파라미터가 분리돼 있어 기존 텍스트 모델을 얼려 두고 이미지·음성 파라미터만 따로 붙여 학습하는 비동기 확장(LMFusion)도 된다. 후속으로 BAGEL(이해·생성 경로 분리, 생성 전에 텍스트로 먼저 생각하기)과 로보틱스의 π0.7(SigLIP+Gemma 위에 행동 전문가를 덧붙인 VLA)이 같은 발상을 쓴다.",
+    "가장 흥미로운 대목은 '이해와 생성 사이의 전이'다. 이해를 잘하면 생성이 좋아지는 방향은 강하게 확인되지만, 이미지·영상 생성을 아무리 많이 학습해도 이해 능력은 거의 안 오른다. Sergey Levine 의 지적(LLM 은 다음 토큰 예측으로 많은 걸 배우는데 영상 모델은 다음 프레임 예측으로 별로 못 배운다)을 인용하며, 언어는 인간 인지를 압축한 추상이고 영상은 수동적 관측이라는 가설, 손실 지형이 복잡하다는 가설, 프레임 간 중복이 크다는 가설을 소개한다. 결론은 오늘의 멀티모달 LLM 이 디지털 정보 처리(문서·인포그래픽·시각 코딩)에는 강하지만 시공간 이해·실시간 지각-행동·로봇 제어 같은 물리 세계 지능에는 한참 못 미치고, 계산량이 커 학습·추론 인프라 부담도 크며, 당분간은 능력별로 특화된 멀티모달 모델이 늘어날 것이라는 전망이다.",
+    "질의응답에서는 모달리티를 분리해도 셀프 어텐션과 자기회귀 조건부로 정보가 섞인다는 설명, JEPA 같은 다른 표현 학습은 물리 세계 이해 쪽에서 탐색할 가치가 있다는 의견, 텍스트를 이미지로 렌더링해 한 모달리티로 합치자는 제안에 대해 '다른 모달리티를 텍스트에 맞추는 편이 추론 능력 확장에 유리하고 텍스트 이미지화는 덜 효율적일 것'이라는 강사의 예측, 다음 토큰 예측의 한계 논쟁(겉보기 목적함수일 뿐 잠재 공간에서 구조를 배우고 있을 수 있다), 이해·생성 표현을 하나로 묶는 연구가 진전 중이라는 소식이 오간다."
+  ],
+  "why_now": "2026년 상반기 주력 모델(Gemini·Qwen·Kimi)이 하나같이 '네이티브 멀티모달'을 내세우고, 이미지 생성 모델들은 생성 전에 텍스트로 먼저 생각하는 방식으로 바뀌었으며, 로봇 회사들은 VLM 을 뼈대로 행동 전문가를 덧붙인 VLA 를 내놓는다. 강연은 그 공통 뼈대가 '모든 것을 토큰으로 + 하나의 자기회귀 트랜스포머 + 모달리티별 특화 파라미터'라는 점을 보여 주면서, 동시에 이해·생성 표현의 통합, 멀티모달 스케일링 법칙, 물리 세계 지능은 아직 열린 문제라고 못박는다. 국내에서도 문서 이해(OCR·인포그래픽)·VLM 파인튜닝·이미지 생성·로보틱스 공고가 늘어나는 만큼, 이 강연의 설계 축(이산 vs 연속 표현, AR vs diffusion, 공유 vs 분리 파라미터)을 알면 논문과 모델 카드를 빠르게 읽을 수 있다.",
+  "chapters": [
+    {
+      "start": 0,
+      "title": "강사 소개와 LLM 패러다임 복습",
+      "points": [
+        "Victoria Lin 은 Thinking Machines Lab 에서 네이티브 멀티모달을 맡고 있으며 Meta AI·Salesforce AI Research 를 거쳤다. 공개 자료만 다루고 의견은 개인 것이라고 먼저 밝힌다.",
+        "오늘의 LLM 은 ChatGPT·Claude Code·Codex 처럼 일상 도구가 됐고, 기호 정보 위의 다음 토큰 예측을 규모로 밀어붙여 창발 능력을 얻었다.",
+        "복습: 트랜스포머가 어휘 위의 확률 분포를 내고, 웹·책·코드·포럼·뉴스 말뭉치로 학습하면 지식 습득 → 지시 따르기 → 추론 → 계획 순으로 능력이 붙는다."
+      ],
+      "on_screen": "표지 'From Language Models to Native Multimodal Intelligence — Victoria Lin, CS25 Transformers United, May 21 2026'. 'Language Models' 슬라이드에 ChatGPT·Claude Code·Codex 화면, 다음 토큰 예측 루프 도식('The capital of France is' → Paris 0.73)과 학습 말뭉치 → Knowledge Acquisition·Instruction Following·Reasoning·Planning 네 능력."
+    },
+    {
+      "start": 180,
+      "title": "왜 언어만으로는 부족한가",
+      "points": [
+        "디지털 세계(웹 문서·차트·영상)도, 우리가 사는 물리 세계도 이미지·오디오·비디오로 이루어져 있다.",
+        "실시간으로 사람과 상호작용하는 AI 를 만들려면 시각·청각 정보를 매끄럽게 다뤄야 한다 — 목표는 기호 지식과 멀티모달 정보를 함께 처리하는 시스템."
+      ],
+      "on_screen": "'digital world — Multimodal information' 과 'physical world — Multimodal experience' 를 반반 나눈 그림(왼쪽은 문서·그래프 화면, 오른쪽은 거리 풍경과 로봇)."
+    },
+    {
+      "start": 240,
+      "title": "네이티브 멀티모달 LLM 의 정의와 모달리티별 토큰화",
+      "points": [
+        "최신 모델(Gemini, Kimi K2.5, Qwen 3.5)이 네이티브 멀티모달을 표방한다. 정의는 ① 모든 모달리티를 토큰화, ② 전역 자기회귀 생성.",
+        "텍스트는 BPE 로 서브워드, 이미지는 고정 크기(예: 16×16) 패치로 나눠(patchify) 인코더를 통과시킨 벡터, 오디오는 파형을 스펙트로그램 프레임으로 바꿔 토큰화한다.",
+        "영상은 이미지의 시퀀스로 보고 프레임마다 패치를 만든 뒤 시간 순으로 펼쳐(flatten) 하나의 시퀀스로 잇는다 — 프레임당 패치 수는 (H/P)×(W/P).",
+        "여기서 토큰은 이산 ID 가 아니어도 된다. 밀집 벡터도 토큰이라 부른다."
+      ],
+      "on_screen": "'Native Multimodal LLMs' — Gemini·Kimi K2.5·Qwen 3.5 로고, Transformer 아래에 T(텍스트)·V(이미지 패치)·A(오디오 프레임) 토큰이 섞여 들어가는 그림. 'Multimodal Tokenization' 세 칸(Text: BPE → subword tokens / Image: Patchify → visual tokens / Audio: Frames → audio tokens). 영상 슬라이드: 텐서 (T,H,W,3), 패치 크기 14 또는 16, 이미지 224·336·448, 프레임별 토큰을 시간축으로 이어 'Visual token sequence (flattened)' + 텍스트 토큰."
+    },
+    {
+      "start": 420,
+      "title": "학습 목표 두 갈래와 LLM 원리의 이전",
+      "points": [
+        "이해형: 멀티모달 시퀀스를 조건으로 주되 손실은 텍스트 토큰에만 건다 — 이미지·영상을 보고 글로 답한다. Gemini·Qwen·Kimi 의 핵심 제품이 이 방식.",
+        "Omni: 출력도 멀티모달이라 이미지·오디오를 생성한다(이름의 유래가 된 GPT-4o 처럼).",
+        "토큰화 관점의 이득 — 섞인 모달리티 프롬프트와 지시 따르기, 멀티모달 위의 추론·계획, 데이터·모델 규모에 따른 성능 향상, MoE 같은 아키텍처 스케일링 기법의 재사용.",
+        "단, 텍스트처럼 멱법칙 계수까지 맞춘 멀티모달 스케일링 법칙은 덜 연구돼 있어 좋은 연구 주제라고 강사는 본다."
+      ],
+      "on_screen": "'Training Objective' — 1. Tokenization across the board 2. Globally autoregressive generation 3. Joint training. 출력 위치에 텍스트만 노란 칸이 뜨는 'Text output only'(Gemini 3.1·Qwen 3.7·Kimi K2.6) 대 모든 칸이 출력인 'Omni'. 'A Scaling Approach to Multimodality' 세 칸: ① Prompting and instruction following ② Planning and reasoning with multimodal information ③ Scaling data and model size leads to continuous performance improvement(데이터/모델 규모 대 성능 우상향 점선)."
+    },
+    {
+      "start": 660,
+      "title": "Omni 모델의 질문과 Chameleon — 모든 것을 이산 토큰으로",
+      "points": [
+        "Omni 의 두 질문: 비텍스트 모달리티를 어떻게 생성하나, 그리고 이해와 생성 사이에 긍정적 전이가 있나.",
+        "Chameleon 의 가설: 모든 모달리티를 이산 토큰으로 바꾸면 LLM 의 성질이 그대로 옮겨 온다. 이미지 패치를 연속 인코더로 임베딩한 뒤 학습된 코드북에서 가장 가까운 벡터의 인덱스로 바꾼다(VQ-VAE).",
+        "텍스트·이미지 교차 시퀀스에 교차 엔트로피 하나로 처음부터 학습(early fusion)해, 텍스트·이미지를 임의 순서로 섞어 생성하고 조언·브레인스토밍·비교 같은 여러 과제를 처리한다. 텍스트 전용 성능도 유지된다.",
+        "한계: 이산화에서 정보가 많이 사라져 SigLIP 같은 연속 인코더를 쓰는 최신 모델보다 이미지 이해가 크게 뒤지고, 생성에도 토큰이 많이 들어 대량 데이터가 있어야 제대로 된 이미지를 뽑는다."
+      ],
+      "on_screen": "'Omni Models — Key research questions: 1. How to generate the non-text modalities?'. 'Chameleon (Chameleon Team, 2024) — Encode all modalities as discrete tokens', 노란 Transformer 위 Autoregressive Objective 와 텍스트·이미지 토큰이 섞인 'Interleaved Multi-Modal Tokens Stream'. VQ-VAE 5단계 도식: 입력 256×256×3 → CNN 인코더 → 32×32×256 연속 잠재 맵 → 코드북 최근접 이웃 조회 → 정수 토큰 격자 → 디코더 복원(출처 VQ-VAE-2, Razavi et al. 2019). 다중 과제 비율 표(Brainstorming 18.6%, Explanation 14.4%, How-to 12.5%, Advice 10.2% …). 요약: Early-fusion 의 의의, VQ-VAE 토큰의 한계, '2026년에는 diffusion·flow-matching 계열이 이미지 생성의 더 확장성 있는 방식으로 자리 잡았다'."
+    },
+    {
+      "start": 990,
+      "title": "Transfusion — 자기회귀와 확산을 한 트랜스포머에",
+      "points": [
+        "이미지를 연속 표현으로 넣고, 그 연속 표현을 직접 예측한다. 이미지 생성 부분은 노이즈에서 시작해 제거할 노이즈를 반복 예측하는 확산 목적을 쓴다.",
+        "입력은 여전히 텍스트·이미지 교차 시퀀스. 텍스트 토큰은 다음 토큰 예측(LM loss), 이미지 구간은 사전학습 VAE 잠재 패치에 노이즈를 섞어 여러 스텝 디노이징한 뒤 깨끗한 이미지를 다시 입력으로 넣고 자기회귀를 이어 간다.",
+        "어텐션 마스크가 핵심 변경: 텍스트는 causal, 같은 이미지 안의 패치끼리는 양방향.",
+        "이산 토큰 방식보다 훨씬 적은 토큰으로 더 좋은 이미지를 만든다. 그러나 VAE 표현은 생성에는 효율적이지만 이해에는 약해, 최신 Omni 모델은 이해용·생성용 인코딩을 따로 두며 둘을 합치는 문제는 아직 열려 있다."
+      ],
+      "on_screen": "'Transfusion (Zhou et al. 2024)' — 같은 트랜스포머 위에 Diffusion Objective(이미지 칸)와 Autoregressive Objective(텍스트 칸). 상세도: Context(BOI·EOI 로 감싼 이미지) → Transformer → ① Text mode(next-token prediction, LM loss) ② Image mode: Clean image → Pretrained VAE encoder → Latent patches → Add noise at timestep t → Shared Transformer → 모든 패치의 디노이징 신호를 병렬 예측, x_t → x_{t-1} → … → x_0. Attention pattern: 텍스트 causal, 이미지 패치는 같은 이미지 안 양방향. 생성 예시 8장(아보카도 의자, 코기, 'Transfusion' 칠판 글씨 등)."
+    },
+    {
+      "start": 1260,
+      "title": "Mixture-of-Transformers — 모달리티별 파라미터와 결정적 라우팅",
+      "points": [
+        "동기: 텍스트와 이미지는 정보 밀도와 데이터 성질이 다르다. 하나의 공유 파라미터로 다 처리해야 하나?",
+        "MoT 는 어텐션의 QKV(와 출력) 투영, FFN, 레이어 정규화를 모달리티마다 따로 둔다. 텍스트 토큰은 텍스트 파라미터, 이미지 토큰은 이미지 파라미터, 음성 토큰은 음성 파라미터로 — 학습된 라우터가 아니라 모달리티로 정해지는 결정적 라우팅이다.",
+        "QKV 를 따로 구한 뒤 어텐션은 모든 모달리티 토큰을 합쳐 한 번에 계산하므로 정보는 섞인다. 밖에서 보면 그냥 트랜스포머 블록이다.",
+        "Chameleon 식(모든 모달리티 교차 엔트로피)과도, Transfusion 식(텍스트 AR + 이미지 diffusion)과도 결합할 수 있다."
+      ],
+      "on_screen": "'Multimodal Architecture Design — Transformer Backbone' 강조. 'Mixture-of-Transformers' 단계별 애니메이션: Input → Attention → FFN → Output 층에 텍스트(노랑)·이미지(분홍)·음성(파랑) 토큰이 각자 색의 Add & LayerNorm·FFN·QKV 블록을 통과하고 가운데 Global Self-Attention(초록)만 공유. 말풍선 'Independent transformer parameters for each modality', 'Deterministic routing'. (a) Autoregressive Objective (b) Diffusion Objective 두 조합."
+    },
+    {
+      "start": 1440,
+      "title": "MoT 실험 — 163M 에서 7B 까지",
+      "points": [
+        "스케일링 사다리: 163M·760M·1.4B·7B 네 크기, 각각 250k 스텝·약 0.5T 토큰(Transfusion 설정). 7B 는 hidden 4096·32층·32헤드, 256 GPU.",
+        "MoT 는 파라미터가 두 배라 dense 와만 비교하면 불공평하므로, 총 파라미터를 맞춘 MoE-4x 도 기준선으로 뒀다.",
+        "결과: 텍스트 성능은 dense 와 비슷하게 유지하면서 이미지 학습·검증 손실이 확연히 낮다. dense 손실에 도달하는 스텝 비율이 MoT 0.309, MoE-4x 0.784 — 이미지 쪽에서 약 3배 빠르다. CLIP 점수·FID·캡셔닝 CIDEr 도 개선.",
+        "정성 비교에서도 세부 지시를 더 잘 따르고 디테일이 살아난다. 해석: 비텍스트 생성은 텍스트 생성과 성질이 달라 한 트랜스포머에 몰면 용량 경쟁이 생긴다.",
+        "MoE 와 결합해 모달리티마다 전문가 수를 다르게 줄 수 있다 — 전문가 수를 늘리면 텍스트는 잘 늘지만 이미지 생성은 그만큼 늘지 않았다."
+      ],
+      "on_screen": "Table 4 'Architectural specifications … (Transfusion setting)': 163M(768/16층/12헤드, 128 GPU) · 760M(1536/24/24, 128) · 1.4B(2048/24/16, 256) · 7B(4096/32/32, 256), Seq 4096, Tokens/Batch 2.10M, Steps 250k, Tokens 0.524T. 'MoT + Transfusion 7B' 그래프: (b) 이미지 학습 손실 Dense·MoE-4x·MoT(빨강, 가장 낮음) (c) Steps to Match Dense — MoE-4x(s=0.784), MoT(s=0.309) 산점도, (f) CLIP↑ (g) FID↓ (h) CIDEr↑ 막대. Dense 대 MoT 생성 이미지 4쌍(리치 열매 모양 의자, 스시 고양이, 개구리, 오리와 거북)."
+    },
+    {
+      "start": 1680,
+      "title": "MoT 요약 — 비동기 학습과 '이해에는 분리가 안 통했다'",
+      "points": [
+        "요약: 모달리티별 파라미터 + 결정적 라우팅, 비텍스트(이미지·음성) 생성 품질의 큰 향상, 혼합 모달 학습의 효율·안정성·통제력 향상.",
+        "파라미터가 분리되므로 이미 강한 텍스트 모델을 얼려 두고 이미지·음성 파라미터만 붙여 학습할 수 있다(LMFusion, Shi et al. 2025) — 텍스트 능력을 건드리지 않고 생성 모달리티를 추가하는 간단한 길.",
+        "질문(이해와 생성은 다른 능력 아닌가)에 대한 답: MoT 에서 '이미지 모달리티'는 이미지 생성을 뜻하며, 이미지 이해에는 모달리티 분리가 도움이 안 됐다. 출력이 텍스트라면 입력이 텍스트든 이미지든 같은 파라미터를 지나는 편이 낫다."
+      ],
+      "on_screen": "'Mixture-of-Transformers (MoT) — Summary' 네 항목: 1) modality-specific parameters, deterministic token routing 2) 비텍스트 생성 품질 향상 3) efficiency, stability, controllability of mixed-modal training, 비동기 학습(e.g., LMFusion, Shi et al., 2025) 4) modality-aware architectures 후속 연구."
+    },
+    {
+      "start": 1890,
+      "title": "MoT 의 후손 — BAGEL 과 로봇 VLA(π0.7)",
+      "points": [
+        "BAGEL(Deng et al. 2025): MoT 에 가까운 구조의 Omni 모델. 이해 경로는 텍스트·이미지를 함께 받고 이해용 표현을 따로 쓰며, 생성 경로와 파라미터가 나뉜다 — 이해·생성 통합이 아직 안 풀렸다는 증거이기도 하다.",
+        "BAGEL 은 이미지를 만들기 전에 텍스트로 먼저 생각(thinking)하게 해 디테일이 좋아짐을 보였다. 강사는 '생성 전 생각'이 요즘 최고 수준 이미지 생성 모델들이 쓰는 기법이라고 말한다.",
+        "로보틱스에서는 행동(action)을 또 하나의 모달리티로 보고 별도 파라미터(action expert)로 행동 벡터를 예측한다. 공유 셀프 어텐션 덕에 바탕 LM 의 세계 지식이 행동 예측으로 넘어간다."
+      ],
+      "on_screen": "'MoT in the Wild — BAGEL (Deng et al. 2025)': Prompts / Results / Results w/ Thinking 표('A car made of small cars', 'A cat is twice as large as the dog next to it' — 생각을 거친 쪽이 지시에 더 맞음). 'Pi 0.7 (Ai et al. 2026)': π0.7 Vision-Language-Action Model(pre-trained SigLIP 400M + Gemma 4B) 옆에 action expert(860M) 가 노이즈에서 행동을 만들고, High-Level Policy(SigLIP+Gemma)가 'clean the kitchen' → 'pick up the knife' 하위 지시를, World Model(BAGEL 14B)이 하위 목표 이미지를 만든다."
+    },
+    {
+      "start": 2100,
+      "title": "이해 ↔ 생성, 전이는 한 방향뿐",
+      "points": [
+        "이해 → 생성: 강하게 '예'. 이해·추론·계획 능력이 좋으면 디테일이 정확한 이미지, 환각이 적은 인포그래픽을 만든다.",
+        "생성 → 이해: 거의 근거가 없다. 이미지 생성에 토큰을 아무리 써도 이미지 이해가 좋아지지 않는다.",
+        "Sergey Levine 의 2025년 글: LLM 은 다음 토큰 예측으로 많이 배우는데 영상 모델은 다음 프레임 예측으로 별로 못 배운다는 수수께끼.",
+        "가설 셋 — 언어는 인간 인지를 고도로 압축한 추상(추론·행동이 담김)이고 영상은 수동적 감각 관측이다 / 이미지·영상의 손실 지형이 복잡해 손실은 좋아 보여도 사람 눈엔 아직 나쁘다 / 프레임 사이 중복이 커 다음 프레임 예측이 쉽다. LLM 교훈의 이식이 끝이 아니라는 신호다."
+      ],
+      "on_screen": "'Transfer between Multimodal Understanding and Generation' — 왼쪽 'Understanding → Generation: strong positive transfer'(멀티모달 입력 → 추론/계획 → 생성 이미지·영상, plans composition·fine-grained details·object relations·infographic layout), 오른쪽 'Generation → Understanding: limited evidence of reverse transfer'. Sergey Levine 트윗 캡처(2025년 6월) 주위에 말풍선 'Language is highly compressed abstraction of human cognition', 'Images/videos are sensory data, passive observation', 'Poor loss landscape', 'High redundancy / frame correlation'."
+    },
+    {
+      "start": 2340,
+      "title": "더 넓은 멀티모달 지능과 결론",
+      "points": [
+        "Chameleon·Transfusion·MoT 같은 Omni 모델은 교차 모달 이해·생성이라는 작지만 중요한 부분집합을 푼 것이다.",
+        "아직 열린 것: 시공간 이해, 실세계 grounding, 물리 세계와의 직접 상호작용, 실시간 지각-행동, 내비게이션·제어, 장기 체화(embodied) 피드백.",
+        "결론 네 가지 — 네이티브 멀티모달은 열린 문제가 많은 활발한 분야 / 디지털 정보 처리엔 강하지만 물리 세계 지능엔 한참 못 미친다 / 계산량이 커 학습·추론 인프라 과제가 따른다 / 당분간 체화 대 인포그래픽 이해처럼 능력별로 특화된 모델이 늘고, 이를 하나의 시스템으로 묶는 것이 다음 연구 과제다."
+      ],
+      "on_screen": "'Broader Multimodal Intelligence' 도식: 왼쪽 Digital/Information World(텍스트·이미지·오디오, 현재 모델이 잘 다룸) → 'What current multimodal LLMs do today'(Chameleon·Transfusion·MoT, Cross-modal understanding/generation) → 'What remains largely open': Spatial-temporal understanding, Real-world grounding, Direct interaction with the physical world, Real-time perception-action, Navigation/control, Long-horizon embodied feedback ← Physical World. 하단 'Today's multimodal LLMs excel at multimodal information processing, but fall far short of full physical-world multimodal intelligence.' 'Conclusion' 네 항목."
+    },
+    {
+      "start": 2510,
+      "title": "질의응답 1 — 모달리티를 나눠도 정보가 섞이나, JEPA, 지식 노동으로의 전이",
+      "points": [
+        "모달리티별 파라미터를 써도 투영 후 셀프 어텐션은 공유하고, '이미지를 보고 텍스트, 텍스트를 보고 이미지'라는 자기회귀 조건부 순서가 남아 있어 정보가 오간다.",
+        "JEPA 같은 생성형 세계 모델에 대해: 멀티모달 공간이 넓어 응용마다 다른 표현이 필요할 수 있다. 문서·인포그래픽·시각 코딩에는 현재의 패치+인코더 방식이 잘 맞고, 공간 이해가 필요한 실세계에는 JEPA 처럼 관계를 효율적으로 모델링하는 구조를 탐색할 가치가 있다(강사 의견).",
+        "영상 생성 학습이 일반 지식 노동·에이전트 능력을 키우나? 지금까지는 그런 전이를 보지 못했다. 다만 로봇 학습에서 영상 모델을 미래 상태 예측·피드백으로 쓰는 식의 간접 경로는 유망하다."
+      ]
+    },
+    {
+      "start": 2880,
+      "title": "질의응답 2 — 텍스트를 이미지로 렌더링해 하나로 합치면?",
+      "points": [
+        "질문: VAE 가 병목이니 텍스트를 이미지로 그려 넣고 이미지 패치만 자기회귀하면 모달리티를 하나로 합쳐 학습이 단순해지지 않나.",
+        "강사는 올해 초 이미지로만 텍스트를 입력받아 꽤 좋은 결과를 낸 논문을 언급하면서도, 원시 텍스트보다는 덜 효율적일 것이라고 예측한다 — 텍스트는 이미 깔끔한 기호 구조이고, 글꼴·문단 배치 같은 군더더기가 생긴다(강사 의견).",
+        "반대 논거: 스크린숏 한 장이 문단 전체를 담으니 더 짧은 문맥으로 더 많은 텍스트를 표현할 수 있다. 그래도 지금까지의 교훈은 '다른 모달리티를 텍스트에 정렬하는 편이 추론·에이전트 능력 확장에 낫다'는 것."
+      ]
+    },
+    {
+      "start": 3240,
+      "title": "질의응답 3 — 통합 표현, 다음 토큰 예측 논쟁, 공간 추론, 영상 속 추론",
+      "points": [
+        "객체 중심의 더 의미적인 시각 임베딩은 유망하며 JEPA 계열의 연구 주제와도 같다.",
+        "지각·생성·추론을 하나의 표현으로? 올해 표준 이미지 이해 인코더 표현으로 생성해도 좋은 이미지가 나오고 때로 VAE 표현보다 낫다는 결과가 나왔다 — 풀리면 이미지 모델링이 언어 모델링에 한 걸음 더 다가간다.",
+        "다음 토큰 예측은 한계가 있나? diffusion LM·discrete diffusion 같은 대안이 시도되지만, 강사는 다음 토큰 예측이 효과를 입증했고 겉보기 목적일 뿐 잠재 공간에서 구조를 배우고 있을 수 있다고 본다.",
+        "공간 추론: Physical Intelligence 의 모델처럼 VLA 가 VLM 을 뼈대로 쓰며 긍정적 전이를 보인다. 영상 속 추론은 지금은 언어를 뼈대로 쓰는 편이 효율적이지만, 미래를 정확히 예측하는 순수 시각 모델도 일종의 추론이라 배제할 수 없다."
+      ]
+    }
+  ],
+  "concepts": [
+    {"term": "Native multimodal LLM", "explain": "이미지·오디오·영상을 별도 모듈로 붙이는 대신 모두 토큰으로 바꿔 하나의 트랜스포머가 텍스트와 함께 자기회귀로 모델링하는 모델. 강연의 정의는 '전부 토큰화 + 전역 자기회귀 생성'.", "at": 240},
+    {"term": "Patchify", "explain": "이미지를 16×16(또는 14×14) 픽셀 같은 고정 크기 조각으로 나누고 각 조각을 벡터로 바꾸는 단계. 224×224 이미지는 16 패치 기준 14×14=196 토큰이 된다. 영상은 프레임마다 같은 작업 후 시간 순으로 펼친다.", "at": 300},
+    {"term": "멀티모달 토큰(연속 vs 이산)", "explain": "토큰은 어휘 ID(이산)일 수도, 인코더가 낸 밀집 벡터(연속)일 수도 있다. 이산은 LLM 학습을 그대로 쓰기 쉽지만 정보 손실이 크고, 연속은 이해 성능이 좋지만 생성에 다른 목적함수가 필요하다.", "at": 420},
+    {"term": "이해형 vs Omni 모델", "explain": "이해형은 멀티모달을 입력받아 텍스트 토큰에만 손실을 거는 모델(Gemini·Qwen·Kimi 의 주력). Omni 는 이미지·오디오까지 출력한다(GPT-4o 의 o 가 omni).", "at": 450},
+    {"term": "Early fusion", "explain": "모달리티별 모델을 따로 학습한 뒤 붙이지 않고, 처음부터 텍스트·이미지 교차 시퀀스로 한 모델을 학습하는 방식. Chameleon 이 대표 사례.", "at": 900},
+    {"term": "VQ-VAE (벡터 양자화)", "explain": "인코더 출력 벡터를 학습된 코드북에서 가장 가까운 코드의 인덱스로 바꿔 이미지를 정수 토큰 격자로 만드는 기법. 디코더가 코드로 이미지를 복원한다. 정보 손실이 이해 성능을 깎는다.", "at": 780},
+    {"term": "SigLIP", "explain": "이미지-텍스트 대조 학습(시그모이드 손실)으로 만든 연속 이미지 인코더. 최신 멀티모달 LLM 이 이해용 인코더로 널리 쓰며, π0.7 의 뼈대에도 들어간다.", "at": 930},
+    {"term": "Diffusion / flow matching", "explain": "노이즈에서 출발해 제거할 노이즈(또는 속도장)를 반복 예측하며 깨끗한 샘플로 가는 생성 방식. 강연 슬라이드는 2026년 이미지 생성의 주류로 확산·flow-matching 계열을 꼽는다.", "at": 1020},
+    {"term": "Transfusion", "explain": "한 트랜스포머에서 텍스트는 다음 토큰 예측, 이미지는 VAE 잠재 패치 위의 확산 목적으로 학습하는 구조. 텍스트는 causal, 같은 이미지 패치끼리는 양방향 어텐션.", "at": 990},
+    {"term": "VAE 잠재 표현", "explain": "이미지를 작은 연속 잠재 격자로 압축하는 오토인코더 표현. 생성(복원)에는 효율적이지만 의미 정보가 약해 이해에는 불리하다 — 그래서 이해용·생성용 인코딩을 따로 두는 모델이 많다.", "at": 1170},
+    {"term": "Mixture-of-Transformers (MoT)", "explain": "QKV 투영·FFN·LayerNorm 을 모달리티별로 따로 두고, 토큰의 모달리티로 결정적 라우팅하되 어텐션은 전체 시퀀스에 공유하는 구조. 비텍스트 생성 품질을 크게 올린다.", "at": 1260},
+    {"term": "결정적 라우팅 vs 학습된 라우팅(MoE)", "explain": "MoE 는 라우터가 토큰마다 전문가를 고르고, MoT 는 모달리티 표식만 보고 고정 배정한다. 둘은 결합 가능해 모달리티마다 전문가 수를 다르게 줄 수 있다.", "at": 1620},
+    {"term": "Steps to match dense", "explain": "기준 dense 모델의 손실에 도달하기까지 필요한 학습 스텝의 비율. MoT 0.309·MoE-4x 0.784 는 각각 dense 의 31%·78% 스텝으로 같은 손실에 간다는 뜻.", "at": 1500},
+    {"term": "비동기 모달리티 확장(LMFusion)", "explain": "이미 학습된 텍스트 LLM 의 파라미터를 얼리고 이미지·음성용 파라미터만 새로 붙여 학습해, 텍스트 능력을 지키면서 생성 모달리티를 더하는 방법.", "at": 1740},
+    {"term": "Thinking before generation", "explain": "이미지를 만들기 전에 모델이 텍스트로 계획·추론 흔적을 먼저 생성하는 방식. BAGEL 에서 디테일과 지시 충실도가 좋아졌고 최신 이미지 생성 모델들이 쓴다.", "at": 1990},
+    {"term": "VLA (Vision-Language-Action) / action expert", "explain": "VLM 을 뼈대로 로봇 행동 벡터를 출력하는 모델. 행동을 별도 모달리티로 보고 전용 파라미터(action expert)로 예측한다. π0.7 은 SigLIP 400M + Gemma 4B 뼈대에 860M action expert.", "at": 2040},
+    {"term": "이해-생성 비대칭 전이", "explain": "이해를 잘하면 생성이 좋아지지만, 생성을 많이 학습해도 이해는 거의 안 좋아지는 현상. 언어의 압축성·영상 손실 지형·프레임 중복이 가설로 거론된다.", "at": 2100},
+    {"term": "JEPA", "explain": "픽셀을 복원하지 않고 잠재 공간에서 가려진 부분의 표현을 예측하는 자기지도 학습 구조(LeCun 계열). 질의응답에서 물리 세계·객체 중심 표현의 대안으로 언급된다.", "at": 2640},
+    {"term": "Discrete diffusion LM", "explain": "텍스트를 왼쪽에서 오른쪽으로 한 토큰씩 내지 않고 마스크된 토큰 전체를 반복적으로 복원하는 언어 모델. 다음 토큰 예측의 대안으로 언급된다.", "at": 3420}
+  ],
+  "trends": [
+    {"claim": "주력 LLM 은 '네이티브 멀티모달'이 기본값이 됐다 — 다만 제품의 핵심은 여전히 멀티모달 입력·텍스트 출력이다.", "evidence": "슬라이드가 Gemini·Qwen·Kimi 최신판을 'text output only' 부류로, GPT-4o 계열을 Omni 로 분류. 강사는 이들 회사가 생성 모델도 따로 있지만 핵심 제품은 텍스트 출력이라고 설명.", "at": 450},
+    {"claim": "이미지 표현은 이산 토큰(VQ-VAE)에서 연속 표현으로 넘어갔다. 이해는 SigLIP 류 인코더, 생성은 확산·flow matching 이 주류.", "evidence": "Chameleon 요약 슬라이드: VQ-VAE 토큰은 연속 임베딩보다 세밀한 시각 의미를 덜 담고, 2026년에는 diffusion·flow-matching 이 더 확장성 있는 생성 방식으로 자리 잡았다.", "at": 930},
+    {"claim": "최신 Omni 모델은 이해용·생성용 이미지 인코딩을 따로 둔다 — 둘을 하나로 묶는 것이 현재 가장 활발한 미해결 과제다.", "evidence": "Transfusion 요약의 'open research problem', BAGEL 의 분리된 이해·생성 경로, 질의응답에서 '이해 인코더 표현으로 생성해도 VAE 보다 나을 때가 있다'는 올해 결과 소개.", "at": 1170},
+    {"claim": "모달리티 특화(모달리티별 파라미터·전문가 수)가 멀티모달 아키텍처의 큰 흐름이다.", "evidence": "MoT 7B 에서 dense 손실 도달 스텝 비율 0.309(MoE-4x 0.784). 발표 후 BAGEL·로보틱스 VLA 등 modality-aware 후속 연구가 이어졌다.", "at": 1500},
+    {"claim": "이미지 생성 모델은 '그리기 전에 생각한다'.", "evidence": "BAGEL 의 Results w/ Thinking 비교, 강사가 최신 이미지 생성 모델들의 공통 기법이라고 언급.", "at": 1990},
+    {"claim": "로보틱스는 처음부터 학습하지 않고 VLM 을 뼈대로 행동 전문가를 덧붙인다(VLA).", "evidence": "π0.7: SigLIP 400M + Gemma 4B 뼈대 + 860M action expert, BAGEL 14B 를 세계 모델로 사용. 질의응답에서 Physical Intelligence 모델들이 VLM 뼈대로 긍정적 전이를 얻는다고 설명.", "at": 2040},
+    {"claim": "생성 학습이 이해를 키우지 않는다 — 영상 생성만으로 범용 지능을 얻는다는 기대는 아직 근거가 없다.", "evidence": "'Generation → Understanding: limited evidence of reverse transfer' 슬라이드와 Sergey Levine 의 2025년 문제 제기, 질의응답의 '지식 노동으로의 전이는 아직 못 봤다'.", "at": 2160},
+    {"claim": "강사 의견: 당분간 체화(로봇)용·인포그래픽 이해용처럼 능력별로 특화된 멀티모달 모델이 늘고, 그것들을 하나의 시스템으로 묶는 것이 다음 과제가 된다. 멀티모달은 계산량이 커 학습·추론 인프라 부담도 크다.", "evidence": "결론 슬라이드 3·4번 항목.", "at": 2400},
+    {"claim": "강사 의견: 모달리티를 합친다면 텍스트를 이미지로 만들기보다 다른 모달리티를 텍스트에 맞추는 쪽이 추론·에이전트 능력 확장에 유리하다.", "evidence": "텍스트 렌더링 질문에 대한 답 — 텍스트는 이미 깔끔한 기호 구조라 이미지화는 덜 효율적일 것이라는 예측(직접 실험은 하지 않았다고 밝힘).", "at": 3000}
+  ],
+  "study": {
+    "prereq": [
+      "트랜스포머 구조(셀프 어텐션, QKV, FFN, LayerNorm, causal 마스크)와 다음 토큰 예측 학습",
+      "ViT 의 패치 임베딩과 CLIP 식 대조 학습의 기본",
+      "오토인코더·VAE 와 확산 모델(DDPM)의 노이즈 추가·제거 과정",
+      "PyTorch 로 작은 모델을 직접 학습해 본 경험"
+    ],
+    "steps": [
+      {"do": "ViT 와 CLIP/SigLIP 으로 '이미지를 토큰으로 바꾸는 법'부터 익힌다 — 패치 크기·해상도와 토큰 수의 관계를 계산해 본다.", "why": "강연의 모든 모델이 patchify 위에 서 있고, 이해형 멀티모달 LLM 은 사실상 'SigLIP 계열 인코더 + LLM' 이다."},
+      {"do": "LLaVA 류 이해형 VLM(비전 인코더 → 프로젝터 → LLM, 손실은 텍스트에만)의 구조와 학습 단계를 정리한다.", "why": "업계 제품 대부분이 이 '멀티모달 입력·텍스트 출력' 형태라 실무 파인튜닝·평가의 출발점이다."},
+      {"do": "VQ-VAE 논문을 읽고 코드북 양자화를 구현한 뒤 Chameleon 논문으로 early fusion 교차 시퀀스 학습을 본다.", "why": "이산 토큰 접근의 장점(LLM 학습 그대로)과 한계(정보 손실·토큰 비효율)를 직접 느껴야 이후 설계 선택이 이해된다."},
+      {"do": "DDPM 과 latent diffusion 을 복습한 뒤 Transfusion 논문에서 손실 결합(LM loss + diffusion loss)과 어텐션 마스크(텍스트 causal, 이미지 내 양방향)를 따라간다.", "why": "'한 트랜스포머에서 AR 과 diffusion 을 같이' 가 현재 Omni 모델의 기본 문법이다."},
+      {"do": "MoE(Switch·Mixtral)를 먼저 이해하고 Mixture-of-Transformers 논문의 모달리티별 파라미터·결정적 라우팅과 스케일링 실험(steps to match dense)을 읽는다.", "why": "모달리티 특화가 왜 비텍스트 생성에 효과적인지, 학습된 라우팅과 무엇이 다른지가 이 강연의 핵심 기여다."},
+      {"do": "BAGEL(생성 전 생각, 이해·생성 경로 분리)과 π0 계열 VLA(action expert) 논문으로 후속 흐름을 잇는다.", "why": "MoT 발상이 Omni 모델과 로보틱스로 어떻게 퍼졌는지 보면 업계 모델 카드를 읽는 눈이 생긴다."},
+      {"do": "마지막으로 이해-생성 전이 문제와 JEPA 같은 대안 표현을 읽고 자기 생각을 한 페이지로 정리한다.", "why": "강사가 꼽은 미해결 문제들이 앞으로 2~3년의 연구·채용 수요가 몰릴 자리다."}
+    ],
+    "practice": [
+      "PyTorch 로 224×224 이미지를 16×16 패치로 자르고 선형 투영해 196개 토큰을 만든 뒤, 텍스트 임베딩과 이어 붙여 작은 트랜스포머에 넣어 본다(BOI/EOI 구분 토큰 포함).",
+      "MNIST 나 CIFAR-10 으로 작은 VQ-VAE 를 학습하고 코드북 크기(64·512·4096)에 따라 복원 품질이 어떻게 바뀌는지 비교한다.",
+      "Transfusion 식 어텐션 마스크를 직접 만든다 — 텍스트는 하삼각, 같은 이미지 구간은 블록 전체 허용 — 그리고 마스크 시각화로 검증한다.",
+      "작은 트랜스포머 블록을 MoT 로 바꿔 본다: 토큰마다 modality id 를 받아 QKV·FFN 가중치를 고르고 어텐션은 공유. dense 와 같은 스텝 수로 학습 손실 곡선을 비교한다.",
+      "공개 VLM(예: Qwen 계열 VL 모델)으로 같은 문서 이미지를 OCR 텍스트로 준 경우와 이미지로 준 경우의 답 정확도·토큰 수를 비교해 질의응답 2의 논쟁을 직접 확인한다."
+    ],
+    "resources": [
+      {"title": "Stanford CS25: Transformers United (과목 홈페이지·일정)", "url": "https://web.stanford.edu/class/cs25/"},
+      {"title": "Chameleon: Mixed-Modal Early-Fusion Foundation Models (arXiv 2405.09818)", "url": "https://arxiv.org/abs/2405.09818"},
+      {"title": "Transfusion: Predict the Next Token and Diffuse Images with One Multi-Modal Model (arXiv 2408.11039)", "url": "https://arxiv.org/abs/2408.11039"},
+      {"title": "Mixture-of-Transformers: A Sparse and Scalable Architecture for Multi-Modal Foundation Models (arXiv 2411.04996)", "url": "https://arxiv.org/abs/2411.04996"},
+      {"title": "Emerging Properties in Unified Multimodal Pretraining — BAGEL (arXiv 2505.14683)", "url": "https://arxiv.org/abs/2505.14683"},
+      {"title": "Neural Discrete Representation Learning — VQ-VAE (arXiv 1711.00937)", "url": "https://arxiv.org/abs/1711.00937"},
+      {"title": "Sigmoid Loss for Language Image Pre-Training — SigLIP (arXiv 2303.15343)", "url": "https://arxiv.org/abs/2303.15343"}
+    ]
+  },
+  "jobs": {
+    "roles": ["멀티모달 AI 연구원", "VLM/LLM 엔지니어", "생성 AI(이미지·영상) 엔지니어", "로보틱스 AI(VLA) 엔지니어", "ML 리서치 엔지니어", "문서 AI(OCR·인포그래픽 이해) 엔지니어"],
+    "skills": ["PyTorch", "Python", "Transformer", "Diffusion", "Stable Diffusion", "CLIP", "VLM", "LLM", "MoE", "Hugging Face", "CUDA", "분산 학습", "DeepSpeed", "OCR"]
+  },
+  "related": ["9vM4p9NN0Ts"],
+  "materials": {
+    "transcript": "official",
+    "frames": 129,
+    "every_sec": 30
+  },
+  "written_at": "2026-11-20"
+}
