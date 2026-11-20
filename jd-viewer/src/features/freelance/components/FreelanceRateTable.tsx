@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { GRADES, SITE_KO, firstMonthly, type Analysis, type Grade, type Project } from '../utils/freelance'
+import { GRADES, SITE_KO, firstMonthly, projectState, type Analysis, type Grade, type Project } from '../utils/freelance'
 
 // 현재 단가표 — 단가 분석의 첫 화면.
 //
@@ -39,7 +39,7 @@ function toCsv(rows: Project[], label: (p: Project) => string): string {
       p.posted_date,
       p.first_seen_at.slice(0, 10),
       p.last_seen_at.slice(0, 10),
-      p.status === 'closed' ? '마감' : '모집중',
+      projectState(p).label,
       p.url,
     ]
       .map(csvCell)
@@ -200,8 +200,8 @@ export function CurrentRateTable({ cur, projects }: { cur: Cur; projects: Projec
                     <td className="px-3 whitespace-nowrap text-[#474747]">{SITE_KO[p.site] ?? p.site}</td>
                     <td className="px-3 whitespace-nowrap text-[#474747] tabular-nums">{p.posted_date ?? `${p.first_seen_at.slice(0, 10)}*`}</td>
                     <td className="px-3">
-                      <span className={'whitespace-nowrap rounded px-[7px] text-xs leading-[22px] ' + (p.status === 'closed' ? 'bg-[#f4f4f4] text-[#999]' : 'bg-(--color-accent-weak) text-(--color-accent)')}>
-                        {p.status === 'closed' ? '마감' : '모집중'}
+                      <span className={'whitespace-nowrap rounded px-[7px] text-xs leading-[22px] ' + (projectState(p).open ? 'bg-(--color-accent-weak) text-(--color-accent)' : 'bg-[#f4f4f4] text-[#999]')}>
+                        {projectState(p).label}
                       </span>
                     </td>
                   </tr>

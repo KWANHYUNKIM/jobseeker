@@ -39,7 +39,8 @@ export interface Project {
   applicants: number | null
   summary: string
   tags: string[]
-  status: 'active' | 'closed'
+  /** stale 은 API(project_state)만 준다 — 14일 넘게 목록에 안 보였다. 화면은 projectState() 로 읽는다. */
+  status: 'active' | 'closed' | 'stale'
   closed_reason?: string
   history?: HistoryEntry[]
   first_seen_at: string
@@ -167,6 +168,36 @@ export const STALE_DAYS = 14
 
 export function todayKst(): string {
   return new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Seoul' }).format(new Date())
+}
+
+export function daysSince(iso: string, now = Date.now()): number {
+  const t = Date.parse(iso)
+  return Number.isNaN(t) ? 0 : (now - t) / 86_400_000
+}
+
+export interface ProjectState {
+  open: boolean
+  label: '모집중' | '접수마감'
+  /** 접수마감으로 본 근거. 모집중이면 null. */
+  reason: string | null
+}
+
+/**
+ * 지금 접수를 받는가 — 목록·상세·단가표가 모두 이 하나로 판정한다(DB 의 project_state 와 같은 순서).
+ *
+ * status 는 데이터를 만든 순간의 값이라, 크롤이 멈추면 마감일이 지난 프로젝트가 '모집중'으로 남는다.
+ * 그래서 화면이 읽는 순간 ① 원본이 닫았다 ② 마감일이 지났다 ③ 14일 넘게 목록에 안 보인다 를 다시 본다.
+ */
+export function projectState(
+  p: Pick<Project, 'status' | 'deadline' | 'last_seen_at' | 'closed_reason'>,
+  today = todayKst(),
+  now = Date.now(),
+): ProjectState {
+  if (p.status === 'closed') return { open: false, label: '접수마감', reason: p.closed_reason || '원본에서 마감 확인' }
+  if (p.deadline && p.deadline < today) return { open: false, label: '접수마감', reason: `마감일 경과(${p.deadline})` }
+  if (p.status === 'stale' || daysSince(p.last_seen_at, now) > STALE_DAYS)
+    return { open: false, label: '접수마감', reason: `원본 목록에서 ${STALE_DAYS}일 넘게 안 보임` }
+  return { open: true, label: '모집중', reason: null }
 }
 
 export function won(n: number): string {

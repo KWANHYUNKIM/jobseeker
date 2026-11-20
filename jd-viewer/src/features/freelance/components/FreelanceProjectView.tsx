@@ -6,7 +6,7 @@ import { absUrl, clip, useSeo } from '../../../utils/seo'
 import { paths } from '../../../utils/urls'
 import { fetchFreelanceProject } from '../api'
 import { useFreelance } from '../hooks/useFreelance'
-import { BODY_BLOCKED, SITE_KO, budgetLabel, splitProjectSlug, type ProjectDetail } from '../utils/freelance'
+import { BODY_BLOCKED, SITE_KO, budgetLabel, projectState, splitProjectSlug, type ProjectDetail } from '../utils/freelance'
 
 // 외주 프로젝트 한 건 — `/freelance/<사이트>-<번호>`.
 //
@@ -70,7 +70,9 @@ export function FreelanceProjectView({ slug }: { slug: string }) {
 
 function Detail({ p, fromApi }: { p: ProjectDetail; fromApi: boolean }) {
   const site = SITE_KO[p.site] ?? p.site
-  const closed = p.status === 'closed'
+  // 주소로 바로 들어온 상세도 목록과 같은 규칙으로 닫는다 — status 만 보면 마감일 지난 자리가 모집중으로 보인다.
+  const state = projectState(p)
+  const closed = !state.open
   const priced = !!p.budget && !!(p.budget.min || p.budget.max)
   const facts: [string, string][] = [
     ['단가', budgetLabel(p.budget)],
@@ -102,7 +104,7 @@ function Detail({ p, fromApi }: { p: ProjectDetail; fromApi: boolean }) {
               {p.tags.filter((t) => t !== p.work_type).map((t) => (
                 <Chip key={t}>{t}</Chip>
               ))}
-              {closed && <Chip tone="closed">모집 마감</Chip>}
+              {closed && <Chip tone="closed">{state.label}</Chip>}
             </div>
             <h1 className="mt-3 text-[26px] sm:text-[30px] font-bold leading-[1.35] tracking-[-0.6px] text-[#272727] break-keep">{p.title}</h1>
             <p className="mt-2 text-sm text-[#888]">
@@ -169,7 +171,7 @@ function Detail({ p, fromApi }: { p: ProjectDetail; fromApi: boolean }) {
                 </ul>
               </section>
             )}
-            {closed && p.closed_reason && <p className="px-1 text-xs text-[#999]">마감 근거: {p.closed_reason}</p>}
+            {closed && state.reason && <p className="px-1 text-xs text-[#999]">마감 근거: {state.reason}</p>}
           </aside>
         </div>
       </div>

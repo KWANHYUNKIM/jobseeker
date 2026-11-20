@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { usePaged, PAGE_SIZE_DENSE as PAGE_SIZE } from '../../../hooks/usePaged'
-import { GRADES, SITE_KO, STALE_DAYS, budgetLabel, monthlyMid, todayKst, type Project, type Stat } from '../utils/freelance'
+import { GRADES, SITE_KO, budgetLabel, monthlyMid, projectState, todayKst, type Project, type Stat } from '../utils/freelance'
 import { useFreelance } from '../hooks/useFreelance'
 import { EmptyState, ErrorState, Loader } from '../../../components/ui'
 import { Pager } from '../../../components/Pager'
@@ -28,11 +28,6 @@ const SCALE_MIN = 200
 const SCALE_MAX = 1000
 const pos = (v: number) => Math.max(0, Math.min(1, (v - SCALE_MIN) / (SCALE_MAX - SCALE_MIN))) * 100
 
-function daysSince(iso: string): number {
-  const t = Date.parse(iso)
-  return Number.isNaN(t) ? 0 : (Date.now() - t) / 86_400_000
-}
-
 /** 부업으로 할 만한가 — 원격이면서 3개월 이하이거나, 원본이 파트타임·주말을 적었거나. */
 function isSide(p: Project): boolean {
   if (p.tags.includes('부업 가능')) return true
@@ -58,13 +53,11 @@ export function FreelanceView() {
   const [kind, setKind] = useState<KindFilter>('all')
   const [sort, setSort] = useState<Sort>('pay')
 
-  // 마감일이 지났거나 2주 넘게 안 보인 프로젝트는 모집중에서 뺀다(뷰어의 useJobs 와 같은 규칙).
+  // 마감일이 지났거나 2주 넘게 안 보인 프로젝트는 모집중에서 뺀다(projectState — 상세·단가표와 같은 규칙).
   const open = useMemo(() => {
     if (!data) return []
     const today = todayKst()
-    return data.projects.filter(
-      (p) => p.status === 'active' && !(p.deadline && p.deadline < today) && daysSince(p.last_seen_at) <= STALE_DAYS,
-    )
+    return data.projects.filter((p) => projectState(p, today).open)
   }, [data])
 
   const shown = useMemo(() => {

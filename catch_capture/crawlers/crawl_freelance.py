@@ -845,6 +845,21 @@ def _check(p: dict, today: date, cache: dict) -> tuple[str, str] | None:
     return None   # freemoa: 목록에 마감 표시가 같이 나온다 — 오래 안 보이면 화면이 stale 로 가린다
 
 
+def expire(p: dict, today: str, now: str) -> bool:
+    """마감일이 지난 모집중 프로젝트를 접수마감으로 닫는다. 닫았으면 True.
+
+    목록은 마감일이 지난 자리를 한동안 그대로 보여 주고(잡코리아·이랜서), 재확인은 목록에서
+    빠진 것만 묻는다. 그래서 마감일 '표기'로 닫는 길이 따로 없으면 JSON 이 모집중으로 남았다
+    (2026-11-12 회차: 모집중 734건 중 마감일 지난 113건). DB 는 project_state 가 같은 규칙으로
+    닫는다 — 둘이 같은 답을 내게 한다. history 는 호출부가 쌓는다."""
+    dl = p.get("deadline")
+    if p.get("status") != "active" or not dl or dl >= today:
+        return False
+    p["status"], p["closed_reason"] = "closed", f"마감일 경과({dl})"
+    p["closed_at"] = p.get("closed_at") or now
+    return True
+
+
 def recheck(candidates: list[dict], now: str) -> list[dict]:
     """오래 안 물어본 것부터 RECHECK_LIMIT 건. 닫힌 것은 status·closed_at·근거를 채운다."""
     today = date.today()
@@ -949,6 +964,7 @@ def run(pages: int = PAGES_DEFAULT, only: set[str] | None = None) -> dict:
     ran: set[str] = set()
     touched: list[dict] = []       # 이번 회차에 목록에서 본 것 — DB 에는 이것만 보낸다
     new = 0
+    today = date.today().isoformat()
     for site, fetch in SOURCES.items():
         if only and site not in only:
             continue
@@ -970,6 +986,12 @@ def run(pages: int = PAGES_DEFAULT, only: set[str] | None = None) -> dict:
                 p["first_seen_at"] = old.get("first_seen_at") or now
                 if old.get("status") == "closed" and p["status"] != "closed":
                     p.pop("closed_at", None)
+            # 목록이 '모집중'이라 해도 마감일이 지났으면 닫는다. 이전에 닫은 시각은 그대로 둔다 —
+            # 매 회차 열었다 닫으면 closed_at 과 history 가 흔들린다.
+            if p["status"] == "active" and p.get("deadline") and p["deadline"] < today:
+                if old and old.get("closed_at"):
+                    p["closed_at"] = old["closed_at"]
+                expire(p, today, now)
             if p["status"] == "closed":
                 p["closed_at"] = (old or {}).get("closed_at") or now
                 p.setdefault("closed_reason", (old or {}).get("closed_reason") or "원본 목록: 모집 마감")
@@ -986,6 +1008,18 @@ def run(pages: int = PAGES_DEFAULT, only: set[str] | None = None) -> dict:
                          if p["status"] == "active" and p["id"] not in seen_now
                          and (not only or p["site"] in only)], now)
     touched.extend(rechecked)
+    # 목록에도 재확인에도 안 걸린 자리 — 마감일이 지났으면 여기서 닫는다.
+    touched_ids = {p["id"] for p in touched}
+    expired = 0
+    for p in by_id.values():
+        before = dict(p)
+        if expire(p, today, now):
+            p["history"] = _history(before, p, now)
+            expired += 1
+            if p["id"] not in touched_ids:
+                touched.append(p)
+    if expired:
+        print(f"[freelance] 마감일 경과로 접수마감 {expired}건", flush=True)
     bodies = collect_bodies(by_id, now, only)
 
     projects = sorted(by_id.values(),
