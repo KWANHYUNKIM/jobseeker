@@ -58,12 +58,10 @@ export function StoryView({ id }: { id: string }) {
     <div data-scroll className="flex-1 min-h-0 overflow-auto bg-white">
       <div className="jd-container max-w-[980px] pt-[43px] pb-[90px]">
         <nav className="text-sm text-[#999]">
-          <a href={paths.wiki()} onClick={onLinkClick(paths.wiki())} className="hover:text-[#272727]">
-            기술도서
-          </a>
+          <span>학습</span>
           <span className="mx-1.5">›</span>
           <a href={back} onClick={onLinkClick(back)} className="hover:text-[#272727]">
-            취업
+            취업후기
           </a>
         </nav>
         <h1 className="mt-2 text-[24px] font-bold leading-9 text-[#272727]">{s.title ?? '(제목 없음)'}</h1>

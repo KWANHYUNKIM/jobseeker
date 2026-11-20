@@ -642,7 +642,7 @@ if (SITE_URL) {
   // robots.txt — 검색어가 붙은 목록은 같은 목록의 무한 변형이라 크롤 예산만 태운다.
   writeFileSync(
     join(DIST, 'robots.txt'),
-    `User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /wiki\nDisallow: /*?q=\n\nSitemap: ${SITE_URL}/sitemap.xml\n`,
+    `User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /wiki\nDisallow: /careers\nDisallow: /*?q=\n\nSitemap: ${SITE_URL}/sitemap.xml\n`,
   )
 }
 

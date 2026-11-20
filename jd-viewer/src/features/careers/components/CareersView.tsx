@@ -21,9 +21,9 @@ import { Bars, Card, Chip, Stat, Steps } from './parts'
 import { med } from '../utils/format'
 import { StoryView } from './StoryView'
 
-// 기술도서 › 취업 — 합격·이직·전환 후기를 연도·회사·회사 유형으로 잘라 본다.
+// 학습 › 취업후기 — 합격·이직·전환 후기를 연도·회사·회사 유형으로 잘라 본다.
 // 원본 글은 DB(career_post)에 있고, 이 화면은 그 글에서 뽑은 구조화 값(스펙·경로·전형·서류)을 센다.
-// 책장과 같이 혼자 보는 화면이라 색인하지 않는다.
+// 혼자 보는 화면이라 색인하지 않는다(robots Disallow /careers).
 const NOINDEX = 'noindex, nofollow'
 
 const TABS = [
@@ -57,7 +57,7 @@ function Dashboard() {
   const fkey = FILTER_KEYS.map((k) => f[k] ?? '').join('|')
   const { data, error, loading } = useAsync((s) => fetchOverview(f, s), fkey)
 
-  useSeo({ title: '취업 — 합격·이직 후기', description: '혼자 보는 취업 자료', robots: NOINDEX, canonical: absUrl(paths.careers()) })
+  useSeo({ title: '취업후기', description: '혼자 보는 취업 자료', robots: NOINDEX, canonical: absUrl(paths.careers()) })
 
   const set = (k: string, v: string | null) => setQuery(k, v)
   const toggle = (k: string, v: string) => set(k, f[k as keyof Filters] === v ? null : v)
@@ -82,13 +82,11 @@ function Dashboard() {
     <div data-scroll className="flex-1 min-h-0 overflow-auto bg-white">
       <div className="jd-container pt-[43px] pb-[90px]">
         <nav className="text-sm text-[#999]">
-          <a href={paths.wiki()} onClick={onLinkClick(paths.wiki())} className="hover:text-[#272727]">
-            기술도서
-          </a>
+          <span>학습</span>
           <span className="mx-1.5">›</span>
-          <span className="text-[#555]">취업</span>
+          <span className="text-[#555]">취업후기</span>
         </nav>
-        <h1 className="mt-2 text-[28px] font-bold leading-10 tracking-[-0.6px] text-[#272727]">취업 — 합격·이직 후기</h1>
+        <h1 className="mt-2 text-[28px] font-bold leading-10 tracking-[-0.6px] text-[#272727]">취업후기 — 합격·이직·전환</h1>
         <p className="mt-1 text-base leading-6 text-[#666]">
           개발자 합격·이직·전환 후기 {o.total.posts.toLocaleString()}편을 모아 경험담 {o.total.counted.toLocaleString()}건으로 정리했다.
           원문은 DB 에 보관한다(열쇠가 있어야 열린다). 글쓴이 이름·아이디는 저장하지 않는다.

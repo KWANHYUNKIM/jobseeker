@@ -54,6 +54,7 @@ const GROUPS: { label: string; items: Item[] }[] = [
     items: [
       { tab: 'blog', label: '기술 블로그', to: paths.blog },
       { tab: 'book', label: '기술도서', to: paths.wiki },
+      { tab: 'careers', label: '취업후기', to: paths.careers },
     ],
   },
   {

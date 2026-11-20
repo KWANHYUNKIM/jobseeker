@@ -104,16 +104,6 @@ function Shelf() {
               onClick={() => setTrack(g.id)}
             />
           ))}
-          {/* 취업 — 책이 아니라 합격·이직 후기(정본 DB). 갈래 탭 끝에 붙여 /wiki/careers 로 간다 */}
-          <a
-            href={paths.careers()}
-            onClick={onLinkClick(paths.careers())}
-            role="tab"
-            aria-selected={false}
-            className="relative shrink-0 px-[18px] pb-[13px] text-base leading-6 tracking-[-0.16px] font-medium text-[#777] hover:text-[#272727]"
-          >
-            💼 취업
-          </a>
         </div>
 
         <div className="mt-12 flex flex-col gap-[50px]">

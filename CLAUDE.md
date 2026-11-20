@@ -270,7 +270,7 @@
   실전 프로젝트 · 품질과 보안 · 인프라와 배포. `index.json` 의 `tracks` 가
   원본이고 화면 왼쪽 차례가 이걸로 그린다. 새 책에 `track` 을 안 적으면
   '그 밖의' 로 모인다(사라지지는 않는다).
-  **서가 탭 끝의 '💼 취업'(`/wiki/careers`)은 책이 아니다** — `catch_capture/careers/` 가 모은 합격·이직·전환
+  **책 옆의 `학습 › 취업후기`(`/careers`, 예전 `/wiki/careers` 는 넘어온다)는 책이 아니다** — `catch_capture/careers/` 가 모은 합격·이직·전환
   후기를 정본 DB(`career_post` 원문 · `career_story` 경험담 · `career_roster` 합격자 명단, 019)에서 읽어 연도·회사·
   회사 유형별로 스펙·이직 경로·전형·지원 결과·서류를 센다(backend `features/careers`, `/api/careers`). 적재는
   `python -m store.ingest.careers`(careers.cycle 이 회차 끝에 부른다) — 회사 유형·경력직 출발지 판정은 여기에만 있다.

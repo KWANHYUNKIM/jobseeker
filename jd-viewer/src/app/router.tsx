@@ -3,6 +3,7 @@ import { AlbaPage } from '../pages/alba/AlbaPage'
 import { BlogPage } from '../pages/blog/BlogPage'
 import { BookPage } from '../pages/book/BookPage'
 import { CalendarPage } from '../pages/calendar/CalendarPage'
+import { CareersPage } from '../pages/careers/CareersPage'
 import { CompaniesPage } from '../pages/companies/CompaniesPage'
 import { FreelancePage } from '../pages/freelance/FreelancePage'
 import { HomePage } from '../pages/home/HomePage'
@@ -21,7 +22,7 @@ import { paths, TAB_SEO } from '../utils/urls'
 /** 페이지 경로 설정 — 경로 첫 세그먼트 → 탭 → 페이지. 루트(`/`)는 회사별 메인, `/jobs` 가 잡 리스트다. */
 export type Tab =
   | 'home' | 'jobs' | 'companies' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend'
-  | 'book' | 'reveng' | 'lectures' | 'reposts' | 'freelance' | 'alba' | 'hardware' | 'top'
+  | 'book' | 'careers' | 'reveng' | 'lectures' | 'reposts' | 'freelance' | 'alba' | 'hardware' | 'top'
 
 const TAB_BY_SEG: Record<string, Tab> = {
   '': 'home',
@@ -35,6 +36,8 @@ const TAB_BY_SEG: Record<string, Tab> = {
   // `/wiki` 는 예전에 기술 백과사전(낱말 단위)이었고 지금은 책장이다. 경로를 그대로
   // 물려받은 이유는 북마크·기록이 이미 그 주소를 가리키고 있어서다.
   wiki: 'book',
+  // 학습 › 취업후기 — 합격·이직 후기(정본 DB career_*)
+  careers: 'careers',
   reveng: 'reveng',
   lectures: 'lectures',
   reposts: 'reposts',
@@ -59,6 +62,10 @@ function useLegacyRedirects(route: Route) {
     if (route.seg[0] === 'reveng' && route.seg[1] === '문서') {
       navigate(route.seg[2] ? paths.revengDoc(route.seg[2]) : paths.reveng(), { replace: true })
     }
+    // 취업후기는 처음에 책장 안(`/wiki/careers`)에 있었다 — 메뉴로 올라가며 `/careers` 로 옮겼다.
+    if (route.seg[0] === 'wiki' && route.seg[1] === 'careers') {
+      navigate(route.seg[2] ? paths.careersStory(route.seg[2]) : paths.careers() + window.location.search, { replace: true })
+    }
   }, [route.path, route.seg])
 }
 
@@ -73,6 +80,8 @@ function useTabSeo(route: Route, tab: Tab) {
     (tab === 'jobs' && !!detail) ||
     (!!detail && (tab === 'companies' || tab === 'radar' || tab === 'reveng' || tab === 'lectures' || tab === 'blog')) ||
     tab === 'book' ||
+    // 취업후기는 혼자 보는 화면이라 CareersView 가 noindex 를 단다.
+    tab === 'careers' ||
     tab === 'hardware' ||
     tab === 'home' ||
     // 구역 TOP 50 은 구역 이름이 제목에 들어간다 — TopBoard 가 단다.
@@ -112,6 +121,8 @@ export function RouteView() {
       return <TrendPage focusTech={route.query.get('tech')} />
     case 'book':
       return <BookPage seg={route.seg.slice(1)} />
+    case 'careers':
+      return <CareersPage seg={route.seg.slice(1)} />
     case 'reveng':
       return <RevengPage seg={route.seg.slice(1)} />
     case 'lectures':

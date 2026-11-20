@@ -40,9 +40,9 @@ export const paths = {
   book: (id: string) => `/wiki/${encodeURIComponent(id)}`,
   /** @param pageId 절 id(`sql-pain`). 차례의 no(`2.1`)가 아니라 슬러그다 — 순서가 바뀌어도 주소는 안 바뀐다. */
   bookPage: (id: string, pageId: string) => `/wiki/${encodeURIComponent(id)}/${encodeURIComponent(pageId)}`,
-  /** 기술도서 › 취업 — 합격·이직 후기(정본 DB career_*). 책 id 'careers' 는 이 화면이 쓴다. */
-  careers: () => '/wiki/careers',
-  careersStory: (id: string) => `/wiki/careers/${encodeURIComponent(id)}`,
+  /** 학습 › 취업후기 — 합격·이직 후기(정본 DB career_*). 예전 주소 `/wiki/careers` 는 여기로 넘어온다. */
+  careers: () => '/careers',
+  careersStory: (id: string) => `/careers/${encodeURIComponent(id)}`,
   reveng: () => '/reveng',
   revengCompany: (slug: string) => `/reveng/${encodeURIComponent(slug)}`,
   /** 회사 개요의 '기능별 상세' 카드가 여는 한 기능 — `/reveng/jxpress/f/cloud-cost-program` */
