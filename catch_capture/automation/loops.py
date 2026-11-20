@@ -135,6 +135,21 @@ REGISTRY: list[Loop] = [
     Loop("guide-engine", "취업 브리핑", "claude-loop", "any", "2시간마다(홀수 시 :47, 세션 cron)", 72,
          "/loop <prompt>", ["guide-engine/state", "jd-viewer/public/guide"],
          check="python guide-engine/validate.py --gaps", prompt=_engine_prompt("guide-engine", "취업 브리핑 엔진")),
+    # 강의 노트 — 공개 강의 영상(Stanford CS229·CS336·CS25 …)을 자막(말)과 30초 간격 장면(슬라이드·판서)으로
+    # 읽고 우리 말로 다시 쓴다. 재료(대본·장면)는 var/lectures/ 에만 두고 공개하지 않는다 — 나가는 건 노트와 원본 링크뿐.
+    Loop("lecture-engine", "강의 노트", "claude-loop", "any", "1시간마다(repeat)", 72,
+         "python -m automation.loops repeat lecture-engine --every 60m",
+         ["lecture-engine/state/LOG.md", "jd-viewer/public/lectures/index.json"],
+         check="python lecture-engine/validate.py --gaps",
+         owns=["jd-viewer/public/lectures/", "lecture-engine/state/"],
+         prompt=(
+             "강의 노트 한 사이클: lecture-engine/PROMPT.md 절차를 그대로 따른다. 다음 영상은 "
+             "`python lecture-engine/validate.py --gaps` 맨 위(비면 PROMPT.md 우선순위대로 새 공개 강의를 찾아 "
+             "state/QUEUE.md 에 덧붙인다). `python lecture-engine/fetch.py <id>` 로 자막·장면을 받고, 대본 전부와 장면 인화 "
+             "전부를 읽은 뒤 jd-viewer/public/lectures/items/<id>.json 을 쓴다. 대본을 옮기지 말고 우리 말로 다시 쓴다. "
+             "validate.py 가 통과하면 state/LOG.md 에 한 줄 쓰고 feat(lectures) 로 커밋한다(git add 는 "
+             "jd-viewer/public/lectures lecture-engine/state 만, git add -A 금지). 푸시하지 않는다. "
+             "무엇을 했는지 한두 줄로 보고한다.")),
     Loop("study-engine", "기술 백과사전", "claude-loop", "any", "자율(화면에서는 빠져 있다)", 24 * 30,
          "/loop <prompt>", ["study-engine/state", "jd-viewer/public/study"],
          check="python study-engine/validate.py", prompt=_engine_prompt("study-engine", "기술 백과사전 엔진"),

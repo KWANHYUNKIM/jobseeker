@@ -36,7 +36,7 @@ FILES = [
     "tech_relations.json", "role_insights.json", "company_tech_radar.json", "engagement.json",
 ]
 # 폴더째 옮기는 것(.json·.md). 부품 가격은 /api/hardware/prices 가 표에서 답하므로 뺀다.
-DIRS = ["reveng", "guide", "book", "hardware", "blog_content"]
+DIRS = ["reveng", "guide", "book", "hardware", "blog_content", "lectures"]
 EXCLUDE = {"hardware/prices.json"}
 EXTS = {".json", ".md"}
 

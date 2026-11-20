@@ -153,6 +153,12 @@
   `PROMPT.md`(사이클 절차) / `schema.json`(형식) / `state/`(대기열·진행) /
   `validate.py`(커밋 전 검증). 산출물은 `jd-viewer/public/reveng/` 에 쌓이고
   뷰어의 `기술 역설계` 탭이 읽는다. 한 회사를 완주할 때까지 다음 회사로 안 넘어간다.
+- `lecture-engine/` : 강의 노트 엔진(2026-11). 공개 강의 영상(Stanford CS229·CS336·CS25·CS329Z 부터, 국내외 개발
+  강의로 넓힌다)을 **자막(말)과 30초 간격 장면(슬라이드·판서)으로 읽고** 우리 말로 다시 쓴다 — 요약·챕터(원본 시각 링크)·
+  핵심 개념·업계 흐름·공부 순서·채용 기술. `fetch.py <영상id>` 가 yt-dlp + ffmpeg(imageio-ffmpeg)로 재료를
+  `catch_capture/var/lectures/<id>/`(커밋 안 함, 공개 안 함)에 받고, 노트는 `jd-viewer/public/lectures/items/<id>.json`,
+  `validate.py` 가 검사(긴 영어 원문 = 전재로 막는다)하고 `index.json` 을 굽는다. 대기열 `state/QUEUE.md`,
+  등록부 키 `lecture-engine`. 뷰어 `기업정보 > 강의 노트`(`/lectures`).
 - `guide-engine/` : 취업 브리핑 엔진. 역설계가 "이 회사가 어떻게 만들어졌나"라면
   여기는 "내가 저기 들어가려면 뭘 하나"다. 공고의 자격요건·우대사항 문장에서 학습
   항목을 뽑고 회사의 연봉 밴드·공개 인물·사업 도메인을 조사한다. 구조는 `engine/` 과

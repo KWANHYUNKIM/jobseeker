@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "강의 노트 한 편 — jd-viewer/public/lectures/items/<id>.json",
+  "description": "영상 강의를 자막(말)과 장면(판서·슬라이드)으로 읽고 우리 말로 다시 쓴 노트. 원문 대본·장면 이미지는 싣지 않는다 — 짧은 용어·수식만 인용한다.",
+  "type": "object",
+  "required": ["id", "source", "course", "title", "title_ko", "topic", "level", "one_line", "summary", "chapters", "concepts", "study", "materials", "written_at"],
+  "properties": {
+    "id": {"type": "string", "description": "영상 id(유튜브 11자). 주소가 된다: /lectures/<id>"},
+    "source": {
+      "type": "object",
+      "required": ["platform", "url", "channel"],
+      "properties": {
+        "platform": {"enum": ["youtube", "inflearn", "other"]},
+        "url": {"type": "string"},
+        "channel": {"type": "string"},
+        "published": {"type": "string", "description": "YYYY-MM-DD"},
+        "duration_sec": {"type": "integer"},
+        "views": {"type": "integer"},
+        "license": {"type": "string"}
+      }
+    },
+    "course": {
+      "type": "object",
+      "required": ["school"],
+      "properties": {
+        "school": {"type": "string", "description": "Stanford · MIT · 국내 채널명 등"},
+        "code": {"type": "string", "description": "CS229 같은 과목 코드"},
+        "term": {"type": "string", "description": "Spring 2026"},
+        "lecture_no": {"type": "string"},
+        "speaker": {"type": "string"}
+      }
+    },
+    "title": {"type": "string", "description": "원제"},
+    "title_ko": {"type": "string", "description": "우리말 제목"},
+    "topic": {"enum": ["llm", "agents", "ml-basics", "deep-learning", "vision", "nlp", "multimodal", "systems", "rl", "data", "career", "other"]},
+    "tags": {"type": "array", "items": {"type": "string"}, "description": "기술 이름 — 공고의 tech_stack 표기와 맞추면 화면이 공고로 잇는다(PyTorch, Python, CUDA …)"},
+    "level": {"enum": ["입문", "중급", "심화"]},
+    "one_line": {"type": "string", "description": "카드에 뜨는 한 줄(60자 안팎)"},
+    "summary": {"type": "array", "items": {"type": "string"}, "minItems": 2, "description": "문단 3~6개 — 강의 전체를 안 본 사람이 이것만 읽고 줄기를 안다"},
+    "why_now": {"type": "string", "description": "요즘 업계에서 이 주제가 왜 중요한가 — 강의가 말한 근거 위주"},
+    "chapters": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["start", "title", "points"],
+        "properties": {
+          "start": {"type": "integer", "description": "영상 속 시작 초 — 화면이 원본의 그 자리로 잇는다"},
+          "title": {"type": "string"},
+          "points": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+          "on_screen": {"type": "string", "description": "그 구간 슬라이드·판서에 실제로 뜬 것(그래프·표·수식) — 장면을 보고 쓴다"}
+        }
+      }
+    },
+    "concepts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["term", "explain"],
+        "properties": {
+          "term": {"type": "string"},
+          "explain": {"type": "string"},
+          "at": {"type": "integer", "description": "처음 나오는 초"}
+        }
+      }
+    },
+    "trends": {
+      "type": "array",
+      "description": "강의가 말한 업계 흐름 — '누가 무엇을 말했나'를 지킨다. 강사의 의견이면 의견이라고 적는다",
+      "items": {
+        "type": "object",
+        "required": ["claim"],
+        "properties": {
+          "claim": {"type": "string"},
+          "evidence": {"type": "string"},
+          "at": {"type": "integer"}
+        }
+      }
+    },
+    "study": {
+      "type": "object",
+      "required": ["steps"],
+      "properties": {
+        "prereq": {"type": "array", "items": {"type": "string"}},
+        "steps": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "required": ["do"],
+            "properties": {"do": {"type": "string"}, "why": {"type": "string"}}
+          }
+        },
+        "practice": {"type": "array", "items": {"type": "string"}, "description": "손으로 해 볼 과제"},
+        "resources": {
+          "type": "array",
+          "items": {"type": "object", "required": ["title", "url"], "properties": {"title": {"type": "string"}, "url": {"type": "string"}}}
+        }
+      }
+    },
+    "jobs": {
+      "type": "object",
+      "description": "이 강의가 닿는 채용 — 직무와 공고에서 실제로 찾는 기술",
+      "properties": {
+        "roles": {"type": "array", "items": {"type": "string"}},
+        "skills": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "related": {"type": "array", "items": {"type": "string"}, "description": "같이 볼 다른 노트 id"},
+    "materials": {
+      "type": "object",
+      "required": ["transcript"],
+      "properties": {
+        "transcript": {"enum": ["official", "auto", "none"]},
+        "frames": {"type": "integer"},
+        "every_sec": {"type": "integer"}
+      }
+    },
+    "written_at": {"type": "string", "description": "YYYY-MM-DD"}
+  }
+}
