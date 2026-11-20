@@ -83,7 +83,28 @@ def check(doc: dict, name: str) -> list[str]:
     for m in re.finditer(r"(?:[A-Za-z][A-Za-z'’-]*[ ,.]+){25,}", blob):
         errs.append(f"{name}: 영어 원문이 길게 들어 있다 — '{m.group(0)[:60]}…'")
         break
+    errs += copied_from_transcript(doc, name)
     return errs
+
+
+COPY_RUN = 40  # 공백을 뺀 글자 기준. 짧은 인용(질문 한 줄)은 두고, 문장째 옮긴 것은 막는다.
+WORK = ROOT / "catch_capture" / "var" / "lectures"
+
+
+def copied_from_transcript(doc: dict, name: str) -> list[str]:
+    """한국어 영상은 영어 덩어리 검사로 전재를 못 잡는다 — 재료가 이 머신에 있으면 대본과 직접 맞대 본다."""
+    t = WORK / str(doc.get("id")) / "transcript.txt"
+    if not t.exists():
+        return []
+    src = re.sub(r"\[[\d:]+\]|\s+", "", t.read_text(encoding="utf-8"))
+    parts = [doc.get("summary"), doc.get("why_now"), doc.get("concepts"), doc.get("trends"),
+             [{k: v for k, v in c.items() if k not in ("code", "formulas", "diagram", "on_screen")} for c in doc.get("chapters") or []]]
+    note = re.sub(r"\s+", "", json.dumps(parts, ensure_ascii=False))
+    grams = {src[i:i + COPY_RUN] for i in range(len(src) - COPY_RUN + 1)}
+    for i in range(len(note) - COPY_RUN + 1):
+        if note[i:i + COPY_RUN] in grams:
+            return [f"{name}: 대본을 {COPY_RUN}자 넘게 그대로 옮겼다 — '{note[i:i + COPY_RUN]}…'"]
+    return []
 
 
 def card(doc: dict) -> dict:
