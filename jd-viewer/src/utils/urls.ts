@@ -14,6 +14,8 @@ export const paths = {
   home: () => '/',
   /** 공고 하나가 한 줄인 목록(필터·검색). 예전에는 `/` 였다. */
   jobs: () => '/jobs',
+  /** 메인 배너 한 장이 여는 구역 인기 TOP 50 — `/top/entry`, `/top/ind%3A금융`. */
+  top: (key: string) => `/top/${encodeURIComponent(key)}`,
   job: (j: Pick<Job, 'site' | 'pid'>) => `/jobs/${jobKey(j)}`,
   companies: () => '/companies',
   /** @param slug companySlug.js 가 만든 ASCII 슬러그(`coupang`). 한글 norm 이 아니다. */

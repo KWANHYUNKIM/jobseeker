@@ -2,6 +2,7 @@ import { useState, type ReactNode } from 'react'
 import { onLinkClick } from '../../../utils/navigation'
 import { paths } from '../../../utils/urls'
 import type { HomeBoard } from '../api'
+import { BANNER_ART } from '../banner'
 
 /** 첫 줄 — 왼쪽 바로가기 넷, 오른쪽 남색 배너(넘겨 보는 판, 장마다 배경 그림). 캐치형 1920 의 y=156~437. */
 export function HeroRow({ d }: { d: HomeBoard }) {
@@ -86,17 +87,8 @@ function QuickLinks() {
   )
 }
 
-/** 장마다 배경 그림과 글자색 — 그림은 오른쪽에 그려져 있고 왼쪽은 글자 자리로 비어 있다(1440×432). */
-const ART: Record<string, { img: string; fg: string }> = {
-  all: { img: '/home/banner/all.jpg', fg: '#fff' },
-  entry: { img: '/home/banner/entry.jpg', fg: '#0b3b2c' },
-  experienced: { img: '/home/banner/experienced.jpg', fg: '#fff' },
-  intern: { img: '/home/banner/intern.jpg', fg: '#fff' },
-  midsmall: { img: '/home/banner/midsmall.jpg', fg: '#fff' },
-  overseas: { img: '/home/banner/overseas.jpg', fg: '#fff' },
-}
-
-type Slide = { key: string; kicker: string; head: [string, string]; tag: string }
+/** `to` — 누르면 가는 곳. 첫 장은 아래 '가장 주목받는 회사'로 내려가고, 구역 장은 그 구역 TOP 50(`/top/<키>`). */
+type Slide = { key: string; kicker: string; head: [string, string]; tag: string; to: string; cta: string }
 
 /** 넘겨 보는 판 — 첫 장은 전체 숫자, 다음 장들은 순위 구역(신입·경력·인턴…) 하나씩. */
 function slidesOf(d: HomeBoard): Slide[] {
@@ -106,6 +98,8 @@ function slidesOf(d: HomeBoard): Slide[] {
     kicker: '오늘 개발자를 찾는 회사',
     head: [`모집중인 IT 공고 ${d.totals.jobs.toLocaleString()}건,`, '큰 곳부터 보여드려요'],
     tag: `#회사 ${d.totals.companies.toLocaleString()}곳 #신입 지원 가능 ${entry.toLocaleString()}건`,
+    to: '#sec-companies',
+    cta: '회사 보기',
   }
   const rest = d.sections
     .filter((s) => !s.key.startsWith('ind:') && s.key !== 'today')
@@ -114,6 +108,8 @@ function slidesOf(d: HomeBoard): Slide[] {
       kicker: `${s.title} 공고 모아보기`,
       head: [`${s.title} 공고 ${s.total.toLocaleString()}건,`, '인기 순으로 골라봤어요'],
       tag: `#${s.title} #TOP ${Math.min(50, s.total)}`,
+      to: paths.top(s.key),
+      cta: `TOP ${Math.min(50, s.total)} 보기`,
     }))
   return [first, ...rest]
 }
@@ -123,8 +119,13 @@ function Banner({ d }: { d: HomeBoard }) {
   const [i, setI] = useState(0)
   const s = slides[i % slides.length]
   const go = (k: number) => setI((n) => (n + k + slides.length) % slides.length)
-  const art = ART[s.key] ?? ART.all
+  const art = BANNER_ART[s.key] ?? BANNER_ART.all
   const dark = art.fg !== '#fff'
+  const open = (x: Slide) => (e: React.MouseEvent) => {
+    if (!x.to.startsWith('#')) return onLinkClick(x.to)(e)
+    e.preventDefault()
+    document.getElementById(x.to.slice(1))?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
   return (
     <section
       aria-roledescription="carousel"
@@ -132,7 +133,16 @@ function Banner({ d }: { d: HomeBoard }) {
       className="relative flex-1 min-w-0 h-[281px] overflow-hidden rounded-[30px] bg-[#000b4b] bg-cover bg-right"
       style={{ backgroundImage: `url(${art.img})`, color: art.fg }}
     >
-      <div className="absolute left-6 sm:left-[9%] top-[16%] right-6 sm:right-[40%]">
+      {/* 판 전체가 링크다 — 화살표·쪽수는 뒤에 그려져 그 위에 얹힌다 */}
+      <a
+        href={s.to}
+        onClick={open(s)}
+        aria-label={`${s.kicker} — ${s.head.join(' ')}`}
+        className="absolute inset-0 group"
+      >
+        <span className="sr-only">{s.kicker}</span>
+      </a>
+      <div className="pointer-events-none absolute left-6 sm:left-[9%] top-[16%] right-6 sm:right-[40%]">
         <p className="text-lg font-bold leading-[26px] tracking-[-0.18px]">{s.kicker}</p>
         <h2 className="mt-0.5 text-[24px] sm:text-[32px] font-bold leading-[1.19] tracking-[-1.6px]">
           {s.head[0]}
@@ -140,14 +150,17 @@ function Banner({ d }: { d: HomeBoard }) {
           {s.head[1]}
         </h2>
         <p className="mt-2.5 text-sm sm:text-base font-medium leading-6 tracking-[-0.16px] opacity-90">{s.tag}</p>
+        <span className={`mt-4 inline-flex items-center gap-1 h-[30px] px-4 rounded-full text-sm font-medium ${dark ? 'bg-black/10' : 'bg-white/18'}`}>
+          {s.cta} ›
+        </span>
       </div>
       <Arrow side="left" dark={dark} onClick={() => go(-1)} />
       <Arrow side="right" dark={dark} onClick={() => go(1)} />
-      <span className={`absolute right-[3%] bottom-[9%] h-[25px] px-3 rounded-full ${dark ? 'bg-black/10' : 'bg-white/14'} text-xs leading-[25px] tabular-nums`}>
+      <span className={`pointer-events-none absolute right-[3%] bottom-[9%] h-[25px] px-3 rounded-full ${dark ? 'bg-black/10' : 'bg-white/14'} text-xs leading-[25px] tabular-nums`}>
         {i + 1} / {slides.length}
       </span>
       {/* 다음 장 그림을 미리 받아 둔다 — 넘길 때 깜빡이지 않게 */}
-      <link rel="prefetch" as="image" href={(ART[slides[(i + 1) % slides.length].key] ?? ART.all).img} />
+      <link rel="prefetch" as="image" href={(BANNER_ART[slides[(i + 1) % slides.length].key] ?? BANNER_ART.all).img} />
     </section>
   )
 }

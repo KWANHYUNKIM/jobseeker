@@ -27,7 +27,7 @@ const GROUPS: { label: string; items: Item[] }[] = [
   {
     label: '채용공고',
     items: [
-      { tab: 'home', label: '기업별 채용', to: paths.home },
+      { tab: 'home', label: '기업별 채용', to: paths.home, also: ['top'] },
       { tab: 'jobs', label: '잡 리스트', to: paths.jobs },
       { tab: 'calendar', label: '모집 캘린더', to: paths.calendar },
       { tab: 'reposts', label: '재공고', to: paths.reposts },

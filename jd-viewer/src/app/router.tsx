@@ -10,6 +10,7 @@ import { JobsPage } from '../pages/jobs/JobsPage'
 import { MindmapPage } from '../pages/mindmap/MindmapPage'
 import { RepostsPage } from '../pages/reposts/RepostsPage'
 import { RevengPage } from '../pages/reveng/RevengPage'
+import { TopPage } from '../pages/top/TopPage'
 import { TrendPage } from '../pages/trend/TrendPage'
 import { navigate, useRoute, type Route } from '../utils/navigation'
 import { useSeo, absUrl } from '../utils/seo'
@@ -18,7 +19,7 @@ import { paths, TAB_SEO } from '../utils/urls'
 /** 페이지 경로 설정 — 경로 첫 세그먼트 → 탭 → 페이지. 루트(`/`)는 회사별 메인, `/jobs` 가 잡 리스트다. */
 export type Tab =
   | 'home' | 'jobs' | 'companies' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend'
-  | 'book' | 'reveng' | 'reposts' | 'freelance' | 'hardware'
+  | 'book' | 'reveng' | 'reposts' | 'freelance' | 'hardware' | 'top'
 
 const TAB_BY_SEG: Record<string, Tab> = {
   '': 'home',
@@ -36,6 +37,8 @@ const TAB_BY_SEG: Record<string, Tab> = {
   reposts: 'reposts',
   freelance: 'freelance',
   hardware: 'hardware',
+  // 메인 배너 한 장이 여는 구역 TOP 50 — `/top/entry`
+  top: 'top',
 }
 
 export function tabOf(route: Route): Tab {
@@ -68,6 +71,8 @@ function useTabSeo(route: Route, tab: Tab) {
     tab === 'book' ||
     tab === 'hardware' ||
     tab === 'home' ||
+    // 구역 TOP 50 은 구역 이름이 제목에 들어간다 — TopBoard 가 단다.
+    tab === 'top' ||
     // 외주 프로젝트 한 건은 상세 화면이 제 제목·noindex 를 단다(남의 글을 옮긴 화면이다).
     (tab === 'freelance' && !!detail && detail !== 'rates') ||
     // 잡 리스트는 검색어가 걸렸을 때 noindex 를 다는 일까지 JobsPage 가 한다.
@@ -107,6 +112,8 @@ export function RouteView() {
       return <MindmapPage />
     case 'jobs':
       return <JobsPage />
+    case 'top':
+      return <TopPage sectionKey={detail} />
     case 'home':
       return <HomePage />
   }
