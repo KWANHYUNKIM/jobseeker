@@ -34,6 +34,21 @@ export interface LectureIndex {
   items: LectureCard[]
 }
 
+/** 챕터 하나 = 교재의 한 절. 요점(points)은 복습용이고 본문(explain)이 공부하는 곳이다. */
+export interface Chapter {
+  start: number
+  title: string
+  points: string[]
+  on_screen?: string
+  explain?: string[]
+  formulas?: { expr: string; meaning: string }[]
+  example?: { title: string; body: string }
+  code?: { lang: string; src: string; note?: string }
+  diagram?: { title?: string; code: string }
+  pitfalls?: string[]
+  check?: { q: string; a: string }[]
+}
+
 export interface Lecture {
   id: string
   source: { platform: string; url: string; channel: string; published?: string; duration_sec?: number; views?: number }
@@ -46,7 +61,7 @@ export interface Lecture {
   one_line: string
   summary: string[]
   why_now?: string
-  chapters: { start: number; title: string; points: string[]; on_screen?: string }[]
+  chapters: Chapter[]
   concepts: { term: string; explain: string; at?: number }[]
   trends?: { claim: string; evidence?: string; at?: number }[]
   study: {

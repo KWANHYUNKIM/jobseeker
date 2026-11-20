@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
-import { useLectureIndex, useLecture, hms, at, type LectureCard, type Lecture } from '../hooks/useLectures'
+import { useLectureIndex, useLecture, hms, at, type LectureCard, type Lecture, type Chapter } from '../hooks/useLectures'
+import { ArchitectureDiagram } from '../../../components/ArchitectureDiagram'
 import { goBack, onLinkClick } from '../../../utils/navigation'
 import { paths } from '../../../utils/urls'
 import { absUrl, clip, useSeo } from '../../../utils/seo'
@@ -199,31 +200,13 @@ function LectureDetail({ id }: { id: string }) {
           )}
         </Section>
 
-        <Section title="챕터" sub="시각을 누르면 원본 영상의 그 자리로 갑니다">
-          <ol className="relative border-l-2 border-[#e5e5e5] ml-2">
+        <Section title="본문" sub="챕터마다 설명 → 식 → 손으로 따라가는 예 → 코드 → 확인 문제. 시각을 누르면 원본 영상의 그 자리로 갑니다">
+          <Toc d={d} />
+          <div className="mt-8 space-y-14">
             {d.chapters.map((c, i) => (
-              <li key={i} className="pl-6 pb-6 relative">
-                <span className="absolute -left-[7px] top-1.5 w-3 h-3 rounded-full bg-(--color-accent)" />
-                <div className="flex items-baseline gap-2 flex-wrap">
-                  <a href={at(d.source.url, c.start)} target="_blank" rel="noreferrer" className="font-mono text-sm text-(--color-accent) hover:underline">
-                    {hms(c.start)}
-                  </a>
-                  <h3 className="text-[16px] font-bold text-[#272727]">{c.title}</h3>
-                </div>
-                <ul className="mt-1.5 list-disc pl-5 space-y-1 text-[14.5px] leading-6 text-[#444]">
-                  {c.points.map((p, j) => (
-                    <li key={j}>{p}</li>
-                  ))}
-                </ul>
-                {c.on_screen && (
-                  <p className="mt-2 rounded-lg border border-dashed border-[#d0d0d0] px-3 py-2 text-[13.5px] leading-6 text-[#555]">
-                    <span className="font-bold text-[#272727]">화면에 뜬 것 · </span>
-                    {c.on_screen}
-                  </p>
-                )}
-              </li>
+              <ChapterView key={i} c={c} n={i + 1} url={d.source.url} id={d.id} />
             ))}
-          </ol>
+          </div>
         </Section>
 
         <Section title="핵심 개념">
@@ -370,6 +353,126 @@ function Section({ title, sub, children }: { title: string; sub?: string; childr
       <h2 className="text-[21px] font-bold text-[#272727]">{title}</h2>
       {sub && <p className="mt-0.5 text-[13px] text-[#888]">{sub}</p>}
       <div className="mt-4">{children}</div>
+    </section>
+  )
+}
+
+/** 차례 — 노트가 길어져서(1시간 강의면 본문 1만 자 넘게) 바로 건너뛸 곳이 필요하다. */
+function Toc({ d }: { d: Lecture }) {
+  return (
+    <nav aria-label="차례" className="rounded-xl bg-[#fafafa] px-5 py-4">
+      <div className="text-sm font-bold text-[#272727]">차례</div>
+      <ol className="mt-2 grid sm:grid-cols-2 gap-x-6 gap-y-1">
+        {d.chapters.map((c, i) => (
+          <li key={i} className="text-[14px] leading-6">
+            <a href={`#ch-${i + 1}`} className="text-[#444] hover:text-(--color-accent)">
+              <span className="font-mono text-[#999] mr-1.5">{i + 1}.</span>
+              {c.title}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}
+
+function ChapterView({ c, n, url, id }: { c: Chapter; n: number; url: string; id: string }) {
+  return (
+    <section id={`ch-${n}`} className="scroll-mt-28">
+      <div className="flex items-baseline gap-3 flex-wrap pb-2 border-b border-[#e5e5e5]">
+        <span className="text-[13px] font-bold text-(--color-accent)">{n}장</span>
+        <h3 className="text-[19px] font-bold text-[#272727]">{c.title}</h3>
+        <a href={at(url, c.start)} target="_blank" rel="noreferrer" className="ml-auto font-mono text-sm text-(--color-accent) hover:underline">
+          ▶ {hms(c.start)}
+        </a>
+      </div>
+
+      {c.explain?.length ? (
+        <div className="mt-4 space-y-3 text-[15.5px] leading-[1.85] text-[#2b2b2b]">
+          {c.explain.map((p, j) => (
+            <p key={j}>{p}</p>
+          ))}
+        </div>
+      ) : null}
+
+      {!!c.formulas?.length && (
+        <div className="mt-5 space-y-2">
+          {c.formulas.map((f, j) => (
+            <div key={j} className="rounded-lg border border-[#e5e5e5] overflow-hidden">
+              <div className="bg-[#f7f7fb] px-4 py-2.5 font-mono text-[15px] text-[#1f2a5a] overflow-x-auto whitespace-pre">{f.expr}</div>
+              <div className="px-4 py-2 text-[14px] leading-6 text-[#555]">{f.meaning}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {c.example && (
+        <div className="mt-5 rounded-xl border-l-4 border-(--color-accent) bg-(--color-accent-weak) px-5 py-4">
+          <div className="text-sm font-bold text-(--color-accent)">손으로 따라가 보기 · {c.example.title}</div>
+          <p className="mt-1.5 text-[14.5px] leading-7 text-[#2b2b2b] whitespace-pre-line">{c.example.body}</p>
+        </div>
+      )}
+
+      {c.code && (
+        <figure className="mt-5">
+          <pre className="rounded-xl bg-[#1e1e24] text-[#e8e8ee] px-4 py-3 text-[13px] leading-6 overflow-x-auto">
+            <code>{c.code.src}</code>
+          </pre>
+          <figcaption className="mt-1 text-[13px] text-[#888]">
+            {c.code.lang}
+            {c.code.note ? ` · ${c.code.note}` : ''}
+          </figcaption>
+        </figure>
+      )}
+
+      {c.diagram && (
+        <figure className="mt-5 rounded-xl border border-[#e5e5e5] p-3">
+          {c.diagram.title && <figcaption className="mb-2 text-sm font-bold text-[#272727]">{c.diagram.title}</figcaption>}
+          <ArchitectureDiagram code={c.diagram.code} idKey={`lec-${id}-${n}`} soft />
+        </figure>
+      )}
+
+      {c.on_screen && (
+        <p className="mt-5 rounded-lg border border-dashed border-[#d0d0d0] px-3 py-2 text-[13.5px] leading-6 text-[#555]">
+          <span className="font-bold text-[#272727]">화면에 뜬 것 · </span>
+          {c.on_screen}
+        </p>
+      )}
+
+      {!!c.pitfalls?.length && (
+        <div className="mt-5 rounded-xl bg-[#fff7ec] px-5 py-3">
+          <div className="text-sm font-bold text-[#a15c00]">헷갈리기 쉬운 것</div>
+          <ul className="mt-1 list-disc pl-5 space-y-1 text-[14.5px] leading-6 text-[#5a4320]">
+            {c.pitfalls.map((p, j) => (
+              <li key={j}>{p}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <div className="mt-5 rounded-xl bg-[#fafafa] px-5 py-3">
+        <div className="text-sm font-bold text-[#272727]">요점</div>
+        <ul className="mt-1 list-disc pl-5 space-y-1 text-[14.5px] leading-6 text-[#444]">
+          {c.points.map((p, j) => (
+            <li key={j}>{p}</li>
+          ))}
+        </ul>
+      </div>
+
+      {!!c.check?.length && (
+        <div className="mt-4 space-y-2">
+          {c.check.map((q, j) => (
+            <details key={j} className="group rounded-xl border border-[#e5e5e5] px-4 py-3">
+              <summary className="cursor-pointer list-none text-[14.5px] font-bold text-[#272727]">
+                <span className="text-(--color-accent) mr-1.5">Q.</span>
+                {q.q}
+                <span className="ml-2 text-xs font-normal text-[#999] group-open:hidden">답 보기</span>
+              </summary>
+              <p className="mt-2 text-[14.5px] leading-7 text-[#444]">{q.a}</p>
+            </details>
+          ))}
+        </div>
+      )}
     </section>
   )
 }

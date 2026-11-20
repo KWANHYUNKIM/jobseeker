@@ -19,6 +19,10 @@ OUT = ROOT / "jd-viewer" / "public" / "lectures"
 ITEMS = OUT / "items"
 SCHEMA = json.loads((Path(__file__).parent / "schema.json").read_text(encoding="utf-8"))
 QUEUE = Path(__file__).parent / "state" / "QUEUE.md"
+# 깊이 기준(2026-11-20): CS231n 공식 노트가 강의 하나에 6천 단어 안팎이다. 한글로 강의 1분당 200자,
+# 챕터 하나 600자 아래면 요약이지 노트가 아니다.
+PER_MIN = 200
+MIN_CHAPTER = 600
 
 TOPIC_LABEL = {
     "llm": "LLM", "agents": "AI 에이전트", "ml-basics": "머신러닝 기초", "deep-learning": "딥러닝",
@@ -51,6 +55,21 @@ def check(doc: dict, name: str) -> list[str]:
             last = s
         if not c.get("points"):
             errs.append(f"{name}: chapters[{i}] points 없음")
+        body = sum(len(x) for x in c.get("explain") or [])
+        if body < MIN_CHAPTER:
+            errs.append(f"{name}: chapters[{i}] '{c.get('title')}' 본문 {body}자 — {MIN_CHAPTER}자 이상")
+        for k in ("formulas", "check"):
+            for j, f in enumerate(c.get(k) or []):
+                if not isinstance(f, dict) or not all(f.get(x) for x in (("expr", "meaning") if k == "formulas" else ("q", "a"))):
+                    errs.append(f"{name}: chapters[{i}].{k}[{j}] 형식")
+    # 깊이 — 노트만 읽고 공부할 수 있어야 한다. 강의 1분당 본문 PER_MIN 자.
+    total = sum(len(x) for c in doc.get("chapters") or [] for x in c.get("explain") or [])
+    need = int((dur if dur < 10**9 else 3600) / 60 * PER_MIN)
+    if total < need:
+        errs.append(f"{name}: 챕터 본문 합 {total}자 — 영상 {dur // 60}분이면 {need}자 이상")
+    checks = sum(len(c.get("check") or []) for c in doc.get("chapters") or [])
+    if checks < 5:
+        errs.append(f"{name}: 확인 문제(check) {checks}개 — 5개 이상")
     for k in ("concepts",):
         for i, c in enumerate(doc.get(k) or []):
             if not c.get("term") or not c.get("explain"):
@@ -59,7 +78,8 @@ def check(doc: dict, name: str) -> list[str]:
     if len(steps) < 2:
         errs.append(f"{name}: study.steps 2개 이상")
     # 전재 검사 — 영어 단어 25개 넘게 이어지는 덩어리는 대본을 옮긴 것으로 본다.
-    blob = json.dumps({k: doc.get(k) for k in ("summary", "chapters", "concepts", "trends", "why_now")}, ensure_ascii=False)
+    blob = json.dumps({k: doc.get(k) for k in ("summary", "concepts", "trends", "why_now")}, ensure_ascii=False) + json.dumps(
+        [{k: v for k, v in c.items() if k not in ("code", "formulas", "diagram")} for c in doc.get("chapters") or []], ensure_ascii=False)
     for m in re.finditer(r"(?:[A-Za-z][A-Za-z'’-]*[ ,.]+){25,}", blob):
         errs.append(f"{name}: 영어 원문이 길게 들어 있다 — '{m.group(0)[:60]}…'")
         break
