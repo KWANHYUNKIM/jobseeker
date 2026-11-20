@@ -40,5 +40,9 @@ class Settings:
     embed_dim: int = field(default_factory=lambda: _int("SEMANTIC_EMBED_DIM", "1024"))
     embed_timeout: float = field(default_factory=lambda: _float("API_EMBED_TIMEOUT", "20"))
 
+    # 커리어 후기 원문(career_post.body)을 읽는 열쇠. 남의 글이라 공개 API 로는 본문을 내주지 않는다 —
+    # 요청의 X-Careers-Key 가 이 값과 같을 때만 준다. 비어 있으면 본문은 늘 잠겨 있다.
+    careers_key: str = field(default_factory=lambda: os.environ.get("CAREERS_KEY", ""))
+
 
 settings = Settings()

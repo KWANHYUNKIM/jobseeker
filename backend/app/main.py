@@ -19,6 +19,7 @@ from fastapi.middleware.gzip import GZipMiddleware
 
 from app.core import exceptions
 from app.core.config import settings
+from app.features.careers.router import router as careers_router
 from app.features.companies.router import router as companies_router
 from app.features.docs.router import router as docs_router
 from app.features.freelance.router import router as freelance_router
@@ -31,7 +32,7 @@ from app.features.home.router import router as home_router
 from app.features.similar.router import router as similar_router
 
 ROUTERS = [health_router, jobs_router, search_router, similar_router, companies_router,
-           posts_router, freelance_router, hardware_router, docs_router, home_router]
+           posts_router, freelance_router, hardware_router, docs_router, home_router, careers_router]
 
 
 def create_app() -> FastAPI:
@@ -44,7 +45,8 @@ def create_app() -> FastAPI:
     )
     # 개발 중에는 뷰어(5173)와 API(8771)의 오리진이 다르다. 운영은 nginx 가 /api/ 를
     # 같은 오리진으로 프록시한다. 읽기 전용 API 라 자격 증명은 받지 않는다.
-    app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET"])
+    app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET"],
+                       allow_headers=["X-Careers-Key"])   # 커리어 후기 원문 열쇠(features/careers)
     app.add_middleware(GZipMiddleware, minimum_size=2048)
     exceptions.install(app)
     for r in ROUTERS:
