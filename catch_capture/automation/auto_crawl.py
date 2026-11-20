@@ -276,6 +276,33 @@ def refresh_closures(limit: int = CLOSE_CHECK_LIMIT, name: str = "마감 재확�
         return 0
 
 
+AUDIT_LIVE = 2   # 점검 때 사이트마다 원본에 다시 묻는 건수(모집중·마감 각각). 회차당 약 50요청
+
+
+def refresh_audit(name: str = "마감·수집 점검") -> None:
+    """회차 끝에 '접수마감이 제때 적히나 · 공고가 들어오나'를 센다(pipeline/close_audit.py).
+
+    고치지 않고 세기만 한다 — 결과는 var/audit/close_audit.json 과 운영 대시보드 빌더 칸.
+    FAIL(수집 0건·판정기가 답을 못 얻음)이 있으면 빌더를 실패로 남겨 눈에 띄게 한다.
+    """
+    orch.builder_started(name)
+    t0 = time.time()
+    try:
+        import importlib
+        from pipeline import close_audit
+        close_audit = importlib.reload(close_audit)
+        r = close_audit.run(live=AUDIT_LIVE)
+        fails = [x for x in r["findings"] if x["level"] == "FAIL"]
+        warns = [x for x in r["findings"] if x["level"] == "WARN"]
+        detail = f"FAIL {len(fails)} / WARN {len(warns)}" + (
+            " — " + "; ".join(f"{x['area']}/{x['site']} {x['msg']}" for x in fails[:3]) if fails else "")
+        log(f"[audit] {detail}")
+        orch.builder_finished(name, not fails, time.time() - t0, detail[:300])
+    except Exception as e:                                          # noqa: BLE001
+        log(f"[audit] 실패: {e!r}")
+        orch.builder_finished(name, False, time.time() - t0, repr(e)[:300])
+
+
 def refresh_vectors() -> None:
     """벡터 갱신: 변경분 임베딩(Ollama → pgvector) → 유사 공고·글 재계산(+ 뷰어용 JSON).
 
@@ -509,6 +536,8 @@ def run_cycle(keyword: str, count: int) -> bool:
     extra_fail = run_extras()
     if extra_fail:
         log(f"[extras] 일부 실패: {extra_fail}")
+    # 외주까지 다 받은 뒤에 센다 — 이번 회차의 수집·마감 결과가 점검 대상이다.
+    refresh_audit()
     orch.cycle_finished(new_data, (datetime.now() - cycle_start).total_seconds())
     return new_data
 
