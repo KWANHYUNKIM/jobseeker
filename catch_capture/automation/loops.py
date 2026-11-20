@@ -273,6 +273,27 @@ REGISTRY: list[Loop] = [
              "디자인 에이전트 한 회차 — `.claude/skills/design-round/SKILL.md` 를 읽고 그 순서 그대로 한다. "
              "표지는 card-cover 스킬, 교훈을 더할 때는 writing-design-lessons 스킬(검사 먼저 — RED → GREEN)을 따른다. "
              "판정·점수·릴리즈는 사람 몫이라 매기지 않는다. 게시·팔로우·댓글 같은 계정 행동도 하지 않는다. 푸시하지 않는다.")),
+    # 커리어 경로 — 개발자 합격·이직·전환 경험담을 모아 '어떤 길로 어디에 갔나'를 센다(개인 도구, 화면에 싣지 않는다).
+    # 데이터는 var/careers/ 에만 쌓이고 커밋하지 않는다. 사람이 아니라 경로를 모은다(careers/__init__.py).
+    Loop("careers", "커리어 경로 수집", "claude-loop", "any", "30분마다(repeat)", 24,
+         "python -m automation.loops repeat careers --every 30m", ["catch_capture/var/careers/report.json"],
+         check="cd catch_capture && python -m careers.report",
+         owns=["catch_capture/var/careers/"],
+         prompt=(
+             "커리어 경로 수집 한 회차. catch_capture 폴더에서: "
+             "① `python -m careers.cycle --queries 40` 을 돌린다(검색어 대기열 한 조각 수집 → 새 글 추출 → 보고서). "
+             "② `var/careers/report.json` 의 gaps(후기 없는 회사·얇은 직무)와 transitions 를 읽고, 아직 안 쓴 다양한 검색어 "
+             "10~20개를 만든다 — 회사 약칭·영문명·팀 이름(예: '토스뱅크 서버', 'Coupang 합격'), 직무 전환(퇴직 공무원 개발자, "
+             "디자이너에서 프론트엔드), 경로(병역특례 후기, 전문연, 고졸 개발자 취업, 30대 개발자 전향), 불합격·탈락 회고. "
+             "`var/careers/queue.json` 의 pending·done 에 이미 있는 것은 빼고 `python -m careers.cycle --add ...` 로 넣는다. "
+             "②-b 회사 GitHub: 공고가 많은데 `var/careers/github_orgs.json` 에 verified 가 없는 한글 이름 회사 몇 곳을 골라, "
+             "그 회사가 공식으로 쓰는 GitHub 조직 login 을 회사 기술 블로그·채용 페이지의 링크에서 확인한 경우에만 "
+             "`var/careers/github_seed.json` 에 {\"회사명\": [[login], [도메인 단서]]} 로 더한다(짐작으로 넣지 않는다). "
+             "회사 조직만 본다 — 직원 개인 GitHub 계정은 찾거나 기록하지 않는다. "
+             "해외 회사 경로(한국에서 해외로, 해외 개발자의 취업·전환 — dev.to 는 cycle 이 태그로 받는다)도 검색어에 섞는다. "
+             "③ 출처 원칙: velog·dev.to(robots 허용·공개 API)와 사람이 넣은 inbox 만 쓴다. brunch·medium 은 AI 수집을 막아 두었고, "
+             "인스타그램·페이스북·링크드인·블라인드·잡플래닛은 자동으로 긁지 않는다(약관). 글쓴이를 다른 계정과 엮거나 개인을 추적하지 않는다. "
+             "코드를 고치지 않고 커밋·푸시하지 않는다. 경험담 수·새로 넣은 검색어를 한두 줄로 보고한다.")),
 ]
 
 BY_KEY = {l.key: l for l in REGISTRY}

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>커리어 경로 · 관리자</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--fg:#1c2130;--muted:#6a7183;--line:#e4e7ee;--acc:#f45757;--acc-weak:#fdecec;--navy:#1f3b73;--bar:#dfe4ee}
+@media (prefers-color-scheme:dark){:root{--bg:#111318;--card:#1a1d24;--fg:#e9ebf1;--muted:#9aa0b0;--line:#2a2e38;--acc-weak:#3a2224;--navy:#8fb0f0;--bar:#2c313c}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.55 "Noto Sans KR",system-ui,-apple-system,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);padding:14px max(16px,3vw);display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px}
+h1{margin:0;font-size:18px}h1 small{font-weight:400;color:var(--muted);font-size:12px;margin-left:6px}
+.stats{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:12px}.stats b{color:var(--fg);font-size:15px;margin-right:3px;font-variant-numeric:tabular-nums}
+nav{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+nav button{border:1px solid var(--line);background:none;color:var(--fg);padding:6px 12px;border-radius:99px;cursor:pointer;font:inherit}
+nav button[aria-pressed=true]{background:var(--fg);color:var(--card);border-color:var(--fg)}
+main{padding:18px max(16px,3vw);max-width:1400px;margin:0 auto}
+.split{display:grid;grid-template-columns:320px minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:860px){.split{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.list{position:sticky;top:76px;max-height:calc(100vh - 96px);display:flex;flex-direction:column;padding:12px}
+.list input,.list select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);font:inherit}
+.filters{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
+.items{overflow:auto;margin:0 -4px;padding:0 4px}
+.item{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:10px;cursor:pointer;border:1px solid transparent}
+.item:hover{background:var(--bg)}.item[aria-selected=true]{background:var(--acc-weak);border-color:var(--acc)}
+.item .meta{color:var(--muted);font-size:12px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.gh{font-size:10px;border:1px solid var(--line);border-radius:4px;padding:0 4px;margin-left:4px;color:var(--muted)}
+h2{margin:0 0 4px;font-size:22px}h3{margin:18px 0 8px;font-size:13px;color:var(--muted);font-weight:600;letter-spacing:.02em}
+.sub{color:var(--muted);margin:0 0 6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:4px 22px}
+.bar{display:grid;grid-template-columns:minmax(70px,130px) 1fr 54px;gap:8px;align-items:center;font-size:13px;margin:3px 0}
+.bar i{display:block;height:8px;border-radius:4px;background:var(--bar);position:relative;overflow:hidden}
+.bar i::after{content:"";position:absolute;inset:0;width:var(--w);background:var(--acc);border-radius:4px}
+.bar span:last-child{color:var(--muted);text-align:right;font-variant-numeric:tabular-nums;font-size:12px}
+.chips{display:flex;flex-wrap:wrap;gap:5px}.chip{border:1px solid var(--line);border-radius:99px;padding:2px 9px;font-size:12px}.chip b{color:var(--acc);font-weight:600;margin-left:3px}
+ul.clean{margin:0;padding-left:18px}ul.clean li{margin:2px 0}
+.story{border-top:1px solid var(--line);padding:10px 0}.story:first-child{border-top:0}
+.story .tag{display:inline-block;font-size:11px;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:0 6px;margin-right:6px;color:var(--muted)}
+a{color:var(--acc)}.muted{color:var(--muted)}.empty{color:var(--muted);padding:30px;text-align:center}
+.ghcard{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:6px}
+.ghcard li{margin:3px 0}.ghcard .tag{color:var(--muted);font-size:12px}
+table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}th{color:var(--muted);font-weight:600;font-size:12px}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:14px;text-align:center;color:var(--muted);cursor:pointer}
+.drop.on{border-color:var(--acc);color:var(--acc)}
+.thumbs{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.thumbs img{width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
+.row{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}.row input{flex:1;min-width:160px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);font:inherit}
+.btn{border:0;background:var(--acc);color:#fff;padding:8px 14px;border-radius:10px;cursor:pointer;font:inherit}
+.btn[disabled]{opacity:.5}
+.st{font-size:11px;border-radius:6px;padding:0 6px;border:1px solid var(--line)}.st.story{color:#18794e;border-color:#18794e}.st.pending{color:var(--muted)}
+pre.body{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;max-height:60vh;overflow:auto;font:13px/1.6 inherit}
+dl.kv{display:grid;grid-template-columns:110px 1fr;gap:4px 10px;margin:0}dl.kv dt{color:var(--muted)}dl.kv dd{margin:0}
+.chip.ok{border-color:#18794e;color:#18794e}.chip.miss{border-color:#c2410c;color:#c2410c}
+.match{display:grid;gap:4px;margin-top:6px;font-size:13px}
+.note{font-size:12px;color:var(--muted);margin-top:14px}
+</style>
+</head>
+<body>
+<header>
+  <h1>커리어 경로 <small>🔒 혼자 보는 페이지</small></h1>
+  <div class="stats" id="stats"></div>
+  <nav id="tabs">
+    <button data-tab="companies" aria-pressed="true">회사</button>
+    <button data-tab="programs" aria-pressed="false">교육과정</button>
+    <button data-tab="posts" aria-pressed="false">모은 글</button>
+    <button data-tab="docs" aria-pressed="false">서류</button>
+    <button data-tab="match" aria-pressed="false">공고 매칭</button>
+    <button data-tab="ages" aria-pressed="false">나이</button>
+    <button data-tab="roster" aria-pressed="false">합격자 명단</button>
+    <button data-tab="transitions" aria-pressed="false">커리어 전환</button>
+    <button data-tab="backgrounds" aria-pressed="false">배경별</button>
+    <button data-tab="market" aria-pressed="false">그때 시장</button>
+    <button data-tab="gaps" aria-pressed="false">빈칸</button>
+  </nav>
+</header>
+<main id="view"><div class="empty">불러오는 중…</div></main>
+<script>
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let R = null, tab = "companies", sel = null, q = "", only = "all", sort = "n";
+
+function bars(items, max = 6) {
+  if (!items || !items.length) return '<div class="muted">—</div>';
+  const top = Math.max(...items.map(i => i[1]));
+  return items.slice(0, max).map(([k, n, pct]) =>
+    `<div class="bar"><span>${esc(k)}</span><i style="--w:${Math.round(100 * n / top)}%"></i><span>${n}${pct != null ? ` · ${pct}%` : ""}</span></div>`).join("");
+}
+const chips = (items, max = 14) => items && items.length
+  ? `<div class="chips">${items.slice(0, max).map(([k, n]) => `<span class="chip">${esc(k)}<b>${n}</b></span>`).join("")}</div>` : '<div class="muted">—</div>';
+const UNKNOWN = "확인되지 않음";
+const src = url => url ? ` <a href="${esc(url)}" target="_blank" rel="noopener">원문</a>` : "";
+// 문장 목록 — {t, url} 이면 끝에 원문 링크(보고서가 문장마다 출처를 단다)
+const list = (xs, max = 10) => xs && xs.length ? `<ul class="clean">${xs.slice(0, max).map(x => x && typeof x === "object" ? `<li>${esc(x.t)}${src(x.url)}</li>` : `<li>${esc(x)}</li>`).join("")}</ul>` : '<div class="muted">—</div>';
+
+function ghCard(g) {
+  if (!g) return "";
+  return `<h3>회사 GitHub</h3><div class="ghcard">
+    <div><a href="${esc(g.url)}" target="_blank" rel="noopener">github.com/${esc(g.login)}</a>
+      <span class="muted"> · 공개 저장소 ${g.public_repos} · 최근 1년 활동 ${g.active_12m}</span></div>
+    <h3>주력 언어</h3>${bars(g.languages, 6)}
+    ${g.topics.length ? `<h3>주제</h3>${chips(g.topics, 12)}` : ""}
+    <h3>대표 저장소</h3><ul class="clean">${g.top_repos.slice(0, 6).map(r =>
+      `<li><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.name)}</a> <span class="tag">${esc(r.lang || "")} ★${r.stars} · ${esc(r.pushed)}</span><br><span class="muted">${esc(r.desc)}</span></li>`).join("")}</ul>
+    ${memberBlock(g.members)}
+  </div>`;
+}
+
+function memberBlock(m) {
+  if (!m || !m.sampled) return "";
+  return `<h3>이 회사 개발자들의 개인 저장소 <span class="muted">(조직 공개 멤버 ${m.public_members}명 중 ${m.sampled}명 · 최근 1년 활동 ${m.active_12m}명 · 1인당 저장소 ${m.avg_repos}개 — 회사 단위 집계, 개인은 남기지 않음)</span></h3>
+    <div class="grid">
+      <div><h3>쓰는 언어 (멤버 수)</h3>${bars(m.languages, 8)}</div>
+      <div><h3>하는 일</h3>${bars(m.kinds, 6)}</div>
+    </div>
+    ${m.topics.length ? `<h3>관심 주제</h3>${chips(m.topics, 15)}` : ""}`;
+}
+
+function stories(ss) {
+  if (!ss || !ss.length) return "";
+  return `<h3>경로 ${ss.length}건</h3><div>${ss.map(s => `<div class="story">
+    <span class="tag">${esc(s.period || s.year || "시기 " + UNKNOWN)}</span><span class="tag">${esc(s.kind || "")}</span>${s.company ? `<span class="tag">${esc(s.company)}</span>` : ""}<span class="tag">${esc([s.role, s.level].filter(Boolean).join(" · "))}</span><span class="tag">학력 ${esc(s.education || UNKNOWN)}</span>${s.age ? `<span class="tag">${s.age}세</span>` : ""}${covTag(s.match)}
+    <div>${esc(s.summary || s.title || "")}${s.url ? src(s.url) : ' <span class="muted">원문 없음</span>'}</div>
+    ${s.match ? `<details><summary class="muted">공고와 맞춰 보기</summary>${matchDetail(s.match)}</details>` : ""}</div>`).join("")}</div>`;
+}
+
+function companyDetail(p) {
+  if (!p) return '<div class="card empty">왼쪽에서 회사를 고르세요</div>';
+  const has = p.n > 0;
+  return `<div class="card">
+    <h2>${esc(p.company)}</h2>
+    <p class="sub">경험담 ${p.n}${tab === "programs" ? " · 회사가 아니라 교육과정·동아리·학교" : " · 지금 모집중 공고 " + p.open_jobs}${p.n && p.n < 3 ? " · 표본이 적어 비율 없이 건수만" : ""}</p>
+    ${has ? `<div class="grid">
+      <div><h3>직무</h3>${bars(p.roles)}</div>
+      <div><h3>신입 · 경력</h3>${bars(p.levels)}</div>
+      <div><h3>학력</h3>${bars(p.education)}</div>
+      <div><h3>거쳐 온 길</h3>${bars(p.path_tags, 8)}</div>
+      <div><h3>시기 <span class="muted">(2025년 이후 ${p.recent}건)</span></h3>${bars(p.years, 6)}</div>
+      ${p.age ? `<div><h3>합격 당시 나이 <span class="muted">(밝힌 ${p.age.n}명 · 중간 ${p.age.median}세)</span></h3>${bars(p.age.bands.filter(b => b[1]), 7)}</div>` : ""}
+    </div>
+    <div class="grid">
+      <div><h3>어학</h3>${chips(p.spec_lang)}</div>
+      <div><h3>자격증</h3>${chips(p.spec_certs)}</div>
+      <div><h3>대외활동 · 교육과정</h3>${chips(p.spec_acts)}</div>
+      <div><h3>학점 · 알고리즘</h3>${list([...(p.spec_gpa || []).map(x => "학점 " + x), ...(p.spec_algo || [])], 8)}</div>
+    </div>
+    <div class="grid">
+      <div><h3>합격자 기술</h3>${chips(p.stack)}</div>
+      <div><h3>준비 방법</h3>${chips(p.prep)}</div>
+      <div><h3>전형 단계</h3>${chips(p.interviews)}</div>
+    </div>
+    <div class="grid">
+      <div><h3>합격 · 탈락 이유로 꼽은 것</h3>${list(p.factors, 12)}</div>
+      <div><h3>면접에서 나온 것</h3>${list(p.questions, 12)}</div>
+      <div><h3>다음 사람에게 준 조언</h3>${list(p.advice, 10)}</div>
+    </div>` : '<p class="muted">아직 모인 경험담이 없어요. 루프가 이 회사 검색어를 계속 돌려요.</p>'}
+    ${companyMatch(p.match)}
+    ${docBlock(p.docs)}
+    ${ghCard(p.github)}
+    ${stories(p.stories)}
+  </div>`;
+}
+
+function viewPrograms() { viewCompanies(true); }
+
+function viewCompanies(prog = false) {
+  const SRC = prog ? (R.programs || []) : R.companies, self = prog ? viewPrograms : viewCompanies;
+  let cs = SRC.filter(p => (!q || p.company.toLowerCase().includes(q.toLowerCase()))
+    && (only === "all" || (only === "story" && p.n > 0) || (only === "gh" && p.github)));
+  cs = cs.slice().sort(sort === "jobs" ? (a, b) => b.open_jobs - a.open_jobs : sort === "name" ? (a, b) => a.company.localeCompare(b.company, "ko") : (a, b) => b.n - a.n || b.open_jobs - a.open_jobs);
+  if (!sel || !cs.find(c => c.norm === sel)) sel = cs[0]?.norm;
+  const cur = SRC.find(c => c.norm === sel);
+  $("#view").innerHTML = `<div class="split">
+    <div class="card list">
+      ${prog ? '<p class="muted">부트캠프·교육과정·동아리·학교 선발 후기 — 회사 목록에서 뺐다</p>' : ""}
+      <input id="q" type="search" placeholder="${prog ? "교육과정" : "회사"} 검색" value="${esc(q)}" aria-label="검색">
+      <div class="filters">
+        <select id="only" aria-label="보기"><option value="all">전체</option><option value="story">경험담 있는 곳</option><option value="gh">GitHub 있는 곳</option></select>
+        <select id="sort" aria-label="정렬"><option value="n">경험담 많은 순</option><option value="jobs">공고 많은 순</option><option value="name">이름순</option></select>
+      </div>
+      <div class="items" role="listbox">${cs.map(c => `<div class="item" role="option" tabindex="0" data-k="${esc(c.norm)}" aria-selected="${c.norm === sel}">
+        <span>${esc(c.company)}${c.github ? '<span class="gh">GH</span>' : ""}</span><span class="meta">${c.n}건${prog ? "" : " · 공고 " + c.open_jobs}</span></div>`).join("") || '<div class="empty">없어요</div>'}</div>
+    </div>
+    <div>${companyDetail(cur)}</div></div>`;
+  $("#only").value = only; $("#sort").value = sort;
+  $("#q").oninput = e => { q = e.target.value; self(); $("#q").focus(); $("#q").setSelectionRange(q.length, q.length); };
+  $("#only").onchange = e => { only = e.target.value; self(); };
+  $("#sort").onchange = e => { sort = e.target.value; self(); };
+  document.querySelectorAll(".item").forEach(el => {
+    const pick = () => { sel = el.dataset.k; self(); };
+    el.onclick = pick; el.onkeydown = e => e.key === "Enter" && pick();
+  });
+}
+
+function viewTransitions() {
+  const ts = R.transitions;
+  if (!ts.length) return $("#view").innerHTML = '<div class="card empty">아직 전환 사례가 없어요</div>';
+  if (!sel || !ts.find(t => t.transition === sel)) sel = ts[0].transition;
+  const t = ts.find(x => x.transition === sel);
+  $("#view").innerHTML = `<div class="split">
+    <div class="card list"><div class="items">${ts.map(x => `<div class="item" tabindex="0" data-k="${esc(x.transition)}" aria-selected="${x.transition === sel}"><span>${esc(x.transition)}</span><span class="meta">${x.n}건</span></div>`).join("")}</div></div>
+    <div class="card"><h2>${esc(t.transition)}</h2><p class="sub">${t.n}건</p>
+      <div class="grid"><div><h3>거쳐 온 길</h3>${bars(t.path_tags, 8)}</div><div><h3>간 직무</h3>${bars(t.roles)}</div><div><h3>학력</h3>${bars(t.education)}</div></div>
+      <div class="grid"><div><h3>준비 방법</h3>${chips(t.prep)}</div><div><h3>기술</h3>${chips(t.stack)}</div></div>
+      <div class="grid"><div><h3>꼽은 이유</h3>${list(t.factors)}</div><div><h3>조언</h3>${list(t.advice)}</div></div>
+      ${stories(t.stories)}</div></div>`;
+  document.querySelectorAll(".item").forEach(el => { el.onclick = () => { sel = el.dataset.k; viewTransitions(); }; });
+}
+
+function viewBackgrounds() {
+  $("#view").innerHTML = `<div class="card"><h2>배경별로 어디에 갔나</h2><p class="sub">글쓴이가 밝힌 학력 갈래 기준</p>
+    <div style="overflow-x:auto"><table><tr><th>학력</th><th>건수</th><th>거쳐 온 길</th><th>간 직무</th><th>간 회사</th></tr>
+    ${R.backgrounds.map(b => `<tr><td><b>${esc(b.education)}</b></td><td>${b.n}</td><td>${bars(b.path_tags, 5)}</td><td>${bars(b.roles, 4)}</td><td>${chips(b.companies, 10)}</td></tr>`).join("")}
+    </table></div>
+    <p class="sub">학력은 원문에 근거 낱말(비전공·컴공·전공 이름 등)이 있을 때만 셉니다. 없으면 '${UNKNOWN}'.</p>
+    ${R.backgrounds.map(b => `<details><summary><b>${esc(b.education)}</b> <span class="muted">${b.n}건 — 원문 보기</span></summary>${stories(b.stories || [])}</details>`).join("")}</div>`;
+}
+
+function viewMarket() {
+  const m = Object.entries(R.market_by_year || {});
+  $("#view").innerHTML = `<div class="card"><h2>그때 채용 시장</h2><p class="sub">경험담 글쓴이가 묘사한 분위기를 연도별로 모았어요. 2026년부터는 우리 공고 추이와 같이 볼 수 있어요.</p>
+    ${m.length ? `<table><tr><th>연도</th><th>글쓴이들이 말한 분위기</th></tr>${m.map(([y, v]) => `<tr><td><b>${esc(y)}</b><div class="muted">${v.length}건</div></td><td>${list(v, 30)}</td></tr>`).join("")}</table>` : '<div class="empty">아직 없어요</div>'}</div>`;
+}
+
+function viewGaps() {
+  const g = R.gaps || {};
+  $("#view").innerHTML = `<div class="card"><h2>빈칸</h2><p class="sub">공고는 많은데 경험담이 아직 없는 회사예요. 루프가 다음 검색어를 고를 때 여기서 고릅니다.</p>
+    ${chips((g.companies_without_stories || []).map(c => [c, ""]), 200)}
+    <h3>표본이 얇은 직무</h3>${chips((g.thin_roles || []).map(c => [c, ""]))}</div>`;
+}
+
+let P = { q: "", source: "", state: "story", year: "", level: "", sel: null, data: null, files: [] };
+async function loadPosts() {
+  const u = new URLSearchParams({ q: P.q, source: P.source, state: P.state, year: P.year, level: P.level });
+  P.data = await (await fetch("/api/careers/posts?" + u)).json();
+}
+function uploadBox() {
+  return `<div class="card" style="margin-bottom:12px"><h3 style="margin-top:0">캡처 넣기</h3>
+    <div class="drop" id="drop" tabindex="0">인스타·페북 캡처를 끌어다 놓거나, 여기를 누르고 붙여넣기(Ctrl+V)<br><span class="note">여러 장 = 게시물 하나. 다음 회차에 그래픽카드가 글자를 읽어 모아요</span></div>
+    <input type="file" id="file" accept="image/*" multiple hidden>
+    <div class="thumbs">${P.files.map(f => `<img src="${f}" alt="캡처">`).join("")}</div>
+    <div class="row"><input id="purl" placeholder="원문 링크(선택)"><input id="pnote" placeholder="메모(선택: 회사·시기 등)"></div>
+    <div class="row"><button class="btn" id="psend" ${P.files.length ? "" : "disabled"}>${P.files.length}장 올리기</button><span id="pmsg" class="note"></span></div></div>`;
+}
+function bindUpload() {
+  const add = files => [...files].filter(f => f && f.type.startsWith("image/")).forEach(f => {
+    const r = new FileReader(); r.onload = () => { P.files.push(r.result); viewPosts(true); }; r.readAsDataURL(f);
+  });
+  const d = $("#drop");
+  d.onclick = () => $("#file").click();
+  $("#file").onchange = e => add(e.target.files);
+  d.ondragover = e => { e.preventDefault(); d.classList.add("on"); };
+  d.ondragleave = () => d.classList.remove("on");
+  d.ondrop = e => { e.preventDefault(); add(e.dataTransfer.files); };
+  d.onpaste = e => add([...e.clipboardData.items].map(i => i.getAsFile()));
+  $("#psend").onclick = async () => {
+    $("#psend").disabled = true;
+    const r = await fetch("/api/careers/upload", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ images: P.files, url: $("#purl").value, note: $("#pnote").value }) });
+    const j = await r.json();
+    P.files = []; await viewPosts(true);
+    $("#pmsg").textContent = r.ok ? `올렸어요 (${j.images}장) — 다음 회차에 글로 바뀌어요` : "실패: " + (j.error || r.status);
+  };
+}
+function postDetail(d) {
+  if (!d) return '<div class="card empty">왼쪽에서 글을 고르세요</div>';
+  const e = d.extracted || {}, sp = e.spec || {}, bg = e.background || {};
+  const kv = [["판정", e.is_story == null ? "아직 추출 전" : e.is_story ? "경험담" : "경험담 아님"], ["종류", e.kind], ["시기", e.period || e.year],
+    ["회사", e.company], ["직무", [e.role, e.level].filter(Boolean).join(" · ")], ["학력", bg.education || (e.is_story ? UNKNOWN + (bg.education_unverified ? ` (모델 추정: ${bg.education_unverified})` : "") : "")], ["교육과정", bg.bootcamp],
+    ["전환", e.transition], ["스펙", [sp.gpa && "학점 " + sp.gpa, ...(sp.language || []), ...(sp.certs || []), sp.algorithm].filter(Boolean).join(", ")],
+    ["그때 시장", e.market_note], ["요약", e.summary]].filter(([, v]) => v);
+  return `<div class="card"><h2>${esc(d.title)}</h2>
+    <p class="sub">${esc(d.source)} · ${esc(d.date || "")} ${d.url ? `· <a href="${esc(d.url)}" target="_blank" rel="noopener">원문</a>` : ""}</p>
+    <dl class="kv">${kv.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl>
+    ${e.path && e.path.length ? `<h3>거친 단계</h3><ul class="clean">${e.path.map(x => `<li>${esc(x.step)}${x.months ? ` (${x.months}개월)` : ""}</li>`).join("")}</ul>` : ""}
+    ${e.key_factors && e.key_factors.length ? `<h3>꼽은 이유</h3>${list(e.key_factors)}` : ""}
+    <h3>본문</h3><pre class="body">${esc(d.body)}</pre></div>`;
+}
+async function viewPosts(keep) {
+  if (!keep || !P.data) await loadPosts();
+  const d = P.data, it = d.items;
+  const cur = P.sel ? await (await fetch("/api/careers/post?id=" + P.sel)).json() : null;
+  $("#view").innerHTML = uploadBox() + `<div class="split">
+    <div class="card list">
+      <input id="pq" type="search" placeholder="제목·회사 검색" value="${esc(P.q)}" aria-label="글 검색">
+      <div class="filters">
+        <select id="pstate" aria-label="판정"><option value="story">경험담 ${d.counts.story}</option><option value="pending">추출 전 ${d.counts.pending}</option><option value="not">경험담 아님 ${d.counts.not}</option><option value="">전체</option></select>
+        <select id="psrc" aria-label="출처"><option value="">모든 출처</option><option value="velog">velog</option><option value="devto">dev.to</option><option value="instagram">인스타</option><option value="facebook">페이스북</option><option value="capture">캡처</option><option value="inbox">직접 넣은 글</option></select>
+        <select id="plevel" aria-label="신입·경력"><option value="">신입·경력 전체</option><option>신입</option><option>경력</option><option>인턴</option></select>
+        <select id="pyear" aria-label="시기"><option value="">모든 시기</option>${[2026, 2025, 2024, 2023, 2022, 2021, 2020].map(y => `<option>${y}</option>`).join("")}</select>
+      </div>
+      <div class="note">${d.total.toLocaleString()}건${d.total > 200 ? " · 앞 200건" : ""}</div>
+      <div class="items">${it.map(x => `<div class="item" tabindex="0" data-k="${esc(x.id)}" aria-selected="${x.id === P.sel}">
+        <span>${esc(x.title)}<br><span class="meta">${esc(x.period || x.year || "")} ${esc(x.level || "")} ${esc(x.company || "")} ${esc(x.role || "")}</span></span>
+        <span class="meta"><span class="st ${x.state}">${x.state === "story" ? "경험담" : x.state === "pending" ? "대기" : "아님"}</span><br>${esc(x.source)}</span></div>`).join("") || '<div class="empty">없어요</div>'}</div>
+    </div><div>${postDetail(cur)}</div></div>`;
+  $("#pstate").value = P.state; $("#psrc").value = P.source; $("#pyear").value = P.year; $("#plevel").value = P.level;
+  $("#pq").onchange = e => { P.q = e.target.value; viewPosts(); };
+  $("#pstate").onchange = e => { P.state = e.target.value; viewPosts(); };
+  $("#psrc").onchange = e => { P.source = e.target.value; viewPosts(); };
+  $("#pyear").onchange = e => { P.year = e.target.value; viewPosts(); };
+  $("#plevel").onchange = e => { P.level = e.target.value; viewPosts(); };
+  document.querySelectorAll(".item").forEach(el => { el.onclick = () => { P.sel = el.dataset.k; viewPosts(true); }; });
+  bindUpload();
+}
+
+function covTag(m) {
+  if (!m) return "";
+  if (m.coverage != null) return `<span class="tag" title="지금 공고 요구 기술 중 글에 나온 비율">공고 매칭 ${m.coverage}%</span>`;
+  if (m.thin) return '<span class="tag muted">공고 표본 적음</span>';
+  if (m.jobs && !m.told_tech) return '<span class="tag muted">글에 기술 안 나옴</span>';
+  return "";
+}
+function matchDetail(m) {
+  if (!m) return "";
+  const gap = m.time_gap ? ` · 경험담보다 ${m.time_gap}년 뒤 공고` : (m.time_gap === 0 ? " · 같은 해 공고" : "");
+  const row = (t, a, cls = "") => a && a.length ? `<div><b>${t}</b> ${a.map(x => `<span class="chip ${cls}">${esc(x)}</span>`).join("")}</div>` : "";
+  return `<div class="match">
+    ${m.jobs ? `<div class="muted">비교: ${esc(m.scope)}${m.role_used ? "(" + esc(m.role_used) + ")" : ""} 공고 ${m.jobs}건 (${esc(m.jobs_from || "")}~${esc(m.jobs_seen)}${gap})${m.job_min_years != null ? ` · 공고 경력 요구 중간값 ${m.job_min_years}년 / 글쓴이 ${m.years_before ?? "?"}년` : ""}</div>
+    ${row("맞춘 기술", m.tech_have, "ok")}${row("글에 안 나온 요구 기술", m.tech_missing, "miss")}${row("공고 밖 기술", m.tech_extra)}
+    ${row("맞춘 역량", m.comp_have, "ok")}${row("글에 안 나온 요구 역량", m.comp_missing, "miss")}` : ""}
+    ${m.reported && m.reported.length ? `<div><b>글쓴이가 밝힌 그때 공고 요구</b>${list(m.reported, 8)}</div>` : ""}
+    ${m.shown && m.shown.length ? `<div><b>요구 → 이렇게 보여줬다</b><ul class="clean">${m.shown.map(x => `<li>${esc(x.requirement)} → ${esc(x.shown_by || "")}</li>`).join("")}</ul></div>` : ""}
+  </div>`;
+}
+function companyMatch(t) {
+  if (!t || !t.tech.length) return "";
+  const pct = v => v == null ? "—" : v + "%";
+  return `<h3>지금 공고가 요구하는 것 vs 합격자가 가졌던 것 <span class="muted">(공고 ${t.jobs}건, ${esc(t.seen)} 기준 · 합격자 중 기술을 밝힌 ${t.stories_with_tech}/${t.stories}건)</span></h3>
+    <div class="grid"><div><table><tr><th>기술</th><th>공고 요구율</th><th>합격자 보유율</th></tr>
+      ${t.tech.slice(0, 12).map(([k, a, b]) => `<tr><td>${esc(k)}</td><td>${a}%</td><td>${pct(b)}</td></tr>`).join("")}</table></div>
+    <div><table><tr><th>역량(자격요건)</th><th>공고 요구율</th><th>글에 나온 비율</th></tr>
+      ${t.comps.slice(0, 10).map(([k, a, b]) => `<tr><td>${esc(k)}</td><td>${a}%</td><td>${pct(b)}</td></tr>`).join("") || '<tr><td colspan="3" class="muted">—</td></tr>'}</table>
+      ${t.min_years.length ? `<p class="muted">공고 경력 요구: ${t.min_years.filter(x => x === 0).length}건 신입 가능, 중간값 ${t.min_years[Math.floor(t.min_years.length / 2)]}년</p>` : ""}</div></div>`;
+}
+let M = { role: null };
+function viewMatch() {
+  const rs = (R.matching || {}).roles || [];
+  if (!rs.length) return $("#view").innerHTML = '<div class="card empty">아직 매칭할 경험담이 없어요</div>';
+  if (!M.role || !rs.find(r => r.role === M.role)) M.role = rs[0].role;
+  const r = rs.find(x => x.role === M.role);
+  $("#view").innerHTML = `<div class="split">
+    <div class="card list"><div class="items">${rs.map(x => `<div class="item" tabindex="0" data-k="${esc(x.role)}" aria-selected="${x.role === M.role}"><span>${esc(x.role)}</span><span class="meta">${x.n}건${x.coverage_median != null ? ` · 중간 ${x.coverage_median}%` : ""}</span></div>`).join("")}</div></div>
+    <div class="card"><h2>${esc(r.role)} — 합격자 vs 공고</h2>
+      <p class="sub">${esc(R.matching.note)} 매칭 비율은 기술을 밝힌 글 + 공고 3건 이상일 때만 (${r.coverage_n}건, 중간값 ${r.coverage_median ?? "—"}%).</p>
+      <div class="grid">
+        <div><h3>합격자가 가졌던 요구 기술</h3>${bars(r.had_tech, 8)}</div>
+        <div><h3>글에 안 나온 요구 기술</h3>${bars(r.missing_tech, 8)}</div>
+        <div><h3>공고 밖 기술 (합격자만)</h3>${bars(r.extra_tech, 8)}</div>
+      </div>
+      <div class="grid">
+        <div><h3>글에 안 나온 요구 역량</h3>${bars(r.missing_comp, 6)}</div>
+        <div><h3>글쓴이가 밝힌 그때 공고 요구</h3>${chips(r.reported, 15)}</div>
+      </div>
+      ${r.shown.length ? `<h3>요구 → 이렇게 보여줬다</h3><ul class="clean">${r.shown.map(x => `<li>${esc(x.requirement)} → ${esc(x.shown_by || "")}</li>`).join("")}</ul>` : ""}
+      <h3>사례</h3>${r.examples.map(e => `<div class="story"><span class="tag">${esc(e.period || e.year || "시기 모름")}</span><span class="tag">${esc([e.level, e.years_before != null ? e.years_before + "년차" : ""].filter(Boolean).join(" · "))}</span>${e.company ? `<span class="tag">${esc(e.company)}</span>` : ""}${covTag(e.match)}
+        <div><b>${esc(e.title || "")}</b> ${e.url ? `<a href="${esc(e.url)}" target="_blank" rel="noopener">원문</a>` : ""}</div>${matchDetail(e.match)}</div>`).join("")}
+    </div></div>`;
+  document.querySelectorAll(".item").forEach(el => { el.onclick = () => { M.role = el.dataset.k; viewMatch(); }; });
+}
+
+let D = { level: "", q: "" };
+function docBlock(d) {
+  if (!d || !d.n) return "";
+  return `<h3>서류는 이렇게 짰어요 <span class="muted">(${d.n}건)</span></h3>
+    <div class="grid">
+      <div><h3>이력서 형식</h3>${bars(d.resume, 5)}</div>
+      <div><h3>포트폴리오 형식</h3>${bars(d.portfolio, 5)}</div>
+      <div><h3>서류 결과</h3>${list(d.doc_results, 6)}</div>
+    </div>
+    <div class="grid">
+      <div><h3>이력서에서 한 것</h3>${list(d.resume_points.map(x => x[0]), 8)}</div>
+      <div><h3>포트폴리오에서 강조한 것</h3>${list(d.portfolio_points.map(x => x[0]), 8)}</div>
+      <div><h3>자소서 쓰는 방식</h3>${list(d.cover_letter_points.map(x => x[0]), 8)}</div>
+    </div>`;
+}
+function viewDocs() {
+  const o = R.overall.docs || {}, all = R.documents || [];
+  const xs = all.filter(x => (!D.level || x.level === D.level) && (!D.q || JSON.stringify(x).toLowerCase().includes(D.q.toLowerCase())));
+  const sec = (t, a) => a && a.length ? `<div><b>${t}</b>${list(a, 6)}</div>` : "";
+  $("#view").innerHTML = `<div class="card"><h2>서류 — 이력서 · 포트폴리오 · 자기소개서</h2>
+    <p class="sub">경험담에서 서류를 어떻게 짰는지 밝힌 ${o.n || 0}건. 예전에 모은 글은 GPU 가 회차마다 40건씩 서류 부분을 다시 읽어 채워요.</p>
+    <div class="grid">
+      <div><h3>이력서 형식</h3>${bars(o.resume, 6)}</div>
+      <div><h3>포트폴리오 형식</h3>${bars(o.portfolio, 6)}</div>
+      <div><h3>포트폴리오에 담은 프로젝트</h3>${chips(o.portfolio_projects, 12)}</div>
+    </div>
+    <div class="grid">
+      <div><h3>이력서에서 한 것</h3>${chips(o.resume_points, 15)}</div>
+      <div><h3>포트폴리오에서 강조한 것</h3>${chips(o.portfolio_points, 15)}</div>
+    </div>
+    <div class="grid">
+      <div><h3>자소서 쓰는 방식</h3>${chips(o.cover_letter_points, 15)}</div>
+      <div><h3>자소서 문항</h3>${chips(o.cover_letter_questions, 15)}</div>
+      <div><h3>서류 결과</h3>${list(o.doc_results, 10)}</div>
+    </div></div>
+    <div class="card" style="margin-top:12px"><div class="filters">
+      <input id="dq" type="search" placeholder="회사·내용 검색" value="${esc(D.q)}" aria-label="서류 사례 검색">
+      <select id="dlevel" aria-label="신입·경력"><option value="">신입·경력 전체</option><option>신입</option><option>경력</option><option>인턴</option></select>
+      <span class="note">${xs.length}건</span></div>
+    ${xs.slice(0, 120).map(x => `<div class="story">
+      <span class="tag">${esc(x.period || x.year || "시기 모름")}</span><span class="tag">${esc([x.level, x.years_before != null ? x.years_before + "년차" : "", x.role].filter(Boolean).join(" · "))}</span>${x.company ? `<span class="tag">${esc(x.company)}</span>` : ""}${x.doc_result ? `<span class="tag">${esc(x.doc_result)}</span>` : ""}
+      <div><b>${esc(x.title || "")}</b> ${x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener">원문</a>` : ""}</div>
+      <div class="grid">${sec("이력서" + (x.resume ? " · " + x.resume : ""), x.resume_points)}${sec("포트폴리오" + (x.portfolio ? " · " + x.portfolio : ""), [...x.portfolio_points, ...x.portfolio_projects])}${sec("자소서", [...x.cover_letter_points, ...x.cover_letter_questions.map(q => "문항: " + q)])}</div>
+    </div>`).join("") || '<div class="empty">아직 없어요</div>'}</div>`;
+  $("#dlevel").value = D.level;
+  $("#dlevel").onchange = e => { D.level = e.target.value; viewDocs(); };
+  $("#dq").onchange = e => { D.q = e.target.value; viewDocs(); };
+}
+
+function ageLine(st) {
+  return st ? `<b>${st.median}세</b> <span class="muted">중간 · ${st.n}명 · ${st.min}~${st.max}세</span>` : '<span class="muted">—</span>';
+}
+function ageTable(title, rows) {
+  if (!rows || !rows.length) return "";
+  return `<h3>${esc(title)}</h3><div style="overflow-x:auto"><table><tr><th></th><th>나이</th><th>20대 초 · 중 · 후</th><th>30대 초 · 중 · 후</th><th>40대+</th></tr>
+    ${rows.map(([k, st]) => `<tr><td><b>${esc(k)}</b></td><td>${ageLine(st)}</td>
+      <td>${st.bands.slice(0, 3).map(b => b[2] + "%").join(" · ")}</td><td>${st.bands.slice(3, 6).map(b => b[2] + "%").join(" · ")}</td><td>${st.bands[6][2]}%</td></tr>`).join("")}</table></div>`;
+}
+
+function viewAges() {
+  const A = R.ages || {}, a = A.all;
+  if (!a) return $("#view").innerHTML = '<div class="card empty">아직 나이를 밝힌 글이 없어요 — 루프가 회차마다 60건씩 확인해요</div>';
+  $("#view").innerHTML = `<div class="card"><h2>합격·입사 당시 나이</h2>
+    <p class="sub">경험담 ${A.of}건 중 글쓴이가 나이를 밝힌 ${a.n}건(숫자·출생연도·'30대 초반' 같은 표현). 다른 사람 나이나 다른 시점 나이는 뺐어요. 밝힌 사람만이라 늦게 시작한 사람이 더 많이 말하는 쪽으로 기울 수 있어요.</p>
+    <div class="grid"><div><h3>전체 ${ageLine(a)}</h3>${bars(a.bands, 7)}</div></div>
+    ${ageTable("신입 · 경력", A.level)}
+    ${ageTable("학력", A.education)}
+    ${ageTable("부트캠프·교육과정", A.bootcamp)}
+    ${ageTable("개발 전 다른 일을 했나", A.prior)}
+    ${ageTable("글 종류", A.kind)}
+    ${ageTable("직무", A.role)}
+    ${ageTable("회사 (2명 이상 밝힌 곳)", A.company)}
+    <h3>30세 이후 신입·인턴으로 들어간 경로 <span class="muted">${(A.late_entry || []).length}건</span></h3>
+    ${(A.late_entry || []).map(s => `<div class="story"><span class="tag">${s.age}세</span><span class="tag">${esc(s.year || "시기 모름")}</span><span class="tag">${esc([s.company, s.role].filter(Boolean).join(" · "))}</span>${s.education ? `<span class="tag">${esc(s.education)}</span>` : ""}${s.prior ? `<span class="tag">전: ${esc(s.prior)}</span>` : ""}${s.bootcamp ? `<span class="tag">${esc(s.bootcamp)}</span>` : ""}
+      <div>${esc(s.summary || "")} ${s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">원문</a>` : ""}</div></div>`).join("") || '<div class="muted">—</div>'}
+  </div>`;
+}
+
+let RS = { by: "org", k: null };
+function viewRoster() {
+  const S = R.roster;
+  if (!S || S.error || !S.posts_read) return $("#view").innerHTML = `<div class="card empty">아직 읽은 명단이 없어요${S && S.error ? " — " + esc(S.error) : ""}. 인스타에서 2시간마다 15개씩 캡처해요.</div>`;
+  const list = RS.by === "org" ? S.orgs : S.schools, key = RS.by === "org" ? "org" : "school";
+  if (!RS.k || !list.find(x => x[key] === RS.k)) RS.k = list[0]?.[key];
+  const cur = list.find(x => x[key] === RS.k);
+  $("#view").innerHTML = `<div class="card"><h2>합격자 명단 · 취업 현황</h2>
+    <p class="sub">인스타 명단 카드 ${S.posts_read}건을 읽었고, 그중 IT 명단 ${S.posts_it}건에서 ${S.people}명(학교 밝힘 ${S.with_school}명 · 전공이 컴퓨터 계열 ${S.cs_share ?? "—"}%). 이름은 남기지 않았어요. 학원·부트캠프가 올린 홍보 명단이 많아 잘 된 사례 쪽으로 기울어요.</p>
+    <div class="grid"><div><h3>올린 곳</h3>${bars(S.posters, 6)}</div><div><h3>명단 종류</h3>${bars(S.kinds, 6)}</div>${S.age ? `<div><h3>나이 ${ageLine(S.age)}</h3>${bars(S.age.bands.filter(b => b[1]), 7)}</div>` : ""}</div>
+    ${(S.programs || []).length ? `<h3>부트캠프·교육과정 선발 <span class="muted">(취업과 따로 셈)</span></h3><div style="overflow-x:auto"><table><tr><th>과정</th><th>인원</th><th>출신 학교</th><th>전공</th><th>컴퓨터 계열</th><th>나이</th></tr>
+      ${S.programs.map(p => `<tr><td><b>${esc(p.org)}</b></td><td>${p.n}</td><td>${chips(p.schools, 5)}</td><td>${chips(p.majors, 4)}</td><td>${p.cs_share ?? "—"}${p.cs_share != null ? "%" : ""}</td><td>${ageLine(p.age)}</td></tr>`).join("")}</table></div>` : ""}</div>
+  <div class="split">
+    <div class="card list"><div class="filters"><select id="rby" aria-label="보기"><option value="org">합격처별</option><option value="school">학교별</option></select></div>
+      <div class="items">${list.map(x => `<div class="item" tabindex="0" data-k="${esc(x[key])}" aria-selected="${x[key] === RS.k}"><span>${esc(x[key])}</span><span class="meta">${x.n}명</span></div>`).join("") || '<div class="empty">없어요</div>'}</div></div>
+    <div class="card">${cur ? (RS.by === "org" ? `<h2>${esc(cur.org)}</h2><p class="sub">${esc(cur.type)} · ${cur.n}명${cur.cs_share != null ? ` · 컴퓨터 계열 전공 ${cur.cs_share}%` : ""}</p>
+      <div class="grid"><div><h3>출신 학교</h3>${bars(cur.schools, 8)}</div><div><h3>전공</h3>${bars(cur.majors, 5)}</div><div><h3>직무</h3>${bars(cur.roles, 5)}</div><div><h3>연도</h3>${bars(cur.years, 5)}</div>
+      ${cur.age ? `<div><h3>나이 ${ageLine(cur.age)}</h3>${bars(cur.age.bands.filter(b => b[1]), 7)}</div>` : ""}</div>`
+      : `<h2>${esc(cur.school)}</h2><p class="sub">${cur.n}명</p><div class="grid"><div><h3>간 곳</h3>${bars(cur.orgs, 8)}</div><div><h3>직무</h3>${bars(cur.roles, 5)}</div>
+      ${cur.age ? `<div><h3>나이 ${ageLine(cur.age)}</h3>${bars(cur.age.bands.filter(b => b[1]), 7)}</div>` : ""}</div>`) : ""}
+      <h3>원본 게시물</h3><ul>${S.sources.slice(-30).reverse().map(p => `<li><a href="${esc(p.url)}" target="_blank" rel="noopener">#${esc(p.tag)}</a> <span class="muted">${esc(p.date || "")} · ${esc(p.poster || "")} · ${p.n}명</span></li>`).join("")}</ul></div></div>`;
+  $("#rby").value = RS.by;
+  $("#rby").onchange = e => { RS.by = e.target.value; RS.k = null; viewRoster(); };
+  document.querySelectorAll(".item").forEach(el => { el.onclick = () => { RS.k = el.dataset.k; viewRoster(); }; });
+}
+
+const VIEWS = { ages: viewAges, roster: viewRoster, companies: () => viewCompanies(), programs: viewPrograms, posts: () => viewPosts(), docs: viewDocs, match: viewMatch, transitions: viewTransitions, backgrounds: viewBackgrounds, market: viewMarket, gaps: viewGaps };
+function render() { VIEWS[tab](); }
+
+document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => {
+  tab = b.dataset.tab; sel = null;
+  document.querySelectorAll("#tabs button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  render();
+});
+
+fetch("/api/careers").then(r => r.ok ? r.json() : Promise.reject(r.status)).then(d => {
+  R = d;
+  const nco = d.companies.filter(c => c.n > 0).length, ngh = d.companies.filter(c => c.github).length;
+  $("#stats").innerHTML = `<span><b>${d.raw.toLocaleString()}</b>모은 글</span><span><b>${d.stories.toLocaleString()}</b>경험담</span>
+    <span><b>${nco}</b>회사</span><span><b>${ngh}</b>GitHub</span><span><b>${d.transitions.length}</b>전환 유형</span>
+    <span>${new Date(d.generated_at).toLocaleString("ko-KR")}</span>`;
+  render();
+}).catch(() => { $("#view").innerHTML = '<div class="card empty">보고서가 아직 없어요. <code>python -m careers.cycle</code> 이 한 번 돌면 생겨요.</div>'; });
+</script>
+</body>
+</html>

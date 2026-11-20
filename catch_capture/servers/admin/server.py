@@ -27,6 +27,79 @@ def _now() -> str:
     return datetime.datetime.now().isoformat(timespec="seconds")
 
 
+def _careers_dir() -> Path:
+    from core.paths import VAR_DIR
+    return VAR_DIR / "careers"
+
+
+def _careers_extracted() -> dict:
+    f = _careers_dir() / "paths.jsonl"
+    if not f.is_file():
+        return {}
+    out = {}
+    for line in f.read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            r = json.loads(line)
+            out[r["id"]] = r
+    return out
+
+
+def _careers_posts(qs: dict) -> dict:
+    """모은 글 목록(본문 빼고). 필터: source·state(story|not|pending)·q·year."""
+    ext = _careers_extracted()
+    q = qs.get("q", [""])[0].lower()
+    src = qs.get("source", [""])[0]
+    state = qs.get("state", [""])[0]
+    year = qs.get("year", [""])[0]
+    level = qs.get("level", [""])[0]
+    rows, counts = [], {"story": 0, "not": 0, "pending": 0}
+    for f in (_careers_dir() / "raw").glob("*.json"):
+        try:
+            r = json.loads(f.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        e = ext.get(r["id"])
+        st = "pending" if e is None else ("story" if e.get("is_story") else "not")
+        if src and r.get("source") != src:
+            continue
+        if year and str((e or {}).get("year") or "") != year:
+            continue
+        if level and (e or {}).get("level") != level:
+            continue
+        if q and q not in (r.get("title") or "").lower() and q not in str((e or {}).get("company") or "").lower():
+            continue
+        counts[st] += 1
+        if state and st != state:
+            continue
+        rows.append({"id": r["id"], "title": r.get("title"), "source": r.get("source"), "date": r.get("date"),
+                     "url": r.get("url"), "state": st, "company": (e or {}).get("company"), "year": (e or {}).get("year"),
+                     "period": (e or {}).get("period"), "kind": (e or {}).get("kind"), "role": (e or {}).get("role"),
+                     "level": (e or {}).get("level")})
+    rows.sort(key=lambda x: (str(x.get("year") or ""), x.get("date") or ""), reverse=True)
+    off = int(qs.get("offset", ["0"])[0] or 0)
+    return {"total": len(rows), "counts": counts, "items": rows[off: off + 200]}
+
+
+def _careers_upload(body: dict) -> dict:
+    """캡처 올리기 — 이미지(data URL)들을 inbox/<시각>/ 에 두면 다음 회차가 글자를 읽어 모은다."""
+    import base64
+    import re as _re
+    imgs = body.get("images") or []
+    if not imgs:
+        raise ValueError("images required")
+    name = _re.sub(r"[^0-9A-Za-z가-힣_-]+", "-", (body.get("name") or "")).strip("-")[:40]
+    d = _careers_dir() / "inbox" / (datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + (f"-{name}" if name else ""))
+    d.mkdir(parents=True, exist_ok=True)
+    for i, data_url in enumerate(imgs, 1):
+        head, _, b64 = data_url.partition(",")
+        ext = ".png" if "png" in head else ".webp" if "webp" in head else ".jpg"
+        (d / f"{i:02d}{ext}").write_bytes(base64.b64decode(b64))
+    url, note = (body.get("url") or "").strip(), (body.get("note") or "").strip()
+    if url or note:
+        (d / "url.txt").write_text(f"{url}\n{note}".strip() + "\n", encoding="utf-8")
+    return {"ok": True, "folder": d.name, "images": len(imgs)}
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = "JobseekerAdmin"
 
@@ -82,6 +155,17 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def _careers_post(self, rid: str) -> None:
+        import re as _re
+        if not _re.fullmatch(r"[a-z]+-[0-9a-f]{12}", rid or ""):
+            return self._err("bad id")
+        f = _careers_dir() / "raw" / f"{rid}.json"
+        if not f.is_file():
+            return self._err("post not found", 404)
+        r = json.loads(f.read_text(encoding="utf-8"))
+        r["extracted"] = _careers_extracted().get(rid)
+        self._json(r)
+
     # ── 라우팅 ───────────────────────────────────────────────
     def do_GET(self) -> None:
         parsed = urlparse(self.path)
@@ -117,6 +201,17 @@ class Handler(BaseHTTPRequestHandler):
                 rid = qs.get("id", [""])[0]
                 r = store.get_resume(rid)
                 self._json(r) if r else self._err("resume not found", 404)
+            elif path == "/api/careers":
+                # 커리어 경로 보고서(catch_capture/careers/report.py 가 굽는다) — 혼자 보는 것이라 여기서만 연다
+                from core.paths import VAR_DIR
+                f = VAR_DIR / "careers" / "report.json"
+                self._json(json.loads(f.read_text(encoding="utf-8"))) if f.is_file() else self._err("report not built", 404)
+            elif path == "/api/careers/posts":
+                self._json(_careers_posts(qs))
+            elif path == "/api/careers/post":
+                self._careers_post(qs.get("id", [""])[0])
+            elif path == "/careers":
+                self._serve_static("/careers.html")
             elif path.startswith("/api/"):
                 self._err("unknown endpoint", 404)
             else:
@@ -150,6 +245,8 @@ class Handler(BaseHTTPRequestHandler):
                 self._ai_analyze(body)
             elif path == "/api/generate":
                 self._ai_generate(body)
+            elif path == "/api/careers/upload":
+                self._json(_careers_upload(body), 201)
             else:
                 self._err("unknown endpoint", 404)
         except Exception as e:  # noqa: BLE001
