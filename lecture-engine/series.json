@@ -1,0 +1,848 @@
+[
+ {
+  "key": "cs229-2026",
+  "playlist": "PLaqpC4kq8Gpw",
+  "match": null,
+  "title": "CS229 머신러닝 (Spring 2026)",
+  "school": "Stanford",
+  "code": "CS229",
+  "term": "Spring 2026",
+  "playlist_title": "Stanford CS229 Machine Learning | Spring 2026",
+  "lectures": [
+   {
+    "no": 1,
+    "id": "DATnpGoGhM8",
+    "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 1: Introduction",
+    "duration": 2219
+   },
+   {
+    "no": 2,
+    "id": "cmNIMjPYdgM",
+    "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 2: Supervised Learning Setup",
+    "duration": 4690
+   },
+   {
+    "no": 3,
+    "id": "uJF_gL3jhxI",
+    "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 3: Weighted Least Squares",
+    "duration": 3734
+   },
+   {
+    "no": 4,
+    "id": "8gVi4Rk21Eg",
+    "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 4: Exponential Family, GLMs Classification",
+    "duration": 4452
+   },
+   {
+    "no": 5,
+    "id": "zRdE8A4UZes",
+    "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 5: Gaussian Discriminant Analysis",
+    "duration": 4898
+   },
+   {
+    "no": 6,
+    "id": "llnEgyyuYkQ",
+    "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 6: Dataset Split, ML Advice",
+    "duration": 4707
+   },
+   {
+    "no": 7,
+    "id": "fRM41w9jzQo",
+    "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 7: Neural Networks 1 (Architecture)",
+    "duration": 4828
+   },
+   {
+    "no": 8,
+    "id": "ne2ngVAoMG8",
+    "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 8: Neural Networks 2 (Backprop)",
+    "duration": 3733
+   },
+   {
+    "no": 9,
+    "id": "bSmIGBCoffA",
+    "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 9: K-Means and GMM (non-EM)",
+    "duration": 4590
+   },
+   {
+    "no": 10,
+    "id": "sUS-eTa0l6s",
+    "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 10: GMM (EM), PCA",
+    "duration": 4806
+   },
+   {
+    "no": 11,
+    "id": "dqUMCzWjZSI",
+    "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 11: Diffusion Models",
+    "duration": 4951
+   },
+   {
+    "no": 12,
+    "id": "_kREM2UAiJ8",
+    "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 12: Representation Learning",
+    "duration": 4557
+   },
+   {
+    "no": 13,
+    "id": "lNTajqxxOn4",
+    "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 13: LLMs, Next-Word Prediction Loss",
+    "duration": 3642
+   },
+   {
+    "no": 14,
+    "id": "pwQ0l4hFCVI",
+    "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 14: Transformers, In-Context Learning",
+    "duration": 4652
+   },
+   {
+    "no": 15,
+    "id": "hHC-SF3utxg",
+    "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 16: Basic Concept in RL, Policy Gradient",
+    "duration": 4399
+   },
+   {
+    "no": 16,
+    "id": "xveNBYVTrqw",
+    "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 18: GMM (EM), PCA",
+    "duration": 4585
+   },
+   {
+    "no": 17,
+    "id": "J7CossjMvEg",
+    "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 20: GMM (EM), PCA",
+    "duration": 4736
+   }
+  ]
+ },
+ {
+  "key": "cs336-2026",
+  "playlist": "PLoROMvodv4rMqXOcazWaTUHhq-yembLCV",
+  "match": null,
+  "title": "CS336 LLM 바닥부터 만들기 (Spring 2026)",
+  "school": "Stanford",
+  "code": "CS336",
+  "term": "Spring 2026",
+  "playlist_title": "Stanford CS336: Language Modeling from Scratch | Spring 2026",
+  "lectures": [
+   {
+    "no": 1,
+    "id": "JuoVZkPBiKk",
+    "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 1: Overview, Tokenization",
+    "duration": 4762
+   },
+   {
+    "no": 2,
+    "id": "kuYAsz7zspQ",
+    "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 2: PyTorch (einops)",
+    "duration": 4645
+   },
+   {
+    "no": 3,
+    "id": "lVynu4bo1rY",
+    "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 3: Architectures",
+    "duration": 5354
+   },
+   {
+    "no": 4,
+    "id": "cKSwj_qZ8Jg",
+    "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 4: Attention Alternatives",
+    "duration": 5181
+   },
+   {
+    "no": 5,
+    "id": "izZba4UA7iY",
+    "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 5: GPUs, TPUs",
+    "duration": 4719
+   },
+   {
+    "no": 6,
+    "id": "xnDHaNUvHBg",
+    "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 6: Kernels, Triton, XLA",
+    "duration": 5201
+   },
+   {
+    "no": 7,
+    "id": "SzpOcwdIL0Y",
+    "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 7: Parallelism",
+    "duration": 4863
+   },
+   {
+    "no": 8,
+    "id": "6-cXp-aOmdg",
+    "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 8: Parallelism",
+    "duration": 4811
+   },
+   {
+    "no": 9,
+    "id": "Q15rhEWZPQ4",
+    "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 9: Scaling Laws",
+    "duration": 4677
+   },
+   {
+    "no": 10,
+    "id": "EfM546A79aM",
+    "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 10: Inference",
+    "duration": 5130
+   },
+   {
+    "no": 11,
+    "id": "vTfEyOyzV9E",
+    "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 11:  Scaling Laws",
+    "duration": 4624
+   },
+   {
+    "no": 12,
+    "id": "JpAxdTWQJxM",
+    "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 12: Evaluation",
+    "duration": 4714
+   },
+   {
+    "no": 13,
+    "id": "-qm0ln33G24",
+    "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 13: Data (Sources, Datasets)",
+    "duration": 4922
+   },
+   {
+    "no": 14,
+    "id": "5sxHosTLPF8",
+    "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 14: Data",
+    "duration": 5086
+   },
+   {
+    "no": 15,
+    "id": "2oH6PWPrYFo",
+    "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 15: Mid/Post-Training",
+    "duration": 4795
+   },
+   {
+    "no": 16,
+    "id": "dIFAi87Ws4E",
+    "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 16: Post-Training - RLVR",
+    "duration": 4551
+   },
+   {
+    "no": 17,
+    "id": "26FtD08ZpOU",
+    "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 17: Alignment - Multimodality",
+    "duration": 4660
+   },
+   {
+    "no": 18,
+    "id": "9EEm4iMAF5s",
+    "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Guest Lecture: Dan Fu",
+    "duration": 4301
+   }
+  ]
+ },
+ {
+  "key": "cs231n-2025",
+  "playlist": "PLoROMvodv4rOmsNzYBMe0gJY2XS8AQg16",
+  "match": null,
+  "title": "CS231N 컴퓨터 비전 딥러닝 (Spring 2025)",
+  "school": "Stanford",
+  "code": "CS231N",
+  "term": "Spring 2025",
+  "playlist_title": "Stanford CS231N Deep Learning for Computer Vision I 2025",
+  "lectures": [
+   {
+    "no": 1,
+    "id": "2fq9wYslV0A",
+    "title": "Stanford CS231N Deep Learning for Computer Vision | Spring 2025 | Lecture 1: Introduction",
+    "duration": 3773
+   },
+   {
+    "no": 2,
+    "id": "pdqofxJeBN8",
+    "title": "Stanford CS231N | Spring 2025 | Lecture 2: Image Classification with Linear Classifiers",
+    "duration": 4022
+   },
+   {
+    "no": 3,
+    "id": "dyNGd06MWn4",
+    "title": "Stanford CS231N | Spring 2025 | Lecture 3: Regularization and Optimization",
+    "duration": 4119
+   },
+   {
+    "no": 4,
+    "id": "25zD5qJHYsk",
+    "title": "Stanford CS231N | Spring 2025 | Lecture 4: Neural Networks and Backpropagation",
+    "duration": 4607
+   },
+   {
+    "no": 5,
+    "id": "f3g1zGdxptI",
+    "title": "Stanford CS231N | Spring 2025 | Lecture 5: Image Classification with CNNs",
+    "duration": 4084
+   },
+   {
+    "no": 6,
+    "id": "aVJy4O5TOk8",
+    "title": "Stanford CS231N Deep Learning for Computer Vision | Spring 2025 | Lecture 6: CNN Architectures",
+    "duration": 4267
+   },
+   {
+    "no": 7,
+    "id": "kG2lAPBF7zA",
+    "title": "Stanford CS231N | Spring 2025 | Lecture 7: Recurrent Neural Networks",
+    "duration": 4308
+   },
+   {
+    "no": 8,
+    "id": "RQowiOF_FvQ",
+    "title": "Stanford CS231N | Spring 2025 | Lecture 8: Attention and Transformers",
+    "duration": 3991
+   },
+   {
+    "no": 9,
+    "id": "PTypu6GqEd4",
+    "title": "Stanford CS231N | Spring 2025 | Lecture 9: Object Detection, Image Segmentation, Visualizing",
+    "duration": 4424
+   },
+   {
+    "no": 10,
+    "id": "wElqklprhPE",
+    "title": "Stanford CS231N Deep Learning for Computer Vision | Spring 2025 | Lecture 10: Video Understanding",
+    "duration": 4125
+   },
+   {
+    "no": 11,
+    "id": "9MvD-XsowsE",
+    "title": "Stanford CS231N | Spring 2025 | Lecture 11: Large Scale Distributed Training",
+    "duration": 4373
+   },
+   {
+    "no": 12,
+    "id": "4howBU7THbM",
+    "title": "Stanford CS231N | Spring 2025 | Lecture 12: Self-Supervised Learning",
+    "duration": 4482
+   },
+   {
+    "no": 13,
+    "id": "zbHXQRUNlH0",
+    "title": "Stanford CS231N Deep Learning for Computer Vision | Spring 2025 | Lecture 13: Generative Models 1",
+    "duration": 4351
+   },
+   {
+    "no": 14,
+    "id": "Edr4uZFh4EE",
+    "title": "Stanford CS231N Deep Learning for Computer Vision | Spring 2025 | Lecture 14: Generative Models 2",
+    "duration": 4329
+   },
+   {
+    "no": 15,
+    "id": "7lxrKDKtykM",
+    "title": "Stanford CS231N Deep Learning for Computer Vision | Spring 2025 | Lecture 15: 3D Vision",
+    "duration": 4310
+   },
+   {
+    "no": 16,
+    "id": "mQOK0Mfyrkk",
+    "title": "Stanford CS231N Deep Learning for Computer Vision | Spring 2025 | Lecture 16: Vision and Language",
+    "duration": 4194
+   },
+   {
+    "no": 17,
+    "id": "XSfmOH_xVSU",
+    "title": "Stanford CS231N Deep Learning for Computer Vision | Spring 2025 | Lecture 17: Robot Learning",
+    "duration": 4713
+   },
+   {
+    "no": 18,
+    "id": "g8UaBfj6Sh8",
+    "title": "Stanford CS231N Deep Learning for Computer Vision | Spring 2025 | Lecture 18: Human-Centered AI",
+    "duration": 3916
+   }
+  ]
+ },
+ {
+  "key": "cme295-2025",
+  "playlist": "PLoROMvodv4rOCXd21gf0CF4xr35yINeOy",
+  "match": null,
+  "title": "CME295 트랜스포머와 LLM (Autumn 2025)",
+  "school": "Stanford",
+  "code": "CME295",
+  "term": "Autumn 2025",
+  "playlist_title": "Stanford CME295: Transformers and Large Language Models I Autumn 2025",
+  "lectures": [
+   {
+    "no": 1,
+    "id": "Ub3GoFaUcds",
+    "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 1 - Transformer",
+    "duration": 6119
+   },
+   {
+    "no": 2,
+    "id": "yT84Y5zCnaA",
+    "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models & Tricks",
+    "duration": 6440
+   },
+   {
+    "no": 3,
+    "id": "Q5baLehv5So",
+    "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 3 - Tranformers & Large Language Models",
+    "duration": 6525
+   },
+   {
+    "no": 4,
+    "id": "VlA_jt_3Qc4",
+    "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 4 - LLM Training",
+    "duration": 6447
+   },
+   {
+    "no": 5,
+    "id": "PmW_TMQ3l0I",
+    "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 5 - LLM tuning",
+    "duration": 6462
+   },
+   {
+    "no": 6,
+    "id": "k5Fh-UgTuCo",
+    "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning",
+    "duration": 6430
+   },
+   {
+    "no": 7,
+    "id": "h-7S6HNq0Vg",
+    "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs",
+    "duration": 6563
+   },
+   {
+    "no": 8,
+    "id": "8fNP4N46RRo",
+    "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 8 - LLM Evaluation",
+    "duration": 6565
+   },
+   {
+    "no": 9,
+    "id": "Q86qzJ1K1Ss",
+    "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 9 - Recap & Current Trends",
+    "duration": 6691
+   }
+  ]
+ },
+ {
+  "key": "cs230-2025",
+  "playlist": "PLoROMvodv4rNRRGdS0rBbXOUGA0wjdh1X",
+  "match": null,
+  "title": "CS230 딥러닝 (Autumn 2025)",
+  "school": "Stanford",
+  "code": "CS230",
+  "term": "Autumn 2025",
+  "playlist_title": "Stanford CS230: Deep Learning I Autumn 2025",
+  "lectures": [
+   {
+    "no": 1,
+    "id": "_NLHFoVNlbg",
+    "title": "Stanford CS230 | Autumn 2025 | Lecture 1: Introduction to Deep Learning",
+    "duration": 3617
+   },
+   {
+    "no": 2,
+    "id": "DNCn1BpCAUY",
+    "title": "Stanford CS230 | Autumn 2025 | Lecture 2: Supervised, Self-Supervised, & Weakly Supervised Learning",
+    "duration": 5988
+   },
+   {
+    "no": 3,
+    "id": "MGqQuQEUXhk",
+    "title": "Stanford CS230 | Autumn 2025 | Lecture 3: Full Cycle of a DL project",
+    "duration": 4025
+   },
+   {
+    "no": 4,
+    "id": "aWlRtOlacYM",
+    "title": "Stanford CS230 | Autumn 2025 | Lecture 4: Adversarial Robustness and Generative Models",
+    "duration": 6437
+   },
+   {
+    "no": 5,
+    "id": "4E27qlfYw0A",
+    "title": "Stanford CS230 | Autumn 2025 | Lecture 5: Deep Reinforcement Learning",
+    "duration": 6301
+   },
+   {
+    "no": 6,
+    "id": "s6JVGzABKho",
+    "title": "Stanford CS230 | Autumn 2025 | Lecture 6: AI Project Strategy",
+    "duration": 4518
+   },
+   {
+    "no": 7,
+    "id": "k1njvbBmfsw",
+    "title": "Stanford CS230 | Autumn 2025 | Lecture 8: Agents, Prompts, and RAG",
+    "duration": 6594
+   },
+   {
+    "no": 8,
+    "id": "AuZoDsNmG_s",
+    "title": "Stanford CS230 | Autumn 2025 | Lecture 9: Career Advice in AI",
+    "duration": 6309
+   },
+   {
+    "no": 9,
+    "id": "Ozb1AR_F5MU",
+    "title": "Stanford CS230 | Autumn 2025 | Lecture 10: What’s Going On Inside My Model?",
+    "duration": 6414
+   }
+  ]
+ },
+ {
+  "key": "cs221-2025",
+  "playlist": "PLoROMvodv4rMeDqwS1yFl3j3sR_-MQNEN",
+  "match": null,
+  "title": "CS221 인공지능 원리와 기법 (Autumn 2025)",
+  "school": "Stanford",
+  "code": "CS221",
+  "term": "Autumn 2025",
+  "playlist_title": "Stanford CS221: Artificial Intelligence: Principles and Techniques | Autumn 2025",
+  "lectures": [
+   {
+    "no": 1,
+    "id": "yaLEGZuIIgE",
+    "title": "Stanford CS221 | Autumn 2025 | Lecture 1: Course Overview and AI Foundations",
+    "duration": 3987
+   },
+   {
+    "no": 2,
+    "id": "ypZJaTqrNdk",
+    "title": "Stanford CS221 | Autumn 2025 | Lecture 2: Learning I",
+    "duration": 4351
+   },
+   {
+    "no": 3,
+    "id": "Mbe5ICIUw5Q",
+    "title": "Stanford CS221 | Autumn 2025 | Lecture 3: Learning II",
+    "duration": 4368
+   },
+   {
+    "no": 4,
+    "id": "89NND-Ca0yY",
+    "title": "Stanford CS221 | Autumn 2025 | Lecture 4: Learning III",
+    "duration": 4306
+   },
+   {
+    "no": 5,
+    "id": "fPESauMaJYA",
+    "title": "Stanford CS221 | Autumn 2025 | Lecture 5: Search I",
+    "duration": 4904
+   },
+   {
+    "no": 6,
+    "id": "4Iu4KPVbnAY",
+    "title": "Stanford CS221 | Autumn 2025 | Lecture 6: Search II",
+    "duration": 4792
+   },
+   {
+    "no": 7,
+    "id": "2ZtF1j3n6XE",
+    "title": "Stanford CS221 | Autumn 2025 | Lecture 7: Markov Decision Processes",
+    "duration": 4820
+   },
+   {
+    "no": 8,
+    "id": "34Hk2v2kwg4",
+    "title": "Stanford CS221 | Autumn 2025 | Lecture 8: Reinforcement Learning",
+    "duration": 4696
+   },
+   {
+    "no": 9,
+    "id": "lOMNskWVeD8",
+    "title": "Stanford CS221 | Autumn 2025 | Lecture 9: Policy Gradient",
+    "duration": 4442
+   },
+   {
+    "no": 10,
+    "id": "SMOD_GiRzb8",
+    "title": "Stanford CS221 | Autumn 2025 | Lecture 10: Games I",
+    "duration": 4405
+   },
+   {
+    "no": 11,
+    "id": "9CKRoKFdS5Y",
+    "title": "Stanford CS221 | Autumn 2025 | Lecture 11: Games II",
+    "duration": 4428
+   },
+   {
+    "no": 12,
+    "id": "ec2rCf4iIqU",
+    "title": "Stanford CS221 | Autumn 2025 | Lecture 12: Bayesian Networks I",
+    "duration": 4656
+   },
+   {
+    "no": 13,
+    "id": "Dk7Kqqehzjk",
+    "title": "Stanford CS221 | Autumn 2025 | Lecture 13: Bayesian Networks and Gibbs Sampling",
+    "duration": 4554
+   },
+   {
+    "no": 14,
+    "id": "4d9V6Sxa6gU",
+    "title": "Stanford CS221 | Autumn 2025 | Lecture 14: Bayesian Networks and Learning",
+    "duration": 4831
+   },
+   {
+    "no": 15,
+    "id": "Q7V13XriJEc",
+    "title": "Stanford CS221 | Autumn 2025 | Lecture 15: Logic I",
+    "duration": 4406
+   },
+   {
+    "no": 16,
+    "id": "x9Mbqu06OVo",
+    "title": "Stanford CS221 | Autumn 2025 | Lecture 16: Logic II",
+    "duration": 4547
+   },
+   {
+    "no": 17,
+    "id": "3orP3u2-jcg",
+    "title": "Stanford CS221 | Autumn 2025 | Lecture 17: Language Models",
+    "duration": 4786
+   },
+   {
+    "no": 18,
+    "id": "071zJXhvNfM",
+    "title": "Stanford CS221 | Autumn 2025 | Lecture 18: AI & Society",
+    "duration": 4330
+   },
+   {
+    "no": 19,
+    "id": "lPx5PF1ttkc",
+    "title": "Stanford CS221 | Autumn 2025 | Lecture 19: AI Supply Chains",
+    "duration": 4476
+   },
+   {
+    "no": 20,
+    "id": "5u5I5jvWR5k",
+    "title": "Stanford CS221 | Autumn 2025 | Lecture 20: Fireside Chat, Conclusion",
+    "duration": 3529
+   }
+  ]
+ },
+ {
+  "key": "cs329z-2026",
+  "playlist": "PLPRcF5HR02_U",
+  "match": null,
+  "title": "CS329Z AI 에이전트 엔지니어링 (Autumn 2026)",
+  "school": "Stanford",
+  "code": "CS329Z",
+  "term": "Autumn 2026",
+  "playlist_title": "Stanford CS329Z Engineering AI Agents | Autumn 2026",
+  "lectures": [
+   {
+    "no": 1,
+    "id": "DGI4vucR71w",
+    "title": "What Are AI Agents? Agentic Systems Explained | Stanford CS329Z Lecture 1 with Diyi Yang",
+    "duration": 4176
+   },
+   {
+    "no": 2,
+    "id": "Vr1NzH8bT44",
+    "title": "LLMs for Agent Builders: Context Engineering | Stanford CS329Z Lecture 2 with Michael Ryan",
+    "duration": 4673
+   },
+   {
+    "no": 3,
+    "id": "psLc-46GqY0",
+    "title": "RAG Explained: From BM25 to Agentic RAG | Stanford CS329Z Lecture 3 with Diyi Yang",
+    "duration": 4591
+   },
+   {
+    "no": 4,
+    "id": "s0S38lz6O7M",
+    "title": "How AI Agents Use Tools: Function Calling & MCP | Stanford CS329Z Lecture 4 with Diyi Yang",
+    "duration": 4756
+   },
+   {
+    "no": 5,
+    "id": "q0Q-Hy8TTps",
+    "title": "DSPy vs. LangGraph: AI Agent Frameworks Explained | Stanford CS329Z Lecture 5 with Michael Ryan",
+    "duration": 4634
+   },
+   {
+    "no": 6,
+    "id": "JC_pLC5EX_w",
+    "title": "AI Agent Design Patterns: ReAct, CodeAct & More | Stanford CS329Z Lecture 6 with Michael Ryan",
+    "duration": 4611
+   },
+   {
+    "no": 7,
+    "id": "qh5tP6PBZ6U",
+    "title": "How AI Agent Memory Works: MemGPT & Memory Types | Stanford CS329Z Lecture 7 with Michael Ryan",
+    "duration": 4735
+   },
+   {
+    "no": 8,
+    "id": "TlX_ft_PQIM",
+    "title": "Multi-Agent Systems: When More Agents Help or Hurt | Stanford CS329Z Lecture 8 with Michael Ryan",
+    "duration": 4736
+   },
+   {
+    "no": 9,
+    "id": "e_m99aR7_3Q",
+    "title": "Optimizing AI Agents: Prompts vs. Weights (GEPA, GRPO) | Stanford CS329Z Lecture 9 with Michael Ryan",
+    "duration": 4834
+   },
+   {
+    "no": 10,
+    "id": "7GW-9ug2nvw",
+    "title": "Terminal-Bench: Evaluating AI Agents | Stanford CS329Z Guest Lecture with Alex Shaw & Ryan Marten",
+    "duration": 4404
+   }
+  ]
+ },
+ {
+  "key": "cs25-v6",
+  "playlist": "PLoROMvodv4rNiJRchCzutFw5ItR_Z27CM",
+  "match": "V6",
+  "title": "CS25 트랜스포머 유나이티드 V6",
+  "school": "Stanford",
+  "code": "CS25",
+  "term": "V6",
+  "playlist_title": "Stanford CS25 - Transformers United",
+  "lectures": [
+   {
+    "no": 1,
+    "id": "bHSDPgZYie0",
+    "title": "Stanford CS25: Transformers United V6 I Overview of Transformers",
+    "duration": 4606
+   },
+   {
+    "no": 2,
+    "id": "GBd7iuJkW08",
+    "title": "Stanford CS25: Transformers United V6 I From Representation Learning to World Modeling",
+    "duration": 4263
+   },
+   {
+    "no": 3,
+    "id": "OyimE74UMF8",
+    "title": "Stanford CS25: Transformers United V6 I On the Tradeoffs of State Space Models and Transformers",
+    "duration": 4628
+   },
+   {
+    "no": 4,
+    "id": "I5BKi32IEa8",
+    "title": "Stanford CS25: Transformers United V6 I The Ultra-Scale Talk: Scaling Training to Thousands of GPUs",
+    "duration": 3708
+   },
+   {
+    "no": 5,
+    "id": "e_H_tkpCAK4",
+    "title": "Stanford CS25: Transformers United V6 I From Next-Token Prediction to Next-Generation Intelligence",
+    "duration": 3477
+   },
+   {
+    "no": 6,
+    "id": "jFdH7n6BAl0",
+    "title": "Stanford CS25: Transformers United V6 I Advancing Science and Medicine with Collaborative AI Agents",
+    "duration": 3993
+   },
+   {
+    "no": 7,
+    "id": "dJtHauhRasc",
+    "title": "Stanford CS25: Transformers United V6 I Distinct Modes of Generalization from Parameters and Context",
+    "duration": 4350
+   },
+   {
+    "no": 8,
+    "id": "ZUdIsRZhWXI",
+    "title": "Stanford CS25: Transformers United V6 I Serving Transformers: Lessons from the Trenches",
+    "duration": 4951
+   },
+   {
+    "no": 9,
+    "id": "NDdc39KYqDU",
+    "title": "Stanford CS25: Transformers United V6 I From Language Models to Native Multimodal Intelligence",
+    "duration": 3880
+   }
+  ]
+ },
+ {
+  "key": "cs153",
+  "playlist": "PLoROMvodv4rN447WKQ5oz_YdYbS74M5IA",
+  "match": null,
+  "title": "CS153 프런티어 시스템 (특강)",
+  "school": "Stanford",
+  "code": "CS153",
+  "term": null,
+  "playlist_title": "Stanford CS153 Frontier Systems",
+  "lectures": [
+   {
+    "no": 1,
+    "id": "8cAQdELWYuo",
+    "title": "Stanford CS153 Frontier Systems | Teaching AI to Touch Atoms",
+    "duration": 2529
+   },
+   {
+    "no": 2,
+    "id": "d0Pfu6B7gIM",
+    "title": "Stanford CS153 Frontier Systems | Building the Frontier Ecosystem",
+    "duration": 3438
+   },
+   {
+    "no": 3,
+    "id": "F_7M4Hc-usM",
+    "title": "Stanford CS153 Frontier Systems | Scale, AGI, and the Future of Everything",
+    "duration": 2470
+   },
+   {
+    "no": 4,
+    "id": "g50FHC-PzK8",
+    "title": "Stanford CS153 Frontier Systems | The Road Ahead: Resilience Required",
+    "duration": 3919
+   },
+   {
+    "no": 5,
+    "id": "VeTqsCpcDgg",
+    "title": "Stanford CS153 Frontier Systems | The Discipline of Delivering Value per Gigawatt",
+    "duration": 3863
+   },
+   {
+    "no": 6,
+    "id": "Lri2LNYtERM",
+    "title": "Stanford CS153 Frontier Systems | The AI Native Company: How One Founder Becomes a 1000x Engineer",
+    "duration": 2835
+   },
+   {
+    "no": 7,
+    "id": "wisccQYTRQc",
+    "title": "Stanford CS153 Frontier Systems | Scott Nolan from General Matter on Energy Bottlenecks",
+    "duration": 3628
+   },
+   {
+    "no": 8,
+    "id": "B8NvdfssGac",
+    "title": "Stanford CS153 Frontier Systems | Ben Horowitz from a16z on Venture Capital Systems, Network Effects",
+    "duration": 3978
+   },
+   {
+    "no": 9,
+    "id": "BQrJ4lHAjhc",
+    "title": "Stanford CS153 Frontier Systems | Nikhyl Singhal from Skip on Product Management in the AI Era",
+    "duration": 3794
+   },
+   {
+    "no": 10,
+    "id": "6nUl_w5W9Wk",
+    "title": "Stanford CS153 Frontier Systems | Amit Jain from Luma AI on Unified Intelligence Systems",
+    "duration": 3462
+   },
+   {
+    "no": 11,
+    "id": "CBaLU0dDEY8",
+    "title": "Stanford CS153 Frontier Systems | Andreas Blattmann from Black Forest Labs on Visual Intelligence",
+    "duration": 3674
+   },
+   {
+    "no": 12,
+    "id": "vfF011ko89o",
+    "title": "Stanford CS153 Frontier Systems | Mati Staniszewski from ElevenLabs on The Future of Voice Systems",
+    "duration": 3986
+   },
+   {
+    "no": 13,
+    "id": "O5PfU_uDhS0",
+    "title": "Stanford CS153 Frontier Systems | Anjney Midha from AMP PBC on Frontier Systems",
+    "duration": 3955
+   }
+  ]
+ }
+]

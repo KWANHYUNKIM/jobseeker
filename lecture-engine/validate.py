@@ -126,6 +126,33 @@ def queue_ids() -> list[str]:
     return re.findall(r"^- \[ \] ([\w-]{11})", QUEUE.read_text(encoding="utf-8"), re.M)
 
 
+SERIES = Path(__file__).parent / "series.json"
+
+
+def load_series() -> list[dict]:
+    return json.loads(SERIES.read_text(encoding="utf-8")) if SERIES.exists() else []
+
+
+def series_index(series: list[dict], have: set[str]) -> list[dict]:
+    """과목마다 1강부터 N강까지 — 노트가 없는 강의도 '준비 중'으로 싣는다(무엇이 남았는지 보이게)."""
+    out = []
+    for s in series:
+        lec = [{"no": l["no"], "id": l["id"], "title": l["title"], "duration_sec": l.get("duration"), "done": l["id"] in have}
+               for l in s["lectures"]]
+        out.append({"key": s["key"], "title": s["title"], "school": s.get("school"), "code": s.get("code"),
+                    "term": s.get("term"), "playlist": f"https://www.youtube.com/playlist?list={s['playlist']}",
+                    "total": len(lec), "done": sum(l["done"] for l in lec), "lectures": lec})
+    return out
+
+
+def gaps(have: set[str]) -> list[str]:
+    """다음 일감 — QUEUE.md 에 손으로 올린 것 먼저, 그다음 series.json 의 과목 순서대로 앞 강의부터."""
+    todo = [v for v in queue_ids() if v not in have]
+    for s in load_series():
+        todo += [l["id"] for l in s["lectures"] if l["id"] not in have and l["id"] not in todo]
+    return todo
+
+
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")  # 윈도 cp949 콘솔에서 한글 결과 줄이 터지지 않게
     ITEMS.mkdir(parents=True, exist_ok=True)
@@ -138,11 +165,11 @@ def main() -> None:
             continue
         errs += check(d, p.name)
         docs.append(d)
+    have = {d["id"] for d in docs}
     if "--gaps" in sys.argv:
-        have = {d["id"] for d in docs}
-        todo = [v for v in queue_ids() if v not in have]
-        print(f"대기열 {len(todo)}편 남음")
-        for v in todo:
+        todo = gaps(have)
+        print(f"남은 강의 {len(todo)}편 — 위에서부터")
+        for v in todo[:20]:
             print(" ", v)
         return
     if errs:
@@ -152,14 +179,23 @@ def main() -> None:
     topics = {}
     for d in docs:
         topics[d["topic"]] = topics.get(d["topic"], 0) + 1
+    series = series_index(load_series(), have)
+    where = {l["id"]: (s["key"], l["no"]) for s in series for l in s["lectures"]}
+    items = []
+    for d in docs:
+        c = card(d)
+        if d["id"] in where:
+            c["series"], c["no"] = where[d["id"]]
+        items.append(c)
     index = {
         "generated_at": datetime.now().isoformat(timespec="seconds"),
         "count": len(docs),
         "topics": [{"key": k, "label": TOPIC_LABEL[k], "count": n} for k, n in sorted(topics.items(), key=lambda x: -x[1])],
-        "items": [card(d) for d in docs],
+        "series": series,
+        "items": items,
     }
     (OUT / "index.json").write_text(json.dumps(index, ensure_ascii=False, indent=1), encoding="utf-8")
-    print(f"통과 — 노트 {len(docs)}편, index.json 갱신")
+    print(f"통과 — 노트 {len(docs)}편, 과목 {len(series)}개, index.json 갱신")
 
 
 if __name__ == "__main__":
