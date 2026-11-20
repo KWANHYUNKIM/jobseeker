@@ -39,6 +39,7 @@ const GROUPS: { label: string; items: Item[] }[] = [
       { tab: 'companies', label: '기업 기술스택', to: paths.companies },
       { tab: 'radar', label: '기술 레이더', to: paths.radar },
       { tab: 'reveng', label: '기술 역설계', to: paths.reveng },
+      { tab: 'lectures', label: '강의 노트', to: paths.lectures },
     ],
   },
   {

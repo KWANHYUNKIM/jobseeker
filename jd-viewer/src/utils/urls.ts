@@ -43,6 +43,9 @@ export const paths = {
   /** 회사 개요의 '기능별 상세' 카드가 여는 한 기능 — `/reveng/jxpress/f/cloud-cost-program` */
   revengFeature: (slug: string, key: string) => `/reveng/${encodeURIComponent(slug)}/f/${encodeURIComponent(key)}`,
   revengDoc: (slug: string) => `/reveng/docs/${encodeURIComponent(slug)}`,
+  /** 강의 노트 — 공개 강의 영상을 읽고 다시 쓴 요약·공부 순서. `/lectures/9vM4p9NN0Ts` */
+  lectures: () => '/lectures',
+  lecture: (id: string) => `/lectures/${encodeURIComponent(id)}`,
   hardware: () => '/hardware',
   hardwareParts: () => '/hardware/parts',
   hardwarePart: (id: string) => `/hardware/parts/${encodeURIComponent(id)}`,
@@ -121,6 +124,10 @@ export const TAB_SEO: Record<string, { title: string; desc: string }> = {
   hardwareParts: {
     title: 'PC 부품 등급·스펙 비교',
     desc: '그래픽카드·CPU·메모리·SSD·메인보드·파워·쿨러·케이스를 성능 지수로 등급을 매기고, 같은 등급 안에서 성능 1점당 가격으로 줄 세웠습니다.',
+  },
+  lectures: {
+    title: 'AI·개발 강의 노트',
+    desc: 'Stanford CS229·CS336·CS25 같은 공개 강의를 끝까지 보고 정리한 노트 — 핵심 개념, 업계 흐름, 공부 순서.',
   },
   reveng: {
     title: '기업 기술 역설계',

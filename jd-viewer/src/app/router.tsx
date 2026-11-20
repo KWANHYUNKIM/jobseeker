@@ -10,6 +10,7 @@ import { JobsPage } from '../pages/jobs/JobsPage'
 import { MindmapPage } from '../pages/mindmap/MindmapPage'
 import { RepostsPage } from '../pages/reposts/RepostsPage'
 import { RevengPage } from '../pages/reveng/RevengPage'
+import { LecturesPage } from '../pages/lectures/LecturesPage'
 import { TopPage } from '../pages/top/TopPage'
 import { TrendPage } from '../pages/trend/TrendPage'
 import { navigate, useRoute, type Route } from '../utils/navigation'
@@ -19,7 +20,7 @@ import { paths, TAB_SEO } from '../utils/urls'
 /** 페이지 경로 설정 — 경로 첫 세그먼트 → 탭 → 페이지. 루트(`/`)는 회사별 메인, `/jobs` 가 잡 리스트다. */
 export type Tab =
   | 'home' | 'jobs' | 'companies' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend'
-  | 'book' | 'reveng' | 'reposts' | 'freelance' | 'hardware' | 'top'
+  | 'book' | 'reveng' | 'lectures' | 'reposts' | 'freelance' | 'hardware' | 'top'
 
 const TAB_BY_SEG: Record<string, Tab> = {
   '': 'home',
@@ -34,6 +35,7 @@ const TAB_BY_SEG: Record<string, Tab> = {
   // 물려받은 이유는 북마크·기록이 이미 그 주소를 가리키고 있어서다.
   wiki: 'book',
   reveng: 'reveng',
+  lectures: 'lectures',
   reposts: 'reposts',
   freelance: 'freelance',
   hardware: 'hardware',
@@ -67,7 +69,7 @@ function useTabSeo(route: Route, tab: Tab) {
   const detail = route.seg[1] ?? null
   const own =
     (tab === 'jobs' && !!detail) ||
-    (!!detail && (tab === 'companies' || tab === 'radar' || tab === 'reveng' || tab === 'blog')) ||
+    (!!detail && (tab === 'companies' || tab === 'radar' || tab === 'reveng' || tab === 'lectures' || tab === 'blog')) ||
     tab === 'book' ||
     tab === 'hardware' ||
     tab === 'home' ||
@@ -106,6 +108,8 @@ export function RouteView() {
       return <BookPage seg={route.seg.slice(1)} />
     case 'reveng':
       return <RevengPage seg={route.seg.slice(1)} />
+    case 'lectures':
+      return <LecturesPage seg={route.seg.slice(1)} />
     case 'hardware':
       return <HardwarePage seg={route.seg.slice(1)} />
     case 'mindmap':

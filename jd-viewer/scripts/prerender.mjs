@@ -171,7 +171,7 @@ function write(path, html) {
 }
 
 // 모든 정적 본문에 공통으로 붙는 머리 — 크롤러가 여기서 다른 탭으로 건너간다.
-const NAV = `<nav><a href="/">기업별 IT 채용</a> · <a href="/jobs">개발자 채용공고</a> · <a href="/companies">기업 기술스택</a> · <a href="/blog">기술블로그</a> · <a href="/radar">기술 레이더</a> · <a href="/calendar">모집 캘린더</a> · <a href="/trend">기술 트렌드</a> · <a href="/reveng">기술 역설계</a> · <a href="/mindmap">커리어 마인드맵</a> · <a href="/reposts">재공고</a> · <a href="/freelance">외주·프리</a> · <a href="/hardware">PC 하드웨어</a></nav>`
+const NAV = `<nav><a href="/">기업별 IT 채용</a> · <a href="/jobs">개발자 채용공고</a> · <a href="/companies">기업 기술스택</a> · <a href="/blog">기술블로그</a> · <a href="/radar">기술 레이더</a> · <a href="/calendar">모집 캘린더</a> · <a href="/trend">기술 트렌드</a> · <a href="/reveng">기술 역설계</a> · <a href="/lectures">강의 노트</a> · <a href="/mindmap">커리어 마인드맵</a> · <a href="/reposts">재공고</a> · <a href="/freelance">외주·프리</a> · <a href="/hardware">PC 하드웨어</a></nav>`
 
 const section = (h, text, max = 1200) =>
   text ? `<section><h2>${esc(h)}</h2><p>${esc(clip(text, max))}</p></section>` : ''
@@ -181,6 +181,7 @@ const jobs = readJson('all_jobs_enriched.json') ?? []
 const stacks = readJson('company_stacks.json')
 const radar = readJson('company_tech_radar.json')
 const revengIndex = readJson('reveng/index.json')
+const lectureIndex = readJson('lectures/index.json')
 const blogs = readJson('tech_blogs.json')
 
 const jobKey = (j) => `${j.site}-${j.pid}` // src/utils/urls.ts 의 jobKey 와 같은 규칙
@@ -244,6 +245,10 @@ const TAB_SEO = {
     title: '개발 기술 트렌드',
     desc: '채용공고에서 언급된 기술의 비중 변화로 보는 개발 기술 트렌드와 학습 경로.',
   },
+  '/lectures': {
+    title: 'AI·개발 강의 노트',
+    desc: 'Stanford CS229·CS336·CS25 같은 공개 강의를 끝까지 보고 정리한 노트 — 핵심 개념, 업계 흐름, 공부 순서.',
+  },
   '/reveng': {
     title: '기업 기술 역설계',
     desc: '공개 자료만으로 재구성한 기업의 비즈니스 모델 → 도메인 → 기능 구현 → 시스템 연결.',
@@ -291,6 +296,10 @@ const radarLinks = radarList
   .map((c) => `<li><a href="/radar/${encodeURIComponent(c.key)}">${esc(c.name)} 기술스택·아키텍처</a></li>`)
   .join('')
 
+const lectureList = lectureIndex?.items ?? []
+const lectureLinks = lectureList
+  .map((c) => `<li><a href="/lectures/${encodeURIComponent(c.id)}">${esc(c.title_ko)} (${esc([c.school, c.code].filter(Boolean).join(' '))})</a></li>`)
+  .join('')
 const revengList = revengIndex?.companies ?? []
 const revengLinks = revengList
   .map((c) => `<li><a href="/reveng/${encodeURIComponent(c.slug)}">${esc(c.name)} 기술 역설계</a></li>`)
@@ -315,6 +324,7 @@ const HUB_LINKS = {
   '/companies': `<h2>회사 목록</h2><ul>${companyLinks}</ul>`,
   '/radar': `<h2>기업 목록</h2><ul>${radarLinks}</ul>`,
   '/reveng': `<h2>역설계한 회사</h2><ul>${revengLinks}</ul>`,
+  '/lectures': `<h2>정리한 강의</h2><ul>${lectureLinks}</ul>`,
 }
 
 const jobsMtime = mtime('all_jobs_enriched.json')
@@ -504,6 +514,25 @@ for (const c of revengList) {
     `</article></main>`
   write(path, page({ path, title: `${c.name} 기술 역설계`, description, body }))
   add(abs(path), c.updated_at ?? today, 'monthly', '0.6')
+}
+
+// ── 강의 노트 ───────────────────────────────────────────────────────────
+// 영상을 읽고 우리 말로 다시 쓴 노트다(대본·장면은 싣지 않는다). 요약과 챕터 제목만 정적으로 깐다.
+for (const c of lectureList) {
+  const path = `/lectures/${encodeURIComponent(c.id)}`
+  const d = readJson(`lectures/items/${c.id}.json`)
+  const who = [c.school, c.code].filter(Boolean).join(' ')
+  const title = `${c.title_ko} — ${who} 강의 노트`
+  const body =
+    `${NAV}<main><article>` +
+    `<h1>${esc(c.title_ko)}</h1><p>${esc(c.title)} · ${esc(who)}</p>` +
+    `<p>${esc(c.one_line)}</p>` +
+    section('요약', (d?.summary ?? []).join(' '), 1200) +
+    (d?.chapters?.length ? `<h2>챕터</h2><ol>${d.chapters.map((h) => `<li>${esc(h.title)}</li>`).join('')}</ol>` : '') +
+    `<p><a href="${esc(c.url)}">원본 영상</a> · <a href="/lectures">전체 강의 노트</a></p>` +
+    `</article></main>`
+  write(path, page({ path, title, description: clip(c.one_line), body }))
+  add(abs(path), c.written_at ?? today, 'monthly', '0.6')
 }
 
 // ── 책(/wiki) ───────────────────────────────────────────────────────────
