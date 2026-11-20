@@ -8,7 +8,10 @@ Claude 는 영상을 직접 보지도 듣지도 못한다. 그래서 **말은 �
 
 ## 한 사이클 = 영상 한 편
 
-1. 다음 일감: `python lecture-engine/validate.py --gaps` 맨 위 id.
+1. 다음 일감: `python lecture-engine/validate.py --gaps` 맨 위 id. 순서는 `state/QUEUE.md` 에 손으로 올린 것 →
+   `series.json` 의 과목 순서대로 앞 강의부터(사용자가 1강부터 N강까지 이어 볼 수 있게).
+   과목 추가: `python lecture-engine/series.py add <재생목록 id> <키> --code CS229 --term "Spring 2026" --title "..."`,
+   새 강의가 올라왔는지는 `series.py refresh`.
    대기열(`state/QUEUE.md`)이 비면 새 영상을 찾아 덧붙인다 — 우선순위:
    Stanford Online(CS229·CS224N·CS231N·CS336·CS25·CS329 계열) → MIT·Berkeley·CMU 공개 강의 →
    국내 개발 채널. 최근 1년 안 학기를 앞에 둔다(트렌드가 목적이다).
