@@ -5,6 +5,9 @@ model2vec>=0.8.0
 numpy>=2.0.0
 # crawl_saramin 의 HTML 파싱
 beautifulsoup4>=4.12
+# 회사 로고·이미지 처리(crawl_logos·crawl_dev·jobs_common). 빠져 있어서 새 venv 에서는
+# 사이클 끝에 "회사 로고 실패: No module named 'PIL'" 로 로고가 안 받아졌다.
+pillow>=10.0
 # crawl_techblog_graph 의 파이프라인 그래프(LLM 없음)
 langgraph>=0.2
 # crawl_techblog 의 본문 추출 — 없으면 RSS 요약만 남고 이미지·표·코드블록이 통째로
