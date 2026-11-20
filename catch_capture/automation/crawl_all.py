@@ -23,6 +23,7 @@
     python crawl_all.py start 개발자 30 --no-blog        # 기술 블로그 단계 스킵
     python crawl_all.py start 개발자 30 --blog-per-feed 40  # 블로그 피드당 수집 개수
     python crawl_all.py start 개발자 30 --no-freelance   # 외주·프리 단계 스킵
+    python crawl_all.py start 개발자 30 --no-alba        # 당근알바 IT 공고 단계 스킵
     python crawl_all.py start 개발자 30 --no-hardware    # PC 부품 가격 단계 스킵
 """
 from __future__ import annotations
@@ -126,8 +127,8 @@ def fix_locations() -> None:
 
 
 def run_extras(do_blog: bool = True, do_freelance: bool = True, do_hardware: bool = True,
-               blog_per_feed: int = BLOG_PER_FEED_DEFAULT) -> list[str]:
-    """키워드와 무관한 사이클당 1회 단계 — 외주 → 회사 로고 → 부품 가격·완제품 → 기술 블로그. 실패한 단계 이름을 돌려준다.
+               blog_per_feed: int = BLOG_PER_FEED_DEFAULT, do_alba: bool = True) -> list[str]:
+    """키워드와 무관한 사이클당 1회 단계 — 외주 → 당근알바 IT → 회사 로고 → 부품 가격·완제품 → 기술 블로그. 실패한 단계 이름을 돌려준다.
 
     공고 통합(DB 쓰기)보다 **뒤에** 돈다(auto_crawl.run_cycle). 예전에는 마지막 키워드 크롤에
     붙어 통합보다 먼저 돌아서, 블로그 LLM 번역(밀린 글이 많으면 한 시간 넘게)과 다나와 10초
@@ -163,6 +164,32 @@ def run_extras(do_blog: bool = True, do_freelance: bool = True, do_hardware: boo
             if orch:
                 orch.freelance_finished(False, None, None, None,
                                         (datetime.now() - fl_start).total_seconds())
+
+    if do_alba:
+        # 당근알바의 IT 일감(요약·링크만). 외주처럼 따로 쌓고(alba.json), 실패해도 사이클은 계속 간다
+        # (crawlers/crawl_daangn_alba.py 머리말 — 약관 때문에 싣는 칸이 정해져 있다).
+        print(f"\n----- 당근알바 IT 공고 -----", flush=True)
+        al_start = datetime.now()
+        if orch:
+            orch.stage_started("alba")
+        try:
+            sys.path.insert(0, str(BASE_DIR))
+            from crawlers.crawl_daangn_alba import run as _alba_run
+            stats = _alba_run()
+            elapsed = (datetime.now() - al_start).total_seconds()
+            if orch:
+                orch.stage_finished("alba", bool(stats.get("ok")), elapsed,
+                                   **{k: v for k, v in stats.items() if k != "ok"})
+            print(f"[OK] 당근알바 완료({elapsed:.0f}s) — 누적 {stats.get('total')}건 "
+                  f"(모집중 {stats.get('open')}, 신규 {stats.get('new')}, 마감 {stats.get('closed_now')}) "
+                  f"→ jd-viewer/public/alba.json", flush=True)
+            if not stats.get("ok"):
+                failures.append("alba")
+        except Exception as e:
+            print(f"[!] 당근알바 크롤 실패: {e}", flush=True)
+            failures.append("alba")
+            if orch:
+                orch.stage_finished("alba", False, (datetime.now() - al_start).total_seconds(), error=str(e)[:200])
 
     # 회사 로고 — 메인 화면 카드용(company.logo_url). 공고 원문이 준 로고 주소만 읽고, 없는 회사만
     # 공고 많은 순으로 회차당 200곳까지 묻는다. 실패해도 회차는 계속 간다.
@@ -259,7 +286,7 @@ def run_extras(do_blog: bool = True, do_freelance: bool = True, do_hardware: boo
 def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: bool = True,
                    depth: int | None = None, do_blog: bool = True,
                    blog_per_feed: int = BLOG_PER_FEED_DEFAULT, do_freelance: bool = True,
-                   do_hardware: bool = True) -> int:
+                   do_hardware: bool = True, do_alba: bool = True) -> int:
     """지정한 크롤러를 순차 실행. 완료 후 aggregate + 기술 블로그 + 외주·프리 + 부품 가격 크롤 호출."""
     env = os.environ.copy()
     env["PYTHONUNBUFFERED"] = "1"
@@ -364,7 +391,7 @@ def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: 
                 orch.aggregate_finished(False, None,
                                         (datetime.now() - agg_start).total_seconds())
 
-    failures += run_extras(do_blog, do_freelance, do_hardware, blog_per_feed)
+    failures += run_extras(do_blog, do_freelance, do_hardware, blog_per_feed, do_alba)
 
     total = (datetime.now() - overall_start).total_seconds()
     print(f"\n========== 전체 완료 ({total:.0f}s) ==========", flush=True)
@@ -443,7 +470,11 @@ def cmd_logs(n: int) -> None:
     sys.stdout.write(b"".join(lines).decode("utf-8", errors="replace"))
 
 
-def _parse_run_args(args: list[str]) -> tuple[str, int, list[str], bool, int | None, bool, int, bool, bool]:
+def _parse_run_args(args: list[str]) -> tuple[str, int, list[str], bool, int | None, bool, int, bool, bool, bool]:
+    do_alba = True
+    if "--no-alba" in args:
+        do_alba = False
+        args.remove("--no-alba")
     do_hardware = True
     if "--no-hardware" in args:
         do_hardware = False
@@ -487,7 +518,7 @@ def _parse_run_args(args: list[str]) -> tuple[str, int, list[str], bool, int | N
     keyword = args[0] if len(args) > 0 else "개발자"
     target = int(args[1]) if len(args) > 1 else 20
     return (keyword, target, _parse_sources(only), do_aggregate, depth, do_blog, blog_per_feed, do_freelance,
-            do_hardware)
+            do_hardware, do_alba)
 
 
 def main() -> None:
@@ -509,9 +540,9 @@ def main() -> None:
         cmd_logs(n)
     elif sub == "run":
         (keyword, target, sources, do_aggregate, depth, do_blog, blog_per_feed, do_freelance,
-         do_hardware) = _parse_run_args(rest)
+         do_hardware, do_alba) = _parse_run_args(rest)
         sys.exit(run_foreground(keyword, target, sources, do_aggregate, depth, do_blog, blog_per_feed,
-                                do_freelance, do_hardware))
+                                do_freelance, do_hardware, do_alba))
     else:
         print(f"[!] 알 수 없는 명령: {sub}", flush=True)
         print(__doc__)

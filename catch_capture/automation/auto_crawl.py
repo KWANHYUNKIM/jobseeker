@@ -536,7 +536,8 @@ def run_cycle(keyword: str, count: int) -> bool:
         # 기술 블로그·외주 프로젝트·부품 가격은 키워드와 무관 → 공고 통합 **뒤에** 한 번(run_extras)
         last = kw == kws[-1]
         rc = run_foreground(kw, count, KEYWORD_SITES + (AGNOSTIC_SITES if last else []),
-                            do_aggregate=not multi, do_blog=False, do_freelance=False, do_hardware=False)
+                            do_aggregate=not multi, do_blog=False, do_freelance=False, do_hardware=False,
+                            do_alba=False)
         if rc != 0:
             rc_fail += 1
             log(f"[crawl] '{kw}' 일부 실패(rc={rc})")
