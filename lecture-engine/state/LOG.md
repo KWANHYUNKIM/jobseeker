@@ -70,3 +70,4 @@
 - 2026-11-20 · Ub3GoFaUcds · CME295 · CME295 1강 — 트랜스포머: NLP 과제와 지표, 토큰화, word2vec, RNN·LSTM 의 한계에서 셀프 어텐션·인코더-디코더까지 한 장에 · 챕터 15 · 본문 23994자
 - 2026-11-20 · yT84Y5zCnaA · CME295 · 스탠퍼드 CME295 2강 — 트랜스포머 이후 바뀐 부품들(사인 위치 임베딩·T5 bias·ALiBi·RoPE, pre-norm·RMSNorm, 슬라이딩 윈도·GQA)과 세 갈래 모델, BERT 깊이 보기 · 챕터 15 · 본문 23956자
 - 2026-11-20 · Q5baLehv5So · CME295 · CME295 3강 — 대규모 언어 모델: LLM 의 정의, Mixture of Experts, 디코딩 전략(greedy·beam·top-k·top-p·온도), guided decoding, 프롬프트·ICL·CoT·self-consistency, 추론 최적화(KV 캐시·GQA·PagedAttention·MLA·추측 디코딩·MTP) · 챕터 14 · 본문 23128자
+- 2026-11-20 · VlA_jt_3Qc4 · CME295 · 스탠퍼드 CME295 4강 — LLM 학습: 사전학습과 스케일링 법칙, 메모리를 나누는 ZeRO·모델 병렬, FlashAttention, 부동소수점·혼합 정밀도, SFT·명령어 튜닝과 평가, LoRA·QLoRA · 챕터 15 · 본문 22501자
