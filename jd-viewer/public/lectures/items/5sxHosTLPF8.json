@@ -1,0 +1,982 @@
+{
+ "id": "5sxHosTLPF8",
+ "source": {
+  "platform": "youtube",
+  "url": "https://www.youtube.com/watch?v=5sxHosTLPF8",
+  "channel": "Stanford Online",
+  "published": "2026-05-27",
+  "duration_sec": 5086,
+  "views": 11181
+ },
+ "course": {
+  "school": "Stanford",
+  "code": "CS336",
+  "term": "Spring 2026",
+  "lecture_no": "14",
+  "speaker": "Percy Liang (공동 강사 Tatsunori Hashimoto)"
+ },
+ "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 14: Data",
+ "title_ko": "데이터 2 — 필터링·중복 제거(MinHash LSH)·혼합, 그리고 합성 사후학습 데이터",
+ "topic": "data",
+ "tags": [
+  "Python",
+  "NumPy",
+  "LLM",
+  "Data Engineering",
+  "fastText",
+  "MinHash",
+  "LSH",
+  "Hugging Face",
+  "Spark",
+  "Synthetic Data",
+  "Docker"
+ ],
+ "level": "중급",
+ "one_line": "좋음을 정의해 분류기로 거르고, MinHash LSH 로 사본을 지우고, 작은 실험으로 혼합 비율을 정한다",
+ "summary": [
+  "CS336 데이터 단원의 두 번째 시간이다. 13강이 데이터의 출처(서비스 → 덤프·크롤)와 약관·저작권을 다뤘다면, 14강은 모은 원재료를 학습용 토큰으로 다듬는 공정 — 변환, 필터링, 중복 제거, 혼합 — 과 사후학습용 합성 데이터를 다룬다. 유튜브 제목은 그냥 'Data' 지만 영상 설명과 실제 내용은 이 네 공정과 합성 데이터다. 변환에서는 HTML 의 상용구를 걷어 내는 규칙 기반 추출기(trafilatura·resiliparse)의 선택만으로 DCLM 핵심 점수가 20.7(WET) 에서 24.5 로 달라진다는 것, PDF 는 비싸지만(VLM OCR) 평균 품질이 높다는 것을 짚는다.",
+  "필터링은 하나의 틀로 정리된다. 작고 좋은 목표 데이터 T 와 거대한 원시 데이터 R 이 있을 때, 싼 모델(KenLM 5-gram 의 p_T(x) 또는 fastText 선형 분류기의 p(T|x))로 점수를 매겨 R 에서 T 와 닮은 부분을 남긴다. 언어 식별(fastText 176개 언어), OpenWebMath(LaTeX 유무에 따라 문턱 0.17/0.8, 14.7B 토큰으로 20배 데이터 모델을 이김), GPT-3(위키백과·책 대 Common Crawl, 파레토 확률적 유지), LLaMA(위키백과가 인용한 페이지), phi-1(GPT-4 가 10만 개를 판정하고 싼 분류기로 증류, HumanEval 12.19% → 17.68%), 독성(Jigsaw)이 모두 같은 틀이다. 다만 최적 문턱은 없다. 강하게 거를수록 데이터가 줄어 긴 학습에서 에폭을 거듭하다 과적합하므로, 짧은 학습엔 고품질, 긴 학습엔 넓은 데이터가 이긴다.",
+  "중복 제거에서는 미러·포크 같은 정확 중복과, 라이선스·템플릿·쉼표 차이 같은 근사 중복(C4 에 61,036번 나온 방독면 문단)을 본다. 지우는 이유는 FLOPs 낭비와 암기(저작권·개인정보) 방지이고, 같은 기술이 평가 셋 오염 제거에 쓰인다. 항목 간 비교라 n² 를 피해야 하므로 해시가 열쇠다. 정확 중복은 해시로 묶어 하나만 남기는 MapReduce 꼴이면 되고(C4 는 3문장 단위), 근사 중복은 Jaccard 유사도로 정의한 뒤 MinHash — 최솟값 해시의 충돌 확률이 정확히 Jaccard 인 해시 — 로 근사한다. 여기에 밴드 b 개 × 행 r 개의 LSH 를 씌우면 충돌 확률이 1 − (1 − s^r)^b 의 S 자 곡선이 되어 문턱 (1/b)^(1/r) 근처에서 계단처럼 갈린다(Lee+ 2021: b=20, r=450 → 약 0.993).",
+  "혼합은 원천들 위의 분포를 정하는 일이다. 감·균등·비례가 기준선이고, 고품질 원천을 올리되 다양성과 원천의 유한성을 지켜야 한다. 저품질 10T·고품질 10B 를 반반 섞어 1T 를 학습하면 고품질을 50 에폭 돌게 된다 — 실제 대형 학습에서도 저지른 실수다. UniMax 는 원천별 에폭 상한을 둔다. 원칙적인 방법은 회귀 기반 혼합(RegMix·Olmix)이다. 작은 프록시 모델 떼를 여러 혼합으로 학습해 '혼합 → 손실' 회귀를 맞추고 최소화한 혼합으로 큰 모델을 학습한다. 회귀가 최소점에서도 맞고 최적점이 규모를 넘어 옮겨진다는 두 믿음이 필요하며, 작은 실험에서는 반복이 없어 고품질에 몰리는 규모 효과를 에폭 상한이나 모의 에폭(모든 원천을 학습 토큰 비율로 축소)으로 막는다. Nemotron 처럼 Common Crawl 을 도메인 × 품질 격자로 쪼개 혼합하기도 한다.",
+  "마지막으로 사후학습 데이터는 과제에 묶여 있고, 환경 → 과제 → 교사 응답의 레시피로 대부분 합성된다. OpenThoughts 는 27개 원천의 질문에 QwQ-32B 로 질문당 16개 응답을 만들어 120만 예를 얻었고, 더 강한 모델(DeepSeek-R1)이 더 좋은 교사가 아니라는 것을 보였다. 에이전트 코딩에서는 SWE-smith(버그를 심어 5만 과제), SWE-Zero(실행 없이도 강한 모델은 많이 푼다 — 실행 금지로 30만 궤적 증류), SWE-rebench(2.1만 실행 가능 과제), SWE-ZERO-12M(실행 불가 과제까지 써서 1200만 궤적)으로 규모가 커지고 있다. 강사는 실제 데이터 일은 도메인마다 다르고 예를 직접 들여다보는 지저분한 작업이라는 말로 끝맺는다."
+ ],
+ "why_now": "강의가 거듭 말하듯 거의 모두가 연산이 부족하다. 그래서 데이터 공정의 선택 — 어떤 추출기를 쓰나(DCLM 핵심 점수 3~4점 차이), 얼마나 강하게 거르나, 중복을 얼마나 지우나, 원천을 어떤 비율로 섞나 — 이 같은 FLOPs 로 얻는 모델 품질을 직접 바꾼다. 50 에폭 실수처럼 비율만 보고 원천 크기를 놓치면 대형 학습이 통째로 낭비된다. 동시에 사후학습 데이터는 거의 전부 강한 모델이 만드는 합성 데이터가 됐고, 에이전트 코딩 궤적이 수천만 단위로 커지고 있다. MinHash LSH·fastText 필터·회귀 혼합은 오픈 데이터셋(FineWeb·DCLM·Dolma·Nemotron-CC)을 직접 만들거나 고쳐 쓰는 LLM 데이터 엔지니어의 기본기이고, 검색·추천의 근사 최근접 탐색에도 같은 LSH 가 쓰인다.",
+ "chapters": [
+  {
+   "start": 0,
+   "title": "데이터 둘째 시간의 지도 — HTML·PDF 를 텍스트로 바꾸기",
+   "points": [
+    "13강은 데이터가 어디서 오는가(살아 있는 서비스 → 덤프·크롤 → 가공)와 약관·저작권을 다뤘고, 14강은 그 뒤의 파이프라인: 변환 → 필터링 → 중복 제거 → 혼합, 마지막으로 사후학습용 합성 데이터.",
+    "크롤 결과물은 텍스트가 아니다. HTML·PDF·저장소 디렉터리이고, 대부분의 노력은 HTML 에서 본문만 뽑는 데 든다.",
+    "HTML→텍스트는 규칙 기반 도구(trafilatura·resiliparse·jusText·lynx)로 한다. 빠르기 때문이고, 계층·시각 구조를 한 줄로 펴는 일이라 본질적으로 정보를 잃는다.",
+    "PDF 는 양이 적지만 평균 품질이 높다. 잘린 파일은 다시 받아야 하고, 스캔본은 VLM 기반 OCR(RolmOCR·Docling)이 필요해 훨씬 비싸다."
+   ],
+   "on_screen": "강의 코드 파일 'Lecture 14: Data II' — Last lecture: Live service → dump/crawl → processed data, terms of service·copyright. This lecture: transformation, filtering, deduplication, mixing / Mid-training + SFT: synthetic data. transformation(): 'Raw data does not come as text', 'Remove boilerplate', 'Inherently lossy', 'Tools (rule-based): trafilatura, resiliparse, jusText, lynx'. 표 [Li+ 2024] Text Extraction / CORE / EXTENDED: resiliparse 24.1 / 13.4, trafilatura 24.5 / 12.5, WET files 20.7 / 12.2. FinePDFs [post] 그림: 왼쪽 PDF 소스 코드(주석), 오른쪽 렌더링된 화면, 아래 빨간 상자 'WHY PARSING IS HARD: 명시적 의미 구조가 없고 절대 위치로 글자를 찍을 뿐'. 항목: Source: Common Crawl / Recrawl truncated PDFs / OCR (RolmOCR) using a VLM or Docling / Lots of cleanup and filtering.",
+   "explain": [
+    "이번 강의는 데이터 단원의 두 번째 시간이다. 지난 13강이 '원재료를 어디서 구하나' — 웹 서비스를 덤프하거나 크롤하고, 약관과 저작권(라이선스 또는 공정 이용)을 따지는 일 — 였다면, 오늘은 그렇게 모은 원재료를 학습에 넣을 수 있는 토큰으로 다듬는 공정을 다룬다. 공장으로 치면 원광을 캐 온 다음 날의 일이다. 광석을 녹여 금속만 뽑고(변환), 불순물이 많은 덩어리를 버리고(필터링), 같은 주물이 여러 번 들어오면 하나만 남기고(중복 제거), 여러 광산의 금속을 정해진 비율로 섞어 합금을 만든다(혼합). 강의 끝에는 사전학습이 아닌 사후학습 데이터, 특히 강한 모델이 만들어 주는 합성 데이터를 짧게 본다. 강의 첫 부분은 사전학습 데이터를 염두에 두고 들으면 된다.",
+    "첫 공정인 변환부터 보자. Common Crawl 안을 들여다보면 텍스트가 아니라 HTML 이고, 가끔 PDF, GitHub 라면 저장소 디렉터리다. 웹 대부분이 HTML 이니 변환 노력의 대부분도 HTML 에 쓴다. 할 일은 내비게이션 메뉴·광고·머리글·바닥글 같은 상용구(boilerplate)를 걷어 내고 본문을 뽑는 것이다. 그런데 무엇이 본문인지가 늘 분명하지는 않다. 메뉴도 '웹 페이지가 어떻게 생겼는지'를 배우는 데는 쓸모가 있을 수 있고, 이미지와 표는 어떻게 할지 정해야 한다. 근본적으로 HTML 은 나무 구조(또는 렌더링된 2차원 화면)인데 언어 모델은 토큰 한 줄을 먹으므로, 펴는 순간 정보가 빠진다. 단순한 표는 마크다운으로 옮기면 되지만 표 안에 표가 들어간 경우는 어딘가에서 포기하거나 근사해야 한다.",
+    "그래서 실무에서는 규칙 기반 추출기를 쓴다. 이유는 두 가지다. 수십억 페이지에 돌려야 하므로 무엇보다 빨라야 하고, 이 단계에서 지능적인 판단이 많이 필요하지는 않기 때문이다. 강사는 빠르면서 더 똑똑한 모델 기반 추출의 여지는 있다고 보지만, 지금의 표준은 규칙이다. 다만 규칙에는 늘 실패율이 있어서 실제 데이터를 열어 보면 흠이 보이고, 어떤 도구를 쓰느냐가 최종 모델 성능까지 바꾼다. 화면의 표(DCLM 의 Li+ 2024)는 같은 크롤에서 추출기만 바꿔 학습한 모델의 점수다. 핵심 평가(CORE)에서는 trafilatura 24.5 와 resiliparse 24.1 이 비슷하지만, Common Crawl 이 미리 뽑아 둔 WET 텍스트 파일은 20.7 로 확 떨어진다. 확장 평가(EXTENDED)에서는 resiliparse 가 13.4 로 가장 높다. 즉 '아무 텍스트나 뽑으면 된다'가 아니라 추출 품질이 점수 3~4점을 좌우한다.",
+    "PDF 는 사정이 또 다르다. Hugging Face 의 FinePDFs 작업이 예다. Common Crawl 에도 PDF 가 들어 있지만 파일이 커서 잘린 채 저장된 경우가 많아 다시 크롤해야 하고, URL 에 확장자가 없으면 받아 보기 전에는 PDF 인지도 모른다. 받은 뒤에는 텍스트로 바꿔야 하는데, PDF 는 설계상 '이 좌표에 이 글자를 찍어라'라는 배치 명령의 모음이라 HTML 의 h1·p 같은 의미 태그가 없다. 읽는 순서조차 보장되지 않으니 좌표로부터 추정해야 하고, 스캔본은 아예 그림이라 VLM 기반 OCR 을 돌려야 한다. HTML 처리보다 훨씬 비싸다. 그래도 하는 이유는 품질이다. PDF 는 웹 전체에서 차지하는 비중은 작지만, 굳이 PDF 로 만들 정도면 대체로 할 말이 있는 문서라 평균 품질이 HTML 보다 높다. 이렇게 텍스트를 손에 넣어도 공정은 아직 한참 남았다 — 다음 장부터가 본론인 필터링이다."
+   ],
+   "diagram": {
+    "title": "14강이 다루는 데이터 공정",
+    "code": "flowchart LR\n  A[\"원재료: HTML · PDF · 저장소\"] --> B[\"변환: 상용구 제거, OCR\"]\n  B --> C[\"필터링: 언어 · 품질 · 독성\"]\n  C --> D[\"중복 제거: 정확 · 근사 MinHash LSH\"]\n  D --> E[\"혼합: 원천별 비율 정하기\"]\n  E --> F[\"사전학습\"]\n  F --> G[\"사후학습: 합성 데이터 SFT\"]"
+   },
+   "pitfalls": [
+    "Common Crawl 의 WET(미리 뽑은 텍스트)를 그대로 쓰면 편하지만 추출 품질이 낮아 DCLM 표에서 CORE 점수가 약 4점 떨어졌다. 추출기는 '전처리 세부사항'이 아니라 모델 성능 변수다.",
+    "'본문만 남긴다'의 기준은 목적에 따라 다르다. 웹 페이지 생성·에이전트 브라우징을 배우게 하려면 구조 정보를 일부 남기는 편이 낫다."
+   ],
+   "check": [
+    {
+     "q": "HTML→텍스트 변환을 모델이 아니라 규칙으로 하는 두 가지 이유는?",
+     "a": "수십억 문서에 돌려야 하므로 속도가 최우선이고, 이 단계는 상용구 제거·본문 추출 정도라 큰 지능이 필요하지 않기 때문이다."
+    },
+    {
+     "q": "PDF 가 웹에서 비중이 작은데도 따로 공을 들이는 이유와, 비용이 큰 이유는?",
+     "a": "평균 품질이 HTML 보다 높아서다. 하지만 의미 구조 없이 좌표 배치만 있어 읽기 순서를 추정해야 하고, 스캔본은 VLM OCR 이 필요하며, 잘린 파일은 다시 받아야 해서 비싸다."
+    }
+   ]
+  },
+  {
+   "start": 405,
+   "title": "필터링의 뼈대 — 목표 데이터 T 와 원시 데이터 R, 점수 함수",
+   "points": [
+    "모든 필터링은 한 틀에 들어간다: 작지만 좋은 목표 데이터 T 와 거대한 원시 데이터 R 이 있을 때, R 에서 T 와 닮은 부분집합 T′ 를 찾는다.",
+    "요구 조건 둘: T 를 그대로 찾는 게 아니라 일반화해야 하고(T′ ≠ T), 웹 전체(수십~100조 토큰)에 돌리므로 극도로 빨라야 한다.",
+    "점수 함수는 두 종류: 생성 모델 score(x)=p_T(x)(KenLM 5-gram) 또는 판별 분류기 score(x)=p(T|x)(fastText 선형 분류기).",
+    "점수가 문턱을 넘으면 남긴다 — 결정적으로 자르거나, GPT-3 처럼 확률적으로 남긴다(np.random.pareto(9) > 1 − score).",
+    "한때는 편향을 피하려고 모델 기반 필터를 일부러 안 썼지만(C4·Gopher·RefinedWeb·FineWeb·Dolma), 이제는 GPT-3·LLaMA·DCLM 처럼 쓰는 것이 표준이다."
+   ],
+   "on_screen": "그림: 큰 분홍 타원 'Raw data R' 안에 작은 'More data T′', 옆에 따로 'Target data T'. Applications: Language identification / Quality filtering / Toxicity filtering. Desiderata: Generalize from the target data (want T and T′ to be different) / Extremely fast. Survey paper on data selection [Albalak+ 2024]. General framework: 1. Estimate some model based on R and T and derive a scoring function 2. Keep examples in R based on their score. Types of classifiers: Generative model of T (KenLM): score(x) = p_T(x) / Simple classifier (fastText): score(x) = p(T | x). To use: keep examples x with score(x) >= threshold (stochastically). Model-based filtering? 일부는 일부러 안 씀(C4, Gopher, RefinedWeb, FineWeb, Dolma), 일부는 씀(GPT-3, LLaMA, DCLM) [becoming the norm]. GPT-3 블록의 코드: def keep_document(score) → np.random.pareto(9) > 1 - score.",
+   "explain": [
+    "필터링이라는 말은 언어 식별, 품질, 독성처럼 목적이 제각각이지만 강사는 이를 한 장의 그림으로 묶는다. 손에 쥔 것은 둘이다. 하나는 '이런 게 좋다'고 확신하는 작은 목표 데이터 T(위키백과, 교과서, 수학 증명 모음 같은 것)이고, 다른 하나는 방금 변환을 마친 거대한 원시 데이터 R 이다. 목표는 R 안에서 T 와 비슷한 부분집합 T′ 를 찾는 것이다. 금광에 비유하면 T 는 '이게 금이다'라고 감정된 표본 몇 개, R 은 강바닥 모래 전체, T′ 는 표본과 같은 성질의 알갱이를 걸러 낸 결과다. 이 틀에 맞추면 영어만 남기기(T = 영어 문서), 품질 높이기(T = 고품질 문서), 독성 걷어 내기(T = 무해한 문서)가 모두 같은 문제가 된다.",
+    "좋은 필터 알고리즘의 조건은 두 가지다. 첫째, 일반화해야 한다. T 는 이미 갖고 있으니 T 자체를 다시 찾는 것은 의미가 없다. T 와 '닮았지만 다른' 문서를 찾아야 한다. 둘째, 무척 빨라야 한다. R 은 웹 전체, 100조 토큰 규모일 수도 있고, 필터를 통과하는 비율은 대개 한 자릿수 퍼센트다. 그러니 문서 하나에 큰 언어 모델을 돌리는 방식은 처음부터 탈락이다. 일반 절차는 (1) R 과 T 로 어떤 모델을 추정해 점수 함수를 만들고 (2) 그 점수로 R 의 문서를 남길지 정하는 것이다. 이 분야를 정리한 서베이로는 Albalak 외(2024)의 데이터 선택 논문이 화면에 걸렸다.",
+    "점수 함수는 크게 둘이다. 생성적 방법은 T 의 분포 자체를 모델링한다. 싸야 하므로 큰 LM 대신 KenLM 같은 5-gram 모델을 T 에 맞추고, 문서 x 의 확률 p_T(x)(실제로는 perplexity)를 점수로 쓴다. 판별적 방법은 요즘 더 흔하다. T 의 문서를 양성, R 에서 무작위로 뽑은 문서를 음성으로 두고(필요하면 개수를 맞춰) 분류기를 학습해 p(T|x) 를 점수로 쓴다. 도구로는 거의 언제나 fastText 를 쓰는데, 단어(와 n-gram) 주머니 위의 선형 분류기라 CPU 에서도 초당 엄청난 수의 문서를 처리하기 때문이다. 점수를 얻은 다음에는 품질 기준에 맞는 문턱을 정해 넘는 문서를 남긴다. 문턱에서 칼같이 자를 수도 있고, 확률적으로 남길 수도 있다.",
+    "확률적 유지의 대표가 GPT-3 다. 화면 코드는 np.random.pareto(9) 로 뽑은 난수가 1 − score 보다 크면 문서를 남긴다. 점수가 1 이면 항상 남고, 점수가 낮아도 0 이 아닌 작은 확률로 살아남는다. 이렇게 하는 이유는 분류기가 '위키백과처럼 생긴 것'만 고르면 다양성이 줄기 때문이다 — 낮은 점수 영역에도 쓸모 있는 글이 섞여 있으니 조금은 통과시킨다. 강사는 또 역사적 흐름을 짚는다. C4·Gopher·RefinedWeb·FineWeb·Dolma 같은 몇 년 전 데이터셋은 모델 기반 필터가 데이터를 특정 방향으로 치우치게 할까 봐 규칙만 썼다. 그러나 지금은 거의 모두가 어느 정도 모델 기반 필터를 쓴다. 연산이 넘치는 곳이라면 전부 학습하면 되겠지만, 대부분은 연산이 부족하니 낮은 품질에 FLOPs 를 낭비할 수 없다는 것이 강사의 설명이다."
+   ],
+   "formulas": [
+    {
+     "expr": "score_gen(x) = p_T(x)",
+     "meaning": "생성적 점수. p_T 는 목표 데이터 T 로 학습한 싼 언어 모델(KenLM 5-gram)이 문서 x 에 주는 확률. 길이 영향을 없애려고 실제로는 perplexity = exp(−(1/|x|)·log p_T(x)) 를 쓰고, 낮을수록 T 와 닮았다."
+    },
+    {
+     "expr": "score_cls(x) = p(T | x) = σ(wᵀφ(x) + b)",
+     "meaning": "판별적 점수. φ(x) 는 문서의 단어·n-gram 빈도 벡터(차원 = 어휘 크기), w 는 같은 차원의 가중치, b 는 절편, σ 는 시그모이드. T 를 양성(1), R 의 무작위 표본을 음성(0)으로 두고 로지스틱 손실로 학습한 fastText 류 선형 분류기."
+    },
+    {
+     "expr": "P(keep | score = s) = P(X > 1 − s),  X ~ numpy.pareto(α=9)  ⇒  P = (2 − s)^(−9)",
+     "meaning": "GPT-3 식 확률적 유지. numpy 의 pareto 는 1 을 뺀 로맥스 분포라 P(X > t) = (1 + t)^(−α). t = 1 − s 를 넣으면 (2 − s)^(−9). s=1 이면 1, s 가 줄면 빠르게 0 으로 가지만 정확히 0 은 아니다. (노트 보충: 닫힌 식은 직접 유도)"
+    }
+   ],
+   "example": {
+    "title": "GPT-3 식 확률적 유지를 손으로",
+    "body": "P(keep) = (2 − s)^(−9) 에 넣어 본다. s = 1.0 → 1^(−9) = 1 (항상 남김). s = 0.9 → 1.1^9 ≈ 2.358 이므로 1/2.358 ≈ 0.424. s = 0.5 → 1.5^9 ≈ 38.44 이므로 ≈ 0.026. s = 0 → 2^(−9) = 1/512 ≈ 0.002. 즉 점수 0.9 문서는 열에 넷, 점수 0.5 문서는 마흔에 하나, 점수 0 문서도 오백에 하나는 살아남는다. 아래 장의 코드에서 20만 번 뽑아 본 모의 결과도 0.4243 · 0.0257 · 0.0018 로 이론값과 맞았다. 결정적 문턱(예: s ≥ 0.9 만)이라면 0.5 짜리 문서는 하나도 남지 않는다 — 확률적 유지는 '꼬리'를 조금 살려 다양성을 지킨다."
+   },
+   "diagram": {
+    "title": "필터링의 일반 틀",
+    "code": "flowchart LR\n  T[\"목표 T: 작고 좋은 데이터\"] --> M[\"모델 추정: KenLM p_T 또는 fastText p(T|x)\"]\n  R[\"원시 R: 웹 전체\"] -->|\"무작위 표본 = 음성\"| M\n  M --> S[\"점수 score(x)\"]\n  R --> S\n  S -->|\"문턱 이상 또는 확률적\"| K[\"T′ 남김 (한 자릿수 %)\"]\n  S -->|\"그 밖\"| X[\"버림\"]"
+   },
+   "pitfalls": [
+    "음성 예로 'R 에서 무작위로 뽑은 문서'를 쓰면 그 안에도 좋은 문서가 섞여 있다. 분류기가 배우는 것은 'T 와 R 평균의 차이'이지 '좋음' 그 자체가 아니다.",
+    "fastText 점수는 확률처럼 보이지만 보정(calibration)된 확률이 아니다. 문턱 0.5 가 '반반'을 뜻한다고 읽으면 안 되고, 남는 비율을 보고 정한다."
+   ],
+   "check": [
+    {
+     "q": "필터 알고리즘이 '일반화'해야 한다는 말은 무슨 뜻인가?",
+     "a": "이미 가진 목표 데이터 T 를 다시 찾는 것이 아니라, R 안에서 T 와 성질은 닮았지만 T 에는 없는 문서 T′ 를 찾아야 한다는 뜻이다."
+    },
+    {
+     "q": "GPT-3 규칙(np.random.pareto(9) > 1 − score)에서 점수 0.8 인 문서가 남을 확률은?",
+     "a": "(2 − 0.8)^(−9) = 1.2^(−9) ≈ 1/5.16 ≈ 0.194, 약 19% 다."
+    }
+   ]
+  },
+  {
+   "start": 660,
+   "title": "필터의 실제 — 언어 식별, 수학 말뭉치, GPT-3·LLaMA",
+   "points": [
+    "언어 식별: Meta 의 fastText 모델이 176개 언어를 가린다(위키백과·Tatoeba·SETimes 로 학습). Dolma 는 p(English) ≥ 0.5 인 페이지만 남긴다.",
+    "OpenWebMath(슬라이드 표기 OpenMathText, Paster+ 2023): LaTeX 규칙 → ProofPile 로 학습한 KenLM perplexity < 15000 → fastText 수학 분류기(LaTeX 있으면 문턱 0.17, 없으면 0.8).",
+    "결과 14.7B 토큰. 이걸로 학습한 1.4B 모델이 20배 많은 비필터 데이터로 학습한 모델보다 수학을 잘했다 — '품질'은 원하는 대로 정의하는 도구다.",
+    "GPT-3: 양성 {Wikipedia, WebText2, Books1, Books2}, 음성 Common Crawl. LLaMA/RedPajama: 양성은 위키백과 문서 자체가 아니라 위키백과가 '인용한' 페이지."
+   ],
+   "on_screen": "Language identification: Goal: find text of a specific language / fastText language identification [article] / Off-the-shelf classifier / Supports 176 languages / Trained on multilingual sites: Wikipedia, Tatoeba (translation site) and SETimes (Southeast European news) / Dolma keeps pages with p(English) >= 0.5 [Soldaini+ 2024]. OpenMathText [Paster+ 2023]: Use rules to filter (e.g., contains latex commands) / KenLM trained on ProofPile, keep if perplexity < 15000 / Trained fastText classifier to predict mathematical writing, threshold is 0.17 if math, 0.8 if no math / Result: produced 14.7B tokens, used to train 1.4B models that do better than models trained on 20x data. GPT-3 [Brown+ 2020]: Positives: samples from {Wikipedia, WebText2, Books1, Books2} / Negatives: samples from CommonCrawl. LLaMA/RedPajama [Touvron+ 2023]: Positives: samples from pages referenced by Wikipedia / Negatives: CommonCrawl / Keep documents that are classified positive.",
+   "explain": [
+    "틀을 세웠으니 실제 사례에 대입해 보자. 가장 쉬운 것은 언어 식별이다. 영어 모델이나 독일어 모델을 만든다면 해당 언어가 아닌 문서를 걸러야 한다. Meta 가 공개한 fastText 언어 식별 모델은 176개 언어를 지원하고, 여러 언어판이 있는 위키백과, 번역 문장 모음인 Tatoeba, 남동유럽 뉴스 사이트 SETimes 처럼 다국어 사이트로 학습했다. 내려받아 바로 쓰면 된다. 강사 말대로 몇 단어만 봐도 스페인어인지 일본어인지 알 수 있으니 다른 문제에 비하면 쉽다. 한 문장 안에서 언어를 바꾸는 코드 스위칭이나 방언 때문에 완벽히 풀린 문제는 아니지만 좋은 LM 을 만드는 데 병목은 아니다. 문턱은 대개 어림으로 정하는데, Dolma 는 영어 확률이 0.5 이상인 페이지를 남겼다.",
+    "다음은 특정 종류의 데이터를 '사냥'하는 경우다. 수학을 잘하는 모델을 원하면 웹에서 수학 글을 긁어모으면 된다. Paster 외(2023)의 작업(슬라이드에는 OpenMathText 로 적혔지만 논문 이름은 OpenWebMath — 노트 보충)은 분류기 하나가 아니라 여러 단계를 겹쳤다. 먼저 LaTeX 명령이 들어 있는지 같은 규칙으로 1차로 거르고, 이미 알려진 수학 말뭉치 ProofPile 로 KenLM 을 학습해 perplexity 가 15000 미만인 문서만 남긴다(생성적 방법). 그다음 수학 글인지 맞히는 fastText 분류기(판별적 방법)를 돌리는데, 문턱이 둘이다. LaTeX 가 있는 문서는 이미 수학일 가능성이 크니 0.17 이라는 낮은 문턱만 넘으면 되고, LaTeX 가 없는 문서는 0.8 을 넘어야 한다. 사전 확률이 높은 집단에는 너그럽게, 낮은 집단에는 엄하게 — 베이즈적으로 자연스러운 설계다.",
+    "그렇게 얻은 것이 147억 토큰이고, 이것으로 학습한 14억 파라미터 모델이 이렇게 거르지 않은 데이터를 20배 더 먹은 모델보다 수학을 잘했다. 강사가 여기서 끌어내는 교훈은 '품질에는 보편적인 정의가 없다'는 것이다. 품질 필터는 도구다. 품질을 '수학다움'으로 정의하면 수학 데이터를 얻고, 그 분야가 좋아진다. 같은 틀로 지난 시간에 본 GPT-3 도 설명된다. GPT-3 는 위키백과, WebText2(레딧에서 추천을 많이 받은 글이 링크한 페이지), 책 두 묶음을 양성으로, Common Crawl 표본을 음성으로 두고 단어 특징 위의 선형 분류기를 학습해 점수가 높은 문서를 (앞 장의 확률적 규칙으로) 남겼다.",
+    "첫 LLaMA(와 이를 재현한 RedPajama)는 미묘하게 다르다. 양성이 위키백과 문서 자체가 아니라 위키백과 문서가 '참고 문헌으로 인용한' 외부 페이지다. 위키백과 편집자들이 출처로 삼을 만하다고 판단한 웹 페이지 집합이니, 위키백과 문체를 닮은 글이 아니라 '사람이 신뢰할 만하다고 고른 웹 글'을 목표로 삼은 셈이다. 음성은 역시 Common Crawl 표본이고 양성으로 분류된 문서를 남긴다. 아래 코드는 fastText 의 뼈대 — 단어 주머니 특징과 로지스틱 회귀 — 를 넘파이로 여덟 문서에 학습해 본 것이다. 증명 문장은 0.979, 스팸 문장은 0.035 로 잘 갈렸지만, 아무 의미 없는 'the cat runs in the area' 도 0.968 을 받았다. 'the'·'in'·'runs' 처럼 양성 문서에 자주 나온 흔한 단어만으로 점수가 오른 것이다 — 단어 주머니 분류기가 문체의 겉모습을 배운다는 한계를 작은 규모에서 그대로 보여 준다."
+   ],
+   "formulas": [
+    {
+     "expr": "keep(x) ⇔ [has_latex(x) ∧ p_math(x) ≥ 0.17] ∨ [¬has_latex(x) ∧ p_math(x) ≥ 0.8]",
+     "meaning": "OpenWebMath 의 2단 문턱. has_latex 는 LaTeX 명령 포함 여부(규칙), p_math 는 fastText 수학 분류기 점수(0~1). 사전 확률이 높은 집단(LaTeX 있음)은 낮은 문턱, 낮은 집단은 높은 문턱을 쓴다. 앞 단계로 ProofPile KenLM perplexity < 15000 조건이 먼저 걸린다."
+    }
+   ],
+   "example": {
+    "title": "문턱 두 개의 효과를 작은 숫자로",
+    "body": "문서 1000개 중 LaTeX 가 있는 것이 100개(그중 실제 수학 90개), 없는 것이 900개(실제 수학 45개)라고 하자. 분류기 점수가 수학 문서에서는 대부분 0.6 안팎, 비수학 문서에서는 0.1 안팎이라 가정한다. 문턱 하나(0.8)만 쓰면 LaTeX 가 있는 수학 90개 중 상당수(점수 0.6 근처)가 탈락한다. 문턱을 0.17 로 내리면 LaTeX 집단의 수학 90개는 거의 다 살고, 비수학 10개 중 점수가 0.17 을 넘는 몇 개만 섞인다 — 이 집단은 원래 90% 가 수학이니 손해가 작다. 반대로 LaTeX 없는 900개에 0.17 을 쓰면 비수학 855개 중 점수 꼬리가 0.17 을 넘는 수십 개가 들어와 정밀도가 무너진다. 그래서 집단마다 문턱을 다르게 둔다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np, re\n# 작은 품질 분류기: 단어 주머니 + 로지스틱 회귀 (fastText 의 뼈대)\ngood = [\"the theorem follows from the lemma by induction\", \"we prove the bound using a simple argument\",\n        \"photosynthesis converts light energy into chemical energy\", \"the algorithm runs in linear time\"]\nbad  = [\"click here buy cheap pills now\", \"best deals free shipping click now\",\n        \"win money fast click here\", \"hot singles in your area buy now\"]\ndocs, y = good + bad, np.array([1]*4 + [0]*4)\nvocab = sorted({w for d in docs for w in d.split()})\nidx = {w: i for i, w in enumerate(vocab)}\ndef feat(d):\n    x = np.zeros(len(vocab))\n    for w in d.split():\n        if w in idx: x[idx[w]] += 1\n    return x / max(1, len(d.split()))\nX = np.stack([feat(d) for d in docs])\nw, b = np.zeros(len(vocab)), 0.0\nfor _ in range(2000):                       # 경사 하강\n    p = 1 / (1 + np.exp(-(X @ w + b)))\n    w -= 1.0 * X.T @ (p - y) / len(y); b -= 1.0 * np.mean(p - y)\nscore = lambda d: 1 / (1 + np.exp(-(feat(d) @ w + b)))\nfor d in [\"we prove the theorem by induction\", \"click here for free money\", \"the cat runs in the area\"]:\n    print(f\"{score(d):.3f}  {d}\")",
+    "note": "실행 결과: 0.979 'we prove the theorem by induction' / 0.035 'click here for free money' / 0.968 'the cat runs in the area' — 마지막 줄은 흔한 단어만으로 점수가 오른 실패 사례."
+   },
+   "pitfalls": [
+    "슬라이드 제목 'OpenMathText' 는 Paster 외(2023)의 데이터셋 이름 OpenWebMath 와 다르다(14.7B 토큰·1.4B 모델·20배 비교가 그 논문의 결과다). 노트 보충으로 바로잡는다.",
+    "LLaMA 의 양성은 '위키백과 문서'가 아니라 '위키백과가 인용한 페이지'다. 둘을 혼동하면 왜 LLaMA 데이터가 백과사전 문체만으로 치우치지 않았는지 설명할 수 없다.",
+    "언어 식별 문턱 0.5 는 짧은 문서·코드 섞인 문서·방언에서 쉽게 틀린다. 짧은 텍스트가 많은 데이터면 길이별로 따로 검사한다."
+   ],
+   "check": [
+    {
+     "q": "OpenWebMath 가 LaTeX 유무에 따라 다른 문턱(0.17 / 0.8)을 쓴 이유는?",
+     "a": "LaTeX 가 있는 문서는 이미 수학일 사전 확률이 높아 낮은 문턱으로도 정밀도가 유지되고, 없는 문서는 사전 확률이 낮아 높은 문턱을 써야 잘못 들어오는 문서를 막을 수 있기 때문이다."
+    },
+    {
+     "q": "GPT-3 와 LLaMA 의 품질 분류기에서 양성 데이터는 각각 무엇이었나?",
+     "a": "GPT-3: 위키백과·WebText2·Books1·Books2 표본. LLaMA: 위키백과 문서들이 참고 문헌으로 인용한 외부 웹 페이지. 둘 다 음성은 Common Crawl 표본."
+    }
+   ]
+  },
+  {
+   "start": 900,
+   "title": "비싼 판정자를 싼 분류기로 증류 — phi-1 과 독성 필터",
+   "points": [
+    "phi-1: 원시 R = The Stack 의 Python 부분. '기초 코딩을 배우는 학생에게 교육적 가치가 있나' 프롬프트로 GPT-4 가 10만 개를 판정 → 그 양성이 목표 T.",
+    "T 로 싼 분류기(코드 생성 모델의 임베딩 위 랜덤 포레스트)를 학습해 R 전체에 적용 — 비싼 판정자를 싼 판정자로 옮기는 패턴.",
+    "HumanEval: 원본 Python 으로 1.3B 를 96K 스텝 학습하면 12.19%, 걸러낸 부분집합으로 36K 스텝이면 17.68% — 더 적은 스텝으로 더 높게.",
+    "독성: Jigsaw Toxic Comments(위키백과 토론 페이지 댓글, 6개 라벨)로 분류기를 만들어 Dolma 가 걸렀다."
+   ],
+   "on_screen": "phi-1 [Gunasekar+ 2023]: Philosophy: really high quality data (textbooks) to train a small model (1.5B) / Includes synthetic data from GPT 3.5 (later: GPT-4) and filtered data. 코드: R = \"Python subset of the Stack\", prompt = \"determine its educational value for a student whose goal is to learn basic coding concepts\", T = \"Use GPT-4 with this prompt to classify 100K subset of R to get positive examples\". Train random forest classifier on T using output embedding from pretrained codegen model / Select data from R that is classified positive. Result on HumanEval: 1.3B LM on Python subset of The Stack 12.19% after 96K steps / new filtered subset 17.68% after 36K steps - better! Toxicity filtering in Dolma [Soldaini+ 2024]: Jigsaw Toxic Comments dataset (2018) / Project goal: help people have better discussions online / comments on Wikipedia talk page annotated with {toxic, severe_toxic, obscene, threat, insult, identity_hate}.",
+   "explain": [
+    "앞 장의 사례들은 '좋은 데이터의 예'를 이미 갖고 있었다. 위키백과, ProofPile 처럼. 그런데 원하는 성질의 데이터셋이 세상에 없다면? Microsoft 의 phi-1 이 그 답을 보여 준다. 철학은 '정말 질 좋은 교과서 같은 데이터로 작은 모델(1.3~1.5B)을 학습한다'이고, GPT-3.5(나중에는 GPT-4)가 만든 합성 데이터와 걸러낸 실제 데이터를 함께 썼다. 걸러낸 쪽이 이 장의 주제다. 원시 R 은 공개 코드 모음 The Stack 의 Python 부분이다. 그리고 '기초 코딩 개념을 배우려는 학생에게 이 코드가 교육적 가치가 있는지 판단하라'는 프롬프트를 만든다.",
+    "핵심 수법은 비싼 판정자를 싼 판정자로 옮기는 것이다. R 전체를 GPT-4 로 판정하면 너무 비싸므로, R 에서 10만 개만 뽑아 GPT-4 에 프롬프트와 함께 넣고, 양성으로 판정된 것을 목표 T 로 삼는다. 즉 여기서 T 는 사람이 고른 데이터셋이 아니라 '비싼 분류기의 출력'이다. 그다음 T(양성)와 나머지(음성)로 싼 분류기를 학습한다. phi-1 은 사전학습된 코드 생성 모델의 출력 임베딩을 특징으로 랜덤 포레스트를 썼는데, 강사는 fastText 를 써도 됐을 것이라고 본다. 이 싼 분류기를 R 전체에 돌려 양성만 고른다. 교사(GPT-4)의 판단을 학생(랜덤 포레스트)에게 증류해 규모를 얻는 구조로, 요즘 FineWeb-Edu 같은 '교육적 가치' 필터도 같은 모양이다(노트 보충).",
+    "효과는 분명했다. 원본 Python 부분으로 1.3B 모델을 96K 스텝 학습하면 HumanEval 12.19% 였는데, 걸러낸 부분집합으로는 36K 스텝 만에 17.68% 에 도달했다. 더 적은 스텝으로 더 높은 곳에 간 것이다. 독성 필터도 같은 틀이다. Jigsaw Toxic Comments 데이터셋(2018)은 온라인 토론을 더 건강하게 만들자는 프로젝트에서 나왔고, 논쟁적인 주제에서 쉽게 과열되는 위키백과 토론 페이지 댓글에 toxic·severe_toxic·obscene·threat·insult·identity_hate 여섯 라벨을 붙였다. 이것으로 양성(유해)·음성을 정의해 분류기를 학습하고, Dolma 는 그 분류기로 Common Crawl 을 걸렀다.",
+    "이 장까지를 묶으면 레시피가 나온다. 원하는 데이터의 종류를 정하고, 그 예를 확보하고(기존 데이터셋이 있으면 그것, 없으면 LLM 프롬프트로 일부를 판정해서), 싼 분류기를 학습해 웹 크롤 전체로 외삽한다. 이 레시피는 '좋음'의 정의를 사람이 쥐고 있다는 점이 장점이자 위험이다. 판정 프롬프트가 '교육적 가치'라면 교재 같은 글은 늘지만 대화체·창작물은 줄어든다. 앞 장에서 GPT-3 가 확률적 유지로 꼬리를 남긴 이유, 다음 장에서 볼 '문턱은 학습 길이에 따라 달라진다'는 이야기가 모두 이 위험과 연결된다."
+   ],
+   "formulas": [
+    {
+     "expr": "T = { x ∈ R_sub : LLM(prompt, x) = 양성 },  |R_sub| = 100K;  T′ = { x ∈ R : f_cheap(x) = 양성 }",
+     "meaning": "phi-1 의 2단계 필터. R_sub 는 R 에서 뽑은 10만 개 표본, LLM 은 비싼 판정자(GPT-4), prompt 는 교육적 가치 판정 문장. f_cheap 는 T 로 학습한 싼 분류기(임베딩 + 랜덤 포레스트). 비싼 판정은 10만 번만, 싼 판정은 R 전체에."
+    }
+   ],
+   "example": {
+    "title": "비싼 판정자 증류의 비용 계산",
+    "body": "R 이 문서 1억 개라 하자. GPT-4 판정이 문서당 0.001달러(입력 1천 토큰 가정)면 전수 판정은 10만 달러다. phi-1 방식은 10만 개만 판정하니 100달러, 여기에 임베딩 계산과 랜덤 포레스트 추론이 문서당 0.00001달러라면 1억 개에 1000달러 — 합쳐 약 1100달러로 비용이 90분의 1 쯤으로 준다. 대신 싼 분류기의 오차(예: GPT-4 판정과 90% 일치)를 받아들인다. 숫자는 가정이지만 '비싼 것은 표본에만, 싼 것은 전체에'라는 구조가 비용을 자릿수 단위로 줄인다는 점을 보여 준다."
+   },
+   "pitfalls": [
+    "T 가 LLM 판정 결과라면 LLM 의 취향(문체·주제 편향)이 그대로 싼 분류기로 옮겨 가고 데이터 전체로 증폭된다. 판정 프롬프트 자체가 데이터 분포를 정한다.",
+    "phi-1 의 HumanEval 향상에는 합성 교과서 데이터도 기여했다. 이 장의 12.19% → 17.68% 비교는 '필터링한 실제 코드'만의 효과이고, 둘을 섞어 말하지 않는다."
+   ],
+   "check": [
+    {
+     "q": "phi-1 필터에서 목표 데이터 T 는 어떻게 만들어졌나? 왜 R 전체를 GPT-4 로 판정하지 않았나?",
+     "a": "R(The Stack 의 Python)에서 10만 개를 뽑아 '교육적 가치' 프롬프트로 GPT-4 가 판정한 양성이 T 다. R 전체를 GPT-4 로 판정하면 너무 비싸서, T 로 싼 랜덤 포레스트 분류기를 학습해 전체에 적용했다."
+    },
+    {
+     "q": "Jigsaw 데이터셋의 원천과 라벨은?",
+     "a": "위키백과 토론 페이지의 댓글이고, toxic·severe_toxic·obscene·threat·insult·identity_hate 여섯 라벨이 붙어 있다."
+    }
+   ]
+  },
+  {
+   "start": 1030,
+   "title": "최적의 문턱은 없다 — 학습 길이가 필터 강도를 정한다",
+   "points": [
+    "좋은 데이터의 기준은 학습할 토큰 수에 달려 있다. 오래 학습하면 낮은 품질도 견디고, 짧게 학습하면 높은 품질이 낫다.",
+    "실험(157M 모델, WARC 100개 크기의 작은 풀): 강하게 거른 dclm 은 초반 손실이 가장 낮지만 고유 토큰이 적어 에폭을 거듭하다 과적합한다.",
+    "거의 거르지 않은 resiliparse 는 초반엔 나쁘지만 오래 학습하면 결국 앞선다 — 곡선이 교차한다.",
+    "요약: 필터링은 연산이 제한된 대부분에게 결정적이고, 레시피는 '좋음을 정의하고 원시 데이터로 외삽하기'."
+   ],
+   "on_screen": "Scale-dependent effects of filtering: No single optimal threshold for filtering / If training for longer, want more (lower quality) data / If training for shorter, want less (higher quality) data. 그래프 'Method comparison at d512 (157M), N=100 WARCs vs tokens (all-epoch markers) -- expWARC_natural': 가로 Tokens trained(log, 100M~10B), 세로 eval loss(약 3~5.5). 범례와 1에폭 토큰 수: dclm 97.6M, high_quality 413.7M, llm_curated 1.86B, low_quality 1.67B, med_quality 994.6M, nemotron_full 316.6M, nemotron_qhigh 93.5M, resiliparse 4.42B. 파란 dclm 곡선은 빨리 내려가다 1B 부근부터 치솟고, 보라 resiliparse 는 천천히 내려가 10B 근처에서 가장 낮다. Summary: Filtering is critical for building a good model / Recipe: define target data (what good looks like), extrapolate to raw data.",
+   "explain": [
+    "지금까지는 분류기가 점수를 주면 '적당한' 문턱으로 자르면 된다고 했다. 그런데 적당한 문턱이 얼마인가? 강사의 답은 '그런 것은 없다'이다. 좋은 데이터의 기준이 학습시키려는 모델, 특히 학습할 토큰 수에 달려 있기 때문이다. 시험공부에 비유해 보자. 시험이 내일이면 핵심 요약 노트만 보는 게 낫다. 하지만 한 학기를 공부한다면 요약 노트를 50번 되읽는 것보다 질이 조금 낮은 참고서까지 넓게 읽는 편이 낫다. 같은 원리로, 짧게 학습할 때는 강하게 거른 고품질 데이터가 유리하고, 오래 학습할 때는 덜 거른 넓은 데이터가 유리하다. 물론 '오래 학습하면서 고품질도 많이' 가 최선이지만, 데이터 풀은 정해져 있으니 고를 수 없는 선택지다.",
+    "강사 연구실(Michael Ryan)의 예비 실험이 이를 보여 준다. 157M 파라미터 모델을 아주 작은 풀 — Common Crawl 의 WARC 파일 100개 분량 — 에서 여러 필터로 만든 데이터셋에 학습했다. 데이터가 작으니 학습 토큰을 늘리면 금세 같은 데이터를 다시 돈다(에폭). 그래프의 점 하나하나가 한 에폭의 끝이다. 파란 dclm 곡선(가장 강한 필터, 1에폭이 9760만 토큰)은 손실이 빠르게 내려간다. 두 번째, 세 번째 에폭에도 여전히 배우지만 어느 순간 과적합해 손실이 치솟는다. 반면 보라 resiliparse(텍스트 추출만 하고 거의 거르지 않은 것, 1에폭 44억 토큰)는 처음엔 훨씬 나쁘지만 에폭을 거의 돌지 않으니 꾸준히 내려가, 수십억 토큰 영역에서는 고품질 데이터보다 낮아진다. 곡선이 교차하는 것이다.",
+    "공정하게 말하면 고품질 쪽은 과적합하기 전에 멈추면 된다. 하지만 그 최선점조차 저품질 데이터로 더 오래 학습한 결과보다 나쁘다는 것이 그래프의 요점이다. 학생 질문도 둘 나왔다. 첫째, 점 하나가 학습 한 번인데 신뢰구간을 내야 하지 않나? 이상적으로는 그렇지만 학습이 비싸 논문에서는 드물고, 강사 경험상 사전학습 손실은 대체로 안정적이었다고 한다. 둘째, 고품질 데이터가 더 많아서 오래 학습하면? 모든 유한한 데이터는 결국 수확 체감이 오지만, 그 곡선은 지금 그림보다 아래에서 계속 내려갈 것이라고 답했다.",
+    "이 장의 결론은 필터링 단원의 요약이기도 하다. 연산이 무한하면 거를 필요 없이 전부 학습하면 된다. 하지만 현실의 거의 모두는 연산이 제한돼 있으니 필터링이 모델 품질에 결정적이다. 레시피는 '좋음이 어떻게 생겼는지 정하고(기존 데이터셋이든 LLM 판정이든) 분류기로 원시 데이터 전체에 외삽한다'. 그리고 문턱은 학습 예산과 함께 정해야 한다. 이 생각은 뒤의 데이터 혼합 단원에서 '작은 원천에 큰 비중을 주면 에폭이 폭증한다'는 문제로 다시 돌아온다. 아래 코드는 좋은 문서 10% 가 섞인 10만 개 풀에서 문턱을 올릴수록 정밀도는 오르고 재현율·남는 양이 줄어드는 교환 관계를 수로 보여 준다."
+   ],
+   "formulas": [
+    {
+     "expr": "precision(t) = |{x : s(x) ≥ t, x ∈ 좋음}| / |{x : s(x) ≥ t}|,   recall(t) = |{x : s(x) ≥ t, x ∈ 좋음}| / |좋음|",
+     "meaning": "문턱 t 의 두 얼굴. s(x) 는 분류기 점수. 정밀도는 남긴 것 중 좋은 문서 비율(데이터의 '질'), 재현율은 좋은 문서 중 남긴 비율(데이터의 '양'과 직결). t 를 올리면 정밀도↑ 재현율↓."
+    },
+    {
+     "expr": "epochs = D / N_kept,   N_kept = N_pool × kept_fraction(t)",
+     "meaning": "D 는 학습할 총 토큰, N_pool 은 풀의 토큰 수, kept_fraction(t) 은 문턱 t 에서 남는 비율. 문턱을 올리면 N_kept 가 줄어 같은 D 에서 에폭이 늘어난다 — 과적합의 원인."
+    }
+   ],
+   "example": {
+    "title": "문턱에 따라 몇 에폭을 돌게 되나",
+    "body": "풀이 100억(10B) 토큰이고 아래 코드처럼 문턱별 남는 비율이 t=0.5 → 18.8%, t=0.7 → 7.0%, t=0.9 → 1.2% 라 하자. 남는 토큰은 각각 1.88B, 0.70B, 0.12B. 학습 예산 D = 1B 이면 에폭은 0.53, 1.43, 8.3. D = 20B 로 늘리면 10.6, 28.6, 167 에폭이다. t=0.9 의 정밀도 0.995 는 매력적이지만 20B 학습에서는 같은 문서를 167번 보는 셈이라 과적합이 확실하고, t=0.5(정밀도 0.48)가 더 나을 수 있다. 짧은 학습(D=1B)이면 t=0.9 도 8에폭이라 견딜 만하다 — 최적 문턱이 예산에 따라 움직인다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nrng = np.random.default_rng(0)\n# 임계값 트레이드오프: 좋은 문서 10%, 점수 분포가 겹친다\nn = 100_000\ngood = rng.random(n) < 0.10\ns = np.where(good, rng.beta(5, 2, n), rng.beta(2, 5, n))\nfor t in [0.3, 0.5, 0.7, 0.9]:\n    keep = s >= t\n    prec = good[keep].mean(); rec = keep[good].mean()\n    print(f\"t={t:.1f} kept={keep.mean():.3f} precision={prec:.3f} recall={rec:.3f}\")\n# GPT-3 식 확률적 유지: np.random.pareto(9) > 1 - score\nfor sc in [1.0, 0.9, 0.5, 0.0]:\n    emp = (rng.pareto(9, 200_000) > 1 - sc).mean()\n    print(f\"score={sc}: 이론 {(2 - sc) ** -9:.4f}  모의 {emp:.4f}\")",
+    "note": "실행 결과: t=0.3 kept=0.479 precision=0.210 recall=0.989 / t=0.5 kept=0.188 precision=0.480 recall=0.890 / t=0.7 kept=0.070 precision=0.852 recall=0.583 / t=0.9 kept=0.012 precision=0.995 recall=0.116. 파레토 유지 확률: 이론 1.0000·0.4241·0.0260·0.0020, 모의 1.0000·0.4243·0.0257·0.0018."
+   },
+   "pitfalls": [
+    "작은 규모(짧은 학습)에서 고른 '최적 필터'를 큰 규모에 그대로 쓰면 고품질 데이터를 수십 에폭 돌아 과적합할 수 있다. 문턱은 학습 토큰 수와 함께 정한다.",
+    "그래프의 각 점은 한 번의 학습이다. 신뢰구간이 없으니 작은 차이(손실 0.01 단위)는 잡음일 수 있다."
+   ],
+   "check": [
+    {
+     "q": "왜 '최적의 필터 문턱'은 하나로 정해지지 않나?",
+     "a": "문턱을 올리면 남는 데이터가 줄어 같은 학습 토큰에서 에폭이 늘어난다. 짧은 학습에서는 고품질이 이기지만 긴 학습에서는 반복으로 과적합해, 더 넓고 덜 거른 데이터가 이긴다. 최적 문턱이 학습 예산에 따라 움직인다."
+    },
+    {
+     "q": "풀 50B 토큰, 문턱 t 에서 2% 가 남는다. 학습 예산 30B 토큰이면 몇 에폭인가?",
+     "a": "남는 양 = 50B × 0.02 = 1B. 30B / 1B = 30 에폭이다."
+    }
+   ]
+  },
+  {
+   "start": 1330,
+   "title": "중복은 어디서 오나 — 종류, 지우는 이유, 설계 공간",
+   "points": [
+    "정확 중복: 미러 사이트, GitHub 포크(파일 대부분이 같다). 근사 중복: 몇 토큰만 다른 같은 글 — 라이선스·약관, 상용구, 쉼표 하나 차이, 국가 이름만 바꾼 템플릿 광고.",
+    "C4 감사에서 방독면 상품 설명 한 문단이 61,036번 나왔다 — 데이터를 직접 봐야 하는 이유.",
+    "지우는 이유: 같은 정보에 FLOPs 낭비를 막고, 암기(저작권·개인정보 위험)를 줄인다. 시험 셋을 학습 셋에서 빼는 오염 제거도 같은 기술.",
+    "설계 공간: 항목 단위(문장·문단·문서), 일치 기준(정확·공통 부분 존재·공통 부분 비율), 조치(모두 삭제·하나만 남김).",
+    "필터링은 항목별(선형·병렬)이지만 중복 제거는 항목 간 비교라 n² 를 피하는 선형 시간 알고리즘(해시)이 필요하다."
+   ],
+   "on_screen": "deduplication(): Two types of duplicates: Exact duplicates (mirror sites, GitHub forks) [Gutenberg mirrors] / Near duplicates: same text differing by a few tokens. Examples of near duplicates: Terms of service and licenses [MIT license] / Formulaic writing (copy/pasted or generated from a template) — 표(Dataset / Example / Near-Duplicate Example): Wiki-40B, LM1B, C4 의 예, C4 예는 'Canada' 와 'USA' 만 바뀐 항공권 광고 / Minor formatting differences in copy/pasting. Product description repeated 61,036 times in C4 (방독면 설명 문단) [example page]. Deduplicating training data makes language models better [Lee+ 2021]: Train more efficiently / Avoid memorization (can mitigate copyright, privacy concerns). Design space: 1. What is an item (sentence, paragraph, document)? 2. How to match (exact match, existence of common subitem, fraction of common subitems)? 3. What action to take (remove all, remove all but one)? Key challenge: Deduplication is fundamentally about comparing items to other items / Need linear time algorithms to scale.",
+   "explain": [
+    "필터로 품질 높은 문서만 남겼다고 해도 그 안에는 여전히 같은 글이 여러 번 들어 있다. 중복은 두 종류다. 정확 중복은 글자 하나 다르지 않은 사본이다. 미러 사이트가 대표적인데, 미러는 존재 목적이 복제라서 크롤러가 둘이 같은 곳임을 모르면 같은 내용을 여러 번 긁는다(구텐베르크 프로젝트의 미러들이 화면에 예로 걸렸다). GitHub 포크도 그렇다. 포크한 뒤 몇 파일을 고쳐도 저장소의 99% 는 그대로다. 근사 중복은 미러나 파생물은 아니지만 몇 토큰만 다른 텍스트다. 같은 출처에서 복사했거나 같은 원본에서 나온 경우다.",
+    "근사 중복의 예는 생각보다 다양하다. MIT 라이선스나 서비스 약관은 수많은 페이지에 붙어 있다. 라이선스 부분만 보면 정확한 사본이지만(누가 옮기다 오타를 내지 않았다면) 그 라이선스가 붙은 페이지의 나머지는 다르다. 사이트마다 반복되는 머리글·바닥글도 그렇다. LM1B(10억 단어 벤치마크)에서는 쉼표 하나 있고 없음만 다른 기사 두 벌이 나오고, C4 에는 'Canada' 를 'USA' 로만 바꾼 템플릿 광고가 있다. 이런 변형을 학습하는 것은 개체명만 바꿔 같은 문장을 되풀이하는 셈이라 GPU 를 낭비한다. 극단적인 예도 있다. C4 를 감사한 연구는 어떤 방독면 상품 설명 문단이 C4 에 61,036번 들어 있음을 찾았다. 왜 그런지는 아무도 모른다 — 웹은 이상한 곳이고, 그래서 데이터를 직접 열어 봐야 한다.",
+    "왜 지우는가? 첫째 이유는 효율이다. 중복을 지우면 정보는 거의 잃지 않고 데이터셋이 작아지니 같은 FLOPs 로 더 다양한 내용을 본다. 둘째는 암기 방지다. Lee 외(2021)는 중복이 많은 텍스트를 모델이 그대로 외워 뱉는다는 것을 보였다. 저작권 있는 글이 여러 번 들어가면 외워 버리고, 개인정보도 같은 위험이 있다. 다만 강사는 대부분의 경우 실질적 동기는 FLOPs 낭비를 막는 것이라고 본다. 중복 제거와 짝을 이루는 것이 오염 제거(decontamination)다. 평가 셋의 문항이 학습 셋에 들어 있지 않게 하는 일로, 같은 기술을 학습 셋과 시험 셋 사이에 적용한다. 지난 12강(평가)에서 본 오염 문제를 데이터 쪽에서 막는 장치다.",
+    "중복 제거를 설계할 때 정할 것은 세 가지다. (1) 항목의 단위: 문장, 문단, 문서 중 무엇을 비교하나. (2) 일치의 기준: 완전히 같아야 하나, 공통 부분이 하나라도 있으면 되나, 공통 부분의 비율이 얼마 이상이어야 하나(근사 중복). (3) 조치: 겹치는 것을 모두 지우나, 하나만 남기고 지우나. 그리고 핵심 난관이 있다. 필터링은 문서 하나만 보고 판단하므로 선형 시간이고 병렬화가 쉽다. 중복 제거는 본질적으로 항목과 항목을 비교하는 일이라 순진하게 하면 n² 이다. 문서가 수십억 개면 불가능하니 선형 시간 알고리즘이 필요하고, 그 열쇠가 다음 장부터 볼 해시 함수다."
+   ],
+   "formulas": [
+    {
+     "expr": "비교 횟수(전수) = n(n − 1)/2",
+     "meaning": "n 개 항목을 쌍마다 비교하는 순진한 방법의 비용. n = 10⁹ 이면 약 5 × 10¹⁷ 번이라 불가능하다. 해시로 같은 칸에 떨어진 것끼리만 비교해 O(n) 으로 줄이는 것이 목표."
+    }
+   ],
+   "example": {
+    "title": "61,036번 반복된 문단이 먹는 연산",
+    "body": "그 문단이 약 100토큰이라 하자. 61,036번이면 약 610만 토큰이다. 학습 FLOPs ≈ 6 × N × D 이므로 1B 파라미터 모델이라면 이 문단에만 6 × 10⁹ × 6.1 × 10⁶ ≈ 3.7 × 10¹⁶ FLOPs 를 쓴다. H100(밀집 BF16 약 10¹⁵ FLOP/s, 활용률 40% 가정)으로 약 90초 분량이다. 하나만 남기면 600토큰 남짓으로 끝난다. 혼자서는 작아 보이지만 이런 반복이 데이터 전체에 수없이 있고, 더 큰 문제는 모델이 이 문단을 그대로 외운다는 점이다."
+   },
+   "pitfalls": [
+    "'중복 제거 = 효율'만 생각하면 오염 제거를 빠뜨린다. 학습 셋 안에서만이 아니라 학습 셋 ↔ 평가 셋 사이도 같은 방법으로 검사해야 벤치마크 점수가 의미를 가진다.",
+    "라이선스·바닥글처럼 문서의 일부만 겹치는 근사 중복은 문서 단위 비교로는 잘 안 잡힌다. 항목 단위(문단·n-gram)를 무엇으로 잡느냐가 결과를 바꾼다."
+   ],
+   "check": [
+    {
+     "q": "필터링과 중복 제거의 계산 구조가 근본적으로 다른 점은?",
+     "a": "필터링은 문서 하나씩 독립적으로 점수를 매기므로 선형 시간·병렬이 쉽다. 중복 제거는 문서끼리 비교해야 하므로 순진하게는 n² 이고, 해시 같은 선형 시간 기법이 필요하다."
+    },
+    {
+     "q": "중복 제거의 설계 공간 세 축을 말하라.",
+     "a": "항목 단위(문장·문단·문서), 일치 기준(정확 일치·공통 부분 존재·공통 부분 비율), 조치(모두 삭제·하나만 남김)."
+    }
+   ]
+  },
+  {
+   "start": 1690,
+   "title": "해시 함수와 정확 중복 제거 — C4 의 3문장 단위",
+   "points": [
+    "해시 함수는 값(문자열)을 훨씬 작은 값(정수·문자열)으로 보낸다. 서로 다른 두 값이 같은 해시를 받으면 충돌.",
+    "암호학적 해시(SHA-256)는 충돌에 강하지만 느리고, 해시 테이블용(DJB2·MurmurHash·CityHash)은 빠르지만 충돌을 감수한다 — 여기서는 후자(mmh3).",
+    "정확 중복 제거: 해시로 묶고 그룹마다 하나만 남긴다. MapReduce 꼴이라 병렬화가 쉽고 의미가 명확하지만 근사 중복은 못 잡는다.",
+    "C4: 항목 = 3문장 구간, 정확 일치, 하나만 남김. 문서 한가운데서 3문장이 빠지면 글이 끊긴다는 부작용."
+   ],
+   "on_screen": "hash_functions(): Hash function h maps item to a hash value (integer or string) / Hash value much smaller than item / Hash collision: h(x) = h(y) for x ≠ y. Tradeoff between efficiency and collision resistance [article]: Cryptographic hash functions (SHA-256): collision resistant, slow (used in bitcoin) / DJB2, MurmurHash, CityHash: not collision resistant, fast (used for hash tables). We will use MurmurHash: h = mmh3.hash(\"hello\"). exact_deduplication(): Simple example 1. Item: string 2. How to match: exact match 3. Action: remove all but one. 코드: items = [\"Hello!\", \"hello\", \"hello there\", \"hello\", \"hi\", \"bye\"]; itertools.groupby(sorted(items, key=mmh3.hash), key=mmh3.hash); deduped_items = [next(group) for h, group in hash_items] → 결과 상자 deduped_items = ['hi', 'bye', 'hello', 'hello there', 'Hello!']. Pro: simple, clear semantics, high precision / Con: does not deduplicate near duplicates / This code is written in a MapReduce way. C4 [Raffel+ 2019]: 1. Item: 3-sentence spans 2. exact match 3. remove all but one / Warning: when a 3-sentence span is removed from the middle of a document, the resulting document might not be coherent.",
+   "explain": [
+    "해시 함수는 다들 안다고 강사는 가볍게 넘어갔지만 정리해 두자. 해시 함수 h 는 문자열 같은 값을 받아 훨씬 짧은 값(정수나 짧은 문자열)으로 바꾼다. 서로 다른 두 입력 x ≠ y 가 h(x) = h(y) 를 받으면 해시 충돌이다. 해시 함수에는 두 부류가 있다. SHA-256 같은 암호학적 해시는 충돌을 일부러 찾아내기가 계산상 불가능하도록 설계돼 비트코인 등에 쓰이지만 느리다. DJB2·MurmurHash·CityHash 같은 해시 테이블용 해시는 충돌에 강하지 않지만 빠르다. 해시 테이블에서는 충돌이 나도 세상이 끝나지 않으니 속도를 택한 것이다. 수십억 문서를 처리하는 중복 제거도 후자를 쓰고, 강의 코드는 MurmurHash(파이썬 mmh3)를 쓴다.",
+    "정확 중복 제거는 개념상 아주 단순하다. 항목마다 해시를 구하고, 해시가 같은 것끼리 묶고, 묶음마다 하나만 남긴다. 화면 예에서는 'Hello!', 'hello', 'hello there', 'hello', 'hi', 'bye' 여섯 개 중 두 번 나온 'hello' 가 하나로 줄어 다섯 개가 남는다. 대소문자가 다른 'Hello!' 는 다른 문자열이니 살아남는다. 강사는 코드를 일부러 MapReduce 꼴로 썼다고 강조한다. map 단계에서 항목마다 (해시, 항목)을 내고, shuffle 로 같은 해시끼리 모이고, reduce 단계에서 그룹마다 하나를 고른다. 각 단계가 항목별로 독립이라 수천 대의 기계로 쪼개 돌릴 수 있다. 이것이 해시가 n² 비교를 선형 시간으로 바꾸는 방식이다 — 같은 해시 칸에 떨어진 것끼리만 보면 된다.",
+    "장점은 의미가 명확하고 정밀도가 높다는 것이다(해시 충돌 확률을 무시하면 지운 것은 진짜 사본이다). 단점은 근사 중복을 전혀 못 잡는다는 것이다. 공백 하나, 쉼표 하나만 달라도 해시가 완전히 달라진다. 아래 코드처럼 공백·대소문자를 정규화한 뒤 해시하면 일부는 잡히지만, 'Canada'→'USA' 같은 차이는 여전히 빠져나간다. 그래서 다음 장의 근사 기법이 필요하다.",
+    "역사적 예로 T5 논문의 C4 가 있다. C4 는 Common Crawl 을 처리하면서 정확 중복 제거를 했는데 항목 단위가 3문장 구간이었다. 정확히 일치하는 3문장 구간이 여러 문서에 있으면 하나만 남기고 나머지 문서에서 그 구간을 지웠다. 주의 깊게 보면 이상한 점이 있다. 문서 중간에서 3문장을 뜯어내면 앞뒤 문맥이 끊긴 글이 남는다. 바닥글처럼 문서 끝에 붙은 상용구라면 괜찮지만, 본문 한가운데 인용문이 겹친 경우에는 문서가 일관성을 잃는다. 그래도 C4 는 그렇게 했다 — 항목 단위의 선택이 결과 데이터의 성질을 바꾼다는 앞 장의 설계 공간 이야기의 구체적인 예다."
+   ],
+   "formulas": [
+    {
+     "expr": "dedup(X) = { first(G) : G ∈ groupby(X, h) }",
+     "meaning": "정확 중복 제거. X 는 항목 집합, h 는 해시 함수, groupby 는 같은 해시값을 가진 항목끼리 묶는 연산(MapReduce 의 shuffle), first(G) 는 그룹 G 의 대표 하나. 결과 크기 = 서로 다른 해시값의 개수."
+    },
+    {
+     "expr": "P(우연한 충돌이 하나라도) ≈ n² / (2 · 2^k)",
+     "meaning": "k 비트 해시에 n 개 항목을 넣을 때 생일 문제 근사(노트 보충). n = 10⁹, k = 64 면 10¹⁸ / (2 × 1.8 × 10¹⁹) ≈ 0.027. 32비트 해시면 사실상 확실히 충돌하므로 문서 수십억 개에는 64비트 이상을 쓴다."
+    }
+   ],
+   "example": {
+    "title": "해시 비트 수와 충돌 — 생일 문제",
+    "body": "문서 10억(n = 10⁹)개를 32비트 해시(2³² ≈ 4.3 × 10⁹ 칸)로 정확 중복 제거한다고 하자. 기대 충돌 쌍 수 ≈ n²/(2·2³²) = 10¹⁸ / 8.6 × 10⁹ ≈ 1.16 × 10⁸, 즉 1억 쌍 넘는 서로 다른 문서가 '중복'으로 오인돼 지워진다. 64비트면 10¹⁸ / (2 × 1.84 × 10¹⁹) ≈ 0.027 쌍 — 기대값이 1 보다 훨씬 작다. 128비트(MD5 등)는 사실상 0 이다. 정확 중복 제거에서 '해시가 같으면 같은 문서'라는 가정은 비트 수가 충분할 때만 성립한다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import hashlib, re\nfrom collections import defaultdict\ndocs = [\"Hello! Welcome to our shop.\", \"Hello!  Welcome to our shop.\",\n        \"hello! welcome to our shop.\", \"Totally different page.\"]\ndef norm(t):                        # 공백·대소문자 정규화 후 해시하면 '거의 같음' 일부를 잡는다\n    return re.sub(r\"\\s+\", \" \", t).strip().lower()\ndef dedup(items, key=lambda t: t):\n    groups = defaultdict(list)      # map: 해시 → 항목들 (MapReduce 의 shuffle 과 같은 모양)\n    for i, t in enumerate(items):\n        groups[hashlib.md5(key(t).encode()).hexdigest()].append(i)\n    return [g[0] for g in groups.values()]   # reduce: 그룹마다 하나만 남긴다\nprint(\"원문 그대로:\", dedup(docs))\nprint(\"정규화 후 :\", dedup(docs, norm))",
+    "note": "실행 결과: 원문 그대로 [0, 1, 2, 3] (아무것도 못 지움) / 정규화 후 [0, 3] (공백·대소문자 차이 둘을 지움)."
+   },
+   "pitfalls": [
+    "화면 코드의 mmh3.hash 는 32비트다. 장난감 예에는 충분하지만 수십억 문서에 쓰면 생일 문제로 서로 다른 문서가 대량으로 충돌한다 — 실무에서는 64·128비트 해시(mmh3.hash64/hash128 등)를 쓴다(노트 보충).",
+    "C4 처럼 문서 일부 구간을 지우면 남은 문서가 문맥이 끊긴다. 문서 단위로 지울지, 구간만 지울지는 품질 대 보존량의 선택이다."
+   ],
+   "check": [
+    {
+     "q": "정확 중복 제거 코드를 MapReduce 꼴로 쓰는 이점은?",
+     "a": "map(항목별 해시)·shuffle(같은 해시끼리 모으기)·reduce(그룹당 하나 남기기)가 모두 항목 또는 그룹 단위로 독립이라 많은 기계에 나눠 병렬로 돌릴 수 있다."
+    },
+    {
+     "q": "C4 의 3문장 단위 정확 중복 제거가 가진 부작용은?",
+     "a": "겹친 3문장 구간을 문서 중간에서 뜯어내면 남은 문서의 흐름이 끊겨 일관성을 잃을 수 있다."
+    }
+   ]
+  },
+  {
+   "start": 1890,
+   "title": "Jaccard 유사도와 MinHash — 충돌 확률이 곧 유사도인 해시",
+   "points": [
+    "근사 일치를 정의한다: Jaccard(A,B) = |A∩B| / |A∪B|. 예: {1,2,3,4} 와 {1,2,3,5} 는 3/5 = 0.6.",
+    "두 문서는 Jaccard ≥ 문턱(예 0.99)이면 근사 중복. 문제는 이것을 선형 시간에 찾는 것.",
+    "MinHash: 집합의 원소를 모두 해시해 최솟값을 취한다. 무작위 해시에 대해 Pr[h(A) = h(B)] = Jaccard(A,B).",
+    "이유: 무작위 해시는 원소에 무작위 순서를 준다. 맨 앞 원소가 공통 원소(1,2,3)이면 두 최솟값이 같고, 4·5 면 다르다.",
+    "보통 해시는 충돌을 피하지만, 여기서는 충돌을 유사도에 맞춰 '조절'하고 싶다."
+   ],
+   "on_screen": "jaccard_minhash(): Jaccard similarity — Definition: Jaccard(A, B) = |A intersect B| / |A union B|, A = {\"1\",\"2\",\"3\",\"4\"}, B = {\"1\",\"2\",\"3\",\"5\"}, compute_jaccard → 결과 상자 jaccard = 0.6. Definition: two documents are near duplicates if their Jaccard similarity >= threshold / Algorithmic challenge: find near duplicates in linear time. MinHash: a random hash function h so that Pr[h(A) = h(B)] = Jaccard(A, B) / Normally, you want different items to hash to different hashes ...but here, you want collision probability to depend on similarity. def minhash(S, seed): return min(mmh3.hash(x, seed) for x in S). Characteristic matrix representation: item | A | B 행렬(1:1 1, 2:1 1, 3:1 1, 4:1 0, 5:0 1). Random hash function induces a permutation over items / Look at which item is first in A and which item is first in B / Each item has the same probability as being first (min) / If 1, 2, 3 is first, then first in A = first in B / If 4, 5 is first, then first in A ≠ first in B. Verify: n = 100, matches = [minhash(A, seed) == minhash(B, seed) for seed in range(n)], estimated_jaccard → 0.6, assert abs(estimated_jaccard - jaccard) < 0.01.",
+   "explain": [
+    "근사 중복을 찾으려면 먼저 '얼마나 비슷한가'를 수로 정해야 한다. 표준적인 척도가 Jaccard 유사도다. 두 집합 A, B 의 교집합 크기를 합집합 크기로 나눈 값이다. 화면 예에서 A = {1,2,3,4}, B = {1,2,3,5} 이면 교집합은 {1,2,3} 으로 3개, 합집합은 {1,2,3,4,5} 로 5개라 Jaccard 는 0.6 이다. 0 이면 서로소, 1 이면 똑같은 집합이다. 문서를 집합으로 바꾸는 방법은 강의가 생략했지만 보통 단어(또는 글자) n-gram 의 집합, 곧 shingle 집합을 쓴다(노트 보충). 그리고 두 문서의 Jaccard 가 어떤 문턱(예: 0.99) 이상이면 근사 중복이라고 정의한다. 남은 문제는 이것을 문서 쌍을 전부 비교하지 않고 선형 시간에 찾는 것이다. 다행히 알고리즘 분야에서 이미 풀린 문제이고, 첫 단계가 MinHash 다.",
+    "MinHash 는 Pr[h(A) = h(B)] = Jaccard(A, B) 를 만족하는 무작위 해시 함수다. 이 성질이 반가운 이유는, 해시는 선형 시간을 만들어 주는 도구이고 Jaccard 는 우리가 원하는 척도인데, 둘을 (기댓값 수준에서) 이어 주기 때문이다. 흥미로운 점은 목적이 뒤집혔다는 것이다. 보통 해시 함수는 서로 다른 것이 다른 값을 받도록, 즉 충돌을 피하도록 만든다. 여기서는 충돌을 원한다. 아무렇게나가 아니라 비슷한 것끼리는 자주, 다른 것끼리는 드물게 충돌하도록 조절된 충돌이다. 만드는 법은 놀랄 만큼 간단하다. 집합의 원소를 하나하나 (시드로 정한) 해시에 넣고 그중 최솟값을 집합의 MinHash 값으로 삼는다. 최솟값이 이상해 보일 수 있지만 최댓값을 써도 된다 — 동률을 깨는 하나의 규칙일 뿐이다.",
+    "왜 충돌 확률이 Jaccard 가 되는지 특성 행렬로 보자. 행은 원소 1~5, 열은 A 와 B, 칸은 그 원소를 가지면 1 이다. 무작위 해시 함수는 원소들에 무작위 순서(순열)를 매긴다. 예를 들어 4, 3, 1, 5, 2 순서. 그러면 A 의 MinHash 는 'A 가 가진 원소 중 이 순서에서 가장 앞선 것', B 도 마찬가지다. 이제 합집합 {1,..,5} 에서 순서상 맨 앞에 오는 원소를 생각하자. 다섯 원소 각각이 맨 앞일 확률은 같다. 맨 앞이 1·2·3(공통 원소)이면 그 원소가 A 에서도 B 에서도 첫째이므로 두 최솟값이 같다. 맨 앞이 4 면 A 의 첫째는 4 인데 B 에는 4 가 없으니 다르고, 5 도 마찬가지다. 따라서 충돌 확률 = (공통 원소 수)/(합집합 크기) = 3/5 = 0.6 = Jaccard. 이것이 증명의 전부다.",
+    "강의는 이를 코드로 확인한다. 시드 100개로 해시 함수 100개를 만들고 A·B 의 MinHash 가 같은 비율을 세면 0.6 이 나온다. 핵심은 n² 비교가 없다는 점이다. 각 문서의 MinHash 를 독립적으로 계산해 두고, 같은 값끼리 충돌하는지만 보면 된다. 아래 코드는 문장 네 개를 단어 3-gram 집합으로 바꾸고 해시 200개로 서명(signature)을 만든 것이다. 실제 Jaccard 0.778 인 쌍은 0.795, 0.231 인 쌍은 0.250, 0 인 쌍은 0.000 으로 추정됐다. 다만 해시 하나의 충돌은 동전 던지기라 '문턱 이상인가'를 믿을 만하게 말해 주지 못한다 — 그 문제를 다음 장의 LSH 가 푼다."
+   ],
+   "formulas": [
+    {
+     "expr": "J(A, B) = |A ∩ B| / |A ∪ B|",
+     "meaning": "Jaccard 유사도. A, B 는 문서를 shingle(단어·글자 n-gram) 집합으로 바꾼 것. 0 이면 공통 원소 없음, 1 이면 같은 집합."
+    },
+    {
+     "expr": "minhash_h(S) = min_{x ∈ S} h(x),   Pr_h[minhash_h(A) = minhash_h(B)] = J(A, B)",
+     "meaning": "h 는 원소에 무작위 순서를 주는 해시(시드로 고른다). 합집합에서 h 가 가장 작은 원소가 교집합에 속할 때만 두 최솟값이 같으므로 확률이 정확히 J. (h 가 원소마다 서로 다른 값을 준다고 가정)"
+    },
+    {
+     "expr": "Ĵ = (1/n) Σ_{i=1}^{n} 1[minhash_{h_i}(A) = minhash_{h_i}(B)],   SE(Ĵ) = √(J(1 − J)/n)",
+     "meaning": "해시 n 개로 Jaccard 를 추정. 1[·] 은 맞으면 1, 아니면 0. 각 항이 성공 확률 J 인 베르누이라 표준오차가 √(J(1−J)/n). J = 0.6, n = 100 이면 √(0.24/100) ≈ 0.049."
+    }
+   ],
+   "example": {
+    "title": "shingle 로 Jaccard 를 손으로, 그리고 추정 오차",
+    "body": "'the cat sat on the mat' 과 'the cat sat on a mat' 을 단어 2-gram 집합으로 바꾼다. A = {the cat, cat sat, sat on, on the, the mat}, B = {the cat, cat sat, sat on, on a, a mat}. 교집합 3개, 합집합 7개 → J = 3/7 ≈ 0.429. 단어 하나 바뀌었는데 2-gram 두 개가 깨져 유사도가 크게 떨어진다 — shingle 길이가 길수록 작은 수정에 민감해진다. 이제 MinHash 로 J = 0.6 을 해시 100개로 추정하면 표준오차는 √(0.6 × 0.4 / 100) = √0.0024 ≈ 0.049. 즉 추정값은 대략 0.50~0.70 사이로 흔들린다. 오차를 0.01 로 줄이려면 n ≈ 0.24 / 0.0001 = 2400 개가 필요하다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np, zlib\ndocs = {\"a\": \"the quick brown fox jumps over the lazy dog today\",\n        \"b\": \"the quick brown fox jumps over the lazy dog again\",\n        \"c\": \"the quick brown fox leaps over the lazy cat today\",\n        \"d\": \"language models need clean and deduplicated data\"}\ndef shingles(t, k=3):                      # 단어 3-gram 집합\n    w = t.split(); return {\" \".join(w[i:i+k]) for i in range(len(w)-k+1)}\nS = {k: {zlib.crc32(s.encode()) for s in shingles(v)} for k, v in docs.items()}\ndef jaccard(A, B): return len(A & B) / len(A | B)\nP, n = (1 << 61) - 1, 200                  # 해시 h(x) = (a·x + c) mod P 를 n 개\nrng = np.random.default_rng(0)\na, c = rng.integers(1, P, n, dtype=np.int64), rng.integers(0, P, n, dtype=np.int64)\ndef signature(s):\n    x = np.array(sorted(s), dtype=object)\n    return np.array([min((int(ai) * xi + int(ci)) % P for xi in x) for ai, ci in zip(a, c)], dtype=object)\nsig = {k: signature(v) for k, v in S.items()}\nfor p, q in [(\"a\", \"b\"), (\"a\", \"c\"), (\"a\", \"d\")]:\n    print(p, q, f\"실제 J={jaccard(S[p], S[q]):.3f}  MinHash 추정={np.mean(sig[p] == sig[q]):.3f}\")\nb, r = 20, 10                               # LSH: 밴드 20 × 행 10 = 200\nbuckets = {}\nfor k, s in sig.items():\n    for i in range(b):\n        buckets.setdefault((i, tuple(s[i*r:(i+1)*r])), set()).add(k)\nprint(\"후보 쌍:\", sorted({tuple(sorted(v)) for v in buckets.values() if len(v) > 1}))",
+    "note": "실행 결과: a b 실제 J=0.778 MinHash 추정=0.795 / a c 실제 J=0.231 추정=0.250 / a d 실제 J=0.000 추정=0.000 / 후보 쌍: [('a', 'b')] — 마지막 줄은 다음 장의 LSH(밴드 20 × 행 10)를 미리 쓴 것."
+   },
+   "pitfalls": [
+    "화면 코드의 assert abs(estimated_jaccard − jaccard) < 0.01 은 해시 100개로는 일반적으로 성립하지 않는다(표준오차 ≈ 0.049). 원소가 5개뿐인 이 예에서 특정 시드 100개가 우연히 딱 60번 맞은 것이고, 시드를 바꾸면 쉽게 깨진다. 노트에서 바로잡는다.",
+    "MinHash 가 근사하는 것은 shingle 집합의 Jaccard 다. 빈도(같은 문장이 문서 안에 두 번)는 집합으로 바꾸며 사라진다."
+   ],
+   "check": [
+    {
+     "q": "A = {a, b, c, d, e, f}, B = {d, e, f, g} 의 Jaccard 와, MinHash 충돌 확률은?",
+     "a": "교집합 {d,e,f} 3개, 합집합 {a..g} 7개 → 3/7 ≈ 0.429. MinHash 충돌 확률도 같은 0.429 다."
+    },
+    {
+     "q": "왜 MinHash 의 충돌 확률이 Jaccard 와 같은가? 한 문장으로.",
+     "a": "무작위 해시가 합집합 원소에 무작위 순서를 주는데, 맨 앞 원소가 교집합에 있을 때만 두 집합의 최솟값이 같고, 그 확률이 |A∩B|/|A∪B| 이기 때문이다."
+    }
+   ]
+  },
+  {
+   "start": 2280,
+   "title": "LSH — 밴드 b 개 × 행 r 개로 확률을 계단처럼 깎기",
+   "points": [
+    "MinHash 하나의 충돌 확률은 Jaccard 그 자체라 너무 무르다. 원하는 건 '문턱 넘으면 충돌, 아니면 안 충돌'.",
+    "해시 n = b × r 개를 밴드 b 개로 나눈다. 어떤 밴드든 그 안의 r 개 해시가 모두 같으면 충돌 — AND(밴드 안) / OR(밴드 사이) 구조.",
+    "P(충돌) = 1 − (1 − s^r)^b. s=0.8, b=5, r=10 이면 밴드 일치 0.1074, 충돌 0.4333. 곡선은 S 자.",
+    "r 을 키우면 곡선이 오른쪽으로 가며 가팔라지고(맞추기 어려움), b 를 키우면 왼쪽으로 간다(맞추기 쉬움).",
+    "전이 지점 ≈ (1/b)^(1/r), 그 자리 충돌 확률 ≈ 1 − 1/e ≈ 0.63. Lee+ 2021: n = 9000, b = 20, r = 450 → 문턱 ≈ 0.993."
+   ],
+   "on_screen": "locality_sensitive_hashing() [book chapter]: Suppose we hash examples with just one MinHash function / P[A and B collide] = Jaccard(A, B) / On average, more similar items will collide, but very stochastic. Goal: have A and B collide if Jaccard(A, B) > threshold / We have to somehow sharpen the probabilities... Solution: use n hash functions, break up into b bands of r hash functions each (n = b * r): n = 12, b = 3, r = 4, Hash functions: h1 h2 h3 h4 | h5 h6 h7 h8 | h9 h10 h11 h12. Key: A and B collide if for some band, all its hash functions return same value / As we will see, the and-or structure of the bands sharpens the threshold. def get_prob_collision(sim, b, r): prob_match = sim ** r; prob_collision = 1 - (1 - prob_match) ** b. 상자: sim 0.8, b 5, r 10, prob_match 0.1074, prob_collision 0.4333. S 자 그래프(가로 similarity, 세로 probability). 표 b=10,r=10: 0.7:0.2491 0.75:0.4399 0.8:0.6789 0.85:0.8884 0.9:0.9863 0.95:0.9999 0.98:1.0000 / b=10,r=20: 0.0080 0.0313 0.1095 0.3265 0.7264 0.9882 1.0000 / b=20,r=20: 0.0158 0.0615 0.2070 0.5464 0.9252 0.9999 1.0000. b values 그래프(곡선 여러 개). Example setting [Lee+ 2021]: n = 9000, b = 20, r = 450 / threshold = (1 / b) ** (1 / r) / Probability that a fixed band matches: prob_match = (1 / b) / Probability that A and B collide is a constant (≈ 1-1/e): prob_collision = 1 - (1 - 1 / b) ** b. 논문 팝업 'Deduplicating Training Data Makes Language Models Better' 초록.",
+   "explain": [
+    "MinHash 로 충돌 확률이 Jaccard 와 같아졌지만 그 자체로는 쓸모가 제한적이다. Jaccard 0.99 인 쌍이 충돌할 확률은 0.99, 0.5 인 쌍도 절반은 충돌한다. 비슷할수록 더 자주 충돌하긴 하지만 분산이 너무 크다. 우리가 원하는 건 계단 함수다. Jaccard 가 문턱을 넘으면 거의 확실히 충돌하고, 못 넘으면 거의 충돌하지 않는 것. 확률을 '날카롭게' 깎아야 한다. 해법은 이론 컴퓨터과학의 고전인 지역 민감 해싱(LSH)이고, 재료는 독립적인 해시 함수를 더 많이 쓰는 것이다.",
+    "해시 n 개를 b 개의 밴드로 나누고, 밴드 하나에 r 개씩 넣는다(n = b × r). 화면 예는 n = 12, b = 3, r = 4 로 h1~h4 | h5~h8 | h9~h12 다. 규칙은 이렇다. 어떤 밴드 하나에서 그 밴드의 r 개 해시가 A 와 B 에 대해 모두 같은 값을 내면 A 와 B 를 '충돌'(후보 쌍)로 본다. 밴드 안은 AND, 밴드 사이는 OR 다. 실제 구현에서는 밴드마다 r 개 값을 묶은 튜플을 키로 해시 테이블(버킷)에 넣고, 같은 버킷에 들어온 문서끼리만 후보로 삼는다. 그러니 여전히 선형 시간이다. 이제 Jaccard 가 s 일 때 충돌 확률을 계산하자. 해시 하나가 맞을 확률이 s 이고 해시들이 독립이므로, 한 밴드의 r 개가 모두 맞을 확률은 s^r 이다 — r 에 대해 지수적으로 작아진다. 밴드 하나가 안 맞을 확률은 1 − s^r, b 개 모두 안 맞을 확률은 (1 − s^r)^b, 그래서 적어도 하나 맞을 확률은 1 − (1 − s^r)^b 다.",
+    "숫자를 넣어 보자. s = 0.8, b = 5, r = 10 이면 밴드 하나 일치 확률은 0.8^10 = 0.1074 로 낮지만, 기회가 다섯 번이라 충돌 확률은 1 − 0.8926^5 = 0.4333 으로 올라간다. s 에 대한 그래프를 그리면 s = 0 에서 0, s = 1 에서 1 이고 그 사이가 S 자다. 이것이 원하던 '상전이' 모양이다. 매개변수의 효과는 이렇다. b = 10, r = 10 에서 Jaccard 0.7~0.98 의 충돌 확률은 0.25~1 이다. r 을 20 으로 올리면 밴드 안 AND 가 엄해져 모든 것이 맞추기 어려워지고 곡선이 오른쪽으로 가며 가팔라진다. 0.7 의 확률이 0.25 에서 0.008 로 떨어진다. 대신 0.9 도 0.72 로 내려간다. 그다음 b 를 20 으로 올리면 기회가 늘어 곡선이 왼쪽으로 간다. 0.9 가 0.92 로 회복되고 0.7 은 0.016 으로 조금만 오른다. b 와 r 을 함께 키우면 전이를 원하는 만큼 날카롭게 만들 수 있지만 해시 수 n = b × r 만큼 비용이 든다.",
+    "전이가 어디서 일어나는지도 식으로 나온다. 밴드 하나의 일치 확률 s^r 이 1/b 가 되는 지점, 즉 s* = (1/b)^(1/r) 이 대략의 문턱이다. 그 자리에서 충돌 확률은 1 − (1 − 1/b)^b 인데, b 가 크면 1 − 1/e ≈ 0.63 으로 수렴한다. 강사 말대로 전이의 '중심'이 0.63 근처이고, b·r 을 키울수록 그 아래는 0 으로, 위는 1 로 몰린다. 실제 예로 Lee 외(2021)의 중복 제거 논문은 n = 9000, b = 20, r = 450 을 썼다. 문턱은 (1/20)^(1/450) ≈ 0.9934 로, 아주 비슷한 문서만 잡는 설정이다. 이 방법을 MinHash LSH 라 부른다. LSH 는 원래 어떤 유사도에도 쓸 수 있는 틀이지만, 언어 모델 데이터 처리에서는 Jaccard 를 근사하는 MinHash 와 짝지어 쓴다. 마지막 주의점으로 강사는 중복 제거를 데이터셋마다 따로 하는 경우가 많지만, 여러 원천을 합친 전체에 걸쳐서도 해야 한다고 덧붙였다."
+   ],
+   "formulas": [
+    {
+     "expr": "P(충돌 | s) = 1 − (1 − s^r)^b",
+     "meaning": "s 는 두 문서의 Jaccard(= MinHash 하나의 충돌 확률), r 은 밴드 하나에 든 해시 수(AND), b 는 밴드 수(OR). s^r 은 한 밴드가 통째로 일치할 확률, (1 − s^r)^b 는 모든 밴드가 어긋날 확률."
+    },
+    {
+     "expr": "s* ≈ (1/b)^(1/r),   P(충돌 | s*) = 1 − (1 − 1/b)^b → 1 − 1/e ≈ 0.632",
+     "meaning": "S 자 곡선의 전이 지점. s*^r = 1/b 가 되는 s. b 가 클수록 그 자리의 충돌 확률이 0.632 로 수렴한다. 원하는 Jaccard 문턱 τ 에 맞추려면 (1/b)^(1/r) = τ 가 되게 b, r 을 고른다."
+    }
+   ],
+   "example": {
+    "title": "b, r 을 바꾸며 손으로 충돌 확률 계산",
+    "body": "① s = 0.8, b = 5, r = 10: 0.8^10 = 0.1074, 1 − 0.1074 = 0.8926, 0.8926^2 = 0.7968, ^4 = 0.6349, ^5 = 0.5667, 따라서 1 − 0.5667 = 0.4333 (화면 값과 일치). ② b = 10, r = 10 의 문턱 = 0.1^0.1 = 0.794 — 화면 표에서 0.8 의 확률이 0.68 로 0.63 근처인 것과 맞는다. ③ b = 10, r = 20 의 문턱 = 0.1^0.05 = 0.891 → 0.9 에서 0.7264. ④ b = 20, r = 20 의 문턱 = 0.05^0.05 = 0.861 → 0.85 에서 0.5464. ⑤ Lee+ 2021: ln 0.05 = −2.996, ÷ 450 = −0.00666, e^(−0.00666) = 0.99336 이 문턱이고 그 자리 확률 1 − 0.95^20 = 1 − 0.3585 = 0.6415. 모두 아래 코드 출력과 같다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "def p_collide(s, b, r):\n    return 1 - (1 - s ** r) ** b             # 어떤 밴드든 r 개가 모두 같을 확률\nsims = [0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.98]\nfor b, r in [(10, 10), (10, 20), (20, 20)]:\n    print(f\"b={b:2d} r={r:2d} 문턱={(1/b)**(1/r):.3f}\", \" \".join(f\"{p_collide(s,b,r):.4f}\" for s in sims))\nprint(\"b=5,r=10,s=0.8:\", round(p_collide(0.8, 5, 10), 4))\nb, r = 20, 450\nt = (1 / b) ** (1 / r)\nprint(f\"Lee+2021 b=20 r=450: 문턱={t:.5f}, 문턱에서 충돌확률={p_collide(t, b, r):.4f}\")\nprint(\"b=20,r=10 s=0.6:\", round(p_collide(0.6,20,10),4), \" s=0.4:\", round(p_collide(0.4,20,10),4))",
+    "note": "실행 결과: b=10 r=10 문턱=0.794 0.2491 0.4399 0.6789 0.8884 0.9863 0.9999 1.0000 / b=10 r=20 문턱=0.891 0.0080 0.0313 0.1095 0.3265 0.7264 0.9882 1.0000 / b=20 r=20 문턱=0.861 0.0158 0.0615 0.2070 0.5464 0.9252 0.9999 1.0000 / b=5,r=10,s=0.8: 0.4333 / Lee+2021 b=20 r=450: 문턱=0.99336, 문턱에서 충돌확률=0.6415 / b=20,r=10 s=0.6: 0.1142 s=0.4: 0.0021."
+   },
+   "diagram": {
+    "title": "MinHash LSH 의 흐름",
+    "code": "flowchart LR\n  D[\"문서\"] --> S[\"shingle 집합\"]\n  S --> M[\"MinHash 서명: 해시 n = b × r 개\"]\n  M --> B1[\"밴드 1: r 개 튜플 → 버킷\"]\n  M --> B2[\"밴드 2 ...\"]\n  M --> Bb[\"밴드 b\"]\n  B1 --> C[\"같은 버킷 = 후보 쌍 (OR)\"]\n  B2 --> C\n  Bb --> C\n  C --> V[\"선택: 실제 Jaccard 로 재확인\"]\n  V --> R[\"군집마다 하나만 남김\"]"
+   },
+   "pitfalls": [
+    "LSH 후보 쌍에는 거짓 양성(문턱 아래인데 충돌)과 거짓 음성(문턱 위인데 놓침)이 모두 있다. 거짓 양성은 후보 쌍의 실제 Jaccard 를 다시 계산해 걸러 낼 수 있지만, 놓친 쌍은 되찾을 수 없다 — 그래서 문턱 근처에서는 거짓 음성을 줄이는 쪽으로 b 를 넉넉히 잡는다.",
+    "강의 중 '밴드 하나 일치 확률이 1/b' 라는 말은 문턱 s* 지점에서의 이야기다. 일반적인 s 에서는 s^r 이다.",
+    "근사 중복은 쌍 관계라 A~B, B~C 이면 A·C 가 직접 닮지 않아도 한 군집이 된다(연결 요소). 군집에서 몇 개를 남길지도 정해야 한다."
+   ],
+   "check": [
+    {
+     "q": "b = 20, r = 10 일 때 Jaccard 0.6 인 쌍과 0.4 인 쌍의 충돌 확률을 구하라.",
+     "a": "0.6^10 ≈ 0.00605 → 1 − (0.99395)^20 ≈ 0.114. 0.4^10 ≈ 0.000105 → 1 − (0.999895)^20 ≈ 0.0021. 문턱 (1/20)^(1/10) ≈ 0.741 아래라 둘 다 낮다."
+    },
+    {
+     "q": "Jaccard 0.9 를 문턱으로 삼고 싶다. r = 20 이면 b 는 대략 얼마로 잡아야 하나?",
+     "a": "(1/b)^(1/20) = 0.9 → 1/b = 0.9^20 ≈ 0.1216 → b ≈ 8.2. 약 8개 밴드(해시 160개)다."
+    },
+    {
+     "q": "r 을 키우는 것과 b 를 키우는 것은 곡선을 각각 어떻게 움직이나?",
+     "a": "r↑: 밴드 안 AND 가 엄해져 곡선이 오른쪽으로 가고 가팔라진다(맞추기 어려움). b↑: 기회(OR)가 늘어 곡선이 왼쪽으로 간다(맞추기 쉬움)."
+    }
+   ]
+  },
+  {
+   "start": 2930,
+   "title": "데이터 혼합 — 기준선, 유한한 원천과 에폭 계산, UniMax",
+   "points": [
+    "모델은 여러 원천(웹·코드·책·논문·PDF·합성 QA)으로 학습한다. 혼합 = 원천들 위의 확률분포 p(s).",
+    "기준선 셋: 감(vibes, 생각보다 흔함), 균등(p(s)=1/k), 비례(p(s) ∝ 원천 토큰 수).",
+    "고품질 원천을 올려야 하지만 두 가지를 지켜야 한다 — 다양성(코드와 논문은 비교 불가), 그리고 원천은 유한하다.",
+    "예: 저품질 10T, 고품질 10B, 반반 섞어 1T 학습 → 저품질 0.05 에폭, 고품질 50 에폭. 큰 학습에서 실제로 저지른 실수.",
+    "UniMax(Chung+ 2023): 균등하게 나누되 원천마다 에폭 상한 C. p(s)·D ≤ C·N(s)."
+   ],
+   "on_screen": "data_mixing(): Recall that language models are trained on multiple data sources. Marin 의 token-count-viewer(huggingface.co/spaces/marin-community) 막대그래프와 표 marin_name / tokens(B) / category: hplt_v3 612.7 web, nemotron_cc_v2/high_quality 608.96 web, nemotron_cc_v2/translated_diverse_qa 592.85 multilingual, nemotron_cc_v2/medium_high_quality 535.45 web, nemotron_cc_code_v1/all 399.41 code, cp/stackv2_code 352.76 code, nemotron_code_v2/synthetic_qa 233.03 code, finepdfs/spa_Latn 216.74 multilingual. The Pile 표(Component / Raw Size / Weight / Epochs / Effective Size): Pile-CC 227.12 GiB 18.11% 1.0, PubMed Central 90.27 14.40% 2.0, Books3 100.96 12.07% 1.5, OpenWebText2 62.77 10.01% 2.0, ArXiv 56.21 8.96% 2.0, Github 95.16 7.59% 1.0, … Wikipedia (en) 6.38 GiB 1.53% 3.0 → 19.13 GiB, 합계 825.18 GiB → 1254.20 GiB. Example: p = {\"Wikipedia\": 0.3, \"CC\": 0.5, \"GitHub\": 0.2}. Baselines: Vibes / Uniform sampling / Proportional mixing. 코드: source_token_counts = {low: trillion(10), high: billion(10)}, p = {low: 0.5, high: 0.5}, train_tokens = trillion(1) → low_num_epochs = 0.05, high_num_epochs = 50, '50x epochs on high quality data...can lead to overfitting!'. UniMax [Chung+ 2023]: balancing different languages for multilingual models / Previous work: p(s) ∝ num_tokens(s)^α for α in [0, 1] / Idea: sample sources uniformly but with a hard cap C on number of epochs / Specifically, p(s) * num_training_tokens ≤ C for all sources s.",
+   "explain": [
+    "변환·필터링·중복 제거는 대개 원천 하나 단위로 이뤄진다. 하지만 언어 모델은 여러 원천을 섞어 학습한다. 화면에 띄운 Marin(강사가 이끄는 오픈 모델 프로젝트)의 토큰 집계를 보면 다음 모델이 학습할 원천이 HPLT 웹(약 6130억 토큰), Nemotron-CC 의 품질별 묶음, 번역된 다양한 QA, 코드(Stack v2, Nemotron 코드), 합성 코드 QA, 스페인어 PDF 등 수십 개다. 옛 The Pile 도 원천마다 가중치를 정했다. 질문은 '이것들을 어떤 비율로 섞나'다. 수학적으로 혼합은 원천들 위의 확률분포 p(s) 이고, 학습 중에는 배치를 채울 때 시퀀스마다 이 분포에서 원천을 뽑는다. 토큰 단위가 아니라 시퀀스 단위로 뽑고, 배치 하나에 여러 원천이 섞이게 해 분산을 줄인다 — 한 스텝은 코드만, 다음 스텝은 에세이만 같은 식으로 하지 않는다.",
+    "가장 단순한 방법 셋이 있다. 첫째는 감(vibes)이다. 직관으로 숫자를 적는 것인데, 강사는 최근 논문에서도 어떤 방법을 쓴 뒤 결국 손으로 만지는 경우가 생각보다 많다고 꼬집는다. 둘째는 균등 표집으로, 원천 k 개에 1/k 씩 준다. 셋째는 비례 혼합으로 원천의 토큰 수에 비례해 준다. 꽤 합리적이지만 거대한 저품질 원천이 토큰을 다 먹어 버린다. 직관적으로는 고품질 원천의 비중을 올려야 한다. 하지만 두 가지를 기억해야 한다. 하나는 다양성이다. 문학·코드·논문은 서로 비교할 수 없는 대상이라 '이 논문이 이 코드보다 질이 높다'고 말할 수 없고, 논문에 몰빵하면 다른 능력이 빠진다. 다른 하나가 강사가 특히 강조한 점인데, 원천마다 양이 유한하다는 것이다.",
+    "구체적인 숫자로 보자. 저품질 원천이 10조(10T) 토큰, 고품질 원천이 100억(10B) 토큰 있다(고품질은 대개 작다). 순진하게 반반 섞어 1조(1T) 토큰을 학습한다고 하자. '1T 학습'은 고유 토큰이 아니라 스텝 수 × 배치 크기다. 저품질에서 가져가는 토큰은 0.5 × 1T = 500B 이고 원천이 10T 이니 0.05 에폭 — 저품질 데이터의 5% 만 한 번 본다. 고품질에서 가져가는 토큰도 500B 인데 원천이 10B 뿐이니 같은 문서를 50번 반복해야 한다. 질문한 학생 말대로 50에폭까지 필요하지 않다. 바로 그게 요점이다. 최선이면 연산 낭비, 최악이면 과적합이다. 데이터를 들여다보며 비율만 정하면 원천 크기를 놓쳐 자기도 모르게 50에폭을 돌게 되고, 강사에 따르면 실제로 큰 학습 몇몇이 이 실수를 했다. 교훈은 하나다. 각 원천을 실제로 몇 에폭 돌게 되는지 계산하라.",
+    "이 문제는 다국어 모델에서 일찍부터 드러났다. 어떤 언어는 데이터가 아주 적기 때문이다. 이전 연구들은 비례 혼합에 지수 α(0~1)를 씌워 분포를 평평하게 만들었다(p ∝ N^α, α = 0 이면 균등, 1 이면 비례). UniMax(Chung 외, 2023)는 이를 더 명시적으로 했다. 원천을 균등하게 뽑되 원천마다 에폭 상한 C(예: 20)를 둔다. 상한에 닿은 원천은 더 이상 토큰을 주지 않고, 남은 예산을 다른 원천에 나눈다. 일종의 안전망이다. 화면 슬라이드는 제약을 'p(s) × 학습 토큰 ≤ C' 로 적었는데, 에폭 상한이라면 원천 크기 N(s) 가 곱해진 p(s)·D ≤ C·N(s) 가 맞다. 아래 코드는 작은 원천부터 균등 몫과 상한 중 작은 것을 주는 간단한 절차로, C = 4 이면 고품질 4% · 저품질 96% 가 나오고 에폭은 각각 4 와 0.096 이 된다."
+   ],
+   "formulas": [
+    {
+     "expr": "epochs(s) = p(s) · D / N(s)",
+     "meaning": "원천 s 를 몇 번 반복하게 되나. p(s) 는 혼합 비율(합 1), D 는 학습 총 토큰(스텝 × 배치 × 시퀀스 길이), N(s) 는 원천 s 의 고유 토큰 수. 1 보다 크면 반복, 수십이면 과적합 위험."
+    },
+    {
+     "expr": "p(s) ∝ N(s)^α,  α ∈ [0, 1]",
+     "meaning": "온도(지수) 혼합. α = 1 이면 비례 혼합, α = 0 이면 균등. 그 사이 값으로 작은 원천을 끌어올린다. 다국어 모델에서 흔히 쓰던 방식."
+    },
+    {
+     "expr": "UniMax:  p(s) · D ≤ C · N(s)  ∀s,  나머지는 가능한 한 균등",
+     "meaning": "C 는 원천별 에폭 상한. 슬라이드의 'p(s)·학습 토큰 ≤ C' 는 N(s) 가 빠진 표기라 바로잡았다. 작은 원천부터 min(균등 몫, C·N(s)) 를 주고 남은 예산을 나머지에 균등 배분한다."
+    }
+   ],
+   "example": {
+    "title": "반반 혼합과 UniMax 를 손으로",
+    "body": "N(low) = 10T, N(high) = 10B, D = 1T. 반반: epochs(low) = 0.5 × 1T / 10T = 0.05, epochs(high) = 0.5 × 1T / 10B = 50. UniMax(C = 4): 작은 원천 high 부터 — 균등 몫 0.5T 와 상한 4 × 10B = 40B 중 작은 40B 를 준다(p = 0.04). 남은 960B 를 low 에 준다(p = 0.96) → epochs(low) = 960B / 10T = 0.096, epochs(high) = 4. The Pile 표도 같은 계산을 '에폭' 칸으로 직접 적었다. 위키백과(영어)는 6.38 GiB 를 3에폭 돌려 실효 19.13 GiB, 전체는 825 GiB 원본이 1254 GiB 실효가 된다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "T, B = 10**12, 10**9\ntokens = {\"low\": 10 * T, \"high\": 10 * B}          # 원천별 고유 토큰\ndef epochs(p, train): return {s: p[s] * train / tokens[s] for s in p}\nprint(\"반반 섞기, 1T 학습:\", epochs({\"low\": .5, \"high\": .5}, 1 * T))\ndef unimax(budget, cap):\n    \"\"\"균등하게 나누되 원천마다 cap 에폭을 넘지 않게 — 작은 원천부터 채운다.\"\"\"\n    p, left = {}, budget\n    order = sorted(tokens, key=tokens.get)            # 작은 원천 먼저\n    for i, s in enumerate(order):\n        fair = left / (len(order) - i)                # 남은 예산의 균등 몫\n        take = min(fair, cap * tokens[s])\n        p[s], left = take / budget, left - take\n    return p\np = unimax(1 * T, cap=4)\nprint(\"UniMax(C=4):\", {s: round(v, 3) for s, v in p.items()}, epochs(p, 1 * T))\nratio = 10 * B / (1 * T)                             # 작은 실험 10B, 본 학습 1T\nsmall = {s: n * ratio for s, n in tokens.items()}\nprint(\"모의 에폭용 축소 원천:\", small)",
+    "note": "실행 결과: 반반 섞기 {'low': 0.05, 'high': 50.0} / UniMax(C=4) 비율 {'high': 0.04, 'low': 0.96}, 에폭 {'high': 4.0, 'low': 0.096} / 모의 에폭용 축소 원천 low 1e11, high 1e8 (12장에서 쓴다)."
+   },
+   "pitfalls": [
+    "슬라이드의 UniMax 제약 'p(s) × num_training_tokens ≤ C' 는 원천 크기가 빠졌다. 에폭 상한이므로 p(s)·D ≤ C·N(s) 로 읽는다.",
+    "'1T 토큰 학습'은 고유 토큰 1T 가 아니다. 학습 토큰은 반복을 포함한 스텝 × 배치이고, 원천의 고유 토큰과 나눠야 에폭이 나온다.",
+    "혼합 비율은 시퀀스(문서) 단위로 뽑는다. 토큰 단위로 섞거나 스텝마다 원천을 통째로 바꾸면 기울기 분산이 커진다."
+   ],
+   "check": [
+    {
+     "q": "원천 A 2T, B 50B 토큰. p = {A: 0.8, B: 0.2} 로 3T 토큰을 학습하면 각 원천은 몇 에폭인가?",
+     "a": "A: 0.8 × 3T / 2T = 1.2 에폭. B: 0.2 × 3T / 50B = 600B / 50B = 12 에폭."
+    },
+    {
+     "q": "같은 예에서 UniMax 상한 C = 5 를 적용하면 B 의 최대 비율은?",
+     "a": "p(B)·3T ≤ 5 × 50B = 250B → p(B) ≤ 0.0833. 나머지 0.9167 은 A 로 간다(A 는 0.9167 × 3T / 2T ≈ 1.375 에폭)."
+    }
+   ]
+  },
+  {
+   "start": 3600,
+   "title": "회귀 기반 혼합 — 작은 모델 떼로 손실 함수를 맞추고 최적화",
+   "points": [
+    "원천이 50개면 숫자 50개를 정해야 한다. 가장 원칙적이고 이해하기 쉬운 방법이 회귀 기반 혼합(RegMix·Olmix 등).",
+    "절차: 작은 규모(예 300M)에서 여러 혼합으로 프록시 모델 떼를 학습 → 혼합 비율 → 손실 회귀 모델 적합 → 회귀 모델을 최소화하는 혼합 → 큰 모델 학습.",
+    "설계 선택: 혼합을 뽑는 분포(Dirichlet 등), 회귀 방법(선형·로그-선형·부스팅 트리), 목표(다운스트림 평가 — 과적합 주의), 작은/큰 규모의 괴리.",
+    "믿음 두 가지: (1) 회귀 모델이 최소점(외삽 영역)에서도 정확하다, (2) 최적 혼합이 작은 규모에서 큰 규모로 옮겨진다."
+   ],
+   "on_screen": "Regression-based mixing [Liu+ 2024][Chen+ 2026] 그림: ① Train small-scale proxy models — 표 Hacker News / Github / Philpapers / Target↓: 9.5% 35.9% 54.6% → 5.46, 87.7% 12.0% 0.3% → 5.57, 24.4% 1.4% 74.2% → 6.07 ② Fit a regression model using data mixture as source (Linear Model, Tree Model) ③ Simulate new data mixtures and predict Target (3차원 곡면) ④ Train a large-scale model on the best mixture — Simulated Best Data Mixture 22.8% / 67.0% / 10.2%, Predicted Best Target 5.34. 항목: Define distribution over mixtures p (e.g., Dirichlet) / Define regression method (e.g., linear, gradient boosted trees) / Define target based on downstream evals (careful not to overfit!) / Discrepancy between small and large scale (tradeoff cost and accuracy). Olmix 비교표(Design Choice × RegMix·DML·AutoScale·BiMix·ADMIRE-BayesOpt·CLIMB·OlmixBase): 프록시 크기 1M / 70·160·305·410M / Target / 280M / 1M·60M / 350M / 30M, 떼 크기 512(m=17) / 20(m=7) / 2m+1 / 4 / 101(m=17) / 112(m=21) / 3(m+1), 회귀 LightGBM·Log-Linear·Power Law·Power Law·Gaussian Process·LightGBM·Log-Linear, 데이터 반복 제약은 OlmixBase 만 Yes, 최적화 Search·Gradient Descent·Exact Solver(KL reg.). Hope 1: regression model is accurate at minimizer 🙏 / Hope 2: optimal data mixtures transfer from small to large scale 🙏.",
+   "explain": [
+    "원천이 세 개면 감으로 정할 수도 있지만 50개면 숫자 50개를 채워야 한다. 비례 혼합은 충분하지 않고, 원천마다 품질 지표를 추정해 그에 비례시키는 것도 결국 어림이다. 강사가 가장 원칙적이고 무슨 일이 일어나는지 이해하기 쉽다고 꼽는 방법이 회귀 기반 혼합(RegMix, Olmix 와 그 계열)이다. 아이디어는 요리 레시피 찾기와 같다. 큰 잔치 음식을 바로 만들어 보기엔 재료가 비싸니, 작은 냄비로 양념 비율을 수십 가지 바꿔 끓여 맛을 기록하고, '비율 → 맛'의 관계를 식으로 맞춘 다음, 그 식이 가장 맛있다고 예측하는 비율로 큰 솥을 끓인다.",
+    "절차는 네 단계다. (1) 큰 모델을 학습하고 싶다면 먼저 작은 규모(예: 3억 파라미터 이하)로 내려가 여러 혼합 비율을 정해 작은 프록시 모델 떼(swarm)를 학습한다. 화면 그림에서는 Hacker News·GitHub·PhilPapers 세 원천에 9.5/35.9/54.6% 를 주면 목표 손실 5.46, 87.7/12.0/0.3% 이면 5.57, 24.4/1.4/74.2% 이면 6.07 이 나왔다. 목표는 perplexity 든 다운스트림 평가든 원하는 지표면 된다. (2) 이 점들로 '혼합 비율 → 손실' 회귀 모델을 적합한다. 이제 학습하지 않고도 어떤 혼합의 손실을 싸게 예측할 수 있다. (3) 회귀 모델을 최소화하는 혼합을 찾는다(그림에서는 22.8/67.0/10.2%, 예측 손실 5.34). (4) 그 혼합으로 큰 모델을 학습한다. 작은 계산으로 답을 찾고 규모를 키운다는 점에서 9·11강의 스케일링 법칙과 같은 사고방식이다.",
+    "설계할 것이 몇 가지 있다. 시험할 혼합들을 어떤 분포에서 뽑을지(분포들 위의 분포가 필요하니 대개 Dirichlet), 회귀 모델을 무엇으로 할지(선형, 로그-선형, 경사 부스팅 트리), 목표 지표를 무엇으로 할지다. 목표를 다운스트림 평가로 잡을 때는 과적합을 조심해야 한다. 사전학습은 범용 모델을 만드는 단계인데, 평가에 코드 과제가 많으면 당연히 코드 데이터 비중이 올라가고, 나중에 시를 써 보라고 하면 망가진 것을 발견한다. 균등·비례 혼합에는 이런 문제가 없다 — 평가를 보지 않기 때문이다. 마지막으로 작은 규모와 큰 규모의 괴리는 비용과 정확도의 교환이다. 너무 작으면 대표성이 없고, 너무 크면 굳이 이렇게 할 이유가 없다(가장 큰 규모에서 하이퍼파라미터 탐색을 하는 셈). Olmix 논문의 표가 이 설계 공간을 정리한다. 프록시는 대개 수백만~수억 파라미터, 떼 크기는 원천 수 m 에 비례(3(m+1) 에서 512 까지), 회귀는 LightGBM·로그-선형·멱법칙·가우스 과정이고, 로그-선형이 대체로 잘 된다고 한다. 데이터 반복 제약을 넣은 것은 OlmixBase 뿐이다.",
+    "이 방법에는 '기도하는' 믿음이 두 개 있다(슬라이드에 합장 이모지까지 붙었다). 첫째, 회귀 모델이 최소점에서도 정확하다는 믿음. 무작위로 뽑은 혼합에서의 예측은 고전적 일반화 이론으로 괜찮지만, 최적화는 예측값이 가장 낮은 곳, 흔히 표본이 드문 극단으로 달려가므로 회귀가 그곳에서 틀릴 수 있다. 둘째, 작은 규모의 최적 혼합이 큰 규모로 옮겨진다는 믿음. 오픈 커뮤니티가 다루는 규모에서는 대체로 성립하거나 적어도 명백히 틀리지는 않지만, 규모 의존 효과는 분명히 있다. 5장에서 본 대로 오래 학습할수록 저품질 데이터도 괜찮아지므로 최적점이 같을 리 없다. 아래 코드는 숨은 손실 함수에서 Dirichlet 혼합 40개를 뽑아 로그-선형 회귀를 맞추고 격자로 최적화한 장난감이다. 예측 최적 [0.54, 0.34, 0.12] 의 진짜 손실은 3.2052 로, 균등 혼합(3.2341)보다 낮았다. 그런데 이 장난감에는 에폭 효과가 없다 — 다음 장이 바로 그 빈틈을 다룬다."
+   ],
+   "formulas": [
+    {
+     "expr": "w ~ Dirichlet(α),  L̂(w) = β₀ + Σ_i β_i · log(w_i + ε),  w* = argmin_{w ∈ Δ} L̂(w)",
+     "meaning": "w 는 혼합 비율 벡터(원천 m 개, 합 1, Δ 는 단체 simplex), Dirichlet 은 이런 벡터를 무작위로 뽑는 분포, L̂ 은 프록시 실험 결과로 적합한 로그-선형 회귀(β 는 최소제곱으로 구한 계수, ε 은 log 0 을 피하는 작은 수), w* 는 예측 손실이 가장 낮은 혼합."
+    },
+    {
+     "expr": "β_i < 0 일 때  w*_i + ε ∝ |β_i|",
+     "meaning": "로그-선형 모델의 닫힌 해(노트 보충, 라그랑주 승수로 유도). 계수의 크기 비율대로 비중이 간다. 회귀가 '이 원천을 늘리면 손실이 얼마나 줄어드나'를 계수로 요약한 셈."
+    }
+   ],
+   "example": {
+    "title": "로그-선형 회귀의 최적 혼합을 손으로",
+    "body": "회귀가 L̂(w) = 3.0 − 0.12·log(w₁+0.02) − 0.075·log(w₂+0.02) − 0.03·log(w₃+0.02) 로 나왔다고 하자. 위 닫힌 해로 w_i + 0.02 ∝ (0.12, 0.075, 0.03), 계수 합 0.225, 그리고 Σ(w_i + 0.02) = 1.06 이므로 w₁ + 0.02 = 1.06 × 0.12/0.225 = 0.565 → w₁ = 0.545, w₂ = 1.06 × 0.075/0.225 − 0.02 = 0.333, w₃ = 1.06 × 0.03/0.225 − 0.02 = 0.121. 아래 코드가 격자 탐색으로 찾은 [0.54, 0.34, 0.12] 와 1% 격자 안에서 일치한다. 균등 혼합(1/3씩)의 손실은 3.2341, 최적은 3.2052 로 약 0.029 낮다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nrng = np.random.default_rng(0)\ndef true_loss(w):                       # 숨은 '진짜' 손실 (모르는 함수라고 가정)\n    return 3.0 - .12*np.log(w[0]+.02) - .075*np.log(w[1]+.02) - .03*np.log(w[2]+.02)\nW = rng.dirichlet([1, 1, 1], 40)        # 작은 프록시 실험 40개의 혼합 비율\ny = np.array([true_loss(w) for w in W]) + rng.normal(0, .005, 40)\nF = np.c_[np.ones(40), np.log(W + .02)] # 로그-선형 회귀의 특징\ncoef, *_ = np.linalg.lstsq(F, y, rcond=None)\ngrid = [np.array([i, j, 100 - i - j]) / 100 for i in range(101) for j in range(101 - i)]\npred = [np.r_[1, np.log(g + .02)] @ coef for g in grid]\nbest = grid[int(np.argmin(pred))]\nprint(\"회귀 계수:\", coef.round(3))\nprint(\"예측 최적 혼합:\", best, \"예측 손실\", round(min(pred), 4), \"진짜 손실\", round(true_loss(best), 4))\nprint(\"균등 혼합 진짜 손실:\", round(true_loss(np.ones(3) / 3), 4))",
+    "note": "실행 결과: 회귀 계수 [3.003 −0.118 −0.075 −0.029] (진짜 3.0, −0.12, −0.075, −0.03 을 잘 복원) / 예측 최적 혼합 [0.54 0.34 0.12] 예측 손실 3.205, 진짜 손실 3.2052 / 균등 혼합 진짜 손실 3.2341."
+   },
+   "diagram": {
+    "title": "회귀 기반 혼합의 네 단계",
+    "code": "flowchart TD\n  A[\"혼합 w 를 Dirichlet 로 여러 개 뽑기\"] --> B[\"작은 프록시 모델 떼 학습 (수M~수백M)\"]\n  B --> C[\"각 모델의 목표 손실 측정\"]\n  C --> D[\"회귀 적합: w → 손실\"]\n  D --> E[\"회귀를 최소화하는 w*\"]\n  E --> F[\"w* 로 큰 모델 학습\"]\n  E -.->|\"믿음 1: 최소점에서도 회귀가 정확\"| D\n  F -.->|\"믿음 2: 작은 규모 최적 = 큰 규모 최적\"| E"
+   },
+   "pitfalls": [
+    "목표를 다운스트림 평가 묶음으로 잡으면 평가 구성에 과적합한다(코드 평가가 많으면 코드 비중만 오른다). 사전학습 혼합에는 넓은 목표(여러 도메인의 perplexity 등)를 쓴다.",
+    "최적화는 표본이 드문 단체의 모서리로 가기 쉽다. 최적점 근처에서 확인용 프록시를 몇 개 더 학습해 회귀가 맞는지 본다."
+   ],
+   "check": [
+    {
+     "q": "회귀 기반 혼합이 스케일링 법칙과 닮은 점은?",
+     "a": "둘 다 작은 규모에서 싸게 실험해 함수(혼합 → 손실, 또는 연산 → 손실)를 맞추고, 그 함수로 큰 규모의 선택을 정한다."
+    },
+    {
+     "q": "'회귀 모델이 최소점에서 정확하다'는 가정이 위험한 이유는?",
+     "a": "회귀는 무작위로 뽑은 혼합 근처에서 맞췄는데, 최적화는 예측이 가장 낮은 극단(표본이 드문 영역)으로 가므로 그곳에서는 외삽이라 오차가 클 수 있다."
+    }
+   ]
+  },
+  {
+   "start": 3990,
+   "title": "작은 실험을 큰 학습처럼 — 에폭 상한과 모의 에폭, 도메인×품질 격자",
+   "points": [
+    "규모 의존 효과: 작은 토큰 예산에서는 고품질 원천을 다 써도 반복이 없어 회귀가 고품질에 몰빵(예 low 0.1 / high 0.9)한다.",
+    "그 혼합을 큰 학습에 쓰면 고품질을 수십~수백 에폭 돌아 과적합한다.",
+    "해법 1: 에폭 상한(Olmix). 해법 2: 모의 에폭(simulated epoching, Held+ 2025) — 모든 원천을 '작은 학습 / 큰 학습' 비율로 줄여 작은 규모에서도 같은 희소성을 겪게 한다.",
+    "축소하면 에폭을 많이 도는 혼합은 손실이 나빠 보이므로 최적점이 균형(예 low 0.7 / high 0.3)으로 옮겨 간다. 과목 전체의 주제 — 작은 규모를 큰 규모처럼(μP 와 같은 정신).",
+    "혼합 대상은 원천만이 아니다. Common Crawl 하나도 주제(WebOrganizer)×품질 격자로 쪼개 칸마다 비율을 정할 수 있다(Nemotron)."
+   ],
+   "on_screen": "Hold on. There's at least one scale-dependent effect: source_token_counts = {low: trillion(10) # abundant, high: billion(10) # scarce} / If train small models on low token counts: p = {low: 0.1, high: 0.9} # More mass on high quality data / But if train large model on this mixture, we will epoch a ton on high quality data and overfit! Simulated epoching [Held+ 2025]: General idea: make small scale look like large scale (general theme of this course) / Instantiation: downsample all sources proportionally. small_run_tokens = billion(10), large_run_tokens = trillion(1), ratio = small_run_tokens / large_run_tokens → 상자 ratio = 0.01, downsampled_source_token_counts = {s: count * ratio ...} / In this downsampled mixture, models that epoch too much won't look good. / So the optimum will be more balanced. p = {low: 0.7, high: 0.3}. Summary: Problem: how to weight different data sources / Regression-based mixing: estimate mixture → loss at small scale, optimize (analogous to scaling laws) / Important consideration: epoching and overfitting (solution: cap or simulated).",
+   "explain": [
+    "앞 장의 두 번째 믿음이 깨지는 구체적인 경우가 하나 있고, 강사는 '잠깐'이라며 멈춰 세운다. 다시 저품질 10T, 고품질 10B 다. 작은 프록시 모델을 적은 토큰(예: 10B)으로 학습하면 고품질 원천 100억 토큰을 다 써도 겨우 한 번 보는 정도라 반복이 없다. 그러면 회귀는 '위키백과 같은 고품질이 최고네, 거의 다 그걸로 하자'고 결론 내린다(예: low 0.1, high 0.9 — 강사가 지어낸 예). 이 혼합을 1T 토큰짜리 큰 학습에 그대로 쓰면 고품질 원천을 0.9 × 1T / 10B = 90 에폭 돈다. 확실한 과적합이다. 작은 규모에서는 '반복 없음', 큰 규모에서는 '반복 많음'이라 두 실험은 데이터에 대해 질적으로 다른 일을 하고 있었던 것이다.",
+    "해법은 둘이다. 하나는 앞 장 Olmix 처럼 최적화에 에폭 상한을 제약으로 넣는 것이다. 다른 하나가 모의 에폭(simulated epoching, Held 외 2025 등 여러 이름으로 불린다)이다. 원리는 '작은 규모를 큰 규모처럼 보이게 만들라'이고, 강사는 이것이 이 과목 전체를 꿰는 주제라고 말한다. 3강·9강에서 본 μP 가 하이퍼파라미터가 규모를 넘어 옮겨지도록 모델을 매개변수화한 것과 같은 정신이다. 구현은 간단하다. 작은 실험이 10B 토큰, 큰 학습이 1T 토큰이면 비율은 0.01 이다. 모든 원천을 이 비율로 줄인다 — 저품질은 10T 에서 100B 로, 고품질은 10B 에서 1억(100M) 토큰으로. 그리고 이 축소된 원천들로 프록시 실험을 한다.",
+    "축소된 세계에서 고품질에 90% 를 주면 10B × 0.9 = 9B 토큰을 1억 토큰짜리 원천에서 가져와야 하니 90 에폭을 돈다. 큰 학습에서 겪을 반복을 작은 실험에서 똑같이 겪는 것이다. 그러면 그 혼합의 손실이 나쁘게 나오고, 회귀와 최적화는 자연스럽게 균형 잡힌 혼합(예: low 0.7, high 0.3)을 고른다. 데이터 희소성을 작은 규모에서 흉내 낸 것이다. 학생이 물었다. 그렇게 줄이면 어떤 원천은 너무 작아지지 않나? 그렇다. 그럴 때 최적점은 그 원천에 아주 작은 비중을 줄 것이고, 원리상 큰 학습으로 올리면 맞아떨어진다. 다만 반올림 문제로 작은 실험에서 그 원천을 한 번도 안 보는 일이 생길 수 있으니, 그런 원천은 '항상 한 번은 본다' 같은 규칙으로 보완한다.",
+    "또 다른 질문은 혼합을 무엇에 적용하느냐였다. 원천이 마침 주제별로 나뉘어 있어서 그렇지, 원천 하나 안에서도 혼합을 할 수 있다. Nemotron 은 Common Crawl 하나를 두 축으로 쪼갰다. 한 축은 도메인(주제)인데, AI2 의 WebOrganizer 같은 도구로 웹 문서를 주제별로 묶는다. 다른 축은 품질 필터 점수 구간이다. 그러면 도메인 × 품질의 2차원 격자가 생기고, 각 칸이 혼합의 한 원천이 된다. 사람이 건네준 별도 원천(코드, 수학, PDF)은 그 위에 더한다. 데이터 혼합 단원의 요약은 이렇다. 문제는 여러 원천의 비중 정하기, 방법은 작은 규모에서 '혼합 → 손실'을 추정해 최적화하고 큰 규모로 일반화하기(스케일링 법칙과 같은 구조), 주의점은 에폭과 과적합(해법: 상한 또는 모의). 그리고 무엇이든 최적화할 때는 엉뚱한 것을 최적화하고 있을 위험을 늘 경계하라는 것."
+   ],
+   "formulas": [
+    {
+     "expr": "ratio = D_small / D_large,   N′(s) = N(s) × ratio",
+     "meaning": "모의 에폭의 축소. D_small 은 프록시 학습 토큰, D_large 는 본 학습 토큰, N(s) 는 원천 s 의 고유 토큰, N′(s) 는 프록시 실험에서 쓸 축소된 원천 크기."
+    },
+    {
+     "expr": "epochs_small(s) = p(s) · D_small / N′(s) = p(s) · D_large / N(s) = epochs_large(s)",
+     "meaning": "축소하면 같은 혼합 p 에 대해 작은 실험과 큰 학습의 에폭 수가 정확히 같아진다. 그래서 반복으로 인한 손해가 작은 실험의 손실에 그대로 드러난다."
+    }
+   ],
+   "example": {
+    "title": "축소 전과 후의 에폭 비교",
+    "body": "D_small = 10B, D_large = 1T, ratio = 0.01. 혼합 p = {low 0.1, high 0.9}. 축소 없이: 작은 실험 high 에폭 = 0.9 × 10B / 10B = 0.9 (반복 없음, 좋아 보임) / 큰 학습 high 에폭 = 0.9 × 1T / 10B = 90 (과적합). 축소 후: N′(high) = 10B × 0.01 = 100M, 작은 실험 high 에폭 = 0.9 × 10B / 100M = 90 — 큰 학습과 같다. 혼합 p = {low 0.7, high 0.3} 이면 high 에폭은 0.3 × 10B / 100M = 30, low 는 0.7 × 10B / 100B = 0.07. 30에폭도 많긴 하지만 90보다 훨씬 덜 과적합하므로 축소된 실험에서는 이쪽이 이긴다."
+   },
+   "pitfalls": [
+    "축소 비율이 너무 작으면 작은 원천이 프록시 실험에서 몇 문서밖에 안 남거나 0 이 된다. '최소 한 번은 본다' 같은 바닥 규칙이 필요하다.",
+    "모의 에폭은 반복 효과만 흉내 낸다. 모델 크기에 따라 데이터 효율 자체가 달라지는 다른 규모 효과까지 해결하지는 않는다."
+   ],
+   "check": [
+    {
+     "q": "작은 실험 20B 토큰, 본 학습 2T 토큰, 원천 크기 high 5B, low 8T. 모의 에폭용으로 축소한 원천 크기는?",
+     "a": "ratio = 20B / 2T = 0.01. high 5B × 0.01 = 50M, low 8T × 0.01 = 80B."
+    },
+    {
+     "q": "모의 에폭을 하면 왜 최적 혼합이 더 균형 잡히나?",
+     "a": "작은 실험에서도 큰 학습과 같은 에폭 수를 겪게 되어, 작은 고품질 원천에 비중을 몰면 반복·과적합으로 손실이 나빠 보이기 때문이다. 최적화가 그런 혼합을 피한다."
+    }
+   ]
+  },
+  {
+   "start": 4370,
+   "title": "사후학습 데이터 — 환경·과제·교사 응답, OpenThoughts",
+   "points": [
+    "사전·중간학습 데이터는 과제에 덜 묶여 있지만 사후학습 데이터는 과제에 강하게 묶인다.",
+    "레시피: (1) 환경 정의(코드라면 GitHub 저장소) (2) 과제·프롬프트 정의 (3) 강한 모델(교사)의 응답 수집. 오픈 진영의 사후학습 데이터는 대부분 합성이다.",
+    "OpenThoughts(Guha+ 2025): 27개 사람·합성 원천(StackExchange·NuminaMath·화학 등)의 질문 → QwQ-32B 교사 → 120만 예.",
+    "발견: 원천은 몇 개를 고르는 게 전부보다 낫다, 질문당 16개 생성이 도움, 더 강한 모델이 더 좋은 교사는 아니다(QwQ-32B > DeepSeek-R1), 단순 답 필터는 도움 안 됨."
+   ],
+   "on_screen": "post_training_data(): Recipe: 1. Define a set of environments 2. Define a set of tasks / prompts 3. Collect responses from a strong model (teacher). OpenThoughts [Guha+ 2025]: 1.2M examples using QwQ-32B as a teacher / Questions come from 27 human and synthetic sources (e.g., StackExchange, NuminaMath, Chemistry). 논문 원천 목록 발췌: OpenCodeReasoning (459K), cognitivecomputations/dolphin-coder (101K), m-a-p/CodeFeedback-Filtered-Instruction (150K), KodCode/KodCode-V1 (384K), Multilingual-Multimodal-NLP/McEval-Instruct (35.8K), christopher/rosetta-code (75.4K), glaiveai/glaive-code-assistant-v3 (946K), StackExchange CodeReview (183K), prithivMLmods/Coder-Stat (41.9K), OpenCoder-LLM/opc-sft-stage2 … 이어서 'Sampling multiple (16) …', 'Better models aren't …' 항목과 파이프라인 그림.",
+   "explain": [
+    "강의 마지막 15분은 사후학습 데이터다. 지금까지 본 사전학습(과 중간학습) 데이터는 대체로 특정 과제에 묶이지 않는다. 회귀 혼합에서 목표 손실을 고르는 부분을 빼면 데이터 자체는 범용이고, 기초 능력을 기르는 것이 목적이다. 사후학습 데이터는 반대로 과제에 강하게 묶인다. 강사는 전체를 훑기보다 최근 공개된 흥미로운 데이터셋 몇 개, 특히 요즘 관심이 큰 코딩 쪽을 짚는다. 이 주제는 다음 15·16강(중간·사후학습, RLVR)으로 이어진다.",
+    "일반 레시피는 세 단계다. 먼저 환경을 정한다. 코드라면 GitHub 저장소다. 다음으로 과제나 프롬프트 집합을 정한다. 마지막으로 강한 모델, 곧 교사에게서 응답을 모은다. 그래서 적어도 오픈 진영의 사후학습 데이터는 거의 전부 합성이다. 교사를 사람으로 바꿀 수도 있지만 느리고 비싸다. 몇 년 전 최전선 연구소들은 사람들에게 큰돈을 주고 응답을 받았는데, 지금은 최전선에서도 사람과 AI 를 섞는 방식이 가능해졌다. 어느 쪽이든 어딘가에 응답을 주는 교사가 있다는 것이 요점이다. 사전학습의 필터링이 '이미 있는 좋은 데이터를 찾는 일'이라면, 사후학습 데이터는 '좋은 데이터를 만드는 일'에 가깝다.",
+    "첫 사례 OpenThoughts 는 o1 이 나와 추론(주로 수학·과학)에 관심이 쏠렸을 때 '좋은 추론 사후학습 데이터를 어떻게 만드나'를 체계적으로 연구한 큰 협업이다. 결과는 QwQ-32B 를 교사로 만든 120만 개 예제다. 질문은 27개 원천에서 왔다. StackExchange 나 NuminaMath 같은 사람이 만든 원천도 있고 합성 원천도 있으며, 코딩만 해도 경쟁 프로그래밍 문제, 코드 골프, 코드 리뷰처럼 성격이 다양하다. 그들은 응답 생성 방식을 꼼꼼히 비교했다. 원천 몇 개를 잘 고르는 것이 모든 원천을 다 쓰는 것보다 나았고, 질문 하나에 응답을 16개씩 뽑는 것이 도움이 됐다. 그래서 120만은 예제 수이고 실제 질문 수는 그 16분의 1, 약 7만 5천 개다. 파이프라인은 원천들 → 질문 중복 제거 → 무작위 축소 표집 → 질문마다 여러 답 생성 → 최종 데이터셋 순서다 — 앞에서 배운 중복 제거와 표집이 여기서도 쓰인다.",
+    "가장 흥미로운 발견은 '더 좋은 모델이 더 좋은 교사는 아니다'였다. 지금 보면 오래되고 작은 QwQ-32B 가, 당시 가장 강한 오픈 모델 중 하나였던 DeepSeek-R1 보다 학생을 더 잘 가르쳤다. 또 정답이 맞는지로 거르는 단순한 답 필터는 도움이 되지 않았다. 직관적으로 보면, 학생 모델이 배우는 것은 정답 자체보다 추론의 '말투와 흐름'이고, 교사의 출력 분포가 학생이 소화하기 좋은지가 교사 자체의 실력보다 중요할 수 있다(이 해석은 노트 보충). 필터링 단원의 교훈 — 품질에는 보편적인 정의가 없고 목적에 따라 정해진다 — 이 사후학습에서도 그대로 통한다."
+   ],
+   "formulas": [
+    {
+     "expr": "질문 수 = 예제 수 / 질문당 생성 수 = 1.2M / 16 = 75K",
+     "meaning": "OpenThoughts 의 규모 해석. 같은 질문에 교사 응답을 여러 개(16) 뽑아 데이터에 넣었으므로 고유 질문은 예제 수보다 훨씬 적다."
+    }
+   ],
+   "example": {
+    "title": "교사 응답 생성 비용 어림",
+    "body": "질문 7만 5천 개에 응답 16개씩, 응답 하나가 추론 포함 평균 5천 토큰이라 하자. 생성 토큰 = 1.2M × 5,000 = 6 × 10⁹, 60억 토큰이다. 32B 모델의 추론 FLOPs 는 토큰당 약 2 × 32 × 10⁹ = 6.4 × 10¹⁰ 이므로 총 3.8 × 10²⁰ FLOPs. GPU 한 장이 추론에서 실효 2 × 10¹⁴ FLOP/s 를 낸다면 1.9 × 10⁶ 초 ≈ 530 GPU-시간이다. 사전학습에 비하면 작지만, 671B 짜리 교사(DeepSeek-R1, 활성 37B 라 토큰당 비용은 비슷)와 비교해 어느 교사가 나은지 실험하려면 이 비용을 여러 번 치러야 한다 — 숫자는 가정이다."
+   },
+   "diagram": {
+    "title": "사후학습 데이터 만들기",
+    "code": "flowchart LR\n  E[\"환경: 저장소 · 문제 은행\"] --> T[\"과제 · 프롬프트\"]\n  T --> D[\"중복 제거 · 축소 표집\"]\n  D --> G[\"교사 모델이 질문당 여러 응답 (16)\"]\n  G --> F[\"필터 (선택)\"]\n  F --> S[\"SFT 데이터\"]"
+   },
+   "pitfalls": [
+    "'가장 강한 모델 = 가장 좋은 교사'가 아니다. OpenThoughts 에서는 QwQ-32B 가 DeepSeek-R1 보다 나은 교사였다. 교사는 실험으로 고른다.",
+    "예제 수(1.2M)와 고유 질문 수(약 75K)를 혼동하지 않는다. 다양성은 질문 수가 정한다."
+   ],
+   "check": [
+    {
+     "q": "사후학습 데이터 레시피의 세 단계는?",
+     "a": "환경 정의(예: GitHub 저장소) → 과제·프롬프트 정의 → 강한 교사 모델(또는 사람)의 응답 수집."
+    },
+    {
+     "q": "OpenThoughts 의 발견 중 직관에 반하는 두 가지는?",
+     "a": "더 강한 모델(DeepSeek-R1)이 더 좋은 교사가 아니었다(QwQ-32B 가 나았다). 그리고 정답 여부로 거르는 단순 답 필터가 도움이 되지 않았다."
+    }
+   ]
+  },
+  {
+   "start": 4680,
+   "title": "에이전트 코딩 데이터 — SWE-smith·SWE-Zero·SWE-rebench, 그리고 정리",
+   "points": [
+    "SWE-smith(Yang+ 2025): 저장소를 실행 가능하게 만든 뒤 LM 이 버그를 심어 과제를 만든다 — 128개 저장소에서 5만 과제.",
+    "SWE-Zero(Ludwig+ 2026): 저장소마다 Docker 를 만드는 건 악몽. 강한 모델은 실행 없이도 상당수를 푼다(MiniMax-M2.5 SWE-bench V 80.2 → 실행 금지 69.5).",
+    "실행 금지 OpenHands 설정으로 Qwen3-Coder-480B 에서 30만 궤적 증류, 실행을 시도한 궤적은 걸러냄. 실행 필요한 1.3만 궤적으로 2단계 미세조정.",
+    "SWE-rebench: 3.4K 저장소에서 2.1만 대화형 Python 과제. SWE-ZERO-12M: 실행 가능 3.2만 + 실행 불가 12만 과제로 1200만 궤적.",
+    "정리: 필터링(좋음 정의 → 가벼운 분류기), 중복 제거(해시), 혼합(작게 시도 → 크게 외삽), 그리고 데이터 일은 결국 예를 직접 보는 지저분한 일."
+   ],
+   "on_screen": "SWE-smith [Yang+ 2025] 그림: Real Repositories → Environment Creation(SWE-agent) → Task Gen. Strategies(Procedural Modification, LM Generated, Combine Bugs, PR Mirroring) → New Task Instances. Given a repository, use LM to generate tasks (introduce bugs with LM) / 128 GitHub repositories yields 50K tasks. SWE-Zero [Ludwig+ 2026]: SWE tasks have heavy dependencies (unlike math or coding contests) / Setting up thousands of Docker images is an infrastructural nightmare / Observation: strong models can solve many tasks without execution feedback. 표 Model / Execution / SWE-bench (V) / SWE-bench (M): MiniMax-M2.5 × 69.5 57.2, ✓ 80.2 74.1 / Qwen3-Coder-Next × 56.9 50.7, ✓ 71.3 64.3 / Qwen3-Coder-480B-A35B-Instruct × 59.4 44.3, ✓ 69.6 54.7 / SWE-HERO-32B (Ours) × 57.7 42.2, ✓ 62.2 44.1. 두 프롬프트 상자: Standard OpenHands Setup (Execution-Based) vs SWE-Zero OpenHands Setup (Execution-Free): 'CANNOT RUN PYTHON CODE', Prohibited Bash Commands: python, pytest, mypy, pip, apt, apt-get. Distilled from Qwen3-Coder-480B + filtering (try to execute anyway). 모델 크기 대 SWE-bench 산점도. SWE-rebench [Badertdinov+ 2025]: 21K interactive Python SWE tasks from 3.4K GitHub repositories / Used Qwen2.5-72B-Instruct to install dependencies and assess PR quality (그림: GitHub·GHArchive → Collection → LLM 설치 스크립트 가설 → Validation → LLM Labeling → Final Dataset 21,000+). SWE-ZERO-12M-trajectories [data]: Scale SWE-Zero up to 12M agent trajectories / Used the SWE-rebench-v2 tasks (32K executable tasks + 120K nonexecutable tasks). 마지막 Summary: Filtering / Deduplication / Mixing / Applications / Post-training data: looks like evaluations, use of synthetic data / A lot of data work is domain-specific, looking at examples, etc.",
+   "explain": [
+    "OpenThoughts 는 수학·과학 추론이 중심이었고 환경이 필요 없었다. 최근 관심은 코드를 생성하는 모델을 넘어 실제 소프트웨어 개발을 하는 에이전트 코딩 모델로 옮겨 갔다. 그러려면 저장소라는 환경, 그 안의 과제, 그리고 에이전트가 과제를 푸는 궤적(trajectory)이 데이터로 필요하다. SWE-smith 는 과제를 자동으로 만든다. 에이전트가 저장소를 받아 의존성을 설치하고 테스트가 돌아가게 만든 다음, 코드를 일부러 고쳐 버그를 심는다(절차적 변형, LM 생성, 버그 결합, 과거 PR 되돌리기). 테스트로 검증된 것이 과제 인스턴스가 된다. 합성 과제지만 128개 저장소에서 5만 개를 얻었고, 발표 당시(작년)로서는 큰 규모였다.",
+    "문제는 환경이다. 수학이나 코딩 대회 문제와 달리 실제 소프트웨어 과제는 의존성이 무겁다. GitHub 저장소 대부분은 그냥 돌리면 돌지도 않는다. 의존성이 낡았고, PR 시점으로 되돌리면 더 엉망이다. 저장소마다 Docker 이미지를 수천 개 만드는 것은 인프라 악몽이다. NVIDIA 의 SWE-Zero 는 여기서 관찰 하나를 한다. 요즘 강한 모델은 실행 피드백 없이도 많은 과제를 푼다. 표를 보면 MiniMax-M2.5 는 실행을 허용하면 SWE-bench Verified 80.2, 실행을 막아도 69.5 다. Qwen3-Coder-480B 는 69.6 대 59.4. 코드를 돌려 보지 못하는데 70점 가까이 나온다는 것은 모델이 코드의 의미를 내부적으로 꽤 갖고 있다는 뜻이다. 그래서 그들은 실행을 금지한 OpenHands 설정 — python·pytest·pip·apt 같은 명령 금지, sed·grep 같은 기본 도구만 허용 — 으로 Qwen3-Coder-480B 에서 30만 개 궤적을 증류했다. 과제는 모두 실제 GitHub PR 이라 SWE-smith 의 합성 과제보다 현실적이다.",
+    "세부도 흥미롭다. 교사 모델이 금지 지시를 무시하고 실행을 시도하는 경우가 있어 그런 궤적은 걸러 냈고, 에이전트가 테스트를 속이는 '해킹'을 막는 장치도 여럿 넣었다. 실행이 필요한 궤적 1.3만 개도 따로 만들어, 실행 없는 궤적으로 먼저 미세조정한 뒤 실행 있는 궤적으로 한 번 더 미세조정했다. 결과 모델 SWE-Hero-32B 는 실행 없이 57.7, 실행 있으면 62.2 를 받았다. 최전선과는 아직 거리가 있지만 진전이다. SWE-rebench 는 GitHub 와 GHArchive 에서 PR 을 대량으로 모아 Qwen2.5-72B-Instruct 가 의존성 설치 스크립트를 가설로 세우고, 실제로 설치·테스트해 보고(대부분 실패하니 더 애쓴다), LLM 으로 과제 품질에 라벨을 붙여 3.4K 저장소에서 2.1만 개 대화형 Python 과제를 얻었다. 그리고 강의 당일 공개된 SWE-ZERO-12M 은 SWE-Zero 아이디어를 1200만 궤적으로 키웠다. SWE-rebench v2 과제 중 실행에 성공한 것은 3.2만 개뿐이고 12만 개는 실행이 안 됐지만, 실행이 필요 없는 SWE-Zero 방식은 전부 쓸 수 있다. 가벼움이 곧 규모다.",
+    "흐름을 정리하면 데이터셋이 점점 정교해지고 있다. 환경이 필요 없는 수학에서 코딩으로, 코딩 데이터도 빠르게 커진다. 프롬프트 쪽에는 완전 합성, 반합성(실제 환경 + 합성 과제), 실제(실제 PR)의 교환이 있고, 응답은 유능할 뿐 아니라 좋은 교사인 모델에서 온다. 코드 환경은 고통스럽고, 필터링 같은 세부가 많다. 강의 전체의 요약은 이렇다. 필터링: 좋음이 어떻게 생겼는지 정하고 가벼운 분류기를 학습해 웹 크롤에서 그와 닮은 작은 부분집합을 얻는다. 중복 제거: 과적합을 피하고 FLOPs 를 아끼는 데 중요하며 해시로 규모를 감당한다. 혼합: 작은 규모에서 여러 혼합을 시도해 큰 규모로 외삽한다. 마지막으로 강사는 솔직하게 덧붙인다. 실제 데이터 작업은 훨씬 지저분하고 도메인마다 다르며, 구체적인 예를 하나하나 들여다보는 일이 대부분이다 — 이 강의는 지형도일 뿐 데이터 일의 실제 모습을 대표하지는 않는다."
+   ],
+   "formulas": [
+    {
+     "expr": "실행 의존도 = 점수(실행 허용) − 점수(실행 금지)",
+     "meaning": "SWE-Zero 표를 읽는 법(노트 보충 용어). MiniMax-M2.5 는 80.2 − 69.5 = 10.7점, Qwen3-Coder-480B 는 69.6 − 59.4 = 10.2점, SWE-Hero-32B 는 62.2 − 57.7 = 4.5점(Verified 기준). 차이가 작을수록 실행 없는 데이터만으로도 많이 얻는다는 뜻."
+    }
+   ],
+   "example": {
+    "title": "실행 가능 과제만 쓸 때와 전부 쓸 때",
+    "body": "SWE-rebench v2 과제가 실행 가능 32K + 실행 불가 120K = 152K 다. 실행 피드백이 필요한 방식은 32K 개(21%)만 쓸 수 있다. 과제당 궤적을 80개씩 만든다면 32K × 80 = 2.56M 궤적이 한계다. SWE-Zero 방식은 152K 전부 쓸 수 있어 같은 80개면 12.16M — 강의에서 소개한 1200만 궤적 규모가 이 계산과 맞는다(과제당 궤적 수 80 은 역산한 가정). 실행 환경을 포기하는 대신 과제 수를 약 4.75배로 늘린 셈이다."
+   },
+   "pitfalls": [
+    "강의 중 '실행 안 된 과제 120개'라고 말한 부분은 슬라이드 기준 12만(120K) 개다.",
+    "실행 없는 궤적은 테스트로 정답을 검증하지 못한다. 규모는 얻지만 틀린 수정도 섞일 수 있어, 실행 가능한 궤적으로 2단계 미세조정해 보완한 것이다.",
+    "SWE-bench (V)·(M) 은 각각 Verified·Multilingual 판이다(노트 보충). 같은 모델도 판에 따라 점수가 크게 다르니 비교할 때 판을 맞춘다."
+   ],
+   "check": [
+    {
+     "q": "SWE-Zero 가 실행 없는 궤적에 주목한 이유는?",
+     "a": "실제 저장소는 의존성이 무거워 수천 개 Docker 환경을 만드는 것이 인프라 악몽인데, 강한 모델은 실행 없이도 SWE-bench 를 상당히(예: 80.2 → 69.5) 풀기 때문에 환경 없이도 대량의 궤적을 만들 수 있다."
+    },
+    {
+     "q": "이 강의의 필터링·중복 제거·혼합 요약을 각각 한 줄로.",
+     "a": "필터링: 좋음을 정의하고 가벼운 분류기로 웹 전체에 외삽. 중복 제거: 해시(MinHash LSH)로 선형 시간에 사본을 지워 FLOPs 와 암기를 줄임. 혼합: 작은 규모에서 여러 혼합을 시도해 최적을 찾고 큰 규모로 외삽(에폭 상한·모의 에폭 주의)."
+    }
+   ]
+  }
+ ],
+ "concepts": [
+  {
+   "term": "목표 데이터 T 와 원시 데이터 R",
+   "explain": "필터링의 공통 틀. 작고 좋은 T 를 기준으로 거대한 R 에서 T 와 닮은 부분집합 T′ 를 찾는다. 언어 식별·품질·독성 필터가 모두 이 틀의 다른 T 다.",
+   "at": 420
+  },
+  {
+   "term": "KenLM (n-gram 생성 점수)",
+   "explain": "T 로 학습한 5-gram 언어 모델의 perplexity 를 점수로 쓰는 생성적 필터. 싸고 빠르다. OpenWebMath 는 ProofPile 로 학습해 perplexity < 15000 을 남겼다.",
+   "at": 540
+  },
+  {
+   "term": "fastText 분류기",
+   "explain": "단어·n-gram 주머니 위의 선형 분류기. T 를 양성, R 의 표본을 음성으로 학습해 p(T|x) 를 점수로 쓴다. 웹 전체에 돌릴 만큼 빨라 품질·언어 필터의 표준 도구다.",
+   "at": 590
+  },
+  {
+   "term": "확률적 유지 (GPT-3 파레토 규칙)",
+   "explain": "np.random.pareto(9) > 1 − score 이면 남긴다. 유지 확률 (2 − s)^(−9) 로, 점수가 낮아도 작은 확률로 살아남아 다양성을 지킨다.",
+   "at": 610
+  },
+  {
+   "term": "LLM 판정의 증류 (phi-1)",
+   "explain": "비싼 LLM 이 표본(10만 개)만 판정해 목표 T 를 만들고, 그것으로 싼 분류기를 학습해 전체에 적용한다. 비용을 자릿수 단위로 줄이는 패턴.",
+   "at": 915
+  },
+  {
+   "term": "규모 의존 필터링",
+   "explain": "최적 문턱은 학습 토큰 수에 달려 있다. 강하게 거르면 데이터가 줄어 긴 학습에서 에폭을 반복하다 과적합하므로, 짧은 학습엔 고품질·긴 학습엔 넓은 데이터가 낫다.",
+   "at": 1045
+  },
+  {
+   "term": "정확 중복과 근사 중복",
+   "explain": "정확 중복은 미러·포크처럼 글자까지 같은 사본, 근사 중복은 라이선스·템플릿·쉼표 차이처럼 몇 토큰만 다른 글. 앞의 것은 해시로, 뒤의 것은 MinHash LSH 로 잡는다.",
+   "at": 1340
+  },
+  {
+   "term": "오염 제거 (decontamination)",
+   "explain": "평가 셋 문항이 학습 셋에 들어가지 않게 하는 것. 중복 제거와 같은 기술을 학습 셋과 평가 셋 사이에 적용한다.",
+   "at": 1610
+  },
+  {
+   "term": "Jaccard 유사도",
+   "explain": "|A∩B| / |A∪B|. 문서를 shingle(n-gram) 집합으로 바꿔 비교한다. 문턱 이상이면 근사 중복으로 본다.",
+   "at": 1900
+  },
+  {
+   "term": "MinHash",
+   "explain": "집합 원소의 해시 최솟값. 무작위 해시에 대해 두 집합의 MinHash 가 같을 확률이 정확히 Jaccard 다. 여러 해시의 일치 비율로 Jaccard 를 추정한다(표준오차 √(J(1−J)/n)).",
+   "at": 1960
+  },
+  {
+   "term": "LSH 밴딩 (b × r)",
+   "explain": "MinHash n = b × r 개를 밴드 b 개로 나누고, 한 밴드의 r 개가 모두 같으면 후보로 본다. 충돌 확률 1 − (1 − s^r)^b 가 S 자라 문턱 (1/b)^(1/r) 근처에서 날카롭게 갈린다.",
+   "at": 2300
+  },
+  {
+   "term": "데이터 혼합 (mixture)",
+   "explain": "여러 원천 위의 확률분포 p(s). 시퀀스마다 원천을 뽑아 배치를 채운다. 감·균등·비례가 기준선이다.",
+   "at": 2960
+  },
+  {
+   "term": "에폭 계산 epochs = p·D/N",
+   "explain": "혼합 비율 × 학습 토큰 ÷ 원천 크기. 작은 고품질 원천에 큰 비중을 주면 수십 에폭이 되어 과적합한다. 혼합을 정할 때 반드시 계산한다.",
+   "at": 3240
+  },
+  {
+   "term": "UniMax",
+   "explain": "원천을 균등하게 뽑되 원천별 에폭 상한 C 를 두는 혼합(Chung+ 2023). 상한에 닿은 원천의 몫은 다른 원천에 나눈다.",
+   "at": 3500
+  },
+  {
+   "term": "회귀 기반 혼합 (RegMix·Olmix)",
+   "explain": "작은 프록시 모델 떼를 여러 혼합으로 학습해 '혼합 → 손실' 회귀를 맞추고, 최소화한 혼합으로 큰 모델을 학습한다. 스케일링 법칙과 같은 구조.",
+   "at": 3605
+  },
+  {
+   "term": "모의 에폭 (simulated epoching)",
+   "explain": "모든 원천을 '작은 학습 토큰 / 큰 학습 토큰' 비율로 줄여 작은 실험에서도 큰 학습과 같은 반복을 겪게 한다. 작은 규모를 큰 규모처럼 — μP 와 같은 정신.",
+   "at": 4040
+  },
+  {
+   "term": "교사 모델과 합성 사후학습 데이터",
+   "explain": "환경 → 과제 → 강한 모델의 응답으로 만드는 SFT 데이터. OpenThoughts 에서는 더 강한 모델이 더 좋은 교사가 아니었다.",
+   "at": 4410
+  },
+  {
+   "term": "실행 없는 에이전트 궤적 (SWE-Zero)",
+   "explain": "코드를 실행하지 못하게 한 에이전트 설정으로 궤적을 증류한다. Docker 환경 없이 모든 PR 과제를 쓸 수 있어 1200만 궤적까지 키웠다.",
+   "at": 4740
+  }
+ ],
+ "trends": [
+  {
+   "claim": "모델 기반 품질 필터가 표준이 됐다",
+   "evidence": "C4·Gopher·RefinedWeb·FineWeb·Dolma 는 편향을 피하려 모델 필터를 피했지만, GPT-3·LLaMA·DCLM 처럼 쓰는 것이 '표준이 되어 간다'고 슬라이드에 적었다. 연산이 부족한 대부분에게는 필수라는 것이 강사 의견.",
+   "at": 640
+  },
+  {
+   "claim": "LLM 을 판정자로 쓰고 싼 분류기로 증류하는 필터가 퍼졌다",
+   "evidence": "phi-1 은 GPT-4 로 10만 개를 판정해 목표 데이터를 만들고 랜덤 포레스트로 The Stack 전체를 걸러 HumanEval 12.19% → 17.68%(더 적은 스텝).",
+   "at": 915
+  },
+  {
+   "claim": "필터 강도는 학습 예산과 같이 정해야 한다",
+   "evidence": "157M 모델 실험에서 강한 필터(dclm)는 초반엔 최고지만 에폭이 쌓이자 과적합하고, 거의 거르지 않은 데이터가 수십억 토큰 영역에서 앞섰다(강사 연구실 예비 실험).",
+   "at": 1100
+  },
+  {
+   "claim": "혼합 비율만 보고 원천 크기를 놓쳐 고품질 데이터를 수십 에폭 도는 실수가 큰 학습에서도 있었다 (강사 의견)",
+   "evidence": "반반 혼합·저품질 10T·고품질 10B·1T 학습이면 고품질 50 에폭. '몇몇 큰 학습이 이걸 망쳤다'고 언급.",
+   "at": 3300
+  },
+  {
+   "claim": "데이터 혼합은 감에서 회귀 기반 최적화로 옮겨 가는 중이지만, 아직 손으로 만지는 경우가 많다 (강사 의견)",
+   "evidence": "RegMix·DML·AutoScale·BiMix·ADMIRE-BayesOpt·CLIMB·Olmix 를 비교한 Olmix 표. 최근 논문도 방법을 쓴 뒤 결국 수동으로 조정한다고 지적.",
+   "at": 3060
+  },
+  {
+   "claim": "오픈 진영의 사후학습 데이터는 거의 전부 합성이고, 최전선에서도 사람·AI 혼합으로 간다",
+   "evidence": "환경 → 과제 → 교사 응답 레시피. OpenThoughts 120만 예(QwQ-32B 교사).",
+   "at": 4420
+  },
+  {
+   "claim": "에이전트 코딩 데이터가 실행 환경의 병목을 우회하며 수천만 궤적 규모로 커지고 있다",
+   "evidence": "SWE-smith 5만 과제 → SWE-Zero 30만 궤적(실행 금지) → SWE-ZERO-12M 1200만 궤적(실행 가능 3.2만 + 불가 12만 과제). 강한 모델은 실행 없이도 SWE-bench Verified 에서 실행 시 점수의 약 80~93% 를 낸다.",
+   "at": 4740
+  }
+ ],
+ "study": {
+  "prereq": [
+   "확률(독립 사건의 곱·여사건), 해시 테이블의 개념",
+   "로지스틱 회귀와 정밀도·재현율",
+   "CS336 9·11강 스케일링 법칙(작은 실험 → 큰 규모 외삽), 12강 평가(오염)",
+   "Python·NumPy, 가능하면 Spark 나 멀티프로세싱으로 대용량 파일 다루기"
+  ],
+  "steps": [
+   {
+    "do": "Common Crawl WARC 파일 하나를 받아 trafilatura 와 resiliparse 로 각각 본문을 뽑고 같은 페이지 20개를 눈으로 비교한다.",
+    "why": "추출기 선택이 점수 3~4점을 바꾼다는 강의 표의 이유를 직접 확인하고, '데이터를 직접 보라'는 습관을 시작한다."
+   },
+   {
+    "do": "fastText 언어 식별 모델로 그 텍스트의 언어를 가르고, 위키백과 문단(양성)과 무작위 웹 문단(음성) 수천 개로 fastText 품질 분류기를 학습한다.",
+    "why": "T/R 틀과 판별적 필터를 손으로 만들어 보고, 흔한 단어만으로 점수가 오르는 등의 실패를 관찰한다."
+   },
+   {
+    "do": "분류기 점수로 문턱 0.3·0.5·0.7·0.9 의 남는 비율과 예상 에폭(학습 예산 두 가지)을 표로 만든다. GPT-3 파레토 규칙의 유지 비율도 같이 계산한다.",
+    "why": "최적 문턱이 학습 예산에 따라 움직인다는 5장의 요점을 숫자로 체감한다."
+   },
+   {
+    "do": "MinHash(단어 5-gram, 해시 128~256개)와 LSH 밴딩을 직접 구현해 수만 문서의 근사 중복 군집을 찾고, datasketch 결과와 비교한다.",
+    "why": "S 자 곡선을 실제 데이터에서 확인하고 b·r 선택이 거짓 양성·음성에 주는 영향을 본다."
+   },
+   {
+    "do": "원천 3~4개(웹·코드·위키·수학)의 토큰 수를 적고 균등·비례·UniMax(C=4) 혼합의 에폭 수를 계산하는 함수를 만든다.",
+    "why": "혼합 비율을 정할 때 늘 에폭을 계산하는 습관을 들인다."
+   },
+   {
+    "do": "작은 모델(수백만 파라미터)로 Dirichlet 혼합 20개를 학습해 로그-선형 회귀를 맞추고 최적 혼합을 예측한 뒤, 그 혼합과 균등 혼합을 실제로 학습해 비교한다. 원천을 축소한 모의 에폭 버전도 해 본다.",
+    "why": "회귀 기반 혼합의 두 믿음(최소점 정확도·규모 전이)이 어디서 깨지는지 직접 본다."
+   }
+  ],
+  "practice": [
+   "b = 16, r = 8 일 때 문턱 (1/b)^(1/r) 과 s = 0.5, 0.7, 0.9 의 충돌 확률을 손으로 구하라.",
+   "Jaccard 0.85 를 문턱으로 하고 해시를 최대 200개 쓸 수 있을 때, 문턱 위(0.9) 충돌 확률 ≥ 0.95, 문턱 아래(0.7) ≤ 0.05 를 만족하는 (b, r) 를 찾아라.",
+   "원천 web 5T, code 500B, wiki 20B, math 50B 로 2T 를 학습할 때 비례 혼합과 균등 혼합의 원천별 에폭을 구하고, C = 10 인 UniMax 비율을 구하라.",
+   "점수 s 에 대해 GPT-3 파레토 규칙과 결정적 문턱 0.7 의 유지 비율을 비교하고, 점수가 Beta(2,5) 분포일 때 전체 유지 비율을 시뮬레이션으로 구하라.",
+   "작은 실험 5B, 본 학습 500B 일 때 모의 에폭용 축소 원천 크기를 구하고, 혼합 {web 0.5, wiki 0.5} 의 wiki 에폭이 작은 실험과 본 학습에서 같은지 확인하라."
+  ],
+  "resources": [
+   {
+    "title": "CS336 과목 홈페이지",
+    "url": "https://cs336.stanford.edu/"
+   },
+   {
+    "title": "Deduplicating Training Data Makes Language Models Better (Lee et al., 2021)",
+    "url": "https://arxiv.org/abs/2107.06499"
+   },
+   {
+    "title": "Mining of Massive Datasets (Leskovec·Rajaraman·Ullman) — 3장 Finding Similar Items 에 MinHash·LSH",
+    "url": "http://www.mmds.org/"
+   },
+   {
+    "title": "fastText 언어 식별 모델",
+    "url": "https://fasttext.cc/docs/en/language-identification.html"
+   },
+   {
+    "title": "DataComp-LM (DCLM, Li et al., 2024)",
+    "url": "https://arxiv.org/abs/2406.11794"
+   },
+   {
+    "title": "Dolma (Soldaini et al., 2024)",
+    "url": "https://arxiv.org/abs/2402.00159"
+   },
+   {
+    "title": "OpenWebMath (Paster et al., 2023)",
+    "url": "https://arxiv.org/abs/2310.06786"
+   },
+   {
+    "title": "Textbooks Are All You Need — phi-1 (Gunasekar et al., 2023)",
+    "url": "https://arxiv.org/abs/2306.11644"
+   },
+   {
+    "title": "UniMax (Chung et al., 2023)",
+    "url": "https://arxiv.org/abs/2304.09151"
+   },
+   {
+    "title": "RegMix (Liu et al., 2024)",
+    "url": "https://arxiv.org/abs/2407.01492"
+   },
+   {
+    "title": "OpenThoughts (Guha et al., 2025)",
+    "url": "https://arxiv.org/abs/2506.04178"
+   },
+   {
+    "title": "SWE-smith (Yang et al., 2025)",
+    "url": "https://arxiv.org/abs/2504.21798"
+   },
+   {
+    "title": "datasketch — MinHash LSH 문서",
+    "url": "https://ekzhu.com/datasketch/lsh.html"
+   }
+  ]
+ },
+ "jobs": {
+  "roles": [
+   "LLM 데이터 엔지니어",
+   "머신러닝 엔지니어(LLM 사전학습)",
+   "AI 리서치 엔지니어",
+   "데이터 엔지니어",
+   "검색·추천 엔지니어"
+  ],
+  "skills": [
+   "Python",
+   "NumPy",
+   "PyTorch",
+   "Spark",
+   "Hugging Face",
+   "fastText",
+   "LLM",
+   "Docker",
+   "Data Engineering",
+   "Machine Learning"
+  ]
+ },
+ "materials": {
+  "transcript": "official",
+  "frames": 170,
+  "every_sec": 30
+ },
+ "related": [
+  "-qm0ln33G24",
+  "Q15rhEWZPQ4",
+  "vTfEyOyzV9E",
+  "JpAxdTWQJxM",
+  "JuoVZkPBiKk"
+ ],
+ "written_at": "2026-11-21"
+}

@@ -47,3 +47,4 @@
 - 2026-11-20 · vTfEyOyzV9E · CS336 · 스케일링 법칙 심화 — 공개 레시피(MiniCPM·DeepSeek·Kimi K2), WSD, 학습률·배치 법칙, Muon, μP 유도 · 챕터 15 · 본문 23756자
 - 2026-11-20 · JpAxdTWQJxM · CS336 · 평가 — perplexity 에서 시험·Arena·LLM 심판·에이전트·ARC-AGI·안전까지, 그리고 오염과 타당성 · 챕터 15 · 본문 22729자
 - 2026-11-20 · -qm0ln33G24 · CS336 · 데이터 1부 — 웹은 어떻게 학습 데이터가 되나: 크롤링의 제약, 저작권과 공정 이용, Common Crawl 에서 C4·The Pile·FineWeb·DCLM·Common Pile 까지 · 챕터 15 · 본문 24203자
+- 2026-11-20 · 5sxHosTLPF8 · CS336 · 데이터 2 — 필터링·중복 제거(MinHash LSH)·혼합, 그리고 합성 사후학습 데이터 · 챕터 14 · 본문 22459자
