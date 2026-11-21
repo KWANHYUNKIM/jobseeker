@@ -61,3 +61,4 @@
 - 2026-11-20 · PTypu6GqEd4 · CS231N · 객체 검출·이미지 분할·시각화 — 픽셀마다 이름표(FCN·전치 합성곱·U-Net), 상자 찾기(R-CNN 계열·YOLO·DETR, IoU·NMS·mAP), 인스턴스 분할(Mask R-CNN), 그리고 현저성 지도·CAM·Grad-CAM · 챕터 15 · 본문 22484자
 - 2026-11-20 · wElqklprhPE · CS231N · 영상 이해 — 단일 프레임·late/early fusion 에서 3D CNN(C3D·I3D), 두 스트림, nonlocal·영상 트랜스포머, 행동 위치 찾기와 시청각까지 · 챕터 15 · 본문 23367자
 - 2026-11-20 · 9MvD-XsowsE · CS231N · 대규모 분산 학습 — H100 을 사이클 단위로 세기, 서버·포드·클러스터의 대역폭 계층, DP·FSDP·HSDP·활성값 체크포인팅, HFU 와 MFU, 그리고 컨텍스트·파이프라인·텐서 병렬과 Llama3 의 4D 병렬 · 챕터 15 · 본문 24992자
+- 2026-11-20 · 4howBU7THbM · CS231N · 자기지도 학습 — 회전·직소·인페인팅·색칠 프리텍스트 과제에서 MAE, 그리고 InfoNCE·SimCLR·MoCo·CPC·DINO 까지 · 챕터 15 · 본문 22429자
