@@ -76,3 +76,4 @@
 - 2026-11-20 · h-7S6HNq0Vg · CME295 · CME295 7강 — 에이전트형 LLM: RAG(청크·임베딩·bi-encoder·BM25·HyDE·contextual retrieval·prompt caching·cross-encoder 재순위·NDCG/MRR/Recall@k), 도구 호출과 학습, 도구 선택, MCP, ReAct 에이전트, A2A, 안전 · 챕터 15 · 본문 23462자
 - 2026-11-20 · 8fNP4N46RRo · CME295 · 스탠퍼드 CME295 8강 — LLM 평가: 평가자 간 일치도(κ), METEOR·BLEU·ROUGE 의 한계, LLM-as-a-Judge 와 세 가지 편향·보정, 사실성 점수, 에이전트 실패 분류, 지식·추론·코딩·안전·에이전트 벤치마크와 pass^k · 챕터 15 · 본문 23321자
 - 2026-11-20 · Q86qzJ1K1Ss · CME295 · CME295 9강(마지막) — 한 학기 복습(1~8강을 한 줄씩)과 2025년의 흐름: 비전 트랜스포머·VLM, 마스크 확산 LLM, 모달리티 교배(DiT·DeepSeek-OCR·2D RoPE), Muon·데이터·파레토·아날로그 어텐션 칩, 에이전트의 내일 · 챕터 15 · 본문 23412자
+- 2026-11-20 · _NLHFoVNlbg · CS230 · CS230 1강 — 딥러닝은 왜 이겼고 무엇을 배우나: 규모의 법칙, 다섯 모듈, AI 코딩 시대의 개발자 · 챕터 14 · 본문 18973자
