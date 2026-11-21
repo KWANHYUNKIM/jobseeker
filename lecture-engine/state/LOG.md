@@ -109,3 +109,4 @@
 - 2026-11-20 · psLc-46GqY0 · CS329Z · RAG 해설 — BM25 에서 에이전트형 RAG 까지: 청크·맥락 검색·RAPTOR·GraphRAG·HNSW·DPR·검색 지표·RRF·ColBERT·Self-RAG·CRAG·Search-R1·실패 유형 · 챕터 15 · 본문 23835자
 - 2026-11-20 · s0S38lz6O7M · CS329Z · AI 에이전트는 도구를 어떻게 쓰나 — 왜 도구인가, Toolformer·ToolkenGPT·ToolLLM·Gorilla, REST·function calling·MCP, BFCL·τ-bench 와 pass^k · 챕터 15 · 본문 21457자
 - 2026-11-20 · q0Q-Hy8TTps · CS329Z · DSPy 대 LangGraph — 에이전트 프레임워크의 추상화, 오픈소스 하네스, 오케스트레이션과 평가 · 챕터 13 · 본문 23817자
+- 2026-11-20 · JC_pLC5EX_w · CS329Z · AI 에이전트 디자인 패턴 — 워크플로 다섯 패턴, ReAct·Reflexion·CodeAct·계획 후 실행, 컨텍스트 관리, 그리고 최소 하네스 Pi · 챕터 15 · 본문 24580자

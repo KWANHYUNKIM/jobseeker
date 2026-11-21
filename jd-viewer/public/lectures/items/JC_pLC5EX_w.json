@@ -1,0 +1,1037 @@
+{
+ "id": "JC_pLC5EX_w",
+ "source": {
+  "platform": "youtube",
+  "url": "https://www.youtube.com/watch?v=JC_pLC5EX_w",
+  "channel": "Stanford Online",
+  "published": "2026-11-14",
+  "duration_sec": 4611,
+  "views": 41718
+ },
+ "course": {
+  "school": "Stanford",
+  "code": "CS329Z",
+  "term": "Autumn 2026",
+  "lecture_no": "6",
+  "speaker": "Michael Ryan (Stanford CS 박사과정, DSPy 기여자) — 공동 강의 Diyi Yang·John Yang"
+ },
+ "title": "AI Agent Design Patterns: ReAct, CodeAct & More | Stanford CS329Z Lecture 6 with Michael Ryan",
+ "title_ko": "AI 에이전트 디자인 패턴 — 워크플로 다섯 패턴, ReAct·Reflexion·CodeAct·계획 후 실행, 컨텍스트 관리, 그리고 최소 하네스 Pi",
+ "topic": "agents",
+ "tags": [
+  "AI Agent",
+  "LLM",
+  "ReAct",
+  "CodeAct",
+  "Reflexion",
+  "Context Engineering",
+  "Prompt Engineering",
+  "Function Calling",
+  "Multi-Agent",
+  "RAG",
+  "Python",
+  "OpenHands",
+  "LangGraph",
+  "DSPy"
+ ],
+ "level": "중급",
+ "one_line": "워크플로·추론·컨텍스트 패턴을 한 카탈로그로 — ReAct 21턴을 CodeAct 2턴으로, 관찰 84% 를 마스킹으로",
+ "summary": [
+  "Stanford CS329Z 「Engineering AI Agents」(2026 가을) 6강으로, DSPy 기여자인 박사과정 Michael Ryan 이 맡았다. 제목은 'ReAct, CodeAct & More' 지만 실제 강의는 네 덩어리다 — Anthropic 이 정리한 워크플로 다섯 패턴(체이닝·라우팅·병렬화·오케스트레이터-워커·평가자-최적화자)과 그 조합 사례 STORM·Archon, 추론·행동 패턴(ReAct·Reflexion·CodeAct·ReWOO/LLMCompiler), 컨텍스트 관리 패턴(이벤트 로그·메모리 오프로딩·압축·관찰 마스킹·서브에이전트·점진적 공개), 그리고 최소 하네스 Pi 의 해부. 강사는 처음부터 '패턴은 반쯤 구운 것'이라며 외워 끼우기보다 평가 데이터 위에서 바꿔 가며 재라고 당부한다.",
+  "워크플로 파트의 축은 '제어 흐름을 누가 쥐나'다. 체이닝은 지연을 내주고 정확도를 사고, 라우팅은 LLM 이 switch 문이 되어 쉬운 입력을 작은 모델로 보내며, 병렬화는 코드가 정한 갈래(안전 분류기와 생성 동시 실행, 다수결 투표)를, 오케스트레이터-워커는 LLM 이 정한 갈래를 돌린다. 평가자-최적화자는 피드백을 말로 분명히 할 수 있고 그것을 줄 능력이 있을 때만 통한다. STORM 은 이 부품들로 위키백과식 기사를 쓰며(개체 재현율 14.10, 개요를 빼면 ROUGE-1 45.82 → 26.77), Archon 은 생성기·융합기·비평가·순위기·검증기 부품의 조립을 베이지안 탐색으로 자동화해 큰 토큰 예산에서 o1 을 넘는다.",
+  "추론·행동 파트에서 ReAct 는 '도구 전에 생각'이며, 원 논문에서 프롬프트보다 파인튜닝할 때 크게 좋아졌다는 반전이 오늘날 에이전트 사후학습의 배경이다. Reflexion 은 실패를 반성문으로 바꿔 다음 시도의 문맥에 넣지만, 외부 신호 없는 자기 교정은 GPT-4-Turbo 의 GSM8K 를 91.5 에서 88.0~91.0 으로 오히려 떨어뜨린다 — 그래서 CRITIC 은 검증자에게 검색·코드 도구를 준다. CodeAct 는 행동을 코드로 바꿔 모든 시험 모델에서 성공률과 턴 수를 개선했고, ReWOO·LLMCompiler 는 관찰 전에 계획을 세워 행동을 워크플로(DAG)로 컴파일한다(HotpotQA 지연 1.80배, Movie Rec 3.74배 단축). 강사는 오늘날 반성은 추론 모델 안으로, 계획 컴파일은 코드 생성과 병렬 도구 호출로 흡수됐다고 정리했다.",
+  "컨텍스트 파트의 두 원칙은 초점 유지와 연속성 보존(요구사항·목표·진행 상황과 KV 캐시 지키기)이다. OpenHands 의 불변 이벤트 로그는 '일어난 일'과 '모델에게 보여 줄 것'을 분리하고, MemGPT 식 메모리는 사실을 밖에 적어 두며, 압축은 앞부분을 요약한다. 「The Complexity Trap」은 에이전트 토큰의 83.9% 가 관찰이라는 점을 들어 옛 관찰만 잘라내는 마스킹이 요약만큼 잘 되고 더 단순하다고 보였다. 서브에이전트와 스킬 파일(점진적 공개)은 아예 한 창에 다 넣지 않는 격리다. 마지막으로 Pi 는 도구 4개, ReAct 고리(bash 에 스크립트를 쓰면 사실상 CodeAct), 트리형 이벤트 로그·스킬·firstKeptEntryId 압축으로 이뤄진 최소 하네스이며 안전장치는 없다. 강사의 결론은 '좋은 모델에는 단순한 하네스'(강사 의견).",
+  "이 노트는 영상 순서를 따르되, 비교에 무게를 둔 '패턴 카탈로그' 챕터를 따로 세우고 강의에 없던 트리 탐색(Tree-of-Thoughts·LATS)을 노트 보충으로 넣었다. 손계산으로는 스마트폰 최저가 과제를 ReAct(21턴, 누적 입력 16,800토큰)와 CodeAct(2턴, 930토큰)로 끝까지 따라가고, 다수결 정확도, 임계 경로 지연, 관찰 마스킹의 턴별 문맥 길이를 직접 계산했다. 코드는 모두 직접 실행한 30줄 이내 파이썬이며 LLM 자리는 가짜(stub)라고 표시했다. ReAct 기초는 CS329Z 1강(DGI4vucR71w)과 CME295 7강(h-7S6HNq0Vg), KV 캐시와 컨텍스트 엔지니어링의 바탕은 CS329Z 2강(Vr1NzH8bT44) 노트에 있다. 다음 7강은 메모리, 8강은 멀티에이전트다."
+ ],
+ "why_now": "강의가 든 근거가 그대로 이유다. 같은 과제에서 행동 형식만 JSON 에서 코드로 바꿔도 성공률이 크게 오르고 턴이 줄며(CodeAct), 실행 구조만 바꿔도 정확도를 지키며 지연이 2~4배 줄고(LLMCompiler), 문맥에서 관찰만 잘라도 요약과 같은 해결률을 더 싸게 얻는다(관찰 마스킹). 즉 에이전트의 품질·비용·지연을 가르는 변수가 모델 선택만큼이나 '어떤 패턴으로 감싸느냐'에 있다. 동시에 강사가 보여 준 흐름 — 자기 반성은 추론 모델 안으로, 계획 컴파일은 병렬 도구 호출로, 하네스는 Pi 처럼 최소화로 — 은 '무엇을 직접 짜고 무엇을 모델에 맡길지'의 경계가 빠르게 움직이고 있음을 뜻한다. 에이전트·LLM 애플리케이션 공고가 요구하는 도구 호출 설계, 컨텍스트 관리, 평가 기반 개선 경험은 바로 이 패턴들을 골라 재 보는 능력이다.",
+ "chapters": [
+  {
+   "start": 0,
+   "title": "디자인 패턴이란 무엇인가 — 소프트웨어의 오래된 도구를 에이전트에 가져오기, 그리고 오늘의 지도",
+   "points": [
+    "디자인 패턴은 '자주 마주치는 설계 문제에 대한 이름 붙은 해법'이다. GoF 『Design Patterns』가 23개(강사는 22~23개라고 얼버무렸다)를 정리했고, 싱글턴이 대표 예다.",
+    "에이전트 시스템도 만들 때마다 같은 결정을 반복한다 — 흐름을 코드가 쥘까 모델이 쥘까, 도구를 어떤 형식으로 부를까, 문맥이 넘치면 무엇을 버릴까.",
+    "강사가 인용한 경고: 패턴은 '반쯤 구운 것'이라 늘 자기 환경에 맞게 마저 구워야 한다. 패턴에 기대지 말고 그 위에 새로 쌓으라는 뜻이다.",
+    "학습 목표 셋: 워크플로·에이전트의 공통 패턴 정의, 컨텍스트 관리 패턴 비교, 실제 하네스(Pi)의 설계 결정 분석.",
+    "질의응답: 오래 남을 것으로는 ReAct 식 추론 패턴과 MCP 를 꼽았다(강사 의견)."
+   ],
+   "on_screen": "GoF 『Design Patterns: Elements of Reusable Object-Oriented Software』 표지와 싱글턴 UML(instance: Singleton, getInstance(), if (instance == null) { instance = new Singleton() } return instance). 'When building an agent system you must make many design decisions / Today we'll introduce design patterns / In practice you will customize your solutions'. Learning Objectives 세 줄. Lecture Overview: Review 5분, Workflow Design Patterns 15분, Agent Design Patterns: Reasoning/Acting 20분, Context 20분, Case Study: Pi 10분.",
+   "explain": [
+    "건축가가 '현관은 남쪽, 계단은 복도 끝'처럼 반복되는 배치를 이름 붙여 부르듯, 소프트웨어 엔지니어도 자주 나오는 설계 문제와 그 해법에 이름을 붙여 왔다. 1994년 이른바 GoF(Gang of Four) 네 저자가 쓴 『Design Patterns』가 대표적이다. 강의 화면에 뜬 싱글턴은 '어떤 클래스의 인스턴스를 프로그램 전체에서 딱 하나만 두고 싶다'는 문제에 대한 해법이다. 생성자를 숨기고 getInstance() 가 처음 불릴 때만 객체를 만들어 저장해 두었다가 이후로는 그 객체를 돌려준다. 이런 이름이 있으면 동료에게 '여기는 싱글턴으로 하자'는 한마디로 긴 설계를 전달할 수 있다는 것이 패턴의 첫 번째 가치다.",
+    "이 강의의 주장은 에이전트 시스템도 똑같다는 것이다. 에이전트를 하나 만들려면 수십 개의 결정을 내려야 한다. 과제를 몇 단계로 쪼갤까, 단계 사이의 분기는 코드의 if 문으로 할까 모델에게 맡길까, 도구를 JSON 으로 부르게 할까 코드를 쓰게 할까, 문맥 창이 차면 옛 기록을 요약할까 지울까. 이런 결정마다 연구와 업계가 시행착오 끝에 정리한 '자주 쓰는 답'이 생겼고, 오늘 강의는 그것을 세 묶음 — 워크플로 패턴, 추론·행동 패턴, 컨텍스트 관리 패턴 — 으로 나눠 소개한 뒤 실제 하네스 하나를 해부한다. 하네스(harness)는 모델을 감싸고 도구 실행·문맥 조립·루프 제어를 맡는 바깥 프로그램을 말한다.",
+    "강사는 처음부터 선을 긋는다. 패턴은 반쯤 구운 빵과 같아서, 각자의 환경에 맞게 마저 구워야 쓸 수 있다는 인용이다. 에이전트 분야는 아직 몇 년 되지 않아 정답이 자주 바뀌므로, 패턴을 체크리스트처럼 외워 끼워 맞추기보다 '이 문제에는 어떤 선택지가 있었지'를 떠올리는 사고 도구로 쓰라는 것이다. 한 학생이 '그래도 굳이 바꾸지 말아야 할 표준이 있느냐'고 묻자, 강사는 꽤 오래 버틸 것으로 생각을 먼저 쓰고 행동하는 ReAct 식 루프와 도구를 묶는 방식으로 퍼지고 있는 MCP 를 꼽았다. 이것은 강사 개인의 전망이다.",
+    "이 노트를 읽는 순서 안내(노트 보충): CS329Z 1강(DGI4vucR71w)은 ReAct·Reflexion 을 에이전트 역사 속에서 짧게 소개했고, 2강(Vr1NzH8bT44)은 KV 캐시와 컨텍스트 엔지니어링의 바탕을, 3강(psLc-46GqY0)은 검색(RAG)을 다뤘다. 4강(도구 호출·MCP)과 5강(DSPy 대 LangGraph, 워크플로와 에이전트의 구분)은 아직 노트가 없지만 이 강의가 5강의 '워크플로 대 에이전트' 구분을 복습으로 다시 꺼내므로 이어 읽는 데 문제는 없다. 이 노트는 ReAct 의 기초보다 '패턴들을 나란히 놓고 비교하는 카탈로그'에 무게를 두고, 각 패턴을 손계산과 실행 가능한 파이썬 코드(가짜 LLM 사용)로 확인한다."
+   ],
+   "diagram": {
+    "title": "오늘 강의의 지도",
+    "code": "flowchart LR\n  A[\"복습: 워크플로 대 에이전트\"] --> B[\"워크플로 패턴 5가지<br/>체이닝·라우팅·병렬화·오케스트레이터·평가자\"]\n  B --> B2[\"조합 사례: STORM · Archon\"]\n  B2 --> C[\"추론·행동 패턴<br/>ReAct · Reflexion · CodeAct · ReWOO/LLMCompiler\"]\n  C --> D[\"컨텍스트 관리 패턴<br/>이벤트 로그·메모리·압축·관찰 마스킹·격리\"]\n  D --> E[\"사례: Pi 하네스\"]"
+   },
+   "pitfalls": [
+    "패턴을 '정답 목록'으로 오해하기 쉽다. 강의의 거듭된 메시지는 평가 데이터를 먼저 만들고 패턴을 바꿔 가며 재 보라는 것이다.",
+    "GoF 책의 패턴 수는 23개다. 강사는 말로 22~23개라고 넘어갔다."
+   ],
+   "check": [
+    {
+     "q": "디자인 패턴이 팀 개발에서 주는 가장 직접적인 이득은?",
+     "a": "설계 결정을 짧은 이름 하나로 공유할 수 있다는 점(공용 어휘). 해법 자체보다 '어떤 문제에 어떤 선택지가 있는지'를 빠르게 떠올리게 해 준다."
+    }
+   ]
+  },
+  {
+   "start": 180,
+   "title": "복습 — 제어 흐름은 어디에 있나: 모델·워크플로·에이전트의 스펙트럼",
+   "points": [
+    "한 줄 기준: 다음에 무엇을 할지(제어 흐름)를 프로그램 코드가 정하면 워크플로, LLM 이 정하면 에이전트다. 모델 단독 호출은 더 큰 시스템의 부품이다.",
+    "예측 가능성과 자율성(agency)은 맞바꾼다 — 워크플로는 예측하기 쉽고 평가·최적화가 쉽지만, 에이전트는 유연한 대신 예측·평가가 어렵다.",
+    "같은 IT 고객 지원이라도 '티켓 분류 → 정책 검색 → 자동 답장'은 워크플로, '도구로 문제를 조사해 직접 해결'은 에이전트가 맞다.",
+    "실제 시스템은 둘을 섞는다."
+   ],
+   "on_screen": "'Where does the control flow lie?' 수평선: Model(Small part of a larger system, 예 GPT-6 Sol·Claude Fable 5.1) — Workflow or Compound AI System(Logic and Orchestration lies in the Program, 예 Email Categorizer·News feed summarizer) — Agent(Control flow is role of the AI Model, 예 Customer Service Agent·Coding Agent). LangChain 블로그의 스케치: 세로축 predictability, 가로축 agency, workflows 는 왼쪽 위·agents 는 오른쪽 아래로 떨어지는 곡선. 지난 강의의 그래프 두 개: start→extract→pick_emoji→add_to_calendar→end 와 start→model⇄tools→end. 표 Workflows/Agents: Control Flow(Code/LLM), Adaptation(Fixed branches, routes, loops / Chooses next step based on observations), Best Fit, Example.",
+   "explain": [
+    "택시와 버스를 떠올리면 쉽다. 버스(워크플로)는 노선이 미리 정해져 있어 언제 어디에 설지 예측할 수 있지만 노선 밖으로는 못 간다. 택시(에이전트)는 운전사가 상황을 보며 길을 고르니 어디든 가지만, 요금과 도착 시각을 미리 알기 어렵다. 강의는 이 차이를 '제어 흐름이 어디에 있나'라는 한 질문으로 정리한다. 프로그램 코드에 단계와 분기가 적혀 있고 LLM 은 그 안의 한 칸을 채우는 부품이면 워크플로(또는 복합 AI 시스템), LLM 이 매번 다음에 부를 도구와 멈출 시점을 정하면 에이전트다. 가장 왼쪽의 '모델'은 그냥 더 큰 시스템 안에서 불리는 한 번의 호출이다.",
+    "지난 강의의 예가 다시 나온다. 이메일에서 일정을 뽑고(extract), 이모지를 고르고(pick_emoji), 캘린더에 넣는(add_to_calendar) 세 단계는 순서가 코드에 박혀 있으니 워크플로다. 반면 에이전트 그래프는 model 과 tools 사이를 오가는 고리 하나뿐이고, 몇 번 돌지는 모델이 관찰을 보고 정한다. 그래서 워크플로의 적응은 '프로그래머가 미리 짜 둔 분기·라우팅·반복'에 그치고, 에이전트는 실행할 때마다 제어 흐름 그래프가 달라진다. LangChain 블로그에서 가져온 스케치는 가로축에 자율성, 세로축에 예측 가능성을 두고 둘이 반비례함을 보여 준다. 예측 가능하다는 것은 곧 평가하고 최적화하기 쉽다는 뜻이기도 하다.",
+    "그렇다면 언제 무엇을 쓰나. 구조가 분명하고 반복되는 일은 워크플로가 싸고 안정적이다. 강의의 예로, 고객 지원 티켓이 들어오면 분류하고 해당 정책을 찾아 자동 답장 초안을 쓰는 일은 워크플로로 충분하다. 하지만 티켓의 문제를 실제로 해결해야 한다면 무엇이 원인인지 조사하고 도구를 이것저것 써 봐야 하므로 에이전트가 필요하다. 같은 업무 영역 안에서도 '답만 할지, 해결까지 할지'에 따라 답이 바뀐다는 점이 핵심이다. 그리고 표 아래 문장처럼 실제 시스템은 대개 둘을 섞는다. 바깥은 워크플로이고 그 한 단계가 에이전트이거나, 에이전트가 하위 작업으로 워크플로를 부르는 식이다.",
+    "노트 보충으로 판단 기준을 하나 더 붙이면, '단계를 미리 적을 수 있는가'를 물어보면 된다. 종이에 단계를 다 적을 수 있다면 그것을 코드로 옮기는 편이 거의 항상 싸고 디버깅하기 쉽다. 적을 수 없는 부분만 모델에게 맡기면 된다. 이 강의 전체가 그 감각을 키우는 연습이다 — 뒤에 나올 ReWOO·LLMCompiler 는 에이전트의 행동을 다시 워크플로로 '컴파일'하려는 시도이고, CodeAct 는 모델이 아예 작은 워크플로(프로그램)를 직접 써서 실행하게 하는 시도다."
+   ],
+   "diagram": {
+    "title": "제어 흐름의 위치로 나눈 세 칸",
+    "code": "flowchart LR\n  M[\"모델<br/>한 번의 호출, 부품\"] --- W[\"워크플로<br/>흐름은 코드가 쥔다<br/>예측↑ 평가 쉬움\"] --- A[\"에이전트<br/>흐름은 LLM 이 쥔다<br/>유연↑ 예측↓\"]"
+   },
+   "pitfalls": [
+    "'LLM 을 여러 번 부르면 에이전트'가 아니다. 호출이 열 번이어도 순서와 분기가 코드에 있으면 워크플로다.",
+    "에이전트가 더 '똑똑한' 설계라는 생각은 틀리다. 구조가 정해진 일에 에이전트를 쓰면 비용·지연·예측 불가능성만 늘어난다."
+   ],
+   "check": [
+    {
+     "q": "환불 요청 메일을 받으면 '주문번호 추출 → DB 조회 → 정책상 환불 가능하면 승인 메일, 아니면 거절 메일'을 보내는 시스템은 워크플로인가 에이전트인가?",
+     "a": "워크플로다. 분기 조건(정책상 가능 여부)을 코드가 판단하고 단계가 고정돼 있다. LLM 은 추출·메일 작성 칸만 채운다."
+    }
+   ]
+  },
+  {
+   "start": 400,
+   "title": "워크플로 패턴 ① — 프롬프트 체이닝·라우팅·병렬화(구획 나누기와 투표)",
+   "points": [
+    "Anthropic 의 「Building effective agents」 분류: 체이닝, 라우팅, 병렬화, 오케스트레이터-워커, 평가자-최적화자 다섯 가지.",
+    "체이닝: 큰 일을 여러 번의 호출로 쪼개고 중간에 게이트(코드의 if)를 둔다. 지연을 내주고 정확도를 산다.",
+    "라우팅: LLM 이 switch 문처럼 입력을 분류해 다른 모델·프롬프트·하위 워크플로로 보낸다. 쉬운 것은 작은 모델로 보내 돈과 시간을 아낀다.",
+    "병렬화: 구획 나누기(서로 독립인 일을 동시에 — 예: 안전 분류기와 답 생성을 함께)와 투표(같은 입력을 여러 번 풀어 다수결). 분기 여부는 LLM 이 아니라 코드가 정한다."
+   ],
+   "on_screen": "Workflow Design Patterns 목록 다섯 줄. Prompt Chaining 그림: In → LLM Call 1 → Output 1 → Gate → (Pass) LLM Call 2 → Output 2 → LLM Call 3 → Out, (Fail) Exit; 'Decompose a larger task into a series of smaller steps / Trades off latency for accuracy / Useful when a task is complicated…'. Routing 그림: In → LLM Call Router → LLM Call 1/2/3 → Out; 'Can also be used to save money/time (weaker model for easier cases)'. Parallelization 그림: In → LLM Call 1·2·3 → Aggregator → Out; Sectioning(예: 질의를 안전/위험으로 표시하면서 동시에 처리), Voting(inference-time scaling), 'Enables focusing each call on an individual aspect'. 출처 anthropic.com/engineering/building-effective-agents.",
+   "explain": [
+    "프롬프트 체이닝은 조립 라인이다. '이 메일에서 일정을 다 뽑고, 이모지를 고르고, 캘린더 명령을 불러라'를 한 프롬프트로 시킬 수도 있지만, 강의의 지난 예제는 이것을 '일정 추출'과 '이모지 고르기' 두 호출로 나눴다. 호출이 둘이면 대개 하나일 때보다 느리다(예외: 추론 없이 두 번 부르는 것이 추론을 켠 한 번보다 빠를 수는 있다). 그래도 나누는 이유는 각 호출이 한 가지에만 집중해 정확도가 오르고, 중간 결과를 코드가 검사할 수 있기 때문이다. 그림의 Gate 가 그 검사다 — 1단계 출력이 조건을 통과하면 다음 호출로, 아니면 그 자리에서 빠져나온다(Exit). 즉 체이닝은 지연을 정확도와 맞바꾸는 패턴이며, 과제가 복잡해 쪼개면 이득이 클 때 쓴다.",
+    "라우팅은 LLM 을 switch 문처럼 쓴다. 첫 호출이 입력을 분류하고, 분류 결과에 따라 서로 다른 모델이나 프롬프트, 또는 서로 다른 하위 워크플로로 보낸다. 메일이 일정에 관한 것인지 할 일에 관한 것인지 먼저 가르고 각각 다른 처리 흐름으로 보내는 식이다. 강의가 강조한 쓰임은 비용 절감이다. 수학 문제를 받으면 먼저 난이도를 판정해서 쉬운 문제는 3B 급 작은 모델에, 최전선 수준 문제는 가장 큰 모델에 보낸다. 대부분의 질문이 쉬운 서비스라면 평균 비용이 크게 떨어진다. 대신 라우터가 잘못 분류하면 어려운 문제가 작은 모델로 가서 틀리므로, 라우터의 정확도 자체를 따로 평가해야 한다.",
+    "병렬화는 두 갈래다. 구획 나누기(sectioning)는 서로 독립인 일을 동시에 돌리는 것이다. 챗봇이 질문에 답을 생성하는 동시에 별도 분류기가 '이 질문에 답해도 안전한가'를 판정하고, 위험하다고 나오면 이미 만든 답을 보여 주지 않는다. 안전 검사가 지연에 더해지지 않는다는 것이 핵심이다. LLM 심판으로 10개 항목짜리 채점표를 평가할 때 항목마다 따로 호출을 병렬로 돌리는 것도 같은 패턴이다 — 각 호출이 한 항목에만 집중하면서 전체 시간은 늘지 않는다. 투표(voting)는 같은 입력을 여러 번 풀어 집계기가 결론을 내는 방식으로, 수학 문제를 다섯 번 풀어 세 번 같은 답이 나오면 그것을 택한다. 이는 추론 시간에 계산을 더 써서 성능을 사는 방법(inference-time scaling)의 하나다.",
+    "라우팅과 병렬화의 차이를 강사가 짚었다. 라우팅은 갈 곳을 LLM 이 고르지만, 병렬화는 '늘 세 갈래로 나눈다'는 것이 코드에 미리 정해져 있다. 즉 분기를 누가 결정하느냐가 다르다. 다음 챕터의 오케스트레이터-워커는 여기서 한 걸음 더 나가 '몇 갈래로 나눌지'까지 LLM 이 정한다. 아래 식과 예제는 투표가 왜 효과가 있는지, 그리고 언제 효과가 없는지를 숫자로 보여 준다(노트 보충). 투표의 이득은 표들이 서로 독립적으로 틀릴 때만 나온다. 같은 모델을 같은 온도로 다섯 번 돌리면 같은 착각을 반복하는 경우가 많아, 실제 이득은 이 계산보다 작다. 그래서 Archon 같은 시스템은 서로 다른 모델을 섞는다."
+   ],
+   "formulas": [
+    {
+     "expr": "E[cost] = c_router + Σ_i p_i · c_i",
+     "meaning": "라우팅의 질의당 기대 비용. c_router 는 분류 호출 비용, p_i 는 입력이 i 번째 경로로 갈 비율, c_i 는 그 경로의 비용. 쉬운 입력의 비율이 클수록, 작은 모델이 쌀수록 이득이 크다."
+    },
+    {
+     "expr": "P_vote(n, p) = Σ_{k=⌊n/2⌋+1}^{n} C(n,k) · p^k · (1−p)^{n−k}",
+     "meaning": "한 번 풀 때 맞을 확률이 p 이고 n 번(홀수)의 시도가 서로 독립일 때 다수결이 맞을 확률. C(n,k) 는 n 개 중 k 개를 고르는 경우의 수. p>0.5 이면 n 이 늘수록 1 로, p<0.5 이면 0 으로 간다(콩도르세 배심원 정리)."
+    },
+    {
+     "expr": "A_chain = Π_j a_j ,  L_chain = Σ_j l_j",
+     "meaning": "체이닝의 정확도·지연(단계가 독립이라 가정). a_j 는 j 단계가 맞을 확률, l_j 는 그 단계의 지연. 단계를 나누면 각 a_j 가 올라가지만 곱해지고, 지연은 더해진다는 맞바꿈이 이 두 식에 들어 있다."
+    }
+   ],
+   "example": {
+    "title": "라우팅 비용과 다섯 표 다수결을 손으로",
+    "body": "라우팅: 질문의 70% 가 쉽고 30% 가 어렵다고 하자. 라우터 호출 $0.0001, 작은 모델 $0.0002, 최전선 모델 $0.01. 기대 비용 = 0.0001 + 0.7×0.0002 + 0.3×0.01 = 0.0001 + 0.00014 + 0.003 = $0.00324. 전부 최전선 모델로 보내면 $0.01 이니 약 68% 절감. 투표: p=0.6, n=5 일 때 3표 이상 맞을 확률 = C(5,3)·0.6³·0.4² + C(5,4)·0.6⁴·0.4 + 0.6⁵ = 10×0.216×0.16 + 5×0.1296×0.4 + 0.07776 = 0.3456 + 0.2592 + 0.0778 = 0.6826. 한 번(0.6)보다 8%p 오른다. 같은 계산으로 n=3 은 0.648, n=15 는 0.787. 체이닝: 한 번에 하면 정확도 0.80 인 일을 두 단계(각 0.95)로 나누면 0.95×0.95 = 0.9025, 대신 지연은 1.2초 → 0.8+0.8 = 1.6초."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 라우팅·병렬화(투표)·체이닝을 함수 조합으로 — LLM 은 규칙 기반 가짜(stub)\nfrom math import comb\ndef router_llm(q):            # 실제로는 작은 LLM 의 분류 호출\n    return \"hard\" if \"증명\" in q or len(q) > 40 else \"easy\"\ndef small_llm(q): return f\"[3B] {q} 답\"\ndef big_llm(q):   return f\"[frontier] {q} 답\"\nROUTES = {\"easy\": small_llm, \"hard\": big_llm}\ndef route(q): return ROUTES[router_llm(q)](q)          # LLM 이 고르는 switch 문\n\ndef chain(email):                                       # 프롬프트 체이닝 + 게이트\n    events = [s for s in email.split(\".\") if \"회의\" in s]   # 1단계: 일정 추출\n    if not events: return \"exit: 일정 없음\"                  # 게이트(if-else)는 코드가 판단\n    return [(\"📅\", e.strip()) for e in events]               # 2단계: 이모지 고르기\n\ndef vote_acc(p, n):           # 독립인 n 표 중 과반이 맞을 확률\n    return sum(comb(n, k) * p**k * (1-p)**(n-k) for k in range(n//2 + 1, n + 1))\n\nprint(route(\"2+3은?\"), \"|\", route(\"소수가 무한히 많음을 증명하라\"))\nprint(chain(\"내일 3시 회의. 점심은 김밥. 금요일 회의 취소\"))\nfor n in (1, 3, 5, 15): print(f\"p=0.6, n={n:2d} -> 다수결 정확도 {vote_acc(0.6, n):.3f}\")\ncost = 0.0001 + 0.7 * 0.0002 + 0.3 * 0.01               # 라우터 + 쉬운 70% + 어려운 30%\nprint(f\"라우팅 기대 비용 ${cost:.5f} vs 전부 frontier $0.01000\")",
+    "note": "직접 실행함. LLM 자리는 모두 규칙으로 흉내 낸 가짜(stub)다 — 패턴의 '모양'과 투표·비용 계산을 보이는 것이 목적이다. 출력: 라우팅이 짧은 질문은 [3B], 증명 문제는 [frontier] 로 보내고, 다수결 정확도 0.600 → 0.648 → 0.683 → 0.787, 기대 비용 $0.00324."
+   },
+   "diagram": {
+    "title": "세 패턴의 모양",
+    "code": "flowchart LR\n  subgraph 체이닝\n    I1[입력] --> L1[LLM 1] --> G{게이트} -->|통과| L2[LLM 2] --> O1[출력]\n    G -->|실패| X[종료]\n  end\n  subgraph 라우팅\n    I2[입력] --> R[LLM 라우터] -.-> S[작은 모델]\n    R -.-> B[큰 모델]\n  end\n  subgraph 병렬화\n    I3[입력] --> P1[LLM a] --> AG[집계기]\n    I3 --> P2[LLM b] --> AG\n    I3 --> P3[LLM c] --> AG\n  end"
+   },
+   "pitfalls": [
+    "투표의 이득 계산은 시도들이 독립이라는 가정 위에 있다. 같은 모델·같은 프롬프트의 표는 상관이 커서 실제 이득이 작다.",
+    "라우팅의 절감은 라우터 오분류 비용을 빼야 한다. 어려운 문제가 작은 모델로 가 틀리면 그 손해가 절감액보다 클 수 있다.",
+    "병렬 구획 나누기로 안전 분류기를 돌릴 때, 생성된 답을 분류기 결과보다 먼저 사용자에게 흘려보내면(스트리밍) 막는 의미가 없다."
+   ],
+   "check": [
+    {
+     "q": "한 번 정답률이 0.4 인 모델로 다섯 표 다수결을 하면 정확도는 오르나 내리나?",
+     "a": "내린다. p<0.5 이면 다수결은 틀린 쪽으로 수렴한다. 계산하면 P=10×0.064×0.36+5×0.0256×0.6+0.01024 ≈ 0.317 로 0.4 보다 낮다."
+    },
+    {
+     "q": "라우팅과 병렬화(구획 나누기)를 가르는 기준은?",
+     "a": "분기를 누가 정하느냐. 라우팅은 LLM 이 입력을 보고 한 경로를 고르고, 병렬화는 코드가 늘 정해진 여러 갈래로 동시에 보낸다."
+    }
+   ]
+  },
+  {
+   "start": 720,
+   "title": "워크플로 패턴 ② — 오케스트레이터-워커와 평가자-최적화자, 그리고 피드백 고리가 성립하는 두 조건",
+   "points": [
+    "오케스트레이터-워커: 한 LLM 이 실행 중에 과제를 몇 개의 하위 과제로 나눌지 정하고 워커 LLM 들에 맡긴 뒤 합성기가 모은다. 하위 과제의 수와 성격을 미리 알 수 없을 때 쓴다.",
+    "병렬화와 모양은 같지만 갈래 수가 동적이라는 점이 다르다(예: '포토샵을 처음부터 만들어라' → UI, 색 선택기 … 를 나눠 맡김).",
+    "평가자-최적화자: 생성기가 답을 내고 평가자가 피드백을 주면 받아들일 때까지 고리를 돈다.",
+    "성립 조건 둘: (1) 무엇이 좋고 나쁜지 말로 분명히 할 수 있어야 하고 (2) LLM(또는 외부 검증기)이 그 피드백을 줄 능력이 있어야 한다. 생성기가 피드백으로 실제로 나아질 수 있어야 한다는 것도 슬라이드에 있다."
+   ],
+   "on_screen": "Orchestrator-Workers 그림: In → Orchestrator ⇢ LLM Call 1·2·3 ⇢ Synthesizer → Out; 'One LLM dynamically breaks down tasks and delegates to worker LLMs / Useful when it is difficult to anticipate the nature and number of subtasks needed / Similar to parallelization but in this case the subtasks are dynamically created.' Evaluator-Optimizer 그림: In → LLM Call Generator —Solution→ LLM Call Evaluator —Accepted→ Out, Evaluator —Rejected + Feedback→ Generator; 'Two necessary conditions: (1) Clear articulable feedback and (2) an LLM is capable of providing that feedback. Also important that the generator can improve based on the feedback.'",
+   "explain": [
+    "오케스트레이터-워커는 프로젝트 관리자와 팀원의 관계다. 관리자는 일을 받고 나서야 '이번 일은 다섯 조각으로 나누자'고 정하고, 조각마다 담당자에게 맡긴 뒤 결과를 모아 하나로 합친다. 앞 챕터의 병렬화와 그림은 거의 같지만, 병렬화는 '늘 세 갈래'가 코드에 박혀 있고 오케스트레이터는 실행 시점에 몇 갈래로 나눌지를 LLM 이 정한다는 점이 다르다. 강사의 예는 '포토샵을 처음부터 만들어라' 같은 거대한 코딩 과제다. UI, 색 선택기, 레이어, 파일 입출력 … 몇 조각이 필요한지는 과제를 읽어 봐야 안다. 그래서 하위 과제의 수와 성격을 미리 예측하기 어려울 때 이 패턴이 맞는다. 워커를 단순 LLM 호출 대신 서브에이전트로 두면 그대로 멀티에이전트 시스템의 한 형태가 된다(멀티에이전트는 8강).",
+    "평가자-최적화자는 글쓴이와 편집자의 관계다. 생성기 LLM 이 초안을 내면 평가자 LLM 이 읽고 '통과' 또는 '반려 + 이유'를 준다. 반려되면 생성기가 피드백을 반영해 다시 쓰고, 통과할 때까지(또는 횟수 상한까지) 고리를 돈다. 이 고리가 실제로 품질을 올리려면 조건이 있다. 첫째, 무엇이 좋고 나쁜지를 말로 분명히 표현할 수 있어야 한다. '이 번역은 존댓말이 섞였다'는 분명한 피드백이지만, '왠지 별로'는 고칠 방향을 주지 못한다. 둘째, LLM 이 그런 피드백을 줄 능력이 있어야 한다. 강사의 예로 사용자 개인의 취향처럼 모델이 잘 모르는 기준이라면 LLM 평가자 대신 사람을 고리에 넣는 설계를 고민해야 한다. 슬라이드는 셋째로 생성기가 피드백을 받아 실제로 나아질 수 있어야 한다고 덧붙인다.",
+    "평가자 자리에 반드시 LLM 이 앉을 필요는 없다. 강사는 외부 검증기도 가능하다고 말했다 — 코드라면 단위 테스트, 수학이라면 정답 검사기, 형식이라면 스키마 검사기가 더 믿을 만한 평가자다. 이 점은 뒤의 Reflexion·CRITIC 챕터에서 '스스로 반성하는 것보다 외부 신호가 낫다'는 결과로 다시 확인된다. 또 질의응답에서 나온 변형으로, 평가자를 더 큰 모델로 두고 작은 모델의 작업을 감독하게 할 수도 있다. 작은 생성기를 여러 번 돌리고 큰 평가자를 가끔 부르면 큰 모델만 쓰는 것보다 쌀 수 있다는 계산이다.",
+    "두 패턴 모두 멈춤 조건이 설계의 절반이다(노트 보충). 오케스트레이터가 하위 과제를 무한히 쪼개거나, 평가자가 끝없이 반려하면 비용이 폭주한다. 그래서 실제 구현에는 최대 워커 수, 최대 반복 횟수, 그리고 '나아지지 않으면 멈춘다'(직전 점수보다 안 오르면 종료) 같은 규칙이 붙는다. 아래 예제는 평가자 고리를 비용 기대값으로 따져 본다."
+   ],
+   "formulas": [
+    {
+     "expr": "E[호출 수] = Σ_{k=1}^{K} (1−q)^{k−1} · 2",
+     "meaning": "평가자-최적화자 고리에서 한 번 시도가 통과할 확률이 q 이고 최대 K 회 돌 때의 기대 호출 수(생성 1 + 평가 1 = 2 호출/회). (1−q)^{k−1} 은 k 번째 회차까지 갈 확률. q 가 낮으면 거의 K 회를 다 쓴다."
+    }
+   ],
+   "example": {
+    "title": "통과율 0.5, 최대 3회의 고리 비용",
+    "body": "k=1 회차는 반드시 돈다(확률 1), k=2 는 첫 회 반려 확률 0.5, k=3 은 0.25. 기대 회차 = 1 + 0.5 + 0.25 = 1.75, 회차당 2 호출이므로 기대 호출 3.5 번. 세 번 다 반려될 확률 0.125 — 이 경우는 상한에 걸려 마지막 초안을 그대로 쓰거나 사람에게 넘긴다. 통과율이 0.9 라면 1 + 0.1 + 0.01 = 1.11 회차, 2.22 호출로 거의 한 번에 끝난다. 즉 이 패턴의 비용은 생성기의 첫 시도 품질에 크게 좌우된다."
+   },
+   "diagram": {
+    "title": "오케스트레이터-워커와 평가자-최적화자",
+    "code": "flowchart LR\n  IN[입력] --> OR[오케스트레이터 LLM<br/>몇 조각으로 나눌지 결정]\n  OR -.-> W1[워커 1]\n  OR -.-> W2[워커 2]\n  OR -.-> WN[워커 n]\n  W1 & W2 & WN -.-> SY[합성기] --> OUT[출력]\n  G[생성기] -->|초안| EV{평가자}\n  EV -->|반려 + 피드백| G\n  EV -->|통과| F[최종]"
+   },
+   "pitfalls": [
+    "오케스트레이터-워커를 '병렬화의 다른 이름'으로 보면 안 된다. 갈래 수가 실행 중에 정해지므로 비용 상한(최대 워커 수)을 따로 걸어야 한다.",
+    "평가 기준을 말로 못 쓰는 과제(미적 취향 등)에 LLM 평가자 고리를 붙이면 점수만 흔들리고 품질은 그대로다."
+   ],
+   "check": [
+    {
+     "q": "평가자-최적화자 패턴이 효과를 내기 위한 두 필수 조건은?",
+     "a": "(1) 무엇이 좋고 나쁜지 명확히 말할 수 있는 피드백이 존재하고 (2) LLM(또는 외부 검증기)이 그 피드백을 실제로 줄 수 있어야 한다. 덧붙여 생성기가 피드백으로 개선될 수 있어야 한다."
+    }
+   ]
+  },
+  {
+   "start": 880,
+   "title": "조합 사례 ① STORM — 위키백과 문서를 쓰는 워크플로를 패턴으로 읽기",
+   "points": [
+    "실제 시스템은 기본 패턴의 조합이다. STORM(2024)은 주제 하나를 받아 인용이 달린 위키백과식 장문 기사를 쓴다.",
+    "흐름: 관련 문서 조사 → 관점(지진학자·정치인·주민 …) 발굴 → 관점마다 '작가-전문가' 질의응답 대화 → 대화를 모아 개요 → 기사.",
+    "패턴 읽기: 관점 수를 LLM 이 정하므로 오케스트레이터-워커(병렬화에 가깝다는 단서 포함), 질문-답 고리는 대략 평가자-최적화자, 조사→개요는 체이닝, '바로 초안 개요' 가지와 '대화' 가지를 늘 함께 돌리니 병렬화.",
+    "결과: 사람이 쓴 기사와의 ROUGE·개체 재현율, LLM 채점 모두 STORM 이 기준선보다 높다. 개요 단계를 빼면 크게 떨어진다."
+   ],
+   "on_screen": "STORM 개요 그림: Topic t → ① Survey(Related Articles) → ② Identify Perspectives(P) → Wikipedia Writer ③ Read & Ask ⇄ Expert ④ Split Queries ⑤ Search & Sift ⑥ Synthesize(Question q / Answer a, Add Trusted Sources) → Gather → Conversations {C0…CN} → ⑧ Refine → Outline O, 그리고 ⑦ Direct Generate → Draft Outline O_D. 빨간 주석: Orchestrator-Workers*(*This is close to parallelization in this instance), Approximately 'Evaluator-Optimizer', Prompt Chaining, Parallelization. 결과 표(Table 2): Direct Gen ROUGE-1 25.62 / ROUGE-L 12.63 / Entity Recall 5.08 / Interest 2.87 / Organization 4.60 / Relevance 3.10 / Coverage 4.16; RAG 28.52/13.18/7.57/3.14/4.22/3.05/4.08; oRAG 44.26/16.51/12.57/3.90/4.79/4.09/4.70; STORM 45.82/16.70/14.10/3.99/4.82/4.45/4.88; w/o Outline Stage 26.77/12.77/7.39/3.33/4.87/3.35/4.37 (1~5점 채점).",
+   "explain": [
+    "지금까지의 패턴은 장난감 예제로 설명됐지만, 실제 시스템은 이 부품들을 여러 겹으로 조립한 것이다. 강의는 그 예로 Stanford 의 STORM 을 든다. 사용자가 '2024년 화롄 지진에 대해 알고 싶다'고 하면 STORM 은 목차를 만들고, 웹에서 자료를 조사해, 인용과 참고문헌이 달린 위키백과 길이의 기사를 써 준다. 단계를 미리 적을 수 있는 일이라 워크플로가 맞지만, LLM 호출 한 번으로는 안 되는 크기다.",
+    "흐름을 따라가 보자. 먼저 주제와 관련된 기존 문서를 찾아 훑어보고(survey), 그 문서들에서 '이 주제를 어떤 관점에서 볼 수 있나'를 뽑는다 — 지진학자, 지질학자, 정치인, 도시 주민 같은 관점이다. 그다음 관점마다 '위키백과 작가' 역할의 LLM 이 그 관점에서 궁금한 질문을 던지고, '전문가' 역할의 LLM 이 질문을 쪼개 검색하고 믿을 만한 출처를 골라 답한다. 이 질문-답이 여러 번 오가 대화가 되고, 대화들(C0…CN)을 모아 개요를 다듬는다. 동시에 다른 가지에서는 주제만 보고 곧바로 초안 개요를 만든다. 마지막으로 다듬은 개요와 모은 참고문헌으로 기사를 쓴다. 질의응답에서 나온 세부: 대화 길이 상한은 하이퍼파라미터이고, 작가 역할이 '질문에 답해 주셔서 고맙습니다'라고 말하면 스스로 고리를 끝내게 프롬프트가 짜여 있으며, 너무 길어지면 강제로 끊는다. 웹 검색은 실제로 한다.",
+    "이제 패턴 이름표를 붙인다. 관점을 몇 개 만들지는 코드가 아니라 LLM 이 주제를 보고 정한다(코드에는 최댓값만 있다). 각 관점이 독립적으로 자기 대화를 진행하므로 오케스트레이터-워커다 — 다만 슬라이드의 별표처럼 이 경우는 병렬화에 꽤 가깝다. 작가가 질문하고 전문가가 답하고 그 답을 보고 다음 질문을 하는 고리는 '평가자가 피드백을 준다'와 정확히 같지는 않지만 출력→피드백→다음 출력의 구조라 대략 평가자-최적화자다. 조사 → 관점 → 개요로 이어지는 순서는 체이닝이고, '바로 초안' 가지와 '대화' 가지를 언제나 둘 다 돌리는 것은 코드가 정한 병렬화다. 한 학생이 '오른쪽의 복잡한 과정 없이 왼쪽의 바로 생성만 해도 개요는 나오지 않느냐'고 물었고, 강사는 결과 표가 답이라고 했다 — 다양한 관점을 거치면 기사가 훨씬 풍부해진다.",
+    "결과 표를 읽어 보자. 사람이 쓴 실제 위키백과 기사와 겹치는 정도(ROUGE-1)는 바로 생성(Direct Gen) 25.62, 검색 증강(RAG) 28.52, 사람이 실제로 쓴 참고문헌을 준 oRAG 44.26, STORM 45.82 다. 개체 재현율(기사에 나와야 할 고유명사를 얼마나 담았나)은 5.08 → 7.57 → 12.57 → 14.10 으로, STORM 이 정답 참고문헌을 받은 oRAG 보다도 높다. LLM 이 1~5점으로 매긴 채점에서도 흥미도 3.99, 관련성 4.45, 포괄성 4.88 로 가장 높다. 그리고 개요 단계를 뺀 STORM 은 ROUGE-1 이 26.77 로 바로 생성과 비슷하게 주저앉는다 — 개요(그리고 그 개요를 만든 대화)가 성능의 핵심이라는 뜻이다. 질의응답에서는 '관점마다 대화 깊이가 다르지 않으냐', '큰 모델이 작은 모델의 답을 감독하면 어떠냐'는 지적도 나왔다. 강사는 STORM 이 감독 LLM 을 두지는 않았고(이미 비싼 시스템이라), 그렇게 하려면 평가자-최적화자 고리를 하나 더 얹으면 된다고 답했다."
+   ],
+   "example": {
+    "title": "STORM 의 LLM 호출 수를 어림해 보기(노트 보충, 가정값)",
+    "body": "관점 N=5, 관점당 대화 R=4 라운드라고 하자. 한 라운드 = 작가 질문 1 + 전문가 쿼리 분해 1 + 답 종합 1 = 3 호출(검색 자체는 LLM 호출이 아니다). 대화 비용 5×4×3 = 60 호출. 여기에 관점 발굴 1, 초안 개요 1, 개요 다듬기 1, 기사 절(section) 작성을 8절이라 하면 8 → 총 약 71 호출. 바로 생성은 1~2 호출이니 30배 이상 비싸다. 대신 관점 5개의 대화는 서로 독립이라 병렬로 돌리면 지연은 '가장 긴 대화 하나'(4×3=12 호출 길이)에 가깝다. 이것이 오케스트레이터-워커를 쓰는 실익이다."
+   },
+   "diagram": {
+    "title": "STORM 에 패턴 이름표 붙이기",
+    "code": "flowchart LR\n  T[주제] --> S[관련 문서 조사] --> P[관점 발굴<br/>수는 LLM 이 결정]\n  P --> C1[관점1 대화<br/>작가⇄전문가]\n  P --> C2[관점2 대화]\n  P --> CN[관점N 대화]\n  T --> D[바로 초안 개요]\n  C1 & C2 & CN --> R[개요 다듬기]\n  D --> R --> A[기사 작성]\n  classDef note fill:#fff3,stroke:#c33\n  class P,C1,C2,CN note"
+   },
+   "pitfalls": [
+    "패턴 분류는 칼같이 떨어지지 않는다. 강사도 '대략', '병렬화에 가깝다'는 단서를 달았다. 이름표보다 '갈래 수를 누가 정하나, 고리를 누가 끊나'를 보는 것이 중요하다.",
+    "표의 Interest·Organization 등은 LLM 이 1~5점으로 매긴 점수다. Organization 은 개요 없는 판(4.87)이 STORM(4.82)보다 오히려 높으니 모든 지표에서 이긴 것은 아니다."
+   ],
+   "check": [
+    {
+     "q": "STORM 에서 '관점 발굴'이 단순 병렬화가 아니라 오케스트레이터-워커로 분류되는 이유는?",
+     "a": "관점(=갈래)의 수와 내용을 프로그램이 미리 정하지 않고 LLM 이 주제를 보고 실행 중에 정하기 때문이다(코드에는 최대치만 있다)."
+    },
+    {
+     "q": "개요 단계를 뺀 STORM 의 ROUGE-1 이 26.77 로 떨어졌다는 것은 무엇을 말하나?",
+     "a": "관점별 대화로 모은 정보가 개요를 통해 구조화돼야 기사에 반영된다는 것 — 성능의 대부분이 개요(와 그 재료인 대화)에서 나온다."
+    }
+   ]
+  },
+  {
+   "start": 1500,
+   "title": "조합 사례 ② Archon — 추론 시간 기법을 부품으로, 워크플로 구조를 자동으로 찾기",
+   "points": [
+    "입력: 목표 벤치마크, 추론 호출 예산, 쓸 수 있는 LLM 목록, 추론 시간 기법(부품) 목록. 베이지안 최적화로 구조 후보를 만들고 벤치마크에서 재며 고친다.",
+    "부품: Generator(1호출/후보), Fuser(여러 후보를 하나로), Critic(후보별 장단점), Ranker(상위 K), Verifier(2호출 — 검토 후 고쳐 쓰기), Unit Test Generator/Evaluator.",
+    "수학용으로 찾은 구조: 4개 모델 × 5샘플 = 20후보 → Claude 3.5 Sonnet 비평 → 순위 → 묶음별 융합 → GPT-4o 검증 → 마지막 융합.",
+    "토큰 예산을 늘릴수록 더 복잡한 구조를 찾고, 어느 예산을 넘으면 당시 최전선 o1 을 넘는다. 생성기들의 답이 다양해야 전체가 산다."
+   ],
+   "on_screen": "Archon: An Architecture Search Framework for Inference-Time Techniques — Inputs(Target Benchmark(s), Inference Call Budget, Available LLMs, Inference-Time Techniques: Generator, Fuser, Critic, Ranker, Verifier, Unit Test Generator, Unit Test Evaluator) → Optimizer(Architecture Optimizer (Hyperparameter Selection) ⇄ Proposed Archon Architecture ⇄ Sample Benchmark Results) → Outputs(Optimized Archon Architecture). 표: Generator 1 call per cand., Fuser 1 call per output, Critic 1 call, Ranker 1 call, Verifier 2 calls per cand.(Reasoning Tasks), Unit Test Generator 1 call. Figure 15 All-Source Archon Architecture for Math: Generator(GPT-4o, Llama 3.1 405B, Qwen 2.5 72B, WizardLM 8x22B, n=5 samples each) → Critic(Claude 3.5 Sonnet) → Ranker(Claude 3.5 Sonnet) → Fuser ×4 → Verifier(GPT-4o) → Fuser(Claude 3.5 Sonnet) → Output. Figure 1: 가로축 Max Input/Output Token Budget 10K~100K, 세로축 Score(%) 40~80, Archon 이 약 53 에서 75 근처까지 오르며 점선 O1(약 68)을 넘는다; AFlow·ADAS·MoA 는 그 아래.",
+   "explain": [
+    "STORM 이 사람이 손으로 조립한 워크플로라면, Archon 은 '조립 자체를 자동으로 하자'는 연구다. 레고 블록 상자(추론 시간 기법), 쓸 수 있는 블록 색깔(여러 LLM), 블록을 쓸 수 있는 개수(호출 예산), 그리고 완성품을 평가할 시험(벤치마크)을 주면, 탐색 알고리즘이 조립도를 여러 개 시험해 보고 점수가 가장 좋은 조립도를 내놓는다. 탐색은 베이지안 최적화로 한다 — 이전에 시험한 구조들의 점수로 '다음엔 어떤 구조가 좋을지'를 추정해 고르는 방법이다(세부 알고리즘은 강의에서 생략).",
+    "블록의 종류가 곧 앞 챕터 패턴들의 부품판이다. Generator 는 질문을 받아 답 후보를 하나 만든다(후보당 1호출). Fuser 는 여러 후보를 읽고 추론해 하나의 답으로 합친다 — 집계기 역할이다. Critic 은 후보마다 강점과 약점을 적는다 — 평가자-최적화자의 평가자다. Ranker 는 후보들을 맞을 가능성 순으로 줄 세운다. Verifier 는 답을 검토해 맞는지 이유를 대고, 틀렸다고 보면 고쳐 쓴다(그래서 후보당 2호출). Unit Test Generator 는 '간결해야 한다', '설명이 충분해야 한다' 같은 통과 조건을 만들고 Unit Test Evaluator 가 그것으로 후보를 판정한다. 질의응답: 이 부품들은 따로 학습한 모델이 아니라 기성 LLM 에 프롬프트를 달리 준 것이다. 또 '순위 매기기를 LLM 이 잘하느냐'는 질문에 강사는 몇 개는 잘하지만 천 개를 줄 세우게 하면 확실히 실패한다고 답했다.",
+    "수학 문제용으로 탐색이 찾은 구조가 흥미롭다. GPT-4o, Llama 3.1, Qwen 2.5, WizardLM 네 모델이 각각 다섯 개씩 답을 만들어 후보 20개가 생긴다. Claude 3.5 Sonnet 이 20개 모두에 장단점 비평을 달고, 같은 모델이 순위를 매긴다. 그 뒤 상위 후보들을 묶음으로 나눠 네 개의 Fuser 가 각 묶음을 하나로 합치고(그림 속 모델 이름은 그 융합을 맡은 모델이지, 그 모델의 출력만 합친다는 뜻이 아니다), GPT-4o 가 검증·수정하고, 마지막 Fuser 하나가 최종 답을 낸다. 강사의 단서 둘: 자기는 이것을 '수학은 이렇게 풀어야 한다'는 권고로 보여 주는 게 아니라 워크플로를 자동 최적화할 수 있다는 예로 보여 준다는 것, 그리고 이 논문이 수학·코드로 평가했지만 오히려 단계가 잘 정의된 실무 워크플로에 더 어울린다고 본다는 것이다(강사 의견).",
+    "질의응답에서 나온 두 가지 위험도 기억할 만하다. 첫째, 생성기들의 답이 다양하지 않으면 비평·순위·융합이 할 일이 없어 전체 구조가 무너진다. 그래서 탐색 과정이 서로 다르게 답하는 모델들을 골랐다. 둘째, 어떤 생성기가 끝없이 추론하며 답을 내지 않으면 그 후보는 버리는 수밖에 없다 — 파이프라인은 각 단계가 언젠가 답을 낸다는 가정 위에 있다. 결과 그래프에서 예산(최대 입출력 토큰)을 1만에서 10만으로 늘리면 Archon 이 더 복잡한 구조를 찾아내 점수가 약 53 에서 75 근처로 오르고, 어느 지점부터 점선으로 표시된 o1 을 넘는다. 같은 예산에서 다른 자동 설계 방법(AFlow, ADAS)과 여러 모델 섞기(MoA)보다 높다. 이것은 '추론 시간 계산을 더 쓰면 더 좋은 답'이라는 흐름의 한 사례다."
+   ],
+   "formulas": [
+    {
+     "expr": "C_arch = Σ_{부품 b} calls(b) ,  예: 4·5 + 20 + 1 + 4 + 2·k + 1",
+     "meaning": "구조 하나의 질의당 LLM 호출 수. calls(b) 는 부품의 호출 수(Generator 는 후보당 1, Verifier 는 후보당 2 …). 탐색은 이 값(또는 토큰 수)이 예산을 넘지 않는 구조 중 벤치마크 점수가 가장 높은 것을 찾는 제약 최적화다."
+    }
+   ],
+   "example": {
+    "title": "Figure 15 구조의 호출 수를 세기(Critic 을 후보당 1호출로 가정)",
+    "body": "Generator 4모델×5샘플 = 20호출. Critic 이 후보 20개를 한 호출에 다 보면 1, 후보마다 따로면 20 — 여기서는 후보마다라고 가정해 20. Ranker 1. Fuser 4개 = 4. Verifier 는 융합된 4개 답에 각 2호출 = 8. 마지막 Fuser 1. 합계 20+20+1+4+8+1 = 54호출. 질문당 한 번 부르는 o1 과 비교하면 호출이 50배를 넘는다. 그래서 그래프 가로축이 '토큰 예산'이다 — 같은 정확도를 어느 비용에 얻는지가 진짜 비교 기준이고, 예산이 작을 때(1만 토큰) Archon 은 o1 보다 낮다."
+   },
+   "diagram": {
+    "title": "수학용 Archon 구조(Figure 15)",
+    "code": "flowchart LR\n  Q[문제] --> G1[GPT-4o ×5]\n  Q --> G2[Llama 3.1 ×5]\n  Q --> G3[Qwen 2.5 ×5]\n  Q --> G4[WizardLM ×5]\n  G1 & G2 & G3 & G4 --> C[Critic<br/>장단점] --> R[Ranker<br/>순위]\n  R --> F1[Fuser] & F2[Fuser] & F3[Fuser] & F4[Fuser]\n  F1 & F2 & F3 & F4 --> V[Verifier<br/>GPT-4o] --> FF[최종 Fuser] --> A[답]"
+   },
+   "pitfalls": [
+    "그림의 Fuser 아래 적힌 모델 이름은 '그 융합을 수행한 모델'이다. 그 모델의 생성 결과만 합친다는 뜻으로 읽으면 틀린다(강사가 질의응답에서 정정).",
+    "o1 을 넘었다는 결과는 큰 토큰 예산에서만이다. 예산을 맞추지 않은 비교는 공정하지 않다."
+   ],
+   "check": [
+    {
+     "q": "Archon 의 생성기 후보들이 거의 같은 답만 낸다면 어떤 문제가 생기나?",
+     "a": "비평·순위·융합 단계가 고를 거리가 없어져 추가 호출이 비용만 늘리고 정확도는 오르지 않는다. 다양성이 이 구조의 전제다."
+    }
+   ]
+  },
+  {
+   "start": 1980,
+   "title": "ReAct 다시 보기 — '행동 전에 생각한다', 그리고 프롬프트보다 파인튜닝이 효과적이었던 원 논문의 발견",
+   "points": [
+    "에이전트 고리(LLM 호출 → 환경과 상호작용 → 피드백 → 멈출지 LLM 이 결정)에서 설계할 것은 '모델이 어떻게 추론하고 환경과 상호작용하나'이다.",
+    "ReAct = 에이전트판 생각의 사슬(CoT): 생각(Thought) → 행동(Action) → 관찰(Observation)을 되풀이. Apple Remote 질문에서 그냥 답·CoT·행동만은 틀리고 ReAct 만 맞힌다.",
+    "원 논문의 반전: 프롬프트만으로는 PaLM-540B 같은 큰 모델에서 ReAct 가 다른 방법보다 나쁘기도 했지만, ReAct 궤적으로 파인튜닝하면 가장 좋아졌다. 오늘날 에이전트용 사후학습이 표준이 된 배경.",
+    "생각을 넣는 효과: PaLM-540B 프롬프트에서 Act 25.7 → ReAct 27.4(HotpotQA EM), 58.9 → 60.9(Fever 정확도)."
+   ],
+   "on_screen": "ReAct: Reason + Act 그림 — (1) Hotpot QA 질문 'Aside from the Apple Remote, what other device can control the program Apple Remote was originally designed to interact with?' (1a) Standard: iPod ✗ (1b) CoT: 'Apple TV … iPhone, iPad, iPod Touch' ✗ (1c) Act-Only: Search[Apple Remote] … Finish[yes] ✗ (1d) ReAct: Thought 1 → Act 1 Search[Apple Remote] → Obs 1 'Front Row media center' → Thought 2 → Search[Front Row] → Obs 'Could not find [Front Row]. Similar: …' → Thought 3 → Search[Front Row (software)] → Obs 'controlled by an Apple Remote or the keyboard function keys' → Finish[keyboard function keys] ✓. 'ReAct: Finetuning for Agents' 막대그래프 두 개(learning=prompt / learning=finetune, 8b·62b·540b, Standard·CoT·Act·ReAct, 세로축 HotpotQA EM 0~30): 프롬프트에서는 540b 의 ReAct 가 CoT 보다 낮고, 파인튜닝에서는 62b ReAct 가 30 을 넘어 가장 높다. 'Now fine-tuning models to act as agents is common practice during post-training.' Table 1 PaLM-540B prompting: Act 25.7 / 58.9, ReAct 27.4 / 60.9.",
+   "explain": [
+    "워크플로에서는 순서를 우리가 짰지만, 에이전트에서는 고리 하나만 짜 두고 그 안에서 무엇을 할지는 모델이 정한다. 그러면 설계해야 할 것은 '모델이 매 턴 어떤 형식으로 생각하고 어떤 형식으로 행동하나'가 된다. 첫 패턴 ReAct 는 1강에서 역사적으로 한 번 소개됐지만, 강사는 오늘날 대부분의 에이전트가 여전히 이 위에 서 있어서 다시 다룬다고 했다. 아이디어는 단순하다. 행동하기 전에 생각을 글로 쓰게 한다. 생각의 사슬(CoT)이 '답하기 전에 생각하기'였다면 ReAct 는 '도구를 부르기 전에 생각하기'다. 강사의 평대로 돌이켜 보면 당연하지만, 좋은 아이디어는 대개 그렇다.",
+    "강의 슬라이드의 예를 따라가 보자. 질문은 'Apple Remote 말고, Apple Remote 가 원래 조작하려고 만든 프로그램을 조작할 수 있는 다른 장치는?'이다. 그냥 물으면 모델은 iPod 이라고 틀리게 답한다. CoT 로 생각하게 하면 그럴듯한 추론 끝에 iPhone·iPad 같은 엉뚱한 목록을 낸다(1강의 분석처럼 환각이 문제다). 행동만 하게 하면 검색은 하지만 무엇을 찾았는지 정리하지 못해 엉뚱한 답으로 끝난다. ReAct 는 '먼저 Apple Remote 가 무엇을 조작하려 했는지 찾아야 한다'고 생각하고 검색해 Front Row 미디어 센터라는 관찰을 얻는다. 'Front Row' 로 다시 검색하니 그런 문서가 없고 비슷한 제목 목록이 돌아온다. 그러자 '소프트웨어 쪽 Front Row 를 찾아야겠다'고 생각을 고쳐 'Front Row (software)' 를 검색하고, 'Apple Remote 나 키보드 기능 키로 조작한다'는 관찰에서 정답(키보드 기능 키)을 낸다. 실패한 관찰을 보고 다음 행동을 고치는 것이 핵심이다.",
+    "원 논문에서 강사가 일부러 짚은 반전이 있다. 프롬프트에 예시를 넣어 ReAct 를 시키는 방식(in-context learning)으로는, 모델을 540B 까지 키우면 ReAct 가 다른 기준선보다 오히려 나빴다. 모델이 이미 파라미터 속 지식으로 답할 수 있는 HotpotQA 의 특성 탓도 있을 것이라고 강사는 덧붙였다. 그런데 ReAct 형식의 궤적으로 모델을 파인튜닝하자 상황이 뒤집혀 ReAct 가 가장 좋아졌다(오른쪽 그래프에서 62B 의 ReAct 막대가 30 을 넘는다). 이 발견이 오늘의 관행으로 이어졌다 — 지금의 최신 모델들은 사후학습 단계에서 에이전트처럼 행동하도록 따로 훈련받으므로, 우리가 쓰는 모델이 ReAct 식 고리에 능숙한 것은 놀라운 일이 아니다.",
+    "생각을 먼저 쓰는 것 자체의 효과는 작은 표가 보여 준다. 같은 PaLM-540B 에 프롬프트로 행동만 시키면 HotpotQA 정확 일치(EM) 25.7, Fever(사실 검증) 정확도 58.9 이고, 행동 앞에 생각을 넣으면 27.4 와 60.9 로 오른다. 큰 차이는 아니지만 일관되게 오른다. 강사는 행동 전에 생각을 넣는 것이 지금도 매우 흔한 설계라고 정리했다. 오늘날에는 이 '생각'이 모델의 추론(reasoning) 토큰으로 들어가 있어 우리가 프롬프트로 강제할 필요가 줄었을 뿐이다. 아래 코드는 이 고리를 가짜 LLM 으로 그대로 재현한다 — 실제 하네스가 하는 일은 출력 파싱, 도구 실행, 관찰 덧붙이기, 단계 상한 이 네 가지가 전부라는 것을 보이려는 것이다."
+   ],
+   "formulas": [
+    {
+     "expr": "τ = (q, t₁, a₁, o₁, t₂, a₂, o₂, …, t_n, a_n=finish[y])",
+     "meaning": "ReAct 궤적. q 는 질문, t_i 는 i 번째 생각(환경을 바꾸지 않는 내부 행동), a_i 는 도구 호출, o_i 는 그 결과 관찰, y 는 최종 답. 매 턴 모델 입력은 q 부터 o_{i−1} 까지 전부다."
+    },
+    {
+     "expr": "a_i ~ π(· | q, t₁, a₁, o₁, …, o_{i−1}, t_i)",
+     "meaning": "행동은 생각 t_i 를 쓴 뒤에 그것을 조건으로 뽑힌다. π 는 LLM 이 정한 정책(다음 토큰 분포). Act-only 는 t_i 가 없는 판이다."
+    }
+   ],
+   "example": {
+    "title": "Apple Remote 궤적의 단계와 문맥 크기",
+    "body": "단계: Search[Apple Remote] → Search[Front Row](실패) → Search[Front Row (software)] → Finish = LLM 호출 4번, 도구 호출 3번. 질문+예시 프롬프트를 600토큰, 턴당 생각+행동 40토큰, 관찰 평균 60토큰이라 하면 1턴 입력 600, 2턴 700, 3턴 800, 4턴 900 → 누적 입력 3,000토큰. 실패 검색 하나가 턴을 1개 늘리고 이후 모든 턴의 입력을 100씩 키운다는 점이 ReAct 비용의 성질이다 — 다음 CodeAct 챕터에서 이 성장이 21턴 규모가 되면 어떻게 커지는지 본다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 최소 ReAct 루프 — LLM 은 미리 써 둔 대본을 차례로 내는 가짜(stub). 실제로는 API 호출 자리\nimport re\nWIKI = {\"Apple Remote\": \"Apple Remote 는 Front Row 미디어 센터를 조작하도록 만들어졌다.\",\n        \"Front Row\": \"Could not find [Front Row]. Similar: ['Front Row (software)']\",\n        \"Front Row (software)\": \"Front Row 는 Apple Remote 나 키보드 기능 키로 조작한다.\"}\nSCRIPT = iter([\n    \"Thought: Apple Remote 가 원래 무엇을 조작했는지 찾자.\\nAction: search[Apple Remote]\",\n    \"Thought: Front Row 를 조작하는 다른 장치를 찾자.\\nAction: search[Front Row]\",\n    \"Thought: 이름이 정확하지 않다. software 를 붙여 다시.\\nAction: search[Front Row (software)]\",\n    \"Thought: 키보드 기능 키로도 조작된다.\\nAction: finish[keyboard function keys]\"])\ndef llm(context): return next(SCRIPT)              # stub: 실제로는 context 전체를 모델에 보낸다\n\ndef react(question, max_steps=8):\n    context = f\"Question: {question}\\n\"\n    for step in range(1, max_steps + 1):\n        out = llm(context)                          # 1) 생각 + 행동 한 줄\n        name, arg = re.search(r\"Action: (\\w+)\\[(.*)\\]\", out).groups()\n        if name == \"finish\": return arg, step\n        obs = WIKI.get(arg, \"검색 결과 없음\")         # 2) 도구 실행은 하네스(코드)가 한다\n        context += f\"{out}\\nObservation: {obs}\\n\"   # 3) 관찰을 문맥 뒤에 덧붙인다\n        print(f\"step {step}: {name}[{arg}] -> {obs[:30]}...\")\n    return None, max_steps                          # 상한에 걸리면 실패로 끝낸다\nprint(react(\"Apple Remote 말고 그 프로그램을 조작할 수 있는 장치는?\"))",
+    "note": "직접 실행함. LLM 은 미리 써 둔 네 응답을 차례로 내는 가짜(stub)다 — 실제로는 llm(context) 자리에서 API 를 부른다. 출력: step 1~3 의 검색과 관찰이 찍히고 ('keyboard function keys', 4) 로 끝난다."
+   },
+   "diagram": {
+    "title": "ReAct 고리",
+    "code": "flowchart LR\n  Q[질문] --> TH[생각 쓰기] --> AC[행동: 도구 호출]\n  AC --> EN[(환경/도구)] --> OB[관찰]\n  OB -->|문맥에 덧붙임| TH\n  TH -->|충분하다| FI[finish: 답]"
+   },
+   "pitfalls": [
+    "ReAct 를 '프롬프트 기법'으로만 보면 원 논문의 핵심 결과를 놓친다 — 큰 이득은 그 형식으로 파인튜닝했을 때 나왔다.",
+    "단계 상한(max_steps)이 없는 ReAct 고리는 같은 검색을 반복하며 비용을 태울 수 있다. 상한과 '같은 행동 반복 감지'는 하네스의 기본 장치다."
+   ],
+   "check": [
+    {
+     "q": "Act-only 와 ReAct 의 차이를 식 하나로 말하면?",
+     "a": "ReAct 는 행동 a_i 를 뽑기 전에 생각 t_i 를 먼저 생성해 조건으로 쓴다. Act-only 는 관찰들만 보고 바로 a_i 를 뽑는다."
+    },
+    {
+     "q": "ReAct 원 논문에서 프롬프트 방식과 파인튜닝 방식의 결과가 어떻게 달랐나?",
+     "a": "프롬프트 방식에서는 540B 에서 ReAct 가 CoT 등 기준선보다 나쁘기도 했지만, ReAct 궤적으로 파인튜닝하면 ReAct 가 가장 좋아졌다."
+    }
+   ]
+  },
+  {
+   "start": 2250,
+   "title": "Reflexion 과 자기 교정의 한계, 그리고 도구를 쥔 검증자 CRITIC",
+   "points": [
+    "Reflexion: 행위자 LLM 이 궤적을 만들고 → 평가자가 판정하고 → 자기 반성 LLM 이 '무엇이 잘못됐나'를 글로 써 → 장기 기억에 쌓아 다음 시도의 문맥으로 준다. 학습이 아니라 문맥 갱신이다.",
+    "괄호 짝 검사 예: 1차는 여는/닫는 괄호 개수만 셌고, 자체 생성 단위 테스트가 실패 → 반성문 → 2차에서 짝을 확인하는 코드로 고친다.",
+    "궤적만 기억하는 것보다 반성문까지 넣는 것이 낫다(HotpotQA 에피소드 기억 실험).",
+    "한계: 외부 신호 없이 '네 답을 다시 검토하라'고만 하면 GPT-4-Turbo 의 GSM8K 91.5 → 88.0~91.0, CommonSenseQA 84.0 → 74.5~83.5 로 오히려 나빠진다. Reflexion 은 단위 테스트 같은 외부 피드백 덕에 통한다.",
+    "CRITIC: 검증자에게 검색·코드 실행 같은 도구를 쥐여 주면(에이전트형 검증자) 도구 없는 비평보다 크게 낫다. 오늘날 자기 반성은 대부분 추론 모델 안에 들어가 있다(강사 의견)."
+   ],
+   "on_screen": "Reflexion (2023) Key Insight: self-reflection is useful. 'Reflexion: Algorithm' 그림(Agent 안에 Self-reflection(LM), Evaluator(LM), Experience(long-term memory), Trajectory(short-term memory), Actor(LM), 바깥 Environment, Obs/Reward·Action) 과 Algorithm 1: Initialize Actor, Evaluator, Self-Reflection: M_a, M_e, M_sr / policy π_θ(a_i|s_i), θ={M_a, mem} / Generate τ_0, Evaluate, Generate sr_0, mem ← [sr_0], while M_e not pass or t < max trials: generate τ_t, evaluate, generate sr_t, append to mem. 'Key Insight: Turn Evaluations/Reflections into Memory (context) for the actor LLM.' 예시 궤적: 의사결정(ALFWorld), 프로그래밍(괄호 문자열 — 'only checks if the total count of open and close parentheses is equal'), 추론. 그래프 HotPotQA Success Rate(CoT only, ReAct only, CoT+Reflexion, ReAct+Reflexion; 시도 0~6) 'Reflexion improves accuracy over trials', HotPotQA Episodic Memory(CoT(GT) only, CoT(GT) EPM, CoT(GT) EPM + Reflexion) 'It's the LLM reflection that helps, not just the past trajectories'. Limitations of Self-Reflection: Table 5 GPT-4-Turbo — Standard 1 call 91.5 / 84.0; feedback prompt 1: round1 3 calls 88.0/81.5, round2 5 calls 90.0/83.0; prompt 2: 90.0/74.5, 90.0/81.0; prompt 3: 91.0/81.5, 91.0/83.5. CRITIC (2024): Black-box LLM → Output → Verify ⇄ External Tools(Knowledge Base, Code Interpreter, Text APIs: Wikipedia, Calculator, Perspective, Search Engine/Google) → Critiques → Correct; 그래프 AmbigNQ(F1) vs Iteration 0~3: CRITIC(Oracle) 가장 위, CRITIC 다음, CRITIC w/o Tool 과 ReAct 는 아래. 'Adding External Tools to the Verifier is useful! (Make an agentic verifier)'.",
+   "explain": [
+    "Reflexion 은 시험을 본 뒤 오답 노트를 쓰는 학생이다. 문제를 풀고(행위자가 궤적을 만든다), 채점을 받고(평가자가 맞았는지 판정한다), 왜 틀렸는지 문장으로 적어(자기 반성 LLM), 다음 시험 전에 그 노트를 읽는다(반성문을 장기 기억에 넣어 다음 시도의 문맥으로 준다). 강사는 행위자부터 보라고 했다. 행위자가 환경과 상호작용하며 만든 궤적이 단기 기억이고, 그 궤적과 반성문이 쌓인 것이 장기 기억(경험)이다. 중요한 점은 모델의 가중치가 바뀌지 않는다는 것이다 — 논문이 '강화'라는 말을 쓰지만 기울기 갱신이 아니라 문맥 갱신이며, 1강 노트에서도 짚었듯 전부 프롬프트로 구현된다.",
+    "강의가 고른 예는 프로그래밍 과제다. 괄호로만 된 문자열들이 올바른 괄호열을 이루는지 판정하는 함수를 짜라는 문제다. 1차 시도는 여는 괄호와 닫는 괄호의 개수가 같은지만 세서 ')(' 같은 문자열을 올바르다고 잘못 판정한다. 평가 단계에서 모델이 스스로 만든 단위 테스트가 실패하고, 반성 단계에서 '개수만 셌고 짝이 맞는지는 확인하지 않았다'는 문장이 나온다. 2차 시도는 이 반성문을 문맥에 넣고 시작하므로 왼쪽부터 깊이를 추적하는 올바른 코드를 쓴다. 결과 그래프에서 HotpotQA 성공률은 반성이 없는 ReAct 단독이 시도를 거듭해도 약 0.3 대에 머무는 반면, ReAct+Reflexion 은 여섯 번째 시도에 0.5 를 넘는다. 오른쪽 그래프는 더 미묘한 질문에 답한다. 지난 궤적만 보여 주는 것(EPM, 에피소드 기억)도 조금 돕지만, 반성문까지 넣은 쪽이 확실히 높다 — 도움이 되는 것은 '기록'이 아니라 '해석된 기록'이다.",
+    "하지만 강사는 곧바로 반대 증거를 보여 준다. 「LLM 은 아직 추론을 스스로 고치지 못한다」(Huang 외, 2023) 논문은 외부 신호 없이 '이 답은 맞을 수도 틀릴 수도 있다, 신중히 검토하고 문제를 보고하라'는 식으로만 자기 교정을 시키면, 기준선을 공정하게 잡았을 때 성능이 오히려 떨어진다고 보고한다. 표에서 GPT-4-Turbo 의 GSM8K 는 한 번 답할 때 91.5 인데 자기 교정 후 88.0~91.0, CommonSenseQA 는 84.0 에서 74.5~83.5 로, 어느 프롬프트로도 원래보다 좋아지지 않았다. 게다가 호출은 3~5배다. 맞는 답을 의심하다 틀린 답으로 바꾸는 경우가 생기기 때문이다. Reflexion 이 통한 이유는 단위 테스트 실행 같은 외부 환경의 피드백이 있었기 때문이다. 또 이 연구는 요즘의 추론 모델 이전 결과다. 지금의 추론 모델은 추론 과정 안에서 스스로 틀린 곳을 되짚는 능력이 뛰어나서, 강사는 '자기 반성을 별도 단계로 강제하기보다 추론 모델에 맡기는 것이 대개 맞다'고 봤다(강사 의견). 그래도 붙여 보고 싶다면 평가 데이터를 갖추고 그 단계를 넣은 판과 뺀 판을 재서 확인하라는 것이 강의의 처방이다.",
+    "CRITIC 은 그 처방의 연구판이다. Reflexion 의 반성이 순전히 프롬프트였다면, CRITIC 은 검증자에게 검색 엔진, 위키백과, 코드 인터프리터, 계산기, 유해성 판정 API 같은 도구를 쥐여 준다. 모델이 낸 답을 검증자가 도구로 확인하고(Verify), 비평(Critiques)을 써서, 그것으로 답을 고친다(Correct). 그래프에서 AmbigNQ 의 F1 은 반복할수록 CRITIC 이 70대 중반까지 오르지만, 같은 방식에서 도구만 뺀 판은 거의 제자리다. 정답을 아는 '오라클' 판이 가장 위에 있다. 슬라이드의 결론 문장대로, 검증자를 에이전트로 만들면 유용하다. 앞 챕터의 평가자-최적화자 조건 (2) — '그 피드백을 줄 능력' — 을 도구로 채워 준 셈이다. 질의응답에서 '반성 같은 기법이 이미 모델 안에 구워져 있어 우리가 통제할 수 없으면 어떻게 하느냐'는 물음에, 강사는 추론이 없는 모델을 골라 반성을 직접 붙이는 실험도 가능하며, 코딩 에이전트 덕에 수백 가지 변형을 시험하기 쉬워졌다고 답했다."
+   ],
+   "formulas": [
+    {
+     "expr": "τ_t ~ π(· | task, mem_t),  mem_{t+1} = mem_t ⊕ sr_t,  sr_t = M_sr(τ_t, M_e(τ_t))",
+     "meaning": "Reflexion 의 한 회차. τ_t 는 t 번째 시도의 궤적, π 는 행위자 LLM(가중치 고정), mem_t 는 지금까지의 반성문 목록, M_e 는 평가자(단위 테스트·정답 검사·LLM 판정), M_sr 은 자기 반성 LLM, ⊕ 는 목록에 덧붙이기. 매개변수 θ = {M_a, mem} 중 바뀌는 것은 mem 뿐이다."
+    },
+    {
+     "expr": "Δ = Acc(self-correct) − Acc(standard)",
+     "meaning": "자기 교정 단계의 순효과. 표에서 GSM8K 는 Δ = 88.0−91.5 = −3.5 ~ 91.0−91.5 = −0.5, CommonSenseQA 는 −9.5 ~ −0.5 로 모두 음수다. 이 값을 반드시 재 보라는 것이 강의의 교훈."
+    }
+   ],
+   "example": {
+    "title": "괄호 문제에서 Reflexion 한 바퀴 손으로",
+    "body": "테스트 네 개: '()()'→참, '(())'→참, ')('→거짓, '(()'→거짓. 1차 코드(개수 비교): '()()' 2=2 참 ✓, '(())' 2=2 참 ✓, ')(' 1=1 참 ✗(기대 거짓), '(()' 2≠1 거짓 ✓ → 실패 1건. 반성문: '개수만 셌다, 왼쪽부터 깊이가 음수가 되는지 봐야 한다'. 2차 코드(깊이 추적): ')(' 는 첫 글자에서 깊이 −1 → 즉시 거짓 ✓, '(()' 는 끝 깊이 1 → 거짓 ✓, 나머지 둘 끝 깊이 0 이고 중간에 음수 없음 → 참 ✓ → 실패 0건, 두 번째 시도에서 종료. 자기 교정 표의 숫자: GSM8K 표준 91.5(1호출) vs 1라운드 88.0(3호출) — 호출은 3배, 정확도는 −3.5%p."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# Reflexion — 행위자·평가자(단위 테스트)·자기 반성. LLM 세 역할은 모두 가짜(stub)\ndef actor(memory):            # stub: 반성 메모가 있으면 고친 코드를 '생성'한다\n    if any(\"짝\" in m for m in memory):\n        def ok(s):\n            depth = 0\n            for ch in s:\n                depth += 1 if ch == \"(\" else -1\n                if depth < 0: return False      # 닫는 괄호가 먼저 나오면 실패\n            return depth == 0\n        return ok\n    return lambda s: s.count(\"(\") == s.count(\")\")   # 1차 시도: 개수만 센다\n\nTESTS = [(\"()()\", True), (\"(())\", True), (\")(\", False), (\"(()\", False)]\ndef evaluator(f):             # 외부 피드백: 실제로 돌려 본 테스트 결과\n    return [(s, want) for s, want in TESTS if f(s) != want]\ndef self_reflect(fails):      # stub: 실제로는 실패 궤적을 LLM 에 주고 반성문을 쓰게 한다\n    return f\"실패 {fails}: 개수만 셌다. 왼쪽부터 짝이 맞는지(깊이<0) 확인해야 한다.\"\n\nmemory = []                    # 장기 기억 = 반성문 목록(다음 시도의 문맥에 들어간다)\nfor trial in range(1, 4):\n    fails = evaluator(actor(memory))\n    print(f\"trial {trial}: 실패 {len(fails)}건\")\n    if not fails: break\n    memory.append(self_reflect(fails))\nprint(memory)",
+    "note": "직접 실행함. 행위자·반성 LLM 은 가짜(stub)이고 평가자는 실제로 돌아가는 단위 테스트다 — Reflexion 이 통하는 이유(외부 피드백)가 코드에서 진짜인 부분이다. 출력: trial 1 실패 1건 → trial 2 실패 0건, 기억에 반성문 1개."
+   },
+   "diagram": {
+    "title": "Reflexion 회차와 CRITIC 의 차이",
+    "code": "flowchart LR\n  A[행위자 LLM] --> T[궤적]\n  T --> E{평가자<br/>단위 테스트·정답 검사}\n  E -->|실패| S[자기 반성 LLM] --> M[(장기 기억<br/>반성문)]\n  M --> A\n  E -->|통과| D[끝]\n  T -. CRITIC .-> V[검증자 + 도구<br/>검색·코드 실행] -.비평.-> A"
+   },
+   "pitfalls": [
+    "CRITIC 슬라이드의 출처 표기(arxiv 2310.01798)는 바로 앞 '자기 교정 불가' 논문의 번호다. CRITIC 논문은 arXiv 2305.11738(ICLR 2024)이다.",
+    "Reflexion 을 RL 로 오해하지 말 것 — 가중치는 그대로이고 바뀌는 것은 문맥의 반성문뿐이다.",
+    "자기 교정은 맞는 답을 틀린 답으로 바꾸는 경우도 만든다. 외부 검증 신호 없이 붙이면 비용(3~5배 호출)만 늘고 정확도가 떨어질 수 있다."
+   ],
+   "check": [
+    {
+     "q": "Reflexion 은 통하는데 '자기 교정 불가' 논문의 자기 교정은 왜 실패했나?",
+     "a": "Reflexion 은 단위 테스트 실행 같은 외부 환경 피드백으로 실패를 확인한 뒤 반성했고, 자기 교정 실험은 외부 신호 없이 모델이 자기 답을 의심만 했기 때문이다."
+    },
+    {
+     "q": "에피소드 기억(EPM) 실험이 보여 준 것은?",
+     "a": "지난 궤적만 보여 주는 것보다, 그 궤적에 대한 LLM 의 반성문을 함께 넣는 것이 더 높은 성공률을 낸다 — 해석된 경험이 도움이 된다."
+    }
+   ]
+  },
+  {
+   "start": 2700,
+   "title": "CodeAct — 행동의 형식을 JSON 에서 코드로: 같은 과제를 21턴과 2턴으로 풀기",
+   "points": [
+    "핵심: 코드가 행동의 좋은 형식이다. 도구를 환경 속 함수로 두고, 모델이 그 함수를 부르는 프로그램을 써서 실행한다.",
+    "JSON/텍스트 행동은 도구 하나 = 턴 하나라서 나라 4개 × 도구 여러 개를 일일이 왕복한다. 코드는 for 문·변수·min() 으로 한 번에 처리한다.",
+    "결과: 시험한 모든 모델에서 코드 행동이 성공률이 높고(예: gpt-4-1106 약 74% 대 JSON·텍스트 약 52~53%) 평균 상호작용 턴이 적다(약 5.5 대 7.6).",
+    "질의응답: 도구를 너무 많이 노출하면 모델이 헷갈린다 → 필요할 때만 알려 주는 점진적 공개(뒤 챕터).",
+    "Pi 처럼 bash 도구 하나에 스크립트를 통째로 써 넣는 것도 사실상 CodeAct 다."
+   ],
+   "on_screen": "JSON Actions: 'LLM Agent using [Text/JSON] as Action'. Instruction: Determine the most cost-effective country to purchase the smartphone model 'CodeAct 1'. The countries to consider are the USA, Japan, Germany, and India. Available APIs: [1] lookup_rates(country: str) -> (float, float) [2] convert_and_tax(price: float, exchange_rate: float, tax_rate: float) -> float [3] estimate_final_price(converted_price: float, shipping_cost: float) -> float [4] lookup_phone_price(model: str, country: str) -> float [5] estimate_shipping_cost(destination_country: str) -> float. 궤적: Think → Action lookup_rates Germany → Environment 1.1, 0.19 → lookup_phone_price CodeAct 1 Germany → 700 → convert_and_tax 700, 1.1, 0.19 → 916.3 → … interactions omitted … → Response 'The most cost-effective country … is Japan with price 904.00 in USD.' Code Actions: countries = ['USA', 'Japan', 'Germany', 'India'] / final_prices = {} / for country in countries: exchange_rate, tax_rate = lookup_rates(country); local_price = lookup_phone_price('CodeAct 1', country); converted_price = convert_and_tax(…); shipping_cost = estimate_shipping_cost(country); final_price = estimate_final_price(…) / most_cost_effective_country = min(final_prices, key=final_prices.get) — 주석 'Control & Data Flow of Code Simplifies Complex Operations', 'Re-use min Function from Existing Software Infrastructures (Python library)', Environment: Japan 904.0. 'CodeAct: More Accurate and More Efficient' 막대그래프 두 개(Success Rate (%) 와 Average Number of Interaction Turns; gpt-4-1106-preview, gpt-4-0613, claude-2, gpt-3.5-turbo-0613, gpt-3.5-turbo-1106, gemini-pro, text-davinci-003, Llama-2-70b-chat-hf; Code/JSON/Text as Action).",
+   "explain": [
+    "식당에서 주문하는 두 방식을 떠올려 보자. JSON 행동은 메뉴 하나를 말할 때마다 종업원이 주방에 다녀오는 방식이다. '김밥 하나' → 다녀옴 → '라면 하나' → 다녀옴. CodeAct 는 주문서를 한 장에 다 적어 한 번에 넘기는 방식이다. 강의의 예는 'CodeAct 1' 이라는 스마트폰을 미국·일본·독일·인도 중 어디서 사는 것이 가장 싼지 정하는 과제다. 쓸 수 있는 도구는 환율과 세율 조회, 현지 가격 조회, 환전·과세 계산, 배송비 추정, 최종가 추정 다섯 개다. ReAct 식 JSON 에이전트는 '먼저 나라별로 달러 가격을 계산하자'고 생각한 뒤 독일 환율을 묻고(1.1, 0.19), 독일 가격을 묻고(700), 환전·과세를 계산하고(916.3) … 이것을 네 나라에 대해 하나씩 왕복한다.",
+    "CodeAct 에이전트도 생각은 똑같이 한다. 다른 점은 행동이 도구 호출 하나가 아니라 프로그램 하나라는 것이다. 나라 목록을 변수에 넣고 for 문으로 돌며 다섯 도구를 차례로 부르고, 결과를 딕셔너리에 모은 뒤 파이썬의 min 함수로 가장 싼 나라를 고른다. 슬라이드의 주석이 이점 둘을 짚는다. 첫째, 코드의 제어 흐름(반복·분기)과 데이터 흐름(변수에 담아 다음 함수로 넘기기)이 복잡한 조작을 단순하게 만든다. 둘째, min 같은 기존 소프트웨어 자산(파이썬 라이브러리)을 그대로 재사용한다. JSON 판에서는 '네 나라 가격 중 최솟값 고르기'조차 모델이 문맥 속 숫자를 읽고 머릿속으로 비교해야 한다. 실행 결과(일본 904.0 달러)를 보고 모델이 답하면 끝이다. 강사는 이것도 여전히 ReAct 식 에이전트라고 강조했다 — 결과가 부족하면 다음 턴에 코드를 더 쓰면 된다. 바뀐 것은 고리가 아니라 행동의 형식이다.",
+    "결과 그래프에서 코드 행동은 시험한 모든 모델에서 성공률이 가장 높다. 예컨대 gpt-4-1106-preview 는 코드로 약 74%, JSON·텍스트로 약 52~53% 다(막대에서 읽은 근사값). 평균 상호작용 턴도 코드가 적다 — 같은 모델에서 약 5.5턴 대 7.6턴. 강사는 text-davinci-003 정도가 JSON 쪽이 턴이 적은 예외처럼 보인다고 했다. 노트 보충으로 덧붙이면 논문 초록은 17개 LLM 분석에서 '성공률 최대 20% 향상'을 내세운다. 왜 그럴까. 도구 호출이 턴 단위면 실수할 기회가 턴 수만큼 있고, 매 턴 늘어난 문맥을 다시 읽어야 한다. 코드면 반복 작업을 기계가 하고, 모델은 모델이 잘하는 '계획을 글로 쓰기'만 한다. 또 LLM 은 사전학습에서 엄청난 양의 코드를 봤으므로 JSON 스키마보다 파이썬 함수 호출 쪽이 익숙한 형식이다.",
+    "물론 공짜는 아니다(노트 보충). 모델이 쓴 코드를 실행하려면 샌드박스가 필요하다 — 임의 코드 실행은 파일 삭제·네트워크 유출 같은 위험을 안는다. 코드 한 덩어리 안에서 중간 결과를 모델이 보지 못하므로, 중간 값에 따라 판단이 달라져야 하는 일(예: 검색 결과를 읽고 다음 검색어를 정하기)은 여전히 여러 턴이 필요하다. 그리고 실행 오류가 나면 오류 메시지를 보고 고치는 턴이 추가된다. 질의응답에서 나온 '도구를 너무 많이 노출하면?'이라는 질문은 컨텍스트 챕터의 점진적 공개로 이어진다. 아래 손계산과 코드는 이 과제를 두 방식으로 끝까지 따라가며 턴 수와 누적 입력 토큰을 센다. 가짜 LLM 이지만 도구 함수와 가격 계산은 진짜로 실행되어 일본 904.00 달러가 나온다."
+   ],
+   "formulas": [
+    {
+     "expr": "T_ReAct = N_country · N_tool + 1",
+     "meaning": "JSON/텍스트 ReAct 의 LLM 턴 수. 도구 호출 하나가 턴 하나이고 마지막에 답 턴이 하나 더 있다. 이 과제는 4·5+1 = 21."
+    },
+    {
+     "expr": "Read_ReAct = Σ_{k=0}^{T−1} (P + k·s) = T·P + s·T(T−1)/2",
+     "meaning": "매 턴 문맥 전체를 다시 읽을 때의 누적 입력 토큰. P 는 시스템 프롬프트+도구 설명, s 는 한 턴이 문맥에 보태는 토큰(출력+관찰), T 는 턴 수. 턴 수의 제곱으로 자란다는 것이 핵심(프롬프트 캐싱이 있으면 비용은 줄지만 지연·문맥 길이는 그대로)."
+    },
+    {
+     "expr": "Read_CodeAct = P + (P + C + o)",
+     "meaning": "코드 한 번 + 답 한 번의 2턴. C 는 코드 덩어리 토큰, o 는 실행 결과 관찰 토큰."
+    }
+   ],
+   "example": {
+    "title": "스마트폰 과제를 두 방식으로 끝까지 — 값과 턴, 토큰",
+    "body": "값(직접 정한 숫자, 독일은 슬라이드와 같다): 미국 899×1.0×1.08 = 970.92 + 배송 10 = 980.92. 일본 120,000엔×0.0068 = 816 × 1.10 = 897.6 + 6.4 = 904.00. 독일 700×1.1 = 770 × 1.19 = 916.3 + 20 = 936.3. 인도 75,000×0.012 = 900 × 1.18 = 1062 + 15 = 1077. 최소 = 일본 904.00. 턴: ReAct 는 나라당 5도구 × 4나라 = 20턴 + 답 1턴 = 21턴. CodeAct 는 코드 1턴 + 답 1턴 = 2턴. 토큰(가정: P=400, 턴당 출력 30 + 관찰 10 → s=40, 코드 C=120, 관찰 o=10): ReAct 누적 입력 = 21×400 + 40×(21×20/2) = 8,400 + 8,400 = 16,800. 마지막 턴의 문맥만 해도 400+20×40 = 1,200. CodeAct 누적 입력 = 400 + (400+120+10) = 930. 약 18배 차이. 출력 토큰은 ReAct 21×30 = 630, CodeAct 120+30 = 150."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# ReAct(JSON 도구 호출) 대 CodeAct — LLM 은 대본대로 움직이는 가짜(stub), 토큰 수는 가정값\nRATES = {\"USA\": (1.0, .08), \"Japan\": (.0068, .10), \"Germany\": (1.1, .19), \"India\": (.012, .18)}\nPRICE = {\"USA\": 899, \"Japan\": 120000, \"Germany\": 700, \"India\": 75000}\nSHIP  = {\"USA\": 10, \"Japan\": 6.4, \"Germany\": 20, \"India\": 15}\nT = {\"lookup_rates\": RATES.get, \"lookup_phone_price\": PRICE.get, \"estimate_shipping_cost\": SHIP.get,\n     \"convert_and_tax\": lambda p, r, t: round(p * r * (1 + t), 2),\n     \"estimate_final_price\": lambda p, s: round(p + s, 2)}\nP, OUT, OBS, CODE_TOK = 400, 30, 10, 120   # 프롬프트, 턴당 출력, 관찰, 코드 덩어리 토큰\nCODE = \"\"\"final = {}\nfor c in ['USA', 'Japan', 'Germany', 'India']:\n    r, t = lookup_rates(c)\n    u = convert_and_tax(lookup_phone_price(c), r, t)\n    final[c] = estimate_final_price(u, estimate_shipping_cost(c))\nbest = min(final, key=final.get)\"\"\"\n\ndef react():                          # 도구 호출 하나 = LLM 한 턴, 매 턴 전체 문맥을 다시 읽는다\n    ctx, read, turns = P, 0, 0\n    for _ in range(4 * 5):           # 나라 4 x 도구 5 (실제 값 계산은 CodeAct 쪽과 같다)\n        read += ctx; ctx += OUT + OBS; turns += 1\n    return turns + 1, read + ctx      # + 최종 답 턴\n\ndef codeact():\n    env = dict(T); exec(CODE, env)    # 반복·min 은 파이썬 인터프리터가 한다\n    read = P + (P + CODE_TOK + OBS)   # 1턴: 코드 작성, 2턴: 결과 보고 답\n    return 2, read, env[\"best\"], env[\"final\"][env[\"best\"]]\n\nprint(\"ReAct  : 턴 %d, 누적 입력 토큰 %d\" % react())\nprint(\"CodeAct: 턴 %d, 누적 입력 토큰 %d -> %s $%.2f\" % codeact())",
+    "note": "직접 실행함. LLM 의 '생각'은 생략한 가짜(stub)이고 토큰 수는 위의 가정값으로 센다. 도구 함수와 CodeAct 쪽 코드 실행(exec)은 진짜다. 출력: 'ReAct : 턴 21, 누적 입력 토큰 16800' / 'CodeAct: 턴 2, 누적 입력 토큰 930 -> Japan $904.00'. 실제 시스템에서 exec 는 반드시 샌드박스 안에서 돌린다."
+   },
+   "diagram": {
+    "title": "같은 과제, 두 행동 형식",
+    "code": "sequenceDiagram\n  participant M as LLM\n  participant E as 환경(도구)\n  Note over M,E: JSON ReAct — 도구 하나에 턴 하나 (21턴)\n  M->>E: lookup_rates(Germany)\n  E-->>M: 1.1, 0.19\n  M->>E: lookup_phone_price(Germany)\n  E-->>M: 700\n  Note over M,E: … 18번 더 …\n  Note over M,E: CodeAct — 프로그램 하나 (2턴)\n  M->>E: for c in countries: … min(final_prices)\n  E-->>M: Japan 904.0"
+   },
+   "pitfalls": [
+    "CodeAct 를 'ReAct 를 대체하는 고리'로 오해하기 쉽다. 고리는 그대로이고 행동의 형식만 코드로 바뀐 것이다.",
+    "중간 결과를 보고 판단해야 하는 탐색형 과제에서는 코드 한 덩어리로 끝낼 수 없어 이점이 줄어든다.",
+    "모델이 쓴 코드를 호스트에서 그대로 exec 하면 안 된다 — 샌드박스·권한 제한이 CodeAct 의 전제 조건이다."
+   ],
+   "check": [
+    {
+     "q": "나라가 10개, 도구가 5개라면 JSON ReAct 는 몇 턴, 누적 입력 토큰은 몇인가?(P=400, s=40)",
+     "a": "T = 10×5+1 = 51턴. 누적 = 51×400 + 40×51×50/2 = 20,400 + 51,000 = 71,400. CodeAct 는 여전히 2턴, 약 930토큰대(코드가 조금 길어질 뿐)."
+    },
+    {
+     "q": "CodeAct 가 성공률까지 높이는 이유 두 가지는?",
+     "a": "(1) 반복·비교 같은 기계적 일을 인터프리터가 정확히 처리해 턴마다 실수할 기회가 줄고 (2) LLM 이 사전학습에서 코드를 많이 봐 함수 호출 형식에 익숙하며 기존 라이브러리(min 등)를 재사용할 수 있다."
+    }
+   ]
+  },
+  {
+   "start": 2940,
+   "title": "계획 후 실행 — ReWOO 와 LLMCompiler: 에이전트의 행동을 다시 워크플로로 컴파일하기",
+   "points": [
+    "핵심: 계획을 먼저 세우면 에이전트의 행동 실행을 워크플로로 되돌릴 수 있다.",
+    "ReWOO(관찰 없이 추론): 플래너가 관찰을 보기 전에 #E1, #E2 … 자리표시자로 '이 도구의 출력이 저 도구의 입력'인 계획 전체를 쓰고, 워커가 LLM 없이 채워 실행, 솔버가 답한다. ReAct 보다 토큰이 적고 정확도도 높았다.",
+    "LLMCompiler: 계획을 의존 그래프(DAG)로 만들어 독립 작업을 병렬 실행하고, 실패하면 다시 계획한다. HotpotQA 에서 정확도는 비슷하게 지키며 지연 1.80배, Movie Rec 3.74배 단축.",
+    "강사: 이 패턴은 상당 부분 코드 생성과 병렬 도구 호출로 대체됐지만, 계획 자체는 여전히 중요하고 서브에이전트 오케스트레이션에 쓰인다."
+   ],
+   "on_screen": "Planning then executing — Key Insight: planning enables turning agent action execution back into workflows. ReWOO: Reasoning WithOut Observation (2023): Planner(Plan: Search for more information about the Hennchata. #E1 = Wikipedia[Hennchata] / Plan: Find out the main ingredient of the Hennchata. #E2 = LLM[What is the main ingredient of the Hennchata? Given context: #E1] / #E3 = Wikipedia[#E2] / #E4 = LLM[What is the name of the cognac house that makes the main ingredient #E2? Given context: #E3]) → Worker(Evidence: The Hennchata is a cocktail consisting of Hennessy cognac and Mexican rice horchata … / Hennessy cognac / Jas Hennessy & Co.) → Solver. LLMCompiler (2024): User Input 'How much does Microsoft's market cap need to increase to exceed Apple's market cap?' → Function Calling Planner($1 = search(Microsoft Market Cap), $2 = search(Apple Market Cap), $3 = math($1 / $2), $4 = llm($3)) → DAG of Tasks → Task Fetching Unit(Fetches Task, Resolves Dependency) → Executor(Tool·Memory 칸들) → Tools(search, math, llm); 'Differences from ReWOO: Parallel Execution and Dynamic Replanning'. ReAct 대 LLMCompiler 비교(Were Scott Derrickson and Ed Wood of the same nationality?, Latency Speedup: 1.8x). 표: HotpotQA GPT — ReAct 61.52, ReAct† 62.47 / 7.12s / 1.00×, OAI Parallel Function 62.05 / 4.42s / 1.61×, LLMCompiler 62.00 / 3.95s / 1.80×; LLaMA-2 70B ReAct 54.74, ReAct† 54.40 / 13.44s, LLMCompiler 57.83 / 9.58s / 1.40×; Movie Rec. GPT ReAct† 72.47 / 20.47s, OAI 77.00 / 7.42s / 2.76×, LLMCompiler 77.13 / 5.47s / 3.74×; ParallelQA ReAct 89.09 / 35.90s, OAI 87.32 / 19.29s / 1.86×, LLMCompiler 89.38 / 16.69s / 2.15×; Game of 24 Tree-of-Thoughts 74.00 / 241.2s, LLMCompiler 75.33 / 83.6s / 2.89×.",
+   "explain": [
+    "ReAct 는 내비게이션 없이 운전하며 교차로마다 '이제 어디로 갈까' 묻는 방식이다. 계획 후 실행은 출발 전에 경로 전체를 짜 두고, 운전은 그대로 따라가기만 하는 방식이다. 강사가 붙인 이 패턴의 핵심 문장은 '계획을 세우면 에이전트의 행동 실행을 다시 워크플로로 돌릴 수 있다'이다. 첫 예인 ReWOO(Reasoning WithOut Observation, 관찰 없이 추론)는 HotpotQA 식 질문 — 'Hennchata 의 주재료를 만드는 코냑 하우스의 이름은?' — 을 받으면 관찰을 하나도 보지 않은 채 계획을 끝까지 쓴다. #E1 = Wikipedia[Hennchata], #E2 = LLM[#E1 을 보고 주재료는?], #E3 = Wikipedia[#E2], #E4 = LLM[#E3 을 보고 #E2 를 만드는 코냑 하우스는?]. 강사도 이 질문을 받으면 무슨 말인지 모르겠다고 했지만, 플래너는 '무엇을 알아야 하는지'의 구조만 알면 되므로 답을 몰라도 계획을 쓸 수 있다.",
+    "그다음은 LLM 의 판단이 필요 없다. 워커가 위키백과에서 Hennchata 문서를 가져와 #E1 에 넣고, 그것을 #E2 의 프롬프트에 끼워 주재료(Hennessy 코냑)를 얻고, 그것으로 다시 검색하고 … 자리표시자를 차례로 채운다. 마지막에 솔버 LLM 이 계획과 모든 증거를 보고 답(Jas Hennessy & Co.)을 쓴다. ReAct 라면 도구 호출 하나마다 모델이 전체 문맥을 다시 읽고 다음 행동을 정해야 했지만, ReWOO 는 플래너 한 번과 솔버 한 번(그리고 계획 안의 LLM 도구 호출)으로 끝나므로 같은 질문을 훨씬 적은 토큰으로 푼다. 강의 그래프에서 ReWOO 가 ReAct 보다 토큰이 적고 정확도도 높았다(노트 보충: 논문 초록은 HotpotQA 에서 토큰 효율 약 5배, 정확도 약 4%p 향상이라고 적는다). 강사는 이것이 CodeAct 와 닮았다고 지적했다 — 코드에서 한 함수의 출력을 변수에 담아 다음 함수에 넘기는 것과 #E 자리표시자가 같은 일을 한다.",
+    "LLMCompiler 는 ReWOO 에서 두 가지를 더했다. 첫째 병렬 실행이다. 'Microsoft 시가총액이 Apple 을 넘으려면 얼마나 올라야 하나'를 받으면 $1 = search(Microsoft 시가총액), $2 = search(Apple 시가총액), $3 = math($1/$2), $4 = llm($3) 이라는 작업 그래프(DAG, 방향이 있고 순환이 없는 그래프)를 만든다. $1 과 $2 는 서로 의존하지 않으니 동시에 실행하고, 둘 다 끝나야 $3 을 돌린다. 작업 가져오기 장치(Task Fetching Unit)가 의존성이 풀린 작업을 실행기에 넘긴다. 둘째 동적 재계획이다. 질의응답에서 강사가 설명한 대로, 외부 검증기가 과제 실패를 알리면 '새 계획을 세워 다시 시도'하는 단순한 고리다. 결과 표가 주장을 뒷받침한다. HotpotQA(GPT)에서 ReAct 는 62.47% 정확도에 7.12초, LLMCompiler 는 62.00% 에 3.95초로 1.80배 빠르다. 독립 작업이 많은 Movie Rec 는 20.47초 → 5.47초(3.74배)이면서 정확도도 72.47 → 77.13 으로 오른다. 트리 탐색 계열과의 비교도 있다 — Game of 24 에서 생각의 나무(Tree-of-Thoughts)는 74.00% 에 241.2초, LLMCompiler 는 75.33% 에 83.6초(2.89배)다. OpenAI 의 병렬 함수 호출도 1.61~2.76배 빨라지지만 LLMCompiler 보다는 느리다.",
+    "강사의 평가는 이렇다. 이 패턴은 여러 면에서 코드 생성에 자리를 내줬다. 동적인 작업 그래프를 따로 만드는 대신 모델이 실행할 코드를 통째로 쓰면 더 유연하기 때문이다. 또 요즘 모델 API 는 한 턴에 여러 도구를 동시에 부르는 병렬 도구 호출을 기본으로 제공해 LLMCompiler 의 병렬성을 상당 부분 흡수했다. 그래도 강사가 이 패턴을 가르친 이유는 '계획' 자체가 에이전트 안에서 여전히 중요한 개념이고 오케스트레이션에 쓰이기 때문이다. Claude Code 처럼 서브에이전트들이 정해진 동적 워크플로를 따르게 하는 기능이 그 예다. 노트 보충으로 약점도 적어 둔다. 관찰을 보지 않고 계획하므로, 첫 검색이 예상과 다른 결과를 내면(예: 문서가 없음) 이후 계획 전체가 헛돈다. ReAct 의 'Front Row 실패 → 검색어 수정' 같은 즉석 회복은 ReWOO 에는 없고, LLMCompiler 의 재계획이 그 빈자리를 부분적으로 메운다."
+   ],
+   "formulas": [
+    {
+     "expr": "L_seq = Σ_v d_v ,  L_DAG = max_{경로 π} Σ_{v∈π} d_v",
+     "meaning": "작업 v 의 소요 시간 d_v 로 본 지연. 순차 실행은 모든 작업 시간의 합, 병렬 DAG 실행은 시작에서 끝까지 가장 긴 의존 경로(임계 경로)의 합. 속도 향상 = L_seq / L_DAG."
+    },
+    {
+     "expr": "Calls_ReWOO = 1(planner) + k_LLM + 1(solver)  vs  Calls_ReAct = n_tool + 1",
+     "meaning": "k_LLM 은 계획 안에 들어 있는 LLM 도구 호출 수, n_tool 은 ReAct 가 부르는 도구 수. 호출 수가 비슷해도 ReWOO 의 각 호출은 짧은 문맥만 읽고 ReAct 는 매번 누적 문맥을 읽어 토큰 차이가 커진다."
+    }
+   ],
+   "example": {
+    "title": "시가총액 질문의 임계 경로와 표의 속도 향상",
+    "body": "가정 시간: search 둘 각 3.0초, math 0.5초, 마지막 llm 1.0초. 순차 = 3+3+0.5+1 = 7.5초. DAG 병렬 = max(3,3) + 0.5 + 1 = 4.5초 → 7.5/4.5 = 1.67배. 표에서 직접 확인: HotpotQA ReAct† 7.12초 / LLMCompiler 3.95초 = 1.80배, Movie Rec 20.47 / 5.47 = 3.74배, ParallelQA 35.90 / 16.69 = 2.15배, Game of 24 의 ToT 241.2 / 83.6 = 2.89배. 독립적인 조회가 많을수록(Movie Rec 는 영화 여러 편을 각각 찾는다) 임계 경로가 짧아져 이득이 크다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# ReWOO 식 계획-후-실행 + LLMCompiler 식 병렬 실행 시간 — 플래너 LLM 은 가짜(stub)\nimport re\nPLAN = [(\"E1\", \"Wikipedia\", \"Hennchata\"),\n        (\"E2\", \"LLM\", \"#E1 에 따르면 Hennchata 의 주재료는?\"),\n        (\"E3\", \"Wikipedia\", \"#E2\"),\n        (\"E4\", \"LLM\", \"#E3 을 보고, #E2 를 만드는 코냑 하우스는?\")]\nTOOLS = {\"Wikipedia\": lambda q: {\"Hennchata\": \"Hennessy 코냑 + 샴페인 칵테일\",\n                                 \"Hennessy\": \"Jas Hennessy & Co. 가 만든다\"}.get(q, q),\n         \"LLM\": lambda q: \"Hennessy\" if \"주재료\" in q else \"Jas Hennessy & Co.\"}\ndef worker(plan):             # 관찰을 보며 다시 생각하지 않는다 — 자리표시자만 채운다\n    ev = {}\n    for name, tool, arg in plan:\n        arg = re.sub(r\"#(E\\d)\", lambda m: ev[m.group(1)], arg)\n        ev[name] = TOOLS[tool](arg)\n    return ev\nev = worker(PLAN)\nprint(ev[\"E4\"], \"| LLM 호출: planner 1 + LLM 도구 2 + solver 1 = 4 (ReAct 라면 단계마다 1)\")\n\n# LLMCompiler: 서로 독립인 작업은 동시에. 시간 = 의존 그래프의 가장 긴 경로\nDAG = {\"s1\": ([], 3.0), \"s2\": ([], 3.0), \"math\": ([\"s1\", \"s2\"], 0.5), \"llm\": ([\"math\"], 1.0)}\ndef finish(t, memo={}):\n    if t not in memo:\n        deps, d = DAG[t]; memo[t] = max([finish(x) for x in deps], default=0) + d\n    return memo[t]\nseq = sum(d for _, d in DAG.values())\nprint(f\"순차 {seq}s, 병렬 {finish('llm')}s, 속도 향상 {seq / finish('llm'):.2f}x\")",
+    "note": "직접 실행함. 플래너가 쓴 계획(PLAN)과 위키백과·LLM 도구는 가짜(stub)다. 워커가 #E 자리표시자를 채우는 부분과 임계 경로 계산은 진짜로 돈다. 솔버 호출은 코드에서 생략했다(E4 가 답 역할). 출력: 'Jas Hennessy & Co.' 와 '순차 7.5s, 병렬 4.5s, 속도 향상 1.67x'."
+   },
+   "diagram": {
+    "title": "ReAct 대 ReWOO 대 LLMCompiler",
+    "code": "flowchart TB\n  subgraph ReAct\n    a1[생각] --> b1[도구] --> c1[관찰] --> a1\n  end\n  subgraph ReWOO\n    P[플래너: #E1..#E4 계획] --> W[워커: 순서대로 채움<br/>LLM 판단 없음] --> S[솔버: 답]\n  end\n  subgraph LLMCompiler\n    P2[플래너: DAG] --> s1[search MSFT] & s2[search AAPL]\n    s1 & s2 --> m[math] --> l[llm] --> V{검증 실패?}\n    V -->|예| P2\n  end"
+   },
+   "pitfalls": [
+    "관찰 없이 계획하므로 중간 결과가 예상과 다르면 계획 전체가 무너진다. 재계획 고리 없이 ReWOO 를 쓰면 실패를 감지조차 못 한다.",
+    "LLMCompiler 의 속도 향상은 독립 작업이 있을 때만 나온다. 모든 단계가 앞 단계에 의존하는 사슬형 질문은 병렬화할 것이 없다.",
+    "표의 ReAct† 는 논문 저자들이 개선한 ReAct 판이다. 원래 ReAct 와 숫자를 섞어 비교하지 말 것."
+   ],
+   "check": [
+    {
+     "q": "작업 A(2초), B(2초), C(A 에 의존, 1초), D(B·C 에 의존, 1초)의 순차·병렬 지연은?",
+     "a": "순차 2+2+1+1 = 6초. 병렬은 경로 A→C→D = 4초, B→D = 3초 중 긴 쪽 4초. 속도 향상 1.5배."
+    },
+    {
+     "q": "강사가 '계획 후 실행이 상당 부분 대체됐다'고 한 대체물 두 가지는?",
+     "a": "코드 생성(CodeAct 식으로 실행할 프로그램을 통째로 쓰기)과 모델 API 의 병렬 도구 호출."
+    }
+   ]
+  },
+  {
+   "start": 3260,
+   "title": "패턴 카탈로그 — ReAct·Reflexion·CodeAct·계획 후 실행·트리 탐색을 한 표에 놓고 고르기",
+   "points": [
+    "강의 정리: ReAct(행동 전 추론은 유용), Reflexion(자기 반성은 이제 추론 안에), CodeAct(코드는 좋은 행동 형식), ReWOO/LLMCompiler(워크플로 컴파일은 지금 주로 병렬 도구 호출로; 계획은 여전히 중요), 가끔 서브에이전트 오케스트레이션에 워크플로.",
+    "고르는 축 넷: 턴 수(지연), 누적 토큰(비용), 중간 관찰에 반응하는 능력(적응성), 오류 회복 방식.",
+    "트리 탐색(Tree-of-Thoughts, LATS 등)은 노트 보충 — 강의에서는 LLMCompiler 표의 Game of 24 비교(74.00% / 241.2초)로만 등장. 정확도를 위해 가장 많은 호출을 쓰는 극단이다.",
+    "실무 조합: 추론 모델 + ReAct 고리 + 코드(또는 bash) 행동 + 병렬 도구 호출 + 필요할 때만 외부 검증 고리."
+   ],
+   "on_screen": "Recap: ReAct: Reasoning before acting is useful. / Reflexion: Self-reflection is incorporated into the reasoning today. / CodeAct: Code is a good form factor for actions. / ReWOO/LLMCompiler: Compiling workflows is primarily done with parallel tool calls today. Planning is still important. / Sometimes workflows are still used for 'sub-agent' orchestration. 오른쪽에 start → model ⇄ tools → end 그래프.",
+   "explain": [
+    "강의는 패턴을 하나씩 보여 준 뒤 한 장으로 정리했다. 행동 전에 추론하는 것은 유용하다(ReAct). 자기 반성은 오늘날 모델의 추론 안에 들어가 있다(Reflexion). 코드는 행동의 좋은 형식이다(CodeAct). 워크플로로 컴파일하는 일은 지금은 주로 병렬 도구 호출로 하지만, 계획은 여전히 중요하다(ReWOO/LLMCompiler). 그리고 서브에이전트 오케스트레이션에는 여전히 워크플로가 쓰인다. 이 챕터는 그 정리를 '언제 무엇을 고르나'의 카탈로그로 넓힌다. 강의에 없던 트리 탐색 계열은 노트 보충으로 표에 넣었다.",
+    "패턴을 비교하는 축을 넷으로 잡으면 차이가 선명해진다. 첫째 턴 수(곧 지연)다. ReAct 는 도구마다 한 턴, CodeAct 는 프로그램마다 한 턴, ReWOO 는 계획 한 번 + 답 한 번, LLMCompiler 는 거기에 병렬 실행이 더해진다. 둘째 누적 토큰(곧 비용)이다. ReAct 는 매 턴 커지는 문맥을 다시 읽어 턴 수의 제곱으로 자라고, 계획형은 각 호출의 문맥이 짧다. 셋째 적응성 — 중간 관찰을 보고 다음 행동을 바꿀 수 있는가. ReAct 가 가장 높고, ReWOO 가 가장 낮으며(재계획 전까지는 못 바꾼다), CodeAct 는 코드 안에 if 문을 넣는 만큼 적응한다. 넷째 오류 회복 방식이다. ReAct 는 다음 턴에서 즉석으로, Reflexion 은 다음 시도(에피소드)에서 반성문으로, LLMCompiler 는 재계획으로, CodeAct 는 실행 오류 메시지를 보고 코드를 고쳐서 회복한다.",
+    "트리 탐색(노트 보충)은 이 스펙트럼의 반대쪽 끝이다. 생각의 나무(Tree-of-Thoughts)는 한 단계에서 여러 후보 생각을 만들고, 각 후보를 LLM 이 '유망한가'로 평가해 너비·깊이 우선 탐색을 한다. LATS(언어 에이전트 트리 탐색)는 여기에 몬테카를로 트리 탐색과 환경 피드백, Reflexion 식 반성을 합친다. 분기 수 b, 깊이 d 면 최악의 경우 생성·평가 호출이 b^d 규모로 늘어나므로 가장 비싸지만, 되돌아가기(backtracking)가 가능해 한 번 틀린 길을 버릴 수 있다. 강의 슬라이드에서 볼 수 있는 유일한 숫자는 LLMCompiler 표의 Game of 24 행이다. Tree-of-Thoughts 가 74.00% 에 241.2초를 쓸 때, 같은 탐색을 병렬 DAG 로 실행한 LLMCompiler 는 75.33% 에 83.6초였다. 탐색 자체가 비싸다는 것과, 탐색 안의 독립 호출은 병렬화로 줄일 수 있다는 것을 함께 보여 준다.",
+    "실무 감각으로 정리하면(강사 의견과 노트 보충을 섞었다), 지금 대부분의 코딩·업무 에이전트는 추론 모델 위에 ReAct 고리를 두고, 행동 형식으로 코드(또는 bash 한 줄에 스크립트 통째로)를 쓰며, 독립 조회는 병렬 도구 호출로 한 턴에 묶고, 정답을 검증할 수 있는 신호(테스트·린터·실행 결과)가 있을 때만 평가 고리를 붙인다. 별도의 '반성 단계'나 '플래너 모듈'은 추론 모델이 생각 안에서 대신하는 경우가 많다. 반면 정답 확인이 쉽고 정확도가 비용보다 중요한 문제(퍼즐·수학 경시·코드 경진)는 트리 탐색이나 Archon 식 다중 후보 구조가 값을 한다. 어느 쪽이든 강의가 반복한 원칙은 같다 — 평가 데이터를 먼저 갖추고, 패턴을 넣은 판과 뺀 판을 재서 고른다."
+   ],
+   "formulas": [
+    {
+     "expr": "Calls_tree ≈ Σ_{ℓ=1}^{d} b^ℓ · (1 + 1_eval) ≈ 2·b^d",
+     "meaning": "분기 b, 깊이 d 인 너비 우선 트리 탐색의 생성+평가 호출 수(가지치기 없음). 1_eval 은 후보마다 평가 호출이 하나 붙는다는 뜻. 빔 폭 k 로 가지치기하면 대략 d·k·b·2 로 줄어든다."
+    }
+   ],
+   "example": {
+    "title": "같은 4단계 문제에 드는 LLM 호출 수 비교",
+    "body": "도구 4개가 필요한 문제를 가정한다. ReAct: 4 + 1(답) = 5호출, 순차. CodeAct: 코드 1 + 답 1 = 2호출(도구 실행은 인터프리터). ReWOO: 플래너 1 + 솔버 1 = 2호출(+ 계획 안 LLM 도구). Reflexion 을 ReAct 위에 3회 시도까지: 최악 3×5 + 반성 2 = 17호출. 트리 탐색 b=3, d=4(가지치기 없음): 생성 3+9+27+81 = 120, 평가도 120 → 240호출. 빔 폭 2 로 가지치기하면 단계마다 2×3 후보만 생성·평가 → 4단계 × 6 × 2 = 48호출. 즉 '정확도를 얼마에 사나'의 문제다."
+   },
+   "diagram": {
+    "title": "적응성과 비용으로 본 패턴 위치(노트 보충)",
+    "code": "quadrantChart\n  title 패턴 카탈로그\n  x-axis 적은 호출 --> 많은 호출\n  y-axis 낮은 적응성 --> 높은 적응성\n  quadrant-1 비싸고 유연\n  quadrant-2 싸고 유연\n  quadrant-3 싸고 고정\n  quadrant-4 비싸고 고정\n  ReWOO: [0.15, 0.2]\n  LLMCompiler: [0.25, 0.35]\n  CodeAct: [0.2, 0.6]\n  ReAct: [0.5, 0.8]\n  Reflexion: [0.7, 0.85]\n  Tree search: [0.92, 0.9]\n  Archon: [0.85, 0.3]"
+   },
+   "pitfalls": [
+    "카탈로그의 위치는 경향일 뿐이다. 예를 들어 CodeAct 도 중간 관찰이 필요한 과제에서는 여러 턴을 돈다.",
+    "트리 탐색·생각의 나무는 이 강의에서 따로 다루지 않았다. 숫자는 LLMCompiler 표의 Game of 24 행뿐이니, 일반 성능 주장으로 확대하지 말 것."
+   ],
+   "check": [
+    {
+     "q": "정답 확인이 쉽고 정확도가 비용보다 훨씬 중요한 퍼즐 문제에 어울리는 패턴과, 단계가 정해진 대량 데이터 처리에 어울리는 패턴은?",
+     "a": "퍼즐은 트리 탐색(또는 다중 후보 + 검증). 단계가 정해진 대량 처리는 계획 후 실행/워크플로(또는 CodeAct 한 번)로 호출을 줄이는 쪽."
+    }
+   ]
+  },
+  {
+   "start": 3320,
+   "title": "컨텍스트 엔지니어링의 두 원칙과 첫 패턴 — 지속 이벤트 로그(OpenHands)",
+   "points": [
+    "에이전트 고리 그림에서 빠진 것: 매 LLM 호출의 입력을 누군가 조립해야 한다. 그 조립 규칙이 컨텍스트 관리다.",
+    "원칙 1 초점 유지: 지금 일에 필요한 것만 창에 둔다. 전체 기록을 다 둘 필요는 없고, 군더더기는 성능을 떨어뜨린다(긴 문맥 중간의 사실은 잘 못 쓴다).",
+    "원칙 2 연속성 보존: 문맥을 조작해도 요구사항·목표·제약·진행 상황은 남겨야 한다. 실무적으로는 KV 캐시를 지키는 것(앞부분을 바꾸지 않기)도 포함.",
+    "패턴 다섯: 지속 이벤트 로그, 메모리 오프로딩, 압축(compaction), 관찰 마스킹, 컨텍스트 격리.",
+    "이벤트 로그(OpenHands): 모든 메시지·행동·관찰을 불변(append-only) 로그에 남기고, 호출마다 로그에서 LLM 입력을 다시 만든다. 무엇을 줄이든 원본은 남고, 외부 관찰자 훅을 걸 수 있다."
+   ],
+   "on_screen": "Context Engineering — 'Prompt engineering vs. context engineering' 그림(왼쪽: System prompt·User message → Assistant message, 오른쪽: Possible context to give model(Doc, Tool, Memory file, Comprehensive instructions, Domain knowledge, Message history …) 에서 골라 Context window 로, 가위 표시). 출처 anthropic.com/engineering/effective-context-engineering-for-ai-agents. 'Context Engineering: Principles' — Focus the Context(Keep only what you need for the task at hand in the context window / The entire history does not need to be in the context / Excessive information is context-bloat) | Preserve Continuity(Manipulate the context to preserve requirements, goals, constraints, progress, etc. / Practically this also means preserving the KV Cache). 출처 needle-in-a-haystack. Persistent Event Log: OpenHands 그림(User Interface: Command Line, Web UI, IDE Plugins / Multi-turn User-Agent Interaction / Event History / Agent produce new action / Event Stream where all Action-Observation(s) are tracked: [1] Message(source=user) 'Can you create a list of numbers from 1 to 10, and create a web page to display them at port 5000?' [2] IPythonRunCellAction … [3] CmdRunAction 'python3 app.py > server.log 2>&1 &' … BrowseInteractiveAction goto('http://127.0.0.1:5000') … / Agent Runtime: Docker Sandbox, Bash Shell, Browser(Playwright Chromium)). 파이프라인: Event List → Filter LLMConvertibleEvent → Group ActionEvents by llm_response_id → Convert to Messages → LLM Input; 슬라이드 문장 넷(요지): 입력을 바꿔도 일어난 일은 그대로 보존 / 로그는 불변(append only) 가능 / LLM 호출마다 입력을 로그에서 재구성 / 외부 관찰자가 시스템 상태를 감시할 훅.",
+   "explain": [
+    "에이전트 고리 그림(model ⇄ tools)에는 그려져 있지 않은 일이 하나 있다. 모델을 부를 때마다 '이번에 무엇을 보여 줄지'를 누군가 조립해야 한다. 2강에서 본 대로 프롬프트 엔지니어링이 질문 한 번에 들어갈 문장 하나를 잘 쓰는 일이었다면, 컨텍스트 엔지니어링은 문서·도구 설명·지시문·도메인 지식·메모리 파일·대화 기록처럼 넣을 수 있는 것이 넘쳐나는 상황에서 무엇을 골라 창에 넣고 무엇을 잘라낼지 정하는 일이다. 왜 고르기가 필요한가. 1강에서 본 '건초 더미 속 바늘' 실험처럼, 문맥이 어느 길이를 넘고 사실이 문맥 한가운데쯤 있으면 모델이 그것을 근거로 추론하지 못한다. 모델이 좋아지고 있지만, 강사는 최고 모델도 컨텍스트를 잘 관리하면 더 잘한다고 했다.",
+    "강의가 세운 원칙은 둘이다. 첫째 초점 유지. 지금 하는 일에 필요한 것만 창에 둔다. 대화의 모든 기록과 모든 관찰을 들고 다닐 필요는 없으며, 넘치는 정보는 그냥 군더더기(context bloat)라 성능을 떨어뜨린다. 둘째 연속성 보존. 문맥을 자르고 줄이는 순간 위험이 생긴다 — 사용자가 처음에 말한 요구사항('삭제는 확인 후에'), 목표, 제약, 지금까지의 진행 상황을 잃으면 에이전트가 예상 밖으로 행동한다. 2강 노트의 '압축 중 확인 지시를 잃고 메일을 지운 사고'가 바로 그 예다. 연속성에는 실무적인 면도 있다. 2강의 KV 캐시 — 문맥 앞부분을 바꾸거나 순서를 뒤섞으면 캐시가 무효가 되어 다시 계산(prefill)해야 하므로 느리고 비싸다. 그래서 좋은 컨텍스트 관리는 앞부분을 고정하고 뒤에만 이어 붙이려 한다. 이 두 원칙은 자주 충돌한다. 초점을 위해 옛 관찰을 지우면 캐시가 깨진다. 아래 패턴들은 이 둘 사이의 서로 다른 타협이다.",
+    "첫 패턴은 지속 이벤트 로그다. 강의는 CMU Graham Neubig 교수 쪽에서 시작한 오픈소스 코딩 에이전트(이자 회사) OpenHands 를 예로 든다. 사용자가 '1부터 10까지의 목록을 만들어 5000번 포트에 웹페이지로 띄워 달라'고 하면, 그 메시지, 에이전트가 실행한 파이썬 셀과 셸 명령, 그 출력, 브라우저로 페이지를 열어 본 결과까지 모든 일이 출처(source)·내용·렌더링 방법이 붙은 객체로 이벤트 스트림에 하나씩 쌓인다. 그리고 모델을 부를 차례가 오면, 로그를 걸러(LLM 이 읽을 수 있는 이벤트만) 같은 응답에서 나온 행동들을 묶고 메시지 형식으로 바꿔 입력을 매번 새로 만든다. 즉 '일어난 일'과 '모델에게 보여 주는 것' 사이에 변환 층이 하나 생긴다.",
+    "이 분리가 주는 이득은 세 가지다. 첫째, 뒤에 나올 압축이나 관찰 마스킹으로 모델 입력을 아무리 줄여도 로그 자체는 append-only 로 그대로라 원본이 사라지지 않는다. 나중에 디버깅하거나, 다른 방식으로 다시 렌더링하거나, 사람에게 보여 줄 수 있다. 둘째, 호출마다 입력을 로그에서 재구성하므로 '어떻게 보여 줄지'를 바꾸는 것이 변환 함수 하나를 바꾸는 일이 된다. 셋째, 모든 일이 로그에 쓰이니 외부 관찰자가 훅을 걸 수 있다 — 'LLM 응답이 기록되면 이 검사기를 돌린다', '위험한 명령이 기록되면 알린다' 같은 감시·확장이 로그 위에 얹힌다. 아래 코드는 불변 이벤트 객체, 그리고 compaction 경계와 관찰 마스킹을 옵션으로 받는 렌더 함수를 보여 준다. 렌더링 결과가 달라져도 로그 길이(7개)는 그대로라는 점이 이 패턴의 요점이다."
+   ],
+   "code": {
+    "lang": "python",
+    "src": "# 불변 이벤트 로그 -> 매 호출마다 LLM 입력을 다시 렌더링 (OpenHands·Pi 방식의 뼈대)\nfrom dataclasses import dataclass\n@dataclass(frozen=True)\nclass Event:\n    id: int; source: str; kind: str; content: str      # kind: message/action/observation\n\nlog = []                                                # append 만 한다 — 지우지 않는다\ndef emit(src, kind, text): log.append(Event(len(log), src, kind, text))\n\ndef render(first_kept=None, summary=None, mask_before=None):\n    msgs = [(\"system\", \"너는 코딩 에이전트다\")]\n    if summary: msgs.append((\"user\", f\"[이전 요약] {summary}\"))\n    for e in log:\n        if first_kept is not None and e.id < first_kept: continue      # Pi 식 compaction 경계\n        text = e.content\n        if mask_before is not None and e.kind == \"observation\" and e.id < mask_before:\n            text = \"[관찰 생략]\"                                      # 관찰 마스킹\n        msgs.append((\"tool\" if e.kind == \"observation\" else e.source, text))\n    return msgs\n\nemit(\"user\", \"message\", \"1~10 을 보여 주는 웹페이지를 5000번 포트에\")\nemit(\"agent\", \"action\", \"write app.py\"); emit(\"env\", \"observation\", \"app.py 12줄 작성됨\")\nemit(\"agent\", \"action\", \"python app.py &\"); emit(\"env\", \"observation\", \"Serving on :5000 ... (로그 200줄)\")\nemit(\"agent\", \"action\", \"curl localhost:5000\"); emit(\"env\", \"observation\", \"<ul><li>1</li>...</ul>\")\nprint(len(render()), render(mask_before=4)[3:5])\nprint(render(first_kept=3, summary=\"app.py 를 만들었다\"))\nprint(\"로그는 그대로:\", len(log), \"개\")",
+    "note": "직접 실행함. LLM 호출 없이 로그와 렌더링만 다룬다. 출력: 전체 렌더 8개 메시지, mask_before=4 일 때 앞쪽 관찰이 '[관찰 생략]' 으로 바뀌고, first_kept=3 + 요약일 때 앞 세 이벤트 대신 요약 한 줄이 들어간다. 마지막 줄 '로그는 그대로: 7 개'."
+   },
+   "diagram": {
+    "title": "이벤트 로그 → LLM 입력 변환",
+    "code": "flowchart LR\n  U[사용자 메시지] --> L[(이벤트 로그<br/>append-only)]\n  A[에이전트 행동] --> L\n  O[관찰·도구 결과] --> L\n  L --> F[필터: LLM 이 읽을 이벤트] --> G[같은 응답의 행동 묶기] --> C[메시지로 변환<br/>+압축·마스킹 규칙] --> IN[LLM 입력]\n  L -. 훅 .-> H[외부 관찰자·검사기]"
+   },
+   "pitfalls": [
+    "'로그를 남긴다'와 '로그 전체를 모델에 보여 준다'는 다르다. 이벤트 로그의 요점은 둘을 분리하는 것이다.",
+    "렌더링 규칙을 자주 바꾸면(예: 매 턴 옛 관찰을 다르게 자르기) 앞부분이 바뀌어 KV 캐시가 계속 깨진다 — 연속성 원칙과 충돌한다."
+   ],
+   "check": [
+    {
+     "q": "컨텍스트 엔지니어링의 두 원칙은 무엇이고, 어디서 충돌하나?",
+     "a": "초점 유지(필요한 것만)와 연속성 보존(요구사항·목표·진행 상황, KV 캐시 유지). 옛 내용을 잘라 초점을 맞추면 앞부분이 바뀌어 캐시가 깨지고 중요한 제약을 잃을 위험이 생긴다."
+    }
+   ]
+  },
+  {
+   "start": 3700,
+   "title": "메모리 오프로딩·압축(compaction)·관찰 마스킹 — 문맥을 줄이는 세 방법과 그 비용",
+   "points": [
+    "메모리 오프로딩(MemGPT): 사실을 파일·저장소에 써 두고 필요할 때 검색해 꺼낸다. 창에 늘 다 둘 필요가 없어진다(7강에서 자세히).",
+    "압축: 문맥 한도를 모델의 실제 한도보다 낮게 정해 두고, 넘으면 앞부분을 LLM 이 요약한 것으로 바꾼다. 압축 자체를 도구를 쓰는 에이전트로 만들 수도 있지만 그동안 사용자는 기다린다.",
+    "관찰 마스킹(「The Complexity Trap」): 에이전트 토큰의 83.9% 가 관찰(추론 9.6%, 행동 6.5%). 요약 대신 옛 관찰만 잘라내도 해결률이 비슷하거나 조금 낫고, 더 싸고, 프로그램만으로 된다.",
+    "마스킹도 KV 캐시를 깨므로 매 턴이 아니라 5~10턴마다 몰아서 한다. 패턴들은 함께 쓸 수 있다."
+   ],
+   "on_screen": "Memory Offloading: MemGPT — 2월 7일 대화 'How was your day today?' / 'fun my bf james baked me a birthday cake' / 'Oh wow, happy birthday!' / System Alert: Memory Pressure / working_context.append('Birthday is February 7') / working_context.append('Boyfriend named James'); 다른 날 'Did you do anything else to celebrate your birthday?' / 'yeah we went to six flags!' / recall_storage.search('six flags') → Showing 3 of 3 results … / 'Did you go with James? It's so cute how both met there!'; 'Storing things to memory or files frees up parts of the context to prune'. Compaction 그림: Raw Agent(System Prompt, User Prompt, Reasoning/Action/Observation 1·2·3 묶음 T1·T2·T3) 대 LLM-Summary(System Prompt, User Prompt, Summary 1 of T1,T2, Reasoning 3, Action 3, Observation 3); 'Have the LLM summarize prior reasoning, action, observation instances / Compress the history into fewer tokens / Can be helpful for the compaction itself to be agentic.' Observation Masking: 'Token Type Distribution — Raw Agent' 원그래프 Observation 83.9%, Reasoning 9.6%, Action 6.5%; (a) Raw Agent (b) Observation Masking(Mask 1, Mask 2 칸) (c) LLM-Summary 비교 그림; 슬라이드 요지: LLM 요약 대신 옛 관찰을 잘라낼 수 있다, 관찰이 긴 코딩 에이전트에 특히 유용. 산점도 세 개 (a) Gemini 2.5 Flash (b) Gemini 2.5 Flash (Thinking) (c) Qwen3-Coder 480B — 가로축 Instance Cost (USD), 세로축 Solve Rate (%); Raw Agent(검은 점)이 오른쪽(비쌈), Observation Masking(세모)·LLM-Summary(네모)는 왼쪽에 비슷한 높이. 출처 arxiv 2508.21433.",
+   "explain": [
+    "책상 위가 좁으면 다 쓴 서류를 서랍에 넣는다. 메모리 오프로딩이 그것이다. MemGPT 예에서 사용자가 2월 7일에 '남자친구 James 가 생일 케이크를 구워 줬다'고 말하면, 에이전트는 '메모리 압박' 경고를 받고 '생일은 2월 7일', '남자친구 이름은 James' 를 작업 기억에 적어 둔다. 다른 날 사용자가 '식스 플래그에 갔다'고 하자 에이전트는 회상 저장소를 '식스 플래그'로 검색해 과거 대화를 찾아 'James 와 갔어요?'라고 묻는다. 사용자에 관한 모든 사실을 매번 창에 넣지 않아도, 필요할 때 검색 도구로 꺼내면 된다. 구현은 RAG 일 수도, 파일 읽기·쓰기 도구일 수도 있다. 강사는 이 주제를 다음 시간(7강, 메모리) 전체로 미루고 한 장만 보여 줬다.",
+    "압축(compaction)은 서류 더미를 요약 메모 한 장으로 바꾸는 일이다. ReAct 고리를 돌다 보면 추론·행동·관찰 묶음(T1, T2, T3 …)이 계속 쌓인다. 가장 단순한 구현은 문맥 한도를 모델이 실제로 감당하는 길이보다 낮게 정해 두고, 넘으면 앞쪽 묶음들을 모델에게 주고 요약하게 해 'Summary 1 (T1, T2)' 한 칸으로 바꾸는 것이다. 더 정교하게는 압축 자체를 에이전트로 만들어, 요약하면서 필요한 정보를 도구로 찾아 확인하게 할 수도 있다. 하지만 에이전트를 써 본 사람이라면 알듯 압축하는 동안 사용자는 기다려야 하고, 요약 호출 비용도 든다. 그리고 2강 노트의 사고처럼 요약이 핵심 제약을 빠뜨릴 위험이 있다 — 연속성 원칙의 위반이다.",
+    "관찰 마스킹은 「The Complexity Trap」 논문의 문제 제기다. 압축은 필요 이상으로 복잡한 해법이고, 더 단순한 방법으로 충분하다는 것이다. 근거는 원그래프다. 코딩·수학 등 여러 과제를 푸는 에이전트의 토큰을 종류별로 세 보니 관찰이 83.9%, 추론 9.6%, 행동 6.5% 였다. 웹 문서를 통째로 가져오거나 테스트 출력 전체를 읽으면 관찰이 문맥을 부풀린다. 그렇다면 추론과 행동은 그대로 두고, 이미 써먹은 옛 관찰만 몇 줄로 줄이거나 '[생략]' 표시로 바꾸면 된다. 이 방식은 LLM 호출 없이 프로그램 규칙만으로 되므로 요약의 지연이 없다. 앞 챕터의 이벤트 로그와도 잘 맞는다 — 관찰은 로그에 원본이 남아 있으니, 변환 함수에 '열 턴이 지난 관찰은 생략'이라는 규칙 하나만 넣으면 된다. 산점도에서 세 모델(Gemini 2.5 Flash, 그 Thinking 판, Qwen3-Coder 480B) 모두 마스킹과 LLM 요약은 해결률이 비슷하고(마스킹이 조금 나은 경우도 있다) 원본 그대로의 에이전트보다 훨씬 싸다. 강사는 둘의 성능 차이를 크게 주장하지는 않지만, 마스킹이 더 단순하고 지연이 없다는 점을 강조했다.",
+    "주의할 점도 있다. 관찰을 지우면 그 지점 이후의 문맥이 바뀌어 KV 캐시가 무효가 된다. 그래서 강사는 매 턴 지우기보다 다섯 턴이나 열 턴마다 몰아서 지우고 한 번 다시 prefill 하는 식의 타협을 권했다. 또 마스킹만으로는 아주 긴 작업에서 결국 한도에 닿을 수 있어, 압축과 겹쳐 쓰기도 한다. 강의의 마지막 메모처럼 이 패턴들은 서로 배타적이지 않다 — 먼저 지식을 메모리로 내보내고, 그다음 압축하고, 이벤트 로그 위에서 관찰을 자르는 식으로 함께 쓴다. 아래 손계산과 코드는 관찰 비중을 84% 로 맞춘 가상 에이전트에서 원본·마스킹·압축의 문맥 길이를 턴별로 따라간다."
+   ],
+   "formulas": [
+    {
+     "expr": "C_raw(t) = S + t·(r + a + o)",
+     "meaning": "t 턴 뒤 원본 문맥 길이. S 는 시스템 프롬프트, r·a·o 는 턴당 추론·행동·관찰 토큰."
+    },
+    {
+     "expr": "C_mask(t) = S + t·(r + a) + min(t, M)·o + max(0, t−M)·m",
+     "meaning": "최근 M 턴의 관찰만 원문으로 두고 그 이전 관찰은 m 토큰짜리 '[생략]' 표지로 바꾼 길이. t 가 커지면 기울기가 (r+a+m) 으로 줄어든다 — 관찰 비중이 클수록 효과가 크다."
+    },
+    {
+     "expr": "C_comp(t) = S + σ + (t − t_c)·(r + a + o)",
+     "meaning": "마지막 압축 시점 t_c 이후의 길이. σ 는 요약 토큰 수. 한도 Λ 를 넘을 때마다 t_c 가 갱신되어 톱니 모양이 된다. 압축할 때마다 요약 호출 1번과 그 지연이 추가된다."
+    }
+   ],
+   "example": {
+    "title": "관찰 84% 에이전트의 10턴·20턴·30턴",
+    "body": "가정: S=2,000, r=300, a=200, o=2,600(관찰 비중 2,600/3,100 = 83.9%), 마스킹 M=3, m=20, 압축 한도 Λ=40,000, 요약 σ=1,500. 10턴: 원본 2,000+10×3,100 = 33,000. 마스킹 2,000 + 10×500 + 3×2,600 + 7×20 = 2,000+5,000+7,800+140 = 14,940(55% 감소). 압축은 아직 한도 아래라 33,000. 13턴에 원본이 42,300 > 40,000 이 되어 압축 → 2,000+1,500 = 3,500 으로 리셋. 20턴: 원본 64,000, 마스킹 20,140, 압축 3,500+7×3,100 = 25,200. 30턴: 원본 95,000, 마스킹 25,340, 압축 19,000(26턴에 두 번째 압축). 매 턴 문맥 전체를 다시 읽는다고 하면 30턴 누적 입력이 원본 1,501,500, 마스킹 526,260(65% 절감), 압축 579,900 — 압축은 여기에 요약 호출 2번이 더 든다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 원본 그대로 / 관찰 마스킹 / 요약(compaction) — 턴별 문맥 토큰 비교(토큰 수는 가정값)\nSYS, R, A, O = 2000, 300, 200, 2600    # 시스템, 턴당 추론·행동·관찰 토큰 (관찰 ≈ 84%)\nKEEP, LIMIT, SUMMARY = 3, 40000, 1500  # 마스킹: 최근 3턴 관찰만 원문, 압축 한도, 요약 크기\n\ndef raw(t):  return SYS + t * (R + A + O)\ndef mask(t): return SYS + t * (R + A) + min(t, KEEP) * O + max(0, t - KEEP) * 20  # 20 = \"[생략]\" 표지\ndef compact(t, ctx=SYS):\n    for _ in range(t):\n        ctx += R + A + O\n        if ctx > LIMIT: ctx = SYS + SUMMARY        # 한도를 넘으면 앞부분을 요약 하나로\n    return ctx\n\ntotal = {\"raw\": 0, \"mask\": 0, \"compact\": 0}\nfor t in range(1, 31):\n    for k, f in ((\"raw\", raw), (\"mask\", mask), (\"compact\", compact)):\n        total[k] += f(t)                             # 매 턴 문맥 전체를 다시 읽는다(캐시 무시)\n    if t in (5, 10, 20, 30):\n        print(f\"턴 {t:2d}: 원본 {raw(t):6d}  마스킹 {mask(t):6d}  압축 {compact(t):6d}\")\nprint(\"30턴 누적 입력:\", total, f\"마스킹 절감 {1 - total['mask'] / total['raw']:.0%}\")",
+    "note": "직접 실행함(LLM 호출 없음 — 토큰 수 산술만). 출력: 턴 5/10/20/30 의 세 길이와 '30턴 누적 입력 … 마스킹 절감 65%'. 숫자는 위 손계산과 같다. 캐시 할인은 무시했다."
+   },
+   "diagram": {
+    "title": "세 방법이 문맥의 어디를 건드리나",
+    "code": "flowchart LR\n  subgraph 원본\n    S1[시스템] --> R1[추론·행동] --> O1[관찰 2600] --> R2[추론·행동] --> O2[관찰 2600]\n  end\n  subgraph 마스킹\n    S2[시스템] --> R3[추론·행동] --> M1[생략 20] --> R4[추론·행동] --> O3[관찰 2600]\n  end\n  subgraph 압축\n    S3[시스템] --> SM[요약 1500<br/>LLM 호출 필요] --> R5[최근 턴 원문]\n  end"
+   },
+   "pitfalls": [
+    "관찰 마스킹을 매 턴 하면 매 턴 KV 캐시가 깨져 오히려 느리고 비쌀 수 있다. 몇 턴씩 몰아서 한다.",
+    "압축 요약은 '사용자의 제약'을 빠뜨릴 수 있다. 시스템 프롬프트처럼 압축되지 않는 자리에 핵심 제약을 고정해 두는 편이 안전하다.",
+    "83.9% 는 특정 에이전트·과제 묶음에서 잰 값이다. 관찰이 짧은 대화형 에이전트에서는 마스킹 효과가 작다."
+   ],
+   "check": [
+    {
+     "q": "위 가정에서 마스킹 판의 턴당 문맥 증가량(t>M 일 때)은? 원본과 비교하면?",
+     "a": "r+a+m = 300+200+20 = 520 토큰/턴. 원본은 3,100 토큰/턴이므로 약 1/6 로 줄어든다."
+    },
+    {
+     "q": "관찰 마스킹이 압축보다 '단순하다'고 하는 이유 두 가지는?",
+     "a": "LLM 요약 호출 없이 프로그램 규칙만으로 되어 지연과 추가 비용이 없고, 이벤트 로그의 렌더링 규칙 하나로 구현되며 원본은 로그에 남는다."
+    }
+   ]
+  },
+  {
+   "start": 4040,
+   "title": "컨텍스트 격리 — 서브에이전트와 점진적 공개(스킬 파일), 그리고 쓰기·고르기·압축·격리 분류",
+   "points": [
+    "서브에이전트: 검색·문서 읽기처럼 문맥을 부풀릴 일을 별도 창의 서브에이전트에 맡기고 짧은 보고만 받는다(멀티에이전트는 8강).",
+    "점진적 공개: 스킬 파일(예: pdf/SKILL.md 의 YAML 머리말 name·description + 본문)의 이름·설명만 시스템 프롬프트에 두고, 필요할 때 본문을 불러온다.",
+    "스킬과 도구의 차이: 도구는 환경에 작용하고, 스킬은 문맥에 지식을 넣을 뿐 실제 일은 여전히 도구로 한다. 스킬 목록은 시스템 프롬프트에 있어 압축에도 살아남는다.",
+    "LangChain 분류: 쓰기(메모리·스크래치패드) / 고르기(관련 도구·지식 검색) / 압축(요약·자르기) / 격리(상태 분할·샌드박스·멀티에이전트).",
+    "실제 시스템은 이 패턴들을 섞는다. 설계의 기준은 여전히 초점 유지와 연속성 보존."
+   ],
+   "on_screen": "Context Isolation 그림: Plan → Agent 1, Agent 2 (각각 따로 된 창과 뇌 아이콘), 'Parallelize computation with isolated context windows'(출처 langchain.com/blog/context-engineering-for-agents). Context Isolation: Progressive Disclosure — pdf/SKILL.md: YAML Frontmatter(name: pdf / description: Comprehensive PDF toolkit for extracting text and tables, merging/splitting documents, and filling out forms.) + Markdown(## Overview … ## Quick Start: from pypdf import PdfReader, PdfWriter / reader = PdfReader('document.pdf') / print(f'Pages: {len(reader.pages)}')); 'You don't need all tools and context in the initial prompt, you can disclose things later as needed (e.g. skill files)'. 출처 anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills. Context Management Taxonomy: Write Context(Long-term memories across agent sessions, Scratchpad within agent session, State within agent session) / Select Context(Retrieve relevant tools, Retrieve from scratchpad, Retrieve long-term memory, Retrieve relevant knowledge) / Compress Context(Summarize context to retain relevant tokens, Trim context to remove irrelevant tokens) / Isolate Context(Partition context in state, Hold in environment/sandbox, Partition across multi-agent); 빨간 표시 'This Wednesday'(메모리) 와 'Next Monday'(멀티에이전트).",
+   "explain": [
+    "앞 챕터의 방법들이 이미 들어온 것을 줄이는 쪽이라면, 컨텍스트 격리는 애초에 한 창에 다 넣지 않는 쪽이다. 첫 방법은 서브에이전트다. 팀장이 '이 분야 논문 백 편을 읽고 요점만 알려 달라'고 맡기듯, 주 에이전트가 문서 검색과 읽기처럼 문맥을 폭발시킬 일을 서브에이전트에게 맡긴다. 서브에이전트는 자기만의 창에 문서들을 가득 채워 일하고, 주 에이전트에게는 짧은 요약만 보고한다. 주 에이전트의 창은 오케스트레이션에 필요한 것만 남아 깨끗하다. 여러 서브에이전트를 동시에 돌리면 계산을 병렬화하는 효과도 있다(그림의 Plan → Agent 1, Agent 2). 워크플로 챕터의 오케스트레이터-워커가 문맥 관리 관점에서 다시 등장한 셈이고, 멀티에이전트의 득실은 8강에서 다룬다.",
+    "두 번째 방법은 점진적 공개다. 사람도 신입 교육 첫날 회사의 모든 매뉴얼을 외우지 않는다. 목차만 알고 필요할 때 해당 매뉴얼을 펴 본다. 스킬 파일이 그 매뉴얼이다. 예시의 pdf/SKILL.md 는 맨 위 YAML 머리말에 이름(pdf)과 한 줄 설명(텍스트·표 추출, 문서 합치기·나누기, 양식 채우기용 PDF 도구 모음)을 두고, 아래 마크다운 본문에 개요와 빠른 시작 코드(pypdf 로 페이지 수 읽기 등)를 둔다. 에이전트의 시스템 프롬프트에는 스킬들의 이름·설명(또는 파일 위치)만 들어 있고, 모델이 실제로 PDF 를 다뤄야 할 때 그 스킬을 불러 본문을 문맥에 추가한다. 질의응답에서 나온 정리가 정확하다. 스킬 목록은 시스템 프롬프트의 일부라 압축에도 살아남지만 본문은 필요할 때까지 들어오지 않는다. CodeAct 챕터의 질문 — '도구를 너무 많이 노출하면 헷갈리지 않느냐' — 에 대한 답도 이것이다. 도구도 필요할 때 공개할 수 있다.",
+    "스킬과 도구는 어떻게 다른가. 도구는 환경에 작용한다 — 파일을 쓰고, 명령을 실행하고, 검색한다. 스킬을 부르는 것은 환경을 바꾸지 않고 작업 기억(문맥 창)에 '이런 일은 이렇게 하라'는 지식을 넣을 뿐이다. 실제 일은 그 지식을 읽은 에이전트가 여전히 도구로 한다. 강의는 마지막으로 LangChain 블로그의 분류를 보여 주며 오늘 배운 패턴들을 네 칸에 넣었다. 쓰기(write)는 세션을 넘는 장기 기억, 세션 안의 스크래치패드와 상태에 적어 두는 것, 고르기(select)는 관련 도구·스크래치패드·장기 기억·지식을 검색해 가져오는 것 — 이 둘은 메모리와 검색의 영역(7강, 3강)이다. 압축(compress)은 요약해서 남기거나 관련 없는 토큰을 잘라내는 것 — 압축과 관찰 마스킹이다. 격리(isolate)는 상태 안에서 나누기, 환경·샌드박스에 들고 있기, 여러 에이전트로 나누기 — 점진적 공개와 서브에이전트다.",
+    "노트 보충으로 점진적 공개의 효과를 숫자로 보자. 스킬이 30개, 각 본문이 평균 2,000 토큰이라면 전부 시스템 프롬프트에 넣을 때 60,000 토큰이 매 호출 앞에 붙는다. 이름과 한 줄 설명만 두면 스킬당 약 40 토큰 × 30 = 1,200 토큰이고, 이번 작업에 PDF 스킬 하나만 불러오면 2,000 을 더해 3,200 토큰이다. 약 19분의 1 이다. 게다가 짧은 목록은 앞부분에 고정되어 KV 캐시에 계속 남고, 불러온 본문은 뒤에 이어 붙으니 연속성 원칙과도 잘 맞는다. 단점은 모델이 '지금 이 스킬이 필요하다'는 것을 스스로 알아차려야 한다는 점이다. 설명 문장이 모호하면 필요한 스킬을 안 부르고 엉뚱하게 일한다. 그래서 스킬의 한 줄 설명은 '언제 쓰는지'를 분명히 적는 것이 관행이다."
+   ],
+   "formulas": [
+    {
+     "expr": "C_skills = Σ_{s∈S} d_s + Σ_{s∈L} b_s",
+     "meaning": "점진적 공개 때 스킬이 차지하는 문맥. S 는 전체 스킬 집합, d_s 는 스킬 s 의 이름·설명 토큰, L 은 이번에 불러온 스킬 집합, b_s 는 본문 토큰. 전부 넣으면 Σ_{s∈S} b_s 가 된다."
+    }
+   ],
+   "example": {
+    "title": "스킬 30개 — 전부 넣기 대 점진적 공개",
+    "body": "전부 넣기: 30 × 2,000 = 60,000 토큰. 점진적 공개: 30 × 40 = 1,200 + 불러온 PDF 스킬 2,000 = 3,200 토큰(약 1/19). 서브에이전트도 같은 식으로 셈할 수 있다 — 문서 10개(각 5,000 토큰)를 주 에이전트가 직접 읽으면 50,000 토큰이 주 창에 남지만, 서브에이전트가 읽고 500 토큰 요약을 보고하면 주 창에는 500 만 늘어난다. 대신 서브에이전트 창의 50,000 토큰 비용은 그대로 들므로 '총비용'이 아니라 '주 창의 초점'을 사는 것이다."
+   },
+   "diagram": {
+    "title": "LangChain 의 네 칸에 오늘 패턴 넣기",
+    "code": "flowchart TB\n  W[쓰기<br/>장기 기억·스크래치패드·상태] --- M1[메모리 오프로딩]\n  S[고르기<br/>도구·기억·지식 검색] --- M2[RAG·메모리 검색]\n  C[압축<br/>요약·자르기] --- M3[compaction · 관찰 마스킹]\n  I[격리<br/>상태 분할·샌드박스·멀티에이전트] --- M4[서브에이전트 · 점진적 공개]"
+   },
+   "pitfalls": [
+    "서브에이전트는 총 토큰을 줄이지 않는다. 주 에이전트 창의 초점을 사는 대신 전체 비용은 오히려 늘 수 있다.",
+    "스킬을 '도구의 한 종류'로 오해하기 쉽다. 스킬은 문맥에 지식을 넣을 뿐 환경을 바꾸지 않는다."
+   ],
+   "check": [
+    {
+     "q": "스킬 파일의 이름·설명은 시스템 프롬프트에 두고 본문은 나중에 불러오는 설계가 연속성 원칙과 잘 맞는 이유는?",
+     "a": "짧은 목록은 문맥 앞부분에 고정되어 KV 캐시가 유지되고 압축에도 살아남으며, 불러온 본문은 뒤에 이어 붙으므로 앞부분을 바꾸지 않는다."
+    }
+   ]
+  },
+  {
+   "start": 4310,
+   "title": "사례 — 최소 하네스 Pi: 도구 4개, ReAct 고리, 트리형 문맥, 그리고 안전장치 없음",
+   "points": [
+    "철학: '워크플로를 Pi 에 맞추지 말고 Pi 를 워크플로에 맞춰라.' 아주 단순하게 두고 커뮤니티가 확장을 얹는다. 서브에이전트·권한 확인·계획 모드·할 일 목록·백그라운드 bash 가 없다.",
+    "도구: read·bash·powershell·edit·write·grep·find·ls 가 내장이지만 기본으로 켜진 것은 read·bash·edit·write 넷. 나머지는 bash 로 다 된다.",
+    "고리: JSON 도구 호출 위의 ReAct. 다만 bash 한 번에 스크립트를 통째로 쓰면 사실상 CodeAct.",
+    "문맥: 이벤트 로그를 트리로 저장해 이전 지점으로 되돌아가 가지를 칠 수 있다. 이벤트 로그 → LLM 입력 변환, 스킬 파일로 점진적 공개, firstKeptEntryId 기준 압축.",
+    "안전: 실행한 프로세스와 같은 권한으로 돌고 확인 팝업이 없다 — 늘 자동 모드. 강사: 좋은 모델에는 단순한 하네스, 약한 모델에는 더 나은 하네스(강사 의견)."
+   ],
+   "on_screen": "Pi Design Philosophy: 'Pi is a minimal agent harness. Adapt Pi to your workflows, not the other way around.' / Pi is an extremely basic harness and people build tons of extensions on top … / Things Pi is lacking: No Sub-Agents, No Permission Checks, No Plan Mode, No agent to-do lists, No bash in the background. Pi Tools 표: read(Read text files and supported images), bash(Run shell commands), powershell(Run PowerShell commands on Windows), edit(Apply exact text replacements to an existing file), write(Create or overwrite a file), grep(Search file contents), find(Find paths using glob patterns), ls(List directory contents); 'Only read, bash, edit, and write are enabled by default / Minimal tool bloat / All other tools are subsets of bash.' (출처 pi.dev/docs/latest/cli#tools). Pi Agent Loop: 요지: JSON 도구 호출 위의 ReAct 식 고리, 문맥은 트리로 쌓이고 이전 가지로 돌아가 다른 흐름을 이어 갈 수 있음. + 가지 친 노드 그림. Pi Context Management: 1. Event Log to LLM Input Conversion 2. Progressive Disclosure through Skill Files 3. Compaction — 'What the LLM sees: system | summary | usr | ass | tool | tool | ass | tool' (prompt / from cmp / messages from firstKeptEntryId). Pi Safety: 경고 상자 요지: 프로세스와 같은 권한으로 돌고 허락을 묻는 팝업이 없다 — 보호 없는 상시 자동 모드로 간주하라. Recap 다섯 줄과 Pi 로고.",
+   "explain": [
+    "마지막 10분은 실제 하네스 하나를 오늘 배운 패턴으로 해부한다. Pi 는 '최소한의 에이전트 하네스'를 표방한다. 설계 철학은 한 문장이다 — 당신의 작업 방식을 Pi 에 맞추지 말고, Pi 를 당신의 작업 방식에 맞춰 고쳐 쓰라. 그래서 일부러 많은 것을 뺐다. 서브에이전트, 명령 실행 전 권한 확인, 계획 모드, 에이전트용 할 일 목록, 백그라운드 bash 실행이 없다. 모든 것이 작업 세션 안에서 실행된다. 대신 확장하기 쉬워서 많은 오픈소스 에이전트가 Pi 위에 지어졌고, 커뮤니티가 빠진 기능들을 확장으로 붙였다. 2강 노트에서 본 'Pi 하네스가 대부분의 모델에서 Codex·Claude Code 와 같거나 나았다'는 결과가 이 강의의 맥락이다.",
+    "도구 표를 보면 철학이 드러난다. 내장 도구는 read, bash, powershell(윈도우용), edit(기존 파일의 정확한 문자열 치환), write(파일 생성·덮어쓰기), grep, find, ls 여덟 개지만, 기본으로 켜진 것은 read·bash·edit·write 넷뿐이다. grep·find·ls 는 bash 로 다 할 수 있는 일의 부분집합이기 때문이다. 도구 설명이 적으니 시스템 프롬프트가 짧고(초점 유지), 모델이 도구 선택에서 헷갈릴 일도 적다. 에이전트 고리는 JSON 도구 호출 위의 ReAct 다. 그런데 강사가 짚은 재미있는 점이 있다. bash 도구 하나를 부르면서 그 인자로 긴 스크립트를 통째로 써 넣을 수 있으니, 형식은 JSON 도구 호출이어도 내용은 CodeAct 다. 오늘 배운 두 패턴이 도구 설계 하나로 합쳐진 셈이다.",
+    "문맥 관리는 오늘 강의의 패턴 셋을 그대로 쓴다. 첫째, 이벤트 로그를 두고 매 호출 LLM 입력으로 변환한다. 특이한 점은 로그를 일렬이 아니라 트리로 저장한다는 것이다. 대화를 이전 지점으로 되돌려 거기서 다른 가지를 칠 수 있다 — 엉뚱한 방향으로 간 작업을 지우지 않고, 갈라지기 전 지점에서 다시 시작하는 것이다. 둘째, 스킬 파일로 점진적 공개를 한다. 셋째, 표준적인 압축을 한다. 경계 항목(firstKeptEntryId)을 정해 그 이후는 원문 그대로 두고, 그 이전은 LLM 에게 요약시킨다. 그래서 모델이 보는 입력은 '시스템 프롬프트 | 요약 | 경계 이후의 사용자·어시스턴트·도구 메시지들' 순서가 된다. 이벤트 로그 챕터의 코드에서 render(first_kept=3, summary=…) 가 정확히 이 모양을 만든다.",
+    "안전 면에서 Pi 는 아무것도 하지 않는다. 다른 하네스들은 위험한 명령 전에 허락을 구하거나 자동/수동 모드를 두지만, Pi 는 실행한 프로세스와 같은 권한으로 돌고 확인 팝업이 없다. 늘 보호 장치 없는 자동 모드라고 보면 된다. 한 학생이 '이렇게 단순한데 왜 잘 되느냐, 위험하지 않으냐'고 묻자 강사는 바탕 모델이 워낙 좋아져서 화려한 장치를 두르는 것이 점점 불필요해졌다고 답했다. 단순한 것을 만들고 필요한 확장만 붙이는 것 자체가 좋은 패턴이라는 것이다. 다만 안전은 응용에 따라 정말 위험할 수 있고, 그 점에서는 Pi 가 분명히 약하다고 인정했다(강사 의견). 이어진 질문 — '돈을 아끼려 오픈 모델을 쓰면 더 나은 하네스가 필요하냐' — 에는 최고 모델은 단순한 하네스가 필요하고 약한 모델은 더 나은 하네스가 필요하다고 답했다. 노트 보충으로 실무 처방을 붙이면, Pi 같은 하네스는 컨테이너나 권한을 줄인 사용자 계정 안에서 돌리고, 네트워크·파일 시스템 접근을 바깥에서 제한하는 것이 기본이다."
+   ],
+   "example": {
+    "title": "Pi 식 압축 경계를 손으로",
+    "body": "이벤트 12개(시스템 제외)가 있고 각 1,500 토큰, 압축 한도 15,000 이라 하자. 현재 18,000 > 15,000 이므로 압축. 최근 4개를 원문으로 남기기로 하면 firstKeptEntryId = 9번째 항목. 1~8번(12,000 토큰)을 LLM 이 800 토큰으로 요약 → 새 입력 = 시스템 1,000 + 요약 800 + 9~12번 6,000 = 7,800 토큰. 로그(트리)에는 1~12번이 그대로 남아 있어, 8번 지점으로 되돌아가 새 가지를 치는 것도 가능하다. 다음 압축 때는 '이전 요약 + 그 뒤 항목'을 다시 요약한다."
+   },
+   "diagram": {
+    "title": "Pi 를 오늘의 패턴으로 읽기",
+    "code": "flowchart LR\n  subgraph 도구\n    T[read · bash · edit · write<br/>기본 4개]\n  end\n  subgraph 고리\n    R[ReAct<br/>JSON 도구 호출] -->|bash 에 스크립트| CA[사실상 CodeAct]\n  end\n  subgraph 문맥\n    L[(트리형 이벤트 로그)] --> CV[LLM 입력 변환]\n    SK[스킬 파일<br/>점진적 공개] --> CV\n    CP[압축<br/>firstKeptEntryId] --> CV\n  end\n  subgraph 안전\n    X[권한 확인 없음<br/>늘 자동 모드]\n  end"
+   },
+   "pitfalls": [
+    "'최소 하네스가 잘 된다'는 것은 강한 모델을 전제로 한 이야기다. 강사도 약한 모델에는 더 나은 하네스가 필요하다고 했다.",
+    "Pi 를 그대로 개인 컴퓨터에서 돌리면 에이전트가 사용자와 같은 권한으로 파일을 지우고 명령을 실행할 수 있다. 격리된 환경에서 돌릴 것."
+   ],
+   "check": [
+    {
+     "q": "Pi 가 JSON 도구 호출 기반 ReAct 인데도 'CodeAct 같다'고 할 수 있는 이유는?",
+     "a": "기본 도구 중 bash 가 있어, 도구 호출 한 번의 인자로 반복·분기가 든 스크립트 전체를 넘겨 실행할 수 있기 때문이다."
+    },
+    {
+     "q": "Pi 의 문맥 관리에 들어간 오늘의 패턴 세 가지는?",
+     "a": "이벤트 로그(트리형)에서 LLM 입력으로의 변환, 스킬 파일을 통한 점진적 공개, firstKeptEntryId 경계를 쓰는 표준 압축."
+    }
+   ]
+  }
+ ],
+ "concepts": [
+  {
+   "term": "디자인 패턴",
+   "explain": "자주 나오는 설계 문제에 대한 이름 붙은 해법. 강사는 '반쯤 구운 것'이라 환경에 맞게 마저 구워야 한다고 강조했다.",
+   "at": 30
+  },
+  {
+   "term": "제어 흐름(control flow)의 위치",
+   "explain": "다음에 할 일을 코드가 정하면 워크플로, LLM 이 정하면 에이전트. 예측 가능성과 자율성을 맞바꾼다.",
+   "at": 210
+  },
+  {
+   "term": "프롬프트 체이닝",
+   "explain": "과제를 여러 LLM 호출로 쪼개고 사이에 코드 게이트를 두는 패턴. 지연을 내주고 정확도를 산다.",
+   "at": 420
+  },
+  {
+   "term": "라우팅",
+   "explain": "LLM 이 입력을 분류해 다른 모델·프롬프트·하위 흐름으로 보내는 switch 문. 쉬운 입력을 작은 모델로 보내 비용을 줄인다.",
+   "at": 540
+  },
+  {
+   "term": "병렬화(구획 나누기·투표)",
+   "explain": "코드가 정한 여러 갈래를 동시에 돌린다. 독립 작업을 나누거나(안전 분류 + 생성), 같은 입력을 여러 번 풀어 다수결한다.",
+   "at": 620
+  },
+  {
+   "term": "오케스트레이터-워커",
+   "explain": "LLM 이 실행 중에 하위 과제의 수와 내용을 정해 워커에 맡기고 합성기가 모은다. 갈래 수가 동적이라는 점이 병렬화와 다르다.",
+   "at": 720
+  },
+  {
+   "term": "평가자-최적화자",
+   "explain": "생성 → 평가·피드백 → 재생성 고리. 피드백을 말로 분명히 할 수 있고 평가자가 그것을 줄 능력이 있어야 통한다.",
+   "at": 800
+  },
+  {
+   "term": "추론 시간 기법(Archon 부품)",
+   "explain": "Generator·Fuser·Critic·Ranker·Verifier·Unit Test Generator/Evaluator. 이 부품의 조립을 예산 안에서 베이지안 탐색으로 최적화한다.",
+   "at": 1530
+  },
+  {
+   "term": "ReAct",
+   "explain": "생각 → 행동 → 관찰을 되풀이하는 에이전트 고리. 에이전트판 CoT. 원 논문에서는 파인튜닝했을 때 효과가 컸다.",
+   "at": 2040
+  },
+  {
+   "term": "Reflexion",
+   "explain": "평가 결과를 자기 반성 LLM 이 반성문으로 바꿔 장기 기억에 쌓고 다음 시도의 문맥으로 주는 방법. 가중치는 바뀌지 않는다.",
+   "at": 2260
+  },
+  {
+   "term": "자기 교정의 한계",
+   "explain": "외부 신호 없이 모델에게 자기 답을 검토시키면 성능이 오히려 떨어질 수 있다(GSM8K 91.5 → 88.0~91.0). 외부 피드백이 핵심이다.",
+   "at": 2460
+  },
+  {
+   "term": "CRITIC(에이전트형 검증자)",
+   "explain": "검증자에게 검색·코드 인터프리터·계산기 등 도구를 줘서 답을 확인·비평·수정하게 하는 방법. 도구 없는 비평보다 크게 낫다.",
+   "at": 2670
+  },
+  {
+   "term": "CodeAct",
+   "explain": "행동을 JSON 도구 호출이 아니라 실행 가능한 코드로 내는 방식. 반복·변수·라이브러리를 써 턴이 줄고 성공률이 오른다.",
+   "at": 2730
+  },
+  {
+   "term": "ReWOO(관찰 없이 추론)",
+   "explain": "관찰을 보기 전에 #E 자리표시자로 도구 사슬 전체를 계획하고, 워커가 LLM 판단 없이 채워 실행한 뒤 솔버가 답한다.",
+   "at": 2970
+  },
+  {
+   "term": "LLMCompiler",
+   "explain": "계획을 의존 그래프(DAG)로 만들어 독립 작업을 병렬 실행하고 실패 시 재계획. 지연을 1.4~3.7배 줄였다.",
+   "at": 3120
+  },
+  {
+   "term": "컨텍스트 엔지니어링 두 원칙",
+   "explain": "초점 유지(필요한 것만)와 연속성 보존(요구사항·목표·제약·진행 상황, KV 캐시 유지).",
+   "at": 3450
+  },
+  {
+   "term": "지속 이벤트 로그",
+   "explain": "모든 메시지·행동·관찰을 append-only 로그에 남기고 매 호출 입력을 그로부터 재구성. 원본 보존과 관찰자 훅이 이점이다(OpenHands).",
+   "at": 3540
+  },
+  {
+   "term": "압축(compaction)",
+   "explain": "문맥이 한도를 넘으면 앞부분을 LLM 요약으로 바꾸는 것. 요약 호출 지연과 제약 누락 위험이 있다. Pi 는 firstKeptEntryId 로 경계를 정한다.",
+   "at": 3800
+  },
+  {
+   "term": "관찰 마스킹",
+   "explain": "요약 대신 옛 관찰만 잘라내거나 생략 표시로 바꾸는 것. 관찰이 토큰의 83.9% 라서 효과가 크고 프로그램만으로 된다.",
+   "at": 3870
+  },
+  {
+   "term": "점진적 공개(스킬 파일)",
+   "explain": "스킬의 이름·설명만 시스템 프롬프트에 두고 본문은 필요할 때 불러오는 격리 방법. 스킬은 지식을 넣고, 도구는 환경에 작용한다.",
+   "at": 4110
+  }
+ ],
+ "trends": [
+  {
+   "claim": "ReAct 식 추론 고리와 MCP 는 꽤 오래 남을 표준이다(강사 의견)",
+   "evidence": "질의응답에서 '바꾸지 말아야 할 것이 있느냐'는 물음에 ReAct 가 꾸준히 버텨 왔고, MCP 가 도구를 구조화하는 흔한 방식으로 자라고 있다고 답했다.",
+   "at": 180
+  },
+  {
+   "claim": "에이전트처럼 행동하도록 사후학습하는 것이 표준 관행이 됐다",
+   "evidence": "ReAct 원 논문에서 프롬프트로는 540B 에서 ReAct 가 기준선보다 나빴지만 파인튜닝하면 가장 좋았다. 슬라이드: 'Now fine-tuning models to act as agents is common practice during post-training.'",
+   "at": 2190
+  },
+  {
+   "claim": "별도의 자기 반성 단계는 추론 모델 안으로 흡수됐다(강사 의견)",
+   "evidence": "외부 신호 없는 자기 교정은 GPT-4-Turbo 에서 GSM8K·CommonSenseQA 를 모두 떨어뜨렸다. 강사는 요즘 추론 모델이 추론 중에 스스로 교정하므로 그쪽에 맡기는 것이 대개 맞다고 봤다.",
+   "at": 2520
+  },
+  {
+   "claim": "검증자는 도구를 쥔 에이전트로 — 외부 피드백이 자기 반성보다 낫다",
+   "evidence": "CRITIC 그래프에서 도구를 쓴 검증이 도구 없는 비평보다 AmbigNQ F1 이 크게 높았다.",
+   "at": 2680
+  },
+  {
+   "claim": "계획 후 실행은 코드 생성과 병렬 도구 호출로 상당 부분 대체됐지만 계획은 여전히 중요하다",
+   "evidence": "강사 정리: 워크플로 컴파일은 지금 주로 병렬 도구 호출로 하며, Claude Code 처럼 서브에이전트가 동적 워크플로를 따르게 하는 데 계획이 쓰인다.",
+   "at": 3290
+  },
+  {
+   "claim": "프롬프트 엔지니어링에서 컨텍스트 엔지니어링으로",
+   "evidence": "강사: 2022~2023년엔 문장 하나를 다듬는 것이 유행이었지만, 이제는 문서·도구·지시·지식이 넘쳐 무엇을 창에 넣을지가 문제다.",
+   "at": 3380
+  },
+  {
+   "claim": "문맥 관리는 '더 똑똑한 요약'보다 '단순한 자르기'로도 충분하다",
+   "evidence": "「The Complexity Trap」: 에이전트 토큰의 83.9% 가 관찰이고, 관찰 마스킹이 LLM 요약과 비슷한 해결률을 더 싸게 냈다.",
+   "at": 3900
+  },
+  {
+   "claim": "최소 하네스 — 좋은 모델에는 단순한 하네스, 약한 모델에는 더 나은 하네스(강사 의견)",
+   "evidence": "Pi 는 도구 4개와 안전장치 없는 설계로도 잘 돌며, 강사는 바탕 모델이 좋아져 화려한 장치가 불필요해지고 있다고 답했다. 다만 안전은 Pi 의 분명한 약점이라고 인정했다.",
+   "at": 4520
+  }
+ ],
+ "study": {
+  "prereq": [
+   "LLM API 를 호출하고 도구(함수) 호출 응답을 처리해 본 경험",
+   "파이썬 기초 — 함수, 딕셔너리, 반복문, exec 의 위험성",
+   "CS329Z 1강(에이전트 해부도, ReAct 소개)과 2강(KV 캐시, 컨텍스트 엔지니어링) 노트",
+   "확률 기초(이항분포) — 투표 정확도 계산에 쓴다"
+  ],
+  "steps": [
+   {
+    "do": "Anthropic 「Building effective agents」를 읽고 다섯 워크플로 패턴을 각각 20줄 안쪽 파이썬 함수로 만든다(LLM 자리는 stub 로 시작)",
+    "why": "패턴의 모양을 코드로 한 번 써 보면 '갈래 수를 누가 정하나, 고리를 누가 끊나'가 몸에 익는다."
+   },
+   {
+    "do": "ReAct 논문(2210.03629)의 Figure 1 을 노트의 c_react.py 로 재현하고, 실제 LLM API 로 llm() 자리를 바꿔 단계 상한·반복 행동 감지를 넣는다",
+    "why": "하네스가 하는 일(파싱·실행·관찰 덧붙이기·상한)이 네 가지뿐임을 확인한다."
+   },
+   {
+    "do": "같은 과제(노트의 스마트폰 최저가)를 JSON 도구 호출과 코드 행동 두 방식으로 구현하고 실제 토큰 사용량과 턴 수를 로그로 비교한다",
+    "why": "CodeAct 의 이득(턴·토큰·성공률)을 내 모델·내 과제에서 숫자로 확인해야 설계 결정을 내릴 수 있다."
+   },
+   {
+    "do": "Reflexion(2303.11366)과 'Cannot Self-Correct' 논문(2310.01798)을 읽고, 단위 테스트가 있는 코딩 과제와 없는 상식 문제에서 자기 반성 단계를 넣은 판·뺀 판을 비교한다",
+    "why": "외부 피드백 유무가 반성의 효과를 가른다는 강의의 핵심을 직접 재 본다."
+   },
+   {
+    "do": "ReWOO(2305.18323)·LLMCompiler(2312.04511)를 읽고 c_rewoo.py 의 DAG 실행을 asyncio 로 바꿔 실제 병렬 지연을 잰다",
+    "why": "임계 경로가 지연을 정한다는 것과, 독립 작업이 없으면 이득이 없다는 것을 체감한다."
+   },
+   {
+    "do": "작은 코딩 에이전트에 이벤트 로그를 두고, 관찰 마스킹과 요약 압축을 렌더링 규칙으로 바꿔 끼우며 비용·성공률을 기록한다(「The Complexity Trap」 2508.21433 참고)",
+    "why": "컨텍스트 관리는 원칙보다 측정이다. KV 캐시를 깨는 빈도까지 함께 본다."
+   },
+   {
+    "do": "Pi 문서와 OpenHands 논문(2407.16741)을 읽고, 내가 쓰는 에이전트 하네스의 도구·고리·문맥·안전 설계를 이 노트 15장의 틀로 표 하나에 정리한다",
+    "why": "실제 하네스를 패턴 어휘로 읽는 연습이 이 강의의 마지막 목표다."
+   }
+  ],
+  "practice": [
+   "한 번 정답률 p=0.55, 0.6, 0.7 에서 n=1,3,5,9 다수결 정확도 표를 손과 코드로 만들고, 같은 모델 표들의 상관이 있으면 어떻게 달라질지 설명해 보라.",
+   "나라 10개·도구 5개로 스마트폰 과제를 키워 ReAct 와 CodeAct 의 턴·누적 토큰을 계산하고(P=400, s=40), 프롬프트 캐싱으로 반복 입력이 0.1배 가격이 되면 비용 차이가 얼마나 줄어드는지 계산해 보라.",
+   "작업 6개짜리 DAG 를 직접 설계해 순차·병렬 지연과 속도 향상을 구하라. 모든 작업이 사슬로 이어진 경우와 비교하라.",
+   "c_mask.py 에서 관찰 비중을 50% 로 낮추면 마스킹 절감률이 얼마가 되는지 예측한 뒤 돌려서 확인하라.",
+   "자주 쓰는 업무 하나를 스킬 파일(YAML 머리말 + 본문)로 써 보고, 한 줄 설명만 보고도 모델이 언제 불러야 할지 알 수 있는지 동료에게 시험해 보라."
+  ],
+  "resources": [
+   {
+    "title": "CS329Z: Engineering AI Agents 과목 홈페이지",
+    "url": "https://cs329z.stanford.edu/"
+   },
+   {
+    "title": "Anthropic — Building effective agents",
+    "url": "https://www.anthropic.com/engineering/building-effective-agents"
+   },
+   {
+    "title": "Anthropic — Effective context engineering for AI agents",
+    "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+   },
+   {
+    "title": "Anthropic — Equipping agents for the real world with Agent Skills",
+    "url": "https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills"
+   },
+   {
+    "title": "ReAct: Synergizing Reasoning and Acting in Language Models (Yao et al., 2022)",
+    "url": "https://arxiv.org/abs/2210.03629"
+   },
+   {
+    "title": "Reflexion: Language Agents with Verbal Reinforcement Learning (Shinn et al., 2023)",
+    "url": "https://arxiv.org/abs/2303.11366"
+   },
+   {
+    "title": "Large Language Models Cannot Self-Correct Reasoning Yet (Huang et al., 2023)",
+    "url": "https://arxiv.org/abs/2310.01798"
+   },
+   {
+    "title": "CRITIC: LLMs Can Self-Correct with Tool-Interactive Critiquing (Gou et al.)",
+    "url": "https://arxiv.org/abs/2305.11738"
+   },
+   {
+    "title": "Executable Code Actions Elicit Better LLM Agents — CodeAct (Wang et al., 2024)",
+    "url": "https://arxiv.org/abs/2402.01030"
+   },
+   {
+    "title": "ReWOO: Decoupling Reasoning from Observations (Xu et al., 2023)",
+    "url": "https://arxiv.org/abs/2305.18323"
+   },
+   {
+    "title": "An LLM Compiler for Parallel Function Calling (Kim et al., 2024)",
+    "url": "https://arxiv.org/abs/2312.04511"
+   },
+   {
+    "title": "STORM: Assisting in Writing Wikipedia-like Articles From Scratch (Shao et al., 2024)",
+    "url": "https://arxiv.org/abs/2402.14207"
+   },
+   {
+    "title": "Archon: An Architecture Search Framework for Inference-Time Techniques",
+    "url": "https://arxiv.org/abs/2409.15254"
+   },
+   {
+    "title": "OpenHands: An Open Platform for AI Software Developers as Generalist Agents",
+    "url": "https://arxiv.org/abs/2407.16741"
+   },
+   {
+    "title": "The Complexity Trap: Simple Observation Masking Is as Efficient as LLM Summarization for Agent Context Management",
+    "url": "https://arxiv.org/abs/2508.21433"
+   },
+   {
+    "title": "MemGPT: Towards LLMs as Operating Systems",
+    "url": "https://arxiv.org/abs/2310.08560"
+   },
+   {
+    "title": "Tree of Thoughts: Deliberate Problem Solving with Large Language Models (노트 보충)",
+    "url": "https://arxiv.org/abs/2305.10601"
+   },
+   {
+    "title": "LangChain — Context Engineering for Agents",
+    "url": "https://blog.langchain.com/context-engineering-for-agents/"
+   }
+  ]
+ },
+ "jobs": {
+  "roles": [
+   "AI 에이전트 개발자",
+   "LLM 애플리케이션 엔지니어",
+   "AI 엔지니어",
+   "MLOps/LLMOps 엔지니어",
+   "백엔드 개발자(AI 서비스)"
+  ],
+  "skills": [
+   "Python",
+   "LLM",
+   "AI Agent",
+   "Function Calling",
+   "MCP",
+   "RAG",
+   "Prompt Engineering",
+   "LangGraph",
+   "LangChain",
+   "DSPy",
+   "OpenAI API",
+   "Claude API",
+   "Docker"
+  ]
+ },
+ "related": [
+  "DGI4vucR71w",
+  "Vr1NzH8bT44",
+  "psLc-46GqY0",
+  "h-7S6HNq0Vg",
+  "s0S38lz6O7M",
+  "q0Q-Hy8TTps"
+ ],
+ "materials": {
+  "transcript": "official",
+  "frames": 154,
+  "every_sec": 30
+ },
+ "written_at": "2026-11-21"
+}
