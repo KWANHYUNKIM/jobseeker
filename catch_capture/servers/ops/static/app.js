@@ -19,6 +19,7 @@ const PHASE_LABEL = {
   blog: "기술 블로그 수집",
   freelance: "외주·프리 수집",
   alba: "당근알바 수집",
+  contests: "공모전 수집",
   building: "대시보드 빌드",
   refreshing: "뷰어 갱신",
   waiting: "다음 주기 대기",
@@ -33,6 +34,7 @@ const STEPS = [
   { key: "refreshing", name: "뷰어", phases: ["refreshing"] },
   { key: "freelance", name: "외주·프리", phases: ["freelance"] },
   { key: "alba", name: "당근알바", phases: ["alba"] },
+  { key: "contests", name: "공모전", phases: ["contests"] },
   { key: "blog", name: "기술블로그", phases: ["blog"] },
   { key: "waiting", name: "대기", phases: ["waiting", "idle"] },
 ];
@@ -200,6 +202,15 @@ function stepStateFor(step, s) {
     if (a.status === "done") return { cls: "done", label: a.skipped ? "건너뜀(마감 확인 중)" : `완료 · 모집중 ${a.open ?? "?"}건(신규 ${a.new ?? "?"}, 마감 ${a.closed_now ?? 0})${secs(a.elapsed)}` };
     if (a.status === "failed") return { cls: "failed", label: "실패" };
     if (a.status === "running") return { cls: "active", label: "수집 중" };
+    return { cls: "", label: "대기" };
+  }
+  if (step.key === "contests") {
+    // 하루 한 번만 실제로 받는다 — 나머지 회차는 '건너뜀'(마감일 계산만)이 정상이다.
+    const c = cyc.contests || {};
+    if (c.status === "done") return { cls: "done", label: `완료 · 접수중 ${c.open ?? "?"}건(신규 ${c.new ?? "?"}, 마감 ${c.closed_now ?? 0})${secs(c.elapsed)}` };
+    if (c.status === "skipped") return { cls: "done", label: c.reason === "locked" ? "건너뜀(마감 확인 중)" : `건너뜀(오늘 받음) · 접수중 ${c.open ?? "?"}건` };
+    if (c.status === "failed") return { cls: "failed", label: "실패" };
+    if (c.status === "running") return { cls: "active", label: "수집 중" };
     return { cls: "", label: "대기" };
   }
   if (step.key === "building" || step.key === "refreshing") {
@@ -449,6 +460,9 @@ function evMessage(e) {
     case "freelance_done": return `외주·프리 ${e.ok ? "완료" : "실패"} · 누적 ${e.total ?? "?"}건(모집중 ${e.active ?? "?"}, 신규 ${e.new ?? "?"})${secs(e.elapsed)}`;
     case "alba_start": return `당근알바 IT 공고 수집 시작`;
     case "alba_done": return `당근알바 ${e.ok ? "완료" : "실패"} · 누적 ${e.total ?? "?"}건(모집중 ${e.open ?? "?"}, 신규 ${e.new ?? "?"}, 마감 ${e.closed_now ?? 0})${secs(e.elapsed)}`;
+    case "contests_start": return `IT·디자인 공모전 수집 시작`;
+    case "contests_done": return e.skipped ? `공모전 — ${e.reason === "locked" ? "마감 확인 중이라" : "12시간 안에 받아서"} 건너뜀(마감일 지나 닫음 ${e.closed_now ?? 0}건)` : `공모전 ${e.ok ? "완료" : "실패"} · 누적 ${e.total ?? "?"}건(접수중 ${e.open ?? "?"}, 신규 ${e.new ?? "?"}, 마감 ${e.closed_now ?? 0})${secs(e.elapsed)}`;
+    case "contests_check": return e.skipped ? `공모전 마감 확인 — 수집 중이라 건너뜀` : `공모전 마감 확인 · 접수중 ${e.open ?? "?"}건, 이번에 마감 ${e.closed_now ?? 0}건`;
     case "alba_check": return e.skipped ? `당근알바 마감 확인 — 회차가 도는 중이라 건너뜀` : `당근알바 마감 확인 · 모집중 ${e.open ?? "?"}건, 이번에 마감 ${e.closed_now ?? 0}건`;
     case "refresh_start": return `${e.target === "dashboard" ? "대시보드" : "뷰어"} 갱신 시작`;
     case "refresh_done": return `${e.target === "dashboard" ? "대시보드" : "뷰어"} 갱신 ${e.ok ? "완료" : "실패"}`;

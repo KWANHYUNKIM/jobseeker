@@ -108,6 +108,10 @@ REGISTRY: list[Loop] = [
     Loop("cycle-alba", "당근알바 IT 공고", "cycle", "mac", "회차마다(외주 다음)", 6,
          "crawlers.crawl_daangn_alba", ["jd-viewer/public/alba.json"],
          note="IT 공고만, 요약·링크만(약관). 사이트맵에서 빠지면 바로 다시 묻는다. --no-alba 로 끈다."),
+    Loop("cycle-contests", "IT·디자인 공모전", "cycle", "mac", "하루 한 번(직전 성공 12시간 안이면 건너뜀)", 30,
+         "crawlers.crawl_contests", ["jd-viewer/public/contests.json"],
+         note="씽굿·위비티·콘테스트코리아, 요약·링크만(씽굿 약관 24조). 마감일 지나면·원문 지워지면 마감으로 남긴다. "
+              "--no-contests 로 끈다, --force 로 지금 받는다."),
     Loop("cycle-hardware", "PC 부품 가격", "cycle", "mac", "하루 한 번(크롤러가 날짜로 막는다)", 30,
          "crawlers.crawl_hardware", ["jd-viewer/public/hardware/prices.json"],
          check="python -m crawlers.crawl_hardware --selftest", note="다나와 통합검색, Crawl-delay 10초. --no-hardware 로 끈다."),

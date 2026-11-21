@@ -537,7 +537,7 @@ def run_cycle(keyword: str, count: int) -> bool:
         last = kw == kws[-1]
         rc = run_foreground(kw, count, KEYWORD_SITES + (AGNOSTIC_SITES if last else []),
                             do_aggregate=not multi, do_blog=False, do_freelance=False, do_hardware=False,
-                            do_alba=False)
+                            do_alba=False, do_contests=False)
         if rc != 0:
             rc_fail += 1
             log(f"[crawl] '{kw}' 일부 실패(rc={rc})")

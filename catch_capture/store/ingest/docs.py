@@ -34,7 +34,7 @@ FILES = [
     "trends.json", "job_calendar.json", "reposts.json", "career_map.json", "mindmap_tree.json",
     "mindmap.md", "learning_resources.json", "blog_guides.json", "inflearn_courses.json",
     "tech_relations.json", "role_insights.json", "company_tech_radar.json", "engagement.json",
-    "alba.json",
+    "alba.json", "contests.json",
 ]
 # 폴더째 옮기는 것(.json·.md). 부품 가격은 /api/hardware/prices 가 표에서 답하므로 뺀다.
 DIRS = ["reveng", "guide", "book", "hardware", "blog_content", "lectures"]
