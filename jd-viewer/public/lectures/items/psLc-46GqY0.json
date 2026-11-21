@@ -1,0 +1,995 @@
+{
+ "id": "psLc-46GqY0",
+ "source": {
+  "platform": "youtube",
+  "url": "https://www.youtube.com/watch?v=psLc-46GqY0",
+  "channel": "Stanford Online",
+  "published": "2026-11-11",
+  "duration_sec": 4591,
+  "views": 45623
+ },
+ "course": {
+  "school": "Stanford",
+  "code": "CS329Z",
+  "term": "Autumn 2026",
+  "lecture_no": "3",
+  "speaker": "Diyi Yang (Stanford CS 조교수, Stanford NLP·HCI·HAI) — 과목은 Michael Ryan·John Yang 과 공동 강의, 이번 시간은 혼자 진행"
+ },
+ "title": "RAG Explained: From BM25 to Agentic RAG | Stanford CS329Z Lecture 3 with Diyi Yang",
+ "title_ko": "RAG 해설 — BM25 에서 에이전트형 RAG 까지: 청크·맥락 검색·RAPTOR·GraphRAG·HNSW·DPR·검색 지표·RRF·ColBERT·Self-RAG·CRAG·Search-R1·실패 유형",
+ "topic": "agents",
+ "tags": [
+  "RAG",
+  "LLM",
+  "BM25",
+  "Vector DB",
+  "Embedding",
+  "Elasticsearch",
+  "ColBERT",
+  "Reranking",
+  "Hybrid Search",
+  "GraphRAG",
+  "AI Agent",
+  "Python",
+  "PyTorch"
+ ],
+ "level": "중급",
+ "one_line": "증거로 답하게 하는 RAG 를 청크·색인·BM25·DPR·ColBERT·지표로 뜯고, 검색을 에이전트의 행동으로 바꾼다",
+ "summary": [
+  "Stanford CS329Z 「Engineering AI Agents」(2026 가을) 3강이다. 1강이 에이전트를 LLM 코어·추론·메모리·도구·환경으로 해부하며 'RAG 는 업계에서 가장 널리 쓰인 워크플로'라고 예고했다면, 이번 시간은 Diyi Yang 교수가 그 RAG 를 파이프라인 부품 단위로 끝까지 뜯어 본다. 영상 제목대로 BM25 에서 에이전트형 RAG 까지 간다. 시작 5분은 학기 프로젝트 지침이다 — 발표 때 한 번 돌아간 데모는 점수가 안 되며, 과제·데이터·성공의 정의를 먼저 정하고 기준선과 실패 사례까지 보고하라는 것이 요지다.",
+  "출발점은 '유창함이 아니라 증거'다. 오피스아워 대기 기록을 검색해 준 답만이 확인 가능하고, 사실이 바뀌면 가중치가 아니라 색인을 고치면 된다. 강의는 고전적 retriever–reader(DrQA)에서 Lewis 등의 RAG 로 넘어가 p(y|x) ≈ Σ p(z|x)p(y|x,z) 라는 식, 문단을 고정하느냐(RAG-Sequence) 토큰마다 다시 고르느냐(RAG-Token)의 차이, DPR 검색기와 BART 생성기를 함께 학습하는 구조를 설명한다. 이어 Naive → Advanced(검색 전 질의 재작성, 검색 후 재순위·융합) → Modular RAG 로의 진화를 보여 준다.",
+  "색인 부분은 '무엇을 벡터 하나로 만들 것인가'에서 시작해 청크 나누기(크기 100~500 토큰, 겹침 10~20%, 의미 단위·LLM 기반), 청크가 잃어버린 맥락을 되살리는 두 방법 — 청크마다 LLM 이 맥락 문장을 붙이는 Anthropic 의 Contextual Retrieval(Failed@20 5.7% → 2.9%)과 문서 전체를 인코딩한 뒤 자르는 Late Chunking — 을 다룬다. 줄 대신 나무(RAPTOR)와 그래프(GraphRAG)로 색인하면 문서 전체를 아우르는 질문에 답할 수 있지만 비싸서 대규모 상용 시스템은 여전히 단순한 방법을 쓴다는 균형도 잡는다. 벡터 검색은 정확 검색 O(N·d) 대신 IVF·PQ·HNSW 같은 근사 최근접 이웃을 쓰며, HNSW 는 층을 내려가며 탐욕적으로 다가가 약 log N 번 만에 찾는다.",
+  "검색 부분이 가장 길다. BM25 의 IDF(문서 절반 넘게 나오는 낱말은 음수)·TF 포화(k₁)·길이 정규화(b)를 그래프로 직관을 주고, DPR 의 두 인코더와 대조 손실, 배치 안 음성과 BM25 하드 음성을 설명한다. DPR 은 5개 중 4개 데이터셋에서 BM25 를 이기고 1,000쌍만으로도 앞선다. 검색 지표 Hit@k·Failed@k·nDCG@k·MRR@k·Recall@k 를 정의한 뒤, 두 검색기가 서로 다른 곳에서 실패한다는 점(BM25 는 바꿔 말하기, 밀집 검색은 오류 코드 같은 드문 글자열)을 근거로 순위만 합치는 RRF 하이브리드를 소개한다. 마지막으로 bi-encoder·cross-encoder·ColBERT 를 '문서 쪽을 미리 계산할 수 있나'로 비교하고, ColBERT 의 MaxSim 이 BERT 재순위 수준의 품질을 1만 배 넘게 적은 연산으로 낸다는 표와 '빠름 대 느림' 요약표로 정리한다.",
+  "끝으로 검색을 에이전트의 행동으로 바꾼다. 검색할지·무엇을 물을지·언제 멈출지라는 세 결정을 Self-RAG 는 반성 토큰으로 생성기 안에 학습하고, CRAG 는 생성기 밖의 가벼운 평가기로 맡기며(정확·애매·틀림 → 다듬기·웹 재검색), Search-R1 은 검색 엔진을 RL 롤아웃 안에 넣어 결과 보상만으로 검색 정책을 배운다(7개 QA 평균 0.304 → 0.431). 강의는 RAG 실패 유형 아홉 개를 검색 쪽·판독 쪽·루프 쪽으로 나눈 표로 끝난다. 이 노트는 강의가 빠르게 넘어간 BM25·검색 지표·대조 손실·MaxSim·RAG 주변화를 작은 숫자로 직접 계산하고, 실행해 본 파이썬 코드로 확인한다. 같은 주제를 사용자 관점에서 다룬 CME295 7강·CS230 8강 노트와 겹치는 부분(BM25 Lucene 판·nDCG 손계산·프롬프트 캐싱)은 그쪽을 가리키고, 이 강의가 더한 것 — 슬라이드 판 IDF 의 음수 문제, 밀집 검색 학습, 늦은 상호작용, 에이전트형 RAG — 에 깊이를 두었다."
+ ],
+ "why_now": "강사의 답처럼 프런티어 모델이 웹 검색을 기본으로 하는 지금도 RAG 원칙은 그대로 쓰인다. 공개되지 않은 사내·금융·개인 데이터는 모델이 알 수 없고, 근거와 인용을 요구하는 분야에서는 검색된 증거가 곧 신뢰다. 바뀐 것은 무게중심이다. 한 번 검색해 붙이는 Naive RAG 에서 맥락 검색·하이브리드(BM25 + 밀집)·재순위로 품질을 끌어올리는 쪽, 그리고 Self-RAG·CRAG·Search-R1 처럼 검색 여부·질의·멈춤을 모델이 정하는 에이전트형 RAG 로 옮겨 가고 있다. Anthropic 의 맥락 검색이 실패율을 절반으로 줄이고, Search-R1 이 7B 모델의 다중 홉 QA 를 크게 올린 숫자가 그 근거다. 동시에 검색이 행동이 되면서 권한 유출·프롬프트 주입·오류 누적 같은 루프 쪽 실패가 새 과제가 됐다. RAG 엔지니어·검색 엔지니어 공고가 벡터 DB 사용 경험을 넘어 하이브리드 검색·재순위·검색 평가 지표·접근 제어를 묻는 흐름과 겹친다.",
+ "chapters": [
+  {
+   "start": 0,
+   "title": "프로젝트 지침과 오늘의 지도 — '한 번 된 데모'는 점수가 안 된다",
+   "points": [
+    "과목 프로젝트의 목표는 자기 에이전트 시스템을 설계·구현·평가하는 것. 주제는 검색·도구 사용·메모리·멀티에이전트·최적화·에이전트용 데이터·평가·안전 어디서든 고른다.",
+    "가장 강조한 것은 엄밀한 평가 — 발표 때 한 번 돌아간 데모는 높은 점수를 못 받는다. 과제·데이터 출처·성공의 정의를 먼저 정하고, 코드 채점기·LLM 심판·사람 평가를 섞어 재고, 여러 과제·기준선·실패 사례를 보고한다.",
+    "데이터·에이전트 프레임워크·연산 자원·평가 방법 네 가지 중 하나라도 없으면 프로젝트가 무너진다. '결과가 우리에게 무언가를 가르쳐야 한다'가 판단 기준.",
+    "오늘의 학습 목표: RAG 파이프라인이 어떻게 만들어지고 어디서 깨지는지, 무엇을 어떻게 색인하고 어떻게 검색하는지. 과제 1(HW1)과 이어진다."
+   ],
+   "on_screen": "'Lecture Overview' — Project(5분)·Why RAG(5분)·The RAG pipeline(10분)·Indexing: chunking, contextual retrieval(15분)·Retrieval: BM25, DPR, ColBERT(20분)·Agentic RAG: Self-RAG, Search-R1(10분)·Failure modes(15분). 'Pick A Topic that You're Excited About' — 에이전트가 하는 일·연구 질문·필요한 데이터/API·프레임워크·평가 방법 다섯 질문과 로봇 그림. 'Rigorous evaluation' 아래 Define early / Measure(code graders, LLM-as-judge, human ratings, or a mix) / Report(many tasks, baselines, where and why the agent fails). 'Example Topics' — 비용·지연·안전 평가, 새 도구·API·UI 적응, 프롬프트 주입 견고성, 도구 오용, 적은 데이터로 도구 사용 학습, 행동 해석, 롱테일·긴 호흡 사례, 사람-에이전트 협업 등과 예시 아이디어(강의계획서를 읽어 마감을 달력에 넣는 에이전트, 다음 학기 시간표 최적화, 논문 발견·요약, 캠퍼스 행사 추천, 특정 코드베이스 전용 코딩 에이전트). 'Recommendations' — 일찍 시작, 데이터 먼저, 분명한 연구 질문, 빨간 글씨 'Results should teach us something'.",
+   "explain": [
+    "3강은 본론에 들어가기 전에 학기 프로젝트 이야기로 시작한다. 이미 질문이 많이 들어왔기 때문이다. 강사가 내놓는 기준은 단순하다. 스스로 정말 신나는 주제를 골라라, 그리고 다섯 가지 질문에 답할 수 있어야 한다 — 에이전트가 무슨 일을 하나, 어떤 연구 질문이 그 일을 끌고 가나, 어떤 데이터나 API 가 뒷받침하나, 어떤 프레임워크를 쓰나, 그리고 무엇보다 어떻게 평가하나. 다섯 번째가 빠진 프로젝트는 아무리 화려해도 '만들어 봤다'로 끝난다.",
+    "평가를 강조하는 방식이 인상적이다. 마지막 시간에 데모 발표를 하는데, 발표 순간에 우연히 한 번 돌아간 데모는 높은 점수를 받지 못한다고 못 박는다. 대신 처음부터 정의해 두라고 한다. 과제는 무엇이고 데이터는 어디서 오며 무엇을 성공으로 칠 것인가. 측정은 코드로 정답을 확인하는 채점기, LLM 을 심판으로 쓰는 방법, 채점 기준표(rubric), 사람 평가, 실행 가능성 확인 등을 섞어도 된다. 보고할 때는 한 사용자·한 데이터 점에서만 되는 것이 아니라 여러 과제에서 되는지, 비교할 기준선(baseline)은 무엇인지, 그리고 에이전트가 어디서 왜 실패하는지를 보여야 한다. 1강에서 '가장 강한 에이전트가 가장 믿을 만한 것은 아니다'로 끝난 문제의식이 그대로 프로젝트 채점 기준이 된 셈이다.",
+    "주제 예시는 두 갈래다. 연구 주제로는 비용·지연·안전까지 포함한 에이전트 평가, 새 도구·API·UI 에 적응하기, 프롬프트 주입에 대한 견고성, 에이전트가 도구를 잘못 쓰는 이유, 적은 데이터로 도구 사용 배우기, 행동 해석, 긴 호흡 과제의 드문 사례, 사람-에이전트·에이전트-에이전트 협업, 보상 해킹 등이 있다. 응용 예시는 스탠퍼드 생활을 편하게 만드는 것들이다 — 강의계획서를 읽고 마감일을 달력에 넣는 에이전트, 다음 학기 시간표 최적화, 논문 찾기·요약, 캠퍼스 행사 모으기·추천, 특정 코드베이스 전용 코딩 에이전트와 그 실패 분석.",
+    "실패를 막는 실전 조언도 있다. 데이터·프레임워크·연산 자원·평가 네 가지가 갖춰졌는지 먼저 확인하라, 하나라도 없으면 프로젝트가 성공하기 어렵다. 일찍 시작해 매주 조금씩 하고, 데이터부터 확보하고, 분명하고 가능하면 창의적인 연구 질문을 세워라. 굵게 강조한 문장은 '결과가 우리에게 무언가를 가르쳐야 한다'이다. 조교나 강사가 보고서를 읽고 새로 배우는 것이 있어야 한다는 뜻이다. 이 기준은 오늘 주제인 RAG 에도 그대로 적용된다. RAG 시스템도 '답이 나왔다'가 아니라 '어떤 질문에서 검색이 실패했고 왜 그런가'를 말할 수 있어야 제대로 만든 것이다.",
+    "이어서 오늘의 지도가 나온다. 왜 RAG 가 필요한가에서 출발해 RAG 파이프라인 전체, 색인(청크 나누기·맥락 붙이기), 검색(BM25·DPR·ColBERT), 에이전트형 RAG(Self-RAG·Search-R1), 마지막으로 실패 유형 순서다. 학습 목표는 '파이프라인이 어떻게 만들어지고 어디서 깨지는지, 무엇을 어떻게 색인하고 어떻게 검색하는지'다. 같은 주제를 다룬 다른 과목 노트(CME295 7강, CS230 8강)가 RAG 를 사용자 관점의 레시피로 설명했다면, 이 강의는 각 부품을 논문 단위로 뜯어 보고 마지막에 '검색을 에이전트의 행동으로 바꾸면 무엇이 달라지나'로 넘어간다는 점이 다르다."
+   ],
+   "pitfalls": [
+    "평가 방법을 프로젝트 끝에 붙이면 늦다. 성공의 정의가 없으면 데이터 수집도 기준선 선택도 할 수 없다 — 강사가 'Define early' 를 첫 줄에 둔 이유다.",
+    "LLM 심판 하나만으로 채점하면 심판 자신의 편향(길이·말투 선호)이 결과가 된다. 코드 채점기나 사람 평가로 일부를 교차 확인해야 한다."
+   ],
+   "check": [
+    {
+     "q": "강사가 프로젝트 보고에서 요구한 세 가지(Report 줄)는?",
+     "a": "여러 과제에서의 결과, 기준선과의 비교, 그리고 에이전트가 어디서 왜 실패하는지."
+    }
+   ]
+  },
+  {
+   "start": 353,
+   "title": "왜 검색인가 — 유창함이 아니라 증거의 차이, 그리고 '가중치가 아니라 색인을 고친다'",
+   "points": [
+    "LLM 혼자에게 '이번 주 가장 한산한 오피스아워는?'을 물으면 '수요일 오후가 보통 조용하다'는 그럴듯한 추측이 나온다 — 근거는 사전 지식뿐이다.",
+    "대기열 기록(화 16시 평균 14명, 목 9시 3명)을 검색해 주면 '목요일 9시, 앞에 3명쯤' 이라고 답한다. 두 답 모두 유창하다. 차이는 증거이고, 두 번째 답은 확인할 수 있다.",
+    "설계 원칙: 모델에게 전부 외우게 하지 말고, 필요한 순간에 관련 정보를 찾아 준다(just-in-time).",
+    "장점 둘 — 동적(사실이 바뀌면 가중치가 아니라 색인을 고친다), 해석 가능(어느 문서에서 가져왔는지 가리켜 사람이 검증할 수 있다, 즉 인용)."
+   ],
+   "on_screen": "'Why Retrieval?' — 질문 'Which office hour this week is least crowded?' 아래 두 칸. LLMs Alone: 'Try the Wednesday afternoon session – midweek hours are usually quietest.' / LLMs + Retrieval: 'Retrieved: Queue log, last 3 weeks — Tue 4pm: 14 waiting avg; Thu 9am: 3.' → 'Thursday 9am — about 3 students ahead of you.' 다음 장 'Using Retrieval to Overcome LMs' Shortcomings' — Dynamic / Interpretable 두 항목과 '소화계는 감염을 어떻게 막나' 질문 → Retriever(Text Collection) → 위산·단백질분해효소 문단 → Reader → 답 그림.",
+   "explain": [
+    "강사가 든 예는 학생에게 아주 가까운 질문이다. '이번 주 오피스아워 중 가장 덜 붐비는 때는?' 이것을 LLM 혼자에게 물으면 '주 중반 수요일 오후가 대체로 조용하니 그때 가 보라'는 답이 나온다. 문장은 매끄럽고 그럴듯하지만, 이 답 뒤에는 아무 자료도 없다. 모델이 학습 중에 본 '보통 주 중반이 한산하다' 같은 일반 상식을 이어 붙였을 뿐이다. 같은 모델에게 지난 3주 대기열 기록을 함께 주면 이야기가 달라진다. 기록에는 화요일 16시에 평균 14명이 기다렸고 목요일 9시에는 3명이 기다렸다고 적혀 있다. 모델은 '목요일 오전 9시, 앞에 3명 정도'라고 답한다.",
+    "핵심은 두 답의 차이가 유창함에 있지 않다는 점이다. 둘 다 유창하다. 차이는 증거다. 두 번째 답은 근거 숫자를 함께 내놓기 때문에 사용자가 직접 확인할 수 있다. 이것이 RAG(Retrieval-Augmented Generation, 검색 증강 생성)의 설계 원칙이다. 모델에게 세상의 모든 사실을 외우게 하는 대신, 모델이 그 정보를 필요로 하는 바로 그 순간에 관련 자료를 찾아서 건네준다. 도서관 사서를 생각하면 쉽다. 사서가 모든 책 내용을 외우고 있을 필요는 없다. 어느 책장에 무엇이 있는지 알고, 질문을 받으면 해당 책을 꺼내 펼쳐 보이면 된다.",
+    "강사는 이 방식의 장점 두 가지를 꼭 기억하라고 한다. 첫째는 동적이라는 점이다. 사실이 바뀌면 모델 가중치를 다시 학습하는 것이 아니라 색인(index)만 갱신하면 된다. 오피스아워 시간이 바뀌었다면 새 기록을 색인에 넣으면 끝이다. 둘째는 해석 가능하다는 점이다. 모델이 어느 문서에서 정보를 가져왔는지 가리킬 수 있으므로 답에 인용을 달 수 있고, 사람이 원한다면 그 문서로 가서 답을 검증할 수 있다. 매개변수 속에 녹아 있는 지식은 출처를 물을 수 없지만, 검색된 문서는 출처가 분명하다.",
+    "노트 보충으로 덧붙이면, 이 두 장점은 실무에서 곧바로 비용 문제와 연결된다. 사내 문서가 매일 바뀌는 회사에서 매일 파인튜닝을 하는 것은 비싸고 느리며, 파인튜닝으로 넣은 지식은 모델이 정확히 기억한다는 보장도 없다. 반면 색인 갱신은 새 문서를 임베딩해 벡터 DB 에 추가하는 일이라 몇 초~몇 분이면 끝난다. 또 금융·의료·법률처럼 '근거를 대라'는 요구가 강한 분야에서는 인용이 사실상 필수 기능이다. 그래서 RAG 는 에이전트 시대에도 가장 널리 배포된 LLM 패턴으로 남아 있다. 1강에서 'RAG 가 업계에서 가장 널리 쓰인 워크플로'라고 소개된 것과 같은 맥락이다."
+   ],
+   "example": {
+    "title": "같은 질문, 두 가지 답의 '검증 가능성' 비교",
+    "body": "질문: 가장 한산한 오피스아워는?\n① LLM 단독: '수요일 오후' — 확인할 자료가 없다. 틀렸는지 맞았는지 사용자는 알 수 없다.\n② LLM + 검색: 검색 결과 '화 16시 평균 14명, 목 9시 평균 3명' → 답 '목 9시(앞에 약 3명)'. 사용자는 기록을 보고 14 > 3 임을 직접 확인한다.\n다음 주 오피스아워가 금 10시로 옮겨졌다면? ①은 재학습 전까지 계속 옛 답을 하고, ②는 새 기록 한 줄을 색인에 넣는 순간 금 10시를 고려한다."
+   },
+   "pitfalls": [
+    "검색이 붙었다고 답이 저절로 맞는 것은 아니다. 검색된 기록이 낡았거나(오래된 색인) 엉뚱한 문서가 걸리면 근거 있는 척하는 오답이 된다 — 마지막 챕터의 실패 유형으로 이어진다."
+   ],
+   "check": [
+    {
+     "q": "RAG 의 두 장점 '동적'과 '해석 가능'을 각각 한 문장으로 설명하라.",
+     "a": "동적: 사실이 바뀌면 가중치 재학습 없이 색인만 갱신한다. 해석 가능: 답이 어느 문서에서 왔는지 가리킬 수 있어 사람이 인용을 따라가 검증할 수 있다."
+    }
+   ]
+  },
+  {
+   "start": 535,
+   "title": "Retriever–Reader 에서 RAG 로 — 수백만 문서를 몇 개로 좁히는 분업",
+   "points": [
+    "고전적 오픈 도메인 QA(DrQA, Chen et al. 2017): 질문 → 문서 검색기(Document Retriever)가 위키백과 전체에서 몇 개 글을 가져옴 → 문서 판독기(Reader)가 답 문자열을 뽑는다.",
+    "형식화: 문서 모음 D = D₁…D_N(N 은 수백만), 질문 Q. 검색기 f(D, Q) → P₁…P_K(K 는 100·50·10 같은 작은 수), 판독기 g(Q, {P₁…P_K}) → 답 A. 판독기 쪽은 독해 문제다.",
+    "초기 검색기는 고정된 TF-IDF 희소 모델, 판독기는 SQuAD 로 학습한 신경망 독해 모델이었다. 지금은 판독기 자리에 제로샷 LLM 을 넣을 수 있다.",
+    "RAG(Lewis et al.): 질의 인코더 q(x) → 문서 색인에서 MIPS 로 top-K(비모수 부분) → 생성기 p_θ(모수 부분) → 문서에 대해 주변화. 질의 인코더와 생성기는 끝에서 끝까지 학습하고, 거대한 문서 색인은 고정한다."
+   ],
+   "on_screen": "'Retrieval Often Used in Open-Domain QA' — 'How many of Warsaw's inhabitants spoke Polish in 1933?' → 위키백과 로고 → Document Retriever → 글 → Document Reader → 833,500 (Chen et al., 2017, github.com/facebookresearch/DrQA). 'Retriever-Reader Framework' — Input: 𝒟 = D₁…D_N and Q, Output: answer string A, Retriever f(𝒟,Q) → P₁…P_K (K is pre-defined, e.g., 100), Reader g(Q,{P₁…P_K}) → A 'A reading comprehension problem!', Retriever = standard TF-IDF sparse model(a fixed module), Reader = neural reading comprehension model(SQuAD 등, 또는 zero-shot LLM). 'Retrieval Augmented Generation (RAG)' [Lewis et al., 2021] — Query Encoder q → q(x) → MIPS → Document Index d(z) → Generator p_θ(Parametric) → Marginalize, 위에 'End-to-End Backprop through q and p_θ', 왼쪽 예시 질의(Define 'middle ear', Barack Obama was born in Hawaii, The Divine Comedy)와 오른쪽 출력(질의응답·사실 검증·Jeopardy 문제 생성).",
+   "explain": [
+    "RAG 를 이해하려면 그 이전의 '검색기-판독기(retriever-reader)' 구조부터 보는 것이 좋다. 2017년 Chen 등의 DrQA 는 '1933년 바르샤바 주민 중 폴란드어를 쓴 사람은 몇 명인가?' 같은 질문에 위키백과 전체를 뒤져 답하는 시스템이었다. 두 단계로 나뉜다. 문서 검색기가 수백만 개 위키백과 글 중 관련 있어 보이는 몇 개를 고르고, 문서 판독기가 그 몇 개를 정밀하게 읽어 '833,500' 같은 답 문자열을 뽑아낸다. 강사는 이 분업이 이 구조의 요점이라고 말한다. 검색기는 싸고 거칠게, 판독기는 비싸고 꼼꼼하게 일한다. 수백만 건을 판독기로 다 읽을 수는 없으니 검색기가 범위를 좁혀 주고, 좁혀진 소수만 판독기가 공들여 읽는다.",
+    "슬라이드는 이것을 함수로 적는다. 입력은 큰 문서 모음 D = D₁, D₂, …, D_N 과 질문 Q 이고 출력은 답 문자열 A 다. N 은 보통 수백만이다. 검색기는 f(D, Q) → P₁, …, P_K 로 상위 K 개 문단을 돌려준다. K 는 미리 정한 작은 수(100, 50, 10)다. 판독기는 g(Q, {P₁, …, P_K}) → A 로 그 문단들을 읽어 답을 낸다. 판독기의 일은 결국 '지문과 질문이 주어졌을 때 답 찾기'라는 독해 문제다. 초기에는 검색기가 학습하지 않는 고정 모듈, 즉 TF-IDF 희소 검색이었고, 연구 노력은 대부분 판독기 쪽 신경망(SQuAD 같은 독해 데이터로 학습)에 몰렸다. 오늘날에는 판독기 자리에 ChatGPT 같은 LLM 을 제로샷으로 넣으면 된다.",
+    "RAG(Lewis 등)는 이 구조를 '생성'으로 바꾸고 검색기까지 학습 대상으로 끌어들인다. 그림을 왼쪽에서 오른쪽으로 따라가 보자. 질의 x 가 질의 인코더를 지나 벡터 q(x) 가 된다. 이 벡터로 문서 색인에 최대 내적 검색(MIPS, Maximum Inner Product Search)을 돌려 top-K 문서 z 를 얻는다. 여기까지가 '비모수(non-parametric)' 부분이다 — 지식이 신경망 가중치가 아니라 외부 색인에 들어 있다는 뜻이다. 그 문서들을 생성기 p_θ 에 넣어 답을 쓰는데, 생성기는 '모수(parametric)' 부분, 즉 가중치 안에 지식이 있는 쪽이다. 마지막으로 여러 문서에서 나온 답 확률을 문서 확률로 가중 평균(주변화)한다.",
+    "중요한 설계 결정은 무엇을 학습하고 무엇을 고정하느냐다. RAG 에서는 손실의 기울기가 생성기를 지나 질의 인코더까지 흘러간다. 즉 '어떤 질의 벡터를 만들어야 좋은 답이 나오는 문서를 찾을까'를 끝에서 끝까지 배운다. 반면 문서 색인(문서 인코더로 미리 계산해 둔 수백만 개 벡터)은 고정한다. 문서 인코더까지 학습하면 매 단계마다 수백만 개 벡터를 다시 계산해 색인을 재구성해야 하니 감당이 안 되기 때문이다. 같은 모델 하나로 질의응답, 사실 검증, Jeopardy 식 문제 생성까지 처리했고, 이후 수많은 후속 연구가 이 틀 위에 쌓였다. 이 '문서 쪽은 미리 계산해 둔다'는 원칙은 뒤의 bi-encoder·cross-encoder·ColBERT 비교에서 다시 핵심 기준이 된다."
+   ],
+   "formulas": [
+    {
+     "expr": "f(D, Q) → P₁, …, P_K ;  g(Q, {P₁, …, P_K}) → A",
+     "meaning": "D = {D₁…D_N}: 문서 모음(N ~ 10⁶), Q: 질문, f: 검색기, P_k: 검색된 k번째 문단, K: 미리 정한 작은 수(예: 100), g: 판독기, A: 답 문자열. 계산량 대부분을 f 가 N → K 로 줄여 준다."
+    }
+   ],
+   "example": {
+    "title": "분업의 계산량 어림",
+    "body": "N = 5,000,000 문서, 판독기가 문서 하나를 읽는 데 20 ms 라고 하자(어림).\n판독기로 전부 읽기: 5,000,000 × 0.02 s = 100,000 s ≈ 28 시간.\n검색기로 K = 100 개로 좁힌 뒤 읽기: 검색 수십 ms + 100 × 0.02 s = 2 s 남짓.\n→ 검색기가 일을 5만 배 줄여 준다. 대신 검색기가 정답 문서를 100개 안에 못 넣으면 판독기가 아무리 좋아도 답을 못 한다(뒤의 '재현율 상한')."
+   },
+   "diagram": {
+    "title": "Retriever–Reader 와 RAG",
+    "code": "flowchart LR\n  Q[\"질문 x\"] --> QE[\"질의 인코더 q(x)\"]\n  QE --> M[\"MIPS: 문서 색인에서 top-K\"]\n  IDX[(\"문서 색인 d(z) — 미리 계산, 고정\")] --> M\n  M --> G[\"생성기 p_θ(y|x,z)\"]\n  G --> MZ[\"z 에 대해 주변화\"]\n  MZ --> Y[\"답 y\"]\n  MZ -. \"기울기\" .-> G\n  G -. \"기울기\" .-> QE"
+   },
+   "pitfalls": [
+    "'비모수'는 모델에 매개변수가 하나도 없다는 뜻이 아니다. 지식이 저장된 곳이 가중치가 아니라 외부 색인이라는 뜻이다. 질의 인코더에는 물론 가중치가 있다."
+   ],
+   "check": [
+    {
+     "q": "RAG 학습에서 문서 인코더(색인)를 고정하는 이유는?",
+     "a": "문서 인코더를 갱신하면 수백만 문서 벡터를 매번 다시 계산하고 색인을 재구성해야 해서 비용이 감당되지 않는다. 그래서 질의 인코더와 생성기만 학습한다."
+    }
+   ]
+  },
+  {
+   "start": 780,
+   "title": "RAG 를 식으로 — p(y|x) = Σ p(z|x)·p(y|x,z), RAG-Sequence 대 RAG-Token, DPR 검색기와 BART 생성기",
+   "points": [
+    "검색기 p(z|x)는 질의 x 에 대한 top-K 문단 z 와 그 확률을, 생성기 p(y|x,z)는 x 와 z 를 보고 답을 한 토큰씩 쓴다. 각 문단에서 나온 답을 검색기가 매긴 확률로 가중합한다.",
+    "RAG-Sequence 는 문단 하나를 골라 답 전체를 쓰고, RAG-Token 은 답의 토큰마다 문단 가중치를 다시 매긴다.",
+    "검색기와 생성기를 함께 학습해 음의 주변 로그우도 Σ_j −log p(y_j|x_j) 를 최소화한다. 어느 문단이 '정답 문단'인지 라벨이 필요 없다.",
+    "검색기는 DPR: p(z|x) ∝ exp(d(z)ᵀq(x)), d = BERT_d, q = BERT_q 두 개의 BERT. 생성기는 BART(encoder-decoder) — x 와 z 를 이어 붙여 넣을 뿐 검색 전용 구조가 없어서 오늘날 LLM 프롬프트로 그대로 옮겨진다.",
+    "성능: NQ 44.5(RAG-Seq) 대 DPR 41.5·T5-11B 34.5, Jeopardy 생성 사람 평가에서 사실성 'RAG 가 낫다' 42.7% 대 'BART 가 낫다' 7.1%."
+   ],
+   "on_screen": "'Deep Dive into RAG' — retriever p(z|x), generator p(y|x,z), 식 p(y|x) ≈ Σ_{z∈top-K} p(z|x)p(y|x,z) 옆 빨간 글씨 'Weight each passage's answer by how likely the retriever rates that passage', RAG-Sequence / RAG-Token 정의, 'Jointly train the retriever and generator to minimize the negative marginal log-likelihood Σ_j −log p(y_j|x_j)'. 'Retriever: DPR' — p(z|x) ∝ exp(d(z)ᵀq(x)), d(z) = BERT_d(z), q(x) = BERT_q(x), top-k 는 MIPS 로. 'Generator: BART' — 어떤 encoder-decoder 도 가능, x 와 z 를 이어 붙인다. 'RAG Performance on Open-Domain QA' 표 — Closed Book T5-11B 34.5/-/37.4, T5-11B+SSM 36.6/-/44.7, Open Book REALM 40.4/-/40.7/46.8, DPR 41.5/57.9/-/41.1/50.6, RAG-Token 44.1/55.2(66.1)/45.5/50.0, RAG-Seq 44.5/56.8(68.0)/45.2/52.2 (NQ/TQA/WQ/CT, Exact Match). 사람 평가 표(Factuality/Specificity): BART better 7.1%/16.8%, RAG better 42.7%/37.4%, Both good 11.7%/11.8%, Both poor 17.7%/6.9%, No majority 20.8%/20.1%.",
+   "explain": [
+    "이제 RAG 를 확률로 적어 보자. 질의 x 가 주어졌을 때 답 y 의 확률은 '어느 문서를 근거로 삼느냐'라는 숨은 변수 z 를 두고 쪼갤 수 있다. 먼저 검색기가 각 문단 z 가 이 질의에 얼마나 맞는지 확률 p(z|x) 를 매기고, 생성기가 그 문단을 읽었을 때 답 y 를 쓸 확률 p(y|x,z) 를 낸다. 둘을 곱해 문단마다 더하면 p(y|x) 가 된다. 슬라이드의 빨간 글씨가 이 식을 한 줄로 요약한다. 각 문단이 만든 답을, 검색기가 그 문단을 얼마나 믿는지로 가중한다. 모든 문서를 다 더할 수는 없으니 합은 top-K 에서만 하고, 그래서 등호가 아니라 근사(≈)다.",
+    "이 합을 어디서 하느냐에 따라 두 변형이 나온다. RAG-Sequence 는 문단 하나를 정해 놓고 그 문단으로 답 전체를 쓴 뒤, 문단마다 나온 '답 전체 확률'을 가중합한다. RAG-Token 은 답의 토큰 하나하나마다 문단 가중합을 새로 한다. 그래서 첫 토큰은 문단 1에 기대고 다음 토큰은 문단 2에 기대는 식으로, 여러 문서의 정보를 한 답 안에서 섞을 수 있다. 두 문서에 흩어진 사실을 이어 붙여야 하는 질문에서 RAG-Token 이 유리할 수 있고, 한 문단이 답을 다 담고 있으면 RAG-Sequence 가 더 일관된 답을 낸다. 표에서 둘의 점수가 비슷하게 엎치락뒤치락하는 것도 이 때문이다.",
+    "학습은 검색기와 생성기를 함께 한다. 정답 답안 y_j 가 있는 질문-답 쌍 (x_j, y_j) 들에 대해 음의 주변 로그우도 Σ_j −log p(y_j|x_j) 를 최소화한다. 여기서 '주변(marginal)'이라는 말이 중요하다. z 를 합으로 없앴기 때문에 '어느 문단이 정답 근거인지' 라벨이 필요 없다. 정답을 잘 만들어 내는 문단에 검색기가 높은 확률을 주도록 기울기가 저절로 밀어 준다. 검색기는 DPR(Dense Passage Retriever)이다. 문단은 BERT_d 로, 질의는 다른 BERT_q 로 각각 벡터화하고, 두 벡터의 내적 d(z)ᵀq(x) 가 점수다. exp 를 씌워 정규화하면 top-K 위의 확률분포가 된다. 문단 벡터는 미리 한 번 계산해 색인에 넣어 두고(오프라인), 질의 시점에는 질의만 인코딩해 MIPS 를 돌린다.",
+    "생성기는 BART 라는 encoder-decoder 모델이다. 강사는 '특별한 검색 전용 구조가 없다'는 점을 짚는다. 질의 x 와 검색된 문단 z 를 이어 붙여 인코더에 넣고, 디코더가 답을 한 토큰씩 쓸 뿐이다. 검색된 문단은 그냥 맥락 속 추가 텍스트다. 바로 이 단순함 덕분에 RAG 는 현대 LLM 으로 그대로 옮겨졌다. 오늘날 RAG 는 생성기를 따로 학습하지 않고, 검색 결과를 프롬프트에 붙여 넣는 것으로 똑같은 일을 한다. 성능 표를 보면 매개변수에만 기대는 'closed book' T5-11B 가 Natural Questions 에서 34.5 인 데 비해 RAG-Sequence 는 44.5 로 크게 앞선다. Jeopardy 문제 생성 사람 평가에서는 사실성에서 'RAG 가 낫다'가 42.7%, 'BART 가 낫다'가 7.1% 였다. 강사의 결론은 RAG 의 공헌이 근거 대기(grounding)이고, 그 일을 실제로 하는 것은 검색된 내용이라는 것이다."
+   ],
+   "formulas": [
+    {
+     "expr": "p(y|x) ≈ Σ_{z∈top-K(p(·|x))} p(z|x) · p(y|x,z)",
+     "meaning": "x: 질의, y: 답(토큰열), z: 검색된 문단(숨은 변수), p(z|x): 검색기가 z 에 준 확률, p(y|x,z): z 를 읽은 생성기가 y 를 낼 확률. 문단마다 답 확률을 검색 확률로 가중합한다. top-K 에서만 더하므로 근사."
+    },
+    {
+     "expr": "RAG-Seq: Σ_z p(z|x) Π_i p(y_i|x,z,y_<i)   /   RAG-Tok: Π_i Σ_z p(z|x) p(y_i|x,z,y_<i)",
+     "meaning": "y_i: 답의 i번째 토큰, y_<i: 그 앞 토큰들. 앞쪽은 '문단 고정 → 답 전체 곱 → 문단 합', 뒤쪽은 '토큰마다 문단 합 → 곱'. 합과 곱의 순서만 다르다."
+    },
+    {
+     "expr": "p(z|x) ∝ exp(d(z)ᵀ q(x)),  d(z) = BERT_d(z),  q(x) = BERT_q(x)",
+     "meaning": "d(z), q(x): 같은 차원(BERT-base 면 768)의 문단·질의 벡터. 내적이 클수록 관련도가 높다. ∝ 는 top-K 위에서 exp 값을 합으로 나눠 확률로 만든다는 뜻(softmax)."
+    },
+    {
+     "expr": "L = Σ_j −log p(y_j | x_j)",
+     "meaning": "j: 학습 예시 번호. 음의 주변 로그우도. z 가 합으로 빠져 있어 정답 문단 라벨 없이 검색기와 생성기를 함께 학습한다."
+    }
+   ],
+   "example": {
+    "title": "두 문단, 두 토큰 — RAG-Seq 와 RAG-Tok 를 손으로",
+    "body": "DPR 점수 d·q: z1 = 12.0, z2 = 11.15 → exp 차이 e^0.85 = 2.34 → p(z1|x) = 2.34/3.34 = 0.70, p(z2|x) = 0.30.\n답 'Thursday 9am' 을 두 토큰으로 본다. 생성기 확률: z1 을 읽으면 [0.9, 0.5], z2 를 읽으면 [0.2, 0.9].\nRAG-Seq = 0.7 × (0.9 × 0.5) + 0.3 × (0.2 × 0.9) = 0.7 × 0.45 + 0.3 × 0.18 = 0.315 + 0.054 = 0.369 → NLL = −ln 0.369 = 0.997.\nRAG-Tok: 토큰1 = 0.7 × 0.9 + 0.3 × 0.2 = 0.69, 토큰2 = 0.7 × 0.5 + 0.3 × 0.9 = 0.62 → 0.69 × 0.62 = 0.428 → NLL = 0.849.\n두 번째 토큰은 z2 가 더 잘 아는데, RAG-Tok 는 토큰마다 z2 의 도움을 받을 수 있어 확률이 더 높다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# RAG-Sequence 와 RAG-Token 의 주변화(marginalization)를 숫자로 비교\nimport math\npz = {\"z1\": 0.7, \"z2\": 0.3}                      # 검색기 p(z|x) (top-2 위에서 softmax)\n# 생성기 p(y_i | x, z, y_<i): 답 \"Thursday 9am\" 을 두 토큰으로 본다\ntok = {\"z1\": [0.9, 0.5], \"z2\": [0.2, 0.9]}\n# RAG-Sequence: 문서마다 답 전체 확률을 곱한 뒤 문서로 가중합\nseq = sum(pz[z] * math.prod(tok[z]) for z in pz)\n# RAG-Token: 토큰마다 문서로 가중합한 뒤 곱\ntoken = math.prod(sum(pz[z] * tok[z][i] for z in pz) for i in range(2))\nprint(f\"RAG-Seq p(y|x) = {seq:.3f}  NLL = {-math.log(seq):.3f}\")\nprint(f\"RAG-Tok p(y|x) = {token:.3f}  NLL = {-math.log(token):.3f}\")\n# DPR 점수 -> p(z|x): exp(d·q) 정규화\nscores = {\"z1\": 12.0, \"z2\": 11.15}\nZ = sum(math.exp(v) for v in scores.values())\nprint({z: round(math.exp(v) / Z, 3) for z, v in scores.items()})"
+   },
+   "pitfalls": [
+    "강사는 말로 생성기를 'BERT' 라고 했지만 슬라이드와 원 논문의 생성기는 BART 다. BERT 는 인코더만 있어 글을 생성하지 못한다 — 이 노트는 슬라이드를 따른다.",
+    "RAG 논문 표기 [Lewis et al., 2021] 은 학회 발표(NeurIPS 2020) 기준으로는 2020 이다. arXiv 2005.11401.",
+    "RAG-Token 이 항상 낫지 않다. 표에서 NQ 는 Seq(44.5)가, WQ 는 Token(45.5)이 높다."
+   ],
+   "check": [
+    {
+     "q": "p(z|x) = [0.5, 0.5], z1 을 읽으면 답 확률 0.8, z2 를 읽으면 0.2 일 때(답이 토큰 하나) RAG-Seq 와 RAG-Tok 의 p(y|x)는?",
+     "a": "토큰이 하나면 둘이 같다: 0.5 × 0.8 + 0.5 × 0.2 = 0.5. 차이는 답이 여러 토큰일 때만 생긴다."
+    },
+    {
+     "q": "주변 로그우도로 학습하면 왜 '정답 문단' 라벨이 필요 없나?",
+     "a": "z 를 합으로 없앤 p(y|x) 만 정답 답안과 비교하므로, 정답을 잘 만드는 문단의 p(z|x) 가 커지도록 기울기가 자동으로 흐른다."
+    }
+   ]
+  },
+  {
+   "start": 1100,
+   "title": "Naive → Advanced → Modular RAG, 그리고 질문 셋 — 속도는? 프런티어 모델에도 RAG 가 필요한가? BERT 는 아직 쓰나?",
+   "points": [
+    "Naive RAG: 사용자 질의 → 문서 색인 → 검색 → 프롬프트 → 고정 LLM → 출력. 일직선.",
+    "Advanced RAG: 검색 전(질의 라우팅·재작성·확장)과 검색 후(재순위·요약·융합) 단계를 끼워 넣는다.",
+    "Modular RAG: 검색·라우팅·재작성·재순위·메모리·융합·예측·시연 같은 모듈로 쪼개고, '검색 후 읽기'나 '반복 검색 후 읽기' 같은 패턴으로 조립한다(Gao et al., 2024).",
+    "Q&A: 속도·메모리·비용은 뒤에서 인코더별로 비교한다 — 문서 쪽을 미리 계산할 수 있느냐가 핵심. 프런티어 모델에도 RAG 원칙은 그대로 통한다(공개되지 않은 사내 금융 DB 같은 경우). BERT 는 이제 '역사적' 모델로 본다."
+   ],
+   "on_screen": "'Different Variants of RAG' (Gao et al., 2024) — 세 칸 그림. Naive RAG(User·Query·Documents → Indexing → Retrieval → Prompt → Frozen LLM → Output), Advanced RAG(주황색 Pre-Retrieval: Query Routing·Query Rewriting·Query Expansion, Post-Retrieval: Rerank·Summary·Fusion), Modular RAG(Modules: Search·Routing·Predict·Retrieve·Rewrite·RAG·Rerank·Read·Demonstrate·Memory·Fusion, 아래 Patterns: Naive RAG·Advanced RAG·DSP·ITER-RETGEN 등).",
+   "explain": [
+    "첫 RAG 논문 이후 몇 년 사이 RAG 는 크게 진화했다. 강사가 보여 준 Gao 등의 정리 그림은 세 단계로 나눈다. 가장 왼쪽의 Naive RAG 는 지금까지 본 일직선 구조다. 문서를 색인하고, 질의가 오면 검색하고, 검색 결과를 프롬프트에 붙여 고정된 LLM 에게 답하게 한다. 간단하고 빠르지만 질의가 애매하거나 검색 결과가 지저분하면 그대로 답에 영향을 준다.",
+    "가운데 Advanced RAG 는 이 일직선의 앞뒤에 손질 단계를 끼운다. 검색 전에는 질의를 다듬는다. 질의 라우팅은 질문 종류에 따라 다른 색인(예: 제품 문서 대 FAQ)으로 보내는 것이고, 질의 재작성은 '그거 언제까지야?' 같은 질문을 '프로젝트 마일스톤 마감일'처럼 검색하기 좋은 문장으로 바꾸는 것이며, 질의 확장은 동의어나 관련 질문을 덧붙여 여러 번 검색하는 것이다. 검색 후에는 결과를 다듬는다. 여러 방법으로 검색한 결과를 융합하고, 더 비싼 모델로 재순위하고, 너무 길면 요약한다. 강사는 이런 기법이 아주 많고, 그것들을 붙일수록 RAG 가 강해진다고 말한다.",
+    "가장 오른쪽의 Modular RAG 는 한 걸음 더 나간다. 모든 것을 모듈 — 검색, 라우팅, 재작성, 재순위, 메모리, 융합 등 — 로 쪼개고, 그 모듈을 패턴으로 조립한다. '검색한 뒤 읽기'가 한 패턴이고, '검색-읽기를 여러 번 반복하기'가 또 한 패턴이다. 이렇게 보면 RAG 는 한 가지 알고리즘이 아니라 부품 상자이고, 설계자는 과제에 맞게 부품을 고르고 순서를 정한다. 1강에서 본 '워크플로 대 에이전트' 구분으로 말하면, 이 조립 순서를 사람이 코드로 정하면 워크플로이고, 모델이 상황에 따라 정하게 하면 이 강의 끝의 에이전트형 RAG 가 된다.",
+    "이 대목에서 학생 질문 셋이 나왔다. 첫째, 성능 말고 속도·메모리·비용 비교는 있느냐. 강사는 뒤에서 인코더 종류별로 지연을 비교하겠다며 핵심 기준을 미리 말한다. 문서 쪽 표현을 미리 계산해 둘 수 있느냐다. 질의와 문서를 한 입력에 넣고 어텐션을 돌리는 인코더는 미리 계산이 불가능하다. 둘째, ChatGPT 같은 프런티어 모델에는 RAG 가 이미 들어 있느냐. 답은 'RAG 는 원칙으로서 언제나 통한다'이다. 금융 서비스 회사의 내부 데이터베이스처럼 인터넷에 공개되지 않은 자료는 모델이 알 방법이 없으니, 그 DB 에 접근하게 해 주는 것이 곧 RAG 다. 일반 웹 검색은 GPT-4 이후 많은 모델이 기본 기능으로 제공한다. 셋째, 검색기 안에서 아직 BERT 를 쓰느냐. BERT 는 이제 '역사적' 모델로 보며, 뒤에서 더 현대적인 인코더로 넘어간다고 답한다."
+   ],
+   "diagram": {
+    "title": "세 세대의 RAG",
+    "code": "flowchart TB\n  subgraph N[\"Naive\"]\n    n1[\"질의\"] --> n2[\"검색\"] --> n3[\"프롬프트 + LLM\"]\n  end\n  subgraph A[\"Advanced\"]\n    a0[\"검색 전: 라우팅·재작성·확장\"] --> a1[\"검색\"] --> a2[\"검색 후: 재순위·요약·융합\"] --> a3[\"LLM\"]\n  end\n  subgraph M[\"Modular\"]\n    m1[\"모듈: 검색·라우팅·재작성·재순위·메모리·융합\"] --> m2[\"패턴: 검색→읽기 / 반복 검색→읽기\"]\n  end\n  N --> A --> M"
+   },
+   "pitfalls": [
+    "부품을 많이 붙일수록 좋아지는 것은 아니다. 단계마다 지연과 비용이 쌓이고, 앞 단계의 실수가 뒤로 번진다(compounding error) — 무엇을 붙일지는 실패 분석으로 정한다.",
+    "'프런티어 모델은 웹 검색이 되니 RAG 는 필요 없다'는 오해다. 웹 검색은 공개 정보만 찾는다. 사내·개인 데이터는 여전히 직접 색인해야 한다."
+   ],
+   "check": [
+    {
+     "q": "질의 재작성은 Advanced RAG 의 어느 단계에 속하며, 왜 효과가 있나?",
+     "a": "검색 전 단계. 대화체·대명사가 섞인 질문을 색인에 있는 문서 표현과 비슷한 검색어로 바꾸면 검색기가 관련 문서를 더 잘 찾는다."
+    }
+   ]
+  },
+  {
+   "start": 1408,
+   "title": "색인 ① — 임베딩의 단위와 청크 나누기: 같은 글, 세 가지 자르기",
+   "points": [
+    "임베딩 종류표: 정적 단어(word2vec·GloVe → 낱말 유형 하나), 문맥 토큰(BERT·RoBERTa → 문맥 속 토큰), 문단(Sentence-BERT·DPR·E5 → 청크 하나), 멀티모달(CLIP → 텍스트·이미지 공유 공간), 그래프(node2vec·GNN → 노드나 관계).",
+    "검색에는 청크마다 고정 차원 벡터 하나와 유사도 척도(코사인 또는 내적)가 필요하다. 단순한 척도가 실제로 잘 된다.",
+    "고정 크기 청크: 100~500 토큰. 너무 작으면 벡터에 맥락이 없고, 너무 크면 한 벡터가 여러 주제를 평균 낸다. 10~20% 겹침으로 경계에서 문장이 잘리는 것을 막는다.",
+    "의미 단위 청크(문장·절), 맥락 보강 청크(청크마다 메타데이터·요약), AI 기반 동적 청크(LLM 이 자연스러운 끊는 점을 찾음)."
+   ],
+   "on_screen": "'What Makes A Good Retriever? Embeddings' 표 — Type/Examples/One vector covers: Static word(word2vec, GloVe / a word type), Contextual(BERT, RoBERTa / a token in context), Passage(Sentence-BERT, DPR, E5 / a chunk), Multimodal(CLIP / text or image, shared space), Graph(node2vec, GNN encoders / a node or relation). 아래 'Retrieval needs both a fixed-dimension vector per chunk, and a similarity metric (cosine or inner product).' 'Chunking: Basic Unit in Retrieval' — Fixed-size(100–500 tokens, Too small/Too large, Overlap 10–20%), Semantic chunking, Context-enriched chunking, AI-driven dynamic chunking (출처 Databricks 블로그). 'Chunking: Same Text, Three Splits' — 'Grading. The project milestone is due Week 6, Thursday 11:59pm. Late days may not be applied to the milestone. The final report is due Week 10.' 를 50 토큰 고정 크기로 자르니 '…The project milestone is due Week 6, Thursday' / '11:59pm. Late days may not be applied to the milestone …' 로 갈라진 모습.",
+   "explain": [
+    "색인의 첫 질문은 '무엇을 벡터 하나로 만들 것인가'다. 강사는 임베딩을 단위별로 정리한 표를 보여 준다. word2vec·GloVe 같은 정적 단어 임베딩은 낱말 유형마다 벡터 하나라서 'bank' 가 은행이든 강둑이든 같은 벡터다. BERT·RoBERTa 같은 문맥 임베딩은 문장 속 각 토큰에 벡터를 주므로 '은행에 돈을 맡겼다'의 bank 에는 금융 의미가 담긴다. 검색에 주로 쓰는 것은 Sentence-BERT·DPR·E5 같은 문단 임베딩으로, 텍스트 덩어리(청크) 하나를 벡터 하나로 만든다. CLIP 은 텍스트와 이미지를 같은 공간에 두어 '고양이 사진'이라는 글로 고양이 이미지를 찾게 하고, node2vec·GNN 은 그래프의 노드나 관계를 벡터로 만든다. 강사는 이 표가 RAG 의 원칙이 텍스트를 넘어 여러 데이터에 적용되는 이유라고 말한다.",
+    "어떤 단위를 쓰든 검색에는 두 가지가 필요하다. 청크마다 고정 차원 벡터 하나, 그리고 두 벡터가 얼마나 가까운지 재는 유사도 척도. 실무에서는 코사인 유사도나 내적을 쓰는데, 강사는 이 단순한 방법이 실제로 아주 잘 된다고 말한다. 노트 보충: 벡터를 길이 1 로 정규화해 두면 코사인과 내적이 같아지므로 대부분의 벡터 DB 는 정규화 후 내적을 쓴다.",
+    "그다음이 청크 나누기(chunking)다. 긴 문서를 검색의 기본 단위로 자르는 일이다. 가장 단순한 방법은 크기로 자르는 것이다. 보통 100~500 토큰씩 자른다. 청크가 너무 작으면 벡터에 맥락이 부족하고(‘11:59pm’ 만 있는 조각은 무엇의 마감인지 모른다), 너무 크면 벡터 하나가 여러 주제를 평균 내 버려 어떤 질문과도 애매하게만 비슷해진다. 그래서 적당한 중간을 찾아 조정해야 한다. 경계에서 문장이 잘리는 문제를 줄이려면 겹침(overlap)을 준다. 이웃한 청크끼리 토큰의 10~20% 를 공유하게 하면 경계 근처 문장이 적어도 한 청크에는 온전히 들어간다.",
+    "더 정교한 방법도 있다. 의미 단위 청크는 문장이나 문단, 절 제목 같은 논리적 경계로 자른다. 맥락 보강 청크는 각 청크에 출처 문서 제목·절 이름 같은 메타데이터나 요약을 덧붙인다. AI 기반 동적 청크는 LLM 에게 글을 읽혀 자연스러운 끊는 점을 찾게 한다. 강사의 예가 차이를 잘 보여 준다. 과목 웹사이트의 '채점' 단락 — 마일스톤은 6주차 목요일 23:59 마감, 지각 일수(late days)는 마일스톤에 쓸 수 없음, 최종 보고서는 10주차 — 을 고정 크기로 자르면 'Week 6, Thursday' 와 '11:59pm' 이 서로 다른 청크로 갈라진다. 겹침을 주면 일부 정보가 두 청크에 같이 들어가고, 웹사이트 제목 기준으로 의미 단위로 자르면 '채점' 블록 전체가 한 청크가 된다. 같은 글이라도 자르는 방법에 따라 검색 단위의 품질이 달라진다는 것이 요점이다."
+   ],
+   "example": {
+    "title": "8 낱말 청크로 '마감' 단락 자르기",
+    "body": "글 25 낱말. 고정 8 낱말(겹침 0) → 4 청크: [Grading … Week 6,] [Thursday 11:59pm. Late days may not be applied] [to the milestone. The final report is due] [Week 10.]\n질문 'late days milestone' 의 낱말 겹침 수: 1, 2, 1, 0. 2번 청크가 이기지만 'milestone' 이 3번으로 넘어가 '지각 일수를 마일스톤에 못 쓴다'는 문장이 반으로 갈렸다.\n겹침 2 낱말(step 6) → 5 청크, 'may not' 이 2·3번 양쪽에 들어가 경계 문장이 이어진다. 대신 청크 수가 25% 늘어 색인 크기도 늘었다.\n문장 단위 → 'Late days may not be applied to the milestone.' 한 청크가 질문과 3 낱말 모두 겹친다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 고정 크기 청크(겹침 있음/없음)와 문장 단위 청크를 같은 글에 적용해 본다\nimport re\ntext = (\"Grading. The project milestone is due Week 6, Thursday 11:59pm. \"\n        \"Late days may not be applied to the milestone. The final report is due Week 10.\")\nwords = text.split()\n\ndef fixed(size, overlap=0):\n    step = size - overlap\n    return [\" \".join(words[i:i + size]) for i in range(0, len(words), step)\n            if words[i:i + size]]\n\ndef by_sentence():\n    return [s for s in re.split(r\"(?<=\\.)\\s+\", text) if s]\n\nfor name, chunks in [(\"fixed 8\", fixed(8)), (\"fixed 8 / overlap 2\", fixed(8, 2)),\n                     (\"sentence\", by_sentence())]:\n    print(f\"== {name}: {len(chunks)} chunks\")\n    for c in chunks:\n        print(\"  |\", c)\nq = \"late days milestone\"\nfor c in fixed(8):\n    print(sum(w.lower().strip(\".,\") in q.split() for w in c.split()), c)"
+   },
+   "pitfalls": [
+    "겹침을 주면 꼬리에 'Week 10.' 처럼 앞 청크와 내용이 같은 짧은 조각이 남는다. 이런 조각은 중복 검색 결과를 만들고 top-k 자리를 낭비하므로 마지막 청크는 앞 청크에 합치는 처리를 한다.",
+    "청크 크기는 토큰 수로 재야 한다. 낱말 수와 토큰 수는 언어마다 다르다(한국어는 낱말당 토큰이 더 많다). 임베딩 모델의 최대 입력 길이를 넘으면 뒤가 조용히 잘린다."
+   ],
+   "check": [
+    {
+     "q": "청크가 너무 클 때와 너무 작을 때 각각의 문제는?",
+     "a": "너무 크면 한 벡터가 여러 주제를 평균 내 어떤 질문과도 뚜렷이 가깝지 않다. 너무 작으면 벡터에 맥락(무엇에 관한 숫자·문장인지)이 없다."
+    }
+   ]
+  },
+  {
+   "start": 1765,
+   "title": "색인 ② — Contextual Retrieval(청크에 맥락 50~100 토큰 붙이기)과 Late Chunking(먼저 임베딩, 나중에 자르기)",
+   "points": [
+    "문제: 질의 'ACME Corp 의 2023년 2분기 매출 성장률은?'에 딱 맞는 청크가 '회사의 매출은 전 분기 대비 3% 늘었다' 뿐이면, 회사명·분기·연도가 청크에 없어 검색이 어렵다.",
+    "Contextual Retrieval(Anthropic): 청크마다 문서 전체를 주고 LLM 에 '이 청크를 문서 안에 위치시키는 짧은 맥락'을 쓰게 해 50~100 토큰을 앞에 붙인다. 그 결과를 임베딩 색인과 BM25 색인 두 곳에 넣는다.",
+    "top-20 검색 실패율(Failed@20): 임베딩 5.7% → 임베딩+BM25 5.0% → 맥락 임베딩 3.7% → 맥락 임베딩+맥락 BM25 2.9%. 대가는 청크마다 LLM 호출 비용.",
+    "Late Chunking(Günther et al., 2024): 긴 문맥 인코더로 문서 전체를 한 번에 임베딩한 뒤, 토큰 벡터를 청크 구간별로 평균 낸다. LLM 호출·추가 토큰 없이 맥락이 벡터에 실린다.",
+    "late chunking 의 이득은 청크가 작을수록 크다 — 큰 청크는 이미 맥락을 담고 있기 때문."
+   ],
+   "on_screen": "'Why Contextual Retrieval' — Query 'What was the revenue growth for ACME Corp in Q2 2023?', Chunk 'The company's revenue grew by 3% over the previous quarter.'(빨간 동그라미). 'Contextual Retrieval' 도식 — Corpus → Chunk 1·2·X → 'Run prompt for every chunk to situate it within the document' → Context 1 + Chunk 1 … → Embedding model → Vector database, TF-IDF → TF-IDF index, 말풍선 'Hybrid retrieval: embeddings catch meaning, TF-IDF/BM25 catches exact terms; results are merged', 'For every prompt, Claude responds with 50–100 tokens of context'. 프롬프트 원문 상자: <document>{{WHOLE_DOCUMENT}}</document> Here is the chunk we want to situate within the whole document <chunk>{{CHUNK_CONTENT}}</chunk> Please give a short succinct context… Answer only with the succinct context and nothing else. 막대그래프 'Contextual Embeddings Reduced Retrieval Failure Rate' — Average % Failed Retrievals@20: Embedding 5.7, Embedding+BM25 5.0, Contextual embedding 3.7, Contextual embedding + contextual BM25 2.9. 'Late Chunking' — i.i.d. embeddings(naive) 대 conditional embeddings(late), '…embed the whole document with a long-context encoder; then mean-pool the token vectors within each chunk's span' (Günther et al., 2024). 표 'Retrieval Results with Long Late Chunking for Different Chunk Sizes' — SciFact·NFCorpus·FiQA·TRECCOVID, 256 토큰 고정 경계 평균 Naive 52.2 / Late 54.0, 5문장 경계 Naive 52.4 / Late 54.3.",
+   "explain": [
+    "청크를 아무리 잘 잘라도 남는 문제가 있다. 강사의 예를 보자. 질의는 'ACME Corp 의 2023년 2분기 매출 성장률은?'이다. 말뭉치 안에서 정확히 이 질문에 답하는 청크는 '회사의 매출은 전 분기 대비 3% 늘었다'이다. 그런데 이 청크만 따로 떼어 보면 어느 회사인지, 어느 분기인지, 몇 년인지가 하나도 없다. 그 정보는 문서 맨 위 제목이나 앞 문단에 있었고, 청크로 자르는 순간 떨어져 나갔다. 질의의 핵심 낱말(ACME, Q2, 2023)이 청크에 없으니 벡터 검색도, 키워드 검색도 이 청크를 높이 올리기 어렵다.",
+    "Anthropic 이 제안한 Contextual Retrieval 의 발상은 단순하다. 떨어져 나간 낱말을 다시 붙이자. 색인하기 전에 청크마다 LLM 을 한 번 부른다. 프롬프트에는 문서 전체와 해당 청크를 넣고 '이 청크를 문서 전체 안에서 위치시킬 짧고 간결한 맥락을 써라, 그 맥락만 답하라'고 지시한다. 모델은 '이 청크는 ACME Corp 의 2023년 2분기 실적 보고서 중 매출 부분이다' 같은 50~100 토큰의 문장을 돌려주고, 이것을 청크 앞에 붙인다. 강사의 말대로 정교한 것은 하나도 없다. 프롬프트 하나를 쓴 것이다. 이렇게 맥락이 붙은 청크를 두 번 색인한다. 한 번은 임베딩 모델로 벡터 색인에, 한 번은 BM25 로 희소(키워드) 색인에.",
+    "왜 두 번인가? 임베딩은 의미가 비슷한 것을 잘 찾지만 'Q2 2023' 이나 오류 코드 같은 정확한 숫자·고유명사에는 약하고, BM25 는 오래된 고전 방법이지만 정확한 낱말 일치에 아주 강하다. 둘의 결과를 합치면 양쪽 장점을 다 얻는다. 막대그래프가 그 효과를 보여 준다. 상위 20개 안에 정답이 없는 비율(Failed@20)이 일반 임베딩 5.7%, 임베딩+BM25 5.0%, 맥락 임베딩 3.7%, 맥락 임베딩+맥락 BM25 2.9% 로 내려간다. 맥락만으로 실패가 35% 줄고, BM25 까지 합치면 거의 절반(49%)이 준다. 강사는 대가도 분명히 말한다. 청크마다 LLM 호출이 한 번씩 필요하므로 비용이 꽤 든다. 학생 질문에 대해서는 이 일에 쓰는 LLM 이 최신 대형 모델일 필요는 없고 작지만 쓸 만한 모델이면 되며, 검색 품질과 비용·속도 사이에서 파레토 분석을 해서 고르라고 답했다. 노트 보충: CME295 7강 노트는 같은 기법의 비용을 프롬프트 캐싱으로 줄이는 계산을 자세히 다룬다.",
+    "Late Chunking 은 같은 문제를 LLM 호출 없이 푼다. 보통의 방식(naive)은 먼저 자르고 청크마다 따로 임베딩한다. 그러면 각 청크는 자기 안의 정보만 본다. Late chunking 은 순서를 뒤집는다. 긴 문맥을 받는 임베딩 모델에 문서 전체를 한 번에 넣어 토큰마다 벡터를 얻고, 그다음에 청크 구간별로 그 토큰 벡터들을 평균 낸다. 트랜스포머 안에서 각 토큰은 이미 문서 전체에 어텐션을 했으므로, '회사의 매출은…' 이라는 토큰들의 벡터에도 앞 문단의 'ACME' 정보가 스며 있다. 맥락이 글자로 붙는 대신 벡터 속에 실려 가는 것이다. 표에서 평균 점수는 256 토큰 경계에서 52.2 → 54.0, 5문장 경계에서 52.4 → 54.3 으로 오른다. 강사는 개선 폭이 청크가 작을 때 가장 크다고 짚는다. 큰 청크는 이미 자기 안에 맥락을 많이 품고 있어 문서 수준 정보가 더해 줄 것이 적고, 작은 청크일수록 문서에서 빌려 오는 정보의 가치가 크기 때문이다."
+   ],
+   "formulas": [
+    {
+     "expr": "v_chunk = (1/|S|) Σ_{t∈S} h_t,  (h_1 … h_T) = Enc(문서 전체)",
+     "meaning": "Late chunking. T: 문서 전체 토큰 수, h_t: 문서 전체를 본 인코더가 t번째 토큰에 낸 벡터, S: 이 청크에 속한 토큰 위치 집합, |S|: 그 개수. 평균(mean-pool)을 '자른 뒤 인코딩'이 아니라 '인코딩한 뒤 자르기'로 한다."
+    },
+    {
+     "expr": "상대 감소율 = (5.7 − 2.9) / 5.7 = 49%",
+     "meaning": "Failed@20 이 5.7% 에서 2.9% 로 줄었을 때, 실패한 검색 중 절반 가까이가 성공으로 바뀌었다는 뜻."
+    }
+   ],
+   "example": {
+    "title": "맥락 붙이기 전후의 BM25 일치 낱말 세기",
+    "body": "질의 낱말: {ACME, revenue, growth, Q2, 2023}.\n원래 청크 'The company's revenue grew by 3% over the previous quarter.' → 일치 1개(revenue). grew 는 growth 와 다른 낱말이라 기본 BM25 에서는 안 맞는다(어간 추출을 하면 맞을 수 있다).\n맥락을 붙인 청크 'This chunk is from ACME Corp's Q2 2023 SEC filing on revenue growth; … The company's revenue grew…' → 일치 5개 모두.\n임베딩 쪽도 회사명·시점이 벡터에 들어가 같은 회사의 다른 분기 청크와 구별된다. 비용: 청크 10,000개면 LLM 호출 10,000번(맥락 75 토큰씩이면 출력만 75만 토큰)."
+   },
+   "pitfalls": [
+    "Contextual retrieval 은 색인 시점 비용이다. 문서가 자주 바뀌면 바뀐 문서의 모든 청크에 대해 다시 LLM 을 불러야 한다.",
+    "Late chunking 은 문서 전체가 인코더의 최대 길이 안에 들어갈 때만 그대로 된다. 그보다 긴 문서는 큰 창으로 나눠 인코딩해야 하고, 그 창 경계에서는 다시 맥락이 끊긴다.",
+    "맥락 문장을 만드는 LLM 이 틀린 맥락(다른 회사명)을 붙이면 검색이 오히려 엉뚱한 곳으로 끌려간다 — 앞 단계의 오류가 뒤로 번지는 사례."
+   ],
+   "check": [
+    {
+     "q": "Contextual retrieval 과 late chunking 은 같은 문제를 어떻게 다르게 푸나?",
+     "a": "둘 다 '청크가 문서 맥락을 잃는' 문제를 푼다. 전자는 LLM 이 쓴 맥락 문장을 청크 텍스트에 붙여(청크마다 LLM 비용) 임베딩·BM25 둘 다 쓰고, 후자는 문서 전체를 인코딩한 토큰 벡터를 청크 구간별로 평균 내 맥락을 벡터에만 싣는다(LLM 호출 없음, BM25 에는 효과 없음)."
+    },
+    {
+     "q": "Failed@20 이 5.0% → 2.9% 면 상대 감소율은?",
+     "a": "(5.0 − 2.9)/5.0 = 42%."
+    }
+   ]
+  },
+  {
+   "start": 2187,
+   "title": "색인 ③ — 줄에서 나무로, 나무에서 그래프로: RAPTOR 와 GraphRAG, 그리고 '비싸서 안 쓴다'",
+   "points": [
+    "RAPTOR(Stanford, Sarthi et al.): 답이 문서 여기저기 흩어진 질문에는 청크 하나로 부족하다. 청크 임베딩 → 군집화 → 군집마다 LLM 요약 → 요약을 다시 임베딩 → 반복해 뿌리까지 나무를 만든다.",
+    "질의 때는 모든 층에서 검색한다. 세부 질문은 잎(원문 청크)에, 주제 질문은 위층 요약 노드에 걸린다. 신데렐라 예: DPR 은 잎만 가져오지만 RAPTOR 는 위층 노드를 고른다.",
+    "GraphRAG(Edge et al., 2024): 색인 때 LLM 이 개체와 관계를 뽑아 지식 그래프를 만들고 커뮤니티 탐지로 묶어 커뮤니티 요약을 만든다. 질의 때는 청크가 아니라 커뮤니티 요약마다 부분 답을 내고 그것을 합쳐 전역 답을 만든다.",
+    "Q&A: 구조가 복잡할수록 '정확한 한 줄 답'보다 높은 수준 질문용이다. 대규모 상용 QA 는 빠르고 대부분 질문을 덮는 단순한 방법을 여전히 선호한다. 파이프라인 오류 누적은 RAG 의 실제 한계이고, 에이전트형 RAG 의 자기 비판이 대응책이다."
+   ],
+   "on_screen": "'Hierarchical Tree-Structured Indexing: RAPTOR' (Sarthi et al., 2025) — RAPTOR Tree(Root layer ~ Leaf layer), Formation of one tree layer(1. Clustering → 2. Summarization by LLM, 노드 1~8), Contents of a node(Index #8, Child Nodes: 2, 3, Text: summary of nodes 2 and 3, Text Embedding). 세 줄 요약 문구. 신데렐라 그림 — 잎 0~15, 중간 16~22, 위 23~26 노드, 주황 테두리 RAPTOR retrieved for Q1, 보라 테두리 Q2, 화살표 DPR retrieved, 'RAPTOR's context usually already contains DPR's, directly or inside a summary.' 'GraphRAG: query-focused over LLM-built graph' (Edge et al., 2024) — Indexing Time: Source Documents → Text Chunks → Entities & Relationships → Knowledge Graph → (community detection) Graph Communities → Community Summaries / Query Time: Community Answers → Global Answer, 오른쪽에 색으로 나뉜 그래프 커뮤니티 점 구름. 'GraphRAG: More Variants' (Han et al., 2025) — 텍스트·이미지 데이터에서 그래프 구조 데이터(분자·소셜·인용·지식 그래프)로 가는 RAG↔GraphRAG 스펙트럼.",
+   "explain": [
+    "지금까지의 색인은 문서를 일렬로 자른 청크의 목록이었다. 강사는 자료구조 수업을 떠올려 보라고 한다. 목록 대신 나무나 그래프를 쓰면 어떤 질문에 더 잘 답할 수 있을까? 첫 번째가 스탠퍼드에서 나온 RAPTOR 다. 동기는 '답이 문서 전체에 퍼져 있는 질문'이다. 소설의 주제가 무엇이냐는 질문에는 어느 한 청크도 답을 담고 있지 않다. 그래서 RAPTOR 는 아래에서 위로 나무를 쌓는다. 먼저 원문 청크를 임베딩해 잎 층을 만든다. 비슷한 청크끼리 군집으로 묶고, 군집마다 LLM 이 요약을 쓴다. 그 요약을 다시 임베딩해 한 층 위의 노드로 삼고, 같은 일을 반복해 뿌리 층까지 올라간다. 노드 하나는 '자식 노드 2, 3 의 요약 텍스트와 그 임베딩'을 담는다.",
+    "질의 시점에는 모든 층을 한꺼번에 후보로 놓고 검색한다. 그러면 세부 질문은 원문 잎에 걸리고, 주제를 묻는 질문은 위층 요약 노드에 걸린다. 신데렐라 예에서 질문 1은 '이야기의 중심 주제는?', 질문 2는 '그녀는 어떻게 행복한 결말을 찾았나?'다. DPR 은 두 질문 모두 잎 청크 몇 개만 가져오는 반면, RAPTOR 는 중간·위층 노드를 고른다. 특히 질문 2는 '그녀'가 누구인지, 행복한 결말이 무엇인지를 여러 장면에 걸쳐 알아야 하므로 여러 층의 의미 처리가 필요하다. 슬라이드 아래 문장처럼, RAPTOR 가 가져온 맥락은 대개 DPR 이 가져온 잎을 직접 또는 요약 안에 이미 포함한다.",
+    "그래프로 한 걸음 더 가면 GraphRAG 다. 어떤 질문은 한 문단은커녕 한 문서로도 안 된다. 여러 문서를 종합해야 한다. GraphRAG 는 색인 시점에 문서를 청크로 자른 뒤 LLM 에게 개체(사람·조직·장소 등)와 그 사이 관계를 모두 뽑게 해 지식 그래프를 만든다. 그 그래프에 커뮤니티 탐지 알고리즘을 돌려 서로 촘촘히 연결된 무리(커뮤니티)로 나누고, 커뮤니티마다 요약을 미리 써 둔다. 질의 시점에는 청크를 검색하지 않는다. 커뮤니티 요약 각각에게 질문을 던져 부분 답을 얻고, 그 부분 답들을 합쳐 전역 답을 만든다. 강사는 이 방식의 힘이 여러 형식을 색인할 수 있는 데 있다고 말한다 — 텍스트·이미지뿐 아니라 분자 같은 생물학 구조, 소셜 네트워크, 인용 네트워크, 지식 그래프까지.",
+    "질의응답이 이 부분의 균형을 잡아 준다. 학생이 '이렇게 복잡한 구조에서는 아주 구체적인 질문에 오히려 답하기 어렵지 않나?'라고 묻자, 강사는 구조가 정교해질수록 정확한 일치 답보다 높은 수준의 질문을 위해 설계된 것이라고 답한다. 맥락 검색은 청크가 국소적이라서, 나무는 여러 청크가 함께 필요해서, 그래프는 열 개쯤 되는 문서를 봐야 하는 '대중은 이 주제를 어떻게 보나' 같은 질문 때문에 필요하다. 그리고 비용이 있다. 그래서 대규모 상용 QA 시스템은 빠르고 대부분 질문을 덮는 앞의 단순한 기법을 여전히 선호한다. 어느 커뮤니티를 볼지 고르는 문제는 관련도 점수를 정의해 여러 커뮤니티의 부분 답을 모으면 된다고 했다. 또 다른 질문은 오류 누적이었다. 첫 검색이 틀리면 뒤에서 좋은 답이 나올 수 없다는 지적에 강사는 그것이 RAG 의 실제 한계라고 인정하고, 에이전트형 RAG 에서 자기 반성·비판 같은 부품을 더해 대응한다고 예고했다."
+   ],
+   "example": {
+    "title": "RAPTOR 나무의 크기 어림",
+    "body": "청크 1,000개, 군집 하나에 평균 5개씩 묶는다고 하자.\n층 0: 1,000 (원문) → 층 1: 200 요약 → 층 2: 40 → 층 3: 8 → 층 4: 2 → 뿌리 1.\n전체 노드 = 1,000 + 200 + 40 + 8 + 2 + 1 = 1,251 → 색인 크기 약 25% 증가.\nLLM 요약 호출 = 200 + 40 + 8 + 2 + 1 = 251번(색인 시점 한 번).\n질의 시점에는 1,251개 전부를 한 목록처럼 놓고 top-k 를 고른다('collapsed tree' 방식, 노트 보충) — 질의 비용은 일반 검색과 거의 같다."
+   },
+   "diagram": {
+    "title": "GraphRAG 의 색인 시점과 질의 시점",
+    "code": "flowchart LR\n  subgraph I[\"색인 시점\"]\n    D[\"원문 문서\"] --> C[\"청크\"] --> E[\"LLM: 개체·관계 추출\"] --> KG[\"지식 그래프\"] --> CD[\"커뮤니티 탐지\"] --> CS[\"커뮤니티 요약\"]\n  end\n  subgraph Q[\"질의 시점\"]\n    CS --> PA[\"커뮤니티마다 부분 답\"] --> GA[\"합쳐서 전역 답\"]\n  end"
+   },
+   "pitfalls": [
+    "RAPTOR 와 GraphRAG 는 LLM 이 쓴 요약·추출을 색인에 넣는다. 요약이 사실을 빠뜨리거나 지어내면 그 오류가 검색 결과로 들어간다 — 원문 잎을 함께 검색하는 이유.",
+    "슬라이드는 RAPTOR 를 (Sarthi et al., 2025) 로 적었지만 arXiv 공개는 2024년 1월, ICLR 2024 발표다(arXiv 2401.18059).",
+    "GraphRAG 의 전역 질의는 커뮤니티 수만큼 LLM 을 불러 비싸다. 특정 사실을 묻는 질문에는 일반 벡터 검색이 더 싸고 정확하다."
+   ],
+   "check": [
+    {
+     "q": "RAPTOR 에서 '그녀는 어떻게 행복한 결말을 찾았나' 같은 질문이 위층 노드에 걸리는 이유는?",
+     "a": "답이 여러 장면(청크)에 흩어져 있어 어느 잎 하나에도 없고, 그 장면들을 묶어 요약한 위층 노드에 종합된 형태로 들어 있기 때문."
+    }
+   ]
+  },
+  {
+   "start": 2714,
+   "title": "벡터 검색 — 정확 검색 O(N·d) 대 근사 최근접 이웃(IVF·PQ·HNSW)",
+   "points": [
+    "과제: 질의 벡터 하나로 N 개 청크 벡터 중 top-k 를 돌려준다. 정확 검색은 전수 비교로 질의당 O(N·d).",
+    "ANN(근사 최근접 이웃)은 재현율을 조금 내주고 속도를 크게 얻는다. IVF: 색인을 군집으로 나눠 가까운 중심 몇 개만 탐색. PQ: 벡터를 짧은 코드로 압축.",
+    "HNSW: 모든 벡터가 층 0 에 있고 위층으로 갈수록 드물게 표본이 남는다. 맨 위층에서 질의 쪽으로 탐욕적으로 건너가다 더 못 가면 한 층 내려간다. 약 log N 번 이동, 높은 재현율.",
+    "구성: 벡터를 하나씩 넣으며 최상위 층을 무작위로 정한다(대부분 층 0). 층마다 M 개 최근접 이웃과 연결하고, 다른 군집으로 건너가는 연결을 휴리스틱으로 남겨 탐욕 탐색이 갇히지 않게 한다."
+   ],
+   "on_screen": "'Vector Search' — The task: given a query vector, return the top-k of N chunk vectors / Exact search: brute-force scan, O(N·d) per query / Approximate nearest neighbor (ANN): trade a little recall for a lot of speed — Inverted File Index (IVF): cluster the index, probe only the nearest centroids; Product Quantization (PQ): compress each vector into a short code; HNSW: multi-layer proximity graph, greedy descent from a coarse layer. 'HNSW (Hierarchical Navigable Small World)' — Layer=2·1·0 세 평면, 위에서 아래로 빨간 점선 경로, 오른쪽 'Decreasing characteristic radius' 화살표, Layers / Search / Fast: ~log N hops, high recall. 'How the graph is built (backup)' — Insert one vector at a time, Pick its top layer at random, Link it at each layer: M nearest neighbors plus a heuristic link across to another cluster…, 그림에 Cluster 1·Cluster 2 와 Inserted element, 'Extra link selected by the heuristic'.",
+   "explain": [
+    "청크를 벡터로 만들었으면 이제 질의 벡터와 가장 가까운 k 개를 찾아야 한다. 가장 정직한 방법은 모든 청크 벡터와 하나하나 내적을 계산해 정렬하는 정확 검색이다. 청크가 N 개, 벡터 차원이 d 면 질의 하나에 곱셈·덧셈이 N×d 번 든다. N 이 백만, d 가 768 이면 질의당 7억 6,800만 번이다. 한 번이면 견딜 만해도 초당 수천 질의를 받는 서비스에서는 감당이 안 된다. 그래서 실무는 근사 최근접 이웃(ANN) 알고리즘을 쓴다. 강사의 요약은 '재현율을 조금 내주고 속도를 많이 얻는다'이다. 전체를 다 보지 않고 질의 근처의 작은 영역만 본다.",
+    "대표적인 ANN 기법 셋이 슬라이드에 있다. IVF(Inverted File Index)는 미리 k-means 같은 방법으로 벡터를 군집으로 나눠 두고, 질의가 오면 질의와 가장 가까운 군집 중심 몇 개만 골라 그 안의 벡터만 비교한다. 도서관에서 '컴퓨터' 서가로 먼저 가서 그 서가만 뒤지는 것과 같다. PQ(Product Quantization)는 벡터 하나를 짧은 코드로 압축한다. 768차원 실수 벡터를 몇십 바이트로 줄이면 메모리가 크게 줄고 비교도 빨라진다(노트 보충: 벡터를 여러 토막으로 나누고 토막마다 대표 벡터 번호만 저장하는 방식). 세 번째가 오늘 자세히 본 HNSW 다.",
+    "HNSW(Hierarchical Navigable Small World)의 직관은 지도 축척이다. 맨 아래 층 0 에는 모든 벡터가 있고, 위층으로 갈수록 무작위로 뽑힌 소수만 남는다. 위층은 '고속도로 지도', 아래층은 '골목 지도'다. 검색은 맨 위층의 진입점에서 시작한다. 현재 노드의 이웃 중 질의에 더 가까운 노드가 있으면 그쪽으로 건너가는 탐욕적 이동을 하다가, 더 가까워질 수 없으면 한 층 내려가 같은 일을 한다. 층 0 에 도착해 마지막으로 이웃을 훑으면 끝이다. 위층에서는 한 번에 멀리 뛰고 아래층에서는 촘촘히 다가가므로 이동 횟수가 대략 log N 에 비례하고, 재현율도 높다.",
+    "그래프를 만드는 방법은 무작위 알고리즘이다. 벡터를 하나씩 넣으면서 그 벡터가 올라갈 최상위 층을 무작위로 정한다. 확률이 층마다 일정 비율로 줄어들도록 뽑아서 대부분은 층 0 에만 머물고 극소수만 꼭대기에 닿는다. 그런 다음 그 벡터가 있는 각 층에서 M 개의 최근접 이웃과 연결한다. 여기에 휴리스틱이 하나 더 있다. 가까운 이웃만 연결하면 한 군집 안에서만 촘촘히 엮여 탐욕 탐색이 그 군집에 갇힐 수 있으므로, 다른 군집으로 건너가는 연결을 일부러 남긴다. 그림의 'Extra link selected by the heuristic' 이 그것이다. 강사는 세부를 직접 읽어 보라며 이 부분을 짧게 넘겼다."
+   ],
+   "formulas": [
+    {
+     "expr": "정확 검색 비용 = O(N · d)",
+     "meaning": "N: 청크 벡터 수, d: 벡터 차원. 질의 하나마다 모든 벡터와 d 차원 내적을 계산한다."
+    },
+    {
+     "expr": "ℓ = ⌊ −ln(U) · m_L ⌋,  U ~ Uniform(0,1),  m_L = 1/ln M",
+     "meaning": "노트 보충(HNSW 원 논문의 층 배정). ℓ: 새 벡터의 최상위 층, M: 층마다 연결할 이웃 수. 이렇게 뽑으면 P(ℓ ≥ L) = M^(−L) 이라 층마다 노드가 1/M 로 준다."
+    },
+    {
+     "expr": "검색 이동 수 ≈ O(log N)",
+     "meaning": "층이 약 log_M N 개이고 층마다 상수 번 이동하므로 전체 이동이 log N 에 비례한다(슬라이드: ~log N hops)."
+    }
+   ],
+   "example": {
+    "title": "백만 벡터, M = 16 일 때 층마다 남는 노드 수",
+    "body": "P(ℓ ≥ L) = 16^(−L).\n층 0: 1,000,000 / 층 1: 1,000,000/16 = 62,500 / 층 2: 3,906 / 층 3: 244 / 층 4: 15 / 층 5: 약 1.\n→ 층이 6개 정도라 위에서 아래로 6번만 '내려가면' 된다. 층마다 이웃 16개를 몇 번 비교한다고 하면 수백 번의 거리 계산으로 끝난다.\n정확 검색은 1,000,000 × 768 = 7.68억 번의 곱셈-덧셈. 노드 수백 개 × 768 차원은 수십만 번 수준 → 대략 천 배 이상 적다(재현율은 100% 가 아니다)."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# HNSW 층 배정: 층 = floor(-ln(U) * mL), mL = 1/ln(M). 층별 노드 수를 세어 본다\nimport math, random\nrandom.seed(0)\nN, M = 1_000_000, 16\nmL = 1 / math.log(M)\nlevels = [int(-math.log(1.0 - random.random()) * mL) for _ in range(N)]\nfor L in range(6):\n    at_least = sum(l >= L for l in levels)\n    print(f\"layer {L}: {at_least:>9,d} nodes  (expected {N / M**L:>11,.1f})\")\nprint(\"exact scan cost N*d (d=768):\", f\"{N * 768:,}\", \"multiply-adds per query\")"
+   },
+   "pitfalls": [
+    "ANN 은 '근사'다. 정답 청크가 색인에 있어도 top-k 에 안 나올 수 있다. 검색 품질을 잴 때 ANN 의 재현율 손실과 임베딩 모델의 품질 문제를 구분해야 한다(정확 검색으로 한 번 비교해 보면 된다).",
+    "HNSW 는 그래프 전체를 메모리에 둔다. 벡터 외에 노드당 이웃 목록이 붙어 메모리가 더 든다 — 그래서 PQ 같은 압축과 함께 쓰는 경우가 많다."
+   ],
+   "check": [
+    {
+     "q": "HNSW 에서 다른 군집으로 건너가는 연결을 휴리스틱으로 남기는 이유는?",
+     "a": "가까운 이웃끼리만 연결하면 탐욕 탐색이 한 군집 안의 국소 최적에 갇혀 질의 쪽 군집으로 넘어가지 못할 수 있기 때문."
+    }
+   ]
+  },
+  {
+   "start": 2922,
+   "title": "BM25 를 손으로 — IDF(얼마나 드문가)·TF 포화(k₁)·길이 정규화(b), 그리고 '흔한 낱말은 음수'",
+   "points": [
+    "검색기 종류: 낱말 겹침(BM25), 벡터 검색(DPR·Sentence 벡터), 기타 신경망(ColBERT), LLM.",
+    "BM25 는 1990년대 방법인데 지금도 모든 검색 논문이 보고하는 기준선이다. 학습도 벡터도 없고, 정확한 낱말 일치에서는 이기기 어렵다.",
+    "score(D,Q) = Σ IDF(q_i) · f(q_i,D)(k₁+1) / [f(q_i,D) + k₁(1 − b + b·|D|/avgdl)],  IDF(q_i) = ln[(N − n(q_i) + 0.5)/(n(q_i) + 0.5)].",
+    "IDF 곡선: 낱말이 문서의 50% 미만에 나오면 양수, 절반 넘게 나오면 음수 — 질의에 고유한 낱말을 찾으려는 설계.",
+    "TF 포화: k₁ 이 작으면(0.5) 거의 '있다/없다', 크면(5) 반복을 더 오래 인정한다. IDF 는 어떤 낱말이 중요한지, 포화는 한 낱말이 점수를 독차지하지 못하게 한다."
+   ],
+   "on_screen": "'Different Types of Retrievers' — Word-overlap (BM25), Vector retrieval (DPR, Sentence vectors), Other, neural systems (ColBERT). 'BM25: the most widely used (even today)' — score(D,Q) = Σ_{i=1}^{n} IDF(q_i) · f(q_i,D)·(k₁+1) / (f(q_i,D) + k₁·(1 − b + b·|D|/avgdl)), 주석 'How rare q_i is'(IDF), 'How often q_i occurs in D'(f), 'Doc length vs. the average'(|D|/avgdl), IDF(q_i) = ln((N − n(q_i) + 0.5)/(n(q_i) + 0.5)), 'Docs in the collection'(N), 'Docs that contain q_i'(n). 강사가 k₁ 에 빨간 동그라미. 'IDF Comparison and Term Frequency Saturation' 두 그래프 — 왼쪽 IDF Comparison: BM25 vs Standard (N = 10,000), x축 Document Frequency(% of collection), 50% 지점 빨간 점선, 그 오른쪽 음수 영역(Negative IDF region) 분홍 음영; 오른쪽 BM25 Term Frequency Saturation, x축 Term Frequency 0~20, 곡선 k₁ = 0.5·1.2·2.0·3.0·5.0 (figure credit mbrenndoerfer.com).",
+   "explain": [
+    "검색기의 큰 갈래는 넷이다. 낱말이 얼마나 겹치는지로 재는 BM25, 질의와 문서를 벡터로 바꿔 거리를 재는 DPR·문장 벡터, ColBERT 같은 그 밖의 신경망 방식, 그리고 LLM 자체다. 강사는 BM25 부터 본다. 1990년대에 나온 방법인데 지금도 거의 모든 검색 논문이 기준선으로 보고한다. 학습이 필요 없고, 벡터도 필요 없고, 정확한 낱말 일치에서는 이기기 매우 어렵다. 식은 TF-IDF 를 다듬은 형태라서, 겉보기엔 복잡해도 두 덩어리로 나뉜다. 질의 낱말 q_i 마다 '이 낱말이 얼마나 드문가(IDF)'와 '이 문서에 얼마나 자주 나오나(TF, 길이 보정 포함)'를 곱하고, 질의의 모든 낱말에 대해 더한다.",
+    "IDF 부터 보자. N 은 전체 문서 수, n(q_i) 는 q_i 가 들어 있는 문서 수다. 강의 슬라이드의 식은 ln[(N − n + 0.5)/(n + 0.5)] 다. 낱말이 드물면 분자가 크고 분모가 작아 IDF 가 크다. '오류 코드 E42' 처럼 몇 문서에만 나오는 낱말이 일치하면 큰 점수를 받는다. 반대로 낱말이 문서 절반에 나오면 분자와 분모가 같아 ln 1 = 0 이고, 절반을 넘으면 분수가 1보다 작아져 IDF 가 음수가 된다. 강사가 보여 준 IDF 곡선이 바로 이것이다. 문서 빈도 50% 를 경계로 왼쪽은 양수, 오른쪽은 음수다. 강사는 이것이 원하는 동작이라고 설명한다. 질의에 고유한 것을 찾으려는 것이니 너무 흔한 낱말은 오히려 감점한다는 뜻이다.",
+    "TF 부분은 f(q_i, D)(k₁+1) / [f + k₁·(길이 보정)] 이다. 길이 보정이 1 이라고 하면 낱말이 한 번 나올 때 값은 (k₁+1)/(1+k₁) = 1 이고, 반복될수록 커지지만 k₁+1 을 넘지 못한다. 이것이 포화(saturation)다. 오른쪽 그래프에서 k₁ = 0.5 인 아래 곡선은 금방 평평해져 거의 '있다/없다'만 따지고, k₁ = 5 인 위 곡선은 반복을 오래 인정한 뒤에야 평평해진다. 강사의 요약은 이렇다. IDF 는 어떤 낱말이 중요한지를 정하고, 포화는 한 낱말이 점수를 독차지하는 것을 막는다. 같은 낱말을 백 번 써서 검색 순위를 올리는 꼼수가 통하지 않는 이유다. 길이 보정 항 (1 − b + b·|D|/avgdl) 은 문서 길이 |D| 를 평균 길이 avgdl 과 비교한다. 긴 문서는 우연히 낱말이 들어갈 확률이 높으니 분모를 키워 감점하고, b(보통 0.75)가 그 정도를 정한다. b = 0 이면 길이를 무시한다.",
+    "강사는 매개변수 선택을 깊이 다루지 않았으니 노트에서 아주 작은 말뭉치로 직접 계산해 본다(아래 예와 코드). 문서 5개에 질의 'printer error e42' 를 던지면 흥미로운 일이 생긴다. 'printer' 는 5개 중 3개에 나오니 슬라이드 식의 IDF 가 −0.336 이다. 그래서 프린터 용지 걸림 문서(D2)가 −0.361 로, 프린터와 아무 상관 없는 커피 머신 문서(D5, 0점)보다 아래로 떨어진다. 실제 검색 엔진(Lucene·Elasticsearch)은 이 문제를 피하려고 IDF 를 ln(1 + (N − n + 0.5)/(n + 0.5)) 로 바꿔 항상 양수가 되게 한다. 그러면 D2 는 0.578 로 D5(0)보다 위에 온다. 이전 노트(CME295 7강)가 Lucene 판으로 계산했으니 두 노트를 나란히 보면 '+1' 하나의 차이가 분명해진다. 작은 말뭉치나 흔한 낱말이 많은 질의에서는 이 차이가 순위를 뒤집는다."
+   ],
+   "formulas": [
+    {
+     "expr": "score(D, Q) = Σ_{i=1}^{n} IDF(q_i) · f(q_i, D)·(k₁ + 1) / ( f(q_i, D) + k₁·(1 − b + b·|D|/avgdl) )",
+     "meaning": "Q = {q_1…q_n}: 질의 낱말, D: 문서, f(q_i, D): D 안에서 q_i 가 나온 횟수, |D|: D 의 낱말 수, avgdl: 말뭉치 평균 문서 길이, k₁(보통 1.2~2.0): TF 포화 정도, b(보통 0.75): 길이 정규화 세기. f = 0 이면 그 낱말 항은 0."
+    },
+    {
+     "expr": "IDF(q_i) = ln( (N − n(q_i) + 0.5) / (n(q_i) + 0.5) )",
+     "meaning": "슬라이드 판. N: 전체 문서 수, n(q_i): q_i 를 포함한 문서 수, 0.5: 0 으로 나누는 것을 막는 평활. n > N/2 이면 음수."
+    },
+    {
+     "expr": "IDF_Lucene(q_i) = ln( 1 + (N − n(q_i) + 0.5) / (n(q_i) + 0.5) )",
+     "meaning": "노트 보충. Lucene·Elasticsearch 가 쓰는 판. +1 덕분에 항상 0 보다 크다. 흔한 낱말은 0 에 가까운 작은 양수가 된다."
+    },
+    {
+     "expr": "TF 상한: f → ∞ 일 때 f(k₁+1)/(f + k₁·L) → k₁ + 1",
+     "meaning": "L: 길이 보정 항. 한 낱말이 아무리 반복돼도 기여는 IDF × (k₁+1) 을 넘지 못한다 — 포화."
+    }
+   ],
+   "example": {
+    "title": "문서 5개, 질의 'printer error e42' 를 손으로",
+    "body": "D1 'e42 error on printer'(4), D2 'printer paper jam'(3), D3 'printer driver update'(3), D4 'error error network down again'(5), D5 'coffee machine broken'(3). N = 5, avgdl = 18/5 = 3.6, k₁ = 1.2, b = 0.75.\nIDF(슬라이드): printer n=3 → ln(2.5/3.5) = −0.336, error n=2 → ln(3.5/2.5) = +0.336, e42 n=1 → ln(4.5/1.5) = 1.099.\nD1: 길이 보정 0.25 + 0.75 × 4/3.6 = 1.083 → k₁ × 1.083 = 1.30 → TF(f=1) = 2.2/2.3 = 0.957. 점수 = (−0.336 + 0.336 + 1.099) × 0.957 = 1.051.\nD2: 보정 0.25 + 0.75 × 3/3.6 = 0.875 → TF = 2.2/(1 + 1.05) = 1.073 → −0.336 × 1.073 = −0.361 (D3 도 같음).\nD4: 보정 0.25 + 0.75 × 5/3.6 = 1.292 → TF(f=2) = 4.4/(2 + 1.55) = 1.239 → 0.336 × 1.239 = 0.417.\nD5: 일치 없음 → 0.\n순위(슬라이드 식): D1 1.051 > D4 0.417 > D5 0 > D2 = D3 −0.361 — 프린터 문서가 커피 문서보다 아래.\nLucene IDF(0.539, 0.875, 1.386)로 다시 하면: D1 2.679 > D4 1.085 > D2 = D3 0.578 > D5 0."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# BM25 을 손으로 계산한 값과 맞춰 보기 (강의 슬라이드 IDF 와 Lucene IDF 비교)\nimport math\ndocs = {\"D1\": \"e42 error on printer\", \"D2\": \"printer paper jam\",\n        \"D3\": \"printer driver update\", \"D4\": \"error error network down again\",\n        \"D5\": \"coffee machine broken\"}\ntoks = {d: t.split() for d, t in docs.items()}\nN = len(toks)\navgdl = sum(len(t) for t in toks.values()) / N\nk1, b = 1.2, 0.75\n\ndef idf(term, lucene=False):\n    n = sum(term in t for t in toks.values())\n    x = (N - n + 0.5) / (n + 0.5)\n    return math.log(x + 1) if lucene else math.log(x)   # 슬라이드 식은 +1 이 없다\n\ndef bm25(query, d, lucene=False):\n    t, s = toks[d], 0.0\n    for q in query.split():\n        f = t.count(q)\n        tf = f * (k1 + 1) / (f + k1 * (1 - b + b * len(t) / avgdl))\n        s += idf(q, lucene) * tf\n    return s\n\nq = \"printer error e42\"\nprint(\"avgdl =\", avgdl, {w: round(idf(w), 3) for w in q.split()})\nfor d in docs:\n    print(d, round(bm25(q, d), 3), round(bm25(q, d, lucene=True), 3))"
+   },
+   "pitfalls": [
+    "슬라이드의 IDF 식에는 +1 이 없어 문서 절반 넘게 나오는 낱말이 음수 점수를 준다. 강사는 이를 의도된 동작으로 설명했지만, 작은 말뭉치에서는 관련 문서가 무관한 문서보다 아래로 가는 부작용이 있다. 실제 라이브러리는 대부분 Lucene 판(+1)이나 음수를 0 으로 자르는 방식을 쓴다 — 어떤 판인지 확인할 것.",
+    "BM25 는 낱말이 정확히 같아야 점수를 준다. 'grew' 와 'growth', '자동차' 와 '차량' 은 남이다. 어간 추출·형태소 분석·동의어 사전이 성능을 크게 바꾸고, 한국어는 형태소 분석기 없이 띄어쓰기로 자르면 '프린터가'·'프린터를' 이 다른 낱말이 된다."
+   ],
+   "check": [
+    {
+     "q": "k₁ = 1.2, 길이 보정 1 일 때 같은 낱말이 1번·2번·10번 나오면 TF 항은?",
+     "a": "1번: 2.2/2.2 = 1.0, 2번: 4.4/3.2 = 1.375, 10번: 22/11.2 = 1.96. 상한 k₁+1 = 2.2 로 포화한다."
+    },
+    {
+     "q": "N = 100 에서 n = 50 인 낱말의 슬라이드 IDF 는?",
+     "a": "ln(50.5/50.5) = 0. 절반에 나오는 낱말은 점수에 기여하지 않는다."
+    }
+   ]
+  },
+  {
+   "start": 3180,
+   "title": "DPR — 두 인코더, 대조 손실, 그리고 음성 예시는 어디서 오나",
+   "points": [
+    "오프라인: 문단들을 문단 인코더 E_P 에 통과시켜 벡터를 벡터 색인에 저장. 온라인: 질의만 질의 인코더 E_Q 에 통과시켜 내적 E_Q(q)ᵀE_P(p) 로 top-k. 두 인코더는 서로 다른 BERT 다.",
+    "강사의 퀴즈: 어느 쪽이 비싼가? 문단 쪽은 수백만 개라 무겁지만 한 번만 오프라인으로, 질의 쪽은 질의마다 한 번 온라인으로 한다.",
+    "학습: 대조 손실 L = −log[exp(s(q,p⁺)) / (exp(s(q,p⁺)) + Σ_j exp(s(q,p_j⁻)))]. 정답 문단은 가깝게, 틀린 문단은 멀게.",
+    "음성 예시: 배치 안의 다른 질문의 정답 문단(in-batch negatives)과 BM25 하드 음성(질문 낱말은 겹치지만 답이 없는 문단). 하드 음성이 낱말 겹침 너머를 가르친다.",
+    "결과: 5개 데이터셋 중 4개에서 BM25 를 이김(Top-20 NQ 78.4 대 59.1), 질문-답 1,000쌍만으로도 BM25 보다 낫다. 추가 사전학습 없이 REALM·ORQA 보다 낫다."
+   ],
+   "on_screen": "'DPR: dense passage retrieval' (Karpukhin et al., 2020) — OFFLINE: Passages → Passage encoder E_P(p) → Passage vectors → Vector index / ONLINE: Query q → Query encoder E_Q(q) → Query vector → Dot product E_Q(q)ᵀE_P(p) → Top-k passages. 학습 그림: Question encoder E_Q(·; θ_Q) 와 Passage encoder E_P(·; θ_P) → h_q, h_p ∈ ℝ^d → Inner-product similarity s(q_i, p) = E_Q(q_i)ᵀE_P(p) → CONTRASTIVE TRAINING LOSS ℒ_i = −log exp(s(q_i,p_i⁺)) / (exp(s(q_i,p_i⁺)) + Σ_j exp(s(q_i,p_{i,j}⁻))), 양쪽 'Update encoder' 점선(∇θ_Q ℒ_i, ∇θ_P ℒ_i). 'DPR beats BM25 on 4 of 5 datasets' 표 — Top-20: BM25 59.1/66.9/55.0/70.9/68.8(NQ/TriviaQA/WQ/TREC/SQuAD), Single DPR 78.4/79.4/73.2/79.8/63.2, BM25+DPR 76.6/79.8/71.0/85.2/71.5, Multi DPR 79.4/78.8/75.0/89.1/51.6, BM25+DPR 78.0/79.9/74.7/88.5/66.2; Top-100: BM25 73.7/76.7/71.1/84.1/80.0, Multi DPR 86.0/84.7/82.9/93.9/67.6. '1,000 QA pairs are enough to beat BM25' — top-k 정확도 곡선(BM25, Train 1k·10k·20k·40k·all(59k)), 'No extra pretraining: DPR also beats ORQA and REALM end to end' 와 비교 표.",
+   "explain": [
+    "DPR(Dense Passage Retrieval)은 BM25 와 정반대의 접근이다. 낱말을 세는 대신 신경망으로 문단과 질문을 밀집 벡터로 바꾸고 내적으로 비교한다. 구조는 두 단계다. 오프라인 단계에서는 모든 문단을 문단 인코더 E_P(BERT 나 RoBERTa 같은 모델)에 통과시켜 벡터를 만들고 벡터 색인에 저장한다. 온라인 단계에서는 질의가 오면 질의 인코더 E_Q 로 벡터를 만들고, 색인의 문단 벡터들과 내적해 top-k 를 고른다. 문단 인코더와 질의 인코더는 서로 다른 두 개의 BERT 다. 질문과 문단은 길이도 문체도 다르니 각자에 맞는 인코더를 따로 학습한다.",
+    "강사가 학생들에게 낸 퀴즈가 있다. 어느 쪽이 비싼가? 답을 정리하면 이렇다. 문단 쪽은 수백만 개를 인코딩해야 하니 총량은 압도적으로 무겁지만, 한 번만 오프라인으로 하면 되고 질의 시점에는 비용이 0 이다(문서가 바뀌면 그 문서만 다시 인코딩). 질의 쪽은 매 질의마다 온라인으로 한 번 돌아야 하므로 지연에 직접 들어간다. 다행히 질의는 짧아 인코딩 한 번이 수 밀리초 수준이다. 이 비대칭 — 무거운 일은 미리, 가벼운 일만 실시간으로 — 이 bi-encoder 가 대규모 검색에 쓰이는 이유이고, 뒤의 cross-encoder 와 갈리는 지점이다.",
+    "학습은 대조 손실(contrastive loss)로 한다. 질문 q 에 대해 정답 문단 p⁺ 하나와 정답이 아닌 문단 p⁻ 여러 개를 놓고, 각각의 내적 점수에 softmax 를 씌운 뒤 정답 문단의 확률에 음의 로그를 취한다. 정답 문단은 질문 쪽으로 당기고 틀린 문단은 밀어내는 효과가 난다. 강사가 핵심 설계 질문이라고 짚는 것은 음성 예시를 어디서 가져오느냐다. 하나는 배치 안 음성이다. 배치에 질문이 B 개 있으면 다른 질문의 정답 문단을 내 질문의 음성으로 쓴다. 추가 비용 없이 음성 B−1 개가 생긴다. 다른 하나는 BM25 하드 음성이다. 질문과 낱말은 많이 겹치는데 정작 답은 없는 문단이다. 이런 문단은 낱말 겹침만 보는 모델을 정확히 속이므로, 이것을 밀어내도록 배우면서 모델이 낱말 겹침 너머의 의미를 익힌다. 기울기는 두 인코더 모두를 갱신한다.",
+    "결과 표는 강력하다. Top-20 정확도(상위 20개 안에 답이 든 문단이 있는 비율)에서 Natural Questions 는 BM25 59.1 에 비해 DPR 78.4, WebQuestions 는 55.0 대 73.2 다. 다섯 개 중 네 데이터셋에서 이긴다. 진 하나가 SQuAD(68.8 대 63.2)인데, 노트 보충으로 덧붙이면 SQuAD 는 문단을 보고 질문을 만든 데이터라 질문과 문단의 낱말이 많이 겹치므로 BM25 에 유리하다. 두 번째 그래프는 학습 데이터가 얼마나 필요한지 보여 준다. 질문-답 1,000쌍만으로 학습한 DPR 도 BM25 곡선 위에 있고, 데이터가 늘수록 더 좋아진다. 또 추가 사전학습 없이도 검색기와 판독기를 끝에서 끝까지 학습한 구글의 REALM 이나 ORQA 보다 낫다. 표에서 BM25+DPR 조합이 TREC(85.2)·SQuAD(71.5)에서 가장 좋은 것도 눈여겨볼 만하다 — 다음 챕터의 하이브리드 검색으로 이어진다."
+   ],
+   "formulas": [
+    {
+     "expr": "s(q, p) = E_Q(q)ᵀ E_P(p),  E_Q(q), E_P(p) ∈ ℝ^d",
+     "meaning": "E_Q: 질의 인코더(매개변수 θ_Q), E_P: 문단 인코더(θ_P), d: 벡터 차원(BERT-base 의 [CLS] 면 768). 점수는 두 벡터의 내적."
+    },
+    {
+     "expr": "L_i = −log [ exp(s(q_i, p_i⁺)) / ( exp(s(q_i, p_i⁺)) + Σ_{j=1}^{n} exp(s(q_i, p_{i,j}⁻)) ) ]",
+     "meaning": "q_i: i번째 질문, p_i⁺: 정답 문단, p_{i,j}⁻: j번째 음성 문단(배치 안 음성 + BM25 하드 음성), n: 음성 수. 정답 문단이 softmax 에서 1등이 되게 하는 교차 엔트로피. ∇θ_Q L_i, ∇θ_P L_i 로 두 인코더를 갱신."
+    }
+   ],
+   "example": {
+    "title": "질문 1개, 정답 1개, 음성 2개의 대조 손실",
+    "body": "q = (1, 2). p⁺ = (1, 1) → s = 3. 배치 안 음성 (−1, 1) → s = 1. BM25 하드 음성 (2, 0) → s = 2.\nL = −ln[e³/(e³ + e¹ + e²)] = ln(1 + e^(−2) + e^(−1)) = ln(1 + 0.135 + 0.368) = ln 1.503 = 0.408.\n하드 음성이 없었다면 L = ln(1 + 0.135) = 0.127. 하드 음성(점수 2) 하나가 손실을 세 배 넘게 키운다 — 모델이 배울 거리가 많은 예시라는 뜻.\n학습이 진행돼 s(p⁺) = 5 가 되면 L = ln(1 + e^(−4) + e^(−3)) = ln 1.068 = 0.066."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# DPR 대조 손실과 ColBERT MaxSim 을 numpy 로 손계산과 맞춰 보기\nimport numpy as np\n# (1) DPR: 질의 1개, 정답 p+ 1개, 음성 2개(배치 내 1 + BM25 하드 1)\nq = np.array([1.0, 2.0])\nP = {\"p+\": np.array([1.0, 1.0]), \"in-batch\": np.array([-1.0, 1.0]),\n     \"bm25-hard\": np.array([2.0, 0.0])}\ns = {k: float(q @ v) for k, v in P.items()}          # 내적 점수\nloss = -np.log(np.exp(s[\"p+\"]) / sum(np.exp(v) for v in s.values()))\nprint(\"scores\", s, \"loss\", round(float(loss), 4))\n# (2) ColBERT: 토큰마다 벡터 하나, 질의 토큰별로 문서 토큰 최댓값을 더한다\nQt = np.array([[1.0, 0.0], [0.6, 0.8]])                 # 질의 토큰 2개(정규화됨)\nDt = np.array([[0.8, 0.6], [0.0, 1.0], [1.0, 0.0]])     # 문서 토큰 3개\nsim = Qt @ Dt.T                                         # 2x3 유사도 표\nprint(sim.round(2), \"MaxSim =\", sim.max(axis=1).round(2), \"S =\", round(float(sim.max(axis=1).sum()), 2))\n# (3) 같은 내용을 벡터 하나로 평균 내면(bi-encoder 흉내) 점수가 뭉개진다\nprint(\"mean-pooled dot =\", round(float(Qt.mean(0) @ Dt.mean(0)), 3))"
+   },
+   "pitfalls": [
+    "배치 안 음성은 '우연히 정답인' 문단을 음성으로 쓸 수 있다(두 질문이 같은 문단을 정답으로 가질 때). 중복 질문을 한 배치에 넣지 않도록 섞는다.",
+    "DPR 은 학습 도메인을 벗어나면 급격히 약해질 수 있다. 위키백과 질문으로 학습한 모델은 사내 로그·코드·법률 문서에서 BM25 보다 못할 수 있다 — 그래서 BM25 는 여전히 기준선이자 하이브리드의 한 축이다."
+   ],
+   "check": [
+    {
+     "q": "BM25 하드 음성이 배치 안 음성보다 학습에 더 도움이 되는 이유는?",
+     "a": "질문과 낱말이 많이 겹쳐 모델이 높은 점수를 주기 쉬운 '헷갈리는' 문단이라 손실과 기울기가 크고, 이를 밀어내며 낱말 겹침이 아닌 의미로 판단하는 법을 배운다. 무작위 음성은 이미 쉽게 구별돼 배울 것이 적다."
+    }
+   ]
+  },
+  {
+   "start": 3342,
+   "title": "검색기를 채점하기 — Hit@k·Failed@k·nDCG@k·MRR@k·Recall@k, 그리고 하이브리드 검색과 RRF",
+   "points": [
+    "Hit@k: 상위 k 안에 관련 문단이 하나라도 있으면 1. 순서는 상관없다. Failed@k = 1 − Hit@k(contextual retrieval 결과의 그 지표).",
+    "nDCG@k: 관련도를 순위 위치로 할인한 DCG 를 이상적 순위의 DCG 로 나눈다.",
+    "MRR@k: 첫 관련 문단 순위의 역수를 질의마다 평균(top-k 밖이면 0). Recall@k: 그 질의의 관련 문단 중 top-k 에서 찾은 비율.",
+    "BM25 와 밀집 검색은 실패하는 곳이 다르다 — BM25 는 바꿔 말하기를, 밀집은 오류 코드·제품 ID 같은 드문 글자열을 놓친다.",
+    "하이브리드: 두 검색기를 다 돌리고 순위 목록을 합친다. RRF(d) = Σ_r 1/(k + rank_r(d)), k = 60. 점수가 아니라 위치를 합치므로 말뭉치별 조정이 필요 없고 검색기 수에 제한이 없다."
+   ],
+   "on_screen": "'Scoring a Retriever: Hit@k, Failed@k, nDCG@k' — Hit@k = (1/|Q|) Σ_{q∈Q} 𝟙[R_q ∩ Top_k(q) ≠ ∅] ('1 if any relevant passage is in the top k, else 0', 'Position in the top k does not matter'), Failed@k = (1/|Q|) Σ 𝟙[R_q ∩ Top_k(q) = ∅] = 1 − Hit@k ('Queries with no relevant passage in the top k'), nDCG@k = (1/|Q|) Σ DCG_q@k / IDCG_q@k ('Normalized by the ideal ranking's DCG'), DCG_q@k = Σ_{i=1}^{k} rel_{q,i}/log₂(i+1) ('Relevance of the passage at rank i', 'Discounted by rank position'). 'Scoring a Retriever: MRR@k, Recall@k' — MRR@k = (1/|Q|) Σ 1/rank_q ('Rank of the first relevant passage', 'Counts as 0 if not in the top k'), Recall@k = (1/|Q|) Σ |R_q ∩ Top_k(q)| / |R_q| ('Relevant passages found in the top k', 'All relevant passages for the query'). 'Hybrid Search and Reciprocal Rank Fusion' — The two approaches fail differently: BM25 misses paraphrase, dense retrieval misses rare literals (e.g., error codes, product IDs) / Hybrid search: run both retrievers, then fuse the two ranked lists / Reciprocal rank fusion: merge positions instead of raw scores — no per-corpus tuning and works with any number of retrievers / RRF(d) = Σ_{r∈R} 1/(k + rank_r(d)), k = 60.",
+   "explain": [
+    "RAG 논문 표를 읽으려면 검색 지표를 알아야 한다. 강사는 '무서워 보이지만 하나씩 풀면 쉽다'며 다섯 개를 정리한다. 모든 지표의 재료는 같다. 질의 집합 Q, 질의 q 마다 사람이 정한 관련 문단 집합 R_q, 그리고 검색기가 돌려준 상위 k 개 Top_k(q). 가장 단순한 것이 Hit@k 다. 상위 k 안에 관련 문단이 하나라도 있으면 그 질의는 1, 없으면 0 이고, 질의들에 대해 평균한다. 순서는 보지 않는다. Failed@k 는 그 반대, 즉 상위 k 안에 관련 문단이 하나도 없는 질의의 비율이며 1 − Hit@k 와 같다. 앞에서 본 contextual retrieval 막대그래프의 Failed@20 이 이것이다. RAG 에서는 이 지표가 특히 중요하다. 상위 k 에 근거가 하나도 없으면 생성기가 아무리 좋아도 근거 있는 답을 쓸 수 없기 때문이다.",
+    "nDCG@k 는 순서까지 본다. DCG@k 는 i 위 문단의 관련도 rel_i 를 log₂(i+1) 로 나눠 더한다. 1위는 그대로(÷1), 2위는 ÷1.585, 3위는 ÷2 로 아래로 갈수록 덜 쳐준다. 관련도가 0/1 이 아니라 0~3 같은 등급이어도 된다. 이것을 정답을 가장 이상적인 순서로 놓았을 때의 DCG(IDCG)로 나누면 0~1 사이 값이 되어 질의끼리 평균 낼 수 있다. MRR@k 는 첫 관련 문단의 순위만 본다. 첫 관련 문단이 1위면 1, 3위면 1/3, top-k 밖이면 0 이고 이를 평균한다. 사용자가 맨 위 결과 하나만 본다면 이 지표가 체감과 가깝다. Recall@k 는 그 질의의 관련 문단이 여러 개일 때 그중 몇 개를 top-k 에서 찾았는지 비율이다. 답에 여러 근거가 다 필요한 질문(다중 홉)에서 중요하다. nDCG 의 손계산은 CME295 7강 노트에 자세하니, 이 노트에서는 나머지 넷을 한 표로 계산한다(아래 예).",
+    "지표를 정리한 뒤 강사는 검색 부분의 마지막 도구로 하이브리드 검색을 소개한다. 앞의 두 검색기는 실패하는 곳이 다르다. BM25 는 낱말이 달라지면 못 찾는다. '차가 시동이 안 걸려요' 와 '자동차 엔진 기동 불량' 은 같은 뜻이지만 겹치는 낱말이 거의 없다. 반대로 DPR 같은 밀집 검색은 'E42', 'SKU-88213' 같은 드문 글자열을 잘 못 찾는다. 이런 글자열은 학습 데이터에서 거의 못 봤으니 벡터 공간에서 의미 있는 자리를 갖지 못한다. 실패가 겹치지 않으니 둘 다 돌리고 결과를 합치면 된다. 문제는 합치는 방법이다. BM25 점수는 0 에서 수십까지, 코사인은 −1 에서 1 까지라 그냥 더하면 BM25 가 모든 것을 좌우한다. 정규화하려 해도 말뭉치마다 점수 분포가 달라 조정이 필요하다.",
+    "RRF(Reciprocal Rank Fusion, 역순위 융합)는 점수를 버리고 순위만 쓴다. 문서 d 가 각 검색기 목록에서 몇 위인지 보고 1/(k + 순위)를 모두 더한다. k = 60 은 경험적으로 정한 상수로, 1위와 2위의 차이를 완만하게 해서 한 목록의 1위가 다른 모든 것을 압도하지 않게 한다. 목록에 없는 문서는 그 항이 0 이다. 강사가 짚은 장점은 두 가지다. 말뭉치마다 따로 조정할 것이 없고, 검색기가 몇 개든 그대로 더하면 된다. 그래서 두 목록에 모두 중간쯤 있는 문서가 한 목록에만 1위인 문서를 이기는 일이 흔하다 — 두 검색기가 함께 지지하는 문서가 위로 올라온다."
+   ],
+   "formulas": [
+    {
+     "expr": "Hit@k = (1/|Q|) Σ_{q∈Q} 𝟙[R_q ∩ Top_k(q) ≠ ∅],  Failed@k = 1 − Hit@k",
+     "meaning": "Q: 평가 질의 집합, R_q: 질의 q 의 관련 문단 집합, Top_k(q): 검색 상위 k 개, 𝟙[·]: 조건이 참이면 1. 순서는 보지 않는다."
+    },
+    {
+     "expr": "nDCG@k = (1/|Q|) Σ_q DCG_q@k / IDCG_q@k,  DCG_q@k = Σ_{i=1}^{k} rel_{q,i} / log₂(i + 1)",
+     "meaning": "rel_{q,i}: i 위 문단의 관련도(0/1 또는 등급), IDCG: 관련 문단을 이상적 순서로 놓았을 때의 DCG. 0~1."
+    },
+    {
+     "expr": "MRR@k = (1/|Q|) Σ_q 1/rank_q",
+     "meaning": "rank_q: 질의 q 의 첫 관련 문단 순위(1부터). top-k 안에 없으면 그 항은 0."
+    },
+    {
+     "expr": "Recall@k = (1/|Q|) Σ_q |R_q ∩ Top_k(q)| / |R_q|",
+     "meaning": "|R_q|: 그 질의의 전체 관련 문단 수. 놓친 근거가 얼마나 되는지 센다."
+    },
+    {
+     "expr": "RRF(d) = Σ_{r∈R} 1 / (k + rank_r(d)),  k = 60",
+     "meaning": "R: 합칠 검색기들의 순위 목록, rank_r(d): 목록 r 에서 d 의 순위(1부터, 없으면 항 생략). 점수 대신 위치를 합친다."
+    }
+   ],
+   "example": {
+    "title": "질의 3개로 네 지표를 손으로, 그리고 RRF",
+    "body": "q1: top-5 = [d3, d7, d1, d9, d2], 관련 {d1, d2}. q2: [d4, d5, d6, d8, d0], 관련 {d9}. q3: [d2, d8, d4, d1, d6], 관련 {d2, d4, d5}.\nHit@1: q3 만 → 1/3 = 0.333. Hit@3: q1(d1 3위), q3 → 2/3 = 0.667, Failed@3 = 0.333. Hit@5 도 0.667(q2 는 d9 를 끝내 못 찾음).\nMRR@5: q1 첫 관련 3위 → 1/3, q2 → 0, q3 → 1 → (0.333 + 0 + 1)/3 = 0.444.\nRecall@3: q1 {d1}/2 = 0.5, q2 0, q3 {d2, d4}/3 = 0.667 → 0.389. Recall@5: q1 2/2 = 1, q2 0, q3 0.667 → 0.556.\n→ Hit@5 와 MRR 은 k=3→5 에서 안 변했지만 Recall 은 0.389→0.556 으로 올랐다(q1 의 두 번째 근거 d2 가 5위에 있었다).\nRRF(k=60): BM25 [A, B, C], 밀집 [C, A, D]. A = 1/61 + 1/62 = 0.03252, C = 1/63 + 1/61 = 0.03227, B = 1/62 = 0.01613, D = 1/63 = 0.01587 → A > C > B > D. 양쪽 목록에 다 있는 A·C 가 위로."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# Hit@k · Failed@k · MRR@k · Recall@k 와 RRF 를 작은 예로 확인\nruns = {  # 질의별 검색 결과(순위순)와 정답 집합\n    \"q1\": ([\"d3\", \"d7\", \"d1\", \"d9\", \"d2\"], {\"d1\", \"d2\"}),\n    \"q2\": ([\"d4\", \"d5\", \"d6\", \"d8\", \"d0\"], {\"d9\"}),\n    \"q3\": ([\"d2\", \"d8\", \"d4\", \"d1\", \"d6\"], {\"d2\", \"d4\", \"d5\"}),\n}\ndef hit(k):    return sum(bool(set(r[:k]) & R) for r, R in runs.values()) / len(runs)\ndef mrr(k):\n    tot = 0\n    for r, R in runs.values():\n        tot += next((1 / (i + 1) for i, d in enumerate(r[:k]) if d in R), 0)\n    return tot / len(runs)\ndef recall(k): return sum(len(set(r[:k]) & R) / len(R) for r, R in runs.values()) / len(runs)\nfor k in (1, 3, 5):\n    print(f\"k={k} Hit={hit(k):.3f} Failed={1-hit(k):.3f} MRR={mrr(k):.3f} Recall={recall(k):.3f}\")\n\ndef rrf(lists, k=60):\n    score = {}\n    for lst in lists:\n        for rank, d in enumerate(lst, 1):\n            score[d] = score.get(d, 0) + 1 / (k + rank)\n    return sorted(score.items(), key=lambda x: -x[1])\nbm25 = [\"A\", \"B\", \"C\"]; dense = [\"C\", \"A\", \"D\"]\nfor d, s in rrf([bm25, dense]): print(d, round(s, 5))"
+   },
+   "pitfalls": [
+    "MRR 은 첫 관련 문단만 본다. 근거가 여럿 필요한 질문에서 MRR 이 높아도 두 번째 근거를 놓쳤을 수 있다 — Recall@k 를 같이 본다.",
+    "RRF 의 k 를 1 처럼 작게 잡으면 1위(1/2)와 2위(1/3)의 차이가 커져 한 검색기의 1위가 결과를 좌우한다. k = 60 은 그 차이를 1/61 대 1/62 로 줄인다.",
+    "지표는 관련 문단 라벨(R_q)의 질에 달려 있다. 라벨이 빠진 '사실은 관련 있는' 문단을 검색기가 찾으면 오히려 점수가 깎인다."
+   ],
+   "check": [
+    {
+     "q": "Hit@10 = 0.9 인데 MRR@10 = 0.2 라면 검색기는 어떤 상태인가?",
+     "a": "대부분 질의에서 관련 문단을 10위 안에 넣기는 하지만 대개 아래쪽(평균적으로 5위 근처)에 둔다. 재순위기(cross-encoder 등)를 붙이면 이득이 클 상황이다."
+    },
+    {
+     "q": "BM25 와 밀집 검색의 점수를 그냥 더하면 안 되는 이유와 RRF 의 해결책은?",
+     "a": "점수 범위와 분포가 달라(BM25 0~수십, 코사인 −1~1) 한쪽이 지배한다. RRF 는 점수를 버리고 순위만 1/(k+rank) 로 바꿔 더하므로 조정 없이 합칠 수 있다."
+    }
+   ]
+  },
+  {
+   "start": 3754,
+   "title": "Bi-encoder·Cross-encoder·ColBERT — '문서 쪽을 미리 계산할 수 있나'와 MaxSim",
+   "points": [
+    "Bi-encoder(검색용): 질의와 문단을 따로 인코딩. Cross-encoder(재순위용): 질의와 문단을 한 입력으로 넣어 둘 사이 전면 어텐션(Humeau et al., 2020).",
+    "네 구조 비교(ColBERT 논문 그림): (a) 표현 기반 유사도(DSSM·SNRM), (b) 질의-문서 상호작용 행렬(DRMM·KNRM·Conv-KNRM), (c) 전부-전부 상호작용(BERT), (d) 늦은 상호작용(ColBERT). 문서 쪽을 오프라인으로 계산할 수 있는 것은 (a)와 (d).",
+    "ColBERT: 토큰마다 벡터 하나를 두고 질의와 문단을 따로 인코딩, 점수 때만 상호작용 — S_{q,d} = Σ_{i∈q} max_j q_i·d_j (MaxSim).",
+    "ColBERT 는 MS MARCO MRR@10 36.0 으로 BM25(16.7~18.7)를 크게 넘고, BERT 재순위(36.0)와 비슷한 품질을 지연 61 ms·FLOPs 7B(BERT-base 의 1/13,900)로 낸다.",
+    "빠름-느림 표: BM25 62 ms(정확한 낱말), DPR 수십 ms(의미), ColBERT 458 ms(토큰 수준 근거, 색인이 큼), Cross-encoder 1천 문단에 10,700 ms(짧은 후보에서 가장 정확, 전체 말뭉치는 못 훑음)."
+   ],
+   "on_screen": "'Cross-Encoders and Reranking' (Humeau et al., 2020) — (a) Bi-encoder: Context Encoder / Candidate Encoder → Ctxt Emb·Cand Emb → Score, (b) Cross-encoder: 두 입력을 한 Encoder → Aggregator → Dim Reduction → Score. 'Late Interaction: Score Tokens, Not Documents' — 'keep one vector per token, encode query and passage independently, and interact only at scoring time; scoring is MaxSim', S_{q,d} = Σ_{i∈q} max_j q_i·d_j, 네 그림 (a) Representation-based Similarity (e.g., DSSM, SNRM) (b) Query-Document Interaction (e.g., DRMM, KNRM, Conv-KNRM) (c) All-to-all Interaction (e.g., BERT) (d) Late Interaction (i.e., the proposed ColBERT) — 강사가 (a)와 (d)의 문서 쪽에 빨간 동그라미. 'General Architecture of ColBERT' — Query Encoder f_Q, Document Encoder f_D(Offline Indexing), 질의 토큰마다 MaxSim → Σ → score (Khattab & Zaharia, SIGIR 2020). 'ColBERT vs. Other Approaches' 표 — MRR@10(Dev): BM25(official) 16.7, BM25(Anserini) 18.7, doc2query 21.5, DeepCT 24.3, docTTTTTquery 27.7, ColBERT re-rank 34.8, ColBERT end-to-end 36.0(Latency 458 ms, Recall@50 82.9, @200 92.3, @1000 96.8). 아래 표 — KNRM 19.8(3 ms), Duet 24.3, fastText+ConvKNRM 29.0, BERT_base 34.7(10,700 ms, 97T FLOPs, 13,900×), BERT_large 36.5(32,900 ms, 340T, 48,600×), ColBERT(over BERT_base) 34.9(61 ms, 7B, 1×). 'Fast vs Slow Retrievers' 표 — Precomputed offline / Query latency / Wins on / Breaks on: BM25(Inverted index, 62 ms fast, Exact terms: IDs, names, error codes / Paraphrase, synonyms), DPR(One vector per passage, Tens of ms fast, Semantic match at corpus scale / Rare literals; needs labeled pairs), ColBERT(One vector per token, 458 ms end-to-end middle, Token-level evidence at scale / Index size: tokens, not documents), Cross-encoder BERT-base(Nothing, 10,700 ms per 1k passages slow, Accuracy on a shortlist / Cannot scan a corpus). 각주: Latencies from Khattab & Zaharia (2020), MS MARCO; DPR from Karpukhin et al. (2020), different hardware.",
+   "explain": [
+    "강사가 '이 장은 정말 중요하다'고 말한 부분이다. 질의와 문서를 비교하는 신경망 구조를 네 가지로 놓고, 무엇을 미리 계산할 수 있는지로 장단점을 가른다. (a) 표현 기반 방식은 bi-encoder 다. 질의와 문서를 각각 따로 벡터 하나로 만들고 내적한다. DPR 이 여기에 속한다. (b)는 질의 낱말과 문서 낱말의 유사도 행렬을 만들어 그 행렬을 처리하는 방식이다. (c)는 cross-encoder 로, 질의와 문서를 이어 붙여 트랜스포머에 한꺼번에 넣고 모든 토큰이 서로에게 어텐션하게 한다. (d)는 늦은 상호작용(late interaction) — 질의와 문서를 따로 인코딩하되 벡터 하나가 아니라 토큰마다 벡터를 남겨 두고, 점수를 낼 때 흥미로운 방식으로 비교한다.",
+    "강사가 학생들에게 장단점을 물었고, 정리는 이렇다. (a)가 가장 빠르다. 대신 문서 전체를 벡터 하나로 눌러 담으니 세부 정보를 잃는다. 가장 무거운 것은 (b)와 (c), 특히 (c)다. 질의와 문서를 같은 행렬 안에 넣어야 하므로 질의가 오기 전에는 아무것도 계산할 수 없다. 문서가 수백만 개라면 질의마다 수백만 번 트랜스포머를 돌려야 하니 전체 말뭉치 검색에는 쓸 수 없다. (d)는 그 중간이다. 기억할 원칙은 하나다. 문서는 많으니 문서 쪽 표현은 가능하면 오프라인으로 미리 계산하고 싶다. 그래서 질의와 문서를 분리(decoupling)할 수 있느냐가 핵심이다. (a)와 (d)는 문서 쪽(그림의 파란 부분)을 미리 처리해 두고 질의 시점에는 질의만 인코딩해 곱을 계산하면 되지만, (c)는 그럴 수 없다. 그래서 실무에서는 bi-encoder 로 후보 수백 개를 먼저 뽑고 cross-encoder 로 그 후보만 다시 순위를 매기는 2단계를 쓴다.",
+    "ColBERT 의 늦은 상호작용 점수는 MaxSim 이다. 질의의 각 토큰 벡터 q_i 에 대해, 문서의 모든 토큰 벡터 d_j 와 내적을 계산해 가장 큰 값 하나를 고른다. 즉 '이 질의 낱말과 가장 잘 맞는 문서 낱말은 무엇이고 얼마나 잘 맞나'를 본다. 그 최댓값들을 질의 토큰 전체에 대해 더한 것이 점수다. 문서 벡터 하나로 평균 내 버리는 bi-encoder 와 달리, 질의의 낱말 하나하나가 문서 안에서 자기 짝을 찾으므로 '토큰 수준의 근거'가 점수에 남는다. 문서 쪽 토큰 벡터는 오프라인으로 계산해 색인에 넣어 둘 수 있다. 대가는 색인 크기다. 문서마다 벡터 하나가 아니라 토큰마다 하나씩이니, 평균 100 토큰 문서라면 저장량이 백 배쯤 된다.",
+    "숫자가 이 절충을 정확히 보여 준다. MS MARCO 문단 순위에서 MRR@10 은 BM25 가 16.7~18.7, 질의 확장류(doc2query·DeepCT·docTTTTTquery)가 21.5~27.7, BERT-base 재순위가 34.7~36.0, ColBERT 가 34.9~36.0 이다. 품질은 BERT 재순위와 비슷한데, 재순위 지연은 BERT-base 10,700 ms 대 ColBERT 61 ms, 질의당 연산은 97조(97T) 대 70억(7B)으로 약 1만 3,900배 차이다. 강사가 요약한 '빠름 대 느림' 표는 이렇다. BM25 는 역색인으로 62 ms, 정확한 낱말(ID·이름·오류 코드)에 강하고 바꿔 말하기·동의어에 약하다. DPR 은 문단당 벡터 하나로 수십 ms, 말뭉치 규모의 의미 일치에 강하고 드문 글자열에 약하며 라벨 쌍이 필요하다. ColBERT 는 토큰당 벡터 하나로 끝에서 끝까지 458 ms, 대규모로 토큰 수준 근거를 찾지만 색인이 토큰 단위로 커진다. Cross-encoder 는 미리 계산할 것이 없어 1천 문단에 10,700 ms, 짧은 후보 목록에서는 가장 정확하지만 말뭉치 전체는 못 훑는다. 강사는 응용 분야(소셜 미디어 글 대 고유명사 많은 금융 문서, 그래프·이미지 데이터)에 따라 이 표의 네 기준 — 미리 계산 가능한가, 질의 지연, 어디서 이기나, 어디서 깨지나 — 으로 고르라고 정리한다."
+   ],
+   "formulas": [
+    {
+     "expr": "S_{q,d} = Σ_{i∈q} max_{j∈d} q_i · d_j",
+     "meaning": "q_i: 질의의 i번째 토큰 벡터, d_j: 문서의 j번째 토큰 벡터(둘 다 정규화), max_j: 질의 토큰 하나에 가장 잘 맞는 문서 토큰의 유사도. 질의 토큰마다 최댓값을 구해 더한다(MaxSim)."
+    },
+    {
+     "expr": "bi-encoder: s = E_Q(q)·E_P(p)   /   cross-encoder: s = h(Enc([q; p]))",
+     "meaning": "E_Q, E_P: 따로 쓰는 인코더(문서 쪽 미리 계산 가능). [q; p]: 질의와 문단을 이어 붙인 입력, Enc 안에서 서로 어텐션, h: 점수를 내는 작은 층. 문서 쪽을 미리 계산할 수 없다."
+    },
+    {
+     "expr": "색인 크기: bi-encoder ≈ N_doc × d  /  ColBERT ≈ N_token × d′",
+     "meaning": "N_doc: 문서 수, N_token: 전체 토큰 수(문서 수 × 평균 길이), d·d′: 벡터 차원(ColBERT 는 128 같은 작은 차원으로 줄여 부담을 덜인다 — 노트 보충)."
+    }
+   ],
+   "example": {
+    "title": "질의 토큰 2개, 문서 토큰 3개의 MaxSim",
+    "body": "질의 토큰 q1 = (1, 0), q2 = (0.6, 0.8). 문서 토큰 d1 = (0.8, 0.6), d2 = (0, 1), d3 = (1, 0).\n유사도 표: q1 → [0.8, 0, 1.0], q2 → [0.96, 0.8, 0.6].\nMaxSim: q1 의 최댓값 1.0(d3), q2 의 최댓값 0.96(d1) → S = 1.0 + 0.96 = 1.96.\n같은 토큰들을 평균 낸 벡터 하나씩으로 비교하면(bi-encoder 흉내) 질의 평균 (0.8, 0.4), 문서 평균 (0.6, 0.533) → 내적 0.693. 질의 낱말마다 가장 잘 맞는 짝이 있었다는 정보가 평균 속에 묻혔다.\n비용: 질의 토큰 32개 × 문서 토큰 180개면 문서 하나당 내적 5,760번 — 벡터 하나(내적 1번)보다 무겁지만 cross-encoder 의 트랜스포머 한 번보다 훨씬 가볍다."
+   },
+   "diagram": {
+    "title": "실무에서 흔한 2단계 검색 구성",
+    "code": "flowchart LR\n  Q[\"질의\"] --> B1[\"BM25 (역색인)\"]\n  Q --> B2[\"Bi-encoder (벡터 색인, ANN)\"]\n  B1 --> F[\"RRF 로 융합: 후보 100~200\"]\n  B2 --> F\n  F --> R[\"Cross-encoder 또는 ColBERT 로 재순위\"]\n  R --> K[\"상위 5~10 → LLM 프롬프트\"]"
+   },
+   "pitfalls": [
+    "Cross-encoder 를 1단계 검색기로 쓰면 질의마다 말뭉치 전체에 트랜스포머를 돌려야 한다. 반드시 후보를 좁힌 뒤에만 쓴다.",
+    "표의 지연 숫자는 서로 다른 하드웨어에서 잰 것이다(각주). 정확한 비교가 아니라 크기 차수를 보는 용도로 읽어야 한다.",
+    "강사는 'ColBERT' 를 말로 'cobalt' 처럼 발음했다. 이름은 Contextualized Late interaction over BERT 의 줄임이다."
+   ],
+   "check": [
+    {
+     "q": "Cross-encoder 의 문서 표현을 미리 계산할 수 없는 이유는?",
+     "a": "질의와 문서를 한 입력으로 넣고 서로 어텐션하므로 문서 토큰의 표현이 질의에 따라 달라진다. 질의가 오기 전에는 계산할 수 없다."
+    },
+    {
+     "q": "ColBERT 가 bi-encoder 보다 정확하고 cross-encoder 보다 빠른 이유를 한 문장씩.",
+     "a": "토큰마다 벡터를 남겨 질의 낱말별로 가장 잘 맞는 문서 낱말을 찾으므로(MaxSim) 평균 벡터보다 세밀하고, 문서 토큰 벡터는 오프라인으로 미리 계산해 두고 점수 때 내적·최댓값만 계산하므로 트랜스포머를 질의마다 돌리는 cross-encoder 보다 빠르다."
+    }
+   ]
+  },
+  {
+   "start": 4098,
+   "title": "에이전트형 RAG ① — 검색을 행동으로: 세 가지 결정, Self-RAG(반성 토큰)와 CRAG(검색 평가기)",
+   "points": [
+    "지금까지의 RAG 는 질문 하나에 잘 답하지만 '검색할지', '무엇을 물을지', '언제 멈출지'를 스스로 정하지 못한다.",
+    "검색을 에이전트가 취하는 행동으로 만든다. 세 결정: (1) 검색할지 바로 답할지, (2) 어떤 질의를 낼지, (3) 결과가 충분히 좋은지.",
+    "Self-RAG(Asai et al., 2024): 모델 하나가 검색·비판·생성을 함께 배운다. 필요할 때 Retrieve 토큰을 내고, 검색된 문단마다 병렬로 조각을 쓰고, 관련성·뒷받침 여부를 스스로 비판해 가장 좋은 조각을 고른다. 결정 1·3 이 생성기 안에 학습된다 — 대가는 비판 라벨 데이터로 하는 학습.",
+    "CRAG(Yan et al., 2024): 생성기는 건드리지 않고 검색기와 생성기 사이에 가벼운 평가기를 둔다. 신뢰도 → 행동: Correct(다듬어 쓴다), Incorrect(버리고 질의를 고쳐 웹 검색), Ambiguous(둘 다). 어떤 RAG 에도 꽂아 쓰는 결정 3."
+   ],
+   "on_screen": "'Agentic RAG: Retrieval inside the Loop' — 'Everything so far answers one question well. None of it decides whether to retrieve, what to ask, or when to stop.' 로봇 세 마리 그림, 빨간 글씨 'Retrieval should be an action the agent takes', 'Three decisions: (1) retrieve or answer directly; (2) what query to issue; (3) whether the result is good enough'. 'Self-RAG: Self-reflective RAG (Asai et al., 2024)' — Prompt 'How did US states get their names?' → Step 1: Retrieve on demand('US states got their names from a variety of sources' 뒤에 Retrieve 토큰) → Step 2: Generate segment in parallel(Prompt+①: Relevant '11 of 50 state names come from persons.' Supported / Prompt+②: Irrelevant 'Texas is named after a Native American tribe.' / Prompt+③: Relevant 'California's name has its origins in a 16th-century novel Las Sergas de Esplandián.' Partially) → Step 3: Critique outputs and select best segment(① > ③ > ②) → 'US states got their names from a variety of sources. 11 of 50 states names are come from persons. 26 states are named after Native Americans, including Utah.' 오른쪽 'SELF-RAG learns to retrieve, critique, and generate text passages to enhance overall generation quality, factuality, and verifiability.' 'CRAG: a critic grades the retrieval (Yan et al., 2024)' — x: 'Who was the screenwriter for Death of a Batman?' → Retrieval Evaluator → Correct / Ambiguous / Incorrect → Knowledge Refinement(decompose → filter → recompose 'strip') / Knowledge Searching(Rewrite → Web Search → Select) → Generator, 왼쪽 설명 — 검색 문서가 입력과 얼마나 관련 있는지 평가해 신뢰도를 내고, 그 값에 따라 다른 지식 검색 행동을 고른다.",
+   "explain": [
+    "강의 마지막 부분은 '에이전트'로 넘어간다. 강사는 지금까지 본 RAG 가 확률·모델·인코딩·색인 이야기였고, 질문 하나에 잘 답하는 데는 훌륭하지만 주도권이 없다고 지적한다. 시스템은 검색을 할지 말지, 무엇을 물을지, 언제 멈출지를 스스로 정하지 못한다. 질문이 오면 무조건 한 번 검색하고, 결과가 엉망이어도 그대로 답한다. 해법은 검색을 에이전트가 취하는 행동 중 하나로 만드는 것이다. 그러면 에이전트가 내려야 할 결정이 셋 생긴다. 첫째, 검색할 것인가 아니면 바로 답할 것인가(이미 아는 상식이면 검색이 오히려 잡음을 넣는다). 둘째, 검색한다면 어떤 질의를 낼 것인가. 셋째, 돌아온 결과가 충분히 좋아서 멈춰도 되는가. 1강의 ReAct 루프(생각→행동→관찰)에서 '행동'의 하나가 검색인 셈이다.",
+    "첫 번째 사례 Self-RAG 는 이 결정을 모델 하나에 가르친다. 특별한 반성 토큰(reflection token)을 텍스트와 함께 생성하도록 학습시키는 것이다. 예는 '미국 각 주는 어떻게 이름을 얻었나?'다. 1단계, 모델이 답을 쓰기 시작하다가 '여러 출처에서 이름을 얻었다'까지 쓰고 근거가 필요하다고 판단하면 Retrieve 토큰을 낸다 — 필요할 때만 검색한다. 2단계, 검색된 문단 세 개 각각에 대해 병렬로 다음 조각을 쓴다. 3단계, 각 조각을 스스로 비판한다. 이 문단은 관련 있나(①: 관련 있음, '50개 주 중 11개는 사람 이름에서 왔다', 뒷받침됨 / ②: 관련 없음, 텍사스 이야기 / ③: 관련 있음, 캘리포니아 이름의 기원, 부분적으로 뒷받침됨)? 조각이 문단으로 뒷받침되나? 그 평가로 순위를 매겨(① > ③ > ②) 가장 좋은 조각을 남기고 다시 이어 쓴다. 결정 1(검색할지)과 결정 3(충분히 좋은지)이 생성기 자체에 학습되어 있다. 대가는 학습 파이프라인이다. 비판 라벨이 붙은 데이터로 모델을 학습시켜야 한다.",
+    "CRAG(Corrective RAG)는 정반대 선택을 한다. 생성기는 건드리지 않고, 검색기와 생성기 사이에 평가기(retrieval evaluator)를 하나 끼운다. 평가기는 검색된 문서가 질문과 얼마나 관련 있는지 채점해 신뢰도를 내고, 신뢰도가 행동으로 이어진다. 정확(Correct)하다고 판단하면 문서를 그대로 쓰되 다듬는다 — 문서를 작은 조각으로 쪼개 관련 없는 조각을 걸러내고 다시 합친다. 틀렸다(Incorrect)고 판단하면 문서를 버리고 질의를 고쳐 쓴 뒤 웹을 다시 검색한다. 애매(Ambiguous)하면 둘 다 한다. 강사는 이것을 심판을 하나 둔 구조라고 부른다. 장점은 플러그 앤 플레이다. 이미 돌아가는 어떤 RAG 시스템에도 끼울 수 있고, 결정 3 을 아주 가벼운 별도 모델이 맡으며, 생성기는 재학습할 필요가 없다.",
+    "두 방법을 나란히 놓으면 설계 축이 보인다. Self-RAG 는 '판단을 생성기 안에 학습'하므로 매끄럽게 통합되지만 학습 비용이 들고 모델을 바꾸면 다시 학습해야 한다. CRAG 는 '판단을 바깥 모듈로' 두므로 붙이고 떼기 쉽지만 평가기 품질이 전체 품질을 묶는다. 앞의 Modular RAG 그림으로 보면 CRAG 는 검색 후 단계에 평가·재작성·재검색 모듈을 추가한 것이고, Self-RAG 는 그 판단 모듈을 생성기와 합친 것이다. 둘 다 앞 챕터 Q&A 에서 지적된 오류 누적 — 첫 검색이 틀리면 끝까지 틀린다 — 에 대한 대응이다. 검색 결과를 의심하고, 나쁘면 다시 찾는다."
+   ],
+   "example": {
+    "title": "CRAG 의 행동 규칙을 숫자로 — 문턱 두 개",
+    "body": "질문: 'Who wrote Death of a Batman?'(6 낱말). 평가기를 '질문 낱말이 문서에 겹치는 비율'로 흉내 내고, 상한 0.6·하한 0.3 을 둔다(실제 CRAG 는 학습된 T5 계열 평가기의 점수를 쓴다 — 노트 보충).\n문서 'death of a batman was written by Henry Fielding' → 겹침 {death, of, a, batman} 4/6 = 0.67 ≥ 0.6 → Correct: 다듬어 쓴다.\n문서 'batman is a superhero' → {a, batman} 2/6 = 0.33 → 0.3 < 0.33 < 0.6 → Ambiguous: 다듬은 문서 + 웹 검색.\n문서 'weather in paris' → 0/6 = 0 ≤ 0.3 → Incorrect: 버리고 질의를 고쳐 웹 검색.\n문턱을 0.7 로 올리면 첫 문서도 Ambiguous 가 되어 웹 검색 비용이 늘고, 0.5 로 내리면 덜 확실한 문서를 그대로 믿게 된다 — 문턱은 정확도와 비용의 절충이다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# CRAG 식 행동 고르기와 '세 가지 결정' 루프를 가짜 함수로 흉내 낸다\nUPPER, LOWER = 0.6, 0.3                       # 평가기 신뢰도 문턱(예시 값)\n\ndef evaluator(q, doc):                        # 가벼운 평가기 흉내: 낱말 겹침 비율\n    qs = set(q.lower().split())\n    return len(qs & set(doc.lower().split())) / len(qs)\n\ndef crag_action(q, docs):\n    best = max(evaluator(q, d) for d in docs)\n    if best >= UPPER:  return \"Correct: 문서를 다듬어(refine) 쓴다\"\n    if best <= LOWER:  return \"Incorrect: 버리고 질의를 고쳐 웹 검색\"\n    return \"Ambiguous: 다듬은 문서 + 웹 검색 둘 다\"\n\nq = \"who wrote death of a batman\"\nfor docs in ([\"death of a batman was written by Henry Fielding\"],\n             [\"batman is a superhero\"], [\"weather in paris\"]):\n    scores = [round(evaluator(q, d), 2) for d in docs]\n    print(scores, \"->\", crag_action(q, docs))"
+   },
+   "diagram": {
+    "title": "에이전트형 RAG 의 세 결정",
+    "code": "flowchart TD\n  Q[\"질문\"] --> D1{\"(1) 검색이 필요한가?\"}\n  D1 -- \"아니오\" --> A[\"바로 답\"]\n  D1 -- \"예\" --> D2[\"(2) 질의 만들기·고치기\"]\n  D2 --> S[\"검색\"]\n  S --> D3{\"(3) 결과가 충분히 좋은가?\"}\n  D3 -- \"예\" --> G[\"근거로 답 생성\"]\n  D3 -- \"아니오\" --> D2"
+   },
+   "pitfalls": [
+    "Self-RAG 의 '병렬 조각 생성'은 검색 문단 수만큼 생성을 여러 번 하는 것이라 지연·비용이 늘어난다.",
+    "CRAG 의 웹 검색 폴백은 사내 비공개 데이터를 다루는 시스템에서는 정보 유출 경로가 될 수 있다 — 무엇을 밖으로 검색해도 되는지 정책이 필요하다.",
+    "Self-RAG 슬라이드의 최종 문장 '11 of 50 states names are come from persons' 는 문법이 틀린 그대로 옮겨진 예시 출력이다(올바르게는 'names come from')."
+   ],
+   "check": [
+    {
+     "q": "Self-RAG 와 CRAG 는 세 결정 중 어느 것을 어디에 두나?",
+     "a": "Self-RAG 는 결정 1(검색 여부)과 결정 3(결과 품질)을 생성기 안에 반성 토큰으로 학습한다. CRAG 는 결정 3 을 생성기 밖의 가벼운 평가기에 맡기고, 나쁘면 질의를 고쳐(결정 2) 웹 검색한다."
+    }
+   ]
+  },
+  {
+   "start": 4320,
+   "title": "에이전트형 RAG ② — Search-R1(검색 정책을 RL 로 배운다)과 RAG 가 깨지는 아홉 자리",
+   "points": [
+    "Search-R1(Jin et al., 2025): 검색 루프를 손으로 설계하지 않고 RL 로 배운다. 모델이 <think> 로 생각하고 <search> 로 질의를 내면 결과가 <information> 으로 돌아오고, 반복하다 <answer> 로 답한다.",
+    "예: '제드 호이어와 존 윌리엄 헨리 2세 중 누가 나이가 많나?' — 세 번 검색하며 질의를 고친다. 계획을 아무도 써 주지 않았다(워크플로가 아닌 에이전트).",
+    "학습: 보통의 PPO/GRPO 에 검색 엔진만 롤아웃 안에 넣는다. 보상은 결과만 — 최종 답이 맞았나.",
+    "Qwen2.5-7B 에서 7개 QA 평균: 직접 추론 0.181, CoT 0.106, RAG 0.304, R1-base 0.276, Search-R1-base 0.431.",
+    "실패 유형 3×3: 검색 쪽(재현율 상한·낡은 색인·권한 유출), 판독 쪽(가운데에서 길을 잃음·주의 분산·근거 충돌), 루프 쪽(오류 누적·멈춤 규칙 없음·프롬프트 주입)."
+   ],
+   "on_screen": "'Search-R1: learn the search policy with RL (Jin et al., 2025)' — 검은 바탕 궤적: Question 'Who is elder, Jed Hoyer or John William Henry II?', Ground Truth John William Henry II, <think>…</think> <search> Jed Hoyer </search> <information> Doc 1 (Title: \"Jed Hoyer\") … </information> … <search> John William Henry II </search> … <search> Jed Hoyer birth year </search> … <answer> John William Henry II </answer>. 'Search-R1 optimizes LLM reasoning trajectories with multi-turn search interactions'. 학습 도식 — PPO w. Search Engine(Rollout Module: Policy LLM ↔ Search Engine, Reference LLM, Reward Model, Value LLM, GAE) / GRPO w. Search Engine(Group Computation, KL) — 강사가 Search Engine 칸에 빨간 동그라미. 프롬프트 템플릿: 'Answer the given question. You must conduct reasoning inside <think> and </think> first every time you get new information. After reasoning, if you find you lack some knowledge, you can call a search engine by <search> query </search>, and it will return the top searched results between <information> and </information>. You can search as many times as you want. If you find no further external knowledge needed, you can directly provide the answer inside <answer> and </answer>…'. 결과 표(Qwen2.5-7b-Base/Instruct; NQ·TriviaQA·PopQA·HotpotQA·2wiki·Musique·Bamboogle·Avg): Direct Inference 0.134/0.408/0.140/0.183/0.250/0.031/0.120/0.181, CoT 평균 0.106, IRCoT 0.239, Search-o1 0.206, RAG 0.349/0.585/0.392/0.299/0.235/0.058/0.208/0.304, SFT 0.207, R1-base 0.276, R1-instruct 0.271, Rejection Sampling 0.348, Search-R1-base 0.480/0.638/0.457/0.433/0.382/0.196/0.432/0.431, Search-R1-instruct 평균 0.385. 'Issues with RAG' 세 칸 — Retrieval-side: Recall ceiling(Missing evidence limits agent), Stale index(Embeddings not update), Permission leak(Use content not allowed to access) / Reader-side: Lost in the middle(Position bias), Distraction(Similar but irrelevant content), Evidence conflict(Sources or knowledge conflicts) / Loop-side: Compounding error(Early mistakes affect later decision), No stopping rule(Lack clear conditions for finishing), Prompt injection(Retrieved text steers the agent).",
+   "explain": [
+    "추론 모델(R1 류)이 등장하면서 질문이 생겼다. 생각하는 능력으로 검색 과정 자체를 개선할 수 있을까? Search-R1 은 검색 루프를 사람이 설계하는 대신 강화학습(RL)으로 배우게 한다. 프롬프트 형식은 단순하다. 모델은 새 정보를 받을 때마다 먼저 <think> 안에서 생각하고, 지식이 부족하다 싶으면 <search> 질의 </search> 를 쓴다. 그러면 시스템이 검색 엔진을 불러 상위 결과를 <information> 안에 넣어 돌려준다. 원하는 만큼 검색할 수 있고, 더 필요 없다고 판단하면 <answer> 안에 답을 쓴다. 강사가 보여 준 궤적에서 모델은 '제드 호이어와 존 윌리엄 헨리 2세 중 누가 나이가 많나?'에 답하려고 먼저 제드 호이어를 검색하고, 다음에 존 윌리엄 헨리 2세를 검색해 1949년생임을 알아내고, 다시 '제드 호이어 출생 연도'로 질의를 고쳐 1973년생임을 찾은 뒤 답한다. 세 번 검색하면서 매번 질의를 다듬었는데, 그 계획을 아무도 써 주지 않았다. 강사는 1강의 '워크플로 대 에이전트' 구분을 다시 떠올리라고 한다. 단계를 코드가 정하면 워크플로, 모델이 정하면 에이전트다.",
+    "학습 방법은 놀랄 만큼 표준적이다. PPO 나 GRPO(이 과목 뒤에서 따로 다룬다)의 롤아웃 모듈 안에 검색 엔진 하나를 추가한 것이 전부다. 롤아웃 동안 정책 LLM 이 글을 쓰다가 검색 질의를 내면 그것이 검색 엔진에 가고, 결과가 정보 토큰으로 맥락에 들어온다. 보상도 단순해서 결과만 본다. 최종 답이 정답과 맞았나. 중간에 어떻게 검색했는지에는 점수를 주지 않는데도, 맞는 답에 이르는 검색 습관이 강화된다. 노트 보충: 원 논문은 검색으로 들어온 <information> 토큰은 모델이 쓴 것이 아니므로 손실 계산에서 가린다(loss masking). 강사는 검색된 문단이 잘려 들어가므로 화면의 궤적이 실제 처리 과정을 그대로 보여 주지는 않는다고도 덧붙였다. 결과 표(Qwen2.5-7B)에서 7개 QA 데이터셋 평균은 직접 추론 0.181, 고정 RAG 0.304, 검색 없는 R1 학습 0.276 인 데 비해 Search-R1-base 는 0.431 이다. 특히 여러 번 찾아야 하는 다중 홉 질문(HotpotQA 0.299 → 0.433, Bamboogle 0.208 → 0.432)에서 차이가 크다.",
+    "강의는 RAG 의 실패 유형으로 끝난다. 어떤 사람은 RAG 가 낡았다고 하고, 어떤 사람은 무엇이 잘못될지 예측하기 어렵다고 한다. 강사는 실패를 세 쪽으로 나눈다. 검색 쪽에서는 첫째, 재현율 상한 — 필요한 근거를 못 찾으면 그 뒤의 에이전트가 아무리 똑똑해도 거기서 막힌다. 둘째, 낡은 색인 — 문서는 바뀌었는데 임베딩을 갱신하지 않았다. 셋째, 권한 유출 — 검색이 보면 안 되는 문서(다른 팀의 인사 자료 등)까지 가져와 답에 쓴다. 판독 쪽에서는 '가운데에서 길을 잃음'(긴 맥락의 가운데에 놓인 정보를 모델이 덜 쓰는 위치 편향), 주의 분산(비슷하지만 무관한 문단에 끌림), 근거 충돌(밖에서 가져온 두 근거가 서로 다르거나, 근거와 모델 자신의 지식이 다를 때 무엇을 믿나)이 있다.",
+    "루프 쪽은 에이전트형 RAG 에서 새로 생긴 문제다. 오류 누적 — 앞에서 잘못 고른 문서나 질의가 뒤의 결정을 계속 비튼다. 멈춤 규칙 없음 — 언제 끝낼지 분명한 조건이 없어 끝없이 검색하거나 너무 일찍 멈춘다. 프롬프트 주입 — 나쁜 의도를 가진 사람이 검색될 문서에 '이전 지시를 무시하고…' 같은 글을 심어 두면, 검색된 텍스트가 에이전트를 조종한다. 검색이 행동이 되고 루프가 길어질수록 이 세 문제가 커진다. 강사는 이 문제들을 학기 뒤쪽(안전 강의 등)에서 다시 다룬다고 예고하며 마친다. 노트 보충으로 실무 대응을 짝지으면: 재현율 상한에는 하이브리드 검색과 Recall@k 모니터링, 낡은 색인에는 증분 재색인, 권한 유출에는 검색 단계의 문서별 접근 제어(ACL) 필터, 가운데 손실에는 재순위 후 중요한 근거를 앞뒤에 배치, 근거 충돌에는 출처·날짜를 함께 넣고 충돌을 드러내 답하기, 오류 누적에는 CRAG 식 평가기, 멈춤 규칙에는 최대 검색 횟수와 예산, 프롬프트 주입에는 검색 텍스트를 지시가 아닌 데이터로 표시하고 도구 권한을 최소화하기."
+   ],
+   "formulas": [
+    {
+     "expr": "max_π E_{x∼D, y∼π(·|x; R)} [ r(x, y) ] − β · KL[ π(y|x; R) ‖ π_ref(y|x; R) ]",
+     "meaning": "노트 보충(Search-R1 논문의 목표). π: 정책 LLM, R: 검색 엔진(롤아웃 중 호출), x: 질문, y: 생각·검색·정보·답이 섞인 궤적, r: 결과 보상(최종 답이 정답과 정확히 일치하면 1), π_ref: 기준 모델, β: KL 벌점 세기. 검색 엔진이 롤아웃 안에 있다는 것만 보통의 RL 미세조정과 다르다."
+    }
+   ],
+   "example": {
+    "title": "결과 표에서 무엇이 이득을 냈는지 나눠 보기",
+    "body": "7개 데이터셋 평균(Qwen2.5-7B-Base): 직접 추론 0.181 → RAG(한 번 검색) 0.304 → R1-base(검색 없이 RL 추론) 0.276 → Search-R1-base 0.431.\n검색만 붙인 효과: 0.304 − 0.181 = +0.123. 추론 RL 만 한 효과: 0.276 − 0.181 = +0.095.\n둘을 '함께 학습'한 효과: 0.431 − 0.181 = +0.250 > 0.123 + 0.095 = 0.218 → 검색과 추론을 따로 더한 것보다 크다.\n다중 홉 Bamboogle: RAG 0.208 → Search-R1 0.432(2배 넘게). 단일 홉 NQ: 0.349 → 0.480(1.4배). 여러 번 찾아야 하는 질문일수록 '검색 정책'을 배운 이득이 크다."
+   },
+   "diagram": {
+    "title": "RAG 실패 유형 3×3",
+    "code": "flowchart LR\n  subgraph R[\"검색 쪽\"]\n    r1[\"재현율 상한\"]\n    r2[\"낡은 색인\"]\n    r3[\"권한 유출\"]\n  end\n  subgraph D[\"판독 쪽\"]\n    d1[\"가운데에서 길을 잃음\"]\n    d2[\"주의 분산\"]\n    d3[\"근거 충돌\"]\n  end\n  subgraph L[\"루프 쪽\"]\n    l1[\"오류 누적\"]\n    l2[\"멈춤 규칙 없음\"]\n    l3[\"프롬프트 주입\"]\n  end\n  R --> D --> L"
+   },
+   "pitfalls": [
+    "Search-R1 의 보상은 정확 일치(exact match)라서 정답과 표기가 다른 맞는 답('JWH II')은 0점이다. 짧은 사실형 QA 에는 맞지만 서술형 답에는 그대로 못 쓴다.",
+    "표의 CoT 평균(0.106)이 직접 추론(0.181)보다 낮다. 작은 모델에게 외부 지식 없이 생각만 길게 시키면 오히려 지어내기가 늘 수 있다는 신호로 읽힌다.",
+    "프롬프트 주입은 '검색 결과를 믿는' 구조 자체에서 나온다. 검색 결과에 시스템 프롬프트와 같은 권위를 주면 안 된다."
+   ],
+   "check": [
+    {
+     "q": "Search-R1 이 중간 검색 과정에 보상을 주지 않는데도 좋은 검색 습관을 배우는 이유는?",
+     "a": "결과 보상이 정답에 이른 궤적 전체를 강화하므로, 그 궤적에 들어 있던 질의 다듬기·여러 번 검색 같은 행동도 함께 강화된다."
+    },
+    {
+     "q": "'권한 유출'은 아홉 실패 중 어느 쪽이며, 어디서 막아야 하나?",
+     "a": "검색 쪽 실패다. 생성 단계에서 '말하지 말라'고 지시하는 것이 아니라 검색 단계에서 사용자 권한으로 문서를 걸러 애초에 맥락에 들어가지 않게 해야 한다."
+    }
+   ]
+  }
+ ],
+ "concepts": [
+  {
+   "term": "RAG (Retrieval-Augmented Generation)",
+   "explain": "질의에 맞는 문서를 검색해 생성기에 함께 넣어 답하게 하는 구조. 지식을 가중치가 아닌 외부 색인에 두어(비모수) 색인만 고쳐 사실을 갱신하고, 답의 근거를 인용할 수 있다.",
+   "at": 420
+  },
+  {
+   "term": "Retriever–Reader",
+   "explain": "검색기가 수백만 문서를 K 개로 좁히고 판독기가 그 K 개를 정밀하게 읽어 답을 뽑는 분업 구조. DrQA(2017)가 대표적이며 RAG 의 전신이다.",
+   "at": 540
+  },
+  {
+   "term": "RAG-Sequence / RAG-Token",
+   "explain": "p(y|x) ≈ Σ p(z|x)p(y|x,z) 를 답 전체 단위로 주변화하느냐(문단 하나로 답 전체), 토큰마다 주변화하느냐(토큰마다 문단 가중치를 다시)의 차이.",
+   "at": 840
+  },
+  {
+   "term": "청크 나누기 (Chunking)",
+   "explain": "문서를 검색 단위로 자르는 일. 고정 크기(100~500 토큰, 겹침 10~20%), 의미 단위, 맥락 보강, LLM 기반 동적 청크가 있다. 너무 작으면 맥락이 없고 너무 크면 주제가 섞인다.",
+   "at": 1590
+  },
+  {
+   "term": "Contextual Retrieval",
+   "explain": "청크마다 문서 전체를 LLM 에 보여 50~100 토큰의 맥락 문장을 붙인 뒤 임베딩·BM25 두 색인에 넣는 Anthropic 의 기법. Failed@20 을 5.7% 에서 2.9% 로 줄였다. 청크마다 LLM 비용이 든다.",
+   "at": 1770
+  },
+  {
+   "term": "Late Chunking",
+   "explain": "긴 문맥 인코더로 문서 전체를 먼저 인코딩한 뒤 토큰 벡터를 청크 구간별로 평균 내는 방법. LLM 호출 없이 문서 맥락이 청크 벡터에 실린다. 작은 청크에서 이득이 크다.",
+   "at": 2050
+  },
+  {
+   "term": "RAPTOR",
+   "explain": "청크 임베딩 → 군집화 → LLM 요약 → 다시 임베딩을 반복해 요약 나무를 만들고 모든 층에서 검색하는 색인. 문서 전체에 흩어진 답을 위층 요약 노드가 담는다.",
+   "at": 2210
+  },
+  {
+   "term": "GraphRAG",
+   "explain": "LLM 이 뽑은 개체·관계로 지식 그래프를 만들고 커뮤니티 요약을 미리 써 두어, 질의 때 커뮤니티별 부분 답을 합쳐 전역 답을 내는 방법. 여러 문서를 종합하는 질문용이며 비싸다.",
+   "at": 2340
+  },
+  {
+   "term": "HNSW",
+   "explain": "층마다 드물어지는 근접 그래프를 쌓고 위층에서 아래층으로 탐욕적으로 내려가며 질의에 다가가는 근사 최근접 이웃 알고리즘. 약 log N 번 이동, 높은 재현율.",
+   "at": 2800
+  },
+  {
+   "term": "BM25",
+   "explain": "IDF(낱말이 얼마나 드문가) × 포화된 TF(얼마나 자주, 문서 길이 보정)를 질의 낱말마다 더하는 1990년대 희소 검색 점수. 학습이 필요 없고 정확한 낱말 일치에 강해 지금도 기준선이다.",
+   "at": 2960
+  },
+  {
+   "term": "DPR (Dense Passage Retrieval)",
+   "explain": "질의·문단을 서로 다른 BERT 로 밀집 벡터화해 내적으로 검색하는 bi-encoder. 배치 안 음성과 BM25 하드 음성으로 대조 학습한다. 5개 중 4개 데이터셋에서 BM25 를 이겼다.",
+   "at": 3200
+  },
+  {
+   "term": "하드 음성 (Hard negative)",
+   "explain": "질문과 낱말은 많이 겹치지만 답은 없는 문단. 대조 학습에 넣으면 모델이 낱말 겹침 너머의 의미로 판단하도록 배운다.",
+   "at": 3300
+  },
+  {
+   "term": "Hit@k / Failed@k",
+   "explain": "상위 k 안에 관련 문단이 하나라도 있는 질의의 비율과 그 반대(1 − Hit@k). 순서는 보지 않는다. RAG 에서 '근거가 아예 없는' 경우를 잰다.",
+   "at": 3360
+  },
+  {
+   "term": "MRR@k / Recall@k / nDCG@k",
+   "explain": "MRR 은 첫 관련 문단 순위의 역수 평균, Recall 은 관련 문단 중 top-k 에서 찾은 비율, nDCG 는 순위로 할인한 관련도를 이상적 순위로 정규화한 값.",
+   "at": 3420
+  },
+  {
+   "term": "RRF (Reciprocal Rank Fusion)",
+   "explain": "여러 검색기의 순위 목록을 Σ 1/(k + rank), k = 60 으로 합치는 방법. 점수 범위가 다른 BM25 와 밀집 검색을 조정 없이 합칠 수 있다.",
+   "at": 3640
+  },
+  {
+   "term": "Bi-encoder / Cross-encoder",
+   "explain": "Bi-encoder 는 질의·문서를 따로 인코딩해 문서 쪽을 미리 계산할 수 있어 빠르다(검색용). Cross-encoder 는 둘을 한 입력으로 넣어 전면 어텐션하므로 정확하지만 미리 계산이 안 돼 후보 재순위에만 쓴다.",
+   "at": 3760
+  },
+  {
+   "term": "ColBERT (Late interaction, MaxSim)",
+   "explain": "토큰마다 벡터를 남겨 질의·문서를 따로 인코딩하고, 질의 토큰마다 가장 잘 맞는 문서 토큰 유사도를 더하는(MaxSim) 검색 모델. BERT 재순위 수준 품질을 훨씬 적은 연산으로 내지만 색인이 토큰 단위로 커진다.",
+   "at": 3800
+  },
+  {
+   "term": "Self-RAG",
+   "explain": "검색 필요 여부와 결과의 관련성·뒷받침 여부를 반성 토큰으로 생성기 안에서 스스로 판단하도록 학습한 RAG. 비판 라벨 데이터로 학습해야 한다.",
+   "at": 4170
+  },
+  {
+   "term": "CRAG (Corrective RAG)",
+   "explain": "검색기와 생성기 사이의 가벼운 평가기가 검색 결과를 정확·애매·틀림으로 판정해 다듬기·웹 재검색을 고르는 방법. 생성기를 건드리지 않아 어떤 RAG 에도 붙일 수 있다.",
+   "at": 4260
+  },
+  {
+   "term": "Search-R1",
+   "explain": "검색 엔진을 RL(PPO/GRPO) 롤아웃 안에 넣고 최종 답 정답 여부만 보상해, 모델이 언제·무엇을 검색할지 스스로 배우게 한 방법. Qwen2.5-7B 7개 QA 평균 0.304(RAG) → 0.431.",
+   "at": 4330
+  }
+ ],
+ "trends": [
+  {
+   "claim": "프런티어 모델 시대에도 RAG 는 원칙으로서 계속 필요하다 (강사 의견)",
+   "evidence": "'프런티어 모델에 RAG 가 이미 들어 있나'는 질문에, 공개되지 않은 금융 서비스 회사의 내부 DB 같은 자료는 모델이 알 수 없으므로 그 DB 에 접근하게 하는 RAG 가 그대로 적용된다고 답했다. 일반 웹 검색은 GPT-4 이후 많은 모델이 기본 제공한다고 덧붙였다.",
+   "at": 1290
+  },
+  {
+   "claim": "임베딩과 BM25 를 함께 쓰는 하이브리드 검색이 표준이 되고 있다",
+   "evidence": "Anthropic 맥락 검색의 Failed@20 은 임베딩 단독 5.7% → 임베딩+BM25 5.0%, 맥락 임베딩+맥락 BM25 2.9%. DPR 표에서도 BM25+DPR 이 TREC 85.2·SQuAD 71.5 로 가장 높았다. 강사는 RRF 로 순위를 합치는 방법을 소개했다.",
+   "at": 3640
+  },
+  {
+   "claim": "RAPTOR·GraphRAG 같은 정교한 색인은 연구용이고, 대규모 상용 QA 는 여전히 단순한 방법을 쓴다 (강사 의견)",
+   "evidence": "청크 알고리즘마다 비용이 있어 상용·대규모 QA 시스템은 빠르고 대부분 질문을 덮는 앞의 기법을 선호한다고 말했다. 맥락 생성용 LLM 도 대형 상용 API 보다 작지만 쓸 만한 모델을 쓴다고 했다.",
+   "at": 2500
+  },
+  {
+   "claim": "BERT 는 이제 '역사적' 모델이고 검색 인코더는 더 현대적인 모델로 옮겨 갔다 (강사 의견)",
+   "evidence": "검색기 안에 아직 BERT 를 쓰느냐는 질문에 분야가 극적으로 바뀌어 BERT 는 역사적인 모델로 본다고 답했다. 임베딩 표에는 E5 같은 문단 임베딩이 함께 올라 있다.",
+   "at": 1380
+  },
+  {
+   "claim": "검색이 고정 단계에서 에이전트가 고르는 행동으로 옮겨 가고, 검색 정책을 RL 로 배우기 시작했다",
+   "evidence": "Self-RAG(반성 토큰), CRAG(평가기), Search-R1(검색 엔진을 넣은 PPO/GRPO, 결과 보상만)을 차례로 소개. Search-R1 은 Qwen2.5-7B 에서 7개 QA 평균을 RAG 0.304 에서 0.431 로 올렸다.",
+   "at": 4320
+  },
+  {
+   "claim": "검색이 루프 안으로 들어오면서 오류 누적·멈춤 규칙·프롬프트 주입이 새 위험이 됐다",
+   "evidence": "실패 유형 표의 '루프 쪽' 세 칸으로 정리했고, 검색 문서에 나쁜 내용을 심어 파이프라인 전체를 공격하는 경우를 예로 들며 학기 뒤 안전 강의에서 다룬다고 했다.",
+   "at": 4520
+  }
+ ],
+ "study": {
+  "prereq": [
+   "Python 과 numpy — 벡터 내적·정렬·softmax 를 직접 짤 수 있을 것",
+   "트랜스포머·BERT 의 기본(토큰 임베딩, 어텐션, [CLS] 벡터) — CS224N 수준",
+   "확률의 기본(조건부 확률, 주변화, 로그우도)과 교차 엔트로피 손실",
+   "1강 노트의 에이전트 루프(생각→행동→관찰)와 워크플로 대 에이전트 구분"
+  ],
+  "steps": [
+   {
+    "do": "이 노트의 BM25 코드를 확장해 rank_bm25 같은 라이브러리와 같은 점수가 나오는지 맞춰 보고, 슬라이드 IDF 와 Lucene IDF 로 작은 말뭉치의 순위가 어떻게 뒤집히는지 확인한다",
+    "why": "식의 IDF·TF 포화·길이 정규화가 각자 순위에 어떤 영향을 주는지 손으로 익히면, 어떤 질의에서 BM25 가 이기고 지는지 감이 잡힌다."
+   },
+   {
+    "do": "작은 문서 모음(예: 과목 웹페이지나 사내 위키 일부)을 고정 크기·겹침·문장 단위 세 방식으로 청크 내고, 질문 30개와 정답 청크 라벨을 만들어 Hit@5·MRR@10·Recall@5 를 잰다",
+    "why": "청크 전략이 검색 지표를 얼마나 바꾸는지는 데이터마다 달라 직접 재 봐야 안다. 라벨 만들기 자체가 프로젝트 평가 설계 연습이다."
+   },
+   {
+    "do": "Sentence-Transformers 로 bi-encoder 밀집 검색을 붙이고, BM25 와 RRF(k = 60)로 합친 하이브리드를 같은 지표로 비교한다. 오류 코드·제품 번호가 든 질문과 바꿔 말한 질문을 따로 집계한다",
+    "why": "'두 검색기는 다른 곳에서 실패한다'를 숫자로 확인하는 실험이다. 실무 RAG 의 기본 구성이 된다."
+   },
+   {
+    "do": "하이브리드로 뽑은 후보 50개를 cross-encoder 로 재순위하고 MRR 과 지연(ms)을 함께 기록한다. 가능하면 ColBERT(RAGatouille 등)도 붙여 세 방식의 품질-지연 표를 직접 만든다",
+    "why": "강의의 '빠름 대 느림' 표를 자기 데이터로 다시 그려 보면 '문서 쪽을 미리 계산할 수 있나'라는 기준이 몸에 붙는다."
+   },
+   {
+    "do": "Anthropic 블로그의 프롬프트로 청크마다 맥락 문장을 붙여 재색인하고 Failed@20 이 얼마나 줄었는지, 그리고 LLM 호출 비용이 얼마였는지 함께 보고한다",
+    "why": "품질 이득과 색인 비용을 한 표에 놓는 연습. 강사가 말한 '파레토 분석'을 실제로 해 본다."
+   },
+   {
+    "do": "CRAG 식 평가기(작은 LLM 에게 관련도 0~1 을 묻기)를 검색 뒤에 넣고, 낮으면 질의를 고쳐 다시 검색하는 루프를 만든다. 최대 검색 횟수(멈춤 규칙)를 두고 루프 없는 RAG 와 정답률·호출 수를 비교한다",
+    "why": "에이전트형 RAG 의 세 결정을 코드로 구현해 보면 이득과 함께 오류 누적·멈춤 규칙 문제가 실제로 보인다."
+   },
+   {
+    "do": "Self-RAG·CRAG·Search-R1 논문을 읽고, 검색 결과 문서에 '이전 지시를 무시하라' 같은 문장을 심어 자기 RAG 가 프롬프트 주입에 얼마나 흔들리는지 시험한다",
+    "why": "실패 유형 표의 루프 쪽 위험을 직접 재현해 두면 안전 강의와 프로젝트의 '실패 분석' 절에 쓸 재료가 된다."
+   }
+  ],
+  "practice": [
+   "문서 5개짜리 말뭉치를 직접 만들어 질의 하나의 BM25 점수를 계산기로 구하고, 코드 결과와 소수 셋째 자리까지 맞춰 본다.",
+   "질의 5개의 top-5 결과와 정답 라벨을 종이에 적고 Hit@3·MRR@5·Recall@5·nDCG@5 를 손으로 계산한다.",
+   "두 검색기의 순위 목록(각 5개)을 RRF 로 합치고, k 를 1·60·1000 으로 바꿨을 때 순위가 어떻게 달라지는지 설명한다.",
+   "2×2 벡터로 MaxSim 점수와 평균 벡터 내적을 계산해 어떤 경우에 두 순위가 갈리는지 예를 만든다.",
+   "자기 RAG 시스템의 실패 사례 20개를 모아 강의의 3×3 실패 유형 중 어디에 속하는지 분류하고, 가장 많은 칸부터 고칠 계획을 쓴다."
+  ],
+  "resources": [
+   {
+    "title": "CS329Z: Engineering AI Agents 과목 홈페이지",
+    "url": "https://cs329z.stanford.edu/"
+   },
+   {
+    "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks (Lewis et al.)",
+    "url": "https://arxiv.org/abs/2005.11401"
+   },
+   {
+    "title": "Reading Wikipedia to Answer Open-Domain Questions — DrQA (Chen et al., 2017)",
+    "url": "https://arxiv.org/abs/1704.00051"
+   },
+   {
+    "title": "Dense Passage Retrieval for Open-Domain Question Answering (Karpukhin et al.)",
+    "url": "https://arxiv.org/abs/2004.04906"
+   },
+   {
+    "title": "ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction over BERT",
+    "url": "https://arxiv.org/abs/2004.12832"
+   },
+   {
+    "title": "Anthropic — Introducing Contextual Retrieval",
+    "url": "https://www.anthropic.com/engineering/contextual-retrieval"
+   },
+   {
+    "title": "Late Chunking: Contextual Chunk Embeddings Using Long-Context Embedding Models (Günther et al.)",
+    "url": "https://arxiv.org/abs/2409.04701"
+   },
+   {
+    "title": "RAPTOR: Recursive Abstractive Processing for Tree-Organized Retrieval (Sarthi et al.)",
+    "url": "https://arxiv.org/abs/2401.18059"
+   },
+   {
+    "title": "From Local to Global: A Graph RAG Approach to Query-Focused Summarization (Edge et al.)",
+    "url": "https://arxiv.org/abs/2404.16130"
+   },
+   {
+    "title": "Efficient and robust approximate nearest neighbor search using HNSW graphs (Malkov & Yashunin)",
+    "url": "https://arxiv.org/abs/1603.09320"
+   },
+   {
+    "title": "Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection (Asai et al.)",
+    "url": "https://arxiv.org/abs/2310.11511"
+   },
+   {
+    "title": "Corrective Retrieval Augmented Generation (Yan et al.)",
+    "url": "https://arxiv.org/abs/2401.15884"
+   },
+   {
+    "title": "Search-R1: Training LLMs to Reason and Leverage Search Engines with RL (Jin et al.)",
+    "url": "https://arxiv.org/abs/2503.09516"
+   },
+   {
+    "title": "Retrieval-Augmented Generation for Large Language Models: A Survey (Gao et al.)",
+    "url": "https://arxiv.org/abs/2312.10997"
+   },
+   {
+    "title": "Lost in the Middle: How Language Models Use Long Contexts (Liu et al.)",
+    "url": "https://arxiv.org/abs/2307.03172"
+   },
+   {
+    "title": "Poly-encoders: architectures for fast and accurate multi-sentence scoring (Humeau et al.)",
+    "url": "https://arxiv.org/abs/1905.01969"
+   }
+  ]
+ },
+ "jobs": {
+  "roles": [
+   "RAG 엔지니어",
+   "검색(Search) 엔지니어",
+   "AI 에이전트 개발자",
+   "LLM 애플리케이션 엔지니어",
+   "ML 엔지니어(랭킹·추천)",
+   "AI 평가(Eval) 엔지니어"
+  ],
+  "skills": [
+   "Python",
+   "RAG",
+   "LLM",
+   "Vector DB",
+   "Elasticsearch",
+   "OpenSearch",
+   "FAISS",
+   "pgvector",
+   "Embedding",
+   "LangChain",
+   "LlamaIndex",
+   "PyTorch",
+   "Hugging Face",
+   "BM25"
+  ]
+ },
+ "related": [
+  "DGI4vucR71w",
+  "Vr1NzH8bT44",
+  "h-7S6HNq0Vg",
+  "k1njvbBmfsw"
+ ],
+ "materials": {
+  "transcript": "official",
+  "frames": 153,
+  "every_sec": 30
+ },
+ "written_at": "2026-11-21"
+}
