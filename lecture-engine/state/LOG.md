@@ -72,3 +72,4 @@
 - 2026-11-20 · Q5baLehv5So · CME295 · CME295 3강 — 대규모 언어 모델: LLM 의 정의, Mixture of Experts, 디코딩 전략(greedy·beam·top-k·top-p·온도), guided decoding, 프롬프트·ICL·CoT·self-consistency, 추론 최적화(KV 캐시·GQA·PagedAttention·MLA·추측 디코딩·MTP) · 챕터 14 · 본문 23128자
 - 2026-11-20 · VlA_jt_3Qc4 · CME295 · 스탠퍼드 CME295 4강 — LLM 학습: 사전학습과 스케일링 법칙, 메모리를 나누는 ZeRO·모델 병렬, FlashAttention, 부동소수점·혼합 정밀도, SFT·명령어 튜닝과 평가, LoRA·QLoRA · 챕터 15 · 본문 22501자
 - 2026-11-20 · PmW_TMQ3l0I · CME295 · CME295 5강 — LLM 선호 조정: 선호 쌍 데이터, Bradley–Terry 보상 모델, RLHF 와 PPO(KL 벌점·어드밴티지·Clip), Best-of-N, 그리고 DPO · 챕터 15 · 본문 24081자
+- 2026-11-20 · k5Fh-UgTuCo · CME295 · 스탠퍼드 CME295 6강 — LLM 추론: 추론 모델이란 무엇인가, 벤치마크와 pass@k·cons@k, 검증 가능한 보상으로 하는 RL, GRPO 와 PPO, 길이·난이도 편향과 DAPO·Dr. GRPO, DeepSeek R1-Zero·R1 레시피와 추론 증류 · 챕터 15 · 본문 23065자
