@@ -46,3 +46,4 @@
 - 2026-11-20 · EfM546A79aM · CS336 · 추론 — prefill 과 decode 의 산술 강도, KV 캐시 회계, GQA·MLA·양자화·가지치기, 추측 디코딩, 연속 배치와 PagedAttention · 챕터 15 · 본문 23473자
 - 2026-11-20 · vTfEyOyzV9E · CS336 · 스케일링 법칙 심화 — 공개 레시피(MiniCPM·DeepSeek·Kimi K2), WSD, 학습률·배치 법칙, Muon, μP 유도 · 챕터 15 · 본문 23756자
 - 2026-11-20 · JpAxdTWQJxM · CS336 · 평가 — perplexity 에서 시험·Arena·LLM 심판·에이전트·ARC-AGI·안전까지, 그리고 오염과 타당성 · 챕터 15 · 본문 22729자
+- 2026-11-20 · -qm0ln33G24 · CS336 · 데이터 1부 — 웹은 어떻게 학습 데이터가 되나: 크롤링의 제약, 저작권과 공정 이용, Common Crawl 에서 C4·The Pile·FineWeb·DCLM·Common Pile 까지 · 챕터 15 · 본문 24203자
