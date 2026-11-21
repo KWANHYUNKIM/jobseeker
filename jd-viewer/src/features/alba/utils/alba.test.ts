@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ALL_FILTER, countBy, dayLabel, filterPosts, payLabel, type AlbaPost } from './alba'
+import { ALL_FILTER, countBy, dayLabel, deadlineLabel, filterPosts, payLabel, sourceLabel, sourceOf, type AlbaPost } from './alba'
 
 const post = (o: Partial<AlbaPost>): AlbaPost => ({
   id: 'x',
@@ -50,5 +50,30 @@ describe('alba', () => {
     expect(payLabel({ amount: 12000, unit: '시급', text: '' })).toBe('시급 12,000원')
     expect(dayLabel('2026-11-20T16:00:00Z')).toBe('11.21') // KST 로 넘어간다
     expect(dayLabel(null)).toBe('')
+  })
+
+  it('출처로 거르고, 출처 칩 건수는 다른 축 안에서 센다', () => {
+    const multi = [
+      post({ id: 'daangn-a' }), // 옛 파일 — source 가 없으면 당근
+      post({ id: 'albamon-1', source: 'albamon', category: '디자인·영상' }),
+      post({ id: 'saramin-2', source: 'saramin', status: 'closed' }),
+      post({ id: 'albamon-3', source: 'albamon', sido: '부산' }),
+    ]
+    expect(sourceOf(multi[0])).toBe('daangn')
+    expect(filterPosts(multi, { ...ALL_FILTER, source: 'albamon' }).map((p) => p.id)).toEqual(['albamon-1', 'albamon-3'])
+    // 마감한 사람인 공고도 '전체'에서는 남는다(뒤로 간다).
+    expect(filterPosts(multi, ALL_FILTER).at(-1)?.id).toBe('saramin-2')
+    expect(Object.fromEntries(countBy(multi, 'source', { ...ALL_FILTER, sido: '서울' }))).toEqual({ daangn: 1, albamon: 1, saramin: 1 })
+    expect(Object.fromEntries(countBy(multi, 'category', { ...ALL_FILTER, source: 'albamon' }))).toEqual({ '디자인·영상': 1, '웹·앱 제작': 1 })
+    expect(sourceLabel('albacheonguk')).toBe('알바천국')
+    expect(sourceLabel('daangn', { daangn: '당근알바' })).toBe('당근알바')
+  })
+
+  it('급여 없음은 출처에 따라 다르게, 마감일은 모집중에만', () => {
+    expect(payLabel(null, 'saramin')).toBe('급여 원문 확인') // 사람인 목록은 급여를 주지 않는다
+    expect(payLabel(null, 'albamon')).toBe('급여 협의')
+    expect(deadlineLabel(post({ deadline: '2026-12-03' }))).toBe('~12.3 마감')
+    expect(deadlineLabel(post({ deadline: '2026-12-03', status: 'closed' }))).toBe('')
+    expect(deadlineLabel(post({}))).toBe('')
   })
 })
