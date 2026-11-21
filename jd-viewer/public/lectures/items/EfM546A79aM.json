@@ -1,0 +1,1070 @@
+{
+  "id": "EfM546A79aM",
+  "source": {
+    "platform": "youtube",
+    "url": "https://www.youtube.com/watch?v=EfM546A79aM",
+    "channel": "Stanford Online",
+    "published": "2026-05-11",
+    "duration_sec": 5130,
+    "views": 21963
+  },
+  "course": {
+    "school": "Stanford",
+    "code": "CS336",
+    "term": "Spring 2026",
+    "lecture_no": "10",
+    "speaker": "Percy Liang (공동 강사 Tatsunori Hashimoto)"
+  },
+  "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 10: Inference",
+  "title_ko": "추론 — prefill 과 decode 의 산술 강도, KV 캐시 회계, GQA·MLA·양자화·가지치기, 추측 디코딩, 연속 배치와 PagedAttention",
+  "topic": "systems",
+  "tags": [
+    "LLM",
+    "Inference",
+    "Transformer",
+    "GPU",
+    "CUDA",
+    "PyTorch",
+    "Python",
+    "vLLM",
+    "SGLang",
+    "TensorRT-LLM",
+    "llama.cpp",
+    "Quantization",
+    "KV Cache",
+    "Speculative Decoding",
+    "MLOps"
+  ],
+  "level": "심화",
+  "one_line": "생성은 메모리를 기다린다 — KV 캐시를 세고, 줄이고, 담는 법으로 추론을 빠르게",
+  "summary": [
+    "CS336 10강은 Percy Liang 이 한 시간 반 동안 추론 하나를 다룬다. 추론은 학습된 모델에 프롬프트를 넣어 응답을 정확하고 빠르게 만드는 일이고, 챗봇·코드 완성·에이전트·배치 처리뿐 아니라 생성형 평가와 강화학습의 롤아웃 안에도 들어 있다. 학습은 한 번 내는 비용이지만 추론은 매일 반복되는 비용이다 — OpenAI 가 하루 약 8.6조 토큰을 만든다는 추정을 DeepSeek V4 의 학습 토큰 32조 옆에 놓는다. 에이전트 시대에는 생성 토큰 대부분을 사람이 읽지 않으니 토큰이 곧 연산 지출이고, 빠르게 만들수록 얻는 가치에 상한이 없다는 것이 강사의 문제의식이다. '빠르다'는 TTFT(첫 토큰까지), 지연(요청 하나의 초/토큰), 처리량(전체의 토큰/초) 세 가지로 나뉜다.",
+    "강의의 뼈대는 2강·5강의 산술 강도 회계다. 행렬곱 X(B×D)@W(D×F)는 B 가 D, F 보다 작으면 강도가 B 이고, H100 은 989 TFLOP/s ÷ 3.35 TB/s ≈ 295 가 넘어야 계산에 묶인다. KV 캐시로 생성을 prefill(프롬프트 전체를 병렬 처리)과 generate(한 토큰씩)로 나누고 MLP 와 어텐션의 강도를 세면, MLP 는 B·T, 어텐션은 ST/(S+T) 다. 그래서 prefill 은 계산에 묶이고, generate 의 MLP 는 동시 요청 수 B 만큼, generate 의 어텐션은 1 미만이다 — 시퀀스마다 자기 KV 캐시를 읽어야 해서 배치를 키워도 나아지지 않는다. '추론은 메모리에 묶인다'는 말의 정체가 이것이다.",
+    "이 결론을 Llama 2 13B·H100 에 넣으면 한 걸음 시간 = (가중치 26GB + 시퀀스당 KV 0.84GB × B) ÷ 3.35TB/s 다. B = 1 이면 8ms·125 tok/s, B = 64 면 23.8ms·2,689 tok/s, B = 256 은 240GB 라 들어가지 않는다. 배치를 키우면 지연은 직선으로 나빠지고 처리량은 대역폭 ÷ 시퀀스당 KV 로 포화한다 — 지연과 처리량의 절충이 배치 크기에서 생기고, TTFT 는 prefill 시간이 정한다. 이 노트는 같은 계산을 Llama 3 8B(가중치 16.1GB, 토큰당 KV 128KiB, 8k 문맥 시퀀스당 1GiB, H100 한 장에 약 59 시퀀스)로 손으로 다시 해 보는 보충 장을 넣었다.",
+    "빠르게 만드는 방법은 모두 '정확도를 크게 해치지 않으며 KV 캐시와 읽을 바이트를 줄인다'로 모인다. 헤드를 묶는 GQA(Llama 2 13B 를 K = 8 로 바꾸면 B = 64 에서 6,417 tok/s, B = 256 도 들어간다), 압축 벡터 512 + RoPE 64 차원만 저장하는 DeepSeek 의 MLA, 층 사이에 KV 를 나누는 CLA, 최근 W 토큰만 보는 슬라이딩 윈도와 전역·지역 하이브리드, 선형 어텐션 계열, DeepSeek V4 의 압축·희소 어텐션. 시스템 쪽에서는 비트를 줄이는 양자화(QAT, PTQ, 헤시안으로 오차를 메우는 GPTQ, 큰 활성 채널을 지키는 AWQ — int3 에서 PPL 43.2 → 13.0), 큰 모델을 잘라내고 증류로 고치는 가지치기(NVIDIA Minitron, 15B → 8B)가 소개된다. 정확도 주장은 모델마다 엇갈린다는 단서도 붙는다(GQA 논문 대 DeepSeek-V2 표).",
+    "정확도를 하나도 잃지 않는 방법이 추측 디코딩이다. 작은 초안 모델이 토큰 몇 개를 쓰고, 큰 목표 모델이 한 번에 병렬로 검사해 min(1, q/p) 확률로 수락하고, 거절되면 잔차 (q − p)₊ 에서 다시 뽑는다. 이 수정된 기각 샘플링은 목표 모델의 분포를 정확히 지키며, Chen 2023 은 70B 모델에서 2~2.5배 속도를 냈다. 노트에는 수락 규칙을 20만 번 돌려 분포와 수락률을 확인하는 시뮬레이션을 넣었다.",
+    "마지막은 들쑥날쑥한 실서비스다. Orca 의 연속 배치는 한 걸음마다 끝난 요청을 빼고 새 요청을 넣으며, 선택적 배치는 어텐션만 시퀀스별로, MLP 는 이어 붙여 한 번에 계산한다. vLLM 의 PagedAttention 은 운영체제 페이징처럼 KV 캐시를 블록으로 나눠 단편화를 없애고, 시스템 프롬프트·여러 샘플의 접두사를 블록 단위로 공유하며 갈라질 때만 복사(copy-on-write)한다. 강사는 KV 캐시와 지금의 어텐션이 본래 추론에 불리한 구조라며, 추론을 염두에 둔 새 아키텍처에 큰 잠재력이 있다는 의견으로 맺는다."
+  ],
+  "why_now": "강의가 든 근거대로 추론 토큰량은 며칠 만에 큰 모델의 학습 토큰량을 넘고, 에이전트는 사람이 읽지 않는 토큰을 끝없이 만든다. 같은 GPU 로 처리량을 두 배 올리면 서비스 원가가 절반이 되니, 모델을 서비스하는 모든 회사가 vLLM·SGLang·TensorRT-LLM 같은 엔진과 양자화·추측 디코딩·KV 캐시 관리에 매달린다. RL 후처리 학습에서도 롤아웃 생성이 병목이라 추론 엔진이 학습 파이프라인 안으로 들어왔다. 국내에서도 오픈 모델을 자체 GPU 로 서빙하는 팀이 늘면서 'LLM 서빙 최적화·추론 엔지니어' 공고가 따로 나오고, 이때 요구되는 것이 바로 이 강의의 회계 — 가중치·KV 캐시 바이트를 세어 지연·처리량·동시 사용자 수를 미리 계산하는 능력이다.",
+  "chapters": [
+    {
+      "start": 0,
+      "title": "왜 추론인가 — 한 번 내는 학습비, 매일 내는 추론비",
+      "points": [
+        "추론은 학습이 끝난 모델에 프롬프트를 넣고 응답을 '정확하고 빠르게' 만들어 내는 일이다. 챗봇·코드 완성·에이전트·대량 배치 처리, 생성이 필요한 평가, 강화학습의 롤아웃이 모두 추론이다.",
+        "학습은 한 번 치르는 비용이지만 추론은 매일 반복되는 비용이다 — OpenAI 가 하루 약 8.6조 토큰을 만든다는 추정과 DeepSeek V4 의 학습 토큰 32조를 나란히 놓는다.",
+        "에이전트 시대에는 생성 토큰 대부분이 사람이 읽지 않는 내부 추론·도구 호출이다. 그래서 '생성 토큰 = 연산 지출' 이고, 빠르게 만들수록 얻는 가치에 상한이 없다(강사 의견).",
+        "서빙 생태계: 폐쇄 모델 API 회사, 오픈 웨이트 호스팅 업체(Together·Fireworks·Baseten·DeepInfra·Groq·Cerebras), 오픈소스 엔진(vLLM·SGLang·TensorRT-LLM·llama.cpp).",
+        "이 강의의 한 줄 — 학습은 시퀀스 축 전체를 한꺼번에 계산하지만 생성은 한 토큰씩 순차로 해야 해서, 같은 모델인데도 전혀 다른 작업이 된다."
+      ],
+      "on_screen": "첫 화면은 강의 전체 요약(추론의 쓰임, 학습과 다른 특성 — memory-bound·dynamic, 기법 — 새 아키텍처·양자화·가지치기/증류·추측 샘플링, 시스템에서 온 아이디어 — 추측 실행·페이징, 새 아키텍처의 큰 잠재력). 이어 실행형 강의 코드 def landscape(): 'Inference shows up in many places' 아래 Actual use(chatbots, code completion, agents, batch data processing) / Model evaluation(e.g., on instruction following) / Reinforcement learning(sample many generations, then apply score). 'Why efficiency matters: training is one-time cost, inference is repeated many times' — OpenAI processes ~8.6T tokens per day [article], DeepSeek v4 was trained on 32T tokens(허깅페이스 PDF 링크). 'Moreover:' Chatbots(사람이 병목) / Agents: query → internal trace → output for human / Tokens generated = compute spent. 'Companies doing inference' 두 줄과 'Open-source packages' 네 줄 — vLLM(Berkeley, PagedAttention, popular and good default), SGLang(Berkeley, RadixAttention, good for agentic workloads), TensorRT-LLM(NVIDIA, highly optimized for GPUs), llama.cpp(C++ only, CPU inference, runs locally).",
+      "explain": [
+        "공장에 빗대면 학습은 공장을 짓는 일이고 추론은 그 공장이 매일 제품을 찍어 내는 일이다. 건설비가 아무리 커도 한 번 내면 끝이지만, 제품 하나당 원가는 매일 판매량만큼 곱해진다. 언어 모델도 같다. 연구자는 학습을 마치고 논문에 그래프를 올리면 끝이지만, 모델을 실제로 쓰는 쪽은 사용자가 질문할 때마다 응답을 만들어야 한다. 강사는 추론이 쓰이는 자리를 세 갈래로 묶는다. 사람이나 프로그램이 모델을 직접 쓰는 경우(챗봇, 코드 자동 완성, 에이전트, 페타바이트급 문서를 모델로 처리하는 배치 작업), 생성 결과로 채점하는 평가(지시 따르기 평가처럼 모델이 글을 써야 점수를 매길 수 있는 것), 그리고 학습 안에 들어간 추론 — 강화학습은 정책 모델로 응답을 여러 개 생성(롤아웃)하고 점수를 매겨 가중치를 고치므로 학습 시간의 상당 부분이 사실은 추론이다.",
+        "규모 감각을 위해 강사는 두 숫자를 나란히 놓는다. OpenAI 가 하루에 만드는 토큰이 약 8.6조 개로 추정되고, 올해 나온 DeepSeek V4 의 학습 데이터가 32조 토큰이다. 토큰 개수만 놓고 보면 4일이 안 돼 추론으로 만든 토큰이 큰 오픈 모델 하나의 학습 토큰을 넘는다. 노트 보충으로 연산량까지 맞춰 보자. 2강에서 본 대로 학습은 토큰 하나에 약 6N FLOPs(N = 파라미터 수, 순전파 2N + 역전파 4N)가 들고, 추론 생성은 순전파뿐이라 토큰 하나에 약 2N 이다. 같은 크기의 모델이라면 추론 토큰이 학습 토큰의 세 배쯤 쌓여야 연산이 같아지므로 32조 × 3 ÷ 8.6조 ≈ 11일이다. 어느 쪽으로 세든 추론 비용은 몇 주 만에 학습 비용을 따라잡고, 그 뒤로는 계속 앞서 나간다.",
+        "강사가 특히 강조하는 변화는 지난 1년 사이 사용 방식이 바뀌었다는 점이다. 예전의 언어 모델은 챗봇이었다 — 질문이 들어가면 답이 나오고 사람이 그걸 읽는다. 사람이 읽는 속도에는 한계가 있으니 어느 정도 빨라지면 더 빨라져도 체감 가치가 크지 않았다. 에이전트는 다르다. 질문 하나가 들어가면 에이전트는 생각하고, 추론하고, 도구를 부르고, 스스로 점검한 뒤에야 사람에게 결과를 보여 준다. 그 과정에서 생성되는 토큰 대부분은 사람이 읽지 않는다. 그러니 생성 토큰 수는 곧 연산 지출이고, 문제가 야심찰수록 토큰이 끝없이 필요하다. 강사의 의견으로는 이 때문에 추론을 짜낼수록 얻는 가치에 상한이 없어졌고, 두 배는 물론 10% 빨라지는 것도 큰일이다.",
+        "그래서 추론으로 먹고사는 회사가 많다. 폐쇄 모델을 API 로 파는 회사들은 당연히 서빙이 사업의 핵심이고, 오픈 웨이트 모델을 대신 돌려 주는 호스팅 업체들도 있다. 오픈소스 엔진도 화면에 정리돼 있다. vLLM 은 PagedAttention 을 처음 내놓은 Berkeley 의 엔진으로 무난한 기본값이고, SGLang 은 RadixAttention(접두사 공유)을 내세워 에이전트 작업에 강하며, TensorRT-LLM 은 NVIDIA GPU 에 깊게 맞춘 대신 범용성이 좁고, llama.cpp 는 C++ 만으로 CPU 에서도 돌아가 로컬 실행에 쓴다. 강의의 순서는 다음과 같다 — 먼저 산술 강도로 추론이 왜 메모리에 묶이는지 계산하고(2강·5강의 도구를 다시 쓴다), 이어 KV 캐시 줄이기·양자화·가지치기처럼 정확도를 조금 내주는 지름길, 정확도를 하나도 잃지 않는 추측 디코딩, 마지막으로 요청이 들쑥날쑥한 실서비스를 위한 연속 배치와 PagedAttention 을 다룬다. 같은 주제를 엔진을 만드는 사람의 눈으로 본 초청 강연(Dan Fu, 9EEm4iMAF5s)이 이 강의의 짝이다."
+      ],
+      "pitfalls": [
+        "'토큰 수가 같다 = 연산이 같다'가 아니다. 학습 토큰은 약 6N, 생성 토큰은 약 2N FLOPs 이고 모델 크기도 다르다. 강의의 '4일 안에 학습량을 넘는다'는 토큰 개수 비교로 읽어야 한다.",
+        "추론은 배포된 서비스에만 있는 게 아니다. RL 후처리 학습에서는 롤아웃 생성이 전체 시간의 큰 몫을 차지해, 추론 엔진(vLLM 등)이 학습 파이프라인 안에 들어간다."
+      ],
+      "check": [
+        {
+          "q": "학습 토큰 32조, 하루 추론 토큰 8.6조라면 토큰 수로는 며칠, 같은 크기 모델로 연산량까지 맞추면 며칠이면 추론이 학습을 따라잡나?",
+          "a": "토큰 수로는 32 ÷ 8.6 ≈ 3.7일. 학습은 토큰당 약 6N, 생성은 약 2N FLOPs 이므로 연산으로는 그 세 배인 약 11일."
+        },
+        {
+          "q": "챗봇과 에이전트에서 '더 빠른 추론'의 가치가 다른 이유는?",
+          "a": "챗봇 토큰은 사람이 읽으므로 읽는 속도보다 빨라지면 체감 가치가 줄지만, 에이전트 토큰 대부분은 사람이 읽지 않는 내부 작업이라 빠를수록 같은 시간·비용에 더 많은 일을 할 수 있다."
+        }
+      ]
+    },
+    {
+      "start": 316,
+      "title": "'빠르다'의 세 가지 뜻 — TTFT, 지연, 처리량, 그리고 순차 생성이라는 근본 문제",
+      "points": [
+        "TTFT(time to first token): 요청을 보내고 첫 토큰이 나올 때까지 기다리는 시간. 대화형 서비스의 첫인상.",
+        "지연(latency, 초/토큰): 요청 하나의 입장에서 토큰이 흘러나오는 속도. 역시 대화형에서 중요.",
+        "처리량(throughput, 토큰/초): 여러 요청을 합쳐 시스템 전체가 내는 토큰 속도. 대량 배치 처리에서 중요.",
+        "대부분의 개선은 셋 다 좋게 하지만, 배치 크기를 정할 때 지연과 처리량은 정면으로 부딪친다(7·8장).",
+        "학습은 모든 토큰을 한 번에 보며 시퀀스 축으로 병렬화하지만, 생성은 자기회귀라 한 토큰씩 순차로 해야 해서 연산 장치를 다 쓰기 어렵다."
+      ],
+      "on_screen": "'What does \"fast\" mean (metrics)?' 세 줄 — Time-to-first-token (TTFT): how long user waits before any generation happens (for interactive applications) / Latency (seconds/token): how fast tokens appear for one query (for interactive applications) / Throughput (tokens/second): how fast tokens appear for many queries (for batch processing). 'What governs efficiency?' — Training (supervised): you see all tokens, can parallelize over sequence (matmul in Transformer) / Inference: you have to generate sequentially, can't parallelize over generation, so harder to fully utilize compute. 이어 강의 차례(Understanding the inference workload, Taking shortcuts (lossy) — reduce_kv_cache_size, quantization, model_pruning).",
+      "explain": [
+        "식당으로 생각하면 쉽다. 주문하고 첫 접시가 나올 때까지 기다린 시간이 TTFT, 첫 접시 이후 다음 접시들이 나오는 간격이 지연, 주방이 한 시간에 모든 테이블에 내보낸 접시 총수가 처리량이다. 손님 한 명에게는 앞의 둘이 중요하고, 사장에게는 마지막이 중요하다. 강의가 정의한 세 지표도 이와 같다. TTFT 는 사용자가 아무것도 받지 못한 채 기다리는 시간이라 대화형 서비스에서 체감이 크다. 일단 토큰이 흘러나오기 시작하면 사람은 어차피 읽는 속도 이상으로 읽지 못하므로, 그 뒤 속도는 어느 정도면 충분하다. 지연은 요청 하나의 관점에서 토큰이 얼마나 빨리 이어 나오는지(초/토큰)이고, 처리량은 많은 요청을 합친 시스템 전체의 토큰/초다. 페타바이트 문서를 모델로 처리하는 일이라면 어느 한 문서가 먼저 끝나든 말든 전체 작업이 빨리 끝나는 것만 중요하니 처리량이 유일한 기준이다.",
+        "노트 보충으로 업계 용어를 정리해 두자. 서빙 벤치마크(vLLM 의 벤치마크 스크립트 등)는 강의가 말한 '지연'을 보통 TPOT(time per output token) 또는 ITL(inter-token latency)이라 부르고, 요청 하나의 총 소요 시간은 TTFT + (출력 토큰 수 − 1) × TPOT 로 나타낸다. 그리고 TTFT 에는 prefill 계산 시간만이 아니라 요청이 큐에서 자기 차례를 기다린 시간도 들어간다 — 서버가 붐비면 계산은 빨라도 TTFT 가 길어진다. 처리량은 지연의 역수가 아니라는 점도 중요하다. 한 걸음에 B 개 요청이 각각 한 토큰씩 받으면, 사용자 한 명은 걸음당 1토큰이지만 시스템은 걸음당 B 토큰을 낸다.",
+        "그럼 무엇이 이 지표들을 정하나? 강의가 꼽는 근본 원인은 하나다. 지도 학습에서는 문장 전체가 이미 주어져 있으므로 모든 위치의 다음 토큰 예측을 한꺼번에 계산한다. 트랜스포머 안에서 시퀀스는 그냥 텐서의 한 축이라, 배치 × 시퀀스 × 모델 차원짜리 큰 텐서가 큰 행렬곱으로 들어간다. 생성은 그럴 수 없다. t 번째 토큰을 뽑아야 그 토큰을 입력으로 t+1 번째를 계산할 수 있으니, 시퀀스 축이 한 걸음에 1 로 줄어든다. 행렬이 '얇아지면' 무게(가중치)를 한 번 읽어 와서 할 계산이 적어지고, 이것이 다음 장들에서 계산할 '낮은 산술 강도'의 정체다. 같은 모델, 같은 가중치인데도 학습과 추론이 전혀 다른 작업이 되는 이유가 여기 있다.",
+        "아래 코드는 요청 세 개의 도착 시각과 토큰이 나온 시각만으로 세 지표를 뽑는다. 요청 b 는 도착 후 0.8초를 기다려야 첫 토큰을 받았고(아마 큐에 밀렸거나 프롬프트가 길었다) 이후 토큰 간격도 50ms 로 느리다. 반면 시스템 처리량은 세 요청의 토큰 15개를 전체 기간 1.05초로 나눈 값이다. 하나의 서비스에서도 사용자마다 체감은 다르고, 운영자가 보는 숫자는 또 다르다는 것을 확인할 수 있다."
+      ],
+      "example": {
+        "title": "도착·토큰 시각에서 지표 셋을 손으로",
+        "body": "요청 a: 0.00초 도착, 토큰 시각 0.35, 0.37, 0.39, 0.41, 0.43.\n• TTFT = 0.35 − 0.00 = 350ms\n• 지연(TPOT) = (0.43 − 0.35) ÷ (5 − 1) = 0.02초 = 20ms/토큰 → 이 사용자에게는 50 토큰/초\n요청 b: 0.10초 도착, 첫 토큰 0.90 → TTFT 800ms, 간격 50ms → 20 토큰/초.\n전체 처리량: 토큰 5 + 4 + 6 = 15개, 첫 도착 0.00 ~ 마지막 토큰 1.05초 → 15 ÷ 1.05 ≈ 14.3 토큰/초.\n세 요청 모두 지연이 20~50ms 인데 처리량이 14.3 인 것은, 이 짧은 예에서 요청이 겹치는 구간이 적고 TTFT 대기 시간이 길기 때문이다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "# 요청 하나의 도착·토큰 시각(초)에서 서빙 지표 세 가지를 뽑는다\nreqs = {   # 요청 id: (도착 시각, [토큰이 나온 시각들])\n    \"a\": (0.00, [0.35, 0.37, 0.39, 0.41, 0.43]),\n    \"b\": (0.10, [0.90, 0.95, 1.00, 1.05]),\n    \"c\": (0.20, [0.50, 0.52, 0.54, 0.56, 0.58, 0.60]),\n}\ntotal_tokens, t0, t1 = 0, 1e9, 0\nfor rid, (arrive, ts) in reqs.items():\n    ttft = ts[0] - arrive                             # 첫 토큰까지 기다린 시간\n    tpot = (ts[-1] - ts[0]) / (len(ts) - 1)           # 첫 토큰 이후 토큰당 간격(지연)\n    print(f\"{rid}: TTFT={ttft*1e3:4.0f}ms  TPOT={tpot*1e3:3.0f}ms/token  ({1/tpot:4.0f} tok/s for this user)\")\n    total_tokens += len(ts); t0 = min(t0, arrive); t1 = max(t1, ts[-1])\nprint(f\"throughput = {total_tokens / (t1 - t0):.1f} tok/s over all requests\")",
+        "note": "직접 쓴 코드. 실서비스 벤치마크도 결국 요청마다 이 세 값을 모아 분포(중앙값·p99)를 본다.\n\n실행 결과:\na: TTFT= 350ms  TPOT= 20ms/token  (  50 tok/s for this user)\nb: TTFT= 800ms  TPOT= 50ms/token  (  20 tok/s for this user)\nc: TTFT= 300ms  TPOT= 20ms/token  (  50 tok/s for this user)\nthroughput = 14.3 tok/s over all requests"
+      },
+      "pitfalls": [
+        "처리량 = 1/지연 이 아니다. 배치로 B 개 요청을 같이 돌리면 처리량은 대략 B/지연이 된다.",
+        "TTFT 를 prefill 계산 시간으로만 보면 붐비는 서버에서 큐 대기 시간을 놓친다."
+      ],
+      "check": [
+        {
+          "q": "다음 작업에서 가장 중요한 지표는? (a) 코드 자동 완성 (b) 밤새 1억 개 문서를 요약 (c) 채팅 앱",
+          "a": "(a) TTFT·지연 — 타이핑 중 제안이 빨리 떠야 한다. (b) 처리량 — 개별 문서가 언제 끝나든 상관없다. (c) TTFT 가 가장 중요하고, 이후 지연은 읽는 속도보다만 빠르면 된다."
+        }
+      ]
+    },
+    {
+      "start": 505,
+      "title": "표기 정리 — 축 이름으로 읽는 트랜스포머 블록",
+      "points": [
+        "Google 의 Scaling Book 표기를 쓴다: B 배치, T 쿼리 쪽 길이(출력 토큰), S 키·값 쪽 길이(입력 토큰), D 모델 차원, F MLP 은닉, H 헤드 차원, N 쿼리 헤드 수, K KV 헤드 수, G = N/K, L 층 수, V 어휘.",
+        "두 텐서의 곱에서 축은 셋으로 나뉜다 — 수축(빨강: 양쪽에 있고 결과에서 사라짐), 일반(검정: 한쪽에만 있고 결과에 남음), 배치(파랑: 양쪽에 있고 결과에도 남음).",
+        "규약: F = 4D, D = N·H, N = K·G(GQA), 학습에서는 S = T, 생성에서는 T = 1.",
+        "어텐션의 QKᵀ 에서 B 가 '배치 축(파랑)'이라는 사실이 뒤에서 추론 병목의 원인이 된다."
+      ],
+      "on_screen": "def review_transformer(): [Scaling book chapter on Transformers]. 'Notation (similar to einops)': Symbols denote dimensions (and their length): B (batch), T (sequence), D (model dim), H (head dim) / Example: BTD x DH → BTH / Contracting (red) dimensions appear in both operands and disappear from result / Regular (black) … / Example: BD x BD → B / Batching (blue) dimensions appear in both operands and stay in result. 블록 회로도: X 에서 W_Q, W_K, W_V 로 BTD·DNH → BTNH(Q), BSD·DKH → BSKH(K, V), Q 를 BTKGH 로 reshape, BTKGH·BSKH → BTSKG, masks, softmax(S), BTSKG·BSKH → BTKGH, reshape BTNH·NHD → BTD(W_O), norm; MLP: W_in1·W_in2 로 BTD·DF → BTF 두 갈래, gelu, BTF·FD → BTD, norm. 기호 표: B batch, L number of layers, T sequence length (query), S sequence length (key value), V vocab, D d_model, F MLP hidden dimension, H attention head dimension, N number of query heads, K number of key/value heads, G q heads per kv head = N // K. Conventions: F = 4 D, D = N H, N = K*G (for GQA, number of heads split across G groups), S = T (during training, condition on S input tokens to predict T output tokens).",
+      "explain": [
+        "추론 비용을 계산한다는 것은 결국 '어느 축이 어느 텐서에 붙어 있나'를 세는 일이다. 그래서 강사는 본론 전에 표기를 맞춘다. 2강에서 einops 로 텐서 축에 이름을 붙였던 것처럼, 여기서는 대문자 하나가 축의 이름이자 그 길이다. 'BTD × DH → BTH' 라고 쓰면 배치 B·길이 T·모델 차원 D 인 활성값에 D×H 행렬을 곱해 B×T×H 를 얻는다는 뜻이다. Google 의 Scaling Book(트랜스포머·추론 장)에서 가져온 표기이고 그림도 그 책에서 빌려 왔다고 밝힌다.",
+        "곱셈에서 축은 세 종류다. 수축 축(빨강)은 두 피연산자 모두에 있고 결과에서는 사라진다 — 위 예의 D 처럼 내적으로 더해져 없어지는 축이다. 일반 축(검정)은 한쪽에만 있고 결과에 남는다 — BT 와 H. 배치 축(파랑)은 양쪽에 모두 있는데 더해지지 않고 결과에 남는다. 'BD × BD → B' 는 배치마다 D 차원 벡터 두 개의 내적을 따로 구하는 것이다. 왜 이 구분이 중요할까? 수축 축이 있고 한쪽 피연산자(가중치)가 배치 축을 갖지 않으면, 그 가중치를 한 번 읽어 와 배치의 모든 행에 재사용할 수 있다. 반면 배치 축이 양쪽에 다 있으면 행마다 서로 다른 피연산자를 읽어야 하므로 재사용이 생기지 않는다. 어텐션 점수 Q·Kᵀ 에서 B 는 바로 이 파란 축이다 — 시퀀스마다 자기 K 를 갖고 있기 때문이다. 이 복선이 6장에서 '생성할 때 어텐션은 배치를 키워도 나아지지 않는다'는 결론으로 돌아온다.",
+        "블록 하나를 축으로 따라가 보자. 입력 X(BTD)에 W_Q(DNH)를 곱하면 Q(BTNH), X(BSD)에 W_K·W_V(DKH)를 곱하면 K·V(BSKH)가 나온다. GQA 라면 KV 헤드 K 개가 쿼리 헤드 N 개를 G = N/K 개씩 나눠 맡으므로 Q 를 BTKGH 로 접는다. 점수는 BTKGH·BSKH → BTSKG(H 가 수축, B·K 가 배치 축), 마스크를 씌우고 S 축으로 softmax 한 뒤 값 V 와 곱해 BTKGH, 다시 BTNH 로 펴서 W_O(NHD)로 BTD 로 돌아온다. MLP 는 BTD 에 두 행렬(게이트·업, DF)을 곱해 BTF 두 개를 만들고, 활성 함수를 거쳐 곱한 뒤 아래 투영(FD)으로 BTD. 이번 강의는 계산을 단순하게 하려고 F = 4D 라 두고, D = N·H, N = K·G 를 규약으로 쓴다.",
+        "마지막 규약이 이 강의 전체의 열쇠다. S 는 조건으로 주어지는(키·값을 만드는) 토큰 수, T 는 이번에 로짓을 계산할(쿼리) 토큰 수다. 학습에서는 입력 전체에 대해 다음 토큰을 예측하므로 S = T 이고, 생성 단계에서는 새 토큰 하나만 계산하므로 T = 1, S 는 지금까지의 길이다. 이 두 변수만 바꿔 끼우면 prefill 과 generate 를 같은 식으로 분석할 수 있다. 아래 코드는 einsum 으로 Q 투영(D 수축)과 점수 계산(H 수축, B·N 배치)을 해 보고, 작은 크기에서 점수 계산의 산술 강도를 세 본다."
+      ],
+      "formulas": [
+        {
+          "expr": "BTD × DNH → BTNH,  BTKGH × BSKH → BTSKG",
+          "meaning": "앞은 Q 투영: D 는 수축 축(양쪽에 있고 사라짐), BT 와 NH 는 일반 축. 뒤는 어텐션 점수: H 가 수축 축이고 B 와 K 는 배치 축(양쪽에 있고 남음), T·G 는 쿼리 쪽 일반 축, S 는 키 쪽 일반 축."
+        },
+        {
+          "expr": "F = 4D,  D = N·H,  N = K·G,  (학습) S = T,  (생성) T = 1",
+          "meaning": "F 는 MLP 은닉 크기, D 는 모델 차원, N 쿼리 헤드 수, H 헤드 차원, K KV 헤드 수, G 는 KV 헤드 하나를 공유하는 쿼리 헤드 수. S 는 키·값 쪽 토큰 수, T 는 쿼리 쪽 토큰 수."
+        }
+      ],
+      "code": {
+        "lang": "python",
+        "src": "import numpy as np\nB, T, S, D, N, H = 2, 3, 5, 16, 4, 4\nrng = np.random.default_rng(0)\nX  = rng.normal(size=(B, T, D))\nWq = rng.normal(size=(D, N, H))\nQ = np.einsum(\"btd,dnh->btnh\", X, Wq)       # d 는 수축(빨강): 양쪽에 있고 결과에서 사라짐\nK = rng.normal(size=(B, S, N, H))\nA = np.einsum(\"btnh,bsnh->bnts\", Q, K)      # h 는 수축, b·n 은 배치(파랑): 양쪽에 있고 결과에 남음\nprint(Q.shape, A.shape)\n# 배치 축은 '공유되는 무게'가 없다: b 마다 다른 K 를 읽으므로 b 를 키워도 재사용이 늘지 않는다\nflops = 2 * B * N * T * S * H\nbytes_ = 2 * (Q.size + K.size + A.size)\nprint(\"attention-score intensity:\", round(flops / bytes_, 2))",
+        "note": "직접 쓴 코드. 점수 계산 einsum 에서 b 와 n 이 양쪽 피연산자에 다 있는 '배치 축'이라, 크기를 키워도 강도가 1 근처에 머문다.\n\n실행 결과:\n(2, 3, 4, 4) (2, 4, 3, 5)\nattention-score intensity: 1.28"
+      },
+      "pitfalls": [
+        "슬라이드 규약 줄의 'N = K*G (… split across G groups)' 는 같은 화면 기호 표의 정의(G = KV 헤드 하나당 쿼리 헤드 수 = N // K)와 어긋난다. 수업 중 학생이 지적했고 강사도 인정했다 — 그룹 수는 K(= KV 헤드 수)이고 G 는 그룹 하나에 든 쿼리 헤드 수다.",
+        "F = 4D 는 계산 편의를 위한 규약이다. SwiGLU 를 쓰는 실제 모델은 3강에서 본 2/3 규칙 때문에 F ≈ 2.7D 가 많다(뒤에 나오는 Llama 2 13B 는 F = 13824 = 2.7 × 5120)."
+      ],
+      "check": [
+        {
+          "q": "N = 32, K = 8 인 모델에서 G 는? 그리고 Q 를 BTKGH 로 접으면 각 축의 길이는?",
+          "a": "G = N/K = 4. Q 는 B × T × 8 × 4 × H 가 되어, KV 헤드 하나(K 축의 한 칸)를 쿼리 헤드 4개가 같이 쓴다."
+        },
+        {
+          "q": "'BD × BD → B' 와 'BD × DF → BF' 중 어느 쪽이 가중치 재사용이 가능한가? 이유는?",
+          "a": "뒤쪽. DF 는 배치 축 B 가 없어 한 번 읽어 B 행 전부에 재사용할 수 있다. 앞쪽은 B 가 양쪽에 다 있는 배치 축이라 행마다 다른 피연산자를 읽어야 한다(내적 B 번)."
+        }
+      ]
+    },
+    {
+      "start": 863,
+      "title": "산술 강도 복습 — 얇은 행렬곱은 계산이 아니라 메모리를 기다린다",
+      "points": [
+        "X(B×D) @ W(D×F) 를 bf16 으로 하면 FLOPs = 2BDF, 옮기는 바이트 = 2BD + 2DF + 2BF.",
+        "산술 강도 = FLOPs ÷ 바이트. B ≪ D, F 이면 강도 ≈ B — 배치 크기가 곧 강도다.",
+        "H100 의 가속기 강도 = 989 TFLOP/s ÷ 3.35 TB/s ≈ 295. 계산 강도가 이보다 크면 계산에 묶여(좋음), 작으면 메모리에 묶인다(나쁨).",
+        "극단적인 B = 1(행렬 × 벡터)은 강도 1 — D×F 행렬 전체를 읽고 2DF FLOPs 만 한다. 이것이 생성의 모습이다."
+      ],
+      "on_screen": "def review_of_arithmetic_intensity(): 'Setup: multiply X (B x D) and W (D x F) matrix. Intuition: B is batch size, D is hidden dimension, F is up-projection dimension in MLP.' 회계 코드 — 1. Read X (B x D) from HBM: bytes_transferred += 2*B*D # 2 bytes for bf16 / 2. Read W (D x F): += 2*D*F / 3. Compute Y = X @ W: flops += 2*B*D*F / 4. Write Y (B x F) to HBM: += 2*B*F; assert flops == 2*B*D*F, bytes == 2*B*D + 2*D*F + 2*B*F. sympy 로 intensity = (flops / bytes).simplify() → 'B*D*F/(B*D + B*F + D*F)', D = c*B, F = c*B 로 바꾸고 c → ∞ 극한 → intensity = B. 'Accelerator intensity of H100: flops_per_second = 989e12, memory_bandwidth = 3.35e12, accelerator_intensity = 295.2239'. 'If computation intensity > accelerator intensity, compute-bound (good); … < …, memory-bound (bad). Conclusion: compute-bound iff B > 295'. 'Extreme case (B = 1, corresponding to matrix-vector product): Arithmetic intensity: 1 / Memory-bound (read D x F matrix, perform only 2 D F FLOPs) / This is basically what happens with inference…'.",
+      "explain": [
+        "2강에서 산술 강도를 처음 배웠다. 다시 비유하면 GPU 는 엄청나게 빠른 요리사이고 HBM(고대역폭 메모리)은 창고다. 요리사가 아무리 빨라도 재료가 창고에서 늦게 오면 손을 놓고 기다린다. 산술 강도는 '창고에서 1바이트를 가져올 때마다 몇 번 계산하나'이고, 이 값이 하드웨어가 감당하는 비율(초당 계산 ÷ 초당 운반)보다 작으면 요리사는 재료를 기다리는 시간이 더 길다. 그 상태를 메모리 대역폭에 묶였다(memory-bound)고 부른다.",
+        "강의는 MLP 의 위 투영 한 번, 즉 X(B×D) 에 W(D×F) 를 곱하는 계산으로 회계를 한다. bf16 은 원소당 2바이트이므로 X 를 읽는 데 2BD, W 를 읽는 데 2DF, 결과 Y(B×F)를 쓰는 데 2BF 바이트가 오간다. 계산은 B·F 개 출력 각각이 길이 D 내적(곱하기·더하기 D 번씩)이라 2BDF FLOPs 다. 바이트는 축 두 개짜리 곱(이차)의 합이고 FLOPs 는 축 세 개의 곱(삼차)이라는 점이 핵심이다 — 행렬곱이 높은 강도를 낼 수 있는 이유가 이 '한 차수 차이'다. 강도는 BDF/(BD + BF + DF) 인데, 추론에서는 보통 배치 B 가 D, F 보다 훨씬 작다. D = F = c·B 로 두고 c 를 키우면 분모의 DF 항이 압도하고 강도는 B 로 수렴한다. 즉 가중치 행렬을 한 번 읽어 몇 개의 행에 재사용하느냐가 강도를 정한다.",
+        "하드웨어 쪽 숫자는 H100 의 bf16 밀집 연산 989 TFLOP/s 와 HBM 대역폭 3.35 TB/s 다. 나누면 약 295 — 바이트 하나를 가져올 때 295번은 계산해야 GPU 를 쉬지 않게 할 수 있다. 그러니 이 행렬곱은 배치가 295 를 넘어야 계산에 묶인다. 강사가 든 극단은 B = 1 이다. 사용자 한 명의 토큰 하나를 계산하면 X 는 벡터 하나, 즉 행렬 × 벡터 곱이 되고 강도는 1 이다. D×F 행렬 전체를 HBM 에서 끌어와 놓고 고작 2DF FLOPs 를 하는 셈이라, GPU 연산 능력의 300분의 1 정도만 쓴다. 강사는 '이것이 기본적으로 추론에서 일어나는 일'이라며 이 장을 맺는다 — 생성 단계의 텐서는 꽉 찬 행렬이 아니라 아주 얇은 행렬이다.",
+        "아래 코드는 Llama 3 8B 의 MLP 크기(D = 4096, F = 14336)로 배치를 바꿔 가며 강도를 계산한다. B = 64 에서도 63 이라 여전히 메모리에 묶이고, B = 295 에서 강도가 295 가 아니라 270 인 것은 '강도 ≈ B' 가 D, F 가 무한히 클 때의 근사이기 때문이다. 실제로 이 행렬곱이 계산에 묶이려면 배치가 300 을 꽤 넘어야 한다."
+      ],
+      "formulas": [
+        {
+          "expr": "FLOPs = 2·B·D·F,  bytes = 2BD + 2DF + 2BF",
+          "meaning": "B 배치(행 수), D 입력 차원, F 출력 차원. 2 는 곱셈과 덧셈(FLOPs 쪽) 또는 bf16 의 2바이트(bytes 쪽). bytes 는 X 읽기 + W 읽기 + Y 쓰기."
+        },
+        {
+          "expr": "intensity = BDF / (BD + BF + DF)  →  B   (B ≪ D, F)",
+          "meaning": "FLOPs ÷ bytes 를 약분한 것. 분모의 DF(가중치 크기)가 지배하면 강도는 배치 크기 B 와 같아진다 — 가중치 한 번 읽어 B 행에 재사용."
+        },
+        {
+          "expr": "accelerator intensity = peak FLOP/s ÷ memory bandwidth = 989e12 ÷ 3.35e12 ≈ 295",
+          "meaning": "H100 SXM 의 bf16 밀집 연산 피크와 HBM3 대역폭의 비. 계산 강도가 이보다 크면 compute-bound, 작으면 memory-bound."
+        }
+      ],
+      "example": {
+        "title": "B = 1, D = 4096, F = 14336 을 손으로",
+        "body": "FLOPs = 2 × 1 × 4096 × 14336 = 117,440,512 ≈ 1.17억.\nbytes = 2×4096 + 2×4096×14336 + 2×14336 = 8,192 + 117,440,512 + 28,672 ≈ 1.175억 → 강도 ≈ 1.0.\n시간으로 바꾸면: 메모리 117.5MB ÷ 3.35TB/s ≈ 35µs, 계산 1.17억 ÷ 989T ≈ 0.12µs.\n계산은 메모리의 300분의 1 시간이면 끝나고 나머지는 기다린다. B = 64 로 늘리면 FLOPs 는 64배인데 bytes 는 거의 그대로(가중치가 대부분)라 시간은 여전히 약 35µs — 배치를 키우면 '공짜로' 일을 더 하는 셈이다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "# 행렬곱 X(B×D) @ W(D×F) 의 산술 강도 — bf16(원소당 2바이트)\ndef intensity(B, D, F):\n    flops = 2 * B * D * F                      # 곱셈+덧셈\n    bytes_ = 2 * B * D + 2 * D * F + 2 * B * F  # X 읽기 + W 읽기 + Y 쓰기\n    return flops / bytes_\n\nh100 = 989e12 / 3.35e12                         # bf16 dense FLOP/s ÷ HBM 대역폭\nprint(f\"H100 accelerator intensity = {h100:.0f}\")\nfor B in [1, 8, 64, 295, 1024]:\n    I = intensity(B, 4096, 14336)\n    print(f\"B={B:5d}  intensity={I:7.1f}  {'compute' if I > h100 else 'memory'}-bound\")",
+        "note": "직접 쓴 코드(강의는 sympy 로 기호 계산을 했고 여기서는 숫자로 확인).\n\n실행 결과:\nH100 accelerator intensity = 295\nB=    1  intensity=    1.0  memory-bound\nB=    8  intensity=    8.0  memory-bound\nB=   64  intensity=   62.7  memory-bound\nB=  295  intensity=  270.0  memory-bound\nB= 1024  intensity=  774.9  compute-bound"
+      },
+      "pitfalls": [
+        "H100 스펙 시트의 1979 TFLOP/s 는 2:4 희소 연산 기준이다. 일반 행렬곱 분석에는 밀집 989 TFLOP/s 를 써야 한다.",
+        "'강도 = B' 는 근사다. D, F 가 유한하면 실제 강도는 B 보다 조금 작다(B = 295 → 270)."
+      ],
+      "check": [
+        {
+          "q": "같은 행렬곱을 fp8(원소당 1바이트)로 하면 B ≪ D, F 일 때 강도는 대략 얼마가 되나?",
+          "a": "바이트가 절반이 되니 강도 ≈ 2B. (단 fp8 연산 피크도 두 배라 가속기 강도 역시 두 배가 되어, 계산에 묶이는 배치 문턱은 비슷하다.)"
+        },
+        {
+          "q": "B = 1 일 때 GPU 연산 능력의 몇 % 를 쓰나? (H100, 강도 1 기준)",
+          "a": "1 ÷ 295 ≈ 0.34%. 나머지 시간은 메모리에서 가중치가 오기를 기다린다."
+        }
+      ]
+    },
+    {
+      "start": 1234,
+      "title": "KV 캐시 — 순진한 생성의 O(T³) 를 버리고 prefill·generate 두 단계로",
+      "points": [
+        "순진한 생성: 토큰을 하나 뽑을 때마다 지금까지의 전체 문장을 트랜스포머에 다시 넣는다. 한 번이 O(T²), T 토큰이면 O(T³).",
+        "인과(causal) 트랜스포머에서는 뒤에 토큰을 붙여도 앞 토큰의 키·값이 변하지 않는다 → 계산한 K, V 를 HBM 에 저장해 재사용(KV 캐시).",
+        "prefill: 프롬프트 전체를 한 번에 넣어 KV 캐시를 채우고 첫 토큰 분포를 낸다 — 학습처럼 병렬, 계산에 묶임.",
+        "generate: 새 토큰 하나만 넣어 그 토큰의 K, V 를 캐시에 덧붙이고 다음 분포를 낸다 — 순차, 메모리 대역폭에 묶임.",
+        "캐시 크기: 시퀀스(B) × 토큰(S) × 층(L) × KV 헤드(K) 마다 H 차원 벡터, 키와 값 두 개, bf16 2바이트."
+      ],
+      "on_screen": "손그림 'Naive Sampling': 'never gonna give you' → Transformer → logits(막대) → sample token 'up' → concatenate → 'never gonna give you up' → Transformer → 'never' → … → 'gonna'. 'Naive inference: to generate each token, feed history into Transformer. Complexity: generating T tokens requires O(T^3) FLOPs (one feedforward pass is O(T^2))'. 'Observation: a lot of the work can be shared across prefixes. Solution: store KV cache in HBM'. 손그림 'Sampling with KV cache': 빨간 Prefill 상자(never gonna give you → Transformer → KV cache initialized + logit, 아래 'compute bound') → 파란 Generate 상자 두 개(KV cache 막대에 new kvs 한 칸씩 추가, 'up' → 'never', 아래 'memory bandwidth bound'). 'KV cache: for every sequence (B), token (S), layer (L), head (K), store an H-dimensional vector'. 'Two stages of inference: 1. Prefill: given a prompt, encode into vectors (parallelizable like in training) 2. Generation: generate new response tokens (sequential)'.",
+      "explain": [
+        "트랜스포머는 '문장을 넣으면 다음 토큰 분포를 내는 상자'다. 이 상자만 있으면 생성은 간단하다. 프롬프트 'never gonna give you' 를 넣어 분포를 얻고 'up' 을 뽑아 붙인 뒤, 'never gonna give you up' 전체를 다시 넣어 'never' 를 뽑고, 또 붙여서 넣는다. 강사가 손그림으로 보여 준 순진한 샘플링이다. 동작은 맞지만 낭비가 심하다. 길이 t 인 문장을 한 번 통과시키는 데 어텐션 때문에 O(t²) 가 들고, 이걸 토큰마다 반복하니 T 개를 만들면 O(T³) 이다. 매번 같은 'never gonna give' 의 표현을 처음부터 다시 계산한다.",
+        "다시 계산할 필요가 없는 이유는 인과 마스크에 있다. 디코더 트랜스포머에서 위치 i 의 표현은 i 이하의 토큰만 보고 만들어지므로, 뒤에 토큰을 몇 개 붙여도 앞 위치의 활성값, 특히 각 층의 키와 값은 한 글자도 바뀌지 않는다. (BERT 같은 양방향 모델이라면 토큰 하나를 붙이는 순간 모든 위치의 표현이 바뀌어 이 재사용이 불가능하다.) 그래서 한 번 계산한 K 와 V 를 HBM 에 쌓아 두는 것이 KV 캐시다. 쿼리는 캐시하지 않는다 — 새 토큰이 과거를 '물어보는' 데에는 새 토큰의 쿼리 하나만 필요하고, 과거 토큰의 쿼리는 이미 할 일을 마쳤다. 캐시 크기는 시퀀스마다, 토큰마다, 층마다, KV 헤드마다 H 차원 벡터가 키와 값으로 두 개씩이다.",
+        "KV 캐시를 쓰면 추론은 두 단계로 갈린다. prefill 은 프롬프트 전체를 한 번에 트랜스포머에 넣어 모든 위치의 K, V 를 계산해 캐시를 채우고, 마지막 위치의 로짓으로 첫 토큰을 뽑는다. 프롬프트는 처음부터 다 주어져 있으니 학습과 똑같이 시퀀스 축으로 병렬 처리되고, 손그림의 빨간 상자 아래에 적힌 대로 계산에 묶인다. generate 는 방금 뽑은 토큰 하나만 넣는다. 이 토큰의 쿼리가 캐시의 키 전부와 내적하고, 이 토큰의 새 K, V 는 캐시 끝에 붙는다. 한 걸음에 토큰 하나라 파란 상자 아래 적힌 대로 메모리 대역폭에 묶인다 — 왜 그런지가 다음 장의 계산이다.",
+        "이 장의 정의는 3강(lVynu4bo1rY)과 CS229 16강(hHC-SF3utxg)에서 이미 봤다. 이번 강의가 더하는 것은 '비용 회계'다. 캐시는 공짜가 아니라 HBM 을 차지하고, 걸음마다 전부 다시 읽어야 하는 바이트다. 아래 코드는 작은 한 헤드 어텐션에서 매번 전체를 다시 계산한 출력과 캐시로 덧붙여 계산한 출력이 똑같다는 것, 그리고 다시 계산한 K/V 행 수가 21 대 6 으로 줄어든다는 것을 확인한다(길이 T 면 T(T+1)/2 대 T)."
+      ],
+      "formulas": [
+        {
+          "expr": "KV bytes = 2 × B × S × L × K × H × (원소 바이트)",
+          "meaning": "앞의 2 는 키와 값 두 개. B 동시 시퀀스 수, S 시퀀스 길이(토큰 수), L 층 수, K KV 헤드 수, H 헤드 차원, 원소 바이트는 bf16 이면 2."
+        },
+        {
+          "expr": "순진한 생성 비용 ∑_{t=1..T} O(t²) = O(T³)  →  KV 캐시: 걸음당 O(t) 읽기, 합계 O(T²)",
+          "meaning": "t 는 현재까지의 길이. 캐시가 있으면 새 토큰 하나가 과거 t 개 키와만 내적하므로 걸음마다 t 에 비례하는 일만 남는다."
+        }
+      ],
+      "example": {
+        "title": "Llama 2 13B 한 시퀀스의 KV 캐시",
+        "body": "L = 40, K = 40(GQA 없음), H = 128, bf16.\n토큰 하나 = 2(K·V) × 40 × 40 × 128 × 2바이트 = 819,200바이트 = 800KiB.\n1024 토큰 시퀀스 = 819,200 × 1024 = 838,860,800바이트 ≈ 0.84GB.\n가중치가 약 26GB 이니, 1024 토큰 시퀀스를 31개만 동시에 들고 있어도 KV 캐시가 가중치만큼 커진다. 다음 장들에서 '캐시가 병목'이라는 말의 출발점이다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "import numpy as np\nrng = np.random.default_rng(0)\nd, T = 8, 6\nWq, Wk, Wv = (rng.normal(size=(d, d)) for _ in range(3))\nX = rng.normal(size=(T, d))                      # 토큰 6개의 입력\n\ndef attend(q, K, V):                             # 한 쿼리가 앞 토큰들을 본다\n    s = K @ q / np.sqrt(d); w = np.exp(s - s.max()); w /= w.sum()\n    return w @ V\n\n# (1) 순진하게: 매 걸음마다 앞 토큰 전부의 K, V 를 다시 계산\nnaive = [attend(X[t] @ Wq, X[:t+1] @ Wk, X[:t+1] @ Wv) for t in range(T)]\n# (2) KV 캐시: 새 토큰의 k, v 만 계산해 덧붙인다\nKc, Vc, cached, kv_rows = [], [], [], 0\nfor t in range(T):\n    Kc.append(X[t] @ Wk); Vc.append(X[t] @ Wv); kv_rows += 1\n    cached.append(attend(X[t] @ Wq, np.array(Kc), np.array(Vc)))\nprint(\"same output:\", np.allclose(naive, cached))\nprint(\"K/V rows computed  naive:\", sum(t + 1 for t in range(T)), \" cached:\", kv_rows)",
+        "note": "직접 쓴 코드. 한 헤드짜리 어텐션으로 순진한 재계산과 KV 캐시가 같은 출력을 낸다는 것만 확인한다.\n\n실행 결과:\nsame output: True\nK/V rows computed  naive: 21  cached: 6"
+      },
+      "diagram": {
+        "title": "prefill 한 번, 그다음 generate 반복",
+        "code": "flowchart LR\n  P[프롬프트 S 토큰] --> PF[Prefill: 전체 병렬 계산<br/>compute-bound]\n  PF --> C[(KV 캐시 in HBM)]\n  PF --> T1[첫 토큰 샘플]\n  T1 --> G[Generate: 새 토큰 1개<br/>memory-bound]\n  C --> G\n  G -->|새 K,V 덧붙임| C\n  G --> T2[다음 토큰 샘플]\n  T2 --> G"
+      },
+      "pitfalls": [
+        "캐시하는 것은 K 와 V 뿐이다. 쿼리는 현재 토큰 것만 쓰고 버린다.",
+        "KV 캐시가 없애는 것은 '과거 K, V 의 재계산'이지 어텐션의 읽기가 아니다. 걸음마다 캐시 전체를 HBM 에서 다시 읽어야 하므로 문맥이 길수록 걸음이 느려진다."
+      ],
+      "check": [
+        {
+          "q": "양방향(BERT 형) 인코더로 생성을 한다면 KV 캐시를 쓸 수 있나?",
+          "a": "쓸 수 없다. 토큰 하나를 붙이면 모든 위치가 새 토큰을 보게 되어 앞 위치의 K, V 가 바뀐다. 캐시는 인과 마스크 덕분에 가능하다."
+        },
+        {
+          "q": "L = 32, K = 8, H = 128, bf16 인 모델에서 토큰 하나의 KV 캐시는 몇 바이트인가?",
+          "a": "2 × 32 × 8 × 128 × 2 = 131,072바이트 = 128KiB."
+        }
+      ]
+    },
+    {
+      "start": 1508,
+      "title": "prefill 은 계산이, generate 는 메모리가 막힌다 — MLP 와 어텐션의 산술 강도",
+      "points": [
+        "MLP: FLOPs = 6BTDF, 바이트 = 4BTD + 4BTF + 6DF → 강도 ≈ B·T. prefill 은 BT 가 커서 문제없고, 생성(T = 1)은 강도 = B 라 동시 요청이 많아야 한다.",
+        "어텐션: FLOPs = 4BSTD, 바이트 = 4BSD + 4BTD → 강도 = ST/(S+T). prefill(T = S)은 S/2, 생성(T = 1)은 S/(S+1) < 1.",
+        "MLP 가중치는 모든 시퀀스가 같이 쓰지만, KV 캐시는 시퀀스마다 따로다 → 어텐션은 배치를 키워도 강도가 늘지 않는다.",
+        "생성 때 B 는 '동시에 들어와 있는 요청 수'라 배치 처리에서는 정할 수 있지만 챗봇에서는 예측할 수 없다 → 연속 배치(14장)로 이어진다.",
+        "정리: prefill 은 계산에 묶이고 generate 는 메모리에 묶인다. 생성 어텐션의 강도 < 1 은 트랜스포머를 쓰는 한 고칠 수 없다."
+      ],
+      "on_screen": "MLP layers (only looking at the matrix multiplications): 1. Read X (B x T x D) — 2*B*T*D / 2. Read Wup (D x F), Wgate (D x F), Wdown (F x D) — 3 * 2*D*F / 3. Compute U = X @ Wup — 2*B*T*D*F / 4. Write U (B x T x F) / 5. Compute G = X @ Wgate / 6. Write G / 7. Compute Y = GeLU(G)*U @ Wdown (F x D) / 8. Write Y; assert flops == 6*B*T*D*F, bytes == 4*B*T*D + 4*B*T*F + 6*D*F → intensity = B*T. 'For the two stages: 1. Prefill: easy to make compute-bound (good) by making B*T large enough (large batches, long sequences) 2. Generation: two problems — Generating one token at a time (T = 1) / B is number of concurrent requests, unpredictable for interactive applications'. 'Attention layers (focusing on the matrix multiplications with FlashAttention)': S is number of previous tokens, T is number of next tokens; 1. Read Q (B x T x D), K (B x S x D), V (B x S x D) / 2. Compute A = Q @ K — 2*B*S*T*D / 3. Compute Y = softmax(A) @ V — 2*B*S*T*D / 4. Write Y; assert flops == 4*B*S*T*D, bytes == 4*B*S*D + 4*B*T*D → intensity = S*T/(S + T), prefill_intensity = S/2 # Good!, generate_intensity = S/(S + 1) < 1 # Bad!. 'Unlike MLPs, no dependence on B, so batching doesn't help! Why? In MLP layers, every sequence hits the same MLP weights (Wup, Wgate, Wdown don't depend on B). In attention layers, every sequence has its own KV cache vectors (Q, K, V all depend on B)'. Summary: Prefill is compute-bound, generation is memory-bound / Prefill MLP intensity: B*S / Prefill attention intensity: S/2 / Generation MLP intensity: B (requires concurrent requests) / Generation attention intensity: <1 (impossible to improve).",
+      "explain": [
+        "4장의 회계를 트랜스포머의 두 부분에 그대로 적용한다. S 는 조건이 되는 토큰 수, T 는 이번에 계산할 토큰 수로 두고, 나중에 prefill(T = S)과 generate(T = 1)로 바꿔 끼운다. 행렬곱만 센다 — 정규화·활성 함수 같은 나머지는 FLOPs 가 작고 행렬곱 커널에 융합할 수 있기 때문이다. MLP 는 X(BTD)를 읽고, 가중치 세 개(업·게이트·다운, 각 D×F)를 읽고, 업과 게이트 결과(BTF)를 쓰고, 다운 투영 결과(BTD)를 쓴다. FLOPs 는 6BTDF, 바이트는 4BTD + 4BTF + 6DF 다. BT 가 D, F 보다 작다고 두면 4장과 똑같이 강도는 BT — 결국 MLP 는 큰 행렬곱이고, 배치 축과 시퀀스 축은 MLP 안에서 서로 섞이지 않으니 둘 다 '행 수'로서 똑같이 강도를 올린다.",
+        "그래서 prefill 의 MLP 는 걱정할 게 없다. 프롬프트가 길거나 배치가 크면 BT 가 수천이 되어 계산에 묶인다. 생성의 MLP 는 T = 1 이라 강도 = B 이고, 여기서 B 는 '지금 동시에 생성 중인 요청 수'다. 문서 일괄 처리라면 B 를 마음대로 키울 수 있지만, 챗봇은 그 순간 접속한 사용자 수에 달려 있고 시시각각 변한다. 그래도 B 를 키울 수만 있으면 MLP 는 해결된다 — 이것이 14장의 연속 배치가 필요한 이유다.",
+        "어텐션은 이야기가 다르다. Q(BTD), K·V(BSD)를 읽고, 점수 A = Q·Kᵀ 와 출력 softmax(A)·V 를 계산하고(각 2BSTD), 출력(BTD)을 쓴다. FlashAttention 처럼 S×T 점수 행렬을 HBM 에 쓰지 않는다고 가정한다. FLOPs 4BSTD 를 바이트 4BSD + 4BTD 로 나누면 강도는 ST/(S+T) — 여기에 B 가 없다. prefill 에서 T = S 면 S/2 로, 프롬프트가 길면 충분히 높다. 생성에서 T = 1 이면 S/(S+1), 즉 1 보다 작다. GPU 가 295 를 원하는데 1 을 주는 셈이다.",
+        "왜 B 가 사라질까? MLP 에서는 모든 시퀀스가 같은 가중치를 지나가므로, 가중치를 한 번 읽어 와서 B 개 시퀀스 전부에 쓴다 — B 를 키울수록 읽은 바이트당 일이 늘어난다(버스 한 대에 손님을 더 태우는 것). 어텐션에서는 시퀀스마다 자기만의 KV 캐시가 있다. 시퀀스 b 의 캐시는 시퀀스 b 의 쿼리 하나에만 쓰이므로, B 를 키우면 읽을 바이트도 정확히 B 배가 된다. 3장의 표기로 말하면 B 가 양쪽에 다 있는 파란 축이고, 결국 시퀀스마다 행렬-벡터 곱(사실상 내적)을 따로 하는 것과 같다. 강사의 결론은 분명하다 — 사람들이 '추론은 메모리에 묶인다'고 말할 때 그 핵심은 생성 단계의 어텐션이고, 트랜스포머의 어텐션을 유지하는 한 이 강도는 올릴 방법이 없다. 남은 길은 읽어야 할 KV 캐시 자체를 줄이는 것(9·10장)이다."
+      ],
+      "formulas": [
+        {
+          "expr": "MLP: FLOPs = 6BTDF,  bytes = 4BTD + 4BTF + 6DF,  intensity ≈ B·T",
+          "meaning": "6 = 행렬 세 개 × 2. bytes 의 4BTD 는 X 읽기 + Y 쓰기, 4BTF 는 U·G 쓰기, 6DF 는 가중치 셋 읽기(bf16). BT ≪ D, F 에서 강도는 행 수 BT."
+        },
+        {
+          "expr": "Attention: FLOPs = 4BSTD,  bytes = 4BSD + 4BTD,  intensity = ST/(S + T)",
+          "meaning": "S 는 키·값 토큰 수, T 는 쿼리 토큰 수. 4BSD 는 K·V 읽기, 4BTD 는 Q 읽기 + 출력 쓰기. 분자·분모 모두에 B 가 곱해져 약분된다 — 배치가 강도에 기여하지 않는다."
+        },
+        {
+          "expr": "prefill (T = S): S/2,   generate (T = 1): S/(S + 1) < 1",
+          "meaning": "같은 식에 두 단계의 T 를 넣은 것. 생성 어텐션은 길이와 무관하게 강도가 1 미만."
+        }
+      ],
+      "example": {
+        "title": "S = 4096, D = 4096, F = 14336 에서 네 칸 채우기",
+        "body": "prefill MLP(B = 1): BT = 4096 이라 이론 강도 ≈ 2,200(유한한 D, F 때문에 4096 보다 작다) → 계산에 묶임.\nprefill 어텐션: 4096/2 = 2048 → 계산에 묶임.\n생성 MLP: B = 1 이면 1, B = 64 면 약 63 → 메모리에 묶이지만 B 로 개선 가능.\n생성 어텐션: 4096/4097 ≈ 1.0, B 를 64 로 늘려도 1.0 → 개선 불가.\n코드 출력이 이 네 칸을 그대로 보여 준다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "# 어텐션과 MLP 의 산술 강도 — 강의의 식을 숫자로 (bf16)\ndef mlp(B, T, D, F):\n    return 6*B*T*D*F / (4*B*T*D + 4*B*T*F + 6*D*F)\ndef attn(B, S, T, D):\n    return 4*B*S*T*D / (4*B*S*D + 4*B*T*D)\n\nD, F, S = 4096, 14336, 4096\nfor name, T in [(\"prefill\", S), (\"decode\", 1)]:\n    for B in [1, 64]:\n        print(f\"{name:7s} B={B:3d}  MLP={mlp(B,T,D,F):8.1f}  attention={attn(B,S,T,D):7.1f}\")",
+        "note": "직접 쓴 코드. 강의의 회계식을 그대로 숫자로 넣었다.\n\n실행 결과:\nprefill B=  1  MLP=  2205.5  attention= 2048.0\nprefill B= 64  MLP=  4693.1  attention= 2048.0\ndecode  B=  1  MLP=     1.0  attention=    1.0\ndecode  B= 64  MLP=    63.2  attention=    1.0"
+      },
+      "diagram": {
+        "title": "두 단계 × 두 층의 강도",
+        "code": "flowchart TB\n  subgraph Prefill[\"Prefill (T = S)\"]\n    PM[MLP: 강도 B·S] --> PC[계산에 묶임]\n    PA[어텐션: 강도 S/2] --> PC\n  end\n  subgraph Gen[\"Generate (T = 1)\"]\n    GM[MLP: 강도 B<br/>동시 요청이 많아야] --> GB[메모리에 묶임]\n    GA[어텐션: 강도 < 1<br/>B 로도 못 고침] --> GB\n  end"
+      },
+      "pitfalls": [
+        "노트 보충: GQA 에서는 KV 헤드 하나를 쿼리 헤드 G 개가 같이 읽으므로 생성 어텐션의 강도가 약 G 로 올라간다(강의의 식은 K = N 인 MHA 기준). 그래도 G 는 4~8 정도라 295 에는 한참 못 미친다.",
+        "'prefill 어텐션 S/2' 는 점수 행렬을 HBM 에 쓰지 않는 FlashAttention 식 구현을 가정한 것이다. 점수를 HBM 에 쓰고 읽는 순진한 구현은 강도가 훨씬 낮다(5강)."
+      ],
+      "check": [
+        {
+          "q": "배치 크기를 키우면 생성 단계 MLP 와 어텐션의 강도는 각각 어떻게 변하나? 이유는?",
+          "a": "MLP 는 B 에 비례해 오른다 — 같은 가중치를 B 개 시퀀스가 공유한다. 어텐션은 그대로(< 1)다 — 시퀀스마다 자기 KV 캐시를 따로 읽어야 해서 바이트도 B 배가 된다."
+        },
+        {
+          "q": "프롬프트 S = 2000 인 prefill 의 어텐션 강도는? 계산에 묶이나?",
+          "a": "S/2 = 1000. H100 의 문턱 295 보다 크므로 계산에 묶인다."
+        }
+      ]
+    },
+    {
+      "start": 2105,
+      "title": "Llama 2 13B 를 H100 에서 — 배치를 키우면 지연은 늘고 처리량은 포화한다",
+      "points": [
+        "가정: 계산과 통신이 완벽히 겹친다 → 한 걸음의 시간 = 가중치 + KV 캐시를 HBM 에서 한 번 읽는 시간.",
+        "메모리 = 2 × 파라미터 + B × (시퀀스당 KV) → 지연 = 메모리 ÷ 대역폭, 처리량 = B ÷ 지연.",
+        "Llama 2 13B(S = 1024): 파라미터 130.2억, 시퀀스당 KV 0.84GB. B = 1: 8.0ms, 125 tok/s / B = 64: 79.7GB, 23.8ms, 2,689 tok/s / B = 256: 240.8GB 로 80GB 를 넘어 불가.",
+        "지연은 B 에 대해 직선으로 늘고, 처리량은 B/(a + bB) 꼴이라 1/b 로 포화한다."
+      ],
+      "on_screen": "def throughput_and_latency(): 'So we have shown that inference is memory-bound. Let us now compute the theoretical maximum latency and throughput of a single request. Assumption: can overlap compute and communication perfectly and ignore overhead.' llama2_13b_config: S 1024, D 5120, F 13824, N 40, K 40, H 128, L 40, V 32000, memory_bandwidth 3.35e12. compute_transformer_performance_stats: num_params = 2*V*D + D*F*3*L + (2*D*N*H + 2*D*K*H)*L / parameter_size = 2*num_params # 2 for bf16 (training requires a larger multiple) / kv_cache_size_per_seq = S * (K*H) * L * 2 * 2 # 2 for key + value, 2 for bf16 / memory = B * kv_cache_size_per_seq + parameter_size / latency = memory / memory_bandwidth / throughput = B / latency. 결과 상자: num_params 13,015,449,600, memory 838860800*B + 26030899200, latency 0.000250406…*B + 0.00777041…, throughput 127792.358…*B/(32*B + 993). b1: memory 26,869,760,000, latency 0.0080, throughput 124.6755 / b64: memory 79,717,990,400, latency 0.0238, throughput 2689.4807 / b256: memory 240,779,264,000, latency 0.0719, throughput 3561.7685, 'h100_memory = 80e9; assert b256.memory > h100_memory # Doesn't fit in memory!', 'Result: doesn't fit into memory and throughput gains are diminishing too…'.",
+      "explain": [
+        "이제 '메모리에 묶인다'는 결론을 숫자로 바꾼다. 강사는 계산과 메모리 전송이 완벽히 겹치고 기타 오버헤드는 없다고 가정한다. 그러면 생성 한 걸음의 시간은 '그 걸음에 HBM 에서 읽어야 하는 모든 바이트 ÷ 대역폭'이다. 걸음마다 읽는 것은 두 가지 — 모델 가중치 전체(모든 층을 한 번씩 지나가니까)와 배치에 든 모든 시퀀스의 KV 캐시다. 이 가정 아래 계산한 값은 하드웨어가 허락하는 최선(이론 상한)이고, 실제 엔진은 이보다 느리다.",
+        "Llama 2 13B 설정을 넣어 보자. 파라미터는 임베딩·출력층 2VD, MLP 3DF × L, 어텐션 투영(Q·O 는 DNH, K·V 는 DKH) × L 을 더해 13,015,449,600 개다 — '13B' 라는 이름과 맞으니 회계가 맞다는 확인이 된다. bf16 이면 가중치는 2바이트 × 130억 = 26.03GB. 시퀀스당 KV 캐시는 S × K × H × L × 2(키·값) × 2(bf16) = 838,860,800바이트. 그래서 총메모리는 0.839GB × B + 26.03GB, 지연은 이를 3.35TB/s 로 나눈 0.25ms × B + 7.77ms, 처리량은 B 를 그 지연으로 나눈 값이다. B = 1 이면 지연 8.0ms(사용자 한 명에게 초당 125토큰)다.",
+        "배치를 64 로 키우면 메모리 79.7GB, 지연 23.8ms, 처리량 2,689 토큰/초가 된다. 지연은 세 배 나빠졌는데 처리량은 스무 배 넘게 좋아졌다. 강사의 버스 비유가 여기서 나온다 — 한 사람씩 태우는 택시는 바로 출발하지만(지연이 짧다) 시간당 나르는 사람이 적고, 버스는 모두 탈 때까지 기다렸다 출발하니(지연이 길다) 한 번에 많이 나른다(처리량이 크다). 배치 안의 요청은 걸음을 같이 밟으므로, 내 요청 하나 입장에서는 남의 KV 캐시까지 읽을 시간을 같이 기다린다. 반대로 가중치는 한 번 읽어 64명이 나눠 쓰니 처리량이 오른다.",
+        "B = 256 으로 더 키우면 계산상으로는 지연 71.9ms, 처리량 3,562 토큰/초지만 메모리가 240.8GB 라 80GB H100 에 들어가지 않는다. 그리고 들어간다 해도 이득이 줄어든다. 처리량 = B/(a + bB) 는 B 가 커지면 1/b, 즉 대역폭 ÷ 시퀀스당 KV = 3.35e12 ÷ 0.839e9 ≈ 3,994 토큰/초로 수렴한다. 64 → 256 으로 네 배를 늘려도 처리량은 1.3배다. 결국 '가중치 읽기를 나눠 내는' 효과가 바닥나면 KV 캐시 읽기가 전부가 되고, 그 상한은 KV 캐시 크기가 정한다. 다음 장 이후의 모든 기법이 KV 캐시를 줄이려는 이유가 이 식에 있다. 아래 코드는 강의의 sympy 결과를 숫자로 그대로 재현하고, GQA(K = 8)를 넣은 9장의 결과까지 함께 보여 준다."
+      ],
+      "formulas": [
+        {
+          "expr": "params = 2VD + 3DF·L + (2DNH + 2DKH)·L",
+          "meaning": "V 어휘, D 모델 차원, F MLP 은닉, L 층, N 쿼리 헤드, K KV 헤드, H 헤드 차원. 2VD 는 입력 임베딩과 출력층, 3DF 는 MLP 행렬 셋, 2DNH 는 W_Q·W_O, 2DKH 는 W_K·W_V. 정규화 파라미터는 무시."
+        },
+        {
+          "expr": "memory = 2·params + B·(S·K·H·L·2·2),  latency = memory / BW,  throughput = B / latency",
+          "meaning": "bf16 이라 파라미터당 2바이트, KV 는 키·값 2 × bf16 2. BW 는 HBM 대역폭(3.35e12 B/s). 지연은 한 걸음(토큰 하나)에 걸리는 초, 처리량은 초당 전체 토큰."
+        },
+        {
+          "expr": "throughput(B) = B·BW / (P + B·C)  →  BW / C   (B → ∞)",
+          "meaning": "P 는 가중치 바이트, C 는 시퀀스당 KV 바이트. 배치가 커지면 처리량은 대역폭을 시퀀스당 KV 로 나눈 값에서 멈춘다."
+        }
+      ],
+      "example": {
+        "title": "B = 1, 64 를 손으로",
+        "body": "가중치 P = 2 × 13,015,449,600 = 26,030,899,200 B. KV C = 1024 × 40 × 128 × 40 × 4 = 838,860,800 B.\nB = 1: 메모리 26.87GB → 26.87e9 ÷ 3.35e12 = 8.02ms → 1 ÷ 0.00802 ≈ 125 토큰/초.\nB = 64: 메모리 26.03 + 64 × 0.839 = 79.72GB → 23.8ms → 64 ÷ 0.0238 ≈ 2,689 토큰/초.\n상한: 3.35e12 ÷ 838,860,800 ≈ 3,994 토큰/초. B = 64 에서 이미 상한의 67% 이고, 256 이면 89% 지만 메모리에 안 들어간다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "# Llama 2 13B 를 H100 한 장에서 — 메모리 대역폭만으로 본 지연·처리량 상한\nS, D, F, N, K, H, L, V = 1024, 5120, 13824, 40, 40, 128, 40, 32000\nBW, HBM = 3.35e12, 80e9\n\ndef stats(B, K=K):\n    params = 2*V*D + 3*D*F*L + (2*D*N*H + 2*D*K*H)*L   # 임베딩·출력 + MLP + Q,O + K,V\n    kv_seq = S * K*H * L * 2 * 2                        # 토큰×KV헤드×헤드차원×층×(K,V)×bf16\n    mem = 2*params + B*kv_seq\n    lat = mem / BW                                      # 한 걸음 = 메모리 전부 한 번 읽기\n    return params, mem, lat, B / lat\n\nfor K_, B in [(40, 1), (40, 64), (40, 256), (8, 64), (8, 256)]:\n    p, m, lat, thr = stats(B, K_)\n    print(f\"K={K_:2d} B={B:3d} params={p/1e9:6.2f}B mem={m/1e9:6.1f}GB \"\n          f\"lat={lat*1e3:5.1f}ms thr={thr:7.0f} tok/s {'OOM' if m > HBM else ''}\")",
+        "note": "직접 쓴 코드. 강의 화면의 sympy 결과(8.0ms·124.7, 23.8ms·2689.5, 71.9ms·3561.8)와 같은 값이 나온다.\n\n실행 결과:\nK=40 B=  1 params= 13.02B mem=  26.9GB lat=  8.0ms thr=    125 tok/s \nK=40 B= 64 params= 13.02B mem=  79.7GB lat= 23.8ms thr=   2689 tok/s \nK=40 B=256 params= 13.02B mem= 240.8GB lat= 71.9ms thr=   3562 tok/s OOM\nK= 8 B= 64 params= 11.34B mem=  33.4GB lat= 10.0ms thr=   6417 tok/s \nK= 8 B=256 params= 11.34B mem=  65.6GB lat= 19.6ms thr=  13068 tok/s"
+      },
+      "pitfalls": [
+        "여기 나온 8ms 는 하드웨어 상한이다. 실제 엔진은 커널 실행 지연·샘플링·스케줄링 오버헤드 때문에 더 느리고, 배치가 작을수록 이 오버헤드 비중이 크다.",
+        "메모리 계산에는 활성값·작업 공간·CUDA 컨텍스트가 빠져 있다. 실제로 쓸 수 있는 KV 공간은 80GB 에서 가중치를 뺀 것보다 작다.",
+        "S = 1024 고정은 단순화다. 실제 서비스는 시퀀스마다 길이가 달라 평균 길이로 근사해야 한다."
+      ],
+      "check": [
+        {
+          "q": "Llama 2 13B 에서 B = 32 일 때 지연과 처리량은? (위 식으로)",
+          "a": "메모리 26.03 + 32 × 0.839 = 52.9GB → 지연 52.9e9 ÷ 3.35e12 ≈ 15.8ms → 처리량 32 ÷ 0.0158 ≈ 2,027 토큰/초."
+        },
+        {
+          "q": "배치를 무한히 키워도 처리량이 약 3,994 토큰/초를 넘지 못하는 이유는?",
+          "a": "배치가 커지면 가중치 읽기는 무시할 만해지고, 시퀀스마다 자기 KV 캐시(0.84GB)를 걸음마다 읽어야 하는 비용만 남는다. 대역폭 ÷ 시퀀스당 KV 가 상한이다."
+        }
+      ]
+    },
+    {
+      "start": 2640,
+      "title": "절충 정리와 TTFT — 그리고 노트 보충: Llama 3 8B 를 H100 한 장에서 손으로 세기",
+      "points": [
+        "배치를 키우면: KV 캐시(O(B))를 더 읽으니 지연이 나빠지고, 가중치 읽기를 나눠 내니 처리량이 좋아진다.",
+        "작은 배치 = 좋은 지연·나쁜 처리량, 큰 배치 = 그 반대. 모델 사본 M 개를 띄우면 지연은 같고 처리량만 M 배.",
+        "모델과 KV 캐시를 여러 장에 나누는 병렬화는 더 어렵다(Scaling Book 추론 장).",
+        "TTFT 는 사실상 prefill 시간의 함수 — prefill 은 작은 배치로 빨리, generate 는 큰 배치로 처리량을.",
+        "노트 보충 숫자: Llama 3 8B bf16 = 가중치 16.1GB, 토큰당 KV 128KiB, 8k 문맥 시퀀스당 1GiB, 80GB 에 8k 시퀀스 약 59개, 걸음 5.1~23.7ms."
+      ],
+      "on_screen": "'What increasing batch size does: Worsens latency because larger KV cache (O(B) size) to read/write / Improves throughput because amortizes the cost of reading parameters'. 'Tradeoff between latency and throughput: 1. Smaller batch sizes yield better latency but worse throughput 2. Larger batch sizes yield better throughput but worse latency'. 'Easy parallelism: if you launch M copies of the model, latency is the same, throughput increases by M! / Harder parallelism: shard the model and the KV cache [Scaling book chapter on inference]'. 'Note: time-to-first-token (TTFT) is essentially a function of prefill time / Use smaller batch sizes during prefill for faster TTFT / Use larger batch sizes during generation to improve throughput'. (Llama 3 8B 계산은 강의에 없는 노트 보충)",
+      "explain": [
+        "강사는 앞 장의 계산을 두 줄로 정리한다. 배치를 키우면 걸음마다 읽을 KV 캐시가 B 에 비례해 늘어 지연이 나빠지고, 가중치를 읽는 비용은 B 명이 나눠 내니 처리량이 좋아진다. 그래서 '빠르게 하자'는 말은 목표가 지연이냐 처리량이냐에 따라 정반대 결정을 부른다. 배치 크기가 그 손잡이다. 병렬화는 이번 강의에서 깊이 다루지 않지만 가장 쉬운 경우는 짚는다 — 같은 모델을 GPU M 장에 하나씩 통째로 올리면 각자 독립적으로 돌므로 지연은 그대로이고 처리량은 M 배다. 모델이 한 장에 안 들어가 가중치와 KV 캐시를 여러 장에 나눠야 하면(텐서 병렬 등, 7·8강) 통신이 끼어들어 계산이 복잡해진다.",
+        "TTFT 는 사실상 prefill 시간으로 정해진다. prefill 이 끝나야 첫 토큰이 나오기 때문이다. prefill 은 계산에 묶이므로 여러 요청의 prefill 을 한 번에 묶으면 각 요청의 첫 토큰이 늦어진다 — 그래서 TTFT 를 줄이려면 prefill 은 작은 배치로, 처리량을 올리려면 generate 는 큰 배치로 돌리라는 것이 강사의 처방이다. 두 단계의 성격이 이렇게 다르니 아예 prefill 과 decode 를 다른 GPU 에 맡기는 '분리(disaggregation)' 설계가 나왔고, 초청 강연(9EEm4iMAF5s)이 이 설계를 실무 쪽에서 자세히 다룬다.",
+        "노트 보충으로 강의의 계산을 지금 흔히 쓰는 모델에 적용해 보자. Llama 3 8B 는 D = 4096, L = 32, 쿼리 헤드 32개, KV 헤드 8개(GQA), H = 128, F = 14336, 어휘 128,256 이다. 7장의 식에 넣으면 파라미터 80.3억, bf16 가중치 16.1GB. 토큰 하나의 KV 캐시는 2 × 8 × 128 × 32 × 2 = 131,072바이트 = 128KiB 이고, 8,192 토큰 문맥이면 시퀀스당 정확히 1GiB 다. H100 80GB 에서 가중치를 빼고 남는 약 64GB 에 8k 시퀀스를 약 59개 들일 수 있다. 한 걸음의 시간은 B = 1 이면 (16.1 + 1.07)GB ÷ 3.35TB/s ≈ 5.1ms(사용자에게 초당 약 196토큰), B = 16 이면 9.9ms(사용자당 101, 전체 1,613), B = 59 면 23.7ms(사용자당 42, 전체 2,489)다.",
+        "TTFT 도 같은 방식으로 어림한다. prefill 은 계산에 묶이니 FLOPs ÷ 연산 속도다. 2,000 토큰 프롬프트면 2 × 80.3억 × 2,000 ≈ 3.2 × 10¹³ FLOPs, 989 TFLOP/s 를 다 쓰면 32ms, 현실적인 50% 활용률이면 약 65ms 다(어텐션 FLOPs 는 이 길이에서 작아 무시). 이 숫자들이 말해 주는 것: 8B 모델을 H100 한 장으로 서비스하면 사용자 한 명에게는 초당 수백 토큰도 가능하지만, 동시 사용자를 늘리면 KV 캐시가 메모리와 대역폭을 모두 먹는다. 긴 문맥(예: 128k)이라면 시퀀스 하나가 16GiB 라 네 명도 못 받는다 — 10장의 슬라이딩 윈도와 9장의 MLA 가 겨냥하는 상황이다."
+      ],
+      "formulas": [
+        {
+          "expr": "TTFT ≈ 대기 시간 + 2·N_params·S_prompt / (peak FLOP/s × MFU)",
+          "meaning": "노트 보충 어림식. N_params 파라미터 수, S_prompt 프롬프트 토큰 수, MFU 는 실제로 쓰는 연산 비율. prefill 은 계산에 묶이므로 FLOPs ÷ 속도. 긴 문맥에서는 어텐션 FLOPs(약 4·L·S²·D)를 더한다."
+        },
+        {
+          "expr": "max batch ≈ (HBM − 가중치) ÷ (토큰당 KV × 문맥 길이)",
+          "meaning": "KV 캐시가 들어갈 자리만으로 정한 동시 시퀀스 상한. 실제로는 활성값·작업 공간을 빼야 해서 더 작다."
+        }
+      ],
+      "example": {
+        "title": "Llama 3 8B, H100 80GB, 8k 문맥 — 손계산",
+        "body": "① 가중치: 8.03e9 × 2 = 16.06GB.\n② 토큰당 KV: 2(K,V) × 8(KV 헤드) × 128(H) × 32(L) × 2바이트 = 131,072 B = 128KiB.\n③ 시퀀스당(8,192 토큰): 128KiB × 8192 = 1GiB = 1.074GB.\n④ 동시 시퀀스: (80 − 16.06) ÷ 1.074 ≈ 59.\n⑤ 걸음 시간: B = 1 → 17.13GB ÷ 3.35TB/s = 5.1ms / B = 59 → (16.06 + 63.4)GB ÷ 3.35TB/s = 23.7ms.\n⑥ 처리량: 59 ÷ 0.0237 ≈ 2,489 토큰/초, 상한(BW ÷ 시퀀스당 KV) = 3.35e12 ÷ 1.074e9 ≈ 3,120.\n⑦ TTFT(2,000 토큰): 3.2e13 ÷ 989e12 = 32ms(MFU 100%), 65ms(MFU 50%)."
+      },
+      "code": {
+        "lang": "python",
+        "src": "# 노트 보충: Llama 3 8B(bf16)를 H100 SXM 80GB 한 장에서 — 손계산을 코드로 확인\nD, F, N, K, H, L, V = 4096, 14336, 32, 8, 128, 32, 128256\nBW, PEAK, HBM = 3.35e12, 989e12, 80e9\nparams = 2*V*D + 3*D*F*L + (2*D*N*H + 2*D*K*H)*L\nw_bytes = 2 * params\nkv_tok = 2 * K * H * L * 2                       # (K,V) × KV헤드 × 헤드차원 × 층 × 2바이트\nprint(f\"params={params/1e9:.2f}B weights={w_bytes/1e9:.1f}GB KV/token={kv_tok/1024:.0f}KiB\")\nctx = 8192\nkv_seq = kv_tok * ctx\nmax_b = int((HBM - w_bytes) // kv_seq)\nprint(f\"KV per 8k seq={kv_seq/2**30:.2f}GiB  max batch at 8k ≈ {max_b}\")\nfor B in [1, 16, max_b]:\n    lat = (w_bytes + B * kv_seq) / BW\n    print(f\"B={B:3d} step={lat*1e3:5.1f}ms  per-user={1/lat:6.1f} tok/s  total={B/lat:7.0f} tok/s\")\nprompt = 2000                                     # TTFT ≈ prefill FLOPs / (피크 × MFU)\nfor mfu in (1.0, 0.5):\n    print(f\"TTFT(2000-token prompt, MFU {mfu:.0%}) ≈ {2*params*prompt/(PEAK*mfu)*1e3:.0f} ms\")",
+        "note": "노트 보충 — 직접 쓴 코드. Llama 3 8B 의 공개 설정값으로 계산했다. HBM 을 80e9 바이트로 두는 것은 강의와 같은 단순화다.\n\n실행 결과:\nparams=8.03B weights=16.1GB KV/token=128KiB\nKV per 8k seq=1.00GiB  max batch at 8k ≈ 59\nB=  1 step=  5.1ms  per-user= 195.5 tok/s  total=    196 tok/s\nB= 16 step=  9.9ms  per-user= 100.8 tok/s  total=   1613 tok/s\nB= 59 step= 23.7ms  per-user=  42.2 tok/s  total=   2489 tok/s\nTTFT(2000-token prompt, MFU 100%) ≈ 32 ms\nTTFT(2000-token prompt, MFU 50%) ≈ 65 ms"
+      },
+      "pitfalls": [
+        "GB(10⁹)와 GiB(2³⁰)를 섞지 말 것. 8k 시퀀스의 KV 는 정확히 1GiB = 1.074GB 다.",
+        "TTFT 를 줄이겠다고 prefill 을 무조건 작게 쪼개면 prefill 의 높은 산술 강도를 버리게 된다. 실제 엔진은 '청크 prefill' 로 크기를 조절해 decode 와 섞는다(14장 보충)."
+      ],
+      "check": [
+        {
+          "q": "Llama 3 8B 를 32k 문맥으로 서비스하면 H100 한 장에 동시 시퀀스는 대략 몇 개인가?",
+          "a": "시퀀스당 KV = 128KiB × 32,768 = 4GiB ≈ 4.29GB. (80 − 16.06) ÷ 4.29 ≈ 14개."
+        },
+        {
+          "q": "모델 사본 4개를 GPU 4장에 하나씩 올리면 지연과 처리량은 어떻게 되나?",
+          "a": "각 사본이 독립적으로 돌므로 지연은 같고 처리량은 4배."
+        }
+      ]
+    },
+    {
+      "start": 2776,
+      "title": "KV 캐시 줄이기 ① — 헤드를 묶는 GQA, 압축해 저장하는 DeepSeek 의 MLA",
+      "points": [
+        "추론은 메모리에 묶이고 KV 캐시가 메모리의 큰 몫이다(배치가 크면 가중치보다 크다) → KV 를 줄이면 지연과 처리량이 같이 좋아진다. 단, 정확도를 지켜야 한다.",
+        "GQA: 쿼리 헤드 N 개, KV 헤드 K 개 — MHA 는 K = N, MQA 는 K = 1. KV 캐시가 N/K 배 준다.",
+        "Llama 2 13B 를 K = 8 로: B = 64 에서 33.4GB·10.0ms·6,417 tok/s, B = 256 도 65.6GB 로 들어가 13,068 tok/s.",
+        "정확도: GQA 논문은 거의 손해가 없다고 했지만 DeepSeek-V2 의 7B 비교는 MHA > GQA > MQA 로 차이가 났다.",
+        "MLA: 키·값 대신 압축 벡터 c(16384 → 512 차원, RoPE 용 64 차원 추가해 576)를 저장하고 필요할 때 K, V 로 펼친다. KV 가 크게 줄면서 MHA 와 같거나 조금 낫다."
+      ],
+      "on_screen": "def reduce_kv_cache_size(): 'Recall that memory is the bottleneck for inference. So let's try to reduce the size of the KV cache …but make sure we don't lose too much accuracy.' Grouped-query attention (GQA) [Ainslie+ 2023] 그림: Multi-head(값·키·쿼리 각 8개) / Grouped-query(값·키 4개가 쿼리 2개씩) / Multi-query(값·키 1개). 'Idea: N query heads, but only K key and value heads, each interacting with N/K query heads / Multi-headed attention (MHA): K=N / Multi-query attention (MQA): K=1 / Group-query attention (GQA): K is somewhere in between'. 그래프 Time per sample(s) vs GQA groups(1~64): MHA 약 2.6 수평선, MQA 약 0.5 수평선, GQA 는 1~8 에서 MQA 수준이다가 32·64 에서 급상승. 'Why does GQA improve latency and throughput? GQA reduces the KV cache by a factor of N/K. Reminder: reducing memory usage leads to speedup (since we're memory-bound)'. 결과 상자 k40_b64(13,015,449,600 / 79,717,990,400 / 0.0238 / 2689.4807), k8_b64(11,337,728,000 / 33,412,874,240 / 0.0100 / 6416.6883), k8_b256(65,625,128,960 / 0.0196 / 13068.1648). 표 [Ainslie+ 2023]: MHA-Large T_infer 0.37 Average 46.0 / MHA-XXL 1.51, 47.2 / MQA-XXL 0.24, 46.6 / GQA-8-XXL 0.28, 47.1 (CNN·arXiv·PubMed·MediaSum·MultiNews·WMT·TriviaQA 열). Multi-head latent attention (MLA) [DeepSeek-AI+ 2024] 그림(MHA·GQA·MQA·MLA, 'Cached During Inference', projection, Compressed Latent KV). 'Normal attention: KV cache consists of K = W_k h, V = W_v h (N*H dimensions) / MLA: store compressed vector c = W_c h (C dimensions), project up to K = W_K c, V = W_V c when needed / DeepSeek v2: reduce N*H = 16384 to C = 512 / Wrinkle: MLA is not compatible with RoPE, so need to add additional 64 dimensions for RoPE, so 512 + 64 = 576 total dimensions'. Table 8(Dense 7B w/ MQA / GQA(8 groups) / MHA — # Params 7.1B/6.9B/6.9B, BBH 33.2/35.6/37.0, MMLU 37.9/41.2/45.2, C-Eval 30.0/37.7/42.9, CMMLU 34.6/38.4/43.5). Table 9(Small MoE MHA/MLA — activated 2.5B/2.4B, total 15.8B/15.7B, KV cache per token 110.6K/15.6K elements, BBH 37.9/39.0, MMLU 48.7/50.0, C-Eval 51.6/50.9, CMMLU 52.3/53.4; Large MoE MHA/MLA — 25.0B/21.5B, 250.8B/247.4B, 860.2K/34.6K, BBH 46.6/50.7, MMLU 57.5/59.0, C-Eval 57.9/59.2, CMMLU 60.7/62.5).",
+      "explain": [
+        "여기부터는 '어떻게 빠르게 하나'다. 강사가 머리에 박아 두라고 한 원리는 하나 — 추론은 메모리에 묶이고, 배치가 크면 KV 캐시가 가중치보다 커진다. 그러니 KV 캐시를 줄이면 걸음마다 읽을 바이트가 줄어 지연이 좋아지고, 같은 메모리에 시퀀스를 더 넣을 수 있어 처리량도 좋아진다. 7장에서 지연과 처리량이 부딪친 것은 배치 크기라는 손잡이 때문이었지 둘이 본래 적이어서가 아니다. 메모리 자체를 줄이면 둘 다 좋아진다. 다만 KV 캐시를 줄이는 것은 모델이 과거를 기억하는 방식을 바꾸는 손실 있는 변경이라, 언제나 정확도를 다시 확인해야 한다.",
+        "첫 번째 방법은 3강에서 배운 GQA 다. MHA 는 쿼리 헤드마다 키·값 헤드를 따로 두지만(K = N), GQA 는 쿼리 헤드는 N 개 그대로 두고 키·값 헤드를 K 개로 줄여 쿼리 헤드 N/K 개가 하나를 나눠 쓴다. 극단인 MQA(K = 1)는 모든 쿼리 헤드가 키·값 하나를 쓰는데, 강사의 표현으로는 품질이 나빠서 아무도 쓰지 않는다. GQA 논문(Ainslie 2023)의 그래프에서 샘플당 시간은 MHA 가 약 2.6초, MQA 가 약 0.5초이고, GQA 는 그룹 8개까지 MQA 와 거의 같다가 32·64 로 가면 급격히 MHA 쪽으로 올라간다. KV 캐시는 정확히 N/K 배 준다. Llama 2 13B 를 K = 8(1:5)로 바꾸면 B = 64 에서 메모리 79.7 → 33.4GB, 지연 23.8 → 10.0ms, 처리량 2,689 → 6,417 토큰/초로 둘 다 좋아진다. 그리고 전에는 넘쳤던 B = 256 이 65.6GB 로 들어가서 처리량이 13,068 토큰/초가 된다 — KV 를 줄인 것이 더 큰 배치라는 다른 절충을 가능하게 한 것이다.",
+        "정확도는 엇갈린다. GQA 논문의 표에서 T5-XXL 기준 MHA 평균 47.2, GQA-8 은 47.1, MQA 는 46.6 으로 GQA 가 거의 손해 없이 MHA 의 5분의 1 시간(1.51 → 0.28초)으로 돈다. 그런데 DeepSeek-V2 논문의 7B 밀집 모델 비교(표 8)에서는 MMLU 가 MQA 37.9, GQA 41.2, MHA 45.2 로 꽤 벌어진다. 강사는 '수학이 아닌 것은 조심해서 받아들이라'고 한다 — 정확도 주장은 특정 모델·특정 학습 설정의 결과다. 학생이 '그냥 모델 차원을 줄이면 안 되나'고 묻자, 강사는 그런 비교는 이 논문들에 없다면서 무차별로 다 줄이면 더 나빠질 거라 추측하고, 결국 이 분야의 요령은 '줄여도 되는 자리를 찾는 것'이며 실험으로만 알 수 있다고 답한다.",
+        "DeepSeek 의 MLA(multi-head latent attention)는 다른 길을 간다. 키·값 헤드 수는 줄이지 않는 대신, 활성값 h 를 작은 잠재 벡터 c = W_c·h 로 압축해 그것만 캐시하고, 어텐션할 때 K = W_K·c, V = W_V·c 로 펼친다. DeepSeek-V2 는 N·H = 16,384 차원을 C = 512 차원으로 줄였다. 걸림돌은 RoPE 다 — RoPE 는 위치마다 다른 회전을 키에 곱하므로 압축 벡터에서 펼치는 선형 변환과 섞이지 않는다. 그래서 RoPE 전용 64 차원을 따로 붙여 토큰·층당 576 차원을 저장한다. 표 9 에서 토큰당 KV 원소는 작은 MoE 가 110.6K → 15.6K, 큰 MoE 가 860.2K → 34.6K 로 줄었고, 벤치마크는 MLA 가 MHA 와 비슷하거나 조금 낫다(큰 MoE MMLU 57.5 → 59.0). 아래 코드는 '4096 차원·32층' 모델 하나에서 방법만 바꿔 토큰당 KV 를 비교한다."
+      ],
+      "formulas": [
+        {
+          "expr": "KV 축소 비율(GQA) = N / K",
+          "meaning": "N 쿼리 헤드 수, K KV 헤드 수. Llama 2 13B 를 K = 40 → 8 로 바꾸면 5배."
+        },
+        {
+          "expr": "MLA: c = W_c·h (C 차원) 저장,  K = W_K·c,  V = W_V·c",
+          "meaning": "h 는 그 토큰의 은닉 상태(D 차원), W_c 는 내려 투영(D → C), W_K·W_V 는 올려 투영(C → N·H). 토큰·층당 저장량이 2·N·H 에서 C + d_rope 로 준다(DeepSeek-V2: 32,768 → 576)."
+        }
+      ],
+      "example": {
+        "title": "DeepSeek-V2 규모로 토큰·층당 저장량 비교",
+        "body": "MHA: 키와 값 각 N·H = 16,384 차원 → 32,768 원소.\nMLA: c 512 + RoPE 키 64 = 576 원소.\n비율 32,768 ÷ 576 ≈ 57배. 60층 bf16 이라면 토큰당 MHA 3.75MiB(= 32,768 × 60 × 2바이트) 대 MLA 67.5KiB.\n표 9 의 큰 MoE 는 860.2K → 34.6K(약 25배)인데, 비교 대상 MHA 모델의 헤드 구성이 달라 비율이 위 계산과 다르다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "# 토큰 하나가 KV 캐시에 남기는 바이트(bf16) — 같은 '4096 차원·32층' 모델에서 방법만 바꿔 본다\nL, N, H = 32, 32, 128\ndef per_token(kind, **a):\n    if kind == \"MHA\": return 2 * N * H * L * 2\n    if kind == \"GQA\": return 2 * a[\"K\"] * H * L * 2\n    if kind == \"MQA\": return 2 * 1 * H * L * 2\n    if kind == \"MLA\": return (a[\"C\"] + a[\"rope\"]) * L * 2           # 잠재벡터 c + RoPE 용 키\n    if kind == \"CLA\": return 2 * a[\"K\"] * H * (L // a[\"share\"]) * 2  # 층 share 개가 KV 공유\nfor kind, a in [(\"MHA\", {}), (\"GQA\", {\"K\": 8}), (\"MQA\", {}),\n                (\"MLA\", {\"C\": 512, \"rope\": 64}), (\"CLA\", {\"K\": 8, \"share\": 2})]:\n    b = per_token(kind, **a)\n    print(f\"{kind}: {b/1024:6.1f} KiB/token  128k ctx = {b*131072/2**30:5.1f} GiB  (MHA 대비 {per_token('MHA')/b:4.1f}x 작음)\")\nW = 4096                                                         # 슬라이딩 윈도: 길이와 무관\nprint(\"SWA(GQA K=8, W=4096) at 128k ctx:\", 2*8*H*L*2*min(W, 131072)/2**30, \"GiB\")",
+        "note": "직접 쓴 코드. 같은 크기 모델에 방법만 바꿔 넣은 가상 비교라 실제 모델의 값과는 다르다(예: MLA 의 C·RoPE 차원은 DeepSeek-V2 값을 빌렸다).\n\n실행 결과:\nMHA:  512.0 KiB/token  128k ctx =  64.0 GiB  (MHA 대비  1.0x 작음)\nGQA:  128.0 KiB/token  128k ctx =  16.0 GiB  (MHA 대비  4.0x 작음)\nMQA:   16.0 KiB/token  128k ctx =   2.0 GiB  (MHA 대비 32.0x 작음)\nMLA:   36.0 KiB/token  128k ctx =   4.5 GiB  (MHA 대비 14.2x 작음)\nCLA:   64.0 KiB/token  128k ctx =   8.0 GiB  (MHA 대비  8.0x 작음)\nSWA(GQA K=8, W=4096) at 128k ctx: 0.5 GiB"
+      },
+      "pitfalls": [
+        "GQA 로 바꾸면 KV 투영 가중치도 줄어 파라미터 수가 바뀐다(Llama 2 13B: 130.2억 → 113.4억). 위 비교는 '같은 모델에서 KV 만 준 것'이 아니다.",
+        "노트 보충: MLA 는 펼친 K, V 를 실제로 다 만들지 않는다. W_K 를 쿼리 쪽, W_V 를 출력 투영 쪽에 흡수해 압축 벡터 c 에 바로 어텐션하는 방식으로 구현해야 메모리 이득이 산다.",
+        "'MQA 는 아무도 안 쓴다' 는 강사의 평가다. 초기 PaLM 등은 MQA 를 썼고, 지금은 GQA·MLA 가 주류라는 뜻으로 읽자."
+      ],
+      "check": [
+        {
+          "q": "Llama 2 13B 를 K = 8 로 바꾸면 시퀀스당 KV(1024 토큰)는 얼마가 되나?",
+          "a": "838,860,800 × 8/40 = 167,772,160바이트 ≈ 0.168GB."
+        },
+        {
+          "q": "MLA 가 RoPE 용 차원을 따로 두는 이유는?",
+          "a": "RoPE 는 위치마다 다른 회전을 키에 곱해야 하는데, 압축 벡터 c 에서 K 를 펼치는 선형 변환과 합쳐지지 않는다. 그래서 위치 정보를 실을 작은 키(64 차원)를 따로 저장한다."
+        }
+      ]
+    },
+    {
+      "start": 3300,
+      "title": "KV 캐시 줄이기 ② — 층 공유(CLA), 슬라이딩 윈도, 하이브리드, 선형 어텐션, DeepSeek 의 압축·희소 어텐션",
+      "points": [
+        "CLA(cross-layer attention): 몇 개 층만 KV 를 계산하고 이웃 층은 그것을 빌려 쓴다 — GQA 가 헤드 사이를 공유하듯 층 사이를 공유. 논문은 정확도-메모리 파레토 경계가 나아진다고 보고.",
+        "슬라이딩 윈도(local) 어텐션: 최근 W 개 토큰만 본다 → KV 크기가 문맥 길이와 무관. 층을 쌓으면 정보가 L × W 까지 전달된다.",
+        "하지만 표현력이 줄어 정확도가 떨어진다 → 전역 어텐션 층과 지역 층을 섞는 하이브리드가 주류.",
+        "선형 어텐션·Mamba·Gated DeltaNet 은 과거를 고정 크기 상태로 요약 — 슬라이딩 윈도보다 표현력이 크지만, 압축이라 바늘 찾기에서 정보를 잃을 수 있다(질의응답).",
+        "DeepSeek V4 의 CSA(m 토큰을 하나로 압축)·DSA(가벼운 인덱서로 상위 k 개 선택)·HCA(더 세게 압축). 확산 모델처럼 자기회귀가 아닌 생성도 대안으로 언급."
+      ],
+      "on_screen": "55:00~62:00 구간은 강사 화면만 잡혀 CLA·슬라이딩 윈도 슬라이드는 장면에 없다(이 부분은 대본으로 재구성). 62:30 이후 DeepSeek V4 그림: Hidden States of KV Tokens → Token-Level Compressor → Compressed KV Entries → Top-k Selector ← Lightning Indexer(Compressed Indexer Keys, Indexer Queries, Multi-Query Attention, Index Scores) → Selected Compressed KV Entries + Sliding Window KV Entries → Concatenation → Shared Key-Value Multi-Query Attention ← Hidden State of Query Token. 'Compressed Sparse Attention (CSA): compresses every m tokens into 1 / DeepSeek Sparse Attention (DSA): selects the top k / Heavily Compressed Attention (HCA): compresses even more'. 'Summary: Goal: reduce the KV cache size (since inference is memory-bound) without hurting accuracy / Lower-dimensional KV cache (GQA, MLA, CLA) / Local attention (truncates the KV cache) on some of the layers / Other ideas: linear attention / state-space-models (Mamba 2, GatedDeltaNet), diffusion models'.",
+      "explain": [
+        "GQA 가 '여러 헤드가 키·값 하나를 나눠 쓴다'였다면, CLA(cross-layer attention, Brandon 외 2024)는 '여러 층이 키·값 하나를 나눠 쓴다'다. 보통은 층마다 K, V 를 계산해 캐시하지만, CLA 는 일부 층에서만 계산하고 바로 위 층들은 아래 층이 만든 캐시를 그대로 쓴다. 두 층씩 묶으면 캐시가 절반이다. 강사가 보여 준 논문 그래프의 요점은, KV 헤드 수나 헤드 차원을 바꿔 캐시를 줄이는 기존 방법들로 그은 '캐시 크기 대 정확도' 곡선보다 CLA 를 섞은 곡선이 더 좋다는 것, 즉 같은 캐시 크기에서 정확도가 높다는 것이다. 9장과 이 장의 방법을 합치면 KV 캐시의 네 축 — 헤드(GQA), 헤드 차원(MLA), 층(CLA), 그리고 토큰(아래 슬라이딩 윈도) — 을 각각 줄이는 셈이다.",
+        "슬라이딩 윈도(지역) 어텐션은 오래된 아이디어다. 전체 어텐션은 모든 이전 토큰을 보지만, 지역 어텐션은 새 토큰이 최근 W 개만 본다. 그러면 KV 캐시는 문맥 길이와 무관하게 시퀀스당 W 토큰 분량으로 고정된다 — 긴 문맥에서 특히 좋다. 그렇다고 W 밖을 완전히 못 보는 것도 아니다. 층 하나를 지날 때마다 정보가 W 만큼 더 뒤로 전해지므로, L 개 층을 쌓으면 이론상 L × W 거리까지 영향이 닿는다. 윈도를 촘촘히 두지 않고 띄엄띄엄(희석) 두거나, 고정된 격자 위치의 전역 토큰과 지역 윈도를 섞는 변형도 있다. 하지만 강사의 말로는 '공짜 점심은 없다' — 표현력이 줄어 정확도가 떨어진다. 그래서 요즘 모델은 전체 어텐션 층과 지역 어텐션 층을 번갈아 두는 하이브리드를 쓰고(3강에서 본 전역·지역 교차), KV 를 줄이는 정도와 정확도 사이에서 비율을 고른다.",
+        "질의응답에서 학생이 선형 어텐션과 슬라이딩 윈도를 비교해 달라고 했다. 선형 어텐션 계열(4강 cKSwj_qZ8Jg 의 주제)은 KV 를 쌓지 않고 과거 전체를 고정 크기 상태로 요약한다. 가장 단순한 형태는 키·값 곱을 계속 더한 합 하나이고, Gated DeltaNet·Delta Net·Mamba 는 덜 잊도록 요약하는 정교한 방법이다. 지역 고해상도 정보가 중요하면 슬라이딩 윈도가, 과거의 넓은 요약이 필요하면 선형 쪽이 낫고, 셋을 섞기도 한다. 강사의 의견으로는 Mamba·DeltaNet 이 슬라이딩 윈도보다 표현력이 크다 — 순환 상태가 마지막 몇 토큰만 기억하도록 배울 수도 있으니 슬라이딩 윈도가 하는 일을 흉내 낼 수 있지만, 슬라이딩 윈도는 그 이상을 못 한다. 다만 아주 긴 문맥에서 특정 문장을 찾는 바늘 찾기 문제라면, 역사 전체를 작은 상태로 압축하는 순간 정보가 사라질 수 있다. 그래서 어느 정도의 전체 어텐션은 늘 남겨 두는 하이브리드가 대세다.",
+        "마지막으로 DeepSeek 은 어텐션 변형을 계속 내놓고 있다. V4 그림을 보면, KV 토큰들의 은닉 상태를 토큰 단위 압축기가 m 개씩 하나로 묶고(CSA), 가벼운 '번개 인덱서'가 작은 쿼리·키로 빠르게 점수를 매겨 압축된 항목 중 상위 k 개만 고르고(DSA), 그 선택 결과를 최근 토큰의 슬라이딩 윈도 항목과 이어 붙여 키·값을 공유하는 MQA 로 어텐션한다. HCA 는 이보다 더 세게 압축한다. 강사도 약어를 다 외우지 못한다며 넘어가지만, 요점은 '어느 토큰을 기억할지 싸게 고르고 나머지는 압축한다'는 것이다. 덧붙여 확산 모델처럼 토큰을 하나씩 만들지 않는 생성 방식도 KV 캐시 문제를 근본에서 비켜 가는 대안으로 언급한다."
+      ],
+      "formulas": [
+        {
+          "expr": "KV(SWA) = 2 · B · min(S, W) · L · K · H · 2바이트,   수용 영역 ≈ L · W",
+          "meaning": "W 윈도 크기, S 문맥 길이. 문맥이 W 를 넘으면 캐시가 더 커지지 않는다. L 층을 지나며 정보가 층마다 W 씩 더 멀리 전달된다."
+        },
+        {
+          "expr": "KV(CLA) = KV(기본) × (1 / 공유 층 수)",
+          "meaning": "층 r 개가 한 KV 를 같이 쓰면 캐시가 1/r 이 된다(예: 2층 공유 → 절반)."
+        }
+      ],
+      "example": {
+        "title": "128k 문맥에서 전체 어텐션 대 슬라이딩 윈도",
+        "body": "Llama 3 8B 형태(GQA K = 8, 32층, 토큰당 128KiB)에서 문맥 131,072 토큰.\n전체 어텐션: 128KiB × 131,072 = 16GiB(시퀀스 하나!).\n슬라이딩 윈도 W = 4,096: 128KiB × 4,096 = 0.5GiB — 32배 작다.\n수용 영역: 32층 × 4,096 = 131,072 토큰 — 이론상으로는 문맥 끝까지 닿는다. 하지만 여러 층을 건너 전달된 정보는 희석되므로, 실제로 먼 곳의 정확한 사실을 꺼내는 데는 약하다. 그래서 몇 층은 전체 어텐션으로 남긴다(예: 지역 5층마다 전역 1층이면 전역 층 KV 만 문맥에 비례)."
+      },
+      "pitfalls": [
+        "수용 영역이 L × W 라고 해서 먼 토큰을 정확히 기억한다는 뜻은 아니다. 층을 거칠 때마다 섞여 흐려진다.",
+        "슬라이딩 윈도·CLA 는 학습부터 그 구조로 해야 한다. 전체 어텐션으로 학습한 모델에 추론 때만 윈도를 씌우면 품질이 크게 떨어질 수 있다."
+      ],
+      "check": [
+        {
+          "q": "KV 캐시를 줄이는 네 '축'과 각각의 대표 방법을 짝지어라.",
+          "a": "헤드 수 — GQA/MQA, 헤드 차원(저장 형태) — MLA, 층 — CLA, 토큰(길이) — 슬라이딩 윈도·DSA 같은 선택/압축."
+        },
+        {
+          "q": "학생 질문: 긴 문맥에서는 선형 어텐션이 늘 낫나?",
+          "a": "아니다. 선형 어텐션은 역사 전체를 고정 크기 상태로 압축하므로, 바늘 찾기처럼 특정 정보를 정확히 꺼내야 하는 문제에서는 정보를 잃을 수 있다. 그래서 일부 전체 어텐션 층을 남기는 하이브리드를 쓴다."
+        }
+      ]
+    },
+    {
+      "start": 3869,
+      "title": "양자화 — 숫자의 비트를 줄여 옮길 바이트를 줄인다 (QAT·PTQ·GPTQ·AWQ)",
+      "points": [
+        "아이디어: 숫자의 정밀도를 낮춘다. 메모리가 줄면 메모리에 묶인 추론은 그만큼 빨라진다. 정확도는 따로 챙겨야 한다.",
+        "형식: bf16(2바이트) → fp8(1바이트) → int8(1바이트, [−128, 127], 추론 전용) → int4(0.5바이트, [−8, 7]).",
+        "QAT: 학습 중 순전파에서 양자화·역양자화로 오차를 흉내 내 가중치가 적응하게 한다 — 좋지만 대규모 학습이 필요.",
+        "PTQ: 학습 뒤 표본 데이터로 층·텐서마다 scale·zero point 를 정한다. GPTQ 는 헤시안 정보로 층별로 양자화하며 오차를 아직 양자화하지 않은 가중치에 넘겨 보정한다.",
+        "AWQ: 활성값이 큰 채널(0.1~1%)에 닿는 가중치가 중요하다 → 그 가중치를 보호. fp16 → int3 로 메모리 4배 감소, 3.2배 속도."
+      ],
+      "on_screen": "def quantization(): 'Key idea: reduce the precision of numbers / Less memory means higher latency/throughput (since inference is memory-bound). Of course we have to worry about accuracy…' 형식 목록(앞줄은 '…for parameters and optimizer states during training' 까지만 보임): fp8 (1 byte) [-240, 240] for e4m3 on H100s: can train if you dare [Peng+ 2023] / int8 (1 byte) [-128, 127]: less accurate but cheaper than fp8, but for inference only [Baalen+ 2023] / int4 (0.5 bytes) [-8, 7]: cheaper, even less accurate [Baalen+ 2023]. [Overview of approaches]. Quantization-aware training (QAT): During training, quantize-and-dequantize during the forward pass to simulate quantization errors / Pro: weights are trained to work with quantization / Con: requires expensive large-scale training. Post-training quantization (PTQ): Done after training, so much cheaper / Run on sample data to determine scale and zero point for each layer or tensor / GPTQ: use Hessian information to update non-quantized weights to account for quantization error [Frantar+ 2022]. Activation-aware quantization (AWQ) [Lin+ 2023]: Observation: some activation channels are large / Weights that hit those matter more / Allocate more precision to those weights / Idea: select which weights (0.1-1%) to keep in high precision based on activations / fp16 → int3 produces 4x lower memory, 3.2x speedup. 그림 (a) RTN quantization (PPL 43.2), (b) Keep 1% salient weights in FP16 (PPL 13.0) — 'bad hardware efficiency' 표시, (c) Scale the weights before quantization (PPL 13.0).",
+      "explain": [
+        "양자화는 아키텍처를 바꾸는 대신 시스템 쪽에서 '같은 숫자를 더 적은 비트로' 적는 방법이다. 비유하면 사진을 고화질 원본 대신 압축 JPEG 로 보내는 것이다 — 화질은 조금 잃지만 보내는 바이트가 확 줄어든다. 추론은 메모리에 묶여 있으니, 걸음마다 읽는 가중치(와 KV 캐시) 바이트가 절반이 되면 걸음 시간도 거의 절반이 된다. 화면의 형식 목록을 보면 bf16 이 기본이고, fp8 은 1바이트라 절반이며 H100 에서 학습까지 할 수 있지만 '감히 한다면'이라는 단서가 붙는다. int8 은 같은 1바이트지만 지수 없이 [−128, 127] 정수라 fp8 보다 부정확하되 연산이 싸서 추론 전용으로 쓰고, int4 는 0.5바이트로 더 싸고 더 부정확하다.",
+        "양자화의 기본 연산부터 보자. 실수 가중치 w 를 정수 q 로 바꾸려면 배율 s(scale)를 정해 q = round(w/s) 로 반올림하고 정수 범위로 자른 뒤, 쓸 때 ŵ = s·q 로 되돌린다. 0 이 한가운데가 아닌 분포라면 zero point z 를 더해 범위를 옮긴다. 가장 단순한 PTQ(학습 후 양자화)는 표본 데이터를 흘려 보며 층이나 텐서마다 s 와 z 를 정하는 것이다. 이렇게만 해도 int8 은 대체로 괜찮지만 비트를 더 내리면 잘 안 된다. 반대편 끝에는 QAT(양자화 인식 학습)가 있다. 학습 중 순전파에서 가중치를 양자화했다가 되돌리는 연산을 끼워 넣어 양자화 오차를 모델이 겪게 하면, 가중치가 그 오차에 적응한다. 효과는 좋지만 대규모 학습을 다시 해야 해서 비싸다. 그래서 실제로는 학습을 마친 뒤 더 똑똑하게 양자화하는 PTQ 기법들이 쓰인다.",
+        "GPTQ(Frantar 2022)는 층 하나씩, 열 하나씩 양자화하면서 방금 생긴 반올림 오차를 아직 양자화하지 않은 나머지 가중치를 조금씩 고쳐 메운다. 어느 방향으로 고칠지는 그 층 입력의 2차 통계(헤시안, 입력 활성값의 공분산)로 정한다 — 출력이 덜 변하는 방향으로 오차를 흡수시키는 것이다. AWQ(Lin 2023)는 관찰에서 출발한다. 활성값 채널 중 일부가 유난히 크고, 그 채널과 곱해지는 가중치의 오차는 출력에서 그만큼 크게 증폭된다. 그러니 활성값 기준으로 중요한 가중치 0.1~1% 를 골라 높은 정밀도로 지키자는 것이다. 그림에서 단순 반올림(RTN)으로 int3 를 하면 퍼플렉서티가 43.2 로 무너지지만, 중요한 1% 만 fp16 으로 두면 13.0 으로 회복된다. 다만 섞인 정밀도는 하드웨어에서 비효율적이라(그림의 'bad hardware efficiency'), 실제 AWQ 는 중요한 채널의 가중치를 양자화 전에 배율로 키워(그만큼 활성값 쪽은 줄여) 같은 효과를 낸다 — 그림 (c), 역시 13.0. 결과적으로 fp16 → int3 에서 메모리 4배 감소, 3.2배 속도 향상을 보고했다.",
+        "아래 코드는 AWQ 의 관찰을 작은 크기로 재현한다. 입력 채널 3개(1%)의 활성값만 50배 크게 만든 뒤 가중치를 int8·int4·int3 로 양자화하면, 같은 반올림 오차라도 큰 채널에 닿은 것이 출력 오차를 지배한다. 그 3개 채널의 가중치만 원래 정밀도로 남기면 int4 출력 오차가 0.18 에서 0.03 으로 줄어든다. 숫자로 연결하면, Llama 3 8B 가중치는 bf16 16.1GB, int8 8.0GB, int4 4.0GB 이고 B = 1 생성 걸음은 각각 약 4.8, 2.4, 1.2ms 가 된다(가중치 읽기만 센 상한). 노트 보충으로, 가중치만 int4 로 줄이고 계산은 bf16 으로 하는 방식(weight-only)은 메모리에 묶인 decode 를 빠르게 하고, 활성값까지 8비트로 계산하는 방식(W8A8)은 계산에 묶인 prefill 에 도움이 된다. KV 캐시도 fp8 로 저장해 절반으로 줄일 수 있다."
+      ],
+      "formulas": [
+        {
+          "expr": "s = max|w| / q_max,   q = clip(round(w / s), −q_max − 1, q_max),   ŵ = s · q",
+          "meaning": "대칭 absmax 양자화. s 는 배율, q_max 는 정수 최댓값(int8 은 127, int4 는 7), q 는 저장되는 정수, ŵ 는 계산 때 되돌린 근삿값. 오차는 최대 s/2."
+        },
+        {
+          "expr": "비대칭: q = round(w / s) + z,   ŵ = s · (q − z)",
+          "meaning": "z 는 zero point(정수). 분포가 0 을 중심으로 대칭이 아닐 때 범위를 옮겨 비트를 낭비하지 않는다."
+        }
+      ],
+      "example": {
+        "title": "가중치 네 개를 int4 로",
+        "body": "w = [0.12, −0.50, 0.33, 0.04], q_max = 7.\ns = 0.50 ÷ 7 = 0.0714.\nw/s = [1.68, −7.00, 4.62, 0.56] → q = [2, −7, 5, 1].\nŵ = s·q = [0.143, −0.500, 0.357, 0.071] → 오차 [0.023, 0, 0.027, 0.031], 모두 s/2 = 0.036 이하.\n만약 이 묶음에 −2.0 같은 이상치가 하나 있으면 s = 0.286 이 되어 0.04 는 0 으로, 0.12 도 0 으로 뭉개진다 — 그래서 텐서 전체보다 채널·블록마다 배율을 따로 두고, AWQ 처럼 중요한 채널을 보호한다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "import numpy as np\nrng = np.random.default_rng(0)\nW = rng.normal(0, 0.02, size=(256, 256))          # 가중치 (출력 × 입력 채널)\nx = rng.normal(0, 1, size=(64, 256))              # 보정용 활성값\nx[:, :3] *= 50                                    # 입력 채널 3개만 활성값이 큰 '이상치 채널'\n\ndef quant(w, bits, axis=None):                    # 대칭 absmax 양자화 → 다시 실수로\n    qmax = 2 ** (bits - 1) - 1\n    s = np.abs(w).max(axis=axis, keepdims=True) / qmax\n    return np.clip(np.round(w / s), -qmax - 1, qmax) * s\n\ndef out_err(Wq): return np.abs(x @ Wq.T - x @ W.T).mean()\nfor bits in (8, 4, 3):\n    plain = quant(W, bits, axis=1)                # 출력 채널마다 scale 하나\n    keep = plain.copy(); keep[:, :3] = W[:, :3]   # 중요한 입력 채널 3개(1%)만 원래 정밀도\n    print(f\"int{bits}: 출력 오차 {out_err(plain):.4f} → 1% 채널 보존 {out_err(keep):.4f}\")\nprint(\"8B 가중치: bf16 16.1GB, int8 8.0GB, int4 4.0GB → decode 한 걸음 4.8 / 2.4 / 1.2 ms\")",
+        "note": "직접 쓴 코드. AWQ 알고리즘 자체가 아니라 '큰 활성값 채널에 닿는 가중치가 출력 오차를 지배한다'는 관찰만 재현한다.\n\n실행 결과:\nint8: 출력 오차 0.0099 → 1% 채널 보존 0.0018\nint4: 출력 오차 0.1812 → 1% 채널 보존 0.0323\nint3: 출력 오차 0.4208 → 1% 채널 보존 0.0748\n8B 가중치: bf16 16.1GB, int8 8.0GB, int4 4.0GB → decode 한 걸음 4.8 / 2.4 / 1.2 ms"
+      },
+      "pitfalls": [
+        "슬라이드의 'fp8 e4m3 범위 [−240, 240]' 은 지수 바이어스가 다른 FNUZ 변형의 값이다. NVIDIA H100 이 쓰는 OCP 표준 E4M3 의 최댓값은 ±448 이다(노트 보충 정정).",
+        "가중치만 양자화하면 decode 는 빨라지지만 prefill 은 거의 그대로다 — prefill 은 계산에 묶여 있어 바이트가 아니라 FLOPs 가 시간을 정한다.",
+        "AWQ 의 '1% 를 fp16 으로'는 개념 설명이다. 실제 구현은 혼합 정밀도 대신 채널 배율 조정(그림 c)으로 하드웨어 효율을 지킨다."
+      ],
+      "check": [
+        {
+          "q": "Llama 2 13B 가중치를 int4 로 바꾸면 B = 1 생성 걸음의 상한 시간은? (KV 는 무시)",
+          "a": "130.2억 × 0.5바이트 = 6.5GB → 6.5e9 ÷ 3.35e12 ≈ 1.9ms(bf16 의 7.8ms 대비 4배)."
+        },
+        {
+          "q": "QAT 와 PTQ 의 장단점을 한 줄씩.",
+          "a": "QAT: 가중치가 양자화 오차에 적응해 품질이 좋지만 대규모 학습이 다시 필요하다. PTQ: 학습 후 표본 데이터만으로 싸게 하지만 비트를 많이 내리면 품질이 떨어져 GPTQ·AWQ 같은 보정이 필요하다."
+        }
+      ]
+    },
+    {
+      "start": 4040,
+      "title": "가지치기와 증류 — 큰 모델을 뜯어내고 다시 고친다 (NVIDIA Minitron)",
+      "points": [
+        "아이디어: 비싼 모델에서 덜 중요한 부분(층·헤드·은닉 차원)을 뜯어내 싸게 만들고, 망가진 부분은 추가 학습으로 고친다.",
+        "Minitron 절차: 작은 보정 데이터(1024 샘플)로 중요도를 추정 → 순위 → 잘라내기 → 원래 모델을 선생으로 증류, 이를 반복.",
+        "15B 모델(Nemotron-4)을 8B 로 줄였을 때 정확도 손실이 작고, 학습 비용은 처음부터 학습하는 것보다 훨씬 적다(그래프: '40배 싸고 9% 더 좋다').",
+        "두 레시피: 처음부터(빠른 구조를 정하고 학습) 대 증류(빠른 구조를 정하고, 원래 모델로 가중치를 초기화하고, 증류로 고친다).",
+        "중요도는 보정 데이터에서 활성값 크기로 본다 — 늘 0 인 '죽은 유닛'은 빼고, 늘 큰 값이면서 변동이 없는 유닛은 편향으로 흡수할 수 있다(질의응답)."
+      ],
+      "on_screen": "def model_pruning(): 'Key idea: just rip out parts of an expensive model to make it cheaper …and then fix it up'. Paper from NVIDIA [Muralidharan+ 2024] 그림: 1. Trained LLM → 2. Estimate importance → 3. Rank → 4. Trim → 5. Distillation(Iterative 화살표). Algorithm: 1. Identify important {layer, head, hidden dimension} on a small calibration dataset (1024 samples) 2. Remove unimportant layers to get a smaller model 3. Distill the original model into pruned model. 그래프: MMLU Score(%) vs Cost to train the model (trillion tokens) — Minitron 8B(약 64)가 Nemotron-4 15B 옆, Nemotron-3 8B(약 54)에서 Minitron 8B 로 '40x cheaper, 9% better', Minitron 4B, Mistral 7B, Gemma 7B, LLaMA-3 8B, LLaMA-2 7B, Phi-2, Gemma 2B; 범례 Minitron (resulting models) / Pruning start / Pruning Path / Other Models. 'Summary: reduce inference complexity without hurting accuracy / From scratch recipe: 1. Define faster model architecture 2. Train faster model / Distillation recipe: 1. Define faster model architecture 2. Initialize weights using original model (which has a different architecture) 3. Repair faster model (distillation)'.",
+      "explain": [
+        "가지치기(pruning)는 강사의 말로 '거친 방법인데 의외로 잘 된다'. 나무 가지치기처럼 잘 자란 큰 모델에서 별로 일하지 않는 가지를 쳐내고, 쳐낸 자리가 아물도록 조금 더 키운다. 처음부터 작은 모델을 학습하는 대신 큰 모델이 이미 배운 것을 물려받으니 훨씬 적은 학습으로 좋은 작은 모델을 얻는다는 계산이다. 소개된 것은 NVIDIA 의 Minitron 논문(Muralidharan 2024)이다. 절차는 다섯 단계다. 학습된 큰 모델에서, 작은 보정 데이터셋(1024 샘플)을 흘려 층·어텐션 헤드·은닉 차원 각각의 중요도를 추정하고, 순위를 매겨, 덜 중요한 것을 잘라낸 뒤, 원래 모델을 선생으로 삼아 잘린 모델을 증류로 다시 학습시킨다. 이 과정을 여러 번 반복해 점점 작게 만든다.",
+        "중요도는 어떻게 재나? 질의응답에서 강사는 보정 데이터를 통과시키며 활성값의 크기를 보는 것이 기본이라고 답한다. 어떤 유닛은 거의 늘 0 근처(죽은 유닛)라 빼도 출력이 거의 안 변하고, 어떤 유닛은 크게 반응하니 남겨야 한다. 학생이 '어떤 뉴런이 늘 100 이라면 그건 의미 있는 건가, 학습의 부산물인가'라고 묻자, 강사는 평균만이 아니라 분산도 봐야 한다고 답한다. 늘 100 인 유닛을 그냥 빼면 모든 것이 망가지지만, 평균이 크고 분산이 작다면 사실상 상수이므로 다음 층의 편향(bias)으로 흡수하고 유닛은 지울 수 있다. 일부 채널이 다른 채널보다 훨씬 크게 활성화된다는 것은 이론이 아니라 실제 학습된 모델에서 관찰되는 사실이고, 가지치기와 AWQ 가 모두 이 관찰에 기대고 있다.",
+        "결과 그래프는 학습에 쓴 토큰 수(비용)를 가로축, MMLU 를 세로축에 놓는다. 15B 모델에서 출발한 가지치기 경로가 8B, 4B 모델로 내려가는데, Minitron 8B 는 처음부터 학습한 Nemotron-3 8B 보다 학습 비용이 40배 적으면서 MMLU 가 9% 높고, 비슷한 크기의 다른 공개 모델들과 견줄 만하다. 강사는 이 절을 두 가지 레시피로 정리한다. 처음부터 레시피는 빠른 아키텍처를 정하고 그것을 학습한다. 증류 레시피는 빠른 아키텍처를 정하되, 원래 모델(구조가 다를 수 있다)의 가중치로 초기화해 일종의 '프랑켄슈타인' 모델을 만들고, 증류로 고친다. 9·10장의 KV 캐시 줄이기도 이 증류 레시피와 결합할 수 있다 — 예컨대 MHA 모델을 GQA 로 바꾸고 짧게 다시 학습하는 업트레이닝이 그 예다.",
+        "증류는 노트 보충으로 식을 적어 두자. 학생 모델이 정답 토큰만 맞히는 대신 선생 모델의 다음 토큰 분포 전체를 따라가도록 KL 발산을 줄인다. 선생 분포에는 '정답은 아니지만 그럴듯한 다른 토큰'에 대한 정보까지 들어 있어 정답 레이블보다 학습 신호가 풍부하다. 아래 코드는 은닉 유닛 크기가 제각각인 작은 MLP 에서, 보정 데이터의 평균 활성 크기로 고른 유닛을 남긴 경우와 무작위로 남긴 경우의 출력 오차를 비교한다. 절반을 남길 때 활성 기준은 오차 0.14, 무작위는 0.75 로, 중요도 추정만으로도 다시 학습하기 전 출발점이 크게 달라진다."
+      ],
+      "formulas": [
+        {
+          "expr": "importance(i) = 평균_{보정 데이터} |a_i|",
+          "meaning": "a_i 는 은닉 유닛(또는 헤드·층) i 의 활성값. 보정 데이터 1024 샘플에서 평균 크기를 재 순위를 매긴다. Minitron 은 층·헤드·은닉 차원·임베딩 차원에 각각 이런 점수를 쓴다."
+        },
+        {
+          "expr": "L_distill = KL( p_teacher(·|x) ‖ p_student(·|x) )",
+          "meaning": "노트 보충. p_teacher·p_student 는 같은 문맥 x 에서 선생(원래 모델)과 학생(잘린 모델)이 낸 다음 토큰 분포. 정답 하나 대신 분포 전체를 맞추도록 학생을 학습시킨다."
+        }
+      ],
+      "example": {
+        "title": "MLP 은닉 폭을 줄이면 무엇이 얼마나 줄어드나",
+        "body": "Llama 3 8B 한 층의 MLP: 3 × D × F = 3 × 4096 × 14336 ≈ 1.76억 파라미터.\nF 를 9216 으로 줄이면 3 × 4096 × 9216 ≈ 1.13억 — 층당 36% 감소, 32층이면 약 20억 파라미터(bf16 4GB)가 빠진다.\n메모리에 묶인 decode 에서는 가중치 바이트가 곧 시간이므로, 16.1GB → 약 12GB 로 걸음 시간도 약 4분의 3 이 된다. 단 KV 캐시는 MLP 와 무관해 그대로다 — KV 를 줄이려면 층 수나 헤드를 잘라야 한다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "import numpy as np\nrng = np.random.default_rng(0)\nD, F, n = 64, 256, 1024                               # 모델 차원, MLP 은닉, 보정 샘플 1024개\nW_up = rng.normal(0, 1, (D, F)) * rng.lognormal(0, 1, F)   # 은닉 유닛마다 크기가 제각각\nW_down = rng.normal(0, 0.1, (F, D))\nX = rng.normal(size=(n, D))                           # 보정(calibration) 데이터\n\ndef mlp(X, keep):\n    h = np.maximum(X @ W_up[:, keep], 0)              # ReLU 은닉\n    return h @ W_down[keep]\n\nfull = mlp(X, np.arange(F))\nscore = np.abs(np.maximum(X @ W_up, 0)).mean(axis=0)  # 중요도 = 보정 데이터에서 평균 활성 크기\nfor frac in (0.75, 0.5, 0.25):\n    k = int(F * frac)\n    by_act = np.argsort(score)[-k:]                   # 활성이 큰 유닛만 남김\n    rand = rng.choice(F, k, replace=False)\n    err = lambda keep: np.linalg.norm(mlp(X, keep) - full) / np.linalg.norm(full)\n    print(f\"keep {frac:.0%}: 활성 기준 오차 {err(by_act):.3f}  무작위 오차 {err(rand):.3f}\")",
+        "note": "직접 쓴 코드. 증류(다시 학습) 단계는 없이, 잘라낸 직후의 출력 오차만 비교한다.\n\n실행 결과:\nkeep 75%: 활성 기준 오차 0.056  무작위 오차 0.381\nkeep 50%: 활성 기준 오차 0.139  무작위 오차 0.747\nkeep 25%: 활성 기준 오차 0.308  무작위 오차 0.893"
+      },
+      "pitfalls": [
+        "잘라낸 직후의 모델은 '쓸 만하지 않다'. 증류로 고치는 단계가 빠지면 가지치기는 성립하지 않는다.",
+        "평균 활성이 크다고 다 중요한 것은 아니다 — 분산이 거의 없으면 상수라 편향으로 흡수할 수 있다(질의응답)."
+      ],
+      "check": [
+        {
+          "q": "Minitron 의 다섯 단계를 순서대로 말하라.",
+          "a": "학습된 큰 모델 → 보정 데이터로 중요도 추정 → 순위 매기기 → 잘라내기 → 원래 모델을 선생으로 증류(반복)."
+        },
+        {
+          "q": "처음부터 레시피와 증류 레시피의 차이는?",
+          "a": "둘 다 빠른 아키텍처를 먼저 정하지만, 처음부터 레시피는 무작위 초기화에서 학습하고, 증류 레시피는 원래 모델의 가중치로 초기화한 뒤 원래 모델을 선생으로 증류해 고친다 — 학습 비용이 훨씬 적다."
+        }
+      ]
+    },
+    {
+      "start": 4316,
+      "title": "추측 디코딩 — 작은 모델이 쓰고 큰 모델이 한꺼번에 검사한다 (정확도 손실 0)",
+      "points": [
+        "비대칭: 주어진 문장을 채점(prefill 처럼 병렬)하는 것이 한 토큰씩 생성하는 것보다 훨씬 빠르다.",
+        "싼 초안 모델 p 가 토큰 K 개(예: 4)를 생성 → 목표 모델 q 가 K+1 위치의 분포를 한 번에 계산 → 앞에서부터 확률 min(1, q/p) 로 수락.",
+        "거절되면 잔차 분포 (q − p)₊ 를 정규화해 한 토큰 뽑고 멈춘다. 모두 수락되면 q 에서 덤으로 한 토큰 더. 결과는 목표 모델에서 뽑은 것과 분포가 정확히 같다.",
+        "Chen 2023(Chinchilla 70B): XSum 탐욕 14.1 → 7.00ms/토큰(2.01배), HumanEval 핵 샘플링 2.46배. 초안 수 K 는 3~4 근처가 최적.",
+        "실전: 70B 목표에 8B 초안, 8B 목표에 1B 초안. 초안은 증류로 목표와 닮게. 개선판: Medusa(여러 토큰 병렬 예측 머리), EAGLE(목표 모델의 상위 특징 사용)."
+      ],
+      "on_screen": "def speculative_sampling(): 'Recall the two stages of inference: Prefill: given a sequence, encode tokens in parallel (compute-bound) [note: also gives you probabilities] / Generation: generate one token at a time (memory-bound). In other words, checking is faster than generation.' 'Speculative sampling [Leviathan+ 2022][Chen+ 2023]: Use a cheaper draft model p to guess a few tokens (e.g., 4) / Evaluate with target model q (process tokens in parallel), and accept if it looks good'. 데모 영상: WITHOUT / WITH SPECULATIVE DECODING, 'My favorite thing about fall is the change in color…'. Algorithm 2 Speculative Sampling (SpS) with Auto-Regressive Target and Draft Models: 'Given lookahead K and minimum target sequence length T…; while n < T do; for t = 1 : K do Sample draft auto-regressively x̃_t ~ p(x|x_1,…,x_n,x̃_1,…,x̃_{t−1}); In parallel, compute K + 1 sets of logits from drafts x̃_1,…,x̃_K: q(x|x_1..x_n), …, q(x|x_1..x_n,x̃_1..x̃_K); for t = 1 : K do Sample r ~ U[0,1]; if r < min(1, q(x|…,x̃_{t−1})/p(x|…,x̃_{t−1})), then Set x_{n+t} ← x̃_t and n ← n + 1; else sample x_{n+t} ~ (q(x|…) − p(x|…))₊ and exit for loop; If all tokens x_{n+1},…,x_{n+K} are accepted, sample extra token x_{n+K+1} ~ q(x|x_1,…,x_n,x_{n+K}) and set n ← n + 1'. 'This is modified rejection sampling with proposal p and target q / Modification: always generate at least one candidate (rejection sampling will keep looping) / Key property: guaranteed to be an exact sample from the target model! / Proof by example: assume two vocabulary elements (A, B) …'. 표: ArS (Greedy) vs SpS (Greedy) XSum (ROUGE-2) 0.157/0.156, 14.1ms/Token 1× vs 7.00ms/Token 2.01×; ArS (Nucleus) vs SpS (Nucleus) HumanEval (100 Shot) 45.1%/47.0%, 14.1ms/Token 1× vs 5.73ms/Token 2.46×. 그래프 셋 vs Number of draft tokens (K, 0~7): Mean Sampling Time (128 tokens, ms — 1800 에서 K=3~4 근처 최저 약 700~950), Acceptance rate(HumanEval 1.0 → 약 0.67, XSum → 약 0.45), Total loop time(14 → 28ms 직선 증가). 'In practice: Target model has 70B parameters, draft model has 8B parameters / Target model has 8B parameters, draft model has 1B parameters / Try to make draft model as close to target (distillation)'. 'Extensions to improve the draft model: Medusa: draft model generates multiple tokens in parallel [Cai+ 2024] / EAGLE: draft model takes high-level features from target model [Li+ 2024]'.",
+      "explain": [
+        "지금까지의 방법은 모두 정확도를 조금 내주는 손실 있는 지름길이었다. 추측 디코딩(speculative decoding/sampling)은 정확도를 하나도 잃지 않는 우아한 방법이다. 출발점은 5·6장의 비대칭이다. 문장이 주어지면 모든 위치의 확률을 한 번에 계산할 수 있고(prefill 처럼 병렬, 계산에 묶임), 생성은 한 토큰씩이다(메모리에 묶임). 즉 '검사는 생성보다 빠르다'. 비유하면 신입 사원(초안 모델)이 보고서 몇 줄을 빠르게 써 오고, 부장(목표 모델)은 한 번 훑어보며 어디까지 쓸 만한지 표시하는 것이다. 부장이 한 줄씩 직접 쓰는 것보다 빠르고, 최종 문서는 부장이 쓴 것과 같은 품질이다. 생성할 때 큰 모델은 어차피 메모리에 묶여 연산이 놀고 있으므로, 토큰 하나 대신 K+1 개를 한 번에 검사해도 걸음 시간이 거의 늘지 않는다.",
+        "알고리즘(Leviathan 2022, Chen 2023 이 거의 동시에 냈다)은 이렇다. 작은 초안 모델 p 로 토큰 K 개를 차례로 뽑는다. 목표 모델 q 에 문맥과 초안 K 개를 한 번에 넣어 K+1 개 위치의 분포를 병렬로 얻는다. 이제 첫 초안 토큰부터 균등 난수 r 을 뽑아 r < min(1, q(x̃)/p(x̃)) 이면 수락한다. 목표 모델이 그 토큰을 초안 모델보다 더 그럴듯하게 보면(q ≥ p) 무조건 수락하고, 덜 그럴듯하게 보면 그 비율만큼만 수락한다. 거절되는 순간 잔차 분포 (q − p)₊ — q 가 p 보다 큰 부분만 남겨 정규화한 것 — 에서 토큰 하나를 새로 뽑고 그 라운드를 끝낸다. K 개가 다 수락되면 이미 계산해 둔 마지막 위치의 q 에서 한 토큰을 덤으로 뽑는다. 그래서 목표 모델 한 번 호출로 최소 1개, 최대 K+1 개 토큰을 얻는다.",
+        "이것이 목표 모델의 분포를 정확히 지키는 이유는 수정된 기각 샘플링이기 때문이다. 보통의 기각 샘플링은 거절되면 아무것도 못 얻고 다시 시도하지만, 여기서는 거절된 확률 질량을 잔차 분포로 정확히 메워 언제나 한 토큰을 낸다. 어떤 토큰 x 가 나올 확률은 '초안이 x 를 내고 수락될 확률 min(p(x), q(x))'과 '거절된 뒤 잔차에서 x 가 뽑힐 확률'의 합이고, 계산하면 정확히 q(x) 가 된다(아래 예). 수락률은 Σ_x min(p(x), q(x)) 로, 두 분포가 겹치는 정도다. Chen 2023 은 Chinchilla 70B 를 목표로 XSum 요약(탐욕)에서 토큰당 14.1ms → 7.00ms(2.01배), HumanEval 코드(핵 샘플링)에서 5.73ms(2.46배)를 냈고 품질 점수는 그대로였다. 초안 수 K 를 늘리면 루프 한 번 시간은 직선으로 늘고 수락률은 떨어지므로, 평균 생성 시간은 K = 3~4 근처에서 가장 낮다. 초안이 너무 적으면 목표 모델의 병렬 검사를 못 살리고, 너무 많으면 뒤쪽 초안이 거의 다 거절된다.",
+        "실전에서는 70B 목표에 8B 초안, 8B 목표에 1B 초안 정도를 쓰고, 초안을 목표와 최대한 닮게 하려고 증류한다. 그러니 앞 장들의 기법이 여기서도 쓰인다 — 강사의 정리로는, KV 캐시 줄이기·양자화·가지치기로 만든 빠른 모델이 마음에 들면 그걸 그대로 서비스하고, 마음에 안 들면 적어도 초안 모델로 쓰고 본 모델이 바로잡게 하면 된다. 초안 쪽 개선으로는 따로 작은 모델을 두지 않고 목표 모델에 여러 토큰을 병렬로 예측하는 머리를 다는 Medusa, 목표 모델의 상위 층 특징을 받아 초안을 만드는 EAGLE 이 화면에 소개됐다. 아래 코드는 토큰 네 개짜리 작은 분포로 이 수락 규칙을 20만 번 돌려, 나온 토큰 분포가 목표 q 와 같고 수락률이 Σmin(p,q) = 0.7 과 맞는지 확인한다."
+      ],
+      "formulas": [
+        {
+          "expr": "P(수락 | x̃) = min(1, q(x̃) / p(x̃)),   거절 시 x ~ norm( max(q − p, 0) )",
+          "meaning": "x̃ 는 초안 모델 p 가 뽑은 토큰, q 는 같은 문맥에서 목표 모델의 분포. 거절되면 q 가 p 보다 큰 부분(잔차)만 남겨 정규화한 분포에서 다시 뽑는다."
+        },
+        {
+          "expr": "P(출력 = x) = min(p(x), q(x)) + (1 − Σ_y min(p(y), q(y))) · (q(x) − p(x))₊ / Σ_y (q(y) − p(y))₊ = q(x)",
+          "meaning": "첫 항은 초안이 x 를 내고 수락될 확률, 둘째 항은 어떤 초안이든 거절된 뒤 잔차에서 x 가 뽑힐 확률. Σ(q−p)₊ = 1 − Σmin(p,q) 이므로 둘째 항이 (q(x) − p(x))₊ 가 되어 합이 q(x)."
+        },
+        {
+          "expr": "α = Σ_x min(p(x), q(x)),   E[토큰 / 목표 호출] = (1 − α^{K+1}) / (1 − α)",
+          "meaning": "α 는 토큰 하나의 수락률(= 1 − 두 분포의 총변동 거리). 위치마다 수락이 독립이고 α 가 같다는 단순화 아래, 초안 K 개일 때 목표 모델 한 번 호출로 얻는 기대 토큰 수(Leviathan 2022)."
+        }
+      ],
+      "example": {
+        "title": "어휘 두 개(A, B)로 정확성 손으로 확인 — 강의의 '예로 보는 증명'",
+        "body": "목표 q = (A 0.7, B 0.3), 초안 p = (A 0.9, B 0.1). 초안은 A 를 과대표집한다.\n• 초안이 A(확률 0.9): 수락 확률 min(1, 0.7/0.9) = 0.778 → A 수락 0.9 × 0.778 = 0.7, 거절 0.2.\n• 초안이 B(확률 0.1): q(B) > p(B) 라 항상 수락 → B 0.1.\n• 거절(0.2) 시 잔차 (q − p)₊ = (0, 0.2) → 정규화하면 B 확률 1.\n최종: P(A) = 0.7, P(B) = 0.1 + 0.2 = 0.3 = q. 수락률 α = min(0.9,0.7) + min(0.1,0.3) = 0.8.\nK = 4 면 기대 토큰 = (1 − 0.8⁵)/(1 − 0.8) = 3.36개/목표 호출."
+      },
+      "code": {
+        "lang": "python",
+        "src": "import numpy as np\nrng = np.random.default_rng(0)\nq = np.array([0.50, 0.30, 0.15, 0.05])   # 목표 모델(큰 모델)의 다음 토큰 분포\np = np.array([0.25, 0.25, 0.25, 0.25])   # 초안 모델(작은 모델)의 분포\n\ndef verify_one():\n    x = rng.choice(4, p=p)                       # 초안이 한 토큰 제안\n    if rng.random() < min(1, q[x] / p[x]):       # 확률 min(1, q/p) 로 수락\n        return x, True\n    r = np.maximum(q - p, 0); r /= r.sum()       # 거절되면 잔차 분포 (q-p)+ 에서 다시 뽑기\n    return rng.choice(4, p=r), False\n\nn = 200_000\ndraws = [verify_one() for _ in range(n)]\nemp = np.bincount([t for t, _ in draws], minlength=4) / n\nprint(\"목표 q      :\", q)\nprint(\"나온 분포    :\", emp.round(3))\nprint(\"수락률 실측  :\", round(np.mean([a for _, a in draws]), 3), \" 이론 Σmin(p,q) =\", np.minimum(p, q).sum())\na = np.minimum(p, q).sum()\nfor k in (1, 2, 4, 8):                           # 초안 k 개일 때 목표 모델 한 번 호출로 얻는 토큰 수\n    print(f\"k={k}: 기대 토큰/검증 = {(1 - a**(k+1)) / (1 - a):.2f}\")",
+        "note": "직접 쓴 코드. 위치 하나에서의 수락 규칙만 시뮬레이션한다(실제 디코딩에서는 위치마다 p, q 가 문맥에 따라 바뀐다).\n\n실행 결과:\n목표 q      : [0.5  0.3  0.15 0.05]\n나온 분포    : [0.501 0.3   0.149 0.05 ]\n수락률 실측  : 0.701  이론 Σmin(p,q) = 0.7000000000000001\nk=1: 기대 토큰/검증 = 1.70\nk=2: 기대 토큰/검증 = 2.19\nk=4: 기대 토큰/검증 = 2.77\nk=8: 기대 토큰/검증 = 3.20"
+      },
+      "diagram": {
+        "title": "추측 디코딩 한 라운드",
+        "code": "flowchart LR\n  A[문맥] --> D[초안 p 로 K 토큰 순차 생성<br/>작고 싸다]\n  D --> V[목표 q 가 K+1 위치를 한 번에 계산<br/>병렬 검사]\n  V --> C{앞에서부터 r < min 1, q/p ?}\n  C -->|수락| C\n  C -->|거절| R[잔차 q-p 에서 1개 뽑고 종료]\n  C -->|K 개 모두 수락| E[q 에서 덤 1개]\n  R --> A\n  E --> A"
+      },
+      "pitfalls": [
+        "'추측'이라는 이름과 달리 결과 품질은 근사가 아니다. 목표 모델에서 직접 뽑은 것과 분포가 정확히 같다(탐욕 디코딩이면 출력이 완전히 같다).",
+        "노트 보충: 배치가 커서 목표 모델이 이미 계산에 묶여 있으면 K+1 위치 검사가 더는 공짜가 아니라 이득이 줄거나 사라진다. 추측 디코딩은 작은 배치·저지연 서비스에서 가장 빛난다.",
+        "수락률은 문맥마다 다르다 — 코드처럼 예측 가능한 텍스트(HumanEval)는 높고, 자유 요약(XSum)은 K 가 늘수록 빨리 떨어진다."
+      ],
+      "check": [
+        {
+          "q": "q = (0.5, 0.5), p = (0.8, 0.2) 일 때 수락률과 K = 2 의 기대 토큰 수는?",
+          "a": "α = min(0.8,0.5) + min(0.2,0.5) = 0.7. 기대 토큰 = (1 − 0.7³)/(1 − 0.7) = 0.657/0.3 ≈ 2.19."
+        },
+        {
+          "q": "보통의 기각 샘플링과 무엇이 다른가?",
+          "a": "보통은 거절되면 아무것도 얻지 못하고 다시 시도하지만, 추측 디코딩은 거절된 질량을 잔차 분포 (q − p)₊ 로 메워 언제나 최소 한 토큰을 낸다. 그래서 목표 호출 한 번이 헛되지 않는다."
+        }
+      ]
+    },
+    {
+      "start": 4616,
+      "title": "동적 워크로드 ① — 연속 배치(Orca)와 선택적 배치",
+      "points": [
+        "실서비스의 요청은 ① 도착 시각이 다르고(먼저 온 요청을 기다리게 하면 손해) ② 접두사를 공유하며(시스템 프롬프트, 한 프롬프트에 여러 샘플) ③ 길이가 다르다(패딩은 낭비).",
+        "학습은 배치 × 길이의 꽉 찬 블록이지만, 추론은 들쭉날쭉한(ragged) 배열이다.",
+        "Orca 의 반복 단위 스케줄링(연속 배치): 한 걸음씩 디코딩하고, 끝난 시퀀스는 즉시 빼고 새 요청은 도착하는 대로 배치에 넣는다.",
+        "선택적 배치: 길이가 다른 시퀀스([3,H], [9,H], [5,H])는 어텐션만 시퀀스별로 따로 계산하고, MLP 같은 나머지는 모두 이어 붙여 [3+9+5, H] 한 덩어리로 계산한다."
+      ],
+      "on_screen": "'Handling dynamic workloads: Batching over sequences in live traffic is tricky because: 1. Requests arrive at different times (waiting is bad for early requests) 2. Sequences have shared prefixes (e.g., system prompts, generating multiple samples) 3. Sequences have different lengths (padding is inefficient)'. def continuous_batching(): [Orca: A Distributed Serving System for Transformer-Based Generative Models][talk]. 'Problem: Training: get a dense block of tokens (batch size x sequence length) / Inference: requests arrive and finish at different times, so you have a ragged array'. 손그림 두 장: T1~T8 열 × S1~S4 행 격자 — 노란 칸(프롬프트), 파란 칸(생성 토큰), 빨간 END 칸, 끝난 행 자리에 새 시퀀스(S5, S6…)가 들어온 모습. 'Solution: iteration-level scheduling — Decode step by step / Add new requests to the batch as they arrive (so don't have to wait until generation completes)'. 'Problem: Batching only works when all sequences have the same dimensionality (right?) / But each request might have a different length'. 'Solution: selective batching — Training: when all sequences of the same length, operate on a B x S x H tensor / But we might have different lengths: [3, H], [9, H], [5, H], etc. / Attention computation: process each sequence separately / Non-attention computation: concatenate all the sequences together to [3 + 9 + 5, H]'.",
+      "explain": [
+        "지금까지의 분석은 '같은 길이의 시퀀스 B 개가 같이 출발해 같이 끝난다'는 깔끔한 그림이었다. 실제 웹 서비스는 그렇지 않다. 사용자들이 아무 때나 들어오고, 상당수가 같은 시스템 프롬프트를 앞에 달고 있으며, 프롬프트도 답도 길이가 제각각이다. 학습이라면 같은 길이로 잘라 만든 배치 × 길이의 꽉 찬 블록을 쓰지만, 추론에서는 요청이 서로 다른 때 시작해 서로 다른 때 끝나는 들쭉날쭉한 배열이 된다. 6장에서 본 대로 생성 단계 MLP 의 효율은 동시에 처리하는 요청 수 B 에 달려 있으니, 이 들쭉날쭉한 흐름을 어떻게 꽉 찬 배치로 만드느냐가 서빙의 핵심 문제다.",
+        "가장 단순한 방법은 정적 배치다 — 요청을 B 개 모아 한꺼번에 시작하고, 묶음의 모든 요청이 끝나야 다음 묶음을 받는다. 문제는 둘이다. 먼저 온 요청은 묶음이 찰 때까지 기다려야 하고, 묶음 안에서 짧은 답이 일찍 끝나도 그 자리는 가장 긴 답이 끝날 때까지 비어 있다. Orca(Yu 2022)가 내놓은 반복 단위 스케줄링, 흔히 연속 배치라 부르는 방법은 스케줄링 단위를 '요청'에서 '디코딩 한 걸음'으로 바꾼다. 매 걸음 배치 안의 모든 시퀀스에 한 토큰씩 생성하고, 끝(END)에 닿은 시퀀스는 그 자리에서 빼고, 새로 도착한 요청은 다음 걸음부터 빈자리에 넣는다. 손그림의 격자에서 빨간 END 칸 다음 열에 새 시퀀스가 들어와 있는 모습이 이것이다. 배치는 늘 거의 꽉 차 있고, 새 요청은 남의 생성이 끝날 때까지 기다리지 않는다.",
+        "그런데 배치는 원래 모든 시퀀스의 모양이 같아야 하나의 텐서로 묶을 수 있지 않나? 시퀀스 길이가 3, 9, 5 라면 B × S × H 텐서가 안 된다. Orca 의 두 번째 아이디어인 선택적 배치는 연산마다 다르게 처리한다. 어텐션은 시퀀스 길이에 따라 계산 모양 자체가 달라서(3×3 과 9×9 를 한 텐서로 공유할 수 없다) 시퀀스별로 따로 계산한다. 반면 MLP·투영·정규화처럼 토큰마다 독립인 연산은 시퀀스 경계와 무관하므로, 모든 시퀀스의 토큰을 이어 붙여 [3+9+5, H] = [17, H] 하나의 '거대 시퀀스'로 만들어 큰 행렬곱 한 번에 처리한다. FLOPs 의 대부분이 이쪽이므로 패딩 없이 배치 효율을 얻는다. 6장의 분석이 바로 이 근거다 — MLP 는 행이 많을수록 좋고, 어텐션은 어차피 시퀀스마다 따로다.",
+        "아래 코드는 생성 길이가 20~400 으로 제각각인 요청 64개를 자리 8개로 처리할 때 정적 배치와 연속 배치의 걸음 수를 비교한다. 정적 배치는 묶음마다 가장 긴 요청을 기다리느라 2,900 걸음에 자리 활용률 39% 이고, 연속 배치는 1,300 걸음에 86% 다. 같은 GPU 로 처리량이 두 배 넘게 오른다. 노트 보충으로, 요즘 엔진은 여기에 '청크 prefill'을 더한다. 긴 프롬프트의 prefill 이 한 걸음에 통째로 끼면 그 걸음의 decode 토큰들이 다 같이 늦어지므로, prefill 을 몇 백 토큰 단위로 쪼개 decode 와 같은 걸음에 섞는다. 계산에 묶인 prefill 과 메모리에 묶인 decode 를 한 걸음에 섞으면 GPU 의 계산과 대역폭을 동시에 쓰게 된다는 장점도 있다."
+      ],
+      "example": {
+        "title": "선택적 배치 대 패딩",
+        "body": "시퀀스 길이 3, 9, 5, 은닉 H.\n패딩 방식: 가장 긴 9 에 맞춰 3 × 9 = 27행 → 실제 토큰 17 개, 10 행(37%)은 0 을 곱하는 낭비.\n선택적 배치: MLP 에는 [17, H] 를 그대로 넣는다 — 낭비 0.\n어텐션은 3×3, 9×9, 5×5 점수를 시퀀스별로 계산(합 9 + 81 + 25 = 115 칸; 패딩이면 3 × 81 = 243 칸).\ndecode 단계에서는 시퀀스마다 새 토큰 1개씩이라 MLP 입력이 [B, H] 이고, 어텐션은 각자 길이가 다른 KV 캐시를 읽는다 — 다음 장의 PagedAttention 이 이 '각자 다른 길이'의 메모리 관리를 맡는다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "import random\nrandom.seed(0)\nlens = [random.choice([20, 50, 100, 400]) for _ in range(64)]   # 요청마다 생성할 토큰 수\nB = 8                                                            # 한 걸음에 처리할 자리 수\n\n# 정적 배치: 8개씩 묶고, 묶음에서 가장 긴 요청이 끝날 때까지 다 같이 기다린다\nstatic_steps = sum(max(lens[i:i+B]) for i in range(0, len(lens), B))\n\n# 연속 배치(반복 단위 스케줄링): 끝난 자리는 다음 걸음에 바로 새 요청으로 채운다\nqueue, slots, steps = list(lens), [], 0\nwhile queue or slots:\n    while queue and len(slots) < B:\n        slots.append(queue.pop(0))\n    slots = [r - 1 for r in slots if r - 1 > 0]                  # 모두 한 토큰씩 생성\n    steps += 1\nuseful = sum(lens)\nfor name, s in [(\"static\", static_steps), (\"continuous\", steps)]:\n    print(f\"{name:10s}: {s:5d} steps, slot utilization {useful/(s*B):.0%}\")",
+        "note": "직접 쓴 코드. prefill 비용과 요청 도착 시각은 무시하고 '자리가 비자마자 채운다'는 효과만 본다.\n\n실행 결과:\nstatic    :  2900 steps, slot utilization 39%\ncontinuous:  1300 steps, slot utilization 86%"
+      },
+      "pitfalls": [
+        "연속 배치는 처리량을 올리지만, 배치가 늘 꽉 차 있으므로 개별 요청의 걸음 시간(지연)은 배치 크기만큼 길어진다 — 7장의 절충은 그대로다.",
+        "선택적 배치에서 어텐션을 '따로' 계산한다는 것이 커널을 시퀀스 수만큼 따로 띄운다는 뜻은 아니다. 실제로는 길이가 다른 시퀀스를 한 커널에서 처리하는 가변 길이 어텐션 커널(FlashAttention varlen 등)을 쓴다."
+      ],
+      "check": [
+        {
+          "q": "정적 배치에서 생성 길이가 (10, 10, 10, 200) 인 네 요청을 한 묶음으로 돌리면 자리 활용률은?",
+          "a": "유용한 토큰 230, 걸음 수 200 × 자리 4 = 800 → 약 29%. 연속 배치라면 짧은 세 자리가 10 걸음 뒤 새 요청으로 채워진다."
+        },
+        {
+          "q": "선택적 배치에서 MLP 는 이어 붙이고 어텐션은 따로 계산하는 이유는?",
+          "a": "MLP 는 토큰마다 독립이라 시퀀스 경계가 상관없고, 이어 붙이면 큰 행렬곱 하나가 되어 효율이 좋다. 어텐션은 시퀀스 안의 토큰끼리만 섞여야 하고 길이마다 계산 모양이 달라 한 텐서로 공유할 수 없다."
+        }
+      ]
+    },
+    {
+      "start": 4760,
+      "title": "동적 워크로드 ② — PagedAttention(vLLM): KV 캐시를 운영체제처럼 페이지로, 그리고 강의 정리",
+      "points": [
+        "예전 방식: 요청이 오면 '프롬프트 + 최대 길이'만큼 KV 캐시 자리를 연속으로 예약 → 내부 단편화(예약했지만 안 쓴 자리)와 외부 단편화(요청 사이의 쓸 수 없는 틈).",
+        "PagedAttention(Kwon 2023): 시퀀스의 KV 캐시를 고정 크기 블록으로 나눠 물리 메모리 아무 데나 두고, 블록 표로 논리 순서를 추적한다 — 운영체제의 페이징.",
+        "블록 단위 공유: 같은 시스템 프롬프트의 KV 를 여러 요청이 한 벌만 두고 같이 쓰고, 한 프롬프트에서 여러 답을 뽑을 때 접두사 블록을 공유한다.",
+        "갈라질 때는 블록 단위 쓰기 시 복사(copy-on-write) — 참조 수가 2 인 블록에 쓰려 하면 그때 복사한다.",
+        "정리: 추론은 메모리에 묶이고 동적이다. 모든 기법의 원리는 '정확도를 크게 해치지 않으면서 KV 캐시를 줄인다'. 새 아키텍처가 큰 잠재력(강사 의견)."
+      ],
+      "on_screen": "def paged_attention(): 'Paper that introduced vLLM in addition to PagedAttention [Kwon+ 2023]'. 'Previous status quo: Request comes in / Allocate section of KV cache for prompt and response (up to a max length)'. 그림: 'Four score and seven years ago our fathers brought forth <resv> …' — 7 KV cache states for request A's prompt, 1 slot for generated token, 2 slots future used (reserved), 2038 slots never used (internal fragmentation), External fragmentation, 3 KV cache states for request B's prompt('You only live once'), 1 slot future used (reserved), 507 slots never used (internal fragmentation). 'Problem: fragmentation (what happens to your hard drive) — But this is wasteful since we might generate much fewer tokens (internal fragmentation) / Might be extra unused space between sections (external fragmentation)'. 'Solution: PagedAttention (remember operating systems) — Divide the KV cache of a sequence into non-contiguous blocks': Query vector 'forth' → Key and value vectors Block 0 'Four score and seven', Block 1 'years ago our fathers', Block 2 'brought forth'. 'Two requests share the KV caches': Request A(Four score and seven / years ago our fathers / brought)와 Request B(It was the best / of times)의 Logical KV blocks 가 Physical KV blocks(Block 0~8)에 흩어져 놓인 그림. 'In general, multiple types of sharing KV caches across sequences': Sharing the system prompt(Sequence A Prompt / Sequence B Prompt: 'Translate English to French:'), Sample multiple responses per prompt (e.g., for program synthesis). 'Solution: share prefixes, copy-on-write at the block level' — Sample A1/A2, Ref count: 2 → 1, Copy-on-write, 'years ago our fathers' / 'years ago our mothers'. 'Other vLLM optimizations: Kernel to fuse block read and attention (reduce kernel launch overhead) / Use latest kernels (FlashAttention, FlashDecoding) / Use CUDA graphs to avoid kernel launch overhead'. 'Summary: use ideas from operating systems (paging) to make use of memory for dynamic workloads'. 최종 Summary: Inference is important (actual use, evaluation, reinforcement learning) / Different characteristics compared to training (memory-bound, dynamic) / Techniques: new architectures, quantization, pruning/distillation, speculative sampling / Ideas from systems (speculative execution, paging) / New architectures have huge potential for improvement.",
+      "explain": [
+        "연속 배치로 요청이 수시로 들어오고 나가면, 각 요청의 KV 캐시를 GPU 메모리 어디에 둘지가 문제가 된다. 예전 엔진은 요청이 오면 그 요청이 쓸 수 있는 최대 길이(예: 최대 2,048 토큰)만큼 연속된 자리를 통째로 예약했다. 얼마나 길게 생성할지 미리 모르기 때문이다. 화면의 그림에서 요청 A 는 프롬프트 7칸을 쓰고 생성 중인 1칸과 곧 쓸 2칸 외에 2,038칸이 끝내 쓰이지 않는다. 이것이 내부 단편화다. 또 요청들의 예약 구역 사이에는 너무 작아서 새 요청을 넣을 수 없는 틈이 생기는데, 이것이 외부 단편화다. 강사는 예전 하드디스크 조각 모음을 떠올리라고 한다. 8장에서 계산했듯 동시 시퀀스 수가 처리량을 정하는데, 메모리의 절반 넘게를 빈자리로 묶어 두면 배치가 그만큼 작아진다.",
+        "vLLM 논문(Kwon 2023)을 쓴 사람들은 시스템 연구자라 이 문제를 이미 풀어 본 적이 있었다 — 운영체제의 가상 메모리 페이징이다. PagedAttention 은 시퀀스의 KV 캐시를 고정 크기 블록(그림은 토큰 4개, 실제로는 보통 16)으로 나누고, 블록을 물리 메모리 아무 데나 둔다. 각 시퀀스는 '논리 블록 0, 1, 2 가 물리 블록 7, 1, 3 에 있다'는 블록 표만 들고 있다. 블록 안에서는 토큰이 정렬돼 있어 규칙성이 유지되고, 블록이 꽉 차면 그때 새 블록 하나를 받는다. 그러면 낭비는 시퀀스마다 마지막 블록의 빈칸뿐이고(블록 크기 − 1 이하), 외부 단편화는 블록 크기가 모두 같아 사라진다. 어텐션 커널은 블록 표를 따라 흩어진 블록에서 키와 값을 읽어 오는데, vLLM 은 이 블록 읽기와 어텐션을 한 커널로 융합하고, FlashAttention·FlashDecoding 같은 최신 커널과 커널 실행 지연을 없애는 CUDA graph 를 함께 쓴다.",
+        "페이징의 또 하나의 선물이 공유다. 많은 요청이 같은 시스템 프롬프트로 시작한다면, 그 프롬프트의 KV 블록을 한 번만 계산해 한 벌만 두고 모든 요청의 블록 표가 같은 물리 블록을 가리키게 하면 된다. 한 프롬프트에서 여러 답을 뽑는 경우(코드 생성에서 후보 여러 개)도 프롬프트 블록을 공유한다. 문제는 갈라질 때다. 'Four score and seven years ago our' 까지 공유하던 두 샘플이 다음 토큰으로 각각 'fathers' 와 'mothers' 를 뽑으면 공유하던 마지막 블록에 서로 다른 값을 써야 한다. 그래서 블록마다 참조 수를 두고, 참조 수가 2 이상인 블록에 쓰려 하는 순간에만 복사본을 만들어(참조 수 2 → 1) 거기에 쓴다. 운영체제의 copy-on-write 그대로다. 같은 토큰을 뽑았다면 복사 없이 계속 공유한다. 노트 보충으로, SGLang 의 RadixAttention 은 이 접두사 공유를 기수 트리로 일반화해 요청이 끝난 뒤에도 접두사 캐시를 남겨 두고 다음 요청이 재사용하게 한다 — 같은 맥락을 계속 늘려 가는 에이전트 작업에 강하다는 1장의 평가가 여기서 온다.",
+        "강사의 마무리는 이렇다. 추론은 실제 사용·평가·강화학습 어디에나 있고, 같은 모델이라도 학습과 전혀 다른 일을 시키는 셈이라 메모리에 묶이고, 실서비스에서는 동적이다. 개선 기법은 새 아키텍처(GQA·MLA·CLA·지역 어텐션), 양자화, 가지치기·증류, 추측 샘플링으로 다양하지만 모두 '정확도를 너무 해치지 않으면서 KV 캐시(그리고 읽을 바이트)를 줄인다'는 한 원리에서 나온다. 그리고 시스템 분야의 아이디어 — 추측 실행, 페이징 — 가 실서비스 엔진에 그대로 쓰인다. 강사의 의견으로는 상태 공간 모델·선형 어텐션·확산처럼 추론을 염두에 두고 설계한 새 아키텍처에 큰 잠재력이 있다. KV 캐시와 지금의 어텐션 구조 자체가 추론에 불리하기 때문이다. 다음 시간은 Tatsu Hashimoto 의 스케일링 법칙 2부다."
+      ],
+      "formulas": [
+        {
+          "expr": "낭비(paged) ≤ 시퀀스 수 × (블록 크기 − 1),   낭비(연속 예약) = Σ (최대 길이 − 실제 생성 길이)",
+          "meaning": "블록 크기는 블록당 토큰 수. 페이징은 시퀀스마다 마지막 블록의 빈칸만 남고, 연속 예약은 최대 길이까지 미리 잡은 자리 중 안 쓴 것이 전부 낭비다(외부 단편화는 별도)."
+        }
+      ],
+      "example": {
+        "title": "블록 표 따라가기",
+        "body": "블록 크기 4. 요청 A 의 문장 'Four score and seven / years ago our fathers / brought forth' 는 10 토큰 → 논리 블록 3개.\n블록 표 A: 논리 0 → 물리 7, 논리 1 → 물리 1, 논리 2 → 물리 3(2칸 사용, 2칸 빈자리).\n요청 B 'It was the best / of times' 는 6 토큰 → 물리 5, 2(2칸 빈자리).\n쿼리 'forth' 는 블록 표대로 물리 7 → 1 → 3 을 읽어 앞 10 개 키와 내적한다.\n낭비는 A·B 각 2칸 = 4칸. 연속 예약(최대 2,048)이었다면 2,038 + 2,042 = 4,080칸 남짓이 비어 있었다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "import math, random\nrandom.seed(1)\nMAX, BLOCK = 2048, 16                     # 최대 생성 길이, 블록 하나에 담는 토큰 수\nreqs = [(random.randint(50, 600), random.randint(10, 800)) for _ in range(100)]  # (프롬프트, 실제 생성)\n\nused = sum(p + g for p, g in reqs)        # 실제로 KV 가 쓰인 토큰 자리\ncontig = sum(p + MAX for p, _ in reqs)    # 미리 '프롬프트 + 최대 길이' 만큼 연속 예약\npaged = sum(math.ceil((p + g) / BLOCK) * BLOCK for p, g in reqs)   # 필요할 때 블록 단위로\nfor name, alloc in [(\"contiguous\", contig), (\"paged(16)\", paged)]:\n    print(f\"{name:10s}: reserved {alloc:7d} slots, waste {1 - used/alloc:.1%}\")\n\nshared = 1000                              # 같은 시스템 프롬프트 1000토큰을 100개 요청이 공유\nprint(\"prefix copies:\", 100 * shared, \"slots → shared blocks:\", math.ceil(shared / BLOCK) * BLOCK)",
+        "note": "직접 쓴 코드. 길이를 무작위로 만든 가상 요청 100개로 예약 방식별 빈자리 비율과 접두사 공유 효과만 센다.\n\n실행 결과:\ncontiguous: reserved  236090 slots, waste 68.3%\npaged(16) : reserved   75632 slots, waste 1.0%\nprefix copies: 100000 slots → shared blocks: 1008"
+      },
+      "diagram": {
+        "title": "논리 블록 → 물리 블록, 그리고 공유",
+        "code": "flowchart LR\n  subgraph A[요청 A 블록 표]\n    A0[논리 0] --> P7[물리 7: Four score and seven]\n    A1[논리 1] --> P1[물리 1: years ago our fathers]\n    A2[논리 2] --> P3[물리 3: brought forth _ _]\n  end\n  subgraph S[샘플 A2 — 접두사 공유]\n    S0[논리 0] --> P7\n    S1[논리 1] -->|쓰기 시 복사| P4[물리 4: years ago our mothers]\n  end"
+      },
+      "pitfalls": [
+        "PagedAttention 은 KV 캐시를 '줄이는' 기법이 아니라 '낭비 없이 담는' 기법이다. 토큰당 KV 크기는 그대로고, 같은 메모리에 더 많은 시퀀스를 넣어 배치를 키우는 것이 효과다.",
+        "블록을 너무 작게 하면 블록 표 조회와 흩어진 읽기 비용이 늘고, 너무 크게 하면 마지막 블록의 낭비가 커진다. vLLM 기본값은 16 토큰 근처다."
+      ],
+      "check": [
+        {
+          "q": "시스템 프롬프트 1,000 토큰을 요청 100개가 공유할 때, 블록 크기 16 의 PagedAttention 으로 아끼는 KV 자리는?",
+          "a": "공유가 없으면 100 × 1,000 = 100,000 토큰 자리. 공유하면 ceil(1000/16) × 16 = 1,008 자리 한 벌. 약 99% 절약."
+        },
+        {
+          "q": "copy-on-write 는 언제 복사를 하나?",
+          "a": "참조 수가 2 이상인(여러 시퀀스가 공유하는) 블록에 어느 시퀀스가 새 값을 쓰려 할 때만 복사한다. 공유 시퀀스들이 같은 토큰을 뽑는 동안은 복사 없이 계속 공유한다."
+        }
+      ]
+    }
+  ],
+  "concepts": [
+    {
+      "term": "TTFT",
+      "explain": "time to first token. 요청을 보낸 뒤 첫 토큰이 나올 때까지의 시간 — 사실상 큐 대기 + prefill 시간. 대화형 서비스의 첫인상을 정한다.",
+      "at": 316
+    },
+    {
+      "term": "지연과 처리량",
+      "explain": "지연은 요청 하나가 느끼는 초/토큰(업계 용어 TPOT·ITL), 처리량은 시스템 전체의 토큰/초. 배치를 키우면 지연은 나빠지고 처리량은 좋아진다.",
+      "at": 360
+    },
+    {
+      "term": "산술 강도",
+      "explain": "FLOPs ÷ HBM 에서 옮긴 바이트. 하드웨어 비율(H100 약 295)보다 작으면 메모리에 묶인다. 얇은 행렬곱(배치 B)의 강도는 약 B.",
+      "at": 863
+    },
+    {
+      "term": "축의 세 종류(수축·일반·배치)",
+      "explain": "두 텐서 곱에서 양쪽에 있고 사라지는 축(수축), 한쪽에만 있는 축(일반), 양쪽에 있고 남는 축(배치). 어텐션의 B 가 배치 축이라 가중치 재사용이 없다.",
+      "at": 590
+    },
+    {
+      "term": "KV 캐시",
+      "explain": "인과 트랜스포머에서 이미 계산한 토큰의 키·값을 HBM 에 저장해 재사용하는 것. 크기 = 2 × B × S × L × K × H × 원소 바이트.",
+      "at": 1260
+    },
+    {
+      "term": "prefill / generate(decode)",
+      "explain": "prefill 은 프롬프트 전체를 병렬로 처리해 KV 캐시를 채우는 단계(계산에 묶임), generate 는 토큰을 하나씩 만드는 단계(메모리에 묶임).",
+      "at": 1380
+    },
+    {
+      "term": "memory-bound 추론",
+      "explain": "생성 단계, 특히 어텐션(강도 S/(S+1) < 1)이 메모리 대역폭에 묶여 GPU 연산이 노는 현상. 한 걸음 시간 ≈ (가중치 + KV) ÷ 대역폭.",
+      "at": 2040
+    },
+    {
+      "term": "GQA / MQA",
+      "explain": "쿼리 헤드 N 개가 KV 헤드 K 개를 나눠 쓰는 어텐션. MHA 는 K = N, MQA 는 K = 1. KV 캐시가 N/K 배 준다.",
+      "at": 2810
+    },
+    {
+      "term": "MLA",
+      "explain": "DeepSeek 의 multi-head latent attention. 키·값 대신 압축 벡터 c(512 차원) + RoPE 용 64 차원만 캐시하고 필요할 때 펼친다.",
+      "at": 3090
+    },
+    {
+      "term": "CLA",
+      "explain": "cross-layer attention. 일부 층만 KV 를 계산하고 이웃 층이 재사용해 층 축에서 캐시를 줄인다.",
+      "at": 3320
+    },
+    {
+      "term": "슬라이딩 윈도 어텐션",
+      "explain": "최근 W 토큰만 보는 지역 어텐션. KV 크기가 문맥 길이와 무관하고 수용 영역은 L × W. 정확도 손실 때문에 전역 층과 섞는 하이브리드로 쓴다.",
+      "at": 3420
+    },
+    {
+      "term": "PTQ / QAT",
+      "explain": "학습 후 표본 데이터로 scale·zero point 를 정하는 양자화(싸다)와, 학습 중 양자화 오차를 흉내 내 가중치를 적응시키는 양자화(비싸다).",
+      "at": 3900
+    },
+    {
+      "term": "GPTQ",
+      "explain": "층별 PTQ. 헤시안(입력 공분산)을 써서 반올림 오차를 아직 양자화하지 않은 가중치에 넘겨 출력 변화를 최소화한다.",
+      "at": 3990
+    },
+    {
+      "term": "AWQ",
+      "explain": "activation-aware weight quantization. 활성값이 큰 채널에 닿는 0.1~1% 가중치를 보호(실제로는 채널 배율 조정). int3 PPL 43.2 → 13.0.",
+      "at": 4010
+    },
+    {
+      "term": "가지치기 + 증류",
+      "explain": "보정 데이터의 활성 크기로 중요도를 재 층·헤드·은닉 차원을 잘라내고, 원래 모델을 선생으로 증류해 고친다(Minitron: 15B → 8B).",
+      "at": 4040
+    },
+    {
+      "term": "추측 디코딩",
+      "explain": "초안 모델 p 가 K 토큰을 쓰고 목표 모델 q 가 병렬로 검사해 min(1, q/p) 로 수락, 거절 시 (q − p)₊ 에서 재표집. 목표 분포를 정확히 지킨다.",
+      "at": 4316
+    },
+    {
+      "term": "연속 배치(반복 단위 스케줄링)",
+      "explain": "Orca 의 방법. 디코딩 한 걸음마다 끝난 시퀀스를 빼고 새 요청을 넣어 배치를 늘 채운다.",
+      "at": 4650
+    },
+    {
+      "term": "선택적 배치",
+      "explain": "길이가 다른 시퀀스를 어텐션은 따로, MLP 등은 [Σ길이, H] 로 이어 붙여 한 번에 계산하는 방법.",
+      "at": 4730
+    },
+    {
+      "term": "PagedAttention",
+      "explain": "vLLM 의 KV 캐시 관리. 고정 크기 블록과 블록 표로 단편화를 없애고, 접두사 블록을 공유하며 갈라질 때 copy-on-write.",
+      "at": 4770
+    }
+  ],
+  "trends": [
+    {
+      "claim": "추론 토큰량이 학습 토큰량을 며칠 만에 넘어선다",
+      "evidence": "OpenAI 하루 약 8.6조 토큰(추정 기사) 대 DeepSeek V4 학습 32조 토큰 — 4일이 안 돼 토큰 수가 같아진다.",
+      "at": 120
+    },
+    {
+      "claim": "에이전트 시대에는 생성 토큰이 곧 연산 지출이라 추론을 짜내는 가치에 상한이 없다 (강사 의견)",
+      "evidence": "에이전트는 질문 하나에 생각·추론·도구 호출·자기 점검을 거쳐 사람이 읽지 않는 토큰을 대량으로 만든다. 사람이 읽는 속도가 상한이던 챗봇과 다르다.",
+      "at": 180
+    },
+    {
+      "claim": "오픈소스 서빙 엔진은 vLLM 이 기본값, SGLang 은 에이전트 작업, TensorRT-LLM 은 NVIDIA 최적화, llama.cpp 는 CPU·로컬",
+      "evidence": "강의 화면의 오픈소스 패키지 목록과 강사의 평가(SGLang 은 에이전트에 좋지만 아직 덜 퍼졌다).",
+      "at": 240
+    },
+    {
+      "claim": "아키텍처 정확도 주장은 모델마다 엇갈린다 — GQA 는 손해가 없다는 결과와 분명히 손해라는 결과가 공존 (강사 의견: 수학이 아닌 것은 조심해서 받아들이라)",
+      "evidence": "GQA 논문(T5-XXL)은 MHA 47.2 대 GQA-8 47.1, DeepSeek-V2 7B 비교는 MMLU MHA 45.2 대 GQA 41.2 대 MQA 37.9.",
+      "at": 3040
+    },
+    {
+      "claim": "DeepSeek 이 KV 캐시를 줄이는 어텐션 변형을 계속 내놓는다",
+      "evidence": "V2 의 MLA(KV 원소 860.2K → 34.6K/토큰, 성능은 MHA 이상)에서 V4 의 CSA·DSA·HCA(압축·상위 k 선택·강한 압축)까지.",
+      "at": 3720
+    },
+    {
+      "claim": "긴 문맥 모델은 전체 어텐션과 지역·선형 어텐션을 섞는 하이브리드로 간다",
+      "evidence": "슬라이딩 윈도만으로는 정확도가 떨어지고 선형 어텐션은 바늘 찾기에서 정보를 잃을 수 있어, 일부 전체 어텐션 층을 남긴다(질의응답).",
+      "at": 3500
+    },
+    {
+      "claim": "운영체제의 아이디어(추측 실행·페이징)가 추론 서버의 표준이 됐다",
+      "evidence": "추측 디코딩, vLLM 의 PagedAttention·copy-on-write, 접두사 공유.",
+      "at": 5000
+    },
+    {
+      "claim": "추론을 염두에 둔 새 아키텍처(상태 공간 모델·선형 어텐션·확산)에 큰 잠재력이 있다 (강사 의견)",
+      "evidence": "KV 캐시와 지금의 어텐션 구조가 본래 추론에 불리하므로, 트랜스포머처럼 학습만이 아니라 추론에 맞춰 설계한 구조가 많은 것을 열 수 있다고 맺는다.",
+      "at": 5050
+    }
+  ],
+  "study": {
+    "prereq": [
+      "산술 강도와 루프라인, bf16 바이트 회계(CS336 2강 kuYAsz7zspQ, 5강 izZba4UA7iY)",
+      "트랜스포머 블록과 GQA·RoPE(CS336 3강 lVynu4bo1rY)",
+      "확률 분포와 기각 샘플링의 기초",
+      "PyTorch 텐서 연산·einsum"
+    ],
+    "steps": [
+      {
+        "do": "4·6장의 회계식(행렬곱, MLP, 어텐션)을 종이에 직접 유도하고 prefill/generate 네 칸 표를 채운다.",
+        "why": "'추론은 메모리에 묶인다'를 외우지 않고 계산으로 설명할 수 있어야 뒤의 모든 기법이 왜 KV 캐시를 겨냥하는지 보인다."
+      },
+      {
+        "do": "자기가 쓰는 모델(예: Llama 3 8B, Qwen 7B)의 config.json 을 열어 파라미터·토큰당 KV·최대 동시 시퀀스·걸음 시간·TTFT 를 8장처럼 계산한다.",
+        "why": "서빙 용량 계획의 기본기다. 공고의 '서빙 최적화' 업무가 이 계산에서 출발한다."
+      },
+      {
+        "do": "작은 GPT(예: 1강~ 과제 1 의 모델)에 KV 캐시를 직접 구현하고, 캐시 유무의 출력이 같은지와 토큰당 시간을 잰다.",
+        "why": "캐시가 무엇을 없애고 무엇을 남기는지(과거 K,V 재계산 vs 캐시 읽기) 손으로 확인한다."
+      },
+      {
+        "do": "vLLM 을 설치해 같은 모델을 배치·최대 동시 시퀀스·문맥 길이를 바꿔 벤치마크하고 TTFT·TPOT·처리량을 기록한다.",
+        "why": "7장의 이론 상한과 실제 엔진의 차이(오버헤드)를 눈으로 본다."
+      },
+      {
+        "do": "AWQ 또는 GPTQ 로 양자화한 int4 모델과 bf16 모델의 decode 속도·퍼플렉서티를 비교한다.",
+        "why": "weight-only 양자화가 decode 에서 얼마나 빨라지고 prefill 에서는 왜 덜 빨라지는지 확인한다."
+      },
+      {
+        "do": "13장의 수락 규칙 시뮬레이션을 실제 초안·목표 모델(같은 계열의 작은 모델·큰 모델)로 확장해 수락률과 K 에 따른 속도를 잰다.",
+        "why": "수락률이 텍스트 종류·K·배치에 따라 어떻게 변하는지가 실전에서 추측 디코딩을 켤지 말지를 정한다."
+      },
+      {
+        "do": "vLLM 논문과 Orca 논문을 읽고 블록 표·copy-on-write·반복 단위 스케줄링을 그림으로 다시 그린다.",
+        "why": "엔진 설정(block size, max_num_seqs, 접두사 캐싱)의 의미를 이해해야 튜닝할 수 있다."
+      }
+    ],
+    "practice": [
+      "Llama 2 13B·Llama 3 8B·자기 모델에 대해 B = 1, 16, 64 의 지연·처리량 상한표를 만들고, K(KV 헤드)를 절반으로 줄이면 어떻게 바뀌는지 계산하라.",
+      "c_spec.py 를 고쳐 위치마다 p, q 가 다른 K 토큰 라운드를 시뮬레이션하고, 기대 토큰 수 식 (1 − α^{K+1})/(1 − α) 와 비교하라.",
+      "c_page.py 에서 블록 크기를 1, 16, 128 로 바꿔 낭비와 블록 표 크기의 절충을 그려 보라.",
+      "MHA 로 학습된 작은 모델의 K, V 헤드를 평균 내어 GQA 로 바꾸고(업트레이닝 없이/짧게 다시 학습) 퍼플렉서티 변화를 재 보라."
+    ],
+    "resources": [
+      {
+        "title": "CS336 과목 홈페이지(강의 코드·일정)",
+        "url": "https://cs336.stanford.edu/"
+      },
+      {
+        "title": "How to Scale Your Model — Transformer Inference 장(강의의 표기·그림 출처)",
+        "url": "https://jax-ml.github.io/scaling-book/inference/"
+      },
+      {
+        "title": "Kwon et al. 2023 — Efficient Memory Management for LLM Serving with PagedAttention(vLLM)",
+        "url": "https://arxiv.org/abs/2309.06180"
+      },
+      {
+        "title": "Leviathan et al. 2022 — Fast Inference from Transformers via Speculative Decoding",
+        "url": "https://arxiv.org/abs/2211.17192"
+      },
+      {
+        "title": "Chen et al. 2023 — Accelerating LLM Decoding with Speculative Sampling",
+        "url": "https://arxiv.org/abs/2302.01318"
+      },
+      {
+        "title": "Ainslie et al. 2023 — GQA",
+        "url": "https://arxiv.org/abs/2305.13245"
+      },
+      {
+        "title": "DeepSeek-V2 기술 보고서(MLA)",
+        "url": "https://arxiv.org/abs/2405.04434"
+      },
+      {
+        "title": "Brandon et al. 2024 — Cross-Layer Attention",
+        "url": "https://arxiv.org/abs/2405.12981"
+      },
+      {
+        "title": "Frantar et al. 2022 — GPTQ",
+        "url": "https://arxiv.org/abs/2210.17323"
+      },
+      {
+        "title": "Lin et al. 2023 — AWQ",
+        "url": "https://arxiv.org/abs/2306.00978"
+      },
+      {
+        "title": "Muralidharan et al. 2024 — Minitron(가지치기 + 증류)",
+        "url": "https://arxiv.org/abs/2407.14679"
+      },
+      {
+        "title": "Orca(OSDI 2022) — 반복 단위 스케줄링·선택적 배치",
+        "url": "https://www.usenix.org/conference/osdi22/presentation/yu"
+      },
+      {
+        "title": "vLLM 공식 문서",
+        "url": "https://docs.vllm.ai/"
+      }
+    ]
+  },
+  "jobs": {
+    "roles": [
+      "LLM 서빙/추론 최적화 엔지니어",
+      "ML 시스템 엔지니어",
+      "MLOps 엔지니어",
+      "AI 인프라 엔지니어",
+      "LLM 연구 엔지니어(효율화)"
+    ],
+    "skills": [
+      "Python",
+      "PyTorch",
+      "CUDA",
+      "Triton",
+      "vLLM",
+      "SGLang",
+      "TensorRT-LLM",
+      "LLM",
+      "Transformer",
+      "Quantization",
+      "Kubernetes",
+      "GPU",
+      "Docker"
+    ]
+  },
+  "related": [
+    "kuYAsz7zspQ",
+    "lVynu4bo1rY",
+    "cKSwj_qZ8Jg",
+    "izZba4UA7iY",
+    "xnDHaNUvHBg",
+    "6-cXp-aOmdg",
+    "Q15rhEWZPQ4",
+    "9EEm4iMAF5s",
+    "hHC-SF3utxg"
+  ],
+  "materials": {
+    "transcript": "official",
+    "frames": 171,
+    "every_sec": 30
+  },
+  "written_at": "2026-11-21"
+}
