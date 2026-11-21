@@ -62,6 +62,7 @@ const GROUPS: { label: string; items: Item[] }[] = [
     items: [
       { tab: 'freelance', label: '외주·프리', to: paths.freelance },
       { tab: 'alba', label: 'IT 알바', to: paths.alba },
+      { tab: 'contests', label: 'IT·디자인 공모전', to: paths.contests },
     ],
   },
   { label: 'PC 하드웨어', items: [{ tab: 'hardware', label: 'PC 하드웨어', to: paths.hardware }] },

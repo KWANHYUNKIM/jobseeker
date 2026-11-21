@@ -5,6 +5,7 @@ import { BookPage } from '../pages/book/BookPage'
 import { CalendarPage } from '../pages/calendar/CalendarPage'
 import { CareersPage } from '../pages/careers/CareersPage'
 import { CompaniesPage } from '../pages/companies/CompaniesPage'
+import { ContestsPage } from '../pages/contests/ContestsPage'
 import { FreelancePage } from '../pages/freelance/FreelancePage'
 import { HomePage } from '../pages/home/HomePage'
 import { HardwarePage } from '../pages/hardware/HardwarePage'
@@ -22,7 +23,7 @@ import { paths, TAB_SEO } from '../utils/urls'
 /** 페이지 경로 설정 — 경로 첫 세그먼트 → 탭 → 페이지. 루트(`/`)는 회사별 메인, `/jobs` 가 잡 리스트다. */
 export type Tab =
   | 'home' | 'jobs' | 'companies' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend'
-  | 'book' | 'careers' | 'reveng' | 'lectures' | 'reposts' | 'freelance' | 'alba' | 'hardware' | 'top'
+  | 'book' | 'careers' | 'reveng' | 'lectures' | 'reposts' | 'freelance' | 'alba' | 'contests' | 'hardware' | 'top'
 
 const TAB_BY_SEG: Record<string, Tab> = {
   '': 'home',
@@ -43,6 +44,7 @@ const TAB_BY_SEG: Record<string, Tab> = {
   reposts: 'reposts',
   freelance: 'freelance',
   alba: 'alba',
+  contests: 'contests',
   hardware: 'hardware',
   // 메인 배너 한 장이 여는 구역 TOP 50 — `/top/entry`
   top: 'top',
@@ -90,6 +92,8 @@ function useTabSeo(route: Route, tab: Tab) {
     (tab === 'freelance' && !!detail && detail !== 'rates') ||
     // 당근알바 IT 공고는 남의 목록을 다시 보여 주는 화면이라 AlbaView 가 noindex 를 단다.
     tab === 'alba' ||
+    // IT·디자인 공모전도 남의 목록을 옮긴 화면이라 ContestsView 가 noindex 를 단다.
+    tab === 'contests' ||
     // 잡 리스트는 검색어가 걸렸을 때 noindex 를 다는 일까지 JobsPage 가 한다.
     tab === 'jobs'
   const t = TAB_SEO[tab === 'freelance' && detail === 'rates' ? 'freelanceRates' : tab] ?? TAB_SEO.jobs
@@ -117,6 +121,8 @@ export function RouteView() {
       return <FreelancePage sub={detail} />
     case 'alba':
       return <AlbaPage />
+    case 'contests':
+      return <ContestsPage />
     case 'trend':
       return <TrendPage focusTech={route.query.get('tech')} />
     case 'book':

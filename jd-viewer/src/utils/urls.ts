@@ -33,6 +33,8 @@ export const paths = {
   freelanceProject: (site: string, pid: string) => `/freelance/${site}-${encodeURIComponent(pid)}`,
   /** 당근알바 IT 공고 — 요약·링크만 싣는 목록(상세 없음, 색인 안 함). */
   alba: () => '/alba',
+  /** IT·디자인 공모전 — 요약·링크만 싣는 목록(상세 없음, 색인 안 함). */
+  contests: () => '/contests',
   trend: (tech?: string) => (tech ? `/trend?tech=${encodeURIComponent(tech)}` : '/trend'),
   /** 책장. 예전 기술 백과사전이 쓰던 경로를 그대로 물려받았다(북마크가 안 깨지게). */
   wiki: () => '/wiki',
@@ -118,6 +120,10 @@ export const TAB_SEO: Record<string, { title: string; desc: string }> = {
   alba: {
     title: '당근알바 IT 공고',
     desc: '당근알바에 올라온 동네 IT 일감 — 웹·앱 제작, 코딩 강사, 영상 편집, 엑셀 자동화, PC 설치를 분류·지역·급여로 모아 봅니다.',
+  },
+  contests: {
+    title: 'IT·디자인 공모전',
+    desc: '개발·AI·데이터, 해커톤, 앱·게임, UI·웹툰·포스터 디자인, 영상 공모전을 분류·마감일·상금으로 모아 봅니다.',
   },
   trend: {
     title: '개발 기술 트렌드',
