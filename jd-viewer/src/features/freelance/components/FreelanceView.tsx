@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { usePaged, PAGE_SIZE_DENSE as PAGE_SIZE } from '../../../hooks/usePaged'
 import { GRADES, SITE_KO, budgetLabel, monthlyMid, projectState, todayKst, type Project, type Stat } from '../utils/freelance'
 import { useFreelance } from '../hooks/useFreelance'
+import { projectDistrictCounts, projectPlace, projectRegionCounts } from '../utils/region'
 import { EmptyState, ErrorState, Loader } from '../../../components/ui'
 import { Pager } from '../../../components/Pager'
 import { SiteFooter } from '../../../components/SiteFooter'
@@ -52,6 +53,9 @@ export function FreelanceView() {
   const { data, loading, error } = useFreelance()
   const [kind, setKind] = useState<KindFilter>('all')
   const [sort, setSort] = useState<Sort>('pay')
+  // 지역 — 시/도를 고르면 그 안의 시/군/구를 한 번 더 고를 수 있다(utils/region — 동네 이름만 적힌 근무지도 접는다).
+  const [region, setRegion] = useState<string | null>(null)
+  const [district, setDistrict] = useState<string | null>(null)
 
   // 마감일이 지났거나 2주 넘게 안 보인 프로젝트는 모집중에서 뺀다(projectState — 상세·단가표와 같은 규칙).
   const open = useMemo(() => {
@@ -60,14 +64,23 @@ export function FreelanceView() {
     return data.projects.filter((p) => projectState(p, today).open)
   }, [data])
 
+  const byKind = useMemo(
+    () => open.filter((p) => (kind === 'onsite' ? p.kind === 'onsite' : kind === 'remote' ? p.kind === 'remote' : kind === 'side' ? isSide(p) : true)),
+    [open, kind],
+  )
+  const regions = useMemo(() => projectRegionCounts(byKind), [byKind])
+  const districts = useMemo(() => (region ? projectDistrictCounts(byKind, region) : []), [byKind, region])
+
   const shown = useMemo(() => {
-    const rows = open.filter((p) =>
-      kind === 'onsite' ? p.kind === 'onsite' : kind === 'remote' ? p.kind === 'remote' : kind === 'side' ? isSide(p) : true,
-    )
+    const rows = byKind.filter((p) => {
+      if (!region) return true
+      const pl = projectPlace(p)
+      return pl.region === region && (!district || pl.district === district)
+    })
     if (sort === 'pay') return [...rows].sort((a, b) => payOf(b) - payOf(a))
     const key = (p: Project) => p.posted_date ?? p.first_seen_at.slice(0, 10)
     return [...rows].sort((a, b) => (key(a) < key(b) ? 1 : key(a) > key(b) ? -1 : 0))
-  }, [open, kind, sort])
+  }, [byKind, region, district, sort])
 
   const paged = usePaged(shown, PAGE_SIZE)
   const stars = useStars()
@@ -130,7 +143,9 @@ export function FreelanceView() {
           <section data-fl-top className="flex-1 min-w-0 w-full scroll-mt-4">
             <div className="flex items-center justify-between">
               <h2 className="text-[22px] font-bold leading-8 tracking-[-0.22px] text-[#272727]">프로젝트</h2>
-              <span className="text-[15px] text-[#666] tabular-nums">모집중 {open.length.toLocaleString()}건</span>
+              <span className="text-[15px] text-[#666] tabular-nums">
+                {shown.length === open.length ? `모집중 ${open.length.toLocaleString()}건` : `${shown.length.toLocaleString()}건 / 모집중 ${open.length.toLocaleString()}건`}
+              </span>
             </div>
             <div className="mt-4 flex flex-wrap items-center gap-2">
               {KINDS.map((k) => (
@@ -151,7 +166,29 @@ export function FreelanceView() {
                   {k.label}
                 </button>
               ))}
-              <label className="ml-auto relative inline-flex items-center h-9 rounded-[18px] border border-(--color-accent) bg-white">
+              <Pick
+                label="지역"
+                className="ml-auto"
+                value={region ?? ''}
+                onChange={(v) => {
+                  setRegion(v || null)
+                  setDistrict(null)
+                  paged.setPage(0)
+                }}
+                options={[['', `전국 (${byKind.length})`], ...regions.map(([r, n]): [string, string] => [r, `${r} (${n})`])]}
+              />
+              {region && districts.length > 0 && (
+                <Pick
+                  label="시·군·구"
+                  value={district ?? ''}
+                  onChange={(v) => {
+                    setDistrict(v || null)
+                    paged.setPage(0)
+                  }}
+                  options={[['', `${region} 전체`], ...districts.map(([d, n]): [string, string] => [d, `${d} (${n})`])]}
+                />
+              )}
+              <label className="relative inline-flex items-center h-9 rounded-[18px] border border-(--color-accent) bg-white">
                 <select
                   aria-label="정렬"
                   value={sort}
@@ -167,7 +204,7 @@ export function FreelanceView() {
               </label>
             </div>
             {shown.length === 0 ? (
-              <EmptyState title="조건에 맞는 프로젝트가 없습니다" hint="다른 유형을 골라 보세요." />
+              <EmptyState title="조건에 맞는 프로젝트가 없습니다" hint="다른 유형이나 지역을 골라 보세요." />
             ) : (
               <ul className="mt-[23px]">
                 {paged.slice.map((p) => (
@@ -350,5 +387,40 @@ function ProjectRow({ p, starred, onStar }: { p: Project; starred: boolean; onSt
         </button>
       </div>
     </li>
+  )
+}
+
+/** 빨간 테두리 고르기 칸 — 정렬 칸과 같은 모양. options 는 [값, 보이는 글]. */
+function Pick({
+  label,
+  value,
+  onChange,
+  options,
+  className = '',
+}: {
+  label: string
+  value: string
+  onChange: (v: string) => void
+  options: [string, string][]
+  className?: string
+}) {
+  return (
+    <label className={'relative inline-flex items-center h-9 rounded-[18px] border border-(--color-accent) bg-white ' + className}>
+      <select
+        aria-label={label}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="appearance-none h-full bg-transparent pl-[17px] pr-[34px] text-sm font-medium tracking-[-0.3px] text-(--color-accent) outline-none cursor-pointer"
+      >
+        {options.map(([v, t]) => (
+          <option key={v} value={v}>
+            {t}
+          </option>
+        ))}
+      </select>
+      <svg className="pointer-events-none absolute right-[17px]" width="10" height="8" viewBox="0 0 10 8" fill="none" stroke="#f45757" strokeWidth="1.5" strokeLinecap="round" aria-hidden>
+        <path d="M1.5 2.5 5 6l3.5-3.5" />
+      </svg>
+    </label>
   )
 }
