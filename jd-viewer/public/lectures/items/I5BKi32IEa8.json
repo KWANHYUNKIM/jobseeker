@@ -1,0 +1,1101 @@
+{
+  "id": "I5BKi32IEa8",
+  "source": {
+    "platform": "youtube",
+    "url": "https://www.youtube.com/watch?v=I5BKi32IEa8",
+    "channel": "Stanford Online",
+    "published": "2026-05-11",
+    "duration_sec": 3708,
+    "views": 2380
+  },
+  "course": {
+    "school": "Stanford",
+    "code": "CS25",
+    "term": "V6",
+    "lecture_no": "4",
+    "speaker": "Nouamane Tazi (Hugging Face 리서치 엔지니어 — Ultra-Scale Playbook 주저자, nanotron 핵심 개발자) — 2026-04-23 초청 강연"
+  },
+  "title": "Stanford CS25: Transformers United V6 I The Ultra-Scale Talk: Scaling Training to Thousands of GPUs",
+  "title_ko": "초대규모 학습 이야기 — 수천 장의 GPU 로 학습을 늘리는 5D 병렬",
+  "topic": "systems",
+  "tags": [
+    "Distributed Training",
+    "PyTorch",
+    "FSDP",
+    "DeepSpeed",
+    "Megatron-LM",
+    "NCCL",
+    "CUDA",
+    "GPU",
+    "InfiniBand",
+    "NVLink",
+    "MoE",
+    "LLM",
+    "Transformer",
+    "Python",
+    "JAX"
+  ],
+  "level": "심화",
+  "one_line": "DP·ZeRO·TP·SP·PP·CP·EP 를 '무엇을 쪼개고 어떤 통신을 어디에 숨기나'로 읽는 실무 지도",
+  "summary": [
+    "Hugging Face 의 Ultra-Scale Playbook 주저자가 '학습 한 스텝을 수천 장의 GPU 에 나누는 법'을 실무자의 눈으로 정리한 초청 강연이다. 출발점은 1조 파라미터·15조 토큰·100만 문맥이라는 요즘 모델의 규모와, 그 규모에서도 한 스텝을 약 1초 안에 끝내야 하는데 GPU 한 장의 메모리는 80GB 남짓이라는 제약이다. 강연은 다섯 축의 병렬(데이터·텐서·파이프라인·컨텍스트·전문가)을 다루되, 앞의 둘을 깊이 파고 나머지 셋은 같은 사고방식으로 빠르게 훑는다. 그 사고방식은 '무엇을 쪼개는가(데이터인가 모델인가)'와 '그 대가로 생기는 통신을 계산 뒤에 숨길 수 있는가' 두 질문이다.",
+    "데이터 병렬에서는 all-reduce 로 기울기를 맞추는 기본형을 torch.profiler 타임라인으로 들여다보며, 역전파 버킷 단위로 통신을 겹치는 법을 보여 준다. 이어 ZeRO 세 단계를 하나의 요령 — all-reduce 는 reduce-scatter 와 all-gather 를 이은 것 — 으로 설명한다. ZeRO-1 은 그 사이에 '자기 조각만 옵티마이저 스텝'을 끼워 넣고, ZeRO-2 는 안 쓰는 기울기를 버리고, ZeRO-3(FSDP)는 가중치까지 나눠 층마다 미리 받아 쓰고 버린다. 강연이 덧붙인 실무 규칙은 '들어가는 가장 낮은 ZeRO 만 쓰라'는 것과, Muon 같은 행렬 옵티마이저 때문에 파라미터를 납작하게 펴지 말고 텐서 단위로 나눠야 한다(FSDP2·DTensor)는 것이다.",
+    "텐서 병렬은 '같은 입력, 쪼갠 가중치'다. 슬라이드의 4×2 행렬 숫자로 column-linear 와 row-linear 를 짝지으면 행렬곱 두 번에 all-reduce 한 번으로 충분함을 보이고, 어텐션은 헤드 단위로 잘라야 한다는 결론을 '각 GPU 가 TP 없을 때와 같은 활성값을 계산하나?'라는 점검 질문으로 끌어낸다. TP 구간 밖 LayerNorm 은 수치 오차로 갈라져 실무에서 기울기를 따로 맞추는데, 시퀀스 병렬(SP)은 all-reduce 를 다시 reduce-scatter 와 all-gather 로 떼어 구간 밖 활성값까지 1/TP 로 나누면서 이 동기화 문제도 저절로 해결한다. 병렬 축들은 서로 직교하므로 장치 격자 위에서 축마다 그룹을 만들어 조합한다.",
+    "후반부의 세 병렬은 각각 하나의 문제에 대응한다. 파이프라인 병렬은 층을 세로로 나눠 통신이 싸지만 거품((p−1)/m)이 생기고, 1F1B 는 활성값 메모리를, DeepSeek 의 DualPipe 는 거품 자체를 줄인다. 컨텍스트 병렬은 긴 시퀀스를 나누고 링 어텐션과 온라인 softmax 로 정확한 어텐션을 만든다. 전문가 병렬은 MoE 의 전문가를 나눠 all-to-all 로 토큰을 보내는데, 강연자가 꼽은 가장 큰 난관은 라우터 결과를 기다려야 버퍼를 잡을 수 있는 CPU–GPU 동기화이고, 이를 피하려면 IBGDA·RDMA 를 쓰는 DeepEP·HybridEP 같은 최신 하드웨어 기반 해법이 필요하다. 실전에서는 EP 통신을 PP 의 1F1B 와 엮어 다른 마이크로배치의 계산 뒤에 숨긴다.",
+    "이 노트는 같은 서가의 CS336 7·8강, CS231N 11강이 이미 유도한 메모리·통신 공식을 반복하기보다, 강연이 새로 보탠 실무 감각(프로파일러로 겹침 확인, 필요한 만큼의 ZeRO, Muon 과 텐서 단위 샤딩, TP 정확성 점검, MoE 의 동기화 병목)에 깊이를 두고, 1T 모델의 계산량, ZeRO 단계별 메모리, 거품 비율, 70B 를 64장에 넣는 설정까지 손계산과 직접 돌린 NumPy 코드로 확인한다. YouTube 제목 그대로 '수천 장으로 학습을 늘리는 법'을 다루며, 내용과 제목이 어긋나는 곳은 없다."
+  ],
+  "why_now": "강연자가 보여 준 대로 최근 공개 모델은 1조 파라미터·15조 토큰·100만 문맥에 이르렀고, 그 대부분이 MoE 다. 이 규모에서는 '병렬을 고르는 일'이 곧 학습 비용과 속도를 정한다 — 같은 GPU 로도 ZeRO 단계·TP 크기·PP 스케줄을 잘못 고르면 절반 이상의 시간을 통신과 거품에 버린다. 또 강연이 짚은 대로 Muon 같은 새 옵티마이저는 샤딩 방식을 바꾸게 만들었고(FSDP2·DTensor), MoE 학습 속도는 IBGDA·RDMA 를 쓸 수 있는 하드웨어냐에 따라 연구실 간 격차가 벌어지고 있다. 사전학습뿐 아니라 사후학습·증류·추론에도, GPU 가 두 장만 있어도 같은 원리가 적용되므로 LLM 을 다루는 엔지니어라면 피할 수 없는 기본기가 됐다.",
+  "chapters": [
+    {
+      "start": 0,
+      "title": "왜 수천 장인가 — 1조 파라미터·15조 토큰·100만 문맥이 인프라에 거는 부담",
+      "points": [
+        "요즘 공개 모델은 1조(1T) 파라미터, 학습 토큰 15조(15T), 문맥 길이 최대 100만 토큰 수준이다(강의 예: Kimi K2.6).",
+        "학습 루프는 저장소에서 데이터를 끊임없이 읽고, 한 스텝을 약 1초 안에 끝내고, 주기적으로 체크포인트를 쓴다 — 그 사이 GPU 한 장의 메모리(약 80GB)가 늘 벽이다.",
+        "이 강연은 그중 '한 스텝의 학습'을 여러 GPU 에 나누는 법, 즉 5D 병렬(DP·TP·PP·CP·EP)에 집중한다.",
+        "강연의 뼈대는 Hugging Face 의 Ultra-Scale Playbook 이고, 책이 나온 뒤 1년 사이의 변화(MoE 확장, Muon)를 덧붙였다."
+      ],
+      "on_screen": "표지 'Scaling Training to Thousands of GPUs — Nouamane Tazi, Research Engineer @ Hugging Face'. 'Trends: train large' 산점도(최근 모델들의 파라미터 수가 오른쪽 위로 커지는 그림). 'LLM Training is troublesome for infrastructure' 슬라이드: ① 데이터 적재(저장소에서 ~15T 토큰) ② 학습 한 스텝(~1초/스텝, GPU 메모리 ~80GB 안에서). 'Plan for today: Demystifying 5D parallelism' 목록 — 1. Data Parallelism (ZeRO1/2/3) 2. Tensor Parallelism (Sequence Parallelism) 3. Pipeline 4. Context 5. Expert. 'Preamble' 슬라이드 — GPU/TPU 등 어떤 가속기에도, 학습과 추론 모두에, 가속기 2장 이상이면 적용된다.",
+      "explain": [
+        "강연자는 Hugging Face 에서 4년째 분산 학습을 다뤄 온 엔지니어로, 'Ultra-Scale Playbook' 의 주저자이자 Hugging Face 의 오픈소스 분산 학습 라이브러리 nanotron 의 핵심 개발자다(StarCoder2·SmolLM3 학습에도 참여했다). 그래서 이 강연은 이론 강의라기보다 '실제로 수천 장을 돌려 본 사람이 어떤 순서로 생각하는가'를 보여 주는 실무 강연이다. 같은 서가에는 이 주제를 정면으로 다룬 노트가 이미 셋 있다 — CS336 7강(집합 연산과 하드웨어), CS336 8강(ZeRO·TP·PP·SP 의 메모리 공식과 실제 학습 설정), CS231N 11강(GPU 구조와 Llama3-405B 의 4D 병렬). 이 노트는 그 공식들을 다시 유도하는 대신, 이 강연이 새로 보탠 것 — 프로파일러로 겹침을 확인하는 습관, 'ZeRO 는 필요한 만큼만', Muon 과 FSDP2, TP 의 정확성 질문, MoE 의 CPU–GPU 동기화 문제 — 에 깊이를 둔다.",
+        "왜 이렇게까지 크게 학습하나. 강연자는 최근 공개 모델들의 크기가 계속 커지고, 대체로 클수록 똑똑해 보이는 상관이 있다는 그림으로 시작한다. 숫자로 보면 감이 온다(노트 보충 — 아래 예와 코드). 학습 계산량은 흔히 6·N·D(N 파라미터, D 토큰)로 어림한다. 밀집(dense) 1조 파라미터를 15조 토큰으로 학습하면 9×10²⁵ FLOP 이고, H100 한 장이 실효 40% 로 초당 약 4×10¹⁴ FLOP 를 낸다고 하면 1만 장으로도 260일이 넘는다. 그래서 실제 1조급 모델은 대부분 MoE 다. 토큰 하나가 거치는 '활성' 파라미터가 320억이면 계산량은 30분의 1로 줄어 2천 장으로 40일 남짓이 된다. 강연 후반부에 MoE 와 전문가 병렬(EP)이 따로 한 장을 차지하는 이유가 여기 있다.",
+        "인프라 쪽 부담은 세 가지로 정리된다. 첫째, 데이터 — 15조 토큰이 저장소에 있고 학습 루프가 쉬지 않고 읽어 가야 한다. 둘째, 학습 스텝 — 모델이 아무리 커도 한 스텝을 대략 1초 안에 끝내야 하는데, GPU 한 장의 메모리는 80GB 남짓으로 고정이다. 셋째, 체크포인트 — 주기적으로 그 거대한 상태를 저장소에 써야 한다. 60일 안에 15조 토큰을 보려면 초당 약 290만 토큰을 처리해야 하고, 스텝이 1초라면 전역 배치가 약 300만 토큰이라는 뜻이다. 강연이 말한 '전역 배치 100만~1,000만 토큰'이라는 범위가 바로 이 계산에서 나온다.",
+        "강연은 다섯 축의 병렬을 다루되 앞의 두 개(데이터 병렬과 텐서 병렬)에 시간을 많이 쓰고, 나머지 셋(파이프라인·컨텍스트·전문가)은 빠르게 훑는다. 강연자의 의도는 '두 축을 깊이 이해하면 같은 사고방식이 나머지에도 통한다'는 것이다. 그 사고방식은 두 문장으로 요약된다. ① 무엇을 쪼개는가 — 데이터(배치·시퀀스)인가, 모델(가중치·층·전문가)인가. ② 그 대가로 어떤 통신이 어디에 생기고, 그것을 계산 뒤에 숨길 수 있는가. 또 이 방법들은 GPU 든 TPU 든, 사전학습이든 사후학습·증류·추론이든, 가속기가 두 장만 있어도 쓸 수 있다는 점을 처음에 못박는다."
+      ],
+      "formulas": [
+        {
+          "expr": "C ≈ 6 · N · D",
+          "meaning": "C 는 학습 전체의 연산량(FLOP), N 은 토큰 하나가 거치는 파라미터 수(MoE 면 활성 파라미터), D 는 학습 토큰 수. 순전파가 파라미터당 곱셈·덧셈 2 FLOP, 역전파가 그 두 배인 4 FLOP 이라서 6 이다(노트 보충)."
+        },
+        {
+          "expr": "T_wall = C / (G · peak · MFU)",
+          "meaning": "T_wall 은 벽시계 학습 시간, G 는 GPU 수, peak 은 GPU 한 장의 최대 연산 속도(H100 bf16 밀집 약 989 TFLOP/s), MFU 는 그중 실제로 쓰는 비율(잘 돌면 0.4 안팎). 병렬화의 목표는 G 를 늘려도 MFU 가 떨어지지 않게 하는 것이다."
+        }
+      ],
+      "example": {
+        "title": "1조 파라미터를 15조 토큰으로 — 손으로 어림",
+        "body": "밀집 1T: C = 6 × 10¹² × 1.5×10¹³ = 9×10²⁵ FLOP. GPU 한 장의 실효 속도 989×10¹² × 0.4 ≈ 3.96×10¹⁴ FLOP/s. 필요한 GPU-초 = 9×10²⁵ / 3.96×10¹⁴ ≈ 2.27×10¹¹. 1만 장이면 2.27×10⁷ 초 ≈ 263일. 활성 32B 인 MoE 라면 C = 6 × 3.2×10¹⁰ × 1.5×10¹³ = 2.88×10²⁴ 로 31분의 1, 2,048장에 약 41일. 검산(노트 보충): DeepSeek-V3 기술 보고서는 활성 37B·14.8T 토큰 학습에 H800 약 279만 GPU-시간(≈1.0×10¹⁰ GPU-초)을 썼다고 밝혔다 — 같은 식으로 37B 를 넣으면 약 8.3×10⁹ GPU-초로, 자릿수가 맞는다. 60일 학습이면 초당 토큰 = 1.5×10¹³ / (60×86,400) ≈ 2.9×10⁶, 즉 스텝 1초당 전역 배치 약 290만 토큰."
+      },
+      "code": {
+        "lang": "python",
+        "src": "# 1T 모델을 15T 토큰으로 — 계산량과 GPU 수를 어림한다 (6·N·D 규칙)\npeak, mfu = 989e12, 0.40          # H100 bf16 밀집 최대치, 실효 비율(가정)\nD = 15e12                          # 학습 토큰 수\nfor name, n_act in [(\"dense 1T\", 1e12), (\"MoE 1T (active 32B)\", 32e9)]:\n    flops = 6 * n_act * D          # 순전파 2 + 역전파 4\n    gpu_sec = flops / (peak * mfu)\n    for gpus in (2048, 10000):\n        print(f\"{name:20s} {flops:.2e} FLOP  {gpus:5d} GPU -> {gpu_sec/gpus/86400:7.1f} 일\")\n# 60일에 끝내려면 초당 몇 토큰? 스텝 1초면 전역 배치는?\ntok_per_s = D / (60 * 86400)\nprint(f\"초당 토큰 {tok_per_s/1e6:.2f}M -> 스텝 1초면 GBS ≈ {tok_per_s/1e6:.1f}M 토큰\")",
+        "note": "실행 결과: dense 1T 는 1만 장에 263.3일, MoE(활성 32B)는 2,048장에 41.1일, 60일에 끝내려면 초당 2.89M 토큰."
+      },
+      "pitfalls": [
+        "'1조 파라미터 모델'이라는 말만 보고 계산량을 어림하면 30배쯤 틀린다 — MoE 는 활성 파라미터로 센다. 메모리(전체 파라미터)와 계산(활성 파라미터)의 기준이 다르다.",
+        "자막에는 'Nanotronics', 'Small LLM 3' 로 적혀 있지만 각각 Hugging Face 의 nanotron 라이브러리와 SmolLM3 모델이다."
+      ],
+      "check": [
+        {
+          "q": "활성 파라미터 37B, 토큰 14.8T 인 MoE 를 H100 1,024장, MFU 40% 로 학습하면 대략 며칠인가?",
+          "a": "C = 6 × 3.7×10¹⁰ × 1.48×10¹³ ≈ 3.29×10²⁴. 장당 3.96×10¹⁴ FLOP/s × 1,024장 ≈ 4.05×10¹⁷ FLOP/s. 3.29×10²⁴ / 4.05×10¹⁷ ≈ 8.1×10⁶ 초 ≈ 94일."
+        },
+        {
+          "q": "스텝 하나가 1초이고 전역 배치가 400만 토큰이면 15조 토큰을 보는 데 며칠 걸리나?",
+          "a": "15×10¹² / 4×10⁶ = 3.75×10⁶ 스텝 = 3.75×10⁶ 초 ≈ 43.4일."
+        }
+      ]
+    },
+    {
+      "start": 180,
+      "title": "한 장에서 시작하기 — 순전파·역전파·옵티마이저, 그리고 기울기 누적",
+      "points": [
+        "GPU 한 장의 학습 한 스텝: 순전파 → 역전파로 기울기 → 옵티마이저 스텝으로 모델 갱신.",
+        "전역 배치는 100만~1,000만(때로 5,000만) 토큰이라 한 번에 못 넣는다 → 작은 마이크로배치로 나눠 여러 번 순·역전파하며 기울기를 더한다(기울기 누적).",
+        "기울기 누적은 두 가지를 전제한다 — 모델이 메모리에 들어간다, 그리고 순서대로 오래 기다릴 수 있다. 둘 다 깨지는 곳에서 병렬이 시작된다.",
+        "이상적인 그림: 모델을 세로·가로로 쪼개고(가중치·기울기·옵티마이저 상태까지), 데이터도 쪼개 동시에 돌린다."
+      ],
+      "on_screen": "'Training: on 1 GPU' 그림 — 위에서 아래로 Model(층 블록 7개) → Forward pass → Backward pass → Gradients → Optimization → Updated model. 'Training: on 1 GPU with a bigger GBS' — Forward(B1)/Backward(B1) … Forward(B3)/Backward(B3) 가 차례로 쌓이고 옆에 'This assumes: Training fits in memory / Patient enough to wait for all the batches'와 'How can we solve this with more GPUs?'. 'What we'd like to do' — ① 모델(층)을 쪼개고 ② Shard data: 모델을 복제하되 GPU 마다 다른 데이터 조각.",
+      "explain": [
+        "분산을 이야기하기 전에 한 장에서 일어나는 일을 정확히 적어 두자. 순전파는 입력을 층마다 통과시켜 손실을 계산하고, 그 과정에서 역전파에 필요한 중간 결과(활성값)를 메모리에 남긴다. 역전파는 마지막 층부터 거꾸로 내려오며 각 파라미터의 기울기를 구한다. 옵티마이저(대개 AdamW)는 기울기와 자신의 상태(1차·2차 모멘트)를 써서 파라미터를 고친다. GPU 메모리를 차지하는 것은 그래서 네 덩어리다 — 파라미터, 기울기, 옵티마이저 상태, 활성값. 앞의 셋을 '모델 상태'라고 부르고, 혼합 정밀도 + Adam 이면 파라미터 하나당 16바이트(bf16 가중치 2 + bf16 기울기 2 + fp32 원본 4 + Adam m 4 + v 4)가 든다. 이 회계는 CS336 8강 노트에 자세히 있다.",
+        "전역 배치(GBS)가 수백만 토큰이면 한 번의 순전파에 다 넣을 수 없다. 활성값 메모리가 배치 크기에 비례해 커지기 때문이다. 해법은 기울기 누적이다. 배치를 작은 마이크로배치로 나눠 하나씩 순·역전파하고, 기울기를 버리지 않고 계속 더한 뒤, 마지막에 한 번만 옵티마이저 스텝을 밟는다. 손실이 예제별 손실의 평균이면 기울기도 평균의 합으로 쪼개지므로, 마이크로배치 기울기를 (1/누적 횟수)씩 더하면 큰 배치 한 번의 기울기와 정확히 같다(아래 코드로 확인). 수학적으로는 아무것도 잃지 않는다.",
+        "대신 이 방법은 두 가정 위에 서 있다. 하나는 '마이크로배치 하나짜리 학습 스텝이 GPU 한 장에 들어간다', 다른 하나는 '모든 마이크로배치를 순서대로 처리할 때까지 기다릴 수 있다'. 1조 파라미터면 모델 상태만 16TB 라서 첫 가정이 깨지고, 15조 토큰을 한 장으로 순서대로 처리하는 것은 두 번째 가정을 깬다. 강연자는 여기서 이상적인 목표를 그림 한 장으로 보여 준다. 모델은 세로(층 단위)나 가로(행렬 단위)로 쪼개고, 그에 딸린 기울기·옵티마이저 상태도 함께 쪼개고, 데이터도 쪼개 여러 장이 동시에 일하게 한다. 이후의 다섯 병렬은 모두 이 그림의 어느 부분을 어떻게 자르느냐의 변주다.",
+        "실무에서 GBS 는 네 수의 곱으로 정해진다(노트 보충). 마이크로배치 크기 × 누적 횟수 × 데이터 병렬 수 × 시퀀스 길이. 예를 들어 시퀀스 4,096, 마이크로배치 1, DP 256, 누적 4 면 약 420만 토큰이다. GPU 를 더 붙여 DP 를 늘리면 같은 GBS 를 유지하려고 누적 횟수를 줄이게 되고, 누적이 1 에 닿으면 더는 DP 만으로 GPU 를 늘릴 수 없다. 이것이 다음 장에서 말할 '데이터 병렬의 천장'이다."
+      ],
+      "formulas": [
+        {
+          "expr": "g = (1/A) · Σ_{a=1}^{A} ∇L(B_a)",
+          "meaning": "g 는 옵티마이저에 넘길 기울기, A 는 누적 횟수(마이크로배치 수), B_a 는 a 번째 마이크로배치, ∇L(B_a) 는 그 마이크로배치의 평균 손실 기울기. 모든 B_a 크기가 같으면 큰 배치 하나의 기울기와 정확히 같다."
+        },
+        {
+          "expr": "GBS_tokens = mbs × A × DP × seq",
+          "meaning": "mbs 마이크로배치 크기(시퀀스 수), A 누적 횟수, DP 데이터 병렬 GPU(묶음) 수, seq 시퀀스 길이. GBS 는 학습 안정성이 정하는 '예산'이고, 나머지 넷은 그 예산을 하드웨어에 나눠 담는 방법이다."
+        }
+      ],
+      "example": {
+        "title": "GBS 를 맞추는 손계산",
+        "body": "목표 GBS 4M 토큰(4,194,304), seq = 4,096 → 한 스텝에 시퀀스 1,024개. GPU 64장, mbs 2 면 한 번에 128개 → 누적 A = 1,024/128 = 8. GPU 를 512장으로 늘리면 한 번에 1,024개 → A = 1. 1,024장이면 한 번에 2,048개로 GBS 를 넘는다 — 이 지점부터는 DP 를 더 키울 수 없고, 모델을 쪼개는 병렬(TP·PP)로 GPU 를 써야 한다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "import numpy as np\nrng = np.random.default_rng(0)\nX, y, w = rng.normal(size=(16, 3)), rng.normal(size=16), rng.normal(size=3)\ngrad = lambda Xb, yb: 2 * Xb.T @ (Xb @ w - yb) / len(yb)   # MSE 기울기(평균)\ng_full = grad(X, y)                                      # 배치 16 한 번에\n# 기울기 누적: 마이크로배치 4개를 차례로, 평균을 맞추려 1/4 씩 더한다\ng_acc = sum(grad(X[i:i+4], y[i:i+4]) / 4 for i in range(0, 16, 4))\n# 데이터 병렬: GPU 4장이 한 조각씩 -> all-reduce(합) 후 /4\ng_dp = np.mean([grad(X[r::4], y[r::4]) for r in range(4)], axis=0)\nprint(np.allclose(g_full, g_acc), np.allclose(g_full, g_dp))\n# 전역 배치(토큰) = 마이크로배치 × 누적 횟수 × DP × 시퀀스 길이\nmbs, acc, dp, seq = 1, 4, 256, 4096\nprint(\"GBS tokens =\", mbs * acc * dp * seq)",
+        "note": "실행 결과: True True (누적 기울기·DP 평균 기울기가 큰 배치 기울기와 같다), GBS tokens = 4194304."
+      },
+      "pitfalls": [
+        "손실을 마이크로배치마다 평균 내고 누적할 때 1/A 를 빼먹으면 기울기가 A 배 커진다 — 학습률을 A 배 올린 것과 같은 효과라 발산하기 쉽다.",
+        "패딩이 섞인 가변 길이 배치에서는 '마이크로배치 평균의 평균'이 '토큰 평균'과 다르다. 토큰 수로 가중해야 정확히 같아진다."
+      ],
+      "check": [
+        {
+          "q": "mbs 4, seq 8,192, DP 128 이고 GBS 를 약 1,600만 토큰으로 하고 싶다. 누적 횟수는?",
+          "a": "한 번에 4 × 8,192 × 128 = 4,194,304 토큰. 16,777,216 / 4,194,304 = 4 → A = 4."
+        },
+        {
+          "q": "기울기 누적이 '수학적으로 공짜'인데도 병렬이 필요한 두 이유는?",
+          "a": "마이크로배치 하나짜리 스텝조차 메모리에 안 들어갈 수 있고(1T 모델은 상태만 16TB), 들어가더라도 순서대로 처리하면 시간이 너무 오래 걸린다."
+        }
+      ]
+    },
+    {
+      "start": 345,
+      "title": "데이터 병렬(DP) — all-reduce, 프로파일러로 본 빈틈, 버킷으로 겹치기",
+      "points": [
+        "GPU 마다 같은 모델·다른 배치 → 기울기가 서로 다르다 → all-reduce(분산 합)로 맞춘 뒤 모두 같은 옵티마이저 스텝.",
+        "PyTorch 의 DDP 로 감싸면 역전파 중에 all-reduce 가 자동으로 붙는다.",
+        "torch.profiler 타임라인으로 확인할 세 가지: GPU 계산 스트림이 늘 차 있나, CPU 가 GPU 보다 앞서 커널을 올리나, 통신이 계산과 겹치나.",
+        "역전파는 마지막 층부터 기울기가 나오므로, 한 '버킷'이 다 차면 바로 all-reduce 를 시작해 남은 역전파와 겹친다(bucket_cap_mb 로 크기 조절).",
+        "장점: 쉽고, 잘 겹치고, 모델 구조를 몰라도 된다. 단점: 옵티마이저 스텝 중복, GBS 가 GPU 수에 비례, 한 스텝이 한 장에 들어가야 함."
+      ],
+      "on_screen": "'Intuition behind Data Parallelism' — GPU0~2 가 각자 Forward(B1)/Backward(B1)…(B3) 를 동시에 돌리고 아래로 AllReduce → Gradients → Optimization → Updated model. 오른쪽 문구 'Data is sharded across GPUs → Each GPU gets different grads → AllReduce helps accumulating grads → Do GPUs stay idle when running comms?'. 'torch.profiler' 화면: CPU(forward)·CPU(backward) 스레드와 GPU computation·GPU communication 스트림, 'CPU asynchronously launches kernels on GPU', 'GPU idle while comms', 'overlap' 표시. 'DP: comms/compute timelines' — Backward 의 버킷 2·1·0 이 끝나는 대로 GPU Communication 줄에 2·1·0 all-reduce 가 겹쳐 그려지고 'Grads AllReduce is overlapped with backward'. 'DP: Pros/Cons' 표(아래 본문).",
+      "explain": [
+        "데이터 병렬은 가장 직관적인 병렬이다. 기울기 누적에서 '마이크로배치를 차례로' 처리하던 것을 '여러 GPU 에 동시에' 나눠 주는 것이다. 각 GPU 는 모델 전체를 복제해 갖고 서로 다른 배치를 받으니 기울기가 서로 다르다. 모델이 계속 똑같이 유지되려면 모든 GPU 가 같은 기울기로 같은 옵티마이저 스텝을 밟아야 한다. 그래서 역전파 뒤에 all-reduce — 모든 GPU 의 기울기를 더해 모두에게 그 합을 돌려주는 집합 연산 — 를 한 번 한다. 결국 '분산된 기울기 누적'이다. 코드로는 모델을 DistributedDataParallel(DDP)로 감싸기만 하면 역전파 안에서 all-reduce 가 알아서 붙는다.",
+        "이 강연이 다른 강의보다 강조하는 것은 '눈으로 확인하는 습관'이다. 순진하게 구현한 DP 를 torch.profiler 로 찍으면 타임라인이 세 줄로 보인다 — CPU 가 커널을 올리는 줄, GPU 계산 줄, GPU 통신 줄. 강연자는 여기서 세 가지를 본다. ① GPU 계산 줄에 빈칸이 없어야 한다. 빈칸은 비싼 텐서 코어가 놀고 있다는 뜻이다. ② CPU 가 늘 GPU 보다 앞서 있어야 한다. CPU 가 다음 커널을 미리 올려 두어야 GPU 가 쉬지 않는다(CPU 가 뒤처지면 아무리 병렬을 잘 짜도 소용없다 — 이 문제는 MoE 장에서 다시 나온다). ③ 통신이 계산과 겹쳐야 한다. 순진한 DDP 는 역전파가 다 끝난 뒤 all-reduce 를 하므로 그동안 계산 줄이 비어 있다.",
+        "겹치는 방법은 역전파의 순서를 이용한다. 역전파는 마지막 층부터 기울기가 나온다. 전체 역전파가 끝날 때까지 기다릴 필요 없이, 마지막 층 묶음의 기울기가 다 나오면 그 묶음만 먼저 all-reduce 를 시작하고, 그동안 GPU 는 앞쪽 층의 역전파를 계속한다. 이 묶음을 '버킷'이라고 하고 PyTorch DDP 에서는 bucket_cap_mb 인자로 크기를 정한다(자막의 'bucket cup' 이 이것이다). 버킷이 너무 작으면 통신 호출이 잦아져 지연 시간이 쌓이고, 너무 크면 첫 통신이 늦게 시작돼 마지막 버킷이 계산 뒤로 숨지 못한다. 강연자는 '수천 장을 다루는 엔지니어 머릿속에는 늘 이 겹침 그림이 있다'며 이것을 강연 전체의 최종 목표로 삼는다 — 계산 줄은 빈틈없이, 통신은 그 아래에 숨긴다.",
+        "DP 의 장단점은 표 하나로 정리된다. 장점은 구현이 쉽고, 통신이 잘 겹치고, 모델 구조와 상관없이(그냥 감싸면) 쓸 수 있다는 것. 단점은 셋이다. ① 모든 GPU 가 같은 옵티마이저 스텝을 중복해서 한다 — 같은 계산을 N 번, 같은 옵티마이저 상태를 N 벌. ② GPU 를 늘리면 GBS 도 같이 늘어난다. GBS 는 학습 안정성이 정하는 상한(수천만 토큰)이 있어 무한히 늘릴 수 없다. ③ 가장 큰 병목으로, 학습 한 스텝이 GPU 한 장에 들어가야 한다. ①과 ③을 고치는 것이 ZeRO 이고, ②를 고치려면 모델을 쪼개는 병렬(TP·PP)이 필요하다."
+      ],
+      "formulas": [
+        {
+          "expr": "g = (1/N) · Σ_{r=1}^{N} g_r   (all-reduce 후 평균)",
+          "meaning": "N 은 데이터 병렬 GPU 수, g_r 은 GPU r 이 자기 배치로 구한 평균 기울기, g 는 모든 GPU 가 똑같이 받는 최종 기울기. 배치 크기가 같으면 N 배 큰 배치 하나의 기울기와 같다."
+        },
+        {
+          "expr": "T_ring_AR ≈ 2·(N−1)/N · M / B_bus",
+          "meaning": "링 all-reduce 의 시간 어림. M 은 기울기 바이트 수, B_bus 는 GPU 한 장의 링크 대역폭, 2(N−1)/N 은 GPU 한 장이 보내는 양의 비율(reduce-scatter (N−1)/N + all-gather (N−1)/N). N 이 커져도 2 에 수렴해 대역폭 항은 거의 일정하지만, 단계 수(2(N−1))만큼의 지연은 N 과 함께 는다(노트 보충)."
+        }
+      ],
+      "example": {
+        "title": "8B 모델 기울기 all-reduce 를 숨길 수 있나",
+        "body": "8B 파라미터, bf16 기울기 → M = 16GB. DP = 8(한 노드, NVLink 약 450GB/s 단방향 가정): 2×7/8×16GB / 450GB/s ≈ 0.062초. 한 스텝 계산이 mbs 1·seq 4,096 이면 6×8×10⁹×4,096 ≈ 1.97×10¹⁴ FLOP, 실효 4×10¹⁴ FLOP/s 로 약 0.49초 — 그중 역전파가 2/3(약 0.33초)라 통신 0.06초는 충분히 숨는다. 같은 DP 를 노드 밖으로(GPU 당 InfiniBand 50GB/s) 늘리면 약 0.6초로 역전파보다 길어져 숨지 못한다(노트 보충, 대역폭은 가정값)."
+      },
+      "code": {
+        "lang": "python",
+        "src": "import numpy as np\nN, M = 4, 8                      # GPU 4장, 각자 기울기 원소 8개\ng = [np.arange(M, dtype=float) * (r + 1) for r in range(N)]\nchunks = [np.split(x.copy(), N) for x in g]   # 각 GPU 가 N 조각으로 나눈다\nsent = 0\n# reduce-scatter: N-1 번, 링의 다음 GPU 로 한 조각씩 넘기며 더한다\nfor s in range(N - 1):\n    for r in range(N):\n        c = (r - s) % N\n        chunks[(r + 1) % N][c] += chunks[r][c]; sent += M // N\n# 이제 GPU r 은 조각 (r+1)%N 의 '전체 합'을 가졌다 -> all-gather 로 돌린다\nfor s in range(N - 1):\n    for r in range(N):\n        c = (r + 1 - s) % N\n        chunks[(r + 1) % N][c] = chunks[r][c].copy(); sent += M // N\nout = [np.concatenate(c) for c in chunks]\nprint(all(np.allclose(o, sum(g)) for o in out))\nprint(\"GPU 하나가 보낸 원소:\", sent // N, \"= 2(N-1)/N·M =\", 2 * (N - 1) / N * M)",
+        "note": "링 all-reduce 를 reduce-scatter 단계와 all-gather 단계로 나눠 흉내 낸다. 실행 결과: True, GPU 하나가 보낸 원소 12 = 2(N−1)/N·M = 12.0. all-reduce = reduce-scatter + all-gather 라는 다음 장의 핵심도 이 코드에 그대로 들어 있다."
+      },
+      "diagram": {
+        "title": "버킷 단위로 역전파와 all-reduce 를 겹친다",
+        "code": "sequenceDiagram\n  participant C as GPU 계산\n  participant N as GPU 통신\n  C->>C: 순전파 층0..2\n  C->>C: 역전파 층2 (버킷2 완성)\n  C->>N: 버킷2 all-reduce 시작\n  C->>C: 역전파 층1 (버킷1 완성)\n  C->>N: 버킷1 all-reduce 시작\n  C->>C: 역전파 층0 (버킷0 완성)\n  C->>N: 버킷0 all-reduce\n  N-->>C: 모든 버킷 완료\n  C->>C: 옵티마이저 스텝"
+      },
+      "pitfalls": [
+        "강연에서 'GPU 가 100만 장이면 DP 를 그냥 다 쓸 수 있다'처럼 들리는 대목은 반대 뜻이다 — GBS 상한 때문에 DP 만으로는 무한히 늘릴 수 없다는 것이 요지다.",
+        "통신이 겹쳤는지는 추측하지 말고 프로파일러로 확인한다. 특히 CPU 가 GPU 를 뒤쫓는 상황(커널 실행 지연)은 전체 시간만 봐서는 보이지 않는다.",
+        "DDP 는 모든 rank 에서 같은 파라미터가 같은 순서로 기울기를 받는다고 가정한다. 조건문으로 일부 층을 건너뛰는 모델은 find_unused_parameters 같은 설정이 필요하고, 그만큼 느려진다."
+      ],
+      "check": [
+        {
+          "q": "버킷 크기를 아주 작게(예: 층 하나) 하면 왜 오히려 느려질 수 있나?",
+          "a": "all-reduce 호출마다 고정 지연(실행·동기화)이 있어 호출이 많아지면 그 지연이 쌓인다. 또 작은 메시지는 링크 대역폭을 다 쓰지 못한다."
+        },
+        {
+          "q": "DP 에서 GPU 수를 두 배로 늘리고 GBS 를 유지하려면 무엇을 바꿔야 하나? 그것이 불가능해지는 순간은?",
+          "a": "기울기 누적 횟수(또는 mbs)를 절반으로 줄인다. 누적이 1, mbs 가 1 인데도 DP × seq 가 GBS 를 넘으면 더는 DP 로 늘릴 수 없다."
+        }
+      ]
+    },
+    {
+      "start": 670,
+      "title": "ZeRO-1·ZeRO-2 — all-reduce 를 reduce-scatter + all-gather 로 바꾸는 요령, 그리고 Muon",
+      "points": [
+        "ZeRO-1: 옵티마이저 상태를 N 조각으로 나눠 각 GPU 가 자기 조각만 갱신한다 → 중복 계산과 중복 메모리를 함께 없앤다.",
+        "핵심 요령: all-reduce = reduce-scatter + all-gather. 기울기는 reduce-scatter 로 자기 조각만 받고, 갱신된 파라미터는 all-gather 로 다시 모은다 — 통신량은 DP 와 같다.",
+        "ZeRO-2: 어차피 자기 조각의 기울기만 쓰므로 나머지 기울기는 버린다. 차이는 작지만 구현이 귀찮아 실무에선 ZeRO-1 을 많이 쓴다.",
+        "Muon 처럼 행렬 전체가 필요한 옵티마이저 때문에, 파라미터를 납작하게 펴서 자르지 말고 '텐서 단위로' 나눠야 한다."
+      ],
+      "on_screen": "'DP: ZeRO1' 그림 — GPU₁…GPUᵢ…GPU_N 이 Forward pass → Backward pass → Reduce-scatter → Optimizer step → All-gather → Forward pass(next) 로 내려간다. 오른쪽 문구: 'Each rank owns 1/N of the optim states and updates only this shard of parameters', 'We ReduceScatter grads because we only need a shard', 'We need to AllGather the updated params', 왼쪽 'We used to AllReduce grads here', 'Distributed optimizer step'. 강조 문구 'We replaced AllReduce with RS + AG to avoid duplicated work and memory (optim states)'. 'Do we need to keep the full grads in memory? No, and that's called DP-Zero2'. 'DP: ZeRO2' 그림에 주석 'In ZeRO2 we only keep useful grads → less memory needed', 'Note: Muon optimizer requires full tensors grads, so when sharding our opt_states/grads we ideally want each rank to have full weights'.",
+      "explain": [
+        "DP 의 첫 번째 낭비는 옵티마이저다. N 장이 모두 같은 기울기로 같은 Adam 갱신을 하고, 그 상태(fp32 원본·m·v, 파라미터당 12바이트)를 N 벌 갖고 있다. 모델 상태 16바이트 중 12바이트가 이 중복이다. ZeRO-1 의 발상은 단순하다 — 파라미터를 N 조각으로 나눠 GPU i 가 i 번째 조각의 옵티마이저 상태만 갖고, 그 조각의 갱신만 책임진다. 그러면 옵티마이저 메모리와 옵티마이저 계산이 모두 1/N 이 된다.",
+        "그런데 그러려면 통신을 바꿔야 한다. GPU i 는 자기 조각의 '합쳐진' 기울기만 있으면 된다. 그래서 all-reduce 대신 reduce-scatter — 합은 내되 결과를 조각별로 흩어 주는 연산 — 를 쓴다. 각자 자기 조각을 갱신하고 나면, 다음 순전파에는 모두가 전체 파라미터를 가져야 하므로 all-gather 로 조각들을 다시 모은다. 강연자가 여기서 '앞으로 계속 재사용할 아주 중요한 직관'이라고 강조하는 것이 이것이다. all-reduce 는 원래 reduce-scatter 와 all-gather 를 이어 붙인 것이다(앞 장 코드의 링 all-reduce 가 정확히 그렇게 두 단계로 돌았다). ZeRO-1 은 통신을 하나도 늘리지 않았다. 원래 붙어 있던 두 단계 사이에 '자기 조각만 옵티마이저 스텝'이라는 일을 끼워 넣었을 뿐이다. 이 요령은 시퀀스 병렬 장에서 한 번 더, 거의 같은 모양으로 나온다.",
+        "ZeRO-2 는 한 발 더 나간다. reduce-scatter 뒤에 GPU i 가 실제로 쓰는 것은 자기 조각의 기울기뿐이다. 그렇다면 나머지 기울기를 메모리에 둘 이유가 없다 — 역전파 중에 버킷이 reduce-scatter 되는 대로 자기 몫이 아닌 부분을 버리면 기울기 메모리도 1/N 이 된다. 차이는 작아 보이지만 기울기 2바이트를 아끼는 셈이다. 다만 강연자 말대로 '말은 쉽고 구현은 귀찮다' — 역전파 도중에 텐서를 부분적으로 버리는 것은 메모리 관리가 까다로워서, 실무에서는 기울기를 그냥 두고 ZeRO-1 을 쓰는 경우가 많다.",
+        "강연이 책(Playbook) 이후의 변화로 덧붙인 것이 Muon 이다. 예전 구현은 모든 파라미터를 한 줄로 납작하게 편 뒤 GPU 수로 균등하게 잘랐다. 텐서의 경계는 신경 쓰지 않았다. Adam 은 원소별 연산이라 그래도 문제가 없다. 그러나 Muon 은 행렬 단위로 뉴턴–슐츠 반복(직교화)을 하므로 한 GPU 가 행렬 전체의 기울기를 가져야 한다. 그래서 요즘은 '텐서 단위로' 나눈다 — 예를 들어 첫 다섯 텐서는 GPU0, 다음 다섯은 GPU1 식으로. 텐서 크기가 제각각이라 완벽한 균등 분할은 아니지만, 옵티마이저가 행렬 연산을 할 수 있다. 이 요구가 다음 장의 FSDP1 → FSDP2 전환과도 이어진다."
+      ],
+      "formulas": [
+        {
+          "expr": "AllReduce(x) = AllGather(ReduceScatter(x))",
+          "meaning": "x 는 GPU 마다 가진 같은 모양의 텐서. ReduceScatter 는 원소별 합을 내되 GPU i 에게 i 번째 조각만 준다. AllGather 는 각자의 조각을 모두에게 모아 붙인다. 둘을 이으면 모두가 합 전체를 가지므로 AllReduce 와 같고, 통신량도 같다(각 단계가 (N−1)/N·M)."
+        },
+        {
+          "expr": "Mem_ZeRO-1 = 2Ψ + 2Ψ + 12Ψ/N,   Mem_ZeRO-2 = 2Ψ + (2Ψ + 12Ψ)/N",
+          "meaning": "Ψ 는 파라미터 수, N 은 데이터 병렬 크기. 2Ψ 는 bf16 가중치, 2Ψ 는 bf16 기울기, 12Ψ 는 fp32 원본 + Adam m·v. ZeRO-1 은 12Ψ 만, ZeRO-2 는 기울기까지 N 으로 나눈다. 활성값은 따로다."
+        }
+      ],
+      "example": {
+        "title": "8B 모델, DP 64 — 모델 상태 메모리를 손으로",
+        "body": "Ψ = 8×10⁹. 순수 DP: 16 × 8×10⁹ = 128GB → H100 80GB 에 안 들어간다. ZeRO-1: 2×8 + 2×8 = 32GB, 옵티마이저 12×8/64 = 1.5GB → 33.5GB. ZeRO-2: 16GB + (16+96)/64 = 16 + 1.75 = 17.75GB. 70B 는 같은 계산으로 DP 1,120GB / ZeRO-1 293GB / ZeRO-2 155GB — ZeRO-2 로도 안 들어가 다음 단계(ZeRO-3 또는 모델 병렬)가 필요하다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "# ZeRO 단계별 GPU 한 장의 '모델 상태' 메모리(GB) — 활성값 제외\ndef zero_mem(psi, n, stage, K=12):   # K: fp32 master 4 + Adam m 4 + v 4\n    w, g, o = 2 * psi, 2 * psi, K * psi\n    if stage >= 1: o /= n\n    if stage >= 2: g /= n\n    if stage >= 3: w /= n\n    return (w + g + o) / 1e9\nfor psi in (8e9, 70e9):\n    row = [f\"{zero_mem(psi, 64, s):7.1f}\" for s in range(4)]\n    print(f\"{psi/1e9:3.0f}B, DP=64 | DP {row[0]} | Z1 {row[1]} | Z2 {row[2]} | Z3 {row[3]}\")\n# 통신량(파라미터 수 Ψ 단위): DDP all-reduce 2Ψ, ZeRO-1/2 RS+AG 2Ψ, ZeRO-3 AG+AG+RS 3Ψ",
+        "note": "실행 결과: 8B → DP 128.0 / Z1 33.5 / Z2 17.8 / Z3 2.0 GB, 70B → 1120.0 / 293.1 / 155.3 / 17.5 GB (활성값 제외)."
+      },
+      "pitfalls": [
+        "ZeRO-1 이 '통신을 줄인다'고 오해하기 쉽다. 통신량은 DP 와 같고, 줄어드는 것은 메모리와 중복 계산이다.",
+        "옵티마이저 상태를 납작하게 펴서 자르는 옛 방식(FSDP1·DeepSpeed 기본)은 Muon·Shampoo 같은 행렬 옵티마이저와 맞지 않는다. 옵티마이저를 바꿀 때 샤딩 방식부터 확인한다.",
+        "ZeRO 의 메모리 공식에는 활성값이 없다. 상태가 2GB 로 줄어도 긴 시퀀스의 활성값 때문에 메모리가 넘칠 수 있다(SP·CP·재계산 장)."
+      ],
+      "check": [
+        {
+          "q": "ZeRO-1 에서 all-reduce 를 reduce-scatter 와 all-gather 로 나눴을 때, 두 연산 사이에 무엇을 하나?",
+          "a": "각 GPU 가 자기 조각(1/N)의 파라미터에 대해서만 옵티마이저 스텝을 한다. 그 뒤 all-gather 로 갱신된 조각을 모두에게 돌린다."
+        },
+        {
+          "q": "13B 모델, DP 32 에서 ZeRO-1 과 ZeRO-2 의 모델 상태 메모리는?",
+          "a": "ZeRO-1: 4×13 + 12×13/32 = 52 + 4.875 ≈ 56.9GB. ZeRO-2: 2×13 + 14×13/32 = 26 + 5.69 ≈ 31.7GB."
+        }
+      ]
+    },
+    {
+      "start": 930,
+      "title": "ZeRO-3(FSDP) — 모델까지 나누고, 필요할 때 모았다가 바로 버린다",
+      "points": [
+        "ZeRO-3 는 가중치까지 N 조각으로 나눈다. 어떤 층을 계산할 차례가 되면 그 층의 나머지 조각을 all-gather 로 받아 계산하고 즉시 버린다.",
+        "느려 보이지만 '다음 층을 미리 받아 두기(prefetch)'로 통신을 현재 층 계산 뒤에 숨긴다 → 메모리에는 FSDP 단위가 두 개 정도만 펼쳐져 있다.",
+        "ZeRO-2 의 큰 all-gather 하나를 층별 작은 all-gather 여럿으로 쪼개 순전파와 겹친 것이 ZeRO-3 다. FSDP 단위 크기는 DDP 의 버킷처럼 조절한다.",
+        "PyTorch: FSDP1 은 클래스로 감싸고 wrap policy 로 단위를 정하며 파라미터를 납작하게 편다. FSDP2 는 fully_shard 함수 + DTensor 로 텐서 모양을 유지하고 다른 병렬과 조합하기 쉽다."
+      ],
+      "on_screen": "'DP: ZeRO-3 forward' 그림 — Layer n−1, Layer n, Layer n+1 이 세로로 있고 Layer n 에서 All-gather → Forward pass → Flush parameters. 문구: 'In ZeRO3 we never materialize the full model', 'We All-Gather the missing params from other ranks when needed then we flush them right after', 'Each GPU computes forward as if it had the full params (note that activations are unsharded)'. 'DP: ZeRO-3 backward' 같은 모양. 'DP: ZeRO-3 comms/compute timelines' — 'To avoid idle GPU time, we prefetch layer n+1 parameters while computing layer n forward'. 'Example code for Zero3 (aka FSDP)': FSDP1 은 size_based_auto_wrap_policy(min_num_params=20000) 와 FSDP(model, auto_wrap_policy=...), FSDP2 는 for layer in model.layers: fully_shard(layer); fully_shard(model) 후 print 하면 FSDPTransformer(… FSDPTransformerBlock …). 'DP: Comparing Zero-2 vs ZeRO-3' — ZeRO-2 는 옵티마이저 뒤 큰 AllGather 하나, ZeRO-3 는 Forward 의 각 블록 앞에 작은 all-gather 가 흩어져 겹친다. 'Instead of waiting for AllGather of the whole model, we AllGather it in parts and overlap with compute', 'ZeRO-3 helps better overlap comms with compute'.",
+      "explain": [
+        "ZeRO-3 는 가장 대담한 단계다. 가중치까지 N 조각으로 나눈다. 그런데 순전파와 역전파는 가중치 전체가 있어야 할 수 있다. 어떻게 하나. 답은 '빌려 쓰고 바로 돌려준다'다. 각 GPU 는 평소에 모든 층의 1/N 조각만 갖고 있다. 층 n 을 계산할 차례가 되면 다른 GPU 들에게서 층 n 의 나머지 조각을 all-gather 로 받아 완전한 가중치를 잠깐 만들고, 계산을 마치면 남의 조각을 즉시 버린다. 역전파도 같은 방식으로 다시 모아 계산한 뒤 버리고, 기울기는 reduce-scatter 로 주인에게 보낸다. 슬라이드 문구처럼 '모델 전체가 한 곳에 실체화되는 순간이 없다'.",
+        "층마다 통신을 기다리면 끔찍하게 느릴 것 같지만, 실제로는 잘 돈다. 비결은 미리 받기(prefetch)다. 층 n 을 계산하는 동안 통신 스트림은 이미 층 n+1 의 조각을 모으고 있다. 계산이 끝나면 다음 층의 가중치가 이미 도착해 있어 GPU 가 쉬지 않는다. 그래서 어느 순간에도 메모리에 펼쳐진 완전한 층은 '지금 계산 중인 것'과 '미리 받는 중인 것' 두 개 정도뿐이다. 강연자는 이것을 ZeRO-2 와 나란히 놓고 비교한다. ZeRO-2 에서는 옵티마이저 스텝 뒤에 모델 전체를 한 번에 모으는 큰 all-gather 가 있었다. ZeRO-3 는 그 큰 all-gather 를 층 단위의 작은 all-gather 여럿으로 쪼개 순전파 사이사이에 흩뿌린 것이다. 같은 통신을 더 잘 숨길 수 있게 된 셈이다. 그리고 DDP 의 버킷처럼 '몇 층을 한 단위로 묶을지(FSDP 단위)'를 조절해 겹침을 맞춘다.",
+        "대가는 통신량이다(노트 보충, CS336 8강 노트에 유도가 있다). 순전파 all-gather Ψ, 역전파 all-gather Ψ, 기울기 reduce-scatter Ψ 로 합이 약 3Ψ 다. DDP·ZeRO-1·ZeRO-2 의 2Ψ 보다 1.5배 많다. 또 하나 주의할 점은 활성값이다. ZeRO-3 는 가중치를 나누지만 각 GPU 는 여전히 '자기 배치 전체'를 계산하므로 활성값은 나뉘지 않는다. 슬라이드도 괄호로 이 점을 짚는다. 활성값 문제는 뒤의 SP·CP·PP 가 다룬다.",
+        "코드 쪽은 두 세대가 있다. FSDP1 은 FSDP 라는 클래스로 모델을 감싸고, 'auto wrap policy'(예: 파라미터 2만 개 이상인 모듈마다 단위를 만든다)로 단위 크기를 정했다. 내부적으로는 단위 안의 파라미터를 한 줄로 납작하게 펴서 균등하게 나눴다 — 앞 장에서 말한 Muon 문제가 바로 여기서 생긴다. FSDP2 는 fully_shard 라는 함수다. 트랜스포머 블록마다 fully_shard 를 부르고 마지막에 모델 전체에 한 번 더 부르면 각 모듈이 FSDP 모듈로 바뀐다. 내부는 PyTorch 의 DTensor(어떤 텐서가 어느 장치 격자에 어떻게 나뉘어 있는지를 기록하는 분산 텐서)를 쓰므로 텐서 모양이 유지되고, 뒤에 나올 TP 등 다른 병렬과도 같은 표기로 조합할 수 있다. TorchTitan 이 FSDP2 + DTensor 위에 5D 병렬을 쌓은 대표 예다(노트 보충)."
+      ],
+      "formulas": [
+        {
+          "expr": "Mem_ZeRO-3 = (2Ψ + 2Ψ + 12Ψ)/N + 2·Ψ_unit",
+          "meaning": "Ψ 는 전체 파라미터 수, N 은 데이터 병렬 크기, Ψ_unit 은 FSDP 단위(대개 트랜스포머 블록 하나)의 파라미터 수. 모델 상태 전체가 1/N 로 줄고, 대신 계산 중인 단위와 미리 받는 단위의 bf16 가중치가 잠깐 더해진다(노트 보충의 어림)."
+        },
+        {
+          "expr": "Comm_ZeRO-3 ≈ AG_fwd(Ψ) + AG_bwd(Ψ) + RS(Ψ) ≈ 3Ψ",
+          "meaning": "AG_fwd·AG_bwd 는 순전파·역전파 직전의 층별 가중치 all-gather, RS 는 기울기 reduce-scatter. DDP 의 all-reduce(2Ψ)보다 50% 많다. 그래서 '들어가기만 하면 낮은 ZeRO 가 빠르다'."
+        }
+      ],
+      "example": {
+        "title": "70B, DP 64 에서 ZeRO-3 가 실제로 펼치는 메모리",
+        "body": "모델 상태: 16 × 70×10⁹ / 64 = 17.5GB. 70B 급(80층)의 블록 하나는 약 70/80 ≈ 0.875B 파라미터 → bf16 로 1.75GB. 두 블록을 펼쳐 두면 3.5GB 가 더해져 약 21GB. 통신은 스텝마다 3 × 140GB(bf16) = 420GB 분량을 링으로 주고받는 셈이라(GPU 당 송신 약 (63/64)×420GB), 노드 밖 InfiniBand 50GB/s 라면 약 8초 — 계산이 그보다 길어야 숨는다. mbs 1·seq 4,096 이면 계산은 6×70×10⁹×4,096 / 4×10¹⁴ ≈ 4.3초라 숨지 못한다. 그래서 큰 모델은 ZeRO-3 만으로 64장 넘게 늘리지 않고 다음 장의 HSDP 나 TP·PP 를 섞는다(대역폭은 가정값)."
+      },
+      "diagram": {
+        "title": "ZeRO-3 순전파: 미리 받기와 버리기",
+        "code": "flowchart LR\n  A[층 n all-gather] --> B[층 n 순전파]\n  B --> C[층 n 남의 조각 버림]\n  A2[층 n+1 all-gather - 미리] -.겹침.-> B\n  C --> D[층 n+1 순전파]\n  A2 --> D\n  D --> E[층 n+2 ...]"
+      },
+      "pitfalls": [
+        "ZeRO-3 = FSDP 다. 이름이 둘이라 다른 기법으로 착각하기 쉽다(DeepSpeed 쪽 이름이 ZeRO-3, PyTorch 쪽 이름이 FSDP).",
+        "ZeRO-3 는 활성값을 나누지 않는다. '모델이 1/N 로 줄었으니 배치도 키울 수 있다'고 생각하면 활성값에서 메모리가 터진다.",
+        "FSDP 단위를 너무 크게(모델 전체 하나) 잡으면 미리 받기가 의미가 없어지고 전체가 한꺼번에 펼쳐진다. 트랜스포머 블록 단위가 흔한 출발점이다."
+      ],
+      "check": [
+        {
+          "q": "ZeRO-3 에서 어느 순간 메모리에 '완전히 펼쳐진' 층이 대략 두 개뿐인 이유는?",
+          "a": "지금 계산 중인 층과, 그 계산과 겹쳐 미리 all-gather 중인 다음 층만 완전한 가중치를 갖고, 계산이 끝난 층은 남의 조각을 즉시 버리기 때문이다."
+        },
+        {
+          "q": "FSDP2 가 FSDP1 보다 Muon 과 잘 맞는 이유는?",
+          "a": "FSDP1 은 단위 안의 파라미터를 납작하게 펴서 잘라 텐서 경계가 사라지지만, FSDP2 는 DTensor 로 텐서 단위의 모양을 유지하므로 행렬 연산이 필요한 옵티마이저가 텐서를 다룰 수 있다."
+        }
+      ]
+    },
+    {
+      "start": 1136,
+      "title": "ZeRO 는 필요한 만큼만 — HSDP, 그리고 데이터 병렬의 천장",
+      "points": [
+        "ZeRO 는 메모리와 통신을 맞바꾼다. ZeRO-1 로 들어가면 ZeRO-3 를 쓰지 말 것 — 통신만 늘고 다른 이득이 없다(강사 의견, 실무 규칙).",
+        "모든 모델에 FSDP2 를 일단 씌우는 습관이 흔한 실수다.",
+        "규모가 커지면 ZeRO-3 의 층별 all-gather 를 다 숨기지 못한다 → HSDP: 작은 원(빠른 망) 안에서는 FSDP, 큰 원에서는 일반 DP.",
+        "ZeRO 도 결국 데이터 병렬이라 GBS 천장은 그대로다 → 같은 배치로 모델을 쪼개는 텐서 병렬로 넘어간다."
+      ],
+      "on_screen": "'DP-ZeRO: Pros/Cons' — 장점: Trades memory for comms / Great overlap of comms with compute / Model-agnostic since we compute fwd/bwd as if we have full tensors. 단점: At scale, even ZeRO-3's overlap isn't enough to hide comms → Hybrid Sharding / GBS scales with number of GPUs → can't scale indefinitely. 아래 화살표 'To avoid increasing GBS let's look at Model Parallelism!'.",
+      "explain": [
+        "이 장에서 강연자가 가장 힘주어 말한 실무 규칙은 '필요한 단계의 ZeRO 만 쓰라'다. ZeRO 의 세 단계는 공짜가 아니다. 단계가 올라갈수록 메모리는 줄지만 통신(특히 ZeRO-3 의 층별 all-gather)이 늘고, 늘어난 통신은 아무리 잘 겹쳐도 완벽하게 숨지는 않는다. 강연자에 따르면 많은 사람이 모델 크기와 상관없이 일단 FSDP2 를 씌우는데, 모델이 ZeRO-1 로 들어간다면 ZeRO-3 는 더 느릴 뿐 얻는 것이 없다. 순서는 이렇다 — DP 로 들어가나? 아니면 ZeRO-1, 그래도 안 되면 ZeRO-2, 그래도 안 되면 ZeRO-3. (이는 강연자의 실무 의견이며, 활성값이 큰 경우처럼 ZeRO-3 로 아낀 메모리를 더 큰 마이크로배치에 써서 오히려 빨라지는 예외도 있다 — 노트 보충.)",
+        "ZeRO-3 의 장점은 분명하다. 메모리를 통신과 맞바꿀 수 있고, 통신이 계산과 잘 겹치며, 각 GPU 가 '전체 텐서를 가진 것처럼' 순·역전파를 하므로 모델 구조를 전혀 몰라도 된다. 상태 공간 모델이든 무엇이든 PyTorch 모듈이면 감싸서 바로 돌아간다. 이것은 뒤에 나올 TP 와 크게 대비되는 점이다. TP 는 모델 구조에 손을 대야 한다.",
+        "단점 첫째는 규모다. GPU 수가 늘면 링 통신의 지연이 늘고, 노드 밖 네트워크가 느리면 층별 all-gather 가 계산 뒤로 숨지 못한다. 해법이 혼합 분할 데이터 병렬(HSDP, hybrid sharding)이다. GPU 를 2차원으로 배치해, 빠른 망으로 이어진 작은 원(예: 한 노드 8장, 또는 몇 노드) 안에서만 FSDP 로 모델을 나누고, 그런 원 여러 개 사이에서는 모델 사본을 그대로 두고 기울기만 all-reduce 하는 일반 DP 를 쓴다. 비싼 층별 all-gather 는 빠른 망 안에서만 오가고, 느린 망에는 스텝당 한 번의 기울기 동기화만 지나간다. 대가는 메모리다 — 모델 상태가 전체 N 이 아니라 작은 원의 크기로만 나뉜다. 강연은 이름만 소개하고 넘어갔고, CS231N 11강 노트에 2차원 격자 그림과 함께 자세히 있다.",
+        "단점 둘째는 근본적이다. ZeRO 가 아무리 메모리를 아껴도 여전히 데이터 병렬이다. GPU 마다 다른 배치를 보므로 GPU 를 늘리면 GBS 도 늘어난다. 강연자의 예로, 1만 장이 있는데 1천 장에서 이미 GBS 상한에 닿았다면 나머지 9천 장은 DP 로는 쓸 수 없다. 이제 '같은 배치를 여러 장이 함께 계산하는' 방법, 즉 모델 자체를 쪼개는 병렬이 필요하다. 그 첫 번째가 텐서 병렬이다."
+      ],
+      "formulas": [
+        {
+          "expr": "HSDP: N = N_shard × N_rep,   Mem ≈ 16Ψ / N_shard,   AG/RS 는 N_shard 안, AllReduce(Ψ/N_shard) 는 N_rep 사이",
+          "meaning": "N 전체 GPU 수, N_shard 는 FSDP 로 모델을 나누는 작은 원의 크기(빠른 망), N_rep 은 그 원의 개수(모델 사본 수). 모델 상태는 N_shard 로만 나뉘고, 느린 망에는 자기 조각 기울기의 all-reduce 만 흐른다(노트 보충)."
+        }
+      ],
+      "example": {
+        "title": "256장에서 FSDP 전체 대 HSDP(8×32)",
+        "body": "8B 모델, bf16 가중치 16GB. 전체 FSDP(N=256): 상태 128GB/256 = 0.5GB 지만, 층별 all-gather 가 256장 전부를 도는 링이라 노드 밖 느린 망을 매 층 지난다. HSDP(N_shard=8, N_rep=32): 상태 128GB/8 = 16GB(80GB 에 충분), 층별 all-gather 는 노드 안 NVLink 에서만, 노드 사이에는 스텝당 한 번 자기 조각 기울기 16GB/8 = 2GB 를 32개 원 사이에서 all-reduce(장당 송신 약 2×31/32×2GB ≈ 3.9GB, 50GB/s 면 약 0.08초). 메모리 16GB 를 내주고 느린 망 통신을 거의 없앴다."
+      },
+      "pitfalls": [
+        "'FSDP 는 무조건 좋다'가 아니다. 들어가는 가장 낮은 ZeRO 단계를 고르고, 프로파일러로 통신이 숨는지 확인한다.",
+        "HSDP 의 작은 원을 노드 경계와 맞추지 않으면(예: 원 하나가 두 노드에 걸치면) 빠른 망에서만 돌아야 할 all-gather 가 느린 망을 지나간다."
+      ],
+      "check": [
+        {
+          "q": "8B 모델을 GPU 16장에서 학습한다. ZeRO-1 로 상태가 약 35GB 라 80GB 에 충분히 들어간다. ZeRO-3 로 바꾸면 무엇을 얻고 무엇을 잃나?",
+          "a": "상태 메모리가 8GB 로 줄지만 통신이 2Ψ 에서 3Ψ 로 50% 늘고, 층별 all-gather 가 숨지 못한 만큼 느려진다. 아낀 메모리로 마이크로배치를 키울 이유가 없다면 잃는 것만 있다."
+        },
+        {
+          "q": "ZeRO-3 를 쓰는데도 GPU 를 더 늘릴 수 없는 상황은 어떤 때인가?",
+          "a": "DP 크기 × mbs × seq 가 이미 GBS 상한에 닿았을 때. ZeRO 는 데이터 병렬이라 GPU 를 늘리면 배치가 늘어나므로, 모델을 쪼개는 TP·PP 등이 필요하다."
+        }
+      ]
+    },
+    {
+      "start": 1389,
+      "title": "텐서 병렬(TP) ① — 같은 입력, 쪼갠 가중치: 행렬곱 두 번에 all-reduce 한 번",
+      "points": [
+        "TP 의 목표: 같은 배치(같은 입력)를 두고 모델만 쪼개, 한 장에서 한 것과 똑같은 계산을 여러 장이 나눠 한다 → 가중치·기울기·옵티마이저 상태가 모두 1/TP.",
+        "행렬곱 하나: 가중치를 열로 자르면 각 GPU 가 출력의 일부 열을 만든다 → all-gather 로 붙인다.",
+        "행렬곱 둘: 첫 가중치는 열로(column-linear), 둘째는 행으로(row-linear) 자르면 중간에 통신 없이 각자 부분합을 내고, 끝에 all-reduce 한 번이면 된다.",
+        "역전파도 같은 모양 — '상류 기울기가 모든 GPU 에서 같다'는 가정 아래 all-reduce 한 번.",
+        "면접 단골 질문: TP 에서 활성값은 전체인가 절반인가? → TP 구간 안은 1/TP, 구간 밖은 전체(다음 장·SP 장에서 답이 완성된다)."
+      ],
+      "on_screen": "'Motivation behind Tensor Parallelism — Idea: we want to shard our model across GPUs but keep same data', 'Same batch for both GPUs', 'Every GPU keeps only half of the model/grad/optim states memory!' (*Example of TP=2). 'TP: Matmul example' — X(4,2) = [[0,1],[2,3],[4,5],[6,7]], W(2,2) = [[10,30],[20,40]] 를 빨간 세로선으로 열 분할, Y = [[20,40],[80,180],[140,320],[200,460]]. GPU1 은 W_0 = [10,20]ᵀ 로 Y_0 = [20,80,140,200]ᵀ, GPU2 는 W_1 = [30,40]ᵀ 로 Y_1 = [40,180,320,460]ᵀ, all_gather 로 Y(4,2). 'TP: 2 matmuls example' — W2_0 = [0 1], W2_1 = [1 0] (각 (1,2)), Y2_0 = [[0,20],[0,80],[0,140],[0,200]], Y2_1 = [[40,0],[180,0],[320,0],[460,0]], all_reduce → Y2 = [[40,20],[180,80],[320,140],[460,200]]. 문구 'Each GPU only does half the compute using same inputs', 'Each GPU only keeps half the parameters at all times', 'Needs 1 AllReduce in fwd'. 'TP: 2 matmuls example (bwd pass)' — ∂L/∂X = ∂L/∂Y1 @ W1ᵀ, ∂L/∂Y1 = ∂L/∂Y2 @ W2ᵀ, 'Same upstream grad', 'Needs 1 AllReduce in bwd'.",
+      "explain": [
+        "데이터 병렬이 '같은 모델, 다른 데이터'라면 텐서 병렬은 정반대로 '같은 데이터, 쪼갠 모델'이다. TP 크기가 2라면 두 GPU 가 똑같은 배치를 받고, 각자 가중치의 절반만 갖고, 계산의 절반만 한다. 마치 큰 GPU 한 장을 두 장으로 나눈 것처럼 동작해서, 결과는 한 장에서 계산한 것과 정확히 같아야 한다. 이렇게 하면 모델 상태(가중치·기울기·옵티마이저)가 모두 1/TP 로 줄고, GBS 는 전혀 늘지 않는다. 데이터 병렬의 천장을 넘는 방법이다.",
+        "어떻게 행렬곱을 나누는지는 슬라이드의 숫자 예로 따라가면 분명해진다. X 는 4×2, W 는 2×2 다. W 를 세로로(열로) 잘라 GPU1 이 첫 열 [10,20]ᵀ, GPU2 가 둘째 열 [30,40]ᵀ 를 갖는다. 두 GPU 가 같은 X 를 곱하면 GPU1 은 출력의 첫 열 [20,80,140,200]ᵀ, GPU2 는 둘째 열 [40,180,320,460]ᵀ 를 얻는다. all-gather 로 옆에 붙이면 원래 Y 다. 행렬곱이 둘이면 더 좋은 길이 있다. 첫 행렬은 열로 자르고(column-linear), 둘째 행렬은 행으로 자르면(row-linear) GPU1 은 '첫 열로 만든 중간값 × 둘째 행렬의 첫 행'을, GPU2 는 '둘째 열 × 둘째 행'을 계산한다. 행렬곱 A·B 는 'A 의 열 k × B 의 행 k' 를 k 에 대해 더한 것이므로 두 GPU 의 결과를 더하기만 하면 정답이다. 그래서 중간에는 통신이 없고 끝에 all-reduce 한 번이면 된다. 슬라이드의 W2 = [[0,1],[1,0]] 예에서 GPU1 은 [[0,20],…], GPU2 는 [[40,0],…] 를 내고 합이 [[40,20],[180,80],[320,140],[460,200]] 이 된다.",
+        "역전파도 거울처럼 같다. 출력 쪽 기울기 ∂L/∂Y2 가 두 GPU 에 똑같이 있다고 하면, 각 GPU 는 자기 W2 조각의 전치와 W1 조각의 전치를 차례로 곱해 ∂L/∂X 의 부분합을 내고, all-reduce 로 더하면 한 장에서 구한 ∂L/∂X 와 같다. 정리하면 행렬곱 두 번을 나누는 비용은 순전파 all-reduce 한 번, 역전파 all-reduce 한 번이다. 단 두 가지 가정이 깔려 있다. 입력이 모든 GPU 에서 같다, 그리고 상류 기울기가 모든 GPU 에서 같다. 강연자는 이 두 번째 가정을 '큰 골칫거리'라고 미리 경고한다. 다음 장에서 그 이유가 드러난다.",
+        "강연자는 여기서 면접에서 자주 나오는 질문을 하나 던진다. 'TP 에서 활성값은 전체 크기로 저장하나, 1/TP 로 저장하나?' 지금까지의 그림으로 답할 수 있다. column-linear 의 출력(위 예의 Y1 조각, MLP 의 GeLU 입출력)은 은닉 차원이 잘려 있으므로 1/TP 크기다. 반면 TP 구간에 들어가기 전의 입력 X 와 all-reduce 로 합쳐진 뒤의 출력은 모든 GPU 가 전체 크기로 똑같이 갖는다. 그러니 답은 '둘 다'다 — 구간 안은 1/TP, 구간 밖은 전체. 이 '구간 밖의 전체 크기 활성값'이 시퀀스 병렬이 해결하려는 문제다."
+      ],
+      "formulas": [
+        {
+          "expr": "Y = X·W = [X·W_{:,0} | X·W_{:,1}]   (column-linear → all-gather)",
+          "meaning": "X 는 (토큰, 입력 차원), W 는 (입력, 출력). W 를 열 묶음 W_{:,0}, W_{:,1} 로 자르면 각 GPU 가 출력의 열 일부를 만들고, 옆으로 이어 붙이면(|) 전체 Y 다."
+        },
+        {
+          "expr": "Z = (X·A)·B = Σ_{g} (X·A_{:,g})·B_{g,:}   (column → row, all-reduce 1회)",
+          "meaning": "A 는 열로, B 는 행으로 같은 지점에서 자른다(g 는 GPU 번호). 각 GPU 가 부분곱 (X·A_{:,g})·B_{g,:} 를 내고 합(all-reduce)하면 Z 다. 중간값 X·A_{:,g} 는 통신 없이 그 GPU 안에 머문다."
+        },
+        {
+          "expr": "∂L/∂X = Σ_{g} (∂L/∂Z · B_{g,:}ᵀ) · A_{:,g}ᵀ",
+          "meaning": "역전파. ∂L/∂Z 가 모든 GPU 에서 같다는 가정 아래 각 GPU 가 자기 조각으로 부분합을 내고 all-reduce 한다. 비선형 함수(GeLU)가 중간에 있으면 원소별이라 각 GPU 가 자기 조각에 그대로 적용하면 된다."
+        }
+      ],
+      "example": {
+        "title": "슬라이드 숫자로 손계산",
+        "body": "X 의 둘째 행 [2,3]. 한 장: [2,3]·W = [2·10+3·20, 2·30+3·40] = [80, 180]. GPU1(첫 열): 2·10+3·20 = 80, GPU2(둘째 열): 2·30+3·40 = 180 → 붙이면 [80,180]. 두 번째 행렬 W2 = [[0,1],[1,0]] 을 행으로 나누면 GPU1 은 80·[0,1] = [0,80], GPU2 는 180·[1,0] = [180,0], 합 = [180,80] (한 장: [80,180]·W2 = [180,80]). 역전파: ∂L/∂Y2 가 모두 1 인 행 [1,1] 이면 한 장은 [1,1]·W2ᵀ·W1ᵀ = [1,1]·W1ᵀ = [10+30, 20+40] = [40,60]. GPU1: ([1,1]·[0,1]ᵀ)·[10,20] = 1·[10,20], GPU2: ([1,1]·[1,0]ᵀ)·[30,40] = 1·[30,40] → 합 [40,60]. 일치."
+      },
+      "code": {
+        "lang": "python",
+        "src": "import numpy as np\nX  = np.array([[0, 1], [2, 3], [4, 5], [6, 7]], float)   # 슬라이드의 입력 (4,2)\nW1 = np.array([[10, 30], [20, 40]], float)                # (2,2)\nW2 = np.array([[0, 1], [1, 0]], float)                    # (2,2) — 열을 맞바꾸는 행렬\nfull = (X @ W1) @ W2\n# GPU g 는 W1 의 열 g 와 W2 의 행 g 만 갖는다 (column-linear -> row-linear)\npart = [(X @ W1[:, [g]]) @ W2[[g], :] for g in range(2)]\nprint(part[0].tolist(), part[1].tolist())\nprint(\"all-reduce(sum) == full:\", np.allclose(part[0] + part[1], full))\n# 역전파: 같은 상류 기울기 dY2 를 두 GPU 가 다 가졌다고 가정\ndY2 = np.ones_like(full)\ndX_full = dY2 @ W2.T @ W1.T\ndX_part = [dY2 @ W2[[g], :].T @ W1[:, [g]].T for g in range(2)]\nprint(\"bwd all-reduce == full:\", np.allclose(sum(dX_part), dX_full), dX_full[0])",
+        "note": "실행 결과: GPU 별 부분 결과 [[0,20],[0,80],[0,140],[0,200]] 와 [[40,0],[180,0],[320,0],[460,0]], all-reduce(sum) == full: True, bwd all-reduce == full: True, 첫 행 기울기 [40, 60]."
+      },
+      "pitfalls": [
+        "column-linear 다음에 바로 all-gather 를 하면 통신이 한 번 더 생긴다. 두 행렬곱을 column → row 로 짝지어야 순전파 통신이 all-reduce 한 번으로 끝난다.",
+        "TP 는 '같은 입력'을 전제한다. 드롭아웃 난수가 GPU 마다 다르면(TP 구간 밖에서) 입력이 갈라져 계산이 틀어진다 — 구간 밖 난수 시드는 TP 그룹 안에서 같게 맞춘다(노트 보충)."
+      ],
+      "check": [
+        {
+          "q": "X = [[1,1]], A = [[1,2],[3,4]], B = [[1,0],[0,1]] 을 TP=2 (A 는 열, B 는 행)로 계산하면 각 GPU 의 부분 결과와 합은?",
+          "a": "GPU1: X·A[:,0] = 1+3 = 4 → 4·[1,0] = [4,0]. GPU2: X·A[:,1] = 2+4 = 6 → 6·[0,1] = [0,6]. 합 [4,6] = X·A·B."
+        },
+        {
+          "q": "TP 에서 순전파 all-reduce 가 '행렬곱 두 번마다 한 번'인 이유는?",
+          "a": "첫 행렬을 열로 자르면 중간값이 은닉 차원으로 나뉜 채 각 GPU 에 남고, 둘째 행렬을 같은 지점에서 행으로 자르면 각 GPU 가 그 조각만으로 최종 출력의 부분합을 만들 수 있어, 끝에서 한 번만 더하면 되기 때문이다."
+        }
+      ]
+    },
+    {
+      "start": 1590,
+      "title": "텐서 병렬(TP) ② — MLP·어텐션에 적용하기, 헤드로 자르는 이유, 그리고 구간 밖 파라미터",
+      "points": [
+        "MLP: Y = GeLU(X·A), Z = Y·B → A 는 column, B 는 row. GeLU 는 원소별이라 쪼갠 채로 적용 가능. MLP 마다 all-reduce.",
+        "어텐션: QKV 투영은 column, 출력 투영은 row. 자르는 축은 헤드 수(num_heads) — 헤드는 서로 독립이라 결과가 TP 없을 때와 같다.",
+        "head_dim 으로 자르면 QKᵀ 점수가 부분합이 되어 softmax 가 틀린다. 일반 질문: 'TP 를 써도 각 GPU 가 TP 없을 때와 같은 활성값을 계산하나?'",
+        "단점: 블록마다 all-reduce(임계 경로), 구현이 복잡(MLA 같은 새 어텐션마다 다시), TP 구간 밖 파라미터(LayerNorm)는 수치 오차로 갈라지므로 실무에서는 그 기울기를 all-reduce 한다."
+      ],
+      "on_screen": "'TP: MLP Example' — Y=GeLU(X@A1), Z=Y@B. GPU1: X → X A1 → GeLU → Y1 → Y1 B1 → Z1, GPU2: X → X A2 → GeLU → Y2 → Y2 B2 → Z2, 두 줄이 AllReduce 마름모에서 합쳐져 Z. 'We parallelize our up and down projections', 'hidden_dim is sharded here! (TP region)', 'AllReduce happening every MLP'. 'TP: Attention Example' — GPU1 에 V1·Q1·K1 → SoftMax → Dropout → Y1 → Y1 B1 → Z1, GPU2 에 K2·Q2·V2 …, 'We parallelize our QKV and output projections', 'Should we shard along head_dim or num_heads or both? Would GPUs compute the same activations as without TP?', 이후 'num_heads is sharded here', 'We need to shard along num_heads dim to keep Attention correct!', 'Need same upstream grad', 'Need same inputs'. 'TP: Pros/Cons' — 장점 Shards model and compute across GPUs → memory & sample efficient / No need for grad AllReduce because GPUs are essentially doing the same work. 단점 Communication heavy (inside every block, part of critical path) / Parameters (e.g. LayerNorm) outside the TP region should stay synchronized. In practice we AllReduce their grads to make sure they don't drift apart / Complex implementation and assumes operations to be parallelizable.",
+      "explain": [
+        "앞 장의 '행렬곱 두 번' 요령을 트랜스포머 블록에 그대로 얹는다. MLP 는 위로 올리는 투영(up-projection) A 와 내리는 투영(down-projection) B 두 행렬곱 사이에 GeLU 가 있다. A 를 열로 자르면 각 GPU 는 은닉 차원(FFN 차원)의 일부만 갖고, GeLU 는 원소마다 따로 적용되는 함수라 쪼갠 조각에 그대로 적용해도 결과가 같다. 그다음 B 를 행으로 자르고 끝에서 all-reduce 하면 된다. 슬라이드가 'hidden_dim 이 여기서 잘린다(TP 구간)'고 표시한 곳이 이 사이다. 결국 MLP 하나마다 순전파 all-reduce 한 번, 역전파 all-reduce 한 번이다.",
+        "어텐션에도 행렬곱이 두 번 있다 — Q·K·V 를 만드는 투영과 마지막 출력 투영. 앞의 것을 column, 뒤의 것을 row 로 자른다. 여기서 강연자가 던지는 질문이 핵심이다. 열로 자를 때 어느 축으로 자르나 — 헤드 수인가, 헤드 하나의 차원(head_dim)인가? 일반적인 판별법은 '각 GPU 가 TP 없을 때와 같은 활성값을 계산하나?'다. head_dim 으로 자르면 각 GPU 는 q·k 내적의 일부 성분만 더한 '부분 점수'를 갖게 된다. softmax 는 비선형이라 부분 점수에 softmax 를 하고 나중에 더해도 전체 점수의 softmax 와 같지 않다. 반면 헤드 단위로 자르면 각 헤드의 어텐션은 다른 헤드와 완전히 독립이므로, GPU1 이 헤드 0·1, GPU2 가 헤드 2·3 을 계산해도 결과가 TP 없을 때와 똑같다(아래 코드에서 True/False 로 확인). 그래서 어텐션의 TP 는 헤드 수로 자른다. 이 질문은 새로운 구조(예: MLA, 선형 어텐션)에 TP 를 붙이거나 구현이 맞는지 점검할 때 그대로 쓰는 도구다.",
+        "이제 앞 장에서 미뤄 둔 '같은 상류 기울기' 가정이 왜 골칫거리인지 보자. TP 는 블록 사이의 모든 것이 GPU 마다 똑같다고 가정한다. 즉 TP 구간 밖의 LayerNorm·드롭아웃·잔차 연결은 모든 GPU 가 똑같은 입력으로 똑같은 계산을 하고, 그 파라미터(LayerNorm 의 γ·β)도 똑같이 유지돼야 한다. 이론적으로는 기울기도 같으니 저절로 같게 유지된다. 하지만 강연자에 따르면 실제로는 부동소수점 연산 순서의 차이 같은 수치 오차로 GPU 마다 값이 조금씩 갈라지고(drift), 그것이 학습을 망가뜨린다. 그래서 실무에서는 이 구간 밖 파라미터의 기울기를 TP 그룹 안에서 all-reduce 해 강제로 맞춘다. 이론상 필요 없는 통신을 안전을 위해 넣는 것이다.",
+        "장단점을 정리하면 이렇다. 장점은 모델과 계산을 함께 나누면서 메모리와 표본 양쪽에서 효율적이라는 것이다 — 메모리는 1/TP, GBS 는 그대로다. 또 각 GPU 가 '같은 일'을 하므로 데이터 병렬처럼 기울기를 all-reduce 할 필요가 없다(구간 밖 파라미터만 예외). 단점은 첫째, 통신이 무겁다. 블록마다(어텐션 하나, MLP 하나마다) 순·역전파 all-reduce 가 계산의 임계 경로 위에 놓여 다른 계산 뒤로 숨기 어렵다. 둘째, 구현이 복잡하고 모델 구조를 알아야 한다. FSDP 처럼 아무 모듈이나 감싸는 것이 아니라 층마다 어느 축을 자를지 정해야 하고, 새 어텐션 변형이 나올 때마다 다시 고민해야 한다."
+      ],
+      "formulas": [
+        {
+          "expr": "head_h = softmax(Q_h K_hᵀ / √d) V_h,   MHA = Concat_h(head_h) · W_O",
+          "meaning": "h 는 헤드 번호, Q_h·K_h·V_h 는 (시퀀스, d) — d 는 head_dim. 헤드끼리는 서로의 값을 쓰지 않으므로 헤드 집합을 GPU 별로 나누면 각 GPU 가 자기 헤드의 head_h 를 정확히 계산한다. W_O 를 같은 헤드 묶음 기준으로 행 분할하면 출력은 GPU 별 부분합 → all-reduce."
+        },
+        {
+          "expr": "q·k = Σ_{i=1}^{d} q_i k_i = (Σ_{i∈GPU1} q_i k_i) + (Σ_{i∈GPU2} q_i k_i)",
+          "meaning": "head_dim 으로 자르면 각 GPU 는 괄호 하나(부분 점수)만 안다. softmax(a+b) ≠ softmax(a) 와 softmax(b) 의 어떤 조합이므로, 점수를 먼저 all-reduce 하지 않는 한 결과가 틀린다."
+        }
+      ],
+      "example": {
+        "title": "head_dim 으로 자르면 왜 틀리나 — 숫자 두 개로",
+        "body": "토큰 두 개, 헤드 하나, d = 2. q = (1, 1), k_A = (2, 0), k_B = (0, 1). 전체 점수: q·k_A = 2, q·k_B = 1 → softmax = (e²,e¹)/(e²+e¹) ≈ (0.731, 0.269). head_dim 분할: GPU1 은 1번 성분만 → 점수 (2, 0) → softmax (0.881, 0.119). GPU2 는 2번 성분만 → (0, 1) → (0.269, 0.731). 어느 쪽도, 둘의 평균 (0.575, 0.425)도 정답 (0.731, 0.269)이 아니다. 헤드 단위로 자르면 이 문제가 아예 생기지 않는다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "import numpy as np\nrng = np.random.default_rng(1)\ns, H, d = 5, 4, 3                                  # 시퀀스 5, 헤드 4, 헤드 차원 3\nQ, K, V = (rng.normal(size=(H, s, d)) for _ in range(3))\ndef attn(q, k, v):\n    a = q @ k.transpose(0, 2, 1) / np.sqrt(d)\n    a = np.exp(a - a.max(-1, keepdims=True)); a /= a.sum(-1, keepdims=True)\n    return a @ v\nfull = attn(Q, K, V)\n# (1) 헤드 축으로 자르기: GPU0 은 헤드 0,1 / GPU1 은 헤드 2,3\nby_head = np.concatenate([attn(Q[:2], K[:2], V[:2]), attn(Q[2:], K[2:], V[2:])])\n# (2) head_dim 축으로 자르기: 각 GPU 가 d 의 일부로만 점수를 낸다\ncut = 2\nby_dim = np.concatenate([attn(Q[..., :cut], K[..., :cut], V[..., :cut]),\n                         attn(Q[..., cut:], K[..., cut:], V[..., cut:])], -1)\nprint(\"heads 로 자름 == full:\", np.allclose(by_head, full))\nprint(\"head_dim 으로 자름 == full:\", np.allclose(by_dim, full))",
+        "note": "실행 결과: heads 로 자름 == full: True, head_dim 으로 자름 == full: False."
+      },
+      "pitfalls": [
+        "TP 크기는 헤드 수(그리고 GQA 라면 KV 헤드 수)의 약수여야 한다. KV 헤드가 8개인데 TP 16 이면 KV 헤드를 복제해야 한다(노트 보충).",
+        "구간 밖 LayerNorm 기울기를 all-reduce 하지 않으면 처음 몇천 스텝은 멀쩡하다가 손실이 서서히 이상해지는 식으로 늦게 드러난다. 강연자가 '학습을 망가뜨린다'고 한 지점이다."
+      ],
+      "check": [
+        {
+          "q": "TP=4, 헤드 32개인 어텐션에서 GPU 하나가 계산하는 헤드 수와 W_O 의 몫은?",
+          "a": "헤드 8개. W_O 는 그 8개 헤드 출력에 해당하는 행(8 × head_dim 행)만 갖고, 출력은 부분합이라 all-reduce 한다."
+        },
+        {
+          "q": "새 어텐션 변형에 TP 를 붙일 때 정확성을 점검하는 한 줄 질문은?",
+          "a": "'TP 를 써도 각 GPU 가 TP 없을 때와 같은 활성값(그 GPU 몫)을 계산하는가?' — 비선형 연산(softmax·정규화) 앞에서 부분합이 생기면 틀린 것이다."
+        }
+      ]
+    },
+    {
+      "start": 1921,
+      "title": "시퀀스 병렬(SP) — all-reduce 를 다시 쪼개 TP 구간 밖까지 나누기",
+      "points": [
+        "TP 구간 밖(LayerNorm·드롭아웃·잔차)은 GPU 마다 같은 (s, b, h) 활성값을 중복 저장·중복 계산한다.",
+        "SP: row-linear 뒤의 all-reduce 를 reduce-scatter(시퀀스 축으로 흩기)로, 다음 TP 구간 앞의 '항등'을 all-gather 로 바꾼다.",
+        "TP 구간 안은 은닉 차원으로, SP 구간은 시퀀스 차원으로 나뉜다 → 모든 활성값이 1/TP. 통신량은 그대로(AR = RS + AG).",
+        "역전파에서 RS 와 AG 는 서로를 뒤집은 연산이 된다 → LayerNorm 기울기 동기화가 저절로 이뤄져 따로 all-reduce 할 필요가 없다.",
+        "TP·SP 는 통신이 많아 노드 안(예: 8장 이하)에서 쓰라는 것이 라이브러리들의 공통 권고다."
+      ],
+      "on_screen": "'TP&SP: Motivation' — Tensor Parallel 블록도: LayerNorm → [TP: Self Attention → Linear] → AllReduce → Dropout → ⊕ → LayerNorm → [TP: Linear → GeLU → Linear] → AllReduce → Dropout → ⊕. 왼쪽 'Activations stored here are of shape (s, b, h/TP)'(TP 구간)와 '(s, b, h)'(구간 밖), 오른쪽 'These ops are replicated across GPUs, can we distribute them too?', 'Note that LayerNorm needs hidden_dim to be full'. 'TP&SP: Properties' — 같은 블록도가 Tensor + Sequence Parallel 로 바뀌어 AllReduce 자리에 ReduceScatter, 블록 시작에 AllGather, 구간 밖 활성값 '(s/TP, b, h)', 'Should we still sync Layernorm grads?'. 'TP&SP: Backward of AllGather/ReduceScatter' — fwd/bwd 화살표, 'ReduceScatter before SP regions help keep Layernorms synchronized', 'No need to sync Layernorm grads'. 'TP&SP: Pros/Cons'.",
+      "explain": [
+        "TP 는 블록의 무거운 부분(행렬곱)을 나눴지만, 그 사이의 가벼운 부분 — LayerNorm, 드롭아웃, 잔차 덧셈 — 은 모든 GPU 가 같은 (시퀀스 s, 배치 b, 은닉 h) 텐서로 똑같이 계산한다. 계산량은 작지만 활성값 메모리는 작지 않다. 긴 시퀀스에서는 이 '구간 밖' 텐서들이 TP 로 줄지 않는 메모리의 큰 몫을 차지하고, 앞 장에서 본 LayerNorm 파라미터 동기화 문제도 여기서 생긴다. LayerNorm 은 토큰마다 은닉 차원 전체로 평균·분산을 내야 하므로 은닉 차원으로는 자를 수 없다. 대신 토큰(시퀀스) 단위로는 독립이다. 그러면 시퀀스 축으로 자르면 된다.",
+        "여기서 ZeRO-1 의 요령이 다시 등장한다. TP 의 row-linear 뒤에는 all-reduce 가 있었다. all-reduce = reduce-scatter + all-gather 이므로, 이를 둘로 떼어 낸다. row-linear 뒤에서는 reduce-scatter 만 해서 '합은 냈지만 시퀀스 축으로 1/TP 씩 흩어진' 결과를 각 GPU 가 갖는다. 그 상태로 드롭아웃·잔차·LayerNorm 을 자기 토큰 조각에만 적용한다(이 구간이 SP 구간이다). 다음 TP 구간의 column-linear 는 전체 시퀀스를 입력으로 받아야 하므로, 원래 아무 통신도 없던 자리(항등 연산)에 all-gather 를 넣어 시퀀스를 다시 모은다. 활성값의 모양이 (s, b, h/TP) → reduce-scatter → (s/TP, b, h) → all-gather → (s, b, h/TP) 로 은닉 축과 시퀀스 축 사이를 오간다.",
+        "얻는 것은 두 가지다. 첫째, 구간 밖 활성값도 1/TP 가 되어 블록의 모든 활성값이 TP 로 나뉜다(CS336 8강 노트의 식으로는 sbh(10 + 24/t + …) 의 10 이 10/t 로 바뀐다). 둘째, 통신량은 하나도 늘지 않는다 — all-reduce 한 번을 reduce-scatter 와 all-gather 로 나눴을 뿐이다. 그리고 강연자가 '아름답다'고 표현한 덤이 있다. reduce-scatter 의 역전파는 all-gather 이고, all-gather 의 역전파는 reduce-scatter 다(서로를 뒤집은 연산). 그래서 역전파에서는 SP 구간 앞쪽에 reduce-scatter 가 생기는데, 이것이 LayerNorm 파라미터로 흘러 들어가는 기울기를 GPU 들 사이에서 합쳐 준다. TP 에서는 '구간 밖은 항등이고 모두 같다'는 이상적인 가정에 기대다가 수치 오차를 막으려 따로 all-reduce 를 넣어야 했지만, SP 에서는 GPU 마다 서로 다른 토큰을 보고 그 차이를 통신이 정식으로 합쳐 주므로 별도 동기화가 필요 없다.",
+        "그래도 TP 의 근본 단점은 남는다. 블록마다 순·역전파 통신이 임계 경로에 있고 구현이 복잡하다. 그래서 Megatron·TorchTitan·nanotron 등 분산 학습 라이브러리들은 하나같이 TP(와 SP)를 한 노드 안에서 쓰라고 권한다. 노드 하나에 GPU 8장이 NVLink 로 묶여 있다면 TP 는 8 이하로 두어, 순·역전파의 all-reduce(또는 RS·AG)가 빠른 노드 내 망에서만 돌게 한다. 노드 밖 느린 망에서 블록마다 통신을 기다리면 GPU 가 대부분의 시간을 논다. (질의응답에서 강연자는 NVL72 처럼 수십 장이 한 NVLink 도메인으로 묶인 최신 시스템에서는 TP 를 그 도메인 크기까지 키우기도 한다고 덧붙였다.)"
+      ],
+      "formulas": [
+        {
+          "expr": "(s, b, h/t) --RS_s--> (s/t, b, h) --AG_s--> (s, b, h/t)",
+          "meaning": "s 시퀀스, b 배치, h 은닉, t TP 크기. RS_s 는 시퀀스 축으로 흩는 reduce-scatter(row-linear 의 부분합을 더하면서 토큰을 나눔), AG_s 는 시퀀스 축 all-gather. TP 구간에서는 은닉 축이, SP 구간에서는 시퀀스 축이 t 로 나뉜다."
+        },
+        {
+          "expr": "bwd(AllGather) = ReduceScatter,   bwd(ReduceScatter) = AllGather",
+          "meaning": "all-gather 는 '조각을 복사해 모두에게'이므로 그 역전파는 '모두의 기울기를 더해 조각 주인에게'(RS)다. 반대도 같다. 그래서 SP 의 역전파는 순전파 통신의 순서만 뒤집은 모양이고 통신량이 같다."
+        }
+      ],
+      "example": {
+        "title": "seq 8,192, h 8,192, TP 4 — 구간 밖 텐서 하나의 크기",
+        "body": "bf16(2바이트), 배치 1: (s, b, h) = 8,192 × 8,192 × 2B = 134,217,728B = 128MiB. 블록 하나의 구간 밖에는 LayerNorm 입력·드롭아웃 마스크·잔차 입력 등 이런 텐서가 여러 개 있고 층이 80개면 수십 GB 가 된다. SP 로 (s/4, b, h) 가 되면 텐서 하나가 32MiB — 구간 밖 활성값 전체가 4분의 1. 통신은 TP 때 all-reduce 한 번(장당 2×3/4×128MiB = 192MiB 송신)이 RS 한 번(96MiB)+AG 한 번(96MiB)으로 바뀌어 같은 192MiB 다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "import numpy as np\nrng = np.random.default_rng(2)\ntp, s, h = 4, 8, 6\npartial = [rng.normal(size=(s, h)) for _ in range(tp)]  # row-linear 직후 GPU별 부분합\nar = sum(partial)                                        # TP: all-reduce -> 모두 (s,h)\nrs = [sum(p[r*s//tp:(r+1)*s//tp] for p in partial) for r in range(tp)]  # SP: reduce-scatter\nprint(\"RS 조각 모양:\", rs[0].shape, \"  AG 하면 AR 과 같다:\", np.allclose(np.concatenate(rs), ar))\n# LayerNorm 은 토큰(행)마다 h 축으로 정규화 -> 시퀀스로 잘라도 조각마다 따로 해도 같다\nln = lambda z: (z - z.mean(-1, keepdims=True)) / z.std(-1, keepdims=True)\nprint(\"시퀀스 조각별 LN == 전체 LN:\", np.allclose(np.concatenate([ln(r) for r in rs]), ln(ar)))\n# 활성값 메모리: 한 층의 TP 밖(LN·dropout·잔차) 텐서가 (s,b,h) 에서 (s/tp,b,h) 로\nS, B, Hd, bytes_ = 8192, 1, 8192, 2\nprint(\"TP 밖 한 텐서:\", S*B*Hd*bytes_/2**20, \"MiB ->\", S*B*Hd*bytes_/tp/2**20, \"MiB (tp=4)\")",
+        "note": "실행 결과: RS 조각 모양 (2, 6), AG 하면 AR 과 같다 True, 시퀀스 조각별 LN == 전체 LN True, TP 밖 한 텐서 128.0 MiB → 32.0 MiB (tp=4)."
+      },
+      "diagram": {
+        "title": "TP+SP 블록 하나의 순전파 통신",
+        "code": "flowchart TB\n  A[\"SP 구간: LayerNorm (s/t,b,h)\"] --> B[AllGather 시퀀스]\n  B --> C[\"TP 구간: QKV column → 어텐션(헤드 분할) (s,b,h/t)\"]\n  C --> D[출력 row-linear 부분합]\n  D --> E[ReduceScatter 시퀀스]\n  E --> F[\"SP 구간: 드롭아웃·잔차·LayerNorm (s/t,b,h)\"]\n  F --> G[AllGather]\n  G --> H[\"TP 구간: MLP up column → GeLU → down row\"]\n  H --> I[ReduceScatter]\n  I --> J[다음 블록]"
+      },
+      "pitfalls": [
+        "여기서 말하는 '시퀀스 병렬'은 TP 에 딸린 Megatron 식 SP 다. 긴 문맥을 위해 어텐션까지 시퀀스로 나누는 것은 컨텍스트 병렬(CP)이고, DeepSpeed 의 'Ulysses 시퀀스 병렬'도 CP 쪽 기법이다. 이름이 겹쳐 혼동이 잦다.",
+        "SP 는 TP 크기와 같은 그룹·같은 크기로만 쓴다. 별도의 병렬 축이 아니라 TP 의 변형이다.",
+        "강연 중 'TPU region' 이라고 들리는 대목은 'TP region'(TP 구간)이다."
+      ],
+      "check": [
+        {
+          "q": "SP 를 켜면 TP 보다 통신량이 늘어나나?",
+          "a": "아니다. all-reduce 를 reduce-scatter 와 all-gather 로 나눠 다른 위치에 둔 것뿐이라 총량이 같다(AR = RS + AG)."
+        },
+        {
+          "q": "SP 에서 LayerNorm 파라미터 기울기를 따로 all-reduce 하지 않아도 되는 이유는?",
+          "a": "순전파의 all-gather 가 역전파에서 reduce-scatter 가 되어, SP 구간(LayerNorm 포함)으로 들어오는 기울기가 TP 그룹 전체에서 정식으로 합쳐지기 때문이다. 각 GPU 는 다른 토큰을 보므로 '같다고 가정'할 필요 자체가 없다."
+        }
+      ]
+    },
+    {
+      "start": 2284,
+      "title": "병렬을 겹쳐 쓰기 — 서로 직교하는 축과 장치 격자(device mesh)",
+      "points": [
+        "병렬 축들은 직교한다: 데이터 축으로 나뉜 배치는 모델 축에서 복제, 모델 축으로 나뉜 가중치는 데이터 축에서 복제.",
+        "그래서 GPU 를 다차원 격자에 놓을 수 있다(2축이면 2D, 다섯이면 5D, 더 쪼개면 6·7D).",
+        "코드: WORLD_SIZE 로 프로세스 그룹을 만든 뒤 축마다 그룹(TP 그룹, DP 그룹)을 만들고, 통신할 때 '어느 축의 그룹인가'만 고른다.",
+        "TorchTitan·Megatron·nanotron 모두 이 구조다."
+      ],
+      "on_screen": "'Combining parallelisms?' — Batch 가 B0·B1·B2 로 나뉘어 각각 GPU 0·1 / 2·3 / 4·5 쌍으로 가고, 각 쌍은 모델 블록을 위아래 반쪽으로 나눠 갖는다. 오른쪽 라벨 TP=0,DP=0 / TP=1,DP=0 / TP=0,DP=1 / … / TP=1,DP=2. 아래 문구 'We shard our data along Data Parallel axis (e.g. DP, CP) and duplicate along other axes', 'We shard our model along Model Parallel axis (e.g. TP, PP) and duplicate along other axes'. 'Example code' — Data Parallel(0,1,2) × Tensor Parallel(0,1) 격자 그림과 torch.distributed 코드(rank·world_size 를 환경변수에서 읽고 dist.init_process_group(backend='nccl'), tp_groups·dp_groups 를 dist.new_group 으로 만들고, dist.all_reduce(x, op=SUM, group=tp_group) / group=dp_group), 'We pick which parallelism axis to AllReduce over'.",
+      "explain": [
+        "지금까지 데이터를 쪼개는 축(DP)과 모델을 쪼개는 축(TP) 두 개를 봤다. 이 둘을 동시에 쓰면 어떻게 되나. 강연자의 답은 '직교하니까 그냥 곱하면 된다'다. 직교한다는 말의 뜻은 이렇다. 배치는 데이터 축을 따라 나뉘고 모델 축을 따라서는 복제된다 — 같은 TP 그룹(GPU 0·1)은 같은 배치 B0 를 본다. 가중치는 모델 축을 따라 나뉘고 데이터 축을 따라서는 복제된다 — GPU 0·2·4 는 모두 모델의 같은 절반을 갖는다. 한 축의 통신이 다른 축의 분할을 건드리지 않으므로 GPU 6장을 3×2 격자로 놓고 행 방향, 열 방향으로 따로 통신하면 된다.",
+        "이 격자를 장치 격자(device mesh)라고 부른다. 축이 둘이면 2D, 다섯 병렬을 다 쓰면 5D 이고, 강연자 말로는 원하는 만큼 더 쪼개 6D·7D 로 볼 수도 있다(예: FSDP 의 샤딩 축과 복제 축을 따로 세거나, MoE 쪽 축을 따로 세는 식). 실제 코드는 놀랍도록 단순하다. 먼저 전체 프로세스 그룹(WORLD_SIZE 개)을 초기화하고, rank 번호를 격자 좌표로 바꾼 뒤, 같은 행끼리 TP 그룹, 같은 열끼리 DP 그룹을 만든다. 이후 통신할 때마다 all_reduce(..., group=tp_group) 처럼 '어느 축으로 할지'만 고른다. TP 의 블록별 all-reduce 는 TP 그룹에서, 기울기 동기화는 DP 그룹에서 일어난다. PyTorch 에서는 init_device_mesh 가 이 과정을 감싸 주고, FSDP2 의 DTensor 가 이 격자 위에서 '이 텐서는 어느 축으로 나뉘고 어느 축으로 복제됐다'를 기록한다(노트 보충).",
+        "격자 좌표를 정하는 방식(어느 축을 안쪽에 두나)이 실무에서는 중요하다(노트 보충). rank 번호가 연속된 GPU 들이 같은 노드에 있으므로, 통신이 가장 잦은 축(TP)을 가장 안쪽(연속된 rank)에 둬야 그 그룹이 한 노드의 NVLink 안에 들어간다. 아래 코드처럼 rank = dp_idx × TP + tp_idx 로 두면 TP 그룹이 [0,1], [2,3] … 처럼 이웃 rank 로 묶인다. 반대로 DP 를 안쪽에 두면 TP 그룹이 [0,3]·[1,4] 처럼 흩어져 노드를 넘나들 수 있다. 5D 에서 흔한 순서는 바깥부터 PP → DP → CP → (EP) → TP 다. 통신이 드문 PP 를 가장 바깥(느린 망)에, 가장 잦은 TP 를 가장 안쪽(빠른 망)에 둔다.",
+        "이 직교성 덕분에 강연 후반의 세 병렬(PP·CP·EP)도 '새 축 하나를 격자에 더하는 일'로 이해하면 된다. 단, 강연자가 EP 장에서 짚듯 EP 는 DP 와 완전히 직교하지는 않는다 — 전문가 쪽에서는 데이터도 같이 나뉘기 때문이다. 이 미묘함은 EP 장에서 다룬다."
+      ],
+      "formulas": [
+        {
+          "expr": "WORLD_SIZE = DP × TP,   rank = dp_idx · TP + tp_idx",
+          "meaning": "WORLD_SIZE 는 전체 GPU 수, dp_idx ∈ [0, DP), tp_idx ∈ [0, TP). TP 를 안쪽(빠르게 변하는) 축으로 두면 같은 TP 그룹이 연속된 rank 가 되어 한 노드 안에 들어간다."
+        },
+        {
+          "expr": "5D: N = PP × DP × CP × EP × TP   (EP 는 MoE 층에서 DP·CP 축을 접어 쓰는 경우가 많다)",
+          "meaning": "N 은 전체 GPU 수. 각 축은 서로 다른 것을 나누고(층·배치·시퀀스·전문가·행렬), 나머지 축에서는 복제된다. 괄호 속 내용은 노트 보충 — MoE 층의 EP 그룹은 대개 별도 GPU 를 더 쓰지 않고 DP(·CP) 그룹을 재배치해 만든다."
+        }
+      ],
+      "example": {
+        "title": "64장을 PP2 × DP4 × TP8 로 — rank 7, 8, 35 는 어디에 있나",
+        "body": "안쪽부터 TP(8) → DP(4) → PP(2). rank = pp·32 + dp·8 + tp. rank 7: pp 0, dp 0, tp 7 → 노드 0 의 마지막 GPU. rank 8: pp 0, dp 1, tp 0 → 노드 1 의 첫 GPU(다른 데이터 조각, 같은 모델 조각). rank 35 = 32 + 3: pp 1, dp 0, tp 3 → 파이프라인 둘째 단계. TP 그룹(예: 0~7)은 한 노드 안, DP 그룹(예: 0·8·16·24)은 노드 넷에 걸치고, PP 이웃(0 과 32)은 멀리 떨어져 있지만 활성값만 주고받으므로 괜찮다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "import numpy as np\nDP, TP = 3, 2                                  # 슬라이드처럼 GPU 6장\nranks = np.arange(DP * TP).reshape(DP, TP)     # rank = dp_idx*TP + tp_idx  (TP 가 안쪽 축)\ntp_groups = [r.tolist() for r in ranks]           # 같은 행 = 같은 데이터, 모델 조각만 다름\ndp_groups = [c.tolist() for c in ranks.T]         # 같은 열 = 같은 모델 조각, 데이터만 다름\nprint(\"TP groups:\", tp_groups)\nprint(\"DP groups:\", dp_groups)\nfor r in (0, 3, 5):\n    print(f\"rank {r}: dp_idx={r // TP}, tp_idx={r % TP}\")\n# 어느 축으로 all-reduce 할지는 '어느 그룹을 넘기느냐'로 정한다\ngrads = np.arange(6.0)                         # rank 마다 값 하나\nprint(\"DP all-reduce:\", [float(grads[g].sum()) for g in dp_groups])",
+        "note": "실행 결과: TP groups [[0,1],[2,3],[4,5]], DP groups [[0,2,4],[1,3,5]], rank 3 → dp_idx 1·tp_idx 1, DP 그룹별 all-reduce 합 [6.0, 9.0]. 실제 코드에서는 각 그룹을 dist.new_group 으로 만들고 all_reduce 의 group 인자로 넘긴다."
+      },
+      "pitfalls": [
+        "dist.new_group 은 모든 rank 가 같은 순서로 호출해야 한다. 자기가 속한 그룹만 만들려고 하면 교착(hang)에 빠진다.",
+        "격자 축의 순서를 바꾸는 것만으로 같은 설정의 속도가 크게 달라질 수 있다 — TP 그룹이 노드를 넘는지 먼저 확인한다."
+      ],
+      "check": [
+        {
+          "q": "GPU 16장(노드 2개 × 8장)을 DP 2 × TP 8 로 쓸 때, rank = dp·8 + tp 와 rank = tp·2 + dp 중 어느 쪽이 좋은가?",
+          "a": "앞쪽. TP 그룹이 0~7, 8~15 로 각 노드 안에 들어간다. 뒤쪽은 TP 그룹이 0,2,4,…,14 로 두 노드에 걸쳐 블록마다 노드 밖 통신을 한다."
+        },
+        {
+          "q": "DP 와 TP 가 '직교'한다는 것을 배치와 가중치로 설명하면?",
+          "a": "배치는 DP 축으로 나뉘고 TP 축에서는 복제되며, 가중치는 TP 축으로 나뉘고 DP 축에서는 복제된다. 그래서 TP 통신(같은 배치·다른 가중치 조각)과 DP 통신(같은 가중치 조각·다른 배치)이 서로 섞이지 않는다."
+        }
+      ]
+    },
+    {
+      "start": 2408,
+      "title": "파이프라인 병렬(PP) — 층을 세로로 나누고, 거품을 스케줄로 메운다",
+      "points": [
+        "PP 는 모델을 층 단위로 나눠(세로 분할) GPU 마다 몇 층씩 맡긴다. 주고받는 것은 경계의 활성값과 기울기뿐이라 통신이 싸다.",
+        "문제는 거품(bubble): 앞 단계가 끝나기 전까지 뒤 단계가 논다. 마이크로배치를 여러 개 흘려 메운다.",
+        "AFAB(모두 순전파 후 모두 역전파) → 1F1B(역전파 우선, 순·역전파가 번갈아): 거품 크기는 같고 활성값 메모리가 준다.",
+        "DeepSeek 의 DualPipe 는 파이프라인 양 끝에서 데이터를 넣고 순·역전파의 계산과 통신을 겹쳐 거품을 크게 줄인다 — 구현은 매우 어렵다.",
+        "단점: 여러 마이크로배치의 활성값을 들고 있어야 함(→ 재계산·CPU 오프로딩), 복잡한 스케줄러, 거품을 숨기려면 마이크로배치가 많아야 해 GBS 가 PP 크기와 함께 커진다."
+      ],
+      "on_screen": "'Intuition behind Pipeline Parallelism' — 층 블록을 GPU 별로 세로로 나눈 그림, 'We want to shard layers across GPUs', 'But what does GPU do when it doesn't have activations yet?'. 'PP: AFAB scheduler (All-Forward All-Backward)' 와 'PP: Pipeline bubble' — GPU1-Layer1…GPU4-Layer4 행에 순전파(파랑) 1~8, 역전파(분홍) 1~8 과 그다음 배치 9~16 이 계단 모양으로, 'Pipeline bubble = GPUs idle', 'Let's assume each GPU has 1 layer / We communicate activations/grads between pairs of GPUs / We schedule many microbatches to keep GPU busy'. 'PP: 1F1B scheduler (1-Forward 1-Backward)' — 'We prioritize backwards over forwards / Still same pipeline bubble'. 'PP: Deepseek's pipeline scheduler' — DeepSeek-V3 보고서의 Figure 5(8 PP rank, 20 마이크로배치, 두 방향; 순전파·역전파·입력용 역전파·가중치용 역전파·겹친 순역전파 색 구분), 'DualPipe is an advanced PP schedule where we inject data from both PP ends to minimize PP bubble.. Easier said than done :)'. 'PP: Pros/Cons' — Cheap communications (activs/grads every pipeline stage) / Shards model across GPUs → memory efficient / Model-agnostic / No need to AllReduce grads; Need to save activations for multiple microbatches before backward / Complex implementation for advanced pipeline schedulers / Needs multiple microbatches to hide PP bubble.",
+      "explain": [
+        "텐서 병렬이 행렬을 가로로 자른다면 파이프라인 병렬은 모델을 세로로, 즉 층 단위로 자른다. 32층 모델을 GPU 4장에 8층씩 나누는 식이다. 각 GPU 는 자기 층의 가중치만 갖고, 경계에서 다음 GPU 로 활성값을(역전파 때는 이전 GPU 로 기울기를) 넘긴다. 주고받는 것이 '경계의 텐서 하나'뿐이고 점대점(send/recv) 통신이라 TP 의 블록마다 all-reduce 와 비교하면 아주 싸다. 그래서 PP 는 노드 밖, 느린 망을 건너는 축으로 쓰기 좋다. 모델 구조도 몰라도 된다 — 층을 차례로 쌓은 모델이면 된다.",
+        "문제는 기다림이다. 배치 하나를 넣으면 GPU1 이 순전파하는 동안 GPU2~4 는 입력이 없어 놀고, 역전파 때는 반대로 앞 GPU 들이 논다. 이 빈 시간이 파이프라인 거품이다. 해법은 배치를 마이크로배치로 잘게 나눠 연달아 흘리는 것이다. 가장 단순한 스케줄은 AFAB(all-forward all-backward) — 마이크로배치 m 개의 순전파를 모두 흘린 뒤 역전파를 모두 흘린다. 거품은 파이프라인을 채우고 비우는 양 끝에만 생기고, 그 비율은 (p−1)/m 이다(p 는 단계 수). 마이크로배치를 늘릴수록 거품이 줄어든다. 하지만 AFAB 는 역전파가 시작되기 전까지 m 개 마이크로배치의 활성값을 모두 들고 있어야 한다.",
+        "1F1B 스케줄은 역전파를 순전파보다 우선한다. 파이프라인이 한 번 차고 나면 각 GPU 는 순전파 하나, 역전파 하나를 번갈아 한다. 역전파가 끝난 마이크로배치의 활성값은 바로 버릴 수 있으니, 한 GPU 가 동시에 들고 있는 활성값이 m 개가 아니라 최대 p 개로 준다. 강연자가 강조하듯 거품의 크기는 AFAB 와 같다 — 1F1B 는 메모리 문제를 풀었지 거품을 없앤 것은 아니다. 거품을 실제로 줄이는 쪽은 더 복잡한 스케줄이다. 강연자가 보여 준 DeepSeek 의 DualPipe 는 층을 왕복(round-robin) 배치해 첫 층을 첫 장치와 마지막 장치 양쪽에 둔다. 그러면 파이프라인의 양 끝에서 동시에 데이터를 넣을 수 있어 한쪽이 빈 시간에 다른 방향의 일을 하고, 한 장치 안에서 한 마이크로배치의 순전파와 다른 마이크로배치의 역전파 계산·통신을 겹친다. 강연자의 평은 '말은 쉽고 구현은 어렵다'. 어떤 마이크로배치의 어떤 활성값·기울기를 어디로 보낼지 정확히 추적해야 하기 때문이다(인터리브·Zero Bubble 같은 다른 스케줄은 CS336 8강 노트 참고).",
+        "장점은 통신이 싸고, 메모리를 효율적으로 나누고, 모델 구조와 무관하며, (TP 처럼) 기울기를 all-reduce 할 필요가 없다는 것이다. 단점은 셋이다. ① 역전파 전까지 여러 마이크로배치의 활성값을 들고 있어야 한다. 그래서 PP 나 FSDP 처럼 활성값 압박이 큰 설정에서는 활성값 체크포인팅(재계산)이나, 요즘은 CPU 오프로딩 — 활성값을 CPU 메모리로 내렸다가 필요할 때 다시 올리기 — 을 쓴다. ② 좋은 스케줄러는 구현이 어렵고 라이브러리에 넣기도 힘들다. ③ 거품을 숨기려면 마이크로배치가 많아야 한다. 강연자는 이것을 가장 깊은 문제로 꼽는다. m 이 p 보다 충분히 커야 하므로 GBS 가 PP 크기와 함께 커져야 하고, 이는 DP 가 부딪혔던 GBS 천장과 같은 벽이다."
+      ],
+      "formulas": [
+        {
+          "expr": "bubble = (p − 1) / m   (이상적 시간 대비),   유휴 몫 = (p − 1) / (m + p − 1)",
+          "meaning": "p 는 파이프라인 단계 수, m 은 한 스텝의 마이크로배치 수. 첫 식은 '쓸모 있는 계산 시간에 대해 거품이 얼마나 더해지나', 둘째 식은 '전체 시간 중 노는 몫'. AFAB 와 1F1B 가 같고, 인터리브(v 개 가상 단계)는 대략 (p−1)/(v·m) 로 줄인다(노트 보충)."
+        },
+        {
+          "expr": "동시 보관 활성값: AFAB = m 개,  1F1B ≤ p 개 (첫 단계 기준)",
+          "meaning": "m 마이크로배치 수, p 단계 수. 1F1B 는 마이크로배치 하나의 역전파가 끝나는 대로 그 활성값을 버린다. 첫 단계는 p 개를 앞서 흘려 두므로 가장 많이 들고 있다."
+        }
+      ],
+      "example": {
+        "title": "p = 4 단계에서 m 을 바꿔 가며",
+        "body": "역전파가 순전파의 2배 시간(순 1, 역 2)이라 하자. m = 8: 이상적 시간 8×3 = 24, 실제 (8+3)×3 = 33 → 거품 9/24 = 0.375 = (4−1)/8, 전체 중 노는 몫 9/33 ≈ 27%. m = 32: 거품 3/32 ≈ 0.094, 노는 몫 9/105 ≈ 8.6%. p = 8 로 늘리면 같은 8% 대를 지키려면 m = 64 가 필요하다(거품 7/64 ≈ 0.109). 즉 PP 를 두 배로 늘리면 마이크로배치도 두 배 — mbs 1, seq 4,096 이라면 GBS 가 PP 단계 하나에 26만 토큰(64×4,096) 이상이어야 하고, 여기에 DP 가 곱해진다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "# 파이프라인 거품: p 단계, m 마이크로배치, 역전파 = 순전파의 2배 시간 가정\ndef afab(p, m, tf=1, tb=2):\n    # 마지막 단계가 끝나는 시각 / 이상적인 시간\n    total = (m + p - 1) * tf + (m + p - 1) * tb\n    ideal = m * (tf + tb)\n    return total, ideal\nfor p, m in [(4, 8), (4, 32), (8, 8), (8, 64)]:\n    total, ideal = afab(p, m)\n    print(f\"p={p} m={m:3d}  거품 비율 (p-1)/m = {(p-1)/m:.3f}\"\n          f\"  실측 {(total-ideal)/ideal:.3f}  유휴 몫 {(total-ideal)/total:.1%}\")\n# 활성값을 동시에 들고 있는 마이크로배치 수: AFAB 는 m 개, 1F1B 는 최대 p 개\np, m = 4, 32\nprint(\"AFAB 동시 보관:\", m, \" 1F1B 동시 보관(첫 단계):\", p)",
+        "note": "실행 결과: p=4·m=8 거품 0.375(유휴 27.3%), p=4·m=32 0.094(8.6%), p=8·m=8 0.875(46.7%), p=8·m=64 0.109(9.9%); AFAB 동시 보관 32, 1F1B 4."
+      },
+      "diagram": {
+        "title": "1F1B — 단계 4개, 마이크로배치 6개 (F=순전파, B=역전파, .=거품)",
+        "code": "flowchart LR\n  subgraph S1[GPU1]\n  a1[F1 F2 F3 F4 B1 F5 B2 F6 B3 . B4 . B5 . B6]\n  end\n  subgraph S4[GPU4]\n  a4[. . . F1 B1 F2 B2 F3 B3 F4 B4 F5 B5 F6 B6]\n  end\n  S1 -- 활성값 --> S4\n  S4 -- 기울기 --> S1"
+      },
+      "pitfalls": [
+        "1F1B 가 거품을 줄인다고 오해하기 쉽다 — 줄이는 것은 활성값 메모리다. 거품은 (p−1)/m 그대로다.",
+        "단계마다 층 수를 똑같이 나눠도 첫 단계(임베딩)와 마지막 단계(출력층·손실)는 계산·메모리가 더 무겁다. 단계 균형을 맞추지 않으면 가장 느린 단계가 파이프라인 전체 속도를 정한다(노트 보충).",
+        "슬라이드 목록의 세 번째 단점을 강연자가 '13 is…'처럼 읽은 대목은 '셋째로'의 말실수다."
+      ],
+      "check": [
+        {
+          "q": "p = 6 인 파이프라인에서 노는 몫을 10% 아래로 두려면 m 은 최소 얼마인가?",
+          "a": "(p−1)/(m+p−1) < 0.1 → 5/(m+5) < 0.1 → m > 45, 즉 m ≥ 46."
+        },
+        {
+          "q": "AFAB 에서 1F1B 로 바꾸면 무엇이 달라지고 무엇이 그대로인가?",
+          "a": "한 GPU 가 동시에 들고 있는 활성값이 m 개에서 최대 p 개로 줄어든다. 거품의 크기((p−1)/m)는 그대로다."
+        }
+      ]
+    },
+    {
+      "start": 2746,
+      "title": "컨텍스트 병렬(CP) — 시퀀스를 나누고, 링 어텐션과 온라인 softmax 로 잇는다",
+      "points": [
+        "시퀀스 길이를 늘리면 활성값이 폭발한다 — TP·PP 로도 시퀀스 자체는 나뉘지 않는다.",
+        "CP 는 배치 대신 시퀀스 축으로 데이터를 나눈다(데이터 병렬과 닮은 꼴). 어텐션 밖 연산은 토큰별이라 그대로 된다.",
+        "어텐션은 모든 토큰을 봐야 하므로 링 어텐션: 각 GPU 가 자기 Q 를 두고 K·V 조각을 링으로 돌려 받으며 온라인 softmax 로 결과를 갱신한다(FlashAttention 과 같은 원리).",
+        "통신이 어텐션 블록 안에 있어 무겁고(send/recv 또는 all-gather), 다른 데이터를 보므로 기울기 all-reduce 가 필요하고, 짧은 시퀀스엔 이득이 없다 → 긴 문맥 학습일 때만 쓴다."
+      ],
+      "on_screen": "'Context Parallelism (CP) — Sharding the sequence length dimension' 표지. 'Previously in Data Parallelism' — Batch 를 B1·B2·B3 로 나눠 GPU0~2 에 주는 그림. 'Intuition behind Context Parallelism' — 같은 그림인데 배치 하나를 시퀀스 S1·S2·S3 로 나눠 각 GPU 에, 'In Context Parallelism we shard data along sequence length dimension', 'But what about attention?'. 'CP: Ring Attention' — 'We use Ring Attention which exchanges K and V of each GPU to compute attention using online softmax'. 온라인 softmax 의사코드: for i ← 1, N do: x_i ← Q[k,:] Kᵀ[:,i]; m_i ← max(m_{i−1}, x_i); d'_i ← d'_{i−1} e^{m_{i−1}−m_i} + e^{x_i−m_i}; o'_i ← o'_{i−1} (d'_{i−1} e^{m_{i−1}−m_i} / d'_i) + (e^{x_i−m_i} / d'_i) V[i,:]; end; O[k,:] ← o'_N. 오른쪽 GPU1(Q1) → GPU2(Q2) → GPU3(Q3) → GPU4(Q4) → GPU1 로 도는 'Ring Attention' 그림. 'CP: Pros/Cons' — Only parallelism to efficiently partition large sequences memory; Communication heavy (every attention block, critical path) / Need to allreduce grads since each GPU sees different data / Doesn't help much for short sequences → To be used if and only if long context training.",
+      "explain": [
+        "문맥 길이를 수십만~100만 토큰으로 늘리면 활성값이 감당이 안 된다. 층 하나의 활성값은 시퀀스 길이에 비례하고(어텐션 점수 행렬을 저장하면 제곱에 비례), TP 는 은닉 차원을, PP 는 층을 나눌 뿐 시퀀스 자체는 나누지 않는다. SP 도 어텐션 구간 밖만 나눈다. 컨텍스트 병렬은 데이터 병렬과 같은 발상을 다른 축에 적용한다. DP 가 배치 축으로 데이터를 나눴다면 CP 는 시퀀스 축으로 나눈다. 길이 100만짜리 시퀀스 하나를 GPU 4장이 25만 토큰씩 맡는 식이다. MLP·LayerNorm 은 토큰마다 독립이라 자기 토큰만 처리하면 끝이다.",
+        "막히는 곳은 어텐션이다. 토큰 하나의 출력은 시퀀스 전체의 키·값을 봐야 나온다. 그렇다고 전체 K·V 를 한 GPU 에 모으면 메모리를 나눈 의미가 없다. 링 어텐션은 이렇게 푼다. 각 GPU 는 자기 Q 조각을 고정해 두고, K·V 조각을 링 모양으로 옆 GPU 에 넘긴다. GPU 가 P 장이면 P 번 돌면서 모든 K·V 조각을 한 번씩 보게 되고, 매번 '지금 가진 K·V 조각에 대한 부분 어텐션'을 계산해 누적한다. 누적에는 온라인 softmax 를 쓴다. softmax 는 분모(지수 합)가 전체를 봐야 정해지지만, 지금까지의 최댓값 m 과 지수 합 l 을 들고 다니면 새 조각이 올 때마다 '이전 누적을 새 최댓값 기준으로 낮춰 다시 맞추는' 식으로 정확한 결과를 만들 수 있다. FlashAttention 이 한 GPU 안의 타일 단위로 하는 일을 GPU 단위로 하는 것이다. K·V 를 넘기는 통신은 다음 조각 계산과 겹칠 수 있다.",
+        "슬라이드의 온라인 softmax 의사코드를 읽어 보자. 쿼리 행 k 하나에 대해 키를 하나씩(i = 1…N) 본다. x_i 는 점수, m_i 는 지금까지의 최댓값, d'_i 는 '최댓값 기준으로 정규화한 지수 합', o'_i 는 지금까지의 정규화된 출력이다. 새 점수가 들어오면 최댓값을 갱신하고, 이전 합과 이전 출력에 e^{m_{i−1}−m_i} 를 곱해 새 기준으로 낮춘 뒤 새 항을 더한다. 마지막의 o'_N 이 정확한 softmax 가중 합과 같다. 링 어텐션에서는 i 가 '키 하나' 대신 'K·V 조각 하나'가 될 뿐이다(아래 코드).",
+        "장점은 단 하나지만 결정적이다 — 긴 시퀀스의 메모리를 효율적으로 나누는 유일한 병렬이다. 단점은 셋이다. ① 어텐션 블록마다 K·V 를 주고받으니 TP 처럼 통신이 임계 경로에 있다(send/recv 로 링을 돌리거나 all-gather 로 한꺼번에 모은다). ② GPU 마다 다른 토큰을 보므로 DP 처럼 기울기를 all-reduce 해야 한다(실무에서는 DP 그룹과 합쳐 한 번에 한다 — 노트 보충). ③ 시퀀스가 짧으면 통신 대비 계산이 작아 이득이 없다. 그래서 강연자의 결론은 '긴 문맥을 학습할 때만, 그때는 반드시'다. 인과 마스크를 쓰면 앞쪽 토큰 조각은 계산할 것이 적어 GPU 간 일이 불균형해지므로, 조각을 앞뒤에서 하나씩 짝지어 나눠 주는 지그재그 배치 같은 보정이 쓰인다(노트 보충)."
+      ],
+      "formulas": [
+        {
+          "expr": "m_new = max(m, max_j s_j),   l_new = l·e^{m − m_new} + Σ_j e^{s_j − m_new},   o_new = o·e^{m − m_new} + Σ_j e^{s_j − m_new} v_j",
+          "meaning": "s_j 는 새로 받은 K 조각의 점수(q·k_j/√d), v_j 는 그 값 벡터, m 은 지금까지의 최댓값, l 은 지금까지의 (최댓값 기준) 지수 합, o 는 정규화 전 누적 출력. 모든 조각을 본 뒤 o/l 이 정확한 softmax(qKᵀ/√d)V 의 한 행이다. e^{m − m_new} 가 '이전 누적을 새 기준으로 낮추는' 보정 인자."
+        },
+        {
+          "expr": "CP 통신(GPU 한 장, 층 하나) ≈ (P − 1)/P · 2 · s · b · h_kv · bytes",
+          "meaning": "P 는 CP 크기, s·b 는 전체 토큰 수, h_kv 는 K 또는 V 한쪽의 차원(GQA 면 KV 헤드 수 × head_dim), 2 는 K 와 V. 각 GPU 가 다른 P−1 개 조각의 K·V 를 한 번씩 받는다(노트 보충의 어림)."
+        }
+      ],
+      "example": {
+        "title": "점수 셋을 두 조각으로 — 온라인 softmax 손계산",
+        "body": "쿼리 하나의 점수 s = (1, 3, 2), 값 v = (10, 20, 30). 정답: e¹=2.718, e³=20.09, e²=7.389, 합 30.19 → 출력 = (2.718·10 + 20.09·20 + 7.389·30)/30.19 = (27.18 + 401.7 + 221.7)/30.19 ≈ 21.55. 조각 1 = {1, 3}: m = 3, l = e^{−2} + e⁰ = 0.1353 + 1 = 1.1353, o = 0.1353·10 + 1·20 = 21.353. 조각 2 = {2}: m_new = max(3, 2) = 3 이라 보정 인자 1, l = 1.1353 + e^{−1} = 1.1353 + 0.3679 = 1.5032, o = 21.353 + 0.3679·30 = 32.39. o/l = 32.39/1.5032 ≈ 21.55. 정답과 같다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "import numpy as np\nrng = np.random.default_rng(3)\ns, d, P = 8, 4, 4                          # 시퀀스 8 을 GPU 4장(CP=4)에 2토큰씩\nq, k, v = (rng.normal(size=(s, d)) for _ in range(3))\nS = q @ k.T / np.sqrt(d); A = np.exp(S - S.max(1, keepdims=True))\nfull = (A / A.sum(1, keepdims=True)) @ v\nQ, K, V = (np.split(x, P) for x in (q, k, v))\nout = []\nfor r in range(P):                         # GPU r 은 자기 Q 조각을 갖고\n    m = np.full((s // P, 1), -np.inf); l = np.zeros((s // P, 1)); o = np.zeros((s // P, d))\n    for step in range(P):                  # 링을 돌며 K,V 조각을 하나씩 받는다\n        j = (r - step) % P\n        sc = Q[r] @ K[j].T / np.sqrt(d)\n        m_new = np.maximum(m, sc.max(1, keepdims=True))\n        scale = np.exp(m - m_new)          # 앞서 쌓은 값을 새 최댓값 기준으로 낮춘다\n        p_ = np.exp(sc - m_new)\n        l = l * scale + p_.sum(1, keepdims=True)\n        o = o * scale + p_ @ V[j]\n        m = m_new\n    out.append(o / l)\nprint(\"링 어텐션 == 전체 어텐션:\", np.allclose(np.concatenate(out), full))",
+        "note": "GPU 4장이 Q 조각을 고정하고 K·V 조각을 링으로 받으며 온라인 softmax 로 누적한다. 실행 결과: 링 어텐션 == 전체 어텐션: True."
+      },
+      "pitfalls": [
+        "강연 중 'CPP', 'sequence parallelism' 이라고 들리는 대목은 컨텍스트 병렬(CP)과 긴 시퀀스 문제를 가리킨다. 앞 장의 Megatron 식 SP 와 다르다.",
+        "인과(causal) 어텐션에서 시퀀스를 앞에서부터 순서대로 잘라 주면 마지막 GPU 만 일이 많고 첫 GPU 는 거의 논다. 조각 배치를 균형 있게 바꿔야 한다(노트 보충).",
+        "CP 를 켜도 어텐션 밖 MLP 의 가중치는 나뉘지 않는다. CP 는 활성값을 위한 축이지 모델 상태를 위한 축이 아니다."
+      ],
+      "check": [
+        {
+          "q": "온라인 softmax 에서 새 조각의 최댓값이 이전 최댓값보다 크면 무엇을 해야 하나?",
+          "a": "이전에 쌓은 지수 합 l 과 출력 o 에 e^{m_old − m_new}(1보다 작은 수)를 곱해 새 최댓값 기준으로 낮춘 뒤 새 항을 더한다."
+        },
+        {
+          "q": "시퀀스 2,048 짜리 학습에서 CP 를 쓰지 않는 이유는?",
+          "a": "짧은 시퀀스는 활성값 문제가 크지 않고, 어텐션마다 K·V 를 주고받는 통신에 비해 GPU 당 계산이 작아 통신을 숨기지 못해 오히려 느려진다."
+        }
+      ]
+    },
+    {
+      "start": 2919,
+      "title": "전문가 병렬(EP) — all-to-all 로 토큰을 보내고, CPU 가 GPU 를 기다리는 문제",
+      "points": [
+        "MoE 는 라우터가 토큰마다 top-k 전문가를 고른다. EP 는 전문가들을 GPU 에 나눠 둔다 — 전문가만, 어텐션은 건드리지 않는다.",
+        "all-to-all: 모든 프로세스가 다른 모든 프로세스에 서로 다른 메시지를 보낸다(N² 꼴, 가장 일반적인 집합 연산). 토큰을 전문가 주인에게 보내는 dispatch, 결과를 원래 자리로 돌리는 combine.",
+        "어텐션 계산이 중복되지 않게 EP 그룹 안에서도 데이터를 나눈다 → EP 는 DP 와 완전히 직교하지 않는다. 다른 데이터를 보므로 MoE 밖 기울기는 all-reduce.",
+        "가장 큰 문제: 라우터가 점수를 내야 GPU 마다 받을 토큰 수(버퍼 크기)를 알 수 있어, CPU 가 GPU 를 기다리는 동기화가 생긴다.",
+        "해법은 최신 하드웨어(IBGDA·RDMA)를 쓰는 DeepEP(DeepSeek)·HybridEP(NVIDIA) — 그런 망이 없으면 이 동기화에 묶여 MoE 학습이 느리다."
+      ],
+      "on_screen": "'Intuition behind Expert Parallelism' — MoE 블록도(어텐션 → 라우터 → FFN 1·FFN 2), 'Shard experts across GPUs', 'Add comms', 'Which comm to add?', 'MoEs are cool.. But how do we parallelize them?'. 'EP: All-To-All' — P0~P3 가 각각 A0~D0, A1~D1… 를 갖고 있다가 All2all 뒤 P0 는 A0 A1 A2 A3 를 갖는 전치 그림, 'All-to-All is communicating distinct messages from each process to every other process', 'Tokens routed to 1st expert'(P0 쪽 점선 상자). 'Intuition behind Expert Parallelism' 정리 — Shard the experts across GPUs / Shard data across GPUs / We need All-to-All comms to route tokens to their respective experts, 그림은 GPU1·GPU2 각각 Self-Attn → Router → All-to-All dispatch → FFN1·FFN2 → All-to-All combine. 'Problem: Router decides on how many tokens each rank gets, so CPU needs to wait for GPU to decide'. 'Expert Parallelism: Difficulty' — GPU 줄: Dispatch preprocess → Permute preprocess → (빈칸) → Dispatch → Permute → Grouped GEMM, CPU 줄: Launch dispatch preprocess → Launch permute preprocess → Runtime buffer allocation(노랑, 'Tokens per expert', 'Buffer size' 화살표가 GPU 에서 내려옴) → Launch dispatch → Launch permute → Launch GMM. 출처 NVIDIA HybridEP 블로그. 'Most solutions to avoid cpu-gpu sync currently involve using recent hardware (IBGDA/RDMA)'. 'EP: Pros/Cons' — Only way to distribute MoEs efficiently; Communication heavy (AlltoAll every MoE block, critical path) / Need to allreduce grads (outside MoE) since each GPU sees different data / CPU-GPU sync to launch Dispatch operation → To be used if and only if MoE training.",
+      "explain": [
+        "MoE(전문가 혼합) 층은 FFN 하나 대신 FFN 여러 개(전문가)를 두고, 라우터가 토큰마다 점수가 높은 k 개 전문가만 골라 계산한다. 파라미터는 전문가 수만큼 많지만 토큰 하나의 계산은 k 개 분량이라, 1장에서 본 '1조 파라미터인데 활성 320억' 같은 모델이 가능해진다. 전문가 병렬은 전문가들을 GPU 에 나눠 담는다. 전문가 64개를 GPU 8장에 8개씩 두는 식이다. EP 는 MoE 층에만 적용되고 어텐션은 건드리지 않는다. 그런데 GPU 마다 어텐션을 똑같이 계산하면 중복이므로, EP 그룹 안의 GPU 들은 서로 다른 데이터를 받는다. 그래서 강연자는 EP 가 DP 와 완전히 직교하지는 않는다고 짚는다 — 전문가 쪽에서 보면 데이터도 함께 나뉜 셈이다. 다른 데이터를 보니 MoE 밖(어텐션 등) 파라미터의 기울기는 DP 처럼 all-reduce 해야 한다.",
+        "토큰이 자기 GPU 에 없는 전문가로 가야 하므로 새 통신이 필요하다. all-to-all 이다. all-reduce 가 '모두의 같은 자리 값을 더하는' 연산이라면 all-to-all 은 '각자가 상대마다 다른 메시지를 보내는' 연산이다. GPU 4장이 각자 4개의 메시지를 갖고 있다가 i 번째 메시지를 GPU i 에게 보내면, 결과적으로 메시지 행렬이 전치된다(슬라이드의 A0~D3 그림). 모든 쌍이 통신하므로 N² 꼴의 가장 복잡한 패턴이다. MoE 에서는 라우팅 직후 토큰을 전문가 주인에게 보내는 dispatch, 전문가 계산 뒤 결과를 원래 GPU·원래 순서로 돌려보내는 combine, 이렇게 MoE 층마다 all-to-all 이 두 번(역전파까지 네 번) 일어난다.",
+        "강연자가 'MoE 를 키울 때 마주치는 가장 큰 문제'로 꼽은 것은 통신량이 아니라 동기화다. all-to-all 을 하려면 '내가 GPU j 에게 토큰을 몇 개 보내고, 몇 개 받는가'를 알아야 수신 버퍼를 잡을 수 있다. 그런데 이 수는 라우터가 GPU 에서 점수를 계산해야 정해진다. PyTorch 에서 커널을 올리고 메모리를 잡는 주체는 CPU 이므로, CPU 는 라우터 커널이 끝날 때까지 기다렸다가 결과(전문가별 토큰 수)를 GPU 에서 받아 와 버퍼를 할당하고서야 다음 커널을 올릴 수 있다. 3장 DP 장에서 '프로파일러로 CPU 가 늘 GPU 보다 앞서 있는지 보라'고 했던 바로 그 조건이 깨지는 것이다 — 그 사이 GPU 는 할 일이 없다(슬라이드의 노란 'Runtime buffer allocation' 칸). 해법으로 DeepSeek 의 DeepEP 와 NVIDIA 의 HybridEP 가 있는데, 강연자에 따르면 현재로서는 최신 하드웨어 기능에 기댄다. IBGDA(InfiniBand GPUDirect Async — GPU 가 CPU 를 거치지 않고 직접 네트워크 전송을 시작하는 기능)와 RDMA 로, 전용 SM 과 메모리를 미리 잡아 두고 GPU 스스로 토큰 수를 알아내 바로 보낸다. 그런 망이 없는 환경(예: InfiniBand 가 없는 클러스터)에서는 이 CPU–GPU 동기화를 피하지 못해, 강연자의 말로는 많은 연구실의 MoE 학습이 느린 이유가 바로 이 하드웨어 차이다. DeepEP 도 IBGDA 가 있어야 제 성능이 난다.",
+        "정리하면 EP 는 MoE 를 효율적으로 분산하는 유일한 방법이지만 통신이 무겁고(MoE 블록마다 all-to-all, 임계 경로), 다른 데이터를 보므로 MoE 밖 기울기를 all-reduce 해야 하고, dispatch 를 띄우려면 CPU–GPU 동기화가 필요하다. 결론은 CP 와 같은 꼴이다 — MoE 를 학습할 때만, 그때는 반드시. 그리고 질의응답에서 나오듯 라우터가 특정 전문가를 편애하면 그 전문가를 가진 GPU 에 토큰이 몰려 나머지가 논다. 아래 코드의 송신 행렬처럼 GPU0 이 평균의 1.5배를 받는 일이 흔하다. 이것이 부하 균형 문제다(마지막 장)."
+      ],
+      "formulas": [
+        {
+          "expr": "recv_j = Σ_i send[i, j],   send[i, j] = |{ (t, e) : t ∈ GPU i, e ∈ topk(router(t)), owner(e) = j }|",
+          "meaning": "send[i, j] 는 GPU i 의 토큰 t 가 고른 top-k 전문가 e 중 GPU j 가 가진 것의 개수, recv_j 는 GPU j 가 받을 토큰 수(=버퍼 크기). router(t) 가 GPU 에서 계산돼야 정해지므로, CPU 가 버퍼를 잡으려면 이 값을 기다려야 한다 — CPU–GPU 동기화의 원인."
+        },
+        {
+          "expr": "all-to-all 송신량(GPU 한 장, MoE 층 하나, dispatch) ≈ T · k · (N_EP − 1)/N_EP · h · bytes",
+          "meaning": "T 는 그 GPU 의 토큰 수, k 는 top-k, N_EP 는 EP 크기, h 는 은닉 차원. 고르게 퍼진다고 가정하면 k 개 사본 중 (N_EP−1)/N_EP 가 남의 GPU 로 간다. combine 도 같은 양이다(노트 보충의 어림)."
+        }
+      ],
+      "example": {
+        "title": "EP 8, top-8, 토큰 8,192, h 7,168 — dispatch 한 번의 양",
+        "body": "DeepSeek-V3 급 숫자를 빌려 어림한다(노트 보충). 한 GPU 의 토큰 8,192개 × k 8 = 65,536개 토큰 사본, 그중 7/8 = 57,344개가 다른 GPU 로 간다. 토큰 하나는 7,168 차원 × bf16 2바이트 = 14,336B ≈ 14KB → 57,344 × 14,336B ≈ 822MB. combine 도 같은 양이고 역전파에서 둘 다 다시 일어나니 MoE 층 하나에 약 3.3GB, 층이 58개면 스텝당 190GB 이상이다. 노드 밖 50GB/s 라면 4초에 가깝다 — 그래서 DeepSeek-V3 는 dispatch 를 FP8 로 보내고, 토큰이 갈 수 있는 노드 수를 제한하고, 다음 장의 계산–통신 겹치기를 쓴다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "import numpy as np\nrng = np.random.default_rng(4)\nEP, E, k, T = 4, 8, 2, 16                  # GPU 4장, 전문가 8개(장당 2개), top-2, 장당 토큰 16\nowner = lambda e: e // (E // EP)           # 전문가 e 를 가진 GPU\nsend = np.zeros((EP, EP), int)             # send[i, j] = GPU i 가 GPU j 로 보낼 토큰 수\nfor i in range(EP):\n    logits = rng.normal(size=(T, E))\n    logits[:, 0] += 1.0                    # 전문가 0 을 살짝 편애하는 라우터\n    topk = np.argsort(-logits, 1)[:, :k]\n    for e in topk.ravel():\n        send[i, owner(e)] += 1\nprint(send)\nprint(\"GPU 별 받는 토큰:\", send.sum(0), \" 평균:\", send.sum() // EP)\n# 이 행렬은 라우터가 계산을 마쳐야 알 수 있다 -> 버퍼 크기를 정하려면 CPU 가 GPU 를 기다린다",
+        "note": "전문가 0 을 편애하는 라우터로 송신 행렬 send[i, j] 를 만든다. 실행 결과: 받는 토큰 [50, 32, 24, 22], 평균 32 — GPU0 이 평균의 1.56배. 이 행렬은 라우터 계산이 끝나야 알 수 있다."
+      },
+      "diagram": {
+        "title": "MoE 층 하나의 EP 흐름과 CPU 대기 지점",
+        "code": "sequenceDiagram\n  participant CPU\n  participant GPU\n  participant Net as 다른 GPU들\n  CPU->>GPU: 라우터 커널 실행\n  GPU-->>CPU: 전문가별 토큰 수 (동기화, CPU 대기)\n  CPU->>CPU: 수신 버퍼 할당\n  CPU->>GPU: dispatch 실행\n  GPU->>Net: all-to-all dispatch\n  Net-->>GPU: 내 전문가 몫 토큰\n  GPU->>GPU: Grouped GEMM (전문가 FFN)\n  GPU->>Net: all-to-all combine\n  Net-->>GPU: 원래 토큰 순서로 결과"
+      },
+      "pitfalls": [
+        "자막의 'IBGDI' 는 슬라이드 표기대로 IBGDA(InfiniBand GPUDirect Async)다.",
+        "EP 를 늘려도 어텐션 쪽 가중치는 나뉘지 않는다. 어텐션은 따로 DP·TP·FSDP 로 다뤄야 한다(MoE 층과 어텐션 층의 병렬 구성을 다르게 두는 'MoE Parallel Folding' 은 CS336 8강 노트 참고).",
+        "all-to-all 의 시간은 평균이 아니라 가장 많이 받는 GPU 가 정한다. 부하가 1.5배 몰리면 그 층의 통신·계산이 1.5배 느려진다."
+      ],
+      "check": [
+        {
+          "q": "all-reduce 와 all-to-all 의 차이를 '보내는 메시지' 관점에서 말하면?",
+          "a": "all-reduce 는 모두가 같은 모양의 텐서를 내고 그 합을 모두가 받는다. all-to-all 은 각 GPU 가 상대마다 서로 다른 메시지를 보내고, 각자 자기에게 온 메시지들을 받는다(메시지 행렬의 전치)."
+        },
+        {
+          "q": "EP 에서 CPU 가 GPU 를 기다려야 하는 이유는?",
+          "a": "all-to-all 의 수신 버퍼 크기(GPU 별로 받을 토큰 수)가 라우터의 GPU 계산 결과로 정해지는데, 커널 실행과 메모리 할당을 CPU 가 하므로 그 값을 GPU 에서 받아 와야 다음 커널을 올릴 수 있다."
+        }
+      ]
+    },
+    {
+      "start": 3270,
+      "title": "EP 와 PP 를 엮어 통신 숨기기, 그리고 5D 병렬을 고르는 순서",
+      "points": [
+        "실전 해법: EP 를 PP 의 1F1B 와 묶어, 한 마이크로배치의 dispatch/combine 통신을 다른 마이크로배치의 순·역전파 계산 뒤에 숨긴다(Megatron 플래그로 켠다).",
+        "다섯 병렬은 서로 직교하고 함께 쓸 수 있다. EP 는 MoE 층만, CP 는 셀프 어텐션만 건드린다.",
+        "어떤 조합을 쓸지는 Playbook 의 '치트 시트'(GPU 수·모델 크기·GBS 에 따른 결정 흐름)를 보라.",
+        "더 볼 곳: Smol Training Playbook 의 인프라 장(벤치마크), JAX Scaling Book(TPU 관점), nanotron·TorchTitan·Megatron-LM 기여 환영.",
+        "마지막 당부: 수천 장을 쓰는 만큼 에너지 영향을 의식하고 책임 있게 쓰자."
+      ],
+      "on_screen": "'EP: Practical Solution' — 'Combine EP with PP with 1F1B scheduler and hide comms from a batch with compute from another batch'. Computation 줄: ATTN(F) · POST_ATTN(F) · MLP(B) · MLP(W) · MLP(F) · POST_ATTN(B) · ATTN(B) · ATTN(W), Communication 줄: combine-A2A(B) · dispatch-A2A(F) · dispatch-A2A(B) · combine-A2A(F) · PP(F) · PP(B). 'Flags to activate this on Megatron: cfg.comm_overlap.overlap_moe_expert_parallel_comm = True, cfg.comm_overlap.delay_wgrad_compute = True'. '5D parallelism — Each parallelism works orthogonal to the others, and all 5 can be combined' 와 블록 그림(어느 연산에 어느 통신이 붙는지). 'Learn more' — 'How infra works when training LLMs' 노드 연결 다이어그램(AWS P5 인스턴스 구성의 주요 부품과 통신 링크 — NVLink·PCIe·EFA 등 대역폭 범례)과 'The Smol Training Playbook: The Secrets to Building World-Class LLMs' 표지 그림. 'Finally.. As we scale to thousand of GPUs let's be mindful of their energy impact, and try to use them responsibly'.",
+      "explain": [
+        "앞 장의 문제 — MoE 층마다 dispatch·combine all-to-all 이 임계 경로에 놓인다 — 를 실무에서 어떻게 푸는가. 강연자가 소개한 방법은 EP 를 PP 의 1F1B 스케줄과 묶는 것이다. 1F1B 에서는 정상 구간에 한 GPU 가 '마이크로배치 A 의 순전파'와 '마이크로배치 B 의 역전파'를 번갈아 한다. 이 두 일을 잘게 쪼개 엇갈리게 배치하면, A 의 dispatch 통신이 도는 동안 B 의 MLP 역전파를 계산하고, B 의 combine 통신이 도는 동안 A 의 어텐션 순전파를 계산할 수 있다. 서로 다른 마이크로배치이니 의존 관계가 없다. 슬라이드의 타임라인에서 계산 줄은 ATTN(F)·MLP(B)·MLP(W)·ATTN(B) 등으로 빈틈없이 차 있고, 통신 줄의 all-to-all 과 PP 송수신이 그 아래 숨어 있다. DeepSeek 의 DualPipe 가 한 일도 본질적으로 이것이다.",
+        "여기서 MLP(B) 와 MLP(W) 가 따로 있는 것이 눈에 띈다. 역전파를 '입력에 대한 기울기(B)'와 '가중치에 대한 기울기(W)' 둘로 나눈 것이다. 앞 층으로 넘길 기울기는 입력 기울기뿐이라 그것만 먼저 계산해 보내고, 가중치 기울기는 나중에 빈 시간에 계산해도 된다. 이렇게 하면 겹칠 수 있는 계산 조각이 늘어난다. Megatron 에서는 overlap_moe_expert_parallel_comm(EP 통신 겹치기)과 delay_wgrad_compute(가중치 기울기 늦추기) 두 플래그로 켠다. 강연자의 메시지는 결국 3장의 프로파일러 그림으로 돌아간다 — 어떤 병렬을 쓰든 목표는 계산 줄을 빈틈없이 채우고 통신을 그 아래 숨기는 것이다.",
+        "강연은 다섯 병렬을 한 장으로 정리하며 끝난다. 다섯은 서로 직교해서 모두 함께 쓸 수 있고, 학습 단계마다 서로 다른 통신이 서로 다른 축에서 일어난다. EP 는 MoE 층만, CP 는 셀프 어텐션만 건드린다. 어떤 조합을 고를지는 Playbook 의 치트 시트에 정리돼 있다. 노트 보충으로 그 결정 흐름을 요약하면 다음과 같다(Playbook 과 CS336 8강·CS231N 11강이 같은 방향을 말한다). ① 먼저 '한 장에 들어가게' — 모델 상태가 크면 노드 안에서 TP(8 이하)를, 더 크면 노드를 넘어 PP 를, 혹은 ZeRO-3 를. 긴 문맥이면 CP, MoE 면 EP 를 더한다. ② 들어간 다음에는 '남은 GPU 는 DP 로' — GBS 상한 안에서 DP(필요하면 ZeRO-1·2)로 처리량을 늘린다. ③ 마지막으로 마이크로배치·누적 횟수·재계산을 조정하며 MFU 를 프로파일러로 확인한다. 아래 코드는 이 흐름을 70B 모델·64장에 적용한 어림이다.",
+        "코드의 결과를 읽어 보면 흥미로운 점이 셋 있다. 첫째, TP 없이 ZeRO-3 만 쓰면 모델 상태는 17.5GB 로 작지만 활성값(재계산 없이 80층 × 6.5GB)이 520GB 라 전혀 안 들어간다 — ZeRO 는 활성값을 나누지 않는다. 둘째, TP 8 은 상태와 활성값을 모두 8분의 1로 줄이지만 상태 48GB + 활성값 65GB 로 여전히 넘친다. 셋째, PP 4 를 더하면 상태는 22GB 로 줄지만 활성값은 65GB 그대로다 — 1F1B 의 첫 단계는 층은 1/4 만 갖지만 마이크로배치를 4개 들고 있어 결국 같다. 여기에 어텐션 점수 행렬만 다시 계산하는 선택적 재계산을 켜야 33GB 로 들어온다. 노트 밖으로 나가는 교훈은 '병렬 축마다 줄이는 메모리가 다르다'는 것이다. 상태는 ZeRO·TP·PP 가, 활성값은 TP+SP·CP·재계산이 줄인다. 마지막으로 강연자는 수천 장의 GPU 를 쓰는 만큼 그 에너지 영향을 의식하고 책임 있게 쓰자는 말로 발표를 맺는다."
+      ],
+      "formulas": [
+        {
+          "expr": "T_step ≈ Σ 계산 + Σ (겹치지 못한 통신) + 거품",
+          "meaning": "한 스텝 시간은 계산 시간, 계산 뒤로 숨지 못한 통신 시간, 파이프라인 거품의 합이다. 모든 병렬 기법·스케줄은 둘째·셋째 항을 0 에 가깝게 만드는 도구다(노트 보충의 정리)."
+        },
+        {
+          "expr": "Mem/GPU ≈ 16Ψ/(TP·PP·[ZeRO 로 나눈 DP]) + A_layer(s, mbs, h, a; TP, CP, 재계산) · (L/PP) · inflight",
+          "meaning": "Ψ 파라미터 수, L 층 수, inflight 는 동시에 들고 있는 마이크로배치 수(1F1B 첫 단계는 PP). 앞 항(상태)은 TP·PP·ZeRO 가, 뒤 항(활성값)은 TP+SP·CP·재계산이 줄인다. PP 는 L/PP 와 inflight=PP 가 상쇄돼 첫 단계의 활성값을 줄이지 못한다."
+        }
+      ],
+      "example": {
+        "title": "70B(80층, h 8,192, 헤드 64), seq 4,096, mbs 1, GPU 64장",
+        "body": "층 하나 활성값(TP 1, 재계산 없음) = s·h·(34 + 5·a·s/h) = 4,096 × 8,192 × (34 + 5×64×4,096/8,192 = 34 + 160) = 33,554,432 × 194 ≈ 6.51GB, 80층이면 521GB. TP 8(+SP)이면 층당 33,554,432 × (34/8 + 160/8 = 24.25) ≈ 0.81GB → 80층 65GB, 상태는 16×70/8 = 140GB 를 DP 8 의 ZeRO-1 로 나누면 2×8.75 + 2×8.75 + 12×8.75/8 = 35 + 13.1 = 48.1GB → 합 113GB, 안 들어간다. PP 4 를 더하면 상태 16×70/32 = 35GB 중 옵티마이저 26.25GB 를 DP 2 로 나눠 8.75 + 13.1 = 21.9GB, 활성값은 20층 × 4 마이크로배치 = 여전히 65GB → 87GB. 선택적 재계산으로 160/8 항을 버리면 층당 33,554,432 × 4.25 ≈ 0.143GB × 80 = 11.4GB → 총 33.3GB. 들어간다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "# 한 GPU 메모리 어림: 모델 상태(16Ψ 규칙) + 활성값(TP+SP 근사, 1F1B)\ndef per_gpu_gb(psi, L, h, a, s, mbs, tp, pp, dp, zero, sel_recompute=False):\n    n = psi / (tp * pp)                         # TP·PP 로 나눈 뒤 이 GPU 의 파라미터\n    w, g, o = 2 * n, 2 * n, 12 * n\n    if zero >= 1: o /= dp\n    if zero >= 2: g /= dp\n    if zero >= 3: w /= dp\n    attn = 0 if sel_recompute else 5 * a * s / (h * tp)   # s² 항은 재계산하면 저장 안 함\n    act_layer = s * mbs * h * (34 / tp + attn)            # 바이트, 16비트 활성값\n    act = act_layer * (L / pp) * pp             # 1F1B 첫 단계: 마이크로배치 pp 개 보관\n    return (w + g + o) / 1e9, act / 1e9\ncfgs = [dict(tp=1, pp=1, dp=64, zero=3), dict(tp=8, pp=1, dp=8, zero=1),\n        dict(tp=8, pp=4, dp=2, zero=1), dict(tp=8, pp=4, dp=2, zero=1, sel_recompute=True)]\nfor c in cfgs:   # 70B 급: L=80, h=8192, a=64, 시퀀스 4096, 마이크로배치 1, GPU 64장\n    st, act = per_gpu_gb(70e9, 80, 8192, 64, 4096, 1, **c)\n    print(c, f\"상태 {st:5.1f} + 활성 {act:6.1f} = {st+act:6.1f} GB\")",
+        "note": "실행 결과: TP1·PP1·DP64·ZeRO-3 → 상태 17.5 + 활성 520.8 = 538.3GB, TP8·DP8·ZeRO-1 → 113.2GB, TP8·PP4·DP2 → 87.0GB, 여기에 선택적 재계산 → 33.3GB. 활성값 식은 CS336 8강 노트의 Megatron 근사(16비트, 드롭아웃 포함)를 그대로 쓴 어림이다."
+      },
+      "pitfalls": [
+        "'PP 를 늘리면 활성값이 준다'는 직관은 1F1B 첫 단계에서는 틀린다 — 층은 1/PP 지만 동시에 들고 있는 마이크로배치가 PP 개라 상쇄된다. 줄어드는 것은 마지막 단계 쪽이다.",
+        "Megatron 플래그 이름은 버전에 따라 바뀐다. 슬라이드의 cfg.comm_overlap.* 표기는 특정 설정 체계(Megatron-Bridge 계열) 기준이므로 쓰는 버전의 문서를 확인한다(노트 보충)."
+      ],
+      "check": [
+        {
+          "q": "TP 8·PP 4·DP 2 로 64장을 쓰는데 GBS 를 seq 4,096 기준 100만 토큰 정도로 두고 싶다. 1F1B 거품을 10% 아래로 하려면 mbs 1 일 때 누적(마이크로배치 수)은 몇 이상이고, GBS 는 얼마가 되나?",
+          "a": "유휴 몫 3/(m+3) < 0.1 → m > 27, m = 32 로 두자. GBS = mbs 1 × m 32 × DP 2 × 4,096 = 262,144 토큰. 100만 토큰이 목표면 m = 128 로 늘려 GBS 1,048,576 토큰 — 이때 거품은 3/131 ≈ 2.3% 로 더 작아진다."
+        },
+        {
+          "q": "EP 통신을 PP 의 1F1B 와 겹칠 수 있는 이유는?",
+          "a": "1F1B 정상 구간에서 한 GPU 가 서로 다른 두 마이크로배치의 순전파와 역전파를 번갈아 하는데, 두 마이크로배치는 서로 의존하지 않으므로 한쪽의 all-to-all 통신이 도는 동안 다른 쪽의 계산을 할 수 있기 때문이다."
+        }
+      ]
+    },
+    {
+      "start": 3420,
+      "title": "질의응답 — 부하 균형, 병렬과 수렴, RL 의 GPU 유휴, 병렬 자동 선택",
+      "points": [
+        "토큰이 한 GPU 의 전문가에 몰리면 나머지가 논다 → 부하 균형: 보조 손실(불균형에 벌점) 또는 보조 손실 없는 방식(라우터 점수에 편향을 더해 자동 조정).",
+        "병렬 방식은 순·역전파의 수학을 바꾸지 않는다 — 제대로 구현했다면 한 장으로 학습한 것과 같고, 스케일링 법칙도 그대로다.",
+        "RL 등에서 CPU 쪽 전처리가 병목이면 데이터 로더 워커를 미리 넉넉히 띄워 학습 반복 전에 처리해 둔다.",
+        "최적 병렬 조합을 자동으로 찾는 연구도 있지만(JAX Scaling Book 등), 결국 모델 크기·데이터·GBS·네트워크(특히 NVLink 도메인 크기 4·8·32·72)에 달렸다."
+      ],
+      "on_screen": "질의응답 구간은 강연자 전신 장면만 이어진다(슬라이드 없음).",
+      "explain": [
+        "첫 질문은 EP 의 부하 균형이다. 모든 토큰이 GPU 하나의 전문가로 몰리면 그 GPU 만 일하고 나머지는 논다. 강연자는 두 계열의 해법을 소개했다. 하나는 보조 손실(auxiliary loss)이다. 전문가별 토큰 분포가 고르지 않을수록 커지는 항을 손실에 더해 라우터가 스스로 고르게 나누도록 학습시킨다. 대가는 이 항이 본래 목적(언어 모델링)과 경쟁해 성능을 조금 깎을 수 있다는 것이다. 다른 하나는 DeepSeek 이 쓴 '보조 손실 없는' 방식이다. 라우터가 top-k 를 고를 때 점수에 전문가별 편향을 더하고, 많이 받은 전문가의 편향은 조금 내리고 적게 받은 쪽은 올린다. 편향은 '누구를 고를지'에만 쓰고 출력의 가중치에는 쓰지 않으므로 손실을 건드리지 않는다(아래 코드에서 최대/평균 부하가 2.36 에서 1.15 로 내려간다).",
+        "둘째 질문은 '병렬 방식이 수렴이나 스케일링 효율에 영향을 주는가, 아니면 더 큰 규모에 닿게만 하는가'였다. 강연자의 답은 분명하다. 다섯 병렬은 순전파와 역전파의 수학을 바꾸지 않는다. 올바르게 구현됐다면 결과는 한 장으로 학습한 것과 같아야 하고, 스케일링 법칙도 그대로 적용된다. PP 를 쓰든 EP 를 쓰든 계산 관점에서 차이가 없어야 한다. (노트 보충: 실제로는 리덕션 순서에 따른 부동소수점 차이 정도는 생기고, TP 장의 LayerNorm drift 처럼 그 작은 차이가 쌓이지 않도록 하는 것이 구현의 몫이다. 또 GBS 를 바꾸는 선택은 병렬 방식과 별개로 수렴에 영향을 준다.)",
+        "셋째 질문은 RL 학습처럼 CPU 쪽 체크포인트 저장이나 환경·데이터 처리가 순차적인 병목이 될 때 GPU 유휴를 줄이는 법이었다. 강연자는 적어도 텍스트라면 PyTorch 데이터 로더의 워커 수를 넉넉히 잡아, 학습 반복에 들어가기 전에 미리 전처리를 끝내 두라고 답했다. 이것도 결국 3장의 원칙 — CPU 가 GPU 보다 늘 앞서 있어야 한다 — 의 연장이다. (노트 보충: 체크포인트는 GPU 메모리에서 CPU 메모리로 먼저 복사한 뒤 저장소 쓰기를 비동기로 하는 방식이 흔하다.)",
+        "마지막 질문은 최적 병렬 조합을 자동으로 정하는 방법이 있느냐였다. 강연자는 관련 논문들이 있고 JAX Scaling Book 이 TPU 에서 그런 탐색을 다뤘다고 소개하면서도, 결국은 모델 크기, 데이터 양, GBS, 그리고 무엇보다 네트워크에 달렸다고 했다. 가장 큰 변수는 빠른 망(NVLink)으로 묶인 묶음의 크기다. 한 NVLink 도메인이 GPU 4장, 8장인 시스템이 있고, 최신 시스템은 32장, 72장까지 묶는다. 묶음이 크면 통신이 무거운 병렬(TP·EP)을 그 안에서 크게 쓸 수 있다. 강연자는 32장 단위로 묶이는 시스템에서는 TP 를 32장 전체에 거는 경우도 있다고 예를 들었다. 하드웨어가 정답을 바꾼다는 것 — CS336 8강 노트의 'TPU 토러스 대 GPU 팻트리' 이야기와 같은 결론이다."
+      ],
+      "formulas": [
+        {
+          "expr": "L_aux = α · N_E · Σ_{e=1}^{N_E} f_e · P_e",
+          "meaning": "N_E 는 전문가 수, f_e 는 전문가 e 가 실제로 받은 토큰 비율, P_e 는 라우터가 전문가 e 에 준 평균 확률, α 는 작은 계수. 분포가 고를 때(f_e = P_e = 1/N_E) 최소가 되도록 설계된 Switch Transformer 식 보조 손실이다(노트 보충)."
+        },
+        {
+          "expr": "b_e ← b_e − u · sign(load_e − mean(load)),   선택 = topk(s_t,e + b_e)",
+          "meaning": "b_e 는 전문가 e 의 편향, u 는 갱신 속도, load_e 는 그 스텝에 e 가 받은 토큰 수, s_t,e 는 토큰 t 의 라우터 점수. 편향은 top-k 선택에만 쓰고 전문가 출력의 가중치(게이트 값)는 원래 점수로 계산한다 — DeepSeek-V3 의 보조 손실 없는 균형 방식(노트 보충)."
+        }
+      ],
+      "example": {
+        "title": "편향 한 번 갱신을 손으로",
+        "body": "전문가 4개, 한 스텝의 부하 (40, 30, 20, 10), 평균 25, u = 0.01. sign(부하 − 평균) = (+1, +1, −1, −1) → 편향 (−0.01, −0.01, +0.01, +0.01). 어떤 토큰의 점수가 (0.50, 0.30, 0.495, 0.10) 이고 top-1 이라면 갱신 전에는 전문가 0(0.50)을 고르지만, 갱신 뒤 (0.49, 0.29, 0.505, 0.11) 이 되어 전문가 2 를 고른다. 점수가 근소하게 갈리는 토큰들부터 덜 붐비는 전문가로 옮겨 가는 식으로 부하가 고르게 된다. 이 토큰의 출력 가중치는 여전히 원래 점수 0.495 로 계산한다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "import numpy as np\nrng = np.random.default_rng(5)\nE, T, k, u = 8, 512, 2, 0.01               # 전문가 8, 토큰 512, top-2, 편향 갱신 속도\nskew = np.linspace(1.0, -1.0, E)           # 라우터가 앞쪽 전문가를 선호한다\nbias = np.zeros(E)\nfor step in range(301):\n    scores = rng.normal(size=(T, E)) + skew\n    chosen = np.argsort(-(scores + bias), 1)[:, :k]   # 편향은 '고르기'에만 쓴다\n    load = np.bincount(chosen.ravel(), minlength=E)\n    if step in (0, 300):\n        print(step, load, \"최대/평균 =\", round(load.max() / load.mean(), 2))\n    bias -= u * np.sign(load - load.mean())           # 많이 받은 전문가는 깎고, 적게 받은 쪽은 올린다",
+        "note": "앞쪽 전문가를 선호하는 라우터에 편향 갱신을 300 스텝 적용한다. 실행 결과: 0 스텝 부하 [302 245 178 118 92 42 32 15], 최대/평균 2.36 → 300 스텝 [133 139 138 126 107 120 147 114], 1.15."
+      },
+      "pitfalls": [
+        "'병렬 방식은 수렴에 영향이 없다'는 말은 같은 GBS·같은 수식을 유지할 때의 이야기다. 병렬을 바꾸면서 GBS 나 마이크로배치 구성을 바꿨다면 학습 동역학이 달라질 수 있다.",
+        "보조 손실 계수 α 를 크게 잡으면 부하는 고르지만 모델 품질이 떨어진다. 편향 방식은 이 교환을 피하려는 것이다."
+      ],
+      "check": [
+        {
+          "q": "보조 손실 없는 부하 균형에서 편향을 출력 가중치 계산에 쓰지 않는 이유는?",
+          "a": "편향은 '누구를 고를지'만 조정하는 장치라, 출력에 섞으면 모델이 계산하는 함수 자체가 바뀌어 손실(학습 목표)에 간섭하게 된다. 선택에만 쓰면 손실을 건드리지 않고 부하만 고르게 만든다."
+        },
+        {
+          "q": "NVLink 도메인이 72장인 시스템과 8장인 시스템에서 TP 설정은 어떻게 달라질 수 있나?",
+          "a": "8장 시스템은 TP 를 8 이하(노드 안)로 묶어야 하지만, 72장 도메인에서는 블록마다의 TP 통신이 여전히 빠른 망 안에 있으므로 TP(또는 EP)를 더 크게 잡을 수 있다."
+        }
+      ]
+    }
+  ],
+  "concepts": [
+    {
+      "term": "데이터 병렬(DP)",
+      "explain": "같은 모델을 GPU 마다 복제하고 배치를 나눠 계산한 뒤 all-reduce 로 기울기를 맞추는 병렬. GPU 를 늘리면 전역 배치도 는다.",
+      "at": 345
+    },
+    {
+      "term": "버킷(bucket_cap_mb)",
+      "explain": "역전파 중 기울기가 일정량 모이면 그 묶음부터 all-reduce 를 시작해 남은 역전파와 겹치게 하는 단위. 너무 작으면 호출 지연이, 너무 크면 겹침 부족이 생긴다.",
+      "at": 500
+    },
+    {
+      "term": "torch.profiler 타임라인",
+      "explain": "CPU 커널 실행·GPU 계산·GPU 통신 스트림을 시간 축에 그려 GPU 빈틈, CPU 가 앞서 있는지, 통신 겹침 여부를 확인하는 도구.",
+      "at": 420
+    },
+    {
+      "term": "all-reduce = reduce-scatter + all-gather",
+      "explain": "합을 내되 조각별로 흩는 reduce-scatter 와 조각을 모두에게 모으는 all-gather 를 이으면 all-reduce 와 같고 통신량도 같다. ZeRO-1 과 SP 가 이 분해를 이용한다.",
+      "at": 740
+    },
+    {
+      "term": "ZeRO-1 / ZeRO-2",
+      "explain": "옵티마이저 상태(ZeRO-1), 그리고 기울기(ZeRO-2)까지 DP 그룹에 나눠 각 GPU 가 자기 조각만 갱신한다. 통신량은 DP 와 같다.",
+      "at": 670
+    },
+    {
+      "term": "ZeRO-3 / FSDP",
+      "explain": "가중치까지 나누고, 층을 계산할 때만 all-gather 로 모았다가 바로 버린다. 다음 층을 미리 받아 통신을 숨기며 통신량은 DP 의 약 1.5배.",
+      "at": 930
+    },
+    {
+      "term": "FSDP2 · DTensor",
+      "explain": "fully_shard 함수로 모듈을 샤딩하는 PyTorch 의 2세대 FSDP. DTensor 로 텐서 모양을 유지해 Muon 같은 행렬 옵티마이저와 다른 병렬(TP 등)과의 조합이 쉽다.",
+      "at": 1110
+    },
+    {
+      "term": "Muon 과 텐서 단위 샤딩",
+      "explain": "Muon 은 행렬 전체에 직교화 반복을 하므로, 옵티마이저 상태·기울기를 납작하게 펴서 균등 분할하지 말고 텐서를 통째로 GPU 에 배정해야 한다.",
+      "at": 830
+    },
+    {
+      "term": "HSDP(혼합 분할)",
+      "explain": "빠른 망으로 묶인 작은 원 안에서는 FSDP, 원 사이에서는 일반 DP 를 쓰는 2차원 구성. 큰 규모에서 ZeRO-3 통신이 숨지 않을 때 쓴다.",
+      "at": 1310
+    },
+    {
+      "term": "텐서 병렬(TP) column/row-linear",
+      "explain": "첫 행렬은 열로, 둘째는 행으로 잘라 중간 통신 없이 부분합을 내고 끝에서 all-reduce 한 번으로 정확한 결과를 얻는 분할. 순·역전파에 각각 한 번.",
+      "at": 1440
+    },
+    {
+      "term": "헤드 단위 어텐션 분할",
+      "explain": "어텐션 TP 는 헤드 수 축으로 자른다. head_dim 으로 자르면 점수가 부분합이 되어 softmax 가 틀린다. 점검 질문: TP 없을 때와 같은 활성값인가?",
+      "at": 1680
+    },
+    {
+      "term": "시퀀스 병렬(SP)",
+      "explain": "TP 의 all-reduce 를 reduce-scatter·all-gather 로 나눠 TP 구간 밖(LayerNorm·드롭아웃) 활성값을 시퀀스 축으로 1/TP 로 나누는 TP 의 변형. 통신량은 같고 LayerNorm 기울기 동기화도 저절로 된다.",
+      "at": 1921
+    },
+    {
+      "term": "장치 격자(device mesh)",
+      "explain": "GPU 를 병렬 축별 다차원 격자에 놓고 축마다 통신 그룹을 만드는 구조. 가장 잦은 통신(TP)을 연속 rank(노드 안)에 둔다.",
+      "at": 2284
+    },
+    {
+      "term": "파이프라인 거품과 1F1B",
+      "explain": "층을 나눈 파이프라인에서 채우고 비우는 동안 노는 시간. 비율 (p−1)/m. 1F1B 는 역전파를 우선해 활성값 보관을 m 개에서 p 개로 줄이지만 거품은 같다.",
+      "at": 2460
+    },
+    {
+      "term": "DualPipe",
+      "explain": "DeepSeek 의 PP 스케줄. 층을 양 끝 장치에 왕복 배치해 파이프라인 양쪽에서 데이터를 넣고, 순·역전파의 계산과 통신을 겹쳐 거품을 줄인다.",
+      "at": 2580
+    },
+    {
+      "term": "컨텍스트 병렬(CP)과 링 어텐션",
+      "explain": "시퀀스 축으로 데이터를 나누고, 어텐션은 K·V 조각을 링으로 돌리며 온라인 softmax 로 누적해 정확히 계산한다. 긴 문맥 학습 전용.",
+      "at": 2780
+    },
+    {
+      "term": "all-to-all (dispatch / combine)",
+      "explain": "각 GPU 가 상대마다 다른 메시지를 보내는 집합 연산. MoE 에서 토큰을 전문가 주인에게 보내고(dispatch) 결과를 되돌린다(combine).",
+      "at": 2960
+    },
+    {
+      "term": "EP 의 CPU–GPU 동기화",
+      "explain": "라우터가 GPU 에서 점수를 내야 GPU 별 수신 토큰 수(버퍼 크기)가 정해져, CPU 가 이를 기다린 뒤에야 dispatch 를 띄울 수 있는 병목. DeepEP·HybridEP 는 IBGDA·RDMA 로 피한다.",
+      "at": 3080
+    },
+    {
+      "term": "부하 균형(보조 손실 / 편향)",
+      "explain": "전문가별 토큰 쏠림을 막는 방법. 불균형에 벌점을 주는 보조 손실, 또는 top-k 선택에만 쓰는 편향을 부하에 따라 조정하는 보조 손실 없는 방식.",
+      "at": 3440
+    }
+  ],
+  "trends": [
+    {
+      "claim": "모델은 여전히 더 크게 학습되는 추세이고, 크기와 지능 사이에 상관이 보인다.",
+      "evidence": "최근 공개 모델의 파라미터 수 산점도와, 강연 주에 나온 1조 파라미터 모델 Kimi K2.6 을 예로 들었다(강사 의견이 섞인 관찰).",
+      "at": 60
+    },
+    {
+      "claim": "요즘 대형 모델 학습은 1T 파라미터·15T 토큰·최대 1M 문맥이 기준선이다.",
+      "evidence": "강연 도입부의 숫자. 인프라 부담으로 데이터 적재(~15T 토큰), 스텝당 ~1초, GPU 메모리 ~80GB 를 들었다.",
+      "at": 105
+    },
+    {
+      "claim": "많은 사람이 모델 크기와 무관하게 FSDP2 를 씌우지만, ZeRO-1 로 들어가면 ZeRO-3 는 더 느릴 뿐이다.",
+      "evidence": "강사 의견(실무 경험). ZeRO-3 는 통신이 늘고 완벽히 숨지 않으므로 필요한 단계만 쓰라고 권했다.",
+      "at": 1240
+    },
+    {
+      "claim": "Muon 같은 행렬 옵티마이저의 등장으로 파라미터를 납작하게 펴서 나누던 방식에서 텐서 단위 샤딩(FSDP2·DTensor)으로 옮겨 가고 있다.",
+      "evidence": "Playbook 이후 1년의 변화로 강연자가 덧붙인 내용.",
+      "at": 830
+    },
+    {
+      "claim": "TP·SP 는 노드 안(8장 이하)에서 쓰라는 것이 라이브러리들의 공통 권고이며, 최신 시스템(NVLink 도메인 32·72장)에서는 그 범위가 넓어진다.",
+      "evidence": "SP 장의 권고와 질의응답의 하드웨어 답변.",
+      "at": 2230
+    },
+    {
+      "claim": "MoE 학습 속도는 IBGDA·RDMA 를 쓸 수 있는 하드웨어냐에 크게 좌우되어, 그런 망이 없는 연구실은 CPU–GPU 동기화 때문에 학습이 느리다.",
+      "evidence": "강사 의견. DeepEP 가 사실상 InfiniBand(IBGDA) 환경에서만 제 성능을 낸다고 했다.",
+      "at": 3150
+    },
+    {
+      "claim": "EP 통신은 PP 의 1F1B 와 엮어 다른 마이크로배치의 계산 뒤에 숨기는 것이 현재의 실전 해법이고, Megatron 에 플래그로 들어가 있다.",
+      "evidence": "EP: Practical Solution 슬라이드의 타임라인과 overlap_moe_expert_parallel_comm·delay_wgrad_compute 플래그.",
+      "at": 3270
+    },
+    {
+      "claim": "수천 장의 GPU 를 쓰는 만큼 에너지 영향을 의식하고 책임 있게 써야 한다.",
+      "evidence": "강사 의견 — 강연 마지막 슬라이드.",
+      "at": 3390
+    }
+  ],
+  "study": {
+    "prereq": [
+      "PyTorch 학습 루프(순전파·역전파·옵티마이저)와 혼합 정밀도",
+      "행렬곱·전치·softmax 정도의 선형대수",
+      "트랜스포머 블록 구조(어텐션·MLP·LayerNorm·잔차) — CS25 1강 노트",
+      "집합 연산(all-reduce·all-gather·reduce-scatter)의 뜻 — CS336 7강 노트"
+    ],
+    "steps": [
+      {
+        "do": "CS336 7강 노트로 집합 연산과 GPU 망(NVLink·InfiniBand)을 정리하고, 3장 코드의 링 all-reduce 를 직접 돌려 2(N−1)/N 을 확인한다.",
+        "why": "이 강연의 모든 병렬은 '어떤 집합 연산이 어디에 붙나'로 설명된다."
+      },
+      {
+        "do": "GPU 두 장(또는 CPU 의 gloo 백엔드)으로 DDP 학습을 돌리고 torch.profiler 로 타임라인을 찍어, bucket_cap_mb 를 바꿔 가며 통신 겹침을 관찰한다.",
+        "why": "강연자가 '모든 엔지니어 머릿속의 그림'이라 한 계산–통신 겹침을 눈으로 확인하는 습관을 들인다."
+      },
+      {
+        "do": "4·5장의 메모리 공식으로 자기 모델의 ZeRO 단계별 메모리를 계산하고, FSDP2(fully_shard)로 같은 모델을 감싸 실제 메모리·속도를 ZeRO-1(또는 DDP)과 비교한다.",
+        "why": "'필요한 만큼의 ZeRO' 규칙을 숫자로 체감한다."
+      },
+      {
+        "do": "Megatron-LM 논문을 읽고 7·8장의 column/row-linear 를 PyTorch 로 TP=2 MLP·어텐션으로 구현해, 한 장 결과와 같은지 검사한다.",
+        "why": "TP 의 정확성 점검 질문을 직접 써 먹어 본다."
+      },
+      {
+        "do": "Ultra-Scale Playbook 을 처음부터 읽으며 각 장의 벤치마크 그래프를 이 노트의 손계산과 맞춰 본다. 특히 SP·PP·CP 장.",
+        "why": "강연은 Playbook 의 요약이라 세부 수치와 그래프는 책에 있다."
+      },
+      {
+        "do": "DeepSeek-V3 기술 보고서의 DualPipe·EP 통신 부분을 읽고, 13장 코드로 라우팅 불균형이 all-to-all 시간에 주는 영향을 계산한다.",
+        "why": "MoE 를 실제 규모에서 학습할 때 무엇이 병목인지 이해한다."
+      },
+      {
+        "do": "TorchTitan 이나 nanotron 의 설정 파일을 열어 DP·TP·PP·CP 크기와 장치 격자 순서를 읽고, 14장 코드로 그 설정의 GPU 당 메모리를 어림한다.",
+        "why": "실제 오픈소스 학습 코드에서 5D 병렬이 어떻게 조합되는지 본다."
+      }
+    ],
+    "practice": [
+      "8B·70B·405B 모델에 대해 DP 64 일 때 ZeRO 0~3 단계별 모델 상태 메모리를 표로 만들고, H100 80GB 에 들어가는 가장 낮은 단계를 고른다.",
+      "7장 코드의 TP 예를 TP=4, 행렬 크기 (8,8) 로 일반화하고 순전파·역전파가 한 장 결과와 같은지 assert 로 확인한다.",
+      "p = 4, 8, 16 단계에서 노는 몫을 5% 아래로 두는 최소 마이크로배치 수를 구하고, seq 4,096·mbs 1·DP 8 일 때의 GBS 를 계산한다.",
+      "12장의 링 어텐션 코드에 인과 마스크를 넣고, 시퀀스를 순서대로 자를 때 GPU 별 계산량이 얼마나 불균형한지 센다.",
+      "15장 편향 갱신 코드에서 u 를 0.001·0.1 로 바꿔 수렴 속도와 진동을 비교한다."
+    ],
+    "resources": [
+      {
+        "title": "The Ultra-Scale Playbook (Hugging Face)",
+        "url": "https://huggingface.co/spaces/nanotron/ultrascale-playbook"
+      },
+      {
+        "title": "The Smol Training Playbook (Hugging Face)",
+        "url": "https://huggingface.co/spaces/HuggingFaceTB/smol-training-playbook"
+      },
+      {
+        "title": "CS25: Transformers United 과목 홈페이지",
+        "url": "https://web.stanford.edu/class/cs25/"
+      },
+      {
+        "title": "ZeRO: Memory Optimizations Toward Training Trillion Parameter Models",
+        "url": "https://arxiv.org/abs/1910.02054"
+      },
+      {
+        "title": "Megatron-LM: Training Multi-Billion Parameter Language Models Using Model Parallelism",
+        "url": "https://arxiv.org/abs/1909.08053"
+      },
+      {
+        "title": "Reducing Activation Recomputation in Large Transformer Models (시퀀스 병렬)",
+        "url": "https://arxiv.org/abs/2205.05198"
+      },
+      {
+        "title": "Ring Attention with Blockwise Transformers for Near-Infinite Context",
+        "url": "https://arxiv.org/abs/2310.01889"
+      },
+      {
+        "title": "DeepSeek-V3 Technical Report (DualPipe·EP)",
+        "url": "https://arxiv.org/abs/2412.19437"
+      },
+      {
+        "title": "DeepEP (GitHub)",
+        "url": "https://github.com/deepseek-ai/DeepEP"
+      },
+      {
+        "title": "nanotron (GitHub)",
+        "url": "https://github.com/huggingface/nanotron"
+      },
+      {
+        "title": "TorchTitan (GitHub)",
+        "url": "https://github.com/pytorch/torchtitan"
+      },
+      {
+        "title": "How to Scale Your Model (JAX Scaling Book)",
+        "url": "https://jax-ml.github.io/scaling-book/"
+      },
+      {
+        "title": "PyTorch FSDP2 fully_shard 문서",
+        "url": "https://docs.pytorch.org/docs/stable/distributed.fsdp.fully_shard.html"
+      }
+    ]
+  },
+  "jobs": {
+    "roles": [
+      "LLM 학습 인프라 엔지니어",
+      "분산 학습·ML 시스템 엔지니어",
+      "ML 리서치 엔지니어(사전학습)",
+      "GPU 클러스터·HPC 엔지니어",
+      "MLOps 엔지니어(대규모 학습)"
+    ],
+    "skills": [
+      "PyTorch",
+      "Python",
+      "CUDA",
+      "NCCL",
+      "FSDP",
+      "DeepSpeed",
+      "Megatron-LM",
+      "Distributed Training",
+      "GPU",
+      "InfiniBand",
+      "NVLink",
+      "MoE",
+      "JAX",
+      "Kubernetes",
+      "Slurm"
+    ]
+  },
+  "related": [
+    "SzpOcwdIL0Y",
+    "6-cXp-aOmdg",
+    "9MvD-XsowsE",
+    "bHSDPgZYie0",
+    "GBd7iuJkW08",
+    "NDdc39KYqDU"
+  ],
+  "materials": {
+    "transcript": "official",
+    "frames": 124,
+    "every_sec": 30
+  },
+  "written_at": "2026-11-21"
+}
