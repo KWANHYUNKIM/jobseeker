@@ -68,10 +68,29 @@ def _deadline(j: dict, today):
     if iso:
         try:
             from datetime import date as _date
-            return _date.fromisoformat(iso), False
+            return _sane(_date.fromisoformat(iso), False)
         except ValueError:
             pass
-    return parse_deadline(j, today)
+    return _sane(*parse_deadline(j, today))
+
+
+# db/schema.sql 의 job_deadline_sane 과 같은 범위. 사이트들이 '상시'를 2999-12-31·9999-12-31 같은
+# 먼 날짜로 적는데(인크루트·그룹 포털), 그대로 넣으면 CHECK 에 걸려 **사이클 전체의** 이중 쓰기가
+# 되돌아간다 — 2026-11-21 인크루트 한 건 때문에 5,099건이 DB 에 못 들어가고 뷰어가 열흘 전 1,233건에
+# 머물렀다. 먼 미래는 상시로, 그 밖에 범위를 벗어난 날짜는 모르는 것으로 둔다.
+_SANE_FROM = (2015, 1, 1)
+_SANE_TO = (2100, 1, 1)
+_ALWAYS_OPEN_FROM_YEAR = 2900
+
+
+def _sane(d, always_open):
+    if d is None:
+        return None, always_open
+    if d.year >= _ALWAYS_OPEN_FROM_YEAR:
+        return None, True
+    if not (_SANE_FROM <= (d.year, d.month, d.day) <= _SANE_TO):
+        return None, always_open
+    return d, always_open
 
 
 def _usable(j: dict) -> bool:
