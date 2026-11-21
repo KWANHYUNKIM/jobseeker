@@ -1,0 +1,1016 @@
+{
+ "id": "Q7V13XriJEc",
+ "source": {
+  "platform": "youtube",
+  "url": "https://www.youtube.com/watch?v=Q7V13XriJEc",
+  "channel": "Stanford Online",
+  "published": "2026-03-09",
+  "duration_sec": 4405,
+  "views": 2153,
+  "license": "Stanford Online 공개 강의(YouTube 표준 라이선스)"
+ },
+ "course": {
+  "school": "Stanford",
+  "code": "CS221",
+  "term": "Autumn 2025",
+  "lecture_no": "15",
+  "speaker": "Percy Liang (Stanford 컴퓨터과학과 부교수)"
+ },
+ "title": "Stanford CS221 | Autumn 2025 | Lecture 15: Logic I",
+ "title_ko": "CS221 15강 — 논리 I: 명제 논리의 구문과 의미, 모델·지식 베이스, 함의·모순·우연과 Ask/Tell, 만족 가능성 환원, modus ponens 와 건전성·완전성",
+ "topic": "other",
+ "tags": [
+  "Python",
+  "Z3",
+  "SAT Solver",
+  "Logic",
+  "Knowledge Representation",
+  "Formal Methods",
+  "Algorithms",
+  "AI"
+ ],
+ "level": "입문",
+ "one_line": "공식 = 그 공식이 참인 세계들의 집합 — 지식이 늘면 세계가 줄고, 얼마나 줄었는지가 Yes·No·모름을 정한다",
+ "summary": [
+  "CS221 추론 단원의 마지막 기술 주제인 논리의 첫 강의다. 탐색·MDP·게임·베이즈 네트워크에 이어, 이번에는 불확실성 없이 참·거짓만 다루는 논리적 추론을 배운다. 강사 Percy Liang 은 'A+B=10, A−B=4' 를 탐색이 아니라 대수로 푸는 예로 기호 추론의 힘을 보이고, 논리가 1990년대까지 AI 의 주류였다가 불확실성과 데이터 문제로 밀려났지만 '많은 것을 짧게 표현하는 힘' 은 대체할 수 없다고 말한다. 자연어는 미끄럽고(1센트 > 아무것도 없음 > 세계 평화), 논리는 형식 언어이며 여럿이 있다. 강의는 명제 논리를 실습장 삼아 모든 논리에 통하는 일반 개념을 정의하는 데 집중한다. 제목은 'Logic I' 이지만 다루는 것은 명제 논리 하나이고, 1차 논리는 다음 강의다.",
+  "논리는 구문·의미·추론 규칙 세 재료로 정의된다. 구문은 명제 기호(Rain, Wet)와 연결사 ¬ ∧ ∨ → ↔ 로 재귀적으로 짓는 공식이다. 의미는 모델(명제 기호마다 참/거짓을 정한 할당 = 세계의 한 상태, 기계학습의 모델과 다른 말)과, 공식과 모델을 받아 0/1 을 내는 해석 함수 I(f, w) 로 시작한다. 강의의 핵심 관점 전환은 공식의 뜻을 '그 공식이 참인 세계들의 집합 M(f)' 로 보는 것이다. Rain ∨ Wet 은 네 세계 중 셋, Rain ∧ Wet 은 하나를 가리킨다. 지식 베이스(KB)는 공식의 집합이고 그 뜻 M(KB) 는 각 공식 모델의 교집합이다. KB = {Rain, Rain → Wet} 이면 '비 옴·젖음' 한 세계만 남는다. 사실을 더할수록 KB 는 커지고 M(KB) 는 줄어든다.",
+  "새 공식 f 를 더했을 때 M(KB) 가 얼마나 줄어드는지가 세 관계를 정한다. 전혀 안 줄면 함의(KB ⊨ f), 비어 버리면 모순, 그 사이면 우연이다. 그리고 'KB 가 f 와 모순 ⇔ KB ⊨ ¬f' 다. 이것으로 지식 베이스의 두 동작을 만든다. Ask[f] 는 Yes / No / I don't know 를, Tell[f] 는 '이미 알던 거야 / 못 믿겠어 / 새로 배웠어(그리고 KB 에 더함)' 를 답한다. 질의응답에서는 모순이 났을 때 누가 틀렸는지 논리는 말해 주지 않는다는 것, 논리의 지식은 단조적이지만 확률적 믿음은 그렇지 않다는 것이 나온다. 베이즈 네트워크와의 다리도 놓는다 — 확률변수는 명제 기호, 할당은 모델이고, P(f | KB) = P(KB ∪ {f}) / P(KB) 는 논리의 세 대답을 0~1 의 숫자로 넓힌다. 반대로 논리는 증거·질의를 '변수 = 값' 이 아닌 임의의 공식으로 넓힌다.",
+  "모델을 다 늘어놓는 계산은 기호 수에 지수적이라, 강의는 모든 질문을 만족 가능성(M(KB) ≠ ∅) 검사로 줄인다. KB ∪ {¬f} 가 만족 불가능하면 함의(귀류법), 아니면 KB ∪ {f} 가 불가능하면 모순, 둘 다 가능하면 우연 — 1비트짜리 검사로 세 갈래를 가르려니 두 번이 필요하다. 만족 가능성은 모델 검사 도구가 푼다. 강의 코드는 처음부터 Z3 의 공식 객체를 썼고, Solver 가 sat 와 그 증거인 모델을 돌려준다. SAT 는 최악의 경우 NP-완전이지만 DPLL·CDCL 해결기가 실제 문제를 빠르게 푼다. 마지막으로 추론 규칙이다. modus ponens(p, p → q ⊢ q)를 바뀌지 않을 때까지 반복하는 전방 추론으로 {Rain, Rain → Wet, Wet → Slippery} 에서 Wet, Slippery 를 유도한다. 규칙은 구문 위에서 돌고(⊢), 그것을 의미(⊨)와 견주는 것이 건전성(유도한 것은 모두 참 — 진실만)과 완전성(참인 것은 모두 유도 — 진실 전부)이며, 강사는 유리잔과 물로 비유한다. modus ponens 는 건전하고, '젖었으니 비가 왔다' 는 건전하지 않다.",
+  "노트는 슬라이드·판서의 말실수 세 곳을 바로잡아 둔다: ∧ 를 계산하며 '더한다' 고 한 것(곱/최솟값이다), '명제 논리에는 괄호가 없다' 고 한 것(묶음 괄호는 있고 없는 것은 P(A) 같은 술어 꼴이다), 전방 추론 루프의 조건이 거꾸로 적힌 것. 노트 보충으로는 연결사의 집합 연산 해석, 모순된 KB 가 모든 것을 함의한다는 점, 함축을 절로 바꾸는 법과 직접 짠 20줄 DPLL, unsat core, Horn 절과 modus ponens 의 완전성 범위를 더했다.",
+  "공부하는 법: 5~8챕터의 손 계산을 진리표로 먼저 해 본 뒤, 7챕터 머리말(I, M 9줄)을 바탕으로 한 코드들을 차례로 돌려 숫자를 맞추어 보라. 그다음 12·13챕터에서 열거를 만족 가능성 검사와 DPLL 로 바꾸고, 14·15챕터에서 같은 KB 를 구문(전방 추론)과 의미(모델)로 각각 따져 두 집합을 비교하면 강의 전체가 하나의 그림으로 이어진다. 모든 코드는 30줄 안쪽으로 직접 써서 Python 3.12 로 돌렸고 출력을 note 에 적었다(Z3 코드만 설치돼 있지 않아 돌리지 않았다)."
+ ],
+ "why_now": "LLM 이 자연어 추론을 잘하게 된 지금도 '틀리면 안 되는 추론' 은 논리 도구에 맡긴다. 강사가 쓴 Z3 같은 SAT/SMT 해결기는 클라우드 접근 정책 검증, 컴파일러·스마트 계약의 형식 검증, 패키지 의존성 해결, 하드웨어 검증, 스케줄링·배치 문제의 실제 엔진이다(노트 보충). 강의가 자연어의 미끄러움(1센트와 세계 평화)으로 보인 것처럼, 언어 모델의 출력을 형식 언어로 옮겨 해결기로 확인하거나 도구로 부르게 하는 흐름(신경-기호 결합, LLM + 정리 증명기)이 활발하며, 그 바닥에 이 강의의 함의·만족 가능성·건전성 개념이 있다(노트 보충). 강사가 말한 '논리의 대체할 수 없는 강점은 압축된 표현력' 은 규칙 엔진·지식 그래프·데이터베이스 제약처럼 많은 경우를 짧은 규칙으로 다루는 실무 시스템이 지금도 논리를 쓰는 이유이기도 하다. 또 11챕터의 확률-논리 대응은 12~14강 베이즈 네트워크와 이번 단원을 한 틀로 묶어 준다.",
+ "chapters": [
+  {
+   "start": 0,
+   "title": "왜 다시 논리인가 — 탐색 대신 대수, 그리고 압축된 표현력",
+   "points": [
+    "강좌의 추론 단원(탐색 → MDP → 게임 → 베이즈 네트워크)의 마지막 기술 주제가 논리다. 이번 강의는 명제 논리, 다음 강의는 1차 논리.",
+    "A + B = 10, A − B = 4 를 풀 때 우리는 후보를 다 뒤지지 않는다. 두 식을 더해 2A = 14 로 만든다 — 기호 조작에 의한 추론이다.",
+    "역사: 1990년대 전까지 AI 의 주류는 논리였다. 약점은 둘 — 불확실성을 못 다루고(확률이 해결), 데이터를 못 쓴다(기계학습이 해결).",
+    "그래도 배우는 이유(강사 의견): 논리는 많은 것을 짧게 표현하는 '압축된 표현력' 을 준다."
+   ],
+   "on_screen": "motivation(): perceive → Agent → act 그림과 위아래 reason·learn 화살표. 'Focus: reasoning / Last time: probabilistic reasoning (Bayesian networks) / This time: logical reasoning (propositional logic, first-order logic)'. 'Problem: If A + B = 10 and A - B = 4, what is A?' 아래에 '탐색이 아니라 대수를 썼다 — 기호적(논리적) 추론의 예'. Historical note 목록: 1990년대 이전 주류, 문제 1 결정적(uncertainty — 확률이 해결), 문제 2 규칙 기반·데이터 미사용(machine learning 이 해결), 강점 expressivity in a compact way.",
+   "explain": [
+    "CS221 은 지능형 에이전트를 '지각하고, 행동하고, 추론하고, 배우는 것' 으로 놓고 시작했다(1강). 그중 추론을 다룬 단원이 길었다. 5·6강의 탐색은 가능한 행동열을 뒤져 최적을 찾았고, 7·8강의 MDP 는 불확실한 전이 위에서, 10·11강의 게임은 상대가 있을 때, 12~14강의 베이즈 네트워크는 확률로 믿음을 갱신했다. 이번 강의는 그 마지막 갈래인 논리적 추론이다. 강사는 이것이 강좌 끝의 'AI 와 사회' 부분 전 마지막 기술 주제라고 소개한다.",
+    "출발은 중학생 문제다. A 더하기 B 가 10, A 빼기 B 가 4 이면 A 는? 교실은 곧바로 7 이라고 답한다. 강사가 묻는 것은 답이 아니라 방법이다. 아무도 A 와 B 의 모든 쌍을 하나씩 넣어 보지 않았다. 두 식을 더해 2A = 14 를 만들고 양변을 2 로 나눴다. 이것은 탐색이 아니라 기호를 규칙대로 바꾸는 일이다. 노트의 코드로 비교하면, −100~100 의 정수 쌍을 뒤지는 탐색은 2만 번 넘게 확인해야 답을 만나지만 대수는 두 걸음이면 끝난다. 게다가 실수 범위라면 후보가 무한해서 탐색은 아예 끝나지 않는다. 기호 추론은 무한한 가능성을 머릿속에서 한 번에 다룬다.",
+    "역사적으로 논리는 1990년대 이전 AI 의 지배적 패러다임이었다. 매카시가 'AI' 라는 말을 만들 때 사람들이 떠올린 것이 이것이다. 그러나 두 가지 약점이 드러났다. 첫째, 논리는 결정적이다 — 어떤 문장이든 참 아니면 거짓이고, 현실의 애매함을 담지 못한다. 이 문제는 확률(12~14강)이 풀었다. 둘째, 규칙을 사람이 손으로 넣어야 해서 데이터에서 배우지 못했다. 이 문제는 기계학습(2~4강)이 풀었다. 그렇다면 강좌 막바지에, 언어 모델 같은 화려한 것으로 끝맺지 않고 왜 논리를 배우나?",
+    "강사의 답은 하나다. 논리는 많은 것을 짧게 말할 수 있게 해 준다 — 압축된 표현력(expressivity)이다. 이 말은 지금은 막연하지만 강의가 진행되며 구체적인 뜻을 얻는다. 6챕터에서 공식 하나가 수많은 세계를 한꺼번에 가리키는 것을 보게 되고, 11챕터에서 베이즈 네트워크는 '변수 = 값' 꼴의 증거밖에 못 받지만 논리는 '비가 오거나 눈이 온다' 같은 임의의 문장을 증거로 받는다는 대비를 보게 된다. 이 강의의 목표는 명제 논리 자체보다, 모든 논리에 통하는 일반 개념(모델, 함의, 건전성, 완전성)을 정확히 익히는 데 있다."
+   ],
+   "example": {
+    "title": "손으로: 탐색 vs 대수",
+    "body": "탐색: A 와 B 를 −100~100 에서 하나씩 넣으면 A = 7 줄에 닿기까지 (7+100)·201 + (3+100) + 1 = 21,611 번을 확인한다. 대수: ① 두 식을 더한다 (A+B) + (A−B) = 10 + 4 → 2A = 14. ② 2 로 나눈다 → A = 7, 그리고 B = 10 − 7 = 3. 두 걸음. 범위를 넓혀도 대수의 걸음 수는 그대로다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 탐색 vs 대수: A+B=10, A-B=4\ncnt = 0\nfor A in range(-100, 101):            # 탐색: 후보를 하나씩 확인\n    for B in range(-100, 101):\n        cnt += 1\n        if A + B == 10 and A - B == 4:\n            print(\"search:\", A, B, \"checked\", cnt)\n# 대수: 두 식을 더하면 2A = 14  ->  기호만 조작\nA = (10 + 4) // 2; B = 10 - A\nprint(\"algebra:\", A, B, \"steps 2\")",
+    "note": "실행 결과: search: 7 3 checked 21611 / algebra: 7 3 steps 2. 후보 공간이 무한하면 위 반복문은 끝나지 않는다."
+   },
+   "pitfalls": [
+    "'논리는 낡았다' 와 '논리는 쓸모없다' 는 다르다. 강사가 든 약점(불확실성, 데이터)은 확률·학습이 보완했고, 표현력은 여전히 논리의 몫이다.",
+    "여기서 '추론(reasoning)' 은 신경망의 inference(순전파)와 다른 뜻이다. 아는 것에서 새로운 결론을 끌어내는 일이다."
+   ],
+   "check": [
+    {
+     "q": "강사가 든 논리의 두 약점과, 각각을 해결한 강좌의 앞 단원은?",
+     "a": "결정적이라 불확실성을 못 다룸 → 확률(베이즈 네트워크). 규칙 기반이라 데이터를 못 씀 → 기계학습."
+    },
+    {
+     "q": "A+B=10, A−B=4 를 '탐색' 으로 푼다는 것은 무엇을 뜻하며, 왜 실수 범위에서는 안 되나?",
+     "a": "후보 (A, B) 를 하나씩 넣어 두 식을 모두 만족하는지 확인하는 것. 실수 범위는 후보가 무한해 끝나지 않는다. 대수는 기호를 바꿔 한 번에 답을 낸다."
+    }
+   ]
+  },
+  {
+   "start": 157,
+   "title": "논리는 언어다 — 자연어는 미끄럽고, 논리는 여럿이다",
+   "points": [
+    "언어의 두 목표: ① 세상에 대한 지식을 표현한다 ② 그 지식으로 추론한다. 논리도 언어로 보면 된다.",
+    "자연어로도 추론은 된다. 그러나 '10센트 > 5센트 > 1센트' 와 '1센트 > 아무것도 없음 > 세계 평화' 는 같은 꼴인데 뒤쪽 결론은 터무니없다.",
+    "언어의 종류: 자연어(비형식, 영어·독일어), 프로그래밍 언어(형식, Python·C++), 논리 언어(형식, 1차 논리·기술 논리).",
+    "논리는 하나가 아니다. 표현하는 것과 쓰임새가 다른 여러 논리가 있다."
+   ],
+   "on_screen": "why_not_natural_language(): Example 1 — 다임 > 니켈, 니켈 > 페니, 그러므로 다임 > 페니. Example 2 — 페니 > nothing, nothing > world peace, 그러므로 페니 > world peace?? 'Natural language is slippery…'. types_of_languages(): 자연어 'Two divides even numbers' 와 독일어 'Zwei dividieren geraden Zahlen', 프로그래밍 Python def even(x): return x % 2 == 0 · C++ bool even(int x), 논리 First-order-logic ∀x. Even(x) → Divides(x, 2) · Description logic Even ⊑ ∀ Divides.2.",
+   "explain": [
+    "강사는 논리를 '언어' 로 생각하라고 거듭 말한다. 언어에는 두 가지 쓰임이 있다. 하나는 지식을 담는 것이다 — 교과서는 세상에 대한 지식을 글로 적은 것이다. 다른 하나는 그 지식으로 생각하는 것이다 — 머릿속에서 무언가를 따져 볼 때도 우리는 일종의 '생각의 언어' 를 쓴다. 논리는 이 두 일을 정밀하게 하도록 설계된 언어다.",
+    "그러면 왜 자연어를 그대로 쓰지 않나? 요즘은 언어 모델이 자연어를 잘 다루니 더욱 그런 질문이 나온다. 자연어로도 추론은 된다. '10센트 동전이 5센트보다 낫고, 5센트가 1센트보다 낫다, 그러므로 10센트가 1센트보다 낫다' 는 누구나 받아들이는 추론이다. 그런데 같은 꼴로 '1센트가 아무것도 없는 것보다 낫고, 아무것도 없는 것이 세계 평화보다 낫다, 그러므로 1센트가 세계 평화보다 낫다' 를 만들면 결론이 엉터리다. 강사는 이유를 생각해 보라며 넘어가는데, 노트로 풀면 이렇다. 둘째 전제의 '아무것도 없음이 세계 평화보다 낫다' 는 '세계 평화보다 나은 것은 하나도 없다' 라는 뜻이다. 첫 전제의 '아무것도 없음' 은 '빈손' 이라는 물건인데 둘째의 그것은 양화사(어떤 것도 ~ 아니다)다. 같은 낱말이 다른 구조를 숨기고 있어 기계적으로 바꿔 끼우면 무너진다. 이것이 자연어가 '미끄럽다' 는 뜻이다.",
+    "그래서 형식 언어가 필요하다. 강사는 언어를 셋으로 나눈다. 영어와 독일어 같은 자연어는 비형식이다. Python 과 C++ 같은 프로그래밍 언어는 형식 언어로, 학생들이 이미 익숙하다. 오늘 배우는 논리 언어도 형식 언어다. 화면은 '2 는 짝수를 나눈다' 라는 같은 생각을 영어, 독일어, Python 함수, C++ 함수, 1차 논리(모든 x 에 대해 Even(x) 이면 Divides(x, 2)), 기술 논리로 각각 적어 보인다. 같은 내용을 여러 언어로 적을 수 있다는 점, 그리고 형식 언어는 뜻이 하나로 정해진다는 점이 핵심이다.",
+    "강사가 기술 논리(description logic)를 굳이 예로 든 이유는 '논리는 하나가 아니다' 를 보이기 위해서다. 자연어에 여러 언어가 있듯 논리에도 여러 종류가 있고, 각각 표현할 수 있는 것과 계산 비용이 다르다(노트 보충: 기술 논리는 온톨로지 언어 OWL 의 바탕이 되는 계열로, 표현력을 일부 줄이는 대신 추론을 결정 가능하게 유지한다). 이번 강의의 명제 논리는 그중 가장 단순하고, 다음 강의의 1차 논리는 '모든', '어떤' 같은 양화사를 더해 훨씬 강하다."
+   ],
+   "pitfalls": [
+    "'형식 언어' 는 딱딱한 문체라는 뜻이 아니라, 무엇이 올바른 문장이고 그 뜻이 무엇인지가 규칙으로 완전히 정해진 언어라는 뜻이다.",
+    "1센트 예의 잘못은 추이성 자체가 틀려서가 아니다. 같은 낱말 'nothing' 이 두 전제에서 다른 논리 구조(물건 vs 양화사)를 가져서다."
+   ],
+   "check": [
+    {
+     "q": "'1센트 > 아무것도 없음 > 세계 평화, 그러므로 1센트 > 세계 평화' 가 잘못된 이유를 한 문장으로.",
+     "a": "둘째 전제의 '아무것도 없음' 은 '세계 평화보다 나은 것은 없다' 는 양화 문장이라, 첫 전제의 '빈손' 과 같은 대상이 아니다. 같은 낱말을 같은 것으로 바꿔 끼운 것이 잘못이다."
+    },
+    {
+     "q": "강사가 구분한 세 종류의 언어와 예를 하나씩.",
+     "a": "자연어(영어·독일어, 비형식), 프로그래밍 언어(Python·C++, 형식), 논리 언어(1차 논리·기술 논리, 형식)."
+    }
+   ]
+  },
+  {
+   "start": 349,
+   "title": "논리의 세 재료 — 구문·의미·추론 규칙, 그리고 구문 ≠ 의미",
+   "points": [
+    "논리 = 구문(syntax, 올바른 공식의 집합) + 의미(semantics, 공식의 뜻) + 추론 규칙(inference rules, 기존 공식에서 새 공식을 만드는 법).",
+    "구문이 달라도 의미가 같을 수 있다: '2 + 3' 과 '3 + 2' 는 둘 다 5.",
+    "구문이 같아도 의미가 다를 수 있다: '3 / 2' 는 Python 2.7 에서 1, Python 3 에서 1.5.",
+    "강의 계획: 구문 → 구문과 이어진 의미 → 의미와 이어진 추론 규칙. 명제 논리는 일반 개념을 배우는 실습장이다."
+   ],
+   "on_screen": "ingredients_of_a_logic(): 1. Syntax — 유효한 공식의 집합, 2. Semantics — 공식의 의미, 3. Inference rules — 기존 공식에서 새 유효 공식을 끌어내는 법. syntax_versus_semantics(): Different syntax, same semantics — 2 + 3 → 5, 3 + 2 → 5. Same syntax, different semantics — 3 / 2 → 1 (Python 2.7), 1.5 (Python 3). 큰 그림: 왼쪽 Syntax 열에 분홍 막대(공식)들이 쌓이고 아래로 빨간 Inference rules 화살표, 오른쪽 Semantics 상자 안 초록 타원 models 와 그 안의 파란 타원. 공식에서 모델 집합으로 검은 화살표. Summary: 논리는 표현력 있는 표현·추론, 언어로 생각하라, 구문·의미·추론 규칙으로 정의된다.",
+   "explain": [
+    "어떤 논리를 정의한다는 것은 세 가지를 정하는 일이다. 첫째 구문은 '무엇이 올바른 공식(문장)인가' 를 정한다. 문법과 같다. 둘째 의미는 '그 공식이 무슨 뜻인가' 를 정한다. 셋째 추론 규칙은 '이미 가진 공식들로부터 어떤 새 공식을 만들어도 되는가' 를 정한다. 추론 규칙은 공식(구문)을 받아 공식을 내놓는 기계적인 절차이지만, 그것이 '좋은' 규칙인지는 의미를 보고 판단한다. 이 세 재료의 관계가 강의 전체의 뼈대이고, 강의 끝 건전성·완전성(15챕터)이 셋을 하나로 묶는다.",
+    "가장 중요한 구분은 구문과 의미다. 강사는 두 방향의 예로 둘이 다르다는 것을 보인다. 먼저 구문이 다른데 의미가 같은 경우: '2 + 3' 과 '3 + 2' 는 다른 문자열이지만 둘 다 수 5 를 가리킨다. 다음은 구문이 같은데 의미가 다른 경우: 문자열 '3 / 2' 는 Python 2.7 규칙으로는 정수 나눗셈이라 1 이고, Python 3 규칙으로는 1.5 다. 코드를 옮기던 사람들이 이 차이로 버그를 많이 만났다. 핵심은 '3 / 2' 라는 문자열 안에는 그 뜻이 들어 있지 않다는 것이다. 문자열에 생명을 불어넣는 것은 바깥에서 주어진 해석 규칙이다.",
+    "화면의 큰 그림을 머리에 넣어 두면 이후가 쉽다. 왼쪽 '구문' 칸에는 공식이 막대처럼 쌓여 있다. 오른쪽 '의미' 칸에는 가능한 모든 세계(모델)의 공간이 있다. 공식 하나는 오른쪽 공간의 한 부분집합을 가리킨다(검은 화살표). 왼쪽에서 추론 규칙(빨간 화살표)은 공식에서 새 공식을 아래로 만들어 낸다. 강의는 이 그림을 따라 구문 → 의미 → 추론 규칙 순으로 간다.",
+    "명제 논리는 생각할 수 있는 가장 단순한 논리다. 강사는 명제 논리 자체보다 이것을 실습장 삼아 함의, 건전성 같은 일반 개념을 정확히 정의하는 것이 더 중요하다고 말한다. 이 낱말들은 일상에서도 쓰이지만 논리에서는 아주 정밀한 뜻을 가진다. 다음 강의에서 1차 논리로 넘어가도 이 개념들은 그대로 쓰인다."
+   ],
+   "code": {
+    "lang": "python",
+    "src": "# 같은 문자열, 다른 의미 — '/' 의 의미는 언어 판(semantics)이 정한다\nsrc = \"3 / 2\"\npy3 = eval(src)                     # 파이썬 3: 참 나눗셈\npy2 = eval(src.replace(\"/\", \"//\"))  # 파이썬 2.7 의 정수 나눗셈을 흉내\nprint(src, \"-> py3:\", py3, \" py2-style:\", py2)\n# 다른 문자열, 같은 의미\nprint(\"2 + 3 =\", eval(\"2 + 3\"), \" 3 + 2 =\", eval(\"3 + 2\"))",
+    "note": "실행 결과: 3 / 2 -> py3: 1.5  py2-style: 1, 그리고 2 + 3 = 5  3 + 2 = 5. Python 2.7 은 이 머신에 없어 정수 나눗셈 // 로 그 규칙을 흉내 냈다."
+   },
+   "diagram": {
+    "title": "논리의 세 재료",
+    "code": "graph LR\n  subgraph SYN[\"구문\"]\n    F1[\"공식들\"] -->|\"추론 규칙\"| F2[\"새 공식\"]\n  end\n  subgraph SEM[\"의미\"]\n    W[\"모델(세계)의 공간\"]\n  end\n  F1 -->|\"M(f)\"| W\n  F2 -->|\"M(g)\"| W"
+   },
+   "pitfalls": [
+    "추론 규칙은 구문 위에서 돈다. 뜻을 보지 않고 모양만 보고 공식을 만든다. 그 규칙이 옳은지는 의미(모델)로 따로 확인해야 한다(15챕터).",
+    "의미가 같다고 구문이 같은 것은 아니다. 'P ∧ Q' 와 'Q ∧ P' 는 서로 다른 공식이지만 같은 모델 집합을 가진다."
+   ],
+   "check": [
+    {
+     "q": "논리를 정의하는 세 재료를 각각 한 줄로.",
+     "a": "구문: 올바른 공식이 무엇인가. 의미: 공식이 무엇을 뜻하나(어떤 세계에서 참인가). 추론 규칙: 가진 공식에서 새 공식을 만드는 규칙."
+    },
+    {
+     "q": "'구문이 같고 의미가 다른' 예를 강의 밖에서 하나 들어 보라.",
+     "a": "예: 문자열 '1' + '1' 은 JavaScript 에서 '11'(문자열 연결), 산술 해석에서는 2. 같은 기호가 언어 규칙에 따라 다른 값을 낸다."
+    }
+   ]
+  },
+  {
+   "start": 505,
+   "title": "명제 논리의 구문 — 기호와 연결사로 재귀적으로 짓는 공식",
+   "points": [
+    "기저: 명제 기호(원자 공식) — P, Q, Rain, Wet 같은 이름. 뜻은 아직 없다.",
+    "귀납: f, g 가 공식이면 ¬f, f ∧ g, f ∨ g, f → g, f ↔ g 도 공식이다.",
+    "그 밖의 것은 공식이 아니다 — 공식 집합은 재귀적으로 정의된 트리들의 집합.",
+    "공식이 아닌 예: 'P ¬Q'(연결사 없음), 'P + Q'(없는 연결사), 'P(A) ∨ Q(B)'(인자를 받는 술어 — 1차 논리의 꼴)."
+   ],
+   "on_screen": "propositional_logic_syntax(): # Base case — Propositional symbols (atomic formulas): P = Bool(\"P\"), Q = Bool(\"Q\"), Rain = Bool(\"Rain\"), Wet = Bool(\"Wet\"). # Inductive case — Logical connectives ∧, ∨, ¬, →, ↔. f = Rain, g = Wet 일 때 h1 = Not(f) # ¬f, h2 = And(f, g) # f ∧ g, h3 = Or(f, g), h4 = Implies(f, g) # f → g, h5 = f == g # f ↔ g. 'Nothing else is a formula.' Examples of formulas: P, Not(P), Or(Not(P), Q), Implies(P, Or(Q, Not(P))) # P → (Q ∨ ¬P). Non-formulas: P ¬Q, P + Q, P(A) ∨ Q(B). 코드는 Z3 의 Bool·And·Or·Not·Implies 를 쓴다.",
+   "explain": [
+    "구문을 정의한다는 것은 '무엇이 올바른 공식인가' 를 빠짐없이 말하는 것이다. 명제 논리는 이것을 재귀로 한다. 기저 단계에서 명제 기호를 정한다. P, Q, Rain, Wet 처럼 아무 식별자나 된다 — 프로그래밍의 변수 이름이라고 생각하면 된다. 이것을 원자 공식이라고도 부른다. 강사는 일부러 이 이름들이 무슨 뜻인지 말하지 않는다. Rain 이 '비' 처럼 보이는 것은 우리가 그렇게 읽을 뿐, 구문 단계에서는 그냥 기호다.",
+    "귀납 단계에서 연결사 다섯 개를 들인다. f 와 g 가 이미 공식이라면 ¬f(부정), f ∧ g(그리고), f ∨ g(또는), f → g(함축), f ↔ g(동치, 양방향 함축)도 공식이다. 그리고 '그 밖의 것은 공식이 아니다' 라는 닫는 말이 붙는다. 이렇게 정의된 공식은 자연스럽게 트리 모양이다. 예를 들어 P → (Q ∨ ¬P) 는 뿌리가 →, 왼쪽 가지가 P, 오른쪽 가지가 ∨ 이고 그 아래에 Q 와 ¬P 가 달린 트리다. 강의 코드는 Z3 라이브러리의 Bool, And, Or, Not, Implies 로 이 트리를 만들고, 동치는 == 로 쓴다.",
+    "무엇이 공식이 아닌지도 보는 것이 좋다. 'P ¬Q' 는 두 공식 사이에 연결사가 없어서 공식이 아니다. 'P + Q' 는 + 가 명제 논리의 연결사 목록에 없어서 아니다. 'P(A) ∨ Q(B)' 에 대해 강사는 '명제 논리에는 괄호가 없다' 고 말하는데, 정확히는 '기호가 인자를 받는 꼴(술어 적용)이 없다' 는 뜻이다. 묶음을 나타내는 괄호는 명제 논리에서도 쓴다 — 위의 P → (Q ∨ ¬P) 가 그 예다. P(A) 처럼 대상 A 에 술어 P 를 적용하는 꼴은 다음 강의의 1차 논리에서 등장한다.",
+    "재귀 정의는 두 가지 이점을 준다. 첫째, 공식이 아무리 길어도 '연결사 하나 + 더 작은 공식들' 로 쪼갤 수 있다. 둘째, 그래서 공식에 대한 함수(다음 챕터의 해석 함수)도 같은 모양의 재귀로 짤 수 있다. 노트의 코드는 공식을 ('or', ('not', 'P'), 'Q') 같은 튜플 트리로 표현하고, 기저(문자열 식별자)와 귀납(연결사 + 인자 개수가 맞는 하위 공식)을 그대로 검사해 위 예들을 판정한다."
+   ],
+   "formulas": [
+    {
+     "expr": "f ::= p | ¬f | f ∧ f | f ∨ f | f → f | f ↔ f",
+     "meaning": "명제 논리 공식의 문법(BNF 꼴, 노트 보충 표기). p 는 명제 기호, f 는 공식. '|' 는 '또는 이 꼴'. 오른쪽의 f 자리에 다시 공식이 들어가므로 재귀적이다."
+    }
+   ],
+   "example": {
+    "title": "손으로: P → (Q ∨ ¬P) 를 트리로 쪼개기",
+    "body": "뿌리: → (왼쪽 P, 오른쪽 Q ∨ ¬P). 오른쪽: ∨ (왼쪽 Q, 오른쪽 ¬P). ¬P: ¬ (아래 P). 잎은 P, Q, P 세 개 — 모두 명제 기호이므로 기저에서 공식이고, 위로 올라가며 각 연결사의 귀납 규칙을 적용하면 전체가 공식이다. 반면 'P ¬Q' 는 뿌리에 올 연결사가 없어 어떤 규칙으로도 만들 수 없다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 명제 논리 공식 = 재귀로 정의된 트리 (튜플로 표현)\nCONN = {\"not\": 1, \"and\": 2, \"or\": 2, \"implies\": 2, \"iff\": 2}\n\ndef is_formula(f):\n    if isinstance(f, str):                 # 기저: 명제 기호(원자 공식)\n        return f.isidentifier()\n    if isinstance(f, tuple) and f and f[0] in CONN:\n        args = f[1:]                       # 귀납: 연결사 + 하위 공식\n        return len(args) == CONN[f[0]] and all(map(is_formula, args))\n    return False                           # 그 밖의 것은 공식이 아니다\n\ntests = {\n    \"P\": \"P\",\n    \"¬P\": (\"not\", \"P\"),\n    \"¬P ∨ Q\": (\"or\", (\"not\", \"P\"), \"Q\"),\n    \"P → (Q ∨ ¬P)\": (\"implies\", \"P\", (\"or\", \"Q\", (\"not\", \"P\"))),\n    \"P ¬Q\": (\"P\", (\"not\", \"Q\")),          # 연결사 없음\n    \"P + Q\": (\"+\", \"P\", \"Q\"),             # 없는 연결사\n    \"¬(P, Q)\": (\"not\", \"P\", \"Q\"),         # 인자 개수 틀림\n}\nfor name, f in tests.items():\n    print(f\"{name:14s} {is_formula(f)}\")",
+    "note": "실행 결과: 위 네 줄 True, 아래 세 줄 False. 튜플 표현은 노트가 고른 것이고 강의는 Z3 객체를 썼다."
+   },
+   "pitfalls": [
+    "슬라이드 설명의 '명제 논리에는 괄호가 없다' 는 부정확하다(노트 정정). 묶음 괄호는 쓰며, 없는 것은 P(A) 같은 술어·인자 꼴이다.",
+    "Rain 이라는 이름이 '비' 를 뜻하는 것은 아니다. 구문 단계의 기호는 이름일 뿐이고, 뜻은 다음 챕터의 모델이 정한다."
+   ],
+   "check": [
+    {
+     "q": "'¬¬P ∧ (Q ↔ R)' 는 공식인가? 트리의 뿌리 연결사는?",
+     "a": "공식이다. 뿌리는 ∧, 왼쪽은 ¬(¬P), 오른쪽은 ↔(Q, R)."
+    },
+    {
+     "q": "명제 논리에 기호가 3개뿐이어도 공식은 무한히 많다. 왜인가?",
+     "a": "귀납 규칙을 몇 번이든 겹쳐 쓸 수 있기 때문이다(¬P, ¬¬P, ¬¬¬P …). 공식은 무한하지만, 뒤에 보듯 모델은 2³ = 8개뿐이다."
+    }
+   ]
+  },
+  {
+   "start": 720,
+   "title": "의미의 첫 단추 — 모델(세계)과 해석 함수 I(f, w)",
+   "points": [
+    "논리의 모델은 기계학습의 모델과 다른 말이다. 모델 w = 세계의 한 상태 = 명제 기호마다 참/거짓을 정한 할당.",
+    "기호가 n 개면 모델은 2ⁿ 개. A, B, C 셋이면 8개.",
+    "해석 함수 I(f, w) 는 공식(구문)과 모델(의미)을 이어 1(w 가 f 를 만족) 또는 0 을 돌려준다.",
+    "I 는 공식 트리를 따라 재귀로 계산한다. 예: (¬A ∧ B) ↔ C, w = {A:1, B:1, C:0} → 1."
+   ],
+   "on_screen": "propositional_logic_semantics(): 정의할 것 목록 — define_model() # State of world, define_interpretation_function() # syntax→semantics, define_models() # Formula → models, define_knowledge_base() # Set of formulas, entailment_contradiction_contingency(), ask_tell(), connection_to_bayesian_networks(), satisfiability(). define_model(): 'Definition: a model w in propositional logic is an assignment of truth values to the propositional symbols', A, B, C 셋 → 2^3 = 8 possible models 목록 {A: False, B: False, C: False} … {A: True, B: True, C: True}. define_interpretation_function(): I 는 (f, w) 를 true(1, w satisfies f) 또는 false(0) 로. 예: f = And(Not(A), B) == C, w = {A: True, B: True, C: False} 와 트리 그림 — I((¬A∧B)↔C, w)=1 아래 I(¬A∧B, w)=0 과 I(C, w)=0, 그 아래 I(¬A, w)=0, I(B, w)=1, 맨 아래 I(A, w)=1. 이어서 def I(f, w) 코드: num_args()==0 이면 w[f], 1 이면 not I(g, w), 2 이면 is_and/is_or/is_implies(not I(g) or I(h))/is_eq(I(g) == I(h)), 그 밖은 ValueError. 디버거 패널에 result = true.",
+   "explain": [
+    "이제 공식에 뜻을 준다. 강사는 개념이 많으니 낱말 하나하나를 기억하라고 당부하고 '모델' 부터 정의한다. 먼저 주의: 여기서 모델은 기계학습의 모델(학습된 함수)이 아니다. 용어가 겹친 것일 뿐, 논리의 모델은 '세계의 한 상태' 다. 그래서 강사는 기호도 w(world)를 쓴다. 명제 논리에서 모델은 명제 기호마다 참 또는 거짓을 하나씩 정한 할당이다. 기호가 A, B, C 셋이면 각자 두 값이니 모델은 2 × 2 × 2 = 8 개다. 이 8개가 '세상이 될 수 있는 모든 모습' 이고, 그중 정확히 하나가 실제 세상이다. 12강 베이즈 네트워크의 '할당' 과 같은 것이다(11챕터에서 다시 잇는다).",
+    "다음으로 구문(공식)과 의미(모델)를 잇는 다리가 해석 함수 I 다. I 는 공식 f 와 모델 w 를 받아, w 에서 f 가 참이면 1(w 가 f 를 만족한다), 거짓이면 0 을 돌려준다. 머릿속 그림은 이렇다 — 오른쪽에 모든 모델의 공간이 있고, 왼쪽 바깥에 공식 하나가 있다. I 는 공간의 한 점 w 를 집어 f 가 그 점에서 성립하는지 판정한다. 공식은 구문 세계에, 모델은 의미 세계에 산다는 것을 잊지 말자.",
+    "I 는 공식이 재귀로 만들어졌으니 재귀로 계산한다. 기저: 공식이 기호 p 이면 모델에서 그 값을 읽는다, I(p, w) = w(p). 귀납: ¬f 이면 I(f, w) 를 뒤집고, f ∧ g 이면 둘 다 1 일 때만 1, f ∨ g 이면 하나라도 1 이면 1, f → g 이면 'f 가 거짓이거나 g 가 참' 일 때 1, f ↔ g 이면 두 값이 같을 때 1 이다. 함축의 정의가 처음엔 이상하다 — 전제가 거짓이면 결론과 상관없이 참이 된다. '비가 오면 젖는다' 는 약속은 비가 오지 않은 날에는 어겨질 수 없다고 생각하면 된다.",
+    "강의 예를 따라가 보자. 공식 (¬A ∧ B) ↔ C, 모델 w = {A 참, B 참, C 거짓}. 트리를 위에서 아래로 쪼개고 아래에서 위로 값을 올린다. 맨 아래 I(A, w) 는 w 에서 읽어 1, 그 위 I(¬A, w) 는 뒤집어 0. I(B, w) = 1. ∧ 는 0 과 1 이니 0 이다(강사가 이 대목에서 '더한다' 고 말하지만 ∧ 는 둘 다 1 일 때만 1 인 연산 — 곱이나 최솟값으로 보면 된다). 오른쪽 I(C, w) = 0. 뿌리의 ↔ 는 0 과 0 이 같으니 1. 그러니 이 세계는 이 공식을 만족한다. 화면은 같은 과정을 디버거로 한 줄씩 밟으며 result = true 를 보인다.",
+    "강사는 이 과정이 컴파일러나 인터프리터를 짜 본 사람에게는 익숙할 것이라고 덧붙인다. 실제로 I 는 작은 인터프리터다. 기호를 바꾸고 연결사의 뜻을 바꿔도, 해석 함수만 정의하면 새 논리를 하나 얻는다. 이것이 '논리는 여럿이다'(2챕터)의 기술적 의미다."
+   ],
+   "formulas": [
+    {
+     "expr": "I(p, w) = w(p)",
+     "meaning": "기저. p 는 명제 기호, w 는 모델(기호 → {0,1} 할당), w(p) 는 그 모델에서 p 의 값."
+    },
+    {
+     "expr": "I(¬f, w) = 1 − I(f, w);  I(f ∧ g, w) = min(I(f,w), I(g,w));  I(f ∨ g, w) = max(I(f,w), I(g,w))",
+     "meaning": "부정은 뒤집기, 그리고는 둘 중 작은 값(둘 다 1 일 때만 1), 또는는 큰 값(하나라도 1 이면 1)."
+    },
+    {
+     "expr": "I(f → g, w) = max(1 − I(f,w), I(g,w));  I(f ↔ g, w) = 1[I(f,w) = I(g,w)]",
+     "meaning": "함축은 '¬f ∨ g' 와 같다 — f 가 거짓이면 무조건 1. 동치는 두 값이 같으면 1. 1[·] 은 조건이 참이면 1."
+    }
+   ],
+   "example": {
+    "title": "손으로: 진리표 한 줄씩 — (¬A ∧ B) ↔ C",
+    "body": "w = (A,B,C) = (1,1,0): ¬A=0, ¬A∧B=0, C=0, 0↔0 = 1. w = (0,1,0): ¬A=1, ¬A∧B=1, C=0, 1↔0 = 0. w = (0,1,1): ¬A∧B=1, C=1 → 1. w = (0,0,0): ¬A∧B=0, C=0 → 1. 8줄을 다 채우면 이 공식이 참인 모델은 (0,0,0),(1,0,0),(1,1,0),(0,1,1) 네 개 — C 가 정확히 '¬A ∧ B' 일 때다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 해석 함수 I(f, w): 공식과 모델(진리값 할당)을 받아 참/거짓\ndef I(f, w, depth=0):\n    if isinstance(f, str):\n        r = w[f]                                   # 기저: 기호는 w 에서 찾는다\n    else:\n        op, *a = f\n        v = [I(g, w, depth + 1) for g in a]        # 하위 공식부터 재귀\n        r = {\"not\": lambda: not v[0],\n             \"and\": lambda: v[0] and v[1],\n             \"or\": lambda: v[0] or v[1],\n             \"implies\": lambda: (not v[0]) or v[1],\n             \"iff\": lambda: v[0] == v[1]}[op]()\n    print(\"  \" * depth + f\"I({show(f)}) = {int(r)}\")\n    return r\n\ndef show(f):\n    if isinstance(f, str): return f\n    if f[0] == \"not\": return \"¬\" + show(f[1])\n    sym = {\"and\": \"∧\", \"or\": \"∨\", \"implies\": \"→\", \"iff\": \"↔\"}[f[0]]\n    return f\"({show(f[1])} {sym} {show(f[2])})\"\n\nf = (\"iff\", (\"and\", (\"not\", \"A\"), \"B\"), \"C\")       # (¬A ∧ B) ↔ C\nw = {\"A\": True, \"B\": True, \"C\": False}\nI(f, w)",
+    "note": "실행 결과(아래에서 위로 값이 올라간다): I(A)=1, I(¬A)=0, I(B)=1, I((¬A ∧ B))=0, I(C)=0, I(((¬A ∧ B) ↔ C))=1 — 화면의 트리와 같다."
+   },
+   "pitfalls": [
+    "강사가 ∧ 를 계산하며 '두 값을 더한다' 고 말한 것은 말실수다(노트 정정). 0 + 1 = 1 이 아니라 0 ∧ 1 = 0 이다. ∧ 는 곱(또는 min)이다.",
+    "f → g 는 '인과' 가 아니다. f 가 거짓인 모든 세계에서 참이 된다 — '거짓 전제는 무엇이든 함축한다'.",
+    "'모델' 을 학습된 신경망으로 읽지 말 것. 이 강의에서 모델 = 진리값 할당 = 세계."
+   ],
+   "check": [
+    {
+     "q": "기호가 Rain, Wet, Snow, Cold 넷이면 모델은 몇 개인가?",
+     "a": "2⁴ = 16 개."
+    },
+    {
+     "q": "w = {P:0, Q:1} 에서 I(P → ¬Q, w) 와 I(¬(P ∨ Q) ↔ ¬P, w) 를 구하라.",
+     "a": "P=0 이라 P → ¬Q 는 1. P∨Q = 1, ¬(P∨Q) = 0, ¬P = 1, 0 ↔ 1 = 0."
+    }
+   ]
+  },
+  {
+   "start": 1230,
+   "title": "공식의 뜻 = 그 공식이 참인 세계의 집합 M(f)",
+   "points": [
+    "M(f) = { w : I(f, w) = 1 } — 공식 f 를 만족하는 모든 모델. 앞으로 의미는 I 대신 M 으로 생각한다.",
+    "기호 Rain, Wet 에서 M(Rain ∨ Wet) 은 4개 중 3개, M(Rain ∧ Wet) 은 1개.",
+    "구하는 법(개념용): 모든 할당을 itertools.product 로 늘어놓고 I 로 걸러 낸다.",
+    "작은 공식이 아주 큰 세계 집합을 압축해 가리킨다 — 기호 100개면 모델 2¹⁰⁰."
+   ],
+   "on_screen": "define_models(): 'Definition: the models of a formula f, denoted M(f), are the models w such that I(f, w) = true.' 분홍 막대 f 에서 상자 안 파란 타원 M(f) 로 화살표. Example: Rain = Bool(\"Rain\"), Wet = Bool(\"Wet\"), f1 = Or(Rain, Wet), models1 = get_models(f1, [Rain, Wet]) → [Rain false·Wet true, Rain true·Wet false, Rain true·Wet true], f2 = And(Rain, Wet), models2 → [Rain true·Wet true]. 'A (small) formula compactly represents a (potentially large) set of models.' get_models 코드: for values in itertools.product([False, True], repeat=len(symbols)): w = dict(zip(symbols, values)); if I(f, w): models.append(w).",
+   "explain": [
+    "해석 함수는 '한 세계에서 이 공식이 참인가' 를 묻는다. 강사는 여기서 관점을 한 번 뒤집는다. 공식 f 를 하나 정하고, I(f, w) 가 1 인 세계 w 를 모두 모은다. 이 집합을 M(f), 'f 의 모델들' 이라고 부른다. 그림으로는 모든 세계의 공간 위에 f 가 참인 영역(파란 타원)을 칠한 것이다. 앞으로 강의는 공식의 뜻을 해석 함수가 아니라 이 집합으로 생각한다. 공식 = 세계들의 집합. 이것이 이 강의에서 가장 중요한 관점 전환이다.",
+    "예를 들어 기호가 Rain 과 Wet 두 개면 세계는 네 개다(비 안 옴·안 젖음, 안 옴·젖음, 옴·안 젖음, 옴·젖음). Rain ∨ Wet 을 각 세계에 대 보면 첫 세계에서만 거짓이고 나머지 셋에서 참이므로 M(Rain ∨ Wet) 은 세계 셋이다. 직관적으로도 맞다 — '비가 오거나 젖어 있다' 는 말을 들으면 우리는 '젖었지만 비는 안 옴', '비가 오는데 안 젖음', '둘 다' 중 하나에 있다고 생각한다. Rain ∧ Wet 은 '둘 다' 한 세계만 남는다. 강사는 이를 '문장의 의미는 그 문장이 참이 되는 모든 가능한 세계' 라고 요약한다.",
+    "강의 코드 get_models 는 이 정의를 그대로 옮긴 것이다. itertools.product([False, True], repeat=n) 으로 기호 n 개의 모든 할당을 만들고, 각 할당을 사전으로 바꿔 I 로 걸러 남은 것을 모은다. 이 방법은 개념을 보여 주기 위한 것이고 2ⁿ 개를 다 보니 느리다. 12챕터에서 이 열거를 만족 가능성 검사로 바꾸는 이유가 여기 있다.",
+    "이 관점이 1챕터의 '압축된 표현력' 의 정체다. 기호가 100개면 세계는 2¹⁰⁰ 개이고, 'x0 ∨ x1' 같은 글자 몇 개짜리 공식이 그중 4분의 3, 곧 수십 자리 수의 세계를 한 번에 가리킨다. 노트의 코드로 기호 20개에서 세면 x0 ∨ x1 의 모델은 786,432 개(= 2²⁰ × 3/4)다. 공식은 짧고, 그것이 가리키는 세계 집합은 거대하다. 확률표(12강)가 세계마다 숫자를 적어야 했던 것과 대비된다."
+   ],
+   "formulas": [
+    {
+     "expr": "M(f) = { w ∈ {0,1}ⁿ : I(f, w) = 1 }",
+     "meaning": "n 은 명제 기호 수, {0,1}ⁿ 은 모든 모델(2ⁿ 개)의 집합, I 는 해석 함수. f 의 뜻을 'f 가 참인 세계들의 집합' 으로 정의한다."
+    },
+    {
+     "expr": "M(¬f) = 전체 − M(f),  M(f ∧ g) = M(f) ∩ M(g),  M(f ∨ g) = M(f) ∪ M(g)",
+     "meaning": "노트 보충: 연결사가 집합 연산이 된다. 부정은 여집합, 그리고는 교집합, 또는은 합집합. 뒤의 지식 베이스·함의가 모두 이 집합 계산이다."
+    }
+   ],
+   "example": {
+    "title": "손으로: 진리표로 M 세 개 구하기 (Rain, Wet)",
+    "body": "세계 (R,W) = 00, 01, 10, 11 에 대해 Rain∨Wet = 0,1,1,1 → M = {01,10,11}. Rain∧Wet = 0,0,0,1 → M = {11}. Rain→Wet = 1,1,0,1 → M = {00,01,11}(비가 오는데 안 젖은 10 만 빠진다). 확인: M(Rain∧Wet) = M(Rain) ∩ M(Wet) = {10,11} ∩ {01,11} = {11}."
+   },
+   "code": {
+    "lang": "python",
+    "src": "from itertools import product\n\ndef I(f, w):\n    if isinstance(f, str): return w[f]\n    op, *a = f; v = [I(g, w) for g in a]\n    return {\"not\": lambda: not v[0], \"and\": lambda: v[0] and v[1],\n            \"or\": lambda: v[0] or v[1], \"implies\": lambda: (not v[0]) or v[1],\n            \"iff\": lambda: v[0] == v[1]}[op]()\n\ndef get_models(f, symbols):\n    \"\"\"M(f): f 를 참으로 만드는 모든 모델(세계)\"\"\"\n    models = []\n    for values in product([False, True], repeat=len(symbols)):\n        w = dict(zip(symbols, values))      # 진리값 할당 하나 = 세계 하나\n        if I(f, w):\n            models.append(w)\n    return models\n\nS = [\"Rain\", \"Wet\"]\nfor name, f in [(\"Rain ∨ Wet\", (\"or\", \"Rain\", \"Wet\")),\n                (\"Rain ∧ Wet\", (\"and\", \"Rain\", \"Wet\")),\n                (\"Rain → Wet\", (\"implies\", \"Rain\", \"Wet\"))]:\n    ms = get_models(f, S)\n    print(f\"{name}: {len(ms)}/4 ->\", [(int(m['Rain']), int(m['Wet'])) for m in ms])\n# 기호 20개 위의 짧은 공식 하나가 가리키는 세계 수\nS20 = [f\"x{i}\" for i in range(20)]\nprint(\"x0 ∨ x1 over 20 symbols:\", len(get_models((\"or\", \"x0\", \"x1\"), S20)))",
+    "note": "실행 결과: Rain ∨ Wet: 3/4 -> [(0,1),(1,0),(1,1)], Rain ∧ Wet: 1/4 -> [(1,1)], Rain → Wet: 3/4 -> [(0,0),(0,1),(1,1)], x0 ∨ x1 over 20 symbols: 786432."
+   },
+   "pitfalls": [
+    "M(f) 는 어떤 기호 집합 위에서 세느냐에 따라 크기가 달라진다. Rain 하나의 공식이라도 기호를 {Rain, Wet} 로 잡으면 모델은 2개, {Rain} 만 잡으면 1개다. 비교할 때는 같은 기호 집합을 쓴다.",
+    "M 이 클수록 공식이 '많이 말한다' 가 아니라 '적게 말한다'. 세계를 덜 배제하기 때문이다. 항상 참인 공식(P ∨ ¬P)의 M 은 전체이고 아무 정보도 없다."
+   ],
+   "check": [
+    {
+     "q": "기호 A, B, C 위에서 M(A → B) 의 크기는?",
+     "a": "A→B 는 (A,B) = (1,0) 일 때만 거짓. (A,B) 네 조합 중 셋이 참이고 C 는 자유이므로 3 × 2 = 6."
+    },
+    {
+     "q": "M(P ∧ ¬P) 와 M(P ∨ ¬P) 는?",
+     "a": "앞은 공집합(어떤 세계에서도 거짓, 모순 공식), 뒤는 모든 세계(항상 참, 항진 공식)."
+    }
+   ]
+  },
+  {
+   "start": 1500,
+   "title": "지식 베이스 — 아는 것의 목록, 그 뜻은 모델들의 교집합",
+   "points": [
+    "지식 베이스(KB) = 공식의 집합. 시간이 지나며 사실을 더해 가는 '우리가 세상에 대해 아는 것의 목록'.",
+    "M(KB) = KB 의 모든 공식을 만족하는 모델 = 각 공식의 M 의 교집합 = 지금 우리가 있을 수 있는 세계들.",
+    "KB 는 의미상 그 공식들의 연언(∧)과 같다. KB = {Rain, Rain → Wet} → M = {Rain 1, Wet 1}.",
+    "사실을 더하면 KB 는 커지고 M(KB) 는 줄어든다(단조). 세계가 줄수록 덜 불확실하다."
+   ],
+   "on_screen": "define_knowledge_base(): 'Definition: a knowledge base (KB) is a set of formulas. Think of the KB as a set of facts that you add to over time.' 'Semantics: models M(KB) are the models that satisfy every formula in KB.' 코드 kb = [Rain, Implies(Rain, Wet)], models_rain = get_models(Rain, [Rain, Wet]) → [Rain T·Wet F, Rain T·Wet T], models_rain_implies_wet → [F·F, F·T, T·T], models_kb = intersect(...) → [Rain T·Wet T]. 'Semantically, a KB is equivalent to the conjunction of its formulas': f = to_formula(kb) → And(Rain, Implies(Rain, Wet)), f_models → [Rain T·Wet T]. 이어서 'As we gain knowledge, we narrow down the possible worlds' 와 도우미 def M(kb): return get_models(to_formula(kb), symbols).",
+   "explain": [
+    "지식 베이스는 새 개념이라기보다 편리한 포장이다. KB 는 그냥 공식들의 집합이다. 강사는 이것을 '시간이 지나며 하나씩 더해 가는 사실 목록', 곧 우리가 세상에 대해 참이라고 아는 것들의 데이터베이스로 생각하라고 한다. 공식 하나하나가 구문이듯 KB 도 구문이다. 그러면 KB 의 뜻은? KB 에 있는 모든 공식을 동시에 만족하는 모델들의 집합 M(KB) 다. 이것은 '지금까지 아는 것과 어긋나지 않는, 우리가 있을 수 있는 모든 세계' 다.",
+    "강의 예: KB = {Rain, Rain → Wet}. 비가 온다는 것을 알고, 비가 오면 젖는다는 것도 안다. M(Rain) 은 비가 오는 두 세계(젖음, 안 젖음)다. M(Rain → Wet) 은 셋인데, 빠진 하나가 무엇인지가 핵심이다 — '비가 오는데 안 젖은' 세계다. 이 공식은 비가 오는지 안 오는지에 대해서는 아무 말도 하지 않는다(비 안 온 세계 둘이 모두 남아 있다). 다만 '비가 오면서 안 젖은' 경우만 금지한다. 두 집합의 교집합을 취하면 '비 옴·젖음' 한 세계만 남는다. 직관과 같다 — 비가 오고, 비가 오면 젖으니, 비가 오고 젖어 있다.",
+    "같은 결과를 다른 길로도 얻는다. KB 의 공식들 사이에 ∧ 를 넣어 하나의 큰 공식 Rain ∧ (Rain → Wet) 을 만들고 그 모델을 구하면 역시 한 세계다. 6챕터의 '∧ 는 교집합' 이라는 사실 때문이다. 강사는 앞으로 KB 를 '사실들의 집합' 과 '그 사실들의 연언 하나' 사이에서 편한 쪽으로 오가겠다고 말한다. 화면 코드의 도우미 함수 M(kb) 도 to_formula 로 KB 를 연언 하나로 만든 뒤 get_models 를 부른다.",
+    "가장 중요한 관찰은 방향이다. KB 에 사실을 하나 더하면 KB 라는 집합은 커진다(사실 다섯 개에서 여섯 개로). 그러나 M(KB) 는 줄어든다. 새 사실은 새 제약이고, 교집합을 하나 더 취하는 것이기 때문이다. M(KB) 는 우리가 있을 수 있는 세계들이므로, 클수록 불확실하고 작을수록 확실하다. 지식을 얻는다는 것은 가능한 세계를 좁혀 가는 일이다. KB 를 '가능한 세계 공간에 거는 제약들' 로 보면, 제약이 많을수록 공간이 좁아진다. 노트 코드로 세면 사실 0개일 때 4세계, Rain 을 넣으면 2세계, Rain → Wet 까지 넣으면 1세계다."
+   ],
+   "formulas": [
+    {
+     "expr": "M(KB) = ⋂_{f ∈ KB} M(f) = M( ∧_{f ∈ KB} f )",
+     "meaning": "KB 의 모델은 각 공식 모델의 교집합이고, 이는 모든 공식을 ∧ 로 묶은 공식 하나의 모델과 같다. 빈 KB 의 M 은 모든 세계(아무것도 모름)."
+    },
+    {
+     "expr": "KB ⊆ KB ∪ {f}  ⇒  M(KB ∪ {f}) ⊆ M(KB)",
+     "meaning": "사실 집합이 커지면 모델 집합은 같거나 작아진다. 논리의 지식은 단조적으로 쌓인다(10챕터에서 확률과 대비)."
+    }
+   ],
+   "example": {
+    "title": "손으로: KB = {Rain, Rain → Wet} 의 진리표",
+    "body": "(R,W) 네 줄. 00: Rain=0 → 탈락. 01: Rain=0 → 탈락. 10: Rain=1, Rain→Wet = 0 → 탈락. 11: Rain=1, Rain→Wet=1 → 통과. M(KB) = {11}. 교집합으로: M(Rain) = {10,11}, M(Rain→Wet) = {00,01,11}, 겹치는 것은 11 하나."
+   },
+   "code": {
+    "lang": "python",
+    "src": "from itertools import product\ndef I(f, w):                                   # 해석 함수(5챕터)\n    if isinstance(f, str): return w[f]\n    op, *a = f; v = [I(g, w) for g in a]\n    return {\"not\": lambda: not v[0], \"and\": lambda: v[0] and v[1], \"or\": lambda: v[0] or v[1],\n            \"implies\": lambda: not v[0] or v[1], \"iff\": lambda: v[0] == v[1]}[op]()\ndef M(kb, S):                                  # M(KB): KB 의 모든 공식을 참으로 만드는 세계\n    ws = (dict(zip(S, v)) for v in product([0, 1], repeat=len(S)))\n    return [w for w in ws if all(I(f, w) for f in kb)]\nS = [\"Rain\", \"Wet\"]\nkb = [\"Rain\", (\"implies\", \"Rain\", \"Wet\")]\nshow = lambda ms: [(m[\"Rain\"], m[\"Wet\"]) for m in ms]\nm1, m2 = M([kb[0]], S), M([kb[1]], S)\nprint(\"M(Rain)        =\", show(m1))\nprint(\"M(Rain → Wet)  =\", show(m2))\nprint(\"교집합          =\", show([w for w in m1 if w in m2]))\nconj = (\"and\", kb[0], kb[1])                    # KB 를 하나의 연언으로\nprint(\"M(Rain ∧ (Rain → Wet)) =\", show(M([conj], S)))\n# 사실을 더할수록 모델 집합은 줄어든다(늘지 않는다)\nfor k in range(3):\n    print(f\"사실 {k}개 -> 모델 {len(M(kb[:k], S))}개\")",
+    "note": "실행 결과: M(Rain) = [(1,0),(1,1)], M(Rain → Wet) = [(0,0),(0,1),(1,1)], 교집합 = [(1,1)], 연언의 모델도 [(1,1)]. 사실 0·1·2개 → 모델 4·2·1개. 앞 9줄(I, M)은 다음 챕터 코드들도 같이 쓰는 머리말이다."
+   },
+   "diagram": {
+    "title": "사실을 더할수록 세계가 줄어든다",
+    "code": "graph LR\n  K0[\"KB = {} : 4세계\"] -->|\"+ Rain\"| K1[\"2세계: 10, 11\"]\n  K1 -->|\"+ Rain → Wet\"| K2[\"1세계: 11\"]"
+   },
+   "pitfalls": [
+    "'KB 가 크다' 와 'M(KB) 가 크다' 는 반대 방향이다. 사실이 많을수록 가능한 세계는 적다.",
+    "M(Rain → Wet) 은 비가 오는지에 대해 아무것도 말하지 않는다. 함축 하나만으로는 결론이 나오지 않고, 전제(Rain)와 만나야 좁혀진다."
+   ],
+   "check": [
+    {
+     "q": "KB = {Rain ∨ Snow, ¬Snow} (기호 Rain, Snow) 의 M(KB) 는?",
+     "a": "M(Rain∨Snow) = {10, 01, 11}(Rain,Snow 순), M(¬Snow) = {00, 10}. 교집합 = {10} — 비가 오고 눈은 안 온다."
+    },
+    {
+     "q": "KB 에 항진 공식(P ∨ ¬P)을 더하면 M(KB) 는 어떻게 되나?",
+     "a": "그대로다. 항진 공식의 M 은 전체라 교집합을 취해도 바뀌지 않는다 — 다음 챕터의 '함의' 의 극단적 예."
+    }
+   ]
+  },
+  {
+   "start": 1880,
+   "title": "얼마나 줄어드나 — 함의·모순·우연",
+   "points": [
+    "새 공식 f 를 KB 에 더했을 때 M(KB) 가 얼마나 줄어드는지로 세 경우를 가른다.",
+    "함의(entailment, KB ⊨ f): M(KB ∪ {f}) = M(KB). f 는 새 정보가 없다 — KB 가 가능하다고 보는 모든 세계에서 f 가 참.",
+    "모순(contradiction): M(KB ∪ {f}) = ∅. f 는 KB 와 함께 참일 수 없다.",
+    "우연(contingency): ∅ ≠ M(KB ∪ {f}) ≠ M(KB). 줄긴 줄지만 다 사라지지는 않는다. 관계: KB 가 f 와 모순 ⇔ KB ⊨ ¬f."
+   ],
+   "on_screen": "entailment_contradiction_contingency(): 'How much does M(KB) shrink?' Entailment — 'Definition: KB entails f (KB ⊨ f) iff M(KB ∪ {f}) = M(KB)', 그림: 분홍 큰 타원 M(f) 안에 초록 M(KB). 'Intuition: f adds no more information.' def entails(kb, f): old_models = M(kb); new_models = M(kb + [f]); return new_models == old_models; assert entails([Rain, Implies(Rain, Wet)], Rain). Contradiction — 'KB contradicts f iff M(KB ∪ {f}) = ∅', 떨어진 두 원, assert contradicts([Rain, Wet], Not(Wet)). Contingency — '∅ ≠ M(KB ∪ {f}) ≠ M(KB)', 겹치는 두 원, assert contingent([Rain], Wet). 'Relationship between entailment and contradiction: KB contradicts f iff KB ⊨ ¬f'. Summary: M(KB ∪ {f}) 를 M(KB) 와 비교 — no change / empty set / shrinks the set.",
+   "explain": [
+    "KB 에 공식 f 를 하나 더한다고 해 보자. 7챕터에서 보았듯 M(KB) 는 절대 커지지 않는다. 그렇다면 질문은 '얼마나 줄어드나' 이고, 그 답에 따라 KB 와 f 의 관계에 이름이 붙는다. 경우는 셋뿐이다 — 전혀 안 줄거나, 완전히 사라지거나, 그 사이.",
+    "첫째, 전혀 안 주는 경우가 함의다. M(KB ∪ {f}) = M(KB) 이면 'KB 가 f 를 함의한다' 고 하고 KB ⊨ f 로 쓴다(가로줄 두 개). 그림으로는 M(KB) 가 M(f) 안에 통째로 들어 있다. 그래서 교집합을 취해도 M(KB) 그대로다. 뜻은 'f 는 새 정보를 더하지 않는다', 다르게 말하면 'KB 와 맞는 어떤 세계에 있든 f 는 참이다'. 정보를 얻는다는 것은 M(KB) 를 좁히는 것이니, 좁히지 못한 f 는 이미 알던 것이다. 예: KB = {Rain, Rain → Wet} 이고 f = Rain 이면 M(KB) = {비 옴·젖음} 이 그대로라 KB ⊨ Rain. f = Wet 도 같다.",
+    "둘째, 완전히 사라지는 경우가 모순이다. M(KB ∪ {f}) = ∅ 이면 'KB 가 f 와 모순된다'. 그림으로는 두 집합이 겹치지 않는다. KB 와 f 가 둘 다 참인 세계가 하나도 없다. 예: KB = {Rain, Wet} 에 f = ¬Wet 을 더하면 남는 세계가 없다. 학생이 '그럼 KB 와 f 중 누가 틀렸나' 를 묻자 강사는 논리는 그 점에 의견이 없다고 답한다. 모순은 둘이 함께 설 수 없다는 사실일 뿐, 누구 탓인지는 바깥 정보로 정해야 한다(10챕터).",
+    "셋째, 그 사이가 우연(contingency)이다. 공집합도 아니고 원래 그대로도 아니면 f 는 KB 에 대해 우연적이다. 그림으로는 두 집합이 일부만 겹친다. 정보를 더할 때 가장 흥미로운 경우로, f 가 진짜 새로운 것을 알려 준다. 예: KB = {Rain} 이면 M = {비·젖음, 비·안 젖음} 인데 f = Wet 을 더하면 {비·젖음} 하나로 준다. 비었지도 않고 그대로도 아니다.",
+    "함의와 모순 사이에는 깔끔한 관계가 있다. KB 가 f 와 모순이라는 것은 KB ⊨ ¬f 와 같다. 이유는 집합으로 보면 바로 나온다. M(¬f) 는 M(f) 의 여집합이다. M(KB) 가 M(f) 와 겹치지 않는다는 것(모순)은 M(KB) 가 M(f) 바깥, 곧 M(¬f) 안에 통째로 들어 있다는 것(¬f 의 함의)과 같은 말이다. 이 관계가 12챕터에서 모든 질문을 만족 가능성 검사 두 번으로 바꾸는 열쇠가 된다."
+   ],
+   "formulas": [
+    {
+     "expr": "KB ⊨ f  ⇔  M(KB ∪ {f}) = M(KB)  ⇔  M(KB) ⊆ M(f)",
+     "meaning": "함의. ⊨ 는 '의미상 따라 나온다'. KB 가 허용하는 모든 세계에서 f 가 참."
+    },
+    {
+     "expr": "KB 가 f 와 모순 ⇔ M(KB) ∩ M(f) = ∅ ⇔ KB ⊨ ¬f",
+     "meaning": "모순. ∅ 는 공집합. M(¬f) 가 M(f) 의 여집합이라 두 표현이 같다."
+    },
+    {
+     "expr": "우연 ⇔ ∅ ≠ M(KB) ∩ M(f) ≠ M(KB)",
+     "meaning": "f 가 KB 의 세계 일부만 남긴다 — 참이 될 수도 거짓이 될 수도 있다."
+    }
+   ],
+   "example": {
+    "title": "손으로: 세 경우를 진리표로 판정 (Rain, Wet)",
+    "body": "① KB = {Rain, Rain→Wet}: M = {11}. f = Wet: M(Wet) = {01,11}, 교집합 {11} = M(KB) → 함의. ② KB = {Rain, Wet}: M = {11}. f = ¬Wet: M = {00,10}, 교집합 ∅ → 모순. ③ KB = {Rain}: M = {10,11}. f = Wet: 교집합 {11} — 비지 않았고 {10,11} 도 아님 → 우연. ④ 확인: ②에서 KB ⊨ ¬¬Wet = Wet 인가? M(KB) = {11} ⊆ M(Wet) = {01,11} — 그렇다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "from itertools import product\ndef I(f, w):                                   # 해석 함수(5챕터)\n    if isinstance(f, str): return w[f]\n    op, *a = f; v = [I(g, w) for g in a]\n    return {\"not\": lambda: not v[0], \"and\": lambda: v[0] and v[1], \"or\": lambda: v[0] or v[1],\n            \"implies\": lambda: not v[0] or v[1], \"iff\": lambda: v[0] == v[1]}[op]()\ndef M(kb, S):                                  # M(KB): KB 의 모든 공식을 참으로 만드는 세계\n    ws = (dict(zip(S, v)) for v in product([0, 1], repeat=len(S)))\n    return [w for w in ws if all(I(f, w) for f in kb)]\ndef relation(kb, f, S):\n    old, new = M(kb, S), M(kb + [f], S)\n    if new == old: return \"entailment  (KB ⊨ f)\"\n    if new == []:  return \"contradiction\"\n    return \"contingency\"\n\nS = [\"Rain\", \"Wet\"]\ncases = [([\"Rain\", (\"implies\", \"Rain\", \"Wet\")], \"Rain\"),\n         ([\"Rain\", (\"implies\", \"Rain\", \"Wet\")], \"Wet\"),\n         ([\"Rain\", \"Wet\"], (\"not\", \"Wet\")),\n         ([\"Rain\"], \"Wet\")]\nfor kb, f in cases:\n    print(kb, \"+\", f, \"->\", relation(kb, f, S))\n# KB 가 ¬f 와 모순 <=> KB ⊨ f\nkb = [\"Rain\", (\"implies\", \"Rain\", \"Wet\")]\nprint(\"contradicts ¬Wet ?\", M(kb + [(\"not\", \"Wet\")], S) == [])",
+    "note": "실행 결과: Rain → entailment, Wet → entailment, ¬Wet → contradiction, [Rain] + Wet → contingency, 그리고 contradicts ¬Wet ? True (KB ⊨ Wet 이므로 ¬Wet 과 모순)."
+   },
+   "diagram": {
+    "title": "M(KB ∪ {f}) 의 크기로 가른다",
+    "code": "graph TD\n  S[\"M(KB ∪ {f}) 를 M(KB) 와 비교\"] --> E[\"같다 → 함의 KB ⊨ f\"]\n  S --> C[\"비었다 → 모순\"]\n  S --> G[\"그 사이 → 우연\"]"
+   },
+   "pitfalls": [
+    "⊨(함의, 의미)와 ⊢(유도, 구문)는 다르다. 가로줄 두 개가 의미, 하나가 구문이다(14·15챕터).",
+    "'f 가 KB 와 모순이 아니다' 는 'KB ⊨ f' 가 아니다. 우연일 수도 있다. 세 경우는 서로 배타적이고 빠짐이 없다.",
+    "KB 자체가 이미 모순(M(KB) = ∅)이면 어떤 f 를 넣어도 '같다' 이자 '비었다' 가 된다 — 모순된 KB 는 모든 것을 함의한다(노트 보충). 정의의 판정 순서(함의 먼저)에 따라 답이 달라 보이니 KB 가 만족 가능한지부터 확인하라."
+   ],
+   "check": [
+    {
+     "q": "KB = {Rain → Wet, ¬Wet} 일 때 f = ¬Rain 은 세 경우 중 무엇인가?",
+     "a": "M(KB): (R,W) 중 ¬Wet 이고 Rain→Wet 인 것은 00 하나. M(¬Rain) = {00, 01} 이 00 을 포함하므로 함의(KB ⊨ ¬Rain). modus tollens 의 의미적 확인."
+    },
+    {
+     "q": "KB ⊨ f 이면 KB ∪ {¬f} 는 어떤 상태인가?",
+     "a": "모순(만족 불가능). M(KB) ⊆ M(f) 이므로 M(KB) ∩ M(¬f) = ∅."
+    }
+   ]
+  },
+  {
+   "start": 2340,
+   "title": "Ask 와 Tell — 같은 계산, 다른 대답",
+   "points": [
+    "KB 로 할 수 있는 두 동작: Ask[f](예/아니오 질문)와 Tell[f](새 사실 알려 주기).",
+    "Ask: 함의 → 'Yes', 모순 → 'No', 우연 → 'I don't know'.",
+    "Tell: 함의 → 'I already knew that', 모순 → 'I don't buy that', 우연 → 'I learned something new' 그리고 f 를 KB 에 더한다.",
+    "Tell 이 받아들였다고 f 가 사실인 것은 아니다 — 아무것도 모르는 KB 는 1 + 3 = 5 도 배운다."
+   ],
+   "on_screen": "ask_tell(): 'What can we do with it? Ask yes/no questions of the KB: Ask[f] / Tell the KB new statements: Tell[f] / What are the possible responses? Depends on the relationship between KB and f.' def ask(kb, f) -> str: old_models = M(kb); new_models = M(kb + [f]); if new_models == old_models: return \"Yes\" # KB entails f; if new_models == []: return \"No\"; return \"I don't know\". 예: kb = [Rain, Wet], ask(kb, Or(Rain, Wet)) → \"Yes\"; kb = [Not(Rain), Wet], ask(kb, Rain) → \"No\"(old_models Rain false·Wet true, new_models []); kb = [Rain], ask(kb, Wet) → \"I don't know\". def tell(kb, f) -> list[Formula]: … return kb, \"I already knew that\" / kb, \"I don't buy that\" / kb + [f], \"I learned something new\". 예: tell([Rain, Implies(Rain, Wet)], Wet), tell([Rain, Wet], Not(Rain)), tell([Rain], Not(Wet)) → new_kb = [\"Rain\", \"Not(Wet)\"]. Summary 표: Entailment(Ask: yes, Tell: I already knew that), Contradiction(Ask: no, Tell: I don't buy that), Contingency(Ask: I don't know, Tell: I learned something new).",
+   "explain": [
+    "이제 앞의 기계 장치로 쓸모 있는 일을 한다. KB 를 하나의 지식 데이터베이스로 놓고, 두 가지 동작을 정의한다. Ask[f] 는 KB 에게 예/아니오 질문을 던지는 것이고, Tell[f] 는 KB 에게 새 사실을 알려 주는 것이다. 명제 논리의 공식은 참·거짓 하나라서 질문도 예/아니오 꼴만 된다. 두 동작 모두 대답은 KB 와 f 의 관계, 곧 8챕터의 세 경우로 정해진다.",
+    "Ask 부터. 계산은 늘 같다 — M(KB) 와 M(KB ∪ {f}) 를 구해 비교한다. 같으면(함의) 'Yes' 다. KB 와 맞는 모든 세계에서 f 가 참이니 확실히 그렇다. 비었으면(모순) 'No' 다. KB 와 맞는 세계 중 f 를 허용하는 것이 하나도 없으니 f 는 있을 수 없다. 그 사이면(우연) 'I don't know' 다. 어떤 가능한 세계에서는 참이고 어떤 세계에서는 거짓이니 '경우에 따라 다르다' 는 뜻이다. 강의 예: KB = {Rain, Wet} 에 'Rain ∨ Wet 인가' → Yes. KB = {¬Rain, Wet} 에 'Rain 인가' → No. KB = {Rain} 에 'Wet 인가' → 모른다. 질문에 답할 때 KB 는 옳다고 가정하고, f 를 가상으로 넣어 보며 무엇이 바뀌는지 본다는 점이 중요하다.",
+    "Tell 도 같은 계산을 하고 대답의 말만 다르다. 함의이면 '이미 알던 거야', 모순이면 '그건 못 믿겠어', 우연이면 '새로 배웠어' 다. 그리고 우연일 때만 f 를 실제로 KB 에 더한다. 강의 예: KB = {Rain, Rain → Wet} 에 Wet 을 알려 주면 이미 알던 것. KB = {Rain, Wet} 에 ¬Rain 을 알려 주면 남는 세계가 없으니 거부. KB = {Rain} 에 ¬Wet 을 알려 주면 세계가 {비·젖음, 비·안 젖음} 에서 {비·안 젖음} 으로 줄어 새로 배우고, KB 는 {Rain, ¬Wet} 이 된다.",
+    "강사는 Tell 이 받아들였다고 그 사실이 옳은 것은 아니라고 강조한다. KB 가 아무것도 모르는 상태라면 '1 더하기 3 은 5' 를 알려 줘도 모순이 없으니 배운다(물론 명제 논리에는 산술이 없으니 그냥 기호 하나로 받아들인다). 강사의 비유로는 소설이 이렇게 작동한다 — 작가가 세계를 만들어 사실을 하나씩 말하면, 독자는 앞뒤가 맞는 한 받아들인다. 논리가 지키는 것은 일관성이지 진실이 아니다.",
+    "학생이 '둘이 같은 계산이면 왜 따로 두나' 를 묻는다. 강사의 답은 사용자 인터페이스의 차이라는 것이다. 지식 베이스에 질문을 하고 싶을 때와 무언가를 알려 주고 싶을 때가 따로 있고, 코드의 차이는 우연일 때 KB 에 더하느냐 한 줄뿐이다. 노트 보충: 이 설계는 '지식 기반 에이전트' 의 고전적 인터페이스(TELL/ASK)이며, 대화형 비서가 사용자 진술을 기억에 넣을지 판단하는 일과 구조가 같다."
+   ],
+   "example": {
+    "title": "손으로: Tell 세 번 이어 하기",
+    "body": "KB = {} (4세계: 00,01,10,11 — Rain,Wet). Tell[Rain → Wet]: M → {00,01,11}, 줄었고 비지 않음 → 배움, KB = {Rain→Wet}. Tell[Rain]: M → {11} → 배움, KB = {Rain→Wet, Rain}. Tell[Wet]: M({11} ∩ {01,11}) = {11} 그대로 → '이미 알던 거야', KB 그대로. Tell[¬Wet]: {11} ∩ {00,10} = ∅ → '못 믿겠어'. Ask[Rain ∧ Wet]: {11} ⊆ {11} → Yes."
+   },
+   "code": {
+    "lang": "python",
+    "src": "from itertools import product\ndef I(f, w):                                   # 해석 함수(5챕터)\n    if isinstance(f, str): return w[f]\n    op, *a = f; v = [I(g, w) for g in a]\n    return {\"not\": lambda: not v[0], \"and\": lambda: v[0] and v[1], \"or\": lambda: v[0] or v[1],\n            \"implies\": lambda: not v[0] or v[1], \"iff\": lambda: v[0] == v[1]}[op]()\ndef M(kb, S):                                  # M(KB): KB 의 모든 공식을 참으로 만드는 세계\n    ws = (dict(zip(S, v)) for v in product([0, 1], repeat=len(S)))\n    return [w for w in ws if all(I(f, w) for f in kb)]\nS = [\"Rain\", \"Wet\"]\ndef ask(kb, f):\n    old, new = M(kb, S), M(kb + [f], S)\n    if new == old: return \"Yes\"\n    if new == []:  return \"No\"\n    return \"I don't know\"\ndef tell(kb, f):                       # 같은 계산, 다른 말 + 우연일 때만 KB 갱신\n    old, new = M(kb, S), M(kb + [f], S)\n    if new == old: return kb, \"I already knew that\"\n    if new == []:  return kb, \"I don't buy that\"\n    return kb + [f], \"I learned something new\"\n\nprint(ask([\"Rain\", \"Wet\"], (\"or\", \"Rain\", \"Wet\")))\nprint(ask([(\"not\", \"Rain\"), \"Wet\"], \"Rain\"))\nprint(ask([\"Rain\"], \"Wet\"))\nprint(tell([\"Rain\", (\"implies\", \"Rain\", \"Wet\")], \"Wet\")[1])\nprint(tell([\"Rain\", \"Wet\"], (\"not\", \"Rain\"))[1])\nkb, msg = tell([\"Rain\"], (\"not\", \"Wet\")); print(msg, kb)\nkb, msg = tell([], (\"iff\", \"Rain\", (\"not\", \"Rain\")))   # 자기모순 공식\nprint(msg, kb)",
+    "note": "실행 결과: Yes / No / I don't know / I already knew that / I don't buy that / I learned something new ['Rain', ('not', 'Wet')] / I don't buy that [] — 마지막 줄은 빈 KB 에 자기모순 공식 Rain ↔ ¬Rain 을 알려 준 것으로, 빈 KB 도 모순 공식만은 거부한다."
+   },
+   "pitfalls": [
+    "Ask 의 'No' 는 '확실히 아니다' 이고 'I don't know' 와 다르다. 논리는 세 값으로 답한다.",
+    "Tell 의 구현은 KB 가 언제나 옳다고 가정한다. 새 정보가 옳고 KB 가 틀렸을 수도 있지만 이 구현은 그 경우를 다루지 않는다(다음 챕터).",
+    "강의 Ask 예에서 KB = {¬Rain, Wet} 에 Rain 을 물은 것은 'No' 다. '모름' 으로 착각하기 쉬우나 ¬Rain 이 이미 KB 에 있다."
+   ],
+   "check": [
+    {
+     "q": "KB = {Rain ∨ Wet, ¬Rain} 에 Ask[Wet] 과 Tell[¬Wet] 의 대답은?",
+     "a": "M(KB) = {01}(Rain,Wet). Ask[Wet]: {01} ⊆ M(Wet) → Yes. Tell[¬Wet]: {01} ∩ {00,10} = ∅ → I don't buy that."
+    },
+    {
+     "q": "Ask 와 Tell 코드에서 실제로 다른 곳은 어디인가?",
+     "a": "대답 문자열과, 우연일 때 Tell 만 kb + [f] 를 돌려 KB 를 갱신한다는 한 줄."
+    }
+   ]
+  },
+  {
+   "start": 2880,
+   "title": "질의응답 — 모순은 누구 탓인가, 그리고 논리의 단조성",
+   "points": [
+    "KB 를 데이터베이스로 생각하는 것은 옳다 — 사실을 저장하는 곳.",
+    "새 사실이 KB 와 모순일 때 KB 쪽이 틀렸을 수도 있다. 무엇을 지울지는 여러 선택지가 있어 어렵고, 논리 자체는 답을 주지 않는다.",
+    "명제 논리에는 시간이 없다. 공식을 더하는 일은 단조적 — M(KB) 는 줄기만 한다. 확률은 비단조 — 새 증거로 믿음이 오르내린다.",
+    "실무 해법(강사 의견): 모순을 일으키는 작은 공식 묶음을 사용자에게 보여 주고 바깥 정보로 결정하게 한다. 실패한 테스트와 코드의 관계와 같다."
+   ],
+   "on_screen": "강사가 강단에서 질문에 답하는 장면. 뒤 화면에 Ask/Tell 요약(Ask · Tell · Entailment · Contradiction · Contingency)이 떠 있다.",
+   "explain": [
+    "Ask/Tell 을 마치고 학생 질문이 몇 개 이어진다. 첫 질문은 'KB 를 데이터베이스로 봐도 되나' 이고 답은 '그렇다' 다. KB 는 사실을 쌓아 두는 곳이고, Ask 는 질의, Tell 은 삽입이다. 다만 보통의 데이터베이스와 달리 삽입할 때 앞뒤가 맞는지 검사하고, 질의할 때 저장된 행에 없는 것도 추론으로 답한다.",
+    "둘째 질문은 앞의 '모순은 누구 탓인가' 의 연장이다. 새로 알려 준 사실이 옳고 KB 가 틀렸다면? 강사는 지금의 Tell 구현이 KB 가 언제나 옳다고 가정한다는 것을 인정한다. 그 가정이 틀렸다면 일이 생긴다. 무엇을 지울지 모르기 때문이다. KB 전체를 버리고 싶지는 않고, 모순을 없애는 지우기 방법이 여러 가지일 수 있다. 예를 들어 {A, A → B} 에 ¬B 가 들어오면 A 를 지워도, A → B 를 지워도 모순이 풀린다(노트 보충 예). 어느 쪽이 맞는지는 논리 안에서 정할 수 없다(노트 보충: 이 문제를 다루는 분야를 믿음 수정 belief revision 이라 부른다).",
+    "셋째 질문은 'KB 가 낡을 수 있나' 다. 명제 논리, 그리고 논리 일반에는 시간 개념이 없다. 공식을 더하는 것은 단조적이다 — 한 번 들어간 사실은 빠지지 않고, M(KB) 는 줄기만 한다. 강사는 여기서 확률과의 흥미로운 차이를 짚는다. 확률은 단조적이지 않다. 13강의 설명해 없애기에서 보았듯, 경보가 울리면 도둑 확률이 0.05 에서 0.51 로 올라갔다가 지진 소식을 들으면 다시 0.05 로 내려간다. 논리에서는 가능한 세계가 한 번 지워지면 다시 살아나지 않는다.",
+    "그러면 현실에서는 어떻게 하나? 강사의 의견은 바깥 장치가 낡은 사실을 감지하게 하고, 모순이 나면 그 모순을 만드는 작은 공식 묶음을 사용자에게 보여 주어 사람이 무엇을 지울지 고르게 하라는 것이다. 그는 프로그래밍에 빗댄다. 테스트가 실패하면 코드가 틀렸을 수도, 테스트가 낡았을 수도 있다. 주석과 코드가 어긋나면 주석이 틀렸을 수도, 코드가 틀렸을 수도 있다. 일반적으로 어느 쪽이 틀렸는지는 알 수 없고, 모순을 드러낸 뒤 바깥 정보로 판단할 수밖에 없다.",
+    "노트 보충: '모순을 만드는 작은 공식 묶음' 은 SAT 분야에서 최소 불만족 부분집합(MUS) 또는 불만족 핵심(unsat core)이라고 부르며, 12챕터에서 언급하는 Z3 같은 해결기가 실제로 이것을 뽑아 준다. 설정 파일 검증, 패키지 의존성 충돌 설명 같은 곳에서 쓰인다."
+   ],
+   "example": {
+    "title": "손으로: 모순을 푸는 두 가지 방법",
+    "body": "KB = {A, A → B}, 새 사실 ¬B. M(KB) = {11}(A,B), M(¬B) = {00,10}, 교집합 ∅ → 모순. 선택 ①: A 를 지운다 → {A→B, ¬B} 의 M = {00} (A 도 거짓이 된다). 선택 ②: A → B 를 지운다 → {A, ¬B} 의 M = {10}. 두 선택은 서로 다른 세계에 도착한다. 어느 것을 고를지는 논리가 아니라 바깥 정보(어떤 사실이 더 믿을 만한가)가 정한다."
+   },
+   "pitfalls": [
+    "'단조' 는 지식(공식 집합)이 늘면 결론도 늘기만 한다는 뜻이다. KB ⊨ f 이면 사실을 더해도 KB ∪ {g} ⊨ f 가 유지된다(M 이 줄기만 하므로). 확률적 믿음에는 이 성질이 없다.",
+    "모순이 났을 때 새 사실을 무조건 거부하는 것(지금의 Tell)은 하나의 정책일 뿐 정답이 아니다."
+   ],
+   "check": [
+    {
+     "q": "KB ⊨ f 이면 어떤 g 를 더해도 KB ∪ {g} ⊨ f 인 이유를 집합으로 설명하라.",
+     "a": "M(KB ∪ {g}) ⊆ M(KB) ⊆ M(f). 부분집합의 부분집합이므로 여전히 M(f) 안에 있다."
+    },
+    {
+     "q": "강사가 든 '모순은 알 수 있지만 누가 틀렸는지는 모르는' 프로그래밍 예 두 가지는?",
+     "a": "테스트 실패(코드가 틀렸나 테스트가 낡았나), 주석과 코드 불일치(주석이 틀렸나 코드가 틀렸나)."
+    }
+   ]
+  },
+  {
+   "start": 3060,
+   "title": "베이즈 네트워크와의 연결 — 확률은 논리를 0~1 로 넓힌 것",
+   "points": [
+    "대응: 확률변수 ↔ 명제 기호, 할당(결합표의 한 줄) ↔ 모델. 결합분포 = 모델 위의 확률분포.",
+    "증거 ↔ KB, 질의 ↔ Ask 하는 공식. P(Rain | Wet=1) ↔ Tell[Wet]; Ask[Rain].",
+    "차이 ①: 베이즈 네트워크의 증거·질의는 '변수 = 값' 뿐이지만 논리는 임의의 공식(Rain ∨ Snow 등)을 쓴다.",
+    "차이 ②: P(KB) = Σ_{w∈M(KB)} P(w), P(f | KB) = P(KB ∪ {f}) / P(KB) — 0(No)·1(Yes) 사이의 숫자가 'I don't know' 를 대신한다."
+   ],
+   "on_screen": "connection_to_bayesian_networks(): 'Recall that a Bayesian network defines a joint distribution over a set of variables.' P = ProbTable(\"Rain Wet\", [[0.5, 0.1], [0.1, 0.3]]) # P(Rain, Wet) — 패널 표 rain wet P: 0 0 0.5 / 0 1 0.1 / 1 0 0.1 / 1 1 0.3. Translating terminology: Random variables ↔ propositional symbols, Models ↔ assignments. Recall probabilistic inference: P(query | evidence) — Evidence ↔ knowledge base KB, Query ↔ thing we're Ask[]'ing about, P(Rain | Wet = 1) ↔ Tell[Wet]; Ask[Rain]. Key difference: BN 은 query·evidence 가 단순 할당(Rain = 1, Wet = 0), 명제 논리는 임의 공식((Rain ∧ Wet) ∨ (Rain ∧ ¬Snow)). P(KB) = Σ_{w ∈ M(KB)} P(W = w), P(KB ∪ {f}) = Σ_{w ∈ M(KB ∪ {f})} P(W = w), P(f | KB) = P(KB ∪ {f}) / P(KB). '0 … 1' 수직선 아래 no · don't know · yes.",
+   "explain": [
+    "베이즈 네트워크는 끝난 줄 알았겠지만, 강사는 그것이 명제 논리와 아주 가깝게 이어져 있다며 다리를 놓는다. 12강에서 베이즈 네트워크는 변수 집합 위의 결합분포를 정의했다. 화면 예는 Rain, Wet 두 변수의 결합표다: 둘 다 0 이 0.5, 비는 안 오는데 젖음 0.1, 비가 오는데 안 젖음 0.1, 둘 다 1 이 0.3. 이 표의 한 줄(할당)은 바로 논리의 모델이다. 확률변수는 명제 기호에 대응하고, 0/1 값은 거짓/참이다. 그러니 결합분포는 '모델들 위의 확률분포' 라고 볼 수 있다.",
+    "추론도 대응된다. 확률 추론은 '증거가 주어졌을 때 질의의 확률' 을 구했다. 증거는 우리가 참이라고 아는 것, 곧 KB 이고, 질의는 우리가 Ask 하는 공식이다. 'Wet 이 1 일 때 Rain 의 확률' 은 논리로 말하면 'KB 에 Wet 을 Tell 하고, Rain 을 Ask 한다' 와 정확히 같은 꼴이다.",
+    "차이가 둘 있다. 첫째는 표현력이다. 베이즈 네트워크에서 증거와 질의는 언제나 '변수 = 값' 의 나열이다(Rain = 1, Wet = 0). 명제 논리에서는 임의의 공식이 될 수 있다 — (Rain ∧ Wet) ∨ (Rain ∧ ¬Snow) 처럼. 이것이 1챕터에서 말한 압축된 표현력의 구체적인 모습이다. 비가 오는지 모르지만 '비 아니면 눈' 이라는 것만 안다면, 논리는 Rain ∨ Snow 를 그대로 KB 에 넣는다. 베이즈 네트워크에서 그렇게 하려면 'Rain 또는 Snow' 를 뜻하는 새 변수를 따로 만들어야 한다. 불가능하지는 않지만 자연스럽지 않다.",
+    "둘째 차이는 당연히 확률이다. 이 둘을 합치면 논리 추론의 확률 일반화가 나온다. 분포가 모델 위에 있으니, KB 의 확률은 KB 와 맞는 모델들의 확률 합이다: P(KB) = Σ_{w∈M(KB)} P(w). 예를 들어 P(Rain) 은 비가 오는 두 세계의 0.1 + 0.3 = 0.4 다. 같은 식으로 P(KB ∪ {f}) 를 구해 나누면 P(f | KB) 다. 이 값은 0 과 1 사이의 숫자이고, 논리의 세 대답을 넓힌다. 0 이면 'No'(모순), 1 이면 'Yes'(함의), 그 사이면 원래는 'I don't know' 였던 것을 '90% 확률' 처럼 정도로 말할 수 있다. 정리하면 확률은 0/1 을 연속값으로 넓히고, 논리는 증거와 질의를 임의 공식으로 넓힌다. 둘을 모두 갖춘 확률 논리 언어 연구도 많지만 이 강의에서는 다루지 않는다.",
+    "강의 화면의 표로 계산해 보자. P(Rain | Wet) = P(Rain ∧ Wet) / P(Wet) = 0.3 / (0.1 + 0.3) = 0.75. 논리만으로는 KB = {Wet} 에서 Rain 이 우연(모름)이었는데, 확률은 75% 라고 말해 준다. 증거를 공식으로 줄 수도 있다: P(Rain | Rain ∨ Wet) = 0.4 / 0.5 = 0.8."
+   ],
+   "formulas": [
+    {
+     "expr": "P(KB) = Σ_{w ∈ M(KB)} P(W = w)",
+     "meaning": "KB 의 확률 = KB 를 만족하는 모든 모델(세계) w 의 확률 합. P(W = w) 는 결합분포가 세계 w 에 준 확률."
+    },
+    {
+     "expr": "P(f | KB) = P(KB ∪ {f}) / P(KB)",
+     "meaning": "KB 를 증거로 했을 때 공식 f 가 참일 확률. 분자는 KB 와 f 가 모두 참인 세계의 확률 합. 0 이면 모순(No), 1 이면 함의(Yes)에 해당(P 가 모든 세계에 양수를 줄 때)."
+    }
+   ],
+   "example": {
+    "title": "손으로: 화면의 결합표로 세 질의",
+    "body": "표: P(00)=0.5, P(01)=0.1, P(10)=0.1, P(11)=0.3 (Rain,Wet). ① P(Rain) = P(10)+P(11) = 0.4. ② P(Rain | Wet) = P(11) / (P(01)+P(11)) = 0.3/0.4 = 0.75. ③ KB = {Rain → Wet}: M = {00,01,11}, P(KB) = 0.9. f = Wet: M(KB∪{f}) = {01,11}, 0.4. P(Wet | Rain→Wet) = 0.4/0.9 ≈ 0.444 — 논리로는 '모름' 인 질의에 숫자가 붙는다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "from itertools import product\ndef I(f, w):                                   # 해석 함수(5챕터)\n    if isinstance(f, str): return w[f]\n    op, *a = f; v = [I(g, w) for g in a]\n    return {\"not\": lambda: not v[0], \"and\": lambda: v[0] and v[1], \"or\": lambda: v[0] or v[1],\n            \"implies\": lambda: not v[0] or v[1], \"iff\": lambda: v[0] == v[1]}[op]()\ndef M(kb, S):                                  # M(KB): KB 의 모든 공식을 참으로 만드는 세계\n    ws = (dict(zip(S, v)) for v in product([0, 1], repeat=len(S)))\n    return [w for w in ws if all(I(f, w) for f in kb)]\nS = [\"Rain\", \"Wet\"]\nP = {(0, 0): 0.5, (0, 1): 0.1, (1, 0): 0.1, (1, 1): 0.3}   # 화면의 결합표\ndef prob(kb):                                  # P(KB) = Σ_{w∈M(KB)} P(w)\n    return sum(P[(w[\"Rain\"], w[\"Wet\"])] for w in M(kb, S))\ndef cond(f, kb):                               # P(f | KB) = P(KB ∪ {f}) / P(KB)\n    return prob(kb + [f]) / prob(kb)\nprint(\"P(Rain)             =\", prob([\"Rain\"]))\nprint(\"P(Rain | Wet)       =\", round(cond(\"Rain\", [\"Wet\"]), 3))\nprint(\"P(Rain | Rain∨Wet)  =\", round(cond(\"Rain\", [(\"or\", \"Rain\", \"Wet\")]), 3))\nprint(\"P(Wet | Rain→Wet)   =\", round(cond(\"Wet\", [(\"implies\", \"Rain\", \"Wet\")]), 3))\nfor kb, f in [([\"Rain\", \"Wet\"], \"Rain\"), ([(\"not\", \"Rain\")], \"Rain\")]:\n    print(kb, f, \"->\", cond(f, kb))           # 1.0 = Yes, 0.0 = No",
+    "note": "실행 결과: P(Rain) = 0.4, P(Rain | Wet) = 0.75, P(Rain | Rain∨Wet) = 0.8, P(Wet | Rain→Wet) = 0.444, 그리고 함의 예 1.0, 모순 예 0.0 — 논리의 Yes/No 가 확률의 양 끝이다."
+   },
+   "diagram": {
+    "title": "두 일반화",
+    "code": "graph TD\n  L[\"명제 논리: 답 Yes/No/모름, 증거 = 임의 공식\"] --> PL[\"확률 논리(다루지 않음)\"]\n  B[\"베이즈 네트워크: 답 0~1, 증거 = 변수=값\"] --> PL"
+   },
+   "pitfalls": [
+    "P(f | KB) = 1 이라고 꼭 함의는 아니다. 확률 0 인 세계가 있으면 그 세계에서 f 가 거짓이어도 1 이 될 수 있다. 결합분포가 모든 세계에 양수를 줄 때만 정확히 대응한다(노트 보충).",
+    "P(KB) = 0 이면(모순된 KB 또는 확률 0 인 증거) P(f | KB) 는 정의되지 않는다."
+   ],
+   "check": [
+    {
+     "q": "같은 표에서 P(Wet | ¬Rain) 은?",
+     "a": "P(01) / (P(00) + P(01)) = 0.1 / 0.6 ≈ 0.167."
+    },
+    {
+     "q": "베이즈 네트워크로 'Rain ∨ Snow' 를 증거로 쓰려면 어떻게 해야 하나? 논리는 어떻게 하나?",
+     "a": "BN 은 Rain 과 Snow 의 or 를 값으로 갖는 새 변수(결정적 노드)를 만들어 그것을 1 로 관측한다. 논리는 공식 Rain ∨ Snow 를 그대로 KB 에 넣는다."
+    }
+   ]
+  },
+  {
+   "start": 3420,
+   "title": "만족 가능성 하나로 줄이기 — 검사 두 번으로 세 갈래",
+   "points": [
+    "지금까지는 M(KB) 와 M(KB ∪ {f}) 를 열거했다 — 기호 수에 지수적이다.",
+    "만족 가능(satisfiable): M(KB) ≠ ∅ — KB 를 참으로 만드는 세계가 하나라도 있다.",
+    "KB ∪ {¬f} 가 만족 불가능 → 함의. 아니면 KB ∪ {f} 가 만족 불가능 → 모순. 둘 다 가능 → 우연.",
+    "검사가 두 번 필요한 이유: 만족 가능성은 1비트(예/아니오)인데 답은 세 갈래다. 함의 검사는 귀류법과 같다."
+   ],
+   "on_screen": "satisfiability(): 'So far: Ask[f] and Tell[f] implemented in terms of entailment, contradiction, and contingency. How do we implement … efficiently? Currently, we enumerate all the models M(KB) and M(KB ∪ {f}), which will be exponentially large. To get faster algorithms, let's reduce to a single operation. Definition: KB is satisfiable iff M(KB) ≠ ∅.' 'Call satisfiability checker on KB ∪ {f}. If not satisfiable, then return contradiction. But if satisfiable, could be entailment or contingency. Recall KB entails f iff KB contradicts ¬f. Call the satisfiability checker on KB ∪ {¬f}. If not satisfiable, then return entailment.' 결정 트리: 'Is KB ∪ {¬f} satisfiable?' —no→ entailment, —yes→ 'Is KB ∪ {f} satisfiable?' —no→ contradiction, —yes→ contingent. 'Note that we need two calls because one call only gives us 1 bit of information and we have 3 outcomes.'",
+   "explain": [
+    "Ask 와 Tell 은 결국 함의·모순·우연을 가르는 일이고, 지금까지는 그것을 모든 모델을 늘어놓아 계산했다. 기호가 n 개면 2ⁿ 개를 다 봐야 하니 기호가 수십 개만 되어도 불가능하다. 더 빠른 알고리즘을 쓰기 위해 강사는 먼저 문제를 '한 가지 연산' 으로 줄인다. 그 연산이 만족 가능성이다. KB 가 만족 가능하다는 것은 M(KB) 가 비어 있지 않다는 것, 곧 KB 의 모든 공식을 참으로 만드는 세계가 적어도 하나 있다는 것이다.",
+    "첫 시도는 자연스럽다. KB ∪ {f} 가 만족 가능한지 묻는다. 불가능하면 M(KB ∪ {f}) = ∅ 이니 모순이다. 그러나 가능하다면 함의인지 우연인지 아직 모른다. 둘 다 KB ∪ {f} 에 세계가 남아 있기 때문이다. 그래서 검사가 하나 더 필요하다. 8챕터의 관계 'KB ⊨ f ⇔ KB 가 ¬f 와 모순' 을 쓴다. KB ∪ {¬f} 가 만족 불가능하면 KB 는 ¬f 와 모순이고, 그것은 곧 KB ⊨ f 다.",
+    "정리하면 결정 트리가 된다. 먼저 'KB ∪ {¬f} 가 만족 가능한가?' 를 묻는다. 아니면 함의. 그렇다면 'KB ∪ {f} 가 만족 가능한가?' 를 묻는다. 아니면 모순, 그렇다면 우연. 강사는 왜 두 번이 필요한지를 정보량으로 설명한다. 만족 가능성 검사는 예/아니오, 곧 1비트를 준다. 그런데 가려야 할 경우는 셋이다. 1비트로는 셋을 구분할 수 없으니 최소 두 번은 물어야 한다(함의인 경우에는 첫 질문에서 끝나므로 한 번이면 된다).",
+    "함의를 '¬f 를 더해 모순이 나는지' 로 확인하는 것은 수학의 귀류법과 같다. f 가 KB 에서 따라 나온다는 것을 보이고 싶으면 f 가 거짓이라고 가정하고(¬f 를 더하고) 추론해 모순에 이르면 된다. 모순이 나면 '¬f 인 세계는 KB 와 함께 있을 수 없다' 는 뜻이니 KB 의 모든 세계에서 f 가 참이다. 이 환원 덕분에, 아래 챕터의 빠른 만족 가능성 검사기만 있으면 Ask 와 Tell 전체를 빠르게 할 수 있다."
+   ],
+   "formulas": [
+    {
+     "expr": "SAT(KB) ⇔ M(KB) ≠ ∅",
+     "meaning": "만족 가능성. KB 의 모든 공식을 동시에 참으로 만드는 모델이 존재한다."
+    },
+    {
+     "expr": "KB ⊨ f ⇔ ¬SAT(KB ∪ {¬f});  모순 ⇔ ¬SAT(KB ∪ {f});  우연 ⇔ SAT(KB ∪ {¬f}) ∧ SAT(KB ∪ {f})",
+     "meaning": "세 관계를 만족 가능성 검사로 옮긴 것. ¬SAT 는 '만족 불가능'. 우연은 f 가 참인 세계도, 거짓인 세계도 KB 안에 있다는 뜻."
+    }
+   ],
+   "example": {
+    "title": "손으로: KB = {Rain ∨ Snow, Rain → Wet, Snow → Wet} 에서 Wet 을 묻기",
+    "body": "기호 Rain, Snow, Wet (8세계). 검사 1: KB ∪ {¬Wet}. Wet=0 이면 Rain→Wet 때문에 Rain=0, Snow→Wet 때문에 Snow=0. 그런데 Rain ∨ Snow 가 거짓이 된다 → 만족 불가능 → 함의, 끝(호출 1번). '비가 오든 눈이 오든 젖는다' 는 경우 나누기 추론이다. f = Rain 이면: 검사 1 KB ∪ {¬Rain} 은 (Rain,Snow,Wet) = (0,1,1) 로 만족 → 검사 2 KB ∪ {Rain} 은 (1,0,1) 로 만족 → 우연."
+   },
+   "code": {
+    "lang": "python",
+    "src": "from itertools import product\ndef I(f, w):                                   # 해석 함수(5챕터)\n    if isinstance(f, str): return w[f]\n    op, *a = f; v = [I(g, w) for g in a]\n    return {\"not\": lambda: not v[0], \"and\": lambda: v[0] and v[1], \"or\": lambda: v[0] or v[1],\n            \"implies\": lambda: not v[0] or v[1], \"iff\": lambda: v[0] == v[1]}[op]()\ndef M(kb, S):                                  # M(KB): KB 의 모든 공식을 참으로 만드는 세계\n    ws = (dict(zip(S, v)) for v in product([0, 1], repeat=len(S)))\n    return [w for w in ws if all(I(f, w) for f in kb)]\nS = [\"Rain\", \"Wet\", \"Snow\"]\ncalls = 0\ndef sat(kb):                                   # 만족 가능성 검사기(지금은 열거)\n    global calls; calls += 1\n    return len(M(kb, S)) > 0\ndef relation(kb, f):                           # 검사 두 번으로 세 갈래\n    if not sat(kb + [(\"not\", f)]): return \"entailment\"\n    if not sat(kb + [f]):          return \"contradiction\"\n    return \"contingency\"\nkb = [(\"or\", \"Rain\", \"Snow\"), (\"implies\", \"Rain\", \"Wet\"), (\"implies\", \"Snow\", \"Wet\")]\nfor f in [\"Wet\", (\"not\", \"Wet\"), \"Rain\", (\"and\", \"Rain\", \"Snow\")]:\n    calls = 0\n    print(f, \"->\", relation(kb, f), f\"(sat 호출 {calls}번)\")",
+    "note": "실행 결과: Wet -> entailment (sat 호출 1번), ¬Wet -> contradiction (2번), Rain -> contingency (2번), Rain ∧ Snow -> contingency (2번). sat 는 아직 열거지만, 이 함수만 빠른 검사기로 바꾸면 relation 은 그대로다."
+   },
+   "diagram": {
+    "title": "만족 가능성 검사 두 번의 결정 트리",
+    "code": "graph TD\n  Q1{\"KB ∪ {¬f} 만족 가능?\"} -->|\"아니오\"| E[\"함의\"]\n  Q1 -->|\"예\"| Q2{\"KB ∪ {f} 만족 가능?\"}\n  Q2 -->|\"아니오\"| C[\"모순\"]\n  Q2 -->|\"예\"| G[\"우연\"]"
+   },
+   "pitfalls": [
+    "강의에서 'KB ∪ {¬f} 가 만족 불가능하면, 즉 모순이 없으면' 이라고 말하는 대목은 말실수다(노트 정정). 만족 불가능하다는 것은 모순이 '있다' 는 뜻이고, 그 모순이 함의를 증명한다.",
+    "첫 검사를 KB ∪ {f} 로 하면 '만족 가능' 이 나왔을 때 함의·우연을 못 가른다. 순서는 상관없지만 두 검사가 모두 있어야 한다."
+   ],
+   "check": [
+    {
+     "q": "KB 가 그 자체로 만족 불가능하면 이 결정 트리는 무엇을 답하나?",
+     "a": "KB ∪ {¬f} 도 만족 불가능하므로 '함의' 다. 모순된 KB 는 모든 것을 함의한다 — 그래서 먼저 SAT(KB) 를 확인해 두는 것이 좋다."
+    },
+    {
+     "q": "만족 가능성 검사를 한 번만 해서 세 갈래를 가를 수 없는 이유는?",
+     "a": "검사 한 번은 예/아니오 두 결과(1비트)뿐인데 구분할 경우는 셋이다."
+    }
+   ]
+  },
+  {
+   "start": 3640,
+   "title": "모델 검사 — Z3 와 SAT 해결기, 그리고 작은 DPLL",
+   "points": [
+    "모델 검사(model checking): 입력 KB, 출력 'KB 가 만족 가능한가'. 만족 가능하면 그 증거인 모델 하나도 돌려준다.",
+    "강의 코드는 처음부터 Z3(SMT 해결기)의 Bool·And·Implies 로 공식을 만들었고, Solver 에 넣어 check() 하면 sat 와 모델 [Rain = True, Wet = True] 가 나온다.",
+    "SAT 는 최악의 경우 NP-완전이지만, 수십 년의 연구로 변수 수만~수십만 개의 실제 문제를 푼다. 안쪽: DPLL(전수 탐색), CDCL(충돌 기반 절 학습).",
+    "앞에서 모델을 열거한 Ask/Tell 은 이해를 위한 개념 증명이다 — 실제로는 만족 가능성 검사 1~2번 + 해결기."
+   ],
+   "on_screen": "'Model checking: task for determining if a KB is satisfiable — Input: a KB, Output: whether KB is satisfiable.' 'We can use Z3's solver to check satisfiability.' Rain = Bool(\"Rain\"), Wet = Bool(\"Wet\"), kb = [Rain, Wet], solver = Solver(), for f in kb: solver.add(f), # Perform model checking, result = solver.check() → \"sat\", # If satisfiable, return some model in M(KB): if result == sat: w = solver.model() → \"[Rain = True, Wet = True]\". 'Under the hood: SAT solvers — DPLL algorithm (exhaustive search), Conflict-driven clause learning (CDCL)'. Summary: 'Entailment, contradiction, and contingency can be reduced to satisfiability / Use model checking to compute satisfiability'.",
+   "explain": [
+    "만족 가능성을 판정하는 일을 모델 검사라고 부른다. 입력은 KB 하나, 출력은 'KB 가 만족 가능한가' 다. 모든 것을 만족 가능성으로 바꾼 이유는, 사람들이 이 문제를 아주 오래 연구해 왔고 효율적인 도구가 이미 있기 때문이다. 강사는 사실 강의 내내 그 도구 하나를 쓰고 있었다고 밝힌다. 공식을 만들 때 쓴 Bool, And, Implies 는 Z3 라는 SMT 해결기의 것이다(SMT 가 무엇인지는 다음 시간에 설명하겠다고 한다).",
+    "Z3 로 만족 가능성을 검사하는 법은 간단하다. Solver 를 하나 만들고 KB 의 공식을 하나씩 add 한 뒤 check 를 부른다. 결과가 sat(만족 가능)이면 model() 로 실제 모델 하나를 얻을 수 있다. 화면의 KB = {Rain, Wet} 에서는 [Rain = True, Wet = True] 가 나왔다. 강사는 이것을 '존재 증명' 이라고 부른다. 만족 가능하다고 말하는 해결기는 그 근거로 KB 를 실제로 만족하는 세계를 하나 내밀어야 하고, 우리는 I 로 그것을 쉽게 확인할 수 있다. 반대로 unsat 이라는 답은 '어떤 세계도 없다' 는 주장이라 확인이 더 어렵다(노트 보충: 그래서 현대 해결기는 unsat 증명 기록도 내놓는다).",
+    "복잡도 이론으로 보면 SAT 는 최악의 경우 NP-완전이다. 변수가 n 개일 때 모든 알려진 알고리즘이 최악에는 지수 시간이 든다고 여겨진다. 그러나 그것이 사람들을 멈추지 못했다. 다양한 휴리스틱과 도구 덕분에 변수 수천에서 수십만 개짜리 실제 SAT 문제가 풀린다. 화면은 그 안쪽 두 이름을 적는다. DPLL 은 기호 하나의 값을 정해 보고 안 되면 되돌아가는 전수 탐색이되, 값이 강제되는 기호(단위 절)를 먼저 전파해 가지를 크게 줄인다. CDCL 은 여기에 '충돌이 나면 그 원인을 새 절로 배워 KB 에 더하는' 학습을 얹어, 같은 실수를 다시 하지 않게 한다. 세부는 이 강좌의 범위 밖이라고 강사는 말한다.",
+    "노트는 Z3 대신 DPLL 을 20줄로 직접 짜서 같은 일을 보인다(노트 보충). 공식을 먼저 절(clause, 리터럴의 or) 목록으로 바꿔야 한다. Rain → Wet 은 ¬Rain ∨ Wet 이라는 절 하나다. 알고리즘은 ① 이미 만족된 절을 지우고, ② 정해진 기호를 절에서 빼고, ③ 빈 절이 생기면 실패, ④ 리터럴이 하나만 남은 절(단위 절)이 있으면 그 값을 강제로 정하고 되풀이, ⑤ 절이 다 사라지면 성공(지금의 할당이 모델), ⑥ 아니면 기호 하나를 1 로 정해 보고 실패하면 0 으로 해 본다. 이것으로 앞 챕터의 KB 에 ¬Wet 을 더하면 None(만족 불가능), 곧 KB ⊨ Wet 이 나온다. 강사의 정리: 강의 앞부분의 모델 열거 Ask/Tell 은 개념을 위한 것이고, 실제 구현은 만족 가능성 1~2번 + 해결기다."
+   ],
+   "formulas": [
+    {
+     "expr": "p → q ≡ ¬p ∨ q",
+     "meaning": "함축을 절로 바꾸는 규칙(노트 보충). ≡ 는 '모델 집합이 같다'. 절 = 리터럴(기호 또는 그 부정)의 or. 해결기는 보통 절들의 and(CNF)를 입력으로 받는다."
+    }
+   ],
+   "example": {
+    "title": "손으로: DPLL 로 KB ∪ {¬Wet} 풀기",
+    "body": "절: (Rain ∨ Snow), (¬Rain ∨ Wet), (¬Snow ∨ Wet), (¬Wet). ① 단위 절 ¬Wet → Wet = 0. ② (¬Rain ∨ Wet) 에서 Wet 이 빠져 단위 절 ¬Rain → Rain = 0. ③ (¬Snow ∨ Wet) 도 단위 절 ¬Snow → Snow = 0. ④ (Rain ∨ Snow) 에서 둘 다 빠져 빈 절 → 충돌. 분기 한 번 없이 만족 불가능 — 따라서 KB ⊨ Wet. 단위 전파만으로 8세계 열거를 대신했다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 노트 보충: 아주 작은 DPLL — 절(clause)=리터럴 집합, 리터럴=(기호, 부호)\ndef dpll(clauses, w=None):\n    w = dict(w or {})\n    while True:                                 # 단위 전파\n        clauses = [c for c in clauses if not any(w.get(s) == v for s, v in c)]\n        clauses = [[(s, v) for s, v in c if s not in w] for c in clauses]\n        if any(len(c) == 0 for c in clauses): return None   # 빈 절 = 충돌\n        unit = next((c[0] for c in clauses if len(c) == 1), None)\n        if unit is None: break\n        w[unit[0]] = unit[1]\n    if not clauses: return w                    # 모든 절 만족 -> 모델(존재 증명)\n    s = clauses[0][0][0]                        # 분기: 기호 하나를 정해 본다\n    return dpll(clauses, {**w, s: 1}) or dpll(clauses, {**w, s: 0})\n\n# KB = {Rain ∨ Snow, ¬Rain ∨ Wet, ¬Snow ∨ Wet}  (→ 를 절로 바꾼 꼴)\nKB = [[(\"Rain\", 1), (\"Snow\", 1)], [(\"Rain\", 0), (\"Wet\", 1)], [(\"Snow\", 0), (\"Wet\", 1)]]\nprint(\"KB sat? \", dpll(KB))\nprint(\"KB ∪ {¬Wet} sat? \", dpll(KB + [[(\"Wet\", 0)]]))   # None -> KB ⊨ Wet\nprint(\"KB ∪ {¬Rain} sat? \", dpll(KB + [[(\"Rain\", 0)]]))",
+    "note": "실행 결과: KB sat?  {'Rain': 1, 'Wet': 1} (Snow 는 정하지 않아도 모든 절이 만족되어 남는다 — 아무 값이나 된다), KB ∪ {¬Wet} sat?  None, KB ∪ {¬Rain} sat?  {'Rain': 0, 'Snow': 1, 'Wet': 1}. Z3 는 이 머신에 설치돼 있지 않아 강의의 Z3 코드는 돌리지 않았다."
+   },
+   "diagram": {
+    "title": "Ask/Tell 의 실제 구현 층",
+    "code": "graph TD\n  A[\"Ask / Tell\"] --> R[\"함의·모순·우연\"]\n  R --> S[\"만족 가능성 검사 1~2번\"]\n  S --> Z[\"SAT/SMT 해결기 — Z3, DPLL, CDCL\"]\n  Z --> W[\"sat 이면 모델 하나(존재 증명)\"]"
+   },
+   "pitfalls": [
+    "NP-완전은 '실전에서 못 푼다' 가 아니다. 최악의 경우에 대한 말이고, 구조가 있는 실제 문제는 대개 빠르게 풀린다.",
+    "해결기가 돌려준 모델은 M(KB) 의 '한' 원소일 뿐이다. 그 모델에서 f 가 참이라고 KB ⊨ f 는 아니다 — 함의는 ¬f 를 더해 unsat 을 받아야 확인된다."
+   ],
+   "check": [
+    {
+     "q": "KB = {Rain, Wet} 에 대해 해결기가 sat 와 모델 {Rain:1, Wet:1} 을 돌려줬다. 이것으로 Ask[Rain ∧ Wet] 의 답을 알 수 있나?",
+     "a": "아니다. 모델 하나는 만족 가능성만 보인다. Ask 에는 KB ∪ {¬(Rain ∧ Wet)} 이 unsat 인지 한 번 더 물어야 하고, 실제로 unsat 이라 Yes 다."
+    },
+    {
+     "q": "Rain ↔ Wet 을 절(CNF)로 바꾸면?",
+     "a": "(¬Rain ∨ Wet) ∧ (¬Wet ∨ Rain) — 양방향 함축 두 개."
+    }
+   ]
+  },
+  {
+   "start": 3800,
+   "title": "추론 규칙 — modus ponens 와 전방 추론, ⊢ 는 구문의 일",
+   "points": [
+    "모델 검사만으로도 다 되지만, 사람의 추론(A+B=10 풀기, 수학)은 경우를 열거하지 않고 기호를 조작해 결론을 끌어낸다.",
+    "modus ponens: 전제 p, p → q 로부터 결론 q. 표기 p, p → q ⊢ q (가로줄 하나 = 증명).",
+    "추론 규칙 = 전제 공식 f₁…f_n 과 결론 g. 규칙은 의미가 아니라 구문 위에서 돈다.",
+    "전방 추론: 바뀌지 않을 때까지 규칙에 맞는 공식들을 KB 에서 골라 결론을 더한다. KB ⊢ f ⇔ f 가 결국 KB 에 들어간다."
+   ],
+   "on_screen": "propositional_logic_inference_rules(): 'We have defined the syntax and semantics of propositional logic. We can do logical inference (Ask/Tell) via satisfiability via model checking. But remember the problem: If A + B = 10 and A - B = 4, what is A? We didn't do model checking, but rather manipulated symbols.' forward_inference(): Example of an inference — It is raining (Rain). If it is raining, then it is wet (Rain → Wet). Therefore, it is wet (Wet). 분수 꼴 Rain, Rain → Wet / Wet (위 premises, 아래 conclusion). 'General modus ponens: p, p → q ⊢ q'. 'General inference rule: Premises: set of formulas f_1, …, f_n / Conclusion: formula g / Rules operate on the syntax, not the semantics.' Forward inference — Input: set of inference rules (Rules), initial knowledge base (KB); While there are no changes to KB: Choose a set of formulas f_1, …, f_n ∈ KB; If matching rule f_1, …, f_n ⊢ g ∈ Rules, then add g to KB. 'We say that KB derives/proves f (KB ⊢ f) if f eventually gets added to KB.' 상자 'Example: Modus ponens inference' — KB = {Rain, Rain → Wet, Wet → Slippery} → Rain 과 Rain → Wet 에 적용해 Wet 추가 → Wet 과 Wet → Slippery 에 적용해 Slippery 추가 → Converged. 'Can't derive some formulas: ¬Wet, Rain → Slippery'.",
+   "explain": [
+    "이제 세 재료의 마지막, 추론 규칙이다. 강사는 솔직하게 말한다. 엄밀히는 이것이 필요 없다. 구문과 의미를 정의했고, 모델 검사라는 블랙박스 해결기가 있으니 Ask/Tell 은 그냥 된다. 그런데 1챕터의 A + B = 10 문제를 떠올려 보자. 거기서 우리는 모델을 검사하지 않았다. 기호를 조작해 답을 끌어냈다. 사람이 수학을 할 때도, 자연어로 따질 때도 경우를 늘어놓기보다 새로운 문장을 유도한다. 그 메커니즘을 형식화한 것이 추론 규칙이다.",
+    "가장 유명한 규칙이 modus ponens(전건 긍정)다. '비가 온다. 비가 오면 젖는다. 그러므로 젖는다.' 위에 전제(Rain, Rain → Wet)를, 아래에 결론(Wet)을 적는 분수 꼴로 쓴다. Rain 과 Wet 자리에는 어떤 공식이 와도 되므로 일반형은 'p 와 p → q 로부터 q' 다. 표기 p, p → q ⊢ q 에서 ⊢ 는 가로줄이 하나이고 '증명한다(유도한다)' 를 뜻한다. 8챕터의 ⊨(가로줄 둘, 함의)와 구별해야 한다. 일반적으로 추론 규칙은 전제 공식들 f₁, …, f_n 과 결론 공식 g 의 짝이다. 그리고 결정적으로, 규칙은 의미가 아니라 구문 위에서 작동한다. 모델을 보지 않고 공식의 모양만 맞춰 본다 — 'KB 에 어떤 X 가 있고 X → Y 라는 모양의 공식도 있으면 Y 를 적는다'.",
+    "규칙 집합이 있으면 반복할 수 있다. 이것이 전방 추론이다. 규칙 집합과 처음 KB 를 받아, KB 가 더 이상 바뀌지 않을 때까지 다음을 되풀이한다 — KB 에서 공식 몇 개를 골라, 그것과 모양이 맞는 규칙이 있으면 그 결론을 KB 에 더한다(화면에는 루프 조건이 'While there are no changes' 로 적혀 있지만 뜻은 '바뀌는 것이 없어질 때까지' 다). 이 과정에서 f 가 결국 KB 에 들어가면 'KB 가 f 를 유도(증명)한다', KB ⊢ f 라고 쓴다.",
+    "강의 예: KB = {Rain, Rain → Wet, Wet → Slippery}. Rain 과 Rain → Wet 에 modus ponens 를 적용해 Wet 을 더한다. 이제 새로 생긴 Wet 과 원래 있던 Wet → Slippery 에 적용해 Slippery 를 더한다. 더 적용할 곳이 없으니 수렴한다. 새로 얻은 사실이 옛 사실과 결합해 또 새 사실을 낳는 연쇄가 전방 추론의 핵심이다. 그러나 이 규칙 하나로는 유도할 수 없는 공식도 있다. ¬Wet 은 실제로 거짓이니 유도하지 않는 것이 다행이다. 반면 Rain → Slippery 는 이 KB 에서 참(함의됨)인데도 modus ponens 는 그 꼴의 공식을 만들지 못한다. 강사는 이것을 '조금 더 고급' 이라 표현한다. 이 간극이 다음 챕터의 완전성 문제다.",
+    "강사는 학생 질문에 답하며 이것이 전부 구문의 일이라고 다시 강조한다. KB 에 기호열이 있고, 규칙이 기호열을 받아 새 기호열을 만든다. 그러면 구문의 ⊢ 로 얻는 것과 의미의 ⊨ 로 참인 것은 어떤 관계인가? 이것이 강의의 마지막 질문이다. 노트 보충: 규칙 기반 시스템(Drools 같은 비즈니스 규칙 엔진, Datalog, 정적 분석기의 사실 전파)이 바로 이 전방 추론 루프를 돈다."
+   ],
+   "formulas": [
+    {
+     "expr": "p,  p → q  ⊢  q",
+     "meaning": "modus ponens. p, q 는 임의의 공식. 쉼표 왼쪽이 전제들, ⊢ 오른쪽이 결론. ⊢(가로줄 하나)는 구문적 유도."
+    },
+    {
+     "expr": "f₁, …, f_n ⊢ g",
+     "meaning": "일반 추론 규칙. 전제 n 개가 KB 에 모두 있으면 결론 g 를 KB 에 더해도 된다."
+    },
+    {
+     "expr": "KB ⊢ f  ⇔  전방 추론이 f 를 결국 KB 에 넣는다",
+     "meaning": "유도 가능성. 사용한 규칙 집합에 따라 달라진다(규칙이 다르면 유도되는 것도 다르다)."
+    }
+   ],
+   "example": {
+    "title": "손으로: modus ponens 유도 기록",
+    "body": "KB₀ = {Rain, Rain→Wet, Wet→Slippery}. 1단계: (Rain, Rain→Wet) 이 p, p→q 꼴 → Wet 추가. KB₁ = KB₀ ∪ {Wet}. 2단계: (Wet, Wet→Slippery) → Slippery 추가. KB₂ = KB₁ ∪ {Slippery}. 3단계: 함축은 두 개뿐이고 결론이 모두 이미 있다 → 수렴. 결과 KB ⊢ Wet, KB ⊢ Slippery. 그러나 KB ⊬ (Rain → Slippery) — 의미로는 M(KB) = {111} 에서 Rain→Slippery 가 참이니 KB ⊨ (Rain → Slippery) 인데도."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 전방 추론: modus ponens 하나만 가진 규칙 집합으로 KB 를 불린다(구문만 본다)\ndef forward(kb):\n    kb = set(kb); log = []\n    changed = True\n    while changed:                              # 더 이상 바뀌지 않을 때까지\n        changed = False\n        for f in list(kb):\n            if isinstance(f, tuple) and f[0] == \"implies\":\n                p, q = f[1], f[2]\n                if p in kb and q not in kb:     # p, p→q 가 다 있으면 q 를 더한다\n                    kb.add(q); changed = True\n                    log.append(f\"{p}, {p}→{q}  ⊢  {q}\")\n    return kb, log\n\nKB = {\"Rain\", (\"implies\", \"Rain\", \"Wet\"), (\"implies\", \"Wet\", \"Slippery\")}\nkb, log = forward(KB)\nprint(\"\\n\".join(log))\nprint(\"Slippery ∈ KB?\", \"Slippery\" in kb)\nprint(\"¬Wet 유도?\", (\"not\", \"Wet\") in kb)\nprint(\"Rain→Slippery 유도?\", (\"implies\", \"Rain\", \"Slippery\") in kb)",
+    "note": "실행 결과: Rain, Rain→Wet  ⊢  Wet / Wet, Wet→Slippery  ⊢  Slippery / Slippery ∈ KB? True / ¬Wet 유도? False / Rain→Slippery 유도? False. 함수는 공식의 모양만 비교하고 모델을 한 번도 계산하지 않는다."
+   },
+   "diagram": {
+    "title": "전방 추론의 연쇄",
+    "code": "graph LR\n  R[\"Rain\"] --> W[\"Wet\"]\n  RW[\"Rain → Wet\"] --> W\n  W --> S[\"Slippery\"]\n  WS[\"Wet → Slippery\"] --> S"
+   },
+   "pitfalls": [
+    "슬라이드의 루프 조건 'While there are no changes to KB' 는 거꾸로 적힌 것이다(노트 정정). 바뀌는 것이 있는 동안 반복하고, 더 바뀌지 않으면 멈춘다.",
+    "⊢ 와 ⊨ 를 섞지 말 것. ⊢ 는 '이 규칙들로 만들 수 있다', ⊨ 는 '모든 가능한 세계에서 참이다'.",
+    "modus ponens 만으로는 Rain → Slippery 같은 함축을 새로 만들 수 없다. 규칙 집합이 무엇이냐에 따라 유도 가능한 것이 정해진다."
+   ],
+   "check": [
+    {
+     "q": "KB = {A, A → B, B → C, D → E} 에서 modus ponens 전방 추론으로 유도되는 새 공식은?",
+     "a": "B, 그다음 C. E 는 D 가 없어서 유도되지 않는다."
+    },
+    {
+     "q": "전방 추론은 반드시 끝나나? (이 강의의 modus ponens, 유한 KB 기준)",
+     "a": "끝난다. modus ponens 의 결론 q 는 이미 KB 에 있는 공식의 일부이므로 새로 생길 수 있는 공식이 유한하고, 더할 것이 없어지면 멈춘다."
+    }
+   ]
+  },
+  {
+   "start": 4120,
+   "title": "건전성과 완전성 — 유리잔과 물, 진실 전부 그리고 진실만",
+   "points": [
+    "비교 대상: 구문 {f : KB ⊢ f}(유도 가능한 것) 와 의미 {f : KB ⊨ f}(참인 것, 유리잔).",
+    "건전성: {f : KB ⊢ f} ⊆ {f : KB ⊨ f} — 물이 잔 밖으로 넘치지 않는다. 진실만.",
+    "완전성: {f : KB ⊨ f} ⊆ {f : KB ⊢ f} — 잔을 가득 채운다. 진실 전부.",
+    "규칙 하나의 건전성 검사: M(전제들의 교집합) ⊆ M(결론) 인가. modus ponens 는 건전, (Wet, Rain → Wet ⊢ Rain) 는 건전하지 않다."
+   ],
+   "on_screen": "soundness_completeness(): Syntax: KB proves/derives f (KB ⊢ f), Semantics: KB entails f (KB ⊨ f). 'What is the relationship? In particular, compare Syntax: {f : KB ⊢ f}, Semantics: {f : KB ⊨ f}'. Truth: {f : KB ⊨ f} 옆에 빈 유리잔 사진. 'Soundness: {f : KB ⊢ f} ⊆ {f : KB ⊨ f}' 옆에 반쯤 찬 잔. 'Completeness: {f : KB ⊨ f} ⊆ {f : KB ⊢ f}' 옆에 물을 붓는 잔, 넘치는 잔. 'What we want is ideally: The truth, the whole truth, and nothing but the truth / Soundness: nothing but the truth / Completeness: the whole truth'. Examples: 'Is Rain, Rain → Wet / Wet (Modus ponens) sound?' M(Rain) ∩ M(Rain → Wet) ⊆? M(Wet) — Rain×Wet 2×2 격자 셋(빨강 칠한 칸), 결과 'Sound!'. 'Is Wet, Rain → Wet / Rain sound?' M(Wet) ∩ M(Rain → Wet) ⊆? M(Rain) — 'Unsound!'. 마지막 main(): Lecture 15: Propositional logic, Summary — Syntax, semantics, inference rules / Models, interpretation function, knowledge base / Semantics: Entailment, contradiction, contingency, satisfiability / Connect syntax and semantics: soundness, completeness. 'Next time: first-order logic (fancy stuff)'.",
+   "explain": [
+    "마지막 질문은 구문과 의미의 관계다. KB 에서 추론 규칙으로 유도할 수 있는 공식의 집합 {f : KB ⊢ f} 와, KB 가 함의하는 공식의 집합 {f : KB ⊨ f} 를 비교한다. 강사는 유리잔 비유를 든다. 의미, 곧 진실은 유리잔이다. 잔 안쪽 공간이 KB 에서 참인(함의되는) 공식들이다. 추론 규칙으로 유도하는 것은 잔에 물을 붓는 것과 같다. 물(유도된 공식)이 잔과 어떻게 맞물리는지가 두 성질을 정한다.",
+    "건전성(soundness)은 유도된 것이 모두 참이라는 것이다: {f : KB ⊢ f} ⊆ {f : KB ⊨ f}. 물이 잔 밖으로 넘치지 않는다. 잔을 다 채우지 못할 수는 있지만, 밖으로 흘리지는 않는다. 건전한 규칙으로 얻은 결론은 믿어도 된다. 완전성(completeness)은 반대 방향이다: {f : KB ⊨ f} ⊆ {f : KB ⊢ f}. 참인 것은 빠짐없이 유도된다 — 잔을 가득 채웠다. 다만 완전하기만 하고 건전하지 않으면 잔 밖에도 물을 쏟았을 수 있다, 곧 거짓도 유도했을 수 있다. 강사는 법정 선서로 정리한다. 우리가 바라는 것은 '진실, 진실 전부, 그리고 진실만' 이다. 건전성은 '진실만', 완전성은 '진실 전부' 다.",
+    "규칙 하나가 건전한지는 모델로 확인한다. 전제들의 모델을 교집합하고, 그것이 결론의 모델에 포함되는지 본다. 전제가 모두 참인 세계에서 결론도 반드시 참이면 그 규칙은 잔 밖으로 물을 흘리지 않는다. modus ponens: M(Rain) = {10, 11}, M(Rain → Wet) = {00, 01, 11}, 교집합 {11}. M(Wet) = {01, 11} 이 이것을 포함하므로 건전하다. 화면은 이것을 Rain × Wet 2×2 격자 세 개에 색칠해 보인다.",
+    "반면 '젖었다, 비가 오면 젖는다, 그러므로 비가 왔다' 는 규칙은 어떤가. M(Wet) = {01, 11}, M(Rain → Wet) = {00, 01, 11}, 교집합 {01, 11}. 그런데 M(Rain) = {10, 11} 에는 01(비는 안 왔는데 젖음 — 스프링클러를 생각하라)이 없다. 그러니 건전하지 않다. 강사는 '실전에서 절대 이러지 말라' 고 한다. 함축을 거꾸로 쓰는 것으로, 논리학에서 후건 긍정의 오류라고 부르는 것이다. 13강의 베이즈 네트워크에서는 젖음을 보면 비의 확률이 '올라가는' 것이 정당했지만, 논리의 결론으로 '비가 왔다' 를 단정하는 것은 틀렸다.",
+    "강의는 여기서 끝나며 요약한다. 구문(공식), 의미(모델·해석 함수·지식 베이스·함의·모순·우연·만족 가능성), 그리고 둘을 잇는 건전성과 완전성. 이 개념들은 명제 논리에 국한되지 않는 논리 일반의 것이다. 노트 보충: modus ponens 는 건전하지만 일반 명제 논리에 대해 완전하지 않다(14챕터의 Rain → Slippery). 다만 KB 를 'Horn 절'(전제들의 ∧ → 기호 하나 꼴과 사실들)로 제한하면 기호 하나짜리 결론에 대해서는 완전해지고, 일반 공식에 대해 완전하려면 resolution 같은 더 강한 규칙이 필요하다. 다음 강의(16강, 논리 II)는 1차 논리로 넘어간다."
+   ],
+   "formulas": [
+    {
+     "expr": "건전성: {f : KB ⊢ f} ⊆ {f : KB ⊨ f}",
+     "meaning": "유도된 것은 모두 함의된다(참이다). 진실만."
+    },
+    {
+     "expr": "완전성: {f : KB ⊨ f} ⊆ {f : KB ⊢ f}",
+     "meaning": "함의되는 것은 모두 유도된다. 진실 전부. 둘 다면 두 집합이 같다."
+    },
+    {
+     "expr": "규칙 f₁, …, f_n ⊢ g 가 건전 ⇔ M(f₁) ∩ … ∩ M(f_n) ⊆ M(g)",
+     "meaning": "전제가 모두 참인 모든 세계에서 결론도 참이면 그 규칙은 건전하다. 건전한 규칙만 쓰는 전방 추론 전체도 건전하다."
+    }
+   ],
+   "example": {
+    "title": "손으로: 규칙 세 개의 건전성 (Rain, Wet 격자)",
+    "body": "① modus ponens (Rain, Rain→Wet ⊢ Wet): {10,11} ∩ {00,01,11} = {11} ⊆ M(Wet) = {01,11} → 건전. ② 후건 긍정 (Wet, Rain→Wet ⊢ Rain): {01,11} ∩ {00,01,11} = {01,11}, 01 ∉ M(Rain) = {10,11} → 건전하지 않음, 반례 세계 01. ③ modus tollens (¬Wet, Rain→Wet ⊢ ¬Rain): {00,10} ∩ {00,01,11} = {00} ⊆ M(¬Rain) = {00,01} → 건전."
+   },
+   "code": {
+    "lang": "python",
+    "src": "from itertools import product\ndef I(f, w):                                   # 해석 함수(5챕터)\n    if isinstance(f, str): return w[f]\n    op, *a = f; v = [I(g, w) for g in a]\n    return {\"not\": lambda: not v[0], \"and\": lambda: v[0] and v[1], \"or\": lambda: v[0] or v[1],\n            \"implies\": lambda: not v[0] or v[1], \"iff\": lambda: v[0] == v[1]}[op]()\ndef M(kb, S):                                  # M(KB): KB 의 모든 공식을 참으로 만드는 세계\n    ws = (dict(zip(S, v)) for v in product([0, 1], repeat=len(S)))\n    return [w for w in ws if all(I(f, w) for f in kb)]\nS = [\"Rain\", \"Wet\"]\ndef sound(premises, conclusion):               # M(전제들) ⊆ M(결론) ?\n    mp = M(premises, S); mc = M([conclusion], S)\n    bad = [w for w in mp if w not in mc]\n    return not bad, [(w[\"Rain\"], w[\"Wet\"]) for w in mp], bad\n\nR = (\"implies\", \"Rain\", \"Wet\")\nprint(\"modus ponens :\", sound([\"Rain\", R], \"Wet\"))\nprint(\"거꾸로(긍정) :\", sound([\"Wet\", R], \"Rain\"))\nprint(\"modus tollens:\", sound([(\"not\", \"Wet\"), R], (\"not\", \"Rain\")))",
+    "note": "실행 결과: modus ponens : (True, [(1,1)], []), 거꾸로(긍정) : (False, [(0,1),(1,1)], [{'Rain': 0, 'Wet': 1}]), modus tollens: (True, [(0,0)], []). 건전하지 않은 규칙은 반례 세계를 돌려준다."
+   },
+   "diagram": {
+    "title": "두 집합의 포함 관계",
+    "code": "graph LR\n  D[\"유도된 것 {f : KB ⊢ f}\"] -->|\"건전성: ⊆\"| T[\"참인 것 {f : KB ⊨ f}\"]\n  T -->|\"완전성: ⊆\"| D"
+   },
+   "pitfalls": [
+    "건전하지만 불완전한 체계는 흔하다(modus ponens 만 쓰는 전방 추론). 빠뜨리는 것은 있어도 틀린 것은 내놓지 않는다.",
+    "'아무것도 유도하지 않는 규칙 집합' 은 자명하게 건전하고, '모든 공식을 유도하는 규칙' 은 자명하게 완전하다. 둘 다 쓸모없다 — 둘을 함께 만족해야 의미가 있다.",
+    "건전성 검사는 '전제의 교집합 ⊆ 결론' 이다. 각 전제의 M 이 결론의 M 에 들어가는지 따로 보는 것이 아니다."
+   ],
+   "check": [
+    {
+     "q": "규칙 'p ∨ q, ¬p ⊢ q'(선언적 삼단논법)는 건전한가? 모델로 확인하라.",
+     "a": "(p,q) 에서 M(p∨q) = {01,10,11}, M(¬p) = {00,01}, 교집합 {01} ⊆ M(q) = {01,11}. 건전하다."
+    },
+    {
+     "q": "14챕터의 예에서 Rain → Slippery 가 유도되지 않은 사실은 건전성과 완전성 중 무엇과 관련되나?",
+     "a": "완전성. KB ⊨ (Rain → Slippery) 인데 KB ⊬ (Rain → Slippery) 이므로, modus ponens 만의 체계는 일반 공식에 대해 완전하지 않다."
+    },
+    {
+     "q": "후건 긍정 규칙을 전방 추론에 넣으면 어떤 일이 생기나?",
+     "a": "건전성이 깨진다. KB = {Wet, Rain → Wet} 에서 Rain 이 유도되지만 세계 01(비 없이 젖음)에서 Rain 은 거짓이라 KB ⊭ Rain. 잔 밖으로 물이 넘친다."
+    }
+   ]
+  }
+ ],
+ "concepts": [
+  {
+   "term": "기호 추론",
+   "explain": "경우를 하나씩 확인(탐색)하지 않고 기호를 규칙대로 바꿔 결론을 얻는 것. A+B=10, A−B=4 를 더해 2A=14 로 푸는 대수가 예.",
+   "at": 60
+  },
+  {
+   "term": "압축된 표현력",
+   "explain": "짧은 공식 하나가 거대한 세계 집합을 가리키는 논리의 강점(강사 의견: 대체할 수 없다). x0 ∨ x1 은 기호 20개 위에서 786,432 개 세계를 가리킨다.",
+   "at": 190
+  },
+  {
+   "term": "구문 / 의미 / 추론 규칙",
+   "explain": "논리를 정의하는 세 재료. 올바른 공식의 집합, 공식의 뜻, 공식에서 새 공식을 만드는 규칙.",
+   "at": 360
+  },
+  {
+   "term": "명제 기호(원자 공식)",
+   "explain": "P, Q, Rain, Wet 같은 이름. 구문 단계에서는 뜻이 없다.",
+   "at": 570
+  },
+  {
+   "term": "논리 연결사",
+   "explain": "¬(부정), ∧(그리고), ∨(또는), →(함축), ↔(동치). 공식 f, g 로부터 새 공식을 만든다. 공식 집합은 재귀적으로 정의된다.",
+   "at": 600
+  },
+  {
+   "term": "모델(세계)",
+   "explain": "명제 기호마다 참/거짓을 정한 할당. 기호 n 개면 2ⁿ 개. 기계학습의 모델과는 다른 말이다.",
+   "at": 750
+  },
+  {
+   "term": "해석 함수 I(f, w)",
+   "explain": "공식 f 와 모델 w 를 받아 w 가 f 를 만족하면 1, 아니면 0. 공식 트리를 따라 재귀로 계산한다.",
+   "at": 860
+  },
+  {
+   "term": "M(f) — 공식의 모델들",
+   "explain": "I(f, w) = 1 인 모든 w. 공식의 뜻을 '참이 되는 세계들의 집합' 으로 본다. ∧ 는 교집합, ∨ 는 합집합, ¬ 는 여집합.",
+   "at": 1240
+  },
+  {
+   "term": "지식 베이스(KB)",
+   "explain": "공식의 집합 — 아는 사실의 목록. M(KB) 는 각 공식 모델의 교집합이며, 의미상 공식들의 연언과 같다.",
+   "at": 1510
+  },
+  {
+   "term": "단조성",
+   "explain": "사실을 더하면 M(KB) 는 줄기만 한다. 한 번 함의된 것은 사실을 더해도 계속 함의된다. 확률적 믿음은 오르내리므로 단조적이지 않다.",
+   "at": 1780
+  },
+  {
+   "term": "함의 KB ⊨ f",
+   "explain": "M(KB ∪ {f}) = M(KB), 곧 M(KB) ⊆ M(f). f 는 새 정보가 없다 — KB 의 모든 세계에서 참.",
+   "at": 1900
+  },
+  {
+   "term": "모순",
+   "explain": "M(KB ∪ {f}) = ∅. KB 와 f 가 함께 참인 세계가 없다. KB 가 f 와 모순 ⇔ KB ⊨ ¬f.",
+   "at": 2030
+  },
+  {
+   "term": "우연(contingency)",
+   "explain": "∅ ≠ M(KB ∪ {f}) ≠ M(KB). f 가 가능한 세계를 일부만 줄인다 — 새 정보.",
+   "at": 2110
+  },
+  {
+   "term": "Ask / Tell",
+   "explain": "KB 의 두 동작. 같은 비교를 하고 Ask 는 Yes/No/I don't know, Tell 은 already knew / don't buy / learned something new 로 답하며 우연일 때만 KB 에 더한다.",
+   "at": 2350
+  },
+  {
+   "term": "P(f | KB)",
+   "explain": "Σ_{w∈M(KB∪{f})} P(w) / Σ_{w∈M(KB)} P(w). 모델 위의 확률분포로 논리 추론을 일반화한 것 — 0 은 No, 1 은 Yes, 그 사이가 정도.",
+   "at": 3280
+  },
+  {
+   "term": "만족 가능성(SAT)",
+   "explain": "M(KB) ≠ ∅. 함의·모순·우연은 SAT 검사 두 번(KB ∪ {¬f}, KB ∪ {f})으로 가를 수 있다.",
+   "at": 3450
+  },
+  {
+   "term": "모델 검사·SAT 해결기",
+   "explain": "KB 가 만족 가능한지 판정하고 그 증거로 모델 하나를 돌려주는 도구. Z3(SMT), DPLL, CDCL. 최악의 경우 NP-완전이지만 실전에서는 빠르다.",
+   "at": 3660
+  },
+  {
+   "term": "modus ponens",
+   "explain": "p, p → q ⊢ q. 구문 위에서 도는 추론 규칙. 건전하지만 일반 명제 논리에 대해 완전하지는 않다.",
+   "at": 3900
+  },
+  {
+   "term": "전방 추론과 KB ⊢ f",
+   "explain": "규칙에 맞는 공식을 골라 결론을 더하는 일을 바뀌지 않을 때까지 반복. 그 과정에서 f 가 KB 에 들어가면 KB ⊢ f.",
+   "at": 3960
+  },
+  {
+   "term": "건전성 / 완전성",
+   "explain": "건전성: 유도한 것은 모두 참({⊢} ⊆ {⊨}, 진실만). 완전성: 참인 것은 모두 유도({⊨} ⊆ {⊢}, 진실 전부). 유리잔과 물 비유.",
+   "at": 4170
+  }
+ ],
+ "trends": [
+  {
+   "claim": "논리는 1990년대 이전 AI 의 주류였으나, 불확실성을 못 다루고 데이터를 못 쓰는 약점 때문에 확률과 기계학습에 자리를 내줬다.",
+   "evidence": "Historical note 슬라이드 — 문제 1 결정적(확률이 해결), 문제 2 규칙 기반·데이터 미사용(기계학습이 해결).",
+   "at": 140
+  },
+  {
+   "claim": "언어 모델 시대에도 논리의 '압축된 표현력' 은 대체할 수 없는 강점이다(강사 의견).",
+   "evidence": "'왜 강좌 끝에 논리를 배우나' 에 대한 답과 'Strength: provides expressivity in a compact way' 슬라이드.",
+   "at": 200
+  },
+  {
+   "claim": "SAT 는 최악의 경우 NP-완전이지만 수십 년의 연구로 해결기가 변수 수천~수십만 개짜리 실제 문제를 푼다 — 실무 구현은 모델 열거가 아니라 만족 가능성 환원 + 해결기다.",
+   "evidence": "Z3 Solver 시연, 'Under the hood: SAT solvers — DPLL, CDCL' 슬라이드와 '개념 증명일 뿐 실제 구현 방식이 아니다' 는 설명.",
+   "at": 3720
+  },
+  {
+   "claim": "지식 베이스에 모순이 생겼을 때 무엇이 틀렸는지는 논리 안에서 알 수 없으니, 모순을 만드는 작은 공식 묶음을 사용자에게 보여 주고 바깥 정보로 결정하게 하는 것이 실무적 해법이다(강사 의견).",
+   "evidence": "질의응답 — 실패한 테스트 대 코드, 주석 대 코드의 비유.",
+   "at": 2950
+  },
+  {
+   "claim": "확률 논리 언어처럼 확률과 논리를 합친 연구 흐름이 있다(강의에서는 다루지 않음).",
+   "evidence": "베이즈 네트워크 연결 챕터 끝 '확률과 논리, 확률적 논리 언어에 관한 연구가 많다' 는 언급.",
+   "at": 3380
+  }
+ ],
+ "study": {
+  "prereq": [
+   "CS221 12강 베이즈 네트워크 I(노트 ec2rCf4iIqU) — 결합분포, 할당, 조건부확률(11챕터 연결에 필요)",
+   "CS221 13강 베이즈 네트워크 II(노트 Dk7Kqqehzjk) — 설명해 없애기(10챕터의 단조성 대비)",
+   "CS221 5강 탐색 I(노트 fPESauMaJYA) — '탐색으로 추론' 과의 대비, 백트래킹(DPLL 이해에 도움)",
+   "집합 기초(교집합·합집합·여집합·부분집합)와 Python 기초(재귀, itertools.product)"
+  ],
+  "steps": [
+   {
+    "do": "5·6챕터 예제로 (¬A ∧ B) ↔ C 와 Rain→Wet 의 진리표를 종이에 전부 채우고, c05·c06 코드 출력과 맞춘다.",
+    "why": "해석 함수의 재귀 계산과 'M(f) = 참인 세계들' 이라는 관점이 이후 모든 개념의 바탕이다."
+   },
+   {
+    "do": "7·8챕터의 KB 세 개로 M(KB) 와 M(KB ∪ {f}) 를 손으로 구해 함의·모순·우연을 판정하고, c08 로 확인한다.",
+    "why": "세 관계를 '얼마나 줄었나' 로 몸에 붙이고, 모순 ⇔ ¬f 의 함의를 집합 그림으로 이해한다."
+   },
+   {
+    "do": "c09 의 ask/tell 로 작은 대화(Tell 4번, Ask 2번)를 직접 만들어 KB 가 어떻게 바뀌는지 기록한다.",
+    "why": "같은 계산이 인터페이스에 따라 다른 대답이 되는 것과, Tell 이 KB 를 옳다고 가정한다는 점을 확인한다."
+   },
+   {
+    "do": "c10 의 결합표 숫자를 바꿔 가며 P(f | KB) 가 0, 1, 그 사이가 되는 경우를 각각 만든다.",
+    "why": "확률이 논리의 세 대답을 일반화한다는 대응을 숫자로 본다."
+   },
+   {
+    "do": "c11 의 sat 함수를 c12 의 DPLL 로 갈아 끼운다(공식을 절로 바꾸는 작은 함수를 직접 짠다).",
+    "why": "'세 관계 → 만족 가능성 → 해결기' 층 구조를 손으로 구현해 본다."
+   },
+   {
+    "do": "pip install z3-solver 후 강의 화면 코드(Solver, add, check, model)로 c11 의 KB 를 풀어 보고 DPLL 결과와 비교한다.",
+    "why": "실제 SMT 해결기의 인터페이스와 '존재 증명' 으로서의 모델을 경험한다."
+   },
+   {
+    "do": "c13·c14 로 같은 KB 를 구문(전방 추론)과 의미(모델)로 따져, 유도된 집합과 함의된 집합의 차이를 목록으로 적는다.",
+    "why": "건전성·완전성을 정의가 아니라 구체적인 공식 목록으로 이해한다."
+   }
+  ],
+  "practice": [
+   "기호 P, Q, R 위에서 KB = {P ∨ Q, ¬P ∨ R, ¬Q ∨ R} 의 진리표를 손으로 채우고 KB ⊨ R 임을 보여라. 이어서 c12 의 DPLL 로 KB ∪ {¬R} 이 만족 불가능임을 확인하라.",
+   "KB = {Rain → Wet, Wet → Slippery, ¬Slippery} 에서 Ask[Rain] 의 답을 손으로 구하라(답: No — M(KB) 에서 Rain 이 모두 거짓). modus ponens 전방 추론으로는 ¬Rain 이 유도되는가?",
+   "'p → q, q → r ⊢ p → r'(가언 삼단논법) 과 'p → q ⊢ q → p'(역) 의 건전성을 c14 방식으로 판정하고, 건전하지 않으면 반례 세계를 적어라.",
+   "c13 에 '∧ 제거(p ∧ q ⊢ p, p ∧ q ⊢ q)' 규칙을 더하고 KB = {A ∧ B, B → C} 에서 C 가 유도되는지 확인하라.",
+   "스도쿠 4×4 를 명제 기호(칸·숫자마다 하나)로 표현해 제약을 절로 적고, DPLL 이나 Z3 로 풀어 보라(노트 보충 과제)."
+  ],
+  "resources": [
+   {
+    "title": "CS221 Autumn 2025 과목 홈페이지(강의 자료·일정)",
+    "url": "https://stanford-cs221.github.io/autumn2025/"
+   },
+   {
+    "title": "Z3 Guide — 온라인 튜토리얼(Python·SMT-LIB 예제)",
+    "url": "https://microsoft.github.io/z3guide/"
+   },
+   {
+    "title": "Z3 GitHub 저장소(z3-solver 파이썬 바인딩 포함)",
+    "url": "https://github.com/Z3Prover/z3"
+   },
+   {
+    "title": "Open Logic Project — 무료 논리학 교재(명제 논리의 의미·건전성·완전성)",
+    "url": "https://openlogicproject.org/"
+   },
+   {
+    "title": "Wikipedia — DPLL algorithm",
+    "url": "https://en.wikipedia.org/wiki/DPLL_algorithm"
+   },
+   {
+    "title": "Wikipedia — Conflict-driven clause learning",
+    "url": "https://en.wikipedia.org/wiki/Conflict-driven_clause_learning"
+   }
+  ]
+ },
+ "jobs": {
+  "roles": [
+   "형식 검증·정적 분석 엔지니어",
+   "컴파일러·프로그래밍 언어 도구 엔지니어",
+   "지식 그래프·규칙 엔진 개발자",
+   "최적화·스케줄링(SAT/SMT·제약 풀이) 엔지니어",
+   "AI 리서치 엔지니어(신경-기호 추론)"
+  ],
+  "skills": [
+   "Python",
+   "Z3",
+   "SAT Solver",
+   "Formal Verification",
+   "Algorithms",
+   "Knowledge Graph",
+   "Prolog"
+  ]
+ },
+ "materials": {
+  "transcript": "official",
+  "frames": 147,
+  "every_sec": 30
+ },
+ "related": [
+  "4d9V6Sxa6gU",
+  "Dk7Kqqehzjk",
+  "ec2rCf4iIqU",
+  "fPESauMaJYA",
+  "yaLEGZuIIgE",
+  "SMOD_GiRzb8",
+  "4Iu4KPVbnAY"
+ ],
+ "written_at": "2026-11-21"
+}
