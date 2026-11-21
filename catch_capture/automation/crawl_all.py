@@ -197,8 +197,7 @@ def run_extras(do_blog: bool = True, do_freelance: bool = True, do_hardware: boo
     if do_contests:
         # IT·디자인 공모전(씽굿·위비티·콘테스트코리아, 요약·링크만). 하루 한 번이면 충분해서 크롤러가
         # 직전 성공 12시간 안이면 받지 않고 마감일 계산만 한다(crawlers/crawl_contests.py 머리말).
-        print(f"
------ IT·디자인 공모전 -----", flush=True)
+        print(f"\n----- IT·디자인 공모전 -----", flush=True)
         ct_start = datetime.now()
         if orch:
             orch.stage_started("contests")
