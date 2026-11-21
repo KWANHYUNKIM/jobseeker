@@ -67,3 +67,4 @@
 - 2026-11-20 · mQOK0Mfyrkk · CS231N · 비전과 언어 — CLIP 제로샷 분류와 그 한계, CoCa, LLaVA·Flamingo 의 두 가지 결합법, Molmo 의 데이터와 가리키기, Segment Anything, 그리고 체이닝(CuPL·VisProg) · 챕터 15 · 본문 23315자
 - 2026-11-20 · XSfmOH_xVSU · CS231N · 로봇 학습 — 문제 정식화와 체화된 지각, 강화학습(DQN·AlphaGo·sim-to-real), 세계 모델과 MPC(입자 동역학·RoboCook), 모방 학습(행동 복제·연쇄 오차·확산 정책), 그리고 VLA·π0 와 평가의 숙제 · 챕터 14 · 본문 18558자
 - 2026-11-20 · g8UaBfj6Sh8 · CS231N · 인간 중심 AI — 사람이 보는 것을 보는 AI 에서 못 보는 것(세밀 분류·편향·사생활), 그리고 보고 싶은 것(앰비언트 의료·VoxPoser·BEHAVIOR)까지 · 챕터 15 · 본문 20883자
+- 2026-11-20 · Ub3GoFaUcds · CME295 · CME295 1강 — 트랜스포머: NLP 과제와 지표, 토큰화, word2vec, RNN·LSTM 의 한계에서 셀프 어텐션·인코더-디코더까지 한 장에 · 챕터 15 · 본문 23994자
