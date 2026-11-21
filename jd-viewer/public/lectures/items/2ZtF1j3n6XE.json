@@ -1,0 +1,976 @@
+{
+ "id": "2ZtF1j3n6XE",
+ "source": {
+  "platform": "youtube",
+  "url": "https://www.youtube.com/watch?v=2ZtF1j3n6XE",
+  "channel": "Stanford Online",
+  "published": "2026-03-09",
+  "duration_sec": 4819,
+  "views": 3954,
+  "license": "Stanford Online 공개 강의(YouTube 표준 라이선스)"
+ },
+ "course": {
+  "school": "Stanford",
+  "code": "CS221",
+  "term": "Autumn 2025",
+  "lecture_no": "7",
+  "speaker": "Percy Liang (Stanford 컴퓨터과학과 부교수)"
+ },
+ "title": "Stanford CS221 | Autumn 2025 | Lecture 7: Markov Decision Processes",
+ "title_ko": "CS221 7강 — 마르코프 결정 과정: 흔들리는 트램·주사위 게임, 정책·롤아웃·할인, 몬테카를로와 정책 평가, 가치 반복(+ 노트 보충: 정책 반복)",
+ "topic": "rl",
+ "tags": [
+  "Reinforcement Learning",
+  "Python",
+  "NumPy",
+  "Dynamic Programming",
+  "Algorithms",
+  "AI",
+  "Probability"
+ ],
+ "level": "입문",
+ "one_line": "행동의 결과가 확률로 갈리는 문제를 MDP 로 옮기고, 정책 평가에 max 하나를 더해 '5 까지 걷고 트램' 이라는 최적 정책을 손으로 구한다",
+ "summary": [
+  "CS221 탐색 단원(5·6강) 다음, 강화학습 단원을 여는 강의다. 강사 Percy Liang 은 지난주의 탐색 문제가 '행동 하나 → 다음 상태 하나' 라는 결정론을 전제했다고 상기시키고, 현실의 결정(마트까지 걷기·자전거·차, 교통과 주차의 불확실성)은 결과가 확률로 갈린다는 점에서 출발한다. 마르코프 결정 과정(MDP)은 탐색 문제의 인터페이스(시작 상태·successors·is_end)를 그대로 두고, successors 의 각 항목에 확률을 붙이고 비용 대신 보상을 쓰는 것으로 이 불확실성을 담는다. 강의는 5강처럼 실행형 파이썬 코드 화면과 칠판을 오가며 진행된다.",
+  "예제는 둘이다. '흔들리는 트램' 은 5강의 교통 문제(걷기 i→i+1 1분, 트램 i→2i 2분)에 트램이 확률 0.4 로 고장 나 제자리에 남는 규칙을 더한 것이고, '주사위 게임' 은 매 판 quit(10달러, 끝) 또는 stay(4달러, 주사위 1·2 면 끝)를 고르는 두 상태짜리 MDP 다. 이를 수학 기호 Actions(s)·T(s, a, s′)·Reward(s, a, s′) 로 옮기고, 각 (s, a) 에서 T 의 합이 1 이라는 조건을 확인한다. 탐색과의 차이는 비용↔보상이라는 겉모습이 아니라 '다음 상태가 분포' 라는 깊은 차이 하나다.",
+  "결과가 갈리므로 MDP 의 해는 행동 목록이 아니라 정책(상태 → 행동 함수)이다. 정책을 MDP 에 넣고 굴린 롤아웃마다 효용(할인된 보상 합, γ ∈ [0, 1])이라는 무작위 숫자가 나오고, 그 기대값이 정책의 가치 V_π(s) 다. 가장 순진한 계산은 롤아웃을 여러 번 굴려 평균하는 몬테카를로 평가로, 트램 tram_if_possible 은 약 −11.7, 주사위 always_stay 는 약 12.8 로 추정되지만 오차가 1/√N 으로만 줄어든다.",
+  "더 나은 방법은 5강 동적 계획법처럼 점화식을 쓰는 것이다. 기회 노드의 가치 Q(s, a, V) = Σ T·(R + γV) 를 정의하고, 정책의 행동으로 Q 를 계산해 새 값을 만드는 부트스트래핑을 L∞ 거리가 10⁻⁵ 아래로 떨어질 때까지 반복하면 정책 평가가 된다. 트램 tram_if_possible 의 정확한 가치는 −12(걷기만 하는 −9 보다 나쁘다 — 강의가 말로 잘못 비교한 부분을 노트가 바로잡는다), 주사위 always_stay 는 정확히 12 로 quit(10)보다 낫다. 거리 그래프는 '모든 상태에 닿기까지 평평 → 지수 감소' 의 두 단계를 보인다.",
+  "마지막 10분은 가치 반복이다. 정책 평가 식에서 π(s) 자리에 max_a 를 넣으면 벨만 최적 방정식 V*(s) = max_a Q(s, a, V*) 가 되고, argmax 를 기록하면 최적 정책이 나온다. 트램에서는 약 21번 반복 뒤 V*(1) = −7.333, 최적 정책은 '5 까지 걷고 5 에서 트램을 시도' 다. MDP 의 최적 정책은 항상 결정론적이며, 다음 주 게임에서는 그렇지 않다는 예고로 끝난다. 노트는 강의의 모든 숫자(첫 반복의 −102·−42, 거리 99·27.28·19.52, 주사위 거리 비 2/3)를 손과 직접 돌린 코드로 재현하고, 강의에 없는 정책 반복을 노트 보충으로 덧붙였다. 영상 제목과 내용은 일치한다."
+ ],
+ "why_now": "강화학습은 LLM 의 RLHF·추론 모델 학습, 추천·광고 입찰, 로보틱스·자율주행 계획, 재고·물류 최적화의 공통 언어가 됐고, 그 모든 것의 바닥이 이 강의의 MDP·가치·벨만 방정식이다. PPO 나 GRPO 가 쓰는 가치 함수·이점(advantage)·할인 γ, 오프라인 평가에서 쓰는 몬테카를로 롤아웃, DQN 의 '부트스트래핑된 목표값' 은 모두 오늘의 정책 평가와 가치 반복을 근사·학습판으로 바꾼 것이다. 강의가 강조하듯 탐색의 구조를 그대로 가져오되 '결과가 분포' 라는 한 가지를 더한 것이어서, 문제를 상태·행동·전이·보상으로 정형화하는 힘은 에이전트 설계와 보상 설계 실무에 바로 쓰인다. 다음 강의의 강화학습(전이와 보상을 모를 때)으로 가기 전에 반드시 손에 익혀야 할 기본기다.",
+ "chapters": [
+  {
+   "start": 0,
+   "title": "탐색에서 MDP 로 — 행동의 결과가 하나가 아닐 때",
+   "points": [
+    "지난주 탐색 문제: 시작 상태·successors(행동, 비용, 다음 상태)·is_end. 핵심 가정은 '행동 → 다음 상태' 가 하나로 정해진다는 것.",
+    "MDP(Markov Decision Process)는 탐색 문제를 일반화한다: 같은 상태에서 같은 행동을 해도 다음 상태가 확률적으로 갈린다.",
+    "현실의 결정(마트까지 걷기·자전거·차?)에는 교통·주차 같은 불확실성이 늘 끼어 있어 탐색 문제로는 담을 수 없다.",
+    "이름 풀이: Markov = 상태가 주어지면 과거와 미래가 독립, Decision = 에이전트가 행동을 고른다, Process = 시간 순으로 일어나는 일.",
+    "1950년대 operations research 에서 나온 오래된 틀이며, 탐색의 구조(상태·행동·끝 상태)는 거의 그대로 가져온다."
+   ],
+   "on_screen": "실행형 강의 코드 main(): 'Last week: search — start_state, successors (action, cost, next state), is_end', 'An action from a state deterministically leads to a new state', TravelSearchProblem(num_locs=10) 의 successors 값 상자(walk·cost 1·state 2 / tram·cost 2·state 2, is_end=false). 'This week: Markov Decision Processes (MDPs) — MDPs generalize search problems; Key difference: actions may have stochastic outcomes (e.g., rolling a dice)', 'Motivating example: How would you go to the grocery store — walk, bike or drive?', 'Origins of MDPs: Developed in operations research in the 1950s' 와 Markov·decision·process 세 줄.",
+   "explain": [
+    "CS221 의 지난 두 강의(5·6강)는 탐색이었다. 탐색 문제는 네 가지로 정의된다 — 시작 상태, 각 상태에서 가능한 행동과 그 비용·도착 상태를 돌려주는 successors, 그리고 끝에 닿았는지 판정하는 is_end. 이 틀에서 가장 중요한 가정은 결정론이다. 상태 5 에서 트램을 타면 반드시 상태 10 에 도착한다. 그래서 '어느 순서로 행동하면 총비용이 가장 작은가' 라는 질문이 성립했고, 동적 계획법과 균일 비용 탐색이 그 답을 냈다. 이번 주의 출발점은 이 가정이 현실에서 거의 성립하지 않는다는 관찰이다.",
+    "강사가 든 동기 예는 마트 가기다. 걸을지, 자전거를 탈지, 차를 몰지 정해야 하는데 차를 고르면 도로가 얼마나 막힐지, 주차 자리를 찾는 데 몇 분이 걸릴지 모른다. 같은 결정이 어떤 날은 10분, 어떤 날은 25분이 된다. 주사위를 굴리는 보드게임도 마찬가지다. 이런 문제를 탐색 문제로 억지로 옮기면 '차를 타면 반드시 15분' 처럼 한 결과를 골라 적어야 하고, 그 순간 위험(가끔 크게 늦는 것)을 모델이 보지 못한다. MDP 는 '행동 하나 → 다음 상태들의 확률 분포' 로 이 불확실성을 정면으로 모델에 넣는다.",
+    "이름의 세 단어를 하나씩 보면 개념의 윤곽이 잡힌다. Markov 는 확률론의 마르코프 연쇄에서 왔고, '현재 상태를 알면 과거는 미래를 예측하는 데 더 보탤 것이 없다' 는 성질이다. 이것은 5강에서 상태를 '앞으로의 행동·비용을 판단하는 데 필요한 모든 것' 으로 정의한 것과 같은 말이다. Decision 은 마르코프 연쇄와의 차이다 — 연쇄는 그냥 굴러가는 것을 지켜보는 시뮬레이션이지만, MDP 에는 매 순간 행동을 고르는 에이전트가 있다. Process 는 시간에 따라 차례로 일어나는 일을 가리키는 확률론 용어다. 이 틀은 1950년대 operations research(재고 관리·설비 교체 같은 의사결정)에서 나왔다.",
+    "강사는 '지난주를 잊지 말라' 고 강조한다. 상태·행동·시작 상태·끝 판정·successors 라는 인터페이스는 그대로 두고, successors 가 돌려주는 각 항목에 확률을 하나 붙이는 것이 변화의 전부이기 때문이다. 그런데 이 작은 변화가 '해(solution)가 무엇인가' 부터 '좋은 해를 어떻게 평가하나' 까지 거의 모든 것을 바꾼다. 이 강의는 그 변화를 순서대로 따라간다: MDP 정의(트램·주사위) → 해는 정책 → 정책의 가치 = 기대 효용 → 몬테카를로로 어림 → 점화식으로 정확히(정책 평가) → max 하나를 더해 최적 정책 찾기(가치 반복). 다음 강의(8강)의 강화학습은 여기서 확률과 보상을 모르는 경우다."
+   ],
+   "diagram": {
+    "title": "이번 강의의 흐름",
+    "code": "flowchart LR\n  S[탐색 문제<br/>결정론] --> M[MDP<br/>확률적 결과]\n  M --> P[해 = 정책 π]\n  P --> R[롤아웃 → 효용]\n  R --> MC[몬테카를로 평가<br/>평균으로 어림]\n  R --> PE[정책 평가<br/>점화식·정확]\n  PE --> VI[가치 반복<br/>max 하나 추가]\n  VI --> RL[다음 강의: 강화학습<br/>T·R 을 모를 때]"
+   },
+   "pitfalls": [
+    "MDP 의 'Markov' 를 '과거를 무시하라' 로 읽으면 안 된다. 필요한 과거는 상태에 넣어 두라는 뜻이다 — 5강의 '연속 트램 금지' 처럼 상태 설계가 그 일을 한다.",
+    "탐색 문제는 MDP 의 특수한 경우다(모든 확률이 1). 그러니 MDP 알고리즘은 탐색 문제도 풀 수 있지만, 그 반대는 성립하지 않는다."
+   ],
+   "check": [
+    {
+     "q": "탐색 문제와 MDP 의 '깊은' 차이를 한 문장으로 말하라.",
+     "a": "탐색 문제에서는 행동 하나가 다음 상태 하나로 이어지지만, MDP 에서는 행동 하나가 다음 상태들 위의 확률 분포로 이어진다."
+    },
+    {
+     "q": "Markov Decision Process 의 Decision 은 마르코프 연쇄와 무엇이 다르다는 뜻인가?",
+     "a": "마르코프 연쇄는 정해진 확률대로 굴러가는 것을 시뮬레이션만 하지만, MDP 에는 매 상태에서 행동을 고르는 에이전트가 있어 '어떤 행동이 최선인가' 를 묻는다."
+    }
+   ]
+  },
+  {
+   "start": 215,
+   "title": "흔들리는 트램(Flaky Tram) MDP — successors 에 확률이 붙는다",
+   "points": [
+    "블록 1…n, 걷기 i→i+1 은 1분, 트램 i→2i 는 2분 — 여기까지는 5강 교통 문제와 같다. 새 규칙: 트램이 확률 p 로 고장 나 제자리에 남는다.",
+    "목표 문구가 '최소 시간' 에서 '기대값으로 최소 시간' 으로 바뀐다. 매번 결과가 달라 평균을 봐야 하기 때문이다.",
+    "Step = (action, prob, reward, state). 걷기는 prob 1 짜리 Step 하나, 트램은 0.6 → 2i, 0.4 → i 두 Step 으로 갈라진다.",
+    "비용 대신 보상: 1분 = reward −1. 비용은 음의 보상일 뿐 관례 차이다.",
+    "고장 화살표가 자기 자신으로 돌아오므로 그래프에 순환이 생긴다. 점선 원(기회 노드)은 '상태에서 행동을 고른 뒤, 결과를 기다리는 자리' 다."
+   ],
+   "on_screen": "'Example: flaky tram problem — Locations 1 to n (same), Walking from i to i+1 takes 1 minute (same), Taking a tram from i to 2*i takes 2 minutes (same), But the tram breaks down with probability p (different), Goal: get from 1 to n in the least time in expectation (on average)'. mdp = FlakyTramMDP(num_locs=10, failure_prob=0.4). successors 코드: Step(action=\"walk\", prob=1, reward=-1, state=state+1), '# Success: move to desired state' Step(action=\"tram\", prob=1 - self.failure_prob, reward=-2, state=2*state), 실패 Step(prob=self.failure_prob, reward=-2, state=state). 값 상자에 상태 1 의 successors 세 개(walk 1 −1 →2 / tram 0.6 −2 →2 / tram 0.4 −2 →1). 이어 그래프 그림: 실선 원(상태 1…10)과 점선 원(1,walk / 1,tram …), 화살표에 'p=0.60,r=-2', 'p=0.40,r=-2', 'p=1.00,r=-1'.",
+   "explain": [
+    "5강의 교통 문제를 그대로 가져와 하나만 비튼다. 블록 1 부터 n 까지 있고, 걸어서 한 칸 가면 1분, 마법 트램을 타면 i 에서 2i 로 가는 데 2분이다. 새 규칙은 트램이 믿을 수 없다는 것이다. 확률 p(강의 예에서는 0.4 — 강사 말로 '꽤 형편없는 트램')로 고장이 나서, 2분을 쓰고도 제자리에 남는다. 탐색 문제로는 이걸 표현할 수 없다. 탐색 문제의 트램은 '도착한다' 거나 '안 도착한다' 둘 중 하나로 정해져야 하는데, 현실의 트램은 어떤 날은 오고 어떤 날은 안 온다.",
+    "그래서 목표 문장도 조심스럽게 바뀐다. 탐색에서는 '1 에서 n 까지 가장 짧은 시간' 이라고 하면 됐다. 경로가 하나로 정해지니까. 이제는 같은 계획을 따라도 운에 따라 6분이 걸리기도 하고 14분이 걸리기도 한다. 그러면 '가장 짧은 시간' 이라는 말이 무엇을 가리키는지 애매해진다. 강의의 답은 '기대값으로(평균적으로) 가장 짧은 시간' 이다. 이 '평균' 이 뒤에서 가치(value)라는 이름으로 정식화된다.",
+    "코드는 탐색 문제와 일부러 같은 인터페이스를 쓴다. start_state 는 1, is_end 는 state == n 으로 똑같다. 바뀌는 것은 successors 가 돌려주는 Step 에 prob 칸이 생기고, cost 대신 reward 를 쓰는 것뿐이다. 걷기는 Step(walk, prob=1, reward=−1, state+1) 하나다. 확률 1 은 '결정론' 을 확률의 말로 한 것이다. 트램은 범위 안(2i ≤ n)일 때만 가능하고, 한 행동에서 Step 이 두 개 나온다 — 성공(prob 0.6, reward −2, 2i)과 실패(prob 0.4, reward −2, i). 그래서 상태 1 에서는 행동은 두 개인데 successors 항목은 세 개다. 행동 수보다 결과 수가 많을 수 있다는 점이 탐색과의 차이를 그대로 보여 준다.",
+    "그래프로 그리면 두 종류의 원이 생긴다. 실선 원은 상태(1, 2, …, 10)이고, 점선 원은 '상태 s 에서 행동 a 를 이미 골랐지만 결과는 아직 모르는' 자리, 즉 기회 노드(chance node) (s, a) 다. 상태 → 기회 노드 화살표는 에이전트의 선택이고, 기회 노드 → 다음 상태 화살표는 자연(우연)의 몫이다. 트램 실패 화살표는 1,tram 에서 다시 1 로 돌아오므로 그래프에 순환이 생긴다. 탐색에서는 순환이 문제를 일으킬 수 있었지만(무한 재귀), 이번 강의의 알고리즘은 순환을 문제없이 다룬다. 확률이 어디서 오느냐는 질문에 강사는 '문제 정의의 일부이고 이 예에서는 지어낸 숫자' 라고 답한다. 실제로는 데이터로 추정하거나, 다음 시간의 강화학습처럼 확률을 몰라도 되는 방법을 쓴다."
+   ],
+   "formulas": [
+    {
+     "expr": "successors(s) = [ (walk, 1, −1, s+1) ]  ∪  [ (tram, 1−p, −2, 2s), (tram, p, −2, s) ]   (2s ≤ n 일 때만)",
+     "meaning": "s 는 지금 블록, n 은 마지막 블록(10), p 는 트램 고장 확률(0.4). 각 튜플은 (행동, 그 결과가 나올 확률, 받는 보상, 도착 상태). 보상 −1·−2 는 걸린 분을 음수로 쓴 것. 같은 행동(tram)의 확률을 더하면 (1−p)+p = 1."
+    }
+   ],
+   "example": {
+    "title": "상태 4 와 상태 6 의 successors 를 손으로 적기",
+    "body": "상태 4: 걷기 → (walk, 1, −1, 5). 트램은 2·4 = 8 ≤ 10 이라 가능 → (tram, 0.6, −2, 8), (tram, 0.4, −2, 4). 항목 3개. 상태 6: 걷기 → (walk, 1, −1, 7). 트램은 2·6 = 12 > 10 이라 불가. 항목 1개. 상태 5: 트램 성공이 곧 끝(10)이다 → (tram, 0.6, −2, 10), (tram, 0.4, −2, 5). 확인: 상태 4 의 tram 확률 합 0.6 + 0.4 = 1, walk 확률 합 1."
+   },
+   "code": {
+    "lang": "python",
+    "src": "from dataclasses import dataclass\n@dataclass(frozen=True)\nclass Step:\n    action: str\n    prob: float\n    reward: float\n    state: int\nclass FlakyTramMDP:\n    def __init__(self, n=10, failure_prob=0.4): self.n, self.p = n, failure_prob\n    def start_state(self): return 1\n    def is_end(self, s): return s == self.n\n    def discount(self): return 1.0\n    def successors(self, s):\n        out = []\n        if s + 1 <= self.n:\n            out.append(Step(\"walk\", 1.0, -1, s + 1))\n        if 2 * s <= self.n:          # 한 행동(tram)이 두 결과로 갈라진다\n            out.append(Step(\"tram\", 1 - self.p, -2, 2 * s))\n            out.append(Step(\"tram\", self.p, -2, s))      # 고장: 제자리(순환)\n        return out\nmdp = FlakyTramMDP()\nfor st in mdp.successors(1): print(st)\nprint(len(mdp.successors(5)), len(mdp.successors(6)))\n",
+    "note": "직접 돌린 출력: Step(action='walk', prob=1.0, reward=-1, state=2) / Step(action='tram', prob=0.6, reward=-2, state=2) / Step(action='tram', prob=0.4, reward=-2, state=1), 그리고 '3 1'(상태 5 는 항목 3개, 상태 6 은 1개). 강의 코드와 같은 인터페이스를 짧게 다시 쓴 것이다."
+   },
+   "pitfalls": [
+    "대본(자막)에는 '트램이 i 에서 i 로 2분' 처럼 들리는 곳이 있으나 슬라이드대로 i → 2i 가 맞다.",
+    "실패 Step 의 보상도 −2 다. 고장 나도 2분은 이미 썼다 — 실패 보상을 0 으로 적으면 트램이 지나치게 매력적으로 보인다.",
+    "범위 검사(2s ≤ n)를 빼면 존재하지 않는 상태 12 로 가는 Step 이 생긴다. 5강의 '표 제한' 검사처럼 알고리즘은 이런 빈틈을 그대로 쓴다."
+   ],
+   "check": [
+    {
+     "q": "p = 0.4 일 때 상태 3 의 successors 항목을 모두 적어라.",
+     "a": "(walk, 1, −1, 4), (tram, 0.6, −2, 6), (tram, 0.4, −2, 3). 행동 2개, 항목 3개."
+    },
+    {
+     "q": "그래프의 점선 원(기회 노드)은 무엇을 나타내며, 거기서 나가는 화살표의 주인은 누구인가?",
+     "a": "상태 s 에서 행동 a 를 고른 직후의 자리 (s, a). 거기서 나가는 화살표는 자연(우연)이 확률에 따라 고르며, 에이전트는 통제하지 못한다."
+    }
+   ]
+  },
+  {
+   "start": 560,
+   "title": "수학 표기 — Actions(s), T(s, a, s′), Reward(s, a, s′)",
+   "points": [
+    "Actions(s): 상태 s 에서 가능한 행동 집합(트램 예: {walk, tram} 또는 {walk}).",
+    "Reward(s, a, s′): s 에서 a 를 해서 s′ 에 도착했을 때 받는 보상.",
+    "T(s, a, s′): s 에서 a 를 했을 때 s′ 에 도착할 확률(전이 확률). 예: T(5, tram, 5) = 0.4, T(5, tram, 10) = 0.6.",
+    "제약: 모든 (s, a) 에 대해 Σ_{s′} T(s, a, s′) = 1 — 각 기회 노드에서 나가는 화살표 확률의 합이 1.",
+    "(s → a) 는 에이전트의 결정, (a → s′) 는 자연의 결정. 보상이 s′ 까지 의존하게 쓴 것은 정의를 편하게 하려는 선택일 뿐 표현력은 같다."
+   ],
+   "on_screen": "'Mathematical notation: Actions(s): all possible actions from state s; Reward(s, a, s′): reward that one would get if we take action a in state s and end up in state s′; T(s, a, s′): probability of ending up in state s′ after taking action a from state s; Note that for each (s, a): Σ_s′ T(s, a, s′) = 1'. 위쪽에 트램 MDP 그래프의 끝부분(8,walk → 9 → 9,walk → 10, 'p=1.00,r=-1').",
+   "explain": [
+    "코드로 정의한 MDP 를 과제와 교과서에서 쓰는 수학 기호로 옮기면 세 개의 함수가 된다. 첫째 Actions(s) 는 상태 s 에서 고를 수 있는 행동의 집합이다. 트램 문제에서 상태 1…5 는 {walk, tram}, 상태 6…9 는 {walk} 다. 둘째 T(s, a, s′) 는 전이 확률이다 — s 에서 a 를 했을 때 다음 상태가 s′ 일 확률. 셋째 Reward(s, a, s′) 는 그 한 걸음에서 받는 보상이다. 코드의 Step(action, prob, reward, state) 한 줄은 정확히 (a, T(s,a,s′), Reward(s,a,s′), s′) 네 값을 묶은 것이다.",
+    "세 기호가 모두 (s, a, s′) 라는 같은 꼴의 인자를 받는다는 점을 보자. 이 세 칸은 한 걸음 안의 두 결정을 나눠 담는다. s 에서 a 로 가는 부분은 에이전트가 정한다. a 에서 s′ 로 가는 부분은 자연이 정한다. 트램을 탈지는 내가 고르지만, 트램이 고장 날지는 내가 고를 수 없다. 이 구분이 뒤에서 '에이전트 차례에서는 max, 자연 차례에서는 확률 가중 평균' 이라는 계산 규칙으로 그대로 이어진다. 그래서 그래프에 기회 노드를 따로 그리는 것이다.",
+    "T 에는 지켜야 할 제약이 하나 있다. 어떤 (s, a) 를 고정하든 가능한 모든 s′ 에 대해 T 를 더하면 1 이어야 한다. 기회 노드에서 나가는 화살표 확률의 합이 1 이라는 뜻이다. T(5, tram, 10) = 0.6 과 T(5, tram, 5) = 0.4 를 더하면 1 이 된다. 강사는 이것을 '좋은 sanity check' 라고 부른다. MDP 를 손으로 정의하다 보면 확률을 빼먹거나 두 번 세는 실수가 흔한데, 이 합 검사로 대부분 잡힌다.",
+    "질의응답에서 나온 질문 하나 — 어떤 교재는 보상을 R(s) 나 R(s, a) 로 쓰는데 왜 여기는 R(s, a, s′) 인가? 강사의 답은 '셋은 거의 같다' 이다. 보상이 도착 상태에 따라 달라지는 MDP 도, 중간에 가짜(dummy) 상태를 하나 끼워 '그 상태로 들어가면 보상을 받는다' 로 바꾸면 R(s, a) 꼴로 옮길 수 있다. 다만 R(s, a, s′) 가 문제를 정의할 때 가장 자연스럽고(트램 성공과 실패가 다른 보상을 줄 수도 있다), 알고리즘은 바뀌지 않는다. 노트 보충: 계산에 필요한 것은 사실상 기대 보상 Σ_{s′} T(s,a,s′)·R(s,a,s′) 뿐이라 R(s, a) 로 줄여 쓰는 교재가 많다. CS229 18강 노트(xveNBYVTrqw)는 R(s) 꼴을 쓴다."
+   ],
+   "formulas": [
+    {
+     "expr": "Σ_{s′} T(s, a, s′) = 1   (모든 s, 모든 a ∈ Actions(s))",
+     "meaning": "T(s, a, s′) 는 상태 s 에서 행동 a 를 했을 때 다음 상태가 s′ 일 확률. 합은 가능한 모든 다음 상태 s′ 에 대해 취한다. 기회 노드 하나에서 나가는 화살표 확률의 합이 1 이라는 확률분포의 조건."
+    },
+    {
+     "expr": "r̄(s, a) = Σ_{s′} T(s, a, s′) · Reward(s, a, s′)",
+     "meaning": "(노트 보충) 기회 노드 (s, a) 에서 받는 즉시 보상의 기대값. R(s, a) 형식의 교재는 이 값을 R 로 쓴다고 보면 된다. 트램 예: r̄(5, tram) = 0.6·(−2) + 0.4·(−2) = −2."
+    }
+   ],
+   "example": {
+    "title": "트램 MDP 의 T 와 Reward 를 표로",
+    "body": "s = 5: T(5, walk, 6) = 1, Reward = −1. T(5, tram, 10) = 0.6, Reward(5, tram, 10) = −2. T(5, tram, 5) = 0.4, Reward(5, tram, 5) = −2. 나머지 s′ 는 T = 0. 합 검사: (5, walk) → 1, (5, tram) → 0.6 + 0.4 = 1. 상태 1…9 전체의 기회 노드 수는 걷기 9개 + 트램 5개(s = 1…5) = 14개이고, 14개 모두 합이 1 이어야 한다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "from collections import defaultdict\ndef successors(s, n=10, p=0.4):\n    out = [(\"walk\", 1.0, -1, s + 1)] if s + 1 <= n else []\n    if 2 * s <= n: out += [(\"tram\", 1 - p, -2, 2 * s), (\"tram\", p, -2, s)]\n    return out\nT, R = {}, {}\nfor s in range(1, 10):\n    for a, prob, r, s2 in successors(s):\n        T[(s, a, s2)] = T.get((s, a, s2), 0) + prob\n        R[(s, a, s2)] = r\nprint(\"T(5,tram,5) =\", T[(5, \"tram\", 5)], \" T(5,tram,10) =\", T[(5, \"tram\", 10)])\ntotal = defaultdict(float)                 # (s,a) 별 확률 합\nfor (s, a, s2), prob in T.items(): total[(s, a)] += prob\nprint(all(abs(v - 1) < 1e-12 for v in total.values()), len(total), \"chance nodes\")\nprint(\"Actions(6) =\", sorted({a for a, *_ in successors(6)}))\n",
+    "note": "직접 돌린 출력: 'T(5,tram,5) = 0.4  T(5,tram,10) = 0.6', 'True 14 chance nodes', \"Actions(6) = ['walk']\". successors 목록에서 T 사전을 만들고 모든 (s, a) 의 확률 합이 1 인지 확인한다."
+   },
+   "pitfalls": [
+    "T(s, a, s′) 의 합 조건은 s′ 에 대해서다. Σ_a 나 Σ_s 로 더해 1 을 기대하면 틀린다.",
+    "트램 실패 결과(s′ = s)를 T 표에서 빼먹으면 (s, tram) 의 확률 합이 0.6 이 되어 확률분포가 아니다."
+   ],
+   "check": [
+    {
+     "q": "트램 MDP(n=10, p=0.4)에서 T(3, tram, 6), T(3, tram, 3), T(3, tram, 4) 는?",
+     "a": "0.6, 0.4, 0. 트램은 3 에서 6(성공) 또는 3(실패)으로만 간다."
+    },
+    {
+     "q": "보상을 R(s, a, s′) 로 쓰든 R(s, a) 로 쓰든 상관없다는 말의 근거는?",
+     "a": "가짜 상태를 끼워 넣으면 한 형식을 다른 형식으로 옮길 수 있고, 계산에는 기대 즉시 보상 Σ T·R 만 쓰이므로 알고리즘이 바뀌지 않는다."
+    }
+   ]
+  },
+  {
+   "start": 791,
+   "title": "주사위 게임 MDP — 그만둘까, 계속할까",
+   "points": [
+    "매 라운드 quit 이면 10달러 받고 끝, stay 면 4달러 받고 주사위를 굴려 1·2(확률 1/3)가 나오면 끝, 아니면(2/3) 다음 라운드.",
+    "상태는 in 과 end 둘뿐. successors(in) = (quit, 1, 10, end), (stay, 1/3, 4, end), (stay, 2/3, 4, in).",
+    "강의실 투표에서 의견이 갈렸다 — 답은 뒤의 몬테카를로(약 12.8)와 정책 평가(정확히 12)에서 나온다: 계속 stay 가 낫다.",
+    "'몇 판만 하고 그만두기' 같은 섞은 전략은 의미가 없다: 상태가 in 하나뿐이라 매번 같은 상황이다.",
+    "탐색과 MDP 비교: 상태·행동·start_state·is_end·successors 는 같고, 비용↔보상은 겉모습 차이, '다음 상태가 분포' 가 깊은 차이."
+   ],
+   "on_screen": "'Let's consider another example, a dice game. For each round: You choose quit or stay. If quit, you get $10 and we end the game. If stay, you get $4 and then I roll a 6-sided dice. If the dice results in 1 or 2, we end the game. Otherwise, continue to the next round.' class DiceGameMDP(MDP): start_state → \"in\", successors → [Step(\"quit\", prob=1, reward=10, \"end\"), Step(\"stay\", prob=1/3, reward=4, \"end\"), Step(\"stay\", prob=2/3, reward=4, \"in\")], is_end → state == \"end\". 그래프: in → (in,quit) → p=1.00,r=10 → end, in → (in,stay) → p=0.33,r=4 → end, p=0.67,r=4 → in. 'Comparison between search problems and MDPs' 네 줄(start_state·is_end 공통, successors 공통, Superficial difference: costs vs rewards, Deep difference: one next state vs distribution over next states).",
+   "explain": [
+    "두 번째 예는 장난감 같은 주사위 게임이다. 매 라운드 두 가지 중 하나를 고른다. quit 을 고르면 10달러를 받고 게임이 끝난다. stay 를 고르면 4달러를 받고, 진행자가 육면체 주사위를 굴린다. 1 이나 2 가 나오면(확률 2/6 = 1/3) 게임이 끝나고, 3~6 이 나오면(2/3) 다음 라운드로 넘어가 다시 고른다. stay 는 당장은 적게 받지만, 게임을 이어 가면 4달러를 여러 번 받을 기회가 생긴다. 직관이 쉽게 답을 주지 않는 이유가 바로 여기에 있다 — 확실한 10달러와, 불확실하지만 여러 번 받을 수 있는 4달러를 견주어야 한다.",
+    "정형화는 놀랄 만큼 작다. 상태는 in(게임 중)과 end(끝) 두 개뿐이다. 시작 상태는 in, is_end 는 state == end. successors(in) 은 세 항목이다: (quit, 확률 1, 보상 10, end), (stay, 1/3, 4, end), (stay, 2/3, 4, in). stay 의 두 갈래 모두 보상이 4 라는 점을 눈여겨보자. 주사위 결과와 상관없이 4달러는 먼저 받는다. 그래프로 그리면 in 에서 점선 원 두 개(in,quit / in,stay)가 나오고, in,stay 에서 in 으로 되돌아오는 화살표가 순환을 만든다. 트램 실패처럼 이 순환이 '몇 번 돌지 모른다' 는 무한 가능성을 담는다.",
+    "강사가 손을 들어 보라고 하자 stay 파와 quit 파가 갈렸고, '세 번만 stay 하고 그만두기' 같은 섞은 전략을 고른 사람은 없었다. 강사는 이 게임에서는 섞은 전략이 의미가 없다고 미리 말해 둔다. 이유는 마르코프 성질에 있다. 게임 안에 있는 한 상황은 언제나 똑같이 in 이다. 이미 몇 판을 했는지는 앞으로 받을 돈의 분포를 바꾸지 않는다. 그러니 첫 판에 stay 가 옳았다면 열 번째 판에도 stay 가 옳다. 아래 코드는 이것을 숫자로 보여 준다: 'k 판까지 stay 하고 그다음 quit' 의 기대값은 k 가 커질수록 10 → 10.67 → 11.11 → … → 12 로 단조 증가한다. 끝까지 stay 하는 것이 가장 좋고, 그 값은 12 다.",
+    "두 예제를 보고 탐색 문제와 MDP 를 나란히 놓으면 이렇다. 공통점 — 상태와 행동이 있고, start_state 와 is_end 가 있고, successors 가 가능한 행동과 그 결과를 돌려준다. 겉모습 차이 — 탐색은 비용을 최소화하고 MDP 는 보상을 최대화한다. 강사는 이것을 머릿속에서 자유롭게 뒤집을 수 있어야 한다고 말한다. 보상 −2 는 비용 2 다. 기계학습에서 오류율과 정확도를 오가는 것과 같다. 깊은 차이 — 탐색의 행동은 다음 상태 하나로, MDP 의 행동은 다음 상태들의 분포로 간다. 강사의 표현으로 이 차이 하나 때문에 이번 강의가 따로 존재한다."
+   ],
+   "formulas": [
+    {
+     "expr": "V_k = 4 + (2/3)·V_{k−1},  V_0 = 10   →   V_∞ = 4 / (1 − 2/3) = 12",
+     "meaning": "(노트 보충) V_k 는 'k 판까지 stay 한 뒤 quit' 의 기대 보상. 한 판 stay 하면 4 를 받고, 확률 2/3 로 남은 k−1 판 전략으로 넘어간다(1/3 은 끝나서 0). k 가 무한이면 고정점 V = 4 + (2/3)V 를 풀어 12."
+    }
+   ],
+   "example": {
+    "title": "손으로: 2판까지 stay 하고 그다음 quit",
+    "body": "V_0 = 10(바로 quit). V_1 = 4 + (2/3)·10 = 4 + 6.667 = 10.667. V_2 = 4 + (2/3)·10.667 = 4 + 7.111 = 11.111. 모두 바로 quit(10)보다 크고, 판을 늘릴수록 커진다. 끝까지 stay: V = 4 + (2/3)V → (1/3)V = 4 → V = 12."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# k 라운드까지 머물다가 그다음 그만두기 — 섞은 전략이 이득인가?\ndef stay_then_quit(k):\n    v = 10.0                      # 남은 라운드 0: 바로 quit\n    for _ in range(k):            # 한 라운드 더 머무르면: 4 받고, 2/3 확률로 계속\n        v = 4 + (2 / 3) * v\n    return v\nfor k in [0, 1, 2, 3, 5, 10, 50]:\n    print(k, round(stay_then_quit(k), 4))\nprint(\"always stay:\", 4 / (1 - 2 / 3))   # V = 4 + (2/3)V  ->  V = 12\n",
+    "note": "직접 돌린 출력: k = 0, 1, 2, 3, 5, 10, 50 에서 10.0, 10.6667, 11.1111, 11.4074, 11.7366, 11.9653, 12.0, 그리고 'always stay: 11.999…'(부동소수점으로 12). 강의가 말로만 한 '섞은 전략은 의미 없다' 를 숫자로 확인한 노트 보충 코드다."
+   },
+   "pitfalls": [
+    "stay 의 두 갈래 모두 보상이 4 다. '끝나는 갈래는 0' 으로 적으면 기대값이 달라진다.",
+    "'섞은 전략이 무의미하다' 는 이 게임의 상태가 in 하나뿐이고 할인이 없기 때문이다. 판 수에 따라 보상이 바뀌는 게임이라면 판 수를 상태에 넣어야 한다."
+   ],
+   "check": [
+    {
+     "q": "stay 만 고집할 때 기대 보상이 12 임을 한 줄 식으로 보여라.",
+     "a": "V = 4 + (2/3)V 이므로 V/3 = 4, V = 12."
+    },
+    {
+     "q": "탐색 문제와 MDP 의 '겉모습 차이' 와 '깊은 차이' 는 각각 무엇인가?",
+     "a": "겉모습: 비용(최소화) vs 보상(최대화) — 부호만 바꾸면 같다. 깊은 차이: 행동의 결과가 다음 상태 하나 vs 다음 상태들의 확률 분포."
+    }
+   ]
+  },
+  {
+   "start": 1070,
+   "title": "MDP 의 해는 정책 — 상태마다 무엇을 할지 정한 함수",
+   "points": [
+    "탐색의 해는 행동의 순서(계획)였다. MDP 에서는 결과가 갈리므로 미리 정한 순서가 쓸모없다.",
+    "정책(policy) π: 상태 → 행동 함수. 어떤 상태에 떨어지든 정책을 보고 행동한다.",
+    "예: always_walk(state) 는 상태를 무시하고 walk. tram_if_possible 은 2s ≤ n 이면 tram, 아니면 walk(상태 3 → tram, 6 → walk).",
+    "5강 best-of-n 에서 쓴 정책과 같은 정의다.",
+    "노트 보충: 결정론적 정책의 수는 Π_s |Actions(s)| — 트램 n=10 이면 2⁵ = 32 개."
+   ],
+   "on_screen": "def introduce_policies(): mdp = FlakyTramMDP(num_locs=10, failure_prob=0.4). 'What does a solution to an MDP look like?' 아래 다섯 줄 — 탐색의 해는 행동의 열(a sequence of actions), MDP 에서는 결과가 불확실해 통하지 않음, 다음 행동이 앞 행동의 결과에 의존해야 함, 'In an MDP, a solution is a policy: a function that maps state to action', 어느 상태에 있든 정책이 할 일을 알려 줌. action = always_walk_policy(state=3) → \"walk\", tram_if_possible_policy(mdp, state=3) → tram, tram_if_possible_policy(mdp, state=6) → walk.",
+   "explain": [
+    "탐색 문제의 해는 행동의 목록이었다. 출발점에서 '걷기, 걷기, 트램, 트램' 처럼 끝까지 미리 계획해 두면 그만이었다. 모든 결과가 정해져 있으니 계획대로 하면 계획한 곳에 도착한다. MDP 에서 같은 일을 하려 하면 금세 막힌다. 상태 2 에서 트램을 타면 상태 4 에 갈 수도, 상태 2 에 남을 수도 있다. 두 경우에 다음에 할 일이 같을 이유가 없다. 상태 4 라면 걷는 게 나을 수 있고, 상태 2 라면 트램을 다시 시도할 수 있다. 행동의 목록은 '지금 어디 있는지' 를 보지 못하므로 이 분기를 처리할 수 없다.",
+    "그래서 MDP 의 해는 정책이다. 정책 π 는 상태를 넣으면 행동을 돌려주는 함수다. 계획을 미리 한 줄로 펴 두는 대신, '어느 상태에 있든 이렇게 하라' 는 규칙표를 들고 다니는 셈이다. 강사의 표현으로 정책은 '길잡이 빛' 이다. 실행 중에 어떤 결과가 나오든 현재 상태를 정책에 넣어 행동을 받으면 된다. 이 정의는 5강의 best-of-n 에서 이미 썼던 것과 같다 — 그때는 결정론적 세계에서 샘플링을 위해 썼고, 이제는 우연에 대응하려고 쓴다.",
+    "강의가 보인 두 정책은 일부러 단순하다. always_walk 는 상태를 아예 보지 않고 늘 walk 를 돌려준다. 상태를 무시해도 정책이다 — 함수가 상태를 인자로 받기만 하면 된다. tram_if_possible 은 트램이 범위 안이면(2·state ≤ n) tram, 아니면 walk 를 돌려준다. 상태 3 이면 6 ≤ 10 이라 tram, 상태 6 이면 12 > 10 이라 walk 다. 이 두 정책이 이번 강의 내내 비교 대상이 된다. 미리 결과를 말해 두면, 뒤의 정책 평가에서 always_walk 의 가치는 −9, tram_if_possible 은 −12 이고 가치 반복이 찾은 최적 정책은 −7.33 이다. '트램이 가능하면 무조건 탄다' 는 욕심이 오히려 그냥 걷기보다 나쁘다.",
+    "노트 보충으로 정책의 개수를 세어 보자. 결정론적 정책은 상태마다 행동 하나를 고르는 표이므로, 그 수는 상태별 행동 수의 곱이다. 트램(n=10)은 상태 1~5 에서 두 개, 6~9 에서 하나이므로 2⁵ = 32 개다. 32 개라면 하나씩 평가해 비교할 수도 있다. 하지만 상태가 100 개, 행동이 두 개만 되어도 2¹⁰⁰ 개가 되어 불가능하다. 이것이 정책을 하나씩 따지는 대신 가치 반복 같은 알고리즘이 필요한 이유다. 또 정책은 확률적일 수도 있다(상태에서 행동의 분포를 돌려주는 함수). 강화학습에서 탐험을 위해 쓰지만, 이 강의 끝에서 보듯 MDP 의 최적 정책은 결정론적 정책 중에 반드시 있다."
+   ],
+   "formulas": [
+    {
+     "expr": "π : S → A,   π(s) ∈ Actions(s)",
+     "meaning": "S 는 상태 집합, A 는 행동 집합. 정책 π 는 각 상태 s 에 그 상태에서 가능한 행동 하나를 짝짓는다."
+    },
+    {
+     "expr": "결정론적 정책의 수 = Π_{s} |Actions(s)|",
+     "meaning": "(노트 보충) 끝이 아닌 모든 상태 s 에 대해 가능한 행동 수 |Actions(s)| 를 곱한 것. 트램 n=10: 2·2·2·2·2·1·1·1·1 = 32."
+    }
+   ],
+   "example": {
+    "title": "두 정책을 상태 1…9 에 적용한 표",
+    "body": "always_walk: 1…9 모두 walk. tram_if_possible: 1 tram(2 ≤ 10), 2 tram(4), 3 tram(6), 4 tram(8), 5 tram(10), 6 walk(12 > 10), 7 walk, 8 walk, 9 walk. 상태 2 에서 트램이 실패해 2 에 남아도 정책은 다시 tram 을 돌려준다 — 행동 목록이 아니라 함수이기 때문에 가능한 일이다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import random\nN = 10\ndef always_walk_policy(state): return \"walk\"\ndef tram_if_possible_policy(state): return \"tram\" if 2 * state <= N else \"walk\"\ndef random_policy(state):                 # 확률적 정책(노트 보충)\n    return random.choice([\"walk\", \"tram\"]) if 2 * state <= N else \"walk\"\nprint([always_walk_policy(s) for s in range(1, N)])\nprint([tram_if_possible_policy(s) for s in range(1, N)])\n# 정책은 표로도 쓸 수 있다: 상태 9개 x 행동 2개(1..5) → 결정론적 정책의 수\nprint(\"결정론적 정책 수 =\", 2 ** 5 * 1 ** 4)\n",
+    "note": "직접 돌린 출력: always_walk 는 walk 9개, tram_if_possible 은 tram 5개 + walk 4개, '결정론적 정책 수 = 32'. random_policy 는 확률적 정책의 예로 넣었다(노트 보충, 실행 결과는 출력하지 않음)."
+   },
+   "pitfalls": [
+    "정책은 '시작 상태에서의 행동' 이 아니라 모든 상태에 대한 규칙이다. 도달하지 않을 것 같은 상태에서도 행동을 정해 둬야 한다(우연히 그곳에 갈 수 있다).",
+    "강의 코드의 tram_if_possible_policy 는 (mdp, state) 두 인자를 받으므로 partial 로 mdp 를 미리 채워 정책(state → action)으로 만든다."
+   ],
+   "check": [
+    {
+     "q": "MDP 의 해로 '행동의 목록' 이 왜 부족한가?",
+     "a": "같은 행동이 다른 상태로 갈릴 수 있어, 다음 행동이 앞 행동의 결과(현재 상태)에 따라 달라져야 하기 때문이다. 목록은 현재 상태를 보지 못한다."
+    },
+    {
+     "q": "트램 문제에서 n = 12 라면 결정론적 정책은 몇 개인가?",
+     "a": "트램이 가능한 상태는 2s ≤ 12 인 s = 1…6, 끝이 아닌 상태는 1…11. 2⁶ = 64 개."
+    }
+   ]
+  },
+  {
+   "start": 1226,
+   "title": "롤아웃·효용·할인 — 정책을 한 번 굴려 점수 매기기",
+   "points": [
+    "롤아웃 = MDP 에 정책을 넣고 끝날 때까지 한 번 시뮬레이션한 것(Step 의 열). 정책이 행동을 고르고 MDP 가 그 행동의 결과를 확률대로 뽑는다.",
+    "효용(utility) = 롤아웃의 할인된 보상 합: u = Σ_i γⁱ·r_i (i = 0 부터).",
+    "할인율 γ ∈ [0, 1]: 1 은 미래도 지금만큼 중요, 0 은 첫 보상만, 0.5 면 다음 걸음은 지금의 절반.",
+    "걷기만(보상 −1 × 9): γ=1 → −9, γ=0 → −1, γ=0.5 → −1.996.",
+    "실전은 1 또는 1 에 가까운 값(0.99). 할인은 '빨리 끝내라' 는 약한 길이 벌점으로도 볼 수 있다(강사 의견)."
+   ],
+   "on_screen": "'How do you evaluate a policy? A rollout is a simulation of the policy in an MDP.' np.random.seed(1); rollout = generate_rollout(mdp, always_walk_policy). generate_rollout 코드: steps = [], state = mdp.start_state(), while not mdp.is_end(state): '# Policy: choose an action' action = policy(state); '# MDP: choose a successor according to that action' successors = [s for s in mdp.successors(state) if s.action == action], probs = [...], choice = np.random.choice(len(successors), p=probs). 값 상자 rollout.steps 에 walk·prob 1·reward −1·state 2…10, discount 1, utility −9. compute_utility: rewards = [step.reward * discount ** i for i, step in enumerate(steps)]; utility = sum(rewards). 'Discounting: how important is the future — Generally represented by a discount factor 0 ≤ γ ≤ 1; Discount = 1 (no discounting) …; Discount = 0 (full discounting) …; Discount = 0.5 (half discounting) …'. 값 상자 utility_1 = −9, utility_0 = −1, rewards = [−1, −0.5, −0.25, −0.125, −0.0625, −0.0313, −0.0156, −0.0078, −0.0039].",
+   "explain": [
+    "정책이 좋은지 알려면 먼저 정책을 실제로 굴려 봐야 한다. 롤아웃(rollout)은 정책을 MDP 에 넣고 끝 상태에 닿을 때까지 한 번 시뮬레이션한 기록이다. 강화학습에서 자주 듣는 그 롤아웃과 같은 말이다. 진행 방식은 두 주체가 번갈아 움직이는 것이다. 현재 상태에서 정책이 행동을 고른다. 그러면 MDP 가 그 행동에 해당하는 successors 만 골라 확률대로 하나를 뽑는다. 뽑힌 Step 을 기록하고 상태를 그 Step 의 도착 상태로 바꾼다. is_end 가 참이 될 때까지 반복한다. always_walk 정책은 매번 결과가 하나뿐이라(확률 1) 롤아웃이 지루하게 walk 9번으로 정해진다.",
+    "롤아웃 하나에는 숫자 하나가 붙는다. 그것이 효용(utility)이고, 정의는 할인된 보상의 합이다. i 번째 걸음(0 부터 센다)의 보상에 γⁱ 을 곱해 모두 더한다. γ 는 0 과 1 사이의 할인율로, 미래를 얼마나 중요하게 볼지 정한다. γ = 1 이면 할인이 없어 모든 걸음의 보상이 같은 무게로 더해진다 — 걷기만 하는 롤아웃은 −1 이 9번이라 효용 −9. γ = 0 이면 0⁰ = 1 인 첫 보상만 남고 나머지는 모두 0 이 되어 효용 −1. γ = 0.5 면 보상이 −1, −0.5, −0.25, … 로 반씩 줄어 합이 −1.996 이다. 화면의 값 상자에 바로 이 수열이 떴다.",
+    "할인을 직관적으로 이해하는 가장 쉬운 방법은 돈의 현재 가치다. γ = 0.5 는 '오늘의 1달러가 내일은 50센트' 라는 말이다. 질의응답에서 '미래가 중요하다는 게 무슨 뜻이냐' 는 질문에 강사는 이렇게 답했다: 지금 2달러를 받는 정책과 나중에 2달러를 받는 정책이 있을 때, γ 가 작을수록 지금 받는 쪽을 고르게 된다. 아래 코드에서 '지금 2' 와 '세 걸음 뒤 3' 을 비교해 보면 γ = 1, 0.9 에서는 나중 쪽(3, 2.187)이, γ = 0.5 에서는 지금 쪽(2 대 0.375)이 이긴다. 할인율 하나가 결정을 뒤집는다.",
+    "그렇다면 γ 는 어떻게 고르나? MDP 를 쓰는 이유가 긴 안목의 결정이므로 보통은 1 이거나 1 에 아주 가깝게(0.99) 둔다. 0.5 처럼 작은 값은 '미래에 관심이 없다' 는 뜻이라 드물다. 오래 생각해 답을 내야 하는 문제라면 할인을 거의 하지 말아야 한다는 질문에, 강사는 0.99 정도는 '어서 끝내자' 는 약한 압력을 주어 행동 순서를 짧게 만드는 일종의 길이 벌점으로 볼 수 있다고 답했다(강사 의견). 할인의 형식이 왜 꼭 γⁱ 이냐는 질문에는, 이 과목에서는 이 형식만 쓰며 알고리즘에 수학적으로 편하기 때문이라고 했다. 노트 보충: 지수 할인은 '같은 상태라면 언제 도착했든 미래를 똑같이 평가' 하게 해 주어, 뒤에서 가치를 상태만의 함수 V(s) 로 쓸 수 있게 하는 성질이다. 순환이 있는 MDP 에서 γ < 1 이면 효용 합이 항상 유한하다는 장점도 있다."
+   ],
+   "formulas": [
+    {
+     "expr": "u = Σ_{i=0}^{T−1} γⁱ · r_i = r_0 + γ·r_1 + γ²·r_2 + …",
+     "meaning": "r_i 는 롤아웃의 i 번째 걸음(0 부터)에서 받은 보상, T 는 걸음 수, γ ∈ [0, 1] 은 할인율. u 는 그 롤아웃 하나의 효용(무작위 값)."
+    },
+    {
+     "expr": "Σ_{i=0}^{T−1} γⁱ = (1 − γ^T) / (1 − γ)   (γ < 1)",
+     "meaning": "등비수열의 합. 보상이 매 걸음 같은 값 c 면 u = c·(1 − γ^T)/(1 − γ). 걷기만(c = −1, T = 9, γ = 0.5): −(1 − 1/512)/0.5 = −1.996."
+    }
+   ],
+   "example": {
+    "title": "걷기만 하는 롤아웃의 효용을 세 할인율로",
+    "body": "보상 열: −1 × 9. γ = 1: −1·9 = −9. γ = 0: −1·1 + 나머지 0 = −1. γ = 0.5: −1 − 0.5 − 0.25 − 0.125 − 0.0625 − 0.03125 − 0.015625 − 0.0078125 − 0.00390625 = −1.99609. γ = 0.9: −(1 − 0.9⁹)/0.1 = −(1 − 0.3874)/0.1 = −6.126. 할인할수록 먼 미래의 비용이 덜 아프게 보인다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "def compute_utility(rewards, discount):\n    return sum(r * discount ** i for i, r in enumerate(rewards))\nwalk = [-1] * 9                      # 1→10 을 걷기만: 보상 −1 이 9 번\nfor g in [1, 0.99, 0.9, 0.5, 0]:\n    print(g, round(compute_utility(walk, g), 4))\n# 할인이 결정을 바꾸는 예: 지금 2 vs 세 걸음 뒤 3\nfor g in [1, 0.9, 0.5]:\n    now, later = compute_utility([2], g), compute_utility([0, 0, 0, 3], g)\n    print(g, \"now\" if now > later else \"later\", round(now, 3), round(later, 3))\n",
+    "note": "직접 돌린 출력: γ = 1, 0.99, 0.9, 0.5, 0 에서 −9, −8.6483, −6.1258, −1.9961, −1. 이어 '지금 2 vs 세 걸음 뒤 3' 비교: γ=1 later(2 vs 3), γ=0.9 later(2.0 vs 2.187), γ=0.5 now(2.0 vs 0.375)."
+   },
+   "pitfalls": [
+    "할인 지수는 0 부터 센다. 첫 보상에 γ 를 곱하면(γ¹ 부터 시작) 강의 정의와 값이 달라진다.",
+    "'할인을 많이 한다' 는 γ 가 작다는 뜻이다. 강사도 헷갈린다고 인정한 부분 — γ = 0.99 는 할인을 '조금' 한 것이다.",
+    "롤아웃의 효용은 무작위 값이다. 같은 정책이라도 롤아웃마다 다르다(다음 장)."
+   ],
+   "check": [
+    {
+     "q": "보상 열 [−2, −2, −1] 의 효용을 γ = 0.5 로 계산하라.",
+     "a": "−2 + 0.5·(−2) + 0.25·(−1) = −2 − 1 − 0.25 = −3.25."
+    },
+    {
+     "q": "롤아웃에서 정책과 MDP 는 각각 무슨 일을 하는가?",
+     "a": "정책은 현재 상태에서 행동을 고르고, MDP 는 그 행동의 successors 중 하나를 확률대로 뽑아 보상과 다음 상태를 정한다."
+    }
+   ]
+  },
+  {
+   "start": 1920,
+   "title": "가치 = 기대 효용, 그리고 몬테카를로 정책 평가",
+   "points": [
+    "같은 정책도 롤아웃마다 효용이 다르다(트램 고장 여부). 정책의 점수로 무작위 값 하나를 쓸 수 없다.",
+    "정책의 가치 V_π(s) = 상태 s 에서 시작해 π 를 따를 때 효용의 기대값. 무작위가 아닌 정해진 숫자다.",
+    "몬테카를로 평가: 롤아웃을 여러 번 하고 효용을 평균. 트램 tram_if_possible 20회 → −11.7, 주사위 always_stay 20회 → 12.8, always_quit → 10.",
+    "오차는 대략 (효용의 표준편차)/√(롤아웃 수) — 4배 정확하려면 16배 굴려야 한다.",
+    "결정론적 정책(always_walk·always_quit)은 롤아웃 한 번이면 정확하다."
+   ],
+   "on_screen": "rollout = generate_rollout(mdp, partial(tram_if_possible_policy, mdp)) 를 네 번 — 값 상자에 tram·prob 0.6·reward −2·state 2, 4, 그다음 prob 0.4 로 4 에 머묾, 8, walk 9…, utility −10. 'Note that the same policy yields different rollouts. So then how do we evaluate a policy? Answer: let's just rollout the policy many times and average the utilities. The expected utility (value) of a policy is defined as the average utility. V_π(s) = expected utility of starting in state s and following policy π.' monte_carlo_policy_evaluation(mdp, policy, num_rollouts): utilities = [generate_rollout(mdp, policy).utility for _ in range(num_rollouts)]; return np.mean(utilities). walk_value = −9(num_rollouts=1), utilities = [−10, −10, −10, −8, −12, −20, −16, −10, −14, −14, −12, −12, −12, −12, −10, −10, −12, −8, −10, −12]. 주사위: quit_value 10, stay 의 utilities = [4, 4, 16, 4, 20, 4, 60, 4, 4, 8, 12, 4, 4, 4, 44, 12, 16, 12, 12, …], 'Note that these values are estimates!'.",
+   "explain": [
+    "tram_if_possible 정책을 네 번 굴리면 네 번 다 다른 롤아웃이 나온다. 한 번은 상태 1 에서 트램이 바로 성공해 2, 4 로 가고, 4 에서 고장이 나 한 번 더 시도해 8 로 간 뒤 걸어서 10 에 닿는다(효용 −10). 다른 번에는 1 에서 세 번 연속 고장이 날 수도 있다. 가능한 롤아웃은 지수적으로 많다. 그러면 정책의 점수를 무엇으로 해야 할까? 롤아웃 하나의 효용은 운에 좌우되는 무작위 값이라 '이 정책은 −10 점' 이라고 말할 수 없다. 학생의 답처럼 기대값을 쓰는 것이 자연스럽다.",
+    "정의는 이렇다. 정책 π 의 가치(value) V_π(s) 는 상태 s 에서 출발해 π 를 따를 때 얻는 효용의 기대값이다. 시작 상태뿐 아니라 아무 상태에서나 정의해 두는 것이 중요하다 — 뒤의 점화식이 '다음 상태의 가치' 를 부르기 때문이다. 5강의 미래 비용 FutureCost(s) 를 떠올리면 닮은 꼴이다. 둘 다 '여기서부터 끝까지' 의 양이다. 다른 점은 미래 비용이 최적 행동을 가정한 최소값인 반면 V_π 는 정해진 정책을 따른 평균이라는 것, 그리고 비용과 보상의 부호다. 강화학습에서 듣는 가치 함수가 바로 이것이다.",
+    "기대값을 가장 순진하게 구하는 방법이 몬테카를로 정책 평가다. 롤아웃을 num_rollouts 번 하고 효용을 평균한다. 그게 전부다. always_walk 는 결정론적이라 한 번이면 −9 로 정확하다. tram_if_possible 은 20번 굴려 효용 [−10, −10, −10, −8, −12, −20, …] 의 평균 −11.7 을 얻었다. 주사위 게임에서는 always_quit 이 한 번에 10, always_stay 는 20번 굴려 4(첫 판에 탈락), 8(두 번째 판에 탈락), 운 좋게 60 까지 나왔고 평균은 12.8 이었다. 이 숫자를 믿는다면 stay 가 낫다. 강사의 말대로 돈을 최대로 벌고 싶다면 말이다. 화면에도 '이 값들은 추정치' 라는 주의가 붙어 있다.",
+    "추정치는 얼마나 정확할까? 한 학생이 '동전 결과는 계속 앞뒤로 바뀌는데 왜 하나의 값으로 수렴하나' 하고 물었다. 강사의 답: 개별 결과는 수렴하지 않지만 그 평균은 수렴한다. 공정한 동전을 백만 번 던지면 앞면 비율은 0.5 근처에 모인다(큰 수의 법칙). 수렴 속도에 대해 강사는 오차가 대략 1/√(롤아웃 수) 이라 100번이면 약 0.1 이라고 말했는데, 정확히는 효용의 표준편차 σ 를 곱해야 한다(노트 보충). 트램 정책은 σ ≈ 3.8 이라 100번 굴려도 오차가 ±0.39 정도이고, 아래 코드에서 20번 → −13.4, 100번 → −11.9, 10,000번 → −11.95 로 참값 −12 에 천천히 다가간다. 오차를 절반으로 줄이려면 롤아웃을 네 배 해야 한다. 강사가 '나쁘지 않지만 훨씬 잘할 수 있다' 고 한 이유이며, 다음 장의 점화식이 그 답이다."
+   ],
+   "formulas": [
+    {
+     "expr": "V_π(s) = E[ u | s_0 = s, 행동은 π 로 ]",
+     "meaning": "s_0 은 시작 상태, u 는 롤아웃의 할인된 효용(무작위 변수). 기대값은 자연이 고르는 모든 결과에 대해 확률로 가중한 평균. 결과 V_π(s) 는 무작위가 아닌 숫자."
+    },
+    {
+     "expr": "V̂_π(s) = (1/N) Σ_{k=1}^{N} u_k,   표준오차 ≈ σ / √N",
+     "meaning": "u_k 는 k 번째 롤아웃의 효용, N 은 롤아웃 수, σ 는 효용 하나의 표준편차. 오차가 1/√N 로만 줄어 정밀도를 10배 올리려면 100배 굴려야 한다. 강의는 σ 를 빼고 1/√N 으로 말했다."
+    }
+   ],
+   "example": {
+    "title": "주사위 게임 always_stay 효용의 분포를 손으로",
+    "body": "첫 판에 탈락: 효용 4, 확률 1/3 = 0.333. 둘째 판 탈락: 8, 확률 (2/3)(1/3) = 0.222. 셋째 판: 12, (2/3)²(1/3) = 0.148. k 째 판: 4k, (2/3)^{k−1}(1/3). 기대값 = Σ 4k·(2/3)^{k−1}(1/3) = 4·(평균 판 수) = 4·3 = 12. 한 번에 4 가 나올 확률이 가장 크지만, 가끔 60(15판) 같은 큰 값이 평균을 끌어올린다. 화면의 20회 평균 12.8 은 이 참값 12 의 추정치다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import random, statistics\ndef tram_step(s, a, n=10, p=0.4):\n    if a == \"walk\": return -1, s + 1\n    return -2, (2 * s if random.random() < 1 - p else s)\ndef rollout_utility(policy, n=10):\n    s, u = 1, 0\n    while s != n:\n        r, s = tram_step(s, policy(s)); u += r\n    return u\ntram_if_possible = lambda s: \"tram\" if 2 * s <= 10 else \"walk\"\nrandom.seed(0)\nfor k in [20, 100, 10_000]:\n    us = [rollout_utility(tram_if_possible) for _ in range(k)]\n    m, sd = statistics.mean(us), statistics.pstdev(us)\n    print(k, round(m, 3), \"± about\", round(sd / k ** 0.5, 3))\n",
+    "note": "직접 돌린 출력(random.seed(0)): 20회 −13.4 ± 약 1.05, 100회 −11.9 ± 0.386, 10,000회 −11.95 ± 0.037. 강의의 20회 결과(−11.7)와 다른 것은 난수가 달라서이며, 참값은 정책 평가가 주는 −12."
+   },
+   "pitfalls": [
+    "강의의 '오차 ≈ 1/√N' 은 효용의 표준편차가 1 정도일 때의 말이다. 효용의 흩어짐이 크면(주사위 게임의 60 같은 값) 같은 N 으로도 오차가 훨씬 크다.",
+    "몬테카를로는 끝 상태에 반드시 닿는다는 가정이 필요하다. 끝에 못 가는 정책(예: 상태 1 에서 영원히 제자리인 정책)을 넣으면 롤아웃이 끝나지 않는다.",
+    "20번 평균 12.8 > 10 이라고 stay 가 낫다고 확신하면 안 된다. 표준오차가 수 달러라 우연일 수 있다 — 정확한 값(12)은 다음 장 방법으로 확인한다."
+   ],
+   "check": [
+    {
+     "q": "always_walk 는 왜 롤아웃 한 번으로 충분한가?",
+     "a": "걷기는 확률 1 로 결과가 정해져 모든 롤아웃이 같은 효용(−9)을 내므로 평균이 곧 한 번의 값이다."
+    },
+    {
+     "q": "몬테카를로 추정의 오차를 1/10 로 줄이려면 롤아웃을 몇 배 해야 하는가?",
+     "a": "오차가 1/√N 에 비례하므로 100배."
+    }
+   ]
+  },
+  {
+   "start": 2520,
+   "title": "Q값 — 기회 노드의 가치를 한 걸음 식으로",
+   "points": [
+    "질문: 롤아웃 없이 가치를 더 빠르고 정확하게 계산할 수 있나? 답: 점화식(5강 동적 계획법의 미래 비용처럼).",
+    "Q(s, a, V) = 상태 s 에서 행동 a 를 하고, 도착한 상태에서는 V 만큼을 얻는다고 할 때의 기대 효용.",
+    "Q(s, a, V) = Σ_{s′} T(s, a, s′)·[Reward(s, a, s′) + γ·V(s′)] — 몬테카를로가 결과 하나를 뽑는 자리에서 모든 결과를 확률로 가중한다.",
+    "초기값: 끝 상태 0, 나머지 −100('아직 어떻게 가는지 모름' 표시).",
+    "워밍업: Q(9, walk) = −1, Q(5, tram) = 0.6·(−2+0) + 0.4·(−2−100) = −42."
+   ],
+   "on_screen": "def introduce_policy_evaluation(): 'So far: can perform many rollouts and average to estimate the value of a policy V_π(s). Is there a way to compute the value V_π(s) more efficiently? Yes! Key: compute the recurrences (recall dynamic programming for search problems).' introduce_q_values(): 'First, we introduce Q-values. Q(s, a, V) measures value of taking action a in state s, and obtaining some value V. Here, V(s) is the value of some policy from state s.' 칠판: 파란 원 s → 점선 원 s,a → 세 개의 s′ 로 갈라지는 화살표, 화살표마다 r, 각 s′ 옆에 γV(s′), 아래에 Q(s,a) = Σ_{s′} T(s,a,s′)[R(s,a,s′) + γV(s′)]. 값 상자 values = {1: −100, …, 9: −100, 10: 0}. compute_q_value(successors, discount, values): for step in successors: utility = step.reward + discount * values[step.state]; weighted_utilities.append(step.prob * utility); value = sum(weighted_utilities).",
+   "explain": [
+    "몬테카를로는 롤아웃을 수없이 굴려야 하고 그래도 근사값만 준다. 더 나은 길은 5강에서 이미 봤다. 탐색 문제의 미래 비용은 '첫 걸음의 비용 + 도착한 곳의 미래 비용' 이라는 점화식으로 정확히 계산됐다. MDP 의 가치도 같은 구조를 갖는다. 차이는 첫 걸음의 결과가 여럿이라는 것뿐이다. 그래서 강사는 먼저 Q값이라는 중간 양을 도입한다. Q값은 기회 노드 (s, a) 에 붙는 가치다 — 이미 행동 a 를 골랐고, 이제 자연이 결과를 정할 차례인 그 자리.",
+    "정의를 칠판 그림으로 읽어 보자. 상태 s 에서 행동 a 를 하면 기회 노드 (s, a) 에 선다. 거기서 화살표가 여러 다음 상태 s′ 로 뻗어 있고, 화살표마다 확률 T(s, a, s′) 와 보상 Reward(s, a, s′) 가 붙어 있다. 도착한 s′ 에서부터의 가치를 누군가 V(s′) 로 알려 준다고 하자. 그러면 그 화살표 하나를 탔을 때의 효용은 '즉시 보상 + γ·V(s′)' 다. 첫 걸음 뒤의 모든 것이 한 걸음 늦게 시작하므로 γ 가 한 번 곱해진다. 마지막으로 화살표들을 확률로 가중해 더한다. 이것이 Q(s, a, V) 다. 강의는 일부러 V 를 세 번째 인자로 넣는다(표준 표기는 아니다). 'V 가 무엇이든 그것을 넣으면 Q 가 나온다' 는 계산 부품으로 쓰기 위해서다.",
+    "학생이 '앞의 평가와 무엇이 다르냐' 고 묻자 강사가 핵심을 짚었다. 몬테카를로는 기회 노드에서 결과 하나를 확률대로 뽑았다. 그래서 표본 잡음이 생긴다. Q값은 모든 결과를 다 보고 확률로 가중한다. 잡음이 없다. 이제 초기 V 가 필요하다. 강의는 '그냥 여기서 끝낸다' 는 값을 쓴다. 끝 상태는 더 받을 보상이 없으니 0, 나머지 상태는 −100 이다. −100 은 '이 상태에서 끝까지 가는 법을 아직 모른다' 는 무효 표시이고 숫자 자체는 임의로 고른 큰 벌점이다.",
+    "워밍업으로 상태 9 와 tram_if_possible 정책을 보자. 상태 9 에서는 18 > 10 이라 트램이 불가능해 정책이 walk 를 준다. successors 는 (1, −1, 10) 하나뿐이니 Q(9, walk, V) = 1·(−1 + 0) = −1. 끝 바로 앞에서 걸으면 1분이 든다는 당연한 답이다. 더 흥미로운 것은 상태 5 의 트램이다. 확률 0.6 으로 10 에 도착해 −2 + V(10) = −2, 확률 0.4 로 5 에 남아 −2 + V(5) = −2 − 100 = −102. 가중합은 0.6·(−2) + 0.4·(−102) = −1.2 − 40.8 = −42. 강의실에서 학생이 바로 이 계산을 맞혔다. 아직 V(5) 가 −100 이라는 '모름' 표시이기 때문에 실패 쪽 값이 크게 나쁘게 나온다. 이 값들이 반복하면서 점점 바로잡힌다."
+   ],
+   "formulas": [
+    {
+     "expr": "Q(s, a, V) = Σ_{s′} T(s, a, s′) · [ Reward(s, a, s′) + γ · V(s′) ]",
+     "meaning": "s 는 지금 상태, a 는 고른 행동, s′ 는 가능한 다음 상태, T 는 전이 확률, Reward 는 즉시 보상, γ 는 할인율, V(s′) 는 다음 상태에서부터 얻는다고 가정한 가치(어떤 V 든 넣을 수 있다). 결과는 기회 노드 (s, a) 의 기대 효용."
+    },
+    {
+     "expr": "V⁽⁰⁾(s) = 0 (s 가 끝),  −100 (그 밖)",
+     "meaning": "강의의 초기값. '0 걸음 하고 끝내기' 의 가치에 해당한다. 끝이 아닌 상태에서 그냥 멈추는 것은 무효라 큰 벌점 −100 을 준다. 값은 임의이고, 반복이 충분하면 결과에 영향을 주지 않는다."
+    }
+   ],
+   "example": {
+    "title": "초기값으로 Q 세 개를 손으로",
+    "body": "V = {1…9: −100, 10: 0}, γ = 1. Q(9, walk) = 1·(−1 + V(10)) = −1. Q(5, tram) = 0.6·(−2 + V(10)) + 0.4·(−2 + V(5)) = 0.6·(−2) + 0.4·(−102) = −1.2 − 40.8 = −42. Q(5, walk) = 1·(−1 + V(6)) = −1 − 100 = −101. 상태 5 에서는 트램 쪽이 '끝에 닿을 가능성' 을 이미 보여 주므로 훨씬 낫다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "def compute_q_value(successors, discount, values):\n    # successors: [(prob, reward, next_state)] — 한 기회 노드에서 나가는 화살표들\n    return sum(p * (r + discount * values[s2]) for p, r, s2 in successors)\nvalues = {s: -100 for s in range(1, 10)}; values[10] = 0   # '그냥 끝낸다' 초기값\ntram5 = [(0.6, -2, 10), (0.4, -2, 5)]\nwalk9 = [(1.0, -1, 10)]\nwalk5 = [(1.0, -1, 6)]\nprint(\"Q(9, walk) =\", compute_q_value(walk9, 1.0, values))\nprint(\"Q(5, tram) =\", round(compute_q_value(tram5, 1.0, values), 4))\nprint(\"Q(5, walk) =\", compute_q_value(walk5, 1.0, values))\n",
+    "note": "직접 돌린 출력: Q(9, walk) = −1.0, Q(5, tram) = −42.0, Q(5, walk) = −101.0. 강의 compute_q_value 와 같은 계산을 (prob, reward, next_state) 튜플로 다시 쓴 것."
+   },
+   "pitfalls": [
+    "Q값 안에서 γ 는 V(s′) 에만 곱한다. 즉시 보상 Reward 에는 곱하지 않는다.",
+    "실패해서 제자리(s′ = s)로 오는 갈래도 V(s) 를 쓴다. 이 자기 참조 때문에 한 번 계산으로 끝나지 않고 반복이 필요하다.",
+    "Q(s, a, V) 의 V 는 '정답 가치' 일 필요가 없다. 아무 V 를 넣어도 계산은 되며, 좋은 V 를 넣을 때만 의미 있는 Q 가 나온다."
+   ],
+   "check": [
+    {
+     "q": "초기값 V(1…9) = −100, V(10) = 0 에서 Q(4, tram) 을 구하라.",
+     "a": "0.6·(−2 + V(8)) + 0.4·(−2 + V(4)) = 0.6·(−102) + 0.4·(−102) = −102."
+    },
+    {
+     "q": "몬테카를로와 Q값 계산이 기회 노드에서 하는 일의 차이는?",
+     "a": "몬테카를로는 결과 하나를 확률대로 뽑아(표본 잡음) 따라가고, Q값은 모든 결과를 확률로 가중해 더한다(잡음 없음)."
+    }
+   ]
+  },
+  {
+   "start": 3060,
+   "title": "부트스트래핑과 수렴 판정 — 값으로 새 값을 만든다",
+   "points": [
+    "정책 평가로 가려면 (1) 모든 상태에 Q 계산을 하고 (2) 끝내기 값 대신 방금 얻은 값을 넣어 다시 계산한다 — 부트스트래핑.",
+    "t 번 반복한 값 = '정책을 t 걸음 따르고 끝낼 때' 의 가치. t 가 커질수록 진짜 가치에 다가간다.",
+    "언제 멈추나: 연속한 두 값 사이의 최대 차이(L∞ 거리)가 허용오차(예: 10⁻⁵)보다 작으면.",
+    "예: values {1: 0.2, 2: 1.0, 3: −1.0} → new {1: 0.2, 2: 1.1, 3: 1.0}, 거리 2.",
+    "최대를 쓰는 이유: 상태 하나라도 아직 멀면 끝난 게 아니다. 같은 도구를 정책 평가와 가치 반복 둘 다 쓴다."
+   ],
+   "on_screen": "'Two things to get to policy evaluation: Do this for all states; Rinse and repeat with the values (instead of terminating values). This is called bootstrapping. After 0 steps: value of terminating. After 1 step: value of following policy for 1 step, then terminating. After 2 steps: value of following policy for 2 steps, then terminating … and so on.' introduce_convergence(): 'How do we know when an iterative algorithm is done? [0] values → [1] values → [2] values → [3] values → [4] values. We look at the maximum change between iterations.' values = {1: 0.2, 2: 1.0, 3: −1.0}, new_values = {1: 0.2, 2: 1.1, 3: 1.0}, distance = compute_distance(values, new_values) → 2. 'When the distance is less than some tolerance (say 1e-5), we terminate. This will be used for policy evaluation and value iteration.'",
+   "explain": [
+    "Q값 하나를 계산하는 법을 알았으니 정책 평가까지 두 걸음이 남았다. 첫째, 상태 9 하나가 아니라 모든 상태에서 정책의 행동으로 Q 를 계산한다. 그러면 상태마다 새 값이 하나씩 생긴다. 둘째, 그 새 값들을 다시 V 자리에 넣어 Q 를 또 계산한다. 이것을 값이 더 변하지 않을 때까지 되풀이한다. 강사는 이것을 부트스트래핑(bootstrapping)이라고 부른다. 자기 신발 끈을 잡아당겨 자기를 들어 올린다는 영어 관용구처럼, 지금의 (불완전한) 추정값을 써서 더 나은 추정값을 만든다는 뜻이다. 강화학습 알고리즘 대부분에 깔린 생각이다.",
+    "반복 t 번째 값이 무엇을 뜻하는지 정확히 말할 수 있다. 0번째는 초기값, 즉 '바로 끝내기' 의 가치다. 1번째는 '정책을 한 걸음 따른 뒤 끝내기' 의 가치다 — 한 걸음의 보상에 끝내기 값(0 또는 −100)을 더한 것. 2번째는 '두 걸음 따른 뒤 끝내기'. t 번째는 't 걸음 따른 뒤 끝내기' 다. 롤아웃이 끝나는 데 걸리는 걸음 수가 대부분 t 보다 작아지면 −100 벌점이 거의 안 끼게 되고, 값은 진짜 가치 V_π 에 다가간다. 5강 동적 계획법이 '끝에서부터 거꾸로' 미래 비용을 채웠다면, 여기서는 순환이 있어 '거꾸로' 순서가 없으니 전체를 여러 번 훑는다.",
+    "그러면 몇 번 반복해야 할까? 경사하강법에서는 '100번쯤 돌리자' 처럼 대충 정했지만, 여기서는 더 정확한 기준을 쓸 수 있다. 반복할 때마다 이전 값과 새 값을 상태별로 빼서 절댓값을 내고, 그중 가장 큰 것을 거리로 삼는다. 이것이 L∞ 거리(최대 노름)다. 강의 예에서 상태 1 은 0.2 → 0.2 로 그대로, 상태 2 는 1.0 → 1.1 로 0.1 변했지만, 상태 3 은 −1.0 → 1.0 으로 2 나 변했다. 거리는 2 다. 거리가 허용오차(예: 10⁻⁵)보다 작아지면 멈춘다.",
+    "왜 평균이 아니라 최대일까? 강사의 말대로 상태 1 이 아무리 훌륭하게 수렴했어도 상태 3 이 멀리 있으면 일이 끝난 것이 아니다. 평균을 쓰면 예의 경우 0.7 이 나와, 상태가 많을수록 한두 상태의 큰 차이가 희석된다. 모든 상태가 가까워졌다는 것을 보장하려면 최대를 봐야 한다. 노트 보충: γ < 1 인 MDP 에서는 한 번의 갱신이 L∞ 거리를 최소 γ 배로 줄인다는 정리(축약 사상)가 있어, 이 기준으로 수렴을 증명할 수 있다. 강의의 γ = 1 트램 예는 끝 상태에 반드시 닿는 정책이라 수렴하지만, 끝에 못 닿는 정책은 값이 −100 근처에 계속 머무를 수 있다."
+   ],
+   "formulas": [
+    {
+     "expr": "‖V − V′‖_∞ = max_s | V(s) − V′(s) |",
+     "meaning": "V, V′ 은 연속한 두 반복의 값(상태 → 숫자). 모든 상태 s 에서 차이의 절댓값을 구해 가장 큰 것을 취한다. 이 값이 허용오차(1e−5)보다 작으면 수렴으로 본다."
+    },
+    {
+     "expr": "V⁽ᵗ⁾ = '정책을 t 걸음 따른 뒤 끝내기' 의 가치",
+     "meaning": "t 는 반복 횟수. V⁽⁰⁾ 는 끝내기 값(0 / −100), V⁽ᵗ⁾ 는 V⁽ᵗ⁻¹⁾ 를 Q 식에 넣어 얻는다. 부트스트래핑의 뜻을 말로 쓴 것."
+    }
+   ],
+   "example": {
+    "title": "L∞ 거리와 평균 거리를 비교",
+    "body": "values = {1: 0.2, 2: 1.0, 3: −1.0}, new = {1: 0.2, 2: 1.1, 3: 1.0}. 상태별 차이: |0| = 0, |0.1| = 0.1, |2.0| = 2.0. L∞ = max = 2.0. 평균 = (0 + 0.1 + 2.0)/3 = 0.7. 상태가 1,000 개고 나머지가 모두 0 차이라면 평균은 0.0021 로 '수렴한 것처럼' 보이지만 L∞ 는 여전히 2 다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "def compute_distance(v1, v2):            # L∞: 상태별 차이 중 가장 큰 것\n    return max(abs(v1[s] - v2[s]) for s in v1)\nvalues     = {1: 0.2, 2: 1.0, 3: -1.0}\nnew_values = {1: 0.2, 2: 1.1, 3: 1.0}\nprint(compute_distance(values, new_values))        # 2.0 — 상태 3 이 아직 멀다\navg = sum(abs(values[s] - new_values[s]) for s in values) / 3\nprint(round(avg, 3), \"← 평균을 쓰면 상태 3 의 큰 차이가 묻힌다\")\n",
+    "note": "직접 돌린 출력: 2.0, 그리고 '0.7 ← 평균을 쓰면 상태 3 의 큰 차이가 묻힌다'."
+   },
+   "pitfalls": [
+    "거리가 작다고 값이 '정답에' 가깝다는 보장은 아니다. 거리는 연속한 두 반복의 차이일 뿐이다. 다만 γ < 1 이면 정답과의 거리가 대략 거리·γ/(1−γ) 이하로 묶인다(노트 보충).",
+    "트램 예처럼 초기값이 −100 이면 처음 몇 번은 거리가 99 근처에서 꿈쩍 않는다. 이것을 '발산' 으로 오해하지 말 것 — 다음 장의 첫 단계다."
+   ],
+   "check": [
+    {
+     "q": "values = {a: 3, b: 5}, new = {a: 3.5, b: 4.9} 의 L∞ 거리는?",
+     "a": "max(0.5, 0.1) = 0.5."
+    },
+    {
+     "q": "반복 2번째 값 V⁽²⁾ 는 말로 무엇의 가치인가?",
+     "a": "정책을 두 걸음 따른 뒤 끝냈을 때(끝이 아니면 −100 벌점)의 기대 효용."
+    }
+   ]
+  },
+  {
+   "start": 3240,
+   "title": "정책 평가 — 트램 tram_if_possible 을 숫자로 따라가기",
+   "points": [
+    "알고리즘: 값 초기화 → 반복(끝 상태는 0, 아니면 a = π(s) 로 Q 계산) → L∞ 거리 < 10⁻⁵ 이면 멈춤.",
+    "첫 반복: 상태 9 → −1, 상태 5 → −42, 상태 1~4 → −102, 상태 6~8 → −101.",
+    "약 27번 반복 뒤 V(1) = −12: tram_if_possible 정책은 평균 12분. 몬테카를로 20회 추정 −11.7 은 근처였을 뿐 정확하지 않았다.",
+    "칠판 점화식: V_π⁽ᵗ⁾(s) ← Σ_{s′} T(s, π(s), s′)[R(s, π(s), s′) + γ·V_π⁽ᵗ⁻¹⁾(s′)] = Q(s, π(s), V_π⁽ᵗ⁻¹⁾).",
+    "걷기만 하는 상태(6~9)는 무작위가 없어 정수로 금방 맞고, 트램 상태(1~5)는 소수로 천천히 수렴한다."
+   ],
+   "on_screen": "'The resulting algorithm is called policy evaluation.' mdp = FlakyTramMDP(num_locs=10, failure_prob=0.4); policy = partial(tram_if_possible_policy, mdp); result = policy_evaluation(mdp, policy). 코드: values = get_initial_values(mdp); distances = []; for iter in range(max_iters): new_values = {}; for state in values: if mdp.is_end(state): new_values[state] = 0; continue; '# Only consider the policy action π(s)' action = policy(state); successors = get_action_successors(mdp, state)[action]; new_values[state] = compute_q_value(successors, mdp.discount(), values); distance = compute_distance(values, new_values); if distance < tolerance: break; values = new_values. 값 상자: 1~4: −102, 5: −42.0000, 6~8: −101, 9: −1 → 중간에 1: −62.8902, 2: −26.1702, 3: −23.0598, 4: −7.8438, 5: −3.7293, 6: −4 … → 최종 iter = 27, 1: −12.0000, 2: −8.6667, 3: −7.3333, 4: −5.3333, 5: −3.3333, 6: −4, 7: −3, 8: −2, 9: −1. 칠판: V_π⁽ᵗ⁾(s) ← Σ_{s′} T(s, π(s), s′)[R(s, π(s), s′) + γV_π⁽ᵗ⁻¹⁾(s′)], 아래에 Q(s, π(s), V_π⁽ᵗ⁻¹⁾), 'action under policy π' 주석.",
+   "explain": [
+    "지금까지의 부품을 조립하면 정책 평가(policy evaluation)가 된다. 값을 초기화하고(끝 0, 나머지 −100), 반복마다 새 값 사전을 만든다. 끝 상태는 언제나 0 이다. 끝이 아닌 상태는 정책이 그 상태에서 고르는 행동 a = π(s) 하나만 본다. 그 행동의 successors 로 Q(s, a, 이전 값)을 계산해 새 값으로 삼는다. 모든 상태를 다 돌면 이전 값과 새 값의 L∞ 거리를 재고, 허용오차보다 작으면 멈추고 아니면 새 값을 이전 값 자리에 놓고 다시 돈다. 코드는 20줄 남짓이고, 핵심은 compute_q_value 한 줄이다.",
+    "트램 문제(n = 10, p = 0.4)에 tram_if_possible 을 넣고 첫 반복을 손으로 따라가 보자. 상태 9: walk, −1 + V(10) = −1. 상태 6~8: walk 뿐이고 다음 상태가 아직 −100 이라 −1 − 100 = −101. 상태 5: 앞 장에서 계산한 −42. 상태 1~4: 트램인데 성공해도 실패해도 도착하는 곳이 −100 이라 −2 − 100 = −102. 화면의 값 상자에 바로 이 숫자들이 떴다. 강의실에서 '왜 5 는 −42 냐' 는 질문에 학생이 '60% 로 바로 끝에 가니까' 라고 답한 그 계산이다. 둘째 반복에서는 상태 8 이 −1 + V(9) = −2 로, 상태 5 가 0.6·(−2) + 0.4·(−2 − 42) = −18.8 로 바로잡힌다.",
+    "반복을 계속하면 끝에서 가까운 상태부터 차례로 '끝에 닿는 길' 을 알게 된다. 걷기만 하는 상태 6~9 는 무작위가 없어 −4, −3, −2, −1 이라는 정수에 금방 고정된다. 트램을 쓰는 상태 1~5 는 실패해 제자리로 오는 갈래가 자기 값을 다시 부르기 때문에 소수로 천천히 다가간다. 약 27번 반복 뒤 거리가 10⁻⁵ 아래로 떨어지고, 값은 V(1) = −12, V(2) = −8.667, V(3) = −7.333, V(4) = −5.333, V(5) = −3.333 이다. 즉 tram_if_possible 을 따르면 평균 12분이 걸린다. 몬테카를로 20회의 −11.7 은 근처였지만 정확하지 않았다. 정책 평가는 극한에서 정확한 값을 준다.",
+    "강사는 같은 내용을 칠판에 수식으로 적었다. 반복 t 의 값 V_π⁽ᵗ⁾(s) 는 다음 상태 s′ 에 대해 T(s, π(s), s′) 로 가중한 [R(s, π(s), s′) + γ·V_π⁽ᵗ⁻¹⁾(s′)] 의 합이다. 이것은 Q 식에 행동으로 π(s) 를, 값으로 직전 반복의 V 를 넣은 Q(s, π(s), V_π⁽ᵗ⁻¹⁾) 와 같다. 수렴하면 양변의 V 가 같아져 V_π(s) = Q(s, π(s), V_π) 라는 고정점 방정식(벨만 기대 방정식)이 된다. 강사는 코드로 설명하는 게 쉬운 때와 수식으로 설명하는 게 쉬운 때가 있다고 했는데, 둘을 한 줄씩 맞대어 보는 것이 이 강의의 공부법이다. 노트 보충 — 상태 5 의 값은 손으로 바로 풀린다: V = 0.6·(−2) + 0.4·(−2 + V) 에서 0.6V = −2, V = −10/3 = −3.333."
+   ],
+   "formulas": [
+    {
+     "expr": "V_π⁽ᵗ⁾(s) ← Σ_{s′} T(s, π(s), s′) · [ R(s, π(s), s′) + γ · V_π⁽ᵗ⁻¹⁾(s′) ] = Q(s, π(s), V_π⁽ᵗ⁻¹⁾)",
+     "meaning": "t 는 반복 번호, π(s) 는 정책이 상태 s 에서 고르는 행동, T 는 전이 확률, R 은 보상, γ 는 할인율, V_π⁽ᵗ⁻¹⁾ 은 직전 반복의 값. 끝 상태는 항상 0. 정책이 행동을 정해 주므로 max 가 없다."
+    },
+    {
+     "expr": "V_π(s) = Σ_{s′} T(s, π(s), s′) · [ R(s, π(s), s′) + γ · V_π(s′) ]",
+     "meaning": "(노트 보충) 수렴한 뒤의 고정점 — 벨만 기대 방정식. 상태마다 미지수 하나, 방정식 하나인 연립 일차방정식이다."
+    }
+   ],
+   "example": {
+    "title": "tram_if_possible 의 참값을 연립방정식으로 손 계산",
+    "body": "γ = 1. 끝에서부터: V(9) = −1, V(8) = −2, V(7) = −3, V(6) = −4. V(5) = 0.6·(−2 + 0) + 0.4·(−2 + V(5)) → 0.6V(5) = −2 → V(5) = −3.333. V(4) = 0.6·(−2 + V(8)) + 0.4·(−2 + V(4)) = −2 + 0.6·(−2) + 0.4V(4) → 0.6V(4) = −3.2 → V(4) = −5.333. V(3) = −2 + 0.6·V(6) + 0.4·V(3) → 0.6V(3) = −2 − 2.4 = −4.4 → V(3) = −7.333. V(2) = −2 + 0.6·V(4) + 0.4·V(2) → 0.6V(2) = −2 − 3.2 = −5.2 → V(2) = −8.667. V(1) = −2 + 0.6·V(2) + 0.4·V(1) → 0.6V(1) = −2 − 5.2 = −7.2 → V(1) = −12. 반복이 27번 걸려 도달한 값과 같다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "def succ(s, n=10, p=0.4):                # {action: [(prob, reward, s')]}\n    d = {\"walk\": [(1.0, -1, s + 1)]} if s + 1 <= n else {}\n    if 2 * s <= n: d[\"tram\"] = [(1 - p, -2, 2 * s), (p, -2, s)]\n    return d\ndef q(trans, V, g): return sum(p * (r + g * V[s2]) for p, r, s2 in trans)\ndef policy_evaluation(policy, n=10, g=1.0, tol=1e-5):\n    V = {s: (0 if s == n else -100) for s in range(1, n + 1)}\n    for it in range(1, 1000):\n        new = {s: 0 if s == n else q(succ(s)[policy(s)], V, g) for s in V}\n        dist = max(abs(new[s] - V[s]) for s in V)\n        if it <= 2: print(it, {s: round(v, 2) for s, v in new.items()})\n        V = new\n        if dist < tol: return V, it\ntram_if_possible = lambda s: \"tram\" if 2 * s <= 10 else \"walk\"\nV, it = policy_evaluation(tram_if_possible)\nprint(\"iters\", it, {s: round(v, 4) for s, v in V.items()})\nprint(\"walk only:\", policy_evaluation(lambda s: \"walk\")[0][1])\n",
+    "note": "직접 돌린 출력: 1번째 반복 {1~4: −102, 5: −42, 6~8: −101, 9: −1, 10: 0}, 2번째 {1: −104, 2: −104, 3: −103.4, 4: −103.4, 5: −18.8, 6: −102, 7: −102, 8: −2, 9: −1}, 'iters 28' 과 최종 {1: −12.0, 2: −8.6667, 3: −7.3333, 4: −5.3333, 5: −3.3333, 6: −4, 7: −3, 8: −2, 9: −1}, 'walk only: −9.0'. 반복 수가 강의(27)와 하나 다른 것은 멈춤 검사를 세는 방식 차이다."
+   },
+   "pitfalls": [
+    "강의는 '최적 정책 −7.3 이 tram_if_possible 보다 낫고, tram_if_possible 이 걷기보다 낫다' 고 말했지만 숫자로는 tram_if_possible(−12)이 always_walk(−9)보다 나쁘다. 상태 1~3 에서 트램은 고장 위험에 비해 얻는 거리가 작아 손해다. 노트에서 바로잡는다.",
+    "값을 제자리에서(in-place) 덮어쓰면 같은 반복 안에서 새 값과 옛 값이 섞인다(가우스-자이델 방식). 그것도 수렴하지만 강의 코드와 반복별 숫자가 달라진다 — 강의는 new_values 사전을 따로 만든다.",
+    "끝 상태를 매 반복 0 으로 고정하지 않으면 끝 상태에서 successors 를 부르다 오류가 나거나 값이 흐른다."
+   ],
+   "check": [
+    {
+     "q": "첫 반복에서 상태 4 의 값이 −102 인 이유는?",
+     "a": "tram_if_possible 은 4 에서 트램을 타고, 성공(8)이든 실패(4)든 도착 상태의 초기값이 −100 이라 0.6·(−2 − 100) + 0.4·(−2 − 100) = −102."
+    },
+    {
+     "q": "always_walk 의 V(1) 을 정책 평가 없이 바로 말하라. tram_if_possible 보다 좋은가?",
+     "a": "걸음 9번 × −1 = −9. tram_if_possible 의 −12 보다 좋다(덜 걸린다)."
+    }
+   ]
+  },
+  {
+   "start": 3900,
+   "title": "수렴의 두 단계, 그리고 주사위 게임의 정확한 답 12",
+   "points": [
+    "거리 그래프: 처음엔 ~100 에서 평평하다가, 어느 순간부터 지수적으로 떨어진다.",
+    "1단계: 모든 상태가 끝에 '닿을 수 있게' 되기까지(걸음 수만큼). 2단계: 값을 다듬는 동안 거리가 기하급수적으로 감소.",
+    "주사위 게임 always_stay: V(in) 이 −100 → … → 12 로 수렴. 거리 37.33, 24.89, 16.59, 11.06 … 매번 2/3 배.",
+    "몬테카를로 추정 12.8 대 정책 평가 12 — 정책 평가는 극한에서 정확하다. stay(12) > quit(10).",
+    "정리: 정책 평가 = 주어진 정책의 가치 계산, 핵심 양은 Q값, 방법은 부트스트래핑."
+   ],
+   "on_screen": "트램 정책 평가의 distance 그래프(x: iteration 0~27, y: distance 0~100): 처음 몇 점이 100 근처, 이어 60, 25, 20, 13 … 으로 떨어져 0 에 붙는다. 'Two phases: 1. Trying to reach all the states (number of steps); 2. Distance decreases exponentially'. 값 상자 values 1: −106, 2: −105.64, 3: −104.56, 4: −44.56, 5: −9.52, 6: −103, 7: −3 … (반복 초반). 'Let's try the dice game:' result = policy_evaluation(mdp, always_stay_policy): 값 상자 in: −21.1852 → 12.0000, end: 0, distances = [37.3333, 24.8889, 16.5926, 11.0617, 7.3745, 4.9163, 3.277 …], 그래프는 x 0~40 에서 지수 감소. 'Summary: Policy evaluation: computes value of a given policy. Key quantity: Q-value Q(s, a, V) = value of taking action a in state s, and obtaining some value V. Bootstrapping: use values to compute new values using recurrence.'",
+   "explain": [
+    "수렴이 얼마나 걸리느냐는 질문에 강사는 거리 그래프를 보여 줬다. 트램 정책 평가의 L∞ 거리는 처음 몇 번 100 근처에서 꿈쩍하지 않다가, 어느 순간부터 가파르게(지수적으로) 떨어진다. 강사는 이것을 두 단계로 설명한다. 첫 단계는 '모든 상태에 손이 닿는' 시기다. 상태 1 에서 끝까지 가려면 여러 걸음이 필요한데, 반복 t 번째 값은 't 걸음 안에 끝내기' 의 가치이므로 t 가 그 걸음 수보다 작으면 −100 벌점이 남아 있다. 두 걸음 만에 1 에서 10 으로 갈 수는 없으니 그 값은 −106 근처에 머문다. 이 단계의 길이는 문제의 걸음 수가 정한다.",
+    "둘째 단계는 다듬기다. 모든 상태가 끝에 닿을 수 있게 되면 −100 벌점은 '트램이 계속 실패하는' 아주 드문 경로에만 남는다. 그 경로의 확률은 0.4, 0.4², 0.4³ … 처럼 기하급수적으로 작아지므로 거리도 기하급수적으로 줄어든다. 노트 보충: 이 감소율은 '아직 끝나지 않을 확률' 이 한 걸음마다 줄어드는 비율이며, γ < 1 이면 최소한 γ 배씩 줄어든다는 것이 보장된다.",
+    "주사위 게임에 같은 코드를 돌리면 이 두 번째 단계만 깨끗하게 보인다. 상태는 in 과 end 둘, 초기값은 in −100, end 0. always_stay 의 갱신식은 V(in) ← (1/3)·(4 + 0) + (2/3)·(4 + V(in)) = 4 + (2/3)·V(in) 이다. −100 에서 시작하면 −62.67, −37.78, −21.19 … 로 올라가 12 에 수렴한다. 거리는 37.33, 24.89, 16.59, 11.06, 7.37 … 로 정확히 매번 2/3 배씩 준다. 2/3 은 '게임이 한 판 더 이어질 확률' 이다. 몬테카를로는 12.8 을 줬지만 정책 평가는 정확히 12 다. 이로써 투표의 답이 나왔다 — stay 를 계속하는 것(12)이 바로 quit(10)보다 기대값으로 2달러 낫다.",
+    "정리하면 정책 평가는 주어진 정책의 가치를 계산한다. 가치의 정의는 롤아웃 효용의 기대값이지만, 롤아웃을 굴리지 않고 점화식으로 구한다. 열쇠는 Q값(행동 하나를 한 뒤 V 를 얻는 가치)이고, 방법은 부트스트래핑(값으로 새 값을 만들기를 반복)이다. 노트 보충: 정책이 고정되면 V_π 는 미지수 |S| 개의 연립 일차방정식 (I − γP_π)V = r_π 의 해이므로, 상태가 적으면 반복 없이 행렬로 한 번에 풀 수도 있다. 아래 코드가 주사위 게임(12)과 트램 정책(−12, −8.667 …)을 이렇게 풀어 반복의 결과와 맞춘다. 상태가 수백만이면 역행렬이 비싸서 반복법을 쓴다."
+   ],
+   "formulas": [
+    {
+     "expr": "V⁽ᵗ⁾(in) = 4 + (2/3)·V⁽ᵗ⁻¹⁾(in),   V⁽ᵗ⁾ − 12 = (2/3)·(V⁽ᵗ⁻¹⁾ − 12)",
+     "meaning": "주사위 게임 always_stay 의 정책 평가 갱신. 고정점 12 와의 차이가 매 반복 2/3 배가 되므로 거리도 2/3 배씩 줄어든다(기하급수 수렴). 2/3 은 게임이 이어질 확률."
+    },
+    {
+     "expr": "(I − γ P_π) V_π = r_π",
+     "meaning": "(노트 보충) P_π 는 정책 π 아래 상태→상태 전이 행렬(끝 상태 열 제외), r_π 는 상태별 기대 즉시 보상 Σ_{s′} T(s, π(s), s′)R(s, π(s), s′), I 는 단위행렬. 정책 평가의 고정점을 행렬로 쓴 것."
+    }
+   ],
+   "example": {
+    "title": "주사위 always_stay 정책 평가 세 번을 손으로",
+    "body": "V⁽⁰⁾(in) = −100. V⁽¹⁾ = 4 + (2/3)(−100) = 4 − 66.667 = −62.667 (거리 37.333). V⁽²⁾ = 4 + (2/3)(−62.667) = 4 − 41.778 = −37.778 (거리 24.889). V⁽³⁾ = 4 + (2/3)(−37.778) = 4 − 25.185 = −21.185 (거리 16.593). 거리 비 24.889/37.333 = 0.6667. 화면 값 상자의 in: −21.1852 와 distances [37.3333, 24.8889, 16.5926] 이 이 숫자다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\n# 주사위 게임, 항상 stay: V(in) = 4 + (2/3)·V(in)\nV, dists = -100.0, []\nfor _ in range(60):\n    new = (1/3) * 4 + (2/3) * (4 + V)\n    dists.append(abs(new - V)); V = new\n    if dists[-1] < 1e-5: break\nprint(len(dists), round(V, 5), [round(d, 4) for d in dists[:4]])\nprint(\"비율\", round(dists[2] / dists[1], 4))          # 매번 2/3 배로 준다\n# 노트 보충: 고정 정책의 가치는 연립 일차방정식이다 (I − γP)V = r\nP = np.array([[2/3]]); r = np.array([4.0])\nprint(np.linalg.solve(np.eye(1) - P, r))\n# 트램 tram_if_possible 정책도 같은 방법으로(상태 1..9, 10 은 0)\nn, p = 10, 0.4\nA, b = np.eye(9), np.zeros(9)\nfor s in range(1, 10):\n    if 2 * s <= n:\n        b[s-1] = -2; A[s-1, s-1] -= p\n        if 2 * s < n: A[s-1, 2*s-1] -= 1 - p\n    else:\n        b[s-1] = -1\n        if s + 1 < n: A[s-1, s] -= 1\nprint(np.round(np.linalg.solve(A, b), 4))\n",
+    "note": "직접 돌린 출력: '39 11.99998 [37.3333, 24.8889, 16.5926, 11.0617]', '비율 0.6667', 연립방정식 해 [12.], 트램 tram_if_possible 연립방정식 해 [−12, −8.6667, −7.3333, −5.3333, −3.3333, −4, −3, −2, −1]. 반복 39번 뒤 12 에 10⁻⁵ 이내로 닿는다."
+   },
+   "pitfalls": [
+    "거리 그래프의 평평한 첫 구간은 버그가 아니다. 초기값 −100 이 남아 있는 동안 생기는 현상이며, 초기값을 0 으로 두면 이 구간 모양이 달라진다.",
+    "할인이 없고(γ = 1) 끝에 닿지 못하는 정책이면 두 번째 단계가 오지 않는다 — 값이 무한히 내려가거나 −100 근처에 머문다."
+   ],
+   "check": [
+    {
+     "q": "주사위 게임 always_stay 정책 평가에서 반복마다 거리가 몇 배가 되며 그 숫자의 뜻은?",
+     "a": "2/3 배. 주사위가 3~6 이 나와 게임이 한 판 더 이어질 확률이다."
+    },
+    {
+     "q": "정책 평가의 거리 그래프가 처음에 평평한 이유는?",
+     "a": "반복 t 의 값은 't 걸음 안에 끝내기' 의 가치라, t 가 끝까지 필요한 걸음 수보다 작은 동안은 −100 벌점이 남아 값이 거의 변하지 않기 때문이다."
+    }
+   ]
+  },
+  {
+   "start": 4140,
+   "title": "가치 반복 — 정책 평가에 max 하나를 더하면 최적 정책",
+   "points": [
+    "정책 평가는 주어진 정책의 가치, 가치 반복(value iteration)은 최적 정책의 가치를 계산하고 그 과정에서 최적 정책도 만든다.",
+    "보통은 '함수 값 계산' 보다 '최소화' 가 훨씬 어렵지만, MDP 에서는 둘이 거의 같다 — 정책 평가 식에서 π(s) 자리에 max_a 를 넣으면 끝.",
+    "V*(s) = max_{a ∈ Actions(s)} Σ_{s′} T(s, a, s′)[R(s, a, s′) + γ·V*(s′)] = max_a Q(s, a, V*).",
+    "π*(s) = argmax_a Q(s, a, V*) — 값과 함께 행동을 기록하면 최적 정책.",
+    "Richard Bellman 의 1950년대 동적 계획법 작업 [Bellman, 1957] 에서 나왔다."
+   ],
+   "on_screen": "def introduce_value_iteration(): 'Policy evaluation: computes value of a given policy. Value iteration: computes value of the optimal policy …and in the process, constructs the optimal policy. Finding the optimal policy might seem much harder than computing the value of a policy …(think computing f(x) versus min_x f(x)) …but the two are actually quite similar! History: Richard Bellman's work on dynamic programming [Bellman, 1957]. Policy evaluation recurrence: V_π(s) = Σ_s′ T(s, π(s), s′)(R(s, π(s), s′) + γV_π(s′)). Value iteration recurrence: V*(s) = max_a Σ_s′ T(s, a, s′)(R(s, a, s′) + γV*(s′)). Key difference: optimize over actions a instead of taking policy action π(s).' value_iteration_for_state 코드: '# V^* = max_a Q(s, a, V^*)', for action, successors in get_action_successors(mdp, state).items(): actions.append(action); q_values.append(compute_q_value(successors, mdp.discount(), values)); value = np.max(q_values); action = actions[np.argmax(q_values)]. 칠판: 'value iteration  V*⁽ᵗ⁾(s) = max_a Q(s, a, V*⁽ᵗ⁻¹⁾)'.",
+   "explain": [
+    "강의 끝 10분, 강사는 '아직 MDP 를 푸는 법을 말하지 않았다' 며 가치 반복으로 넘어간다. 정책 평가가 '이 정책은 얼마나 좋은가' 에 답했다면, 가치 반복은 '가장 좋은 정책은 얼마나 좋은가' 에 답하고, 덤으로 그 최적 정책을 만들어 준다. 강사는 이것이 처음 보면 이상한 일이라고 짚는다. 보통 함수 f(x) 의 값을 계산하는 것은 쉬워도 f 를 최소화하는 x 를 찾는 것은 어렵고, 때로는 계산 불가능할 만큼 어렵다. 그런데 MDP 에서는 정책 하나를 평가하는 것과 최적 정책을 찾는 것이 거의 같은 일이다. 강사의 농담으로 '네 글자, 아니 한 줄' 차이다.",
+    "그 한 줄이 무엇인지 두 점화식을 나란히 놓으면 보인다. 정책 평가에서 상태 s 의 값은 정책이 정해 준 행동 π(s) 의 Q 값이었다. 가치 반복에서는 정책이 없으니, 가능한 모든 행동의 Q 값을 계산해 가장 큰 것을 고른다. 즉 π(s) 자리에 max_a 가 들어간다. 강사는 칠판에 V*(s) = max_a Q(s, a, V*) 라고 썼다. 반복 알고리즘으로 쓰면 오른쪽의 V* 는 직전 반복 t−1 의 값이고 왼쪽은 새 값 t 다. 그리고 그 max 를 이룬 행동(argmax)을 기록해 두면 그것이 상태 s 의 최적 행동 π*(s) 다. 이 식을 처음 세운 사람이 1950년대 동적 계획법의 Richard Bellman 이어서 벨만 최적 방정식이라 부른다.",
+    "왜 max 하나로 충분할까? 직관은 이렇다. 상태 s 에서 첫 행동을 무엇으로 하든, 그 뒤에 도착하는 상태 s′ 에서는 다시 최선을 다할 것이다. 그러면 '첫 행동 a 를 하고 그다음부터 최적으로' 의 가치가 Q(s, a, V*) 이고, 최적 정책은 이 중 가장 좋은 첫 행동을 고르면 된다. 마르코프 성질 덕분에 s′ 에서의 최선은 어떻게 s′ 에 왔는지와 무관하므로, 문제가 상태별 작은 문제로 쪼개진다. 5강의 동적 계획법이 '미래 비용 = min(첫 걸음 비용 + 도착한 곳의 미래 비용)' 이었던 것과 같은 구조이고, 차이는 기회 노드에서 확률 가중 평균이 한 번 더 끼는 것뿐이다. 정리하면 에이전트 차례(상태 노드)에서는 max, 자연 차례(기회 노드)에서는 기대값을 취한다.",
+    "작은 예로 손을 풀어 보자. 주사위 게임에서 V(in) 을 0 에서 시작해 가치 반복을 하면, 매 반복 Q(in, quit) = 10 과 Q(in, stay) = 4 + (2/3)·V(in) 중 큰 것을 고른다. 첫 반복은 10 대 4 로 quit 이 이기고 V = 10. 둘째는 10 대 4 + 6.667 = 10.667 로 stay 가 이긴다. 그다음부터 stay 가 계속 이기며 V 가 11.111, 11.407, … , 12 로 오른다. 흥미롭게도 가치 반복 초반에는 최적 행동이 quit 으로 보이다가 바뀐다. 짧은 지평선(t 걸음 안에 끝내야 할 때)에서는 확실한 10 이 낫지만, 지평선이 길어지면 stay 가 낫다는 뜻이다. 노트 보충: 할인을 넣으면 답이 바뀔 수 있다. stay 의 가치는 4/(1 − (2/3)γ) 이므로 γ = 0.9 면 정확히 10 으로 quit 과 같고, γ = 0.8 이면 8.57 로 quit 이 낫다."
+   ],
+   "formulas": [
+    {
+     "expr": "V*(s) = max_{a ∈ Actions(s)} Σ_{s′} T(s, a, s′) · [ R(s, a, s′) + γ · V*(s′) ] = max_a Q(s, a, V*)",
+     "meaning": "V*(s) 는 상태 s 에서 시작해 최적으로 행동할 때의 가치, max 는 그 상태에서 가능한 행동들에 대해 취한다. 나머지 기호는 정책 평가와 같다. 끝 상태는 V* = 0. 벨만 최적 방정식."
+    },
+    {
+     "expr": "V*⁽ᵗ⁾(s) ← max_a Q(s, a, V*⁽ᵗ⁻¹⁾),   π*(s) = argmax_a Q(s, a, V*)",
+     "meaning": "가치 반복의 갱신(t 는 반복 번호)과 최적 정책 추출. argmax 는 max 를 이루는 행동을 돌려준다."
+    }
+   ],
+   "example": {
+    "title": "주사위 게임 가치 반복을 V⁽⁰⁾ = 0 에서 손으로",
+    "body": "t=1: Q(quit) = 10, Q(stay) = 4 + (2/3)·0 = 4 → V = 10, π = quit. t=2: Q(stay) = 4 + (2/3)·10 = 10.667 > 10 → V = 10.667, π = stay. t=3: 4 + (2/3)·10.667 = 11.111 → stay. t=4: 4 + 7.407 = 11.407. t=5: 11.605. t=6: 11.737. … → 12. 최종 π*(in) = stay, V*(in) = 12."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 주사위 게임 가치 반복을 V0(in)=0 에서 손 계산과 같이 따라간다\nV = 0.0\nfor t in range(1, 8):\n    q_quit = 10\n    q_stay = (1/3) * (4 + 0) + (2/3) * (4 + V)     # = 4 + (2/3)V\n    V, a = max((q_quit, \"quit\"), (q_stay, \"stay\"))\n    print(t, round(q_quit, 4), round(q_stay, 4), \"→\", round(V, 4), a)\n# 할인을 넣으면 답이 바뀐다: stay 를 영원히 하면 V = 4 / (1 − (2/3)γ)\nfor g in [1.0, 0.9, 0.8]:\n    v_stay = 4 / (1 - (2/3) * g)\n    print(g, round(v_stay, 3), \"stay\" if v_stay > 10 else \"quit(or tie)\")\n",
+    "note": "직접 돌린 출력: t=1 '10 4.0 → 10 quit', t=2 '10 10.6667 → 10.6667 stay', t=3 11.1111, t=4 11.4074, t=5 11.6049, t=6 11.7366, t=7 11.8244(모두 stay). 할인 비교: γ=1.0 → 12.0 stay, γ=0.9 → 10.0(quit 과 동률), γ=0.8 → 8.571 quit. 할인 비교는 노트 보충."
+   },
+   "pitfalls": [
+    "가치 반복은 '정책을 하나씩 평가해 가장 좋은 것을 고르는' 방법이 아니다. 상태별로 행동의 max 를 매 반복 취할 뿐이며, 정책은 마지막에 argmax 로 읽는다.",
+    "중간 반복의 argmax 정책(예: 주사위 t=1 의 quit)은 최적이 아닐 수 있다. 수렴한 V* 로 뽑은 argmax 가 최적 정책이다.",
+    "max 는 상태 노드에서만, 확률 가중합은 기회 노드에서만 취한다. 둘의 순서를 바꿔 Σ T·max 로 쓰면 '결과를 보고 행동을 고르는' 다른 문제가 된다."
+   ],
+   "check": [
+    {
+     "q": "정책 평가 점화식을 가치 반복 점화식으로 바꾸려면 무엇을 바꾸는가?",
+     "a": "정책이 주는 행동 π(s) 대신 가능한 모든 행동에 대해 Q 를 계산하고 max_a 를 취한다(그리고 argmax 를 기록한다)."
+    },
+    {
+     "q": "주사위 게임에서 γ = 0.9 면 stay 의 가치는? 최적 행동은?",
+     "a": "V = 4 + 0.9·(2/3)·V → V(1 − 0.6) = 4 → V = 10. quit(10)과 같아 둘 다 최적(동률)."
+    }
+   ]
+  },
+  {
+   "start": 4440,
+   "title": "트램 가치 반복을 손으로 — 5 까지 걷고 그다음 트램",
+   "points": [
+    "트램 MDP 에 가치 반복을 돌리면 약 21~22번 반복에 수렴: V*(1) = −7.333.",
+    "최적 정책: 1~4 walk, 5 tram, 6~9 walk — '5 까지 걸어가서 트램을 시도한다'.",
+    "가치 비교: 최적 −7.33 > always_walk −9 > tram_if_possible −12.",
+    "거리 그래프: 99, 99, 99, 99, 27.28, 19.52 … — 처음엔 평평하다가 지수적으로 감소(정책 평가와 같은 두 단계).",
+    "직관: 일찍 트램을 타면 실패 위험 대비 얻는 거리가 작다. 5 에서는 성공하면 바로 끝이고 실패해도 다시 시도할 수 있다."
+   ],
+   "on_screen": "result = value_iteration(mdp): values 와 pi 를 같이 기록. 값 상자 iter = 21, distance = 0.000009964…, 이어 values 1: −7.333333…, 2: −6.333…, 3: −5.333…, 4: −4.333…, 5: −3.333…, 6: −4, 7: −3, 8: −2, 9: −1, 10: 0. pi: 1 walk, 2 walk, 3 walk, 4 walk, 5 tram, 6 walk, 7 walk, 8 walk, 9 walk, 10 None. distances = [99, 99, 99, 99, 27.28, 19.52…], 그래프(x 0~22)는 처음 4점이 99, 이후 급히 0 으로.",
+   "explain": [
+    "이제 강의의 결론부, 흔들리는 트램에 가치 반복을 돌린 결과를 직접 손으로 확인해 보자. 초기값은 앞과 같다(끝 0, 나머지 −100). 첫 반복에서 상태 9 는 walk 하나라 −1, 상태 5 는 walk(−1 + V(6) = −101)와 tram(−42) 중 큰 tram 으로 −42, 나머지 상태는 walk −101 과 tram −102 중 walk 로 −101 이다. 둘째 반복: 상태 8 = −1 + V(9) = −2. 상태 4 = max(walk: −1 + V(5) = −43, tram: 0.6·(−2 + V(8)) + 0.4·(−2 + V(4)) = 0.6·(−102) + 0.4·(−102) = −102) = −43. 상태 5 = max(walk: −1 + V(6) = −102, tram: 0.6·(−2) + 0.4·(−2 − 42) = −1.2 − 17.6 = −18.8) = −18.8. 셋째 반복: 상태 7 = −3, 상태 4 = −1 + V(5) = −19.8, 상태 5 = 0.6·(−2) + 0.4·(−2 − 18.8) = −9.52, 상태 3 = −1 + V(4) = −44. 상태 2 는 walk 가 −1 + V(3) = −1 − 102 = −103, tram 이 0.6·(−2 + V(4)) + 0.4·(−2 + V(2)) = 0.6·(−45) + 0.4·(−104) = −27 − 41.6 = −68.6 이라 tram 의 −68.6 이 이긴다(여기서 V 는 모두 둘째 반복의 값). 끝 가까운 곳부터 '끝에 닿는 길' 의 정보가 한 반복에 한 칸씩 거꾸로 퍼지는 것이 보인다.",
+    "넷째 반복이 지나면 상태 6~9 가 −4, −3, −2, −1 로 확정되고, 그때부터 거리가 99 에서 27.28, 19.52, 9.28, 3.71 … 로 빠르게 줄어 21~22번째에 10⁻⁵ 아래로 내려간다. 화면의 거리 목록 [99, 99, 99, 99, 27.28, 19.52 …] 이 정확히 이것이다. 수렴한 값은 V*(1) = −7.333, V*(2) = −6.333, V*(3) = −5.333, V*(4) = −4.333, V*(5) = −3.333, 그리고 6~9 는 −4 … −1 이다. 상태 5 의 값(−3.333)이 상태 6 의 값(−4)보다 좋다는 점이 눈에 띈다. 5 에서는 트램 한 번으로 끝에 갈 수 있지만 6 에서는 네 걸음을 걸어야 하기 때문이다.",
+    "argmax 로 읽은 최적 정책은 1~4 walk, 5 tram, 6~9 walk 다. 말로 하면 '5 까지 걸어가서 트램을 시도하고, 실패하면 다시 시도한다'. 강사는 이것이 직관적으로도 말이 된다고 설명한다. 트램은 불안정하고 2분이나 든다. 상태 1 에서 트램은 성공해도 한 칸(1→2)밖에 못 가는데 실패하면 2분을 날린다. 반면 상태 5 에서는 성공하면 바로 끝이고, 성공 확률 0.6 으로 몇 번이든 다시 시도할 수 있다. 시도 횟수의 기대값은 1/0.6 = 1.667 번, 시간은 2 × 1.667 = 3.333 분이다. 걸어서 5 칸 가는 5분보다 낫다. 그 결과 최적 정책의 기대 시간은 4(걷기) + 3.333 = 7.333 분이다.",
+    "숫자로 행동을 비교하면 결정이 분명해진다. 상태 4 에서 walk 의 Q 는 −1 + V*(5) = −4.333, tram 의 Q 는 −2 + 0.6·V*(8) + 0.4·V*(4) = −2 − 1.2 − 1.733 = −4.933 이라 walk 가 0.6 분 낫다. 상태 1 에서는 walk −7.333 대 tram −2 + 0.6·(−6.333) + 0.4·(−7.333) = −8.733 이다. 세 정책을 줄 세우면 최적(−7.33) > always_walk(−9) > tram_if_possible(−12). 강사가 말했듯 일반적인 문제에서 이런 답은 직관으로 뻔하지 않으며, 그래서 알고리즘이 계산해 주는 것이다. 노트 보충: 실패 확률 p 를 바꾸면 경계가 움직인다. 예컨대 p = 0 이면 트램을 탈 수 있는 모든 곳에서 타는 쪽이 유리해진다 — 아래 c13 코드에서 p 를 바꿔 직접 확인해 볼 수 있다."
+   ],
+   "formulas": [
+    {
+     "expr": "V*(5) = 0.6·(−2 + 0) + 0.4·(−2 + V*(5))  →  V*(5) = −2/0.6 = −3.333",
+     "meaning": "상태 5 에서 트램을 계속 시도하는 정책의 가치. 시도마다 −2, 성공 확률 0.6 이라 기대 시도 횟수 1/0.6, 기대 시간 2/0.6 분."
+    },
+    {
+     "expr": "V*(1) = 4·(−1) + V*(5) = −4 − 3.333 = −7.333",
+     "meaning": "1→5 는 결정론적 걷기 네 번(각 −1), 그다음 상태 5 의 가치. 최적 정책의 기대 총시간 7.333 분."
+    }
+   ],
+   "example": {
+    "title": "수렴한 V* 로 상태 3·4·5 의 Q 를 손으로 비교",
+    "body": "V* = {3: −5.333, 4: −4.333, 5: −3.333, 6: −4, 8: −2, 10: 0}. 상태 3: walk = −1 + V*(4) = −5.333, tram = −2 + 0.6·V*(6) + 0.4·V*(3) = −2 − 2.4 − 2.133 = −6.533 → walk. 상태 4: walk = −1 + V*(5) = −4.333, tram = −2 + 0.6·(−2) + 0.4·(−4.333) = −2 − 1.2 − 1.733 = −4.933 → walk. 상태 5: walk = −1 + V*(6) = −5, tram = −2 + 0.6·0 + 0.4·(−3.333) = −3.333 → tram. 그래서 '5 에서만 트램'."
+   },
+   "code": {
+    "lang": "python",
+    "src": "def succ(s, n=10, p=0.4):\n    d = {\"walk\": [(1.0, -1, s + 1)]} if s + 1 <= n else {}\n    if 2 * s <= n: d[\"tram\"] = [(1 - p, -2, 2 * s), (p, -2, s)]\n    return d\ndef q(trans, V, g=1.0): return sum(pr * (r + g * V[s2]) for pr, r, s2 in trans)\ndef value_iteration(n=10, tol=1e-5):\n    V = {s: (0 if s == n else -100) for s in range(1, n + 1)}; pi = {}\n    for it in range(1, 1000):\n        new = dict(V)\n        for s in range(1, n):\n            qs = {a: q(t, V) for a, t in succ(s).items()}\n            pi[s] = max(qs, key=qs.get); new[s] = qs[pi[s]]   # 차이는 이 max 하나\n        dist = max(abs(new[s] - V[s]) for s in V)\n        if it in (1, 2, 3, 5): print(it, [round(new[s], 2) for s in range(1, n)], round(dist, 2))\n        V = new\n        if dist < tol: return V, pi, it\nV, pi, it = value_iteration()\nprint(\"iters\", it, [round(V[s], 3) for s in range(1, 10)])\nprint(pi)\nprint({a: round(q(t, V), 3) for a, t in succ(4).items()}, {a: round(q(t, V), 3) for a, t in succ(1).items()})\n",
+    "note": "직접 돌린 출력: 1번째 [−101, −101, −101, −101, −42, −101, −101, −101, −1] 거리 99.0, 2번째 [−102, −102, −102, −43, −18.8, −102, −102, −2, −1], 3번째 [−103, −68.6, −44, −19.8, −9.52, −103, −3, −2, −1], 5번째 [−42.32, −21.8, −11.52, −6.81, −4.32, −4, −3, −2, −1] 거리 27.28, 'iters 22' 와 [−7.333, −6.333, −5.333, −4.333, −3.333, −4, −3, −2, −1], 정책 {1~4: walk, 5: tram, 6~9: walk}, 상태 4 {walk: −4.333, tram: −4.933}, 상태 1 {walk: −7.333, tram: −8.733}. 강의 화면의 거리 99, 27.28, 19.52 와 같다."
+   },
+   "pitfalls": [
+    "첫 문단 손 계산처럼 반복 중 값은 '직전 반복' 의 값으로만 계산해야 한다. 같은 반복 안에서 방금 고친 값을 쓰면 숫자가 강의와 달라진다(그래도 수렴은 한다).",
+    "강의 화면의 pi 사전에서 10 은 None 이다 — 끝 상태에는 행동이 없다. 정책을 쓸 때 끝 상태를 따로 처리해야 한다.",
+    "최적 정책이 '확률이 높은 쪽' 이나 '빠른 쪽' 을 고르는 것이 아니다. 기대 효용 전체를 비교한다 — 상태 4 의 트램은 성공하면 더 멀리 가지만 기대값으로는 손해다."
+   ],
+   "check": [
+    {
+     "q": "p = 0.4 에서 상태 5 의 최적 행동과 그 가치를 손으로 구하라.",
+     "a": "tram. V = 0.6·(−2) + 0.4·(−2 + V) → 0.6V = −2 → V = −3.333. walk 는 −1 + V*(6) = −5 로 더 나쁘다."
+    },
+    {
+     "q": "최적 정책의 기대 총시간이 7.333 분인 이유를 걷기·트램으로 나눠 설명하라.",
+     "a": "1→5 를 걷는 데 4분(결정론), 5 에서 트램을 성공할 때까지 기대 1/0.6 번 × 2분 = 3.333 분. 합 7.333."
+    }
+   ]
+  },
+  {
+   "start": 4620,
+   "title": "최적 정책은 결정론적, 정리, 그리고 노트 보충: 정책 반복",
+   "points": [
+    "MDP 의 최적 정책은 항상 결정론적 정책 중에 있다 — max 는 어떤 행동 하나에서 이뤄지므로. 동률이면 섞어도 같은 값.",
+    "다음 주 게임에서는 무작위 정책이 실제로 이득일 수 있다(상대가 있으므로).",
+    "강의 요약: MDP 는 탐색의 일반화 / 해는 정책 / MDP + 정책 → 롤아웃 → 효용 / 가치 = 기대 효용 / 정책 평가·가치 반복.",
+    "노트 보충 — 정책 반복: 평가(정확히) ↔ 개선(argmax) 을 번갈아. 트램에서 always_walk → {4, 5 tram} → {5 tram} 로 세 번 평가 만에 최적.",
+    "다음 강의(8강): T 와 R 을 모를 때 정책을 찾는 강화학습."
+   ],
+   "on_screen": "'Summary: Value iteration: computes value of the optimal policy; Takes max over actions compared to policy evaluation, which takes policy action; Bootstrapping: use values to compute new values using recurrence (same)'. 전체 요약: 'MDPs: generalize search problems (action result in distribution over next states); Policy (solution): maps state to action; MDP + policy → rollout → utility; Value of policy = expected utility of policy; Policy evaluation: computes value of a given policy; Value iteration: computes value of the optimal policy'. 칠판에는 정책 평가 점화식이 남아 있다. 정책 반복은 강의에 나오지 않는다(노트 보충).",
+   "explain": [
+    "끝 무렵 질문 하나 — 가치 반복이 내놓는 최적 정책은 언제나 결정론적인가? 강사의 답은 MDP 에서는 그렇다는 것이다. 상태마다 Q 값들의 max 를 취하는데, max 는 언제나 어떤 행동 하나에서 이뤄진다. 그 행동을 고르면 최적 가치를 얻는다. 두 행동의 Q 가 같다면 둘을 어떤 비율로 섞어도 같은 값이 나오지만, 굳이 섞을 이유는 없다. 앞의 주사위 게임에서 '섞은 전략은 의미 없다' 고 한 것도 같은 이야기다. 강사는 다음 주 게임에서는 이것이 깨진다고 예고한다. 가위바위보처럼 상대가 내 정책을 알고 대응하는 상황에서는 무작위가 실제로 도움이 된다.",
+    "강의 전체를 되짚으면 이렇다. MDP 는 행동의 결과가 다음 상태 하나가 아니라 분포라는 점에서 탐색 문제를 일반화한다. 그래서 해는 행동 목록이 아니라 상태마다 행동을 주는 정책이다. MDP 에 정책을 넣고 굴리면 롤아웃이 나오고, 롤아웃은 효용(할인된 보상 합)이라는 무작위 숫자를 만든다. 그 기대값이 정책의 가치로, 무작위가 아닌 숫자다. 정책 평가는 주어진 정책의 가치를, 가치 반복은 최적 정책의 가치와 정책을 계산하며, 두 알고리즘은 Q 값과 부트스트래핑을 공유하고 max 하나만 다르다. 강사의 공부 조언은 알고리즘을 외우지 말고 점화식이 어떻게 작동하는지 이해하라는 것이다.",
+    "노트 보충으로, 과제와 교재에서 자주 같이 나오는 정책 반복(policy iteration)을 정리한다. 강의에는 나오지 않았다. 아이디어는 정책 평가와 '개선' 을 번갈아 하는 것이다. (1) 임의의 정책 π 에서 시작해 V_π 를 정확히 구한다(정책 평가, 또는 연립방정식). (2) 각 상태에서 argmax_a Q(s, a, V_π) 로 새 정책을 만든다(정책 개선). (3) 정책이 바뀌지 않으면 멈춘다. 정책 개선 정리에 따르면 새 정책의 가치는 모든 상태에서 이전 이상이고, 결정론적 정책의 수가 유한하므로 반드시 멈춘다. 트램에서 always_walk(V(1) = −9)로 시작하면, 상태 4 의 tram Q = −2 + 0.6·V(8) + 0.4·V(4) = −2 − 1.2 − 2.4 = −5.6 이 walk 의 −6 보다 크고 상태 5 도 tram(−4)이 walk(−5)보다 커서 {4, 5 에서 tram} 으로 바뀐다(V(1) = −8.333). 다시 개선하면 상태 4 는 walk(−4.333) 가 tram(−5.333) 보다 나아져 {5 에서만 tram} 이 되고(V(1) = −7.333), 한 번 더 개선해도 바뀌지 않아 멈춘다. 평가 세 번이면 끝난다.",
+    "가치 반복과 정책 반복은 어떻게 다를까? 가치 반복은 한 번의 반복이 싸다(상태 × 행동 × 다음 상태). 대신 반복을 많이(트램 22번) 한다. 정책 반복은 한 번의 평가가 비싸지만(연립방정식이나 내부 반복), 바깥 반복 수가 아주 적다(트램 3번). 둘 다 같은 V*, π* 에 도달한다. 이 강의의 뼈대는 CS229 18강 노트(xveNBYVTrqw)의 벨만 방정식·가치 반복과, CS230 5강 노트(4E27qlfYw0A)의 Q 표·벨만 방정식에서도 다른 표기로 다시 만난다. 다음 강의(CS221 8강)는 T 와 R 을 모른 채 경험(롤아웃)만으로 이 값을 배우는 강화학습이다 — 오늘의 몬테카를로 평가와 부트스트래핑이 각각 몬테카를로 학습과 TD·Q 학습으로 자란다."
+   ],
+   "formulas": [
+    {
+     "expr": "π_{k+1}(s) = argmax_a Σ_{s′} T(s, a, s′) · [ R(s, a, s′) + γ · V_{π_k}(s′) ]",
+     "meaning": "(노트 보충) 정책 반복의 개선 단계. k 는 바깥 반복 번호, V_{π_k} 는 정책 π_k 를 정확히 평가한 값. 정책 개선 정리: 모든 s 에서 V_{π_{k+1}}(s) ≥ V_{π_k}(s), 같으면 최적."
+    },
+    {
+     "expr": "max_a Q(s, a, V*) 는 어떤 a* 에서 달성  →  π*(s) = a* (결정론적)",
+     "meaning": "행동 집합이 유한하면 max 는 특정 행동에서 이뤄지므로 최적 가치를 내는 결정론적 정책이 항상 있다. 확률적 정책은 Q 의 가중평균이라 max 를 넘을 수 없다."
+    }
+   ],
+   "example": {
+    "title": "트램 정책 반복 첫 개선을 손으로",
+    "body": "π_0 = always_walk, V = {1: −9, 2: −8, 3: −7, 4: −6, 5: −5, 6: −4, 7: −3, 8: −2, 9: −1}. 상태 3: walk = −1 + V(4) = −7, tram = −2 + 0.6·V(6) + 0.4·V(3) = −2 − 2.4 − 2.8 = −7.2 → walk. 상태 4: walk = −6, tram = −2 + 0.6·(−2) + 0.4·(−6) = −2 − 1.2 − 2.4 = −5.6 → tram! 상태 5: walk = −5, tram = −2 + 0 + 0.4·(−5) = −4 → tram. 상태 1: tram = −2 + 0.6·(−8) + 0.4·(−9) = −10.4 < −9 → walk. π_1 = {4, 5 tram}. 평가하면 V(4) 는 0.6V = −2 − 1.2 → −5.333, V(1) = −3 + V(4) = −8.333."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nn, p = 10, 0.4\ndef succ(s):\n    d = {\"walk\": [(1.0, -1, s + 1)]} if s + 1 <= n else {}\n    if 2 * s <= n: d[\"tram\"] = [(1 - p, -2, 2 * s), (p, -2, s)]\n    return d\ndef evaluate(pi):                        # (I − P_π)V = r_π 를 정확히 푼다\n    A, b = np.eye(n), np.zeros(n)        # 인덱스 s−1, 끝 상태 10 은 V = 0\n    for s in range(1, n):\n        for pr, r, s2 in succ(s)[pi[s]]:\n            b[s-1] += pr * r; A[s-1, s2-1] -= pr\n    return np.linalg.solve(A, b)\ndef q(V, trans): return sum(pr * (r + V[s2-1]) for pr, r, s2 in trans)\npi = {s: \"walk\" for s in range(1, n)}    # 시작: 항상 걷기\nfor k in range(1, 10):\n    V = evaluate(pi)\n    new = {s: max(succ(s), key=lambda a: q(V, succ(s)[a])) for s in range(1, n)}\n    print(k, np.round(V[:9], 3), [s for s in new if new[s] == \"tram\"])\n    if new == pi: break\n    pi = new\n",
+    "note": "직접 돌린 출력: '1 [−9 −8 −7 −6 −5 −4 −3 −2 −1] [4, 5]', '2 [−8.333 −7.333 −6.333 −5.333 −3.333 −4 −3 −2 −1] [5]', '3 [−7.333 −6.333 −5.333 −4.333 −3.333 −4 −3 −2 −1] [5]'. 각 줄은 (바깥 반복, 현재 정책의 가치, 개선 후 트램을 타는 상태). 강의에 없는 노트 보충 코드다."
+   },
+   "diagram": {
+    "title": "정책 평가·가치 반복·정책 반복의 관계",
+    "code": "flowchart TB\n  Q[\"Q(s,a,V) = Σ T·(R + γV)\"]\n  Q -->|a = π(s)| PE[정책 평가<br/>V_π]\n  Q -->|max_a| VI[가치 반복<br/>V*, π* = argmax]\n  PE --> IMP[정책 개선<br/>argmax_a Q(s,a,V_π)]\n  IMP -->|새 정책| PE\n  IMP -.->|바뀌지 않으면| OPT[최적 정책 π*]\n  VI --> OPT"
+   },
+   "pitfalls": [
+    "정책 반복의 평가 단계에서 '대충' 평가하고 개선하면(몇 번만 반복) 수정 정책 반복이 된다. 그것도 수렴하지만 '바깥 반복 수가 적다' 는 성질이 약해진다.",
+    "개선 단계에서 동률일 때 행동을 매번 다르게 고르면 정책이 두 동률 정책 사이를 오가며 멈추지 않을 수 있다. 동률이면 현재 행동을 유지한다.",
+    "'최적 정책은 결정론적' 은 단일 에이전트 MDP 의 이야기다. 상대가 있는 게임(다음 주)에서는 성립하지 않는다."
+   ],
+   "check": [
+    {
+     "q": "왜 MDP 에서는 결정론적 최적 정책이 항상 있는가?",
+     "a": "상태별 최적 가치는 유한 개 Q 값의 max 이고, max 는 어떤 행동 하나에서 이뤄지므로 그 행동을 고르는 결정론적 정책이 최적 가치를 낸다. 확률적 정책은 Q 의 가중평균이라 max 를 넘지 못한다."
+    },
+    {
+     "q": "정책 반복의 한 바퀴를 두 단계로 말하라.",
+     "a": "(1) 현재 정책을 평가해 V_π 를 구한다. (2) 각 상태에서 argmax_a Q(s, a, V_π) 로 정책을 개선한다. 정책이 바뀌지 않으면 멈춘다."
+    },
+    {
+     "q": "가치 반복과 정책 반복 중 바깥 반복 수가 적은 쪽은? 대가는?",
+     "a": "정책 반복(트램 3번). 대신 한 번의 평가가 비싸다(연립방정식이나 내부 반복)."
+    }
+   ]
+  }
+ ],
+ "concepts": [
+  {
+   "term": "마르코프 결정 과정(MDP)",
+   "explain": "시작 상태·행동·전이 확률 T(s, a, s′)·보상 Reward(s, a, s′)·끝 판정·할인율로 정의되는 의사결정 문제. 탐색 문제에서 행동의 결과를 분포로 일반화한 것.",
+   "at": 80
+  },
+  {
+   "term": "마르코프 성질",
+   "explain": "현재 상태가 주어지면 과거와 미래가 독립. 필요한 과거 정보는 상태에 넣어 둔다는 뜻이기도 하다.",
+   "at": 140
+  },
+  {
+   "term": "기회 노드(chance node)",
+   "explain": "상태 s 에서 행동 a 를 고른 직후의 자리 (s, a). 여기서 자연이 확률에 따라 다음 상태를 정한다. 그림의 점선 원.",
+   "at": 470
+  },
+  {
+   "term": "전이 확률 T(s, a, s′)",
+   "explain": "s 에서 a 를 했을 때 s′ 로 갈 확률. 모든 (s, a) 에서 s′ 에 대한 합이 1.",
+   "at": 660
+  },
+  {
+   "term": "보상 Reward(s, a, s′)",
+   "explain": "한 걸음에서 받는 숫자. 비용은 음의 보상(−1 = 1분). R(s) 나 R(s, a) 로 쓰는 교재와 표현력은 같다.",
+   "at": 640
+  },
+  {
+   "term": "정책(policy) π",
+   "explain": "상태 → 행동 함수. MDP 의 해. 결과가 갈리므로 행동 목록 대신 상태마다 할 일을 정한다.",
+   "at": 1090
+  },
+  {
+   "term": "롤아웃(rollout)",
+   "explain": "MDP 에 정책을 넣고 끝까지 한 번 시뮬레이션한 Step 의 열. 정책이 행동을, MDP 가 결과를 뽑는다.",
+   "at": 1226
+  },
+  {
+   "term": "효용(utility)",
+   "explain": "롤아웃 하나의 할인된 보상 합 Σ γⁱ r_i. 롤아웃마다 다른 무작위 값.",
+   "at": 1340
+  },
+  {
+   "term": "할인율 γ",
+   "explain": "0~1 의 수. 미래 보상에 γⁱ 을 곱해 덜 중요하게 본다. 1 은 할인 없음, 0 은 첫 보상만. 실전은 1 또는 0.99.",
+   "at": 1380
+  },
+  {
+   "term": "가치 V_π(s)",
+   "explain": "상태 s 에서 시작해 π 를 따를 때 효용의 기대값. 무작위가 아닌 숫자.",
+   "at": 1980
+  },
+  {
+   "term": "몬테카를로 정책 평가",
+   "explain": "롤아웃을 N 번 굴려 효용을 평균. 오차가 σ/√N 으로만 줄어든다.",
+   "at": 2080
+  },
+  {
+   "term": "Q값 Q(s, a, V)",
+   "explain": "s 에서 a 를 하고 도착한 곳에서 V 를 얻을 때의 기대 효용 Σ T·(R + γV). 정책 평가와 가치 반복의 공통 부품.",
+   "at": 2580
+  },
+  {
+   "term": "부트스트래핑",
+   "explain": "지금의 값 추정으로 점화식을 계산해 새 값을 만들고, 이를 반복하는 것. t 번째 값 = t 걸음 따르고 끝내기의 가치.",
+   "at": 3060
+  },
+  {
+   "term": "L∞ 거리",
+   "explain": "연속한 두 값 사이 상태별 차이의 최대. 허용오차(10⁻⁵)보다 작으면 수렴으로 본다.",
+   "at": 3180
+  },
+  {
+   "term": "정책 평가(policy evaluation)",
+   "explain": "V_π⁽ᵗ⁾(s) ← Q(s, π(s), V_π⁽ᵗ⁻¹⁾) 를 수렴할 때까지 반복해 주어진 정책의 가치를 정확히 구한다.",
+   "at": 3240
+  },
+  {
+   "term": "가치 반복(value iteration)",
+   "explain": "V*⁽ᵗ⁾(s) ← max_a Q(s, a, V*⁽ᵗ⁻¹⁾) 를 반복해 최적 가치를 구하고 argmax 로 최적 정책을 읽는다.",
+   "at": 4140
+  },
+  {
+   "term": "벨만 최적 방정식",
+   "explain": "V*(s) = max_a Σ T(s, a, s′)[R + γV*(s′)]. Richard Bellman(1957)의 동적 계획법에서 유래.",
+   "at": 4200
+  },
+  {
+   "term": "결정론적 최적 정책",
+   "explain": "MDP 에서는 max 가 한 행동에서 이뤄지므로 최적 정책이 결정론적 정책 중에 항상 있다. 게임에서는 성립하지 않는다.",
+   "at": 4620
+  },
+  {
+   "term": "정책 반복(노트 보충)",
+   "explain": "정책 평가와 argmax 개선을 번갈아 하는 방법. 정책이 바뀌지 않으면 최적. 트램에서 평가 세 번.",
+   "at": 4680
+  }
+ ],
+ "trends": [
+  {
+   "claim": "MDP 는 1950년대 operations research 에서 나온 오래된 틀이며, 가치 반복은 Richard Bellman 의 동적 계획법(1957)에 뿌리를 둔다.",
+   "evidence": "슬라이드 'Origins of MDPs: Developed in operations research in the 1950s' 와 '[Bellman, 1957]'.",
+   "at": 150
+  },
+  {
+   "claim": "부트스트래핑(값으로 새 값을 만드는 반복)은 강화학습 알고리즘 전반에 흔한 생각이다(강사 의견).",
+   "evidence": "정책 평가 요약에서 강화학습 알고리즘에 자주 등장하는 아이디어라고 언급.",
+   "at": 4140
+  },
+  {
+   "claim": "할인율은 보통 1 이나 0.99 처럼 1 에 가깝게 두며, 0.99 는 행동 순서를 짧게 만드는 약한 길이 벌점으로 볼 수 있다(강사 의견).",
+   "evidence": "할인에 관한 질의응답에서 '어서 끝내자는 약한 압력' 이라고 설명.",
+   "at": 1880
+  },
+  {
+   "claim": "실제로는 전이 확률을 모르는 경우가 많고, 이때는 확률을 추정하거나 확률을 몰라도 되는 강화학습을 쓴다.",
+   "evidence": "확률이 어디서 오느냐는 질문에 다음 강의(강화학습)를 예고하며 답함.",
+   "at": 600
+  },
+  {
+   "claim": "단일 에이전트 MDP 에서는 결정론적 정책으로 충분하지만, 상대가 있는 게임에서는 무작위 정책이 실제로 도움이 된다.",
+   "evidence": "최적 정책이 결정론적이냐는 질문에 대한 답과 다음 주 게임 단원 예고.",
+   "at": 4660
+  }
+ ],
+ "study": {
+  "prereq": [
+   "CS221 5강 탐색 I(노트 fPESauMaJYA) — 탐색 문제 정형화, 미래 비용, 동적 계획법",
+   "확률 기초: 기대값, 조건부 확률, 등비급수 합, 큰 수의 법칙",
+   "파이썬 dict·dataclass·functools.partial, NumPy 기본(np.random.choice, np.linalg.solve)",
+   "CS221 1~4강(노트 yaLEGZuIIgE·ypZJaTqrNdk·Mbe5ICIUw5Q·89NND-Ca0yY)의 반복 최적화 감각(경사하강법의 '언제 멈추나')"
+  ],
+  "steps": [
+   {
+    "do": "트램 MDP(n=10, p=0.4)를 종이에 그래프로 그리고(실선 상태·점선 기회 노드), 모든 (s, a) 의 T 합이 1 인지 c03 코드로 확인한다.",
+    "why": "MDP 를 정확히 정형화하는 것이 모든 알고리즘의 출발점이고, 기회 노드 그림이 뒤의 Q 식을 그대로 보여 준다."
+   },
+   {
+    "do": "주사위 always_stay 효용 분포(4, 8, 12 …와 그 확률)를 손으로 적어 기대값 12 를 구하고, c07 처럼 몬테카를로로 N = 20, 100, 10,000 을 돌려 비교한다.",
+    "why": "가치 = 기대 효용이라는 정의와 몬테카를로의 1/√N 오차를 몸으로 익힌다."
+   },
+   {
+    "do": "정책 평가 첫 세 반복을 트램 tram_if_possible 에 대해 손으로 채우고(−102, −42 …), c10 출력과 맞춘 뒤 연립방정식 풀이(c11)로 참값 −12 를 확인한다.",
+    "why": "부트스트래핑이 '끝 가까운 곳부터 정보가 퍼지는' 과정임을 숫자로 본다."
+   },
+   {
+    "do": "가치 반복을 트램에 대해 손으로 5번 돌려 화면의 거리 99, 99, 99, 99, 27.28 을 재현하고, 수렴한 V* 로 상태 3·4·5 의 Q 를 비교해 '5 에서만 트램' 을 유도한다.",
+    "why": "max 하나가 최적 정책을 만드는 방식과 최적 정책의 직관(실패 위험 대비 얻는 거리)을 함께 이해한다."
+   },
+   {
+    "do": "c13 에서 p(고장 확률)를 0, 0.2, 0.6, 0.8 로, γ 를 0.9 로 바꿔 최적 정책이 어떻게 바뀌는지 표로 정리한다.",
+    "why": "모델 매개변수에 대한 최적 정책의 민감도를 보는 것이 실무 모델링의 핵심 습관이다."
+   },
+   {
+    "do": "c14 정책 반복을 돌리고, 가치 반복과 반복 수·한 반복의 비용을 비교한다. 이어 CS229 18강 노트(xveNBYVTrqw)·CS230 5강 노트(4E27qlfYw0A)의 벨만 방정식 표기와 대조한다.",
+    "why": "같은 개념을 다른 표기(R(s) 형, Q 표)로 다시 만나 다음 강의 강화학습의 바탕을 굳힌다."
+   }
+  ],
+  "practice": [
+   "트램 p = 0.4 에서 상태 3 의 tram Q 값을 수렴한 V* 로 계산해 walk 보다 나쁜 이유를 숫자로 설명하라(답: −6.533 대 −5.333).",
+   "주사위 게임에 '판마다 10% 확률로 진행자가 상금을 두 배로' 같은 규칙을 하나 더해 상태를 다시 설계하고, 가치 반복으로 최적 정책을 구하라.",
+   "보상 −1 이 9번인 롤아웃의 효용을 γ = 0.9 로 손 계산하고(−6.126) 등비급수 공식으로 검산하라.",
+   "끝에 닿지 못하는 정책(상태 1 에서 영원히 트램 실패만 하는 MDP, p = 1)에 정책 평가를 돌리면 무슨 일이 생기는지 γ = 1 과 γ = 0.9 로 비교하라.",
+   "Gymnasium 의 FrozenLake 환경에서 전이 표(env.unwrapped.P)를 꺼내 이 노트의 가치 반복 코드로 최적 정책을 구하라."
+  ],
+  "resources": [
+   {
+    "title": "CS221 Autumn 2025 과목 홈페이지(일정·과제)",
+    "url": "https://stanford-cs221.github.io/autumn2025/"
+   },
+   {
+    "title": "CS221 실행형 강의 저장소(GitHub)",
+    "url": "https://github.com/stanford-cs221/autumn2025-lectures"
+   },
+   {
+    "title": "CS221 강의 재생목록(Stanford Online)",
+    "url": "https://www.youtube.com/playlist?list=PLoROMvodv4rMeDqwS1yFl3j3sR_-MQNEN"
+   },
+   {
+    "title": "Sutton & Barto — Reinforcement Learning: An Introduction(2판, 3·4장 MDP·동적 계획법)",
+    "url": "http://incompleteideas.net/book/the-book-2nd.html"
+   },
+   {
+    "title": "Gymnasium — FrozenLake 환경 문서",
+    "url": "https://gymnasium.farama.org/environments/toy_text/frozen_lake/"
+   },
+   {
+    "title": "David Silver — UCL 강화학습 강의(2·3강 MDP·동적 계획법)",
+    "url": "https://www.davidsilver.uk/teaching/"
+   }
+  ]
+ },
+ "jobs": {
+  "roles": [
+   "머신러닝 엔지니어",
+   "강화학습 리서치 엔지니어",
+   "AI 리서치 엔지니어",
+   "로보틱스·자율주행 계획 엔지니어",
+   "추천·광고 최적화 엔지니어",
+   "운영 최적화(OR) 엔지니어"
+  ],
+  "skills": [
+   "Python",
+   "NumPy",
+   "Reinforcement Learning",
+   "PyTorch",
+   "Algorithms",
+   "Probability",
+   "Dynamic Programming"
+  ]
+ },
+ "related": [
+  "fPESauMaJYA",
+  "yaLEGZuIIgE",
+  "ypZJaTqrNdk",
+  "Mbe5ICIUw5Q",
+  "89NND-Ca0yY",
+  "xveNBYVTrqw",
+  "4E27qlfYw0A",
+  "4Iu4KPVbnAY"
+ ],
+ "materials": {
+  "transcript": "official",
+  "frames": 161,
+  "every_sec": 30
+ },
+ "written_at": "2026-11-21"
+}
