@@ -1,0 +1,983 @@
+{
+  "id": "mQOK0Mfyrkk",
+  "source": {
+    "platform": "youtube",
+    "url": "https://www.youtube.com/watch?v=mQOK0Mfyrkk",
+    "channel": "Stanford Online",
+    "published": "2025-09-02",
+    "duration_sec": 4193,
+    "views": 26238
+  },
+  "course": {
+    "school": "Stanford",
+    "code": "CS231N",
+    "term": "Spring 2025",
+    "lecture_no": "16",
+    "speaker": "Ranjay Krishna (University of Washington 조교수, RAIVN 연구실 — 초청 강연)"
+  },
+  "title": "Stanford CS231N Deep Learning for Computer Vision | Spring 2025 | Lecture 16: Vision and Language",
+  "title_ko": "비전과 언어 — CLIP 제로샷 분류와 그 한계, CoCa, LLaVA·Flamingo 의 두 가지 결합법, Molmo 의 데이터와 가리키기, Segment Anything, 그리고 체이닝(CuPL·VisProg)",
+  "topic": "multimodal",
+  "tags": [
+    "PyTorch",
+    "Python",
+    "NumPy",
+    "Deep Learning",
+    "Computer Vision",
+    "Multimodal",
+    "CLIP",
+    "Transformer",
+    "LLM",
+    "VLM"
+  ],
+  "level": "중급",
+  "one_line": "CLIP 으로 글로 쓴 분류기, LLM 에 눈 달기 두 방식, 데이터가 만든 Molmo, 무엇이든 자르는 SAM, 모델 엮기",
+  "summary": [
+    "UW 의 Ranjay Krishna 가 맡은 초청 강연으로, 제목은 '비전과 언어'지만 실제로는 '멀티모달 파운데이션 모델' 전반을 다룬다. 과제마다 모델을 새로 학습하던 지금까지의 방식에서, 큰 데이터로 한 번 사전학습한 모델을 미세조정·few-shot·zero-shot 으로 여러 과제에 옮기는 방식으로의 전환이 출발점이다. 강의는 분류(CLIP·CoCa) → 언어 모델과 비전의 결합(LLaVA·Flamingo·Molmo) → 텍스트 밖의 출력(SAM) → 여러 모델 엮기(CuPL·VisProg) 순으로 진행한다.",
+    "CLIP 은 12강 SimCLR 의 대조 손실을 이미지와 캡션 사이로 옮긴 것이다. 인터넷 4억 쌍으로 학습한 뒤 클래스 이름을 텍스트 인코더에 넣어 분류기 가중치를 '글로 써서' 만들면 레이블 없이 분류할 수 있다(제로샷). 'A photo of a {}' 문장과 템플릿 평균이 정확도를 올린다. 분포가 바뀐 데이터(ObjectNet·스케치·적대적 사진)에서 ImageNet 학습 모델보다 훨씬 강건하다. 반면 개념의 세밀함이 배치 크기에 묶이고, '풀 속의 머그'와 '머그 속의 풀'을 못 가리며(합성성), 위치 정보가 없고, 데이터를 의도적으로 고르지 않으면 한계가 뚜렷하다. CoCa 는 여기에 캡션 생성 손실을 더해 ImageNet 리더보드 맨 위(91.0%)에 올랐다.",
+    "VLM 은 이미지를 LLM 에 넣는 방법에 따라 두 갈래로 나뉜다. LLaVA 는 CLIP 의 끝에서 둘째 층 패치 토큰을 선형 층 하나로 LLM 의 단어 임베딩 공간에 옮겨 입력 앞에 붙인다. 336px 사진 한 장이 576 토큰이 되므로 사진이 많아지면 문맥이 빠르게 찬다. Flamingo 는 얼린 LLM 의 층마다 tanh 게이트(0 에서 시작)를 단 교차 어텐션을 끼우고, Perceiver 로 사진을 고정 개수 토큰으로 줄인다. 사진과 글이 번갈아 나오는 웹 문서와 '바로 앞 사진만 보는' 마스크로 학습한 덕에 여러 턴 대화, 여러 사진 추론, few-shot 학습(OCR·산수·분류)이 된다.",
+    "강사 연구실의 Molmo 는 닫힌 모델을 증류하지 않고 가중치·데이터·코드·평가를 모두 공개한 VLM 이다. 870명이 32.5만 번 비교한 사람 선호 평가에서 GPT-4o 와 Elo 1점 차인 2위였다. 구조는 LLaVA 와 같고 차이는 데이터다. 인터넷의 '우연한' 캡션 60억 쌍 대신, 주석자가 60~90초 말한 '의도한' 묘사와 가리키기 주석 약 70만 쌍을 썼다. 점을 찍어 근거를 대며 세는 능력은 환각을 줄이고, 그 점을 SAM 2 나 로봇 계획기에 넘겨 엮을 수 있다.",
+    "SAM 은 점·상자·글 프롬프트로 무엇이든 마스크를 낸다. 애매한 프롬프트에는 마스크 셋을 내고 가장 가까운 하나에만 손실을 주며, 모델이 제안하고 사람이 고치는 데이터 엔진으로 11억 마스크를 만들었다. 마지막으로 체이닝은 LLM 이 쓴 설명문으로 CLIP 의 낯선 범주 분류를 돕고(CuPL), LLM 이 짠 파이썬 프로그램으로 탐지·분할·생성 모듈을 엮는다(VisProg). 강의 전체를 꿰는 교훈은 반복된다. 좋은 모델의 비결은 많은 경우 구조보다 데이터의 질이고, 그 데이터는 인터넷에 없어서 만들어야 한다.",
+    "이 노트는 같은 주제의 CS336 17강 노트(CLIP·SigLIP 손실 구현, LLaVA 학습 단계, AnyRes, Qwen-VL 의 동적 해상도·M-RoPE)와 CS25 강연 노트(Chameleon·Transfusion 의 네이티브 멀티모달)와 겹치지 않게, 이 강의에만 있는 것에 집중했다. 직접 계산하는 것은 세 가지다. 3-클래스 프롬프트 세트의 제로샷 확률(배율에 따라 37% → 71% → 99.9999%), VLM 의 이미지 토큰 예산(224px 256개, 336px 576개, 사진 5장이면 문맥의 78%), SAM 의 최소 손실. 모두 numpy 코드로 확인한다."
+  ],
+  "why_now": "강의는 파운데이션 모델이 비전의 기본값이 된 시점을 보여 준다. CoCa 이후 이미지 인코더를 지도학습으로 만들던 관행이 사라졌고, 지난 2년 사이 평가 문화가 '분류 벤치마크 몇 개'에서 '질의응답으로 표현되는 모든 이해 과제'로 바뀌었다(강사 의견). 동시에 GPT-4o·Gemini·Claude 같은 닫힌 VLM 과 공개 모델의 격차(11개 벤치마크 평균 약 80 대 43), 그리고 증류에 기댄 '공개 가중치' 모델의 재현성 문제가 연구계의 큰 과제로 떠올랐다. Molmo 는 사람이 말로 만든 70만 쌍의 고품질 데이터로 그 격차를 거의 지웠다. 이 사례는 데이터 수집·필터링이 지금의 연구 최전선이라는 강사의 주장을 뒷받침한다. 가리키기로 근거를 대는 VLM 이 SAM 2·로봇 계획기와 엮이는 장면, LLM 이 프로그램으로 여러 모델을 부르는 VisProg 는 오늘날 'VLM 에이전트'와 '체화 AI'의 원형이다. 이 분야 직무 면접에서 CLIP 제로샷, 이미지 토큰 예산, 교차 어텐션 대 입력 결합의 득실은 단골 질문이다.",
+  "chapters": [
+    {
+      "start": 0,
+      "title": "도입 — 과제마다 모델 하나에서, 한 번 미리 배우고 여러 과제로 옮기는 파운데이션 모델로",
+      "points": [
+        "지금까지의 과목은 '데이터 모으기 → 그 과제 전용 모델 학습 → 테스트 셋 평가'의 반복이었다.",
+        "파운데이션 모델은 크고 다양한 데이터로 하나를 미리 학습해 두고, 미세조정·few-shot·zero-shot 으로 여러 과제에 옮긴다.",
+        "늘 보이는 성질은 '여러 과제에 두루 강건함', 자주 보이는 성질은 '많은 매개변수·많은 데이터·자기지도 목적'.",
+        "오늘의 지도: 분류(CLIP·CoCa) → 언어 모델 + 비전(LLaVA·Flamingo·Molmo) → 텍스트 밖의 출력(SAM) → 여러 모델 엮기(CuPL·VisProg)."
+      ],
+      "on_screen": "초청 강사 소개 후 '지금까지 이 과목은 과제마다 전문 모델을 학습했다' 슬라이드 — Data Domain 1~4 → Model 1~4 → Task 1~4 가 네 줄로 따로 그려져 있다. 이어 'Now, we build Foundation Models': Large Scale Diverse Dataset → Foundation Model → Task 1~4, 아래에 'Pre-training'과 'Fine-tuning / zero-shot / few-shot'. 언어 예로 Common Crawl+ → GPT → Math Problems·Symbolic Reasoning·Trivia·Translation. 분류표: Language(ELMo·BERT·GPT·T5) / Classification(CLIP·CoCa) / LM + Vision(LLaVA·Flamingo·GPT-4V·Gemini·Molmo) / And More!(Segment Anything·Whisper·Dalle·Stable Diffusion·Imagen) / Chaining(LMs + CLIP·Visual Programming). 오늘 다룰 것은 초록 글씨. 'How do identify a model as a Foundation?' — 늘: general/robust to many tasks, 자주: Large # params, Large amount of data, Self-supervised pre-training objective.",
+      "explain": [
+        "이 강의는 CS231N 의 초청 강연으로, 워싱턴대(UW)에서 RAIVN 연구실을 이끄는 Ranjay Krishna 가 맡았다. 그는 2020·2021년에 이 과목을 직접 가르쳤고 비전·언어·로보틱스·HCI 의 경계에서 연구한다. 주제는 '멀티모달 파운데이션 모델'이다. 유튜브 제목은 'Vision and Language' 지만, 실제로는 CLIP 으로 시작해 VLM(시각-언어 모델), 분할 모델 SAM, 그리고 여러 모델을 프로그램으로 엮는 체이닝까지, 언어와 비전을 잇는 거의 모든 갈래를 훑는다.",
+        "출발점은 지금까지 이 과목에서 모델을 만든 방식이다. 1강부터 과제 2·3까지 우리는 '데이터 셋 모으기 → 그 과제만을 위한 모델 학습 → 테스트 셋으로 평가'를 반복했다. 분류기는 분류만, 캡셔닝 모델은 캡션만 한다. 새 과제가 오면 데이터부터 다시 모은다. 파운데이션 모델은 이 순서를 뒤집는다. 크고 다양한 데이터로 모델 하나를 먼저 학습해 두고(사전학습), 개별 과제에는 그 모델을 '맞춰' 쓴다. 맞추는 방법은 세 가지 수준이 있다 — 약간의 레이블로 미세조정(fine-tuning), 예시 몇 개만 보여 주는 few-shot, 예시 없이 바로 쓰는 zero-shot. 언어 쪽의 GPT 가 대표적이다. 인터넷 텍스트(Common Crawl)로 다음 단어 맞히기를 배운 뒤 수학 문제·기호 추론·상식 퀴즈·번역에 거의 데이터 없이 옮겨 간다.",
+        "무엇이 파운데이션 모델인가에 대해서는 정의가 갈린다. 강의는 '늘 보이는 성질'과 '자주 보이는 성질'로 나눠 정리한다. 늘 보이는 것은 하나의 모델이 여러 과제에 두루, 강건하게 쓰인다는 점이다. 자주 보이는 것은 매개변수가 많고, 학습 데이터가 많고, 사람 레이블 대신 자기지도 목적으로 학습한다는 점이다. 12강의 자기지도 학습(SimCLR·MAE)과 11강의 대규모 분산 학습이 바로 이 '많은 데이터·큰 모델·레이블 없는 목적'을 가능하게 한 기술이었다는 점을 떠올리면 이번 강의의 위치가 보인다.",
+        "강의의 지도는 다섯 칸짜리 표 하나로 요약된다. 언어(ELMo·BERT·GPT·T5)는 이 과목에서 다루지 않는다. 오늘 다룰 것은 ① 분류를 일반화한 CLIP·CoCa, ② 언어 모델에 비전을 붙인 LLaVA·Flamingo·Molmo(GPT-4V·Gemini 는 같은 부류의 닫힌 모델), ③ 출력이 텍스트가 아닌 Segment Anything, ④ 언어 모델과 CLIP 같은 모델을 엮는 체이닝(CuPL·Visual Programming)이다. 노트 보충: 같은 주제를 언어 모델 쪽에서 본 CS336 17강 노트(CLIP·SigLIP·LLaVA·Qwen-VL)와, 이해와 생성을 한 모델로 합치는 CS25 강연 노트(Chameleon·Transfusion)가 이미 있다. 이 노트는 그 둘과 겹치는 부분은 짧게 가리키고, 이 강의에만 있는 것 — 제로샷 분류의 실제 계산, CLIP 의 한계, Flamingo 의 게이트 교차 어텐션과 마스크, Molmo 의 데이터 철학, SAM, 체이닝 — 을 깊게 다룬다."
+      ],
+      "diagram": {
+        "title": "과제별 모델 vs 파운데이션 모델",
+        "code": "flowchart LR\n  subgraph OLD[\"지금까지: 과제마다 따로\"]\n    D1[\"데이터 1\"] --> M1[\"모델 1\"] --> T1[\"과제 1\"]\n    D2[\"데이터 2\"] --> M2[\"모델 2\"] --> T2[\"과제 2\"]\n  end\n  subgraph NEW[\"파운데이션 모델\"]\n    BIG[\"크고 다양한 데이터<br/>(대개 레이블 없음)\"] -->|사전학습| FM[\"파운데이션 모델\"]\n    FM -->|미세조정| A[\"과제 A\"]\n    FM -->|few-shot| B[\"과제 B\"]\n    FM -->|zero-shot| C[\"과제 C\"]\n  end"
+      },
+      "pitfalls": [
+        "파운데이션 모델의 정의는 합의돼 있지 않다. '매개변수가 크다'는 자주 보이는 성질이지 필요조건이 아니다 — 핵심은 하나를 여러 과제로 옮길 수 있느냐다.",
+        "zero-shot 은 '그 데이터 셋을 학습 때 한 번도 안 봤다'는 보장이 아니다. 인터넷 규모 데이터에는 평가 셋과 비슷한 사진이 섞여 있을 수 있다(질의응답에서도 이 의문이 나왔다)."
+      ],
+      "check": [
+        {
+          "q": "미세조정·few-shot·zero-shot 의 차이를 '새 과제에 필요한 데이터' 관점에서 설명하라.",
+          "a": "미세조정은 레이블 데이터로 가중치를 실제로 바꾼다. few-shot 은 가중치는 그대로 두고 입력(프롬프트)에 예시 몇 개만 넣는다. zero-shot 은 예시도 없이 과제 설명이나 클래스 이름만으로 바로 쓴다."
+        },
+        {
+          "q": "강의가 말한 파운데이션 모델의 '늘 보이는 성질' 하나와 '자주 보이는 성질' 셋은?",
+          "a": "늘: 여러 과제에 두루·강건하게 쓰인다. 자주: 매개변수가 많다, 데이터가 많다, 자기지도 목적으로 사전학습한다."
+        }
+      ]
+    },
+    {
+      "start": 258,
+      "title": "CLIP 의 학습 목표 — SimCLR 의 '같은 것 끌기'를 이미지와 텍스트 사이로 옮기기",
+      "points": [
+        "SimCLR 은 같은 사진의 두 증강본을 끌어당기고 다른 사진은 밀어냈다. CLIP 은 한쪽 인코더를 텍스트 인코더로 바꾼다.",
+        "미니배치 N 쌍으로 N×N 유사도 표를 만들고 대각선(진짜 짝)이 이기도록 이미지→텍스트, 텍스트→이미지 두 방향 교차 엔트로피를 더한다.",
+        "인터넷의 사진+alt-text 쌍이면 되므로 레이블 없이 4억 쌍 규모로 키울 수 있었다(OpenAI, 2021).",
+        "사전학습한 이미지 인코더 위에 선형 층만 얹어(선형 프로브) 27개 데이터 셋 평균에서 기존 모델을 앞섰다."
+      ],
+      "on_screen": "'Recall this self-supervised objective from SimCLR' — 배치의 사진 N 장, 사진마다 증강 두 개, 특징 추출, 초록(같은 쌍)·빨강(다른 쌍) 칸의 유사도 격자. 고양이 스케치·강아지 스케치가 표현 공간의 같은 군집에 놓이는 그림, 이어서 'A cute fluffy cat', 'My favorite dog is a golden retriever' 같은 문장도 같은 공간에 놓이는 그림. CLIP 그림: Image Encoder ↔ Text Encoder, 오른쪽 캡션 'My favorite dog is a golden retriever', 'A cute fluffy cat', 'Monkeys are my favorite animal'. 식: Σᵢ −log( e^{⟨uᵢ,vᵢ⟩} / Σⱼ e^{⟨uᵢ,vⱼ⟩} ) + Σᵢ −log( e^{⟨uᵢ,vᵢ⟩} / Σⱼ e^{⟨uⱼ,vᵢ⟩} ). 'Lots of image-text data can be found online'(Mount Rainier 사진과 위키 alt-text), 2단계 그림(Step 1 대조 목적 사전학습 / Step 2 선형 분류기로 분류·검출·분할에 전이). 'CLIP features w/ linear probe across multiple datasets' — 27개 데이터 셋 선형 프로브 평균 점수 대 연산량(GFLOPs/image) 그래프, CLIP-ViT(빨간 별) L/14@336px 가 맨 위, 그 아래 EfficientNet-NoisyStudent·Instagram·SimCLRv2·BYOL·MoCo·BiT·ResNet.",
+      "explain": [
+        "12강의 SimCLR 을 떠올려 보자. 고양이 사진 하나를 두 번 다르게 잘라·색을 바꾸면 두 '증강본'이 생긴다. 모델은 이 둘의 표현을 가깝게, 배치 안의 다른 사진(개·원숭이)의 표현은 멀게 만들도록 학습한다. 이렇게 배운 공간에서는 처음 보는 고양이 스케치도 고양이 군집 근처에 놓이기를 기대한다. CLIP 의 발상은 단순하다. 같은 공간에 문장도 놓아 보자. 'A cute fluffy cat' 이라는 문장의 벡터가 고양이 사진들 근처에 있고, 'My favorite dog is a golden retriever' 가 다른 개보다 골든 리트리버 사진에 더 가깝다면, 그림으로도 글로도 같은 공간을 검색할 수 있다.",
+        "구조로 옮기면, SimCLR 의 두 인코더 중 하나를 텍스트 인코더로 바꾼 것이 CLIP 이다. 미니배치에 사진-캡션 쌍 N 개가 들어오면 이미지 인코더가 uᵢ, 텍스트 인코더가 vᵢ 를 낸다(둘 다 같은 차원으로 투영하고 길이 1로 정규화). 그러면 N×N 유사도 표가 생기고, 대각선 칸 ⟨uᵢ,vᵢ⟩ 가 진짜 짝이다. 손실은 각 행에서 '대각선 칸이 정답인 N지선다 교차 엔트로피'를 계산한다 — 사진 i 가 자기 캡션을 N 개 캡션 중에서 골라내도록. 여기에 열 방향, 즉 캡션 i 가 자기 사진을 N 장 중에서 골라내는 손실을 하나 더 더한다. 강의는 이것을 두 모달리티 사이의 '대칭 손실'이라고 불렀다. 분자에는 끌어당길 짝, 분모에는 밀어낼 나머지 전부가 들어간다는 점에서 12강의 InfoNCE 와 똑같은 모양이다.",
+        "이 목표가 위력적인 이유는 데이터다. 사람이 '이 사진은 개'라고 레이블을 달 필요가 없다. 인터넷에는 사진과 그 옆의 설명문(alt-text, 캡션)이 이미 짝지어 수십억 개 널려 있다. 슬라이드는 위키백과의 레이니어 산 사진과 그 설명문을 예로 든다. OpenAI 는 2021년 이런 쌍 약 4억 개를 모아 CLIP 을 학습했다. 학습이 끝나면 12강과 같은 2단계를 밟는다. 1단계 사전학습으로 이미지 인코더를 얻고, 2단계에서 그 가중치를 가져와 위에 선형 층 하나를 얹어 분류에, 혹은 디코더를 붙여 분할에 쓴다.",
+        "당시 사람들을 놀라게 한 것은 선형 프로브 결과다. 27개 이미지 분류 데이터 셋의 평균 정확도를 연산량에 대해 그린 그래프에서, CLIP 의 ViT 판들이 EfficientNet·BiT·SimCLRv2·MoCo 같은 기존 지도·자기지도 모델을 모두 위에서 누른다. 그리고 학습에 쓴 사진이 많을수록, 모델이 클수록 점수가 계속 오른다. 좋은 사전학습 목표와 사실상 무한한 데이터가 만났다는 신호였다. 노트 보충: 슬라이드 식에는 온도(temperature) τ 가 빠져 있다. 실제 CLIP 은 ⟨u,v⟩/τ 를 쓰고 τ 도 학습한다(logit scale = 1/τ, 상한 100). 온도의 역할은 다음 챕터의 계산에서 직접 확인한다. 손실의 분산 구현·SigLIP 의 시그모이드 대안은 CS336 17강 노트에 자세하다."
+      ],
+      "formulas": [
+        {
+          "expr": "L = (1/N) Σᵢ −log( exp(⟨uᵢ,vᵢ⟩/τ) / Σⱼ exp(⟨uᵢ,vⱼ⟩/τ) )  +  (1/N) Σᵢ −log( exp(⟨uᵢ,vᵢ⟩/τ) / Σⱼ exp(⟨uⱼ,vᵢ⟩/τ) )",
+          "meaning": "N: 미니배치의 사진-캡션 쌍 수. uᵢ ∈ ℝᵈ: i번째 사진의 이미지 임베딩(길이 1로 정규화), vᵢ ∈ ℝᵈ: i번째 캡션의 텍스트 임베딩(정규화). ⟨·,·⟩: 내적 = 코사인 유사도. τ: 온도(학습됨, 슬라이드에서는 생략). 첫 항은 사진 i 가 N 개 캡션 중 자기 캡션을 고르는 교차 엔트로피(N×N 표의 행 방향), 둘째 항은 캡션 i 가 N 장 중 자기 사진을 고르는 교차 엔트로피(열 방향). 실제 구현은 둘의 평균을 쓴다. 무작위로 찍으면 각 항이 log N 이다."
+        }
+      ],
+      "example": {
+        "title": "N=2 배치로 대칭 손실 손으로 계산하기",
+        "body": "사진 2장, 캡션 2개. 코사인 유사도 표 S = [[0.9, 0.1],[0.2, 0.8]] (행 = 사진, 열 = 캡션), τ = 0.1 이면 로짓 = [[9, 1],[2, 8]]. 행 방향: 사진1 → −log(e⁹/(e⁹+e¹)) = log(1+e⁻⁸) ≈ 0.000335. 사진2 → log(1+e⁻⁶) ≈ 0.00248. 열 방향: 캡션1 → 열 [9, 2] 이므로 log(1+e⁻⁷) ≈ 0.000911. 캡션2 → 열 [1, 8] 이므로 log(1+e⁻⁷) ≈ 0.000911. 두 방향 평균 = ((0.000335+0.00248)/2 + (0.000911+0.000911)/2)/2 ≈ 0.00116. 만약 τ = 1 이면 로짓이 [[0.9,0.1],[0.2,0.8]] 그대로라 사진1 항만 해도 log(1+e^{−0.8}) ≈ 0.371 — 같은 유사도 표라도 온도가 손실의 크기를 크게 바꾼다. 무작위 표라면 각 항은 log 2 ≈ 0.693 근처다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "import numpy as np\n\ndef l2n(x):\n    return x / np.linalg.norm(x, axis=1, keepdims=True)\n\ndef clip_loss(img, txt, t=0.07):\n    u, v = l2n(img), l2n(txt)          # (N,d) 각각 단위 벡터로\n    logits = u @ v.T / t               # (N,N) 코사인 / 온도\n    def ce_diag(L):                    # 행마다 '대각선이 정답'인 교차 엔트로피\n        L = L - L.max(axis=1, keepdims=True)\n        logp = L - np.log(np.exp(L).sum(axis=1, keepdims=True))\n        return -np.mean(np.diag(logp))\n    return (ce_diag(logits) + ce_diag(logits.T)) / 2   # 이미지→텍스트 + 텍스트→이미지\n\nrng = np.random.default_rng(0)\nN, d = 4, 8\ntxt = rng.normal(size=(N, d))\ngood = txt + 0.1 * rng.normal(size=(N, d))   # 짝과 거의 같은 방향\nbad = rng.normal(size=(N, d))                # 짝과 무관\nprint(\"짝이 맞는 배치 손실 :\", f\"{clip_loss(good, txt):.6f}\")\nprint(\"무작위 배치 손실    :\", round(clip_loss(bad, txt), 4))\nprint(\"찍기 수준 log N     :\", round(np.log(N), 4))",
+        "note": "짝이 맞는 배치는 손실이 거의 0, 무관한 배치는 찍기 수준(log 4 ≈ 1.386)보다도 크다 — 무작위 방향끼리도 τ=0.07 로 나누면 로짓 차가 커져 '자신 있게 틀리기' 때문이다. 실행 결과: 0.000035 / 6.7278 / 1.3863."
+      },
+      "pitfalls": [
+        "슬라이드의 CLIP 손실 식에는 온도 τ(또는 logit scale)가 없다. 실제 구현은 반드시 유사도를 τ 로 나눈다 — 빠뜨리면 코사인이 [−1,1] 에 갇혀 softmax 가 거의 균등해지고 학습이 잘 안 된다.",
+        "두 방향 손실 중 하나만 쓰면 '모든 사진이 같은 인기 캡션 하나를 고르는' 쪽으로 쏠릴 수 있다. 행·열 양쪽을 다 쓰는 것이 대칭 손실의 의미다."
+      ],
+      "check": [
+        {
+          "q": "SimCLR 과 CLIP 의 손실은 무엇이 같고 무엇이 다른가?",
+          "a": "둘 다 '배치 안에서 내 짝 고르기' 교차 엔트로피(InfoNCE)다. SimCLR 은 같은 사진의 두 증강본이 짝이고 인코더가 하나(공유)인 반면, CLIP 은 사진과 그 캡션이 짝이고 이미지·텍스트 인코더가 따로이며 두 방향 손실을 더한다."
+        },
+        {
+          "q": "배치 크기 N=1024 에서 모델이 무작위로 찍는다면 한 방향 손실은 얼마쯤인가?",
+          "a": "log 1024 ≈ 6.93."
+        }
+      ]
+    },
+    {
+      "start": 600,
+      "title": "제로샷 분류 — 텍스트 인코더로 분류기의 가중치를 '써서' 만든다",
+      "points": [
+        "언어 모델은 모든 과제가 '이어 쓰기'라 재학습이 필요 없지만, 대조 학습한 CLIP 에는 이어 쓰기가 없다.",
+        "요령: 클래스 이름을 텍스트 인코더에 넣어 클래스마다 벡터를 만들고, 새 사진의 벡터와 가장 가까운 것을 고른다 — 1-최근접 이웃.",
+        "한 단어보다 'A photo of a {}' 문장이 낫다(ImageNet +1.3%). 템플릿 여러 개의 평균 벡터를 쓰면 +5%.",
+        "단어 벡터는 텍스트 인코더의 최종 표현(ResNet 이면 마지막 벡터, 트랜스포머면 EOS/CLS 위치)에서 나온다."
+      ],
+      "on_screen": "'Big difference with language models: We can use LLMs zero-shot for new downstream tasks' — Step 1 'I love ___' → Encoder φ / Decoder ψ → 'cake', Step 2 'The movie review I hated the movie is ___' → 'negative'. 'But how do we use pre-trained vision-language models in a zero-shot manner?' → 'Out of the box classification (No fine-tuning)'. 'Clever trick: we can create a classifier using the text encoder!' — 개 사진 → Image vector, 'word' → Text Encoder → text vector, 둘 사이 matching score 0.27. 'Create a vector representation for each category!' — plane / dog / bird → 'Plane' vector, 'Dog' vector, 'Bird' vector. 'Match a new image to the most similar vector' — 유사도 0.13(plane) · 0.27(dog) · 0.09(bird). 'A photo of a plane / dog / bird' → '+1.3% on ImageNet'. 'A drawing of a …' 등 여러 문장의 Mean 'Plane'·'Dog'·'Bird' vector → '+5% on ImageNet' (Radford et al.).",
+      "explain": [
+        "언어 모델을 새 과제에 쓸 때는 재학습이 필요 없다. 'I love ___' 을 이어 쓰도록 배운 모델에게 '영화평: 이 영화 정말 싫었다. 이 평은 ___' 이라고 쓰면 'negative' 를 이어 쓴다. 모든 과제가 언어로 표현되고, 언어로 표현된 과제는 곧 이어 쓰기이기 때문이다. CLIP 은 사정이 다르다. 사진과 캡션의 짝을 맞히도록만 배웠으니 '이어 쓸' 출력 칸이 없다. 그대로라면 새 과제마다 선형 층을 얹고 그 층을 학습할 레이블 데이터가 또 필요하다. 그래서 사람들은 CLIP 을 '상자에서 꺼내 바로' 쓰는 방법을 궁리했다.",
+        "해법은 텍스트 인코더를 분류기의 가중치 생성기로 쓰는 것이다. 새 데이터 셋의 클래스가 비행기·개·새라고 하자. 세 단어를 각각 텍스트 인코더에 넣어 벡터 세 개를 만든다. 이것이 분류기의 세 '클래스 중심'이다. 새 사진이 오면 이미지 인코더로 벡터를 만들고 세 중심과 코사인 유사도를 잰다. 슬라이드의 개 사진은 비행기 0.13, 개 0.27, 새 0.09 를 받았고 가장 높은 개로 분류된다. 강의는 이것을 '텍스트 공간에 미리 박아 둔 클래스 벡터들에 대한 1-최근접 이웃'이라고 정리한다. 2강의 kNN 과 선형 분류기를 기억한다면, 클래스 벡터 C 개를 쌓은 행렬이 곧 선형 분류기의 W 이고, 다만 그 W 를 학습하지 않고 '글로 써서' 얻었다는 점만 다르다.",
+        "그렇다면 무슨 글을 써야 하나. CLIP 은 인터넷의 문장들로 학습했고, 인터넷에서 'dog' 한 단어만 덜렁 달린 캡션은 드물다. 그래서 'A photo of a dog' 처럼 학습 분포와 닮은 문장으로 쓰면 ImageNet 정확도가 약 1.3%p 오른다. 어떤 문장이 최선인지 고르기도 어렵기 때문에, 'A photo of a …', 'A drawing of a …' 처럼 템플릿을 여러 개 만들어 각 클래스의 벡터를 평균한다(프롬프트 앙상블). 슬라이드에 따르면 이렇게 하면 약 5%p 가 오른다. 평균을 내는 이유는 통계적으로 단순하다 — 템플릿마다 섞인 우연한 흔들림이 평균에서 상쇄되고 클래스의 공통 방향만 남는다. 아래 코드가 이 효과를 장난감 실험으로 보여 준다.",
+        "벡터를 어디서 뽑느냐는 질문도 나왔다. 하나의 벡터로 요약하는 자리는 인코더 구조에 따라 다르다. ResNet 이면 마지막 풀링 벡터, 트랜스포머면 요약용 토큰(CLS, CLIP 텍스트 인코더는 실제로 EOS 위치) 하나를 쓴다. 또 하나 짚을 것은 확률로 바꾸는 단계다. 코사인 0.27 과 0.13 의 차이는 작아 보이지만 CLIP 은 학습된 배율(logit scale, 약 100)을 곱한 뒤 softmax 한다. 아래 예에서 보듯 배율 1이면 개 확률이 37% 에 그치지만 배율 100이면 사실상 100% 다. 같은 순위라도 '얼마나 자신 있나'는 배율이 정한다. 노트 보충: 이 1-최근접 이웃 구조 덕분에 클래스 목록을 바꾸는 데 드는 비용은 텍스트 인코딩 C 번뿐이고, 이미지 벡터는 한 번 계산해 두면 재사용할 수 있다."
+      ],
+      "formulas": [
+        {
+          "expr": "ŷ = argmax_c ⟨f(x), g(t_c)⟩,   p(c|x) = softmax_c( s · ⟨f(x), g(t_c)⟩ )",
+          "meaning": "x: 분류할 사진, f: 이미지 인코더(출력 정규화), t_c: 클래스 c 의 문장(예: 'A photo of a dog'), g: 텍스트 인코더(출력 정규화), ⟨·,·⟩: 코사인 유사도, s: 학습된 logit scale(=1/τ, CLIP 은 상한 100). argmax 는 1-최근접 이웃, softmax 는 그것을 확률로 바꾼 것. g(t_c) 를 쌓은 C×d 행렬이 선형 분류기의 W 역할을 한다."
+        },
+        {
+          "expr": "w_c = normalize( (1/K) Σ_k g(template_k(c)) )",
+          "meaning": "프롬프트 앙상블. template_k: K 개의 문장 틀('A photo of a {}', 'A drawing of a {}' …). 클래스마다 K 개 텍스트 벡터를 평균한 뒤 다시 길이 1로 정규화해 클래스 벡터 w_c 로 쓴다."
+        }
+      ],
+      "example": {
+        "title": "슬라이드의 세 점수를 확률로 바꾸기 (3-클래스 프롬프트 세트)",
+        "body": "코사인: plane 0.13, dog 0.27, bird 0.09. ① 배율 s = 1: 로짓 그대로. e^0.13 = 1.139, e^0.27 = 1.310, e^0.09 = 1.094, 합 3.543 → p = 0.321 / 0.370 / 0.309. 순위는 맞지만 거의 균등하다. ② s = 10: 로짓 1.3 / 2.7 / 0.9 → e^1.3 = 3.669, e^2.7 = 14.880, e^0.9 = 2.460, 합 21.009 → p = 0.175 / 0.708 / 0.117. ③ s = 100(CLIP 의 실제 상한): 로짓 13 / 27 / 9 → dog 대비 plane 은 e^(−14) ≈ 8.3×10⁻⁷, bird 는 e^(−18) ≈ 1.5×10⁻⁸ 배 → p(dog) ≈ 0.999999. 결론: 판정(argmax)은 배율과 무관하게 dog 이고, 배율은 '확신의 정도'만 바꾼다. 그래서 CLIP 의 확률을 그대로 보정된 확률로 믿으면 안 된다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "import numpy as np\n\nclasses = [\"plane\", \"dog\", \"bird\"]\ncos = np.array([0.13, 0.27, 0.09])        # 슬라이드의 이미지-텍스트 코사인 유사도\n\ndef softmax(z):\n    z = z - z.max(); e = np.exp(z); return e / e.sum()\n\nfor scale in (1, 10, 100):                 # CLIP 은 학습된 logit scale(최대 100)을 곱한다\n    p = softmax(scale * cos)\n    print(f\"scale={scale:>3}:\", [f\"{c}={v:.4f}\" for c, v in zip(classes, p)])\n\n# 프롬프트 앙상블: 템플릿마다 흔들린 텍스트 벡터를 평균하면 정확도가 오르나?\nrng = np.random.default_rng(0)\nd, C, trials = 32, 3, 2000\nunit = lambda v: v / np.linalg.norm(v, axis=-1, keepdims=True)\nfor k in (1, 8):\n    hit = 0\n    for _ in range(trials):\n        concept = unit(rng.normal(size=(C, d)))\n        W = unit(np.mean(concept[:, None] + 0.25 * rng.normal(size=(C, k, d)), axis=1))\n        y = rng.integers(C)\n        img = unit(concept[y] + 0.25 * rng.normal(size=d))\n        hit += int(np.argmax(W @ img) == y)\n    print(f\"템플릿 {k}개 평균: 정확도 {hit / trials:.3f}\")",
+        "note": "앞 세 줄은 손 계산과 같은 값(0.3214/0.3697/0.3088, 0.1747/0.7083/0.1171, 0/1/0). 뒤 두 줄은 장난감 실험 — 템플릿 벡터마다 잡음을 섞었을 때 1개만 쓰면 정확도 0.880, 8개를 평균하면 0.985. 실제 CLIP 의 +5%p 와 숫자는 다르지만 '평균이 잡음을 지운다'는 원리는 같다."
+      },
+      "diagram": {
+        "title": "CLIP 제로샷 분류의 흐름",
+        "code": "flowchart LR\n  C[\"클래스 이름<br/>plane · dog · bird\"] --> T[\"템플릿 채우기<br/>A photo of a {}\"] --> G[\"텍스트 인코더 g\"] --> W[\"클래스 벡터 W<br/>(C×d, 평균·정규화)\"]\n  X[\"새 사진\"] --> F[\"이미지 인코더 f\"] --> U[\"이미지 벡터 u\"]\n  W --> S[\"코사인 W·u\"]\n  U --> S\n  S --> A[\"× logit scale → softmax<br/>→ argmax\"]"
+      },
+      "pitfalls": [
+        "코사인 값 자체(0.27)를 확률로 읽으면 안 된다. 확률은 배율을 곱한 softmax 이고, 배율이 클수록 과신한다.",
+        "평균한 텍스트 벡터는 다시 길이 1로 정규화해야 코사인 비교가 공정하다. 정규화를 빼면 템플릿이 잘 맞는 클래스의 벡터가 길어져 편향된다."
+      ],
+      "check": [
+        {
+          "q": "CLIP 제로샷 분류기를 선형 분류기 Wx 로 본다면 W 의 각 행은 무엇인가?",
+          "a": "클래스 c 의 문장(들)을 텍스트 인코더에 넣어 얻은 정규화된 텍스트 벡터. 학습이 아니라 텍스트 인코딩으로 W 를 만든다."
+        },
+        {
+          "q": "코사인이 plane 0.13, dog 0.27, bird 0.09 일 때 배율 10 에서 p(dog) 를 구하라.",
+          "a": "e^2.7/(e^1.3+e^2.7+e^0.9) = 14.88/21.01 ≈ 0.708."
+        },
+        {
+          "q": "'dog' 대신 'A photo of a dog' 를 쓰면 왜 성능이 오르나?",
+          "a": "CLIP 은 인터넷 문장으로 학습했기 때문에 한 단어짜리 입력은 학습 분포에서 벗어난다. 학습 때 본 문장 모양에 가까운 입력이 더 좋은 텍스트 벡터를 만든다."
+        }
+      ]
+    },
+    {
+      "start": 876,
+      "title": "CLIP 은 왜 분포 밖에서도 버티나 — ObjectNet·스케치, 제로샷 대 선형 프로브, 그리고 규모",
+      "points": [
+        "ImageNet 에서는 레이블 없이 ResNet-101(76.2%)과 같은 76.2% — 그러나 진짜 소식은 분포가 바뀐 데이터 셋에서다.",
+        "ObjectNet 32.6% → 72.3%, ImageNet-Sketch 25.2% → 60.2%, ImageNet-Adversarial 2.7% → 77.1%.",
+        "이유 둘: 캡션에는 클래스 이름 말고도 모양·색·맥락 정보가 담겨 있다, 그리고 데이터가 300배 크다.",
+        "모델 307M(ViT) 대 ResNet 44.5M, 데이터 4억 쌍 대 128만 장 — 규모의 차이."
+      ],
+      "on_screen": "'Exciting result after training on 400M image-text pairs' — ImageNet: ImageNet ResNet101 76.2% / CLIP ViT-L 76.2%, 'Matches the accuracy of ResNet 101 that has been trained on ImageNet, except CLIP was trained with no human labels at all!'. 이어 표: ImageNet V2 64.3 → 70.1, ImageNet Rendition 37.7 → 88.9, ObjectNet 32.6 → 72.3, ImageNet Sketch 25.2 → 60.2, ImageNet Adversarial 2.7 → 77.1. 'Difference in performance between linear probe vs zero-shot'(x축 'Zero-Shot CLIP vs. Linear Probe on ResNet50') — 초록 막대 StanfordCars +28.9, Country211 +23.2, Food101 +22.5, Kinetics700 +14.5, SST2 +12.4 … ImageNet +1.9 … PascalVOC2007 +0.5, 파란 막대 Birdsnap −3.2, MNIST −10.0, FGVCAircraft −11.3 … KITTI Distance −34.0, EuroSAT −37.1. 원 크기 비교: ImageNet ResNet Parameters(44.5 Million) 대 Clip Parameters(307 Million), ImageNet ResNet Training Data(1.28 Million) 대 Clip Training Data(400 Million images).",
+      "explain": [
+        "CLIP 이 레이블 하나 없이 ImageNet 에서 ResNet-101 과 같은 76.2% 를 냈다는 것은 놀랍지만, 질의응답에서 바로 반론이 나왔다 — 인터넷 사진에 ImageNet 과 비슷한 것이 섞였을 테니 그리 대단하지 않을 수도 있다. 강사도 동의하며 더 중요한 증거로 넘어간다. CLIP 이후에 모았거나 일부러 이상하게 찍은 데이터 셋들이다. ObjectNet 은 바나나를 바닥에 굴리거나 썩은 바나나를 찍는 식으로, 물체를 흔치 않은 자세·장소·상태로 모은 셋이다. ImageNet 은 대부분 물체의 '전형적인' 모습을 담기 때문에 ImageNet 으로 학습한 모델은 여기서 무너진다(32.6%). CLIP 은 72.3% 를 유지한다. 스케치(25.2 → 60.2), 그림·만화 같은 렌디션(37.7 → 88.9), 적대적으로 고른 어려운 사진(2.7 → 77.1)에서도 격차가 크다.",
+        "왜 그런가에 대해 강의는 두 가지 이유를 든다. 첫째, 감독 신호의 내용이 다르다. ImageNet 레이블은 1000개 중 하나의 번호일 뿐이지만, 인터넷 캡션은 '노랗고 길쭉한', '접시 위에', '연필로 그린' 처럼 모양·색·재질·맥락까지 말한다. 모델은 클래스 이름 하나가 아니라 그 물체를 알아보는 여러 단서를 함께 배우고, 그래서 전형적이지 않은 모습에도 다른 단서로 버틴다. 둘째, 규모다. ImageNet 은 128만 장인데 CLIP 은 4억 쌍, 요즘은 수십억 쌍을 쉽게 내려받는다. 모델도 ResNet 의 4,450만 개에서 ViT 의 3억 700만 개로 커졌다. 많이 본 모델에게는 약간 분포 밖의 사진이 덜 낯설다.",
+        "제로샷과 선형 프로브를 견준 막대그래프는 해석에 주의가 필요하다. 이 그래프는 '제로샷 CLIP' 의 정확도에서 'ResNet-50 특징 위에 학습한 선형 프로브' 의 정확도를 뺀 값이다. 초록(양수)은 레이블을 하나도 안 쓴 CLIP 이, 레이블로 학습한 ResNet-50 선형 분류기를 이긴 데이터 셋이다 — 자동차 모델(StanfordCars +28.9), 음식(Food101 +22.5), 행동 영상(Kinetics700 +14.5) 처럼 인터넷에 글이 많은 개념들이다. 파랑(음수)은 위성 사진 분류(EuroSAT −37.1), 자동차까지 거리(KITTI −34.0), 의료 조직 사진(PatchCamelyon), 숫자 세기(CLEVRCounts), 손글씨 숫자(MNIST) 처럼 인터넷 캡션이 거의 말하지 않는 추상적·전문적 과제다. 이 경계가 바로 뒤 챕터에서 말할 CLIP 의 한계와 이어진다.",
+        "이 결과들이 모여 CLIP 은 '이미지 쪽의 첫 파운데이션 모델'로 불리게 됐다. 하나의 인코더를 재학습 없이, 혹은 아주 가볍게만 맞춰 수많은 분류 과제에 쓸 수 있게 됐다는 뜻이다. 강의가 요약한 성공 요인은 결국 세 가지다 — 구조를 ResNet 에서 트랜스포머(ViT)로 바꿔 크게 키운 것, 레이블 대신 인터넷 쌍으로 데이터를 300배 늘린 것, 그리고 그 둘을 감당할 만큼 단순한 대조 목표. 노트 보충: 'ImageNet 에서 높은 점수가 곧 강건성은 아니다'는 이 비교의 교훈은 10강 이후 모든 평가에 적용된다. 새 모델을 볼 때 원 분포와 분포 이동 데이터 셋 점수를 함께 보는 습관을 들이자."
+      ],
+      "example": {
+        "title": "분포 이동에서 잃은 몫 계산하기",
+        "body": "ResNet-101: ImageNet 76.2 → ObjectNet 32.6. 잃은 몫 = (76.2−32.6)/76.2 ≈ 57%. CLIP ViT-L: 76.2 → 72.3, 잃은 몫 = 3.9/76.2 ≈ 5%. 스케치: ResNet 은 (76.2−25.2)/76.2 ≈ 67% 를 잃고 CLIP 은 (76.2−60.2)/76.2 ≈ 21% 를 잃는다. 같은 원 분포 정확도에서 출발했는데 분포가 바뀌면 손실이 10배 넘게 차이 난다 — '강건성'을 숫자로 본 것이다. 규모 비: 데이터 4억/128만 ≈ 313배, 매개변수 307M/44.5M ≈ 6.9배."
+      },
+      "pitfalls": [
+        "강의에서는 막대그래프를 '선형 프로브를 하면 대부분 데이터 셋에서 좋아진다'고 읽었지만, 슬라이드 축 이름(Zero-Shot CLIP vs. Linear Probe on ResNet50)대로라면 초록은 '제로샷 CLIP 이 ResNet-50 선형 프로브를 이긴' 데이터 셋이다(27개 중 16개). CLIP 특징 위의 선형 프로브는 대체로 제로샷 CLIP 보다 더 높다 — 둘을 섞지 말자.",
+        "ImageNet 76.2% 동률만으로 '레이블 없이도 똑같다'고 결론 내리면 안 된다. 인터넷 데이터가 평가 사진과 겹칠 가능성(오염)은 늘 남는다 — 그래서 CLIP 이후에 모은 셋의 결과가 더 설득력 있다."
+      ],
+      "check": [
+        {
+          "q": "EuroSAT·KITTI Distance 에서 제로샷 CLIP 이 크게 지는 이유를 데이터 관점에서 설명하라.",
+          "a": "위성 사진의 토지 분류나 차까지의 거리 같은 내용은 인터넷 캡션에 거의 적히지 않는다. 대조 학습은 캡션이 말한 것만 배우므로, 글로 잘 표현되지 않는 전문적·기하적 개념은 표현 공간에 담기지 않는다."
+        },
+        {
+          "q": "CLIP 의 분포 이동 강건성을 설명하는 강의의 두 이유는?",
+          "a": "① 캡션이 클래스 이름보다 풍부한 정보(모양·색·맥락)를 감독 신호로 준다. ② 데이터(4억 쌍)와 모델(307M)의 규모가 ImageNet 학습보다 훨씬 크다."
+        }
+      ]
+    },
+    {
+      "start": 1055,
+      "title": "CoCa — 대조 손실에 캡션 손실을 더하자, 분류 파운데이션 모델이 지도학습을 넘다",
+      "points": [
+        "CoCa(2022) = CLIP 의 대조 손실 + 이미지 특징을 교차 어텐션으로 읽어 캡션을 생성하는 디코더의 캡션 손실.",
+        "가설: '고양이냐 개냐'를 가르는 것보다 사진을 글로 묘사하는 것이 더 많은 정보를 요구하는, 더 강한 학습 목표다.",
+        "ImageNet 류 변형 전반에서 CLIP 보다 크게 오르고, 얼린 상태 90.6%·미세조정 91.0% 로 리더보드 맨 위.",
+        "강사 의견: 이 지점에서 이미지 인코더를 지도학습으로 만드는 흐름이 끝나고 인터넷 데이터 사전학습으로 넘어갔다."
+      ],
+      "on_screen": "'CoCa improved upon CLIP by adding a generation objective' — 왼쪽 Image Encoder(attentional pooling) ↔ 오른쪽 Unimodal Text Decoder(cls-token), 그 사이 Contrastive Loss. 입력 쌍 사진 + 'two dogs running in a field'. 다음 장 'CoCa added a decoder with a captioning loss' — 위에 Multimodal Text Decoder 가 Cross-Attention 으로 이미지 특징을 읽고 Captioning Loss. 'Classifier foundation models now beat all other models on ImageNet' 표: ALIGN 88.6, Florence 90.1, MetaPseudoLabels 90.2, CoAtNet 90.9, ViT-G 90.5, + Model Soups 90.9, CoCa (frozen) 90.6, CoCa (finetuned) 91.0(빨간 상자). 옆에 연도별 ImageNet top-1 리더보드 산점도(2016~2024), 맨 위에 CoCa.",
+      "explain": [
+        "CLIP 이 나오자 그 목표를 바꿔 보는 변형이 쏟아졌는데, 강의가 고른 대표는 2022년의 CoCa(Contrastive Captioner)다. 구조의 아래쪽은 CLIP 과 같다. 이미지 인코더가 사진을, 텍스트 쪽이 캡션을 인코딩하고 둘 사이에 대조 손실을 건다. 다른 점은 하나 — 위에 '멀티모달 텍스트 디코더'를 더 얹는다. 이 디코더는 7강·8강의 캡셔닝 모델처럼 캡션을 한 단어씩 생성하는데, 매 층에서 교차 어텐션으로 이미지 인코더의 특징을 읽는다. 그래서 손실이 둘이다. 대조 손실(이 사진과 이 캡션이 짝인가)과 캡션 손실(이 사진을 보고 이 캡션을 한 단어씩 맞힐 수 있는가).",
+        "왜 캡션을 더하면 좋아지나. 강의의 설명은 '과제의 난이도가 배우는 정보량을 정한다'는 것이다. 배치 안에서 고양이 사진과 트럭 사진을 구분하는 일은 털이 있다는 것 하나만 알아도 풀린다. 반면 '들판을 달리는 개 두 마리'라는 문장을 단어 단위로 맞히려면 개가 몇 마리인지, 무엇을 하는지, 배경이 무엇인지까지 사진에서 읽어야 한다. 더 많은 것을 요구하는 목표가 더 풍부한 특징을 만든다는 가설이고, 결과가 이를 뒷받침했다. CoCa 는 ImageNet 의 여러 변형에서 CLIP 보다 크게 올랐고, 강의는 데이터 셋 전반에서 약 10% 의 향상을 언급한다.",
+        "역사적으로 이 결과가 중요한 이유는 리더보드다. ImageNet 정확도 표에서 CoCa 는 얼린(frozen) 인코더 위에 분류기만 학습해도 90.6%, 전체를 미세조정하면 91.0% 로 ALIGN(88.6)·Florence(90.1)·Meta Pseudo Labels(90.2)·CoAtNet(90.9)·ViT-G 를 모두 앞섰다. 강사는 이 시점을 전환점으로 본다(강사 의견). 이미지 인코더를 ImageNet 같은 지도 데이터로 처음부터 학습하던 방식이 이 무렵을 기점으로 사라지고, 인터넷의 이미지-텍스트 데이터로 사전학습하는 것이 표준이 됐다는 것이다. 실제로 이후의 VLM 들(다음 챕터들)은 거의 모두 CLIP·SigLIP 계열 사전학습 인코더를 가져다 쓴다.",
+        "노트 보충: CoCa 의 텍스트 쪽은 하나의 디코더를 두 부분으로 나눈다. 아래 절반(unimodal)은 이미지를 보지 않고 텍스트만 인과적 어텐션으로 처리해 마지막 cls 토큰을 대조 손실용 텍스트 벡터로 내고, 위 절반(multimodal)은 교차 어텐션으로 이미지를 읽어 캡션 손실을 낸다. 한 번의 순전파로 두 손실을 모두 계산할 수 있어 비용이 크게 늘지 않는다. 이미지 쪽은 attentional pooling 으로 대조용 벡터 하나와 디코더용 토큰 여러 개를 따로 뽑는다. CS336 17강 노트가 지적했듯 '캡션을 예측하는 것만으로는' 학습이 느리다는 CLIP 논문의 절제 결과가 있는데, CoCa 는 대조 손실을 버리지 않고 둘을 더해서 그 단점을 피했다고 이해하면 된다."
+      ],
+      "formulas": [
+        {
+          "expr": "L_CoCa = λ_Con · L_Con + λ_Cap · L_Cap,   L_Cap = −Σ_{t=1..T} log P_θ(y_t | y_<t, x)",
+          "meaning": "L_Con: 앞 챕터의 대칭 대조 손실. L_Cap: 캡션 손실 — 사진 x 와 앞 단어들 y_<t 를 보고 t번째 단어 y_t 를 맞히는 자기회귀 교차 엔트로피(T 는 캡션 길이). λ_Con, λ_Cap: 두 손실의 가중치(노트 보충: 논문은 λ_Cap = 2, λ_Con = 1)."
+        }
+      ],
+      "example": {
+        "title": "캡션 손실이 대조 손실보다 '더 많이 묻는' 정도",
+        "body": "배치 N = 4 에서 대조 손실의 한 방향은 4지선다 — 완벽히 풀어도 사진당 얻는 정보는 log₂4 = 2비트다. 'two dogs running in a field' 를 어휘 3만 단어로 한 토큰씩 맞히면 토큰당 최대 log₂30000 ≈ 14.9비트, 6토큰이면 최대 약 89비트를 묻는다. 물론 실제로 맞혀야 하는 정보는 이보다 적지만, 캡션 손실은 '몇 마리', '무엇을', '어디서' 를 따로따로 채점한다는 점에서 대조 손실이 할 수 없는 세밀한 감독을 준다. 그래서 대조 손실은 배치를 키워야(=선지를 늘려야) 어려워지지만 캡션 손실은 배치 크기와 무관하게 어렵다."
+      },
+      "pitfalls": [
+        "'캡션을 생성하는 모델이 더 좋다'가 아니다. CLIP 논문은 캡션 예측만으로 학습하면 대조 학습보다 훨씬 느리다고 보고했다. CoCa 의 요점은 두 손실의 결합이다.",
+        "'frozen 90.6' 은 인코더를 얼리고 위의 분류 머리만 학습한 값이다. 제로샷 정확도와 혼동하지 말 것(노트 보충: CoCa 의 제로샷 ImageNet 은 86.3%)."
+      ],
+      "check": [
+        {
+          "q": "CoCa 에서 이미지 특징은 캡션 디코더에 어떤 방식으로 들어가는가?",
+          "a": "교차 어텐션. 디코더의 텍스트 토큰이 질의(Q), 이미지 인코더 출력이 키·값(K, V)이 된다."
+        },
+        {
+          "q": "대조 손실은 배치를 키워야 어려워지는데 캡션 손실은 그렇지 않은 이유는?",
+          "a": "대조 손실은 배치 안의 다른 샘플이 선지가 되므로 선지 수(=배치 크기)가 문제의 난이도를 정한다. 캡션 손실은 사진마다 전체 어휘 위에서 단어를 맞히므로 배치와 무관하게 세밀한 내용을 요구한다."
+        }
+      ]
+    },
+    {
+      "start": 1230,
+      "title": "CLIP 의 장점과 한계 — 내적 하나의 효율, 그리고 배치 크기·합성성·그라운딩·데이터의 벽",
+      "points": [
+        "장점: 내적뿐이라 학습·추론이 싸다(50억 장 검색도 가능), 어휘가 열려 있다, 다른 모델과 엮기 쉽다.",
+        "한계 1: 개념의 세밀함이 배치에 달렸다 — 배치 4면 '동물', 100이면 '개', 32,000 이면 '웰시코기'.",
+        "합성성 실패: '풀 위의 머그'와 '머그 속의 풀'을 못 가른다(Winoground·CREPE·ARO). 어려운 음성으로 학습하면 오히려 의미를 잊었다.",
+        "한계 2·3: 사진 단위 캡션엔 위치 정보(그라운딩)가 없다, 50억 장도 세상을 다 담지 못해 데이터 필터링이 연구 최전선이다."
+      ],
+      "on_screen": "'Advantages of CLIP-style models' — 1. Dot product is super efficient (a. Easy to train (enables scaling) b. Fast inference, e.g., retrieval over 5B images) 2. Open-vocabulary (zero-shot generalization) 3. Can be chained with other models (CuPL). 'April 2022, Tristan Thrush et al: CLIP can't distinguish between' — 'there is a mug in some grass' / 'there is some grass in a mug' 두 사진. 'Disadvantages of CLIP-style models — 1. Rely too heavily on batch size to learn concepts' 코기 사진과 Batch size: 4 → 'animal', 100 → 'dog', 32000 → 'Welsh Corgi'. 'But there's a limit…Even in a batch of 32K, it's unlikely you see both …'. Winoground · CREPE('Crepe on a skillet' / 'Boats on a skillet' / 'Crepe under a skillet' / 'Crepe on a dog') · ARO 예시, 'compositionality'. 'But training with hard negatives has its own problems…' — 'A black cat and a brown dog' ✓ / 'A brown cat and a black dog' ✗ / 'A brown dog and a black cat' ✗ 'hard positives'. '2. Image-level captions are insufficient supervision' — 거실 사진, 'living room' ✓ 'house plants' ✗ 'couch' ✗, 'Also train on region captions with bounding box coordinates'. '3. You can't know everything in your 5B dataset' — Stanford Internet Observatory 보고서 표지, 'It's extremely important to be intentional about data collection and filtering'.",
+      "explain": [
+        "먼저 장점. CLIP 의 계산은 결국 벡터 두 개의 내적이다. 학습이 단순하니 크게 키우기 쉽고, 추론도 싸다. 데이터 셋 전체를 한 번 임베딩해 두면 분류든 검색이든 '가장 가까운 벡터 찾기'로 끝나서, 슬라이드 말로는 50억 장 위에서도 검색할 수 있다. 어휘가 열려 있어(open vocabulary) 어떤 문장을 넣어도 그에 맞는 사진을 찾는다. 그리고 다른 모델의 출력(예: LLM 이 쓴 설명문)을 받아 쓰기 좋아서 체이닝의 부품이 된다 — 마지막 챕터의 CuPL 이 그 예다.",
+        "한계의 첫째는 배치 크기 의존성이다. 대조 손실은 배치 안의 다른 샘플과 견주어서만 배운다. 배치가 4개라 코기 옆에 늘 트럭·컵·산만 있다면, 모델은 '동물이다' 정도만 알아도 손실을 0 으로 만든다. 배치를 100 으로 키우면 다른 동물이 섞이니 '개'를 알아야 하고, 32,000 쯤 되면 다른 품종의 개(어려운 음성, hard negative)가 섞여 '웰시코기'를 가려내야 한다. 그래서 CLIP 류는 수많은 GPU 에 걸쳐 거대한 배치로 학습하고, 이는 대부분의 연구실이 감당할 수 없는 규모다. 게다가 배치를 키워도 보장은 없다. 어려운 음성이 들어오느냐는 데이터의 우연에 달렸다. 아래 계산이 보여 주듯, 데이터의 0.01% 만 코기와 헷갈릴 만한 사진이라면 배치 4에서 그런 사진을 만날 확률은 0.03%, 배치 32,000 에서야 96% 다.",
+        "이 문제의 가장 유명한 증상이 합성성(compositionality) 실패다. '풀 속의 머그'와 '머그 속의 풀'은 같은 단어로 된 다른 장면인데 CLIP 은 둘을 구분하지 못한다(2022년 Winoground). 32,000 개 배치에서도 이 두 문장이 같은 배치에 함께 들어올 일은 거의 없으니, 어순과 관계를 가르도록 강제하는 신호가 없다. 강사 연구실이 만든 CREPE·ARO 등 여러 벤치마크가 같은 결함을 반복해서 확인했다. 노트 보충: ARO 논문은 이 현상을 'CLIP 이 단어 주머니(bag-of-words)처럼 행동한다'고 표현했다. 아래 코드는 극단적인 단어 주머니 인코더(단어 벡터 평균)가 두 문장을 정확히 같은 벡터로 만든다는 것을 보여 준다. 커뮤니티의 반응은 배치를 손으로 짜서 어려운 음성(단어를 바꿔 넣은 문장)을 일부러 넣는 것이었고 약 1년간 유행했다. 그러나 강사 연구실의 후속 연구에 따르면 이렇게 학습하면 의미에 관한 다른 지식을 '잊어서' 여러 환경에서의 일반화가 오히려 나빠졌다. 이유는 아직 이론적으로 설명되지 않았다(강사 의견·자기 연구 소개).",
+        "둘째 한계는 감독의 단위다. 사진 한 장에 캡션 한 줄이면 '사람이 길을 건넌다'는 알아도 그 사람이 사진의 어디에 있는지, 차는 어디 있는지는 배울 수 없다. 거실 사진에 'living room' 은 맞지만 'house plants', 'couch' 는 캡션에 없어 감독이 되지 않는다. 그래서 영역 캡션과 상자 좌표로도 학습해야 한다는 제안이 나오고, 이 '그라운딩'이 뒤에서 Molmo 의 핵심 무기가 된다. 셋째 한계는 데이터 자체다. 50억 장을 모아도 세상의 중요한 것을 다 담지 못하고, 그 안에 무엇이 들었는지도 다 알 수 없다 — 슬라이드는 대규모 학습 데이터에서 불법 아동 성착취물이 발견된 스탠퍼드 인터넷 관측소 보고서를 보여 주며 데이터 수집·필터링을 의도적으로 해야 한다고 강조한다. 강사는 인터넷에서 좋은 학습 데이터를 골라내는 필터링이 지금 이 분야의 연구 최전선이라고 말한다."
+      ],
+      "formulas": [
+        {
+          "expr": "P(배치에 어려운 음성 ≥ 1) = 1 − (1 − p)^(B−1)",
+          "meaning": "p: 데이터에서 '이 샘플과 헷갈릴 만큼 비슷한' 샘플의 비율, B: 배치 크기(자기 자신 제외 B−1 개가 음성). 독립 추출을 가정한 근사. p 가 작으면 기대 개수 ≈ p(B−1) 이고, 이것이 1 근처가 되려면 B ≈ 1/p 가 필요하다 — 세밀한 개념일수록 p 가 작아 배치가 커져야 하는 이유."
+        }
+      ],
+      "example": {
+        "title": "코기를 배우려면 배치가 얼마나 커야 하나",
+        "body": "데이터의 p = 0.01%(=10⁻⁴)가 다른 코기·비슷한 견종이라 하자. B = 4: 1 − (1−10⁻⁴)³ ≈ 3×10⁻⁴ — 사실상 어려운 음성이 없다 → '동물' 수준이면 충분. B = 100: ≈ 99×10⁻⁴ ≈ 1%. B = 1,000: ≈ 9.5%. B = 32,000: 1 − e^(−3.2) ≈ 0.959, 기대 개수 3.2개 — 이제야 배치마다 견종을 가려야 할 상황이 생긴다. '머그 속의 풀'처럼 정확히 같은 단어의 다른 배치는 p 가 10⁻⁹ 수준이라 B = 32,000 이어도 확률 ≈ 3×10⁻⁵ — 배치 키우기로는 합성성을 배울 수 없다는 강의의 말이 숫자로 확인된다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "import numpy as np\n\n# 데이터의 p 비율이 '코기와 헷갈릴 만한' 어려운 음성(다른 코기 품종 등)이라 하자.\np = 1e-4\nfor B in (4, 100, 1000, 32000):\n    hit = 1 - (1 - p) ** (B - 1)      # 배치의 나머지 B-1 개 중 하나라도 걸릴 확률\n    print(f\"B={B:>6}: 어려운 음성이 배치에 있을 확률 {hit:.4f}, 기대 개수 {p*(B-1):.2f}\")\n\n# 단어 벡터를 평균만 하는 '단어 주머니' 인코더는 어순을 못 본다\nrng = np.random.default_rng(0)\nvocab = {w: rng.normal(size=8) for w in \"there is a mug in some grass\".split()}\nenc = lambda s: np.mean([vocab[w] for w in s.split()], axis=0)\ns1, s2 = \"there is a mug in some grass\", \"there is some grass in a mug\"\nprint(\"두 문장 임베딩 차이:\", np.abs(enc(s1) - enc(s2)).max())",
+        "note": "위 네 줄은 손 계산과 같다(0.0003 / 0.0099 / 0.0951 / 0.9592). 마지막 줄 — 단어 벡터를 평균하는 인코더는 두 문장의 차이가 부동소수점 오차(1e-16)뿐이다. 실제 CLIP 텍스트 인코더는 위치 임베딩이 있어 이렇게 극단적이지는 않지만, 대조 목표가 어순을 쓸 이유를 주지 않으면 비슷하게 행동한다."
+      },
+      "pitfalls": [
+        "강의 중 'CLIP can distinguish' 라고 말한 대목은 슬라이드 제목대로 'can't distinguish(구분하지 못한다)' 가 맞다.",
+        "어려운 음성을 넣으면 무조건 좋아진다는 직관은 틀릴 수 있다. 강사 연구실은 합성성 점수는 오르지만 다른 일반화가 떨어지는 부작용을 보고했다.",
+        "'50억 장이면 충분하다'는 생각도 위험하다 — 무엇이 들었는지 모르는 데이터는 법적·윤리적 위험(유해 콘텐츠)도 함께 들여온다."
+      ],
+      "check": [
+        {
+          "q": "배치 4로 학습한 CLIP 이 '웰시코기'를 배우지 못하는 이유를 손실의 관점에서 설명하라.",
+          "a": "대조 손실은 배치 안의 다른 샘플과만 견준다. 배치에 다른 개가 없으면 '동물이다' 정도만 구분해도 손실이 거의 0 이 되므로, 견종을 가를 기울기 신호가 생기지 않는다."
+        },
+        {
+          "q": "합성성 실패의 예를 하나 들고, 왜 배치 키우기로 잘 해결되지 않는지 말하라.",
+          "a": "'풀 속의 머그' vs '머그 속의 풀'. 같은 단어의 다른 배열이 같은 배치에 함께 들어올 확률이 극히 낮아, 어순·관계를 구분하도록 강제하는 음성이 거의 생기지 않는다."
+        }
+      ]
+    },
+    {
+      "start": 1555,
+      "title": "LLaVA — CLIP 의 끝에서 둘째 층 패치 토큰을 선형 층 하나로 LLM 에 끼워 넣기",
+      "points": [
+        "동기: 다음 토큰 예측은 수많은 과제에 그대로 옮겨진다. 이미지를 입력으로 받아 글을 내는 모델을 만들자 — VLM.",
+        "역사: 2019 ViLBERT 가 먼저 했지만 과제마다 따로 미세조정해야 했다(트랜스포머 이전 설계·과제별 기법).",
+        "어떤 이미지 토큰을 쓰나: CLS 는 너무 요약됐고 마지막 층 패치는 감독을 안 받았다 → 끝에서 둘째 층의 패치 토큰.",
+        "레시피: 사전학습 LLM + CLIP 인코더 → 새 선형 층으로 연결 → LLM 과 선형 층을 함께 미세조정(10만+ 샘플이면 쓸 만하다)."
+      ],
+      "on_screen": "'LLaVA — Motivation: Language models which do next token prediction can be applied to a wide variety of tasks… Can we build a model that can accept images and text as input, and then output text? → Vision-Language Models'. 'First, some historical context — They go as far back as 2019 → ViLBERT'(두 줄 스트림 Co-TRM 그림), 'BUT, they had to finetune for each task separately, with non-trivial task-specific methods (e.g., Mask-RCNN bounding box re-ranking for RefCOCO)'. 'LLaVA uses the autoregressive nature of LLMs' — 'Cats are so' → 'cute' 어텐션 그림. 'Key idea behind LLaVA — add visual information to the LLM': Transformer block ×3 아래 v₁ v₂ … vₙ + 'Cats' 'are' 'so', 'Which image tokens work best here?'. 'What tokens should we use from CLIP?' — Patchify → Flatten + Linear proj + 2D pos embed → Vision Transformer, CLS 는 'Extract Image Features from CLS token for contrastive learning', 마지막 층 패치에 'But these tokens are not supervised! (Could be random and loss will not change)'. 'Use Penultimate Layer!' — L−1 Layers 출력(빨강), 'In practice, these tokens preserve spatial and linguistic information best for LLMs. Can drop CLS for slight gains.' 'LLaVA — Overall Architecture + Training Recipe': 1. Initialize with pretrained Language Model for LLM Decoder (e.g. LLaMA) and pretrained image encoder (e.g. CLIP) 2. Train a new linear layer to bridge CLIP features to LLM input space 3. Finetune LLM + linear layer together. 'Can get reasonable performance with >100,000 samples containing an input image, input instruction, and output text.'",
+      "explain": [
+        "언어 모델의 '다음 토큰 예측'은 이어 쓰기 하나로 수학·감정 분석·기호 추론을 다 푼다. 그렇다면 이미지를 입력으로 받아 글을 내는 모델도 같은 방식으로 만들 수 있지 않을까. 이것이 시각-언어 모델(VLM, 혹은 멀티모달 언어 모델)의 동기이고, 강의는 약 2~2.5년 전 가장 먼저 널리 퍼진 LLaVA 를 출발점으로 삼는다. 다만 역사를 바로잡는다. 이 생각은 2019년 ViLBERT 가 먼저 했다. 이미지 스트림과 텍스트 스트림을 공동 어텐션으로 섞는 모델이었지만, 과제마다(예: RefCOCO 는 Mask R-CNN 상자 재순위) 별도의 미세조정과 과제 전용 기법이 필요했다. 강의 맨 앞의 '과제마다 모델' 패러다임에서 벗어나지 못한 셈이다. LLaVA 세대가 다른 점은 더 나은 구조(트랜스포머 LLM), 그리고 개별 과제가 아니라 다양한 과제를 한꺼번에 담은 데이터로 학습한다는 점이다.",
+        "아이디어는 8강의 자기회귀 트랜스포머에서 출발한다. 언어 모델은 'Cats are so' 를 보고 과거 토큰들에 어텐션해 'cute' 를 낸다. VLM 은 이 과거 문맥 앞에 이미지를 토큰으로 바꿔 끼워 넣을 뿐이다. 그러면 모델은 이미지 토큰과 앞선 단어 모두에 어텐션하며 이어 쓴다. 남은 질문은 '이미지 토큰을 무엇으로 하나'다. LLaVA 의 답은 CLIP 의 이미지 인코더(ViT)다. ViT 는 사진을 패치로 잘라 각 패치를 벡터로 만들고 여러 층을 거친 뒤, 패치마다 하나씩의 출력 토큰과 요약용 CLS 토큰을 낸다. 지금까지 제로샷 분류에서는 CLS 하나만 썼다. 그러나 CLS 한 개로는 '어디에 무엇이 있나'가 다 뭉개진다.",
+        "그렇다고 마지막 층의 패치 토큰을 쓰자니 문제가 있다. CLIP 의 대조 손실은 CLS(요약 벡터)에만 걸려 있어서 마지막 층의 나머지 패치 토큰은 어떤 감독도 받지 않는다 — 슬라이드 표현대로 그 값이 무작위여도 손실은 변하지 않는다. 실제로 쓸모가 적다는 것이 경험적으로 확인됐다. 대신 한 층 앞, 끝에서 둘째(penultimate) 층의 패치 토큰을 쓰면 좋다. 이 토큰들은 마지막 층이 CLS 를 계산할 때 재료로 쓰이므로 간접적으로 감독을 받고, 공간 정보(무엇이 어디 있나)와 언어와 맞춰진 의미를 둘 다 품고 있다. 슬라이드는 CLS 를 빼면 약간 더 좋아진다고 덧붙인다.",
+        "LLaVA 전체는 이렇게 조립된다. ① 사전학습된 LLM(예: LLaMA 계열)과 사전학습된 CLIP 이미지 인코더를 가져온다. ② 둘 사이에 새 선형 층 W 하나를 둔다. 역할은 CLIP 특징 공간(예: 1024차원)의 벡터를 LLM 이 이해하는 단어 임베딩 공간(예: 4096차원)으로 옮기는 번역이다. ③ LLM 과 선형 층을 함께 미세조정한다(CLIP 인코더는 보통 얼린다). 데이터는 '이미지 + 지시문 + 답'의 묶음이고, 10만 개 남짓이면 쓸 만한 성능이 나온다고 슬라이드는 말한다. 이렇게 들어간 이미지 토큰이 LLM 의 문맥을 얼마나 차지하는지는 아래 예에서 직접 세어 본다. 노트 보충: 두 단계 학습(먼저 선형 층만 맞추는 정렬 단계 → 전체 지시 미세조정), GPT-4 로 합성한 지시 데이터, 2층 MLP 로 바꾼 LLaVA-1.5·AnyRes 고해상도 처리는 CS336 17강 노트에 이미 정리돼 있으니 그쪽을 보자."
+      ],
+      "formulas": [
+        {
+          "expr": "N_img = (H/p) · (W/p),   H_v = Z_{L−1}[1:] · W + b  (H_v ∈ ℝ^{N_img × d_llm})",
+          "meaning": "H, W: 입력 해상도(픽셀), p: ViT 패치 크기(ViT-L/14 면 14), N_img: 이미지 하나가 만드는 토큰 수. Z_{L−1}: 끝에서 둘째 층 출력((1+N_img) × d_vis, 첫 행이 CLS), [1:] 은 CLS 를 버린다는 뜻. W ∈ ℝ^{d_vis × d_llm}, b ∈ ℝ^{d_llm}: 학습하는 연결 선형 층. H_v 의 각 행이 '가짜 단어' 하나가 되어 텍스트 임베딩 앞에 이어 붙는다."
+        }
+      ],
+      "example": {
+        "title": "VLM 의 이미지 토큰 예산 손으로 세기",
+        "body": "CLIP ViT-L/14, 224px 입력: 224/14 = 16 → 16×16 = 256 토큰. 336px 입력: 336/14 = 24 → 24×24 = 576 토큰(CLS 포함 577개에서 CLS 제외). 연결 선형 층: d_vis = 1024 → d_llm = 4096(7B 급) 이면 매개변수 1024×4096 + 4096 = 4,198,400 ≈ 4.2M — LLM 70억 개의 0.06% 에 불과하다. 문맥 4096 토큰 LLM 이라면 사진 한 장(576)이 문맥의 14.1% 를 먹는다. Flamingo 식 few-shot 처럼 사진 5장(예시 4 + 질의 1) + 글 300 토큰을 넣으면 5×576 + 300 = 3,180 토큰(문맥의 78%), 셀프 어텐션의 점수 쌍은 3,180² ≈ 1,011만 개 — 사진 수에 따라 제곱으로 늘어난다. 이것이 다음 챕터 Flamingo 가 이미지를 시퀀스에 넣지 않고 교차 어텐션으로 읽는 동기다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "import numpy as np\n\npatch, d_vis, d_llm, ctx = 14, 1024, 4096, 4096   # ViT-L/14, 7B 급 LLM, 문맥 4096\n\nfor res in (224, 336):\n    n = (res // patch) ** 2                         # 패치 = 이미지 토큰 수(CLS 제외)\n    print(f\"{res}px -> {res//patch}x{res//patch} = {n} 토큰, 문맥의 {n/ctx:.1%}\")\n\nW = np.zeros((d_vis, d_llm)); b = np.zeros(d_llm)   # LLaVA 의 연결 선형 층\nprint(\"선형 층 파라미터:\", W.size + b.size)\n\nfeats = np.random.randn(577, d_vis)                 # 끝에서 둘째 층 출력: CLS + 576 패치\nvis_tokens = feats[1:] @ W + b                      # CLS 를 버리고 576 개만 투영\nprint(\"LLM 에 들어가는 시각 토큰 모양:\", vis_tokens.shape)\n\nn_img, n_txt = 5, 300                               # 사진 5장(4-shot + 질의) + 글 300 토큰\nseq = n_img * 576 + n_txt\nprint(f\"LLaVA 식 시퀀스: {seq} 토큰 (문맥 {ctx} 의 {seq/ctx:.0%}), 어텐션 쌍 {seq**2:,}\")\nprint(f\"Flamingo 식 시퀀스: {n_img + n_txt} 토큰, 교차 어텐션 쌍 {(n_txt)*64:,} (이미지당 64 잠재)\")",
+        "note": "실행 결과: 224px→256 토큰(6.2%), 336px→576 토큰(14.1%), 선형 층 4,198,400, 시각 토큰 모양 (576, 4096), LLaVA 식 3,180 토큰(78%)·어텐션 쌍 10,112,400 대 Flamingo 식 305 토큰·교차 어텐션 쌍 19,200(층당). 차원 1024·4096·문맥 4096 은 설명용 가정."
+      },
+      "diagram": {
+        "title": "LLaVA 의 데이터 흐름",
+        "code": "flowchart LR\n  IMG[\"사진 336×336\"] --> P[\"14×14 패치 576개\"] --> V[\"CLIP ViT<br/>(얼림)\"]\n  V -->|끝에서 둘째 층<br/>CLS 제외| Z[\"576 × 1024\"]\n  Z --> W[\"선형 층 W<br/>(새로 학습)\"] --> H[\"576 × 4096<br/>'가짜 단어'\"]\n  T[\"지시문 토큰<br/>'Cats are so'\"] --> E[\"단어 임베딩\"]\n  H --> CAT[\"이어 붙이기\"]\n  E --> CAT\n  CAT --> LLM[\"LLM 디코더<br/>(미세조정)\"] --> OUT[\"'cute'\"]"
+      },
+      "pitfalls": [
+        "'CLIP 의 마지막 층 = 가장 좋은 특징'이 아니다. 대조 손실이 CLS 에만 걸리므로 마지막 층 패치 토큰은 감독을 받지 않는다 — LLaVA 류는 끝에서 둘째 층을 쓴다.",
+        "이미지 토큰 수는 해상도의 제곱에 비례한다. 해상도를 224 → 336 으로 1.5배 올리면 토큰은 2.25배(256 → 576), 셀프 어텐션 비용은 그보다 더 빨리 는다."
+      ],
+      "check": [
+        {
+          "q": "ViT-L/14 에 448×448 사진을 넣으면 이미지 토큰은 몇 개인가? 문맥 4096 의 몇 %인가?",
+          "a": "448/14 = 32 → 32² = 1,024 토큰. 1024/4096 = 25%."
+        },
+        {
+          "q": "LLaVA 에서 새로 학습하는 부분과 가져오는 부분을 구분하라.",
+          "a": "가져오는 것: 사전학습 LLM, 사전학습 CLIP 이미지 인코더. 새로 학습: 둘을 잇는 선형 층. 이후 LLM 과 선형 층을 함께 미세조정한다(이미지 인코더는 보통 얼림)."
+        }
+      ]
+    },
+    {
+      "start": 1848,
+      "title": "Flamingo 의 구조 — 얼린 LLM 의 층마다 게이트 교차 어텐션을, 그리고 Perceiver 로 고정 개수 시각 토큰",
+      "points": [
+        "LLaVA 는 이미지 토큰을 입력에 한 번 넣지만, Flamingo(Google DeepMind, 2022)는 시각 특징을 LLM 의 모든 층에 넣는다.",
+        "Perceiver Resampler: 크기가 제각각인 이미지 특징을 고정 개수(노트 보충: 64개)의 작은 토큰으로 줄인다.",
+        "GATED XATTN-DENSE: 교차 어텐션 → tanh 게이트 → FFW → tanh 게이트, 각각 잔차 연결. 게이트 매개변수 α 는 0 으로 시작한다.",
+        "비전 인코더와 LM 은 모두 얼리고, Perceiver 와 새 교차 어텐션 층만 학습한다. 코드로는 두세 줄의 변화다."
+      ],
+      "on_screen": "'Flamingo followed up with a new way to fuse visual features' — Vision encoder 출력이 Transformer block 들 옆으로 들어가는 그림, 입력 '<image> This cat is so'. 'Pre-trained parts of Flamingo'(Alayrac et al. 2022) — Vision Encoder ❄ ×2(강아지·고양이 사진), n-th LM block ❄ … 1st LM block ❄, 'Processed text: <image> This is a very cute dog. <image> This is', 출력 'a very serious cat.'. 'Perceiver sampler converts variable sized image tokens to fixed sized ones' — Perceiver Resampler 가 각 인코더 위에, LM block 사이마다 'n-th GATED XATTN-DENSE'. 'Flamingo gated cross-attention' 확대: 아래부터 cross attention(K=V=[X], Q=[Y]) → tanh gating → FFW → tanh gating → self attention ❄(K=V=[Y]) → FFW ❄. 오른쪽 코드: def gated_xattn_dense(y, x, alpha_xattn, alpha_dense): # 1. Gated Cross Attention y = y + tanh(alpha_xattn) * attention(q=y, kv=x) # 2. Gated Feed Forward (dense) Layer y = y + tanh(alpha_dense) * ffw(y) # Regular self-attention + FFW on language y = y + frozen_attention(q=y, kv=y); y = y + frozen_ffw(y); return y. 'Flamingo full architecture' — 범례 'Pretrained and frozen' / 'Trained from scratch during Flamingo training'.",
+      "explain": [
+        "LLaVA 가 나온 직후 Google(DeepMind)은 Flamingo 를 냈다. 큰 틀은 같다 — 사전학습된 비전 인코더의 특징을 사전학습된 LLM 과 합친다. 다른 것은 '어디에서 합치나'다. LLaVA 는 이미지 토큰을 선형 층에 통과시켜 입력 시퀀스의 앞부분에 한 번 넣는다. 그 뒤로는 LLM 의 셀프 어텐션이 알아서 이미지 토큰을 참고해야 한다. Flamingo 는 시각 특징을 LLM 의 모든 층에 넣는다. 층마다 '지금 이 단어를 만들 때 이미지의 어느 부분이 필요한가'를 다시 묻는 셈이다. 그러려면 LLM 구조를 고쳐야 하는데, 고친 부분은 둘이다.",
+        "첫째는 Perceiver Resampler 다. 비전 인코더의 출력은 해상도에 따라(영상이면 프레임 수에 따라) 토큰 수가 달라진다. Resampler 는 학습되는 고정 개수의 '잠재 질의' 벡터들이 이미지 특징 전체에 교차 어텐션해, 입력 크기와 상관없이 언제나 같은 개수의 작은 시각 토큰을 내게 한다(노트 보충: 논문은 64개). 그래서 LM 의 각 층이 읽어야 할 시각 토큰 수가 사진 크기와 무관하게 고정된다. 둘째가 GATED XATTN-DENSE 블록이다. LM 의 각 층 바로 앞에 끼워 넣는 블록으로, 언어 토큰 y 가 질의(Q), Resampler 가 낸 시각 토큰 x 가 키·값(K=V)인 교차 어텐션을 하고, 그 결과에 tanh 게이트를 곱해 잔차로 더한다. 이어 피드포워드 층(FFW)도 같은 방식으로 tanh 게이트를 거쳐 잔차로 더한다. 그 다음에 원래의 얼린 LM 층(셀프 어텐션 + FFW)이 온다.",
+        "게이트가 핵심이다. 강의는 tanh 게이트를 '이미지에서 무엇을 남기고 무엇을 잊을지 정하는 장치'로 설명했다. 노트 보충으로 더 정확히 말하면, 게이트는 스칼라 학습 매개변수 α 에 tanh 를 씌운 값이고 α 는 0 으로 초기화된다. tanh(0) = 0 이므로 학습 시작 순간 새 블록은 아무것도 더하지 않고, 모델은 원래 LLM 과 정확히 같은 출력을 낸다. 학습이 진행되며 α 가 조금씩 커지면 그만큼만 시각 정보가 섞인다. 이렇게 해야 무작위로 초기화된 새 층이 사전학습된 LLM 의 언어 능력을 첫 걸음부터 망가뜨리지 않는다. 아래 코드에서 α = 0 이면 언어 표현이 정확히 그대로이고, α 가 커질수록 변화가 커지는 것을 확인한다.",
+        "학습 범위는 매우 좁다. 비전 인코더도, LM 의 모든 가중치도 얼린다. 새로 학습하는 것은 Perceiver Resampler 와 층마다 끼운 게이트 교차 어텐션 블록뿐이다. 코드로 보면 원래 층 앞에 두세 줄을 더한 정도지만, 모델 입장에서는 '언제, 이미지의 어디를 볼지'를 층마다 고를 수 있게 된 큰 변화다. 노트 보충: 이 '교차 어텐션으로 시각 정보를 넣는' 계열은 Qwen-VL 1세대의 리샘플러, Llama 3.2 Vision 의 교차 어텐션 어댑터로 이어졌고, 반대로 LLaVA 식 '입력에 끼우기'는 Qwen2-VL 이후 대부분의 공개 VLM 이 택했다. 두 계열의 장단(토큰 예산 대 구조 변경)은 앞 챕터의 계산과 CS336 17강 노트의 Qwen-VL 절을 함께 보면 선명해진다."
+      ],
+      "formulas": [
+        {
+          "expr": "y ← y + tanh(α_xattn) · Attn(Q = y W_Q, K = x W_K, V = x W_V);   y ← y + tanh(α_dense) · FFW(y);   y ← y + SelfAttn_frozen(y);   y ← y + FFW_frozen(y)",
+          "meaning": "y: 언어 토큰의 은닉 표현(T × d), x: Perceiver Resampler 가 낸 시각 토큰(64 × d). Attn: 교차 어텐션(질의는 언어, 키·값은 시각). α_xattn, α_dense: 층마다 하나씩인 스칼라 게이트 매개변수, 0 으로 초기화 → tanh(0) = 0 이라 처음에는 블록이 항등 함수. 뒤 두 줄은 원래 LM 층(얼림). 학습되는 것은 첫 두 줄의 가중치와 α, Resampler 뿐."
+        }
+      ],
+      "example": {
+        "title": "게이트 값이 섞는 정도",
+        "body": "교차 어텐션 출력의 한 성분이 a = 2.0, 원래 언어 표현 성분이 y = 0.5 라 하자. α = 0: tanh 0 = 0 → y' = 0.5 (원래 LLM 그대로). α = 0.1: tanh 0.1 ≈ 0.0997 → y' = 0.5 + 0.0997×2.0 ≈ 0.699. α = 1: tanh 1 ≈ 0.762 → y' = 0.5 + 1.523 = 2.023. α 가 아무리 커져도 tanh 는 1 을 넘지 않으므로 시각 기여는 최대 a 만큼으로 묶인다. 학습은 α 를 0 에서 출발해 '이 층에서 시각 정보가 얼마나 필요한가'에 맞춰 키운다 — 논문 그림(노트 보충)에서도 깊은 층일수록 게이트 절댓값이 커지는 경향이 보고됐다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "import numpy as np\nrng = np.random.default_rng(0)\n\ndef attn(q, kv, Wq, Wk, Wv):\n    Q, K, V = q @ Wq, kv @ Wk, kv @ Wv\n    s = Q @ K.T / np.sqrt(Q.shape[1])\n    a = np.exp(s - s.max(1, keepdims=True)); a /= a.sum(1, keepdims=True)\n    return a @ V\n\nd = 8\ny = rng.normal(size=(5, d))          # 언어 토큰 5개\nx = rng.normal(size=(64, d))         # Perceiver 가 낸 시각 잠재 64개\nWq, Wk, Wv = (rng.normal(size=(d, d)) for _ in range(3))\nW1 = rng.normal(size=(d, d))\nffw = lambda h: np.maximum(h @ W1, 0)\n\ndef gated_xattn_dense(y, x, a_xattn, a_dense):\n    y = y + np.tanh(a_xattn) * attn(y, x, Wq, Wk, Wv)   # 1) 게이트 교차 어텐션\n    y = y + np.tanh(a_dense) * ffw(y)                     # 2) 게이트 FFW\n    return y                                              # 이 뒤에 얼린 LM 층이 온다\n\nfor a in (0.0, 0.1, 1.0):\n    out = gated_xattn_dense(y, x, a, a)\n    print(f\"alpha={a}: 언어 표현이 바뀐 정도 {np.abs(out - y).max():.3f}\")",
+        "note": "실행 결과: alpha=0.0 → 0.000(정확히 원래 LLM), 0.1 → 1.045, 1.0 → 11.266. 언어 토큰 5개가 시각 잠재 64개에 교차 어텐션하고, 그 뒤에 얼린 LM 층이 온다고 가정한 장난감 구현. 행렬은 무작위."
+      },
+      "diagram": {
+        "title": "Flamingo 한 층의 구조",
+        "code": "flowchart BT\n  X[\"시각 토큰 x<br/>(Perceiver 출력, 64개)\"] --> CA\n  Y[\"언어 토큰 y\"] --> CA[\"교차 어텐션<br/>Q=y, K=V=x\"]\n  CA --> G1[\"× tanh(α_xattn)<br/>+ 잔차\"] --> F[\"FFW\"] --> G2[\"× tanh(α_dense)<br/>+ 잔차\"]\n  G2 --> SA[\"셀프 어텐션 ❄<br/>(원래 LM)\"] --> FF[\"FFW ❄\"] --> NEXT[\"다음 층\"]"
+      },
+      "pitfalls": [
+        "tanh 게이트를 '픽셀별로 남길 것을 고르는 마스크'로 이해하면 틀린다. 게이트는 층마다 스칼라 하나(α)로, 그 층의 시각 기여 전체의 세기를 조절한다. 무엇을 볼지는 교차 어텐션 가중치가 정한다.",
+        "Flamingo 에서 이미지 토큰은 입력 시퀀스에 이어 붙지 않는다. 시퀀스에는 '<image>' 태그 하나만 있고, 시각 정보는 층마다 교차 어텐션으로 들어온다(질의응답에서 강사가 확인)."
+      ],
+      "check": [
+        {
+          "q": "게이트 α 를 0 으로 초기화하는 이유는?",
+          "a": "tanh(0) = 0 이라 학습 시작 시 새 블록이 항등 함수가 되어, 사전학습된 LLM 의 출력을 그대로 보존한다. 무작위 초기화된 교차 어텐션이 언어 능력을 처음부터 망가뜨리는 것을 막고, 시각 정보를 점진적으로 섞는다."
+        },
+        {
+          "q": "Perceiver Resampler 가 없으면 무엇이 문제인가?",
+          "a": "이미지·영상의 해상도나 프레임 수에 따라 시각 토큰 수가 달라져 층마다 교차 어텐션 비용이 들쭉날쭉하고 커진다. Resampler 는 이를 고정 개수의 작은 토큰으로 줄인다."
+        }
+      ]
+    },
+    {
+      "start": 2024,
+      "title": "Flamingo 의 학습 데이터 — 사진과 글이 번갈아 나오는 문서, 그리고 '바로 앞 사진만 보라'는 마스크",
+      "points": [
+        "학습 데이터는 이미지와 텍스트가 섞인(interleaved) 긴 시퀀스 — 웹 문서처럼 사진·설명·사진·설명이 이어진다.",
+        "특수 태그: <image> 는 사진이 들어온 자리, <EOC>(end of chunk)는 그 사진에 대한 글이 끝난 자리.",
+        "마스크된 교차 어텐션: 각 텍스트 토큰은 바로 앞에 나온 사진 하나의 시각 토큰만 본다.",
+        "그래도 텍스트끼리의 셀프 어텐션은 막지 않으므로, 앞선 사진들의 정보는 앞선 글을 통해 간접적으로 흘러온다."
+      ],
+      "on_screen": "'Flamingo arranges its training data similar to language modeling, with special tags <image>, <eos> to indicate when a new image shows up or the text ends.' — 입력 '<BOS>Cute pics of my pets!<EOC><image>My puppy sitting in the grass.<EOC><image>My cat looking very dignified.<EOC>', 주황 상자는 Image 1(강아지), 파란 상자는 Image 2(고양이)에 연결. 'Processed text: <image> tags are inserted and special tokens are added'. 'Flamingo masked attention' — Masked cross_attention 격자: 행 = 시각 토큰(Image 1·Image 2 의 Perceiver 출력), 열 = 텍스트 토큰, 진한 칸이 '볼 수 있는' 부분으로 계단 모양, 아래 tokenization, K=V=[X].",
+      "explain": [
+        "Flamingo 가 여러 장의 사진과 대화를 다룰 수 있게 된 비결은 구조보다 데이터의 모양에 있다. 강의는 학습을 어렵게 만든 동시에 다양한 과제로 옮겨 가게 한 '기발한 학습법'으로 이 부분을 소개한다. 사진 한 장 + 설명 한 줄의 쌍이 아니라, 웹 문서처럼 글과 사진이 번갈아 나오는 긴 시퀀스로 학습한다. 예컨대 '내 반려동물 귀여운 사진들!' 다음에 강아지 사진, '풀밭에 앉은 우리 강아지', 그다음 고양이 사진, '아주 근엄해 보이는 우리 고양이' 가 이어진다. 모델은 언어 모델처럼 이 시퀀스의 다음 토큰을 맞히고, 특히 마지막 사진에 대한 설명을 이어 쓰는 법을 배운다.",
+        "사진은 시퀀스에 직접 들어가지 않으므로 '어디에 사진이 있었나'를 표시할 장치가 필요하다. 그래서 텍스트를 전처리할 때 사진이 있던 자리에 <image> 태그를 넣고, 각 사진에 딸린 글이 끝나는 자리에 <EOC>(end of chunk) 토큰을 넣는다(슬라이드 제목은 <eos> 라고 적었지만 그림 속 실제 토큰은 <EOC> 다). 다음은 마스크다. 어떤 사진을 설명하는 동안에는 그 사진만 봐야 한다. '풀밭에 앉은 우리 강아지'를 만드는 동안 고양이 사진을 보면 안 된다. 그래서 교차 어텐션에 손으로 설계한 마스크를 건다 — 각 텍스트 토큰은 자기보다 앞에 나온 사진 중 가장 가까운 한 장의 시각 토큰에만 어텐션한다. 슬라이드의 마스크 격자가 계단 모양인 이유다.",
+        "그렇다면 모델은 앞선 사진들을 완전히 잊는가? 아니다. 강의가 짚은 것처럼 학습 중 모델은 전체 문맥을 본다. 교차 어텐션(시각 정보를 읽는 통로)만 '바로 앞 사진 한 장'으로 제한될 뿐, 텍스트끼리의 셀프 어텐션은 평소처럼 인과적으로 열려 있다. 그래서 두 번째 사진을 설명하는 토큰은 고양이 사진을 직접 보면서, 동시에 첫 사진에 대해 쓰인 글('풀밭의 강아지')도 셀프 어텐션으로 읽는다. 앞선 사진의 정보가 그 사진에 대해 쓴 글을 통해 간접적으로 전달되는 구조다. 이 덕분에 '이 사진들의 공통점은?' 같은 여러 사진 질문과 few-shot 예시 학습이 가능해진다 — 다음 챕터의 응용이 모두 여기서 나온다.",
+        "노트 보충: 논문의 학습 데이터는 이런 인터리브 웹 문서 약 4,300만 쪽(M3W) 외에, 이미지-텍스트 쌍(ALIGN 18억 쌍, LTIP 3.12억 쌍)과 짧은 영상-텍스트 쌍(VTP 2,700만)을 섞는다. 쌍 데이터는 '사진 하나 + 글 하나'짜리 인터리브 문서의 특수한 경우로 볼 수 있어 같은 형식으로 함께 학습한다. 한 가지 더 — 마스크 규칙 덕분에 사진이 몇 장이든 각 텍스트 토큰이 읽는 시각 토큰은 Resampler 의 64개로 고정된다. 앞 챕터의 계산처럼 사진을 시퀀스에 다 넣는 방식과 비교하면, 사진 수가 늘어도 시각 쪽 비용이 선형으로만 는다."
+      ],
+      "example": {
+        "title": "마스크 행렬 손으로 그리기",
+        "body": "토큰열: <BOS> Cute pics of my pets ! <EOC> | <image> My puppy … grass . <EOC> | <image> My cat … dignified . <EOC>. 각 토큰 앞에 나온 <image> 수를 누적해서 센다: 첫 <image> 전 8개 토큰은 0 → 어떤 사진도 보지 않는다(행 [0 0]). 첫 <image> 부터 다음 <image> 직전까지 9개 토큰은 1 → 사진 1 만 본다([1 0]). 두 번째 <image> 부터 끝까지 8개 토큰은 2 → 사진 2 만 본다([0 1]). 행렬 크기는 25 × 2, 1 인 칸은 17개. 사진 2 를 설명하는 'cat' 토큰은 교차 어텐션으로는 사진 2 만, 셀프 어텐션으로는 'puppy' 를 포함한 앞의 모든 글을 볼 수 있다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "import numpy as np\n\n# <image> 이 자리에서 그림이 들어가는 인터리브 문서\ntoks = \"<BOS> Cute pics of my pets ! <EOC> <image> My puppy sitting in the grass . <EOC> <image> My cat looking very dignified . <EOC>\".split()\nimg_idx = np.cumsum([t == \"<image>\" for t in toks])   # 각 토큰 직전까지 나온 그림 수\nn_img = img_idx.max()\nmask = np.zeros((len(toks), n_img), dtype=int)\nfor i, k in enumerate(img_idx):\n    if k > 0:\n        mask[i, k - 1] = 1                              # 바로 앞 그림 하나만 본다\nfor t, row in zip(toks, mask):\n    print(f\"{t:>10} {row}\")",
+        "note": "실행 결과는 위 손 계산과 같은 25×2 행렬 — 첫 8 토큰 [0 0], 다음 9 토큰 [1 0], 마지막 8 토큰 [0 1]. 실제 구현에서는 사진 인덱스 대신 각 사진의 64개 시각 토큰 열 전체가 같은 값으로 열리거나 닫힌다."
+      },
+      "pitfalls": [
+        "슬라이드 제목은 텍스트 끝 태그를 '<eos>' 라고 적었지만, 그림 속 실제 시퀀스와 논문의 토큰은 '<EOC>(end of chunk)' 다.",
+        "'바로 앞 사진만 본다'는 교차 어텐션 얘기다. 셀프 어텐션까지 막는다고 오해하면 Flamingo 가 여러 사진을 비교하는 능력을 설명할 수 없다."
+      ],
+      "check": [
+        {
+          "q": "'<image> A <EOC> <image> B <EOC> <image> C' 에서 C 를 만드는 토큰이 교차 어텐션으로 볼 수 있는 사진과, 셀프 어텐션으로 볼 수 있는 글은?",
+          "a": "교차 어텐션: 세 번째 사진만. 셀프 어텐션: 앞의 모든 텍스트(A, B 포함)."
+        },
+        {
+          "q": "이미지-텍스트 쌍 데이터를 인터리브 형식으로 어떻게 표현하나?",
+          "a": "'<image> 캡션 <EOC>' 처럼 사진 하나와 글 하나로 된 짧은 인터리브 문서로 본다."
+        }
+      ]
+    },
+    {
+      "start": 2228,
+      "title": "Flamingo 의 응용 — 여러 턴 대화, 여러 사진 추론, 그리고 이미지 in-context 학습",
+      "points": [
+        "사전학습 LLM 의 추론 능력을 물려받아 '달 위의 테디베어 두 마리' → '무엇을 하나?' → '무엇을 쓰나?' 같은 여러 턴 대화가 된다.",
+        "여러 사진을 주고 공통점을 묻기(모두 플라밍고), 차이를 묻기가 가능하다.",
+        "in-context(few-shot) 학습: 사진-설명 예시 몇 쌍을 앞에 붙이면 새 사진에 같은 형식으로 답한다 — 분류·VQA·OCR·산수.",
+        "벤치마크 문화가 '분류 몇 개'에서 '질의응답으로 표현되는 모든 이해 과제'로 바뀌었다(강사 의견)."
+      ],
+      "on_screen": "'Flamingo results' — 세 대화: 달 위의 테디베어 사진 'This is a picture of two teddy bears on the moon.' → 'What are they doing?' → 'They are having a conversation.' → 'What object are they using?' → 'It looks like a computer.' → 'Is this surprising?' …; 플라밍고 그림 세 장 'What is the common thing about these three images?' → 'They are all flamingos.', 'What is the difference between these three images?' → 'The first one is a cartoon, the second one is a real flamingo, and the third one is a 3D model of a flamingo.'; 스티커 붙은 사과 'The sticker says iPod' 등. 'Flamingo enables in-context learning' — Input Prompt / Completion 표: 친칠라·시바 설명 2쌍 + 플라밍고 사진 → 'a flamingo. They are found in the Caribbean and South America.'; 그림 제목 질의응답 2쌍 + 고흐 그림 → 'Arles.'; 'Output: Underground' / 'Output: Congress' + 새 사진 → 'Soulomes'; 손글씨 산수 '2+1=3', '5+6=11' + 새 사진 → '3x6=18'. 'Zero/Few shot' 벤치마크 표(Flamingo-3B·9B·80B, 0/4/8/16/32-shot, 16개 과제, 빨간 상자는 미세조정 SOTA 를 넘은 칸).",
+      "explain": [
+        "Flamingo 의 쓸모는 세 가지 응용으로 요약된다. 첫째는 한 사진에 대한 여러 턴 대화다. 달 위에 테디베어 두 마리가 있는 사진을 주면 '달 위의 테디베어 두 마리' 라고 묘사하고, '무엇을 하고 있나?' 에 '대화 중', '무엇을 쓰고 있나?' 에 '컴퓨터처럼 보인다' 고 답한다. '이게 놀라운가?' 에도 답한다. 이것이 되는 이유는 두 가지다. 하나는 얼린 LLM 의 언어·추론 능력을 그대로 물려받았다는 것, 다른 하나는 학습 데이터 자체가 여러 사진과 여러 문단이 이어지는 긴 시퀀스라 긴 대화 형식에 익숙하다는 것이다.",
+        "둘째는 여러 사진에 걸친 추론이다. 만화 플라밍고·실제 플라밍고·3D 모델 플라밍고 세 장을 주고 공통점을 물으면 '모두 플라밍고' 라고 답하고, 차이를 물으면 '첫째는 만화, 둘째는 실물, 셋째는 3D 모델' 이라고 답한다. 앞 챕터의 마스크 구조에서 보았듯 각 사진에 대한 표현이 글을 통해 이어지기 때문이다. 셋째가 가장 주목받은 in-context 학습이다. GPT 에 '이런 예시처럼 해 줘' 라고 예를 보여 주는 것과 같다. 사진 + 설명 쌍을 두어 개 앞에 붙이고 새 사진만 주면 같은 형식의 설명을 이어 쓴다. 사진 + 질문 + 답 예시를 주면 새 사진의 질문에 답한다. 지하철 표지판 사진 → 'Underground', 의사당 사진 → 'Congress' 를 보여 주면 새 사진의 글자를 읽는 OCR 이 되고, 손글씨 '2+1=3', '5+6=11' 을 보여 주면 새 사진의 '3x6' 을 읽고 '=18' 까지 계산한다. 가중치는 하나도 바뀌지 않는다. 예시를 모두 빼면 제로샷이 된다.",
+        "질의응답에서 나온 질문 둘이 구조 이해에 도움이 된다. 하나, 예시 사진들은 시퀀스에 이어 붙는가? 아니다 — 시퀀스에는 텍스트와 <image> 태그만 있고 사진은 Resampler 를 거쳐 층마다 교차 어텐션으로 들어간다. 둘, 대화가 이어질 때마다 앞의 사진과 대화를 다시 넣는가? 웹 인터페이스에서 사용자는 사진을 한 번만 주지만, 뒤에서는 사용자가 대화를 이어 갈 것이라 보고 모델 상태(노트 보충: 앞선 토큰들의 키·값 캐시)를 보관해 두었다가 새 토큰만 더 받는다. 캐시하지 않는다면 대화 전체를 다시 입력으로 넣어야 한다.",
+        "Flamingo 논문의 큰 표는 16개 과제에서 3B·9B·80B 모델의 0·4·8·16·32-shot 점수를 보여 주는데, 여러 칸에서 그 과제 전용으로 미세조정한 최고 모델을 몇 개의 예시만으로 넘었다(빨간 상자). 예전에는 CLIP 을 각 과제에 맞춰 고쳐 써야 했던 과제들이다. 강사는 이 시점에 컴퓨터 비전의 평가 문화가 바뀌었다고 본다(강사 의견). 분류 벤치마크 몇 개를 보고하던 것에서, 질의응답 형식으로 바꿀 수 있는 거의 모든 이해 과제를 벤치마크로 만드는 쪽으로 — 지난 2년간 그것이 표준이 됐다는 것이다. 노트 보충: 이 흐름이 오늘날 MMMU·ChartQA·DocVQA 같은 수십 개의 VLM 벤치마크로 이어졌다."
+      ],
+      "example": {
+        "title": "few-shot 프롬프트의 비용 세기",
+        "body": "손글씨 산수 예시를 k 개 붙인다고 하자. 사진당 Flamingo 시퀀스에 들어가는 것은 '<image>' 1토큰 + 답 'Output: 2+1=3' 약 8토큰 = 9토큰. k = 4 이면 예시 36토큰 + 질의 사진 1 + 'Output:' 2 ≈ 39토큰, 시각 쪽은 사진 5장 × 64 = 320개의 잠재 토큰이 교차 어텐션 키·값으로만 쓰인다. 같은 프롬프트를 LLaVA 식(사진당 576 토큰)으로 넣으면 5×576 + 38 = 2,918 토큰 — 시퀀스가 약 75배 길다. k = 32(논문의 최대 shot)라면 Flamingo 는 약 300토큰, LLaVA 식은 33×576 ≈ 19,000 토큰으로 4K 문맥에 들어가지도 않는다. Flamingo 가 32-shot 까지 실험할 수 있었던 구조적 이유다."
+      },
+      "pitfalls": [
+        "few-shot 은 학습이 아니다 — 가중치는 그대로이고 예시는 입력의 일부일 뿐이다. 예시를 다 빼면 같은 모델이 제로샷이 된다.",
+        "'대화가 이어져도 사진을 한 번만 넣는다'는 것은 키·값 캐시 덕분이다. 모델 자체에 기억이 생긴 것이 아니다."
+      ],
+      "check": [
+        {
+          "q": "Flamingo 로 OCR 을 few-shot 으로 시키는 프롬프트를 설계해 보라.",
+          "a": "'<image>(지하철 표지판) Output: Underground <image>(의사당) Output: Congress <image>(새 사진) Output:' — 모델이 새 사진의 글자를 같은 형식으로 이어 쓴다."
+        },
+        {
+          "q": "Flamingo 가 32-shot 까지 다룰 수 있었던 구조적 이유는?",
+          "a": "사진이 시퀀스에 토큰으로 들어가지 않고(태그 1개), 사진당 64개로 줄인 시각 토큰을 교차 어텐션으로만 읽기 때문에 사진 수가 늘어도 시퀀스 길이가 거의 늘지 않는다."
+        }
+      ]
+    },
+    {
+      "start": 2491,
+      "title": "닫힌 모델과 열린 모델의 격차 — 증류된 '공개' 모델의 문제와 Molmo",
+      "points": [
+        "11개 시각 이해 벤치마크 평균: API 모델(GPT-4o·Gemini 1.5·Claude 3 계열)은 70~80점대, 공개 LLaVA 는 약 43점.",
+        "Qwen·InternVL·Phi 등 공개 가중치 모델은 대부분 GPT·Gemini 를 증류 — 가중치는 열렸지만 만드는 법은 열리지 않았다(강사 의견).",
+        "Molmo(AI2, 2024-09-25): 가중치·데이터·코드·평가를 모두 공개. 학술 벤치마크와 사람 선호도에서 최상위권.",
+        "870명이 32.5만 번 비교한 Elo: Molmo-72B 가 GPT-4o 에 1점 뒤진 2위, Gemini 1.5 Pro·Claude 3.5 를 앞섬. 7B 모델은 GPU 한 장에 올라간다."
+      ],
+      "on_screen": "'Today, average performance across 11 visual understanding benchmarks' — 가로 막대: 위쪽 빨간 상자 'API Only'(GPT-4o, GPT-4V, Gemini 1.5 Pro, Gemini 1.5 Flash, Claude 3.5 Sonnet, Claude 3 Opus, Claude 3 Haiku …), 맨 아래 초록 상자 'Open'(LLaVA-1.5 13B·7B, 약 43). 'There are open-weight models but they are all distilled from GPT' — 가운데 'Open Weights'(Qwen VL2 72B·7B, InternVL2, Pixtral, Phi-3.5 Vision, PaliGemma …), 'Distilled'(LLaVA OneVision, Cambrian, xGen-MM …). 'Completely Open — Open Weights, Open Data, Open Code, Open Evals', 맨 위 분홍 막대 Molmo-72B·Molmo-7B. 'Human Preference Elo Rating' 막대, 'Molmo – 72B model ranks second for vision tasks — Barely second to GPT-4o — Outperforming Gemini 1.5 Pro and Claude-3.5', 'with 325k pairwise comparisons and 870 human annotators'. 'Molmo-7B outperforms — Gemini 1.5 Flash — LLAVA OneVision 72B — GPT-4V — QwenVL2 72B — and many others'. 'Reaction online — released Sep 25, 2024'(WIRED 'The Most Capable Open Source AI Model Yet Could Supercharge AI Agents', TechCrunch 기사), 트윗 표 'Llama-3.2-11B vs Pixtral-12B, Qwen2-VL-7B, Molmo-7B-D, InternVL2-8B …', 'Never bet against open-source software!'. 'molmo > gemini 1.5 flash (at counting)' — 보트 세기 'Counting the boats shows a total of 35'.",
+      "explain": [
+        "Flamingo 와 LLaVA 의 성공을 보고 기업들은 VLM 에 막대한 투자를 했고, GPT-4V·GPT-4o, Gemini 1.5 Pro·Flash, Claude 3 Opus(이제는 Claude 4 Opus) 같은 API 전용 모델이 쏟아졌다. 강사가 보여 준 11개 대표 시각 이해 벤치마크 평균에서 이들은 70점대 후반~80점 근처인데, 공개된 LLaVA 는 약 43점에 머문다. 이 격차를 본 커뮤니티는 GPT 나 Gemini 의 출력을 학습 데이터로 삼아 작은 모델을 만드는 '증류'에 나섰다. Alibaba 의 Qwen, InternVL, Phi 등이 그렇게 나온 공개 가중치 모델들이다.",
+        "강사가 이 분야의 큰 문제로 꼽는 것이 바로 이 지점이다(강사 의견). 증류 모델은 가중치는 내려받을 수 있지만 '어떻게 만드는지'는 공개되지 않은 셈이다. GPT 가 있어야만 재현할 수 있고, GPT 가 없다면 연구 커뮤니티는 성능 좋은 VLM 을 처음부터 만드는 법을 모른다. 만드는 비법은 OpenAI 와 Google 의 팀만 안다. 강사 연구실(AI2 와 공동)이 지난 1~2년 이 격차를 메우고 그 지식을 커뮤니티에 퍼뜨리는 데 집중한 결과가 Molmo 다. Molmo 는 가중치·학습 데이터와 평가 데이터·학습 코드·평가 코드를 모두 공개한 '완전 공개' 모델이다. 충분한 GPU 만 있으면 누구나 집에서 Molmo 를 처음부터 다시 학습하고, 새 평가를 붙이고, 새 용도로 고쳐 쓸 수 있다.",
+        "학술 벤치마크만으로는 부족하다 — 결국 사람들이 GPT 대신 이 모델을 쓰고 싶어 하느냐가 중요하다. 그래서 연구팀은 Molmo 체험장을 열고 대규모 사용자 평가를 했다. 870명에게 두 모델의 답을 나란히 보여 주고 어느 쪽이 나은지 고르게 하는 비교를 약 32.5만 번 했고, 그 결과를 체스 등급처럼 Elo 점수로 바꿨다. Molmo-72B 는 GPT-4o 에 Elo 1점 뒤진 2위였고 Gemini 1.5 Pro 와 Claude 3.5 를 앞섰다. Elo 1점 차이는 아래 계산처럼 사실상 동전 던지기다. 70억 매개변수짜리 Molmo-7B 도 바로 뒤를 이었는데, 이 크기는 GPU 한 장에 올라가므로 많은 사람이 직접 돌리고 미세조정할 수 있다는 점에서 의미가 크다. 강사는 작은 연구실이 수십억 달러를 쓴 기업 모델을 따라잡았다는 점을 자랑스럽게 말한다.",
+        "2024년 9월 25일 공개 후 반응은 컸다. 언론 기사, NVIDIA 연구자를 포함한 많은 사람의 '오픈소스에 반대로 걸지 마라'는 반응이 나왔고, 로보틱스 쪽 활용 아이디어가 특히 많이 나왔다. 같은 날 Meta 가 Llama 3.2 의 비전 모델을 냈는데(강의에서는 'LLaVA 3.2' 라고 말했지만 Llama 3.2 Vision 이 맞다), 여러 사람의 비교에서 Molmo 가 앞섰다. 그렇다면 비결은 무엇이었나? 강사의 답은 '판단을 픽셀에 근거시키기(grounding)'다. 보트가 몇 척이냐고 물으면 보통 모델은 숫자를 지어내기 쉽지만, Molmo 는 셀 대상마다 점을 찍은 뒤 최종 개수를 말한다 — 슬라이드에서 Gemini 1.5 Flash 를 세기에서 이긴 예. 이 능력이 어디서 왔는지가 다음 챕터, 데이터 이야기다."
+      ],
+      "formulas": [
+        {
+          "expr": "E_A = 1 / (1 + 10^(−(R_A − R_B)/400))",
+          "meaning": "Elo 에서 A 가 B 를 이길 기대 확률. R_A, R_B: 두 모델의 Elo 점수, 400: 체스 Elo 의 관례적 척도(400점 차 = 약 10:1 승산). 사람 선호 비교 결과를 모아 이 식에 맞도록 점수를 추정한다."
+        }
+      ],
+      "example": {
+        "title": "Elo 1점 차이는 얼마나 다른가",
+        "body": "R_A − R_B = 1: 10^(−1/400) = 10^(−0.0025) ≈ 0.99426 → E = 1/(1+0.99426) ≈ 0.5014. 즉 GPT-4o 와 Molmo-72B 를 붙이면 사람들이 GPT-4o 를 고를 확률이 50.14% — 강의 표현대로 동전 던지기다. 비교: 10점 차 ≈ 51.4%, 50점 차 ≈ 57.2%, 100점 차 ≈ 64.0%, 400점 차 ≈ 90.9%. 이런 작은 차이를 신뢰하려면 비교 수가 많아야 한다. 승률 p 의 표준오차는 √(p(1−p)/n) 이라, 두 모델 사이에 n = 10,000 번 비교해도 0.5 ± 0.005(±1σ) — 0.14%p 차이는 통계적으로 가려낼 수 없다. 그래서 '2위' 보다 '사실상 동률'이 더 정확한 해석이다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "def win_prob(diff):                       # Elo 차이 diff 일 때 앞선 쪽이 이길 기대 확률\n    return 1 / (1 + 10 ** (-diff / 400))\n\nfor diff in (1, 10, 50, 100, 400):\n    print(f\"Elo 차이 {diff:>3}: {win_prob(diff):.4f}\")",
+        "note": "실행 결과: 1점 0.5014, 10점 0.5144, 50점 0.5715, 100점 0.6401, 400점 0.9091."
+      },
+      "pitfalls": [
+        "강의에서 'LLaVA 3.2' 라고 한 Meta 모델은 Llama 3.2 Vision(11B·90B, 2024-09-25 공개)이다. 'GPT-40' 은 GPT-4o.",
+        "'공개 가중치(open weights)'와 '완전 공개(open data·code·evals)'는 다르다. 가중치만으로는 데이터와 학습법을 재현할 수 없다.",
+        "Elo 1점 차 순위를 우열로 읽지 말 것 — 표본 오차보다 작다."
+      ],
+      "check": [
+        {
+          "q": "강사가 Qwen·InternVL 같은 모델을 '정말로 열린 것은 아니다'라고 한 이유는?",
+          "a": "GPT·Gemini 를 증류해 만들었기 때문이다. 가중치는 받을 수 있어도, 닫힌 모델 없이 처음부터 만드는 방법(데이터·레시피)은 알 수 없다."
+        },
+        {
+          "q": "Elo 차이 100점이면 앞선 모델이 이길 기대 확률은?",
+          "a": "1/(1+10^(−0.25)) = 1/(1+0.5623) ≈ 0.640."
+        }
+      ]
+    },
+    {
+      "start": 2883,
+      "title": "데이터는 양보다 질 — 60억 쌍 대 70만 쌍, '우연한' 인터넷 글과 '의도한' 사람의 말",
+      "points": [
+        "Llama 3.1V 계열은 이미지-텍스트 60억 쌍, Molmo 는 손으로 만든 PixMo 약 70만 쌍. 구조는 LLaVA 와 거의 같다.",
+        "인터넷 캡션은 '우연한(incidental)' 데이터 — 올린 사람의 감상('분홍, 일본, 감성 사진')이지 사진 내용이 아니다.",
+        "사람은 너무 뻔한 것(왼쪽·오른쪽, 크기, 재질, 화면 속 시각·배터리)을 말하지 않는다 — 그래서 일부러 물어 끌어낸다.",
+        "주석자에게 타이핑 대신 60~90초 말하게 하고 음성을 텍스트로 바꿨다 — 쓰지 않던 것까지 말하게 된다."
+      ],
+      "on_screen": "'Data matters! Quality over quantity even for pretraining' — 큰 초록 원 'LLAMA 3.1V 6 Billion Image-Text pairs' 대 작은 원 'Molmo is trained with PixMo 700k Image-Text pairs'. 'Internet data is incidental / Human annotated data is intentional' — 분홍 건물 사진의 인터넷 글 'pink, japan, aesthetic image'. 'PixMo data is intentional:' — 책상 사진과 긴 묘사(빨강으로 강조된 크기·모양·재질·위치 표현: 'large and rectangular', 'polished, rich wood', 'spans horizontally across the image', 'to the right of'…). 'Collecting dense captions is hard!!!' — 태블릿 홈 화면 사진과 시각 11:48, 배터리 67%, 와이파이·앱 아이콘을 하나하나 묘사한 긴 글. 'Questions designed to extract meaningful visual information from annotators' — What is the image at first glance? / What are the objects and their counts? / What does the text say? / What are the positions of the objects? / What subtle details are noticeable? / What is in the background? / What is the style and color?. 'People don't like to type … but they love to talk — We ask annotators to speak for 60 to 90 seconds about an image — We automatically convert speech into text for pretraining'.",
+      "explain": [
+        "Molmo 의 구조는 새롭지 않다. CLIP 계열 이미지 인코더, 연결 층(강의에서는 선형 층이라 했다), 그리고 LLM — LLaVA 와 거의 같은 배치다. 차이는 데이터다. Meta 의 Llama 3.1 비전 모델이 약 60억 개의 이미지-텍스트 쌍으로 학습했다면, Molmo 는 약 70만 쌍(PixMo 데이터 셋)으로 학습했다. 거의 1만 배 적다. 대신 그 70만 쌍을 사람이 직접 공들여 만들었다. 강사는 이것이 기업 모델과 자기들 모델의 가장 큰 차이라고 말한다. 사전학습에서도 양보다 질이 중요하다는 주장이다.",
+        "왜 인터넷 데이터로는 안 되나. 강사의 표현을 빌리면 인터넷 캡션은 '우연한(incidental)' 데이터다. 사진을 올린 사람이 그 순간 느낀 감상이나 주관을 적은 글이지, 사진에 무엇이 어디 있는지를 적은 글이 아니다. 분홍색 건물 사진에 붙은 글이 '분홍, 일본, 감성 사진' 인 식이다. 게다가 사람은 너무 당연한 것을 말하지 않는다. '컵이 노트북 왼쪽에 있다'는 사실을 굳이 글로 쓰는 사람은 없다 — 대화의 격률상 뻔한 정보는 생략하는 것이 자연스럽기 때문이다(강의에서 언급한 그라이스의 격률). 그런데 모델이 배워야 할 것이 바로 그런 정보다. 크기(크다), 모양(직사각형), 재질(윤이 나는 짙은 원목), 배치(사진 가로를 가로지른다), 화면 속 시각과 배터리 잔량 같은 것들. PixMo 의 묘사는 이런 내용을 '의도해서(intentional)' 담는다. 책상 사진 하나에 몇 문단, 태블릿 홈 화면 하나에 아이콘 하나하나까지.",
+        "그런 밀도의 묘사를 사람에게서 얻는 것은 어렵다. 연구팀은 2년 가까이 여러 방식으로 '무엇을 물어야 인터넷에 없는 정보가 나오나'를 실험했다. 결과로 나온 것이 질문 목록이다 — 첫눈에 무슨 사진인가, 무엇이 몇 개 있나, 글자는 뭐라고 쓰여 있나, 물체들은 어디 있나, 눈에 띄는 미묘한 점은, 배경에는 무엇이, 스타일과 색은. 그리고 결정적인 요령은 '타이핑 대신 말하기'였다. 사람은 타이핑을 싫어하지만 말하는 것은 좋아한다. 주석자에게 사진 하나를 보고 60~90초 동안 말하게 하고, 그 음성을 자동으로 텍스트로 바꿔 사전학습 데이터로 썼다. 말로 하면 글로 쓸 때 생략하던 뻔한 것들까지 술술 나온다.",
+        "이 이야기는 앞의 여러 챕터와 같은 교훈으로 묶인다. CLIP 의 한계 셋째(데이터를 의도적으로 골라야 한다), CoCa 의 캡션 손실(더 많은 것을 묻는 감독이 더 좋은 특징을 만든다), 그리고 곧 볼 SAM 의 데이터 엔진까지. 많은 시각 과제에서 필요한 데이터는 인터넷에 아예 없고, 나가서 모아야 한다. 노트 보충: 이 '밀도 높은 캡션 + 적은 양' 전략은 CS336 17강 노트의 LLaVA-OneVision 이 말한 '양보다 질' 과도 같은 방향이다. 다만 OneVision 이 GPT 계열 모델로 합성한 데이터를 섞은 반면 Molmo 는 닫힌 VLM 을 쓰지 않고 사람의 말에서 데이터를 얻었다는 점이 다르다(논문은 이를 명시적 목표로 삼는다)."
+      ],
+      "example": {
+        "title": "말하기 60~90초는 글로 몇 단어인가",
+        "body": "보통 사람의 말 속도를 분당 약 150단어라 하면(노트 보충의 어림값), 60초 = 약 150단어, 90초 = 약 225단어. 인터넷 alt-text 가 평균 10단어 남짓이라면 사진 한 장당 15~20배 많은 묘사를 얻는다. 70만 장 × 약 200단어 ≈ 1.4억 단어. 60억 쌍 × 10단어 = 600억 단어와 비교하면 단어 수로도 약 400배 적지만, 강사의 주장은 그 1.4억 단어가 '사진 속에 실제로 무엇이 어디 있나'를 말한다는 데 있다. 같은 계산으로, 태블릿 화면 묘사의 '시각 11:48', '배터리 67%' 같은 정보는 인터넷 캡션 60억 개 중에도 거의 없을 것이다."
+      },
+      "pitfalls": [
+        "'70만 쌍만으로 학습했다'를 'LLM·비전 인코더도 작은 데이터로 만들었다'로 읽으면 안 된다. Molmo 는 사전학습된 LLM 과 CLIP 계열 인코더 위에서 VLM 단계를 작은 고품질 데이터로 학습한 것이다.",
+        "노트 보충: 강의는 연결 층을 '선형 층'이라고 했지만 Molmo 논문의 커넥터는 작은 MLP(와 패치 풀링)다 — 요점(구조는 평범, 차이는 데이터)은 같다."
+      ],
+      "check": [
+        {
+          "q": "'우연한(incidental)' 데이터와 '의도한(intentional)' 데이터의 차이를 예로 설명하라.",
+          "a": "우연한 데이터는 사진을 올린 사람이 다른 목적으로 남긴 글(예: '분홍, 일본, 감성 사진')이라 내용을 묘사하지 않는다. 의도한 데이터는 사진의 내용(물체·개수·위치·재질·글자)을 묘사하도록 설계된 질문으로 얻은 글이다."
+        },
+        {
+          "q": "주석자에게 타이핑 대신 말하게 하면 왜 좋은가?",
+          "a": "말하기는 타이핑보다 부담이 적어 같은 시간에 훨씬 긴 묘사가 나오고, 글로 쓸 때 '뻔하다'고 생략하는 위치·크기 같은 정보까지 말하게 된다."
+        }
+      ]
+    },
+    {
+      "start": 3066,
+      "title": "가리키기로 근거 대기 — 점 찍어 세기, 화면 조작, SAM 2·로봇과 엮기",
+      "points": [
+        "Molmo 는 답하기 전에 근거 위치를 점으로 찍는다 — '메뉴를 가리켜', '검색 옵션은 어디서', 버스 노선 번호.",
+        "점 찍어 세기: 대상마다 점을 찍은 뒤 개수를 말하면 숫자를 지어내는 환각이 줄어든다.",
+        "Molmo 의 점을 SAM 2 에 넘기면 크리켓 방망이를 영상 내내 분할할 수 있다 — 체이닝의 예고편.",
+        "로봇: '물병을 가리켜' → 이동 → '설거지 그릇이 있는 곳' → 싱크 → '빈 자리' 에 내려놓기. 해상도가 바뀌어도 위치 임베딩을 맞춰 쓴다."
+      ],
+      "on_screen": "'From perception To action' — huggingface 웹 화면 세 장: 'Point to the menu', 'Point to where I can set search options', 'Point to where I can find mid size datasets', 분홍 점이 정답 위치에. 'Pointing to count, pointing to ground' — 정박한 보트 사진 'Count the boats' → 보트마다 점, 'Counting the boats shows a total of 35'; 버스 사진 'What is the route of this bus?' → 전광판에 점, 답 'Berkeley BART'. 'Chaining Molmo + SAM 2 — Can you point to the cricket bat?'(크리켓 선수 사진). 'Embodied AI for Navigation & Manipulation' — 'Point to the handle on the white bottle', 'Points are shown in the image', 부엌 싱크 앞 Hello Robot(Stretch) 영상.",
+      "explain": [
+        "PixMo 데이터에는 밀도 높은 묘사 말고 또 하나, '가리키기(pointing)' 주석이 들어 있다. 사람이 질문에 해당하는 위치에 점을 찍은 데이터다. 이것으로 학습한 Molmo 는 답을 말하기 전에 사진 속 근거의 위치를 점(좌표)으로 낸다. 강의가 보여 준 예가 다양하다. 웹 화면에서 '메뉴를 가리켜' 라고 하면 메뉴 버튼 위에 점을 찍고, '검색 옵션은 어디서 바꾸나', '중간 크기 데이터 셋은 어디서 고르나' 에도 해당 컨트롤을 가리킨다. 버스 사진에서 노선 번호를 물으면 그냥 답하지 않고 전광판 위치를 먼저 가리킨 다음 번호를 읽는다. 왼쪽 차와 오른쪽 차 수를 비교하거나, 깊이 영상·위성 사진·붐비는 경기장 사진에서도 같은 식으로 추론한다.",
+        "이것이 왜 중요한가. 앞 챕터에서 말한 '판단을 픽셀에 근거시키기'가 바로 이것이다. 보트를 세라고 하면 보통의 VLM 은 사진 전체 인상으로 그럴듯한 숫자를 지어내기 쉽다. Molmo 는 보트 하나하나에 점을 찍고, 찍은 점을 세어 35척이라고 답한다. 출력 형식 자체가 중간 단계를 강제하는 셈이라, 수학 문제에서 풀이 과정을 쓰게 하면 정확도가 오르는 것과 비슷한 효과가 난다. 질의응답에서 강사는 가리키기가 환각을 꽤 줄이는 것 같다고 하면서도, 엉뚱한 곳을 가리킬 수 있으니 보장은 아니라고 덧붙였다(마지막 챕터). 또 점이라는 출력은 사람이 바로 검증할 수 있다 — 숫자 '35' 는 맞는지 알기 어렵지만 점 35개는 눈으로 확인된다.",
+        "점은 다른 모델의 입력이 되기에도 좋다. 이것이 강의 마지막 주제인 '체이닝'의 예고편이다. Molmo 에게 '크리켓 방망이를 가리켜' 라고 해서 점을 얻고, 그 점을 분할 모델 SAM 2 의 프롬프트로 넘기면 SAM 2 가 방망이의 마스크를 만들어 영상 내내 추적한다. 로봇에서는 더 직접적이다. 연구실에서 한 실험은 이렇다. Molmo 에게 '물병을 가리켜' → 단순한 경로 계획기로 로봇을 그 점으로 이동 → '설거지할 그릇이 있는 곳을 가리켜' → 싱크를 가리키면 그리로 이동 → '싱크의 빈 공간을 가리켜' → 거기에 물병을 내려놓기. 인식은 VLM 이, 동작은 전통적 계획기가 맡아 서로의 출력을 잇는다. 강사 연구실은 이렇게 VLM 을 물리 세계로 일반화하는 일에 집중하고 있고, 자세한 로봇 학습은 다음 강의(17강) 주제다.",
+        "질의응답에서는 '입력 해상도를 고정 크기로 바꾸면 점 좌표가 어긋나지 않나'라는 질문이 나왔다. 답은 요즘 모델은 임의 해상도 입력에 적응할 수 있다는 것이다. 이미지 크기에 따라 위치 임베딩을 바꿔 주는 방식이 있고, 점은 그 새 좌표계에서 찍으면 된다. 노트 보충: Molmo 는 점 좌표를 이미지 크기에 대한 백분율(0~100)로 텍스트로 출력하므로, 원본 해상도로 되돌리려면 비율만 곱하면 된다 — 예컨대 (x, y) = (62.5, 40.0) 은 1920×1080 사진에서 (1200, 432) 픽셀이다. 임의 해상도 처리(동적 해상도, 2D 위치 인코딩)의 실제 구현은 CS336 17강 노트의 Qwen2-VL 절을 보자."
+      ],
+      "example": {
+        "title": "점 좌표를 픽셀로, 그리고 세기",
+        "body": "Molmo 식 출력 '<point x=\"62.5\" y=\"40.0\">' (백분율 좌표, 노트 보충)를 1920×1080 사진에 옮기면 x = 0.625×1920 = 1200, y = 0.400×1080 = 432 픽셀. 같은 사진을 모델 입력용으로 336×336 으로 줄였다면 그 안에서의 위치는 (210, 134.4) 이지만, 백분율로 말하므로 어느 해상도로든 바로 옮겨진다. 세기: 점 35개를 출력했다면 답은 35 — 'Count the boats' 의 답을 숫자 하나가 아니라 35개의 확인 가능한 근거로 바꾼 것이다. 점 하나가 틀렸으면 사람이 그 하나만 지우고 34 로 고칠 수 있다."
+      },
+      "pitfalls": [
+        "가리키기가 환각을 '없애는' 것은 아니다. 틀린 곳을 가리키며 틀린 답을 낼 수도 있다 — 근거를 검증할 수 있게 만든다는 것이 정확한 장점이다.",
+        "로봇 데모에서 동작 자체를 Molmo 가 만든 것이 아니다. 목표 위치(점)만 VLM 이 내고 이동은 별도의 단순한 경로 계획기가 했다."
+      ],
+      "check": [
+        {
+          "q": "'점 찍고 세기'가 숫자만 말하기보다 나은 이유 두 가지는?",
+          "a": "① 대상 하나하나를 찾는 중간 단계를 강제해 숫자를 지어내는 환각이 준다. ② 점은 사람이 눈으로 검증하고 고칠 수 있다."
+        },
+        {
+          "q": "Molmo 와 SAM 2 를 엮을 때 무엇이 무엇의 입력이 되는가?",
+          "a": "Molmo 가 텍스트 질의('크리켓 방망이를 가리켜')를 받아 낸 점 좌표가 SAM 2 의 점 프롬프트가 되어 방망이 마스크(와 영상 추적)를 만든다."
+        }
+      ]
+    },
+    {
+      "start": 3263,
+      "title": "Segment Anything(SAM) — 프롬프트로 가리키면 마스크를, 애매하면 셋을, 데이터는 모델이 만든다",
+      "points": [
+        "목표: COCO 80개 같은 고정 범주가 아니라, 사용자가 가리킨 '아무것'이나 고품질 마스크로 내는 분할 파운데이션 모델.",
+        "구조: 무거운 이미지 인코더(한 번) + 프롬프트 인코더(점·상자·마스크·글) + 가벼운 마스크 디코더.",
+        "점 하나도 애매하다(가위 전체 / 손잡이 / 손잡이 하나) → 마스크 3개를 내고, 정답과 가장 가까운 것에만 손실을 준다. 각 마스크의 신뢰도도 예측.",
+        "데이터 엔진: 모델이 제안 → 사람이 고침 → 재학습을 반복해 SA-1B(이미지 1,100만, 마스크 11억) — 이미지 6배·마스크 400배."
+      ],
+      "on_screen": "Foundation Models 표로 돌아와 'And More!' 칸의 Segment Anything 초록. 'Segment Anything Model (SAM) — What does it mean to have a segmentation foundation model?' 왼쪽 Mask R-CNN 거리 사진 'Masking model trained on dataset of specific number of objects (80 in COCO) / Model outputs masks of all objects in that image that is one of the categories of interest', 오른쪽 군중 사진 'Masking model trained on a dataset of a huge number of categories / Model outputs mask of any objects that the user cares about'. 'How to know what to mask?' — 고양이 두 마리 사진과 'Cats' 상자. 'Basic SAM Architecture' — prompt → prompt encoder, image → image encoder, 둘 → lightweight mask decoder → valid mask. 'SAM Architecture' — image → image encoder → image embedding, mask → conv 로 더하기, points·box·text → prompt encoder, mask decoder. 'Ambiguity in correct prompt' — 가위 손잡이의 빨간 점 하나와 마스크 세 개(전체·손잡이 둘·손잡이 하나). '1. Loss only calculated with respect to best mask 2. Model also trained to output confidence score for each mask', 출력 valid masks 셋과 score. 막대그래프: 데이터 셋별 이미지 수 SA-1B 대 OpenImages V5(6X), 마스크 수(400X), LVIS·COCO·ADE20k. 'annotate ↔ train' 순환(model ↔ data), 'Segment Anything 1B (SA-1B): 1+ billion masks, 11 million images, privacy respecting, licensed images'. 'Zero-Shot with SAM' — 유화 두 점의 분할.",
+      "explain": [
+        "지금까지의 파운데이션 모델은 출력이 클래스나 글이었다. 강의의 마지막 3분의 1은 출력 공간을 넓히는 이야기로, 그 대표가 Meta 의 Segment Anything Model(SAM, 2023)이다. 9강의 Mask R-CNN 은 COCO 의 80개 범주 안에서만 마스크를 낸다. SAM 의 목표는 두 가지다. 범주 수에 제한 없이 무엇이든 분할할 것, 그리고 사용자가 '바로 그것'을 정확히 지정해 고품질 마스크를 얻을 수 있을 것. 앞의 것은 데이터의 문제고, 뒤의 것은 구조의 문제다. 강의는 구조부터 다룬다. 고양이 두 마리가 있는 사진에서 '고양이'라고만 하면 어느 고양이를 원하는지 알 수 없다. 글보다 정확한 지정 수단 — 점 찍기, 상자 그리기 — 이 필요하다.",
+        "그래서 SAM 은 세 부분으로 되어 있다. 이미지 인코더는 사진을 한 번 인코딩해 이미지 임베딩을 만든다(강의는 CLIP 인코더일 수도 있다고 했지만, 노트 보충: 실제 SAM 은 MAE 로 사전학습한 ViT-H 를 쓴다). 프롬프트 인코더는 사용자가 원하는 것을 지정하는 여러 방식 — 점(전경·배경), 상자, 대략의 마스크, 글 — 을 벡터로 바꾼다. 마스크 형태의 프롬프트는 합성곱으로 줄여 이미지 임베딩에 더한다. 마지막으로 가벼운 마스크 디코더가 두 정보를 받아 마스크를 낸다. 디코더는 9강에서 본 분할 디코더와 비슷한 구조다. 무거운 이미지 인코더는 사진당 한 번만 돌고, 사용자가 점을 바꿔 찍을 때마다는 가벼운 디코더만 다시 돌아서 대화형으로 쓸 수 있다.",
+        "점 하나로도 애매함은 남는다. 가위 손잡이 위에 점을 찍었다면 가위 전체를 원할 수도, 손잡이 부분을 원할 수도, 손잡이 고리 하나를 원할 수도 있다. 세 답이 모두 그럴듯한데 모델이 하나만 내게 하면, 정답과 다른 수준을 골랐다는 이유로 벌을 받는다. 그러면 모델은 세 마스크의 흐릿한 평균을 내는 쪽으로 학습된다. SAM 의 해법은 마스크를 세 개(서로 다른 세밀함 수준) 내게 하고, 그중 정답과 가장 가까운 하나에만 손실을 계산하는 것이다. 나머지 둘은 벌하지 않는다. 그러면 세 출력이 자연스럽게 전체·부분·하위 부분으로 분업하게 되고, 사용자가 알맞은 것을 고른다. 동시에 각 마스크가 얼마나 좋은지(예상 IoU)를 점수로 예측하도록 학습해, 사용자 없이 자동으로 쓸 때는 점수가 높은 것을 고른다.",
+        "구조를 갖췄으면 남은 것은 데이터다. SAM 이전의 분할 데이터 셋은 아주 작았다. 저자들은 이미지 수를 기존 최대(OpenImages V5)의 약 6배, 마스크 수를 약 400배로 늘렸다. 방법은 '모델이 주석을 돕는' 데이터 엔진이다. 처음에 사람이 일부를 주석하면 → 그것으로 모델을 학습 → 모델이 새 사진에 마스크를 제안 → 사람이 고치고 보탬 → 다시 학습. 이 순환을 반복해 SA-1B(이미지 1,100만 장, 마스크 11억 개 이상, 사생활을 보호하고 사용 허락을 받은 사진)를 만들었다. 채소 하나하나, 우산 하나하나, 물속 장면, 그림까지 개별 마스크가 달린 데이터다. 강사는 Flamingo·Molmo 와 같은 교훈을 다시 강조한다. 많은 비전 과제에서 고품질 데이터는 인터넷에 없고, 나가서 만들어야 한다. 그 결과 SAM 은 학습 때 못 본 유화 같은 그림도 제로샷으로 분할한다."
+      ],
+      "formulas": [
+        {
+          "expr": "L = min_{k ∈ {1,2,3}} ℓ(M̂_k, M*) + λ · Σ_k ( ŝ_k − IoU(M̂_k, M*) )²",
+          "meaning": "M̂_k: 디코더가 낸 k번째 후보 마스크(세밀함 수준이 다른 3개), M*: 정답 마스크, ℓ: 마스크 손실(노트 보충: 논문은 focal + dice 를 20:1 로 섞는다). min 은 정답과 가장 가까운 후보 하나에만 기울기가 흐르게 한다. ŝ_k: k번째 후보의 예측 신뢰도, IoU: 그 후보와 정답의 실제 겹침 비율 — 둘의 제곱 오차로 '자기 마스크가 얼마나 좋은지' 를 맞히게 한다. λ: 두 손실의 비율."
+        }
+      ],
+      "example": {
+        "title": "세 후보 중 최소 손실 고르기",
+        "body": "6×6 격자에서 정답 M* 은 가위 전체 4×4 = 16 픽셀. 후보 1(전체, 16픽셀, 완전 일치): IoU = 16/16 = 1 → 손실 1 − IoU = 0. 후보 2(손잡이 둘, 8픽셀, 정답의 부분집합): 교집합 8, 합집합 16 → IoU = 0.5, 손실 0.5. 후보 3(손잡이 하나, 4픽셀): IoU = 4/16 = 0.25, 손실 0.75. SAM 식 손실 = min = 0 (후보 1에만 기울기). 만약 정답이 '손잡이 하나' 였다면 후보 3 의 손실이 0 이 되어 그쪽만 학습된다. 셋을 평균해 벌하면 (0 + 0.5 + 0.75)/3 ≈ 0.417 — 세 후보가 모두 전체 마스크 쪽으로 끌려가 '부분'을 담당할 출력이 사라진다."
+      },
+      "code": {
+        "lang": "python",
+        "src": "import numpy as np\n\ngt = np.zeros((6, 6)); gt[1:5, 1:5] = 1          # 정답: 가위 전체 (4x4 = 16 픽셀)\n\nwhole = gt.copy()                                  # 후보 1: 전체\nhandle = np.zeros_like(gt); handle[3:5, 1:5] = 1  # 후보 2: 손잡이 둘 (8 픽셀)\nring = np.zeros_like(gt); ring[3:5, 1:3] = 1      # 후보 3: 손잡이 하나 (4 픽셀)\n\ndef iou(a, b):\n    return (a * b).sum() / ((a + b) > 0).sum()\n\nlosses = [1 - iou(m, gt) for m in (whole, handle, ring)]\nbest = int(np.argmin(losses))\nprint(\"후보별 손실(1-IoU):\", np.round(losses, 3))\nprint(\"역전파는 후보\", best, \"에만, 손실\", round(losses[best], 3))\nprint(\"평균으로 벌했다면:\", round(np.mean(losses), 3))",
+        "note": "실행 결과: 후보별 손실 [0, 0.5, 0.75], 역전파는 후보 0 에만(손실 0), 평균으로 벌했다면 0.417. 설명을 위해 1 − IoU 를 손실로 썼다 — 실제 SAM 은 픽셀별 focal·dice 손실을 쓴다."
+      },
+      "diagram": {
+        "title": "SAM 의 구조와 데이터 엔진",
+        "code": "flowchart LR\n  IMG[\"사진\"] --> IE[\"이미지 인코더<br/>(무거움, 사진당 1번)\"] --> EMB[\"이미지 임베딩\"]\n  PR[\"프롬프트<br/>점 · 상자 · 글\"] --> PE[\"프롬프트 인코더\"]\n  MK[\"마스크 프롬프트\"] --> CV[\"conv\"] --> EMB\n  EMB --> DEC[\"가벼운 마스크 디코더\"]\n  PE --> DEC\n  DEC --> OUT[\"마스크 3개 + 신뢰도\"]\n  OUT -.->|사람이 고침| DATA[\"SA-1B<br/>1,100만 장 · 11억 마스크\"]\n  DATA -.->|재학습| IE"
+      },
+      "pitfalls": [
+        "강의에서는 SAM 의 이미지 인코더를 'CLIP 인코더일 수 있다'고 했지만 실제 SAM 은 MAE 사전학습 ViT-H 를 쓴다. CLIP 은 글 프롬프트를 인코딩하는 쪽(논문의 실험적 기능)에 쓰였다.",
+        "SAM 은 '무엇인지'를 말하지 않는다 — 클래스 없는 마스크를 낸다. 이름표가 필요하면 CLIP 이나 VLM 과 엮어야 한다."
+      ],
+      "check": [
+        {
+          "q": "SAM 이 마스크를 하나가 아니라 셋 내고 최솟값 손실을 쓰는 이유는?",
+          "a": "점 하나도 전체·부분·하위 부분 중 무엇을 뜻하는지 애매하다. 하나만 내게 하면 다른 수준을 고른 그럴듯한 답이 벌을 받아 흐릿한 평균 마스크를 학습한다. 셋을 내고 가장 가까운 하나에만 손실을 주면 출력들이 수준별로 분업한다."
+        },
+        {
+          "q": "SAM 에서 이미지 인코더와 마스크 디코더의 무게를 비대칭으로 설계한 이유는?",
+          "a": "무거운 인코더는 사진당 한 번만 돌리고, 사용자가 점·상자를 바꿀 때마다는 가벼운 디코더만 다시 돌려 대화형으로 빠르게 응답하기 위해서다."
+        }
+      ]
+    },
+    {
+      "start": 3630,
+      "title": "체이닝 — LLM 이 쓴 설명으로 CLIP 을 돕고(CuPL), LLM 이 짠 프로그램으로 모델들을 엮는다(VisProg), 그리고 정리·문답",
+      "points": [
+        "CLIP 이 모르는 범주(로리킷·마림바·고가교·파피용)도 GPT-3 가 쓴 설명문으로 분류하면 맞힌다 — CuPL.",
+        "VisProg(CVPR 2023 최우수 논문): LLM 이 질문을 파이썬 프로그램으로 바꾸고, 그 안에서 탐지·분할·VQA·이미지 생성 모듈을 부른다.",
+        "in-context 예시는 고정해도 되고, 질문마다 비슷한 예시를 검색해 고르면 더 좋다. 비용은 API 호출 + 여러 모델 적재.",
+        "정리와 문답: 환각은 여전하다 — 가리키기·검증기로 줄인다. 필요한 도구를 스스로 만드는 연구는 이제 시작."
+      ],
+      "on_screen": "'What happens when a model is asked to classify a concept it has never seen?' — 'A photo of a marimba / viaduct / papillon / lorikeet' 와 로리킷·마림바·고가교·파피용 사진. 'Solution: chaining — 1. Get an LLM to generate a description. 2. Classify using the description' — 'A marimba is a large wooden percussion instrument that looks like a xylophone.', 'A viaduct is a bridge composed of several spans supported by piers or pillars.', 'A papillon is a small, spaniel-type dog with a long, silky coat and fringed ears.', 'A lorikeet is a small to medium-sized parrot with a brightly colored plumage.'. 'CuPL (CUstomized Prompts via Language models)' — LLM-prompts 'What does a {lorikeet, marimba, viaduct, papillon} look like?' → GPT-3 → Image-prompts. 표: std 와 CuPL(base) 의 정확도 — ImageNet 75.54 → 76.19(+0.65), DTD 55.20 → 58.90(+3.70), Stanford Cars 77.53 → 76.49(−1.04), SUN397 69.31 → 72.74(+3.43), Food101 93.08 → 93.33, FGVC Aircraft 32.88 → 36.69(+3.81), Oxford Pets 93.33 → 93.37, Caltech101 93.24 → 93.45, Flowers 102 78.53 → 78.83, UCF101 77.45 → 77.74, Kinetics-700 60.07 → 60.24, RESISC45 71.10 → 68.96(−2.14), CIFAR-10 95.59 → 95.81, CIFAR-100 78.26 → 78.47, Birdsnap 50.43 → 51.11; # hw(손으로 쓴 템플릿 수) 80·8·8·2·1·2·1·34·1·48·28·18·18·18·1 → 모두 3. 'Can we generalize the idea of chaining to all vision tasks?' — 카누 사진 'Are there 3 people in the boat?'. 'VISPROG (visual programming)' — LEFT/RIGHT 두 사진, 'Statement: The left and right image contains a total of six people and two boats.' 'Train a new model for your task'(Multi-image VQA model, 'General to 2 images now, but not beyond that') 대 'Write a python script with the models you have': class MyMultiImageVQA(): def ProcessIms(): Ans1 = VQA(Image1); Ans2 = VQA(Image2); Return Ans1 + Ans2 → GPT → False. 모듈 표: Image Understanding(Loc: OWL-ViT, FaceDet: DSFD, Seg: MaskFormer, Select: CLIP-ViT, Classify: CLIP-ViT, Vqa: ViLT), Image Manipulation(Replace: Stable Diffusion, ColorPop, BgBlur, Tag, Emoji, Crop·CropLeft·CropRight·CropAbove·CropBelow), Knowledge Retrieval(List: GPT3), Arithmetic & Logical(Eval, Count, Result). 'Instruction: Replace desert with lush green grass — Program: OBJ0=Seg(image=IMAGE); OBJ1=Select(image=IMAGE, object=OBJ0, query='desert', category=None); IMAGE0=Replace(image=IMAGE, object=OBJ1, prompt='lush green grass'); RESULT=IMAGE0'. Summary 세 장(파운데이션 모델 그림, Flamingo in-context 표, 오리너구리 CuPL·VisProg 프로그램).",
+      "explain": [
+        "마지막 주제는 체이닝, 즉 여러 모델을 엮어 어느 하나로는 못 하는 일을 하게 하는 것이다. 강의는 교실 퀴즈로 시작했다. 로리킷·마림바·고가교·파피용이라는 낱말과 사진 네 장을 짝지어 보라. 고가교는 쉽게 맞히지만 파피용(개)과 로리킷(새)은 헷갈린다. CLIP 도 이 범주들을 잘 못 맞힌다. 그런데 '로리킷은 색이 화려한 중소형 앵무새', '파피용은 비단 같은 긴 털과 술 달린 귀를 가진 작은 스패니얼형 개' 라는 설명을 주면 사람도 바로 맞힌다. CuPL 의 발상이 이것이다. CLIP 이 그 단어를 거의 못 봤더라도, 인터넷 어딘가에 그 개념을 설명한 글이 있었을 테니 GPT 는 묘사를 쓸 수 있다. 그리고 CLIP 은 묘사 속 일반 단어(앵무새, 화려한 깃털)는 잘 안다. 그래서 'A photo of a {}' 대신 GPT-3 에게 '{} 는 어떻게 생겼나?' 라고 물어 얻은 문장들을 3챕터의 프롬프트 앙상블 자리에 넣는다.",
+        "결과 표가 흥미롭다. 사람이 손으로 쓴 템플릿(ImageNet 은 80개)을 쓰던 기본 방식 대비, LLM 질문 템플릿 3개만으로 ImageNet 75.54 → 76.19, 질감(DTD) +3.70, 장면(SUN397) +3.43, 항공기 기종(FGVC) +3.81 이 올랐다. 꽃·차·애완동물 같은 세밀한 범주에서 특히 도움이 된다. 다만 모든 곳에서 오르지는 않는다 — Stanford Cars −1.04, 위성 사진(RESISC45) −2.14 는 떨어졌다(강의에서 짚지 않은 부분). 이 설명문 체이닝이 2장의 'CLIP 은 다른 모델과 엮기 쉽다'는 장점의 실제 예다.",
+        "이를 모든 시각 질문으로 일반화한 것이 VisProg(Visual Programming, CVPR 2023 최우수 논문)이다. '배 안에 세 사람이 있나?' 라는 질문을 VLM 하나로 풀 수도 있지만, 수십 년간 만든 전문 모델(9강의 객체 탐지기 등)을 쓸 수도 있다 — 탐지 결과가 셋이면 세 명이다. '두 사진의 사람 합계가 여섯이고 배가 둘인가?' 처럼 사진이 둘이면 '두 사진용 모델'을 새로 학습하는 대신, 사진마다 탐지하고 더하는 프로그램을 쓰면 된다. VisProg 는 이 프로그램을 GPT 가 쓰게 한다. GPT 에게 쓸 수 있는 함수 목록(위치 찾기 OWL-ViT, 얼굴 탐지, 분할 MaskFormer, 고르기·분류 CLIP, VQA ViLT, 교체 Stable Diffusion, 자르기·흐림 같은 PIL 함수, 지식 검색 GPT-3, 세기·계산)과 몇 개의 예시 프로그램을 주면, 새 질문에 대해 그 함수들을 엮은 프로그램을 생성한다. '사막을 푸른 잔디로 바꿔' 라는 편집 요청은 '분할 → 사막 고르기 → 그 영역만 잔디로 교체' 의 세 줄 프로그램이 된다. 아직 미숙한 통째 편집 모델 대신 분할로 해당 픽셀만 골라 바꾸고 합성하는 것이다.",
+        "질의응답에서 나온 실무 질문들이 체이닝의 장단을 보여 준다. in-context 예시는 다양하게 고정해 두고 일반화를 바랄 수도 있고, 질문마다 가장 비슷한 예시를 검색해 고를 수도 있다(검색 시스템이 좋다면 후자가 낫다). 비용은 크다 — GPT API 호출에 더해 여러 모델을 메모리에 올려 차례로 돌려야 한다. 그래서 2025년 현재의 연구는 이런 능력을 단일 모델로 증류하는 쪽과, 엮기 자체를 더 잘하는 쪽으로 갈린다. 강사는 이것을 '어떤 모델의 도움이 필요한지 정하고 엮는 에이전트'로 볼 수 있다고 했다. 정리하면 오늘의 줄기는 다음과 같다. 파운데이션 모델은 한 번의 사전학습을 많은 과제로 옮기는 것이고, 분류(CLIP)는 인터넷의 이미지-텍스트 쌍으로, 언어 모델과의 결합(LLaVA·Flamingo·Molmo)은 캡션·세기·OCR 을 in-context 로, 출력은 마스크(SAM)로까지 넓어졌으며, 이것들을 프로그램으로 엮으면 새 능력이 생긴다. 마지막 문답 둘: 환각은 여전히 모든 모델의 문제이고, 가리키기는 근거를 요구해 환각을 줄이지만 보장은 아니며, 큰 회사들은 출력을 사용자에게 보내기 전 별도 검증기들을 통과시킨다. 그리고 필요한 도구가 없을 때 모델이 학습 데이터를 모아 도구를 스스로 만드는 연구도 시작됐지만 아직 초기 단계다(강사 의견)."
+      ],
+      "example": {
+        "title": "VisProg 질문 하나를 프로그램으로 풀기",
+        "body": "진술: '왼쪽과 오른쪽 사진을 합쳐 사람 여섯, 배 둘'. 프로그램: people = Count(Loc(LEFT,'person')) + Count(Loc(RIGHT,'person')); boats = Count(Loc(LEFT,'boat')) + Count(Loc(RIGHT,'boat')); RESULT = (people == 6) and (boats == 2). 탐지기가 왼쪽 사람 3·배 1, 오른쪽 사람 3·배 1(그리고 노 1)을 냈다면 people = 6, boats = 2 → True. 만약 오른쪽 탐지기가 사람 하나를 놓쳐 2 를 냈다면 people = 5 → False — 체이닝의 정확도는 가장 약한 모듈에 묶인다. 슬라이드의 예(VQA 두 번의 답을 더한 프로그램)는 'False' 를 냈다. 반대로 장점은, 중간값(3, 3, 1, 1)이 모두 보이니 어디서 틀렸는지 디버깅할 수 있다는 것이다. CuPL 쪽 계산: ImageNet 에서 손 템플릿 80개 → LLM 질문 3개로 줄였는데 +0.65%p."
+      },
+      "code": {
+        "lang": "python",
+        "src": "# 'LLM 이 짠 프로그램'을 흉내: 탐지기 결과를 세어 더한다\ndetections = {                                  # 가짜 탐지기 출력(이미지별 상자 이름)\n    \"left\":  [\"person\", \"person\", \"person\", \"boat\"],\n    \"right\": [\"person\", \"person\", \"person\", \"boat\", \"paddle\"],\n}\ndef Loc(image, obj):                            # 모듈 1: 객체 찾기\n    return [d for d in detections[image] if d == obj]\ndef Count(boxes):                               # 모듈 2: 세기\n    return len(boxes)\n\n# LLM 이 질문을 보고 짰다고 가정한 프로그램\npeople = Count(Loc(\"left\", \"person\")) + Count(Loc(\"right\", \"person\"))\nboats = Count(Loc(\"left\", \"boat\")) + Count(Loc(\"right\", \"boat\"))\nanswer = (people == 6) and (boats == 2)\nprint(\"사람\", people, \"배\", boats, \"->\", answer)",
+        "note": "탐지기 출력을 가짜로 고정한 장난감. 실제 VisProg 에서는 Loc 이 OWL-ViT, 프로그램 문자열은 GPT-3 가 in-context 예시를 보고 생성한다. 실행 결과: '사람 6 배 2 -> True'."
+      },
+      "diagram": {
+        "title": "체이닝의 두 모양",
+        "code": "flowchart TB\n  subgraph CUPL[\"CuPL: 설명문 체이닝\"]\n    Q1[\"'로리킷은 어떻게 생겼나?'\"] --> G1[\"GPT-3\"] --> D1[\"설명문 여러 개\"] --> T1[\"CLIP 텍스트 인코더<br/>평균 → 클래스 벡터\"] --> Z1[\"제로샷 분류\"]\n  end\n  subgraph VP[\"VisProg: 프로그램 체이닝\"]\n    Q2[\"질문 + 예시 프로그램\"] --> G2[\"GPT\"] --> P2[\"파이썬 프로그램\"]\n    P2 --> M1[\"Loc (OWL-ViT)\"]\n    P2 --> M2[\"Seg (MaskFormer)\"]\n    P2 --> M3[\"Replace (Stable Diffusion)\"]\n    M1 --> R2[\"Count / Eval → 답\"]\n    M2 --> R2\n    M3 --> R2\n  end"
+      },
+      "pitfalls": [
+        "CuPL 이 모든 데이터 셋에서 이기는 것은 아니다 — 슬라이드 표에서도 Stanford Cars(−1.04)·RESISC45(−2.14)는 떨어졌다. 설명문이 오히려 헷갈리는 단서를 넣을 수 있다.",
+        "체이닝 파이프라인의 오류는 모듈을 따라 전파된다. 탐지기 하나의 실수가 최종 답을 뒤집으므로, 중간 결과를 로그로 남겨 검증하는 설계가 필요하다."
+      ],
+      "check": [
+        {
+          "q": "CuPL 은 3챕터의 프롬프트 앙상블에서 무엇을 바꾼 것인가?",
+          "a": "사람이 손으로 쓴 템플릿('A photo of a {}' 등) 대신, LLM 에게 '{} 는 어떻게 생겼나?' 라고 물어 얻은 설명문들을 텍스트 인코더에 넣고 평균해 클래스 벡터를 만든다."
+        },
+        {
+          "q": "VisProg 방식이 단일 VLM 보다 나은 점과 못한 점을 하나씩 들라.",
+          "a": "나은 점: 사진 수·과제 형태가 바뀌어도 새 학습 없이 프로그램으로 대응하고, 중간 결과로 디버깅·검증할 수 있다. 못한 점: API 호출과 여러 모델 적재로 비용·지연이 크고, 가장 약한 모듈의 오류가 그대로 전파된다."
+        }
+      ]
+    }
+  ],
+  "concepts": [
+    {
+      "term": "파운데이션 모델(foundation model)",
+      "explain": "크고 다양한 데이터로 한 번 사전학습해 미세조정·few-shot·zero-shot 으로 여러 과제에 옮겨 쓰는 모델. 늘 '여러 과제에 강건', 자주 '큰 모델·큰 데이터·자기지도 목적'.",
+      "at": 90
+    },
+    {
+      "term": "CLIP 대칭 대조 손실",
+      "explain": "N 쌍 배치의 N×N 유사도 표에서 대각선이 이기도록 이미지→텍스트, 텍스트→이미지 두 방향 교차 엔트로피를 더한 손실. 온도 τ 로 나눈다.",
+      "at": 420
+    },
+    {
+      "term": "선형 프로브(linear probe)",
+      "explain": "사전학습 인코더를 얼리고 그 위에 선형 분류기만 학습해 표현의 질을 재는 방법. CLIP 은 27개 데이터 셋 평균에서 기존 모델을 앞섰다.",
+      "at": 510
+    },
+    {
+      "term": "제로샷 분류(zero-shot classification)",
+      "explain": "클래스 이름(문장)을 텍스트 인코더에 넣어 만든 벡터들과 이미지 벡터의 코사인 유사도로 분류하는 것. 학습 없이 W 를 '글로 쓰는' 1-최근접 이웃.",
+      "at": 660
+    },
+    {
+      "term": "프롬프트 앙상블",
+      "explain": "'A photo of a {}', 'A drawing of a {}' 등 여러 템플릿으로 만든 텍스트 벡터를 평균·정규화해 클래스 벡터로 쓰는 것. 슬라이드 기준 ImageNet +5%p.",
+      "at": 810
+    },
+    {
+      "term": "CoCa(Contrastive Captioner)",
+      "explain": "대조 손실에 교차 어텐션 디코더의 캡션 생성 손실을 더한 이미지-텍스트 모델(2022). ImageNet 미세조정 91.0%.",
+      "at": 1090
+    },
+    {
+      "term": "어려운 음성(hard negative)",
+      "explain": "정답과 비슷해서 구분하기 어려운 음성 샘플. 대조 학습에서 세밀한 개념을 배우게 하지만, 배치에 우연히 들어와야 하고 손으로 넣으면 다른 일반화가 나빠질 수 있다.",
+      "at": 1300
+    },
+    {
+      "term": "합성성(compositionality)",
+      "explain": "개념과 그 관계를 조합해 이해하는 능력. CLIP 은 '풀 속의 머그'와 '머그 속의 풀'을 구분하지 못한다(Winoground·CREPE·ARO).",
+      "at": 1380
+    },
+    {
+      "term": "시각-언어 모델(VLM)",
+      "explain": "이미지와 텍스트를 입력으로 받아 텍스트를 내는 모델. 사전학습 LLM 의 다음 토큰 예측에 시각 정보를 넣는다.",
+      "at": 1570
+    },
+    {
+      "term": "끝에서 둘째 층 특징(penultimate layer features)",
+      "explain": "CLIP ViT 의 마지막 직전 층 패치 토큰. 마지막 층 패치는 감독을 받지 않으므로 LLaVA 류는 공간·언어 정보를 잘 보존한 이 층을 쓴다.",
+      "at": 1800
+    },
+    {
+      "term": "연결 층(projector)",
+      "explain": "비전 인코더 특징 공간의 벡터를 LLM 단어 임베딩 공간으로 옮기는 학습 층. LLaVA 는 선형 층 하나(1024→4096 이면 약 420만 매개변수).",
+      "at": 1860
+    },
+    {
+      "term": "Perceiver Resampler",
+      "explain": "학습되는 고정 개수 잠재 질의가 이미지 특징에 교차 어텐션해, 입력 크기와 무관하게 고정 개수(Flamingo 는 64)의 시각 토큰을 내는 모듈.",
+      "at": 1990
+    },
+    {
+      "term": "게이트 교차 어텐션(GATED XATTN-DENSE)",
+      "explain": "얼린 LLM 층 앞에 끼우는 교차 어텐션 + FFW 블록. 각 출력에 tanh(α) 를 곱해 잔차로 더하고 α=0 으로 시작해 처음엔 항등 함수.",
+      "at": 2000
+    },
+    {
+      "term": "인터리브 데이터와 마스크된 교차 어텐션",
+      "explain": "사진과 글이 번갈아 나오는 시퀀스(<image>·<EOC> 태그). 각 텍스트 토큰은 교차 어텐션으로 바로 앞 사진만 보고, 셀프 어텐션으로 앞의 모든 글을 본다.",
+      "at": 2130
+    },
+    {
+      "term": "in-context(few-shot) 학습",
+      "explain": "가중치를 바꾸지 않고 입력에 예시 몇 개를 붙여 새 과제를 수행하게 하는 것. Flamingo 는 사진-답 예시로 분류·VQA·OCR·산수를 했다.",
+      "at": 2310
+    },
+    {
+      "term": "완전 공개 모델(open weights·data·code·evals)",
+      "explain": "가중치뿐 아니라 학습·평가 데이터와 코드까지 공개해 처음부터 재현할 수 있는 모델. 닫힌 모델을 증류한 '공개 가중치' 모델과 구분된다(Molmo).",
+      "at": 2650
+    },
+    {
+      "term": "우연한 vs 의도한 데이터",
+      "explain": "인터넷 캡션은 올린 사람의 감상이라 내용 묘사가 드물다(우연한). PixMo 는 질문 목록과 60~90초 말하기로 크기·위치·재질·글자까지 묘사를 끌어냈다(의도한).",
+      "at": 2910
+    },
+    {
+      "term": "가리키기 그라운딩(pointing)",
+      "explain": "답의 근거 위치를 점 좌표로 출력하는 것. 세기 환각을 줄이고 검증을 쉽게 하며, 다른 모델(SAM 2·로봇 계획기)의 입력이 된다.",
+      "at": 2850
+    },
+    {
+      "term": "Segment Anything(SAM)과 데이터 엔진",
+      "explain": "점·상자·글 프롬프트로 무엇이든 분할하는 모델. 애매하면 마스크 3개를 내고 최소 손실만 학습, 모델 제안 → 사람 수정 순환으로 SA-1B(1,100만 장·11억 마스크)를 만들었다.",
+      "at": 3270
+    },
+    {
+      "term": "체이닝(CuPL·VisProg)",
+      "explain": "여러 모델을 엮어 새 능력을 얻는 것. CuPL 은 LLM 설명문으로 CLIP 분류를 돕고, VisProg 는 LLM 이 쓴 파이썬 프로그램이 탐지·분할·생성 모듈을 부른다.",
+      "at": 3660
+    }
+  ],
+  "trends": [
+    {
+      "claim": "과제별 모델에서, 한 번 사전학습해 여러 과제로 옮기는 파운데이션 모델로 분야가 옮겨 갔다.",
+      "evidence": "과제별 모델 네 줄 대 Foundation Model 한 개의 대비 슬라이드, GPT 의 예.",
+      "at": 60
+    },
+    {
+      "claim": "CoCa 무렵을 기점으로 이미지 인코더를 지도학습으로 만드는 관행이 끝나고 인터넷 이미지-텍스트 사전학습이 표준이 됐다(강사 의견).",
+      "evidence": "ImageNet 리더보드에서 CoCa(미세조정 91.0%)가 지도학습 모델을 앞선 표와 연도별 산점도.",
+      "at": 1170
+    },
+    {
+      "claim": "인터넷에서 좋은 학습 데이터를 골라내는 데이터 필터링이 지금 이 분야의 연구 최전선이다(강사 의견).",
+      "evidence": "'50억 장으로도 모든 것을 알 수 없다', 대규모 데이터 셋의 유해 콘텐츠 보고서 슬라이드.",
+      "at": 1500
+    },
+    {
+      "claim": "VLM 평가가 '분류 벤치마크 몇 개'에서 '질의응답으로 표현 가능한 모든 이해 과제'로 바뀌었다(강사 의견).",
+      "evidence": "Flamingo 의 16개 과제 few-shot 표 이후 지난 2년간 VQA 형식 벤치마크가 표준이 됐다는 설명.",
+      "at": 2460
+    },
+    {
+      "claim": "닫힌 API 모델과 공개 모델 사이의 격차가 컸고, 공개 가중치 모델 다수는 GPT·Gemini 증류라 재현 가능한 지식이 아니다(강사 의견).",
+      "evidence": "11개 벤치마크 평균 — API 모델 70~80점대 대 LLaVA 약 43, 'Open weights but distilled from GPT' 슬라이드.",
+      "at": 2520
+    },
+    {
+      "claim": "완전 공개 모델이 닫힌 모델을 따라잡을 수 있다 — '오픈소스에 반대로 걸지 마라'.",
+      "evidence": "Molmo-72B 가 870명·32.5만 비교 Elo 에서 GPT-4o 와 1점 차 2위, Gemini 1.5 Pro·Claude 3.5 를 앞섬, 공개 당일 반응.",
+      "at": 2700
+    },
+    {
+      "claim": "사전학습에서도 데이터의 양보다 질이 중요하다(강사 의견).",
+      "evidence": "Llama 3.1V 60억 쌍 대 PixMo 70만 쌍, 구조는 LLaVA 와 같고 차이는 데이터뿐이라는 설명.",
+      "at": 2885
+    },
+    {
+      "claim": "가리키기로 근거를 대는 VLM 을 SAM 2·로봇 계획기와 엮어 체화 AI 에 쓰는 연구가 활발하다.",
+      "evidence": "Molmo + SAM 2 크리켓 방망이 분할, 물병을 싱크로 옮기는 로봇 데모.",
+      "at": 3130
+    },
+    {
+      "claim": "체이닝으로 얻은 능력을 단일 모델로 증류하는 것과 엮기 자체를 더 잘하는 것이 2025년 연구의 큰 줄기다.",
+      "evidence": "VisProg 비용(API 호출 + 여러 모델 적재)에 대한 질의응답.",
+      "at": 3960
+    },
+    {
+      "claim": "큰 회사들은 단일 모델 출력을 바로 내보내지 않고 검증기를 거쳐 환각을 줄인다.",
+      "evidence": "마지막 질의응답 — 가리키기는 환각을 줄이지만 보장은 아니며, 검증 방법이 필요하다는 답.",
+      "at": 4110
+    }
+  ],
+  "study": {
+    "prereq": [
+      "CS231N 8강 어텐션·트랜스포머(셀프 어텐션·교차 어텐션·ViT 패치)",
+      "CS231N 12강 자기지도 학습의 InfoNCE·SimCLR",
+      "CS231N 9강 분할(FCN·U-Net·Mask R-CNN)의 입출력",
+      "softmax·교차 엔트로피, 코사인 유사도, NumPy 행렬 연산"
+    ],
+    "steps": [
+      {
+        "do": "2·3챕터의 대칭 대조 손실과 제로샷 확률을 손으로 계산한 뒤 numpy 코드로 같은 숫자가 나오는지 확인한다. 온도를 0.01·0.07·1 로 바꿔 손실과 확률이 어떻게 변하는지 표로 적는다.",
+        "why": "CLIP 계열의 모든 응용(검색·분류·체이닝)이 이 두 식 위에 있고, 온도·배율은 실무에서 가장 자주 헷갈리는 부분이다."
+      },
+      {
+        "do": "open_clip 으로 사전학습 CLIP 을 내려받아 CIFAR-10 에서 단어 하나 / 'A photo of a {}' / 템플릿 여러 개 평균의 제로샷 정확도를 비교한다.",
+        "why": "강의의 +1.3%p·+5%p 를 직접 재현해 프롬프트 설계의 효과를 체감한다."
+      },
+      {
+        "do": "Winoground 류 문장 쌍('a mug in grass' / 'grass in a mug')을 만들어 CLIP 의 텍스트-이미지 점수를 재고, 단어 순서를 바꿔도 점수가 얼마나 같은지 확인한다.",
+        "why": "합성성 한계를 숫자로 보면 VLM·체이닝이 왜 필요한지 납득된다."
+      },
+      {
+        "do": "7챕터의 이미지 토큰 예산 계산을 해상도 224·336·448·672 와 사진 1·5·10장에 대해 표로 만들고, 같은 표를 Flamingo 식(사진당 64 잠재)으로도 채운다.",
+        "why": "VLM 설계·서빙 비용 판단의 기본기이며, CS336 17강 노트의 AnyRes·동적 해상도로 넘어가는 다리다."
+      },
+      {
+        "do": "8·9챕터의 게이트 교차 어텐션과 인터리브 마스크를 PyTorch 로 옮겨, α=0 에서 출력이 원래 LM 과 같은지 테스트로 확인한다.",
+        "why": "얼린 모델에 새 모듈을 '안전하게' 끼우는 초기화 기법은 어댑터·LoRA 등 다른 곳에도 쓰인다."
+      },
+      {
+        "do": "SAM(또는 SAM 2) 공개 데모나 코드로 점 하나를 찍어 나오는 마스크 3개와 점수를 확인하고, 14챕터의 최소 손실 코드를 IoU 대신 dice 손실로 바꿔 본다.",
+        "why": "애매성을 다루는 다중 출력 + 최소 손실 패턴을 몸으로 익힌다."
+      },
+      {
+        "do": "VisProg 논문의 모듈 표를 보고, 탐지기(OWL-ViT 등) + 간단한 프로그램으로 '두 사진의 사람 수 합'을 실제로 계산하는 작은 파이프라인을 만든다.",
+        "why": "체이닝·VLM 에이전트의 구조와 오류 전파를 직접 경험한다."
+      }
+    ],
+    "practice": [
+      "코사인 [0.31, 0.25, 0.22, 0.05] 인 4-클래스에서 배율 1·10·100 의 확률을 손으로 계산하라.",
+      "ViT-B/16 에 384×384 사진을 넣으면 이미지 토큰은 몇 개인가? 문맥 8192 LLM 에 사진 몇 장까지 들어가나(글 500 토큰 남김)?",
+      "배치 크기 B 에서 어려운 음성 기대 개수가 1 이 되려면 B 가 얼마여야 하는지 p = 10⁻³, 10⁻⁵ 에 대해 구하라.",
+      "Flamingo 마스크 코드를 '앞선 모든 사진을 볼 수 있는' 버전으로 바꾸고 두 행렬의 차이를 설명하라.",
+      "SAM 최소 손실에서 정답이 '손잡이 하나'일 때 세 후보의 손실과 기울기가 가는 곳을 적어라."
+    ],
+    "resources": [
+      {
+        "title": "CS231n 과목 홈페이지(슬라이드·노트·과제)",
+        "url": "https://cs231n.stanford.edu/"
+      },
+      {
+        "title": "Radford et al., Learning Transferable Visual Models From Natural Language Supervision (CLIP, 2021)",
+        "url": "https://arxiv.org/abs/2103.00020"
+      },
+      {
+        "title": "Yu et al., CoCa: Contrastive Captioners are Image-Text Foundation Models (2022)",
+        "url": "https://arxiv.org/abs/2205.01917"
+      },
+      {
+        "title": "Thrush et al., Winoground: Probing Vision and Language Models for Visio-Linguistic Compositionality (2022)",
+        "url": "https://arxiv.org/abs/2204.03162"
+      },
+      {
+        "title": "Yuksekgonul et al., When and Why Vision-Language Models Behave like Bags-of-Words (ARO, 2022)",
+        "url": "https://arxiv.org/abs/2210.01936"
+      },
+      {
+        "title": "Liu et al., Visual Instruction Tuning (LLaVA, 2023)",
+        "url": "https://arxiv.org/abs/2304.08485"
+      },
+      {
+        "title": "Alayrac et al., Flamingo: a Visual Language Model for Few-Shot Learning (2022)",
+        "url": "https://arxiv.org/abs/2204.14198"
+      },
+      {
+        "title": "Deitke et al., Molmo and PixMo: Open Weights and Open Data for State-of-the-Art VLMs (2024)",
+        "url": "https://arxiv.org/abs/2409.17146"
+      },
+      {
+        "title": "Kirillov et al., Segment Anything (2023)",
+        "url": "https://arxiv.org/abs/2304.02643"
+      },
+      {
+        "title": "Pratt et al., What does a platypus look like? Generating customized prompts for zero-shot image classification (CuPL, 2022)",
+        "url": "https://arxiv.org/abs/2209.03320"
+      },
+      {
+        "title": "Gupta & Kembhavi, Visual Programming: Compositional visual reasoning without training (VisProg, 2022)",
+        "url": "https://arxiv.org/abs/2211.11559"
+      },
+      {
+        "title": "OpenCLIP — 공개 CLIP 구현과 사전학습 가중치",
+        "url": "https://github.com/mlfoundations/open_clip"
+      },
+      {
+        "title": "Segment Anything 공식 코드",
+        "url": "https://github.com/facebookresearch/segment-anything"
+      }
+    ]
+  },
+  "jobs": {
+    "roles": [
+      "멀티모달·VLM 연구 엔지니어",
+      "컴퓨터 비전 엔지니어",
+      "머신러닝 엔지니어(검색·추천의 이미지-텍스트 임베딩)",
+      "AI 에이전트·로보틱스 인식 엔지니어",
+      "데이터 엔지니어(주석·데이터 큐레이션 파이프라인)"
+    ],
+    "skills": [
+      "PyTorch",
+      "Python",
+      "NumPy",
+      "Deep Learning",
+      "Computer Vision",
+      "Transformer",
+      "LLM",
+      "Hugging Face",
+      "CUDA",
+      "OpenCV"
+    ]
+  },
+  "related": [
+    "26FtD08ZpOU",
+    "NDdc39KYqDU",
+    "4howBU7THbM",
+    "RQowiOF_FvQ",
+    "PTypu6GqEd4",
+    "Edr4uZFh4EE",
+    "9MvD-XsowsE"
+  ],
+  "materials": {
+    "transcript": "official",
+    "frames": 140,
+    "every_sec": 30
+  },
+  "written_at": "2026-11-21"
+}

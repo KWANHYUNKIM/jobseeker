@@ -64,3 +64,4 @@
 - 2026-11-20 · 4howBU7THbM · CS231N · 자기지도 학습 — 회전·직소·인페인팅·색칠 프리텍스트 과제에서 MAE, 그리고 InfoNCE·SimCLR·MoCo·CPC·DINO 까지 · 챕터 15 · 본문 22429자
 - 2026-11-20 · Edr4uZFh4EE · CS231N · 생성 모델 2 — GAN 의 minimax 게임과 비포화 손실, 정류 흐름(rectified flow)의 학습·샘플링, CFG·잡음 스케줄, 잠재 확산·DiT 에서 FLUX·MovieGen 까지 · 챕터 15 · 본문 22951자
 - 2026-11-20 · 7lxrKDKtykM · CS231N · 3D 비전 — 점·메시·곡면·복셀에서 PointNet·Chamfer, 딥 암시 함수, NeRF·가우시안 스플래팅, 그리고 모양의 구조까지 · 챕터 15 · 본문 19363자
+- 2026-11-20 · mQOK0Mfyrkk · CS231N · 비전과 언어 — CLIP 제로샷 분류와 그 한계, CoCa, LLaVA·Flamingo 의 두 가지 결합법, Molmo 의 데이터와 가리키기, Segment Anything, 그리고 체이닝(CuPL·VisProg) · 챕터 15 · 본문 23315자
