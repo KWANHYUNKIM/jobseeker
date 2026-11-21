@@ -1,0 +1,1011 @@
+{
+ "id": "26FtD08ZpOU",
+ "source": {
+  "platform": "youtube",
+  "url": "https://www.youtube.com/watch?v=26FtD08ZpOU",
+  "channel": "Stanford Online",
+  "published": "2026-06-04",
+  "duration_sec": 4659,
+  "views": 12659
+ },
+ "course": {
+  "school": "Stanford",
+  "code": "CS336",
+  "term": "Spring 2026",
+  "lecture_no": "17",
+  "speaker": "Percy Liang"
+ },
+ "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 17: Alignment - Multimodality",
+ "title_ko": "멀티모달 모델 — CLIP·SigLIP 으로 이미지를 벡터로, LLaVA·Qwen-VL 로 LLM 에 꿰매기, 동적 해상도와 M-RoPE, 그리고 Chameleon 의 이산 토큰 (제목은 'Alignment' 지만 내용은 멀티모달)",
+ "topic": "multimodal",
+ "tags": [
+  "Python",
+  "PyTorch",
+  "NumPy",
+  "LLM",
+  "VLM",
+  "CLIP",
+  "SigLIP",
+  "ViT",
+  "Transformer",
+  "Multimodal",
+  "Contrastive Learning",
+  "RoPE",
+  "Qwen",
+  "LLaVA",
+  "VQ-VAE",
+  "Distributed Training"
+ ],
+ "level": "중급",
+ "one_line": "이미지를 몇 개의 토큰으로 바꿔 LLM 에 넣나 — CLIP 대조 학습에서 Qwen3-VL·Chameleon 까지",
+ "summary": [
+  "CS336 17강은 유튜브 제목이 'Alignment - Multimodality' 로 정렬 묶음에 들어가 있지만, 실제 내용은 정렬 알고리즘이 아니라 멀티모달 모델, 특히 이미지를 읽는 비전-언어 모델(VLM)을 어떻게 만드는가다. 원래 강화학습을 더 다룰 계획이었던 Percy Liang 이 자기 몫의 마지막 강의를 멀티모달에 쓴 것이다. 출발점은 어떤 모달리티 조합이든 넣고 내는 '옴니 모델'이라는 목표와, 트랜스포머가 여전히 모든 모달리티에서 가장 강하니 결국 모든 것을 '의미 단위의 토큰'으로 바꿔야 한다는 현실이다. 텍스트의 BPE 에 해당하는 이미지의 토큰화가 무엇이냐는 질문이 강의 전체를 꿴다.",
+  "첫 부분은 이미지 인코더다. CLIP(2021)은 웹에서 모은 4억 개의 (이미지, 캡션) 쌍으로, 배치 N 쌍의 N×N 유사도 행렬에서 행·열마다 짝을 맞히는 2N 개의 softmax 분류를 푼다. 비전 쪽은 ViT-L/14@336(336/14 = 24, 576 패치)이 가장 좋았고, 제로샷으로 ImageNet 120만 장을 학습한 ResNet-50 에 맞먹었다. 캡션을 생성하는 목표보다 대조 목표가 약 12배 효율적이었다는 절제 결과는 강의 끝 '이해와 생성의 비대칭'으로 이어진다. SigLIP(2023)은 softmax 를 칸마다의 시그모이드 이진 분류로 바꿔, 텍스트 조각을 장치 사이에 돌리는 분산 계산이 가능해지고 배치 크기와 손실 함수가 분리된다(32K 에서 포화).",
+  "두 번째 부분은 그 벡터를 사전학습된 LLM 에 꿰매는 VLM 이다. LLaVA(2023)는 CLIP 패치 특징에 행렬 W 하나를 곱해 '가짜 단어'로 만들고, GPT-4 로 합성한 15.8만 개 대화로 '정렬(W 만) → 미세조정(W + LLM)' 2단계 학습을 했다. LLaVA-OneVision(2024)은 SigLIP·Qwen2·2층 MLP 로 부품을 바꾸고, 고해상도 OCR 을 위해 이미지를 인코더 크기 조각으로 자르는 AnyRes 를 쓰며, 단일 이미지 (1+9)×729 = 7,290, 여러 이미지 12×729 = 8,748, 영상 32×196 = 6,272 토큰으로 모달리티의 길이를 맞춘다. 과제 특화 합성 데이터와 3단계 학습, 그리고 단일 이미지 데이터가 여러 이미지·영상 과제로 전이되는 현상을 보인다.",
+  "Qwen 계열은 같은 틀의 다른 갈래다. Qwen-VL 은 교차 어텐션 한 층으로 늘 256 토큰을 만들고 상자 좌표를 특수 토큰으로 출력하며, 첫 단계부터 비전 인코더도 학습한다. Qwen2-VL 은 원본 해상도로 ViT 를 돌리고 2×2 를 병합해 28×28 픽셀을 토큰 하나로 만든다 — 8204×1092 문서는 293×39 = 11,427 토큰, 28×224 수식 조각은 8 토큰이다. 위치는 (시간, 높이, 너비) 세 값의 M-RoPE 로 준다. Qwen3-VL 은 축을 번갈아 배치한 인터리브 MRoPE, 영상 시각을 텍스트 토큰으로 넣는 타임스탬프, 긴 예제를 √길이로 눌러 주는 손실, 인코더 여러 층을 LLM 여러 층에 꽂는 DeepStack, 8K→32K→256K 로 늘어나는 4단계 사전학습(약 2.2조 토큰)으로 GPT-5·Gemini 2.5 Pro 와 겨루는 성능을 낸다.",
+  "질의응답에서는 이 VLM 들이 이미지를 생성하지 않고 텍스트만 낸다는 것, 영상 데이터 로딩이 새 병목이라는 것, 비전 인코더(대개 10억 미만)와 프로젝터는 LLM 에 비해 아주 작다는 것을 짚는다. 마지막으로 Chameleon(2024)은 VQ-VAE 로 512×512 이미지를 8,192개 어휘의 1,024 토큰으로 바꿔 텍스트와 함께 하나의 언어 모델로 이해·생성을 통일했지만, 엔트로피가 다른 토큰을 섞어 학습이 불안정해(QK norm·z-loss 로 완화) 이산화로 정보를 잃어 성능이 떨어졌다. 강사의 결론(일부는 추측)은 지금의 최선이 '연속 인코더 + 트랜스포머 + 생성은 확산'이고, 이해는 의미를, 생성은 세밀함을 요구하며, 정보 밀도가 낮은 영상은 가중을 맞춰야 한다는 것이다."
+ ],
+ "why_now": "현업 LLM 은 거의 전부 이미지·문서·화면을 입력으로 받고, 국내에서도 문서 OCR·차트 이해·GUI 에이전트처럼 VLM 을 파인튜닝하거나 서빙하는 일이 늘었다. 이 강의는 그 공통 뼈대(비전 인코더 + 프로젝터 + LLM, 정렬 → 전체 학습 → 지시 튜닝)를 공개 논문 기준으로 정리하고, 실무에서 바로 비용이 되는 숫자 — 이미지 한 장이 몇 토큰이 되는지(576·729·7,290·11,427), 영상을 몇 프레임까지 넣을 수 있는지, 긴 문맥을 어떤 단계로 늘리는지 — 를 계산할 수 있게 해 준다. 강사가 지적하듯 최전선 모델의 내부는 비공개이고 LLaVA 처럼 데이터까지 공개한 계열이 재현·연구의 기준점이라는 점, 그리고 생성까지 하는 옴니 모델에서는 이산 토큰(Chameleon)보다 연속 인코더 + 확산 쪽으로 무게가 옮겨 갔다는 점도 지금 방향을 잡는 데 필요하다.",
+ "chapters": [
+  {
+   "start": 0,
+   "title": "도입 — 옴니 모델이라는 북극성, 그리고 '모든 것을 토큰으로'",
+   "points": [
+    "계획은 강화학습이었지만 강사(Percy Liang)는 자기 몫의 마지막 강의를 멀티모달에 쓴다 — 주요 모델이 모두 멀티모달인데 이 과목이 그걸 빼면 불완전하다는 이유다.",
+    "언어 모델은 이미 '아무 텍스트 → 아무 텍스트'로 꽤 일반적이지만, 세상에는 이미지·오디오·영상이 있다. 목표는 어떤 조합이든 넣고(이해) 어떤 조합이든 내는(생성) 옴니(omni) 모델이다.",
+    "현실: 트랜스포머가 모든 모달리티에서 여전히 규모에서 가장 강하다 → 쓰는 수밖에 없다. 트랜스포머는 토큰(이산 또는 연속)을 말하고, 토큰은 대략 '의미 단위'여야 한다.",
+    "텍스트에서는 BPE 로 이 문제를 이미 풀었다(1강). 픽셀 하나는 의미가 없으니 이미지·오디오의 'BPE'를 찾아야 한다.",
+    "두 질문: ① 비텍스트를 어떻게 넣나(이해) ② 어떻게 내나(생성). 오늘은 거의 ①, 특히 이미지다."
+   ],
+   "on_screen": "edtrace 슬라이드(코드처럼 줄 번호가 붙은 화면). 'Lecture 17: multimodal models' / So far: language models, text ⇒ text / The world is multimodal — Text·Images·Audio('The sounds of ocean waves crashing on the shore.')·Video 예시 카드 / Ultimate goal: omni model — Input any combination of modalities (understanding), Output any combination of modalities (generation) / Where we are today: Transformers work really well. So we gotta use them. / Transformers speak tokens (discrete or continuous), where a token represents some ~semantic information. / Therefore, we must convert everything into tokens. / Note: we had to do this with text (recall the tokenization lecture). / Questions: 1. How do we input non-text data? 2. How do we output non-text data? / 목차: # Encoding images clip() siglip() # Injecting image encodings into LLMs llava() llava_onevision() qwen_vl() qwen2_vl() qwen3_vl() # Towards Omni models chameleon().",
+   "explain": [
+    "이 강의는 CS336 의 원래 계획표에서 살짝 벗어난다. 강사는 원래 강화학습을 더 다룰 생각이었지만, 자기에게 남은 강의가 한 번뿐이라 멀티모달을 고른다. 이유는 간단하다. 지금 최전선 모델(GPT·Gemini·Claude·Qwen)은 거의 전부 이미지를 읽고, 상당수는 오디오·영상까지 받는다. 텍스트만 다루고 과목을 끝내면 '언어 모델을 바닥부터 짓는다'는 그림에서 큰 조각이 빠진다. 그래서 유튜브 제목은 'Alignment - Multimodality' 로 정렬(사후학습) 묶음에 들어가 있지만, 실제 내용은 정렬 알고리즘이 아니라 비전-언어 모델(VLM)을 만드는 법이다. 다만 뒤에서 보듯 VLM 은 '이미 학습한 언어 모델에 이미지를 덧붙이는 중간·사후학습'이라는 점에서 15강의 사후학습과 이어진다.",
+    "출발점은 옴니 모델이라는 북극성이다. 이미지와 영상을 같이 주고 질문하기, 텍스트로 이미지를 만들기, 오디오를 이미지로 바꾸기 — 어떤 모달리티 조합이든 입력으로 받고 어떤 조합이든 출력하는 모델이다. 이 강의는 거기까지 가지 않는다. 대신 그 첫 조각, 즉 이미지를 언어 모델에 '먹이는' 방법을 차근차근 짓는다. 출력 쪽(이미지·오디오 생성)은 마지막에 Chameleon 을 통해 살짝 맛만 본다.",
+    "왜 하필 트랜스포머로 짓는가? 강사의 말은 다소 현실적이다. 사람들이 온갖 다른 구조를 시도했지만, 텍스트든 이미지든 오디오든 규모를 키웠을 때 여전히 트랜스포머가 가장 낫다. 그러니 트랜스포머에 맞춰 데이터를 바꾸는 수밖에 없다. 트랜스포머는 '토큰의 열'을 받아 '토큰의 열'을 낸다. 여기서 토큰의 뜻을 넓힌다 — 텍스트처럼 어휘표의 번호(이산 토큰)일 수도 있고, 이미 벡터로 만들어진 임베딩(연속 토큰)일 수도 있다. 중요한 조건은 토큰 하나가 대략 하나의 의미 단위를 나타내야 한다는 것이다. 영어의 서브워드는 그럭저럭 의미가 있지만, 픽셀 하나는 그 자체로 아무 뜻도 없다.",
+    "그래서 문제는 '이미지용 BPE 는 무엇인가'로 바뀐다. 1강에서 텍스트는 바이트를 자주 붙는 쌍으로 합쳐 의미 덩어리를 만들었다. 이미지는 그렇게 단순하지 않다. 이 강의의 나머지는 이 질문에 대한 답들의 역사다 — CLIP·SigLIP 으로 이미지를 의미 벡터로 바꾸고(인코딩), LLaVA·Qwen-VL 계열이 그 벡터를 언어 모델에 끼워 넣고(주입), Chameleon 이 이미지를 아예 이산 토큰으로 만들어 텍스트와 같은 공간에 둔다(옴니로 가는 시도)."
+   ],
+   "diagram": {
+    "title": "강의의 지도",
+    "code": "flowchart LR\n  A[이미지] --> B[CLIP / SigLIP<br/>이미지 인코더]\n  B --> C[프로젝터<br/>선형·MLP·교차어텐션]\n  C --> D[사전학습된 LLM]\n  T[텍스트] --> D\n  D --> O[텍스트 출력]\n  A --> V[VQ-VAE<br/>이산 코드]\n  V --> M[Chameleon<br/>하나의 LM]\n  T --> M\n  M --> O2[텍스트+이미지 출력]"
+   },
+   "pitfalls": [
+    "제목의 'Alignment' 를 보고 RLHF·DPO 강의를 기대하면 안 된다. 실제 내용은 멀티모달(VLM) 개관이다. 정렬 알고리즘은 15강 노트(2oH6PWPrYFo)에 있다.",
+    "'토큰'을 어휘표 번호로만 생각하면 VLM 이 이해되지 않는다. VLM 의 이미지 토큰은 대부분 연속 벡터(임베딩)이고, 텍스트 토큰과 같은 폭의 벡터라서 같은 열에 섞일 뿐이다."
+   ],
+   "check": [
+    {
+     "q": "트랜스포머에 이미지를 넣으려 할 때 '픽셀 하나 = 토큰 하나'가 나쁜 이유를 두 가지 드시오.",
+     "a": "① 픽셀 하나에는 의미가 거의 없어(신호 대 잡음비가 낮아) 토큰이 의미 단위라는 조건을 깬다. ② 224×224 이미지만 해도 5만 개가 넘는 토큰이 되어 어텐션 비용(길이의 제곱)이 폭발한다. 그래서 패치로 묶거나 인코더로 압축한다."
+    }
+   ]
+  },
+  {
+   "start": 240,
+   "title": "CLIP 의 목표 — 이미지·캡션 쌍으로 하는 대조 학습, 2N 개의 softmax 분류",
+   "points": [
+    "CLIP(Contrastive Language-Image Pre-training, Radford 2021) — GPT-2·3 로 언어는 '웹을 긁어 큰 모델을 학습'하는 시대였지만 비전은 아직 ImageNet 같은 주석 데이터 + ResNet 이었다.",
+    "질문: 웹에 넘치는 (이미지, 캡션) 쌍을 쓸 수 있나? 배치 N 쌍(예: 32,768)을 이미지 인코더·텍스트 인코더로 각각 벡터 I₁…I_N, T₁…T_N 으로 만든다.",
+    "목표: I_i·T_i 가 I_i·T_j(j≠i)보다 훨씬 크게 — 그리고 반대로 T_i 기준으로도. 곧 N×N 유사도 행렬에서 행 방향 N 개, 열 방향 N 개, 모두 2N 개의 분류 문제.",
+    "구현은 L2 정규화 → 내적 × exp(t) → 행·열 교차 엔트로피 평균. 정답 라벨은 arange(n) 곧 대각선."
+   ],
+   "on_screen": "CLIP 그림 세 칸: (1) Contrastive pre-training — Text Encoder 가 T₁…T_N, Image Encoder 가 I₁…I_N 을 내고 I_i·T_j 격자(대각선 파란 칸), (2) Create dataset classifier from label text — 'A photo of a {object}.', (3) Use for zero-shot prediction. Method: Get a batch of (image, text) examples (e.g., 32768) / Encode each image and each text / For each image, prefer its aligned text over other texts / For each text, prefer its aligned image over other images. 논문의 numpy 풍 의사코드: I_f = image_encoder(I) #[n, d_i], T_f = text_encoder(T) #[n, d_t], I_e = l2_normalize(np.dot(I_f, W_i), axis=1), T_e = l2_normalize(np.dot(T_f, W_t), axis=1), logits = np.dot(I_e, T_e.T) * np.exp(t), labels = np.arange(n), loss_i = cross_entropy_loss(logits, labels, axis=0), loss_t = cross_entropy_loss(logits, labels, axis=1), loss = (loss_i + loss_t)/2.",
+   "explain": [
+    "2021년의 분위기부터 보자. 언어 쪽은 GPT-2·GPT-3 로 이미 '파운데이션 모델' 시대였다. 인터넷 텍스트를 마구 긁으면 품질은 엉망이지만, 충분히 큰 모델을 학습하면 그 잡음 속에서 쓸모 있는 것을 뽑아낸다. 비전 쪽은 달랐다. ImageNet 처럼 사람이 라벨을 붙인 데이터셋에 ResNet 을 학습하고, 데이터 증강을 열심히 해서 정확도를 올리는 방식이 주류였다. OpenAI 연구자들의 질문은 이것이었다 — 웹에는 이미지와 그 옆의 설명(캡션·alt 텍스트)이 엄청나게 많은데, 언어 모델이 웹 텍스트를 쓰듯 이걸 쓸 수 없을까?",
+    "CLIP 의 아이디어는 단순하다. 이미지-텍스트 쌍 N 개를 한 배치로 모은다. 이미지는 이미지 인코더로, 텍스트는 텍스트 인코더로 각각 d 차원 벡터를 만든다. 이제 N×N 행렬을 그린다. (i, j) 칸은 i 번째 이미지와 j 번째 텍스트의 유사도(정규화한 벡터의 내적 = 코사인 유사도)다. 대각선 칸은 실제로 짝인 쌍이고 나머지는 짝이 아닌 쌍이다. 학습 목표는 각 행에서 대각선 칸이 가장 크도록(이미지 입장에서 '내 캡션은 N 개 중 이것'), 그리고 각 열에서도 대각선 칸이 가장 크도록(텍스트 입장에서 '내 이미지는 이것') 하는 것이다. 행마다 N-지선다 분류가 하나, 열마다 또 하나이므로 배치 하나에 분류 문제가 2N 개 들어 있다.",
+    "식으로 쓰면 각 행의 손실은 보통의 softmax 교차 엔트로피다. 로짓은 코사인 유사도에 온도 τ 의 역수(코드에서는 exp(t), t 는 학습되는 스칼라)를 곱한 값이다. 코사인 유사도는 -1~1 범위라 그대로 softmax 에 넣으면 분포가 너무 평평해서, 큰 수를 곱해 날카롭게 만든다(노트 보충: CLIP 논문은 이 배율을 학습하되 100 에서 잘랐다). 최종 손실은 이미지→텍스트 방향과 텍스트→이미지 방향 손실의 평균이다. 강사의 요약대로, 이것은 예제들이 N×N 행렬 모양으로 엮인 다중 분류 문제일 뿐이다.",
+    "왜 이것이 '정렬(alignment)'인가? 손실을 낮추려면 같은 내용을 담은 이미지와 텍스트가 공유 공간에서 같은 방향을 가리켜야 한다. 고양이 사진과 'a photo of a cat' 이 가까워지고, 개 사진과는 멀어진다. 결과적으로 두 인코더는 서로 다른 모달리티를 하나의 의미 공간으로 데려간다. 이 '공유 공간'이 뒤에 나오는 모든 VLM 의 토대가 된다. 참고로 CS229 13강 노트(lNTajqxxOn4)의 SimCLR 손실과 수학적으로 같은 꼴이다 — 차이는 양성 쌍이 '같은 이미지의 두 증강'이냐 '이미지와 그 캡션'이냐뿐이다."
+   ],
+   "formulas": [
+    {
+     "expr": "s_ij = τ⁻¹ · (I_i / ‖I_i‖) · (T_j / ‖T_j‖)",
+     "meaning": "s_ij 는 i 번째 이미지와 j 번째 텍스트의 로짓. I_i, T_j 는 인코더 출력을 공유 차원 d_e 로 선형 사상한 벡터(W_i, W_t), ‖·‖ 는 L2 노름이라 내적은 코사인 유사도(-1~1). τ⁻¹ = exp(t) 는 학습되는 배율."
+    },
+    {
+     "expr": "L_I = −(1/N) Σ_i log( exp(s_ii) / Σ_j exp(s_ij) )",
+     "meaning": "이미지→텍스트 방향 손실. 행 i 에서 정답(대각선) 텍스트의 softmax 확률에 음의 로그. N 은 배치 크기이자 선택지 수."
+    },
+    {
+     "expr": "L_T = −(1/N) Σ_j log( exp(s_jj) / Σ_i exp(s_ij) ),  L = (L_I + L_T)/2",
+     "meaning": "텍스트→이미지 방향(열 방향) 손실과 두 방향의 평균. 행·열 softmax 가 각각 N 개씩, 모두 2N 개의 분류 문제."
+    }
+   ],
+   "example": {
+    "title": "2쌍짜리 배치를 손으로",
+    "body": "이미지 I₁=(1,0), I₂=(0,1), 텍스트 T₁=(0.8,0.6), T₂=(0.6,0.8) — 모두 이미 길이 1.\n코사인 유사도: I₁·T₁=0.8, I₁·T₂=0.6, I₂·T₁=0.6, I₂·T₂=0.8.\n배율 τ⁻¹=10 → 로짓 행렬 [[8, 6], [6, 8]].\n행 1 softmax: 정답 확률 = e⁸/(e⁸+e⁶) = 1/(1+e⁻²) = 0.8808 → −ln 0.8808 = 0.1269.\n행 2 도 대칭이라 0.1269, 열 방향도 행렬이 대칭이라 같다.\nL = (0.1269 + 0.1269)/2 = 0.1269. 아래 코드가 같은 값을 낸다.\n배율을 1 로 두면 정답 확률이 1/(1+e⁻⁰·²)=0.55 에 그쳐 손실이 0.598 — 온도가 왜 필요한지 보인다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\n\ndef l2n(x):\n    return x / np.linalg.norm(x, axis=1, keepdims=True)\n\ndef xent_rows(logits):            # 행마다 정답이 대각선인 교차 엔트로피\n    z = logits - logits.max(axis=1, keepdims=True)\n    logp = z - np.log(np.exp(z).sum(axis=1, keepdims=True))\n    return -np.mean(np.diag(logp))\n\ndef clip_loss(img, txt, t):\n    I, T = l2n(img), l2n(txt)\n    logits = I @ T.T * t          # [n, n] 코사인 유사도 × 온도\n    return (xent_rows(logits) + xent_rows(logits.T)) / 2  # 이미지→텍스트, 텍스트→이미지\n\nimg = np.array([[1.0, 0.0], [0.0, 1.0]])\ntxt = np.array([[0.8, 0.6], [0.6, 0.8]])\nprint(round(clip_loss(img, txt, t=10.0), 4))       # 손으로 푼 값 0.1269\nrng = np.random.default_rng(0)\nx = rng.normal(size=(8, 16))\nprint(round(clip_loss(x, x + 0.1 * rng.normal(size=(8, 16)), 10.0), 4))  # 짝이 맞으면 작다\nprint(round(clip_loss(x, rng.normal(size=(8, 16)), 10.0), 4))            # 무작위 짝이면 크다",
+    "note": "실행 결과 0.1269 / 0.0068 / 4.5927 — 짝이 맞는 배치는 손실이 거의 0, 무작위 짝은 ln 8 ≈ 2.08 보다도 크다(배율 10 때문에 틀린 확신이 벌을 받는다)."
+   },
+   "pitfalls": [
+    "CLIP 손실은 배치 크기 N 에 따라 '다른 문제'가 된다. N=2 면 이지선다, N=32,768 이면 3만 지선다다. 그래서 배치를 줄이면 손실 함수 자체가 바뀐다(뒤 SigLIP 장에서 다시 나온다).",
+    "정규화를 빼먹으면 벡터 길이만 키워서 로짓을 키우는 꼼수가 생긴다. 코사인 유사도 + 학습되는 온도 조합이 표준이다."
+   ],
+   "check": [
+    {
+     "q": "배치 크기 N=4 일 때 CLIP 손실 한 번 계산에 포함된 분류 문제의 수와 각 문제의 선택지 수는?",
+     "a": "행 방향 4개 + 열 방향 4개 = 8개의 분류 문제, 각각 4지선다."
+    },
+    {
+     "q": "CLIP 이 코사인 유사도에 τ⁻¹ 을 곱하는 이유는?",
+     "a": "코사인 유사도는 -1~1 이라 softmax 가 거의 균등해진다. 큰 배율을 곱해 분포를 날카롭게 해야 정답을 확신 있게 고를 수 있고 손실이 의미 있게 낮아진다. 그 배율을 학습되는 값으로 둔다."
+    }
+   ]
+  },
+  {
+   "start": 480,
+   "title": "CLIP 의 데이터와 전처리 — 4억 쌍, OpenCLIP·LAION-5B, 짧은 변 336 리사이즈와 가운데 자르기",
+   "points": [
+    "데이터: 쿼리 50만 개로 검색해 쿼리당 최대 약 2만 쌍 → 4억 (이미지, 텍스트) 쌍. 공개되지 않았다.",
+    "OpenCLIP(Cherti 2022)이 LAION-5B(50억 쌍)로 재현 — 그런데 LAION 은 거르는 데 CLIP 을 썼다(부트스트래핑). 데이터·코드를 가리킬 수 있는 CLIP 급 모델.",
+    "신경망은 고정 크기를 좋아한다 → 짧은 변을 336(또는 224)으로 bicubic 리사이즈하고 가운데를 336×336 으로 자른다. 분류 시절에는 물체가 가운데라 괜찮았다.",
+    "질문: 왜 이미지만으로(SimCLR) 안 하나? 증강으로는 '이 개'에서 '다른 품종의 개'로 갈 수 없다 — 텍스트가 더 높은 수준의 의미를 준다."
+   ],
+   "on_screen": "Data: Searched for 500K queries, get ~20K (image, text) pairs per query / Trained on 400M image-text pairs / Didn't release the dataset / Reproduced in OpenCLIP (using LAION-5B dataset, which used CLIP for filtering) [Cherti+ 2022]. Data processing [code]: Images come in all resolutions (arbitrary W x H) / Resize using bicubic interpolation so shorter side is 336 pixels / Center crop (cuts off borders to get 336 x 336). 이 구간 중간(11:00~12:30)은 강사 화면, 질의응답.",
+   "explain": [
+    "CLIP 논문은 데이터에 대해 말을 아낀다. 알려진 것은 대략 이렇다. 어딘가에서 쿼리 50만 개를 만들고, 각 쿼리로 웹을 검색해 쿼리당 최대 2만 개 정도의 (이미지, 텍스트) 쌍을 모았다. 합쳐서 4억 쌍이다. 쿼리를 다양하게 잡아 개념이 고르게 덮이도록 한 셈이다. 데이터셋은 공개되지 않았다. 그래서 오픈소스 쪽에서 OpenCLIP 이라는 재현 작업이 나왔고, 여기서 쓴 LAION-5B 는 50억 쌍을 공개했다. 재미있는 점은 LAION 을 만들 때 쓰레기 쌍을 거르는 데 OpenAI 의 CLIP 을 썼다는 것이다. CLIP 으로 거른 데이터로 OpenCLIP 을 학습한 것이니 일종의 부트스트래핑이다. 그래도 '무엇으로 학습했는지'를 가리킬 수 있는 모델이라는 점에서 의미가 크다.",
+    "웹 캡션은 매우 잡음이 많다. 강사가 질문에 답하며 지적하듯, 사람이 이미지 옆에 쓰는 글은 이미지를 그대로 묘사하지 않는다. 개 사진에 굳이 '개'라고 쓰지 않는다 — 이미 보이니까. 그런데도 학습이 된다는 것이 놀랍고, 그 뒤에는 상당한 필터링이 있다. 또 다른 질문은 '같은 배치에 개 사진이 둘이면 서로 음성 예제가 되어 헷갈리지 않느냐'였다. 답은, 평균적으로 배치 안 다른 예제는 대개 사과나 고양이처럼 다른 것이라 괜찮고, 가끔 생기는 잘못된 음성은 잡음으로 흡수된다는 것이다.",
+    "전처리도 실용적으로 거칠다. 웹 이미지는 가로로 긴 것, 세로로 긴 것, 크기가 제각각이다. 신경망(특히 배치 처리)은 고정 크기를 좋아하므로 CLIP 은 짧은 변이 336(또는 224) 픽셀이 되도록 bicubic 보간으로 줄이고, 가운데에서 336×336 정사각형을 잘라낸다. 가장자리는 버린다. 이것은 편의를 위한 것이다. 당시 CLIP 저자들의 머릿속에는 ImageNet 분류가 있었고, 분류 이미지에서는 물체가 보통 가운데 있어서 가장자리를 잃어도 큰 문제가 없었다. 하지만 문서나 긴 영수증을 이렇게 자르면 글자 대부분이 사라진다. 뒤에서 LLaVA 의 AnyRes 와 Qwen2-VL 의 동적 해상도가 바로 이 약점을 고친다.",
+    "한 학생이 근본적인 질문을 했다 — 왜 굳이 텍스트와 짝을 짓나, 이미지만으로 표현을 배우면 안 되나? 실제로 SimCLR 같은 자기지도 대조 학습은 이미지 하나를 자르고 돌리고 색을 흔들어 두 개의 '보기'를 만들고, 둘이 같은 이미지라고 가르친다. 이것은 낮은 수준의 시각 특징을 배우는 데 쓸모 있다. 하지만 강사의 말처럼 어떤 증강을 해도 한 품종의 개에서 다른 품종의 개로 갈 수는 없다. '둘 다 개다'라는 판단은 텍스트가 알려 준다. 텍스트를 짝으로 쓰면 표현이 더 높은 수준의 의미를 담게 되고, 이것이 뒤에서 VLM 이 질문에 답할 때 필요한 바로 그 성질이다."
+   ],
+   "formulas": [
+    {
+     "expr": "scale = 336 / min(W, H);  (W', H') = (round(W·scale), round(H·scale));  crop = 가운데 336×336",
+     "meaning": "CLIP 전처리. W, H 는 원본 너비·높이. 짧은 변을 336 에 맞추고 긴 변은 비율대로 바꾼다. 그다음 긴 변 방향의 양 끝을 (긴 변 − 336)/2 씩 잘라 버린다."
+    }
+   ],
+   "example": {
+    "title": "풍경 사진과 영수증이 잃는 것",
+    "body": "풍경 1920×1080: scale = 336/1080 = 0.311 → 597×336 으로 줄인 뒤 가로 (597−336)/2 ≈ 130픽셀씩 양쪽을 버린다. 남는 면적 비율 336/597 = 56%. 하늘과 산의 가운데는 남는다.\n긴 영수증 600×3000: scale = 336/600 = 0.56 → 336×1680, 세로 (1680−336)/2 = 672픽셀씩 위아래를 버린다. 남는 것은 가운데 20%. 게다가 600→336 으로 줄었으니 원래 10픽셀 높이 글자가 5.6픽셀이 된다 — 'J' 와 'I' 를 가르기 어렵다."
+   },
+   "pitfalls": [
+    "'CLIP 데이터 = LAION' 이 아니다. 원래 CLIP 의 4억 쌍은 비공개이고, LAION-5B 는 OpenCLIP 재현에 쓰인 공개 데이터다.",
+    "가운데 자르기는 분류에서만 무해하다. 문서·차트·화면 캡처를 다루는 VLM 에서 그대로 쓰면 정보가 대부분 사라진다."
+   ],
+   "check": [
+    {
+     "q": "LAION-5B 로 학습한 OpenCLIP 을 '완전히 독립적인 재현'이라 부르기 어려운 이유는?",
+     "a": "LAION-5B 를 만들 때 이미지-텍스트 쌍의 품질을 거르는 데 OpenAI 의 CLIP 점수를 썼다. CLIP 의 판단이 데이터에 이미 스며 있으니 일종의 부트스트래핑이다."
+    }
+   ]
+  },
+  {
+   "start": 750,
+   "title": "비전 인코더 ViT — 이미지를 14×14 패치로 자르면 토큰이 몇 개인가, attention pooling, 텍스트 인코더",
+   "points": [
+    "CLIP 은 ResNet-50 과 ViT(Dosovitskiy 2020)를 모두 시험했고 ViT 가 가장 좋았다. 그래서 'CLIP' 이라 하면 보통 ViT 판이다.",
+    "ViT: 이미지를 P×P 패치로 자르고, 패치 하나(P·P·3 개의 수)를 선형 사상해 토큰으로 → 위치 임베딩을 더해 → 표준 트랜스포머 인코더.",
+    "최고 모델 ViT-L/14@336px: L = large(24층), 14×14 패치, RGB 3채널, 336×336 해상도 → 24×24 = 576 패치(+CLS). 학습 대부분은 저해상도로, 끝에서만 336.",
+    "한 벡터로 줄이는 법: 평균 대신 attention pooling(전체 평균을 질의로 한 번 더 QKV 어텐션). 위치 임베딩은 1D 로도 분류에는 차이가 크지 않았다.",
+    "텍스트 인코더: GPT-2 식 트랜스포머(6,300만 파라미터, 12층). [BOS] … [EOS] 로 감싸고 맨 위층 EOS 활성값을 문장 벡터로."
+   ],
+   "on_screen": "Vision encoder: Experimented with ResNet-50 and Vision Transformers [Dosovitskiy+ 2020]. ViT 그림 — 패치 격자 → Linear Projection of Flattened Patches → Patch + Position Embedding(0~9, *Extra learnable [class] embedding) → Transformer Encoder → MLP Head → Class(Bird, Ball, Car…). 오른쪽 Transformer Encoder 블록: Embedded Patches → Norm → Multi-Head Attention → + → Norm → MLP → +, ×L. 논문 미리보기 'An Image is Worth 16x16 Words'. Attention pooling: do QKV with query = global average of activations / Best model: ViT-L/14@336px (L = large, 14x14 patches, 3 channels, trained on 336x336 resolution images) / Text encoder: GPT-2 Transformer (63M parameters, 12 layers) / Encode [BOS] ... [EOS], return [EOS] activation at highest layer.",
+   "explain": [
+    "이미지를 트랜스포머에 넣는 가장 직접적인 방법이 ViT(Vision Transformer)다. 직관은 '이미지는 16×16 단어의 모음'이라는 원 논문 제목 그대로다. 이미지를 바둑판처럼 P×P 픽셀 조각(패치)으로 자른다. 패치 하나는 P×P×3(RGB) 개의 수이니, 이것을 한 줄로 펴서 길이 P²·3 의 벡터로 만든다. 이 벡터에 행렬 하나를 곱해(선형 패치 임베딩) 트랜스포머의 폭 d 로 맞춘다. 그러면 패치 하나가 토큰 하나가 된다. 여기에 언어 모델에서처럼 위치 임베딩을 더하고, 표준 트랜스포머 인코더(인과 마스크 없는 양방향 어텐션)를 통과시키면 패치마다 문맥을 반영한 벡터가 나온다. 픽셀 하나는 의미가 없지만 14×14 픽셀 덩어리는 '눈의 일부', '글자 획 하나' 정도의 의미를 갖는다 — 이것이 이미지판 BPE 의 가장 단순한 답이다.",
+    "토큰 수는 해상도와 패치 크기로 정해진다: (H/P)×(W/P). CLIP 의 최고 모델 ViT-L/14@336px 라면 336/14 = 24 이므로 24×24 = 576 개의 패치 토큰이 나오고, 분류용 CLS 토큰을 하나 더하면 577 개다. 같은 모델을 224 에서 돌리면 16×16 = 256 개다. 해상도를 1.5배 올리면 토큰은 2.25배, 어텐션 비용은 그 제곱으로 늘어난다. 그래서 CLIP 은 학습 대부분을 낮은 해상도로 하고 마지막 일부만 336 으로 학습했다. 패치 하나의 원래 벡터 길이는 14·14·3 = 588 이고, ViT-L 의 폭은 1024 이니 패치 임베딩 행렬은 588×1024 다.",
+    "트랜스포머 인코더는 벡터의 '열'을 낸다. 그런데 CLIP 손실에는 이미지당 벡터 하나가 필요하다. 가장 쉬운 방법은 모든 위치의 벡터를 평균하는 것이다. CLIP(정확히는 ResNet 판에서 도입하고 설명한 방식)은 한 걸음 더 나간다. 전체 평균 벡터를 질의(query)로 삼고, 모든 위치의 벡터를 키·값으로 삼아 어텐션을 한 번 더 한다(attention pooling). 결과는 '평균을 출발점으로, 중요한 위치에 더 가중을 둔' 요약 벡터다. 위치 임베딩에 대해 학생이 '0~9 의 1D 번호보다 2D 구조를 쓰면 낫지 않냐'고 물었는데, 강사는 CLIP 저자들이 2D 판도 시험했지만 큰 차이가 없었다고 답한다. 다만 이것은 분류라는 과제 기준의 결론이라는 단서를 단다 — 뒤의 Qwen2-VL M-RoPE 가 공간 구조를 제대로 쓰는 예다.",
+    "텍스트 쪽은 익숙하다. CLIP 을 만든 팀이 GPT-2 를 만든 팀이라 GPT-2 식 트랜스포머(6,300만 파라미터, 12층)를 썼다. 문장 하나를 벡터 하나로 만들기 위해 앞에 BOS, 뒤에 EOS 를 붙이고, 맨 위층에서 EOS 위치의 활성값을 문장 전체의 표현으로 쓴다. 인과 마스크가 있는 디코더라서 EOS 만이 문장 전체를 볼 수 있는 자리이기 때문이다. 이렇게 이미지 인코더와 텍스트 인코더가 정해지면, 학습은 앞 장의 절차 그대로다 — 배치를 뽑고, 텍스트와 이미지를 모두 인코딩하고, 2N 개의 교차 엔트로피를 계산한다."
+   ],
+   "formulas": [
+    {
+     "expr": "N_patch = (H/P)·(W/P),  x_k ∈ ℝ^{P²·C} → E x_k + p_k ∈ ℝ^d",
+     "meaning": "H, W 는 이미지 높이·너비, P 는 패치 한 변의 픽셀 수, C=3 은 RGB 채널. x_k 는 k 번째 패치를 편 벡터(길이 P²C), E 는 d×P²C 의 패치 임베딩 행렬, p_k 는 위치 임베딩. ViT-L/14@336: N=24·24=576, P²C=588, d=1024."
+    },
+    {
+     "expr": "pool(X) = softmax( q Kᵀ / √d ) V,  q = mean(X) W_q,  K = X W_k,  V = X W_v",
+     "meaning": "attention pooling. X 는 [N, d] 의 패치 출력, q 는 전체 평균에서 만든 질의 하나, 결과는 d 차원 벡터 하나. 단순 평균은 모든 위치에 1/N 가중, 이것은 학습된 가중."
+    }
+   ],
+   "example": {
+    "title": "해상도·패치별 토큰 수를 손으로",
+    "body": "ViT-B/16@224: 224/16 = 14 → 14×14 = 196 토큰, 패치 벡터 16·16·3 = 768.\nCLIP ViT-L/14@224: 224/14 = 16 → 256 토큰 (첫 LLaVA 가 이것을 썼다).\nCLIP ViT-L/14@336: 336/14 = 24 → 576 토큰 (+CLS = 577; LLaVA-1.5 가 576 을 LLM 에 넣는다).\nSigLIP so400m/14@384: 384/14 = 27.4 → 27 → 27×27 = 729 토큰 (LLaVA-OneVision 표의 '729' 가 이것).\n어텐션 비용 비: 576² / 256² = 5.06 — 해상도 1.5배가 어텐션 5배."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\n\ndef patchify(img, p):\n    \"\"\"img [H, W, C] → 토큰 [N, p*p*C]. H, W 가 p 로 나눠떨어지는 부분만 쓴다.\"\"\"\n    H, W, C = img.shape\n    h, w = H // p, W // p\n    x = img[: h * p, : w * p].reshape(h, p, w, p, C).transpose(0, 2, 1, 3, 4)\n    return x.reshape(h * w, p * p * C)\n\nfor name, res, p in [(\"ViT-B/16@224\", 224, 16), (\"CLIP ViT-L/14@224\", 224, 14),\n                     (\"CLIP ViT-L/14@336\", 336, 14), (\"SigLIP so400m/14@384\", 384, 14)]:\n    tok = patchify(np.zeros((res, res, 3)), p)\n    print(f\"{name:22s} 패치 {tok.shape[0]:4d}개, 패치 벡터 길이 {tok.shape[1]}\")\n\nrng = np.random.default_rng(0)\ntok = patchify(rng.normal(size=(336, 336, 3)), 14)        # [576, 588]\nE_proj = rng.normal(size=(588, 1024)) / np.sqrt(588)      # 선형 패치 임베딩\npos = rng.normal(size=(577, 1024)) * 0.02                 # CLS + 576 위치\ncls = np.zeros((1, 1024))\nx = np.concatenate([cls, tok @ E_proj]) + pos\nprint(\"트랜스포머 입력\", x.shape)",
+    "note": "출력: 196·256·576·729 패치, 패치 벡터 768 또는 588, 트랜스포머 입력 (577, 1024)."
+   },
+   "pitfalls": [
+    "384/14 는 나눠떨어지지 않는다(27.43). 실제 구현은 합성곱 stride 14 로 패치를 뽑으므로 가장자리 6픽셀이 버려지고 27×27 이 된다.",
+    "ViT 의 '/14' 는 패치 크기이지 층 수가 아니다. ViT-L 의 층 수는 24, 폭은 1024 다."
+   ],
+   "check": [
+    {
+     "q": "ViT-L/14 로 448×448 이미지를 넣으면 패치 토큰은 몇 개이고, 336 일 때보다 어텐션 행렬은 몇 배 커지나?",
+     "a": "448/14 = 32 → 1024 개. 어텐션 행렬 원소 수는 1024²/576² ≈ 3.16 배."
+    },
+    {
+     "q": "GPT-2 식 텍스트 인코더에서 문장 벡터로 왜 EOS 위치의 활성값을 쓰나?",
+     "a": "인과 마스크 때문에 각 위치는 자기 앞만 본다. 마지막 EOS 위치만 문장 전체를 본 표현이므로 문장 요약으로 쓰기에 알맞다."
+    }
+   ]
+  },
+  {
+   "start": 1000,
+   "title": "제로샷 분류와 절제 실험 — ResNet-50 을 라벨 없이 이기다, 캡션을 '예측'하면 왜 느린가",
+   "points": [
+    "헤드라인: ImageNet 에서 제로샷 CLIP 이 120만 장으로 학습한 ResNet-50 과 맞먹거나 넘었다 — Mechanical Turk 주석 수천 시간 없이 웹 데이터만으로.",
+    "제로샷 방법: 클래스 이름을 'A photo of a {object}.' 문장으로 만들어 텍스트 벡터를 얻고, 이미지 벡터와 내적이 가장 큰 클래스를 고른다.",
+    "절제: 캡션을 직접 생성(트랜스포머 LM)하거나 단어 가방을 예측하는 것보다 대조 학습이 훨씬 효율적 — 같은 정확도에 대조가 BoW 예측보다 4배, BoW 예측이 LM 보다 3배 적은 이미지.",
+    "교훈: 표현을 배우는 데는 캡션의 정확한 토큰 순서를 모델링할 필요가 없다. 강사는 이 점을 강의 끝(이해와 생성의 비대칭)에서 다시 꺼낸다.",
+    "CLIP 정리: 텍스트 덕분에 의미를 담지만 분류 기준으로 설계돼 세밀하지 않다. 기술적 약점은 큰 배치(약 3만)가 필요하고 softmax 가 배치 전체에 걸린다는 것."
+   ],
+   "on_screen": "Headline result: On ImageNet, zero-shot CLIP outperformed ResNet-50 trained on 1.2M ImageNet images. Ablation: Alternative: predict text from images directly / Much less compute efficient compared to CLIP-style ranking. 그래프: x축 '# of images processed'(2M, 33M, 67M, 134M, 268M, 400M), y축 Zero-Shot ImageNet Accuracy(0~40). 세 곡선 — Bag of Words Contrastive (CLIP)(초록, 가장 위), Bag of Words Prediction(주황), Transformer Language Model(파랑, 가장 아래). 화살표 '4X efficiency'(초록↔주황), '3X efficiency'(주황↔파랑). Summary: Encoding of images captures semantics given by (noisy) text / Design decisions chosen based on image classification (not very fine-grained) / Technical: requires large batch sizes, softmax operation over full batch.",
+   "explain": [
+    "CLIP 이 2021년에 큰 반향을 일으킨 이유는 숫자 하나다. ImageNet 학습 데이터를 한 장도 보지 않은 CLIP 이, ImageNet 의 120만 장 라벨 데이터로 학습한 ResNet-50 과 ImageNet 정확도에서 맞먹었다(논문 기준 약 76%). 120만 장의 라벨은 Mechanical Turk 작업자들이 수많은 시간을 들여 붙인 것이다. CLIP 이 쓴 웹 데이터도 결국 사람들이 쓴 글이지만, 그것은 이미 세상에 있던 부산물이다. 이미 있는 데이터를 활용할 수 있으면 별도 주석 없이 '제로샷'으로 갈 수 있다는 것이 메시지다.",
+    "제로샷 분류는 이렇게 한다. 분류하고 싶은 클래스가 1,000개라면, 각 클래스 이름을 'A photo of a dog.' 같은 문장으로 만들어 텍스트 인코더에 넣는다. 그러면 클래스마다 텍스트 벡터가 하나씩, 1,000개 생긴다. 이것이 그대로 분류기의 가중치 행렬 역할을 한다. 새 이미지가 오면 이미지 벡터를 만들고 1,000개 텍스트 벡터와 내적해 가장 큰 것을 고른다. 학습 때 했던 '이미지에 맞는 캡션 고르기'를 그대로 분류에 쓰는 것이다. 클래스 목록을 바꾸고 싶으면 문장만 바꾸면 된다 — 새로 학습할 필요가 없다.",
+    "강사가 강의 끝까지 끌고 가는 실험은 절제(ablation) 그래프다. CLIP 저자들은 대조 학습 대신 '이미지를 보고 캡션을 예측하는' 목표도 시험했다. 하나는 트랜스포머 언어 모델로 캡션을 한 토큰씩 생성하는 것, 다른 하나는 캡션의 단어 가방(BoW, 순서 무시)을 예측하는 것이다. 결과는 직관과 반대다. 더 강력해 보이는 언어 모델 목표가 가장 느리게 배웠고, BoW 예측이 그보다 3배 효율적이며, 대조 목표(CLIP)가 BoW 예측보다 다시 4배 효율적이었다. 같은 제로샷 정확도에 도달하는 데 필요한 이미지 수로 보면 대조 학습이 LM 목표보다 약 12배 적게 든다.",
+    "왜 그럴까? 표현 학습의 목표가 '이미지의 대략적인 의미'를 잡는 것이라면, 캡션의 정확한 단어 순서·문체까지 맞히는 것은 쓸데없이 어려운 일이다. 같은 사진에 사람마다 다른 문장을 쓰니, 생성 목표는 이 다양성까지 모델링하느라 용량과 연산을 쓴다. 대조 목표는 '이 사진의 캡션이 32,767개의 다른 캡션 중 어느 것인가'만 맞히면 된다. 강사는 이것을 강의 끝의 요점 — 이해(의미)와 생성(세밀한 세부)이 요구하는 것이 다르다 — 의 첫 증거로 쓴다. CLIP 을 정리하면, 텍스트와 짝지었기에 의미를 잘 담지만, 설계 결정이 분류를 기준으로 내려져 세밀하지 않다. 그래도 이후 모든 VLM 의 튼튼한 출발점이 된다. 기술적 약점은 배치가 3만 정도로 커야 하고, softmax 가 배치 전체에 걸쳐 있어 나눠 계산하기 어렵다는 것이다 — 다음 장의 SigLIP 이 정확히 이 점을 고친다."
+   ],
+   "formulas": [
+    {
+     "expr": "ŷ = argmax_c  cos( f_img(x), f_txt(\"A photo of a \" + name_c) )",
+     "meaning": "제로샷 분류. x 는 입력 이미지, c 는 클래스, name_c 는 클래스 이름, f_img·f_txt 는 학습된 두 인코더(+정규화). 텍스트 벡터들이 분류기의 가중치 행렬이 된다."
+    }
+   ],
+   "example": {
+    "title": "세 클래스 제로샷을 손으로",
+    "body": "클래스 문장 벡터(정규화됨): 개 (0.9, 0.1, 0.42), 고양이 (0.1, 0.95, 0.30), 자동차 (0.2, 0.1, 0.97).\n이미지 벡터 x = (0.8, 0.3, 0.52).\n내적: 개 0.72+0.03+0.218 = 0.968 / 고양이 0.08+0.285+0.156 = 0.521 / 자동차 0.16+0.03+0.504 = 0.694.\n→ '개'. 확률을 원하면 배율(예: 100)을 곱해 softmax: 개 확률 ≈ 1/(1+e^{-27.4}+e^{-44.7}) ≈ 1.\n효율 비교: 그래프에서 대조가 BoW 예측의 4배, BoW 예측이 LM 의 3배 → 대조는 LM 대비 4×3 = 12배 적은 이미지로 같은 정확도."
+   },
+   "pitfalls": [
+    "'제로샷 CLIP 이 ResNet-50 을 이겼다'는 ImageNet 정확도에 대한 이야기다. 세밀한 분류(차종·꽃 품종)나 개수 세기에서는 지도 학습 모델보다 약했다.",
+    "절제 결과를 '생성 목표는 쓸모없다'로 읽으면 안 된다. 표현(인코더)을 배우는 효율에 대한 결과이고, 생성 능력 자체는 별개 문제다."
+   ],
+   "check": [
+    {
+     "q": "CLIP 을 1,000-클래스 분류기로 쓸 때 '학습해야 하는 새 파라미터'는 몇 개인가?",
+     "a": "0개. 클래스 이름 문장을 텍스트 인코더에 넣어 얻은 벡터들이 그대로 분류기의 가중치가 된다."
+    }
+   ]
+  },
+  {
+   "start": 1320,
+   "title": "SigLIP — softmax 대신 시그모이드: 쌍마다 '짝인가 아닌가'의 이진 분류",
+   "points": [
+    "SigLIP(Sigmoid Loss for Language Image Pre-training, Zhai 2023, Google) — CLIP 의 개선판으로 생각하면 된다.",
+    "CLIP: (텍스트, 이미지) 대 (텍스트, 이미지')의 다중 분류. SigLIP: (텍스트, 이미지) 각 칸이 '정렬됐나'의 이진 분류. 대각선 +1, 나머지 −1.",
+    "의사코드: t = exp(t′), 두 임베딩 L2 정규화, logits = zimg·ztxtᵀ·t + b, labels = 2·eye(n) − ones(n), loss = −Σ log_sigmoid(labels·logits)/n.",
+    "질문: 양성·음성 균형이나 어려운 음성 샘플링이 필요한가? 첫 논문은 같은 행렬을 그대로 썼다 — 대신 편향 b 를 큰 음수로 시작해 불균형을 다룬다(노트 보충).",
+    "데이터: WebLI(Chen 2022) 수십억 쌍, 이미지 속 글자를 OCR 로 뽑아 쌍을 늘리고 상위 10% 품질만 남김, 100개 언어."
+   ],
+   "on_screen": "SigLIP (Sigmoid Loss for Language Image Pre-Training) [Zhai+ 2023]. Objective: CLIP: multiclass classification for (text, image) versus (text, image') for all image' / SigLIP: binary classification for (text, image) - aligned or not? Algorithm 1 Sigmoid loss pseudo-implementation: # img_emb : image model embedding [n, dim] # txt_emb : text model embedding [n, dim] # t_prime, b : learnable temperature and bias # n : mini-batch size; t = exp(t_prime); zimg = l2_normalize(img_emb); ztxt = l2_normalize(txt_emb); logits = dot(zimg, ztxt.T) * t + b; labels = 2 * eye(n) - ones(n) # -1 with diagonal 1; l = -sum(log_sigmoid(labels * logits)) / n. Data: WebLI dataset: O(billion) (image, text) pairs [Chen+ 2022] / Scraped from the Internet / Used automatic OCR to extract text from images / Keep 10% highest quality / Supports 100 languages.",
+   "explain": [
+    "SigLIP 의 생각은 CLIP 보다 오히려 단순하다. CLIP 은 '이 이미지에 맞는 캡션은 N 개 중 어느 것인가'라는 다지선다를 푼다. 정답 하나를 고르려면 N 개 후보를 모두 함께 봐야 하므로 softmax 의 분모에 배치 전체가 들어간다. SigLIP 은 질문을 바꾼다 — N×N 행렬의 각 칸을 따로 보고 '이 이미지와 이 텍스트는 짝인가, 아닌가'를 묻는다. 칸 하나하나가 독립된 이진 분류 문제다. 대각선은 정답이 '예'(+1), 나머지는 '아니오'(−1)다. 이진 분류의 표준 손실은 로지스틱(시그모이드) 손실이니, 각 칸에서 −log σ(라벨 × 로짓)을 계산해 모두 더하고 배치 크기로 나누면 끝이다.",
+    "슬라이드의 의사코드를 한 줄씩 읽어 보자. 온도 t 는 로그 공간의 파라미터 t′ 를 지수화해 늘 양수로 만든다. 두 임베딩을 L2 정규화하고 내적해 코사인 유사도 행렬을 만든 뒤 t 를 곱하고 편향 b 를 더한다. 라벨 행렬은 2·I − 1 로 만드는데, 단위행렬에 2 를 곱하고 1 을 빼면 대각선은 1, 나머지는 −1 이 된다. 라벨과 로짓을 곱하면 '맞게 분류한 정도'가 되고, log_sigmoid 를 씌워 더한 것의 음수가 손실이다. CLIP 에 비해 줄 수도 비슷하고, softmax 의 정규화(분모)가 사라졌다는 것이 핵심 차이다.",
+    "학생이 물었다 — 대조 학습은 보통 양성과 음성의 균형을 맞추거나 '어려운 음성'을 골라야 하는데 SigLIP 은 그런 장치가 필요 없나? 강사의 답은 첫 논문은 같은 N×N 행렬을 그대로 썼다는 것이다. 노트 보충: 배치가 N 이면 양성은 N 개, 음성은 N²−N 개라 극단적으로 불균형하다. 논문은 이것을 편향 b 의 초기값으로 다룬다 — t′ = log 10, b = −10 으로 시작해, 처음에는 모든 칸을 '아니오'로 예측하게 해 둔다. 그러면 초기 손실이 거대한 음성 쪽에 휘둘리지 않는다. 아래 예에서 b 를 0 으로 두면 손실이 6.0 이지만 적당한 음수면 0.63 으로 떨어지는 것을 손으로 확인할 수 있다.",
+    "데이터는 Google 답게 크다. 2022년 PaLI 논문에서 만든 WebLI 데이터셋으로 수십억 쌍 규모다. 웹을 긁은 것 외에, 이미지 안에 글자가 있으면 자동 OCR 로 글자를 뽑아 그것도 (이미지, 텍스트) 쌍으로 썼다. 품질 점수로 상위 10% 만 남기고, 100개 언어를 지원한다. 영어 위주였던 CLIP 과 달리 다국어라는 점, 그리고 OCR 텍스트가 섞여 글자를 읽는 능력의 씨앗이 들어간다는 점이 뒤의 VLM 들이 SigLIP 을 선호하게 된 배경이다."
+   ],
+   "formulas": [
+    {
+     "expr": "L = −(1/N) Σ_i Σ_j log σ( z_ij · (t · x_i·y_j + b) ),  z_ij = +1 (i=j), −1 (i≠j)",
+     "meaning": "x_i, y_j 는 정규화한 이미지·텍스트 임베딩, t = exp(t′) 는 온도(배율), b 는 학습되는 편향, σ 는 시그모이드, z_ij 는 라벨. N² 개 칸이 각자 독립된 로지스틱 회귀 항이다."
+    },
+    {
+     "expr": "log σ(u) = −log(1 + e^{−u})",
+     "meaning": "수치적으로 안정되게 계산하려면 np.logaddexp(0, −u) 를 쓴다. u 가 크면 0 에 가깝고(잘 맞힘), 음수로 크면 −u 에 가깝다(크게 틀림)."
+    }
+   ],
+   "example": {
+    "title": "앞 장의 2쌍 배치를 SigLIP 으로",
+    "body": "코사인 유사도 [[0.8, 0.6], [0.6, 0.8]], t = 10 → t·cos = [[8, 6], [6, 8]].\nb = 0: 대각선 칸 −log σ(8) = 0.000335, 비대각선 칸 라벨 −1 → −log σ(−6) = 6.0025.\n  합 = 2×0.000335 + 2×6.0025 = 12.0057, ÷N(2) = 6.0028.\nb = −7: 대각선 −log σ(1) = 0.3133, 비대각선 −log σ(−(6−7)) = −log σ(1) = 0.3133.\n  합 = 4×0.3133 = 1.2533, ÷2 = 0.6265.\n즉 b 가 '짝 아닌 쌍이 기본'이라는 사전 지식을 넣어 주면 같은 임베딩에서도 손실이 10배 가까이 낮다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\n\ndef l2n(x):\n    return x / np.linalg.norm(x, axis=1, keepdims=True)\n\ndef log_sigmoid(z):\n    return -np.logaddexp(0.0, -z)\n\ndef siglip_loss(img, txt, t, b):\n    logits = l2n(img) @ l2n(txt).T * t + b\n    n = len(img)\n    labels = 2 * np.eye(n) - 1            # 대각선 +1, 나머지 -1\n    return -np.sum(log_sigmoid(labels * logits)) / n\n\nimg = np.array([[1.0, 0.0], [0.0, 1.0]])\ntxt = np.array([[0.8, 0.6], [0.6, 0.8]])\nfor b in [0.0, -7.0, -10.0]:\n    print(f\"b={b:5.1f}  loss={siglip_loss(img, txt, 10.0, b):.4f}\")",
+    "note": "출력: b=0 → 6.0028, b=−7 → 0.6265, b=−10 → 2.1451. 손으로 푼 값과 같다."
+   },
+   "pitfalls": [
+    "SigLIP 의 '/n' 은 배치 크기로 나누는 것이지 칸 수(n²)로 나누는 것이 아니다. 그래서 배치를 키우면 음성 항이 늘어 손실의 절대값도 함께 변한다 — 배치 크기가 다른 실험의 손실 숫자를 그대로 비교하지 말 것.",
+    "편향 b 를 0 으로 시작하면 초반 그래디언트가 압도적으로 많은 음성 칸에 끌려 학습이 불안정해진다(노트 보충: 논문 초기값 b = −10)."
+   ],
+   "check": [
+    {
+     "q": "배치 N=1,024 일 때 SigLIP 손실의 양성 항과 음성 항은 각각 몇 개인가?",
+     "a": "양성 1,024 개(대각선), 음성 1,024² − 1,024 = 1,047,552 개."
+    },
+    {
+     "q": "CLIP 과 SigLIP 중 어느 쪽 손실이 '한 칸만 보고' 계산 가능한가, 그 이유는?",
+     "a": "SigLIP. 각 칸이 독립된 시그모이드 항이라 다른 칸을 몰라도 된다. CLIP 은 softmax 분모에 같은 행(또는 열)의 모든 칸이 들어가 행 전체가 필요하다."
+    }
+   ]
+  },
+  {
+   "start": 1500,
+   "title": "SigLIP 의 효율 — 장치 사이로 텍스트를 돌리는 분산 손실, 배치 크기와 손실의 분리",
+   "points": [
+    "학습비: CLIP 은 TPUv3 256개로 10일, SigLIP 은 TPUv4 32개로 5일. v4 는 칩당 FLOP/s 가 오히려 낮지만(강사: 약 60% 느림) 팟을 크게 묶고 연결망이 좋다.",
+    "분산: 각 장치가 (이미지, 텍스트) 일부를 가진 DDP 같은 구도. 먼저 자기 블록(대각선 포함)의 손실을 계산하고, 텍스트 조각을 옆 장치로 돌려 가며 비대각 블록을 채운다.",
+    "N×N 행렬이 어디에도 한꺼번에 모이지 않는다 — 시그모이드 손실이 칸마다 분해되기 때문.",
+    "배치 크기와 손실이 분리된다: CLIP 은 배치를 바꾸면 다른 손실이지만 SigLIP 은 같은 문제의 표본 크기만 바뀐다. 16K 미만 배치에서 CLIP 보다 좋다.",
+    "100만 배치까지 가 봤지만 32K 면 충분 — 9강의 임계 배치 크기(critical batch size)와 같은 이야기."
+   ],
+   "on_screen": "Efficiency: CLIP: 10 days on 256 TPUv3 / SigLIP: 5 days on 32 TPUv4 (lower FLOP/s than TPUv3) - much faster! 그림: 장치 3대(Device 1·2·3)의 12×12 행렬. 첫 칸은 대각 블록(장치마다 자기 I·T 4쌍)만 채워지고 'loss' 막대 아래 장치별 합, 이어서 텍스트 블록이 옆 장치로 옮겨 가며 비대각 블록이 채워지는 세 단계, 마지막 'Cross Device Σ'. Batch size: Decouple batch size from loss / Better than CLIP for <16K batch sizes / Go up to 1M batch size, but 32K is enough.",
+   "explain": [
+    "SigLIP 논문의 주된 주장은 '훨씬 싸게 학습된다'는 것이다. 슬라이드에 따르면 CLIP 은 TPUv3 256개로 10일, SigLIP 은 TPUv4 32개로 5일이었다. v4 가 v3 보다 당연히 빠르리라 생각하기 쉽지만, 강사는 칩 하나의 초당 FLOP 로 보면 v4 가 오히려 낮다고 짚는다(대략 60% 느리다고 말한다). v4 의 장점은 한 팟에 더 많이 묶을 수 있고 칩 사이 연결이 좋다는 것인데, 32개 규모에서는 그 장점이 별로 드러나지 않는다. 물론 CLIP 은 처리량을 끝까지 짜내려 한 코드가 아니었을 것이라는 단서도 붙인다. 그래도 칩 수 1/8, 기간 1/2 이라는 차이의 상당 부분은 손실 함수의 구조에서 나온다.",
+    "7강(병렬화 1)의 데이터 병렬(DDP)을 떠올리자. 언어 모델 학습에서는 각 장치가 배치의 일부를 맡고, 예제끼리 서로 상관이 없으니 각자 손실과 그래디언트를 계산한 뒤 마지막에 그래디언트만 all-reduce 하면 된다. 대조 학습은 다르다. 예제끼리 서로 음성 예제가 되므로, 장치 1 의 이미지와 장치 3 의 텍스트 사이 유사도도 손실에 들어간다. CLIP 의 softmax 는 행 하나의 분모에 배치 전체의 텍스트가 필요하므로, 보통은 모든 임베딩을 all-gather 해서 각 장치가 N×N 의 자기 몫 행을 통째로 계산한다. SigLIP 은 칸마다 손실이 분해되니 더 영리하게 할 수 있다. 첫 단계에서 각 장치는 자기가 가진 이미지·텍스트 블록(대각 블록, 양성 포함)의 손실만 계산한다. 그다음 텍스트 임베딩 조각을 옆 장치로 넘긴다. 장치 1 은 장치 2 의 텍스트(T5~T8)를 받아 그 블록의 음성 손실을 더하고, 다음 단계에 T9~T12 를 받아 또 더한다. 장치 수만큼 돌면 모든 비대각 블록이 한 번씩 계산된다. 링 방식이라 한 번에 오가는 것은 작은 텍스트 임베딩 조각뿐이고, N×N 행렬은 어디에도 통째로 존재하지 않는다.",
+    "두 번째 장점은 배치 크기와 손실 함수가 분리된다는 것이다. CLIP 에서 배치 크기는 '선택지 수'이므로, 배치를 바꾸면 푸는 문제 자체가 바뀐다. 배치가 작으면 문제가 너무 쉬워져 표현이 나빠진다. SigLIP 에서 배치 크기는 '이진 분류 표본을 몇 개 모아 평균 내나'일 뿐이다. 작은 배치는 분산이 커질 뿐 기댓값으로는 같은 손실이다. 그래서 SigLIP 은 16K 보다 작은 배치에서 CLIP 보다 뚜렷이 좋다. 반대로 배치를 100만까지 키워 보았지만 32K 를 넘으면 더 나아지지 않았다. 강사는 이것을 9강에서 본 임계 배치 크기와 같은 현상으로 읽는다 — 그 이상 키우면 같은 연산으로 얻는 개선이 줄어든다.",
+    "이렇게 해서 이미지 인코더 두 개가 준비됐다. CLIP 과 SigLIP 은 고정 크기 이미지(예: 336×336)를 받아 의미를 담은 벡터를 낸다. 정확히는 이미지 하나당 벡터 하나(pooling 결과)를 학습에 쓰지만, 그 안쪽에는 패치마다 벡터가 있다. 다음 장부터는 이 패치 벡터들을 언어 모델의 입력에 끼워 넣는 VLM 을 짓는다."
+   ],
+   "formulas": [
+    {
+     "expr": "L = Σ_{d=1..D} Σ_{s=0..D−1} ℓ( I^{(d)}, T^{((d+s) mod D)} ) / N",
+     "meaning": "D 는 장치 수, I^{(d)} 는 장치 d 의 이미지 임베딩 조각, T^{(k)} 는 장치 k 의 텍스트 조각, s 는 돌린 단계 수, ℓ 은 블록 하나의 시그모이드 손실 합(s=0 일 때만 대각선 양성 포함). 단계마다 각 장치는 텍스트 조각 하나만 받는다."
+    }
+   ],
+   "example": {
+    "title": "장치 3대, 장치당 4쌍",
+    "body": "배치 N = 12. 전체 행렬 12×12 = 144 칸.\n단계 0: 각 장치가 자기 4×4 블록(16칸, 양성 4개 포함) → 3×16 = 48 칸.\n단계 1: 장치 1 이 T5~T8, 장치 2 가 T9~T12, 장치 3 이 T1~T4 를 받아 음성 블록 → 48 칸.\n단계 2: 한 칸 더 돌려 남은 비대각 블록 → 48 칸. 합 144 칸 = 전체.\n통신: 단계마다 장치당 텍스트 임베딩 4×d 만 이동(d=1152 bf16 이면 9 KB). all-gather 로 12×d 를 모으는 것보다 메모리가 작고, 계산과 통신을 겹치기 쉽다.\n시간 비교(슬라이드 숫자): CLIP 256 칩 × 10 일 = 2,560 칩·일, SigLIP 32 × 5 = 160 칩·일 → 16배."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\n\ndef l2n(x): return x / np.linalg.norm(x, axis=1, keepdims=True)\ndef ls(z): return -np.logaddexp(0.0, -z)\n\nrng = np.random.default_rng(1)\nD, per, d = 3, 4, 8                       # 장치 3대, 장치당 4쌍\nimg = l2n(rng.normal(size=(D * per, d))); txt = l2n(img + 0.3 * rng.normal(size=(D * per, d)))\nt, b, n = 10.0, -5.0, D * per\n\nfull = 2 * np.eye(n) - 1\nref = -np.sum(ls(full * (img @ txt.T * t + b))) / n   # 한 장치에 다 모았을 때\n\nimgs = np.split(img, D); txts = np.split(txt, D)\ntotal = 0.0\nfor step in range(D):                     # 텍스트 조각을 옆 장치로 돌린다(ring)\n    for dev in range(D):\n        j = (dev + step) % D              # 이번 단계에 dev 가 가진 텍스트 조각\n        lab = 2 * np.eye(per) - 1 if j == dev else -np.ones((per, per))\n        total += -np.sum(ls(lab * (imgs[dev] @ txts[j].T * t + b)))\nprint(round(ref, 6), round(total / n, 6))  # 같은 값\nprint(\"단계별 통신: 텍스트 임베딩\", per, \"x\", d, \"만 이동, n x n 행렬은 어디에도 안 모인다\")",
+    "note": "출력: 한 곳에 모은 손실과 링으로 나눠 계산한 손실이 1.910373 으로 같다."
+   },
+   "pitfalls": [
+    "강의 중 강사가 'CLIP was five days on 32 v4s' 라고 말하는 대목은 말실수다. 슬라이드대로 5일·TPUv4 32개는 SigLIP, 10일·TPUv3 256개가 CLIP 이다.",
+    "'SigLIP 은 배치를 아무리 키워도 좋아진다'가 아니다. 32K 부근에서 포화된다."
+   ],
+   "check": [
+    {
+     "q": "CLIP 손실을 위의 링 방식으로 그대로 계산할 수 없는 이유는?",
+     "a": "CLIP 의 softmax 는 행마다 분모에 그 행의 모든 칸(배치 전체 텍스트)의 exp 합이 필요하다. 블록 단위로 돌며 계산하려면 행별 최대값·합을 따로 누적해 마지막에 정규화해야 하므로(온라인 softmax 같은 장치) 칸별로 그냥 더하는 SigLIP 처럼 간단하지 않다."
+    }
+   ]
+  },
+  {
+   "start": 1710,
+   "title": "LLaVA — CLIP 벡터를 행렬 W 하나로 '가짜 단어'로 바꿔 LLM 에 끼우기, GPT-4 로 합성한 지시 데이터, 2단계 학습",
+   "points": [
+    "VLM 의 두 계열 LLaVA·Qwen-VL 은 큰 틀이 같다: 기존 이미지 인코더 + 기존 LLM 을 꿰맨다 — 바닥부터가 아니라 중간·사후학습의 성격.",
+    "LLaVA(Liu 2023): 비전 인코더 CLIP ViT-L/14, 텍스트 디코더 Vicuna(ShareGPT 대화로 미세조정한 LLaMA). 당시 GPT-4 의 시각 추론을 오픈 모델로 처음 보여 줬다.",
+    "구조: Z_v = CLIP(X_v) → H_v = W·Z_v 로 텍스트 임베딩 공간에 사상 → 텍스트 임베딩 H_q 와 이어 붙여 그대로 트랜스포머에.",
+    "데이터: MS COCO 의 사람 캡션·박스를 GPT-4(텍스트만)에 주고 대화·상세 묘사·복잡한 추론 세 유형을 생성 → 15.8만 개.",
+    "학습 1단계(정렬): 인코더·LLM 고정, W 만. 2단계(미세조정): 인코더 고정, W + LLM."
+   ],
+   "on_screen": "LLaVA (Large Language and Vision Assistant) [Liu+ 2023] (논문 미리보기 'Visual Instruction Tuning', 2023-04-17). Vision encoder: CLIP / Text decoder: Vicuna (LLaMA fine-tuned on ShareGPT conversations) [post] / Data: MS COCO has images annotated with bounding boxes and Mechanical Turk captions / Prompt GPT-4 with captions or detected objects and generate questions or conversations / Pair generations with original images / 158K examples. 예시 상자: Context type 1: Captions(검은 SUV 옆 짐을 든 사람들), Context type 2: Boxes(person: [0.681, 0.242, 0.774, 0.694], backpack: …), Response type 1: conversation, 2: detailed description, 3: complex reasoning. Model: Encode images with CLIP (ViT-L/14) / Linear projection (W) into embedding space (Flamingo and Q-former are more complex). 그림: Vision Encoder → Z_v → Projection W → H_v, Language Instruction X_q → H_q, Language Model f_φ → Language Response X_a. Training: Stage 1 (alignment): freeze vision encoder and language model, only train W / Stage 2 (fine-tuning): freeze vision encoder and train W and language model. 'Visual input example, Extreme Ironing' — 노란 택시 뒤에서 다림질하는 남자, LLaVA·GPT-4·BLIP-2·OpenFlamingo 답 비교.",
+   "explain": [
+    "이제 이미지 인코더를 언어 모델에 연결한다. 강사가 다루는 두 계열 LLaVA 와 Qwen-VL 은 큰 틀이 같다. 이미 학습된 이미지 인코더(CLIP 등)와 이미 학습된 LLM 을 가져와 꿰맨다. 아무것도 바닥부터 학습하지 않으니, 이 작업은 사전학습보다는 15강에서 본 중간학습·사후학습에 가깝다. LLaVA(2023)가 주목받은 이유는 시기 때문이다. 그때 GPT-4 가 이미지를 보고 추론하는 모습을 보여 줬는데 내부는 비공개였다. LLaVA 는 GPT-4 만큼은 아니어도 비슷한 일을 하는 오픈 모델을 내놓아, 사람들이 'VLM 의 속'을 들여다볼 수 있게 했다.",
+    "구조는 놀랄 만큼 단순하다. 이미지를 CLIP ViT-L/14 에 넣으면 패치마다 벡터(Z_v)가 나온다(224 해상도면 256개, 각 1024 차원). 이 벡터들은 언어 모델의 단어 임베딩과 '같은 공간'에 있지 않다 — 언어 모델은 1024 차원 CLIP 벡터를 본 적이 없고, 폭도 다르다(Vicuna-7B 는 4096). 그래서 행렬 W(1024×4096) 하나를 곱해 H_v 를 만든다. 텍스트는 평소처럼 단어 임베딩 표에서 벡터를 꺼낸다(H_q). 그다음 [텍스트 앞부분, 이미지 벡터들, 질문 텍스트] 를 한 줄로 이어 붙여 언어 모델에 넣는다. 언어 모델 입장에서 이미지는 '특이한 단어 256개'일 뿐이다. 슬라이드는 Flamingo(교차 어텐션)나 Q-Former(BLIP-2) 같은 더 복잡한 연결 방식이 있다고 적지만, LLaVA 는 가장 단순한 선형 사상을 택했다.",
+    "학습 데이터가 재미있다. MS COCO 는 사람이 캡션과 물체 상자를 붙여 둔 이미지 데이터셋이다. LLaVA 저자들은 이미지를 볼 수 없는(당시 텍스트 전용) GPT-4 에게 캡션과 상자 좌표를 텍스트로 주고 세 가지를 만들게 했다 — 이미지에 대한 질문·답 대화, 상세한 묘사, 그리고 복잡한 추론(예: '이 사람들이 어떤 어려움을 겪고 있나? — 짐이 많아 SUV 에 다 싣기 어렵다'). 이렇게 합성한 15.8만 개를 원래 이미지와 짝지었다. 15강에서 본 'LLM 이 만든 SFT 데이터'의 멀티모달판이다.",
+    "학습은 두 단계다. 1단계는 '정렬' 단계로, 비전 인코더와 언어 모델을 모두 얼리고 W 만 학습한다. 무작위 W 로 만든 H_v 는 어떤 단어 임베딩과도 닮지 않았으니, 먼저 이미지 벡터가 '언어 모델이 알아듣는 단어 임베딩처럼' 보이게 만드는 것이다. 2단계는 비전 인코더만 얼리고 W 와 언어 모델을 함께 미세조정한다 — 이미지+텍스트 → 텍스트 데이터로 언어 모델이 이미지에 대해 대화하는 법을 배운다. 논문의 대표 예는 '극한 다림질' 사진이다. 노란 택시 뒤에 매달려 다림질하는 남자 사진에 '무엇이 이상한가'를 물으면 LLaVA 는 '보통 미니밴 뒤에서 다림질하지 않는다'고 답한다. 강사가 덧붙이길, 질문이 이상함을 묻지 않아도 그 점을 짚어 낸다는 것을 저자들이 강조했고, 당시 다른 오픈 모델(BLIP-2, OpenFlamingo)은 '노란 택시 뒤에 남자가 앉아 있다' 정도에 그쳤다."
+   ],
+   "formulas": [
+    {
+     "expr": "Z_v = g(X_v) ∈ ℝ^{N×d_v},  H_v = Z_v W ∈ ℝ^{N×d},  W ∈ ℝ^{d_v×d}",
+     "meaning": "X_v 는 이미지, g 는 CLIP ViT-L/14(맨 끝 직전 층의 격자 특징), N 은 패치 수(224 에서 256, 336 에서 576), d_v=1024 는 CLIP 폭, d 는 LLM 폭(Vicuna-7B 4096, 13B 5120). H_v 의 각 행이 '단어 임베딩 하나'처럼 LLM 에 들어간다."
+    },
+    {
+     "expr": "L = −Σ_{t ∈ 답} log p_θ( x_t | H_v, H_q, x_{<t} )",
+     "meaning": "학습 손실은 보통의 다음 토큰 교차 엔트로피인데, 답(assistant) 부분 토큰에만 건다. θ 는 1단계에서 W 만, 2단계에서 W 와 LLM 파라미터."
+    }
+   ],
+   "example": {
+    "title": "LLaVA-1.5 입력 길이와 W 의 크기",
+    "body": "336 해상도 CLIP → 24×24 = 576 개 패치 벡터, 각 1024 차원 → Z_v 는 [576, 1024].\nW: 1024 × 4096 = 4,194,304 개 파라미터(7B 의 0.06%). 1단계는 이 400만 개만 학습한다.\n시스템 프롬프트 4토큰 + 이미지 576 + 질문 4토큰 → LLM 입력 [584, 4096].\n같은 질문을 텍스트로만 하면 8토큰 — 이미지 한 장이 문맥의 98% 를 차지한다. 이것이 뒤의 '토큰 예산' 이야기의 출발점이다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nrng = np.random.default_rng(0)\n\nd_vis, d_llm, vocab = 1024, 4096, 32000     # CLIP ViT-L/14 폭, Vicuna-7B 폭\nZ_v = rng.normal(size=(576, d_vis))          # 336px 이미지 → 24x24 패치 특징\nW = rng.normal(size=(d_vis, d_llm)) * 0.02   # 1단계에서 이것만 학습한다\nH_v = Z_v @ W                                # [576, 4096] — '가짜 단어' 576개\n\nE_tok = rng.normal(size=(vocab, d_llm)) * 0.02\nprompt_ids = [1, 3148, 1001, 29901]          # 'USER:' 같은 텍스트 토큰(임의 id)\nquestion_ids = [1724, 338, 18530, 29973]\nH_q = E_tok[question_ids]\nseq = np.concatenate([E_tok[prompt_ids], H_v, H_q])  # 그대로 LLM 에 들어간다\nprint(\"이미지 토큰\", H_v.shape, \"→ LLM 입력\", seq.shape)\nprint(\"W 파라미터\", W.size, \"개 (7B 언어 모델의 약\", round(W.size / 7e9 * 100, 3), \"%)\")\n\n# LLaVA-1.5/OneVision 식 2층 MLP 프로젝터 파라미터 수\ndef mlp_params(d_in, d_out):                 # Linear(d_in,d_out) + GELU + Linear(d_out,d_out)\n    return d_in * d_out + d_out + d_out * d_out + d_out\nfor name, h in [(\"Qwen2-0.5B\", 896), (\"Qwen2-7B\", 3584), (\"Qwen2-72B\", 8192)]:\n    print(name, f\"{mlp_params(1152, h) / 1e6:.1f}M\")",
+    "note": "출력 첫 두 줄: 이미지 토큰 (576, 4096) → LLM 입력 (584, 4096), W 4,194,304 개. 아래 세 줄의 MLP 프로젝터 크기는 다음 장(OneVision)에서 쓴다."
+   },
+   "pitfalls": [
+    "LLaVA 의 GPT-4 는 이미지를 보지 않았다. 사람이 쓴 캡션·상자 좌표를 텍스트로 받아 대화를 '상상'해 만든 것이다. 그래서 캡션에 없는 세부는 데이터에 없다.",
+    "1단계에서 LLM 을 얼리는 이유를 '연산 절약'으로만 보면 반쪽이다. 무작위 W 가 만든 이상한 입력으로 LLM 을 건드리면 언어 능력이 망가질 수 있어, 먼저 입력을 LLM 이 아는 분포로 맞추는 것이다."
+   ],
+   "check": [
+    {
+     "q": "Vicuna-13B(폭 5120)에 CLIP ViT-L/14@336 을 선형 W 로 붙이면 W 의 모양과 파라미터 수는?",
+     "a": "1024×5120, 5,242,880 개(편향 포함 시 +5120)."
+    },
+    {
+     "q": "LLaVA 1단계에서 학습되는 것과 얼려 두는 것을 구분하시오.",
+     "a": "학습: 프로젝션 W 만. 얼림: CLIP 비전 인코더, Vicuna 언어 모델 전체."
+    }
+   ]
+  },
+  {
+   "start": 2100,
+   "title": "LLaVA-OneVision — SigLIP·Qwen2·2층 MLP 로 부품 교체, AnyRes 로 고해상도 읽기, 모달리티별 토큰 예산",
+   "points": [
+    "OneVision(Li 2024)은 LLaVA-1.5·LLaVA-NeXT 의 개선을 모은 최신판. 같은 틀에 부품을 업그레이드: SigLIP 인코더, Qwen-2(72B까지) 디코더, 2층 MLP 프로젝터.",
+    "목표가 넓어졌다: 단일 이미지, 여러 이미지, 영상(프레임 샘플의 열).",
+    "OCR 에는 고해상도가 필수 — 336 으로 자르면 문서를 못 읽는다. AnyRes(LLaVA-1.5 때 도입): 이미지를 인코더 해상도 크기의 a×b 조각으로 나눠 각각 인코딩하고 이어 붙인다 + 전체를 줄인 한 장.",
+    "토큰이 너무 많으면 이중선형 보간으로 줄인다. 트랜스포머는 원래 가변 길이를 다루니 이미지도 가변 길이로.",
+    "모달리티 균형: 단일 이미지는 고해상도 (1+9)×729 = 7,290, 여러 이미지는 기본 해상도 12×729 = 8,748, 영상은 프레임당 196 × 32 = 6,272 토큰이 상한 — 비슷한 길이로 맞춘다."
+   ],
+   "on_screen": "LLaVA OneVision [Li+ 2024] / Latest version in the LLaVA series (after LLaVA 1.5, LLaVA-Next) / Handle multiple images, video. 그림: Qwen-2 → Language Model f_φ, 2-Layer MLP → Projection p_θ, SigLIP → Vision Encoder g_ψ; 아래 Single Image·Multi-Image·Video. Vision encoder: SigLIP (use grid features before and after last Transformer layer) / Text decoder: Qwen-2 72B / Projector: 2-layer MLP. Data processing: Preserving high resolution is important (e.g., for OCR) / CLIP resizes and crops to 336x336, which loses information / Solution: AnyRes, introduced in LLaVA 1.5 [paper] / Break up image into a x b pieces (matching resolution of vision encoder), encode, concatenate / If too many tokens (original image is too high resolution), then use bilinear interpolation. 그림: 논문 페이지 → split 조각 + resize 전체 → encode → 색 격자 → Bilinear Interpolation → flatten → LLM. Handle 3 types of input: Goal: make all of the modalities produce roughly the same length. 표 'Example on Token Strategy': Single-Image 729 + N*729 Tokens, N Crops, (1 + 9) * 729 = 7290 Tokens / Multi-Image N*729 Tokens, 12 * 729 = 8748 Tokens / Video N*196 Tokens, N Frames, 32 * 196 = 6272 Tokens (Max Tokens). Single image: use higher resolution / Multiple images: use base resolution for each image / Video: use lower resolution for each frame.",
+   "explain": [
+    "LLaVA 이후 LLaVA-1.5, LLaVA-NeXT 가 이어졌고, 강사는 그 개선을 한데 모은 LLaVA-OneVision(2024)으로 건너뛴다. 레시피는 그대로이고 목표가 커졌다. 단일 이미지뿐 아니라 여러 이미지, 그리고 영상(프레임을 일정 간격으로 뽑은 이미지의 열)까지 다룬다. 부품은 업그레이드됐다. 비전 인코더는 CLIP 대신 SigLIP(마지막 트랜스포머 층 전후의 격자 특징을 쓴다), 텍스트 디코더는 당시 가장 좋던 오픈 모델 Qwen-2(최대 72B), 프로젝터는 선형 W 대신 2층 MLP 다. 강사의 비유로는 같은 시스템에서 부품만 갈아 끼운 것이다.",
+    "가장 중요한 개선은 해상도다. OCR(이미지 속 글자 읽기)을 하려면 세밀한 정보가 살아 있어야 한다. 그렇지 않으면 J 가 I 처럼 보인다. 그런데 CLIP 식 전처리는 336×336 으로 줄이고 자르니 문서는 읽을 수 없다. 해결책 AnyRes(LLaVA-1.5 계열에서 도입)는 단순하다. 인코더가 고해상도를 못 받으면, 이미지를 줄이지 말고 인코더가 받는 크기(예: 384×384)의 조각 a×b 개로 잘라 각각 인코딩한 뒤 벡터를 이어 붙인다. 여기에 전체 그림을 한 장으로 줄인 '축소본'도 하나 넣어 전체 배치를 놓치지 않게 한다. 슬라이드 그림처럼 논문 한 페이지는 축소본 1장 + 조각 여러 장으로 들어간다. 원본이 너무 커서 조각이 너무 많아지면 격자 특징을 이중선형 보간으로 줄여 토큰 수를 제한한다.",
+    "강사는 여기서 철학적인 점을 짚는다. 트랜스포머는 원래 길이가 제각각인 문장을 잘 다룬다. 그런데 이미지는 고정 크기로 욱여넣고 있었다. AnyRes 는 이미지도 '크면 토큰이 많고 작으면 적은' 가변 길이 입력으로 바꿔, 트랜스포머가 이미 가진 유연성을 이미지에도 쓰는 것이다. 1강에서 강사가 토큰화에 대해 말한 '덩어리 크기는 가변이어야 한다'는 원칙의 이미지판이기도 하다.",
+    "여러 모달리티를 섞을 때는 균형 문제가 생긴다. 기술적으로 여러 이미지와 영상도 결국 이미지 여러 장이지만, 영상은 길고 프레임끼리 비슷해서 그대로 넣으면 데이터셋이 반복적인 프레임 토큰에 지배당한다. 그래서 OneVision 은 모달리티마다 해상도를 다르게 줘서 최대 토큰 수를 비슷하게 맞춘다. 단일 이미지는 자세히 본다: 축소본 1장 + 조각 최대 9장, 각각 729 토큰이라 최대 (1+9)×729 = 7,290. 여러 이미지는 '멀리서' 본다: 장마다 기본 해상도 729 토큰, 12장이면 8,748. 영상은 더 거칠게 본다: 프레임마다 2×2 로 줄여 196 토큰, 최대 32 프레임이라 6,272. 강사는 영상에서 프레임을 32개 이상 쓰기 어려운 이유가 문맥 길이라고 짚고, 멀티모달의 큰 부분이 결국 긴 문맥 문제라는 것을 뒤의 Qwen3-VL 에서 다시 보여 준다."
+   ],
+   "formulas": [
+    {
+     "expr": "T_single = (1 + a·b) · g²,  a·b ≤ 9,  g = ⌊384/14⌋ = 27",
+     "meaning": "단일 이미지 토큰 수. a, b 는 AnyRes 격자의 세로·가로 조각 수, 1 은 전체 축소본, g² = 729 는 384 해상도 SigLIP(패치 14)의 한 장당 토큰."
+    },
+    {
+     "expr": "T_video = F · ⌈g/2⌉² = F · 196,  F ≤ 32",
+     "meaning": "영상 토큰 수. F 는 프레임 수, 프레임마다 27×27 격자를 2배 이중선형 축소해 14×14 = 196."
+    },
+    {
+     "expr": "MLP(z) = W₂ · GELU(W₁ z + b₁) + b₂,  W₁ ∈ ℝ^{d×1152}, W₂ ∈ ℝ^{d×d}",
+     "meaning": "2층 MLP 프로젝터. 1152 는 SigLIP so400m 의 폭, d 는 LLM 폭(Qwen2-0.5B 896, 7B 3584, 72B 8192). 파라미터 수 ≈ 1152d + d²."
+    }
+   ],
+   "example": {
+    "title": "AnyRes 토큰 수를 손으로",
+    "body": "384×384 사진: 격자 1×1 → (1+1)×729 = 1,458 토큰(축소본 + 조각 1장).\n768×1152 그림: 768/384 = 2, 1152/384 = 3 → 2×3 = 6 조각 → (1+6)×729 = 5,103.\n1100×850 스캔 문서: ⌈1100/384⌉ = 3, ⌈850/384⌉ = 3 → 9 조각 → (1+9)×729 = 7,290 (상한).\n3000×2000 사진: 8×6 = 48 조각이 되지만 상한 9 → 3×3 으로 줄이거나 보간 → 7,290.\n비교: 여러 이미지 12장 12×729 = 8,748, 영상 32프레임 32×196 = 6,272 — 세 모달리티가 6천~9천 토큰으로 비슷하다.\n프로젝터: Qwen2-0.5B(폭 896)면 1152·896 + 896 + 896² + 896 = 1,836,800 ≈ 1.8M — 다음 장 표의 1.8M 과 같다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import math\n\ndef base_tokens(res=384, patch=14):\n    g = res // patch                     # 384//14 = 27\n    return g * g                         # 729\n\ndef anyres_tokens(H, W, tile=384, max_crops=9):\n    a, b = math.ceil(H / tile), math.ceil(W / tile)\n    while a * b > max_crops:             # 조각이 너무 많으면 격자를 줄인다\n        if a >= b: a -= 1\n        else: b -= 1\n    return a, b, (1 + a * b) * base_tokens()   # 축소본 1장 + 조각 a*b 장\n\nfor H, W in [(384, 384), (768, 1152), (1100, 850), (3000, 2000)]:\n    a, b, n = anyres_tokens(H, W)\n    print(f\"{H}x{W}: 격자 {a}x{b}, 토큰 {n}\")\n\nprint(\"단일 이미지 상한\", (1 + 9) * 729)\nprint(\"여러 이미지 12장\", 12 * 729)\npooled = math.ceil(27 / 2) ** 2          # 2x2 이중선형 축소 → 14x14\nprint(\"영상 프레임당\", pooled, \" 32프레임\", 32 * pooled)",
+    "note": "출력: 1458 / 5103 / 7290 / 7290, 상한 7290·8748, 영상 프레임당 196·32프레임 6272. 조각을 줄이는 방식은 단순화한 것이다(실제 구현은 미리 정한 격자 후보 중 원본 비율에 가장 맞는 것을 고른다)."
+   },
+   "pitfalls": [
+    "AnyRes 의 조각은 '인코더가 원래 받는 해상도'로 자른다. 인코더 자체는 그대로이고 여러 번 호출할 뿐이다 — 고해상도를 직접 받는 인코더(Qwen2-VL)와 구별할 것.",
+    "축소본(전체를 줄인 한 장)을 빼면 조각들 사이의 전체 배치(어느 조각이 왼쪽 위인지 등)를 잃기 쉽다."
+   ],
+   "check": [
+    {
+     "q": "OneVision 에서 영상 프레임 하나가 196 토큰인 이유를 계산으로 보이시오.",
+     "a": "SigLIP 384 해상도·패치 14 → 27×27 = 729 격자. 2×2 이중선형 축소로 ⌈27/2⌉ = 14 → 14×14 = 196."
+    },
+    {
+     "q": "같은 7,290 토큰 예산으로 영상 프레임은 몇 장까지 넣을 수 있나? 왜 OneVision 은 32 에서 멈췄나?",
+     "a": "7,290/196 ≈ 37 장. 실제 상한 32 는 문맥 길이와 학습 효율 때문이고, 세 모달리티의 최대 길이를 비슷하게 맞추려는 목적도 있다."
+    }
+   ]
+  },
+  {
+   "start": 2460,
+   "title": "OneVision 의 데이터와 학습 — 양보다 질, 쉬운 것에서 어려운 것으로 3단계, 모달리티 사이의 전이",
+   "points": [
+    "데이터 철학: 양보다 질. 실제로는 과제별로 겨냥한 데이터(VQA·표·차트·OCR·차이 찾기 등) — 사후학습 영역. GPT-4 계열 증류도 숨기지 않는다.",
+    "단일 이미지 320만, OneVision(여러 이미지·영상 포함) 160만 샘플.",
+    "학습: Stage-1 정렬(프로젝터만, LCS 55.8만, 729 토큰) → Stage-1.5 고품질 지식(전체 모델, 400만) → Stage-2 시각 지시 튜닝(단일 이미지 320만 → OneVision 160만).",
+    "전이: 표·차트 단일 이미지 데이터만 있어도 여러 이미지 질문에 일반화, 단일 이미지 OCR + 여러 이미지 관계 추론 → GUI 에이전트 화면 묘사, 단일 이미지 시각 프롬프트(원 표시) → 영상 속 표시된 선수 묘사.",
+    "LLaVA 계열의 가치: 가중치뿐 아니라 데이터까지 공개해 재현·연구가 가능하다."
+   ],
+   "on_screen": "Data: Philosophy: quality over quantity. 도넛 그림 'Single-image 3.2M'(General·Doc/Chart/Screen·Math/Reasoning·General OCR·Language) 과 'OneVision 1.6M'(Single-Image·Multi-Image·Video) 와 데이터셋 이름 목록. Training: Philosophy: easier to harder. Stage-1 Language-Image Alignment → Stage-1.5 High-Quality Knowledge Learning → Stage-2 Visual Instruction Tuning. 표: Resolution 384 / 384×{2×2,1×{2,3},{2,3}×1} / 384×{1×1,…,6×6}; #Tokens 729 / Max 729×5 / Max 729×10; Dataset LCS / Image / Image / (Multi-Image) & Video; #Samples 558K / 4M / 3.2M / 1.6M; Trainable Projector / Full Model / Full Model / Full Model; 0.5B LLM 1.8M / 0.8B / 0.8B / 0.8B; 7.6B LLM 20.0M / 8.0B / 8.0B / 8.0B; 72.7B LLM 72.0M / 73.2B / 73.2B / 73.2B; Batch Size 512 / 256/512 / 256/512 / 256/512; LR ψ_vision 1×10⁻³ / 2×10⁻⁶ …; LR {θ_proj, φ_LLM} 1×10⁻³ / 1×10⁻⁵ …; Epoch 1. Transfer between modalities: Single image data for diagrams and charts, but generalize to multi-image (예: 보험사 가격표·차트 두 장) / OCR on single image data, relational reasoning from multi-image data, generalize to GUI-based agents (TikTok 화면) / Visual prompting (circle) in single images, generalize to videos (축구 영상 'Describe the player highlighted in the video'). Summary: Standard VLM template: vision encoder + projector + LM / Most work goes into data curation (heavy on synthesized, task-specific data) / Open-source (released model weights and data).",
+   "explain": [
+    "OneVision 논문이 내세우는 데이터 철학은 '양보다 질'이다. 강사는 이것을 다른 말로 '매우 겨냥한 데이터'라고 해석한다. 데이터셋 목록을 보면 거의 전부 과제 단위다 — 시각 질의응답(VQA), 표에 대한 질문, 차트 읽기, 문서 OCR, 두 이미지의 다른 점 찾기 같은 것들이다. 이것은 명백히 사후학습의 영역이다. 모델이 하길 원하는 과제를 잔뜩 만들어 보여 주는 것이다. 그리고 상당 부분을 GPT-4 계열 모델로 합성했다는 것도 숨기지 않는다. 강사는 이것이 이상적이진 않지만 주석 예산이 없으면 그렇게 한다고 평한다(15강·14강의 합성 데이터 논의와 같은 결이다). 규모는 단일 이미지 데이터 320만, 여러 이미지·영상을 포함한 OneVision 데이터 160만 샘플이다.",
+    "학습은 세 단계로, 원칙은 '쉬운 것에서 어려운 것으로'다. Stage-1 은 LLaVA 와 같은 정렬 단계로 프로젝터만 학습한다(LCS 55.8만 쌍, 384 해상도 729 토큰, 학습률 1e-3). Stage-1.5 는 고품질 '지식' 데이터 400만으로 모델 전체를 학습하고, 해상도를 AnyRes 로 올려 최대 729×5 토큰까지 쓴다. Stage-2 는 시각 지시 튜닝으로, 먼저 단일 이미지 320만, 이어서 여러 이미지·영상을 섞은 160만으로 학습한다(최대 729×10 토큰). 표를 자세히 보면 비전 인코더의 학습률(2e-6)이 LLM·프로젝터(1e-5)보다 다섯 배 낮다 — 이미 잘 학습된 인코더를 너무 흔들지 않으려는 것이다. 강사는 2단계가 3단계로 늘어난 데 특별한 원리는 없어 보인다고 솔직히 말한다. 중간 단계는 지식 중심의 고품질 데이터, 마지막은 하류 과제처럼 생긴 예제 중심이라는 정도다.",
+    "강사가 흥미롭다고 꼽은 발견은 모달리티 사이의 전이다. 표와 차트에 대한 데이터는 단일 이미지로만 있었는데, 시험 때 표 한 장과 차트 한 장을 따로 주고 둘을 엮어 묻는 질문에도 답한다. OCR 데이터는 단일 이미지에만 있고, 이미지 간 관계 추론 데이터는 여러 이미지에만 있었는데, 둘을 합친 능력 — 스마트폰 화면 캡처 여러 장을 보고 무슨 일이 일어나는지 묘사하기(GUI 에이전트의 바탕) — 이 생긴다. 원을 그려 '여기를 보라'고 표시하는 시각 프롬프트 데이터는 단일 이미지에만 있었지만, 영상에서 원으로 표시한 축구 선수를 여러 프레임에 걸쳐 묘사한다. 처음 보면 과제마다 데이터를 만들어 넣는 지도학습처럼 보이지만, 과제가 충분히 많으면 조합해서 일반화한다는 점이 안심이 된다는 것이 강사의 평이다.",
+    "LLaVA 계열의 요약은 셋이다. 표준 VLM 틀은 '비전 인코더 + 프로젝터 + 언어 모델'이다. 일의 대부분은 데이터 큐레이션이며 합성·과제 특화 데이터에 크게 기댄다. 그리고 모델 가중치뿐 아니라 데이터까지 공개해서 누구나 재현하고 연구할 수 있다 — 이것이 다음에 볼 Qwen 계열과의 가장 큰 차이다."
+   ],
+   "formulas": [
+    {
+     "expr": "lr_vision : lr_{proj,LLM} = 2×10⁻⁶ : 1×10⁻⁵ = 1 : 5",
+     "meaning": "Stage-1.5·2 의 학습률 비. 사전학습된 비전 인코더는 작은 학습률로 살짝만 고치고, 언어 모델·프로젝터는 상대적으로 크게 움직인다. Stage-1 은 프로젝터만 1×10⁻³."
+    }
+   ],
+   "example": {
+    "title": "단계별로 학습되는 파라미터 수(7.6B LLM 기준, 표의 숫자)",
+    "body": "Stage-1: 프로젝터 20.0M 만 → 전체 약 8.0B 중 0.25%.\nStage-1.5 / 2: 전체 8.0B.\n샘플 수: 55.8만 → 400만 → 320만 → 160만, 합 약 935만 샘플.\n한 샘플이 평균 3,000 토큰이라 치면(이미지 토큰 수천 + 대화) 약 280억 토큰 — 사전학습(수조 토큰)에 비하면 매우 작다. VLM 이 '꿰매기'라 싸다는 감각을 숫자로 확인할 수 있다.\n노트 보충: 같은 2층 MLP 식(1152·d + d² + 2d)으로 계산하면 0.5B(d=896)는 1.84M 으로 표와 맞지만, 7.6B(d=3584)는 17.0M, 72B(d=8192)는 76.6M 이 나와 표의 20.0M·72.0M 과 어긋난다. 표가 어떤 항을 더 세었는지는 확인하지 못했다."
+   },
+   "pitfalls": [
+    "'양보다 질'을 '데이터가 적다'로 오해하지 말 것. 수백만 샘플이고, 핵심은 과제를 겨냥해 고른다는 점이다.",
+    "모달리티 간 전이는 '공짜로 모든 조합이 된다'는 뜻이 아니다. 관찰된 몇 가지 조합의 사례이고, 데이터가 전혀 없는 능력은 여전히 약하다."
+   ],
+   "check": [
+    {
+     "q": "OneVision 이 단일 이미지 데이터만으로도 여러 이미지 질문에 답하게 된 현상을 무엇이라 부르며, 강사는 이것을 왜 '안심이 된다'고 했나?",
+     "a": "모달리티(시나리오) 간 전이. 과제마다 데이터를 만들어 넣는 방식이 끝없는 수작업처럼 보이지만, 과제가 충분히 많으면 모델이 능력을 조합해 보지 못한 조합에도 일반화하기 때문이다."
+    }
+   ]
+  },
+  {
+   "start": 2760,
+   "title": "Qwen-VL — 교차 어텐션 한 층으로 고정 256 토큰, 2D 위치, 상자 토큰, 그리고 인코더까지 학습하는 3단계",
+   "points": [
+    "Qwen-VL(Bai 2023): 비전 인코더 OpenCLIP ViT-bigG(14×14 패치), 어댑터는 교차 어텐션 한 층 — 학습되는 질의로 2D 위치 임베딩을 반영해 고정 길이 256 으로 압축.",
+    "특수 토큰: 이미지(<img>), 상자(<box>), 지칭(<ref>) — 상자 좌표를 텍스트로 내 grounding 을 한다(이미지를 그리는 게 아니다).",
+    "Stage 1 사전학습: 대규모 저품질 이미지-텍스트 쌍(약 14억), LM 고정, 비전 인코더 + 어댑터 학습 — LLaVA 와 달리 인코더도 학습한다(저해상도).",
+    "Stage 2 다과제 사전학습: 고품질 과제 데이터(VQA·차트 QA·grounding·OCR), 고해상도, 전체 학습. Stage 3 지시 튜닝: 비전 인코더 고정, 어댑터 + LM.",
+    "능력: 중국어 대화, 코드, 스파이더맨·헐크 찾기 같은 상자 출력, OCR, 비교."
+   ],
+   "on_screen": "Qwen-VL [Bai+ 2023]. Architecture: Vision encoder: OpenCLIP's ViT-bigG (14x14 patches) [Cherti+ 2022] / Adaptor: one layer cross-attention, incorporate 2D positional encodings, maps to fixed length of 256 / Special tokens: , , (HTML 슬라이드라 태그가 잘려 빈칸으로 보인다 — 강사 '슬라이드를 HTML 로 만들면 이렇게 된다'). Training 그림: Stage1: Pretraining(QwenLM 얼음, CrossAttn 불, ViT 불, Low Resolution, Image-Text Pairs) / Stage2: Multi-task Pretraining(QwenLM·CrossAttn·ViT 모두 불, High Resolution, Multi-task and Interleaved VL Data) / Stage3: Supervised Finetuning(QwenLM·CrossAttn 불, ViT 얼음, Chat Interleaved VL Data); Learnable Query Embs. Stage 1: large-scale low quality data; freeze LM, train vision encoder + adaptor — 표 Language/Dataset/Original/Cleaned/Remaining%: LAION-en 2B→280M 14%, LAION-COCO 600M→300M 50%, DataComp 1.4B→300M 21%, Coyo 700M→200M 28%, CC12M 12M→8M 66%, CC3M 3M→3M 100% …. Stage 3: instruction tuning data; freeze visual encoder, train adaptor + LM. 예시 화면: 중국어 대화, 코드, 스파이더맨·헐크 상자.",
+   "explain": [
+    "Qwen 팀도 2023년부터 멀티모달 모델을 냈다. 첫 판 Qwen-VL 은 앞에서 본 패턴과 거의 같다. 비전 인코더는 OpenCLIP 의 ViT-bigG(가장 큰 축의 ViT, 패치 14)다 — OpenCLIP 은 CLIP 의 오픈 재현이니 결국 CLIP 인코더다. 다른 점은 어댑터다. LLaVA 의 선형 W 대신 교차 어텐션 한 층을 쓴다. 학습되는 질의 벡터 256개를 두고, 이 질의들이 이미지 패치 특징(키·값)을 어텐션으로 훑어 정보를 모은다. 패치가 몇 개든 출력은 늘 질의 수만큼, 곧 256개 벡터다. 어텐션을 할 때 2D 위치 임베딩을 넣어, 질의가 '어느 위치의 패치인지'를 알 수 있게 했다.",
+    "강사는 이 고정 길이 256 이 '전혀 동적이지 않다'고 짚는다. 큰 문서든 작은 아이콘이든 똑같이 256 토큰이다. 당시에는 비전 인코더도 고정 해상도였으니 앞뒤가 맞았지만, 다음 판(Qwen2-VL)에서 바뀐다. 특수 토큰도 눈여겨볼 만하다. 이미지 구간을 감싸는 이미지 태그, 상자 좌표를 감싸는 box 태그, 그 상자가 가리키는 말을 감싸는 ref 태그가 있다. 슬라이드에서 이 태그들이 빈칸으로 보이는 것은 강사가 말하듯 HTML 슬라이드가 꺾쇠 태그를 먹어 버렸기 때문이다. '스파이더맨과 헐크를 찾아라'라고 하면 모델은 이미지를 그리는 게 아니라 각 인물의 상자 좌표를 텍스트 토큰으로 출력한다.",
+    "학습은 LLaVA 처럼 3단계지만 무엇을 얼리느냐가 다르다. 1단계는 '사전학습'이라고 부르지만 바닥부터가 아니라, 대규모 저품질 이미지-텍스트 쌍(LAION·DataComp·Coyo 등을 정제해 약 14억 개)으로 하는 단계다. 언어 모델은 얼리고 비전 인코더와 어댑터를 학습한다. LLaVA 와 달리 이 시점에 비전 인코더도 학습한다는 것이 차이다(저해상도 224). 정제표를 보면 LAION-en 20억 쌍 중 14% 만 남기는 식으로 대부분을 버렸다. 2단계는 VQA·차트 질의응답·grounding·OCR 같은 고품질 과제 데이터로 모든 파라미터를 학습하고, 해상도를 448 로 올린다. 3단계는 지시 튜닝 데이터로, 비전 인코더를 얼리고 어댑터와 언어 모델을 학습한다.",
+    "능력 예시는 Qwen 답게 중국어 대화가 섞여 있다. 또 Qwen 팀은 시각 모델이 언어 모델을 '포함'하길 원해서, 언어 모델이 하는 코드 작성 같은 일도 잘하길 기대한다. 상자 출력(grounding), OCR, 두 이미지 비교 같은 익숙한 과제들도 보여 준다. 정리하면 Qwen-VL 은 'CLIP 계열 인코더 + 압축 어댑터 + 강한 자사 LLM + 3단계' 라는 같은 뼈대 위에서, 인코더를 더 적극적으로 학습시키고 좌표 출력 같은 구조적 출력을 특수 토큰으로 설계한 판이다."
+   ],
+   "formulas": [
+    {
+     "expr": "Y = softmax( (Q)(Z W_k + P)ᵀ / √d ) (Z W_v),  Q ∈ ℝ^{256×d},  Z ∈ ℝ^{N×d_v}",
+     "meaning": "교차 어텐션 어댑터(리샘플러). Q 는 학습되는 질의 256개, Z 는 N 개의 패치 특징(N 은 해상도에 따라 다름), P 는 2D 위치 임베딩, W_k·W_v 는 키·값 사상. 출력 Y 는 N 과 무관하게 [256, d]."
+    }
+   ],
+   "example": {
+    "title": "리샘플러가 줄이는 양",
+    "body": "ViT-bigG/14 에 448×448 → 32×32 = 1,024 패치 → 어댑터 후 256 토큰: 4배 압축.\n224×224 → 16×16 = 256 패치 → 256 토큰: 압축 없음.\n어텐션 계산량: 질의 256 × 키 1,024 = 262,144 개의 점수 — 1,024 토큰을 LLM 에 그대로 넣었을 때 LLM 의 층마다 드는 1,024² ≈ 105만 개 점수보다 4배 작고, 그 이후 LLM 쪽 비용은 256 토큰 기준이 된다.\n대가: 세밀한 문서(1,024 패치에 담긴 글자)를 256 개 벡터로 줄이면 정보가 빠진다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nrng = np.random.default_rng(0)\n\ndef softmax(x):\n    x = x - x.max(-1, keepdims=True); e = np.exp(x); return e / e.sum(-1, keepdims=True)\n\ndef resampler(feats, Q, Wk, Wv):\n    \"\"\"feats [N, d] (N 은 이미지마다 다름) → [256, d] 고정\"\"\"\n    K, V = feats @ Wk, feats @ Wv\n    A = softmax(Q @ K.T / np.sqrt(Q.shape[1]))   # [256, N]\n    return A @ V                                 # [256, d]\n\nd = 64\nQ = rng.normal(size=(256, d))                    # 학습되는 질의 256개\nWk, Wv = rng.normal(size=(d, d)) / 8, rng.normal(size=(d, d)) / 8\nfor N in [256, 1024, 4096]:                      # 해상도가 달라 패치 수가 달라도\n    out = resampler(rng.normal(size=(N, d)), Q, Wk, Wv)\n    print(N, \"패치 →\", out.shape)",
+    "note": "출력: 256·1024·4096 패치 모두 → (256, 64). 패치 수가 달라도 출력 길이는 질의 수로 고정된다."
+   },
+   "pitfalls": [
+    "Qwen-VL 의 '사전학습(Stage 1)'은 LLM 사전학습이 아니다. LLM 은 이미 학습된 Qwen 이고 얼려 둔다. 학습되는 것은 비전 인코더와 어댑터다.",
+    "상자 grounding 은 이미지 생성이 아니다. 좌표를 숫자 텍스트로 출력할 뿐이다."
+   ],
+   "check": [
+    {
+     "q": "LLaVA 와 Qwen-VL 의 첫 단계에서 학습되는 부분을 비교하시오.",
+     "a": "LLaVA 1단계: 프로젝션 W 만(인코더·LLM 고정). Qwen-VL 1단계: 비전 인코더 + 교차 어텐션 어댑터(LLM 만 고정)."
+    }
+   ]
+  },
+  {
+   "start": 2940,
+   "title": "Qwen2-VL — 원본 해상도 그대로(동적 해상도), 2×2 병합으로 28픽셀 = 토큰 하나, 그리고 3D 위치 M-RoPE",
+   "points": [
+    "더 큰 ViT(6억 7,500만). 핵심은 동적 해상도: 8204×1092 문서는 11,427 토큰, 28×224 수식 조각은 8 토큰, 1260×700 사진은 1,125, 644×336·16프레임 영상은 2,208.",
+    "패치 14 의 ViT 를 원본 해상도로 돌리고 이웃 2×2 패치를 하나로 병합 → 28×28 픽셀이 LLM 토큰 하나. 224×224 면 64 + 시작·끝 2 = 66 토큰.",
+    "영상: 초당 2프레임 샘플, 최대 16,384 토큰. 연속 2프레임도 하나로 묶는다(노트 보충).",
+    "M-RoPE: 1D RoPE(내적이 거리에만 의존)를 3D 로 — 위치가 (시간, 높이, 너비) 세 값, 차원을 세 묶음으로 나눠 축마다 RoPE 를 하고 이어 붙인다. 텍스트는 세 값이 같다.",
+    "LM 은 Qwen2, 인코더는 DFN 에서 초기화. 학습은 Qwen-VL 과 비슷한 3단계. 영상 이해·수학·코드·함수 호출·UI 조작까지."
+   ],
+   "on_screen": "Visual encoder: larger ViT (675M). 그림: QwenLM Decoder 아래 'Images and videos here.' 토큰 줄 — 11427 tokens Picture 1, 8 tokens Picture 2, 1125 tokens Picture 3, 2208 tokens Video 1; Vision Encoder ← Native Resolution Input. Picture 1: Height 8204 × Width 1092(Qwen2 블로그 페이지), Picture 2: Height 28 × Width 224(수식 한 줄), Picture 3: Height 700 × Width 1260(바다 위 바위섬), Video 1: Height 336 × Width 644, Time 16. Key: dynamic resolution to handle varying resolutions / Each 224 x 224 patch encoded with ViT/14, compress every 2x2 => 66 tokens / Video: sample 2 frames/sec, max 16384 tokens. Multimodal Rotary Position Embedding (MRoPE): 그림 'This video features a dog, specifically a Shiba …' 텍스트와 시바견 영상 프레임에 Temporal·Height·Width 위치 id. Initialize LM with Qwen2 and vision encoder from DFN [Fang+ 2023] / Training (similar to Qwen-VL): Stage 1: train only visual encoder / Stage 2: train all parameters / Stage 3: train language model on instruction following datasets. 능력 그림: General Chat, Video Understanding, Grounding, Multilingual OCR, Long Document Understanding, Math & Code, Live Chat, Formula Recognition, Function Calling, UI Interaction, Beyond.",
+   "explain": [
+    "Qwen2-VL 은 Qwen-VL 의 업그레이드인데, 강사는 핵심을 '동적 해상도'로 꼽는다. LLaVA 에서 OneVision 으로 가며 '크기가 제각각인 이미지를 다뤄야 한다'를 깨달았듯, 영상까지 하려면 이미지마다 다른 수의 토큰이 필요하다. 슬라이드 그림이 이것을 잘 보여 준다. 세로 8,204 픽셀짜리 긴 블로그 페이지는 11,427 토큰, 수식 한 줄을 오린 28×224 조각은 단 8 토큰, 1260×700 사진은 1,125 토큰, 16프레임 영상은 2,208 토큰이다. 이미지를 고정 크기로 줄이거나 고정 개수로 압축하지 않고, 원본 해상도에 비례하는 토큰을 준다.",
+    "구조로 보면, 패치 14 의 ViT(6억 7,500만 파라미터, DFN 의 CLIP 계열 인코더에서 초기화)를 원본 해상도 그대로 돌린다. 그러면 14×14 픽셀마다 패치가 하나씩 나오는데, 이대로 LLM 에 넣으면 너무 많으니 이웃한 2×2 패치 네 개의 벡터를 이어 붙여 MLP 로 하나로 합친다. 결과적으로 28×28 픽셀 영역이 LLM 토큰 하나가 된다. 그래서 토큰 수 = (H/28)×(W/28) 이다. 1260×700 사진은 45×25 = 1,125, 28×224 는 1×8 = 8, 8204×1092 는 293×39 = 11,427 — 슬라이드 숫자가 정확히 맞는다. 영상은 초당 2프레임을 뽑고, 노트 보충으로 연속한 2프레임을 시간 방향으로도 묶어 한 칸으로 만든다. 16프레임 644×336 영상은 시간 8칸 × 12 × 23 = 2,208 이다. 영상 전체는 최대 16,384 토큰으로 제한한다(강사는 '1만 6천'이라 말하고 슬라이드는 16384).",
+    "슬라이드의 '224×224 조각을 ViT/14 로 인코딩하고 2×2 를 압축하면 66 토큰'은 조심해서 읽어야 한다. 강사는 이것을 LLaVA AnyRes 처럼 224 조각으로 자르는 방식으로 설명하지만, 노트 보충으로 정리하면 Qwen2-VL 은 이미지를 조각으로 자르지 않고 한 장 전체를 원본 해상도로 ViT 에 넣는다(2D RoPE 를 쓰는 ViT 라 가능하다). 224×224 는 '예를 들어 이 크기면 몇 토큰인가'를 보여 주는 기준값이다. 224/14 = 16 → 256 패치 → 2×2 병합으로 64 → 이미지 시작·끝 특수 토큰 2개를 더해 66 이다.",
+    "두 번째 변화는 위치 인코딩이다. 3강에서 본 RoPE 는 벡터를 위치에 비례한 각도로 회전시켜, 두 토큰의 내적이 둘 사이 거리에만 의존하게 만든다. 텍스트의 거리는 '몇 토큰 떨어졌나' 하나뿐이다. 이미지·영상에는 시간·높이·너비의 세 축이 있다. M-RoPE(멀티모달 RoPE)는 위치를 (t, h, w) 세 값으로 두고, 머리 차원을 세 묶음으로 나눠 묶음마다 해당 축의 위치로 RoPE 를 건 뒤 이어 붙인다. 텍스트 토큰은 세 값을 모두 같게 둬서 보통의 1D RoPE 와 똑같이 동작한다. 이미지는 시간이 고정이고 높이·너비가 격자 좌표를 따라 변한다. 이미지 다음에 오는 텍스트는 앞선 위치들의 최대값 + 1 부터 다시 센다. 강사는 이 방식이 직관적이지만 Qwen3-VL 에서 다시 보듯 최적은 아니었다고 미리 말해 둔다. 학습은 Qwen-VL 과 비슷한 3단계(비전 인코더만 → 전체 → 지시 튜닝 데이터로 LLM)이고, 결과 모델은 영상 이해·수학·코드·함수 호출·UI 조작까지 보여 준다."
+   ],
+   "formulas": [
+    {
+     "expr": "T_img = ⌈H/28⌉ · ⌈W/28⌉,  T_vid = ⌈F/2⌉ · ⌈H/28⌉ · ⌈W/28⌉",
+     "meaning": "Qwen2-VL 토큰 수(대략, 실제 구현은 28 의 배수로 반올림 리사이즈하고 최소·최대 픽셀 수를 둔다). 28 = 패치 14 × 병합 2, F 는 프레임 수, 프레임 2장을 한 칸으로 묶는다."
+    },
+    {
+     "expr": "pos(텍스트 k) = (k, k, k);  pos(이미지 패치 r, c) = (s, s + r, s + c)",
+     "meaning": "M-RoPE 의 위치 id. s 는 이미지가 시작하는 위치, r·c 는 격자의 행·열. 영상이면 시간 칸마다 첫 값이 늘어난다. 이미지 뒤 텍스트는 지금까지 쓴 위치의 최대값 + 1 부터."
+    }
+   ],
+   "example": {
+    "title": "슬라이드의 네 숫자를 맞혀 보기",
+    "body": "Picture 1 문서 8204×1092: 8204/28 = 293, 1092/28 = 39 → 293×39 = 11,427 ✓\nPicture 2 수식 28×224: 1 × 8 = 8 ✓\nPicture 3 사진 700×1260: 25 × 45 = 1,125 ✓\nVideo 1 336×644, 16프레임: 시간 16/2 = 8, 336/28 = 12, 644/28 = 23 → 8×12×23 = 2,208 ✓\n비교: LLaVA-1.5 는 네 개 모두 576 토큰, Qwen-VL 은 모두 256 토큰. 문서는 너무 적고 수식 조각은 너무 많다.\nM-RoPE: 텍스트 5개(위치 0~4) 뒤 2×3 이미지 → (5,5,5)(5,5,6)(5,5,7)(5,6,5)(5,6,6)(5,6,7), 다음 텍스트는 max 7 + 1 = 8 부터 (8,8,8)."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\n\ndef qwen2vl_tokens(H, W, T=1, patch=14, merge=2, t_patch=2):\n    unit = patch * merge                         # 28 픽셀 = 최종 토큰 한 칸\n    h, w = round(H / unit), round(W / unit)\n    t = max(1, T // t_patch)                     # 영상은 프레임 2장을 한 칸으로\n    return h * w * t, (t, h, w)\n\nfor name, (H, W, T) in {\"Picture1 문서\": (8204, 1092, 1), \"Picture2 수식\": (28, 224, 1),\n                        \"Picture3 사진\": (700, 1260, 1), \"Video1\": (336, 644, 16)}.items():\n    n, grid = qwen2vl_tokens(H, W, T)\n    print(f\"{name:12s} 격자 t,h,w={grid} → {n} 토큰\")\n\ndef mrope_ids(t, h, w, start):\n    \"\"\"이미지/영상 토큰마다 (시간, 높이, 너비) 위치 세 개\"\"\"\n    tt, hh, ww = np.meshgrid(np.arange(t), np.arange(h), np.arange(w), indexing=\"ij\")\n    return np.stack([tt.ravel(), hh.ravel(), ww.ravel()], 1) + start\n\nids = mrope_ids(1, 2, 3, start=5)               # 텍스트 5개 뒤 2x3 이미지\nprint(ids.tolist())\nnxt = ids.max() + 1                              # 이미지 다음 텍스트는 (8,8,8) 부터\nprint(\"다음 텍스트 위치\", [int(nxt)] * 3)",
+    "note": "출력: 11427 / 8 / 1125 / 2208 토큰, M-RoPE 위치 6개와 다음 텍스트 위치 [8, 8, 8]."
+   },
+   "pitfalls": [
+    "슬라이드의 '224×224 patch 마다 인코딩'을 AnyRes 식 타일링으로 읽으면 틀린다(노트 보충). Qwen2-VL 은 한 장 전체를 원본 해상도로 한 번에 인코딩하고, 224 는 토큰 수를 설명하는 기준 크기다. 66 = 64(2×2 병합 후) + 2(시작·끝 토큰).",
+    "M-RoPE 에서 이미지 토큰 수가 많아도 위치 id 는 격자 크기만큼만 늘어난다. 11,427 토큰짜리 문서도 위치는 293 정도만 전진한다 — 1D 로 세는 것과 다르다."
+   ],
+   "check": [
+    {
+     "q": "Qwen2-VL 로 1920×1080 화면 캡처를 넣으면 대략 몇 토큰인가?",
+     "a": "1920/28 ≈ 68.6, 1080/28 ≈ 38.6 → 28 의 배수로 반올림하면 69×39 ≈ 2,691 토큰(구현의 반올림 방식에 따라 조금 다르다)."
+    },
+    {
+     "q": "M-RoPE 에서 텍스트 토큰의 (t, h, w) 를 모두 같게 두는 이유는?",
+     "a": "세 축 모두 같은 값으로 회전하면 묶음별 RoPE 를 이어 붙인 결과가 보통의 1D RoPE 와 같아져, 사전학습된 언어 모델의 위치 감각을 그대로 유지할 수 있다."
+    }
+   ]
+  },
+  {
+   "start": 3150,
+   "title": "Qwen3-VL — 인터리브 MRoPE, 명시적 타임스탬프 토큰, 제곱근 정규화 손실, DeepStack, 256K 문맥까지의 학습",
+   "points": [
+    "LM: Qwen3 밀집·MoE(최대 235B-A22B), 긴 문맥 256K — 긴 영상에 필수. 인코더: SigLIP-2(SigLIP 과 같은 구조, 하위 호환).",
+    "인터리브 MRoPE: 차원을 [t…t h…h w…w] 로 덩어리째 나누면 한 축이 한 주파수 대역만 가진다 → [t h w t h w …] 로 섞어 모든 축이 고·저주파를 다 갖게.",
+    "영상 시각을 위치 인코딩에 숨기지 않고 '0.0초' 같은 텍스트 토큰으로 명시 — '2초 뒤에 무슨 일이?'에 직접 답할 수 있게.",
+    "제곱근 정규화 토큰 손실: 예제 길이의 제곱근으로 나눠 긴 영상 예제가 학습을 지배하지 않게(세부는 불명확, 강사 추정).",
+    "DeepStack: 비전 인코더 여러 층의 특징을 LLM 의 여러 층 잔차 흐름에 직접 더한다 — 인코더를 블랙박스가 아니라 깊이 융합. 사전학습 4단계(S0 정렬 67B 토큰 → S1 ~1T@8K → S2 ~1T@32K → S3 100B@256K), 사후학습 SFT(긴 CoT)·지식 증류·RL."
+   ],
+   "on_screen": "Qwen3-VL [Bai+ 2025]. 그림: Qwen3 LM Dense/MoE Decoder, 'Images and videos here.' 11427 tokens Picture 1, 8 tokens Picture 2, 1125 tokens Picture 3, Video 1(타임스탬프 토큰 줄 '<0.0 seconds>' 등) — Vision Encoder(Native Resolution Input), 오른쪽 DeepStack 화살표가 LLM 여러 층으로. Language model: Qwen-3 models (dense and MoE models up to 235B-A22B) / Long context understanding (256K). Vision encoder: SigLIP-2 (same architecture as SigLIP) [Tschannen+ 2025] / Interleaved MRoPE: distribute all axes (temporal, width, height) to low- and high-frequency bands … [t w h t w h t w h] rather than [t t t t w w w w h h h h] / Add explicit video timestamps (as separate tokens rather than in positional embeddings) / Square-root-normalized per-token loss: balance text and multimodal data (video examples are long, don't want to dominate). Adapter: DeepStack: cross-layer fusion to inject visual information into multiple layers [Meng+ 2024]. Training: Pre-training has 4 stages (train adapter, train all parameters on 8K, 32K, 256K lengths). 표 Stage/Objective/Training/Token Budget/Sequence Length: S0 Vision-Language Alignment, Merger, 67B, 8,192 / S1 Multimodal Pre-Training, All, ~1T, 8,192 / S2 Long-Context Pre-Training, All, ~1T, 32,768 / S3 Ultra-Long-Context Adaptation, All, 100B, 262,144. Post-training: SFT on long CoT data, knowledge distillation, RL. 결과표: Qwen3-VL 235B-A22B(thinking·instruct) vs Gemini 2.5 Pro, OpenAI GPT-5, Claude Opus 4.1 — MMMU·MathVista·MMBench·DocVQA·OCRBench·ScreenSpot·OSWorld 등, 굵은 글씨가 행 최고. Summary: SOTA performance / Lots of data work, but not many details / Minor but potentially important architectural improvements / Scale up.",
+   "explain": [
+    "Qwen3-VL(2025)은 구조를 뒤엎지 않는다. 강사의 표현으로는 '큰 구조 변화는 아니지만 품질에는 영향을 줄 법한 변화들'의 모음이다. 먼저 언어 모델이 Qwen3 로 바뀌었다. 밀집 모델과 MoE 모델(최대 235B 파라미터 중 토큰당 22B 활성) 시리즈이고, 강사는 Qwen3 가 워낙 좋아서 최종 모델 품질을 크게 끌어올렸다고 본다. 문맥 길이는 256K 까지 간다 — 긴 영상을 이해하려면 필수다. 비전 인코더는 SigLIP-2 로, SigLIP 과 구조가 같고 하위 호환되도록 설계된 개선판이다.",
+    "인터리브 MRoPE 를 이해하려면 RoPE 의 주파수를 떠올려야 한다. RoPE 는 머리 차원을 두 개씩 짝지어 회전시키는데, 짝마다 회전 속도(주파수)가 다르다. 앞쪽 짝은 빠르게 돌고(고주파, 가까운 위치 구별에 좋다), 뒤쪽 짝은 천천히 돈다(저주파, 먼 거리 구별에 좋다). Qwen2-VL 의 M-RoPE 는 차원을 [시간 덩어리, 높이 덩어리, 너비 덩어리]로 잘랐으니, 한 축은 고주파만, 다른 축은 저주파만 갖게 된다(노트 보충: 어느 축이 고주파 쪽인지는 구현의 배치 순서에 달렸다). 그러면 예컨대 시간 축은 '바로 옆 프레임'은 잘 가르지만 '몇 분 떨어진 장면'의 구별은 서툴 수 있다. Qwen3-VL 은 [t h w t h w …] 로 축을 번갈아 배치해, 세 축 모두가 고주파부터 저주파까지 전 대역을 갖게 했다. 아래 코드가 두 배치에서 축마다 가진 주파수 범위를 보여 준다.",
+    "세 번째는 영상 시각을 다루는 방식이다. Qwen2-VL 에서는 시간 정보가 위치 인코딩 속에 암묵적으로 들어 있었다 — 프레임마다 시간 위치가 다르니 '시간 감각'은 있다. Qwen3-VL 은 각 프레임 앞에 '0.0초', '2.0초' 같은 시각을 텍스트 토큰으로 직접 넣는다. 모델이 그 토큰을 직접 가리킬 수 있으니 '2초 뒤에 무슨 일이 일어났나' 같은 질문에 답하기 쉬워진다. 네 번째는 손실의 가중이다. 보통의 SFT 는 모든 토큰을 똑같이 센다. 그러면 수만 토큰짜리 영상 예제가 수백 토큰짜리 이미지 예제를 압도한다. 강사의 이해로는(논문 세부가 분명치 않다고 단서를 단다) 예제마다 길이의 제곱근으로 나눠, 긴 예제의 영향을 줄이되 예제 단위 평균처럼 완전히 같게 만들지는 않는다. 15강·14강의 데이터 혼합 가중과 같은 문제를 손실 쪽에서 다룬 것이다.",
+    "마지막은 어댑터다. 이 강의에서 어댑터는 선형 사상(LLaVA) → 2층 MLP(OneVision) → 교차 어텐션(Qwen-VL)으로 진화했다. DeepStack 은 한 걸음 더 나간다. 비전 인코더는 층마다 시각 특징을 계산하는데, 지금까지는 마지막 층의 출력만 LLM 입력에 넣었다. DeepStack 은 인코더 중간 여러 층의 특징을 LLM 의 앞쪽 여러 층의 잔차 흐름(해당 이미지 토큰 위치)에 직접 더한다. 인코더를 '벡터 열을 뱉는 블랙박스'로 보지 않고 LLM 에 깊이 융합하는 것이다. 학습 파이프라인은 사전학습 4단계(S0: 어댑터만 67B 토큰 → S1: 전체 ~1T 토큰, 8K 길이 → S2: ~1T, 32K → S3: 100B, 256K)와 사후학습 3단계(긴 생각 사슬 SFT, 지식 증류, 강화학습)로, 강사는 이쯤 되면 시스템 논문이라고 평한다. 결과표에서 Qwen3-VL 235B 는 Gemini 2.5 Pro·GPT-5·Claude Opus 4.1 과 견줘 굵은 글씨(행 최고)를 상당수 가져간다. 정리하면 SOTA 성능, 많은 데이터 작업(세부는 거의 비공개), 작지만 중요할 수 있는 구조 개선, 그리고 규모 확대다."
+   ],
+   "formulas": [
+    {
+     "expr": "θ_i = base^{−i/P},  i = 0..P−1;  blocked: axis(i) = ⌊3i/P⌋,  interleaved: axis(i) = i mod 3",
+     "meaning": "P 는 회전 쌍 수, θ_i 는 i 번째 쌍의 각주파수(i 가 작을수록 고주파). blocked 는 앞 1/3 을 한 축에 몰아 주고, interleaved 는 쌍을 번갈아 세 축에 나눠 각 축이 θ 의 전 범위를 표본으로 갖게 한다."
+    },
+    {
+     "expr": "L = Σ_e Σ_{t∈e} w_e · ℓ_t,  w_e ∝ 1/√L_e",
+     "meaning": "제곱근 정규화(강사 해석). e 는 예제, L_e 는 예제의 학습 토큰 수, ℓ_t 는 토큰 손실. 예제 e 의 총 영향은 L_e · w_e = √L_e 에 비례 — 토큰마다 1(∝L_e)과 예제마다 1(∝1)의 중간."
+    }
+   ],
+   "example": {
+    "title": "세 예제의 '영향력 몫'",
+    "body": "예제 길이 200(이미지 문답), 2,000(문서), 20,000(긴 영상).\n토큰마다 가중 1: 몫 ∝ 200 : 2,000 : 20,000 → 0.9% : 9.0% : 90.1% — 영상이 지배.\n예제마다 1(1/L): 33% : 33% : 33% — 영상 토큰 하나는 이미지 토큰의 1/100 만큼만 배운다.\n제곱근(1/√L): 몫 ∝ √200 : √2000 : √20000 = 14.1 : 44.7 : 141.4 → 7.1% : 22.3% : 70.6%.\nQwen3-VL 사전학습 토큰: 67B + ~1T + ~1T + 100B ≈ 2.17T 토큰. 사후학습 이전에 이미 LLaVA-OneVision(수백억 토큰 추정)의 수십 배."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\n\npairs, base = 24, 10000.0                   # 회전 쌍 24개(head_dim 48 가정)\nfreq = base ** (-np.arange(pairs) / pairs)  # 쌍 0 이 가장 빠르게 돈다(고주파)\n\nblocked = np.array([\"t\"] * 8 + [\"h\"] * 8 + [\"w\"] * 8)       # Qwen2-VL 식\ninterleaved = np.array([\"t\", \"h\", \"w\"] * 8)                  # Qwen3-VL 식\nfor name, axes in [(\"blocked\", blocked), (\"interleaved\", interleaved)]:\n    rng_ = {a: (freq[axes == a].min(), freq[axes == a].max()) for a in \"thw\"}\n    print(name, {a: f\"{lo:.1e}~{hi:.1e}\" for a, (lo, hi) in rng_.items()})\n\n# 제곱근 정규화 손실: 예제 길이 L 의 토큰 가중치\nlengths = np.array([200, 2_000, 20_000])     # 짧은 이미지 문답, 문서, 긴 영상\nfor scheme, w in [(\"토큰마다 1\", np.ones(3)), (\"예제마다 1\", 1 / lengths),\n                  (\"sqrt\", 1 / np.sqrt(lengths))]:\n    share = w * lengths / (w * lengths).sum()\n    print(f\"{scheme:8s}\", np.round(share, 3))",
+    "note": "출력: blocked 에서는 t·h·w 의 주파수 범위가 겹치지 않고(예: t 6.8e-02~1.0, w 1.5e-04~2.2e-03), interleaved 에서는 세 축 모두 1e-4 부근부터 0.5~1.0 까지 넓게 걸친다. 아래 세 줄은 위 예의 몫 0.009/0.09/0.901, 1/3 씩, 0.071/0.223/0.706."
+   },
+   "pitfalls": [
+    "강사는 DeepStack 을 'DeepSeek 팀 논문'이라 말하지만 슬라이드 인용은 [Meng+ 2024] 다. 노트 보충: DeepStack 은 Meng 등 2024년 논문으로 DeepSeek 과는 무관하다 — 이름이 비슷해 생긴 말실수로 보인다.",
+    "제곱근 정규화의 정확한 식은 논문에 자세히 없다. 위 식은 강사의 해석이고, '예제 손실을 √L 로 나눈다'는 것과 '토큰 평균에 √L 을 곱한다'는 같은 몫을 준다.",
+    "슬라이드의 축 순서 표기 [t w h …] 와 본문의 [t h w …] 는 같은 생각이다 — 핵심은 순서가 아니라 번갈아 섞는다는 것."
+   ],
+   "check": [
+    {
+     "q": "Qwen3-VL S0~S3 단계 중 '긴 문맥'을 위한 단계와 그 시퀀스 길이·토큰 예산은?",
+     "a": "S2 Long-Context Pre-Training 32,768 길이 ~1T 토큰, S3 Ultra-Long-Context Adaptation 262,144(256K) 길이 100B 토큰."
+    },
+    {
+     "q": "타임스탬프를 위치 인코딩이 아니라 텍스트 토큰으로 넣으면 무엇이 좋은가?",
+     "a": "모델이 시각을 명시적인 토큰으로 보고 그대로 읽거나 인용할 수 있어 '3초 지점' 같은 질문에 직접 대응할 수 있다. 프레임 샘플링 간격이 달라져도 실제 시각이 정확히 전달된다."
+    }
+   ]
+  },
+  {
+   "start": 3570,
+   "title": "질의응답 — VLM 은 텍스트만 낸다, 시스템 부담은 데이터 로딩, 정렬 단계의 LLM, 비전 인코더가 작은 이유",
+   "points": [
+    "지금까지의 VLM 은 영상·이미지를 생성하지 않는다. 멀티모달은 입력 쪽뿐이고 출력은 늘 텍스트. RL 단계 말고는 데이터의 모든 답 토큰을 그대로 지도한다.",
+    "시스템 면에서 더 쉽지 않다: 영상은 불러오기만 해도 병목 — 언어 모델에서는 무시하던 데이터 로딩을 계산과 비동기로 겹쳐야 한다.",
+    "토큰 수: 영상이 토큰이 많으니 가중을 낮춘다(앞의 제곱근 정규화, 14강의 데이터 혼합). 그래도 텍스트 토큰이 수십 조라 멀티모달 토큰이 텍스트를 압도하진 않는다(강사 의견).",
+    "정렬 단계의 LLM 은 반드시 사전학습된 것이어야 하고 얼려 둔다. 어댑터만 정해진 토큰 예산(예: 67B)만큼 학습 — 적응형 기준은 없다.",
+    "비전 인코더는 LLM 보다 훨씬 작다(대개 10억 미만): 패치라는 국소 정보를 이해할 뿐 추론·지식은 LLM 에. OneVision 72B 의 프로젝터는 7,200만."
+   ],
+   "on_screen": "화면은 대부분 강사. 뒤 스크린에 Qwen3-VL 결과표의 2D/3D Grounding·Embodied/Spatial Understanding·Multi-Image 행, 'Square-root-normalized per-token loss … want to dominate', 'Adapter: DeepStack', Training 표(S0~S3), LLaVA-OneVision 학습 표(Trainable Projector 1.8M/20.0M/72.0M)가 다시 뜬다.",
+   "explain": [
+    "Qwen3-VL 까지 마친 뒤 질문이 몰렸다. 첫 질문은 영상 생성에 관한 것이었다 — 모델이 언제 영상을, 언제 텍스트를 내야 하는지 어떻게 아느냐. 강사의 답은 분명하다. 지금까지 본 VLM 은 영상도 이미지도 생성하지 않는다. 멀티모달은 전부 입력 쪽 이야기이고 출력은 언제나 텍스트다. 그리고 RL 단계를 빼면 모든 단계에서 데이터셋에 있는 답의 모든 토큰을 그대로 지도한다. 묘사가 얼마나 좋은지 LLM 심판이 채점하는 식의 품질 신호는 없고, 데이터에 있는 것을 따라 할 뿐이다. RL 에서야 다른 보상을 실험할 여지가 생긴다. 생성까지 하는 모델은 다음 장의 Chameleon 과, 이를 이어 Transfusion·MoT 를 다룬 CS25 노트(NDdc39KYqDU)의 영역이다.",
+    "두 번째 질문은 시스템 쪽 부담이었다. 멀티모달 학습이 순수 LLM 학습보다 시스템적으로 어렵냐는 것이다. 강사는 '쉽지는 않다'고 답한다. 데이터셋이 훨씬 크고, 특히 영상은 디스크에서 불러와 디코딩하는 것만으로 병목이 될 수 있다. 이 과목에서 데이터 로딩을 거의 다루지 않은 것은 텍스트 토큰을 불러오는 비용이 매우 싸기 때문이었다. 멀티모달에서는 5·7강에서 본 '통신을 계산과 겹치기'처럼, 데이터 로딩도 계산과 비동기로 겹치도록 짜야 한다. 토큰 수 문제도 있다. 영상은 토큰이 많으니 원하지 않으면 가중을 낮추면 된다 — 앞 장의 제곱근 정규화가 그 예이고, 14강에서 본 데이터 혼합 가중으로도 조절할 수 있다. 다만 강사는 텍스트 토큰도 수십 조 개라, 멀티모달 토큰이 텍스트를 압도할 만큼 많지는 않다고 본다.",
+    "세 번째 질문은 정렬 단계에서 언어 모델이 무엇을 아는가였다. 언어 모델은 반드시 사전학습된 것이어야 한다. 그렇지 않으면 '정렬'할 대상이 없다. 정렬 단계에서 언어 모델은 얼려 두고, 주어진 비전 인코더를 주어진 언어 모델에 잇는 어댑터만 학습한다. 얼마나 학습하냐는 물음에는, 토큰 예산(예: Qwen3-VL S0 의 670억 토큰)을 정해 두고 그만큼 학습할 뿐 '충분히 정렬되면 멈추는' 적응형 기준은 없다고 답한다.",
+    "마지막 질문은 비전 인코더가 LLM 보다 훨씬 작냐는 것이었다. 답은 대체로 그렇다. 강사가 OneVision 표를 다시 찾아 보이듯, 72B 언어 모델에 프로젝터는 7,200만(강사가 처음에 72억으로 잘못 읽었다가 바로잡는다)이고, ViT 는 대개 10억 미만이다(SigLIP so400m 약 4억, Qwen2-VL 의 ViT 6억 7,500만). 이유는 비전 인코더가 하는 일이 국소적이기 때문이다. 패치는 작고, 인코더는 패치가 무엇인지 이해할 뿐 많은 지식을 담거나 추론하지 않는다. 모델의 능력 대부분은 여전히 언어 모델에 있다. 강사는 Qwen3 를 끝으로 VLM 을 정리하며, LLaVA 논문이나 AI2 의 공개 VLM 논문(강의에서는 이름이 잘 들리지 않는다)이 데이터 구성을 더 자세히 공개한다고 권한다."
+   ],
+   "formulas": [
+    {
+     "expr": "params(VLM) = params(ViT) + params(projector) + params(LLM),  예: 0.4B + 0.07B + 72B",
+     "meaning": "VLM 파라미터의 구성. 대표값: SigLIP so400m ≈ 0.4B, 72B LLM 용 2층 MLP 프로젝터 ≈ 0.07B. 인코더·프로젝터는 전체의 1% 안팎이다."
+    }
+   ],
+   "example": {
+    "title": "LLaVA-OneVision-72B 의 파라미터 몫",
+    "body": "비전 인코더 SigLIP so400m 약 4억(0.4B), 프로젝터 7,200만(0.072B), LLM 72.7B.\n합 ≈ 73.2B — 학습 표의 'Full Model 73.2B' 와 맞는다.\n몫: LLM 99.3%, 인코더 0.55%, 프로젝터 0.1%.\n그러나 연산은 다르다: 이미지 한 장 7,290 토큰이 들어가면 LLM 의 FLOPs 는 2 × 72.7B × 7,290 ≈ 1.06e15, 인코더는 조각 10장 × 729 토큰 × 2 × 0.4B ≈ 5.8e12. 연산에서도 LLM 이 압도하지만, 이미지 토큰 수가 LLM 비용을 좌우한다는 점이 토큰 예산을 따지는 이유다."
+   },
+   "pitfalls": [
+    "'멀티모달 모델 = 이미지도 생성' 이 아니다. LLaVA·Qwen-VL 계열은 이해 전용이고 출력은 텍스트(좌표 포함)뿐이다.",
+    "비전 인코더가 작다고 이미지 처리 비용이 작은 것은 아니다. 비용의 대부분은 이미지 토큰을 받아 처리하는 LLM 쪽에서 생긴다."
+   ],
+   "check": [
+    {
+     "q": "정렬(Stage 1) 단계를 무작위 초기화한 LLM 으로 하면 왜 의미가 없나?",
+     "a": "정렬의 목표는 이미지 벡터를 'LLM 이 이미 아는 단어 임베딩 공간'에 맞추는 것이다. LLM 이 아무것도 모르면 맞출 공간 자체가 없다. 그래서 사전학습된 LLM 을 얼려 두고 어댑터만 학습한다."
+    }
+   ]
+  },
+  {
+   "start": 4020,
+   "title": "옴니로 가는 길 — Chameleon 의 이산 토큰 통일, VQ-VAE, 학습 불안정, 그리고 강의 정리",
+   "points": [
+    "VLM 은 이미지를 넣을 수만 있고 생성은 못 한다(확산 헤드를 붙여야). Chameleon(Meta 2024): 모든 것을 이산 토큰으로 — 이해와 생성을 같은 방식으로, 텍스트·이미지가 섞인 출력까지.",
+    "VQ-VAE(van den Oord 2017): 인코더가 연속 벡터를 만들고 코드북(8,192개)에서 가장 가까운 코드로 반올림 → 디코더가 복원, 재구성 손실로 학습. 512×512 이미지 → 1,024 토큰.",
+    "새 BPE 토크나이저를 학습하고, 어댑터 없이 보통의 LM 학습: Stage 1(80%) 텍스트 2.9T·텍스트/이미지 1.5T·인터리브 400B, Stage 2(20%) 절반은 고품질.",
+    "문제: 텍스트(낮은 엔트로피)와 이미지 토큰(높은 엔트로피)이 다르게 행동 → 파라미터 노름 증가·손실 불안정 → QK norm·z-loss 로 완화. 이산화가 정보를 잃어(작은 글씨 OCR) 성능도 떨어진다.",
+    "정리: 최전선은 네이티브 멀티모달을 표방하지만 세부는 비공개. 강사 추측 — 연속 인코더 + 트랜스포머 + 생성은 확산. 이해와 생성은 요구가 다르다(의미 대 세밀함), 영상은 정보 밀도가 낮아 가중을 맞춰야 한다."
+   ],
+   "on_screen": "Chameleon [Chameleon Team 2024] / So far: VLMs encode images (via CLIP or SigLIP), inject into LM / Disadvantage: can't generate images (need diffusion) / Chameleon: map everything into discrete tokens / Advantage: can analyze and generate images in a uniform way. 그림 (a) Mixed-Modal Pre-Training: 텍스트 프롬프트 'What can I bake with this?' + 이미지 토크나이저 → Mixed-Modal Auto-Regressive LM, (b) Mixed-Modal Generation: 'Here is a recipe for banana bread.' + Image De-Tokenizer → 빵 이미지. 생성 예: 'I'm bored. Could you show me some cool, quirky-looking birds?' → Puffin·Golden Pheasant 설명과 사진이 번갈아. VQ-VAE (Vector Quantized Variational Autoencoder) [Oord+ 2017]: map image to a discrete codebook, decode back to image and minimize reconstruction. 그림: Input → Encoder q_φ(z|x) → Latent features (continuous) → Vector Quantization(Nearest code, Quantized latent indices 3 12 7 / 4 4 1 / 9 18 2) → Decoder p_θ(x|z_q) → Reconstruction; Loss L = L_recon + L_vq (reconstruction loss e.g. L1 or L2, vector quantization loss commitment + codebook); Codebook (Embedding Table) E ∈ ℝ^{K×D}, e₁ … e_K. Encodes 512 x 512 image into 1024 tokens (codebook of size 8192) / Train a new BPE tokenizer. Training: Stage 1 (80%): large-scale, unsupervised (2.9T text tokens, 1.5T text/image tokens, 400B text interleaved tokens) / Stage 2 (20%): 50% of stage 1 data, 50% of high quality data. Training stability: Text tokens have low entropy, image tokens have high entropy, leads to norm growth, logit … / Fixes: QK norm, z-loss regularization. Summary: Elegant (just autoregressive modeling of discrete tokens) / Not as performant (discretization loses information - think OCR) / Training with multiple modalities is tricky. 강의 Summary: Frontier models are expected to be multimodal (natively multimodal, omni) / Fundamental challenge: how to encode non-text modalities? / Comprehension and generation might demand different things (semantics versus finer-grained) / Balance images + video (lower information density) and text for training stability / Continuous encoders + Transformer + diffusion models for generation.",
+   "explain": [
+    "지금까지의 VLM 은 이미지를 벡터로 바꿔 언어 모델에 주입했다. 언어 모델이니 출력은 텍스트뿐이다. 이미지를 생성하려면 방법이 여럿 있다 — VLM 에 확산(diffusion) 헤드를 붙이는 것도 그중 하나다. 강사가 소개하는 것은 Meta 의 Chameleon(2024)이 택한 길이다. '모든 것을 이산 토큰으로 바꾸면 어떨까?' 이미지도 어휘표의 번호열이 되면, 이미지를 읽는 것(이해)과 만드는 것(생성)이 똑같이 '다음 토큰 예측'이 된다. 텍스트 프롬프트 뒤에 이미지 토큰을 생성할 수도, 반대로 이미지 뒤에 설명을 쓸 수도 있다. 논문 예처럼 '심심한데 특이한 새를 보여 줘'라고 하면 퍼핀 설명 → 퍼핀 사진 → 금계 설명 → 금계 사진이 한 흐름으로 섞여 나온다. 강사는 스스로를 '언어 쪽 사람'이라 부르며 이 방식이 미학적으로 끌린다고 말한다 — 텍스트와 이미지가 진짜로 같은 공간에 산다.",
+    "이미지를 이산 토큰으로 바꾸는 도구가 VQ-VAE(벡터 양자화 변분 오토인코더, 2017)다. 인코더가 이미지를 연속 벡터들의 격자로 만든다. 코드북에는 원형(prototype) 벡터가 K 개(예: 8,192개) 있다. 격자의 각 벡터를 코드북에서 가장 가까운 원형으로 '반올림'하고, 그 원형의 번호가 토큰이 된다. 디코더는 코드북 벡터 격자에서 원래 이미지를 복원하고, 전체를 재구성 손실로 학습한다. 반올림(argmin)은 미분이 안 되므로 코드북 손실·커밋먼트 손실 같은 항을 더하는데, 강사는 시간 관계상 넘어간다(노트 보충: 그래디언트는 직통 추정기로 인코더에 전달한다). Chameleon 은 512×512 이미지를 32×32 = 1,024 개 토큰으로, 각 토큰은 8,192개 어휘 중 하나로 만든다. 텍스트와 이미지 토큰이 섞인 데이터에 맞춰 새 BPE 토크나이저도 학습했다.",
+    "학습 자체는 매우 단순하다. 어댑터도 단계별 얼리기도 없이 그냥 언어 모델 학습이다. Stage 1(전체의 80%)은 대규모 비지도 데이터 — 텍스트 2.9조, 텍스트·이미지 쌍 1.5조, 인터리브 문서 4,000억 토큰 — 이고, Stage 2(20%)는 Stage 1 데이터 절반과 고품질 데이터 절반이다. 하지만 문제가 셋 있다. 첫째, 학습이 불안정했다. 같은 공간의 이산 토큰이라고 불러도 이미지는 이미지다. 텍스트의 다음 토큰은 대개 예측 가능해 엔트로피가 낮지만, 이미지 토큰은 '이 칸이 정확히 어떤 파란색인가'처럼 엔트로피가 높다. 섞어 학습하니 파라미터 노름이 커지고 로짓이 커져 손실이 튀었다. 3강에서 본 QK norm 과 z-loss 정규화로 상당 부분 잡았다. 둘째, 성능이 연속 인코더 VLM 만큼 나오지 않았다. 이산화는 정보를 잃는다 — 작은 글씨를 8,192 개 원형 중 하나로 반올림하면 읽을 수 없다(OCR 을 생각하라). 셋째, 여러 모달리티를 섞어 학습하는 가중이 Qwen 때보다 더 까다롭다. VQ-VAE 는 '트랜스포머로 이미지를 생성하려면 이산 토큰이 필요하다'는 이유로 한때 이미지 생성에 널리 쓰였지만, 확산 모델이 실용화되며 덜 쓰이게 됐다. Chameleon 이후 Transfusion(자기회귀 + 확산을 한 트랜스포머에)과 Mixture-of-Transformers 로 이어지는 흐름은 CS25 초청 강연 노트(NDdc39KYqDU)가 자세히 다루므로 여기서는 반복하지 않는다.",
+    "강사의 정리는 다섯 줄이다. 최전선 모델은 이제 멀티모달, 나아가 '네이티브 멀티모달·옴니'를 기대받는다. Gemini 나 GPT 가 나올 때마다 네이티브 멀티모달이라고 홍보하고 실제로 여러 모달리티를 다루지만, 어떻게 만들었는지는 공개하지 않는다. 강사의 추측(강사 의견)은 정보를 잃지 않으려는 연속 인코더 + 생성은 확산의 조합이다. 근본 과제는 비텍스트 모달리티를 어떻게 인코딩하느냐다. 그리고 이해와 생성 사이에 비대칭이 있다 — CLIP 처럼 분류·이해에는 높은 수준의 의미만 담은 작은 벡터로 충분하지만(앞의 절제 실험이 증거), OCR 이나 이미지 생성에는 아주 세밀한 정보가 필요하다. 확산이 생성에 강한 이유도 고·저주파 세부를 정밀하게 다듬기 때문이다. 영상은 텍스트보다 정보 밀도가 낮으니 학습 안정과 균형을 위해 가중을 조심스레 맞춰야 한다. 지금의 최선은 연속 인코더 + 트랜스포머 + 생성용 확산이고, 5년 된 CLIP 과 비슷한 아이디어가 여전히 이미지 의미를 담는 표준이다. 과제는 없지만 직접 이런 모델을 학습해 보라는 권유로 강의가 끝난다."
+   ],
+   "formulas": [
+    {
+     "expr": "k*(z) = argmin_k ‖z − e_k‖²,  z_q = e_{k*}",
+     "meaning": "벡터 양자화. z 는 인코더가 낸 위치 하나의 연속 벡터(D 차원), e_k 는 코드북 E ∈ ℝ^{K×D} 의 k 번째 원형, k* 가 그 위치의 이산 토큰. Chameleon: K = 8,192."
+    },
+    {
+     "expr": "L = ‖x − D(z_q)‖² + ‖sg[z] − e‖² + β‖z − sg[e]‖²",
+     "meaning": "VQ-VAE 손실(노트 보충 — 강의는 L = L_recon + L_vq 까지만). x 는 원본, D 는 디코더, sg 는 그래디언트를 막는 stop-gradient. 둘째 항은 코드북을 인코더 출력 쪽으로, 셋째(커밋먼트, β≈0.25)는 인코더를 코드 쪽으로 당긴다."
+    },
+    {
+     "expr": "정보량 상한 = N_tok · log₂ K = 1024 · 13 bit",
+     "meaning": "이미지 한 장을 토큰 1,024 개, 어휘 8,192(=2¹³)로 표현하면 많아야 13,312 bit ≈ 1.6 KB. 원본 512×512×3 = 786 KB 의 약 1/470 — 세밀한 글자가 사라지는 이유를 숫자로 본다."
+    }
+   ],
+   "example": {
+    "title": "Chameleon 의 이미지 한 장과 학습 토큰",
+    "body": "512×512 → 다운샘플 16배 → 32×32 = 1,024 토큰, 어휘 8,192 = 2¹³ → 정보량 상한 1,024 × 13 = 13,312 bit = 1,664 byte.\n원본 RGB 512·512·3 = 786,432 byte → 약 473 배 압축. 사진의 대략적인 모양은 남지만 6pt 글씨는 남지 않는다.\n비교: Qwen2-VL 은 같은 512×512 를 (512/28)² ≈ 18×18 = 324 개의 '연속' 토큰(각 수천 차원 실수 벡터)으로 넣는다 — 토큰은 적어도 정보량 상한은 훨씬 높다.\n학습 토큰: Stage 1 = 2.9T + 1.5T + 0.4T = 4.8T (전체의 80%) → 전체 약 6T, Stage 2 약 1.2T."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nrng = np.random.default_rng(0)\n\nK, D = 8192, 256                             # 코드북 8192개, 코드 벡터 256차원\ncodebook = rng.normal(size=(K, D))\n\ndef quantize(z):                             # z [N, D] → 가장 가까운 코드 번호\n    d2 = (z ** 2).sum(1, keepdims=True) - 2 * z @ codebook.T + (codebook ** 2).sum(1)\n    return d2.argmin(1)\n\nz = rng.normal(size=(1024, D))               # 512x512 → 32x32 = 1024 개의 잠재 벡터\nidx = quantize(z)\nz_q = codebook[idx]\nprint(\"토큰\", idx.shape, \"범위\", idx.min(), \"~\", idx.max())\nprint(\"양자화 오차(평균 제곱)\", round(float(((z - z_q) ** 2).mean()), 3))\nprint(\"이미지 한 장 정보량 상한\", 1024 * np.log2(K), \"bit =\", 1024 * 13 // 8, \"byte\")\nprint(\"원본 512x512x3 바이트\", 512 * 512 * 3)",
+    "note": "출력: 토큰 (1024,) 범위 3~8177, 양자화 오차, 정보량 상한 13312 bit = 1664 byte, 원본 786432 byte. 무작위 코드북이라 오차 값 자체는 의미 없고, 모양과 정보량 계산을 보라."
+   },
+   "diagram": {
+    "title": "세 가지 길 — 무엇을 토큰으로 쓰나",
+    "code": "flowchart TB\n  I[이미지] --> E1[연속 인코더<br/>CLIP·SigLIP]\n  E1 --> P[프로젝터] --> L1[LLM<br/>텍스트만 출력]\n  I --> Q[VQ-VAE<br/>이산 코드 1024개]\n  Q --> L2[Chameleon 단일 LM<br/>텍스트+이미지 토큰 출력]\n  L2 --> DQ[VQ 디코더 → 이미지]\n  E1 --> L3[트랜스포머 + 확산 헤드<br/>강사 추측: 최전선의 조합]"
+   },
+   "pitfalls": [
+    "'이산 토큰이니 텍스트와 똑같다'는 착각이 Chameleon 의 불안정성의 원인이다. 엔트로피가 다른 두 분포를 한 소프트맥스로 학습하면 로짓·노름이 커진다 — QK norm·z-loss 가 필요했다.",
+    "'최전선 모델은 연속 인코더 + 확산' 은 강사의 추측이다. 공개된 사실이 아니다."
+   ],
+   "check": [
+    {
+     "q": "VQ-VAE 코드북을 8,192 에서 65,536 으로 늘리면 이미지 한 장(1,024 토큰)의 정보량 상한은 얼마나 늘고, 대가는 무엇인가?",
+     "a": "log₂ 65,536 = 16 bit 이므로 1,024×16 = 16,384 bit, 13→16 으로 약 23% 증가. 대가: LM 의 어휘·출력 소프트맥스가 커지고 코드북 활용이 고르지 않거나 학습이 어려워질 수 있다. 토큰 수를 늘리는 편(해상도↑)이 정보량을 더 키우지만 문맥이 길어진다."
+    },
+    {
+     "q": "강사가 말한 '이해와 생성의 비대칭'을 이 강의의 실험 하나로 뒷받침하시오.",
+     "a": "CLIP 절제 실험: 이미지 표현을 배우는 데 캡션을 토큰 단위로 생성하는 목표가 대조 목표보다 훨씬(약 12배) 비효율적이었다. 이해에는 대략적 의미만 필요하고 정확한 세부를 모델링할 필요가 없다는 증거다. 반대로 생성·OCR 은 세부가 필요해 Chameleon 의 이산화가 손해를 봤다."
+    }
+   ]
+  }
+ ],
+ "concepts": [
+  {
+   "term": "옴니 모델 (Omni model)",
+   "explain": "어떤 모달리티 조합이든 입력으로 받고(이해) 어떤 조합이든 출력하는(생성) 모델. 강의가 제시한 북극성이고, 오늘 다룬 VLM 은 그중 '이미지를 읽어 텍스트를 내는' 조각이다.",
+   "at": 60
+  },
+  {
+   "term": "연속 토큰 / 이산 토큰",
+   "explain": "트랜스포머 입력 단위의 두 종류. 이산 토큰은 어휘표 번호(텍스트, Chameleon 의 VQ 코드), 연속 토큰은 이미 만들어진 실수 벡터(VLM 의 이미지 패치 임베딩). 어느 쪽이든 대략 의미 단위여야 한다.",
+   "at": 120
+  },
+  {
+   "term": "CLIP 대조 손실",
+   "explain": "배치 N 쌍의 N×N 코사인 유사도 행렬에서 행·열마다 대각선(짝)을 고르는 2N 개의 softmax 교차 엔트로피. 학습되는 온도로 로짓을 날카롭게 한다.",
+   "at": 360
+  },
+  {
+   "term": "제로샷 분류",
+   "explain": "클래스 이름을 'A photo of a …' 문장으로 만들어 텍스트 벡터를 얻고, 이미지 벡터와 내적이 가장 큰 클래스를 고르는 법. 새 파라미터를 학습하지 않는다.",
+   "at": 1020
+  },
+  {
+   "term": "ViT 패치 토큰",
+   "explain": "이미지를 P×P 패치로 잘라 펴서 선형 사상한 토큰. 토큰 수 (H/P)(W/P) — ViT-L/14@336 은 576, SigLIP/14@384 는 729.",
+   "at": 780
+  },
+  {
+   "term": "Attention pooling",
+   "explain": "패치 출력들의 전체 평균을 질의로 삼아 한 번 더 어텐션해 이미지 하나의 요약 벡터를 만드는 법. 단순 평균보다 중요한 위치에 가중을 둔다.",
+   "at": 840
+  },
+  {
+   "term": "SigLIP 시그모이드 손실",
+   "explain": "N×N 행렬의 칸마다 '짝인가'를 묻는 독립 이진 분류. softmax 정규화가 없어 블록 단위 분산 계산이 쉽고 배치 크기와 손실이 분리된다. 편향 b 를 큰 음수로 시작해 음성 과다를 다룬다.",
+   "at": 1360
+  },
+  {
+   "term": "프로젝터 (어댑터)",
+   "explain": "비전 인코더 출력을 LLM 임베딩 공간으로 옮기는 부품. 선형(LLaVA) → 2층 MLP(OneVision) → 교차 어텐션 리샘플러(Qwen-VL, 고정 256) → DeepStack(Qwen3-VL, 여러 층 주입)으로 진화.",
+   "at": 1920
+  },
+  {
+   "term": "정렬 단계 (Alignment stage)",
+   "explain": "VLM 학습의 첫 단계. 사전학습된 비전 인코더와 LLM 을 얼리고 프로젝터만 학습해 이미지 벡터가 LLM 이 아는 단어 임베딩처럼 보이게 한다. 여기서의 '정렬'은 RLHF 정렬과 다른 뜻이다.",
+   "at": 1980
+  },
+  {
+   "term": "AnyRes",
+   "explain": "고해상도 이미지를 인코더 입력 크기의 a×b 조각으로 잘라 각각 인코딩하고 이어 붙이는 방식(+ 전체 축소본 1장). 토큰이 너무 많으면 이중선형 보간으로 줄인다.",
+   "at": 2220
+  },
+  {
+   "term": "모달리티별 토큰 예산",
+   "explain": "단일 이미지는 고해상도, 여러 이미지는 기본 해상도, 영상은 프레임당 저해상도로 처리해 최대 길이를 비슷하게(약 6~9천 토큰) 맞추는 OneVision 의 전략.",
+   "at": 2400
+  },
+  {
+   "term": "모달리티 간 전이",
+   "explain": "단일 이미지로만 배운 능력(차트 읽기, OCR, 시각 프롬프트)이 여러 이미지·영상 과제에서도 나타나는 현상. 과제가 충분히 많으면 조합해 일반화한다.",
+   "at": 2580
+  },
+  {
+   "term": "교차 어텐션 리샘플러",
+   "explain": "학습되는 질의 벡터 고정 개수(Qwen-VL 은 256)가 가변 개수의 패치 특징을 어텐션으로 요약해, 해상도와 무관하게 고정 길이 출력을 내는 어댑터.",
+   "at": 2780
+  },
+  {
+   "term": "동적(원본) 해상도",
+   "explain": "이미지를 고정 크기로 줄이지 않고 원본 해상도로 인코딩해, 큰 이미지는 많은 토큰·작은 이미지는 적은 토큰을 받게 하는 방식. Qwen2-VL 은 28×28 픽셀 = 토큰 하나.",
+   "at": 2960
+  },
+  {
+   "term": "M-RoPE (멀티모달 RoPE)",
+   "explain": "위치를 (시간, 높이, 너비) 세 값으로 두고 차원 묶음마다 해당 축의 RoPE 를 거는 위치 인코딩. 텍스트는 세 값이 같아 1D RoPE 와 같다. Qwen3-VL 은 축을 번갈아 배치(인터리브)해 모든 축이 전 주파수 대역을 갖게 했다.",
+   "at": 3060
+  },
+  {
+   "term": "제곱근 정규화 토큰 손실",
+   "explain": "예제 손실 가중을 길이의 제곱근에 반비례하게 두어, 긴 영상 예제가 학습을 지배하지 않도록 하는 Qwen3-VL 의 장치(강사 해석).",
+   "at": 3360
+  },
+  {
+   "term": "DeepStack",
+   "explain": "비전 인코더 여러 층의 특징을 LLM 앞쪽 여러 층의 잔차 흐름에 직접 더하는 깊은 융합 어댑터(Meng 2024). Qwen3-VL 이 채택.",
+   "at": 3410
+  },
+  {
+   "term": "VQ-VAE",
+   "explain": "인코더 출력 벡터를 코드북(예: 8,192개)의 가장 가까운 원형으로 반올림해 이산 코드로 만들고 디코더로 복원하는 오토인코더. Chameleon 이 이미지를 1,024 토큰으로 바꾸는 데 썼다.",
+   "at": 4140
+  },
+  {
+   "term": "이해와 생성의 비대칭",
+   "explain": "이해(분류·질의응답)에는 높은 수준의 의미만 담은 표현으로 충분하지만, OCR·이미지 생성에는 세밀한 정보가 필요하다는 강사의 요점. 하나의 범용 인코더가 둘 다 잘하기 어렵다.",
+   "at": 4520
+  }
+ ],
+ "trends": [
+  {
+   "claim": "모든 주요 최전선 모델은 멀티모달이고, 나아가 '네이티브 멀티모달·옴니'를 기대받는다.",
+   "evidence": "강의 도입과 정리 슬라이드 'Frontier models are expected to be multimodal'. Gemini·GPT 출시 때마다 네이티브 멀티모달을 내세운다.",
+   "at": 4440
+  },
+  {
+   "claim": "트랜스포머가 모든 모달리티에서 규모상 최선이라 데이터를 토큰으로 바꾸는 쪽으로 간다.",
+   "evidence": "강사: 다른 구조를 시도한 노력에도 규모에서는 여전히 트랜스포머가 가장 낫다.",
+   "at": 120
+  },
+  {
+   "claim": "VLM 의 표준 틀은 '비전 인코더 + 프로젝터 + 사전학습 LLM' 이고, 일의 대부분은 데이터 큐레이션(합성·과제 특화)이다.",
+   "evidence": "LLaVA-OneVision 요약 슬라이드, Qwen3-VL 요약 'Lots of data work, but not many details'.",
+   "at": 2700
+  },
+  {
+   "claim": "이미지는 고정 크기에서 가변 길이 입력으로 — AnyRes 에서 원본 해상도(동적 해상도)로 옮겨 갔다.",
+   "evidence": "LLaVA-OneVision AnyRes, Qwen2-VL 의 11,427/8/1,125/2,208 토큰 예.",
+   "at": 2960
+  },
+  {
+   "claim": "멀티모달의 큰 부분은 결국 긴 문맥 문제다 — 영상 때문에 문맥을 256K 까지 늘린다.",
+   "evidence": "OneVision 의 32프레임 상한, Qwen3-VL 의 S2(32K)·S3(256K) 단계.",
+   "at": 3200
+  },
+  {
+   "claim": "오픈 VLM(Qwen3-VL 235B)이 GPT-5·Gemini 2.5 Pro·Claude Opus 4.1 과 여러 벤치마크에서 겨룬다.",
+   "evidence": "Qwen3-VL 결과표에서 굵은 글씨(행 최고)를 상당수 차지.",
+   "at": 3510
+  },
+  {
+   "claim": "이산 토큰으로 모든 모달리티를 통일하는 방식(VQ 계열)은 생성에서 확산 모델에 밀려 덜 쓰인다.",
+   "evidence": "Chameleon 의 학습 불안정과 이산화 정보 손실, 강사: 확산이 실용화되며 이 계열의 인기가 줄었다.",
+   "at": 4440
+  },
+  {
+   "claim": "강사 의견: 비공개 최전선 모델은 아마 '연속 인코더 + 트랜스포머 + 생성은 확산' 조합일 것이다.",
+   "evidence": "정리 슬라이드 'Continuous encoders + Transformer + diffusion models for generation' 과 강사의 '내 추측'이라는 단서.",
+   "at": 4500
+  }
+ ],
+ "study": {
+  "prereq": [
+   "트랜스포머·셀프 어텐션과 RoPE(CS336 3강 노트 lVynu4bo1rY)",
+   "softmax 교차 엔트로피·로지스틱 회귀",
+   "데이터 병렬과 집합 통신(7강 노트 SzpOcwdIL0Y)",
+   "사후학습·SFT 의 기본(15강 노트 2oH6PWPrYFo)",
+   "NumPy 로 행렬 연산하기"
+  ],
+  "steps": [
+   {
+    "do": "CLIP 손실과 SigLIP 손실을 NumPy 로 직접 짜고, 2쌍짜리 예를 손으로 계산해 코드와 맞춘다. 온도와 편향 b 를 바꿔 손실이 어떻게 변하는지 본다.",
+    "why": "VLM 의 모든 비전 인코더가 이 두 손실 중 하나로 학습됐다. 2N 개 softmax 와 N² 개 시그모이드의 차이가 분산 학습·배치 크기 이야기의 뿌리다."
+   },
+   {
+    "do": "ViT 패치화와 토큰 수 계산을 연습한다 — 224/336/384 해상도, 패치 14/16, AnyRes 조각, Qwen2-VL 의 28픽셀 규칙으로 여러 이미지 크기의 토큰 수를 표로 만든다.",
+    "why": "이미지 한 장이 몇 토큰인지가 VLM 의 문맥·비용·지연을 결정한다. 실무에서 가장 자주 하는 계산이다."
+   },
+   {
+    "do": "LLaVA 논문을 읽고 '정렬(프로젝터만) → 미세조정(프로젝터 + LLM)' 2단계와 GPT-4 데이터 합성 방식을 정리한다.",
+    "why": "가장 단순한 VLM 레시피이고, 이후 모든 모델이 이 뼈대를 키운 것이다."
+   },
+   {
+    "do": "LLaVA-OneVision 의 학습 표(해상도·토큰·데이터·학습 파라미터·학습률)를 단계별로 다시 그리고, 프로젝터 파라미터 수를 직접 계산해 본다.",
+    "why": "단계마다 무엇을 얼리고 무엇을 얼마나 학습하는지가 VLM 학습 설계의 핵심 결정이다."
+   },
+   {
+    "do": "Qwen2-VL 논문에서 동적 해상도와 M-RoPE 절을 읽고, 위치 id (t, h, w) 를 텍스트·이미지·영상이 섞인 시퀀스에 대해 손으로 매겨 본다.",
+    "why": "RoPE 를 2D·3D 로 확장하는 방식은 영상·문서 모델에서 계속 바뀌는 부분이고 Qwen3-VL 의 인터리브 MRoPE 로 이어진다."
+   },
+   {
+    "do": "Chameleon 과 VQ-VAE 논문을 읽고, 이어서 CS25 초청 강연 노트(NDdc39KYqDU)로 Transfusion·MoT 를 공부한다.",
+    "why": "이해만 하는 VLM 에서 생성까지 하는 옴니 모델로 가는 다음 단계다."
+   }
+  ],
+  "practice": [
+   "c02·c06 코드로 배치 크기 N 을 4, 64, 1024 로 바꿔 같은 품질의 짝 데이터에서 CLIP 손실과 SigLIP 손실이 어떻게 변하는지 그래프로 그려 보기(CLIP 은 대략 log N 으로 커진다).",
+   "c07 의 링 방식 SigLIP 손실을 장치 4대·장치당 8쌍으로 바꾸고, 단계마다 주고받는 바이트 수를 all-gather 방식과 비교하기.",
+   "작은 CLIP(예: OpenCLIP 의 작은 ViT 체크포인트)을 내려받아 자기 사진 10장에 대해 제로샷 분류를 하고, 프롬프트 문장('a photo of a …' 대 이름만)에 따른 정확도 차이를 기록하기.",
+   "스마트폰 화면 캡처·영수증·풍경 사진 세 장에 대해 CLIP 전처리(336 가운데 자르기), AnyRes(384 조각, 최대 9), Qwen2-VL(28픽셀)의 토큰 수와 잘려 나가는 면적 비율을 표로 비교하기.",
+   "Hugging Face 의 공개 소형 VLM 하나를 골라 이미지 해상도를 바꿔 가며 입력 토큰 수와 응답 지연을 재고, 위 계산과 맞는지 확인하기."
+  ],
+  "resources": [
+   {
+    "title": "CS336 Language Modeling from Scratch 과목 홈페이지",
+    "url": "https://cs336.stanford.edu/"
+   },
+   {
+    "title": "CLIP — Learning Transferable Visual Models From Natural Language Supervision (Radford 2021)",
+    "url": "https://arxiv.org/abs/2103.00020"
+   },
+   {
+    "title": "ViT — An Image is Worth 16x16 Words (Dosovitskiy 2020)",
+    "url": "https://arxiv.org/abs/2010.11929"
+   },
+   {
+    "title": "SigLIP — Sigmoid Loss for Language Image Pre-Training (Zhai 2023)",
+    "url": "https://arxiv.org/abs/2303.15343"
+   },
+   {
+    "title": "OpenCLIP 저장소",
+    "url": "https://github.com/mlfoundations/open_clip"
+   },
+   {
+    "title": "LLaVA — Visual Instruction Tuning (Liu 2023)",
+    "url": "https://arxiv.org/abs/2304.08485"
+   },
+   {
+    "title": "LLaVA-OneVision (Li 2024)",
+    "url": "https://arxiv.org/abs/2408.03326"
+   },
+   {
+    "title": "Qwen-VL (Bai 2023)",
+    "url": "https://arxiv.org/abs/2308.12966"
+   },
+   {
+    "title": "Qwen2-VL (Wang 2024)",
+    "url": "https://arxiv.org/abs/2409.12191"
+   },
+   {
+    "title": "Chameleon: Mixed-Modal Early-Fusion Foundation Models (2024)",
+    "url": "https://arxiv.org/abs/2405.09818"
+   },
+   {
+    "title": "VQ-VAE — Neural Discrete Representation Learning (van den Oord 2017)",
+    "url": "https://arxiv.org/abs/1711.00937"
+   }
+  ]
+ },
+ "jobs": {
+  "roles": [
+   "멀티모달(VLM) 연구·엔지니어",
+   "LLM 사후학습 엔지니어",
+   "문서 AI·OCR 엔지니어",
+   "컴퓨터 비전 엔지니어",
+   "ML 시스템·추론 최적화 엔지니어"
+  ],
+  "skills": [
+   "Python",
+   "PyTorch",
+   "NumPy",
+   "Transformer",
+   "CLIP",
+   "VLM",
+   "LLM",
+   "Hugging Face",
+   "Distributed Training",
+   "CUDA",
+   "OCR"
+  ]
+ },
+ "related": [
+  "NDdc39KYqDU",
+  "2oH6PWPrYFo",
+  "lVynu4bo1rY",
+  "lNTajqxxOn4",
+  "SzpOcwdIL0Y",
+  "5sxHosTLPF8",
+  "Q15rhEWZPQ4",
+  "JuoVZkPBiKk",
+  "2fq9wYslV0A",
+  "zbHXQRUNlH0"
+ ],
+ "materials": {
+  "transcript": "official",
+  "frames": 155,
+  "every_sec": 30
+ },
+ "written_at": "2026-11-21"
+}
