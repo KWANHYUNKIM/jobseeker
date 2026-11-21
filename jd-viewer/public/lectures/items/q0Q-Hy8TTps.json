@@ -1,0 +1,824 @@
+{
+ "id": "q0Q-Hy8TTps",
+ "source": {
+  "platform": "youtube",
+  "url": "https://www.youtube.com/watch?v=q0Q-Hy8TTps",
+  "channel": "Stanford Online",
+  "published": "2026-11-13",
+  "duration_sec": 4634,
+  "views": 31087
+ },
+ "course": {
+  "school": "Stanford",
+  "code": "CS329Z",
+  "term": "Autumn 2026",
+  "lecture_no": "5",
+  "speaker": "Michael Ryan (Stanford CS 박사과정, DSPy 기여자) — 공동 강의 Diyi Yang·John Yang"
+ },
+ "title": "DSPy vs. LangGraph: AI Agent Frameworks Explained | Stanford CS329Z Lecture 5 with Michael Ryan",
+ "title_ko": "DSPy 대 LangGraph — 에이전트 프레임워크의 추상화, 오픈소스 하네스, 오케스트레이션과 평가",
+ "topic": "agents",
+ "tags": [
+  "DSPy",
+  "LangGraph",
+  "LangChain",
+  "AI Agent",
+  "Prompt Optimization",
+  "Temporal",
+  "Langfuse",
+  "MLflow",
+  "Pydantic",
+  "Python",
+  "LLM"
+ ],
+ "level": "중급",
+ "one_line": "같은 캘린더 프로그램을 DSPy(시그니처·모듈·옵티마이저)와 LangGraph(상태·노드·엣지)로 짜 보고, 하네스·오케스트레이션·평가까지",
+ "summary": [
+  "CS329Z 5강은 이 과목에서 드물게 '추상화'를 배우는 시간이다. 강사 Michael Ryan(DSPy 기여자, 스스로 DSPy 쪽으로 편향돼 있다고 밝힘)은 PyTorch 의 loss.backward() 가 손으로 쓰던 역전파를 감추듯, 에이전트 프레임워크가 프롬프트 조립·파싱·재시도·도구 반복을 감춘다는 비유로 시작한다. 지도는 '에이전시 스펙트럼' 한 줄이다. 모델(부품) → 워크플로·복합 AI 시스템(제어 흐름이 프로그램에) → 에이전트(제어 흐름이 모델에). 층마다 도구가 있고(모델 API·LiteLLM / DSPy·LangGraph / SWE-agent·OpenHands), 그 위에 신뢰성(Temporal)과 관측성(Langfuse·MLflow·LangSmith) 도구가 덮인다. AI 시스템을 '엔지니어링'하려면 시스템·데이터·평가 세 기둥이 다 있어야 한다는 것이 강의 전체의 축이다.",
+  "강의의 절반은 주피터 노트북 실습이다. 작은 캘린더 앱(tinycal)을 외부 환경으로 두고, '이메일에서 일정을 뽑아 이모지를 붙여 캘린더에 넣는다'는 같은 프로그램을 DSPy, LangGraph, Temporal 로 차례로 다시 쓴다. DSPy 에서는 시그니처('message -> response', 타입 붙은 Literal·float, 클래스 시그니처 ExtractEvent)가 입출력 계약이 되고, 어댑터가 그것을 [[ ## 칸 ## ]] 표지가 붙은 프롬프트로 결정론적으로 바꾸며, docstring 이 시스템 프롬프트가 된다. 모듈은 Predict·ChainOfThought(출력 앞에 reasoning 칸 추가)이고, dspy.Module 의 forward 에 평범한 파이썬 if 문으로 두 LLM 호출을 엮는다.",
+  "가장 공들인 대목은 옵티마이저다. 정답이 붙은 합성 이메일 50통(학습 30 / 시험 20)과 '날짜·시각·길이가 모두 맞으면 1' 이라는 정확 일치 지표(틀린 칸을 문장 피드백으로도 돌려줌)를 준비하자, GPT-5.4 Nano 는 처음부터 100% 였고 Gemma 3 12B 는 55% 였다. GEPA 옵티마이저가 지시문(docstring) 하나만 꼼꼼한 형식 규칙으로 다시 쓰자 작은 모델도 시험 세트 100% 가 됐다. 비용(수백 번 실행, 백만 토큰 단위), 과적합(학습·시험 분리), 캐시와 재현성, 스타트렉풍 이상한 프롬프트 일화가 질의응답으로 이어졌다. 이어 dspy.ReAct 한 줄 에이전트와, 긴 입력을 REPL 변수로 다루는 dspy.RLM 을 보였다.",
+  "LangGraph 는 같은 문제를 '공유 작업대' 그림으로 본다. 상태(TypedDict)를 노드가 읽고 바꾼 칸만 돌려주며, 엣지가 제어 흐름이고, 조건부 엣지는 다음 노드 이름을 돌려주는 라우터 함수다. DSPy forward 안의 if 문이 그래프의 점선 분기가 된다. create_agent 두 줄로 모델 ⇄ 도구 반복 에이전트도 만든다. 강사의 비교(의견)는 'DSPy 는 파이썬 제어 흐름과 프롬프트 최적화, LangGraph 는 견고한 그래프 오케스트레이션'이고, LangGraph 노드 안에 DSPy 모듈을 넣는 조합도 권한다.",
+  "후반부는 스펙트럼의 오른쪽과 위쪽이다. 하네스(환경을 뺀 에이전트의 나머지)의 설계 선택을 mini-SWE-agent(bash 하나·누적 기록·행동마다 새 프로세스), OpenHands(이벤트 저장·지속 터미널·반복 감지), Pi(도구 넷·트리 기록), OpenClaw(30분 heartbeat·마크다운 정체성·야간 기억 정리)로 대비하고, 같은 모델도 하네스에 따라 Terminal-Bench 2 성공률이 크게 갈린다는 그래프와 LLM 이 하네스를 스스로 쓰는 Meta-Harness 를 소개한다. METR 의 과제 길이 그래프로 '오래 도는 에이전트에는 믿을 만한 인프라가 필요하다'를 보이고, Temporal 의 활동·워크플로·워커·서버 모델과 3번 재시도 후 성공한 이력을 UI 로 보여 준다.",
+  "마지막은 모범 사례다. 단순하게(좁은 일은 워크플로, 데이터가 많으면 미세조정 모델까지), 실패를 관찰·복구 가능하게(추적·타임아웃·예산, 오류를 에이전트에게 돌려주기, 메타 에이전트 Shepherd), 평가를 돌려라(헤드라인 벤치마크가 아니라 내 도메인 맞춤 평가, 경계 사례·실패 시나리오). 한계로는 추상화가 밑바닥을 가리고, 많은 호출이 엮이면 원인 찾기가 어렵고, 외부 라이브러리에 기대게 된다는 점을 들며 '프롬프트를 보여 줘'로 맺는다. YouTube 제목은 'DSPy 대 LangGraph' 지만 실제 강의 범위는 프레임워크 지형 전체(하네스·Temporal·관측성·모범 사례)를 덮는다. 이 노트의 코드는 모두 라이브러리 없이 핵심 추상화를 흉내 낸 것이다(DSPy·LangGraph·Temporal 미설치 환경에서 직접 실행)."
+ ],
+ "why_now": "강사가 든 근거가 그대로 이유다. DSPy·LangGraph 는 GitHub 별이 각각 수만 개이고, 에이전트 엔지니어 채용 검색에서 요구·우대 기술로 실제로 적혀 있다(슬라이드의 'DSPy Developer Jobs', 'Now Hiring: 2000 Langgraph Jobs'). 동시에 METR 그래프처럼 LLM 이 맡는 과제가 길어지면서 에이전트가 몇 시간씩 도는 일이 흔해졌고, 그만큼 Temporal 같은 내구성 있는 실행과 Langfuse·LangSmith 같은 관측 도구가 필수 인프라가 됐다. 또 같은 모델이라도 하네스에 따라 Terminal-Bench 2 성공률이 16%p 넘게 갈리고, 지시문 하나를 자동 최적화해 12B 공개 모델이 API 모델과 같은 정확도를 낸 데모처럼 '어떤 모델이냐'보다 '어떻게 엮고 평가하고 최적화하느냐'가 품질과 비용을 가른다. 국내 LLM 애플리케이션·AI 에이전트 공고에서도 LangChain/LangGraph 경험, 평가 파이프라인, 비용 최적화가 반복해서 요구되는 이유다.",
+ "chapters": [
+  {
+   "start": 0,
+   "title": "프레임워크는 무엇을 감추나 — PyTorch 비유, 학습 목표, AI 시스템의 세 기둥",
+   "points": [
+    "프레임워크는 밑바닥 시스템 세부를 감춰 준다: numpy 로 역전파를 손으로 쓰던 일을 PyTorch 에서는 loss.backward() 한 줄이 대신한다.",
+    "이 과목의 다른 강의는 그 세부를 직접 구현·이해하는 것이 목표이고, 이번 강의만 '추상화' 자체를 배운다.",
+    "AI 시스템 공학의 세 기둥: 데이터(학습 데이터·롤아웃·시연·사람 피드백), 시스템(모델·복합 시스템·에이전트), 평가+지표(통과율·정확 일치·LLM 심판·비용/지연).",
+    "시스템만 있으면 '만든' 것이고, 데이터와 평가까지 갖춰야 '엔지니어링'한 것이다."
+   ],
+   "on_screen": "'Abstractions in Frameworks' — 왼쪽 'Writing Backprop by hand'(numpy 로 d_pred, d_w, d_b 를 직접 계산하고 w, b 를 갱신), 오른쪽 'Writing Backprop with PyTorch'(optimizer, loss.backward(), optimizer.step()). 다음 장 'Frameworks abstract away some of the underlying system details… The goal for today is to learn the abstractions.' 학습 목표 셋(Identify·Relate·Assess). 강의 개요: 에이전트를 '엔지니어링'한다는 뜻(10분) / 워크플로·프로그램 프레임워크(25분) / 오픈소스 하네스(15분) / 오케스트레이션·텔레메트리(15분) / 모범 사례(15분). 'Three Pillars of AI Systems' 세 칸(파랑 Data, 초록 System or Model, 빨강 Evaluation + Metric). 이어서 과목 전체 일정 목록(Optimization, Data Selection & Quality, LLM-as-Judge, Coding & Software Agents, Frontiers).",
+   "explain": [
+    "강의는 '여기 PyTorch 써 본 사람?'이라는 질문으로 시작한다. 거의 모두가 손을 든다. 이 비유가 강의 전체의 뼈대다. 선형 회귀 하나를 numpy 만으로 학습시키려면 예측값과 손실을 계산한 뒤, 손실을 가중치 w 와 편향 b 로 미분한 식(d_pred = 2·(pred − y)/n, d_w = Σ d_pred·x, d_b = Σ d_pred)을 사람이 직접 유도해 코드로 옮기고, 마지막에 w ← w − lr·d_w 로 갱신해야 한다. PyTorch 에서는 순전파만 쓰고 loss.backward() 를 부르면 미분은 프레임워크가 알아서 한다. 미분이 사라진 것이 아니라, 계산 그래프를 기록해 두었다가 거꾸로 따라가는 일을 라이브러리가 맡은 것이다. 이렇게 '밑에서 일어나는 일은 그대로인데 사람이 매번 손으로 하지 않아도 되게 해 주는 층'을 추상화라 한다.",
+    "에이전트 프레임워크도 똑같다. LLM 을 부르는 프롬프트를 손으로 조립하고, 응답 문자열에서 필요한 값을 정규식으로 뜯어내고, 실패하면 다시 묻고, 도구를 부르고 결과를 다시 넣는 반복을 매번 직접 짤 수도 있다. 프레임워크는 이 반복을 '시그니처', '모듈', '상태 그래프' 같은 개념으로 묶어 준다. 강사가 분명히 하는 점은, 이 과목의 나머지 강의는 바로 그 밑바닥(컨텍스트 관리, 도구 호출, 메모리, 검색)을 직접 구현하고 이해하는 것이 목표이고, 오늘만 예외적으로 위층의 추상화를 배운다는 것이다. 학습 목표도 세 동사로 정리된다. 흔히 쓰는 프레임워크를 알아보고(identify), 그 추상화가 지금까지 배운 시스템 설계의 어디에 대응하는지 연결하고(relate), 오케스트레이션·신뢰성 도구가 얼마나 쓸모 있는지 판단하는(assess) 것이다.",
+    "그다음 '세 기둥' 그림이 나온다. 1강에서도 잠깐 나온 틀이다. 첫째 기둥은 시스템 자체로, 언어 모델 하나일 수도 있고 여러 호출을 엮은 복합 AI 시스템(워크플로)이나 에이전트일 수도 있다. 둘째는 데이터로, 학습 데이터, 시스템이 스스로 만들어 낸 실행 기록(롤아웃), 사람이 보여 준 시연, 사람 피드백이 모두 여기에 든다. 셋째는 평가와 지표로, 과제 통과율, 정보 추출이라면 정답과 완전히 같은지 보는 정확 일치(exact match), LLM 에게 채점을 맡기는 LLM 심판, 그리고 비용과 지연이 있다. 강사의 요지는 간단하다. 시스템만 대충 엮어 에이전트를 '만드는' 것은 데이터도 평가도 없이 가능하고 오늘 그렇게 하는 법도 보여 주겠지만, 그것을 '엔지니어링'했다고 하려면 세 기둥이 모두 있어야 한다는 것이다.",
+    "이 구분은 뒤에서 DSPy 옵티마이저를 볼 때 그대로 돌아온다. 이메일 50통(데이터), 날짜·시각·길이가 모두 맞으면 1점인 지표(평가), 그리고 추출 모듈(시스템)이 갖춰지자 작은 모델의 정확도를 55% 에서 100% 로 끌어올리는 자동 개선이 가능해진다. 과목 일정표에서 보듯 지금은 '시스템' 부분을 다루고 있고, 곧 데이터 선택과 품질, LLM 심판과 평가 인프라, 최적화 같은 주제로 넘어간다(노트 보충: 1강 노트의 에이전트 구성 요소 — LLM 코어·메모리·도구·환경 — 와 2강의 컨텍스트 엔지니어링이 오늘 프레임워크가 감추는 바로 그 '밑바닥'이다)."
+   ],
+   "example": {
+    "title": "역전파를 손으로 한 번 — 프레임워크가 대신하는 일의 크기",
+    "body": "데이터 x = [1, 2], y = [3, 5], 초기 w = 1, b = 0, 학습률 lr = 0.1. 예측 pred = w·x + b = [1, 2], 오차 pred − y = [−2, −3], 손실 MSE = (4 + 9)/2 = 6.5. d_pred = 2·(pred − y)/2 = [−2, −3]. d_w = Σ d_pred·x = −2·1 + (−3)·2 = −8, d_b = Σ d_pred = −5. 갱신: w = 1 − 0.1·(−8) = 1.8, b = 0 − 0.1·(−5) = 0.5. 새 예측 [2.3, 4.1], 손실 ((0.7)² + (0.9)²)/2 = 0.65 로 줄었다. PyTorch 에서는 이 넷째 줄까지의 미분을 loss.backward() 한 줄이 한다 — 에이전트 프레임워크가 감추는 '프롬프트 조립·파싱·재시도'도 이처럼 매번 손으로 하면 길고 틀리기 쉬운 일이다."
+   },
+   "pitfalls": [
+    "'프레임워크를 쓰면 밑바닥을 몰라도 된다'가 아니다. 강사는 강의 끝에서 같은 비유로 돌아와, 역전파를 모르고도 신경망은 짤 수 있지만 고장 났을 때 고치려면 밑을 알아야 한다고 정리한다.",
+    "시스템만 있고 데이터·지표가 없으면 '좋아졌다'를 말할 근거가 없다. 프롬프트를 바꿔 몇 번 눈으로 확인한 것은 평가가 아니다."
+   ],
+   "check": [
+    {
+     "q": "세 기둥 중 '롤아웃'은 어디에 속하고, 왜 그 자리인가?",
+     "a": "데이터 기둥이다. 시스템이 과제를 실제로 수행하며 남긴 실행 기록이라 시스템이 '만들어 낸' 데이터이고, 이것이 다시 시스템 개선(학습·최적화)의 재료가 된다."
+    }
+   ]
+  },
+  {
+   "start": 270,
+   "title": "에이전시 스펙트럼과 프레임워크 지형 — 제어 흐름은 누가 쥐나",
+   "points": [
+    "스펙트럼 왼쪽 '모델'(큰 시스템의 작은 부품) → 가운데 '워크플로/복합 AI 시스템'(제어 흐름이 프로그램에 있음) → 오른쪽 '에이전트'(제어 흐름이 모델에 있음).",
+    "층마다 프레임워크가 있다: 모델 호출은 OpenAI API·Anthropic API·LiteLLM, 워크플로는 DSPy·LangGraph, 에이전트는 SWE-agent·OpenHands 같은 하네스.",
+    "그 위에 신뢰성(Temporal — 죽어도 다시 살아나 계속 돈다)과 관측성(Langfuse·MLflow — 무슨 일이 일어났는지 보여 준다) 도구가 덮인다.",
+    "DSPy·LangGraph 는 업계 채용 공고에도 요구·우대 기술로 나온다."
+   ],
+   "on_screen": "'Framework Landscape' 그림: 가로선 위 세 점 Model(Small part of a larger system) — Workflow or Compound AI System(Logic and Orchestration Lies in the Program) — Agent(Control flow is role of the AI Model). 아래에 OpenAI API·Anthropic API·LiteLLM / DSPy·LangGraph / SWE-agent·OpenHands 로고. 위쪽 띠 'Reliability: Temporal' 과 'Observability: Langfuse, mlflow'. 오늘 순서를 Part 1(워크플로), Part 2(에이전트), Part 3(신뢰성·관측성)로 빨간 상자. 'Are these frameworks actually used?' — GitHub 별 dspy 약 38.5k, langgraph 약 42.8k, temporal 약 23.5k 와 'DSPy Developer Jobs in San Francisco', 'Now Hiring: 2000 Langgraph Jobs' 검색 결과 캡처. Recap 슬라이드.",
+   "explain": [
+    "이 강의의 지도는 가로선 하나다. 강사는 이것을 에이전시(agency)의 스펙트럼이라 부르고, 기준을 딱 하나로 잡는다. '다음에 무엇을 할지 정하는 제어 흐름이 누구 손에 있나'. 맨 왼쪽은 모델이다. LLM 호출 하나는 큰 시스템 속 작은 부품일 뿐이고, 입력을 넣으면 출력이 나온다. 가운데는 워크플로 또는 복합 AI 시스템이다. 모델을 세 번 부르고, 이런 경우엔 이 모델로 저런 경우엔 저 모델로 보내는 식의 논리를 사람이 프로그램으로 쓴다. 반복과 분기가 있어도 그 결정은 코드가 내린다. 모델은 프로그램이 한 줄씩 실행되다 만나는 함수 하나에 불과하다. 맨 오른쪽이 에이전트다. 사람은 과제만 주고, '이 일을 하려면 이 도구를 써야겠다', '다른 모델을 한 번 더 불러야겠다'는 판단은 모델이 한다.",
+    "왜 이 기준이 중요한가. 제어 흐름이 코드에 있으면 실행 경로를 미리 알 수 있어 테스트하고 디버깅하기 쉽고, 비용과 시간도 예측할 수 있다. 대신 미리 생각하지 못한 상황에는 대응하지 못한다. 제어 흐름이 모델에 있으면 열린 과제에 유연하게 대응하지만, 같은 입력에도 경로가 달라질 수 있고 몇 번 도구를 부를지 모른다. 이 트레이드오프가 강의 끝의 첫 번째 모범 사례('단순하게 시작하라')로 다시 이어진다. 층마다 도구도 다르다. 모델 층에는 OpenAI·Anthropic API 와, 여러 제공사를 같은 인터페이스로 부르게 해 주는 LiteLLM 이 있다. 워크플로 층에는 오늘의 주인공 DSPy 와 LangGraph 가 있다. 에이전트 층에는 SWE-agent·OpenHands 처럼 이미 만들어진 에이전트(하네스)가 있다. 다만 경계는 흐릿해서, 뒤에서 보듯 DSPy 와 LangGraph 로도 한 줄짜리 에이전트를 만들 수 있다.",
+    "스펙트럼 위에는 띠가 하나 더 있다. 신뢰성 도구(Temporal)와 관측성 도구(Langfuse, MLflow)다. 질문에 대한 강사의 구분은 이렇다. 관측성 도구는 실행 기록(트레이스)과 오류를 보여 주어 사람이 가서 고치게 한다. 신뢰성 도구는 그것도 하지만, 한발 더 나아가 프로세스가 죽으면 다시 띄우고 실패한 단계를 자동으로 재시도해 시스템이 계속 돌게 만든다. 즉 '사람에게 드러내느냐, 스스로 처리하고 나중에 보게 하느냐'의 차이다. 강사 스스로 업계에 정해진 분류가 있는 것은 아니고 실제로는 많이 겹친다고 덧붙인다.",
+    "마지막으로 '아무 GitHub 프로젝트나 골라 온 것 아니냐'는 의문에 답하는 슬라이드가 있다. 세 라이브러리 모두 별이 수만 개이고, 에이전트 엔지니어 채용을 검색하면 DSPy 와 LangGraph 가 요구 기술이나 우대 기술로 실제로 적혀 있다는 것이다. 정리하면, 이 강의는 (1) 워크플로·복합 시스템 프레임워크(DSPy, LangGraph), (2) 오픈소스 에이전트 하네스, (3) 신뢰성·관측성 도구 순서로 스펙트럼을 왼쪽에서 오른쪽으로, 그리고 위로 훑는다. OpenAI API 쓰는 법은 각자 알아서 익힐 수 있다고 보고 건너뛴다."
+   ],
+   "diagram": {
+    "title": "에이전시 스펙트럼과 층별 도구",
+    "code": "flowchart LR\n  M[모델<br/>큰 시스템의 부품] --> W[워크플로·복합 AI 시스템<br/>제어 흐름 = 프로그램]\n  W --> A[에이전트<br/>제어 흐름 = 모델]\n  M -.- M1[OpenAI API · Anthropic API · LiteLLM]\n  W -.- W1[DSPy · LangGraph]\n  A -.- A1[mini-SWE-agent · OpenHands · Pi]\n  R[신뢰성: Temporal] -.-> W\n  O[관측성: Langfuse · MLflow · LangSmith] -.-> A"
+   },
+   "pitfalls": [
+    "'에이전트가 워크플로보다 진보한 것'이라는 서열이 아니다. 같은 일을 할 수 있다면 왼쪽이 디버깅·비용 면에서 유리하다.",
+    "관측성과 신뢰성의 경계는 강사가 편의상 그은 것이다. LangSmith 처럼 평가 점수까지 보여 주는 도구, Temporal 처럼 UI 로 이력을 보여 주는 도구가 섞여 있다."
+   ],
+   "check": [
+    {
+     "q": "'이메일이 오면 일정 정보를 뽑아 캘린더에 넣고, 일정이 없으면 아무것도 안 한다'를 파이썬 if 문으로 짰다. 스펙트럼의 어디인가?",
+     "a": "워크플로(복합 AI 시스템)다. LLM 은 추출과 이모지 선택에만 쓰이고, 다음 단계로 갈지 말지는 사람이 쓴 if 문이 정한다."
+    }
+   ]
+  },
+  {
+   "start": 540,
+   "title": "DSPy ① 시그니처 — 입력·출력 계약과, 어댑터가 그것을 프롬프트로 바꾸는 방법",
+   "points": [
+    "DSPy 의 세 개념: 시그니처(무엇 — 모델이 보는 입력·출력), 모듈(어떻게 — 시그니처를 어떤 추론 전략으로 채우나), 옵티마이저(개선 — 지표가 오르도록 프롬프트·가중치를 고친다).",
+    "가장 단순한 시그니처는 문자열 \"message -> response\" 이고, dspy.Predict(시그니처) 로 감싸면 호출 가능한 함수가 된다.",
+    "타입을 붙이면(Literal['positive','negative','neutral'], float) 출력이 그 형식으로 강제된다 — 타입 없이 돌렸을 때 positive / Negative / negative 처럼 표기가 흔들렸다.",
+    "시그니처 → 프롬프트 변환은 '어댑터'가 결정론적으로 한다(LLM 이 하지 않는다). ChatAdapter 가 실패하면 JSONAdapter 로 다시 시도하고, 그래도 안 되면 오류를 낸다."
+   ],
+   "on_screen": "'DSPy' 로고 다음 세 상자: Signatures (What) — 입력·출력을 엄격히 정의 / Modules (How) — 시그니처와 프로그램 논리를 호출 가능한 함수로 조합 / Optimizers — 지표를 최대화하도록 프롬프트나 가중치 개선. 노트북 셀: signature = \"message -> response\"; chat = dspy.Predict(signature); print(chat(message=\"Hello, how are you?\").response) → 인사 답장 한 줄. 이어서 sentiment_signature = \"message -> sentiment\" 로 세 문장을 분류한 출력 positive / Negative / negative. 타입 시그니처 셀 typed_signature = \"message: str -> sentiment: Literal['positive','negative','neutral'], confidence: float\" 와 출력 Prediction(sentiment='negative', confidence=0.9). dspy_llm.inspect_history(n=3) 로 본 실제 프롬프트: User message 에 [[ ## message ## ]] 와 입력 문장, 끝에 [[ ## sentiment ## ]] 부터 출력 칸을 채우라는 요구. Response 에 [[ ## sentiment ## ]] negative / [[ ## confidence ## ]] 0.86 / [[ ## completed ## ]].",
+   "explain": [
+    "DSPy 를 소개하며 강사는 자신이 몇 년 전 이 라이브러리 작업에 참여했으니 편향이 있다고 먼저 밝힌다. 그리고 꼭 알아야 할 개념을 셋으로 줄인다. 시그니처는 '무엇을' 하느냐, 즉 언어 모델이 무엇을 받고 무엇을 내놓아야 하는지의 계약이다. 모듈은 '어떻게' 하느냐로, 같은 계약을 그냥 한 번에 채울지, 먼저 생각을 적게 한 뒤 채울지, 도구를 써 가며 채울지를 정한다. 옵티마이저는 데이터와 지표가 주어졌을 때 그 계약을 더 잘 지키도록 프롬프트(또는 가중치)를 자동으로 고친다. 함수에 빗대면 시그니처는 함수 선언(타입 힌트), 모듈은 함수 본문, 옵티마이저는 그 본문을 테스트 점수에 맞춰 다듬는 도구다.",
+    "가장 단순한 시그니처는 화살표가 있는 문자열이다. \"message -> response\" 는 '입력 칸 message 를 받아 출력 칸 response 를 내라'는 뜻이다. 이것을 dspy.Predict 로 감싸면 chat(message=\"Hello, how are you?\") 처럼 키워드 인자로 부를 수 있고, 결과의 .response 에 답이 들어 있다. 인자 이름과 결과 속성 이름이 시그니처의 칸 이름과 정확히 일치한다는 점이 핵심이다. 사람이 '이 형식으로 답하라'는 프롬프트를 쓰지 않았는데도 구조화된 입출력이 생긴다. 그런데 \"message -> sentiment\" 로 감정 분류를 돌려 보니 결과가 positive, Negative, negative 로 대소문자가 흔들렸다. 계약이 '문자열 하나'로만 정해져 있으니 모델이 아무 표기나 써도 계약 위반이 아닌 것이다. 그래서 타입을 붙인다. sentiment 를 Literal['positive','negative','neutral'] 로, 확신도 confidence 를 float 로 선언하면 출력은 세 값 중 하나여야 하고 확신도는 숫자로 파싱되어 Prediction(sentiment='negative', confidence=0.9) 같은 객체가 나온다.",
+    "그럼 이 강제는 어떻게 이뤄지나. 수강생의 질문이 정확히 이것이었다. 답은 '어댑터'다. 어댑터는 시그니처를 실제 프롬프트 문자열로 바꾸고, 모델의 응답을 다시 파이썬 값으로 파싱하는 층이다. inspect_history 로 들여다본 프롬프트에는 시스템 메시지에 입력 칸과 출력 칸 목록, 각 칸의 타입, 그리고 '모든 상호작용은 이런 구조를 따른다'는 틀이 적혀 있고, 사용자 메시지에는 [[ ## message ## ]] 라는 표지 아래 실제 입력이, 마지막에 '[[ ## sentiment ## ]] 부터 출력 칸을 채워라'는 요구가 붙는다. 모델은 [[ ## sentiment ## ]] negative, [[ ## confidence ## ]] 0.86, [[ ## completed ## ]] 처럼 답하고, DSPy 가 표지를 기준으로 잘라 타입에 맞게 변환한다. 이 변환은 LLM 이 아니라 정해진 코드가 하므로 같은 시그니처는 늘 같은 프롬프트가 된다(결정론적). 응답이 형식을 어기면 기본인 ChatAdapter 다음으로 JSON 으로 받는 JSONAdapter 를 시도하고, 그래도 실패하면 오류를 낸다. 사용자 정의 어댑터도 넣을 수 있다.",
+    "왜 이렇게 하나(노트 보충). 손으로 쓴 프롬프트는 '무엇을 원하나'(과제 정의)와 '어떤 형식으로 쓰나'(직렬화)와 '이 모델에 잘 먹히는 말투'(모델 특화 요령)가 한 문자열에 뒤섞인다. 시그니처는 첫째만 사람이 쓰게 하고, 둘째는 어댑터에, 셋째는 옵티마이저에 넘긴다. 그래서 모델을 바꾸거나 출력 칸을 하나 더할 때 프롬프트 전체를 다시 쓰지 않아도 된다. 2강에서 배운 구조화 출력(제약 디코딩)이 '토큰 생성 단계에서' 형식을 강제한다면, 어댑터는 '프롬프트와 파싱 단계에서' 형식을 강제하고 검증한다는 점이 다르다. 아래 코드는 DSPy 없이 이 흐름(시그니처 → 프롬프트 → 응답 파싱·타입 검사)을 흉내 낸 것으로, 실제 DSPy 의 프롬프트 문구와 똑같지는 않다."
+   ],
+   "example": {
+    "title": "\"message: str -> sentiment: Literal[...], confidence: float\" 를 손으로 컴파일하고 파싱하기",
+    "body": "① 입력 칸 1개(message), 출력 칸 2개(sentiment, confidence). ② 시스템 메시지: '입력 칸: message / 출력 칸: sentiment, confidence / 목표: …(docstring)'. ③ 사용자 메시지: '[[ ## message ## ]]' 다음 줄에 'I am very confused today!', 끝에 'sentiment, confidence 순서로 답하고 [[ ## completed ## ]] 로 끝내라'. ④ 모델 응답이 '[[ ## sentiment ## ]] / Negative / [[ ## confidence ## ]] / 0.86' 이라면, 표지로 잘라 sentiment='Negative' → 소문자로 바꾸면 허용값 {positive, negative, neutral} 안에 있으므로 'negative'. confidence='0.86' → float 0.86. ⑤ 만약 sentiment 가 'confused' 였다면 허용값 밖이므로 파싱 실패 → 다른 어댑터로 재시도. 결과: {sentiment: 'negative', confidence: 0.86}. 출력 칸이 k 개면 응답 표지는 k+1 개(마지막 completed)다 — 여기선 3개."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import re\nfrom typing import Literal, get_args\n# DSPy 없이 '시그니처 → 프롬프트 → 파싱' 흐름만 흉내 낸다(필드 표기는 DSPy ChatAdapter 모양을 따름)\nSIG = {\"inputs\": {\"message\": str},\n       \"outputs\": {\"sentiment\": Literal[\"positive\", \"negative\", \"neutral\"], \"confidence\": float},\n       \"instructions\": \"Classify the sentiment of the message.\"}\ndef compile_prompt(sig, **inputs):\n    sys = (f\"Your input fields are: {', '.join(sig['inputs'])}\\n\"\n           f\"Your output fields are: {', '.join(sig['outputs'])}\\n\"\n           f\"Objective: {sig['instructions']}\")\n    user = \"\".join(f\"[[ ## {k} ## ]]\\n{v}\\n\\n\" for k, v in inputs.items())\n    user += \"Respond with \" + \", \".join(f\"[[ ## {o} ## ]]\" for o in sig[\"outputs\"]) + \", then [[ ## completed ## ]]\"\n    return sys, user\ndef parse(sig, reply):\n    got = dict(re.findall(r\"\\[\\[ ## (\\w+) ## \\]\\]\\n(.*)\", reply))\n    out = {}\n    for name, typ in sig[\"outputs\"].items():\n        raw = got[name].strip()                       # 없으면 KeyError → 실제 DSPy 는 JSON 어댑터로 재시도\n        if getattr(typ, \"__origin__\", None) is Literal:\n            if raw.lower() not in get_args(typ): raise ValueError(f\"{name}={raw!r} 허용값 아님\")\n            out[name] = raw.lower()                   # 'Negative' 와 'negative' 를 하나로\n        else:\n            out[name] = typ(raw)                      # '0.86' → 0.86\n    return out\nsys, user = compile_prompt(SIG, message=\"I am very confused today!\")\nprint(sys); print(\"---\"); print(user); print(\"---\")\nfake_reply = \"[[ ## sentiment ## ]]\\nNegative\\n[[ ## confidence ## ]]\\n0.86\\n[[ ## completed ## ]]\"\nprint(parse(SIG, fake_reply))",
+    "note": "직접 실행함(Python 3.12, DSPy 없이 표준 라이브러리만 — DSPy 를 흉내 낸 것이지 DSPy 코드가 아니다). 출력: 시스템 메시지 3줄, [[ ## message ## ]] 가 든 사용자 메시지, 그리고 {'sentiment': 'negative', 'confidence': 0.86}. DSPy 가 설치돼 있다면 dspy.Predict(\"message: str -> sentiment: Literal['positive','negative','neutral'], confidence: float\") 와 inspect_history 로 진짜 프롬프트를 비교해 보라."
+   },
+   "pitfalls": [
+    "칸 이름이 곧 지시문이다. 'sentiment' 를 's' 로 쓰면 모델은 무엇을 채워야 할지 모른다 — 이름을 대충 짓지 말 것.",
+    "타입 강제가 '정답'을 보장하지는 않는다. 'negative' 가 허용값이라 통과해도 실제 감정이 neutral 일 수 있다. 형식 검증과 정확도 평가는 다른 일이다.",
+    "어댑터가 프롬프트를 만든다고 프롬프트를 안 봐도 되는 것은 아니다. 강의 끝의 '프롬프트를 보여 달라'는 경고처럼 inspect_history 로 늘 확인하라."
+   ],
+   "check": [
+    {
+     "q": "시그니처를 프롬프트로 바꾸는 일은 LLM 이 하는가?",
+     "a": "아니다. 어댑터라는 정해진 코드가 결정론적으로 한다. LLM 은 그렇게 만든 프롬프트에 답할 뿐이고, 그 답을 파싱·검증하는 것도 어댑터다."
+    },
+    {
+     "q": "타입 없는 'message -> sentiment' 에서 positive/Negative/negative 가 나온 것은 왜 '버그'가 아닌가?",
+     "a": "계약이 '아무 문자열'이었으므로 모델은 계약을 어기지 않았다. 원하는 값의 집합을 Literal 로 계약에 적어야 그 밖의 값이 위반이 된다."
+    }
+   ]
+  },
+  {
+   "start": 945,
+   "title": "DSPy ② 클래스 시그니처 — 필드 이름·설명·타입, 그리고 docstring 이 시스템 프롬프트가 된다",
+   "points": [
+    "시그니처가 복잡해지면 클래스로 쓴다: email 은 InputField, event_name·date·start·duration_minutes 는 OutputField.",
+    "타입은 꽤 자유롭다 — datetime.date, datetime.time, int, 그리고 '| None'(이메일에 없으면 None).",
+    "모델이 칸에 무엇을 넣을지 아는 단서는 칸 이름, 타입, desc(예: '24-hour clock') 뿐이다. 시그니처에 없는 정보는 돌려받을 수 없다.",
+    "클래스 docstring 이 시스템 프롬프트(지시문)로 쓰인다. 핵심만 적고 세부는 옵티마이저에 맡기라는 것이 강사의 권고."
+   ],
+   "on_screen": "노트북 셀(시그니처가 복잡해지면 클래스로): import datetime as dt; class ExtractEvent(dspy.Signature) 의 docstring 'Extract event details from an email.' / email: str = dspy.InputField() / event_name: str | None = dspy.OutputField() / date: dt.date | None = dspy.OutputField() / start: dt.time | None = dspy.OutputField(desc=\"24-hour clock\") / duration_minutes: int | None = dspy.OutputField(desc=\"duration of the event in minutes, if known\"). extract = dspy.Predict(ExtractEvent) 로 금요일 10월 9일 오전 10시 회의 이메일을 넣은 결과 event_name='meeting', date=datetime.date(2026, 10, 9), start=datetime.time(10, 0), duration_minutes=None.",
+   "explain": [
+    "문자열 시그니처는 칸이 두세 개를 넘으면 금방 지저분해진다. 그래서 dspy.Signature 를 상속한 클래스로 쓴다. 강의의 예는 이메일에서 일정 정보를 뽑는 ExtractEvent 다. 입력은 email 하나, 출력은 일정 이름(event_name), 날짜(date), 시작 시각(start), 길이(duration_minutes) 넷이다. 날짜는 파이썬 datetime 모듈의 date 타입, 시각은 time 타입, 길이는 정수로 선언한다. DSPy 는 이런 임의의 타입을 보고 모델 출력을 그 형식으로 맞추는 방법을 스스로 정한다. 모든 출력에 '| None' 을 붙인 것도 눈여겨볼 점이다. 이메일에 길이가 안 적혀 있으면 모델이 지어내지 말고 None 을 내도 된다는 계약이다. 실제로 '이번 금요일 10월 9일 오전 10시 회의' 이메일에서는 이름 meeting, 날짜 2026-10-09, 시각 10:00 을 뽑고 길이는 None 으로 남겼다.",
+    "질문이 이어졌다. '모델은 칸 이름만 보고 무엇을 넣을지 아는가? 날짜가 두 개면?' 답은 '그렇다, 시그니처가 전부다'다. date 칸에 무엇을 넣을지 알려 주는 것은 date 라는 단어와 그 타입, 그리고 desc 로 붙인 설명뿐이다. start 에 '24-hour clock' 이라고 적어 두면 그 문장도 프롬프트에 들어가 오후 3시를 15:00 으로 쓰게 만든다. 거꾸로, 이메일에 '참고로 장소가 바뀌었다' 같은 중요한 정보가 있어도 시그니처에 그 칸이 없으면 모델은 그것을 말해 줄 방법이 없다. 강사는 이것이 에이전트적인 방식(모델이 무엇을 알려 줄지 스스로 판단)과 워크플로 방식(무엇을 받고 무엇을 내놓을지 사람이 엄격히 정함)의 차이라고 짚는다.",
+    "그럼 '날짜가 여럿이면 첫 번째를 골라라' 같은 지시는 어디에 쓰나. 클래스의 docstring 이다. DSPy 는 시그니처 클래스의 문서 문자열을 그대로 시스템 프롬프트의 지시문으로 쓴다. 강사도 약간 '편법' 같은 설계라고 인정한다. 한 수강생은 '문서용 문자열을 실행되는 코드처럼 쓰니 경계가 흐려진다'고 지적했고, 다른 수강생은 반대로 '지시문을 일반 필드로 두면 누군가 그 필드를 float 로 선언하는 식의 실수가 생기고 이를 막으려면 어댑터가 모든 필드를 검사해야 하는데, docstring 은 모듈당 하나뿐이라 그런 실수가 구조적으로 불가능하다'고 변호했다. 강사는 둘 다 일리가 있다고 받는다. 코드를 훑는 사람이 '이 시그니처가 무슨 일을 하나'를 한 줄로 읽을 수 있다는 장점도 있다.",
+    "얼마나 자세히 써야 하나. 강사의 답은 과제에 따라 다르지만, '과제의 핵심이고 빠지면 안 되는 것'은 docstring 에 꼭 쓰고, 자잘한 형식 요령은 옵티마이저가 찾게 두라는 것이다. 뒤에서 보겠지만 실제로 GEPA 옵티마이저가 바꾼 것은 이 docstring 한 문장뿐이었고, 그것만으로 작은 모델의 정확도가 크게 올랐다. 직접 쓴 docstring 은 옵티마이저의 출발점이 되므로, 손으로 쓴 프롬프트와 자동 최적화는 서로 배타적이지 않다(질문 답변: 직접 쓰고 나서 최적화하면 그 위에서 고친다). 또 다른 질문에 답해, 어떤 LM 을 쓸지는 노트북 맨 앞 설정 칸에서 dspy 의 LM 설정으로 한 번 정해 두었다고 밝혔다."
+   ],
+   "example": {
+    "title": "같은 이메일, 칸 정의만 바꿔서 결과 예상하기",
+    "body": "이메일: 'Lab sync on Dec 7 2026 at 3 PM, two hours. (Moved from Dec 5.)' ① start 에 desc 없음 → 모델이 '3 PM' 이라고 쓰면 time 파싱이 실패하거나 03:00 으로 잘못 해석될 위험. desc='24-hour clock' → 15:00. ② duration_minutes: int | None → 'two hours' 를 2 × 60 = 120 으로 바꿔야 한다. 타입이 int 이므로 '2 hours' 문자열은 파싱 실패. ③ 날짜가 둘(12/7, 12/5)인데 docstring 에 규칙이 없으면 어느 쪽이 나올지 보장이 없다. docstring 에 '옮겨진 경우 새 날짜를 쓴다' 한 줄을 넣으면 2026-12-07. ④ '장소 변경' 같은 정보는 칸이 없으니 결과에 절대 안 나온다 — 필요하면 notes: str | None 칸을 더한다. 출력 칸 4개가 모두 None 을 허용하므로 모델이 모르면 비워 둘 수 있는 자리가 4곳이다."
+   },
+   "pitfalls": [
+    "'| None' 을 안 붙이면 모델은 정보가 없어도 뭔가를 지어내 채우려 한다. 모를 수 있는 칸은 None 을 허용하라.",
+    "docstring 은 주석이 아니다. 고치면 프롬프트가 바뀌고 결과가 바뀐다. 코드 리뷰에서도 '동작 변경'으로 다뤄야 한다."
+   ],
+   "check": [
+    {
+     "q": "ExtractEvent 에서 모델이 'duration_minutes 칸이 무엇인지' 알 수 있는 단서를 모두 들어라.",
+     "a": "칸 이름 duration_minutes, 타입 int | None, desc '분 단위 길이, 알 때만', 그리고 클래스 docstring 의 전체 지시문."
+    }
+   ]
+  },
+  {
+   "start": 1215,
+   "title": "DSPy ③ 모듈 — Predict 와 ChainOfThought, 그리고 파이썬 논리로 모듈을 합성하기",
+   "points": [
+    "모듈은 시그니처를 '어떻게' 채울지의 전략이다: Predict(그대로), ChainOfThought(출력 앞에 reasoning 칸을 하나 더함), BestOfN 등.",
+    "ChainOfThought 는 마법이 아니라 출력 칸 맨 앞에 reasoning 을 끼워 넣는 것 — 칸 순서대로 생성되므로 이유를 먼저 쓰고 답을 쓴다.",
+    "dspy.Module 을 상속해 __init__ 에 하위 모듈을 두고 forward() 에 평범한 파이썬 제어 흐름을 쓴다(PyTorch 의 nn.Module 을 본뜬 모양).",
+    "UpdateCalendarFromEmail: 추출(LLM 호출 1) → 일정이 없으면 바로 반환 → 이모지 고르기(LLM 호출 2) → tinycal.add_event(파이썬) → dspy.Prediction 반환."
+   ],
+   "on_screen": "셀 '다른 추론 전략': extract_cot = dspy.ChainOfThought(ExtractEvent) 의 출력 Prediction(reasoning='The email states there is a meeting \"this Friday, October 9th at 10 AM PST.\" So the event name …', event_name='meeting', date=datetime.date(2026, 10, 9), start=datetime.time(10, 0), duration_minutes=None). 둘째 시그니처 class PickEmoji(dspy.Signature): docstring 'Pick one emoji that best represents a calendar event.' / event_name: str = dspy.InputField() / emoji: str = dspy.OutputField(desc=\"exactly one emoji character\"); pick_emoji(event_name=\"Dentist\") → reasoning 'A dentist appointment is a healthcare-related calendar event…', emoji='🦷'. 셀 'Modules are composable and can include python logic': class UpdateCalendarFromEmail(dspy.Module) — __init__ 에 self.extract = dspy.ChainOfThought(ExtractEvent) # LLM call 1, self.pick_emoji = dspy.ChainOfThought(PickEmoji) # LLM call 2 / forward(self, email) 에서 details = self.extract(email=email), 'Plain Python control flow: not every email contains an event.' 주석과 함께 None 검사 후 dspy.Prediction(event=None, status=\"no event found in email\"), 아니면 emoji 를 고르고 tinycal.add_event(title, date, start, duration_minutes, emoji) — '# tinycal assumes 1 hour if None' — 후 status=\"added to calendar\". 실행 결과 Prediction(event={'id': '252583ff', 'notes': '', 'emoji': …, 'title': 'meeting', 'date': '2026-10-09', 'start': '10…'}, status='added to calendar') 와 Prediction(event=None, status='no event found in email'). 브라우저의 작은 캘린더 앱(tinycal) 금요일 칸에 meeting 이 생긴다.",
+   "explain": [
+    "시그니처가 '계약'이라면 모듈은 그 계약을 이행하는 방식이다. 기본 Predict 는 시그니처를 프롬프트로 바꿔 한 번 부르고 끝낸다. 같은 ExtractEvent 시그니처를 dspy.ChainOfThought 로 감싸면 출력에 reasoning 이라는 칸이 하나 더 생긴다. 실행 결과를 보면 모델은 먼저 '이메일에 이번 금요일 10월 9일 오전 10시 회의가 있다고 적혀 있으니 일정 이름은 …'처럼 근거를 적고, 그다음 event_name, date, start 를 채운다. 강사가 강조하는 것은 '순서가 중요하다'는 점이다. LLM 은 앞에서부터 토큰을 하나씩 생성하므로, reasoning 칸이 앞에 있으면 답을 쓰기 전에 생각을 펼친 텍스트가 이미 문맥에 들어가 뒤의 답에 영향을 준다. 즉 생각의 사슬(chain-of-thought)은 별도의 신비한 기능이 아니라 '출력 칸 하나를 앞에 더한 시그니처 변환'이다. 이 밖에 여러 번 뽑아 가장 좋은 것을 고르는 BestOfN 같은 모듈도 있다(강의에서는 이름만 언급).",
+    "모듈이 진가를 드러내는 것은 합성이다. 강사는 둘째 시그니처 PickEmoji(일정 이름을 받아 이모지 하나를 고른다)를 만들어 'Dentist' 를 넣고 치아 이모지가 나오는 것을 보인 뒤, 두 모듈을 하나로 묶는다. dspy.Module 을 상속한 UpdateCalendarFromEmail 클래스의 __init__ 에서 self.extract 와 self.pick_emoji 를 각각 ChainOfThought 로 만들어 두고, forward 메서드에 실제 흐름을 쓴다. 이름을 forward 로 하는 것이 중요한데, PyTorch 의 nn.Module 에서 영감을 받은 규약이기 때문이다. PyTorch 에서 층(layer)을 __init__ 에 두고 forward 에서 순서대로 부르듯, DSPy 에서는 LLM 호출 단위를 __init__ 에 두고 forward 에서 부른다. 이렇게 해 두면 옵티마이저가 모듈 안의 모든 하위 예측기(predictor)를 찾아 각각의 프롬프트를 고칠 수 있다(노트 보충).",
+    "forward 안은 평범한 파이썬이다. 먼저 self.extract(email=email) 로 세부 정보를 뽑는다. 일정 이름이나 날짜나 시작 시각 중 하나라도 None 이면 '이 메일엔 일정이 없다'고 보고 dspy.Prediction(event=None, status='no event found in email') 를 돌려준다. 강사는 이 판단 기준은 라이브러리와 상관없는 자기 설계 결정이고 허점이 있을 수 있다고 덧붙인다. 일정이 있으면 self.pick_emoji 로 이모지를 고르고, Claude 에게 만들게 했다는 작은 캘린더 SDK(tinycal)의 add_event 에 제목·날짜·시작·길이·이모지를 넘긴다. 길이가 None 이면 tinycal 이 1시간으로 가정한다. 회의 이메일과 '슬라이드 보내 줘서 고맙다'는 이메일을 차례로 넣자, 첫째는 캘린더에 추가되고 둘째는 일정 없음으로 끝났다. 화면의 캘린더 앱 금요일 칸에 실제로 meeting 이 생겼다.",
+    "이것이 스펙트럼의 '워크플로'다. LLM 을 두 번 부르지만, 두 번째를 부를지 말지는 if 문이 정한다. 모델은 정해진 계약 안에서 칸만 채운다. 그래서 실패 경로가 분명하다. 추출이 틀렸는지, 이모지가 이상한지, 캘린더 API 가 실패했는지를 단계별로 나눠 볼 수 있다. 아래 코드는 DSPy 없이 Predict·ChainOfThought·Module 의 관계를 흉내 낸 것으로, LLM 자리에 규칙으로 답하는 가짜 함수를 넣었다. 가짜 LM 이 reasoning 칸을 '추가로 요구받았을 때만' 채운다는 점이 ChainOfThought 의 정체를 잘 보여 준다."
+   ],
+   "code": {
+    "lang": "python",
+    "src": "# DSPy 의 Predict / ChainOfThought / Module 합성을 흉내 낸다. LM 은 규칙으로 답하는 가짜다.\nimport re  # 실행: PYTHONIOENCODING=utf-8 (이모지 출력)\ndef fake_lm(fields, text):                      # 실제로는 여기서 LLM 이 불린다\n    out = {}\n    if \"reasoning\" in fields: out[\"reasoning\"] = f\"본문에서 날짜·시각을 찾는다: {text[:30]}...\"\n    m = re.search(r\"(\\d{1,2}) ?(AM|PM)\", text)\n    if \"start\" in fields: out[\"start\"] = (f\"{int(m[1]) % 12 + (12 if m[2] == 'PM' else 0):02d}:00\" if m else None)\n    if \"event_name\" in fields: out[\"event_name\"] = \"meeting\" if \"meeting\" in text else None\n    if \"emoji\" in fields: out[\"emoji\"] = \"🦷\" if \"dentist\" in text.lower() else \"📅\"\n    return out\nclass Predict:\n    def __init__(self, outputs): self.outputs = outputs\n    def __call__(self, text): return fake_lm(self.outputs, text)\nclass ChainOfThought(Predict):                   # 출력 맨 앞에 reasoning 칸 하나를 더할 뿐\n    def __init__(self, outputs): super().__init__([\"reasoning\"] + outputs)\ncalendar = []\nclass UpdateCalendarFromEmail:\n    def __init__(self):\n        self.extract = ChainOfThought([\"event_name\", \"start\"])   # LM 호출 1\n        self.pick_emoji = Predict([\"emoji\"])                     # LM 호출 2\n    def forward(self, email):\n        d = self.extract(email)\n        if d[\"event_name\"] is None or d[\"start\"] is None:        # 평범한 파이썬 제어 흐름\n            return {\"event\": None, \"status\": \"no event found in email\"}\n        ev = {**d, \"emoji\": self.pick_emoji(d[\"event_name\"])[\"emoji\"], \"minutes\": 60}\n        calendar.append(ev)\n        return {\"event\": ev, \"status\": \"added to calendar\"}\nm = UpdateCalendarFromEmail()\nprint(m.forward(\"We have a meeting scheduled for this Friday at 10 AM PST.\"))\nprint(m.forward(\"Thanks for sending the slides, they look great!\"))\nprint(len(calendar), \"event(s) on calendar\")",
+    "note": "직접 실행함(DSPy·LLM 없이 흉내만 — 진짜 라이브러리 코드가 아니다). 출력: 첫 이메일은 {'event': {'reasoning': …, 'start': '10:00', 'event_name': 'meeting', 'emoji': '📅', 'minutes': 60}, 'status': 'added to calendar'}, 둘째는 {'event': None, 'status': 'no event found in email'}, 마지막 줄 '1 event(s) on calendar'. 윈도 콘솔에서는 이모지 때문에 PYTHONIOENCODING=utf-8 이 필요했다."
+   },
+   "diagram": {
+    "title": "UpdateCalendarFromEmail.forward 의 흐름 — 분기는 파이썬이 정한다",
+    "code": "flowchart TD\n  E[email] --> X[self.extract<br/>ChainOfThought ExtractEvent<br/>LLM 호출 1]\n  X --> C{event_name·date·start<br/>중 None 있음?}\n  C -- 예 --> N[Prediction event=None<br/>no event found]\n  C -- 아니오 --> P[self.pick_emoji<br/>LLM 호출 2]\n  P --> T[tinycal.add_event<br/>순수 파이썬]\n  T --> OK[Prediction status=added to calendar]"
+   },
+   "pitfalls": [
+    "ChainOfThought 를 쓰면 출력 토큰(=비용·지연)이 늘어난다. 쉬운 추출 과제라면 Predict 로 충분한지 평가로 확인하라.",
+    "reasoning 칸이 '맞는 이유'를 보장하지 않는다. 그럴듯한 이유 뒤에 틀린 답이 올 수 있으니 평가는 최종 칸으로 한다.",
+    "forward 대신 다른 이름으로 메서드를 만들면 모듈 호출 규약이 깨진다 — PyTorch 와 같은 함정이다."
+   ],
+   "check": [
+    {
+     "q": "ChainOfThought(ExtractEvent) 가 Predict(ExtractEvent) 와 다른 점을 시그니처 관점에서 한 문장으로.",
+     "a": "출력 칸 맨 앞에 reasoning 칸을 하나 더한 시그니처로 Predict 를 하는 것과 같다 — 칸 순서대로 생성되므로 이유가 답보다 먼저 나온다."
+    },
+    {
+     "q": "UpdateCalendarFromEmail 에 일정 없는 이메일을 넣으면 LLM 은 몇 번 불리나?",
+     "a": "한 번(추출)이다. None 검사에서 바로 반환하므로 이모지 고르기는 불리지 않는다."
+    }
+   ]
+  },
+  {
+   "start": 1590,
+   "title": "DSPy ④ 옵티마이저 — 데이터 50통, 정확 일치 지표, GEPA 로 작은 모델을 55% 에서 100% 로",
+   "points": [
+    "질문: 큰 API 모델(GPT-5.4 Nano)로 되는 일을 로컬에서 돌릴 만한 공개 가중치 모델도 할 수 있나?",
+    "데이터: 정답 라벨이 붙은 합성 이메일 50통 → dspy.Example(입력=email) → 학습 30 / 시험 20.",
+    "지표: 날짜·시작 시각·길이 셋이 모두 정답과 같으면 1, 아니면 0(일정 이름은 자유 서술이라 채점 안 함). 틀린 칸을 문장 피드백으로도 돌려준다.",
+    "Gemma 3 12B 는 최적화 전 55%(20개 중 11개) → GEPA 가 지시문(docstring)만 다시 써서 시험 세트 100%. 큰 모델은 처음부터 100%.",
+    "비용은 공짜가 아니다: 수백 번 실행, 대략 백만 토큰 단위 — 한 번 돌리고 결과 프롬프트를 계속 쓰는 트레이드오프."
+   ],
+   "on_screen": "'Optimizers — Can a small model do the extraction task? Let's let DSPy's GEPA optimizer rewrite the prompt for us.' 셀 '# 1. The data: 50 realistic emails with gold labels (see data/emails.json)' — 예시 이메일(박사 위원회 회의, 10월 28일 2:45pm, Huang 018, 한 시간)과 GOLD: {'event_name': 'thesis committee meeting', 'date': '2026-10-28', 'start': '14:45', 'duration_minutes': 60}. examples = [dspy.Example(**row).with_inputs(\"email\") …]; random.Random(0).shuffle; trainset, testset = examples[:30], examples[30:]. '# 2. The metric: 1 if the date, start time, and duration ALL exactly match the gold label, else 0.' def event_metric(gold, pred, trace=None, pred_name=None, pred_trace=None): checks = {date, start([:5]), duration_minutes}; score = float(all(checks.values())); wrong 목록으로 feedback 문자열; return dspy.Prediction(score=score, feedback=feedback). evaluate = dspy.Evaluate(devset=testset, metric=event_metric, num_threads=8, display_progress=True). 큰 모델 점검 결과 EvaluationResult(score=100.0). '# 3. The small model: Gemma 3 12B' small_lm = dspy.LM(\"openrouter/google/gemma-3-12b-it\", …); extract_small = dspy.Predict(ExtractEvent); extract_small.set_lm(small_lm); before = evaluate(extract_small). GEPA 실행 셀(작은 예산, 약 3분)과 로그 'Average Metric: 20.00 / 20'. 바뀐 지시문: 'You are given a single email (plain text). Your job is to extract calendar event details…' 아래 Input/format(날짜 표기 예, 시각 표기 예, 길이 표현 예), Output fields(use these keys exactly: event_name 짧은 제목, date ISO YYYY-MM-DD, start HH:MM:SS 24시간제와 시간대 처리, duration_minutes 정수 또는 null), Extraction rules.",
+   "explain": [
+    "옵티마이저 절은 강사가 직접 연구했던 부분이라 가장 공들인 대목이다. 질문은 현실적이다. 앞의 추출 모듈은 GPT-5.4 Nano(강의 속 'API 의 큰 모델' 역할)로 잘 돌았다. 그런데 같은 일을 적당한 하드웨어에서 돌릴 수 있는 공개 가중치의 작은 모델로 할 수 있을까? 비용·지연·데이터 반출 문제 때문에 실무에서 자주 나오는 질문이다. 강사는 OpenRouter 에서 고를 수 있는 작은 모델 가운데 '어느 정도는 하지만 밀어 줘야 하는' Gemma 3 12B 를 골랐다. 여기서 1강 첫머리의 세 기둥이 그대로 등장한다. 데이터는 정답 라벨이 붙은 현실적인 합성 이메일 50통이고, 시스템은 ExtractEvent 를 Predict 로 감싼 추출기이며, 지표는 아래의 정확 일치 함수다.",
+    "데이터는 dspy.Example 로 바꾼다. with_inputs(\"email\") 로 어느 칸이 입력인지 표시하면 나머지(일정 이름·날짜·시각·길이)는 정답 라벨로 취급된다. 섞은 뒤 30개는 학습 세트, 20개는 시험 세트다. 지표 함수는 DSPy 가 정한 모양(gold, pred, 선택 인자 trace 등)을 따라야 한다. 안의 논리는 평범한 파이썬이다. 예측 날짜를 문자열로 바꾼 것이 정답 날짜와 같은지, 예측 시각의 앞 다섯 글자(HH:MM)가 정답과 같은지, 길이가 같은지 세 가지를 확인하고 all() 로 모두 참이면 1.0, 하나라도 틀리면 0.0 을 준다. 일정 이름은 사람마다 다르게 쓸 수 있어 채점하지 않는다. 선택 사항이지만 강의의 지표는 '무엇이 어떻게 틀렸나'를 문장(feedback)으로도 돌려준다. 점수만 있어도 되지만, 이 문장이 있으면 옵티마이저가 훨씬 잘 고친다는 것이 강사의 말이다. 마지막으로 dspy.Evaluate 에 시험 세트와 지표, 스레드 수를 주면 평가기가 만들어진다(만들기만 하고 부르지 않으면 아무 일도 안 일어난다는 점도 화면에서 보였다).",
+    "큰 모델은 시험 세트에서 100% 였다. 같은 시그니처에 Gemma 3 12B 를 꽂은 extract_small 은 최적화 전 55%, 즉 20통 중 11통만 세 칸을 모두 맞혔다. 이때 모델이 받은 지시문은 docstring 한 줄('이메일에서 일정 정보를 뽑아라')뿐이었다. 이제 GEPA 옵티마이저를 돌린다. 작동 원리는 2주 뒤 최적화 강의에서 자세히 다루기로 하고, 여기서는 '여러 번 실행해 보고, 결과와 피드백을 반성(reflect)하고, 프롬프트를 고쳐 쓴다'는 정도만 말한다. 캐시 덕분에 강의에서는 바로 끝났지만 직접 돌리면 몇 분(화면 기준 작은 예산으로 약 3분) 걸린다. 결과는 시험 세트 100%. 바뀐 것은 지시문 하나다. 새 지시문은 '한 통의 이메일이 주어진다'로 시작해 입력 형식(날짜는 M/D/YYYY, '월 일 연도' 등 사람식 표기로 온다, 시각은 10:45am 같은 식, 길이는 '두 시간 세션' 같은 말로 온다), 출력 칸의 정확한 형식(날짜는 ISO, 시각은 24시간제, 시간대가 있으면 오프셋 포함, 길이는 정수 분이고 없으면 null), 추출 규칙까지 꼼꼼히 적는다. 사람이 손으로 쓸 수도 있었던 내용이지만, 옵티마이저가 학습 세트의 실패를 보고 스스로 찾아냈다.",
+    "질문들이 핵심을 찔렀다. 비용은? 실행 규모에 따라 다르지만 시스템을 수백 번 돌리므로 대략 백만 토큰 단위가 들 수 있고 예산으로 조절한다. 한 번 들이고 계속 쓰는 비용이라는 트레이드오프다. 시험 세트에 과적합되지 않나? 옵티마이저는 학습 세트만 보고, 100% 는 따로 떼어 둔 시험 세트 점수다. 이번 결과 프롬프트에는 예시가 없었지만 일부 DSPy 옵티마이저는 문맥 속 예시(few-shot)를 넣기도 하므로, 학습·검증·시험 분리라는 머신러닝의 기본은 그대로 지켜야 한다. 다시 돌리면 같은 프롬프트가 나오나? DSPy 는 같은 입력·같은 설정의 LM 호출 결과를 디스크에 캐시하므로 캐시가 있으면 같고, 없으면 달라질 수 있다. 이상한 프롬프트가 나오기도 하나? 2년쯤 전 강사의 옵티마이저로 수학 성능을 올렸더니 '당신은 스타플릿의 함장이다' 같은 스타트렉풍 지시문이 나왔는데 실제로 점수가 올랐다고 한다. 요즘 모델에서는 드물다. 교훈은 '프롬프트가 이상한가'보다 '지표와 데이터가 정말 원하는 것을 재는가'를 걱정하라는 것이다. 지표가 허술하면 옵티마이저는 그 허점을 파고든다. 옵티마이저가 쓰는 교사(반성) 모델도 사람이 지정하며, 이번엔 GPT-5.4 Nano 였다."
+   ],
+   "formulas": [
+    {
+     "expr": "score(gold, pred) = 𝟙[pred.date = gold.date ∧ pred.start[:5] = gold.start ∧ pred.duration = gold.duration]",
+     "meaning": "𝟙[·] 은 괄호 안이 참이면 1, 거짓이면 0 인 지시 함수. ∧ 는 '그리고'. pred 는 모델 예측, gold 는 정답 라벨. start[:5] 는 'HH:MM:SS' 에서 앞 다섯 글자 'HH:MM' 만 비교한다는 뜻. 세 칸 중 하나만 틀려도 0 — 부분 점수가 없는 엄격한 정확 일치다."
+    },
+    {
+     "expr": "Acc(P; D_test) = (1/|D_test|) · Σ_{(x, y)∈D_test} score(y, P(x))",
+     "meaning": "P 는 평가할 프로그램(모듈), D_test 는 시험 세트, |D_test| 는 그 크기(여기선 20), x 는 이메일, y 는 정답. 평균 점수를 백분율로 쓰면 강의의 55%·100% 가 된다."
+    },
+    {
+     "expr": "P* = argmax_{instr ∈ 후보} Acc(P_instr; D_train)",
+     "meaning": "옵티마이저가 푸는 문제를 가장 단순하게 쓴 것(노트 보충). instr 은 지시문 후보, P_instr 은 그 지시문을 쓴 프로그램. 학습 세트 D_train 에서 점수가 가장 높은 후보를 고르고, 시험 세트는 마지막 보고에만 쓴다. GEPA 는 후보를 무작위로 늘어놓는 대신 실패 기록과 피드백을 반성해 새 후보를 만들어 낸다."
+    }
+   ],
+   "example": {
+    "title": "55% 와 피드백 문장을 손으로",
+    "body": "시험 세트 20통 중 세 칸이 모두 맞은 것이 11통 → Acc = 11/20 = 0.55 = 55%. 최적화 후 20/20 = 100%. 한 통을 채점해 보자: 정답 {date: 2026-10-28, start: 14:45, duration: 60}. 작은 모델 예측 {date: '10/28/2026', start: '2:45 PM', duration: '1 hour'}. date: '10/28/2026' ≠ '2026-10-28' → 틀림. start: 앞 다섯 글자 '2:45 ' ≠ '14:45' → 틀림. duration: '1 hour' ≠ 60 → 틀림. score = 0, feedback = 'Wrong -> date: expected 2026-10-28, got 10/28/2026; start: …; duration_minutes: …'. 이 문장을 본 반성 모델은 '날짜는 ISO, 시각은 24시간제, 길이는 정수 분으로 쓰라'는 규칙을 지시문에 넣게 된다 — 실제 GEPA 결과 지시문에 바로 이 규칙들이 들어 있었다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 데이터 + 지표 + '지시문 고르기' 최적화. GEPA 가 아니라 원리만 보이는 가장 단순한 탐색이다.\ndata = [  # (email, gold) — gold 는 ISO 날짜, 24시간제 시각, 분 단위 길이\n    (\"Thesis meeting Oct 28 2026 at 2:45 PM, one hour.\", {\"date\": \"2026-10-28\", \"start\": \"14:45\", \"minutes\": 60}),\n    (\"Dentist on Oct 7 2026 at 9:00 AM for 30 minutes.\", {\"date\": \"2026-10-07\", \"start\": \"09:00\", \"minutes\": 30}),\n    (\"Coffee chat Nov 2 2026 at 3:30 PM.\",               {\"date\": \"2026-11-02\", \"start\": \"15:30\", \"minutes\": None}),\n    (\"Lab sync Dec 7 2026 at 11:00 AM, two hours.\",      {\"date\": \"2026-12-07\", \"start\": \"11:00\", \"minutes\": 120})]\ndef small_lm(instr, email, gold):          # 가짜 작은 모델: 지시문에 힌트가 있어야 형식을 맞춘다\n    pred = dict(gold)\n    if \"ISO\" not in instr:     pred[\"date\"] = \"10/28/2026\"          # 미국식으로 쓴다\n    if \"24-hour\" not in instr and gold[\"start\"] >= \"13\": pred[\"start\"] = f\"{int(gold['start'][:2]) - 12}{gold['start'][2:]} PM\"\n    if \"integer\" not in instr and gold[\"minutes\"] and gold[\"minutes\"] >= 60: pred[\"minutes\"] = f\"{gold['minutes']//60} hour\"\n    return pred\ndef metric(gold, pred):                    # 세 칸이 모두 같으면 1, 아니면 0 + 무엇이 틀렸는지\n    wrong = [k for k in gold if pred[k] != gold[k]]\n    return float(not wrong), \"All correct\" if not wrong else \"Wrong -> \" + \", \".join(wrong)\ndef evaluate(instr, rows):\n    return sum(metric(g, small_lm(instr, e, g))[0] for e, g in rows) / len(rows)\ntrain, test = data[:2] + data[3:], data[2:3]\ncandidates = [\"Extract event details from an email.\",\n              \"Extract event details. Dates in ISO format.\",\n              \"Extract event details. Dates in ISO format, start in 24-hour clock, duration as integer minutes.\"]\nfor c in candidates: print(f\"{evaluate(c, train):.2f}  {c}\")\nbest = max(candidates, key=lambda c: evaluate(c, train))   # 학습 세트로만 고른다\nprint(\"test:\", evaluate(best, test), \"| feedback 예:\", metric(data[0][1], small_lm(candidates[0], *data[0]))[1])",
+    "note": "직접 실행함(DSPy·LLM 없이 흉내만). '작은 모델'은 지시문에 ISO·24-hour·integer 라는 힌트가 있을 때만 형식을 맞추는 가짜 함수다. 출력: 지시문 후보별 학습 점수 0.00 / 0.33 / 1.00, 'test: 1.0', 피드백 예 'Wrong -> date, start, minutes'. 실제 GEPA 는 후보 목록을 미리 주지 않고 반성 모델이 새 지시문을 써 낸다는 점이 다르다."
+   },
+   "pitfalls": [
+    "옵티마이저 점수를 시험 세트로 보고하려면 시험 세트를 최적화에 절대 쓰지 말 것. 강의도 학습 30 / 시험 20 으로 나눴다.",
+    "지표가 해킹 가능하면 옵티마이저가 해킹한다. 예컨대 길이가 None 인 정답이 많은데 '항상 None' 이 통과되는 지표라면 그 방향으로 수렴할 수 있다.",
+    "캐시 때문에 '돌렸더니 0.6초'가 나와도 실제 비용은 그게 아니다. 처음 돌릴 땐 수백 번 호출과 큰 토큰 비용을 각오하고 예산(auto 설정)을 정하라."
+   ],
+   "check": [
+    {
+     "q": "GEPA 최적화 후 작은 모델이 100% 가 됐을 때, 모델 가중치는 바뀌었나?",
+     "a": "아니다. 바뀐 것은 지시문(시그니처의 instructions, 원래 docstring) 하나뿐이다. 가중치를 바꾸는 옵티마이저도 DSPy 에 있지만 모델 가중치에 접근할 수 있을 때 쓴다."
+    },
+    {
+     "q": "지표가 점수만 돌려줄 때와 피드백 문장도 돌려줄 때 옵티마이저 입장에서 무엇이 다른가?",
+     "a": "점수만 있으면 '틀렸다'만 알고 왜 틀렸는지는 실행 기록을 보고 추측해야 한다. 피드백이 있으면 '날짜 형식이 틀렸다'처럼 고칠 방향을 바로 알 수 있어 반성 기반 옵티마이저(GEPA)가 더 적은 시도로 좋은 지시문을 찾는다."
+    }
+   ]
+  },
+  {
+   "start": 2145,
+   "title": "DSPy ⑤ 에이전트 한 줄 — dspy.ReAct 와 긴 문맥용 dspy.RLM",
+   "points": [
+    "지금까지는 워크플로(제어 흐름이 파이썬에). 제어를 모델에게 넘기려면 dspy.ReAct(\"request -> summary\", tools=tinycal.TOOLS) 한 줄이면 된다.",
+    "도구는 그냥 파이썬 함수 목록 — 각 함수의 이름·인자·docstring 이 도구 설명이 된다.",
+    "ReAct = 생각(Thought) → 행동(Action, 도구 호출) → 관찰(Observation) 반복, 마지막에 시그니처의 출력 칸(summary)을 채운다.",
+    "dspy.RLM(재귀 언어 모델): 긴 입력(받은편지함 전체)을 모델 문맥에 넣지 않고 REPL 의 변수로 두고, 모델이 코드를 실행해 필요한 부분만 꺼내 본다."
+   ],
+   "on_screen": "셀 'An agent in one line. Specify the inputs/outputs and the tools it can use.': agent = dspy.ReAct(\"request -> summary\", tools=tinycal.TOOLS); result = agent(request=\"Schedule a 30-minute coffee with John on Oct 7, 2026 in the afternoon after my lectures and put a book emoji on all of my lectures for that same week.\"); print(result.summary) → 'Added 📚 emoji to all lectures that week: CS329Z Lecture — Oct 5, 2026 (13:30–14:50), CS329Z Lecture — Oct 7, 2026 (13:30–14:50). Scheduled coffee: Coffee with John — Oct 7, 2026 (15:00–15:30)'. 셀 'RLMs can handle really long context': rows = json.load(open(\"data/emails.json\")); inbox = 구분선으로 이은 전체 이메일; rlm = dspy.RLM(\"inbox, question -> event_names: list[str], dates: list[str]\", max_iters=8); question='Which events are held in the Gates building, and on what dates?' → ['The thesis defense for Wei Zhang'], ['Monday, December 7, 2026']. 슬라이드 'React' — ReAct 논문(arxiv 2210.03629) 그림: Apple Remote 질문을 Thought/Act/Obs 네 번으로 푸는 예. 'DSPy Summary' 다섯 줄.",
+   "explain": [
+    "지금까지 만든 것은 모두 워크플로였다. 입력과 출력, 그리고 언제 모델을 부를지는 파이썬 코드가 정했다. 그런데 '내 캘린더를 알아서 관리해 줘'처럼 무엇을 몇 번 해야 할지 미리 알 수 없는 요청이라면, 그 판단을 모델에게 넘겨야 한다. DSPy 에는 이것도 모듈로 들어 있다. 1강에서 소개한 ReAct 구조(다음 강의에서 더 깊이 다시 다룬다)다. 강사는 시그니처를 \"request -> summary\" 로 주고 tools 에 tinycal 의 도구 목록을 넘겼다. 이것이 DSPy 로 에이전트를 만드는 전부, 코드 한 줄이다. 도구들은 일정 추가·삭제·이동 같은 평범한 파이썬 함수이고, 각자 이름·인자·docstring 이 있어서 그것이 모델에게 보이는 도구 설명이 된다(4강에서 본 함수 호출의 도구 스키마를 프레임워크가 함수 정의에서 자동으로 만들어 주는 셈이다). 시그니처가 다소 막연하다('요청을 받아 할 일을 다 하고 마지막에 요약을 내라'는 뜻으로 썼다)는 것도 강사 스스로 인정했다.",
+    "요청은 '10월 7일 오후 강의 끝난 뒤 존과 30분 커피를 잡고, 그 주 내 강의 전부에 책 이모지를 붙여 줘'였다. 몇 초 뒤 summary 칸에 '그 주 강의 두 개(10월 5일·7일 13:30–14:50)에 책 이모지를 붙였고, 10월 7일 15:00–15:30 에 존과의 커피를 잡았다'는 요약이 나왔고, 캘린더 앱에도 그대로 반영됐다. 모델은 아마 먼저 일정을 조회해 강의가 언제인지 보고(관찰), 강의 일정마다 이모지를 바꾸는 도구를 부르고, 강의가 끝나는 14:50 이후 빈 시간을 찾아 커피를 넣었을 것이다. 이 순서를 정한 것은 사람의 코드가 아니라 모델이다. 슬라이드의 ReAct 그림(원 논문의 예)은 생각 → 행동 → 관찰을 네 번 돌아 'Apple Remote 로 원래 조작하던 프로그램을 다른 무엇으로 조작할 수 있나'에 답하는 모습을 보여 준다. 검색어가 실패하면(관찰: 찾을 수 없음) 생각을 고쳐 다른 검색어로 다시 시도하는 것이 핵심이다.",
+    "둘째는 2강에서 다룬 재귀 언어 모델(RLM)이다. 이메일 50통 전체를 한 문자열(inbox)로 이어 붙이고, \"inbox, question -> event_names: list[str], dates: list[str]\" 시그니처로 'Gates 건물에서 열리는 일정과 날짜는?'을 물었다. 답은 '웨이 장의 학위 논문 심사, 2026년 12월 7일 월요일'. 50통은 작은 모델 문맥도 다 채우지 않지만, 백만 통이었어도 같은 방식이 통한다는 것이 요점이다. 질문에 대한 답이 중요하다. 이 경우 모델은 이메일 전체를 읽지 않는다. 모델에게는 inbox 라는 변수가 있다는 사실만 주어지고, 모델은 코드 실행 환경(REPL)에서 그 변수에 grep 같은 연산을 해 'Gates' 가 든 부분만 꺼내 본다. 프롬프트를 '읽을 글'이 아니라 '조작할 데이터'로 다루는 것이다. 다른 모든 예에서는 문맥 = 모델이 실제로 보는 것이었지만, RLM 에서는 문맥이 더 흐릿한 개념이 된다.",
+    "DSPy 정리 슬라이드는 다섯 줄이다. 시그니처는 입출력 계약을 정한다. 모듈은 그 계약을 어떻게 이행할지 정하고 합성된다(Predict, ChainOfThought, BestOfN…). 옵티마이저는 데이터와 지표가 있으면 프로그램의 프롬프트나 가중치를 개선한다(오늘은 프롬프트 옵티마이저만 보였고, 가중치에 접근할 수 있으면 가중치 옵티마이저도 있다). 그리고 에이전트용 내장 모듈(ReAct, RLM)이 있다. 아래 코드는 ReAct 루프의 뼈대를 흉내 낸 것이다. 실제로는 policy 자리에서 지금까지의 기록 전체가 프롬프트로 LLM 에 들어가고, LLM 이 다음 생각·도구·인자를 시그니처 형식으로 답한다. 최대 단계 수를 두는 것은 모델이 끝내지 못하고 같은 행동을 반복할 때의 안전장치다."
+   ],
+   "code": {
+    "lang": "python",
+    "src": "# ReAct 루프(생각 → 행동 → 관찰)를 흉내 낸다. 정책(policy)이 LLM 자리다 — 여기선 각본으로 대신한다.\ncal = {\"e1\": {\"title\": \"CS329Z Lecture\", \"start\": \"13:30\"}, \"e2\": {\"title\": \"Coffee with John\", \"start\": \"15:00\"}}\ndef list_events():            return {k: v[\"title\"] + \" @\" + v[\"start\"] for k, v in cal.items()}\ndef move_event(eid, start):   cal[eid][\"start\"] = start; return f\"{eid} moved to {start}\"\nTOOLS = {\"list_events\": list_events, \"move_event\": move_event}\ndef policy(history):          # 실제로는 지금까지의 기록 전체를 프롬프트로 LLM 에 넣고 다음 행동을 받는다\n    if len(history) == 1: return (\"커피 일정이 어느 것인지 먼저 본다\", \"list_events\", {})\n    if len(history) == 2: return (\"e2 가 커피다. 30분 늦춘다\", \"move_event\", {\"eid\": \"e2\", \"start\": \"15:30\"})\n    return (\"끝났다\", \"finish\", {\"summary\": \"Coffee with John 을 15:30 으로 옮겼다\"})\ndef react(request, max_steps=5):\n    history = [(\"request\", request)]\n    for step in range(1, max_steps + 1):\n        thought, tool, args = policy(history)\n        if tool == \"finish\": return args[\"summary\"], history\n        obs = TOOLS[tool](**args)                       # 도구 실행 결과 = 관찰\n        print(f\"[{step}] thought={thought} | act={tool}{args} | obs={obs}\")\n        history.append((tool, obs))\n    return \"budget exhausted\", history                  # 무한 루프 방지: 최대 단계 수\nsummary, h = react(\"Move my coffee with John 30 minutes later\")\nprint(\"summary:\", summary, \"| LLM 호출 수:\", len(h))",
+    "note": "직접 실행함(DSPy·LLM 없이 흉내만 — policy 는 정해진 각본). 출력: [1] list_events 호출과 관찰(일정 두 개), [2] move_event(e2, 15:30) 와 'e2 moved to 15:30', 마지막 'summary: Coffee with John 을 15:30 으로 옮겼다 | LLM 호출 수: 3'. 도구 2번 + 끝내기 판단 1번 = LLM 호출 3번이라는 점이 워크플로보다 비용 예측이 어려운 이유다."
+   },
+   "diagram": {
+    "title": "ReAct 루프",
+    "code": "flowchart LR\n  Q[request] --> T[Thought<br/>LLM 이 다음 행동을 정함]\n  T -->|도구 이름+인자| A[Action<br/>파이썬 함수 실행]\n  A --> O[Observation<br/>결과를 기록에 추가]\n  O --> T\n  T -->|finish| S[summary 칸 채우기]"
+   },
+   "pitfalls": [
+    "'한 줄로 에이전트'는 시작일 뿐이다. 도구 설명(docstring)이 엉성하면 모델이 엉뚱한 도구를 부른다 — 도구 설계가 곧 프롬프트 설계다.",
+    "RLM 에서 '문맥에 50통을 넣었다'고 말하면 틀린다. 모델이 직접 본 것은 변수 이름과 코드 실행 결과뿐이다.",
+    "ReAct 에는 반드시 최대 반복 수(max_iters 등)를 둔다. 없으면 실패한 도구를 끝없이 다시 부를 수 있다."
+   ],
+   "check": [
+    {
+     "q": "UpdateCalendarFromEmail(워크플로)과 dspy.ReAct(에이전트)에서 '캘린더에 넣을지 말지'를 정하는 주체는 각각 누구인가?",
+     "a": "워크플로에서는 forward 안의 파이썬 if 문, ReAct 에서는 매 단계 다음 행동을 고르는 LLM 이다."
+    }
+   ]
+  },
+  {
+   "start": 2550,
+   "title": "LangGraph ① 상태·노드·엣지 — 공유 작업대를 고쳐 나가는 그래프",
+   "points": [
+    "상태(State)는 그래프 전체가 함께 쓰는 작업대(TypedDict 같은 객체). 노드는 상태를 읽고 '바꾼 칸만' 돌려주는 함수다.",
+    "엣지는 제어 흐름이다. START 와 END 노드가 있고, 일부 엣지는 조건부(점선)다.",
+    "LangGraph 의 에이전트는 LLM 노드 ⇄ Tools 노드를 오가다 END 로 가는 작은 그래프이고, 상태는 메시지 기록이다.",
+    "구조화 출력도 된다: Pydantic 모델을 langchain_llm.with_structured_output(EventDetails) 에 넘긴다.",
+    "그래프로 쓰는 이점(강사 답): 노드 단위 재시도, 관측성, 견고함, 노드별 분산 실행. 상태 기계는 문제를 생각하는 좋은 틀이다."
+   ],
+   "on_screen": "'Outline of a LangGraph Workflow' — 위에 'The State is a shared workspace for the graph. You can think of it as an object that the graph will modify.' 상자, 아래 Start → 빨간 노드들 → End 그래프(실선과 점선), 'Edges Define Control Flow', 'Some Edges are Conditional'. 'Outline of a LangGraph Agent' — State(can be message history), Start → LLM ⇄ Tools(점선 순환) → End. 노트북 'Part 2: LangGraph / Defining a Graph': from pydantic import BaseModel, Field; class EventDetails(BaseModel) — event_name: str | None = Field(description=\"short title for the event, e.g. 'Dentist' or 'Meeting'\"), date: dt.date | None, start: dt.time | None = Field(description=\"24-hour clock\"), duration_minutes: int | None; extract_llm = langchain_llm.with_structured_output(EventDetails). '# First we define the state': class State(TypedDict): email: str; details: EventDetails | None. 노드: def extract_node(state: State): return {\"details\": extract_llm.invoke(state[\"email\"])}. from langgraph.graph import StateGraph, START, END; builder = StateGraph(State); builder.add_node(\"extract\", extract_node); builder.add_edge(START, \"extract\"); builder.add_edge(\"extract\", END); graph = builder.compile(). 시각화 __start__ → extract → __end__. graph.invoke({\"email\": …}) 결과 {'email': …, 'details': EventDetails(event_name='Meeting', date=datetime.date(2026, 10, 9), start=datetime.time(10, 0, tzinfo=…(-25200)), duration_minutes=None)}.",
+   "explain": [
+    "LangGraph 는 같은 문제를 전혀 다른 그림으로 본다. 강사는 이것이 DSPy 와 뒤에서 볼 오케스트레이션 라이브러리의 중간쯤에 있다고 소개한다. 핵심 비유는 '작업대'다. 상태(State)는 그래프의 모든 단계가 함께 쓰는 작업대이고, 그래프가 실행되는 동안 고쳐 나가는 하나의 객체다. 보통 이 워크플로에서 중요한 변수들의 묶음(TypedDict)으로 정의한다. 노드는 작업대 앞에 차례로 서는 작업자다. 작업자는 상태를 읽고, 자기가 바꾼 칸만 적은 쪽지를 돌려준다. 엣지는 '다음에 누가 작업대 앞에 설지'를 정하는 화살표, 즉 제어 흐름이다. 그래프에는 시작(START)과 끝(END) 노드가 있어야 하고, 슬라이드에서 점선으로 그린 엣지는 상태를 보고 갈 곳을 고르는 조건부 엣지다.",
+    "실습은 DSPy 때와 같은 프로그램을 다시 쓰는 것이다(같은 문제를 두 프레임워크로 비교하려는 의도). 먼저 구조화 출력이다. Pydantic 의 BaseModel 로 EventDetails 를 정의한다. 칸 구성(이름·날짜·시작·길이)과 '| None', 그리고 Field(description=…) 으로 붙인 설명이 DSPy 시그니처와 거의 같다. 그다음 langchain_llm.with_structured_output(EventDetails) 로 'LLM 이 늘 이 구조로 답하게' 묶어 둔다. 상태는 email(문자열)과 details(EventDetails 또는 None) 두 칸이다. 노드 extract_node 는 상태를 받아 state[\"email\"] 을 구조화 LLM 에 넣고 {\"details\": …} 만 돌려준다. 강사가 짚는 부분은 이것이다. 노드가 email 칸은 건드리지 않고 details 칸만 돌려주면, LangGraph 엔진이 '이 노드가 바꾼 칸은 details 뿐'이라고 보고 그 칸만 상태에 반영한다. 즉 노드의 반환값은 상태 전체가 아니라 '부분 갱신'이다.",
+    "그래프 조립은 빌더로 한다. StateGraph(State) 를 만들고, add_node(\"extract\", extract_node) 로 노드를 붙이고, add_edge(START, \"extract\") 와 add_edge(\"extract\", END) 로 엣지를 잇고, compile() 하면 실행 가능한 그래프가 된다. 시각화하면 __start__ → extract → __end__ 의 한 줄짜리 그래프다. 분기가 없으니 늘 같은 경로를 따른다. invoke({\"email\": \"이번 금요일 회의…\"}) 를 부르면 결과는 최종 상태다. email 은 그대로, details 에는 추출 결과(Meeting, 2026-10-09, 10:00, 길이 None)가 채워져 있다. 화면의 결과에는 시작 시각에 −25200초(UTC−7, 태평양 여름 시간) 시간대가 붙어 있었는데, 이메일의 PST 표기를 반영한 것이다.",
+    "'왜 굳이 그래프로 쓰나'라는 질문에 강사는 오케스트레이션을 이유로 든다. 노드 단위로 '이 노드만 다시 시도'를 걸 수 있고, 어느 노드에서 무엇이 바뀌었는지 보이니 관측성이 좋고, 비교적 견고하며, 노드마다 다른 기계에서 돌리는 분산 실행에도 맞는다. 상태 기계(state machine)로 문제를 생각하는 것 자체가 좋은 틀이라는 의견도 덧붙인다. 그래프는 누가 그리나? 개발자가 코드로 정의한다. 그 시스템을 쓰는 최종 사용자는 그래프를 몰라도 되고, 입력만 넘기면 그래프를 따라 실행된다. 아래 코드는 LangGraph 없이 이 핵심(노드 = 부분 갱신, 엣지 = 다음 노드, 조건 엣지 = 다음 노드 이름을 돌려주는 함수)을 30줄로 흉내 낸 것이다. 다음 장의 조건부 그래프까지 한 번에 실행한다."
+   ],
+   "code": {
+    "lang": "python",
+    "src": "# LangGraph 의 StateGraph 를 흉내 낸 30줄. 노드는 state 를 받아 '바꾼 칸만' dict 로 돌려준다.\nSTART, END = \"__start__\", \"__end__\"\nclass StateGraph:\n    def __init__(self): self.nodes, self.edges, self.cond = {}, {}, {}\n    def add_node(self, name, fn): self.nodes[name] = fn\n    def add_edge(self, a, b): self.edges[a] = b\n    def add_conditional_edges(self, a, router): self.cond[a] = router\n    def invoke(self, state, max_steps=20):\n        cur, state = START, dict(state)\n        for _ in range(max_steps):\n            nxt = self.cond[cur](state) if cur in self.cond else self.edges[cur]\n            print(f\"  {cur} -> {nxt}\")\n            if nxt == END: return state\n            state.update(self.nodes[nxt](state))       # 부분 갱신을 공유 state 에 병합\n            cur = nxt\n        raise RuntimeError(\"step limit\")                # 순환 그래프의 안전장치\ndef extract(s):   return {\"details\": {\"name\": \"Dentist\", \"start\": \"09:00\"} if \"dentist\" in s[\"email\"].lower() else None}\ndef pick_emoji(s): return {\"emoji\": \"🦷\"}\ndef add_to_cal(s): return {\"status\": \"added to calendar\"}\ndef route(s):     return \"pick_emoji\" if s[\"details\"] else END   # 조건 엣지 = 다음 노드 이름을 돌려주는 함수\ng = StateGraph()\nfor n, f in [(\"extract\", extract), (\"pick_emoji\", pick_emoji), (\"add_to_calendar\", add_to_cal)]: g.add_node(n, f)\ng.add_edge(START, \"extract\"); g.add_conditional_edges(\"extract\", route)\ng.add_edge(\"pick_emoji\", \"add_to_calendar\"); g.add_edge(\"add_to_calendar\", END)\nfor mail in [\"Dentist appointment confirmed Oct 7 at 9 AM\", \"Your OpenRouter credits have arrived!\"]:\n    print(mail); print(\"  =>\", g.invoke({\"email\": mail}))",
+    "note": "직접 실행함(LangGraph 없이 흉내만 — 진짜 langgraph 의 API 이름을 빌렸지만 구현은 30줄짜리 장난감이다). 치과 이메일: __start__ → extract → pick_emoji → add_to_calendar → __end__, 최종 상태에 details·emoji·status. 크레딧 안내 메일: __start__ → extract → __end__, details=None. LangGraph 가 설치돼 있다면 from langgraph.graph import StateGraph, START, END 로 같은 그래프를 만들어 결과를 비교해 보라."
+   },
+   "pitfalls": [
+    "노드가 상태 전체를 복사해 돌려줄 필요는 없다. 바꾼 칸만 돌려준다 — 전체를 돌려주면 다른 노드가 동시에 바꾼 칸을 덮어쓸 수 있다(병렬 분기에서 특히).",
+    "그래프를 compile() 하지 않고 invoke 하려 하면 안 된다. 빌더와 실행 가능한 그래프는 다른 객체다.",
+    "구조화 출력은 LangGraph 의 기능이 아니라 LangChain LLM 래퍼의 기능이다. LangGraph 자체는 상태·노드·엣지만 다룬다."
+   ],
+   "check": [
+    {
+     "q": "상태 {email, details} 에서 extract_node 가 {\"details\": X} 를 돌려주면 invoke 후 상태는?",
+     "a": "{email: 원래 이메일, details: X}. email 은 노드가 돌려주지 않았으므로 그대로 남고 details 만 갱신된다."
+    }
+   ]
+  },
+  {
+   "start": 2850,
+   "title": "LangGraph ② 조건부 엣지와 create_agent — 같은 캘린더 프로그램, 그리고 DSPy 와 무엇이 다른가",
+   "points": [
+    "조건부 엣지 = 상태를 받아 '다음 노드 이름'을 돌려주는 라우터 함수. 일정이 있으면 \"pick_emoji\", 없으면 END.",
+    "그래프: START → extract → (조건) → pick_emoji → add_to_calendar → END. DSPy forward 의 if 문이 그래프의 분기가 됐다.",
+    "에이전트는 from langchain.agents import create_agent; create_agent(LLM, tools=…) 두 줄 — 안은 ReAct 류의 모델 ⇄ 도구 반복.",
+    "차이(강사 의견): DSPy 는 평범한 파이썬 제어 흐름 + 프롬프트 최적화, LangGraph 는 견고한 그래프 오케스트레이션. LangGraph 에는 (강사가 아는 한) 옵티마이저가 없다. 둘을 합칠 수도 있다 — DSPy 모듈을 LangGraph 노드로."
+   ],
+   "on_screen": "셀 'Conditional Edges (Enable Workflows)': class CalendarState — email, details, emoji, status. '# Create Nodes': def pick_emoji_node(state: CalendarState): reply = langchain_llm.invoke(\"Reply with exactly one emoji character, nothing else, for a calendar …\"); return {\"emoji\": reply.text.strip()} / def add_to_calendar_node(state): d = state[\"details\"]; tinycal.add_event(d.event_name, d.date, d.start, duration_minutes=…, emoji=state[\"emoji\"]); return {\"status\": \"added to calendar\"}. '# Create a Conditional Edge': from typing import Literal; def route(state: CalendarState) -> Literal[\"pick_emoji\", \"__end__\"]: d = state[\"details\"]; return \"pick_emoji\" if d.event_name and d.date and d.start else END — 주석 '# plain python decides where to go'. '# Build the graph': builder = StateGraph(CalendarState); add_node(\"extract\", …), add_node(\"pick_emoji\", …), add_node(\"add_to_calendar\", …); add_edge(START, \"extract\"); add_conditional_edges(\"extract\", route) — '# dotted arrows in the drawing'; add_edge(\"pick_emoji\", \"add_to_calendar\"); add_edge(\"add_to_calendar\", END); calendar_graph = builder.compile(). 그림: __start__ → extract ⇢ pick_emoji → add_to_calendar → __end__, extract ⇢ __end__. 치과 예약 이메일 결과 details=EventDetails(event_name='Dentist Appointment', date=2026-10-07, …), emoji 🦷, status 'added to calendar'. 'CS329Z Open Router Credits have arrived! Please check your inbox.' 은 캘린더에 추가되지 않음. Agents 셀: from langchain.agents import create_agent; langchain_cal_agent = create_agent(langchain_llm, tools=tinycal.TOOLS); 그림 __start__ → model ⇄ tools → __end__; invoke({\"messages\": [(\"user\", \"Please move my coffee with John on Oct 7th to be 30 minutes later\")]}) 결과 HumanMessage / AIMessage / ToolMessage(일정 목록) / ToolMessage / AIMessage('Done — I moved Coffee with John on Oct 7 from 15:00–15:30 to 15:30–16:00'). 'LangGraph Summary' 다섯 줄, 'Recap' 과 DSPy·LangGraph·LlamaIndex·crewAI 로고.",
+   "explain": [
+    "조건부 엣지를 만드는 법은 의외로 단순하다. 상태를 받아 '다음에 갈 노드의 이름'을 돌려주는 함수를 하나 쓰면 된다. 강의의 route 함수는 상태의 details 를 보고, 일정 이름·날짜·시작 시각이 모두 있으면 \"pick_emoji\" 를, 아니면 END 를 돌려준다. 반환 타입을 Literal[\"pick_emoji\", \"__end__\"] 로 적어 두면 그래프 그림을 그릴 때 이 함수가 어디로 갈 수 있는지 알 수 있다. 노트북 주석대로 '어디로 갈지는 평범한 파이썬이 정한다'. 새 상태 CalendarState 에는 email, details 에 emoji 와 status 가 더해졌다. 노드는 셋이다. extract(앞 장과 같음), pick_emoji(LLM 에 '이모지 한 글자만 답하라'고 물어 {\"emoji\": …} 반환), add_to_calendar(tinycal.add_event 를 부르고 {\"status\": \"added to calendar\"} 반환).",
+    "조립은 add_edge(START, \"extract\"), add_conditional_edges(\"extract\", route), add_edge(\"pick_emoji\", \"add_to_calendar\"), add_edge(\"add_to_calendar\", END) 다. 그림으로 보면 extract 에서 점선 두 갈래가 나가 하나는 pick_emoji 로, 하나는 바로 __end__ 로 간다. 이것은 DSPy 장에서 forward 안에 쓴 if 문과 정확히 같은 프로그램이다. 차이는 그 분기가 코드 한가운데 묻혀 있느냐, 그래프의 구조로 드러나 있느냐다. 치과 예약 확정 메일을 넣자 Dentist Appointment 가 치아 이모지와 함께 10월 7일 칸에 추가됐고, 'OpenRouter 크레딧이 도착했다'는 메일은 extract 뒤 바로 끝나 캘린더에 아무것도 생기지 않았다. 다른 노드에 다른 모델을 쓸 수 있느냐는 질문에는, 노드 안은 자유로운 코드라서 LLM 을 몇 개든 쓸 수 있다고 답했다.",
+    "에이전트도 DSPy 처럼 짧다. LangGraph 는 LangChain 과 한 생태계라, from langchain.agents import create_agent 후 create_agent(LLM, tools=tinycal.TOOLS) 두 줄이면 된다. 그림은 __start__ → model ⇄ tools → __end__ 로, 강사는 안에서 ReAct 와 비슷한 일이 일어날 것이라고 본다. 상태는 메시지 기록이다. '10월 7일 존과의 커피를 30분 늦춰 줘'라고 하자 메시지 목록에 사용자 메시지, 도구를 부르겠다는 AI 메시지, 일정 목록을 담은 도구 메시지, 이동 결과 도구 메시지, 마지막으로 '15:00–15:30 에서 15:30–16:00 으로 옮겼다'는 AI 메시지가 쌓였고, 캘린더에서도 실제로 옮겨졌다. 모델 ⇄ 도구 반복보다 복잡한 구조가 필요하면 LangChain 쪽의 'deep agents' 같은 패키지가 그 용도일 것이라고 했지만 자세히는 모른다고 덧붙였다.",
+    "그럼 둘의 차이는 무엇인가. 강사의 답(의견임을 전제로)은 이렇다. 사람들이 DSPy 를 찾는 이유는 평범한 파이썬 제어 흐름 위에 LLM 호출을 얹고 그 프롬프트를 최적화하고 싶어서다. LangGraph 를 찾는 이유는 정해진 제어 흐름을 따르는 견고한 그래프를 오케스트레이션하고 싶어서다. 구조화 출력은 둘 다 잘하므로 그것이 선택 기준은 아니다. 대규모 데이터 처리처럼 거대한 그래프를 분산·병렬로 돌려야 한다면 LangGraph 쪽에 기울 수 있고, 그 노드 안에서 DSPy 모듈을 불러 프롬프트를 최적화하는 식으로 둘을 합칠 수도 있다. LangGraph 에 옵티마이저가 있느냐는 질문에는 '아는 한 없다, 다만 확신은 못 한다'고 답했다. 결국 비슷한 문제를 푸는 두 추상화이고 취향의 문제도 있다는 것이 결론이다. 정리 슬라이드는 워크플로가 모델 호출·도구·프로그램 논리를 더 큰 시스템으로 엮고, 프레임워크마다 추상화가 다르며(시그니처·모듈 대 상태·노드·엣지), 사람이 제어 흐름과 모델이 결정할 자리를 설계하고, 개선에는 데이터와 평가가 필요하다(DSPy 는 옵티마이저로 이를 드러낸다)고 요약한다. 화면 구석에는 같은 층의 다른 선택지로 LlamaIndex 와 crewAI 로고도 있었다."
+   ],
+   "example": {
+    "title": "LangGraph 상태 기계를 손으로 한 줄씩 따라가기(트레이스)",
+    "body": "입력 상태 S0 = {email: '치과 예약 확정: 10월 7일 9시'}. ① START → extract(고정 엣지). extract 가 {details: {name: Dentist Appointment, date: 2026-10-07, start: 09:00, dur: None}} 반환 → S1 = S0 + details. ② extract 에서 조건 엣지: route(S1) — name·date·start 모두 있음 → 'pick_emoji'. ③ pick_emoji 가 {emoji: 🦷} → S2 = S1 + emoji. ④ 고정 엣지 → add_to_calendar: tinycal 에 넣고 {status: 'added to calendar'} → S3. ⑤ 고정 엣지 → END, S3 반환(칸 4개). 노드 실행 3번, LLM 호출 2번(extract, pick_emoji). 크레딧 메일이면: ① extract → details 의 name·date·start 가 None → ② route 가 END → 최종 상태 칸 2개(email, details), 노드 실행 1번, LLM 호출 1번. DSPy 판(forward)과 LLM 호출 수가 같다 — 같은 프로그램이기 때문이다."
+   },
+   "diagram": {
+    "title": "강의의 캘린더 그래프(조건부 엣지는 점선)",
+    "code": "flowchart LR\n  S((START)) --> X[extract]\n  X -. route: 일정 있음 .-> P[pick_emoji]\n  X -. route: 없음 .-> E((END))\n  P --> C[add_to_calendar]\n  C --> E"
+   },
+   "pitfalls": [
+    "라우터 함수가 존재하지 않는 노드 이름을 돌려주면 실행 중에 실패한다. 반환 타입을 Literal 로 적어 두면 그림과 검사에 도움이 된다.",
+    "create_agent 의 그래프에는 순환(model ⇄ tools)이 있다. 재귀·단계 한도를 두지 않으면 끝나지 않는 실행이 생길 수 있다(노트 보충: LangGraph 에는 recursion_limit 설정이 있다).",
+    "'DSPy 냐 LangGraph 냐'는 양자택일이 아니다. 강사는 DSPy 모듈을 LangGraph 노드로 넣는 조합을 명시적으로 권한다."
+   ],
+   "check": [
+    {
+     "q": "DSPy 의 UpdateCalendarFromEmail 과 LangGraph 의 calendar_graph 에서, '일정이 없으면 끝낸다'는 논리는 각각 어디에 있나?",
+     "a": "DSPy 에서는 forward 메서드 안의 if 문, LangGraph 에서는 extract 노드 뒤의 조건부 엣지(route 함수)에 있다."
+    },
+    {
+     "q": "수백만 건 문서를 처리하는 파이프라인을 분산·병렬로 돌리면서 각 단계의 프롬프트도 최적화하고 싶다. 강사의 제안대로 짜면?",
+     "a": "전체 흐름은 LangGraph 그래프로 오케스트레이션하고(노드별 재시도·분산), 각 노드 안의 LLM 호출은 DSPy 모듈로 만들어 옵티마이저로 프롬프트를 개선한다."
+    }
+   ]
+  },
+  {
+   "start": 3300,
+   "title": "오픈소스 에이전트 하네스 — mini-SWE-agent · OpenHands · Pi · OpenClaw, 그리고 Meta-Harness",
+   "points": [
+    "하네스 = 외부 환경을 뺀 에이전트의 나머지 전부(계획·추론, 메모리, LLM 코어 주변, 도구, 행동 실행). 1강 그림의 빨간 상자.",
+    "하네스를 가르는 설계 선택: 어떤 도구, 메모리·컨텍스트 관리, 도구 실행 방식, 도구 결과를 문맥에 되돌리는 방식. 좋은 하네스는 성공률·비용·지연·사용자 통제의 균형을 맞춘다.",
+    "mini-SWE-agent: 도구는 bash 하나, 기록은 단순 누적, 행동마다 subprocess.run(상태 없는 실행). OpenHands: 모든 단계를 이벤트(JSON 파일)로 저장해 문맥을 재구성, 지속 터미널(tmux), 같은 행동·결과 4번 반복이면 멈춤.",
+    "Pi: 도구 4개, 권한 체계 없음, 기록을 트리로. OpenClaw: 30분마다 스스로 깨어남, 하나의 장기 게이트웨이 프로세스, 마크다운 파일로 정체성, 매일 밤 3시 기억 정리.",
+    "같은 모델도 하네스에 따라 Terminal-Bench 2 성공률이 크게 달라진다. Meta-Harness 는 LLM 이 하네스 코드를 스스로 고쳐 쓰는 연구(비교에는 주의)."
+   ],
+   "on_screen": "'What is an Agent Harness?' — 1강 그림: Planning & Reasoning · Memory · LLM Core · Tools(Retrieval, Calculator, Code, Search, Read/Write Memory…) · Agent actions(tool call, interaction, response to users) 를 빨간 테두리로 묶고, 오른쪽 Environment(Desktop OS, Web browser, Mobile apps, Games, Databases)와 observe/act 화살표. 'What differentiates Agent Harnesses?' 세 줄. 'Mini SWE-Agent' 세 줄(bash 뿐 / 완전히 선형인 기록 / subprocess.run 으로 독립 실행). 'Open Hands' 세 줄(단계마다 JSON 파일 이벤트, 지속 터미널 tmux, 같은 행동과 결과 4번 반복 시 중단). 'Open Claw' 네 줄(30분마다 heartbeat 와 NO_REPLY, 장기 Gateway 프로세스, AGENTS.md·SOUL.md·IDENTITY.md·USER.md·MEMORY.md 를 시스템 프롬프트에 주입, 새벽 3시 배경 작업이 하루 노트를 MEMORY.md 로 정리). 'The Harness can make a big difference' — Terminal-Bench 2, 같은 모델에서 하네스별 롤아웃당 비용과 성공률(Claude Fable 5: Pi $1.08 71.1% / Codex $0.98 72.2% / Claude Code $1.55 75.6%; Claude Opus 4.8: $0.76 72.2% / $0.85 72.2% / $0.90 68.9%; Claude Sonnet 4.6: $0.61 65.6% / $0.55 63.3% / $0.67 62.2%; Claude Haiku 4.5: $0.25 47.8% / $0.21 31.1% / $0.25 41.1%), 출처 arena.ai 블로그. 'Meta-Harness'(arxiv 2603.28052) — 탐색 루프 그림(모든 경험이 든 파일시스템 → 하네스 코드 제안 → 과제 평가 → 로그 저장)과 그래프: 텍스트 분류에서 4번 평가 만에 기존 최선 수준, TerminalBench-2 통과율 Meta-Harness 37.6 / Goose 35.5 / Terminus-KIRA 33.7 / Mini-SWE-Agent 29.8 / Terminus-2 28.3 / Claude Code 27.5(모두 Claude Haiku 4.5). 'Bringing it together' 세 줄.",
+   "explain": [
+    "이제 스펙트럼의 오른쪽 끝, 이미 만들어진 에이전트들이다. 먼저 정의. 1강의 에이전트 그림에서 외부 환경(데스크톱 OS, 브라우저, 앱, 데이터베이스)을 뺀 나머지 전부, 즉 계획·추론, 메모리, LLM 코어를 둘러싼 장치, 도구, 행동 실행이 하네스(harness)다. 말 그대로 LLM 에 채우는 '마구(馬具)'라서, 같은 말(모델)이라도 마구에 따라 다르게 달린다. 하네스를 가르는 것은 설계 선택이다. 모델에게 어떤 도구를 주나, 메모리와 컨텍스트를 어떻게 관리하나, 도구를 어떻게 실행하나, 도구가 돌려준 결과를 어떤 모양으로 문맥에 되돌리나. 그리고 좋은 하네스는 과제 성공률, 비용, 지연, 사용자가 얼마나 통제하느냐 사이에서 균형을 잡는데, 그 균형점은 용도에 달렸다. Claude Code 처럼 사람과 붙어 일하는 도구는 사용자 상호작용이 중요하고, 벤치마크 과제를 혼자 푸는 하네스는 사용자 개입이 거의 상관없다.",
+    "네 가지 예가 그 선택지를 보여 준다. mini-SWE-agent 는 미니멀리즘의 극단이다. 도구는 bash 하나뿐이고, 문맥은 ChatGPT 대화처럼 보고 한 것을 그냥 차곡차곡 쌓는다(복잡한 컨텍스트 관리가 없다). 특히 행동마다 subprocess.run 으로 새 셸을 띄운다. 앞 행동에서 cd 로 폴더를 옮겨도 다음 행동에서는 원래 자리다. 불편해 보이지만 각 행동이 완전히 독립적이라, 도커 환경에서 에이전트를 평가할 때 셸 상태가 꼬이는 문제를 걱정할 필요가 없다. OpenHands 는 반대쪽이다. 모든 단계를 이벤트로(디스크에 이벤트당 JSON 파일 하나) 저장하고, 매 단계 그 이벤트들로부터 모델에게 보낼 메시지를 다시 만든다. tmux 세션으로 터미널을 계속 유지해 cd·환경 변수·가상환경이 명령 사이에 이어진다. 같은 행동과 같은 결과가 네 번 반복되면 '막혔다'고 보고 스스로 실행을 멈추는 감지기도 있다.",
+    "Pi 는 또 다른 단순형으로, 도구 4개(읽기·쓰기·편집·bash)에 권한 체계가 없고, 기록을 목록이 아니라 트리로 저장한다(갈래를 쳐서 되돌아갈 수 있게). OpenClaw 는 AI 엔지니어 바깥에서도 유명해진, 내 컴퓨터에서 상주하는 에이전트다. 30분마다 스스로 깨어나는 심장박동(heartbeat) 턴이 있어 할 말이 없으면 NO_REPLY 로 조용히 넘어가고, 모든 채팅 채널을 하나의 장기 게이트웨이 프로세스가 맡으며, AGENTS.md·SOUL.md·IDENTITY.md·USER.md·MEMORY.md 같은 마크다운 파일을 시스템 프롬프트에 넣어 정체성을 만들고, 매일 밤 3시에 배경 작업이 그날의 노트를 훑어 남길 것만 MEMORY.md 로 옮긴다. 강사의 요지는 '하네스를 만드는 정답은 없고 설계 선택이 있을 뿐'이라는 것이다. 그리고 그 선택이 결과를 크게 바꾼다. 2강에서도 본 Terminal-Bench 2 그래프에서 Claude Haiku 4.5 는 Pi 에서 47.8%, Codex 하네스에서 31.1%, Claude Code 에서 41.1% 였다. 모델은 같은데 하네스만 바꿔 16.7%p 차이다.",
+    "마지막은 연구 사례 Meta-Harness 다. LLM 이 자기 하네스의 코드를 스스로 써서 특정 과제에 맞게 최적화한다. 모든 이전 후보의 소스 코드·실행 기록·점수가 든 파일시스템을 에이전트가 읽고 새 하네스를 제안하면, 그것을 과제로 평가해 로그를 다시 저장하는 반복이다. 과학 코드를 잘 짜는 에이전트가 필요하면 과학 평가를 걸어 두고 '네 하네스를 직접 써라'라고 시키면 화학 관련 도구 같은 것을 스스로 만든다. 논문은 TerminalBench-2 에서 Claude Haiku 4.5 기준 37.6% 로 사람이 만든 하네스들(Goose 35.5, Claude Code 27.5 등)을 앞섰다고 보고한다. 다만 강사는 이 비교를 곧이곧대로 받지 말라고 한다. Meta-Harness 는 TerminalBench 과제를 보며 거기에 맞춰 최적화했지만, Claude Code 는 모든 일에 두루 쓰이도록 만든 것이기 때문이다. 이 과목의 숙제 1 이 바로 하네스 만들기다(필수 도구는 정해 주지만 컨텍스트·메모리·도구 노출은 직접 결정). 구독 요금제로 오픈 하네스를 돌리는 방법이 있느냐는 질문에는, 그런 시도가 있지만 제공사 약관 위반일 수 있으니 약관을 잘 읽으라고 답했다."
+   ],
+   "example": {
+    "title": "하네스 그래프에서 '성공 1건당 비용'을 계산해 보기",
+    "body": "롤아웃(시도) 1번의 비용을 성공률로 나누면 '성공 한 번 얻는 데 드는 기대 비용'이 된다. Claude Haiku 4.5: Pi $0.25 / 0.478 ≈ $0.52, Codex $0.21 / 0.311 ≈ $0.68, Claude Code $0.25 / 0.411 ≈ $0.61. 가장 싼 롤아웃(Codex)이 성공 기준으로는 가장 비싸다. Claude Opus 4.8: Pi $0.76 / 0.722 ≈ $1.05, Codex $0.85 / 0.722 ≈ $1.18, Claude Code $0.90 / 0.689 ≈ $1.31. Claude Fable 5: Pi $1.08 / 0.711 ≈ $1.52, Codex $0.98 / 0.722 ≈ $1.36, Claude Code $1.55 / 0.756 ≈ $2.05 — 성공률은 Claude Code 가 가장 높지만 비용도 가장 크다. '좋은 하네스는 성공률과 비용의 균형'이라는 말을 숫자로 보면 이렇다(노트 보충 계산, 실패한 시도도 비용을 낸다고 가정)."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# mini-SWE-agent 식 '매번 새 프로세스' 실행과 OpenHands 식 '계속 살아 있는 셸'의 차이를 본다.\nimport subprocess, sys, os\ndef run_fresh(code):                 # 행동마다 새 프로세스: 이전 행동의 cd·변수는 사라진다\n    r = subprocess.run([sys.executable, \"-c\", code], capture_output=True, text=True, timeout=10)\n    return r.stdout.strip()\nprint(run_fresh(\"import os; os.chdir('..'); print('after chdir:', os.getcwd())\"))\nprint(run_fresh(\"import os; print('next action:', os.getcwd())\"))   # 원래 폴더로 돌아와 있다\nclass PersistentShell:               # 상태가 이어지는 셸을 흉내: 같은 네임스페이스에서 계속 실행\n    def __init__(self): self.ns = {\"os\": os}\n    def run(self, code): exec(code, self.ns); return self.ns.get(\"out\")\nsh = PersistentShell(); start = os.getcwd()\nsh.run(\"os.chdir('..'); x = 41\")\nprint(\"persistent:\", sh.run(\"out = (os.getcwd(), x + 1)\"))\nos.chdir(start)",
+    "note": "직접 실행함(Windows, Python 3.12). 새 프로세스에서 '..' 로 chdir 해도 다음 행동의 작업 폴더는 원래 폴더로 돌아와 있고(mini-SWE-agent 식), exec 로 같은 네임스페이스를 쓰는 '지속 셸' 흉내에서는 폴더 이동과 변수 x=41 이 다음 명령까지 남아 (상위 폴더, 42) 가 출력된다(OpenHands 의 tmux 식). 실제 하네스는 셸 명령을 실행하지만, 원리를 보이려고 파이썬 프로세스로 대신했다."
+   },
+   "pitfalls": [
+    "'하네스 = 프레임워크'가 아니다. DSPy·LangGraph 는 에이전트를 만드는 재료이고, 하네스는 그 재료로 이미 조립된 에이전트(도구·문맥 정책 포함)다.",
+    "벤치마크 하나의 순위로 하네스를 고르지 말 것. 같은 표에서도 모델이 바뀌면 1등 하네스가 바뀐다(Fable 5 에선 Claude Code, Haiku 4.5 에선 Pi).",
+    "Meta-Harness 대 Claude Code 비교는 '특정 벤치마크에 맞춘 것' 대 '범용'이라 공정하지 않다는 강사의 단서를 함께 기억하라."
+   ],
+   "check": [
+    {
+     "q": "mini-SWE-agent 가 행동마다 subprocess.run 으로 새 셸을 띄우는 설계의 장점과 단점을 하나씩.",
+     "a": "장점: 행동이 서로 독립이라 도커 평가 환경에서 셸 상태가 꼬이지 않고 재현이 쉽다. 단점: cd·환경 변수·가상환경 활성화가 다음 명령에 이어지지 않아 모델이 매번 'cd repo && …'처럼 다시 써야 한다."
+    },
+    {
+     "q": "OpenHands 가 실행을 스스로 멈추는 조건은?",
+     "a": "같은 행동과 같은 결과가 4번 반복될 때(막혔다고 판단하는 감지기)."
+    }
+   ]
+  },
+  {
+   "start": 3720,
+   "title": "오케스트레이션과 텔레메트리 — Temporal 의 활동·워크플로·워커, 그리고 LangSmith·MLflow·Langfuse",
+   "points": [
+    "왜 필요한가: METR 그래프처럼 LLM 이 푸는 과제의 길이(사람 기준 시간)가 해마다 늘고, 에이전트는 오래 돈다. 오래 도는 프로세스는 인프라가 믿을 만해야 하고 디버깅용 로그·관측이 필요하다.",
+    "Temporal: 활동(activity) = 실패할 수 있는 기능 단위, 워크플로 = 활동을 잇는 코드, 워커 = 실제로 실행하는 프로세스, 서버 = 작업 대기열을 나눠 주고 실행 이력·상태를 저장.",
+    "데모: 가끔 실패하는 이모지 활동을 3번 재시도한 끝에 성공 — Temporal UI(localhost:8233)의 이벤트 이력·타임라인으로 확인.",
+    "관측성 도구: MLflow, LangSmith(LangGraph 생태계 — 토큰·지연·평가 점수), Langfuse(시간에 따른 신뢰성·비용). 소프트웨어 공학의 교훈이 에이전트 공학으로 그대로 넘어온다."
+   ],
+   "on_screen": "'Why is orchestration/telemetry needed?' — METR 그래프 'Length of software tasks that different LLMs can complete 50% of the time': 가로축 LLM 출시일(2020–2026), 세로축 사람 기준 과제 길이(로그 눈금, 몇 초 → 16시간), GPT-2 에서 최근 모델로 갈수록 점이 위로(출처 metr.org/time-horizons). 세 줄: 에이전트는 오래 돈다(앞 그래프는 '사람 시간'), 디버깅에 로그·관측 도구가 유용, 좋은 소프트웨어 공학의 교훈이 옮겨 온다. 'Temporal Execution Model' — 왼쪽 Your Code(Client): 빨간 점(활동)을 선으로 이은 워크플로, 'Activities are functional units that can fail. Workflows link activities together.', 아래 Activity Workers / Workflow Workers; 오른쪽 Server. Temporal Web UI: '5 Workflows' 목록(reminder-1, reminder-1-calendar, retry-1, calendar-2, calendar-1 — 모두 COMPLETED, CalendarWorkflow/ReminderWorkflow), retry-1 상세(입력 'Go for a walk on Tuesday, October 6, 2026 at 9am, should take 30 minutes.', 결과 'added to calendar', 이벤트 이력·타임라인). LangSmith 화면(ProductionTraces — 실행별 지연·피드백 점수, 토큰 수). 'Best Practices and Challenges' 장 표지.",
+   "explain": [
+    "왜 오케스트레이션과 텔레메트리(원격 측정)가 필요한가. 강사는 METR 의 그래프를 보여 준다. 가로축은 LLM 출시일, 세로축은 '그 모델이 절반의 확률로 해내는 소프트웨어 과제가 사람에게 몇 시간짜리인가'다. 점들이 해마다 위로 올라가, 몇 초짜리 과제에서 몇 시간짜리 과제로 옮겨 왔다. 세로축이 모델 실행 시간이 아니라 사람 기준 시간이라는 점은 강사도 짚지만, 사람에게 오래 걸리는 일은 대개 에이전트에게도 많은 단계와 긴 실행을 뜻한다. 몇 시간 도는 프로세스라면 중간에 기계가 재부팅되거나 API 가 잠시 끊기는 일은 '있을 수 있는 일'이 아니라 '반드시 일어나는 일'이다. 그때 처음부터 다시 하면 과제는 실패한다. 그래서 인프라가 믿을 만해야 하고, 무엇이 잘못됐는지 볼 로그와 관측 도구가 필요하다. 이것은 새 문제가 아니라 소프트웨어 공학이 분산 시스템에서 이미 비싸게 배운 교훈이고, 그것이 에이전트 공학으로 넘어온다.",
+    "Temporal 은 그 교훈을 담은 대표 도구다(강사는 많은 에이전트 엔지니어가 쓰는 매우 인기 있는 도구라며 직접 익혀 보길 권한다). 실행 모델은 네 단어로 요약된다. 활동(activity)은 '실패할 수 있는 기능 단위'다. LLM 호출, 외부 API 호출, 파일 쓰기처럼 바깥 세계와 닿는 일이 여기에 든다. 워크플로는 활동들을 잇는 코드다. 워커는 그 코드를 실제로 실행하는 프로세스로, 활동마다·워크플로마다 따로 둘 수 있다. 서버는 반대편에서 '다음엔 이 활동을 이 워커에게'라는 작업 대기열을 관리하고 모든 실행 이력과 상태를 저장한다. 이력이 서버에 있으니 워커가 죽어도 다른 워커가 이력을 보고 이어서 실행할 수 있다. 이것을 내구성 있는 실행(durable execution)이라 부른다(노트 보충: 그래서 Temporal 의 워크플로 코드는 재실행해도 같은 결과가 나오도록 결정론적이어야 하고, 무작위·시간·외부 호출 같은 비결정적 일은 활동으로 빼야 한다).",
+    "시간이 부족해 코드는 넘어가고 결과만 보였다. 같은 캘린더 프로그램을 Temporal 로 다시 쓴 것이다. Temporal 웹 UI 에 다섯 개 워크플로가 모두 완료로 떠 있고, 그중 retry-1 은 '가끔 실패하는 워커' 아래서 돌린 것이다. 이력을 열면 일정 추출 활동이 먼저 성공하고, 이모지 고르기 활동이 세 번 재시도된 끝에 성공한 뒤 캘린더에 추가되는 순서가 타임스탬프와 함께 보인다(입력은 '10월 6일 화요일 오전 9시 30분 산책', 결과는 '캘린더에 추가됨'). 사람이 재시도 코드를 짜지 않았는데도 재시도가 일어났고, 그 과정이 기록으로 남아 디버깅할 수 있다. 즉 Temporal 은 관측(이력 UI)과 복구(자동 재시도)를 함께 준다.",
+    "관측성 도구도 짧게 훑는다. MLflow 는 실행된 것을 들여다보게 해 주고, LangSmith 는 LangGraph 생태계 쪽 도구로 실행마다 토큰 수·지연·평가 점수를 보여 주며, Langfuse 는 시간에 따라 시스템이 얼마나 믿을 만했고 얼마나 비쌌는지를 볼 수 있다. 목적은 모두 같다. 시스템 밑에서 실제로 무슨 일이 일어났는지 들여다보는 것이다. 이 절의 정리 문장이 강의 전체의 메시지와 이어진다. 오케스트레이션은 에이전트를 믿을 만하게 하고, 관측성은 디버깅과 모니터링을 가능하게 한다. 그리고 평가를 세우고, 모니터링하고, 내구성 있게 실행하는 것이 에이전트를 '만드는' 것과 '엔지니어링하는' 것을 가른다. 아래 코드는 Temporal 의 '활동 재시도 + 이력 기록'만 흉내 낸 것이다. 진짜 Temporal 은 이력을 서버에 저장해 프로세스가 죽은 뒤에도 이어 가지만, 이 코드는 메모리 목록에 적을 뿐이다."
+   ],
+   "code": {
+    "lang": "python",
+    "src": "# Temporal 의 '활동(activity) 재시도 + 실행 이력' 을 흉내 낸다. 실제 Temporal 은 이력을 서버에 저장해 재시작 후에도 이어 간다.\nimport random\nrandom.seed(3)\nhistory = []                                         # 서버가 들고 있는 이벤트 이력 역할\ndef activity(name, fn, max_attempts=5, backoff=1.0):\n    for attempt in range(1, max_attempts + 1):\n        try:\n            out = fn(); history.append((name, attempt, \"completed\", out)); return out\n        except Exception as e:\n            history.append((name, attempt, \"failed\", str(e)))\n            backoff *= 2                             # 지수 백오프(여기선 기다리지 않고 값만 기록)\n    raise RuntimeError(f\"{name} gave up after {max_attempts}\")\ndef flaky_pick_emoji():\n    if random.random() < 0.6: raise TimeoutError(\"emoji LLM timeout\")\n    return \"🦷\"\ndef workflow(email):                                 # 워크플로 = 활동들을 잇는 결정론적 코드\n    d = activity(\"extract_event\", lambda: {\"title\": \"Dentist\", \"start\": \"09:00\"})\n    e = activity(\"pick_emoji\", flaky_pick_emoji)\n    return activity(\"add_to_calendar\", lambda: f\"added {e} {d['title']}\")\nprint(workflow(\"Dentist appointment confirmed\"))\nfor row in history: print(row)",
+    "note": "직접 실행함(Temporal 없이 흉내만). random.seed(3) 에서 pick_emoji 가 3번 'emoji LLM timeout' 으로 실패하고 4번째에 성공 — 강의 데모의 '3번 재시도 후 성공'과 같은 모양이 나오도록 씨앗을 골랐다. 출력 마지막 줄들이 서버 이력 역할: extract_event 1회 완료, pick_emoji 1~3회 실패·4회 완료, add_to_calendar 1회 완료."
+   },
+   "diagram": {
+    "title": "Temporal 실행 모델(강의 그림을 옮겨 그림)",
+    "code": "flowchart LR\n  subgraph Client[내 코드]\n    WF[워크플로: 활동을 잇는 결정론적 코드]\n    A1[활동: extract_event] --> A2[활동: pick_emoji] --> A3[활동: add_to_calendar]\n  end\n  subgraph Server[Temporal 서버]\n    Q[작업 대기열]\n    H[(실행 이력·상태)]\n  end\n  Q --> W1[워크플로 워커]\n  Q --> W2[활동 워커]\n  W2 -- 실패/성공 기록 --> H\n  H -- 재시도·재개 --> Q"
+   },
+   "pitfalls": [
+    "METR 그래프의 세로축은 모델이 걸린 시간이 아니라 '사람이 그 과제에 쓰는 시간'이다. 강사도 이 점을 짚었다.",
+    "재시도는 공짜가 아니다. LLM 활동을 재시도하면 토큰 비용이 다시 나가고, 부작용이 있는 활동(메일 보내기, 일정 추가)은 두 번 실행돼도 안전하도록(멱등) 설계해야 한다(노트 보충).",
+    "관측성 도구를 붙여도 아무도 트레이스를 보지 않으면 소용없다. 정기적으로 실패 트레이스를 읽는 습관이 도구보다 중요하다."
+   ],
+   "check": [
+    {
+     "q": "Temporal 에서 LLM 호출은 워크플로 코드에 직접 쓰나, 활동으로 빼나? 이유는?",
+     "a": "활동으로 뺀다. LLM 호출은 실패할 수 있고 결과가 비결정적이라, 활동으로 두어야 재시도·타임아웃이 걸리고 결과가 이력에 기록되어 재개 시 다시 부르지 않고 이력의 값을 쓸 수 있다."
+    },
+    {
+     "q": "관측성 도구와 신뢰성(오케스트레이션) 도구의 차이를 강사의 기준으로 한 문장.",
+     "a": "관측성 도구는 트레이스와 오류를 드러내 사람이 고치게 하고, 신뢰성 도구는 거기에 더해 실패를 스스로 처리(재시작·재시도)해 시스템이 계속 돌게 한다."
+    }
+   ]
+  },
+  {
+   "start": 4080,
+   "title": "모범 사례 ① 단순하게, 그리고 실패를 관찰·복구 가능하게 — 오류를 에이전트에게 돌려주기, Shepherd",
+   "points": [
+    "단순하게: 늘 에이전트가 필요한 것은 아니다. '모든 메일의 일정을 캘린더에' 같은 좁은 일은 워크플로가 맞고, '내 캘린더를 관리해 줘' 같은 열린 일에야 에이전트가 필요하다.",
+    "에이전트를 만들면 줄 도구를 신중히 고른다. 데이터가 많으면 스펙트럼 맨 왼쪽(특정 과제용으로 학습한 단일 모델)로 돌아갈 수도 있다 — 예: 정보 추출 미세조정.",
+    "실패를 관찰 가능하게: 모델 호출·도구 호출·상태 변화·오류를 추적하고, 타임아웃·재시도 한도·실행 예산을 두고, 출력을 기록해 실패를 진단한다.",
+    "복구 가능하게: Claude Code 처럼 실패한 도구 호출의 오류를 모델에게 돌려줘 다시 시도하게 한다. Shepherd 는 메타 에이전트가 작업 에이전트의 실행을 관찰·가로채기·되돌리기·갈래치기 한다."
+   ],
+   "on_screen": "'Keep it Simple' — 에이전시 스펙트럼 그림 아래 세 줄(늘 에이전트가 필요하진 않다, 에이전트를 만들면 도구를 신중히, 데이터가 많으면 모델을 끝에서 끝까지 최적화할 수도). 'Make Failures Observable and Recoverable' — 네 줄(모델 호출·도구 호출·상태 변화·오류 추적 / 타임아웃·재시도 한도·실행 예산 / 출력 기록과 실패 진단 / 시스템 상태 모니터링)과 Temporal·mlflow·Langfuse 로고, Claude Code 화면 캡처(sleep 30 뒤 grep 하는 Bash 명령이 차단되어 오류 메시지가 모델에게 돌아감)와 'You can raise the error to the agent to try again.' 'Example: Shepherd'(arxiv 2605.10913) — 메타 에이전트가 Create·Observe·Intercept·Revert·Fork 로 작업 에이전트의 LLM 호출·도구 호출을 다루는 그림, 코드 'from shepherd import agent, observe, revert, fork' / @agent(LLM=\"haiku\") def implement(repo, feature) / @agent(LLM=\"opus\", tools=[observe, revert, fork]) def oversee(agent_run) — 테스트가 깨지면 되돌리고 다시 시도. 아래 막대그래프: (a) CooperBench 짝 코딩 — 메타 에이전트 없이 28.8, Sonnet 4.6 메타 에이전트 45.3, Opus 4.7 54.7 / (b) LiveCodeBench 반사실적 최적화 — 최적화 안 함 30.7%, GEPA 48.7%, MetaHarness 40.0%, CRO 51.0% / (c) TerminalBench-2 트리 강화학습 — Qwen3.5-35B-A3B 26.1·34.2·39.4, Nemotron-3-Super 30.3·33.8·37.2(Base·FlatGRPO·Tree-GRPO).",
+   "explain": [
+    "마지막 장은 모범 사례다. 첫째는 '단순하게'다. 스펙트럼을 다시 꺼내 놓고, 늘 에이전트를 만들 필요는 없다고 말한다. 워크플로나 복합 시스템이 훨씬 믿을 만하고 디버깅하기 쉽다. 오늘 본 '내 모든 메일에서 일정을 뽑아 캘린더에 넣기'처럼 할 일이 좁고 분명하면 워크플로가 제격이다. 반면 '비서처럼 내 캘린더를 관리해 줘'처럼 무엇을 할지 미리 정의하기 어려운 열린 과제라면 그때 에이전트 시스템이 필요할 수 있다. 에이전트를 만든다면 어떤 도구를 줄지 신중히 생각해야 한다(2강의 '도구가 많을수록 좋은 것은 아니다'와 이어진다). 그리고 데이터가 아주 많다면 오히려 스펙트럼의 맨 왼쪽으로 돌아갈 수도 있다. 여러 단계를 엮은 문서 정보 추출 워크플로 대신, 그 일에 특화해 미세조정한 모델 하나가 입력 하나·출력 하나로 처리하는 것이 나을 수 있다는 것이다.",
+    "둘째는 '실패를 관찰 가능하고 복구 가능하게'다. 관찰 쪽은 체크리스트다. 모델 호출, 도구 호출, 상태 변화, 오류를 모두 추적해 어딘가에 기록한다. 타임아웃, 재시도 한도, 실행 예산(최대 단계·최대 토큰·최대 비용)을 정해 둔다. 출력을 기록해 실패를 진단하고, 시스템 전체 상태를 모니터링한다. 앞 장의 Temporal·MLflow·Langfuse 가 이를 위한 도구다. 복구 쪽의 가장 단순하고 강력한 기법은 '오류를 에이전트에게 돌려주기'다. 화면의 Claude Code 예에서 모델이 실행한 명령이 막히자, 하네스는 프로그램을 죽이는 대신 그 오류 메시지를 도구 결과로 모델에게 넘겼고, 모델은 그것을 읽고 다른 방식으로 다시 시도했다. 예외를 던져 루프를 끝내는 대신 오류를 '관찰'로 바꾸는 것이다. 아래 코드가 그 패턴을 보인다.",
+    "강사는 연구 사례로 Shepherd 를 소개한다. Meta-Harness 처럼 아직 연구 단계지만, 관측성 층 자체를 에이전트에게 맡기는 발상이다. 작업 에이전트(예: Haiku 가 저장소에 기능을 구현)가 일하는 동안, 메타 에이전트(예: Opus)가 그 실행을 관찰(observe)하고, 버그 있는 도구 호출을 가로채고(intercept), 되돌리고(revert), 다른 갈래로 다시 실행(fork)한다. 코드로는 메타 에이전트 함수에 observe·revert·fork 를 도구로 주고 '테스트가 깨지면 되돌리고 다시 시도하라'고 지시하는 정도다. 그래프에서는 CooperBench 짝 코딩에서 메타 에이전트가 없을 때 28.8 이던 통과율이 Sonnet 4.6 메타 에이전트로 45.3, Opus 4.7 로 54.7 이 되고, 다른 두 실험(반사실적 최적화, 트리 기반 강화학습)에서도 메타 에이전트 쪽이 높다. 강사의 결론은 '어떤 형태로든 관측성 층을 두라'는 것이다.",
+    "이 두 원칙은 서로 연결된다(노트 보충). 단순한 워크플로는 실패 지점이 적고 분명해서 관찰하기 쉽고, 관찰 가능한 시스템은 '어디까지 단순하게 갈 수 있는지'를 데이터로 판단하게 해 준다. 예산과 한도도 마찬가지다. ReAct 장에서 본 것처럼 에이전트는 LLM 호출 수를 미리 알 수 없으므로, 단계 한도·도구 호출 한도가 없으면 실패가 '느리고 비싼 실패'가 된다. 도구가 예산을 다 썼을 때도 예외 대신 '예산이 끝났으니 지금까지를 요약하고 멈춰라' 같은 문장을 관찰로 돌려주면, 모델이 깔끔하게 끝낼 기회를 준다."
+   ],
+   "code": {
+    "lang": "python",
+    "src": "# 관찰 가능하고 복구 가능한 도구 호출: 모든 호출을 기록하고, 실패는 예외로 죽지 않고 '관찰'로 에이전트에게 돌려준다.\nimport time, json\nTRACE, BUDGET = [], {\"tool_calls\": 4}\ndef traced(fn):\n    def wrap(**args):\n        if BUDGET[\"tool_calls\"] <= 0: return \"ERROR: tool budget exhausted — stop and summarize\"\n        BUDGET[\"tool_calls\"] -= 1\n        t0 = time.perf_counter()\n        try:    out, ok = fn(**args), True\n        except Exception as e: out, ok = f\"ERROR: {type(e).__name__}: {e} — fix the arguments and try again\", False\n        TRACE.append({\"tool\": fn.__name__, \"args\": args, \"ok\": ok, \"ms\": round((time.perf_counter() - t0) * 1000, 2)})\n        return out\n    return wrap\n@traced\ndef add_event(title, start):\n    h, m = map(int, start.split(\":\"))          # '3pm' 같은 형식이면 ValueError\n    return f\"added {title} at {h:02d}:{m:02d}\"\nprint(add_event(title=\"Coffee\", start=\"3pm\"))   # 1회차: 에이전트가 형식을 틀림 → 오류 문장이 관찰로 돌아감\nprint(add_event(title=\"Coffee\", start=\"15:00\")) # 2회차: 오류를 읽고 고친 호출\nprint(json.dumps(TRACE, ensure_ascii=False))",
+    "note": "직접 실행함. 첫 호출(start='3pm')은 ValueError 를 잡아 'ERROR: ValueError: … — fix the arguments and try again' 문장을 돌려주고 프로그램은 죽지 않는다. 둘째 호출(start='15:00')은 'added Coffee at 15:00'. TRACE 에는 두 호출의 인자·성공 여부·소요 시간(ms, 실행마다 조금 다름)이 남는다. 도구 호출 예산(4번)을 넘으면 예외 대신 멈추라는 문장을 돌려준다."
+   },
+   "pitfalls": [
+    "오류를 모델에게 돌려줄 때 스택 트레이스 전체를 넣으면 문맥을 낭비한다. 무엇이 틀렸고 어떻게 고칠지를 짧은 문장으로 주는 편이 낫다(2강의 컨텍스트 예산과 같은 이야기).",
+    "재시도 한도 없이 '오류를 돌려주고 다시 시도'만 하면 같은 실수를 무한 반복할 수 있다. OpenHands 의 '4번 같은 결과면 멈춤' 같은 감지기를 함께 둔다.",
+    "'단순하게'는 '에이전트를 쓰지 말라'가 아니다. 열린 과제를 워크플로로 억지로 짜면 분기가 끝없이 늘어난다."
+   ],
+   "check": [
+    {
+     "q": "'받은편지함의 모든 송장에서 금액·날짜·거래처를 뽑아 회계 시스템에 넣기'를 만든다. 강의의 '단순하게' 원칙대로라면 스펙트럼 어디서 시작하고, 어떤 조건이면 더 왼쪽으로 가나?",
+     "a": "할 일이 좁고 분명하므로 워크플로(추출 모듈 + 파이썬 검증 + API 호출)에서 시작한다. 라벨 붙은 송장 데이터가 충분히 쌓이면 추출 전용으로 미세조정한 단일 모델(맨 왼쪽)을 고려할 수 있다."
+    }
+   ]
+  },
+  {
+   "start": 4290,
+   "title": "모범 사례 ② 평가를 돌려라, 그리고 프레임워크의 한계 — 내 도메인의 평가, 추상화의 대가, '프롬프트를 보여 줘'",
+   "points": [
+    "설계 결정은 평가에 근거해야 하고, 평가가 있어야 최적화가 가능하다(옵티마이저 데모가 된 이유). 프로젝트에서 가장 먼저 할 일 중 하나가 좋은 평가 만들기.",
+    "지표는 정확도만이 아니다 — 비용·지연(사용자 대면이면 특히). 대표 사례·다양한 사례·경계 사례·실패 시나리오로 시험하고, '잘 되는 길'만 시험하지 말 것.",
+    "헤드라인 벤치마크(Terminal-Bench, SWE-bench, DeepSWE)가 아니라 내 도메인의 맞춤 평가를 올려라 — 범용 코딩 하네스를 만드는 경우만 예외.",
+    "한계: 추상화는 밑바닥에서 멀어지게 한다, 수많은 호출이 엮이면 실패 원인을 찾기 어렵다(트레이스를 보라), 외부 라이브러리 의존과 유지보수 위험.",
+    "정리: 만들기 → 실행 → 평가 → 개선의 순환. 단순하게 시작해 복잡성을 정당화하고, 실패와 복구를 설계하고, 증거로 품질·비용·지연을 판단하고, 시스템을 끝까지 이해하라."
+   ],
+   "on_screen": "'Run Evaluations' — 다섯 줄(설계 결정을 평가에 근거 / 평가가 최적화를 가능케 / 제대로 된 평가 만들기가 가장 중요한 단계 중 하나 / 지표를 현명하게: 정확도·비용·지연 등 / 대표 과제·경계 사례·실패 시나리오 시험)과 저울 그림. 다음 장: 왼쪽 TERMINAL-BENCH·SWE-bench·DeepSWE 로고에 빨간 X, 오른쪽 'Your Custom Domain Eval!' 에 초록 체크, 아래 '범용 코딩 에이전트 하네스를 만들거나 범용 에이전트 시스템 개선을 시험하는 게 아니라면 표준 코딩 벤치마크는 올라야 할 대상이 아니다'. 'Challenges and Limitations' — 프레임워크 위에 쌓으면 의존성과 유지보수에 기대게 된다는 줄 등, 'Show me the prompt' 블로그 밈. 'Recap' 다섯 줄(Building → Running → Evaluating → Improving 순환 / 단순하게 시작해 추가 복잡성을 정당화 / 실패·복구를 설계 / 증거와 평가로 품질·비용·지연 판단 / 시스템이 어떻게 도는지 완전히 이해). 'Summary' 체크리스트 다섯 항목.",
+   "explain": [
+    "셋째 모범 사례는 '평가를 돌려라'다. 강사는 에이전트 설계 결정을 내리는 가장 좋은 방법은 평가에 근거하는 것이라고 말한다. 그리고 평가는 최적화를 가능하게 한다. 앞에서 작은 모델을 55% 에서 100% 로 끌어올릴 수 있었던 것은 옵티마이저가 똑똑해서이기도 하지만, 그 전에 이메일 데이터에 정확 일치 지표를 정의해 두었기 때문이다. 평가 없이 하는 개선은 '이렇게 하면 좋아질 것 같다'는 짐작으로 어둠 속에서 활을 쏘는 것과 같다. 평가가 있으면 가설을 세우고 실제로 나아졌는지 확인할 수 있다. 그래서 강사는 수강생들의 프로젝트 제안서에서 평가를 깊이 고민하라고, 프로젝트에서 가장 먼저 할 일 중 하나가 좋은 평가를 만드는 것이라고 거듭 강조한다. 과소평가되는 일이라는 말도 덧붙인다.",
+    "평가를 잘 만드는 요령은 두 가지다. 지표를 현명하게 고를 것. 정확도가 당연한 출발점이지만, 용도에 따라 비용과 지연도 지표가 되어야 하고, 사용자가 기다리는 서비스라면 지연이 특히 중요하다. 그리고 시험 사례를 넓게 잡을 것. 대표적인 사례, 다양한 사례, 경계 사례, 여러 실패 시나리오를 넣어 시스템을 정말 어려운 상황에 몰아넣어야 한다. 늘 잘 되는 길(happy path)만 시험하면 '항상 이렇게 동작하겠지'라는 착각 위에서 잘못된 설계 결정을 내린다. 또 하나, 회사들이 에이전트를 발표할 때 내세우는 헤드라인 벤치마크(Terminal-Bench, SWE-bench, DeepSWE)를 따라 올리고 싶은 유혹이 있지만, 강사는 자기 도메인의 맞춤 평가에 집중하라고 한다. 캘린더 관리 에이전트를 만든다면 캘린더 평가를 만들어야지 SWE-bench 점수를 보일 이유가 없다. 범용 코딩 에이전트 하네스를 만드는 경우에만 그 벤치마크들이 맞는 표적이다.",
+    "마지막은 프레임워크의 한계다. 첫째, 추상화는 밑바닥에서 사람을 멀어지게 한다. 처음의 PyTorch 비유로 돌아가, PyTorch 만 배운 사람도 역전파를 몰라도 신경망을 짤 수 있지만 때로는 역전파를 알아야 한다. 마찬가지로 오늘 본 프레임워크로 이 수업을 듣지 않고도 에이전트 코드를 짤 수 있지만, 밑에서 무슨 일이 일어나는지 알아야 더 좋은 시스템을 만든다. 그것이 이 수업의 목적이다. 둘째, 복잡한 시스템에서는 실패가 어디서 오는지 찾기 어렵다. 오늘은 단순한 예였지만 LLM 호출이 열 개, 백 개 엮이면 트레이스를 직접 보는 것이 필수이고, 관측성 도구나 에이전트의 도움을 받을 수 있다. 셋째, 프레임워크 위에 쌓으면 외부 라이브러리의 유지보수에 기대게 된다. 오늘 본 세 라이브러리는 활발히 관리되지만, 5년·10년 갈 시스템이라면 그 라이브러리가 계속 살아 있을지, 더 우아한 대안이 나올지를 고려해야 한다. 블로그 글에서 따온 밈의 제목 '프롬프트를 보여 줘(Show me the prompt)'가 이 한계들을 한마디로 요약한다. 프레임워크가 마법처럼 해 주는 일이 있어도, 실제로 무엇이 모델에 들어가는지 확인하라는 것이다.",
+    "정리 슬라이드는 다섯 줄이다. 에이전트 엔지니어링은 만들기 → 실행 → 평가 → 개선을 도는 순환이며, 처음 만든 시스템을 그대로 내보낼 생각을 하지 말 것. 단순하게 시작하고 덧붙이는 복잡성마다 근거를 댈 것. 실패와 복구를 설계할 것(Temporal 같은 도구, 그리고 시스템이 실패하면 무엇을 할지에 대한 계획). 증거와 평가로 품질·비용·지연을 판단할 것. 그리고 시스템이 어떻게 도는지 끝까지 이해할 것 — 무언가 깨졌을 때 원인은 밑바닥에 있을 수 있기 때문이다. 강사가 2강에서 LLM 내부를 가르친 동기와 같다. 다음 강의(강사 예고)는 ReAct 를 비롯한 에이전트 구조를 더 깊이 다루고, 2주 뒤에는 GEPA 같은 최적화 알고리즘이 어떻게 작동하는지를 다룬다."
+   ],
+   "formulas": [
+    {
+     "expr": "J(시스템) = Acc − λ_c · Cost − λ_t · Latency",
+     "meaning": "노트 보충: '지표를 현명하게 고르라'를 한 줄로 쓴 것. Acc 는 평가 세트 정확도(0~1), Cost 는 과제당 평균 비용(달러), Latency 는 과제당 평균 지연(초), λ_c 와 λ_t 는 비용·지연을 정확도와 같은 단위로 바꾸는 가중치(사용자 대면 서비스면 λ_t 를 크게). 하나의 숫자로 합치면 설계안끼리 비교하기 쉽지만 가중치 선택 자체가 설계 결정이다."
+    }
+   ],
+   "example": {
+    "title": "세 설계안을 내 도메인 평가로 비교하기",
+    "body": "캘린더 이메일 평가 세트 100통에서: A = 워크플로 + 큰 모델: 정확도 0.97, 과제당 $0.004, 1.2초. B = 워크플로 + 최적화한 작은 모델: 0.95, $0.0005, 0.6초. C = ReAct 에이전트 + 큰 모델: 0.96, $0.02, 6.0초. λ_c = 10(1센트 = 0.1점), λ_t = 0.01(1초 = 0.01점)로 두면 J(A) = 0.97 − 0.04 − 0.012 = 0.918, J(B) = 0.95 − 0.005 − 0.006 = 0.939, J(C) = 0.96 − 0.2 − 0.06 = 0.700. 정확도 1위는 A 지만 B 가 가장 좋은 설계이고, C 는 이 좁은 과제에 에이전트를 쓴 대가를 치른다. 숫자는 설명용 가정이다(노트 보충). 경계 사례(날짜 둘, 시간대 표기, 일정 없음)를 평가 세트에 넣지 않았다면 세 안의 차이는 보이지도 않았을 것이다."
+   },
+   "pitfalls": [
+    "벤치마크 점수가 높은 모델·하네스가 내 과제에서도 좋다는 보장은 없다. 반드시 내 도메인 평가로 다시 잰다.",
+    "평가 세트를 '잘 되는 예'로만 채우면 모든 설계가 100% 로 보여 비교가 불가능하다. 실패 시나리오를 일부러 넣어라.",
+    "프레임워크를 고를 때 기능만 보지 말고 유지보수 상태와 빠져나갈 수 있는지(생성된 프롬프트를 꺼내 볼 수 있는지)도 본다."
+   ],
+   "check": [
+    {
+     "q": "캘린더 관리 에이전트 프로젝트에서 SWE-bench 점수를 올리는 것이 왜 강사의 기준으로 잘못된 목표인가? 예외는?",
+     "a": "SWE-bench 는 범용 코딩 능력을 재므로 캘린더 과제의 품질과 무관하다. 그 프로젝트는 캘린더 맞춤 평가로 재야 한다. 예외는 범용 코딩 에이전트 하네스를 만들거나 범용 에이전트 시스템 개선을 시험하는 경우다."
+    },
+    {
+     "q": "강의가 꼽은 프레임워크의 한계 세 가지는?",
+     "a": "① 추상화가 밑바닥 시스템에서 멀어지게 한다 ② 많은 호출이 엮인 시스템에서 실패 원인 찾기가 어렵다 ③ 외부 라이브러리 의존·장기 유지보수 위험."
+    }
+   ]
+  }
+ ],
+ "concepts": [
+  {
+   "term": "에이전시 스펙트럼",
+   "explain": "모델 → 워크플로(복합 AI 시스템) → 에이전트로 이어지는 축. 기준은 '다음에 무엇을 할지 정하는 제어 흐름이 프로그램에 있나, 모델에 있나'.",
+   "at": 270
+  },
+  {
+   "term": "AI 시스템의 세 기둥",
+   "explain": "시스템(모델·워크플로·에이전트), 데이터(학습 데이터·롤아웃·시연·피드백), 평가+지표(통과율·정확 일치·LLM 심판·비용/지연). 셋이 다 있어야 '엔지니어링'이다.",
+   "at": 180
+  },
+  {
+   "term": "시그니처(DSPy Signature)",
+   "explain": "언어 모델이 받는 입력 칸과 내놓는 출력 칸의 계약. 문자열('message -> response') 또는 클래스로 쓰며, 칸 이름·타입·desc·docstring 이 곧 지시문이 된다.",
+   "at": 570
+  },
+  {
+   "term": "어댑터(Adapter)",
+   "explain": "시그니처를 실제 프롬프트로 바꾸고 응답을 파싱·검증하는 DSPy 의 층. 결정론적이며, ChatAdapter 가 실패하면 JSONAdapter 로 재시도한다.",
+   "at": 780
+  },
+  {
+   "term": "모듈(DSPy Module)",
+   "explain": "시그니처를 '어떻게' 채울지의 전략(Predict, ChainOfThought, BestOfN, ReAct, RLM). dspy.Module 을 상속해 forward 에 파이썬 논리로 하위 모듈을 엮는다.",
+   "at": 1215
+  },
+  {
+   "term": "ChainOfThought",
+   "explain": "출력 칸 맨 앞에 reasoning 칸을 더한 Predict. 칸 순서대로 생성되므로 근거를 먼저 쓰고 답을 쓴다.",
+   "at": 1220
+  },
+  {
+   "term": "옵티마이저(DSPy Optimizer)",
+   "explain": "데이터와 지표가 주어지면 프로그램의 프롬프트(지시문·예시) 또는 가중치를 지표가 오르도록 자동으로 고치는 도구.",
+   "at": 1590
+  },
+  {
+   "term": "GEPA",
+   "explain": "반성 기반 프롬프트 진화 옵티마이저. 프로그램을 여러 번 실행하고 결과·피드백을 반성해 지시문을 다시 쓴다. 강의에서 Gemma 3 12B 를 55% → 100% 로.",
+   "at": 1875
+  },
+  {
+   "term": "정확 일치 지표(exact match)",
+   "explain": "예측이 정답과 완전히 같을 때만 1, 아니면 0 인 지표. 강의에서는 날짜·시작 시각·길이 세 칸이 모두 같아야 1.",
+   "at": 1710
+  },
+  {
+   "term": "ReAct",
+   "explain": "생각(Thought) → 행동(Action, 도구 호출) → 관찰(Observation)을 반복하는 에이전트 구조. dspy.ReAct 와 LangChain create_agent 가 이 모양이다.",
+   "at": 2160
+  },
+  {
+   "term": "RLM(재귀 언어 모델)",
+   "explain": "긴 입력을 모델 문맥에 넣지 않고 REPL 의 변수로 두고, 모델이 코드를 실행해 필요한 부분만 꺼내 보게 하는 방식. dspy.RLM.",
+   "at": 2280
+  },
+  {
+   "term": "상태(LangGraph State)",
+   "explain": "그래프의 모든 노드가 함께 읽고 쓰는 공유 작업대(TypedDict 등). 노드는 바꾼 칸만 돌려주고 엔진이 병합한다.",
+   "at": 2550
+  },
+  {
+   "term": "조건부 엣지",
+   "explain": "상태를 받아 다음 노드의 이름을 돌려주는 라우터 함수로 정의되는 엣지. 그래프 그림에서 점선.",
+   "at": 2880
+  },
+  {
+   "term": "에이전트 하네스",
+   "explain": "외부 환경을 뺀 에이전트의 나머지 전부 — 도구, 메모리·컨텍스트 관리, 도구 실행 방식, 결과를 문맥에 되돌리는 방식. 같은 모델도 하네스에 따라 성능이 크게 달라진다.",
+   "at": 3330
+  },
+  {
+   "term": "Meta-Harness",
+   "explain": "LLM 이 이전 후보들의 코드·실행 기록·점수를 읽고 하네스 코드를 스스로 다시 써서 특정 과제에 최적화하는 연구(arXiv 2603.28052).",
+   "at": 3600
+  },
+  {
+   "term": "내구성 있는 실행(durable execution)",
+   "explain": "실행 이력을 서버에 저장해 워커가 죽어도 이어서 실행하고 실패한 단계를 자동 재시도하는 방식. Temporal 의 핵심.",
+   "at": 3780
+  },
+  {
+   "term": "활동·워크플로·워커(Temporal)",
+   "explain": "활동 = 실패할 수 있는 기능 단위(LLM·API 호출), 워크플로 = 활동을 잇는 코드, 워커 = 실제 실행 프로세스, 서버 = 작업 대기열과 이력.",
+   "at": 3810
+  },
+  {
+   "term": "관측성(observability)",
+   "explain": "모델 호출·도구 호출·상태 변화·오류를 추적·기록해 무슨 일이 일어났는지 보여 주는 것. MLflow, LangSmith, Langfuse.",
+   "at": 3970
+  },
+  {
+   "term": "메타 에이전트(Shepherd)",
+   "explain": "작업 에이전트의 실행을 관찰하고 가로채고 되돌리고 갈래쳐 다시 실행하는 상위 에이전트 — 관측성 층을 에이전트로 만든 연구(arXiv 2605.10913).",
+   "at": 4215
+  },
+  {
+   "term": "맞춤 도메인 평가",
+   "explain": "헤드라인 벤치마크 대신 내 과제(예: 캘린더)의 대표·경계·실패 사례로 만든 평가. 범용 코딩 하네스를 만드는 경우만 표준 벤치마크가 맞는 표적이다.",
+   "at": 4350
+  }
+ ],
+ "trends": [
+  {
+   "claim": "DSPy·LangGraph 는 업계에서 실제로 쓰이며 채용 요건에 등장한다",
+   "evidence": "슬라이드: GitHub 별 dspy 약 38.5k, langgraph 약 42.8k, temporal 약 23.5k, 그리고 'DSPy Developer Jobs in San Francisco', 'Now Hiring: 2000 Langgraph Jobs' 검색 결과. 강사는 에이전트 엔지니어 공고에 요구·우대 기술로 적혀 있다고 말했다.",
+   "at": 420
+  },
+  {
+   "claim": "프롬프트는 손으로 다듬기보다 데이터·지표로 자동 최적화하는 쪽으로 간다 (강사 의견, DSPy 기여자로서 편향을 밝힘)",
+   "evidence": "GEPA 가 지시문만 다시 써서 Gemma 3 12B 의 시험 정확도를 55% → 100% 로. 강사는 핵심만 docstring 에 쓰고 세부는 옵티마이저에 맡기라고 권했고, 자신의 옵티마이저가 Meta·Google·Dropbox·Amazon 등에서 쓰인다는 소개(영상 설명)가 있다.",
+   "at": 1890
+  },
+  {
+   "claim": "작은 공개 가중치 모델도 최적화된 프롬프트로 API 모델 수준에 닿을 수 있다",
+   "evidence": "같은 추출 과제에서 GPT-5.4 Nano 100%, Gemma 3 12B 최적화 전 55% → GEPA 후 100%(시험 20통). 비용은 최적화 한 번에 수백 번 실행·백만 토큰 단위.",
+   "at": 1860
+  },
+  {
+   "claim": "같은 모델이라도 하네스 설계가 성능·비용을 크게 가른다",
+   "evidence": "Terminal-Bench 2(arena.ai 블로그 인용): Claude Haiku 4.5 가 Pi 47.8%, Claude Code 41.1%, Codex 31.1%. 모델에 따라 1등 하네스가 바뀐다(Fable 5 는 Claude Code 75.6%).",
+   "at": 3570
+  },
+  {
+   "claim": "하네스 자체를 LLM 이 쓰고 최적화하는 연구가 나오고 있다(단, 비교 공정성에 주의 — 강사 의견)",
+   "evidence": "Meta-Harness 가 TerminalBench-2(Haiku 4.5)에서 37.6% 로 Goose 35.5, Claude Code 27.5 등을 앞섰다는 보고. 강사는 특정 벤치마크에 맞춘 것과 범용 도구의 비교라 감안하라고 했다.",
+   "at": 3600
+  },
+  {
+   "claim": "LLM 이 푸는 과제의 길이가 해마다 늘어 장시간 실행 인프라가 필요해졌다",
+   "evidence": "METR 그래프: 모델이 50% 확률로 완수하는 소프트웨어 과제의 사람 기준 길이가 GPT-2 시절 몇 초에서 최근 몇 시간 단위로. 강사는 Temporal 을 많은 에이전트 엔지니어가 쓴다고 했다.",
+   "at": 3750
+  },
+  {
+   "claim": "관측성 층을 에이전트로 만드는 메타 에이전트가 연구되고 있다",
+   "evidence": "Shepherd: CooperBench 짝 코딩에서 메타 에이전트 없이 28.8 → Sonnet 4.6 메타 에이전트 45.3, Opus 4.7 54.7.",
+   "at": 4215
+  },
+  {
+   "claim": "헤드라인 벤치마크가 아니라 내 도메인 맞춤 평가를 올려야 한다 (강사 의견)",
+   "evidence": "Terminal-Bench·SWE-bench·DeepSWE 에 X, 'Your Custom Domain Eval!' 에 체크. 범용 코딩 하네스를 만드는 경우만 예외.",
+   "at": 4380
+  }
+ ],
+ "study": {
+  "prereq": [
+   "Python 중급 — 클래스·타입 힌트(Literal, Optional, TypedDict), 데코레이터, 예외 처리",
+   "LLM API 를 직접 호출해 본 경험(메시지 배열, JSON 출력 받기)",
+   "머신러닝 평가의 기본 — 학습/검증/시험 분리, 과적합",
+   "CS329Z 1강(에이전트 구성 요소·ReAct)과 2강(컨텍스트 엔지니어링·RLM·하네스 비교) 노트"
+  ],
+  "steps": [
+   {
+    "do": "이 노트의 흉내 코드 다섯 개(시그니처 컴파일러, Module 합성, 지시문 최적화, ReAct 루프, 미니 StateGraph)를 직접 돌리고, 각 코드에서 '진짜 라이브러리가 대신해 주는 부분'에 주석을 단다",
+    "why": "추상화 밑에 무엇이 있는지 먼저 알면 프레임워크를 쓸 때 '프롬프트를 보여 줘'를 스스로 할 수 있다."
+   },
+   {
+    "do": "DSPy 를 설치해(pip install dspy) ExtractEvent 시그니처를 Predict·ChainOfThought 로 돌리고 inspect_history 로 실제 프롬프트를 이 노트의 손 컴파일 결과와 비교한다",
+    "why": "어댑터가 만드는 프롬프트의 실제 모양과 타입 검증·재시도 동작을 눈으로 확인한다."
+   },
+   {
+    "do": "라벨 붙은 이메일 30~50통을 직접 만들고(경계 사례 포함: 날짜 둘, 시간대, 일정 없음) 정확 일치 지표 + 피드백 문장을 쓴 뒤, 작은 모델에 GEPA(또는 다른 DSPy 옵티마이저)를 작은 예산으로 돌려 최적화 전후를 시험 세트로 잰다",
+    "why": "세 기둥(데이터·시스템·지표)을 실제로 갖췄을 때 무엇이 가능해지는지, 비용이 얼마인지 체감한다."
+   },
+   {
+    "do": "같은 캘린더 프로그램을 LangGraph 로 다시 짜서(상태·노드·조건부 엣지), DSPy 판과 LLM 호출 수·코드 길이·디버깅 편의를 표로 비교한다. 이어서 DSPy 모듈을 LangGraph 노드 안에 넣는 조합도 만들어 본다",
+    "why": "두 추상화가 같은 문제를 어떻게 다르게 표현하는지, 강사가 권한 조합이 실제로 어떤지 판단할 근거가 생긴다."
+   },
+   {
+    "do": "mini-SWE-agent 저장소의 에이전트 루프 코드를 읽고, 행동 실행·기록 누적·종료 조건을 이 노트의 ReAct 흉내 코드와 대응시킨다",
+    "why": "숙제 1(하네스 만들기)의 설계 선택 — 도구, 컨텍스트 관리, 실행 방식 — 을 가장 작은 실제 하네스에서 확인한다."
+   },
+   {
+    "do": "Temporal 개발 서버를 띄워(로컬 UI 8233) LLM 호출을 활동으로 감싼 워크플로를 만들고, 일부러 실패하게 해 재시도 이력을 UI 에서 본다. 같은 실행을 Langfuse 나 MLflow 트레이스로도 남겨 본다",
+    "why": "내구성 있는 실행과 관측성이 '도구 이름'이 아니라 '실패했을 때 무엇이 보이고 무엇이 자동으로 되는가'라는 감각으로 남는다."
+   }
+  ],
+  "practice": [
+   "'message: str -> sentiment: Literal[...], confidence: float' 시그니처를 손으로 프롬프트로 바꿔 적고, 모델 응답 세 가지(정상, 대문자 Negative, 허용값 밖 'confused')를 파싱했을 때 결과를 예측해 본다.",
+   "강의의 캘린더 조건부 그래프에 '이미 같은 시각에 일정이 있으면 사용자에게 확인을 묻는 노드'를 더하고, 두 이메일에 대한 상태 트레이스를 손으로 적은 뒤 코드로 확인한다.",
+   "Terminal-Bench 2 하네스 표에서 모델별 '성공 1건당 비용'을 계산해 어느 하네스가 가장 효율적인지 표로 만든다.",
+   "자기 프로젝트 하나를 골라 대표 사례 10개·경계 사례 10개·실패 시나리오 5개로 된 맞춤 평가 세트와, 정확도·비용·지연을 함께 보는 지표를 설계한다."
+  ],
+  "resources": [
+   {
+    "title": "CS329Z: Engineering AI Agents (과목 홈페이지)",
+    "url": "https://cs329z.stanford.edu/"
+   },
+   {
+    "title": "DSPy 공식 문서",
+    "url": "https://dspy.ai/"
+   },
+   {
+    "title": "DSPy GitHub",
+    "url": "https://github.com/stanfordnlp/dspy"
+   },
+   {
+    "title": "DSPy 논문 — Compiling Declarative Language Model Calls into Self-Improving Pipelines",
+    "url": "https://arxiv.org/abs/2310.03714"
+   },
+   {
+    "title": "GEPA 논문 — Reflective Prompt Evolution Can Outperform Reinforcement Learning",
+    "url": "https://arxiv.org/abs/2507.19457"
+   },
+   {
+    "title": "LangGraph 문서",
+    "url": "https://langchain-ai.github.io/langgraph/"
+   },
+   {
+    "title": "ReAct 논문",
+    "url": "https://arxiv.org/abs/2210.03629"
+   },
+   {
+    "title": "mini-SWE-agent",
+    "url": "https://github.com/SWE-agent/mini-swe-agent"
+   },
+   {
+    "title": "Meta-Harness 논문",
+    "url": "https://arxiv.org/abs/2603.28052"
+   },
+   {
+    "title": "Shepherd 논문",
+    "url": "https://arxiv.org/abs/2605.10913"
+   },
+   {
+    "title": "Temporal 문서",
+    "url": "https://docs.temporal.io/"
+   },
+   {
+    "title": "METR Time Horizons",
+    "url": "https://metr.org/time-horizons/"
+   },
+   {
+    "title": "Arena — coding agents harness tax (강의 하네스 그래프 출처)",
+    "url": "https://arena.ai/blog/coding-agents-harness-tax"
+   },
+   {
+    "title": "Langfuse 문서",
+    "url": "https://langfuse.com/docs"
+   }
+  ]
+ },
+ "jobs": {
+  "roles": [
+   "AI 에이전트 엔지니어",
+   "LLM 애플리케이션 개발자",
+   "AI 엔지니어(LLMOps)",
+   "머신러닝 엔지니어",
+   "백엔드 개발자(AI 서비스)"
+  ],
+  "skills": [
+   "Python",
+   "DSPy",
+   "LangGraph",
+   "LangChain",
+   "Pydantic",
+   "Temporal",
+   "Langfuse",
+   "MLflow",
+   "LLM",
+   "Prompt Engineering",
+   "Docker"
+  ]
+ },
+ "related": [
+  "DGI4vucR71w",
+  "Vr1NzH8bT44",
+  "psLc-46GqY0",
+  "s0S38lz6O7M"
+ ],
+ "materials": {
+  "transcript": "official",
+  "frames": 154,
+  "every_sec": 30
+ },
+ "written_at": "2026-11-21"
+}
