@@ -1,0 +1,1029 @@
+{
+ "id": "lOMNskWVeD8",
+ "source": {
+  "platform": "youtube",
+  "url": "https://www.youtube.com/watch?v=lOMNskWVeD8",
+  "channel": "Stanford Online",
+  "published": "2026-03-09",
+  "duration_sec": 4442,
+  "views": 2122,
+  "license": "Stanford Online 공개 강의(YouTube 표준 라이선스)"
+ },
+ "course": {
+  "school": "Stanford",
+  "code": "CS221",
+  "term": "Autumn 2025",
+  "lecture_no": "9",
+  "speaker": "Percy Liang (Stanford 컴퓨터과학과 부교수)"
+ },
+ "title": "Stanford CS221 | Autumn 2025 | Lecture 9: Policy Gradient",
+ "title_ko": "CS221 9강 — 정책 경사: 함수 근사 Q-learning, 정책 = 확률적 분류기, 모방 학습에서 REINFORCE 로, 기준선·남은 보상·actor-critic 으로 분산 줄이기",
+ "topic": "rl",
+ "tags": [
+  "Reinforcement Learning",
+  "PyTorch",
+  "Python",
+  "NumPy",
+  "Deep Learning",
+  "Machine Learning",
+  "Probability"
+ ],
+ "level": "중급",
+ "one_line": "큰 상태 공간은 Q_θ 회귀로, 정책은 로그 미분 트릭으로 직접 — REINFORCE 를 '효용으로 가중한 자기 모방' 으로 유도하고 기준선으로 분산을 37→1 처럼 줄인다",
+ "summary": [
+  "CS221 강화학습 단원의 마지막 강의다(7강 MDP, 8강 기본 RL 알고리즘에 이어). 제목은 '정책 경사' 지만 앞의 3분의 1은 8강 복습과 함수 근사(파라미터화된 Q-learning)에 쓰이고, 정책 경사 본론은 34분께부터 시작한다. 강사 Percy Liang 은 지난 시간의 알고리즘들을 세 축(모델 기반인가, on/off-policy 인가, 부트스트래핑하는가)으로 다시 정리한 뒤 두 가지를 더한다. 표에 담을 수 없을 만큼 큰 상태 공간을 다루는 법, 그리고 가치를 거치지 않고 정책을 곧장 배우는 법이다. 그는 이 둘을 갖추면 최신 강화학습 알고리즘을 읽을 재료가 다 모인다고 말한다. 강의는 실행형 파이썬(PyTorch) 화면과 칠판을 오가며, 예제는 끝까지 흔들리는 트램(1→6, 트램 고장 확률 0.1)이다.",
+  "전반부는 함수 근사다. 로봇의 상태가 이미지이고 언어 모델의 상태가 문장이면 (s,a) 마다 칸을 두는 표 방식은 불가능하다. 그래서 Q 를 파라미터 θ 를 가진 함수 Q_θ(s,a) 로 두고, 2~4강의 세 질문(가설 공간·손실·최적화)에 다시 답한다. 특성 φ(s,a) 위의 선형 함수나 MLP 를 쓰고, Q-learning 이 만든 목표값 r + γ·max Q_θ(s′,a′) 를 정답 라벨처럼 두어 제곱 손실을 SGD 로 줄인다. 강화학습이 정하는 것은 목표값 하나이고 나머지는 기계학습의 일이라는 것이 요점이다. 원-핫 특성으로 표 방식을 흉내 낸 시연은 정답(가치 반복)에 '대략' 다가갔지만 그 실행에서는 최적 정책을 놓쳤고, 함수 근사를 섞으면 일반적으로 수렴 보장이 없다는 점도 짚는다.",
+  "후반부는 정책 기반 방법이다. 정책은 상태를 받아 행동을 내는 분류기이고, 0-1 손실 문제를 피하려고 확률적 분류기 π_θ(a|s)(softmax)로 둔다. 시연이 있다면 모방 학습, 즉 Σ log π_θ(a_i|s_i) 를 최대화하는 지도학습으로 끝난다. 시연이 없고 보상만 있을 때의 '0차 직관' 은 내 정책으로 롤아웃을 돌려 좋은 것만 골라 모방하는 것이다. 이를 수학으로 다듬기 위해 롤아웃의 확률 p_θ(τ)(정책 항과 전이 항의 번갈아 곱)와 목표 V(θ) = Σ_τ p_θ(τ)·U(τ) 를 적고, 로그 미분 트릭 ∇p = p·∇log p 로 기울기를 기대값 E[∇log p_θ(τ)·U(τ)] 로 바꾼다(정책 경사 항등식). 기대값은 표본 하나로 근사되고, 전이 항은 θ 와 무관해 사라지므로 ∇J = U(τ)·Σ_t ∇log π_θ(a_t|s_{t−1}), 곧 Williams(1992)의 REINFORCE 가 된다. 효용이 0/1 이면 성공한 자기 롤아웃만 모방하는 것과 같다.",
+  "REINFORCE 구현은 상태 원-핫 → 행동 로짓 → softmax → 표본 추출로 행동하고, 롤아웃이 끝나면 걸음마다 '효용 × 교차 엔트로피' 를 더한 손실로 갱신한다(강사가 처음에 효용 곱을 빠뜨렸다가 고친 장면이 있다). 표본 하나짜리 추정치는 편향이 없지만 분산이 크다. 강사는 평균 추정 장난감(값 −4, −6, 6, 8)으로 추정기의 편향과 분산을 보여 주는데, 평균 0 인 보정값 (−6, −6, 6, 6) 을 빼자 분산이 약 37 에서 1 로 떨어진다(제어 변량). 정책 경사에서 그 보정값은 행동에 의존하지 않는 기준선 b(s) 이고, Σ_a π = 1 의 기울기가 0 이라는 사실에서 E[∇log π·b(s)] = 0 이 나온다.",
+  "마지막으로 분산을 줄이는 세 가지 개선 — 기준선 빼기, 효용 대신 남은 보상(returns-to-go), 효용 대신 편향된 Q 추정(부트스트래핑 → actor-critic) — 을 식으로만 빠르게 보여 주고, 게임의 규칙을 '편향도 분산도 낮은 기울기 추정치 찾기' 로 요약한다. 노트는 강의가 건너뛴 기준선 증명, 남은 보상이 왜 평균을 바꾸지 않는지(강의의 '과거는 미래에 영향을 주지 않는다' 는 방향이 거꾸로라 바로잡았다), 화면의 낡은 변수값(mu = 0.4)과 비복원 추출로 생긴 분산 12.4 를 직접 계산으로 메웠다. 모든 예제는 numpy 로 다시 짜서 돌렸다. 강의는 MDP·RL 단원을 '롤아웃 → 손실 → 경사 갱신' 이라는 공통 틀로 정리하고, 다음 시간(10강 게임)에는 적이 있는 환경으로 넘어간다고 예고한다."
+ ],
+ "why_now": "LLM 의 사후 학습은 지금 정책 경사 위에서 돌아간다. 사람 선호나 정답 검증으로 보상을 주고 모델(정책)을 갱신하는 RLHF·RLVR 의 PPO·GRPO 는 모두 이 강의의 REINFORCE 에 기준선(GRPO 는 그룹 평균, PPO 는 가치망)과 남은 보상·이점 추정, 그리고 on-policy 제약을 푸는 비율 클리핑을 더한 것이다. 강의가 든 두 사례 — 로봇 원격 조종 시연, 수학을 아는 사람이 쓴 풀이 — 는 각각 로봇 행동 복제와 LLM 의 지도 미세조정(SFT)이며, '좋은 롤아웃만 골라 모방' 이라는 0차 직관은 거부 표본 미세조정으로 실무에서 그대로 쓰인다. 강사가 말하듯 이 강의의 재료(함수 근사, 정책 경사 항등식, 분산 감소)를 갖추면 최신 RL 논문의 식이 '어느 추정치를 어떻게 바꿨나' 로 읽힌다. 강화학습 리서치·LLM 정렬 엔지니어 공고가 PPO·GRPO·보상 모델링 경험을 요구하는 지금, 그 식들을 손으로 유도하고 디버깅할 수 있는 바닥이 이것이다(노트 보충).",
+ "chapters": [
+  {
+   "start": 0,
+   "title": "강화학습 설정 다시 보기 — 에이전트·환경·롤아웃·효용",
+   "points": [
+    "강화학습은 알고리즘 하나가 아니라 '설정' 이다: 에이전트가 행동하고, 환경이 보상과 관찰을 돌려준다.",
+    "이번 강의의 환경은 흔들리는 트램 MDP(위치 1→6, 걷기 i→i+1 보상 −1, 트램 i→2i 보상 −2, 고장 확률 0.1).",
+    "에이전트(RL 알고리즘)는 MDP 를 보지 못한다 — get_action 과 incorporate_feedback 두 창구로만 세상을 엿본다.",
+    "롤아웃 하나가 효용(할인된 보상 합) 하나를 낳고, 롤아웃을 많이 돌려 평균한 것이 그 알고리즘의 가치다.",
+    "정책은 고정된 상태→행동 함수, RL 알고리즘은 상호작용하며 내부 정책을 바꾸는 '움직이는' 대상이다."
+   ],
+   "on_screen": "에이전트 ↔ 환경 상자 그림(화살표: action / reward, observation). 코드: mdp = FlakyTramMDP(num_locs=6, failure_prob=0.1), policy = partial(walk_tram_policy, …), rl = QLearning(exploration_policy=policy, epsilon=0.4, discount=1, learning_rate=0.1). 에이전트 시점의 상호작용 기록: rl.get_action(state=1) → rl.incorporate_feedback(state=1, action=\"walk\", reward=-1, next_state=2, is_end=False) … state=3, action=\"tram\", reward=-2, next_state=6, is_end=True. 'Each rollout generates a utility', value = simulate(mdp, rl, num_trials=20).",
+   "explain": [
+    "이 강의는 강화학습 두 번째 시간이다. 7강에서 MDP(결과가 확률로 갈리는 탐색 문제)를 세우고 가치 반복으로 풀었고, 8강에서는 전이 확률과 보상을 모르는 상태에서 경험만으로 배우는 기본 알고리즘(모델 기반 추정, 모델 없는 몬테카를로, SARSA, Q-learning)을 다뤘다. 오늘의 목표는 두 가지다. 하나는 상태가 이미지나 문장처럼 너무 많아 표에 담을 수 없을 때 어떻게 하느냐(함수 근사)이고, 다른 하나는 가치를 거치지 않고 정책 자체를 곧장 학습하는 방법(정책 경사)이다. 강사 Percy Liang 은 이 둘을 갖추면 요즘의 최신 강화학습 알고리즘 대부분을 읽을 재료가 다 모인다고 예고한다.",
+    "먼저 설정을 다시 세운다. 강화학습은 특정 알고리즘의 이름이 아니라 문제를 바라보는 틀이다. 에이전트가 행동을 고르면 환경이 그 결과로 보상과 관찰을 돌려주고, 에이전트는 이 되먹임을 해석해 다음 행동을 더 잘 고르려 한다. 강사는 이것이 인공지능을 생각하는 가장 일반적인 방식이라고 본다. 이번 강의에서 환경은 늘 MDP 로 주어진다. 예제는 7강부터 써 온 흔들리는 트램이다. 위치 1 에서 6 으로 가야 하고, 걷기는 i 에서 i+1 로 1분(보상 −1), 트램은 i 에서 2i 로 2분(보상 −2)이 걸리는데 트램은 확률 0.1 로 고장 나 제자리에 남는다.",
+    "에이전트 쪽에서 보면 세상은 두 개의 함수 호출뿐이다. 환경이 get_action(상태)를 부르면 에이전트가 행동을 돌려주고, 환경은 그 결과를 incorporate_feedback(상태, 행동, 보상, 다음 상태, 끝났는지)로 알려 준다. 화면의 예에서는 1 에서 걷기(−1, 2 로), 2 에서 걷기(−1, 3 으로), 3 에서 트램(−2, 6 에 도착, 끝)이 이어졌다. 이렇게 시작부터 끝까지의 한 줄을 롤아웃(rollout, 궤적·에피소드라고도 한다)이라 하고, 롤아웃마다 할인된 보상 합인 효용(utility)이 하나 나온다. 할인율이 1 이면 이 롤아웃의 효용은 −1 −1 −2 = −4 다.",
+    "여기서 강사가 짚는 격리(isolation)가 중요하다. RL 알고리즘에는 MDP 객체가 넘어가지 않는다. 전이 확률표도 보상 함수도 볼 수 없고, 오로지 incorporate_feedback 으로 들어오는 경험 조각만 본다. 이 점이 7강의 가치 반복(MDP 를 통째로 알고 계산)과 8강 이후의 강화학습(경험에서 배움)을 가르는 경계다. 또 '정책' 과 'RL 알고리즘' 을 구분해야 한다. 정책은 상태에서 행동으로 가는 고정된 함수이고, RL 알고리즘은 상호작용하면서 자기 안의 정책을 계속 고쳐 가는 동적인 대상이다. 롤아웃을 20번 돌려 효용을 평균하면 그 RL 알고리즘이 이 MDP 에서 거둔 가치가 된다. 아래 코드는 '걷고 걷다가 3 에서 트램' 이라는 고정 정책의 가치를 몬테카를로로 재 본 것인데, 표본이 늘수록 정확한 값 −4.222 로 다가간다."
+   ],
+   "formulas": [
+    {
+     "expr": "utility(τ) = r₁ + γ·r₂ + γ²·r₃ + … + γ^{T−1}·r_T",
+     "meaning": "τ 는 롤아웃 하나, r_t 는 t 번째 걸음에서 받은 보상, γ(0~1)는 할인율, T 는 롤아웃 길이. 화면 예(γ=1)는 −1 + (−1) + (−2) = −4."
+    },
+    {
+     "expr": "value(정책 또는 알고리즘) ≈ (1/n)·Σ_{i=1..n} utility(τ_i)",
+     "meaning": "롤아웃 n 개의 효용 평균. n 이 커지면 기대 효용 E[utility] 로 수렴한다(큰 수의 법칙). 강의의 simulate(mdp, rl, num_trials=20) 가 이것이다."
+    }
+   ],
+   "example": {
+    "title": "손으로: '걷기·걷기·트램' 정책의 기대 효용",
+    "body": "1→2→3 걷기 두 번이 −2. 3 에서 트램을 타면 매번 −2 를 내고 0.9 확률로 6 에 도착, 0.1 확률로 3 에 남아 다시 탄다. 트램 비용의 기대값 C 는 C = −2 + 0.1·C → 0.9C = −2 → C = −2.222. 합치면 −2 + (−2.222) = −4.222. 롤아웃 하나는 −4(한 번에 성공) 또는 −6(한 번 고장) 같은 정수지만, 평균은 −4.222 로 모인다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 흔들리는 트램(n=6, 고장 0.1): 정해 둔 정책의 효용을 몬테카를로로 평균 내기\nimport numpy as np\nrng = np.random.default_rng(0)\nN, FAIL = 6, 0.1\ndef step(s, a):                      # 환경: (다음 상태, 보상)\n    if a == \"walk\": return s + 1, -1.0\n    return (s if rng.random() < FAIL else 2 * s), -2.0\ndef policy(s):                       # 걷고 걷다가 3 에서 트램\n    return \"tram\" if 2 * s == N else \"walk\"\ndef rollout(gamma=1.0):\n    s, u, g = 1, 0.0, 1.0\n    while s != N:\n        s, r = step(s, policy(s))\n        u += g * r; g *= gamma\n    return u\nfor n in [1, 20, 10000]:\n    us = [rollout() for _ in range(n)]\n    print(n, round(np.mean(us), 3))\nprint(\"정확값:\", -2 - 2 / 0.9)       # 걷기 2번(-2) + 트램 기대 비용 -2/0.9\n",
+    "note": "직접 돌린 출력: 롤아웃 1개 → −4.0, 20개 → −4.5, 10,000개 → −4.23, 정확값 −4.2222. 20개 평균도 꽤 흔들린다는 것이 뒤의 '분산 감소' 이야기의 씨앗이다."
+   },
+   "pitfalls": [
+    "RL 알고리즘이 MDP 를 '안다' 고 착각하기 쉽다. 강의 코드에서 value_iteration(mdp) 는 정답 비교용으로 바깥에서만 부른다.",
+    "정책(고정 함수)과 RL 알고리즘(배우면서 바뀌는 대상)을 섞어 쓰면 'RL 알고리즘의 가치' 가 왜 롤아웃마다 바뀌는지 헷갈린다."
+   ],
+   "check": [
+    {
+     "q": "할인율 γ=0.5 일 때 보상열 (−1, −1, −2) 의 효용은?",
+     "a": "−1 + 0.5·(−1) + 0.25·(−2) = −1 − 0.5 − 0.5 = −2."
+    },
+    {
+     "q": "RL 알고리즘이 환경에 대해 알 수 있는 정보의 통로 두 가지는?",
+     "a": "get_action(상태) 호출과 incorporate_feedback(상태, 행동, 보상, 다음 상태, 끝 여부) 호출뿐이다. 전이 확률과 보상 함수는 직접 보지 못한다."
+    }
+   ]
+  },
+  {
+   "start": 300,
+   "title": "네 가지 가치와 '모델을 세울까 말까'",
+   "points": [
+    "V^π(s): s 에서 정책 π 를 따를 때의 기대 효용. Q^π(s,a): s 에서 먼저 a 를 하고 그 뒤 π 를 따를 때.",
+    "V*(s)·Q*(s,a): 같은 것을 최적 정책으로. V 는 상태 노드, Q 는 기회 노드(상태·행동 쌍)에 붙는다.",
+    "모델 기반: 경험으로 MDP(전이·보상)를 추정한 뒤 가치 반복으로 최적 정책을 계산.",
+    "가치 기반(모델 없음): MDP 를 건너뛰고 Q 를 직접 추정, 정책은 argmax_a Q(s,a).",
+    "Q → 정책은 쉽고, 보상 → Q 는 어렵다. 오늘은 여기에 세 번째 길(정책 직접 학습)을 더한다."
+   ],
+   "on_screen": "'Various flavors of values (expected utility)' 네 줄: V_π(s) value of following policy π from state s / Q_π(s,a) value of taking action a in state s, and then following policy π / V*(s) / Q*(s,a). 'To model or not to model?': Model-based: estimate the MDP, then compute the optimal policy · Value-based (model-free): don't estimate the MDP, just estimate Q-values directly.",
+   "explain": [
+    "알고리즘을 말하기 전에 강사는 7·8강에서 나온 '가치' 네 가지를 한 자리에 모아 둔다. 여기서 가치는 언제나 기대 효용과 같은 말이다. V^π(s) 는 상태 s 에 떨어뜨려 놓고 정책 π 를 끝까지 따르게 했을 때, 그것을 무한히 반복해 평균한 효용이다. Q^π(s,a) 는 s 에서 첫 행동만 a 로 강제하고 그 뒤로는 π 를 따를 때의 기대 효용이다. 7강의 그림으로 말하면 V 는 상태 노드(실선 원)에, Q 는 상태와 행동을 고른 직후의 기회 노드(점선 원)에 붙는 숫자다. π 자리에 별표를 넣으면 최적 정책을 따른다는 뜻이 되어 V*(s), Q*(s,a) 가 된다.",
+    "네 가치 사이에는 간단한 다리가 있다. V^π(s) = Q^π(s, π(s)) 이고, V*(s) = max_a Q*(s,a) 다. Q 는 '행동마다 점수' 를 주기 때문에 Q 만 있으면 정책은 바로 나온다 — 각 상태에서 Q 가 가장 큰 행동을 고르면 된다. 반대로 V 만 있으면 행동을 고르려고 한 걸음 앞을 내다봐야 하는데, 그러려면 전이 확률을 알아야 한다. 강화학습에서 V 보다 Q 를 즐겨 배우는 이유가 이것이다(노트 보충).",
+    "그다음 질문은 '모델을 세울 것인가' 다. 모델 기반 방법은 지금까지 본 전이를 세어 T(s,a,s′) 를 추정하고 받은 보상을 기록해 MDP 를 재구성한 다음, 7강의 가치 반복으로 최적 정책을 계산한다. 모델 없는(가치 기반) 방법은 전이와 보상을 추정하는 수고를 건너뛰고 Q 값을 곧장 추정한다. 강사의 요약은 이렇다: Q 에서 정책으로 가는 것은 쉽지만, 보상(또는 MDP)에서 Q 로 가는 것은 쉽지 않다. 그 어려운 구간을 경험에서 직접 메우는 것이 SARSA 와 Q-learning 이다.",
+    "아래 코드는 트램 MDP 에서 가치 반복으로 V* 와 Q* 를 구한 것이다. 이 값들은 강의 뒤쪽에서 파라미터화된 Q-learning 의 결과와 비교하는 '정답지' 로 등장한다(화면의 result.values: 1 → −4.2222, 2 → −3.2222). 상태 3 의 Q*(3, tram) = −2.222 가 Q*(3, walk) = −3 보다 크므로 3 에서는 트램, 상태 1·2 에서는 걷기가 낫다. 즉 최적 정책은 '걷고, 걷고, 트램' 이다."
+   ],
+   "formulas": [
+    {
+     "expr": "V^π(s) = Q^π(s, π(s)),   Q^π(s,a) = Σ_{s′} T(s,a,s′)·[Reward(s,a,s′) + γ·V^π(s′)]",
+     "meaning": "T 는 전이 확률, Reward 는 한 걸음 보상, γ 는 할인율. 끝 상태의 V 는 0. 기회 노드 (s,a) 의 값은 다음 상태들에 대한 '보상 + 할인된 다음 가치' 의 확률 가중 평균."
+    },
+    {
+     "expr": "V*(s) = max_a Q*(s,a),   π*(s) = argmax_a Q*(s,a)",
+     "meaning": "최적 가치는 가장 좋은 행동의 Q, 최적 정책은 그 행동 자체. Q* 만 알면 전이 확률 없이도 정책이 나온다."
+    }
+   ],
+   "example": {
+    "title": "손으로: 상태 3 과 2 의 V*",
+    "body": "V*(5) = −1, V*(4) = −1 + V*(5) = −2. 상태 3: 걷기 = −1 + V*(4) = −3, 트램 = −2 + 0.9·0 + 0.1·V*(3) → V = −2/0.9 = −2.222. 더 큰 트램을 골라 V*(3) = −2.222. 상태 2: 걷기 = −1 + (−2.222) = −3.222, 트램(2→4) = −2 + 0.9·(−2) + 0.1·V → 0.9V = −3.8 → −4.222. 걷기가 낫고 V*(2) = −3.222. 같은 방식으로 V*(1) = −4.222."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 가치 반복으로 V*·Q* 구하기 — RL 알고리즘은 못 보는 '정답지'\nimport numpy as np\nN, FAIL = 6, 0.1\ndef succ(s):                         # 행동 -> [(확률, 보상, 다음 상태)]\n    out = {\"walk\": [(1.0, -1.0, s + 1)]}\n    if 2 * s <= N: out[\"tram\"] = [(1 - FAIL, -2.0, 2 * s), (FAIL, -2.0, s)]\n    return out\nV = np.zeros(N + 1)                  # V[N] = 0 (끝)\nfor it in range(100):\n    newV = V.copy()\n    for s in range(1, N):\n        newV[s] = max(sum(p * (r + V[t]) for p, r, t in tr) for tr in succ(s).values())\n    if np.max(np.abs(newV - V)) < 1e-10: break\n    V = newV\nfor s in range(1, N):\n    Q = {a: round(float(sum(p * (r + V[t]) for p, r, t in tr)), 4) for a, tr in succ(s).items()}\n    print(s, round(float(V[s]), 4), Q)\n",
+    "note": "직접 돌린 출력: 1 → V* −4.2222 (walk −4.2222, tram −5.3222), 2 → −3.2222 (walk −3.2222, tram −4.1222), 3 → −2.2222 (walk −3.0, tram −2.2222), 4 → −2.0, 5 → −1.0. 강의 화면의 result.values 와 같다. 여기서 tram 의 Q 는 '이번 한 번은 트램, 그 뒤 최적' 의 값이다."
+   },
+   "pitfalls": [
+    "Q^π 는 '첫 행동까지 π 를 따른다' 가 아니다. 첫 행동은 a 로 고정이고, 그 뒤부터 π 다.",
+    "트램이 범위를 넘는 상태(4·5 에서 8·10)는 행동 목록에서 빠진다. 가치 반복에서 이를 빼먹으면 존재하지 않는 상태를 참조한다."
+   ],
+   "check": [
+    {
+     "q": "V 만 알 때와 Q 만 알 때, 정책을 뽑는 데 무엇이 더 필요한가?",
+     "a": "V 만 있으면 각 행동의 결과를 한 걸음 앞으로 계산해야 하므로 전이 확률 T 와 보상이 필요하다. Q 만 있으면 argmax_a Q(s,a) 로 바로 정책이 나온다."
+    }
+   ]
+  },
+  {
+   "start": 480,
+   "title": "모델 없는 방법의 공통 뼈대 — 목표값, on/off-policy, 부트스트래핑",
+   "points": [
+    "몬테카를로·SARSA·Q-learning 은 모두 'Q(s,a) ← Q(s,a) + η·(target − Q(s,a))' 한 줄로 쓴다. 차이는 target 뿐.",
+    "target 은 누가 정답을 알려 주지 않는 상황에서 효용을 시끄럽게 추정한 값이다.",
+    "on-policy: 데이터를 만드는 탐색 정책 = 추정하려는 정책(SARSA). off-policy: 둘이 다르다(Q-learning 은 무작위로 돌아다녀도 Q* 를 추정).",
+    "목표값 두 종류: 끝까지 굴린 실제 효용(full rollout) 또는 즉시 보상 + 현재 추정으로 메운 미래(bootstrapping).",
+    "축 세 개(모델 유무·on/off·부트스트랩 유무)로 네 알고리즘을 따로따로가 아닌 한 지도에서 본다."
+   ],
+   "on_screen": "'General form for model-free methods (for model-free Monte Carlo, SARSA, Q-learning)': Current model estimate Q(s,a) · Target (estimate of utility) · Update: Q(s,a) ← Q(s,a) + learning_rate * (target − Q(s,a)). 'On-policy (Q_π) vs. off-policy (Q*)': Follow exploration policy π to generate rollouts …to estimate Q-values of an estimation policy. 'What to use as targets?': Full rollouts / Bootstrapping. Algorithms 목록: Model-based value iteration · Model-free Monte Carlo (target = utility) · SARSA (target = r + γ·Q(s′,a′), a′ = π(s′)) · Q-learning (target = r + γ·max_a′ Q*(s′,a′)).",
+   "explain": [
+    "8강의 알고리즘들을 하나씩 외우기보다, 강사는 그 밑에 깔린 공통 뼈대를 먼저 보여 준다. 모델 없는 가치 기반 방법은 모두 지금의 추정치 Q(s,a) 를 가지고 있다가, 경험 한 조각이 들어오면 'Q 가 이쯤이어야 하지 않을까' 하는 새 관점을 만든다. 이것을 목표값(target)이라 부른다. 아무도 진짜 Q 를 알려 주지 않으므로 목표값은 효용의 시끄러운 추정이다. 갱신은 Q 를 목표값 쪽으로 학습률 η 만큼 끌어당기는 것이다. 목표값이 이미 Q 와 같으면 아무 일도 안 일어나고, 목표값이 위에 있으면 Q 를 위로 조금 민다.",
+    "첫 번째 축은 on-policy 대 off-policy 다. RL 알고리즘은 어떤 정책(탐색 정책)을 따라 움직이며 데이터를 만든다. 그 데이터로 어떤 정책(추정 정책)의 Q 를 추정한다. 두 정책이 같으면 on-policy, 다르면 off-policy 다. SARSA 는 지금 따르는 정책의 Q^π 를 추정하므로 on-policy 이고, Q-learning 은 무엇을 따르든 최적 정책의 Q* 를 추정하므로 off-policy 다. 강사는 off-policy 의 매력을 이렇게 표현한다: 무작위로 돌아다니며 모은 데이터, 혹은 어디선가 얻어 온 데이터로도 원하는 정책(보통 최적 정책)을 추정할 수 있다. 질의응답에서는 SARSA 와 Q-learning 중 무엇을 쓰느냐는 질문에, 응용에 따라 다르지만 off-policy 는 더 과감하게 탐색해도 여전히 최적 정책을 추정한다는 장점이 있고, SARSA 는 최적 정책 가까이에서 움직여야 원하는 값을 얻는다고 답한다.",
+    "두 번째 축은 목표값을 무엇으로 하느냐다. 끝까지 굴린 롤아웃(full rollout)의 실제 효용을 쓰면 편향이 없지만 끝날 때까지 기다려야 하고 값이 많이 흔들린다. 부트스트래핑은 즉시 보상 하나만 받고, 나머지 미래는 지금 가진 추정치로 메운다. 자기 추정으로 자기 목표를 만드는 셈이라 '부트스트랩(제 구두끈으로 자신을 끌어올린다)' 이라는 이름이 붙었다. 이 두 축으로 보면 네 알고리즘이 한 지도에 놓인다. 모델 기반 가치 반복은 MDP 를 추정한다. 모델 없는 몬테카를로는 on-policy, 부트스트래핑 없음(target = 효용). SARSA 는 on-policy, 부트스트래핑(target = r + γ·Q(s′, a′), a′ 는 정책이 실제로 고른 다음 행동). Q-learning 은 off-policy, 부트스트래핑(target = r + γ·max_{a′} Q(s′, a′)).",
+    "SARSA 와 Q-learning 의 차이는 목표값 안의 'a′ 를 무엇으로 하느냐' 하나뿐이다. 이것은 7강에서 정책 평가와 가치 반복이 다른 방식과 똑같다. 정책 평가는 정책이 정한 행동 하나를 따라가고, 가치 반복은 가능한 행동 중 max 를 취한다. Q^π 를 원하면 다음 행동이 π 에서 나와야 하고, Q* 를 원하면 최적 정책이 고를 행동, 즉 max 를 써야 한다. get_action(ε-탐욕)은 둘이 같고, 다른 것은 incorporate_feedback 안의 목표값 계산뿐이다. 아래 예와 코드는 같은 경험 한 조각에 두 목표값을 적용해 결과가 어떻게 갈리는지 보여 준다."
+   ],
+   "formulas": [
+    {
+     "expr": "Q(s,a) ← Q(s,a) + η·(target − Q(s,a))",
+     "meaning": "η 는 학습률(0~1). (target − Q) 는 '얼마나 틀렸나'. η=1 이면 Q 를 target 으로 덮어쓰고, η 가 작으면 여러 목표값의 이동 평균이 된다."
+    },
+    {
+     "expr": "몬테카를로: target = utility(그 시점부터 끝까지)   SARSA: target = r + γ·Q(s′, a′)   Q-learning: target = r + γ·max_{a′} Q(s′, a′)",
+     "meaning": "r 은 이번 걸음의 보상, s′ 는 다음 상태, a′ 는 SARSA 에서 정책이 s′ 에서 실제로 고른 행동. 끝 상태에 닿았으면 target = r(미래 항 없음)."
+    }
+   ],
+   "example": {
+    "title": "손으로: 같은 경험, 다른 목표값",
+    "body": "현재 Q(2,walk) = −4, Q(3,walk) = −3, Q(3,tram) = −2.5, η = 0.1, γ = 1. 경험: 2 에서 walk, 보상 −1, 3 도착. 탐색 정책이 3 에서 실제로 고른 행동은 walk. SARSA target = −1 + Q(3,walk) = −4 → Q(2,walk) = −4 + 0.1·(−4 − (−4)) = −4(그대로). Q-learning target = −1 + max(−3, −2.5) = −3.5 → Q(2,walk) = −4 + 0.1·(0.5) = −3.95. Q-learning 은 '3 에서는 트램이 더 낫다' 는 지식을 2 의 값에 바로 반영한다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 표 방식 SARSA 와 Q-learning: 같은 경험 한 조각, 다른 목표값\nQ = {(3, \"walk\"): -3.0, (3, \"tram\"): -2.5, (2, \"walk\"): -4.0}\neta, gamma = 0.1, 1.0\ns, a, r, s2 = 2, \"walk\", -1.0, 3      # 2 에서 걸어 3 으로, 보상 -1\na2 = \"walk\"                           # 탐색 정책이 3 에서 실제로 고른 행동\nsarsa_target = r + gamma * Q[(s2, a2)]                       # on-policy\nqlearn_target = r + gamma * max(Q[(s2, b)] for b in [\"walk\", \"tram\"])  # off-policy\nfor name, tgt in [(\"SARSA\", sarsa_target), (\"Q-learning\", qlearn_target)]:\n    new = Q[(s, a)] + eta * (tgt - Q[(s, a)])\n    print(name, \"target\", tgt, \"-> Q(2,walk)\", round(new, 3))\n",
+    "note": "직접 돌린 출력: SARSA target −4.0 → Q(2,walk) −4.0 / Q-learning target −3.5 → Q(2,walk) −3.95."
+   },
+   "diagram": {
+    "title": "네 알고리즘을 세 축으로",
+    "code": "graph TD\n  RL[\"경험에서 배우기\"] --> MB[\"모델 기반: MDP 추정 후 가치 반복\"]\n  RL --> MF[\"모델 없음: Q 직접 추정\"]\n  MF --> MC[\"몬테카를로: on-policy, 목표값 = 효용\"]\n  MF --> SA[\"SARSA: on-policy, 목표값 = r + γ·Q(s′, π(s′))\"]\n  MF --> QL[\"Q-learning: off-policy, 목표값 = r + γ·max Q(s′, a′)\"]\n  RL --> PG[\"오늘 추가: 정책 직접 추정\"]"
+   },
+   "pitfalls": [
+    "'off-policy 니까 탐색 정책이 아무래도 좋다' 는 아니다. 모든 (s,a) 를 충분히 자주 방문해야 표 방식 Q-learning 의 수렴 조건이 선다.",
+    "SARSA 의 a′ 는 다음 상태에서 '실제로 고른' 행동이다. 탐욕 행동으로 바꿔 넣으면 그것은 Q-learning 이다."
+   ],
+   "check": [
+    {
+     "q": "몬테카를로가 SARSA 보다 늦게 배우는 이유를 목표값 관점에서 설명하라.",
+     "a": "몬테카를로의 목표값은 롤아웃이 끝나야 알 수 있는 실제 효용이라 끝까지 기다려야 하고, 여러 걸음의 무작위성이 다 쌓여 분산이 크다. SARSA 는 한 걸음 뒤에 바로 r + γQ 로 목표값을 만든다(대신 Q 추정이 틀린 만큼 편향이 생긴다)."
+    },
+    {
+     "q": "Q-learning 이 off-policy 인 이유를 목표값의 한 글자로 말하라.",
+     "a": "max. 다음 행동을 탐색 정책이 실제로 한 것이 아니라 max_{a′} 로 잡으므로, 데이터를 만든 정책과 무관하게 최적 정책의 값을 추정한다."
+    }
+   ]
+  },
+  {
+   "start": 1020,
+   "title": "표가 터질 때 — 함수 근사로 가는 이유와 설계 세 문항",
+   "points": [
+    "지금까지는 (s,a) 마다 숫자 하나를 사전에 담는 표 방식(tabular)이었다.",
+    "로봇의 상태는 카메라 이미지, 언어 모델의 상태는 문장 전체 — 가능한 상태가 사실상 무한이라 표가 불가능하다.",
+    "함수 근사: Q(s,a) 를 파라미터 θ 를 가진 함수 Q_θ(s,a) 로 두고 θ 를 추정한다(심층 RL 에서는 당연한 전제).",
+    "설계 세 문항은 기계학습과 같다: 가설 공간(어떤 함수), 손실(무엇이 좋은가), 최적화(어떻게 줄이나).",
+    "가설 공간 예: 특성 φ(s,a) 와의 내적 θ·φ(s,a), 또는 MLP(φ(s,a))."
+   ],
+   "on_screen": "'So far, we are estimating a Q-value for each state/action (s,a) pair. This is the tabular setting.' 실제 예: 로봇 정책을 배울 때 상태 = 이미지(조리대 위 냄비 사진), 정리 증명에서 상태 = 문장('Let x, y, z be positive real numbers that satisfy the following system of equations…'). def function_approximation(): Tabular setting: lookup table for Q(s,a) / Function approximation: Q_θ(s,a) is a function with parameters θ. Design decisions 1~3, 'Should seem familiar from the machine learning lecture!'. 1번 답: map (s,a) to a vector of features φ(s,a), linear Q_θ(s,a) = φ(s,a)·θ, or MLP Q_θ(s,a) = MLP_θ(φ(s,a)).",
+   "explain": [
+    "지금까지의 Q-learning 은 상태·행동 쌍마다 숫자 하나를 저장했다. 8강 코드에서는 말 그대로 파이썬 사전이었다. 이것을 표 방식(tabular setting)이라 부른다. 트램처럼 상태가 6개, 행동이 2개면 칸이 12개라 아무 문제가 없다. 그러나 현실의 문제로 가면 사정이 달라진다. 로봇 정책을 학습할 때 상태는 로봇 카메라가 보는 이미지이고 행동은 팔을 어떻게 움직일지다. 언어 모델로 정리를 증명하게 할 때 상태는 문제 문장과 지금까지 쓴 풀이 전체이고 행동은 다음 토큰이다. 가능한 이미지나 가능한 문장의 수는 천문학적이어서 이미지로 색인하는 표는 만들 수도 없고, 만들어도 같은 이미지를 두 번 볼 일이 없어 쓸모가 없다.",
+    "강의실에서는 '상태 공간을 줄여야 한다' 는 답이 나왔다. 강사는 그 직관이 옳다고 받으면서, 오늘은 더 직접적인 방법을 쓴다고 말한다. 기계학습에서 배운 것을 떠올려 보자. 아주 고차원인 입력(이미지·문장)을 받아 숫자 하나로 보내는 복잡한 함수를 학습하는 법을 우리는 이미 안다. 그러니 Q 를 칸마다 따로 외우지 말고, 파라미터 θ 를 가진 함수 Q_θ(s,a) 로 두고 θ 를 추정하자. 이것이 강화학습에서 말하는 함수 근사(function approximation)이고, 표 방식과 대비해 부르는 이름이다. 요즘의 심층 강화학습에서는 상태 공간이 크면 다른 선택지가 없으므로 함수 근사는 당연한 전제가 되었다.",
+    "함수 근사를 하려면 2~4강에서 본 세 가지 설계 결정을 그대로 다시 해야 한다. 첫째, 가능한 함수 Q_θ 는 무엇인가(가설 공간). 둘째, 어떤 Q_θ 가 좋은지 어떻게 판단하는가(손실 함수). 셋째, 손실을 어떻게 줄이는가(최적화 알고리즘). 강사는 이것이 익숙하게 느껴져야 한다고 말한다. 결국 이번 단원은 지금까지 배운 강화학습과 기계학습을 한데 붙이는 작업이다.",
+    "첫째 질문의 답은 이렇다. 상태와 행동은 문장일 수도 이미지일 수도 있으니, 먼저 특성 벡터 φ(s,a) 로 바꾼다(기계학습은 벡터·행렬·텐서를 좋아한다). 그다음 가장 단순하게는 선형 함수 Q_θ(s,a) = θ·φ(s,a) 를 쓰고, 더 강하게는 4강의 다층 퍼셉트론을 쓴다 — 벡터에 행렬을 곱하고 비선형을 거치고 다시 행렬을 곱하는 것을 반복한다. 강사는 여기를 '좋아하는 모델 구조를 끼워 넣는 자리' 로 생각하라고 한다. 오늘 실습에서는 일부러 가장 단순한 특성, 즉 (s,a) 마다 칸 하나가 1 인 원-핫(지시) 특성을 쓴다. 그러면 선형 모델이 정확히 표 방식을 흉내 내므로, 기계학습 장치가 제대로 붙었는지 검증할 수 있다."
+   ],
+   "formulas": [
+    {
+     "expr": "Q_θ(s,a) = θ·φ(s,a) = Σ_j θ_j·φ_j(s,a)",
+     "meaning": "φ(s,a) 는 d 차원 특성 벡터, θ 는 같은 길이의 가중치 벡터. 결과는 스칼라 하나(그 쌍의 Q 추정). 원-핫 φ 를 쓰면 θ_j 하나가 표의 칸 하나와 같다."
+    },
+    {
+     "expr": "Q_θ(s,a) = w₂·σ(W₁·φ(s,a) + b₁) + b₂",
+     "meaning": "MLP 판. W₁ 은 (은닉 크기 × d) 행렬, σ 는 ReLU 같은 비선형, w₂ 는 은닉 크기 길이의 벡터. θ = (W₁, b₁, w₂, b₂)."
+    }
+   ],
+   "example": {
+    "title": "손으로: 트램의 원-핫 특성 번호 매기기",
+    "body": "상태 1~6, 행동 [walk, tram] 이면 특성 수 = 6 × 2 = 12. 번호 = (상태 − 1) × 2 + 행동 번호. (1,walk) → 0, (1,tram) → 1, (2,walk) → 2, (3,tram) → 5, (6,tram) → 11. φ(3,tram) 은 길이 12, 다섯 번째 자리(0부터 세서)만 1. 이때 θ·φ(3,tram) = θ₅ 이므로 θ₅ 가 곧 'Q(3,tram) 표 칸' 이다."
+   },
+   "pitfalls": [
+    "함수 근사는 '상태를 줄이는 것' 과 같지 않다. 비슷한 상태가 비슷한 특성을 갖게 해 θ 를 공유하는 것이고, 그 덕에 처음 보는 상태에도 값을 낼 수 있다.",
+    "원-핫 특성으로는 일반화가 전혀 없다. 강의가 이것을 쓴 이유는 '표와 같은 결과가 나오는지' 검증하기 위해서다."
+   ],
+   "check": [
+    {
+     "q": "표 방식 Q 가 이미지 상태에서 쓸모없는 두 가지 이유는?",
+     "a": "① 가능한 이미지 수가 천문학적이라 저장할 수 없다. ② 같은 이미지를 두 번 보는 일이 거의 없어, 칸마다 따로 배운 값은 처음 보는 상태에 아무 정보도 주지 못한다(일반화가 없다)."
+    }
+   ]
+  },
+  {
+   "start": 1320,
+   "title": "파라미터화된 Q-learning — 목표값을 정답 삼아 회귀하기",
+   "points": [
+    "특성 φ(s,a)(원-핫 12개) → nn.Linear(12, 1) → Q 값. 최적화는 SGD.",
+    "정책 π(s) = argmax_a Q_θ(s,a), get_action 은 예전처럼 ε-탐욕.",
+    "incorporate_feedback: target = r + γ·Q_θ(s′, π(s′)) (끝이면 r), value = Q_θ(s,a), loss = (value − target)².",
+    "loss.backward() 로 기울기를 구해 θ 를 한 걸음 — 목표값을 '정답 라벨' 로 둔 회귀 한 스텝이다.",
+    "강화학습 쪽이 정하는 것은 목표값뿐, 나머지(모델·손실·최적화)는 기계학습이 맡는다."
+   ],
+   "on_screen": "class ParameterizedQLearning(RLAlgorithm): __init__(num_locs, actions, exploration_policy, epsilon, discount, learning_rate) — self.num_features = num_locs * len(actions), self.model = nn.Linear(self.num_features, 1), self.optimizer = torch.optim.SGD(…). def phi: index = (state − 1) * len(self.actions) + self.actions.index(action), one_hot(index, num_features). def Q: value = self.model(phi). def pi: q_values = {action: self.Q(state, action) …}, max. incorporate_feedback: if is_end: target = reward / else: next_action = self.pi(next_state); target = reward + self.discount * self.Q(next_state, next_action); value = self.Q(state, action); loss = (value − target) ** 2; zero_grad → backward → step. 디버거 값: target = −0.7591, value = 0.2542, loss = 1.0267.",
+   "explain": [
+    "이제 함수 근사를 실제로 Q-learning 에 붙인다. 환경은 같은 트램 MDP, 탐색 정책도 같은 걷기·트램 무작위 정책이다. 새로운 클래스 ParameterizedQLearning 은 세 부품을 갖는다. 특성 수는 상태 수 × 행동 수 = 12 이고, 모델은 12 를 받아 스칼라 하나를 내는 선형층 nn.Linear(12, 1), 최적화기는 평범한 SGD 다. 특성 함수 phi 는 앞 챕터의 번호 매기기를 그대로 코드로 옮긴 것이고 학습되는 부분은 하나도 없다(손으로 정한 것이다). Q 는 phi 를 모델에 통과시켜 숫자를 얻고, pi 는 모든 행동의 Q 를 계산해 가장 큰 것을 고른다. 고정된 θ 하나가 주어지면 특성 → Q → 정책이 차례로 정해진다.",
+    "RL 알고리즘이 반드시 구현해야 하는 것은 늘 두 함수다. get_action 은 이전과 같다: 확률 ε 로 탐색 정책을 따르고, 1−ε 로 현재 Q 기준 최선의 행동을 고른다. 달라지는 것은 incorporate_feedback 이다. 먼저 목표값을 만든다. 끝에 닿았으면 target = 보상, 아니면 다음 상태에서 현재 θ 가 가장 좋다고 보는 행동 a′ = π(s′) 를 골라 target = r + γ·Q_θ(s′, a′) 로 둔다. 이것이 Q-learning 의 부트스트래핑 목표값이다(π 가 argmax 이므로 max_{a′} Q 와 같다). 다음으로 지금 모델의 예측 value = Q_θ(s,a) 를 구한다. 두 값을 가깝게 하고 싶을 때 회귀에서 하던 대로 제곱 손실 (value − target)² 를 정의하고, 그 기울기로 θ 를 한 걸음 옮긴다. 강의 화면의 첫 갱신에서는 target −0.7591, value 0.2542, loss 1.0267 이 찍혔다 — (0.2542 + 0.7591)² = 1.0268 로 손계산과 맞는다.",
+    "여기서 강사가 강조하는 관점이 이 챕터의 핵심이다. get_action 과 incorporate_feedback 이라는 강화학습의 뼈대 안에서 Q-learning 이 정하는 것은 '목표값이 무엇인가' 하나뿐이다. 목표값이 정해진 다음의 일 — 손실 계산, 모델 구조, 기울기, 갱신 — 은 전부 기계학습의 영역이다. 그래서 같은 틀에 SARSA 나 몬테카를로를 꽂으려면 목표값 한 줄만 바꾸면 된다. 그리고 원-핫 특성을 MLP 나 CNN 으로 바꾸면 그대로 심층 Q-학습이 된다.",
+    "한 가지 미묘한 점(노트 보충): 목표값 안에도 θ 가 들어 있다(Q_θ(s′,a′)). 그런데 기울기는 value 쪽으로만 흘려야 한다. 강의의 파이토치 코드에서는 target 을 그냥 계산했으므로 이론상 target 쪽으로도 기울기가 흐를 수 있는데, 표준 구현(DQN 등)은 target 을 상수로 취급해 기울기를 끊는다(torch.no_grad 또는 detach). 이런 갱신을 '준경사(semi-gradient)' 라 부른다. 아래 numpy 코드는 기울기를 직접 손으로 적어서 target 을 자연스럽게 상수로 둔다. 원-핫 특성일 때 제곱 손실의 기울기는 2(value − target)·φ(s,a) 이고, φ 가 칸 하나만 1 이므로 그 칸만 θ ← θ − 2η(value − target) 로 움직인다. 이것은 학습률 2η 의 표 방식 Q-learning 갱신과 정확히 같다."
+   ],
+   "formulas": [
+    {
+     "expr": "Loss(θ) = (Q_θ(s,a) − target)²,   target = r + γ·max_{a′} Q_θ(s′,a′) (끝이면 r)",
+     "meaning": "s,a,r,s′ 는 경험 한 조각. target 은 이번 갱신에서 상수로 취급한다(준경사). 제곱 손실은 '예측을 목표값에 가깝게' 라는 회귀의 손실."
+    },
+    {
+     "expr": "θ ← θ − η·∇_θ Loss = θ − η·2·(Q_θ(s,a) − target)·∇_θ Q_θ(s,a)",
+     "meaning": "선형 모델이면 ∇_θ Q_θ(s,a) = φ(s,a). 원-핫이면 해당 칸 θ_j 만 −2η(value − target) 만큼 움직인다 = 표 방식 갱신 Q ← Q + 2η(target − Q)."
+    }
+   ],
+   "example": {
+    "title": "손으로: 화면의 첫 갱신 숫자 따라가기",
+    "body": "화면 값: value = Q_θ(1,walk) = 0.2542, target = −0.7591. loss = (0.2542 − (−0.7591))² = 1.0133² = 1.0268(화면 1.0267, 반올림 차). 기울기 ∂loss/∂value = 2 × 1.0133 = 2.0266. 원-핫이라면 θ_(1,walk) 가 −η × 2.0266 만큼 바뀐다. 학습률 0.1 이면 0.2542 → 0.2542 − 0.2027 = 0.0515 로 목표값 쪽으로 내려간다. (강의 모델은 nn.Linear 라 편향 b 도 함께 움직여 다른 칸의 Q 도 조금씩 바뀐다 — 순수한 표와의 작은 차이.)"
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 선형 Q_θ(s,a) = θ·φ(s,a), φ = 원-핫. 손실 (Q_θ - target)^2 에 SGD — numpy 로\nimport numpy as np\nrng = np.random.default_rng(1)\nN, FAIL, ACTS = 6, 0.1, [\"walk\", \"tram\"]\ndef ok(s, a): return a == \"walk\" or 2 * s <= N\ndef step(s, a):\n    if a == \"walk\": return s + 1, -1.0\n    return (s if rng.random() < FAIL else 2 * s), -2.0\ndef phi(s, a):\n    v = np.zeros(N * 2); v[(s - 1) * 2 + ACTS.index(a)] = 1.0; return v\ntheta, lr, eps = np.zeros(N * 2), 0.1, 0.4\nQ = lambda s, a: theta @ phi(s, a)\ngreedy = lambda s: max([a for a in ACTS if ok(s, a)], key=lambda a: Q(s, a))\nfor episode in range(2000):\n    s = 1\n    while s != N:\n        a = rng.choice([b for b in ACTS if ok(s, b)]) if rng.random() < eps else greedy(s)\n        s2, r = step(s, a)\n        target = r if s2 == N else r + Q(s2, greedy(s2))     # Q-learning 목표값\n        grad = 2 * (Q(s, a) - target) * phi(s, a)            # d/dθ (Q-target)^2\n        theta -= lr * grad\n        s = s2\nprint({s: greedy(s) for s in range(1, N)})\nprint({s: round(float(Q(s, greedy(s))), 3) for s in range(1, N)})\n",
+    "note": "직접 돌린 출력(2,000 에피소드, ε = 0.4, lr = 0.1): 정책 {1: walk, 2: walk, 3: tram, 4: walk, 5: walk}, 값 {1: −4.218, 2: −3.143, 3: −2.053, 4: −2.0, 5: −1.0}. 정답 V*(−4.222, −3.222, −2.222, −2, −1)과 비교하면 정책은 맞고 값은 근처다. 강의 버전과 달리 범위 밖 트램을 막았고(ok), 편향 항이 없다."
+   },
+   "pitfalls": [
+    "target 쪽으로 기울기를 흘리면 '목표를 예측 쪽으로 끌어오는' 엉뚱한 갱신이 섞인다. 파이토치에서는 target 계산을 torch.no_grad() 로 감싸거나 .detach() 한다.",
+    "nn.Linear 의 편향 b 는 모든 (s,a) 가 공유한다. 원-핫 특성이어도 편향 때문에 한 칸의 갱신이 다른 칸의 Q 를 조금 움직인다."
+   ],
+   "check": [
+    {
+     "q": "파라미터화된 Q-learning 을 파라미터화된 SARSA 로 바꾸려면 코드에서 무엇을 고치나?",
+     "a": "목표값 한 줄. next_action 을 self.pi(next_state)(argmax) 대신 탐색 정책이 다음 상태에서 실제로 고른 행동으로 바꾼다. 손실·모델·최적화는 그대로다."
+    },
+    {
+     "q": "원-핫 특성 + 선형 모델 + 제곱 손실 + 학습률 η 의 SGD 는 학습률 몇의 표 방식 Q-learning 과 같은가?",
+     "a": "기울기가 2(value − target)φ 이므로 표 방식 학습률 2η 와 같다(편향 항이 없을 때)."
+    }
+   ]
+  },
+  {
+   "start": 1740,
+   "title": "결과 비교, 왜 제곱 손실인가, 그리고 수렴 보장의 부재",
+   "points": [
+    "100번 돌린 강의 시연은 운이 나빠 최적 정책(걷기·걷기·트램)을 못 찾았다 — 확률적이고, 더 돌리면 나아진다.",
+    "추정 가치는 정답(가치 반복) 근처지만 어긋나고, 많이 방문한 상태일수록 정확하다.",
+    "제곱 손실인 이유: 목표값은 '원하는 값' 의 시끄러운 표본이고, 제곱 손실의 최소점은 그 평균이다.",
+    "표 방식은 모든 (s,a) 를 계속 방문하면 수렴하지만, 함수 근사를 섞으면 일반적으로 보장이 없다.",
+    "요약: Q_θ 로 근사 → 특성 φ → 선형/MLP → (Q_θ − target)² 의 경사로 갱신."
+   ],
+   "on_screen": "value = simulate(mdp, rl, num_trials=100). pi = {state: rl.pi(state) …} → 1: walk, 2: tram, 3: walk, 4: tram, 5: walk, 6: walk. V = {1: −2.4859, 2: −1.5086, 3: −0.7895, 4: 0.4102, 5: −1.0001, 6: −1.4009}. result = value_iteration(mdp), result.values = {1: −4.2222232, 2: −3.2222232, …}. 'It's in the ballpark, and more accurate for more visited states.' Summary 다섯 줄: parameterize Q_θ(s,a) by some θ / map states and actions into a vector of features φ(s,a) / linear function or MLP / squared loss between Q_θ(s,a) and target (r + γ·max_a′ Q_θ(s′,a′)) / take a gradient of the loss w.r.t. θ and take a step.",
+   "explain": [
+    "강의 시연에서는 롤아웃 100번을 돌린 뒤 학습된 정책을 뽑았는데, 결과가 1: 걷기, 2: 트램, 3: 걷기, 4: 트램 … 으로 최적(걷기·걷기·트램)이 아니었다. 강사는 이것이 확률적인 과정이라 이번에 운이 나빴고 바로 전 실행에서는 최적 정책을 얻었다고 말한다. 가치도 비교했다. 학습된 V 는 1 → −2.49, 2 → −1.51 이고 정답(가치 반복)은 1 → −4.22, 2 → −3.22 다. 화면 문구대로 '대략 맞는 범위이고, 많이 방문한 상태일수록 더 정확하다'. 롤아웃 100번, 학습률 0.1 로는 트램 고장 같은 드문 사건의 영향이 아직 다 반영되지 않았고, 0 에서 시작한 θ 가 아직 덜 내려온 것이다. 노트의 numpy 판(2,000 에피소드)은 정책을 맞히고 값도 −4.218, −3.143 으로 다가갔다.",
+    "왜 하필 제곱 손실인가라는 질문이 나왔다. 강사의 답을 풀어 쓰면 이렇다. 가장 단순한 경우로 몬테카를로를 생각하자. 목표값은 롤아웃 하나의 효용이다. 같은 (s,a) 에서 이것을 백만 번 모아 평균 내면 그것이 바로 우리가 원하는 Q 다. 즉 목표값은 '원하는 값' 의 시끄러운 표본이다. 제곱 손실은 회귀처럼 예측을 그 표본들에 가깝게 당기고, 여러 표본에 대한 제곱 오차의 합을 최소로 만드는 상수는 정확히 표본 평균이다. 그래서 제곱 손실을 따라 내려가면 Q 가 목표값들의 평균, 즉 기대 효용으로 간다. 갱신 뒤 손실이 줄었다면 그것은 value 가 target 쪽으로 움직였다는 뜻이다.",
+    "그럼 이 방법은 최적 가치로 수렴하는가? 강사의 답은 '일반적으로는 아니다' 이다. 표 방식에서는 조건이 갖춰지면 Q-learning 이 수렴한다 — 대표 조건은 탐색 정책이 모든 곳을 충분히 방문하는 것이다(노트 보충: 학습률도 합은 무한, 제곱합은 유한이 되도록 줄여야 한다). 그러나 함수 근사를 섞으면 일반적인 보장이 없다. 국소 최적으로 간다는 정도를 보일 수 있을지는 몰라도, 최적 정책을 찾는다는 보장은 아니다. 노트 보충: 함수 근사 + 부트스트래핑 + off-policy 셋이 겹치면 값이 발산할 수 있다는 것이 알려져 있고(Sutton·Barto 의 '치명적 삼총사'), DQN 이 목표망과 재생 버퍼를 쓰는 것도 이 불안정을 누르기 위해서다.",
+    "근사의 대가를 직접 보려고, 원-핫 12칸 대신 숫자 4개짜리 공유 특성(상수, 남은 거리 비율, 트램 여부, 둘의 곱)으로 같은 Q-learning 을 돌려 보았다(아래 코드). 정책은 여전히 '걷기·걷기·트램' 으로 맞지만, 값은 상태 4 에서 −1.74(정답 −2), 상태 5 에서 −0.89(정답 −1)처럼 체계적으로 어긋난다. 특성 4개로는 V* 의 모양을 정확히 그릴 수 없기 때문이다. 대신 θ 4개만 배우면 되고, 상태 1000 짜리 트램에도 같은 θ 를 그대로 쓸 수 있다. 정확도를 내주고 일반화를 얻는 것이 함수 근사의 거래다."
+   ],
+   "formulas": [
+    {
+     "expr": "argmin_c Σ_i (c − y_i)² = (1/n)·Σ_i y_i",
+     "meaning": "y_i 는 같은 (s,a) 에서 얻은 목표값 표본들, c 는 예측 하나. 제곱 손실을 최소화하는 상수는 표본 평균 — 그래서 제곱 손실은 '기대 효용' 을 추정한다."
+    }
+   ],
+   "example": {
+    "title": "손으로: 목표값 두 개에 대한 제곱 손실",
+    "body": "같은 (3, tram) 에서 목표값으로 −2(한 번에 성공)를 9번, −4(한 번 고장)를 1번 받았다고 하자. 예측 c 에 대한 손실은 9(c+2)² + (c+4)². 미분 18(c+2) + 2(c+4) = 0 → 20c + 44 = 0 → c = −2.2. 표본 평균 (9·(−2) + (−4))/10 = −2.2 와 같고, 정답 Q*(3,tram) = −2.222 에 가깝다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 원-핫 대신 4개짜리 공유 특성 — 표 12칸을 숫자 4개로 '압축' 하면 무엇을 잃나\nimport numpy as np\nrng = np.random.default_rng(2)\nN, FAIL, ACTS = 6, 0.1, [\"walk\", \"tram\"]\ndef ok(s, a): return a == \"walk\" or 2 * s <= N\ndef step(s, a):\n    if a == \"walk\": return s + 1, -1.0\n    return (s if rng.random() < FAIL else 2 * s), -2.0\ndef phi(s, a):\n    t = float(a == \"tram\"); x = (N - s) / N           # 남은 거리 비율\n    return np.array([1.0, x, t, x * t])\ntheta, lr, eps = np.zeros(4), 0.05, 0.4\nQ = lambda s, a: theta @ phi(s, a)\ngreedy = lambda s: max([a for a in ACTS if ok(s, a)], key=lambda a: Q(s, a))\nfor episode in range(3000):\n    s = 1\n    while s != N:\n        a = rng.choice([b for b in ACTS if ok(s, b)]) if rng.random() < eps else greedy(s)\n        s2, r = step(s, a)\n        target = r if s2 == N else r + Q(s2, greedy(s2))\n        theta -= lr * 2 * (Q(s, a) - target) * phi(s, a)\n        s = s2\nprint(\"theta\", np.round(theta, 3))\nprint({s: greedy(s) for s in range(1, N)})\nprint({s: round(float(Q(s, greedy(s))), 3) for s in range(1, N)})\nprint(\"true V*\", {1: -4.222, 2: -3.222, 3: -2.222, 4: -2.0, 5: -1.0})\n",
+    "note": "직접 돌린 출력: theta [−0.034, −5.11, 2.979, −5.04], 정책 {1: walk, 2: walk, 3: tram, 4: walk, 5: walk}, 값 {1: −4.293, 2: −3.441, 3: −2.13, 4: −1.738, 5: −0.886} vs 정답 {−4.222, −3.222, −2.222, −2.0, −1.0}. 정책은 맞고 값은 체계적으로 어긋난다(노트 보충 실험)."
+   },
+   "pitfalls": [
+    "'강의 데모가 최적 정책을 못 찾았다 = 알고리즘이 틀렸다' 가 아니다. 롤아웃 100번과 ε-탐욕의 무작위성 때문이며, 실행마다 결과가 다르다.",
+    "표 방식의 수렴 정리를 함수 근사에 그대로 가져다 쓰면 안 된다. 특성이 공유되면 한 칸의 갱신이 다른 상태의 값을 망칠 수 있다."
+   ],
+   "check": [
+    {
+     "q": "목표값이 편향 없는 표본이라면 제곱 손실을 쓴 SGD 의 Q 는 무엇을 향해 가는가?",
+     "a": "목표값들의 기대값, 즉 그 (s,a) 의 기대 효용 Q(s,a). 제곱 손실의 최소점이 평균이기 때문이다."
+    },
+    {
+     "q": "공유 특성 4개짜리 근사가 정책은 맞히면서 값은 틀릴 수 있는 이유는?",
+     "a": "정책은 상태마다 행동 간 Q 의 '순서' 만 맞으면 되지만, 값은 크기까지 맞아야 한다. 표현력이 부족한 근사는 순서는 지키되 크기를 체계적으로 틀릴 수 있다."
+    }
+   ]
+  },
+  {
+   "start": 2040,
+   "title": "정책을 직접 배우자 — 정책은 확률적 분류기다",
+   "points": [
+    "모델 기반(MDP → 정책), 가치 기반(Q → 정책)에 이어, 세 번째 길은 정책을 직접 추정하는 것이다.",
+    "정책은 상태를 넣으면 행동을 내는 분류기다.",
+    "3강에서 본 대로 '라벨 하나를 내는' 분류기는 0-1 손실의 기울기가 거의 모든 곳에서 0 이라 최적화할 수 없다.",
+    "그래서 확률적 분류기 π_θ(a|s)(상태 → 행동 분포)로 바꾼다 — 분포는 θ 에 대해 연속이라 미분할 수 있다.",
+    "확률적 정책은 행동을 뽑아 쓰므로, 따로 탐색 정책이 없어도 저절로 탐색한다."
+   ],
+   "on_screen": "def policy_gradient(): Model-based: estimate the MDP → policy π(s) / Value-based: estimate Q-values Q(s,a) → policy π(s) / 'Why not directly estimate the policy π(s)? Think of the policy as a classifier (input s → output a)' / 'Recall that a classifier is a hard function to optimize directly …so we optimize over a probabilistic classifier π(a | s)'. 뒤의 구현 화면: state = 1, phi = 1 0 0 0 0 0, logits = 0.3595, −0.2431, probs = 0.6462, 0.3538, action = \"walk\".",
+   "explain": [
+    "지금까지 온 길을 정리하면 이렇다. 모델 기반 방법은 MDP 를 추정한 뒤 가치 반복으로 정책을 계산했다. 가치 기반 방법은 MDP 는 건너뛰고 Q 를 추정한 뒤 argmax 로 정책을 얻었다. 그런데 조금만 생각하면 다음 질문이 나온다. 결국 원하는 것은 정책인데, Q 조차 거치지 말고 정책을 바로 추정하면 안 되나? 강사는 '그럼 지금까지 시간을 낭비한 것이냐' 는 농담에 짧게는 아니라고 답하고, 그 이유는 강의 끝에서 분명해진다고 예고한다(뒤에서 가치 추정이 기준선과 actor-critic 으로 다시 돌아온다).",
+    "정책을 직접 추정하려면 정책을 기계학습의 대상으로 봐야 한다. 정책은 입력(상태)을 출력(행동)으로 보내는 함수이니 분류기다. 그런데 3강에서 배웠듯 '정답 라벨 하나를 내놓는' 분류기는 직접 최적화하기 어렵다. 0-1 손실은 θ 를 조금 바꿔도 대부분 그대로이다가 경계에서 갑자기 뛰므로, 기울기가 거의 어디서나 0 이어서 경사하강법이 움직이지 못한다. 3강의 해법은 분류기가 라벨 대신 확률 분포를 내놓게 하는 것이었다. 같은 처방을 정책에 쓴다. 확률적 정책 π_θ(a|s) 는 상태 s 를 받아 가능한 행동들 위의 분포를 낸다. 분포는 θ 에 대해 매끄럽게 변하므로 미분하고 최적화할 수 있다.",
+    "구체적인 모양은 3강의 다중 클래스 로지스틱 회귀 그대로다. 상태를 특성 벡터 φ(s) 로 바꾸고(트램에서는 상태 원-핫), 행렬 W 를 곱해 행동마다 로짓(점수)을 얻고, softmax 로 확률로 바꾼다. 강의 구현 화면에서 상태 1 의 로짓은 (walk 0.3595, tram −0.2431)이었고 softmax 를 거쳐 (0.6462, 0.3538)이 되었다. 행동은 이 분포에서 뽑는다. 그러니 같은 상태에서도 매번 다른 행동이 나올 수 있다.",
+    "이 무작위성에는 덤이 있다. Q-learning 은 탐욕 정책만으로는 새로운 것을 시도하지 않으므로 ε-탐욕 같은 별도의 탐색 장치가 필요했다. 확률적 정책은 확률이 0 이 아닌 모든 행동을 가끔씩 고르므로 저절로 탐색한다. 강의 구현도 '명시적인 탐색 정책이 필요 없다, 확률적 정책이 탐색을 준다' 고 적어 둔다. 다만 학습이 진행돼 분포가 한쪽으로 쏠리면 탐색도 줄어든다는 점은 기억해 두자(노트 보충: 그래서 실무에서는 엔트로피 보너스를 더하기도 한다)."
+   ],
+   "formulas": [
+    {
+     "expr": "π_θ(a|s) = exp(z_a) / Σ_{a′} exp(z_{a′}),   z = W·φ(s) + b",
+     "meaning": "φ(s) 는 상태 특성(길이 d), W 는 (행동 수 × d) 행렬, b 는 행동별 편향, z_a 는 행동 a 의 로짓. softmax 가 로짓을 합이 1 인 확률로 바꾼다. θ = (W, b)."
+    },
+    {
+     "expr": "log π_θ(a|s) = z_a − log Σ_{a′} exp(z_{a′})",
+     "meaning": "뒤에서 계속 쓰일 로그 확률. z 에 대해 매끄러워서 기울기를 구할 수 있다: ∂/∂z = e_a − π (e_a 는 a 자리만 1 인 벡터)."
+    }
+   ],
+   "example": {
+    "title": "손으로: 화면의 로짓을 확률로",
+    "body": "z = (0.3595, −0.2431). 차이 0.6026. softmax 는 차이에만 의존하므로 π(walk) = 1/(1 + e^{−0.6026}) = 1/(1 + 0.5474) = 0.6463, π(tram) = 0.3537. 화면의 (0.6462, 0.3538)과 소수 넷째 자리 반올림 차이뿐이다. 로그 확률 log 0.6463 = −0.4365."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 정책 = 확률적 분류기: 상태 원-핫 -> 선형 -> softmax -> 행동 분포\nimport numpy as np\nrng = np.random.default_rng(0)\ndef softmax(z): z = z - z.max(); e = np.exp(z); return e / e.sum()\nW = np.zeros((2, 6)); b = np.zeros(2)          # 행동 2개 x 상태 6개\nW[:, 0] = [0.3595, -0.2431]                     # 강의 화면의 상태 1 로짓을 그대로\nphi = np.eye(6)[0]                              # 상태 1 의 원-핫\np = softmax(W @ phi + b)\nprint(\"probs\", np.round(p, 4))\ndraws = rng.choice([\"walk\", \"tram\"], size=10000, p=p)\nprint(\"walk 비율\", (draws == \"walk\").mean())\n# 0-1 손실 대신 log π 는 θ 에 대해 매끄럽다: 로짓 하나를 조금 올리면\nfor d in [0.0, 0.1, 0.2]:\n    print(d, round(float(np.log(softmax(np.array([0.3595 + d, -0.2431]))[0])), 4))\n",
+    "note": "직접 돌린 출력: probs [0.6463, 0.3537], 10,000번 뽑았을 때 walk 비율 0.642. walk 로짓을 0, 0.1, 0.2 올리면 log π(walk) 가 −0.4366 → −0.4023 → −0.3703 으로 매끄럽게 변한다 — 0-1 손실과 달리 기울기가 살아 있다."
+   },
+   "pitfalls": [
+    "확률적 정책의 '행동' 은 argmax 가 아니라 표본이다. 학습 중에 argmax 로 행동하면 탐색이 사라지고, 뒤의 정책 경사 공식도 성립하지 않는다(표본이 π_θ 에서 나와야 한다).",
+    "softmax 는 로짓의 차이에만 반응한다. 모든 로짓에 같은 수를 더해도 확률은 그대로다."
+   ],
+   "check": [
+    {
+     "q": "로짓이 (1, 1) 이면 확률은? (2, 0) 이면?",
+     "a": "(1,1) → (0.5, 0.5). (2,0) → 1/(1+e^{−2}) = 0.881, 0.119."
+    },
+    {
+     "q": "정책을 '라벨을 내는' 분류기로 두면 경사하강법이 왜 막히는가?",
+     "a": "출력 행동이 θ 의 계단 함수라, θ 를 조금 바꿔도 대부분 행동(따라서 효용)이 변하지 않아 기울기가 거의 어디서나 0 이다. 확률을 내면 θ 를 바꿀 때 확률이 연속적으로 변해 기울기가 생긴다."
+    }
+   ]
+  },
+  {
+   "start": 2160,
+   "title": "모방 학습 — 시연이 있으면 지도학습으로 끝난다",
+   "points": [
+    "전문가가 보여 준 롤아웃(1 걷기, 2 걷기, 3 트램)이 있으면 (상태, 행동) 예제 세 개로 바뀐다.",
+    "목적 함수 J(θ) = Σ_i log π_θ(a_i | s_i) 를 최대화 — 다중 클래스 분류의 로그 가능도 그대로.",
+    "이것이 모방 학습(행동 복제). 강화학습 알고리즘이 필요 없는 순수한 지도학습이다.",
+    "실제 사례: 로봇 원격 조종 시연, 수학을 아는 사람을 고용해 풀이를 쓰게 하기.",
+    "문제는 RL 환경이 시연을 주지 않는다는 것 — 보상만 준다."
+   ],
+   "on_screen": "def imitation_learning(): 'If we had demonstrations of the policy, it'd be easy.' rollout = Rollout(steps=[Step(action=\"walk\", prob=1, reward=-1, state=2), Step(\"walk\", …, state=3), Step(\"tram\", …, reward=-2, state=6)], discount=1). examples = [Example(input=1, output=\"walk\"), Example(input=2, output=\"walk\"), Example(input=3, output=\"tram\")]. J(θ) = Σ_i log π_θ(a_i | s_i). 'This is called imitation learning.' Examples: Robotics: teleoperation(사진), Math: …",
+   "explain": [
+    "정책 경사로 바로 들어가기 전에 강사는 쉬운 경우부터 본다. 만약 누군가 정답 행동을 보여 준다면? 전문가가 와서 '1 에서 걷고, 2 에서 걷고, 3 에서 트램을 타라' 는 롤아웃을 하나 보여 줬다고 하자. 이 롤아웃은 곧바로 학습 예제 세 개가 된다: 입력 1 → 출력 walk, 입력 2 → walk, 입력 3 → tram. 그러면 3강의 분류 문제와 똑같아진다. 예제마다 '정책이 전문가의 행동에 준 로그 확률' 을 더한 J(θ) = Σ_i log π_θ(a_i | s_i) 를 최대화하면 된다. 다중 클래스 분류에서 교차 엔트로피를 최소화하는 것과 같은 일이다.",
+    "이것을 모방 학습(imitation learning) 또는 행동 복제(behavior cloning)라 부른다. 전문가가 무엇을 할지 보여 주고, 분류기(정책)는 전문가가 한 대로 하도록 학습된다. 강사는 이것이 원래라면 강화학습 문제였을 곳에서 실제로 많이 쓰인다고 강조한다. 로봇에서는 사람이 원격 조종으로 '컵을 깨뜨리지 않고 집어 조리대에 놓는 법' 을 여러 번 시연하고, 그 기록으로 정책을 학습한다. 수학 문제를 푸는 언어 모델을 만들 때는 회사들이 수학을 아는 사람을 고용해 문제를 풀고 깔끔한 풀이를 쓰게 한다. 둘 다 '주어진 상태에서 전문가가 할 행동' 의 시연이다(노트 보충: 언어 모델의 지도 미세조정 SFT 가 바로 이 모양이다).",
+    "모방 학습은 강화학습 알고리즘 없이 지도학습만으로 된다. 그래서 강사는 '쉬웠다, 이제 집에 가도 된다' 고 농담한다. 문제는 강화학습의 환경이 그렇게 친절하지 않다는 것이다. 환경은 '이렇게 하라' 고 알려 주지 않는다. 그저 보상을 주거나 주지 않을 뿐이다. 시연이 없고 보상 함수만 있을 때 어떻게 할지가 다음 챕터의 질문이다. 그 답이 '모방 학습을 살짝 고친 것' 으로 판명된다는 점이 이 강의 후반부의 묘미다.",
+    "아래 코드는 세 예제로 softmax 정책을 경사 상승법으로 학습한다. 처음에는 θ 가 0 이라 모든 행동이 반반이고 J = 3·log 0.5 = −2.079 다. 몇 번의 갱신으로 J 는 0 쪽으로 오르고, π(tram | 3) 은 0.62, 0.71 을 지나 0.995 까지 올라간다. 기울기 계산의 핵심은 log softmax 의 미분 (e_a − π)·φ(s)ᵀ 하나다. 이 식은 정책 경사에서도 그대로 다시 쓰인다."
+   ],
+   "formulas": [
+    {
+     "expr": "J(θ) = Σ_{i=1..n} log π_θ(a_i | s_i)",
+     "meaning": "(s_i, a_i) 는 전문가 시연에서 뽑은 상태·행동 쌍 n 개. 최대화하면 정책이 전문가 행동에 높은 확률을 준다. −J 는 교차 엔트로피 손실의 합."
+    },
+    {
+     "expr": "∇_W log π_θ(a|s) = (e_a − π_θ(·|s))·φ(s)ᵀ",
+     "meaning": "선형 softmax 정책의 로그 확률 기울기. e_a 는 a 자리만 1 인 벡터, π_θ(·|s) 는 행동 확률 벡터, φ(s) 는 상태 특성. 고른 행동의 로짓은 (1 − π_a)만큼 올리고 나머지는 π_{a′} 만큼 내린다."
+    }
+   ],
+   "example": {
+    "title": "손으로: 첫 경사 상승 한 걸음",
+    "body": "θ = 0 이면 모든 상태에서 π = (0.5, 0.5). 예제 (3, tram) 의 기울기: e_tram − π = (−0.5, +0.5) 를 상태 3 열에 더한다. 학습률 0.5 면 상태 3 의 로짓이 (−0.25, +0.25) 가 되어 π(tram|3) = 1/(1 + e^{−0.5}) = 0.6225. 코드의 첫 줄 출력과 같다. J 는 처음에 3·log 0.5 = −2.0794."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 모방 학습: 전문가 시연 (1,walk) (2,walk) (3,tram) 의 로그 가능도를 경사 상승으로\nimport numpy as np\ndef softmax(z): z = z - z.max(); e = np.exp(z); return e / e.sum()\nA = [\"walk\", \"tram\"]\ndemo = [(1, \"walk\"), (2, \"walk\"), (3, \"tram\")]\nW = np.zeros((2, 6)); lr = 0.5\nfor it in range(201):\n    J, G = 0.0, np.zeros_like(W)\n    for s, a in demo:\n        x = np.eye(6)[s - 1]; p = softmax(W @ x); k = A.index(a)\n        J += np.log(p[k])\n        G += np.outer(np.eye(2)[k] - p, x)      # ∇ log softmax = (e_a - p) x^T\n    W += lr * G\n    if it in (0, 1, 10, 200):\n        print(it, \"J\", round(J, 4), \"π(tram|3)\", round(softmax(W @ np.eye(6)[2])[1], 4))\n",
+    "note": "직접 돌린 출력: 0 회 J −2.0794(갱신 전), π(tram|3) 0.6225(갱신 후) / 1 회 −1.4222, 0.7063 / 10 회 −0.2969, 0.9135 / 200 회 −0.0151, 0.995."
+   },
+   "pitfalls": [
+    "모방 학습은 시연에 없는 상태에서 무엇을 할지 모른다. 정책이 조금 빗나가 전문가가 가 보지 않은 상태에 들어가면 오차가 쌓인다(노트 보충: 공변량 이동 — DAgger 같은 방법이 이를 다룬다).",
+    "시연자의 실수까지 그대로 따라 한다. 모방 학습은 '좋은 행동' 이 아니라 '시연된 행동' 을 배운다."
+   ],
+   "check": [
+    {
+     "q": "모방 학습의 목적 함수와 다중 클래스 분류의 교차 엔트로피 손실은 어떤 관계인가?",
+     "a": "부호만 반대인 같은 것이다. J(θ) = Σ log π_θ(a_i|s_i) 를 최대화하는 것은 Σ −log π_θ(a_i|s_i)(교차 엔트로피)를 최소화하는 것과 같다."
+    }
+   ]
+  },
+  {
+   "start": 2320,
+   "title": "시연이 없을 때 — 좋은 롤아웃을 골라 따라 하기, 그리고 롤아웃의 확률",
+   "points": [
+    "시연 대신 할 수 있는 일: 내 정책으로 롤아웃을 돌리고, 그 결과가 얼마나 좋았는지(효용)를 함께 본다.",
+    "가장 거친 직관: 효용이 높은 롤아웃만 골라 모방 학습 — 정책 경사의 '0차 근사' 다.",
+    "롤아웃 τ = (s₀, a₁, r₁, s₁, a₂, r₂, s₂, …). 롤아웃·궤적·에피소드는 같은 말로 써도 된다.",
+    "p_θ(τ) = p(s₀)·Π_t π_θ(a_t|s_{t−1})·T(s_{t−1}, a_t, s_t) — 에이전트 차례와 환경 차례가 번갈아 곱해진다.",
+    "목표: V(θ) = E_{τ∼p_θ}[utility(τ)] = Σ_τ p_θ(τ)·utility(τ) 를 최대화. MDP 도 Q 도 없는 가장 직접적인 진술."
+   ],
+   "on_screen": "'But in reinforcement learning, we don't have demonstrations. We have a reward function… So what do we do?' 'Suppose we have a rollout (trajectory, episode): τ = (s_0, a_1, r_1, s_1, a_2, r_2, s_2, a_3, r_3, s_3)'. 'Each rollout produces a utility.' 'What is the probability of a rollout?' p(τ) = p(s_0) * π_θ(a_1 | s_0) * T(s_0, a_1, s_1) * π_θ(a_2 | s_1) * T(s_1, a_2, s_2) * π_θ(a_3 | s_2) * T(s_2, a_3, s_3). Components: p(s_0) 시작 확률 · π_θ(a_t | s_{t−1}) policy · T(s_{t−1}, a_t, s_t) transition distribution. 'Our goal is to maximize the expected utility of a rollout: V(θ) = E_θ[utility(τ)] = Σ_τ p_θ(τ) * utility(τ)'.",
+   "explain": [
+    "환경은 잔인하다. 무엇을 해야 하는지는 말해 주지 않고 보상만 준다. 그렇다면 무엇을 할 수 있을까? 강의실의 답처럼 탐색, 즉 지금의 정책으로 롤아웃을 돌려 데이터를 모으는 것이다. 하지만 그 데이터를 그대로 모방하면 안 된다. 자기가 한 행동을 그대로 따라 하라고 학습시키면 아무것도 나아지지 않는다. 다행히 롤아웃에는 시연에 없던 정보가 하나 더 붙어 있다. 그 결과가 얼마나 좋았는지, 즉 효용이다.",
+    "그래서 가장 거친 아이디어가 나온다. 롤아웃을 많이 돌리면 어떤 것은 좋고 어떤 것은 나쁠 것이다. 좋은 것만 골라 모방 학습을 하자. 강사는 이것이 실제로 일어나는 일과 그리 멀지 않다고 말하며, 정책 경사에서 단 하나만 기억한다면 이 '0차 근사' 를 기억하라고 한다 — 내 정책으로 롤아웃을 모으고, 보상이 높은 것을 골라 모방 학습한다. 남은 시간은 이것을 수학으로 다듬어 '고르기' 대신 '효용으로 가중하기' 로 바꾸는 과정이다(노트 보충: 실제로 이 거친 판은 '거부 표본 미세조정(rejection sampling fine-tuning)' 이나 교차 엔트로피 방법이라는 이름으로 지금도 쓰인다).",
+    "수학을 위해 기호부터 정한다. 롤아웃을 τ(trajectory 의 t)로 쓰고, τ = (s₀, a₁, r₁, s₁, a₂, r₂, s₂, …) 처럼 상태·행동·보상이 번갈아 이어진 열로 본다. 트램 예에서는 (1, walk, −1, 2, walk, −1, 3, tram, −2, 6)이다. 이 롤아웃이 일어날 확률은 연쇄 법칙으로 조건부 확률들의 곱이 된다. 먼저 시작 상태 s₀ 의 확률(트램에서는 늘 1 에서 시작하므로 1), 그다음 에이전트 차례로 정책이 s₀ 에서 a₁ 을 고를 확률 π_θ(a₁|s₀), 그다음 환경 차례로 (s₀, a₁) 에서 s₁ 로 갈 전이 확률 T(s₀, a₁, s₁), 다시 에이전트 차례 π_θ(a₂|s₁), 환경 차례 T(s₁, a₂, s₂) … 가 번갈아 곱해진다. 정책 항에만 θ 가 들어 있고, 전이 항은 환경의 것이라 θ 와 무관하다는 점을 눈여겨보자. 이것이 다음 챕터에서 결정적인 역할을 한다.",
+    "이제 강화학습이 원하는 것을 그대로 적을 수 있다. 정책 파라미터 θ 의 가치 V(θ) 는 롤아웃 효용의 기대값이고, 기대값을 풀어 쓰면 가능한 모든 롤아웃 τ 에 대해 '그 롤아웃의 확률 × 그 효용' 을 더한 것이다. 강사는 이보다 더 직접적인 강화학습의 진술은 있을 수 없다고 말한다. MDP 를 추정하지도 않고 Q 값도 없다. 기대 효용을 θ 의 함수로 적어 놓고 그것을 최대화하겠다는 것이다. 우리가 아는 최적화 방법은 사실상 하나, 경사법이다. 그러니 V(θ) 의 기울기를 구하면 된다."
+   ],
+   "formulas": [
+    {
+     "expr": "p_θ(τ) = p(s₀)·Π_{t=1..T} π_θ(a_t | s_{t−1})·T(s_{t−1}, a_t, s_t)",
+     "meaning": "τ 는 길이 T 인 롤아웃. p(s₀) 시작 상태 확률, π_θ(a_t|s_{t−1}) 는 t 번째 행동을 고를 정책 확률(θ 에 의존), T(s_{t−1}, a_t, s_t) 는 환경의 전이 확률(θ 와 무관). 강의 슬라이드의 첨자 규칙(행동 a_t 는 상태 s_{t−1} 에서 고른다)을 그대로 따랐다."
+    },
+    {
+     "expr": "V(θ) = E_{τ∼p_θ}[utility(τ)] = Σ_τ p_θ(τ)·utility(τ)",
+     "meaning": "정책 θ 로 롤아웃을 뽑았을 때의 기대 효용. 합은 가능한 모든 롤아웃에 걸친다(보통 너무 많아 직접 못 센다)."
+    }
+   ],
+   "example": {
+    "title": "손으로: 균등 정책에서 롤아웃 하나의 확률",
+    "body": "정책이 1·2·3 에서 반반(walk 0.5, tram 0.5)이라 하자. τ = (1 walk→2, 2 walk→3, 3 tram→6). p = 1 × [0.5 × 1] × [0.5 × 1] × [0.5 × 0.9] = 0.1125. 같은 행동인데 트램이 한 번 고장 났다면(3 tram→3, 3 tram→6): 1 × 0.5 × 0.5 × (0.5 × 0.1) × (0.5 × 0.9) = 0.005625, 효용 −6. 기대 효용은 이런 (확률 × 효용) 을 모든 롤아웃에 대해 더한 것이다."
+   },
+   "diagram": {
+    "title": "롤아웃의 확률 = 에이전트 차례와 환경 차례의 곱",
+    "code": "graph LR\n  S0[\"s0\"] -->|\"에이전트: π_θ 가 a1 을 고름\"| C1((\"s0, a1\"))\n  C1 -->|\"환경: T 로 s1 이 정해짐\"| S1[\"s1\"]\n  S1 -->|\"에이전트: π_θ 가 a2 를 고름\"| C2((\"s1, a2\"))\n  C2 -->|\"환경: T 로 s2\"| S2[\"s2\"]\n  S2 -->|\"…\"| END[\"끝: utility(τ)\"]"
+   },
+   "pitfalls": [
+    "'좋은 롤아웃만 모방' 은 직관일 뿐 그대로 쓰면 효용의 크기 정보를 버린다. REINFORCE 는 고르기 대신 효용으로 가중한다.",
+    "p_θ(τ) 의 전이 항 T 는 알 필요가 없다 — 다음 챕터에서 로그를 취하면 θ 기울기에서 사라진다. '전이를 모르니 정책 경사도 못 한다' 는 오해다."
+   ],
+   "check": [
+    {
+     "q": "p_θ(τ) 의 인수 중 θ 에 의존하는 것은?",
+     "a": "정책 항 π_θ(a_t|s_{t−1}) 들뿐이다. 시작 확률 p(s₀) 와 전이 확률 T 는 환경이 정하므로 θ 와 무관하다."
+    }
+   ]
+  },
+  {
+   "start": 2640,
+   "title": "정책 경사 항등식 — 로그 미분 트릭으로 기울기를 기대값으로 바꾸기",
+   "points": [
+    "∇V(θ) = ∇ Σ_τ p_θ(τ)·U(τ) = Σ_τ ∇p_θ(τ)·U(τ) — 기울기는 선형이라 합 안으로 들어간다.",
+    "트릭: ∇p_θ(τ) = p_θ(τ)·∇log p_θ(τ) (∇log p = ∇p / p 를 거꾸로 쓴 것).",
+    "그러면 다시 p_θ 로 가중한 합 = 기대값이 된다: ∇V(θ) = E_{τ∼p_θ}[∇log p_θ(τ)·U(τ)].",
+    "이것이 '정책 경사 정리'. 강사는 너무 기초적이라 '항등식' 으로 부르겠다고 한다.",
+    "기대값이면 표본으로 근사할 수 있다 — 모든 궤적을 더하는 대신 하나를 뽑는다."
+   ],
+   "on_screen": "'Let's just take the gradient of V(θ) with respect to θ:' ∇_θ V(θ) = ∇_θ E_θ[utility(τ)] / = ∇_θ Σ_τ p_θ(τ) * utility(τ) / = Σ_τ ∇_θ p_θ(τ) * utility(τ) / = Σ_τ p_θ(τ) * ∇_θ log p_θ(τ) * utility(τ) / = E_θ[∇_θ log p_θ(τ) * utility(τ)]. 'This is the policy gradient theorem (identity).' 칠판 판서: ∇_θ log p_θ(τ) = ∇_θ p_θ(τ) / p_θ(τ) (분모 p_θ(τ) 를 왼쪽으로 넘기는 화살표).",
+   "explain": [
+    "목표 V(θ) = Σ_τ p_θ(τ)·U(τ) 의 기울기를 구해 보자(U 는 utility 의 줄임). 정의를 그대로 쓰고, 기울기는 선형 연산이므로 합 안으로 넣으면 Σ_τ ∇p_θ(τ)·U(τ) 가 된다. 여기까지는 그냥 정의다. 문제는 이 식을 계산할 방법이 없다는 것이다. 합은 가능한 모든 롤아웃에 걸쳐 있어 셀 수 없이 많고, 각 항의 ∇p_θ(τ) 는 확률의 기울기일 뿐 확률로 가중된 기대값의 꼴이 아니어서 표본으로 근사할 수도 없다. 롤아웃을 뽑으면 p_θ 의 비율로 나오는데, 식에는 p_θ 가 가중치로 붙어 있지 않기 때문이다.",
+    "그래서 강사는 처음 보면 이상한 일을 한다. ∇p_θ(τ) 를 p_θ(τ)·∇log p_θ(τ) 로 다시 쓴다. 출처는 칠판에 쓴 로그의 미분이다. log 의 미분은 '안의 것의 역수 × 안의 것의 미분' 이므로 ∇log p_θ(τ) = ∇p_θ(τ) / p_θ(τ) 이고, 분모를 반대편으로 넘기면 ∇p_θ(τ) = p_θ(τ)·∇log p_θ(τ) 가 된다. 이 '미친 짓에 이유가 있다'. 이렇게 쓰면 식이 다시 'Σ_τ p_θ(τ) × 무엇' 의 모양, 즉 기대값으로 깔끔하게 포장된다. ∇V(θ) = E_{τ∼p_θ}[∇log p_θ(τ)·U(τ)]. 강사는 이 기대값 기호를 볼 때마다 '모든 궤적에 대해 그 확률을 곱해 더한 것' 으로 읽으라고 당부한다.",
+    "이 식은 정책 경사 정리(policy gradient theorem)라 불린다. 강사는 이것이 너무 기초적이라 정리라 부를 자격이 없다며 '항등식' 이라고 부르겠다고 한다. 값어치는 다음에 있다. 기대값은 계산할 수 없을 때 표본 하나로 근사할 수 있다. 정책 θ 로 롤아웃 하나를 실제로 돌려 τ 를 얻고, 그 τ 에 대해 ∇log p_θ(τ)·U(τ) 를 계산하면 그것이 진짜 기울기의 편향 없는 추정치다. 원래는 미분하는 방법조차 불분명했던 기대 효용이, '뽑아서 계산할 수 있는 무언가의 평균' 이 된 것이다.",
+    "한 가지가 더 남았다(노트 보충, 강의는 다음 챕터에서 결과만 보여 준다). ∇log p_θ(τ) 를 실제로 어떻게 계산하나? 앞 챕터의 곱셈 식에 로그를 씌우면 곱이 합이 된다: log p_θ(τ) = log p(s₀) + Σ_t log π_θ(a_t|s_{t−1}) + Σ_t log T(s_{t−1}, a_t, s_t). θ 로 미분하면 θ 와 무관한 시작 확률과 전이 확률 항은 0 이 되어 사라진다. 남는 것은 ∇log p_θ(τ) = Σ_t ∇log π_θ(a_t|s_{t−1}) 뿐이다. 환경의 전이 확률을 몰라도, 미분할 수도 없어도 상관없다. 정책 경사가 '모델 없는' 방법인 이유가 바로 이 한 줄이다. 아래 코드는 행동 두 개짜리 가장 작은 경우에서 수치 미분, 항등식, 표본 평균이 모두 같은 기울기를 내는지 확인한다."
+   ],
+   "formulas": [
+    {
+     "expr": "∇_θ V(θ) = Σ_τ ∇_θ p_θ(τ)·U(τ) = Σ_τ p_θ(τ)·∇_θ log p_θ(τ)·U(τ) = E_{τ∼p_θ}[∇_θ log p_θ(τ)·U(τ)]",
+     "meaning": "U(τ) 는 롤아웃 효용(θ 와 무관한 숫자). 가운데 등호가 로그 미분 트릭 ∇p = p·∇log p. 마지막 꼴은 '정책에서 뽑은 롤아웃에 대한 평균' 이라 표본으로 근사된다."
+    },
+    {
+     "expr": "∇_θ log p_θ(τ) = Σ_t ∇_θ log π_θ(a_t | s_{t−1})",
+     "meaning": "(노트 보충 유도) log p_θ(τ) 의 시작 확률·전이 확률 항은 θ 와 무관해 미분하면 0. 환경 모델 없이 정책의 로그 확률 기울기만으로 계산된다. ∇log π 를 '점수 함수(score function)' 라고도 부른다."
+    }
+   ],
+   "example": {
+    "title": "손으로: 행동 2개, 효용 (1, 3) 인 한 걸음 문제",
+    "body": "θ = (θ₁, θ₂), π = softmax(θ), θ = (0,0) 이면 π = (0.5, 0.5). V = 0.5·1 + 0.5·3 = 2. 직접 미분: ∂V/∂θ₁ = π₁(U₁ − V) = 0.5·(1 − 2) = −0.5, ∂V/∂θ₂ = +0.5. 항등식: ∇log π(a) = e_a − π. a=1: (0.5, −0.5)·1, a=2: (−0.5, 0.5)·3. 기대값 = 0.5·(0.5, −0.5) + 0.5·(−1.5, 1.5) = (0.25 − 0.75, −0.25 + 0.75) = (−0.5, 0.5). 같다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 정책 경사 항등식 확인: 한 걸음짜리 '궤적'(행동 2개, 효용 1 과 3)\nimport numpy as np\nrng = np.random.default_rng(0)\ndef softmax(z): e = np.exp(z - z.max()); return e / e.sum()\nU = np.array([1.0, 3.0]); theta = np.zeros(2)\nV = lambda th: softmax(th) @ U                     # V(θ) = Σ_τ p_θ(τ) U(τ)\nh = 1e-6                                           # 1) 수치 미분\nnum = np.array([(V(theta + h * e) - V(theta - h * e)) / (2 * h) for e in np.eye(2)])\np = softmax(theta)                                 # 2) 항등식: Σ p ∇log p · U\nscore = lambda a: np.eye(2)[a] - p                 # ∇_θ log softmax(θ)_a\nexact = sum(p[a] * score(a) * U[a] for a in range(2))\nsamples = rng.choice(2, size=100000, p=p)          # 3) 표본 평균(REINFORCE)\nmc = np.mean([score(a) * U[a] for a in samples], axis=0)\nprint(\"numeric \", np.round(num, 4)); print(\"identity\", np.round(exact, 4)); print(\"sampled \", np.round(mc, 4))\none = [score(a) * U[a] for a in samples[:5]]       # 표본 하나짜리 추정치는 들쭉날쭉\nprint(\"single samples\", [np.round(g, 2).tolist() for g in one])\n",
+    "note": "직접 돌린 출력: numeric [−0.5, 0.5] / identity [−0.5, 0.5] / sampled(10만 개) [−0.498, 0.498] / 표본 하나짜리 추정치 [[−1.5, 1.5], [0.5, −0.5], [0.5, −0.5], [0.5, −0.5], [−1.5, 1.5]]. 평균은 맞지만 하나하나는 크게 흔들리고, 나쁜 행동(효용 1)을 뽑은 표본은 오히려 그 행동을 '올리라' 고 한다 — 뒤의 기준선이 고칠 문제."
+   },
+   "pitfalls": [
+    "∇p 를 ∇log p 로 바꾼 것은 근사가 아니라 항등식이다. 근사는 그다음 '기대값을 표본 하나로' 바꿀 때 들어간다(편향은 없고 분산만 생긴다).",
+    "효용 U(τ) 는 θ 를 미분하는 대상이 아니다. 자동미분으로 구현할 때 U 가 계산 그래프에 붙어 있지 않도록 상수로 다룬다.",
+    "슬라이드의 기울기 식은 연속 행동·확률 밀도에도 그대로 성립한다(합 대신 적분). 이산 행동에만 쓰는 식이 아니다."
+   ],
+   "check": [
+    {
+     "q": "로그 미분 트릭 한 줄을 적고, 왜 이것이 필요한지 한 문장으로 말하라.",
+     "a": "∇p_θ(τ) = p_θ(τ)·∇log p_θ(τ). Σ_τ ∇p_θ(τ)U(τ) 를 p_θ 로 가중한 합(기대값)으로 바꿔, 정책에서 롤아웃을 뽑아 표본 평균으로 근사할 수 있게 하려고."
+    },
+    {
+     "q": "전이 확률 T 를 모르는데도 ∇log p_θ(τ) 를 계산할 수 있는 이유는?",
+     "a": "log 를 취하면 곱이 합으로 쪼개지고, T 항은 θ 와 무관해 미분하면 0 이 된다. 남는 것은 Σ_t ∇log π_θ(a_t|s_{t−1}) 뿐이다."
+    }
+   ]
+  },
+  {
+   "start": 2880,
+   "title": "REINFORCE — 효용으로 가중한 자기 모방",
+   "points": [
+    "표본 τ ∼ p_θ 하나로 J(θ, τ) = log p_θ(τ)·U(τ) 를 정의하면 ∇J 가 기울기의 편향 없는 추정치다.",
+    "풀어 쓰면 ∇J = U(τ)·Σ_t ∇log π_θ(a_t|s_{t−1}) — Williams(1992)의 REINFORCE.",
+    "직관: 내 정책이 만든 시연을 효용으로 가중해 모방 학습. U ∈ {0,1} 이면 성공한 롤아웃만 모방하는 것과 같다.",
+    "U 가 음수면 그 행동에서 멀어지라는 뜻 — '그거 하지 마'.",
+    "on-policy: 지금 정책으로 뽑은 롤아웃이어야 한다. 효용은 할인된 보상 합."
+   ],
+   "on_screen": "'Whenever you see E_θ[…], you can replace it with a sample τ ∼ p_θ(τ) …define the objective function J(θ, τ) = log p_θ(τ) * utility(τ) …and update θ by taking a step in the direction of ∇_θ J(θ, τ).' 'Breaking down the gradient: ∇_θ J(θ, τ) = utility(τ) * Σ_t ∇_θ log π_θ(a_t | s_{t−1})'. 'This is the REINFORCE algorithm [Williams, 1992]'. Intuition: imitation learning on demonstrations from own policy weighted by utility / If utility(τ) ∈ {0, 1} (success/failure), then this is just imitation learning on own successful demonstrations. Summary: Objective: optimize policy directly to maximize expected utility / Due to policy gradient theorem, can compute unbiased gradient / Algorithm: sample a rollout (on-policy), update using (state, action) in the rollout τ, weighted by utility.",
+   "explain": [
+    "앞 챕터의 결론을 알고리즘으로 바꾸면 이렇다. 기대값 E_θ[…] 를 볼 때마다 표본 τ ∼ p_θ(τ) 하나로 바꿀 수 있다. 그러니 롤아웃 하나를 뽑고, 그 롤아웃에 대해 목적 함수 J(θ, τ) = log p_θ(τ)·U(τ) 를 정의하자. 이 J 의 기울기가 바로 기대값 안에 있던 것 ∇log p_θ(τ)·U(τ) 이므로, ∇J 방향으로 한 걸음 가면 평균적으로 기대 효용을 올리는 방향으로 가는 것이다. 정리하면: 반박할 수 없는 목표(기대 효용 최대화)에서 출발해, 경사법을 쓰려고 기울기를 구했더니 기대값이었고, 기대값은 표본 하나로 근사했다. 이 세 걸음이 정책 경사의 전부다.",
+    "기울기를 풀어 쓰면 ∇J(θ, τ) = U(τ)·Σ_t ∇log π_θ(a_t | s_{t−1}) 이다. 롤아웃에 나온 모든 (상태, 행동) 쌍에 대해 '그 행동의 로그 확률을 올리는 방향' 을 더하고, 전체에 롤아웃의 효용을 곱한다. 이것이 Ronald Williams 가 1992년에 낸 REINFORCE 알고리즘이고, 정책 경사 계열 알고리즘 가운데 가장 오래되고 단순한 것이다. 슬라이드에 서식이 조금 깨졌다고 강사가 말한 자리가 바로 이 식이다.",
+    "모방 학습과 나란히 놓으면 직관이 선다. 모방 학습의 기울기는 Σ_t ∇log π_θ(a_t|s_t), 즉 시연된 행동의 확률을 올리는 것이었다. REINFORCE 는 시연을 남이 아니라 자기 정책이 만든 롤아웃에서 얻고, 거기에 효용을 곱한다. 효용이 없으면 그냥 '내가 한 일을 그대로 다시 하라' 는 쓸모없는 모방이 되지만, 효용이 붙으면 그 롤아웃이 얼마나 좋았는지에 민감해진다. 특히 효용이 0(실패) 아니면 1(성공)이면, 실패한 롤아웃은 기울기에 아무것도 보태지 않고 성공한 롤아웃만 모방하게 된다. 앞에서 말한 '좋은 롤아웃만 골라 모방' 이라는 거친 직관을 REINFORCE 가 정확히 구현하는 특수한 경우다. 효용이 0.5 면 가중치 0.5 로 따라 하고, 효용이 −10 이면 그 행동에서 강하게 멀어진다 — '그건 하지 마라'.",
+    "효용은 8강에서 정의한 대로 할인된 보상 합이다. 트램 롤아웃 (walk −1, walk −1, tram −2) 이면 U = −1 + γ·(−1) + γ²·(−2) 다. 그리고 이 알고리즘은 on-policy 다. 기울기 공식이 'τ 가 지금의 p_θ 에서 뽑혔다' 는 전제 위에 서 있으므로, 예전 정책으로 모은 롤아웃이나 남의 롤아웃을 그대로 쓰면 기대값이 틀어진다(노트 보충: 그런 데이터를 쓰려면 중요도 가중치 π_θ/π_old 를 곱해야 하고, PPO 의 비율 클리핑이 여기서 나온다 — CS229 20강 노트 J7CossjMvEg). 아래 손계산은 강의 설정에서 흥미로운 점 하나를 드러낸다. 트램 문제의 보상은 전부 음수라 모든 롤아웃의 효용이 음수다. 그러면 최적 롤아웃을 뽑아도 그 행동들의 확률이 내려간다! 그래도 평균적으로는 옳은 방향으로 간다. 나쁜 롤아웃(효용 −8)이 더 세게 밀어내기 때문이다. 다만 이 '모두를 밀어내는 데 차이로만 배우는' 방식은 매우 시끄럽고, 그것이 기준선이 필요한 이유다."
+   ],
+   "formulas": [
+    {
+     "expr": "J(θ, τ) = log p_θ(τ)·U(τ),   τ ∼ p_θ",
+     "meaning": "롤아웃 하나로 만든 대리 목적 함수. U(τ) 는 상수 취급. E_τ[∇J] = ∇V(θ) 이므로 ∇J 는 기울기의 편향 없는 추정치."
+    },
+    {
+     "expr": "θ ← θ + η·U(τ)·Σ_{t=1..T} ∇_θ log π_θ(a_t | s_{t−1})",
+     "meaning": "REINFORCE 갱신(경사 '상승' — 효용을 올린다). η 는 학습률, 합은 롤아웃 안의 모든 걸음. 손실로 구현하면 loss = −U·Σ log π = U·Σ CE(logits, a_t) 를 최소화한다."
+    }
+   ],
+   "example": {
+    "title": "손으로: 최적 롤아웃인데 확률이 내려간다?",
+    "body": "θ = 0(모든 상태에서 walk/tram 반반), η = 0.05, 롤아웃 (1 walk, 2 walk, 3 tram 성공), U = −4. 상태 1 의 ∇log π(walk) = e_walk − π = (0.5, −0.5). 갱신 = 0.05 × (−4) × (0.5, −0.5) = (−0.1, +0.1). 로짓이 (walk −0.1, tram +0.1) 이 되어 π(tram|1) = 1/(1 + e^{−0.2}) = 0.550. 상태 1 에서 맞는 행동(walk)의 확률이 0.5 → 0.45 로 내려갔다. 반대로 효용 −8 인 롤아웃이면 같은 계산에서 변화가 두 배다. 평균하면 효용이 덜 나쁜 행동이 상대적으로 살아남는다."
+   },
+   "pitfalls": [
+    "REINFORCE 는 경사 '상승' 이다. 파이토치 최적화기는 손실을 최소화하므로 loss = −U·Σ log π(= U·Σ 교차 엔트로피)로 넣어야 한다. 부호를 틀리면 정확히 반대로 배운다.",
+    "on-policy 전제: 롤아웃이 지금 θ 의 정책에서 나와야 한다. 여러 번 갱신하는 동안 같은 롤아웃을 재사용하면 기울기가 편향된다.",
+    "슬라이드의 첨자 a_t | s_{t−1} 은 'a_t 를 그 직전 상태에서 골랐다' 는 강의 규칙이다. 다른 교재는 a_t | s_t 로 쓴다 — 같은 것이다."
+   ],
+   "check": [
+    {
+     "q": "효용이 성공 1, 실패 0 일 때 REINFORCE 갱신은 무엇과 같아지는가?",
+     "a": "성공한 롤아웃들의 (상태, 행동) 쌍에 대해서만 로그 가능도를 올리는 모방 학습. 실패한 롤아웃은 U = 0 이라 기울기에 기여하지 않는다."
+    },
+    {
+     "q": "보상이 모두 음수인 문제에서 REINFORCE 가 그래도 배우는 이유는?",
+     "a": "모든 롤아웃이 자기 행동을 밀어내지만, 효용이 더 나쁜 롤아웃이 더 세게 밀어낸다. 기대값으로는 기울기가 정확하므로 덜 나쁜 행동이 상대적으로 올라간다. 다만 분산이 커서 느리다."
+    }
+   ]
+  },
+  {
+   "start": 3240,
+   "title": "REINFORCE 구현 다시 짜기 — 확률적 분류기, 롤아웃 기록, 교차 엔트로피 × 효용",
+   "points": [
+    "모델은 nn.Linear(상태 수, 행동 수): 상태 원-핫 → 행동 로짓. 다중 클래스라 출력이 벡터다.",
+    "get_action: 로짓 → softmax → torch.multinomial 로 행동 하나 뽑기. 별도 탐색 정책이 없다.",
+    "incorporate_feedback: 몬테카를로처럼 롤아웃과 효용을 쌓다가 끝에서 한 번 갱신.",
+    "손실 = Σ_t 효용 × 교차 엔트로피(로짓, 원-핫 행동). 강의는 처음에 효용 곱을 빠뜨렸다가 고쳤다.",
+    "초기화는 중요하다: 처음 정책이 데이터를 만든다 — θ 를 작게 두어 거의 균등한 분포에서 시작."
+   ],
+   "on_screen": "def policy_gradient_implementation(): mdp = FlakyTramMDP(num_locs=6, failure_prob=0.1), rl = Reinforce(num_locs=…, actions=[\"walk\", \"tram\"], discount=1, …). 'Note that we don't need an explicit exploration policy …because the stochastic policy should give us exploration.' class Reinforce: self.model = nn.Linear(self.num_locs, len(actions)), self.start_state = None, self.rollout: list[Step] = []. get_action: phi = self.phi(state), logits = self.model(phi), probs = torch.softmax(logits, dim=0), index = torch.multinomial(probs, num_samples=1).item(). 디버거: self.utility = −5, rollout = walk(r −1, 2) / tram(r −2, 2) / tram(r −2, 4). 손실 루프: cross_entropy = nn.CrossEntropyLoss(), target = one_hot(…), loss += self.utility * cross_entropy(logits, target). 학습 뒤 pi: 1 walk 0.8747 / 2 walk 0.7969 / 3 tram 0.6381 / 4 walk 0.9339 / 5 walk 0.6099 / 6 walk 0.7909.",
+   "explain": [
+    "수학을 마쳤으니 강사는 같은 트램 MDP 위에 Reinforce 클래스를 짠다. 모델은 이제 상태에서 행동으로 가는 확률적 분류기라서, 상태 원-핫을 받아 행동 수만큼의 로짓을 내는 nn.Linear(상태 수, 행동 수) 가 된다. Q 하나를 내던 앞의 선형층(출력 1)과 달리 다중 클래스라 행렬이다. 최적화기는 똑같이 SGD 다. 그리고 몬테카를로처럼 지금 롤아웃의 시작 상태, 걸음 목록, 누적 효용을 기억해 둔다. REINFORCE 는 효용을 알아야 갱신할 수 있으므로 롤아웃이 끝날 때까지 기다려야 하기 때문이다.",
+    "get_action 은 분류에서 예측하는 것과 똑같다. 상태의 특성을 계산하고, 모델에 통과시켜 로짓을 얻고, softmax 로 분포를 만든 뒤, 다른 점은 argmax 가 아니라 그 분포에서 표본을 뽑는다는 것 하나다. 화면에서 상태 1 의 로짓 (0.3595, −0.2431) 은 확률 (0.6462, 0.3538) 이 되었고 이번에는 walk 가 뽑혔다. 강사는 명시적인 탐색 정책이 필요 없다는 점을 다시 짚는다 — 확률적 정책이 스스로 탐색한다. 원하면 탐색을 더 얹을 수는 있다.",
+    "incorporate_feedback 은 걸음마다 롤아웃에 (행동, 보상, 다음 상태) 를 추가하고 효용에 보상을 더하기만 한다. 끝에 닿았을 때 비로소 갱신한다. 롤아웃의 걸음마다 그 걸음의 상태(입력)와 행동(출력)으로 분류 손실을 만든다. 상태 특성 → 로짓을 계산하고, 행동의 원-핫을 정답으로 하는 교차 엔트로피를 구해 손실에 더한다. 강사는 처음에 이 손실에 효용을 곱하는 것을 잊었다고 고백한다(그러면 자기 행동을 그대로 모방할 뿐이다). 화면의 최종 코드는 loss += self.utility * cross_entropy(logits, target) 이다. 교차 엔트로피가 −log π 이므로 이것은 −U·log π 의 합, 즉 REINFORCE 목적 함수의 음수다. 최소화하면 U·Σ log π 를 최대화하는 것이 되어 부호도 맞다. 화면의 롤아웃은 walk(→2), tram(고장, 2 에 그대로), tram(→4) … 로 이어진 효용 −5 짜리였다.",
+    "학습 뒤의 정책은 1: walk 0.87, 2: walk 0.80, 3: tram 0.64, 4: walk 0.93 … 이었다. 3 에서 트램, 1·2 에서 걷기로 올바른 쪽으로 기울었지만 아직 확신은 약하다(6 은 끝 상태라 의미 없는 값이다). 강사는 RL 알고리즘이 본질적으로 온라인이라는 점도 덧붙인다. 행동하고 되먹임을 받고 다시 행동하는 흐름이고, 여기서는 롤아웃 하나마다 갱신했지만 여러 롤아웃을 모아 묶음(batch)으로 갱신하면 조금 오프라인처럼 보여도 정신은 온라인이다. 초기화가 중요하냐는 질문에는, 지도학습에서도 비선형 신경망이면 초기화가 결과에 영향을 주지만 여기서는 더 중요하다고 답한다. 처음 정책 π_θ 가 곧 처음의 탐색 정책이라, 수집되는 데이터 자체가 초기 정책의 질에 좌우되기 때문이다. 그래서 θ 를 작게 두어 행동 분포가 거의 균등하게 시작하는 것이 보통이다. 아래 numpy 판은 범위를 넘는 트램을 마스크로 막고 3,000 롤아웃을 돌려 π(tram|3) = 0.977, 평균 효용 −4.23(최적 −4.222)에 이르렀다."
+   ],
+   "formulas": [
+    {
+     "expr": "loss(θ) = Σ_t U(τ)·CE(z_θ(s_{t−1}), a_t) = −U(τ)·Σ_t log π_θ(a_t | s_{t−1})",
+     "meaning": "z_θ(s) 는 상태 s 의 로짓 벡터, CE 는 교차 엔트로피(= −log softmax(z)[a]). 이 손실을 최소화하는 SGD 한 걸음이 REINFORCE 의 경사 상승 한 걸음과 같다."
+    },
+    {
+     "expr": "∇_{W[s]} log π_θ(a|s) = e_a − π_θ(·|s)   (상태 원-핫, 선형 softmax)",
+     "meaning": "W[s] 는 상태 s 의 로짓 파라미터 줄. 그 상태를 지난 걸음만 그 줄을 움직인다. 갱신량은 η·U·(e_a − π)."
+    }
+   ],
+   "example": {
+    "title": "손으로: 화면 롤아웃(효용 −5)의 첫 걸음 손실",
+    "body": "상태 1, 로짓 (0.3595, −0.2431), 행동 walk, π(walk) = 0.6463. CE = −log 0.6463 = 0.4365. 손실 기여 = U × CE = −5 × 0.4365 = −2.18. 이 손실을 줄이려면 CE 를 키워야 하므로(U 가 음수) 상태 1 의 walk 확률이 내려간다 — 효용 −5 는 최적(−4.222)보다 나쁜 롤아웃이라 밀어내는 것이 맞다. 기울기 크기: η·|U|·(1 − 0.6463) = η × 5 × 0.3537."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# REINFORCE (Williams 1992) — 흔들리는 트램, 상태별 softmax 정책, numpy 만으로\nimport numpy as np\nrng = np.random.default_rng(0)\nN, FAIL, A = 6, 0.1, [\"walk\", \"tram\"]\ndef probs(W, s):\n    z = W[s].copy()\n    if 2 * s > N: z[1] = -np.inf                   # 범위를 넘는 트램은 막는다(마스크)\n    e = np.exp(z - z.max()); return e / e.sum()\ndef rollout(W):\n    s, traj, U = 1, [], 0.0\n    while s != N and len(traj) < 50:\n        a = rng.choice(2, p=probs(W, s)); traj.append((s, a))\n        if a == 0: s, r = s + 1, -1.0\n        else: s, r = (s if rng.random() < FAIL else 2 * s), -2.0\n        U += r\n    return traj, U\nW, lr = np.zeros((N + 1, 2)), 0.05\nfor ep in range(3000):\n    traj, U = rollout(W)\n    for s, a in traj:                              # θ += η · U · Σ_t ∇log π(a_t|s_t)\n        W[s] += lr * U * (np.eye(2)[a] - probs(W, s))\n    if ep in (0, 300, 2999):\n        print(ep, \"U\", U, {s: round(float(probs(W, s)[1]), 3) for s in (1, 2, 3)})\nprint(\"평균 효용\", np.mean([rollout(W)[1] for _ in range(2000)]), \"(최적 -4.222)\")\n",
+    "note": "직접 돌린 출력(π(tram|s) 를 표시): 0 번째 U −6.0 {1: 0.426, 2: 0.574, 3: 0.574} / 300 번째 U −4.0 {1: 0.007, 2: 0.045, 3: 0.977} / 2999 번째 U −4.0 {1: 0.002, 2: 0.001, 3: 0.977}. 학습 뒤 2,000 롤아웃 평균 효용 −4.2325(최적 −4.222). 강의 코드와 달리 범위 밖 트램을 마스크했고, 롤아웃 길이를 50 으로 끊었다."
+   },
+   "pitfalls": [
+    "효용을 곱하지 않은 교차 엔트로피 합은 '내가 한 대로 더 하라' 는 자기 모방이다. 강의 시연도 처음에 이 실수를 했고, 그런데도 이번에는 우연히 그럴듯한 정책이 나왔다 — 결과가 좋아 보여도 코드를 검증해야 하는 이유.",
+    "롤아웃이 끝나지 않으면 갱신도 없다. 고장이 잦은 환경이나 초기 정책이 나쁘면 롤아웃이 매우 길어질 수 있으니 최대 길이를 둔다.",
+    "끝 상태(트램의 6)의 정책 확률은 학습되지 않은 아무 값이다. 해석하지 않는다."
+   ],
+   "check": [
+    {
+     "q": "Reinforce 의 모델이 Q-learning 의 nn.Linear(특성 수, 1) 과 달리 nn.Linear(상태 수, 행동 수) 인 이유는?",
+     "a": "Q-learning 은 (s,a) 쌍마다 숫자 하나(Q)를 내지만, 정책은 상태 하나를 받아 모든 행동의 확률(로짓 벡터)을 내는 다중 클래스 분류기이기 때문이다."
+    },
+    {
+     "q": "초기화가 지도학습보다 정책 경사에서 더 중요한 이유는?",
+     "a": "초기 정책이 곧 초기 탐색 정책이라, 학습에 쓰일 데이터 자체를 결정한다. 처음부터 한쪽 행동에 쏠리면 다른 행동을 거의 시도하지 못해 좋은 롤아웃을 보지 못할 수 있다."
+    }
+   ]
+  },
+  {
+   "start": 3660,
+   "title": "분산 감소 맛보기 — 평균 0 인 보정값을 빼면 평균은 그대로, 분산은 뚝",
+   "points": [
+    "REINFORCE 는 표본 하나로 기울기를 추정한다 — 편향은 없지만 분산이 크다. 더 좋은 추정치가 있을까?",
+    "장난감: 값 (−4, −6, 6, 8) 이 각 1/4 확률일 때 평균 μ = 1 을 추정하는 추정기(estimator)들.",
+    "표본 하나: 분산 37. 둘의 평균: 더 작다. 잡음 더하기: 더 크다(편향 없음은 같다).",
+    "평균 0 인 보정값 (−6, −6, 6, 6) 을 빼면 평균은 그대로 1, 분산은 1 로 떨어진다 — 제어 변량(control variate).",
+    "높은 분산 = SGD 가 맞는 답에 가기까지 더 많은 반복이 필요하다."
+   ],
+   "on_screen": "def policy_gradient_enhancements(): 'REINFORCE is one particular (unbiased) estimate of ∇_θ V(θ) … However, can we get a better estimate?' def variance_reduction(): μ = E[f(i)] = Σ_i p(i) * f(i), probs = torch.tensor([0.25, 0.25, 0.25, 0.25]), points = torch.tensor([−4., −6., 6., 8.]), mu = probs @ points. 'An estimator is any random variable that tries to get close to μ. Each estimator has a bias and a variance (and a cost).' estimator1: index = torch.multinomial(probs, num_samples=1) → points[index]. evaluate_estimator: num_samples = 1000, mean/variance. 결과 상자: result1 mean 1.0500 var 36.5541 / result2 mean 0.9610 var 12.4179 / result3(잡음 추가) mean 1.2687 var 37.5806 / result4(offsets = [−6, −6, 6, 6]) mean 1.0300 var 1.0001. 변수 상자에는 probs 0.1000 ×4, mu = 0.4000 이 남아 있다.",
+   "explain": [
+    "REINFORCE 는 기대값 ∇V(θ) = E[∇log p_θ(τ)·U(τ)] 를 롤아웃 하나로 추정했다. 이 추정치는 편향이 없다(평균이 정확하다). 하지만 앞의 코드에서 보았듯 하나하나는 심하게 흔들린다. 더 좋은 추정치를 얻을 수 있을까? '더 좋다' 가 무슨 뜻인지 정하려고 강사는 잠시 옆길로 새서 가장 단순한 문제, 숫자 목록의 평균 추정을 본다. 인덱스 i 가 확률 p(i) 로 뽑히고 값이 f(i) 일 때 참값 μ = Σ_i p(i)·f(i) 를 추정한다. 예제는 값 (−4, −6, 6, 8), 확률 각 1/4, 참값 μ = 1 이다. 정책 경사에서 '모든 롤아웃에 대한 합' 이 비싸듯, 이 합도 비싸다고 가정한다.",
+    "추정기(estimator)는 μ 에 가까워지려는 확률변수라면 무엇이든 된다. 추정기마다 편향(평균이 μ 에서 얼마나 벗어나나), 분산(얼마나 흔들리나), 그리고 계산 비용이 있다. 가장 단순한 추정기 1 은 인덱스 하나를 뽑아 그 값을 돌려준다. 평균은 정확히 μ 이고 분산은 E[f²] − μ² = (16 + 36 + 36 + 64)/4 − 1 = 37 이다(화면에서는 1000번 실험으로 36.55). 강사는 이 분산이 결코 좋지 않다고 말한다. 확률적 경사하강법에서 분산이 크면 맞는 답에 닿기까지 반복이 더 많이 필요하다. 추정기 2 는 둘을 뽑아 평균한다. 평균은 같고 분산은 줄어든다(화면 12.42). 추정기 3 은 일부러 나쁘게, 뽑은 값에 표준정규 잡음을 더한다. 평균은 여전히 맞지만(편향 없음) 분산은 37 + 1 = 38 로 오히려 커진다(화면 37.58).",
+    "이제 재미있는 부분이다. 평균이 0 인 마법의 함수 offset(i) 가 있다고 하자. 그러면 f(i) − offset(i) 의 기대값은 기대값의 선형성 때문에 E[f] − E[offset] = μ − 0 = μ 그대로다. 강사는 offset = (−6, −6, 6, 6) 을 택한다(확률이 균등하니 평균 0). 추정기 4 는 인덱스를 뽑아 f(i) − offset(i) 를 돌려준다. 값이 (2, 0, 0, 2) 가 되어 평균은 1, 분산은 (4+0+0+4)/4 − 1 = 1 이다. 화면의 1000번 실험도 1.0001. 평균을 건드리지 않고 분산을 37 에서 1 로 줄인 것이다. 분산만 줄이는 것은 쉽다 — 그냥 0 을 돌려주면 분산 0 이다. 그러나 그것은 답이 틀린다. 평균이 0 인 무언가를 빼는 한 답은 맞은 채로 분산을 줄일 희망이 생긴다. 이 기법을 제어 변량(control variate)이라 부르고, 매우 강력한 일반 원리다.",
+    "왜 통했을까? 참값은 1 인데 −4, −6 은 너무 아래에, 6, 8 은 너무 위에 있다. 보정값은 아래에 있는 것을 끌어올리고(−(−6) = +6) 위에 있는 것을 끌어내린다(−6). 즉 값들이 평균 근처 어디에 있을지에 대한 사전 지식이 있으면 분산을 줄일 수 있다. 정책 경사로 돌아가면, '평균 0 이면서 분산을 줄여 주는 보정값' 을 어떻게 찾느냐가 다음 질문이다. 덧붙여 화면에 대한 정정 두 가지(노트 보충): 첫째, 변수 상자의 probs 0.1 ×4 와 mu = 0.4 는 확률을 0.25 로 고치기 전의 낡은 값이다. 강사도 '합이 1 이 되는 척하자, 나중에 고치겠다' 고 했고, torch.multinomial 은 가중치를 알아서 정규화하므로 표본 결과는 μ = 1 기준으로 맞다. 둘째, 추정기 2 의 분산이 이론값 37/2 = 18.5 가 아니라 12.4 인 것은 torch.multinomial 이 기본적으로 복원 없이 뽑기 때문이다. 4개 중 2개를 복원 없이 뽑으면 분산이 (37/2)·(4−2)/(4−1) = 12.33 이 된다. 아래 코드가 두 경우를 모두 재현한다."
+   ],
+   "formulas": [
+    {
+     "expr": "μ = Σ_i p(i)·f(i) = 0.25·(−4 −6 + 6 + 8) = 1",
+     "meaning": "p(i) 는 인덱스 i 의 확률, f(i) 는 그 값. 정책 경사에서는 i ↔ 롤아웃 τ, f ↔ ∇log p_θ(τ)·U(τ) 에 해당한다."
+    },
+    {
+     "expr": "E[f(i) − c(i)] = μ − E[c(i)] = μ   (E[c] = 0 이면),   Var[f − c] = Var[f] − 2Cov(f, c) + Var[c]",
+     "meaning": "c(i) 는 평균 0 인 보정값(제어 변량). 평균은 그대로이고, c 가 f 와 같은 방향으로 크게 움직일수록(Cov 가 클수록) 분산이 준다. 예: Var[f] = 37, Var[c] = 36, Cov = (24 + 36 + 36 + 48)/4 = 36 → 37 − 72 + 36 = 1."
+    }
+   ],
+   "example": {
+    "title": "손으로: 네 추정기의 분산",
+    "body": "E[f²] = (16 + 36 + 36 + 64)/4 = 38, μ = 1. ① 하나: 38 − 1 = 37. ② 둘 평균(복원): 37/2 = 18.5, 복원 없이: 18.5 × 2/3 = 12.33. ③ 잡음 N(0,1) 추가: 37 + 1 = 38. ④ f − c = (2, 0, 0, 2): 평균 1, E[(f−c)²] = (4 + 0 + 0 + 4)/4 = 2, 분산 2 − 1 = 1."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 평균 μ = Σ p_i f_i 를 추정하는 네 가지 방법 — 편향과 분산\nimport numpy as np\nrng = np.random.default_rng(0)\np = np.array([0.25, 0.25, 0.25, 0.25]); f = np.array([-4., -6., 6., 8.])\noff = np.array([-6., -6., 6., 6.])                 # 평균 0 인 보정값: p @ off = 0\nmu = p @ f\nest = {\n    \"1 one sample\":        lambda: f[rng.choice(4, p=p)],\n    \"2 avg of two (repl)\": lambda: f[rng.choice(4, size=2, p=p)].mean(),\n    \"2' two, no repl\":     lambda: f[rng.choice(4, size=2, replace=False, p=p)].mean(),\n    \"3 sample + noise\":    lambda: f[rng.choice(4, p=p)] + rng.standard_normal(),\n    \"4 control variate\":   lambda: (lambda i: f[i] - off[i])(rng.choice(4, p=p)),\n}\nprint(\"mu\", mu, \" p@off\", p @ off)\nfor name, e in est.items():\n    xs = np.array([e() for _ in range(100000)])\n    print(f\"{name:20s} mean {xs.mean():6.3f}  var {xs.var():6.2f}\")\n",
+    "note": "직접 돌린 출력(10만 번): mu 1.0, p@off 0.0 / 1 one sample mean 0.987 var 37.00 / 2 avg of two (repl) 0.978, 18.50 / 2' two, no repl 1.018, 12.30 / 3 sample + noise 0.992, 38.00 / 4 control variate 1.001, 1.00. 강의 화면의 36.55·12.42·37.58·1.0001 은 1000번 실험의 같은 값들이다."
+   },
+   "pitfalls": [
+    "편향 없음 ≠ 좋은 추정기. 추정기 3 은 편향이 없지만 분산이 커서 더 나쁘다. 편향과 분산을 함께 본다.",
+    "보정값의 평균이 0 이 아니면 답이 틀어진다(편향). 아무 숫자나 빼면 되는 것이 아니다.",
+    "화면 변수 상자의 mu = 0.4 는 확률을 0.1 로 두었던 낡은 값이다. 참값은 1 이다."
+   ],
+   "check": [
+    {
+     "q": "보정값을 (−5, −5, 5, 5) 로 바꾸면 추정기 4 의 평균과 분산은?",
+     "a": "f − c = (1, −1, 1, 3). 평균 (1 − 1 + 1 + 3)/4 = 1(그대로). E[x²] = (1 + 1 + 1 + 9)/4 = 3, 분산 3 − 1 = 2."
+    },
+    {
+     "q": "분산을 0 으로 만드는 가장 쉬운 '추정기' 는 무엇이고 왜 쓸 수 없는가?",
+     "a": "늘 0(또는 아무 상수)을 돌려주는 것. 분산은 0 이지만 평균이 μ 가 아니어서 편향이 생긴다. 분산 감소는 평균을 지키면서 해야 의미가 있다."
+    }
+   ]
+  },
+  {
+   "start": 4070,
+   "title": "기준선 항등식 — 행동에 의존하지 않는 b(s) 는 기울기 평균을 바꾸지 않는다",
+   "points": [
+    "핵심 항등식: 상태에만 의존하는(행동에는 의존하지 않는) 아무 함수 b(s) 에 대해 E_{a∼π_θ(·|s)}[∇log π_θ(a|s)·b(s)] = 0.",
+    "그러니 효용에서 b(s) 를 빼도 정책 경사의 평균은 그대로, 분산은 줄 수 있다 — b 를 기준선(baseline)이라 부른다.",
+    "증명: Σ_a π_θ(a|s) = 1 을 미분하면 0 — 정책 경사 정리를 거꾸로 따라가는 것.",
+    "A* 의 휴리스틱 비유: 도메인 지식(좋은 b)이 알고리즘을 빠르게 한다.",
+    "가장 좋은 b(s) 는 대략 그 상태의 가치 V(s) — '평소보다 얼마나 잘했나' 만 남긴다."
+   ],
+   "on_screen": "'So how do we find an offset(s, a) that E[offset(s, a)] = 0?' 'Key identity: Let b(s) be any function that only depends on state s (not action a). Then E_θ[∇_θ log π_θ(a | s) * b(s)] = 0 for all s, and a ∼ π_θ(a | s).' 'Analogy: heuristics in A* search (use domain knowledge to improve algorithm)'. Proof: E_θ[b(s)] = constant / ∇_θ E_θ[b(s)] = 0 / … 'This is basically the reverse direction of the policy gradient theorem.'",
+   "explain": [
+    "평균 추정 장난감에서 배운 것은 '평균이 0 인 보정값을 빼면 분산을 줄일 수 있다' 였다. 정책 경사에서 그런 보정값은 어디서 오나? 강사는 핵심 항등식 하나를 내놓는다. b(s) 를 상태에만 의존하고 행동에는 의존하지 않는 아무 함수라 하자. 그러면 어떤 상태 s 에서든, 행동 a 를 정책 π_θ(·|s) 에서 뽑을 때 E[∇log π_θ(a|s)·b(s)] = 0 이다. 처음 보면 이상하다. b(s) 가 아무리 커도 0 이라니. 그러나 이 덕분에 정책 경사 식의 효용 자리에서 b(s) 를 빼거나 더해도 평균이 바뀌지 않는다. 평균은 그대로인 채 분산을 줄일 기회가 생긴 것이다. 이 b 를 기준선(baseline)이라 부른다.",
+    "증명은 짧다(강사는 시간 관계로 건너뛰고 '정책 경사 정리와 같은 수학을 반대 방향으로' 라고만 했으니 노트에서 채운다). b(s) 는 a 와 무관하므로 기대값 밖으로 꺼낼 수 있다: E_a[∇log π_θ(a|s)·b(s)] = b(s)·Σ_a π_θ(a|s)·∇log π_θ(a|s). 로그 미분 트릭을 거꾸로 쓰면 π·∇log π = ∇π 이므로 이것은 b(s)·Σ_a ∇π_θ(a|s) = b(s)·∇Σ_a π_θ(a|s) = b(s)·∇1 = 0 이다. 확률의 합은 θ 가 무엇이든 늘 1 이라, 그 기울기는 0 이다. 슬라이드의 증명 첫 줄 '상수의 기대값은 상수, 그 기울기는 0' 이 바로 이 생각이다. b 가 행동에 의존하면 b 를 합 밖으로 꺼낼 수 없어 이 논리가 깨진다. 그래서 '행동에는 의존하지 않는다' 는 조건이 핵심이다.",
+    "강사는 이것을 A* 탐색의 휴리스틱에 비유한다. 6강에서 A* 는 미래 비용에 대한 도메인 지식(휴리스틱)을 쓸수록 빨라졌고, 미래 비용을 정확히 알면 아주 빠른 알고리즘이 됐다. 마찬가지로 기준선을 잘 고르면 분산을 크게 줄일 수 있다. 어떤 b 가 좋은가? 장난감에서 보정값이 '값들이 평균 근처 어디에 있을지' 에 대한 지식이었듯, 여기서는 '이 상태에서 보통 얼마의 효용을 받나', 즉 그 상태의 가치 V^π(s) 에 가까운 것이 좋다(노트 보충: 분산을 최소로 하는 b 는 정확히 V 는 아니지만 그에 가깝고, 실무에서는 V 를 쓴다). 그러면 효용 − b 는 '평소보다 얼마나 잘했나' 가 된다. 평소보다 잘한 롤아웃의 행동은 올리고, 못한 롤아웃의 행동은 내린다.",
+    "앞에서 막혔던 두 문제가 여기서 풀린다. 행동 두 개, 효용 (1, 3) 예에서 기준선 없이는 효용 1 인 나쁜 행동을 뽑아도 그 행동을 '올리라' 는 표본이 나왔다(둘 다 양수라서). b = 2(=V)로 빼면 나쁜 행동은 1 − 2 = −1 로 내려가고 좋은 행동은 +1 로 올라간다. 두 행동 어느 것을 뽑아도 추정치가 정확히 (−0.5, 0.5) 로 같아져 분산이 0 이 된다. 트램처럼 보상이 모두 음수인 문제에서 '최적 롤아웃인데도 확률이 내려가는' 현상도 기준선으로 사라진다. 효용 −4 에서 기준선 −5.49(균등 정책의 V(1))를 빼면 +1.49 로 양수가 되어 그 행동을 올린다. 아래 코드는 b 를 바꿔 가며 평균은 늘 같고 분산만 달라짐을 보여 준다."
+   ],
+   "formulas": [
+    {
+     "expr": "E_{a∼π_θ(·|s)}[∇_θ log π_θ(a|s)·b(s)] = b(s)·Σ_a ∇_θ π_θ(a|s) = b(s)·∇_θ Σ_a π_θ(a|s) = b(s)·∇_θ 1 = 0",
+     "meaning": "b(s) 는 상태 s 에만 의존하는 아무 함수(기준선). 첫 등호에서 π·∇log π = ∇π(로그 미분 트릭 역방향)를 썼다. b 가 a 에 의존하면 합 밖으로 못 꺼내 성립하지 않는다."
+    },
+    {
+     "expr": "∇_θ V(θ) = E_τ[ Σ_t ∇_θ log π_θ(a_t | s_{t−1})·(U(τ) − b(s_{t−1})) ]",
+     "meaning": "기준선을 뺀 정책 경사. 평균은 원래와 같고(편향 0), b 가 효용을 잘 예측할수록 분산이 준다."
+    }
+   ],
+   "example": {
+    "title": "손으로: b 에 따라 바뀌는 분산(행동 2개, 효용 1·3, π = 반반)",
+    "body": "표본 추정치 g(a) = (e_a − π)·(U_a − b). b = 0: a=1 → (0.5, −0.5), a=2 → (−1.5, 1.5). 평균 (−0.5, 0.5), 평균과의 차이 제곱합 = 0.5·(1² + 1²) + 0.5·(1² + 1²) = 2. b = 2: a=1 → (0.5, −0.5)·(−1) = (−0.5, 0.5), a=2 → (−0.5, 0.5)·1 = (−0.5, 0.5). 둘이 같아 분산 0. b = 5: a=1 → (−2, 2), a=2 → (1, −1), 평균은 여전히 (−0.5, 0.5), 분산 4.5. 기준선이 '평균 효용' 에서 멀어질수록 나빠진다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 기준선 항등식: E_{a~π}[∇log π(a|s) · b(s)] = 0 — 그리고 분산은?\nimport numpy as np\ndef softmax(z): e = np.exp(z - z.max()); return e / e.sum()\nU = np.array([1.0, 3.0]); p = softmax(np.zeros(2))\nscore = [np.eye(2)[a] - p for a in range(2)]       # ∇log π(a)\nfor b in [0.0, 1.0, 2.0, 5.0]:\n    g = [score[a] * (U[a] - b) for a in range(2)]  # 표본 하나짜리 추정치(행동별)\n    mean = sum(p[a] * g[a] for a in range(2))\n    var = sum(p[a] * np.sum((g[a] - mean) ** 2) for a in range(2))\n    print(f\"b={b}: mean {np.round(mean, 3)}  var {var:.3f}  E[score*b] {np.round(sum(p[a]*score[a]*b for a in range(2)), 3)}\")\n",
+    "note": "직접 돌린 출력: b=0 → mean [−0.5, 0.5] var 2.000 / b=1 → var 0.500 / b=2 → var 0.000 / b=5 → var 4.500. 모든 b 에서 E[score·b] = [0, 0] 이고 평균 기울기는 같다."
+   },
+   "pitfalls": [
+    "기준선이 행동 a 에 의존하면(예: b = Q(s,a)) 항등식이 깨져 편향이 생긴다. 행동에 의존하는 것을 쓰려면 Q − V 처럼 따로 보정해야 한다(actor-critic 의 이점 함수).",
+    "기준선은 평균을 바꾸지 않을 뿐, 나쁜 기준선은 분산을 키운다(b = 5 예). '아무 b 나 넣어도 좋아진다' 가 아니다.",
+    "학습된 V 를 기준선으로 쓸 때 V 가 지금 롤아웃의 결과를 보고 만들어졌다면 엄밀히는 행동과 상관이 생긴다. 보통 V 는 따로 학습한 신경망(가치망)으로 둔다."
+   ],
+   "check": [
+    {
+     "q": "기준선 항등식의 증명에서 '확률의 합 = 1' 이 하는 역할은?",
+     "a": "Σ_a π_θ(a|s) = 1 이 θ 와 무관한 상수라 그 기울기가 0 이다. b(s)·Σ_a ∇π = b(s)·∇Σ_a π = b(s)·∇1 = 0 이 증명의 전부다."
+    },
+    {
+     "q": "보상이 모두 음수인 트램에서 기준선이 없을 때와 V(s) 기준선이 있을 때, 최적 롤아웃(효용 −4)의 행동은 각각 어떻게 갱신되나?",
+     "a": "없을 때: 효용 −4 가 음수라 그 행동들의 확률이 내려간다(다른 롤아웃이 더 세게 내려가 평균적으로만 맞다). V(1) ≈ −5.49 기준선이면 −4 − (−5.49) = +1.49 > 0 이라 그 행동들의 확률이 올라간다."
+    }
+   ]
+  },
+  {
+   "start": 4220,
+   "title": "세 가지 개선과 단원 정리 — 기준선, 남은 보상, actor-critic",
+   "points": [
+    "개선 1 기준선: J = Σ_t log π_θ(a_t|s_{t−1})·(U(τ) − b(s_{t−1})). 편향 없이 분산 감소.",
+    "개선 2 남은 보상(reward-to-go): 효용 전체 대신 그 걸음 이후의 보상 r_t + γr_{t+1} + … 만 곱한다 — 미래의 행동은 과거 보상을 바꿀 수 없다.",
+    "개선 3 효용 대신 편향된 추정 Q(s_t, a_t) 를 쓰는 부트스트래핑 → actor-critic(정책 + 가치를 함께 학습, 심층 학습에서는 파라미터 공유도).",
+    "게임의 규칙: ∇E[∇log p_θ(τ)·U(τ)] 의 추정치 중 편향도 분산도 작은 것을 찾는다. 기준선은 편향 0, 부트스트래핑은 약간의 편향과 큰 분산 감소.",
+    "단원 정리: 모델 기반·가치 기반·정책 기반 — 롤아웃 → 손실 → 경사 갱신이라는 같은 틀. 다음은 적이 있는 환경(게임)."
+   ],
+   "on_screen": "'Enhancements to reduce variance: 1. Baselines: subtract off a baseline b(s) from the utility — J(θ, τ) = Σ_t log π_θ(a_t | s_{t−1}) * (utility(τ) − b(s_{t−1})) / 2. Use returns-to-go instead of utility — J(θ, τ) = Σ_t log π_θ(a_t | s_{t−1}) * (r_t + γ r_{t+1} + γ^2 r_{t+2} + … − b(s_{t−1})) / 3. Use a biased estimate of the value function Q(s, a) instead of utility(τ) (bootstrapping) — J(θ, τ) = Σ_t log π_θ(a_t | s_{t−1}) * (Q(s_t, a_t) − b(s_{t−1}))'. Summary: The game: find a low-bias, low-variance estimate of E_θ[∇_θ log p_θ(τ) * utility(τ)] / Baselines: a general-purpose strategy to reduce variance, still unbiased / Bootstrapping: reduce variance but introduce a bit of bias. 마지막 화면: Model-based: estimate the MDP / Value-based: estimate Q-values / Policy-based: estimate policy. Form of algorithm: 1. Generate rollouts from exploration policy 2. Form some loss function (parameters of MDP, Q-values, or policy) 3. Update parameters using gradient step. 'In MDPs and RL, we're maximizing expected utility. Next time: what if there are adversaries in the environment?'",
+   "explain": [
+    "기준선 항등식 위에서 강사는 시간 관계로 세 가지 개선을 이름과 식만 빠르게 짚는다. 여기서는 하나씩 풀어 쓴다. 첫째는 방금 본 기준선이다. 효용에서 상태에만 의존하는 b(s) 를 빼면 평균은 그대로이고 분산은 줄 수 있다. b 는 모델일 수도 있고 휴리스틱일 수도 있다. 가장 단순하게는 최근 롤아웃 효용의 이동 평균(상수 기준선)이고, 더 좋게는 상태별 가치 추정 V(s) 다. 노트 보충: LLM 강화학습에서 쓰는 GRPO 는 같은 문제에 답을 여러 개 뽑아 그 그룹의 평균 보상을 기준선으로 쓴다(CS336 16강 노트 dIFAi87Ws4E). 가치망을 따로 학습하지 않아도 되는 기준선이다.",
+    "둘째는 남은 보상(returns-to-go)이다. t 번째 행동의 로그 확률에 롤아웃 전체의 효용을 곱하는 대신, 그 행동 이후에 받은 보상 r_t + γ·r_{t+1} + γ²·r_{t+2} + … 만 곱한다. 강사는 이것이 '과거는 미래에 영향을 주지 않기 때문' 이라고 짧게 말하는데, 정확히는 방향이 반대다(노트 정정): t 번째 행동은 그 이전에 이미 받은 보상을 바꿀 수 없다. 그래서 과거 보상 항은 그 행동의 점수 함수와 곱해져도 평균이 0 이 되고(기준선 항등식과 같은 논리 — 과거 보상은 그 시점의 행동에 의존하지 않는다), 빼도 평균은 그대로이면서 잡음만 줄어든다. 트램 예로 보면 3 에서 탄 트램의 공로를 따질 때, 1·2 에서 걸으며 낸 −2 는 트램 탓이 아니므로 빼는 것이 옳다.",
+    "셋째는 부트스트래핑의 귀환이다. 효용(또는 남은 보상) 대신 편향된 가치 추정 Q(s_t, a_t) 를 쓴다. 강사의 말로 'Q 를 다시 불러온다'. SARSA·Q-learning 에서 끝까지 기다리지 않고 추정치로 미래를 메웠듯, 여기서도 롤아웃이 끝나기 전에 Q 추정으로 그 행동의 가치를 매긴다. 이렇게 정책(actor, 행동하는 쪽)과 가치(critic, 평가하는 쪽)를 동시에 추정하는 방법을 actor-critic 이라 부르고, 심층 학습에서는 두 네트워크가 몸통 파라미터를 공유하기도 한다. 강의 초반에 '정책을 직접 배울 거면 왜 Q 를 배웠나' 의 답이 여기에 있다. 가치 추정은 정책 경사의 분산을 줄이는 도구로 돌아온다. 노트 보충: Q(s,a) − V(s) 를 이점(advantage) A(s,a) 라 부르며, PPO 는 이 이점을 GAE 로 추정하고 비율 클리핑으로 on-policy 제약을 느슨하게 한다(CS229 20강 노트 J7CossjMvEg).",
+    "전체를 꿰는 문장은 이것이다. 정책 경사의 게임은 E[∇log p_θ(τ)·U(τ)] 의 추정치 가운데 편향도 낮고 분산도 낮은 것을 찾는 일이다. 기준선은 분산을 줄이는 범용 전략이며 편향은 여전히 0 이다. 부트스트래핑은 분산을 줄이는 대신 약간의 편향을 들여온다. 아래 코드는 트램에서 균등 정책일 때 세 가지 추정치(효용 그대로 / 효용 − 상수 기준선 / 남은 보상 − V(s))의 평균과 분산을 잰다. 평균은 세 경우 모두 (−0.30, −0.15, 0.10) 으로 같고, 상태 1 의 분산은 8.6 → 0.29 → 0.20, 상태 3 은 4.17 → 0.16 → 0.04 로 떨어진다. 마지막으로 강사는 MDP·강화학습 단원을 정리한다. 모델 기반(MDP 추정), 가치 기반(Q 추정), 정책 기반(정책 추정) 세 갈래가 있지만 알고리즘의 형태는 같다. 탐색 정책으로 롤아웃을 만들고, MDP 파라미터든 Q 든 정책이든 무언가에 대한 손실을 세우고, 경사 한 걸음으로 갱신한다. 이 단원 내내 기대 효용을 최대화했는데, 다음 시간(10강 게임)은 환경 안에 적이 있어 기대값 대신 최악의 경우를 따져야 하는 상황이다."
+   ],
+   "formulas": [
+    {
+     "expr": "G_t = r_t + γ·r_{t+1} + γ²·r_{t+2} + … (남은 보상),   J = Σ_t log π_θ(a_t|s_{t−1})·(G_t − b(s_{t−1}))",
+     "meaning": "G_t 는 t 번째 걸음부터 끝까지의 할인 보상 합. U(τ) = 과거 보상 + γ^{…}·G_t 에서 과거 보상 부분을 버린 것. 평균은 그대로, 분산 감소."
+    },
+    {
+     "expr": "J = Σ_t log π_θ(a_t|s_{t−1})·(Q_φ(s_{t−1}, a_t) − b(s_{t−1})),   A(s,a) = Q(s,a) − V(s)",
+     "meaning": "Q_φ 는 따로 학습하는 critic(파라미터 φ)의 추정치 — 편향이 있다. b = V 로 두면 괄호 안이 이점 A 다. 슬라이드는 Q(s_t, a_t) 로 적었지만 강의의 첨자 규칙(a_t 는 s_{t−1} 에서 고름)에 맞추면 Q(s_{t−1}, a_t) 다."
+    }
+   ],
+   "example": {
+    "title": "손으로: 롤아웃 (walk −1, walk −1, tram −2) 의 걸음별 가중치",
+    "body": "γ = 1, 균등 정책의 V = (1: −5.49, 2: −3.91, 3: −2.63). 효용 그대로면 세 걸음 모두 가중치 −4. 남은 보상은 G = (−4, −3, −2). 남은 보상 − V(s) 는 1 에서 −4 − (−5.49) = +1.49, 2 에서 −3 − (−3.91) = +0.91, 3 에서 −2 − (−2.63) = +0.63. 셋 다 양수가 되어 '평소보다 잘했다, 이 행동들을 올려라' 는 신호가 된다. 효용 그대로(−4)일 때의 '모두 내려라' 와 정반대다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 트램, 균등 정책(θ=0)에서 경사 추정치 세 가지의 분산 비교\nimport numpy as np\nrng = np.random.default_rng(0)\nN, FAIL = 6, 0.1\ndef probs(s): return np.array([1.0, 0.0]) if 2 * s > N else np.array([0.5, 0.5])\nV = np.zeros(N + 1)                                   # 기준선 b(s) = V^π(s), 정책 평가로\nfor _ in range(500):\n    for s in range(1, N):\n        p = probs(s); tram = -2 + (1 - FAIL) * V[min(2 * s, N)] + FAIL * V[s]\n        V[s] = p[0] * (-1 + V[s + 1]) + p[1] * tram\ndef grad(mode):\n    s, steps = 1, []\n    while s != N:\n        a = rng.choice(2, p=probs(s))\n        s2, r = (s + 1, -1.0) if a == 0 else ((s if rng.random() < FAIL else 2 * s), -2.0)\n        steps.append((s, a, r)); s = s2\n    rs = [r for _, _, r in steps]; U = sum(rs); g = np.zeros((N + 1, 2))\n    for t, (s, a, r) in enumerate(steps):\n        w = {\"utility\": U, \"utility-b\": U - V[1], \"rtg-b(s)\": sum(rs[t:]) - V[s]}[mode]\n        g[s] += w * (np.eye(2)[a] - probs(s))\n    return g[1:4, 1]                                  # 상태 1~3 의 '트램' 성분\nprint(\"V^π\", np.round(V[1:N], 3))\nfor mode in [\"utility\", \"utility-b\", \"rtg-b(s)\"]:\n    G = np.array([grad(mode) for _ in range(20000)])\n    print(f\"{mode:10s} mean {np.round(G.mean(0), 2)}  var {np.round(G.var(0), 2)}\")\n",
+    "note": "직접 돌린 출력: V^π [−5.49, −3.911, −2.632, −2.0, −1.0] / utility mean [−0.29, −0.15, 0.10] var [8.6, 8.7, 4.17] / utility−b mean [−0.30, −0.15, 0.10] var [0.29, 0.32, 0.16] / rtg−b(s) mean [−0.30, −0.15, 0.10] var [0.20, 0.13, 0.04]. 표시값은 상태 1~3 의 '트램 로짓' 기울기 성분, 2만 개 롤아웃."
+   },
+   "diagram": {
+    "title": "강화학습 단원 지도(7·8·9강)",
+    "code": "graph TD\n  G[\"목표: 기대 효용 최대화\"] --> MB[\"모델 기반: MDP 추정 후 가치 반복\"]\n  G --> VB[\"가치 기반: Q 추정, argmax 로 정책\"]\n  G --> PB[\"정책 기반: π_θ 를 경사로 직접\"]\n  VB --> FA[\"함수 근사 Q_θ: 목표값에 제곱 손실\"]\n  PB --> RF[\"REINFORCE: 효용 가중 자기 모방\"]\n  RF --> BL[\"기준선 · 남은 보상: 편향 0, 분산 감소\"]\n  FA --> AC[\"actor-critic: Q 로 부트스트랩\"]\n  BL --> AC\n  AC --> PPO[\"노트 보충: PPO · GRPO\"]"
+   },
+   "pitfalls": [
+    "강의의 '과거는 미래에 영향을 주지 않는다' 는 말은 거꾸로 들린다. 정확한 이유는 '지금의 행동은 이미 받은 과거 보상에 영향을 줄 수 없다' 이다.",
+    "슬라이드 3번 식의 Q(s_t, a_t) 는 강의의 첨자 규칙(a_t 는 s_{t−1} 에서)과 어긋난다. Q(s_{t−1}, a_t), 즉 '행동을 고른 상태와 그 행동' 의 Q 로 읽는다.",
+    "actor-critic 은 분산을 줄이는 대신 critic 의 오차만큼 편향을 들인다. critic 이 엉망이면 정책도 엉뚱한 방향으로 간다."
+   ],
+   "check": [
+    {
+     "q": "남은 보상을 써도 기울기의 평균이 변하지 않는 이유를 기준선 항등식과 연결해 설명하라.",
+     "a": "t 번째 행동 이전에 받은 보상들은 그 행동에 의존하지 않으므로, 그 시점의 상태에서 보면 기준선과 같은 역할을 한다. 행동에 의존하지 않는 것과 점수 함수 ∇log π(a_t|·)의 곱은 기대값이 0 이므로 빼도 평균이 그대로다."
+    },
+    {
+     "q": "세 가지 개선 중 편향을 들이는 것은 무엇이고, 대신 무엇을 얻는가?",
+     "a": "효용 대신 추정된 Q 를 쓰는 부트스트래핑(actor-critic). critic 의 오차만큼 편향이 생기지만 롤아웃 끝까지의 무작위성이 사라져 분산이 크게 줄고, 롤아웃이 끝나기 전에 갱신할 수 있다."
+    },
+    {
+     "q": "세 갈래(모델 기반·가치 기반·정책 기반)의 공통 알고리즘 형태 세 단계는?",
+     "a": "① 탐색 정책으로 롤아웃 생성 ② 무엇(MDP 파라미터·Q·정책)에 대한 손실 구성 ③ 경사 한 걸음으로 파라미터 갱신."
+    }
+   ]
+  }
+ ],
+ "concepts": [
+  {
+   "term": "표 방식(tabular setting)",
+   "explain": "(s,a) 쌍마다 Q 값 하나를 사전(표)에 따로 저장하는 방식. 상태가 작을 때만 가능하고 일반화가 없다.",
+   "at": 1020
+  },
+  {
+   "term": "함수 근사(function approximation)",
+   "explain": "Q 나 정책을 파라미터 θ 를 가진 함수(선형·MLP)로 두고 θ 를 학습. 비슷한 상태가 θ 를 공유해 처음 보는 상태에도 값을 낸다.",
+   "at": 1110
+  },
+  {
+   "term": "특성 벡터 φ(s,a)",
+   "explain": "상태·행동을 기계학습 모델이 받는 벡터로 바꾼 것. 강의는 표 방식을 흉내 내려고 (s,a) 마다 한 칸이 1 인 원-핫 특성을 썼다.",
+   "at": 1260
+  },
+  {
+   "term": "목표값(target)",
+   "explain": "모델 없는 가치 방법에서 '효용이 이쯤일 것' 이라는 시끄러운 추정. 몬테카를로는 실제 효용, SARSA·Q-learning 은 r + γ·Q(다음).",
+   "at": 490
+  },
+  {
+   "term": "on-policy / off-policy",
+   "explain": "데이터를 만든 탐색 정책과 값을 추정하려는 정책이 같으면 on-policy(SARSA, REINFORCE), 다르면 off-policy(Q-learning).",
+   "at": 540
+  },
+  {
+   "term": "부트스트래핑(bootstrapping)",
+   "explain": "롤아웃 끝까지 기다리지 않고 즉시 보상 + 현재 가치 추정으로 목표값을 만드는 것. 분산을 줄이는 대신 편향을 들인다.",
+   "at": 660
+  },
+  {
+   "term": "확률적 정책 π_θ(a|s)",
+   "explain": "상태를 받아 행동 분포를 내는 확률적 분류기(보통 softmax). θ 에 대해 미분 가능하고, 표본을 뽑아 행동하므로 저절로 탐색한다.",
+   "at": 2130
+  },
+  {
+   "term": "모방 학습(imitation learning)",
+   "explain": "전문가 시연의 (상태, 행동) 쌍으로 Σ log π_θ(a|s) 를 최대화하는 지도학습. 행동 복제라고도 한다.",
+   "at": 2200
+  },
+  {
+   "term": "롤아웃(rollout)·궤적 τ",
+   "explain": "시작부터 끝까지의 상태·행동·보상 열. 궤적·에피소드와 같은 말. 확률 p_θ(τ) 는 정책 항과 전이 항의 곱.",
+   "at": 2420
+  },
+  {
+   "term": "정책 경사 항등식(정리)",
+   "explain": "∇_θ E[U(τ)] = E[∇_θ log p_θ(τ)·U(τ)]. 로그 미분 트릭으로 기울기를 기대값으로 바꿔 표본으로 추정할 수 있게 한다.",
+   "at": 2870
+  },
+  {
+   "term": "로그 미분 트릭(score function)",
+   "explain": "∇p = p·∇log p. ∇log π 를 점수 함수라 부르며, 전이 확률을 몰라도 계산된다.",
+   "at": 2760
+  },
+  {
+   "term": "REINFORCE",
+   "explain": "Williams(1992). 롤아웃 하나를 뽑아 θ ← θ + η·U(τ)·Σ_t ∇log π_θ(a_t|s_{t−1}). 효용으로 가중한 자기 모방.",
+   "at": 3060
+  },
+  {
+   "term": "추정기의 편향·분산",
+   "explain": "편향은 평균이 참값에서 벗어난 정도, 분산은 흔들림. 분산이 크면 SGD 가 더 많은 반복을 필요로 한다.",
+   "at": 3790
+  },
+  {
+   "term": "제어 변량(control variate)",
+   "explain": "평균이 0 인 보정값을 빼서 평균은 지키고 분산을 줄이는 기법. 장난감에서 분산 37 → 1.",
+   "at": 3950
+  },
+  {
+   "term": "기준선(baseline) b(s)",
+   "explain": "행동에 의존하지 않는 함수. E[∇log π(a|s)·b(s)] = 0 이라 효용에서 빼도 기울기 평균은 그대로, 좋은 b(≈V(s))면 분산이 준다.",
+   "at": 4080
+  },
+  {
+   "term": "남은 보상(returns-to-go)",
+   "explain": "t 번째 행동에 효용 전체 대신 그 이후 보상 r_t + γr_{t+1} + … 만 곱하는 것. 행동이 과거 보상을 바꿀 수 없으므로 편향 없이 분산 감소.",
+   "at": 4270
+  },
+  {
+   "term": "actor-critic",
+   "explain": "정책(actor)과 가치 추정(critic)을 함께 학습해, 효용 대신 critic 의 Q 추정으로 정책 경사를 계산. 분산은 줄고 약간의 편향이 생긴다.",
+   "at": 4300
+  },
+  {
+   "term": "이점(advantage) A(s,a)",
+   "explain": "(노트 보충) Q(s,a) − V(s). '그 상태에서 평소보다 이 행동이 얼마나 나은가'. 기준선을 V 로 둔 정책 경사의 가중치.",
+   "at": 4300
+  }
+ ],
+ "trends": [
+  {
+   "claim": "심층 강화학습에서 함수 근사는 이제 기본 전제다 — 상태 공간이 크면 다른 선택지가 없다(강사 의견).",
+   "evidence": "함수 근사를 표 방식과 대비해 소개하며 요즘 심층 RL 에서는 이미 당연하다고 언급.",
+   "at": 1110
+  },
+  {
+   "claim": "로봇 학습에서는 사람이 원격 조종으로 시연을 만들어 모방 학습하는 방식이 쓰인다.",
+   "evidence": "슬라이드 'Robotics: teleoperation' 사진과 컵을 집어 조리대에 놓는 예.",
+   "at": 2280
+  },
+  {
+   "claim": "LLM 수학 능력을 위해 회사들이 수학을 아는 사람을 고용해 문제 풀이를 쓰게 한다 — 시연 데이터 수집.",
+   "evidence": "모방 학습 예로 수학 분야를 들며 설명.",
+   "at": 2290
+  },
+  {
+   "claim": "정책 경사에서 한 가지만 기억한다면 '내 정책의 롤아웃 중 보상이 높은 것을 골라 모방 학습' 이라는 0차 직관이다(강사 의견).",
+   "evidence": "REINFORCE 유도 전에 직관을 먼저 제시하며 실제 일어나는 일과 멀지 않다고 언급.",
+   "at": 2390
+  },
+  {
+   "claim": "REINFORCE(Williams, 1992)는 정책 경사 계열에서 가장 오래되고 단순한 알고리즘이다.",
+   "evidence": "슬라이드 'This is the REINFORCE algorithm [Williams, 1992]'.",
+   "at": 3060
+  },
+  {
+   "claim": "정책 경사 정리는 '정리' 라 부를 만큼 깊지 않은 기초 항등식이다(강사 의견).",
+   "evidence": "유도 직후 'policy gradient theorem (identity)' 로 적고 항등식으로 부르겠다고 말함.",
+   "at": 2880
+  },
+  {
+   "claim": "기준선은 편향 없이 분산을 줄이는 범용 전략이고, 부트스트래핑은 약간의 편향을 대가로 분산을 줄인다.",
+   "evidence": "마지막 요약 슬라이드 'Baselines … still unbiased / Bootstrapping: reduce variance but introduce a bit of bias'.",
+   "at": 4340
+  },
+  {
+   "claim": "이 단원의 재료(함수 근사·정책 경사·분산 감소)를 갖추면 최신 RL 알고리즘 대부분을 이해할 수 있다(강사 의견).",
+   "evidence": "강의 첫머리의 목표 제시.",
+   "at": 30
+  }
+ ],
+ "study": {
+  "prereq": [
+   "CS221 7강 MDP(노트 2ZtF1j3n6XE) — V^π, Q^π, 정책 평가, 가치 반복",
+   "CS221 8강 강화학습(Q-learning·SARSA·ε-탐욕) — 이 노트 1~3챕터가 요약한다",
+   "CS221 3강 로지스틱 회귀·softmax·교차 엔트로피(노트 Mbe5ICIUw5Q), 4강 PyTorch·MLP(노트 89NND-Ca0yY)",
+   "확률 기초: 기대값의 선형성, 분산, 연쇄 법칙(조건부 확률의 곱), 로그 미분"
+  ],
+  "steps": [
+   {
+    "do": "c02 가치 반복으로 트램의 V*·Q* 를 구하고, c05 파라미터화 Q-learning 의 결과와 비교한다. 이어 c06 처럼 특성을 4개로 줄여 정책은 맞고 값은 틀리는 것을 확인한다.",
+    "why": "함수 근사가 '목표값을 라벨로 둔 회귀' 라는 관점과, 근사가 무엇을 잃는지를 몸으로 익힌다."
+   },
+   {
+    "do": "c08 모방 학습을 돌려 J 와 π(tram|3) 의 변화를 보고, log softmax 기울기 (e_a − π)φᵀ 를 종이에 유도한다.",
+    "why": "REINFORCE 의 기울기는 이 식에 효용을 곱한 것뿐이다."
+   },
+   {
+    "do": "정책 경사 항등식을 교과서 없이 칠판처럼 다섯 줄로 유도하고, log p_θ(τ) 에서 전이 항이 사라지는 것까지 적는다. c10 으로 수치 미분과 비교한다.",
+    "why": "로그 미분 트릭과 '모델이 필요 없는 이유' 를 내 손으로 확인해야 PPO·GRPO 식이 읽힌다."
+   },
+   {
+    "do": "c11 REINFORCE 를 돌리고, 보상이 모두 음수일 때 최적 롤아웃의 행동 확률이 내려가는 것을 첫 갱신에서 손으로 확인한다.",
+    "why": "기준선이 왜 필요한지를 가장 짧게 보여 주는 현상이다."
+   },
+   {
+    "do": "c13·c14·c15 로 제어 변량·기준선·남은 보상이 평균은 그대로 두고 분산만 줄이는지 숫자로 비교한다.",
+    "why": "'편향 0, 분산 감소' 를 정의가 아니라 측정으로 이해한다."
+   },
+   {
+    "do": "CS229 18·20강 노트(xveNBYVTrqw, J7CossjMvEg)로 같은 유도를 다른 기호로 다시 보고, CS336 16강 노트(dIFAi87Ws4E)에서 GRPO 의 그룹 기준선을 이 강의의 b(s) 와 연결한다.",
+    "why": "같은 REINFORCE 가 PPO·GRPO 로 어떻게 확장되는지 한 줄로 잇는다."
+   }
+  ],
+  "practice": [
+   "c11 에 상수 기준선(최근 효용의 이동 평균)을 넣고, 같은 시드에서 π(tram|3) > 0.9 에 닿는 롤아웃 수를 기준선 유무로 비교하라.",
+   "c11 의 손실 부호를 일부러 뒤집어(경사 하강) 정책이 어떻게 망가지는지 관찰하라.",
+   "트램을 n = 20 으로 키우고 상태 원-핫 대신 [1, 남은 거리 비율] 특성의 softmax 정책으로 REINFORCE 를 돌려 보라 — 함수 근사 정책 경사.",
+   "평균 추정 장난감에서 보정값을 c·(−6, −6, 6, 6) 으로 두고 c 에 따른 분산을 그려 최적 c 를 찾아라(답: Cov/Var = 1)."
+  ],
+  "resources": [
+   {
+    "title": "CS221 Autumn 2025 과목 홈페이지(강의 자료·일정)",
+    "url": "https://stanford-cs221.github.io/autumn2025/"
+   },
+   {
+    "title": "Sutton & Barto, Reinforcement Learning: An Introduction (2판, 13장 정책 경사)",
+    "url": "http://incompleteideas.net/book/the-book-2nd.html"
+   },
+   {
+    "title": "OpenAI Spinning Up — Intro to Policy Optimization(정책 경사 유도·기준선)",
+    "url": "https://spinningup.openai.com/en/latest/spinningup/rl_intro3.html"
+   },
+   {
+    "title": "Williams (1992), Simple statistical gradient-following algorithms (REINFORCE)",
+    "url": "https://link.springer.com/article/10.1007/BF00992696"
+   },
+   {
+    "title": "Schulman et al. (2015), High-Dimensional Continuous Control Using GAE",
+    "url": "https://arxiv.org/abs/1506.02438"
+   },
+   {
+    "title": "Schulman et al. (2017), Proximal Policy Optimization Algorithms",
+    "url": "https://arxiv.org/abs/1707.06347"
+   }
+  ]
+ },
+ "jobs": {
+  "roles": [
+   "강화학습 리서치 엔지니어",
+   "LLM 사후학습·정렬 엔지니어",
+   "머신러닝 엔지니어",
+   "로보틱스 학습 엔지니어",
+   "추천·광고 최적화 엔지니어"
+  ],
+  "skills": [
+   "Reinforcement Learning",
+   "PyTorch",
+   "Python",
+   "NumPy",
+   "Deep Learning",
+   "Machine Learning",
+   "LLM"
+  ]
+ },
+ "related": [
+  "34Hk2v2kwg4",
+  "2ZtF1j3n6XE",
+  "Mbe5ICIUw5Q",
+  "89NND-Ca0yY",
+  "4Iu4KPVbnAY",
+  "xveNBYVTrqw",
+  "J7CossjMvEg",
+  "dIFAi87Ws4E"
+ ],
+ "materials": {
+  "transcript": "official",
+  "frames": 148,
+  "every_sec": 30
+ },
+ "written_at": "2026-11-21"
+}
