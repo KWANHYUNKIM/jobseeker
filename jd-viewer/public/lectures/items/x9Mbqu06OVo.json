@@ -1,0 +1,960 @@
+{
+  "id": "x9Mbqu06OVo",
+  "source": {
+    "platform": "youtube",
+    "url": "https://www.youtube.com/watch?v=x9Mbqu06OVo",
+    "channel": "Stanford Online",
+    "published": "2026-03-09",
+    "duration_sec": 4547,
+    "views": 2044
+  },
+  "course": {
+    "school": "Stanford",
+    "code": "CS221",
+    "term": "Autumn 2025",
+    "lecture_no": "16",
+    "speaker": "Percy Liang"
+  },
+  "title": "Stanford CS221 | Autumn 2025 | Lecture 16: Logic II",
+  "title_ko": "CS221 16강 — 논리 II: 1차 논리의 구문·의미(영역과 해석), 명제화, 치환·단일화와 modus ponens, 자연어 번역",
+  "topic": "other",
+  "tags": [
+    "Python",
+    "Artificial Intelligence",
+    "Logic",
+    "First-Order Logic",
+    "Knowledge Representation",
+    "Knowledge Graph",
+    "Z3",
+    "Algorithms"
+  ],
+  "level": "중급",
+  "one_line": "대상·술어·‘모든’을 더한 1차 논리 — 영역으로 뜻을 정하고, 단일화로 규칙을 사실에 꽂는다",
+  "summary": [
+    "CS221 의 논리 두 번째 강의로, 15강의 명제 논리를 1차 논리로 넓힌다. 강사 Percy Liang 은 ‘앨리스는 피닉스 출신 학생이고, 덥고 먼 곳 출신은 눈이 오면 불행한데, 앨리스는 행복하다 — 그러면 눈이 오나?’라는 예로 시작한다. 답이 ‘모름’에서 ‘아니오’로 바뀌는 과정을 청중이 직접 추론하게 하고, 이런 문장을 담는 언어와 그 위의 추론 방법이 오늘의 주제라고 선언한다. 이어 구문·의미·추론 규칙, 모델과 해석 함수, 함의·모순·우연, 충족 가능성으로의 환원, 건전성과 완전성을 15분 가까이 복습한다.",
+    "명제 논리의 한계는 ‘모든 학생은 산수를 안다’와 골드바흐 추측으로 드러난다. 학생마다 기호를 만들어야 하고, 정수처럼 끝없는 대상은 아예 쓸 수 없다. 빠진 것은 대상과 술어, 그리고 한정사와 변수다. 강사는 이를 반복문 없는 프로그래밍에 빗댄다. 1차 논리의 구문은 대상을 가리키는 항(상수·변수·함수 적용)과 참/거짓을 가리키는 식(술어를 항에 적용한 원자식, 연결사, ∀·∃)을 엄격히 나눈다. Knows(Student, arithmetic) 같은 흔한 오류가 왜 틀렸는지도 짚는다.",
+    "의미론에서는 ‘원자식마다 참/거짓을 주자’는 첫 시도가 무한한 원자식과, 같은 대상을 가리키는 다른 항(father(alice) 와 bob) 때문에 실패함을 보인다. 그래서 영역(대상 집합)이라는 간접층을 두고, 해석이 상수·함수·술어를 영역의 물건으로 보내게 한다. 모델 = (영역, 해석)이며 그림으로는 지식 그래프다. 식의 참/거짓은 재귀 해석 함수로 정하는데, ∀ 는 영역 위의 for 문이다.",
+    "추론은 두 길이다. 고유 이름과 영역 닫힘을 가정하면 ∀ 를 ∧, ∃ 를 ∨ 로 펼쳐 명제 논리로 바꿀 수 있고(명제화), 이때 1차 논리는 문법 설탕이다. 일반적으로는 한정절(∨ 없는 if–then 규칙)에 대한 modus ponens 를 쓰는데, Takes(alice, cs221) 과 Takes(x, y) 가 글자로 달라 그냥은 적용되지 않는다. 그래서 치환(찾아 바꾸기)과 단일화(두 식을 같게 만드는 치환 찾기)를 도입하고, 몸통을 단일화한 θ 를 머리에 적용하는 둘째 판 modus ponens 로 Knows(alice, logic) 을 이끈다. 이 규칙은 건전하지만 완전하지 않으며, 함수가 있으면 무한히 돌 수 있다.",
+    "강사는 완전성을 주는 분해(resolution)를 이번 학기에는 건너뛴다고 밝힌다. 그래서 유튜브 제목이 ‘Logic II’ 이고 분해·CNF 가 나오리라 예상할 수 있지만 실제 강의에는 없다. 이 노트는 그 공백을 ‘노트 보충’ 챕터로 채워 CNF 변환과 분해 반박, 스콜렘화를 손으로 따라가게 했다. 마지막 파트는 자연어 → 1차 논리 번역 연습으로, ‘∀ 는 → 와, ∃ 는 ∧ 와 짝’이라는 규칙과 짝을 바꿨을 때의 오역을 보인다. 끝으로 ‘학생의 70%’처럼 집합을 세는 문장은 고차 논리가 필요하다는 말로 논리 단원을 닫고, 언어 모델과 AI·사회를 다룰 마지막 강의들을 예고한다. 대규모 언어 모델과 논리 추론을 잇는 이야기는 이 강의에 나오지 않는다."
+  ],
+  "why_now": "1차 논리 자체는 오래된 주제지만 그 부품은 오늘의 시스템 곳곳에 살아 있다. 강사가 짚듯 지식 그래프(개체–관계–개체)는 1차 논리 모델의 그림이고, 검색 엔진의 지식 패널·추천의 관계 그래프·RAG 에 붙는 그래프 DB 가 이 구조를 쓴다(노트 보충). 단일화는 프롤로그와 Datalog 같은 규칙 엔진, 타입 추론(힌들리–밀너), 정적 분석·보안 정책 엔진의 핵심 연산이고, 이 강의의 ask 가 쓰는 z3 같은 SMT 솔버는 소프트웨어 검증·테스트 생성·클라우드 접근 정책 검사에 실제로 쓰인다(노트 보충). 또 대규모 언어 모델의 추론을 검증하려고 자연어를 형식 논리로 옮긴 뒤 솔버에 맡기는 연구가 이어지는데, 그때 필요한 번역 감각(‘∀ 는 →, ∃ 는 ∧’, 한정사 순서)이 바로 이 강의 마지막 파트다(노트 보충 — 강의는 LLM 과의 연결을 다루지 않는다).",
+  "chapters": [
+    {
+      "start": 0,
+      "title": "동기 예제 — 앨리스는 행복하다, 그러면 눈이 오는가?",
+      "points": [
+        "자연어 문장 하나마다 1차 논리 식을 하나씩 지식 베이스(KB)에 넣고, ask 로 예/아니오/모름을 묻는다.",
+        "‘눈이 오나?’는 처음엔 ‘모름’ — KB 의 어떤 문장도 눈을 강제하지도 막지도 않는다.",
+        "‘덥고 먼 곳 출신의 사람은 눈이 오면 불행하다’와 ‘앨리스는 행복하다’가 들어오면 답이 ‘아니오’로 바뀐다(대우 추론).",
+        "오늘의 두 질문: 1차 논리는 무엇을 표현할 수 있나, 그리고 그 위에서 추론은 어떻게 하나."
+      ],
+      "on_screen": "코드형 강의 노트의 motivating_example(): kb = [] 에 Student(alice), From(alice, phoenix), And(Hot(phoenix), City(phoenix)), ForAll([x], Implies(Student(x), Person(x))), ForAll([x], Implies(City(x), Place(x))), Implies(Snowing, Cold) 를 차례로 append. 첫 ask(kb, Snowing) 결과 패널 result = \"I don't know\". 이어서 ∀x, y. Person(x) ∧ From(x, y) ∧ Hot(y) ∧ Place(y) ∧ Snowing → ¬Happy(x) 와 Happy(alice) 를 넣은 뒤 결과 패널 result = \"No\". 강의 개요 상자: 항·함수·술어 / 변수와 한정사(∀, ∃) / 모델과 해석 함수 / 명제화 / 치환·단일화를 쓴 modus ponens(한정절) / 고차 논리('학생의 70% 가 머신러닝을 안다').",
+      "explain": [
+        "강의는 정의보다 체험을 먼저 준다. 강사는 일상 문장을 하나씩 말하며 그 옆에 1차 논리 식을 적고, 청중에게 직접 추론해 보라고 한다. ‘앨리스는 학생이다’는 Student(alice), ‘앨리스는 피닉스 출신이다’는 From(alice, phoenix), ‘피닉스는 더운 도시다’는 Hot(phoenix) ∧ City(phoenix), ‘학생은 사람이다’는 ∀x. Student(x) → Person(x), ‘도시는 장소다’는 ∀x. City(x) → Place(x), ‘눈이 오면 춥다’는 Snowing → Cold 다. 마지막 것은 변수가 없는 순수한 명제 논리 문장인데, 1차 논리가 명제 논리를 품는 상위 언어라서 그대로 쓸 수 있다.",
+        "여기까지 넣고 ‘눈이 오나?’라고 물으면 정답은 ‘모른다’다. 눈이 온다고 해도, 안 온다고 해도 KB 의 어느 문장도 깨지지 않기 때문이다. 다음으로 ‘덥고 먼 곳(장소) 출신의 사람은 눈이 오면 행복하지 않다’를 ∀x, y. Person(x) ∧ From(x, y) ∧ Hot(y) ∧ Place(y) ∧ Snowing → ¬Happy(x) 로 넣고, ‘앨리스는 행복하다’ Happy(alice) 를 넣는다. 이제 답은 ‘아니오’다. 왜 그런지 손으로 따라가 보자. 앨리스는 학생이므로 사람이고, 피닉스는 도시이므로 장소이며 덥다. 앨리스는 피닉스 출신이다. 그러면 x=alice, y=phoenix 를 넣은 규칙의 앞부분 중 Snowing 만 빼고 전부 참이다. 만약 눈이 온다면 ¬Happy(alice) 가 나와 Happy(alice) 와 충돌한다. 그러므로 눈이 올 수 없다.",
+        "이 추론에는 눈여겨볼 재료가 세 가지 있다. 첫째, ‘모든 x 에 대해’라는 일반 규칙을 특정 대상(alice, phoenix)에 꽂아 쓰는 단계가 필요하다. 이것이 뒤에서 배울 치환과 단일화다. 둘째, 결론이 결론 쪽이 아니라 전제 쪽(Snowing)에서 나온다. ‘A 이면 B, 그런데 B 가 아니다, 그러므로 A 가 아니다’라는 대우 추론이다. 셋째, ‘눈이 오면 춥다’는 문장은 답에 아무 역할도 하지 않는 미끼다. 논리 추론은 관련 없는 지식이 섞여 있어도 흔들리지 않는다.",
+        "강사가 보여 준 ask 함수는 z3 라는 SMT 솔버에 KB 와 ¬질문을 넣어 충족 불가능하면 ‘예’, KB 와 질문을 넣어 충족 불가능하면 ‘아니오’, 둘 다 아니면 ‘모름’을 돌려준다. 15강(논리 I)에서 배운 ‘모든 질문을 충족 가능성 두 번으로 바꾼다’를 그대로 쓴 것이다. 아래 코드는 솔버 없이 같은 일을 한다. 대상을 alice·phoenix 둘로 정해 규칙을 펼친 뒤(이것을 뒤에서 명제화라고 부른다) 기호 9개의 512개 모델을 모두 훑어 KB 를 만족하는 모델들에서 Snowing 의 값이 하나로 정해지는지를 본다. 강사는 이 예를 ‘오늘 배울 것의 예고편’으로 남겨 두고 끝에 다시 돌아오라고 한다."
+      ],
+      "formulas": [
+        {
+          "expr": "∀x, y. Person(x) ∧ From(x, y) ∧ Hot(y) ∧ Place(y) ∧ Snowing → ¬Happy(x)",
+          "meaning": "∀x, y 는 ‘모든 대상 x 와 모든 대상 y 에 대해’. Person·Hot·Place 는 인자 하나짜리 술어(대상 → 참/거짓), From 은 인자 둘짜리 술어, Snowing 은 인자 없는 술어(= 명제 기호), ¬ 는 부정, → 는 함의다. 사람 x 가 덥고 장소인 y 출신이고 눈이 오면 x 는 행복하지 않다는 뜻."
+        },
+        {
+          "expr": "(P → Q) ∧ ¬Q ⊨ ¬P",
+          "meaning": "대우 추론(modus tollens). P 이면 Q 인데 Q 가 거짓이면 P 도 거짓이어야 한다. 여기서 P 는 앞부분 전체(눈 포함), Q 는 ¬Happy(alice) 이고, Happy(alice) 가 참이므로 Q 가 거짓이다. 앞부분에서 눈 말고는 전부 참이라 거짓일 수 있는 것은 Snowing 뿐이다."
+        }
+      ],
+      "example": {
+        "title": "‘아니오’를 손으로 이끌어 내기",
+        "body": "1) Student(alice), ∀x Student(x)→Person(x) ⇒ Person(alice)\n2) Hot(phoenix) ∧ City(phoenix) ⇒ City(phoenix), ∀x City(x)→Place(x) ⇒ Place(phoenix)\n3) 규칙에 x=alice, y=phoenix: Person(alice) ∧ From(alice,phoenix) ∧ Hot(phoenix) ∧ Place(phoenix) ∧ Snowing → ¬Happy(alice)\n4) 앞의 넷은 참이므로 이 식은 Snowing → ¬Happy(alice) 로 줄어든다.\n5) Happy(alice) 가 참 ⇒ ¬Happy(alice) 거짓 ⇒ Snowing 거짓. 답: ‘아니오’.\nHappy(alice) 가 없을 때는 4) 까지만 성립하고 Snowing 은 어느 쪽이든 가능 ⇒ ‘모름’."
+      },
+      "code": {
+        "lang": "python",
+        "src": "from itertools import product\n# 동기 예제를 alice·phoenix 두 대상으로 접지(grounding)한 뒤 모든 모델을 센다\nA = [\"StudentA\", \"PersonA\", \"FromAP\", \"HotP\", \"CityP\", \"PlaceP\", \"Snowing\", \"Cold\", \"HappyA\"]\nimp = lambda p, q: (not p) or q\ndef kb(m, happy_known):\n    rules = [m[\"StudentA\"], m[\"FromAP\"], m[\"HotP\"] and m[\"CityP\"],\n             imp(m[\"StudentA\"], m[\"PersonA\"]), imp(m[\"CityP\"], m[\"PlaceP\"]),\n             imp(m[\"Snowing\"], m[\"Cold\"]),\n             imp(m[\"PersonA\"] and m[\"FromAP\"] and m[\"HotP\"] and m[\"PlaceP\"] and m[\"Snowing\"],\n                 not m[\"HappyA\"])]\n    if happy_known:\n        rules.append(m[\"HappyA\"])\n    return all(rules)\ndef ask(happy_known, q=\"Snowing\"):\n    models = [dict(zip(A, v)) for v in product([False, True], repeat=len(A))]\n    ok = [m for m in models if kb(m, happy_known)]\n    vals = {m[q] for m in ok}\n    return \"Yes\" if vals == {True} else \"No\" if vals == {False} else \"I don't know\"\nprint(\"행복 모름:\", ask(False))   # I don't know\nprint(\"행복 앎  :\", ask(True))    # No",
+        "note": "직접 쓴 코드로 실행 확인. 출력: ‘행복 모름: I don't know’, ‘행복 앎: No’. 강의의 z3 대신 2⁹=512 개 모델을 전수 검사한다."
+      },
+      "diagram": {
+        "title": "‘아니오’에 이르는 추론 사슬",
+        "code": "flowchart LR\n  S[Student alice] --> P[Person alice]\n  C[City phoenix] --> PL[Place phoenix]\n  P --> R{규칙 x=alice, y=phoenix}\n  PL --> R\n  F[From alice phoenix] --> R\n  H[Hot phoenix] --> R\n  R --> I[Snowing → ¬Happy alice]\n  HA[Happy alice] --> N[¬Snowing: 답 No]\n  I --> N"
+      },
+      "pitfalls": [
+        "결과 패널에 찍힌 값은 마지막으로 실행된 줄의 결과다. 장면에 따라 첫 질문 옆에 ‘No’ 가 보이기도 하지만, 첫 질문의 답은 ‘I don't know’ 이고 ‘No’ 는 Happy(alice) 를 넣은 뒤의 답이다.",
+        "‘눈이 오면 춥다’에서 Cold 를 거꾸로 써 ‘춥지 않으니 눈이 안 온다’로 착각하면 안 된다. KB 에는 춥다/안 춥다에 대한 정보가 없다."
+      ],
+      "check": [
+        {
+          "q": "Happy(alice) 대신 ¬Cold 를 넣었다면 ‘눈이 오나?’의 답은?",
+          "a": "‘아니오’. Snowing → Cold 의 대우로 ¬Cold 에서 ¬Snowing 이 나온다."
+        },
+        {
+          "q": "Happy(alice) 가 있어도 From(alice, phoenix) 가 없다면 답은?",
+          "a": "‘모름’. 규칙의 앞부분이 다 채워지지 않아 Snowing 이 거짓이어야 할 이유가 사라진다."
+        }
+      ]
+    },
+    {
+      "start": 244,
+      "title": "복습 ① — 구문·의미·모델, 그리고 KB 와 새 식의 세 가지 관계",
+      "points": [
+        "논리 = 지식을 표현하고 그 위에서 추론하는 언어. 정의하려면 구문·의미·추론 규칙 셋이 필요하다.",
+        "모델(가능 세계) = 명제 기호마다 참/거짓을 정한 배정. 해석 함수 I(f, w) 가 구문과 의미를 잇는 다리다.",
+        "M(f) = f 를 만족하는 모델들의 집합. KB 의 모델은 각 식의 모델 집합의 교집합.",
+        "새 식 f 를 KB 에 더했을 때 모델 집합이 그대로면 함의, 텅 비면 모순, 그 사이면 우연(contingency)."
+      ],
+      "on_screen": "왼쪽 ‘Syntax’(빨간 막대 = formula 들, 아래로 ‘Inference rules’ 화살표)와 오른쪽 ‘Semantics’(models 라는 초록 타원 안의 파란 타원) 그림. 코드: Rain = Bool(\"Rain\"), Wet = Bool(\"Wet\"), formula = And(Rain, Not(Wet)), w = {Rain: True, Wet: False}, result = I(formula, w) → true, models = get_models(formula, [Rain, Wet]) → {Rain: true, Wet: false}. kb = [Rain, Implies(Rain, Wet)], f = Wet, old_models·new_models 패널이 모두 Rain:true, Wet:true. 정의: Entailment M(KB) = M(KB ∪ {f}), Contradiction M(KB ∪ {f}) = ∅, Contingency ∅ ≠ M(KB ∪ {f}) ≠ M(KB). Ask[f]·Tell[f] 의 쓰임.",
+      "explain": [
+        "15강(논리 I)의 내용을 강사가 빠르게 되짚는다. 핵심은 ‘논리는 지식을 담고 그 위에서 추론하는 언어’라는 관점이고, 어떤 논리든 구문(어떤 기호 배열이 올바른 식인가), 의미(그 식이 세계에 대해 무엇을 말하나), 추론 규칙(식에서 새 식을 어떻게 기계적으로 만드나) 세 가지로 정의한다. 강의 그림은 두 나라를 나눠 그린다. 왼쪽 구문 나라에는 기호 줄만 있고 추론 규칙은 그 기호를 다른 기호로 바꿀 뿐이다. 오른쪽 의미 나라에는 가능한 세계들이 있다. 두 나라를 잇는 화살표가 해석 함수다.",
+        "명제 논리에서 원자는 Rain·Wet 같은 명제 기호이고, 이를 ∧(그리고)·∨(또는)·¬(아니다)·→(이면)·↔(필요충분) 로 재귀적으로 엮어 식을 만든다. 모델(또는 세계) w 는 기호마다 참/거짓을 하나씩 정한 배정이다. 예컨대 {Rain: 참, Wet: 거짓} 은 ‘비가 오는데 젖지 않은’ 세계다. 해석 함수 I(f, w) 는 식과 세계를 받아 그 세계에서 식이 참인지를 돌려준다. Rain ∧ ¬Wet 은 이 세계에서 참이고, Wet 하나만이면 거짓이다. 우리는 어느 세계에 사는지 모르는 상태에서 출발하고, 식을 하나 알 때마다 가능한 세계의 범위가 좁아진다고 생각하면 된다. 그 범위가 M(f) 다.",
+        "지식 베이스 KB 는 식들의 집합이고 M(KB) 는 각 식의 모델 집합의 교집합, 즉 아는 것 전부와 어긋나지 않는 세계들이다. 새 식 f 가 오면 M(KB) 와 M(KB ∪ {f}) 를 비교한다. 둘이 같으면 f 는 새로운 정보가 없다 — KB 가 이미 f 를 함의(entail)한다. 뒤의 것이 비면 f 와 KB 가 동시에 참인 세계가 없다 — 모순이다. 둘 다 아니면 f 는 진짜로 새 정보를 주는 우연(contingent) 식이다. 강의 예에서 KB = {Rain, Rain → Wet} 이면 남는 세계는 {Rain 참, Wet 참} 하나뿐이고, Wet 을 더해도 그대로이므로 함의다.",
+        "이 세 관계가 에이전트의 두 동작을 만든다. Ask[f] 는 ‘f 가 참이냐’는 예/아니오 질문으로, 함의면 예, 모순이면 아니오, 우연이면 모름이다. Tell[f] 는 f 를 KB 에 더하는 동작인데, 우연일 때만 받아들인다. 이미 함의되는 것은 넣을 필요가 없고, 모순인 것은 넣으면 KB 가 무너진다. 앞 챕터 동기 예제의 ‘모름 → 아니오’ 변화가 바로 Tell 두 번 뒤에 Ask 의 답이 우연에서 모순 쪽으로 옮겨 간 것이다. 아래 코드는 I·M·관계 판정을 서른 줄 안쪽으로 그대로 옮긴 것이다."
+      ],
+      "formulas": [
+        {
+          "expr": "M(KB) = ⋂_{f ∈ KB} M(f)",
+          "meaning": "M(f) 는 식 f 를 참으로 만드는 모델(세계)들의 집합, ⋂ 는 교집합. KB 의 식을 모두 만족하는 세계만 남긴다."
+        },
+        {
+          "expr": "함의: M(KB ∪ {f}) = M(KB)    모순: M(KB ∪ {f}) = ∅    우연: ∅ ≠ M(KB ∪ {f}) ≠ M(KB)",
+          "meaning": "KB ∪ {f} 는 KB 에 f 를 더한 식 집합, ∅ 는 공집합. f 를 더해 가능한 세계가 줄지 않으면 함의, 하나도 안 남으면 모순, 일부만 줄면 우연이다."
+        }
+      ],
+      "example": {
+        "title": "Rain·Wet 두 기호의 네 세계",
+        "body": "세계 네 개: (R,W) = (F,F), (F,T), (T,F), (T,T).\nM(Rain) = {(T,F), (T,T)}, M(Rain → Wet) = {(F,F), (F,T), (T,T)}\nM(KB) = 교집합 = {(T,T)}\nf = Wet: M(KB ∪ {Wet}) = {(T,T)} = M(KB) ⇒ 함의\nf = ¬Wet: {(T,T)} ∩ {(F,F),(T,F)} = ∅ ⇒ 모순\nKB = {Rain} 만이면 M = {(T,F),(T,T)}, Wet 을 더하면 {(T,T)} ⇒ 줄었지만 비지 않음 ⇒ 우연"
+      },
+      "code": {
+        "lang": "python",
+        "src": "from itertools import product\n# 명제 논리: 식은 튜플, 모델은 dict. I(f, w) 와 M(f) 를 그대로 구현\ndef I(f, w):\n    if isinstance(f, str): return w[f]\n    op, *a = f\n    if op == \"not\": return not I(a[0], w)\n    if op == \"and\": return I(a[0], w) and I(a[1], w)\n    if op == \"or\":  return I(a[0], w) or I(a[1], w)\n    if op == \"->\":  return (not I(a[0], w)) or I(a[1], w)\n    if op == \"<->\": return I(a[0], w) == I(a[1], w)\nSYMS = [\"Rain\", \"Wet\"]\ndef M(fs):  # 식 집합(KB)을 만족하는 모델 목록\n    ws = [dict(zip(SYMS, v)) for v in product([False, True], repeat=len(SYMS))]\n    return [w for w in ws if all(I(f, w) for f in fs)]\ndef relation(kb, f):\n    old, new = M(kb), M(kb + [f])\n    if not new: return \"contradiction\"\n    if new == old: return \"entailment\"\n    return \"contingency\"\nkb = [\"Rain\", (\"->\", \"Rain\", \"Wet\")]\nprint(I((\"and\", \"Rain\", (\"not\", \"Wet\")), {\"Rain\": True, \"Wet\": False}))  # True\nprint(M(kb))                                    # [{'Rain': True, 'Wet': True}]\nprint(relation(kb, \"Wet\"), relation(kb, (\"not\", \"Wet\")), relation([\"Rain\"], \"Wet\"))",
+        "note": "직접 쓴 코드로 실행 확인. 출력: True / [{'Rain': True, 'Wet': True}] / entailment contradiction contingency."
+      },
+      "diagram": {
+        "title": "구문과 의미를 잇는 다리",
+        "code": "flowchart LR\n  subgraph 구문\n    KB[KB: 식 집합] -->|추론 규칙| F[새 식 f]\n  end\n  subgraph 의미\n    MK[M KB: 가능 세계] --- MF[M KB ∪ f]\n  end\n  KB -->|해석 함수 I| MK\n  F -->|해석 함수 I| MF"
+      },
+      "pitfalls": [
+        "‘모델’이라는 말이 머신러닝의 모델(학습된 함수)과 다르다. 논리에서 모델은 ‘가능한 세계 하나’, 즉 기호에 값을 정한 배정이다.",
+        "함의는 ‘f 가 참일 수 있다’가 아니라 ‘KB 가 참인 모든 세계에서 f 가 참’이다. 하나라도 예외 세계가 있으면 우연이다."
+      ],
+      "check": [
+        {
+          "q": "KB = {Rain ∨ Snow, ¬Rain} 에 Snow 를 Tell 하면 받아들여지나?",
+          "a": "받아들여지지 않는다. M(KB) 에서 Snow 는 이미 참뿐이라 함의 — 새 정보가 없다."
+        },
+        {
+          "q": "M(KB) 가 공집합인 KB 에 어떤 f 를 물으면?",
+          "a": "M(KB ∪ {f}) 도 공집합이라 정의상 함의이자 모순이 된다. 모순된 KB 는 무엇이든 ‘증명’하므로 Tell 이 모순을 막아야 한다."
+        }
+      ]
+    },
+    {
+      "start": 590,
+      "title": "복습 ② — 충족 가능성으로 환원, 추론 규칙, 건전성과 완전성",
+      "points": [
+        "충족 가능: M(KB) ≠ ∅. 모델 검사 = KB 가 충족 가능한지 판정하는 일.",
+        "함의·모순·우연은 충족 가능성 질문 두 번(KB ∪ {f}, KB ∪ {¬f})으로 가를 수 있다.",
+        "추론 규칙은 구문 위에서만 움직인다. modus ponens: p 와 p → q 에서 q.",
+        "KB ⊢ f(증명) 와 KB ⊨ f(함의)를 잇는 것이 건전성(증명한 건 참)과 완전성(참인 건 다 증명)."
+      ],
+      "on_screen": "‘Satisfiability: KB is satisfiable iff M(KB) ≠ ∅’, ‘Model checking: determine if a KB is satisfiable’, ‘Reduce entailment/contradiction/contingency to satisfiability’. ‘Inference rules: how to derive new valid formulas from existing ones?’, ‘Modus ponens: p, p → q ⊢ q’, ‘Syntax: KB derives/proves f (KB ⊢ f) if exists set of rules that produce f’, ‘Semantics: KB entails f (KB ⊨ f) if M(KB) = M(KB ∪ {f})’, ‘Soundness: if KB ⊢ f, then KB ⊨ f’, ‘Completeness: if KB ⊨ f, then KB ⊢ f’, 마지막 줄 ‘nothing but the truth / the whole truth’.",
+      "explain": [
+        "추론을 실제로 계산하는 첫 번째 길은 모든 질문을 하나의 원초적 질문으로 바꾸는 것이다. KB 가 충족 가능하다는 것은 KB 의 식을 모두 참으로 만드는 세계가 적어도 하나 있다는 뜻이고(M(KB) ≠ ∅), 이를 판정하는 일을 모델 검사(model checking)라고 부른다. 실제로는 SAT 솔버(DPLL·CDCL 계열)나 z3 같은 SMT 솔버가 이 일을 한다. 충족 가능성 판정기 하나만 있으면 앞 챕터의 세 관계를 두 번의 호출로 가를 수 있다.",
+        "방법은 이렇다. 먼저 KB ∪ {¬f} 가 충족 불가능하면, f 가 거짓인 세계가 KB 와 함께 존재할 수 없다는 뜻이므로 함의다. 아니라면 KB ∪ {f} 가 충족 불가능한지를 본다. 그렇다면 모순, 둘 다 충족 가능하면 우연이다. 증명을 ‘¬f 를 가정하면 말이 안 된다’로 바꾸는 이 수법은 수학의 귀류법과 같고, 노트 뒤쪽 보충 챕터의 분해(resolution) 반박도 같은 뼈대를 쓴다.",
+        "두 번째 길은 추론 규칙이다. 규칙은 KB 의 식 몇 개를 골라 정해진 틀에 맞으면 새 식을 만든다. 대표가 modus ponens 로, p 와 p → q 가 있으면 q 를 만든다. Rain 과 Rain → Wet 에서 Wet 이 나오는 식이다. 중요한 점은 규칙이 의미를 전혀 보지 않고 기호 모양만 맞춰 본다는 것이다. 규칙을 몇 번 적용해 f 를 만들 수 있으면 KB 가 f 를 도출(증명)한다고 하고 KB ⊢ f 로 쓴다. 한편 의미 쪽에서 KB 가 f 를 함의하는 것은 KB ⊨ f 로 쓴다. 겉보기에 둘은 전혀 다른 개념이다.",
+        "둘을 잇는 것이 두 성질이다. 건전성(soundness)은 KB ⊢ f 이면 KB ⊨ f, 즉 규칙으로 만든 것은 언제나 참이라는 보장이다. 강사는 물컵 비유를 쓴다. 컵이 ‘참인 것들’의 범위이고, 건전한 규칙은 물을 부어도 컵 밖으로 넘치지 않는다. 완전성(completeness)은 KB ⊨ f 이면 KB ⊢ f, 즉 참인 것은 모두 증명할 수 있어 컵을 끝까지 채운다는 보장이다. 법정 선서처럼 ‘오직 진실만’이 건전성, ‘진실 전부’가 완전성이다. 아래 코드의 마지막 부분은 modus ponens 만으로 돌리는 전방 연쇄가 건전하지만, 규칙의 몸통이 채워지지 않으면 아무것도 더 만들지 못한다는 것을 보여 준다. 이 성질 쌍이 오늘 1차 논리 판 modus ponens 를 평가하는 잣대가 된다."
+      ],
+      "formulas": [
+        {
+          "expr": "KB ⊨ f  ⇔  KB ∪ {¬f} 충족 불가능",
+          "meaning": "⊨ 는 의미적 함의. 오른쪽은 KB 와 ¬f 를 동시에 참으로 만드는 세계가 없다는 뜻. 함의 판정을 충족 가능성 판정 한 번으로 바꾼다."
+        },
+        {
+          "expr": "p,  p → q  ⊢  q",
+          "meaning": "modus ponens. 가로 줄 위(또는 ⊢ 왼쪽)가 전제, 오른쪽이 결론. p 와 q 는 명제 기호, ⊢ 는 ‘규칙으로 도출한다’."
+        },
+        {
+          "expr": "건전성: KB ⊢ f ⇒ KB ⊨ f     완전성: KB ⊨ f ⇒ KB ⊢ f",
+          "meaning": "⊢(구문적 증명)과 ⊨(의미적 함의)의 포함 관계. 둘 다 성립하면 증명 가능한 것과 참인 것이 정확히 같다."
+        }
+      ],
+      "example": {
+        "title": "충족 가능성 두 번으로 세 질문 가르기",
+        "body": "KB = {Rain, Rain → Wet}, 기호 Rain·Wet·Snow.\nf = Wet: KB ∪ {¬Wet} 은 Rain=참이면 Wet=참이어야 하므로 충족 불가 ⇒ 함의(예).\nf = ¬Rain: KB ∪ {¬¬Rain}=KB∪{Rain} 은 충족 가능, KB ∪ {¬Rain} 은 충족 불가 ⇒ 모순(아니오).\nf = Snow: 두 경우 모두 Snow 값만 바꾼 세계가 있어 충족 가능 ⇒ 우연(모름)."
+      },
+      "code": {
+        "lang": "python",
+        "src": "from itertools import product\n# 함의·모순·우연을 '충족 가능한가?' 두 번으로 가른다 (모델 검사 = 전수 탐색)\nimp = lambda p, q: (not p) or q\nSYMS = [\"Rain\", \"Wet\", \"Snow\"]\ndef satisfiable(fs):\n    for v in product([False, True], repeat=len(SYMS)):\n        w = dict(zip(SYMS, v))\n        if all(f(w) for f in fs): return True\n    return False\ndef ask(kb, f):\n    if not satisfiable(kb + [lambda w: not f(w)]): return \"entailment (Yes)\"\n    if not satisfiable(kb + [f]): return \"contradiction (No)\"\n    return \"contingency (I don't know)\"\nkb = [lambda w: w[\"Rain\"], lambda w: imp(w[\"Rain\"], w[\"Wet\"])]\nprint(ask(kb, lambda w: w[\"Wet\"]))        # entailment\nprint(ask(kb, lambda w: not w[\"Rain\"]))   # contradiction\nprint(ask(kb, lambda w: w[\"Snow\"]))       # contingency\n# 같은 KB 에 modus ponens 를 되풀이 적용(전방 연쇄)\nfacts, rules = {\"Rain\"}, [({\"Rain\"}, \"Wet\"), ({\"Wet\", \"Cold\"}, \"Ice\")]\nchanged = True\nwhile changed:\n    changed = False\n    for body, head in rules:\n        if body <= facts and head not in facts:\n            facts.add(head); changed = True\nprint(sorted(facts))                      # ['Rain', 'Wet'] — Ice 는 못 만든다",
+        "note": "직접 쓴 코드로 실행 확인. 출력: entailment (Yes) / contradiction (No) / contingency (I don't know) / ['Rain', 'Wet']. 규칙 Wet ∧ Cold → Ice 는 Cold 가 없어 쓰이지 않는다."
+      },
+      "pitfalls": [
+        "건전성과 완전성의 방향을 헷갈리기 쉽다. ‘증명 ⇒ 참’이 건전성, ‘참 ⇒ 증명’이 완전성이다. 아무것도 증명하지 않는 규칙 집합은 건전하지만 완전하지 않다.",
+        "모델 검사는 명제 기호가 n 개면 최악 2ⁿ 세계를 본다. 현대 SAT 솔버가 실전에서 빠른 것과 최악 계산량이 지수인 것은 모순이 아니다(노트 보충)."
+      ],
+      "check": [
+        {
+          "q": "‘KB ∪ {f} 가 충족 불가능’과 ‘KB ⊨ ¬f’ 는 같은 말인가?",
+          "a": "같다. f 와 KB 가 동시에 참인 세계가 없다는 것은 KB 가 참인 모든 세계에서 f 가 거짓, 곧 ¬f 가 참이라는 뜻이다."
+        },
+        {
+          "q": "‘p ∨ q, ¬p ⊢ p’ 라는 규칙은 건전한가?",
+          "a": "아니다. ¬p 가 참인 세계에서 p 를 만들어 내므로 참이 아닌 것을 도출한다."
+        }
+      ]
+    },
+    {
+      "start": 807,
+      "title": "명제 논리의 한계 — 대상도, ‘모든’도 없다",
+      "points": [
+        "‘앨리스와 밥은 산수를 안다’는 기호 두 개로 된다. ‘모든 학생은 산수를 안다’는 학생 수만큼 식이 길어진다.",
+        "골드바흐 추측(2보다 큰 모든 짝수는 두 소수의 합)은 정수를 끝없이 늘어놓아야 해 명제 논리로 못 쓴다.",
+        "빠진 것 ①대상과 술어: AliceKnowsArithmetic 은 안쪽 구조(앨리스·안다·산수)가 있다. ②한정사와 변수: ‘모든’.",
+        "비유: 반복문 없이 프로그래밍하기 — 경우를 다 늘어놓아야 한다."
+      ],
+      "on_screen": "limitations_of_propositional_logic(): AliceKnowsArithmetic = Bool(\"AliceKnowsArithmetic\"), BobKnowsArithmetic = Bool(...), formula = And(AliceKnowsArithmetic, BobKnowsArithmetic). ‘All students know arithmetic.’ 아래 AliceIsStudent·BobIsStudent 와 formula = And(Implies(AliceIsStudent, AliceKnowsArithmetic), Implies(BobIsStudent, BobKnowsArithmetic)). ‘Every even integer greater than 2 is the sum of two prime numbers.’ 아래 ‘???’. 그리고 ‘What's missing?’ — Objects and predicates, Quantifiers and variables.",
+      "explain": [
+        "명제 논리의 문제를 강사는 표현해 보기로 보여 준다. ‘앨리스와 밥은 둘 다 산수를 안다’는 AliceKnowsArithmetic 과 BobKnowsArithmetic 이라는 기호 둘을 만들고 ∧ 로 묶으면 끝이다. 여기까지는 괜찮아 보인다. 그런데 ‘모든 학생은 산수를 안다’로 가면 사정이 달라진다. 학생마다 ‘X 가 학생이면 X 는 산수를 안다’를 하나씩 만들어 ∧ 로 이어야 하고, 학생이 천 명이면 식도 천 덩어리가 된다. 새 학생이 들어올 때마다 식을 고쳐야 하는 것도 문제다.",
+        "더 나쁜 경우가 골드바흐 추측이다. ‘2보다 큰 모든 짝수는 두 소수의 합이다’를 명제 논리로 쓰려면 4, 6, 8, … 을 하나하나 기호로 만들어야 하는데 정수는 끝이 없다. 유한한 식으로는 아예 쓸 수 없다. 논리의 목표는 세계에 대한 복잡한 사실을 짧게 담는 것이고, 자연어가 강력한 것도 몇 단어로 복잡한 말을 할 수 있어서다. 명제 논리는 이 기준에서 너무 투박하고 표현력이 모자란다.",
+        "무엇이 빠졌나? 첫째는 대상과 술어다. AliceKnowsArithmetic 은 참/거짓 하나로 뭉쳐진 덩어리지만 실제로는 ‘앨리스’라는 대상, ‘안다’라는 관계, ‘산수’라는 대상이 들어 있다. 이 안쪽 구조를 드러내면 Knows(alice, arithmetic) 처럼 쓸 수 있고, 같은 Knows 를 밥에게도 그대로 쓴다. 둘째는 한정사와 변수다. ‘모든’은 사람·대상 전부에 걸리는 말이고, 대상을 다 늘어놓을 수 없을 때(무한하거나 미리 모를 때) 반드시 필요하다.",
+        "강사의 비유가 기억하기 좋다. 명제 논리로 일반 규칙을 쓰는 것은 for 반복문 없이 프로그램을 짜는 것과 같다. 모든 경우를 손으로 펼쳐 적어야 하고, 경우가 늘면 코드가 터진다. 실제로 쓰이는 프로그래밍 언어에 반복문이 없는 것이 없듯, 지식 표현에도 ‘모든 x 에 대해’가 있어야 한다. 1차 논리는 바로 대상(항)·술어·변수·한정사를 더한 언어다. 아래 코드는 학생 수에 따라 명제 논리 식이 선형으로 자라는 반면 1차 논리 식은 길이가 고정이라는 것을 숫자로 보여 준다."
+      ],
+      "example": {
+        "title": "학생 수와 식의 크기",
+        "body": "학생 n 명이면 명제 논리 식은 (S_i → K_i) 덩어리 n 개를 ∧ 로 잇는다: 기호 2n 개, 연결사 2n−1 개.\nn=2: (AliceIsStudent → AliceKnowsArithmetic) ∧ (BobIsStudent → BobKnowsArithmetic)\nn=1000: 기호 2000 개.\n1차 논리: ∀x. Student(x) → Knows(x, arithmetic) — n 과 무관하게 한 줄."
+      },
+      "code": {
+        "lang": "python",
+        "src": "# '모든 학생은 산수를 안다'를 명제 논리로 적으면 식 길이가 학생 수에 비례한다\ndef propositional(names):\n    parts = [f\"({n}IsStudent -> {n}KnowsArithmetic)\" for n in names]\n    return \" & \".join(parts)\nfor n in [2, 10, 1000]:\n    names = [f\"S{i}\" for i in range(n)]\n    print(n, \"명\", \"명제 식 길이:\", len(propositional(names)))\nfol = \"forall x. Student(x) -> Knows(x, arithmetic)\"\nprint(\"1차 논리 식 길이:\", len(fol), \"(학생 수와 무관)\")\nprint(propositional([\"Alice\", \"Bob\"]))",
+        "note": "직접 쓴 코드로 실행 확인. 문자열 길이 71(2명) → 367(10명) → 40777(1000명), 1차 논리 식은 44자."
+      },
+      "pitfalls": [
+        "‘명제 논리로는 원리상 불가능’과 ‘불편하다’를 구분하자. 대상이 유한하고 다 알려져 있으면 명제 논리로도 쓸 수 있다(뒤의 명제화). 무한하거나 이름 없는 대상이 있으면 정말로 못 쓴다."
+      ],
+      "check": [
+        {
+          "q": "‘어떤 학생은 산수를 안다’를 학생 3명(a, b, c)에 대해 명제 논리로 쓰면?",
+          "a": "(Sa ∧ Ka) ∨ (Sb ∧ Kb) ∨ (Sc ∧ Kc). ‘어떤’은 ∨ 로 펼쳐진다."
+        }
+      ]
+    },
+    {
+      "start": 1010,
+      "title": "1차 논리의 구문 — 항은 대상, 식은 참·거짓",
+      "points": [
+        "항(term) = 대상을 가리킴: 상수(alice, arithmetic), 변수(x, y), 함수 적용(father(alice), add(x, y)).",
+        "원자식 = 술어를 항에 적용: Snowing(0항), Student(x)(1항), Knows(x, arithmetic)(2항).",
+        "식 = 원자식을 연결사(∧ ∨ ¬ → ↔)로 잇고, 한정사(∀x, ∃x)를 앞에 붙인 것.",
+        "인자 자리에는 항만 온다. father(x) 는 식이 아니고, Knows(Student, arithmetic) 는 틀린 식이다.",
+        "관례: 항은 소문자, 식(술어)은 대문자로 시작."
+      ],
+      "on_screen": "first_order_logic_syntax(): ‘In propositional logic, formulas denote truth values. In first-order logic, formulas denote truth values and terms denote objects.’ Constants: alice = Const(\"Alice\", Object), arithmetic = Const(...). Variables: x, y. Functions: father = Function(\"father\", Object, Object), add = Function(\"add\", Object, Object, Object), term = father(alice), term = add(x, y). Atomic formulas: Snowing = Bool(\"Snowing\") # 0-arity, Student = Function(\"Student\", Object, BoolSort()) # unary, Knows = Function(\"Knows\", Object, Object, BoolSort()) # binary. Quantifiers: ForAll([x], Implies(Student(x), Knows(x, arithmetic))), Exists([x], And(Student(x), Knows(x, arithmetic))). Non-formulas: father(x), Knows(Student, arithmetic), Foo(Knows(alice, arithmetic)). Convention: lowercase for terms, uppercase for formulas.",
+      "explain": [
+        "1차 논리도 명제 논리와 같은 순서, 곧 구문 → 의미 → 추론 규칙으로 정의한다. 구문에서 가장 큰 변화는 ‘무엇을 가리키는가’가 둘로 나뉜다는 점이다. 명제 논리에서 식은 언제나 참/거짓을 가리켰다. 1차 논리에는 여전히 참/거짓을 가리키는 식이 있지만, 그 밖에 대상(object)을 가리키는 항(term)이 새로 생긴다. 앨리스라는 사람, 산수라는 추상적 개념이 대상이다. ‘앨리스’는 참도 거짓도 아니다. 이 구분을 놓치면 나머지가 다 꼬인다.",
+        "항은 세 종류다. 상수 기호(alice, bob, arithmetic)는 특정 대상의 이름이다. 명제 기호와 헷갈리지 말아야 하는데, 명제 기호는 식이고 상수는 항이다. 변수(x, y)는 아직 정해지지 않은 대상 자리다. 함수 기호는 항 몇 개를 받아 항 하나를 돌려준다. father 는 사람 하나를 받아 그 아버지를, add 는 대상 둘을 받아 합을 돌려준다. 함수에 항을 넣으면 다시 항이 되므로 father(father(alice)), add(add(x, y), z) 처럼 얼마든지 깊게 쌓을 수 있다.",
+        "식 쪽에서 원자식은 이제 명제 기호가 아니라 ‘술어를 항에 적용한 것’이다. 술어도 넓게 보면 함수지만, 대상을 받아 참/거짓을 돌려준다는 점이 다르다. Snowing 은 인자 0개짜리 술어(= 명제 기호), Student 는 1항(단항) 술어, Knows 는 2항 술어다. 원자식을 만든 뒤에는 명제 논리와 똑같이 ∧ ∨ ¬ → 로 묶고, 마지막으로 변수가 들어 있는 식 앞에 ∀x(모든 x 에 대해) 또는 ∃x(어떤 x 가 있어)를 붙인다. ∀x. Student(x) → Knows(x, arithmetic) 가 완성된 1차 논리 식이다.",
+        "강사가 강조한 흔한 실수는 인자 자리에 식을 넣는 것이다. father(x) 는 아버지라는 대상을 가리키는 항이지 식이 아니다. Knows(Student, arithmetic) 는 ‘학생은 산수를 안다’를 날로 옮기려다 나오는 오류로, Student 는 술어라 Knows 의 인자가 될 수 없다. Student(x) 를 넣어도 마찬가지로 안 되는데, Student(x) 는 참/거짓이지 대상이 아니기 때문이다. Foo(Knows(alice, arithmetic)) 도 함수에 참/거짓을 넣은 것이라 틀렸다. 규칙을 한 줄로 줄이면 ‘인자로 들어가는 것은 언제나 항, 식의 맨 바깥은 언제나 참/거짓’이다. 질문에서 나온 ‘함수가 함수를 돌려줄 수 있나’에 대해 강사는 1차 논리에서는 안 된다고 답한다. 파이썬보다 훨씬 제한된 언어이고, 그 제한 덕분에 계산이 다루기 쉬워진다. 아래 코드는 이 규칙을 그대로 검사기로 만든 것이다."
+      ],
+      "formulas": [
+        {
+          "expr": "항 t ::= c | x | f(t₁, …, tₙ)",
+          "meaning": "c 는 상수 기호, x 는 변수, f 는 n 항 함수 기호, t₁…tₙ 은 다시 항. 재귀 정의라서 father(father(alice)) 도 항이다."
+        },
+        {
+          "expr": "식 φ ::= P(t₁, …, tₙ) | ¬φ | φ ∧ ψ | φ ∨ ψ | φ → ψ | ∀x. φ | ∃x. φ",
+          "meaning": "P 는 n 항 술어 기호(n=0 이면 명제 기호), t 는 항, φ·ψ 는 식. 술어를 항에 적용한 것이 원자식이고, 나머지는 원자식을 연결사와 한정사로 감싼 것."
+        }
+      ],
+      "example": {
+        "title": "항일까 식일까 — 다섯 개 가려내기",
+        "body": "father(alice) → 항(대상: 앨리스의 아버지)\nKnows(father(alice), arithmetic) → 식(원자식)\nStudent(x) → Knows(x, arithmetic) → 식(변수 x 가 묶이지 않은 열린 식)\nKnows(Student, arithmetic) → 잘못(Student 는 술어라 항 자리에 못 옴)\nadd(Student(x), y) → 잘못(함수 인자에 참/거짓을 넣음)"
+      },
+      "code": {
+        "lang": "python",
+        "src": "# 1차 논리 구문 검사기: 항(대상)과 식(참·거짓)을 가른다\nCONST, VARS = {\"alice\", \"bob\", \"arithmetic\"}, {\"x\", \"y\"}\nFUNCS = {\"father\": 1, \"add\": 2}                  # 항 -> 항\nPREDS = {\"Snowing\": 0, \"Student\": 1, \"Knows\": 2}  # 항 -> 참/거짓\ndef is_term(t):\n    if isinstance(t, str): return t in CONST or t in VARS\n    f, *args = t\n    return FUNCS.get(f) == len(args) and all(is_term(a) for a in args)\ndef is_formula(f):\n    op, *a = f if isinstance(f, tuple) else (f,)\n    if op in PREDS: return PREDS[op] == len(a) and all(is_term(x) for x in a)\n    if op == \"not\": return is_formula(a[0])\n    if op in (\"and\", \"or\", \"->\"): return all(is_formula(x) for x in a)\n    if op in (\"forall\", \"exists\"): return a[0] in VARS and is_formula(a[1])\n    return False\ntests = {\n    \"forall x. Student(x) -> Knows(x, arithmetic)\":\n        (\"forall\", \"x\", (\"->\", (\"Student\", \"x\"), (\"Knows\", \"x\", \"arithmetic\"))),\n    \"father(x)\": (\"father\", \"x\"),\n    \"Knows(Student, arithmetic)\": (\"Knows\", \"Student\", \"arithmetic\"),\n    \"Knows(father(father(alice)), arithmetic)\":\n        (\"Knows\", (\"father\", (\"father\", \"alice\")), \"arithmetic\"),\n}\nfor s, f in tests.items():\n    print(f\"{s:45s} 식? {is_formula(f)}   항? {is_term(f)}\")",
+        "note": "직접 쓴 코드로 실행 확인. 출력은 차례로 (식 True, 항 False) / (False, True) / (False, False) / (True, False)."
+      },
+      "diagram": {
+        "title": "1차 논리 문법의 층",
+        "code": "flowchart BT\n  C[상수 alice] --> T[항: 대상]\n  V[변수 x] --> T\n  FN[함수 father] -->|항을 받아 항| T\n  T -->|인자| A[원자식: 술어 적용]\n  A --> CN[연결사 ∧ ∨ ¬ →]\n  CN --> Q[한정사 ∀x ∃x]\n  Q --> F[식: 참/거짓]"
+      },
+      "pitfalls": [
+        "강의 코드(z3)는 술어를 Function(\"Student\", Object, BoolSort()) 처럼 ‘불 값을 돌려주는 함수’로 선언한다. 도구 구현상 그런 것이고, 논리 문법에서 술어와 함수는 엄연히 다른 범주다.",
+        "변수 x 를 Const(\"x\", Object) 로 만드는 것도 z3 의 관례다. ForAll([x], …) 로 묶여야 비로소 변수 구실을 한다."
+      ],
+      "check": [
+        {
+          "q": "‘밥의 아버지는 학생이다’를 1차 논리로 쓰면?",
+          "a": "Student(father(bob)). father(bob) 이 항, Student 가 술어."
+        },
+        {
+          "q": "Knows(alice, Knows(bob, arithmetic)) 가 틀린 이유는?",
+          "a": "Knows 의 두 번째 인자 자리에 식(참/거짓)이 들어갔다. 인자는 항이어야 한다. ‘앨리스는 밥이 산수를 안다는 걸 안다’ 같은 문장은 1차 논리로 바로 못 쓴다."
+        }
+      ]
+    },
+    {
+      "start": 1563,
+      "title": "1차 논리의 의미 ① — 원자식에 값을 바로 주면 왜 안 되나, 영역과 해석",
+      "points": [
+        "첫 시도: 모델 = 원자식마다 참/거짓. 문제 1: 함수 때문에 원자식이 무한히 많다(father(father(…))).",
+        "문제 2: 다른 항이 같은 대상을 가리킬 수 있는데(father(alice) = bob) 값이 따로 놀 수 있다.",
+        "둘째 시도: 간접층을 둔다. 영역 = 대상들의 집합 {o1, o2, o3}.",
+        "해석 함수 = 상수 → 대상, 함수 → 대상에서 대상으로의 사상, 술어 → 대상 튜플에서 참/거짓으로의 사상.",
+        "1차 논리 모델 w = (영역, 해석)."
+      ],
+      "on_screen": "Attempt 1: w = {Student(alice): True, Knows(alice, arithmetic): True}. Problem 1: father(alice), father(father(alice)), … ‘There are an infinite number of atomic formulas!’. Problem 2: term = father(alice), term = bob, w = {Knows(father(alice), arithmetic): True, Knows(bob, arithmetic): False}. Attempt 2 ‘Key idea: introduce a layer of indirection’ — domain = [\"o1\", \"o2\", \"o3\"], constants = {alice: \"o1\", bob: \"o2\", arithmetic: \"o3\"}, functions = {father: {\"o1\": \"o2\"}}, predicates = {Knows: {(\"o1\",\"o3\"): True, (\"o2\",\"o3\"): False}, Student: {\"o1\": True, \"o2\": False, \"o3\": False}}, w = FirstOrderLogicModel(domain=domain, interpretation=interpretation).",
+      "explain": [
+        "명제 논리에서 모델은 원자식(명제 기호)마다 참/거짓을 정한 것이었다. 그러니 1차 논리에서도 원자식 Student(alice), Knows(alice, arithmetic) 마다 참/거짓을 정하면 되지 않을까? 강사가 먼저 이 ‘순진한 첫 시도’를 해 보고 두 가지 문제를 보인다. 실패하는 이유를 알아 두면 정식 정의가 왜 그렇게 생겼는지가 저절로 이해된다.",
+        "첫째 문제는 개수다. 함수가 있으면 항이 끝없이 만들어진다. father(alice), father(father(alice)), father(father(father(alice))) … 각각을 Knows 에 넣은 원자식도 그만큼 많으므로, 모델 하나가 무한히 많은 원자식에 값을 매겨야 한다. 둘째 문제는 일관성이다. father(alice) 와 bob 은 다른 기호지만 실제로는 같은 사람(밥이 앨리스의 아버지)일 수 있다. 원자식에 값을 따로따로 주면 Knows(father(alice), arithmetic) 는 참, Knows(bob, arithmetic) 는 거짓인 모델도 만들 수 있는데, 같은 사람이 산수를 알면서 모르는 셈이라 말이 안 된다. 기호 수준에서는 두 항이 같은 대상을 가리킨다는 사실을 담을 곳이 없다.",
+        "해결책은 간접층(layer of indirection)이다. 기호를 곧바로 참/거짓으로 보내지 말고, 먼저 대상들의 집합인 영역(domain)을 따로 둔다. 강의에서는 대상에 o1, o2, o3 처럼 의미 없는 이름을 붙인다. 그리고 해석 함수가 기호를 영역 쪽 물건으로 보낸다. 상수는 대상 하나로(alice → o1, bob → o2, arithmetic → o3), 함수 기호는 대상에서 대상으로 가는 표로(father: o1 → o2, 곧 o1 의 아버지는 o2), 술어는 대상(튜플)에서 참/거짓으로 가는 표로(Knows: (o1, o3) → 참, (o2, o3) → 거짓, Student: o1 → 참) 보낸다. 표에 적지 않은 조합은 거짓으로 본다.",
+        "이렇게 하면 두 문제가 한꺼번에 풀린다. 무한히 많은 항도 결국 유한한(혹은 정해진) 영역의 대상 중 하나로 계산되므로, 모델은 기호 개수만큼의 표만 가지면 된다. 또 father(alice) 와 bob 이 같은 대상 o2 로 계산되면 Knows 표에서 같은 칸을 읽으므로 값이 어긋날 수 없다. 강사는 이 모델을 실제로 다 만들어 두는 일은 드물고, 수학적 대상으로 정의를 분명히 하려고 코드로 적었을 뿐이며 실무에서는 필요한 부분만 그때그때 만든다고 덧붙인다. 정리하면 1차 논리의 모델 w 는 (영역, 해석)의 쌍이다."
+      ],
+      "formulas": [
+        {
+          "expr": "w = (D, 𝓘),   𝓘(c) ∈ D,   𝓘(f): Dⁿ → D,   𝓘(P): Dⁿ → {참, 거짓}",
+          "meaning": "D 는 영역(대상 집합), 𝓘 는 해석. 상수 c 는 대상 하나, n 항 함수 f 는 대상 n 개를 대상 하나로, n 항 술어 P 는 대상 n 개를 참/거짓으로 보낸다. Dⁿ 은 대상 n 개의 튜플 집합."
+        }
+      ],
+      "example": {
+        "title": "강의 모델에서 두 항 계산하기",
+        "body": "D = {o1, o2, o3}, alice→o1, bob→o2, arithmetic→o3, father: o1→o2\nKnows 참인 칸: (o1, o3) 하나. Student 참인 칸: o1 하나.\nfather(alice) = father(o1) = o2,  bob = o2 ⇒ 같은 대상\nKnows(father(alice), arithmetic) = Knows표[(o2, o3)] = 거짓\nKnows(bob, arithmetic) = Knows표[(o2, o3)] = 거짓 ⇒ 둘이 어긋날 수 없다."
+      },
+      "pitfalls": [
+        "o1, o2 는 기호가 아니라 세계 쪽 물건에 붙인 임시 꼬리표다. alice 와 o1 을 같은 층의 것으로 생각하면 ‘간접층’의 의미가 사라진다.",
+        "father 표에 o2, o3 의 아버지가 없다. 수학적 정의에서 함수는 영역 전체에서 정의돼야 하므로 엄밀히는 o2·o3 의 아버지도 정해야 한다(강의 코드는 쓰이는 칸만 적었다 — 노트 보충)."
+      ],
+      "check": [
+        {
+          "q": "모델의 Knows 표를 (o1, o3), (o2, o3) 둘 다 참으로 바꾸면 Knows(father(alice), arithmetic) 는?",
+          "a": "참. father(alice) 가 o2 이고 (o2, o3) 칸이 참이다."
+        },
+        {
+          "q": "첫 시도(원자식마다 값)가 함수 없는 유한 언어에서는 괜찮은가?",
+          "a": "개수 문제는 사라지지만, 두 상수가 같은 대상일 가능성(alice 와 robert 가 같은 사람)을 담지 못하는 문제는 여전히 남는다. 그래서 뒤의 명제화는 ‘고유 이름’ 가정을 따로 둔다."
+        }
+      ]
+    },
+    {
+      "start": 2060,
+      "title": "1차 논리의 의미 ② — 지식 그래프 그림과 재귀 해석 함수",
+      "points": [
+        "그림: 대상 = 노드, 상수 = 노드에 붙은 이름표(한 노드에 여럿 가능: bob·robert), 단항 술어 = 노드 표시, 이항 술어 = 간선.",
+        "이것이 지식 그래프의 뿌리다.",
+        "I(f, w, subst): 식을 쪼개 재귀 호출하고, 잎(원자식)에서 해석 표를 찾는다. subst 는 변수 → 대상 배정.",
+        "∀x. φ: 영역의 모든 대상 o 에 대해 subst 에 x→o 를 더해 φ 를 해석하고 전부 참이면 참. ∃x 는 하나라도 참이면 참.",
+        "강의 모델에서 Knows(alice, arithmetic) = 참, ∀x. Knows(x, arithmetic) = 거짓."
+      ],
+      "on_screen": "w 그림: 노드 o1(이름표 alice, 빨간 Student), o2(bob, robert), o3(arithmetic), o1→o3 와 o2→o3 에 Knows 간선. interpret_formula(f, w, subst={}) 코드: is_quantifier ∧ is_forall 이면 ‘Bind the variable to each object in the domain and check if the formula is true’ — result = True; for o in w.domain: result = result and interpret_formula(body, w, subst | {variable: o}); is_and·is_or·is_implies·is_eq 분기; else ‘Binary predicate’ — predicate_value = w.interpretation.predicates[predicate], arg1_value = interpret_term(arg1, w, subst), result = predicate_value[(arg1_value, arg2_value)]. interpret_term: is_var → subst[t], 0 인자 → w.interpretation.constants[t], 함수 적용 → func_value[arg_values]. 디버거 패널: arg1_value = \"o1\", arg2_value = \"o3\", result = true; 두 번째 질의 result = false. 요약: Semantics defined by interpretation function 𝓘(f, w) / Model w = (domain, interpretation).",
+      "explain": [
+        "모델을 그림으로 보면 훨씬 쉽다. 영역의 대상이 노드이고, 상수는 노드에 붙은 이름표다. 강사는 일부러 o2 에 bob 과 robert 라는 이름표 두 개를 붙여, 상수와 대상이 꼭 일대일일 필요가 없음을 보인다. 단항 술어 Student 는 노드 일부에 찍힌 표시이고, 이항 술어 Knows 는 노드 쌍을 잇는 간선이다. 이 그림은 바로 지식 그래프(knowledge graph)다. 위키데이터나 검색 엔진의 지식 패널이 쓰는 ‘개체–관계–개체’ 구조가 1차 논리 모델에 뿌리를 두고 있다고 강사는 말한다.",
+        "이제 식의 참/거짓을 정의한다. 명제 논리처럼 해석 함수 I(f, w) 를 식의 구조를 따라 재귀적으로 정의하는데, 1차 논리에서는 인자가 하나 더 필요하다. 변수를 어떤 대상으로 묶었는지를 기록하는 배정 subst(변수 → 대상)다. 연결사 ∧ ∨ ¬ → 는 명제 논리와 똑같이 양쪽을 해석해 조합한다. 원자식, 예를 들어 Knows(alice, arithmetic) 에 이르면 인자인 항들을 먼저 대상으로 계산한다. 항 해석 interpret_term 은 변수면 subst 에서, 상수면 해석의 상수 표에서, 함수 적용이면 인자를 재귀적으로 계산한 뒤 함수 표에서 찾는다. alice → o1, arithmetic → o3 을 얻으면 Knows 표의 (o1, o3) 칸을 읽어 참을 돌려준다.",
+        "질문 시간에 나온 ‘왜 ∧ 는 양쪽을 해석해 조합하는데 Knows 같은 술어는 다르게 처리하나’에 대한 답이 이 구분의 핵심이다. ∧ 의 양쪽은 식(참/거짓)이므로 재귀 결과를 그대로 조합한다. 반면 술어의 인자는 식이 아니라 항이고, 항을 해석하면 참/거짓이 아니라 대상이 나온다. 대상 튜플을 참/거짓으로 바꾸는 것은 해석에 담긴 술어 표다.",
+        "한정사가 1차 논리의 새 재료다. ∀x. φ 를 해석할 때는 영역의 대상 o 하나하나에 대해 subst 에 x → o 를 더한 채 몸통 φ 를 해석하고, 모두 참일 때만 참이다. 말 그대로 영역 위의 for 반복문이다. ∃x. φ 는 하나라도 참이면 참이다. 강의 모델에서 ∀x. Knows(x, arithmetic) 는 x = o2 에서 (o2, o3) 가 거짓이므로 거짓이다(o3 에서도 거짓). 반면 ∀x. Student(x) → Knows(x, arithmetic) 는 학생이 o1 하나뿐이고 o1 은 산수를 알며, 학생이 아닌 o2·o3 에서는 → 의 앞이 거짓이라 자동으로 참이 되므로 참이다. 영역이 무한하면 이 반복문은 끝나지 않는데, 그래서 해석 함수는 계산 절차라기보다 ‘참의 정의’로 이해해야 한다."
+      ],
+      "formulas": [
+        {
+          "expr": "I(∀x. φ, w, σ) = ∧_{o ∈ D} I(φ, w, σ ∪ {x ↦ o})",
+          "meaning": "σ 는 지금까지의 변수 배정(subst), x ↦ o 는 x 를 대상 o 로 묶는 것, D 는 영역. 모든 대상에 대해 몸통이 참이면 참. ∃ 는 ∧ 를 ∨ 로 바꾼 것."
+        },
+        {
+          "expr": "I(P(t₁, …, tₙ), w, σ) = 𝓘(P)(T(t₁), …, T(tₙ))",
+          "meaning": "원자식의 값. T 는 항 해석(변수 → σ, 상수 → 𝓘(c), 함수 → 𝓘(f)(인자의 T)). 항을 대상으로 바꾼 뒤 술어 표 𝓘(P) 를 읽는다."
+        }
+      ],
+      "example": {
+        "title": "∀x. Student(x) → Knows(x, arithmetic) 를 손으로 해석",
+        "body": "x=o1: Student(o1)=참, Knows(o1,o3)=참 ⇒ 참 → 참 = 참\nx=o2: Student(o2)=거짓 ⇒ 거짓 → (무엇이든) = 참\nx=o3: Student(o3)=거짓 ⇒ 참\n세 경우 모두 참 ⇒ 식 전체 참.\n비교: ∀x. Knows(x, arithmetic) 는 x=o2 에서 Knows(o2,o3)=거짓 ⇒ 전체 거짓."
+      },
+      "code": {
+        "lang": "python",
+        "src": "# 1차 논리 모델 = 영역(대상 집합) + 해석(기호 -> 대상)\ndomain = [\"o1\", \"o2\", \"o3\"]\nconsts = {\"alice\": \"o1\", \"bob\": \"o2\", \"robert\": \"o2\", \"arithmetic\": \"o3\"}\nfuncs = {\"father\": {\"o1\": \"o2\"}}\npreds = {\"Knows\": {(\"o1\", \"o3\")}, \"Student\": {(\"o1\",)}}   # 참인 튜플만 적는다\ndef term(t, sub):\n    if isinstance(t, str):\n        return sub[t] if t in sub else consts[t]\n    f, arg = t                        # 함수는 1항(father)만 예로 든다\n    return funcs[f][term(arg, sub)]\ndef I(f, sub={}):\n    op, *a = f\n    if op == \"forall\": return all(I(a[1], {**sub, a[0]: o}) for o in domain)\n    if op == \"exists\": return any(I(a[1], {**sub, a[0]: o}) for o in domain)\n    if op == \"not\": return not I(a[0], sub)\n    if op == \"and\": return I(a[0], sub) and I(a[1], sub)\n    if op == \"->\":  return (not I(a[0], sub)) or I(a[1], sub)\n    return tuple(term(x, sub) for x in a) in preds[op]     # 원자식\nprint(I((\"Knows\", \"alice\", \"arithmetic\")))                        # True\nprint(I((\"forall\", \"x\", (\"Knows\", \"x\", \"arithmetic\"))))           # False\nprint(I((\"forall\", \"x\", (\"->\", (\"Student\", \"x\"), (\"Knows\", \"x\", \"arithmetic\")))))  # True\nprint(I((\"Knows\", (\"father\", \"alice\"), \"arithmetic\")), I((\"Knows\", \"bob\", \"arithmetic\")))",
+        "note": "직접 쓴 코드로 실행 확인. 출력: True / False / True / False False(father(alice) 와 bob 은 같은 대상 o2 라 같은 값). 함수는 1항(father)만 처리한다."
+      },
+      "diagram": {
+        "title": "강의의 모델 w (지식 그래프로 보기)",
+        "code": "flowchart TB\n  o1((o1: alice, Student)) -->|Knows| o3((o3: arithmetic))\n  o2((o2: bob, robert)) -.->|Knows 거짓| o3\n  o1 -->|father| o2"
+      },
+      "pitfalls": [
+        "∀ 에 → 가 붙은 식은 ‘해당 없는’ 대상에서 공허하게 참이 된다(거짓 → 무엇 = 참). 이것이 뒤의 번역 규칙 ‘∀ 는 → 와 짝’의 이유다.",
+        "강의 코드는 한정사가 변수 하나만 묶는다고 가정한다(assert f.num_vars() == 1). ∀x, y 는 ∀x ∀y 로 겹쳐 쓴 것으로 생각하면 된다."
+      ],
+      "check": [
+        {
+          "q": "강의 모델에서 ∃x. Student(x) ∧ ¬Knows(x, arithmetic) 의 값은?",
+          "a": "거짓. 학생은 o1 뿐이고 o1 은 산수를 안다."
+        },
+        {
+          "q": "interpret_term 에서 변수가 subst 에 없으면 어떻게 되나?",
+          "a": "묶이지 않은 자유 변수라 값을 정할 수 없다. 한정사로 묶인 닫힌 식(문장)만 참/거짓이 정해진다."
+        }
+      ]
+    },
+    {
+      "start": 2715,
+      "title": "명제화 — 고유 이름과 영역 닫힘이면 1차 논리는 문법 설탕",
+      "points": [
+        "추론 = Ask/Tell → 함의·모순·우연 → 충족 가능성. 가장 쉬운 길은 명제 논리로 바꿔 모델 검사를 쓰는 것.",
+        "일반적으로는 불가능(1차 논리가 더 강하다). 두 가정이 있으면 가능하다.",
+        "고유 이름: 대상마다 상수가 많아야 하나. 영역 닫힘: 대상마다 상수가 적어도 하나. 합치면 상수 ↔ 대상 일대일.",
+        "방법: 원자식을 명제 기호로(Student(alice) → StudentAlice), ∀ 는 모든 상수에 대한 ∧, ∃ 는 ∨ 로 펼친다.",
+        "이 경우 1차 논리는 표현력은 같고 읽고 쓰기만 편한 문법 설탕이다."
+      ],
+      "on_screen": "propositionalization(): kb = [Student(alice), Student(bob), ForAll([x], Implies(Student(x), Knows(x, arithmetic))), Exists([x], And(Student(x), Knows(x, arithmetic)))]. ‘Let's reduce to propositional logic. We can't do this in general (because first-order logic is more powerful).’ 세 모델 그림: w₁(john→o1, bob→o2), w₂(john·bob 모두 o1), w₃(john→o1, 이름 없는 o2, bob→o3). ‘Unique names’(대상마다 상수 많아야 하나, w₂ 배제), ‘Domain closure’(대상마다 상수 적어도 하나, w₃ 배제). 명제화한 kb: StudentAlice, StudentBob, And(Implies(StudentAlice, KnowsAliceArithmetic), Implies(StudentBob, KnowsBobArithmetic)), Or(And(StudentAlice, KnowsAliceArithmetic), And(StudentBob, KnowsBobArithmetic)). ‘In this regime, first-order logic is syntactic sugar for propositional logic.’",
+      "explain": [
+        "구문과 의미를 정했으니 이제 추론이다. 목표는 명제 논리와 같다. Ask 와 Tell 을 하려면 함의·모순·우연을 판정해야 하고, 그것은 충족 가능성 판정으로 줄어든다. 가장 손쉬운 전략은 1차 논리 KB 를 명제 논리 KB 로 바꾸는 것이다. 명제 논리라면 지난 시간의 모델 검사를 그대로 쓸 수 있다. 물론 1차 논리가 더 표현력이 크므로 언제나 바꿀 수 있는 것은 아니다. 강사는 모델에 대한 두 가정을 두면 가능하다고 설명한다.",
+        "첫째 가정은 고유 이름(unique names)이다. 대상 하나에 붙은 상수가 많아야 하나라는 뜻으로, john 과 bob 이 둘 다 o1 을 가리키는 모델 w₂ 를 배제한다. 둘째 가정은 영역 닫힘(domain closure)이다. 모든 대상에 이름(상수)이 적어도 하나 있어야 한다는 뜻으로, 이름 없는 o2 가 있는 모델 w₃ 를 배제한다. 두 가정을 합치면 상수와 대상이 일대일로 대응하고, 따라서 ‘모든 대상’은 ‘모든 상수’와 같은 말이 된다. 슬라이드의 고유 이름 문장은 처음에 ‘각 상수는 …’으로 시작했다가 강사가 말로 ‘각 대상이 많아야 하나의 상수에 대응한다’로 바로잡는다.",
+        "그다음은 기계적이다. 원자식 Student(alice) 는 괄호와 쉼표를 지운 명제 기호 StudentAlice 가 된다. ∀x. Student(x) → Knows(x, arithmetic) 는 상수마다 x 를 바꿔 넣은 사본들을 ∧ 로 이은 (StudentAlice → KnowsAliceArithmetic) ∧ (StudentBob → KnowsBobArithmetic) 가 되고, ∃x. Student(x) ∧ Knows(x, arithmetic) 는 사본들을 ∨ 로 이은 (StudentAlice ∧ KnowsAliceArithmetic) ∨ (StudentBob ∧ KnowsBobArithmetic) 가 된다. ∀ 는 큰 ∧, ∃ 는 큰 ∨ 라는 감각은 뒤에서 한정절을 이해할 때도 다시 쓰인다.",
+        "이렇게 바꾸고 나면 남는 것은 순수한 명제 논리 KB 이고, 15강의 어떤 추론 기법이든 쓸 수 있다. 이 상황에서 1차 논리는 표현력이 늘어난 것이 아니라 같은 내용을 짧게 읽고 쓰게 해 주는 문법 설탕(syntactic sugar)일 뿐이다. 첫 챕터의 동기 예제 코드도 alice·phoenix 두 대상만 있다고 보고 이 방식으로 푼 것이다. 하지만 대상이 무한하거나(정수), 함수 때문에 항이 끝없이 생기거나, 이름 없는 대상이 있을 수 있으면 이 길이 막힌다. 그때 필요한 것이 다음 챕터부터의 추론 규칙이다. 펼친 식의 크기가 상수 개수의 거듭제곱(한정사가 겹치면)으로 커진다는 실무적 비용도 기억해 두자(노트 보충)."
+      ],
+      "formulas": [
+        {
+          "expr": "∀x. φ(x)  ⟶  φ(c₁) ∧ φ(c₂) ∧ … ∧ φ(c_k),    ∃x. φ(x)  ⟶  φ(c₁) ∨ … ∨ φ(c_k)",
+          "meaning": "c₁…c_k 는 KB 에 나오는 모든 상수, φ(c) 는 x 자리에 c 를 넣은 사본. 고유 이름·영역 닫힘이 있을 때만 의미가 보존된다."
+        }
+      ],
+      "example": {
+        "title": "학생 KB 를 펼쳐 남는 모델 세기",
+        "body": "KB: Student(alice), Student(bob), ∀x Student(x)→Knows(x, arithmetic)\n펼침: SA, SB, (SA→KA) ∧ (SB→KB)\n기호 4개 ⇒ 세계 16개. SA=SB=참이어야 하고, 그러면 KA=KB=참이어야 함 ⇒ 남는 세계 1개.\n그러므로 KB ⊨ Knows(bob, arithmetic) — 질문 KB 를 펼친 KnowsBobArithmetic 이 그 한 세계에서 참."
+      },
+      "code": {
+        "lang": "python",
+        "src": "from itertools import product\n# 명제화: 상수가 곧 대상(고유 이름 + 영역 닫힘)이면 ∀ 는 ∧, ∃ 는 ∨ 로 펼친다\nCONSTS = [\"alice\", \"bob\"]\ndef ground(f, sub={}):\n    op, *a = f\n    if op in (\"forall\", \"exists\"):\n        parts = [ground(a[1], {**sub, a[0]: c}) for c in CONSTS]\n        out = parts[0]\n        for p in parts[1:]:\n            out = (\"and\" if op == \"forall\" else \"or\", out, p)\n        return out\n    if op in (\"not\", \"and\", \"or\", \"->\"):\n        return (op, *[ground(x, sub) for x in a])\n    return op + \"\".join(s.capitalize() for s in (sub.get(x, x) for x in a))  # 원자식 -> 명제 기호\ndef ev(f, w):\n    if isinstance(f, str): return w[f]\n    op, *a = f\n    v = [ev(x, w) for x in a]\n    return {\"not\": lambda: not v[0], \"and\": lambda: v[0] and v[1],\n            \"or\": lambda: v[0] or v[1], \"->\": lambda: (not v[0]) or v[1]}[op]()\nkb = [(\"Student\", \"alice\"), (\"Student\", \"bob\"),\n      (\"forall\", \"x\", (\"->\", (\"Student\", \"x\"), (\"Knows\", \"x\", \"arithmetic\")))]\ng = [ground(f) for f in kb]\nprint(g[2])\nsyms = [\"StudentAlice\", \"StudentBob\", \"KnowsAliceArithmetic\", \"KnowsBobArithmetic\"]\nmodels = [dict(zip(syms, v)) for v in product([False, True], repeat=4)]\nalive = [w for w in models if all(ev(f, w) for f in g)]\nprint(len(alive), \"개 모델이 남음:\", alive[0])",
+        "note": "직접 쓴 코드로 실행 확인. 펼친 식과 ‘1 개 모델이 남음’ 이 출력된다. 함수 기호는 다루지 않는다(함수가 있으면 항이 끝없이 생겨 이 방법이 끝나지 않는다)."
+      },
+      "diagram": {
+        "title": "배제되는 두 모델",
+        "code": "flowchart LR\n  subgraph w1[w₁ 허용]\n    j1[john] --> a1((o1))\n    b1[bob] --> a2((o2))\n  end\n  subgraph w2[w₂ 고유 이름 위반]\n    j2[john] --> c1((o1))\n    b2[bob] --> c1\n  end\n  subgraph w3[w₃ 영역 닫힘 위반]\n    j3[john] --> d1((o1))\n    d2((o2 이름 없음))\n    b3[bob] --> d3((o3))\n  end"
+      },
+      "pitfalls": [
+        "슬라이드의 고유 이름 정의는 ‘각 상수는 …’으로 시작했다가 ‘각 대상은 …’으로 이어지는, 고치다 만 문장으로 떠 있다. 맞는 뜻은 ‘대상 하나에 상수가 많아야 하나’다.",
+        "영역 닫힘을 가정하면 ‘앨리스의 아버지(이름 없음)’ 같은 대상을 따로 상정할 수 없다. 데이터베이스의 닫힌 세계 가정(없으면 거짓)과 비슷하지만 같은 개념은 아니다(노트 보충)."
+      ],
+      "check": [
+        {
+          "q": "상수가 a, b, c 세 개일 때 ∀x ∀y. Knows(x, y) 를 펼치면 원자 사본이 몇 개?",
+          "a": "3 × 3 = 9 개를 ∧ 로 잇는다. 한정사가 겹칠수록 상수 수의 거듭제곱으로 커진다."
+        },
+        {
+          "q": "고유 이름 가정 없이 john 과 bob 이 같은 사람일 수 있다면 ∃x Student(x) 를 (StudentJohn ∨ StudentBob) 으로 펼쳐도 되나?",
+          "a": "이 식 자체는 영역 닫힘만 있으면 맞다. 문제는 같은 대상의 두 이름이 서로 다른 명제 기호가 되어 StudentJohn=참, StudentBob=거짓 같은 모순적 배정을 막지 못한다는 것이다."
+        }
+      ]
+    },
+    {
+      "start": 2955,
+      "title": "한정절과 modus ponens 첫 시도 — 글자가 같아야만 맞는 규칙",
+      "points": [
+        "한정절(definite clause): ∀x₁…xₙ. (a₁ ∧ … ∧ a_k) → b, 여기서 aᵢ, b 는 원자식. 즉 ‘원자식들의 ∧ 이면 원자식 하나’.",
+        "예: ∀x, y, z. Takes(x, y) ∧ Covers(y, z) → Knows(x, z). 비예: Student(alice) ∨ Student(bob), ∃x. Student(x) ∧ Knows(x, arithmetic).",
+        "직관: ∨ 가 없다(∃ 도 숨은 ∨).",
+        "첫 시도: a₁…a_k 와 규칙이 정확히 같으면 b. 그런데 Takes(alice, cs221) ≠ Takes(x, y) 라 적용이 안 된다."
+      ],
+      "on_screen": "first_order_logic_inference_rules(): ‘Definition: a definite clause is a formula of the following form: ∀ x_1 … x_n. (a_1 ∧ … ∧ a_k) → b …where x_1, …, x_n are variables, a_1, …, a_k, b are atomic formulas.’ Example: # ∀ x, y, z. (Takes(x, y) ∧ Covers(y, z)) → Knows(x, z), 그 아래 코드 formula = ForAll([x, y, z], Implies(And(Knows(x, y), Covers(y, z)), Knows(x, z))). Non-example: Or(Student(alice), Student(bob)), Exists([x], And(Student(x), Knows(x, arithmetic))). Attempt 1: modus ponens with exact match — Premises a_1, …, a_k / ∀x_1 … x_n.(a_1 ∧ … ∧ a_k) → b, Conclusion b. kb = [Takes(alice, cs221), Covers(cs221, logic), ForAll(...)]. ‘However, Takes(alice, cs221) ≠ Takes(x, y). So we can't apply the rule.’ 칠판: Rain / Rain → Wet / 가로줄 / Wet, 옆에 Takes(alice, cs221) 와 Takes(x, y).",
+      "explain": [
+        "명제화가 안 되는 일반적인 경우를 위해 추론 규칙으로 간다. 15강에서처럼 modus ponens 를 1차 논리로 옮기려는데, 이 규칙은 특별한 모양의 식에서만 쓴다. 그 모양이 한정절이다. 한정절은 몇 개의 변수를 ∀ 로 묶고, 원자식 몇 개를 ∧ 로 이은 것이 원자식 하나를 함의하는 꼴 ∀x₁…xₙ. (a₁ ∧ … ∧ a_k) → b 다. k = 0 이면 전제 없이 b 가 참이라는 사실(fact) 하나가 된다. Takes(alice, cs221) 같은 사실도 한정절이다.",
+        "강의의 대표 예는 ∀x, y, z. Takes(x, y) ∧ Covers(y, z) → Knows(x, z) 다. 누군가 x 가 수업 y 를 듣고 그 수업이 개념 z 를 다루면, x 는 z 를 안다는 규칙이다. 반대로 Student(alice) ∨ Student(bob) 는 한정절이 아니다. ∨ 가 들어 있기 때문이다. ∃x. Student(x) ∧ Knows(x, arithmetic) 도 아니다. 앞 챕터에서 보았듯 ∃ 는 사실상 큰 ∨ 이기 때문이다. 한정절의 직관을 한 줄로 줄이면 ‘∨ 가 없다’이고, 그래서 ‘이것들이 다 참이면 저것도 참’이라는 if–then 규칙만 남는다. 프롤로그(Prolog)가 쓰는 혼(Horn) 절이 바로 이 꼴이다(노트 보충).",
+        "그러면 modus ponens 의 첫 판본은 자연스럽다. 전제로 원자식 a₁, …, a_k 와 한정절 ∀x₁…xₙ. (a₁ ∧ … ∧ a_k) → b 가 있으면 결론 b 를 낸다. 명제 판과 다른 점은 ∀ 가 붙어 있다는 것뿐이다. 이제 KB = {Takes(alice, cs221), Covers(cs221, logic), 위의 규칙} 에 적용해 보자. 사람이라면 ‘앨리스는 논리를 안다’를 바로 떠올린다. 그런데 규칙은 적용되지 않는다.",
+        "이유는 규칙이 구문만 보기 때문이다. 규칙이 요구하는 첫 전제는 글자 그대로 Takes(x, y) 인데, KB 에 있는 것은 Takes(alice, cs221) 이다. 두 문자열은 다르므로 짝이 맞지 않는다. 명제 논리에서는 Rain 과 Rain → Wet 의 Rain 이 정확히 같은 글자라 문제가 없었다(강사가 칠판에 Rain / Rain → Wet / Wet 을 적고 그 옆에 Takes(alice, cs221) 과 Takes(x, y) 를 나란히 적어 대비한다). 강사의 표현대로 ‘어리석어 보이지만 규칙은 규칙’이다. 해결 아이디어는 ∀ 의 뜻에서 나온다. ∀x, y, z 는 x, y, z 에 무엇을 넣어도 성립한다는 뜻이므로, 규칙은 사실 ‘틀(template)’이다. x = alice, y = cs221 로 채워 넣는 장치만 있으면 된다. 그 장치가 다음 챕터의 치환과 단일화다."
+      ],
+      "formulas": [
+        {
+          "expr": "∀x₁ … xₙ. (a₁ ∧ … ∧ a_k) → b",
+          "meaning": "한정절. x₁…xₙ 은 변수, a₁…a_k(몸통)와 b(머리)는 원자식. 부정·∨·∃ 가 들어가면 한정절이 아니다. k=0 이면 사실."
+        },
+        {
+          "expr": "a₁, …, a_k,   ∀x₁…xₙ. (a₁ ∧ … ∧ a_k) → b   ⊢   b",
+          "meaning": "정확 일치판 modus ponens. 전제의 원자식이 규칙 몸통과 글자까지 같아야 적용된다 — 변수가 있는 규칙에는 거의 쓸모가 없다."
+        }
+      ],
+      "example": {
+        "title": "어느 것이 한정절인가",
+        "body": "Takes(alice, cs221) → 한정절(k=0, 사실)\n∀x. City(x) → Place(x) → 한정절\n∀x, y. Person(x) ∧ From(x,y) ∧ Hot(y) ∧ Place(y) ∧ Snowing → ¬Happy(x) → 아님(머리가 부정)\nStudent(alice) ∨ Student(bob) → 아님(∨)\n∃x. Student(x) ∧ Knows(x, arithmetic) → 아님(∃ = 숨은 ∨)\n그래서 첫 챕터의 ‘아니오’는 modus ponens 만으로는 얻을 수 없다."
+      },
+      "pitfalls": [
+        "슬라이드의 한정절 예 코드는 주석(Takes(x, y) ∧ Covers(y, z))과 달리 And(Knows(x, y), Covers(y, z)) 로 적혀 있다. 오타이고, 맞는 것은 Takes(x, y) 다(뒤의 KB 코드에서는 Takes 로 고쳐져 있다).",
+        "첫 챕터 동기 예제의 ‘불행’ 규칙은 머리가 ¬Happy(x) 라 한정절이 아니다. 그 예의 ‘아니오’는 modus ponens 로는 못 내고 모델 검사(z3)나 분해가 필요하다."
+      ],
+      "check": [
+        {
+          "q": "∀x. Student(x) → Person(x) ∧ Mortal(x) 는 한정절인가?",
+          "a": "엄밀히는 아니지만(머리가 ∧), ∀x. Student(x) → Person(x) 와 ∀x. Student(x) → Mortal(x) 두 한정절로 쪼갤 수 있다."
+        },
+        {
+          "q": "왜 ∃ 가 들어가면 한정절이 아닌가?",
+          "a": "∃x. φ(x) 는 φ(c₁) ∨ φ(c₂) ∨ … 와 같은 뜻이라 ∨ 를 숨기고 있기 때문이다."
+        }
+      ]
+    },
+    {
+      "start": 3300,
+      "title": "치환과 단일화 — 식 위의 찾아 바꾸기와 일반화된 등호",
+      "points": [
+        "치환 θ = {변수 ↦ 항}. Subst(θ, f) 는 f 안의 변수를 재귀적으로 찾아 바꾼다. 오른쪽에 변수가 와도 된다(y ↦ z).",
+        "Knows(x, y) 에 {x ↦ alice, y ↦ cs221} ⇒ Knows(alice, cs221). Student(x) ∧ Knows(x, y) 에 {x ↦ alice, y ↦ z} ⇒ Student(alice) ∧ Knows(alice, z).",
+        "단일화 Unify(f, g) = 두 식을 똑같이 만드는 치환을 찾고, 없으면 실패(None).",
+        "바꿀 수 있는 것은 변수뿐. Knows(alice, y) 와 Knows(bob, z) 는 alice ≠ bob 이라 실패."
+      ],
+      "on_screen": "introduce_substitution(): ‘Substitution: search and replace on terms in a formula’, formula = Knows(x, y), subst = {x: alice, y: cs221}, result = substitute(formula, subst) → \"Knows(alice, cs221)\"; formula = And(Student(x), Knows(x, y)), subst = {x: alice, y: z} → \"And(Student(alice), Knows(alice, z))\". substitute 코드: if f in subst: result = subst[f] else: new_args = [substitute(f.arg(i), subst) for i in range(f.num_args())]; result = f.decl()(*new_args). introduce_unification(): ‘Unification: find a substitution that makes two terms equal’, unify(Knows(x, y), Knows(alice, bob), {}) → {x: alice, y: bob}, unify(Knows(alice, y), Knows(x, z), {}) → {x: alice, y: z}, unify(Knows(alice, y), Knows(bob, z), {}) # Should fail. unify 코드: if f1 == f2: return subst; elif is_variable(f1): subst[f1] = f2 …; elif is_variable(f2): subst[f2] = substitute(f1, subst) …; else: if f1.decl() != f2.decl(): return None; for i …: if unify(f1.arg(i), f2.arg(i), subst) is None: return None. 칠판: Takes(alice, cs221) 아래 Takes(x, y).",
+      "explain": [
+        "치환(substitution)은 식을 수술하는 도구다. θ 는 ‘변수 ↦ 항’ 의 표이고, Subst(θ, f) 는 식 f 를 재귀적으로 내려가며 θ 에 있는 변수를 만날 때마다 대응하는 항으로 바꾼다. 문서 편집기의 ‘찾아 바꾸기’를 식의 나무 구조에 맞게 한 것이라고 보면 된다. Knows(x, y) 에 {x ↦ alice, y ↦ cs221} 을 적용하면 술어 Knows 는 그대로 두고 인자 x, y 를 각각 재귀 처리해 Knows(alice, cs221) 이 된다. 바꿔 넣는 쪽이 꼭 상수일 필요는 없다. {x ↦ alice, y ↦ z} 처럼 변수를 다른 변수로 바꿀 수도 있어서, Student(x) ∧ Knows(x, y) 는 Student(alice) ∧ Knows(alice, z) 가 된다.",
+        "단일화(unification)는 ‘일반화된 등호’다. Takes(alice, cs221) 과 Takes(x, y) 는 글자로는 다르지만, 적당한 치환을 하면 같아진다. 단일화는 두 식을 받아 둘에 똑같이 적용했을 때 둘을 같게 만드는 치환을 찾고, 그런 치환이 없으면 실패를 돌려준다. 조건이 하나 있다. 바꿀 수 있는 것은 변수뿐이다. x, y 는 무엇으로든 바꿀 수 있지만 alice 를 bob 으로 바꿀 수는 없다. 상수는 특정 대상의 이름이기 때문이다.",
+        "알고리즘은 두 식을 동시에 재귀적으로 내려간다. 둘이 이미 같으면 지금까지의 치환을 그대로 돌려준다. 한쪽이 변수이면 그 변수를 다른 쪽으로 묶는 항목을 치환에 더한다. 둘 다 변수가 아니면 맨 위 기호(술어나 함수 이름)가 같은지 보고, 다르면(Knows 와 Takes) 실패, 같으면 인자들을 차례로 단일화하는데 하나라도 실패하면 전체가 실패다. 강의 예로 Knows(x, y) 와 Knows(alice, bob) 은 {x ↦ alice, y ↦ bob}, Knows(alice, y) 와 Knows(x, z) 는 {x ↦ alice, y ↦ z} 가 되고 둘 다 Knows(alice, z) 로 같아진다. Knows(alice, y) 와 Knows(bob, z) 는 첫 인자에서 상수끼리 부딪혀 실패한다.",
+        "강의 코드는 개념을 보이려는 최소 판이라 두 가지를 생략했다(노트 보충). 하나는 이미 묶인 변수를 다시 만났을 때 치환을 먼저 적용해 보는 일이다. 예를 들어 P(x, x) 와 P(alice, bob) 은 x 가 alice 와 bob 둘 다일 수 없으므로 실패해야 한다. 다른 하나는 발생 검사(occurs check)다. x 와 father(x) 를 단일화하면 x = father(father(father(…))) 라는 끝없는 항이 필요하므로 실패해야 한다. 아래 코드는 두 가지를 넣은 판이고, 단일화 결과는 두 식을 같게 만드는 치환 중 가장 덜 구체적인 것(최일반 단일자, MGU)이다."
+      ],
+      "formulas": [
+        {
+          "expr": "Subst(θ, f),   θ = {x₁ ↦ t₁, …, xₙ ↦ tₙ}",
+          "meaning": "θ(세타)는 치환, xᵢ 는 변수, tᵢ 는 항(상수·변수·함수 적용 모두 가능). f 안의 모든 xᵢ 를 tᵢ 로 바꾼 식."
+        },
+        {
+          "expr": "Unify(f, g) = θ  such that  Subst(θ, f) = Subst(θ, g),  없으면 실패",
+          "meaning": "두 식(또는 항) f, g 를 글자까지 같게 만드는 치환 θ. 변수만 바꿀 수 있다. 여러 개면 가장 일반적인 것(MGU)을 고른다."
+        }
+      ],
+      "example": {
+        "title": "단일화 세 건을 손으로",
+        "body": "① Takes(alice, cs221) vs Takes(x, y): 술어 같음 → alice vs x ⇒ {x↦alice} → cs221 vs y ⇒ {x↦alice, y↦cs221}. 성공.\n② Knows(x, father(x)) vs Knows(bob, y): x vs bob ⇒ {x↦bob}; father(x) vs y ⇒ 치환 적용하면 father(bob) vs y ⇒ {y↦father(bob)}. 결과 둘 다 Knows(bob, father(bob)).\n③ P(x, x) vs P(alice, bob): {x↦alice} 뒤 둘째 인자 x 는 alice 로 바뀌어 alice vs bob ⇒ 실패.\n④ Knows(x, father(x)) vs Knows(father(y), y): x↦father(y) 뒤 father(father(y)) vs y ⇒ y 가 자기 안에 나타남 ⇒ 발생 검사로 실패."
+      },
+      "code": {
+        "lang": "python",
+        "src": "# 치환(substitute)과 단일화(unify). 소문자 x,y,z,… 한 글자는 변수, 나머지는 상수\nis_var = lambda t: isinstance(t, str) and t in (\"x\", \"y\", \"z\", \"u\", \"v\")\ndef substitute(t, s):\n    if is_var(t): return substitute(s[t], s) if t in s else t\n    if isinstance(t, tuple): return tuple(substitute(a, s) for a in t)\n    return t\ndef occurs(v, t, s):\n    t = substitute(t, s)\n    return t == v or (isinstance(t, tuple) and any(occurs(v, a, s) for a in t))\ndef unify(a, b, s):\n    if s is None: return None\n    a, b = substitute(a, s), substitute(b, s)\n    if a == b: return s\n    if is_var(a): return None if occurs(a, b, s) else {**s, a: b}\n    if is_var(b): return unify(b, a, s)\n    if isinstance(a, tuple) and isinstance(b, tuple) and len(a) == len(b) and a[0] == b[0]:\n        for x, y in zip(a[1:], b[1:]):\n            s = unify(x, y, s)\n        return s\n    return None\nif __name__ == \"__main__\":\n    print(substitute((\"Knows\", \"x\", \"y\"), {\"x\": \"alice\", \"y\": \"cs221\"}))\n    print(unify((\"Knows\", \"x\", \"y\"), (\"Knows\", \"alice\", \"bob\"), {}))\n    print(unify((\"Knows\", \"alice\", \"y\"), (\"Knows\", \"x\", \"z\"), {}))\n    print(unify((\"Knows\", \"alice\", \"y\"), (\"Knows\", \"bob\", \"z\"), {}))      # None\n    print(unify((\"P\", \"x\", \"x\"), (\"P\", \"alice\", \"bob\"), {}))              # None\n    print(unify((\"Knows\", \"x\", (\"father\", \"x\")), (\"Knows\", (\"father\", \"y\"), \"y\"), {}))  # None(발생 검사)",
+        "note": "직접 쓴 코드로 실행 확인. 출력: ('Knows','alice','cs221') / {'x':'alice','y':'bob'} / {'x':'alice','y':'z'} / None / None / None. 마지막 두 None 은 강의 코드에는 없는 ‘묶인 변수 재확인’과 ‘발생 검사’ 덕분이다."
+      },
+      "diagram": {
+        "title": "unify 의 분기",
+        "code": "flowchart TD\n  S[unify f, g, θ] --> E{θ 적용 후 f = g?}\n  E -->|예| R[θ 반환]\n  E -->|아니오| V{한쪽이 변수 v?}\n  V -->|예| O{v 가 다른 쪽에 들어 있나?}\n  O -->|예| F[실패]\n  O -->|아니오| B[θ ∪ v ↦ 다른 쪽]\n  V -->|아니오| D{맨 위 기호·인자 수 같나?}\n  D -->|아니오| F\n  D -->|예| A[인자를 차례로 unify, 하나라도 실패면 실패]"
+      },
+      "pitfalls": [
+        "강의의 unify 는 이미 묶인 변수에 치환을 적용하지 않고 발생 검사도 없다. P(x, x) vs P(alice, bob) 처럼 같은 변수가 두 번 나오면 틀린 답을 낼 수 있다(노트 보충, 위 코드에서 고침).",
+        "단일화는 양쪽 모두의 변수를 바꿀 수 있다. 규칙과 사실에 같은 이름의 변수가 있으면 엉키므로, 실무에서는 규칙을 쓸 때마다 변수 이름을 새로 바꾼다(standardizing apart, 노트 보충)."
+      ],
+      "check": [
+        {
+          "q": "Covers(y, z) 와 Covers(cs221, logic) 의 단일자는?",
+          "a": "{y ↦ cs221, z ↦ logic}."
+        },
+        {
+          "q": "Knows(alice, x) 와 Takes(alice, cs221) 은 단일화되나?",
+          "a": "안 된다. 맨 위 술어가 Knows 와 Takes 로 다르다."
+        }
+      ]
+    },
+    {
+      "start": 3660,
+      "title": "modus ponens 둘째 시도 — 단일화로 맞추고 치환으로 결론, 그리고 건전하지만 불완전",
+      "points": [
+        "전제 a₁′…a_k′ 와 한정절 ∀x. (a₁ ∧ … ∧ a_k) → b, θ = Unify(a₁′ ∧ … ∧ a_k′, a₁ ∧ … ∧ a_k) 이면 결론 b′ = Subst(θ, b).",
+        "예: θ = {x ↦ alice, y ↦ cs221, z ↦ logic} ⇒ Knows(alice, logic).",
+        "복잡도: 매번 원자식 하나. 함수 없으면 최대 (상수 수)^(최대 술어 인자 수) 개, 함수 있으면 무한할 수 있다.",
+        "건전하지만 완전하지 않다 — ∨ 가 든 것을 못 이끈다. 1차 논리에서 완전하려면 분해(resolution)가 필요(이번 학기는 생략)."
+      ],
+      "on_screen": "Attempt 2: modus ponens with substitution and unification — Premises: a_1', …, a_k' / ∀x_1 … x_n.(a_1 ∧ … ∧ a_k) → b / θ = unify(a_1' ∧ … ∧ a_k', a_1 ∧ … ∧ a_k), Conclusion: substitute(b, θ) = b'. 코드: theta = unify(And(Takes(alice, cs221), Covers(cs221, logic)), And(Takes(x, y), Covers(y, z)), {}); result = substitute(Knows(x, z), theta) → 패널 theta = {x: alice, y: cs221, z: logic}, result = \"Knows(alice, logic)\". Complexity: ‘Each application of Modus ponens produces an atomic formula’, ‘If no functions, then complexity is num-constant-symbols^(maximum-predicate-arity)’, ‘If functions, then complexity then possibly infinite’: Knows(alice, logic), Knows(father(alice), logic), Knows(father(father(alice)), logic), … Properties: Sound: if KB ⊢ f, then KB ⊨ f / Not complete … / Need the resolution rule to be complete. Summary: works on definite clauses / no disjunction (or) allowed / Substitution: search and replace / Unification: find a substitution that makes two terms equal.",
+      "explain": [
+        "이제 도구가 다 모였다. 둘째 판 modus ponens 는 전제로 원자식 a₁′, …, a_k′(작은따옴표는 ‘KB 에 실제로 있는 구체적 사실’이라는 표시)와 한정절 ∀x₁…xₙ. (a₁ ∧ … ∧ a_k) → b 를 받는다. 먼저 두 몸통 a₁′ ∧ … ∧ a_k′ 와 a₁ ∧ … ∧ a_k 를 단일화해 θ 를 얻는다. 성공하면 결론은 b 가 아니라 b 에 θ 를 적용한 b′ = Subst(θ, b) 다. b 에는 아직 변수가 남아 있으므로 그대로 낼 수 없다.",
+        "강의 예를 따라가 보자. KB 에 Takes(alice, cs221), Covers(cs221, logic), 그리고 규칙 ∀x, y, z. Takes(x, y) ∧ Covers(y, z) → Knows(x, z) 가 있다. Takes(alice, cs221) ∧ Covers(cs221, logic) 과 Takes(x, y) ∧ Covers(y, z) 를 단일화하면 첫 원자에서 x ↦ alice, y ↦ cs221, 둘째 원자에서 (y 는 이미 cs221 이므로 일치를 확인하고) z ↦ logic 을 얻는다. 머리 Knows(x, z) 에 θ 를 적용하면 Knows(alice, logic) 이 나온다. 이렇게 단일화가 ‘일반 변수’와 ‘구체 사례’ 사이의 틈을 메워 준다. 실제 시스템은 이 규칙을 새 사실이 더 나오지 않을 때까지 되풀이하는데, 이것이 전방 연쇄(forward chaining)이고 아래 코드가 그 판이다.",
+        "비용은 어떨까. modus ponens 를 한 번 적용할 때마다 원자식이 하나 나온다. 함수가 없으면 만들 수 있는 원자식의 수가 유한하다. 상수가 10 개이고 술어의 최대 인자 수가 2 라면 Knows(·,·) 꼴은 10 × 10 = 100 개뿐이라, 반복은 반드시 끝난다(술어 종류 수를 곱한 만큼이 상한). 하지만 함수가 있으면 Knows(alice, logic), Knows(father(alice), logic), Knows(father(father(alice)), logic) … 처럼 끝이 없을 수 있다. ‘x 가 논리를 알면 x 의 아버지도 논리를 안다’ 같은 규칙 하나면 영원히 새 사실을 만든다.",
+        "성질을 정리하자. 이 modus ponens 는 건전하다. 이끌어 낸 것은 모두 KB 가 함의한다. 그러나 완전하지 않다. KB 가 함의하는데도 증명하지 못하는 식이 있고, 가장 쉬운 예가 ∨ 가 들어간 결론이다. 첫 챕터의 ‘눈이 오지 않는다’도 머리가 부정인 규칙에서 나오므로 modus ponens 로는 얻을 수 없다. 강사는 1차 논리에서 완전성을 얻으려면 분해(resolution) 규칙이 필요하며, 예년 강의에서는 다뤘지만 이번 학기에는 건너뛴다고 말한다. 다음 챕터는 그 공백을 메우는 노트 보충이다. 오늘 추론 파트의 요약은 이렇다. modus ponens 는 한정절(∨ 없음)에서 동작하고, 치환은 식 위의 찾아 바꾸기, 단일화는 두 식을 같게 만드는 치환 찾기이며, 둘 다 변수와 상수를 맞추기 위해 1차 논리 추론에 꼭 필요하다."
+      ],
+      "formulas": [
+        {
+          "expr": "a₁′, …, a_k′,   ∀x₁…xₙ. (a₁ ∧ … ∧ a_k) → b,   θ = Unify(a₁′ ∧ … ∧ a_k′, a₁ ∧ … ∧ a_k)   ⊢   Subst(θ, b)",
+          "meaning": "일반화된 modus ponens. 프라임(′)은 KB 의 구체 사실, θ 는 몸통을 맞춰 주는 치환, Subst(θ, b) 는 머리에 θ 를 적용한 결론."
+        },
+        {
+          "expr": "원자식 수 ≤ |술어| × |상수|^(최대 인자 수)   (함수가 없을 때)",
+          "meaning": "|상수| 는 상수 기호 개수. 각 술어 인자 자리에 상수 하나씩 넣는 경우의 수. 강의 슬라이드는 술어 종류 수 곱을 생략하고 ‘상수 수의 최대 인자 수 제곱’으로 적었다. 이 상한 때문에 함수 없는 전방 연쇄는 반드시 끝난다."
+        }
+      ],
+      "example": {
+        "title": "전방 연쇄 한 바퀴",
+        "body": "사실: Takes(alice,cs221), Covers(cs221,logic), Covers(cs221,search), Takes(bob,cs229), Covers(cs229,ml)\n규칙: Takes(x,y) ∧ Covers(y,z) → Knows(x,z)\nTakes(alice,cs221) 과 맞춤: {x↦alice, y↦cs221} → Covers(cs221, z) 와 맞는 사실 2개\n  ⇒ Knows(alice,logic), Knows(alice,search)\nTakes(bob,cs229): {x↦bob, y↦cs229} → Covers(cs229,ml) ⇒ Knows(bob,ml)\n둘째 바퀴: 새 Knows 사실은 규칙 몸통(Takes·Covers)과 맞지 않음 ⇒ 종료. 새 사실 3개."
+      },
+      "code": {
+        "lang": "python",
+        "src": "# 단일화를 쓴 modus ponens 를 더 나올 게 없을 때까지 되풀이(전방 연쇄)\nfrom c10 import unify, substitute\nfacts = {(\"Takes\", \"alice\", \"cs221\"), (\"Covers\", \"cs221\", \"logic\"),\n         (\"Takes\", \"bob\", \"cs229\"), (\"Covers\", \"cs229\", \"ml\"), (\"Covers\", \"cs221\", \"search\")}\nrules = [([(\"Takes\", \"x\", \"y\"), (\"Covers\", \"y\", \"z\")], (\"Knows\", \"x\", \"z\"))]\ndef match(body, s):                   # 몸통의 원자식을 차례로 사실과 단일화\n    if not body:\n        yield s; return\n    for f in sorted(facts):\n        s2 = unify(body[0], f, dict(s))\n        if s2 is not None:\n            yield from match(body[1:], s2)\nnew = True\nwhile new:\n    new = False\n    for body, head in rules:\n        for th in list(match(body, {})):\n            b = substitute(head, th)\n            if b not in facts:\n                print(\"유도:\", b, \" θ =\", th); facts.add(b); new = True",
+        "note": "직접 쓴 코드로 실행 확인. 앞 챕터의 c10.py(unify·substitute)를 같은 폴더에 두고 import 한다. 출력: Knows(alice, logic) / Knows(alice, search) / Knows(bob, ml) 과 각각의 θ."
+      },
+      "diagram": {
+        "title": "일반화된 modus ponens 한 번",
+        "code": "flowchart LR\n  F1[Takes alice, cs221] --> U[Unify 몸통]\n  F2[Covers cs221, logic] --> U\n  R[Takes x,y ∧ Covers y,z → Knows x,z] --> U\n  U -->|θ = x↦alice, y↦cs221, z↦logic| S[Subst θ, Knows x,z]\n  S --> K[Knows alice, logic]"
+      },
+      "pitfalls": [
+        "‘건전하다’를 ‘쓸 만하다’로 오해하지 말자. 아무것도 증명하지 않아도 건전하다. modus ponens 는 한정절 KB 에서 원자식 질문에 대해서는 완전하다는 더 강한 사실이 있지만, 그 밖의 식(∨, ¬)에 대해서는 불완전하다(노트 보충).",
+        "함수가 있는 KB 에서 전방 연쇄를 ‘끝날 때까지’ 돌리면 끝나지 않을 수 있다. 질문에서 거꾸로 내려가는 후방 연쇄(프롤로그 방식)도 같은 위험이 있다."
+      ],
+      "check": [
+        {
+          "q": "상수 5개, 술어 Knows(2항)·Student(1항)뿐이고 함수가 없다. 전방 연쇄가 만들 수 있는 원자식은 최대 몇 개?",
+          "a": "5² + 5 = 30 개."
+        },
+        {
+          "q": "KB = {Student(alice) ∨ Student(bob), ∀x Student(x) → Smart(x)} 에서 Smart(alice) ∨ Smart(bob) 은 modus ponens 로 나오나?",
+          "a": "안 나온다. 첫 식이 한정절이 아니라 단일화할 원자 사실이 없다. 의미상으로는 함의되므로 불완전성의 예다."
+        }
+      ]
+    },
+    {
+      "start": 3930,
+      "title": "노트 보충 — 분해(resolution)와 CNF: 강의가 건너뛴 완전한 규칙",
+      "points": [
+        "강의는 분해를 이름만 언급하고 건너뛴다. 이 챕터는 그 내용을 채우는 노트 보충이다.",
+        "CNF(논리곱 정규형) = 절(리터럴의 ∨)들의 ∧. 변환: → 제거 → ¬ 를 안으로(드모르간) → ∨ 를 ∧ 위로 분배.",
+        "분해 규칙: (A ∨ p), (¬p ∨ B) ⊢ (A ∨ B). 빈 절이 나오면 모순.",
+        "반박 증명: KB ⊨ f 를 보이려면 KB ∧ ¬f 를 CNF 로 만들고 빈 절을 이끈다. 명제 논리에서 완전.",
+        "1차 논리 판: ∃ 는 스콜렘화, ∀ 는 떨어뜨리고, 분해할 때 단일화를 쓴다."
+      ],
+      "on_screen": "(강의 화면에는 ‘Need the resolution rule to be complete’ 한 줄만 있고 분해 규칙 자체는 나오지 않는다. 이 챕터의 식과 예는 노트가 덧붙인 것이다.)",
+      "explain": [
+        "앞 챕터에서 modus ponens 는 ∨ 를 다루지 못해 불완전하다는 것을 보았다. 강사는 완전성을 원하면 분해(resolution)를 쓰라고만 하고 넘어갔으므로, 여기서는 그 규칙을 노트 보충으로 정리한다. 15강도 ‘일반 공식에 완전하려면 resolution 같은 더 강한 규칙이 필요하다’는 말까지만 했으므로, 이 규칙은 이 노트에서 처음 정식으로 나온다. 분해는 규칙이 하나뿐이다. ‘A 또는 p’ 와 ‘B 또는 p 아님’ 이 둘 다 참이면, p 가 참이든 거짓이든 A 나 B 중 하나는 참이어야 하므로 ‘A 또는 B’ 를 결론으로 낸다. 서로 반대인 리터럴 p 와 ¬p 를 지우고 나머지를 합치는 셈이다. modus ponens 는 이 규칙의 특수한 경우다. p 와 ¬p ∨ q(= p → q)에서 q 가 나온다.",
+        "분해는 입력이 절(clause), 즉 리터럴(기호나 그 부정)들을 ∨ 로 이은 꼴이어야 한다. 그래서 먼저 식을 CNF(논리곱 정규형) — 절들을 ∧ 로 이은 꼴 — 로 바꾼다. 절차는 세 단계다. ① A → B 를 ¬A ∨ B 로 바꿔 → 를 없앤다(↔ 는 두 방향 → 로 먼저 쪼갠다). ② 드모르간 법칙 ¬(A ∧ B) = ¬A ∨ ¬B, ¬(A ∨ B) = ¬A ∧ ¬B 와 ¬¬A = A 로 부정을 기호 바로 앞까지 밀어 넣는다(부정 정규형). ③ 분배 법칙 A ∨ (B ∧ C) = (A ∨ B) ∧ (A ∨ C) 로 ∨ 를 ∧ 아래로 내린다. 아래 예에서 (Rain ∨ Snow) → (Wet ∧ Cold) 가 절 네 개로 바뀌는 과정을 손으로 따라가 본다. 분배 때문에 CNF 가 지수적으로 커질 수 있다는 점은 기억해 두자(실무 솔버는 새 기호를 도입하는 체이틴 변환으로 이를 피한다).",
+        "증명은 귀류법, 곧 반박(refutation)으로 한다. KB ⊨ f 를 보이려면 KB ∧ ¬f 를 CNF 로 만들고 분해를 되풀이해 빈 절(□, 리터럴이 하나도 없는 절 = 거짓)이 나오는지 본다. 나오면 KB ∧ ¬f 는 충족 불가능이므로 KB ⊨ f 다. 복습 챕터의 ‘함의 = KB ∪ {¬f} 충족 불가능’과 같은 뼈대다. 명제 논리에서 분해 반박은 건전하고 완전하다. 첫 챕터의 ‘눈이 오나 → 아니오’를 분해로 보이자. 접지한 규칙 ¬Person ∨ ¬Hot ∨ ¬Snowing ∨ ¬Happy 와 사실 Person, Hot, Happy, 그리고 목표 ¬Snowing 의 부정인 Snowing 을 차례로 분해하면 빈 절이 나온다. modus ponens 로는 얻지 못한 답이다.",
+        "1차 논리 판은 두 가지가 더 붙는다. 첫째, CNF 로 바꿀 때 한정사를 없애야 한다. ∃ 는 스콜렘화(Skolemization)로 지운다. ∃x. Student(x) 는 새 상수 s₁ 을 만들어 Student(s₁) 로, ∀y ∃x. Loves(x, y) 처럼 ∀ 안의 ∃ 는 y 에 기대는 새 함수 f 를 만들어 Loves(f(y), y) 로 바꾼다. 그 뒤 남은 ∀ 는 모든 변수가 전칭이라고 약속하고 떼어 낸다. 둘째, 분해할 때 p 와 ¬p 가 글자로 같을 필요 없이 단일화되면 된다. Student(x) ∨ ¬Takes(x, cs221) 과 ¬Student(alice) 를 x ↦ alice 로 맞춰 ¬Takes(alice, cs221) 을 낸다. 이렇게 하면 1차 논리에서도 반박 완전성이 성립한다(괴델의 완전성 정리와 로빈슨의 분해 원리). 다만 1차 논리의 함의는 반결정 가능(semi-decidable)이라, 함의되면 언젠가 빈 절을 찾지만 함의되지 않으면 영원히 돌 수 있다."
+      ],
+      "formulas": [
+        {
+          "expr": "(a₁ ∨ … ∨ a_m ∨ p),  (¬p ∨ b₁ ∨ … ∨ b_n)  ⊢  (a₁ ∨ … ∨ a_m ∨ b₁ ∨ … ∨ b_n)",
+          "meaning": "분해 규칙. aᵢ, bⱼ 는 리터럴(기호 또는 그 부정), p 와 ¬p 는 서로 지워지는 짝(상보 리터럴). 결과 절을 분해식(resolvent)이라 한다. m=n=0 이면 빈 절 □."
+        },
+        {
+          "expr": "KB ⊨ f  ⇔  CNF(KB ∧ ¬f) ⊢_res □",
+          "meaning": "⊢_res 는 분해만으로 도출, □ 은 빈 절(거짓). 반박 완전성: 함의되면 빈 절이 반드시 나오고, 나오면 함의된다."
+        },
+        {
+          "expr": "1차 판: (A ∨ P(s)),  (¬P(t) ∨ B),  θ = Unify(P(s), P(t))  ⊢  Subst(θ, A ∨ B)",
+          "meaning": "s, t 는 항 목록. 상보 리터럴이 단일화되면 두 절의 나머지를 합치고 θ 를 적용한다. modus ponens 둘째 판과 같은 ‘맞추고 치환’ 구조."
+        }
+      ],
+      "example": {
+        "title": "CNF 변환과 분해 반박을 손으로",
+        "body": "[CNF] (Rain ∨ Snow) → (Wet ∧ Cold)\n① → 제거: ¬(Rain ∨ Snow) ∨ (Wet ∧ Cold)\n② 드모르간: (¬Rain ∧ ¬Snow) ∨ (Wet ∧ Cold)\n③ 분배: (¬Rain ∨ Wet) ∧ (¬Rain ∨ Cold) ∧ (¬Snow ∨ Wet) ∧ (¬Snow ∨ Cold)\n\n[반박] KB: Person ∧ Hot ∧ Snowing → ¬Happy, Person, Hot, Happy. 증명할 것: ¬Snowing\n절: C1 = ¬Person ∨ ¬Hot ∨ ¬Snowing ∨ ¬Happy, C2 = Person, C3 = Hot, C4 = Happy, C5 = Snowing(목표의 부정)\nC1+C2 → ¬Hot ∨ ¬Snowing ∨ ¬Happy\n+C3 → ¬Snowing ∨ ¬Happy\n+C4 → ¬Snowing\n+C5 → □ (빈 절) ⇒ KB ⊨ ¬Snowing\n\n[1차 판 한 걸음] C = ¬Takes(x,y) ∨ ¬Covers(y,z) ∨ Knows(x,z), 사실 Takes(alice,cs221)\nθ = {x↦alice, y↦cs221} ⇒ ¬Covers(cs221,z) ∨ Knows(alice,z)"
+      },
+      "code": {
+        "lang": "python",
+        "src": "# CNF 변환 + 분해 반박(명제 판). 식: 문자열 기호 또는 (\"not\"|\"and\"|\"or\"|\"->\", ...)\ndef nnf(f, neg=False):                       # → 없애고 ¬ 를 기호 앞까지 밀어 넣기\n    if isinstance(f, str): return (\"not\", f) if neg else f\n    op, *a = f\n    if op == \"not\": return nnf(a[0], not neg)\n    if op == \"->\": return nnf((\"or\", (\"not\", a[0]), a[1]), neg)\n    op = {\"and\": \"or\", \"or\": \"and\"}[op] if neg else op   # 드모르간\n    return (op, nnf(a[0], neg), nnf(a[1], neg))\ndef cnf(f):                                  # 절(리터럴의 frozenset)들의 집합\n    if isinstance(f, str) or f[0] == \"not\": return {frozenset([f])}\n    l, r = cnf(f[1]), cnf(f[2])\n    return l | r if f[0] == \"and\" else {a | b for a in l for b in r}  # ∨ 를 ∧ 위로 분배\nneg = lambda x: x[1] if isinstance(x, tuple) else (\"not\", x)\ndef refute(clauses):                         # 빈 절이 나오면 KB ∧ ¬goal 은 모순\n    S = set(clauses)\n    while True:\n        new = {(a - {x}) | (b - {neg(x)}) for a in S for b in S for x in a if neg(x) in b}\n        if frozenset() in new: return True\n        if new <= S: return False\n        S |= new\nshow = lambda c: \"(\" + \" ∨ \".join(sorted(\"¬\" + x[1] if isinstance(x, tuple) else x for x in c)) + \")\"\nprint(\" ∧ \".join(sorted(map(show, cnf(nnf((\"->\", (\"or\", \"Rain\", \"Snow\"), (\"and\", \"Wet\", \"Cold\"))))))))\nrule = (\"->\", (\"and\", \"Person\", (\"and\", \"Hot\", \"Snowing\")), (\"not\", \"Happy\"))\nkb = [rule, \"Person\", \"Hot\", \"Happy\"]\nclauses = set().union(*(cnf(nnf(f)) for f in kb))\nprint(\"KB ⊨ ¬Snowing ?\", refute(clauses | cnf(nnf(\"Snowing\"))))    # ¬goal = Snowing\nprint(\"KB ⊨ Snowing ?\", refute(clauses | cnf(nnf((\"not\", \"Snowing\")))))",
+        "note": "직접 쓴 코드로 실행 확인(명제 판). 출력: (Cold ∨ ¬Rain) ∧ (Cold ∨ ¬Snow) ∧ (Wet ∨ ¬Rain) ∧ (Wet ∨ ¬Snow) / KB ⊨ ¬Snowing ? True / KB ⊨ Snowing ? False. 분해 쌍을 모두 만드는 단순 구현이라 기호가 많아지면 매우 느리다."
+      },
+      "diagram": {
+        "title": "분해 반박 나무 (위 예)",
+        "code": "flowchart TD\n  C1[¬Person ∨ ¬Hot ∨ ¬Snowing ∨ ¬Happy] --> R1[¬Hot ∨ ¬Snowing ∨ ¬Happy]\n  C2[Person] --> R1\n  R1 --> R2[¬Snowing ∨ ¬Happy]\n  C3[Hot] --> R2\n  R2 --> R3[¬Snowing]\n  C4[Happy] --> R3\n  R3 --> E[빈 절 □]\n  C5[Snowing: 목표의 부정] --> E"
+      },
+      "pitfalls": [
+        "분해 반박은 KB 에 ¬f 를 더하는 것이지 f 를 더하는 것이 아니다. 방향을 바꾸면 ‘모순이 안 나온다’는 무의미한 결론만 얻는다.",
+        "스콜렘화한 식은 원래 식과 동치가 아니라 ‘충족 가능성만 같다(equisatisfiable)’. 반박 증명에는 그것으로 충분하다.",
+        "한 번에 상보 리터럴 두 쌍을 같이 지우면 안 된다. (p ∨ q) 와 (¬p ∨ ¬q) 에서 □ 을 내는 것은 틀렸다 — 실제 분해식은 q ∨ ¬q(항진)다."
+      ],
+      "check": [
+        {
+          "q": "¬(A → B) 를 CNF 로 바꾸면?",
+          "a": "¬(¬A ∨ B) = A ∧ ¬B. 절 두 개 {A}, {¬B}."
+        },
+        {
+          "q": "KB = {P ∨ Q, ¬P ∨ Q} 에서 Q 를 분해로 증명하라.",
+          "a": "두 절을 P 로 분해하면 Q ∨ Q = Q. 반박으로 하면 ¬Q 를 더해 Q 와 분해해 □."
+        },
+        {
+          "q": "∀x ∃y. Parent(y, x) 를 스콜렘화하면?",
+          "a": "y 가 x 에 기대므로 새 함수 p 를 써서 Parent(p(x), x). 그 뒤 ∀x 를 떼어 낸다."
+        }
+      ]
+    },
+    {
+      "start": 4039,
+      "title": "자연어를 1차 논리로 — ∀ 는 → 와, ∃ 는 ∧ 와",
+      "points": [
+        "‘앨리스와 밥은 산수를 안다’ = Knows(alice, arithmetic) ∧ Knows(bob, arithmetic).",
+        "‘모든 학생은 산수를 안다’ = ∀x. Student(x) → Knows(x, arithmetic). ‘어떤 학생은 산수를 안다’ = ∃x. Student(x) ∧ Knows(x, arithmetic).",
+        "규칙: ∀ 는 → 와, ∃ 는 ∧ 와 짝(강사 말로 99%). ∀x. S ∧ K 는 ‘모든 것이 학생이고 산수를 안다’, ∃x. S → K 는 비학생 하나만 있어도 참.",
+        "‘모든 학생이 들은 어떤 과목’, 골드바흐 추측, ‘수업–개념–앎’ 규칙의 번역. 마지막만 한정절이다."
+      ],
+      "on_screen": "natural_language_to_first_order_logic(): ‘First-order logic can be used to encode natural language sentences.’ All students know arithmetic: ForAll([x], Implies(Student(x), Knows(x, arithmetic))). Some student knows arithmetic: Exists([x], And(Student(x), Knows(x, arithmetic))). ‘Universal quantification (∀) is usually paired with an implication (→). Existential quantification (∃) is usually paired with a conjunction (∧).’ Probably wrong: ∀x. Student(x) ∧ Knows(x, arithmetic) — ‘Every object is both a student and knows arithmetic.’; ∃x. Student(x) → Knows(x, arithmetic) — ‘Some object is either not a student or knows arithmetic.’ There is some course that every student has taken: ∃x. Course(x) ∧ ∀y. Student(y) → Takes(y, x). Goldbach: ∀x. Even(x) ∧ GreaterThan(x, two) → ∃y, z. Prime(y) ∧ Prime(z) ∧ add(y, z) == x. If a student takes a course and the course covers a concept, then the student knows the concept: ∀x, y, z. Student(x) ∧ Takes(x, y) ∧ Course(y) ∧ Covers(y, z) ∧ Concept(z) → Knows(x, z).",
+      "explain": [
+        "마지막 파트는 숙제와 직결되는 번역 연습이다. 1차 논리는 자연어 문장의 뜻을 담기에 아주 자연스러운 언어이고, 강사는 이것이 비형식적인 요구 사항을 코드로 옮기는 일과 크게 다르지 않으며 연습이 필요할 뿐이라고 말한다. 쉬운 것부터 보자. ‘앨리스와 밥은 둘 다 산수를 안다’는 두 원자식의 ∧ 다. ‘모든 학생은 산수를 안다’는 ∀x. Student(x) → Knows(x, arithmetic), ‘어떤 학생은 산수를 안다’는 ∃x. Student(x) ∧ Knows(x, arithmetic) 이다.",
+        "여기서 가장 중요한 습관이 나온다. ∀ 는 대개 → 와, ∃ 는 대개 ∧ 와 짝을 이룬다. 짝을 바꾸면 뜻이 완전히 틀어진다. ∀x. Student(x) ∧ Knows(x, arithmetic) 는 ‘영역의 모든 대상이 학생이면서 산수를 안다’는 뜻이라, 책상이나 도시까지 학생이어야 한다. ∃x. Student(x) → Knows(x, arithmetic) 는 ‘학생이 아니거나 산수를 아는 대상이 하나 있다’는 뜻이라, 학생이 아닌 대상이 하나만 있어도(→ 의 앞이 거짓이면 참) 참이 되어 아무 말도 하지 않는 셈이다. 아래 코드는 학생이 아닌 o3 가 있는 작은 모델에서 네 식의 값을 찍어 이 차이를 확인한다.",
+        "조금 어려운 예들이다. ‘모든 학생이 들은 어떤 과목이 있다’는 ∃x. Course(x) ∧ ∀y. Student(y) → Takes(y, x) — 바깥 ∃ 는 ∧ 와, 안쪽 ∀ 는 → 와 짝을 이룬 것을 볼 수 있다. 강사는 처음에 Course(x) 를 빠뜨렸다가 ‘엄밀히는 과목이라는 조건이 있어야 한다’고 덧붙인다. 골드바흐 추측은 ∀x. Even(x) ∧ GreaterThan(x, two) → ∃y, z. Prime(y) ∧ Prime(z) ∧ add(y, z) = x 가 된다. 4장의 명제 논리로는 쓸 수 없던 문장이 한 줄로 들어온다. add 는 함수, = 은 두 항이 같은 대상이라는 등호다. 마지막으로 ‘학생이 과목을 듣고 그 과목이 어떤 개념을 다루면, 그 학생은 그 개념을 안다’는 ∀x, y, z. Student(x) ∧ Takes(x, y) ∧ Course(y) ∧ Covers(y, z) ∧ Concept(z) → Knows(x, z) 다.",
+        "강사는 세 번역의 차이도 짚는다. 마지막 규칙은 원자식들의 ∧ 가 원자식 하나를 함의하는 한정절이라, 오늘 배운 modus ponens 가 바로 쓸 수 있다. 반면 과목 문장과 골드바흐 추측은 ∃ 가 들어 있어 한정절이 아니고, 더 강한 추론(모델 검사나 분해)이 필요하다. 번역할 때 같은 문장이 어떤 꼴로 떨어지느냐가 곧 어떤 추론 도구를 쓸 수 있느냐를 정한다는 점에서, 번역은 단순한 받아쓰기가 아니라 설계다. 첫 챕터의 동기 예제로 돌아가 각 문장의 꼴을 다시 읽어 보라는 것이 강사의 마무리다."
+      ],
+      "formulas": [
+        {
+          "expr": "∀x. Student(x) → Knows(x, arithmetic)   vs   ∀x. Student(x) ∧ Knows(x, arithmetic)",
+          "meaning": "왼쪽은 ‘학생이라면 안다’(비학생에게는 아무 요구 없음), 오른쪽은 ‘모든 대상이 학생이고 안다’. 같은 단어를 써도 연결사 하나로 뜻이 갈린다."
+        },
+        {
+          "expr": "∃x. Student(x) ∧ Knows(x, arithmetic)   vs   ∃x. Student(x) → Knows(x, arithmetic)",
+          "meaning": "왼쪽은 ‘산수를 아는 학생이 있다’, 오른쪽은 ‘¬Student(x) ∨ Knows(x, arithmetic) 인 x 가 있다’로, 비학생 하나만 있으면 참이 된다."
+        },
+        {
+          "expr": "∀x. Even(x) ∧ GreaterThan(x, two) → ∃y, z. Prime(y) ∧ Prime(z) ∧ add(y, z) = x",
+          "meaning": "골드바흐 추측. Even·Prime 은 단항 술어, GreaterThan 은 이항 술어, two 는 상수, add 는 이항 함수(항을 돌려줌), = 은 두 항이 같은 대상을 가리킨다는 술어."
+        }
+      ],
+      "example": {
+        "title": "네 식의 값을 작은 모델에서",
+        "body": "D = {o1, o2, o3}, Student = {o1, o2}, o3 는 비학생.\n경우 A: Knows(·, arithmetic) = {o1, o2}\n  ∀ S→K: o1 참, o2 참, o3(앞이 거짓) 참 ⇒ 참 ✓\n  ∀ S∧K: o3 에서 S 거짓 ⇒ 거짓 ✗(문장은 참인데 식이 거짓)\n경우 B: 아무도 산수를 모름\n  ∃ S∧K: o1·o2 모두 K 거짓 ⇒ 거짓 ✓\n  ∃ S→K: o3 에서 앞이 거짓이라 참 ⇒ 참 ✗(문장은 거짓인데 식이 참)"
+      },
+      "code": {
+        "lang": "python",
+        "src": "# 번역 규칙 확인: ∀ 는 → 와, ∃ 는 ∧ 와 짝짓는다. 학생이 아닌 대상(o3)이 있는 모델에서 본다\nD = [\"o1\", \"o2\", \"o3\"]\nStudent = {\"o1\", \"o2\"}\nKnows = {\"o1\", \"o2\"}                      # Knows(x, arithmetic) 가 참인 x\nS, K = (lambda x: x in Student), (lambda x: x in Knows)\nimp = lambda p, q: (not p) or q\nprint(\"∀x S(x)→K(x)  :\", all(imp(S(x), K(x)) for x in D))   # True  (맞는 번역)\nprint(\"∀x S(x)∧K(x)  :\", all(S(x) and K(x) for x in D))     # False (o3 도 학생이어야 함)\nKnows = set()                                 # 이제 아무도 산수를 모른다\nprint(\"∃x S(x)∧K(x)  :\", any(S(x) and K(x) for x in D))     # False (맞는 번역)\nprint(\"∃x S(x)→K(x)  :\", any(imp(S(x), K(x)) for x in D))   # True  (o3 가 비학생이라 참)\n# 70% 의 학생이 산수를 안다 — 세는 일은 1차 논리 식 하나로 못 쓴다\nD2 = [f\"s{i}\" for i in range(10)]; know = set(D2[:7])\nprint(\"비율:\", sum(x in know for x in D2) / len(D2))",
+        "note": "직접 쓴 코드로 실행 확인. 출력: True / False / False / True / 비율: 0.7. 마지막 두 줄은 다음 챕터의 ‘70%’ 예고다."
+      },
+      "pitfalls": [
+        "‘모든 학생이 들은 과목이 있다’의 슬라이드 식은 Course(x) 가 들어간 판(∃x. Course(x) ∧ …)이 맞다. 강사가 말로 처음엔 Course 를 빠뜨렸다가 덧붙인다.",
+        "골드바흐 식의 == 는 z3 코드 표기이고 논리에서는 등호 술어 = 다. 등호를 쓰려면 등호의 공리(반사·대칭·추이·대입)를 의미론이 지켜야 한다(노트 보충).",
+        "‘∀ 는 →, ∃ 는 ∧’ 는 ‘대부분’ 규칙이다. ‘모든 것은 변한다’(∀x. Changes(x))처럼 조건이 없는 문장에는 → 가 필요 없다."
+      ],
+      "check": [
+        {
+          "q": "‘산수를 모르는 학생은 없다’를 1차 논리로 쓰면?",
+          "a": "¬∃x. Student(x) ∧ ¬Knows(x, arithmetic). 드모르간으로 ∀x. Student(x) → Knows(x, arithmetic) 와 같다."
+        },
+        {
+          "q": "‘모든 학생은 어떤 과목을 들었다’와 ‘모든 학생이 들은 어떤 과목이 있다’의 차이를 식으로?",
+          "a": "앞은 ∀y. Student(y) → ∃x. Course(x) ∧ Takes(y, x)(학생마다 과목이 달라도 됨), 뒤는 ∃x. Course(x) ∧ ∀y. Student(y) → Takes(y, x)(한 과목을 모두가 들음). 한정사 순서가 뜻을 바꾼다."
+        }
+      ]
+    },
+    {
+      "start": 4330,
+      "title": "정리와 고차 논리 — ‘학생의 70%’는 1차 논리로 못 쓴다",
+      "points": [
+        "1차 논리 = 항(대상)·함수·술어 + 변수와 한정사(대상 위의 for 문). 의미는 영역과 해석.",
+        "추론: 고유 이름·영역 닫힘이면 명제화, 한정절이면 단일화 modus ponens, 완전성이 필요하면 분해.",
+        "‘학생의 70% 가 머신러닝을 안다’는 집합을 세야 해서 1차 논리로는 못 쓴다 → 고차 논리.",
+        "논리 단원 끝. 다음 강의부터는 언어 모델과 AI 와 사회를 다루는 마지막 세 강의, 그리고 마지막 대담."
+      ],
+      "on_screen": "Lecture 16: First-order logic — motivating_example(), review_logic(), limitations_of_propositional_logic(), introduce_first_order_logic(). Summary: First-order logic: more powerful than propositional logic / Introduces terms (denote objects), functions, predicates / Introduces variables and quantifiers (∀, ∃) that operate over objects / Model/interpretation function: maps symbols to objects in the domain / Propositionalization: reduce first-order logic to propositional logic / Modus ponens with substitution and unification: works on definite clauses / Higher-order logics to represent more (70% of students know machine learning). 칠판에 남은 Takes(alice, cs221), Takes(x, y).",
+      "explain": [
+        "강사는 오늘의 줄기를 한 번 더 묶는다. 1차 논리는 명제 논리보다 강한 언어다. 대상을 가리키는 항, 대상에서 대상을 만드는 함수, 대상을 받아 참/거짓을 내는 술어가 생겼고, 변수와 한정사가 모든 대상 위를 도는 for 문 역할을 한다. 반복문이 있는 언어로 한 줄에 많은 일을 시킬 수 있듯이, 이 한정사가 1차 논리의 힘이다. 의미는 영역과, 상수·함수·술어를 영역의 물건으로 보내는 해석으로 정한다.",
+        "추론 쪽 지도는 이렇다. 고유 이름과 영역 닫힘을 가정할 수 있으면 명제화해서 명제 논리의 도구(모델 검사)를 쓴다. 그럴 수 없거나 KB 가 한정절뿐이라면 치환·단일화를 쓴 modus ponens 를 돌린다. 이 경우 건전하고, 한정절 KB 의 원자식 질문에는 충분하다. 완전성까지 원하면 분해가 필요하다. 어느 길을 고를지는 결국 표현력과 계산 가능성 사이의 거래다. 질문 시간에 강사가 말한 ‘언어를 제한할수록 다루기 쉬워지고 덜 표현적이 된다’가 이 단원 전체를 관통하는 교훈이다.",
+        "마지막으로 1차 논리의 한계 하나. ‘학생의 70% 가 머신러닝을 안다’를 1차 논리로 써 보면 막힌다. ∀ 와 ∃ 는 개별 대상 하나하나에 대해 말할 수 있을 뿐, 학생들의 집합을 통째로 잡아 그 크기를 세고 비율을 따질 수는 없다. 이런 문장에는 집합이나 술어 자체 위를 한정할 수 있는 고차 논리(higher-order logic)가 필요하다. 강사는 이것이 앞서 나온 ‘함수가 함수를 돌려줄 수 있나’라는 질문과 닿아 있다고 짚는다. 1차 논리는 그런 것을 일부러 막아 계산을 다룰 만하게 만든 언어였다(노트 보충: 학생 수를 고정하면 ‘10명 중 7명’을 경우의 수로 펼쳐 쓸 수는 있지만, 학생 수를 모르는 일반 문장으로는 안 된다).",
+        "이로써 CS221 의 논리 단원이 끝난다. 강의 전체를 돌아보면 상태 기반 모델(5–6강 탐색, 7–9강 MDP·강화학습, 10–11강 게임), 변수 기반 모델(12–14강 베이즈 네트워크), 그리고 논리(15–16강)로 이어지는 흐름이었다. 베이즈 네트워크가 가능 세계에 확률을 매겼다면 논리는 가능 세계를 참/거짓으로 걸러 낸다는 점에서 둘은 같은 ‘세계들의 집합’ 위의 이야기다. 강사는 다음 시간부터 관점을 넓혀 언어 모델, AI 와 사회를 다루는 마지막 세 강의를 하고, 마지막 시간은 발표가 곁들인 대담 형식이 된다고 예고한다."
+      ],
+      "example": {
+        "title": "‘70%’ 를 1차 논리로 쓰려 할 때",
+        "body": "학생이 정확히 10명(s1…s10)이라고 고정하면 ‘7명 이상이 안다’는 C(10,7)+C(10,8)+C(10,9)+C(10,10) = 120+45+10+1 = 176 개 경우를 ∨ 로 펼쳐 쓸 수 있다.\n학생 수가 정해지지 않으면 이 펼침 자체가 불가능 ⇒ 집합의 크기를 말하는 고차(또는 수를 다루는 확장) 논리가 필요."
+      },
+      "diagram": {
+        "title": "1차 논리 추론의 길 고르기",
+        "code": "flowchart TD\n  Q[1차 논리 KB 에 질문] --> A{고유 이름 + 영역 닫힘?}\n  A -->|예| P[명제화 → 모델 검사]\n  A -->|아니오| B{KB 가 한정절뿐?}\n  B -->|예| M[단일화 modus ponens: 건전]\n  B -->|아니오| R[분해 반박: 건전·완전, 반결정]\n  Q --> H{집합의 크기·비율?}\n  H -->|예| HO[고차 논리 필요]"
+      },
+      "pitfalls": [
+        "‘완전하다’와 ‘결정 가능하다’는 다르다. 1차 논리의 분해는 완전하지만, 함의되지 않는 질문에는 끝나지 않을 수 있다(반결정성, 노트 보충)."
+      ],
+      "check": [
+        {
+          "q": "‘모든 학생은 적어도 두 과목을 들었다’는 1차 논리로 쓸 수 있나?",
+          "a": "있다. ∀x. Student(x) → ∃y, z. Course(y) ∧ Course(z) ∧ ¬(y = z) ∧ Takes(x, y) ∧ Takes(x, z). 고정된 개수는 등호로 쓸 수 있고, 비율처럼 집합 크기에 기대는 말이 어렵다."
+        }
+      ]
+    }
+  ],
+  "concepts": [
+    {
+      "term": "1차 논리(first-order logic)",
+      "explain": "명제 논리에 대상을 가리키는 항, 술어, 함수, 변수와 한정사(∀, ∃)를 더한 언어. 모든 대상에 대한 일반 규칙을 한 줄로 쓴다.",
+      "at": 0
+    },
+    {
+      "term": "함의·모순·우연",
+      "explain": "새 식 f 를 KB 에 더했을 때 가능한 세계 집합이 그대로면 함의, 비면 모순, 일부만 줄면 우연. Ask 의 예/아니오/모름에 대응한다.",
+      "at": 470
+    },
+    {
+      "term": "건전성과 완전성",
+      "explain": "건전성: 규칙으로 증명한 것은 참(KB ⊢ f ⇒ KB ⊨ f). 완전성: 참인 것은 모두 증명 가능(KB ⊨ f ⇒ KB ⊢ f).",
+      "at": 720
+    },
+    {
+      "term": "항(term)",
+      "explain": "대상을 가리키는 표현. 상수(alice), 변수(x), 함수 적용(father(alice)). 참/거짓이 아니다.",
+      "at": 1030
+    },
+    {
+      "term": "술어(predicate)",
+      "explain": "항을 받아 참/거짓을 돌려주는 기호. 0항(Snowing)·1항(Student)·2항(Knows). 술어를 항에 적용한 것이 원자식이다.",
+      "at": 1140
+    },
+    {
+      "term": "한정사 ∀·∃",
+      "explain": "∀x 는 모든 대상에 대해, ∃x 는 어떤 대상이 있어. 의미상 영역 위의 큰 ∧·∨ 이고, 해석 함수에서는 영역을 도는 for 문이다.",
+      "at": 1260
+    },
+    {
+      "term": "영역(domain)",
+      "explain": "모델이 다루는 대상들의 집합(o1, o2, o3). 기호와 참/거짓 사이에 둔 간접층으로, 무한한 항과 같은 대상의 다른 이름 문제를 푼다.",
+      "at": 1790
+    },
+    {
+      "term": "해석(interpretation)",
+      "explain": "상수 → 대상, 함수 → 대상에서 대상으로의 표, 술어 → 대상 튜플에서 참/거짓으로의 표. 1차 논리 모델 = (영역, 해석).",
+      "at": 1830
+    },
+    {
+      "term": "지식 그래프",
+      "explain": "대상을 노드, 단항 술어를 노드 표시, 이항 술어를 간선으로 그린 1차 논리 모델의 그림. 상수는 노드의 이름표다.",
+      "at": 2090
+    },
+    {
+      "term": "명제화(propositionalization)",
+      "explain": "고유 이름·영역 닫힘을 가정하고 원자식을 명제 기호로, ∀ 를 ∧, ∃ 를 ∨ 로 펼쳐 1차 논리 KB 를 명제 논리로 바꾸는 것.",
+      "at": 2715
+    },
+    {
+      "term": "고유 이름·영역 닫힘",
+      "explain": "고유 이름: 대상마다 상수가 많아야 하나. 영역 닫힘: 대상마다 상수가 적어도 하나. 합치면 상수와 대상이 일대일.",
+      "at": 2770
+    },
+    {
+      "term": "한정절(definite clause)",
+      "explain": "∀x₁…xₙ. (a₁ ∧ … ∧ a_k) → b, aᵢ·b 는 원자식. ∨(와 ∃)가 없는 if–then 규칙. modus ponens 가 동작하는 꼴.",
+      "at": 2970
+    },
+    {
+      "term": "치환(substitution)",
+      "explain": "변수 ↦ 항의 표 θ 를 식에 적용해 변수를 재귀적으로 찾아 바꾸는 연산 Subst(θ, f).",
+      "at": 3330
+    },
+    {
+      "term": "단일화(unification)",
+      "explain": "두 식을 똑같이 만드는 치환을 찾는 ‘일반화된 등호’. 변수만 바꿀 수 있고, 상수끼리 다르거나 술어가 다르면 실패.",
+      "at": 3500
+    },
+    {
+      "term": "일반화된 modus ponens",
+      "explain": "사실들과 한정절 몸통을 단일화해 θ 를 얻고 머리에 θ 를 적용해 결론을 낸다. 건전하지만 불완전하다.",
+      "at": 3660
+    },
+    {
+      "term": "분해(resolution)와 CNF",
+      "explain": "(A ∨ p), (¬p ∨ B) ⊢ (A ∨ B). 식을 CNF 로 바꾸고 KB ∧ ¬f 에서 빈 절을 이끌어 증명한다. 1차 논리에서도 완전(강의는 생략, 노트 보충).",
+      "at": 3930
+    },
+    {
+      "term": "∀ 는 →, ∃ 는 ∧",
+      "explain": "번역의 경험칙. ∀x. S(x) ∧ K(x) 는 모든 대상에 과한 요구를, ∃x. S(x) → K(x) 는 비학생 하나로 참이 되는 빈말을 만든다.",
+      "at": 4110
+    },
+    {
+      "term": "고차 논리",
+      "explain": "대상뿐 아니라 집합·술어 위를 한정할 수 있는 논리. ‘학생의 70%’처럼 집합 크기를 말하려면 필요하다.",
+      "at": 4440
+    }
+  ],
+  "trends": [
+    {
+      "claim": "지식 그래프는 1차 논리에 뿌리를 둔 구조다 — 대상이 노드, 이항 술어가 간선이다(강사 의견).",
+      "evidence": "모델을 노드·이름표·간선 그림으로 보여 주며 지식 그래프를 들어 본 사람이라면 그것이 이런 구조라고 설명한 부분.",
+      "at": 2110
+    },
+    {
+      "claim": "언어를 제한할수록 계산이 다루기 쉬워지고 표현력은 줄어든다. 1차 논리가 함수가 함수를 돌려주는 것을 막는 이유다(강사 의견).",
+      "evidence": "‘함수가 함수를 돌려줄 수 있나’ 질문에 대한 답변.",
+      "at": 1450
+    },
+    {
+      "claim": "자연어 명세를 1차 논리로 옮기는 일은 비형식 명세를 코드로 옮기는 일과 크게 다르지 않으며 연습이 필요하다(강사 의견).",
+      "evidence": "번역 예를 마치며 한 말과 과제가 번역 문제를 포함한다는 안내.",
+      "at": 4280
+    },
+    {
+      "claim": "논리 단원을 마치고 남은 강의는 언어 모델과 AI 와 사회를 넓게 다룬다 — 과목이 고전 AI 기법에서 현대 LLM 맥락으로 마무리된다.",
+      "evidence": "강의 끝의 다음 시간 예고(마지막 세 강의 + 대담).",
+      "at": 4500
+    }
+  ],
+  "study": {
+    "prereq": [
+      "CS221 15강(논리 I — 명제 논리의 구문·의미·모델 검사·modus ponens). 이 강의 앞 15분이 그 복습이다",
+      "집합·함수의 기초(정의역·공역, 튜플), 재귀 함수 작성",
+      "Python 의 튜플·dict·재귀, itertools.product",
+      "(선택) 12–14강 베이즈 네트워크 — ‘가능 세계 위의 확률’과 ‘가능 세계 위의 참/거짓’을 비교해 보면 좋다"
+    ],
+    "steps": [
+      {
+        "do": "동기 예제를 종이에 옮겨 ‘모름 → 아니오’를 손으로 이끌고, c01 처럼 접지 후 모델 전수 검사로 확인한다.",
+        "why": "전체 그림(문장 → 식 → 질문 → 답)을 먼저 몸으로 겪어야 뒤의 정의가 왜 필요한지 보인다."
+      },
+      {
+        "do": "항/식 구분 검사기(c05)를 만들고, 자기가 쓴 번역 10개를 통과시켜 본다. 일부러 Knows(Student, arithmetic) 같은 오류도 넣는다.",
+        "why": "1차 논리 오류의 대부분은 항 자리에 식(또는 술어)을 넣는 데서 나온다."
+      },
+      {
+        "do": "영역·해석으로 작은 모델을 짓고 재귀 해석 함수(c06)로 ∀·∃ 식을 평가한다. 같은 식이 참이 되는 모델과 거짓이 되는 모델을 하나씩 만든다.",
+        "why": "‘식의 뜻 = 그것을 참으로 만드는 모델들’이라는 의미론의 감각을 손에 익힌다."
+      },
+      {
+        "do": "unify 를 발생 검사까지 넣어 직접 짜고(c10), P(x, x) vs P(a, b), x vs f(x) 같은 함정 사례로 시험한다.",
+        "why": "강의 판 unify 의 빈틈을 스스로 찾아 고쳐 보는 것이 단일화를 이해하는 가장 빠른 길이다."
+      },
+      {
+        "do": "전방 연쇄(c11)에 ‘조상’ 규칙(Parent → Ancestor, Ancestor ∧ Parent → Ancestor)을 넣고 고정점까지 돌린다. 함수 기호가 있는 규칙을 넣어 끝나지 않는 것도 본다.",
+        "why": "modus ponens 의 복잡도 상한과 무한 루프를 직접 확인한다."
+      },
+      {
+        "do": "노트 보충 챕터의 CNF 변환·분해 반박(c12)을 손으로 세 문제 풀고 코드와 맞춘다. 이어 z3(pip install z3-solver)로 동기 예제를 강의처럼 ForAll 그대로 넣어 푼다.",
+        "why": "강의가 건너뛴 완전한 규칙을 채우고, 실무 도구(SMT 솔버)가 같은 질문을 어떻게 받는지 본다."
+      }
+    ],
+    "practice": [
+      "‘모든 학생은 어떤 과목을 들었다’와 ‘모든 학생이 들은 과목이 있다’를 식으로 쓰고, 한쪽만 참인 모델을 영역 3개로 만들어 c06 식 해석기로 확인하라.",
+      "Knows(x, father(y)) 와 Knows(father(z), z) 를 손으로 단일화하라(답: θ = {x ↦ father(z), z ↦ father(y)} 이고 두 식은 Knows(father(father(y)), father(y)) 로 같아진다 — 발생 검사에 걸리지 않음을 c10 으로 확인).",
+      "(A ∧ B) → (C ∨ ¬D) 를 CNF 로 바꾸고, KB = {A, B, D, (A ∧ B) → (C ∨ ¬D)} 에서 C 를 분해 반박으로 증명하라.",
+      "‘누구나 누군가를 사랑한다’와 ‘모두에게 사랑받는 누군가가 있다’를 1차 논리로 쓰고 스콜렘화하라."
+    ],
+    "resources": [
+      {
+        "title": "CS221 Autumn 2025 과목 홈페이지(일정·코드형 강의 자료)",
+        "url": "https://stanford-cs221.github.io/autumn2025/"
+      },
+      {
+        "title": "Wikipedia — First-order logic",
+        "url": "https://en.wikipedia.org/wiki/First-order_logic"
+      },
+      {
+        "title": "Wikipedia — Unification (computer science)",
+        "url": "https://en.wikipedia.org/wiki/Unification_(computer_science)"
+      },
+      {
+        "title": "Wikipedia — Resolution (logic)",
+        "url": "https://en.wikipedia.org/wiki/Resolution_(logic)"
+      },
+      {
+        "title": "Wikipedia — Conjunctive normal form",
+        "url": "https://en.wikipedia.org/wiki/Conjunctive_normal_form"
+      },
+      {
+        "title": "Z3 Theorem Prover (GitHub, 강의 코드가 쓰는 솔버)",
+        "url": "https://github.com/Z3Prover/z3"
+      }
+    ]
+  },
+  "jobs": {
+    "roles": [
+      "AI 리서처",
+      "지식 그래프 엔지니어",
+      "검증·정적 분석 엔지니어",
+      "규칙 엔진·추천 백엔드 개발자",
+      "머신러닝 엔지니어"
+    ],
+    "skills": [
+      "Python",
+      "Z3",
+      "Knowledge Graph",
+      "Algorithms",
+      "Artificial Intelligence",
+      "Logic"
+    ]
+  },
+  "related": [
+    "Q7V13XriJEc",
+    "4d9V6Sxa6gU",
+    "ec2rCf4iIqU",
+    "Dk7Kqqehzjk",
+    "fPESauMaJYA",
+    "yaLEGZuIIgE"
+  ],
+  "materials": {
+    "transcript": "official",
+    "frames": 152,
+    "every_sec": 30
+  },
+  "written_at": "2026-11-21"
+}
