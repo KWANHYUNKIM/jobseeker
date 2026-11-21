@@ -42,6 +42,8 @@ Claude 는 영상을 직접 보지도 듣지도 못한다. 그래서 **말은 �
 6. 기록: `state/LOG.md` 에 한 줄(날짜 · id · 제목 · 챕터 수). 커밋:
    `git add jd-viewer/public/lectures lecture-engine/state` → `feat(lectures): <과목> <제목> 노트`.
    푸시는 하지 않는다. 재료 폴더(`var/lectures/<id>`)는 커밋하지 않는다.
+7. 정리: `python lecture-engine/clean.py --apply` — 노트가 커밋되고 DB(viewer_doc)에 들어간 강의의 장면 이미지·
+   자막 원본·영상을 지운다(대본·메타만 남긴다). 조건이 하나라도 안 맞으면 남긴다.
 
 ## 하지 않는 것
 - 원본 영상·장면 이미지·대본을 공개 폴더에 두지 않는다 — 공개되는 건 노트뿐이고 원본은 링크한다.

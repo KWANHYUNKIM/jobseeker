@@ -171,7 +171,8 @@ REGISTRY: list[Loop] = [
              "state/QUEUE.md 에 덧붙인다). `python lecture-engine/fetch.py <id>` 로 자막·장면을 받고, 대본 전부와 장면 인화 "
              "전부를 읽은 뒤 jd-viewer/public/lectures/items/<id>.json 을 쓴다. 대본을 옮기지 말고 우리 말로 다시 쓴다. "
              "validate.py 가 통과하면 state/LOG.md 에 한 줄 쓰고 feat(lectures) 로 커밋한다(git add 는 "
-             "jd-viewer/public/lectures lecture-engine/state 만, git add -A 금지). 푸시하지 않는다. "
+             "jd-viewer/public/lectures lecture-engine/state 만, git add -A 금지). 커밋한 뒤 "
+             "`python lecture-engine/clean.py --apply` 로 끝난 강의의 장면 이미지를 지운다. 푸시하지 않는다. "
              "무엇을 했는지 한두 줄로 보고한다.")),
     Loop("study-engine", "기술 백과사전", "claude-loop", "any", "자율(화면에서는 빠져 있다)", 24 * 30,
          "/loop <prompt>", ["study-engine/state", "jd-viewer/public/study"],
