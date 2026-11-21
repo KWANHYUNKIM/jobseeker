@@ -71,3 +71,4 @@
 - 2026-11-20 · yT84Y5zCnaA · CME295 · 스탠퍼드 CME295 2강 — 트랜스포머 이후 바뀐 부품들(사인 위치 임베딩·T5 bias·ALiBi·RoPE, pre-norm·RMSNorm, 슬라이딩 윈도·GQA)과 세 갈래 모델, BERT 깊이 보기 · 챕터 15 · 본문 23956자
 - 2026-11-20 · Q5baLehv5So · CME295 · CME295 3강 — 대규모 언어 모델: LLM 의 정의, Mixture of Experts, 디코딩 전략(greedy·beam·top-k·top-p·온도), guided decoding, 프롬프트·ICL·CoT·self-consistency, 추론 최적화(KV 캐시·GQA·PagedAttention·MLA·추측 디코딩·MTP) · 챕터 14 · 본문 23128자
 - 2026-11-20 · VlA_jt_3Qc4 · CME295 · 스탠퍼드 CME295 4강 — LLM 학습: 사전학습과 스케일링 법칙, 메모리를 나누는 ZeRO·모델 병렬, FlashAttention, 부동소수점·혼합 정밀도, SFT·명령어 튜닝과 평가, LoRA·QLoRA · 챕터 15 · 본문 22501자
+- 2026-11-20 · PmW_TMQ3l0I · CME295 · CME295 5강 — LLM 선호 조정: 선호 쌍 데이터, Bradley–Terry 보상 모델, RLHF 와 PPO(KL 벌점·어드밴티지·Clip), Best-of-N, 그리고 DPO · 챕터 15 · 본문 24081자
