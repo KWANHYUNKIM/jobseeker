@@ -86,10 +86,11 @@ REGISTRY: list[Loop] = [
     Loop("closecheck", "마감 재확인", "launchd", "mac", "10분마다 100건", 1,
          "com.jobseeker.closecheck → python -m pipeline.close_check --limit 100",
          ["catch_capture/job_closures.json"], note="원장 잠금(job_closures.lock)을 못 잡으면 그 회차를 건너뛴다."),
-    Loop("albacheck", "당근알바 마감 확인", "launchd", "mac", "30분마다 60건", 2,
-         "com.jobseeker.albacheck → python -m crawlers.crawl_daangn_alba --check --recheck 60",
+    Loop("albacheck", "컴퓨터 알바 마감 확인", "launchd", "mac", "30분마다 출처당 60건", 2,
+         "com.jobseeker.albacheck → python -m crawlers.crawl_alba --check --recheck 60",
          ["jd-viewer/public/alba.json"],
-         note="새 공고는 회차(cycle-alba)가 받고 여기는 마감만 본다. alba.lock 을 못 잡으면 건너뛴다."),
+         note="새 공고는 회차(cycle-alba)가 받고 여기는 마감만 본다. 목록은 당근 사이트맵만 다시 받는다. "
+              "alba.lock 을 못 잡으면 건너뛴다."),
     Loop("publisher", "소셜 자동 발행", "launchd", "mac", "5분마다 tick(12:30·19:30 슬롯)", 24,
          "com.jobseeker.publisher → python -m publish.daemon tick", [],
          note="design-lab/SOCIAL.md. autopublish.live 가 꺼져 있으면 연습 발행만."),
@@ -105,9 +106,10 @@ REGISTRY: list[Loop] = [
          "crawlers.crawl_techblog_graph", ["jd-viewer/public/tech_blogs.json"], note="--no-blog 로 끈다."),
     Loop("cycle-freelance", "외주·프리 프로젝트", "cycle", "mac", "회차마다(마지막 키워드)", 6,
          "crawlers.crawl_freelance", ["jd-viewer/public/freelance.json"], note="--no-freelance 로 끈다."),
-    Loop("cycle-alba", "당근알바 IT 공고", "cycle", "mac", "회차마다(외주 다음)", 6,
-         "crawlers.crawl_daangn_alba", ["jd-viewer/public/alba.json"],
-         note="IT 공고만, 요약·링크만(약관). 사이트맵에서 빠지면 바로 다시 묻는다. --no-alba 로 끈다."),
+    Loop("cycle-alba", "컴퓨터 알바 모음", "cycle", "mac", "회차마다(외주 다음)", 6,
+         "crawlers.crawl_alba", ["jd-viewer/public/alba.json"],
+         note="당근·알바천국·알바몬·사람인·잡코리아, 컴퓨터 일만·요약·링크만. 출처마다 따로 돌고 하나가 실패해도 "
+              "나머지는 간다. 끝까지 본 목록(당근·알바천국·알바몬)에서 빠지면 바로 다시 묻는다. --no-alba 로 끈다."),
     Loop("cycle-contests", "IT·디자인 공모전", "cycle", "mac", "하루 한 번(직전 성공 12시간 안이면 건너뜀)", 30,
          "crawlers.crawl_contests", ["jd-viewer/public/contests.json"],
          note="씽굿·위비티·콘테스트코리아, 요약·링크만(씽굿 약관 24조). 마감일 지나면·원문 지워지면 마감으로 남긴다. "

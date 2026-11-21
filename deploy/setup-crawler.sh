@@ -47,9 +47,9 @@ CC_PLIST="$HOME/Library/LaunchAgents/$CC_LABEL.plist"
 CC_INTERVAL="${CLOSE_CHECK_INTERVAL:-600}"
 CC_LIMIT="${CLOSE_CHECK_LIMIT:-100}"
 
-# 당근알바 IT 공고 마감 확인 — 위 closecheck 의 알바판. 크롤 회차 끝에서도 새 공고 수집과
-# 모집중 100건 재확인을 하지만, 회차(1시간) 사이에 사람을 구해 닫힌 공고가 그만큼 늦게 닫힌다.
-# 새 공고는 받지 않고 재확인만 한다(crawl_daangn_alba --check). 회차 쪽과는 alba.lock 을 나눠 써서
+# 컴퓨터 알바 모음 마감 확인 — 위 closecheck 의 알바판. 크롤 회차 끝에서도 새 공고 수집과
+# 출처마다 모집중 재확인을 하지만, 회차(1시간) 사이에 사람을 구해 닫힌 공고가 그만큼 늦게 닫힌다.
+# 새 공고는 받지 않고 출처마다 재확인만 한다(crawl_alba --check). 회차 쪽과는 alba.lock 을 나눠 써서
 # 겹치면 뒤에 온 쪽이 건너뛴다.
 AC_LABEL="com.jobseeker.albacheck"
 AC_PLIST="$HOME/Library/LaunchAgents/$AC_LABEL.plist"
@@ -212,7 +212,9 @@ sync_cc_plist() {
   log "마감 재확인 등록 — ${CC_INTERVAL}초마다 ${CC_LIMIT}건 ($CC_LABEL)"
 }
 
-# 당근알바 마감 확인 plist — closecheck 와 같은 꼴. 등록 즉시 한 번 돈다.
+# 컴퓨터 알바 마감 확인 plist — closecheck 와 같은 꼴. 등록 즉시 한 번 돈다.
+# (예전 plist 는 crawl_daangn_alba 를 불렀다 — 그 입구는 crawl_alba 로 넘기는 껍데기로 남아 있고,
+# 이 스크립트를 다시 돌리면 아래 내용이 달라 새로 깐다.)
 write_ac_plist() {  # $1 = 쓸 경로
   cat > "$1" <<PLIST_EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -225,7 +227,7 @@ write_ac_plist() {  # $1 = 쓸 경로
   <array>
     <string>$VENV/bin/python</string>
     <string>-m</string>
-    <string>crawlers.crawl_daangn_alba</string>
+    <string>crawlers.crawl_alba</string>
     <string>--check</string>
     <string>--recheck</string>
     <string>$AC_LIMIT</string>
@@ -259,14 +261,14 @@ sync_ac_plist() {
   write_ac_plist "$tmp"
   if [ -f "$AC_PLIST" ] && cmp -s "$tmp" "$AC_PLIST"; then
     rm -f "$tmp"
-    log "당근알바 마감 확인 스케줄 최신 상태"
+    log "컴퓨터 알바 마감 확인 스케줄 최신 상태"
     return
   fi
   mv "$tmp" "$AC_PLIST"
   launchctl bootout "gui/$(id -u)/$AC_LABEL" 2>/dev/null || true
   launchctl bootstrap "gui/$(id -u)" "$AC_PLIST"
   launchctl print "gui/$(id -u)/$AC_LABEL" >/dev/null 2>&1 || die "albacheck launchd 등록 실패"
-  log "당근알바 마감 확인 등록 — ${AC_INTERVAL}초마다 ${AC_LIMIT}건 ($AC_LABEL)"
+  log "컴퓨터 알바 마감 확인 등록 — ${AC_INTERVAL}초마다 출처당 ${AC_LIMIT}건 ($AC_LABEL)"
 }
 
 # 실행 여부는 launchd 에 직접 묻는다. pgrep -f 는 명령줄에 이 문자열이 들어간

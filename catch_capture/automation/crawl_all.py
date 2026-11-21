@@ -23,7 +23,7 @@
     python crawl_all.py start 개발자 30 --no-blog        # 기술 블로그 단계 스킵
     python crawl_all.py start 개발자 30 --blog-per-feed 40  # 블로그 피드당 수집 개수
     python crawl_all.py start 개발자 30 --no-freelance   # 외주·프리 단계 스킵
-    python crawl_all.py start 개발자 30 --no-alba        # 당근알바 IT 공고 단계 스킵
+    python crawl_all.py start 개발자 30 --no-alba        # 컴퓨터 알바 모음(당근·알바천국·알바몬·사람인·잡코리아) 단계 스킵
     python crawl_all.py start 개발자 30 --no-contests    # IT·디자인 공모전 단계 스킵
     python crawl_all.py start 개발자 30 --no-hardware    # PC 부품 가격 단계 스킵
 """
@@ -130,7 +130,7 @@ def fix_locations() -> None:
 def run_extras(do_blog: bool = True, do_freelance: bool = True, do_hardware: bool = True,
                blog_per_feed: int = BLOG_PER_FEED_DEFAULT, do_alba: bool = True,
                do_contests: bool = True) -> list[str]:
-    """키워드와 무관한 사이클당 1회 단계 — 외주 → 당근알바 IT → 공모전 → 회사 로고 → 부품 가격·완제품 → 기술 블로그. 실패한 단계 이름을 돌려준다.
+    """키워드와 무관한 사이클당 1회 단계 — 외주 → 컴퓨터 알바 → 공모전 → 회사 로고 → 부품 가격·완제품 → 기술 블로그. 실패한 단계 이름을 돌려준다.
 
     공고 통합(DB 쓰기)보다 **뒤에** 돈다(auto_crawl.run_cycle). 예전에는 마지막 키워드 크롤에
     붙어 통합보다 먼저 돌아서, 블로그 LLM 번역(밀린 글이 많으면 한 시간 넘게)과 다나와 10초
@@ -168,27 +168,28 @@ def run_extras(do_blog: bool = True, do_freelance: bool = True, do_hardware: boo
                                         (datetime.now() - fl_start).total_seconds())
 
     if do_alba:
-        # 당근알바의 IT 일감(요약·링크만). 외주처럼 따로 쌓고(alba.json), 실패해도 사이클은 계속 간다
-        # (crawlers/crawl_daangn_alba.py 머리말 — 약관 때문에 싣는 칸이 정해져 있다).
-        print(f"\n----- 당근알바 IT 공고 -----", flush=True)
+        # 알바 공고 중 컴퓨터 일(요약·링크만) — 당근·알바천국·알바몬·사람인·잡코리아. 외주처럼 따로 쌓고
+        # (alba.json), 출처 하나가 실패해도 나머지는 돌고 사이클도 계속 간다(crawlers/crawl_alba.py 머리말).
+        print(f"\n----- 컴퓨터 알바 모음 -----", flush=True)
         al_start = datetime.now()
         if orch:
             orch.stage_started("alba")
         try:
             sys.path.insert(0, str(BASE_DIR))
-            from crawlers.crawl_daangn_alba import run as _alba_run
+            from crawlers.crawl_alba import run as _alba_run
             stats = _alba_run()
             elapsed = (datetime.now() - al_start).total_seconds()
             if orch:
                 orch.stage_finished("alba", bool(stats.get("ok")), elapsed,
-                                   **{k: v for k, v in stats.items() if k != "ok"})
-            print(f"[OK] 당근알바 완료({elapsed:.0f}s) — 누적 {stats.get('total')}건 "
-                  f"(모집중 {stats.get('open')}, 신규 {stats.get('new')}, 마감 {stats.get('closed_now')}) "
-                  f"→ jd-viewer/public/alba.json", flush=True)
+                                   **{k: v for k, v in stats.items() if k not in ("ok", "per_source")})
+            print(f"[OK] 컴퓨터 알바 완료({elapsed:.0f}s) — 누적 {stats.get('total')}건 "
+                  f"(모집중 {stats.get('open')}, 신규 {stats.get('new')}, 마감 {stats.get('closed_now')}"
+                  + (f", 실패 출처 {','.join(stats['failed'])}" if stats.get("failed") else "")
+                  + ") → jd-viewer/public/alba.json", flush=True)
             if not stats.get("ok"):
                 failures.append("alba")
         except Exception as e:
-            print(f"[!] 당근알바 크롤 실패: {e}", flush=True)
+            print(f"[!] 컴퓨터 알바 크롤 실패: {e}", flush=True)
             failures.append("alba")
             if orch:
                 orch.stage_finished("alba", False, (datetime.now() - al_start).total_seconds(), error=str(e)[:200])
