@@ -1,11 +1,17 @@
-"""당근알바 IT 공고(crawl_daangn_alba) — 네트워크 없이 파서·분류·마감 판정만 본다."""
+"""당근알바(crawlers/alba/daangn) + 공통 분류·마감 판정(crawlers/alba/common) — 네트워크 없이 본다.
+
+출처가 다섯 곳으로 늘면서 crawl_daangn_alba 의 내용을 crawlers/alba/ 로 옮겼다. 새 출처의 파서는
+test_alba_sources.py 에 있다.
+"""
 from __future__ import annotations
 
 from pathlib import Path
 
 import pytest
 
-from crawlers import crawl_daangn_alba as da
+from crawlers import crawl_alba as ca
+from crawlers.alba import common as da
+from crawlers.alba import daangn as dg
 
 FIXTURE = (Path(__file__).parent / "fixtures" / "daangn_alba_post.html").read_text(encoding="utf-8")
 NOW = "2026-11-21T10:00:00+09:00"
@@ -14,7 +20,7 @@ NOW = "2026-11-21T10:00:00+09:00"
 # ── 상세 파서 ─────────────────────────────────────────────────────────
 
 def test_parse_detail_summary_fields():
-    d = da.parse_detail(FIXTURE)
+    d = dg.parse_detail(FIXTURE)
     assert d["title"] == "홈페이지 제작"
     assert d["pay"] == {"amount": 40000, "unit": "건당", "text": "건당 40,000원"}
     assert (d["sido"], d["sigungu"]) == ("대전", "서구")        # 시/도 줄임 + 시/군/구
@@ -27,13 +33,14 @@ def test_parse_detail_summary_fields():
 
 def test_post_keeps_only_summary():
     """저장하는 공고에는 본문·상호·주소가 없다(약관 — 요약과 링크만)."""
-    d = da.parse_detail(FIXTURE)
-    p = da.make_post("abc123def456", "https://jobs.daangn.com/job-posts/x-abc123def456", d, "웹·앱 제작", NOW)
+    d = dg.parse_detail(FIXTURE)
+    p = da.make_post("daangn", "abc123def456", "https://jobs.daangn.com/job-posts/x-abc123def456", d, "웹·앱 제작", NOW)
     blob = repr(p)
     for leak in ("문의 폼", "테스트상회", "가상동", "가상로", "36.0"):
         assert leak not in blob
-    assert set(p) == {"id", "url", "category", "status", "first_seen_at", "last_seen_at", "checked_at",
-                      "title", "pay", "sido", "sigungu", "employment", "hours", "posted_at", "history"}
+    assert set(p) == {"id", "source", "pid", "url", "category", "status", "first_seen_at", "last_seen_at", "checked_at",
+                      "title", "pay", "sido", "sigungu", "employment", "hours", "posted_at", "deadline", "history"}
+    assert p["id"] == "daangn-abc123def456" and p["source"] == "daangn"
 
 
 @pytest.mark.parametrize("patch,reason", [
@@ -47,17 +54,17 @@ def test_closed_flags(patch, reason):
     repl = {"closed:!1": "closed:!0", "closedAt:null": 'closedAt:"2026-11-21T01:00:00.000Z"',
             "deleted:!1": "deleted:!0", "hidden:!1": "hidden:!0",
             'status:"ACCEPTED"': 'status:"REJECTED"'}[patch]
-    d = da.parse_detail(FIXTURE.replace(patch, repl, 1))
+    d = dg.parse_detail(FIXTURE.replace(patch, repl, 1))
     assert d["closed_reason"] == reason
 
 
 def test_opt_out_flag():
-    d = da.parse_detail(FIXTURE.replace("webCrawlNotAllowed:!1", "webCrawlNotAllowed:!0"))
+    d = dg.parse_detail(FIXTURE.replace("webCrawlNotAllowed:!1", "webCrawlNotAllowed:!0"))
     assert d["opt_out"] is True
 
 
 def test_unparseable_page_is_none():
-    assert da.parse_detail("<html><body>점검 중</body></html>") is None
+    assert dg.parse_detail("<html><body>점검 중</body></html>") is None
 
 
 # ── 사이트맵 ──────────────────────────────────────────────────────────
@@ -66,7 +73,7 @@ def test_parse_sitemap_strips_id():
     xml = ("<urlset><url><loc>https://jobs.daangn.com/job-posts/%ED%99%88%ED%8E%98%EC%9D%B4%EC%A7%80-"
            "%EC%A0%9C%EC%9E%91-fx182nomj7x3</loc><lastmod>2026-11-20T09:42:11.017Z</lastmod></url>"
            "<url><loc>https://jobs.daangn.com/about</loc></url></urlset>")
-    e = da.parse_sitemap(xml)
+    e = dg.parse_sitemap(xml)
     assert list(e) == ["fx182nomj7x3"]
     assert e["fx182nomj7x3"]["slug"] == "홈페이지-제작"
     assert e["fx182nomj7x3"]["lastmod"].startswith("2026-11-20")
@@ -114,7 +121,7 @@ def test_classify_not_it(title):
 
 def test_slug_id_noise_is_ignored():
     """슬러그 끝의 무작위 id 에 'it'·'ai'·'gpt' 가 들어 있어도 후보가 아니다."""
-    e = da.parse_sitemap("<loc>https://jobs.daangn.com/job-posts/%ED%99%80%EC%84%9C%EB%B9%99-5ufgptwxm3pn</loc>")
+    e = dg.parse_sitemap("<loc>https://jobs.daangn.com/job-posts/%ED%99%80%EC%84%9C%EB%B9%99-5ufgptwxm3pn</loc>")
     assert not da.is_candidate(e["5ufgptwxm3pn"]["slug"])
 
 
@@ -133,8 +140,8 @@ def test_ambiguous_title_uses_content_only_in_memory():
 # ── 마감·재확인 ───────────────────────────────────────────────────────
 
 def _post(**kw):
-    d = da.parse_detail(FIXTURE)
-    p = da.make_post("abc123def456", "https://jobs.daangn.com/job-posts/x-abc123def456", d, "웹·앱 제작",
+    d = dg.parse_detail(FIXTURE)
+    p = da.make_post("daangn", "abc123def456", "https://jobs.daangn.com/job-posts/x-abc123def456", d, "웹·앱 제작",
                      "2026-11-20T10:00:00+09:00")
     p.update(kw)
     return p
@@ -142,7 +149,7 @@ def _post(**kw):
 
 def test_apply_check_closes_and_keeps_history():
     p = _post()
-    d = da.parse_detail(FIXTURE.replace("closed:!1", "closed:!0", 1))
+    d = dg.parse_detail(FIXTURE.replace("closed:!1", "closed:!0", 1))
     assert da.apply_check(p, d, None, NOW) == "closed"
     assert p["status"] == "closed" and p["closed_at"] == NOW and p["closed_reason"] == "원본 확인: 모집 마감"
     assert [h["status"] for h in p["history"]] == ["open", "closed"]
@@ -153,7 +160,7 @@ def test_apply_check_closes_and_keeps_history():
 
 def test_apply_check_closed_at_from_source():
     p = _post()
-    d = da.parse_detail(FIXTURE.replace("closedAt:null", 'closedAt:"2026-11-21T01:00:00.000Z"', 1))
+    d = dg.parse_detail(FIXTURE.replace("closedAt:null", 'closedAt:"2026-11-21T01:00:00.000Z"', 1))
     da.apply_check(p, d, None, NOW)
     assert p["closed_at"] == "2026-11-21T01:00:00.000Z"
 
@@ -162,14 +169,14 @@ def test_apply_check_gone_and_reopen():
     p = _post()
     assert da.apply_check(p, None, "원본 삭제(HTTP 404)", NOW) == "closed"
     assert p["closed_reason"] == "원본 삭제(HTTP 404)"
-    d = da.parse_detail(FIXTURE)
+    d = dg.parse_detail(FIXTURE)
     assert da.apply_check(p, d, None, "2026-11-22T10:00:00+09:00") == "open"
     assert p["status"] == "open" and "closed_at" not in p
 
 
 def test_apply_check_opt_out_drops_and_unknown_keeps():
     p = _post()
-    d = da.parse_detail(FIXTURE.replace("webCrawlNotAllowed:!1", "webCrawlNotAllowed:!0"))
+    d = dg.parse_detail(FIXTURE.replace("webCrawlNotAllowed:!1", "webCrawlNotAllowed:!0"))
     assert da.apply_check(p, d, None, NOW) == "drop"
     q = _post()
     assert da.apply_check(q, None, None, NOW) == "unknown" and q["status"] == "open"
@@ -177,7 +184,7 @@ def test_apply_check_opt_out_drops_and_unknown_keeps():
 
 def test_apply_check_updates_pay_history():
     p = _post()
-    d = da.parse_detail(FIXTURE.replace("건당 40,000원", "건당 50,000원").replace("salary:40000", "salary:50000"))
+    d = dg.parse_detail(FIXTURE.replace("건당 40,000원", "건당 50,000원").replace("salary:40000", "salary:50000"))
     da.apply_check(p, d, None, NOW)
     assert p["pay"]["amount"] == 50000
     assert [h["pay"] for h in p["history"]] == ["건당 40,000원", "건당 50,000원"]
@@ -194,11 +201,13 @@ def test_plan_recheck_order():
     entries = {k: {"url": "u", "slug": "s", "lastmod": "2026-11-20"} for k in posts if k != "gone00000001"}
     entries["chg000000001"]["lastmod"] = "2026-11-21"
     seen = {k: "2026-11-20" for k in posts}
-    order = da.plan_recheck(posts, entries, seen, sitemap_ok=True, skip=set(), limit=2)
+    order = da.plan_recheck(posts, entries, seen, listing_ok=True, skip=set(), limit=2)
     # 사라진 것 → lastmod 바뀐 것(마감 포함) → 오래 안 물어본 모집중. 마감·변화 없는 것은 묻지 않는다.
     assert order == ["gone00000001", "chg000000001", "old000000001"]
-    # 사이트맵이 깨져 보이면 '사라짐' 으로 묻지 않는다.
-    assert "gone00000001" not in da.plan_recheck(posts, entries, seen, sitemap_ok=False, skip=set())
+    # 목록이 깨져 보이면(또는 끝까지 못 보는 출처면) '사라짐'으로 앞당기지 않는다 — 다른 모집중과 같이
+    # 오래 안 물어본 순서로만 묻는다(사람인·잡코리아는 늘 이쪽이다).
+    assert da.plan_recheck(posts, entries, seen, listing_ok=False, skip=set(), limit=2) == [
+        "chg000000001", "old000000001"]
 
 
 # ── 회차 사이 재확인(launchd albacheck) ───────────────────────────────
@@ -207,10 +216,10 @@ def test_run_skips_when_another_holds_the_lock(tmp_path, monkeypatch):
     """회차 안과 회차 사이가 겹치면 뒤에 온 쪽이 건너뛴다 — alba.json 을 덮어 마감 판정을 지우지 않게."""
     lock = tmp_path / "alba.lock"
     monkeypatch.setattr(da, "LOCK_PATH", lock)
-    monkeypatch.setattr(da, "_run", lambda *a, **k: pytest.fail("잠금을 못 잡았는데 돌았다"))
+    monkeypatch.setattr(ca, "_run", lambda *a, **k: pytest.fail("잠금을 못 잡았는데 돌았다"))
     with open(lock, "a+") as fh:
-        assert da._try_lock(fh)
-        res = da.run()
+        assert da.try_lock(fh)
+        res = ca.run()
     assert res["skipped"] is True and res["ok"] is True
 
 
@@ -218,14 +227,14 @@ def test_check_fetches_no_new_posts(tmp_path, monkeypatch):
     """--check 는 새 공고를 받지 않고(new_limit=0) 재확인만 한다."""
     seen = {}
     monkeypatch.setattr(da, "LOCK_PATH", tmp_path / "alba.lock")
-    monkeypatch.setattr(da, "_run", lambda new_limit, recheck_limit: seen.update(new=new_limit, re=recheck_limit)
-                        or {"ok": True, "total": 1, "open": 1, "new": 0, "closed_now": 0})
+    monkeypatch.setattr(ca, "_run", lambda new_limit, recheck_limit, sources, check: seen.update(
+        new=new_limit, re=recheck_limit, check=check) or {"ok": True, "total": 1, "open": 1, "new": 0, "closed_now": 0})
     import store.ingest.docs as docs
     from automation import orchestration as orch
     monkeypatch.setattr(docs, "sync", lambda *a, **k: {})
     monkeypatch.setattr(orch, "emit", lambda *a, **k: None)      # 진짜 run_events.jsonl 에 쓰지 않게
-    da.check(42)
-    assert seen == {"new": 0, "re": 42}
+    ca.check(42)
+    assert seen == {"new": 0, "re": 42, "check": True}
 
 
 # ── 범위 넓힘(규칙 2판) — 컴퓨터로 하는 디자인·문서 일까지 ─────────────
