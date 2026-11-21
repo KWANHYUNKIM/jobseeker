@@ -1,0 +1,1070 @@
+{
+ "id": "vTfEyOyzV9E",
+ "source": {
+  "platform": "youtube",
+  "url": "https://www.youtube.com/watch?v=vTfEyOyzV9E",
+  "channel": "Stanford Online",
+  "published": "2026-05-19",
+  "duration_sec": 4623,
+  "views": 13004
+ },
+ "course": {
+  "school": "Stanford",
+  "code": "CS336",
+  "term": "Spring 2026",
+  "lecture_no": "11",
+  "speaker": "Tatsunori Hashimoto (공동 강사 Percy Liang)"
+ },
+ "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 11:  Scaling Laws",
+ "title_ko": "스케일링 법칙 심화 — 공개 레시피(MiniCPM·DeepSeek·Kimi K2), WSD, 학습률·배치 법칙, Muon, μP 유도",
+ "topic": "llm",
+ "tags": [
+  "LLM",
+  "Deep Learning",
+  "PyTorch",
+  "Python",
+  "NumPy",
+  "Transformer",
+  "MoE",
+  "Machine Learning",
+  "Distributed Training"
+ ],
+ "level": "심화",
+ "one_line": "작은 모델의 최적 설정을 큰 모델로 옮기는 두 길 — 법칙으로 예측하거나(DeepSeek), μP 로 고정하거나(MiniCPM)",
+ "summary": [
+  "CS336 열한째 시간이자 스케일링 법칙 2부작의 심화편이다. 9강(Q15rhEWZPQ4)이 Kaplan·Chinchilla·IsoFLOP 까지 '고전'을 다뤘다면, 이번에는 그 뒤 실제 모델을 공개한 팀들이 규모를 키울 때 무엇을 걱정했고 어떻게 풀었는지를 따라간다. 강사 Tatsunori Hashimoto 는 스스로 잡동사니라고 하지만 줄기는 하나다. 학습률·배치·초기화처럼 규모에 민감한 하이퍼파라미터를 작은 실험에서 큰 학습으로 어떻게 옮기나. 길은 둘이다. 최적값의 움직임을 법칙으로 맞춰 외삽하거나(DeepSeek), 매개화를 바꿔 아예 움직이지 않게 하거나(μP, MiniCPM). 영상 제목은 9강과 같은 'Scaling Laws'지만 내용은 하이퍼파라미터 스케일링·옵티마이저·μP 가 중심이다.",
+  "첫 부분은 공개 레시피다. MiniCPM 은 μP 다섯 가지 조작(임베딩 ×12, 잔차 ×1.4/√L, 행렬 초기화 0.1/√m, 행렬 학습률 0.01/m, 로짓 1/m)으로 9M~0.5B 사다리 전체의 최적 학습률을 10⁻² 에 고정하고, 최적 배치는 ln BS = −6.24 ln L + 20.91 로 손실의 거듭제곱에 맞췄다. 코사인 스케줄은 길이마다 처음부터 다시 돌아야 해서 데이터 축 실험이 n² 로 비싸지는데, WSD(워밍업–유지–짧은 감쇠) 사다리꼴로 안정 구간 체크포인트를 되감아 감쇠만 반복하면 이 비용이 크게 준다. 결합 적합으로는 파라미터당 약 95 토큰이라는 높은 비율을 얻었지만 강사는 적합의 흔들림일 수 있다며 의심한다.",
+  "DeepSeek LLM 은 μP 없이 10¹⁷~10²⁰ FLOPs 에서 배치 × 학습률 격자를 훑어 '최소의 0.25% 안' 설정을 모으고 η = 0.3118·C^(−0.125), B = 0.2920·C^(0.327) 을 맞췄다. 두 계단 WSD(80% 에서 31.6%, 90% 에서 10%)와 토큰당 FLOPs M 을 쓴 IsoFLOP 으로 Chinchilla 를 재현했고, 작은 모델로 그은 선이 7B·67B 의 손실을 맞혔다. 이후 Qwen 은 같은 방식을 짧게만 언급하고, Kimi K2 는 희소도 법칙으로 48(384 중 8 활성)을, Hunyuan 은 활성 파라미터당 96 토큰을, Llama 3 는 연산 → NLL → 정확도의 시그모이드 2단 예측을, MiniMax-01 은 선형·소프트맥스·혼합 어텐션의 스케일링 비교로 혼합 구조를 정당화했다.",
+  "둘째 부분은 학습률·배치 법칙과 옵티마이저다. 법칙마다 입력 변수(손실·연산·파라미터·데이터)부터 다르고, StepFun 의 Step Law 는 η = 1.79·N^(−0.713)·D^(0.307), B = 0.58·D^(0.571) 로 배치가 데이터에만 묶인다는 관찰과 손실 지형의 볼록성을 보였다. 옵티마이저에서는 NanoGPT speedrun 의 Muon 이득이 규모를 키우면 1.4배에서 1.1배로 줄고, 새 방법의 이득 상당수가 기준선 조율 부족이라는 경고, 연산과 Chinchilla 비 두 축을 늘 확인하라는 원칙, 몇 자릿수 동안 곧던 직선이 발산한 Marin 의 사례가 나온다. Muon 은 모멘텀 갱신의 특이값을 Newton–Schulz 로 1 근처에 모으는 행렬 옵티마이저이고, Kimi K2 가 전체 학습에 써서 큰 규모에서 작동함을 보였다.",
+  "마지막 부분은 μP 의 유도와 검증이다. 너비 극한에서 A1(초기화 시 활성 Θ(1))과 A2(한 스텝 뒤 활성 변화 Θ(1), 특징 학습)를 선언하고, 가우스 행렬의 스펙트럼 노름과 랭크 1 갱신으로 초기화 σ = (1/√fan_in)·min(1, √(fan_out/fan_in)), 학습률 SGD fan_out/fan_in·Adam 1/fan_in 을 끌어낸다. Lingle 의 재현에서는 너비 128~2048(그리고 10B 까지) 최적 학습률이 2⁻⁶ 로 고정됐지만 학습 가능한 RMSNorm 이득·Lion·큰 가중치 감쇠는 μP 를 깨뜨렸다. 노트는 사다리 파라미터 수, 최적 배치, WSD 비용, 결합 적합의 95 토큰, DeepSeek·Step Law 설정, Newton–Schulz, μP 의 두 조건을 손으로 풀고 numpy 로 확인한다."
+ ],
+ "why_now": "모델 하나의 사전학습이 수백만~수억 달러가 되면서, 목표 규모에서 하이퍼파라미터를 고를 기회는 사실상 한 번뿐이다. 강의가 보여 주듯 2024년 이후 공개 모델 팀들(DeepSeek·Qwen·StepFun)은 학습률·배치를 연산의 법칙으로 정하고, MiniCPM·Cerebras 는 μP 로 고정하며, WSD 스케줄은 이어 학습과 데이터 축 실험을 위한 사실상 기본값이 됐다. MoE 로의 전환은 희소도와 활성 파라미터를 법칙으로 정하는 새 일감을 만들었고(Kimi K2·Hunyuan), Muon 처럼 작은 규모에서 태어난 옵티마이저가 1조 파라미터급 학습에 쓰이기 시작했다. 국내에서도 파운데이션 모델을 직접 사전학습하는 팀이 늘면서, 작은 모델 사다리를 설계해 학습률·배치·모델 크기를 정하고 큰 학습의 손실을 예측하는 일이 LLM 사전학습·AI 리서치 엔지니어 공고의 실제 업무가 됐다.",
+ "chapters": [
+  {
+   "start": 0,
+   "title": "오늘의 질문 — Chinchilla 이후, 실제로 모델을 키우는 사람들은 무엇을 하나",
+   "points": [
+    "9강의 스케일링 법칙은 2022년(Chinchilla)에서 멈췄다. 오늘은 그 뒤에 실제 모델을 만든 팀들이 공개한 '키우는 법'을 따라간다.",
+    "세 질문: Chinchilla 식 접근이 실제 규모에서도 통하나? 법칙을 맞추는 데 드는 연산을 줄일 수 있나? 잘 늘어나는 아키텍처·매개화를 골라야 하나?",
+    "학습률·배치·초기화는 규모에 민감하다 — 두 갈래 해법: 법칙으로 맞춰 예측(DeepSeek)하거나, 매개화를 바꿔 아예 움직이지 않게(μP, MiniCPM) 한다.",
+    "순서: ① 공개 레시피(MiniCPM·DeepSeek·Qwen·Kimi K2·Hunyuan·Llama 3·MiniMax) ② 학습률·배치 법칙과 옵티마이저(StepFun·Muon) ③ μP 의 유도와 실전 검증.",
+    "최근 보고서는 이런 내용을 점점 덜 싣는다 — 다들 아는 기본기가 됐기 때문이라는 것이 강사의 추측이다."
+   ],
+   "on_screen": "'Motivation today — What is the best practices for scaling and hparam tuning LMs? · Does chinchilla's approach to scaling actually work? · Can we save compute when training and fitting these things? · Should we be picking particular architectures / parametrizations to scale nicely?' 'Scaling in practice — The newest model we talked about with scaling details - 2022 (Training Compute-Optimal LLMs). What about more recently?' 아래에 DeepSeek LLM(2024)·MiniCPM(2024)·Llama 3 Herd(2024)·Hunyuan-Large(2024)·MiniMax-01(2025)·Kimi K2(2026) 표지가 연도와 함께 놓인다. 'Initialization and optimizers — Initialization, optimizers, and various hyperparams (LR/batch) can be scale sensitive' 아래에 학습률·배치 법칙 그림과 옵티마이저 비교 그림(C4/EN 손실 대 Chinchilla 비율, AdamW·NAdamW·Muon·Soap).",
+   "explain": [
+    "9강(Q15rhEWZPQ4)에서 우리는 스케일링 법칙의 '고전'을 배웠다. 로그-로그 직선, 임계 배치, Kaplan 대 Chinchilla, IsoFLOP 으로 모델 크기와 토큰 수를 나누는 법까지. 그런데 그 이야기는 대략 2022년에 멈춰 있다. 이번 11강은 2부작의 둘째 편으로, 그 뒤 실제로 수십억~수천억 파라미터 모델을 만들어 공개한 팀들이 '규모를 키울 때 무엇을 걱정했고 어떻게 풀었는가'를 따라간다. 강사 Tatsunori Hashimoto 는 스스로 '잡동사니 모음'이라고 소개하지만, 줄기는 분명하다. 작은 실험에서 큰 학습으로 넘어갈 때 하이퍼파라미터를 어떻게 옮기느냐다.",
+    "강사가 던지는 질문은 셋이다. 첫째, 9강의 Chinchilla 식 절차가 오픈 모델을 만드는 실제 규모에서도 맞는가? 둘째, 법칙을 맞추는 데 드는 연산 자체를 아낄 방법이 있는가? Chinchilla 를 따라 하려면 모델을 수십 개 처음부터 학습해야 하니 이것도 큰돈이다. 셋째, 처음부터 '잘 늘어나는' 아키텍처나 매개화(parametrization)를 골라 두면 일이 쉬워지는가? 이 셋에 대한 답이 강의의 세 부분 — 공개 레시피 사례, 학습률·배치·옵티마이저의 규모 의존성, μP — 에 흩어져 있다.",
+    "왜 하이퍼파라미터가 문제인가를 먼저 감각으로 잡아 두자. 모델 크기와 토큰 수는 Chinchilla 로 정할 수 있다고 쳐도, 실제 학습에는 학습률·배치 크기·초기화 표준편차·가중치 감쇠 같은 손잡이가 수십 개 붙어 있다. 이 중 상당수는 모델이 커지면 최적값이 움직인다. 너비를 4배 키웠는데 학습률을 그대로 두면 발산하거나 너무 느리게 배운다. 그렇다고 목표 규모에서 격자 탐색을 할 수는 없다 — 한 번 학습이 수백만 달러이기 때문이다. 그래서 길은 둘뿐이다. 작은 규모에서 최적값이 규모에 따라 어떻게 움직이는지 법칙으로 맞춰 외삽하거나(DeepSeek·Qwen·StepFun 의 길), 매개화를 바꿔 최적값이 아예 움직이지 않게 만들거나(μP, MiniCPM·Cerebras 의 길).",
+    "강의 첫 화면의 연표가 오늘의 지도다. 2024년에는 DeepSeek LLM·MiniCPM·Llama 3·Hunyuan-Large 가, 2025년에는 MiniMax-01 이, 2026년에는 Kimi K2 가 스케일링 세부를 공개했다. 강사는 최근 이런 논문이 줄었고 그나마 중국 오픈소스 진영에서 주로 나온다고 짚는다. 또 하나 흥미로운 관찰은, 학습률을 어떻게 정하고 Chinchilla 를 어떻게 하는지 같은 기본기는 이제 '다 아는 것'이 되어 논문에서 아예 빠진다는 점이다. 그래서 오히려 2024년의 조금 오래된 논문들이 교재로 좋다. 이 노트도 같은 순서로, 먼저 MiniCPM 과 DeepSeek 두 사례를 자세히 본 뒤 각 사례가 대표하는 두 철학을 하나씩 파고든다."
+   ],
+   "diagram": {
+    "title": "규모에 민감한 하이퍼파라미터를 다루는 두 갈래",
+    "code": "flowchart TD\n  Q[\"작은 모델의 최적 설정을 큰 모델로 옮기고 싶다\"] --> A[\"최적값이 규모에 따라 움직인다\"]\n  A --> P1[\"길 1: 법칙으로 맞춰 외삽<br/>DeepSeek · Qwen · StepFun\"]\n  A --> P2[\"길 2: 매개화를 바꿔 고정<br/>μP · MiniCPM · Cerebras\"]\n  P1 --> G[\"작은 규모 격자 탐색 → η*(C), B*(C) 직선\"]\n  P2 --> H[\"층별 초기화·학습률 배율 → η* 가 너비와 무관\"]\n  G --> R[\"큰 학습 한 번\"]\n  H --> R\n  R --> W[\"WSD 스케줄로 데이터 축 실험 비용 절감\"]"
+   },
+   "pitfalls": [
+    "'스케일링 법칙 = 모델 크기와 토큰 수 배분'으로만 기억하면 오늘 강의의 절반을 놓친다. 실제 팀들이 가장 공들이는 것은 학습률과 배치의 규모 의존성이다.",
+    "논문에 스케일링 실험이 안 실렸다고 그 팀이 안 했다는 뜻이 아니다. 강사는 기본기가 당연해져서 생략된다고 본다(강사 의견)."
+   ],
+   "check": [
+    {
+     "q": "규모에 따라 최적값이 움직이는 하이퍼파라미터를 다루는 두 가지 큰 전략은?",
+     "a": "작은 규모 실험으로 최적값의 스케일링 법칙을 맞춰 목표 규모로 외삽하는 것(DeepSeek 식), 그리고 μP 처럼 초기화·층별 학습률을 다시 매개화해 최적값이 규모와 무관하게 만드는 것(MiniCPM 식)."
+    }
+   ]
+  },
+  {
+   "start": 180,
+   "title": "MiniCPM ① — μP 다섯 가지 조작과 5배 위까지 올리는 모델 사다리",
+   "points": [
+    "MiniCPM(2024, 칭화대 계열): 1~2.4B 급에서 당시 최고 수준. 대부분의 2B 를 이기고 여러 7B 와 비슷했다.",
+    "μP 조작 다섯 가지: 임베딩 출력 ×scale_emb, 잔차 증분 ×scale_depth/√(층 수), 행렬 초기화 표준편차 init_std/√(d_m/d_base), 행렬 학습률 ×1/(d_m/d_base), 출력 로짓 ×1/(d_m/d_base).",
+    "상수: scale_emb = 12, scale_depth = 1.4, init_std = 0.1, lr = 0.01.",
+    "사다리: 9M → 0.5B 일곱 모델(너비·깊이를 같이 키워 모양을 고정). 가장 큰 사다리 모델과 실제 출시 모델 사이 간격은 약 5배.",
+    "목표는 민감한 세 값 — 최적 배치, 학습률, 토큰/파라미터 비 — 을 작은 모델에서 확정하고 큰 모델을 한 번에 맞추는 것."
+   ],
+   "on_screen": "'MiniCPM (2024) – small, high-perf LM from Tsinghua group … Careful, extensive scaling computations + muP to stabilize and simplify scaling. Not really sota model (even in 2024) but many interesting lessons on scaling.' 성능표: MiniCPM-1.2B 가 C-Eval 49.14·CMMLU 46.81·MMLU 49.63·HumanEval 44.51·GSM8K 31.77, MiniCPM-2.4B 가 51.13·51.07·53.46·50.00·53.83 으로 Llama2-7B·Mistral-7B 등과 나란히 놓인다. 'Techique 1: muP to stabilize scaling — Scale_emb = 12, scale_depth = 1.4, init_std = 0.1, lr = 0.01' 아래 Table 7(Embedding Output Scaling / Residual Connection Scaling / Initialization of Tensors / Learning Rate Scaling of Tensors / LM Head Scaling). 'Scaling recipe / strategy — Use muP for initialization, fix the aspect ratio, scale up the overall model size' 표: 9M(N 0.009B, d_m 320, d_ff 800, d_h 64, n_h 5, L 8), 30M(0.036, 512, 1280, 64, 8, 12), 70M(0.066, 640, 1600, 64, 10, 14), 0.1B(0.109, 768, 1920, 64, 12, 16), 0.17B(0.166, 896, 2240, 64, 14, 18), 0.2B(0.241, 1024, 2560, 64, 16, 20), 0.5B(0.499, 1344, 3360, 64, 21, 24). 'Note that the gap between the largest model here and the actual model they train is ~5x. Optimal batch, LR, token-to-size ratios are directly fitted via scaling analysis.'",
+   "explain": [
+    "MiniCPM 은 중국 산학 연합이 2024년에 낸 '작지만 잘 만든' 언어 모델이다. 1.2B 와 2.4B 두 크기가 당시 1~2B 대에서 사실상 최고였고, 슬라이드의 성능표를 보면 2.4B 가 MMLU 53.5, GSM8K 53.8 로 Llama2-7B 나 Mistral-7B 와 견줄 만했다. 강사가 이 논문을 고른 이유는 성능보다 방법 때문이다. 작은 모델은 크게 학습할 여유가 없으니 '한 번에 맞추기'가 중요하고, 그래서 스케일링 계산을 유난히 꼼꼼하게 공개했다. 2026년 기준으로도 이 팀이 한 일이 여러 후속 작업의 표준이 됐다는 것이 강사의 평가다.",
+    "첫 기법은 μP(Maximal Update Parametrization)다. 목표는 한 줄이다. 모델 너비를 바꿔도 최적 학습률이 그대로이게 하자. MiniCPM 은 이를 다섯 가지 조작으로 구현한다. ① 임베딩 출력에 scale_emb(=12)를 곱한다. ② 각 층의 잔차 덧셈 증분에 scale_depth/√(층 수)(scale_depth = 1.4)를 곱해 깊어질수록 한 층의 기여를 줄인다. ③ 2차원(행렬) 파라미터의 초기화 표준편차를 init_std/√(d_m/d_base) 로 둔다. 너비가 기준의 m 배면 표준편차는 1/√m 배다. ④ 행렬 파라미터의 학습률을 전체 학습률의 1/(d_m/d_base) 배로 둔다 — 파라미터마다 다른 학습률이라 낯설 수 있다. ⑤ 출력 로짓을 1/(d_m/d_base) 배로 줄인다. 왜 하필 이 배율들인지는 뒤의 μP 유도(13·14장)에서 직접 끌어낸다. 여기서는 '너비에 따라 초기화와 학습률을 미리 정해진 비율로 줄인다'만 잡아 두면 된다.",
+    "둘째 재료는 모델 사다리다. MiniCPM 은 너비 d_m 과 층 수 L 을 함께 키워 모델의 '모양'(aspect ratio, d_m/L ≈ 40~56)을 거의 고정한 채 9M 부터 0.5B 까지 일곱 모델을 만든다. 헤드 차원 d_h 는 64 로 고정하고 헤드 수가 늘며, FFN 너비 d_ff 는 d_m 의 2.5배(SwiGLU 라서 4배 대신 8/3 근처)다. 아래 코드로 확인하면 비임베딩 파라미터 L·(4d_m² + 3·d_m·d_ff) 가 표의 N 과 소수 셋째 자리까지 일치한다. 사다리 꼭대기(0.5B)와 실제 출시 모델(2.4B) 사이는 약 5배다. 즉 MiniCPM 은 2.4B 를 수백 번 돌리는 대신 9M~0.5B 를 많이 돌려 최적 배치·학습률·토큰 비율을 법칙으로 맞추고, 큰 모델은 그 값으로 한 번에 학습한다.",
+    "왜 μP 와 사다리가 짝인가? 사다리의 모든 모델이 같은 학습률을 쓸 수 있다면, 작은 모델에서 학습률 하나만 찾으면 끝난다. 반대로 μP 없이 표준 매개화를 쓰면 사다리의 칸마다 학습률을 다시 찾아야 하고, 그 최적값이 어떻게 움직이는지도 다시 맞춰야 한다. 다음 장에서 보듯 MiniCPM 의 실험에서는 이 약속이 꽤 잘 지켜진다. 다만 μP 가 고정해 주는 것은 학습률뿐이고 배치 크기는 여전히 움직인다는 점이 다음 이야기다."
+   ],
+   "formulas": [
+    {
+     "expr": "h₀ = scale_emb · Embed(x),  scale_emb = 12",
+     "meaning": "임베딩 출력 배율. 임베딩 행렬은 너비와 무관한 크기로 초기화하고 출력만 상수배로 키워 활성 크기를 맞춘다."
+    },
+    {
+     "expr": "h_{l+1} = h_l + (scale_depth/√L) · Block_l(h_l),  scale_depth = 1.4",
+     "meaning": "L: 층 수. 층이 많을수록 한 층이 잔차 흐름에 더하는 양을 1/√L 로 줄여 깊이에 따른 폭주를 막는다."
+    },
+    {
+     "expr": "σ_init = init_std / √(d_m/d_base),  η_matrix = η / (d_m/d_base),  logits ← logits / (d_m/d_base)",
+     "meaning": "d_m: 이 모델의 너비, d_base: 기준 너비(노트 보충 — MiniCPM 은 256), m = d_m/d_base: 너비 배수. 행렬 파라미터는 초기화 표준편차 1/√m, 학습률 1/m, 출력 로짓 1/m 로 줄인다. 벡터 파라미터(정규화 이득 등)는 기본값 그대로."
+    },
+    {
+     "expr": "N_nonemb = L · (4·d_m² + 3·d_m·d_ff)",
+     "meaning": "어텐션 Q·K·V·O 네 행렬(각 d_m×d_m)과 SwiGLU 의 세 행렬(d_m×d_ff)을 층마다 센 비임베딩 파라미터 수."
+    }
+   ],
+   "example": {
+    "title": "0.2B 사다리 모델의 μP 설정을 손으로",
+    "body": "0.2B: d_m = 1024, L = 20, d_ff = 2560. 너비 배수 m = 1024/256 = 4(d_base = 256 가정). 초기화 표준편차 = 0.1/√4 = 0.05. 행렬 학습률 = 0.01/4 = 0.0025. 출력 로짓 배율 = 1/4 = 0.25. 잔차 배율 = 1.4/√20 = 1.4/4.472 = 0.313. 파라미터 수 = 20·(4·1024² + 3·1024·2560) = 20·(4,194,304 + 7,864,320) = 20·12,058,624 = 241,172,480 ≈ 0.241B — 표의 0.241 과 같다. 같은 계산을 9M(d_m = 320)에 하면 m = 1.25, 표준편차 0.0894, 행렬 학습률 0.008 이다. 너비가 3.2배 다르지만 '기준 학습률 0.01' 하나로 두 모델을 모두 학습한다는 것이 μP 의 약속이다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\n# MiniCPM 사다리: (이름, d_m, d_ff, L) — 슬라이드 표의 값\nladder = [(\"9M\",320,800,8), (\"30M\",512,1280,12), (\"70M\",640,1600,14),\n          (\"0.1B\",768,1920,16), (\"0.17B\",896,2240,18), (\"0.2B\",1024,2560,20),\n          (\"0.5B\",1344,3360,24)]\nd_base, init_std, lr, scale_depth = 256, 0.1, 0.01, 1.4\nfor name, d, dff, L in ladder:\n    N = L * (4*d*d + 3*d*dff)          # 어텐션 4d² + SwiGLU 3·d·d_ff (비임베딩)\n    m = d / d_base                      # 너비 배수\n    print(f\"{name:>5} N={N/1e9:.3f}B  d/L={d/L:5.1f}  \"\n          f\"init={init_std/np.sqrt(m):.4f}  lr_mat={lr/m:.5f}  \"\n          f\"res={scale_depth/np.sqrt(L):.3f}  logit×{1/m:.3f}\")\n",
+    "note": "필자 실행 결과: N 이 0.009·0.036·0.066·0.109·0.166·0.241·0.499B 로 슬라이드 표와 일치한다. d/L 은 40→56 으로 거의 고정, 초기화는 0.0894→0.0436, 행렬 학습률은 0.008→0.0019, 잔차 배율은 0.495→0.286 으로 줄어든다."
+   },
+   "pitfalls": [
+    "슬라이드 제목의 'Techique' 는 'Technique' 의 오타다.",
+    "d_base 값은 슬라이드에 없다. 노트의 숫자 예는 MiniCPM 논문의 기준 너비 256 을 가정한 것이다(노트 보충).",
+    "'행렬 학습률 1/m' 은 Adam 계열 기준이다. SGD 였다면 μP 의 학습률 규칙이 다르다(14장)."
+   ],
+   "check": [
+    {
+     "q": "MiniCPM 의 사다리에서 너비가 기준의 8배인 모델이라면 행렬 초기화 표준편차와 행렬 학습률은 기준 대비 몇 배인가?",
+     "a": "표준편차는 1/√8 ≈ 0.354배, 학습률은 1/8 = 0.125배."
+    },
+    {
+     "q": "사다리 모델들의 d_m/L 을 거의 일정하게 두는 이유는?",
+     "a": "모양(aspect ratio)을 고정해야 '크기' 하나만 바뀌는 깨끗한 스케일링 축이 된다. 모양까지 바뀌면 손실 변화가 크기 때문인지 모양 때문인지 가를 수 없다."
+    }
+   ]
+  },
+  {
+   "start": 450,
+   "title": "MiniCPM ② — 학습률은 고정되고, 최적 배치는 손실의 거듭제곱으로 커진다",
+   "points": [
+    "μP 덕분에 모델 크기(선 하나 = 크기 하나)가 달라도 최소 손실이 학습률 10⁻² 근처에 모인다. 가장 작은 모델만 조금 비껴 있다.",
+    "배치는 μP 가 고정해 주지 않는다 — 데이터 양과 모델 크기 둘 다에 따라 움직인다.",
+    "방법: 배치 크기를 고정한 학습 곡선(점 기둥 하나)을 여러 개 그리고, 같은 손실 등고선에서 손실이 가장 낮은 배치를 이어 '최적 배치'를 찾는다.",
+    "결과: ln(BS) = −6.24·ln(L) + 20.91 — 목표 손실이 낮을수록 배치를 거듭제곱으로 키운다(Kaplan 의 임계 배치와 같은 모양).",
+    "목표 손실은 스케일링 법칙으로 미리 알 수 있으니, 학습 전에 배치를 정할 수 있다."
+   ],
+   "on_screen": "'Optimal LR — According to muP – optimal learning rate should be (roughly) stable. Is it?' Figure 3(Loss vs Learning Rate): 여러 크기의 곡선이 학습률 10⁻² 근처에서 바닥을 이루고, 'After applying for the Tensor Program, the learning rate shift becomes minimal.' 'Optimal batch — Three model sizes (9m, 30m, 170m) as a function of data size (y), batch (x) and loss (col). Vertical columns of points represent a single training curve (fixed batch, more points). Red line attempts to identify minimum loss points for each y-value – this is the optimal batch size for a model size / dataset size combination.' 'Optimal batch size — We can then follow the Kaplan 2020 analysis and plot optimal batch size vs final loss.' 그림 범례 'log(BS) = −6.24 * log(L) + 20.91', 세로축 Batch Size(10⁵~10⁶), 가로축 Loss(3.5~5.5). 'Fairly clean trend – polynomially increase the batch size as loss decreases.'",
+   "explain": [
+    "μP 가 약속을 지키는지부터 보자. MiniCPM 은 사다리의 여러 크기에서 학습률을 훑고 최종 손실을 그렸다. 곡선 하나가 모델 크기 하나다. 표준 매개화였다면 모델이 커질수록 곡선의 바닥이 왼쪽(작은 학습률)으로 미끄러졌을 텐데, 여기서는 거의 모든 곡선의 바닥이 10⁻² 근처에 모여 있다. 가장 작은 모델만 살짝 비껴 있지만 그것도 최솟점과 가깝다. 강사는 이것을 μP 의 '깨끗한 성공 사례'로 소개한다. 이렇게 되면 학습률 조율이라는 일 하나가 통째로 사라진다.",
+    "하지만 배치 크기는 다르다. 9강에서 본 임계 배치(McCandlish·Kaplan)를 떠올리면, 배치의 적정선은 '기울기 잡음 대 신호'의 비로 정해지고 이 비는 학습이 진행될수록(손실이 낮아질수록) 커진다. 그러니 최적 배치는 데이터 양과 모델 크기 둘 다에 묶여 있고, 학습률을 고정하는 매개화로는 잡히지 않는다. MiniCPM 은 이를 실험으로 맞춘다. 9M·30M·170M 세 크기마다 배치 크기를 고정한 학습을 여러 개 돌린다. 그림에서 세로로 늘어선 점 기둥 하나가 학습 하나이고, 아래에서 위로 갈수록 처리한 토큰이 많다. 색은 손실이다. 같은 토큰 수(가로줄) 에서 어느 배치가 가장 낮은 손실을 냈는지 찾아 빨간 선으로 이으면, 그것이 그 모델·데이터 조합의 최적 배치다.",
+    "이렇게 모은 최적 배치를 최종 손실에 대해 그리면 로그-로그 직선이 나온다. 슬라이드의 맞춤식은 ln(BS) = −6.24·ln(L) + 20.91, 즉 BS ≈ e^20.91 · L^(−6.24) 이다. 지수가 −6.24 로 아주 가파르다. 손실이 조금만 내려가도 배치는 크게 늘어야 한다는 뜻이다. Kaplan 이 임계 배치를 B_crit ∝ L^(−1/α_B) 꼴로 쓴 것과 같은 모양이고, 강사도 '예상대로 Kaplan 식 분석이 그대로 나온다'고 정리한다. 실용적 가치는 순서에 있다. 목표 모델의 최종 손실은 스케일링 법칙으로 학습 전에 예측할 수 있으니, 그 손실을 이 식에 넣으면 학습을 시작하기도 전에 배치를 정할 수 있다.",
+    "강사는 학습률과 배치를 '가장 중요하고 가장 민감한' 두 손잡이라고 부르며, 오늘 강의 내내 이 둘이 계속 돌아올 것이라고 예고한다. 정리하면 MiniCPM 의 전략은 학습률은 μP 로 고정하고, 배치는 손실의 거듭제곱 법칙으로 맞추는 혼합형이다. 다음 장의 WSD 스케줄은 이런 실험(특히 데이터 축 실험)을 싸게 만드는 장치다."
+   ],
+   "formulas": [
+    {
+     "expr": "ln BS* = −6.24 · ln L + 20.91   ⇔   BS* = e^20.91 · L^(−6.24)",
+     "meaning": "BS*: 최적 배치(토큰), L: 목표 최종 손실(nat). 로그의 밑은 자연로그로 읽었다 — 손실 4.5 에서 약 10⁵, 3.5 에서 약 5×10⁵ 가 되어 그림의 축과 맞는다(노트 보충의 확인)."
+    },
+    {
+     "expr": "BS*(L₁)/BS*(L₂) = (L₂/L₁)^6.24",
+     "meaning": "두 목표 손실의 최적 배치 비율. 상수항이 사라져 지수만 남는다."
+    }
+   ],
+   "example": {
+    "title": "손실 4.5 → 3.5 이면 배치는 몇 배?",
+    "body": "비율 = (4.5/3.5)^6.24 = 1.2857^6.24. ln 1.2857 = 0.2513 이므로 0.2513 × 6.24 = 1.568, e^1.568 = 4.80. 손실이 22% 낮아지는 동안 최적 배치는 약 4.8배 커진다. 절댓값: ln BS = −6.24 × ln 3.5 + 20.91 = −6.24 × 1.2528 + 20.91 = −7.817 + 20.91 = 13.09, e^13.09 ≈ 4.85×10⁵ 토큰. 시퀀스 길이 4096 이면 약 118 시퀀스다. 손실 3.0 까지 내려가면 ln BS = −6.24 × 1.0986 + 20.91 = 14.06, 약 1.27×10⁶ 토큰."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\n# MiniCPM 그림의 맞춤 직선: ln(BS) = -6.24·ln(L) + 20.91  (BS 는 토큰 단위)\ndef bs_opt(loss):\n    return np.exp(-6.24 * np.log(loss) + 20.91)\nfor L in [5.0, 4.5, 4.0, 3.5, 3.0]:\n    print(f\"loss {L:.1f} -> 최적 배치 ≈ {bs_opt(L):>12,.0f} 토큰\")\nprint(\"손실 4.5→3.5 배치 배수:\", round(bs_opt(3.5)/bs_opt(4.5), 2))\n# 같은 직선을 점들에서 다시 맞춰 지수를 되찾는다(잡음 3%)\nrng = np.random.default_rng(0)\nLs = np.linspace(3.3, 5.4, 25)\nobs = bs_opt(Ls) * np.exp(rng.normal(0, 0.03, Ls.size))\nk, b = np.polyfit(np.log(Ls), np.log(obs), 1)\nprint(f\"재적합: 기울기 {k:.2f}, 절편 {b:.2f}\")\n",
+    "note": "필자 실행 결과: 손실 5.0·4.5·4.0·3.5·3.0 에서 최적 배치 약 5.2만·10.1만·21.1만·48.5만·127만 토큰, 4.5→3.5 배수 4.8. 3% 잡음을 넣은 점에서 다시 맞추면 기울기 −6.23, 절편 20.90 으로 되찾는다."
+   },
+   "pitfalls": [
+    "'μP 를 쓰면 하이퍼파라미터 조율이 끝난다'가 아니다. μP 는 너비에 대한 학습률(과 초기화)을 고정할 뿐, 배치·가중치 감쇠·학습 길이에 따른 변화는 따로 다뤄야 한다.",
+    "맞춤식의 로그 밑을 확인하지 않으면 배치를 수백 배 틀리게 읽는다. 그림 축 값과 대조해 밑을 정한다."
+   ],
+   "check": [
+    {
+     "q": "같은 맞춤식에서 목표 손실을 10% 낮추면 최적 배치는 몇 배가 되나?",
+     "a": "(1/0.9)^6.24 = e^(6.24 × 0.1054) = e^0.657 ≈ 1.93배."
+    },
+    {
+     "q": "MiniCPM 이 최적 배치를 구할 때 그림의 '세로 점 기둥 하나'는 무엇인가?",
+     "a": "배치 크기를 고정한 학습 한 번의 학습 곡선. 위로 갈수록 처리한 토큰이 많고 색이 손실이다."
+    }
+   ]
+  },
+  {
+   "start": 600,
+   "title": "WSD 학습률 — 코사인의 n² 비용을 사다리꼴 하나로",
+   "points": [
+    "코사인 스케줄은 총 학습 길이를 미리 알아야 모양이 정해진다 → 4M 시퀀스 학습의 끝에서 8M 학습을 이어 갈 수 없고, 매번 처음부터 다시 돈다(데이터 축 실험 비용이 n 에서 n² 로).",
+    "WSD(warmup–stable–decay): 고정 스텝 수의 워밍업 → 긴 일정 구간 → 끝 10~20% 에서 최댓값의 약 10% 까지 빠르게 감쇠.",
+    "안정 구간의 체크포인트로 되감아 감쇠만 다시 하면 어떤 길이의 학습이든 얻는다 — 감쇠 비용(약 10%)만 반복한다.",
+    "손실 곡선 모양: 안정 구간에서는 코사인보다 나빠 보이다가 감쇠에서 한꺼번에 따라잡고 같거나 조금 낫다.",
+    "현장 감각(강사): 코사인이 조금 나은 경우가 많지만 WSD 도 대부분 거의 같고, 이어 학습이 쉬워 기본값으로 널리 쓴다."
+   ],
+   "on_screen": "'What remains – model size vs data tradeoffs. From chinchilla – to fit a scaling law, we need to train from scratch, not just early stop' — 코사인 주기 길이(1.0×~3.0× num. steps)별 학습률·손실 곡선 격자. 'This turns the cost of fitting a scaling law from n to n^2.. Can we avoid this?' '(partial) solution in miniCPM – WSD learning rate — Instead of cosine, split learning rate into warmup, stable, and decay phases.' Figure 15(Cosine(80N) 대 WSD(40N,4N)·WSD(80N,8N) — 'The WSD LRS with different end steps share the same stable training stage.') 'For chinchilla-style analysis, can restart the run at the end of the stable phase.' 'WSD learning rates work well in miniCPM — Slower during the stable phase, rapid loss decay during decay phase. Decay ~ 10%.' 그림: Loss on C4 대 Tokens(B), WSD(10N,2N)…WSD(60N,6N) 곡선과 Cosine(80N).",
+   "explain": [
+    "Chinchilla 식 분석은 데이터 축 실험을 많이 요구한다. 같은 모델을 10B, 20B, 40B, 80B 토큰으로 학습했을 때의 최종 손실이 각각 필요하다. 그런데 코사인 스케줄은 '총 길이'가 모양에 들어 있다. 학습률이 전체 길이에 맞춰 천천히 내려가므로, 40B 학습의 중간(20B 지점)은 20B 짜리 코사인 학습의 끝과 다르다. 20B 시점에는 학습률이 아직 높아서 손실이 덜 내려가 있다. 그래서 길이마다 처음부터 따로 학습해야 하고, 데이터 점 n 개를 얻는 비용이 대략 n² 로 커진다. 9강의 Kaplan 대 Chinchilla 논쟁에서 '조기 종료 곡선으로 데이터 법칙을 맞추면 틀린다'는 교훈의 뒷면이 바로 이것이다.",
+    "MiniCPM 이 대중화한 해법이 WSD(Warmup–Stable–Decay) 스케줄이다. 모양은 큰 사다리꼴이다. 워밍업은 전체 길이의 비율이 아니라 고정된 스텝 수로 정한다 — 그래야 길이와 무관해진다. 그다음 학습률을 최댓값으로 오래 유지하는 안정 구간이 이어지고, 마지막 10~20% 에서 최댓값의 약 10% 까지 빠르게 떨어뜨린다. 핵심은 안정 구간이 길이와 무관하다는 점이다. 80B 학습의 안정 구간 중 어느 체크포인트로 되감아 거기서 감쇠만 하면, 그 길이의 '제대로 끝난' 학습을 얻는다. 감쇠는 매번 다시 해야 하지만 그것은 전체의 10% 정도다. 처음부터 다시 도는 것보다 훨씬 싸다.",
+    "손실 곡선은 처음 보면 이상하다. 안정 구간에서는 높은 학습률 때문에 손실이 코사인보다 한참 위에 머물러 '지고 있는 것처럼' 보인다. 그러다 감쇠가 시작되면 손실이 급격히 떨어져 코사인을 따라잡고, 같거나 가끔은 더 낮게 끝난다. 강사는 이 그림이 학습률 감쇠(어닐링)가 최종 성능에 얼마나 큰 몫을 하는지 보여 준다고 강조한다. ETH 의 Martin Jaggi 그룹 등이 WSD 를 폭넓게 비교했고, 현장의 감각은 '잘 조율한 코사인이 약간 나은 경우가 많지만 WSD 도 대부분 거의 같다'는 정도다. 이어 학습이 자유롭다는 장점 때문에 많은 팀이 기본값으로 쓴다.",
+    "WSD 를 갖추면 Chinchilla 식 분석이 쉬워진다. 모델 크기마다 긴 안정 구간 학습을 하나씩 돌리고, 여러 지점에서 되감아 감쇠하면 데이터 축 훑기가 한 번에 나온다. 모델 축은 크기를 바꿔 돌리면 된다. 아래 예와 코드는 이 절약을 숫자로 보여 준다. 다음 장에서 볼 DeepSeek 도 같은 생각을 계단식으로 변형해 쓴다. 이 기법은 과제 3(스케일링)에서 예산 안에 데이터 축 점을 많이 얻는 데도 그대로 쓸 수 있다."
+   ],
+   "formulas": [
+    {
+     "expr": "η(t) = η_max·t/T_w (t < T_w);  η_max (T_w ≤ t < (1−f)T);  η_max·[1 − (1−r)·(t−(1−f)T)/(fT)] (그 뒤)",
+     "meaning": "WSD 를 선형 감쇠로 쓴 꼴. T_w: 워밍업 스텝(고정), T: 총 스텝, f: 감쇠 비율(0.1~0.2), r: 끝 학습률 비(약 0.1). 감쇠 꼴은 선형·코사인·1−√ 등 변형이 있다."
+    },
+    {
+     "expr": "비용_cosine = Σᵢ Dᵢ,   비용_WSD ≈ (1−f)·max Dᵢ + f·Σᵢ Dᵢ",
+     "meaning": "목표 길이 D₁…D_k 의 데이터 축 점을 얻는 총 토큰. 길이를 등간격 Δ 로 k 개 잡으면 코사인은 Δ·k(k+1)/2(제곱), WSD 는 대략 (1−f)kΔ + f·Δk(k+1)/2."
+    }
+   ],
+   "example": {
+    "title": "10·20·40·80B 네 점을 얻는 비용",
+    "body": "코사인: 10 + 20 + 40 + 80 = 150B 토큰. WSD(f = 0.1): 80B 학습의 안정 구간 0.9 × 80 = 72B 를 한 번 돌리고, 각 길이 Dᵢ 의 0.9·Dᵢ 지점에서 0.1·Dᵢ 만큼 감쇠 가지를 낸다 → 1 + 2 + 4 + 8 = 15B. 합 87B, 코사인의 58%. 점이 촘촘할수록 차이가 커진다: 5B 간격 20점(5~100B)이면 코사인 5 × 20 × 21/2 = 1,050B, WSD 0.9 × 100 + 0.1 × 1,050 = 195B — 5.4배 싸다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\ndef cosine(t, T, peak=1.0, warm=200, floor=0.1):\n    if t < warm: return peak * t / warm\n    p = (t - warm) / (T - warm)\n    return peak * (floor + (1 - floor) * 0.5 * (1 + np.cos(np.pi * p)))\ndef wsd(t, T, peak=1.0, warm=200, decay_frac=0.1, floor=0.1):\n    if t < warm: return peak * t / warm\n    t_dec = T * (1 - decay_frac)            # 안정 구간 끝\n    if t < t_dec: return peak\n    return peak * (1 - (1 - floor) * (t - t_dec) / (T - t_dec))\nT = 10_000\nfor t in [100, 2000, 5000, 8999, 9500, 10000]:\n    print(f\"t={t:>5}  cosine={cosine(t,T):.3f}  wsd={wsd(t,T):.3f}\")\n# 데이터 축 훑기 비용: 목표 길이 D_i 마다 하나씩\nD = np.array([10, 20, 40, 80])               # 십억 토큰\ncos_cost = D.sum()                           # 코사인: 매번 처음부터\nwsd_cost = 0.9 * D.max() + 0.1 * D.sum()     # 안정 구간 한 번 + 감쇠 가지들\nprint(\"코사인 총비용\", cos_cost, \"B / WSD 총비용\", wsd_cost, \"B\")\nk = 20; Dk = np.arange(1, k + 1) * 5.0       # 5B 간격 20점\nprint(\"20점: 코사인\", Dk.sum(), \"B, WSD\", 0.9 * Dk.max() + 0.1 * Dk.sum(), \"B\")\n",
+    "note": "필자 실행 결과: t = 5,000 에서 코사인 0.564, WSD 1.000 / t = 9,500 에서 0.106 대 0.550 / 끝에서 둘 다 0.100. 비용은 4점 150B 대 87B, 20점 1,050B 대 195B."
+   },
+   "pitfalls": [
+    "워밍업을 '전체의 몇 %'로 정하면 WSD 의 장점(길이 무관)이 깨진다. 워밍업은 고정 스텝 수로 둔다.",
+    "안정 구간 중간의 손실로 모델을 비교하면 안 된다. 감쇠 전 손실은 학습률 잡음 때문에 부풀어 있다 — 비교는 감쇠를 마친 점끼리.",
+    "되감을 체크포인트는 반드시 안정 구간의 것이어야 한다. 이미 감쇠한 체크포인트에서 학습률을 다시 올려 잇는 것은 다른 실험이다."
+   ],
+   "check": [
+    {
+     "q": "코사인 스케줄로 데이터 축 점을 얻는 비용이 n² 로 커지는 이유는?",
+     "a": "코사인의 모양이 총 길이에 따라 정해져서, 긴 학습의 중간 체크포인트가 짧은 학습의 끝과 같지 않다. 길이마다 처음부터 다시 학습해야 하므로 비용이 길이의 합(등간격이면 n² 에 비례)이 된다."
+    },
+    {
+     "q": "WSD 로 50B 학습 결과가 필요하다. 100B 안정 구간 학습이 이미 있다면 무엇을 하나?",
+     "a": "안정 구간의 45B 지점(0.9 × 50B) 체크포인트로 되감아, 거기서 5B 동안 학습률을 감쇠한다."
+    }
+   ]
+  },
+  {
+   "start": 840,
+   "title": "MiniCPM ③ — Chinchilla 방법 1·3 재현과 '파라미터당 95 토큰' 주장",
+   "points": [
+    "WSD 로 되감아 감쇠하며 데이터 축을, 사다리로 모델 축을 훑어 Chinchilla 를 재현했다.",
+    "고른 것은 방법 1(아래 껍질)과 방법 3(결합 적합) — 강사는 이 둘이 Chinchilla 세 방법 중 가장 덜 믿을 만하다고 본다.",
+    "결합 적합: L = 7.54×10⁻²/N^0.30 + 2.92×10⁻¹/D^0.30 + 0.25, C = 10²¹ 에서 D/N ≈ 95.6 — Chinchilla 20:1 보다 훨씬 데이터 쪽.",
+    "두 지수가 같으면(α = β) 최적 D/N 은 연산과 무관한 상수 (B/A)^(1/α) 가 된다(η = 0).",
+    "강사: 정말 그렇게 많은 토큰이 필요하다는 뜻인지, 적합이 Chinchilla 와 달라서인지 불분명하다."
+   ],
+   "on_screen": "'Chinchilla-type analysis — Equipped with the WSD learning rate, we can now try to find the optimal data-to-model size ratio' 논문 발췌: 'L(N, D) = C_N·N^(−α) + C_D·D^(−β) + L₀ … N_opt/D_opt = K²·(C/6)^η'. 'MiniCPM authors choose method 1 (lower envelope) and method 3 (joint fit).' 'Chinchilla method 1 — Fairly clear (though maybe not linear?) trends' — Code·English(Wikihow)·Chinese 손실 대 연산 그림, 'Different colors indicate different models. Their runs suggest relatively low diminishing returns due to data.' 'Chinchilla method 3 — Their primary scaling approach is the joint fit – they find very high data-model ratios.' Ultratext 등고선(가로 Non-embedding Parameters(10⁹), 세로 Compute(10¹⁸ Flops)) 위에 '7.54×10⁻²/N^0.30 + 2.92×10⁻¹/D^0.30 + 0.25', 'K² = 0.01', 'η = −0.00', 'D_opt/N_opt |_{C=10²¹} = 95.60'.",
+   "explain": [
+    "WSD 를 갖춘 MiniCPM 은 Chinchilla 분석을 재현한다. 모델 축은 사다리로, 데이터 축은 안정 구간 체크포인트에서 감쇠 가지를 내어 훑는다. 9강에서 배운 Chinchilla 의 세 방법 — ① 여러 크기의 학습 곡선을 겹쳐 아래 껍질(lower envelope)을 따는 법, ② 연산을 고정한 IsoFLOP 곡선의 꼭짓점을 잇는 법, ③ L(N, D) 전체 식을 한꺼번에 맞추는 법 — 중 MiniCPM 은 1과 3을 골랐다. 강사는 이 선택에 고개를 갸웃한다. 방법 2(IsoFLOP)가 가장 튼튼하고, 방법 3은 9강에서 본 것처럼 Epoch AI 의 재적합이 원 논문의 맞춤 실수를 잡아낼 만큼 예민하기 때문이다.",
+    "결과 그림 자체는 깔끔하다. 방법 1에서는 코드·영어·중국어 데이터마다 아래 껍질이 대체로 직선이고, 방법 3에서는 연산–비임베딩 파라미터 평면에 매끄러운 등고선이 그려진다. 맞춘 식은 L = 7.54×10⁻²/N^0.30 + 2.92×10⁻¹/D^0.30 + 0.25 이다. 여기서 눈에 띄는 것은 두 지수가 모두 0.30 으로 같다는 점이다. 9강의 닫힌 꼴을 떠올리면 최적 모델 크기는 N* ∝ C^(β/(α+β)) 이고, α = β 면 N* ∝ C^0.5, D* ∝ C^0.5 가 되어 두 값의 비가 연산과 무관한 상수가 된다. 슬라이드의 η = −0.00 이 바로 'N/D 비가 연산에 따라 변하지 않는다'는 뜻이다.",
+    "그 상수가 얼마인지가 문제다. 최적점에서는 두 항의 한계 효용이 같아야 하므로 α·A·N^(−α) = β·B·D^(−β). α = β 면 A/N^α = B/D^α, 곧 (D/N)^α = B/A 이고 D/N = (B/A)^(1/α) 다. 숫자를 넣으면 (0.292/0.0754)^(1/0.3) ≈ 91 이 나온다. 슬라이드의 95.6 과의 작은 차이는 지수를 소수 둘째 자리로 반올림해 보여 줬기 때문으로 보인다. 어쨌든 파라미터당 약 90~95 토큰이고, Chinchilla 의 약 20 보다 4~5배 데이터 쪽이다. MiniCPM 저자들은 이를 근거로 Chinchilla 보다 훨씬 많은 텍스트로 학습해야 한다고 주장했다.",
+    "강사는 이 결론을 그대로 받아들이지 않는다. 정말 데이터가 더 필요한 것인지, 아니면 이 팀의 적합(방법 3)이 Chinchilla 원 논문과 다르게 흔들린 것인지 가를 수 없다는 것이다. 아래 코드가 그 예민함을 보여 준다. D 쪽 지수만 0.30 에서 0.27 로 바꾸면 '연산과 무관한 91'이 사라지고, 연산이 10⁴배 커지는 동안 최적 D/N 이 73 에서 118 로 흘러간다. 결합 적합의 지수가 소수 둘째 자리만 달라져도 외삽 결론이 크게 바뀐다는 것, 9강의 Kaplan–Chinchilla 논쟁과 같은 교훈이다. MiniCPM 에서 가져갈 두 가지는 결국 μP 로 학습률을 안정시키는 요령과 WSD 스케줄이라는 것이 강사의 정리다."
+   ],
+   "formulas": [
+    {
+     "expr": "L(N, D) = A/N^α + B/D^β + E,   A = 7.54×10⁻², B = 2.92×10⁻¹, α = β = 0.30, E = 0.25",
+     "meaning": "MiniCPM 의 결합 적합(Ultratext). N: 비임베딩 파라미터, D: 토큰, E: 줄일 수 없는 손실. 단위는 그림 축 기준이다."
+    },
+    {
+     "expr": "N_opt/D_opt = K²·(C/6)^η,   η = (β−α)/(α+β)",
+     "meaning": "6ND = C 제약 아래 최적 비율. α = β 면 η = 0 이라 비율이 연산과 무관한 상수 K² 가 된다. 슬라이드 K² = 0.01 은 D/N ≈ 100 근처라는 뜻."
+    },
+    {
+     "expr": "α = β 일 때 D*/N* = (B/A)^(1/α)",
+     "meaning": "최적점 조건 αA·N^(−α) = βB·D^(−β) 에서 바로 나온다. A, B 의 비율과 지수만으로 토큰/파라미터 비가 정해진다."
+    }
+   ],
+   "example": {
+    "title": "95 토큰을 손으로 다시 계산하기",
+    "body": "B/A = 0.292/0.0754 = 3.873. ln 3.873 = 1.354. 1/α = 1/0.30 = 3.333. 1.354 × 3.333 = 4.513, e^4.513 ≈ 91.2. 따라서 D*/N* ≈ 91(슬라이드 95.6 과 반올림 차이). 1B 모델이면 약 91B 토큰, Chinchilla 20:1(20B)의 4.6배다. 연산으로 바꾸면 C = 6 × 1e9 × 91e9 ≈ 5.5×10²⁰ FLOPs. 같은 연산을 Chinchilla 20:1 로 쓰면 N = √(C/120) = √(4.6×10¹⁸) ≈ 2.1B, D ≈ 43B — 같은 예산에서 MiniCPM 법칙은 절반 크기 모델을 두 배 넘게 오래 학습하라고 말한다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\n# MiniCPM 결합 적합(슬라이드): L = A/N^a + B/D^b + E\nA, B, E, a, b = 7.54e-2, 2.92e-1, 0.25, 0.30, 0.30\ndef loss(N, D): return A / N**a + B / D**b + E\ndef optimum(C):\n    # 6ND = C 위에서 N 을 격자로 훑어 최솟점 찾기\n    N = np.logspace(-3, 3, 200001) # 단위는 슬라이드와 같다고 둔다\n    D = C / (6 * N)\n    i = np.argmin(loss(N, D))\n    return N[i], D[i]\nfor C in [1e0, 1e2, 1e4]:\n    N, D = optimum(C)\n    print(f\"C={C:g}: N*={N:.4g}, D*={D:.4g}, D/N={D/N:.1f}\")\nprint(\"닫힌 꼴 (B/A)^(1/a) =\", round((B / A) ** (1 / a), 1))\nb = 0.27                               # D 지수만 조금 낮추면?\nfor C in [1e0, 1e2, 1e4]:\n    N, D = optimum(C)\n    print(f\"b=0.27, C={C:g}: D/N={D/N:.1f}\")\n",
+    "note": "필자 실행 결과: C = 1, 10², 10⁴ 모두 D/N = 91.2(닫힌 꼴과 일치). D 지수를 0.27 로 바꾸면 같은 C 들에서 D/N = 72.7 → 92.7 → 118.1 로 연산에 따라 흐른다."
+   },
+   "pitfalls": [
+    "'MiniCPM 은 파라미터당 95 토큰이 최적임을 보였다'고 단정하지 않는다. 가장 예민한 방법 3 의 결과이고 강사도 의심한다(강사 의견).",
+    "K² = 0.01 은 N/D 비다(D/N 이 아니다). D/N 으로 읽으면 약 100.",
+    "그림의 N 은 10⁹ 단위, C 는 10¹⁸ 단위 축이다. 식의 상수를 다른 단위의 N·D 에 그대로 넣으면 비율이 틀어진다."
+   ],
+   "check": [
+    {
+     "q": "결합 적합에서 α = 0.34, β = 0.28 이면 최적 N 은 연산의 몇 제곱으로 커지나?",
+     "a": "N* ∝ C^(β/(α+β)) = C^(0.28/0.62) ≈ C^0.45. D* ∝ C^0.55 로 데이터 쪽이 더 빨리 큰다."
+    },
+    {
+     "q": "강사가 MiniCPM 의 Chinchilla 재현에서 아쉬워하는 선택은?",
+     "a": "가장 튼튼한 방법 2(IsoFLOP) 대신 덜 믿을 만한 방법 1(아래 껍질)과 방법 3(결합 적합)을 고른 것. 특히 방법 3의 높은 데이터 비율 결론은 적합의 흔들림일 수 있다."
+    }
+   ]
+  },
+  {
+   "start": 930,
+   "title": "DeepSeek LLM ① — μP 없이, 학습률과 배치를 연산의 법칙으로 맞추기",
+   "points": [
+    "DeepSeek LLM(2024, 7B·67B)은 MoE 이전의 첫 논문이지만 지금도 가장 잘 실행된 공개 스케일링 분석 중 하나라는 평가.",
+    "전략: 트랜스포머의 다른 하이퍼파라미터는 규모 불변이라 가정하고, μP 없이 배치·학습률의 최적값을 직접 법칙으로 맞춘다.",
+    "작은 연산(10¹⁷, 10²⁰ FLOPs)에서 배치 × 학습률 격자 탐색 → 최솟값의 0.25% 안에 드는 '거의 최적' 설정을 모은다. 최적 근처는 넓고 평평하다.",
+    "결과: η_opt = 0.3118·C^(−0.1250), B_opt = 0.2920·C^(0.3271) — 연산이 크면 배치는 키우고 학습률은 낮춘다.",
+    "강사: 배치 직선은 그럴듯하지만 학습률 직선은 '살면서 본 최고의 직선'은 아니다 — 격자 양자화 오차가 크다."
+   ],
+   "on_screen": "'DeepSeek (2024) – another LM with careful scaling analysis — 7 and 67B param models – generally high performance compared to other open LM.' 'Scaling strategy – batch + LR — Scaling strategy: don't use any muP, directly estimate optimal batch / LR' 논문 발췌와 두 히트맵 '(a) 1e17 FLOPs (177M FLOPs/token)', '(b) 1e20 FLOPs (2.94B FLOPs/token)'(가로 Learning Rate, 세로 Batch Size(Tokens), 색 손실, 별표 최적). 'Scaling analysis of learning rates — Small scale runs + collect near optimal (within 0.25% of min) models. η_opt = 0.3118·C^−0.1250, B_opt = 0.2920·C^0.3271 (1)' 그림 '(a) Batch size scaling curve', '(b) Learning rate scaling curve'(가로 Non-Embedding Training FLOPs, 회색 점 = 거의 최적 설정, 별 = 7B MHA 2T Token·67B GQA 2T Token). 'Learning rate fit looks a bit questionable..'",
+   "explain": [
+    "DeepSeek 의 첫 논문 DeepSeek LLM 은 MoE·MLA 같은 화려한 기법이 나오기 전, 7B 와 67B 의 밀집 모델을 낸 보고서다. 강사는 이 논문만 봐도 '아주 진지한 사람들'임을 알 수 있었다고 말한다. 실험 설계의 취향이 좋고, 지금도 공개된 스케일링 분석 중 가장 잘 실행된 것에 속한다는 평가다. 이 팀은 MiniCPM 과 정반대 철학을 택한다. μP 같은 재매개화는 쓰지 않는다. 학습률과 배치가 규모에 따라 움직인다는 것을 받아들이고, 그 움직임 자체가 스케일링 법칙처럼 예측 가능하다면 그걸로 충분하다고 본다.",
+    "방법은 무식할 만큼 직접적이다. 연산 예산을 고정하고(예: 10¹⁷ FLOPs, 토큰당 1.77억 FLOPs 모델), 배치 크기와 학습률을 격자로 훑어 최종 손실을 히트맵으로 그린다. 이것을 여러 연산 규모(10²⁰ 까지)에서 반복한다. 히트맵에서 눈여겨볼 점은 최적 근처가 넓다는 것이다. 꽤 넓은 배치·학습률 범위에서 손실이 거의 같다. 그래서 DeepSeek 은 최솟점 하나를 찍지 않고, 최소 손실의 0.25% 안에 드는 설정을 전부 '거의 최적'으로 모아 회색 점으로 찍는다. 그 점들을 연산에 대해 로그-로그로 그리고 직선을 맞추면 두 법칙이 나온다: η_opt = 0.3118·C^(−0.125), B_opt = 0.2920·C^(0.3271). 연산이 커질수록 배치는 키우고 학습률은 낮추라는 뜻이다. 그림의 별은 실제로 학습한 7B·67B 의 설정으로, 큰 연산에서 배치가 훨씬 크고 학습률이 훨씬 낮다.",
+    "강사의 평가는 엇갈린다. 배치 쪽 점들은 직선처럼 보인다. 학습률 쪽은 회색 점들이 넓게 퍼져 있어 '살면서 본 최고의 직선 맞춤은 아니지만 아마 괜찮다'는 정도다. 모델은 실제로 잘 학습됐으니 실용적으로는 통했다. 한 학생이 '같은 연산에서 왜 최적 학습률 범위가 이렇게 넓으냐'고 묻자, 강사는 같은 연산이라도 모델 크기 등이 달라지기 때문이라고 답한다. 그리고 격자 탐색 방식의 약점을 짚는다. 격자가 제자리에 놓이지 않으면 양자화 오차가 커서, 맞춘 직선이 임의의 선처럼 보일 수 있다는 것이다.",
+    "양자화 오차가 무엇인지 아래 코드로 보자. 학습률을 2배 간격 격자(2⁻¹², 2⁻¹¹, …)로 훑으면, 참 최적점이 규모에 따라 −10.4 에서 −8.6 까지 매끄럽게 움직여도 '격자 최솟값'은 −10, −10, −10, −10, −9, −9, −9 처럼 계단으로만 움직인다. 이런 계단 점들에 직선을 맞추면 기울기가 엉뚱해진다. 손실이 학습률의 로그에 대해 볼록하다는 성질(10장에서 StepFun 이 확인한다)을 이용해 격자 점에 포물선을 맞추고 꼭짓점을 읽으면 오차가 0.02 안으로 줄어든다. DeepSeek 의 '0.25% 안 설정 모으기'도 같은 문제를 다른 방식으로 누그러뜨리는 장치다. 강사의 한 줄 요약: 민감한 하이퍼파라미터는 안정시키거나(MiniCPM) 법칙으로 맞추거나(DeepSeek) 둘 중 하나다."
+   ],
+   "formulas": [
+    {
+     "expr": "η_opt = 0.3118 · C^(−0.1250),   B_opt = 0.2920 · C^(0.3271)",
+     "meaning": "C: 비임베딩 학습 FLOPs(다음 장의 M·D), η_opt: 최적 학습률, B_opt: 최적 배치(토큰). 연산 10배마다 학습률은 10^(−0.125) = 0.75배, 배치는 10^0.327 = 2.12배."
+    },
+    {
+     "expr": "near-optimal = { (B, η) : L(B, η) ≤ 1.0025 · min L }",
+     "meaning": "최솟값의 0.25% 안에 드는 모든 설정. 최적 근처가 평평해 한 점보다 집합이 더 안정적인 추정을 준다."
+    }
+   ],
+   "example": {
+    "title": "DeepSeek 법칙에 연산을 넣어 보기",
+    "body": "C = 10²⁰: η = 0.3118 × 10^(−2.5) = 0.3118 × 0.003162 = 9.86×10⁻⁴, B = 0.2920 × 10^(20 × 0.3271) = 0.2920 × 10^6.542 = 0.2920 × 3.48×10⁶ ≈ 1.02×10⁶ 토큰(시퀀스 4096 이면 약 248 개). C = 10²⁴(대략 67B 를 2T 토큰): η = 0.3118 × 10⁻³ = 3.1×10⁻⁴, B = 0.2920 × 10^7.85 ≈ 2.07×10⁷ 토큰(약 5,000 시퀀스). 연산 10⁴배 동안 학습률은 0.32배, 배치는 약 20배."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nrng = np.random.default_rng(0)\ndef loss(log2_lr, opt):            # 참 지형: log 학습률에 대해 볼록(포물선)\n    return 2.5 + 0.02 * (log2_lr - opt) ** 2\ngrid = np.arange(-12, -5, 1.0)     # 2배 간격 격자 2^-12 … 2^-6\ntrue_opts = np.linspace(-10.4, -8.6, 7)   # 규모가 커지며 최적점이 서서히 이동\nfor t in true_opts:\n    y = loss(grid, t) + rng.normal(0, 0.002, grid.size)\n    argmin = grid[np.argmin(y)]\n    c2, c1, c0 = np.polyfit(grid, y, 2)       # 포물선 맞춤으로 꼭짓점\n    vertex = -c1 / (2 * c2)\n    print(f\"참 {t:6.2f} | 격자 최솟값 {argmin:6.1f} | 포물선 꼭짓점 {vertex:6.2f}\")\n",
+    "note": "필자 실행 결과: 참 최적점 −10.40·−10.10·−9.80·−9.50·−9.20·−8.90·−8.60 에 대해 격자 최솟값은 −10·−10·−10·−10·−9·−9·−9(계단), 포물선 꼭짓점은 −10.40·−10.08·−9.82·−9.49·−9.21·−8.91·−8.61. 2배 간격 격자의 양자화 오차를 포물선 맞춤이 거의 없앤다."
+   },
+   "pitfalls": [
+    "DeepSeek 의 C 는 6ND 가 아니라 비임베딩 FLOPs(M·D)다. 6ND 로 계산한 C 를 넣으면 학습률·배치가 살짝 어긋난다(다음 장).",
+    "뒤에 나오는 StepFun 비교표에는 DeepSeek 학습률 계수가 0.3188 로 적혀 있지만, DeepSeek 슬라이드(와 원 논문)의 값은 0.3118 이다. 표의 오기로 보고 0.3118 을 쓴다.",
+    "격자 최솟값을 그대로 이어 직선을 맞추지 않는다. 볼록성을 이용해 꼭짓점을 보간하거나 거의 최적 집합을 쓴다."
+   ],
+   "check": [
+    {
+     "q": "DeepSeek 법칙으로 연산이 100배 커지면 학습률과 배치는 각각 몇 배?",
+     "a": "학습률 100^(−0.125) = 10^(−0.25) ≈ 0.56배, 배치 100^0.3271 = 10^0.654 ≈ 4.5배."
+    },
+    {
+     "q": "DeepSeek 과 MiniCPM 의 하이퍼파라미터 철학 차이를 한 문장으로?",
+     "a": "MiniCPM 은 μP 로 최적 학습률이 규모에 따라 움직이지 않게 만들고, DeepSeek 은 움직임을 받아들여 작은 규모 격자 탐색으로 그 움직임의 거듭제곱 법칙을 맞춰 외삽한다."
+    }
+   ]
+  },
+  {
+   "start": 1200,
+   "title": "DeepSeek LLM ② — 두 계단 WSD, 토큰당 FLOPs M 으로 IsoFLOP, 그리고 큰 모델 손실 예측",
+   "points": [
+    "다단 학습률: 2000 스텝 워밍업 → 토큰 80% 지점에서 최댓값의 31.6% → 90% 지점에서 10%. 감쇠를 두 계단(각 10%)으로 나눈 WSD 변형.",
+    "성능은 코사인과 거의 같고, 80% 지점 체크포인트를 재사용할 수 있다. 계단을 둘로 나눈 이유는 불분명하고 이후 널리 퍼지지 않았다(강사).",
+    "IsoFLOP(Chinchilla 방법 2)을 택해 MiniCPM 보다 훨씬 깔끔한 곡선 — 모델 크기는 파라미터 N 대신 토큰당 비임베딩 FLOPs M 으로 잰다.",
+    "작은 규모에서 맞춘 법칙이 7B·67B 의 실제 손실(bits-per-byte)을 꽤 정확히 맞혔다 — 스케일링 법칙 작업의 최종 증거."
+   ],
+   "on_screen": "'For chinchilla analysis: WSD-style learning rate — Deepseek uses WSD-style learning rate – fast warmup + two decay steps of 10% each.' 발췌: 'learning rate … reaches its maximum value after 2000 warmup steps, and then decreases to 31.6% of the maximum value after processing 80% of the training tokens. It further reduces to 10% of the maximum value after 90% of the tokens. The gradient clipping … is set to 1.0.' 그림 '(a) Multi-step v.s. cosine learning rate decay', '(b) Different proportions of multi-step stages'(80%+10%+10%, 70%+15%+15%, 60%+20%+20%). 'Generally seems to match performance of cosine learning rates.' 'Data-size tradeoff analysis: Chinchilla method 2 — Straightforward isoflop-style analysis' '(a) IsoFLOP curve'(가로 Non-Embedding FLOPs/Token (M), 1e17~3e20), '(b) Optimal model scaling', '(c) Optimal data scaling'. 'Scaling predicts final model loss — The fitted scaling models (generally) accurately predict the final model losses.' Figure 5: Bits-per-Byte on Validation Set 대 Training FLOPs(C = MD), 점선 = 작은 모델로 맞춘 거듭제곱, 파란 별 = DeepSeek LLM 7B·67B.",
+   "explain": [
+    "DeepSeek 도 Chinchilla 를 재현하려고 WSD 계열 스케줄을 쓴다. 다만 감쇠를 한 번에 하지 않고 두 계단으로 나눈다. 2000 스텝 워밍업 후 최대 학습률을 유지하다가, 학습 토큰의 80% 를 처리한 지점에서 최댓값의 31.6% 로, 90% 지점에서 10% 로 뚝 떨어뜨린다. 31.6% 는 10^(−0.5) 라서, 두 계단이 로그 눈금에서 정확히 같은 크기(각각 √10 배 감소)다. 그림 (a)에서 이 다단 스케줄의 손실은 계단마다 뚝 떨어지며 결국 코사인과 거의 같은 곳에 도착하고, (b)에서 계단 비율을 80/10/10, 70/15/15, 60/20/20 으로 바꿔도 결과가 비슷하다. 강사는 왜 굳이 두 계단인지는 모르겠다고 하며, 이 변형은 이후 크게 유행하지 않았다고 덧붙인다. 요점은 WSD 계열이 Chinchilla 재현에 쓸 만하다는 것이다.",
+    "DeepSeek 의 Chinchilla 재현은 MiniCPM 보다 훨씬 깔끔하다. 강사는 그 이유를 방법 선택에서 찾는다. DeepSeek 은 연산을 고정한 IsoFLOP(방법 2)을 택했다. 예산마다 모델 크기를 바꿔 가며 손실을 재면 U자 곡선이 생기고, 꼭짓점들을 이으면 최적 모델 크기와 최적 데이터가 연산의 거듭제곱으로 나온다. 한 가지 세부가 중요하다. DeepSeek 은 모델 크기를 파라미터 수 N 이 아니라 '토큰당 비임베딩 FLOPs' M 으로 잰다. M = 72·n_layer·d_model² + 12·n_layer·d_model·l_seq 로, 앞 항은 6N(비임베딩)과 같고 뒤 항은 어텐션 점수 계산(QKᵀ, 가중합)의 FLOPs 다. 9강에서 '무엇을 파라미터로 세느냐'가 Kaplan 과 Chinchilla 를 갈랐던 것처럼, 시퀀스가 길고 모델이 작을수록 6N 은 실제 연산을 과소평가한다. 그래서 연산은 C = M·D 로 쓴다.",
+    "아래 예처럼 d_model = 4096, 30층, 시퀀스 4096 이면 어텐션 항이 6N 의 약 17% 를 더한다. 작은 모델(d_model 이 작고 시퀀스는 같으면) 일수록 이 비율이 커지므로, 6N 으로 재면 작은 모델의 연산을 체계적으로 깎아 IsoFLOP 꼭짓점이 미끄러진다. M 을 쓰면 모델 크기와 무관하게 '실제로 쓴 FLOPs' 로 줄을 세울 수 있다. 앞 장의 학습률·배치 법칙에 들어간 C 도 이 M·D 다.",
+    "마지막 그림이 강사가 가장 아끼는 장면이다. 작고 잘 통제된 모델들을 작은 연산 범위에서 여럿 학습해 거듭제곱 직선을 긋고, 그 선을 끝까지 연장한 지점에 실제로 학습한 7B 와 67B 를 별로 찍었다. 별이 선 위에 꽤 정확히 앉는다(bits-per-byte 기준). 법칙으로 큰 모델의 손실을 미리 맞힌 것이다. 강사는 이런 그림이 요즘 오픈 모델 보고서에서 드물어진 것을 아쉬워한다. 정리하면 DeepSeek 레시피는 ① 다른 하이퍼파라미터는 규모 불변으로 두고 ② 배치·학습률은 연산의 법칙으로 맞추고 ③ 모델 크기는 IsoFLOP 으로 정하며 ④ 계단식 스케줄로 Chinchilla 비용을 줄인다."
+   ],
+   "formulas": [
+    {
+     "expr": "M = 72·n_layer·d_model² + 12·n_layer·d_model·l_seq,   C = M·D",
+     "meaning": "M: 토큰당 비임베딩 학습 FLOPs(순전파+역전파). 첫 항은 행렬곱(= 6 × 12·n_layer·d_model²), 둘째 항은 길이 l_seq 의 어텐션 점수·가중합. D: 학습 토큰. (DeepSeek LLM 논문의 정의 — 노트 보충)"
+    },
+    {
+     "expr": "η(t) = η_max (t < 0.8T),  0.316·η_max (0.8T ≤ t < 0.9T),  0.1·η_max (t ≥ 0.9T)",
+     "meaning": "T: 총 토큰. 0.316 = 10^(−0.5) 라 두 계단이 로그 눈금으로 같은 크기다. 워밍업 2000 스텝, 기울기 클리핑 1.0."
+    }
+   ],
+   "example": {
+    "title": "6N 과 M 의 차이를 숫자로",
+    "body": "n_layer = 30, d_model = 4096, l_seq = 4096. 비임베딩 N = 12 × 30 × 4096² = 12 × 30 × 16,777,216 = 6.04×10⁹ → 6N = 3.624×10¹⁰. M = 72 × 30 × 4096² + 12 × 30 × 4096 × 4096 = 3.624×10¹⁰ + 6.04×10⁹ = 4.228×10¹⁰. M/6N = 1.167, 어텐션 몫 17%. 작은 모델 d_model = 1024, n_layer = 16 이면 첫 항 72 × 16 × 1024² = 1.208×10⁹, 둘째 항 12 × 16 × 1024 × 4096 = 8.05×10⁸ → 어텐션 몫 67%. 작을수록 6N 은 실제 연산을 크게 과소평가한다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\ndef ds(C):   # DeepSeek LLM: C 는 비임베딩 학습 FLOPs(=M·D)\n    return 0.3118 * C**-0.1250, 0.2920 * C**0.3271\nfor C in [1e17, 1e20, 1e22, 1e24]:\n    lr, B = ds(C)\n    print(f\"C={C:.0e}: lr={lr:.2e}, batch={B:,.0f} tokens\")\n# M(비임베딩 FLOPs/토큰) 대 6N\nL, d, s = 30, 4096, 4096\nN_ne = 12 * L * d * d\nM = 72 * L * d * d + 12 * L * d * s\nprint(f\"6N={6*N_ne:.3e}, M={M:.3e}, M/6N={M/(6*N_ne):.3f}\")\n",
+    "note": "필자 실행 결과: C = 10¹⁷·10²⁰·10²²·10²⁴ 에서 학습률 2.34e-3·9.86e-4·5.54e-4·3.12e-4, 배치 약 10.6만·102만·459만·2,069만 토큰. 30층·4096 폭·시퀀스 4096 에서 6N = 3.624e10, M = 4.228e10, M/6N = 1.167."
+   },
+   "pitfalls": [
+    "다단 스케줄의 31.6% 를 임의의 숫자로 외우지 않는다. 10^(−0.5) 로, 두 번 감쇠해 10% 가 되도록 로그 눈금을 반으로 나눈 값이다.",
+    "IsoFLOP 의 가로축을 N(파라미터)으로 할지 M(FLOPs/토큰)으로 할지에 따라 꼭짓점이 바뀐다. 다른 팀의 법칙을 가져올 때 축의 정의부터 맞춘다."
+   ],
+   "check": [
+    {
+     "q": "DeepSeek 의 다단 스케줄에서 첫 계단 뒤 학습률은 최댓값의 몇 %이고, 왜 그 값인가?",
+     "a": "31.6%. 10^(−0.5) 로, 두 계단을 거쳐 10%(10^(−1))가 되도록 로그 눈금에서 같은 크기로 나눴다."
+    },
+    {
+     "q": "같은 6N 이라도 어떤 모델에서 M 과의 차이가 커지는가?",
+     "a": "d_model 이 작고 l_seq 가 긴 모델. 어텐션 항 12·n_layer·d_model·l_seq 와 행렬 항 72·n_layer·d_model² 의 비가 l_seq/(6·d_model) 이라, 폭이 좁을수록 어텐션 몫이 커진다."
+    }
+   ]
+  },
+  {
+   "start": 1350,
+   "title": "최근 보고서들 — Qwen 의 하이퍼 법칙, Kimi K2·Hunyuan 의 MoE 법칙, Llama 3 의 하류 매핑, MiniMax 의 아키텍처 법칙",
+   "points": [
+    "Qwen 2.5: 배치·학습률의 최적값을 스케일링 실험으로 맞추고 MoE 에도 적용 — DeepSeek 식과 같은 계열. Qwen 3 은 '2.5 와 같다'고만 쓴다.",
+    "Kimi K2: 희소도(총 전문가/활성 전문가) 스케일링 법칙 — 같은 활성 파라미터에서 희소할수록 손실이 낮다. 수확 체감을 보고 희소도 48(384 중 8 활성)을 골랐다.",
+    "Hunyuan-Large: 희소도는 고정하고 MoE 용 IsoFLOP 을 돌려 '활성 파라미터당 약 96 토큰'을 얻었다.",
+    "Llama 3: IsoFLOP 으로 약 39:1, 그리고 연산 → 정답 NLL → 하류 정확도를 시그모이드로 잇는 2단 예측.",
+    "MiniMax-01: 선형(라이트닝)·소프트맥스·혼합 어텐션의 스케일링을 비교해 비슷함을 보이고 혼합 구조 채택을 정당화."
+   ],
+   "on_screen": "'Other models: Qwen scaling — Qwen 2.5 – batch and hyper scaling fits', 'Qwen 3 – similar scaling for LR/batch' 발췌. 'Kimi K2 — Many recent papers – sparsity scaling law to find the right sparsity levels' 발췌: '… sparsity 48 reduces FLOPs by 1.69x, 1.39x, and 1.15x compared to sparsity levels 8, 16, and 32 … we adopt a sparsity of 48 for Kimi K2, activating 8 out of 384 experts per forward pass.' Figure 5(Sparsity Scaling Law), Figure 6(어텐션 헤드 수 — 헤드를 두 배로 하면 검증 손실 0.5~1.2% 감소). 'Hunyuan (2024) large scaling laws — Yet more isoflops-style scaling (but this time for MoE parameter sizes)' Figure 3, 'Optimal ratio – 96-1 (data to active param)'. 'LLaMA 3 (2024) Scaling laws' — IsoFLOPs curves(6×10¹⁸~10²² FLOPs), 'Isoflops-style scaling (39-1 ratio)', 'Compute-to-downstream scaling'(Normalized NLL per Char 대 Accuracy 시그모이드). 'MiniMax-01 (2025) — Architecture scaling laws + Chinchilla method 1' Figure 6(Loss·Model size·Tokens vs Compute; Softmax·Lightning·Hybrid-lightning). 'Recent scaling law recipes' 요약 슬라이드.",
+   "explain": [
+    "2024년 말 이후의 보고서들은 세부를 훨씬 적게 싣는다. 강사가 보여 주는 Qwen 2.5 는 '최적 배치·학습률을 찾으려고 스케일링 실험을 했고, 법칙으로 최적값을 예측했으며, MoE 에도 그렇게 했다' 정도만 쓴다. 내용은 DeepSeek 식 분석과 같다. Qwen 3 에 이르면 '2.5 에서 이미 정했으니 똑같이 했다'로 끝난다. 강사는 이것을 실패가 아니라 성숙의 신호로 읽는다. 학습률·배치 법칙과 Chinchilla 는 이제 표준 레시피의 일부가 돼서, 보고서에 길게 쓸 이유가 없어졌다는 것이다.",
+    "그렇다면 2026년의 새 질문은 무엇인가. 답은 MoE 다. 많은 회사가 밀집 모델에서 MoE 로 완전히 넘어가면서 '활성 파라미터를 얼마로, 희소도를 얼마로 할까'를 정해야 했다. Kimi K2 는 활성 파라미터를 고정하고 총 전문가 수를 늘려 가며(희소도 = 총 전문가/활성 전문가) 연산 대 손실 곡선을 그렸다. 결과는 예상대로 희소할수록 같은 연산에서 손실이 낮다. 하지만 숫자로 관계를 알면 합리적으로 멈출 지점을 고를 수 있다. 같은 검증 손실 1.5 에 도달하는 데 희소도 48 은 희소도 8·16·32 보다 연산이 1.69배·1.39배·1.15배 적게 든다. 개선 폭이 줄어드는 것을 보고, 인프라 복잡도와 저울질해 희소도 48(384 전문가 중 8 활성)을 택했다. 4강(cKSwj_qZ8Jg)에서 본 MoE 설계 선택이 이렇게 법칙으로 정당화된다.",
+    "Hunyuan-Large 도 비슷하게, MoE 로 바꾼 뒤 IsoFLOP 을 다시 돌렸다. 이 팀은 희소도를 고정하고 활성 파라미터 크기를 훑어 '활성 파라미터 하나당 약 96 토큰'이라는 비율을 얻었다. Llama 3 의 IsoFLOP 결과(약 39:1)는 강사 말로 '별로 쓸모 있지는 않다'. 더 흥미로운 것은 오른쪽 그림이다. 왼쪽 단계에서 연산 → 벤치마크 정답의 정규화 NLL 이 매끄럽게 줄고, 오른쪽 단계에서 NLL → 정확도가 시그모이드 모양으로 이어진다. 두 단계를 엮으면 연산에서 하류 정확도를 예측할 수 있다. 9강에서 '퍼플렉서티는 깔끔하지만 하류는 따로 논다'고 경고했는데, 여기서는 적어도 일부 과제에서 둘이 꽤 단단히 묶여 있음을 보여 준다. 강사는 점들이 곡선에서 체계적으로 벗어나는 부분도 있어 이 곡선을 '유일한 진실'로 믿지는 않는다고 덧붙인다.",
+    "MiniMax-01 은 9강에서 말한 '스케일링 법칙의 쓸모' 중 하나인 아키텍처 선택에 법칙을 쓴 사례다. 선형 어텐션 계열인 라이트닝 어텐션, 보통의 소프트맥스 어텐션, 둘을 섞은 혼합 구조를 놓고 Kaplan 식 그림(연산 대 손실, 연산 대 최적 모델 크기, 연산 대 최적 토큰)을 그렸다. 키우면 어느 하나가 크게 뒤처지는가? 답은 대체로 '아니다' — 셋은 비슷하고 필요한 모델 크기도 비슷했다. 이 결과로 실제 서비스 모델에 혼합 구조를 쓰는 결정을 정당화했다. 요약 슬라이드의 정리: DeepSeek 레시피(하이퍼 불변 가정 + 배치·학습률 법칙 + IsoFLOP + 계단 스케줄), MiniCPM 레시피(μP + WSD + 방법 3), 그리고 최근(Qwen: 학습률·배치, Kimi K2: MoE, Llama 3·Hunyuan: IsoFLOP 만, MiniMax: 아키텍처 결정)."
+   ],
+   "formulas": [
+    {
+     "expr": "희소도 s = E_total / E_active,   Kimi K2: s = 384/8 = 48",
+     "meaning": "E_total: 총 전문가 수, E_active: 토큰당 활성 전문가 수. 활성 파라미터(=토큰당 연산)를 고정한 채 s 를 키우면 총 파라미터만 는다."
+    },
+    {
+     "expr": "acc ≈ lo + (hi − lo) · σ(k·(x₀ − NLL)),   σ(z) = 1/(1+e^(−z))",
+     "meaning": "Llama 3 식 2단 예측의 둘째 단계. NLL: 정답의 정규화 음의 로그우도, lo: 찍기 정확도, hi: 천장, x₀: 전환점, k: 가파름. 첫 단계(연산 → NLL)는 보통의 거듭제곱 법칙."
+    }
+   ],
+   "example": {
+    "title": "희소도 48 의 이득을 연산으로 환산",
+    "body": "목표 검증 손실 1.5. 희소도 48 이 연산 C 로 도달한다면 희소도 32 는 1.15C, 16 은 1.39C, 8 은 1.69C 가 든다. 거꾸로 말해 8 → 16 으로 갈 때 연산 절약은 1 − 1.39/1.69 = 18%, 16 → 32 는 1 − 1.15/1.39 = 17%, 32 → 48 은 1 − 1/1.15 = 13%. 희소도를 두 배로 할 때마다 얻는 이득은 비슷하거나 줄어드는데, 총 파라미터(메모리·통신)는 계속 늘어난다. Kimi K2 가 48 에서 멈춘 근거다. Hunyuan 의 96:1 로 활성 50B 모델의 토큰을 정하면 약 4.8T 토큰이다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\n# 손실(NLL) → 정확도: acc = lo + (hi-lo)·σ(k·(x0 - nll))\ndef sig(nll, lo, hi, k, x0): return lo + (hi - lo) / (1 + np.exp(-k * (x0 - nll)))\nrng = np.random.default_rng(0)\nnll = np.linspace(1.40, 1.20, 12)                 # 작은 모델 → 큰 모델\nacc = sig(nll, 0.25, 0.95, 40, 1.30) + rng.normal(0, 0.01, nll.size)\nbest, best_err = None, 1e9\nfor k in np.linspace(10, 80, 71):                 # 단순 격자 맞춤(lo, hi 는 알려졌다고 둔다)\n    for x0 in np.linspace(1.20, 1.40, 201):\n        err = np.sum((sig(nll, 0.25, 0.95, k, x0) - acc) ** 2)\n        if err < best_err: best, best_err = (k, x0), err\nk, x0 = best\nprint(f\"맞춘 k={k:.1f}, x0={x0:.3f}\")\nfor target in [1.25, 1.20, 1.15]:\n    print(f\"NLL {target} → 예측 정확도 {sig(target, 0.25, 0.95, k, x0):.3f}\")\n",
+    "note": "필자 실행 결과: 합성 점(참 k = 40, x₀ = 1.30)에서 맞춘 k = 40.0, x₀ = 1.301. NLL 1.25·1.20·1.15 에서 예측 정확도 0.869·0.938·0.948 — 시그모이드는 천장 근처에서 포화하므로 NLL 이 더 내려가도 정확도는 거의 안 오른다."
+   },
+   "pitfalls": [
+    "'활성 파라미터당 96 토큰'(Hunyuan)과 'Chinchilla 20:1'은 분모가 다르다. MoE 비율은 활성 파라미터 기준이라 총 파라미터 기준 비율과 견줄 수 없다.",
+    "시그모이드 매핑은 과제별이다. 한 벤치마크에서 맞춘 곡선을 다른 벤치마크로 옮기지 않는다. 강사도 체계적 이탈이 보인다고 경고한다.",
+    "희소도 법칙의 결론 '희소할수록 좋다'는 같은 FLOPs 기준이다. 메모리·통신·추론 배치 효율 비용은 그 그림에 없다."
+   ],
+   "check": [
+    {
+     "q": "Kimi K2 가 희소도를 더 키우지 않고 48 에서 멈춘 근거는?",
+     "a": "희소도 법칙에서 같은 손실을 내는 데 필요한 연산 절약이 희소도를 늘릴수록 줄어드는(수확 체감) 반면, 총 파라미터와 인프라 복잡도는 계속 늘기 때문이다."
+    },
+    {
+     "q": "Llama 3 의 하류 예측이 두 단계인 이유는?",
+     "a": "연산 → 정확도를 바로 맞추면 정확도의 S자 모양(찍기 수준·천장) 때문에 직선 외삽이 안 된다. 연산 → NLL 은 매끄러운 거듭제곱이고, NLL → 정확도는 시그모이드로 따로 맞춰 두 단계를 잇는다."
+    }
+   ]
+  },
+  {
+   "start": 1830,
+   "title": "학습률·배치 법칙은 무엇의 함수인가 — 여러 법칙의 표와 StepFun 의 Step Law",
+   "points": [
+    "논문마다 학습률·배치 법칙의 '입력 변수'부터 다르다: 최종 손실(OpenAI), 연산(DeepSeek), 파라미터(Porian), 파라미터와 데이터(StepFun).",
+    "StepFun 'Predictable Scale Part I': 막대한 연산으로 학습률 × 배치 공간을 격자 탐색 — 현재 가장 큰 규모의 DeepSeek 식 분석.",
+    "Step Law: η* = 1.79·N^(−0.713)·D^(0.307), B* = 0.58·D^(0.571) — 상대 오차 0.94‰ 로 표에서 가장 작다.",
+    "Chinchilla 경로(N, D ∝ C^0.5)에 얹으면 η* ∝ C^(−0.20), B* ∝ C^(0.29) — DeepSeek 과 같은 방향, 다른 지수.",
+    "데이터 레시피·모델 희소도까지 다룬 것은 이 표에서 StepFun 뿐이다."
+   ],
+   "on_screen": "'Optimizer scaling — Optimizers choices / tuning can be tricky and scale sensitive … How should we pick different optimizers?' 'StepFun scaling law study — Predictable Scale: Part I, Step Law – Optimal Hyperparameter Scaling Law in Large Language Model Pre-training. Core question: how do we set LR / batch params as we scale? (Deepseek / qwen approach)' 'Core question – scaling rates on LR and batch — What are the right variables / functional form?' 표(Name / Data Recipe / Model Sparsity / Learning Rate / Batch Size / Relative Error): OpenAI Law — 3.239·10⁻³ + −1.395·10⁻⁴·log(N), 2e18·L^(−4.76190), 9.51‰ · Microsoft Law — 1.3192e⁻⁵·N^(−0.23)·D^(−0.32), -, 9.25‰ · DeepSeek Law — 0.3188·C^(−0.1250), 0.2920·C^(0.3271), 9.26‰ · Porian Law — 3.7·N^(−0.36), 0.7576·N^(0.703), 3.71‰ · MiniCPM Law — -, 2e18/L^6.24, - · MeiTuan Law — λ·L^(−α), λ_B·L^(−α_B), - · Ours (Step Law) — 1.79·N^(−0.713)·D^(0.307), 0.58·D^(0.571), 0.94‰ (Data Recipe·Model Sparsity 체크는 Step Law 만). 'Different views: Critical batch: batch as a function of loss (OpenAI) / Compute power law: poly function of compute (DeepSeek) / .. Or something else?' 'The approach: purely empirical – grid search the space — Much like the DeepSeek paper' 등고선(Global Minimum·Ours(Step Law)·DeepSeek Law·Porian Law·Microsoft Law·OpenAI Law 표시)과 모델 설정표.",
+   "explain": [
+    "이제 강의의 둘째 부분, DeepSeek 쪽 철학을 깊게 본다. 질문은 '규모가 바뀔 때 학습률과 배치를 어떻게 정하나'이고, 교재는 StepFun 팀의 사전 인쇄 논문 'Predictable Scale: Part I'(Step Law)이다. 강사는 하이퍼파라미터, 특히 학습률에 대해 정말 믿을 만한 연구는 아직 없다고 전제하면서도, 이 논문이 가장 가까이 갔다고 본다. StepFun 은 실제로 큰 모델을 만들어 공개하는 팀이고, 하이퍼파라미터 공간을 격자로 훑는 데 엄청난 연산을 태웠다.",
+    "논문의 비교표가 이 분야의 혼란을 한눈에 보여 준다. 맨 위 OpenAI(Kaplan) 법칙의 배치는 2e18·L^(−4.76) — 9강의 임계 배치, 즉 최종 손실의 함수다. 3장에서 본 MiniCPM 도 같은 꼴(L^(−6.24))이다. DeepSeek 은 연산 C 의 함수, Porian 은 파라미터 N 의 함수, Microsoft 는 N 과 D 의 함수로 학습률을 쓴다. 강사가 짚는 것은 '사람들이 어떤 변수가 학습률을 정하는지조차 합의하지 못했다'는 점이다. 같은 실험이라도 손실·연산·파라미터·데이터 중 무엇을 x 축으로 삼느냐에 따라 법칙의 모양이 달라지고, 다른 레시피로 옮겼을 때 어긋나는 방식도 달라진다. 표의 마지막 열 '상대 오차'는 각 법칙이 예측한 설정의 손실이 실제 최적 손실보다 얼마나 나쁜지(천분율)다. Step Law 가 0.94‰ 로 가장 작고, 데이터 레시피와 모델 희소도(MoE)까지 고려한 것도 Step Law 뿐이다. 다만 이것은 저자들 자신의 실험에서 잰 값이다.",
+    "Step Law 의 꼴은 η* = 1.79·N^(−0.713)·D^(0.307), B* = 0.58·D^(0.571) 이다(N: 비임베딩 파라미터, D: 토큰). 배치는 데이터에만 의존하고, 학습률은 모델이 크면 내려가고 데이터가 많으면 올라간다. 데이터가 많을수록 학습률이 높아야 한다는 것은 직관에 어긋나는데, 다음 장에서 그 해석을 본다. 한 가지 연결이 중요하다. 이 실험들은 대개 Chinchilla 식으로 N 과 D 를 함께 키운다. N ∝ C^0.5, D ∝ C^0.5 를 넣으면 η* ∝ C^((−0.713+0.307)/2) = C^(−0.203), B* ∝ C^(0.571/2) = C^(0.286). 연산이 늘면 학습률은 낮추고 배치는 키운다는 DeepSeek 법칙과 같은 방향이 나온다. 지수만 다르다(DeepSeek: −0.125, 0.327).",
+    "강사는 마지막 줄(Step Law)조차 복음처럼 믿지 말라고 당부한다. 이런 법칙들은 여러 면에서 깨지기 쉽다. 그래도 실험과 현상에서 배울 것은 많다. 실험 설계는 DeepSeek 과 같다. 여러 모델 크기·데이터 크기마다 학습률 × 배치 격자를 촘촘히 돌려 손실을 채우고, 그 지형에서 최적점을 찾는다. 등고선 그림에는 전역 최솟값 옆에 각 법칙이 예측한 점이 찍혀 있어, 어떤 법칙이 얼마나 빗나가는지 눈으로 볼 수 있다. 아래 코드는 두 법칙을 같은 Chinchilla 경로에 놓고 비교한다."
+   ],
+   "formulas": [
+    {
+     "expr": "Step Law:  η* = 1.79 · N^(−0.713) · D^(0.307),   B* = 0.58 · D^(0.571)",
+     "meaning": "N: 비임베딩 파라미터, D: 학습 토큰, B*: 최적 배치(토큰). 배치는 D 만의 함수, 학습률은 N 에 반비례 쪽·D 에 비례 쪽."
+    },
+    {
+     "expr": "N ∝ C^0.5, D ∝ C^0.5  ⇒  η* ∝ C^((−0.713+0.307)/2) = C^(−0.203),  B* ∝ C^(0.286)",
+     "meaning": "Chinchilla 식으로 함께 키울 때의 연산 지수. DeepSeek 의 C^(−0.125), C^(0.327) 와 방향이 같다."
+    },
+    {
+     "expr": "B_crit(L) = 2×10¹⁸ · L^(−4.76)  (OpenAI/Kaplan, 토큰)",
+     "meaning": "임계 배치를 최종 손실 L 의 함수로 쓴 꼴 — 9강의 McCandlish·Kaplan 관점."
+    }
+   ],
+   "example": {
+    "title": "1B 모델 · 100B 토큰의 Step Law 설정",
+    "body": "N = 10⁹, D = 10¹¹. N^(−0.713) = 10^(−6.417), D^(0.307) = 10^(3.377). 곱 10^(−3.040) = 9.12×10⁻⁴, × 1.79 = 1.63×10⁻³. 배치: D^(0.571) = 10^(6.281) = 1.91×10⁶, × 0.58 = 1.11×10⁶ 토큰(시퀀스 4096 이면 약 270 개). 같은 1B 를 20B 토큰(20:1)으로만 학습하면 η* = 1.79 × 10^(−6.417) × (2×10¹⁰)^0.307 = 9.96×10⁻⁴ — 데이터를 5배 늘리자 최적 학습률이 1.64배(= 5^0.307) 올라간다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\ndef step_law(N, D):            # StepFun: N 비임베딩 파라미터, D 토큰\n    return 1.79 * N**-0.713 * D**0.307, 0.58 * D**0.571\ndef deepseek(C):\n    return 0.3118 * C**-0.1250, 0.2920 * C**0.3271\nfor N in [1e8, 1e9, 1e10]:\n    D = 20 * N                 # Chinchilla 20:1 로 키운다\n    C = 6 * N * D\n    lr_s, B_s = step_law(N, D); lr_d, B_d = deepseek(C)\n    print(f\"N={N:.0e} D={D:.0e} | Step lr={lr_s:.2e} B={B_s:.2e}\"\n          f\" | DeepSeek lr={lr_d:.2e} B={B_d:.2e}\")\n# Chinchilla 경로에서 C 지수로 바꾸기: N ∝ C^0.5, D ∝ C^0.5\nprint(\"Step lr 의 C 지수:\", (-0.713 + 0.307) / 2, \" B 의 C 지수:\", 0.571 / 2)\n# 같은 N 에서 D 만 늘리면(과학습) 학습률은 오른다\nprint([f\"{step_law(1e9, D)[0]:.2e}\" for D in [2e10, 1e11, 1e12]])\n",
+    "note": "필자 실행 결과: N = 10⁸·10⁹·10¹⁰ (D = 20N)에서 Step Law 학습률 2.54e-3·9.96e-4·3.91e-4, 배치 1.19e5·4.42e5·1.65e6 / DeepSeek 법칙 1.71e-3·9.64e-4·5.42e-4, 배치 2.39e5·1.08e6·4.87e6. 1B 를 데이터 20B·100B·1T 로 학습하면 Step Law 학습률 9.96e-4·1.63e-3·3.31e-3. 두 법칙이 1B 근처에서는 학습률이 비슷하고 배치는 2배 넘게 다르다."
+   },
+   "pitfalls": [
+    "표의 DeepSeek 계수 0.3188 은 0.3118 의 오기다(앞 DeepSeek 슬라이드와 원 논문은 0.3118).",
+    "법칙마다 C·N 의 정의(6ND 대 M·D, 비임베딩 대 전체)가 다르다. 다른 논문의 법칙 둘을 숫자로 견줄 때는 변수 정의부터 맞춘다.",
+    "'상대 오차 0.94‰'는 저자 자신의 실험 분포 안에서 잰 값이다. 다른 데이터·아키텍처로 옮기면 커질 수 있다."
+   ],
+   "check": [
+    {
+     "q": "Step Law 에서 모델을 고정하고 데이터를 10배 늘리면 최적 학습률과 배치는 몇 배?",
+     "a": "학습률 10^0.307 ≈ 2.03배, 배치 10^0.571 ≈ 3.72배."
+    },
+    {
+     "q": "OpenAI 식 배치 법칙과 DeepSeek 식 배치 법칙의 입력 변수 차이는?",
+     "a": "OpenAI(Kaplan)는 목표 최종 손실 L 의 함수(임계 배치), DeepSeek 은 학습 연산 C 의 함수다."
+    }
+   ]
+  },
+  {
+   "start": 2040,
+   "title": "StepFun 의 관찰 — 볼록한 지형, 데이터만 보는 배치, 견고함과 그 한계, 그리고 '결국은 감'",
+   "points": [
+    "관찰 1: 1B·100B 토큰 단면에서 학습률·배치에 대한 손실 지형이 볼록하고 매끄럽다 → 격자 탐색이 믿을 만하다.",
+    "관찰 2: 최적 배치는 거의 데이터 양 D 에만 의존한다(모델 크기별 점들이 한 직선). 학습률은 큰 모델일수록 낮고, 데이터가 많을수록 높다(반직관적, 깨지기 쉬움).",
+    "관찰 3: 법칙이 MoE 로도 꽤 옮겨 간다(활성 파라미터 기준). 데이터 분포를 바꾸면 최적점이 조금씩 이동한다 → 숫자는 데이터에 따라 다르다.",
+    "실무: 그 연산 범위 근처라면 좋은 기본값. 큰 학습이면 자기 설정에서 다시 확인 — 법칙의 전이는 결국 '내 상황이 충분히 비슷한가'라는 감의 문제다.",
+    "상호작용: 모든 하이퍼파라미터를 함께 격자로 훑을 수 없으니, 가장 민감한 학습률(·배치)을 촘촘히 보고 나머지는 하나씩 국소 훑기."
+   ],
+   "on_screen": "'Observation 1: loss over batch/LR are convex — For pre-training losses, minimizers for LR/batch can be cleanly identified' — 학습률·배치 고정 단면의 볼록 곡선 8개와 3차원 손실 곡면 둘. 'Observation 2: scaling trends — (a) Scaling laws with dataset size for different number of parameters'(왼쪽 학습률, 오른쪽 배치 대 D; 범례 N = 59M~1B) 'For chinchilla style joint scaling: batch is primarily dependent on dataset size. They also find higher optimal LR with D (for fixed M), but this is likely more fragile if swapping to WSD – see e.g. InternLM scaling law paper (Zhou+ 2026)'. 'Observation 3 (?) robustness — Generalization to MoEs'(Figure 7: Low/Medium/High sparsity N_a/N = 0.27/0.58, D = 8.0B, '…our method consistently approximates global minima across sparsity regimes'), 'Generalization to other datasets'((a) Bilingual Corpus (b) Code Integration (c) Code-Dominant).",
+   "explain": [
+    "StepFun 의 첫 관찰은 지형의 모양이다. 1B 파라미터·100B 토큰 단면에서 학습률과 배치를 축으로 손실을 그리면, 학습률을 하나 고정하고 배치를 바꾸든 배치를 고정하고 학습률을 바꾸든 단면이 볼록하고 거의 매끄럽다. 3차원 곡면으로 보면 한가운데 오목한 그릇 모양이다. 이것은 실무에 아주 반가운 소식이다. 지형이 들쭉날쭉했다면 '격자를 깔아 최적을 찾는다'는 계획 자체가 의심스러웠을 것이다. 볼록하니 최솟점이 멀리 있지 않다는 확신을 갖고 탐색할 수 있고, 6장에서 본 것처럼 격자 점에 포물선을 맞춰 꼭짓점을 보간하는 것도 정당화된다.",
+    "둘째 관찰이 강사가 꼽는 이 논문의 핵심이다. 최적 배치를 데이터 양 D 에 대해 그리면 모델 크기가 다른 점들(색)이 거의 같은 직선 위에 놓인다. 즉 최적 배치는 모델 크기와 무관하게 '얼마나 많은 데이터로 학습하느냐'에 따라 정해진다. 강사는 관련 논문을 살펴봐도 이것을 반박하는 증거는 본 적이 없다고 말한다. 9강의 임계 배치 이야기와 맞춰 보면 그럴듯하다. 학습이 오래 진행될수록 기울기 신호가 작아져 잡음을 누르려면 배치가 커져야 하고, 그 진행 정도를 가장 잘 대표하는 것이 처리한 데이터 양이다. 반면 학습률의 그림은 다르다. 모델이 클수록 최적 학습률이 낮아지는데(파랑 → 분홍), 데이터가 많을수록 최적 학습률이 올라간다. 이것은 직관에 어긋나고, 강사는 깨지기 쉬운 결과일 수 있다고 경고한다. 슬라이드는 스케줄을 WSD 로 바꾸면 이 D 의존성이 뒤집힐 수 있다는 다른 연구(InternLM, Zhou 외 2026)를 함께 가리킨다.",
+    "셋째는 견고함이다. 강사는 즉석에서 '내일 언어 모델을 학습한다면 학습률을 1e-3 으로 할까 1e-4 로 할까?'를 묻는다. 대부분 대략의 감이 있다는 것 — 좋은 학습률 범위는 생각보다 넓고 안정적이다. 실제로 StepFun 의 법칙은 MoE 로 꽤 잘 옮겨 간다. 희소도가 다른 MoE 세 개에서 법칙이 예측한 별과 직접 찾은 최적점이 가깝다(활성 파라미터를 기준으로 맞추면). 반면 데이터 분포를 바꾸면(이중 언어, 코드 혼합, 코드 위주) 최적 학습률과 배치가 조금씩 움직인다. 법칙의 구체적인 숫자는 학습 데이터에 기대고 있다는 뜻이다. 그리고 Chinchilla 식으로 N, D 를 함께 키우면 'N 이 커지면 내려가고 D 가 커지면 올라가는' 두 효과가 부분적으로 상쇄되어, 결국 연산이 늘면 학습률이 내려가고 배치가 커지는 DeepSeek 꼴이 된다.",
+    "질의응답이 실무 감각을 준다. '그냥 이 법칙을 가져다 쓰면 되나, 아니면 직접 격자 탐색을 해야 하나?' 강사의 답은 예산과 정밀도에 달렸다는 것이다. StepFun 이 격자를 돌린 연산 범위 근처라면 이 법칙은 아주 좋은 기본값이고, 머릿속에서 꺼낸 숫자보다 낫다. 하지만 큰 사전학습을 하는 팀이라면 가중치 감쇠를 크게 쓰는 등 작은 차이가 있기 마련이고, 그 차이가 같은 방식으로 확장된다는 보장이 없다. 그래서 앞에서 본 보고서들이 모두 Chinchilla 와 학습률 법칙을 다시 확인했던 것이다. 강사는 스케일링 법칙이 과학처럼 보이지만 상당 부분은 여전히 '감'이라고 말한다. 또 다른 질문 — 학습률과 배치만 훑으면 다른 하이퍼파라미터와의 상호작용은 어떻게 하나? — 에는, 상호작용을 다 보려면 조합이 지수적으로 늘어 불가능하니, 가장 민감한 학습률(과 배치)을 촘촘히 훑고 가중치 감쇠 같은 나머지는 그 뒤 하나씩 국소 훑기로 맞춘다는 것이 현실적인 답이다."
+   ],
+   "formulas": [
+    {
+     "expr": "L(log η, log B) ≈ L* + a·(log η − log η*)² + b·(log B − log B*)² + c·(log η − log η*)(log B − log B*)",
+     "meaning": "최적점 근처의 볼록 지형을 2차식으로 근사한 것(노트 보충). a, b > 0 이고 ab > c²/4 이면 그릇 모양. 격자 점에 이 식을 맞추면 (η*, B*) 를 격자 간격보다 정밀하게 얻는다."
+    },
+    {
+     "expr": "B* ∝ D^0.571  (N 과 거의 무관)",
+     "meaning": "관찰 2: 최적 배치는 처리할 데이터 양으로 정해진다. 임계 배치가 학습의 진행 정도와 함께 커진다는 9강의 그림과 맞는다."
+    }
+   ],
+   "example": {
+    "title": "두 효과가 상쇄되는 모습",
+    "body": "모델을 10배(N × 10), 데이터를 10배(D × 10) 키우면(= 연산 100배, Chinchilla 경로): 학습률은 10^(−0.713) × 10^(0.307) = 10^(−0.406) = 0.39배. 모델만 10배면 0.19배, 데이터만 10배면 2.03배 — 반대 방향의 두 효과가 합쳐져 0.39배가 된다. 배치는 데이터에만 묶여 10^0.571 = 3.72배. 같은 100배 연산을 DeepSeek 법칙에 넣으면 학습률 0.56배, 배치 4.5배 — 방향은 같고 크기만 다르다."
+   },
+   "pitfalls": [
+    "'데이터가 많을수록 최적 학습률이 높다'를 일반 법칙으로 외우지 않는다. 코사인 스케줄 기준의 결과이고 WSD 에서는 뒤집힌다는 보고가 있다(슬라이드의 경고).",
+    "법칙의 숫자는 데이터 분포에 기댄다. 코드 위주 데이터로 학습하면서 일반 텍스트에서 맞춘 숫자를 그대로 쓰면 최적점에서 벗어날 수 있다.",
+    "MoE 로 옮길 때는 총 파라미터가 아니라 활성 파라미터를 N 자리에 넣어야 법칙이 맞는다."
+   ],
+   "check": [
+    {
+     "q": "StepFun 이 손실 지형이 볼록하다는 것을 보인 것이 왜 중요한가?",
+     "a": "격자 탐색으로 찾은 최적점이 믿을 만하고(국소 최솟값에 속지 않음), 격자 점에 2차식을 맞춰 최적점을 보간하는 것이 정당화되기 때문이다."
+    },
+    {
+     "q": "학습률만 촘촘히 훑고 가중치 감쇠는 따로 하나씩 훑는 이유는?",
+     "a": "하이퍼파라미터 조합은 지수적으로 늘어 모두 함께 격자로 볼 수 없다. 가장 민감한 학습률을 먼저 정밀하게 잡고, 덜 민감한 것들은 그 근처에서 국소적으로 맞추는 것이 현실적이다."
+    }
+   ]
+  },
+  {
+   "start": 2370,
+   "title": "옵티마이저와 규모 — 작은 규모의 큰 이득이 왜 사라지나, 그리고 두 축(연산·Chinchilla 비)",
+   "points": [
+    "NanoGPT speedrun(과제 1의 모태)에서 Muon 이 Adam 을 크게 앞섰다. 그런데 규모를 키운 연구에서는 이득이 줄어든다.",
+    "문제 1 — 조율: 기준선 AdamW 를 대충 조율하면 새 옵티마이저가 2배 빨라 보인다. 학습률(6e-4 → 8e-3)만 바로잡아도 이득이 사라진다. 옵티마이저마다 최적 가중치 감쇠도 다르다(Lion 은 0.6).",
+    "문제 2 — 규모 의존: AdamW 대비 속도 향상이 130M 에서 약 1.3~1.4배 → 1.2B 에서 약 1.1배로 줄었다. 행렬 기반 옵티마이저(Muon·Soap·Kron)는 스칼라 기반보다 꾸준히 낫다.",
+    "알고리즘 개발의 두 축: 연산(크기)과 Chinchilla 비(파라미터당 토큰). 후자는 흔히 빠지는 큰 교란 변수다.",
+    "문제 2.5 — 몇 자릿수 동안 아름답던 스케일링 직선이 갑자기 휘고 발산할 수 있다(Marin 의 공개 실패 사례)."
+   ],
+   "on_screen": "'Optimizers and scale' — 왼쪽 'Optimizer comparison by time (NanoGPT speedrun)'(Adam·DistributedShampoo(UpdateFreq=10/32)·SOAP·Muon, 가로 Wallclock time on 8xH100), 오른쪽 'Speedup vs Model Size (8x Chinchilla)'(AdamW = 1.0, NAdamW·Muon·Soap 이 130M·300M·520M·1.2B 에서 1.4 근처 → 1.1 근처로 하락, 'Optimizers' speedup w.r.t. AdamW decreases with model size'). 'Optimization is a core part of LLMs (but also tricky, due to scale dependence!)'. 'Problem 1 – hyper tuning is often off..' (Fantastic Pretraining Optimizers and Where to Find Them): 'Loss on C4/EN on 130M models'(AdamW w/ lr 6e-4·Mars·Nesterov AdamW·AdamW w/ lr 8e-3, 'Tuning LR of AdamW leads to 2x speedup'), 'C4/EN Loss vs Weight Decay'(Lion·AdamW, 'wd ≈ 0.6 is optimal for Lion'). 'Different optimizers can require different hyperparameters! (and likely have different optimal hyperparameter scaling)'. 'Problem 2 – fairly significant scale dependence' — 'C4/EN Loss Scaling For 520M Models'(Chinchilla Ratio 1·2·4·8; 'Matrix-based optimizers (solid) consistently outperform scalar-based optimizers (dashed)'), 'General algorithm development note – always check scaling with respect to compute and chinchilla ratios. These are often major confounders to performance!' 'Problem 2.5 – establishing scaling is nontrivial! Sometimes, a good looking scaling can blow up' — IsoFLOP parabolas per compute bucket, 'Scaling law + held-out validation'(Run Diverged ×), [From https://oa.williamheld.com/blog/delphi/], 'Cautious AdamC + Sqrt batch-size scaling of learning rates (Fixed with some more careful parametrization / scaling / optimizer changes)'.",
+   "explain": [
+    "3강(아키텍처)에서 시간이 없어 미뤘던 옵티마이저 이야기를 여기서 한다. 옵티마이저는 규모에 따라 성능이 달라지기 때문에 스케일링 강의에 놓기 좋다. 출발점은 NanoGPT speedrun 이다. 과제 1에 영감을 준 이 벤치마크는 아주 작은 모델을 정해진 손실(3점대)까지 최대한 빨리 학습하는 경쟁이다. 여기서 Muon 이라는 옵티마이저가 Adam 보다 눈에 띄게 빨리 손실을 떨어뜨렸고, 벽시계 시간으로도 거의 느리지 않았다. 그러면 자연스러운 질문이 생긴다. 이것은 큰 규모에서도 좋은가? 그리고 규모를 키운 연구를 해 보면 그만큼 좋지는 않다.",
+    "강사는 Kaiyue Wen·Tengyu Ma·Percy Liang·David Hall 의 'Fantastic Pretraining Optimizers and Where to Find Them'을 길잡이로 쓴다. 첫 교훈은 규모 이전의 기본기다. 옵티마이저마다 좋은 하이퍼파라미터가 다르다. 130M 모델에서 AdamW 를 학습률 6e-4 로 두면 Mars·Nesterov AdamW 같은 새 방법이 훨씬 나아 보이지만, AdamW 의 학습률을 8e-3 으로 바로잡으면 그 차이가 사라진다 — 학습률 조율만으로 2배 속도 향상이 나온다. 가중치 감쇠도 마찬가지다. Lion 은 감쇠 0.6 근처가 최적인데, 다른 옵티마이저에 맞는 작은 감쇠를 그대로 쓰면 Lion 이 훨씬 나빠 보인다. 새 방법의 이득 중 상당 부분이 사실은 '기준선을 덜 조율한 것'일 수 있다는 경고다.",
+    "둘째 교훈이 오늘의 주제인 규모 의존성이다. 강사는 규모를 생각할 때 늘 확인해야 할 축이 둘이라고 강조한다. 첫째 축은 연산(모델 크기)이다. 파라미터당 토큰 비를 고정하고 크기를 키우면, AdamW 대비 Muon·Soap 등의 속도 향상이 130M 에서 약 1.3~1.4배였다가 1.2B 에서 약 1.1배로 줄어든다. 작은 규모에서 큰 이득이 큰 규모에서 줄어드는 전형적인 그림이다. 둘째 축은 Chinchilla 비(파라미터당 토큰)다. 어떤 알고리즘은 데이터보다 모델이 훨씬 큰 과매개화 영역에서 잘 듣고(암묵적 정규화 같은 효과), 어떤 알고리즘은 파라미터당 데이터가 많은 영역에서 잘 듣는다. 모델 크기 축은 꼼꼼히 보는 논문도 이 축은 연산이 모자라 빼먹기 일쑤다. 이 연구에서는 520M 모델의 Chinchilla 비 1·2·4·8 에서 옵티마이저 간 격차가 거의 일정했고, 행렬 기반(Muon·Soap·Kron)이 스칼라 기반(AdamW·NAdamW·Mars)보다 꾸준히 나았다. 하지만 늘 그런 것은 아니니 두 축을 모두 확인하라는 것이 강사의 일반 원칙이다.",
+    "마지막 경고는 Percy Liang 의 오픈소스 학습 프로젝트 Marin 에서 Will Held 가 공개한 실패 사례다. Cautious AdamC(Adam 변형)와 '배치의 제곱근에 비례하는 학습률' 같은 그럴듯한 설정으로 IsoFLOP 분석을 했고, 10²⁰ FLOPs 근처까지는 아름다운 직선이 나왔다. 그런데 그 너머로 외삽해 학습해 보니 처음엔 조금 나쁘고, 그다음엔 많이 나쁘고, 결국 발산했다. 몇 자릿수 동안 좋아 보이던 추세가 갑자기 직선을 벗어나 무너질 수 있다는 것이다. 해결은 μP 식으로 매개화를 더 조심스럽게 하고 옵티마이저를 바꾼 것이었다. 논문이 아니라 실험 일지라서 실패도 공개된 귀한 사례이고, 강사는 '스케일링 실험을 하라'는 말이 쉽지 않다는 것을 보여 주려고 이 그림을 골랐다."
+   ],
+   "formulas": [
+    {
+     "expr": "speedup(N) = C_AdamW(L_target) / C_opt(L_target)",
+     "meaning": "같은 목표 손실 L_target 에 도달하는 데 AdamW 가 쓴 연산(또는 스텝)과 새 옵티마이저가 쓴 연산의 비. 1.0 이면 이득 없음. 규모 N 의 함수로 그려 이득이 유지되는지 본다."
+    },
+    {
+     "expr": "Chinchilla 비 r = D/N  (파라미터당 토큰)",
+     "meaning": "같은 연산이라도 r 이 다르면 과매개화(r 작음) 대 데이터 풍부(r 큼) 영역이다. 알고리즘 비교는 연산 축과 r 축 둘 다에서 해야 한다."
+    }
+   ],
+   "example": {
+    "title": "속도 향상 1.4배 → 1.1배는 연산으로 얼마?",
+    "body": "목표 손실에 AdamW 가 100 단위 연산을 쓴다면, 130M 에서 1.4배 향상은 새 옵티마이저가 100/1.4 = 71.4 단위 — 29% 절약. 1.2B 에서 1.1배면 100/1.1 = 90.9 단위 — 9% 절약. 추세가 같은 비율로 계속 줄면(크기 약 9배에 이득이 1.4 → 1.1) 다음 10배 규모에서는 거의 1.0 에 가까워질 수 있다. 반대로 기준선 AdamW 의 학습률이 틀려 있으면 '2배 향상'이 나오는데, 그것은 옵티마이저가 아니라 조율의 차이다."
+   },
+   "pitfalls": [
+    "새 옵티마이저 논문의 '2배 빠름'을 볼 때 먼저 기준선의 학습률·감쇠를 각각 최적으로 조율했는지 확인한다. 옵티마이저마다 최적 하이퍼파라미터와 그 스케일링이 다르다.",
+    "모델 크기만 키우고 Chinchilla 비를 고정한 실험은 한 축만 본 것이다. 과학습 영역(r 큼)에서 결론이 달라질 수 있다.",
+    "몇 자릿수 동안 직선이었다는 사실이 다음 자릿수를 보장하지 않는다(Marin 사례). 외삽 지점 근처에서 검증 학습을 꼭 한다."
+   ],
+   "check": [
+    {
+     "q": "알고리즘의 스케일링을 볼 때 강사가 늘 확인하라고 한 두 축은?",
+     "a": "연산(모델 크기) 축과 Chinchilla 비(파라미터당 토큰) 축."
+    },
+    {
+     "q": "'AdamW 의 학습률을 6e-4 에서 8e-3 으로 바꾸자 2배 빨라졌다'는 결과가 옵티마이저 비교에 주는 교훈은?",
+     "a": "새 옵티마이저의 이득처럼 보이는 것이 기준선을 덜 조율한 탓일 수 있다. 비교하는 모든 옵티마이저를 각자 최적 하이퍼파라미터로 맞춘 뒤에 견줘야 한다."
+    }
+   ]
+  },
+  {
+   "start": 2970,
+   "title": "Muon — 행렬 갱신의 특이값을 모두 1로, Newton–Schulz 로 싸게, 그리고 Kimi K2",
+   "points": [
+    "모멘텀 SGD: B_t = μ·B_{t−1} + G_t, θ_t = θ_{t−1} − η·B_t. Muon 은 그 사이에 O_t = NewtonSchulz5(B_t) 를 끼운다.",
+    "직교화: B = U S Vᵀ 의 특이값을 모두 1로 → U Vᵀ. 모든 방향의 갱신 크기가 같아진다(Adam 이 좌표별 크기를 맞춘다면 Muon 은 스펙트럼 노름에서 맞춘다).",
+    "행렬 파라미터 전용 — 벡터 파라미터(정규화 이득·편향)와 보통 임베딩은 AdamW 로.",
+    "SVD 는 GPU 에서 느리다 → 행렬곱만 쓰는 5회 Newton–Schulz 반복으로 근사 직교화.",
+    "작은 규모 이득은 커도 규모 연구에선 줄었지만, Kimi K2 가 전 학습을 Muon(+안정화 장치)으로 해냈다 — 큰 규모에서 '작동'은 확인, Adam 보다 나은지는 미정."
+   ],
+   "on_screen": "'A few slides on muon.. Muon:' Algorithm 2 Muon — 'Require: Learning rate η, momentum μ / 1: Initialize B₀ ← 0 / 2: for t = 1, … do / 3: Compute gradient G_t ← ∇_θ L_t(θ_{t−1}) / 4: B_t ← μB_{t−1} + G_t / 5: O_t ← NewtonSchulz5(B_t) / 6: Update parameters θ_t ← θ_{t−1} − ηO_t / 7: end for / 8: return θ_t'. 'Optimizer for matrix valued parameters. NewtonSchultz (approximately) orthogonalizes the matrix B_t = USVᵀ → UVᵀ'. 'Muon and scaling' — NanoGPT speedrun (very small!) / Scaling study / Kimi K2(손실 곡선이 1.5T 토큰 넘게 매끄럽게 내려감). 'Scaling gains are tricky to measure, but clearly muon works at scale.'",
+   "explain": [
+    "Muon 을 따로 다루는 이유는 강사의 수업 기준 때문이다. 새 연구 주제를 수업에 넣으려면 '큰 학습에 실제로 쓰였는가'를 통과해야 하는데, Muon 은 이제 그 기준을 넘었다. 알고리즘 자체도 흥미롭다. 출발은 평범한 모멘텀 SGD 다. 기울기 G_t 를 구하고, 모멘텀 버퍼 B_t = μ·B_{t−1} + G_t 에 더한 뒤, θ 에서 η·B_t 를 뺀다. Muon 은 마지막 단계 직전에 한 줄을 끼운다. B_t 를 그대로 쓰지 않고 O_t = NewtonSchulz5(B_t) 로 바꾼 뒤 그것으로 갱신한다.",
+    "그 한 줄의 발상은 이렇다. 보통의 기울기 갱신은 모든 파라미터를 똑같은 숫자 더미로 취급한다. 하지만 신경망의 파라미터는 같지 않다. RMSNorm 의 이득 같은 벡터 파라미터가 있고, 어텐션·MLP 의 가중치 같은 행렬 파라미터가 있다. 행렬에는 특이값이라는 구조가 있다. 그러니 행렬 갱신 B_t 를 특이값 분해 U S Vᵀ 로 쓰고, 특이값을 모두 1로 바꾼 U Vᵀ 를 갱신으로 쓰자. 특이값이 크게 튀는 방향은 1로 줄이고, 거의 0인 방향은 1로 키운다. Adam·Adagrad 가 기울기를 그 크기로 나눠 '모든 좌표의 갱신 크기를 비슷하게' 만든다면, Muon 은 스펙트럼 노름의 관점에서 '모든 방향의 갱신 크기를 같게' 만든다. 이 연산은 행렬에서만 정의되므로 Muon 은 행렬 파라미터에만 쓰고, 벡터 파라미터는 계속 AdamW 로 갱신한다.",
+    "그런데 SVD 는 GPU 에서 느리다(학생의 질문). 그래서 Muon 은 SVD 를 하지 않는다. Newton–Schulz 반복은 행렬곱만으로 X ← aX + b(XXᵀ)X + c(XXᵀ)²X 를 몇 번 되풀이해 특이값을 1 쪽으로 몰아붙인다. 각 특이값 s 에 대해 s ← a·s + b·s³ + c·s⁵ 라는 같은 다항식이 따로 적용되므로, U 와 V 는 그대로 두고 특이값만 바꾸는 셈이다. 계수 (3.4445, −4.7750, 2.0315)는 정확히 1로 보내기보다 5번 안에 빨리 1 근처로 모으도록 고른 값이라, 결과 특이값은 대략 0.7~1.2 에 흩어진다. 아래 코드에서 원래 특이값 73.5, 61.7, 35.4, 18.6 이 1.13, 1.04, 0.75, 0.68 로 모이고, 정확한 UVᵀ 와의 코사인 유사도는 0.986 이다. 강사가 꼽는 Muon 의 영리한 점은 셋 — 파라미터를 행렬로 본 것, 직교화라는 발상, 그리고 그것을 행렬곱만으로 하는 시스템 감각이다.",
+    "규모 이야기로 돌아가면, 앞 장의 연구들은 Muon 의 이득이 규모가 커질수록 줄어든다고 보고했고, 강사는 그걸로 이야기가 끝났다고 생각했다. 누가 이걸 위해 전체 사전학습 규모의 연산을 쓰겠는가. 그런데 Kimi K2 가 전체를 Muon 으로 학습해 냈다. 여러 불안정성 문제를 만나 Muon 이 폭주하지 않게 하는 장치를 덧붙였고(노트 보충: 어텐션 로짓을 잘라 주는 MuonClip), 결과 모델은 매우 좋았으며 학습 곡선도 매끄러웠다. 다만 같은 규모의 AdamW 대조 실험은 없으니 Muon 이 더 나은지는 모른다. 강사의 교훈: 큰 규모에서 무엇이 통하는지 아는 것은 정말 어렵다. 그래도 작은 규모 실험에서 아이디어를 얻고 그것이 언젠가 큰 모델로 올라가는 것이 지금까지의 과학이 돌아가는 방식이다. 한 학생의 질문에 대한 답도 붙는다. Muon 계열은 층마다 다른 하이퍼파라미터가 필요하고, Jeremy Bernstein 같은 연구자는 층마다 다른 옵티마이저까지 주장한다 — 강사는 그걸 다 조율하고 싶지는 않다며 웃는다."
+   ],
+   "formulas": [
+    {
+     "expr": "B_t = μ·B_{t−1} + G_t,   O_t = NS5(B_t) ≈ U Vᵀ (B_t = U S Vᵀ),   θ_t = θ_{t−1} − η·O_t",
+     "meaning": "G_t: 기울기 행렬, μ: 모멘텀 계수, B_t: 모멘텀 버퍼, U, V: 특이벡터, S: 특이값 대각행렬, η: 학습률. 특이값을 모두 1로 바꾼 '직교화된' 갱신을 쓴다."
+    },
+    {
+     "expr": "X₀ = B/‖B‖_F,   X ← a·X + (b·A + c·A²)·X,  A = X Xᵀ,  (a, b, c) = (3.4445, −4.7750, 2.0315)",
+     "meaning": "Newton–Schulz 5차 반복. 프로베니우스 노름으로 나눠 특이값을 1 이하로 만든 뒤, 각 특이값 s 에 p(s) = a·s + b·s³ + c·s⁵ 를 반복 적용한다. 행렬곱만 쓰므로 GPU 에서 빠르다(계수는 널리 쓰이는 구현의 값 — 노트 보충)."
+    }
+   ],
+   "example": {
+    "title": "2×2 갱신을 손으로 직교화",
+    "body": "B = diag(3, 0.5) 라 하자. SVD 는 U = V = I, S = diag(3, 0.5). 특이값을 1로 바꾸면 UVᵀ = I — 두 방향 모두 크기 1 로 같아진다. 보통 SGD 라면 첫 방향은 둘째보다 6배 크게 움직였을 것이다. Newton–Schulz 로 해 보면: ‖B‖_F = √(9 + 0.25) = 3.041, 정규화 특이값 0.986, 0.164. 한 번 적용 p(s) = 3.4445s − 4.775s³ + 2.0315s⁵: s = 0.986 → 3.396 − 4.577 + 1.890 = 0.709, s = 0.164 → 0.565 − 0.021 + 0.000 = 0.544. 한 번 만에 6:1 이던 비가 1.3:1 로 줄었고, 반복하면 둘 다 0.7~1.2 띠 안으로 들어간다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\ndef newton_schulz5(G, steps=5):\n    a, b, c = 3.4445, -4.7750, 2.0315        # 널리 쓰이는 5차 계수\n    X = G / (np.linalg.norm(G) + 1e-7)       # 프로베니우스로 나눠 특이값 ≤ 1\n    for _ in range(steps):\n        A = X @ X.T\n        X = a * X + (b * A + c * A @ A) @ X\n    return X\nrng = np.random.default_rng(0)\nG = rng.normal(size=(64, 256)) @ np.diag(np.linspace(0.01, 5, 256))\nprint(\"원래 특이값   :\", np.round(np.linalg.svd(G, compute_uv=False)[[0, 10, 40, 63]], 3))\nO = newton_schulz5(G)\nprint(\"NS5 뒤 특이값 :\", np.round(np.linalg.svd(O, compute_uv=False)[[0, 10, 40, 63]], 3))\nU, S, Vt = np.linalg.svd(G, full_matrices=False)\nprint(\"정확한 UVᵀ 와 코사인 유사도:\",\n      round(float(np.sum(O * (U @ Vt)) / np.linalg.norm(O) / np.linalg.norm(U @ Vt)), 4))\n",
+    "note": "필자 실행 결과: 원래 특이값 [73.511 61.711 35.41 18.643] → NS5 뒤 [1.134 1.04 0.75 0.683], 정확한 UVᵀ 와의 코사인 유사도 0.9861. 정확한 직교화가 아니라 '대략 1 근처'로 모으는 근사임을 확인할 수 있다."
+   },
+   "pitfalls": [
+    "Muon 을 모든 파라미터에 쓰지 않는다. 벡터 파라미터(정규화 이득·편향)는 특이값이 없고, 임베딩·출력층도 보통 AdamW 로 둔다.",
+    "Newton–Schulz 결과는 정확한 직교 행렬이 아니다(특이값 약 0.7~1.2). '특이값이 정확히 1'이라고 가정한 분석은 근사다.",
+    "'Kimi K2 가 Muon 으로 학습했다' ≠ 'Muon 이 큰 규모에서 AdamW 보다 낫다'. 같은 규모의 대조 실험은 공개되지 않았다(강사 지적)."
+   ],
+   "check": [
+    {
+     "q": "Muon 이 SVD 대신 Newton–Schulz 반복을 쓰는 이유는?",
+     "a": "SVD 는 GPU 에서 느리고 병렬화가 어렵다. Newton–Schulz 는 행렬곱만으로 몇 번 반복해 특이값을 1 근처로 모으므로 빠르다."
+    },
+    {
+     "q": "Adam 과 Muon 의 '정규화' 관점을 한 줄씩 대비하면?",
+     "a": "Adam 은 좌표마다 기울기를 그 크기로 나눠 좌표별 갱신 크기를 맞추고, Muon 은 행렬 갱신의 특이값을 1로 맞춰 모든 방향(스펙트럼)의 갱신 크기를 맞춘다."
+    }
+   ]
+  },
+  {
+   "start": 3420,
+   "title": "μP 의 목표와 조건 A1 — 초기화에서 활성 크기를 너비와 무관하게",
+   "points": [
+    "목표: 너비를 키워도 최적 학습률이 같은 자리에 있게. 손잡이: 층별 초기화, 파라미터별 학습률, (때로) 잔차 배율.",
+    "증거: Cerebras-GPT(0.1~13B, Chinchilla 레시피) — μP 판의 손실 예측이 실제와 거의 맞고 표준판은 들쭉날쭉.",
+    "두 조건(Yang·Simon·Bernstein 'A Spectral Condition for Feature Learning'): A1 초기화 시 활성 성분이 Θ(1), A2 한 스텝 뒤 활성 변화도 Θ(1)(특징 학습, NTK 와 대비).",
+    "A1 유도: 가우스 행렬의 스펙트럼 노름 ‖W‖ ≈ σ(√n_{l−1} + √n_l), ‖h_l‖ ≈ ‖W_l‖·‖h_{l−1}‖ → σ = (1/√n_{l−1})·min(1, √(n_l/n_{l−1})).",
+    "정사각 층이면 표준 1/√fan_in 초기화와 같고, fan_out < fan_in 인 층에서만 더 작아진다."
+   ],
+   "on_screen": "'Maximum update parametrization – in depth — Recall – the maximum update parametrization makes appealing claims' — 'Standard Practice'(너비 128~8192 곡선의 최적 학습률이 '−20~−10 log₂ LearningRate' 범위에서 옮겨 감, 'optimum shifts') 대 'Our Work'('optimum stable'), Table 2(μP function for a model M′ that is r times the widths of M: AdamW learning rate (matrix-like) 1/r, AdamW learning rate (others) 1, Initialization variance (matrix-like) σ/r, …). 'Scale-invariant hyperparameter tuning would be very nice. How does it work, and does it work in practice?' 'CerebrasGPT – 0.1 to 13B models trained with the Chinchilla recipe. Core finding – using muP parametrization makes scaling more stable'(Figure 5: Percentage loss increase relative to Cerebras-GPT scaling law). 'What is muP, anyway? A Spectral Condition for Feature Learning (Greg Yang, James B. Simon, Jeremy Bernstein) (this is a very accessible muP for babies paper). muP is based off the following assertion. As a function of the width of the network n_l.. A1: The activations at initialization should remain Θ(1). A2: After one gradient step, the change in activation should be Θ(1). Note: if individual activations are Θ(1), then the norm should be Θ(√n_l)'. 'Deriving muP (condition A1) — Suppose that we have a simple, deep linear network (h_l = W_l h_{l−1}) and we init W_l ~ N(0, σ²I_{n_l×n_{l−1}}) then by basic matrix concentration ‖W_l‖_* → σ(√n_{l−1} + √n_l) and, ‖h_l‖₂ ≈ ‖W_l‖_*‖h_{l−1}‖₂. Now let's pick σ = (√n_l/√n_{l−1})(√n_l + √n_{l−1})^(−1) = Θ((1/√n_{l−1})·min(1, √(n_l/n_{l−1}))). Inductive assumption ‖h_{l−1}‖₂ = Θ(√n_{l−1}). Inductive case ‖W_l‖_* → σ(√n_{l−1} + √n_l) = √n_l/√n_{l−1}, ‖h_l‖₂ = √n_l + o(√n_l)' [Comments – this is a kind of worst case derivation – the ≈ is an upper bound].",
+   "explain": [
+    "강의의 마지막 부분은 MiniCPM 쪽 철학, μP 다. 강사는 μP 가 '좀 신비한 물건'이라고 말한다. 논문도 구현도 많지만 밑바탕 수학이나 정확한 구현에 대해 다 같은 말을 하지는 않는다. 그래도 공통된 핵심이 있고 대체로 잘 듣는다. 목표는 그림 한 장이다. 표준 매개화에서는 너비 128 부터 8192 까지 곡선의 최적 학습률이 너비가 커질수록 옆으로 미끄러진다. μP 에서는 모든 너비의 최적점이 한 자리에 모인다. 이를 위해 기꺼이 건드리는 손잡이는 셋 — 층마다 다른 초기화, 파라미터마다 다른 학습률, 그리고 때로 모델 크기에 따라 잔차 연결을 키우거나 줄이는 배율이다.",
+    "실전 증거로 강사는 Cerebras 를 든다. 칩 회사지만 9강의 Hestness 가 이끄는 언어 모델 연구 조직이 있고, μP 스케일링 논문을 많이 낸다. Cerebras-GPT 는 0.1B 부터 13B 까지를 Chinchilla 레시피로 학습하면서 μP 판도 함께 학습했다. 결과는 μP 판의 스케일링 적합이 더 안정적이라는 것이다. μP 판에서 법칙이 예측한 손실은 실제 모델 손실과 거의 정확히 맞았고, 표준판은 예측에서 훨씬 들쭉날쭉 벗어났다. 이밖에도 MiniCPM 등 많은 모델이 μP 변형으로 학습됐다. 강사는 사례를 더 늘어놓는 대신 μP 의 개념과 수학을 직접 따라가겠다고 한다. 추천 문헌은 Greg Yang·James Simon·Jeremy Bernstein 의 'A Spectral Condition for Feature Learning'이다. μP 를 시작한 Greg Yang 의 Tensor Programs 연작은 강사에게도 난해하고, 이 논문이 가장 읽기 쉽다('μP for babies').",
+    "μP 는 물리학자식 사고에서 나온다. 너비 n_l 을 무한대로 키우는 극한을 생각하고, 그 극한에서 지켜져야 할 두 불변 조건을 선언한다. A1: 초기화 상태에서 활성의 각 성분은 너비와 무관하게 Θ(1) 이어야 한다. 무작위 입력을 넣었을 때 활성이 너비에 따라 폭주하거나 0으로 사라진다면 매개화가 잘못된 것이다. A2: 한 번의 기울기 스텝 뒤 활성의 변화도 Θ(1) 이어야 한다. 이것이 '특징 학습'이다. 이론을 아는 사람에게는 NTK(neural tangent kernel)와 대비하면 선명하다. NTK 매개화에서는 너비가 커질수록 활성의 변화가 사라져, 무한히 넓은 망이 사실상 고정된 특징 위의 선형 모델이 된다. μP 는 그걸 원하지 않는다. 큰 망에서도 특징이 배워져야 한다. 한 가지 표기 약속: 성분이 Θ(1) 이면 길이 n_l 짜리 벡터의 노름은 Θ(√n_l) 이다. 유도는 노름으로 한다.",
+    "A1 을 유도해 보자. 깊은 선형망 h_l = W_l·h_{l−1} 에서 W_l 의 성분을 N(0, σ²) 로 초기화한다. 무작위 행렬 이론의 표준 결과로 n_l × n_{l−1} 가우스 행렬의 스펙트럼 노름은 대략 σ(√n_{l−1} + √n_l) 이다. 그리고 고차원에서는 ‖h_l‖ ≈ ‖W_l‖·‖h_{l−1}‖ 로 본다(엄밀히는 상한이고, 슬라이드도 '최악의 경우 유도'라고 단서를 단다). 이제 귀납법이다. ‖h_{l−1}‖ = Θ(√n_{l−1}) 이라 가정하고, ‖h_l‖ = Θ(√n_l) 이 되게 σ 를 고른다. 필요한 것은 ‖W_l‖ = √n_l/√n_{l−1} 이므로 σ = (√n_l/√n_{l−1})/(√n_{l−1} + √n_l) 이고, 이것은 Θ((1/√n_{l−1})·min(1, √(n_l/n_{l−1}))) 와 같은 크기다. 대입하면 ‖h_l‖ = √n_l + o(√n_l) 로 귀납이 닫힌다. fan_out 이 fan_in 이상이면 익숙한 1/√fan_in 초기화이고, fan_out 이 더 작을 때만 √(fan_out/fan_in) 배 더 작게 초기화한다. 아래 코드에서 이 규칙은 너비 128~2048 에서 활성 RMS 를 약 1 로 유지하고, 고정 표준편차 0.02 는 6층만 지나도 너비에 따라 10⁻⁴ 에서 10⁻¹ 까지 흔들린다."
+   ],
+   "formulas": [
+    {
+     "expr": "A1: h_l 의 성분 = Θ(1) ⇔ ‖h_l‖₂ = Θ(√n_l);   A2: Δh_l 의 성분 = Θ(1) ⇔ ‖Δh_l‖₂ = Θ(√n_l)",
+     "meaning": "n_l: l 층의 너비, h_l: 그 층의 활성 벡터, Δh_l: 한 번의 기울기 스텝 뒤 활성의 변화. 너비를 무한대로 키울 때 지켜야 할 두 불변 조건."
+    },
+    {
+     "expr": "W ~ N(0, σ²)^{n_l × n_{l−1}}  ⇒  ‖W‖_* ≈ σ(√n_{l−1} + √n_l)",
+     "meaning": "‖·‖_*: 스펙트럼(연산자) 노름 = 가장 큰 특이값. 가우스 무작위 행렬의 집중 현상에서 나오는 표준 결과."
+    },
+    {
+     "expr": "σ_l = (√n_l/√n_{l−1}) / (√n_l + √n_{l−1}) = Θ( (1/√n_{l−1}) · min(1, √(n_l/n_{l−1})) )",
+     "meaning": "‖W_l‖_* = √n_l/√n_{l−1} 이 되게 고른 초기화 표준편차. n_l ≥ n_{l−1} 이면 1/√fan_in(표준), n_l < n_{l−1} 이면 √n_l/n_{l−1}."
+    }
+   ],
+   "example": {
+    "title": "세 가지 모양의 층에서 σ 계산",
+    "body": "① 정사각 1024→1024: σ = (√1024/√1024)/(32 + 32) = 1/64 = 0.0156. Θ 식으로는 1/√1024 × min(1, 1) = 1/32 — 상수배(2) 차이는 Θ 가 무시한다. 확인: ‖W‖ ≈ σ(32 + 32) = 1 = √n_l/√n_{l−1}. ② 넓어지는 층 1024→4096(MLP 위 투영): σ = (64/32)/(64 + 32) = 2/96 = 0.0208, ‖W‖ ≈ 0.0208 × 96 = 2 = 64/32. Θ 식 1/32 × 1 = 0.031. ③ 좁아지는 층 4096→1024(MLP 아래 투영): σ = (32/64)/(32 + 64) = 0.5/96 = 0.0052, Θ 식 1/64 × min(1, 0.5) = 0.0078 — 표준 1/√fan_in(= 0.0156)보다 절반 작다. 이 셋째 경우가 μP 초기화가 표준과 갈리는 곳이다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nrng = np.random.default_rng(0)\ndef run(width, rule, depth=6, d_in=64):\n    dims = [d_in] + [width] * depth\n    h = rng.normal(size=d_in)                       # 성분 하나가 O(1)\n    for n_in, n_out in zip(dims[:-1], dims[1:]):\n        if rule == \"muP\":\n            sigma = (1 / np.sqrt(n_in)) * min(1, np.sqrt(n_out / n_in))\n        else:                                       # 고정 표준편차 0.02\n            sigma = 0.02\n        W = rng.normal(0, sigma, size=(n_out, n_in))\n        h = W @ h\n    return np.linalg.norm(h) / np.sqrt(len(h))      # 성분 RMS\nfor w in [128, 512, 2048]:\n    print(f\"width {w:>4}: muP RMS={run(w,'muP'):.3f}  fixed0.02 RMS={run(w,'fixed'):.2e}\")\n# 가우스 행렬 스펙트럼 노름 ≈ σ(√n_in + √n_out) 확인\nn_in, n_out, s = 1024, 4096, 0.01\nW = rng.normal(0, s, size=(n_out, n_in))\nprint(\"실측\", round(np.linalg.norm(W, 2), 3), \"공식\", round(s * (np.sqrt(n_in) + np.sqrt(n_out)), 3))\n",
+    "note": "필자 실행 결과: μP 초기화의 활성 RMS 는 너비 128·512·2048 에서 0.810·1.045·1.036 으로 거의 일정, 고정 σ = 0.02 는 9.93e-05·2.87e-03·9.34e-02 로 너비에 따라 수백 배 흔들린다. 1024→4096, σ = 0.01 가우스 행렬의 스펙트럼 노름 실측 0.96 대 공식 0.96."
+   },
+   "pitfalls": [
+    "슬라이드의 ‖h_l‖ ≈ ‖W_l‖‖h_{l−1}‖ 는 등식이 아니라 상한이다(슬라이드 주석: 최악의 경우 유도). 무작위 행렬에 무작위 벡터를 곱하면 실제로는 대략 ‖W‖_F/√n_{l−1} 배가 되어 상수배 차이가 난다 — μP 는 Θ(차수)만 맞추는 논증이다.",
+    "강의 중 '이 비율이 1보다 작지 않으면 다르다'는 말은 반대로 들릴 수 있다. 식으로는 fan_out < fan_in 일 때만 표준 초기화와 달라진다(min 의 둘째 항이 이길 때).",
+    "A1 만 지키면 표준 매개화와 거의 같다. μP 의 진짜 차이는 A2(학습률 규칙)에서 나온다."
+   ],
+   "check": [
+    {
+     "q": "A2 조건이 NTK 매개화와 μP 를 가르는 이유는?",
+     "a": "NTK 에서는 너비가 커질수록 한 스텝 뒤 활성 변화가 0으로 사라져 특징이 학습되지 않는다. μP 는 A2 로 그 변화가 너비와 무관하게 Θ(1) 이도록 강제해 큰 망에서도 특징 학습이 일어나게 한다."
+    },
+    {
+     "q": "2048→512 층의 μP 초기화 표준편차(Θ 식)는 표준 1/√fan_in 의 몇 배인가?",
+     "a": "min(1, √(512/2048)) = 0.5 배. 1/√2048 × 0.5 ≈ 0.011."
+    }
+   ]
+  },
+  {
+   "start": 3930,
+   "title": "μP 조건 A2 — 랭크 1 갱신에서 층별 학습률 n_l/n_{l−1}(SGD)·1/n_{l−1}(Adam)까지",
+   "points": [
+    "SGD 의 한 예제 갱신은 랭크 1: ΔW_l = −η_l·∇_{h_l}ℓ·h_{l−1}ᵀ → ‖ΔW_l h_{l−1}‖ = ‖ΔW_l‖_*·‖h_{l−1}‖.",
+    "Δh_l = W_l Δh_{l−1} + ΔW_l (h_{l−1} + Δh_{l−1}) — 세 항이 상쇄되지 않는다고 보고 각각 Θ(√n_l) 로 맞추면 ‖ΔW_l‖_* = Θ(√n_l/√n_{l−1}).",
+    "추가 가정: 한 스텝의 손실 변화 Δℓ = Θ(1). 그러면 ‖∇_{W_l}ℓ‖_* = Θ(√n_{l−1}/√n_l).",
+    "결론: SGD 학습률 η_l = Θ(n_l/n_{l−1}), Adam 은 η_l = Θ(1/n_{l−1}). 표준 매개화는 학습률 Θ(1)·초기화 1/√n_{l−1}.",
+    "강사: 엄밀한 증명이 아니라 차수를 따지는 '물리학자의 수학' — 상쇄 없음, Δℓ = O(1) 같은 가정이 쌓인다."
+   ],
+   "on_screen": "'Deriving muP (condition A2) — Now we need to deal with updates. Suppose we have the update ΔW_l on the weights. For SGD, on a linear layer, this looks like a rank-one loss-activation outer product. ΔW_l = −η_l ∇_{h_l}ℓ h_{l−1}ᵀ. Thus, ‖ΔW_l h_{l−1}‖₂ = ‖ΔW_l‖_*‖h_{l−1}‖₂. Now note that we have the update Δh_l = W_l Δh_{l−1} + ΔW_l(h_{l−1} + Δh_{l−1}). Assuming that the leading order terms don't cancel, we see that • W_lΔh_{l−1} = Θ(√n_l) from induction assumption + condition A1 argument • ΔW_l h_{l−1} = ‖ΔW_l‖_*√n_{l−1} from above, thus ‖ΔW_l‖_* = Θ(√n_l/√n_{l−1}) • ΔW_lΔh_{l−1} = O(‖ΔW_l‖_*√n_{l−1})'. 'Deriving muP (condition A2) part 2 — Recall – the key is to pick LR such that ‖ΔW_l‖_*√n_{l−1} = Θ(√n_l). Suppose that the loss update also scales O(1). Δℓ ≈ Θ(⟨ΔW_l, ∇_{W_l}ℓ⟩) = Θ(‖ΔW_l‖_F‖∇_{W_l}ℓ‖_F) = Θ(‖ΔW_l‖_*‖∇_{W_l}ℓ‖_*) … plug in Δℓ = O(1), ‖ΔW_l‖_* = Θ(√n_l/√n_{l−1}) to get ‖∇_{W_l}ℓ‖_* = Θ(√n_{l−1}/√n_l) … η_l = Θ(n_l/n_{l−1})' [with Adam, ‖ΔW_l‖_*√n_{l−1} = Θ(√n_l)]. 'muP mini recap.. So, what is (baby) muP about? Controlling activations (and changes) via W and ΔW. Initialization (stdev): Set to Θ((1/√n_{l−1})·min(1, √(n_l/n_{l−1}))). Learning rates: Set to n_l/n_{l−1} (for Adam 1/n_{l−1}). Compared to standard parametrizations – these set Initialization: Set to 1/√n_{l−1}, Learning rates: Set to Θ(1). Differences – LR changes for Adam, also init diffs when fanout n_l < fanin'.",
+   "explain": [
+    "A2 는 갱신을 다룬다. 단순화를 위해 깊은 선형망, 배치 크기 1의 SGD 를 생각한다. 선형층 h_l = W_l h_{l−1} 의 가중치 기울기는 '출력 쪽 기울기'와 '입력 활성'의 외적이다. 역전파가 앞의 행렬–벡터 곱을 되짚으면 랭크 1 외적이 나오기 때문이다. 그래서 갱신은 ΔW_l = −η_l·∇_{h_l}ℓ·h_{l−1}ᵀ 이고, 랭크 1 이라 이 행렬이 h_{l−1} 에 작용할 때는 스펙트럼 노름이 그대로 걸린다: ‖ΔW_l h_{l−1}‖ = ‖ΔW_l‖_*·‖h_{l−1}‖. 랭크 1 행렬 u vᵀ 는 v 방향 벡터를 정확히 ‖u‖·‖v‖ 배로 늘리기 때문이다.",
+    "이제 한 스텝 뒤 이 층의 활성 변화를 펼친다. h_l + Δh_l = (W_l + ΔW_l)(h_{l−1} + Δh_{l−1}) 에서 원래 값을 빼면 Δh_l = W_l Δh_{l−1} + ΔW_l h_{l−1} + ΔW_l Δh_{l−1}. 첫 항은 아래층 변화가 그대로 전해지는 몫이고, 나머지 둘은 이 층의 가중치가 바뀌어서 생긴 몫이다. A2 를 노름으로 쓰면 ‖Δh_l‖ = Θ(√n_l) 이어야 하고, 강사는 세 항이 서로 상쇄되지 않는다고 가정한 뒤 각 항을 Θ(√n_l) 로 맞춘다. 첫 항은 귀납 가정(‖Δh_{l−1}‖ = Θ(√n_{l−1}))과 A1 의 ‖W_l‖_* = √n_l/√n_{l−1} 로 저절로 맞는다. 둘째 항은 ‖ΔW_l‖_*·√n_{l−1} = Θ(√n_l) 을 요구하므로 ‖ΔW_l‖_* = Θ(√n_l/√n_{l−1}). 셋째 항은 둘째 항과 같은 차수 이하다. 결국 '갱신의 스펙트럼 노름이 A1 의 가중치 노름과 같은 크기여야 한다'는 조건이 나온다.",
+    "남은 일은 이 크기의 갱신을 만드는 학습률을 찾는 것이다. 여기서 강사가 '가장 덜 마음에 드는' 가정이 들어간다. 한 스텝의 손실 변화가 너비와 무관하게 Θ(1) 이라는 것 — 큰 모델도 한 스텝마다 비슷한 만큼 진척한다는 가정이다. 테일러 근사로 Δℓ ≈ ⟨ΔW_l, ∇_{W_l}ℓ⟩ 이고, 둘 다 랭크 1 이라 프로베니우스 노름과 스펙트럼 노름이 같아 Δℓ = Θ(‖ΔW_l‖_*·‖∇_{W_l}ℓ‖_*). Δℓ = Θ(1) 과 ‖ΔW_l‖_* = Θ(√n_l/√n_{l−1}) 을 넣으면 ‖∇_{W_l}ℓ‖_* = Θ(√n_{l−1}/√n_l). SGD 에서는 ΔW_l = −η_l ∇_{W_l}ℓ 이므로 η_l = ‖ΔW_l‖_*/‖∇_{W_l}ℓ‖_* = (√n_l/√n_{l−1})/(√n_{l−1}/√n_l) = n_l/n_{l−1}, 즉 fan_out/fan_in 이다. Adam 은 갱신이 기울기 크기로 정규화되므로(부호 갱신에 가깝다) 결과가 달라지고, 유도를 생략한 채 결론만 말하면 η_l = Θ(1/n_{l−1}), fan_in 에 반비례하는 층별 학습률이 된다. fan_in 이 큰 층일수록 작은 학습률을 받는다.",
+    "정리 슬라이드가 표준 매개화와 나란히 놓는다. μP: 초기화 표준편차 Θ((1/√n_{l−1})·min(1, √(n_l/n_{l−1}))), 학습률 n_l/n_{l−1}(Adam 은 1/n_{l−1}). 표준: 초기화 1/√n_{l−1}, 학습률 Θ(1). 실질적인 차이는 Adam 의 학습률이 너비에 따라 줄어든다는 것, 그리고 fan_out < fan_in 인 층의 초기화다. MiniCPM 의 '행렬 학습률 1/(d_m/d_base)'가 바로 이 Adam 규칙이다. 강사는 이 유도를 엄밀한 수학이 아니라 각 항의 차수를 장부처럼 따라가는 '물리학자의 수학'이라고 부른다(물리학자들이 실제로 이렇게 만들었다). 너비 극한을 잡고, 불변 조건을 선언하고, 가정을 더해 하이퍼파라미터의 스케일링 규칙을 끌어내는 이 사고방식 자체가 컴퓨터과학·ML 에서 익숙한 것과 다른, 배워 둘 만한 도구라는 것이 강사의 말이다. 아래 코드는 랭크 1 기울기 하나로 이 규칙을 숫자로 확인한다."
+   ],
+   "formulas": [
+    {
+     "expr": "ΔW_l = −η_l · ∇_{h_l}ℓ · h_{l−1}ᵀ,   ‖ΔW_l h_{l−1}‖₂ = ‖ΔW_l‖_* · ‖h_{l−1}‖₂",
+     "meaning": "배치 1 SGD 의 랭크 1 갱신. ∇_{h_l}ℓ: 층 출력에 대한 손실 기울기(길이 n_l), h_{l−1}: 입력 활성(길이 n_{l−1}). 랭크 1 이라 h_{l−1} 방향에 스펙트럼 노름이 정확히 걸린다."
+    },
+    {
+     "expr": "Δh_l = W_l Δh_{l−1} + ΔW_l h_{l−1} + ΔW_l Δh_{l−1}  ⇒  ‖ΔW_l‖_* = Θ(√n_l / √n_{l−1})",
+     "meaning": "한 스텝 뒤 활성 변화를 세 항으로 펼치고 상쇄가 없다고 가정해 각 항을 Θ(√n_l) 로 맞춘 결과."
+    },
+    {
+     "expr": "Δℓ ≈ ⟨ΔW_l, ∇_{W_l}ℓ⟩ = Θ(‖ΔW_l‖_*·‖∇_{W_l}ℓ‖_*) = Θ(1)  ⇒  ‖∇_{W_l}ℓ‖_* = Θ(√n_{l−1}/√n_l)",
+     "meaning": "손실 변화가 너비와 무관하다는 가정. 랭크 1 행렬은 프로베니우스 노름 = 스펙트럼 노름이라 내적을 두 스펙트럼 노름의 곱으로 쓸 수 있다."
+    },
+    {
+     "expr": "SGD: η_l = Θ(n_l / n_{l−1}),   Adam: η_l = Θ(1 / n_{l−1})",
+     "meaning": "μP 의 층별 학습률. SGD 는 fan_out/fan_in, Adam 은 1/fan_in. 표준 매개화는 둘 다 Θ(1)."
+    }
+   ],
+   "example": {
+    "title": "너비 256 → 1024 로 키울 때 층마다 학습률",
+    "body": "기준 모델(d = 256, d_ff = 1024)을 Adam 학습률 η₀ = 1e-2 로 조율했다고 하자. μP Adam 규칙 η ∝ 1/fan_in. 너비 4배 모델(d = 1024, d_ff = 4096): 어텐션 Q(1024→1024)는 fan_in 256 → 1024 이므로 1e-2 × 256/1024 = 2.5e-3. MLP 위 투영(1024→4096)도 fan_in 1024 라 2.5e-3. MLP 아래 투영(4096→1024)은 기준 fan_in 1024 → 4096 이므로 1e-2 × 1024/4096 = 2.5e-3 — 모든 은닉 행렬이 같은 비율 1/4 로 준다. 벡터 파라미터(정규화 이득)는 1e-2 그대로. SGD 였다면 정사각 층은 n_l/n_{l−1} = 1 로 너비가 커져도 학습률이 그대로다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nrng = np.random.default_rng(1)\ndef delta_rms(n_in, n_out, lr, opt):\n    h = rng.normal(size=n_in)                  # 입력 활성: 성분 O(1), 노름 √n_in\n    g = rng.normal(size=n_out) / n_out         # ∇_h ℓ: 노름 1/√n_out (μP 가정과 같은 크기)\n    G = np.outer(g, h)                         # 랭크 1 기울기 ∇_W ℓ = g hᵀ\n    dW = -lr * (np.sign(G) if opt == \"adam\" else G)   # Adam 은 부호 갱신으로 근사\n    return np.linalg.norm(dW @ h) / np.sqrt(n_out)    # Δh 성분 RMS\nfor n_in, n_out in [(256, 256), (1024, 1024), (4096, 4096), (1024, 4096)]:\n    sgd = delta_rms(n_in, n_out, n_out / n_in, \"sgd\")          # μP SGD: η = n_out/n_in\n    adam_fix = delta_rms(n_in, n_out, 1e-2, \"adam\")             # 표준: η 고정\n    adam_mup = delta_rms(n_in, n_out, 1e-2 * 256 / n_in, \"adam\")  # μP Adam: η ∝ 1/n_in\n    print(f\"{n_in:>4}→{n_out:<4} SGD μP {sgd:.3f} | Adam η고정 {adam_fix:.3f} | Adam μP {adam_mup:.3f}\")\n",
+    "note": "필자 실행 결과(Δh 성분 RMS): 256·1024·4096 정사각과 1024→4096 에서 SGD μP(η = n_out/n_in) 0.776·0.978·0.984·1.014 로 일정, Adam 학습률 고정은 2.245·8.100·32.312·8.021 로 fan_in 에 비례해 커지고, Adam μP(η ∝ 1/n_in) 2.036·1.980·1.995·2.063 으로 일정. Adam 을 부호 갱신으로 근사했다."
+   },
+   "pitfalls": [
+    "SGD 규칙(n_l/n_{l−1})과 Adam 규칙(1/n_{l−1})을 섞지 않는다. 대부분의 LLM 은 Adam 계열이라 실전에서는 1/fan_in 쪽이다.",
+    "'상쇄가 없다', 'Δℓ = Θ(1)' 같은 가정은 증명된 것이 아니다. 강사도 특히 Δℓ 가정은 미심쩍다고 말한다 — μP 는 이 가정 아래의 차수 논증이다.",
+    "Θ 는 상수배를 무시한다. μP 는 '너비에 따라 어떻게 바꾸나'를 줄 뿐, 기준 학습률 η₀ 자체는 작은 모델에서 찾아야 한다."
+   ],
+   "check": [
+    {
+     "q": "SGD 에서 512→2048 층의 μP 학습률은 2048→512 층의 몇 배인가?",
+     "a": "512→2048 은 n_l/n_{l−1} = 4, 2048→512 는 1/4 이므로 16배."
+    },
+    {
+     "q": "Adam 의 μP 학습률이 1/fan_in 인 직관은?",
+     "a": "Adam 갱신은 성분마다 크기가 대략 η 로 정규화된 부호 갱신에 가깝다. 이런 행렬이 입력 벡터에 작용하면 fan_in 개 성분이 같은 방향으로 더해져 출력 변화가 η·fan_in 에 비례하므로, 변화를 Θ(1) 로 두려면 η ∝ 1/fan_in 이어야 한다."
+    }
+   ]
+  },
+  {
+   "start": 4320,
+   "title": "μP 는 실제로 무엇에 견디나 — 전이 재현, 깨뜨리는 것들, 그리고 '스케일링은 아직 기술'",
+   "points": [
+    "Lingle 'A Large-Scale Exploration of μ-Transfer': 트랜스포머 파라미터별 μP 표(임베딩·어텐션·MLP·출력층의 초기화 분산·Adam 학습률), 어텐션 배율 1/D.",
+    "재현: 너비 128·512·2048(16배)에서 기본 μP·투영 편향 판 모두 최적 기준 학습률이 2⁻⁶ 로 같다 — 전이 성공.",
+    "대체로 견딤: SwiGLU·제곱 ReLU, 배치 크기, 초기화 변형 등. 깨뜨림: RMSNorm 이득을 학습하는 것, Lion 같은 부호 기반 옵티마이저, 큰 분리형 가중치 감쇠.",
+    "표준 매개화는 너비 2048 에서 학습률 2⁻⁶ 이상이 발산(7.2+) — μP 는 10B 까지 2⁻⁶ 이 최적. μP 가 더 조율하기 쉬워 보인다.",
+    "정리: 문제는 아키텍처·옵티마이저 하이퍼파라미터·Chinchilla 훑기 비용, 해법은 μP·작은 규모 탐색과 예측·WSD — 아직 만능 해법은 없다."
+   ],
+   "on_screen": "'Deeper dive into muP — Recall – muP is a scaling procedure for hyperparams (as a function of width)' (A Large-Scale Exploration of μ-Transfer, Lucas Dax Lingle) Table 2(Param / Init Variance(Θ) / Adam LR(Θ) / Init Variance(Exact) / Adam LR(Exact)): W^E 1, 1, 1, α (Embedding) · W^AQ·W^AK·W^AV 1/M, 1/M, 1/M, αP/M · W^AO 1/(HD), 1/(HD), 1/M, αP/M (Attention params) · W^FI 1/M, 1/M, 1/M, αP/M · W^FO 1/F, 1/F, 0.25/M, αP/M (Input/output MLP) · W^U 1/M², 1/M, 1/M², αP/M (Softmax linear). 'μP uses an attention scale of τ⁻¹ = Θ(1/D) instead of the usual τ⁻¹ = 1/√D. For simplicity, we use τ⁻¹ = 1/D …'. 'Replicating muP — Q1: Does muP work as claimed?' 표: Baseline μP 128: 3.846 3.743 3.695 3.884 4.143 / 512: 3.114 2.993 2.953 3.221 3.506 / 2048: 2.711 2.553 2.511 2.563 3.244 (Base LR 2⁻¹⁰·2⁻⁸·2⁻⁶·2⁻⁴·2⁻², Transfer ✔), Projection Biases 128: 3.838 3.735 3.705 3.911 4.269 / 512: 3.108 2.986 2.947 2.970 3.557 / 2048: 2.710 2.552 2.529 2.672 3.418 ✔. 'What is muP robust to? Activations – SwiGLU and squared relu · Batch sizes – Large / small · Initialization variations – zero attention, etc. · RMS norm gains · Exotic optimizers (Lion) · Regularizers. Which of these (if any) break muP?' 'What is muP not robust to? Exotic optimizers' — AdamW·Lion 알고리즘, Lion Optimizer 128: 3.708 3.736 4.057 4.344 10.380 / 512: 2.952 2.947 3.416 3.961 10.285 / 2048: 2.519 2.511 3.151 10.377 10.377 ✘. 'Is muP useful? At least to some extent.. Overall, muP generally seems useful – insofar that SP is quite a bit more unstable.' Table 3(SP): 128: 3.841 3.757 3.706 3.879 4.030 / 512: 3.013 2.967 2.987 3.383 7.403 / 2048: 2.738 2.902 7.247 7.477 7.314. Table 4(large-scale, Base LR 2⁻⁸·2⁻⁶·2⁻⁴): 2M/128: 3.791 3.766 3.814 · 40M/512: 3.016 2.983 3.004 · 600M/2048: 2.513 2.459 2.466 · 10B/8192: 2.238 2.167 2.169. 'Current evidence suggests that muP parametrization / initialization may be easier to tune.' 'Recap: scaling in the wild — What are challenges in scaling in practice: 1. Setting model arch hyperparameters (width, etc) 2. Setting optimizer hyperparameters (LR, batch) 3. Compute needed to fit the big chinchilla sweep. Some solutions? 1. Assume stability (or use muP) 2. Search for optimal LR / batch in small scale, either keep fixed or predict scaling 3. Use alternative learning schedules (WSD-like)'.",
+   "explain": [
+    "유도가 끝났으니 실전으로 돌아온다. 강사가 소개하는 것은 한 독립 연구자(Lucas Dax Lingle)가 μP 를 여러 방향으로 두들겨 본 'A Large-Scale Exploration of μ-Transfer'다. μP 를 '너비의 함수로 하이퍼파라미터를 바꾸는 절차'로 보고, 트랜스포머의 파라미터마다 규칙을 표로 정리했다. 너비를 M 이라 하면 임베딩 W^E 는 초기화 분산 1·Adam 학습률 α(너비 무관), 어텐션 Q·K·V 와 MLP 입력 행렬은 분산 1/M·학습률 αP/M, 출력 로짓을 만드는 W^U 는 분산 1/M²·학습률 1/M 이다. 14장의 규칙 — 은닉 행렬은 1/fan_in, 임베딩은 fan_in 이 너비와 무관하니 그대로 — 이 그대로 보인다. 어텐션 점수도 1/√D 대신 1/D 로 나누는 것이 μP 의 요구다(노트 보충: 학습이 진행되면 Q 와 K 가 서로 상관돼 내적이 D 에 비례해 커지기 때문).",
+    "첫 질문은 '정말 전이되나'다. 너비 128, 512, 2048(각각 4배씩, 파라미터로는 16배씩)에서 기준 학습률 2⁻¹⁰ 부터 2⁻² 까지 훑으면, 기본 μP 의 최적점은 세 너비 모두 2⁻⁶ 이다(3.695, 2.953, 2.511). 어텐션 투영에 편향을 넣은 변형도 마찬가지다. 가장 작은 모델의 최적 학습률이 큰 모델의 최적을 그대로 맞혔다. 이것은 MiniCPM 등이 보고한 핵심 결과의 재현이다. 대비를 위해 표준 매개화(SP)를 보면, 최적점이 2⁻⁶(128) → 2⁻⁸(512) → 2⁻¹⁰(2048)으로 왼쪽으로 미끄러지고, 2048 에서 2⁻⁶ 이상을 쓰면 손실이 7.2~7.5 로 발산한다. 아래 코드로 128 의 최적 학습률을 2048 에 그대로 옮기면 SP 는 손실이 4.5 나 나빠지고 μP 는 손해가 0이다. 큰 규모 실험에서도 2M·40M·600M·10B 파라미터(너비 128~8192)의 최적 기준 학습률이 모두 2⁻⁶ 이었다.",
+    "둘째 질문은 '이론 밖의 것들이 μP 를 깨뜨리나'다. 현대 언어 모델에는 μP 이론에 딱 맞지 않는 부품이 많다. SwiGLU·제곱 ReLU 같은 활성 함수, 아주 크거나 작은 배치, 어텐션을 0으로 초기화하는 변형, RMSNorm 의 이득, Lion 같은 특이한 옵티마이저, 정규화 항. 결과는 대체로 견딘다는 쪽이다. 깨지는 것은 셋. ① RMSNorm 의 이득(gain)을 학습 가능하게 두면 전이가 깨진다 — 다만 많은 경우 이득을 없애도 성능 손해가 없으니 큰 문제는 아닐 수 있다. ② Lion 처럼 기울기의 부호만 쓰는 옵티마이저는 전이가 안 된다(128 에서 최적 2⁻¹⁰, 2048 에서 2⁻⁸ 로 움직이고 큰 학습률에서 손실 10 대로 발산). 부호 기울기는 정신적으로 Muon 과 가까워서, 그 계열에서도 비슷한 문제가 있을 수 있다. ③ 가장 걱정스러운 것은 큰 분리형(decoupled) 가중치 감쇠로, 여기서 μP 가 눈에 띄게 실패한다.",
+    "그래서 μP 는 쓸모가 있나? 강사의 답은 '어느 정도는'이다. 학습률을 안정시키고 싶다면 실제로 꽤 유용하다. 표준 매개화에서는 너비를 늘릴 때 최적 학습률이 예측 가능하지만 크게 움직이고, μP 에서는 움직이지 않는다. 다만 이것이 '정답'으로 확정된 것은 아니고, 규모에 따른 하이퍼파라미터 표류를 다루는 여러 도구 중 하나이며, 스케일링 법칙으로 맞추는 쪽도 여전히 유망하다. 마지막 정리 슬라이드가 오늘 전체의 요약이다. 실전 스케일링의 어려움은 ① 너비 등 아키텍처 하이퍼파라미터 정하기 ② 학습률·배치 같은 옵티마이저 하이퍼파라미터 정하기 ③ 큰 Chinchilla 훑기에 드는 연산. 해법은 ① 안정성을 가정하거나 μP 를 쓰고 ② 작은 규모에서 최적 학습률·배치를 찾아 고정하거나 법칙으로 예측하고 ③ WSD 같은 스케줄로 비용을 줄이는 것. 강사는 스케일링 법칙이 처음엔 '이 선을 그으면 큰 규모에서 무슨 일이 일어날지 확실히 안다'는 과학처럼 소개되지만, 실제로는 훨씬 지저분하고 미지가 많은 기술(art)이라고 맺는다. 다음 해에는 '해결했다'는 강의가 나올지도 모르지만 아직은 아니다."
+   ],
+   "formulas": [
+    {
+     "expr": "은닉 행렬: Var_init = Θ(1/M),  η_Adam = αP/M;   임베딩: Var = 1, η = α;   출력 W^U: Var = Θ(1/M²), η = αP/M",
+     "meaning": "Lingle 의 트랜스포머 μP 표. M: 모델 너비(d_model), α: 기준 학습률, P: 기준 너비(proxy)에서 맞춘 배율. 은닉 행렬은 fan_in = M 이라 1/M, 임베딩은 fan_in 이 어휘(원-핫)라 너비 무관."
+    },
+    {
+     "expr": "attention logits = q·k / D   (표준은 q·k / √D)",
+     "meaning": "D: 헤드 차원. μP 는 학습 중 q 와 k 가 정렬돼 내적이 D 에 비례해 커지는 것을 고려해 1/D 로 나눈다."
+    }
+   ],
+   "example": {
+    "title": "표의 숫자로 '전이'를 손으로 판정",
+    "body": "SP 128 의 최적은 2⁻⁶(3.706). 이 값을 2048 에 그대로 쓰면 7.247, 2048 의 최적(2⁻¹⁰, 2.738)보다 4.509 나쁘다 — 사실상 발산. 512 에서는 2.987 대 최적 2.967 로 0.020 손해. μP: 128 의 최적 2⁻⁶(3.695)을 512 에 쓰면 2.953 = 512 의 최적, 2048 에 쓰면 2.511 = 2048 의 최적 — 손해 0. Lion 은 128 최적 2⁻¹⁰(3.708)를 2048 에 쓰면 2.519 대 최적 2.511(2⁻⁸), 손해 0.008 로 작지만 최적점이 옮겨 가고 2⁻⁴ 에서 이미 10.377 로 발산해 '안전한 창'이 너비와 함께 좁아진다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nlrs = np.array([-10, -8, -6, -4, -2])            # log2 학습률\nsp  = {128: [3.841, 3.757, 3.706, 3.879, 4.030],  # 표준 매개화(SP)\n       512: [3.013, 2.967, 2.987, 3.383, 7.403],\n       2048: [2.738, 2.902, 7.247, 7.477, 7.314]}\nmup = {128: [3.846, 3.743, 3.695, 3.884, 4.143],  # 기본 μP\n       512: [3.114, 2.993, 2.953, 3.221, 3.506],\n       2048: [2.711, 2.553, 2.511, 2.563, 3.244]}\nfor name, tab in [(\"SP \", sp), (\"μP \", mup)]:\n    best = {w: int(lrs[np.argmin(v)]) for w, v in tab.items()}\n    small = lrs.tolist().index(best[128])          # 128 폭의 최적 LR 을 그대로 쓰면\n    regret = {w: round(v[small] - min(v), 3) for w, v in tab.items()}\n    print(name, \"최적 log2 LR:\", best, \" 128 최적값 이식 손해:\", regret)\n",
+    "note": "필자 실행 결과: SP 최적 log₂ LR {128: −6, 512: −8, 2048: −10}, 128 의 최적을 이식한 손해 {512: 0.02, 2048: 4.509}. μP 최적 {128: −6, 512: −6, 2048: −6}, 손해 모두 0.0. 표 숫자는 슬라이드(Lingle)에서 옮겼다."
+   },
+   "pitfalls": [
+    "'μP 를 쓰면 무엇이든 전이된다'가 아니다. 학습 가능한 RMSNorm 이득, 부호 기반 옵티마이저(Lion), 큰 분리형 가중치 감쇠에서는 깨진다는 보고가 있다.",
+    "μP 표의 규칙은 너비에 대한 것이다. 깊이·배치·학습 길이에 따른 전이는 별도 규칙(예: 잔차 1/√L 배율)이나 실험이 필요하다.",
+    "구현마다 μP 세부(출력층 배율, 어텐션 1/D, 임베딩 학습률)가 다르다. 강사 말대로 '모두가 같은 μP 를 말하지 않는다' — 쓰는 구현의 표를 확인한다."
+   ],
+   "check": [
+    {
+     "q": "Lingle 의 실험에서 μP 를 깨뜨린 세 가지는?",
+     "a": "학습 가능한 RMSNorm 이득, Lion 같은 부호 기반 옵티마이저, 큰 분리형(decoupled) 가중치 감쇠."
+    },
+    {
+     "q": "강사가 정리한 '실전 스케일링'의 세 문제와 세 해법을 짝지으면?",
+     "a": "아키텍처 하이퍼파라미터 ↔ 안정성 가정 또는 μP / 옵티마이저 하이퍼파라미터(학습률·배치) ↔ 작은 규모 탐색 후 고정 또는 법칙으로 예측 / Chinchilla 훑기 연산 ↔ WSD 같은 스케줄."
+    }
+   ]
+  }
+ ],
+ "concepts": [
+  {
+   "term": "하이퍼파라미터 전이 (Hyperparameter transfer)",
+   "explain": "작은 모델에서 찾은 최적 학습률·초기화 등을 큰 모델에 그대로(μP) 또는 법칙으로 변환해(DeepSeek 식) 옮기는 것. 목표 규모에서 격자 탐색을 피하려는 장치.",
+   "at": 60
+  },
+  {
+   "term": "μP (Maximal Update Parametrization)",
+   "explain": "너비를 키워도 활성과 한 스텝 뒤 활성 변화가 Θ(1) 로 유지되도록 층별 초기화·학습률·배율을 정하는 매개화. 최적 학습률이 너비와 무관해진다.",
+   "at": 300
+  },
+  {
+   "term": "모델 사다리 (Scaling ladder)",
+   "explain": "모양(d_model/L)을 고정한 채 크기만 키운 작은 모델 계열. MiniCPM 은 9M~0.5B 일곱 칸으로 법칙을 맞추고 약 5배 위 모델을 한 번에 학습했다.",
+   "at": 390
+  },
+  {
+   "term": "최적 배치의 손실 법칙",
+   "explain": "목표 손실이 낮을수록 최적 배치가 거듭제곱으로 커진다. MiniCPM: ln BS = −6.24 ln L + 20.91. Kaplan 의 임계 배치와 같은 꼴.",
+   "at": 540
+  },
+  {
+   "term": "WSD 스케줄 (Warmup–Stable–Decay)",
+   "explain": "고정 스텝 워밍업 → 긴 최대 학습률 유지 → 끝 10~20% 급감쇠. 안정 구간 체크포인트로 되감아 감쇠만 하면 어떤 길이의 학습도 얻어 데이터 축 실험이 싸진다.",
+   "at": 660
+  },
+  {
+   "term": "Chinchilla 방법 1·2·3",
+   "explain": "학습 곡선의 아래 껍질(1), 연산 고정 IsoFLOP 꼭짓점(2), L(N, D) 결합 적합(3). 방법 2 가 가장 튼튼하고 3 은 상수 맞춤에 예민하다.",
+   "at": 860
+  },
+  {
+   "term": "거의 최적 집합 (near-optimal set)",
+   "explain": "DeepSeek 이 최솟값의 0.25% 안에 드는 모든 (배치, 학습률)을 모아 법칙을 맞춘 방법. 평평한 최적 근처에서 한 점보다 안정적이다.",
+   "at": 1080
+  },
+  {
+   "term": "토큰당 비임베딩 FLOPs M",
+   "explain": "M = 72·n_layer·d_model² + 12·n_layer·d_model·l_seq. 6N 이 빠뜨리는 어텐션 연산까지 센 모델 크기 척도. DeepSeek 은 C = M·D 로 법칙을 쓴다.",
+   "at": 1230
+  },
+  {
+   "term": "희소도 스케일링 법칙 (Sparsity scaling law)",
+   "explain": "활성 파라미터를 고정하고 총 전문가 수를 늘릴 때 손실·연산의 관계. Kimi K2 는 수확 체감을 보고 희소도 48(384 중 8 활성)을 택했다.",
+   "at": 1410
+  },
+  {
+   "term": "Step Law",
+   "explain": "StepFun 의 하이퍼파라미터 법칙 η = 1.79·N^(−0.713)·D^(0.307), B = 0.58·D^(0.571). 최적 배치는 데이터 양에만 의존한다.",
+   "at": 1860
+  },
+  {
+   "term": "Chinchilla 비 (tokens per parameter)",
+   "explain": "D/N. 알고리즘 비교에서 연산 축과 함께 꼭 확인해야 할 두 번째 축 — 과매개화 영역과 데이터 풍부 영역에서 결론이 달라질 수 있다.",
+   "at": 2760
+  },
+  {
+   "term": "Muon",
+   "explain": "모멘텀 갱신 행렬의 특이값을 Newton–Schulz 반복으로 1 근처에 모아(UVᵀ) 쓰는 행렬 파라미터용 옵티마이저. 벡터 파라미터는 AdamW 로 둔다.",
+   "at": 2520
+  },
+  {
+   "term": "Newton–Schulz 반복",
+   "explain": "X ← aX + b(XXᵀ)X + c(XXᵀ)²X 를 몇 번 되풀이해 행렬을 근사 직교화하는 행렬곱 전용 알고리즘. SVD 보다 GPU 에서 훨씬 빠르다.",
+   "at": 3030
+  },
+  {
+   "term": "특징 학습 대 NTK",
+   "explain": "μP 의 조건 A2 — 한 스텝 뒤 활성 변화가 Θ(1). NTK 매개화에서는 너비가 커질수록 이 변화가 사라져 특징이 고정된다.",
+   "at": 3690
+  },
+  {
+   "term": "스펙트럼 노름 (operator norm)",
+   "explain": "행렬의 가장 큰 특이값. 가우스 행렬은 σ(√n_in + √n_out). μP 유도는 가중치와 갱신의 스펙트럼 노름을 √(fan_out/fan_in) 크기로 맞추는 논증이다.",
+   "at": 3780
+  },
+  {
+   "term": "층별 학습률 (per-layer learning rate)",
+   "explain": "μP 에서 SGD 는 fan_out/fan_in, Adam 은 1/fan_in 에 비례하는 학습률. MiniCPM 의 '행렬 학습률 1/(d_m/d_base)'가 Adam 규칙이다.",
+   "at": 4200
+  }
+ ],
+ "trends": [
+  {
+   "claim": "공개 모델 보고서의 스케일링 세부가 줄고 있다 — 기본기가 당연해졌기 때문",
+   "evidence": "강사 의견 — Qwen 2.5 는 학습률·배치 법칙을 짧게만, Qwen 3 은 '2.5 와 같다'로 끝낸다. Chinchilla·학습률 법칙은 이제 다 아는 레시피라 지면을 쓰지 않는다는 추측. 이런 논문이 줄었고 대부분 중국 오픈소스 진영에서 나온다는 관찰도 함께.",
+   "at": 1380
+  },
+  {
+   "claim": "MoE 전환과 함께 희소도·활성 파라미터를 스케일링 법칙으로 정하는 것이 새 표준 작업이 됐다",
+   "evidence": "Kimi K2 의 희소도 법칙(48 에서 멈춤, 희소도 8·16·32 대비 연산 1.69·1.39·1.15배 절약), Hunyuan-Large 의 활성 파라미터당 96 토큰.",
+   "at": 1410
+  },
+  {
+   "claim": "WSD 류 스케줄이 널리 쓰이는 기본값이 됐다",
+   "evidence": "MiniCPM 이 대중화, DeepSeek 은 두 계단 변형. 강사 의견 — 잘 조율한 코사인이 약간 나은 경우가 많지만 WSD 도 거의 같고 이어 학습이 쉬워 다재다능한 기본값.",
+   "at": 660
+  },
+  {
+   "claim": "Muon 이 작은 벤치마크에서 1조 파라미터급 학습으로 올라왔다",
+   "evidence": "NanoGPT speedrun 에서 Adam 을 앞섰고, 규모 연구에서는 이득이 줄었지만 Kimi K2 가 전체를 Muon(+안정화 장치)으로 학습. AdamW 와의 대규모 대조 실험은 아직 없다(강사 지적).",
+   "at": 3180
+  },
+  {
+   "claim": "μP 는 실무에서 유용하지만 완성된 이론·구현은 아니다",
+   "evidence": "Cerebras-GPT 와 Lingle 의 재현에서 학습률 전이 성공(10B 까지). 학습 가능한 RMSNorm 이득·Lion·큰 가중치 감쇠에서 실패. 강사 의견 — 구현마다 세부가 다르고 '정답'이라 하긴 이르다.",
+   "at": 4440
+  },
+  {
+   "claim": "스케일링 법칙은 과학처럼 보이지만 상당 부분이 '감'이다",
+   "evidence": "강사 의견 — 남의 법칙을 내 설정에 옮길지는 결국 '충분히 비슷한가'의 판단이고, Marin 처럼 몇 자릿수 곧던 선이 발산하기도 한다. 다음 해 '해결됐다'는 강의를 기대하지만 아직 만능 해법은 없다.",
+   "at": 4560
+  }
+ ],
+ "study": {
+  "prereq": [
+   "CS336 9강(Q15rhEWZPQ4) — 로그-로그 직선, 임계 배치, Chinchilla 세 방법과 IsoFLOP(오늘은 그 위에 쌓는다)",
+   "CS336 2강(kuYAsz7zspQ) — 6ND, 파라미터 회계(사다리 모델 파라미터 수와 M 계산에 쓴다)",
+   "CS336 3강(lVynu4bo1rY) — pre-norm·RMSNorm·SwiGLU, 너비·깊이 경험칙",
+   "CS336 4강(cKSwj_qZ8Jg) — MoE 의 top-k 라우팅과 희소도",
+   "선형대수: 특이값 분해, 스펙트럼 노름과 프로베니우스 노름, 랭크 1 행렬",
+   "Adam·모멘텀 SGD 의 갱신식과 학습률 스케줄(워밍업·코사인)"
+  ],
+  "steps": [
+   {
+    "do": "MiniCPM 사다리 표의 파라미터 수를 L·(4d² + 3d·d_ff) 로 다시 계산하고, 너비 배수 m 에 따른 초기화·학습률·로짓 배율을 표로 적는다",
+    "why": "μP 의 다섯 조작이 실제 숫자로 어떻게 바뀌는지 손에 익혀야 뒤의 유도가 '그래서 이 값'으로 연결된다."
+   },
+   {
+    "do": "WSD 와 코사인 스케줄을 직접 구현해 작은 모델(수백만 파라미터)로 비교하고, 안정 구간 체크포인트에서 되감아 감쇠하는 데이터 축 훑기를 해 본다",
+    "why": "감쇠 구간에서 손실이 한꺼번에 떨어지는 모습과 데이터 축 실험 비용 절감을 직접 경험한다. 과제 3 의 예산 관리에도 쓴다."
+   },
+   {
+    "do": "작은 모델 2~3 크기에서 학습률 × 배치 격자를 돌려 손실 지형을 그리고, 격자 최솟값과 포물선 꼭짓점을 비교한 뒤 η*(C), B*(C) 직선을 맞춘다",
+    "why": "DeepSeek·StepFun 식 분석의 축소판. 양자화 오차와 지형의 볼록성을 눈으로 확인한다."
+   },
+   {
+    "do": "DeepSeek 법칙과 Step Law 를 같은 Chinchilla 경로 위에 놓고 10⁸~10¹⁰ 파라미터에서 학습률·배치를 비교한다. 변수 정의(M·D 대 6ND)를 맞춰 본다",
+    "why": "법칙마다 입력 변수가 다르다는 강의의 요점을 숫자로 체감하고, 남의 법칙을 가져올 때 무엇을 확인할지 익힌다."
+   },
+   {
+    "do": "Newton–Schulz 5차 반복을 numpy·PyTorch 로 구현해 특이값 분포를 보고, 작은 GPT 에서 행렬 파라미터만 Muon, 나머지는 AdamW 로 학습해 본다",
+    "why": "Muon 의 '행렬 전용 + 근사 직교화' 설계를 코드로 이해한다."
+   },
+   {
+    "do": "A1·A2 유도를 종이에 다시 쓰고, 너비 128·512·2048 MLP 를 표준 매개화와 μP(Adam 1/fan_in)로 학습해 학습률–손실 곡선의 최적점 이동을 비교한다",
+    "why": "μP 의 약속(최적 학습률 고정)을 직접 재현해야 Lingle 표의 의미와 한계(가중치 감쇠·Lion)가 보인다."
+   }
+  ],
+  "practice": [
+   "MiniCPM 배치 법칙으로 손실 4.0 → 2.8 학습 동안 최적 배치가 어떻게 커지는지 표로 만들고, 그에 맞춘 배치 워밍업 스케줄을 설계하라.",
+   "결합 적합 L = A/N^α + B/D^β + E 에서 α 를 0.30 으로 두고 β 를 0.25~0.35 로 바꾸며 C = 10¹⁸~10²⁴ 에서 최적 D/N 이 어떻게 흐르는지 그려라.",
+   "6장 코드(격자 대 포물선)를 고쳐 격자 간격을 2배에서 √2배·4배로 바꾸고, 잡음 크기에 따라 포물선 꼭짓점 추정 오차가 어떻게 변하는지 기록하라.",
+   "14장 코드를 2층 MLP 로 넓혀 실제 역전파 기울기로 한 스텝을 밟고, 표준 매개화와 μP 에서 Δh 의 RMS 가 너비에 따라 어떻게 변하는지 확인하라.",
+   "Lingle 표(SP·μP·Lion)를 학습률–손실 그림으로 다시 그리고, 너비가 커질 때 '발산하지 않는 학습률 창'의 폭이 어떻게 변하는지 설명하라."
+  ],
+  "resources": [
+   {
+    "title": "CS336 과목 홈페이지 (강의 자료·과제 3)",
+    "url": "https://cs336.stanford.edu/"
+   },
+   {
+    "title": "Hu 외 2024 — MiniCPM: Unveiling the Potential of Small Language Models with Scalable Training Strategies",
+    "url": "https://arxiv.org/abs/2404.06395"
+   },
+   {
+    "title": "DeepSeek-AI 2024 — DeepSeek LLM: Scaling Open-Source Language Models with Longtermism",
+    "url": "https://arxiv.org/abs/2401.02954"
+   },
+   {
+    "title": "Li 외 2025 — Predictable Scale: Part I, Step Law (StepFun)",
+    "url": "https://arxiv.org/abs/2503.04715"
+   },
+   {
+    "title": "Wen 외 2025 — Fantastic Pretraining Optimizers and Where to Find Them",
+    "url": "https://arxiv.org/abs/2509.02046"
+   },
+   {
+    "title": "Keller Jordan — Muon: An optimizer for hidden layers in neural networks",
+    "url": "https://kellerjordan.github.io/posts/muon/"
+   },
+   {
+    "title": "Kimi Team 2025 — Kimi K2: Open Agentic Intelligence",
+    "url": "https://arxiv.org/abs/2507.20534"
+   },
+   {
+    "title": "Yang·Simon·Bernstein 2023 — A Spectral Condition for Feature Learning",
+    "url": "https://arxiv.org/abs/2310.17813"
+   },
+   {
+    "title": "Yang 외 2022 — Tensor Programs V (μTransfer)",
+    "url": "https://arxiv.org/abs/2203.03466"
+   },
+   {
+    "title": "Lingle 2024 — An Empirical Study of μP Learning Rate Transfer (초판 제목 A Large-Scale Exploration of μ-Transfer)",
+    "url": "https://arxiv.org/abs/2404.05728"
+   },
+   {
+    "title": "Dey 외 2023 — Cerebras-GPT",
+    "url": "https://arxiv.org/abs/2304.03208"
+   },
+   {
+    "title": "Hägele 외 2024 — Scaling Laws and Compute-Optimal Training Beyond Fixed Training Durations (WSD 비교)",
+    "url": "https://arxiv.org/abs/2405.18392"
+   },
+   {
+    "title": "Llama Team 2024 — The Llama 3 Herd of Models",
+    "url": "https://arxiv.org/abs/2407.21783"
+   },
+   {
+    "title": "MiniMax 2025 — MiniMax-01: Scaling Foundation Models with Lightning Attention",
+    "url": "https://arxiv.org/abs/2501.08313"
+   }
+  ]
+ },
+ "jobs": {
+  "roles": [
+   "LLM 엔지니어 (사전학습·스케일링)",
+   "AI 리서치 엔지니어 / 리서치 사이언티스트",
+   "ML 엔지니어 (학습 인프라·하이퍼파라미터 실험 설계)",
+   "딥러닝 최적화(옵티마이저) 연구원",
+   "MLOps 엔지니어 (대규모 학습 운영)"
+  ],
+  "skills": [
+   "PyTorch",
+   "Python",
+   "NumPy",
+   "LLM",
+   "Deep Learning",
+   "Transformer",
+   "MoE",
+   "Distributed Training",
+   "Machine Learning",
+   "CUDA"
+  ]
+ },
+ "related": [
+  "Q15rhEWZPQ4",
+  "kuYAsz7zspQ",
+  "lVynu4bo1rY",
+  "cKSwj_qZ8Jg",
+  "6-cXp-aOmdg",
+  "SzpOcwdIL0Y",
+  "JuoVZkPBiKk"
+ ],
+ "materials": {
+  "transcript": "official",
+  "frames": 154,
+  "every_sec": 30
+ },
+ "written_at": "2026-11-21"
+}
