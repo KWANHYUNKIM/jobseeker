@@ -1,0 +1,855 @@
+{
+ "id": "SMOD_GiRzb8",
+ "source": {
+  "platform": "youtube",
+  "url": "https://www.youtube.com/watch?v=SMOD_GiRzb8",
+  "channel": "Stanford Online",
+  "published": "2026-03-09",
+  "duration_sec": 4404,
+  "views": 2207
+ },
+ "course": {
+  "school": "Stanford",
+  "code": "CS221",
+  "term": "Autumn 2025",
+  "lecture_no": "10",
+  "speaker": "Percy Liang"
+ },
+ "title": "Stanford CS221 | Autumn 2025 | Lecture 10: Games I",
+ "title_ko": "CS221 10강 — 게임 I: 게임 트리, 게임 평가·expectimax·minimax·expectiminimax, 알파-베타 가지치기와 평가 함수",
+ "topic": "rl",
+ "tags": [
+  "Python",
+  "Artificial Intelligence",
+  "Game AI",
+  "Minimax",
+  "Alpha-Beta Pruning",
+  "Search Algorithms",
+  "Reinforcement Learning"
+ ],
+ "level": "중급",
+ "one_line": "상대를 모르면 최악을 가정한다 — minimax 와 그 값을 지키며 덜 보는 알파-베타·평가 함수",
+ "summary": [
+  "CS221 의 상태 공간 모델 여행(5·6강 탐색, 7강 MDP, 8강 강화학습)의 마지막 정거장인 두 사람 제로섬 게임 강의다. 강사 Percy Liang 은 세 통(A: −50·50, B: 1·3, C: −5·15) 중 하나를 고르면 강사가 숫자를 꺼내 주는 '게임 1' 투표로 시작해, 같은 판인데도 상대를 어떻게 가정하느냐에 따라 최선의 답이 A·B·C 로 갈린다는 데서 출발한다. MDP 는 환경의 확률을 알고, 게임은 환경 속 상대의 전략을 모른다.",
+  "모델링 부분에서는 게임을 start_state·is_end·utility·player·successors 함수로 정의하고(차례가 상태 안에 있다), 정해진 두 정책의 기대 효용인 게임 값을 몬테카를로 시뮬레이션과 재귀 V_eval 로 잰다(게임 1 에서 에이전트 늘 A·상대 반반 → 0). 에이전트 차례의 합을 max 로 바꾸면 알려진 상대에 대한 최적인 expectimax(→ 5, 통 C), 상대 차례를 min 으로 바꾸면 상대가 최선을 다한다고 가정하는 minimax(→ 1, 통 B)다. 앞의 둘은 MDP 의 정책 평가·가치 반복에 대응하고 min 이 들어간 minimax 만 게임에 고유하다.",
+  "반감 게임(N 에서 1 빼기 또는 반으로 나누기, 0 을 넘겨받은 쪽이 이김)에서 minimax 정책은 무작위 상대를 10 판 모두 이기고, n=1..11 의 승패표를 기계적으로 낸다. 이어 '풀린 게임'(완전한 수에서의 결과를 앎 — 틱택토·님·사목은 강하게, 체커·오델로는 약하게; 체스·바둑은 컴퓨터가 사람을 이겨도 안 풀림)을 구분한다. 정책끼리 엇갈려 붙이는 face-off 에서는 세 명제로 −5 ≤ 1 ≤ 2 ≤ 5 사슬을 세운다. minimax 정책은 어떤 상대에게도 지켜지는 하한을 주지만, 상대를 알면 expectimax 가 더 잘한다 — '최적'은 늘 '무엇에 대해' 최적이다.",
+  "동전을 섞은 게임 2 로 max·min·기댓값 노드가 함께 있는 expectiminimax(→ −2, 통 C)를 보고, 플레이어가 여럿이거나 차례 규칙이 이상해도 재귀만 새로 쓰면 된다는 것, 반대로 불완전 정보(포커)·비제로섬·동시 게임은 이 게임 트리 틀에 들어가지 않는다는 것을 짚는다.",
+  "속도 부분은 두 갈래다. 알파-베타 가지치기는 max 노드의 하한·min 노드의 상한 구간을 들고 다니다가 어떤 노드의 구간이 조상의 구간과 겹치지 않으면 서브트리째 버린다(칠판 예제에서 잎 9 개 중 5 개만 보고 값 7). 답은 정확하고, 자식을 보는 순서가 좋을수록 많이 자른다 — max 는 큰 것부터, min 은 작은 것부터. 근사 쪽은 평가 함수다. 체스의 material·mobility 같은 특성의 합으로 판세를 어림하고, 깊이 제한 탐색에서 깊이가 다하면 Eval 로 끊는다. 평가 함수는 가치 V 의 근사이므로 배울 수 있고, 다음 강의가 그 학습(TD 학습)이다.",
+  "제목 그대로 '게임 I' 의 내용이며 이 노트의 코드(게임 평가·expectimax·minimax 한 함수, 반감 게임 승패표, 알파-베타 로그, face-off 표, expectiminimax, 순서 비교, 깊이 제한 탐색)는 모두 직접 짜서 돌린 것이다. 강의의 말실수 두 곳(expectiminimax 에서 'min 노드에서 평균', 체스 평가에서 '기동성은 원하지 않는다')은 슬라이드 식에 맞춰 바로잡았다."
+ ],
+ "why_now": "게임 트리 탐색은 오래된 주제처럼 보이지만 지금의 AI 에도 그대로 살아 있다. 체스 엔진은 여전히 알파-베타 탐색에 학습한 평가 함수(NNUE)를 얹어 돌고, AlphaGo·AlphaZero 는 이 강의 마지막에 예고된 '평가 함수를 배운다'는 생각을 신경망과 트리 탐색으로 밀어붙인 결과다(노트 보충). 또 minimax 는 '모르는 상대에 대해 최악을 보장한다'는 원칙으로, 적대적 학습(GAN 의 min-max 목적), 강건 최적화, 보안의 위협 모델에서 같은 모양으로 다시 나온다. 강의가 강조한 '최적은 무엇에 대해 최적인가'라는 질문은 다중 에이전트 시스템과 LLM 에이전트끼리의 협상·경쟁을 설계할 때도 첫 질문이다. 게임 AI·추천·광고 입찰처럼 상대가 있는 환경을 다루는 엔지니어와, 탐색·가지치기를 다루는 알고리즘 면접 모두에서 minimax·알파-베타는 단골 소재다.",
+ "chapters": [
+  {
+   "start": 0,
+   "title": "게임 1 — 상대의 전략을 모르면 무엇을 골라야 하나",
+   "points": [
+    "통 A(−50, 50)·B(1, 3)·C(−5, 15) 중 하나를 내가 고르면, 상대(강사)가 그 통의 숫자 하나를 골라 준다. 나는 그 숫자를 크게 하고 싶다.",
+    "정답은 '상대가 어떻게 하느냐'에 달렸다 — 너그러운 상대라면 A 의 50, 무작위라면 C, 심술궂다면 B.",
+    "MDP: 환경은 무작위지만 확률은 안다. 게임: 환경 안에 나를 상대하는 '상대'가 있고 그 전략을 모른다.",
+    "오늘의 길: 모델링(게임·평가·expectimax·minimax·관계·expectiminimax) → 빠르게 하기(알파-베타는 정확, 평가 함수는 근사)."
+   ],
+   "on_screen": "'Lecture 10: Games I' 코드형 강의 노트(파이썬 파일 화면). 'Example: game 1' 상자 — 세 통 A[−50 50], B[1 3], C[−5 15]. 'What should your strategy be? Note that it depends on your opponent (me)'s strategy, which is unknown…'. 이어서 'MDPs: agent tries to maximize utility, environment is random and known / Games: … opponent strategy is unknown' 두 줄과 목차 함수 목록 modeling()·game_evaluation()·expectimax()·minimax()·face_off()·expectiminimax()·alpha_beta_pruning()·evaluation_functions().",
+   "explain": [
+    "강의는 손을 들게 하는 작은 놀이로 시작한다. 탁자 위에 통이 셋 있다. A 에는 −50 과 50, B 에는 1 과 3, C 에는 −5 와 15 가 들어 있다. 학생이 통 하나를 고르면 강사가 그 통에서 숫자 하나를 꺼내 주고, 학생은 받은 숫자가 클수록 좋다. 투표해 보니 C 를 고른 사람이 가장 많았고 A 를 고른 사람도 몇 있었으며 B 는 의외로 적었다. 강사는 B 가 적은 것을 두고 '내가 그렇게 심술궂다고 생각하지 않는 모양'이라고 농담한다.",
+    "이 문제는 일부러 답이 정해지지 않게 만들어졌다. 어떤 통이 좋은지는 오로지 상대가 숫자를 어떻게 꺼내느냐에 달려 있기 때문이다. 상대가 너그러워서 늘 큰 숫자를 준다면 A 가 최고다(50). 상대가 동전을 던져 아무거나 준다면 평균이 A 는 0, B 는 2, C 는 5 이므로 C 가 낫다. 상대가 나를 골탕 먹이려 늘 작은 숫자를 준다면 A 는 −50, B 는 1, C 는 −5 이므로 B 가 유일하게 양수를 지킨다. 같은 판인데 상대에 대한 가정 세 가지가 서로 다른 답 세 개를 낸다. 이것이 오늘 강의 전체의 씨앗이다.",
+    "지난 두 강의(7강 MDP, 8강 강화학습)와 견주면 차이가 선명하다. MDP 에서도 에이전트는 효용을 최대로 하려 하고 환경은 무작위다. 다만 그 무작위의 확률표(전이 확률)는 주어진다고 가정했고, 강화학습은 그 표를 모르는 대신 겪어 보며 배웠다. 게임에서는 환경 안에 '상대'라는 또 하나의 의사결정자가 들어 있고, 그 상대의 전략(정책)이 무엇인지 모른다. 상대는 그냥 주사위가 아니라 나에게 맞서 움직일 수도 있다. 그래서 '상대가 이렇게 둔다면'이라는 가정을 명시적으로 세우고, 가정마다 다른 재귀식을 세우는 것이 이번 강의의 방법이다.",
+    "강의의 길은 두 부분이다. 앞부분은 모델링이다 — 게임이 무엇인지 정의하고, 두 정책이 정해졌을 때 게임의 값을 재는 법(게임 평가), 상대 정책을 알 때 최선을 찾는 법(expectimax), 상대가 최선을 다한다고 가정하는 법(minimax), 이 정책들을 서로 붙였을 때 값 사이의 관계, 그리고 동전 같은 우연까지 섞은 expectiminimax 를 차례로 본다. 뒷부분은 속도다. 게임 트리는 수가 깊어지면 지수적으로 커지므로, 답을 바꾸지 않고 필요 없는 가지를 잘라 내는 알파-베타 가지치기(정확한 방법)와, 끝까지 내려가지 않고 중간에서 '이 판은 이 정도 좋다'고 어림하는 평가 함수(근사 방법)를 다룬다. 5·6강 탐색, 7강 MDP 와 같은 '상태 공간 모델' 여행의 마지막 정거장이라고 강사는 소개한다."
+   ],
+   "example": {
+    "title": "상대 가정 세 가지 → 답 세 가지",
+    "body": "너그러운 상대(늘 큰 수): A=50, B=3, C=15 → A.\n반반 무작위 상대: A=(−50+50)/2=0, B=(1+3)/2=2, C=(−5+15)/2=5 → C.\n최악의 상대(늘 작은 수): A=−50, B=1, C=−5 → B.\n같은 통 세 개인데 상대 모델에 따라 최선이 바뀐다. 뒤에서 둘째 줄과 셋째 줄이 각각 expectimax 값(5)과 minimax 값(1)이라는 이름을 얻는다."
+   },
+   "pitfalls": [
+    "'최선의 통'을 묻는 질문 자체가 상대 가정 없이는 답이 없다. 게임에서 '최적'이라는 말을 들으면 늘 '어떤 상대에 대해?'를 되물어야 한다 — 8장에서 이것이 정식 명제가 된다."
+   ],
+   "check": [
+    {
+     "q": "상대가 1/2 확률로 아무 숫자나 꺼낸다면 어느 통이 최선이고 기댓값은?",
+     "a": "C. 기댓값 (−5+15)/2 = 5 로 A(0)·B(2)보다 크다."
+    },
+    {
+     "q": "MDP 와 게임의 차이를 '모르는 것'의 관점에서 한 문장으로?",
+     "a": "MDP 는 환경의 확률을 알고(강화학습은 겪어서 배우고), 게임은 환경 속 상대의 전략을 모른다 — 그래서 상대에 대한 가정을 세워야 한다."
+    }
+   ]
+  },
+  {
+   "start": 180,
+   "title": "게임 트리와 두 사람 제로섬 게임의 형식 정의",
+   "points": [
+    "게임 트리: 뿌리 = 시작 상태, 간선 = 행동, 잎 = 게임의 결말. 뿌리에서 잎까지 한 줄이 한 판(롤아웃·궤적)이다.",
+    "두 사람 제로섬: 플레이어는 agent 와 opp 둘, 상대의 효용 = −(에이전트의 효용). 에이전트가 +1 이면 상대는 −1.",
+    "게임 = start_state · is_end(s) · utility(s) · player(s) · successors(s)(행동 → 다음 상태). player(s) 가 새로 붙었다.",
+    "특징: 효용은 끝 상태에만 있다(희소 보상), 상태마다 두는 사람이 다르다.",
+    "정책: 결정적 π_p(s) = 행동, 확률적 π_p(a|s) = 그 행동을 할 확률. 강의는 확률적 정책을 기본으로 둔다."
+   ],
+   "on_screen": "칠판에 게임 1 의 트리를 그린다 — 뿌리에서 A·B·C 세 간선, 각 노드에서 1·2 두 간선, 잎 −50, 50, 1, 3, −5, 15. 슬라이드 'This lecture: two-player zero-sum games / Two players: agent and opponent / Zero-sum: utility of agent = −utility of opponent'. 'Key idea: game tree — Each node is a decision point for a player. Each root-to-leaf path is a possible outcome of the game.' 코드 game = Game1(); state = game.start_state() → 'root', is_end → false, player → 'agent'; state='A' 의 successors → {1: 'A1', 2: 'A2'}, player 'opp'; 'A1' 은 is_end true, utility −50. 'Key characteristics of a game: All the utility is at the end state (sparse reward) / Different players in control at different states'. 'Types of policies: Deterministic π_p(s) … Stochastic π_p(a | s) …'.",
+   "explain": [
+    "게임을 머릿속에 그리는 기본 도구는 게임 트리다. 뿌리 노드는 게임이 시작하는 상태이고, 노드에서 뻗어 나가는 간선 하나하나는 그 상태에서 둘 수 있는 수(행동)다. 게임 1 이라면 뿌리에서 A·B·C 세 간선이 나가고, 그 아래 각 통 노드에서 상대가 '첫째 숫자(1)'와 '둘째 숫자(2)' 두 간선을 고른다. 잎에는 그 결말의 점수가 적힌다. 뿌리에서 잎 하나까지 내려가는 길 한 줄이 한 판의 전개, 곧 롤아웃(궤적)이다. 노드마다 '지금 누가 결정하나'가 정해져 있다는 점이 5강 탐색 트리와 다르다. 어떤 노드는 에이전트가, 어떤 노드는 상대가 고른다.",
+    "이 수업은 두 사람 제로섬 게임만 다룬다. 두 사람이란 플레이어가 에이전트와 상대 둘뿐이라는 뜻이고, 제로섬이란 상대의 효용이 언제나 에이전트 효용의 음수라는 뜻이다. 둘을 더하면 0 이 되어서 붙은 이름이다. 에이전트가 이겨 +1 을 받으면 상대는 −1 을 받는다. 이 가정 덕에 숫자 하나만 들고 다니면 된다. 에이전트는 그 숫자를 키우려 하고, 상대는 자기 효용(그 숫자의 음수)을 키우려 하므로 결국 그 숫자를 줄이려 한다. 뒤에 나올 minimax 의 'max 와 min'이 바로 여기서 나온다.",
+    "형식적으로 게임은 몇 개의 함수로 정의된다. 시작 상태(start_state), 게임이 끝났는지 묻는 is_end(s), 끝 상태의 점수 utility(s), 그리고 상태를 주면 '행동 → 다음 상태' 짝을 돌려주는 successors(s). 탐색 문제·MDP 와 비교해 새로 붙은 것은 player(s) 하나로, 지금 차례인 플레이어('agent' 또는 'opp')를 돌려준다. 강사는 차례가 상태의 성질이라는 점을 강조한다. 누구 차례인지가 상태 안에 들어 있으니, 한 사람이 두 번 연달아 두는 규칙이든 차례를 건너뛰는 규칙이든 상태만 잘 정의하면 같은 틀에 들어간다(9장에서 다시 나온다). 코드 화면에서는 'root' 상태에서 is_end 가 false, player 가 'agent', 'A' 상태에서 player 가 'opp' 이고 successors 가 {1: 'A1', 2: 'A2'}, 'A1' 에서 is_end 가 true 이고 utility 가 −50 인 것을 차례로 확인한다.",
+    "게임의 특징 두 가지가 정리된다. 첫째, 효용은 전부 끝 상태에 몰려 있다. 중간에 점수를 주는 게임도 있지만 보통 중요한 것은 끝에 누가 이겼냐는 것이고, 점수를 많이 땄어도 질 수 있다. 강화학습 용어로는 희소 보상 문제다 — 끝까지 가 보기 전에는 잘하고 있는지 알 수 없고, 잘 나가다가 한순간에 무너질 수도 있다. 둘째, 상태마다 통제하는 사람이 다르다. 7강 MDP 에서도 에이전트가 고르는 노드와 환경이 확률로 넘기는 우연 노드가 번갈아 나왔는데, 이제 그 자리에 상대가 고르는 노드가 끼어든다. 정책은 여전히 상태에서 행동으로 가는 사상이다. 결정적 정책 π_p(s) 는 플레이어 p 가 상태 s 에서 둘 수, 확률적 정책 π_p(a|s) 는 그 수를 둘 확률이며, 강의 코드는 정책이 늘 '행동 → 확률' 사전을 돌려주게 해서 결정적 정책을 확률 1 짜리 확률적 정책으로 다룬다."
+   ],
+   "formulas": [
+    {
+     "expr": "Utility_opp(s) = −Utility_agent(s)",
+     "meaning": "제로섬 조건. s 는 끝 상태, Utility_agent 는 에이전트가 받는 점수, Utility_opp 는 상대가 받는 점수. 둘의 합이 늘 0 이라 숫자 하나(에이전트 기준)만 다루면 된다."
+    },
+    {
+     "expr": "π_p(s) ∈ Actions(s),   π_p(a | s) ∈ [0, 1],  Σ_a π_p(a | s) = 1",
+     "meaning": "p 는 플레이어(agent 또는 opp), s 는 상태, a 는 행동, Actions(s) 는 s 에서 둘 수 있는 수의 집합. 결정적 정책은 수 하나를, 확률적 정책은 행동마다 확률을 준다. 결정적 정책은 한 행동의 확률이 1 인 특수한 경우다."
+    }
+   ],
+   "diagram": {
+    "title": "게임 1 의 게임 트리(root 는 에이전트, A·B·C 는 상대)",
+    "code": "graph TD\n  R[\"root (agent)\"] -->|A| A((\"A (opp)\"))\n  R -->|B| B((\"B (opp)\"))\n  R -->|C| C((\"C (opp)\"))\n  A -->|1| a1[\"-50\"]\n  A -->|2| a2[\"50\"]\n  B -->|1| b1[\"1\"]\n  B -->|2| b2[\"3\"]\n  C -->|1| c1[\"-5\"]\n  C -->|2| c2[\"15\"]"
+   },
+   "example": {
+    "title": "상태 'A' 에서 함수를 불러 보면",
+    "body": "is_end('A') = False\nplayer('A') = 'opp'\nsuccessors('A') = {1: 'A1', 2: 'A2'}\nis_end('A1') = True, utility('A1') = −50 (에이전트 기준)\n제로섬이므로 상대가 A1 에서 받는 효용은 +50 이다. 상대는 자기 효용 +50 을 원하므로, 에이전트 숫자로 말하면 '작은 쪽'인 −50 을 원한다."
+   },
+   "pitfalls": [
+    "효용이 끝에만 있다는 것은 규칙의 제약이 아니라 이 강의의 단순화다. 중간 점수를 합쳐 끝에 한 번 주면 같은 틀에 들어간다.",
+    "player(s) 는 트리의 깊이(짝수·홀수)로 정해지는 것이 아니라 상태가 들고 있는 값이다. '번갈아 둔다'를 코드에 하드코딩하면 차례를 건너뛰는 게임에서 틀린다."
+   ],
+   "check": [
+    {
+     "q": "제로섬 게임에서 상대가 자기 효용을 최대로 하려는 것은 에이전트 기준 숫자로 무엇을 하는 것인가?",
+     "a": "에이전트 효용을 최소로 하는 것. 상대 효용 = −에이전트 효용이므로 하나를 키우면 다른 하나는 줄어든다."
+    },
+    {
+     "q": "게임 정의에서 탐색 문제·MDP 에 없던 함수는?",
+     "a": "player(s) — 그 상태에서 누구 차례인지를 돌려준다."
+    }
+   ]
+  },
+  {
+   "start": 540,
+   "title": "반감 게임 — 두 번째 예제와, 할인이 필요 없는 이유",
+   "points": [
+    "반감 게임: 수 N 에서 시작해 번갈아 'N−1(decrement)' 또는 '⌊N/2⌋(half)' 로 바꾼다. 0 을 받아 든 사람(그때 차례인 사람)이 이긴다.",
+    "상태 = (n, 차례). N=11 에이전트 차례에서 decrement → (10, opp), half → (5, opp).",
+    "효용은 끝에 한 번만 나오는 숫자 하나라 할인율 γ 를 둘 이유가 없다.",
+    "최적 전략은 머릿속으로 바로 보이지 않는다 — minimax 재귀를 돌려야 보인다(7장)."
+   ],
+   "on_screen": "'Problem: halving game — Start with a number N. Players take turns either decrementing N or replacing it with ⌊N/2⌋. The player that is left with 0 wins.' 코드 game = HalvingGame(n=11); state = game.start_state() → {n: 11, player: 'agent'}; successors → decrement: {n: 10, player: 'opp'}, half: {n: 5, player: 'opp'}.",
+   "explain": [
+    "두 번째 예제는 훨씬 진짜 게임 같다. 자연수 N 하나로 시작하고, 에이전트와 상대가 번갈아 두 가지 수 중 하나를 둔다. N 에서 1 을 빼거나(decrement), N 을 반으로 나누고 내림하거나(half, ⌊N/2⌋). 수가 0 이 된 순간 차례가 돌아온 사람, 곧 0 을 '받아 든' 사람이 이긴다. 예를 들어 에이전트 차례에 n=1 이면 어느 수를 두어도 0 이 되어 상대가 0 을 받으므로 상대가 이긴다. 반대로 n=2 라면 에이전트가 무엇을 두든 1 이 상대에게 가고, 상대는 0 을 만들어 에이전트에게 넘길 수밖에 없으니 에이전트가 이긴다.",
+    "이 게임의 상태는 수 n 만으로는 부족하고 '지금 누구 차례인가'가 같이 들어간다. 시작 상태는 (n=11, 에이전트 차례)이고, 여기서 decrement 를 두면 (10, 상대 차례), half 를 두면 (5, 상대 차례)로 간다. 2장에서 말한 '차례가 상태 안에 있다'의 구체적인 모습이다. 이렇게 두면 player(s) 는 상태의 필드를 읽기만 하면 되고, successors(s) 는 수를 바꾸면서 차례도 뒤집은 새 상태를 돌려준다.",
+    "강사는 여기서 이 게임의 최적 전략이 무엇인지 생각해 보라고 하면서, minimax 재귀를 머릿속으로 돌릴 수 있는 사람이 아니라면 바로 보이지 않을 것이라고 말한다. 실제로 7장에서 계산해 보면 이기는 자리와 지는 자리가 1, 2, 3, … 순서로 뚜렷한 규칙 없이 섞여 나온다(n=1 은 패배, 2·3 은 승리, 4 는 패배 …). 이 '손으로는 안 보이는데 재귀로는 기계적으로 나오는' 성질이 게임 트리 탐색의 쓸모를 잘 보여 준다.",
+    "한 학생이 할인율을 고려해야 하냐고 묻는다. 7강 MDP 에서는 걸음마다 보상이 쌓이고, 먼 미래의 보상은 γ 를 곱해 깎았다. 이 강의는 효용이 끝에 한 번만 나오는 숫자 하나라고 가정하므로 깎을 대상이 없다 — 그 숫자가 곧 효용이다. 노트 보충: 실제 게임 프로그램은 '이길 거라면 빨리 이기고 질 거라면 늦게 지라'는 성향을 주려고 끝난 깊이에 따라 점수를 조금씩 바꾸기도 하는데(예: 체스 엔진의 '메이트까지 몇 수'), 이것은 할인과 비슷한 효과를 효용 정의 쪽에서 내는 방법이다."
+   ],
+   "example": {
+    "title": "작은 n 에서 손으로 승패 따지기(에이전트 차례)",
+    "body": "n=1: 어느 수든 0 → 상대가 0 을 받음 → 에이전트 패(−1).\nn=2: decrement → (1, 상대). 상대가 어떤 수를 두든 0 → 에이전트가 0 을 받음 → 승(+1).\nn=3: half → ⌊3/2⌋=1 → (1, 상대) → 위와 같이 승(+1). decrement → (2, 상대) 는 상대가 이기는 자리라 피한다.\nn=4: decrement → (3, 상대) 는 상대 승, half → (2, 상대) 도 상대 승 → 어느 쪽이든 패(−1).\n7장의 코드 결과(1:−1, 2:+1, 3:+1, 4:−1)와 같다."
+   },
+   "pitfalls": [
+    "'0 이 된 사람이 진다'로 읽기 쉽다. 강의 규칙은 0 이 된 상태에서 차례인 사람이 이긴다. 즉 0 을 만든 사람이 아니라 0 을 넘겨받은 사람이 이긴다."
+   ],
+   "check": [
+    {
+     "q": "(n=5, 에이전트 차례)에서 둘 수 있는 두 수와 각 다음 상태는?",
+     "a": "decrement → (4, 상대 차례), half → (2, 상대 차례)."
+    },
+    {
+     "q": "이 강의에서 할인율을 쓰지 않는 이유는?",
+     "a": "효용이 끝 상태에서 한 번 나오는 숫자 하나뿐이라 시간에 따라 깎을 보상이 없기 때문이다."
+    }
+   ]
+  },
+  {
+   "start": 660,
+   "title": "게임 평가 — 두 정책이 정해졌을 때 게임의 값(시뮬레이션과 V_eval)",
+   "points": [
+    "게임의 값 = 정해진 두 정책으로 둘 때 에이전트 효용의 기댓값(가능한 모든 롤아웃에 대해).",
+    "몬테카를로: simulate 로 여러 판 굴려 평균한다. 20 판 평균 15 — 표본 오차일 뿐 참값은 0.",
+    "정확한 값은 재귀 V_eval: 끝이면 Utility, 아니면 그 차례 플레이어의 정책 확률로 자식 값을 가중 평균.",
+    "게임 1(에이전트 늘 A, 상대 반반): 통 값 0·2·5, 뿌리 값 = 1·0 + 0·2 + 0·5 = 0.",
+    "MDP 의 정책 평가와 같은 일. 다만 정확한 계산은 지수 시간(가지 2, 깊이 100 → 2¹⁰⁰)."
+   ],
+   "on_screen": "'Given a game and a policy for each player… the value (expected utility) of a game over all possible rollouts'. 코드 always_choose_a_policy → {'A': 1}, random_policy → {'1': 0.5, '2': 0.5}, policies = {'agent': …, 'opp': …}. simulate(game, policies): while not game.is_end(state): player = game.player(state); actions = policies[player](state); action = sample_dict(actions); state = game.successors(state)[action]. 실행 결과 steps [A → A2], utility 50, 20 판 utilities 표와 mean_utility = 15. 'Can we compute the game value exactly without simulation? Yes, by defining a recurrence!' — 사슬 그림 ○ −π_agent→ ○ −π_opp→ ○ … 와 V_eval 3단 식. 'Example: game evaluation' 그림: 통 노드 값 0, 2, 5(녹색), 간선 확률 (1)(0)(0)·(0.5)(0.5), V_eval(s_start) = 0. 요약 'Monte Carlo: we can simulate the game and average the utilities / Recurrence to compute value exactly (but could take exponential time!) / Analogous to policy evaluation in MDPs'.",
+   "explain": [
+    "가장 쉬운 질문부터 시작한다. 두 플레이어가 어떻게 둘지 이미 정해져 있다면, 이 게임은 에이전트에게 평균 몇 점짜리인가? 이를 게임의 값이라 부르고, 정의는 가능한 모든 판(롤아웃)에 대해 에이전트 효용의 기댓값이다. 7강에서 정책 π 의 값 V_π(s) 를 그 정책을 따를 때의 기대 효용으로 정의한 것과 똑같은 생각이다. 강의의 예에서는 에이전트가 언제나 A 를 고르고(확률 1), 상대는 1 과 2 를 반반으로 고른다. 코드에서 정책은 상태를 받아 '행동 → 확률' 사전을 돌려주는 함수이고, 두 정책을 {'agent': …, 'opp': …} 사전으로 묶어 게임에 넘긴다.",
+    "값을 재는 첫 방법은 직접 해 보는 것이다. simulate 함수는 시작 상태에서 출발해, 게임이 끝나지 않은 동안 '지금 누구 차례인가 → 그 사람의 정책에서 행동 분포를 받는다 → 그 분포에서 행동 하나를 뽑는다 → successors 로 다음 상태로 간다'를 되풀이하고, 끝 상태의 효용을 돌려준다. 5강 탐색·7강 MDP 의 시뮬레이터와 같은 모양이다. 한 번 돌렸을 때는 A 를 고르고 상대가 동전으로 2 를 골라 50 을 받았다. 20 번 돌려 평균하니 15 가 나왔다. 그렇다고 이 게임의 값이 15 인 것은 아니다. 표본이 20 개뿐이라 생긴 오차다. 판 수를 백만 번으로 늘리면 −50 과 50 이 반반씩 나오니 평균은 0 에 다가간다. 이렇게 여러 판의 평균으로 값을 어림하는 것을 몬테카를로 추정이라 한다.",
+    "시뮬레이션 없이 정확한 값을 구할 수도 있다. 재귀식 V_eval 을 세우면 된다. 끝 상태라면 그 효용이 값이다(바닥 사례). 에이전트 차례라면 에이전트 정책이 각 행동에 주는 확률로 자식 상태 값을 가중 평균하고, 상대 차례라면 상대 정책의 확률로 같은 가중 평균을 한다. 두 경우의 차이는 '누구의 정책을 쓰느냐' 하나뿐이다. 7강의 정책 평가에서 행동에 대한 합과 다음 상태에 대한 합(전이 확률 가중)을 했던 것과 같은 계산이고, 상대를 MDP 의 환경(전이 확률)으로 보면 정확히 같은 식이 된다. 코드도 거의 그대로 옮겨진다. 끝이면 utility 를 돌려주고, 아니면 차례인 사람의 정책에서 (행동, 확률) 쌍을 돌며 확률 × 자식의 V_eval 을 더한다.",
+    "아래에서 위로 값을 채워 보면 이 재귀가 무엇을 하는지 보인다. 통 A 노드 값은 0.5×(−50) + 0.5×50 = 0, B 는 0.5×1 + 0.5×3 = 2, C 는 0.5×(−5) + 0.5×15 = 5 다. 뿌리에서는 에이전트 정책이 A 에 1, B·C 에 0 을 주므로 1×0 + 0×2 + 0×5 = 0. 게임의 값은 0 이고, 제로섬이니 상대의 기대 효용은 −0 = 0 이다. 주의할 점이 하나 있다. 이 계산은 정확하지만 트리 전체를 훑어야 하므로 지수 시간이 걸린다. 노드마다 수가 2 개이고 100 수까지 가는 게임이라면 2¹⁰⁰ 개의 잎을 봐야 한다. 그래서 게임 평가만 할 거라면 실무에서는 몬테카를로로 충분히 빨리 수렴한다. 그런데도 재귀를 배우는 까닭은 바로 다음 장의 expectimax 처럼 표본 평균으로는 구할 수 없는 값들이 있기 때문이다."
+   ],
+   "formulas": [
+    {
+     "expr": "V_eval(s) = Utility(s)                                   if IsEnd(s)\n          = Σ_{a∈Actions(s)} π_agent(s, a) · V_eval(Succ(s, a))   if Player(s) = agent\n          = Σ_{a∈Actions(s)} π_opp(s, a) · V_eval(Succ(s, a))     if Player(s) = opp",
+     "meaning": "s 는 상태, a 는 행동, Actions(s) 는 s 에서 가능한 행동 집합, Succ(s, a) 는 a 를 두었을 때의 다음 상태, π_agent(s, a)·π_opp(s, a) 는 각 플레이어가 s 에서 a 를 고를 확률, Utility(s) 는 끝 상태의 에이전트 효용. 차례인 사람의 정책 확률로 자식 값을 가중 평균하는 것이 전부다."
+    },
+    {
+     "expr": "V̂ = (1/n) Σ_{i=1..n} Utility(롤아웃 i)",
+     "meaning": "몬테카를로 추정. n 은 시뮬레이션 횟수. 각 롤아웃은 두 정책에서 행동을 뽑아 끝까지 둔 한 판이고, 그 효용들의 평균은 n 이 커질수록 V_eval(s_start) 로 다가간다(큰 수의 법칙)."
+    }
+   ],
+   "example": {
+    "title": "게임 1 에서 V_eval 을 아래에서 위로",
+    "body": "에이전트: 늘 A. 상대: 1·2 각 1/2.\nA 노드: 0.5·(−50) + 0.5·50 = 0\nB 노드: 0.5·1 + 0.5·3 = 2\nC 노드: 0.5·(−5) + 0.5·15 = 5\n뿌리: 1·0 + 0·2 + 0·5 = 0 → V_eval(s_start) = 0\n아래 코드로 굴려 보면 20 판 평균은 −20(표본이 적어 크게 흔들림), 1000 판은 2.4, 10만 판은 0.117 로 0 에 다가간다(시드 1)."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import random\n# 게임 평가를 몬테카를로로: 에이전트는 늘 A, 상대는 1/2 씩 무작위\nLEAVES = {\"A\": {1: -50, 2: 50}, \"B\": {1: 1, 2: 3}, \"C\": {1: -5, 2: 15}}\npi_agent = lambda s: {\"A\": 1.0}\npi_opp = lambda s: {1: 0.5, 2: 0.5}\n\ndef sample(dist):\n    acts, probs = zip(*dist.items())\n    return random.choices(acts, weights=probs)[0]\n\ndef simulate():\n    b = sample(pi_agent(\"root\"))          # 에이전트 차례\n    k = sample(pi_opp(b))                 # 상대 차례\n    return LEAVES[b][k]                   # 끝 상태의 효용\n\nrandom.seed(1)\nfor n in (20, 1000, 100000):\n    us = [simulate() for _ in range(n)]\n    print(n, \"판 평균:\", sum(us) / n)",
+    "note": "직접 돌린 결과: 20 판 −20.0, 1000 판 2.4, 100000 판 0.117. 강의 화면의 '20 판 평균 15'와 숫자가 다른 것은 난수열이 달라서이고, 판 수가 적을 때 평균이 크게 흔들린다는 점은 같다."
+   },
+   "pitfalls": [
+    "시뮬레이션 평균(15)을 게임의 값으로 착각하지 말 것. 값은 기댓값(0)이고, 평균은 그 추정치다.",
+    "V_eval 은 '정책이 주어졌을 때'의 값이다. 정책을 바꾸면 값도 바뀐다 — 이것만으로는 어떻게 두어야 하는지 알려 주지 않는다."
+   ],
+   "check": [
+    {
+     "q": "에이전트가 늘 C 를 고르고 상대가 반반이면 게임 1 의 V_eval 은?",
+     "a": "0.5·(−5) + 0.5·15 = 5."
+    },
+    {
+     "q": "게임 평가가 7강의 무엇과 같은 계산인가?",
+     "a": "MDP 의 정책 평가. 상대 정책을 환경의 전이 확률로 보면 식이 같다."
+    }
+   ]
+  },
+  {
+   "start": 1230,
+   "title": "expectimax — 상대의 정책을 알 때 최적의 수",
+   "points": [
+    "이제 에이전트 정책은 주어지지 않는다. 상대 정책 π_opp 는 고정·알려짐으로 두고, 에이전트의 최적 정책을 찾는다.",
+    "재귀에서 바뀌는 곳은 단 한 줄: 에이전트 차례의 Σ π_agent(…) 가 max_a 로.",
+    "그림 기호: △ = max 노드(에이전트), ○ = 고정 정책 노드(평균).",
+    "게임 1: 통 값 0·2·5 중 max → 5, C 를 고른다. C 를 고른 학생들은 상대를 '동전 던지기'로 본 셈.",
+    "max 가 끼면 단순 표본 평균으로 추정할 수 없다. MDP 의 가치 반복에 해당한다."
+   ],
+   "on_screen": "'Previously: we can evaluate a fixed agent policy / Now: find the optimal agent policy'. 사슬 그림 △ −π_agent→ ○ −π_opp→ △ … . 식 V_exptmax(s) 에서 'max_{a∈Actions(s)}' 만 빨간색. 'Example: expectimax' 그림: π_opp(s,a) = 1/2, 뿌리 △ 5, 통 노드 0, 2, 5, 오른쪽 가지가 붉게 표시, V_exptmax(s_start) = 5. 코드 V_expectimax(game, opp_policy, state): agent 차례에 next_states = list(game.successors(state).values()); values = [V_expectimax(...) for next_state in next_states]; value = np.max(values) — 실행 화면 next_states ['A','B','C'], values [0 2 5], value 5. 'Now the optimal action is to choose C!' 요약 'Expectimax: find the optimal agent policy with respect to a fixed opponent policy / Analogous to value iteration in MDPs'.",
+   "explain": [
+    "게임 평가는 두 정책을 모두 받아 값만 쟀다. 이제 한 걸음 나아가, 에이전트가 어떻게 두어야 하는지를 직접 구한다. 단, 상대가 어떻게 둘지는 알고 있다고 가정한다 — 예를 들어 상대가 늘 동전을 던진다는 것을 안다. 그러면 상대는 사실상 주사위와 같고, 문제는 7강의 MDP 로 돌아간다. 이 상황의 최적 값을 expectimax 값이라 부른다. 이름 그대로 상대 노드에서는 기댓값(expectation)을, 내 노드에서는 최댓값(max)을 취한다.",
+    "재귀식은 게임 평가의 식에서 딱 한 곳만 바뀐다. 에이전트 차례에서 정책 확률로 가중 평균하던 Σ_a π_agent(s, a)·V(…) 가 max_a V(…) 로 바뀐다. 에이전트는 기대 효용을 최대로 하고 싶으니, 자식들의 expectimax 값 중 가장 큰 것을 주는 수를 고르면 된다. 상대 차례는 그대로 상대 정책의 확률로 가중 평균한다. 강의 그림에서는 위를 향한 세모(△)가 max 노드, 동그라미(○)가 고정 정책이 돌아가는 평균 노드다. 강사는 이런 재귀가 앞으로 반복해서 나오니 새 재귀 하나를 이해하는 데 드는 노력이 점점 0 에 가까워지길 바란다고 말한다.",
+    "게임 1 에 적용하면 통 노드 값은 게임 평가 때와 같이 0, 2, 5 이고, 뿌리에서 셋의 최댓값 5 를 취한다. 최적 수는 C 다. 처음 투표에서 C 를 고른 학생들은 강사를 동전 던지는 상대로 보고 머릿속으로 expectimax 를 돌린 셈이다. 15 를 받을 수도 있고 −5 를 받을 수도 있지만 평균으로 보면 가장 좋다. 코드는 에이전트 차례에 successors 의 다음 상태 목록(['A', 'B', 'C'])을 만들고, 각각에 재귀를 불러 값 [0, 2, 5] 를 얻은 뒤 np.max 로 5 를 고른다. 상대 차례 코드는 평가 때의 가중 평균과 같다.",
+    "중요한 관찰이 하나 있다. 게임 평가는 합(기댓값)뿐이라 롤아웃을 뽑아 평균하면 편향 없는 추정치가 나왔다. expectimax 에는 max 가 끼어 있어 그렇게 할 수 없다. 표본 평균의 최댓값은 최댓값의 평균과 다르고, 애초에 에이전트가 어떤 수를 둘지 정해져 있지 않으니 뽑을 정책이 없다. 그래서 재귀가 필요하다. 정리하면 게임 평가는 MDP 의 정책 평가, expectimax 는 MDP 의 가치 반복에 대응한다. 강사의 말대로 여기까지는 MDP 를 게임 용어로 다시 말한 것에 불과하고, 진짜 새로운 것은 다음 장의 minimax 다."
+   ],
+   "formulas": [
+    {
+     "expr": "V_exptmax(s) = Utility(s)                                        if IsEnd(s)\n             = max_{a∈Actions(s)} V_exptmax(Succ(s, a))               if Player(s) = agent\n             = Σ_{a∈Actions(s)} π_opp(s, a) · V_exptmax(Succ(s, a))   if Player(s) = opp",
+     "meaning": "V_eval 과 같은 기호. 달라진 것은 에이전트 차례의 max 하나로, 에이전트는 자식 값 중 가장 큰 쪽으로 간다. π_opp 는 알려진 고정 정책이다. 최적 수는 그 max 를 내는 a(argmax)."
+    }
+   ],
+   "example": {
+    "title": "게임 1 의 expectimax 를 손으로",
+    "body": "상대 π_opp: 1·2 각 1/2.\nA: 0.5·(−50)+0.5·50 = 0 / B: 0.5·1+0.5·3 = 2 / C: 0.5·(−5)+0.5·15 = 5\n뿌리(△): max(0, 2, 5) = 5, argmax = C.\n같은 상대에 대해 1 장의 '반반 무작위 상대' 줄과 같은 답이다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 게임 1: 루트(agent) -> A/B/C(opp) -> 숫자\nTREE = {\"root\": (\"agent\", {\"A\": \"A\", \"B\": \"B\", \"C\": \"C\"}),\n        \"A\": (\"opp\", {1: -50, 2: 50}), \"B\": (\"opp\", {1: 1, 2: 3}),\n        \"C\": (\"opp\", {1: -5, 2: 15})}\n\ndef V(s, agent, opp):\n    \"\"\"agent/opp 는 '자식 값 dict -> 값' 함수. 무엇을 넣느냐가 곧 재귀의 이름이다.\"\"\"\n    if not isinstance(s, str):          # 잎: 숫자 자체가 효용\n        return s\n    player, succ = TREE[s]\n    vals = {a: V(t, agent, opp) for a, t in succ.items()}\n    return (agent if player == \"agent\" else opp)(vals)\n\nmean = lambda v: sum(v.values()) / len(v)          # 반반 무작위 정책\nalways_A = lambda v: v[\"A\"]                        # 언제나 A\nbest = lambda v: max(v.values())\nworst = lambda v: min(v.values())\n\nprint(\"V_eval     =\", V(\"root\", always_A, mean))   # 0\nprint(\"V_exptmax  =\", V(\"root\", best, mean))       # 5 (C)\nprint(\"V_minimax  =\", V(\"root\", best, worst))      # 1 (B)",
+    "note": "한 재귀 함수에 '에이전트 노드 규칙'과 '상대 노드 규칙'만 바꿔 끼워 게임 평가·expectimax·minimax 세 값을 다 낸다. 직접 돌린 결과: V_eval = 0.0, V_exptmax = 5.0, V_minimax = 1."
+   },
+   "pitfalls": [
+    "expectimax 의 '최적'은 '이 상대 정책에 대해' 최적이다. 상대가 실제로는 다르게 둔다면 C 는 −5 를 받을 수 있다(8장의 −5).",
+    "max 를 포함한 값은 롤아웃 평균으로 추정하면 안 된다. 표본 값들의 최댓값은 위쪽으로 치우친다."
+   ],
+   "check": [
+    {
+     "q": "상대가 늘 첫째 숫자(1)를 꺼낸다고 알 때 expectimax 수는?",
+     "a": "통 값이 −50, 1, −5 이므로 B(값 1). 이 경우 상대 정책이 결정적이라 기댓값이 곧 그 숫자다."
+    },
+    {
+     "q": "expectimax 가 MDP 의 무엇에 대응하나?",
+     "a": "가치 반복(최적 가치). 게임 평가가 정책 평가에 대응한다."
+    }
+   ]
+  },
+  {
+   "start": 1500,
+   "title": "minimax — 상대가 최선을 다한다고 가정한다",
+   "points": [
+    "게임의 본질은 상대 정책을 모른다는 것. minimax 원칙: 상대가 자기에게 가장 좋은 수(= 내 효용을 가장 낮추는 수)를 둔다고 가정한다.",
+    "재귀: 끝이면 Utility, 에이전트 차례 max, 상대 차례 min. 앞의 어느 식보다 단순하다.",
+    "그림: △ max 노드, ▽ min 노드.",
+    "게임 1: min 노드 −50, 1, −5 → 뿌리 max = 1, 수는 B.",
+    "코드는 값과 함께 그 값을 낸 행동도 돌려준다(정책으로 쓰려고)."
+   ],
+   "on_screen": "'Previously: assumed the opponent policy was known (expectimax) / The whole point of games is that we don't know the opponent policy! What should we do?' 'Minimax: assume the opponent plays their best possible strategy'. 사슬 △ −π_agent→ ▽ −π_opp→ △ … . 식 V_minmax(s): Utility(s) / max(빨강) / min(파랑). 'Example: minimax' 그림: ▽ −50, ▽ 1, ▽ −5, 뿌리 △ 1, V_minmax(s_start) = 1. 코드 V_minmax(game, state) -> tuple[float, Action]: 끝이면 (utility, None); values = {action: V_minmax(game, next_state)[0] for action, next_state in successors.items()}; agent 면 max(values.items(), key=lambda x: x[1]), opp 면 min(…); 실행 결과 value (1, 'B').",
+   "explain": [
+    "앞의 두 재귀는 상대 정책을 알고 있었다. 그런데 게임이 MDP 와 다른 바로 그 지점은 상대가 무엇을 할지 모른다는 것이다. 모르는 것 앞에서 쓸 수 있는 원칙 하나가 minimax 다. 상대가 나를 노리고 있다고, 즉 상대가 자기가 둘 수 있는 최선의 전략을 써서 내 효용을 가능한 한 낮춘다고 가정한다. 제로섬 게임에서는 상대의 최선이 곧 나의 최악이므로, 이 가정은 '최악의 경우를 대비한다'와 같은 말이다.",
+    "재귀식은 오히려 앞의 것들보다 단순하다. 끝 상태면 효용, 에이전트 차례면 자식 값의 최댓값, 상대 차례면 자식 값의 최솟값. 확률도 정책도 들어가지 않는다. max 와 min 이 번갈아 나오니 minimax 라는 이름이 붙었다. 그림에서는 위를 향한 세모(△)가 max 노드, 아래를 향한 세모(▽)가 min 노드다. 게임 1 에 적용하면 상대 노드에서 A 는 min(−50, 50) = −50, B 는 min(1, 3) = 1, C 는 min(−5, 15) = −5 이고, 뿌리에서 셋의 최댓값 1 을 취한다. 최적 수는 B 다. 처음 투표에서 B 를 고른 학생들은 머릿속으로 minimax 를 돌린 것이고, A 를 고른 학생들에 대해서는 강사도 설명할 길이 없다며 웃는다.",
+    "코드에서 강사는 값만이 아니라 그 값을 낸 행동도 함께 돌려준다. 값만 알아서는 실제로 무엇을 둘지 모르기 때문이다. 끝 상태면 (효용, None) 을 돌려주고, 아니면 successors 의 (행동, 다음 상태) 마다 재귀를 불러 '행동 → 값' 사전을 만든 뒤, 에이전트면 값이 가장 큰 항목을, 상대면 가장 작은 항목을 고른다. 게임 1 에서 values 는 {A: −50, B: 1, C: −5} 이고 결과는 (1, 'B') 다.",
+    "minimax 값의 뜻을 정리하면 이렇다. 에이전트가 최적으로 두어 효용을 최대로 하려 하고, 상대도 최적으로 두어 그것을 최소로 하려 할 때, 에이전트가 받게 되는 효용. 이 값과 정책이 얼마나 강한 보장을 주는지는 8장에서 정식으로 증명하지만, 직관은 지금 잡아 둘 수 있다. B 를 고르면 상대가 무엇을 하든 1 이상은 받는다. 상대가 실수로 3 을 주면 더 좋을 뿐이다. 반면 C 를 고르면 상대가 심술을 부릴 때 −5 까지 떨어진다. 이 'max 와 min 이 함께 있는 구조'는 MDP 에 대응물이 없다 — MDP 에는 max 와 평균만 있고 min 이 없다. 그래서 강사는 이 부분이 게임에만 있는 고유한 내용이라고 말한다."
+   ],
+   "formulas": [
+    {
+     "expr": "V_minmax(s) = Utility(s)                              if IsEnd(s)\n            = max_{a∈Actions(s)} V_minmax(Succ(s, a))      if Player(s) = agent\n            = min_{a∈Actions(s)} V_minmax(Succ(s, a))      if Player(s) = opp",
+     "meaning": "기호는 앞과 같다. 에이전트 차례에는 자식 값의 최댓값, 상대 차례에는 최솟값. 정책 확률이 사라졌다. π_max(s) = argmax, π_min(s) = argmin 으로 두 플레이어의 minimax 정책이 나온다."
+    }
+   ],
+   "example": {
+    "title": "게임 1 의 minimax 를 손으로",
+    "body": "A(▽): min(−50, 50) = −50\nB(▽): min(1, 3) = 1\nC(▽): min(−5, 15) = −5\n뿌리(△): max(−50, 1, −5) = 1, argmax = B\nV_minmax(s_start) = 1 — 4 장 코드의 마지막 줄 출력과 같다."
+   },
+   "pitfalls": [
+    "minimax 는 상대가 '나쁜 사람'이라고 믿는 것이 아니라 최악에 대비하는 원칙이다. 상대가 약해도 minimax 정책은 그 하한을 지킨다(8장).",
+    "제로섬이 아니면 '상대의 최선 = 나의 최악'이 성립하지 않는다. 이 재귀는 두 사람 제로섬 가정 위에 서 있다."
+   ],
+   "check": [
+    {
+     "q": "게임 1 에서 통 B 가 (1, 3) 이 아니라 (−6, 3) 이었다면 minimax 값과 수는?",
+     "a": "min 값이 A −50, B −6, C −5 이므로 뿌리 max = −5, 수는 C."
+    },
+    {
+     "q": "minimax 재귀에서 MDP 에 없는 연산은?",
+     "a": "min. MDP 의 재귀에는 max(에이전트)와 기댓값(환경)만 있다."
+    }
+   ]
+  },
+  {
+   "start": 1740,
+   "title": "반감 게임의 minimax 정책과 '풀린 게임'",
+   "points": [
+    "minimax 정책: 상태마다 V_minmax 를 계산하고 그 행동을 확률 1 로 둔다.",
+    "minimax 에이전트 대 무작위 상대: 11 → 10 → 5 → 4 → 3 → 1 → 0 으로 이김. 10 판 모두 이김(평균 효용 1).",
+    "n=1..11 의 minimax 값: −1, +1, +1, −1, +1, −1, +1, +1, +1, −1, +1. 값 +1 이면 상대가 무엇을 하든 이긴다.",
+    "값 −1 은 '최선의 상대에게 진다'는 뜻이지 약한 상대에게도 진다는 뜻은 아니다.",
+    "풀린 게임: 완전한 수(perfect play)에서의 결과(뿌리의 minimax 값)를 안다. 강하게 풀림(틱택토·님·사목), 약하게 풀림(체커·오델로), 안 풀림(체스·바둑)."
+   ],
+   "on_screen": "코드 minimax_policy(state): value, action = V_minmax(game, state); return {action: 1.0}. random_policy → {'decrement': 0.5, 'half': 0.5}. 롤아웃 화면 steps: decrement (n 10, opp) → half (n 5, agent) → decrement (n 4, opp) → decrement (n 3, agent) → half (n 1, opp) → decrement (n 0, agent), utility 1; utilities [1 1 1 1 1 1 1 1 1 1], mean_utility = 1, 'The minimax policy crushes the random policy!'. results = {n: V_minmax(game, HalvingState(n=n, player='agent')) for n in range(1, 12)} → 1:(−1,'decrement'), 2:(1,'decrement'), 3:(1,'half'), 4:(−1,'decrement'), 5:(1,'decrement'), 6:(−1,'decrement'), 7:(1,'decrement'), 8:(1,'half'), 9:(1,'half'), 10:(−1,…), 11:(1,'decrement'). 'When agent and opponent play optimally, this is perfect play. A game is solved if the outcome under perfect play is known. Strongly solved games: tic-tac-toe, nim, connect four / Weakly solved games (from initial position): checkers, Othello / Unsolved games: chess, Go (even if computers are superhuman!)'.",
+   "explain": [
+    "minimax 재귀를 실제로 두는 정책으로 바꾸는 법은 간단하다. 상태를 받으면 그 상태의 minimax 값과 그 값을 낸 행동을 계산하고, 그 행동을 확률 1 로 돌려주면 된다. 이렇게 만든 정책은 매 수마다 그 자리에서 남은 트리 전체에 대해 재귀를 돌린다는 점에 주의하자. 미리 표를 만들어 두는 것이 아니라 둘 때마다 계산한다. 반감 게임에서 이 minimax 에이전트를 반반으로 무작위로 두는 상대와 붙여 보면, 11 에서 decrement 로 10, 상대가 half 로 5, 에이전트가 decrement 로 4, 상대가 decrement 로 3, 에이전트가 half 로 1, 상대가 어쩔 수 없이 0 을 만들어 에이전트에게 넘긴다. 에이전트의 승리다. 10 판을 두면 10 판 모두 이긴다. 이길 수 있는 자리에서 시작했으니 놀랄 일은 아니다.",
+    "n=1 부터 11 까지 에이전트 차례일 때의 minimax 값을 표로 뽑으면 −1, +1, +1, −1, +1, −1, +1, +1, +1, −1, +1 이 나온다. 값 +1 은 에이전트가 최적으로 두면 상대가 최적으로 두더라도 이긴다는 뜻이고, 거기서 둘 수(11 이면 decrement, 3·8·9 면 half)도 같이 나온다. 값 −1 은 상대가 최적으로 두면 상대가 반드시 이긴다는 뜻이다. 그렇다고 모든 희망이 사라진 것은 아니다. 상대가 약하면 실수를 할 수 있고, 그러면 여전히 이길 수 있다. 값 +1 이 '상대가 무엇을 하든 이긴다'는 보장이라는 주장은 다음 장에서 정식으로 보인다.",
+    "강사는 여기서 한 가지 곁가지를 짚는다. 두 사람이 모두 최적으로 두는 것을 완전한 수(perfect play)라 하고, 완전한 수에서 게임의 결과가 알려지면 그 게임이 '풀렸다'고 한다. 즉 뿌리의 minimax 값을 안다는 뜻이다. 모든 상태에서 minimax 값을 아는 것을 강하게 풀렸다고 하고 틱택토, 님, 사목(커넥트 포)이 여기에 든다. 시작 위치에서의 값만 아는 것을 약하게 풀렸다고 하며 체커와 오델로가 예로 나온다. 체스와 바둑은 풀리지 않았다.",
+    "흔한 오해를 강사가 바로잡는다. 컴퓨터가 체스와 바둑에서 사람을 이기니 이 게임들이 풀렸다고 생각하는 사람이 많지만, 그렇지 않다. 우리는 시작 위치의 minimax 값을 모르고 최적 정책도 갖고 있지 않다. 가진 것은 사람보다 나은 정책일 뿐이다. 사람을 이기는 것과 최적인 것은 다른 이야기다. 노트 보충: 체커는 2007 년 Schaeffer 연구진이 약하게 풀었고(양쪽이 완전하게 두면 무승부), 오델로(8×8)는 2023 년에 무승부라는 계산 결과가 발표되었다. 체스는 말 7 개 이하 같은 끝내기 국면만 표(엔드게임 테이블베이스)로 강하게 풀려 있다."
+   ],
+   "code": {
+    "lang": "python",
+    "src": "from functools import lru_cache\n# 반감 게임: (n, 차례). 행동 dec: n-1, half: n//2. n=0 일 때 차례인 쪽이 이긴다.\n@lru_cache(None)\ndef minimax(n, player):\n    if n == 0:\n        return (1 if player == \"agent\" else -1), None\n    nxt = \"opp\" if player == \"agent\" else \"agent\"\n    vals = {a: minimax(m, nxt)[0] for a, m in ((\"decrement\", n - 1), (\"half\", n // 2))}\n    pick = max if player == \"agent\" else min\n    act = pick(vals, key=vals.get)           # 동점이면 앞의 decrement\n    return vals[act], act\n\nfor n in range(1, 12):\n    print(n, minimax(n, \"agent\"))",
+    "note": "직접 돌린 결과가 강의 화면 표와 같다: 1:(−1, decrement) 2:(1, decrement) 3:(1, half) 4:(−1, decrement) 5:(1, decrement) 6:(−1, decrement) 7:(1, decrement) 8:(1, half) 9:(1, half) 10:(−1, decrement) 11:(1, decrement). lru_cache 는 같은 (n, 차례)를 다시 계산하지 않게 하는 메모이제이션이다 — 강의 코드는 쓰지 않는다."
+   },
+   "example": {
+    "title": "n=8 에서 half 가 이기는 수인 이유",
+    "body": "(8, 에이전트) → half → (4, 상대). 3 장에서 (4, 에이전트) 는 −1, 즉 4 에서 차례인 사람이 진다. 차례만 바뀐 (4, 상대) 에서는 상대가 진다 → 에이전트 승.\ndecrement → (7, 상대) 는 7 에서 차례인 사람이 이기는 자리(+1)라 상대가 이긴다. 그래서 half 만 이기는 수다."
+   },
+   "pitfalls": [
+    "'컴퓨터가 사람을 이긴다'는 '게임이 풀렸다'가 아니다. 풀렸다는 것은 완전한 수에서의 결과를 안다는 뜻이다.",
+    "minimax 정책은 매 수마다 남은 트리를 다시 탐색한다. 큰 게임에서는 이 비용 때문에 10·11장의 가지치기와 평가 함수가 필요하다."
+   ],
+   "check": [
+    {
+     "q": "(n=6, 에이전트 차례)의 minimax 값이 −1 인 이유를 한 줄로?",
+     "a": "decrement → (5, 상대), half → (3, 상대) 인데 5 와 3 은 모두 차례인 사람이 이기는 자리라 어느 쪽이든 상대가 이긴다."
+    },
+    {
+     "q": "강하게 풀린 게임과 약하게 풀린 게임의 차이는?",
+     "a": "강하게 풀림 = 모든 상태의 minimax 값을 안다. 약하게 풀림 = 시작 위치의 값(과 그것을 지키는 수)만 안다."
+    }
+   ]
+  },
+  {
+   "start": 2100,
+   "title": "정책끼리 붙여 보기 — '최적'은 늘 '무엇에 대해' 최적이다",
+   "points": [
+    "재귀가 정책을 낳는다: V_minmax → π_max(에이전트), π_min(상대). V_exptmax(7) → π_exptmax(7)(에이전트), 상대는 임의의 고정 정책 π_7.",
+    "성질 1: π_max 는 π_min 상대로 최선 → V(π_max, π_min) ≥ V(π_agent, π_min).",
+    "성질 2: π_min 은 π_max 상대로 최선 → V(π_max, π_min) ≤ V(π_max, π_opp). 곧 minimax 값은 어떤 상대에게도 지켜지는 하한.",
+    "성질 3: π_exptmax(7) 은 π_7 상대로 최선 → V(π_max, π_7) ≤ V(π_exptmax(7), π_7). 상대를 알면 minimax 보다 잘할 수 있다.",
+    "게임 1 의 표: V(π_exptmax(7), π_min) = −5 ≤ V(π_max, π_min) = 1 ≤ V(π_max, π_7) = 2 ≤ V(π_exptmax(7), π_7) = 5."
+   ],
+   "on_screen": "face_off(): 'Computing recurrences produce different policies: V_minmax → π_max (agent), π_min (opponent) / V_exptmax → π_exptmax(7) (agent), π_7 (opponent)'. 'Each optimal policy bakes in assumptions about how the other player plays'. 'V(π_agent, π_opp): value of game when π_agent plays π_opp'. 2×2 표: 행 π_max·π_exptmax(7), 열 π_min·π_7. 'Proposition: best against minimax opponent — V(π_max, π_min) ≥ V(π_agent, π_min) for all π_agent', 'Proposition: lower bound against any opponent — V(π_max, π_min) ≤ V(π_max, π_opp) for all π_opp', 'Proposition: not optimal if opponent is known — V(π_max, π_7) ≤ V(π_exptmax(7), π_7) for opponent π_7'. 칠판에 표를 그리고 1 ≤ 2 (위 줄), 1 ≥ −5(왼쪽 열), 2 ≤ 5(오른쪽 열)를 채운다. 'Putting everything together' 표와 요약 'Always think about optimality with respect to what? / Minimax provides both optimality and a lower bound against any (unknown) opponent'.",
+   "explain": [
+    "지금까지 세운 재귀들은 저마다 정책을 낳는다. minimax 재귀의 argmax 는 에이전트 정책 π_max, argmin 은 상대 정책 π_min 이 된다. expectimax 는 어떤 고정된 상대 정책을 전제하는데, 강사는 그 상대를 임의로 π_7 이라 이름 붙이고(숫자 7 에 특별한 뜻은 없다), π_7 에 대해 구한 에이전트 정책을 π_exptmax(7) 이라 부른다. 핵심 메시지는 '최적'이라는 말 뒤에는 늘 상대에 대한 가정이 숨어 있다는 것이다. π_max 는 π_min 에 대해 최적이고, π_min 은 π_max 에 대해 최적이며, π_exptmax(7) 은 π_7 에 대해 최적이다. 그렇다면 이 정책들을 서로 엇갈려 붙이면 값은 어떻게 될까. V(π_agent, π_opp) 를 'π_agent 가 π_opp 와 둘 때 게임의 값'(4 장의 게임 평가)이라 두고 2×2 표를 채운다.",
+    "성질 1: π_max 는 π_min 을 상대로 가장 좋은 정책이다. 그러니 상대를 π_min 으로 고정하고 에이전트를 다른 정책으로 바꾸면 값은 같거나 줄 뿐이다. 특히 π_exptmax(7) 으로 바꾸어도 마찬가지이므로 표의 왼쪽 열에서 V(π_max, π_min) ≥ V(π_exptmax(7), π_min) 이다. 성질 2: π_min 은 π_max 를 상대로 가장 좋은 상대 정책이다. 상대 입장에서 값을 낮추는 데 π_min 보다 나은 것이 없으니, 에이전트를 π_max 로 고정하고 상대를 다른 무엇으로 바꾸면 값은 같거나 커진다. 이것을 에이전트 쪽에서 읽으면, π_max 를 쓰는 한 minimax 값은 어떤 상대를 만나도 지켜지는 하한이다. 게임 1 에서 B 를 고르면 1 이 보장되고, 상대가 3 을 주면 3 이 될 뿐 1 아래로는 안 내려간다. 그래서 표의 위쪽 줄에서 V(π_max, π_min) ≤ V(π_max, π_7) 이다.",
+    "이 하한 성질의 따름정리가 7 장에서 미뤄 둔 주장이다. minimax 값이 +1(이김)이면 상대가 무엇을 하든 π_max 로 두는 에이전트의 값은 1 이상이고, 이 게임에서 가능한 가장 큰 값이 1 이므로 정확히 1, 즉 반드시 이긴다. 성질 3: π_exptmax(7) 은 π_7 에 대해 최적이므로 상대가 정말로 π_7 이라면 에이전트를 π_max 로 바꾸면 값이 같거나 줄어든다. 표의 아래쪽 줄로 V(π_max, π_7) ≤ V(π_exptmax(7), π_7). 게임 1 에서 반반 상대에게 minimax 수 B 를 두면 2, expectimax 수 C 를 두면 5 다. 상대를 안다면 minimax 보다 잘할 수 있다. 약한 상대 앞에서는 강한 상대 앞에서라면 감히 못 둘 수를 둘 수 있다.",
+    "네 칸을 모두 채우면 −5 ≤ 1 ≤ 2 ≤ 5 라는 사슬이 생긴다. π_exptmax(7) 이 π_min 을 만나면 C 를 골랐다가 −5 를 받고, π_max 가 π_min 을 만나면 1, π_max 가 π_7 을 만나면 2, π_exptmax(7) 이 π_7 을 만나면 5 다. 강사는 이 값들이 이렇게 하나로 엮인다는 것이 멋지다고 말한다. 정리하면 minimax 정책은 두 가지로 해석된다. 하나는 최악의 상대 π_min 에 대한 최적 정책, 다른 하나는 정체를 모르는 상대에 대한 하한 보장이다. 강사는 두 번째 해석을 더 좋아한다고 말한다(강사 의견). 진짜 최악의 상대를 만나는 일은 드물지만, 무슨 일이 생겨도 보장이 필요할 때 minimax 를 쓰는 것이다. 노트 보충: 두 사람이 동시에 두고 확률적 정책(섞은 전략)까지 쓰는 게임으로 넓히면 이 이야기는 폰 노이만의 minimax 정리로 이어진다. 예전 학기의 CS221 은 이것을 두 번째 게임 강의에서 다뤘다."
+   ],
+   "formulas": [
+    {
+     "expr": "V(π_max, π_min) ≥ V(π_agent, π_min)   for all π_agent",
+     "meaning": "성질 1. V(π_agent, π_opp) 는 두 정책으로 둘 때의 게임 값(V_eval). π_min 상대로는 π_max 보다 나은 에이전트 정책이 없다."
+    },
+    {
+     "expr": "V(π_max, π_min) ≤ V(π_max, π_opp)   for all π_opp",
+     "meaning": "성질 2. π_max 를 쓰면 어떤 상대 π_opp 를 만나도 minimax 값 이상을 받는다 — 모르는 상대에 대한 하한."
+    },
+    {
+     "expr": "V(π_max, π_7) ≤ V(π_exptmax(7), π_7)",
+     "meaning": "성질 3. π_7 은 고정된 상대 정책, π_exptmax(7) 은 그 상대에 맞춘 expectimax 정책. 상대를 알면 그에 맞춘 정책이 minimax 정책 이상이다."
+    }
+   ],
+   "example": {
+    "title": "게임 1 의 2×2 표를 손으로 채우기",
+    "body": "π_max = B, π_exptmax(7) = C, π_min = 그 통의 작은 수, π_7 = 반반.\nV(π_max, π_min) = min(1, 3) = 1\nV(π_max, π_7) = (1+3)/2 = 2\nV(π_exptmax(7), π_min) = min(−5, 15) = −5\nV(π_exptmax(7), π_7) = (−5+15)/2 = 5\n왼쪽 열 1 ≥ −5 (성질 1), 위쪽 줄 1 ≤ 2 (성질 2), 오른쪽 열 2 ≤ 5 (성질 3) → −5 ≤ 1 ≤ 2 ≤ 5."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 네 정책을 서로 붙여 본다 (게임 1). 정책 = 자식 값 dict -> 값.\nLEAVES = {\"A\": {1: -50, 2: 50}, \"B\": {1: 1, 2: 3}, \"C\": {1: -5, 2: 15}}\npi_min = lambda d: min(d.values())                 # 최악의 상대\npi_7   = lambda d: sum(d.values()) / len(d)        # 반반 무작위 상대\ndef agent(opp_model):                              # opp_model 을 가정하고 고른 통\n    return max(LEAVES, key=lambda b: opp_model(LEAVES[b]))\npi_max, pi_exp = agent(pi_min), agent(pi_7)        # 'B', 'C'\nfor name, bin_ in ((\"pi_max\", pi_max), (\"pi_exptmax(7)\", pi_exp)):\n    row = [opp(LEAVES[bin_]) for opp in (pi_min, pi_7)]\n    print(f\"{name:14s} 통={bin_}  vs pi_min={row[0]:>5}  vs pi_7={row[1]:>5}\")",
+    "note": "직접 돌린 결과: pi_max 통=B vs pi_min=1, vs pi_7=2.0 / pi_exptmax(7) 통=C vs pi_min=−5, vs pi_7=5.0."
+   },
+   "diagram": {
+    "title": "네 값의 사슬",
+    "code": "graph LR\n  E1[\"V(π_exptmax7, π_min) = -5\"] -->|\"≤ 성질1\"| M[\"V(π_max, π_min) = 1\"]\n  M -->|\"≤ 성질2\"| M7[\"V(π_max, π_7) = 2\"]\n  M7 -->|\"≤ 성질3\"| E7[\"V(π_exptmax7, π_7) = 5\"]"
+   },
+   "pitfalls": [
+    "π_7 의 '7' 은 특별한 정책 번호가 아니라 '어떤 고정 상대'를 가리키는 이름표일 뿐이다.",
+    "성질 2 의 하한은 π_max 를 쓸 때만 성립한다. expectimax 정책은 상대가 가정과 다르면 하한이 없다(−5).",
+    "표의 대각선 두 칸(1 과 5)은 각각 서로를 전제로 만든 정책끼리 만난 경우다. 엇갈린 두 칸을 비교하는 부등식은 없다 — 사슬은 세 성질을 이어서 나온다."
+   ],
+   "check": [
+    {
+     "q": "상대가 늘 둘째 숫자(큰 수)를 주는 정책 π_g 라면 V(π_max, π_g) 는? 성질 2 와 맞나?",
+     "a": "B 의 큰 수 3. 3 ≥ 1 이므로 하한 성질과 맞다."
+    },
+    {
+     "q": "minimax 값이 +1 이면 왜 반드시 이긴다고 말할 수 있나?",
+     "a": "성질 2 로 어떤 상대에게도 값이 1 이상인데, 효용의 최댓값이 1 이라 값이 정확히 1, 곧 매번 이긴다."
+    }
+   ]
+  },
+  {
+   "start": 2790,
+   "title": "expectiminimax — 우연까지 섞인 게임과, 게임 트리가 못 담는 것",
+   "points": [
+    "게임 2: 통을 고른 뒤 동전을 던져 앞면이면 한 칸 왼쪽 통(감아 돌기)으로, 뒷면이면 그대로. 그다음 상대가 숫자를 고른다.",
+    "세 종류 노드: max(에이전트) · min(상대) · 기댓값(동전, π_coin = 1/2).",
+    "게임 2 의 값: A −27.5, B −24.5, C −2 → 뿌리 −2, 수는 C.",
+    "확장: 플레이어 셋 이상(팩맨과 유령 여럿), 한 번 더 두기·다음 차례 정하기 — 차례가 상태 안에 있으니 재귀만 새로 쓰면 된다.",
+    "못 담는 것: 불완전 정보(포커), 비제로섬(죄수의 딜레마)·협력 게임, 동시에 두는 게임(가위바위보)."
+   ],
+   "on_screen": "'Example: game 2 — You choose one of the three bins. Flip a coin; if heads, then move one bin to the left (with wrap around). I choose a number from that bin.' 'Example: expectiminimax' 그림: π_coin(s, a) = 1/2 for a ∈ {0, 1}, 동전 노드 −27.5, −24.5, −2, 그 아래 min 노드(−50, −5, 1, −50, −5, 1 …), V_exptminmax(s_start) = −2. 사슬 △ −π_agent→ ○ −π_coin→ ▽ −π_opp→ ○ … . 식 V_exptminmax(s): Utility / max(빨강, agent) / min(파랑, opp) / Σ π_coin(s,a) V(…) (초록, coin). 'In general, one could imagine many possible extensions: More than two players (either agents or opponents) / Players taking extra turns or choosing who to go next / Just define recurrence V_…() generally!' 'Things that aren't covered by game trees: Games with imperfect information (e.g., poker) / Non-zero-sum games (e.g., prisoner's dilemma) / Non-turn-based games (e.g., rock-paper-scissors)'.",
+   "explain": [
+    "강사가 '디저트'라고 부르는 짧은 장이다. 게임 1 을 조금 바꾼다. 학생이 통을 고르면 강사가 동전을 던진다. 앞면이면 고른 통에서 한 칸 왼쪽 통으로 옮기고(A 의 왼쪽은 감아 돌아 C), 뒷면이면 그대로 둔다. 그다음 강사가 그 통의 숫자를 고른다. 이 게임에는 의사결정자가 둘이고 우연이 하나 있다. 그래서 동전을 하나의 '플레이어'로 보고 고정 정책 π_coin(앞면 1/2, 뒷면 1/2)을 준다. 고정 정책이므로 그림에서는 동그라미 노드다.",
+    "트리를 그리면 뿌리(에이전트, max) 아래 통 A·B·C, 그 아래 동전 노드(기댓값), 그 아래 상대 노드(min), 맨 아래 숫자다. 재귀는 세 경우를 가진다. 에이전트 차례면 max, 상대 차례면 min, 동전 차례면 π_coin 으로 가중 평균. 기댓값·최솟값·최댓값이 다 있어서 expectiminimax 라 부른다. 강의 중 강사가 잠시 'min 노드에서 평균을 낸다'고 말이 엇갈리는데, 평균을 내는 것은 동전 노드이고 min 노드는 최솟값을 취한다. 값을 계산하면 A 를 고를 때 앞면이면 C 로 가서 상대가 −5, 뒷면이면 A 에서 −50 이라 평균 −27.5, B 는 앞면 A(−50)와 뒷면 B(1)의 평균 −24.5, C 는 앞면 B(1)와 뒷면 C(−5)의 평균 −2. 뿌리는 −2 이고 최선의 수는 C 다. 게임 1 의 minimax 수(B)와 달라졌다는 점이 재밌다. 동전 때문에 B 가 A 로 밀려날 위험이 생겼기 때문이다.",
+    "이 장의 진짜 메시지는 재귀가 상상력을 풀어 준다는 것이다. 차례가 상태 안에 들어 있고, 우리가 하는 일은 상태에서 다음 상태로 넘어가는 것뿐이므로, 규칙이 아무리 이상해도 '그 노드에서 누가 무엇을 하나'만 정하면 재귀를 쓸 수 있다. 플레이어가 셋 이상이어도 된다 — 과제의 팩맨에서는 팩맨 하나와 유령 여럿이 나오고, 유령마다 min 노드(또는 기댓값 노드)를 두면 된다. 한 사람이 한 번 더 두거나, 다음에 누가 둘지 고르거나, 차례를 잃는 규칙도 상태와 다음 상태만 잘 정의하면 같은 틀에 들어간다. 이름도 마음대로 붙일 수 있다. 강사는 'expectiminimini…' 같은 것도 얼마든지 만들 수 있다고 농담한다.",
+    "반대로 이 틀이 담지 못하는 게임도 있다. 첫째, 불완전 정보 게임(포커와 대부분의 카드 게임). 게임 트리에서는 모든 것이 상태를 거쳐 가고 상태가 모든 정보를 담는다. 플레이어마다 아는 것이 다르면(내 패는 나만 안다) 상태 하나로 그 차이를 나타낼 수 없다. 둘째, 비제로섬 게임(죄수의 딜레마)과 협력 게임. 효용이 숫자 하나로 요약되지 않으니 max·min 의 대칭이 깨진다. 셋째, 차례 없이 동시에 두는 게임(가위바위보). 가위바위보를 차례대로 두면 뒤에 두는 사람이 늘 이기니 재미가 없다. 노트 보충: 예전 학기의 CS221 은 동시 게임과 비제로섬 게임을 두 번째 게임 강의에서 다뤘다. 이번 학기 강사는 다음 시간 주제로 게임 속 학습(TD 학습)을 예고한다."
+   ],
+   "formulas": [
+    {
+     "expr": "V_exptminmax(s) = Utility(s)                                         if IsEnd(s)\n               = max_{a∈Actions(s)} V_exptminmax(Succ(s, a))              if Player(s) = agent\n               = min_{a∈Actions(s)} V_exptminmax(Succ(s, a))              if Player(s) = opp\n               = Σ_{a∈Actions(s)} π_coin(s, a) · V_exptminmax(Succ(s, a))  if Player(s) = coin",
+     "meaning": "π_coin(s, a) 는 동전이 결과 a(앞·뒤)를 낼 확률(각 1/2). 나머지 기호는 앞과 같다. 노드 종류마다 연산 하나 — 에이전트는 최대, 상대는 최소, 우연은 기댓값."
+    }
+   ],
+   "example": {
+    "title": "게임 2 를 손으로",
+    "body": "왼쪽 이동: A→C, B→A, C→B. 상대(min): A=−50, B=1, C=−5.\nA 선택: 0.5·(C의 −5) + 0.5·(A의 −50) = −27.5\nB 선택: 0.5·(A의 −50) + 0.5·(B의 1) = −24.5\nC 선택: 0.5·(B의 1) + 0.5·(C의 −5) = −2\n뿌리: max(−27.5, −24.5, −2) = −2 → C. 강의 그림의 V_exptminmax(s_start) = −2 와 같다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 게임 2: 고른 통에서 동전 앞면이면 왼쪽 통(감아 돌기)으로, 뒷면이면 그대로. 그다음 상대가 min.\nBINS = {\"A\": [-50, 50], \"B\": [1, 3], \"C\": [-5, 15]}\nLEFT = {\"A\": \"C\", \"B\": \"A\", \"C\": \"B\"}\ndef coin_value(b):\n    heads, tails = min(BINS[LEFT[b]]), min(BINS[b])   # 상대 = min 노드\n    return 0.5 * heads + 0.5 * tails                 # 동전 = 기댓값 노드\nvals = {b: coin_value(b) for b in BINS}\nprint(vals, \"->\", max(vals, key=vals.get), max(vals.values()))",
+    "note": "직접 돌린 결과: {'A': −27.5, 'B': −24.5, 'C': −2.0} -> C −2.0."
+   },
+   "pitfalls": [
+    "강의 중 'min 노드에서 평균을 낸다'는 말실수가 있다. 평균은 동전(우연) 노드에서, min 노드에서는 최솟값을 취한다 — 슬라이드 식이 맞다.",
+    "동전 노드가 생기면 minimax 수가 바뀔 수 있다. 게임 1 에서 B 였던 답이 게임 2 에서 C 가 됐다."
+   ],
+   "check": [
+    {
+     "q": "게임 2 에서 동전 앞면이면 오른쪽으로 옮긴다면(A→B, B→C, C→A) 최선의 수와 값은?",
+     "a": "A: 0.5·1 + 0.5·(−50) = −24.5, B: 0.5·(−5) + 0.5·1 = −2, C: 0.5·(−50) + 0.5·(−5) = −27.5 → B, 값 −2."
+    },
+    {
+     "q": "포커가 이 게임 트리 틀에 안 들어가는 이유는?",
+     "a": "플레이어마다 아는 정보가 다른데(내 패), 게임 트리는 모든 정보를 하나의 상태가 담는다고 가정하기 때문이다."
+    }
+   ]
+  },
+  {
+   "start": 3120,
+   "title": "알파-베타 가지치기의 원리 — 분기 한정과 구간",
+   "points": [
+    "minimax 는 노드 수에 선형이지만 노드 수가 깊이에 지수적이다. 같은 답을 더 적게 보고 내고 싶다.",
+    "분기 한정(branch and bound): A ∈ [3, 5], B ∈ [5, 100] 이면 정확한 값을 몰라도 B 를 고르면 된다.",
+    "예: 뿌리 max, 왼쪽 min(3, 5) = 3, 오른쪽 min 의 첫 잎이 2 → 오른쪽 ≤ 2 → 뿌리 = max(3, min(2, X)) = 3. X 는 볼 필요가 없다.",
+    "일반화: 탐색 중 max 노드는 하한(≥), min 노드는 상한(≤)을 가진다. minimax 값은 어떤 잎 하나에서 온다(최적 경로).",
+    "최적 경로는 모든 조상의 구간 안에 있어야 한다 → 어떤 노드의 구간이 조상 중 하나의 구간과 겹치지 않으면 그 노드를 잘라 낸다."
+   ],
+   "on_screen": "alpha_beta_pruning(): minimax 식을 다시 띄우고 'Recall that it takes exponential time in general! How can we speed it up? / Alpha-beta pruning: don't visit states that we know aren't going to be optimal. But how do we know if we don't look?' 'Simple example: A has value in [3, 5] / B has value in [5, 100] / Which one would you choose? No matter what A and B turn out to be, B will always be better. And we don't need to compute A and B exactly! This idea is called branch and bound, used heavily in combinatorial optimization.' 트리 그림: 뿌리 △ 3, 왼쪽 ▽ 3(잎 3, 5), 오른쪽 ▽ ≤ 2(잎 2 와 나머지). 'Root computes max(3, min(2, X)) = 3 no matter what X is…so don't need to explore X!' 일반 그림: △ ≥ 6 → ▽ ≤ 8 → △ ≥ 3 → ▽ ≤ 5. 'While we're exploring, each max (min) node has a lower (upper) bound on its value / The minimax value came from some leaf / Optimal path is path taken by minimax policies to that leaf / This optimal path should be within the lower/upper bounds / Prune a node if its bounds doesn't overlap every ancestor's bounds'.",
+   "explain": [
+    "이제 강의 후반, 속도 이야기다. 주사위도 이상한 규칙도 없는 순수한 minimax 로 돌아간다. minimax 는 트리의 노드를 하나씩 다 방문하니 노드 수에 대해서는 선형이지만, 노드 수 자체가 깊이에 지수적으로 늘어난다. 가지가 b 개, 깊이가 d 면 잎이 b^d 개다. 알파-베타 가지치기의 생각은, 어떤 상태들은 끝까지 보지 않고도 최적이 될 수 없다는 것을 알 수 있다는 것이다. 처음 들으면 마법처럼 들린다. 보지도 않은 가지에 최적의 수가 숨어 있을지 어떻게 아나?",
+    "강사는 짧은 질문으로 직관을 준다. 행동 A 의 값이 3 과 5 사이 어딘가, 행동 B 의 값이 5 와 100 사이 어딘가라고만 알려 준다. 어느 쪽을 고르겠는가? 학생들은 B 를 고른다. A 와 B 의 정확한 값을 몰라도, 어떤 경우든 B 가 A 이상이기 때문이다. 정확한 값을 계산하지 않고 값이 놓일 구간만 들고 다니다가, 한 구간이 다른 구간보다 확실히 위에 있으면 아래쪽을 버리는 것. 이것이 조합 최적화에서 널리 쓰이는 분기 한정(branch and bound)의 원리이고, 알파-베타는 그 게임판이다.",
+    "작은 트리로 보자. 뿌리는 max, 그 아래 min 노드 둘. 깊이 우선으로 왼쪽부터 내려가 잎 3 과 5 를 보면 왼쪽 min 노드는 3 이다. 이제 뿌리는 '지금까지 최선 3', 곧 3 이상이다. 오른쪽 min 노드로 내려가 첫 잎 2 를 본다. min 노드는 더 작아질 수만 있으니 오른쪽은 2 이하다. 여기서 멈춰도 된다. 뿌리 값은 max(3, min(2, X)) 인데 X 가 백만이면 min 은 2, X 가 −백만이면 min 은 −백만, 어느 쪽이든 뿌리는 3 이다. X 를 볼 필요가 없다.",
+    "이것을 일반화하면 이렇다. 탐색하는 동안 모든 노드는 값의 구간을 가진다. max 노드는 자식을 하나 볼 때마다 값이 커질 수만 있으므로 하한(≥ 6 같은)을, min 노드는 작아질 수만 있으므로 상한(≤ 8 같은)을 가진다. 한편 뿌리의 minimax 값은 결국 어떤 잎 하나에서 왔다. max·min 을 취하는 연산은 자식 중 하나를 고르는 일이니까. 뿌리에서 그 잎까지 minimax 정책이 따라가는 길을 최적 경로라 하자. 최적 경로 위의 노드들은 모두 같은 값을 가지므로, 그 값은 경로 위 모든 조상의 구간 안에 있어야 한다. 그러니 어떤 노드의 구간이 조상 가운데 하나라도 그 구간과 겹치지 않으면, 그 노드는 최적 경로에 있을 수 없고 잘라 내도 된다. 슬라이드의 그림에서 맨 아래 min 노드의 '≤ 5' 는 바로 위 max 노드의 '≥ 3' 과는 겹치지만 맨 위 뿌리의 '≥ 6' 과는 겹치지 않는다. 그래서 잘라 낼 수 있다. 바로 위 부모만 보면 안 되고 조상 전체를 봐야 한다는 점이 핵심이다."
+   ],
+   "formulas": [
+    {
+     "expr": "α(s) = max { 하한 of max 조상 t (s 포함) },   β(s) = min { 상한 of min 조상 t (s 포함) }\n가지치기 조건: α(s) ≥ β(s)",
+     "meaning": "α 는 경로 위 max 노드들이 이미 확보한 하한 중 가장 큰 것, β 는 경로 위 min 노드들이 이미 확보한 상한 중 가장 작은 것. 최적 경로의 값 v 는 α ≤ v ≤ β 를 만족해야 하는데 α ≥ β 이면 그런 v 가 (자를 가지 안에서는) 결과를 바꿀 수 없으므로 남은 자식을 안 본다. '모든 조상의 구간과 겹치나'를 두 숫자로 줄인 것이다(노트 보충: 강의는 구간 그림으로만 말하고, α·β 이름은 다음 장 칠판에서 붙인다)."
+    }
+   ],
+   "example": {
+    "title": "max(3, min(2, X)) 가 늘 3 인지 X 에 숫자를 넣어 보기",
+    "body": "X = 1,000,000: min(2, X) = 2 → max(3, 2) = 3\nX = 2.5: min = 2 → 3\nX = −1,000,000: min = −1,000,000 → 3\n오른쪽 min 노드는 첫 잎 2 를 본 순간 '≤ 2' 가 되고, 뿌리의 '≥ 3' 과 구간이 겹치지 않는다. 그래서 X 와 그 아래 전부를 버린다."
+   },
+   "diagram": {
+    "title": "구간이 조상과 겹치지 않으면 자른다(슬라이드 그림)",
+    "code": "graph TD\n  R[\"max: ≥ 6\"] --> X1[\"...\"]\n  R --> M1[\"min: ≤ 8\"]\n  M1 --> X2[\"...\"]\n  M1 --> N1[\"max: ≥ 3\"]\n  N1 --> X3[\"...\"]\n  N1 --> P[\"min: ≤ 5 → 뿌리 ≥ 6 과 안 겹침 → 가지치기\"]"
+   },
+   "pitfalls": [
+    "부모의 구간만 보면 '≤ 5' 와 '≥ 3' 이 겹쳐 못 자른다고 오판한다. 겹침은 모든 조상과 확인해야 한다 — 그래서 α·β 를 뿌리부터 내려보낸다.",
+    "가지치기는 답(뿌리 값과 뿌리의 최적 수)을 바꾸지 않는다. 다만 잘린 가지 안 노드들의 '값'은 정확히 계산되지 않는다(경계값만 남는다)."
+   ],
+   "check": [
+    {
+     "q": "뿌리 max 의 왼쪽 min 이 4 로 끝났고, 오른쪽 min 의 첫 잎이 6 이다. 오른쪽의 나머지를 자를 수 있나?",
+     "a": "아니다. 오른쪽은 ≤ 6 이고 뿌리는 ≥ 4 라 구간 [4, 6] 이 겹친다. 남은 잎이 4 와 6 사이면 뿌리 값이 바뀔 수 있다."
+    },
+    {
+     "q": "max 노드가 하한을, min 노드가 상한을 갖는 이유는?",
+     "a": "max 노드는 자식을 더 볼수록 값이 커질 수만 있고(지금까지 최댓값이 하한), min 노드는 작아질 수만 있기 때문이다(지금까지 최솟값이 상한)."
+    }
+   ]
+  },
+  {
+   "start": 3510,
+   "title": "칠판 예제로 따라가는 알파-베타",
+   "points": [
+    "트리: 뿌리 max, min 자식 셋. 왼쪽 min(9, 7), 가운데 min(6, max(3, 4), max(7, 9)), 오른쪽 min(8, 3). 층 수가 가지마다 달라도 된다.",
+    "왼쪽: 9 → ≤ 9, 7 → = 7. 뿌리 ≥ 7(α = 7).",
+    "가운데: 첫 잎 6 → ≤ 6. 뿌리 ≥ 7 과 안 겹침 → 나머지 두 max 서브트리(잎 3, 4, 7, 9)를 통째로 자른다.",
+    "오른쪽: 8 → ≤ 8, 겹치므로 계속. 3 → 3. 뿌리 = max(7, ≤6, 3) = 7.",
+    "잎 9 개 중 5 개만 보았다. 한 노드가 아니라 서브트리 전체를 자르는 것이 힘이다."
+   ],
+   "on_screen": "칠판(58:30~1:03): 뿌리 △, ▽ 셋. 왼쪽 ▽ 아래 잎 9, 7. 가운데 ▽ 아래 잎 6 과 △ 둘(잎 3, 4 / 7, 9). 오른쪽 ▽ 아래 잎 8, 3. 빨간 펜으로 왼쪽 ▽ 옆 '7', 뿌리 옆 '≥ 7', 가운데 ▽ 옆 '≤ 6' 과 그 아래 서브트리에 X 표, 오른쪽 ▽ 옆 '≤ 8' 이후 '3', 뿌리 최종 '7'. 'max 노드에는 α(하한), min 노드에는 β(상한)' 를 말로 붙인다.",
+   "explain": [
+    "강사가 칠판에 조금 더 큰 트리를 그려 직접 따라간다. 뿌리는 max 이고 그 아래 min 노드가 셋 있다. 왼쪽 min 의 자식은 잎 9 와 7, 가운데 min 의 자식은 잎 6 과 두 개의 max 노드(각각 잎 3·4, 잎 7·9), 오른쪽 min 의 자식은 잎 8 과 3 이다. 가지마다 깊이가 달라도 된다는 점도 강사가 짚는다. 여기서 이름을 붙인다. max 노드가 가진 하한을 알파(α), min 노드가 가진 상한을 베타(β)라 부른다. 처음에는 아무것도 모르므로 모든 구간이 (−∞, +∞) 다.",
+    "왼쪽 가지부터 깊이 우선으로 내려간다. 잎 9 를 보면 왼쪽 min 은 '9 이하', 잎 7 을 보면 '7 이하'가 되고, 자식을 다 보았으니 값은 정확히 7 이다. 뿌리로 올라가면 뿌리는 '7 이상'(α = 7)이 된다. 한 학생이 뿌리의 '≥ 7' 이 어디서 왔냐고 묻는데, 답은 왼쪽 서브트리의 값이 7 로 확정되었고 max 노드는 자식을 볼 때마다 지금까지의 최댓값을 하한으로 갱신하기 때문이다. 재귀 자체는 위에서 아래로 부르지만 값은 바닥에 닿은 뒤 위로 올라오며 채워진다.",
+    "가운데 min 으로 내려가 첫 자식인 잎 6 을 보면 가운데는 '6 이하'(β = 6)가 된다. 뿌리는 7 이상인데 가운데는 6 이하이니 두 구간이 겹치지 않는다. 가운데 서브트리에 무엇이 남아 있든 뿌리의 선택을 바꿀 수 없으므로 여기서 멈춘다. 두 max 노드와 그 아래 잎 3·4·7·9 가 통째로 잘린다. 참고로 끝까지 계산했다면 가운데의 값은 min(6, max(3, 4), max(7, 9)) = min(6, 4, 9) = 4 였을 것이다. 4 든 6 이든 7 보다 작으니 결과는 같다.",
+    "오른쪽 min 으로 가서 잎 8 을 보면 오른쪽은 '8 이하'다. 뿌리의 '7 이상'과 구간 [7, 8] 이 겹치므로 아직 자를 수 없다. 남은 잎이 7.5 라면 뿌리 값이 바뀔 수도 있기 때문이다. 다음 잎 3 을 보면 오른쪽은 3 이 되고, 뿌리는 max(7, 3) 으로 최종 7 이다. 잎 9 개 중 5 개만 보고 정확한 minimax 값과 최적 수(왼쪽)를 얻었다. 강사는 알파-베타가 강력한 이유가 노드 하나가 아니라 서브트리 전체를 잘라 낼 수 있기 때문이라고 강조한다. 운이 좋으면 아주 큰 덩어리가 떨어져 나간다. 그 '운'을 어떻게 만드는지가 다음 장이다."
+   ],
+   "formulas": [
+    {
+     "expr": "max 노드: α ← max(α, v_child)   min 노드: β ← min(β, v_child)   α ≥ β 이면 남은 자식을 건너뛴다",
+     "meaning": "v_child 는 방금 계산을 마친 자식의 값. α 와 β 는 부모에게서 물려받은 값에서 시작한다(뿌리는 −∞, +∞). 아래 코드는 이 세 줄을 그대로 구현했다."
+    }
+   ],
+   "example": {
+    "title": "칠판 트리의 α·β 를 한 걸음씩",
+    "body": "뿌리(max) α=−∞, β=+∞\n왼쪽 min: 9 → β=9, 7 → β=7, 끝 → 값 7. 뿌리 α=7\n가운데 min(α=7 물려받음): 6 → β=6. α=7 ≥ β=6 → 나머지 [max(3,4), max(7,9)] 가지치기\n오른쪽 min(α=7): 8 → β=8 (7 < 8, 계속), 3 → β=3, 끝 → 값 3\n뿌리 = max(7, 6 이하, 3) = 7. 본 잎: 9, 7, 6, 8, 3 (9 개 중 5 개)."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import math\n# 판서 예: 루트 max, 자식 min 셋. 리스트 깊이가 바뀔 때마다 max/min 이 번갈아 온다.\nBOARD = [[9, 7], [6, [3, 4], [7, 9]], [8, 3]]\nseen = []\n\ndef ab(node, is_max, alpha=-math.inf, beta=math.inf):\n    if isinstance(node, (int, float)):\n        seen.append(node); return node\n    v = -math.inf if is_max else math.inf\n    for i, child in enumerate(node):\n        c = ab(child, not is_max, alpha, beta)\n        if is_max:\n            v = max(v, c); alpha = max(alpha, v)\n        else:\n            v = min(v, c); beta = min(beta, v)\n        if alpha >= beta and i + 1 < len(node):  # 구간이 안 겹친다\n            print(f\"  가지치기: {node[i+1:]} (alpha={alpha}, beta={beta})\")\n            break\n    return v\n\nprint(\"값 =\", ab(BOARD, True))\nprint(\"본 잎 =\", seen, f\"({len(seen)}/9)\")",
+    "note": "직접 돌린 결과: '가지치기: [[3, 4], [7, 9]] (alpha=7, beta=6)', '값 = 7', '본 잎 = [9, 7, 6, 8, 3] (5/9)'. 리스트 중첩 깊이가 바뀔 때마다 max/min 이 번갈아 온다는 규칙으로 트리를 적었다."
+   },
+   "diagram": {
+    "title": "칠판 트리 — 잘린 서브트리는 점선",
+    "code": "graph TD\n  R[\"max: 7\"] --> L[\"min: 7\"]\n  R --> M[\"min: ≤ 6 (가지치기)\"]\n  R --> Rt[\"min: 3\"]\n  L --> l1[\"9\"]\n  L --> l2[\"7\"]\n  M --> m1[\"6\"]\n  M -.-> m2[\"max(3, 4)\"]\n  M -.-> m3[\"max(7, 9)\"]\n  Rt --> r1[\"8\"]\n  Rt --> r2[\"3\"]"
+   },
+   "pitfalls": [
+    "가운데 노드의 '값'을 6 으로 적으면 틀린다. 가지치기 후 남는 것은 '6 이하'라는 경계뿐이고 참값은 4 다. 뿌리 값과 뿌리의 수만 정확하다.",
+    "오른쪽에서 8 을 본 직후 자르면 안 된다. ≤ 8 과 ≥ 7 이 겹친다."
+   ],
+   "check": [
+    {
+     "q": "오른쪽 min 의 잎 순서가 (3, 8) 이었다면 무엇이 달라지나?",
+     "a": "첫 잎 3 에서 오른쪽이 ≤ 3 이 되어 뿌리 ≥ 7 과 안 겹치므로 8 을 보지 않고 자른다. 본 잎이 4 개로 준다."
+    },
+    {
+     "q": "가운데 min 의 첫 자식이 잎 6 이 아니라 max(7, 9) 였다면 가지치기는?",
+     "a": "그 max 를 다 보면 9 → 가운데 ≤ 9, 뿌리 ≥ 7 과 겹쳐 계속. 다음 6 → ≤ 6, 그제야 나머지 max(3, 4) 를 자른다. 순서에 따라 보는 잎 수가 달라진다."
+    }
+   ]
+  },
+  {
+   "start": 3740,
+   "title": "자식을 보는 순서가 가지치기를 정한다 — 그리고 expectimax 는?",
+   "points": [
+    "학생 질문: expectimax 에도 되나? → 일반적으로는 안 된다. 기댓값은 모든 결과를 봐야 한다(효용에 범위가 있으면 일부는 가능할 수도 — 강사도 확답을 미룸).",
+    "같은 트리라도 순서가 [3, 5], [2, 10] 이면 10 이 잘리고, [2, 10], [3, 5] 면 아무것도 안 잘린다.",
+    "max 노드에서는 큰 값일 법한 자식부터(하한이 빨리 올라감), min 노드에서는 작은 값일 법한 자식부터.",
+    "실제로는 평가 함수(다음 장)로 자식 순서를 정한다. 휴리스틱이 좋으면 빠르고, 나빠도 답은 정확하다 — A* 와 같은 구조.",
+    "여전히 최악은 지수 시간. P = NP 를 푼 게 아니다."
+   ],
+   "on_screen": "'Ordering: The order in which the children are visited impacts what you can prune' 트리: 뿌리 △ 3, 왼쪽 ▽ 2(잎 2, 10), 오른쪽 ▽ 3(잎 3, 5) — 앞 장의 3, 5, 2, 10 순서를 뒤집은 그림. 'In practice, use a heuristic (evaluation function later) to order the children: Decreasing for max nodes / Increasing for min nodes'. 'Summary: Alpha-beta pruning: speed up minimax search, exact computation / Want to order actions to shrink the bounds as fast as possible'.",
+   "explain": [
+    "칠판 예제가 끝나고 한 학생이 묻는다. expectimax 에도 이런 가지치기가 되나? 강사의 짧은 답은 '일반적으로는 아니다'이다. 기댓값 노드의 값은 모든 결과의 가중 평균이라, 하나라도 안 보면 그 결과가 아주 크거나 작을 수 있어 평균을 가둘 수 없다. 다만 효용의 범위(예: 늘 −100 과 100 사이)를 안다면 아직 안 본 결과가 평균을 얼마나 움직일 수 있는지 상한을 걸 수 있으니 어느 정도는 자를 수도 있겠다고 덧붙이고, 정확히는 더 생각해 봐야겠다고 확답을 미룬다. 노트 보충: 실제로 효용 범위를 이용해 우연 노드에서도 가지치기를 하는 방법(Ballard 의 *-minimax 계열)이 있으며, 효용 범위가 좁을수록 많이 자른다.",
+    "그다음 주제는 '운'이다. 알파-베타가 얼마나 자르는지는 자식을 어떤 순서로 보느냐에 달렸다. 앞의 작은 트리에서 왼쪽 min 의 잎이 3, 5, 오른쪽 min 의 잎이 2, 10 이면 왼쪽에서 뿌리가 ≥ 3 이 되고 오른쪽의 첫 잎 2 에서 ≤ 2 가 되어 10 이 잘린다. 그런데 두 min 노드의 순서를 바꿔 (2, 10) 을 먼저 보면 왼쪽 값이 2, 뿌리는 ≥ 2 다. 오른쪽에서 첫 잎 3 을 보아도 ≤ 3 이라 [2, 3] 이 겹치므로 자를 수 없고, 5 까지 다 봐야 한다. 같은 트리, 같은 답인데 본 잎의 수가 3 개와 4 개로 갈린다.",
+    "원리는 구간을 최대한 빨리 좁히는 것이다. max 노드에서는 값이 클 것 같은 자식을 먼저 보면 하한(α)이 빨리 높아지고, 그만큼 뒤의 형제들이 일찍 잘린다. min 노드에서는 반대로 작을 것 같은 자식을 먼저 본다. 결국 하고 싶은 것은 최적 경로를 먼저 맞히는 것이다. 정답 경로를 먼저 따라가면 나머지 가지는 대부분 첫 잎에서 바로 구간이 어긋난다. 실제로 무엇이 클 '것 같은지'는 다음 장의 평가 함수 같은 휴리스틱으로 짐작한다. max 노드는 평가값 내림차순, min 노드는 오름차순으로 자식을 정렬한다.",
+    "강사는 이것이 수업 전체에 걸친 패턴이라고 말한다. 6 강의 A* 처럼, 정확한 알고리즘에 휴리스틱을 끼우면 휴리스틱이 좋을 때는 매우 빨라지고 나쁠 때는 느려지지만 어느 경우에도 답은 맞다. 알파-베타도 같다. 순서가 엉망이어도 결과는 그냥 minimax 와 같고, 아낀 계산이 줄어들 뿐이다. 다만 아무리 운이 좋아도 최악의 경우는 여전히 지수 시간이다. 강사의 농담대로 P = NP 를 해결한 것은 아니다. 노트 보충: Knuth 와 Moore(1975)의 분석에 따르면 순서가 완벽할 때 보는 잎의 수는 약 b^(d/2) 로, 같은 시간에 두 배 깊이까지 볼 수 있는 셈이다. 무작위 순서에서는 대략 b^(3d/4) 정도로 알려져 있다."
+   ],
+   "formulas": [
+    {
+     "expr": "최선의 순서에서 본 잎 수 ≈ b^⌈d/2⌉ + b^⌊d/2⌋ − 1  (노트 보충, Knuth–Moore 1975)",
+     "meaning": "b 는 노드당 가지 수, d 는 깊이, ⌈·⌉·⌊·⌋ 는 올림·내림. 순서를 모두 맞히면 minimax 의 b^d 대신 대략 b^(d/2) 만 보면 된다. 예: b = 10, d = 4 이면 10⁴ = 10,000 개 대신 10² + 10² − 1 = 199 개."
+    }
+   ],
+   "example": {
+    "title": "순서 두 가지를 손으로 비교",
+    "body": "순서 1: [[3, 5], [2, 10]] → 왼쪽 = 3, 뿌리 ≥ 3. 오른쪽 첫 잎 2 → ≤ 2, 안 겹침 → 10 생략. 본 잎 3, 5, 2 (3 개).\n순서 2: [[2, 10], [3, 5]] → 왼쪽 = 2, 뿌리 ≥ 2. 오른쪽 첫 잎 3 → ≤ 3, [2, 3] 겹침 → 계속. 5 → 3. 본 잎 2, 10, 3, 5 (4 개).\n두 경우 모두 뿌리 값 3."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 이동 순서가 가지치기를 바꾼다: 같은 트리, 자식 순서만 다르게\nimport math\ndef ab(node, is_max, a=-math.inf, b=math.inf, seen=None):\n    if not isinstance(node, list):\n        seen.append(node); return node\n    v = -math.inf if is_max else math.inf\n    for ch in node:\n        c = ab(ch, not is_max, a, b, seen)\n        if is_max: v = max(v, c); a = max(a, v)\n        else:      v = min(v, c); b = min(b, v)\n        if a >= b: break\n    return v\nfor tree in ([[3, 5], [2, 10]], [[2, 10], [3, 5]]):\n    seen = []\n    print(tree, \"값\", ab(tree, True, seen=seen), \"본 잎\", seen)",
+    "note": "직접 돌린 결과: [[3, 5], [2, 10]] 값 3 본 잎 [3, 5, 2] / [[2, 10], [3, 5]] 값 3 본 잎 [2, 10, 3, 5]."
+   },
+   "pitfalls": [
+    "순서가 나쁘면 알파-베타가 '틀린다'고 생각하기 쉽다. 순서는 속도만 바꾸고 답은 바꾸지 않는다.",
+    "min 노드에서도 '큰 것부터' 정렬하면 오히려 가지치기가 준다. max 는 내림차순, min 은 오름차순이다."
+   ],
+   "check": [
+    {
+     "q": "max 노드에서 자식을 평가값이 큰 순서로 보는 이유는?",
+     "a": "첫 자식에서 하한 α 가 높게 잡혀야 뒤의 형제 min 노드들이 첫 잎에서 바로 'α 보다 작다'로 잘리기 때문이다."
+    },
+    {
+     "q": "b = 3, d = 4 인 트리에서 순서가 완벽하면 대략 몇 개의 잎을 보나(Knuth–Moore 식)?",
+     "a": "3² + 3² − 1 = 17 개. minimax 는 3⁴ = 81 개."
+    }
+   ]
+  },
+  {
+   "start": 3990,
+   "title": "평가 함수와 깊이 제한 탐색 — 끝까지 못 가면 어림한다",
+   "points": [
+    "평가 함수 Eval(s): 탐색 없이 상태가 얼마나 좋은지 바로 어림한 값. 게임은 끝의 승패만 중요하지만, 중간 판세도 보면 안다.",
+    "체스 예: Eval = material + mobility + king-safety + center-control. material = 10¹⁰⁰(K−K') + 9(Q−Q') + 5(R−R') + 3(B−B'+N−N') + 1(P−P').",
+    "평가 함수만으로 한 수 탐욕 선택은 약하다. 대신 깊이 제한 탐색: 깊이 d 가 0 이 되면 Eval 로 끊는다. 상대가 둔 뒤 d − 1(한 단위 = 양쪽 한 수씩).",
+    "보장은 없다. 깊이 볼수록 Eval 이 나빠도 덜 민감하고, 얕게 보면 Eval 이 좋아야 한다. 탐색의 FutureCost 와 닮았다.",
+    "Eval 은 V·Q 값의 근사다 → 배울 수 있다. 다음 강의: 게임에서 평가 함수를 배우는 TD 학습."
+   ],
+   "on_screen": "evaluation_functions(): minimax 식, 'Recall that it takes exponential time in general! How can we compute things approximately?' 'Key idea: define evaluation function — In the game, only thing that matters is who wins at the end / Evaluation function captures prior knowledge about what might be good'. 체스판 그림과 'Example: chess — Eval(s) = material + mobility + king-safety + center-control / material = 10¹⁰⁰(K − K') + 9(Q − Q') + 5(R − R') + 3(B − B' + N − N') + 1(P − P') / mobility = 0.1(num-legal-moves − num-legal-moves')'. 'Limited depth tree search (stop at maximum depth d_max)': V_minmax(s, d) = Utility(s) [IsEnd] / Eval(s) [d = 0, 빨강] / max V(Succ(s,a), d) [agent] / min V(Succ(s,a), d − 1) [opp, d − 1 빨강]. 'No guarantees that we will find the optimal policy!' 요약 'Evaluation function: prior knowledge that evaluates a state / Do search to a certain depth, and then use the evaluation function / Analogy: FutureCost in search problems'. 마지막 전체 요약 'Recurrences define various (game, policy) outcomes (evaluation, expectimax, minimax, expectiminimax) / Alpha-beta pruning: branch and bound to speed up minimax (exact) / Evaluation functions: prior knowledge that speeds up (approximately)'.",
+   "explain": [
+    "알파-베타는 정확하지만 여전히 지수적이다. 체스처럼 끝까지 내려가는 것이 불가능한 게임에서는 근사가 필요하다. 평가 함수의 생각은 단순하다. 탐색은 잊고, 이 상태가 얼마나 좋은지 그냥 어림해서 숫자 하나를 내자. 강사의 표현으로는 '분위기 점검'이다. 게임에서 정말 중요한 것은 끝에 누가 이기느냐뿐이지만, 체스를 두는 사람은 판을 보기만 해도 누가 잘하고 있는지 어느 정도 안다. 평가 함수는 이런 사전 지식을 숫자로 옮긴 것이다.",
+    "체스의 예로 보는 평가 함수는 여러 항의 합이다. 각 항은 직관적인 성질 하나를 담은 특성(feature)이라고 생각하면 된다. 기물이 많을 것(material), 둘 수 있는 수가 많을 것(mobility), 킹이 안전할 것(king-safety), 중앙을 장악할 것(center-control). 기물 항은 내 기물 수에서 상대 기물 수를 뺀 것에 가치를 곱해 더한다. 킹은 잃으면 끝이라 10¹⁰⁰ 이라는 터무니없는 무게를, 퀸은 9, 룩은 5, 비숍·나이트는 3, 폰은 1 을 준다. 기동성 항은 내 합법 수에서 상대 합법 수를 뺀 것에 0.1 을 곱한다. 강의 중 강사가 기동성을 원하지 않는다고 말이 헛나오는데, 슬라이드 식처럼 기동성은 클수록 좋다(+ 항).",
+    "이 평가 함수를 어떻게 쓸까. 가장 단순하게는 한 수 앞의 상태들을 평가해서 가장 좋은 쪽을 고를 수 있다. 하지만 강사는 이런 플레이어는 너무 탐욕스러워 기물을 지키는 데만 급급하고 잘 두지 못할 것이라고 말한다. 대신 탐색과 섞는다. 깊이 제한 탐색은 minimax 에 깊이 d 를 하나 더 붙인다. 끝 상태면 효용, d 가 0 이면 더 내려가지 않고 Eval(s) 를 돌려준다. 그 밖에는 minimax 처럼 max·min 을 하는데, 에이전트가 둔 뒤에는 d 를 그대로, 상대가 둔 뒤에는 d − 1 로 내려보낸다. 깊이 한 단위가 '에이전트 한 수 + 상대 한 수'가 되도록 두 번 빼지 않으려는 것이다. 강사는 이것이 오늘 본 여섯 번째쯤 되는 재귀라며 이제 익숙해졌으리라고 웃는다.",
+    "이 방법에는 보장이 없다. 최적 정책을 찾는다는 약속이 없고 완전히 휴리스틱이다. 얼마나 잘 두느냐는 평가 함수의 질에 달렸다. 다만 조절할 손잡이가 있다. 깊이 탐색할수록 평가 함수가 엉성해도 덜 흔들리고, 얕게 탐색하면 평가 함수가 좋아야 한다. 강사는 이것을 탐색 문제에서 남은 비용을 어림하던 FutureCost(6강의 A* 휴리스틱)에 빗댄다. 몇 걸음 앞을 보고 나머지는 어림하는 구조가 같다. 그리고 다음 시간을 위한 질문을 던진다. 평가 함수는 무엇을 떠올리게 하나? 7·8강의 가치 V 와 Q 값, 곧 참값의 근사다. 그렇다면 손으로 짜는 대신 데이터에서, 혹은 강화학습으로 배울 수 있다. 다음 강의가 바로 그것, 게임 속 학습과 TD 학습이다. 노트 보충: 바둑의 AlphaGo·AlphaZero 와 오늘날 체스 엔진 Stockfish 의 NNUE 는 모두 이 평가 함수를 신경망으로 배운 예다."
+   ],
+   "formulas": [
+    {
+     "expr": "Eval(s) = material + mobility + king-safety + center-control\nmaterial = 10¹⁰⁰(K − K') + 9(Q − Q') + 5(R − R') + 3(B − B' + N − N') + 1(P − P')\nmobility = 0.1 · (num-legal-moves − num-legal-moves')",
+     "meaning": "K, Q, R, B, N, P 는 내 킹·퀸·룩·비숍·나이트·폰의 수, 프라임(′)이 붙은 것은 상대의 수. num-legal-moves 는 내가 둘 수 있는 합법 수의 개수, 프라임은 상대의 것. 계수(9, 5, 3, 1)는 기물의 통상 가치이고 10¹⁰⁰ 은 킹을 잃으면 다른 무엇으로도 만회할 수 없다는 뜻이다."
+    },
+    {
+     "expr": "V_minmax(s, d) = Utility(s)                                 if IsEnd(s)\n               = Eval(s)                                    if d = 0\n               = max_{a∈Actions(s)} V_minmax(Succ(s, a), d)       if Player(s) = agent\n               = min_{a∈Actions(s)} V_minmax(Succ(s, a), d − 1)   if Player(s) = opp",
+     "meaning": "d 는 남은 탐색 깊이(양쪽이 한 수씩 두면 1 줄어든다). d = 0 에 닿으면 더 내려가지 않고 평가 함수로 끊는다. 처음에 d = d_max 로 부른다. IsEnd 가 먼저 검사되므로 진짜 끝 상태에서는 Eval 이 아니라 참 효용을 쓴다."
+    }
+   ],
+   "example": {
+    "title": "기물 평가를 작은 판에 넣어 보기",
+    "body": "내 쪽: 퀸 1, 룩 2, 폰 5. 상대: 룩 2, 비숍 1, 나이트 1, 폰 6. 킹은 둘 다 1.\nmaterial = 10¹⁰⁰·(1−1) + 9·(1−0) + 5·(2−2) + 3·(0−1 + 0−1) + 1·(5−6) = 9 + 0 − 6 − 1 = 2\n합법 수가 나 30, 상대 20 이면 mobility = 0.1·(30−20) = 1\n이 두 항만 더하면 Eval = 3 — 대략 폰 세 개만큼 유리하다는 어림."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 깊이 제한 minimax: 반감 게임, 깊이 d 가 0 이 되면 Eval 로 끊는다.\ndef eval_fn(n, player):\n    return 0.0                      # '모르겠다' — 가장 순진한 평가 함수\ndef V(n, player, d):\n    if n == 0:\n        return 1 if player == \"agent\" else -1\n    if d == 0:\n        return eval_fn(n, player)\n    if player == \"agent\":           # 에이전트 차례에는 d 를 그대로\n        return max(V(m, \"opp\", d) for m in (n - 1, n // 2))\n    return min(V(m, \"agent\", d - 1) for m in (n - 1, n // 2))  # 상대가 두면 한 수 끝\nfor d in range(1, 6):\n    print(f\"d={d}:\", [V(n, \"agent\", d) for n in range(1, 12)])",
+    "note": "직접 돌린 결과(n=1..11): d=1 → [−1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], d=2 → [−1, 1, 1, −1, 1, 0, 0, 1, 1, 0, 0], d=3 이후 → [−1, 1, 1, −1, 1, −1, 1, 1, 1, −1, 1] (7장의 완전 탐색과 같다). 평가 함수가 '모름(0)'뿐이어도 깊이가 끝까지 닿는 자리부터 참값으로 바뀐다. 8·9 처럼 일찍 끝나는 승리는 얕은 깊이에서도 보인다."
+   },
+   "pitfalls": [
+    "강의 중 '기동성은 원하지 않는다'는 말실수가 있다. 슬라이드 식대로 기동성은 클수록 좋다.",
+    "깊이 d 를 에이전트·상대 양쪽에서 모두 빼면 깊이 단위가 반 수가 된다. 강의 식은 상대가 둔 뒤에만 d − 1.",
+    "깊이 제한 탐색의 값은 참 minimax 값이 아니다. 평가 함수의 오차가 그대로 섞인다 — 보장 없음."
+   ],
+   "check": [
+    {
+     "q": "깊이 제한 탐색에서 깊이를 늘리면 무엇이 좋아지고 무엇이 나빠지나?",
+     "a": "평가 함수의 오차에 덜 민감해져 수의 질이 좋아지지만, 보는 노드 수가 지수적으로 늘어 시간이 더 든다."
+    },
+    {
+     "q": "평가 함수가 7·8강의 어떤 양과 닮았고, 그래서 무엇을 할 수 있나?",
+     "a": "상태 가치 V(또는 Q)의 근사다. 그래서 손으로 짜는 대신 데이터나 강화학습(TD 학습)으로 배울 수 있다 — 다음 강의 주제."
+    }
+   ]
+  }
+ ],
+ "concepts": [
+  {
+   "term": "두 사람 제로섬 게임",
+   "explain": "플레이어가 에이전트와 상대 둘이고, 상대 효용이 늘 에이전트 효용의 음수인 게임. 숫자 하나만 들고 다니면 되고, 에이전트는 키우고 상대는 줄이려 한다.",
+   "at": 240
+  },
+  {
+   "term": "게임 트리",
+   "explain": "뿌리 = 시작 상태, 간선 = 수, 잎 = 결말인 트리. 노드마다 차례인 플레이어가 정해져 있고, 뿌리에서 잎까지 한 줄이 한 판(롤아웃)이다.",
+   "at": 180
+  },
+  {
+   "term": "player(s)",
+   "explain": "상태 s 에서 누구 차례인지 돌려주는 함수. 차례가 상태의 성질이라 한 번 더 두기·차례 건너뛰기 같은 규칙도 같은 틀에 들어간다.",
+   "at": 320
+  },
+  {
+   "term": "희소 보상",
+   "explain": "효용이 끝 상태에만 몰려 있어 끝까지 가기 전에는 잘하고 있는지 모르는 성질. 게임의 특징이자 강화학습을 어렵게 하는 요인.",
+   "at": 450
+  },
+  {
+   "term": "게임 값 V_eval",
+   "explain": "정해진 두 정책으로 둘 때 에이전트 효용의 기댓값. 롤아웃 평균(몬테카를로)으로 어림하거나 재귀로 정확히 구한다. MDP 의 정책 평가에 대응.",
+   "at": 670
+  },
+  {
+   "term": "expectimax",
+   "explain": "상대 정책을 알고 고정할 때 에이전트의 최적 값. 에이전트 노드는 max, 상대 노드는 정책 확률로 평균. MDP 의 가치 반복에 대응.",
+   "at": 1240
+  },
+  {
+   "term": "minimax",
+   "explain": "상대가 자기 최선(= 내 효용 최소)을 둔다고 가정한 값. 에이전트 노드 max, 상대 노드 min. π_max 는 어떤 상대에게도 이 값을 하한으로 보장한다.",
+   "at": 1530
+  },
+  {
+   "term": "완전한 수·풀린 게임",
+   "explain": "양쪽이 최적으로 두는 것이 완전한 수, 그때의 결과(뿌리 minimax 값)를 알면 풀린 게임. 모든 상태를 알면 강하게, 시작 위치만 알면 약하게 풀렸다고 한다.",
+   "at": 1980
+  },
+  {
+   "term": "face-off 부등식",
+   "explain": "V(π_exptmax(7), π_min) ≤ V(π_max, π_min) ≤ V(π_max, π_7) ≤ V(π_exptmax(7), π_7). 게임 1 에서 −5 ≤ 1 ≤ 2 ≤ 5.",
+   "at": 2280
+  },
+  {
+   "term": "expectiminimax",
+   "explain": "max(에이전트)·min(상대)·기댓값(우연) 노드가 함께 있는 재귀. 게임 2 에서 −2.",
+   "at": 2800
+  },
+  {
+   "term": "불완전 정보 게임",
+   "explain": "플레이어마다 아는 것이 다른 게임(포커). 상태 하나가 모든 정보를 담는다는 게임 트리 가정이 깨져 이 강의의 재귀로 다룰 수 없다.",
+   "at": 3020
+  },
+  {
+   "term": "분기 한정(branch and bound)",
+   "explain": "값의 구간만 들고 다니다가 한 구간이 다른 구간보다 확실히 나쁘면 버리는 조합 최적화의 일반 원리. 알파-베타의 바탕.",
+   "at": 3230
+  },
+  {
+   "term": "알파-베타 가지치기",
+   "explain": "max 노드의 하한 α, min 노드의 상한 β 를 내려보내며 α ≥ β 가 되면 남은 자식을 보지 않는 minimax. 답은 정확하고 서브트리째 자른다.",
+   "at": 3140
+  },
+  {
+   "term": "최적 경로",
+   "explain": "뿌리의 minimax 값을 낸 잎까지 minimax 정책이 따라가는 길. 이 경로의 값은 모든 조상의 구간 안에 있어야 하므로, 조상과 구간이 안 겹치는 노드는 잘라도 된다.",
+   "at": 3420
+  },
+  {
+   "term": "이동 순서(move ordering)",
+   "explain": "알파-베타에서 자식을 보는 순서. max 노드는 큰 것부터, min 노드는 작은 것부터 보면 구간이 빨리 좁혀져 많이 자른다. 보통 평가 함수로 정렬한다.",
+   "at": 3830
+  },
+  {
+   "term": "평가 함수 Eval(s)",
+   "explain": "탐색 없이 상태의 좋음을 어림한 값. 체스에서는 material·mobility·king-safety·center-control 같은 특성의 합. 가치 V 의 근사라 학습할 수도 있다.",
+   "at": 4000
+  },
+  {
+   "term": "깊이 제한 탐색",
+   "explain": "minimax 에 남은 깊이 d 를 붙여 d = 0 이면 Eval 로 끊는 방법. 상대가 둔 뒤 d − 1. 보장은 없고, 깊을수록 Eval 오차에 덜 민감하다.",
+   "at": 4130
+  }
+ ],
+ "trends": [
+  {
+   "claim": "체스·바둑은 컴퓨터가 사람을 이기지만 '풀린' 게임은 아니다 — 시작 위치의 minimax 값도 최적 정책도 모른다.",
+   "evidence": "슬라이드 'Unsolved games: chess, Go (even if computers are superhuman!)' 와 강사의 설명. 강하게 풀린 예로 틱택토·님·사목, 약하게 풀린 예로 체커·오델로를 든다.",
+   "at": 2030
+  },
+  {
+   "claim": "minimax 는 '최악의 상대에 대한 최적'보다 '모르는 상대에 대한 하한 보장'으로 이해하는 편이 낫다 — 진짜 최악의 상대는 드물지만 보장이 필요할 때 쓴다(강사 의견).",
+   "evidence": "face-off 요약에서 두 해석을 소개한 뒤 두 번째를 더 좋아한다고 말함.",
+   "at": 2730
+  },
+  {
+   "claim": "상대를 알면 minimax 보다 잘할 수 있다 — 약한 상대에게는 강한 상대 앞에서 못 둘 수를 둘 수 있다.",
+   "evidence": "게임 1 에서 반반 상대에게 minimax 수 B 는 2, expectimax 수 C 는 5.",
+   "at": 2640
+  },
+  {
+   "claim": "정확한 알고리즘에 휴리스틱을 끼우는 것은 수업 전체의 패턴이다 — 휴리스틱이 좋으면 빠르고 나빠도 답은 맞다(A*, 알파-베타의 이동 순서).",
+   "evidence": "이동 순서를 설명한 뒤 A* 와 견준 강사의 일반론.",
+   "at": 3940
+  },
+  {
+   "claim": "평가 함수는 손으로 짜는 것에서 배우는 것으로 간다 — 지도 데이터나 강화학습으로 학습할 수 있고, 다음 강의가 TD 학습으로 그것을 다룬다.",
+   "evidence": "강의 끝에서 평가 함수를 V·Q 값의 근사로 연결하고 다음 시간 주제를 예고.",
+   "at": 4310
+  }
+ ],
+ "study": {
+  "prereq": [
+   "CS221 7강 MDP(정책 평가·가치 반복)와 8강 강화학습 — 게임 평가·expectimax 가 그 재귀의 게임판이다",
+   "CS221 5·6강 탐색(깊이 우선 탐색, A* 와 휴리스틱 FutureCost)",
+   "재귀 함수와 메모이제이션, 파이썬 dict",
+   "기댓값과 큰 수의 법칙(몬테카를로 추정)"
+  ],
+  "steps": [
+   {
+    "do": "게임 1 의 트리를 손으로 그리고 V_eval(0)·V_exptmax(5)·V_minmax(1)를 아래에서 위로 채운 뒤, 4장의 한 함수 코드로 확인한다.",
+    "why": "세 재귀가 '에이전트·상대 노드에 무슨 연산을 두나'의 차이뿐이라는 것이 한눈에 들어온다."
+   },
+   {
+    "do": "반감 게임을 Game 클래스(start_state·is_end·utility·player·successors)로 직접 짜고 minimax 정책 대 무작위 정책을 100 판 붙여 본다.",
+    "why": "차례가 상태 안에 있다는 설계와 minimax 정책을 '매 수 재귀'로 쓰는 법이 손에 익는다."
+   },
+   {
+    "do": "face-off 2×2 표를 게임 1 과, 통 숫자를 바꾼 새 게임에서 채워 세 명제가 늘 성립하는지 확인한다.",
+    "why": "'최적은 무엇에 대해 최적인가'를 숫자로 체감하는 가장 빠른 길."
+   },
+   {
+    "do": "칠판 트리와 작은 트리 몇 개에 알파-베타를 손으로 돌리며 α·β 를 노드 옆에 적고, 7장의 코드 로그와 맞춘다.",
+    "why": "가지치기 조건(조상 전체와의 겹침)을 정확히 이해했는지 확인하는 표준 연습."
+   },
+   {
+    "do": "무작위 트리(b=4, d=6)를 만들어 자식 순서를 무작위·최선·최악으로 바꿔 알파-베타가 본 잎 수를 세고 b^(d/2) 와 비교한다.",
+    "why": "이동 순서의 효과와 Knuth–Moore 분석을 실험으로 확인한다."
+   },
+   {
+    "do": "틱택토에 깊이 제한 minimax + 간단한 평가 함수(열린 줄 수 차이)를 넣고, 깊이 1·2·4 에서 완전 탐색 minimax 상대와 둬 본다.",
+    "why": "평가 함수의 질과 탐색 깊이가 서로를 메운다는 강의 주장을 직접 본다."
+   },
+   {
+    "do": "Berkeley CS188 의 팩맨 멀티에이전트 과제(minimax·알파-베타·expectimax 유령)를 풀고 다음 강의(TD 학습)로 넘어간다.",
+    "why": "강의가 언급한 '팩맨과 여러 유령' 재귀를 실제 코드베이스에서 구현해 본다."
+   }
+  ],
+  "practice": [
+   "게임 1 에서 상대가 0.8 확률로 작은 수, 0.2 확률로 큰 수를 준다면 expectimax 수와 값은? face-off 표의 오른쪽 열을 이 상대로 다시 채워 본다.",
+   "반감 게임 규칙을 '0 을 만든 사람이 이긴다'로 바꿔 n=1..15 의 minimax 값을 구하고 원래 규칙과 비교한다.",
+   "칠판 트리에서 오른쪽 min 의 잎 순서를 (3, 8) 로, 가운데 min 의 자식 순서를 (max(7,9), 6, max(3,4)) 로 바꿔 본 잎 수가 어떻게 바뀌는지 손으로 센다.",
+   "게임 2 에 동전 대신 주사위(1/3 왼쪽, 1/3 그대로, 1/3 오른쪽)를 넣어 expectiminimax 값을 계산한다.",
+   "깊이 제한 탐색의 d 를 상대 차례가 아니라 양쪽 모두에서 줄이도록 바꾸면 c7 코드의 결과 표가 어떻게 달라지는지 확인한다."
+  ],
+  "resources": [
+   {
+    "title": "CS221 Autumn 2025 과목 홈페이지(일정·강의 코드)",
+    "url": "https://stanford-cs221.github.io/autumn2025/"
+   },
+   {
+    "title": "Berkeley CS188 — Project 2: Multi-Agent Search(팩맨 minimax·알파-베타·expectimax)",
+    "url": "https://inst.eecs.berkeley.edu/~cs188/fa24/projects/proj2/"
+   },
+   {
+    "title": "Chessprogramming wiki — Alpha-Beta",
+    "url": "https://www.chessprogramming.org/Alpha-Beta"
+   },
+   {
+    "title": "Chessprogramming wiki — Evaluation",
+    "url": "https://www.chessprogramming.org/Evaluation"
+   },
+   {
+    "title": "Russell & Norvig, AIMA 공식 사이트(5장 Adversarial Search)",
+    "url": "https://aima.cs.berkeley.edu/"
+   }
+  ]
+ },
+ "jobs": {
+  "roles": [
+   "게임 AI 엔지니어",
+   "머신러닝 엔지니어",
+   "강화학습 리서처",
+   "알고리즘 엔지니어",
+   "로보틱스 소프트웨어 엔지니어"
+  ],
+  "skills": [
+   "Python",
+   "C++",
+   "Reinforcement Learning",
+   "Game AI",
+   "Algorithms"
+  ]
+ },
+ "related": [
+  "lOMNskWVeD8",
+  "34Hk2v2kwg4",
+  "2ZtF1j3n6XE",
+  "fPESauMaJYA",
+  "4Iu4KPVbnAY"
+ ],
+ "materials": {
+  "transcript": "official",
+  "frames": 147,
+  "every_sec": 30
+ },
+ "written_at": "2026-11-21"
+}
