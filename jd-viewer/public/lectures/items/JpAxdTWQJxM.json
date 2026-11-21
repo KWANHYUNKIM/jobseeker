@@ -1,0 +1,1073 @@
+{
+ "id": "JpAxdTWQJxM",
+ "source": {
+  "platform": "youtube",
+  "url": "https://www.youtube.com/watch?v=JpAxdTWQJxM",
+  "channel": "Stanford Online",
+  "published": "2026-05-19",
+  "duration_sec": 4714,
+  "views": 11634
+ },
+ "course": {
+  "school": "Stanford",
+  "code": "CS336",
+  "term": "Spring 2026",
+  "lecture_no": "12",
+  "speaker": "Percy Liang (공동 강사 Tatsunori Hashimoto)"
+ },
+ "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Lecture 12: Evaluation",
+ "title_ko": "평가 — perplexity 에서 시험·Arena·LLM 심판·에이전트·ARC-AGI·안전까지, 그리고 오염과 타당성",
+ "topic": "llm",
+ "tags": [
+  "LLM",
+  "Python",
+  "NumPy",
+  "PyTorch",
+  "Evaluation",
+  "Benchmark",
+  "LLM-as-a-Judge",
+  "AI Agent",
+  "AI Safety",
+  "Statistics",
+  "Machine Learning"
+ ],
+ "level": "중급",
+ "one_line": "추상적인 '좋음'을 숫자로 옮길 때 생기는 틈 — 벤치마크 계보와 Elo·pass@k·신뢰구간·오염 검정을 손으로",
+ "summary": [
+  "모델을 만들고 빠르게 하는 법을 다 배운 뒤, 데이터로 넘어가기 직전에 '무엇을 원하나'를 정하는 강의다. Percy Liang 은 평가를 '추상적 구성 개념(대화·추론·안전)을 구체적 지표로 옮기는 일'로 정의하고, 그 옮기는 과정의 틈이 강의 전체의 주제라고 말한다. 평가는 업계의 북극성이라 무엇을 재느냐가 무엇을 만들지를 정한다. 출발점으로 벤치마크 지수(Artificial Analysis), 비용 대비 점수, 사람의 선호(Arena), 실제 유료 사용량(OpenRouter)이라는 네 렌즈를 보여 주며, 어느 것도 정답이 아니라고 한다.",
+  "첫 축은 perplexity 다. 언어 모델이 분포이니 테스트 데이터에 준 확률이 가장 자연스러운 평가이고, 2010년대에는 PTB·WikiText-103·1BW 의 분포 안 평가가 표준이었다. GPT-2 가 웹 데이터로 학습하고 표준 데이터셋에 제로샷으로 평가하면서 지금의 틀이 생겼다. '참 분포에 도달하면 모든 문제가 풀린다'는 perplexity 만능론은 교차 엔트로피 = 엔트로피 + KL 이라는 수학 위에 선 믿음이고, 반대로 perplexity 는 중요하지 않은 토큰에도 같은 벌점을 매겨 조건부 perplexity 가 필요하다. LAMBADA·HellaSwag 처럼 변장한 perplexity 벤치마크와, 확률의 정당성을 믿어야 하는 perplexity 리더보드의 함정도 다룬다.",
+  "둘째 축은 벤치마크의 계보다. 시험형(MMLU → MMLU-Pro → GPQA → HLE)은 몇 년 만에 포화되고 더 어려운 시험이 나오는 순환을 반복하며, 객관식의 한계는 난이도가 아니라 실제 사용을 담지 못한다는 데 있다. 열린 질문에는 Chatbot Arena 의 쌍대 비교와 Elo(Bradley–Terry), AlpacaEval·WildBench 의 LLM 심판을 쓰는데, 길이 편향·아첨·순환적 검증 같은 문제가 따라온다. 에이전트 벤치마크(SWE-bench·Terminal-Bench·CyBench·MLE-bench)는 '말'이 아니라 '행동'을 평가하며 점수가 모델과 스캐폴드(계획·위임·기억·문맥 공학)의 합작이다. ARC-AGI 는 지식에서 추론을 떼어 내려 하고(3판은 최고 0.5%), 안전 벤치마크(HarmBench·AIR-Bench·탈옥)는 '안전이 무엇인가'라는 합의되지 않은 질문을 드러낸다.",
+  "셋째 축은 평가 자체의 타당성이다. 생태학적 타당도(GDPval·MedHELM·Clio)는 현실을 담으려 하지만 사생활과 충돌한다. 학습·테스트 오염에는 순서 교환성 검정, 겹침 보고 규범, 새 평가, 비공개 평가라는 네 갈래가 있고, SWE-bench Verified·Platinum 벤치마크처럼 데이터셋 오류를 걸러 내는 작업과 출력을 직접 읽는 감사가 필요하다. 결론은 '정답인 평가는 없다 — 목적을 정하고, 게임의 규칙(방법·모델·에이전트)을 밝히고, 난이도·현실성·타당성 중 무엇을 양보할지 고르라'이다.",
+  "이 노트는 강의가 말로만 지나간 계산을 손으로 해 본다. perplexity·bits/byte, 엔트로피 하한, 선택지 길이 정규화, 정확도의 신뢰구간과 짝지은 부트스트랩, 우연 보정과 답 추출, Elo 갱신과 Bradley–Terry 적합, Spearman 상관과 길이 통제 승률, pass@k 불편 추정과 pass^k, 에이전트 문맥 비용, ARC 채점, ASR 과 과잉 거절, 순서 교환성 검정을 모두 작은 숫자와 직접 돌려 본 numpy 코드로 확인한다. CS229 LLM 특강(9vM4p9NN0Ts)이 perplexity·MMLU·Arena 의 기본을 소개했다면, 이 노트는 그 아래의 통계와 함정까지 내려간다. 강의 제목과 내용은 일치한다."
+ ],
+ "why_now": "모델 개발사가 데이터를 공개하지 않고 벤치마크가 1~2년이면 포화되는 지금, '이 숫자를 믿어도 되나'를 판단하는 능력이 모델을 만드는 능력만큼 중요해졌다. 강의가 보여 주듯 GPQA 는 39% 에서 94% 로, SWE-bench Verified 는 2024년 16.8% 에서 90%대로, CyBench 는 10% 에서 사실상 해결로 올라왔고 ARC-AGI-3 는 0.5% 에서 새로 시작한다. 에이전트 시대에는 점수가 모델과 스캐폴드의 합작이라 해석이 더 어렵고, LLM 심판은 싸지만 길이·자기 선호 편향이 있다. 국내에서도 LLM 을 도입하는 회사마다 '우리 업무에 어느 모델이 맞나'를 자체 평가 셋으로 판단해야 하고, 평가 파이프라인 설계·LLM 심판 검증·신뢰구간 보고를 할 줄 아는 사람이 필요하다. 다음 강의(데이터)에서 무엇을 학습할지 고르는 기준도 결국 여기서 정한 평가다.",
+ "chapters": [
+  {
+   "start": 0,
+   "title": "평가란 무엇인가 — 추상적인 '좋음'을 구체적인 숫자로 바꾸는 일",
+   "points": [
+    "지금까지 과목은 모델을 만들고(구조·최적화·커널·병렬화·스케일링·추론) 빠르게 하는 법을 다뤘다. 남은 것은 데이터이고, 데이터를 고르기 전에 '어떤 행동을 원하나'를 정해야 한다 — 그것이 평가다.",
+    "평가의 핵심 난제: '대화를 잘한다', '추론을 잘한다' 같은 추상적 구성 개념(construct)을 구체적인 프롬프트·환경·지표로 옮기는 것.",
+    "'좋은 모델'의 네 가지 렌즈 — 벤치마크 점수(Artificial Analysis 지수), 점수 대비 비용, 사람의 선호(Arena), 사람들이 실제로 돈을 내고 쓰는가(OpenRouter 사용량).",
+    "평가는 북극성 역할을 한다. 무엇을 재느냐가 업계 전체가 무엇을 만들지를 정한다."
+   ],
+   "on_screen": "강의 코드 파일 형식의 슬라이드. Takeaways(정답인 평가는 없다 / 게임의 규칙을 분명히: 방법 대 모델 대 에이전트 / 난이도·현실성·타당성). 'Core challenge: abstract construct → concrete metric'. Artificial Analysis Intelligence Index 막대그래프(여러 벤치마크를 묶은 지수), '지수 대 실행 비용(USD, 로그 눈금)' 산점도와 왼쪽 위 'Most attractive quadrant', Arena 순위표(claude-opus-4-7-thinking 이 1위, 점수 1500 안팎), OpenRouter 의 많이 쓰인 모델 20개 목록(Hy3 preview, Kimi K2.6, Claude Sonnet 4.6, Gemini 3 Flash Preview …).",
+   "explain": [
+    "식당을 평가한다고 생각해 보자. 미슐랭 별(전문가 시험), 가격 대비 만족도, 손님 투표, 실제로 줄을 서는 손님 수는 모두 '좋은 식당'을 재는 방법이지만 서로 다른 답을 낸다. 언어 모델도 같다. 강의는 평가가 '프롬프트를 만들고, 모델에 보내고, 정확도를 계산한다'는 기계적 절차처럼 보이지만 실제로는 깊은 문제라고 시작한다. 왜냐하면 평가가 모델 개발자 모두가 바라보는 북극성이 되기 때문이다. 어떤 벤치마크가 유명해지면 연구실과 회사는 그 숫자를 올리려고 데이터와 학습법을 바꾸고, 결국 평가가 모델의 능력 자체를 빚는다.",
+    "강의가 반복해서 쓰는 틀은 '추상적 구성 개념 → 구체적 지표'다. 구성 개념(construct)은 심리측정학 용어로, 직접 관찰할 수 없는 성질(지능, 대화 능력, 추론력)을 뜻한다. 이것을 재려면 관찰 가능한 대리물이 필요하다. 예컨대 '추론력'을 '수학 경시 문제 정답률'로 옮기는 순간, 우리는 추론력의 일부(정답이 하나로 떨어지는 짧은 문제)만 재게 된다. 이 옮기는 과정에서 생기는 틈을 구성 타당도(construct validity) 문제라고 부른다. 강의 전체가 이 틈이 어디서 어떻게 벌어지는지를 사례별로 보여 준다.",
+    "강의는 '좋음'을 정의하는 네 가지 렌즈를 차례로 보여 준다. 첫째, 여러 벤치마크를 묶은 지수 — Artificial Analysis 의 Intelligence Index 가 사실상 표준처럼 쓰인다. 둘째, 그 지수를 실행 비용과 함께 본다 — 산점도에서 비용이 클수록 점수도 높지만 완전히 일치하지는 않아서, 싸면서 점수가 높은 왼쪽 위 '가장 매력적인 사분면'의 모델이 실무적으로 좋은 선택이다. 셋째, 사람들이 어느 답을 더 좋아하는가 — Arena(옛 Chatbot Arena). 넷째, 사람들이 실제로 돈을 내고 쓰는가 — 여러 모델을 한 창구로 쓰게 해 주는 OpenRouter 의 사용 통계. 마지막 것은 경제학적 관점으로, 좋음이 무엇인지 몰라도 돈을 낸다면 좋은 것이라는 입장이다. 다만 OpenRouter 이용자가 전체 이용자를 대표하지는 않는다는 단서가 붙는다.",
+    "강사는 이 넷 중 어느 것도 '정답'은 아니며, 정답이 있는지조차 모르겠다고 말한다. 이 장의 목적은 답을 주는 것이 아니라 질문을 바꾸는 것이다. '이 모델이 좋은가?'가 아니라 '누구에게, 무엇을 위해, 어떤 비용으로 좋은가?'를 묻게 만드는 것. 이 질문은 강의 마지막 장(평가의 목적)에서 다시 정리된다. 1강(JuoVZkPBiKk)에서 '정확도 = 효율 × 자원'을 말했다면, 여기서 정확도라는 말 자체가 무엇을 뜻하는지를 해부하는 셈이다."
+   ],
+   "formulas": [
+    {
+     "expr": "모델 m 이 파레토 전선 위 ⇔ cost(m′) ≤ cost(m) 이고 score(m′) ≥ score(m) 이며 둘 중 하나는 엄격한 m′ 가 없다",
+     "meaning": "cost 는 같은 지수를 한 번 돌리는 데 드는 비용, score 는 지수 점수, m′ 은 다른 모델. 비용도 더 싸고 점수도 더 높은 모델이 하나라도 있으면 m 은 '지배당한' 것이다. 비용 대비 성능 산점도에서 '매력적인 사분면'을 고르는 일을 식으로 쓴 것이다(노트 보충)."
+    }
+   ],
+   "example": {
+    "title": "다섯 모델에서 파레토 전선 고르기",
+    "body": "모델 A~E 의 (비용 $, 점수)가 (5, 40), (20, 55), (60, 52), (300, 70), (900, 72) 라 하자. 싼 것부터 보면 A(40)가 남고, B(55)는 A 보다 높으니 남는다. C(52)는 더 싼 B(55)보다 점수가 낮으니 지배당한다 — 돈을 세 배 내고 점수는 떨어진다. D(70), E(72)는 이전 최고를 넘으니 남는다. 전선은 A·B·D·E. 그런데 점수 1점당 비용은 A 0.12, B 0.36, D 4.29, E 12.5 달러로, E 는 D 보다 점수 2점을 얻으려고 비용을 세 배 쓴다. 전선 위에 있다는 것과 '내 예산에 맞는 최선'은 다른 질문이다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\n# 모델 다섯 개: 지수 한 번 돌리는 비용(달러)과 점수\nnames = np.array([\"A\", \"B\", \"C\", \"D\", \"E\"])\ncost = np.array([5, 20, 60, 300, 900])\nscore = np.array([40, 55, 52, 70, 72])\n\norder = np.argsort(cost)          # 싼 것부터 훑는다\nfront, best = [], -np.inf\nfor i in order:\n    if score[i] > best:           # 더 싼 모델보다 점수가 높아야 살아남는다\n        front.append(str(names[i])); best = score[i]\nprint(\"파레토 전선:\", front)\n# 점수 1점당 비용 — 같은 '좋음'도 무엇으로 나누느냐에 따라 순위가 바뀐다\nprint({str(k): float(v) for k, v in zip(names, np.round(cost / score, 2))})",
+    "note": "실행 결과: 파레토 전선 ['A','B','D','E'], 점수당 비용 A 0.12 · B 0.36 · C 1.15 · D 4.29 · E 12.5."
+   },
+   "diagram": {
+    "title": "구성 개념에서 지표까지",
+    "code": "flowchart LR\n  C[추상적 구성 개념<br/>대화·추론·안전] --> O[구체화<br/>프롬프트·환경·채점 규칙]\n  O --> M[지표<br/>정확도·승률·pass@k]\n  M --> D[개발자의 최적화 대상]\n  D -->|모델이 바뀜| C\n  O -.틈: 구성 타당도.-> C"
+   },
+   "pitfalls": [
+    "지수 하나(예: Intelligence Index)의 순위를 '모델의 지능 순위'로 읽으면 안 된다. 지수는 어떤 벤치마크를 어떤 가중으로 묶었는지에 따라 달라지는 하나의 선택이다.",
+    "OpenRouter 사용량은 OpenRouter 를 쓰는 사람들(대체로 개발자, 무료 모델 선호)의 선택이다. 기업 내부 배포나 각 회사 자체 앱 사용은 들어 있지 않다."
+   ],
+   "check": [
+    {
+     "q": "같은 모델 둘을 두고 '벤치마크 지수'는 A 가 높고 '실제 유료 사용량'은 B 가 많다면 어느 쪽이 좋은 모델인가?",
+     "a": "질문이 정의되지 않았다. 지수는 시험 문제를 푸는 능력을, 사용량은 가격·속도·통합 편의까지 포함한 시장의 선택을 잰다. 무엇을 위해 고르는지(목적)를 먼저 정해야 답이 나온다."
+    },
+    {
+     "q": "구성 타당도(construct validity) 문제를 한 문장으로 설명하라.",
+     "a": "재고 싶은 추상적 성질과 실제로 재는 구체적 지표 사이의 틈 — 지표가 올라도 그 성질이 올랐다고 장담할 수 없는 문제다."
+    }
+   ]
+  },
+  {
+   "start": 330,
+   "title": "Perplexity — 분포를 분포로 재기, 분포 안 평가에서 GPT-2 의 분포 밖 평가로",
+   "points": [
+    "언어 모델은 토큰열 위의 확률분포 p(x) 이므로 가장 자연스러운 평가는 테스트 데이터 D 에 준 확률이다: perplexity = (1/p(D))^(1/|D|).",
+    "2010년대 언어 모델링 연구는 Penn Treebank·WikiText-103·One Billion Word 에서 '학습 분할로 학습, 테스트 분할로 평가'하는 분포 안(in-distribution) 평가였다.",
+    "Jozefowicz+ 2016: CNN+LSTM 으로 One Billion Word 의 perplexity 51.3 → 30.0. 순수 신경망이 n-gram 을 이긴다는 결정적 결과.",
+    "GPT-2(2019)는 WebText 40GB 로 학습하고 표준 데이터셋에 제로샷으로 평가했다 — 분포 밖(out-of-distribution) 평가의 시작. 작은 데이터셋(PTB 35.76 vs SOTA 46.54)에서는 이겼지만 큰 것(1BW 42.16 vs 21.8)에서는 졌다."
+   ],
+   "on_screen": "def perplexity(): 'language model is a probability distribution p(x)', 'Perplexity (1/p(D))^(1/|D|)'. 표준 데이터셋: Penn Treebank(WSJ), WikiText-103(Wikipedia), One Billion Word Benchmark(WMT11 — EuroParl, UN, news). 'Classic paradigm: in-distribution evaluation'. GPT-2 논문 표: 열 LAMBADA(PPL·ACC), CBT-CN, CBT-NE, WikiText2, PTB, enwik8(BPB), text8(BPC), WikiText103, 1BW. SOTA 행 99.8 / 59.23 / 85.7 / 82.3 / 39.14 / 46.54 / 0.99 / 1.08 / 18.3 / 21.8, 1542M 행 8.63 / 63.24 / 93.30 / 89.05 / 18.34 / 35.76 / 0.93 / 0.98 / 17.48 / 42.16. 아래 'Works better on small datasets (PTB) where transfer is helpful, but not larger datasets (1BW)'.",
+   "explain": [
+    "언어 모델을 '다음 말 맞히기 기계'로 보면 정확도로 평가하고 싶어진다. 그러나 언어 모델은 답 하나를 내는 기계가 아니라 모든 문장에 확률을 매기는 분포다. 분포를 평가하는 가장 직접적인 방법은 '실제로 일어난 일(테스트 문서)에 얼마나 많은 확률을 걸었나'를 보는 것이다. 일기예보를 생각하면 쉽다. 비가 온 날 '강수 확률 90%'라고 한 예보관이 '50%'라고 한 예보관보다 잘한 것이다. 맞혔냐 틀렸냐가 아니라 걸었던 확률의 크기로 채점한다. 이것이 likelihood(우도), log loss, perplexity 가 공통으로 재는 것이고, 세 개념은 서로 단조 변환 관계일 뿐이다.",
+    "정의는 이렇다. 테스트 데이터 D 가 토큰 |D| 개로 되어 있을 때 perplexity 는 (1/p(D))^(1/|D|) 이다. 자기회귀 모델에서는 p(D) 가 각 토큰의 조건부 확률의 곱이므로, 로그를 취하면 '토큰당 평균 음의 로그우도'의 지수가 된다. |D| 제곱근을 취하는 이유는 문서 길이에 상관없이 비교할 수 있게 하려는 것이다. 해석도 직관적이다. perplexity 가 10 이면, 모델이 매 토큰마다 평균적으로 10개의 선택지 중 하나를 균등하게 고르는 만큼 헷갈린다는 뜻이다. 학습할 때 줄인 손실이 바로 학습 데이터 위의 이 값(의 로그)이었으니, 테스트 데이터에서 같은 것을 재는 것은 아주 자연스럽다. 9강·11강의 스케일링 법칙 곡선의 세로축이 전부 이 손실이었다는 것을 떠올리자.",
+    "2010년대 내내 언어 모델 논문은 이 숫자를 보고했다. 표준 데이터셋은 월스트리트저널 기사로 만든 Penn Treebank, 위키백과로 만든 WikiText-103, 기계번역용 말뭉치(유럽 의회 기록·UN 문서·뉴스)에서 뽑은 One Billion Word 였다. 모두 '학습 분할로 학습하고 같은 데이터셋의 테스트 분할로 평가'하는 분포 안 평가였다. 그 틀 안에서도 진보는 컸다. 2016년 Jozefowicz 등은 CNN 과 LSTM 을 One Billion Word 에 적용해 perplexity 를 51.3 에서 30.0 으로 낮췄다. 당시에는 아직 n-gram 모델이나 n-gram 과 신경망의 혼합이 논의되던 때라, 순수 신경망이 확실히 낫다는 것을 보인 결정적 결과였다.",
+    "판을 바꾼 것은 2019년 GPT-2 다. OpenAI 는 Reddit 에서 링크된 웹페이지 40GB(WebText)로 학습하고, 남들이 학습·평가하던 표준 데이터셋에는 한 번도 학습하지 않은 채 제로샷으로 평가했다. 분포 밖 평가다. 결과표를 보면 15억 파라미터 모델이 작은 데이터셋에서 특히 강했다. PTB 에서 35.76 으로 당시 최고 46.54 를 이겼고, 긴 문맥이 필요한 LAMBADA 에서는 perplexity 99.8 을 8.63 으로 떨어뜨렸다. 반면 학습 데이터가 넉넉한 1BW 에서는 42.16 으로 전용 모델(21.8)에 크게 졌다. 분포 안 데이터가 충분하면 전용 모델이 낫고, 데이터가 적은 곳에서는 넓게 배운 모델의 전이가 이긴다는 뜻이다. 강사는 GPT-2 가 학습·테스트 겹침을 꼼꼼히 걸렀는지는 모른다는 단서도 단다. 어쨌든 이 논문 이후 '큰 데이터로 학습하고 표준 벤치마크로 평가한다'는 지금의 기본 틀이 자리 잡았다."
+   ],
+   "formulas": [
+    {
+     "expr": "PPL(D) = p(D)^(−1/|D|) = exp( −(1/|D|) Σᵢ log p(xᵢ | x₁…xᵢ₋₁) )",
+     "meaning": "D 는 테스트 토큰열, |D| 는 토큰 수, xᵢ 는 i 번째 토큰, p(xᵢ|앞 토큰들) 은 모델이 그 자리에 실제로 나온 토큰에 준 조건부 확률. 괄호 안은 토큰당 평균 음의 로그우도(교차 엔트로피 손실, nat 단위)이고 exp 를 씌우면 perplexity. 1 이 최소(모든 토큰을 확률 1로 맞힘)이고, 어휘 크기 V 의 균등분포면 V 가 된다."
+    },
+    {
+     "expr": "bits/byte = Σᵢ −log₂ p(xᵢ | x<ᵢ) ÷ (원문 바이트 수)",
+     "meaning": "노트 보충. perplexity 는 '토큰당'이라 토크나이저가 다른 모델끼리 비교할 수 없다(토큰을 크게 자르는 모델은 토큰당 손실이 커 보인다). 전체 비트를 원문 바이트 수로 나누면 토크나이저와 무관한 단위가 된다. GPT-2 표의 enwik8(BPB)·text8(BPC) 열이 이 단위다."
+    }
+   ],
+   "example": {
+    "title": "토큰 4개로 perplexity 와 bits/byte 계산",
+    "body": "모델이 실제 토큰들에 준 확률이 0.5, 0.25, 0.8, 0.1 이라 하자. 음의 로그(자연로그)는 0.693, 1.386, 0.223, 2.303 이고 합은 4.605, 평균은 1.151 이다. perplexity = e^1.151 ≈ 3.162. 곱으로 해도 같다: 0.5×0.25×0.8×0.1 = 0.01, 0.01^(−1/4) = 10^0.5 ≈ 3.162. 즉 이 모델은 매 토큰마다 대략 3.16개 중에 고르는 만큼 헷갈린다. 비트로 바꾸면 4.605/0.693 ≈ 6.644 비트이고, 이 네 토큰이 원문 20바이트를 덮는다면 0.332 bits/byte 다. 앞 2개를 프롬프트로 보고 응답 토큰(0.8, 0.1)만 세면 평균 NLL = (0.223+2.303)/2 = 1.263, perplexity ≈ 3.536 으로 달라진다 — 다음 장의 조건부 perplexity 다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\n# 정답 토큰에 모델이 준 확률 (문서 하나, 토큰 4개)\np = np.array([0.5, 0.25, 0.8, 0.1])\nnll = -np.log(p)                       # 토큰별 음의 로그우도 (nat)\nprint(\"평균 NLL:\", nll.mean().round(4))\nprint(\"perplexity:\", np.exp(nll.mean()).round(4))\nprint(\"곱으로 계산:\", (p.prod() ** (-1 / len(p))).round(4))\n\n# 토크나이저가 다른 모델끼리 비교하려면 바이트당 비트로\nn_bytes = 20                           # 이 4토큰이 덮는 원문 바이트 수\nbits = nll.sum() / np.log(2)\nprint(\"총 비트:\", bits.round(3), \" bits/byte:\", (bits / n_bytes).round(3))\n\n# 조건부 perplexity: 프롬프트 토큰은 빼고 응답 토큰만 센다\nmask = np.array([0, 0, 1, 1])          # 앞 2개는 프롬프트\nprint(\"응답만 PPL:\", np.exp((nll * mask).sum() / mask.sum()).round(4))",
+    "note": "실행 결과: 평균 NLL 1.1513, perplexity 3.1623(두 방법 같음), 총 6.644비트, 0.332 bits/byte, 응답만 PPL 3.5355."
+   },
+   "pitfalls": [
+    "perplexity 는 토크나이저에 의존한다. 어휘가 다른 두 모델의 perplexity 를 바로 비교하면 틀린다 — bits/byte 처럼 원문 단위로 정규화해야 한다(노트 보충).",
+    "GPT-2 표의 숫자 중 ACC 열(LAMBADA ACC, CBT)은 높을수록, PPL·BPB·BPC 열은 낮을수록 좋다. 굵은 글씨만 보고 방향을 헷갈리기 쉽다.",
+    "분포 밖 제로샷 평가는 '학습 데이터에 테스트 문서가 없다'는 가정 위에 서 있다. 웹 규모 학습에서는 이 가정을 확인하기 어렵다(14장)."
+   ],
+   "check": [
+    {
+     "q": "어휘 5만 개짜리 모델이 모든 토큰에 균등한 확률을 준다면 perplexity 는?",
+     "a": "모든 토큰 확률이 1/50000 이므로 PPL = (1/50000)^(−1) = 50000. 아무것도 배우지 않은 모델의 기준선이다."
+    },
+    {
+     "q": "GPT-2 가 PTB 에서는 최고 기록을 넘었는데 1BW 에서는 크게 진 이유를 강의는 어떻게 설명하나?",
+     "a": "PTB 는 작아서 전용 모델이 배울 데이터가 적고 넓은 데이터에서 온 전이가 도움이 되지만, 1BW 는 분포 안 학습 데이터가 충분해 전용 모델이 그 분포를 훨씬 잘 맞춘다."
+    }
+   ]
+  },
+  {
+   "start": 570,
+   "title": "'Perplexity 면 충분하다'는 믿음과 그 한계 — 엔트로피 하한, 조건부 perplexity",
+   "points": [
+    "참 분포를 t, 모델을 p 라 하면 도달 가능한 최선의 perplexity 는 t 의 엔트로피 H(t) 이고, p = t 일 때만 도달한다.",
+    "p = t 이면 p(풀이 | 문제) 로 모든 과제를 풀 수 있으니 perplexity 를 계속 낮추면 'AGI 에 도달한다'는 논리 — 강사는 과학이라기보다 믿음에 가깝다고 하면서도 스케일링을 밀어붙인 원동력이었다고 본다.",
+    "반대로 perplexity 는 '필요 이상'이다. 'Stanford was founded in 1885' 에서 1885 는 지식이지만 문장 첫 단어나 founded 는 별 의미가 없는데도 똑같이 벌점을 매긴다.",
+    "해법: 프롬프트를 조건으로 두고 응답 부분만 재는 조건부 perplexity p(response | prompt)^(−1/|response|)."
+   ],
+   "on_screen": "'Perplexity is all you need (more faith than science)': True distribution is t, model is p / Best possible perplexity is H(t) obtained iff p = t / If p = t, then solve all the tasks: p(solution | problem) / So by pushing down on perplexity, we will eventually reach AGI. 'Perplexity is maybe more than you need': Example: Stanford was founded in 1885 / penalizes prediction on all tokens (e.g., founded) / Solution: measure conditional perplexity p(response | prompt)^(1/|response|).",
+   "explain": [
+    "강사는 반쯤 농담으로 'perplexity 가 전부다'라는 논증을 소개한다. 비유하자면, 세상의 모든 문장이 어떤 확률로 나오는지를 완벽히 아는 책이 있다면 그 책에서 '문제: … 풀이:' 다음에 올 문장을 읽기만 하면 모든 문제가 풀린다. 언어 모델 학습은 그 책을 점점 정확하게 베끼는 과정이고, perplexity 는 베낀 정도를 재는 자다. 그러니 자를 계속 줄이면 결국 모든 걸 풀 수 있다는 논리다.",
+    "수학적으로 이 논증의 첫 단계는 정확하다. 참 분포 t 아래에서 모델 p 의 기대 손실은 교차 엔트로피 H(t, p) 이고, 이것은 H(t) + KL(t‖p) 로 쪼개진다. KL 발산은 항상 0 이상이고 p = t 일 때만 0 이므로, 손실의 하한은 엔트로피 H(t) 이며 그 하한에 도달하는 유일한 모델이 참 분포다. 따라서 perplexity 를 낮추는 것은 곧 KL 을 줄여 참 분포에 다가가는 것이다. 참 분포를 가지면 질문을 조건으로 답을, 문제를 조건으로 풀이를 생성할 수 있다. 강사는 이것을 '과학보다는 믿음'이라 부르면서도, GPT-3 이전 언어 모델이 이렇게 큰 영향을 낼지 불분명하던 시기에 사람들이 계속 모델을 키운 원동력이 바로 이 믿음이었다고 평가한다. 9강의 스케일링 법칙이 손실의 매끄러운 감소를 근거로 투자를 정당화한 것도 같은 흐름이다.",
+    "논증의 약점은 '실제로 도달할 수 없는 극한'을 말한다는 점이다. 현실의 모델은 KL 이 0 이 아니고, 남은 KL 이 어디에 몰려 있느냐가 중요하다. 강사는 반대 방향의 비판도 든다 — perplexity 는 필요한 것보다 많이 잰다. 'Stanford was founded in 1885' 라는 문장에서 1885 를 맞히는 것은 사실상 '스탠퍼드는 언제 세워졌나?'라는 질의응답과 같아 세계 지식을 잰다. 그러나 문장 첫 단어나 'founded' 같은 단어를 맞히는 것은 문체·관용 표현의 문제일 뿐인데, perplexity 는 참 분포에서 벗어난 비트 하나하나에 똑같이 값을 매긴다. 그래서 평균 perplexity 가 조금 좋아졌을 때, 그것이 지식이 늘어서인지 말투를 더 잘 흉내 내서인지 구분할 수 없다.",
+    "해법은 조건부 perplexity 다. 프롬프트(질문)를 조건으로 주고, 그 뒤의 응답 토큰들에 대해서만 perplexity 를 잰다. 그러면 관심 있는 토큰에 측정을 집중할 수 있다. 이것은 사후학습(SFT)에서 프롬프트 토큰의 손실을 가리고 응답 토큰만 학습하는 것과 정확히 같은 구조다(15강에서 다시 나온다). 정리하면 perplexity 는 매끄럽고 싸고 언제나 계산할 수 있다는 장점이 있지만, '어디서 틀렸는가'의 가중치를 우리가 정할 수 없다는 한계가 있고, 조건부 perplexity 는 그 가중치를 거칠게나마 정하는 방법이다."
+   ],
+   "formulas": [
+    {
+     "expr": "H(t, p) = −Σₓ t(x) log p(x) = H(t) + KL(t ‖ p) ≥ H(t)",
+     "meaning": "t(x) 는 참 분포에서 문장 x 의 확률, p(x) 는 모델의 확률. 첫 항 H(t) = −Σ t log t 는 데이터 자체의 불확실성(줄일 수 없는 부분), KL(t‖p) = Σ t log(t/p) 는 모델이 틀린 만큼(줄일 수 있는 부분). KL ≥ 0 이고 p = t 일 때만 0 이므로 최선의 perplexity 는 exp(H(t)) 다. 9강 스케일링 법칙의 '줄일 수 없는 손실' 항이 바로 H(t) 에 해당한다."
+    },
+    {
+     "expr": "PPL(response | prompt) = p(response | prompt)^(−1/|response|)",
+     "meaning": "prompt 는 조건으로 주는 앞부분(질문), response 는 재고 싶은 뒷부분, |response| 는 응답 토큰 수. 프롬프트 토큰의 확률은 계산에 넣지 않는다."
+    }
+   ],
+   "example": {
+    "title": "세 단어짜리 세계에서 엔트로피와 교차 엔트로피",
+    "body": "참 분포 t = (0.5, 0.25, 0.25), 모델 p = (0.4, 0.4, 0.2) 라 하자. 엔트로피 H(t) = 0.5·1 + 0.25·2 + 0.25·2 = 1.5 비트, 최선의 perplexity = 2^1.5 ≈ 2.828. 교차 엔트로피 = 0.5·(−log₂0.4) + 0.25·(−log₂0.4) + 0.25·(−log₂0.2) = 0.75·1.3219 + 0.25·2.3219 ≈ 0.9914 + 0.5805 = 1.5719 비트, 모델 perplexity = 2^1.5719 ≈ 2.973. 차이 0.0719 비트가 KL(t‖p) 이다. p 를 t 쪽으로 절반 옮기면 교차 엔트로피는 1.5194, 90% 옮기면 1.5008, 완전히 옮기면 1.5 로 하한에 닿는다. 하한 아래로는 절대 내려가지 않는다는 것을 숫자로 확인할 수 있다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nt = np.array([0.5, 0.25, 0.25])   # 참 분포\np = np.array([0.4, 0.4, 0.2])     # 모델\nH = -(t * np.log2(t)).sum()       # 엔트로피 = 도달 가능한 최소\nCE = -(t * np.log2(p)).sum()      # 교차 엔트로피 = 우리가 재는 손실\nKL = (t * np.log2(t / p)).sum()\nprint(f\"H={H:.4f}  CE={CE:.4f}  KL={KL:.4f}  H+KL={H+KL:.4f}\")\nprint(f\"최선 PPL={2**H:.4f}  모델 PPL={2**CE:.4f}\")\n# p 를 t 쪽으로 옮길수록 CE 가 H 로 내려간다\nfor a in [0, 0.5, 0.9, 1.0]:\n    q = (1 - a) * p + a * t\n    print(a, round(-(t * np.log2(q)).sum(), 4))",
+    "note": "실행 결과: H=1.5000, CE=1.5719, KL=0.0719, 최선 PPL 2.8284 · 모델 PPL 2.9730, 혼합 비율 0/0.5/0.9/1.0 에서 CE 1.5719/1.5194/1.5008/1.5."
+   },
+   "pitfalls": [
+    "'perplexity 하한은 1'이 아니다. 데이터 자체에 불확실성이 있으므로 하한은 exp(H(t)) 이고, 그 값은 모른다. 그래서 perplexity 가 어디까지 내려갈 수 있는지(헤드룸)를 알기 어렵다.",
+    "perplexity 가 같아도 틀리는 위치가 다를 수 있다. 사실 관계 토큰에서 틀리는 모델과 말투 토큰에서 틀리는 모델은 같은 평균을 가질 수 있다."
+   ],
+   "check": [
+    {
+     "q": "참 분포가 동전 던지기(앞 0.5, 뒤 0.5)일 때 어떤 모델도 넘을 수 없는 perplexity 는?",
+     "a": "H = 1 비트이므로 최선의 perplexity 는 2^1 = 2. 모델이 아무리 좋아도 2 아래로 내려갈 수 없다."
+    },
+    {
+     "q": "질의응답 데이터에서 질문 토큰까지 포함한 perplexity 를 쓰면 무엇이 문제인가?",
+     "a": "질문 문장을 얼마나 잘 흉내 내는지까지 점수에 섞여, 답을 아는 능력과 질문 문체를 맞히는 능력이 구분되지 않는다. 응답만 재는 조건부 perplexity 를 써야 한다."
+    }
+   ]
+  },
+  {
+   "start": 780,
+   "title": "변장한 perplexity — LAMBADA·HellaSwag, 그리고 perplexity 리더보드의 함정",
+   "points": [
+    "정확도로 채점하는 벤치마크 중에도 실은 다음 토큰 예측인 것이 많다. LAMBADA(2016)는 긴 문맥이 있어야만 맞힐 수 있는 마지막 단어를 고른 빈칸 채우기다.",
+    "HellaSwag(2019)는 ActivityNet·WikiHow 에서 가져온 문장 뒤에 올 이어 쓰기 4개 중 하나를 고르는 객관식이지만, 실제로는 이어 쓰기의 우도를 비교한다. 오답은 적대적 필터링으로 만들었다.",
+    "perplexity 리더보드를 열면 제출자가 돌려준 로그확률이 '합이 1인 진짜 분포'인지 믿어야 한다. 항상 logprob 0 을 돌려주는 가짜 모델은 perplexity 1 을 얻는다.",
+    "하류 과제는 블랙박스로 충분하다: 프롬프트를 주고 응답을 받아 정확도를 계산하면 된다. 그래서 대부분의 공개 평가는 생성 결과로 채점한다.",
+    "그래도 perplexity 는 규모에 따라 매끄럽게 변해 스케일링 법칙에 쓰이고, 지금도 모델 개발 안에서는 많이 쓴다."
+   ],
+   "on_screen": "'Some benchmarks are perplexity in disguise' — Cloze tasks: LAMBADA [Paperno+ 2016] 예문 세 개(Context / Target sentence / Target word: miscarriage, Gabriel, chains). 'Multiple choice sentence completion: HellaSwag [Zellers+ 2019]' — 개를 씻기는 여자 문장과 선택지 A~D(정답 C), WikiHow 의 교차로 통행 순서 예문(정답 D), ActivityNet/WikiHow 와 'Adversarial Filtering' 아이콘. 'Warning (if you're running a perplexity leaderboard): People submit LM and you compute log_prob = LM(test_data) / You need to trust that the probabilities are valid (sum to 1) / For downstream tasks, response = LM(prompt) and compute accuracy on response'. Summary: smooth scaling laws / still need benchmarks for non-believers.",
+   "explain": [
+    "겉으로는 시험인데 속은 perplexity 인 벤치마크들이 있다. 빈칸 채우기 시험지를 떠올려 보자. 빈칸 하나를 채우는 것은 정답률로 채점하지만, 모델 입장에서는 '빈칸 자리의 다음 토큰을 가장 높은 확률로 예측했느냐'와 같다. LAMBADA 가 그런 예다. 소설 문단을 주고 마지막 문장의 마지막 단어를 맞히게 하는데, 문제를 아무렇게나 고르지 않았다. 마지막 문장만 보고는 맞힐 수 없고 앞 문맥 전체를 봐야 맞힐 수 있는 단어만 골랐다. 즉 perplexity 를 모든 토큰이 아니라 '장거리 의존이 필요한 위치'에만 집중시킨 것이다. 초기 GPT 논문들이 긴 문맥 모델링을 추론의 열쇠로 보고 이 데이터셋을 즐겨 보고한 이유다. 앞 장의 조건부 perplexity 를 극단까지 밀어 '어느 토큰이 중요한가'를 사람이 정한 사례라 할 수 있다.",
+    "HellaSwag 는 상식 추론 데이터셋으로, 동영상 설명(ActivityNet)과 생활 안내문(WikiHow)에서 가져온 문장 앞부분을 주고 그럴듯한 이어 쓰기 네 개 중 하나를 고르게 한다. 예컨대 '양동이와 개를 데리고 밖에 있는 여자, 개가 뛰어다닌다, 그녀는 ___'. 오답 후보는 언어 모델이 만든 그럴듯한 문장 중 판별 모델이 잘 속는 것만 남기는 적대적 필터링으로 만들었다. 객관식이지만 사전학습 모델을 평가할 때는 보통 각 선택지를 이어 붙인 문장의 로그확률을 계산해 가장 높은 것을 고른다. 이때 선택지 길이가 다르면 로그확률의 '합'은 짧은 선택지를 편애하므로(토큰이 많을수록 음수가 쌓인다) 토큰 수나 글자 수로 나눈 평균을 쓰는 경우가 많다. 이 정규화 방식 하나로 점수가 바뀐다는 것이 노트 보충으로 기억할 점이다.",
+    "강사는 perplexity 에 반한 사람이 perplexity 리더보드를 열려 할 때의 함정을 경고한다. 하류 과제는 '프롬프트를 주면 응답이 온다'는 블랙박스 계약만으로 채점할 수 있다. 그러나 perplexity 는 제출자가 '이 테스트 데이터의 로그확률은 얼마다'라고 숫자를 돌려주는 계약이다. 그 숫자가 진짜 확률분포(모든 가능한 문장에 대해 합이 1)에서 나왔는지 겉으로는 확인할 수 없다. 무엇을 받든 logprob 0(확률 1)을 돌려주는 가짜 모델을 내면 perplexity 1 로 1등이 된다. 정규화되지 않은 점수를 내는 것이다. 코드를 들여다보거나 출력 분포의 합을 검사해야 하고, VAE 처럼 우도를 정확히 계산할 수 없고 상한(bound)만 계산되는 모델이라면 그 수학까지 믿어야 한다.",
+    "그래서 강의의 요약은 균형적이다. perplexity 는 모델 크기와 계산량에 따라 매끄럽게 변해 스케일링 법칙을 맞추기에 좋고, 실제로 모델 개발 내부에서는 지금도 핵심 지표다. 하지만 perplexity 를 믿지 않는 사람들, 즉 대부분의 사용자와 외부 관찰자를 설득하려면 실제 상황을 담은 벤치마크가 필요하다. 이후 장들은 바로 그 벤치마크들 — 시험, 대화, 에이전트, 순수 추론, 안전 — 을 차례로 본다."
+   ],
+   "formulas": [
+    {
+     "expr": "선택 = argmaxⱼ (1/|cⱼ|) Σₖ log p(cⱼ,ₖ | context, cⱼ,<ₖ)",
+     "meaning": "노트 보충. cⱼ 는 j 번째 선택지(이어 쓰기)의 토큰열, |cⱼ| 는 그 토큰 수, cⱼ,ₖ 는 k 번째 토큰, context 는 문제 앞부분. 각 선택지의 로그확률을 길이로 나눈 평균이 가장 큰 것을 답으로 고른다. 나누지 않으면(합) 짧은 선택지가 유리하다."
+    }
+   ],
+   "example": {
+    "title": "합으로 고를까, 평균으로 고를까",
+    "body": "세 선택지의 토큰별 로그확률이 A = (−1.0, −0.5), B = (−0.8), C = (−0.4, −0.3, −0.5, −0.6) 이라 하자. 합은 A −1.5, B −0.8, C −1.8 이므로 합 기준으로는 B 를 고른다. 토큰 평균은 A −0.75, B −0.8, C −0.45 이므로 평균 기준으로는 C 를 고른다. C 는 각 토큰을 아주 자연스럽게 이어 가지만 길어서 합이 손해를 본 것이다. 같은 모델, 같은 문제인데 채점 규칙 하나로 정답·오답이 뒤집힌다. 그래서 '이 모델의 HellaSwag 점수'를 비교할 때는 정규화 방식(합·토큰 평균·글자 평균)과 몇 샷 프롬프트였는지를 같이 봐야 한다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\n# 선택지마다 '이어 쓰기' 토큰들의 로그확률\nchoices = {\n    \"A\": np.array([-1.0, -0.5]),\n    \"B\": np.array([-0.8]),\n    \"C\": np.array([-0.4, -0.3, -0.5, -0.6]),\n}\nfor name, lp in choices.items():\n    print(name, \"합\", lp.sum().round(2), \"평균\", lp.mean().round(3))\npick_sum = max(choices, key=lambda k: choices[k].sum())\npick_mean = max(choices, key=lambda k: choices[k].mean())\nprint(\"합으로 고르면\", pick_sum, \"/ 토큰 평균으로 고르면\", pick_mean)\n\n# 가짜 '언어 모델': 무엇을 넣든 logprob 0 을 돌려준다 → PPL 1\nfake = lambda tokens: np.zeros(len(tokens))\nprint(\"가짜 모델 PPL:\", np.exp(-fake(range(100)).mean()))",
+    "note": "실행 결과: 합으로 고르면 B, 토큰 평균으로 고르면 C. 가짜 모델 PPL 1.0."
+   },
+   "pitfalls": [
+    "API 로만 접근할 수 있는 모델은 로그확률을 주지 않거나 상위 몇 개만 준다. 이런 모델은 우도 방식으로 HellaSwag 를 잴 수 없고 생성해서 답 글자를 뽑아야 하는데, 두 방식의 점수는 직접 비교할 수 없다(노트 보충).",
+    "LAMBADA 정확도는 '마지막 단어 전체'를 맞혀야 한다. 단어가 여러 토큰이면 첫 토큰만 맞힌 것은 정답이 아니다."
+   ],
+   "check": [
+    {
+     "q": "perplexity 리더보드에서 제출자가 돌려준 로그확률이 정당한지 확인하는 한 가지 방법은?",
+     "a": "작은 어휘·짧은 길이에서 가능한 모든 다음 토큰의 확률을 질의해 합이 1인지 검사하거나, 제출자의 모델 코드를 받아 직접 돌린다. 블랙박스 숫자만으로는 확인할 수 없다는 것이 요점이다."
+    },
+    {
+     "q": "LAMBADA 가 일반 perplexity 보다 '날카로운' 측정인 이유는?",
+     "a": "앞 문맥 전체가 있어야 맞힐 수 있는 위치만 골라 측정을 장거리 의존 능력에 집중시켰기 때문이다. 쉬운 토큰들이 평균을 희석하지 않는다."
+    }
+   ]
+  },
+  {
+   "start": 1080,
+   "title": "시험형 벤치마크 1 — MMLU 와 MMLU-Pro, 그리고 정확도의 신뢰구간",
+   "points": [
+    "시험의 장점: 과목과 난이도를 통제할 수 있고, 정답이 분명하게 설계돼 채점이 쉽다. 그래서 LLM 벤치마크 문화의 큰 축이 시험에서 왔다.",
+    "MMLU(Hendrycks+ 2020): 57개 과목(수학·미국사·법·도덕 …) 객관식 4지선다, 대학(원)생이 공개 자료에서 모았다. 이름과 달리 언어 이해보다 지식과 추론을 잰다. GPT-3 퓨샷으로 평가했고 지금은 90점대로 포화.",
+    "MMLU-Pro(Wang+ 2024): 잡음·사소한 문항 제거, 선택지 4개 → 10개, 사고 사슬(CoT)로 평가. 모델 정확도가 16~33%p 떨어져 다시 변별력이 생겼지만 이것도 90점 가까이 올라왔다.",
+    "노트 보충: 정확도도 표본 추정치다. 198문항에서 65% 의 95% 구간은 약 ±6.6%p 이고, 1만 2천 문항에서 88% 는 ±0.6%p 다."
+   ],
+   "on_screen": "def exam_benchmarks(): Exams are a useful way to test language models (as with humans) / Have control over the subject and difficulty / Design to have unambiguous correct answer, easy to grade. MMLU [Hendrycks+ 2020]: 57 subjects, 'collected by graduate and undergraduate students from freely available sources online', 'Despite the name, MMLU is really about testing knowledge, not language understanding', 'Evaluated on GPT-3 using few-shot prompting'. 퓨샷 프롬프트 예시('The following are multiple choice questions about high school mathematics.' + 문항·Answer) 와 'GPT-3 Few Shot Test Performance' 막대(Small/Medium/Large/X-Large × Commonsense·Linguistics·Knowledge). llm-stats.com MMLU 그래프(2023~2026, GPT-5 0.925). MMLU-Pro [Wang+ 2024]: Removed noisy/trivial questions / Expanded 4 choices to 10 / Evaluated using chain of thought / 'Accuracy of models drop by 16% to 33% (not as saturated)'.",
+   "explain": [
+    "시험은 사람을 평가할 때 오래 써 온 도구라 언어 모델에도 그대로 옮기기 쉽다. 출제자가 과목과 난이도를 정할 수 있고, 정답이 하나로 떨어지게 만들 수 있어 채점이 기계적이다. 강사는 수많은 시험형 벤치마크 중 LLM 발전에 영향이 컸던 것만 골라 계보를 따라간다. 그 계보의 공통 패턴은 '벤치마크가 나온다 → 모델이 못 푼다 → 몇 년 만에 포화된다 → 더 어려운 벤치마크를 만든다'의 반복이다.",
+    "MMLU 는 GPT-3 가 나온 2020년 무렵 Hendrycks 등이 만들었다. 당시만 해도 많은 사람이 언어 모델을 '유창한 영어를 생성하는 것' 정도로 봤는데, 이들은 앞서 나가 언어 모델을 범용 문제 풀이기로 보고 57개 과목의 객관식 문제를 대학생·대학원생이 인터넷 공개 자료에서 모아 정리했다. 이름에 '언어 이해'가 들어 있지만 실제로는 지식과 추론을 잰다. 평가는 퓨샷 프롬프트로 했다. '다음은 고등학교 수학에 관한 객관식 문제다'라는 머리말 뒤에 문제-답 예시 몇 개를 붙이고 마지막 문제의 답을 예측하게 한다. 지금 보면 평범하지만, 당시에는 이렇게 복잡한 프롬프트를 주고 언어 모델이 합리적인 답을 내리라 기대하는 것 자체가 과감했다. 결과도 그랬다. 작은 모델은 우연(25%)을 겨우 넘었고 가장 큰 GPT-3 만 확실히 우연을 넘었다. 그 뒤 GPT-3.5, GPT-4 를 거치며 점수가 오르고 지금은 90점대(화면의 GPT-5 는 0.925)로 포화됐다.",
+    "2024년 무렵 MMLU 가 너무 쉬워지자 MMLU-Pro 가 나왔다. 세 가지를 바꿨다. 첫째, 정답이 이상하거나 너무 쉬운 문항을 걸러 냈다. 둘째, 선택지를 4개에서 10개로 늘려 찍어서 맞힐 확률을 25% 에서 10% 로 낮췄다. 셋째, GPT-3 때는 없던 사고 사슬(chain of thought) 풀이를 전제로 평가했다 — 몇 단계 추론이 필요한 문제는 생각할 기회를 줘야 실력이 드러나기 때문이다. 화면 문구로는 모델 정확도가 16~33%p 떨어져 '아직 포화되지 않은' 벤치마크가 됐다. 강의에서 말로는 '정확도가 33 으로 돌아갔다'처럼 들리지만, 슬라이드 기준으로는 하락 폭이다. 그러나 이것도 몇 년 만에 88~90 근처까지 올라왔다.",
+    "노트 보충으로 꼭 짚어야 할 것은, 벤치마크 정확도가 '참 정확도'의 표본 추정치라는 점이다. 문항 n 개 각각을 맞히면 1, 틀리면 0 인 베르누이 시행으로 보면 정확도의 표준오차는 √(p(1−p)/n) 이다. 문항이 적은 벤치마크에서 1~2%p 차이로 순위를 매기는 것은 동전 몇 번 던져 보고 동전이 휘었다고 말하는 것과 비슷하다. 강의 후반(14장)에서 강사가 통계학처럼 신뢰구간을 보고하는 규범을 언급하는데, 그 신뢰구간을 실제로 계산하는 법이 여기 있다. 두 모델을 같은 문항으로 비교할 때는 각자의 구간을 따로 보기보다 문항 단위로 짝지어 차이의 구간을 보는 것이 훨씬 정확하다(짝지은 부트스트랩)."
+   ],
+   "formulas": [
+    {
+     "expr": "SE(p̂) = √( p̂(1 − p̂) / n ),   95% 구간 ≈ p̂ ± 1.96·SE",
+     "meaning": "p̂ 은 관측 정확도, n 은 문항 수, 1.96 은 표준정규분포의 양쪽 2.5% 지점. 문항이 서로 독립이라는 가정 아래의 정규근사 구간이다. p̂ 이 0 이나 1 에 가깝거나 n 이 작으면 구간이 [0,1] 밖으로 나가므로 Wilson 구간을 쓴다(노트 보충)."
+    },
+    {
+     "expr": "Wilson: [ p̂ + z²/2n ± z√( p̂(1−p̂)/n + z²/4n² ) ] / (1 + z²/n)",
+     "meaning": "z = 1.96. 분자 첫 항은 p̂ 을 0.5 쪽으로 약간 당긴 중심, ± 뒤는 반폭. 항상 [0, 1] 안에 있고 작은 n 에서도 잘 맞는다."
+    }
+   ],
+   "example": {
+    "title": "198문항 65% 와 1만 2천 문항 88% 의 신뢰구간",
+    "body": "198문항(GPQA Diamond 크기)에서 65% 를 맞혔다면 SE = √(0.65×0.35/198) = √(0.2275/198) = √0.001149 ≈ 0.0339, 95% 구간은 0.65 ± 1.96×0.0339 = 0.65 ± 0.066 → [58.4%, 71.6%]. 같은 벤치마크에서 66% 와 63% 인 두 모델을 '앞섰다'고 말할 근거가 약하다. 1만 2천 문항(MMLU-Pro 크기)에서 88% 면 SE = √(0.88×0.12/12032) ≈ 0.00296, 구간은 ±0.58%p 로 좁다. 100문항에서 98% 를 맞혔다면 정규근사 구간은 [95.3%, 100.7%] 로 1을 넘는 엉터리가 되고, Wilson 구간은 [93.0%, 99.5%] 다. 짝지은 비교: 198문항 중 두 모델이 15% 문항에서만 답이 다르도록 흉내 낸 실험에서 차이 −0.5%p 의 부트스트랩 구간은 [−5.6%p, +4.6%p] 로 0 을 포함한다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\ndef normal_ci(acc, n, z=1.96):\n    se = np.sqrt(acc * (1 - acc) / n)\n    return acc - z * se, acc + z * se\ndef wilson_ci(acc, n, z=1.96):\n    c = (acc + z**2 / (2 * n)) / (1 + z**2 / n)\n    h = z * np.sqrt(acc * (1 - acc) / n + z**2 / (4 * n**2)) / (1 + z**2 / n)\n    return c - h, c + h\nfor acc, n in [(0.65, 198), (0.88, 12032), (0.98, 100)]:\n    print(n, np.round(normal_ci(acc, n), 4), np.round(wilson_ci(acc, n), 4))\n\n# 같은 198문항을 푼 두 모델 — 짝지은 부트스트랩으로 차이의 구간\nrng = np.random.default_rng(0)\na = rng.random(198) < 0.70           # 모델 A 의 문항별 정오\nb = a.copy(); flip = rng.random(198) < 0.15\nb[flip] = ~b[flip]                   # B 는 A 와 15% 문항에서만 다르다\ndiff = []\nfor _ in range(10000):\n    idx = rng.integers(0, 198, 198)  # 문항을 다시 뽑는다(두 모델 같이)\n    diff.append(a[idx].mean() - b[idx].mean())\nprint(\"차이\", round(a.mean() - b.mean(), 4), np.round(np.percentile(diff, [2.5, 97.5]), 4))",
+    "note": "실행 결과: n=198 [0.5836, 0.7164] / Wilson [0.5813, 0.7130]; n=12032 [0.8742, 0.8858]; n=100·98% 정규 [0.9526, 1.0074] · Wilson [0.9300, 0.9945]; 짝지은 차이 −0.0051, 구간 [−0.0556, 0.0455]."
+   },
+   "pitfalls": [
+    "슬라이드의 MMLU-Pro 문구는 '정확도가 16~33% 떨어졌다'(하락 폭)이다. 강의 말로는 정확도가 33 으로 돌아간 것처럼 들리니 슬라이드 기준으로 읽는다.",
+    "문항이 독립이라는 가정은 같은 지문을 공유하는 문항 묶음(예: 한 지문에 여러 질문)에서는 깨진다. 그럴 때는 묶음 단위로 재표집해야 구간이 너무 좁아지지 않는다(노트 보충).",
+    "포화된 벤치마크도 쓸모가 있다. 강사는 큰 모델에는 포화됐어도 작은 모델 개발이나 스케일링 법칙 맞추기에는 여전히 유용하다고 말한다."
+   ],
+   "check": [
+    {
+     "q": "400문항 벤치마크에서 정확도 80% 의 95% 정규근사 구간을 손으로 구하라.",
+     "a": "SE = √(0.8×0.2/400) = √0.0004 = 0.02, 반폭 1.96×0.02 ≈ 0.039. 구간 ≈ [76.1%, 83.9%]."
+    },
+    {
+     "q": "MMLU-Pro 가 선택지를 10개로 늘린 효과를 '우연 수준'으로 설명하라.",
+     "a": "찍어서 맞힐 기대 정확도가 1/4 = 25% 에서 1/10 = 10% 로 내려가 점수의 바닥이 낮아지고, 운으로 얻는 점수가 줄어 실력 차이가 더 잘 드러난다."
+    }
+   ]
+  },
+  {
+   "start": 1385,
+   "title": "시험형 벤치마크 2 — GPQA·Humanity's Last Exam, 포화와 오염, 답 추출",
+   "points": [
+    "GPQA(Rein+ 2023): 구글 검색으로도 못 푸는(Google-proof) 대학원 수준 문제. Upwork 의 박사 61명이 출제 → 전문가 검증 → 수정 → 두 번째 전문가 → 비전문가 검증. 전문가 65%, 구글을 30분 쓴 비전문가 34%, 당시 GPT-4 39%. 지금은 94% 안팎.",
+    "Diamond 부분집합: 전문가 2명이 모두 정답에 동의하고 비전문가 3명 중 1명 이하만 맞힌 문항.",
+    "Humanity's Last Exam(Phan+ 2025): 다중모달 2,500문항(객관식+단답), 상금 50만 달러와 공저자 자격으로 크라우드소싱, 최전선 모델로 거르고 여러 단계 검토, 비공개 문항 따로 보관. 처음엔 한 자릿수였고 2026년 최고가 64.7%.",
+    "객관식은 얼마든지 어렵게 만들 수 있다 — 문제는 난이도가 아니라 '물을 수 있는 질문의 종류'를 제한한다는 것과, 실제 사용(열린 질문)을 담지 못한다는 것."
+   ],
+   "on_screen": "GPQA [Rein+ 2023] 출제 흐름 그림: Question writing → Expert validation #1(정답 확인·피드백) → Question revision → Expert validation #2 → Non-expert validation(다른 분야 전문가 3명, 구글 허용, 평균 37분) → 'Include this Q in the DIAMOND set because (1) 2 out of 2 expert validators agree (2) ≤ 1 out of 3 non-expert validators answers correctly'. PhD experts achieve 65% accuracy / Non-experts achieve 34% over 30 minutes with access to Google / GPT-4 achieves 39%. HLE [Phan+ 2025]: 2500 questions, multimodal, multiple-choice + short-answer, 라틴어 비문·벌새 해부학 예시, 'Awarded $500K prize pool + co-authorship', 'Filtered by frontier LLMs, multiple stages of review', 깔때기 70,000 Attempts → 13,000 Submissions → 6,000 Candidates → 2,500 HLE Public Set + HLE Private Set, 'Accuracy of LLMs Across Benchmarks' 막대(GPT-4o·o1·Sonnet-3.5·Gemini 1.5 가 HLE 에서 한 자릿수). Summary: Trend towards harder questions / Multiple-choice format can be as difficult as one wants / Does not capture real usage.",
+   "explain": [
+    "MMLU 계열이 포화되자 출제자들은 '인터넷에서 찾을 수 있으면 너무 쉽다'는 기준을 세웠다. 언어 모델은 인터넷으로 학습하니, 구글 검색으로 풀리는 문제는 기억력 시험에 가깝다. GPQA(Google-Proof Q&A)는 그래서 박사급 전문가가 자기 분야에서 검색으로는 답이 안 나오는 문제를 만들게 했다. 이런 문제를 얻으려면 사람 손이 많이 든다. 프리랜서 플랫폼 Upwork 에서 박사 61명을 모아, 한 명이 문제를 쓰면 같은 분야 전문가가 풀어 보고 피드백을 주고, 출제자가 고치고, 두 번째 전문가가 다시 풀고, 마지막으로 다른 분야 전문가 세 명이 구글을 써 가며(평균 30분 넘게) 풀어 본다. 이 중 '전문가 둘이 모두 정답에 동의하고, 비전문가 셋 중 많아야 한 명만 맞힌' 문항을 Diamond 집합(198문항)으로 묶어 리더보드에서 많이 쓴다.",
+    "숫자가 이 벤치마크의 성격을 말해 준다. 박사 전문가는 65%, 구글을 30분 쓴 비전문가는 34%(4지선다 우연 25% 를 겨우 넘음), 당시 GPT-4 는 39% 였다. 시험으로 치면 전문가도 낙제점에 가깝다. 그런데 지금은 94% 근처다. 강사는 벤치마크의 유통기한이 짧다고 말한다. 여기서 수강생이 날카로운 질문을 했다 — 이 문제들이 학습 데이터에 들어가 있지 않다는 걸 어떻게 아나? 강사의 답은 '모른다'이다. 학습 데이터가 무엇인지 공개되지 않으니 이 숫자들은 믿음 위에 있다. 게다가 오염은 테스트 셋을 그대로 학습하는 식으로 일어나지 않는 경우가 많다. 문제가 파생된 원래 자료(교과서, 논문, 포럼 글)가 학습 데이터에 있을 수 있어 훨씬 미묘하다. 이 주제는 14장에서 본격적으로 다룬다.",
+    "Humanity's Last Exam(HLE)은 이 경쟁의 끝판을 자처한다. 수학·인문·자연과학의 다중모달 문항(그림이 붙은 문제 포함)을 객관식과 단답형으로 모았다. 상금 50만 달러와 논문 공저자 자격을 내걸고 7만 건의 시도 → 최전선 모델이 못 푼 1만 3천 건 → 전문가 검토 6천 건 → 공개 2,500문항으로 줄였고, 학습 데이터로 새는 것을 막으려 비공개 문항을 따로 남겼다. 다만 평가하려면 문제를 모델 API 로 보내야 하므로, 그 프롬프트가 회사 학습 데이터로 들어가지 않기를 '바랄 수밖에' 없다. 강사는 모든 데이터셋 논문이 '기존 벤치마크에서는 모델들이 다 잘한다, 내 데이터셋에서는 다 못한다'는 같은 그림을 싣는다고 꼬집는다. HLE 도 처음엔 한 자릿수였고, 2026년 기준 최고 점수는 64.7% 로 아직 여유가 있다.",
+    "이 절의 정리는 세 줄이다. 모델이 강해질수록 문제는 더 어려워졌다. 객관식이라고 쉬운 것이 아니다 — 객관식도 얼마든지 어렵게 만들 수 있고, 진짜 한계는 객관식이 물을 수 있는 질문의 종류를 제한한다는 데 있다. 그리고 가장 큰 문제는 시험이 실제 사용을 담지 못한다는 것이다. HLE 를 평가할 때 말고 HLE 같은 질문을 모델에 묻는 사람은 없다. 사람들은 정답이 없거나 잘 정의되지도 않은 열린 질문을 한다. 수강생의 또 다른 질문 — 모델 출력과 정답을 어떻게 비교하나 — 에 강사는 객관식이면 고른 글자가 정답 글자와 같은지만 본다고 답한다. 단 요즘은 모델이 사고 사슬을 길게 쓴 뒤 답을 내므로 '답을 어떻게 뽑아내느냐'가 점수에 영향을 주며 평가가 그 규칙에 꽤 민감하다고 덧붙인다."
+   ],
+   "formulas": [
+    {
+     "expr": "우연 보정 점수 = (acc − 1/K) / (1 − 1/K)",
+     "meaning": "노트 보충. acc 는 관측 정확도, K 는 선택지 수, 1/K 는 찍어서 맞힐 기대 정확도. 0 이면 우연 수준, 1 이면 만점. 선택지 수가 다른 벤치마크(MMLU 4개, MMLU-Pro 10개, GPQA 4개)의 점수를 같은 눈금에 놓을 때 쓴다."
+    }
+   ],
+   "example": {
+    "title": "우연 보정과 답 추출 규칙",
+    "body": "MMLU(4지선다)에서 60% 는 (0.60 − 0.25)/(0.75) ≈ 0.467, MMLU-Pro(10지선다)에서 33% 는 (0.33 − 0.10)/0.90 ≈ 0.256 이다. GPQA 비전문가의 34% 를 보정하면 (0.34 − 0.25)/0.75 = 0.12 로 우연보다 아주 조금 나은 수준임이 분명해진다. 답 추출: 출력 네 개 — 'the answer is (C)', 'Answer: D', '… Final answer: B', 'The correct option is c' — 에 '정확히 the answer is (X) 꼴'만 인정하는 엄격한 규칙을 쓰면 첫 번째 하나만 뽑혀 3개가 0점이 된다. '마지막에 나온 알파벳 한 글자'를 뽑는 느슨한 규칙은 C, D, B, C 를 모두 뽑는다. 같은 모델의 점수가 25% 에서 100% 까지 움직일 수 있다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import re\ndef chance_adjusted(acc, n_choices):\n    chance = 1 / n_choices\n    return (acc - chance) / (1 - chance)\nprint(round(chance_adjusted(0.60, 4), 3), round(chance_adjusted(0.33, 10), 3))\n\n# 생각을 길게 쓴 출력에서 답 글자 뽑기 — 규칙 하나로 점수가 달라진다\nouts = [\n    \"Let us think. B looks tempting, but the answer is (C).\",\n    \"Answer: D\",\n    \"I think it is A or B. Final answer: B\",\n    \"The correct option is c\",\n]\nstrict = re.compile(r\"answer is \\(?([A-J])\\)?\")\nloose = re.compile(r\"\\b([A-J])\\b(?!.*\\b[A-J]\\b)\", re.I | re.S)  # 마지막 글자\nfor o in outs:\n    s = strict.search(o); l = loose.search(o)\n    print((s.group(1) if s else None), (l.group(1).upper() if l else None))",
+    "note": "실행 결과: 우연 보정 0.467, 0.256. 엄격 규칙 C/None/None/None, 느슨한 규칙 C/D/B/C. 느슨한 규칙은 대소문자를 무시하므로 'I' 같은 한 글자 단어도 후보가 된다 — 실제 평가 코드는 이런 예외를 따로 막는다."
+   },
+   "pitfalls": [
+    "강의 말로는 Diamond 조건이 '비전문가 한 명이 맞힌 문항'처럼 들리지만 슬라이드 기준은 '비전문가 3명 중 1명 이하가 맞힌 문항'이다(맞힌 사람이 적어야 Google-proof).",
+    "비공개 테스트 셋도 API 로 평가하는 순간 문항이 모델 회사 서버를 지나간다. '비공개'는 공개 웹에 없다는 뜻이지 아무도 못 봤다는 뜻이 아니다.",
+    "리더보드 숫자를 볼 때는 답 추출 규칙, 사고 사슬 허용 여부, 몇 번 시도했는지를 함께 확인해야 한다. 같은 벤치마크라도 평가 설정이 다르면 다른 시험이다."
+   ],
+   "check": [
+    {
+     "q": "GPQA 가 '구글 검색 가능'을 제외 기준으로 삼은 이유는?",
+     "a": "언어 모델은 인터넷으로 학습하므로 검색으로 풀리는 문제는 기억을 재는 것에 가깝다. 검색으로 안 풀리는 문제만 남겨야 지식의 단순 회상이 아니라 전문 추론을 잴 수 있다."
+    },
+    {
+     "q": "'객관식은 너무 쉽다'는 비판에 대한 강사의 반론은?",
+     "a": "객관식도 얼마든지 어렵게 만들 수 있다(GPQA·HLE). 객관식의 진짜 약점은 난이도가 아니라 물을 수 있는 질문의 종류를 정답 하나로 떨어지는 것으로 제한한다는 점이다."
+    }
+   ]
+  },
+  {
+   "start": 1890,
+   "title": "열린 질문의 평가 1 — Chatbot Arena 와 Elo·Bradley–Terry",
+   "points": [
+    "'비트 샐러드에 어울리는 허브는?' 같은 열린 질문에는 정답이 없어 정확히 일치를 셀 수 없다.",
+    "Chatbot Arena(Chiang+ 2024, 지금은 Arena): 누구나 질문을 넣으면 익명의 두 모델이 답하고, 질문한 사람이 A·B·둘 다 좋음·둘 다 나쁨 중 하나를 고른다.",
+    "쌍대 비교로 Elo 점수를 맞춘다: P(A 가 B 를 이김) = 1/(1+10^((R_B−R_A)/400)), 관측된 승패의 우도를 최대화.",
+    "장점: 실제 프롬프트, 모든 모델이 같은 질문을 받을 필요 없음(비교 그래프가 연결만 되면 됨), 새 모델·새 프롬프트가 들어와도 갱신 가능.",
+    "약점: 누가 오는지 모름, 스팸·조작, 이진 선호가 문체와 정확성을 뒤섞음, 질문자가 정답을 모름, 아첨(sycophancy)에 취약."
+   ],
+   "on_screen": "def chat_benchmarks(): So far, we've been evaluating on well-defined multiple-choice tasks / Most people don't ask multiple-choice exam questions to their AI assistant. Example prompt: 비트·염소 치즈 샐러드에 어울리는 허브 질문과 긴 응답. 'Challenge: how to evaluate an open-ended response?'. Chatbot Arena [Chiang+ 2024] 데이터 수집: Random person from the Internet types in prompt / They get response from two random (anonymized) models / They rate which one is better — 화면 캡처(Assistant A / Assistant B, 'A is better · Both are good · Both are bad · B is better'). 'Compute ELO rankings based on pairwise comparisons: Define model: p(A wins against B) = 1 / (1 + 10^((ELO_B − ELO_A)/400)) / Fit this model to maximize probability of pairwise comparisons'. Arena(Text) 순위표: claude-opus-4-7-thinking, claude-opus-4-6-thinking, claude-opus-4-6, gemini-3.1-pro-preview, claude-opus-4-7, muse-spark, gpt-5.5-high, gemini-3-pro, grok-4.20-beta1, grok-4.20-beta-0309-reasoning (점수 약 1503 → 1477). Properties 여섯 줄.",
+   "explain": [
+    "열린 질문을 평가하는 일은 요리 대회 심사와 같다. '정답 요리'가 없으니 점수표를 대조할 수 없다. 대신 두 요리를 나란히 놓고 '어느 쪽이 더 맛있나'를 묻는 것은 훨씬 쉽다. 절대 점수(이 요리는 10점 만점에 7점)는 심사위원마다 기준이 달라 흔들리지만, 둘 중 고르기는 사람들 사이에서도 비교적 일관된다. Chatbot Arena 는 이 생각을 대규모로 실현했다. 인터넷의 누구나 사이트에 와서 질문을 넣으면 이름을 가린 두 모델의 답이 나란히 나오고, 질문한 사람이 어느 쪽이 나은지 고른다. 이 쌍대 비교 기록이 수백만 건 쌓이면 모델마다 하나의 점수를 매길 수 있다.",
+    "점수 모델은 체스에서 쓰는 Elo 체계다. 각 모델에 실수 하나 R 을 두고, A 가 B 를 이길 확률을 1/(1 + 10^((R_B − R_A)/400)) 로 정의한다. 점수 차가 0 이면 50%, A 가 400점 높으면 10:1, 즉 약 91% 로 이긴다. 이 확률 모델은 통계학의 Bradley–Terry 모형과 같은 것인데(로짓 눈금으로 θ = R·ln10/400), 관측된 모든 승패의 로그우도를 최대로 만드는 R 들을 구하면 된다. 체스 Elo 는 경기 하나마다 점수를 조금씩 옮기는 온라인 갱신(R ← R + K·(실제 − 기대))을 쓰지만, Arena 는 경기 순서에 따라 결과가 흔들리는 문제 때문에 전체 기록에 Bradley–Terry 를 한꺼번에 맞추고 부트스트랩으로 신뢰구간을 낸다(노트 보충: Arena 논문의 방식). 무승부는 반승으로 치거나 따로 모형화한다.",
+    "강사는 이 설계의 장점을 셋 든다. 첫째, 프롬프트가 현실에서 온다. 사람들은 공짜로 좋은 모델을 쓰려고 오니 대체로 실제로 하고 싶은 일을 묻는다. 둘째, Elo 의 아름다움 — 체스에서 모든 선수가 서로 붙을 필요가 없듯 모든 모델이 같은 프롬프트를 받을 필요가 없다. 비교 그래프가 연결돼 있기만 하면 순위를 낼 수 있다. 사람이 평가자라 한 사람이 모든 모델을 비교할 수 없으니 이 성질이 결정적이다. 셋째, 새 모델과 새 프롬프트가 계속 들어와도 자연스럽게 갱신된다.",
+    "반대로 약점도 분명하다. 인터넷의 아무나, 그중에서도 이 사이트에 오는 사람들은 어떤 분포인가? 논문에 인구통계가 있지만 그것이 전부를 말해 주지는 않는다. 스팸, 그리고 자기 모델을 띄우려는 조작도 있을 수 있다 — 강사는 '서부 개척 시대'라고 표현한다. 이진 선호는 문체와 정확성을 뒤섞는다. 체스에서는 이겼냐 졌냐만 중요하지만 '어느 답이 더 낫냐'는 훨씬 덜 분명하다. 질문한 사람이 판정한다는 것은 의도를 아는 사람이 판정한다는 장점이지만, 사람은 답을 모르기 때문에 질문하는 것이니 두 답 중 어느 것이 맞는지 판단하기 어렵다. 그리고 듣기 좋은 답이 정확하고 솔직한 답보다 높게 평가되는 아첨 문제가 있다. 노트 보충으로, 이후 Arena 는 답 길이·마크다운 양 같은 문체 변수를 회귀에 넣어 '문체 통제' 순위를 따로 내기 시작했다."
+   ],
+   "formulas": [
+    {
+     "expr": "P(A ≻ B) = 1 / (1 + 10^((R_B − R_A)/400)) = σ(θ_A − θ_B),  θ = R · ln10 / 400",
+     "meaning": "R_A, R_B 는 두 모델의 Elo 점수, 400 은 '400점 차 = 10배 승산'이 되도록 고른 눈금, σ 는 로지스틱 함수. θ 로 바꾸면 Bradley–Terry 모형이다. 점수 전체에 같은 상수를 더해도 확률이 같으므로 기준점(예: 평균 1500 또는 특정 모델 고정)을 따로 정해야 한다."
+    },
+    {
+     "expr": "R_A ← R_A + K · (S_A − E_A)",
+     "meaning": "체스식 온라인 갱신. S_A 는 실제 결과(이김 1, 비김 0.5, 짐 0), E_A 는 위 식의 기대 승률, K 는 한 번에 움직이는 최대 폭(체스는 보통 16~32). 기대보다 잘하면 오르고 못하면 내린다."
+    },
+    {
+     "expr": "max_θ Σ_(i,j,y) [ y·log σ(θᵢ − θⱼ) + (1 − y)·log σ(θⱼ − θᵢ) ]",
+     "meaning": "모든 비교 기록 (i, j, y) — y 는 i 가 이겼으면 1 — 에 대한 Bradley–Terry 로그우도. 로지스틱 회귀와 같은 오목 함수라 경사 상승으로 쉽게 맞춘다."
+    }
+   ],
+   "example": {
+    "title": "Elo 한 경기 갱신을 손으로",
+    "body": "모델 A 1500점, B 1400점, K = 32. A 의 기대 승률 E_A = 1/(1 + 10^(−100/400)) = 1/(1 + 10^(−0.25)) = 1/(1 + 0.5623) ≈ 0.640. B 의 기대 승률은 0.360. 그런데 B 가 이겼다면 A 는 1500 + 32×(0 − 0.640) = 1479.5, B 는 1400 + 32×(1 − 0.360) = 1420.5 가 된다. 약자가 이기면 많이 오르고(+20.5), 강자가 이겼다면 1500 + 32×0.360 = 1511.5 로 조금만 올랐을 것이다. 한꺼번에 맞추기: 참 점수 1600·1500·1350 인 세 모델로 약 2천 번의 비교를 흉내 내 Bradley–Terry 를 맞추면 1606·1517·1377, 차이 89·140 이 나온다(참 차이 100·150). 비교가 수천 번이어도 점수에 ±10점 정도의 잡음이 남는다는 뜻이다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\ndef expected(ra, rb):                       # A 가 이길 확률\n    return 1 / (1 + 10 ** ((rb - ra) / 400))\nra, rb, K = 1500, 1400, 32\nea = expected(ra, rb)\nprint(\"E_A =\", round(ea, 4))\nprint(\"A 가 지면:\", round(ra + K * (0 - ea), 1), round(rb + K * (1 - (1 - ea)), 1))\n\n# Bradley–Terry 를 한꺼번에 맞추기 (Arena 식) — 진짜 실력 3개로 대결 생성\nrng = np.random.default_rng(1)\ntrue = np.array([1600, 1500, 1350]); M = len(true)\npairs = rng.integers(0, M, (3000, 2)); pairs = pairs[pairs[:, 0] != pairs[:, 1]]\nwin = rng.random(len(pairs)) < expected(true[pairs[:, 0]], true[pairs[:, 1]])\ns = np.log(10) / 400                         # Elo 눈금 ↔ 로짓 눈금\ntheta = np.zeros(M)\nfor _ in range(2000):                        # 로그우도 경사 상승\n    p = 1 / (1 + np.exp(-(theta[pairs[:, 0]] - theta[pairs[:, 1]])))\n    g = np.zeros(M)\n    np.add.at(g, pairs[:, 0], win - p); np.add.at(g, pairs[:, 1], p - win)\n    theta += 0.5 * g / len(pairs)\n    theta -= theta.mean()                    # 기준점은 정해지지 않으므로 고정\nelo = 1500 + theta / s\nprint(\"추정 Elo:\", elo.round(0), \" 차이:\", np.diff(elo).round(0), \"참 차이:\", np.diff(true))",
+    "note": "실행 결과: E_A = 0.6401, A 가 지면 1479.5 / 1420.5. Bradley–Terry 추정 Elo [1606, 1517, 1377], 차이 [−89, −140] (참 [−100, −150])."
+   },
+   "diagram": {
+    "title": "Arena 한 번의 투표가 순위가 되기까지",
+    "code": "flowchart LR\n  U[사용자 질문] --> R{무작위로 두 모델}\n  R --> A[익명 답 A]\n  R --> B[익명 답 B]\n  A --> V[사용자 투표<br/>A·B·둘 다 좋음·둘 다 나쁨]\n  B --> V\n  V --> L[(비교 기록 i, j, y)]\n  L --> F[Bradley–Terry 최대우도]\n  F --> S[점수 + 부트스트랩 구간]\n  S --> T[순위표]"
+   },
+   "pitfalls": [
+    "Elo 차이는 승률로 해석해야 한다. 1500 대 1480 은 20점 차, 기대 승률 약 53% 로 거의 동전 던지기다. 순위표에서 몇 계단 차이가 실력 차이를 뜻하지 않는다.",
+    "Elo 점수의 절대값은 의미가 없다(기준점을 어디 두느냐에 따라 바뀐다). 다른 시기·다른 리더보드의 점수를 직접 비교하면 안 된다.",
+    "투표자가 정답을 모르는 질문에서는 '그럴듯해 보이는 답'이 이긴다. 선호와 정확성은 다른 구성 개념이다."
+   ],
+   "check": [
+    {
+     "q": "Elo 점수가 200점 높은 모델의 기대 승률은?",
+     "a": "1/(1 + 10^(−200/400)) = 1/(1 + 10^(−0.5)) = 1/(1 + 0.316) ≈ 0.76, 약 76%."
+    },
+    {
+     "q": "Arena 에서 모든 모델이 같은 프롬프트를 받지 않아도 순위를 낼 수 있는 조건은?",
+     "a": "모델들을 꼭짓점, 비교를 변으로 한 그래프가 연결돼 있어야 한다. 서로 직접 붙지 않았더라도 공통 상대를 통해 점수가 같은 눈금에 놓인다."
+    }
+   ]
+  },
+  {
+   "start": 2300,
+   "title": "열린 질문의 평가 2 — LLM 심판(AlpacaEval·WildBench), 길이 편향, 지표를 평가하는 법",
+   "points": [
+    "AlpacaEval(2023): 805개 지시문, 기준 모델(GPT-4 preview) 답 대비 승률을 GPT-4 preview 가 판정 — LLM-as-a-judge. 판정자와 기준이 같은 모델이라 편향 우려.",
+    "LLM 심판은 긴 답을 좋아해 리더보드 게이밍이 일어났다. AlpacaEval 2.0 은 간단한 회귀로 길이 효과를 빼는 길이 통제(LC) 승률을 도입(Dubois+ 2024).",
+    "지표를 어떻게 평가하나? 다른 지표와의 상관으로 정상성 검사. LC AlpacaEval 2.0 과 Chatbot Arena 의 Spearman 상관 0.98 — 다만 그 시점의 모델 집합에서만 성립.",
+    "WildBench(Lin+ 2024): 실제 대화 100만 건에서 1,024개를 뽑고 GPT-4 turbo 가 프롬프트별 체크리스트를 보며 판정. 체크리스트·루브릭이 판정을 잘 정의된 과제로 만든다.",
+    "정리: 쌍대 비교가 절대 점수보다 신호가 크고, 사람·LLM 심판 모두 편향이 있으며, 루브릭이 신뢰도를 높인다."
+   ],
+   "on_screen": "AlpacaEval (2023) [leaderboard]: 805 instructions from various sources / Metric: win rate against baseline model (GPT-4 preview) as judged by GPT-4 preview (potential bias?) / Problem: LLM judges favor longer responses, resulted in leaderboard gaming / Alpaca Eval 2.0 used regression to debias the metric [Dubois+ 2024] / How do we evaluate the metric? / Correlation with Chatbot Arena (humans) is high — 'Chat Arena Spearman correlation' 띠: 0.35 0.51 0.59 0.63 0.66 0.69 0.83 0.87 0.94 0.98, 맨 오른쪽(가장 높은 0.98)이 LC AlpacaEval 2.0, 맨 왼쪽이 Output Length, 사이에 TruthfulQA·HellaSwag·GSM8K·MMLU·MT-bench 등. WildBench [Lin+ 2024]: Sourced 1024 examples from 1M human-chatbot conversations / Uses GPT-4 turbo as a judge with a checklist (like CoT for judging) / Well-correlated with Chatbot Arena (seems to be the de facto sanity check) — Pairwise(WB-Reward, 길이 벌점) 와 Individual(WB-Score) 두 방식 그림. Summary 네 줄.",
+   "explain": [
+    "사람 심판은 비싸고 느리다. 그래서 '강한 모델을 심판으로 쓰자'는 생각이 나왔다. 요리 대회에 비유하면, 매번 손님 수천 명을 부르는 대신 경험 많은 심사위원 한 명에게 판정을 맡기는 것이다. AlpacaEval 은 이 생각을 표준화했다. 다양한 출처의 지시문 805개에 대해, 평가받는 모델의 답과 기준 모델(당시 GPT-4 preview)의 답을 나란히 놓고 GPT-4 preview 가 어느 쪽이 나은지 고른다. 지표는 기준 모델에 대한 승률이다. 심판과 기준이 같은 모델이라 자기 답을 편애할 수 있다는 의심이 바로 든다. 여러 심판을 앙상블하는 식으로 줄일 수는 있다. 이렇게 언어 모델을 채점자로 쓰는 방식을 LLM-as-a-judge 라 부르며, 지금 언어 모델 평가에서 아주 널리 쓰인다.",
+    "초기 AlpacaEval 의 큰 문제는 LLM 심판이 긴 답을 좋아한다는 것이었다. 그러자 답을 길게 쓰도록 미세조정한 모델들이 리더보드에 올라와 높은 점수를 받았다 — 지표가 목표가 되면 지표가 망가진다는 굿하트의 법칙 그대로다. 후속 논문(AlpacaEval 2.0 의 길이 통제판)은 간단한 회귀로 이를 고쳤다. 승패를 '모델 효과 + 길이 차이 효과 + 지시문 난이도'로 설명하는 로지스틱 회귀를 맞춘 뒤, 길이 차이 항을 0 으로 놓고 승률을 다시 계산한다. '두 답의 길이가 같았다면 이 모델이 몇 % 이겼을까'를 묻는 반사실적 질문이다.",
+    "여기서 강사는 한 단계 위의 질문을 던진다. 지표가 좋은지는 어떻게 아나? 모델을 평가하는 지표를 평가하는 것, 즉 메타 평가다. 정답은 없지만 정상성 검사로 다른 지표와의 상관을 볼 수 있다. 화면의 띠는 여러 벤치마크 순위가 Chatbot Arena(사람) 순위와 얼마나 같은지를 Spearman 상관으로 보여 준다. 답 길이만으로 순위를 매겨도 0.35 의 상관이 나오고(그만큼 길이가 선호와 엮여 있다), MMLU 나 GSM8K 같은 시험은 중간, LC AlpacaEval 2.0 은 0.98 로 가장 높다. 그러니 Arena 에 모델을 올리기 싫거나 사람 투표를 기다릴 수 없을 때 대용으로 쓸 수 있다. 단, 이 상관은 그 시점에 있던 모델 집합에서 잰 것이다. 심판(GPT-4 preview)보다 강한 모델들 사이에서도 유지된다는 보장은 없다. 실제로 이 리더보드는 1년 넘게 관리되지 않고 있다.",
+    "WildBench 는 두 아이디어를 합쳤다. Arena 처럼 무료 대화 서비스를 열어 실제 사용자 질문 100만 건을 모으고 그중 어려운 1,024개를 골랐다. 판정은 AlpacaEval 처럼 LLM 이 하지만, 핵심 혁신은 프롬프트마다 만든 체크리스트다. '이 답이 좋은가?'만 물으면 무엇을 중시해야 하는지 정의되지 않은 과제가 된다. '사용자가 지정한 엑셀 함수를 썼는가', '불필요한 가정을 하지 않았는가' 같은 체크리스트를 주면 판정이 훨씬 잘 정의되고, 심판이 사고 사슬처럼 항목별로 분석한 뒤 결론을 내게 된다. 쌍대 비교(WB-Reward, 길이 벌점 포함)와 개별 점수(WB-Score) 둘 다 낸다. 이것도 Arena 와 상관이 높다고 보고하는데, 강사는 이것이 다소 순환 논법임을 인정한다 — Arena 가 정답이라는 근거는 무엇인가? 그래도 모두가 같은 배에 타 있다는 것이 강사의 말이다. 이 절의 결론: 비슷한 두 답 사이에서는 쌍대 비교가 방향 정보를 주어 '10점 만점에 7점이냐 8점이냐' 같은 절대 점수보다 신호가 크다. 사람과 LLM 심판 모두 편향이 있으니 여러 심판의 결과를 함께 보고, 체크리스트·루브릭으로 과제를 잘 정의해야 한다. 이것은 사람 크라우드소싱에서도 똑같다."
+   ],
+   "formulas": [
+    {
+     "expr": "logit P(m ≻ base | x) = θ_m − θ_base + φ_m · tanh(Δlen / σ) + ψ_x",
+     "meaning": "길이 통제 승률의 뼈대(Dubois+ 2024 를 단순화한 형태, 노트 보충). θ_m 은 모델의 실력, Δlen 은 두 답의 길이 차, σ 는 길이 차의 표준편차, φ_m 은 길이에 대한 민감도, ψ_x 는 지시문 x 의 난이도. 맞춘 뒤 Δlen = 0 으로 두고 승률을 계산하면 길이 효과가 빠진 승률이 된다."
+    },
+    {
+     "expr": "ρ = 1 − 6 Σ dᵢ² / ( n(n² − 1) )",
+     "meaning": "Spearman 순위 상관. n 은 모델 수, dᵢ 는 모델 i 의 두 순위 차. 동점이 없을 때의 공식이다. 1 이면 순위가 완전히 같고, 0 이면 무관, −1 이면 정반대."
+    }
+   ],
+   "example": {
+    "title": "Spearman 상관과 길이 보정을 숫자로",
+    "body": "다섯 모델의 LLM 심판 순위가 1,2,3,4,5 이고 사람 순위가 2,1,3,5,4 라면 차이 d = −1, 1, 0, −1, 1, Σd² = 4. ρ = 1 − 6×4/(5×24) = 1 − 24/120 = 0.8. 길이 보정: 진짜 품질은 기준보다 조금 나은데(로짓 +0.2) 답을 꾸준히 길게 쓰는 모델을, 길이에 끌리는 심판(길이 계수 0.8)이 4천 번 판정하도록 흉내 내면 그냥 승률은 68.8% 다. 길이 차만 설명 변수로 둔 로지스틱 회귀를 맞추고 길이 차를 0 으로 놓으면 승률은 55.7% 로 내려간다 — 품질만의 기대 승률(약 54%)에 가깝다. 길이 계수 추정치는 0.62 로 참값 0.8 보다 작은데, 회귀에 품질 변수가 없어 생기는 감쇠다. 보정은 완벽하지 않지만 게이밍의 대부분을 걷어 낸다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\n# (1) 메타 평가: 심판 순위와 사람(Arena) 순위의 Spearman\njudge = np.array([1, 2, 3, 4, 5]); human = np.array([2, 1, 3, 5, 4])\nd = judge - human; n = len(d)\nprint(\"rho =\", 1 - 6 * (d**2).sum() / (n * (n**2 - 1)))\n\n# (2) 길이 보정: 승패를 '품질 차 + 길이 차'로 회귀하고 길이 항을 끈다\nrng = np.random.default_rng(0)\nN = 4000\nq = rng.normal(0.2, 1, N)                  # 진짜 품질 차(모델 - 기준)\nL = rng.normal(1.0, 1, N)                  # 길이 차(표준화) — 이 모델은 길게 쓴다\nwin = rng.random(N) < 1 / (1 + np.exp(-(q + 0.8 * L)))   # 심판은 길이에 끌린다\nX = np.column_stack([np.ones(N), L]); w = np.zeros(2)\nfor _ in range(3000):\n    p = 1 / (1 + np.exp(-X @ w)); w += 0.5 * X.T @ (win - p) / N\nprint(\"그냥 승률:\", win.mean().round(3))\nprint(\"길이 계수:\", w[1].round(2), \" 길이 차 0 일 때 승률:\", (1 / (1 + np.exp(-w[0]))).round(3))",
+    "note": "실행 결과: rho = 0.8, 그냥 승률 0.688, 길이 계수 0.62, 길이 차 0 일 때 승률 0.557."
+   },
+   "pitfalls": [
+    "노트 보충: LLM 심판에는 길이 편향 말고도 위치 편향(먼저 나온 답 선호)과 자기 선호(같은 계열 모델의 답 선호)가 알려져 있다. 쌍대 판정은 A·B 순서를 바꿔 두 번 묻고 결과가 엇갈리면 무승부로 치는 것이 기본 대책이다.",
+    "상관 0.98 은 '그 시점의 모델들'에서의 순위 일치다. 새 세대 모델이나 심판보다 강한 모델에서는 다시 검증해야 한다.",
+    "체크리스트도 LLM 이 만들면 그 LLM 의 관점이 들어간다. 루브릭은 신뢰도(같은 판정이 반복되나)를 높이지만 타당도(맞는 것을 재나)를 보장하지 않는다."
+   ],
+   "check": [
+    {
+     "q": "AlpacaEval 초기판에서 리더보드 게이밍이 일어난 경로를 설명하라.",
+     "a": "LLM 심판이 긴 답을 선호했기 때문에, 품질과 상관없이 답을 길게 쓰도록 미세조정한 모델이 승률을 올렸다. 지표가 측정하려던 품질 대신 길이가 최적화됐다."
+    },
+    {
+     "q": "왜 절대 점수(1~10점)보다 쌍대 비교가 더 높은 신호를 준다고 하나?",
+     "a": "비슷한 두 답을 나란히 놓으면 판정자가 상대적 차이에 집중할 수 있어 일관된 방향 정보를 준다. 절대 점수는 판정자마다 기준점이 달라 같은 답에도 7점·8점이 섞여 잡음이 크다."
+    }
+   ]
+  },
+  {
+   "start": 2700,
+   "title": "에이전트 벤치마크 — SWE-bench·Terminal-Bench·CyBench·MLE-bench 와 pass@k",
+   "points": [
+    "지금까지는 모델이 '말하는 것'을 평가했고 이제는 '하는 것'을 평가한다. 에이전트 = 언어 모델 + 스캐폴드(언제 모델을 부르고 어떤 도구를 쓰게 할지 정하는 로직).",
+    "SWE-bench(Jimenez+ 2023): 파이썬 저장소 12개, 과제 2,294개. 코드베이스와 GitHub 이슈를 주면 패치를 내고, 단위 테스트로 채점한다. Verified 판 기준 2024년 16.8% → 지금 90%대.",
+    "Terminal-Bench(Merrill+ 2026): 도커 컨테이너 터미널이 환경. 93명이 낸 229개 과제 중 89개가 2.0. 같은 모델도 에이전트가 다르면 점수가 다르다.",
+    "CyBench(Zhang+ 2024): CTF 40개, 사람 팀의 최초 풀이 시간을 난이도로. 출시 때 최고 약 10% → 지금은 사실상 해결. MLE-bench(Chan+ 2024): Kaggle 대회 75개.",
+    "노트 보충: 코드 과제는 여러 번 뽑아 pass@k 로 보고한다. n 번 중 c 번 통과면 불편 추정치 1 − C(n−c,k)/C(n,k)."
+   ],
+   "on_screen": "def agentic_benchmarks(): Previously: evaluate what LMs say (chat) / Now: evaluate what LMs do (agents) / Agent = language model + agent scaffold. SWE-bench [Jimenez+ 2023]: 2294 tasks across 12 Python repositories / Given codebase + issue description, submit a PR / Evaluation metric: unit tests — 그림: Model Input(Instructions, Issue: napoleon_use_param 관련, Code: README.rst, sphinx/ext/napoleon/docstring.py …), Gold Patch, Generated Patch, Generated Patch Test Results(PASSED 다수, FAILED 2, '2 failed, 45 passed, 8 warnings'). llm-stats SWE-bench Verified 그래프(2024 DeepSeek-V2.5 0.168 → 2026 0.9 대). TerminalBench [Merrill+ 2026]: Docker Container / Agent Execution / Test Execution & Results 그림, 229 tasks crowdsourced from 93 contributors, 89 tasks constitute Terminal-Bench 2.0, 소요 시간 표(Expert: <1h 36(48.6%), 1h–1day 35(47.3%), 1day–1week 3(4.1%), >1week 0 / Junior: 6(8.1%), 53(71.6%), 12(16.2%), 3(4.1%)), 리더보드(에이전트·모델·정확도 열). CyBench [Zhang+ 2024]: Task Description → Agent(Memory) → Action → Environment(Kali Linux, Local Files, Task Server) → Observation, 'Use first-solve time as a measure of difficulty', 모델별 성공률 표. MLEBench [Chan+ 2024]: 75 Kaggle competitions — Competition(Description, Dataset, Leaderboard) → Agent → submission.csv → Grader.",
+   "explain": [
+    "채팅 평가가 '무엇을 말하나'를 봤다면 에이전트 평가는 '무엇을 해내나'를 본다. 면접에서 말을 잘하는 지원자와 실제로 일을 끝내는 직원은 다르다. 에이전트는 언어 모델에 스캐폴드를 씌운 것이다. 스캐폴드는 모델을 언제 어떻게 부를지, 어떤 도구(셸, 파일 편집기, 브라우저)를 쓰게 할지, 관찰 결과를 어떻게 다시 넣을지를 정하는 바깥 로직이다. 에이전트 평가의 큰 장점은 채점이 결과로 명확하게 떨어지는 경우가 많다는 것이다 — 테스트가 통과했나, 깃발 문자열을 찾았나, 제출 파일의 점수가 몇인가.",
+    "SWE-bench 는 이 분야를 연 벤치마크다. 실제 파이썬 저장소 12개에서 해결된 GitHub 이슈 2,294개를 모았다. 에이전트는 코드베이스와 이슈 설명을 받아 패치를 제출한다. 채점은 그 이슈를 고친 실제 PR 에 딸려 온 단위 테스트로 한다. 패치 전에는 실패하던 테스트가 통과해야 하고(고쳤나), 원래 통과하던 테스트는 계속 통과해야 한다(다른 것을 망가뜨리지 않았나). 화면의 예시는 sphinx 의 napoleon 확장에서 매개변수 문서화 옵션이 다른 섹션에 반영되지 않는 이슈이고, 생성된 패치가 테스트 47개 중 45개를 통과하고 2개를 실패한 결과가 보인다. 그래프는 원판의 문제를 사람이 걸러 낸 SWE-bench Verified 기준인데(왜 Verified 가 생겼는지는 14장), 2024년 5월 16.8% 에서 2026년 90%대까지 올랐다.",
+    "Terminal-Bench 는 더 일반적이다. 환경이 도커 컨테이너 속 터미널 하나이고, 명령을 쳐서 할 수 있는 모든 일이 과제가 된다(예: 1980년대 COBOL 프로그램을 파이썬으로 다시 구현). 환경이 단순하고 보편적이라는 것이 장점이다. 세계 각지 93명이 과제 229개를 냈고 그중 89개가 2.0 판을 이룬다. 소요 시간 표가 흥미롭다. 전문가에게는 절반 가까이가 1시간 안에 끝나는 과제지만, 주니어에게는 70% 이상이 하루 가까이 걸리는 과제다. 같은 과제의 '난이도'가 누구 기준이냐에 따라 달라진다. 리더보드에서 강사가 짚는 점은 같은 모델이라도 에이전트(스캐폴드)가 다르면 정확도가 다르다는 것이다. CyBench 는 보안 경진대회 CTF 문제 40개로, 에이전트가 서버 소스 코드를 보고 웹 서버에 접속해 침투한 뒤 깃발(침투를 증명하는 고유 문자열)을 꺼내야 한다. 사람 팀이 처음 풀기까지 걸린 시간을 난이도 척도로 쓴다. 출시 때 최고 모델이 10% 안팎이었는데 지금은 사실상 다 풀린다. MLE-bench 는 Kaggle 대회 75개로, 데이터를 보고 코드를 짜고 모델을 학습해 제출 파일을 내면 대회 리더보드 기준으로 메달을 매긴다. 여기서도 같은 언어 모델에 다른 스캐폴드가 큰 차이를 낸다.",
+    "노트 보충으로, 에이전트·코드 평가는 같은 과제를 여러 번 돌리는 경우가 많아 결과를 요약하는 방식이 중요하다. 한 번 뽑아 통과할 확률이 pass@1, k 번 뽑아 한 번이라도 통과할 확률이 pass@k 다. n 번 뽑아 c 번 통과했을 때 1 − (1 − c/n)^k 로 계산하면 편향이 생기므로, Codex 논문(Chen+ 2021)은 n 개 중 k 개를 비복원 추출했을 때 모두 실패할 확률을 빼는 불편 추정치를 쓴다. 반대로 실서비스에서는 '한 번이라도'보다 '매번' 성공하는 것이 중요할 수 있어, k 번 모두 성공할 확률(pass^k)을 보고하는 벤치마크도 있다. 같은 결과에서 pass@k 는 k 와 함께 오르고 pass^k 는 떨어진다. 어느 쪽을 보고하느냐는 평가의 목적(15장)에 달렸다."
+   ],
+   "formulas": [
+    {
+     "expr": "pass@k = E_과제[ 1 − C(n − c, k) / C(n, k) ]",
+     "meaning": "n 은 과제 하나에서 뽑은 시도 수(n ≥ k), c 는 그중 테스트를 통과한 수, C(a, b) 는 조합의 수. C(n−c,k)/C(n,k) 는 n 개 중 k 개를 골랐을 때 전부 실패작일 확률이고, 1 에서 빼면 '하나라도 통과'할 확률. 과제마다 계산해 평균 낸다. n − c < k 이면 1."
+    },
+    {
+     "expr": "pass^k = C(c, k) / C(n, k)",
+     "meaning": "노트 보충. k 개를 골랐을 때 모두 통과할 확률 — 일관성(신뢰성) 지표. k = 1 이면 pass@1 과 같다."
+    }
+   ],
+   "example": {
+    "title": "10번 시도에 3번 통과 — pass@1, pass@5, pass^2",
+    "body": "n = 10, c = 3. pass@1 = 1 − C(7,1)/C(10,1) = 1 − 7/10 = 0.3. pass@2 = 1 − C(7,2)/C(10,2) = 1 − 21/45 ≈ 0.533. pass@5 = 1 − C(7,5)/C(10,5) = 1 − 21/252 ≈ 0.917. 단순식 1 − 0.7^5 = 1 − 0.168 = 0.832 는 불편 추정치보다 작다(비복원 추출을 무시한 탓에 편향된다). pass^2 = C(3,2)/C(10,2) = 3/45 ≈ 0.067 — 두 번 연속 성공할 확률은 7% 도 안 된다. 과제 넷의 (n, c) 가 (10,0), (10,3), (10,10), (10,1) 이면 벤치마크 pass@1 = (0 + 0.3 + 1 + 0.1)/4 = 0.35."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nfrom math import comb\ndef pass_at_k(n, c, k):\n    \"\"\"n 번 뽑아 c 번 통과했을 때 pass@k 의 불편 추정 (Chen+ 2021)\"\"\"\n    if n - c < k:\n        return 1.0\n    # 1 - C(n-c,k)/C(n,k) 를 곱으로 — 큰 n 에서 넘치지 않게\n    return 1.0 - np.prod(1.0 - k / np.arange(n - c + 1, n + 1))\ndef pass_hat_k(n, c, k):                 # k 번 모두 성공할 확률 (일관성)\n    return comb(c, k) / comb(n, k)\nn, c = 10, 3\nfor k in [1, 2, 5]:\n    naive = 1 - (1 - c / n) ** k\n    print(k, round(pass_at_k(n, c, k), 4), round(1 - comb(n-c, k)/comb(n, k), 4),\n          \"naive\", round(naive, 4), \"pass^k\", round(pass_hat_k(n, c, k), 4))\n# 과제 여러 개의 평균이 벤치마크 점수\nresults = [(10, 0), (10, 3), (10, 10), (10, 1)]\nprint(\"pass@1 =\", np.mean([pass_at_k(n, c, 1) for n, c in results]))",
+    "note": "실행 결과: k=1 → 0.3 / k=2 → 0.5333 (단순식 0.51, pass^k 0.0667) / k=5 → 0.9167 (단순식 0.8319, pass^k 0). 곱 형태와 조합 형태가 같은 값을 낸다. 벤치마크 pass@1 = 0.35."
+   },
+   "diagram": {
+    "title": "SWE-bench 한 과제의 채점",
+    "code": "flowchart LR\n  I[이슈 설명 + 저장소 스냅숏] --> AG[에이전트<br/>모델 + 스캐폴드]\n  AG --> P[패치 diff]\n  P --> T1[실패하던 테스트<br/>FAIL→PASS?]\n  P --> T2[원래 통과하던 테스트<br/>PASS→PASS?]\n  T1 --> J{둘 다 만족?}\n  T2 --> J\n  J -->|예| OK[해결 1]\n  J -->|아니오| NO[해결 0]"
+   },
+   "pitfalls": [
+    "테스트 통과 = 올바른 해법이 아니다. 테스트가 불완전하면 엉뚱한 패치도 통과한다(14장의 데이터셋 품질 문제).",
+    "에이전트 리더보드의 숫자는 '모델'이 아니라 '모델 + 스캐폴드 + 시도 횟수 + 시간·비용 한도'의 점수다. 설정이 다른 두 숫자를 나란히 놓으면 안 된다.",
+    "pass@k 를 k 를 밝히지 않고 보고하거나, pass@10 과 다른 모델의 pass@1 을 비교하는 실수가 흔하다."
+   ],
+   "check": [
+    {
+     "q": "n = 5 번 중 c = 1 번 통과했다. pass@1 과 pass@3 을 구하라.",
+     "a": "pass@1 = 1 − C(4,1)/C(5,1) = 1 − 4/5 = 0.2. pass@3 = 1 − C(4,3)/C(5,3) = 1 − 4/10 = 0.6."
+    },
+    {
+     "q": "SWE-bench 가 원래 통과하던 테스트도 다시 돌리는 이유는?",
+     "a": "이슈를 고치면서 다른 기능을 망가뜨리지 않았는지(회귀) 확인하기 위해서다. 실패하던 테스트만 보면 테스트를 지우거나 다른 곳을 부수는 패치도 통과할 수 있다."
+    }
+   ]
+  },
+  {
+   "start": 3100,
+   "title": "스캐폴드가 점수를 바꾼다 — 계획·위임·기억·문맥 공학",
+   "points": [
+    "초기 CyBench 스캐폴드는 하나의 연속 기억에 행동·관찰을 계속 이어 붙이는 단순한 구조였다. 기록이 금방 커져 문맥 관리가 필요해진다.",
+    "명시적 계획: 생각을 흘려 쓰지 말고 할 일 목록을 만들어 하나씩 지운다.",
+    "위계적 위임: 하위 에이전트를 깨끗한 문맥으로 불러 결과만 돌려받는다 — 주 에이전트는 세부를 보지 않는다(캡슐화).",
+    "영속 기억: 파일에 읽고 쓴다. 과도한 문맥 공학: 언제 위임할지, 어떤 전략을 쓸지, 무엇을 기억에 쓸지를 자세히 지시하며 보통 특정 모델에 맞춰 조정된다.",
+    "에이전트 평가 = 언어 모델 평가 + 스캐폴드 평가."
+   ],
+   "on_screen": "CyBench 의 단순한 스캐폴드 그림: Memory(Initial Prompt, Response-Observation History) → Act → Execute → Update 고리. 'Agent scaffolds [post]' 그림: 가운데 Orchestrator, 위 Planning(Update), 오른쪽 Sub-Agents(Specialists)로 Delegation 과 Final Answer, 아래 Persistent Memory(Write/Read), 왼쪽 Context Engineering. 목록: Explicit planning: keep a todo list that gets checked off / Hierarchical delegation: agents calling other sub-agents (clean context) / Persistent memory: read/write files / Extreme context engineering: explicit more instructions on process. Summary: Agents dramatically enhance the capability surface of language models / Agent scaffolds are very important / Evaluating agents = evaluating agent scaffold + language model.",
+   "explain": [
+    "같은 요리사라도 주방 동선과 레시피 카드, 보조 요리사 배치가 다르면 결과가 다르다. 에이전트의 스캐폴드가 그 주방이다. 가장 단순한 스캐폴드는 CyBench 초기판처럼 처음 지시문에 '행동 → 실행 결과 관찰'을 한 줄씩 계속 이어 붙이는 하나의 긴 기억이다. 모델은 매 걸음 전체 기록을 읽고 다음 명령을 낸다. 짧은 과제에는 충분하지만, 기록은 걸음마다 커지고 결국 문맥 창을 넘거나, 넘지 않더라도 모델이 자기가 어디까지 했는지를 잃어버린다.",
+    "그래서 복잡한 과제를 푸는 최근 스캐폴드들은 네 가지 장치를 쓴다. 첫째, 명시적 계획 — 생각을 의식의 흐름처럼 길게 쓰는 대신 할 일 목록을 만들고 끝난 항목에 체크한다. 문맥이 길어져도 목록이 현재 위치를 알려 준다. 둘째, 위계적 위임 — 주 에이전트(오케스트레이터)가 하위 에이전트를 깨끗한 문맥으로 부르고, 하위 에이전트는 일을 마친 뒤 결과만 돌려준다. 주 에이전트는 지저분한 세부(실패한 명령, 긴 로그)를 보지 않는다. 소프트웨어 설계의 캡슐화와 같다. 셋째, 영속 기억 — 문맥 창에 다 담을 수 없으니 파일에 메모를 쓰고 필요할 때 읽는다. 넷째, 과도할 정도의 문맥 공학 — 언제 위임하고, 이 전략과 저 전략 중 무엇을 먼저 시도하고, 무엇을 기억에 남길지를 지시문에 자세히 적는다. 이런 지시는 보통 특정 언어 모델의 습관에 맞춰 다듬어진다.",
+    "이것이 평가에 주는 의미는 크다. 강사가 앞 장에서 짚었듯 Terminal-Bench 와 MLE-bench 리더보드에서 같은 모델이 스캐폴드에 따라 다른 점수를 받는다. 따라서 에이전트 벤치마크 점수는 언어 모델만의 점수가 아니라 '모델 + 스캐폴드' 시스템의 점수다. 모델을 비교하고 싶다면 스캐폴드를 고정해야 하고, 스캐폴드를 비교하고 싶다면 모델을 고정해야 한다. 그리고 스캐폴드가 특정 모델에 맞춰 조정돼 있다면, 다른 모델을 그 스캐폴드에 넣은 비교는 공정하지 않을 수 있다. 강의 결론처럼 에이전트는 언어 모델이 할 수 있는 일의 범위를 크게 넓히지만, 평가할 때는 무엇이 고정되고 무엇이 바뀌었는지를 분명히 해야 한다(15장 '게임의 규칙').",
+    "노트 보충으로 비용 측면을 보자. 단순 스캐폴드에서 걸음마다 2천 토큰이 쌓이면 50걸음 뒤 문맥은 10만 토큰이 되고, 매 호출마다 전체 기록을 다시 넣으므로 모든 호출의 입력 토큰 합은 2천×(1+2+…+50) = 255만 토큰으로 걸음 수의 제곱에 비례해 커진다. 10강(EfM546A79aM)에서 본 KV 캐시와 접두사 캐싱이 이 비용을 줄여 주지만 문맥 길이 자체의 한계는 남는다. 위임은 이 제곱 증가를 쪼갠다. 그래서 에이전트 리더보드는 정확도와 함께 과제당 비용·시간을 보고하는 쪽으로 가고 있다."
+   ],
+   "formulas": [
+    {
+     "expr": "총 입력 토큰 = Σ_(t=1..T) s·t = s · T(T + 1)/2",
+     "meaning": "노트 보충. s 는 한 걸음에 쌓이는 토큰 수(행동 + 관찰), T 는 걸음 수. 매 호출에 지금까지의 기록 전체를 넣으면 t 번째 호출의 입력이 s·t 이므로 합은 T 의 제곱에 비례한다. 캐시가 없을 때 비용의 상한 감각을 준다."
+    }
+   ],
+   "example": {
+    "title": "50걸음 에이전트의 문맥과 위임 효과",
+    "body": "걸음당 s = 2,000 토큰, T = 50 걸음이면 마지막 문맥은 2,000×50 = 100,000 토큰, 모든 호출의 입력 합은 2,000×50×51/2 = 2,550,000 토큰이다. 이를 10걸음짜리 하위 에이전트 5개로 쪼개고 각자 200토큰 요약만 돌려준다고 하자. 하위 에이전트 하나의 입력 합은 2,000×10×11/2 = 110,000, 다섯이면 550,000. 주 에이전트는 요약만 보므로 문맥이 200, 400, …, 1,000 이고 합은 3,000. 총 553,000 토큰으로 약 4.6배 줄고, 가장 긴 문맥도 100,000 에서 20,000 으로 줄어 모델이 길을 잃을 위험이 작아진다. 대가는 요약에서 정보가 빠질 수 있다는 것이다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\nsteps, per_step = 50, 2000              # 한 걸음마다 행동+관찰 2천 토큰이 쌓인다\nctx = per_step * np.arange(1, steps + 1)\nprint(\"마지막 문맥:\", ctx[-1], \" 모든 호출에 넣은 토큰 합:\", ctx.sum())\n\n# 하위 에이전트에 10걸음씩 맡기고 200토큰 요약만 돌려받으면\nsub_steps, summary = 10, 200\nsub_ctx = per_step * np.arange(1, sub_steps + 1)       # 하위 에이전트 하나의 문맥\nn_sub = steps // sub_steps\nmain_ctx = summary * np.arange(1, n_sub + 1)           # 주 에이전트는 요약만 본다\ntotal = n_sub * sub_ctx.sum() + main_ctx.sum()\nprint(\"하위 문맥 최대:\", sub_ctx[-1], \" 주 문맥 최대:\", main_ctx[-1], \" 합:\", total)",
+    "note": "실행 결과: 마지막 문맥 100000, 입력 합 2550000 / 위임 시 하위 문맥 최대 20000, 주 문맥 최대 1000, 합 553000."
+   },
+   "diagram": {
+    "title": "현대 스캐폴드의 구성(강의 그림을 다시 그림)",
+    "code": "flowchart TB\n  PL[계획<br/>할 일 목록] <--> O((오케스트레이터))\n  CE[문맥 공학<br/>과정 지시문] --> O\n  O -->|위임: 깨끗한 문맥| SA[하위 에이전트들]\n  SA -->|최종 결과만| O\n  O <-->|쓰기·읽기| PM[(영속 기억<br/>파일)]\n  O --> ENV[환경<br/>셸·편집기·브라우저]"
+   },
+   "pitfalls": [
+    "'모델 X 가 SWE-bench 에서 Y%' 라는 문장에는 스캐폴드가 빠져 있다. 같은 모델의 점수가 스캐폴드에 따라 크게 달라질 수 있으니 어떤 에이전트로 쟀는지를 확인해야 한다.",
+    "특정 모델에 맞춰 다듬은 스캐폴드에 다른 모델을 넣어 비교하면 그 모델이 불리하다. 스캐폴드 고정 비교도 완전히 공정하지는 않다."
+   ],
+   "check": [
+    {
+     "q": "위계적 위임이 '캡슐화'와 닮았다는 말의 뜻은?",
+     "a": "하위 에이전트가 내부 과정(실패한 시도·긴 로그)을 감추고 결과만 인터페이스로 돌려주므로, 주 에이전트의 문맥은 깨끗하게 유지되고 세부 구현에 신경 쓰지 않아도 된다는 뜻이다."
+    },
+    {
+     "q": "걸음당 1,000 토큰이 쌓이는 단순 스캐폴드가 20걸음을 돌면 모든 호출의 입력 토큰 합은?",
+     "a": "1,000 × 20 × 21 / 2 = 210,000 토큰. 마지막 문맥은 20,000 토큰."
+    }
+   ]
+  },
+  {
+   "start": 3235,
+   "title": "순수 추론 벤치마크 — ARC-AGI 1·2·3 은 지식과 추론을 떼어 낼 수 있나",
+   "points": [
+    "지금까지의 과제는 언어·세계 지식을 요구했다. 추론만 따로 잴 수 있나? 그것이 더 순수한 지능의 형태라는 주장도 있다.",
+    "ARC-AGI(2019~): 사람에게는 100% 풀리지만 AI 에게는 어려운 격자 퍼즐, 과제마다 고유해서 암기가 도움이 안 되게 설계.",
+    "사전학습 모델은 수년간 0점 근처였고, 2024년 추론 모델(o1, o3)이 나오자 점수가 급등했다. ARC-AGI-1 은 사실상 해결, ARC-AGI-2(2025) 도 해결되는 중.",
+    "ARC-AGI-3(2026년 3월): 상호작용 게임 환경. 최고 점수가 1% 미만(Opus 4.6 Max 0.50%, Gemini 3.1 Pro Preview 0.40%, GPT 5.4 High 0.20%, Grok-4.20 0.10%).",
+    "한계: 추론과 지식을 완전히 떼어 내기 어렵고, 사람 수준 추론으로 제한돼 초인적 추론(수학 미해결 문제)은 다루지 않는다. 그래도 현재 모델의 빈틈을 드러낸다."
+   ],
+   "on_screen": "def pure_reasoning_benchmarks(): All of the tasks so far require linguistic and world knowledge / Can we isolate reasoning from knowledge? / Arguably, reasoning captures a more pure form of intelligence (isn't just about memorizing facts). ARC-AGI [website]: 100% solvable by humans, but challenging for AI / Each task is unique, so memorization doesn't help. ARC-AGI-1 (2019) 분홍·노랑 격자 예시 다섯 쌍, ARC-AGI-2 (March 2025): more multi-step reasoning 예시. 산점도(가로: 모델 출시일 2020~2026, 세로: 점수 0~100%, 파랑 ARC-AGI-1, 주황 ARC-AGI-2, 세로 점선 'AI Reasoning'·'Agentic Coding'). Pretrained language models didn't move the needle / Reasoning models (o1, o3) started making things take off. ARC-AGI-3 (March 2026): interactive environments — 분홍 게임기 화면 속 미로. 점수표 Anthropic Opus 4.6 (Max) 0.50%, Google Gemini 3.1 Pro Preview 0.40%, OpenAI GPT 5.4 (High) 0.20%, xAI Grok-4.20 (Beta 0309 Reasoning) 0.10%. Summary: Goal is to disentangle reasoning from knowledge (difficult to do!) / Constrained to human reasoning (not superhuman reasoning) / Clearly exposes gaps in current models.",
+   "explain": [
+    "IQ 검사의 도형 행렬 문제를 떠올려 보자. 어휘나 상식을 몰라도 그림 사이의 규칙을 찾으면 풀 수 있게 만든 문제다. 지금까지 본 벤치마크는 모두 언어와 세계 지식이 필요했다. MMLU 는 지식, SWE-bench 는 파이썬과 라이브러리에 대한 지식이 필수다. 그렇다면 지식과 무관한 '유동 지능'만 따로 잴 수 있을까? 그것이 사실을 외우는 것보다 더 순수한 지능이라는 주장도 있다. ARC-AGI 는 2019년, 즉 GPT-2 시절이자 LLM 이전에 이 목표로 시작됐다. 강사는 그 시점을 생각하면 선견지명이 있었다고 평한다.",
+    "과제 형식은 이렇다. 입력 격자와 출력 격자의 예시 쌍 몇 개를 보여 주고, 새 입력 격자에 대한 출력 격자를 맞히게 한다. 칸마다 색(숫자 0~9)이 있고, 규칙은 '빈 부분을 노란색으로 채워 직사각형을 완성하라'처럼 사람이 10초 안에 알아챌 만한 것이다. 설계 원칙은 둘이다. 사람에게는 100% 풀려야 하고, 과제마다 고유해서 비슷한 문제를 외워 두는 것이 도움이 되지 않아야 한다. 채점은 출력 격자가 칸 하나까지 정확히 같아야 맞는 것으로 친다(노트 보충: 공식 대회는 과제당 두 번의 시도를 허용한다). 2025년의 ARC-AGI-2 는 여러 단계 추론이 필요한 더 복잡한 과제로 바뀌었다.",
+    "역사 그래프가 이 벤치마크의 의미를 보여 준다. GPT-3 같은 사전학습 모델은 수년간 0점 근처였다. 창작자들이 의도한 대로다 — 사전학습은 인터넷의 사실과 언어 패턴을 배우지만 이 과제에는 직접 도움이 되지 않는다. 그러다 2024년 OpenAI 의 o1·o3 같은 추론 모델이 나오자 점수가 급격히 올랐다. 지금 ARC-AGI-1 은 사실상 풀렸고 ARC-AGI-2 도 해결되는 중이다. 강사는 그렇다면 사전학습의 지식이 필요 없었냐고 묻고, 사전학습이 없었다면 추론 모델의 폭발도 없었을 테니 여전히 중요했지만 ARC-AGI 점수에 직접 드러나지 않았을 뿐이라고 답한다. 그리고 2026년 3월 ARC-AGI-3 가 나왔다. 이번에는 정적인 퍼즐이 아니라 온라인으로 직접 해 볼 수 있는 상호작용 게임이다. 말 없이 화면의 패턴만 보고 규칙과 목표를 알아내야 하며, 최고 점수가 0.5% 다. 강사는 내년 강의 때 이 슬라이드를 고쳐야 할 것이라고 농담한다.",
+    "강사의 평가는 균형적이다. ARC-AGI 는 추론을 지식에서 떼어 내려는 아마 가장 좋은 시도지만, 완전히 떼어 낼 수 있는지는 불분명하다. 격자의 대칭·물체 같은 개념도 결국 어떤 사전 지식에서 오며 '순수한 추론'이란 것이 있는지 확신하기 어렵다. 사람들이 이 벤치마크를 정말 중시하면 이것도 공략될 것이다. 또 '사람에게 100% 풀린다'는 설계 원칙 때문에 사람 수준의 추론만 다루며, 수학 올림피아드 금메달이나 미해결 수학 문제 같은 초인적 추론은 범위 밖이다. 그래도 현재 모델이 사람과 다른 빈틈을 가진다는 것을 분명히 보여 준다는 점에서 가치가 있다. 수강생 질문에 대한 답으로, 격자(ARC-AGI-3 는 64×64)는 이미지로 줄 수도 있고 아스키 그림 같은 텍스트로 줄 수도 있는데, 어느 쪽이든 모델이 자연어가 아닌 공간 구조를 추론해야 한다."
+   ],
+   "formulas": [
+    {
+     "expr": "score = (1/|T|) Σ_(τ∈T) 1[ ∃ a ∈ 시도₁,₂ : a = y_τ ]",
+     "meaning": "노트 보충(ARC-AGI-1·2 공식 대회 방식). T 는 과제 집합, y_τ 는 과제 τ 의 정답 격자, 시도는 최대 2개, 1[·] 은 조건이 참이면 1. 격자의 크기와 모든 칸이 정확히 같아야 하며 부분 점수는 없다."
+    }
+   ],
+   "example": {
+    "title": "3×3 격자 과제를 채점해 보기",
+    "body": "예시 쌍이 '격자를 좌우로 뒤집는다'는 규칙을 보여 준다고 하자. 테스트 입력이 [[1,1,0],[0,0,0],[0,1,0]] 이면 정답은 [[0,1,1],[0,0,0],[0,1,0]]. 첫 시도로 입력을 그대로, 두 번째로 위아래로 뒤집은 [[0,1,0],[0,0,0],[1,1,0]] 을 내면 둘 다 틀려 0점이다 — 9칸 중 7칸이 맞아도 부분 점수는 없다. 첫 시도를 위아래 뒤집기, 두 번째를 좌우 뒤집기로 내면 두 번째가 맞아 1점. 입력 크기: ARC-AGI-3 의 64×64 화면을 숫자 한 글자씩 줄바꿈으로 이어 텍스트로 주면 64×64 + 63 = 4,159 글자이고, 상호작용 게임이라 한 판에 이런 화면이 수십·수백 장 쌓인다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\n# ARC 풍 과제 하나: 규칙 = '왼쪽-오른쪽 뒤집기'\ntrain_in = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 0]])\ntrain_out = train_in[:, ::-1]\ntest_in = np.array([[1, 1, 0], [0, 0, 0], [0, 1, 0]])\nanswer = test_in[:, ::-1]\n\ndef grade(attempts, answer):          # 정확히 같아야 1점, 시도 2번까지\n    return int(any(a.shape == answer.shape and (a == answer).all() for a in attempts[:2]))\nprint(grade([test_in, test_in[::-1, :]], answer))            # 둘 다 틀림 → 0\nprint(grade([test_in[::-1, :], test_in[:, ::-1]], answer))   # 두 번째에 맞힘 → 1\n\n# 64x64 격자를 글자로 주면 문맥이 얼마나 되나\ngrid = np.zeros((64, 64), dtype=int)\ntext = \"\\n\".join(\"\".join(map(str, row)) for row in grid)\nprint(\"글자 수:\", len(text))",
+    "note": "실행 결과: 0, 1, 글자 수 4159."
+   },
+   "pitfalls": [
+    "'ARC-AGI-1 이 풀렸다 = AGI' 가 아니다. 벤치마크 이름에 AGI 가 들어 있을 뿐, 사람 수준의 특정 퍼즐 유형을 잰다.",
+    "ARC 점수는 계산 예산(과제당 비용)과 함께 봐야 한다. 같은 모델도 추론에 쓰는 토큰을 크게 늘리면 점수가 오른다(노트 보충: ARC Prize 리더보드는 과제당 비용을 함께 표시한다)."
+   ],
+   "check": [
+    {
+     "q": "사전학습만 한 모델이 ARC-AGI 에서 거의 0점이었다는 사실이 강사에게 어떤 의미인가?",
+     "a": "인터넷의 사실·언어 패턴을 배우는 것만으로는 이런 새로운 규칙 추론에 직접 도움이 되지 않는다는 뜻이며, 창작자의 설계 의도(지식과 추론의 분리)가 어느 정도 통했다는 증거다. 다만 사전학습은 추론 모델의 토대로서 간접적으로 중요했다."
+    },
+    {
+     "q": "ARC-AGI 가 초인적 추론을 다루지 못하는 이유는?",
+     "a": "모든 과제가 사람에게 100% 풀리도록 설계됐기 때문이다. 사람이 못 푸는 문제(미해결 수학 문제 등)는 정의상 들어갈 수 없다."
+    }
+   ]
+  },
+  {
+   "start": 3600,
+   "title": "안전 벤치마크 — HarmBench·AIR-Bench·탈옥, 그리고 안전이란 무엇인가",
+   "points": [
+    "자동차 안전은 충돌 시험과 수십 년의 합의로 정의가 분명하다. AI 안전에는 아직 그런 합의가 없다.",
+    "HarmBench(Mazeika+ 2024): 법·규범을 어기는 해로운 행동 510개로 요청하고 모델이 거절하는지 본다.",
+    "AIR-Bench(Zeng+ 2024): EU·중국·미국의 규제와 기업 정책을 모아 위험 범주 314개로 분류하고 프롬프트 5,694개를 만들었다.",
+    "탈옥: GCG(Zou+ 2023)는 좌표별 최적화로 무의미한 접미사를 찾아 안전 장치를 뚫는다. 공개 모델(Llama)에서 찾은 공격이 닫힌 모델(GPT-4)로 전이됐다.",
+    "안전은 맥락적(정치·법·사회 규범, 나라마다 다름)이고 위험도 다양하다(환각·아첨·범죄 방조·불평등·비판적 사고 상실). 사이버보안 에이전트처럼 이중 용도도 있다."
+   ],
+   "on_screen": "def safety_benchmarks(): 폭스바겐 폴로 충돌 안전 등급 페이지(별점, 더미 그림, 부위별 색 등급, 아동 좌석 표). 'What does safety mean for AI?'. HarmBench [Mazeika+ 2024]: Based on 510 harmful behaviors that violate laws or norms [HarmBench on HELM] [Example of safety failure]. AIR-Bench [Zeng+ 2024]: Based on regulatory frameworks and company policies / Taxonomized into 314 risk categories, 5694 prompts — 원형 분류도(Level-1~4, 차별·불법 물질·사기·정치 선동·허위정보 등) [HELM AIR-Bench]. Jailbreaking: Language models are trained to refuse harmful instructions / Greedy Coordinate Gradient (GCG) automatically optimizes prompts to bypass safety [Zou+ 2023] / Transfers from open-weight models (Llama) to closed models (GPT-4) — ChatGPT·Claude·Bard·Llama-2 가 '인류 파괴 계획' 요청에 무의미한 접미사가 붙자 단계별로 답하는 캡처. What is safety? Many aspects of safety are strongly contextual (politics, law, social norms - which vary across countries) / Many risks are quite varied (hallucinations, sycophancy, abetting crimes, inequality, losing critical thinking). Dual-use: capable cybersecurity agents (Mythos) can be used to hack into a system or to do penetration testing.",
+   "explain": [
+    "자동차의 안전 등급을 생각해 보자. 정해진 속도로 벽에 부딪히고, 에어백이 터지고, 더미 인형의 머리·가슴·다리가 얼마나 다쳤는지를 색으로 매긴다. 이 절차가 명확한 것은 수십 년 동안 로비와 논쟁을 거쳐 '자동차의 안전'이 무엇인지 합의했기 때문이다. AI 에는 그런 합의가 없다. 강사는 좋은 답이 없다고 인정하면서 사람들이 어떻게 생각해 왔는지 사례를 보여 준다.",
+    "가장 흔한 생각은 '나쁜 사람이 모델로 나쁜 일을 하지 못하게 한다'이다. HarmBench 는 법이나 규범을 어기는 해로운 행동 510개를 요청하고 모델이 거절하는지를 본다. 그러나 안전은 그것만이 아니다. AIR-Bench 는 안전을 전체적으로 보려고 EU·중국·미국의 규제 문서와 기업들의 이용 정책을 모아 무엇이 잘못될 수 있는지의 분류 체계를 만들었다. 네 단계 위계로 위험 범주 314개를 나누고, 범주마다 프롬프트를 만들어 총 5,694개로 평가한다. 원형 분류도에는 차별, 불법 물질, 사기, 민주적 참여 방해, 허위정보 같은 범주가 보인다. 규제가 나라마다 다르므로 어느 나라 기준으로 보느냐에 따라 같은 모델의 점수가 달라진다.",
+    "하위 문제로 탈옥(jailbreak)이 있다. 모델은 해로운 지시를 거절하도록 학습되지만 영리하게 우회할 수 있다. 초기 연구인 GCG(Greedy Coordinate Gradient)는 공격 접미사의 토큰을 하나씩 바꿔 가며 모델이 '물론입니다, 단계별 계획은…'으로 답을 시작할 확률을 최대화하는 좌표별 최적화로 사람 눈에는 무의미한 문자열을 찾는다. 놀라운 것은 공개 가중치 모델(Llama)에서 기울기를 써서 찾은 공격이 기울기를 볼 수 없는 닫힌 모델(GPT-4 등)에도 전이됐다는 점이다. 화면에는 여러 상용 챗봇이 '인류를 파괴할 단계별 계획'에 순순히 답하는 캡처가 있다. 강사는 그 계획이 정말 해로운지는 논쟁할 수 있지만 기대되는 행동은 거절이라고 말한다. 평가 관점에서 탈옥은 '정적인 프롬프트 목록'으로 잰 안전 점수가 적응적인 공격자 앞에서는 과대평가될 수 있음을 뜻한다.",
+    "더 큰 질문은 '안전이 무엇인가'다. 많은 측면이 정치·법·사회 규범에 달려 있어 맥락적이고 나라마다 다르다. 위험도 다양하다. 환각은 의료·법률·금융에서 위험하지만 능력과 상관이 있어 모델이 정확해지면 줄어든다. 아첨이나 범죄 방조는 능력과 반대로 갈 수도 있다. 불평등이나 비판적 사고 상실 같은 사회적 영향은 능력이 커질수록 커질 수 있다. 안전을 'AI 가 사람들에게 좋은 방향으로 가게 하는 것'으로 넓히면 이 강의 시간으로는 다룰 수 없을 만큼 복잡한 주제가 된다. 마지막으로 이중 용도가 있다. 강력한 사이버보안 에이전트(강사는 Mythos 를 예로 든다)는 시스템을 해킹하는 데도, 침투 시험으로 시스템을 더 안전하게 만드는 데도 쓰인다. 9장의 CyBench 점수가 오른 것이 능력 향상인지 위험 증가인지는 보는 쪽에 따라 다르다."
+   ],
+   "formulas": [
+    {
+     "expr": "ASR = (해로운 요청에 응한 수) / (해로운 요청 수),   과잉 거절률 = (무해한 요청을 거절한 수) / (무해한 요청 수)",
+     "meaning": "노트 보충. ASR(attack success rate)은 낮을수록 안전, 과잉 거절률은 낮을수록 쓸모 있다. 둘은 맞바뀌므로 한쪽만 보고하면 '무조건 거절하는 모델'이 완벽한 안전 점수를 받는다."
+    },
+    {
+     "expr": "P(k 번 중 한 번 이상 뚫림) = 1 − (1 − p)^k",
+     "meaning": "p 는 공격 한 번의 성공 확률, k 는 공격자가 시도하는 횟수(서로 독립 가정). 적응적인 공격자는 여러 번 시도하므로 한 번 시도 기준의 ASR 은 실제 위험을 과소평가한다."
+    }
+   ],
+   "example": {
+    "title": "안전과 쓸모의 맞바꿈",
+    "body": "HarmBench 크기의 해로운 요청 510개 중 51개에 응했다면 ASR = 51/510 = 10%. 겉보기에 아슬아슬하지만 무해한 요청 200개(예: '프로세스를 죽이는 법' 같은 리눅스 질문) 중 30개를 거절했다면 과잉 거절률 15%. 같은 모델을 무조건 거절하도록 바꾸면 ASR 0% 로 '완벽히 안전'하지만 과잉 거절률 100% 로 쓸모가 없다. 공격 한 번의 성공률이 5% 인 탈옥 기법을 공격자가 20가지 변형으로 시도하면 한 번 이상 뚫릴 확률은 1 − 0.95^20 ≈ 0.642, 64% 다. 정적 목록으로 잰 5% 와 적응적 공격자 앞의 64% 는 전혀 다른 숫자다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "# 해로운 요청 510개, 무해하지만 겉보기에 아슬아슬한 요청 200개\nharmful_complied = 51\nbenign_refused = 30\nasr = harmful_complied / 510                 # 공격 성공률(낮을수록 안전)\nover = benign_refused / 200                  # 과잉 거절률(낮을수록 쓸모)\nprint(f\"ASR={asr:.1%}  과잉거절={over:.1%}\")\n\n# 같은 모델을 '무조건 거절'로 바꾸면 ASR 0% 지만 과잉거절 100%\nprint(\"무조건 거절: ASR=0.0%  과잉거절=100.0%\")\n# 자동 탈옥: 공격 문장 20개 중 하나라도 뚫리면 성공으로 센다\np_one = 0.05\nprint(\"시도 20번 중 한 번 이상 뚫릴 확률:\", round(1 - (1 - p_one) ** 20, 3))",
+    "note": "실행 결과: ASR 10.0%, 과잉거절 15.0%, 20번 시도 시 0.642."
+   },
+   "pitfalls": [
+    "안전 점수 하나로 모델을 줄 세우면 '거절을 많이 하는 모델'이 이긴다. 과잉 거절(쓸모)과 함께 봐야 한다.",
+    "정적 프롬프트 목록에서 거절률이 높아도 GCG 같은 자동 최적화 공격이나 여러 번 시도하는 공격자 앞에서는 뚫릴 수 있다.",
+    "AIR-Bench 처럼 규제에서 온 분류는 나라마다 기준이 달라, 한 지역 규제로 낸 점수를 다른 지역에 그대로 옮길 수 없다."
+   ],
+   "check": [
+    {
+     "q": "환각과 아첨은 능력과의 관계가 어떻게 다른가(강의 기준)?",
+     "a": "환각은 능력과 상관이 있어 모델이 정확해질수록 줄어드는 경향이 있지만, 아첨이나 범죄 방조는 능력이 커져도 저절로 줄지 않고 오히려 반대로 갈 수 있다. 그래서 안전 위험마다 다른 대응이 필요하다."
+    },
+    {
+     "q": "공개 모델에서 찾은 GCG 공격이 닫힌 모델에 전이된다는 사실이 평가에 주는 함의는?",
+     "a": "닫힌 모델의 기울기를 보지 못해도 공격할 수 있으므로, 비공개라는 것이 안전을 보장하지 않는다. 안전 평가는 정적 프롬프트만이 아니라 자동화된 적응형 공격까지 포함해야 한다."
+    }
+   ]
+  },
+  {
+   "start": 3900,
+   "title": "현실성(생태학적 타당도) — GDPval·MedHELM·Clio, 현실과 사생활의 줄다리기",
+   "points": [
+    "생태학적 타당도: 평가가 실제 사용을 얼마나 담나. 시험은 실제 사용과 멀고, Arena 프롬프트는 실제 사람에게서 오지만 분포를 통제할 수 없다.",
+    "GDPval(OpenAI, Patwardhan+ 2025): 미국 GDP 상위 9개 산업, 직업 44개, 평균 경력 약 14년의 전문가가 만든 과제(간호사, 컨시어지, 부동산 중개인, 영상 편집자 …).",
+    "MedHELM(Bedi+ 2025): 의료 벤치마크가 표준화 시험에 머물던 것을 넘어 임상의 29명이 낸 임상 과제 121개(공개·비공개 데이터 혼합).",
+    "Clio(Anthropic, Tamkin+ 2024): 사람이 직접 보지 않고 언어 모델이 실제 사용 대화를 분석·요약해 '사람들이 무엇에 쓰나'를 알아낸다.",
+    "현실성과 사생활은 충돌한다 — 실제 질의 스트림의 표본이 가장 값지지만 사생활 문제에 부딪힌다."
+   ],
+   "on_screen": "def realism(): Ecological validity: how well does an evaluation capture real-world use? / Exam benchmarks (e.g., GPQA) are far away from real-world use / Chatbot Arena prompts are from real people, but distribution is uncontrolled. GDPval (OpenAI) [Patwardhan+ 2025]: 44 occupations from top 9 sectors according to US GDP / Tasks come from professionals with ~14 years of experience — 과제 카드(Manufacturing Engineer, Financial and Investment Analyst, Registered Nurse, Film and Video Editor, Customer Service, Concierge, Real Estate Agent: 판매 브로셔, Recreation worker 등). MedHELM [Bedi+ 2025]: Previous medical benchmarks were based on standardized exams / 121 clinical tasks sourced from 29 clinicians, mixture of private and public datasets — 분류 체계 → 벤치마크 → 평가자 → 모델 공개 흐름도. Clio (Anthropic) [Tamkin+ 2024]: Use language models to analyze real user data / Glean general pattern of what people are asking — 막대그래프 'Comparison of Ground Truth and Clio Categories (Synthetic)'(맨 위 Software development questions, 범례 Ground Truth / True Positive / False Positive). 'Unfortunately, realism and privacy are sometimes at odds with each other.'",
+   "explain": [
+    "운전면허 필기시험 만점자가 실제 도로에서 운전을 잘한다는 보장은 없다. 평가가 실제 사용 상황을 얼마나 닮았는지를 심리학에서는 생태학적 타당도(ecological validity)라 부른다. 시험형 벤치마크(GPQA 같은)는 실제 사용과 거리가 멀다. Chatbot Arena 의 프롬프트는 실제 사람에게서 오지만 누가 오는지 통제할 수 없어 그 분포가 우리가 관심 있는 분포인지 알 수 없다. 강사는 개별 질의 수준은 아니더라도 '사용 사례' 수준에서 현실을 담으려는 벤치마크 세 가지를 소개한다.",
+    "GDPval 은 OpenAI 가 만든 것으로, 경제적 가치에서 출발한다. 미국 GDP 기여가 큰 상위 9개 산업에서 직업 44개를 고르고, 그 직업에서 평균 14년쯤 일한 전문가들이 실제 업무와 같은 과제를 만들었다. 간호사, 호텔 컨시어지, 부동산 중개인(새 상가 판매 브로셔 디자인), 영상 편집자 등이다. 과제의 산출물이 문서·표·슬라이드·영상이므로 채점은 같은 직업의 전문가가 모델 산출물과 사람 산출물을 비교해 판정한다. MedHELM 은 의료 분야의 예다. 그동안 의료 벤치마크는 의사 국가시험 같은 표준화 시험이 대부분이었다. 사람도 그 시험을 통과하고 의대를 졸업하지만 곧바로 환자를 수술하지는 않고 긴 수련을 거친다. 언어 모델도 의료 시험을 통과했다고 바로 배치해서는 안 된다. 그래서 MedHELM 은 임상의 29명에게서 그들이 실제로 언어 모델에 물을 만한 임상 과제 121개를 모았다. 객관식 시험 문제와는 모양이 아주 다르고, 일부는 병원의 비공개 데이터로 평가한다.",
+    "그렇다면 사람들이 실제로 무엇을 하는지에 대한 데이터는 누가 가졌나? 모델 개발사다. Anthropic 의 Clio 는 그 데이터를 쓰되 사생활을 지키는 방법을 보여 준다. 사람이 대화를 직접 읽는 대신 언어 모델이 대화를 읽고 주제를 요약·분류하고, 사람은 집계된 패턴만 본다. 그러면 '사람들이 Claude 를 무엇에 쓰는가'(화면 맨 위는 소프트웨어 개발 질문) 같은 질문에 답할 수 있다. 화면의 막대그래프는 정답 범주를 아는 합성 데이터로 Clio 의 분류가 얼마나 맞는지 검증한 것이다(참 양성·거짓 양성을 함께 표시).",
+    "강사는 현실성과 사생활이 때로 충돌한다고 정리한다. 이상적으로는 실제 질의 흐름에서 표본을 뽑아 모델이 얼마나 잘 하는지, 오류가 무엇인지를 깊이 이해하고 싶다. 그것이 가장 가치 있는 평가 데이터다. 그러나 그 순간 사생활 문제에 부딪힌다. Clio 같은 접근은 개별 대화 대신 집계 패턴만 내보내는 타협이며, 노트 보충으로 덧붙이면 이런 시스템은 보통 너무 작은 무리(소수의 사용자만 속한 주제)는 공개하지 않는 최소 크기 기준을 둔다. 작은 무리는 특정 개인을 드러낼 수 있기 때문이다. 국내에서도 상담 로그나 고객센터 대화로 평가 셋을 만들 때 같은 문제가 생긴다."
+   ],
+   "example": {
+    "title": "집계만 내보내기 — 최소 무리 크기",
+    "body": "대화 4,910건을 주제로 묶었더니 '웹 개발 디버깅' 2,100건, '글 다듬기' 1,500건, '데이터 분석' 900건, '여행 계획' 400건, '희귀 질환 상담' 7건, '특정 회사 내부 문의' 3건이 나왔다고 하자(가상). 최소 무리 크기를 50건으로 두면 마지막 두 무리 10건은 숨기고 나머지만 비율로 공개한다: 웹 개발 디버깅 42.8%(2,100/4,910), 글 다듬기 30.5%, 데이터 분석 18.3%, 여행 계획 8.1%(비율은 전체 4,910건 기준). 7건짜리 희귀 질환 무리를 공개하면 사용자가 누구인지 좁혀질 수 있다. 대가는 드문 사용 사례가 평가 설계에서 빠진다는 것 — 현실성과 사생활의 맞바꿈이 숫자로 보인다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "from collections import Counter\n# 대화 4,910건을 주제로 묶은 결과(가상) — 적은 무리는 공개하지 않는다\nclusters = Counter({\"웹 개발 디버깅\": 2100, \"글 다듬기\": 1500, \"데이터 분석\": 900,\n                    \"여행 계획\": 400, \"희귀 질환 상담\": 7, \"특정 회사 내부 문의\": 3})\nK_MIN = 50                                    # 이보다 작은 무리는 숨긴다\nshown = {k: v for k, v in clusters.items() if v >= K_MIN}\ntotal = sum(clusters.values())\nfor k, v in sorted(shown.items(), key=lambda x: -x[1]):\n    print(f\"{k:12s} {v / total:.1%}\")\nprint(\"숨긴 대화:\", total - sum(shown.values()), \"건\")",
+    "note": "실행 결과: 웹 개발 디버깅 42.8%, 글 다듬기 30.5%, 데이터 분석 18.3%, 여행 계획 8.1%, 숨긴 대화 10건. 최소 크기 기준은 노트 보충으로 만든 예이고 Clio 의 실제 값과는 다르다."
+   },
+   "pitfalls": [
+    "'실제 사용자 프롬프트'라고 해서 대표성이 있는 것이 아니다. 어떤 서비스의 어떤 사용자에게서 왔는지가 분포를 정한다(Arena 이용자 ≠ 기업 고객).",
+    "전문가가 만든 과제(GDPval)도 '전문가가 평가용으로 상상한 업무'이지 실제 업무 흐름의 표본은 아니다. 현실성은 정도의 문제다."
+   ],
+   "check": [
+    {
+     "q": "의료 시험 점수가 높은 모델을 바로 임상에 배치하면 안 되는 이유를 강의의 비유로 설명하라.",
+     "a": "사람도 표준화 시험을 통과하고 졸업한 뒤 곧바로 환자를 수술하지 않고 긴 수련을 거친다. 시험은 실제 임상 과제(기록 요약, 환자 안내, 판단 지원)와 모양이 달라 생태학적 타당도가 낮기 때문이다."
+    },
+    {
+     "q": "Clio 가 현실성과 사생활을 함께 잡으려고 쓰는 방법은?",
+     "a": "사람이 대화를 직접 보지 않고 언어 모델이 대화를 요약·분류하게 한 뒤, 사람은 집계된 패턴만 본다. 개별 대화 대신 분포 수준의 정보만 꺼낸다."
+    }
+   ]
+  },
+  {
+   "start": 4130,
+   "title": "타당성 — 학습·테스트 오염을 다루는 네 갈래와 데이터셋 품질",
+   "points": [
+    "기초 원칙은 '테스트 셋으로 학습하지 말라'. 파운데이션 모델 이전(ImageNet, SQuAD)에는 분할이 분명했지만, 지금은 인터넷 전체로 학습하고 무엇을 학습했는지 알리지 않는다.",
+    "갈래 1: 모델에서 오염을 추론한다 — 벤치마크 문항의 순서는 교환 가능해야 하므로, 원래 순서의 로그확률이 섞은 순서보다 체계적으로 높으면 학습한 것이다(Oren+ 2023).",
+    "갈래 2: 보고 규범 — 신뢰구간을 보고하듯 모델 제공자가 학습·테스트 겹침을 보고해야 한다(Zhang+ 2024). 갈래 3: 새 평가 — LiveCodeBench·UncheatableEval 처럼 학습 마감일 이후 자료로 만든다(타임스탬프도 복사 때문에 완전히 안전하진 않다). 갈래 4: 비공개 평가 — 회사 내부 코드, 개인 미공개 글(perplexity 평가에 가장 쉽다).",
+    "데이터셋 품질: SWE-bench → Verified, Platinum 판(Vendrow+ 2025)은 기존 벤치마크의 오류(잘못된 정답·모순·모호함·풀 수 없는 문항)를 걸러 냈다. 에이전트 벤치마크는 테스트 부족·아무것도 안 하는 에이전트가 점수를 얻는 문제가 있다(Zhu+ 2025).",
+    "Docent 처럼 LLM 으로 에이전트 기록을 살펴 문제를 찾는다. 벤치마크를 만들든 돌리든 출력을 직접 읽어라."
+   ],
+   "on_screen": "def validity(): How do we know our evaluations are valid? Train-test overlap: Machine learning 101: don't train on your test set / Pre-foundation models (ImageNet, SQuAD): well-defined train-test splits / Today: train on the Internet and don't tell people about your data. Route 1: try to infer train-test overlap from model — Exploit exchangeability of data points [Oren+ 2023], 'Contamination Test' 그림(Canonical Order 와 Shuffled Order 의 퀴즈 질문들, high/low model log-probability 표시, 'Differences in log-probability between orderings reveal contamination'). Route 2: encourage reporting norms (e.g., people report confidence intervals) / Model providers should report train-test overlap [Zhang+ 2024]. Route 3: use fresh evals / LiveCodeBench, UncheatableEval: scrape new webpages / Timestamps aren't always safe due to copying either. Route 4: use private evals / Companies use internal code bases that aren't on the Internet / Use your personal writings / Easiest for perplexity. Dataset quality: Fixed up SWE-Bench to produce SWE-Bench Verified / Create Platinum versions of benchmarks [Vendrow+ 2025] — (a) Mislabeled question, SVAMP(14 bags, not 2) (b) Logical contradiction, GSM8K(stalls 가 10개이자 20개) (c) Ambiguity, VQA v2.0('아기가 양말을 신었나?' 알 수 없음) (d) Clear flaw / ill-posed, MMLU HS Math(곡선 식이 빠짐). 표: Avg # errors original / cleaned / % errors caused by benchmark errors — SingleOp 2.5/0.3/90%, SingleEq 1.1/0.1/93%, MultiArith 3.5/0.4/89%, SVAMP 18.8/4.3/77%, GSM8K 10.1/5.2/48%, MMLU HS Math 20.5/19.5/5%, Logic Ded. 3-Obj 2.4/2.4/0%, Object Counting 6.3/4.8/24%, Navigate 5.9/5.9/0%, TabFact 17.3/4.3/75%, HotpotQA 26.4/2.3/91%, SQuAD2.0 56.2/9.9/82%, DROP 28.4/6.6/77%, Winograd WSC 16.6/15.0/10%. Problems with agentic benchmarks: insufficient test cases, trivial agent can solve task [Zhu+ 2025] / Docent: use LLM to inspect agent traces to detect problems [post].",
+   "explain": [
+    "학생이 기말고사 문제를 미리 봤다면 점수가 높아도 실력을 말해 주지 않는다. 머신러닝 101 의 첫 원칙이 '테스트 셋으로 학습하지 말라'인 이유다. 파운데이션 모델 이전에는 이 원칙을 지키기 쉬웠다. ImageNet 이나 SQuAD 같은 데이터셋에는 학습 분할과 테스트 분할이 정해져 있었고 모두가 같은 게임을 했다. 지금은 모델이 인터넷 전체와 그 이상으로 학습하고, 무엇이 학습 데이터에 들어 있는지 알리지 않는다. 6장의 수강생 질문 — 시험 문제를 학습하지 않았다는 걸 어떻게 아나 — 에 대한 본격적인 답이 이 장이다. 강사는 네 갈래의 대응을 제시한다.",
+    "첫째 갈래는 모델 자체에서 오염을 추론하는 것이다. 강사가 'Tatsu 의 연구실'(공동 강사 Hashimoto)이라고 소개한 Oren 등의 아이디어가 영리하다. 벤치마크 문항들의 순서는 원래 아무 의미가 없으니(교환 가능성), 모델이 그 데이터셋을 본 적이 없다면 원래 순서로 이어 붙인 문서와 섞은 순서로 이어 붙인 문서의 로그확률이 통계적으로 같아야 한다. 그런데 원래 순서가 섞은 순서들보다 체계적으로 높은 확률을 받으면, 모델이 그 데이터셋 파일을 그 순서 그대로 본 적이 있다는 증거다. 순열 검정이라 모델 내부나 학습 데이터에 접근하지 않고 로그확률만으로 오염을 증명할 수 있다는 점이 강력하다. 둘째 갈래는 규범이다. 통계학에서 추정치를 보고하면 신뢰구간을 같이 보고하는 것이 당연하듯, GPQA 점수를 주장하는 모델 제공자는 테스트 셋으로 학습하지 않았다는 근거(겹침 분석)를 함께 내야 한다는 입장 논문(Zhang+ 2024)이 있다.",
+    "셋째 갈래는 포기하고 최악을 가정하는 것이다. 공개된 평가는 모두 학습됐다고 보고, 대신 언제든 새 평가를 만들 수 있다는 점을 이용한다. LiveCodeBench, UncheatableEval 같은 프로젝트는 새 웹페이지·arXiv 논문·GitHub 저장소를 계속 긁어 모델의 학습 마감일 이후 자료로 평가를 만든다. 꽤 튼튼하지만 타임스탬프도 완전히 안전하지 않다. 오늘 올라온 GitHub 코드가 사실은 예전 저장소를 베낀 것일 수 있다. 넷째 갈래는 비공개 평가다. Google 이나 OpenAI 는 인터넷에 없는 내부 코드베이스로 평가할 수 있고, 학습에 쓰지 않으니 믿을 만하다. 회사가 아니라면 개인적인 글을 쓰면 된다 — 강사는 대학원 시절 떨어지고 온라인에 올리지 않은 논문들을 쓴다고 농담한다. 이 방식은 perplexity 평가에 특히 좋다. 문서만 있으면 로그확률을 잴 수 있으니 문항과 정답을 만들 필요가 없다.",
+    "또 다른 타당성 문제는 데이터셋 품질이다. 9장에서 SWE-bench Verified 를 쓴 이유는 원판에 엄밀하지 않은 단위 테스트와 풀 수 없는 과제가 섞여 있어 사람이 걸러 냈기 때문이다. Vendrow 등의 Platinum 판은 GSM8K·MMLU 같은 기존 벤치마크를 꼼꼼히 감사해 오류 문항을 걸러 냈다. 예시가 인상적이다. SVAMP 에는 '14봉지'인데 정답이 2 로 적힌 문항, GSM8K 에는 마구간이 10개이자 20개라는 모순 문항, VQA 에는 아기 사진만으로는 알 수 없는 '양말을 신었나', MMLU 고교 수학에는 곡선의 식이 빠져 풀 수 없는 문항이 있었다. 표에 따르면 여러 데이터셋에서 모델 오류의 상당 부분(SingleEq 93%, HotpotQA 91%)이 실은 벤치마크 오류 때문이었다. 에이전트 벤치마크는 더 심각할 수 있다. 질문과 답만 보는 것이 아니라 환경 전체를 검증해야 하기 때문이다. 테스트 케이스가 불완전하면 동작하지 않는 해법도 통과하고, Zhu 등(2025)은 아무것도 하지 않는(빈 응답만 내는) 에이전트가 한 벤치마크에서 38% 를 받는 사례를 보고했다(자막에는 'TorchBench'로 들리지만 원 논문에서 벤치마크 이름을 확인하라). 강사는 LLM 으로 에이전트 실행 기록을 훑어 문제를 찾는 도구 Docent 를 정량 일변도 문화에 대한 질적 대응으로 소개하며, 벤치마크를 만들든 돌리든 반드시 출력을 직접 읽고 감사하라고 당부한다."
+   ],
+   "formulas": [
+    {
+     "expr": "p = (1 + #{ j : log p_θ(shuffleⱼ(D)) ≥ log p_θ(D) }) / (1 + N)",
+     "meaning": "Oren+ 2023 의 순열 검정을 단순화한 형태. D 는 원래 순서로 이어 붙인 벤치마크, shuffleⱼ(D) 는 j 번째로 섞은 순서, p_θ 는 모델의 확률, N 은 섞은 횟수. 오염이 없다면 원래 순서는 N+1 개 중 무작위 한 자리이므로, 원래 순서가 맨 위면 p = 1/(N+1) 로 작아져 오염을 의심한다(1 을 더하는 것은 원래 순서 자신을 세는 표준 보정)."
+    },
+    {
+     "expr": "오염률 = |{ 테스트 문항 x : ngrams_n(x) ∩ ngrams_n(학습 데이터) ≠ ∅ }| / |테스트|",
+     "meaning": "노트 보충. 학습 데이터에 접근할 수 있을 때 쓰는 n-gram 겹침 검사(GPT-3 논문은 13-gram). n 이 작으면 흔한 구절 때문에 거짓 양성이, 크면 살짝 바꿔 쓴 문장을 놓치는 거짓 음성이 생긴다."
+    }
+   ],
+   "example": {
+    "title": "순서 검정과 n-gram 겹침을 손으로",
+    "body": "원래 순서로 넣은 벤치마크의 로그확률이 −1000, 99번 섞어서 잰 로그확률이 평균 −1040(표준편차 10)이라면 섞은 것 중 −1000 이상인 것이 없다. p = (1 + 0)/(1 + 99) = 0.01 → 원래 순서를 본 적이 있다고 의심할 만하다. 섞은 것 중 30개가 −1000 이상이었다면 p = 31/100 = 0.31 로 증거가 없다. n-gram 검사: 학습 문장 'the quick brown fox jumps over the lazy dog near the river bank today'(14단어)와 테스트 문장 'a quick brown fox jumps over the lazy dog near the river bank'(13단어)의 8-gram 을 비교하면 테스트의 8-gram 6개 중 5개가 학습 문장에 있다 → 오염 의심. 'what is the capital city of france and why is it famous'의 8-gram 5개는 하나도 겹치지 않는다."
+   },
+   "code": {
+    "lang": "python",
+    "src": "import numpy as np\ndef ngrams(text, n=8):\n    w = text.lower().split()\n    return {tuple(w[i:i + n]) for i in range(len(w) - n + 1)}\ntrain = \"the quick brown fox jumps over the lazy dog near the river bank today\"\ntest = [\"a quick brown fox jumps over the lazy dog near the river bank\",\n        \"what is the capital city of france and why is it famous\"]\ntr = ngrams(train)\nfor t in test:\n    g = ngrams(t); hit = len(g & tr)\n    print(hit, \"/\", len(g), \"겹침 →\", \"오염 의심\" if hit else \"깨끗\")\n\n# 순서 교환성 검정(Oren+ 2023 아이디어): 원래 순서의 로그확률이 섞은 순서보다 높은가\nrng = np.random.default_rng(0)\ncanon = -1000.0                                # 원래 순서로 넣었을 때 logprob\nshuffled = rng.normal(-1040, 10, 99)           # 99번 섞어서 잰 logprob\np = (1 + (shuffled >= canon).sum()) / (1 + len(shuffled))\nprint(\"p-value =\", p)",
+    "note": "실행 결과: 5 / 6 겹침 → 오염 의심, 0 / 5 겹침 → 깨끗, p-value = 0.01."
+   },
+   "diagram": {
+    "title": "오염에 대처하는 네 갈래",
+    "code": "flowchart TB\n  Q{이 점수, 학습한 문제인가?}\n  Q --> R1[1 모델에서 추론<br/>순서 교환성 검정]\n  Q --> R2[2 보고 규범<br/>겹침 분석 공개]\n  Q --> R3[3 새 평가<br/>마감일 이후 자료]\n  Q --> R4[4 비공개 평가<br/>내부 코드·개인 글]\n  R3 -.복사된 콘텐츠.-> W[타임스탬프도 완전하진 않음]\n  R4 -.API 로 보내면.-> W2[서버를 지나감]"
+   },
+   "pitfalls": [
+    "순서 검정은 '원래 순서 그대로 학습한' 오염만 잡는다. 문항을 다른 순서나 다른 형식으로 본 경우, 원 출처 자료만 본 경우는 놓친다 — 음성이 '깨끗함'을 증명하지 않는다.",
+    "벤치마크 정확도가 90% 를 넘으면 남은 오류의 상당수가 벤치마크 자체의 오류일 수 있다. 그 영역의 1~2%p 차이는 라벨 잡음과 구분되지 않는다.",
+    "오염은 대개 '테스트 셋을 실수로 학습'보다 미묘하다. 문항이 파생된 교재·포럼 글이 학습되면 n-gram 겹침 없이도 점수가 부풀 수 있다."
+   ],
+   "check": [
+    {
+     "q": "Oren 등의 검정이 학습 데이터에 접근하지 않고도 오염을 보일 수 있는 이유는?",
+     "a": "오염이 없다면 문항 순서는 교환 가능하므로 원래 순서와 섞은 순서의 로그확률 분포가 같아야 한다. 모델의 로그확률만으로 이 귀무가설을 순열 검정할 수 있어 학습 데이터를 볼 필요가 없다."
+    },
+    {
+     "q": "Platinum 표에서 MMLU HS Math 는 '벤치마크 오류 때문인 모델 오류' 비율이 5% 인데 SingleEq 는 93% 다. 이것이 뜻하는 바는?",
+     "a": "SingleEq 처럼 쉬운 데이터셋에서는 모델이 거의 다 맞히고 남은 오류 대부분이 잘못된 문항 탓이라 정리하면 오류가 거의 사라진다. MMLU HS Math 에서는 모델의 오류가 대부분 진짜 실력 부족이다."
+    }
+   ]
+  },
+  {
+   "start": 4510,
+   "title": "평가의 목적과 게임의 규칙 — 방법 대 모델 대 에이전트, 그리고 정리",
+   "points": [
+    "정답인 평가는 없다. 어떤 질문에 답하려는지에 달렸다: ① 사용자·회사의 구매 결정(모델 A 냐 B 냐) ② 연구자가 원시 능력(지능)을 재고 싶음 ③ 사업·정책을 위해 이득과 해악을 이해 ④ 개발자가 모델을 고칠 피드백.",
+    "파운데이션 모델 이전에는 학습·테스트 분할이 고정돼 '방법(알고리즘)'을 평가했다. 지금은 대부분 '모델·시스템'을 평가하며 무엇이든 허용된다.",
+    "예외: NanoGPT speedrun — 데이터를 고정하고 정해진 검증 손실까지 가는 시간을 겨룬다. 방법을 평가하면 연구자의 알고리즘 혁신을 장려한다.",
+    "정리: 목적을 정하고, 게임의 규칙(방법·모델·에이전트 중 무엇을 평가하나)을 분명히 하라. 난이도·현실성·타당성(오염 없음)을 모두 갖추기는 어렵고 목적에 따라 무엇을 양보할지 고른다.",
+    "다음 주부터는 학습 데이터를 다룬다."
+   ],
+   "on_screen": "def how_to_think_about_evaluation(): What's the point of evaluation? There is no one true evaluation; it depends on what question you're trying to answer. 1. User or company wants to make a purchase decision (model A or model B) for their use case (e.g., customer service chatbots). 2. Researchers want to measure the raw capabilities of a model (e.g., intelligence). 3. We want to understand the benefits + harms of a model (for business and policy reasons). 4. Model developers want to get feedback to improve the model. What are we evaluating? Pre-foundation models, we evaluated methods (standardized train-test splits) / Today, we're mostly evaluating models/systems (anything goes) / There are some exceptions — nanogpt speedrun: fixed data, compute time to get to a particular validation loss, Keller Jordan 의 트윗 캡처(NanoGPT 학습 속도 기록, 2024-10-16). 'Evaluating methods encourage algorithmic innovation from researchers.' Takeaways: There is no one true evaluation; choose the evaluation depending on what you're trying to measure / Clearly state the rules of the game (methods versus models versus agents) / Considerations: difficulty, realism, validity.",
+   "explain": [
+    "강의 끝에서 강사는 한발 물러나 철학적인 질문을 던진다. 평가는 왜 하나? 지금까지 수많은 벤치마크를 봤지만 모든 것을 지배하는 평가 하나는 없다. 지도에 비유하면, 등산 지도·지하철 노선도·지적도는 같은 땅을 그리지만 목적이 달라 서로를 대신하지 못한다. 평가도 목적이 먼저이고, 강사는 그 목적이 흔히 분명히 적혀 있지 않다고 지적한다.",
+    "강사는 목적을 넷으로 나눈다. 첫째, 사용자나 회사가 고객센터 챗봇 같은 특정 용도를 위해 모델 A 와 B 중 무엇을 살지 정하는 구매 결정 — 이때는 자기 용도의 데이터로 만든 평가(현실성)와 비용이 핵심이다. 둘째, 연구자가 '지능' 같은 직관적 개념으로 모델의 원시 능력을 재고 싶은 경우 — 어렵고 오염되지 않은 벤치마크(GPQA·HLE·ARC-AGI)가 맞다. 셋째, 사업이나 정책을 위해 모델의 이득과 해악을 이해하려는 경우 — 안전 벤치마크와 GDPval 같은 경제적 과제가 맞다. 넷째, 개발자가 모델을 고칠 피드백을 얻으려는 경우 — 싸고 매끄럽고 자주 돌릴 수 있는 지표(perplexity, 작은 모델에서도 변별되는 벤치마크)가 맞다. 목적이 다르면 같은 벤치마크 점수도 다르게 읽어야 한다.",
+    "다음 질문은 '무엇을 평가하나'다. 파운데이션 모델 이전에는 학습·테스트 분할이 고정돼 있어 바뀌는 것은 알고리즘뿐이었다. 즉 '방법'을 평가했다. 지금은 대부분 최종 '모델'이나 '시스템'을 평가하고, 그 안에서는 데이터·계산량·스캐폴드 무엇이든 허용된다. 실제로 배포되어 사람들이 쓰는 것이 최종 모델이니 이것도 유용하다. 하지만 예외가 있다. NanoGPT speedrun 은 데이터를 고정하고 정해진 검증 손실에 도달하기까지의 학습 시간을 겨룬다. 이렇게 규칙을 고정해 방법을 평가하면 연구자들이 알고리즘 혁신(옵티마이저, 구조 변경)을 내도록 장려한다. 11강(vTfEyOyzV9E)에서 본 Muon 옵티마이저가 이런 speedrun 문화에서 주목받았다는 것도 연결해 둘 만하다(노트 보충).",
+    "강의의 결론은 세 줄이다. 정답인 평가는 없으니 재려는 것에 맞춰 평가를 고른다. 게임의 규칙 — 방법을 평가하나, 모델을 평가하나, 에이전트(모델 + 스캐폴드)를 평가하나 — 을 분명히 밝힌다. 그리고 난이도, 현실성, 타당성(오염 없음)을 함께 고려한다. 셋을 모두 갖추기는 어렵다. 현실적인 평가(실사용 로그)는 비공개라 재현이 어렵고, 어려운 평가(HLE)는 현실과 멀며, 공개된 평가는 곧 오염된다. 목적에 따라 무엇을 양보할지 정하는 것이 평가 설계의 본질이다. 강사는 다음 주부터 학습 데이터를 다룬다고 예고한다. 이 강의에서 정한 '원하는 행동'이 데이터 선택의 기준이 된다."
+   ],
+   "example": {
+    "title": "목적 네 개에 평가를 짝지어 보기",
+    "body": "국내 쇼핑몰이 고객센터 챗봇 모델을 고른다(목적 ①): 지난달 상담 로그 500건(개인정보 제거)을 뽑아 두 모델 답을 상담사 세 명이 쌍대 비교하고, 건당 비용과 응답 지연을 함께 본다 — 500건이면 승률 60% 의 95% 구간은 ±4.3%p 다. 연구실이 새 추론 기법을 보고한다(목적 ②): GPQA Diamond 198문항으로는 구간이 ±6.6%p 라 부족하니 여러 벤치마크와 시드를 모으고 짝지은 비교를 쓴다. 정책 보고서(목적 ③): HarmBench ASR 과 과잉 거절률을 함께 내고 지역 규제에 맞는 AIR-Bench 범주를 고른다. 사전학습 팀의 매일 점검(목적 ④): 비공개 문서의 bits/byte 와 작은 모델에서도 변별되는 벤치마크를 쓴다. 같은 모델에 네 개의 다른 성적표가 나온다."
+   },
+   "diagram": {
+    "title": "목적에서 평가 설계로",
+    "code": "flowchart LR\n  G1[구매 결정] --> E1[내 데이터 쌍대 비교 + 비용]\n  G2[원시 능력 측정] --> E2[어렵고 새로운 벤치마크 + 신뢰구간]\n  G3[이득·해악 이해] --> E3[안전·경제 과제 벤치마크]\n  G4[개발 피드백] --> E4[perplexity·bits/byte·작은 모델용 벤치]\n  E1 & E2 & E3 & E4 --> R[게임의 규칙 명시<br/>방법·모델·에이전트]\n  R --> T[난이도·현실성·타당성 중 무엇을 양보하나]"
+   },
+   "pitfalls": [
+    "'방법'을 주장하는 논문이 '모델' 점수로 근거를 대면 안 된다. 데이터·계산량이 다르면 방법의 효과와 자원의 효과가 섞인다.",
+    "평가 결과를 보고할 때 목적·규칙·설정(프롬프트, 시도 수, 답 추출, 스캐폴드)을 적지 않으면 숫자를 재현할 수도, 해석할 수도 없다."
+   ],
+   "check": [
+    {
+     "q": "NanoGPT speedrun 이 '방법 평가'인 이유는?",
+     "a": "데이터와 목표 검증 손실을 고정하고 학습 시간만 겨루므로, 결과 차이가 데이터나 모델 크기가 아니라 알고리즘·구현에서 나온다. 그래서 알고리즘 혁신을 장려한다."
+    },
+    {
+     "q": "난이도·현실성·타당성을 동시에 갖추기 어려운 이유를 예 하나로 설명하라.",
+     "a": "실사용 로그로 만든 평가는 현실적이지만 사생활 때문에 공개할 수 없어 재현·검증이 어렵고, 공개하면 곧 학습 데이터로 새어 오염된다. HLE 처럼 어렵게 만든 시험은 현실 사용과 멀다."
+    }
+   ]
+  }
+ ],
+ "concepts": [
+  {
+   "term": "구성 개념 → 구체 지표 (construct validity)",
+   "explain": "직접 관찰할 수 없는 성질(추론력·대화 능력)을 관찰 가능한 지표로 옮기는 것이 평가이며, 그 사이의 틈이 구성 타당도 문제다. 강의 전체를 꿰는 틀.",
+   "at": 120
+  },
+  {
+   "term": "Perplexity",
+   "explain": "테스트 데이터에 준 확률의 토큰당 기하평균의 역수, exp(평균 음의 로그우도). 1 이 최소, 균등분포면 어휘 크기. 토크나이저에 의존하므로 비교에는 bits/byte 를 쓴다.",
+   "at": 345
+  },
+  {
+   "term": "분포 안 vs 분포 밖 평가",
+   "explain": "같은 데이터셋의 학습·테스트 분할로 평가하는 것(2010년대 PTB·1BW)과, 다른 데이터로 학습하고 표준 데이터셋에 제로샷으로 평가하는 것(GPT-2 이후).",
+   "at": 400
+  },
+  {
+   "term": "엔트로피 하한과 KL",
+   "explain": "교차 엔트로피 H(t,p) = H(t) + KL(t‖p) ≥ H(t). 최선의 perplexity 는 참 분포의 엔트로피이며 p = t 일 때만 도달한다. 'perplexity 만능론'의 수학적 근거.",
+   "at": 600
+  },
+  {
+   "term": "조건부 perplexity",
+   "explain": "프롬프트를 조건으로 두고 응답 토큰만으로 잰 perplexity. 관심 없는 토큰(문체)을 측정에서 빼는 방법.",
+   "at": 700
+  },
+  {
+   "term": "MMLU / MMLU-Pro",
+   "explain": "57과목 4지선다 지식·추론 시험(2020)과, 잡음 문항 제거·10지선다·CoT 평가로 어렵게 만든 후속판(2024). 둘 다 90점 근처로 포화됐다.",
+   "at": 1140
+  },
+  {
+   "term": "GPQA Diamond",
+   "explain": "박사 61명이 만든 구글로도 못 푸는 대학원 수준 문항 중, 전문가 2명이 모두 동의하고 비전문가 3명 중 1명 이하만 맞힌 198문항. 전문가 65%, 비전문가 34%.",
+   "at": 1400
+  },
+  {
+   "term": "Humanity's Last Exam",
+   "explain": "상금과 공저자 자격으로 모은 다중모달 2,500문항, 최전선 모델로 거르고 비공개 문항을 따로 둔 시험. 2026년 최고 64.7%.",
+   "at": 1620
+  },
+  {
+   "term": "Elo / Bradley–Terry",
+   "explain": "P(A가 B를 이김) = 1/(1+10^((R_B−R_A)/400)). Arena 는 쌍대 비교 기록 전체에 이 모형을 최대우도로 맞춰 순위를 낸다. 비교 그래프가 연결돼 있으면 모든 모델이 같은 프롬프트를 받을 필요가 없다.",
+   "at": 2040
+  },
+  {
+   "term": "LLM-as-a-judge",
+   "explain": "강한 언어 모델이 답을 채점하거나 쌍대 판정하는 방식(AlpacaEval·WildBench). 싸고 빠르지만 길이·위치·자기 선호 편향이 있어 길이 통제, 순서 교체, 체크리스트로 보완한다.",
+   "at": 2330
+  },
+  {
+   "term": "길이 통제 승률 (LC win rate)",
+   "explain": "승패를 모델 효과·길이 차·지시문 난이도로 회귀한 뒤 길이 차를 0 으로 놓고 다시 계산한 승률. 답을 길게 써서 점수를 올리는 게이밍을 막는다.",
+   "at": 2375
+  },
+  {
+   "term": "메타 평가",
+   "explain": "지표가 좋은지를 평가하는 것. 다른 지표(예: Arena 순위)와의 Spearman 상관으로 정상성을 검사하지만, 그 상관은 당시 모델 집합에서만 유효하다.",
+   "at": 2400
+  },
+  {
+   "term": "에이전트 스캐폴드",
+   "explain": "언어 모델을 언제 어떻게 부르고 어떤 도구를 쓰게 할지 정하는 바깥 로직. 계획·위임·영속 기억·문맥 공학. 에이전트 점수 = 모델 + 스캐폴드의 점수.",
+   "at": 2730
+  },
+  {
+   "term": "pass@k / pass^k",
+   "explain": "k 번 시도 중 한 번이라도 통과할 확률(불편 추정 1 − C(n−c,k)/C(n,k))과 k 번 모두 통과할 확률. 앞은 능력의 상한, 뒤는 신뢰성.",
+   "at": 2760
+  },
+  {
+   "term": "ARC-AGI",
+   "explain": "사람에게는 100% 풀리고 과제마다 고유한 격자 추론 퍼즐. 사전학습 모델은 0점 근처, 추론 모델 이후 급등. 3판(2026)은 상호작용 게임이고 최고 0.5%.",
+   "at": 3260
+  },
+  {
+   "term": "탈옥과 GCG",
+   "explain": "안전 학습을 우회하는 프롬프트. GCG 는 토큰 단위 좌표 최적화로 무의미한 공격 접미사를 찾으며, 공개 모델에서 찾은 공격이 닫힌 모델로 전이된다.",
+   "at": 3720
+  },
+  {
+   "term": "생태학적 타당도",
+   "explain": "평가가 실제 사용 상황을 얼마나 닮았나. 시험은 낮고, 실사용 로그는 높지만 사생활과 충돌한다(GDPval·MedHELM·Clio).",
+   "at": 3910
+  },
+  {
+   "term": "학습·테스트 오염과 교환성 검정",
+   "explain": "웹 규모 학습에서 벤치마크가 학습 데이터에 섞이는 문제. 원래 문항 순서의 로그확률이 섞은 순서보다 높으면 오염을 의심하는 순열 검정(Oren+ 2023)으로 데이터 없이도 증명할 수 있다.",
+   "at": 4180
+  },
+  {
+   "term": "Platinum 벤치마크",
+   "explain": "기존 벤치마크의 오류 문항(잘못된 정답·모순·모호함·풀 수 없음)을 걸러 낸 판. 쉬운 데이터셋에서는 모델 오류의 대부분이 벤치마크 오류였다.",
+   "at": 4400
+  },
+  {
+   "term": "방법 평가 vs 모델 평가",
+   "explain": "데이터·자원을 고정하고 알고리즘을 비교하는 것(NanoGPT speedrun)과, 무엇이든 허용하고 최종 시스템을 비교하는 것. 게임의 규칙을 밝혀야 숫자를 해석할 수 있다.",
+   "at": 4600
+  }
+ ],
+ "trends": [
+  {
+   "claim": "벤치마크의 유통기한이 짧아졌다 — 나오고 1~2년이면 포화된다",
+   "evidence": "MMLU 가 90점대, MMLU-Pro 가 90 근처, GPQA 가 GPT-4 시절 39% 에서 94% 로. 강사는 포화된 벤치마크도 작은 모델 개발·스케일링 법칙 맞추기에는 쓸모 있다고 덧붙인다.",
+   "at": 1530
+  },
+  {
+   "claim": "모든 데이터셋 논문은 같은 그림을 싣는다 — 기존 벤치마크는 쉽고 내 것은 어렵다 (강사 의견, 농담조)",
+   "evidence": "HLE 발표 때 최전선 모델이 한 자릿수였고 2026년 최고가 64.7%. ARC-AGI-3 가 나오며 같은 순환이 반복된다.",
+   "at": 1690
+  },
+  {
+   "claim": "LLM-as-a-judge 가 열린 질문 평가의 주류가 됐고, 체크리스트·루브릭이 필수가 되고 있다 (강사 의견)",
+   "evidence": "AlpacaEval 의 길이 게이밍과 길이 통제판, WildBench 의 프롬프트별 체크리스트. 사람 크라우드소싱도 루브릭 없이는 엉망이 된다는 경험을 근거로 든다.",
+   "at": 2620
+  },
+  {
+   "claim": "평가의 중심이 '말'에서 '행동'(에이전트)으로 옮겨 갔고 코딩이 그 앞줄에 있다",
+   "evidence": "SWE-bench Verified 가 2024년 16.8% 에서 2026년 90%대, CyBench 는 출시 때 10% 안팎에서 사실상 해결. Terminal-Bench 2.0, MLE-bench 등장.",
+   "at": 2820
+  },
+  {
+   "claim": "에이전트 성능은 스캐폴드(계획·위임·기억·문맥 공학)가 크게 좌우한다",
+   "evidence": "Terminal-Bench·MLE-bench 리더보드에서 같은 모델이 에이전트에 따라 다른 점수. 오케스트레이터·하위 에이전트·영속 기억 구조가 표준처럼 쓰인다.",
+   "at": 3120
+  },
+  {
+   "claim": "추론 모델(o1·o3)이 ARC-AGI 의 판도를 바꿨다",
+   "evidence": "사전학습 모델은 수년간 0점 근처였다가 2024년 추론 모델 이후 급등, ARC-AGI-1 은 사실상 해결, 2도 해결 중. 3판은 최고 0.5%.",
+   "at": 3370
+  },
+  {
+   "claim": "사이버보안 능력은 이중 용도라 안전 위험이자 이득이다",
+   "evidence": "CTF 벤치마크가 사실상 풀렸고, Mythos 같은 사이버보안 에이전트는 해킹에도 침투 시험에도 쓰인다고 강사가 언급.",
+   "at": 3870
+  },
+  {
+   "claim": "모델 제공자가 학습·테스트 겹침을 보고하는 규범이 필요하다 (강사 의견)",
+   "evidence": "통계학에서 신뢰구간을 보고하듯 벤치마크 점수에 오염이 없다는 근거를 붙이자는 입장 논문(Zhang+ 2024)을 소개.",
+   "at": 4250
+  },
+  {
+   "claim": "새 평가(학습 마감일 이후 자료)와 비공개 평가로 오염을 피하는 흐름",
+   "evidence": "LiveCodeBench·UncheatableEval 이 새 웹페이지·논문·저장소를 긁고, 회사는 내부 코드베이스로 평가. 다만 복사된 콘텐츠 때문에 타임스탬프도 완전하지 않다.",
+   "at": 4290
+  }
+ ],
+ "study": {
+  "prereq": [
+   "확률·로그·조건부 확률, 베르누이 분포와 표준오차",
+   "언어 모델 학습 손실(교차 엔트로피) — CS336 1~3강, 스케일링 법칙(9·11강)",
+   "Python·NumPy 기본, 로지스틱 회귀"
+  ],
+  "steps": [
+   {
+    "do": "작은 공개 모델(예: GPT-2 small)로 위키 문단 하나의 perplexity 와 bits/byte 를 직접 계산하고, 토크나이저가 다른 모델과 비교해 본다.",
+    "why": "perplexity 가 토크나이저에 의존한다는 것과 조건부 perplexity 의 차이를 손으로 체감한다."
+   },
+   {
+    "do": "HellaSwag 50문항을 합·토큰 평균·글자 평균 세 가지 규칙으로 채점해 점수 차이를 기록한다.",
+    "why": "채점 규칙 하나로 점수가 바뀌는 것을 직접 보고, 리더보드 숫자를 읽을 때 설정을 확인하는 습관을 들인다."
+   },
+   {
+    "do": "벤치마크 결과(문항별 정오)로 정규·Wilson 신뢰구간과 짝지은 부트스트랩을 계산하는 함수를 만들어 두 모델의 차이가 유의한지 판단한다.",
+    "why": "작은 벤치마크의 1~2%p 차이가 잡음인지 실력인지 가르는 기본기다."
+   },
+   {
+    "do": "쌍대 비교 기록(직접 만든 투표 수백 건)에 Bradley–Terry 를 맞추고 부트스트랩으로 점수 구간을 낸다. 온라인 Elo 갱신과 순서 의존성을 비교한다.",
+    "why": "Arena 순위가 어떻게 만들어지고 몇 점 차이가 의미 있는지 이해한다."
+   },
+   {
+    "do": "LLM 심판으로 두 모델을 판정하되 A·B 순서를 바꿔 두 번 묻고, 답 길이와 승률의 관계를 회귀해 길이 통제 승률을 계산한다.",
+    "why": "위치·길이 편향을 직접 측정하고 보정하는 법을 익힌다."
+   },
+   {
+    "do": "HumanEval 류 코드 과제 몇 개를 과제당 10번씩 생성해 pass@1·pass@5·pass^2 를 계산한다.",
+    "why": "능력의 상한(pass@k)과 신뢰성(pass^k)을 구분해 보고하는 법을 익힌다."
+   },
+   {
+    "do": "자기 업무(또는 관심 분야)의 실제 질문 50개로 비공개 평가 셋을 만들고 루브릭을 쓴 뒤 두 모델을 비교하고, 출력을 직접 읽어 감사한다.",
+    "why": "강의의 결론 — 목적을 정하고, 규칙을 밝히고, 출력을 읽어라 — 을 실제로 해 본다."
+   }
+  ],
+  "practice": [
+   "198문항 벤치마크에서 70% 와 66% 를 받은 두 모델의 차이를 짝지은 부트스트랩으로 검정하라(문항별 결과를 가상으로 만들어도 된다).",
+   "Elo 1600 과 1450 인 두 모델의 기대 승률을 손으로 구하고, 약자가 이겼을 때 K=16 으로 갱신하라.",
+   "n=20, c=4 일 때 pass@1, pass@5, pass^2 를 손과 코드로 각각 구하라.",
+   "공개 벤치마크 하나를 골라 문항 순서를 섞은 버전 20개와 원래 순서의 로그확률을 작은 모델로 비교해 교환성 검정을 해 보라.",
+   "GSM8K 에서 무작위 30문항을 직접 읽고 정답·문제 자체의 오류가 있는지 감사하라."
+  ],
+  "resources": [
+   {
+    "title": "CS336 과목 홈페이지",
+    "url": "https://cs336.stanford.edu/"
+   },
+   {
+    "title": "MMLU (Hendrycks et al., 2020)",
+    "url": "https://arxiv.org/abs/2009.03300"
+   },
+   {
+    "title": "GPQA (Rein et al., 2023)",
+    "url": "https://arxiv.org/abs/2311.12022"
+   },
+   {
+    "title": "Chatbot Arena (Chiang et al., 2024)",
+    "url": "https://arxiv.org/abs/2403.04132"
+   },
+   {
+    "title": "Length-Controlled AlpacaEval (Dubois et al., 2024)",
+    "url": "https://arxiv.org/abs/2404.04475"
+   },
+   {
+    "title": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena (Zheng et al., 2023)",
+    "url": "https://arxiv.org/abs/2306.05685"
+   },
+   {
+    "title": "SWE-bench (Jimenez et al., 2023)",
+    "url": "https://arxiv.org/abs/2310.06770"
+   },
+   {
+    "title": "Evaluating Large Language Models Trained on Code — pass@k (Chen et al., 2021)",
+    "url": "https://arxiv.org/abs/2107.03374"
+   },
+   {
+    "title": "Proving Test Set Contamination in Black Box Language Models (Oren et al., 2023)",
+    "url": "https://arxiv.org/abs/2310.17623"
+   },
+   {
+    "title": "Adding Error Bars to Evals (Miller, 2024)",
+    "url": "https://arxiv.org/abs/2411.00640"
+   },
+   {
+    "title": "HELM (Stanford CRFM)",
+    "url": "https://crfm.stanford.edu/helm/"
+   },
+   {
+    "title": "ARC Prize (ARC-AGI)",
+    "url": "https://arcprize.org/"
+   }
+  ]
+ },
+ "jobs": {
+  "roles": [
+   "LLM 평가 엔지니어",
+   "머신러닝 엔지니어(LLM)",
+   "AI 리서치 엔지니어",
+   "MLOps 엔지니어",
+   "AI 안전·레드팀",
+   "데이터 사이언티스트"
+  ],
+  "skills": [
+   "Python",
+   "PyTorch",
+   "NumPy",
+   "LLM",
+   "Hugging Face",
+   "Statistics",
+   "Docker",
+   "Machine Learning"
+  ]
+ },
+ "related": [
+  "JuoVZkPBiKk",
+  "Q15rhEWZPQ4",
+  "vTfEyOyzV9E",
+  "EfM546A79aM",
+  "9vM4p9NN0Ts"
+ ],
+ "materials": {
+  "transcript": "official",
+  "frames": 157,
+  "every_sec": 30
+ },
+ "written_at": "2026-11-21"
+}

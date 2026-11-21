@@ -45,3 +45,4 @@
 - 2026-11-20 · 6-cXp-aOmdg · CS336 · 병렬화 2 — ZeRO·FSDP, 파이프라인 거품, 텐서·시퀀스·전문가 병렬, 그리고 4D 조합과 실제 학습 설정 · 챕터 15 · 본문 26912자
 - 2026-11-20 · EfM546A79aM · CS336 · 추론 — prefill 과 decode 의 산술 강도, KV 캐시 회계, GQA·MLA·양자화·가지치기, 추측 디코딩, 연속 배치와 PagedAttention · 챕터 15 · 본문 23473자
 - 2026-11-20 · vTfEyOyzV9E · CS336 · 스케일링 법칙 심화 — 공개 레시피(MiniCPM·DeepSeek·Kimi K2), WSD, 학습률·배치 법칙, Muon, μP 유도 · 챕터 15 · 본문 23756자
+- 2026-11-20 · JpAxdTWQJxM · CS336 · 평가 — perplexity 에서 시험·Arena·LLM 심판·에이전트·ARC-AGI·안전까지, 그리고 오염과 타당성 · 챕터 15 · 본문 22729자
