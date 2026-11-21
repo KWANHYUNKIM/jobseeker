@@ -62,3 +62,4 @@
 - 2026-11-20 · wElqklprhPE · CS231N · 영상 이해 — 단일 프레임·late/early fusion 에서 3D CNN(C3D·I3D), 두 스트림, nonlocal·영상 트랜스포머, 행동 위치 찾기와 시청각까지 · 챕터 15 · 본문 23367자
 - 2026-11-20 · 9MvD-XsowsE · CS231N · 대규모 분산 학습 — H100 을 사이클 단위로 세기, 서버·포드·클러스터의 대역폭 계층, DP·FSDP·HSDP·활성값 체크포인팅, HFU 와 MFU, 그리고 컨텍스트·파이프라인·텐서 병렬과 Llama3 의 4D 병렬 · 챕터 15 · 본문 24992자
 - 2026-11-20 · 4howBU7THbM · CS231N · 자기지도 학습 — 회전·직소·인페인팅·색칠 프리텍스트 과제에서 MAE, 그리고 InfoNCE·SimCLR·MoCo·CPC·DINO 까지 · 챕터 15 · 본문 22429자
+- 2026-11-20 · Edr4uZFh4EE · CS231N · 생성 모델 2 — GAN 의 minimax 게임과 비포화 손실, 정류 흐름(rectified flow)의 학습·샘플링, CFG·잡음 스케줄, 잠재 확산·DiT 에서 FLUX·MovieGen 까지 · 챕터 15 · 본문 22951자
