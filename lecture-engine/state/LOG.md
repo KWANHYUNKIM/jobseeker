@@ -66,3 +66,4 @@
 - 2026-11-20 · 7lxrKDKtykM · CS231N · 3D 비전 — 점·메시·곡면·복셀에서 PointNet·Chamfer, 딥 암시 함수, NeRF·가우시안 스플래팅, 그리고 모양의 구조까지 · 챕터 15 · 본문 19363자
 - 2026-11-20 · mQOK0Mfyrkk · CS231N · 비전과 언어 — CLIP 제로샷 분류와 그 한계, CoCa, LLaVA·Flamingo 의 두 가지 결합법, Molmo 의 데이터와 가리키기, Segment Anything, 그리고 체이닝(CuPL·VisProg) · 챕터 15 · 본문 23315자
 - 2026-11-20 · XSfmOH_xVSU · CS231N · 로봇 학습 — 문제 정식화와 체화된 지각, 강화학습(DQN·AlphaGo·sim-to-real), 세계 모델과 MPC(입자 동역학·RoboCook), 모방 학습(행동 복제·연쇄 오차·확산 정책), 그리고 VLA·π0 와 평가의 숙제 · 챕터 14 · 본문 18558자
+- 2026-11-20 · g8UaBfj6Sh8 · CS231N · 인간 중심 AI — 사람이 보는 것을 보는 AI 에서 못 보는 것(세밀 분류·편향·사생활), 그리고 보고 싶은 것(앰비언트 의료·VoxPoser·BEHAVIOR)까지 · 챕터 15 · 본문 20883자
