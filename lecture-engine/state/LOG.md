@@ -110,3 +110,4 @@
 - 2026-11-20 · s0S38lz6O7M · CS329Z · AI 에이전트는 도구를 어떻게 쓰나 — 왜 도구인가, Toolformer·ToolkenGPT·ToolLLM·Gorilla, REST·function calling·MCP, BFCL·τ-bench 와 pass^k · 챕터 15 · 본문 21457자
 - 2026-11-20 · q0Q-Hy8TTps · CS329Z · DSPy 대 LangGraph — 에이전트 프레임워크의 추상화, 오픈소스 하네스, 오케스트레이션과 평가 · 챕터 13 · 본문 23817자
 - 2026-11-20 · JC_pLC5EX_w · CS329Z · AI 에이전트 디자인 패턴 — 워크플로 다섯 패턴, ReAct·Reflexion·CodeAct·계획 후 실행, 컨텍스트 관리, 그리고 최소 하네스 Pi · 챕터 15 · 본문 24580자
+- 2026-11-20 · qh5tP6PBZ6U · CS329Z · AI 에이전트의 기억은 어떻게 동작하나 — 네 가지 기억, 저장소 셋, 네 가지 구조 패턴(Voyager·MemGPT·Generative Agents·Mem0), 기억 벤치마크와 남은 문제 · 챕터 15 · 본문 20942자
