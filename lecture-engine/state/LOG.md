@@ -65,3 +65,4 @@
 - 2026-11-20 · Edr4uZFh4EE · CS231N · 생성 모델 2 — GAN 의 minimax 게임과 비포화 손실, 정류 흐름(rectified flow)의 학습·샘플링, CFG·잡음 스케줄, 잠재 확산·DiT 에서 FLUX·MovieGen 까지 · 챕터 15 · 본문 22951자
 - 2026-11-20 · 7lxrKDKtykM · CS231N · 3D 비전 — 점·메시·곡면·복셀에서 PointNet·Chamfer, 딥 암시 함수, NeRF·가우시안 스플래팅, 그리고 모양의 구조까지 · 챕터 15 · 본문 19363자
 - 2026-11-20 · mQOK0Mfyrkk · CS231N · 비전과 언어 — CLIP 제로샷 분류와 그 한계, CoCa, LLaVA·Flamingo 의 두 가지 결합법, Molmo 의 데이터와 가리키기, Segment Anything, 그리고 체이닝(CuPL·VisProg) · 챕터 15 · 본문 23315자
+- 2026-11-20 · XSfmOH_xVSU · CS231N · 로봇 학습 — 문제 정식화와 체화된 지각, 강화학습(DQN·AlphaGo·sim-to-real), 세계 모델과 MPC(입자 동역학·RoboCook), 모방 학습(행동 복제·연쇄 오차·확산 정책), 그리고 VLA·π0 와 평가의 숙제 · 챕터 14 · 본문 18558자
