@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-23T05:01:40",
- "count": 140,
+ "generated_at": "2026-11-23T06:04:43",
+ "count": 141,
  "topics": [
   {
    "key": "llm",
@@ -15,7 +15,7 @@
   {
    "key": "ml-basics",
    "label": "머신러닝 기초",
-   "count": 19
+   "count": 20
   },
   {
    "key": "systems",
@@ -102,7 +102,7 @@
        "key": "statquest-ml",
        "title": "StatQuest 머신러닝 기초 — 아주 쉽게 설명하기",
        "school": "StatQuest",
-       "done": 4,
+       "done": 5,
        "total": 25
       },
       {
@@ -115,7 +115,7 @@
      ],
      "why": "교차검증·과적합·회귀·분류 같은 용어를 하나씩 아주 쉽게 푼다. '모두를 위한 딥러닝'은 같은 내용을 한국어로 10~15분씩 짧게.",
      "tip": "둘 중 편한 쪽 하나만 끝까지. 한국어가 편하면 모두의 딥러닝 lec 01~07(회귀·분류)부터.",
-     "done": 4,
+     "done": 5,
      "total": 49
     },
     {
@@ -246,7 +246,7 @@
      "total": 50
     }
    ],
-   "done": 137,
+   "done": 138,
    "total": 202
   },
   {
@@ -1732,7 +1732,7 @@
    "track": "ai",
    "playlist": "https://www.youtube.com/playlist?list=PLblh5JKOoLUICTaGLRoHQDuF_7q2GfuJF",
    "total": 25,
-   "done": 4,
+   "done": 5,
    "lectures": [
     {
      "no": 1,
@@ -1767,7 +1767,7 @@
      "id": "PWvfrTgaPBI",
      "title": "The Sensitivity, Specificity, Precision, Recall Sing-a-Long!!!",
      "duration_sec": 42,
-     "done": false
+     "done": true
     },
     {
      "no": 6,
@@ -5387,6 +5387,36 @@
    "written_at": "2026-11-23",
    "series": "3b1b-nn",
    "no": 10,
+   "track": "ai"
+  },
+  {
+   "id": "PWvfrTgaPBI",
+   "title": "The Sensitivity, Specificity, Precision, Recall Sing-a-Long!!!",
+   "title_ko": "민감도·특이도·정밀도·재현율 노래 — 세로줄로 나누면 민감도·특이도, 가로줄로 나누면 정밀도, 재현율은 민감도의 다른 이름",
+   "school": "StatQuest",
+   "code": "StatQuest",
+   "term": "기초 25편",
+   "speaker": "Josh Starmer",
+   "topic": "ml-basics",
+   "tags": [
+    "Machine Learning",
+    "Python",
+    "NumPy",
+    "scikit-learn",
+    "Statistics"
+   ],
+   "level": "입문",
+   "one_line": "민감도·특이도는 '실제 정답' 무리 안에서, 정밀도는 '예측한 것' 무리 안에서 맞힌 비율이고, 재현율은 민감도와 똑같은 식이다",
+   "duration_sec": 42,
+   "published": "2022-02-10",
+   "views": 167006,
+   "url": "https://www.youtube.com/watch?v=PWvfrTgaPBI",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/PWvfrTgaPBI/mqdefault.jpg",
+   "chapters": 4,
+   "written_at": "2026-11-23",
+   "series": "statquest-ml",
+   "no": 5,
    "track": "ai"
   },
   {
