@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-21T17:45:25",
+ "generated_at": "2026-11-22T14:59:30",
  "count": 126,
  "topics": [
   {
@@ -63,6 +63,604 @@
    "count": 2
   }
  ],
+ "tracks": [
+  {
+   "key": "ai",
+   "label": "AI·머신러닝",
+   "for": "머신러닝·딥러닝을 처음 보는 사람",
+   "goal": "신경망이 무엇을 하는지 그림으로 이해 → 손으로 작은 모델을 만들어 봄 → 대학 정규 과목을 따라갈 수 있게 됨",
+   "how": [
+    "수식부터 보지 않는다. 1·2단계는 그림과 비유로 '무엇을 하려는지'만 잡고, 식은 3단계부터 천천히 본다.",
+    "한 편을 보면 노트의 '확인 문제'를 먼저 풀어 본다. 못 풀면 그 챕터의 원본 영상 시각을 눌러 그 부분만 다시 본다.",
+    "4단계(직접 만들기)는 꼭 손으로 친다. 코드를 따라 치며 숫자가 바뀌는 걸 보는 게 강의 10편보다 빨리 남는다.",
+    "Stanford 정규 과목(5단계부터)은 앞 단계를 끝낸 뒤에 본다. 노트의 '입문' 표시부터 골라 보면 덜 막힌다.",
+    "선수 지식은 세 가지면 된다 — 파이썬 기초, 고등학교 수준의 함수·그래프, 행렬 곱이 무엇인지. 모르면 그 자리에서 찾아보고 넘어간다."
+   ],
+   "steps": [
+    {
+     "title": "1단계 · 그림으로 감 잡기",
+     "level": "입문",
+     "series": [
+      {
+       "key": "3b1b-nn",
+       "title": "그림으로 보는 신경망 (3Blue1Brown)",
+       "school": "3Blue1Brown",
+       "done": 0,
+       "total": 10
+      }
+     ],
+     "why": "신경망·경사하강법·역전파·트랜스포머를 애니메이션으로 보여 준다. 식 없이도 '아 이런 거구나'가 생긴다.",
+     "tip": "1~4편(신경망·학습·역전파)만 먼저. 5편부터는 LLM 이야기라 3단계 뒤에 다시 와도 된다.",
+     "done": 0,
+     "total": 10
+    },
+    {
+     "title": "2단계 · 머신러닝 용어를 쉬운 말로",
+     "level": "입문",
+     "series": [
+      {
+       "key": "statquest-ml",
+       "title": "StatQuest 머신러닝 기초 — 아주 쉽게 설명하기",
+       "school": "StatQuest",
+       "done": 0,
+       "total": 25
+      },
+      {
+       "key": "dlzeroall-s1",
+       "title": "모두를 위한 딥러닝 시즌 1 (한국어, 이론편)",
+       "school": "Sung Kim(HKUST)",
+       "done": 0,
+       "total": 24
+      }
+     ],
+     "why": "교차검증·과적합·회귀·분류 같은 용어를 하나씩 아주 쉽게 푼다. '모두를 위한 딥러닝'은 같은 내용을 한국어로 10~15분씩 짧게.",
+     "tip": "둘 중 편한 쪽 하나만 끝까지. 한국어가 편하면 모두의 딥러닝 lec 01~07(회귀·분류)부터.",
+     "done": 0,
+     "total": 49
+    },
+    {
+     "title": "3단계 · 딥러닝 입문 강의",
+     "level": "입문",
+     "series": [
+      {
+       "key": "mit-6s191",
+       "title": "MIT 6.S191 딥러닝 입문",
+       "school": "MIT",
+       "done": 0,
+       "total": 10
+      },
+      {
+       "key": "cs230-2025",
+       "title": "CS230 딥러닝 (Autumn 2025)",
+       "school": "Stanford",
+       "done": 9,
+       "total": 9
+      }
+     ],
+     "why": "대학 강의지만 입문용이다. MIT 6.S191 은 일주일 집중 과정이라 한 편이 한 주제로 깔끔하고, CS230 은 Andrew Ng 의 실무 감각(데이터·평가·프로젝트)이 강하다.",
+     "tip": "6.S191 1~3강(기초·RNN/트랜스포머·CNN)을 먼저, CS230 은 '입문' 표시 강의부터.",
+     "done": 9,
+     "total": 19
+    },
+    {
+     "title": "4단계 · 직접 만들어 보기",
+     "level": "중급",
+     "series": [
+      {
+       "key": "karpathy-z2h",
+       "title": "Neural Networks: Zero to Hero — 직접 만들며 배우는 신경망",
+       "school": "Andrej Karpathy",
+       "done": 0,
+       "total": 10
+      }
+     ],
+     "why": "역전파 엔진(micrograd)부터 GPT 까지 빈 파일에서 직접 짠다. 앞에서 그림으로 본 것이 코드로 굳는다.",
+     "tip": "1편(micrograd)만 해도 큰 수확. 노트의 코드 칸을 직접 돌려 보고, 막히면 원본 영상의 그 시각으로.",
+     "done": 0,
+     "total": 10
+    },
+    {
+     "title": "5단계 · 대학 정규 과목(기초 이론)",
+     "level": "중급",
+     "series": [
+      {
+       "key": "cs229-2026",
+       "title": "CS229 머신러닝 (Spring 2026)",
+       "school": "Stanford",
+       "done": 17,
+       "total": 17
+      },
+      {
+       "key": "cs221-2025",
+       "title": "CS221 인공지능 원리와 기법 (Autumn 2025)",
+       "school": "Stanford",
+       "done": 20,
+       "total": 20
+      }
+     ],
+     "why": "수식으로 왜 그렇게 되는지까지 간다. CS229 는 머신러닝 이론, CS221 은 탐색·게임·확률 추론까지 AI 전반.",
+     "tip": "한 번에 다 보지 않는다. 앞 단계에서 이름만 들어 본 주제(선형회귀·로지스틱·신경망)부터 골라 본다.",
+     "done": 37,
+     "total": 37
+    },
+    {
+     "title": "6단계 · 분야 하나 골라 깊이",
+     "level": "중급",
+     "series": [
+      {
+       "key": "cs231n-2025",
+       "title": "CS231N 컴퓨터 비전 딥러닝 (Spring 2025)",
+       "school": "Stanford",
+       "done": 18,
+       "total": 18
+      },
+      {
+       "key": "cme295-2025",
+       "title": "CME295 트랜스포머와 LLM (Autumn 2025)",
+       "school": "Stanford",
+       "done": 9,
+       "total": 9
+      }
+     ],
+     "why": "이미지(CS231N)든 언어 모델(CME295)이든 하나를 고른다. 채용 공고는 분야를 하나 깊게 판 사람을 찾는다.",
+     "tip": "관심 있는 쪽 하나만. 두 과목 모두 1강이 전체 지도라 거기서 고르면 된다.",
+     "done": 27,
+     "total": 27
+    },
+    {
+     "title": "7단계 · 최신 흐름과 심화",
+     "level": "심화",
+     "series": [
+      {
+       "key": "cs336-2026",
+       "title": "CS336 LLM 바닥부터 만들기 (Spring 2026)",
+       "school": "Stanford",
+       "done": 18,
+       "total": 18
+      },
+      {
+       "key": "cs25-v6",
+       "title": "CS25 트랜스포머 유나이티드 V6",
+       "school": "Stanford",
+       "done": 9,
+       "total": 9
+      },
+      {
+       "key": "cs329z-2026",
+       "title": "CS329Z AI 에이전트 엔지니어링 (Autumn 2026)",
+       "school": "Stanford",
+       "done": 10,
+       "total": 10
+      },
+      {
+       "key": "cs153",
+       "title": "CS153 프런티어 시스템 (특강)",
+       "school": "Stanford",
+       "done": 13,
+       "total": 13
+      }
+     ],
+     "why": "LLM 을 바닥부터 만드는 법(CS336), 연구 최전선 특강(CS25), 에이전트(CS329Z), 업계 이야기(CS153).",
+     "tip": "CS153 은 수식이 없는 업계 특강이라 언제 봐도 된다 — 지루할 때 쉬어 가는 용도로.",
+     "done": 50,
+     "total": 50
+    }
+   ],
+   "done": 123,
+   "total": 202
+  },
+  {
+   "key": "coding-test",
+   "label": "코딩테스트",
+   "for": "알고리즘 문제를 처음 풀어 보는 사람",
+   "goal": "자주 나오는 유형(그리디·구현·DFS/BFS·정렬·이진 탐색·DP·최단 경로)을 알아보고 시간 안에 푼다",
+   "how": [
+    "강의 한 편 = 유형 하나. 보고 나면 그 유형 문제를 백준·프로그래머스에서 쉬운 것 3개를 바로 푼다.",
+    "30분 고민해도 안 되면 답을 본다. 대신 다음 날 답을 안 보고 다시 푼다 — 이게 실력이 붙는 구간이다.",
+    "언어는 하나로 고정(파이썬 추천 — 강의가 파이썬이다).",
+    "자료구조 강의는 이코테를 하다가 '스택·큐·힙·트리'가 막힐 때 그 편만 찾아 본다."
+   ],
+   "steps": [
+    {
+     "title": "1단계 · 유형별 핵심",
+     "level": "입문",
+     "series": [
+      {
+       "key": "icote-2021",
+       "title": "이것이 취업을 위한 코딩 테스트다 (파이썬)",
+       "school": "동빈나",
+       "done": 0,
+       "total": 15
+      }
+     ],
+     "why": "국내 코딩테스트 출제 경향에 맞춰 유형을 순서대로 묶었다. 1편이 파이썬 문법 총정리라 그것부터.",
+     "tip": "1~5편(문법·그리디·DFS/BFS·정렬·이진 탐색)이 시험의 절반이다.",
+     "done": 0,
+     "total": 15
+    },
+    {
+     "title": "2단계 · 자료구조 기본기",
+     "level": "중급",
+     "series": [
+      {
+       "key": "ds-python",
+       "title": "자료구조 — 파이썬으로 배우기",
+       "school": "신찬수(한국외대)",
+       "done": 0,
+       "total": 56
+      }
+     ],
+     "why": "배열·연결 리스트·스택·큐·힙·해시·트리를 파이썬으로 직접 구현한다. 문제를 '왜 이렇게 푸나'가 보인다.",
+     "tip": "필요한 장만. 순서대로 다 볼 필요 없다.",
+     "done": 0,
+     "total": 56
+    }
+   ],
+   "done": 0,
+   "total": 71
+  },
+  {
+   "key": "backend",
+   "label": "백엔드",
+   "for": "서버 개발을 처음 배우는 사람",
+   "goal": "요청이 서버에 와서 DB 를 거쳐 응답이 나가기까지를 설명하고, 스프링 부트로 작은 CRUD 서비스를 만든다",
+   "how": [
+    "네트워크 기초를 먼저 — HTTP·포트·TCP 를 모르면 프레임워크가 하는 일이 마법처럼 보인다.",
+    "강의를 따라 만든 프로젝트는 꼭 끝까지 돌려 보고, 기능 하나를 내 마음대로 바꿔 본다(게시판 → 댓글 추가처럼).",
+    "국내 채용은 자바·스프링이 가장 많다. 이 사이트의 '기술도서' 서가(스프링·JPA·HTTP)가 이 강의들의 다음 책이다.",
+    "CS50W 는 영어 강의지만 웹이 어떻게 굴러가는지를 가장 차근차근 보여 준다 — 노트로 먼저 읽고 필요한 부분만 영상으로."
+   ],
+   "steps": [
+    {
+     "title": "1단계 · 네트워크·웹의 원리",
+     "level": "입문",
+     "series": [
+      {
+       "key": "net-basics",
+       "title": "네트워크 기초 이론 — 백엔드 개발자 관점",
+       "school": "널널한 개발자",
+       "done": 0,
+       "total": 42
+      }
+     ],
+     "why": "IP·포트·TCP·HTTP·CORS·JWT 를 개발자 관점에서 설명한다. 면접 단골 질문이기도 하다.",
+     "tip": "앞 10편 정도면 충분히 출발할 수 있다.",
+     "done": 0,
+     "total": 42
+    },
+    {
+     "title": "2단계 · 웹 프로그래밍 전체 그림",
+     "level": "입문",
+     "series": [
+      {
+       "key": "cs50w-2020",
+       "title": "CS50 웹 프로그래밍 (Python·JavaScript·Django)",
+       "school": "Harvard",
+       "done": 0,
+       "total": 10
+      }
+     ],
+     "why": "HTML → Python → Django → SQL → API → 테스트·배포까지 한 학기에 훑는다. 어떤 언어로 가도 같은 그림이다.",
+     "tip": "0~4강(HTML·Git·Python·Django·SQL)만 해도 서버가 무엇을 하는지 잡힌다.",
+     "done": 0,
+     "total": 10
+    },
+    {
+     "title": "3단계 · 스프링 부트로 만들어 보기",
+     "level": "중급",
+     "series": [
+      {
+       "key": "hongpark-boot",
+       "title": "스프링 부트, 입문!",
+       "school": "홍팍",
+       "done": 0,
+       "total": 34
+      }
+     ],
+     "why": "게시판을 만들며 MVC·JPA·REST API·테스트·IoC/DI·AOP 까지 간다. 국내 신입 백엔드 공고가 바라는 범위와 거의 같다.",
+     "tip": "따라 치되, 각 편이 끝나면 노트의 '확인 문제'로 말로 설명할 수 있나 점검한다.",
+     "done": 0,
+     "total": 34
+    }
+   ],
+   "done": 0,
+   "total": 86
+  },
+  {
+   "key": "frontend",
+   "label": "프론트엔드",
+   "for": "웹 화면 만들기를 처음 배우는 사람",
+   "goal": "HTML·CSS 로 화면을 짜고, 자바스크립트로 움직이게 하고, 리액트로 작은 앱을 만든다",
+   "how": [
+    "보기만 하면 남지 않는다 — 강의 옆에 에디터를 열고 같은 화면을 직접 만든다.",
+    "HTML 은 짧게, 자바스크립트는 길게. 프론트엔드 면접의 대부분이 자바스크립트다.",
+    "리액트는 자바스크립트 기초(함수·배열 메서드·비동기)를 끝낸 뒤에. 순서를 바꾸면 리액트가 어려운 게 아니라 JS 가 어려운 것이다.",
+    "작은 것 하나라도 끝까지 만들어 배포해 본다(할 일 목록·날씨 앱) — 포트폴리오의 첫 줄이 된다."
+   ],
+   "steps": [
+    {
+     "title": "1단계 · HTML 첫걸음",
+     "level": "입문",
+     "series": [
+      {
+       "key": "opentutorials-html",
+       "title": "생활코딩 HTML — 웹의 첫걸음",
+       "school": "생활코딩",
+       "done": 0,
+       "total": 44
+      }
+     ],
+     "why": "웹 페이지가 무엇으로 되어 있는지, 태그 하나하나를 아주 천천히 설명한다. 한 편이 5~10분이다.",
+     "tip": "빠르게 훑고 다음으로. 막히는 태그만 다시 본다.",
+     "done": 0,
+     "total": 44
+    },
+    {
+     "title": "2단계 · 자바스크립트 기초",
+     "level": "입문",
+     "series": [
+      {
+       "key": "dream-js",
+       "title": "자바스크립트 기초 강의 (드림코딩)",
+       "school": "드림코딩",
+       "done": 0,
+       "total": 27
+      }
+     ],
+     "why": "변수·함수·클래스·배열·비동기(Promise·async)를 노트를 쓰며 차근차근. 프론트엔드의 몸통이다.",
+     "tip": "배열 API·비동기 편은 두 번 본다.",
+     "done": 0,
+     "total": 27
+    },
+    {
+     "title": "3단계 · 리액트 기초",
+     "level": "중급",
+     "series": [
+      {
+       "key": "noona-react",
+       "title": "리액트 기초 강의",
+       "school": "코딩알려주는누나",
+       "done": 0,
+       "total": 12
+      }
+     ],
+     "why": "컴포넌트·state·props·hooks 로 실제 앱을 만든다.",
+     "tip": "강의 앱을 만든 뒤 기능 하나를 내 아이디어로 더한다.",
+     "done": 0,
+     "total": 12
+    }
+   ],
+   "done": 0,
+   "total": 83
+  },
+  {
+   "key": "design",
+   "label": "디자인(UI·UX)",
+   "for": "디자인을 배운 적 없는 사람 — 개발자도 포함",
+   "goal": "보기 좋은 화면의 규칙(그리드·글자·색·여백)을 알고, 사용자 입장에서 흐름을 설계하고, 피그마로 화면을 그린다",
+   "how": [
+    "감각보다 규칙부터 — 정렬·여백·글자 크기 몇 가지만 지켜도 화면이 확 달라진다.",
+    "좋아하는 앱 화면 하나를 골라 피그마로 똑같이 따라 그려 본다. 따라 그리기가 가장 빠른 공부다.",
+    "UX 는 '누가, 왜, 어떤 순서로 쓰나'를 묻는 일이다. 화면을 그리기 전에 그 질문에 한 줄로 답해 본다.",
+    "포트폴리오는 결과 화면보다 '왜 이렇게 했나'를 보여 준다 — 노트의 체크리스트를 그 근거로 쓴다."
+   ],
+   "steps": [
+    {
+     "title": "1단계 · 화면 디자인의 규칙",
+     "level": "입문",
+     "series": [
+      {
+       "key": "designbase-web",
+       "title": "웹 디자인 입문 — 그리드·타이포·색·여백",
+       "school": "디자인베이스",
+       "done": 0,
+       "total": 29
+      }
+     ],
+     "why": "그리드·게슈탈트·타이포그래피·색·여백·이미지를 짧은 편으로 하나씩. 디자인 '용어'가 생긴다.",
+     "tip": "한 편 보고 내가 쓰는 사이트에서 그 규칙이 어디 쓰였나 찾아본다.",
+     "done": 0,
+     "total": 29
+    },
+    {
+     "title": "2단계 · UX 의 생각법",
+     "level": "입문",
+     "series": [
+      {
+       "key": "ux-basics",
+       "title": "UX 디자인 핵심 기초",
+       "school": "ForDesignBeginner",
+       "done": 0,
+       "total": 18
+      }
+     ],
+     "why": "UI 와 UX 의 차이, 인터랙션, 사용자 경험의 품질, UX 프로세스까지.",
+     "tip": "Chapter 1~8 이 개념, 뒤쪽이 실무 프로세스다.",
+     "done": 0,
+     "total": 18
+    },
+    {
+     "title": "3단계 · 피그마로 그리기",
+     "level": "입문",
+     "series": [
+      {
+       "key": "uxschool-figma",
+       "title": "Figma UI 디자인 — 기초부터 프로토타입까지",
+       "school": "UX스쿨",
+       "done": 0,
+       "total": 26
+      }
+     ],
+     "why": "피그마 기초부터 컴포넌트·오토 레이아웃·프로토타입까지. 회사들이 실제로 쓰는 도구다.",
+     "tip": "따라 그린 화면을 하나의 작은 앱 시안으로 이어 붙이면 포트폴리오 1번이 된다.",
+     "done": 0,
+     "total": 26
+    }
+   ],
+   "done": 0,
+   "total": 73
+  },
+  {
+   "key": "detail-page",
+   "label": "상세페이지·포토샵",
+   "for": "포토샵을 처음 켜 보는 사람, 쇼핑몰 상세페이지를 직접 만들고 싶은 사람",
+   "goal": "포토샵 기본 도구를 다루고, 팔리는 상세페이지의 구성(후킹 → 문제 → 해결 → 근거 → 구매 유도)으로 한 장을 완성한다",
+   "how": [
+    "도구는 필요할 때 배운다 — 포토샵 기초는 1~6강(화면·선택·브러시·펜툴·레이어)만 먼저.",
+    "상세페이지는 디자인보다 '구성'이 먼저다. 그리기 전에 섹션 순서를 글로 적는다(기획 강의).",
+    "스마트스토어 상세페이지는 가로 860px 이 기준이다 — 새 문서를 만들 때부터 맞춘다.",
+    "잘 팔리는 상세페이지 3개를 캡처해 섹션마다 무엇을 말하는지 적어 본다. 따라 하기 강의와 같이 하면 빠르다.",
+    "폰트·이미지는 저작권을 확인한다(무료 상업용 폰트·직접 찍은 사진)."
+   ],
+   "steps": [
+    {
+     "title": "1단계 · 포토샵 기본 도구",
+     "level": "입문",
+     "series": [
+      {
+       "key": "ps-basics",
+       "title": "포토샵 기초 강좌 (포토샵 2024~2026)",
+       "school": "에디터 몽키",
+       "done": 0,
+       "total": 15
+      }
+     ],
+     "why": "인터페이스·선택 도구·브러시·펜툴·레이어·스마트 오브젝트·생성형 채우기까지 최신 포토샵 기준.",
+     "tip": "강좌마다 소스 파일이 있다 — 꼭 같이 따라 한다.",
+     "done": 0,
+     "total": 15
+    },
+    {
+     "title": "2단계 · 상세페이지 기획",
+     "level": "입문",
+     "series": [
+      {
+       "key": "ps-detail-intro",
+       "title": "상세페이지 디자인 — 시작 전에 알아 둘 것",
+       "school": "celestar1",
+       "done": 0,
+       "total": 7
+      }
+     ],
+     "why": "시작 전에 알아 둘 것, 설득하는 구성(마케팅 이론), 무료 폰트, gif 만들기까지.",
+     "tip": "1편(이것만 알고 시작하세요)을 보고 내 상품 하나로 섹션 순서를 적어 본다.",
+     "done": 0,
+     "total": 7
+    },
+    {
+     "title": "3단계 · 포토샵으로 직접 만들기",
+     "level": "중급",
+     "series": [
+      {
+       "key": "ps-detail-practice",
+       "title": "포토샵으로 쇼핑몰 상세페이지 만들기 (실습)",
+       "school": "Min_yonug",
+       "done": 0,
+       "total": 7
+      },
+      {
+       "key": "ezdesign-detail",
+       "title": "상세페이지 디자인 따라하기 (가구·화장품)",
+       "school": "이지디자인",
+       "done": 0,
+       "total": 7
+      }
+     ],
+     "why": "제품 사진 보정·배경 정리·레이어 정리부터 가구·화장품 상세페이지를 처음부터 끝까지 따라 만든다.",
+     "tip": "따라 만든 뒤 같은 구성으로 다른 상품을 한 장 더 만든다 — 그게 진짜 내 것이 된다.",
+     "done": 0,
+     "total": 14
+    }
+   ],
+   "done": 0,
+   "total": 36
+  },
+  {
+   "key": "toeic",
+   "label": "토익",
+   "for": "토익 점수가 없거나 600점 아래인 사람",
+   "goal": "시험 구조와 공부법을 알고, 문법 9개 주제와 LC 파트별 풀이법으로 목표 점수(대개 700~800)를 첫 시험에 넘는다",
+   "how": [
+    "공부법 영상부터 — 무엇을 버리고 무엇에 시간을 쓰는지 알면 같은 시간에 점수가 다르다.",
+    "매일 하는 것 셋: 단어(30분), 문법 한 주제 또는 RC 한 강, LC 듣기(받아쓰기·따라 말하기).",
+    "노트의 예문은 직접 만든 것이다. 기출 문제는 공식 문제집(ETS)으로 푼다 — 강의 노트는 풀이 '방법'을 정리한 것.",
+    "2~3주마다 실전 모의고사 한 회를 시간 재고 풀고, 틀린 유형을 노트의 그 강의로 돌아가 다시 본다.",
+    "LC 는 '들리는 것'보다 '패턴'이다 — 파트1 사진 묘사·파트2 의문사 응답의 정답/오답 패턴부터."
+   ],
+   "steps": [
+    {
+     "title": "1단계 · 공부법과 시험 구조",
+     "level": "입문",
+     "series": [
+      {
+       "key": "toeic-nobase",
+       "title": "토익 노베이스 공부법 (250→855)",
+       "school": "김눕눕",
+       "done": 0,
+       "total": 6
+      }
+     ],
+     "why": "250점에서 855점까지 간 독학 경험 — 노베이스가 하지 말아야 할 것, LC·RC 공부 순서.",
+     "tip": "6편 모두 짧다. 하루에 다 보고 내 공부 계획표를 만든다.",
+     "done": 0,
+     "total": 6
+    },
+    {
+     "title": "2단계 · 문법 9일 완성",
+     "level": "입문",
+     "series": [
+      {
+       "key": "toeic-grammar",
+       "title": "토익 독학 문법 정복 9일",
+       "school": "해커스토익",
+       "done": 0,
+       "total": 9
+      }
+     ],
+     "why": "시제·수동태·준동사·분사·품사·접속사·관계사·비교까지 토익 문법 전 범위를 9일로 나눴다.",
+     "tip": "하루 한 편, 보고 나서 노트의 확인 문제를 푼다.",
+     "done": 0,
+     "total": 9
+    },
+    {
+     "title": "3단계 · RC 파트별 전략",
+     "level": "중급",
+     "series": [
+      {
+       "key": "toeic-rc",
+       "title": "ETS 토익 기출 공식입문서 RC (무료 인강)",
+       "school": "YBM 원탑토익",
+       "done": 0,
+       "total": 20
+      }
+     ],
+     "why": "Part 5 품사·문법 → Part 6 → Part 7 질문 유형·지문 유형·다중 지문 순서로 ETS 공식 입문서를 따라간다.",
+     "tip": "문법 9일과 겹치는 Part 5 는 빠르게, Part 7 은 천천히.",
+     "done": 0,
+     "total": 20
+    },
+    {
+     "title": "4단계 · LC 공부법",
+     "level": "중급",
+     "series": [
+      {
+       "key": "toeic-lc",
+       "title": "민지원의 토익랜드 — LC 공부법",
+       "school": "해커스토익",
+       "done": 0,
+       "total": 23
+      }
+     ],
+     "why": "LC 파트별 문장 유형, 빈출 문장, 정답/오답 패턴, 귀 뚫는 방법.",
+     "tip": "RC 와 같이 간다 — 하루에 한 편씩 번갈아.",
+     "done": 0,
+     "total": 23
+    }
+   ],
+   "done": 0,
+   "total": 58
+  }
+ ],
  "series": [
   {
    "key": "cs229-2026",
@@ -70,6 +668,7 @@
    "school": "Stanford",
    "code": "CS229",
    "term": "Spring 2026",
+   "track": "ai",
    "playlist": "https://www.youtube.com/playlist?list=PLaqpC4kq8Gpw",
    "total": 17,
    "done": 17,
@@ -201,6 +800,7 @@
    "school": "Stanford",
    "code": "CS336",
    "term": "Spring 2026",
+   "track": "ai",
    "playlist": "https://www.youtube.com/playlist?list=PLoROMvodv4rMqXOcazWaTUHhq-yembLCV",
    "total": 18,
    "done": 18,
@@ -339,6 +939,7 @@
    "school": "Stanford",
    "code": "CS231N",
    "term": "Spring 2025",
+   "track": "ai",
    "playlist": "https://www.youtube.com/playlist?list=PLoROMvodv4rOmsNzYBMe0gJY2XS8AQg16",
    "total": 18,
    "done": 18,
@@ -477,6 +1078,7 @@
    "school": "Stanford",
    "code": "CME295",
    "term": "Autumn 2025",
+   "track": "ai",
    "playlist": "https://www.youtube.com/playlist?list=PLoROMvodv4rOCXd21gf0CF4xr35yINeOy",
    "total": 9,
    "done": 9,
@@ -552,6 +1154,7 @@
    "school": "Stanford",
    "code": "CS230",
    "term": "Autumn 2025",
+   "track": "ai",
    "playlist": "https://www.youtube.com/playlist?list=PLoROMvodv4rNRRGdS0rBbXOUGA0wjdh1X",
    "total": 9,
    "done": 9,
@@ -627,6 +1230,7 @@
    "school": "Stanford",
    "code": "CS221",
    "term": "Autumn 2025",
+   "track": "ai",
    "playlist": "https://www.youtube.com/playlist?list=PLoROMvodv4rMeDqwS1yFl3j3sR_-MQNEN",
    "total": 20,
    "done": 20,
@@ -779,6 +1383,7 @@
    "school": "Stanford",
    "code": "CS329Z",
    "term": "Autumn 2026",
+   "track": "ai",
    "playlist": "https://www.youtube.com/playlist?list=PLPRcF5HR02_U",
    "total": 10,
    "done": 10,
@@ -861,6 +1466,7 @@
    "school": "Stanford",
    "code": "CS25",
    "term": "V6",
+   "track": "ai",
    "playlist": "https://www.youtube.com/playlist?list=PLoROMvodv4rNiJRchCzutFw5ItR_Z27CM",
    "total": 9,
    "done": 9,
@@ -936,6 +1542,7 @@
    "school": "Stanford",
    "code": "CS153",
    "term": "Spring 2026",
+   "track": "ai",
    "playlist": "https://www.youtube.com/playlist?list=PLoROMvodv4rN447WKQ5oz_YdYbS74M5IA",
    "total": 13,
    "done": 13,
@@ -1032,6 +1639,3720 @@
      "done": true
     }
    ]
+  },
+  {
+   "key": "3b1b-nn",
+   "title": "그림으로 보는 신경망 (3Blue1Brown)",
+   "school": "3Blue1Brown",
+   "code": "3B1B",
+   "term": "2017~2024",
+   "track": "ai",
+   "playlist": "https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi",
+   "total": 10,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "aircAruvnKk",
+     "title": "But what is a neural network? | Deep learning chapter 1",
+     "duration_sec": 1120,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "IHZwWFHWa-w",
+     "title": "Gradient descent, how neural networks learn | Deep Learning Chapter 2",
+     "duration_sec": 1233,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "GlYgs6v2YfU",
+     "title": "But what is cross-entropy? | Information theory, part 2",
+     "duration_sec": 2031,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "iv-5mZ_9CPY",
+     "title": "But how do AI images and videos actually work? | Guest video by Welch Labs",
+     "duration_sec": 2240,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "Ilg3gGewQ5U",
+     "title": "Backpropagation, intuitively | Deep Learning Chapter 3",
+     "duration_sec": 767,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "tIeHLnjs5U8",
+     "title": "Backpropagation calculus | Deep Learning Chapter 4",
+     "duration_sec": 618,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "LPZh9BOjkQs",
+     "title": "Large Language Models explained briefly",
+     "duration_sec": 478,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "wjZofJX0v4M",
+     "title": "Transformers, the tech behind LLMs | Deep Learning Chapter 5",
+     "duration_sec": 1634,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "eMlx5fFNoYc",
+     "title": "Attention in transformers, step-by-step | Deep Learning Chapter 6",
+     "duration_sec": 1570,
+     "done": false
+    },
+    {
+     "no": 10,
+     "id": "9-Jl0dxWQs8",
+     "title": "How might LLMs store facts | Deep Learning Chapter 7",
+     "duration_sec": 1363,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "statquest-ml",
+   "title": "StatQuest 머신러닝 기초 — 아주 쉽게 설명하기",
+   "school": "StatQuest",
+   "code": "StatQuest",
+   "term": "기초 25편",
+   "track": "ai",
+   "playlist": "https://www.youtube.com/playlist?list=PLblh5JKOoLUICTaGLRoHQDuF_7q2GfuJF",
+   "total": 25,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "Gv9_4yMHFhI",
+     "title": "A Gentle Introduction to Machine Learning",
+     "duration_sec": 765,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "fSytzGwwBVw",
+     "title": "Machine Learning Fundamentals: Cross Validation",
+     "duration_sec": 365,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "Kdsp6soqA7o",
+     "title": "Machine Learning Fundamentals: The Confusion Matrix",
+     "duration_sec": 433,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "vP06aMoz4v8",
+     "title": "Machine Learning Fundamentals: Sensitivity and Specificity",
+     "duration_sec": 707,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "PWvfrTgaPBI",
+     "title": "The Sensitivity, Specificity, Precision, Recall Sing-a-Long!!!",
+     "duration_sec": 42,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "EuBBz3bI-aA",
+     "title": "Machine Learning Fundamentals: Bias and Variance",
+     "duration_sec": 396,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "YtebGVx-Fxw",
+     "title": "Entropy (for data science) Clearly Explained!!!",
+     "duration_sec": 995,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "eJIp_mgVLwE",
+     "title": "Mutual Information, Clearly Explained!!!",
+     "duration_sec": 974,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "PaFPbb66DxQ",
+     "title": "The Main Ideas of Fitting a Line to Data (The Main Ideas of Least Squares and Linear Regression.)",
+     "duration_sec": 562,
+     "done": false
+    },
+    {
+     "no": 10,
+     "id": "7ArmBVF2dCs",
+     "title": "Linear Regression, Clearly Explained!!!",
+     "duration_sec": 1647,
+     "done": false
+    },
+    {
+     "no": 11,
+     "id": "zITIFTsivN8",
+     "title": "Multiple Regression, Clearly Explained!!!",
+     "duration_sec": 325,
+     "done": false
+    },
+    {
+     "no": 12,
+     "id": "NF5_btOaCig",
+     "title": "Using Linear Models for t-tests and ANOVA, Clearly Explained!!!",
+     "duration_sec": 698,
+     "done": false
+    },
+    {
+     "no": 13,
+     "id": "CqLGvwi-5Pc",
+     "title": "Design Matrices For Linear Models, Clearly Explained!!!",
+     "duration_sec": 880,
+     "done": false
+    },
+    {
+     "no": 14,
+     "id": "ARfXDSkQf1Y",
+     "title": "Odds and Log(Odds), Clearly Explained!!!",
+     "duration_sec": 691,
+     "done": false
+    },
+    {
+     "no": 15,
+     "id": "8nm0G-1uJzA",
+     "title": "Odds Ratios and Log(Odds Ratios), Clearly Explained!!!",
+     "duration_sec": 980,
+     "done": false
+    },
+    {
+     "no": 16,
+     "id": "yIYKR4sgzI8",
+     "title": "StatQuest: Logistic Regression",
+     "duration_sec": 528,
+     "done": false
+    },
+    {
+     "no": 17,
+     "id": "vN5cNN2-HWE",
+     "title": "Logistic Regression Details Pt1: Coefficients",
+     "duration_sec": 1142,
+     "done": false
+    },
+    {
+     "no": 18,
+     "id": "BfKanl1aSG0",
+     "title": "Logistic Regression Details Pt 2: Maximum Likelihood",
+     "duration_sec": 623,
+     "done": false
+    },
+    {
+     "no": 19,
+     "id": "xxFYro8QuXA",
+     "title": "Logistic Regression Details Pt 3: R-squared and p-value",
+     "duration_sec": 925,
+     "done": false
+    },
+    {
+     "no": 20,
+     "id": "9T0wlKdew6I",
+     "title": "Saturated Models and Deviance",
+     "duration_sec": 1120,
+     "done": false
+    },
+    {
+     "no": 21,
+     "id": "C4N3_XJJ-jU",
+     "title": "Logistic Regression in R, Clearly Explained!!!!",
+     "duration_sec": 1035,
+     "done": false
+    },
+    {
+     "no": 22,
+     "id": "JC56jS2gVUE",
+     "title": "Deviance Residuals",
+     "duration_sec": 378,
+     "done": false
+    },
+    {
+     "no": 23,
+     "id": "4jRBRDbJemM",
+     "title": "ROC and AUC, Clearly Explained!",
+     "duration_sec": 977,
+     "done": false
+    },
+    {
+     "no": 24,
+     "id": "qcvAqAH60Yw",
+     "title": "ROC and AUC in R",
+     "duration_sec": 913,
+     "done": false
+    },
+    {
+     "no": 25,
+     "id": "Q81RR3yKn30",
+     "title": "Regularization Part 1: Ridge (L2) Regression",
+     "duration_sec": 1227,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "dlzeroall-s1",
+   "title": "모두를 위한 딥러닝 시즌 1 (한국어, 이론편)",
+   "school": "Sung Kim(HKUST)",
+   "code": "모두의 딥러닝",
+   "term": "시즌 1",
+   "track": "ai",
+   "playlist": "https://www.youtube.com/playlist?list=PLlMkM4tgfjnLSOjrEJN31gZATbcj_MpUm",
+   "total": 24,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "BS6O0zOGX4E",
+     "title": "Lec 00 - Introduction and Schedule for the Machine/Deep Learning Course",
+     "duration_sec": 605,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "qPMeuL2LIqY",
+     "title": "ML lec 01 - 기본적인 Machine Learning 의 용어와 개념 설명",
+     "duration_sec": 749,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "Hax03rCn3UI",
+     "title": "ML lec 02 - Linear Regression의 Hypothesis 와 cost 설명",
+     "duration_sec": 810,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "TxIVr-nk1so",
+     "title": "ML lec 03 - Linear Regression의 cost 최소화 알고리즘의 원리 설명",
+     "duration_sec": 972,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "kPxpJY6fRkY",
+     "title": "ML lec 04 - multi-variable linear regression (*new)",
+     "duration_sec": 1065,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "PIjno6paszY",
+     "title": "ML lec 5-1: Logistic Classification의 가설 함수 정의",
+     "duration_sec": 897,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "6vzchGYEJBc",
+     "title": "ML lec 5-2 Logistic Regression의 cost 함수 설명",
+     "duration_sec": 864,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "MFAnsx1y9ZI",
+     "title": "ML lec 6-1 - Softmax Regression: Introduction to basic concepts",
+     "duration_sec": 617,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "jMU9G5WEtBc",
+     "title": "ML lec 6-2: Cost function of Softmax classifier",
+     "duration_sec": 936,
+     "done": false
+    },
+    {
+     "no": 10,
+     "id": "1jPjVoDV_uo",
+     "title": "Lec 07-1: Learning Rate, Overfitting, and Regularization",
+     "duration_sec": 843,
+     "done": false
+    },
+    {
+     "no": 11,
+     "id": "KVv1nMSlPzY",
+     "title": "Lec 07-2: Training/Testing Datasets",
+     "duration_sec": 561,
+     "done": false
+    },
+    {
+     "no": 12,
+     "id": "n7DNueHGkqE",
+     "title": "lec 08-1: 딥러닝의 기본 개념: 시작과 XOR 문제",
+     "duration_sec": 1062,
+     "done": false
+    },
+    {
+     "no": 13,
+     "id": "AByVbUX1PUI",
+     "title": "Lec 08-2: Basic Concepts of Deep Learning 2: Backpropagation and the Emergence of 'Deep' in 2006/...",
+     "duration_sec": 757,
+     "done": false
+    },
+    {
+     "no": 14,
+     "id": "GYecDQQwTdI",
+     "title": "lec9-1: Solving the XOR Problem with Deep Learning",
+     "duration_sec": 903,
+     "done": false
+    },
+    {
+     "no": 15,
+     "id": "oZyvmtqLmLo",
+     "title": "lec9-x: Special Episode: Derivatives Explained in 10 Minutes (Watch Before lec9-2)",
+     "duration_sec": 569,
+     "done": false
+    },
+    {
+     "no": 16,
+     "id": "573EZkzfnZ0",
+     "title": "lec9-2: Training Deep Networks (backpropagation)",
+     "duration_sec": 1108,
+     "done": false
+    },
+    {
+     "no": 17,
+     "id": "cKtg_fpw88c",
+     "title": "lec10-1: ReLU is better than Sigmoid",
+     "duration_sec": 1050,
+     "done": false
+    },
+    {
+     "no": 18,
+     "id": "4rC0sWrp3Uw",
+     "title": "lec10-2: How to properly initialize weights",
+     "duration_sec": 738,
+     "done": false
+    },
+    {
+     "no": 19,
+     "id": "wTxMsp22llc",
+     "title": "lec10-3: Dropout and Ensemble",
+     "duration_sec": 596,
+     "done": false
+    },
+    {
+     "no": 20,
+     "id": "YHsbHjTBx9Q",
+     "title": "lec10-4: Let's Build Network Modules Like LEGOs",
+     "duration_sec": 309,
+     "done": false
+    },
+    {
+     "no": 21,
+     "id": "Em63mknbtWo",
+     "title": "lec11-1 Building Conv Layers in ConvNets",
+     "duration_sec": 982,
+     "done": false
+    },
+    {
+     "no": 22,
+     "id": "2-75C-yZaoA",
+     "title": "lec11-2: ConvNet Max Pooling and Full Network",
+     "duration_sec": 333,
+     "done": false
+    },
+    {
+     "no": 23,
+     "id": "KbNbWTnlYXs",
+     "title": "lec11-3 Examples of ConvNet Applications",
+     "duration_sec": 751,
+     "done": false
+    },
+    {
+     "no": 24,
+     "id": "-SHPG_KMUkQ",
+     "title": "lec12: An Introduction to RNN, the Highlight of Neural Networks",
+     "duration_sec": 1183,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "mit-6s191",
+   "title": "MIT 6.S191 딥러닝 입문",
+   "school": "MIT",
+   "code": "6.S191",
+   "term": "최신 학기",
+   "track": "ai",
+   "playlist": "https://www.youtube.com/playlist?list=PLtBw6njQRU-rwp5__7C0oIVt26ZgjG9NI",
+   "total": 10,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "II4giR4vOOo",
+     "title": "MIT Introduction to Deep Learning | 6.S191",
+     "duration_sec": 3376,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "d02VkQ9MP44",
+     "title": "MIT 6.S191: Recurrent Neural Networks, Transformers, and Attention",
+     "duration_sec": 3454,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "pqIcoskUuWs",
+     "title": "MIT 6.S191: Convolutional Neural Networks",
+     "duration_sec": 3406,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "R8V8CbuxryI",
+     "title": "MIT 6.S191: Deep Generative Modeling",
+     "duration_sec": 2976,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "1ij3dweHu-0",
+     "title": "MIT 6.S191: Reinforcement Learning",
+     "duration_sec": 3559,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "ev7cLSd-ySE",
+     "title": "MIT 6.S191: Language Models and New Frontiers",
+     "duration_sec": 3377,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "XKOpA7iaJvg",
+     "title": "MIT 6.S191: The Three Laws of AI",
+     "duration_sec": 3109,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "rZACoZD8AG8",
+     "title": "MIT 6.S191: AI for Science",
+     "duration_sec": 3550,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "UZZD9d9YqnQ",
+     "title": "MIT 6.S191: Secrets of Massively Parallel Training",
+     "duration_sec": 3160,
+     "done": false
+    },
+    {
+     "no": 10,
+     "id": "alfdI7S6wCY",
+     "title": "MIT Introduction to Deep Learning (2025) | 6.S191",
+     "duration_sec": 4166,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "karpathy-z2h",
+   "title": "Neural Networks: Zero to Hero — 직접 만들며 배우는 신경망",
+   "school": "Andrej Karpathy",
+   "code": "Zero to Hero",
+   "term": "2022~2024",
+   "track": "ai",
+   "playlist": "https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ",
+   "total": 10,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "VMj-3S1tku0",
+     "title": "The spelled-out intro to neural networks and backpropagation: building micrograd",
+     "duration_sec": 8752,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "PaCmpygFfXo",
+     "title": "The spelled-out intro to language modeling: building makemore",
+     "duration_sec": 7065,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "TCH_1BHY58I",
+     "title": "Building makemore Part 2: MLP",
+     "duration_sec": 4540,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "P6sfmUTpUmc",
+     "title": "Building makemore Part 3: Activations & Gradients, BatchNorm",
+     "duration_sec": 6958,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "q8SA3rM6ckI",
+     "title": "Building makemore Part 4: Becoming a Backprop Ninja",
+     "duration_sec": 6924,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "t3YJ5hKiMQ0",
+     "title": "Building makemore Part 5: Building a WaveNet",
+     "duration_sec": 3382,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "kCc8FmEb1nY",
+     "title": "Let's build GPT: from scratch, in code, spelled out.",
+     "duration_sec": 6980,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "bZQun8Y4L2A",
+     "title": "State of GPT | BRK216HFS",
+     "duration_sec": 2560,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "zduSFxRajkE",
+     "title": "Let's build the GPT Tokenizer",
+     "duration_sec": 8015,
+     "done": false
+    },
+    {
+     "no": 10,
+     "id": "l8pRSuU81PU",
+     "title": "Let's reproduce GPT-2 (124M)",
+     "duration_sec": 14486,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "icote-2021",
+   "title": "이것이 취업을 위한 코딩 테스트다 (파이썬)",
+   "school": "동빈나",
+   "code": "이코테",
+   "term": "2021",
+   "track": "coding-test",
+   "playlist": "https://www.youtube.com/playlist?list=PLRx0vPvlEmdAghTr5mXQxGpHjWqSz0dgC",
+   "total": 15,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "m-9pAwq1o3w",
+     "title": "(이코테 2021 강의 몰아보기) 1. 코딩 테스트 출제 경향 분석 및 파이썬 문법 부수기",
+     "duration_sec": 8503,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "2zjoKjt97vQ",
+     "title": "(이코테 2021 강의 몰아보기) 2. 그리디 & 구현",
+     "duration_sec": 3280,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "7C9RgOcvkvo",
+     "title": "(2021 Coding Test Lecture Marathon) 3. DFS & BFS",
+     "duration_sec": 3494,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "KGyK-pNvWos",
+     "title": "(Icote 2021 Lecture Blitz) 4. Sorting Algorithm",
+     "duration_sec": 2614,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "94RC-DsGMLo",
+     "title": "(이코테 2021 강의 몰아보기) 5. 이진 탐색",
+     "duration_sec": 1571,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "5Lu34WIx2Us",
+     "title": "(2021 Coding Test Lecture Marathon) 6. Dynamic Programming",
+     "duration_sec": 4098,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "acqm9mM1P6o",
+     "title": "(이코테 2021 강의 몰아보기) 7. 최단 경로 알고리즘",
+     "duration_sec": 3948,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "aOhhNFTIeFI",
+     "title": "(이코테 2021 강의 몰아보기) 8. 기타 그래프 이론",
+     "duration_sec": 2672,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "cswJ1h-How0",
+     "title": "(이코테 2021 강의 몰아보기) 9. 코딩 테스트에서 자주 출제되는 기타 알고리즘",
+     "duration_sec": 1809,
+     "done": false
+    },
+    {
+     "no": 10,
+     "id": "d8KPN79UAKA",
+     "title": "(이코테 2021 강의 몰아보기) 10. 개발형 코딩 테스트",
+     "duration_sec": 1183,
+     "done": false
+    },
+    {
+     "no": 11,
+     "id": "AjFlp951nz0",
+     "title": "Data Structures: Priority Queues and Heaps: A 10-Minute Summary",
+     "duration_sec": 656,
+     "done": false
+    },
+    {
+     "no": 12,
+     "id": "i5yHkP1jQmo",
+     "title": "10-Minute Summary of Tree Data Structures for Coding Tests",
+     "duration_sec": 674,
+     "done": false
+    },
+    {
+     "no": 13,
+     "id": "Ppimbaxm8d8",
+     "title": "7-Minute Key Summary of the Bellman-Ford Algorithm for Coding Tests",
+     "duration_sec": 470,
+     "done": false
+    },
+    {
+     "no": 14,
+     "id": "fg2iGP4e2mc",
+     "title": "Data Structures: Mastering Binary Indexed Trees (BITs, Fenwick Trees) in 10 Minutes",
+     "duration_sec": 566,
+     "done": false
+    },
+    {
+     "no": 15,
+     "id": "O895NbxirM8",
+     "title": "최소 공통 조상(Lowest Common Ancestor, LCA) 알고리즘 10분 정복",
+     "duration_sec": 569,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "ds-python",
+   "title": "자료구조 — 파이썬으로 배우기",
+   "school": "신찬수(한국외대)",
+   "code": "자료구조",
+   "term": "파이썬",
+   "track": "coding-test",
+   "playlist": "https://www.youtube.com/playlist?list=PLsMufJgu5933ZkBCHS7bQTx0bncjwi4PK",
+   "total": 56,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "PIidtIBCjEg",
+     "title": "Introduction to Data Structures",
+     "duration_sec": 1230,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "M2mcJvmYpWY",
+     "title": "자료구조와알고리즘",
+     "duration_sec": 1196,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "jgWyu83DfO0",
+     "title": "Algorithm Time Complexity 1",
+     "duration_sec": 1343,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "ysn9dLDNLEU",
+     "title": "Algorithm Time Complexity 2",
+     "duration_sec": 1125,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "0xGJx6qsNCY",
+     "title": "알고리즘 시간복잡도 BigO",
+     "duration_sec": 1555,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "Lqd8o7vL2Z8",
+     "title": "순차적 자료구조: 배열과리스트",
+     "duration_sec": 1689,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "buJBlTsWlW0",
+     "title": "Introduction to Data Structures: Sequential Data Structures",
+     "duration_sec": 825,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "OzFXiukhv8o",
+     "title": "자료구조 스택 (stack)",
+     "duration_sec": 1901,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "G9ujrSGEB4A",
+     "title": "Using Stack Data Structures - Calculator (1/2)",
+     "duration_sec": 659,
+     "done": false
+    },
+    {
+     "no": 10,
+     "id": "MYk4autDAJ0",
+     "title": "자료구조 스택 활용 - 계산기 (2/2)",
+     "duration_sec": 1917,
+     "done": false
+    },
+    {
+     "no": 11,
+     "id": "nqCNk_DmPio",
+     "title": "Data structure Queue",
+     "duration_sec": 1280,
+     "done": false
+    },
+    {
+     "no": 12,
+     "id": "sMpsvA5O0xU",
+     "title": "자료구조 연결리스트 소개",
+     "duration_sec": 1381,
+     "done": false
+    },
+    {
+     "no": 13,
+     "id": "kGZoEShMcSQ",
+     "title": "자료구조 한방향연결리스트 - 삽입, 삭제 연산",
+     "duration_sec": 1689,
+     "done": false
+    },
+    {
+     "no": 14,
+     "id": "aCHwXmpuAkY",
+     "title": "Data Structures: Singly Linked List - Search Operation",
+     "duration_sec": 709,
+     "done": false
+    },
+    {
+     "no": 15,
+     "id": "nQhzNRmnmt8",
+     "title": "자료구조 양방향연결리스트 정의 - splice 연산",
+     "duration_sec": 1302,
+     "done": false
+    },
+    {
+     "no": 16,
+     "id": "zWrFVf9_YTQ",
+     "title": "자료구조 양방향연결리스트 삽입-삭제-탐색 연산",
+     "duration_sec": 1493,
+     "done": false
+    },
+    {
+     "no": 17,
+     "id": "Bzmepm6pYQI",
+     "title": "Data Structures: Hash Tables - Introduction and Hash Functions",
+     "duration_sec": 1852,
+     "done": false
+    },
+    {
+     "no": 18,
+     "id": "Bj4pd9rJp5c",
+     "title": "자료구조 해시테이블 - open addressing (linear probing)",
+     "duration_sec": 2210,
+     "done": false
+    },
+    {
+     "no": 19,
+     "id": "ghjWopXXUeA",
+     "title": "자료구조 해시테이블 - 성능평가, chaining",
+     "duration_sec": 1253,
+     "done": false
+    },
+    {
+     "no": 20,
+     "id": "w-1w4ood7Bc",
+     "title": "Data Structures - Introduction to Tree Structures",
+     "duration_sec": 1205,
+     "done": false
+    },
+    {
+     "no": 21,
+     "id": "8XnPN6IB22Y",
+     "title": "Data Structure - Heap Definition",
+     "duration_sec": 1228,
+     "done": false
+    },
+    {
+     "no": 22,
+     "id": "6VMSTOdHRfI",
+     "title": "Data structure heap make_heap operation",
+     "duration_sec": 1454,
+     "done": false
+    },
+    {
+     "no": 23,
+     "id": "gVRDc5NRjjw",
+     "title": "자료구조 힙 (heap) - insert와 delete_max 연산",
+     "duration_sec": 1611,
+     "done": false
+    },
+    {
+     "no": 24,
+     "id": "HDjqrmmpFdU",
+     "title": "자료구조 - 이진트리 - 정의와 순회",
+     "duration_sec": 1521,
+     "done": false
+    },
+    {
+     "no": 25,
+     "id": "HDjqrmmpFdU",
+     "title": "자료구조 - 이진트리 - 정의와 순회",
+     "duration_sec": 1521,
+     "done": false
+    },
+    {
+     "no": 26,
+     "id": "Bhprzw_1kb0",
+     "title": "자료구조 - 이진트리 - 이진탐색트리 정의와 탐색, 삽입 연산",
+     "duration_sec": 1797,
+     "done": false
+    },
+    {
+     "no": 27,
+     "id": "VVhmgQIJCu8",
+     "title": "Data Structure - Binary Tree - Binary Search Tree Delete Operation",
+     "duration_sec": 1584,
+     "done": false
+    },
+    {
+     "no": 28,
+     "id": "Kuw0f3-E-Hw",
+     "title": "Data Structures - Balanced Binary Search Tree - Definition and Rotation",
+     "duration_sec": 1449,
+     "done": false
+    },
+    {
+     "no": 29,
+     "id": "dHHjrl6m5CE",
+     "title": "Data Structures - Balanced Binary Search Trees - Definition of AVL Trees",
+     "duration_sec": 936,
+     "done": false
+    },
+    {
+     "no": 30,
+     "id": "KkgN2xAzmG8",
+     "title": "Data Structures - Balanced Binary Search Tree - AVL Insertion Operation",
+     "duration_sec": 1558,
+     "done": false
+    },
+    {
+     "no": 31,
+     "id": "W3uPlSCzAZM",
+     "title": "Data Structures - Balanced Binary Search Trees - AVL Tree Deletion Operations",
+     "duration_sec": 1807,
+     "done": false
+    },
+    {
+     "no": 32,
+     "id": "SHdYv41iCmE",
+     "title": "자료구조 - 균형탐색이진트리 - Red-Black 트리",
+     "duration_sec": 1502,
+     "done": false
+    },
+    {
+     "no": 33,
+     "id": "eAUbCgJBtcQ",
+     "title": "Data Structures - Balanced Binary Search Tree - Red-Black Tree Insertion Operation",
+     "duration_sec": 1017,
+     "done": false
+    },
+    {
+     "no": 34,
+     "id": "ad3tnpLCxYk",
+     "title": "Data Structures - Balanced Binary Search Tree - 2-3-4 Tree",
+     "duration_sec": 2158,
+     "done": false
+    },
+    {
+     "no": 35,
+     "id": "GaET9oHzC3Q",
+     "title": "자료구조 - union-find 자료구조 1/2",
+     "duration_sec": 1235,
+     "done": false
+    },
+    {
+     "no": 36,
+     "id": "L6NgqSagmTM",
+     "title": "자료구조 - union-find 자료구조 2/2",
+     "duration_sec": 1637,
+     "done": false
+    },
+    {
+     "no": 37,
+     "id": "2edeT2eVFAE",
+     "title": "Data Structures-Algorithms - Definition and Representation of Graphs",
+     "duration_sec": 1667,
+     "done": false
+    },
+    {
+     "no": 38,
+     "id": "2edeT2eVFAE",
+     "title": "Data Structures-Algorithms - Definition and Representation of Graphs",
+     "duration_sec": 1667,
+     "done": false
+    },
+    {
+     "no": 39,
+     "id": "_gIqaC7iLZk",
+     "title": "알고리즘+자료구조 - 그래프(graph) 기본연산",
+     "duration_sec": 1402,
+     "done": false
+    },
+    {
+     "no": 40,
+     "id": "qvmlmPByP2w",
+     "title": "Algorithms + Data Structures - Graphs - DFS 1/2",
+     "duration_sec": 1799,
+     "done": false
+    },
+    {
+     "no": 41,
+     "id": "UGAPnY5MXEQ",
+     "title": "알고리즘+자료구조 - 그래프 - DFS 2/2",
+     "duration_sec": 1696,
+     "done": false
+    },
+    {
+     "no": 42,
+     "id": "0NrlN88D9Fs",
+     "title": "알고리즘-자료구조 - 최단경로 문제 소개와 Bellman Ford 알고리즘 (1/3)",
+     "duration_sec": 965,
+     "done": false
+    },
+    {
+     "no": 43,
+     "id": "4pyBLcHXRjQ",
+     "title": "Algorithms & Data Structures - Shortest Path Dijkstra Algorithm (2/3)",
+     "duration_sec": 916,
+     "done": false
+    },
+    {
+     "no": 44,
+     "id": "Ek0E8a0Dvr0",
+     "title": "알고리즘-자료구조 - 최단경로 Dijkstra 알고리즘 - 예제 설명 (3/3)",
+     "duration_sec": 721,
+     "done": false
+    },
+    {
+     "no": 45,
+     "id": "bKa7bfXQi3A",
+     "title": "Algorithm-Data Structure - Graph All-to-All Shortest Path",
+     "duration_sec": 2175,
+     "done": false
+    },
+    {
+     "no": 46,
+     "id": "2pjUsuHTqHc",
+     "title": "Algorithm-Data Structure - Tim Sort",
+     "duration_sec": 2713,
+     "done": false
+    },
+    {
+     "no": 47,
+     "id": "HHN1axRRKx8",
+     "title": "Data Structures - Algorithms - Tim's Sorting Algorithm (new)",
+     "duration_sec": 2588,
+     "done": false
+    },
+    {
+     "no": 48,
+     "id": "HHN1axRRKx8",
+     "title": "Data Structures - Algorithms - Tim's Sorting Algorithm (new)",
+     "duration_sec": 2588,
+     "done": false
+    },
+    {
+     "no": 49,
+     "id": "nOmLnd9L6pY",
+     "title": "[과제] 순열복원 - 순한맛, 매운맛 해설",
+     "duration_sec": 1208,
+     "done": false
+    },
+    {
+     "no": 50,
+     "id": "hUjaxK9zx5M",
+     "title": "Data Structure Binary Index Tree (1/2)",
+     "duration_sec": 1676,
+     "done": false
+    },
+    {
+     "no": 51,
+     "id": "Lyqf8FKzHiY",
+     "title": "자료구조 이진인덱스트리 (2/2)",
+     "duration_sec": 1174,
+     "done": false
+    },
+    {
+     "no": 52,
+     "id": "RHVZzSqGYpo",
+     "title": "Algorithm - Permutation Restoration Problem Algorithm Explanation",
+     "duration_sec": 1494,
+     "done": false
+    },
+    {
+     "no": 53,
+     "id": "kZjbFWt1cFo",
+     "title": "자료구조 - python dict의 실제 구현",
+     "duration_sec": 1859,
+     "done": false
+    },
+    {
+     "no": 54,
+     "id": "PQxmjP9CmOQ",
+     "title": "자료구조 - Python 리스트 - dynamic array, amortized time, initialization (1/2)",
+     "duration_sec": 1385,
+     "done": false
+    },
+    {
+     "no": 55,
+     "id": "mqufagXeTsw",
+     "title": "자료구조 - Python 리스트 - dynamic array, amortized time, initialization (2/2)",
+     "duration_sec": 1509,
+     "done": false
+    },
+    {
+     "no": 56,
+     "id": "GTYSPwz5ByU",
+     "title": "Algorithm Interview: Search in the Dark 3/3 - The Lowest Common Ancestor (LCA) Problem",
+     "duration_sec": 2178,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "net-basics",
+   "title": "네트워크 기초 이론 — 백엔드 개발자 관점",
+   "school": "널널한 개발자",
+   "code": "네트워크",
+   "term": "기초",
+   "track": "backend",
+   "playlist": "https://www.youtube.com/playlist?list=PLXvgR_grOs1BFH-TuqFsfHqbh-gpMbFoy",
+   "total": 42,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "k1gyh9BlOT8",
+     "title": "For those who want to learn networking",
+     "duration_sec": 803,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "JDh_lzHO_CA",
+     "title": "What MAC address, IP address, and port number identify",
+     "duration_sec": 551,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "kGst-VftN1w",
+     "title": "The Relationship Between Host, Switch, and Network",
+     "duration_sec": 696,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "gOMljj6K2V0",
+     "title": "Things to remember about the IPv4 address system",
+     "duration_sec": 951,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "INamKzKzbPc",
+     "title": "Understanding Port Numbers from a Developer's Perspective",
+     "duration_sec": 451,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "oAbukpZbpTg",
+     "title": "What Switch does is Switching.",
+     "duration_sec": 522,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "p6ASAAMwgd8",
+     "title": "Network data unit organization (very important!)",
+     "duration_sec": 504,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "094pRrSlYKg",
+     "title": "Network Interface Selection Principles and Criteria",
+     "duration_sec": 481,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "mrNg1RnOGgU",
+     "title": "웹 서비스를 만드신 분에 대하여...",
+     "duration_sec": 699,
+     "done": false
+    },
+    {
+     "no": 10,
+     "id": "4Sfned8HLzk",
+     "title": "The structure of early web services",
+     "duration_sec": 764,
+     "done": false
+    },
+    {
+     "no": 11,
+     "id": "byR3BcrChT8",
+     "title": "The 3 Essential Elements of Web Services",
+     "duration_sec": 1235,
+     "done": false
+    },
+    {
+     "no": 12,
+     "id": "poKkQHUBt9A",
+     "title": "WAS, JVM, and RESTful APIs",
+     "duration_sec": 1264,
+     "done": false
+    },
+    {
+     "no": 13,
+     "id": "N8pE-vDsJ38",
+     "title": "LAN과  WAN을 구별하는 방법",
+     "duration_sec": 492,
+     "done": false
+    },
+    {
+     "no": 14,
+     "id": "Bz-K-DPfioE",
+     "title": "How Packets are Created and Encapsulated",
+     "duration_sec": 630,
+     "done": false
+    },
+    {
+     "no": 15,
+     "id": "y8rPmcYRsrk",
+     "title": "L2 스위치에 대해서",
+     "duration_sec": 698,
+     "done": false
+    },
+    {
+     "no": 16,
+     "id": "9MPzEwZrRqo",
+     "title": "IP헤더 형식과 의미 요약",
+     "duration_sec": 941,
+     "done": false
+    },
+    {
+     "no": 17,
+     "id": "5Dku-vX3w-c",
+     "title": "Wireshark's internal structure and operating principles",
+     "duration_sec": 739,
+     "done": false
+    },
+    {
+     "no": 18,
+     "id": "kZia_C-YY2o",
+     "title": "Internal structure of the router and Inline",
+     "duration_sec": 713,
+     "done": false
+    },
+    {
+     "no": 19,
+     "id": "XBPXxFip4xs",
+     "title": "Inline 구조와  Out of path 구조",
+     "duration_sec": 664,
+     "done": false
+    },
+    {
+     "no": 20,
+     "id": "dThqHi8-MiQ",
+     "title": "Proxy structure and operating principles",
+     "duration_sec": 467,
+     "done": false
+    },
+    {
+     "no": 21,
+     "id": "sSw2sFA4JP0",
+     "title": "Uses of Proxies, Part 1: Bypassing",
+     "duration_sec": 320,
+     "done": false
+    },
+    {
+     "no": 22,
+     "id": "fkJx3T26BL0",
+     "title": "Proxy Usage Part 2: Analysis",
+     "duration_sec": 443,
+     "done": false
+    },
+    {
+     "no": 23,
+     "id": "kdCBEE5sm04",
+     "title": "Proxy Usage Part 3: Surveillance and Protection",
+     "duration_sec": 534,
+     "done": false
+    },
+    {
+     "no": 24,
+     "id": "VXpcMEj8CzU",
+     "title": "Proxy의 활용 네 번째, Reverse Proxy",
+     "duration_sec": 422,
+     "done": false
+    },
+    {
+     "no": 25,
+     "id": "K9L9YZhEjC0",
+     "title": "The TCP Send/Receive Principles That Will Change Your Life Once You Understand Them",
+     "duration_sec": 1939,
+     "done": false
+    },
+    {
+     "no": 26,
+     "id": "DC9FfKSgisg",
+     "title": "TCP 연결이라는 착각에 대해",
+     "duration_sec": 699,
+     "done": false
+    },
+    {
+     "no": 27,
+     "id": "mP_C2QJEYts",
+     "title": "TCP 연결, LAN선 뽑기 그리고 게임해킹!",
+     "duration_sec": 1129,
+     "done": false
+    },
+    {
+     "no": 28,
+     "id": "5D9qz2CEIus",
+     "title": "Unicast, Broadcast, Multicast",
+     "duration_sec": 764,
+     "done": false
+    },
+    {
+     "no": 29,
+     "id": "W0x88b_dYhw",
+     "title": "Types and Characteristics of IP Addresses",
+     "duration_sec": 828,
+     "done": false
+    },
+    {
+     "no": 30,
+     "id": "XXzxetbAIfA",
+     "title": "전세계 인터넷을 멈추는 방법과 DNS",
+     "duration_sec": 1399,
+     "done": false
+    },
+    {
+     "no": 31,
+     "id": "7Hah81GBZ5g",
+     "title": "TCP/IP Communication and Changes in MAC Addresses",
+     "duration_sec": 498,
+     "done": false
+    },
+    {
+     "no": 32,
+     "id": "lN4ZBrtb-fs",
+     "title": "How L2 switches and ARP work",
+     "duration_sec": 790,
+     "done": false
+    },
+    {
+     "no": 33,
+     "id": "PXbJx5IDIT4",
+     "title": "Lost Packet Disappearance and TTL",
+     "duration_sec": 377,
+     "done": false
+    },
+    {
+     "no": 34,
+     "id": "JYBRE_eD7a8",
+     "title": "MTU and Packet Fragmentation",
+     "duration_sec": 655,
+     "done": false
+    },
+    {
+     "no": 35,
+     "id": "SJOdlS1uDBg",
+     "title": "Garaetteok and Stream",
+     "duration_sec": 757,
+     "done": false
+    },
+    {
+     "no": 36,
+     "id": "8mY1pKW2m7k",
+     "title": "퇴근시간을 결정하는 TCP 장애유형 5가지",
+     "duration_sec": 706,
+     "done": false
+    },
+    {
+     "no": 37,
+     "id": "px0HDON5Wa4",
+     "title": "Subnetting: Cutting Networks into Smaller Pieces",
+     "duration_sec": 877,
+     "done": false
+    },
+    {
+     "no": 38,
+     "id": "gh5bPxqwRFA",
+     "title": "Subnetting Refresher",
+     "duration_sec": 486,
+     "done": false
+    },
+    {
+     "no": 39,
+     "id": "2cWEh4xSXL0",
+     "title": "Understanding the Monolithic 3-Tier Web Service Architecture in One Picture",
+     "duration_sec": 3486,
+     "done": false
+    },
+    {
+     "no": 40,
+     "id": "rNSmtNc0SgE",
+     "title": "CSRF, SOP, and CORS",
+     "duration_sec": 1580,
+     "done": false
+    },
+    {
+     "no": 41,
+     "id": "LVxzSNcJVmU",
+     "title": "The Modern Web and JWT",
+     "duration_sec": 1794,
+     "done": false
+    },
+    {
+     "no": 42,
+     "id": "XitMYD8OVcA",
+     "title": "(※ Very Important) TCP Failure Types and Transmission/Reception Principles That Will Change Your ...",
+     "duration_sec": 2887,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "cs50w-2020",
+   "title": "CS50 웹 프로그래밍 (Python·JavaScript·Django)",
+   "school": "Harvard",
+   "code": "CS50W",
+   "term": "2020",
+   "track": "backend",
+   "playlist": "https://www.youtube.com/playlist?list=PLhQjrBD2T380xvFSUmToMMzERZ3qB5Ueu",
+   "total": 10,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "zFZrkCIc2Oc",
+     "title": "CS50W - Lecture 0 - HTML and CSS",
+     "duration_sec": 7412,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "Nn7EX3zkGUo",
+     "title": "CS50W - Introduction",
+     "duration_sec": 133,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "NcoBAfJ6l2Q",
+     "title": "CS50W - Lecture 1 - Git",
+     "duration_sec": 3196,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "EOLPQdVj5Ac",
+     "title": "CS50W - Lecture 2 - Python",
+     "duration_sec": 4062,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "w8q0C-C1js4",
+     "title": "CS50W - Lecture 3 - Django",
+     "duration_sec": 5945,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "YzP164YANAU",
+     "title": "CS50W - Lecture 4 - SQL, Models and Migrations",
+     "duration_sec": 6847,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "x5trGVMKTdY",
+     "title": "CS50W - Lecture 5 - JavaScript",
+     "duration_sec": 6686,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "jrBhi8wbzPw",
+     "title": "CS50W - Lecture 6 - User Interfaces",
+     "duration_sec": 6015,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "WbRDkJ4lPdY",
+     "title": "CS50W - Lecture 7 - Testing and CI/CD",
+     "duration_sec": 5639,
+     "done": false
+    },
+    {
+     "no": 10,
+     "id": "6PWTxRGh_dk",
+     "title": "CS50W - Lecture 8 - Scalability and Security",
+     "duration_sec": 5266,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "hongpark-boot",
+   "title": "스프링 부트, 입문!",
+   "school": "홍팍",
+   "code": "스프링 부트",
+   "term": "입문",
+   "track": "backend",
+   "playlist": "https://www.youtube.com/playlist?list=PLyebPLlVYXCiYdYaWRKgCqvnCFrLEANXt",
+   "total": 34,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "_vDACE13Ubc",
+     "title": "[스프링 부트 입문 00] 강의를 소개합니다",
+     "duration_sec": 146,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "HAlcc-HMz7k",
+     "title": "[Spring Boot Introduction 01] What is Spring Boot?",
+     "duration_sec": 132,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "EYmVJuRLHDQ",
+     "title": "[Spring Boot Introduction 02] Creating a Development Environment",
+     "duration_sec": 1222,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "-B60B9eAIyU",
+     "title": "[Spring Boot Introduction 03] How Web Services Work",
+     "duration_sec": 417,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "Y_gkH0nLMY8",
+     "title": "[스프링 부트 입문 04] 뷰 템플릿과 MVC 패턴",
+     "duration_sec": 847,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "5vfxeRJJsWo",
+     "title": "[Spring Boot Introduction 05] MVC Roles and Execution Flow",
+     "duration_sec": 559,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "AIsz-FTvGgQ",
+     "title": "[Book Advertisement] Introduction to Spring Boot! Also available as a book, thank you.",
+     "duration_sec": 181,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "TgMPJ-TLgVc",
+     "title": "[Spring Boot Introduction 06] View Templates and Layouts",
+     "duration_sec": 845,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "rzjudEZ8bt0",
+     "title": "[스프링 부트 입문 07] 폼 데이터 주고 받기",
+     "duration_sec": 913,
+     "done": false
+    },
+    {
+     "no": 10,
+     "id": "ZGgf_1OXcAY",
+     "title": "[Spring Boot Introduction 08] Data Generation with JPA",
+     "duration_sec": 1004,
+     "done": false
+    },
+    {
+     "no": 11,
+     "id": "76a6YMmpZmY",
+     "title": "[스프링 부트 입문 09] DB 테이블과 SQL",
+     "duration_sec": 565,
+     "done": false
+    },
+    {
+     "no": 12,
+     "id": "2VYBQ_99RJg",
+     "title": "[Spring Boot Introduction 10] Lombok and Refactoring",
+     "duration_sec": 827,
+     "done": false
+    },
+    {
+     "no": 13,
+     "id": "E0YO0XqpBIY",
+     "title": "[스프링 부트 입문 11] 데이터 조회하기 with JPA",
+     "duration_sec": 1003,
+     "done": false
+    },
+    {
+     "no": 14,
+     "id": "rxRcIxU_d4I",
+     "title": "[스프링 부트 입문 12] 데이터 목록조회",
+     "duration_sec": 689,
+     "done": false
+    },
+    {
+     "no": 15,
+     "id": "T_najiNzQGw",
+     "title": "[Spring Boot Introduction 13] Links and Redirects",
+     "duration_sec": 857,
+     "done": false
+    },
+    {
+     "no": 16,
+     "id": "5jUowGLS-9s",
+     "title": "[Spring Boot Introduction 14] Creating a Modification Form",
+     "duration_sec": 820,
+     "done": false
+    },
+    {
+     "no": 17,
+     "id": "pNz7fjZzdck",
+     "title": "[스프링 부트 입문 15] 데이터 수정하기",
+     "duration_sec": 1236,
+     "done": false
+    },
+    {
+     "no": 18,
+     "id": "2IuZs5I5KJg",
+     "title": "[스프링 부트 입문 16] 데이터 삭제하기",
+     "duration_sec": 1197,
+     "done": false
+    },
+    {
+     "no": 19,
+     "id": "RUsTFA5GCiM",
+     "title": "[스프링 부트 입문 17] CRUD와 SQL 쿼리",
+     "duration_sec": 1044,
+     "done": false
+    },
+    {
+     "no": 20,
+     "id": "UjBXb3m1uY0",
+     "title": "[스프링 부트 입문 18] RestAPI와 JSON",
+     "duration_sec": 1100,
+     "done": false
+    },
+    {
+     "no": 21,
+     "id": "Q_B5c6eChDo",
+     "title": "[Spring Boot Introduction 19] HTTP and RestController",
+     "duration_sec": 1742,
+     "done": false
+    },
+    {
+     "no": 22,
+     "id": "l5Va-XbwR04",
+     "title": "[Spring Boot Introduction 20] Service Layer and Transactions",
+     "duration_sec": 1765,
+     "done": false
+    },
+    {
+     "no": 23,
+     "id": "XYghe60uIOs",
+     "title": "[Spring Boot Introduction 21] Writing Tests",
+     "duration_sec": 1519,
+     "done": false
+    },
+    {
+     "no": 24,
+     "id": "LNW-pFxLWq4",
+     "title": "[스프링 부트 입문 22] 댓글 엔티티와 리파지터리(feat. 테스트)",
+     "duration_sec": 2140,
+     "done": false
+    },
+    {
+     "no": 25,
+     "id": "sCsPk-ZgXa0",
+     "title": "[Spring Boot Introduction 23] Comment Service and Controller",
+     "duration_sec": 2361,
+     "done": false
+    },
+    {
+     "no": 26,
+     "id": "PY5EeW4FXxU",
+     "title": "[스프링 부트 입문 24] 댓글 목록 뷰 만들기",
+     "duration_sec": 643,
+     "done": false
+    },
+    {
+     "no": 27,
+     "id": "qbXs0gkfTfU",
+     "title": "[Spring Boot Introduction 25] Commenting with JavaScript",
+     "duration_sec": 1565,
+     "done": false
+    },
+    {
+     "no": 28,
+     "id": "9nmFotwDOig",
+     "title": "[스프링 부트 입문 26] 댓글 수정 with 자바스크립트",
+     "duration_sec": 1734,
+     "done": false
+    },
+    {
+     "no": 29,
+     "id": "Sg8ibALgdT8",
+     "title": "[스프링 부트 입문 27] 댓글 삭제 with 자바스크립트",
+     "duration_sec": 1131,
+     "done": false
+    },
+    {
+     "no": 30,
+     "id": "Ym7cAtE2jQs",
+     "title": "[Spring Boot Introduction 28] Connecting to a Database",
+     "duration_sec": 969,
+     "done": false
+    },
+    {
+     "no": 31,
+     "id": "5d3wEN0_MLY",
+     "title": "[스프링 부트 입문 29] IoC와 DI(객체를 주입한다고?)",
+     "duration_sec": 1305,
+     "done": false
+    },
+    {
+     "no": 32,
+     "id": "xmiIJvGsvUc",
+     "title": "[스프링 부트 입문 30] AOP, 관점 지향 프로그래밍(부가 기능을 주입한다고?)",
+     "duration_sec": 1764,
+     "done": false
+    },
+    {
+     "no": 33,
+     "id": "9-8aE9GonlM",
+     "title": "[스프링 부트 입문 31] ObjectMapper(JSON을 객체로 변환한다고?)",
+     "duration_sec": 1321,
+     "done": false
+    },
+    {
+     "no": 34,
+     "id": "woJP-wMKO7U",
+     "title": "[Spring Boot Introduction 32] Concluding the lecture..!",
+     "duration_sec": 213,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "opentutorials-html",
+   "title": "생활코딩 HTML — 웹의 첫걸음",
+   "school": "생활코딩",
+   "code": "HTML",
+   "term": "WEB1",
+   "track": "frontend",
+   "playlist": "https://www.youtube.com/playlist?list=PLuHgQVnccGMDUzDDCKW-pCZQY-MMCX5yB",
+   "total": 44,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "OGFgdro160I",
+     "title": "HTML - Introduction to the Class",
+     "duration_sec": 124,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "33DjsANwlJk",
+     "title": "HTML - Introduction to Technology",
+     "duration_sec": 371,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "jSJM9iOiQ1g",
+     "title": "HTML - 기본문법 1",
+     "duration_sec": 608,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "zQTgBEWYbug",
+     "title": "HTML - Basic Grammar 2",
+     "duration_sec": 577,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "AE7foaifXMU",
+     "title": "HTML - Hypertext and Attributes",
+     "duration_sec": 813,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "Oje3e4Ry5wE",
+     "title": "HTML - 맥에서 텍스트 에디트 주의사항",
+     "duration_sec": 81,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "JiuYfoSEac4",
+     "title": "HTML - Tag Nesting and Lists",
+     "duration_sec": 555,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "gqg-toXZ_rE",
+     "title": "HTML - 문서의 구조",
+     "duration_sec": 650,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "EgT5520Ztek",
+     "title": "HTML - DOCTYPE",
+     "duration_sec": 239,
+     "done": false
+    },
+    {
+     "no": 10,
+     "id": "Tt3kr7whkb4",
+     "title": "HTML - Creating a Website",
+     "duration_sec": 646,
+     "done": false
+    },
+    {
+     "no": 11,
+     "id": "uim3Vr6crXI",
+     "title": "HTML - Development Tools",
+     "duration_sec": 951,
+     "done": false
+    },
+    {
+     "no": 12,
+     "id": "9VM7du__sUY",
+     "title": "HTML: History and Statistics",
+     "duration_sec": 529,
+     "done": false
+    },
+    {
+     "no": 13,
+     "id": "z7DiQe4wnLc",
+     "title": "HTML - Paragraph: p tag",
+     "duration_sec": 260,
+     "done": false
+    },
+    {
+     "no": 14,
+     "id": "HkX_3Kk5haE",
+     "title": "HTML - Line Breaks : br",
+     "duration_sec": 248,
+     "done": false
+    },
+    {
+     "no": 15,
+     "id": "V_ogge8xfDs",
+     "title": "HTML - Image: img",
+     "duration_sec": 414,
+     "done": false
+    },
+    {
+     "no": 16,
+     "id": "XUTFXu0f4qo",
+     "title": "HTML - 표1 : 기본",
+     "duration_sec": 600,
+     "done": false
+    },
+    {
+     "no": 17,
+     "id": "H84fuDj1Jxs",
+     "title": "HTML - Table 2: Structure",
+     "duration_sec": 358,
+     "done": false
+    },
+    {
+     "no": 18,
+     "id": "i7oKd-eKvdw",
+     "title": "HTML - Table 3: Merge",
+     "duration_sec": 310,
+     "done": false
+    },
+    {
+     "no": 19,
+     "id": "sFtZdlmgCVY",
+     "title": "HTML - Form Basics",
+     "duration_sec": 740,
+     "done": false
+    },
+    {
+     "no": 20,
+     "id": "-wMLXTISFFY",
+     "title": "HTML - form: character input",
+     "duration_sec": 378,
+     "done": false
+    },
+    {
+     "no": 21,
+     "id": "dNmubsrqDSA",
+     "title": "HTML - form : dropdown list",
+     "duration_sec": 496,
+     "done": false
+    },
+    {
+     "no": 22,
+     "id": "LYFOUIDBIp4",
+     "title": "HTML - form : radio, checkbox",
+     "duration_sec": 538,
+     "done": false
+    },
+    {
+     "no": 23,
+     "id": "LnlIrDXwEr0",
+     "title": "HTML - form : button",
+     "duration_sec": 317,
+     "done": false
+    },
+    {
+     "no": 24,
+     "id": "viGaQ2i8t44",
+     "title": "HTML - form : hidden",
+     "duration_sec": 288,
+     "done": false
+    },
+    {
+     "no": 25,
+     "id": "_4upG-03td8",
+     "title": "HTML - form : label",
+     "duration_sec": 549,
+     "done": false
+    },
+    {
+     "no": 26,
+     "id": "OnX9TCSGvws",
+     "title": "HTML - form : method",
+     "duration_sec": 528,
+     "done": false
+    },
+    {
+     "no": 27,
+     "id": "XY5G4RN_LKg",
+     "title": "HTML - form: File Upload",
+     "duration_sec": 620,
+     "done": false
+    },
+    {
+     "no": 28,
+     "id": "SfgcrR9952M",
+     "title": "HTML: HTML as Information",
+     "duration_sec": 90,
+     "done": false
+    },
+    {
+     "no": 29,
+     "id": "pcOkHx1x3Y4",
+     "title": "HTML - The font Tag",
+     "duration_sec": 395,
+     "done": false
+    },
+    {
+     "no": 30,
+     "id": "zO5zHxX2lNI",
+     "title": "HTML - meta 태그",
+     "duration_sec": 526,
+     "done": false
+    },
+    {
+     "no": 31,
+     "id": "uDmNhHYecL4",
+     "title": "HTML - 의미론적인 태그",
+     "duration_sec": 779,
+     "done": false
+    },
+    {
+     "no": 32,
+     "id": "owK8xxL7pps",
+     "title": "HTML - 검색엔진최적화 1",
+     "duration_sec": 446,
+     "done": false
+    },
+    {
+     "no": 33,
+     "id": "-G2aDXiF8zE",
+     "title": "HTML - Search Engine Optimization 2",
+     "duration_sec": 700,
+     "done": false
+    },
+    {
+     "no": 34,
+     "id": "TDSmp-QxVRU",
+     "title": "HTML - Search Engine Optimization 3",
+     "duration_sec": 368,
+     "done": false
+    },
+    {
+     "no": 35,
+     "id": "J_ZQhHpV6PQ",
+     "title": "HTML - SEO 4: Links",
+     "duration_sec": 281,
+     "done": false
+    },
+    {
+     "no": 36,
+     "id": "jtjyNe1yfOM",
+     "title": "HTML - 검색엔진최적화 5 : 이미지와 제목",
+     "duration_sec": 581,
+     "done": false
+    },
+    {
+     "no": 37,
+     "id": "hRmfZxXa3KA",
+     "title": "HTML - Search Engine Optimization 6: Robotstxt & Sitemap",
+     "duration_sec": 742,
+     "done": false
+    },
+    {
+     "no": 38,
+     "id": "tagJ0lm6CK8",
+     "title": "HTML - Search Engine Optimization 7: PageRank",
+     "duration_sec": 482,
+     "done": false
+    },
+    {
+     "no": 39,
+     "id": "q_8rVZmMt6M",
+     "title": "HTML - Web Developer Tools",
+     "duration_sec": 623,
+     "done": false
+    },
+    {
+     "no": 40,
+     "id": "rF2nkJCH55c",
+     "title": "HTML - Mobile Support",
+     "duration_sec": 360,
+     "done": false
+    },
+    {
+     "no": 41,
+     "id": "VNXx4Q2WFgU",
+     "title": "HTML - HTML5의 새로운 제출양식 1",
+     "duration_sec": 590,
+     "done": false
+    },
+    {
+     "no": 42,
+     "id": "_VTxM1JUfwI",
+     "title": "HTML - New HTML5 Form Input Types 2",
+     "duration_sec": 347,
+     "done": false
+    },
+    {
+     "no": 43,
+     "id": "36Z-N1wa9lA",
+     "title": "HTML - HTML5 Form 3: New Attributes",
+     "duration_sec": 405,
+     "done": false
+    },
+    {
+     "no": 44,
+     "id": "dJOhEj9_6gM",
+     "title": "HTML - html5 form 4: Checking input values",
+     "duration_sec": 978,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "dream-js",
+   "title": "자바스크립트 기초 강의 (드림코딩)",
+   "school": "드림코딩",
+   "code": "JavaScript",
+   "term": "ES5+",
+   "track": "frontend",
+   "playlist": "https://www.youtube.com/playlist?list=PLv2d7VI9OotTVOL4QmPfvJWPJvkmv6h-2",
+   "total": 27,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "wcsVjmHrUQg",
+     "title": "A Must-Watch Before You Learn JavaScript | The History, Present, and Future of JavaScript (JavaSc...",
+     "duration_sec": 941,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "tJieVCgGzhs",
+     "title": "자바스크립트 2. 콘솔에 출력, script async 와 defer의 차이점 및 앞으로 자바스크립트 공부 방향 | 프론트엔드 개발자 입문편 (JavaScript ES5+)",
+     "duration_sec": 1064,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "OCCpGh4ujb8",
+     "title": "JavaScript 3. Data Types, let vs var, hoisting | Frontend Developer Beginner Course (JavaScript E...",
+     "duration_sec": 1679,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "YBjufjBaxHo",
+     "title": "자바스크립트 4. 코딩의 기본 operator, if, for loop 코드리뷰 팁  | 프론트엔드 개발자 입문편 (JavaScript ES6)",
+     "duration_sec": 1215,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "e_lU39U-5bQ",
+     "title": "JavaScript 5. What is an Arrow Function? Function Declarations and Expressions | Frontend Develop...",
+     "duration_sec": 1502,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "_DLhUBWsRtw",
+     "title": "JavaScript 6. Class vs Object: Understanding Object-Oriented Programming | Frontend Developer Sta...",
+     "duration_sec": 1537,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "1Lbr29tzAA8",
+     "title": "JavaScript 7. What Exactly is an Object? | Frontend Developer Primer (JavaScript ES6)",
+     "duration_sec": 1384,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "yOdAVDuHUKQ",
+     "title": "자바스크립트 8. 배열 제대로 알고 쓰자. 자바스크립트 배열 개념과 APIs 총정리 | 프론트엔드 개발자 입문편 (JavaScript ES6 )",
+     "duration_sec": 1928,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "3CUjtKJ7PJg",
+     "title": "JavaScript 9. 10 Useful Array Methods. Array APIs Masterclass | Front-End Development for Beginne...",
+     "duration_sec": 2234,
+     "done": false
+    },
+    {
+     "no": 10,
+     "id": "FN_D4Ihs3LE",
+     "title": "JavaScript 10. JSON Concepts, Usage Methods, and Useful Websites: JavaScript JSON | Introduction ...",
+     "duration_sec": 1357,
+     "done": false
+    },
+    {
+     "no": 11,
+     "id": "s1vpVCrT8f4",
+     "title": "JavaScript 11. Understanding Callbacks: The Start of Asynchronous Processing and Experiencing Cal...",
+     "duration_sec": 1276,
+     "done": false
+    },
+    {
+     "no": 12,
+     "id": "JB_yU6Oe2eE",
+     "title": "자바스크립트 12. 프로미스 개념부터 활용까지 JavaScript Promise | 프론트엔드 개발자 입문편 (JavaScript ES6)",
+     "duration_sec": 1690,
+     "done": false
+    },
+    {
+     "no": 13,
+     "id": "aoQSOZfz3vQ",
+     "title": "JavaScript 13. The Highlight of Asynchronous: JavaScript async & await and Useful Promise APIs | ...",
+     "duration_sec": 1053,
+     "done": false
+    },
+    {
+     "no": 14,
+     "id": "PuG2VW18O1E",
+     "title": "프로그래밍 포기 하지 마세요 (자바스크립트 함수 기본편)",
+     "duration_sec": 1038,
+     "done": false
+    },
+    {
+     "no": 15,
+     "id": "__Zz17_5FRU",
+     "title": "JavaScript Basics 1. Variables | The Difference Between Primitive Types and Objects",
+     "duration_sec": 1132,
+     "done": false
+    },
+    {
+     "no": 16,
+     "id": "-cAPq25P-68",
+     "title": "JavaScript Basics 2: Functions | Function Definition, Calling, and Callback Functions",
+     "duration_sec": 1317,
+     "done": false
+    },
+    {
+     "no": 17,
+     "id": "SswrP0JLNGY",
+     "title": "JavaScript Basics 3: Operators | All About Booleans && Operator",
+     "duration_sec": 428,
+     "done": false
+    },
+    {
+     "no": 18,
+     "id": "fU25vI0EOOk",
+     "title": "JavaScript Basics 4: Classes | Class Examples and Callback Functions: A Final Summary",
+     "duration_sec": 967,
+     "done": false
+    },
+    {
+     "no": 19,
+     "id": "v2Aw9f-MK5s",
+     "title": "How to Create a Responsive Website with Clone Coding Portfolio | HTML, CSS, JavaScript Front-End ...",
+     "duration_sec": 136,
+     "done": false
+    },
+    {
+     "no": 20,
+     "id": "x2T2rDM-APM",
+     "title": "프론트엔드 개발자라면 필수로 알아야 하는 브라우저 101 필수 개념과 게임 프로젝트 🕹",
+     "duration_sec": 148,
+     "done": false
+    },
+    {
+     "no": 21,
+     "id": "We2Kv1HMGvc",
+     "title": "자바스크립트를 이용한 미니 게임 만들기 프로젝트 안내편 | 프론트엔드 개발자 입문편 🕹",
+     "duration_sec": 295,
+     "done": false
+    },
+    {
+     "no": 22,
+     "id": "6oGctyyeZ6E",
+     "title": "자바스크립트를 이용한 미니게임 만들기 & 코드 리뷰, 코딩 팁 (여러분들의 코드를 드디어 리뷰해요 🙌)",
+     "duration_sec": 623,
+     "done": false
+    },
+    {
+     "no": 23,
+     "id": "36HrZHzPeuY",
+     "title": "Modern JavaScript Syntax (ES6 - ES11) | Essential Features You'll Regret Not Knowing 🐶",
+     "duration_sec": 917,
+     "done": false
+    },
+    {
+     "no": 24,
+     "id": "waePYqd8LiM",
+     "title": "Introductory Course on Backend Development with Node | Rest APIs, Databases, and More 🚀 Full-Stac...",
+     "duration_sec": 668,
+     "done": false
+    },
+    {
+     "no": 25,
+     "id": "BUAhpB3FmS4",
+     "title": "자바스크립트 프로처럼 쓰는 팁 ✨ (+ 보너스 인터뷰 문제 하나!)",
+     "duration_sec": 1143,
+     "done": false
+    },
+    {
+     "no": 26,
+     "id": "wbDpZwDRgRk",
+     "title": "5 JavaScript Animation Libraries (Super Useful👍)",
+     "duration_sec": 844,
+     "done": false
+    },
+    {
+     "no": 27,
+     "id": "2AMRTAFSh98",
+     "title": "Tips for Coding in JavaScript 🍯🐝",
+     "duration_sec": 626,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "noona-react",
+   "title": "리액트 기초 강의",
+   "school": "코딩알려주는누나",
+   "code": "React",
+   "term": "기초",
+   "track": "frontend",
+   "playlist": "https://www.youtube.com/playlist?list=PLKvVQ9ZQzjVkP0xd30Zi90P4S_rTlm-LH",
+   "total": 12,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "qcphnSqneE0",
+     "title": "The Ultimate Front-End Masterclass | If you don't understand React after this, just give up...",
+     "duration_sec": 806,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "MeZ3FCTub3I",
+     "title": "이거 모르면 프론트엔드 개발자 못됨 | 리액트 진짜 쉽게 설명해줌 | 리액트 초보자 입문 강의 1탄",
+     "duration_sec": 585,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "NcI-WJSWdv8",
+     "title": "Before you start learning React, you'll be in trouble if you don't know all the JavaScript gramma...",
+     "duration_sec": 965,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "TFLvKGhrAwM",
+     "title": "리액트 초보자 입문강의 3탄 | 리액트 state 진짜 쉽게 설명해줌 | 이거 모르면 프론트엔드 개발자는 힘들지...",
+     "duration_sec": 1248,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "TjUju3aUIDM",
+     "title": "Let's Build a To-Do App with React! (Funny) | See How Actual React Concepts Are Used | For React ...",
+     "duration_sec": 1160,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "UKnLwVm9suY",
+     "title": "아직도 옛날 리덕스 쓴다고..? 옛날 리덕스를 최신 리덕스 Toolkit으로 바꿔보자!",
+     "duration_sec": 1123,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "jOSu8VzJbpQ",
+     "title": "리액트 프로젝트를 더 풍부하게 만들어줄 애니메이션 라이브러리  React Spring",
+     "duration_sec": 1272,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "Tc0uZVVwP1c",
+     "title": "I'll teach you React in the easiest way! A React course from a bootcamp instructor is now availab...",
+     "duration_sec": 398,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "kllWOdnU1Fg",
+     "title": "useRef 훅 누구보다 쉽게 설명해드림 | 지금 까지 useState만 썼다면 꼭 봐라",
+     "duration_sec": 1251,
+     "done": false
+    },
+    {
+     "no": 10,
+     "id": "XeC8vRBpZTw",
+     "title": "Why you use it is more important than how you use it | Two uses of useMemo",
+     "duration_sec": 1268,
+     "done": false
+    },
+    {
+     "no": 11,
+     "id": "KJo_EQtG8Rw",
+     "title": "컴포넌트 커터마이즈 하기 힘들었던 사람 다 들어와 | 스타일 컴포넌트, 테마 , css module 까지 싹 다 정리해줄게",
+     "duration_sec": 1973,
+     "done": false
+    },
+    {
+     "no": 12,
+     "id": "gdQzGkW5kps",
+     "title": "리액트 19에서 새로나온 훅들 싹다 정리해드림 | useActionState, useOptimistic, useTransition, useFormStauts, use",
+     "duration_sec": 1368,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "designbase-web",
+   "title": "웹 디자인 입문 — 그리드·타이포·색·여백",
+   "school": "디자인베이스",
+   "code": "웹디자인",
+   "term": "입문",
+   "track": "design",
+   "playlist": "https://www.youtube.com/playlist?list=PLkbzizJk4Ae8VJcW6qpHjiP2qByn4Gs8w",
+   "total": 29,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "0q0tdEbNci4",
+     "title": "#1 Is It Too Late to Learn Web Design Now? - Web Design Introductory Course",
+     "duration_sec": 333,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "njHQ2aR-m1g",
+     "title": "#2 Do You Know What This Term Means? - Web Design Introductory Course",
+     "duration_sec": 550,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "SoFC7CAd0tc",
+     "title": "#3 Understanding Web UI Components with Bootstrap - Introductory Web Design Course",
+     "duration_sec": 664,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "iqv9CDY-QCA",
+     "title": "#4 Everything You Need to Know About Web Design Grid Systems?! - Web Design Introductory Course",
+     "duration_sec": 1057,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "jFf8W1N21L8",
+     "title": "#5 게슈탈트 이론으로 보는 와이어프레임(지식 UP) - 웹디자인 입문 강좌",
+     "duration_sec": 621,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "cCwj-xYYCM0",
+     "title": "#6 Web Design Practice: PC Header Design 01 - Introductory Web Design Course",
+     "duration_sec": 585,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "jmly8U6Eeuk",
+     "title": "#7 Web Design Practice PC Banner Design 02 - Introductory Web Design Course",
+     "duration_sec": 609,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "D8XMY0fb2wQ",
+     "title": "#8 Web Design Practice PC Section Design 03 - Introduction to Web Design Course",
+     "duration_sec": 1016,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "rQgfrZimsOg",
+     "title": "#9 Web Design Practice PC Section, Footer Design 04 - Intro to Web Design Course",
+     "duration_sec": 636,
+     "done": false
+    },
+    {
+     "no": 10,
+     "id": "ay7VHoa8tKs",
+     "title": "#10 웹디자인 실습 PC 카테고리 페이지 - 웹디자인 입문 강좌",
+     "duration_sec": 692,
+     "done": false
+    },
+    {
+     "no": 11,
+     "id": "5nCEdPeyG_Y",
+     "title": "#11 시선강탈 웹 메인 배너 만드는 방법(feat. 포토샵) - 웹디자인 입문 강좌",
+     "duration_sec": 927,
+     "done": false
+    },
+    {
+     "no": 12,
+     "id": "oztzLAZJJiY",
+     "title": "#12 웹디자인 실습 모바일 메인 페이지 - 웹디자인 입문 강좌",
+     "duration_sec": 1515,
+     "done": false
+    },
+    {
+     "no": 13,
+     "id": "ivKBx4XoLmQ",
+     "title": "#13 Web Design Practice Mobile Subpage (Feat. The Power of Sketch Symbols) - Introductory Web Des...",
+     "duration_sec": 669,
+     "done": false
+    },
+    {
+     "no": 14,
+     "id": "2xq-cJCoBMI",
+     "title": "#14 How to Organize Layers and Assets (Feat. Zeplin) - Web Design Intro Course",
+     "duration_sec": 401,
+     "done": false
+    },
+    {
+     "no": 15,
+     "id": "-tTVd5LZEOI",
+     "title": "Web Design in the AI ​​Era: The Criteria for Differentiating Results - Web Design Course 1-1",
+     "duration_sec": 343,
+     "done": false
+    },
+    {
+     "no": 16,
+     "id": "mk5JkPvkIas",
+     "title": "Understanding the Full Workflow of Website Creation - Web Design Course 1-2",
+     "duration_sec": 763,
+     "done": false
+    },
+    {
+     "no": 17,
+     "id": "B-5ELrLxMk8",
+     "title": "Responsive vs. Adaptive Design Explained! Including Mobile-First Concepts - Web Design Tutorial 1-3",
+     "duration_sec": 369,
+     "done": false
+    },
+    {
+     "no": 18,
+     "id": "-sP-hqWnyn8",
+     "title": "Where Should You Place Elements? A Complete Guide to Website Structure and Function - Web Design ...",
+     "duration_sec": 443,
+     "done": false
+    },
+    {
+     "no": 19,
+     "id": "LPcOSRrFDco",
+     "title": "The Core of Website Planning! Main Section Structure and Design Principles - Web Design Course 1-5",
+     "duration_sec": 585,
+     "done": false
+    },
+    {
+     "no": 20,
+     "id": "DfS-_CIYcUk",
+     "title": "Understanding Key Components for Web Structure and Navigation - Web Design Course 1-6",
+     "duration_sec": 362,
+     "done": false
+    },
+    {
+     "no": 21,
+     "id": "vXuwinMGsyo",
+     "title": "UI Components That Drive User Action - Web Design Course 1-7",
+     "duration_sec": 603,
+     "done": false
+    },
+    {
+     "no": 22,
+     "id": "naUa34JmumA",
+     "title": "From Alerts to Modals: Understanding Feedback UI Components - Web Design Course 1-8",
+     "duration_sec": 429,
+     "done": false
+    },
+    {
+     "no": 23,
+     "id": "jA2l55dbZ_U",
+     "title": "From Cards to Carousels: Understanding Content UI Components - Web Design Tutorial 1-9",
+     "duration_sec": 508,
+     "done": false
+    },
+    {
+     "no": 24,
+     "id": "sGgOyd0a3T0",
+     "title": "Web Layout Basics: Understanding Grids and Breakpoints - Web Design Tutorial 2-1",
+     "duration_sec": 504,
+     "done": false
+    },
+    {
+     "no": 25,
+     "id": "zFArAew3mM4",
+     "title": "Units Every Web Designer Needs to Know: Mastering px, rem, %, vw, and vh - Web Design Tutorial 2-2",
+     "duration_sec": 493,
+     "done": false
+    },
+    {
+     "no": 26,
+     "id": "lsje0JieKpI",
+     "title": "Typography for Readable Web Design - Web Design Tutorial 2-3",
+     "duration_sec": 817,
+     "done": false
+    },
+    {
+     "no": 27,
+     "id": "pp4RwPkw-C4",
+     "title": "How to Use Color in Web Design | Understanding UI Color Systems and Design Tokens - Web Design Co...",
+     "duration_sec": 464,
+     "done": false
+    },
+    {
+     "no": 28,
+     "id": "ANOt_v7Mop8",
+     "title": "How to Set Spacing and Sizing in Web Design | Understanding Spacing and Sizing Rules - Web Design...",
+     "duration_sec": 512,
+     "done": false
+    },
+    {
+     "no": 29,
+     "id": "mLt9rHLM23Q",
+     "title": "How to Use Images in Web Design | From Choosing Graphic Styles to WebP Optimization - Web Design ...",
+     "duration_sec": 381,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "ux-basics",
+   "title": "UX 디자인 핵심 기초",
+   "school": "ForDesignBeginner",
+   "code": "UX 기초",
+   "term": "핵심",
+   "track": "design",
+   "playlist": "https://www.youtube.com/playlist?list=PLu8h5Q8iakRj6Ho0kZcMttm_z_bW_LsfJ",
+   "total": 18,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "yFhsww3HF4c",
+     "title": "Chapter 1. UX/UI디자인이란? UX디자인이 어려운 이유!",
+     "duration_sec": 719,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "PtTOXE2uNm0",
+     "title": "Chapter 2-2. 새로운 인터페이스의 필요성. 새로운 인터페이스가 왜 필요한가?",
+     "duration_sec": 187,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "SC7v4R_MG8Q",
+     "title": "Chapter 2-1. UI란 무엇인가? 인터페이스의 발전과정",
+     "duration_sec": 449,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "9ZhEZGzgEFU",
+     "title": "Chapter 3. 인터랙션 디자인이란? 인터랙션 디자인의 필요성, 사용 분야",
+     "duration_sec": 513,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "ESl0a5vEfDE",
+     "title": "Chapter 4. 인터페이스의 발전 과정 #1",
+     "duration_sec": 1117,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "x8gPxjLGAxs",
+     "title": "Chapter 5. 인터페이스의 발전 과정 #2",
+     "duration_sec": 580,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "oi0UY8EH5_4",
+     "title": "Chapter 6. 인터페이스의 발전 과정 #3",
+     "duration_sec": 431,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "5o982mor5x8",
+     "title": "Chapter 7. UX디자인의 개념들. 경험 디자인에서 경험의 흐름이란 무엇인가?",
+     "duration_sec": 1048,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "OYf7ZdSgUAU",
+     "title": "Chapter 8. 사용자 경험의 품질 속성. 일곱 가지의 사용자 경험 품질 속성에 대해 알아보자!",
+     "duration_sec": 578,
+     "done": false
+    },
+    {
+     "no": 10,
+     "id": "YBIsC81n-kI",
+     "title": "Chapter 10. 인포메이션 아키텍쳐가 뭐에요? 인포메이션 아키텍쳐의 정의, 요소",
+     "duration_sec": 897,
+     "done": false
+    },
+    {
+     "no": 11,
+     "id": "_zxKs7euPRM",
+     "title": "Chapter 14. 메타버스 디자이너 되기, 메타버스 디자인에는 뭐가 필요한가? #1",
+     "duration_sec": 754,
+     "done": false
+    },
+    {
+     "no": 12,
+     "id": "aorvxojQLKo",
+     "title": "Chapter 25. 머릿속의 지식과 세상 속의 지식 2 (디자인과 인간심리)",
+     "duration_sec": 923,
+     "done": false
+    },
+    {
+     "no": 13,
+     "id": "imVjITvMYjU",
+     "title": "Chapter 45.  UI 디자인이란 무엇인가? What is UI design?",
+     "duration_sec": 1212,
+     "done": false
+    },
+    {
+     "no": 14,
+     "id": "ELzpu39X1zw",
+     "title": "Chapter 46.  UX 디자인의 개념 The Concept of UX design.",
+     "duration_sec": 1799,
+     "done": false
+    },
+    {
+     "no": 15,
+     "id": "dVj2sfVWXb4",
+     "title": "Chapter 47.  AI 시대, 디자이너의 3 Tier.   The Designer’s 3-Tier Model in the Age of AI",
+     "duration_sec": 1172,
+     "done": false
+    },
+    {
+     "no": 16,
+     "id": "6a1FIgE5Yks",
+     "title": "Chapter 48.  UX 디자인 프로세스-1   The Process of UX design.",
+     "duration_sec": 592,
+     "done": false
+    },
+    {
+     "no": 17,
+     "id": "jvL45KZnOis",
+     "title": "Chapter 49.  UX 디자인 프로세스-2   The Process of UX design.",
+     "duration_sec": 2031,
+     "done": false
+    },
+    {
+     "no": 18,
+     "id": "jlARmTB9eGg",
+     "title": "Chapter 50.  UX 디자인 프로세스-3   The Process of UX design.",
+     "duration_sec": 1114,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "uxschool-figma",
+   "title": "Figma UI 디자인 — 기초부터 프로토타입까지",
+   "school": "UX스쿨",
+   "code": "Figma",
+   "term": "기초",
+   "track": "design",
+   "playlist": "https://www.youtube.com/playlist?list=PLqCeqvhJaNE-RpomcaV74NnZt0vN0UWao",
+   "total": 26,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "LllNfT_5l3s",
+     "title": "[Figma] UI/UX Prototype Tool!!! Figma Introduction, Pros & Cons, and Comparison with Adobe XD",
+     "duration_sec": 273,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "JQRmEgfgGgY",
+     "title": "[Figma] 처음 사용자를 위한 피그마 인터페이스 : 사용방법 + 툴 설명 (초보)",
+     "duration_sec": 381,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "0fzSJ0xbDr4",
+     "title": "[Figma] 피그마를 처음 하시는 분들을 위한 쉽게 와이어프레임 그리기! (UI키트 활용, 앱UI)",
+     "duration_sec": 761,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "CI7SFb9cYTE",
+     "title": "[Figma] Easy Prototype Connection for Figma Beginners (App Screen Connection)",
+     "duration_sec": 673,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "22yeayhXwZk",
+     "title": "[Figma] Changing Fonts in Bulk & Missing Fonts & Using Local Fonts & Android, iOS Default Fonts &...",
+     "duration_sec": 412,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "z19LEgQIlgA",
+     "title": "[Figma] 피그마 작업할 때 로컬 파일로 꼭 저장해두세요!!! 로컬파일 저장 / 파일 열기",
+     "duration_sec": 77,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "_3TOfju01k8",
+     "title": "[Figma] Figma App UI UX Design / Drawing from the Airbnb App Design",
+     "duration_sec": 1353,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "6DH1oTeoTX4",
+     "title": "[Figma] Interactions & Animations for Screen Transitions and Dynamic Pages!!",
+     "duration_sec": 547,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "chsKsouf4Ac",
+     "title": "[Figma] 가로(좌우) 스크롤 하기!  오브젝트&사진&그림등을 좌우 스크롤해보세요! (2분강의)",
+     "duration_sec": 133,
+     "done": false
+    },
+    {
+     "no": 10,
+     "id": "4Y60GlJNcC8",
+     "title": "[Figma] 피그마를 처음 하시는 분들을 위한 쉽게 웹(Web)와이어프레임 그리기 (UI키트 활용, 웹UI)",
+     "duration_sec": 644,
+     "done": false
+    },
+    {
+     "no": 11,
+     "id": "kUGUtOaSyw8",
+     "title": "[Figma] Fixed Top Navigation Menu Bar (Top, Bottom Menu, Images, and Text) - Figma Update! (1-Min...",
+     "duration_sec": 77,
+     "done": false
+    },
+    {
+     "no": 12,
+     "id": "HA_DpIEbX8M",
+     "title": "[Figma] Using Components: How to Draw a Button, Image, etc. and Use It on Multiple Screens (Examp...",
+     "duration_sec": 248,
+     "done": false
+    },
+    {
+     "no": 13,
+     "id": "hDeXdKaHBJU",
+     "title": "[Figma] Mouseover!!! Enlarge images (photos) on mouseover! Change color, show information (text),...",
+     "duration_sec": 275,
+     "done": false
+    },
+    {
+     "no": 14,
+     "id": "OEsqS7AXkY0",
+     "title": "[Figma] Using Overlays!!! Selecting the Hamburger Menu Brings Up a Sliding Menu & Keyboard / Pop-...",
+     "duration_sec": 194,
+     "done": false
+    },
+    {
+     "no": 15,
+     "id": "-j_dki9hbEA",
+     "title": "[Figma] Adding Video to Web/App (1-Minute Lecture) What to do if the video doesn't add!!!",
+     "duration_sec": 129,
+     "done": false
+    },
+    {
+     "no": 16,
+     "id": "twjW0_4PVIs",
+     "title": "[Figma] 인터랙션 : 피그마에서 좌우 드래그로 이미지 확대! 이미지 슬라이드 기능!!! (웹/앱 이미지 선택시 활용해보세요)",
+     "duration_sec": 390,
+     "done": false
+    },
+    {
+     "no": 17,
+     "id": "bTDnre1UlLc",
+     "title": "[Figma] How to Add Sound/Audio in Figma!!! (Music Apps! Sound Effects!)",
+     "duration_sec": 431,
+     "done": false
+    },
+    {
+     "no": 18,
+     "id": "ffHk-EQUuTo",
+     "title": "[Figma] 꼭 필요한 플러그인! Unsplash! 무료 이미지 쉽게 찾아서 가져오기!!! 언플래쉬 활용법!",
+     "duration_sec": 196,
+     "done": false
+    },
+    {
+     "no": 19,
+     "id": "tJqoNEW43PQ",
+     "title": "[Figma] A must-have plugin! Easily find free icons for your app and web design! How to add icons!",
+     "duration_sec": 417,
+     "done": false
+    },
+    {
+     "no": 20,
+     "id": "k8bPsEkHp6M",
+     "title": "[UX+AI] UI design in 3 seconds (with Korean input), web app, wireframe, image creation, and autom...",
+     "duration_sec": 493,
+     "done": false
+    },
+    {
+     "no": 21,
+     "id": "JzpRNNbvM08",
+     "title": "[UX+AI] AI로 쉽게! 앱 리자인하기! 갈릴레오AI, AI UI디자인 #GalileoAI #aidesign",
+     "duration_sec": 199,
+     "done": false
+    },
+    {
+     "no": 22,
+     "id": "FltOGbkI66o",
+     "title": "[UX+AI] AI Made Easy! High-Quality App & Web Design in 3 Seconds (1) #GalileoAI, AI-Powered App D...",
+     "duration_sec": 508,
+     "done": false
+    },
+    {
+     "no": 23,
+     "id": "Jm9h_JmEnu8",
+     "title": "[UX+AI] Draw wireframes in just 3 seconds with AI! How to draw in Figma! AI wireframes, AI design",
+     "duration_sec": 607,
+     "done": false
+    },
+    {
+     "no": 24,
+     "id": "1P5jgKy_Qvk",
+     "title": "[Figma] How to Scroll to a Specific Section from a Menu! Move to Top with a Back-to-Top Button! S...",
+     "duration_sec": 289,
+     "done": false
+    },
+    {
+     "no": 25,
+     "id": "ix7QxJ3ikYE",
+     "title": "[Figma] Circular Spinning Loading Animation Bar #FigmaLoadingBar #LoadingCircle",
+     "duration_sec": 330,
+     "done": false
+    },
+    {
+     "no": 26,
+     "id": "X7E4rBSxMe0",
+     "title": "[Figma] Create an Animated Floating Action Button in 5 Minutes #FloatingActionButton #figmaanimation",
+     "duration_sec": 381,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "ps-basics",
+   "title": "포토샵 기초 강좌 (포토샵 2024~2026)",
+   "school": "에디터 몽키",
+   "code": "포토샵",
+   "term": "2024~2026",
+   "track": "detail-page",
+   "playlist": "https://www.youtube.com/playlist?list=PLRBSoa3MjYpEXRc0gYdkyCVVmhDyyycpi",
+   "total": 15,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "siTrRLqF7wA",
+     "title": "[Photoshop Basics Tutorial 1] Getting Started with Photoshop: Interface, Menus, and Essential Sho...",
+     "duration_sec": 1238,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "zAjCkT17aA4",
+     "title": "[Photoshop Basics Class 2] Toolbox: Marquee, Lasso, and Magic Wand Tools (Photoshop 2024: This is...",
+     "duration_sec": 2072,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "GB5GfOwa2kE",
+     "title": "[Photoshop Basics Tutorial 3] Brush Tool, Eraser Tool, Clone Stamp Tool, Paint Bucket Tool (Photo...",
+     "duration_sec": 1633,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "7U5_Q1cjkp0",
+     "title": "[포토샵 기초 강좌4]  펜툴사용법 (feat.선택영역 크기로 저장하기. 선택영역만 저장하는 방법)",
+     "duration_sec": 1347,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "wsy8fJBz3Do",
+     "title": "[Photoshop Basics 5] Layer Concepts, Layer Masks, and Clipping Masks (feat. Compositing Practice)",
+     "duration_sec": 2132,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "7YlboWT4QfY",
+     "title": "[Photoshop Basic Tutorial 6] Blending Modes & Layer Styles: Perfect Understanding and Application...",
+     "duration_sec": 1138,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "AQSsskmXEeg",
+     "title": "[Photoshop Basics Tutorial 7] Image Color Correction. Master the Basics in One Video. With Practi...",
+     "duration_sec": 1205,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "1xN4GrFvhtg",
+     "title": "[Photoshop Basics 8] Image Color Correction 2 (Advanced). Compositing + Color Correction Practice...",
+     "duration_sec": 1730,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "3fdb6jkHbEE",
+     "title": "[포토샵 기초 강좌9] Filter 이펙트들을 익히자! 흐림 효과, 흐림효과 갤러리, 왜곡, 노이즈,  픽셀화, 렌더, 선명 효과, 스타일화  (포토샵2024  / 소스 제공)",
+     "duration_sec": 1504,
+     "done": false
+    },
+    {
+     "no": 10,
+     "id": "aOTFfMqGplU",
+     "title": "[Photoshop Basics Tutorial 10] Sky Replacement, Camera Raw Filter (Photoshop 2024 / Source Provided)",
+     "duration_sec": 823,
+     "done": false
+    },
+    {
+     "no": 11,
+     "id": "s2LF-h2YfYo",
+     "title": "[포토샵 기초 강좌11] 뉴럴필터(Neural Filter) (포토샵2024 / 소스 제공) 얼굴보정, 흑백사진을 컬러로 변환",
+     "duration_sec": 819,
+     "done": false
+    },
+    {
+     "no": 12,
+     "id": "wWsR6lz5m1s",
+     "title": "[Photoshop Basic Tutorial 12] Generative Fill (Photoshop 2024 Compositing / Assets Provided) Now,...",
+     "duration_sec": 1339,
+     "done": false
+    },
+    {
+     "no": 13,
+     "id": "z9ceWeot5V4",
+     "title": "[포토샵 기초 강좌13] 소실점 (Vanishing point)을 이용해서 기울어진 간판, 벽, 계단, 상자에 이미지 넣기.  목업까지 한번에 해결. 배니싱 포인트",
+     "duration_sec": 1474,
+     "done": false
+    },
+    {
+     "no": 14,
+     "id": "EbVJZna7flk",
+     "title": "[Photoshop Basics Tutorial 14] Understanding and Using Smart Objects. Mockup Practice (Source Fil...",
+     "duration_sec": 1142,
+     "done": false
+    },
+    {
+     "no": 15,
+     "id": "KbhLUT-0HVU",
+     "title": "[포토샵 기초 강좌15] AI 제거 도구 및 배경 제거 그리고 배경생성 (생성형 채우기와 비교 분석)  2025 신기능 | 전선 및 케이블, 인물제거 포함 (소스 제공)",
+     "duration_sec": 1164,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "ps-detail-intro",
+   "title": "상세페이지 디자인 — 시작 전에 알아 둘 것",
+   "school": "celestar1",
+   "code": "상세페이지",
+   "term": "기획",
+   "track": "detail-page",
+   "playlist": "https://www.youtube.com/playlist?list=PLb09ICNSQAe9TKv_gpGOKgcV9niWLpwm5",
+   "total": 7,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "PsOEADo4-pA",
+     "title": "#01 상세페이지 디자인! 이것만 알고 시작하세요!",
+     "duration_sec": 1176,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "JEmdu9pq5Pw",
+     "title": "디자인 연구소 #2 - 디자이너가 좋아하는 저작권 무료 한글 폰트 5종",
+     "duration_sec": 322,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "R3rKIBTz6Sc",
+     "title": "How to Create a Persuasive Product Page (feat. Which Marketing Theories to Apply and How?)",
+     "duration_sec": 928,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "U-VL9eq_6iw",
+     "title": "상세페이지 디자인 제작 이렇게 빨리 만든다고?",
+     "duration_sec": 363,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "Kzb3bYQWJ_E",
+     "title": "[상세페이지 만들기 꿀팁 포토샵 강좌] 이미지 동영상 gif로 움짤만드는법 총정리!",
+     "duration_sec": 476,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "bhB89OxGVaI",
+     "title": "쇼핑몰 포트폴리오 연습용 휴대폰 제품촬영 후 상세페이지 상품페이지 만들기 [그림자, 제품아래에 라인넣기](한글자막지원)",
+     "duration_sec": 1738,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "mhKMRt2_YcU",
+     "title": "[포토샵강좌] 시네마그래프 만들기",
+     "duration_sec": 497,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "ps-detail-practice",
+   "title": "포토샵으로 쇼핑몰 상세페이지 만들기 (실습)",
+   "school": "Min_yonug",
+   "code": "상세페이지",
+   "term": "실습",
+   "track": "detail-page",
+   "playlist": "https://www.youtube.com/playlist?list=PLu1M-6a3UVNPh-bkhlJkWZkgfhewehbOg",
+   "total": 7,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "umUq3lyK8vg",
+     "title": "포토샵 쇼핑몰 상품페이지 제작 후 레이어 그룹 정리하는방법(한글자막지원)",
+     "duration_sec": 601,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "o5R8AaJffJg",
+     "title": "쇼핑몰 블로그후기 상세페이지 상품페이지 사진촬영 캘리그라피 딥펜 깃털펜후기 (한글자막지원)",
+     "duration_sec": 798,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "ucu7ec_ESFs",
+     "title": "포토샵 쇼핑몰 상품페이지 상품 누끼안따고 배경 화이트톤으로 맞추기 (좋은사진 고르기+도장툴활용)(한글자막지원)",
+     "duration_sec": 888,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "bhB89OxGVaI",
+     "title": "쇼핑몰 포트폴리오 연습용 휴대폰 제품촬영 후 상세페이지 상품페이지 만들기 [그림자, 제품아래에 라인넣기](한글자막지원)",
+     "duration_sec": 1738,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "ESkXhRUM0fE",
+     "title": "포토샵 상품 상세 페이지디자인 제작 사진2장 자연스럽게 이어지도록 보정",
+     "duration_sec": 1036,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "-vly054VFUk",
+     "title": "포토샵CC 초보강좌 간단한 이벤트 상세페이지 작업 2",
+     "duration_sec": 1046,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "5XMZYv_TUL8",
+     "title": "쇼핑몰 상품페이지 상세페이지 만들기 글씨에 배경보이게 만드는 방법(한글자막지원)",
+     "duration_sec": 868,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "ezdesign-detail",
+   "title": "상세페이지 디자인 따라하기 (가구·화장품)",
+   "school": "이지디자인",
+   "code": "상세페이지",
+   "term": "따라하기",
+   "track": "detail-page",
+   "playlist": "https://www.youtube.com/playlist?list=PLuUDbEpetaTvcE-JE009yxjIqF22dkIoD",
+   "total": 7,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "wJ9kqn4270s",
+     "title": "Following Along with Detail Page Design Part 1! Furniture Detail Page Design Intro!",
+     "duration_sec": 391,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "m2haM7Bs4zE",
+     "title": "[상세페이지 디자인] 따라하기 2편! 가구 상세페이지 디자인",
+     "duration_sec": 541,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "_re_0-UZE14",
+     "title": "상세페이지 디자인 따라하기! 화장품 상세페이지 디자인 인트로!",
+     "duration_sec": 955,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "o-6Wr7ZAaJ0",
+     "title": "(무작정 따라하기 01) [템플릿 무료 공유] 포토샵으로 누구나 만드는 상세페이지 강의!!",
+     "duration_sec": 1573,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "2Woa1emrNvc",
+     "title": "(무작정 따라하기 02) [템플릿 무료 공유] 고급스러운 느낌의 상세페이지 레이아웃 디자인!!",
+     "duration_sec": 2673,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "qDFt32x1TgI",
+     "title": "(무작정 따라하기 03) [템플릿 무료 공유] 포토샵으로 만드는 심플하고 모던한 상세페이지 레이아웃!",
+     "duration_sec": 2546,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "jokWxd3Aos4",
+     "title": "(무작정 따라하기 04) [템플릿 무료 공유] 반려동물 강아지 상세페이지 이걸로 끝. feat포토샵",
+     "duration_sec": 3494,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "toeic-nobase",
+   "title": "토익 노베이스 공부법 (250→855)",
+   "school": "김눕눕",
+   "code": "토익",
+   "term": "공부법",
+   "track": "toeic",
+   "playlist": "https://www.youtube.com/playlist?list=PLv_DQoSWh5n4vUle_SKh6-s6aLeGSuo-g",
+   "total": 6,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "3Ggf1S29Y1o",
+     "title": "250 → 855 points | A TOEIC self-study from scratch: \"The most realistic and important way to stud...",
+     "duration_sec": 643,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "aEQXlTgjz7g",
+     "title": "250 → 855 points | How I self-studied LC in 4 months from zero | It's okay if you can't hear it.",
+     "duration_sec": 491,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "kAGN4pYYbaY",
+     "title": "250 → 855 | ❓So, how did you study for 4 months? | RC Study Tips for TOEIC Beginners Self-Studyin...",
+     "duration_sec": 812,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "UvE87V2vDEw",
+     "title": "250 → 855 points | TOEIC novices, please don't do this! (feat. 5 personal experiences) | A must-w...",
+     "duration_sec": 571,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "n1Q40WlUkiU",
+     "title": "250 → 855점 | 가장 많았던 토익 질문 총정리_zip | 기본적인 공부 방법편 1부 | 토익 노베이스 필수시청",
+     "duration_sec": 614,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "1C4ZEQ3F9zo",
+     "title": "250 → 855 | Want to hit your target score on your first try? | First Test Practice Part 2 | TOEIC...",
+     "duration_sec": 565,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "toeic-grammar",
+   "title": "토익 독학 문법 정복 9일",
+   "school": "해커스토익",
+   "code": "토익 문법",
+   "term": "9일 완성",
+   "track": "toeic",
+   "playlist": "https://www.youtube.com/playlist?list=PLejRTbPvd2kVLyiEYQFg7qPTB8IZoKI6u",
+   "total": 9,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "u27lpDzS5y0",
+     "title": "토익 독학러 문법 정복 프로젝트 [1일차 시제]",
+     "duration_sec": 3244,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "ZpmjWwnIUdI",
+     "title": "토익 독학러 문법 정복 프로젝트 [2일차 수동태&수일치]",
+     "duration_sec": 4079,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "YZBJkjVRQjg",
+     "title": "토익 독학러 문법 정복 프로젝트 [3일차 to부정사&동명사]",
+     "duration_sec": 3399,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "JGaHJfAKJLM",
+     "title": "토익 독학러 문법 정복 프로젝트 [4일차 분사&분사구문]",
+     "duration_sec": 3670,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "x42R_stQftM",
+     "title": "토익 독학러 문법 정복 프로젝트 [5일차 명사&대명사]",
+     "duration_sec": 4818,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "y09fvaGUM9c",
+     "title": "토익 독학러 문법 정복 프로젝트 [6일차 형용사&부사]",
+     "duration_sec": 4312,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "dRaWKmHnask",
+     "title": "토익 독학러 문법 정복 프로젝트 [7일차 전치사&부사절 접속사]",
+     "duration_sec": 4572,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "HyTCJ15Jmn0",
+     "title": "토익 독학러 문법 정복 프로젝트 [8강 명사절&형용사절 접속사]",
+     "duration_sec": 6099,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "Vg6-7JYcGRs",
+     "title": "토익 독학러 문법 정복 프로젝트 [9일차 비교&도치구문]",
+     "duration_sec": 3583,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "toeic-rc",
+   "title": "ETS 토익 기출 공식입문서 RC (무료 인강)",
+   "school": "YBM 원탑토익",
+   "code": "토익 RC",
+   "term": "입문",
+   "track": "toeic",
+   "playlist": "https://www.youtube.com/playlist?list=PLkHJpeZY1f7-zV297NjrxVT3VoDPs6TQg",
+   "total": 20,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "ChOgCaNkL80",
+     "title": "[ETS 토익기출 공식입문서 RC] 1강 PART 5 기초 문법과 독해 전략",
+     "duration_sec": 1402,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "t9g0bB0AqBg",
+     "title": "[ETS TOEIC Official Introduction to RC] Lesson 2, Part 5: Nouns",
+     "duration_sec": 1295,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "h9OYE9IXsdA",
+     "title": "[ETS 토익기출 공식입문서 RC] 3강 PART 5 대명사",
+     "duration_sec": 1372,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "H2vObtJBzTU",
+     "title": "[ETS 토익기출 공식입문서 RC] 4강 PART 5 형용사",
+     "duration_sec": 1164,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "ikRjE3v-LME",
+     "title": "[ETS 토익기출 공식입문서 RC] 5강 PART 5 부사",
+     "duration_sec": 1128,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "u9_eQ5SS6V4",
+     "title": "[ETS TOEIC Official Introduction RC] Lesson 6 Part 5 Prepositions",
+     "duration_sec": 1768,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "XIDTsEyuVIM",
+     "title": "[ETS 토익기출 공식입문서 RC] 7강 PART 5 동사의 종류와 형태, 수 일치",
+     "duration_sec": 1898,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "LT9578dGPyE",
+     "title": "[ETS 토익기출 공식입문서 RC] 8강 PART 5 시제",
+     "duration_sec": 1453,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "zTxnq7lQo7g",
+     "title": "[ETS TOEIC Official Introduction RC] Lesson 9 Part 5",
+     "duration_sec": 1302,
+     "done": false
+    },
+    {
+     "no": 10,
+     "id": "hQ9jbzxON4w",
+     "title": "[ETS 토익기출 공식입문서 RC] 10강 PART 5 to부정사",
+     "duration_sec": 1430,
+     "done": false
+    },
+    {
+     "no": 11,
+     "id": "0COfPkh6qiA",
+     "title": "[ETS 토익기출 공식입문서 RC] 11강 PART 5 동명사",
+     "duration_sec": 1388,
+     "done": false
+    },
+    {
+     "no": 12,
+     "id": "A42qtIIaPig",
+     "title": "[ETS TOEIC Official Introduction to RC] Lesson 12 Part 5",
+     "duration_sec": 1738,
+     "done": false
+    },
+    {
+     "no": 13,
+     "id": "EXuXLjwZtuw",
+     "title": "[ETS TOEIC Official Introduction RC] Lesson 13 Part 5 Coordinating Conjunctions and Adverbial Con...",
+     "duration_sec": 1658,
+     "done": false
+    },
+    {
+     "no": 14,
+     "id": "HGlQQFdBd1w",
+     "title": "[ETS 토익기출 공식입문서 RC] 14강 PART 5 명사절 접속사",
+     "duration_sec": 1220,
+     "done": false
+    },
+    {
+     "no": 15,
+     "id": "7HzGWrgTWTA",
+     "title": "[ETS 토익기출 공식입문서 RC] 15강 PART 5 관계사",
+     "duration_sec": 1710,
+     "done": false
+    },
+    {
+     "no": 16,
+     "id": "2YDBLHyLbqU",
+     "title": "[ETS TOEIC Official Introduction to RC] Lesson 16 Part 5 Comparative Sentences, Conditionals, and...",
+     "duration_sec": 1862,
+     "done": false
+    },
+    {
+     "no": 17,
+     "id": "yz3Qi7_Pva0",
+     "title": "[ETS 토익기출 공식입문서 RC] 17강 PART 6",
+     "duration_sec": 1457,
+     "done": false
+    },
+    {
+     "no": 18,
+     "id": "KHWHdhnqh0k",
+     "title": "[ETS 토익기출 공식입문서 RC] 18강 PART 7 CHAPTER 1 질문 유형",
+     "duration_sec": 1749,
+     "done": false
+    },
+    {
+     "no": 19,
+     "id": "Ym3yTO89Zhk",
+     "title": "[ETS TOEIC Official Introduction RC] Lesson 19 Part 7 Chapter 2 Passage Types",
+     "duration_sec": 1441,
+     "done": false
+    },
+    {
+     "no": 20,
+     "id": "g0KhXAicPjQ",
+     "title": "[ETS 토익기출 공식입문서 RC] 20강 PART 7 CHAPTER 3 이중 지문, 삼중 지문",
+     "duration_sec": 1133,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "toeic-lc",
+   "title": "민지원의 토익랜드 — LC 공부법",
+   "school": "해커스토익",
+   "code": "토익 LC",
+   "term": "기초",
+   "track": "toeic",
+   "playlist": "https://www.youtube.com/playlist?list=PLejRTbPvd2kWCMqvU7cgEndEljvbNV1SL",
+   "total": 23,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "0_0GxWNQj48",
+     "title": "토익 초보라면 따라해보세요! 토익시험 점수 슝~💨 올리는 LC 공부법 가이드🌈 l 민지원의 토익랜드 1탄 l 토익 점수, 토익기출문제, 토익인강추천, 강남토익, 강남 해커스어학원",
+     "duration_sec": 538,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "AhB2JVCkHX0",
+     "title": "토익 노베이스가 딱 한 달 만에 700점 달성하는 🐶쉬운 방법",
+     "duration_sec": 2892,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "zTbh57IsVhs",
+     "title": "토익 LC 빈출 단어와 문장으로 토익 시험 전 귀 뚫고 가세요👂 잘 듣는 꿀팁 방출🙆 l 민지원의 토익랜드 2탄 l 모의토익, 토익 점수, 토익 접수, 토익기출, 토익영단어",
+     "duration_sec": 1349,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "4g4_Mp65LJw",
+     "title": "토익 LC 파트1 이 영상 하나로 종결🕶 문장 유형 총정리 자료 제공  l 민지원의 토익랜드 3탄 l 토익독학, 토익단어장, 토익만점",
+     "duration_sec": 3477,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "Oj1hBBy0AtE",
+     "title": "토익 LC 파트1 만점 받는 3단계 풀이법! ★무료 모의고사 제공★ 🙆나~ 이러다 토익 다~ 맞아~!🙆 l 민지원의 토익랜드 4탄 l 토익시험, 토익정답, 토익가채점",
+     "duration_sec": 3030,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "xpBJUvovD9k",
+     "title": "토익만점자가 알려주는 토익 LC 정답만 고르는 4가지 만능 스킬🔨 토익 시험 전 필수📍 l 민지원의 토익랜드 5탄 l 토익기출문제, 토익900, 토익, 토익답안지,토익시험지",
+     "duration_sec": 2235,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "LsghqS3Rf8I",
+     "title": "🔥본격 공부 자극 영상!🔥 여러분의 꿈⭐은 무엇인가요? 만점자 공부썰로 토익시험 만점받자!  l 민지원의 토익랜드 6탄 l 공부자극, 토익기출문제, 토익 영단어",
+     "duration_sec": 428,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "hJiT1sq7hwA",
+     "title": "토익 LC 귀 뚫는 특급 자료 무료 제공 중 💌 빈출문제로 시원하게 정리하고 가세요~ l 민지원의 토익랜드 7탄 l 토익 접수, 토익시험일정, 토익교재, 토익 일정, 토익만점",
+     "duration_sec": 1361,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "9JQg2B2bH-0",
+     "title": "토익 LC, 요즘은 이렇게 나옵니다. 👑 빈출 문제 총정리로 귀 뚫고, 점수 올리기! l 민지원의 토익랜드 8탄 l 토익 귀뚫기, 토익lc공부법, 토익기출문제, 강남 해커스 어학원",
+     "duration_sec": 1065,
+     "done": false
+    },
+    {
+     "no": 10,
+     "id": "yr0bNJb3yI8",
+     "title": "토익 어-느새 부터 LC가 안들려?! 어려워진 토익도 빈출문장 총정리로 다 들리게 해줄게! 👂 l 민지원의 토익랜드 9탄 l 토익공부법, 토익900, 모의토익, 해커스 강남",
+     "duration_sec": 2747,
+     "done": false
+    },
+    {
+     "no": 11,
+     "id": "WwFBRI7TH9Q",
+     "title": "토익 LC 패러프레이징으로 정답만 고르는 방법 대공개! 절~대 안까먹는 단어 암기비법까지~ l 민지원의 토익랜드 10탄 l #토익 #토익lc #토익기출문제집 #토익900",
+     "duration_sec": 2410,
+     "done": false
+    },
+    {
+     "no": 12,
+     "id": "Nhv054-Bquk",
+     "title": "토익 LC, 안 들리는 데에는 이유가 있다! 만점 강사가 알려주는 최신 빈출문제 8개로 극복하기 l 민지원의 토익랜드 11탄 l 토익lc공부법, 토익 시험, 토익만점, 토익기출문제",
+     "duration_sec": 1694,
+     "done": false
+    },
+    {
+     "no": 13,
+     "id": "gyESy3n_nq8",
+     "title": "토익 LC 점수 급상승 하는 방법 l 해커스 토익 민지원",
+     "duration_sec": 10397,
+     "done": false
+    },
+    {
+     "no": 14,
+     "id": "jROj2I96NuA",
+     "title": "토익 LC 점수가 달라지는 마법!🎆  🎉환상의 토익랜드로 초대합니다🎉 l 민지원의 토익랜드 예고편 l 토익시험, 토익 점수, 토익시험시간, 토익신청, 토익기출문제, 토익책",
+     "duration_sec": 33,
+     "done": false
+    },
+    {
+     "no": 15,
+     "id": "wBuaXr9oBgs",
+     "title": "토익 전! LC 쉽게 푸는 팁 대공개! 이번 시험은 그렇게 풀지 마요...!!! l 민지원의 토익랜드 12탄 l #토익 #토익lc #토익lc공부법 #토익점수",
+     "duration_sec": 2079,
+     "done": false
+    },
+    {
+     "no": 16,
+     "id": "zxC3ECksJL0",
+     "title": "토익 LC 실전 빈출문제 총정리! 토익 만점자의 안내를 받아~ 토익 다~! 맞히세요~! l 민지원의 토익랜드 13탄 l 해커스 민지원, 토익독학, 토익기출문제, 모의토익",
+     "duration_sec": 2261,
+     "done": false
+    },
+    {
+     "no": 17,
+     "id": "88DLsU6h1pU",
+     "title": "토익 대비! 만점 강사가 추천하는 LC 점수 UP! 끝판왕 공부 스킬 공개! 🎩 l 민지원의 토익랜드 14탄 | #토익 #토익lc #토익점수 #토익만점 #토익시간배분",
+     "duration_sec": 2239,
+     "done": false
+    },
+    {
+     "no": 18,
+     "id": "Q-s4XKANPPs",
+     "title": "토익 LC 초보자를 위한 꼭! 나오는 필수 관용구 11가지 정리해드립니다 🌸 l 민지원의 토익랜드 15탄",
+     "duration_sec": 1069,
+     "done": false
+    },
+    {
+     "no": 19,
+     "id": "xEO2lF0LI3g",
+     "title": "토익 전! LC 귀뚫기를 위해 꼭!! 알아야 할 3가지 요소는?! 🐰🥕 l 민지원의 토익랜드 16탄",
+     "duration_sec": 2508,
+     "done": false
+    },
+    {
+     "no": 20,
+     "id": "k5co1pEI0jA",
+     "title": "토익lc 귀가 뚫리고👂 정답이 보이는 👀 햌! 추천 공부법 공개!  (feat. 넷플릭스) l 민지원의 토익랜드 17탄",
+     "duration_sec": 1255,
+     "done": false
+    },
+    {
+     "no": 21,
+     "id": "r3MIHnP2gsg",
+     "title": "토익 시험 완벽 대비! 토익 단어 알파벳만 알아도 정복 가능한 암기스킬 대방출! l 민지원의 토익랜드 18탄",
+     "duration_sec": 1344,
+     "done": false
+    },
+    {
+     "no": 22,
+     "id": "ZSt1FtccQ1Y",
+     "title": "토익 LC 정답/오답 패턴 익히고 시험 점수 올리고! l 민지원의 토익랜드 19탄｜토익 정답",
+     "duration_sec": 2192,
+     "done": false
+    },
+    {
+     "no": 23,
+     "id": "tr22FhixHsA",
+     "title": "토익LC 정답이 저절로 보이는 3STEP 풀이법 😎 l 민지원의 토익랜드 20탄",
+     "duration_sec": 2973,
+     "done": false
+    }
+   ]
   }
  ],
  "items": [
@@ -1065,7 +5386,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs329z-2026",
-   "no": 10
+   "no": 10,
+   "track": "ai"
   },
   {
    "id": "e_m99aR7_3Q",
@@ -1097,7 +5419,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs329z-2026",
-   "no": 9
+   "no": 9,
+   "track": "ai"
   },
   {
    "id": "TlX_ft_PQIM",
@@ -1129,7 +5452,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs329z-2026",
-   "no": 8
+   "no": 8,
+   "track": "ai"
   },
   {
    "id": "qh5tP6PBZ6U",
@@ -1161,7 +5485,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs329z-2026",
-   "no": 7
+   "no": 7,
+   "track": "ai"
   },
   {
    "id": "JC_pLC5EX_w",
@@ -1193,7 +5518,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs329z-2026",
-   "no": 6
+   "no": 6,
+   "track": "ai"
   },
   {
    "id": "q0Q-Hy8TTps",
@@ -1225,7 +5551,8 @@
    "chapters": 13,
    "written_at": "2026-11-21",
    "series": "cs329z-2026",
-   "no": 5
+   "no": 5,
+   "track": "ai"
   },
   {
    "id": "s0S38lz6O7M",
@@ -1257,7 +5584,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs329z-2026",
-   "no": 4
+   "no": 4,
+   "track": "ai"
   },
   {
    "id": "psLc-46GqY0",
@@ -1289,7 +5617,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs329z-2026",
-   "no": 3
+   "no": 3,
+   "track": "ai"
   },
   {
    "id": "Vr1NzH8bT44",
@@ -1321,7 +5650,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs329z-2026",
-   "no": 2
+   "no": 2,
+   "track": "ai"
   },
   {
    "id": "8cAQdELWYuo",
@@ -1353,7 +5683,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs153",
-   "no": 1
+   "no": 1,
+   "track": "ai"
   },
   {
    "id": "J7CossjMvEg",
@@ -1383,7 +5714,8 @@
    "chapters": 14,
    "written_at": "2026-11-21",
    "series": "cs229-2026",
-   "no": 17
+   "no": 17,
+   "track": "ai"
   },
   {
    "id": "xveNBYVTrqw",
@@ -1415,7 +5747,8 @@
    "chapters": 12,
    "written_at": "2026-11-21",
    "series": "cs229-2026",
-   "no": 16
+   "no": 16,
+   "track": "ai"
   },
   {
    "id": "d0Pfu6B7gIM",
@@ -1447,7 +5780,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs153",
-   "no": 2
+   "no": 2,
+   "track": "ai"
   },
   {
    "id": "F_7M4Hc-usM",
@@ -1478,7 +5812,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs153",
-   "no": 3
+   "no": 3,
+   "track": "ai"
   },
   {
    "id": "26FtD08ZpOU",
@@ -1510,7 +5845,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs336-2026",
-   "no": 17
+   "no": 17,
+   "track": "ai"
   },
   {
    "id": "ZUdIsRZhWXI",
@@ -1542,7 +5878,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs25-v6",
-   "no": 8
+   "no": 8,
+   "track": "ai"
   },
   {
    "id": "g50FHC-PzK8",
@@ -1574,7 +5911,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs153",
-   "no": 4
+   "no": 4,
+   "track": "ai"
   },
   {
    "id": "2oH6PWPrYFo",
@@ -1606,7 +5944,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs336-2026",
-   "no": 15
+   "no": 15,
+   "track": "ai"
   },
   {
    "id": "5sxHosTLPF8",
@@ -1638,7 +5977,8 @@
    "chapters": 14,
    "written_at": "2026-11-21",
    "series": "cs336-2026",
-   "no": 14
+   "no": 14,
+   "track": "ai"
   },
   {
    "id": "dIFAi87Ws4E",
@@ -1670,7 +6010,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs336-2026",
-   "no": 16
+   "no": 16,
+   "track": "ai"
   },
   {
    "id": "jFdH7n6BAl0",
@@ -1702,7 +6043,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs25-v6",
-   "no": 6
+   "no": 6,
+   "track": "ai"
   },
   {
    "id": "VeTqsCpcDgg",
@@ -1734,7 +6076,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs153",
-   "no": 5
+   "no": 5,
+   "track": "ai"
   },
   {
    "id": "dJtHauhRasc",
@@ -1766,7 +6109,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs25-v6",
-   "no": 7
+   "no": 7,
+   "track": "ai"
   },
   {
    "id": "Lri2LNYtERM",
@@ -1798,7 +6142,8 @@
    "chapters": 14,
    "written_at": "2026-11-21",
    "series": "cs153",
-   "no": 6
+   "no": 6,
+   "track": "ai"
   },
   {
    "id": "-qm0ln33G24",
@@ -1830,7 +6175,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs336-2026",
-   "no": 13
+   "no": 13,
+   "track": "ai"
   },
   {
    "id": "JpAxdTWQJxM",
@@ -1862,7 +6208,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs336-2026",
-   "no": 12
+   "no": 12,
+   "track": "ai"
   },
   {
    "id": "vTfEyOyzV9E",
@@ -1894,7 +6241,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs336-2026",
-   "no": 11
+   "no": 11,
+   "track": "ai"
   },
   {
    "id": "wisccQYTRQc",
@@ -1924,7 +6272,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs153",
-   "no": 7
+   "no": 7,
+   "track": "ai"
   },
   {
    "id": "B8NvdfssGac",
@@ -1956,7 +6305,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs153",
-   "no": 8
+   "no": 8,
+   "track": "ai"
   },
   {
    "id": "e_H_tkpCAK4",
@@ -1988,7 +6338,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs25-v6",
-   "no": 5
+   "no": 5,
+   "track": "ai"
   },
   {
    "id": "EfM546A79aM",
@@ -2020,7 +6371,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs336-2026",
-   "no": 10
+   "no": 10,
+   "track": "ai"
   },
   {
    "id": "I5BKi32IEa8",
@@ -2052,7 +6404,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs25-v6",
-   "no": 4
+   "no": 4,
+   "track": "ai"
   },
   {
    "id": "BQrJ4lHAjhc",
@@ -2082,7 +6435,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs153",
-   "no": 9
+   "no": 9,
+   "track": "ai"
   },
   {
    "id": "6nUl_w5W9Wk",
@@ -2114,7 +6468,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs153",
-   "no": 10
+   "no": 10,
+   "track": "ai"
   },
   {
    "id": "CBaLU0dDEY8",
@@ -2146,7 +6501,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs153",
-   "no": 11
+   "no": 11,
+   "track": "ai"
   },
   {
    "id": "vfF011ko89o",
@@ -2178,7 +6534,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs153",
-   "no": 12
+   "no": 12,
+   "track": "ai"
   },
   {
    "id": "O5PfU_uDhS0",
@@ -2210,7 +6567,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs153",
-   "no": 13
+   "no": 13,
+   "track": "ai"
   },
   {
    "id": "Q15rhEWZPQ4",
@@ -2242,7 +6600,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs336-2026",
-   "no": 9
+   "no": 9,
+   "track": "ai"
   },
   {
    "id": "6-cXp-aOmdg",
@@ -2274,7 +6633,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs336-2026",
-   "no": 8
+   "no": 8,
+   "track": "ai"
   },
   {
    "id": "SzpOcwdIL0Y",
@@ -2306,7 +6666,8 @@
    "chapters": 14,
    "written_at": "2026-11-21",
    "series": "cs336-2026",
-   "no": 7
+   "no": 7,
+   "track": "ai"
   },
   {
    "id": "xnDHaNUvHBg",
@@ -2338,7 +6699,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs336-2026",
-   "no": 6
+   "no": 6,
+   "track": "ai"
   },
   {
    "id": "OyimE74UMF8",
@@ -2370,7 +6732,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs25-v6",
-   "no": 3
+   "no": 3,
+   "track": "ai"
   },
   {
    "id": "izZba4UA7iY",
@@ -2402,7 +6765,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs336-2026",
-   "no": 5
+   "no": 5,
+   "track": "ai"
   },
   {
    "id": "cKSwj_qZ8Jg",
@@ -2434,7 +6798,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs336-2026",
-   "no": 4
+   "no": 4,
+   "track": "ai"
   },
   {
    "id": "lVynu4bo1rY",
@@ -2466,7 +6831,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs336-2026",
-   "no": 3
+   "no": 3,
+   "track": "ai"
   },
   {
    "id": "kuYAsz7zspQ",
@@ -2498,7 +6864,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs336-2026",
-   "no": 2
+   "no": 2,
+   "track": "ai"
   },
   {
    "id": "071zJXhvNfM",
@@ -2530,7 +6897,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs221-2025",
-   "no": 18
+   "no": 18,
+   "track": "ai"
   },
   {
    "id": "2ZtF1j3n6XE",
@@ -2561,7 +6929,8 @@
    "chapters": 14,
    "written_at": "2026-11-21",
    "series": "cs221-2025",
-   "no": 7
+   "no": 7,
+   "track": "ai"
   },
   {
    "id": "34Hk2v2kwg4",
@@ -2591,7 +6960,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs221-2025",
-   "no": 8
+   "no": 8,
+   "track": "ai"
   },
   {
    "id": "3orP3u2-jcg",
@@ -2623,7 +6993,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs221-2025",
-   "no": 17
+   "no": 17,
+   "track": "ai"
   },
   {
    "id": "4d9V6Sxa6gU",
@@ -2654,7 +7025,8 @@
    "chapters": 14,
    "written_at": "2026-11-21",
    "series": "cs221-2025",
-   "no": 14
+   "no": 14,
+   "track": "ai"
   },
   {
    "id": "4Iu4KPVbnAY",
@@ -2684,7 +7056,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs221-2025",
-   "no": 6
+   "no": 6,
+   "track": "ai"
   },
   {
    "id": "5u5I5jvWR5k",
@@ -2714,7 +7087,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs221-2025",
-   "no": 20
+   "no": 20,
+   "track": "ai"
   },
   {
    "id": "89NND-Ca0yY",
@@ -2744,7 +7118,8 @@
    "chapters": 14,
    "written_at": "2026-11-21",
    "series": "cs221-2025",
-   "no": 4
+   "no": 4,
+   "track": "ai"
   },
   {
    "id": "9CKRoKFdS5Y",
@@ -2775,7 +7150,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs221-2025",
-   "no": 11
+   "no": 11,
+   "track": "ai"
   },
   {
    "id": "Dk7Kqqehzjk",
@@ -2807,7 +7183,8 @@
    "chapters": 14,
    "written_at": "2026-11-21",
    "series": "cs221-2025",
-   "no": 13
+   "no": 13,
+   "track": "ai"
   },
   {
    "id": "ec2rCf4iIqU",
@@ -2838,7 +7215,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs221-2025",
-   "no": 12
+   "no": 12,
+   "track": "ai"
   },
   {
    "id": "fPESauMaJYA",
@@ -2870,7 +7248,8 @@
    "chapters": 14,
    "written_at": "2026-11-21",
    "series": "cs221-2025",
-   "no": 5
+   "no": 5,
+   "track": "ai"
   },
   {
    "id": "lOMNskWVeD8",
@@ -2901,7 +7280,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs221-2025",
-   "no": 9
+   "no": 9,
+   "track": "ai"
   },
   {
    "id": "lPx5PF1ttkc",
@@ -2933,7 +7313,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs221-2025",
-   "no": 19
+   "no": 19,
+   "track": "ai"
   },
   {
    "id": "Mbe5ICIUw5Q",
@@ -2964,7 +7345,8 @@
    "chapters": 13,
    "written_at": "2026-11-21",
    "series": "cs221-2025",
-   "no": 3
+   "no": 3,
+   "track": "ai"
   },
   {
    "id": "Q7V13XriJEc",
@@ -2996,7 +7378,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs221-2025",
-   "no": 15
+   "no": 15,
+   "track": "ai"
   },
   {
    "id": "SMOD_GiRzb8",
@@ -3027,7 +7410,8 @@
    "chapters": 13,
    "written_at": "2026-11-21",
    "series": "cs221-2025",
-   "no": 10
+   "no": 10,
+   "track": "ai"
   },
   {
    "id": "x9Mbqu06OVo",
@@ -3059,7 +7443,8 @@
    "chapters": 14,
    "written_at": "2026-11-21",
    "series": "cs221-2025",
-   "no": 16
+   "no": 16,
+   "track": "ai"
   },
   {
    "id": "yaLEGZuIIgE",
@@ -3091,7 +7476,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs221-2025",
-   "no": 1
+   "no": 1,
+   "track": "ai"
   },
   {
    "id": "ypZJaTqrNdk",
@@ -3121,7 +7507,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs221-2025",
-   "no": 2
+   "no": 2,
+   "track": "ai"
   },
   {
    "id": "AuZoDsNmG_s",
@@ -3153,7 +7540,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs230-2025",
-   "no": 8
+   "no": 8,
+   "track": "ai"
   },
   {
    "id": "Ozb1AR_F5MU",
@@ -3185,7 +7573,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs230-2025",
-   "no": 9
+   "no": 9,
+   "track": "ai"
   },
   {
    "id": "Q86qzJ1K1Ss",
@@ -3217,7 +7606,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cme295-2025",
-   "no": 9
+   "no": 9,
+   "track": "ai"
   },
   {
    "id": "8fNP4N46RRo",
@@ -3249,7 +7639,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cme295-2025",
-   "no": 8
+   "no": 8,
+   "track": "ai"
   },
   {
    "id": "k1njvbBmfsw",
@@ -3281,7 +7672,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs230-2025",
-   "no": 7
+   "no": 7,
+   "track": "ai"
   },
   {
    "id": "h-7S6HNq0Vg",
@@ -3313,7 +7705,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cme295-2025",
-   "no": 7
+   "no": 7,
+   "track": "ai"
   },
   {
    "id": "k5Fh-UgTuCo",
@@ -3345,7 +7738,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cme295-2025",
-   "no": 6
+   "no": 6,
+   "track": "ai"
   },
   {
    "id": "PmW_TMQ3l0I",
@@ -3377,7 +7771,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cme295-2025",
-   "no": 5
+   "no": 5,
+   "track": "ai"
   },
   {
    "id": "s6JVGzABKho",
@@ -3409,7 +7804,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs230-2025",
-   "no": 6
+   "no": 6,
+   "track": "ai"
   },
   {
    "id": "4E27qlfYw0A",
@@ -3441,7 +7837,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs230-2025",
-   "no": 5
+   "no": 5,
+   "track": "ai"
   },
   {
    "id": "aWlRtOlacYM",
@@ -3473,7 +7870,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs230-2025",
-   "no": 4
+   "no": 4,
+   "track": "ai"
   },
   {
    "id": "VlA_jt_3Qc4",
@@ -3505,7 +7903,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cme295-2025",
-   "no": 4
+   "no": 4,
+   "track": "ai"
   },
   {
    "id": "Q5baLehv5So",
@@ -3537,7 +7936,8 @@
    "chapters": 14,
    "written_at": "2026-11-21",
    "series": "cme295-2025",
-   "no": 3
+   "no": 3,
+   "track": "ai"
   },
   {
    "id": "Ub3GoFaUcds",
@@ -3569,7 +7969,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cme295-2025",
-   "no": 1
+   "no": 1,
+   "track": "ai"
   },
   {
    "id": "yT84Y5zCnaA",
@@ -3601,7 +8002,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cme295-2025",
-   "no": 2
+   "no": 2,
+   "track": "ai"
   },
   {
    "id": "MGqQuQEUXhk",
@@ -3633,7 +8035,8 @@
    "chapters": 14,
    "written_at": "2026-11-21",
    "series": "cs230-2025",
-   "no": 3
+   "no": 3,
+   "track": "ai"
   },
   {
    "id": "DNCn1BpCAUY",
@@ -3665,7 +8068,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs230-2025",
-   "no": 2
+   "no": 2,
+   "track": "ai"
   },
   {
    "id": "_NLHFoVNlbg",
@@ -3697,7 +8101,8 @@
    "chapters": 14,
    "written_at": "2026-11-21",
    "series": "cs230-2025",
-   "no": 1
+   "no": 1,
+   "track": "ai"
   },
   {
    "id": "25zD5qJHYsk",
@@ -3729,7 +8134,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs231n-2025",
-   "no": 4
+   "no": 4,
+   "track": "ai"
   },
   {
    "id": "4howBU7THbM",
@@ -3761,7 +8167,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs231n-2025",
-   "no": 12
+   "no": 12,
+   "track": "ai"
   },
   {
    "id": "7lxrKDKtykM",
@@ -3793,7 +8200,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs231n-2025",
-   "no": 15
+   "no": 15,
+   "track": "ai"
   },
   {
    "id": "9MvD-XsowsE",
@@ -3825,7 +8233,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs231n-2025",
-   "no": 11
+   "no": 11,
+   "track": "ai"
   },
   {
    "id": "aVJy4O5TOk8",
@@ -3857,7 +8266,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs231n-2025",
-   "no": 6
+   "no": 6,
+   "track": "ai"
   },
   {
    "id": "dyNGd06MWn4",
@@ -3888,7 +8298,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs231n-2025",
-   "no": 3
+   "no": 3,
+   "track": "ai"
   },
   {
    "id": "Edr4uZFh4EE",
@@ -3920,7 +8331,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs231n-2025",
-   "no": 14
+   "no": 14,
+   "track": "ai"
   },
   {
    "id": "f3g1zGdxptI",
@@ -3951,7 +8363,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs231n-2025",
-   "no": 5
+   "no": 5,
+   "track": "ai"
   },
   {
    "id": "g8UaBfj6Sh8",
@@ -3983,7 +8396,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs231n-2025",
-   "no": 18
+   "no": 18,
+   "track": "ai"
   },
   {
    "id": "kG2lAPBF7zA",
@@ -4015,7 +8429,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs231n-2025",
-   "no": 7
+   "no": 7,
+   "track": "ai"
   },
   {
    "id": "mQOK0Mfyrkk",
@@ -4047,7 +8462,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs231n-2025",
-   "no": 16
+   "no": 16,
+   "track": "ai"
   },
   {
    "id": "pdqofxJeBN8",
@@ -4078,7 +8494,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs231n-2025",
-   "no": 2
+   "no": 2,
+   "track": "ai"
   },
   {
    "id": "PTypu6GqEd4",
@@ -4110,7 +8527,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs231n-2025",
-   "no": 9
+   "no": 9,
+   "track": "ai"
   },
   {
    "id": "RQowiOF_FvQ",
@@ -4142,7 +8560,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs231n-2025",
-   "no": 8
+   "no": 8,
+   "track": "ai"
   },
   {
    "id": "wElqklprhPE",
@@ -4174,7 +8593,8 @@
    "chapters": 15,
    "written_at": "2026-11-21",
    "series": "cs231n-2025",
-   "no": 10
+   "no": 10,
+   "track": "ai"
   },
   {
    "id": "XSfmOH_xVSU",
@@ -4206,7 +8626,8 @@
    "chapters": 14,
    "written_at": "2026-11-21",
    "series": "cs231n-2025",
-   "no": 17
+   "no": 17,
+   "track": "ai"
   },
   {
    "id": "DGI4vucR71w",
@@ -4238,7 +8659,8 @@
    "chapters": 15,
    "written_at": "2026-11-20",
    "series": "cs329z-2026",
-   "no": 1
+   "no": 1,
+   "track": "ai"
   },
   {
    "id": "_kREM2UAiJ8",
@@ -4270,7 +8692,8 @@
    "chapters": 15,
    "written_at": "2026-11-20",
    "series": "cs229-2026",
-   "no": 12
+   "no": 12,
+   "track": "ai"
   },
   {
    "id": "bSmIGBCoffA",
@@ -4299,7 +8722,8 @@
    "chapters": 15,
    "written_at": "2026-11-20",
    "series": "cs229-2026",
-   "no": 9
+   "no": 9,
+   "track": "ai"
   },
   {
    "id": "dqUMCzWjZSI",
@@ -4330,7 +8754,8 @@
    "chapters": 14,
    "written_at": "2026-11-20",
    "series": "cs229-2026",
-   "no": 11
+   "no": 11,
+   "track": "ai"
   },
   {
    "id": "hHC-SF3utxg",
@@ -4362,7 +8787,8 @@
    "chapters": 15,
    "written_at": "2026-11-20",
    "series": "cs229-2026",
-   "no": 15
+   "no": 15,
+   "track": "ai"
   },
   {
    "id": "lNTajqxxOn4",
@@ -4394,7 +8820,8 @@
    "chapters": 15,
    "written_at": "2026-11-20",
    "series": "cs229-2026",
-   "no": 13
+   "no": 13,
+   "track": "ai"
   },
   {
    "id": "pwQ0l4hFCVI",
@@ -4426,7 +8853,8 @@
    "chapters": 15,
    "written_at": "2026-11-20",
    "series": "cs229-2026",
-   "no": 14
+   "no": 14,
+   "track": "ai"
   },
   {
    "id": "sUS-eTa0l6s",
@@ -4456,7 +8884,8 @@
    "chapters": 15,
    "written_at": "2026-11-20",
    "series": "cs229-2026",
-   "no": 10
+   "no": 10,
+   "track": "ai"
   },
   {
    "id": "EETpft-TDWw",
@@ -4483,7 +8912,8 @@
    "platform": "youtube",
    "thumbnail": "https://i.ytimg.com/vi/EETpft-TDWw/mqdefault.jpg",
    "chapters": 10,
-   "written_at": "2026-11-20"
+   "written_at": "2026-11-20",
+   "track": "ai"
   },
   {
    "id": "fRM41w9jzQo",
@@ -4513,7 +8943,8 @@
    "chapters": 15,
    "written_at": "2026-11-20",
    "series": "cs229-2026",
-   "no": 7
+   "no": 7,
+   "track": "ai"
   },
   {
    "id": "llnEgyyuYkQ",
@@ -4543,7 +8974,8 @@
    "chapters": 15,
    "written_at": "2026-11-20",
    "series": "cs229-2026",
-   "no": 6
+   "no": 6,
+   "track": "ai"
   },
   {
    "id": "ne2ngVAoMG8",
@@ -4573,7 +9005,8 @@
    "chapters": 14,
    "written_at": "2026-11-20",
    "series": "cs229-2026",
-   "no": 8
+   "no": 8,
+   "track": "ai"
   },
   {
    "id": "zRdE8A4UZes",
@@ -4603,7 +9036,8 @@
    "chapters": 15,
    "written_at": "2026-11-20",
    "series": "cs229-2026",
-   "no": 5
+   "no": 5,
+   "track": "ai"
   },
   {
    "id": "8gVi4Rk21Eg",
@@ -4635,7 +9069,8 @@
    "chapters": 15,
    "written_at": "2026-11-20",
    "series": "cs229-2026",
-   "no": 4
+   "no": 4,
+   "track": "ai"
   },
   {
    "id": "cmNIMjPYdgM",
@@ -4666,7 +9101,8 @@
    "chapters": 15,
    "written_at": "2026-11-20",
    "series": "cs229-2026",
-   "no": 2
+   "no": 2,
+   "track": "ai"
   },
   {
    "id": "DATnpGoGhM8",
@@ -4697,7 +9133,8 @@
    "chapters": 15,
    "written_at": "2026-11-20",
    "series": "cs229-2026",
-   "no": 1
+   "no": 1,
+   "track": "ai"
   },
   {
    "id": "uJF_gL3jhxI",
@@ -4727,7 +9164,8 @@
    "chapters": 15,
    "written_at": "2026-11-20",
    "series": "cs229-2026",
-   "no": 3
+   "no": 3,
+   "track": "ai"
   },
   {
    "id": "9EEm4iMAF5s",
@@ -4759,7 +9197,8 @@
    "chapters": 15,
    "written_at": "2026-11-20",
    "series": "cs336-2026",
-   "no": 18
+   "no": 18,
+   "track": "ai"
   },
   {
    "id": "NDdc39KYqDU",
@@ -4791,7 +9230,8 @@
    "chapters": 15,
    "written_at": "2026-11-20",
    "series": "cs25-v6",
-   "no": 9
+   "no": 9,
+   "track": "ai"
   },
   {
    "id": "bHSDPgZYie0",
@@ -4823,7 +9263,8 @@
    "chapters": 15,
    "written_at": "2026-11-20",
    "series": "cs25-v6",
-   "no": 1
+   "no": 1,
+   "track": "ai"
   },
   {
    "id": "GBd7iuJkW08",
@@ -4855,7 +9296,8 @@
    "chapters": 15,
    "written_at": "2026-11-20",
    "series": "cs25-v6",
-   "no": 2
+   "no": 2,
+   "track": "ai"
   },
   {
    "id": "JuoVZkPBiKk",
@@ -4887,7 +9329,8 @@
    "chapters": 15,
    "written_at": "2026-11-20",
    "series": "cs336-2026",
-   "no": 1
+   "no": 1,
+   "track": "ai"
   },
   {
    "id": "2fq9wYslV0A",
@@ -4918,7 +9361,8 @@
    "chapters": 15,
    "written_at": "2026-11-20",
    "series": "cs231n-2025",
-   "no": 1
+   "no": 1,
+   "track": "ai"
   },
   {
    "id": "zbHXQRUNlH0",
@@ -4950,7 +9394,8 @@
    "chapters": 15,
    "written_at": "2026-11-20",
    "series": "cs231n-2025",
-   "no": 13
+   "no": 13,
+   "track": "ai"
   },
   {
    "id": "DzpHeXVSC5I",
@@ -4980,7 +9425,8 @@
    "platform": "youtube",
    "thumbnail": "https://i.ytimg.com/vi/DzpHeXVSC5I/mqdefault.jpg",
    "chapters": 14,
-   "written_at": "2026-11-20"
+   "written_at": "2026-11-20",
+   "track": "ai"
   },
   {
    "id": "9vM4p9NN0Ts",
@@ -5010,7 +9456,8 @@
    "platform": "youtube",
    "thumbnail": "https://i.ytimg.com/vi/9vM4p9NN0Ts/mqdefault.jpg",
    "chapters": 15,
-   "written_at": "2026-11-20"
+   "written_at": "2026-11-20",
+   "track": "ai"
   }
  ]
 }

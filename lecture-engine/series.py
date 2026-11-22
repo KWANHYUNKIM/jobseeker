@@ -20,7 +20,15 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 FILE = HERE / "series.json"
-LEC_NO = re.compile(r"\bLecture\s*(\d+)", re.I)
+# 'Lecture 3' 만 보던 것을 국내 재생목록 표기까지 — '[포토샵 기초 강좌15]' '8강' '[1일차' 'Chapter 50' '#4' 'Lec 02'.
+# 국내 목록은 최신이 위인 경우가 많아서 번호를 읽어야 1강부터 줄 세울 수 있다.
+LEC_NO = re.compile(r"(?:\bLecture|\bLec|\bUnit|\bChapter|\bLesson|\bClass|\bTutorial|\bPart|\bDay|강좌|강의|입문|#)\s*(\d{1,3})(?!\d)"
+                    r"|(?<!\d)(\d{1,3})\s*(?:강|편|일차|탄)", re.I)
+
+
+def lec_no(title: str) -> int | None:
+    m = LEC_NO.search(title)
+    return int(m.group(1) or m.group(2)) if m else None
 
 
 def load() -> list[dict]:
@@ -45,7 +53,7 @@ def playlist(pl: str) -> tuple[str, list[dict]]:
 
 
 def order(vids: list[dict]) -> list[dict]:
-    nums = [int(m.group(1)) if (m := LEC_NO.search(v["title"])) else None for v in vids]
+    nums = [lec_no(v["title"]) for v in vids]
     known = [n for n in nums if n is not None]
     if len(known) >= 2 and known[0] > known[-1]:  # 최신이 위 — 뒤집어 오래된 것부터
         vids, nums = vids[::-1], nums[::-1]
@@ -62,8 +70,11 @@ def build(entry: dict) -> dict:
     title, vids = playlist(entry["playlist"])
     if entry.get("match"):
         vids = [v for v in vids if re.search(entry["match"], v["title"])]
+    if entry.get("max"):                      # 100편 넘는 채널 목록(StatQuest 등)은 앞 N편만 — 입문 부분
+        vids = vids[: entry["max"]]
     entry["playlist_title"] = title
-    entry["lectures"] = [{"no": i + 1, **v} for i, v in enumerate(order(vids))]
+    # keep_order: 번호 표기가 섞여 읽으면 오히려 뒤엉키는 목록(웹디자인 입문의 '#1' 과 'Tutorial 2-3')은 재생목록 순서 그대로
+    entry["lectures"] = [{"no": i + 1, **v} for i, v in enumerate(vids if entry.get("keep_order") else order(vids))]
     return entry
 
 
@@ -79,6 +90,8 @@ def main() -> None:
     a.add_argument("--school", default="Stanford")
     a.add_argument("--code")
     a.add_argument("--term")
+    a.add_argument("--track", default="ai", help="paths.json 의 학습 트랙(ai·coding-test·backend·frontend·design·detail-page·toeic)")
+    a.add_argument("--max", type=int, help="재생목록 앞 N편만")
     sub.add_parser("refresh")
     sub.add_parser("list")
     args = ap.parse_args()
@@ -86,7 +99,7 @@ def main() -> None:
     if args.cmd == "add":
         items = [s for s in items if s["key"] != args.key]
         e = build({"key": args.key, "playlist": args.playlist, "match": args.match, "title": args.title,
-                   "school": args.school, "code": args.code, "term": args.term})
+                   "school": args.school, "code": args.code, "term": args.term, "track": args.track, "max": args.max})
         e["title"] = e["title"] or e["playlist_title"]
         items.append(e)
         save(items)

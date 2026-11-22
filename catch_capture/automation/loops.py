@@ -170,14 +170,15 @@ REGISTRY: list[Loop] = [
          "python -m automation.loops repeat lecture-engine --every 60m",
          ["lecture-engine/state/LOG.md", "jd-viewer/public/lectures/index.json"],
          check="python lecture-engine/validate.py --gaps",
-         owns=["jd-viewer/public/lectures/", "lecture-engine/state/"],
+         owns=["jd-viewer/public/lectures/", "lecture-engine/state/", "lecture-engine/series.json", "lecture-engine/paths.json"],
          prompt=(
              "강의 노트 한 사이클: lecture-engine/PROMPT.md 절차를 그대로 따른다. 다음 영상은 "
-             "`python lecture-engine/validate.py --gaps` 맨 위(비면 PROMPT.md 우선순위대로 새 공개 강의를 찾아 "
-             "state/QUEUE.md 에 덧붙인다). `python lecture-engine/fetch.py <id>` 로 자막·장면을 받고, 대본 전부와 장면 인화 "
+             "`python lecture-engine/validate.py --gaps` 맨 위 — paths.json 로드맵대로 트랙(AI·코딩테스트·백엔드·프론트엔드·"
+             "디자인·상세페이지·토익)을 번갈아 입문부터 낸다(비면 PROMPT.md 기준으로 알기 쉬운 공개 강의를 찾아 series.py add + "
+             "paths.json 에 넣는다). 사용자는 ML·DL 초보다 — 입문 노트는 비유부터 쉽게. `python lecture-engine/fetch.py <id>` 로 자막·장면을 받고, 대본 전부와 장면 인화 "
              "전부를 읽은 뒤 jd-viewer/public/lectures/items/<id>.json 을 쓴다. 대본을 옮기지 말고 우리 말로 다시 쓴다. "
              "validate.py 가 통과하면 state/LOG.md 에 한 줄 쓰고 feat(lectures) 로 커밋한다(git add 는 "
-             "jd-viewer/public/lectures lecture-engine/state 만, git add -A 금지). 커밋한 뒤 "
+             "jd-viewer/public/lectures lecture-engine/state lecture-engine/series.json lecture-engine/paths.json 만, git add -A 금지). 커밋한 뒤 "
              "`python lecture-engine/clean.py --apply` 로 끝난 강의의 장면 이미지를 지운다. 푸시하지 않는다. "
              "무엇을 했는지 한두 줄로 보고한다.")),
     Loop("study-engine", "기술 백과사전", "claude-loop", "any", "자율(화면에서는 빠져 있다)", 24 * 30,
