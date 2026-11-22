@@ -12,6 +12,7 @@
 """
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
 import sys
@@ -53,8 +54,25 @@ def size(p: Path) -> int:
     return sum(f.stat().st_size for f in p.rglob("*") if f.is_file())
 
 
+def venv_python() -> Path | None:
+    for rel in ("Scripts/python.exe", "bin/python"):
+        p = CATCH / ".venv" / rel
+        if p.exists():
+            return p
+    return None
+
+
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")
+    # 루프 세션은 시스템 python 으로 부른다 — 거기엔 psycopg 가 없어 DB 확인이 늘 실패하고 아무것도 못 지웠다.
+    # DB 드라이버가 없으면 catch_capture 의 venv python 으로 다시 띄운다(fetch.py 의 yt_dlp 는 시스템 쪽에 있어 루프는 그대로 둔다).
+    try:
+        import psycopg  # noqa: F401
+    except ImportError:
+        vp = venv_python()
+        if vp and Path(sys.executable).resolve() != vp.resolve() and "LECTURE_CLEAN_REEXEC" not in os.environ:
+            env = {**os.environ, "LECTURE_CLEAN_REEXEC": "1", "PYTHONIOENCODING": "utf-8"}
+            sys.exit(subprocess.run([str(vp), str(Path(__file__).resolve()), *sys.argv[1:]], env=env).returncode)
     apply = "--apply" in sys.argv
     if apply:                                     # 방금 쓴 노트도 DB 에 들어가 있게 — 회차 끝의 동기화와 같은 것
         sys.path.insert(0, str(CATCH))
