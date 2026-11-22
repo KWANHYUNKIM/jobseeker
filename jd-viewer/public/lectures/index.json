@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-22T15:09:59",
- "count": 127,
+ "generated_at": "2026-11-22T16:17:05",
+ "count": 128,
  "topics": [
   {
    "key": "llm",
@@ -10,7 +10,7 @@
   {
    "key": "deep-learning",
    "label": "딥러닝",
-   "count": 17
+   "count": 18
   },
   {
    "key": "systems",
@@ -85,13 +85,13 @@
        "key": "3b1b-nn",
        "title": "그림으로 보는 신경망 (3Blue1Brown)",
        "school": "3Blue1Brown",
-       "done": 1,
+       "done": 2,
        "total": 10
       }
      ],
      "why": "신경망·경사하강법·역전파·트랜스포머를 애니메이션으로 보여 준다. 식 없이도 '아 이런 거구나'가 생긴다.",
      "tip": "1~4편(신경망·학습·역전파)만 먼저. 5편부터는 LLM 이야기라 3단계 뒤에 다시 와도 된다.",
-     "done": 1,
+     "done": 2,
      "total": 10
     },
     {
@@ -246,7 +246,7 @@
      "total": 50
     }
    ],
-   "done": 124,
+   "done": 125,
    "total": 202
   },
   {
@@ -1649,7 +1649,7 @@
    "track": "ai",
    "playlist": "https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi",
    "total": 10,
-   "done": 1,
+   "done": 2,
    "lectures": [
     {
      "no": 1,
@@ -1663,7 +1663,7 @@
      "id": "IHZwWFHWa-w",
      "title": "Gradient descent, how neural networks learn | Deep Learning Chapter 2",
      "duration_sec": 1233,
-     "done": false
+     "done": true
     },
     {
      "no": 3,
@@ -5356,6 +5356,37 @@
   }
  ],
  "items": [
+  {
+   "id": "IHZwWFHWa-w",
+   "title": "Gradient descent, how neural networks learn | Deep Learning Chapter 2",
+   "title_ko": "경사 하강법 — 신경망은 어떻게 배우나: 비용 함수, 내리막 방향(기울기 벡터), 그리고 학습된 신경망의 속을 들여다보기",
+   "school": "3Blue1Brown",
+   "code": "3B1B",
+   "term": "2017~2024",
+   "speaker": "Grant Sanderson (끝부분 대담: Lisha Li)",
+   "topic": "deep-learning",
+   "tags": [
+    "Deep Learning",
+    "Machine Learning",
+    "Neural Network",
+    "Gradient Descent",
+    "Python",
+    "NumPy"
+   ],
+   "level": "입문",
+   "one_line": "신경망이 '배운다'는 것은 틀린 정도(비용)를 재고 내리막으로 조금씩 걸어 내려가는 것이다",
+   "duration_sec": 1233,
+   "published": "2017-10-16",
+   "views": 9800937,
+   "url": "https://www.youtube.com/watch?v=IHZwWFHWa-w",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/IHZwWFHWa-w/mqdefault.jpg",
+   "chapters": 13,
+   "written_at": "2026-11-22",
+   "series": "3b1b-nn",
+   "no": 2,
+   "track": "ai"
+  },
   {
    "id": "aircAruvnKk",
    "title": "But what is a neural network? | Deep learning chapter 1",
