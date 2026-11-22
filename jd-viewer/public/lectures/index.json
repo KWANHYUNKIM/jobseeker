@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-23T03:56:45",
- "count": 139,
+ "generated_at": "2026-11-23T05:01:40",
+ "count": 140,
  "topics": [
   {
    "key": "llm",
@@ -15,7 +15,7 @@
   {
    "key": "ml-basics",
    "label": "머신러닝 기초",
-   "count": 18
+   "count": 19
   },
   {
    "key": "systems",
@@ -102,7 +102,7 @@
        "key": "statquest-ml",
        "title": "StatQuest 머신러닝 기초 — 아주 쉽게 설명하기",
        "school": "StatQuest",
-       "done": 3,
+       "done": 4,
        "total": 25
       },
       {
@@ -115,7 +115,7 @@
      ],
      "why": "교차검증·과적합·회귀·분류 같은 용어를 하나씩 아주 쉽게 푼다. '모두를 위한 딥러닝'은 같은 내용을 한국어로 10~15분씩 짧게.",
      "tip": "둘 중 편한 쪽 하나만 끝까지. 한국어가 편하면 모두의 딥러닝 lec 01~07(회귀·분류)부터.",
-     "done": 3,
+     "done": 4,
      "total": 49
     },
     {
@@ -246,7 +246,7 @@
      "total": 50
     }
    ],
-   "done": 136,
+   "done": 137,
    "total": 202
   },
   {
@@ -1732,7 +1732,7 @@
    "track": "ai",
    "playlist": "https://www.youtube.com/playlist?list=PLblh5JKOoLUICTaGLRoHQDuF_7q2GfuJF",
    "total": 25,
-   "done": 3,
+   "done": 4,
    "lectures": [
     {
      "no": 1,
@@ -1760,7 +1760,7 @@
      "id": "vP06aMoz4v8",
      "title": "Machine Learning Fundamentals: Sensitivity and Specificity",
      "duration_sec": 707,
-     "done": false
+     "done": true
     },
     {
      "no": 5,
@@ -5387,6 +5387,36 @@
    "written_at": "2026-11-23",
    "series": "3b1b-nn",
    "no": 10,
+   "track": "ai"
+  },
+  {
+   "id": "vP06aMoz4v8",
+   "title": "Machine Learning Fundamentals: Sensitivity and Specificity",
+   "title_ko": "민감도와 특이도 — 아픈 사람을 몇 % 잡았나, 건강한 사람을 몇 % 맞게 보냈나, 3×3 표에서는 답마다 따로 센다",
+   "school": "StatQuest",
+   "code": "StatQuest",
+   "term": "기초 25편",
+   "speaker": "Josh Starmer",
+   "topic": "ml-basics",
+   "tags": [
+    "Machine Learning",
+    "Python",
+    "NumPy",
+    "scikit-learn",
+    "Statistics"
+   ],
+   "level": "입문",
+   "one_line": "혼동 행렬의 세로줄 하나 안에서 비율을 내면 민감도(아픈 사람 잡은 비율)와 특이도(건강한 사람 맞힌 비율)가 된다",
+   "duration_sec": 706,
+   "published": "2019-12-02",
+   "views": 514982,
+   "url": "https://www.youtube.com/watch?v=vP06aMoz4v8",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/vP06aMoz4v8/mqdefault.jpg",
+   "chapters": 8,
+   "written_at": "2026-11-23",
+   "series": "statquest-ml",
+   "no": 4,
    "track": "ai"
   },
   {
