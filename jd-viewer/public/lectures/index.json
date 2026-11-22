@@ -1,11 +1,11 @@
 {
- "generated_at": "2026-11-22T23:32:24",
- "count": 135,
+ "generated_at": "2026-11-23T00:39:54",
+ "count": 136,
  "topics": [
   {
    "key": "llm",
    "label": "LLM",
-   "count": 29
+   "count": 30
   },
   {
    "key": "deep-learning",
@@ -85,13 +85,13 @@
        "key": "3b1b-nn",
        "title": "그림으로 보는 신경망 (3Blue1Brown)",
        "school": "3Blue1Brown",
-       "done": 9,
+       "done": 10,
        "total": 10
       }
      ],
      "why": "신경망·경사하강법·역전파·트랜스포머를 애니메이션으로 보여 준다. 식 없이도 '아 이런 거구나'가 생긴다.",
      "tip": "1~4편(신경망·학습·역전파)만 먼저. 5편부터는 LLM 이야기라 3단계 뒤에 다시 와도 된다.",
-     "done": 9,
+     "done": 10,
      "total": 10
     },
     {
@@ -246,7 +246,7 @@
      "total": 50
     }
    ],
-   "done": 132,
+   "done": 133,
    "total": 202
   },
   {
@@ -1649,7 +1649,7 @@
    "track": "ai",
    "playlist": "https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi",
    "total": 10,
-   "done": 9,
+   "done": 10,
    "lectures": [
     {
      "no": 1,
@@ -1719,7 +1719,7 @@
      "id": "9-Jl0dxWQs8",
      "title": "How might LLMs store facts | Deep Learning Chapter 7",
      "duration_sec": 1363,
-     "done": false
+     "done": true
     }
    ]
   },
@@ -5356,6 +5356,39 @@
   }
  ],
  "items": [
+  {
+   "id": "9-Jl0dxWQs8",
+   "title": "How might LLMs store facts | Deep Learning Chapter 7",
+   "title_ko": "LLM 은 사실을 어디에 어떻게 담아 두나 — MLP 블록과 중첩(superposition) (딥러닝 7장)",
+   "school": "3Blue1Brown",
+   "code": "3B1B",
+   "term": "2017~2024",
+   "speaker": "Grant Sanderson",
+   "topic": "llm",
+   "tags": [
+    "Transformer",
+    "LLM",
+    "GPT",
+    "Deep Learning",
+    "Machine Learning",
+    "NLP",
+    "Python",
+    "NumPy"
+   ],
+   "level": "입문",
+   "one_line": "'마이클 조던은 ___ 선수다'에 '농구'를 채우는 지식은 MLP 블록에 산다 — 위로 올리는 행렬·ReLU·아래로 내리는 행렬 세 걸음을 작은 숫자로 따라가고, 거의 수직인 방향 덕분에 차원보다 훨씬 많은 생각을 담는 '중첩'까지 본다",
+   "duration_sec": 1362,
+   "published": "2024-08-31",
+   "views": 2364490,
+   "url": "https://www.youtube.com/watch?v=9-Jl0dxWQs8",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/9-Jl0dxWQs8/mqdefault.jpg",
+   "chapters": 14,
+   "written_at": "2026-11-23",
+   "series": "3b1b-nn",
+   "no": 10,
+   "track": "ai"
+  },
   {
    "id": "GlYgs6v2YfU",
    "title": "But what is cross-entropy? | Information theory, part 2",
