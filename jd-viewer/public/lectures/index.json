@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-23T01:45:23",
- "count": 137,
+ "generated_at": "2026-11-23T02:50:59",
+ "count": 138,
  "topics": [
   {
    "key": "llm",
@@ -15,7 +15,7 @@
   {
    "key": "ml-basics",
    "label": "머신러닝 기초",
-   "count": 16
+   "count": 17
   },
   {
    "key": "systems",
@@ -102,7 +102,7 @@
        "key": "statquest-ml",
        "title": "StatQuest 머신러닝 기초 — 아주 쉽게 설명하기",
        "school": "StatQuest",
-       "done": 1,
+       "done": 2,
        "total": 25
       },
       {
@@ -115,7 +115,7 @@
      ],
      "why": "교차검증·과적합·회귀·분류 같은 용어를 하나씩 아주 쉽게 푼다. '모두를 위한 딥러닝'은 같은 내용을 한국어로 10~15분씩 짧게.",
      "tip": "둘 중 편한 쪽 하나만 끝까지. 한국어가 편하면 모두의 딥러닝 lec 01~07(회귀·분류)부터.",
-     "done": 1,
+     "done": 2,
      "total": 49
     },
     {
@@ -246,7 +246,7 @@
      "total": 50
     }
    ],
-   "done": 134,
+   "done": 135,
    "total": 202
   },
   {
@@ -1732,7 +1732,7 @@
    "track": "ai",
    "playlist": "https://www.youtube.com/playlist?list=PLblh5JKOoLUICTaGLRoHQDuF_7q2GfuJF",
    "total": 25,
-   "done": 1,
+   "done": 2,
    "lectures": [
     {
      "no": 1,
@@ -1746,7 +1746,7 @@
      "id": "fSytzGwwBVw",
      "title": "Machine Learning Fundamentals: Cross Validation",
      "duration_sec": 365,
-     "done": false
+     "done": true
     },
     {
      "no": 3,
@@ -5417,6 +5417,36 @@
    "written_at": "2026-11-23",
    "series": "statquest-ml",
    "no": 1,
+   "track": "ai"
+  },
+  {
+   "id": "fSytzGwwBVw",
+   "title": "Machine Learning Fundamentals: Cross Validation",
+   "title_ko": "교차 검증 — 자료를 몇 묶음으로 나눠 돌아가며 시험 보기, 4겹·10겹·하나씩 빼기, 튜닝 값 고르기",
+   "school": "StatQuest",
+   "code": "StatQuest",
+   "term": "기초 25편",
+   "speaker": "Josh Starmer",
+   "topic": "ml-basics",
+   "tags": [
+    "Machine Learning",
+    "Python",
+    "NumPy",
+    "scikit-learn",
+    "Statistics"
+   ],
+   "level": "입문",
+   "one_line": "자료를 몇 묶음으로 나눠 묶음마다 한 번씩 시험지로 써 보면, 어떤 방법이 정말 잘 맞히는지 공평하게 비교할 수 있다",
+   "duration_sec": 364,
+   "published": "2018-04-24",
+   "views": 1546915,
+   "url": "https://www.youtube.com/watch?v=fSytzGwwBVw",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/fSytzGwwBVw/mqdefault.jpg",
+   "chapters": 8,
+   "written_at": "2026-11-23",
+   "series": "statquest-ml",
+   "no": 2,
    "track": "ai"
   },
   {
