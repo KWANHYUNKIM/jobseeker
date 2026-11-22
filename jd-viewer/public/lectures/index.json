@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-23T02:50:59",
- "count": 138,
+ "generated_at": "2026-11-23T03:56:45",
+ "count": 139,
  "topics": [
   {
    "key": "llm",
@@ -15,7 +15,7 @@
   {
    "key": "ml-basics",
    "label": "머신러닝 기초",
-   "count": 17
+   "count": 18
   },
   {
    "key": "systems",
@@ -102,7 +102,7 @@
        "key": "statquest-ml",
        "title": "StatQuest 머신러닝 기초 — 아주 쉽게 설명하기",
        "school": "StatQuest",
-       "done": 2,
+       "done": 3,
        "total": 25
       },
       {
@@ -115,7 +115,7 @@
      ],
      "why": "교차검증·과적합·회귀·분류 같은 용어를 하나씩 아주 쉽게 푼다. '모두를 위한 딥러닝'은 같은 내용을 한국어로 10~15분씩 짧게.",
      "tip": "둘 중 편한 쪽 하나만 끝까지. 한국어가 편하면 모두의 딥러닝 lec 01~07(회귀·분류)부터.",
-     "done": 2,
+     "done": 3,
      "total": 49
     },
     {
@@ -246,7 +246,7 @@
      "total": 50
     }
    ],
-   "done": 135,
+   "done": 136,
    "total": 202
   },
   {
@@ -1732,7 +1732,7 @@
    "track": "ai",
    "playlist": "https://www.youtube.com/playlist?list=PLblh5JKOoLUICTaGLRoHQDuF_7q2GfuJF",
    "total": 25,
-   "done": 2,
+   "done": 3,
    "lectures": [
     {
      "no": 1,
@@ -1753,7 +1753,7 @@
      "id": "Kdsp6soqA7o",
      "title": "Machine Learning Fundamentals: The Confusion Matrix",
      "duration_sec": 433,
-     "done": false
+     "done": true
     },
     {
      "no": 4,
@@ -5417,6 +5417,36 @@
    "written_at": "2026-11-23",
    "series": "statquest-ml",
    "no": 1,
+   "track": "ai"
+  },
+  {
+   "id": "Kdsp6soqA7o",
+   "title": "Machine Learning Fundamentals: The Confusion Matrix",
+   "title_ko": "혼동 행렬 — 맞힌 것과 틀린 것을 네 칸 표로 나눠 세기, 세 방법 성적표 견주기, 3×3 이상으로 늘리기",
+   "school": "StatQuest",
+   "code": "StatQuest",
+   "term": "기초 25편",
+   "speaker": "Josh Starmer",
+   "topic": "ml-basics",
+   "tags": [
+    "Machine Learning",
+    "Python",
+    "NumPy",
+    "scikit-learn",
+    "Statistics"
+   ],
+   "level": "입문",
+   "one_line": "'몇 개 맞혔나' 하나로는 모자라다 — 무엇을 무엇으로 착각했는지 칸별로 세는 표가 혼동 행렬이다",
+   "duration_sec": 432,
+   "published": "2018-10-29",
+   "views": 1016975,
+   "url": "https://www.youtube.com/watch?v=Kdsp6soqA7o",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/Kdsp6soqA7o/mqdefault.jpg",
+   "chapters": 8,
+   "written_at": "2026-11-23",
+   "series": "statquest-ml",
+   "no": 3,
    "track": "ai"
   },
   {
