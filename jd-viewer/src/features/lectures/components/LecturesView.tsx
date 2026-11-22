@@ -6,6 +6,8 @@ import { paths } from '../../../utils/urls'
 import { absUrl, clip, useSeo } from '../../../utils/seo'
 import { Loader, ErrorState, EmptyState, hits } from '../../../components/ui'
 import { SiteFooter } from '../../../components/SiteFooter'
+import { TrackRoadmap } from './TrackRoadmap'
+import { roadmapRank } from '../utils/roadmap'
 
 // 강의 노트 — 공개 강의 영상(Stanford CS229·CS336·CS25 …)을 자막(말)과 장면(판서·슬라이드)으로
 // 읽고 우리 말로 다시 쓴 노트. 목적은 둘이다: 요즘 업계가 어디로 가나(trends), 그래서 무엇을
@@ -23,17 +25,48 @@ export function LecturesView({ seg = [] }: { seg?: string[] }) {
   const id = seg[0] === 'course' ? null : (seg[0] ?? null)
   const { data, loading, error } = useLectureIndex()
   const [topic, setTopic] = useState<string | null>(null)
+  const [level, setLevel] = useState<string | null>(null)
   const [query, setQuery] = useState('')
-  const items = useMemo(() => data?.items ?? [], [data])
-  const shown = useMemo(
-    () =>
-      items.filter(
-        (c) =>
-          (!topic || c.topic === topic) &&
-          hits(query, c.title, c.title_ko, c.one_line, c.code, c.school, c.speaker, ...(c.tags ?? [])),
-      ),
-    [items, topic, query],
+  // 트랙(분야)은 주소에 남긴다(?track=ai) — 노트를 보고 돌아와도 고른 분야가 그대로.
+  const [trackKey, setTrackKey] = useState<string | null>(() =>
+    typeof window === 'undefined' ? null : new URLSearchParams(window.location.search).get('track'),
   )
+  const pickTrack = (k: string | null) => {
+    setTrackKey(k)
+    setTopic(null)
+    const u = new URL(window.location.href)
+    if (k) u.searchParams.set('track', k)
+    else u.searchParams.delete('track')
+    window.history.replaceState(window.history.state, '', u)
+  }
+  const tracks = useMemo(() => data?.tracks ?? [], [data])
+  const track = tracks.find((t) => t.key === trackKey)
+  const items = useMemo(() => data?.items ?? [], [data])
+  const inTrack = useMemo(() => (track ? items.filter((c) => (c.track ?? 'ai') === track.key) : items), [items, track])
+  const shown = useMemo(() => {
+    const out = inTrack.filter(
+      (c) =>
+        (!topic || c.topic === topic) &&
+        (!level || c.level === level) &&
+        hits(query, c.title, c.title_ko, c.one_line, c.code, c.school, c.speaker, ...(c.tags ?? [])),
+    )
+    if (!track) return out
+    const rank = roadmapRank(track) // 트랙을 고르면 최신순이 아니라 공부할 순서대로
+    return [...out].sort((a, b) => rank(a) - rank(b))
+  }, [inTrack, topic, level, query, track])
+  const topicChips = useMemo(() => {
+    const n = new Map<string, number>()
+    for (const c of inTrack) n.set(c.topic, (n.get(c.topic) ?? 0) + 1)
+    return (data?.topics ?? []).filter((t) => n.has(t.key)).map((t) => ({ ...t, count: n.get(t.key) as number }))
+  }, [inTrack, data])
+  const seriesShown = useMemo(() => {
+    const all = data?.series ?? []
+    if (!track) return all
+    const order = track.steps.flatMap((st) => st.series.map((s) => s.key))
+    return all
+      .filter((s) => (s.track ?? 'ai') === track.key)
+      .sort((a, b) => (order.indexOf(a.key) + 1 || 999) - (order.indexOf(b.key) + 1 || 999))
+  }, [data, track])
   const entry = id ? items.find((c) => c.id === id) : null
   useSeo(
     entry
@@ -68,9 +101,48 @@ export function LecturesView({ seg = [] }: { seg?: string[] }) {
       <div className="jd-container pt-[43px] pb-[90px]">
         <h1 className="text-[28px] font-bold leading-10 tracking-[-0.6px] text-[#272727]">강의 노트</h1>
         <p className="mt-1 text-base leading-6 tracking-[-0.16px] text-[#666]">
-          Stanford 같은 공개 강의 영상을 <b className="font-bold text-(--color-accent)">자막과 장면(슬라이드·판서)으로 끝까지 읽고</b>{' '}
-          요약·업계 흐름·공부 순서로 다시 정리했어요. 챕터를 누르면 원본 영상의 그 자리로 갑니다.
+          공개 강의 영상을 <b className="font-bold text-(--color-accent)">자막과 장면(슬라이드·판서)으로 끝까지 읽고</b>{' '}
+          처음 배우는 사람도 따라올 수 있게 다시 정리했어요. 분야를 고르면 쉬운 것부터 공부할 순서가 나옵니다.
         </p>
+
+        {tracks.length > 0 && (
+          <div className="mt-[22px] flex flex-wrap gap-2" aria-label="학습 분야">
+            <Chip active={!track} onClick={() => pickTrack(null)}>
+              전체
+            </Chip>
+            {tracks.map((t) => (
+              <Chip key={t.key} active={track?.key === t.key} onClick={() => pickTrack(track?.key === t.key ? null : t.key)}>
+                {t.label} <span className="opacity-60">{t.done}</span>
+              </Chip>
+            ))}
+          </div>
+        )}
+        {track && <TrackRoadmap t={track} items={items} />}
+        {!track && tracks.length > 0 && (
+          <section className="mt-[28px]">
+            <h2 className="text-[22px] font-bold text-[#272727]">무엇부터 공부할까요?</h2>
+            <p className="mt-1 text-sm text-[#888]">분야를 누르면 입문부터 차례대로 볼 강의와 공부법이 나와요.</p>
+            <div className="mt-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {tracks.map((t) => (
+                <button
+                  key={t.key}
+                  type="button"
+                  onClick={() => pickTrack(t.key)}
+                  className="text-left rounded-xl border border-[#e5e5e5] px-4 py-3 hover:border-[#272727] transition"
+                >
+                  <div className="text-[16px] font-bold text-[#272727]">{t.label}</div>
+                  <div className="mt-0.5 text-[13px] leading-5 text-[#666] line-clamp-2">{t.for}</div>
+                  <div className="mt-2 h-1 rounded-full bg-[#eee] overflow-hidden">
+                    <div className="h-full bg-(--color-accent)" style={{ width: `${t.total ? Math.round((t.done / t.total) * 100) : 0}%` }} />
+                  </div>
+                  <div className="mt-1 text-xs text-[#888]">
+                    {t.steps.length}단계 · {t.total}편 중 {t.done}편 정리
+                  </div>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
 
         {items.length === 0 ? (
           <EmptyState title="아직 정리한 강의가 없습니다" hint={<code>lecture-engine/state/QUEUE.md</code>} />
@@ -83,19 +155,23 @@ export function LecturesView({ seg = [] }: { seg?: string[] }) {
               <Stat label="갱신" value={data?.generated_at.slice(0, 10) ?? '-'} />
             </div>
 
-            {!!data?.series?.length && (
+            {seriesShown.length > 0 && (
               <section className="mt-[40px]">
                 <h2 className="text-[22px] font-bold text-[#272727]">과목별로 1강부터</h2>
-                <p className="mt-1 text-sm text-[#888]">공식 재생목록 순서 그대로 묶었어요. 아직 정리 안 된 강의는 차례대로 채워집니다.</p>
+                <p className="mt-1 text-sm text-[#888]">
+                  {track ? '학습 순서대로 놓았어요.' : '공식 재생목록 순서 그대로 묶었어요.'} 아직 정리 안 된 강의는 차례대로 채워집니다.
+                </p>
                 <div className="mt-5 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {data.series.map((sr) => (
+                  {seriesShown.map((sr) => (
                     <SeriesCard key={sr.key} s={sr} />
                   ))}
                 </div>
               </section>
             )}
 
-            <h2 className="mt-[48px] text-[22px] font-bold text-[#272727]">정리한 강의 전체</h2>
+            <h2 className="mt-[48px] text-[22px] font-bold text-[#272727]">
+              {track ? `${track.label} — 정리한 강의 (공부 순서)` : '정리한 강의 전체'}
+            </h2>
             <label className="mt-[16px] flex items-center gap-2.5 h-[52px] rounded-[26px] border border-[#c4c4c4] pl-[23px] pr-5 focus-within:border-[#272727]">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#272727" strokeWidth="2" aria-hidden className="shrink-0">
                 <circle cx="8.5" cy="8.5" r="5.5" />
@@ -112,10 +188,16 @@ export function LecturesView({ seg = [] }: { seg?: string[] }) {
             </label>
 
             <div className="mt-[18px] flex flex-wrap gap-2">
+              {(['입문', '중급', '심화'] as const).map((lv) => (
+                <Chip key={lv} active={level === lv} onClick={() => setLevel(level === lv ? null : lv)}>
+                  {lv}
+                </Chip>
+              ))}
+              <span aria-hidden className="mx-1 w-px self-stretch bg-[#e0e0e0]" />
               <Chip active={!topic} onClick={() => setTopic(null)}>
-                전체 <span className="opacity-60">{items.length}</span>
+                전체 <span className="opacity-60">{inTrack.length}</span>
               </Chip>
-              {(data?.topics ?? []).map((t) => (
+              {topicChips.map((t) => (
                 <Chip key={t.key} active={topic === t.key} onClick={() => setTopic(topic === t.key ? null : t.key)}>
                   {t.label} <span className="opacity-60">{t.count}</span>
                 </Chip>

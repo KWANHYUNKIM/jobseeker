@@ -28,6 +28,8 @@ export interface LectureCard {
   /** 속한 과목(series.json 의 key)과 그 과목에서의 차례 */
   series?: string
   no?: number
+  /** 학습 트랙(lecture-engine/paths.json 의 key) — ai·coding-test·backend·frontend·design·detail-page·toeic */
+  track?: string
 }
 
 /** 과목 — 공식 재생목록을 1강부터 N강까지 굳힌 것. 노트가 없는 강의도 '준비 중'으로 들어 있다. */
@@ -37,16 +39,41 @@ export interface Series {
   school?: string
   code?: string
   term?: string
+  track?: string
   playlist: string
   total: number
   done: number
   lectures: { no: number; id: string; title: string; duration_sec?: number; done: boolean }[]
 }
 
+/** 학습 로드맵의 한 단계 — 무엇을(series) 왜 이 순서로(why) 어떻게(tip) 보나 */
+export interface TrackStep {
+  title: string
+  level: '입문' | '중급' | '심화'
+  why: string
+  tip?: string
+  series: { key: string; title: string; school?: string; done: number; total: number }[]
+  done: number
+  total: number
+}
+
+/** 학습 트랙(분야) — 초보가 따라갈 순서와 공부법. 원본은 lecture-engine/paths.json */
+export interface Track {
+  key: string
+  label: string
+  for: string
+  goal: string
+  how: string[]
+  steps: TrackStep[]
+  done: number
+  total: number
+}
+
 export interface LectureIndex {
   generated_at: string
   count: number
   topics: { key: string; label: string; count: number }[]
+  tracks?: Track[]
   series?: Series[]
   items: LectureCard[]
 }
