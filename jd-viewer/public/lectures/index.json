@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-23T07:10:05",
- "count": 142,
+ "generated_at": "2026-11-23T08:15:19",
+ "count": 143,
  "topics": [
   {
    "key": "llm",
@@ -10,7 +10,7 @@
   {
    "key": "ml-basics",
    "label": "머신러닝 기초",
-   "count": 21
+   "count": 22
   },
   {
    "key": "deep-learning",
@@ -102,7 +102,7 @@
        "key": "statquest-ml",
        "title": "StatQuest 머신러닝 기초 — 아주 쉽게 설명하기",
        "school": "StatQuest",
-       "done": 6,
+       "done": 7,
        "total": 25
       },
       {
@@ -115,7 +115,7 @@
      ],
      "why": "교차검증·과적합·회귀·분류 같은 용어를 하나씩 아주 쉽게 푼다. '모두를 위한 딥러닝'은 같은 내용을 한국어로 10~15분씩 짧게.",
      "tip": "둘 중 편한 쪽 하나만 끝까지. 한국어가 편하면 모두의 딥러닝 lec 01~07(회귀·분류)부터.",
-     "done": 6,
+     "done": 7,
      "total": 49
     },
     {
@@ -246,7 +246,7 @@
      "total": 50
     }
    ],
-   "done": 139,
+   "done": 140,
    "total": 202
   },
   {
@@ -1732,7 +1732,7 @@
    "track": "ai",
    "playlist": "https://www.youtube.com/playlist?list=PLblh5JKOoLUICTaGLRoHQDuF_7q2GfuJF",
    "total": 25,
-   "done": 6,
+   "done": 7,
    "lectures": [
     {
      "no": 1,
@@ -1781,7 +1781,7 @@
      "id": "YtebGVx-Fxw",
      "title": "Entropy (for data science) Clearly Explained!!!",
      "duration_sec": 995,
-     "done": false
+     "done": true
     },
     {
      "no": 8,
@@ -5417,6 +5417,36 @@
    "written_at": "2026-11-23",
    "series": "statquest-ml",
    "no": 5,
+   "track": "ai"
+  },
+  {
+   "id": "YtebGVx-Fxw",
+   "title": "Entropy (for data science) Clearly Explained!!!",
+   "title_ko": "엔트로피 — '얼마나 놀랄까'를 숫자로 재고(놀람 = log(1/확률)), 그 놀람의 평균이 엔트로피다",
+   "school": "StatQuest",
+   "code": "StatQuest",
+   "term": "기초 25편",
+   "speaker": "Josh Starmer",
+   "topic": "ml-basics",
+   "tags": [
+    "Machine Learning",
+    "Statistics",
+    "Python",
+    "Decision Tree",
+    "Information Theory"
+   ],
+   "level": "입문",
+   "one_line": "드문 일일수록 더 놀라므로 놀람을 log(1/확률)로 재고, 한 번 뽑을 때 기대되는 놀람의 평균을 엔트로피라 부른다 — 섞여 있을수록 크고, 한쪽으로 몰릴수록 작다",
+   "duration_sec": 994,
+   "published": "2021-08-25",
+   "views": 928733,
+   "url": "https://www.youtube.com/watch?v=YtebGVx-Fxw",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/YtebGVx-Fxw/mqdefault.jpg",
+   "chapters": 7,
+   "written_at": "2026-11-23",
+   "series": "statquest-ml",
+   "no": 7,
    "track": "ai"
   },
   {
