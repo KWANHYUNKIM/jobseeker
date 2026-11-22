@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-22T18:36:23",
- "count": 130,
+ "generated_at": "2026-11-22T19:42:28",
+ "count": 131,
  "topics": [
   {
    "key": "llm",
@@ -10,7 +10,7 @@
   {
    "key": "deep-learning",
    "label": "딥러닝",
-   "count": 19
+   "count": 20
   },
   {
    "key": "ml-basics",
@@ -85,13 +85,13 @@
        "key": "3b1b-nn",
        "title": "그림으로 보는 신경망 (3Blue1Brown)",
        "school": "3Blue1Brown",
-       "done": 4,
+       "done": 5,
        "total": 10
       }
      ],
      "why": "신경망·경사하강법·역전파·트랜스포머를 애니메이션으로 보여 준다. 식 없이도 '아 이런 거구나'가 생긴다.",
      "tip": "1~4편(신경망·학습·역전파)만 먼저. 5편부터는 LLM 이야기라 3단계 뒤에 다시 와도 된다.",
-     "done": 4,
+     "done": 5,
      "total": 10
     },
     {
@@ -246,7 +246,7 @@
      "total": 50
     }
    ],
-   "done": 127,
+   "done": 128,
    "total": 202
   },
   {
@@ -1649,7 +1649,7 @@
    "track": "ai",
    "playlist": "https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi",
    "total": 10,
-   "done": 4,
+   "done": 5,
    "lectures": [
     {
      "no": 1,
@@ -1684,7 +1684,7 @@
      "id": "Ilg3gGewQ5U",
      "title": "Backpropagation, intuitively | Deep Learning Chapter 3",
      "duration_sec": 767,
-     "done": false
+     "done": true
     },
     {
      "no": 6,
@@ -5420,6 +5420,39 @@
    "written_at": "2026-11-22",
    "series": "3b1b-nn",
    "no": 4,
+   "track": "ai"
+  },
+  {
+   "id": "Ilg3gGewQ5U",
+   "title": "Backpropagation, intuitively | Deep Learning Chapter 3",
+   "title_ko": "역전파를 직관으로 — 그림 한 장이 가중치마다 보내는 '이렇게 바뀌었으면' 쪽지, 그리고 미니배치 확률적 경사 하강법",
+   "school": "3Blue1Brown",
+   "code": "3B1B",
+   "term": "2017~2024",
+   "speaker": "Grant Sanderson",
+   "topic": "deep-learning",
+   "tags": [
+    "Deep Learning",
+    "Machine Learning",
+    "Neural Network",
+    "Backpropagation",
+    "Gradient Descent",
+    "Python",
+    "NumPy",
+    "PyTorch"
+   ],
+   "level": "입문",
+   "one_line": "역전파는 '출력이 이렇게 바뀌었으면'이라는 바람을 뒤쪽 층으로 차례차례 나눠 보내, 가중치마다 얼마나 고칠지를 정하는 계산법이다",
+   "duration_sec": 767,
+   "published": "2017-11-03",
+   "views": 6456302,
+   "url": "https://www.youtube.com/watch?v=Ilg3gGewQ5U",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/Ilg3gGewQ5U/mqdefault.jpg",
+   "chapters": 10,
+   "written_at": "2026-11-22",
+   "series": "3b1b-nn",
+   "no": 5,
    "track": "ai"
   },
   {
