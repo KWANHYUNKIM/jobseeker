@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-22T17:26:00",
- "count": 129,
+ "generated_at": "2026-11-22T18:36:23",
+ "count": 130,
  "topics": [
   {
    "key": "llm",
@@ -10,7 +10,7 @@
   {
    "key": "deep-learning",
    "label": "딥러닝",
-   "count": 18
+   "count": 19
   },
   {
    "key": "ml-basics",
@@ -85,13 +85,13 @@
        "key": "3b1b-nn",
        "title": "그림으로 보는 신경망 (3Blue1Brown)",
        "school": "3Blue1Brown",
-       "done": 3,
+       "done": 4,
        "total": 10
       }
      ],
      "why": "신경망·경사하강법·역전파·트랜스포머를 애니메이션으로 보여 준다. 식 없이도 '아 이런 거구나'가 생긴다.",
      "tip": "1~4편(신경망·학습·역전파)만 먼저. 5편부터는 LLM 이야기라 3단계 뒤에 다시 와도 된다.",
-     "done": 3,
+     "done": 4,
      "total": 10
     },
     {
@@ -246,7 +246,7 @@
      "total": 50
     }
    ],
-   "done": 126,
+   "done": 127,
    "total": 202
   },
   {
@@ -1649,7 +1649,7 @@
    "track": "ai",
    "playlist": "https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi",
    "total": 10,
-   "done": 3,
+   "done": 4,
    "lectures": [
     {
      "no": 1,
@@ -1677,7 +1677,7 @@
      "id": "iv-5mZ_9CPY",
      "title": "But how do AI images and videos actually work? | Guest video by Welch Labs",
      "duration_sec": 2240,
-     "done": false
+     "done": true
     },
     {
      "no": 5,
@@ -5387,6 +5387,39 @@
    "written_at": "2026-11-22",
    "series": "3b1b-nn",
    "no": 3,
+   "track": "ai"
+  },
+  {
+   "id": "iv-5mZ_9CPY",
+   "title": "But how do AI images and videos actually work? | Guest video by Welch Labs",
+   "title_ko": "3B1B 4편(Welch Labs 초청) — AI 는 그림과 영상을 어떻게 만드나: 잡음에서 시작하는 확산 모델, CLIP 의 글·그림 공유 공간, 브라운 운동을 거꾸로 돌리기, DDPM·DDIM, 조건화와 분류기 없는 안내(CFG), 네거티브 프롬프트",
+   "school": "3Blue1Brown",
+   "code": "3B1B",
+   "term": "2017~2025",
+   "speaker": "Stephen Welch (Welch Labs, 초청 영상) · 끝인사 Grant Sanderson",
+   "topic": "deep-learning",
+   "tags": [
+    "Diffusion Model",
+    "Stable Diffusion",
+    "CLIP",
+    "Generative AI",
+    "Deep Learning",
+    "PyTorch",
+    "Python",
+    "NumPy"
+   ],
+   "level": "입문",
+   "one_line": "AI 그림·영상은 잡음을 조금씩 걷어 내며 만든다 — 그 '걷어 낼 방향'을 배우는 것이 확산 모델이다",
+   "duration_sec": 2240,
+   "published": "2025-07-25",
+   "views": 2271232,
+   "url": "https://www.youtube.com/watch?v=iv-5mZ_9CPY",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/iv-5mZ_9CPY/mqdefault.jpg",
+   "chapters": 16,
+   "written_at": "2026-11-22",
+   "series": "3b1b-nn",
+   "no": 4,
    "track": "ai"
   },
   {

@@ -138,3 +138,4 @@
   - 정리 보류: clean.py --apply 가 psycopg 없음으로 DB 대조 실패 → 아무것도 안 지움(var/lectures/IHZwWFHWa-w 장면 남음). venv 파이썬 실행은 권한 미승인.
 - 2026-11-22 · GlYgs6v2YfU · 3B1B · 3B1B 3강 — 교차 엔트로피: gzip 언어 계통수, 로봇 부호 1.75→2.625비트, Q=P 에서 최소·최솟값=H(P), LLM 손실=토큰당 평균 정보량, 왜 로그인가(라그랑주), 증류, KL 발산 · 챕터 14 · 본문 13856자
   - 정리 보류: clean.py --apply 가 psycopg 없음으로 DB 동기화 실패 → 아무것도 안 지움(var/lectures/GlYgs6v2YfU 장면 남음).
+- 2026-11-22 · iv-5mZ_9CPY · 3B1B · 3B1B 4편(Welch Labs 초청) — AI 그림·영상은 어떻게 만드나: CLIP 대조 학습·모자 벡터, 그림=점·브라운 운동, DDPM 잡음 전체 예측·생성 중 잡음(평균→흐림), 시간 조건·상전이, SDE→ODE DDIM, unCLIP·조건화, CFG(α), 네거티브 프롬프트 · 챕터 16 · 본문 17436자
