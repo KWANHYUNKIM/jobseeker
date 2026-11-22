@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-22T19:42:28",
- "count": 131,
+ "generated_at": "2026-11-22T20:48:30",
+ "count": 132,
  "topics": [
   {
    "key": "llm",
@@ -10,7 +10,7 @@
   {
    "key": "deep-learning",
    "label": "딥러닝",
-   "count": 20
+   "count": 21
   },
   {
    "key": "ml-basics",
@@ -85,13 +85,13 @@
        "key": "3b1b-nn",
        "title": "그림으로 보는 신경망 (3Blue1Brown)",
        "school": "3Blue1Brown",
-       "done": 5,
+       "done": 6,
        "total": 10
       }
      ],
      "why": "신경망·경사하강법·역전파·트랜스포머를 애니메이션으로 보여 준다. 식 없이도 '아 이런 거구나'가 생긴다.",
      "tip": "1~4편(신경망·학습·역전파)만 먼저. 5편부터는 LLM 이야기라 3단계 뒤에 다시 와도 된다.",
-     "done": 5,
+     "done": 6,
      "total": 10
     },
     {
@@ -246,7 +246,7 @@
      "total": 50
     }
    ],
-   "done": 128,
+   "done": 129,
    "total": 202
   },
   {
@@ -1649,7 +1649,7 @@
    "track": "ai",
    "playlist": "https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi",
    "total": 10,
-   "done": 5,
+   "done": 6,
    "lectures": [
     {
      "no": 1,
@@ -1691,7 +1691,7 @@
      "id": "tIeHLnjs5U8",
      "title": "Backpropagation calculus | Deep Learning Chapter 4",
      "duration_sec": 618,
-     "done": false
+     "done": true
     },
     {
      "no": 7,
@@ -5453,6 +5453,39 @@
    "written_at": "2026-11-22",
    "series": "3b1b-nn",
    "no": 5,
+   "track": "ai"
+  },
+  {
+   "id": "tIeHLnjs5U8",
+   "title": "Backpropagation calculus | Deep Learning Chapter 4",
+   "title_ko": "역전파의 미적분 — 작은 밀기의 비율 세 개를 곱하는 연쇄 법칙, 뉴런 하나짜리 사슬에서 여러 뉴런 층까지",
+   "school": "3Blue1Brown",
+   "code": "3B1B",
+   "term": "2017~2024",
+   "speaker": "Grant Sanderson",
+   "topic": "deep-learning",
+   "tags": [
+    "Deep Learning",
+    "Machine Learning",
+    "Neural Network",
+    "Backpropagation",
+    "Gradient Descent",
+    "Python",
+    "NumPy",
+    "PyTorch"
+   ],
+   "level": "입문",
+   "one_line": "역전파의 수식은 '가중치를 살짝 밀면 z 가, z 가 밀리면 a 가, a 가 밀리면 비용이 얼마나 밀리나'라는 비율 세 개를 곱하는 연쇄 법칙을 층마다 되풀이하는 것이다",
+   "duration_sec": 617,
+   "published": "2017-11-03",
+   "views": 4036718,
+   "url": "https://www.youtube.com/watch?v=tIeHLnjs5U8",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/tIeHLnjs5U8/mqdefault.jpg",
+   "chapters": 9,
+   "written_at": "2026-11-22",
+   "series": "3b1b-nn",
+   "no": 6,
    "track": "ai"
   },
   {
