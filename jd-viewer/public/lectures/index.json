@@ -1,11 +1,11 @@
 {
- "generated_at": "2026-11-22T22:24:46",
- "count": 134,
+ "generated_at": "2026-11-22T23:32:24",
+ "count": 135,
  "topics": [
   {
    "key": "llm",
    "label": "LLM",
-   "count": 28
+   "count": 29
   },
   {
    "key": "deep-learning",
@@ -85,13 +85,13 @@
        "key": "3b1b-nn",
        "title": "그림으로 보는 신경망 (3Blue1Brown)",
        "school": "3Blue1Brown",
-       "done": 8,
+       "done": 9,
        "total": 10
       }
      ],
      "why": "신경망·경사하강법·역전파·트랜스포머를 애니메이션으로 보여 준다. 식 없이도 '아 이런 거구나'가 생긴다.",
      "tip": "1~4편(신경망·학습·역전파)만 먼저. 5편부터는 LLM 이야기라 3단계 뒤에 다시 와도 된다.",
-     "done": 8,
+     "done": 9,
      "total": 10
     },
     {
@@ -246,7 +246,7 @@
      "total": 50
     }
    ],
-   "done": 131,
+   "done": 132,
    "total": 202
   },
   {
@@ -1649,7 +1649,7 @@
    "track": "ai",
    "playlist": "https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi",
    "total": 10,
-   "done": 8,
+   "done": 9,
    "lectures": [
     {
      "no": 1,
@@ -1712,7 +1712,7 @@
      "id": "eMlx5fFNoYc",
      "title": "Attention in transformers, step-by-step | Deep Learning Chapter 6",
      "duration_sec": 1570,
-     "done": false
+     "done": true
     },
     {
      "no": 10,
@@ -5453,6 +5453,39 @@
    "written_at": "2026-11-22",
    "series": "3b1b-nn",
    "no": 7,
+   "track": "ai"
+  },
+  {
+   "id": "eMlx5fFNoYc",
+   "title": "Attention in transformers, step-by-step | Deep Learning Chapter 6",
+   "title_ko": "트랜스포머의 어텐션 한 걸음씩 — 쿼리·키·밸류, 소프트맥스, 마스킹, 여러 머리 (딥러닝 6장)",
+   "school": "3Blue1Brown",
+   "code": "3B1B",
+   "term": "2017~2024",
+   "speaker": "Grant Sanderson",
+   "topic": "llm",
+   "tags": [
+    "Transformer",
+    "LLM",
+    "GPT",
+    "Deep Learning",
+    "Machine Learning",
+    "NLP",
+    "Python",
+    "NumPy"
+   ],
+   "level": "입문",
+   "one_line": "낱말들이 서로 '내 앞에 형용사 있어?' 하고 묻고 답해 뜻을 고치는 장치 — 쿼리·키 내적, 소프트맥스, 마스킹, 밸류 더하기, 96개 머리를 작은 숫자로 따라가 본다",
+   "duration_sec": 1569,
+   "published": "2024-04-07",
+   "views": 4974755,
+   "url": "https://www.youtube.com/watch?v=eMlx5fFNoYc",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/eMlx5fFNoYc/mqdefault.jpg",
+   "chapters": 14,
+   "written_at": "2026-11-22",
+   "series": "3b1b-nn",
+   "no": 9,
    "track": "ai"
   },
   {
