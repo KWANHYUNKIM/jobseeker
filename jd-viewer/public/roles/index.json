@@ -2,6 +2,7 @@
  "updated_at": "2026-11-23",
  "jobs": {
   "ats-toss:group:7990802003": "toss-ads-ai-engineer",
+  "ats-toss:group:7998957003": "toss-ads-bidding-pacing-mle",
   "ats-toss:group:7998956003": "toss-ads-ranking-mle",
   "ats-toss:group:7998953003": "toss-ads-retrieval-mle",
   "ats-toss:group:7758217003": "toss-ai-engineer-model",
@@ -50,6 +51,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 16
+  },
+  {
+   "id": "toss-ads-bidding-pacing-mle",
+   "company": "토스",
+   "role": "ML 엔지니어 (Ads Bidding & Pacing)",
+   "jobs": [
+    "ats-toss:group:7998957003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 11
   },
   {
    "id": "toss-ads-ranking-mle",
