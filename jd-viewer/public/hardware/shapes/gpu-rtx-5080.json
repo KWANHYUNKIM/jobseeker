@@ -63,6 +63,39 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "3슬롯·16핀 1개·ARGB 는 공식 표. 공식 사진(상자와 같이 세운 정면): 검정 쉬라우드에 팬 3개(같은 크기로 보인다, 검정 날개·PALIT 허브), 첫 팬 옆 윗면 쪽에 연두·노랑 GAMINGPRO 그림이 있어 accent 로 적었다. ARGB 가 어디서 빛나는지는 공식 문구에 없고 사진이 꺼진 상태라 light·fan_light 는 비웠다. 팬 지름·날개 수·백플레이트(문구는 full-cover die-cast frame 뿐)·16핀 자리는 자료에 없어 비웠다."
+  },
+  "asus-prime-rtx5080-o16g": {
+   "kind": "gpu",
+   "fan_count": 3,
+   "slots": 2.5,
+   "backplate": true,
+   "color": "#17181a",
+   "accent": "#c9ccd0",
+   "marks": [
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#e6e8ea"
+    },
+    {
+     "text": "PRIME",
+     "where": "edge",
+     "color": "#3a3c40"
+    }
+   ],
+   "sources": [
+    {
+     "title": "ASUS Prime RTX 5080 OC — 공식 제품 페이지(three Axial-tech fans · 2.5-slot · Vented Backplate · 대표 정면 사진)",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/prime/prime-rtx5080-o16g/"
+    },
+    {
+     "title": "ASUS Prime RTX 5080 OC — 공식 스펙(2.5 Slot · 1 x 16-pin · 304x126x50mm)",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/prime/prime-rtx5080-o16g/techspec/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 3개·2.5슬롯·통풍 백플레이트·16핀 1개는 공식 문구·스펙. 공식 대표 정면 사진(세션 임시 폴더에서 보기만): 무광 검정 쉬라우드를 가는 은색 선이 팬마다 칸으로 나누고, 윗 모서리 앞면에 흰 GEFORCE RTX 글자와 검정 광택의 큰 PRIME 양각 글자, 검정 날개에 은색 허브(PRIME·ASUS·PRIME). 조명은 공식 페이지에 언급이 없어 fan_light 는 비웠다. 갤러리(/gallery/)는 404 라 윗면·뒷면 사진을 못 봐 16핀 자리(power)·플로스루를 비웠다 — 렌더러가 보통 자리에 그린다. 날개 수는 사진으로 확실히 세지 못했고 팬 지름은 자료에 없다. 다나와는 쓰지 않았다."
   }
  }
 }

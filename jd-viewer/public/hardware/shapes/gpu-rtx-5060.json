@@ -37,6 +37,39 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "팬 2개·TORX FAN 5.0·플로스루 보강 백플레이트·8핀 1개는 공식 데이터시트 문구. 데이터시트 정면 사진: 검정 팬 2개(허브에 흰 msi)에 은색 테두리 쉬라우드, 조명 항목 없음. 뒷면 사진: 검정 백플레이트에 MSI 방패·GEFORCE RTX, 끝 쪽이 뚫려 핀이 보인다. V1(msi-ventus-2x-oc-v1-rtx5060)과 겉모양이 같다. 팬 지름·날개 수·8핀 자리는 자료에 없거나 사진이 작아 비웠다. msi.com 은 403 이라 열지 않았다. 다나와는 쓰지 않았다."
+  },
+  "galax-white-oc-v2-rtx5060": {
+   "kind": "gpu",
+   "fans": [
+    92,
+    92
+   ],
+   "fan_blades": 7,
+   "slots": 2,
+   "backplate": true,
+   "power": {
+    "type": "8pin",
+    "n": 1,
+    "at": 0.5
+   },
+   "color": "#eceef0",
+   "accent": "#8c8f93",
+   "marks": [
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#1c1d1f"
+    }
+   ],
+   "sources": [
+    {
+     "title": "GALAX GeForce RTX 5060 1-Click OC White 2X V2 — 공식 제품 페이지(2*92mm · 7 WINGS 3.0 · 팬 LED 스위치 · Expanded Opening 백플레이트 · 2 slot · 8-pin x1 · 사진 정면/LED 켠 정면/비스듬한 윗면)",
+     "url": "https://galax.com/en/product/geforce-rtx-5060-1-click-oc-white-2x-v2/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 2개·92mm·날개 7장·2슬롯·8핀 1개·백플레이트는 공식 표·문구, 날개 7장은 정면 사진과도 같다. 공식 사진(보기만): 흰 쉬라우드에 양각 회로 무늬·탄소 무늬, 반투명 흰 날개에 검정 GALAX 허브, 켠 사진에서 팬이 흰색으로 빛난다 — fan_light 형식에 흰 단색이 없어 비웠다(기존 REQUESTS). 비스듬한 윗면 사진: 모서리에 검정 GEFORCE RTX 글자, 끝 쪽 윗면에 회색 회로 그림(accent), 8핀은 PCB 끝 홈 속 카드 길이의 약 절반 자리(at=0.5, 판독), 홈 뒤로 히트파이프가 보인다. 뒷면 사진은 못 봐 플로스루를 비웠다. models 의 국내명↔글로벌명 짝짓기는 추정(models 노트). 다나와는 쓰지 않았다."
   }
  }
 }

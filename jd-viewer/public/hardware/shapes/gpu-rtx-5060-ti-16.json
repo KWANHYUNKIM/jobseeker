@@ -73,6 +73,27 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "95mm 팬 2개·2슬롯·흰 백플레이트는 공식 문구. 공식 대표 사진(상자와 같이 찍은 비스듬한 한 장): 흰 쉬라우드에 흰 날개 팬, 허브는 흰 바탕 로고, 쉬라우드 표면에 굽이치는 홈(무늬는 단색으로만 그린다, accent 는 홈의 옅은 회색). 'Subtle RGB' 의 자리는 문구·꺼진 사진으로 알 수 없어 light·fan_light 는 비웠다. 갤러리는 스크립트로 불러와 정면·뒷면 사진을 못 봐서 날개 수·8핀 자리·플로스루는 비웠다. 다나와는 쓰지 않았다."
+  },
+  "asus-dual-rtx5060ti-o16g": {
+   "kind": "gpu",
+   "fan_count": 2,
+   "slots": 2.5,
+   "backplate": true,
+   "color": "#141518",
+   "accent": "#c9ccd0",
+   "sources": [
+    {
+     "title": "ASUS Dual RTX 5060 Ti OC 16GB — 공식 제품 페이지(two Axial-tech fans · Vented Backplate · 대표 정면 사진)",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/dual/dual-rtx5060ti-o16g/"
+    },
+    {
+     "title": "ASUS Dual RTX 5060 Ti OC 16GB — 공식 스펙(2.5 Slot · 1 x 8-pin · 229x120x50mm)",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/dual/dual-rtx5060ti-o16g/techspec/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 2개·2.5슬롯·통풍 백플레이트·8핀 1개는 공식 문구·스펙. 공식 대표 정면 사진(보기만): 검정 쉬라우드에 은색 판(팬 사이·양 끝), 브래킷 쪽 위 DUAL 양각, 검정 날개에 은색 테 ASUS 허브 — 8GB 판(gpu-rtx-5060-ti-8)과 같은 겉모양. 8GB 판은 윗면 사진으로 8핀이 약 92% 자리였지만, 이 제품은 갤러리가 404 라 윗면을 직접 못 봐 power·모서리 글자는 옮기지 않았다. 조명은 공식 언급이 없어 비웠다. 날개 수·팬 지름·플로스루도 비웠다. 다나와는 쓰지 않았다."
   }
  }
 }
