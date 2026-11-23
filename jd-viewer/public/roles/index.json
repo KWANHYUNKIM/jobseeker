@@ -100,16 +100,19 @@
   "ats-skcareers:sk:R261800": "tmap-auto-ai-agent-tpm",
   "wanted-399666": "tmap-auto-android-client",
   "wanted-361653": "tmap-auto-dev-pm",
+  "ats-skcareers:sk:R262402": "tmap-backend-rp-traffic",
   "wanted-393102": "tmap-client-engineer-android",
   "ats-skcareers:sk:R262169": "tmap-data-analytics-lead",
   "wanted-393103": "tmap-mobility-ios-client-engineer",
   "ats-skcareers:sk:R262015": "tmap-mobility-llmops-engineer",
   "ats-skcareers:sk:R262310": "tmap-mobility-service-backend",
+  "wanted-393106": "tmap-navigation-sdk-engineer",
   "ats-skcareers:sk:R262485": "tmap-security-assessment-engineer",
   "dev-580895": "tmap-security-assessment-engineer",
   "ats-skcareers:sk:R262516": "tmap-security-technology-engineer",
   "dev-581410": "tmap-security-technology-engineer",
   "wanted-398468": "tmap-security-technology-engineer",
+  "wanted-365859": "tmap-sre",
   "ats-toss:group:7990802003": "toss-ads-ai-engineer",
   "ats-toss:group:7998957003": "toss-ads-bidding-pacing-mle",
   "ats-toss:group:6619423003": "toss-ads-data-analyst",
@@ -1016,6 +1019,16 @@
    "lines": 16
   },
   {
+   "id": "tmap-backend-rp-traffic",
+   "company": "티맵모빌리티",
+   "role": "Backend Engineer - RP/교통",
+   "jobs": [
+    "ats-skcareers:sk:R262402"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 22
+  },
+  {
    "id": "tmap-client-engineer-android",
    "company": "티맵모빌리티",
    "role": "Client Engineer",
@@ -1066,6 +1079,16 @@
    "lines": 24
   },
   {
+   "id": "tmap-navigation-sdk-engineer",
+   "company": "티맵모빌리티",
+   "role": "Navigation SDK Engineer",
+   "jobs": [
+    "wanted-393106"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 19
+  },
+  {
    "id": "tmap-security-assessment-engineer",
    "company": "티맵모빌리티",
    "role": "보안 진단 엔지니어",
@@ -1087,6 +1110,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 27
+  },
+  {
+   "id": "tmap-sre",
+   "company": "티맵모빌리티",
+   "role": "Site Reliability Engineer",
+   "jobs": [
+    "wanted-365859"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 20
   },
   {
    "id": "toss-ads-ai-engineer",

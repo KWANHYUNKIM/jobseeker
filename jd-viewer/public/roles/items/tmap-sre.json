@@ -1,0 +1,1133 @@
+{
+ "id": "tmap-sre",
+ "company": "티맵모빌리티",
+ "role": "Site Reliability Engineer",
+ "jobs": [
+  "wanted-365859"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "TMAP 의 모든 서비스(경로 안내·검색·인증·운전 점수·광고…)에 장애가 나면 가장 먼저 붙어 원인을 찾고, 같은 장애가 다시 안 나게 **회사 전체의 규칙** — 온콜, 장애 등급, 신뢰성 목표(SLO), 배포 전 점검, 일부러 고장 내 보는 훈련 — 을 만듭니다.[1]",
+  "env": "2021년부터 3년 반 동안 IDC 두 곳의 서버 2,800여 대를 AWS 로 옮겨 서비스의 99% 가 AWS(EKS·Istio·Karpenter·Aurora·DynamoDB) 위에서 돕니다.[2] 관측은 Datadog 하나로 모았고 로그가 한 달 600억 건 쌓입니다.[4]",
+  "oneline": "만드는 사람보다 **지키는 사람**. 5년 차 이상이 장애 현장 지휘와 전사 운영 표준을 같이 맡는 자리입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "전사 서비스 장애의 1차 대응 및 RCA 리드를 합니다.",
+   "short": "장애가 나면 가장 먼저 붙어 서비스를 되살리고, '왜 났나(RCA, 근본 원인 분석)'를 끝까지 이끈다.",
+   "why": "TMAP 은 한 달 1,500만 명 넘게 쓰는 서비스라[2] 출근 시간 장애가 곧 뉴스가 됩니다. 2025-12-10 오전 8시 9분쯤 앱이 '서비스가 지연되고 있다'는 오류를 띄우며 길안내·신규 가입이 막혔고 약 1시간 51분 뒤 정상화됐는데, 회사는 해킹·디도스가 아닌 **내부 시스템 문제**라고 밝혔습니다.[5][6] 2025-09-04 에는 외부 CDN 업체(클라우드플레어)의 한국 구간 장애로 10여 분 접속이 끊겼습니다.[7] 원인이 안에도, 밖에도 있습니다.",
+   "actually": {
+    "intro": "구글 SRE 책이 정리한 장애 대응의 기본 모양입니다. TMAP 의 실제 절차는 공개되지 않았습니다.[13][16]",
+    "items": [
+     "**역할 나누기** — 지휘(Incident Commander), 실제 조치(Ops), 바깥 소통(Comms)을 다른 사람이 맡는다. 1차 대응자는 보통 지휘부터 잡는다.[13]",
+     "**되살리기가 먼저** — 원인을 다 알기 전에 롤백·트래픽 돌리기·기능 끄기로 피해를 줄인다. 원인 찾기는 그다음이다.[16]",
+     "**타임라인 남기기** — 누가 언제 무엇을 보고 무엇을 했는지 그 자리에서 적는다. 나중에 RCA 의 재료가 된다.[13]",
+     "**TMAP 의 도구** — 통합 모니터링에서 이슈가 생기면 Jira 티켓이 자동으로 생기고 Slack 으로 관련자에게 알림이 간다.[4]",
+     "**RCA** — '무엇이 바뀌었나(배포·설정·트래픽·외부 업체)'부터 좁힌다. 클라우드플레어 장애처럼 원인이 회사 밖이면 '우리 쪽 대비책이 무엇이었나'가 RCA 의 답이 된다.[7] {추론}"
+    ]
+   },
+   "how_far": "모든 장애를 혼자 고치는 자리가 아닙니다. 서비스 코드는 각 개발팀이 고치고, 이 자리는 **현장을 지휘하고 원인을 끝까지 좁혀 문서로 닫는** 사람입니다. '전사'라서 내 팀이 만들지 않은 시스템의 장애에도 처음 들어갑니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    13,
+    16
+   ],
+   "study": [
+    "sre-book",
+    "sre-workbook",
+    "pd-response"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "포스트모템 및 재발 방지 액션 아이템 추적 관리를 합니다.",
+   "short": "장애 뒤 '무슨 일이 있었고 무엇을 바꿀지' 문서를 쓰고, 그 할 일이 실제로 끝날 때까지 쫓는다.",
+   "why": "TMAP 은 모두가 같은 데이터를 보니 대응 경과와 잘한 점·못한 점을 공유하고, 대응이 늦어진 경우 함께 원인을 분석한다고 했습니다.[4] 포스트모템이 문서로 끝나면 같은 장애가 돌아옵니다 — 그래서 공고가 '추적 관리'를 따로 적었습니다.[1]",
+   "actually": {
+    "intro": "구글 SRE 책의 포스트모템 원칙입니다.[12]",
+    "items": [
+     "**쓰는 기준을 미리 정한다** — 사용자에게 보인 장애, 데이터 손실, 사람이 손으로 막아야 했던 일, 해결이 오래 걸린 일 등.",
+     "**탓하지 않는다(blameless)** — '누가 실수했나'가 아니라 '왜 그 실수가 가능했나'를 쓴다. 그래야 사람들이 숨기지 않는다.",
+     "**문서 뼈대** — 요약 · 영향(시간·사용자 수·에러 버짓 소모) · 타임라인 · 원인 · 잘된 점/운 좋았던 점 · 액션 아이템(담당자·기한).",
+     "**액션 아이템 추적** — Jira 같은 티켓으로 만들고 기한을 넘긴 것을 정기적으로 다시 본다. TMAP 은 이미 장애를 Jira 로 추적한다.[4]"
+    ]
+   },
+   "how_far": "문서를 대신 써 주는 자리가 아니라 **서식과 기준을 만들고, 팀들이 쓰게 하고, 할 일이 닫히는지 본다** — 우대사항 '포스트모템 문화 정착'과 같은 말입니다.[1] {추론}",
+   "refs": [
+    1,
+    4,
+    12
+   ],
+   "study": [
+    "sre-book",
+    "sre-workbook"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "온콜/인시던트 체계를 수립 및 표준화 합니다.",
+   "short": "밤에 누가 전화를 받고, 장애를 몇 등급으로 나누고, 누구에게 언제 올리나를 회사 전체가 같게 맞춘다.",
+   "why": "TMAP 의 서비스군(쿠버네티스 namespace)은 40개에서 70개로, 시스템 종류는 300개에서 700개로 늘었습니다.[4] 팀마다 대응 방식이 다르면 여러 팀이 걸친 장애에서 '누가 지휘하나'부터 막힙니다. {추론}",
+   "actually": {
+    "items": [
+     "**온콜 순번** — 서비스마다 1차·2차 담당과 교대 주기. 구글은 한 교대에 처리할 사건 수에 상한을 두어 사람이 지치지 않게 한다.[16]",
+     "**심각도 등급** — 예: SEV1 전체 길안내 불가 · SEV2 일부 기능·일부 사용자 · SEV3 내부 영향. 등급마다 호출 범위·보고 대상·포스트모템 필수 여부를 정한다.[17] {추론}",
+     "**알림을 '사람을 깨울 것'과 '아침에 볼 것'으로 나누기** — SLO 를 얼마나 빨리 태우나(번 레이트)로 정한다(아래 SLO 줄).[15]",
+     "**연락 경로** — 자동 티켓(Jira)과 Slack 알림에 이어 전화 호출·전사 공지 채널·외부 공지(앱 공지·고객센터)까지.[4][17]"
+    ]
+   },
+   "how_far": "도구를 고르는 일보다 **규칙을 문서로 만들고 팀들이 따르게 하는** 일이 큽니다. 공고 동사가 '수립 및 표준화'입니다.[1]",
+   "refs": [
+    1,
+    4,
+    15,
+    16,
+    17
+   ],
+   "study": [
+    "sre-workbook",
+    "pd-response"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SLI/SLO 정의 및 신뢰성을 데이터 정량화 합니다.",
+   "short": "'잘 돈다'를 숫자로 — 무엇을 잴지(SLI)와 몇 %를 지킬지(SLO)를 서비스마다 정한다.",
+   "why": "'안정적이다'는 사람마다 다르게 읽힙니다. SLI(서비스 수준 지표)는 사용자가 겪는 것을 잰 비율, SLO(서비스 수준 목표)는 그 비율의 목표입니다.[14] TMAP 은 관측 데이터가 이미 Datadog 한 곳에 모여 있어[4] 숫자를 만들 재료가 있습니다.",
+   "actually": {
+    "items": [
+     "**SLI 고르기** — 길안내 요청 중 성공한 비율(가용성), 300ms 안에 답한 비율(지연), 받은 경로가 맞는 비율(정확성). 사용자에게 가까운 곳(게이트웨이·앱)에서 잰다.[14]",
+     "**분모 정하기** — 사용자가 잘못 보낸 요청(4xx)은 빼고, 서버가 실패한 것(5xx)과 너무 느린 것만 나쁜 것으로 센다.[14]",
+     "**SLO 정하기** — 30일 동안 99.9% 같은 목표. 지난 몇 달의 실제 값을 보고 정하고, 너무 높으면 아무것도 못 바꾼다.[14]",
+     "**대시보드** — Datadog 은 SLO 를 지표 기반·모니터 기반으로 만들고 남은 에러 버짓을 보여 준다.[31]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "요청 로그로 SLI 두 개 세기 (직접 돌린 출력)",
+     "body": "요청 10건 중 404 하나는 사용자 잘못이라 분모에서 뺍니다. 2,300ms 짜리는 성공했어도 지연 SLI 에서는 나쁜 요청입니다.",
+     "lang": "python",
+     "code": "logs = [  # (상태코드, 응답 ms)\n    (200, 120), (200, 95), (500, 30), (200, 2300), (200, 180),\n    (503, 10), (200, 140), (200, 160), (404, 20), (200, 110),\n]\nvalid = [l for l in logs if l[0] != 404]          # 사용자 잘못(4xx)은 분모에서 뺀다\ngood = [l for l in valid if l[0] < 500]\nprint(f\"가용성 SLI {len(good)}/{len(valid)} = {len(good)/len(valid):.1%}\")\nfast = [l for l in good if l[1] <= 300]\nprint(f\"지연 SLI(300ms 안) {len(fast)}/{len(valid)} = {len(fast)/len(valid):.1%}\")\n# 가용성 SLI 7/9 = 77.8%\n# 지연 SLI(300ms 안) 6/9 = 66.7%"
+    }
+   ],
+   "how_far": "목표 숫자는 서비스·사업 쪽과 같이 정합니다. 이 자리는 **무엇을 어디서 잴지 정의하고, 숫자가 매일 자동으로 나오게** 만듭니다. 모든 서비스를 한 번에 하지 않고 길안내·인증처럼 사용자 첫 화면에 걸린 것부터가 보통입니다.[14] {추론}",
+   "refs": [
+    4,
+    14,
+    31
+   ],
+   "study": [
+    "sre-workbook",
+    "slo-book",
+    "dd-slo"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "서비스 운영 성숙도 관리 - 서비스 레벨에 따른 프로덕션 필수 점검항목을 정의 및 관리합니다.",
+   "short": "서비스를 중요도로 나누고, 등급마다 '운영에 올리기 전 꼭 갖출 것' 목록을 만들어 지키게 한다.",
+   "why": "TMAP 은 신규 서비스를 AWS 에서 바로 시작하고 사업이 안 되면 빨리 접는 방식으로 일합니다.[2][3] 서비스가 자주 생기니 '운영에 나가도 되는 상태인가'를 매번 같은 기준으로 봐야 합니다. {추론}",
+   "actually": {
+    "intro": "구글은 이것을 운영 준비 검토(PRR, Production Readiness Review)라고 부릅니다.[17]",
+    "items": [
+     "**서비스 등급** — 길안내·인증 같은 핵심 / 부가 기능 / 내부 도구. 등급이 높을수록 점검 항목이 많다. {추론}",
+     "**점검 항목 예** — SLO 와 알림이 있나, 온콜 담당이 있나, 대시보드·로그·트레이스가 있나, 여러 가용 영역(AZ)에 나뉘어 있나, 오토스케일 한도·부하 시험을 했나, 롤백 방법이 있나, 의존하는 서비스가 죽으면 어떻게 되나.[17][18]",
+     "**AWS 기준표** — AWS Well-Architected 의 신뢰성 기둥이 장애 격리·변경 관리·장애 대비 질문을 묶어 둔다.[18]",
+     "**TMAP 의 바탕** — 클러스터를 용도별로 나눠 장애 영향을 줄였고, 배포는 Jenkins·Argo CD(GitOps) 표준 파이프라인으로 통일돼 있다.[2] 점검 항목을 파이프라인에 붙이기 좋은 환경이다. {추론}"
+    ]
+   },
+   "how_far": "항목을 정하고 서비스별 점수를 매겨 **부족한 팀에 알려 주는** 데까지입니다. 고치는 건 각 서비스 팀입니다. {추론}",
+   "refs": [
+    2,
+    3,
+    17,
+    18
+   ],
+   "study": [
+    "sre-book",
+    "aws-wa-rel"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "전사 배포/변경 관리 표준화를 합니다. (배포 전 영향도 분석, 리스크 검토)",
+   "short": "배포·설정 변경이 장애의 큰 원인이라, 바꾸기 전에 무엇이 다칠지 보고 조금씩 내보내는 규칙을 만든다.",
+   "why": "TMAP 은 이미 배포 도구를 표준화했습니다(Jenkins·Argo CD·GitOps).[2] 이 줄이 묻는 것은 도구가 아니라 **언제·얼마나·누구 승인으로** 내보내나입니다. 배포가 얼마나 자주 장애를 내나는 DORA 지표의 '변경 실패율'로 잽니다.[24]",
+   "actually": {
+    "items": [
+     "**영향도 분석** — 바꾸는 서비스를 누가 부르는지 따라가 다칠 수 있는 서비스를 미리 적는다(아래 예시).",
+     "**조금씩 내보내기** — TMAP 은 AWS 로 옮길 때 Istio 로 트래픽을 비율만큼 새 쪽에 보내며 점진적으로 넘겼고, 트래픽 미러링(복사본을 새 쪽에 보내 결과만 비교)으로 검증했다.[2][21] 같은 방법을 평소 배포에도 쓴다(카나리).[25]",
+     "**자동 판정** — 카나리 동안 오류율·지연이 기준을 넘으면 자동으로 되돌린다(Argo Rollouts 의 분석 단계).[25]",
+     "**배포 금지 시간** — 출퇴근 시간·명절 연휴처럼 트래픽이 몰리는 때. 명절·연휴는 TMAP 이 IDC 시절 서버를 늘려 대비하던 때다.[2] {추론}",
+     "**리스크 검토** — 큰 변경(DB 이관·네트워크·인증)은 검토 회의와 롤백 계획을 필수로. TMAP 은 DB 를 옮길 때 실시간 동기화·이중 쓰기·부분 이관을 데이터 특성에 따라 골랐다.[2]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "장애 영향도 — 누가 나를 부르나를 거꾸로 따라가기 (가상의 호출 관계, 직접 돌린 출력)",
+     "body": "호출 관계를 뒤집어 넓이 우선으로 따라가면 한 서비스가 죽을 때 같이 다치는 서비스가 나옵니다. 실제로는 트레이스(APM)의 서비스 지도가 이 표를 줍니다.",
+     "lang": "python",
+     "code": "from collections import deque\ncalls = {  # 호출하는 쪽 -> 호출받는 쪽\n    \"app-gateway\": [\"auth\", \"route\", \"search\"],\n    \"route\": [\"traffic\", \"map-tile\"],\n    \"search\": [\"poi\"],\n    \"drive-score\": [\"auth\", \"dynamo\"],\n    \"ad\": [\"poi\"],\n}\ncallers = {}\nfor src, dsts in calls.items():\n    for d in dsts:\n        callers.setdefault(d, []).append(src)\ndef impacted(down):\n    seen, q = set(), deque([down])\n    while q:\n        for c in callers.get(q.popleft(), []):\n            if c not in seen:\n                seen.add(c); q.append(c)\n    return sorted(seen)\nprint(\"poi 가 죽으면:\", impacted(\"poi\"))\nprint(\"auth 가 죽으면:\", impacted(\"auth\"))\n# poi 가 죽으면: ['ad', 'app-gateway', 'search']\n# auth 가 죽으면: ['app-gateway', 'drive-score']"
+    }
+   ],
+   "how_far": "모든 배포를 손으로 승인하는 게 아니라 **위험한 변경만 걸러 내는 기준**과 자동 판정을 만드는 일입니다. 너무 무거우면 팀들이 배포를 몰아서 하게 돼 오히려 위험해집니다.[24] {추론}",
+   "refs": [
+    2,
+    21,
+    24,
+    25
+   ],
+   "study": [
+    "dora",
+    "argo-rollouts",
+    "istio-mirror"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "장애 리스크 사전 진단 및 Chaos Engineering 훈련을 기획합니다.",
+   "short": "운영 환경을 일부러 조금 고장 내 보고, 버티는지·사람이 제대로 대응하는지를 미리 확인한다.",
+   "why": "TMAP 은 EC2 스팟 인스턴스(싸지만 AWS 가 언제든 회수하는 서버)를 Karpenter 로 쓰고, 경로 엔진을 ARM(Graviton3) 서버로 옮겼습니다.[2] 서버가 수시로 사라지는 걸 전제로 만든 구조라, 실제로 사라져도 괜찮은지 확인해야 합니다. {추론} 외부 업체 장애로 앱이 끊긴 적도 있습니다.[7]",
+   "actually": {
+    "intro": "카오스 엔지니어링의 기본 절차입니다.[20]",
+    "items": [
+     "**정상 상태 정의** — '길안내 성공률 99.9%' 같은 숫자(위의 SLI)로 정상을 정한다.",
+     "**가설** — '노드 하나가 사라져도 성공률은 그대로다'.",
+     "**작게 주입** — AWS FIS(Fault Injection Service)로 EC2 중단·EKS 노드 종료·네트워크 지연·스팟 회수 알림을 일으킨다. 멈춤 조건(CloudWatch 경보)을 걸어 SLI 가 떨어지면 바로 멈춘다.[19]",
+     "**폭발 반경 줄이기** — 개발 환경 → 일부 트래픽 → 운영 순서로, 한 가용 영역·한 서비스부터.[20][29]",
+     "**사람도 훈련** — 장애 역할극(game day)으로 온콜·지휘·소통 절차가 실제로 도는지 본다.[29]"
+    ]
+   },
+   "how_far": "공고 동사가 '기획'입니다.[1] 도구를 만드는 게 아니라 **무엇을 고장 낼지 고르고, 일정·범위·멈춤 조건을 정하고, 결과를 포스트모템처럼 정리**하는 일입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    7,
+    19,
+    20,
+    29
+   ],
+   "study": [
+    "chaos-book",
+    "aws-fis",
+    "aws-chaos-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "SRE 또는 인프라 운영 관련 실무 5년 이상이거나 이에 준하는 경험을 보유하신 분",
+   "short": "장애 현장에서 여러 팀을 지휘하려면 운영 경험의 폭이 필요해서 5년 이상을 둔다.",
+   "why": "이 자리의 일 대부분이 '전사' 표준입니다.[1] 남의 팀 시스템에 들어가 원인을 좁히고 규칙을 따르게 하려면 여러 종류의 장애를 겪어 본 경험이 말의 무게가 됩니다. {추론}",
+   "how_far": "'이에 준하는'이 붙어 있어 직함이 SRE 가 아니어도 됩니다 — 백엔드 개발자로 운영·온콜을 오래 맡았거나 DevOps·인프라 운영을 했다면 그 경험을 장애 사례 중심으로 쓰면 됩니다.[1] {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AWS 운영 경험 3년 이상의 경험을 보유하신 분",
+   "short": "서비스의 99% 가 AWS 위에 있어서. 콘솔을 아는 수준이 아니라 AWS 에서 장애를 겪고 고쳐 본 수준.",
+   "why": "TMAP 은 컴퓨팅의 96%, DB 의 99% 를 AWS 관리형 서비스로 옮겼습니다.[2] 네트워크도 기능별 계정 분리·WAF·Transit Gateway·VPC 피어링·Direct Connect/VPN·Control Tower 로 짜여 있습니다.[2]",
+   "actually": {
+    "intro": "이 회사의 AWS 를 발표에서 모은 것입니다.[2]",
+    "items": [
+     "**컴퓨팅** — EKS(용도별 클러스터) · Karpenter(노드 자동 증감, 스팟) · Graviton3(ARM). CPU 코어가 온프레미스 5만 개 이상 → EKS 7천 → Karpenter 뒤 약 4천.",
+     "**트래픽** — Istio 서비스 메시(비율 분배·미러링).",
+     "**DB** — 오라클 중심 400여 개(초당 86만 요청)를 Aurora MySQL·Aurora PostgreSQL·DynamoDB·OpenSearch 로 나눠 옮김.",
+     "**데이터·메시지** — MSK(Kafka)·DMS·Airflow·EMR·Athena, 운전 점수의 Flink(2019년 온프레미스에서 배치 → 실시간 전환[8])는 EKS 위에, 체크포인트는 EFS.",
+     "**비용** — DevOps 팀이 팀별·서비스별·일별 비용 대시보드를 만들어 개발팀이 직접 줄인다."
+    ]
+   },
+   "how_far": "자격증보다 **이 부품들이 고장 나는 모양**(스팟 회수·노드 정리 때의 파드 이동[30]·AZ 장애·DB 장애 조치·커넥션 고갈·WAF 오탐)을 겪어 보고 설명할 수 있느냐가 중요합니다. CTO 도 신규 서비스를 AWS 에서 먼저 시작하며 조직의 클라우드 운영 역량을 키웠다고 했습니다.[9] {추론}",
+   "refs": [
+    2,
+    8,
+    9,
+    30
+   ],
+   "study": [
+    "aws-wa-rel",
+    "karpenter"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "여러 계층에 걸친 IT 서비스 장애를 1차 대응부터 RCA, 재발방지까지 끝까지 추적, 해결한 경험을 보유하신 분",
+   "short": "앱·API·메시·쿠버네티스·DB·네트워크를 가로지른 장애 하나를 처음부터 재발 방지까지 닫아 본 경험.",
+   "why": "TMAP 의 한 요청은 앱 → WAF → 게이트웨이 → Istio → EKS 의 서비스 → Aurora·DynamoDB·Redis 를 지나갑니다.[2] 증상(앱 '서비스 지연')과 원인(어느 한 층)이 다른 층에 있는 경우가 많습니다. {추론}",
+   "actually": {
+    "items": [
+     "**층을 내려가며 좁히기** — 사용자 영향(SLI) → 어느 서비스 → 어느 의존 → 어느 자원(CPU·메모리·커넥션·디스크·네트워크).[22]",
+     "**'바뀐 것' 찾기** — 같은 시각의 배포·설정 변경·트래픽 급증·외부 업체 공지를 겹쳐 본다.[16]",
+     "**재발 방지는 층마다** — 예: 커넥션 고갈이면 풀 크기·타임아웃(앱) + 알림(관측) + 배포 점검 항목(절차)을 같이 바꾼다.[12] {추론}"
+    ]
+   },
+   "how_far": "면접에서는 **사례 하나를 타임라인으로** 말하게 됩니다 — 무엇을 보고 무엇을 의심했고, 무엇이 틀렸고, 무엇을 바꿨나. 서류에도 그 모양으로 쓰는 게 좋습니다. {추론}",
+   "refs": [
+    2,
+    12,
+    16,
+    22
+   ],
+   "study": [
+    "sre-book",
+    "use-method"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "옵저버빌리티 플랫폼을 활용한 장애 진단 및 분석 경험을 보유하신 분",
+   "short": "로그·지표·트레이스를 오가며 '어디가 왜 느린가'를 찾아 본 경험. TMAP 은 Datadog 을 쓴다.",
+   "why": "TMAP 은 분사 뒤 개발팀과 DevOps 팀이 서로 다른 모니터링을 써 장애 원인 분석이 늦었고, 그래서 Datadog 으로 모아 모든 엔지니어가 같은 로그·같은 화면을 보게 했습니다.[4] 온프레미스 때 직접 만들던 로그 파이프라인·대시보드를 클라우드에선 SaaS 로 바꿨다고 백엔드 발표자도 말했습니다.[2]",
+   "actually": {
+    "items": [
+     "**지표(metric)** — 오류율·지연·포화도를 시간에 따라. 이상이 '언제' 시작됐나.[22]",
+     "**트레이스(trace)** — 요청 하나가 지난 서비스와 각 구간 시간. '어디서' 느렸나.[28]",
+     "**로그(log)** — 그 구간의 오류 메시지. '왜'. TMAP 은 한 달 로그가 300억 건에서 600억 건으로 늘었다.[4]",
+     "**이어 보기** — 트레이스 ID 로 로그와 트레이스를 잇고, 배포 표시를 지표 그래프에 겹친다.[28] {추론}"
+    ]
+   },
+   "how_far": "Datadog 을 안 써 봤어도 됩니다 — 'Datadog 등'이 아니라 '옵저버빌리티 플랫폼'이라고 적었습니다.[1] Prometheus·Grafana·Elastic·OpenTelemetry 무엇이든 **세 신호를 오가며 원인을 좁힌 사례**를 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    2,
+    4,
+    22,
+    28
+   ],
+   "study": [
+    "o11y-ko",
+    "otel"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "서버/네트워크 레벨 장애 진단 역량을 보유하신 분",
+   "short": "대시보드가 답을 안 줄 때 서버에 들어가 CPU·메모리·디스크·소켓·패킷을 직접 보는 힘.",
+   "why": "관리형 서비스가 많아도 EKS 노드·파드·서비스 메시·VPC·Direct Connect·외부 기관 VPN 은 남습니다.[2] 외부 CDN 장애처럼 네트워크 구간 문제도 실제로 겪었습니다.[7]",
+   "actually": {
+    "items": [
+     "**USE 방법** — 자원마다 사용률(Utilization)·포화(Saturation)·오류(Errors)를 차례로 본다.[22]",
+     "**첫 60초 명령** — uptime · dmesg · vmstat · mpstat · pidstat · iostat · free · sar(네트워크) · top. 넷플릭스가 정리한 순서다.[23]",
+     "**네트워크** — DNS 조회, TCP 연결 상태(ss), 재전송, 패킷 캡처(tcpdump), MTU·타임아웃, 보안 그룹·NACL·라우팅 표.",
+     "**쿠버네티스 층** — 파드 재시작·OOMKilled·노드 압박·DNS(CoreDNS)·사이드카(Envoy) 오류 코드. {추론}"
+    ]
+   },
+   "how_far": "네트워크 엔지니어 수준이 아니라 **'네트워크 문제다/아니다'를 근거를 들어 가를 수 있는** 수준입니다. {추론}",
+   "refs": [
+    2,
+    7,
+    22,
+    23
+   ],
+   "study": [
+    "use-method",
+    "netflix-60s"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "시스템간 연동 구조 분석 및 장애 영향도 평가 경험을 보유하신 분",
+   "short": "서비스끼리 누가 누구를 부르는지 그려 보고, 하나가 죽으면 어디까지 번지는지 말할 수 있는 힘.",
+   "why": "TMAP 은 클라이언트 · 지도 플랫폼 · 모빌리티 플랫폼(경로·인증·결제) · 서비스(카라이프·어디갈까·광고) · 데이터 플랫폼이 엮인 구조라고 스스로 설명합니다.[2][3] 인증이나 경로가 멈추면 위에 얹힌 여러 서비스가 같이 멈춥니다. {추론}",
+   "actually": {
+    "items": [
+     "**의존 지도** — 트레이스의 서비스 지도, 메시(Istio)의 호출 기록으로 그린다.[21][28]",
+     "**동기·비동기 구분** — 바로 답을 기다리는 호출(HTTP)은 장애가 바로 번지고, 메시지(Kafka) 뒤쪽은 늦게 번진다.",
+     "**영향도 매기기** — 사용자 수·매출·대체 경로 유무로 등급을 매긴다(앞의 영향도 예시).",
+     "**끊는 장치** — 타임아웃·재시도 한도·서킷 브레이커·대체 응답(캐시된 경로 등). {추론}"
+    ]
+   },
+   "refs": [
+    2,
+    3,
+    21,
+    28
+   ],
+   "study": [
+    "aws-wa-rel",
+    "istio-mirror"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모/대용량 트래픽 서비스 운영 경험을 보유하신 분",
+   "short": "TMAP 은 월 사용자 1,500만 명대, DB 요청 초당 86만 건 규모라 작은 서비스와 장애 모양이 다르다.",
+   "why": "발표 기준 월 사용자 1,520만 명·누적 회원 2,400만 명이고[2], 이관 전 DB 400여 개가 초당 86만 건을 처리했습니다.[2][3] 연간 이동 데이터는 67억 건입니다.[3] 출퇴근·명절처럼 트래픽이 한때 몰리는 모양도 있습니다.[2]",
+   "how_far": "숫자 자체보다 **규모가 만든 문제**(한꺼번에 몰리는 재시도, 캐시가 비는 순간, 노드 증설이 따라가지 못하는 몇 분)를 겪어 본 경험이 우대 대상입니다. {추론}",
+   "refs": [
+    2,
+    3
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "SLI/SLO/에러 버짓 운영 경험을 보유하신 분",
+   "short": "목표를 정하는 데서 끝나지 않고, '남은 실패 허용량'으로 알림과 배포 속도를 조절해 본 경험.",
+   "why": "에러 버짓은 1 − SLO 입니다. 99.9% 면 30일에 43.2분만큼 실패해도 됩니다. 이걸 다 쓰면 기능 배포를 늦추고 안정화에 집중하자는 약속이 에러 버짓 정책입니다.[14]",
+   "actually": {
+    "items": [
+     "**번 레이트 알림** — 버짓을 평소보다 몇 배 빨리 태우나로 알린다. 구글 워크북은 1시간 동안 14.4배(30일 버짓의 2%)면 사람을 깨우고, 6시간 6배(5%)도 깨우고, 3일 1배(10%)는 티켓으로 두는 조합을 권한다.[15]",
+     "**짧은 창 같이 보기** — 1시간 창과 5분 창이 둘 다 넘을 때만 울리게 해 이미 끝난 장애로 깨우지 않는다.[15]",
+     "**버짓 정책** — 다 쓰면 배포 동결·포스트모템 필수처럼 미리 합의한다.[14]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "에러 버짓과 번 레이트 (직접 돌린 출력)",
+     "body": "2025-12-10 장애가 약 1시간 51분이었는데[5], 그만큼 전면 장애였다면 99.9% 30일 버짓의 2.5배를 한 번에 쓴 셈입니다. 실제 실패 비율은 공개되지 않았습니다. {추론}",
+     "lang": "python",
+     "code": "slo = 0.999\nminutes = 30 * 24 * 60\nbudget_min = minutes * (1 - slo)\nprint(f\"30일 에러 버짓: {budget_min:.1f}분\")\noutage = 111\nprint(f\"111분 전면 장애 = 버짓의 {outage / budget_min:.0%}\")\nreq, err = 120_000, 1_800\nrate = err / req\nburn = rate / (1 - slo)\nprint(f\"1시간 오류율 {rate:.2%} -> 번 레이트 {burn:.1f}배\")\nprint(\"1시간 기준 14.4배 넘으면 호출(page):\", burn >= 14.4)\n# 30일 에러 버짓: 43.2분\n# 111분 전면 장애 = 버짓의 257%\n# 1시간 오류율 1.50% -> 번 레이트 15.0배\n# 1시간 기준 14.4배 넘으면 호출(page): True"
+    }
+   ],
+   "refs": [
+    5,
+    14,
+    15
+   ],
+   "study": [
+    "sre-workbook",
+    "slo-book",
+    "dd-slo"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Java/Spring 애플리케이션 성능 분석 경험을 보유하신 분",
+   "short": "서비스 대부분이 Java/Spring 이라 '앱이 느리다'를 JVM 안까지 들어가 볼 수 있으면 RCA 가 빨라진다.",
+   "why": "공고의 기술 꼬리표가 AWS·Java·Spring 입니다.[1] 장애 원인이 인프라가 아니라 앱 안(스레드·GC·커넥션 풀)인 경우, SRE 가 거기까지 보면 개발팀에 넘기는 시간이 줄어듭니다. {추론}",
+   "actually": {
+    "items": [
+     "**스레드 덤프** — 요청 스레드가 무엇을 기다리나(DB 커넥션·외부 호출·락). jstack 이나 Actuator 의 threaddump 엔드포인트.[27]",
+     "**GC·힙** — GC 멈춤 시간, 힙 사용량, OOM 직전 힙 덤프.[27]",
+     "**프로파일링** — async-profiler 로 CPU·할당·락 대기 불꽃 그래프(flame graph).[26]",
+     "**커넥션 풀** — 대기 중인 요청 수·풀 크기·타임아웃. Actuator 지표로 내보내 대시보드에 올린다.[27]",
+     "**ARM 전환 확인** — TMAP 은 경로 엔진을 Graviton3(ARM)로 옮겼다. JVM 은 대부분 그대로 돌지만 네이티브 라이브러리는 확인이 필요하다.[2] {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    26,
+    27
+   ],
+   "study": [
+    "java-opt",
+    "async-profiler",
+    "actuator"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "LLM/에이전트를 개발·운영·진단에 활용해 본 경험을 보유하신 분",
+   "short": "장애 분석에 LLM 을 쓰거나(로그 요약·원인 후보), LLM 서비스 자체를 운영해 본 경험.",
+   "why": "두 방향이 다 있습니다. ① 회사가 LLM 기반 음성 AI 에이전트를 내놓았고 그 안정 운영을 위해 AI 옵스를 검토 중이라고 했습니다.[4] ② 업무 도구로 ChatGPT·Gemini·Claude·Codex 를 쓸 수 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**진단에 쓰기** — 장애 시각의 로그·알림을 모아 요약, 비슷한 지난 포스트모템 찾기, 포스트모템 초안 쓰기. {추론}",
+     "**운영 대상으로서의 LLM** — 응답 지연(첫 토큰까지)·실패율·토큰 비용을 SLI 처럼 잰다. 음성 에이전트는 대화가 길어(멀티턴) 한 대화의 성공을 따로 정의해야 한다.[4] {추론}",
+     "**주의** — LLM 이 낸 원인 후보는 근거(지표·로그)로 확인하기 전에는 결론이 아니다. {추론}"
+    ]
+   },
+   "how_far": "우대사항이라 없어도 지원할 수 있습니다. 있다면 '무엇을 시켰고, 얼마나 맞았고, 어디서 틀렸나'를 숫자로 말할 수 있으면 좋습니다. {추론}",
+   "refs": [
+    1,
+    4
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "옵저버빌리티 플랫폼으로 서비스 품질을 상시 관측 및 개선한 경험을 보유하신 분",
+   "short": "장애 때만 보는 게 아니라, 평소 지표로 느려지는 곳·비싼 곳을 찾아 먼저 고친 경험.",
+   "why": "TMAP 은 관측과 비용을 같이 봅니다 — 로그가 두 배가 됐는데 모니터링 비용 비율은 11% 에서 9% 로 줄였고[4], 개발자에게 컨테이너 단위 성능·비용 정보를 주자 개발자들이 스스로 비용을 줄이는 문화가 생겼다고 했습니다.[2] 경로 엔진은 이전 뒤 응답 속도·처리량이 좋아지고 간헐 지연이 줄었다고 합니다.[2]",
+   "actually": {
+    "items": [
+     "**주간 리뷰** — 서비스별 SLO·느린 엔드포인트 상위 10개·오류 상위 10개를 매주 보고 담당 팀에 넘긴다. {추론}",
+     "**알림 정리** — 울려도 아무도 안 움직이는 알림은 지운다. 깨우는 알림은 SLO 기준으로.[15]",
+     "**로그 비용** — 쓸모없는 로그 줄이기·샘플링·보관 기간 나누기. TMAP 은 OpenSearch 의 오래된 로그를 웜 티어와 S3 로 내린다.[2]"
+    ]
+   },
+   "refs": [
+    2,
+    4,
+    15
+   ],
+   "study": [
+    "o11y-ko",
+    "dd-slo"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "포스트모템 문화 정착 경험을 보유하신 분",
+   "short": "포스트모템을 '혼나는 문서'가 아니라 '배우는 문서'로 만들어 팀들이 스스로 쓰게 해 본 경험.",
+   "why": "구글 SRE 책은 탓하지 않는 포스트모템을 문화로 만들려면 경영진의 지지, 좋은 포스트모템 칭찬, 함께 읽는 모임 같은 장치가 필요하다고 적습니다.[12] TMAP 도 대응 경과와 잘한 점·못한 점을 공유한다고 했습니다.[4]",
+   "actually": {
+    "items": [
+     "**서식과 예시** — 빈 서식보다 잘 쓴 예시 하나가 더 낫다.[12]",
+     "**같이 읽기** — 월 1회 포스트모템 읽기 모임, 이달의 포스트모템.[12]",
+     "**숫자로 보기** — 기한 안에 닫힌 액션 아이템 비율, 같은 원인의 재발 건수. {추론}"
+    ]
+   },
+   "refs": [
+    4,
+    12
+   ],
+   "study": [
+    "sre-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "배포/변경관리 프로세스 설계 또는 자동화 경험을 보유하신 분",
+   "short": "변경 관리 규칙을 사람 검토가 아니라 파이프라인 안의 자동 검사·자동 롤백으로 만들어 본 경험.",
+   "why": "TMAP 은 Jenkins·Argo CD 의 GitOps 표준 파이프라인이 있어 개발팀이 따로 손 쓰지 않고 배포합니다.[2] 업무 줄의 '배포 전 영향도 분석·리스크 검토'를 이 파이프라인에 넣으면 규칙이 저절로 지켜집니다. {추론}",
+   "actually": {
+    "items": [
+     "**GitOps** — 운영 상태를 Git 에 적고 Argo CD 가 맞춘다. 변경 기록 = Git 기록이라 '무엇이 바뀌었나'를 바로 찾는다.[2]",
+     "**단계적 배포 자동화** — Argo Rollouts 의 카나리 단계와 지표 분석으로 자동 승격·자동 롤백.[25]",
+     "**변경 차단 규칙** — 배포 금지 시간, SLO 버짓 소진 시 동결, 고위험 변경은 승인 필요. {추론}",
+     "**지표** — 배포 빈도·변경 실패율·복구 시간을 DORA 지표로 잰다.[24]"
+    ]
+   },
+   "refs": [
+    2,
+    24,
+    25
+   ],
+   "study": [
+    "dora",
+    "argo-rollouts"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "tmap-aws-talk",
+   "title": "전국민의 네비게이션, TMAP MOBILITY의 AWS 마이그레이션 여정! (AWS Summit Seoul 2025)",
+   "by": "티맵모빌리티 DevOps 팀 권상훈 · 백엔드 이재한 · AWS 이수정",
+   "kind": "video",
+   "url": "https://www.youtube.com/watch?v=7OMQRREycQw",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "이 회사 AWS 의 모양(EKS·Istio·Karpenter·DB 이관 방식·배포 파이프라인)을 회사 사람이 직접 설명한다. 면접 전에 반드시 볼 것."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering — How Google Runs Production Systems",
+   "by": "Betsy Beyer 외 · O'Reilly · 2016 (온라인 무료)",
+   "kind": "book",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "장애 관리·포스트모템 문화·운영 준비 검토(PRR) 장이 업무 줄 ①②⑤에 그대로 대응한다."
+  },
+  {
+   "id": "sre-workbook",
+   "title": "The Site Reliability Workbook",
+   "by": "Betsy Beyer 외 · O'Reilly · 2018 (온라인 무료)",
+   "kind": "book",
+   "url": "https://sre.google/workbook/table-of-contents/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "SLO 만들기·SLO 기반 알림(번 레이트)·장애 대응 장이 SLI/SLO·에러 버짓·온콜 줄을 실제 숫자로 채운다."
+  },
+  {
+   "id": "slo-book",
+   "title": "Implementing Service Level Objectives",
+   "by": "Alex Hidalgo · O'Reilly · 2020",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/implementing-service-level/9781492076803/",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "SLI 측정·에러 버짓 활용·SLO 알림만 다룬 한 권. SLO 를 전사에 퍼뜨리는 업무 줄 ④와 우대 줄에 맞다."
+  },
+  {
+   "id": "o11y-ko",
+   "title": "데브옵스 엔지니어를 위한 실전 관찰 가능성 엔지니어링",
+   "by": "채리티 메이저스·리즈 퐁존스·조지 미란다 · 노승헌 옮김 · 한빛미디어 · 2024",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/debeuobseu-enjinieoreul-wihan/9791169212519/",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "why": "로그·지표·트레이스로 '모르는 장애'를 좁히는 법과 SLO 기반 알림. 옵저버빌리티 요건·우대 두 줄을 한국어로 채운다."
+  },
+  {
+   "id": "chaos-book",
+   "title": "Chaos Engineering: System Resiliency in Practice",
+   "by": "Casey Rosenthal · Nora Jones · O'Reilly · 2020",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/chaos-engineering/9781492043850/",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "넷플릭스 등에서 카오스 실험을 기획·운영한 경험. 업무 줄 ⑦ '훈련 기획'의 범위·멈춤 조건 정하는 법."
+  },
+  {
+   "id": "aws-chaos-ko",
+   "title": "AWS 권장 가이드 · 카오스 엔지니어링 여정 전략",
+   "by": "AWS",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/ko_kr/prescriptive-guidance/latest/strategy-chaos-engineering-journey/chaos-engineering-emergence.html",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "AWS 위에서 카오스 엔지니어링을 조직에 들이는 단계를 한국어로. 훈련 기획서의 뼈대로 쓴다."
+  },
+  {
+   "id": "aws-fis",
+   "title": "AWS Fault Injection Service 사용 설명서",
+   "by": "AWS",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/fis/latest/userguide/what-is.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "EC2·EKS·네트워크 장애 주입과 멈춤 조건. 업무 줄 ⑦을 실제로 돌리는 도구."
+  },
+  {
+   "id": "aws-wa-rel",
+   "title": "AWS Well-Architected Framework · 신뢰성 원칙(Reliability Pillar)",
+   "by": "AWS",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "장애 격리·변경 관리·장애 대비 질문 목록. '프로덕션 필수 점검항목'을 만들 때 출발점."
+  },
+  {
+   "id": "karpenter",
+   "title": "Karpenter 문서",
+   "by": "Karpenter 프로젝트",
+   "kind": "doc",
+   "url": "https://karpenter.sh/docs/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "TMAP 이 노드 증감·스팟에 쓰는 도구. 스팟 회수·노드 정리(consolidation)가 장애로 이어지는 모양을 이해한다."
+  },
+  {
+   "id": "istio-mirror",
+   "title": "Istio 문서 · Mirroring(트래픽 미러링)",
+   "by": "Istio",
+   "kind": "doc",
+   "url": "https://istio.io/latest/docs/tasks/traffic-management/mirroring/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "TMAP 이 이관 검증에 쓴 미러링과 비율 분배. 배포 영향도·연동 구조 줄의 도구."
+  },
+  {
+   "id": "argo-rollouts",
+   "title": "Argo Rollouts 문서",
+   "by": "Argo 프로젝트",
+   "kind": "doc",
+   "url": "https://argo-rollouts.readthedocs.io/en/stable/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "카나리·블루그린과 지표 분석으로 자동 롤백. Argo CD 를 쓰는 회사의 배포 자동화 우대 줄에 바로 붙는다."
+  },
+  {
+   "id": "dora",
+   "title": "DORA · 소프트웨어 배포 성과 지표(Four Keys)",
+   "by": "DORA",
+   "kind": "doc",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "배포 빈도·변경 리드 타임·변경 실패율·복구 시간. 변경 관리 표준이 효과가 있었는지 재는 숫자."
+  },
+  {
+   "id": "pd-response",
+   "title": "PagerDuty Incident Response Documentation",
+   "by": "PagerDuty",
+   "kind": "doc",
+   "url": "https://response.pagerduty.com/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "공개된 장애 대응 절차서 — 심각도 등급·지휘자 역할·온콜 방식. 온콜/인시던트 체계 수립의 견본."
+  },
+  {
+   "id": "dd-slo",
+   "title": "Datadog 문서 · 서비스 수준 목표(SLO)",
+   "by": "Datadog",
+   "kind": "doc",
+   "url": "https://docs.datadoghq.com/ko/service_level_objectives/",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "TMAP 이 쓰는 관측 도구에서 SLO·에러 버짓·번 레이트 알림을 만드는 법."
+  },
+  {
+   "id": "otel",
+   "title": "OpenTelemetry 문서",
+   "by": "OpenTelemetry",
+   "kind": "doc",
+   "url": "https://opentelemetry.io/docs/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "지표·트레이스·로그를 잇는 공통 표준. 특정 제품에 묶이지 않고 관측 기본기를 익힌다."
+  },
+  {
+   "id": "use-method",
+   "title": "The USE Method",
+   "by": "Brendan Gregg",
+   "kind": "doc",
+   "url": "https://www.brendangregg.com/usemethod.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "자원마다 사용률·포화·오류를 보는 점검 순서. 서버 레벨 장애 진단 요건의 기본 틀."
+  },
+  {
+   "id": "netflix-60s",
+   "title": "Linux Performance Analysis in 60,000 Milliseconds",
+   "by": "Netflix Technology Blog",
+   "kind": "doc",
+   "url": "https://netflixtechblog.com/linux-performance-analysis-in-60-000-milliseconds-accc10403c55",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "서버에 들어가 처음 1분에 칠 명령 10개와 읽는 법. 서버 장애 진단 줄의 최소선."
+  },
+  {
+   "id": "java-opt",
+   "title": "자바 최적화",
+   "by": "벤저민 J. 에번스·제임스 고프·크리스 뉴랜드",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9E%90%EB%B0%94%20%EC%B5%9C%EC%A0%81%ED%99%94%20%EC%97%90%EB%B2%88%EC%8A%A4",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "why": "GC·JIT·성능 측정의 함정. Java/Spring 성능 분석 우대 줄을 JVM 안쪽까지 채운다."
+  },
+  {
+   "id": "async-profiler",
+   "title": "async-profiler",
+   "by": "async-profiler 프로젝트",
+   "kind": "doc",
+   "url": "https://github.com/async-profiler/async-profiler",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "운영 중인 JVM 의 CPU·할당·락 대기를 불꽃 그래프로. 느린 Spring 서비스를 직접 들여다보는 도구."
+  },
+  {
+   "id": "actuator",
+   "title": "Spring Boot 문서 · Production-ready Features(Actuator)",
+   "by": "Spring",
+   "kind": "doc",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/index.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "헬스 체크·지표·스레드 덤프 엔드포인트. 앱이 관측 데이터를 내보내게 하는 표준 방법."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사의 구조를 먼저 안다",
+   "time": "2~3일",
+   "goal": "TMAP 의 AWS 구성(계정·네트워크·EKS·메시·DB)을 그림 한 장으로 그리고 각 부품이 고장 나면 무엇이 멈추나 말할 수 있다.",
+   "task": "발표 두 편을 보고 요청 하나(앱 → WAF → 게이트웨이 → Istio → 서비스 → Aurora/DynamoDB)의 경로를 그린 뒤, 칸마다 '고장 모양 1개 + 볼 지표 1개'를 적는다.",
+   "resources": [
+   "tmap-aws-talk",
+   "karpenter",
+   "istio-mirror"
+   ]
+  },
+  {
+   "title": "SLI·SLO·에러 버짓을 손으로 만든다",
+   "time": "1~2주",
+   "goal": "요청 로그에서 가용성·지연 SLI 를 계산하고, 99.9% SLO 의 번 레이트 알림 조건을 정할 수 있다.",
+   "task": "가상의 길안내 API 요청 로그 10만 줄(상태 코드·응답 시간·시각)을 만들어 1시간·6시간·30일 SLI 와 번 레이트를 계산하고, 워크북의 다중 창 알림이 언제 울리는지 그래프로 그린다.",
+   "resources": [
+   "sre-workbook",
+   "slo-book",
+   "dd-slo"
+   ]
+  },
+  {
+   "title": "관측 세 신호로 원인을 좁힌다",
+   "time": "2주",
+   "goal": "지표·트레이스·로그를 트레이스 ID 로 이어, 일부러 넣은 지연의 위치를 찾을 수 있다.",
+   "task": "Spring Boot 서비스 3개(게이트웨이·경로·장소)를 OpenTelemetry 로 계측하고, 장소 서비스 DB 커넥션 풀을 일부러 2개로 줄여 느려지게 한 뒤 지표 → 트레이스 → 로그 → 스레드 덤프 순서로 원인을 찾아 기록한다.",
+   "resources": [
+   "otel",
+   "o11y-ko",
+   "actuator",
+   "async-profiler"
+   ]
+  },
+  {
+   "title": "장애 대응 절차와 포스트모템을 써 본다",
+   "time": "1주",
+   "goal": "심각도 등급표·온콜 규칙·포스트모템 서식을 만들고, 위 3단계의 장애로 포스트모템 한 편을 쓸 수 있다.",
+   "task": "SEV1~3 등급표(기준·호출 범위·보고 대상)와 포스트모템 서식을 만들고, 3단계 장애의 타임라인·원인·액션 아이템(담당·기한)을 채운다. 액션 아이템마다 '재발하면 어느 알림이 먼저 울리나'를 적는다.",
+   "resources": [
+   "sre-book",
+   "pd-response"
+   ]
+  },
+  {
+   "title": "고장을 일부러 내 보고 배포를 지킨다",
+   "time": "2주",
+   "goal": "카오스 실험 기획서(가설·범위·멈춤 조건)를 쓰고, 지표가 나빠지면 자동으로 되돌아가는 카나리 배포를 만들 수 있다.",
+   "task": "로컬 쿠버네티스(kind)에 Argo Rollouts 카나리를 걸고 오류율 2% 를 넘으면 롤백되게 한 뒤, 파드 하나를 지우는 실험으로 SLI 가 유지되는지 확인한다. 결과를 실험 보고서 한 장으로 정리한다.",
+   "resources": [
+   "argo-rollouts",
+   "chaos-book",
+   "aws-fis",
+   "aws-chaos-ko",
+   "dora"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공시 숫자는 없다(비상장). 집계 사이트 기준 초봉 **약 4,793만원**, 평균 **약 7,049만원** — 이 자리는 5년 차 이상이라 처우 협의로 정한다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,793만원",
+    "amount": 4793,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 기준일 표기가 없고 직군 구분도 없다 [10]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "약 7,049만원",
+    "amount": 7049,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계(사원 수 359명으로 표시) — 경력직이 섞인 회사 전체 값이다 [10]"
+   }
+  ],
+  "how": "티맵모빌리티는 비상장사라 사업보고서의 직원 평균 급여 공시가 없다. 공고는 연봉을 적지 않고, 레퍼런스 체크 다음의 **처우협의** 단계에서 정한다 [1]. 집계 평균은 신입부터 섞인 값이라 5년 차 이상 경력직이 받는 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무 시간",
+    "detail": "4주 단위 160시간 안에서 스스로 계획, 매월 금요일 하루 쉬는 Happy Friday"
+   },
+   {
+    "name": "재택",
+    "detail": "주 1회"
+   },
+   {
+    "name": "휴가",
+    "detail": "연차 외 체력단련휴가 연 최대 5일, 사유·승인 없는 연차·반차·반반차"
+   },
+   {
+    "name": "장기 근속",
+    "detail": "재직 3년마다 30일 유급 휴가"
+   },
+   {
+    "name": "복리후생비",
+    "detail": "연 360만원(IT 기기·교육·여행·운동·가족 건강검진·휴양소 등)"
+   },
+   {
+    "name": "건강",
+    "detail": "협약 건강검진 연 40만원 한도, 본인·배우자·자녀·양가 부모 의료비, 독감 예방접종비"
+   },
+   {
+    "name": "교육",
+    "detail": "직무 교육비 연 100만원까지"
+   },
+   {
+    "name": "통신비",
+    "detail": "SKT 이용자 월 최대 10만원"
+   },
+   {
+    "name": "포인트",
+    "detail": "생일 TMAP Point 10만, 농수산물 '자연이랑' 연 60만 포인트"
+   },
+   {
+    "name": "가족·주거",
+    "detail": "자녀 학자금, 금융기관 대출 이자 일부 지원"
+   },
+   {
+    "name": "사내",
+    "detail": "헬스키퍼 안마 월 4회, 라운지·수면실·폰부스, 구내식당(점심 5,000원·아침 무료), 허먼밀러 의자, AI 도구(ChatGPT·Gemini·Claude·Codex)"
+   }
+  ],
+  "note": "이 공고의 '혜택 및 복지'다(2026년 원티드) [1]. 구내식당 값은 2026년 1월 사옥 취재 기사다 [11]. 정규직 전체 기준으로 읽히지만 적용 조건은 처우 협의 때 확인한다 {추론}. 모든 직무에 3개월 시용 기간(급여 100%)이 있다 [1]."
+ },
+ "location": {
+  "name": "티맵모빌리티 본사 (SK-C타워)",
+  "address": "서울특별시 중구 충무로 15, SK-C타워 7-9층",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%A4%91%EA%B5%AC%20%EC%B6%A9%EB%AC%B4%EB%A1%9C%2015",
+  "note": "이 공고는 근무지를 '서울 중구'로만 적었다 [1]. 같은 회사의 다른 원티드 공고가 충무로 15, SK-C타워 7-9층을 근무지로 적고 [32], 사옥 취재 기사도 중구 SKC 타워 7~9층이라고 적었다 [11]. 우편번호는 확인하지 못했다."
+ },
+ "fit": {
+  "good": [
+   "장애 현장에서 침착하게 순서를 정하는 게 즐거운 사람",
+   "남이 만든 시스템도 끝까지 파고들어 원인을 찾는 사람",
+   "규칙을 문서로 만들고 여러 팀을 설득하는 일을 꺼리지 않는 사람",
+   "클라우드 이관이 끝난 직후의 대규모 AWS 환경을 다뤄 보고 싶은 사람[2]"
+  ],
+  "hard": [
+   "온콜이 일의 일부다 — 출근 시간·연휴 장애가 가장 아프다[5]",
+   "'전사 표준'은 다른 팀의 협조가 있어야 굴러간다 — 기술보다 설득이 더 걸리는 날이 있다 {추론}",
+   "전형에 코딩테스트가 있다 — 운영 직무라도 준비해야 한다[1]",
+   "5년 이상 경력 요건 — 신입·주니어 자리는 아니다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "출근 시간에 앱이 '서비스 지연'을 띄운다는 신고가 들어왔어요. 첫 10분에 무엇을 하겠어요?",
+   "a": "2025-12-10 실제 장애 모양 — 역할 나누기·되살리기 먼저·타임라인.[5][13]"
+  },
+  {
+   "q": "길안내 API 의 SLI 를 무엇으로 정하겠어요? 4xx 는 분모에 넣나요?",
+   "a": "SLI 정의와 분모 — 업무 줄 ④.[14]"
+  },
+  {
+   "q": "99.9% SLO 에서 1시간 오류율이 1.5% 면 사람을 깨워야 하나요?",
+   "a": "번 레이트 14.4배 기준.[15]"
+  },
+  {
+   "q": "Karpenter 가 스팟 노드를 회수할 때 서비스가 흔들리지 않게 하려면?",
+   "a": "이 회사가 실제로 쓰는 구성.[2]"
+  },
+  {
+   "q": "외부 CDN 장애로 10분 끊겼어요. RCA 의 결론과 재발 방지는 무엇인가요?",
+   "a": "원인이 밖에 있을 때의 RCA — 2025-09-04 실제 사례.[7]"
+  },
+  {
+   "q": "포스트모템 액션 아이템이 석 달째 안 닫혀요. 어떻게 하겠어요?",
+   "a": "'추적 관리'와 문화 정착 줄.[12]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · [티맵모빌리티] Site Reliability Engineer (SRE)",
+   "url": "https://www.wanted.co.kr/wd/365859",
+   "kind": "posting",
+   "note": "업무·요건·우대·혜택·전형(서류 → 코딩테스트 → 1·2차 인터뷰 → 레퍼런스 체크 → 처우협의) · 기술 꼬리표 AWS·Java·Spring"
+  },
+  {
+   "n": 2,
+   "title": "AWS Summit Seoul 2025 · 전국민의 네비게이션, TMAP MOBILITY의 AWS 마이그레이션 여정!",
+   "url": "https://www.youtube.com/watch?v=7OMQRREycQw",
+   "kind": "company",
+   "date": "2025-05",
+   "note": "티맵모빌리티 DevOps 팀·백엔드 발표 · 자막 전부 확인 — 2021년부터 3년 반, 서비스 99% AWS, IDC 2곳·서버 2,800여 대·4.9PB, 컴퓨팅 96%·DB 99% 관리형, EKS·Istio·Karpenter, CPU 5만+ → 7천 → 약 4천, DB 400여 개·초당 86만, Jenkins·Argo CD GitOps, Graviton3, 운전 점수 Flink"
+  },
+  {
+   "n": 3,
+   "title": "AWS Summit 2025 Day 2 기조연설 · 김재순(티맵모빌리티 CTO) 부분",
+   "url": "https://www.youtube.com/watch?v=iYFx_Nq3VL8",
+   "kind": "company",
+   "date": "2025-05-15",
+   "note": "36~46분 · 자막 확인 — 가입자 2,400만, 연 67억 건 이동 데이터, MAU 약 1,600만, 서버 2,800대·5PB, DB 400여 개·초당 86만"
+  },
+  {
+   "n": 4,
+   "title": "Datadog 고객 사례 · 티맵모빌리티의 Datadog 도입기",
+   "url": "https://www.datadoghq.com/ko/case-studies/tmap/",
+   "kind": "company",
+   "date": "2026-02 무렵",
+   "note": "업체가 낸 사례(회사 CTO 인용) — 분사 뒤 파편화된 모니터링 통합, 로그 월 300억 → 600억 건, 모니터링 비용 비율 11% → 9%, namespace 40 → 70, 시스템 종류 300 → 700, Jira 자동 티켓·Slack 알림, CWPP·SIEM·AI 옵스 검토"
+  },
+  {
+   "n": 5,
+   "title": "아시아경제 · Navigation App TMAP Experiences Morning Access Disruption... Restored in 2 Hours",
+   "url": "https://www.asiae.co.kr/en/article/2025121011085191624",
+   "kind": "news",
+   "date": "2025-12-10",
+   "note": "오전 8시 9분쯤 발생, 약 10시 정상화(1시간 51분), 내부 시스템 문제, 해킹·디도스 아님"
+  },
+  {
+   "n": 6,
+   "title": "스마트투데이 · 티맵, 출근시간 접속 장애…신규 가입도 불가",
+   "url": "https://www.smarttoday.co.kr/ko-kr/articles/98646",
+   "kind": "news",
+   "date": "2025-12-10"
+  },
+  {
+   "n": 7,
+   "title": "뉴스1 · 제미나이·챗GPT 오류 원인 클라우드플레어 韓서버장애(종합)",
+   "url": "https://www.news1.kr/it-science/general-it/5901896",
+   "kind": "news",
+   "date": "2025-09-04",
+   "note": "오후 2시 10분쯤 티맵 접속 불가, 10여 분 뒤 복구 — 클라우드플레어 한국 구간 장애 영향"
+  },
+  {
+   "n": 8,
+   "title": "Flink Forward Berlin 2018 · Real-time driving score service using Flink",
+   "url": "https://speakerdeck.com/eastcirclek/real-time-driving-score-service-using-flink",
+   "kind": "company",
+   "date": "2018-09",
+   "note": "분사 전 SK텔레콤 발표 — 운전 점수 배치(Hive) → Flink 스트리밍 전환"
+  },
+  {
+   "n": 9,
+   "title": "테크M · 버너 보겔스가 한국말을?...'AWS 서밋 서울 2025' 기조연설도 남다르게",
+   "url": "https://www.techm.kr/news/articleView.html?idxno=139709",
+   "kind": "news",
+   "date": "2025-05",
+   "note": "김재순 CTO 발표 요약 — 신규 서비스 AWS 우선, IDC 2곳 5PB 이전, 비용 최적화"
+  },
+  {
+   "n": 10,
+   "title": "자소설닷컴 · 티맵모빌리티 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11668",
+   "kind": "reference",
+   "note": "기준일 표기 없음 — 검색 결과 요약으로 확인(페이지는 자동 접근 차단). 같은 회사의 다른 풀이와 같은 값"
+  },
+  {
+   "n": 11,
+   "title": "머니투데이 · [IT사파] 티맵모빌리티, 왜 사옥에 엔진을 심었을까",
+   "url": "https://www.mt.co.kr/tech/2026/01/19/2026011615574546384",
+   "kind": "news",
+   "date": "2026-01-19",
+   "note": "사옥(중구 SKC 타워 7~9층) 취재 — 재택·Happy Friday·구내식당"
+  },
+  {
+   "n": 12,
+   "title": "Google SRE Book · Postmortem Culture: Learning from Failure",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "Google SRE Book · Managing Incidents",
+   "url": "https://sre.google/sre-book/managing-incidents/",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Google SRE Workbook · Implementing SLOs",
+   "url": "https://sre.google/workbook/implementing-slos/",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "Google SRE Workbook · Alerting on SLOs",
+   "url": "https://sre.google/workbook/alerting-on-slos/",
+   "kind": "reference",
+   "note": "다중 창·다중 번 레이트 표(1시간 14.4배·6시간 6배·3일 1배)"
+  },
+  {
+   "n": 16,
+   "title": "Google SRE Workbook · Incident Response",
+   "url": "https://sre.google/workbook/incident-response/",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Google SRE Book · The Evolving SRE Engagement Model (운영 준비 검토)",
+   "url": "https://sre.google/sre-book/evolving-sre-engagement-model/",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "AWS Well-Architected Framework · Reliability Pillar",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "AWS Fault Injection Service 사용 설명서",
+   "url": "https://docs.aws.amazon.com/fis/latest/userguide/what-is.html",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Principles of Chaos Engineering",
+   "url": "https://principlesofchaos.org/",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Istio 문서 · Mirroring",
+   "url": "https://istio.io/latest/docs/tasks/traffic-management/mirroring/",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "Brendan Gregg · The USE Method",
+   "url": "https://www.brendangregg.com/usemethod.html",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Netflix Technology Blog · Linux Performance Analysis in 60,000 Milliseconds",
+   "url": "https://netflixtechblog.com/linux-performance-analysis-in-60-000-milliseconds-accc10403c55",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "DORA · DORA's software delivery metrics: the four keys",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "Argo Rollouts 문서",
+   "url": "https://argo-rollouts.readthedocs.io/en/stable/",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "async-profiler",
+   "url": "https://github.com/async-profiler/async-profiler",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "Spring Boot 문서 · Actuator",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "OpenTelemetry 문서",
+   "url": "https://opentelemetry.io/docs/",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "AWS 권장 가이드 · 카오스 엔지니어링 여정 전략",
+   "url": "https://docs.aws.amazon.com/ko_kr/prescriptive-guidance/latest/strategy-chaos-engineering-journey/chaos-engineering-emergence.html",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "Karpenter 문서",
+   "url": "https://karpenter.sh/docs/",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "Datadog 문서 · 서비스 수준 목표(SLO)",
+   "url": "https://docs.datadoghq.com/ko/service_level_objectives/",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "원티드 · [티맵모빌리티] 보안 기술 엔지니어",
+   "url": "https://www.wanted.co.kr/wd/398468",
+   "kind": "posting",
+   "note": "같은 회사 공고 — 근무지 충무로 15, SK-C타워 7-9층"
+  }
+ ],
+ "caveat": "티맵모빌리티의 SRE 조직·온콜 규칙·SLO 값·장애 등급은 공개되지 않았습니다. 회사 근거는 AWS Summit 2025 의 회사 발표 두 편(자막 전부 확인), Datadog 이 낸 고객 사례(업체 자료라 숫자는 회사 측 주장), 2025년 장애 보도 두 건뿐이고, 절차 부분은 구글 SRE 책·AWS·DORA 문서로 '보통 이런 일'을 보였습니다. 2025-12-10 장애의 상세 원인은 공개되지 않았습니다."
+}
