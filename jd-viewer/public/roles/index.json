@@ -47,6 +47,7 @@
   "jobkorea-50142477": "megazone-air-ai-engineer",
   "jobkorea-50272885": "megazone-air-platform-backend",
   "jobkorea-50249597": "megazone-cloud-ai-soc",
+  "jobkorea-50317848": "megazone-cloud-ops-engineer",
   "saramin-55435593": "megazone-cloud-security-consultant-grc",
   "wanted-306088": "megazone-japan-cloud-engineer-associate",
   "wanted-306087": "megazone-japan-cloud-engineer-senior",
@@ -624,6 +625,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 44
+  },
+  {
+   "id": "megazone-cloud-ops-engineer",
+   "company": "메가존클라우드",
+   "role": "클라우드 운영 엔지니어 (AWS · DevOps · 보안)",
+   "jobs": [
+    "jobkorea-50317848"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 55
   },
   {
    "id": "megazone-cloud-security-consultant-grc",
