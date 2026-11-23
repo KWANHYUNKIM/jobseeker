@@ -1,0 +1,834 @@
+{
+ "id": "tosssec-nodejs-developer",
+ "company": "토스증권",
+ "role": "Node.js 개발자",
+ "team": "Automation Platform Team — 자동화 플랫폼",
+ "jobs": [
+  "ats-toss:group:7571171003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "임직원과 고객이 **반복하던 일을 자동화 플랫폼으로 없애는** 팀에서, 고객용 서비스와 그 뒤의 내부 서비스를 Node.js로 만듭니다.[1]",
+  "env": "TypeScript·NestJS·Vitest, 로그는 ELK, 조정·큐는 ZooKeeper·Redis·Kafka.[1] 토스 그룹의 웹 자동화 코드는 서버만이 아니라 **앱 안의 보이지 않는 웹뷰**에서도 돕니다.[2][3]",
+  "oneline": "'Node.js 백엔드'보다 **자동화 플랫폼 개발자**에 가깝다. Spring 서버 경력자도 전환 가능하면 받고, 사전 과제가 있다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "서버, 클라이언트 등 다양한 환경에서 동작하는 Node.js 기반 애플리케이션을 만들어요.",
+   "short": "서버뿐 아니라 고객 휴대폰 속 '보이지 않는 웹뷰'에서 도는 자동화 코드까지 TypeScript로 짜는 일.",
+   "why": "이 자리는 토스증권 **Automation Platform Team** 소속이고, 고객용 서비스와 그 뒤의 내부 서비스를 같이 만들며 임직원·고객의 반복 작업을 자동화 플랫폼으로 없애는 팀입니다.[1] 토스의 웹 자동화(Web Automation) 조직은 바깥 기관 웹사이트의 일을 토스 화면 안에서 대신 해 주는 기술을 만들어 왔고, 그 코드가 서버가 아니라 **앱 안의 웹뷰(앱에 들어간 작은 브라우저)**에서 돕니다.[2][3] 공고의 '클라이언트'가 이 자리를 가리킨다고 읽힙니다. {추론}",
+   "actually": {
+    "intro": "토스 그룹의 Node.js 개발자들이 발표한 것으로 보면 '환경'이 이렇게 갈립니다(토스증권 팀 자체 발표는 찾지 못했다).",
+    "items": [
+     "**보이지 않는 웹뷰** — 국민지원금 신청처럼 바깥 사이트의 여러 단계를 스크립트가 대신 진행하고, 고객에게 보이는 화면(프론트 웹뷰)은 입력만 받는다. 이름·전화번호처럼 토스가 가진 정보는 앱에서 받아 채운다.[3]",
+     "**메시지 위의 요청·응답** — 웹뷰·앱 사이는 메시지만 오가서, 메시지마다 번호를 붙이고 답이 오면 번호로 짝을 찾아 약속(Promise)을 푼다. 토스는 이 통로를 RxJS로 감싸고 양쪽이 같은 TypeScript 타입을 쓰게 했다.[3]",
+     "**웹뷰 안의 Nest.js 서버** — 토스뱅크는 대출 서류를 받는 스크래핑을 웹뷰 안에 띄운 Nest.js(실제로는 Fastify 위) 서버로 바꿨다. 소켓 대신 앱 브리지로 'HTTP처럼 생긴' 요청을 주고받고, 브라우저에 없는 Node 기능은 폴리필로 채웠다.[4]",
+     "**보통 서버** — 공고의 기술 목록은 TypeScript·NestJS·pnpm·Vitest와 ELK·ZooKeeper·Redis·Kafka다.[1] 내부 도구·배치·API 서버 쪽 일로 읽힌다. {추론}",
+     "**다른 계열사의 같은 직군** — 토스는 원격으로 모바일 기기를 제어하는 자동화 플랫폼, 토스플레이스는 물류 연동 서버·배치를 Node.js 공고로 뽑는다.[6] 그룹 안에서 'Node.js 개발자 = 자동화'의 폭이 넓다는 뜻이다."
+    ]
+   },
+   "flows": [
+    {
+     "caption": "보이지 않는 웹뷰가 바깥 사이트의 신청을 대신하는 흐름(토스 SLASH 22 발표 기준)[3]",
+     "steps": [
+      "고객 · 토스 앱에서 서비스를 누른다",
+      "프론트 웹뷰 · 로딩 화면을 띄우고 자동화 웹뷰를 깨운다",
+      "자동화 웹뷰 · 바깥 사이트를 열고 점검 중인지부터 확인한다",
+      "앱 브리지 · 이름·전화번호 같은 토스 보유 정보를 넘겨준다",
+      "프론트 웹뷰 · 인증번호처럼 고객만 아는 값을 입력받는다",
+      "자동화 웹뷰 · 폼을 채워 보내고 결과에 따라 다음 단계로 간다"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "examples": [
+    {
+     "title": "메시지만 오가는 두 쪽 위에 '요청 → 응답'을 만든다 (직접 돌린 출력)",
+     "body": "느린 요청을 먼저, 빠른 요청을 나중에 보내도 번호로 짝을 찾아 각자 제 답을 받습니다. 토스 발표의 콜백 id + 약속 표와 같은 생각입니다.[3] 이 예시는 작업 PC에서 node 실행이 막혀 **같은 이벤트 루프 모양의 파이썬 asyncio**로 짜서 돌렸습니다 — `gather` 는 Node 의 `Promise.all`, `await` 는 그대로 같은 뜻입니다. 출력: `slow:계좌조회 완료 | fast:로그인 완료 | 남은 대기: 0`",
+     "lang": "python",
+     "code": "import asyncio\n\nasync def main():\n    to_worker, to_front = asyncio.Queue(), asyncio.Queue()   # 메시지만 오가는 두 통로\n    async def worker():                                       # 보이지 않는 쪽: 일하고 같은 id 로 답한다\n        while True:\n            m = await to_worker.get()\n            async def reply(m=m):\n                await asyncio.sleep(0.03 if m[\"type\"] == \"slow\" else 0.005)\n                await to_front.put({\"id\": m[\"id\"], \"payload\": f'{m[\"type\"]}:{m[\"payload\"]} 완료'})\n            asyncio.ensure_future(reply())\n    pending, seq = {}, [0]\n    async def front_listener():                               # 답이 오면 id 로 짝을 찾아 약속을 푼다\n        while True:\n            m = await to_front.get()\n            pending.pop(m[\"id\"]).set_result(m[\"payload\"])\n    def call(type_, payload):\n        seq[0] += 1\n        fut = asyncio.get_running_loop().create_future()\n        pending[seq[0]] = fut\n        to_worker.put_nowait({\"id\": seq[0], \"type\": type_, \"payload\": payload})\n        return fut\n    w, f = asyncio.ensure_future(worker()), asyncio.ensure_future(front_listener())\n    a, b = await asyncio.gather(call(\"slow\", \"계좌조회\"), call(\"fast\", \"로그인\"))\n    print(a, \"|\", b, \"| 남은 대기:\", len(pending))\n    w.cancel(); f.cancel()\n\nasyncio.run(main())"
+    }
+   ],
+   "how_far": "웹뷰 자동화를 해 본 적이 없어도 됩니다 — 팀원 코멘트가 2년차 이상 백엔드·프론트엔드·풀스택 모두를 반긴다고 적었습니다.[1] 다만 **브라우저와 Node의 실행 환경 차이**(브라우저에는 `process`·파일 시스템이 없다)와 **비동기 메시지를 약속으로 감싸는 법**은 이 팀에서 바로 쓰는 기본기입니다.[3][4] {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    6
+   ],
+   "study": [
+    "slash22-ca",
+    "slash24-webview-nest",
+    "node-textbook",
+    "node-eventloop"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "안정적이고 관측 가능한 서비스를 만들기 위한, 라이브러리와 테스트 코드를 작성해요.",
+   "short": "여러 서비스가 같이 쓰는 공용 부품(로그·재시도·실행 제어)을 만들고, 테스트로 깨지지 않게 지키는 일.",
+   "why": "자동화는 남의 사이트에 기대서 '알 수 없는 오류'가 흔합니다. 토스 웹 자동화 팀은 외부 솔루션을 쓸 때 오류율 30%, 원인을 알 수 없는 실패, 느린 속도로 고생했고, 구간마다 로그를 넣어 보이게 만든 뒤에야 고칠 수 있었다고 했습니다.[2] 챕터 인터뷰는 사내 금융 서비스 거의 전부가 웹 자동화를 쓰고, 테스트 커버리지 70% 이상을 지킨다고 소개했습니다.[5]",
+   "actually": {
+    "intro": "토스가 공개한 '라이브러리'의 실제 모양입니다.",
+    "items": [
+     "**구간 시각 로그** — 요청이 큐에 들어간 시각, 큐에서 나와 실행된 시각, 스크립트를 다 받은 시각, 바깥 호출·전체 걸린 시간을 남긴다. 이것으로 계좌·카드가 많은 고객의 기기에서 실행이 아예 못 뜨는 문제를 찾았다.[2]",
+     "**실행 제어 미들웨어** — 사이트(벤더)마다 요청을 쌓는 저장소와 꺼내 돌리는 소비자, 동시에 돌 수 있는 일꾼 수를 정하는 일꾼 풀을 부품으로 나눴다.[2]",
+     "**인터셉터** — 같은 요청이 진행 중이면 합치고(진행 중 묶기), 끝난 결과는 브라우저 저장소(IndexedDB)에 잠깐 두어 다시 쓴다.[2]",
+     "**에러 모양 통일** — 토스뱅크는 내부용 메시지와 고객에게 보일 메시지를 나눠 정의하고, 날것의 런타임 에러가 고객에게 나가지 않게 했다. 오류 추적·성능 계측(Sentry)을 붙여 대응 시간을 1~2시간에서 30분 안팎으로 줄였다.[4]",
+     "**시험 장치** — 토스뱅크는 앱 시뮬레이터 안에서 가상 서버로 API를 시험해 보는 도구를 만들어 다른 직군도 쓰게 했다.[4] 공고의 테스트 도구는 Vitest다.[1]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "진행 중인 같은 요청은 한 번만 부른다 (직접 돌린 출력)",
+     "body": "계좌 목록과 계좌 상세가 같은 잔액 조회를 동시에 부르는 경우를 흉내 냈습니다.[2] 이 예시는 작업 PC에서 node 실행이 막혀 **같은 이벤트 루프 모양의 파이썬 asyncio**로 짜서 돌렸습니다 — `gather` 는 Node 의 `Promise.all`, `await` 는 그대로 같은 뜻입니다. 출력: `화면 세 곳이 요청 → 3 개 응답, 바깥 호출 1 번` / `끝난 뒤 다시 요청 → 바깥 호출 누적 2 번`",
+     "lang": "python",
+     "code": "import asyncio\n\nasync def main():\n    calls = {\"n\": 0}\n    async def fetch_balance(acct):           # 느린 바깥 호출(가상)\n        calls[\"n\"] += 1\n        await asyncio.sleep(0.02)\n        return {\"acct\": acct, \"won\": 120000}\n    inflight = {}\n    def once(key, fn):                       # 진행 중이면 같은 약속을 돌려준다\n        if key in inflight:\n            return inflight[key]\n        t = asyncio.ensure_future(fn())\n        t.add_done_callback(lambda _: inflight.pop(key, None))\n        inflight[key] = t\n        return t\n    rs = await asyncio.gather(*[once(\"bal:A-1\", lambda: fetch_balance(\"A-1\")) for _ in range(3)])\n    print(\"화면 세 곳이 요청 →\", len(rs), \"개 응답, 바깥 호출\", calls[\"n\"], \"번\")\n    await once(\"bal:A-1\", lambda: fetch_balance(\"A-1\"))\n    print(\"끝난 뒤 다시 요청 → 바깥 호출 누적\", calls[\"n\"], \"번\")\n\nasyncio.run(main())"
+    }
+   ],
+   "how_far": "공용 라이브러리는 **쓰는 사람이 속을 몰라도 되게** 만드는 것이 목표입니다(토스뱅크는 데코레이터 한 줄로 동시성 규칙을 걸게 했다).[4] 최소선은 내가 만든 모듈에 단위 테스트를 붙이고, 실패했을 때 어디서 막혔는지 로그만 보고 말할 수 있는 정도입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    4,
+    5
+   ],
+   "study": [
+    "slash22-scraping",
+    "slash24-webview-nest",
+    "vitest-docs",
+    "otel-js"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Node.js, TypeScript, Nest.js에 대한 깊은 이해가 있거나, 다른 서버 사이드 환경(Spring 등)에서 충분한 실무 경험을 보유하고 Node.js 생태계로의 전환이 가능하신 분",
+   "short": "Node를 몰라도 Spring 서버 경험이 탄탄하면 된다 — Nest.js는 Spring과 생각하는 법이 거의 같아서.",
+   "why": "Nest.js는 모듈·컨트롤러·서비스·프로바이더로 나누고 의존성 주입(필요한 객체를 프레임워크가 넣어 주는 것)·미들웨어·인터셉터를 쓰는 서버 프레임워크입니다.[10] 토스뱅크 Node.js 챕터는 이 구조가 업무 규칙을 유지보수하기 쉽고 코드 품질을 일정 이상 담보해서 Nest.js를 쓴다고 했습니다.[4] Spring의 빈·DI·AOP를 아는 사람에게 익숙한 틀입니다. {추론}",
+   "actually": {
+    "items": [
+     "**층 구조** — Nest.js는 HTTP 처리를 Express나 Fastify에 맡기고, 그 위에 DI·인터셉터를 얹는다. 어댑터만 바꿔 Express ↔ Fastify 를 갈 수 있다.[4][10]",
+     "**이벤트 루프** — Node는 한 스레드가 이벤트 루프로 I/O를 돌린다. 무거운 계산은 루프를 멈추게 해서 다른 요청이 다 기다린다 — 그럴 때 worker_threads로 뺀다.[8][23]",
+     "**Spring에서 넘어올 때 다른 점** — 스레드마다 요청 하나가 아니라 한 스레드가 여러 요청을 번갈아 돈다. 그래서 스레드 로컬 대신 AsyncLocalStorage로 요청 맥락을 들고 다닌다.[9] {추론}",
+     "**TypeScript** — 웹뷰·앱 사이 메시지 형식을 공통 타입 패키지로 묶어 양쪽 코드가 같은 타입을 보게 했다.[3]"
+    ]
+   },
+   "level": {
+    "basic": "async/await·Promise 순서를 설명하고, Nest.js로 컨트롤러·서비스·DTO 검증이 있는 API를 만든다.",
+    "work": "이벤트 루프를 막는 코드를 찾아내고, 인터셉터·예외 필터·모듈 구성을 스스로 정한다. Spring 경력자는 같은 문제를 Nest.js로 다시 풀어 본다.",
+    "team": "Nest.js가 기대는 Node 기능을 이해할 만큼 — 토스뱅크는 브라우저에서 Nest.js를 돌리려고 HTTP 계층을 직접 갈아 끼웠다.[4]"
+   },
+   "how_far": "'깊은 이해' 또는 '다른 서버에서 충분한 실무' 둘 중 하나입니다.[1] Spring 출신이면 면접 전까지 **Nest.js로 작은 API 하나를 끝까지 만들어 테스트까지 붙여 보는 것**이 전환 가능을 보이는 가장 짧은 길입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    8,
+    9,
+    10,
+    23
+   ],
+   "study": [
+    "nest-docs",
+    "nest-wikidocs",
+    "node-design-patterns",
+    "effective-ts",
+    "node-eventloop"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "분산 환경 애플리케이션을 설계하여 운영해 본 경험이 있으며, 동시성·원자성·병렬 처리와 관련된 이슈를 스스로 정의하고 해결해 본 분",
+   "short": "여러 서버·여러 요청이 같은 것을 동시에 건드릴 때 값이 깨지지 않게 순서와 잠금을 설계해 봤나를 묻는다.",
+   "why": "자동화 대상 사이트는 동시에 두 요청이 들어가면 세션이 풀리기도 합니다 — 토스는 특정 카드사에서 두 조회를 병렬로 돌리자 로그인이 풀린 사례를 들었습니다.[2] 토스뱅크도 병렬로 못 도는 API 둘이 부딪혀 둘 다 실패한 사례를 보였습니다.[4] 공고의 기술 목록에 Redis·ZooKeeper·Kafka가 있는 것은 서버 쪽에서도 같은 문제를 여러 대에 걸쳐 푼다는 뜻으로 읽힙니다.[1] {추론}",
+   "actually": {
+    "intro": "회사가 공개한 풀이와, 같은 문제의 보통 풀이입니다.",
+    "items": [
+     "**순차·병렬 소비자** — 토스는 사이트별로 '병렬로 돌려도 되는가'를 설정으로 두고, 병렬 소비자는 (쌓인 요청, 빈 일꾼, 잠금) 셋을, 순차 소비자는 거기에 '이 사이트에 이미 도는 일꾼'까지 넷을 확인한 뒤 꺼낸다.[2]",
+     "**데코레이터로 거는 규칙** — 토스뱅크는 API마다 Sequential/Parallel 표시를 달아, 순차 작업이 돌면 나머지가 기다리게 했다. 웹뷰 안은 인메모리 저장소로, 보통 서버는 Redis로 한다고 했다.[4]",
+     "**여러 서버 사이의 잠금** — Redis 잠금은 키를 정해진 시간만 잡는 방식이다.[11] 잠금이 시간 초과로 풀린 사이 다른 쪽이 쓰면 깨질 수 있어, 쓰기에 증가하는 번호(펜싱 토큰)를 붙이라는 반론이 유명하다.[12]",
+     "**지도자 뽑기·순서** — ZooKeeper는 잠금·리더 선출 같은 조정 기법의 표준 레시피를 문서로 둔다.[13] Kafka는 한 파티션 안에서만 순서를 지키고, 전달 보장(최대 한 번·최소 한 번·정확히 한 번)을 고르게 한다.[14]",
+     "**원자성** — '읽고-바꾸고-쓰기' 사이에 await가 끼면 한 스레드여도 다른 요청이 끼어든다(아래 예시). 한 번에 끝나는 명령(Redis INCR, SQL UPDATE … SET n = n - 1)으로 바꾸거나 잠근다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "스레드가 하나여도 await 사이에 갱신이 사라진다 (직접 돌린 출력)",
+     "body": "남은 수량 10에서 다섯 번 빼면 5여야 하지만, 다섯 요청이 모두 10을 읽고 9를 씁니다. 잠그면 5가 됩니다 — 단 이 잠금은 **한 프로세스 안에서만** 통하고, 서버가 여러 대면 Redis·DB 쪽 잠금이 필요합니다.[11] 이 예시는 작업 PC에서 node 실행이 막혀 **같은 이벤트 루프 모양의 파이썬 asyncio**로 짜서 돌렸습니다 — `gather` 는 Node 의 `Promise.all`, `await` 는 그대로 같은 뜻입니다. 출력: `잠금 없이 5번 차감 → 9` / `잠금으로 5번 차감 → 5`",
+     "lang": "python",
+     "code": "import asyncio\n\nasync def main():\n    state = {\"stock\": 10}\n    async def buy():\n        cur = state[\"stock\"]          # 읽고\n        await asyncio.sleep(0.005)    # 바깥 호출을 기다리는 사이 (Node 의 await 와 같은 자리)\n        state[\"stock\"] = cur - 1      # 쓴다\n    await asyncio.gather(*[buy() for _ in range(5)])      # Node 의 Promise.all\n    print(\"잠금 없이 5번 차감 →\", state[\"stock\"])\n    state[\"stock\"] = 10\n    lock = asyncio.Lock()              # 한 프로세스 안에서만 통하는 잠금\n    async def locked():\n        async with lock:\n            await buy()\n    await asyncio.gather(*[locked() for _ in range(5)])\n    print(\"잠금으로 5번 차감 →\", state[\"stock\"])\n\nasyncio.run(main())"
+    }
+   ],
+   "how_far": "요건의 열쇠말은 **'스스로 정의하고'**입니다.[1] 이력서 안내도 프로젝트에서 겪은 문제와 해결 방법을 쓰라고 합니다.[1] 최소선은 내가 겪은 경쟁 상태 하나를 '언제·왜 깨졌고, 어떤 잠금·순서·멱등으로 막았고, 그 방법의 빈틈은 무엇인지'로 말할 수 있는 정도입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    4,
+    11,
+    12,
+    13,
+    14
+   ],
+   "study": [
+    "ddia",
+    "kleppmann-lock",
+    "redis-lock",
+    "zk-recipes",
+    "kafka-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "안정적인 서비스 운영을 위한 로그 수집과 모니터링 경험이 있으신 분",
+   "short": "남의 사이트에 기대는 자동화는 '왜 실패했나'를 로그로만 알 수 있어서.",
+   "why": "토스 웹 자동화 팀은 지표를 개선하는 과정에서 가장 중요했던 것이 **가시성**이었다고 정리했습니다 — 어디서 오류가 나고 어디가 막히는지 로그와 지표로 알아야 맞는 해법을 고를 수 있었다는 것입니다.[2] 공고의 기술 목록에는 ELK(로그를 모아 검색·시각화하는 Elasticsearch·Logstash·Kibana 묶음)가 있습니다.[1][16]",
+   "actually": {
+    "items": [
+     "**HTTP 디버그 로그** — 스크래핑 중 오간 모든 HTTP 요청을 남겨 실패 지점을 찾았다.[2]",
+     "**구간별 시간** — 큐 대기·실행 시작·스크립트 로드·바깥 호출 시간을 나눠 재서 '어디가 느린가'를 숫자로 봤다. 평균 20초 → 5초.[2]",
+     "**오류 영향도** — 토스뱅크는 Sentry의 알림·성능 기능으로 평균 응답 시간·영향받은 사용자 수를 바로 봤다.[4]",
+     "**추적 id** — 요청 하나에 id를 달고 모든 로그에 찍으면, 서로 섞여 찍힌 로그를 요청 단위로 다시 묶을 수 있다(OpenTelemetry가 이 일을 표준화했다).[15][9]",
+     "**구조화 로그** — 문장 대신 JSON 필드로 남겨야 ELK에서 필드로 찾고 센다.[16] {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "섞여 찍힌 로그를 요청 단위로 묶는 추적 id (직접 돌린 출력)",
+     "body": "두 요청이 동시에 돌면 로그가 a, b, b, a 순으로 섞입니다. 각 줄에 요청 맥락의 id가 붙어 있어 나중에 묶을 수 있습니다. Node에서는 AsyncLocalStorage가 이 맥락을 들고 다닙니다.[9] 이 예시는 작업 PC에서 node 실행이 막혀 **같은 이벤트 루프 모양의 파이썬 asyncio**로 짜서 돌렸습니다 — `gather` 는 Node 의 `Promise.all`, `await` 는 그대로 같은 뜻입니다. 출력: `{\"trace\": \"req-a\", \"msg\": \"받음\"}` / `{\"trace\": \"req-b\", \"msg\": \"받음\"}` / `{\"trace\": \"req-b\", \"msg\": \"바깥 호출 끝\"}` / `{\"trace\": \"req-a\", \"msg\": \"바깥 호출 끝\"}`",
+     "lang": "python",
+     "code": "import asyncio, contextvars, json\n\ntrace_var = contextvars.ContextVar(\"trace\", default=None)   # Node 의 AsyncLocalStorage 자리\ndef log(msg):\n    print(json.dumps({\"trace\": trace_var.get(), \"msg\": msg}, ensure_ascii=False))\n\nasync def handle(trace, wait):\n    trace_var.set(trace)\n    log(\"받음\")\n    await asyncio.sleep(wait)        # 다른 요청이 이 사이에 끼어든다\n    log(\"바깥 호출 끝\")\n\nasync def main():\n    await asyncio.gather(handle(\"req-a\", 0.03), handle(\"req-b\", 0.01))\n\nasyncio.run(main())"
+    }
+   ],
+   "how_far": "ELK를 직접 깔아 운영해 봤어야 한다는 뜻은 아닙니다. {추론} 내 서비스의 로그를 **필드가 있는 형태로** 남기고, 대시보드나 알림으로 '평소와 다름'을 먼저 알아챈 경험 하나가 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    2,
+    4,
+    9,
+    15,
+    16
+   ],
+   "study": [
+    "slash22-scraping",
+    "otel-js",
+    "elastic-stack",
+    "node-als"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "유연하면서도 가독성이 좋은 코드, 유지보수가 가능한 코드를 작성하실 수 있는 분",
+   "short": "바깥 사이트는 수시로 바뀌어서, 바뀐 한 곳만 고치면 되는 구조로 짜야 하기 때문.",
+   "why": "자동화 코드는 대상 사이트가 화면을 바꾸면 깨집니다. 토스는 사이트 변경에 설정만으로 대응하도록 바꿔, 10분 넘던 빌드·배포 대신 클릭 두 번으로 바꿀 수 있게 했습니다.[2] 이력서 안내는 **내가 생각하는 좋은 코드나 설계 철학**을 짧게 적으라고 요구합니다.[1]",
+   "actually": {
+    "items": [
+     "**업무 단위로 쪼개기** — 토스 자동화는 '점검 확인 → 자격 조회 → 개인정보 입력·신청 → 결과' 단계를 각각 페이지 클래스로 두고, 매니저가 지금 주소에 맞는 것을 골라 돌린다.[3]",
+     "**바뀌는 것과 안 바뀌는 것 나누기** — 병렬·순차 같은 사이트별 차이는 코드가 아니라 설정으로 뺐다.[2]",
+     "**표준 모양 쓰기** — 토스뱅크는 메시지 방식을 표준 HTTP 모양의 API로 바꾸고 Swagger 문서를 열어, 다른 팀과 맞추는 기간을 평균 3주에서 1~2주로 줄였다.[4]",
+     "**같이 읽기** — 챕터는 큰 시스템을 만들거나 리팩터링할 때 전원이 모여 코드 리뷰를 하고, 『리팩터링』·『데이터 중심 애플리케이션 설계』로 매일 스터디를 했다고 소개했다(2021년 글).[5]"
+    ]
+   },
+   "how_far": "사전 과제가 있고 1차 직무 인터뷰는 과제를 두고 대화합니다.[1] 과제 코드 자체가 이 요건의 시험지라고 보는 것이 맞습니다. {추론} 최소선은 이름만 보고 역할을 알 수 있는 함수·모듈, 테스트가 붙은 핵심 로직, '왜 이렇게 나눴는지'를 말로 설명할 수 있는 정도입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "study": [
+    "refactoring",
+    "effective-ts",
+    "node-design-patterns"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "반복적이거나 비효율적인 프로세스를 발견하고 더 나은 대안을 제시하실 수 있는 분",
+   "short": "팀의 존재 이유가 '사람이 반복하는 일을 없애는 것'이라, 그 반복을 먼저 알아보는 눈이 필요해서.",
+   "why": "팀 소개 자체가 임직원과 고객을 반복 작업에서 벗어나게 하는 자동화 플랫폼을 만든다는 것입니다.[1] 토스 웹 자동화 챕터는 개발자가 기획 단계부터 참여하고, 배포 시스템을 고쳐 30분 걸리던 일을 초 단위로 줄였다고 소개했습니다.[5]",
+   "actually": {
+    "intro": "공개된 사례에서 '반복·비효율'은 이런 모양이었습니다.",
+    "items": [
+     "**고객의 반복** — 바깥 사이트에서 이름·전화번호·생년월일을 매번 치던 것을 토스가 가진 정보로 채워, 국민지원금 신청을 클릭 다섯 번과 입력 한 번으로 줄였다.[3]",
+     "**시스템의 반복** — 보유 카드 목록·거래 내역·결제 예정 금액을 조회할 때마다 다시 로그인하던 것을 세션 재사용으로 바꿨다(어떤 사이트는 로그인할 때마다 고객에게 알림이 갔다).[2]",
+     "**개발자의 반복** — 설정 하나 바꾸려고 10분 넘게 빌드·배포하던 것을 관리 화면 클릭 두 번으로.[2]",
+     "**팀 사이의 반복** — 메시지 형식을 메신저로 주고받던 협의를 Swagger로 바꿔 협업 기간을 줄였다.[4]",
+     "**테스트의 반복** — 토스페이먼츠는 Playwright로 테스트 자동화 플랫폼을 만들어 한 번에 45만 개 테스트를 돌린다고 발표했다(같은 그룹 다른 회사).[7]"
+    ]
+   },
+   "how_far": "'제시'까지가 요건입니다 — 다 혼자 만들라는 뜻은 아닙니다. {추론} 이력서에 **'무엇이 몇 번·몇 분 반복됐고, 무엇으로 바꿔 얼마나 줄었는지'**를 숫자로 적은 사례 하나가 가장 직접적인 증거입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    7
+   ],
+   "study": [
+    "slash22-scraping",
+    "slash22-ca",
+    "playwright-docs"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "사람이 같은 일을 반복하는 것을 보면 못 참는 사람[1]",
+   "남의 사이트·남의 시스템이 왜 실패했는지 로그로 끝까지 파는 사람[2]",
+   "서버와 브라우저(웹뷰) 양쪽의 JavaScript 실행 환경을 다 만져 보고 싶은 사람[3][4]",
+   "Spring으로 서버를 해 봤고 Nest.js·TypeScript로 넘어가 보고 싶은 사람[1]"
+  ],
+  "hard": [
+   "자동화 대상(바깥 사이트)이 예고 없이 바뀌면 그날 일이 생긴다[2]",
+   "브라우저·웹뷰 쪽은 Node 기능이 다 있지 않아 폴리필·번들 크기와 싸운다[2][4]",
+   "사전 과제 + 직무 인터뷰 두 번 — 코드로 먼저 보여 줘야 한다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "Node.js는 스레드가 하나인데 '읽고-바꾸고-쓰기'에서 왜 갱신이 사라질 수 있나요? 서버가 여러 대면 어떻게 막나요?",
+   "a": "await 사이의 끼어들기, 한 프로세스 잠금 vs Redis 잠금·원자 명령, 시간 초과 잠금의 빈틈.[11][12]"
+  },
+  {
+   "q": "같은 바깥 사이트에 병렬로 보내면 세션이 풀리는 곳과 괜찮은 곳이 섞여 있어요. 어떻게 실행을 제어하나요?",
+   "a": "토스의 순차/병렬 소비자와 사이트별 설정.[2]"
+  },
+  {
+   "q": "화면 두 곳이 같은 조회를 동시에 부릅니다. 바깥 호출을 한 번으로 줄이려면?",
+   "a": "진행 중 묶기와 짧은 캐시 — 토스 미들웨어의 인터셉터.[2]"
+  },
+  {
+   "q": "자동화 성공률이 갑자기 떨어졌습니다. 무엇을 먼저 보나요?",
+   "a": "구간별 시간 로그·HTTP 디버그 로그·영향받은 사용자 수.[2][4]"
+  },
+  {
+   "q": "Spring의 DI·AOP·스레드 로컬은 Nest.js·Node에서 각각 무엇에 해당하나요?",
+   "a": "프로바이더 주입·인터셉터·AsyncLocalStorage — '전환 가능'을 보는 질문으로 읽힌다.[9][10] {추론}"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 토스증권 Node.js 개발자 (Node.js Developer)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7571171003",
+   "kind": "posting",
+   "note": "Automation Platform Team 소개, 업무·요건, 팀원 코멘트(웹 자동화·국민지원금·숨은 보험금, 2년차 이상 백엔드/프론트엔드/풀스택 환영), 이력서 안내(문제와 해결·좋은 코드/설계 철학), 기술 목록(TypeScript·NestJS·pnpm·Vitest·ELK·ZooKeeper·Redis·Kafka), 합류 여정(서류 → 사전과제 → 직무 인터뷰 2회 → 문화적합성 → 레퍼런스 → 처우협의)"
+  },
+  {
+   "n": 2,
+   "title": "SLASH 22 · 스크래핑으로 우아한 조회 경험을 만든 방법",
+   "url": "https://www.youtube.com/watch?v=dP8S3kIQysk",
+   "kind": "company",
+   "date": "2022-06",
+   "note": "토스 Web Automation 챕터. 자막 전부 읽음(외부 솔루션 → 내재화, 오류율 30% → 0.5%, 평균 20초 → 5초, 구간 로그, 미들웨어: 벤더·이벤트 저장소·소비자·일꾼 풀(iframe·Web Worker), 세션 재사용, 진행 중 묶기·IndexedDB 캐시, 트리 셰이킹, 순차/병렬 소비자, 배포 10분 → 클릭 두 번)"
+  },
+  {
+   "n": 3,
+   "title": "SLASH 22 · 금융의 모든 순간을 자동화할 때 까지 Toss Crazy Activation",
+   "url": "https://www.youtube.com/watch?v=ScZT51pZ5MQ",
+   "kind": "company",
+   "date": "2022-06",
+   "note": "토스 Web Automation 챕터. 자막 전부 읽음(프론트 웹뷰·보이지 않는 CA 웹뷰·토스 앱 브리지, 국민지원금 신청 흐름, 페이지 클래스·페이지 매니저, 콜백 id → Promise → RxJS, 공통 TypeScript 프로토콜 패키지)"
+  },
+  {
+   "n": 4,
+   "title": "SLASH 24 · 웹뷰로 시작되는 Nest.js 프레임워크로 똑똑하게 서류 스크래핑하기",
+   "url": "https://www.youtube.com/watch?v=JDeZNxIk5Ko",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스뱅크 Node.js Platform Team — 같은 그룹 다른 회사. 자막 전부 읽음(메시지 → API 방식, Nest.js 선택 이유, Express/Fastify 어댑터, 약식 HTTP 인터페이스, 내부/고객 메시지, 인메모리 Sequential/Parallel 데코레이터, Swagger 협업 3주 → 1~2주, 시뮬레이터 테스트, Sentry 대응 1~2시간 → 30분, 폴리필·번들링)"
+  },
+  {
+   "n": 5,
+   "title": "토스피드 · 모든 금융 서비스가 토스로 통하게 만드는 사람들, Web Automation 챕터를 만나다",
+   "url": "https://toss.im/tossfeed/article/web-automation-chapter-interview",
+   "kind": "company",
+   "date": "2021-06-08",
+   "note": "챕터가 만든 서비스(계좌·카드 조회, 숨은 보험금·카드 포인트, 국민비서 등), 배포 30분 → 초 단위, 커버리지 70% 이상, 기획부터 참여, 전원 코드 리뷰, 『데이터 중심 애플리케이션 설계』·『리팩터링』 스터디"
+  },
+  {
+   "n": 6,
+   "title": "토스 채용 · Node.js 개발자(토스·토스증권·토스플레이스 포지션 묶음)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7734083003",
+   "kind": "posting",
+   "note": "토스 자동화 팀(원격 모바일 기기 제어 플랫폼), 토스플레이스 Operations Team(물류 연동 서버·배치)"
+  },
+  {
+   "n": 7,
+   "title": "SLASH 24 세션 소개 · 클릭 한 번으로 테스트 45만 개 완료! 테스트 자동화 플랫폼 구축기",
+   "url": "https://toss.im/slash-24/sessions/15",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스페이먼츠 Node.js Developer, Playwright 기반 — 세션 소개만 읽음(영상은 보지 않음)"
+  },
+  {
+   "n": 8,
+   "title": "Node.js 공식 문서 · The Node.js Event Loop",
+   "url": "https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick",
+   "kind": "reference"
+  },
+  {
+   "n": 9,
+   "title": "Node.js 공식 문서 · Asynchronous context tracking (AsyncLocalStorage)",
+   "url": "https://nodejs.org/api/async_context.html",
+   "kind": "reference"
+  },
+  {
+   "n": 10,
+   "title": "NestJS 공식 문서",
+   "url": "https://docs.nestjs.com/",
+   "kind": "reference",
+   "note": "모듈·프로바이더·인터셉터, Express/Fastify 플랫폼"
+  },
+  {
+   "n": 11,
+   "title": "Redis 공식 문서 · Distributed Locks with Redis",
+   "url": "https://redis.io/docs/latest/develop/clients/patterns/distributed-locks/",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "Martin Kleppmann · How to do distributed locking",
+   "url": "https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html",
+   "kind": "reference",
+   "date": "2016-02-08",
+   "note": "시간 제한 잠금의 한계와 펜싱 토큰"
+  },
+  {
+   "n": 13,
+   "title": "Apache ZooKeeper · Recipes and Solutions",
+   "url": "https://zookeeper.apache.org/doc/current/recipes.html",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Apache Kafka 공식 문서",
+   "url": "https://kafka.apache.org/documentation/",
+   "kind": "reference",
+   "note": "파티션 순서·전달 보장(Message Delivery Semantics)"
+  },
+  {
+   "n": 15,
+   "title": "OpenTelemetry · JavaScript",
+   "url": "https://opentelemetry.io/docs/languages/js/",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Elastic · Elastic Stack(ELK)",
+   "url": "https://www.elastic.co/elastic-stack",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "토스증권 — 사이트 하단 회사 정보",
+   "url": "https://tossinvest.com/",
+   "kind": "company",
+   "note": "토스증권(주), 06133 서울특별시 강남구 테헤란로 133, 7층 (역삼동, 한국타이어빌딩)"
+  },
+  {
+   "n": 18,
+   "title": "자소설닷컴 — 토스증권(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/13103",
+   "kind": "reference",
+   "note": "페이지 직접 열람은 막혀(403) 검색 결과 요약으로 확인 — 평균 7,007만원·초봉 5,003만원·사원 292명, 기준일 표기 없음"
+  },
+  {
+   "n": 19,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 20,
+   "title": "CEO스코어데일리 · '브로커리지 의존 탈피'…토스·카카오페이·키움증권 인원 확충 활발",
+   "url": "https://ceoscoredaily.com/page/view/2026031715402230471",
+   "kind": "news",
+   "date": "2026-03-17",
+   "note": "금융투자협회 자료 — 토스증권 임직원 371명 → 485명(+30.73%)"
+  },
+  {
+   "n": 21,
+   "title": "CEO스코어데일리 · '호황' 증권가, 임직원 수 2% 늘 때 급여는 48% 증가",
+   "url": "https://www.ceoscoredaily.com/page/view/2026052816034001002",
+   "kind": "news",
+   "date": "2026-05-29",
+   "note": "금융투자협회 공시, 2026년 1분기 — 토스증권 직원 380명 → 516명, 직원 급여 총액 +21.4%(금액은 기사에 없음), 성과급은 전 임직원 같은 기준(회사 설명)"
+  },
+  {
+   "n": 22,
+   "title": "토스 채용 — 합류 여정(처우협의 단계)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7571171003",
+   "kind": "posting",
+   "note": "서류접수 → 사전과제 → 1차 직무 인터뷰(과제 중심) → 2차 직무 인터뷰(이력서 중심) → 문화적합성 인터뷰 → 레퍼런스 체크 → 처우협의 → 최종합격"
+  },
+  {
+   "n": 23,
+   "title": "Node.js 공식 문서 · Worker threads",
+   "url": "https://nodejs.org/api/worker_threads.html",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "토스증권 Automation Platform Team 자신의 기술 글·발표는 찾지 못했습니다. 팀의 일은 공고가 근거이고, 웹 자동화의 실제 구조는 토스(Web Automation 챕터, 2021~2022)와 같은 그룹 토스뱅크(2024)의 발표로 보였습니다 — 토스증권 팀이 그대로 이렇게 일한다는 뜻은 아닙니다. 공고의 '클라이언트 환경'이 웹뷰 자동화를 가리킨다는 것은 그 발표들에서 미룬 읽기입니다({추론}). 코드 예시는 작업 PC에서 node 실행이 막혀 같은 비동기 모양의 파이썬 asyncio로 돌렸습니다. 연봉·복지·주소는 앞선 토스증권 풀이에서 확인한 값입니다.",
+ "resources": [
+  {
+   "id": "slash22-ca",
+   "title": "SLASH 22 · 금융의 모든 순간을 자동화할 때 까지 Toss Crazy Activation",
+   "by": "토스 Web Automation 챕터 · 12분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=ScZT51pZ5MQ",
+   "why": "'클라이언트에서 도는 Node.js 앱'이 무엇인지 — 보이지 않는 웹뷰·브리지·메시지 위의 요청/응답을 한 번에 그려 볼 수 있다."
+  },
+  {
+   "id": "slash22-scraping",
+   "title": "SLASH 22 · 스크래핑으로 우아한 조회 경험을 만든 방법",
+   "by": "토스 Web Automation 챕터 · 14분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=dP8S3kIQysk",
+   "why": "라이브러리·관측·동시성 요건의 회사 쪽 답 — 구간 로그, 일꾼 풀, 순차/병렬 소비자, 진행 중 묶기·캐시, 설정으로 대응."
+  },
+  {
+   "id": "slash24-webview-nest",
+   "title": "SLASH 24 · 웹뷰로 시작되는 Nest.js 프레임워크로 똑똑하게 서류 스크래핑하기",
+   "by": "토스뱅크 Node.js Platform Team · 25분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.youtube.com/watch?v=JDeZNxIk5Ko",
+   "why": "Nest.js·Fastify 계층 구조, 데코레이터 동시성 규칙, 에러 메시지 설계, Sentry 도입까지 — Nest.js '깊은 이해'가 어디까지인지 보여 준다(같은 그룹 다른 회사)."
+  },
+  {
+   "id": "node-textbook",
+   "title": "Node.js 교과서",
+   "by": "조현영 · 길벗",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=Node.js%20%EA%B5%90%EA%B3%BC%EC%84%9C",
+   "why": "Node.js가 처음인 Spring 개발자가 모듈·이벤트 루프·Express·DB 연결을 한국어로 처음부터 채운다."
+  },
+  {
+   "id": "node-design-patterns",
+   "title": "Node.js 디자인 패턴 바이블",
+   "by": "마리오 카시아로 · 루치아노 맘미노 · 길벗",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=Node.js%20%EB%94%94%EC%9E%90%EC%9D%B8%20%ED%8C%A8%ED%84%B4%20%EB%B0%94%EC%9D%B4%EB%B8%94",
+   "why": "비동기 흐름 제어(동시 실행 수 제한·큐), 스트림, 메시징 패턴 — '깊은 이해'와 병렬 처리 요건을 Node 방식으로."
+  },
+  {
+   "id": "nest-docs",
+   "title": "NestJS Documentation",
+   "by": "NestJS 공식",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nestjs.com/",
+   "why": "모듈·프로바이더·인터셉터·예외 필터·테스트 장을 먼저. Spring의 같은 개념과 짝지어 읽는다."
+  },
+  {
+   "id": "nest-wikidocs",
+   "title": "NestJS로 배우는 백엔드 프로그래밍",
+   "by": "위키독스(온라인판)",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://wikidocs.net/book/7059",
+   "why": "회원 가입·인증·로깅·헬스 체크·테스트가 붙은 API를 Nest.js로 끝까지 만들어 보는 한국어 실습."
+  },
+  {
+   "id": "effective-ts",
+   "title": "이펙티브 타입스크립트",
+   "by": "댄 밴더캄 · 인사이트",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C%20%ED%83%80%EC%9E%85%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8",
+   "why": "타입으로 잘못된 상태를 막는 법 — 양쪽이 같은 메시지 타입을 쓰는 공통 패키지, 읽기 좋은 코드 요건에."
+  },
+  {
+   "id": "node-eventloop",
+   "title": "The Node.js Event Loop",
+   "by": "Node.js 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick",
+   "why": "타이머·I/O·setImmediate·nextTick이 어떤 순서로 도는지. 면접의 'Node는 왜 한 스레드로 많은 요청을 받나'에 답하는 근거."
+  },
+  {
+   "id": "node-als",
+   "title": "Asynchronous context tracking (AsyncLocalStorage)",
+   "by": "Node.js 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://nodejs.org/api/async_context.html",
+   "why": "요청마다 추적 id를 들고 다니는 표준 방법 — 로그 수집 요건에서 섞인 로그를 묶는 데 쓴다."
+  },
+  {
+   "id": "vitest-docs",
+   "title": "Vitest",
+   "by": "Vitest 공식",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://vitest.dev/",
+   "why": "공고의 테스트 도구. 모킹·가짜 타이머로 재시도·시간 초과 로직을 시험하는 법을 익힌다."
+  },
+  {
+   "id": "otel-js",
+   "title": "OpenTelemetry JavaScript",
+   "by": "OpenTelemetry 공식",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://opentelemetry.io/docs/languages/js/",
+   "why": "추적·지표·로그를 표준 방식으로 남기는 법 — '관측 가능한 서비스' 업무 줄의 일반론."
+  },
+  {
+   "id": "elastic-stack",
+   "title": "Elastic Stack",
+   "by": "Elastic 공식",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.elastic.co/elastic-stack",
+   "why": "공고의 ELK가 무엇을 어디서 하는지(수집·저장·검색·시각화) 큰 그림."
+  },
+  {
+   "id": "ddia",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+   "why": "분산 환경·동시성·원자성 요건의 교과서. 토스 웹 자동화 챕터가 스터디한 책으로 소개됐다.[5]"
+  },
+  {
+   "id": "refactoring",
+   "title": "리팩터링 2판",
+   "by": "마틴 파울러 · 한빛미디어",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A6%AC%ED%8C%A9%ED%84%B0%EB%A7%81%202%ED%8C%90",
+   "why": "유지보수 가능한 코드 요건 — 예제가 JavaScript라 Node 개발자에게 바로 맞는다. 챕터 스터디 책이기도 하다.[5]"
+  },
+  {
+   "id": "kleppmann-lock",
+   "title": "How to do distributed locking",
+   "by": "Martin Kleppmann · 2016",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html",
+   "why": "시간 제한 잠금이 언제 깨지는지와 펜싱 토큰 — 원자성 이슈를 '스스로 정의'하는 연습."
+  },
+  {
+   "id": "redis-lock",
+   "title": "Distributed Locks with Redis",
+   "by": "Redis 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://redis.io/docs/latest/develop/clients/patterns/distributed-locks/",
+   "why": "공고 기술 목록의 Redis로 여러 서버 사이 잠금을 거는 표준 방법(SET NX PX)과 그 한계."
+  },
+  {
+   "id": "zk-recipes",
+   "title": "ZooKeeper Recipes and Solutions",
+   "by": "Apache ZooKeeper 공식",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://zookeeper.apache.org/doc/current/recipes.html",
+   "why": "공고 기술 목록의 ZooKeeper — 잠금·리더 선출·장벽 같은 조정 기법의 원형."
+  },
+  {
+   "id": "kafka-docs",
+   "title": "Apache Kafka Documentation",
+   "by": "Apache Kafka 공식",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kafka.apache.org/documentation/",
+   "why": "파티션 안 순서, 소비자 그룹, 전달 보장 장 — 병렬 처리와 순서 보장을 같이 설계하는 법."
+  },
+  {
+   "id": "playwright-docs",
+   "title": "Playwright",
+   "by": "Playwright 공식",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://playwright.dev/",
+   "why": "브라우저 자동화의 일반 도구 — 웹 자동화 팀의 일을 내 PC에서 작게 흉내 내 볼 때."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "팀이 하는 일 그리기",
+   "time": "1주",
+   "goal": "보이지 않는 웹뷰·브리지·서버가 어떻게 나뉘고, 왜 로그와 실행 제어가 필요한지 말로 설명할 수 있다.",
+   "resources": [
+    "slash22-ca",
+    "slash22-scraping",
+    "slash24-webview-nest"
+   ],
+   "task": "발표 셋을 보고 '고객이 버튼을 누른 뒤 바깥 사이트 신청이 끝날 때까지'를 한 장 그림으로 그린다. 칸마다 '여기서 실패하면 어떤 로그로 알 수 있나'를 한 줄씩 적는다."
+  },
+  {
+   "title": "Node.js와 이벤트 루프",
+   "time": "2주",
+   "goal": "Promise·async/await 실행 순서를 예측하고, 이벤트 루프를 막는 코드를 찾아 worker_threads로 뺄 수 있다.",
+   "resources": [
+    "node-textbook",
+    "node-eventloop",
+    "node-design-patterns"
+   ],
+   "task": "가상 계좌 100개의 잔액을 '동시에 최대 5개씩만' 조회하는 함수를 직접 짠다(라이브러리 없이). 일부러 무거운 계산을 넣어 다른 요청이 늦어지는 것을 시간으로 재 본다."
+  },
+  {
+   "title": "Nest.js로 작은 서비스 끝까지",
+   "time": "2~3주",
+   "goal": "모듈·DI·인터셉터·예외 필터를 쓰고 Vitest로 테스트가 붙은 API를 만든다.",
+   "resources": [
+    "nest-wikidocs",
+    "nest-docs",
+    "effective-ts",
+    "vitest-docs"
+   ],
+   "task": "가상 '서류 발급 요청' API를 만든다. 같은 사용자 요청이 진행 중이면 합치는 인터셉터와, 내부 에러를 고객용 메시지로 바꾸는 예외 필터를 직접 넣고 테스트로 확인한다."
+  },
+  {
+   "title": "동시성과 여러 서버",
+   "time": "2~3주",
+   "goal": "경쟁 상태를 재현하고, 한 프로세스 잠금·Redis 잠금·한 번에 끝나는 명령의 차이와 빈틈을 설명할 수 있다.",
+   "resources": [
+    "ddia",
+    "redis-lock",
+    "kleppmann-lock",
+    "kafka-docs",
+    "zk-recipes"
+   ],
+   "task": "Docker로 Redis를 띄우고 앞 단계 서비스를 두 개 띄운다. 같은 가상 재고를 동시에 차감해 깨지는 것을 보이고, 잠금·원자 명령으로 고친 뒤 잠금 시간 초과 상황에서 무엇이 남는지 적는다."
+  },
+  {
+   "title": "보이게 만들기",
+   "time": "1~2주",
+   "goal": "추적 id가 붙은 구조화 로그와 구간별 시간 지표로 '어디가 느린가'를 숫자로 답한다.",
+   "resources": [
+    "node-als",
+    "otel-js",
+    "elastic-stack",
+    "refactoring"
+   ],
+   "task": "앞 서비스에 AsyncLocalStorage로 추적 id를 붙이고 JSON 로그를 남긴다. 큐 대기·처리·바깥 호출 시간을 나눠 찍고, 일부러 느린 바깥 호출을 넣어 로그만 보고 병목을 찾아 이력서용 한 문단(문제·원인·해결·숫자)으로 쓴다."
+  }
+ ],
+ "pay": {
+  "summary": "공시된 직원 평균 급여 숫자는 찾지 못했다 — 공공데이터 집계로 **초봉 약 5,000만원 · 평균 약 7,000만원**(기준일 없음). 연봉은 처우 협의로 사람마다 정한다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,003만원",
+    "amount": 5003,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 기준일 표기가 없고 사원 수가 292명으로 적혀 있어 최근 인원(2026년 1분기 516명)보다 예전 값으로 보인다. 직군 구분 없음 [18][21]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 7,007만원",
+    "amount": 7007,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계 사이트의 평균 — 경력직이 섞인 회사 전체 값이다. 페이지 직접 열람이 막혀 검색 결과 요약으로 확인했다 [18]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고, 전형 끝에 **처우 협의** 단계가 따로 있다 [22]. 토스증권은 사업보고서 평균 급여 공시 숫자를 찾지 못했다(**공시 숫자 없음**). 금융투자협회 공시를 분석한 기사는 2026년 1분기에 직원이 380명에서 516명으로 늘고 직원 급여 총액은 21.4% 늘었다고만 적었다 [21]. 한 해 전체로는 2025년 임직원이 371명에서 485명으로 30.73% 늘었다 [20]. 평균은 경력직이 많은 회사 전체 값이라 신입이 받는 금액으로 읽으면 안 된다 {추론}. 같은 기준의 동종사 값을 찾지 못해 비교 줄은 싣지 않았다."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통·통신",
+    "detail": "주차비·택시비 100%(법인카드), 통신비 매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   }
+  ],
+  "note": "토스 팀 전체를 기준으로 한 2021년 공식 소개 글이다 [19]. 토스증권에 그대로 적용되는지, 지금도 같은지는 글에 적혀 있지 않아 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스증권 본사",
+  "address": "서울특별시 강남구 테헤란로 133, 7층 (역삼동, 한국타이어빌딩)",
+  "postal": "06133",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20133",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "공고의 근무지 표기는 'Seoul'뿐이고, 주소는 토스증권 사이트 하단의 회사 정보다 [17]."
+ }
+}

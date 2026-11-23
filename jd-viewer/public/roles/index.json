@@ -175,6 +175,7 @@
   "ats-toss:group:7585698003": "tosssec-dba-mysql",
   "ats-toss:group:4076052003": "tosssec-dba-oracle",
   "ats-toss:group:5863983003": "tosssec-fep-server-developer",
+  "ats-toss:group:6615122003": "tosssec-frontend-developer-veterans",
   "ats-toss:group:4076141003": "tosssec-frontend-developer",
   "ats-toss:group:5130165003": "tosssec-frontend-platform-engineer",
   "ats-toss:group:7986136003": "tosssec-japan-product-server",
@@ -182,6 +183,7 @@
   "ats-toss:group:7575603003": "tosssec-ml-engineer-llm",
   "ats-toss:group:7598977003": "tosssec-network-security-engineer-junior",
   "ats-toss:group:5398782003": "tosssec-network-security-engineer",
+  "ats-toss:group:7571171003": "tosssec-nodejs-developer",
   "ats-toss:group:4154060003": "tosssec-product-data-analyst",
   "ats-toss:group:4076140003": "tosssec-product-server-developer",
   "ats-toss:group:8011230003": "tosssec-security-engineer-infra",
@@ -1772,6 +1774,16 @@
    "lines": 15
   },
   {
+   "id": "tosssec-frontend-developer-veterans",
+   "company": "토스증권",
+   "role": "프론트엔드 개발자 (보훈특별채용)",
+   "jobs": [
+    "ats-toss:group:6615122003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 10
+  },
+  {
    "id": "tosssec-frontend-developer",
    "company": "토스증권",
    "role": "프론트엔드 개발자",
@@ -1840,6 +1852,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 15
+  },
+  {
+   "id": "tosssec-nodejs-developer",
+   "company": "토스증권",
+   "role": "Node.js 개발자",
+   "jobs": [
+    "ats-toss:group:7571171003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 7
   },
   {
    "id": "tosssec-product-data-analyst",
