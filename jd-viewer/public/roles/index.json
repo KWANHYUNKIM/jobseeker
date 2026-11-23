@@ -44,10 +44,13 @@
   "wanted-387807": "medcom-android-engineer",
   "wanted-387811": "medcom-cloud-infra-engineer-japan",
   "wanted-394202": "mediphone-platform-engineer",
+  "jobkorea-50272885": "megazone-air-platform-backend",
   "jobkorea-50249597": "megazone-cloud-ai-soc",
   "wanted-306088": "megazone-japan-cloud-engineer-associate",
   "wanted-306087": "megazone-japan-cloud-engineer-senior",
   "saramin-55340311": "megazone-multicloud-ops-engineer",
+  "saramin-55436318": "megazone-product-build-engineering-lead",
+  "jobkorea-50250360": "megazonecloud-ai-engineer",
   "wanted-394722": "nhn-japan-frontend",
   "wanted-395799": "progrit-frontend-tech-lead",
   "wanted-393626": "recruit-data-engineer-japan",
@@ -590,6 +593,16 @@
    "lines": 27
   },
   {
+   "id": "megazone-air-platform-backend",
+   "company": "메가존클라우드",
+   "role": "AIR Platform Backend Developer · 플랫폼 기획",
+   "jobs": [
+    "jobkorea-50272885"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 39
+  },
+  {
    "id": "megazone-cloud-ai-soc",
    "company": "메가존클라우드",
    "role": "클라우드 AI-SOC 전문가 (CERT·운영·관제)",
@@ -628,6 +641,26 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 41
+  },
+  {
+   "id": "megazone-product-build-engineering-lead",
+   "company": "메가존클라우드",
+   "role": "Product Build Unit Engineering Lead",
+   "jobs": [
+    "saramin-55436318"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 19
+  },
+  {
+   "id": "megazonecloud-ai-engineer",
+   "company": "메가존클라우드",
+   "role": "AI Engineer",
+   "jobs": [
+    "jobkorea-50250360"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 28
   },
   {
    "id": "nhn-japan-frontend",
