@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-23T14:38:07",
+ "generated_at": "2026-11-23T14:44:59",
  "count": 148,
  "topics": [
   {
@@ -108,21 +108,12 @@
        "subject": "기초 통계·머신러닝",
        "done": 12,
        "total": 25
-      },
-      {
-       "key": "dlzeroall-s1",
-       "title": "모두를 위한 딥러닝 시즌 1 (한국어, 이론편)",
-       "school": "Sung Kim(HKUST)",
-       "stack": "이론 · TensorFlow 1.x",
-       "subject": "딥러닝",
-       "done": 0,
-       "total": 24
       }
      ],
-     "why": "교차검증·과적합·회귀·분류 같은 용어를 하나씩 아주 쉽게 푼다. '모두를 위한 딥러닝'은 같은 내용을 한국어로 10~15분씩 짧게.",
-     "tip": "둘 중 편한 쪽 하나만 끝까지. 한국어가 편하면 모두의 딥러닝 lec 01~07(회귀·분류)부터.",
+     "why": "교차검증·과적합·회귀·분류 같은 용어를 하나씩 아주 쉽게 푼다. 1단계에서 본 '신경망이 하는 일'에 이름을 붙이는 단계다.",
+     "tip": "영어 강의지만 노트가 우리 말로 다시 쓴 교재다 — 노트를 먼저 읽고 그림이 필요한 곳만 영상으로.",
      "done": 12,
-     "total": 49
+     "total": 25
     },
     {
      "title": "3단계 · 딥러닝 입문 강의",
@@ -275,7 +266,7 @@
     }
    ],
    "done": 145,
-   "total": 202
+   "total": 178
   },
   {
    "key": "coding-test",
@@ -447,74 +438,75 @@
    "key": "frontend",
    "label": "프론트엔드",
    "for": "웹 화면 만들기를 처음 배우는 사람",
-   "goal": "HTML·CSS 로 화면을 짜고, 자바스크립트로 움직이게 하고, 리액트로 작은 앱을 만든다",
+   "goal": "HTML·CSS 로 화면을 짜고, 자바스크립트로 움직이게 하고, 리액트 19 로 작은 앱을 만든다",
    "how": [
     "보기만 하면 남지 않는다 — 강의 옆에 에디터를 열고 같은 화면을 직접 만든다.",
     "HTML 은 짧게, 자바스크립트는 길게. 프론트엔드 면접의 대부분이 자바스크립트다.",
     "리액트는 자바스크립트 기초(함수·배열 메서드·비동기)를 끝낸 뒤에. 순서를 바꾸면 리액트가 어려운 게 아니라 JS 가 어려운 것이다.",
-    "작은 것 하나라도 끝까지 만들어 배포해 본다(할 일 목록·날씨 앱) — 포트폴리오의 첫 줄이 된다."
+    "작은 것 하나라도 끝까지 만들어 배포해 본다(할 일 목록·날씨 앱) — 포트폴리오의 첫 줄이 된다.",
+    "자바스크립트·리액트는 최신 판(2023 년·React 19) 영어 강의다 — 노트가 우리 말로 다시 쓴 교재이니 노트 먼저, 따라 칠 곳만 영상(자동 한글 자막)으로."
    ],
    "steps": [
     {
-     "title": "1단계 · HTML 첫걸음",
+     "title": "1단계 · HTML·CSS 로 화면 짜기",
      "level": "입문",
      "series": [
       {
-       "key": "opentutorials-html",
-       "title": "생활코딩 HTML — 웹의 첫걸음",
-       "school": "생활코딩",
+       "key": "designbase-webcode",
+       "title": "웹 코딩 입문 — HTML·CSS (디자인베이스)",
+       "school": "디자인베이스",
        "stack": "HTML · CSS",
-       "subject": "마크업",
+       "subject": "마크업·스타일",
        "done": 0,
-       "total": 44
+       "total": 36
       }
      ],
-     "why": "웹 페이지가 무엇으로 되어 있는지, 태그 하나하나를 아주 천천히 설명한다. 한 편이 5~10분이다.",
-     "tip": "빠르게 훑고 다음으로. 막히는 태그만 다시 본다.",
+     "why": "HTML 구조 → CSS 문법 → 박스 모델·포지션·플렉스 → 반응형(미디어 쿼리) → 서버에 올리기까지, 버튼·카드·로그인 화면을 만들며 간다.",
+     "tip": "#27 부트스트랩·#28 jQuery 는 요즘 덜 쓰니 건너뛰어도 된다. #34 플렉스는 꼭 본다.",
      "done": 0,
-     "total": 44
+     "total": 36
     },
     {
      "title": "2단계 · 자바스크립트 기초",
      "level": "입문",
      "series": [
       {
-       "key": "dream-js",
-       "title": "자바스크립트 기초 강의 (드림코딩)",
-       "school": "드림코딩",
-       "stack": "JavaScript",
+       "key": "brocode-js-2023",
+       "title": "자바스크립트 기초 (Bro Code, 2023)",
+       "school": "Bro Code",
+       "stack": "JavaScript (ES2023)",
        "subject": "언어 기초",
        "done": 0,
-       "total": 27
+       "total": 80
       }
      ],
-     "why": "변수·함수·클래스·배열·비동기(Promise·async)를 노트를 쓰며 차근차근. 프론트엔드의 몸통이다.",
-     "tip": "배열 API·비동기 편은 두 번 본다.",
+     "why": "변수·함수·배열·객체·클래스 → DOM·이벤트(1단계에서 만든 화면을 움직인다) → Promise·async·fetch 까지. 프론트엔드의 몸통이다.",
+     "tip": "배열 메서드·비동기 편은 두 번 본다. 편마다 끝의 작은 앱(계산기·날씨 앱)을 직접 친다.",
      "done": 0,
-     "total": 27
+     "total": 80
     },
     {
-     "title": "3단계 · 리액트 기초",
+     "title": "3단계 · 리액트 19",
      "level": "중급",
      "series": [
       {
-       "key": "noona-react",
-       "title": "리액트 기초 강의",
-       "school": "코딩알려주는누나",
-       "stack": "React",
+       "key": "codevolution-react19",
+       "title": "리액트 19 완전 정복 (Codevolution)",
+       "school": "Codevolution",
+       "stack": "React 19",
        "subject": "UI 프레임워크",
        "done": 0,
-       "total": 12
+       "total": 38
       }
      ],
-     "why": "컴포넌트·state·props·hooks 로 실제 앱을 만든다.",
+     "why": "2단계의 DOM 조작을 리액트가 어떻게 대신하나 — 컴포넌트·JSX·props·state·hooks·폼·데이터 불러오기를 지금 판(React 19)으로.",
      "tip": "강의 앱을 만든 뒤 기능 하나를 내 아이디어로 더한다.",
      "done": 0,
-     "total": 12
+     "total": 38
     }
    ],
    "done": 0,
-   "total": 83
+   "total": 154
   },
   {
    "key": "design",
@@ -571,23 +563,23 @@
      "level": "입문",
      "series": [
       {
-       "key": "uxschool-figma",
-       "title": "Figma UI 디자인 — 기초부터 프로토타입까지",
-       "school": "UX스쿨",
-       "stack": "Figma",
+       "key": "starrybitna-figma",
+       "title": "피그마 기초 — 컴포넌트·오토 레이아웃·프로토타입 (스태리빛나)",
+       "school": "스태리빛나",
+       "stack": "Figma (2025 UI)",
        "subject": "디자인 도구 실습",
        "done": 0,
-       "total": 26
+       "total": 12
       }
      ],
-     "why": "피그마 기초부터 컴포넌트·오토 레이아웃·프로토타입까지. 회사들이 실제로 쓰는 도구다.",
+     "why": "1·2단계의 규칙과 생각을 실제 화면으로 — 새 인터페이스(UI3) 기준으로 컴포넌트·오토 레이아웃·스타일·그리드·프로토타입까지. 회사들이 실제로 쓰는 도구다.",
      "tip": "따라 그린 화면을 하나의 작은 앱 시안으로 이어 붙이면 포트폴리오 1번이 된다.",
      "done": 0,
-     "total": 26
+     "total": 12
     }
    ],
    "done": 0,
-   "total": 73
+   "total": 59
   },
   {
    "key": "detail-page",
@@ -645,15 +637,6 @@
      "level": "중급",
      "series": [
       {
-       "key": "ps-detail-practice",
-       "title": "포토샵으로 쇼핑몰 상세페이지 만들기 (실습)",
-       "school": "Min_yonug",
-       "stack": "Photoshop",
-       "subject": "상세페이지 실습",
-       "done": 0,
-       "total": 7
-      },
-      {
        "key": "ezdesign-detail",
        "title": "상세페이지 디자인 따라하기 (가구·화장품)",
        "school": "이지디자인",
@@ -663,14 +646,14 @@
        "total": 7
       }
      ],
-     "why": "제품 사진 보정·배경 정리·레이어 정리부터 가구·화장품 상세페이지를 처음부터 끝까지 따라 만든다.",
+     "why": "1단계 도구와 2단계 구성으로 가구·화장품·반려동물 상세페이지를 처음부터 끝까지 따라 만든다(무료 템플릿 제공).",
      "tip": "따라 만든 뒤 같은 구성으로 다른 상품을 한 장 더 만든다 — 그게 진짜 내 것이 된다.",
      "done": 0,
-     "total": 14
+     "total": 7
     }
    ],
    "done": 0,
-   "total": 36
+   "total": 29
   },
   {
    "key": "toeic",
@@ -2218,205 +2201,6 @@
    ]
   },
   {
-   "key": "dlzeroall-s1",
-   "title": "모두를 위한 딥러닝 시즌 1 (한국어, 이론편)",
-   "school": "Sung Kim(HKUST)",
-   "code": "모두의 딥러닝",
-   "term": "시즌 1",
-   "track": "ai",
-   "stack": "이론 · TensorFlow 1.x",
-   "subject": "딥러닝",
-   "quality": {
-    "why": "한국어 입문의 고전 — 코드는 TensorFlow 1 이라 낡았다(이론만)",
-    "stats": {
-     "checked": "2026-11-23",
-     "channel": "Sung Kim",
-     "channel_followers": 60400,
-     "first_views": 909180,
-     "first_likes": 3965,
-     "like_per_1k_views": 4.4,
-     "first_uploaded": "2016-03-21",
-     "last_views": 144338,
-     "stay_ratio": 0.159,
-     "subtitles": [],
-     "auto_subtitles": true
-    }
-   },
-   "playlist": "https://www.youtube.com/playlist?list=PLlMkM4tgfjnLSOjrEJN31gZATbcj_MpUm",
-   "total": 24,
-   "done": 0,
-   "lectures": [
-    {
-     "no": 1,
-     "id": "BS6O0zOGX4E",
-     "title": "Lec 00 - Introduction and Schedule for the Machine/Deep Learning Course",
-     "duration_sec": 605,
-     "done": false
-    },
-    {
-     "no": 2,
-     "id": "qPMeuL2LIqY",
-     "title": "ML lec 01 - 기본적인 Machine Learning 의 용어와 개념 설명",
-     "duration_sec": 749,
-     "done": false
-    },
-    {
-     "no": 3,
-     "id": "Hax03rCn3UI",
-     "title": "ML lec 02 - Linear Regression의 Hypothesis 와 cost 설명",
-     "duration_sec": 810,
-     "done": false
-    },
-    {
-     "no": 4,
-     "id": "TxIVr-nk1so",
-     "title": "ML lec 03 - Linear Regression의 cost 최소화 알고리즘의 원리 설명",
-     "duration_sec": 972,
-     "done": false
-    },
-    {
-     "no": 5,
-     "id": "kPxpJY6fRkY",
-     "title": "ML lec 04 - multi-variable linear regression (*new)",
-     "duration_sec": 1065,
-     "done": false
-    },
-    {
-     "no": 6,
-     "id": "PIjno6paszY",
-     "title": "ML lec 5-1: Logistic Classification의 가설 함수 정의",
-     "duration_sec": 897,
-     "done": false
-    },
-    {
-     "no": 7,
-     "id": "6vzchGYEJBc",
-     "title": "ML lec 5-2 Logistic Regression의 cost 함수 설명",
-     "duration_sec": 864,
-     "done": false
-    },
-    {
-     "no": 8,
-     "id": "MFAnsx1y9ZI",
-     "title": "ML lec 6-1 - Softmax Regression: Introduction to basic concepts",
-     "duration_sec": 617,
-     "done": false
-    },
-    {
-     "no": 9,
-     "id": "jMU9G5WEtBc",
-     "title": "ML lec 6-2: Cost function of Softmax classifier",
-     "duration_sec": 936,
-     "done": false
-    },
-    {
-     "no": 10,
-     "id": "1jPjVoDV_uo",
-     "title": "Lec 07-1: Learning Rate, Overfitting, and Regularization",
-     "duration_sec": 843,
-     "done": false
-    },
-    {
-     "no": 11,
-     "id": "KVv1nMSlPzY",
-     "title": "Lec 07-2: Training/Testing Datasets",
-     "duration_sec": 561,
-     "done": false
-    },
-    {
-     "no": 12,
-     "id": "n7DNueHGkqE",
-     "title": "lec 08-1: 딥러닝의 기본 개념: 시작과 XOR 문제",
-     "duration_sec": 1062,
-     "done": false
-    },
-    {
-     "no": 13,
-     "id": "AByVbUX1PUI",
-     "title": "Lec 08-2: Basic Concepts of Deep Learning 2: Backpropagation and the Emergence of 'Deep' in 2006/...",
-     "duration_sec": 757,
-     "done": false
-    },
-    {
-     "no": 14,
-     "id": "GYecDQQwTdI",
-     "title": "lec9-1: Solving the XOR Problem with Deep Learning",
-     "duration_sec": 903,
-     "done": false
-    },
-    {
-     "no": 15,
-     "id": "oZyvmtqLmLo",
-     "title": "lec9-x: Special Episode: Derivatives Explained in 10 Minutes (Watch Before lec9-2)",
-     "duration_sec": 569,
-     "done": false
-    },
-    {
-     "no": 16,
-     "id": "573EZkzfnZ0",
-     "title": "lec9-2: Training Deep Networks (backpropagation)",
-     "duration_sec": 1108,
-     "done": false
-    },
-    {
-     "no": 17,
-     "id": "cKtg_fpw88c",
-     "title": "lec10-1: ReLU is better than Sigmoid",
-     "duration_sec": 1050,
-     "done": false
-    },
-    {
-     "no": 18,
-     "id": "4rC0sWrp3Uw",
-     "title": "lec10-2: How to properly initialize weights",
-     "duration_sec": 738,
-     "done": false
-    },
-    {
-     "no": 19,
-     "id": "wTxMsp22llc",
-     "title": "lec10-3: Dropout and Ensemble",
-     "duration_sec": 596,
-     "done": false
-    },
-    {
-     "no": 20,
-     "id": "YHsbHjTBx9Q",
-     "title": "lec10-4: Let's Build Network Modules Like LEGOs",
-     "duration_sec": 309,
-     "done": false
-    },
-    {
-     "no": 21,
-     "id": "Em63mknbtWo",
-     "title": "lec11-1 Building Conv Layers in ConvNets",
-     "duration_sec": 982,
-     "done": false
-    },
-    {
-     "no": 22,
-     "id": "2-75C-yZaoA",
-     "title": "lec11-2: ConvNet Max Pooling and Full Network",
-     "duration_sec": 333,
-     "done": false
-    },
-    {
-     "no": 23,
-     "id": "KbNbWTnlYXs",
-     "title": "lec11-3 Examples of ConvNet Applications",
-     "duration_sec": 751,
-     "done": false
-    },
-    {
-     "no": 24,
-     "id": "-SHPG_KMUkQ",
-     "title": "lec12: An Introduction to RNN, the Highlight of Neural Networks",
-     "duration_sec": 1183,
-     "done": false
-    }
-   ]
-  },
-  {
    "key": "mit-6s191",
    "title": "MIT 6.S191 딥러닝 입문",
    "school": "MIT",
@@ -3505,682 +3289,6 @@
    ]
   },
   {
-   "key": "opentutorials-html",
-   "title": "생활코딩 HTML — 웹의 첫걸음",
-   "school": "생활코딩",
-   "code": "HTML",
-   "term": "WEB1",
-   "track": "frontend",
-   "stack": "HTML · CSS",
-   "subject": "마크업",
-   "quality": {
-    "why": "생활코딩 — 국내 웹 입문의 표준",
-    "stats": {
-     "checked": "2026-11-23",
-     "channel": "생활코딩",
-     "channel_followers": 340000,
-     "first_views": 395505,
-     "first_likes": 1246,
-     "like_per_1k_views": 3.2,
-     "first_uploaded": "2015-12-05",
-     "last_views": 34333,
-     "stay_ratio": 0.087,
-     "subtitles": [
-      "ko"
-     ],
-     "auto_subtitles": true
-    }
-   },
-   "playlist": "https://www.youtube.com/playlist?list=PLuHgQVnccGMDUzDDCKW-pCZQY-MMCX5yB",
-   "total": 44,
-   "done": 0,
-   "lectures": [
-    {
-     "no": 1,
-     "id": "OGFgdro160I",
-     "title": "HTML - Introduction to the Class",
-     "duration_sec": 124,
-     "done": false
-    },
-    {
-     "no": 2,
-     "id": "33DjsANwlJk",
-     "title": "HTML - Introduction to Technology",
-     "duration_sec": 371,
-     "done": false
-    },
-    {
-     "no": 3,
-     "id": "jSJM9iOiQ1g",
-     "title": "HTML - 기본문법 1",
-     "duration_sec": 608,
-     "done": false
-    },
-    {
-     "no": 4,
-     "id": "zQTgBEWYbug",
-     "title": "HTML - Basic Grammar 2",
-     "duration_sec": 577,
-     "done": false
-    },
-    {
-     "no": 5,
-     "id": "AE7foaifXMU",
-     "title": "HTML - Hypertext and Attributes",
-     "duration_sec": 813,
-     "done": false
-    },
-    {
-     "no": 6,
-     "id": "Oje3e4Ry5wE",
-     "title": "HTML - 맥에서 텍스트 에디트 주의사항",
-     "duration_sec": 81,
-     "done": false
-    },
-    {
-     "no": 7,
-     "id": "JiuYfoSEac4",
-     "title": "HTML - Tag Nesting and Lists",
-     "duration_sec": 555,
-     "done": false
-    },
-    {
-     "no": 8,
-     "id": "gqg-toXZ_rE",
-     "title": "HTML - 문서의 구조",
-     "duration_sec": 650,
-     "done": false
-    },
-    {
-     "no": 9,
-     "id": "EgT5520Ztek",
-     "title": "HTML - DOCTYPE",
-     "duration_sec": 239,
-     "done": false
-    },
-    {
-     "no": 10,
-     "id": "Tt3kr7whkb4",
-     "title": "HTML - Creating a Website",
-     "duration_sec": 646,
-     "done": false
-    },
-    {
-     "no": 11,
-     "id": "uim3Vr6crXI",
-     "title": "HTML - Development Tools",
-     "duration_sec": 951,
-     "done": false
-    },
-    {
-     "no": 12,
-     "id": "9VM7du__sUY",
-     "title": "HTML: History and Statistics",
-     "duration_sec": 529,
-     "done": false
-    },
-    {
-     "no": 13,
-     "id": "z7DiQe4wnLc",
-     "title": "HTML - Paragraph: p tag",
-     "duration_sec": 260,
-     "done": false
-    },
-    {
-     "no": 14,
-     "id": "HkX_3Kk5haE",
-     "title": "HTML - Line Breaks : br",
-     "duration_sec": 248,
-     "done": false
-    },
-    {
-     "no": 15,
-     "id": "V_ogge8xfDs",
-     "title": "HTML - Image: img",
-     "duration_sec": 414,
-     "done": false
-    },
-    {
-     "no": 16,
-     "id": "XUTFXu0f4qo",
-     "title": "HTML - 표1 : 기본",
-     "duration_sec": 600,
-     "done": false
-    },
-    {
-     "no": 17,
-     "id": "H84fuDj1Jxs",
-     "title": "HTML - Table 2: Structure",
-     "duration_sec": 358,
-     "done": false
-    },
-    {
-     "no": 18,
-     "id": "i7oKd-eKvdw",
-     "title": "HTML - Table 3: Merge",
-     "duration_sec": 310,
-     "done": false
-    },
-    {
-     "no": 19,
-     "id": "sFtZdlmgCVY",
-     "title": "HTML - Form Basics",
-     "duration_sec": 740,
-     "done": false
-    },
-    {
-     "no": 20,
-     "id": "-wMLXTISFFY",
-     "title": "HTML - form: character input",
-     "duration_sec": 378,
-     "done": false
-    },
-    {
-     "no": 21,
-     "id": "dNmubsrqDSA",
-     "title": "HTML - form : dropdown list",
-     "duration_sec": 496,
-     "done": false
-    },
-    {
-     "no": 22,
-     "id": "LYFOUIDBIp4",
-     "title": "HTML - form : radio, checkbox",
-     "duration_sec": 538,
-     "done": false
-    },
-    {
-     "no": 23,
-     "id": "LnlIrDXwEr0",
-     "title": "HTML - form : button",
-     "duration_sec": 317,
-     "done": false
-    },
-    {
-     "no": 24,
-     "id": "viGaQ2i8t44",
-     "title": "HTML - form : hidden",
-     "duration_sec": 288,
-     "done": false
-    },
-    {
-     "no": 25,
-     "id": "_4upG-03td8",
-     "title": "HTML - form : label",
-     "duration_sec": 549,
-     "done": false
-    },
-    {
-     "no": 26,
-     "id": "OnX9TCSGvws",
-     "title": "HTML - form : method",
-     "duration_sec": 528,
-     "done": false
-    },
-    {
-     "no": 27,
-     "id": "XY5G4RN_LKg",
-     "title": "HTML - form: File Upload",
-     "duration_sec": 620,
-     "done": false
-    },
-    {
-     "no": 28,
-     "id": "SfgcrR9952M",
-     "title": "HTML: HTML as Information",
-     "duration_sec": 90,
-     "done": false
-    },
-    {
-     "no": 29,
-     "id": "pcOkHx1x3Y4",
-     "title": "HTML - The font Tag",
-     "duration_sec": 395,
-     "done": false
-    },
-    {
-     "no": 30,
-     "id": "zO5zHxX2lNI",
-     "title": "HTML - meta 태그",
-     "duration_sec": 526,
-     "done": false
-    },
-    {
-     "no": 31,
-     "id": "uDmNhHYecL4",
-     "title": "HTML - 의미론적인 태그",
-     "duration_sec": 779,
-     "done": false
-    },
-    {
-     "no": 32,
-     "id": "owK8xxL7pps",
-     "title": "HTML - 검색엔진최적화 1",
-     "duration_sec": 446,
-     "done": false
-    },
-    {
-     "no": 33,
-     "id": "-G2aDXiF8zE",
-     "title": "HTML - Search Engine Optimization 2",
-     "duration_sec": 700,
-     "done": false
-    },
-    {
-     "no": 34,
-     "id": "TDSmp-QxVRU",
-     "title": "HTML - Search Engine Optimization 3",
-     "duration_sec": 368,
-     "done": false
-    },
-    {
-     "no": 35,
-     "id": "J_ZQhHpV6PQ",
-     "title": "HTML - SEO 4: Links",
-     "duration_sec": 281,
-     "done": false
-    },
-    {
-     "no": 36,
-     "id": "jtjyNe1yfOM",
-     "title": "HTML - 검색엔진최적화 5 : 이미지와 제목",
-     "duration_sec": 581,
-     "done": false
-    },
-    {
-     "no": 37,
-     "id": "hRmfZxXa3KA",
-     "title": "HTML - Search Engine Optimization 6: Robotstxt & Sitemap",
-     "duration_sec": 742,
-     "done": false
-    },
-    {
-     "no": 38,
-     "id": "tagJ0lm6CK8",
-     "title": "HTML - Search Engine Optimization 7: PageRank",
-     "duration_sec": 482,
-     "done": false
-    },
-    {
-     "no": 39,
-     "id": "q_8rVZmMt6M",
-     "title": "HTML - Web Developer Tools",
-     "duration_sec": 623,
-     "done": false
-    },
-    {
-     "no": 40,
-     "id": "rF2nkJCH55c",
-     "title": "HTML - Mobile Support",
-     "duration_sec": 360,
-     "done": false
-    },
-    {
-     "no": 41,
-     "id": "VNXx4Q2WFgU",
-     "title": "HTML - HTML5의 새로운 제출양식 1",
-     "duration_sec": 590,
-     "done": false
-    },
-    {
-     "no": 42,
-     "id": "_VTxM1JUfwI",
-     "title": "HTML - New HTML5 Form Input Types 2",
-     "duration_sec": 347,
-     "done": false
-    },
-    {
-     "no": 43,
-     "id": "36Z-N1wa9lA",
-     "title": "HTML - HTML5 Form 3: New Attributes",
-     "duration_sec": 405,
-     "done": false
-    },
-    {
-     "no": 44,
-     "id": "dJOhEj9_6gM",
-     "title": "HTML - html5 form 4: Checking input values",
-     "duration_sec": 978,
-     "done": false
-    }
-   ]
-  },
-  {
-   "key": "dream-js",
-   "title": "자바스크립트 기초 강의 (드림코딩)",
-   "school": "드림코딩",
-   "code": "JavaScript",
-   "term": "ES5+",
-   "track": "frontend",
-   "stack": "JavaScript",
-   "subject": "언어 기초",
-   "quality": {
-    "why": "드림코딩 — 자바스크립트 기초로 널리 추천",
-    "stats": {
-     "checked": "2026-11-23",
-     "channel": "드림코딩",
-     "channel_followers": 160000,
-     "first_views": 500397,
-     "first_likes": 9103,
-     "like_per_1k_views": 18.2,
-     "first_uploaded": "2020-03-30",
-     "last_views": 33815,
-     "stay_ratio": 0.068,
-     "subtitles": [],
-     "auto_subtitles": true
-    }
-   },
-   "playlist": "https://www.youtube.com/playlist?list=PLv2d7VI9OotTVOL4QmPfvJWPJvkmv6h-2",
-   "total": 27,
-   "done": 0,
-   "lectures": [
-    {
-     "no": 1,
-     "id": "wcsVjmHrUQg",
-     "title": "A Must-Watch Before You Learn JavaScript | The History, Present, and Future of JavaScript (JavaSc...",
-     "duration_sec": 941,
-     "done": false
-    },
-    {
-     "no": 2,
-     "id": "tJieVCgGzhs",
-     "title": "자바스크립트 2. 콘솔에 출력, script async 와 defer의 차이점 및 앞으로 자바스크립트 공부 방향 | 프론트엔드 개발자 입문편 (JavaScript ES5+)",
-     "duration_sec": 1064,
-     "done": false
-    },
-    {
-     "no": 3,
-     "id": "OCCpGh4ujb8",
-     "title": "JavaScript 3. Data Types, let vs var, hoisting | Frontend Developer Beginner Course (JavaScript E...",
-     "duration_sec": 1679,
-     "done": false
-    },
-    {
-     "no": 4,
-     "id": "YBjufjBaxHo",
-     "title": "자바스크립트 4. 코딩의 기본 operator, if, for loop 코드리뷰 팁  | 프론트엔드 개발자 입문편 (JavaScript ES6)",
-     "duration_sec": 1215,
-     "done": false
-    },
-    {
-     "no": 5,
-     "id": "e_lU39U-5bQ",
-     "title": "JavaScript 5. What is an Arrow Function? Function Declarations and Expressions | Frontend Develop...",
-     "duration_sec": 1502,
-     "done": false
-    },
-    {
-     "no": 6,
-     "id": "_DLhUBWsRtw",
-     "title": "JavaScript 6. Class vs Object: Understanding Object-Oriented Programming | Frontend Developer Sta...",
-     "duration_sec": 1537,
-     "done": false
-    },
-    {
-     "no": 7,
-     "id": "1Lbr29tzAA8",
-     "title": "JavaScript 7. What Exactly is an Object? | Frontend Developer Primer (JavaScript ES6)",
-     "duration_sec": 1384,
-     "done": false
-    },
-    {
-     "no": 8,
-     "id": "yOdAVDuHUKQ",
-     "title": "자바스크립트 8. 배열 제대로 알고 쓰자. 자바스크립트 배열 개념과 APIs 총정리 | 프론트엔드 개발자 입문편 (JavaScript ES6 )",
-     "duration_sec": 1928,
-     "done": false
-    },
-    {
-     "no": 9,
-     "id": "3CUjtKJ7PJg",
-     "title": "JavaScript 9. 10 Useful Array Methods. Array APIs Masterclass | Front-End Development for Beginne...",
-     "duration_sec": 2234,
-     "done": false
-    },
-    {
-     "no": 10,
-     "id": "FN_D4Ihs3LE",
-     "title": "JavaScript 10. JSON Concepts, Usage Methods, and Useful Websites: JavaScript JSON | Introduction ...",
-     "duration_sec": 1357,
-     "done": false
-    },
-    {
-     "no": 11,
-     "id": "s1vpVCrT8f4",
-     "title": "JavaScript 11. Understanding Callbacks: The Start of Asynchronous Processing and Experiencing Cal...",
-     "duration_sec": 1276,
-     "done": false
-    },
-    {
-     "no": 12,
-     "id": "JB_yU6Oe2eE",
-     "title": "자바스크립트 12. 프로미스 개념부터 활용까지 JavaScript Promise | 프론트엔드 개발자 입문편 (JavaScript ES6)",
-     "duration_sec": 1690,
-     "done": false
-    },
-    {
-     "no": 13,
-     "id": "aoQSOZfz3vQ",
-     "title": "JavaScript 13. The Highlight of Asynchronous: JavaScript async & await and Useful Promise APIs | ...",
-     "duration_sec": 1053,
-     "done": false
-    },
-    {
-     "no": 14,
-     "id": "PuG2VW18O1E",
-     "title": "프로그래밍 포기 하지 마세요 (자바스크립트 함수 기본편)",
-     "duration_sec": 1038,
-     "done": false
-    },
-    {
-     "no": 15,
-     "id": "__Zz17_5FRU",
-     "title": "JavaScript Basics 1. Variables | The Difference Between Primitive Types and Objects",
-     "duration_sec": 1132,
-     "done": false
-    },
-    {
-     "no": 16,
-     "id": "-cAPq25P-68",
-     "title": "JavaScript Basics 2: Functions | Function Definition, Calling, and Callback Functions",
-     "duration_sec": 1317,
-     "done": false
-    },
-    {
-     "no": 17,
-     "id": "SswrP0JLNGY",
-     "title": "JavaScript Basics 3: Operators | All About Booleans && Operator",
-     "duration_sec": 428,
-     "done": false
-    },
-    {
-     "no": 18,
-     "id": "fU25vI0EOOk",
-     "title": "JavaScript Basics 4: Classes | Class Examples and Callback Functions: A Final Summary",
-     "duration_sec": 967,
-     "done": false
-    },
-    {
-     "no": 19,
-     "id": "v2Aw9f-MK5s",
-     "title": "How to Create a Responsive Website with Clone Coding Portfolio | HTML, CSS, JavaScript Front-End ...",
-     "duration_sec": 136,
-     "done": false
-    },
-    {
-     "no": 20,
-     "id": "x2T2rDM-APM",
-     "title": "프론트엔드 개발자라면 필수로 알아야 하는 브라우저 101 필수 개념과 게임 프로젝트 🕹",
-     "duration_sec": 148,
-     "done": false
-    },
-    {
-     "no": 21,
-     "id": "We2Kv1HMGvc",
-     "title": "자바스크립트를 이용한 미니 게임 만들기 프로젝트 안내편 | 프론트엔드 개발자 입문편 🕹",
-     "duration_sec": 295,
-     "done": false
-    },
-    {
-     "no": 22,
-     "id": "6oGctyyeZ6E",
-     "title": "자바스크립트를 이용한 미니게임 만들기 & 코드 리뷰, 코딩 팁 (여러분들의 코드를 드디어 리뷰해요 🙌)",
-     "duration_sec": 623,
-     "done": false
-    },
-    {
-     "no": 23,
-     "id": "36HrZHzPeuY",
-     "title": "Modern JavaScript Syntax (ES6 - ES11) | Essential Features You'll Regret Not Knowing 🐶",
-     "duration_sec": 917,
-     "done": false
-    },
-    {
-     "no": 24,
-     "id": "waePYqd8LiM",
-     "title": "Introductory Course on Backend Development with Node | Rest APIs, Databases, and More 🚀 Full-Stac...",
-     "duration_sec": 668,
-     "done": false
-    },
-    {
-     "no": 25,
-     "id": "BUAhpB3FmS4",
-     "title": "자바스크립트 프로처럼 쓰는 팁 ✨ (+ 보너스 인터뷰 문제 하나!)",
-     "duration_sec": 1143,
-     "done": false
-    },
-    {
-     "no": 26,
-     "id": "wbDpZwDRgRk",
-     "title": "5 JavaScript Animation Libraries (Super Useful👍)",
-     "duration_sec": 844,
-     "done": false
-    },
-    {
-     "no": 27,
-     "id": "2AMRTAFSh98",
-     "title": "Tips for Coding in JavaScript 🍯🐝",
-     "duration_sec": 626,
-     "done": false
-    }
-   ]
-  },
-  {
-   "key": "noona-react",
-   "title": "리액트 기초 강의",
-   "school": "코딩알려주는누나",
-   "code": "React",
-   "term": "기초",
-   "track": "frontend",
-   "stack": "React",
-   "subject": "UI 프레임워크",
-   "quality": {
-    "why": "한국어 리액트 기초",
-    "stats": {
-     "checked": "2026-11-23",
-     "channel": "코딩알려주는누나",
-     "channel_followers": 142000,
-     "first_views": 97576,
-     "first_likes": 1334,
-     "like_per_1k_views": 13.7,
-     "first_uploaded": "2021-08-11",
-     "last_views": 12134,
-     "stay_ratio": 0.124,
-     "subtitles": [],
-     "auto_subtitles": true
-    }
-   },
-   "playlist": "https://www.youtube.com/playlist?list=PLKvVQ9ZQzjVkP0xd30Zi90P4S_rTlm-LH",
-   "total": 12,
-   "done": 0,
-   "lectures": [
-    {
-     "no": 1,
-     "id": "qcphnSqneE0",
-     "title": "The Ultimate Front-End Masterclass | If you don't understand React after this, just give up...",
-     "duration_sec": 806,
-     "done": false
-    },
-    {
-     "no": 2,
-     "id": "MeZ3FCTub3I",
-     "title": "이거 모르면 프론트엔드 개발자 못됨 | 리액트 진짜 쉽게 설명해줌 | 리액트 초보자 입문 강의 1탄",
-     "duration_sec": 585,
-     "done": false
-    },
-    {
-     "no": 3,
-     "id": "NcI-WJSWdv8",
-     "title": "Before you start learning React, you'll be in trouble if you don't know all the JavaScript gramma...",
-     "duration_sec": 965,
-     "done": false
-    },
-    {
-     "no": 4,
-     "id": "TFLvKGhrAwM",
-     "title": "리액트 초보자 입문강의 3탄 | 리액트 state 진짜 쉽게 설명해줌 | 이거 모르면 프론트엔드 개발자는 힘들지...",
-     "duration_sec": 1248,
-     "done": false
-    },
-    {
-     "no": 5,
-     "id": "TjUju3aUIDM",
-     "title": "Let's Build a To-Do App with React! (Funny) | See How Actual React Concepts Are Used | For React ...",
-     "duration_sec": 1160,
-     "done": false
-    },
-    {
-     "no": 6,
-     "id": "UKnLwVm9suY",
-     "title": "아직도 옛날 리덕스 쓴다고..? 옛날 리덕스를 최신 리덕스 Toolkit으로 바꿔보자!",
-     "duration_sec": 1123,
-     "done": false
-    },
-    {
-     "no": 7,
-     "id": "jOSu8VzJbpQ",
-     "title": "리액트 프로젝트를 더 풍부하게 만들어줄 애니메이션 라이브러리  React Spring",
-     "duration_sec": 1272,
-     "done": false
-    },
-    {
-     "no": 8,
-     "id": "Tc0uZVVwP1c",
-     "title": "I'll teach you React in the easiest way! A React course from a bootcamp instructor is now availab...",
-     "duration_sec": 398,
-     "done": false
-    },
-    {
-     "no": 9,
-     "id": "kllWOdnU1Fg",
-     "title": "useRef 훅 누구보다 쉽게 설명해드림 | 지금 까지 useState만 썼다면 꼭 봐라",
-     "duration_sec": 1251,
-     "done": false
-    },
-    {
-     "no": 10,
-     "id": "XeC8vRBpZTw",
-     "title": "Why you use it is more important than how you use it | Two uses of useMemo",
-     "duration_sec": 1268,
-     "done": false
-    },
-    {
-     "no": 11,
-     "id": "KJo_EQtG8Rw",
-     "title": "컴포넌트 커터마이즈 하기 힘들었던 사람 다 들어와 | 스타일 컴포넌트, 테마 , css module 까지 싹 다 정리해줄게",
-     "duration_sec": 1973,
-     "done": false
-    },
-    {
-     "no": 12,
-     "id": "gdQzGkW5kps",
-     "title": "리액트 19에서 새로나온 훅들 싹다 정리해드림 | useActionState, useOptimistic, useTransition, useFormStauts, use",
-     "duration_sec": 1368,
-     "done": false
-    }
-   ]
-  },
-  {
    "key": "designbase-web",
    "title": "웹 디자인 입문 — 그리드·타이포·색·여백",
    "school": "디자인베이스",
@@ -4572,219 +3680,6 @@
    ]
   },
   {
-   "key": "uxschool-figma",
-   "title": "Figma UI 디자인 — 기초부터 프로토타입까지",
-   "school": "UX스쿨",
-   "code": "Figma",
-   "term": "기초",
-   "track": "design",
-   "stack": "Figma",
-   "subject": "디자인 도구 실습",
-   "quality": {
-    "why": "피그마로 UI·프로토타입까지",
-    "stats": {
-     "checked": "2026-11-23",
-     "channel": "UX School",
-     "channel_followers": 5530,
-     "first_views": 30511,
-     "first_likes": 191,
-     "like_per_1k_views": 6.3,
-     "first_uploaded": "2022-12-31",
-     "last_views": 471,
-     "stay_ratio": 0.015,
-     "subtitles": [],
-     "auto_subtitles": true
-    }
-   },
-   "playlist": "https://www.youtube.com/playlist?list=PLqCeqvhJaNE-RpomcaV74NnZt0vN0UWao",
-   "total": 26,
-   "done": 0,
-   "lectures": [
-    {
-     "no": 1,
-     "id": "LllNfT_5l3s",
-     "title": "[Figma] UI/UX Prototype Tool!!! Figma Introduction, Pros & Cons, and Comparison with Adobe XD",
-     "duration_sec": 273,
-     "done": false
-    },
-    {
-     "no": 2,
-     "id": "JQRmEgfgGgY",
-     "title": "[Figma] 처음 사용자를 위한 피그마 인터페이스 : 사용방법 + 툴 설명 (초보)",
-     "duration_sec": 381,
-     "done": false
-    },
-    {
-     "no": 3,
-     "id": "0fzSJ0xbDr4",
-     "title": "[Figma] 피그마를 처음 하시는 분들을 위한 쉽게 와이어프레임 그리기! (UI키트 활용, 앱UI)",
-     "duration_sec": 761,
-     "done": false
-    },
-    {
-     "no": 4,
-     "id": "CI7SFb9cYTE",
-     "title": "[Figma] Easy Prototype Connection for Figma Beginners (App Screen Connection)",
-     "duration_sec": 673,
-     "done": false
-    },
-    {
-     "no": 5,
-     "id": "22yeayhXwZk",
-     "title": "[Figma] Changing Fonts in Bulk & Missing Fonts & Using Local Fonts & Android, iOS Default Fonts &...",
-     "duration_sec": 412,
-     "done": false
-    },
-    {
-     "no": 6,
-     "id": "z19LEgQIlgA",
-     "title": "[Figma] 피그마 작업할 때 로컬 파일로 꼭 저장해두세요!!! 로컬파일 저장 / 파일 열기",
-     "duration_sec": 77,
-     "done": false
-    },
-    {
-     "no": 7,
-     "id": "_3TOfju01k8",
-     "title": "[Figma] Figma App UI UX Design / Drawing from the Airbnb App Design",
-     "duration_sec": 1353,
-     "done": false
-    },
-    {
-     "no": 8,
-     "id": "6DH1oTeoTX4",
-     "title": "[Figma] Interactions & Animations for Screen Transitions and Dynamic Pages!!",
-     "duration_sec": 547,
-     "done": false
-    },
-    {
-     "no": 9,
-     "id": "chsKsouf4Ac",
-     "title": "[Figma] 가로(좌우) 스크롤 하기!  오브젝트&사진&그림등을 좌우 스크롤해보세요! (2분강의)",
-     "duration_sec": 133,
-     "done": false
-    },
-    {
-     "no": 10,
-     "id": "4Y60GlJNcC8",
-     "title": "[Figma] 피그마를 처음 하시는 분들을 위한 쉽게 웹(Web)와이어프레임 그리기 (UI키트 활용, 웹UI)",
-     "duration_sec": 644,
-     "done": false
-    },
-    {
-     "no": 11,
-     "id": "kUGUtOaSyw8",
-     "title": "[Figma] Fixed Top Navigation Menu Bar (Top, Bottom Menu, Images, and Text) - Figma Update! (1-Min...",
-     "duration_sec": 77,
-     "done": false
-    },
-    {
-     "no": 12,
-     "id": "HA_DpIEbX8M",
-     "title": "[Figma] Using Components: How to Draw a Button, Image, etc. and Use It on Multiple Screens (Examp...",
-     "duration_sec": 248,
-     "done": false
-    },
-    {
-     "no": 13,
-     "id": "hDeXdKaHBJU",
-     "title": "[Figma] Mouseover!!! Enlarge images (photos) on mouseover! Change color, show information (text),...",
-     "duration_sec": 275,
-     "done": false
-    },
-    {
-     "no": 14,
-     "id": "OEsqS7AXkY0",
-     "title": "[Figma] Using Overlays!!! Selecting the Hamburger Menu Brings Up a Sliding Menu & Keyboard / Pop-...",
-     "duration_sec": 194,
-     "done": false
-    },
-    {
-     "no": 15,
-     "id": "-j_dki9hbEA",
-     "title": "[Figma] Adding Video to Web/App (1-Minute Lecture) What to do if the video doesn't add!!!",
-     "duration_sec": 129,
-     "done": false
-    },
-    {
-     "no": 16,
-     "id": "twjW0_4PVIs",
-     "title": "[Figma] 인터랙션 : 피그마에서 좌우 드래그로 이미지 확대! 이미지 슬라이드 기능!!! (웹/앱 이미지 선택시 활용해보세요)",
-     "duration_sec": 390,
-     "done": false
-    },
-    {
-     "no": 17,
-     "id": "bTDnre1UlLc",
-     "title": "[Figma] How to Add Sound/Audio in Figma!!! (Music Apps! Sound Effects!)",
-     "duration_sec": 431,
-     "done": false
-    },
-    {
-     "no": 18,
-     "id": "ffHk-EQUuTo",
-     "title": "[Figma] 꼭 필요한 플러그인! Unsplash! 무료 이미지 쉽게 찾아서 가져오기!!! 언플래쉬 활용법!",
-     "duration_sec": 196,
-     "done": false
-    },
-    {
-     "no": 19,
-     "id": "tJqoNEW43PQ",
-     "title": "[Figma] A must-have plugin! Easily find free icons for your app and web design! How to add icons!",
-     "duration_sec": 417,
-     "done": false
-    },
-    {
-     "no": 20,
-     "id": "k8bPsEkHp6M",
-     "title": "[UX+AI] UI design in 3 seconds (with Korean input), web app, wireframe, image creation, and autom...",
-     "duration_sec": 493,
-     "done": false
-    },
-    {
-     "no": 21,
-     "id": "JzpRNNbvM08",
-     "title": "[UX+AI] AI로 쉽게! 앱 리자인하기! 갈릴레오AI, AI UI디자인 #GalileoAI #aidesign",
-     "duration_sec": 199,
-     "done": false
-    },
-    {
-     "no": 22,
-     "id": "FltOGbkI66o",
-     "title": "[UX+AI] AI Made Easy! High-Quality App & Web Design in 3 Seconds (1) #GalileoAI, AI-Powered App D...",
-     "duration_sec": 508,
-     "done": false
-    },
-    {
-     "no": 23,
-     "id": "Jm9h_JmEnu8",
-     "title": "[UX+AI] Draw wireframes in just 3 seconds with AI! How to draw in Figma! AI wireframes, AI design",
-     "duration_sec": 607,
-     "done": false
-    },
-    {
-     "no": 24,
-     "id": "1P5jgKy_Qvk",
-     "title": "[Figma] How to Scroll to a Specific Section from a Menu! Move to Top with a Back-to-Top Button! S...",
-     "duration_sec": 289,
-     "done": false
-    },
-    {
-     "no": 25,
-     "id": "ix7QxJ3ikYE",
-     "title": "[Figma] Circular Spinning Loading Animation Bar #FigmaLoadingBar #LoadingCircle",
-     "duration_sec": 330,
-     "done": false
-    },
-    {
-     "no": 26,
-     "id": "X7E4rBSxMe0",
-     "title": "[Figma] Create an Animated Floating Action Button in 5 Minutes #FloatingActionButton #figmaanimation",
-     "duration_sec": 381,
-     "done": false
-    }
-   ]
-  },
-  {
    "key": "ps-basics",
    "title": "포토샵 기초 강좌 (포토샵 2024~2026)",
    "school": "에디터 몽키",
@@ -4996,88 +3891,6 @@
      "id": "mhKMRt2_YcU",
      "title": "[포토샵강좌] 시네마그래프 만들기",
      "duration_sec": 497,
-     "done": false
-    }
-   ]
-  },
-  {
-   "key": "ps-detail-practice",
-   "title": "포토샵으로 쇼핑몰 상세페이지 만들기 (실습)",
-   "school": "Min_yonug",
-   "code": "상세페이지",
-   "term": "실습",
-   "track": "detail-page",
-   "stack": "Photoshop",
-   "subject": "상세페이지 실습",
-   "quality": {
-    "why": "쇼핑몰 상세페이지 제작 실습",
-    "stats": {
-     "checked": "2026-11-23",
-     "channel": "오냥냥ONiangNiang",
-     "channel_followers": 15400,
-     "first_views": 1335,
-     "first_likes": 48,
-     "like_per_1k_views": 36.0,
-     "first_uploaded": "2020-04-11",
-     "last_views": 1580,
-     "stay_ratio": 1.184,
-     "subtitles": [
-      "ko"
-     ],
-     "auto_subtitles": true
-    }
-   },
-   "playlist": "https://www.youtube.com/playlist?list=PLu1M-6a3UVNPh-bkhlJkWZkgfhewehbOg",
-   "total": 7,
-   "done": 0,
-   "lectures": [
-    {
-     "no": 1,
-     "id": "umUq3lyK8vg",
-     "title": "포토샵 쇼핑몰 상품페이지 제작 후 레이어 그룹 정리하는방법(한글자막지원)",
-     "duration_sec": 601,
-     "done": false
-    },
-    {
-     "no": 2,
-     "id": "o5R8AaJffJg",
-     "title": "쇼핑몰 블로그후기 상세페이지 상품페이지 사진촬영 캘리그라피 딥펜 깃털펜후기 (한글자막지원)",
-     "duration_sec": 798,
-     "done": false
-    },
-    {
-     "no": 3,
-     "id": "ucu7ec_ESFs",
-     "title": "포토샵 쇼핑몰 상품페이지 상품 누끼안따고 배경 화이트톤으로 맞추기 (좋은사진 고르기+도장툴활용)(한글자막지원)",
-     "duration_sec": 888,
-     "done": false
-    },
-    {
-     "no": 4,
-     "id": "bhB89OxGVaI",
-     "title": "쇼핑몰 포트폴리오 연습용 휴대폰 제품촬영 후 상세페이지 상품페이지 만들기 [그림자, 제품아래에 라인넣기](한글자막지원)",
-     "duration_sec": 1738,
-     "done": false
-    },
-    {
-     "no": 5,
-     "id": "ESkXhRUM0fE",
-     "title": "포토샵 상품 상세 페이지디자인 제작 사진2장 자연스럽게 이어지도록 보정",
-     "duration_sec": 1036,
-     "done": false
-    },
-    {
-     "no": 6,
-     "id": "-vly054VFUk",
-     "title": "포토샵CC 초보강좌 간단한 이벤트 상세페이지 작업 2",
-     "duration_sec": 1046,
-     "done": false
-    },
-    {
-     "no": 7,
-     "id": "5XMZYv_TUL8",
-     "title": "쇼핑몰 상품페이지 상세페이지 만들기 글씨에 배경보이게 만드는 방법(한글자막지원)",
-     "duration_sec": 868,
      "done": false
     }
    ]
@@ -7023,6 +5836,1295 @@
      "id": "M1AhPg5H1nQ",
      "title": "SQL CREATE TABLE - SQL Tutorial #35",
      "duration_sec": 625,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "designbase-webcode",
+   "title": "웹 코딩 입문 — HTML·CSS (디자인베이스)",
+   "school": "디자인베이스",
+   "code": "HTML·CSS",
+   "term": "입문 36편",
+   "track": "frontend",
+   "stack": "HTML · CSS",
+   "subject": "마크업·스타일",
+   "quality": {
+    "why": "HTML 구조부터 박스 모델·포지션·플렉스·반응형·배포까지 한국어로 — 생활코딩 HTML(2015, HTML 만)보다 새롭고 CSS 까지 간다",
+    "stats": {
+     "checked": "2026-11-23",
+     "channel": "디자인베이스",
+     "channel_followers": 130000,
+     "first_views": 75744,
+     "first_likes": 1055,
+     "like_per_1k_views": 13.9,
+     "first_uploaded": "2020-05-25",
+     "last_views": 6156,
+     "stay_ratio": 0.081,
+     "subtitles": [],
+     "auto_subtitles": true
+    }
+   },
+   "playlist": "https://www.youtube.com/playlist?list=PLkbzizJk4Ae_ZCinIZzwLf4XDh1NvjmyE",
+   "total": 36,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "7JUe5aHHFHo",
+     "title": "#1 Why Web Designers Need to Learn Coding - Web Coding Course",
+     "duration_sec": 200,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "SYFsP366WLM",
+     "title": "35. Who uses only CSS these days... SASS (SCSS) Usage Guide Part 1 - Web Coding Tutorial",
+     "duration_sec": 555,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "J8JPPcxr8Q8",
+     "title": "#2 Setting Up a Super-Easy Development Environment - Web Coding Course",
+     "duration_sec": 277,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "qvJ5n3HStyg",
+     "title": "36. Who Uses Only CSS These Days... SASS (SCSS) Usage Guide Part 2 - Web Coding Tutorial",
+     "duration_sec": 596,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "VrSJIcyeSDI",
+     "title": "#3 Understanding the Roles of Web Languages: HTML, CSS, and Javascript - Web Coding Course",
+     "duration_sec": 188,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "7DkrkPea_zM",
+     "title": "#4 HTML Basics: Structure and Syntax - Web Coding Tutorial",
+     "duration_sec": 664,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "k9Pfhq4GC4w",
+     "title": "#5 CSS Grammar and 3 Connection Methods for Decorating - Web Coding Course",
+     "duration_sec": 606,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "_nJl75kn3yY",
+     "title": "#6 Creating a Button with HTML + CSS (Feat. Mouse Over) - Web Coding Tutorial",
+     "duration_sec": 693,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "i72xG6ukehk",
+     "title": "#7 Creating Card UI with Code (Class and ID) - Web Coding Tutorial",
+     "duration_sec": 1174,
+     "done": false
+    },
+    {
+     "no": 10,
+     "id": "SJyBE-_2D34",
+     "title": "#8 CSS 개념잡기 Display & Cascading - 웹 코딩 강좌",
+     "duration_sec": 472,
+     "done": false
+    },
+    {
+     "no": 11,
+     "id": "Utqd7h7k-RM",
+     "title": "#9 Parent and Child Relationships?? - Web Coding Tutorial",
+     "duration_sec": 316,
+     "done": false
+    },
+    {
+     "no": 12,
+     "id": "DpES7X-xgUc",
+     "title": "#10 Reset.css & Normalize.css for Style Reset - Web Coding Tutorial",
+     "duration_sec": 277,
+     "done": false
+    },
+    {
+     "no": 13,
+     "id": "HKVmR9mdGCc",
+     "title": "#11 Must-Know Box Model for Accurate Coding - Web Coding Tutorial",
+     "duration_sec": 696,
+     "done": false
+    },
+    {
+     "no": 14,
+     "id": "gdo-KlJZ7u0",
+     "title": "#12 Position Yourself! Understanding CSS Position - Web Coding Tutorial",
+     "duration_sec": 551,
+     "done": false
+    },
+    {
+     "no": 15,
+     "id": "3haIzH9KuBE",
+     "title": "#13 Sending elements forward and backward with CSS z-index (feat. parallax effect) - Web Coding T...",
+     "duration_sec": 633,
+     "done": false
+    },
+    {
+     "no": 16,
+     "id": "JMX9FNoB6Cg",
+     "title": "#14 CSS Float 사용법 - 웹 코딩 강좌",
+     "duration_sec": 926,
+     "done": false
+    },
+    {
+     "no": 17,
+     "id": "SmzghM3l228",
+     "title": "#15 Understanding CSS Units for Responsive Design: %, em, rem, vw, vh - Web Coding Tutorial",
+     "duration_sec": 555,
+     "done": false
+    },
+    {
+     "no": 18,
+     "id": "QvQsuAaUwxo",
+     "title": "#16 How to add a background image - Web Coding Tutorial",
+     "duration_sec": 522,
+     "done": false
+    },
+    {
+     "no": 19,
+     "id": "j1UuCGG6244",
+     "title": "#17 Applying Google Web Fonts and Adjusting Letter and Line Spacing - Web Coding Tutorial",
+     "duration_sec": 619,
+     "done": false
+    },
+    {
+     "no": 20,
+     "id": "qhLwni69Trs",
+     "title": "#18 How to Implement Animation with CSS Code - Web Coding Tutorial",
+     "duration_sec": 606,
+     "done": false
+    },
+    {
+     "no": 21,
+     "id": "vyX488i1QNI",
+     "title": "#19 CSS로 그라데이션 배경 만드는 방법 - 웹 코딩 강좌",
+     "duration_sec": 370,
+     "done": false
+    },
+    {
+     "no": 22,
+     "id": "RwiSwAwtKOk",
+     "title": "#20 Creating a Login UI Screen with Sample Code - Web Coding Tutorial",
+     "duration_sec": 1681,
+     "done": false
+    },
+    {
+     "no": 23,
+     "id": "xAxC88B7Haw",
+     "title": "#21 카드 UI 예제 코드로 만들기 - 웹 코딩 강좌",
+     "duration_sec": 2167,
+     "done": false
+    },
+    {
+     "no": 24,
+     "id": "dtBNnijA1QU",
+     "title": "#22 반응형으로 만드는 마법, 미디어 쿼리 - 웹 코딩 강좌",
+     "duration_sec": 709,
+     "done": false
+    },
+    {
+     "no": 25,
+     "id": "ZqZgyiv7w3M",
+     "title": "#23 반응형 영상 배경 만들기 - 웹 코딩 강좌",
+     "duration_sec": 1321,
+     "done": false
+    },
+    {
+     "no": 26,
+     "id": "Luviine3TOM",
+     "title": "#24 SEO를 위한 메타태그 이해하기 - 웹 코딩 강좌",
+     "duration_sec": 512,
+     "done": false
+    },
+    {
+     "no": 27,
+     "id": "9hoVbmzNSjA",
+     "title": "#25 Controlling the Mouse Cursor with CSS - Web Coding Tutorial",
+     "duration_sec": 317,
+     "done": false
+    },
+    {
+     "no": 28,
+     "id": "4vWqyqQ3WYg",
+     "title": "#26 How to Add a Favicon in 30 Seconds - Web Coding Tutorial",
+     "duration_sec": 247,
+     "done": false
+    },
+    {
+     "no": 29,
+     "id": "0xqdo8mHYDA",
+     "title": "#27 부트스트랩으로 웹사이트 만드는 방법 - 웹 코딩 강좌",
+     "duration_sec": 956,
+     "done": false
+    },
+    {
+     "no": 30,
+     "id": "lGRMjEkwegg",
+     "title": "#28 jQuery로 모달 팝업 만들기 - 웹 코딩 강좌",
+     "duration_sec": 1189,
+     "done": false
+    },
+    {
+     "no": 31,
+     "id": "1FhfdnrRbJc",
+     "title": "#29 쉽게 반응형 헤더 만들기 - 웹 코딩 강좌",
+     "duration_sec": 926,
+     "done": false
+    },
+    {
+     "no": 32,
+     "id": "7k8BPFfXRL0",
+     "title": "#30 Build a Web Slider in 3 Minutes - Web Coding Tutorial",
+     "duration_sec": 639,
+     "done": false
+    },
+    {
+     "no": 33,
+     "id": "hJ1GJ8zJ-6c",
+     "title": "#31 완성된 코드 웹 서버에 올리기 - 웹 코딩 강좌",
+     "duration_sec": 366,
+     "done": false
+    },
+    {
+     "no": 34,
+     "id": "5SkDTA4YCuo",
+     "title": "#32 How to Connect Google Analytics to Your Website - Web Coding Tutorial",
+     "duration_sec": 388,
+     "done": false
+    },
+    {
+     "no": 35,
+     "id": "rkp29vJeBWE",
+     "title": "33. Awwwards 스타일의 마우스 인터랙션 구현하는 방법 - 웹 코딩 강좌",
+     "duration_sec": 811,
+     "done": false
+    },
+    {
+     "no": 36,
+     "id": "ZhvyBHOnYB8",
+     "title": "34. CSS Flex를 이용해서 반응형 레이아웃 좀 더 쉽게 짜는 방법 - 웹 코딩 강좌",
+     "duration_sec": 560,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "brocode-js-2023",
+   "title": "자바스크립트 기초 (Bro Code, 2023)",
+   "school": "Bro Code",
+   "code": "JavaScript",
+   "term": "2023",
+   "track": "frontend",
+   "stack": "JavaScript (ES2023)",
+   "subject": "언어 기초",
+   "quality": {
+    "why": "2023년에 새로 찍은 80편 — 문법부터 DOM·이벤트·비동기·fetch 까지, 1강 조회 100만",
+    "stats": {
+     "checked": "2026-11-23",
+     "channel": "Bro Code",
+     "channel_followers": 3450000,
+     "first_views": 1026803,
+     "first_likes": 13113,
+     "like_per_1k_views": 12.8,
+     "first_uploaded": "2023-10-14",
+     "last_views": 125856,
+     "stay_ratio": 0.123,
+     "subtitles": [],
+     "auto_subtitles": true
+    }
+   },
+   "playlist": "https://www.youtube.com/playlist?list=PLZPZq0r_RZOO1zkgO4bIdfuLpizCeHYKv",
+   "total": 80,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "Ihy0QziLDf0",
+     "title": "JavaScript tutorial for beginners 🌐",
+     "duration_sec": 723,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "nbX0MIV7-Ek",
+     "title": "JavaScript VARIABLES are easy! 📦",
+     "duration_sec": 769,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "FyGIKD2fxIo",
+     "title": "JavaScript ARITHMETIC OPERATORS in 8 minutes! ➕",
+     "duration_sec": 508,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "JeXqaKeJSRI",
+     "title": "How to accept JavaScript USER INPUT in 5 minutes 💬",
+     "duration_sec": 322,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "jLRnuVHwHKk",
+     "title": "Learn JavaScript TYPE CONVERSION in 5 minutes! 💱",
+     "duration_sec": 340,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "3M53uhj0D4k",
+     "title": "JavaScript CONSTANTS are easy 🚫",
+     "duration_sec": 462,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "uSJXZ3LkABE",
+     "title": "JavaScript COUNTER PROGRAM 🔢",
+     "duration_sec": 557,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "uy-1WNqecnI",
+     "title": "Why the Math object in JavaScript is useful 🧮",
+     "duration_sec": 337,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "K2upGO5Bb48",
+     "title": "Random number generator in JavaScript ⁉",
+     "duration_sec": 517,
+     "done": false
+    },
+    {
+     "no": 10,
+     "id": "PgUXiprlg1k",
+     "title": "If statements in JavaScript are easy 🤔",
+     "duration_sec": 958,
+     "done": false
+    },
+    {
+     "no": 11,
+     "id": "SgxzJdqhyfw",
+     "title": "The JavaScript checked property is easy ✅",
+     "duration_sec": 607,
+     "done": false
+    },
+    {
+     "no": 12,
+     "id": "atS_A9HHAVo",
+     "title": "JavaScript TERNARY OPERATOR in 6 minutes!  ❓",
+     "duration_sec": 406,
+     "done": false
+    },
+    {
+     "no": 13,
+     "id": "z2fcWdoph4U",
+     "title": "Learn JavaScript SWITCHES in 6 minutes! 💡",
+     "duration_sec": 405,
+     "done": false
+    },
+    {
+     "no": 14,
+     "id": "wssvLtVSFeI",
+     "title": "Useful JavaScript STRING METHODS 🧵",
+     "duration_sec": 483,
+     "done": false
+    },
+    {
+     "no": 15,
+     "id": "sPPGd4Lfh3s",
+     "title": "Learn JavaScript STRING SLICING in 8 minutes! ✂️",
+     "duration_sec": 482,
+     "done": false
+    },
+    {
+     "no": 16,
+     "id": "J4YhlDsNqeE",
+     "title": "Learn JS METHOD CHAINING in 5 minutes! ⛓",
+     "duration_sec": 327,
+     "done": false
+    },
+    {
+     "no": 17,
+     "id": "ovWYhDVQiR8",
+     "title": "Learn JavaScript LOGICAL OPERATORS in 5 minutes ❗",
+     "duration_sec": 342,
+     "done": false
+    },
+    {
+     "no": 18,
+     "id": "O7aUm0AuUy4",
+     "title": "Learn JavaScript STRICT EQUALITY in 3 minutes! 🟰",
+     "duration_sec": 238,
+     "done": false
+    },
+    {
+     "no": 19,
+     "id": "TDUz9QcGPoE",
+     "title": "Learn JavaScript WHILE LOOPS in 8 minutes! 🔁",
+     "duration_sec": 492,
+     "done": false
+    },
+    {
+     "no": 20,
+     "id": "ZOQYIWLngSU",
+     "title": "Learn JavaScript FOR LOOPS in 5 minutes! 🔂",
+     "duration_sec": 345,
+     "done": false
+    },
+    {
+     "no": 21,
+     "id": "maB0r59KOUk",
+     "title": "JavaScript NUMBER GUESSING GAME ↕",
+     "duration_sec": 534,
+     "done": false
+    },
+    {
+     "no": 22,
+     "id": "HFaxylC7bUc",
+     "title": "JavaScript FUNCTIONS are easy! 📞",
+     "duration_sec": 734,
+     "done": false
+    },
+    {
+     "no": 23,
+     "id": "KyqmbIkZGIo",
+     "title": "Learn JavaScript VARIABLE SCOPE in 5 minutes! 🏠",
+     "duration_sec": 326,
+     "done": false
+    },
+    {
+     "no": 24,
+     "id": "6xrTdpIAsb0",
+     "title": "JavaScript TEMPERATURE CONVERSION PROGRAM 🌡️",
+     "duration_sec": 978,
+     "done": false
+    },
+    {
+     "no": 25,
+     "id": "yQ1fz8LY354",
+     "title": "Learn JavaScript ARRAYS in 8 minutes! 🗃",
+     "duration_sec": 486,
+     "done": false
+    },
+    {
+     "no": 26,
+     "id": "SmJNeJuLmVo",
+     "title": "Learn 2D ARRAYS in JavaScript in 6 minutes! ⬜",
+     "duration_sec": 391,
+     "done": false
+    },
+    {
+     "no": 27,
+     "id": "RuDdltsfaVc",
+     "title": "JavaScript SPREAD OPERATOR in 4 minutes! 📖",
+     "duration_sec": 295,
+     "done": false
+    },
+    {
+     "no": 28,
+     "id": "ahwR1D_GAfc",
+     "title": "JavaScript REST PARAMETERS in 8 minutes! 🗄",
+     "duration_sec": 486,
+     "done": false
+    },
+    {
+     "no": 29,
+     "id": "PXilNmL9U80",
+     "title": "Build this dice roller program with JavaScript 🎲",
+     "duration_sec": 852,
+     "done": false
+    },
+    {
+     "no": 30,
+     "id": "1cdXwYEFDAg",
+     "title": "Build this JavaScript random password generator 🔑",
+     "duration_sec": 725,
+     "done": false
+    },
+    {
+     "no": 31,
+     "id": "i2SPq-nb3NQ",
+     "title": "Learn JavaScript CALLBACKS in 7 minutes! 🤙",
+     "duration_sec": 437,
+     "done": false
+    },
+    {
+     "no": 32,
+     "id": "uOZWH0KEUs4",
+     "title": "JavaScript forEach() method in 8 minutes! ➿",
+     "duration_sec": 482,
+     "done": false
+    },
+    {
+     "no": 33,
+     "id": "xNQH1NbZQ0E",
+     "title": "JavaScript map() method in 7 minutes! 🗺️",
+     "duration_sec": 422,
+     "done": false
+    },
+    {
+     "no": 34,
+     "id": "VvSEKHKFvpQ",
+     "title": "JavaScript filter() method in 6 minutes! 🚰",
+     "duration_sec": 390,
+     "done": false
+    },
+    {
+     "no": 35,
+     "id": "iDWtuWkuj8g",
+     "title": "JavaScript reduce() method in 5 minutes! ♻️",
+     "duration_sec": 316,
+     "done": false
+    },
+    {
+     "no": 36,
+     "id": "jDqmFt03Gy0",
+     "title": "JavaScript FUNCTION EXPRESSIONS in 7 minutes! 🐣",
+     "duration_sec": 452,
+     "done": false
+    },
+    {
+     "no": 37,
+     "id": "fRRRkognpOs",
+     "title": "Learn JavaScript ARROW FUNCTIONS in 8 minutes! 🎯",
+     "duration_sec": 482,
+     "done": false
+    },
+    {
+     "no": 38,
+     "id": "lo7o91qLzxc",
+     "title": "Learn JavaScript OBJECTS in 7 minutes! 🧍",
+     "duration_sec": 421,
+     "done": false
+    },
+    {
+     "no": 39,
+     "id": "Jdlo8ZDt5Jg",
+     "title": "What is THIS in JavaScript? 👈",
+     "duration_sec": 267,
+     "done": false
+    },
+    {
+     "no": 40,
+     "id": "WPmAu26LZKo",
+     "title": "JavaScript CONSTRUCTORS in 5 minutes! 🛠",
+     "duration_sec": 332,
+     "done": false
+    },
+    {
+     "no": 41,
+     "id": "U2vxAEiaVRY",
+     "title": "Learn JavaScript CLASSES in 6 minutes! 🏭",
+     "duration_sec": 369,
+     "done": false
+    },
+    {
+     "no": 42,
+     "id": "UOH4SAG3BoQ",
+     "title": "Learn JavaScript STATIC keyword in 8 minutes! ⚡",
+     "duration_sec": 484,
+     "done": false
+    },
+    {
+     "no": 43,
+     "id": "DqUPa0D2N78",
+     "title": "Learn JavaScript INHERITANCE in 7 minutes! 🐇",
+     "duration_sec": 424,
+     "done": false
+    },
+    {
+     "no": 44,
+     "id": "Cto38GpvJgg",
+     "title": "The JavaScript SUPER keyword is super! 🦸‍♂️",
+     "duration_sec": 562,
+     "done": false
+    },
+    {
+     "no": 45,
+     "id": "KQVCAnh6Afk",
+     "title": "JavaScript GETTERS & SETTERS are awesome!!! 📐",
+     "duration_sec": 794,
+     "done": false
+    },
+    {
+     "no": 46,
+     "id": "UHZcJyVXtLo",
+     "title": "JavaScript DESTRUCTURING in 8 minutes! 💥",
+     "duration_sec": 521,
+     "done": false
+    },
+    {
+     "no": 47,
+     "id": "b8gwYQ_V4K4",
+     "title": "Learn JavaScript NESTED OBJECTS easy! 📫",
+     "duration_sec": 554,
+     "done": false
+    },
+    {
+     "no": 48,
+     "id": "w9078dAjcrY",
+     "title": "JavaScript ARRAYS of OBJECTS are easy! 🍎",
+     "duration_sec": 601,
+     "done": false
+    },
+    {
+     "no": 49,
+     "id": "CTHhlx25X-U",
+     "title": "Learn JavaScript SORTING in 6 minutes! 🗃",
+     "duration_sec": 402,
+     "done": false
+    },
+    {
+     "no": 50,
+     "id": "FGAUekwri1Q",
+     "title": "How to SHUFFLE AN ARRAY in 4 minutes! 🔀",
+     "duration_sec": 245,
+     "done": false
+    },
+    {
+     "no": 51,
+     "id": "LwYwz67l1lA",
+     "title": "Learn JavaScript DATE objects in 8 minutes! 📅",
+     "duration_sec": 482,
+     "done": false
+    },
+    {
+     "no": 52,
+     "id": "beZfCfiuIkA",
+     "title": "Learn JavaScript CLOSURES in 10 minutes! 🔒",
+     "duration_sec": 658,
+     "done": false
+    },
+    {
+     "no": 53,
+     "id": "shWr5DNVeCI",
+     "title": "Learn JavaScript setTimeout() in 6 minutes! ⏰",
+     "duration_sec": 373,
+     "done": false
+    },
+    {
+     "no": 54,
+     "id": "9amAW_qXv84",
+     "title": "JavaScript console.time() is awesome! ⏲",
+     "duration_sec": 280,
+     "done": false
+    },
+    {
+     "no": 55,
+     "id": "HOMu48bTzz8",
+     "title": "Format currency EASY in JavaScript 💲",
+     "duration_sec": 330,
+     "done": false
+    },
+    {
+     "no": 56,
+     "id": "pq_FYp2JSLI",
+     "title": "Build a JS compound interest calculator 💰",
+     "duration_sec": 1109,
+     "done": false
+    },
+    {
+     "no": 57,
+     "id": "2glfqa-ZbNw",
+     "title": "Build this digital clock with JavaScript! 🕐",
+     "duration_sec": 648,
+     "done": false
+    },
+    {
+     "no": 58,
+     "id": "d8-LGhKtzRw",
+     "title": "Build this stopwatch with JavaScript! ⏱",
+     "duration_sec": 1086,
+     "done": false
+    },
+    {
+     "no": 59,
+     "id": "fl-_6d18DN0",
+     "title": "Learn JavaScript ES6 Modules in 6 minutes! 🚢",
+     "duration_sec": 365,
+     "done": false
+    },
+    {
+     "no": 60,
+     "id": "Coyy79wRz_s",
+     "title": "What is asynchronous JavaScript code? 💤",
+     "duration_sec": 288,
+     "done": false
+    },
+    {
+     "no": 61,
+     "id": "NwoAZF66_Go",
+     "title": "JavaScript Error handling in 9 minutes! ⚠",
+     "duration_sec": 543,
+     "done": false
+    },
+    {
+     "no": 62,
+     "id": "I5kj-YsmWjM",
+     "title": "Build this JS calculator in 15 minutes! 🖩",
+     "duration_sec": 920,
+     "done": false
+    },
+    {
+     "no": 63,
+     "id": "NO5kUNxGIu0",
+     "title": "The JavaScript DOM explained in 5 minutes! 🌳",
+     "duration_sec": 301,
+     "done": false
+    },
+    {
+     "no": 64,
+     "id": "FQtjI1PC5Z0",
+     "title": "Learn JavaScript ELEMENT SELECTORS easy! 📑",
+     "duration_sec": 1058,
+     "done": false
+    },
+    {
+     "no": 65,
+     "id": "RKXIMnSwUcg",
+     "title": "Learn DOM Navigation in 15 minutes! 🧭",
+     "duration_sec": 927,
+     "done": false
+    },
+    {
+     "no": 66,
+     "id": "WCRi7y6aNrQ",
+     "title": "How to ADD/CHANGE HTML using JavaScript 🛠️",
+     "duration_sec": 933,
+     "done": false
+    },
+    {
+     "no": 67,
+     "id": "g_vXSKbfUiQ",
+     "title": "Learn JavaScript MOUSE EVENTS in 10 minutes! 🖱",
+     "duration_sec": 630,
+     "done": false
+    },
+    {
+     "no": 68,
+     "id": "q32skvBgxo4",
+     "title": "Learn JavaScript KEY EVENTS in 10+ minutes! ⌨",
+     "duration_sec": 676,
+     "done": false
+    },
+    {
+     "no": 69,
+     "id": "MkvHPOT4RS8",
+     "title": "How to HIDE and SHOW HTML using JavaScript 🖼",
+     "duration_sec": 311,
+     "done": false
+    },
+    {
+     "no": 70,
+     "id": "5n3qPKgLEDc",
+     "title": "What are NodeLists in JavaScript? 📃",
+     "duration_sec": 802,
+     "done": false
+    },
+    {
+     "no": 71,
+     "id": "62qN2RcpIAE",
+     "title": "Learn the JavaScript classList property easy! 💡",
+     "duration_sec": 960,
+     "done": false
+    },
+    {
+     "no": 72,
+     "id": "3uKdQx-SZ5A",
+     "title": "Build this rock paper scissors game with JavaScript! 👊",
+     "duration_sec": 1134,
+     "done": false
+    },
+    {
+     "no": 73,
+     "id": "749ta0nvj8s",
+     "title": "Build this image slider with JavaScript! 🖼️",
+     "duration_sec": 949,
+     "done": false
+    },
+    {
+     "no": 74,
+     "id": "NOlOw03qBfw",
+     "title": "What is JavaScript CALLBACK HELL? 🔥",
+     "duration_sec": 349,
+     "done": false
+    },
+    {
+     "no": 75,
+     "id": "NOzi4wBHn0o",
+     "title": "What are JavaScript PROMISES? 🤞",
+     "duration_sec": 757,
+     "done": false
+    },
+    {
+     "no": 76,
+     "id": "9j1dZwFEJ-c",
+     "title": "JavaScript ASYNC/AWAIT is easy! ⏳",
+     "duration_sec": 279,
+     "done": false
+    },
+    {
+     "no": 77,
+     "id": "r4MLHHLctKw",
+     "title": "Learn JSON files in 10 minutes! 📄",
+     "duration_sec": 609,
+     "done": false
+    },
+    {
+     "no": 78,
+     "id": "i7oL_K_FmM8",
+     "title": "Learn how JavaScript COOKIES work! 🍪",
+     "duration_sec": 855,
+     "done": false
+    },
+    {
+     "no": 79,
+     "id": "37vxWr0WgQk",
+     "title": "How to FETCH data from an API using JavaScript ↩️",
+     "duration_sec": 857,
+     "done": false
+    },
+    {
+     "no": 80,
+     "id": "VaDUGPMjzOM",
+     "title": "Create a weather app with JavaScript! ☀️",
+     "duration_sec": 2320,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "codevolution-react19",
+   "title": "리액트 19 완전 정복 (Codevolution)",
+   "school": "Codevolution",
+   "code": "React",
+   "term": "React 19 (2025~2026)",
+   "track": "frontend",
+   "stack": "React 19",
+   "subject": "UI 프레임워크",
+   "quality": {
+    "why": "지금 판(React 19)으로 2025-10~2026-01 에 찍은 38편 — 리액트 강의로 이름난 채널",
+    "stats": {
+     "checked": "2026-11-23",
+     "channel": "Codevolution",
+     "channel_followers": 759000,
+     "first_views": 164045,
+     "first_likes": 1945,
+     "like_per_1k_views": 11.9,
+     "first_uploaded": "2025-10-27",
+     "last_views": 10766,
+     "stay_ratio": 0.066,
+     "subtitles": [],
+     "auto_subtitles": true
+    }
+   },
+   "playlist": "https://www.youtube.com/playlist?list=PLC3y8-rFHvwg9D7EOSEBabuutIdKZN5V3",
+   "total": 38,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "H6QAY_VqvUc",
+     "title": "React 19 Tutorial - 1 - Introduction",
+     "duration_sec": 279,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "32nwU4Gd8qE",
+     "title": "React 19 Tutorial - 2 - Your First React App",
+     "duration_sec": 262,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "j_D-KWQmZt4",
+     "title": "React 19 Tutorial - 3 - Project Structure",
+     "duration_sec": 434,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "zFdDdPMyIAo",
+     "title": "React 19 Tutorial - 4 - Components",
+     "duration_sec": 438,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "ACqQh7zdPiY",
+     "title": "React 19 Tutorial - 5 - Export and Import Components",
+     "duration_sec": 378,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "6sg98ju4O-w",
+     "title": "React 19 Tutorial - 6 - JSX",
+     "duration_sec": 516,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "1IvSI_YKx-k",
+     "title": "React 19 Tutorial - 7 - Rules of JSX",
+     "duration_sec": 772,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "JQBaytmgmGo",
+     "title": "React 19 Tutorial - 8 - Props",
+     "duration_sec": 576,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "pQLXUT94Hcg",
+     "title": "React 19 Tutorial - 9 - Props Patterns",
+     "duration_sec": 614,
+     "done": false
+    },
+    {
+     "no": 10,
+     "id": "VwuwodgrIaU",
+     "title": "React 19 Tutorial - 10 - Conditional Rendering",
+     "duration_sec": 702,
+     "done": false
+    },
+    {
+     "no": 11,
+     "id": "lRB-RAZeaHg",
+     "title": "React 19 Tutorial - 11 - Rendering Lists",
+     "duration_sec": 436,
+     "done": false
+    },
+    {
+     "no": 12,
+     "id": "y_J0-bUoACc",
+     "title": "React 19 Tutorial - 12 - Lists and Keys",
+     "duration_sec": 381,
+     "done": false
+    },
+    {
+     "no": 13,
+     "id": "919gHAelBfw",
+     "title": "React 19 Tutorial - 13 - Index as Key Anti-Pattern",
+     "duration_sec": 505,
+     "done": false
+    },
+    {
+     "no": 14,
+     "id": "sIecklWhEaw",
+     "title": "React 19 Tutorial - 14 - Styling React Components",
+     "duration_sec": 637,
+     "done": false
+    },
+    {
+     "no": 15,
+     "id": "peewECGtPCI",
+     "title": "React 19 Tutorial - 15 - Event Handling",
+     "duration_sec": 450,
+     "done": false
+    },
+    {
+     "no": 16,
+     "id": "XzZoUojeuF0",
+     "title": "React 19 Tutorial - 16 - Event Handlers as Props",
+     "duration_sec": 634,
+     "done": false
+    },
+    {
+     "no": 17,
+     "id": "CRZSGDUfgsw",
+     "title": "React 19 Tutorials - 17 - Introduction to State",
+     "duration_sec": 398,
+     "done": false
+    },
+    {
+     "no": 18,
+     "id": "akZJe9Mx-Xc",
+     "title": "React 19 Tutorial - 18 - useState Hook",
+     "duration_sec": 649,
+     "done": false
+    },
+    {
+     "no": 19,
+     "id": "YdJPtx-ovWM",
+     "title": "React 19 Tutorial - 19 - Rules of Hooks",
+     "duration_sec": 560,
+     "done": false
+    },
+    {
+     "no": 20,
+     "id": "qiPHXVeNi_w",
+     "title": "React 19 Tutorial - 20 - How State Updates Work",
+     "duration_sec": 355,
+     "done": false
+    },
+    {
+     "no": 21,
+     "id": "hjNExKVUHSw",
+     "title": "React 19 Tutorial - 21 - State as a Snapshot",
+     "duration_sec": 347,
+     "done": false
+    },
+    {
+     "no": 22,
+     "id": "7PsTafZluL0",
+     "title": "React 19 Tutorial - 22 - setState using Previous State",
+     "duration_sec": 478,
+     "done": false
+    },
+    {
+     "no": 23,
+     "id": "IXrMupqNlog",
+     "title": "React 19 Tutorial - 23 - How React Batches Updates",
+     "duration_sec": 244,
+     "done": false
+    },
+    {
+     "no": 24,
+     "id": "MCIfZlQlmSc",
+     "title": "React 19 Tutorial - 24 - useState with Objects",
+     "duration_sec": 568,
+     "done": false
+    },
+    {
+     "no": 25,
+     "id": "m0FUyg5ntlM",
+     "title": "React 19 Tutorial - 25 - useState with Arrays",
+     "duration_sec": 532,
+     "done": false
+    },
+    {
+     "no": 26,
+     "id": "YpjvL5SvVhM",
+     "title": "React 19 Tutorial - 26 - Sharing State Between Components",
+     "duration_sec": 736,
+     "done": false
+    },
+    {
+     "no": 27,
+     "id": "I2B_vbo_4B0",
+     "title": "React 19 Tutorial - 27 - useReducer Hook",
+     "duration_sec": 291,
+     "done": false
+    },
+    {
+     "no": 28,
+     "id": "WaqlQYpNSWI",
+     "title": "React 19 Tutorial - 28 - useReducer (simple state and action)",
+     "duration_sec": 492,
+     "done": false
+    },
+    {
+     "no": 29,
+     "id": "9QRq2kbP7PA",
+     "title": "React 19 Tutorial - 29 - useReducer (complex state and actions)",
+     "duration_sec": 1257,
+     "done": false
+    },
+    {
+     "no": 30,
+     "id": "XKVlIu2RKmo",
+     "title": "React 19 Tutorial - 30 - useReducer Lazy Initialization",
+     "duration_sec": 373,
+     "done": false
+    },
+    {
+     "no": 31,
+     "id": "5BwYRc84qgc",
+     "title": "React 19 Tutorial - 31 - Implementing useState with useReducer",
+     "duration_sec": 579,
+     "done": false
+    },
+    {
+     "no": 32,
+     "id": "jfxERvIgOp4",
+     "title": "React 19 Tutorial - 32 - useState vs useReducer",
+     "duration_sec": 227,
+     "done": false
+    },
+    {
+     "no": 33,
+     "id": "IgZjyyG6DjQ",
+     "title": "React 19 Tutorial - 33 - The Prop Drilling Problem",
+     "duration_sec": 341,
+     "done": false
+    },
+    {
+     "no": 34,
+     "id": "BdKykWVTPtU",
+     "title": "React 19 Tutorial - 34 - Context and useContext Hook",
+     "duration_sec": 499,
+     "done": false
+    },
+    {
+     "no": 35,
+     "id": "Iy2u57d3pLU",
+     "title": "React 19 Tutorial - 35 - Context with State",
+     "duration_sec": 470,
+     "done": false
+    },
+    {
+     "no": 36,
+     "id": "18sbaJl06N0",
+     "title": "React 19 Tutorial - 36 - use API for Context",
+     "duration_sec": 254,
+     "done": false
+    },
+    {
+     "no": 37,
+     "id": "b4VbMlgciYg",
+     "title": "React 19 Tutorial - 37 - Refs and useRef Hook",
+     "duration_sec": 443,
+     "done": false
+    },
+    {
+     "no": 38,
+     "id": "O1mleqDJ-Wg",
+     "title": "React 19 Tutorial - 38 - Manipulate the DOM with Refs",
+     "duration_sec": 201,
+     "done": false
+    }
+   ]
+  },
+  {
+   "key": "starrybitna-figma",
+   "title": "피그마 기초 — 컴포넌트·오토 레이아웃·프로토타입 (스태리빛나)",
+   "school": "스태리빛나",
+   "code": "Figma",
+   "term": "2023~2025",
+   "track": "design",
+   "stack": "Figma (2025 UI)",
+   "subject": "디자인 도구 실습",
+   "quality": {
+    "why": "새 인터페이스(UI3)·2025 오토 레이아웃까지 다룬 한국어 기초 — 좋아요 비율 18, 공식 한국어 자막. 뒤의 잡담·드로잉 편은 뺐다",
+    "stats": {
+     "checked": "2026-11-23",
+     "channel": "StarryBitna",
+     "channel_followers": 9390,
+     "first_views": 139534,
+     "first_likes": 2506,
+     "like_per_1k_views": 18.0,
+     "first_uploaded": "2023-07-05",
+     "last_views": 4523,
+     "stay_ratio": 0.032,
+     "subtitles": [
+      "en",
+      "ko"
+     ],
+     "auto_subtitles": true
+    }
+   },
+   "playlist": "https://www.youtube.com/playlist?list=PLCED9ZdFzLddZ3eCPQ8Deb6Zruu9-VMsR",
+   "total": 12,
+   "done": 0,
+   "lectures": [
+    {
+     "no": 1,
+     "id": "ASlOHtOps-s",
+     "title": "Figma Basics: 10-Minute Course (Understanding Components) What is Figma? - Figma (Basics)",
+     "duration_sec": 663,
+     "done": false
+    },
+    {
+     "no": 2,
+     "id": "ZWeUbQJ5cMk",
+     "title": "피그마 파일을 컴퓨터 바탕 화면에 저장하고 불러오기 How to save Figma files to desktop - 피그마(기초)",
+     "duration_sec": 112,
+     "done": false
+    },
+    {
+     "no": 3,
+     "id": "onld0jSaOrg",
+     "title": "피그마 단축키 작업 속도 10배 향상 Figma shortcuts to work 10X faster - 피그마(기초)",
+     "duration_sec": 432,
+     "done": false
+    },
+    {
+     "no": 4,
+     "id": "w6RCu2FtZ4s",
+     "title": "피그마 어려울 때 보는 영상",
+     "duration_sec": 101,
+     "done": false
+    },
+    {
+     "no": 5,
+     "id": "-b0BycN_jGs",
+     "title": "Figma's New Interface: Download & Web vs. App Differences 🌟 Figma Basics (NEW Ver.)",
+     "duration_sec": 366,
+     "done": false
+    },
+    {
+     "no": 6,
+     "id": "VbutDOpRtEg",
+     "title": "Understanding Figma Auto Layout 100% - Figma (Basic) Mastering Figma Auto Layout, Fill Container,...",
+     "duration_sec": 572,
+     "done": false
+    },
+    {
+     "no": 7,
+     "id": "Xl_-n1Ie1eQ",
+     "title": "Mastering Figma Components - Figma Basics",
+     "duration_sec": 551,
+     "done": false
+    },
+    {
+     "no": 8,
+     "id": "iJjYddFStSo",
+     "title": "From registering Figma styles to using them - Figma (Basics)",
+     "duration_sec": 464,
+     "done": false
+    },
+    {
+     "no": 9,
+     "id": "fzVYkIgWH0o",
+     "title": "Setting up grids in Figma 😎 Tips for beginners - Figma (Basic) Setting up grids in Figma",
+     "duration_sec": 376,
+     "done": false
+    },
+    {
+     "no": 10,
+     "id": "sIEkzau9Wgg",
+     "title": "Mastering Figma Prototypes: A Complete Guide for Beginners",
+     "duration_sec": 351,
+     "done": false
+    },
+    {
+     "no": 11,
+     "id": "g0P4nsGsViQ",
+     "title": "2025 Figma Latest Course 🥺 If designers want to learn the basics of Figma",
+     "duration_sec": 301,
+     "done": false
+    },
+    {
+     "no": 12,
+     "id": "FRcEdJy3Ttg",
+     "title": "Create a Figma Design Poster 🧐 A Realistic 7-Minute Tutorial",
+     "duration_sec": 467,
      "done": false
     }
    ]
