@@ -5,6 +5,7 @@
   "ats-toss:group:7758217003": "toss-ai-engineer-model",
   "ats-toss:group:7646941003": "toss-ai-platform-engineer-platform",
   "ats-toss:group:7986152003": "toss-ai-platform-inference-pipeline",
+  "ats-toss:group:8009061003": "toss-ai-platform-retrieval",
   "ats-toss:group:7786567003": "toss-ai-platform-serving",
   "ats-toss:group:8000575003": "toss-aioc-ai-solution-engineer",
   "ats-toss:group:7798373003": "toss-call-infra-engineer",
@@ -13,6 +14,7 @@
   "ats-toss:group:7827378003": "toss-commerce-data-graph-mle",
   "ats-toss:group:7992223003": "toss-commerce-search-relevance-mle",
   "ats-toss:group:7795787003": "toss-commerce-signal-data-scientist",
+  "ats-toss:group:4071151003": "toss-devops-engineer",
   "ats-toss:group:8003064003": "toss-dip-data-scientist",
   "ats-toss:group:7818488003": "toss-dw-analytics-engineer",
   "ats-toss:group:7985496003": "toss-dw-global-analytics-engineer",
@@ -68,6 +70,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 17
+  },
+  {
+   "id": "toss-ai-platform-retrieval",
+   "company": "토스",
+   "role": "AI 플랫폼 엔지니어 (Retrieval)",
+   "jobs": [
+    "ats-toss:group:8009061003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 14
   },
   {
    "id": "toss-ai-platform-serving",
@@ -148,6 +160,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 14
+  },
+  {
+   "id": "toss-devops-engineer",
+   "company": "토스",
+   "role": "DevOps 엔지니어",
+   "jobs": [
+    "ats-toss:group:4071151003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 13
   },
   {
    "id": "toss-dip-data-scientist",
