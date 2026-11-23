@@ -212,8 +212,26 @@ def candidates(items: list[dict], jobs: list[dict]) -> list[tuple]:
         if n < 5:
             continue
         cand.append((per_co.get(j.get("company", ""), 0), n, key, j))
-    cand.sort(key=lambda x: (-x[0], -x[1]))
+    # 순서: ① 사람이 먼저 해 달라고 한 공고(PRIORITY, 적힌 순서) ② 국내 회사 ③ 일본 회사(가나·株式会社 — 해외 보드에서
+    # 같이 들어온다) — 그 안에서는 회사 모집중 공고가 많은 곳부터.
+    pri = priority()
+    cand.sort(key=lambda x: (pri.index(x[2]) if x[2] in pri else len(pri), is_japanese(x[3]), -x[0], -x[1]))
     return cand
+
+
+PRIORITY = ROOT / "catch_capture" / "var" / "roles" / "priority.txt"   # 한 줄에 공고 키 하나(site-pid)
+JAPANESE = re.compile(r"[぀-ヿ]|株式会社")
+
+
+def priority() -> list[str]:
+    try:
+        return [ln.strip() for ln in PRIORITY.read_text(encoding="utf-8").splitlines() if ln.strip() and not ln.startswith("#")]
+    except OSError:
+        return []
+
+
+def is_japanese(j: dict) -> bool:
+    return bool(JAPANESE.search(f"{j.get('company', '')} {j.get('title', '')}"))
 
 
 def claim(items: list[dict], jobs: list[dict]) -> int:
