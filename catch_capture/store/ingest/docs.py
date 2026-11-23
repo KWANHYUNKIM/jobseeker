@@ -37,7 +37,7 @@ FILES = [
     "alba.json", "contests.json",
 ]
 # 폴더째 옮기는 것(.json·.md). 부품 가격은 /api/hardware/prices 가 표에서 답하므로 뺀다.
-DIRS = ["reveng", "guide", "book", "hardware", "blog_content", "lectures"]
+DIRS = ["reveng", "guide", "book", "hardware", "blog_content", "lectures", "roles"]
 EXCLUDE = {"hardware/prices.json"}
 EXTS = {".json", ".md"}
 

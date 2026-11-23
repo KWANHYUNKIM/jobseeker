@@ -1,0 +1,18 @@
+{
+ "updated_at": "2026-11-23",
+ "jobs": {
+  "saramin-55608860": "tossbank-finance-data-system"
+ },
+ "roles": [
+  {
+   "id": "tossbank-finance-data-system",
+   "company": "토스뱅크",
+   "role": "재무 데이터 시스템 개발자",
+   "jobs": [
+    "saramin-55608860"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 9
+  }
+ ]
+}

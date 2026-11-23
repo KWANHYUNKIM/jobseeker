@@ -1,0 +1,41 @@
+{
+  "_note": "설명형 스키마 — 값은 그 칸에 무엇을 담는지에 대한 설명. 실제 검사는 engine/roles/validate.py. 글 안의 [n] 은 sources.n, {추론} 은 근거 없는 판단, **…** 은 굵게.",
+  "id": "string — 회사-직무 슬러그(영문 소문자·하이픈). 파일 이름과 같다",
+  "company": "string",
+  "role": "string — 직무 이름(공고 제목에서 영문 병기·괄호를 뺀 것)",
+  "team": "string (선택) — 소속 조직",
+  "jobs": ["string — 이 풀이를 쓰는 공고 키(site-pid). 같은 자리가 여러 사이트에 올라오면 모두"],
+  "researched_at": "YYYY-MM-DD",
+  "tldr": {
+    "what": "string — 무엇을 만드나(한두 문장)",
+    "env": "string — 어떤 환경에서",
+    "oneline": "string — 한마디로"
+  },
+  "lines": [
+    {
+      "section": "task | qualification | preference",
+      "quote": "string — 공고 줄 원문 그대로",
+      "short": "string — 90자 안. 공고 줄 밑에 늘 보이는 한 줄 답",
+      "why": "string — 왜 필요한가",
+      "actually": { "intro": "string (선택)", "items": ["string — 실제로는 이런 일·계산"] },
+      "level": { "basic": "string", "work": "string", "team": "string — 이 팀 수준" },
+      "flows": [{ "caption": "string", "steps": ["string — '이름 · 설명'"], "mine_from": "number (선택) — 이 직무가 맡는 첫 단계 번호(0부터)" }],
+      "examples": [{ "title": "string", "body": "string", "lang": "string (code 가 있으면 필수)", "code": "string (선택) — 직접 돌려 본 짧은 코드" }],
+      "how_far": "string (선택) — 어디까지 하면 되나",
+      "refs": ["number — 이 줄이 기대는 출처"]
+    }
+  ],
+  "fit": { "good": ["string"], "hard": ["string"] },
+  "interview": [{ "q": "string", "a": "string — 왜 이 질문인가(근거 번호)" }],
+  "sources": [
+    {
+      "n": "number",
+      "title": "string",
+      "url": "string",
+      "kind": "company(회사 발표·블로그) | posting(공고) | news | reference(다른 곳의 공개 문서·표준) | community",
+      "date": "string (선택)",
+      "note": "string (선택)"
+    }
+  ],
+  "caveat": "string (선택) — 시점·공개되지 않은 부분"
+}
