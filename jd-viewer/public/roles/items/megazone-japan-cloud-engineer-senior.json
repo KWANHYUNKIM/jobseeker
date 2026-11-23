@@ -1,0 +1,1231 @@
+{
+ "id": "megazone-japan-cloud-engineer-senior",
+ "company": "MEGAZONE株式会社 (메가존클라우드 일본 법인)",
+ "role": "시니어 클라우드 엔지니어 (일본 근무)",
+ "team": "일본 법인 기술 부문 · LAPRAS Global Bridge 연계 채용",
+ "jobs": [
+  "wanted-306087"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "일본 고객사(공공기관·스타트업·대기업)의 요구를 듣고 **AWS 같은 클라우드에 시스템을 설계·구축·이전**하는 기술 책임자 자리입니다.[1][4] 회사는 메가존클라우드(한국 본사)의 일본 법인이고, 고객사에 상주하지 않습니다.[3][4]",
+  "env": "AWS 중심(Azure·Google Cloud도 요건에 있음), Terraform·CloudFormation 같은 코드형 인프라, CI/CD, 컨테이너.[1] 일본 법인은 직원 20명 정도의 작은 조직이고, 한국 본사와 기술 지원을 주고받습니다.[2][3][6]",
+  "oneline": "경력 10년 이상의 인프라·클라우드 엔지니어가 **'고객 앞에서 설계를 책임지는'** 자리. 문턱은 기술보다 **일본어 비즈니스 회화와 일본 이주**입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "クラウドインフラストラクチャの設計と構築\n・顧客の要件や課題をヒアリングし、機能要件、非機能要件を満たすクラウド インフラストラクチャを設計および実装できる。",
+   "short": "고객 이야기를 듣고 '무엇을 하나(기능)'와 '얼마나 튼튼·빠르게(비기능)'를 클라우드 설계로 옮기는 일.",
+   "why": "이 회사는 AWS 도입을 설계부터 구축·운영까지 대신해 주는 파트너 회사라서, 고객 요구를 설계로 바꾸는 사람이 일의 출발점입니다.[3] 같은 회사의 다른 엔지니어 공고도 일을 '아키텍처 리뷰·고가용성·보안 설계·IaC·비용 최적화'로 적었습니다.[4]",
+   "actually": {
+    "intro": "일본 SI 현장에서는 비기능 요건(성능·가용성처럼 '기능 말고 품질')을 IPA(일본 정보처리추진기구)의 '비기능 요구 그레이드' 같은 표로 고객과 맞춥니다.[13] 회사의 실제 서식은 공개되지 않았습니다.",
+    "items": [
+     "**기능 요건** — 어떤 화면·API·배치가 있고 누가 쓰나. 클라우드 엔지니어는 이것을 서버·DB·저장소 구성으로 바꾼다. {추론}",
+     "**비기능 요건** — IPA 표의 큰 갈래는 가용성·성능/확장성·운영/보수성·이전성·보안·시스템 환경 여섯 가지다.[13] 예: '연간 몇 시간까지 멈춰도 되나', '최대 동시 접속', '로그 몇 년 보관'.",
+     "**숫자로 정하기** — '멈추면 안 된다'를 '월 가동률 99.9%, 복구 1시간 안'처럼 숫자로 바꿔야 설계와 견적이 나온다. {추론}",
+     "**설계 기준** — AWS는 운영·보안·안정성·성능·비용·지속가능성 6개 축의 Well-Architected 기준으로 설계를 점검한다.[26]",
+     "**공개된 사례** — 회사 공고에 나온 구축 예: 웹 서버(EC2)·부하 분산(ALB)·DB(Aurora)·저장소(S3)·감시(CloudWatch)·웹 방화벽(WAF)으로 만든 사내 헬프데스크, 사내망과 VPN으로만 잇는 폐쇄망 머신러닝 환경(SageMaker·WorkSpaces).[4]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "가용성 숫자가 설계를 바꾸는 이유 (직접 계산)",
+     "body": "부품 하나가 99.9%라도 부하 분산 → 앱 → DB 세 단이 줄줄이 이어지면 전체는 99.7%로 떨어져 1년에 약 26시간 멈출 수 있습니다. 같은 것을 두 벌 나란히 두면(서로 독립이라 가정) 99.9999%가 됩니다. 그래서 '99.9%'를 약속하면 단마다 이중화가 필요합니다 {추론}.",
+     "lang": "python",
+     "code": "a = 0.999\nprint('직렬 3단(LB-앱-DB):', round(a**3*100, 4))\nprint('같은 것 2벌 병렬:', round((1-(1-a)**2)*100, 4))\nprint('연간 멈춤 99.9%:', round((1-a)*365*24, 2), '시간')\nprint('연간 멈춤 99.7%:', round((1-a**3)*365*24, 2), '시간')\n# 직렬 3단(LB-앱-DB): 99.7003\n# 같은 것 2벌 병렬: 99.9999\n# 연간 멈춤 99.9%: 8.76 시간\n# 연간 멈춤 99.7%: 26.25 시간"
+    }
+   ],
+   "how_far": "고객이 원하는 수준(얼마나 멈춰도 되나)은 고객이 정합니다. 이 자리는 그 말을 **숫자로 확인하고, 그 숫자를 지키는 구성과 비용을 제안**합니다. 시니어 공고라 혼자 요구를 듣고 설계서까지 내는 것이 최소선입니다. {추론}",
+   "refs": [
+    3,
+    4,
+    13,
+    26
+   ],
+   "study": [
+    "ipa-hikinou",
+    "aws-wa"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・システム構築、クラウド移行、モダナイゼーション プロジェクトを、技術のスペシャリストとして実行責任と説明責任をもってリードできる。",
+   "short": "새로 짓기·옮기기·현대화 프로젝트에서 기술 쪽을 '하는 사람'이자 '결과를 설명하는 사람'으로 이끄는 일.",
+   "why": "회사는 대규모 클라우드 이전부터 시스템 통합까지 맡는다고 적었고[1], 본사는 이전을 자동화하는 자체 도구 HyperMig까지 만들어 상을 받았습니다.[8][9] 일본 법인의 서비스 목록에도 '이전과 현대화'가 들어 있습니다.[7]",
+   "actually": {
+    "intro": "'실행 책임과 설명 책임'은 프로젝트 관리의 RACI 표에서 R(Responsible, 실제로 하는 사람)과 A(Accountable, 결과를 최종 책임지고 승인하는 사람)에 해당합니다.[22]",
+    "items": [
+     "**옮기는 방법 고르기** — AWS는 시스템마다 7가지 길을 고른다: 없애기·그대로 두기·그대로 옮기기(rehost)·위치만 옮기기(relocate)·다른 제품으로 바꾸기(repurchase)·조금 고쳐 옮기기(replatform)·구조를 다시 짜기(refactor).[11]",
+     "**현황 조사** — HyperMig의 첫 단계도 지금 시스템과 서로의 의존 관계를 조사하는 것이고, 다음이 이전 경로 평가, 마지막이 이전 실행이다.[8]",
+     "**현대화** — 서버를 그대로 옮긴 뒤 컨테이너·관리형 DB·서버리스로 바꿔 운영 부담을 줄인다. {추론}",
+     "**설명 책임** — 왜 이 구성인지, 비용은 얼마인지, 위험은 무엇인지 고객에게 설명하고 승인받는다. {추론}"
+    ]
+   },
+   "how_far": "프로젝트 전체의 일정·예산은 PM이 맡는 경우가 많고, 이 자리는 **기술 판단의 마지막 책임자**입니다 — 이전 방식·구성·전환 순서를 정하고 그 근거를 말할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    7,
+    8,
+    9,
+    11,
+    22
+   ],
+   "study": [
+    "aws-7rs",
+    "aws-wa"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・Terraform や AWS CloudFormation などの Infrastructure as Code (IaC) ツールを使用して、クラウド インフラストラクチャのプロビジョニングを自動化できる。",
+   "short": "서버·네트워크를 콘솔에서 손으로 만들지 않고 코드로 적어 같은 환경을 몇 번이고 똑같이 찍어 내는 일.",
+   "why": "고객마다 비슷한 구성을 여러 번 만들고, 개발·검증·운영 환경을 똑같이 맞춰야 하는 회사라서 코드형 인프라가 기본입니다. 회사의 다른 공고도 IaC를 업무로 적었습니다.[4]",
+   "actually": {
+    "items": [
+     "**Terraform** — 원하는 모습을 코드로 적으면 지금 상태와 비교해 바꿀 것만 바꾼다. 무엇이 만들어졌는지는 상태(state) 파일에 적어 두고, 여럿이 쓰면 S3 같은 공용 저장소에 두고 잠금을 건다.[20]",
+     "**CloudFormation** — AWS 자체의 템플릿 방식. 템플릿대로 자원을 만들고 고친다.[19]",
+     "**CDK** — Python·TypeScript 같은 일반 언어로 적으면 CloudFormation 템플릿을 만들어 배포한다.[19]",
+     "**재사용** — 고객마다 쓰는 VPC·서브넷·보안 그룹 묶음을 모듈로 만들어 두고 값만 바꾼다. {추론}",
+     "**계획 먼저** — terraform plan 으로 무엇이 바뀔지 보고 리뷰한 뒤 apply. 고객 환경이라 '계획 → 승인 → 적용' 기록이 남아야 한다. {추론}"
+    ]
+   },
+   "how_far": "한 도구를 깊게 + 다른 하나는 읽을 줄 아는 수준이 현실적인 선입니다. 상태 파일 관리(원격 저장·잠금), 모듈 나누기, 기존 자원을 코드로 가져오기까지 해 봤으면 시니어 요건에 맞습니다. {추론}",
+   "refs": [
+    4,
+    19,
+    20
+   ],
+   "study": [
+    "terraform-docs",
+    "tf-state",
+    "tf-up-running",
+    "ja-jissen-tf",
+    "cdk-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "クラウドインフラストラクチャの導入\n・導入、監視、トラブルシューティング、文書化など、クラウド環境のライフサイクル全体を考慮できる。",
+   "short": "다 만들고 끝이 아니라, 넘긴 뒤의 감시·장애 대응·문서까지 처음부터 생각해 설계하는 일.",
+   "why": "회사는 설계·구축에 더해 운영까지 지원한다고 적었고[3], 일본 법인에는 AWS 문의를 메일·티켓·채팅·전화로 받는 기술 지원 자리가 따로 있습니다.[2][28] 구축한 사람이 남긴 문서와 감시 설정이 그다음 운영의 바탕이 됩니다. {추론}",
+   "actually": {
+    "items": [
+     "**감시** — 구글 SRE 책은 기본 신호로 지연·트래픽·오류·포화(얼마나 꽉 찼나) 넷을 꼽는다.[29] 이것을 CloudWatch 경보로 건다. {추론}",
+     "**장애 대응** — 로그·지표를 보고 원인을 좁히는 순서를 문서(런북)로 남긴다. {추론}",
+     "**문서화** — 일본 SI 납품물은 보통 설계서·파라미터 시트·운용 설계서·테스트 결과서다. {추론}",
+     "**넘기기** — 고객 운영팀이나 회사 지원팀이 이어받을 수 있게 계정·권한·경보 받는 사람을 정리한다. {추론}"
+    ]
+   },
+   "how_far": "이 줄은 '할 줄 안다'보다 '빠뜨리지 않는다'가 핵심입니다. 구축 계획에 감시·백업·문서 항목이 처음부터 들어 있게 하는 것이 최소선입니다. {추론}",
+   "refs": [
+    2,
+    3,
+    28,
+    29
+   ],
+   "study": [
+    "sre-monitoring",
+    "aws-wa"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・CI/CD パイプラインを利用して、アプリケーションのデプロイと更新を合理化できる。",
+   "short": "코드를 올리면 시험·빌드·배포가 자동으로 이어지게 엮어, 고객의 배포를 빠르고 덜 위험하게 만드는 일.",
+   "why": "일본 법인의 서비스 목록에 '애플리케이션과 DevOps'가 들어 있습니다.[7] 배포가 사람 손에 달려 있으면 고객이 업데이트를 미루게 됩니다. {추론}",
+   "actually": {
+    "items": [
+     "**파이프라인** — 코드 올림 → 시험 → 이미지 빌드 → 검증 환경 배포 → 승인 → 운영 배포. {추론}",
+     "**인프라도 같이** — Terraform 계획을 PR에 붙이고, 승인되면 적용하는 흐름. {추론}",
+     "**재는 법** — DORA는 배포 성과를 다섯 숫자로 잰다: 변경이 운영까지 가는 시간·배포 빈도·실패한 배포 복구 시간·변경 실패율·다시 손본 배포 비율.[21]"
+    ]
+   },
+   "how_far": "고객 앱 코드는 고객이 씁니다. 이 자리는 **배포 길(파이프라인)과 그 길이 닿는 인프라**를 맡습니다. {추론}",
+   "refs": [
+    7,
+    21
+   ],
+   "study": [
+    "gha-docs",
+    "dora"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・高可用性、耐障害性、災害復旧戦略が担保された設計を実施できる。",
+   "short": "서버 하나·데이터센터 하나가 죽어도 서비스가 버티고, 큰 재해에도 정해진 시간 안에 되살아나게 설계하는 일.",
+   "why": "회사 다른 공고에도 고가용성 설계가 업무로 적혀 있고[4], 고객에 공공기관·병원기구·경찰청 같은 곳이 있어 멈춤과 데이터 손실에 엄격합니다.[3] {추론}",
+   "actually": {
+    "intro": "AWS 재해 복구 백서의 네 가지 방식 — 싼 것부터 비싼 것 순서입니다.[10]",
+    "items": [
+     "**백업·복원** — 백업만 해 두고 재해 때 인프라를 다시 만든다. 가장 싸고 복구가 가장 느리다.[10]",
+     "**파일럿 라이트** — DB 같은 핵심만 다른 리전에 켜 두고 나머지는 재해 때 띄운다.[10]",
+     "**웜 스탠바이** — 작은 크기의 완전한 복제본을 늘 돌려 두고 재해 때 키운다.[10]",
+     "**멀티 사이트 액티브/액티브** — 두 곳이 동시에 손님을 받는다. 복구 시간·데이터 손실이 0에 가깝지만 가장 복잡하고 비싸다.[10]",
+     "**두 숫자** — RTO(멈춘 뒤 되살아나기까지 허용 시간)와 RPO(잃어도 되는 데이터의 시간 폭)를 고객과 먼저 정해야 위 넷 중 하나를 고를 수 있다.[10]",
+     "**일본이라면** — 도쿄 리전에 오사카 리전을 짝지어 재해 대비를 하는 구성이 흔하다. {추론}"
+    ]
+   },
+   "how_far": "고객이 RTO·RPO와 예산을 정하고, 이 자리는 **그 숫자에 맞는 방식과 비용을 견주어 제안하고, 실제로 복구 훈련까지 돌려 보는** 데까지입니다. {추론}",
+   "refs": [
+    3,
+    4,
+    10
+   ],
+   "study": [
+    "aws-dr",
+    "aws-wa-rel"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "チームビルディング\n・プロジェクトの実行を確実に成功させるために、部門を超えたチームと緊密に連携できる。",
+   "short": "영업·고객 담당·지원팀·한국 본사와 손발을 맞춰 프로젝트가 중간에 끊기지 않게 하는 일.",
+   "why": "일본 법인은 20명 남짓이라[3] 한 프로젝트에 영업·기술·지원이 함께 붙습니다. 회사 인터뷰에서 일본 법인 SA는 마케팅이 발표 기회를 만들고 기술팀과 한국 본사가 돕는다고 했습니다.[6] 관리 책임자는 한국 본사와의 연락을 맡는다고 소개됐습니다.[5]",
+   "actually": {
+    "items": [
+     "**영업과** — 제안 단계에 같이 들어가 구성과 견적의 기술 근거를 댄다. {추론}",
+     "**본사와** — 일본에 없는 기술(예: 특정 솔루션)은 한국 본사 전문가에게 묻고 받는다.[6]",
+     "**지원팀과** — 구축이 끝난 고객을 기술 지원팀이 이어받게 넘긴다.[28] {추론}"
+    ]
+   },
+   "how_far": "작은 조직이라 '내 일 경계'가 넓습니다. 일본어로 다른 부서와 회의하고 일정을 맞추는 일이 일상입니다. {추론}",
+   "refs": [
+    3,
+    5,
+    6,
+    28
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・若手エンジニアが自律的に作業できるまでレビューや継続的な指導を続ける。",
+   "short": "후배가 혼자 구축할 수 있을 때까지 설계·코드를 봐 주고 계속 가르치는 일.",
+   "why": "공고는 이 자리를 일본 업무 확대의 중심 역할이라고 적었습니다.[1] 회사는 입사 뒤 클라우드를 배워도 되고 온프레미스(자체 서버) 경험이 이전 일에 그대로 쓰인다고 했으니[5], 클라우드가 처음인 동료를 키우는 일이 생깁니다. 실제로 일본 법인 SA 한 명은 지원 엔지니어로 들어와 2년 차에 SA가 됐습니다.[6]",
+   "actually": {
+    "items": [
+     "**리뷰** — Terraform PR·설계서를 보고 보안 그룹이 너무 열렸나, 이중화가 빠졌나를 짚는다. {추론}",
+     "**짝 작업** — 처음엔 같이 고객 회의에 들어가고, 다음엔 후배가 하고 뒤에서 본다. {추론}",
+     "**자격증** — 회사는 자격 취득 지원(장려금·응시료)이 있어 공부 길을 같이 잡아 줄 수 있다.[1]"
+    ]
+   },
+   "how_far": "'자율적으로 일할 때까지'가 기준입니다. 정답을 대신 써 주기보다 왜 그런지 설명하는 리뷰가 요구됩니다. {추론}",
+   "refs": [
+    1,
+    5,
+    6
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "広報活動\n・先進的な技術的な取り組みについて、ブログ等で公開し、当社の市場認知度を向上させることができる。",
+   "short": "한 일을 블로그·발표로 공개해 '일본에서 메가존' 이름을 알리는 일.",
+   "why": "회사 인터뷰에서 일본 법인 SA는 회사를 일본 AWS 파트너 중 후발 주자로 소개했고, 일본 기술 블로그를 열 때 글을 많이 썼으며 그 활동으로 AWS Ambassador(AWS가 파트너사 엔지니어 중 고르는 기술 대표)에 뽑혔다고 했습니다.[6]",
+   "actually": {
+    "items": [
+     "**글** — 구축하면서 막힌 곳과 푼 방법을 고객 이름을 빼고 쓴다. {추론}",
+     "**발표** — 회사 마케팅이 발표 기회를 만들어 준다.[6]",
+     "**인정** — 본사에는 AWS Ambassador·Hero 같은 외부 인정을 받은 엔지니어가 여럿 있다고 소개됐다.[6]"
+    ]
+   },
+   "how_far": "외부 글쓰기 경험이 없어도 되지만, 입사 뒤 일본어로 기술 글을 쓰는 일이 업무에 들어간다고 보면 됩니다. {추론}",
+   "refs": [
+    6
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・ソリューションアーキテクト、クラウドエンジニアリング、クラウド運用、インフラエンジニア、ソフトウェア開発等IT業界で技術者として10年以上の経験を有する。",
+   "short": "SA·클라우드·인프라·개발 등 IT 기술직 10년 이상 — 직무 이름보다 '기술자로 10년'이 기준.",
+   "why": "고객 앞에서 설계를 혼자 책임지고 후배를 가르치는 시니어 자리라서 경력이 깁니다.[1] 원티드 표기도 '경력 10~20년'입니다.[1]",
+   "how_far": "여러 직무를 합쳐 10년이면 됩니다. 그중 클라우드 실무는 아래 줄대로 3년 이상이 따로 필요합니다.[1] 일본 취업 비자(기술·인문지식·국제업무)는 학력이나 실무 경력으로 요건을 채우는데, 세부는 출입국재류관리청 안내로 확인합니다.[25]",
+   "refs": [
+    1,
+    25
+   ],
+   "study": [
+    "isa-visa"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・コンピューティング、ストレージ、ネットワーキング、セキュリティ サービスを含むパブリック クラウド (AWS、Azure、 GC) における3年以上の実践経験がある。",
+   "short": "AWS·Azure·Google Cloud 중 하나에서 서버·저장소·네트워크·보안을 직접 다룬 지 3년 이상.",
+   "why": "회사는 AWS 중심 파트너라서[3] 실제 일감은 AWS가 대부분일 것입니다. {추론} 일본 법인 서비스에는 데이터·AI·보안·이전 등 여러 갈래가 있습니다.[7]",
+   "actually": {
+    "intro": "네 갈래를 AWS 이름으로 보면 이렇습니다. {추론}",
+    "items": [
+     "**컴퓨팅** — EC2(가상 서버)·오토스케일링·ECS/EKS(컨테이너)·Lambda.",
+     "**스토리지** — S3(파일 저장소)·EBS(디스크)·EFS(공유 파일)·백업.",
+     "**네트워킹** — VPC·서브넷·라우팅·로드밸런서·DNS(Route 53)·VPN.",
+     "**보안** — IAM(권한)·보안 그룹·KMS(암호 키)·WAF·CloudTrail(누가 무엇을 했나 기록)."
+    ]
+   },
+   "how_far": "'3년 실전'이라 자격증만으로는 부족하고, 운영 중인 환경을 만들고 고쳐 본 경험이 있어야 합니다. 면접에서 '왜 그 구성을 골랐나'를 물을 가능성이 큽니다. {추론}",
+   "refs": [
+    3,
+    7
+   ],
+   "study": [
+    "aws-wa",
+    "ko-aws-container"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Infrastructure as Code ツール （Terraform、AWS CloudFormation、AWS CDK等）を利用できる。",
+   "short": "Terraform·CloudFormation·CDK 중 하나로 실제 인프라를 코드로 만들어 본 수준.",
+   "why": "업무 셋째 줄(프로비저닝 자동화)을 하려면 필요합니다.[1] CDK는 결국 CloudFormation 템플릿을 만들어 배포하므로 둘은 한 줄기입니다.[19]",
+   "level": {
+    "basic": "자원 만들기·변수·출력값 · plan/apply 읽기",
+    "work": "모듈 나누기 · 원격 state와 잠금 · 기존 자원 가져오기(import)",
+    "team": "고객마다 재사용하는 모듈 묶음 · 계획을 리뷰·승인받는 흐름 {추론}"
+   },
+   "how_far": "'이용할 수 있다'라 도구를 만드는 수준은 아닙니다. 다만 고객 환경을 망가뜨리지 않으려면 state 파일이 무엇을 기억하는지와 잠금이 왜 필요한지는 설명할 수 있어야 합니다.[20]",
+   "refs": [
+    1,
+    19,
+    20
+   ],
+   "study": [
+    "terraform-docs",
+    "tf-state",
+    "tf-up-running",
+    "cdk-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・クラウド ネットワーキング、VPC 設計、VPN、ハイブリッド クラウド アーキテクチャの実務経験を有する。",
+   "short": "클라우드 안의 망(VPC)을 나누고, 고객 사내망과 VPN으로 이어 반은 사내·반은 클라우드로 굴려 본 경험.",
+   "why": "회사 공고의 사례가 바로 사내망과 VPN으로만 잇는 폐쇄망 환경입니다.[4] 공공기관·대기업 고객은 기존 사내 시스템을 한 번에 다 옮기지 못해 한동안 사내와 클라우드를 같이 씁니다. {추론}",
+   "actually": {
+    "items": [
+     "**주소 나누기** — VPC는 /16(6만 5천여 개)부터 /28(16개)까지 주소 덩어리를 받고, 서브넷마다 AWS가 5개를 예약한다(망 주소·라우터·DNS·예비·마지막 주소).[16]",
+     "**겹치지 않게** — 고객 사내망 주소와 겹치면 VPN으로 이을 수 없다. 설계 첫날 고객 망 주소표부터 받는다. {추론}",
+     "**VPN** — AWS Site-to-Site VPN은 고객 장비와 터널 두 개를 맺어 한쪽이 끊겨도 버티게 한다.[27]",
+     "**여러 VPC 잇기** — Transit Gateway는 여러 VPC와 사내망을 한 허브로 묶는다.[15]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "서브넷 설계표를 코드로 — 사내망과 겹치는 칸 찾기 (직접 돌린 출력)",
+     "body": "도쿄 리전의 가용 영역 세 곳(1a·1c·1d)에 공개·앱·DB 세 층으로 나눴습니다. 서브넷마다 5개는 AWS 예약이라 뺐습니다.[16] 고객 사내망을 10.0.128.0/20 으로 가정하면 마지막 칸이 겹쳐 VPN 연결이 안 됩니다.",
+     "lang": "python",
+     "code": "import ipaddress\n\nvpc = ipaddress.ip_network(\"10.0.0.0/16\")\nonprem = ipaddress.ip_network(\"10.0.128.0/20\")  # 고객 사내망(가상의 예)\n\nazs = [\"1a\", \"1c\", \"1d\"]\nsubnets = list(vpc.subnets(new_prefix=20))\nplan, i = {}, 0\nfor tier in [\"public\", \"private-app\", \"private-db\"]:\n    for az in azs:\n        plan[f\"{tier}-{az}\"] = subnets[i]\n        i += 1\n\nfor name, net in plan.items():\n    usable = net.num_addresses - 5  # AWS 는 서브넷마다 5개를 예약한다\n    clash = \" <- 사내망과 겹침!\" if net.overlaps(onprem) else \"\"\n    print(f\"{name:16} {str(net):15} 쓸 수 있는 IP {usable}{clash}\")\n\n# public-1a        10.0.0.0/20     쓸 수 있는 IP 4091\n# ...\n# private-db-1c    10.0.112.0/20   쓸 수 있는 IP 4091\n# private-db-1d    10.0.128.0/20   쓸 수 있는 IP 4091 <- 사내망과 겹침!"
+    }
+   ],
+   "how_far": "라우팅 표·서브넷·VPN·방화벽 규칙을 직접 그리고 문제가 나면 '어디서 패킷이 막혔나'를 좁힐 수 있는 수준이 실무 경험의 기준입니다. {추론}",
+   "refs": [
+    4,
+    15,
+    16,
+    27
+   ],
+   "study": [
+    "nw-intro",
+    "aws-s2s",
+    "aws-tgw"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Python、Go、または Bash でのスクリプト/プログラミング スキルを有する。",
+   "short": "콘솔 클릭으로 안 되는 반복 일을 Python·Go·Bash 중 하나로 짜서 자동화할 수 있는 수준.",
+   "why": "IaC로 못 덮는 일 — 수백 대 서버 점검, 이전 전 자원 목록 뽑기, 비용 보고서 — 은 스크립트로 합니다. {추론} 회사 다른 공고도 비용 최적화를 업무로 적었습니다.[4]",
+   "level": {
+    "basic": "Bash로 명령 엮기 · 반복문·조건 · 종료 코드",
+    "work": "Python boto3(AWS SDK)로 자원 목록·태그 점검 · JSON 다루기",
+    "team": "이전 전 현황 조사·정리를 스크립트로 반복 가능하게 {추론}"
+   },
+   "how_far": "개발자 수준의 큰 프로그램은 아닙니다. 남이 다시 돌려도 같은 결과가 나오는 짧은 도구를 쓸 수 있으면 됩니다. {추론}",
+   "refs": [
+    4
+   ],
+   "study": [
+    "boto3-docs",
+    "go-tour",
+    "linux-woo"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本語レベル: ビジネス",
+   "short": "일본 고객과 요구 듣기·설계 설명·회의를 일본어로 할 수 있는 수준 — 서류도 일본어로 낸다.",
+   "why": "고객 대응이 업무의 중심이고, 원티드 안내에 일본어 전용 포지션이라 일본어 이력서·직무경력서가 필수이며 국문·영문만 내면 서류에서 빠진다고 적혀 있습니다.[1]",
+   "how_far": "공고에 급수는 없습니다. JLPT로 보면 N1은 폭넓은 장면의 일본어를, N2는 일상에 더해 폭넓은 장면을 어느 정도 이해하는 수준입니다.[24] 회의·설계서·블로그까지 일본어로 해야 하니 N1 근처를 목표로 보는 것이 안전합니다. {추론}",
+   "refs": [
+    1,
+    24
+   ],
+   "study": [
+    "jlpt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本国内への移住が必要",
+   "short": "원격 근무가 아니라 일본에 살며 도쿄 사무실로 출근하는 자리라서.",
+   "why": "근무지가 도쿄 아카사카 사무실로 적혀 있고 근무 시간도 정해져 있습니다.[1] 이 공고는 LAPRAS Global Bridge 연계 채용으로, 일본 회사와 지원자를 잇습니다.[1]",
+   "how_far": "취업 비자(체류 자격) 신청은 보통 회사가 서류를 준비해 돕지만, 비자·이사 비용 지원 여부는 공고에 없습니다.[1] 체류 자격 요건은 출입국재류관리청 안내에서 확인합니다.[25] {추론}",
+   "refs": [
+    1,
+    25
+   ],
+   "study": [
+    "isa-visa"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・コンテナ化された環境 (Docker、Kubernetes) の実践経験がある。",
+   "short": "고객 앱을 컨테이너로 바꾸고 쿠버네티스(EKS 등)에서 굴려 본 경험 — 현대화 일감에 바로 쓰여서.",
+   "why": "업무의 '현대화'에서 흔한 다음 단계가 컨테이너화입니다.[11] 일본 법인 서비스에도 애플리케이션·DevOps가 있습니다.[7]",
+   "how_far": "직접 클러스터를 구축·업그레이드해 봤으면 강점, 그 위에 앱을 올려 본 정도면 기본입니다. {추론}",
+   "refs": [
+    7,
+    11
+   ],
+   "study": [
+    "docker-book",
+    "kubernetes-book",
+    "k8s-in-action"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・CI/CD パイプライン (Jenkins、GitHub Actions、GitLab CI/CD) の実務経験がある。",
+   "short": "Jenkins·GitHub Actions·GitLab 중 하나로 배포 자동화를 실제 운영해 본 경험.",
+   "why": "고객마다 쓰는 도구가 달라서 셋이 다 적혀 있습니다. 업무 다섯째 줄(CI/CD로 배포 합리화)에 바로 쓰입니다.[1] {추론}",
+   "how_far": "하나를 깊게 알면 나머지는 개념(단계·비밀값·러너)이 같아 금방 옮겨 갈 수 있습니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "gha-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・サーバーレス コンピューティング (AWS Lambda、Google Cloud Functions) の実務経験がある。",
+   "short": "서버를 띄우지 않고 함수만 올려 쓰는 방식 — 작은 자동화·이벤트 처리를 싸게 만들 때 쓰여서.",
+   "why": "서버리스는 서버 관리 부담을 줄이는 현대화 선택지 중 하나입니다. {추론}",
+   "actually": {
+    "items": [
+     "**한계를 알고 쓰기** — Lambda 함수 하나는 최대 30분(1,800초)까지 돌고, 메모리는 128MB~10,240MB다.[14] 그보다 긴 일은 컨테이너나 배치로 보낸다.",
+     "**쓰는 곳** — 파일이 올라오면 처리, 정해진 시각에 점검, API 뒤의 가벼운 처리. {추론}"
+    ]
+   },
+   "refs": [
+    14
+   ],
+   "study": [
+    "lambda-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・AWS、GCの資格を有する。（AWS Certified Solutions Architect – Professional相当 ）",
+   "short": "AWS 솔루션스 아키텍트 프로페셔널급 자격 — 파트너 회사에게 자격자 수는 실력 증명이기도 해서.",
+   "why": "회사는 일본에서 높은 등급의 AWS 파트너라고 소개하고[3], 자격 취득 지원(장려금·응시료)을 복리후생으로 둡니다.[1] AWS 파트너 등급은 보통 자격 보유자 수를 요건으로 둡니다. {추론}",
+   "actually": {
+    "items": [
+     "**시험** — 180분·75문항, 300달러, 일본어·한국어로도 볼 수 있고 3년 유효.[12]",
+     "**권장 경력** — AWS로 설계·구현한 경험 2년 이상.[12]"
+    ]
+   },
+   "how_far": "우대 사항이라 없어도 지원할 수 있습니다. 입사 뒤 따도 되고, 회사가 응시료를 돕습니다.[1]",
+   "refs": [
+    1,
+    3,
+    12
+   ],
+   "study": [
+    "aws-sap"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・HPCや生成AIのプロジェクトをリードした経験を有する。",
+   "short": "대규모 계산(HPC)이나 생성 AI 프로젝트를 이끈 경험 — 회사가 미는 새 일감이라서.",
+   "why": "회사 공고의 사례에 폐쇄망 머신러닝 환경(SageMaker)이 있고[4], 일본 법인 서비스에 데이터·AI가 있으며 AWS의 에이전트 AI 전문 인증을 받았다고 알립니다.[7] 고객에 이화학연구소 같은 연구 기관도 있습니다.[3]",
+   "actually": {
+    "items": [
+     "**HPC** — AWS ParallelCluster는 계산 노드·작업 스케줄러(Slurm)·공유 파일 시스템을 한 번에 세워 주는 도구다.[17]",
+     "**생성 AI** — Amazon Bedrock은 여러 회사의 기반 모델을 관리형으로 불러 쓰게 해 준다.[18] 인프라 쪽 일은 망 분리·권한·로그·비용 관리다. {추론}"
+    ]
+   },
+   "how_far": "모델을 만드는 연구자 자리가 아닙니다. **그 계산이 돌 바닥(GPU 노드·저장소·망·권한)을 설계해 본 경험**이 우대입니다. {추론}",
+   "refs": [
+    3,
+    4,
+    7,
+    17,
+    18
+   ],
+   "study": [
+    "parallelcluster",
+    "bedrock-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "【ソフトスキル】\n・役職や組織に依らずオープンかつフラットに他人と接することができる",
+   "short": "직급·소속을 따지지 않고 누구와도 터놓고 이야기하는 사람 — 20명 조직이라 벽이 없어서.",
+   "why": "일본 법인은 20명 정도라[2][3] 사장·영업·후배·한국 본사와 직접 일합니다. 회사는 속도를 중시하는 문화라고 소개했습니다.[5]",
+   "refs": [
+    2,
+    3,
+    5
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・新しいテクノロジーを学び、変化に適応しようと努力できる",
+   "short": "클라우드 서비스가 계속 바뀌니 스스로 새로 배우는 사람.",
+   "why": "회사는 AWS 교육 자료·멘토 제도를 제공한다고 적었고[1], 자격 취득 지원도 둡니다.[1] Lambda 최대 실행 시간 같은 서비스 한계값도 기억에 기대지 말고 문서로 다시 확인하는 습관이 필요합니다.[14] {추론}",
+   "refs": [
+    1,
+    14
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・未経験の仕事に対しても、積極的に取り組むことができる",
+   "short": "처음 해 보는 일감도 피하지 않는 사람 — 작은 법인이라 일이 정해진 칸에 안 맞아서.",
+   "why": "일본 법인 SA 인터뷰에서도 지원 엔지니어로 시작해 SA·발표·블로그로 일을 넓혀 갔다고 했습니다.[6]",
+   "refs": [
+    6
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・すぐにあきらめずに、代替案を練って結果を出すことに拘ることができる",
+   "short": "막혀도 다른 길을 찾아 결과를 내는 사람 — 고객 사정(예산·규제·기존 시스템)이 늘 걸려서.",
+   "why": "이전 프로젝트는 시스템마다 그대로 옮기기·고쳐 옮기기·다시 짜기 같은 여러 길 중에서 고르는 일이라, 한 길이 막히면 다른 길을 내놓아야 합니다.[11] {추론}",
+   "refs": [
+    11
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・異なる立場からの論理を理解しようと努めることができる。",
+   "short": "고객·영업·운영팀처럼 입장이 다른 사람의 논리를 먼저 이해하려는 사람.",
+   "why": "고객은 비용과 일정, 운영팀은 안정, 영업은 수주를 봅니다. 설명 책임을 지는 자리라[1] 서로 다른 논리를 한 설계로 묶어야 합니다. {추론}",
+   "refs": [
+    1
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "인프라 경력은 길고, 이제 고객 앞에서 설계를 책임지고 싶은 사람",
+   "일본에서 살며 일할 계획이 있고 일본어 회의가 편한 사람",
+   "작은 조직에서 영업·지원·후배 교육까지 넓게 맡는 게 즐거운 사람[3][6]",
+   "한국어 동료가 있는 환경이 좋은 사람 — 공고에 한국어 모국어 직원 5명 이상[1]"
+  ],
+  "hard": [
+   "일본어 서류·면접이 기본이라 일본어가 약하면 서류에서 빠진다[1]",
+   "고객 사정에 따라 일감 종류가 매번 바뀐다 {추론}",
+   "블로그 같은 대외 활동이 업무에 들어간다[1]",
+   "유급휴가는 6개월 뒤 10일부터라 첫해 휴가가 적다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "고객이 '절대 멈추면 안 된다'고 하면 무엇부터 묻겠어요?",
+   "a": "RTO·RPO를 숫자로 받고, 네 가지 재해 복구 방식의 비용과 견준다.[10]"
+  },
+  {
+   "q": "사내 시스템 50개를 AWS로 옮긴다면 시스템마다 어떻게 나누겠어요?",
+   "a": "7가지 이전 방식과 현황·의존 관계 조사.[8][11]"
+  },
+  {
+   "q": "VPN 연결이 안 되는데 원인이 주소 겹침인지 어떻게 확인하나요?",
+   "a": "VPC·사내망 주소표와 라우팅 표부터.[16][27]"
+  },
+  {
+   "q": "Terraform state 파일이 꼬였을 때 어떻게 하나요? 여럿이 쓸 때는요?",
+   "a": "원격 저장과 잠금.[20]"
+  },
+  {
+   "q": "후배가 올린 설계를 리뷰할 때 무엇을 먼저 보나요?",
+   "a": "Well-Architected 6개 축으로 빠진 칸 찾기.[26]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · [MEGAZONE株式会社] Cloud Engineer (Senior)_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/306087",
+   "kind": "posting",
+   "note": "LAPRAS Global Bridge 연계 · 회사 소개·모집 배경·업무·요건·우대·연봉(850만~1,000만 엔, 입사 시 원칙 1,000만 엔)·복리후생·근무지·선발 순서(서류 → 면접 3회)"
+  },
+  {
+   "n": 2,
+   "title": "en 엔지니어 Ambi · MEGAZONE株式会社 회사 정보",
+   "url": "https://en-ambi.com/agency/a-8696/?PK=56114C",
+   "kind": "company",
+   "note": "2019-04-25 설립, 자본금 9,900만 엔, 직원 20명, 〒107-0052 港区赤坂, 사이트 megazonejapan.jp, 같은 회사의 AWS 기술 지원·경리 공고"
+  },
+  {
+   "n": 3,
+   "title": "Green · MEGAZONE株式会社 기업 페이지",
+   "url": "https://www.green-japan.com/company/8818",
+   "kind": "company",
+   "note": "주주 MEGAZONE Corporation 51%·이토추 테크노솔루션즈 49%, 직원 20명, 평균 37세, AWS 도입(설계·구축·운영) 지원, 고객 예(롯데홈쇼핑·넥슨·교토대·국립병원기구·경찰청·이화학연구소). 그룹 인원 숫자는 페이지 안에서도 서로 다르다"
+  },
+  {
+   "n": 4,
+   "title": "Green · MEGAZONE ソリューションアーキテクト (AWSクラウドエンジニア) 공고",
+   "url": "https://www.green-japan.com/company/8818/job/308073",
+   "kind": "posting",
+   "note": "650만~1,500만 엔, 공공·스타트업 고객, 아키텍처 리뷰·고가용성·보안 설계·IaC·비용 최적화, 상주 없음, 구축 사례 2건, 연 50만~100만 엔 승급 사례"
+  },
+  {
+   "n": 5,
+   "title": "Green · MEGAZONE 회사 소개(PR) — 기술 총괄·관리 총괄 매니저",
+   "url": "https://www.green-japan.com/company/8818/pr",
+   "kind": "company",
+   "note": "일본 지사의 한국인 3명, 영업·엔지니어는 주로 일본인, 클라우드는 입사 뒤 배워도 됨, 온프레미스 경험이 이전 일에 쓰임, 속도 중시"
+  },
+  {
+   "n": 6,
+   "title": "메가존클라우드 브런치 · AWS Ambassador, 아가 히로아키 SA 인터뷰",
+   "url": "https://brunch.co.kr/@potaatofilter/17",
+   "kind": "company",
+   "date": "2026-01-25",
+   "note": "메가존클라우드 마케팅이 한 메가존 재팬 기술본부 SA 인터뷰 — 지원 엔지니어 → 2년 차 SA, 스타트업·공공 고객, 일본 기술 블로그 시작, 2025 AWS Ambassador, 일본 AWS 파트너 중 후발 주자"
+  },
+  {
+   "n": 7,
+   "title": "MegazoneCloud 일본 사이트",
+   "url": "https://www.megazonejapan.jp/",
+   "kind": "company",
+   "note": "서비스(데이터·AI, 이전·현대화, 애플리케이션·DevOps, AI 콘택트센터, 보안), 제품(HyperMig 등), AWS 에이전트 AI 전문 인증 소식"
+  },
+  {
+   "n": 8,
+   "title": "MegazoneCloud · HyperMig 제품 소개",
+   "url": "https://megazone.com/us/product/hyper-mig",
+   "kind": "company",
+   "note": "본사의 클라우드 이전 도구 — 현황 조사(Discovery) → 평가(Assessment) → 이전(Migration) 3단계, 의존 관계 분석"
+  },
+  {
+   "n": 9,
+   "title": "벤처스퀘어 · 메가존클라우드, 2025 월드IT쇼서 과기부 장관상 수상",
+   "url": "https://venturesquare.net/966523",
+   "kind": "news",
+   "date": "2025",
+   "note": "HyperMig 수상"
+  },
+  {
+   "n": 10,
+   "title": "AWS 백서 · Disaster Recovery of Workloads on AWS — 클라우드의 재해 복구 방식",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html",
+   "kind": "reference",
+   "note": "백업·복원 / 파일럿 라이트 / 웜 스탠바이 / 멀티 사이트 액티브-액티브, 비용·복잡도 순서"
+  },
+  {
+   "n": 11,
+   "title": "AWS Prescriptive Guidance · 이전 전략(7 Rs)",
+   "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/large-migration-guide/migration-strategies.html",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "AWS Certified Solutions Architect – Professional",
+   "url": "https://aws.amazon.com/certification/certified-solutions-architect-professional/",
+   "kind": "reference",
+   "note": "180분·75문항·300달러·3년 유효·일본어/한국어 응시, 권장 경력 2년"
+  },
+  {
+   "n": 13,
+   "title": "IPA · 非機能要求グレード",
+   "url": "https://www.ipa.go.jp/archive/digital/iot-en-ci/jyouryuu/hikinou/ent03-b.html",
+   "kind": "reference",
+   "note": "일본 정보처리추진기구의 비기능 요구 정리표(2018판, 보관 페이지). 사용자와 개발자 사이 오해를 막으려 항목과 수준을 단계별로 정한다"
+  },
+  {
+   "n": 14,
+   "title": "AWS Lambda 개발자 안내서 · 할당량",
+   "url": "https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html",
+   "kind": "reference",
+   "note": "최대 실행 1,800초, 메모리 128MB~10,240MB(조사일 기준)"
+  },
+  {
+   "n": 15,
+   "title": "Amazon VPC · What is a transit gateway?",
+   "url": "https://docs.aws.amazon.com/vpc/latest/tgw/what-is-transit-gateway.html",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Amazon VPC 사용 설명서 · VPC CIDR 블록 / 서브넷 크기",
+   "url": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-cidr-blocks.html",
+   "kind": "reference",
+   "note": "/16~/28, 서브넷마다 5개 예약(subnet-sizing 페이지)"
+  },
+  {
+   "n": 17,
+   "title": "AWS ParallelCluster 사용 설명서 · What is AWS ParallelCluster",
+   "url": "https://docs.aws.amazon.com/parallelcluster/latest/ug/what-is-aws-parallelcluster.html",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Amazon Bedrock 사용 설명서 · What is Amazon Bedrock",
+   "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "AWS CDK v2 개발자 안내서 / AWS CloudFormation 사용 설명서",
+   "url": "https://docs.aws.amazon.com/cdk/v2/guide/home.html",
+   "kind": "reference",
+   "note": "CDK는 CloudFormation 템플릿을 만들어(synthesis) 배포한다. CloudFormation 안내서: docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html"
+  },
+  {
+   "n": 20,
+   "title": "Terraform 문서 · State (원격 state·잠금)",
+   "url": "https://developer.hashicorp.com/terraform/language/state",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "DORA · 소프트웨어 배포 성과 지표",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+   "kind": "reference",
+   "note": "지금은 다섯 지표"
+  },
+  {
+   "n": 22,
+   "title": "Wikipedia · Responsibility assignment matrix (RACI)",
+   "url": "https://en.wikipedia.org/wiki/Responsibility_assignment_matrix",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "일본 국세청 · 2024년분 민간급여실태통계조사 결과",
+   "url": "https://www.nta.go.jp/publication/statistics/kokuzeicho/minkan/gaiyou/2024.htm",
+   "kind": "reference",
+   "note": "1년 근무한 급여소득자 평균 478만 엔(남성 587만 엔)"
+  },
+  {
+   "n": 24,
+   "title": "JLPT 공식 · N1~N5 인정의 기준",
+   "url": "https://www.jlpt.jp/about/levelsummary.html",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "일본 출입국재류관리청 · 재류자격 '기술·인문지식·국제업무'",
+   "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html",
+   "kind": "reference",
+   "note": "학력·경력 기준 세부는 원문에서 확인"
+  },
+  {
+   "n": 26,
+   "title": "AWS Well-Architected Framework",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html",
+   "kind": "reference",
+   "note": "운영 우수성·보안·안정성·성능 효율·비용 최적화·지속가능성 6개 축"
+  },
+  {
+   "n": 27,
+   "title": "AWS Site-to-Site VPN 사용 설명서 · Tunnel options",
+   "url": "https://docs.aws.amazon.com/vpn/latest/s2svpn/VPNTunnels.html",
+   "kind": "reference",
+   "note": "연결마다 터널 두 개"
+  },
+  {
+   "n": 28,
+   "title": "Green · MEGAZONE テクニカルサポート 공고",
+   "url": "https://www.green-japan.com/company/8818/job/275272",
+   "kind": "posting",
+   "note": "500만~700만 엔, AWS 문의를 메일·티켓·채팅·전화로 대응"
+  },
+  {
+   "n": 29,
+   "title": "Google SRE Book · Monitoring Distributed Systems",
+   "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+   "kind": "reference",
+   "note": "네 가지 기본 신호(지연·트래픽·오류·포화)"
+  }
+ ],
+ "caveat": "일본 법인의 기술 블로그·컨퍼런스 발표는 찾지 못했습니다(인터뷰에 일본 기술 블로그를 열었다는 말만 있습니다). 회사 근거는 이 공고, 일본 채용 사이트(Green·en Ambi)의 회사 정보·다른 공고, 회사 일본 사이트, 본사 마케팅의 SA 인터뷰뿐입니다. 채용 사이트의 회사 숫자(그룹 인원·매출)는 페이지 안에서도 서로 달라 직원 20명·설립 2019년만 썼고, 대표자 이름도 두 사이트가 달라 싣지 않았습니다. 설계·문서 서식과 재해 복구 방식은 회사가 공개하지 않아 IPA·AWS 공식 문서로 '보통 이런 것'을 보였습니다. 비자·이사 비용 지원은 공고에 없습니다.",
+ "resources": [
+  {
+   "id": "aws-wa",
+   "title": "AWS Well-Architected Framework",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html",
+   "why": "설계를 6개 축으로 점검하는 질문 목록. 요구 듣기·설계·후배 리뷰 줄의 공통 기준."
+  },
+  {
+   "id": "aws-wa-rel",
+   "title": "AWS Well-Architected · Reliability Pillar",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+   "why": "고가용성·내결함성 업무 줄을 위한 안정성 원칙 — 다중 가용 영역·복구 시험."
+  },
+  {
+   "id": "aws-dr",
+   "title": "Disaster Recovery of Workloads on AWS",
+   "by": "AWS 백서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html",
+   "why": "재해 복구 네 방식과 RTO·RPO. 고객에게 비용과 복구 속도를 견주어 설명할 때의 기준."
+  },
+  {
+   "id": "aws-7rs",
+   "title": "AWS Prescriptive Guidance · Migration strategies (7 Rs)",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/large-migration-guide/migration-strategies.html",
+   "why": "클라우드 이전 프로젝트를 이끌 때 시스템마다 옮기는 길을 고르는 공통어."
+  },
+  {
+   "id": "ipa-hikinou",
+   "title": "非機能要求グレード",
+   "by": "IPA(일본 정보처리추진기구)",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.ipa.go.jp/archive/digital/iot-en-ci/jyouryuu/hikinou/ent03-b.html",
+   "why": "일본 고객과 비기능 요건을 맞출 때 쓰는 일본 SI 현장의 표. 낱말 자체를 일본어로 익히는 데도 좋다."
+  },
+  {
+   "id": "terraform-docs",
+   "title": "Terraform 공식 문서",
+   "by": "HashiCorp",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.hashicorp.com/terraform/docs",
+   "why": "IaC 업무·요건 줄의 기본. 튜토리얼로 AWS 자원을 코드로 만들어 본다."
+  },
+  {
+   "id": "tf-state",
+   "title": "Terraform 문서 · State",
+   "by": "HashiCorp",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.hashicorp.com/terraform/language/state",
+   "why": "여럿이 고객 환경을 다룰 때 꼭 알아야 할 state·원격 저장·잠금."
+  },
+  {
+   "id": "tf-up-running",
+   "title": "Terraform: Up & Running (3판)",
+   "by": "Yevgeniy Brikman · O'Reilly · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/terraform-up-and/9781098116736/",
+   "why": "모듈·state·여러 환경·테스트까지 — 고객마다 재사용할 Terraform 구조를 잡는 책."
+  },
+  {
+   "id": "ja-jissen-tf",
+   "title": "実践Terraform AWSにおけるシステム設計とベストプラクティス",
+   "by": "野村友規 · インプレスR&D · 2019",
+   "kind": "book",
+   "lang": "ja",
+   "free": false,
+   "level": "실무",
+   "url": "https://ndlsearch.ndl.go.jp/en/books/R100000002-I029962347",
+   "why": "AWS 구성을 Terraform으로 짓는 일본어 책. 일본 현장에서 쓰는 낱말로 같은 내용을 다시 익힌다."
+  },
+  {
+   "id": "cdk-docs",
+   "title": "AWS CDK v2 개발자 안내서",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/cdk/v2/guide/home.html",
+   "why": "요건에 적힌 CDK·CloudFormation이 어떻게 이어지는지(코드 → 템플릿 → 배포)."
+  },
+  {
+   "id": "nw-intro",
+   "title": "IT 엔지니어를 위한 네트워크 입문",
+   "by": "고재성 외",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ridibooks.com/books/754029945",
+   "why": "주소·라우팅·VPN·방화벽의 바탕. VPC 설계·하이브리드 요건 줄을 읽기 전 기본기."
+  },
+  {
+   "id": "aws-s2s",
+   "title": "AWS Site-to-Site VPN 사용 설명서",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/vpn/latest/s2svpn/VPNTunnels.html",
+   "why": "고객 사내망과 AWS를 잇는 VPN 터널 설정. 하이브리드 요건 줄."
+  },
+  {
+   "id": "aws-tgw",
+   "title": "Amazon VPC Transit Gateways",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.aws.amazon.com/vpc/latest/tgw/what-is-transit-gateway.html",
+   "why": "VPC가 여러 개·사내망이 여럿인 대기업 고객 망을 한 허브로 묶는 법."
+  },
+  {
+   "id": "boto3-docs",
+   "title": "Boto3 문서 (AWS SDK for Python)",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://boto3.amazonaws.com/v1/documentation/api/latest/index.html",
+   "why": "스크립트 요건 줄 — 자원 목록·태그 점검·이전 전 조사를 Python으로."
+  },
+  {
+   "id": "go-tour",
+   "title": "A Tour of Go",
+   "by": "Go 공식",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://go.dev/tour/",
+   "why": "스크립트 언어로 Go를 고를 때 문법을 하루 이틀에 훑는 공식 실습."
+  },
+  {
+   "id": "linux-woo",
+   "title": "이것이 리눅스다 with Rocky Linux",
+   "by": "우재남 · 한빛미디어",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=Book&SearchWord=%EC%9D%B4%EA%B2%83%EC%9D%B4+%EB%A6%AC%EB%88%85%EC%8A%A4%EB%8B%A4",
+   "why": "Bash·서버 관리의 기본. 개발 경력에서 인프라로 넘어온 사람의 빈칸 채우기."
+  },
+  {
+   "id": "sre-monitoring",
+   "title": "Site Reliability Engineering · Monitoring Distributed Systems",
+   "by": "Google · O'Reilly · 2016 (웹 무료)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+   "why": "무엇을 감시할지(네 가지 신호) — 감시·장애 대응을 설계에 넣는 줄."
+  },
+  {
+   "id": "gha-docs",
+   "title": "GitHub Actions 문서",
+   "by": "GitHub",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.github.com/ko/actions",
+   "why": "CI/CD 업무·우대 줄. Terraform plan을 PR에 붙이는 흐름까지 만들어 본다."
+  },
+  {
+   "id": "dora",
+   "title": "DORA's software delivery performance metrics",
+   "by": "DORA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+   "why": "배포를 '합리화했다'를 숫자로 보여 주는 다섯 지표. 고객 보고와 면접 답에 쓴다."
+  },
+  {
+   "id": "docker-book",
+   "title": "개발자를 위한 도커 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "컨테이너 우대 줄의 첫 칸 — 실제로 친 명령과 출력으로."
+  },
+  {
+   "id": "kubernetes-book",
+   "title": "쿠버네티스 입문 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "kubectl 출력 읽기와 Pending·CrashLoopBackOff 고치기. 고객 앱을 쿠버네티스로 옮길 때."
+  },
+  {
+   "id": "k8s-in-action",
+   "title": "쿠버네티스 인 액션",
+   "by": "마르코 룩샤 · 강인호 외 옮김 · 에이콘출판 · 2020",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=235962702",
+   "why": "쿠버네티스 구조를 깊게. 클러스터를 직접 세우고 운영하는 수준까지."
+  },
+  {
+   "id": "ko-aws-container",
+   "title": "AWS 컨테이너 설계와 구축 철저 입문",
+   "by": "아라이 마사야·우마카츠 아츠시 · 양현 옮김 · 위키북스 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=296061083",
+   "why": "일본 저자가 쓴 AWS 구성 설계(VPC·ECS·CI/CD·보안) 책의 번역 — 일본 SI가 AWS를 짓는 방식을 한국어로."
+  },
+  {
+   "id": "lambda-docs",
+   "title": "AWS Lambda 개발자 안내서 · 할당량",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html",
+   "why": "서버리스 우대 줄 — 언제 Lambda를 쓰고 언제 피하나를 한계값으로 판단."
+  },
+  {
+   "id": "aws-sap",
+   "title": "AWS Certified Solutions Architect – Professional",
+   "by": "AWS",
+   "kind": "course",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://aws.amazon.com/certification/certified-solutions-architect-professional/",
+   "why": "우대 자격 그 자체. 시험 범위(복잡한 조직·이전·비용·안정성 설계)가 이 자리의 업무와 거의 겹친다."
+  },
+  {
+   "id": "parallelcluster",
+   "title": "AWS ParallelCluster 사용 설명서",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.aws.amazon.com/parallelcluster/latest/ug/what-is-aws-parallelcluster.html",
+   "why": "HPC 우대 줄 — 계산 노드·Slurm·공유 저장소를 코드로 세워 본다."
+  },
+  {
+   "id": "bedrock-docs",
+   "title": "Amazon Bedrock 사용 설명서",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html",
+   "why": "생성 AI 우대 줄 — 인프라 쪽에서 모델 호출의 망·권한·로그를 설계하는 출발점."
+  },
+  {
+   "id": "jlpt",
+   "title": "JLPT · N1~N5 인정 기준",
+   "by": "일본국제교육지원협회·국제교류기금",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.jlpt.jp/about/levelsummary.html",
+   "why": "'비즈니스 일본어'를 급수로 가늠하고 공부 목표를 정할 때."
+  },
+  {
+   "id": "isa-visa",
+   "title": "在留資格「技術・人文知識・国際業務」",
+   "by": "일본 출입국재류관리청",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html",
+   "why": "일본 이주 요건 — 개발자가 흔히 받는 체류 자격의 학력·경력 요건을 원문으로 확인."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "설계 기준과 이전 공통어",
+   "time": "1~2주",
+   "goal": "Well-Architected 6개 축, 이전 7가지 방식, 재해 복구 4가지를 고객에게 말로 설명할 수 있다.",
+   "resources": [
+    "aws-wa",
+    "aws-7rs",
+    "aws-dr",
+    "ipa-hikinou"
+   ],
+   "task": "가상의 사내 시스템 5개(웹·사내 메일·회계 DB·파일 서버·배치)를 표로 만들고, 시스템마다 이전 방식·RTO/RPO·재해 복구 방식을 한 줄씩 정해 이유를 적는다."
+  },
+  {
+   "title": "VPC와 하이브리드 망",
+   "time": "2~3주",
+   "goal": "사내망과 겹치지 않는 VPC 주소표를 짜고, VPN으로 잇는 구성을 그릴 수 있다.",
+   "resources": [
+    "nw-intro",
+    "aws-s2s",
+    "aws-tgw"
+   ],
+   "task": "위 서브넷 설계 코드를 고쳐 가상 사내망 주소 3개와 안 겹치는 3층 × 3가용 영역 표를 만들고, VPN·라우팅 표를 그림으로 남긴다."
+  },
+  {
+   "title": "코드로 짓기",
+   "time": "3~4주",
+   "goal": "2단계 구성을 Terraform 모듈로 만들고 원격 state·잠금을 쓰며 plan을 리뷰받는 흐름을 돌린다.",
+   "resources": [
+    "terraform-docs",
+    "tf-state",
+    "tf-up-running",
+    "ja-jissen-tf",
+    "cdk-docs",
+    "gha-docs"
+   ],
+   "task": "VPC·ALB·EC2 두 대·RDS를 Terraform 모듈로 만들고, GitHub Actions가 PR에 plan을 붙이고 병합하면 apply하게 한다. 한 가용 영역을 끄는 장애 시험을 하고 결과를 적는다."
+  },
+  {
+   "title": "운영을 설계에 넣기",
+   "time": "1~2주",
+   "goal": "감시·백업·런북·배포 지표가 들어간 넘김 문서를 쓸 수 있다.",
+   "resources": [
+    "sre-monitoring",
+    "aws-wa-rel",
+    "dora",
+    "boto3-docs"
+   ],
+   "task": "3단계 환경에 네 가지 신호 경보를 걸고, boto3로 태그 없는 자원을 찾아 보고하는 스크립트를 쓰고, 운영 설계서 한 장(경보·대응 순서·백업 주기)을 일본어로 써 본다."
+  },
+  {
+   "title": "자격과 우대 칸 (선택)",
+   "time": "계속",
+   "goal": "SA 프로페셔널을 따고, 컨테이너·서버리스·HPC/생성 AI 중 하나를 깊게 해 본다.",
+   "resources": [
+    "aws-sap",
+    "kubernetes-book",
+    "k8s-in-action",
+    "ko-aws-container",
+    "lambda-docs",
+    "parallelcluster",
+    "bedrock-docs",
+    "jlpt"
+   ],
+   "task": "3단계 앱을 컨테이너로 바꿔 EKS나 ECS에 올리거나, 사내망에서만 Bedrock을 부르는 폐쇄망 구성을 Terraform으로 만들어 블로그 글 한 편(일본어)으로 정리한다."
+  }
+ ],
+ "pay": {
+  "summary": "공고 표기 **연 850만~1,000만 엔**, 입사 때는 **원칙적으로 1,000만 엔**에서 시작한다고 적었다 — 회사 평균 연봉은 공개되지 않았다",
+  "rows": [
+   {
+    "label": "공고 표기 연봉",
+    "value": "850만~1,000만 엔",
+    "basis": "공고",
+    "note": "정사원, 수습 3개월(조건 같음). 성과에 따라 1,000만 엔 넘게도 가능하다고 적었다 [1]"
+   },
+   {
+    "label": "입사 시 시작 연봉",
+    "value": "원칙 1,000만 엔",
+    "basis": "공고",
+    "note": "공고의 급여 상세 — '입사 시 원칙적으로 연 1,000만 엔' [1]"
+   },
+   {
+    "label": "같은 회사 SA 공고",
+    "value": "650만~1,500만 엔",
+    "basis": "공고 · 일본 채용 사이트",
+    "note": "Green의 ソリューションアーキテクト(AWS 클라우드 엔지니어) 공고. 많은 직원이 연 50만~100만 엔씩 오른다고 적었다 [4]"
+   },
+   {
+    "label": "같은 회사 기술 지원 공고",
+    "value": "500만~700만 엔",
+    "basis": "공고 · 일본 채용 사이트",
+    "note": "Green의 テクニカルサポート 공고 [28]"
+   },
+   {
+    "label": "일본 급여소득자 평균(참고)",
+    "value": "478만 엔",
+    "basis": "통계 · 2024년",
+    "note": "일본 국세청 민간급여실태통계조사, 1년 내내 근무한 급여소득자 전체 평균(남성 587만 엔). 공고 숫자와 기준이 달라 막대로 견주지 않는다 [23]"
+   }
+  ],
+  "how": "비상장 일본 법인이라 사업보고서의 평균 급여가 없고, 회사가 밝힌 평균 연봉도 찾지 못했다 — 공시 숫자 없음 {추론}. 숫자는 모두 엔화이고 원화 환산은 환율에 따라 달라 싣지 않았다 {추론}. 상여·잔업수당 계산 방식은 공고에 없어 면접 때 확인한다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "휴일",
+    "detail": "연간 휴일 120일 정도 · 완전 주 2일(토·일) · 공휴일 · 여름휴가 · 경조 휴가"
+   },
+   {
+    "name": "유급휴가",
+    "detail": "6개월 근무 뒤 10일"
+   },
+   {
+    "name": "육아·간병",
+    "detail": "출산 전후 휴업·육아휴직·간병휴직(법정대로)"
+   },
+   {
+    "name": "근무 시간",
+    "detail": "9:00~18:00(8시간), 앞뒤 1시간까지 옮겨 근무 가능 · 평균 잔업 월 10시간 정도"
+   },
+   {
+    "name": "자격 취득 지원",
+    "detail": "장려금·응시료 등 보조"
+   },
+   {
+    "name": "경조금",
+    "detail": "경조 위문금 제도"
+   },
+   {
+    "name": "한국어 동료",
+    "detail": "한국어 모국어 직원 5명 이상 · 한국 출장 있음"
+   },
+   {
+    "name": "사회보험",
+    "detail": "고용보험·산재보험·건강보험·후생연금"
+   },
+   {
+    "name": "기타",
+    "detail": "간접흡연 대책 있음"
+   }
+  ],
+  "note": "원티드 공고의 복리후생 칸 그대로다 [1]. 같은 회사 Green 공고에도 사회보험·자격 취득 지원·경조금·육아/간병 휴업·연간 휴일 120일 정도가 같게 적혀 있다 [4]. 공고 소개 글에는 AWS 교육 자료·멘토 제도도 있다 [1]."
+ },
+ "location": {
+  "name": "MEGAZONE 본사 (H¹O 아카사카)",
+  "address": "東京都港区赤坂3-17-3 H¹O赤坂 (도쿄도 미나토구 아카사카 3-17-3)",
+  "postal": "107-0052",
+  "map_url": "https://map.naver.com/p/search/%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B8%AF%E5%8C%BA%E8%B5%A4%E5%9D%823-17-3",
+  "near": "도쿄메트로 긴자선·마루노우치선 아카사카미쓰케역 걸어서 4분, 지요다선 아카사카역 5분, 긴자선·난보쿠선 다메이케산노역 7분",
+  "note": "주소와 오는 길은 공고의 근무지 칸[1], 우편번호는 회사 정보 페이지[2]다. 일본 주소는 도로명이 아니라 지번(정·번지·호)으로 쓴다 {추론}."
+ }
+}

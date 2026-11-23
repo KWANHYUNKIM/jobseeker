@@ -14,6 +14,7 @@
   "wanted-391368": "litalico-sre-product",
   "wanted-393885": "litalico-sre-tech-lead",
   "wanted-394202": "mediphone-platform-engineer",
+  "wanted-306087": "megazone-japan-cloud-engineer-senior",
   "wanted-394722": "nhn-japan-frontend",
   "wanted-395799": "progrit-frontend-tech-lead",
   "wanted-393626": "recruit-data-engineer-japan",
@@ -270,6 +271,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 27
+  },
+  {
+   "id": "megazone-japan-cloud-engineer-senior",
+   "company": "MEGAZONE株式会社 (메가존클라우드 일본 법인)",
+   "role": "시니어 클라우드 엔지니어 (일본 근무)",
+   "jobs": [
+    "wanted-306087"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 26
   },
   {
    "id": "nhn-japan-frontend",
