@@ -3,6 +3,7 @@
  "jobs": {
   "ats-toss:group:7990802003": "toss-ads-ai-engineer",
   "ats-toss:group:7998957003": "toss-ads-bidding-pacing-mle",
+  "ats-toss:group:6619423003": "toss-ads-data-analyst",
   "ats-toss:group:7998956003": "toss-ads-ranking-mle",
   "ats-toss:group:7728018003": "toss-ads-reco-data-scientist",
   "ats-toss:group:7998953003": "toss-ads-retrieval-mle",
@@ -83,6 +84,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 11
+  },
+  {
+   "id": "toss-ads-data-analyst",
+   "company": "토스",
+   "role": "데이터 분석가 (Ads)",
+   "jobs": [
+    "ats-toss:group:6619423003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 7
   },
   {
    "id": "toss-ads-ranking-mle",
