@@ -1,0 +1,959 @@
+{
+ "id": "tossbank-devops-engineer",
+ "company": "토스뱅크",
+ "role": "DevOps 엔지니어",
+ "team": "Server Platform Division · DevOps 팀",
+ "jobs": [
+  "wanted-385879",
+  "ats-toss:group:7757550003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "은행 서비스 수백 개가 도는 **쿠버네티스 클러스터 · Istio 서비스 메시 · 빌드·배포 파이프라인 · 모니터링**을 맡습니다. 제품 개발자가 제품에만 집중하도록 서버 공용 시스템 중 '프로그래밍 이외의 일'을 하는 팀입니다.[1]",
+  "env": "자체 데이터센터 두 곳을 **액티브-액티브**로 쓰고[3][6], 은행이라 **전자금융감독규정**(배포 상호 검증·기록·망분리·3시간 복구)을 시스템으로 지켜야 합니다.[4][10]",
+  "oneline": "토스 앱의 2천만 고객에게 은행을 내보내는 바닥을 책임지는 자리.[1] 도구보다 **문제를 정하고 조금씩 바꾸는 과정**을 봅니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Kubernetes와 Istio를 기반으로 서비스 클러스터를 운영해요.",
+   "short": "은행 서비스 수백 개가 도는 쿠버네티스 클러스터와, 서비스 사이 통신을 맡는 Istio를 멈추지 않게 돌보는 일.",
+   "why": "토스뱅크는 2021년 10월 출범 때 고객 요청을 받는 쪽(채널계)을 처음부터 컨테이너로 만들어 쿠버네티스에 올렸습니다.[3] 서비스를 잘게 나누자 요청 하나에 내부 호출이 많아져, 재시도·서킷 브레이커(고장 난 상대를 잠시 끊는 장치) 같은 네트워크 처리를 앱이 아니라 **인프라 층(Istio)** 에서 하려고 메시를 들였습니다.[3] 지금은 400개 넘는 서비스가 서로 얽혀 있습니다.[5]",
+   "actually": {
+    "intro": "토스뱅크 DevOps가 SLASH 22에서 공개한 운영 방식입니다.[3]",
+    "items": [
+     "**들어오는 길** — 맨 앞 HAProxy 뒤에 Istio 인그레스 게이트웨이(Envoy)를 둔다. 큰 이미지 내려받기 같은 내부 트래픽이 고객 API를 해치지 않게 **트래픽 성격별로 게이트웨이를 따로** 띄운다.",
+     "**한 단계 줄이기** — NodePort 대신 hostPort로 게이트웨이를 노드마다 하나씩 띄워 kube-proxy(IPVS) 부하 분산을 건너뛴다. 대신 늘리고 줄일 때 노드 라벨과 HAProxy 목록을 손봐야 한다.",
+     "**나가는 길** — 다른 클러스터로 가는 mTLS(서로 인증서를 확인하는 암호화 통신)는 이그레스 게이트웨이에 맡긴다. DB·Kafka·ZooKeeper·Redis처럼 메시 밖 자원으로 가는 포트는 프록시를 거치지 않게 뺀다.",
+     "**배치 작업의 좀비 사이드카** — 배치가 끝나도 옆에 붙은 프록시가 안 끝나서, 프록시가 뜰 때까지 기다렸다 명령을 돌리고 끝나면 프록시에 종료를 보내는 스크립트로 감쌌다. 최근 쿠버네티스는 이 문제를 위해 사이드카 컨테이너를 따로 지원한다.[23]",
+     "**컨트롤 플레인 튜닝** — istiod가 모든 프록시에 설정을 밀어 보내는 양·주기, Go 런타임이 쓸 CPU 수를 할당량에 맞게 조정한다.",
+     "**업그레이드 따라가기** — Istio 1.8에서 중앙 수집기(Mixer)가 없어지자 메트릭·로그 수집 구조를 새로 짰다(업무③)."
+    ]
+   },
+   "how_far": "클러스터를 새로 세우는 일보다 **이미 큰 클러스터를 멈추지 않고 고치는** 일이 대부분입니다. {추론} 하드웨어·커널은 SE(시스템 엔지니어), 그 위 소프트웨어는 DevOps라는 분담과 계열사마다 2~5명의 작은 DevOps 팀이 같은 스택(Kubernetes·Istio·Prometheus)을 쓰는 구조는 토스 DevOps 공고가 밝힌 것입니다.[9]",
+   "examples": [
+    {
+     "title": "VirtualService 규칙 순서 (직접 돌린 출력)",
+     "body": "Istio는 위에서부터 처음 맞는 규칙을 고릅니다. 조건 없는 기본 규칙을 맨 위에 두면 새 버전 헤더가 있어도 모두 옛 버전으로 갑니다.[5][12] 출력: `기본 규칙을 맨 아래에: v2 / 맨 위에: v1`",
+     "lang": "python",
+     "code": "def route(rules, headers):            # VirtualService 처럼 위에서부터 처음 맞는 규칙\n    for match, dest in rules:\n        if all(headers.get(k) == v for k, v in match.items()):\n            return dest\n\ngood = [({\"x-sticky-version\": \"v2\"}, \"v2\"), ({\"x-sticky-version\": \"v1\"}, \"v1\"), ({}, \"v1\")]\nbad  = [({}, \"v1\"), ({\"x-sticky-version\": \"v2\"}, \"v2\"), ({\"x-sticky-version\": \"v1\"}, \"v1\")]\nh = {\"x-sticky-version\": \"v2\"}\nprint(\"기본 규칙을 맨 아래에:\", route(good, h), \"/ 맨 위에:\", route(bad, h))"
+    }
+   ],
+   "refs": [
+    3,
+    5,
+    9,
+    12,
+    23
+   ],
+   "study": [
+    "slash22-mesh",
+    "istio-docs",
+    "k8s-docs",
+    "k8s-sidecar"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "빌드/배포 시스템을 운영하고 반복 작업을 자동화하여 개발 생산성을 높여요.",
+   "short": "파이프라인 400여 개를 템플릿 하나로 묶어 관리하고, 개발자가 배포를 두 번 하는 것 같은 반복을 없앤다.",
+   "why": "토스뱅크 DevOps가 속한 서버 플랫폼 팀의 목표가 **생산성·안정성·보안 컴플라이언스**입니다.[4] 파이프라인은 빌드·배포 281개, 작업 자동화 76개 등 **400개가 넘고 1년에 두 배 넘게** 늘어서, 복사해 붙이다 생기는 실수가 곧 배포 사고가 됩니다.[4]",
+   "actually": {
+    "intro": "SLASH 23·24에서 토스뱅크가 공개한 방식입니다.",
+    "items": [
+     "**파이프라인을 코드로** — GoCD(Jenkins와 비슷한 자동화 서버)의 파이프라인을 웹 화면이 아니라 YAML 파일로 Git에 둔다. 어떤 파이프라인이 있는지, 언제 무엇이 바뀌었는지 Git에서 본다.[4]",
+     "**Helm 템플릿 + values** — 공통 동작은 템플릿(5가지 유형·설정값 72개·1,182줄), 서비스마다 다른 값만 values 파일에. 조건문으로 템플릿 변경을 시험용 파이프라인에서 먼저 돌린다.[4]",
+     "**다시 그려 비교하는 CI** — develop 브랜치에 올리면 GitHub Actions가 모든 파일을 다시 렌더링해, 저장된 결과와 다르면 '의도하지 않은 변경'으로 보고 메신저로 알린다. 통과하면 master에 반영되고 GoCD에 동기화된다. 쿠버네티스 배포 템플릿(7가지 오브젝트·762줄)도 렌더링 결과를 검증용으로 Git에 저장해 같은 검사를 한다.[4]",
+     "**롤링 대신 카나리** — 쿠버네티스 기본 롤링 업데이트는 중간에 못 멈춰서, 고객 서비스는 Istio로 새 버전에 1%부터 넣는다. 개발 환경·내부 어드민은 롤링.[5]",
+     "**두 번 배포 없애기** — 요청마다 비율로 나누면 새 탭이 보였다가 누르면 옛 버전으로 가 404가 났다. 개발자가 '새 페이지 먼저, 진입 화면 나중'으로 두 번 배포하던 것을, 게이트웨이가 사용자 키를 해시해 버전을 고정하는 **스티키 카나리**로 없앴다. Istio 자체 기능(consistent hash)은 비율을 바꿀 때마다 고정이 풀려 못 썼다.[5]"
+    ]
+   },
+   "how_far": "서비스 개발자는 자기 values만 고칩니다. DevOps는 **템플릿·검사·배포 방식**을 맡아 한 줄 실수가 수백 개로 퍼지지 않게 합니다.[4] 발표자는 이 방법이 Jenkins·GitHub Actions·Spinnaker 같은 다른 도구에도 그대로 통한다고 했습니다.[4]",
+   "examples": [
+    {
+     "title": "요청마다 나누기 vs 스티키 카나리 (직접 돌린 출력)",
+     "body": "새 버전 50%일 때 '첫 화면은 새 버전, 탭을 누르면 옛 버전'인 사용자를 셉니다. 해시 방식은 발표의 '해시 후 100으로 나눈 나머지'이고, 해시 함수는 예시로 고른 것입니다.[5] 출력: `요청마다 비율로 나눌 때 404 본 사용자: 245 / 1000`, `사용자 키로 고정할 때 404 본 사용자: 0 / 1000`",
+     "lang": "python",
+     "code": "import hashlib, random\n\ndef bucket(key):                      # 사용자 키 → 0~99\n    return int(hashlib.sha256(key.encode()).hexdigest(), 16) % 100\n\nrandom.seed(7)\nNEW = 50                              # 새 버전 비율(%)\nmiss_random = miss_sticky = 0\nfor u in [\"user-%d\" % i for i in range(1000)]:\n    # 첫 화면(새 탭이 보이나) → 탭 누르기(새 페이지가 있나)\n    first, second = random.random() * 100 < NEW, random.random() * 100 < NEW\n    miss_random += first and not second\n    b = bucket(u)\n    miss_sticky += (b < NEW) and not (b < NEW)\nprint(\"요청마다 비율로 나눌 때 404 본 사용자:\", miss_random, \"/ 1000\")\nprint(\"사용자 키로 고정할 때 404 본 사용자:\", miss_sticky, \"/ 1000\")"
+    }
+   ],
+   "refs": [
+    4,
+    5
+   ],
+   "study": [
+    "slash23-pipeline",
+    "slash24-canary",
+    "gocd-docs",
+    "helm-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "모니터링 시스템을 운영하고 고가용성 아키텍처를 구현하여 서비스 안정성을 높여요.",
+   "short": "데이터센터 한 곳이 멈춰도 은행 앱이 돌게 이중화하고, 문제가 생기면 사람보다 먼저 알아채게 만든다.",
+   "why": "기존 은행은 재해 때만 켜는 예비 센터(DR)를 두지만, 토스뱅크는 데이터센터 두 곳을 **둘 다 늘 쓰는(액티브-액티브)** 구조로 시작했습니다. 장애뿐 아니라 인프라 작업 때도 트래픽을 한쪽으로 돌려 서비스 영향을 없애기 위해서입니다.[3] 규정도 은행에 주요 장비 이중화와 재해복구센터, **핵심업무 3시간 안 복구**를 요구합니다.[10]",
+   "actually": {
+    "items": [
+     "**두 배를 받을 자리** — 한쪽이 멈추면 남은 곳이 평소의 두 배를 받아야 해서, 고객 서비스의 CPU request(최소 보장량)를 평소 최대 사용량의 두 배로 잡는다.[6]",
+     "**장애 번짐 막기** — 계정계(돈과 원장을 다루는 핵심 시스템)로 가는 연결 시스템(MCI)을 ServiceEntry로 메시에 등록하고, 업무 도메인별로 서킷 브레이커·벌크헤드(연결 칸막이)를 걸었다. 장비를 물리적으로 나누지 않고 한 도메인의 지연이 전체로 번지지 않게 했다.[3][12]",
+     "**메트릭** — Prometheus가 각 파드의 프록시에서 직접 긁고, 수집 대상은 Prometheus Operator의 PodMonitor·ServiceMonitor로 자동 등록. 오래 보관·묶어 보기는 Thanos, 화면은 Grafana. 로그는 ELK, 호출 추적은 Pinpoint.[3][6][22]",
+     "**로그를 디스크에 안 쓰기** — 프록시 접근 로그를 파일로 쌓아 Filebeat가 읽던 방식은 트래픽이 몰리면 노드 디스크를 해칠 수 있어, Envoy가 gRPC로 보내는 로그를 Go로 만든 수집기가 받아 Kafka → Logstash → Elasticsearch로 보낸다. Istio 기본 옵션으로 켰더니 운영 중 모든 사이드카가 죽는 문제가 있어 설정을 직접 넣었다.[3]",
+     "**노이즈 없는 알림** — 'request 대비 사용률'이 너무 높거나 낮을 때 알린다. 코틀린·스프링 기동 직후(예열)는 잘라 내고, 새벽·주말 저점은 '최근 1주 최대'로 본다. 1분 간격 7일이면 점 10,080개라, 30분 최대를 미리 기록해(recording rule) 15분 간격으로 겹쳐 구한다.[6][14]"
+    ]
+   },
+   "how_far": "대시보드를 그리는 것보다 **수집 경로가 서비스 노드를 해치지 않고, 알림이 믿을 만하게** 만드는 일이 큽니다. {추론} 업무 문장의 '고가용성 아키텍처를 구현'은 위처럼 데이터센터 이중화·장애 격리 설정까지 DevOps 몫이라는 뜻으로 읽힙니다. {추론}",
+   "examples": [
+    {
+     "title": "벌크헤드 — 한 도메인이 느려질 때 (직접 돌린 출력, 가상 숫자)",
+     "body": "카드 쪽 응답이 1초로 늘었을 때 초당 처리 요청 수입니다. 연결을 같이 쓰면 느린 요청이 연결을 다 잡아 멀쩡한 수신·여신까지 멈추고, 도메인마다 나누면 카드만 느려집니다.[3] 출력: `연결 60개를 같이 쓸 때  : {'수신': 0, '여신': 0, '카드': 60}`, `도메인마다 20개씩 나눌 때: {'수신': 300, '여신': 300, '카드': 20}`",
+     "lang": "python",
+     "code": "demand = {\"수신\": 300, \"여신\": 300, \"카드\": 300}   # 초당 요청\nhold = {\"수신\": 0.02, \"여신\": 0.02, \"카드\": 1.0}    # 요청 하나가 연결을 잡는 시간(초) — 카드 쪽이 느려졌다\n\ndef shared(cap):                       # 연결을 같이 쓴다: 느린 요청이 먼저 다 잡는 최악의 경우\n    slow_takes = min(cap, demand[\"카드\"] * hold[\"카드\"])\n    left = cap - slow_takes\n    return {d: round(slow_takes / hold[d]) if d == \"카드\" else round(min(demand[d], left / 2 / hold[d]))\n            for d in demand}\n\ndef split(per):                        # 도메인마다 연결을 따로(벌크헤드)\n    return {d: round(min(demand[d], per / hold[d])) for d in demand}\n\nprint(\"연결 60개를 같이 쓸 때  :\", shared(60))\nprint(\"도메인마다 20개씩 나눌 때:\", split(20))"
+    }
+   ],
+   "refs": [
+    3,
+    6,
+    10,
+    12,
+    14,
+    22
+   ],
+   "study": [
+    "slash22-mesh",
+    "slash24-cpu",
+    "prometheus-docs",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "업무 과정에서 보안과 규제를 준수할 수 있는 시스템을 만들어요.",
+   "short": "은행 규정(배포 상호 검증·책임자 승인·기록 보존·망분리)을 사람의 주의가 아니라 시스템이 늘 지키게 만든다.",
+   "why": "토스뱅크 같은 금융회사에는 전자금융감독규정이 적용되고, 서비스를 배포할 때 **상호 검증** 같은 절차를 파이프라인에서 지켜야 합니다. 발표자는 그 기능을 '켤 수 있다'로는 부족하고 **'반드시 켜져 있다'를 보장**해야 한다고 했습니다.[4]",
+   "actually": {
+    "intro": "규정이 요구하는 것과 토스뱅크가 공개한 방법입니다.",
+    "items": [
+     "**프로그램 통제** — 프로그램을 등록·변경·폐기하는 절차를 세워 운용해야 한다(29조). 배치(일괄작업)에도 통제 절차가 있다(30조).[10] 토스뱅크는 배포 절차를 중앙 템플릿에 넣어 모든 파이프라인이 같은 절차를 타게 했다.[4]",
+     "**중요 작업은 두 사람** — 원장·이용자 정보가 있는 시스템의 중요 작업은 책임자가 이중 확인한다(28조). 시스템 관리자의 주요 작업도 같다.[10]",
+     "**기록 남기기** — 시스템 접속 기록은 성공·실패와 상관없이 자동으로 남겨 1년 이상 보존하고, 접근 권한은 최소로 준다(13조).[10]",
+     "**망분리** — 전산실 안의 시스템과 그것을 운영·개발하려 직접 붙는 단말은 인터넷과 물리적으로 나눠야 한다(15조). 그래서 외부 SaaS·공개 저장소를 바로 못 쓰는 경우가 많다. {추론}[10]",
+     "**메시로 접근 통제** — 앞단 장비로는 쿠버네티스 서비스의 IP 기반 접근 통제가 어려워 EnvoyFilter로 막고, 내부망 도메인 경로 노출과 일부 공격 요청도 프록시에서 차단한다. 인증이 없거나 사내 LDAP와 안 붙는 오픈소스 도구는 앱을 고치지 않고 프록시가 토큰을 검증하게 했다.[3]",
+     "**서비스 사이 통신 암호화** — 같은 그룹 토스는 모든 서비스에 mTLS를 강제하고, 새 서비스는 허용 목록에 오른 상대만 부르게 했다.[7][13]"
+    ]
+   },
+   "how_far": "규정 해석은 보안·준법 담당과 같이 하고, DevOps는 **그 규칙이 빠짐없이 적용됐다는 것을 플랫폼이 보장하게** 만듭니다.[4] 조문을 외울 필요는 없지만 '왜 이 승인 단계가 있나'를 규정 조항과 이어 설명할 수 있으면 됩니다. {추론}",
+   "examples": [
+    {
+     "title": "'반드시 켜져 있다' 검사 (직접 돌린 출력)",
+     "body": "다시 그린 모든 파이프라인에 승인 단계가 있고 배포보다 앞인지 확인합니다. 발표의 '다시 그려 비교'에 정책 검사를 더한 예이고, 토스뱅크가 이렇게 검사하는지는 공개되지 않았습니다. {추론}[4] 출력: `svc-a → 통과`, `svc-b → 막음: 승인 단계 없음`, `svc-c → 막음: 승인이 배포보다 뒤`",
+     "lang": "python",
+     "code": "rendered = {                      # 템플릿에서 다시 그린 파이프라인의 단계들\n    \"svc-a\": [\"build\", \"test\", \"approve\", \"deploy\"],\n    \"svc-b\": [\"build\", \"deploy\"],\n    \"svc-c\": [\"build\", \"test\", \"deploy\", \"approve\"],\n}\nfor name, stages in rendered.items():\n    if \"approve\" not in stages:\n        print(name, \"→ 막음: 승인 단계 없음\")\n    elif stages.index(\"approve\") > stages.index(\"deploy\"):\n        print(name, \"→ 막음: 승인이 배포보다 뒤\")\n    else:\n        print(name, \"→ 통과\")"
+    }
+   ],
+   "refs": [
+    3,
+    4,
+    7,
+    10,
+    13
+   ],
+   "study": [
+    "efsr",
+    "slash23-pipeline",
+    "slash23-istio"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Container orchestration 기술을 바탕으로 서비스를 운영해보신 분을 원해요.",
+   "short": "컨테이너 여러 개를 서버 여러 대에 놓고 살리는 도구(대개 쿠버네티스)로 실제 서비스를 돌려 본 경험.",
+   "why": "토스뱅크의 고객 서비스는 모두 컨테이너로 쿠버네티스 위에서 돌고, 계정계 일부와 MCI도 옮기는 중이라고 했습니다.[3] 공고 이름은 '쿠버네티스'가 아니라 '컨테이너 오케스트레이션'이라 다른 도구 경험도 문이 열려 있고, 쿠버네티스는 우대사항에 따로 있습니다.[1]",
+   "actually": {
+    "intro": "이 팀이 발표에서 기본으로 깔고 말한 개념입니다.",
+    "items": [
+     "**request와 limit** — request는 '최소 이만큼 보장', limit은 '이 이상은 못 씀'. limit에 닿으면 기다리는 스로틀링이 생긴다.[6][11]",
+     "**평균은 낮은데 멈춘다** — 리눅스는 limit을 100ms 주기마다 쓸 수 있는 시간으로 지켜서, 순간 몰리면 평균이 낮아도 스로틀링이 난다. 그래서 고객 서비스는 limit을 안 건다.[6]",
+     "**코어 수 착각** — 컨테이너는 노드의 CPU 코어 수를 그대로 보므로, 병렬도를 코어 수에 맞추는 앱은 과하게 스레드를 띄운다.[6]",
+     "**배포 방식** — 롤링 업데이트·블루그린·카나리의 차이와, 롤링이 중간에 못 멈추는 이유.[5]",
+     "**앱 종류별 차이** — API·컨슈머는 계속 돌고, 배치는 끝나야 한다. 사이드카가 있을 때 배치가 안 끝나는 이유.[3]"
+    ]
+   },
+   "how_far": "'운영해 봤다'는 배포·롤백·자원 설정·장애 확인(kubectl로 Pending·CrashLoopBackOff 읽기)을 직접 해 본 수준입니다. 클러스터 설치 자체보다 **서비스가 왜 느린지·왜 안 뜨는지 찾아 본 경험**을 이력서에 씁니다. {추론}",
+   "refs": [
+    1,
+    3,
+    5,
+    6,
+    11
+   ],
+   "study": [
+    "docker-book",
+    "kube-book",
+    "k8s-in-action",
+    "k8s-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "빌드/배포 시스템이나 모니터링 시스템을 큰 규모에서 운영하고 개선해보신 분을 원해요.",
+   "short": "파이프라인·대시보드를 '쓰는' 쪽이 아니라, 수백 개 서비스가 쓰는 그 시스템을 맡아 고쳐 본 경험.",
+   "why": "이 팀은 파이프라인 400여 개와 서비스 400여 개를 다룹니다.[4][5] 규모가 커지면 화면에서 찾기·비교가 안 되고, 템플릿 한 줄이 모든 배포를 바꾸고, 메트릭 질의 하나가 Thanos·Grafana를 멈춥니다.[4][6]",
+   "actually": {
+    "intro": "'큰 규모'에서 생기는 문제와 이 팀이 한 개선입니다.",
+    "items": [
+     "**가시성** — 웹 화면으로는 400개를 훑을 수 없다 → Git 파일로.[4]",
+     "**실수 줄이기** — 복사·붙이기 → 템플릿 + 변수.[4]",
+     "**변경의 영향** — 템플릿 한 줄이 전체로 → 시험용 파이프라인 먼저, 다시 그려 비교하는 CI.[4]",
+     "**질의 부하** — 7일 최댓값을 1분 간격으로 바로 구하기 → recording rule로 겹쳐 구하기.[6][14]",
+     "**결과 숫자** — 이렇게 해서 CPU 할당량을 200코어 넘게 줄였고, 같은 그룹 토스는 자체 수집기로 CPU 약 400코어·메모리 약 300GB를 아꼈다.[6]"
+    ]
+   },
+   "how_far": "규모는 숫자로 말합니다 — 서비스·파이프라인 몇 개, 하루 배포 몇 번, 시계열 몇 개. 그리고 **고치기 전과 뒤의 숫자**(배포 리드타임·실패율·복구 시간)를 붙입니다. 배포 성과를 재는 일반 틀로는 DORA의 네 지표가 있습니다.[16] {추론}",
+   "refs": [
+    4,
+    5,
+    6,
+    14,
+    16
+   ],
+   "study": [
+    "slash23-pipeline",
+    "slash24-cpu",
+    "prometheus-docs",
+    "dora"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "보안과 규제 준수에 대한 이해도가 있으신 분을 원해요.",
+   "short": "금융 규정이 인프라에 무엇을 요구하나(승인·기록·접근 최소화·망분리·이중화)를 알고 설계에 넣을 수 있는 정도.",
+   "why": "토스뱅크 서버 플랫폼 팀 목표 셋 중 하나가 보안 컴플라이언스입니다.[4] 은행은 전자금융감독규정의 접근 통제·기록 보존·프로그램 통제·망분리·이중화 조항을 지켜야 합니다.[10]",
+   "actually": {
+    "intro": "'이해도'를 이 팀 업무로 옮기면 이런 질문에 답할 수 있는 것입니다. {추론}",
+    "items": [
+     "배포 승인을 사람이 건너뛸 수 없게 하려면 파이프라인 어디에 두나.[4]",
+     "운영자가 원장 DB에 붙은 기록은 어디에 남고, 몇 년 두나(원장 직접 작업 5년, 시스템 접속 기록 1년 이상).[10]",
+     "새 서비스가 아무 서비스나 부를 수 없게 하려면(기본 차단 + 허용 목록).[7][13]",
+     "인터넷과 나뉜 망에서 외부 이미지·패키지는 어떻게 들여오나. {추론}",
+     "핵심업무 3시간 안 복구 요건을 데이터센터 이중화로 어떻게 지키나.[10]"
+    ]
+   },
+   "how_far": "보안 전문가 수준이 아니라, **규정이 왜 그 절차를 요구하는지 알고 불편을 자동화로 줄이는** 엔지니어 수준입니다. 금융권 경험이 없다면 전자금융감독규정의 정보기술부문 조항(13·15·23·27~30조)을 한 번 읽어 두는 것이 최소선입니다. {추론}",
+   "refs": [
+    4,
+    7,
+    10,
+    13
+   ],
+   "study": [
+    "efsr",
+    "slash23-istio"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "“문제 정의 - 대안 도출 - 비교 검증 - 점진 적용 - 추가 개선“의 모든 과정을 스스로 수행해보신 분을 원해요.",
+   "short": "누가 시킨 작업을 처리한 경험보다, 문제를 스스로 정하고 골라서 조금씩 바꾸고 끝까지 다듬어 본 경험을 본다.",
+   "why": "이 팀의 발표가 모두 이 순서로 짜여 있습니다. 카나리 발표는 404 문제를 정의하고 → 두 번 배포·Istio consistent hash·게이트웨이 헤더를 비교하고 → 헤더 방식을 골랐으며, 자동 카나리도 오픈소스 대신 자동 롤백만 직접 만드는 쪽을 골랐습니다.[5]",
+   "actually": {
+    "intro": "토스뱅크 발표 하나를 다섯 칸에 넣으면 이렇습니다.[5]",
+    "items": [
+     "**문제 정의** — 카나리 중 사용자가 버전을 오가며 404를 본다. 400개 서비스가 얽혀 배포한 서비스는 멀쩡한데 옆 서비스가 장애를 낸다.",
+     "**대안 도출** — 진입 화면과 새 화면을 나눠 두 번 배포 / Istio consistent hash / 게이트웨이 해시 헤더. 자동 카나리는 Spinnaker·Flagger / 직접 만들기.",
+     "**비교 검증** — 두 번 배포는 생산성이 떨어지고 순서를 틀리면 같은 오류. consistent hash는 비율을 바꾸면 고정이 풀림. 오픈소스는 운영 비용과 새 장애 지점.",
+     "**점진 적용** — 헤더 방식 스티키 카나리를 프런트엔드 서비스에. 자동 카나리 중 가장 중요한 '자동 롤백'만 먼저(가장 단순한 것을 빠르게).",
+     "**추가 개선** — 롤백 기준을 오류 로그 수에 '로그 지연(감시가 눈먼 상태)'까지 넓혔다. 같은 그룹 토스는 Redis 지연을 고쳤다고 본 뒤에도 남은 더 작은 지연을 다시 쫓아 원인 도구를 바꿨다.[8]"
+    ]
+   },
+   "how_far": "이력서·면접에서 다섯 칸이 다 드러나야 합니다. 특히 **고르지 않은 대안과 그 이유**, 그리고 한 번에 다 바꾸지 않고 어떻게 조금씩 넣었는지가 빠지기 쉽습니다. 공고의 이력서 안내도 '기술적 의사 결정 과정'을 적으라고 합니다.[2] 장애에서 시작한 개선이라면, 사람을 탓하지 않고 원인·재발 방지를 적는 포스트모템 형식이 '문제 정의'와 '추가 개선' 칸을 채우는 데 좋습니다.[15] {추론}",
+   "examples": [
+    {
+     "title": "자동 롤백 조건 (직접 돌린 출력)",
+     "body": "발표의 두 기준 — 전체 오류 로그 수가 기준을 넘거나, 로그가 늦게 쌓이면 새 버전 트래픽을 0으로 — 을 작게 옮겼습니다. 기준 숫자는 가상입니다.[5] 출력: `계속`, `롤백: 오류 로그 80건 > 기준 50`, `롤백: 로그가 180초째 안 들어옴(감시가 눈먼 상태)`",
+     "lang": "python",
+     "code": "def should_rollback(errors_per_min, threshold, last_log_age_s, lag_limit_s):\n    if errors_per_min > threshold:\n        return \"롤백: 오류 로그 %d건 > 기준 %d\" % (errors_per_min, threshold)\n    if last_log_age_s > lag_limit_s:\n        return \"롤백: 로그가 %d초째 안 들어옴(감시가 눈먼 상태)\" % last_log_age_s\n    return \"계속\"\n\nprint(should_rollback(12, 50, 5, 60))\nprint(should_rollback(80, 50, 5, 60))\nprint(should_rollback(3, 50, 180, 60))"
+    }
+   ],
+   "refs": [
+    2,
+    5,
+    8,
+    15
+   ],
+   "study": [
+    "slash24-canary",
+    "slash24-ebpf",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Kubernetes와 Istio를 활용해서 서비스를 운영해보셨으면 더 좋아요.",
+   "short": "이 팀의 바닥이 바로 쿠버네티스 + Istio라서. 해 봤다면 첫날부터 같은 말로 일할 수 있다.",
+   "why": "토스 그룹 DevOps 팀은 모두 Kubernetes·Istio·Prometheus를 쓰고 운영 경험을 나눕니다.[9] 토스뱅크는 배포(카나리·블루그린), 장애 격리(서킷 브레이커·벌크헤드), 접근 통제(EnvoyFilter)를 Istio 설정으로 합니다.[3][5]",
+   "actually": {
+    "intro": "이 팀이 손대는 Istio 자원입니다.",
+    "items": [
+     "**VirtualService** — 헤더·비율로 버전 고르기, 규칙 순서.[5][12]",
+     "**DestinationRule** — 서브셋(v1·v2), 서킷 브레이커·연결 수 제한.[3][12]",
+     "**ServiceEntry** — 메시 밖 시스템(MCI)을 메시 안처럼 다루기.[3]",
+     "**Gateway(인그레스·이그레스)** — 들어오고 나가는 길, 클러스터 사이 mTLS.[3]",
+     "**EnvoyFilter** — 기본 자원으로 안 되는 접근 통제·인증·로그 전송.[3]",
+     "**PeerAuthentication·AuthorizationPolicy·Sidecar** — 서비스 사이 암호화와 호출 허용 목록.[7][13]"
+    ]
+   },
+   "how_far": "Istio를 써 보지 못했다면, 작은 클러스터에서 카나리·서킷 브레이커·mTLS를 직접 걸어 보고 **사이드카가 붙으면 무엇이 달라지나**(배치 종료·Prometheus 수집·연결 끊기)를 설명할 수 있는 정도가 최소선입니다. {추론}",
+   "refs": [
+    3,
+    5,
+    7,
+    9,
+    12,
+    13
+   ],
+   "study": [
+    "istio-docs",
+    "istio-in-action",
+    "slash22-mesh",
+    "slash23-istio"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "On-premise 환경에서 서비스를 운영해보셨으면 더 좋아요.",
+   "short": "토스뱅크는 자체 데이터센터(IDC)에서 돌아서, 클라우드처럼 '돈 내고 바로 늘리기'가 안 된다.",
+   "why": "토스뱅크는 IDC 환경이라 오토스케일링(부하 따라 자동으로 늘리기)을 쓰지 않습니다. 서버를 바로 늘릴 수 없어, 부하 때 파드가 자원을 다 차지하면 꼭 필요한 배포조차 못 할 수 있기 때문입니다.[6]",
+   "actually": {
+    "items": [
+     "**미리 추산하기** — 최대 부하를 추산해 자원을 맞추고, 알림으로 계속 조정한다(프로젝션).[6]",
+     "**앞단을 직접** — 클라우드 로드밸런서 대신 HAProxy와 hostPort 게이트웨이, 노드 라벨을 손으로 맞춘다.[3]",
+     "**두 센터를 직접** — 액티브-액티브 데이터센터 사이로 트래픽을 돌리는 일이 운영의 일부다.[3][6]",
+     "**규정상 이유도 있다** — 은행 전산실과 재해복구센터는 국내에 두고, 전산실 시스템은 인터넷과 물리적으로 나눠야 한다.[10]"
+    ]
+   },
+   "how_far": "클라우드만 써 봤다면, 관리형 서비스가 감춰 주던 것 — 로드밸런서·노드 용량·네트워크 — 을 직접 다뤄 본 경험으로 채웁니다(예: 직접 세운 클러스터에서 노드가 꽉 찼을 때 무엇이 Pending이 되나). {추론}",
+   "refs": [
+    3,
+    6,
+    10
+   ],
+   "study": [
+    "slash24-cpu",
+    "kernel-cfs",
+    "k8s-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "주로 활용하신 기술을 알 수 있게 적어주시면 좋아요.",
+   "short": "이력서 안내다. 도구 이름만 나열하지 말고, 어느 일에 무엇을 썼는지 붙여 적는다.",
+   "why": "공고가 우대사항 아래에 따로 단 '이력서는 이렇게' 안내입니다.[2] 서류 다음이 사전 과제와 직무 인터뷰라, 적은 기술은 거기서 깊게 물어볼 거리가 됩니다.[2] {추론}",
+   "how_far": "예: 'Kubernetes(온프레미스 3개 클러스터, 서비스 120개) · Istio 1.x(카나리·mTLS) · GoCD/ArgoCD · Prometheus/Thanos'처럼 **규모와 쓰임**을 같이. 써 본 정도와 운영해 본 정도를 구분합니다. {추론}",
+   "refs": [
+    2
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "어떤 문제를 어떻게 해결해서 어떤 결과를 얻었는지 적어주시면 좋아요.",
+   "short": "이력서 안내다. 문제 → 한 일 → 숫자로 된 결과를 한 덩어리로 쓴다.",
+   "why": "이 팀의 발표도 늘 결과를 숫자로 끝냅니다 — CPU 할당량 200코어 넘게 절감, 노드 간 사용률 차이 40%p → 20%p 같은 식입니다.[6]",
+   "how_far": "결과에는 고치기 전과 뒤의 숫자(배포 시간·장애 복구 시간·비용·알림 수)를 붙입니다. 배포 성과를 재는 흔한 지표는 배포 빈도·리드타임·변경 실패율·복구 시간입니다.[16]",
+   "refs": [
+    6,
+    16
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "기술적 의사 결정이 필요했던 일이 있다면 그 과정이 드러나게 적어주시면 좋아요.",
+   "short": "이력서 안내다. 무엇과 무엇을 견줘 왜 골랐는지, 버린 쪽까지 적는다.",
+   "why": "자격요건 넷째 줄(문제 정의 → 대안 → 비교 검증 → 점진 적용 → 추가 개선)을 서류에서 보려는 안내입니다.[2] 토스뱅크 발표도 오픈소스 자동 카나리를 버리고 자동 롤백만 직접 만든 이유를 운영 비용과 새 장애 지점으로 설명했습니다.[5]",
+   "how_far": "한 건이라도 '대안 A·B·C → 기준(안정성·운영 비용·학습 비용) → 고른 것과 버린 이유 → 어떻게 조금씩 넣었나'가 보이면 됩니다. {추론}",
+   "refs": [
+    2,
+    5
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "'한 번에 다 바꾸기'보다 1%부터 넣고 지켜보는 게 편한 사람[5]",
+   "오픈소스를 쓰다 막히면 설정을 직접 넣어 우회하는 사람 — 이 팀은 Istio 기본 옵션 대신 EnvoyFilter를 직접 썼다[3]",
+   "동료 개발자의 반복(두 번 배포·복사 붙이기)을 없애는 데서 보람을 느끼는 사람[4][5]",
+   "규정을 핑계 삼지 않고 자동화로 지키는 쪽을 좋아하는 사람[4]"
+  ],
+  "hard": [
+   "배포·접근마다 승인·기록 절차가 붙는다[4][10]",
+   "IDC라 부하가 늘어도 바로 서버를 늘릴 수 없다[6]",
+   "발표가 2022~2024년 것이라, 지금의 도구 구성은 면접에서 확인해야 한다 {추론}",
+   "장애 대응이 일의 일부라 근무 시간 밖 대응이 있을 수 있다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "카나리 배포 중 새 기능 탭을 누르면 가끔 404가 납니다. 원인과 해결은요? 진입 화면을 나중에 배포하면 안 되나요?",
+   "a": "요청마다 비율로 나누면 버전이 바뀐다 — 두 번 배포의 비용과 스티키 카나리.[5]"
+  },
+  {
+   "q": "템플릿 한 줄을 고치면 파이프라인 수백 개가 바뀝니다. 실수를 어떻게 막겠어요?",
+   "a": "다시 그려 비교하는 CI, 시험용 파이프라인 먼저.[4]"
+  },
+  {
+   "q": "배포 승인 절차를 '켤 수 있다'가 아니라 '반드시 켜져 있다'로 보장하려면요?",
+   "a": "절차를 중앙 템플릿에 넣고 검사로 막는다.[4][10]"
+  },
+  {
+   "q": "계정계 연결 시스템 한 도메인이 느려지자 모든 서비스가 같이 느려졌습니다. 장비를 나누지 않고 어떻게 막겠어요?",
+   "a": "ServiceEntry + 도메인별 서킷 브레이커·벌크헤드.[3]"
+  },
+  {
+   "q": "배치 Job에 사이드카를 붙였더니 Job이 끝나지 않습니다. 왜일까요?",
+   "a": "프록시가 안 끝난다 — 감싸는 스크립트, 지금은 사이드카 컨테이너 기능.[3][23]"
+  },
+  {
+   "q": "IDC에서 HPA 같은 자동 확장을 쓰면 무엇이 위험할까요? 그럼 request는 어떻게 잡나요?",
+   "a": "배포 자리가 없어질 수 있다 — 평소 최대의 두 배(데이터센터 한 곳 장애).[6]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 토스뱅크 DevOps 엔지니어 (DevOps Engineer)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7757550003",
+   "kind": "posting",
+   "note": "팀 소개(Server Platform Division)·업무·요건·동료 한마디(2천만 고객, 오픈소스로 고가용성 분산 시스템)"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · 토스뱅크 DevOps Engineer",
+   "url": "https://www.wanted.co.kr/wd/385879",
+   "kind": "posting",
+   "note": "같은 공고 — 이력서 작성 안내·복리후생·합류 여정(사전과제·사전 인터뷰·처우협의)"
+  },
+  {
+   "n": 3,
+   "title": "SLASH 22 · 은행 앱에도 Service Mesh 도입이 가능한가요?",
+   "url": "https://www.youtube.com/watch?v=ftFHZwyUN38",
+   "kind": "company",
+   "date": "2022",
+   "note": "토스뱅크 DevOps 김동진·하성준 · 공식 자막 전부 읽음(자동 변환이 깨진 일부 옵션 이름·공격 이름은 쓰지 않음)"
+  },
+  {
+   "n": 4,
+   "title": "SLASH 23 · 유연하고 안전하게 배포 Pipeline 운영하기",
+   "url": "https://www.youtube.com/watch?v=SRLeXvA-o-U",
+   "kind": "company",
+   "date": "2023",
+   "note": "토스뱅크 DevOps 김동석 · 자막 전부 읽음"
+  },
+  {
+   "n": 5,
+   "title": "SLASH 24 · 생산성과 안정성 모두 잡는 마스터키, Canary 배포 개선기",
+   "url": "https://www.youtube.com/watch?v=ApNj9MZU7Ak",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스뱅크 DevOps·SRE · 자막 전부 읽음"
+  },
+  {
+   "n": 6,
+   "title": "SLASH 24 · Kubernetes CPU 알뜰하게 사용하기",
+   "url": "https://www.youtube.com/watch?v=WdikCm_CYms",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스뱅크 DevOps 팀 리더 김동석 + 토스 DevOps 이재성 · 자막 전부 읽음"
+  },
+  {
+   "n": 7,
+   "title": "SLASH 23 · 고객 불안을 0으로 만드는 토스의 Istio Zero Trust",
+   "url": "https://www.youtube.com/watch?v=4sJd6PIkP_s",
+   "kind": "company",
+   "date": "2023",
+   "note": "같은 그룹 토스 DevOps — 자막은 앞선 풀이(toss-devops-engineer) 때 읽은 것"
+  },
+  {
+   "n": 8,
+   "title": "SLASH 24 · 미처 알지 못했던 Kernel까지 Observability 향상시키기",
+   "url": "https://www.youtube.com/watch?v=e8cEDhAPm-E",
+   "kind": "company",
+   "date": "2024",
+   "note": "같은 그룹 토스 DevOps — 자막은 앞선 풀이 때 읽은 것"
+  },
+  {
+   "n": 9,
+   "title": "토스 채용 · DevOps 엔지니어 (토스)",
+   "url": "https://toss.im/career/job-detail?gh_jid=4071151003",
+   "kind": "posting",
+   "note": "같은 그룹 다른 회사 — SE·SRE·DevOps 분담, 계열사 DevOps 2~5명·같은 스택"
+  },
+  {
+   "n": 10,
+   "title": "전자금융감독규정(제2025-4호) 사본",
+   "url": "https://ko.wikisource.org/wiki/%EC%A0%84%EC%9E%90%EA%B8%88%EC%9C%B5%EA%B0%90%EB%8F%85%EA%B7%9C%EC%A0%95_(%EC%A0%9C2025-4%ED%98%B8)",
+   "kind": "reference",
+   "note": "13·15·23·27~30조를 읽음. 위키 사본이라 공식 원문(국가법령정보센터)과 대조 필요 — 개정이 잦다"
+  },
+  {
+   "n": 11,
+   "title": "Kubernetes 문서 · 파드와 컨테이너 리소스 관리",
+   "url": "https://kubernetes.io/ko/docs/concepts/configuration/manage-resources-containers/",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "Istio 문서 · Traffic Management",
+   "url": "https://istio.io/latest/docs/concepts/traffic-management/",
+   "kind": "reference",
+   "note": "VirtualService·DestinationRule·ServiceEntry·서킷 브레이커"
+  },
+  {
+   "n": 13,
+   "title": "Istio 문서 · Security",
+   "url": "https://istio.io/latest/docs/concepts/security/",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Prometheus 문서 · Recording rules",
+   "url": "https://prometheus.io/docs/prometheus/latest/configuration/recording_rules/",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "Google SRE Book · Postmortem Culture",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "DORA · 소프트웨어 배포 성과 지표(four keys)",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "뉴시스 — 3년 근무 직원 1억4000만원… 인터넷은행 평균 급여(각사 사업보고서)",
+   "url": "https://www.newsis.com/view/NISX20250812_0003287731",
+   "kind": "news",
+   "date": "2025-08-13"
+  },
+  {
+   "n": 18,
+   "title": "SBS Biz — 인뱅 3사도 연봉 1억원대로(은행연합회 2025 지배구조 및 보수체계 연차보고서)",
+   "url": "https://biz.sbs.co.kr/amp/article/20000297249",
+   "kind": "news",
+   "date": "2026-03-13"
+  },
+  {
+   "n": 19,
+   "title": "자소설닷컴 — 토스뱅크 연봉(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 20,
+   "title": "토스뱅크 — 회사 정보(사이트 하단 주소)",
+   "url": "https://tossbank.com/esg",
+   "kind": "company"
+  },
+  {
+   "n": 21,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 22,
+   "title": "Prometheus Operator 문서 · PodMonitor·ServiceMonitor",
+   "url": "https://prometheus-operator.dev/docs/getting-started/introduction/",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Kubernetes 문서 · Sidecar Containers",
+   "url": "https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/",
+   "kind": "reference",
+   "note": "init 컨테이너에 restartPolicy: Always — 본 컨테이너가 끝나면 사이드카도 정리된다"
+  }
+ ],
+ "caveat": "근거 발표는 2022~2024년 것이라 지금은 도구·구성이 달라졌을 수 있습니다. 토스뱅크가 규정의 각 조항을 시스템으로 어떻게 지키는지(승인·기록·망분리의 세부)는 공개 자료가 없어, 규정 원문과 같은 그룹의 공개 발표로 '보통 이런 것'을 보였습니다. 규정 조문은 위키 사본으로 읽었으니 공식 원문으로 확인하세요.",
+ "resources": [
+  {
+   "id": "slash22-mesh",
+   "title": "SLASH 22 · 은행 앱에도 Service Mesh 도입이 가능한가요?",
+   "by": "토스뱅크 DevOps · 20분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=ftFHZwyUN38",
+   "why": "업무①③ — 이 팀이 Istio를 왜 들였고 인그레스·이그레스·로그·배치 사이드카를 어떻게 운영하나. 지원 전에 꼭 볼 영상."
+  },
+  {
+   "id": "slash23-pipeline",
+   "title": "SLASH 23 · 유연하고 안전하게 배포 Pipeline 운영하기",
+   "by": "토스뱅크 DevOps · 15분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=SRLeXvA-o-U",
+   "why": "업무②④ — 파이프라인 400개를 Git·Helm·CI로 다루고 규정상 절차를 '반드시 켜져 있게' 하는 법."
+  },
+  {
+   "id": "slash24-canary",
+   "title": "SLASH 24 · 생산성과 안정성 모두 잡는 마스터키, Canary 배포 개선기",
+   "by": "토스뱅크 DevOps·SRE · 21분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=ApNj9MZU7Ak",
+   "why": "업무②·요건④ — 스티키 카나리와 자동 롤백. '문제 정의 → 비교 → 점진 적용'의 본보기."
+  },
+  {
+   "id": "slash24-cpu",
+   "title": "SLASH 24 · Kubernetes CPU 알뜰하게 사용하기",
+   "by": "토스뱅크·토스 DevOps · 24분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=WdikCm_CYms",
+   "why": "업무③·온프레미스 우대 — 액티브-액티브 기준 request, limit을 안 거는 이유, IDC에서 오토스케일링을 안 쓰는 이유."
+  },
+  {
+   "id": "slash23-istio",
+   "title": "SLASH 23 · 고객 불안을 0으로 만드는 토스의 Istio Zero Trust",
+   "by": "토스 DevOps · 28분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=4sJd6PIkP_s",
+   "why": "업무④ — 같은 그룹이 mTLS STRICT·호출 허용 목록을 실제로 옮긴 순서."
+  },
+  {
+   "id": "slash24-ebpf",
+   "title": "SLASH 24 · 미처 알지 못했던 Kernel까지 Observability 향상시키기",
+   "by": "토스 DevOps · 22분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.youtube.com/watch?v=e8cEDhAPm-E",
+   "why": "요건④의 '추가 개선' — 고쳤다고 본 지연을 커널까지 다시 쫓아간 과정."
+  },
+  {
+   "id": "docker-book",
+   "title": "개발자를 위한 도커 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "요건① — 컨테이너가 무엇을 나눠 쓰고 무엇을 격리하나. 오케스트레이션 전의 바탕."
+  },
+  {
+   "id": "kube-book",
+   "title": "쿠버네티스 입문 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "요건① — kubectl이 돌려준 것(Pending·CrashLoopBackOff)을 읽는 법."
+  },
+  {
+   "id": "k8s-docs",
+   "title": "Kubernetes 공식 문서(한국어)",
+   "by": "Kubernetes",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://kubernetes.io/ko/docs/home/",
+   "why": "리소스 관리·서비스 네트워킹·스케줄링 장 — 클러스터 운영 업무의 기준 문서."
+  },
+  {
+   "id": "k8s-sidecar",
+   "title": "Kubernetes 문서 · Sidecar Containers",
+   "by": "Kubernetes",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/",
+   "why": "업무① — 발표의 '배치가 끝나도 프록시가 안 끝나는' 문제를 지금 쿠버네티스가 어떻게 풀었나."
+  },
+  {
+   "id": "k8s-in-action",
+   "title": "쿠버네티스 인 액션",
+   "by": "마르코 룩샤",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%20%EC%9D%B8%20%EC%95%A1%EC%85%98",
+   "why": "요건① — Service·kube-proxy·스케줄러가 안에서 어떻게 움직이나. 원서는 2018년이라 버전은 공식 문서로 보충."
+  },
+  {
+   "id": "istio-docs",
+   "title": "Istio 공식 문서",
+   "by": "Istio",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://istio.io/latest/docs/",
+   "why": "업무①·우대① — VirtualService·DestinationRule·ServiceEntry·Gateway·EnvoyFilter, 이 팀이 쓰는 자원 그대로."
+  },
+  {
+   "id": "istio-in-action",
+   "title": "Istio in Action",
+   "by": "Christian Posta · Rinor Maloku · Manning",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.manning.com/books/istio-in-action",
+   "why": "우대① — Envoy가 트래픽을 어떻게 다루고 메시 운영에서 무엇이 문제가 되나."
+  },
+  {
+   "id": "gocd-docs",
+   "title": "GoCD 문서 · Pipelines as code",
+   "by": "GoCD",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.gocd.org/current/advanced_usage/pipelines_as_code.html",
+   "why": "업무② — 이 팀이 쓰는 GoCD에서 파이프라인을 Git 파일로 두는 법."
+  },
+  {
+   "id": "helm-docs",
+   "title": "Helm 문서",
+   "by": "Helm",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://helm.sh/docs/",
+   "why": "업무② — 템플릿·values·조건문. 파이프라인과 배포 오브젝트를 같은 방식으로 찍어 내는 도구."
+  },
+  {
+   "id": "prometheus-docs",
+   "title": "Prometheus 문서",
+   "by": "Prometheus",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://prometheus.io/docs/introduction/overview/",
+   "why": "업무③ — PromQL·recording rule·라벨 설계. 노이즈 없는 알림의 기본."
+  },
+  {
+   "id": "kernel-cfs",
+   "title": "Linux 커널 문서 · CFS Bandwidth Control",
+   "by": "Linux kernel",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.kernel.org/scheduler/sched-bwc.html",
+   "why": "요건①·온프레미스 — CPU limit이 주기마다 쓸 시간으로 지켜지는 원리. 스로틀링 질문의 원문."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering",
+   "by": "Google · O'Reilly · 2016",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "why": "업무③·요건④ — 모니터링·장애 대응·포스트모템 장. 온라인 무료."
+  },
+  {
+   "id": "efsr",
+   "title": "전자금융감독규정",
+   "by": "금융위원회 고시 · 국가법령정보센터",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.law.go.kr/행정규칙/전자금융감독규정",
+   "why": "업무④·요건③ — 13조(접근·기록)·15조(망분리)·23조(이중화·복구 3시간)·27~30조(원장·이중 확인·프로그램·배치 통제)만 먼저."
+  },
+  {
+   "id": "dora",
+   "title": "DORA's software delivery metrics: the four keys",
+   "by": "DORA (Google Cloud)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+   "why": "요건②·이력서 안내 — 개선 전후를 배포 빈도·리드타임·변경 실패율·복구 시간으로 보이는 법."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "컨테이너와 쿠버네티스 손에 익히기",
+   "time": "2~3주",
+   "goal": "배포·롤백·자원 설정을 직접 하고, 안 뜨는 파드의 원인을 kubectl로 찾을 수 있다.",
+   "resources": [
+    "docker-book",
+    "kube-book",
+    "k8s-docs",
+    "k8s-in-action"
+   ],
+   "task": "노트북에 노드 3개짜리 kind 클러스터를 띄우고 가짜 API 3개를 배포한다. CPU limit 있음/없음 두 배포에 순간 부하를 걸어 응답 시간과 스로틀링 지표를 비교하고, 일부러 이미지 이름을 틀려 Pending·ImagePullBackOff를 읽어 본다."
+  },
+  {
+   "title": "Istio로 트래픽 다루기",
+   "time": "2~3주",
+   "goal": "카나리(비율·헤더)·서킷 브레이커·mTLS를 걸고, 사이드카가 만드는 문제를 설명할 수 있다.",
+   "resources": [
+    "istio-docs",
+    "istio-in-action",
+    "slash22-mesh",
+    "slash24-canary",
+    "k8s-sidecar"
+   ],
+   "task": "1단계 클러스터에 Istio를 올린다. v2를 10% 카나리로 내고 사용자 헤더로 버전을 고정했을 때와 안 했을 때 '탭을 누르면 404'가 몇 번 나는지 센다. 클러스터 밖 가짜 계정계(느린 서버)를 ServiceEntry로 등록해 도메인별 연결 제한을 걸고, 한 도메인만 느려지게 만든다. 끝나야 하는 Job에 사이드카를 붙여 안 끝나는 것을 확인하고 고친다."
+  },
+  {
+   "title": "파이프라인을 코드로",
+   "time": "2주",
+   "goal": "Helm 템플릿 + values로 여러 서비스의 파이프라인·배포를 찍어 내고, 템플릿 변경을 CI가 잡게 할 수 있다.",
+   "resources": [
+    "slash23-pipeline",
+    "gocd-docs",
+    "helm-docs"
+   ],
+   "task": "가상 서비스 5개의 values와 공통 템플릿을 Git에 둔다. 렌더링 결과를 저장하고, PR마다 GitHub Actions가 다시 렌더링해 차이가 나면 실패하게 한다. 모든 결과에 승인 단계가 배포보다 앞에 있는지 검사하는 단계를 더하고, 승인 단계를 지우는 PR을 일부러 올려 막히는지 본다."
+  },
+  {
+   "title": "관측·고가용성·규정",
+   "time": "2주",
+   "goal": "노이즈 없는 알림과 자동 롤백을 만들고, 그것이 금융 규정의 어느 조항과 이어지는지 말할 수 있다.",
+   "resources": [
+    "prometheus-docs",
+    "slash24-cpu",
+    "sre-book",
+    "efsr",
+    "kernel-cfs"
+   ],
+   "task": "Prometheus로 'request 대비 사용률' 과다·과소 알림을 만든다(기동 직후 제외, recording rule로 7일 최대). 오류 로그 수나 로그 지연이 기준을 넘으면 카나리 비율을 0으로 돌리는 스크립트를 붙인다. 마지막에 이 실습에서 만든 승인·기록·이중화 장치를 전자금융감독규정 조항과 한 표로 짝짓는다."
+  },
+  {
+   "title": "다섯 칸으로 쓰기 (지원 전)",
+   "time": "1주",
+   "goal": "자기 경험 하나를 '문제 정의 → 대안 → 비교 검증 → 점진 적용 → 추가 개선'과 전후 숫자로 쓸 수 있다.",
+   "resources": [
+    "slash24-canary",
+    "slash24-ebpf",
+    "dora"
+   ],
+   "task": "1~4단계 중 하나(또는 실제 경험)를 골라 한 장으로 쓴다. 버린 대안과 그 이유, 몇 %부터 넣었는지, 고친 뒤 무엇이 남아 다시 손봤는지, DORA 지표 중 무엇이 얼마나 바뀌었는지를 꼭 넣는다."
+  }
+ ],
+ "pay": {
+  "summary": "신입 초봉은 **약 5,100만원**(집계값), 직원 평균은 **약 1억 1,600만원**(공시) — 평균은 경력직이 대부분이라 초봉과 다르다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 적혀 있지 않고 직군 구분도 없어 개발자 계약 연봉과 다를 수 있다 [19]"
+   },
+   {
+    "label": "직원 평균 보수",
+    "value": "1억 1,600만원",
+    "amount": 11600,
+    "basis": "공시 · 2025년",
+    "note": "은행연합회 공시(지배구조·보수체계 연차보고서), 임원을 뺀 직원만. 전년보다 300만원 올랐다 [18]"
+   },
+   {
+    "label": "임직원 평균 급여",
+    "value": "1억 1,700만원",
+    "amount": 11700,
+    "basis": "사업보고서 · 2024년",
+    "note": "임직원 684명 기준 [17]"
+   },
+   {
+    "label": "카카오뱅크 평균",
+    "value": "1억 2,200만원",
+    "amount": 12200,
+    "basis": "공시 · 2025년",
+    "peer": true,
+    "note": "같은 공시의 평균 보수 [18]"
+   },
+   {
+    "label": "케이뱅크 평균",
+    "value": "1억 200만원",
+    "amount": 10200,
+    "basis": "공시 · 2025년",
+    "peer": true,
+    "note": "같은 공시의 임직원 평균 보수(임원 포함) [18]"
+   }
+  ],
+  "how": "공고에는 연봉이 적혀 있지 않고, 레퍼런스 체크 뒤 **처우 협의** 단계에서 사람마다 정한다 [2]. 공고 요건이 '경력 2년 이상'이라 신입 초봉은 참고용이다 [2]. 평균 보수는 경력직이 많은 회사 전체 값이라 이 자리 연봉으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무",
+    "detail": "자율 출퇴근, 자율 휴가·재택근무, Early Friday & OFF Week"
+   },
+   {
+    "name": "임금 방식",
+    "detail": "비포괄임금제(초과 근무를 따로 계산)"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "업무 관련 비용 100% 지원, 최고급 장비·소프트웨어"
+   },
+   {
+    "name": "성과급",
+    "detail": "반기별 성과급"
+   },
+   {
+    "name": "수당",
+    "detail": "매월 통신비·체력단련비, 명절 상여금, 생일축하비"
+   },
+   {
+    "name": "보험·경조",
+    "detail": "직장단체보험(가족 포함), 경조사비"
+   },
+   {
+    "name": "인재추천비",
+    "detail": "500만원"
+   },
+   {
+    "name": "식대·교통",
+    "detail": "법인카드 전원 지급 — 점심·저녁·야간교통비 100%"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "사내 카페 커피 Silo, 편의점, 헤어살롱 무료"
+   }
+  ],
+  "note": "이 공고(원티드)에 회사가 적은 복리후생이다 [2]. 통신비·체력단련비 금액(각 월 10만원)은 토스 팀 전체를 기준으로 한 2021년 공식 글에만 있어 토스뱅크에 그대로인지는 처우 협의 때 확인한다 [21] {추론}."
+ },
+ "location": {
+  "name": "토스뱅크 본사",
+  "address": "서울특별시 강남구 테헤란로 131, 13층 (역삼동, 한국지식재산센터)",
+  "postal": "06133",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20131",
+  "near": "2호선 역삼역과 강남역 사이 테헤란로 {추론}",
+  "note": "공고의 근무지 표기는 '서울 강남구'이고, 주소는 토스뱅크 사이트 하단의 회사 정보다 [20]. 팀 자리가 본사와 다를 수 있다 {추론}."
+ }
+}

@@ -62,6 +62,8 @@
   "ats-toss:group:4555752003": "toss-security-researcher-apt",
   "ats-toss:group:7780944003": "toss-security-researcher-mobile",
   "ats-toss:group:4076085003": "toss-security-researcher-pentest",
+  "wanted-385879": "tossbank-devops-engineer",
+  "ats-toss:group:7757550003": "tossbank-devops-engineer",
   "saramin-55608860": "tossbank-finance-data-system",
   "ats-toss:group:7702579003": "tossbank-infra-operations-engineer",
   "ats-toss:group:4542935003": "tossbank-product-foundation-server",
@@ -669,6 +671,17 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 12
+  },
+  {
+   "id": "tossbank-devops-engineer",
+   "company": "토스뱅크",
+   "role": "DevOps 엔지니어",
+   "jobs": [
+    "wanted-385879",
+    "ats-toss:group:7757550003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 13
   },
   {
    "id": "tossbank-finance-data-system",
