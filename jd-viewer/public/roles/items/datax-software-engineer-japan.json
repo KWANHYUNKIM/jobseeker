@@ -1,0 +1,1047 @@
+{
+ "id": "datax-software-engineer-japan",
+ "company": "데이터X (株式会社データX)",
+ "role": "신입 소프트웨어 엔지니어 (일본 근무)",
+ "team": "b→dash 등 SaaS 개발 · LAPRAS Global Bridge 연계 채용",
+ "jobs": [
+  "wanted-395987"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "고객사 마케터가 코드 없이 데이터를 모으고·합치고·써먹게 하는 SaaS **b→dash** 등을 **화면(Vue.js)부터 서버(Rails·Go)·DB까지** 만들고 고칩니다.[1][3] 1,300곳 넘는 회사가 쓰는 제품이고, 2026년에는 AI 에이전트가 이 데이터를 직접 조회하는 기능(MCP)을 붙였습니다.[3][4]",
+  "env": "도쿄 신주쿠 사무실에서 **일본어로 일하는 자리**입니다 — 이력서·직무경력서도 일본어여야 합니다.[1] AWS 위에서 Docker·Terraform을 쓰고, AI 코딩 도구(Devin·Cursor·Windsurf)를 실무에 씁니다.[1]",
+  "oneline": "신입~3년 차 풀스택 웹 개발자 자리. 기술 요건은 '어떤 언어든 실무 경험'뿐이고, 진짜 문턱은 **일본어 업무 소통과 일본 이주**입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "・フロントエンド開発：Vue.jsを中心としたフロントエンド設計と実装",
+   "short": "고객사 마케터가 쓰는 데이터 설정·분석 화면을 Vue.js로 설계하고 만드는 일.",
+   "why": "b→dash는 코드 없이(노코드) 데이터를 가져오고·가공하고·합치고·뽑아 쓰게 하는 제품이라, 사용자가 만지는 화면이 곧 제품입니다.[3] 회사는 웹 앱을 Rails와 Vue.js로 만든다고 적었습니다.[2]",
+   "actually": {
+    "intro": "노코드 데이터 제품의 화면에 보통 들어가는 것입니다. 회사가 화면 구조를 공개하지는 않았습니다.",
+    "items": [
+     "**데이터 목록** — 어떤 데이터 파일이 있고 칸(컬럼)이 어떤 형식인지 보여 주는 화면. 같은 정보를 MCP 기능이 AI에게도 내준다.[4]",
+     "**가공·통합 설정** — 표 두 개를 어떤 칸으로 잇고 어떤 조건으로 거를지 마우스로 정하는 화면.[3]",
+     "**보낼 사람 고르기** — 이탈할 것 같은 고객·살 것 같은 고객을 골라 메일·LINE을 보내는 조건 화면.[3]",
+     "**컴포넌트로 나누기** — Vue 공식 문서는 빌드 도구를 쓰는 앱이면 단일 파일 컴포넌트(.vue 파일 하나에 화면·동작·모양)와 Composition API 조합을 권한다.[7]"
+    ]
+   },
+   "how_far": "디자인은 Figma로 받습니다(공고의 '그 밖' 도구 목록).[1] 신입이라면 화면을 컴포넌트로 나누고, API를 불러 표·입력 폼을 그리고, 입력 오류를 막는 정도가 최소선입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    7
+   ],
+   "study": [
+    "vue-docs-ko",
+    "doit-vue"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・バックエンド開発：Ruby on RailsやGoを中心とした開発、DB設計と運用",
+   "short": "화면이 부르는 API는 Rails로, 큰 데이터를 빨리 처리할 서버는 Go로 만들고 표를 설계·운영한다.",
+   "why": "같은 회사의 다른 공고는 웹 앱은 Rails·Vue.js, 서버 앱은 Java·Scala·Go로 만든다고 나눠 적었고, **1조 건에 이르는 데이터**를 처리하는 배치 앱도 언급했습니다.[2] 제품의 데이터 모델과 아키텍처 설계는 CTO가 맡아 왔습니다.[17]",
+   "level": {
+    "basic": "Ruby 문법 · Rails의 MVC(모델·화면·컨트롤러) · 마이그레이션 · Active Record로 조회",
+    "work": "연관(has_many) · N+1 막기 · 트랜잭션 · 인덱스 · Go 기본 문법과 고루틴(가벼운 동시 실행)",
+    "team": "1조 건 규모 데이터의 배치·집계, 서비스 DB와 분석 DB(Snowflake 등)를 나눠 쓰기 {추론}"
+   },
+   "actually": {
+    "items": [
+     "**Rails** — 화면이 부르는 API와 관리 기능. 모델과 마이그레이션으로 표를 만들고 바꾼다.[6]",
+     "**Go** — 요청이 많거나 데이터가 큰 서버·배치. 고루틴과 채널로 여러 일을 동시에 처리한다.[18]",
+     "**서비스 DB** — AWS Aurora(MySQL 호환 DB)와 Redis(메모리 캐시)가 목록에 있다.[1] 표·인덱스 설계, 마이그레이션, 느린 쿼리 확인이 '운영'이다. {추론}",
+     "**분석 DB** — Snowflake·Redshift·Hadoop(EMR)·Kinesis도 목록에 있다.[1] 고객 데이터를 쌓고 크게 집계하는 쪽이다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "N+1 — 목록 10줄에 쿼리 11번",
+     "body": "Rails 가이드의 예(책 10권과 저자)를 파이썬 sqlite로 흉내 낸 것입니다. 책마다 저자를 따로 물으면 11번, Rails의 `includes`처럼 저자를 한 번에 모아 물으면 2번입니다(가이드의 숫자와 같다).[6] 직접 돌린 출력은 맨 아래 두 줄.",
+     "lang": "python",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\nn = 0\ndef q(sql, args=()):\n    global n; n += 1\n    return db.execute(sql, args).fetchall()\ndb.executescript(\"\"\"\nCREATE TABLE authors(id INTEGER PRIMARY KEY, name TEXT);\nCREATE TABLE books(id INTEGER PRIMARY KEY, title TEXT, author_id INT);\n\"\"\")\ndb.executemany(\"INSERT INTO authors VALUES(?,?)\", [(i, f\"a{i}\") for i in range(1, 11)])\ndb.executemany(\"INSERT INTO books VALUES(?,?,?)\", [(i, f\"b{i}\", i) for i in range(1, 11)])\n\nn = 0  # N+1: 책마다 저자를 따로\nfor bid, title, aid in q(\"SELECT * FROM books LIMIT 10\"):\n    q(\"SELECT name FROM authors WHERE id=?\", (aid,))\nprint(\"N+1     :\", n, \"queries\")\n\nn = 0  # includes 처럼: 책 1번 + 저자 IN 1번\nbooks = q(\"SELECT * FROM books LIMIT 10\")\nids = sorted({b[2] for b in books})\nq(f\"SELECT id, name FROM authors WHERE id IN ({','.join('?'*len(ids))})\", ids)\nprint(\"preload :\", n, \"queries\")\n\n# N+1     : 11 queries\n# preload : 2 queries"
+    }
+   ],
+   "how_far": "두 언어를 다 할 줄 알아야 하는 건 아닙니다 — 자격요건은 '어떤 언어든 실무 경험'입니다.[1] 표를 만들고 인덱스를 거는 이유, 쿼리가 몇 번 나가는지를 설명할 수 있는 정도가 최소선입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    6,
+    17,
+    18
+   ],
+   "study": [
+    "rails-tutorial",
+    "railsguide-query",
+    "go-tour",
+    "real-mysql"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・新機能の設計・既存機能の改善、パフォーマンスチューニング",
+   "short": "새 기능을 설계하고, 있던 기능을 고치고, 느린 곳을 재서 빠르게 만드는 일.",
+   "why": "같은 회사의 다른 공고에도 '성능을 중시한 애플리케이션 개선'이 따로 적혀 있습니다.[2] 공고 본문은 여러 개발자가 동시에 새 기능을 만드는 큰 프로젝트와, 사용자 의견으로 빠르게 고쳐 가는 애자일 개발을 이 자리의 일로 소개합니다.[1] 1,300곳 넘는 고객사의 데이터가 한 제품에 모이니 느린 쿼리 하나가 여러 고객을 느리게 합니다. {추론}",
+   "actually": {
+    "items": [
+     "**N+1 찾기** — 목록 10줄을 그리며 쿼리 11번. `includes`로 2번.[6]",
+     "**인덱스** — 실행 계획에 표 전체 훑기(SCAN)가 보이면 조건 칸에 인덱스를 건다(아래 예시).",
+     "**캐시** — 자주 읽고 잘 안 바뀌는 값은 Redis에 둔다. {추론}",
+     "**오래 걸리는 일은 뒤로** — SQS 큐에 넣고 따로 처리한다. 표준 큐는 같은 메시지를 두 번 줄 수 있어서, 두 번 처리해도 결과가 같게(멱등) 만든다.[13]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "인덱스 하나로 표 전체 훑기 → 바로 찾기",
+     "body": "가상 이벤트 30만 줄에서 한 고객의 이벤트 수를 200번 셉니다. 인덱스 전에는 실행 계획이 `SCAN`(전체 훑기)이고 1,159ms, 인덱스 뒤에는 `SEARCH … USING COVERING INDEX`이고 1ms가 안 됐습니다(직접 돌린 출력, 컴퓨터마다 시간은 다르다).",
+     "lang": "python",
+     "code": "import sqlite3, random, time\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE events(id INTEGER PRIMARY KEY, customer_id INT, kind TEXT)\")\nrandom.seed(1)\ndb.executemany(\"INSERT INTO events(customer_id, kind) VALUES(?,?)\",\n               [(random.randint(1, 50000), \"open\") for _ in range(300000)])\nsql = \"SELECT COUNT(*) FROM events WHERE customer_id = 123\"\ndef run():\n    t = time.perf_counter()\n    for _ in range(200): db.execute(sql).fetchone()\n    return (time.perf_counter() - t) * 1000\nprint(db.execute(\"EXPLAIN QUERY PLAN \" + sql).fetchall()[0][3], f\"{run():.0f}ms/200\")\ndb.execute(\"CREATE INDEX idx_events_customer ON events(customer_id)\")\nprint(db.execute(\"EXPLAIN QUERY PLAN \" + sql).fetchall()[0][3], f\"{run():.0f}ms/200\")\n\n# SCAN events 1159ms/200\n# SEARCH events USING COVERING INDEX idx_events_customer (customer_id=?) 0ms/200"
+    },
+    {
+     "title": "같은 메시지가 두 번 와도 한 번만 반영",
+     "body": "SQS 표준 큐는 메시지를 '최소 한 번' 전달합니다.[13] m1이 다시 오면 그냥 더한 합은 13, 처리한 id를 기억해 거르면 10(직접 돌린 출력).",
+     "lang": "python",
+     "code": "messages = [(\"m1\", 3), (\"m2\", 5), (\"m1\", 3), (\"m3\", 2)]  # m1 이 다시 배달됨\ndone, total_naive, total_safe = set(), 0, 0\nfor mid, value in messages:\n    total_naive += value\n    if mid in done:\n        continue\n    done.add(mid)\n    total_safe += value\nprint(\"그냥 더함:\", total_naive)   # 13\nprint(\"id 로 거름:\", total_safe)   # 10"
+    }
+   ],
+   "how_far": "신입은 '느리다'를 숫자로 재고(쿼리 수·실행 시간·실행 계획) 원인 하나를 짚어 고친 뒤 전후를 비교하는 데서 시작하면 됩니다. 기능 설계는 처음엔 선배와 같이 합니다. {추론}",
+   "refs": [
+    1,
+    2,
+    6,
+    13
+   ],
+   "study": [
+    "railsguide-query",
+    "real-mysql",
+    "sql-levelup",
+    "sqs-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・AIエージェントを活用した最新開発手法の導入と活用",
+   "short": "Devin·Cursor·Windsurf 같은 AI 코딩 도구로 개발하고, 팀에 쓰는 법을 들여오는 일.",
+   "why": "공고가 세 도구를 실제 개발 환경으로 적었습니다.[1] 제품 쪽도 2026년 7월, AI 에이전트가 b→dash에 쌓인 데이터를 직접 조회하게 하는 MCP 서버 기능을 냈습니다.[4]",
+   "actually": {
+    "items": [
+     "**Cursor·Windsurf** — AI가 붙은 코드 편집기. 코드베이스를 읽게 하고 여러 파일을 한 번에 고치게 시킨다.[15]",
+     "**Devin** — 일을 맡기면 스스로 계획·구현·테스트하고 풀 리퀘스트를 올리는 에이전트.[14]",
+     "**사람의 몫** — AI가 낸 변경을 읽고, 테스트로 확인하고, 합칠지 정한다. {추론}",
+     "**제품에 AI 붙이기** — MCP(AI 도구와 외부 데이터를 잇는 공개 표준)[16]로 자연어 요청 → SQL 자동 생성 → 집계. 사용자 권한만큼만 데이터를 보이고, AI에 비밀번호를 넘기지 않으며, 개인정보로 지정한 칸은 자동으로 가린다.[4]"
+    ]
+   },
+   "how_far": "'도입과 활용'이라 도구를 써 본 경험, 그리고 AI가 쓴 코드를 그대로 믿지 않고 검증하는 습관을 보여 주면 됩니다. {추론}",
+   "refs": [
+    1,
+    4,
+    14,
+    15,
+    16
+   ],
+   "study": [
+    "cursor-docs",
+    "devin-docs",
+    "mcp-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■開発環境・技術スタック\n20種類以上の最新技術スタックを実務で活用（クラウド、AI、セキュリティ、UI/UXなど）",
+   "short": "아래 20여 가지를 다 아는 사람을 찾는다는 뜻이 아니라, 들어가면 이것들을 만진다는 뜻.",
+   "why": "회사가 이 자리의 장점 둘째로 '20개가 넘는 기술과 AI를 풀스택으로'를 꼽았습니다.[1] 자격요건은 '어떤 언어든 실무 경험'뿐이라 목록 전체가 요건은 아닙니다.[1]",
+   "how_far": "지원 전에는 목록을 층(화면·서버·DB·분석·인프라·배포)으로 나누고 각 도구가 어느 층의 무엇인지 한 줄로 말할 수 있으면 충분합니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "● インフラ管理\n・Docker\n・Terraform\n・Ansible",
+   "short": "서버를 손으로 만지지 않고 컨테이너와 코드로 만들고 설정한다.",
+   "why": "회사가 인프라 관리 도구로 이 셋을 적었습니다.[1] 아래 'Orchestration' 줄에도 같은 셋이 다시 나옵니다.[1]",
+   "actually": {
+    "items": [
+     "**Docker** — 앱과 실행 환경을 이미지 하나로 묶어 어느 컴퓨터에서나 같게 띄운다.",
+     "**Terraform** — AWS 자원(서버·DB·큐)을 코드로 적어 두고, 바뀔 내용을 `plan`으로 먼저 본 뒤 `apply`로 반영한다.[12]",
+     "**Ansible** — 이미 있는 서버에 패키지·설정을 똑같이 깐다. {추론}"
+    ]
+   },
+   "how_far": "신입은 로컬에서 Docker로 앱을 띄우고, Terraform 코드를 읽고 `plan` 결과를 이해하는 정도면 됩니다. 운영 인프라를 바꾸는 일은 리뷰를 거칩니다. {추론}",
+   "refs": [
+    1,
+    12
+   ],
+   "study": [
+    "docker-book",
+    "terraform-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "● AI・データ分析\n・Snowflake\n・Apache Hadoop\n・Amazon Redshift\n・Amazon Kinesis",
+   "short": "고객사 데이터를 실시간으로 받아 쌓고 크게 집계하는 분석용 저장소·처리 도구들.",
+   "why": "b→dash는 회사 곳곳에 흩어진 데이터를 AI가 읽을 수 있는 한 가지 형식으로 정리하는 데이터 기반(CDP, 고객 데이터 플랫폼)이라고 회사가 설명합니다.[3] 화면이 쓰는 서비스 DB와 따로, 큰 집계를 위한 저장소가 필요합니다. {추론}",
+   "actually": {
+    "items": [
+     "**Kinesis** — 클릭·구매 같은 이벤트가 끊임없이 흘러드는 흐름(스트림)을 받는다.[19]",
+     "**Snowflake·Redshift** — 수억 줄을 한 번에 집계하는 분석용 DB(데이터 웨어하우스). Snowflake는 저장과 계산 자원을 나눠 따로 늘린다.[11]",
+     "**Hadoop(EMR)** — 큰 파일을 여러 서버에 나눠 처리하는 배치. 공고의 AWS 목록에 EMR이 있다.[1]",
+     "**AI 기능과의 관계** — MCP 기능은 AI가 만든 SQL로 이 데이터를 집계한다.[4]"
+    ]
+   },
+   "how_far": "분석 기반 자체는 이미 있고, 이 자리는 그 위에서 SQL을 쓰고 결과를 API·화면으로 내는 쪽일 가능성이 큽니다. SQL로 집계(GROUP BY·JOIN)를 자유롭게 쓰는 정도가 최소선입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    11,
+    19
+   ],
+   "study": [
+    "snowflake-docs",
+    "sql-levelup"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "● AIエージェント\n・WindSurf\n・Devin\n・Cursor",
+   "short": "실제로 쓰는 AI 코딩 도구 세 가지 — 업무④에서 말한 '최신 개발 방법'의 도구 이름.",
+   "why": "업무④ 'AI 에이전트를 활용한 최신 개발 방법의 도입과 활용'에 쓰는 도구입니다.[1]",
+   "actually": {
+    "items": [
+     "**편집기형(Cursor·Windsurf)** — 내가 쓰는 코드 옆에서 제안하고 고친다.[15]",
+     "**위임형(Devin)** — 일을 맡기고 결과(풀 리퀘스트)를 받아 리뷰한다.[14]"
+    ]
+   },
+   "how_far": "작은 Rails·Vue 앱을 AI 도구와 만들어 보고, 무엇을 맡겼고 무엇을 직접 고쳤는지 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    14,
+    15
+   ],
+   "study": [
+    "cursor-docs",
+    "devin-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "● 開発言語・フレームワークなど\n・言語：Ruby / HTML5 / Javascript / Sass / Go\n・フレームワーク：Ruby on Rails / Vue.js",
+   "short": "서버는 Ruby(Rails)·Go, 화면은 JavaScript(Vue.js)·HTML·Sass(CSS를 편하게 쓰는 언어).",
+   "why": "업무①(화면)·②(서버)에 쓰는 언어입니다.[1] 다른 공고에는 서버 앱에 Java·Scala도 적혀 있었습니다.[2]",
+   "how_far": "Ruby를 안 써 봤어도 지원할 수 있습니다 — 요건은 어떤 언어든 실무 경험입니다.[1] 한 언어를 깊게 하고 Ruby 문법 기초를 익혀 두면 됩니다. {추론}",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "rails-tutorial",
+    "go-tour",
+    "vue-docs-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・CI/CD：GitHub Actions / Circle CI / fastlane",
+   "short": "코드를 올리면 테스트·배포가 자동으로 돈다. fastlane은 모바일 앱 빌드·배포용.",
+   "why": "공고의 배포 도구 목록입니다.[1] fastlane은 iOS·Android 앱의 빌드·배포를 자동화하는 도구라, 편집기 목록의 Xcode·Android Studio와 함께 모바일 앱도 있다는 뜻으로 읽힙니다. {추론}",
+   "actually": {
+    "items": [
+     "**GitHub Actions** — 저장소의 YAML 파일(워크플로)로 풀 리퀘스트마다 테스트를 돌리고 배포한다.[20]"
+    ]
+   },
+   "how_far": "워크플로 파일을 읽고, 테스트가 왜 실패했는지 로그에서 찾을 수 있는 정도면 됩니다. {추론}",
+   "refs": [
+    1,
+    20
+   ],
+   "study": [
+    "gha-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・ミドルウェア：nginx / Snowflake",
+   "short": "nginx는 요청을 받아 앱 서버로 넘기는 앞단 웹 서버, Snowflake는 위의 분석 DB.",
+   "why": "공고의 미들웨어 목록입니다.[1] 분석 DB인 Snowflake가 여기에도 적혀 있을 만큼 제품의 중심에 있습니다. {추론}",
+   "how_far": "nginx가 Rails 앞에서 정적 파일을 주고 나머지 요청을 앱으로 넘긴다는 그림, HTTP 요청·응답의 기본을 알면 됩니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "http-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・AWS Service：EC2 / Aurora / Lambda / Kinesis / EMR / SNS / SQS / Redis",
+   "short": "서버(EC2)·DB(Aurora)·함수(Lambda)·스트림(Kinesis)·배치(EMR)·알림과 큐(SNS·SQS)·캐시(Redis).",
+   "why": "제품이 AWS 위에 있습니다.[1] 2018년 AWS Summit Tokyo의 스타트업 아키텍처 경연(Startup Architecture of the Year) 최종 후보에 당시 CTO가 올랐고[5], 회사 공고는 이 대회 최우수상을 받았다고 적었습니다.[2]",
+   "actually": {
+    "items": [
+     "**EC2·Aurora·Redis** — 앱 서버, MySQL 호환 DB, 메모리 캐시. {추론}",
+     "**SQS** — 일을 쌓아 두는 큐. 표준 큐는 같은 메시지를 두 번 줄 수 있다.[13]",
+     "**SNS·Lambda** — 한 알림을 여러 곳에 뿌리고, 서버 없이 이벤트마다 짧은 코드를 돌린다. {추론}",
+     "**Kinesis·EMR** — 이벤트 흐름 받기와 큰 배치.[19]"
+    ]
+   },
+   "how_far": "서비스마다 무슨 일을 하는지 한 줄씩 말하고, 큐 메시지가 두 번 와도 괜찮게 처리하는 법을 알면 됩니다. {추론}",
+   "refs": [
+    1,
+    2,
+    5,
+    13,
+    19
+   ],
+   "study": [
+    "sqs-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・Orchestration：Docker / Terraform / Ansible",
+   "short": "위 '인프라 관리'와 같은 세 도구 — 컨테이너·인프라 코드·서버 설정.",
+   "why": "위 '인프라 관리' 줄과 같은 도구를 다시 적었습니다.[1] Terraform은 인프라를 코드로 적어 관리하는 도구입니다.[12]",
+   "refs": [
+    1,
+    12
+   ],
+   "study": [
+    "docker-book",
+    "terraform-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・コミュニケーション：Slack / GitHub\n・IDE / テキストエディタ：Xcode / Android Studio / VS Code / IntelliJ IDEA / Vim\n・その他：Firebase / AWS / Figma",
+   "short": "대화는 Slack(일본어), 코드 리뷰는 GitHub, 디자인은 Figma로 받는다. 편집기는 고른다.",
+   "why": "자격요건에 업무에서 Slack 채팅을 많이 쓴다고 따로 적었습니다.[1] Xcode·Android Studio·Firebase는 모바일 앱 개발에 쓰는 도구입니다. {추론}",
+   "how_far": "GitHub 풀 리퀘스트로 리뷰를 주고받아 본 경험이 있으면 좋습니다. 편집기는 익숙한 것을 씁니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "＜開発能力要件＞\n何らかの開発言語を用いた実務経験があること",
+   "short": "언어는 상관없이, 실제로 무언가를 개발해 본 경험. 아래 예 셋 중 하나면 된다.",
+   "why": "신입~3년 공고라 특정 기술이 아니라 '만들어 본 적'을 봅니다.[1] 회사가 바로 아래에 '실무 경험'의 예를 셋 적어 범위를 넓혔습니다.[1]",
+   "how_far": "개인 앱 출시·팀 프로젝트·웹 앱 개발과 배포 중 하나를 링크와 함께 설명할 수 있으면 요건을 채웁니다.[1]",
+   "refs": [
+    1
+   ],
+   "study": [
+    "rails-tutorial"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "例1:個人開発を通してアプリをリリースしたことがある\n例2: チームでのプロジェクトに参加し、機能の実装やバグ修正を行った経験がある\n例:3 Webアプリケーションの開発とデプロイを一貫して担当したことがある",
+   "short": "개인 앱을 내놨거나, 팀에서 기능·버그를 맡았거나, 웹 앱을 만들고 배포까지 혼자 했거나.",
+   "why": "회사가 '실무 경험'의 예로 든 세 가지입니다.[1] 회사에 다녀 본 경력이 아니어도 된다는 뜻으로 읽힙니다. {추론}",
+   "actually": {
+    "items": [
+     "**예1** — 남이 쓸 수 있게 공개(앱 스토어·URL)한 것.",
+     "**예2** — 남의 코드에 기능을 더하고 버그를 고친 것. GitHub 이슈·풀 리퀘스트가 증거가 된다.",
+     "**예3** — 개발부터 서버에 올리기까지 혼자. 업무②와 인프라 목록에 가장 가깝다. {추론}"
+    ]
+   },
+   "how_far": "서류는 일본어 이력서와 직무경력서입니다.[1] 무엇을 만들었고 내가 무엇을 맡았는지, 어떤 기술을 썼는지를 일본어로 적을 수 있어야 합니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "rails-tutorial",
+    "docker-book",
+    "gha-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "＜言語能力要件＞\n・JLPT N1が望ましいが、N2以上でも可",
+   "short": "일본어능력시험 N1이 좋고 N2 이상이면 지원 가능 — 문턱은 N2.",
+   "why": "일본어 전용 포지션이라, 일본어 이력서·직무경력서 없이 국문·영문만 내면 통보 없이 서류에서 떨어진다고 공고 맨 위에 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**N2** — 일상 장면에 더해 조금 넓은 장면의 일본어. 논지가 분명한 신문·잡지 기사와 해설을 읽고, 자연에 가까운 속도의 대화·뉴스 요지를 잡는다.[8]",
+     "**N1** — 폭넓은 장면의 일본어. 논리가 복잡하고 추상적인 논설·평론을 읽고, 자연스러운 속도의 강의까지 알아듣는다.[8]"
+    ]
+   },
+   "how_far": "시험은 읽고 듣는 힘을 잽니다.[8] 그래서 회사가 바로 아래에 회화와 글 소통을 따로 적었습니다.[1] 점수보다 아래 두 줄을 면접에서 보여 주는 게 중요합니다. {추론}",
+   "refs": [
+    1,
+    8
+   ],
+   "study": [
+    "jlpt-levels",
+    "jlpt-samples"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・会話の受け答えがしっかりでき、意思疎通が取れる",
+   "short": "회의·면접에서 묻는 말을 바로 알아듣고 제대로 답하는 일본어 회화.",
+   "why": "팀마다 매일 회고를 하고 3개월마다 전사 총회가 있는, 모두 같은 목표를 맞춰 가는 회사라고 소개합니다.[1] 설명회는 온라인(Google Meet)이고 지원 서류는 일본어입니다.[1]",
+   "how_far": "내 프로젝트를 일본어로 3분 동안 설명하고, '왜 그 기술을 골랐나' 같은 되묻기에 답할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "jlpt-samples"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・文章によるやり取りがスムーズにできる（業務でSlackなどのチャットを多用するため）",
+   "short": "Slack 채팅으로 질문·보고·리뷰 답을 일본어로 막힘없이 쓰는 것. 회사가 이유를 직접 적었다.",
+   "why": "업무에서 Slack 같은 채팅을 많이 쓰기 때문이라고 공고에 적혀 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**막혔을 때 질문** — 무엇을 하려 했고, 무엇을 해 봤고, 무엇이 안 되는지.",
+     "**진행 보고** — 오늘 한 것·남은 것·막힌 것을 짧게.",
+     "**코드 리뷰 답** — 지적을 받아들이거나 이유를 들어 설명하기. 존댓말(です·ます)로. {추론}"
+    ]
+   },
+   "how_far": "번역기 없이 위 세 가지를 몇 분 안에 쓸 수 있는 정도. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "jlpt-samples"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本語レベル: ビジネス",
+   "short": "업무에 쓰는 일본어 — 위 회화·글 두 줄을 합친 수준.",
+   "why": "원티드 공고 머리에도 '비즈니스 레벨 이상의 일본어 필수'를 다시 적었습니다.[1]",
+   "refs": [
+    1
+   ],
+   "study": [
+    "jlpt-levels"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本国内への移住が必要",
+   "short": "원격이 아니라 도쿄로 이사해 신주쿠 사무실로 출근하는 자리.",
+   "why": "근무지는 도쿄 신주쿠의 사무실이고 근무 시간은 9시~18시(실근무 8시간)입니다.[1]",
+   "actually": {
+    "items": [
+     "**취업 비자** — 엔지니어는 보통 재류자격 '기술·인문지식·국제업무'로 일한다. 자연과학·인문과학 지식이 필요한 일이 대상이고, 재류 기간은 5년·3년·1년·3개월 중 하나로 정해진다.[9]",
+     "**학력·경력 요건** — 이 재류자격에는 학력이나 실무 경력 기준이 있어, 전공·졸업 여부에 따라 준비할 서류가 달라진다. 입국관리청 안내로 확인한다.[9]",
+     "**집** — 회사 근처에 살면 주택수당 월 3만 엔, 집세 보조 최대 월 6만 엔.[1]"
+    ]
+   },
+   "how_far": "비자 신청 지원과 이사 비용 지원 여부는 공고에 없습니다. 연계 회사(LAPRAS)의 커피챗이나 설명회에서 묻습니다. {추론}",
+   "refs": [
+    1,
+    9
+   ],
+   "study": [
+    "isa-gijinkoku"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "＜人物/志向性要件＞\n・人間性（誠実で真面目）",
+   "short": "성실하고 진지한 사람 — 기술이 아니라 태도를 본다.",
+   "why": "평균 27세로 젊지만 세부까지 고집하며 프로답게 일하는 사원이 많다고 회사가 소개했습니다.[1]",
+   "how_far": "맡은 일을 끝까지 마친 사례, 실수를 숨기지 않고 고친 사례를 하나씩 준비합니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・チームで一つの目標を成し遂げることに面白みややりがいを感じるかどうか",
+   "short": "혼자 잘하기보다 팀으로 목표를 이루는 데서 보람을 느끼는가.",
+   "why": "회사는 개인 플레이가 아니라 전 사원이 같은 목표로 간다고 했고, 팀마다 매일 회고·3개월마다 전사 총회를 합니다.[1] 여러 개발자가 한 기능을 동시에 만드는 큰 프로젝트도 이 자리의 일입니다.[1]",
+   "how_far": "팀 프로젝트에서 내가 맡은 몫과 남을 도운 일을 같이 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・成長意欲（仕事における成果やキャリアにおける市場価値を高めるための自己投資に時間を使いたいという意欲）",
+   "short": "성과와 몸값을 올리려고 스스로 시간을 들여 공부할 마음.",
+   "why": "1년에 4번 개인 목표를 세우고 평가해, 4번 승급·승격 기회가 있습니다.[1] 연차와 상관없이 성과로 승격하고, 신입 입사 4년 차가 매니저가 된 사례를 들었습니다.[1] 사내 자습실과[1] 기술 공부 모임(b→tech lab)도 있습니다.[2]",
+   "how_far": "최근에 혼자 공부해 만든 것과 그 결과를 보여 주면 됩니다. 3개월마다 평가라 속도에 맞출 각오가 필요합니다. {추론}",
+   "refs": [
+    1,
+    2
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "일본에서 개발자로 일하고 싶고 일본어 업무 소통이 되는 사람[1]",
+   "화면·서버·인프라를 가리지 않고 다 만져 보고 싶은 사람[1]",
+   "AI 코딩 도구를 실무에서 써 보고 싶은 사람[1]",
+   "3개월마다 평가받고 빨리 올라가는 구조가 좋은 사람[1]"
+  ],
+  "hard": [
+   "일본어 서류가 없으면 서류에서 바로 떨어진다[1]",
+   "이주가 필요하다 — 원격 근무 자리가 아니다[1]",
+   "기본 연봉 아래 끝(360만 엔)은 월급 30만 엔 × 12이고, 그 위는 평가·성과급에 달렸다[1]",
+   "초과 근무가 있다고 공고에 적혀 있다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "목록 화면이 느리다는 문의가 왔어요. 무엇부터 재 보겠어요?",
+   "a": "쿼리 수(N+1)와 실행 계획 — 업무③ 성능 개선.[6]"
+  },
+  {
+   "q": "큐에서 같은 메시지가 두 번 오면 어떻게 하나요?",
+   "a": "SQS 표준 큐의 최소 한 번 전달과 멱등 처리.[13]"
+  },
+  {
+   "q": "AI 에이전트가 만든 코드를 어떻게 믿고 합치나요?",
+   "a": "업무④ — 도구 도입보다 검증하는 습관을 본다.[1][14]"
+  },
+  {
+   "q": "AI가 고객 데이터를 조회할 때 다른 고객사 데이터나 개인정보가 새지 않게 하려면?",
+   "a": "회사 MCP 기능의 권한 범위 제어·개인정보 마스킹.[4]"
+  },
+  {
+   "q": "개발부터 배포까지 혼자 맡은 경험을 일본어로 설명해 주세요.",
+   "a": "자격요건 예3과 일본어 회화 요건을 한 번에 본다.[1]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · [株式会社データX] 신입 소프트웨어 엔지니어_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/395987",
+   "kind": "posting",
+   "note": "LAPRAS Global Bridge 연계 · 회사 소개·업무·기술 목록·요건·급여·복리후생·근무지 · 상시 채용"
+  },
+  {
+   "n": 2,
+   "title": "Green · 데이터X 소프트웨어 개발 엔지니어 공고(경험 적은 사람 환영)",
+   "url": "https://www.green-japan.com/company/2067/job/76113",
+   "kind": "posting",
+   "note": "같은 회사의 마감된 공고 — 웹 앱 Rails·Vue.js, 서버 앱 Java·Scala·Go, 1조 건 데이터 배치, 성능 개선, b→tech lab, 연 400만~849만 엔. 게재 시점 표기 없음"
+  },
+  {
+   "n": 3,
+   "title": "PR TIMES · 데이터X, AI 시대의 데이터 기반 'AI Driven CDP' 발표",
+   "url": "https://prtimes.jp/main/html/rd/p/000000175.000013454.html",
+   "kind": "company",
+   "date": "2026-04-23",
+   "note": "회사 보도자료 — 노코드 데이터 기반·MCP 표준·예측과 메일/LINE 개인화, 누적 1,300곳 이상, 회사 개요(소재지·대표·설립)"
+  },
+  {
+   "n": 4,
+   "title": "PR TIMES · AI Driven CDP 'b→dash', MCP 서버 기능 구현",
+   "url": "https://prtimes.jp/main/html/rd/p/000000185.000013454.html",
+   "kind": "company",
+   "date": "2026-07-15",
+   "note": "회사 보도자료 — 자연어 → SQL 집계, 권한 범위 제어, 개인정보 자동 마스킹"
+  },
+  {
+   "n": 5,
+   "title": "AWS Startup 블로그 · Startup Architecture of the Year 2018 최종 후보 결정",
+   "url": "https://aws.amazon.com/jp/blogs/startup/saoy2018_finalist",
+   "kind": "news",
+   "date": "2018",
+   "note": "당시 사명 프롬스크래치(현 데이터X)의 b→dash CTO가 최종 후보. 발표한 아키텍처 본문은 못 읽음"
+  },
+  {
+   "n": 6,
+   "title": "Rails 가이드 · Active Record 쿼리 인터페이스(N+1과 includes·preload·eager_load)",
+   "url": "https://railsguides.jp/active_record_querying.html",
+   "kind": "reference",
+   "note": "Rails 8.1 판 — 책 10권 예: 11번 → 2번"
+  },
+  {
+   "n": 7,
+   "title": "Vue.js 공식 문서 · 소개",
+   "url": "https://ja.vuejs.org/guide/introduction.html",
+   "kind": "reference"
+  },
+  {
+   "n": 8,
+   "title": "JLPT 공식 · N1~N5 인정의 기준",
+   "url": "https://www.jlpt.jp/about/levelsummary.html",
+   "kind": "reference"
+  },
+  {
+   "n": 9,
+   "title": "일본 출입국재류관리청 · 재류자격 '기술·인문지식·국제업무'",
+   "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html",
+   "kind": "reference",
+   "note": "본문은 자동 접속이 막혀 검색 요약으로 활동 내용·재류 기간만 확인. 학력·경력 기준 세부는 원문에서 확인 필요"
+  },
+  {
+   "n": 10,
+   "title": "일본 국세청 · 2024년분 민간급여실태통계조사 결과",
+   "url": "https://www.nta.go.jp/publication/statistics/kokuzeicho/minkan/gaiyou/2024.htm",
+   "kind": "reference",
+   "note": "1년 근무한 급여소득자 평균 478만 엔(남 587·여 333)"
+  },
+  {
+   "n": 11,
+   "title": "Snowflake 문서 · 핵심 개념과 아키텍처",
+   "url": "https://docs.snowflake.com/en/user-guide/intro-key-concepts",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "HashiCorp · What is Terraform?",
+   "url": "https://developer.hashicorp.com/terraform/intro",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "Amazon SQS 개발자 안내서 · 표준 큐의 최소 한 번 전달",
+   "url": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/standard-queues-at-least-once-delivery.html",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Devin 공식 문서",
+   "url": "https://docs.devin.ai/",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "Cursor 공식 문서",
+   "url": "https://docs.cursor.com/",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Model Context Protocol · 소개",
+   "url": "https://modelcontextprotocol.io/introduction",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Schoo · 프롬스크래치 CTO 출강 수업(강사 소개·'b→dash 시스템 아키텍처' 장)",
+   "url": "https://schoo.jp/class/3734",
+   "kind": "company",
+   "note": "CTO가 데이터 모델·아키텍처 설계·기술 선정을 맡는다는 소개. 수업 영상은 안 봄"
+  },
+  {
+   "n": 18,
+   "title": "A Tour of Go",
+   "url": "https://go.dev/tour/",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Amazon Kinesis Data Streams 개발자 안내서 · 소개",
+   "url": "https://docs.aws.amazon.com/streams/latest/dev/introduction.html",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "GitHub Docs · GitHub Actions",
+   "url": "https://docs.github.com/en/actions",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "회사 기술 블로그·컨퍼런스 발표를 찾지 못했고, 회사 사이트(data-x.co.jp)와 CTO 인터뷰 기사(EnterpriseZine)는 자동 접속이 막혀 읽지 못했습니다. 회사 근거는 이 공고·같은 회사의 다른 공고·회사 보도자료뿐이라, 제품 내부 구조(서비스 나누기·데이터 흐름)는 공개 문서로 '보통 이런 것'을 보였습니다. 비자 지원·이사 비용 지원은 공고에 없습니다.",
+ "resources": [
+  {
+   "id": "rails-tutorial",
+   "title": "Ruby on Rails Tutorial",
+   "by": "Michael Hartl",
+   "kind": "course",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.railstutorial.org/",
+   "why": "Rails로 웹 앱 하나를 만들고 배포까지 가는 과정. 자격요건 예3(개발부터 배포까지)을 채우는 가장 빠른 길."
+  },
+  {
+   "id": "railsguide-query",
+   "title": "Active Record Query Interface (Rails Guides)",
+   "by": "Rails 공식 가이드",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://guides.rubyonrails.org/active_record_querying.html",
+   "why": "조회 문법과 N+1을 막는 includes·preload·eager_load의 차이. 업무②③의 기본기."
+  },
+  {
+   "id": "vue-docs-ko",
+   "title": "Vue.js 공식 문서(한국어)",
+   "by": "Vue.js",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://ko.vuejs.org/guide/introduction.html",
+   "why": "단일 파일 컴포넌트와 Composition API — 업무① 화면 개발의 출발점."
+  },
+  {
+   "id": "doit-vue",
+   "title": "Do it! Vue.js 입문",
+   "by": "장기효 · 이지스퍼블리싱",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=Do%20it%20Vue.js%20%EC%9E%85%EB%AC%B8",
+   "why": "컴포넌트·라우터·API 호출을 따라 만들며 익힌다. Vue 2 기준이라 문법 차이는 공식 문서로 보충."
+  },
+  {
+   "id": "go-tour",
+   "title": "A Tour of Go",
+   "by": "Go 공식",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://go.dev/tour/",
+   "why": "브라우저에서 Go 문법·고루틴·채널을 직접 돌려 본다. 업무②의 Go 서버를 읽을 수 있게."
+  },
+  {
+   "id": "gopl",
+   "title": "The Go Programming Language",
+   "by": "Alan Donovan · Brian Kernighan · Addison-Wesley · 2015",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.gopl.io/",
+   "why": "Go를 제대로 쓰는 법과 동시성. 큰 데이터를 처리하는 Go 서버를 맡을 때."
+  },
+  {
+   "id": "real-mysql",
+   "title": "Real MySQL 8.0",
+   "by": "백은빈 · 이성욱 · 위키북스 · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=Real%20MySQL%208.0",
+   "why": "인덱스·실행 계획·잠금. Aurora(MySQL 호환) DB 설계와 성능 개선(업무②③)."
+  },
+  {
+   "id": "sql-levelup",
+   "title": "SQL 레벨업",
+   "by": "한빛미디어",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=SQL%20%EB%A0%88%EB%B2%A8%EC%97%85",
+   "why": "반복문 대신 집합으로 생각하는 SQL, CASE·윈도우 함수. 분석 DB 위에서 집계를 쓸 때."
+  },
+  {
+   "id": "docker-book",
+   "title": "개발자를 위한 도커 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "이미지·컨테이너를 실제 명령과 출력으로. 인프라 관리 목록의 첫 칸."
+  },
+  {
+   "id": "http-book",
+   "title": "모든 개발자를 위한 HTTP 웹 기본 지식 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/http-basic",
+   "why": "nginx·API·캐시를 이해하는 바탕인 HTTP 요청·응답."
+  },
+  {
+   "id": "terraform-docs",
+   "title": "What is Terraform? / Get Started",
+   "by": "HashiCorp 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.hashicorp.com/terraform/intro",
+   "why": "인프라를 코드로 적고 plan·apply로 바꾸는 흐름. 인프라 관리 목록의 Terraform."
+  },
+  {
+   "id": "gha-docs",
+   "title": "GitHub Actions 문서",
+   "by": "GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.github.com/en/actions",
+   "why": "풀 리퀘스트마다 테스트를 돌리는 워크플로. CI/CD 목록과 예3의 '배포'."
+  },
+  {
+   "id": "sqs-docs",
+   "title": "Amazon SQS 개발자 안내서",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html",
+   "why": "큐로 일을 뒤로 빼는 법과 중복 전달. 성능 개선과 AWS 목록의 SQS."
+  },
+  {
+   "id": "snowflake-docs",
+   "title": "Snowflake 핵심 개념과 아키텍처",
+   "by": "Snowflake 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.snowflake.com/en/user-guide/intro-key-concepts",
+   "why": "저장과 계산을 나눈 분석 DB 구조. 'AI·데이터 분석' 목록과 미들웨어 목록의 Snowflake."
+  },
+  {
+   "id": "mcp-docs",
+   "title": "Model Context Protocol 소개",
+   "by": "modelcontextprotocol.io",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://modelcontextprotocol.io/introduction",
+   "why": "AI 도구와 외부 데이터를 잇는 표준. 회사가 b→dash에 붙인 MCP 기능을 이해하는 바탕."
+  },
+  {
+   "id": "devin-docs",
+   "title": "Devin 문서",
+   "by": "Cognition",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.devin.ai/",
+   "why": "일을 맡기고 풀 리퀘스트로 받는 위임형 에이전트 쓰는 법. 업무④."
+  },
+  {
+   "id": "cursor-docs",
+   "title": "Cursor 문서",
+   "by": "Cursor",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.cursor.com/",
+   "why": "AI 편집기로 코드베이스를 읽고 고치게 하는 법. 업무④와 AI 에이전트 목록."
+  },
+  {
+   "id": "jlpt-levels",
+   "title": "JLPT N1–N5: Summary of Linguistic Competence Required for Each Level",
+   "by": "일본국제교육지원협회 · 국제교류기금",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.jlpt.jp/e/about/levelsummary.html",
+   "why": "N1·N2가 각각 무엇을 읽고 들을 수 있는 수준인지 — 언어 요건의 기준선."
+  },
+  {
+   "id": "jlpt-samples",
+   "title": "JLPT 문제 예시(Sample Questions)",
+   "by": "JLPT 공식",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.jlpt.jp/e/samples/forlearners.html",
+   "why": "공식 예시 문제로 지금 내가 N2에 닿는지 재 본다."
+  },
+  {
+   "id": "isa-gijinkoku",
+   "title": "Status of Residence: Engineer / Specialist in Humanities / International Services",
+   "by": "일본 출입국재류관리청",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html?lang=en",
+   "why": "이주 요건 — 엔지니어 취업 비자의 대상·재류 기간·서류."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "일본어 서류와 소통 (처음부터 끝까지 같이)",
+   "time": "계속",
+   "goal": "N2를 넘기고, 일본어 이력서·직무경력서를 쓰고, 내 프로젝트를 일본어로 3분 설명한다.",
+   "task": "지금까지 만든 것 하나를 직무경력서 형식(기간·역할·쓴 기술·결과)으로 A4 한 장에 쓰고, Slack식 진행 보고(한 것·남은 것·막힌 것) 3줄을 일본어로 매일 써 본다.",
+   "resources": [
+    "jlpt-levels",
+    "jlpt-samples"
+   ]
+  },
+  {
+   "title": "Rails로 API 하나",
+   "time": "3~4주",
+   "goal": "Rails로 표를 만들고 조건 조회 API를 내고, 쿼리 수를 세서 N+1을 고친다.",
+   "task": "가상 고객 1만 명·구매 10만 건으로 '조건으로 고객 고르기' API를 만든다(예: 30일 안 구매 없음 + 누적 3회 이상). 목록 API의 쿼리 수를 로그로 세고 includes로 줄인 전후를 비교한다.",
+   "resources": [
+    "rails-tutorial",
+    "railsguide-query",
+    "http-book"
+   ]
+  },
+  {
+   "title": "Vue로 그 화면",
+   "time": "2~3주",
+   "goal": "컴포넌트로 나눈 조건 편집 화면이 API를 불러 결과를 보여 준다.",
+   "task": "2단계 API 위에 조건 추가·삭제와 '해당 고객 수 미리보기'가 되는 화면을 단일 파일 컴포넌트로 만든다.",
+   "resources": [
+    "vue-docs-ko",
+    "doit-vue"
+   ]
+  },
+  {
+   "title": "DB 성능과 Go 맛보기",
+   "time": "2~3주",
+   "goal": "실행 계획을 읽고 인덱스로 고치며, 큐 소비자를 Go로 짤 수 있다.",
+   "task": "구매 표를 100만 줄로 늘려 느린 쿼리 3개를 실행 계획으로 진단하고 고친 전후 시간을 표로 남긴다. Go로 큐(로컬 큐로 흉내) 소비자를 만들어 같은 메시지 id를 두 번 반영하지 않게 한다.",
+   "resources": [
+    "real-mysql",
+    "sql-levelup",
+    "go-tour",
+    "gopl",
+    "sqs-docs"
+   ]
+  },
+  {
+   "title": "배포·인프라·AI 도구",
+   "time": "2~3주",
+   "goal": "앱을 컨테이너로 묶어 자동 테스트를 걸고 배포까지 한다 — 자격요건 예3의 증거.",
+   "task": "1~4단계 앱을 Docker로 묶고 GitHub Actions로 풀 리퀘스트마다 테스트를 돌린다. (선택) Terraform으로 클라우드에 올린다. 기능 하나를 AI 도구에 맡겨 보고, 무엇을 고쳐서 합쳤는지 기록한다.",
+   "resources": [
+    "docker-book",
+    "gha-docs",
+    "terraform-docs",
+    "cursor-docs",
+    "devin-docs",
+    "mcp-docs",
+    "snowflake-docs",
+    "isa-gijinkoku"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공고 표기 **연 360만~600만 엔**(월급 30만 엔부터), 회사가 밝힌 평균은 **약 680만 엔**(평균 28세) — 평균은 성과급·경력이 섞인 값이다",
+  "rows": [
+   {
+    "label": "공고 표기 연봉",
+    "value": "360만~600만 엔",
+    "basis": "공고",
+    "note": "원티드 공고의 회사 표기. 아래 끝 360만 엔은 월급 30만 엔 × 12와 같다(직접 계산) [1]"
+   },
+   {
+    "label": "월급",
+    "value": "30만 엔부터",
+    "basis": "공고",
+    "note": "연 4번 승급·승격 기회, 실적에 연동한 특별 급여도 연 4번 [1]"
+   },
+   {
+    "label": "회사 평균 연봉",
+    "value": "약 680만 엔",
+    "basis": "회사 발표(공고)",
+    "note": "평균 28세 기준이라고 공고에 적었다. 같은 공고 본문은 평균 27세라고도 써서 기준 시점이 다를 수 있다. 신입 2년 차 1,000만 엔·6년 차 2,400만 엔은 '이런 사람도 있다'는 예시다 [1]"
+   },
+   {
+    "label": "같은 회사 다른 공고",
+    "value": "400만~849만 엔",
+    "basis": "공고(마감)",
+    "note": "Green의 소프트웨어 개발 엔지니어 공고(경험 적은 사람 환영). 마감된 공고이고 게재 시점 표기가 없다 [2]"
+   },
+   {
+    "label": "일본 급여소득자 평균(참고)",
+    "value": "478만 엔",
+    "basis": "통계 · 2024년",
+    "note": "일본 국세청 민간급여실태통계조사, 1년 내내 근무한 급여소득자 전체 평균. 공고 숫자와 기준이 달라 막대로 견주지 않는다 [10]"
+   }
+  ],
+  "how": "숫자는 모두 엔화이고, 원화 환산은 환율에 따라 달라 싣지 않았다 {추론}. 회사는 3개월마다 평가해 승급하고 성과급(실적 연동 특별 급여, 사내 통화 '포케'를 바꾼 변동 상여)을 더하는 구조라고 적었다 [1]. 평균 680만 엔은 이런 성과급과 경력이 섞인 회사 전체 값이라 신입 첫해 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "휴일",
+    "detail": "연간 휴일 120일, 완전 주 2일 휴무 · 여름·연말연시·유급·경조·육아·개호 휴가"
+   },
+   {
+    "name": "근무 시간",
+    "detail": "9:00~18:00, 실근무 8시간 · 초과 근무 있음"
+   },
+   {
+    "name": "수습",
+    "detail": "3개월, 수습 중에도 조건 같음"
+   },
+   {
+    "name": "마이포케 제도",
+    "detail": "회사 자체 통화 '포케'를 모아 변동 상여로 바꿈"
+   },
+   {
+    "name": "우리사주회",
+    "detail": "매달 월급 일부를 출자할 수 있음"
+   },
+   {
+    "name": "근거리 주택수당",
+    "detail": "회사 근처에 사는 사원에게 3만 엔"
+   },
+   {
+    "name": "집세 보조",
+    "detail": "주거비 일부를 매달 최대 6만 엔"
+   },
+   {
+    "name": "파밀리아",
+    "detail": "사원 교류 보조금 1인당 매달 5천 엔"
+   },
+   {
+    "name": "추천 채용 수당",
+    "detail": "지인을 소개한 사원에게 10만~50만 엔"
+   },
+   {
+    "name": "사내 체육관·건강 지원",
+    "detail": "사내 체육관, 트레이너 강습 무료"
+   },
+   {
+    "name": "출산 축하금",
+    "detail": "출산마다 10만 엔"
+   },
+   {
+    "name": "자녀 수당",
+    "detail": "18세 이하 자녀 1인당 매달 2만~6만 엔"
+   },
+   {
+    "name": "고객 상품 이용 보조",
+    "detail": "고객사의 상품·서비스를 쓰면 최대 5,000엔 보조"
+   },
+   {
+    "name": "자습실",
+    "detail": "사원 전용 자습실"
+   },
+   {
+    "name": "사회보험",
+    "detail": "건강보험·후생연금·고용보험·산재보험"
+   }
+  ],
+  "note": "원티드 공고에 회사가 적은 복리후생이다 [1]. 공고에 작성 날짜가 없어 언제 기준인지는 알 수 없다. 근거리 주택수당과 집세 보조를 함께 받을 수 있는지는 적혀 있지 않다 {추론}."
+ },
+ "location": {
+  "name": "데이터X 본사 (스미토모부동산 니시신주쿠 빌딩 26층)",
+  "address": "東京都新宿区西新宿7-20-1 住友不動産西新宿ビル26階 (도쿄도 신주쿠구 니시신주쿠 7-20-1)",
+  "postal": "160-0023",
+  "map_url": "https://map.naver.com/p/search/%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E8%A5%BF%E6%96%B0%E5%AE%BF7-20-1",
+  "near": "지하철 니시신주쿠역 걸어서 3분, 신주쿠니시구치역 4분, 도초마에역 5분",
+  "note": "공고의 근무지[1]와 회사 보도자료의 소재지[3]가 같다. 일본 주소는 도로명이 아니라 지번(정·번지·호)으로 쓴다 {추론}."
+ }
+}
