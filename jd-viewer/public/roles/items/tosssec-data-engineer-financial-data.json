@@ -1,0 +1,1045 @@
+{
+ "id": "tosssec-data-engineer-financial-data",
+ "company": "토스증권",
+ "role": "데이터 엔지니어 (금융데이터/재무)",
+ "team": "AI Info & Data Silo",
+ "jobs": [
+  "ats-toss:group:7827711003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "국내외 공시·실적·경제지표·시세를 받아 **한 가지 표준 모양**으로 다듬는 일입니다. 벤더마다 다른 종목 번호를 하나로 잇고, 공시 글은 LLM 으로 표로 만들고, 그 위에서 퀀트 지표를 계산합니다.[1]",
+  "env": "외부 벤더(LSEG·S&P Global·FnGuide)와 DART·KIND·SEC 공시를 Airflow 배치로 받고, Impala·ClickHouse·Kafka 위에서 처리합니다.[1] 같은 팀의 다른 공고는 Iceberg·Spark·Kubernetes·데이터 계약까지 적었습니다.[2]",
+  "oneline": "투자 화면에 뜨는 숫자가 **어디서 왔고 맞는지** 책임지는 데이터 엔지니어. 기술보다 **금융 데이터의 뜻(식별자·기업 이벤트·공시 시점)**이 더 어렵습니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "국내외 공시·실적·경제지표·시세 등 다양한 도메인의 데이터를 수집·가공·적재하는 파이프라인을 구축하고, 장애 대응·백필·모니터링 등 운영 전반을 담당해요.",
+   "short": "공시·실적·지표·시세를 매일 제때 받아 표에 쌓고, 빠지거나 늦으면 다시 채우는 일까지 맡는다.",
+   "why": "이 팀은 뉴스·공시·실적·시세를 모아 투자자에게 보여 주는 AI 데이터 서비스를 만들고, 여러 나라 데이터를 다룰 수 있는 구조를 짓는 중입니다.[1] 회사는 미국 공시를 실시간으로 받아 분석·요약·번역해 알림까지 보내는 자동화 파이프라인을 운영한다고 밝혔습니다.[5] 원천이 늦거나 끊기면 화면의 숫자가 바로 틀어집니다.",
+   "actually": {
+    "intro": "원천마다 받는 방식이 다릅니다.",
+    "items": [
+     "**국내 공시** — 금감원 OpenDART 는 인증키를 붙여 공시 목록·재무제표를 JSON 으로 준다. 회사는 8자리 고유번호로 찾는다(고유번호 파일을 따로 받는다).[10]",
+     "**미국 공시** — SEC EDGAR 는 키 없이 JSON API 를 주되, 초당 10건 넘게 부르지 말고 요청 머리에 누가 부르는지 적으라고 한다.[11]",
+     "**벤더 데이터** — LSEG·S&P·FnGuide 같은 유료 벤더는 계약된 API 나 파일로 준다. 명세서(필드 뜻·갱신 주기)를 읽는 데서 일이 시작된다.[1]",
+     "**백필(다시 채우기)** — 원천이 늦게 고쳐 주거나 파서가 틀렸을 때 지난 날짜를 다시 돌린다. 토스증권 DW 팀은 몇 달 치를 30일씩 잘라 돌리고 망가진 표만 골라 돌릴 수 있게 DAG 를 짰다.[9]",
+     "**모니터링** — '왔나(완전성)·제때 왔나(적시성)·맞나(정합성)' 세 가지를 본다. 같은 그룹의 자문 데이터 공고도 같은 세 낱말을 쓴다.[3]"
+    ]
+   },
+   "how_far": "어떤 데이터를 살지는 사업·서비스 쪽이 정합니다. 엔지니어는 **새 원천을 붙여 매일 돌게 하고, 실패하면 알림 → 원인 → 다시 채우기를 스스로 끝내는** 수준입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    5,
+    9,
+    10,
+    11
+   ],
+   "study": [
+    "opendart-guide",
+    "sec-edgar-api",
+    "airflow-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "공시 등 원천 비정형 데이터를 LLM으로 구조화해 투자 정보 자산으로 만들고, 지속적으로 새로운 기술 시도를 이어가요",
+   "short": "글로 된 공시를 LLM 에게 읽혀 '회사·날짜·금액·사건 종류' 같은 칸이 있는 표로 바꾼다.",
+   "why": "공시는 사람이 읽으라고 쓴 글이라 그대로는 검색·알림·계산에 못 씁니다. 회사는 종목·테마·이벤트를 구조화한 **금융 온톨로지**(개념과 관계를 정해 둔 사전)를 운영하고, 뉴스·공시를 LLM 이 참고하게 하는 구조(RAG)를 쓴다고 밝혔습니다.[5] 토스증권 ML 엔지니어 글은 뉴스·공시를 **들어오는 순간** 분류 모델로 꼬리표를 붙여 둔다고 썼습니다.[4]",
+   "actually": {
+    "intro": "회사 글에서 보이는 방식과, LLM 구조화의 보통 모양입니다.",
+    "items": [
+     "**들어올 때 꼬리표** — 검색할 때가 아니라 적재할 때 분류한다. 한 건은 제목·본문·분류 꼬리표·관련 종목·임베딩 칸을 가진다.[4]",
+     "**LLM 은 끝 단계에만** — 검색·분류·중복 제거·평가는 따로 만든 모델과 규칙이 하고, LLM 은 그 위에서 생성만 한다. 자유롭게 도는 에이전트 대신 단계가 정해진 흐름으로, 단계마다 입출력 모양(스키마)을 정했다.[4]",
+     "**모양 강제** — LLM 에 JSON 스키마를 주고 그 모양으로만 답하게 하는 기능이 있다(구조화 출력).[17] 모양이 맞아도 값이 맞는지는 따로 검사한다.",
+     "**검수** — 회사는 AI 결과에 데이터 기반 검증 단계를 두고 전문 인력이 상시 검수한다고 밝혔다.[6] 운영 중 나온 실패 사례는 평가 세트와 예시로 다시 넣는다.[4]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "LLM 이 뽑은 실적 표를 믿기 전에 (직접 돌린 출력)",
+     "body": "가상 회사의 추출 결과에 빠진 칸·단위·상식선(영업이익이 매출보다 클 수 없다 등)을 검사합니다. 걸리면 원문과 대조하는 줄로 보냅니다. 규칙은 예시이고 실제 기준은 팀이 정합니다 {추론}.",
+     "lang": "python",
+     "code": "extracted = {\"corp\": \"가상전자\", \"period\": \"2026Q3\", \"revenue\": 1000,\n             \"operating_income\": 120, \"net_income\": 150, \"unit\": \"억원\"}\nproblems = []\nfor key in [\"corp\", \"period\", \"revenue\", \"operating_income\", \"net_income\", \"unit\"]:\n    if key not in extracted:\n        problems.append(\"빠진 칸 \" + key)\nif extracted[\"unit\"] not in (\"원\", \"백만원\", \"억원\"):\n    problems.append(\"단위 모름\")\nif extracted[\"operating_income\"] > extracted[\"revenue\"]:\n    problems.append(\"영업이익 > 매출\")\nif abs(extracted[\"net_income\"]) > 2 * abs(extracted[\"operating_income\"]):\n    problems.append(\"순이익이 영업이익의 2배 넘음 - 원문 대조\")\nprint(problems or \"통과\")\n# 출력: 통과"
+    }
+   ],
+   "how_far": "모델을 직접 학습시키는 일은 ML 엔지니어 몫으로 보입니다(같은 회사에 LLM ML 엔지니어 공고가 따로 있다). 이 자리는 **LLM 을 파이프라인의 한 단계로 붙이고, 결과를 검사·저장·재처리할 수 있게** 만드는 쪽입니다. {추론}",
+   "refs": [
+    4,
+    5,
+    6,
+    17
+   ],
+   "study": [
+    "tosstech-ai",
+    "claude-structured"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Refinitiv(LSEG), S&P Global, FnGuide 등 외부 벤더의 데이터 명세를 분석해 사내 표준 데이터 모델로 매핑하고, 복수 벤더 간 데이터 격차를 조정하는 기준을 수립해요.",
+   "short": "벤더마다 다른 칸 이름·단위·정의를 우리 표 하나로 맞추고, 두 벤더 숫자가 다를 때 누구를 믿을지 정한다.",
+   "why": "같은 '매출'도 벤더마다 연결/별도, 통화, 단위, 발표 시점 기준이 다를 수 있습니다 {추론}. 국내는 FnGuide, 해외는 LSEG·S&P 처럼 나라마다 벤더가 다르면 화면 하나에 섞어 보여 줄 때 기준이 필요합니다.[1] 팀원 코멘트도 이 자리가 데이터 모델과 품질 기준을 정의하는 데까지 간다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**명세 읽기** — 필드마다 정의·단위·통화·갱신 주기·결측 표기를 표로 옮긴다.",
+     "**표준 모델로 잇기** — '벤더 A 의 필드 X = 우리 표의 revenue, 단위 백만원 → 원' 같은 대응표를 만든다.",
+     "**차이 재기** — 같은 종목·같은 기간 값을 나란히 놓고 허용 오차를 넘는 것만 뽑는다(아래 예).",
+     "**우선순위 정하기** — 원천(공시) > 벤더 A > 벤더 B 처럼 항목마다 믿는 순서를 정하고 그 이유를 남긴다. {추론}",
+     "**사내 원천과 교차 검증** — 같은 팀의 DRE 공고는 외부 벤더 데이터와 사내 원천을 교차 검증하는 체계를 만든다고 적었다.[2]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "두 벤더 대조 — 1% 넘게 다르거나 한쪽에만 있는 것 (직접 돌린 출력, 가상 값)",
+     "body": "값이 다른 것과 한쪽에만 있는 것을 따로 셉니다. 한쪽에만 있으면 종목 번호 매핑이 틀렸을 수도 있습니다.",
+     "lang": "python",
+     "code": "from decimal import Decimal as D\nvendor_a = {\"005930\": D(\"12.30\"), \"000660\": D(\"4.10\"), \"035420\": D(\"20.0\")}\nvendor_b = {\"005930\": D(\"12.31\"), \"000660\": D(\"5.20\"), \"035720\": D(\"48.0\")}\ntol = D(\"0.01\")\nfor k in sorted(set(vendor_a) | set(vendor_b)):\n    a, b = vendor_a.get(k), vendor_b.get(k)\n    if a is None or b is None:\n        print(k, \"한쪽에만 있음\", a, b)\n    elif abs(a - b) / max(abs(a), abs(b)) > tol:\n        print(k, \"값 다름\", a, b)\n    else:\n        print(k, \"일치\")\n# 000660 값 다름 4.10 5.20\n# 005930 일치\n# 035420 한쪽에만 있음 20.0 None\n# 035720 한쪽에만 있음 None 48.0"
+    }
+   ],
+   "how_far": "어느 숫자를 고객에게 보여 줄지는 서비스·도메인 담당과 함께 정합니다. 엔지니어는 **차이를 숫자로 보여 주고, 정한 기준을 코드로 박아 매일 같은 결과가 나오게** 합니다. {추론}",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "lseg-symbology",
+    "fde-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "벤더별로 다른 종목 식별자(티커, ISIN, RIC 등)를 사내 표준 식별자와 매핑하고, 티커 변경·상장폐지·기업 액션 등 다양한 이벤트를 대응하며 데이터를 관리해요.",
+   "short": "같은 회사를 가리키는 여러 번호를 우리 번호 하나로 잇고, 이름·번호가 바뀌거나 사라지는 날을 놓치지 않는다.",
+   "why": "티커는 거래소가 붙인 짧은 이름이라 바뀌거나 다시 쓰이고, ISIN 은 국제 표준 12자리 번호, RIC 는 LSEG 가 붙인 '티커 + 거래소 꼬리' 번호입니다.[12][14] 벤더마다 다른 번호로 주니 잇지 않으면 한 회사가 둘로 보이거나 둘이 하나로 섞입니다. 같은 그룹 자문 데이터 공고에도 똑같은 업무 줄이 있습니다 — 증권 데이터 전반의 기본 문제입니다.[3]",
+   "actually": {
+    "items": [
+     "**번호 종류** — ISIN 은 앞 2자리 나라 + 9자리 + 검사 숫자 1자리. 한국 ISIN 의 등록기관은 한국거래소다.[12][21] RIC 는 IBM.N(뉴욕거래소의 IBM)처럼 쓰고 LSEG 권리가 걸려 있다.[14] OpenFIGI 는 ISIN·티커를 FIGI 라는 공개 번호로 바꿔 주는 API 를 준다.[13]",
+     "**대응표는 기간을 가진다** — '이 티커가 이 회사를 가리킨 기간'(시작일·종료일)으로 저장해야 과거 데이터를 옛 이름으로 찾을 수 있다. {추론}",
+     "**기업 액션(corporate action)** — 액면분할·병합·합병·분할·상장폐지·사명 변경. 분할이 나면 과거 주가를 그 비율로 고쳐야 등락률이 맞는다(아래 예).",
+     "**동명이인 문제** — 토스증권 뉴스 팀은 '배럴(석유 단위)' 기사가 같은 이름의 의류 종목에 붙는 식의 잘못된 매칭 때문에 약 3,000개 종목을 맞히는 자체 모델을 만들었다.[8]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "ISIN 검사 숫자 확인 (직접 돌린 출력)",
+     "body": "글자를 숫자로 바꾸고(A=10…Z=35) 오른쪽부터 하나 걸러 두 배 하는 Luhn 방식입니다. 받은 번호가 깨졌는지 먼저 거릅니다.",
+     "lang": "python",
+     "code": "def isin_ok(isin):\n    if len(isin) != 12:\n        return False\n    digits = \"\".join(str(int(c, 36)) for c in isin[:-1])\n    total = 0\n    for i, ch in enumerate(reversed(digits)):\n        n = int(ch)\n        if i % 2 == 0:\n            n *= 2\n            if n > 9:\n                n -= 9\n        total += n\n    return (10 - total % 10) % 10 == int(isin[-1])\n\nfor code in [\"US0378331005\", \"KR7005930003\", \"KR7005930004\"]:\n    print(code, isin_ok(code))\n# US0378331005 True\n# KR7005930003 True\n# KR7005930004 False"
+    },
+    {
+     "title": "1:5 액면분할 — 고치지 않으면 하루에 -79% (직접 돌린 출력, 가상 값)",
+     "body": "분할 전날 50,000원 → 분할일 10,400원. 그대로 보면 **-79.2%**, 분할 전 가격을 5로 나눈 수정주가로 보면 **+4.0%** 입니다.",
+     "lang": "python",
+     "code": "from decimal import Decimal as D\nprices = [(\"09-01\", D(51000)), (\"09-02\", D(50000)), (\"09-03\", D(10400))]\nsplit_day, ratio = \"09-03\", D(5)\nraw = (prices[2][1] / prices[1][1] - 1) * 100\nadj = [(d, p / ratio if d < split_day else p) for d, p in prices]\nfixed = (adj[2][1] / adj[1][1] - 1) * 100\nprint(\"수정 전 등락률 %.1f%%\" % raw)    # -79.2%\nprint(\"수정 후 등락률 %.1f%%\" % fixed)  # 4.0%"
+    }
+   ],
+   "how_far": "식별자 기준을 처음부터 다 짓는 게 아니라 **이벤트가 나도 대응표가 안 깨지게** 운영하는 게 일의 중심입니다. 면접에서는 '티커가 바뀐 날 전후 데이터를 어떻게 한 회사로 잇나'를 설명할 수 있으면 됩니다. {추론}",
+   "refs": [
+    3,
+    8,
+    12,
+    13,
+    14,
+    21
+   ],
+   "study": [
+    "openfigi-docs",
+    "lseg-symbology",
+    "quant-py"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "재무·가격 데이터 기반의 퀀트 팩터 산출 파이프라인을 개발하고, 산출 로직의 정확성을 검증해요",
+   "short": "PER·모멘텀 같은 '종목을 고르는 숫자'를 매일 계산하는 작업을 만들고, 계산이 맞는지 확인한다.",
+   "why": "퀀트 팩터(factor)는 가치(싸다)·모멘텀(오르고 있다)·규모처럼 종목을 줄 세우는 기준 숫자입니다.[18] 회사는 주가 움직임이 의미 있는지 3개월 평균 종가 기준 표준점수(Z-score)로 가려 AI 시그널을 낸다고 밝혔습니다 — 가격 데이터로 지표를 계산하는 일이 이미 서비스에 들어가 있습니다.[6]",
+   "actually": {
+    "items": [
+     "**재료 맞추기** — 가격은 수정주가로, 재무는 그 날짜에 **이미 공시된 값**으로만 쓴다(아래 예). 나중에 고쳐진 숫자를 과거 날짜에 쓰면 '미래를 본' 계산이 된다.[15][16]",
+     "**계산** — 예: PER = 시가총액 ÷ 최근 4분기 순이익. 시가총액 1조원, 4분기 순이익 합 1,000억원이면 PER 10. {추론}",
+     "**정확성 검증** — 손으로 계산한 몇 종목과 대조, 벤더가 주는 같은 지표와 대조, 하루 사이 값이 크게 튄 종목 목록 보기.",
+     "**공식 정의 따라 하기** — 학계 표준 팩터는 Kenneth French 데이터 라이브러리가 정의와 월별 값을 공개한다.[18]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "그날 알 수 있던 값만 쓰기 (직접 돌린 출력, 가상 값)",
+     "body": "2분기(6/30 끝) 순이익이 8/14 공시에 120억, 11/2 정정 공시에 90억이 됐다면 7/31 에는 아직 모르고, 8/31 에는 120, 11/30 에는 90 입니다. 기간 끝 날짜로만 붙이면 7/31 계산에 90이 들어갑니다.[15]",
+     "lang": "python",
+     "code": "filings = [(\"2026-05-15\", \"2026Q1\", 100),\n           (\"2026-08-14\", \"2026Q2\", 120),\n           (\"2026-11-02\", \"2026Q2\", 90)]  # 정정\n\ndef known_on(asof, period):\n    rows = [f for f in filings if f[1] == period and f[0] <= asof]\n    return rows[-1][2] if rows else None\n\nfor asof in [\"2026-07-31\", \"2026-08-31\", \"2026-11-30\"]:\n    print(asof, known_on(asof, \"2026Q2\"))\n# 2026-07-31 None\n# 2026-08-31 120\n# 2026-11-30 90"
+    }
+   ],
+   "how_far": "어떤 팩터를 쓸지는 서비스·리서치 쪽이 정합니다. 엔지니어는 **정의를 그대로 옮기고, 시점·수정주가·결측을 틀리지 않게** 계산하는 사람입니다. {추론}",
+   "refs": [
+    6,
+    15,
+    16,
+    18
+   ],
+   "study": [
+    "quant-py",
+    "french-lib",
+    "sp-pit"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "대용량 투자정보를 탐색·분석해 이상값과 식별자 매핑 오류를 탐지하고, 원천 데이터와 가공 데이터 사이의 정합성·완전성·적시성을 검증하는 품질 체계를 구축해요",
+   "short": "쌓인 데이터를 뒤져 튀는 값·잘못 이어진 종목을 찾고, '다 왔나·제때 왔나·맞나'를 자동으로 재는 장치를 만든다.",
+   "why": "같은 팀 DRE 공고는 **잘못된 데이터를 고객보다 먼저 찾는 시스템**을 만든다고 적었고, 품질 기준을 선언형 데이터 계약(어떤 칸이 어떤 값이어야 하는지 글로 적어 두고 자동 검사)으로 정의한다고 했습니다.[2] 이 자리는 그 기준을 자기 도메인(재무·시세)에 채우는 쪽입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**완전성** — 오늘 상장 종목 수 대비 받은 종목 수, 분기마다 실적이 와야 할 회사 중 빠진 회사.",
+     "**적시성** — 공시 시각과 우리 표에 들어온 시각의 차이. 미국 공시는 실시간 처리를 밝혔으니 분 단위로 볼 것이다.[5] {추론}",
+     "**정합성** — 원천 합계와 가공 합계 대조, 자산 = 부채 + 자본 같은 회계 등식 검사, 두 벤더 대조(업무③).",
+     "**이상값** — 하루 사이 시가총액이 10배 바뀐 종목(분할 미반영·단위 오류 의심), 매핑 하나에 회사 둘이 붙은 번호.",
+     "**어디서 틀렸나 추적** — DRE 공고는 고객이 보는 화면에서 원천까지 데이터 계보(lineage)를 따라가 검증 빈칸을 찾는다고 했다.[2]"
+    ]
+   },
+   "how_far": "품질 플랫폼 자체는 DRE 쪽이 함께 만들고, 이 자리는 **자기 도메인의 규칙을 정하고 걸린 것을 끝까지 고치는** 쪽으로 읽힙니다. {추론}",
+   "refs": [
+    2,
+    5
+   ],
+   "study": [
+    "fde-ko",
+    "sp-pit"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "3년 이상의 데이터 엔지니어링 실무 경험이 있으신 분, 금융 데이터 처리 경험이 있다면 더 좋아요.",
+   "short": "파이프라인을 혼자 맡아 운영해 본 3년차 이상. 금융 데이터는 있으면 좋고 필수는 아니다.",
+   "why": "업무 여섯 줄이 모두 '만들고 운영'까지라 장애·백필을 겪어 본 사람이 필요합니다.[1] 같은 그룹 자문·DRE 공고도 똑같이 3년 이상을 적었습니다.[2][3]",
+   "how_far": "금융 경험이 없다면 업무④⑤(식별자·기업 액션·시점)를 작은 데이터로 직접 해 보고 설명할 수 있는 정도가 최소선입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Python, SQL 기반의 데이터 수집·가공 역량이 필요해요.",
+   "short": "API 를 부르고 파싱하는 건 Python, 쌓인 데이터를 합치고 검사하는 건 SQL.",
+   "why": "수집(외부 API·파일)은 코드, 가공·검증은 대부분 SQL 입니다.[1] 같은 팀 DRE 공고는 Python·SQL 로 '프로덕션 수준의 검증 로직'을 구현해 본 경험을 요구합니다.[2]",
+   "level": {
+    "basic": "Python: requests·JSON·pandas · SQL: JOIN·GROUP BY·CASE·NULL",
+    "work": "재시도·속도 제한·타임아웃 · 윈도우 함수(LAG·ROW_NUMBER)로 전일 대비·중복 제거 · 기간 조인(시작일~종료일)",
+    "team": "돈·비율을 Decimal 로 · 시점 맞춘 조인(as-of) · 대조 쿼리로 두 표가 같은지 증명"
+   },
+   "actually": {
+    "items": [
+     "**기간 조인** — '이 날짜에 이 티커가 가리킨 회사' = 대응표의 시작일 ≤ 날짜 < 종료일. {추론}",
+     "**전일 대비 튐** — LAG 로 어제 값을 붙여 비율이 범위를 넘는 줄만 뽑는다.",
+     "**표가 같은지** — 토스 쪽 발표는 두 결과를 합쳐 중복을 지운 뒤 개수를 세는 방식으로 매일 수백 개 표를 대조했다(토스뱅크 사례).[9]"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    9
+   ],
+   "study": [
+    "sql-levelup",
+    "py-decimal"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "외부 API 및 파일 연계 기반 수집 시스템을 직접 설계·구현해본 경험이 필요해요.",
+   "short": "남의 서버에서 데이터를 받아오는 일 — 끊기고, 늦고, 모양이 바뀌는 걸 견디게 짜 본 경험.",
+   "why": "이 팀의 원천은 거의 다 바깥입니다 — 벤더와 DART·KIND·SEC.[1] 원천마다 요청 한도와 규칙이 있어(SEC 는 초당 10건, 요청 머리에 신원 표기) 지키지 않으면 막힙니다.[11]",
+   "actually": {
+    "items": [
+     "**받기** — API(페이지 넘기기·한도·인증키), 파일(SFTP·압축·전일 파일 덮어쓰기 여부).",
+     "**견디기** — 실패하면 간격을 늘려 재시도, 같은 날을 두 번 받아도 결과가 같게(멱등) 저장.",
+     "**원본 보관** — 받은 그대로를 먼저 저장하고 파싱은 그다음. 파서를 고치면 다시 받지 않고 다시 돌릴 수 있다. {추론}",
+     "**모양 변화 감지** — 벤더가 칸을 바꾸면 조용히 NULL 이 쌓인다. 스키마 검사로 먼저 멈춘다. {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    10,
+    11
+   ],
+   "study": [
+    "opendart-guide",
+    "sec-edgar-api",
+    "fde-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Airflow 등 배치 파이프라인을 개발·운영해본 경험이 필요해요.",
+   "short": "'매일 몇 시에, 무엇이 끝나면, 무엇을' 돌리고, 실패하면 다시 돌리는 작업표를 짜고 지켜본 경험.",
+   "why": "업무①의 운영(장애·백필·모니터링)이 Airflow 위에서 이뤄집니다.[1] 토스증권 랭킹 발표는 랭킹마다 Airflow 작업이 줄줄이 늘어 개발·운영이 힘들었던 경험을 이야기했고[7], 토스증권 DW 팀은 오래 걸리는 작업 먼저 돌리기·30일씩 잘라 백필하기를 소개했습니다.[9]",
+   "actually": {
+    "items": [
+     "**의존 관계** — 시세가 다 와야 팩터 계산, 공시가 와야 LLM 구조화.",
+     "**날짜 인자** — 작업이 '오늘'이 아니라 '처리할 날짜'를 받아야 백필이 된다.",
+     "**재실행** — 실패한 칸만 다시, 연결된 뒤 작업도 같이.",
+     "**알림** — 늦은 작업(SLA)·빈 결과도 실패로 본다. {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    7,
+    9
+   ],
+   "study": [
+    "airflow-book",
+    "airflow-docs",
+    "slash24dw"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "RDBMS 및 분산 데이터 환경(Impala, ClickHouse, Kafka 등)에서 데이터를 처리해본 경험이 필요해요.",
+   "short": "토스증권 데이터가 실제로 사는 곳이 Impala·ClickHouse·Kafka 라서. 운영보다 그 위에서 잘 쓰는 수준.",
+   "why": "토스증권 데이터 엔지니어 발표에 따르면 시세·체결 데이터는 Kafka 로 들어와 HDFS·Kudu 에 쌓이고 Impala 로 조회합니다. 그런데 큰 DW 작업·분석 쿼리와 자원을 다퉈 랭킹 갱신이 늦거나 실패해, 서비스용으로 ClickHouse 를 따로 세웠습니다.[7]",
+   "actually": {
+    "intro": "그 발표에서 나온 숫자입니다.[7]",
+    "items": [
+     "**Kafka → ClickHouse** — 장비 5대로 초당 약 70만 건 들어오는 토픽을 받아 초당 약 60만 건 적재를 확인. 다만 ClickHouse 서버와 자원을 나눠 쓰는 Kafka 엔진 대신 별도 싱크 커넥터를 택했다.",
+     "**최신 값만 남기기** — 같은 키는 버전이 가장 큰 줄만 남기는 ReplacingMergeTree 로 최근 시세만 본다.[22]",
+     "**미리 줄이기** — 1시간에 1억 건 넘던 화면 로그를 종목 × 분 단위로 미리 모아 약 46만 건으로 줄였다(머티리얼라이즈드 뷰 + AggregatingMergeTree).",
+     "**결과** — 랭킹 만드는 작업 10~20초 → 200~300ms, 쿼리 평균 약 600ms → 200~300ms. 서비스와 분석 환경을 떼어 놓았다."
+    ]
+   },
+   "how_far": "클러스터 구축은 플랫폼 쪽 몫으로 보입니다. 이 자리는 **어느 엔진에 무엇을 둘지 고르고, 느린 쿼리·지연된 소비(컨슈머 랙)를 읽을 줄 아는** 수준입니다. {추론}",
+   "refs": [
+    7,
+    22
+   ],
+   "study": [
+    "slash24-ch",
+    "clickhouse-rmt",
+    "fde-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "금융 데이터 도메인에 대한 이해를 바탕으로, 복잡한 원천 데이터를 유의미한 투자 정보 자산으로 가공해본 경험이 필요해요.",
+   "short": "숫자의 뜻(연결/별도·정정 공시·수정주가·공시 시점)을 알아야 투자자가 쓸 수 있는 데이터가 된다.",
+   "why": "팀원 코멘트는 이 자리가 **원천 데이터의 구조와 업무적 의미를 분석하는 것**부터 시작한다고 했고, 자신들을 '금융 도메인과 데이터 엔지니어링 사이의 연결고리'로 소개했습니다.[1]",
+   "actually": {
+    "items": [
+     "**재무제표 종류** — 연결(자회사 포함)·별도. DART API 도 둘을 나눠 고른다.[10]",
+     "**보고서 종류** — 사업·반기·1분기·3분기 보고서, 그리고 정정. 언제 공시됐는지가 값만큼 중요하다.[15]",
+     "**가격** — 수정주가·거래 정지·상장 첫날.",
+     "**뉴스·공시 연결** — 이 글이 어느 종목 얘기인지. 토스증권은 이걸 자체 모델로 맞힌다.[8]"
+    ]
+   },
+   "refs": [
+    1,
+    8,
+    10,
+    15
+   ],
+   "study": [
+    "quant-py",
+    "sp-pit"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "데이터 정합성·품질 문제를 단순 오류 수정에 그치지 않고, 데이터 구조와 도메인 맥락 관점에서 원인을 추적해 근본적으로 해결해본 경험이 필요해요.",
+   "short": "틀린 값 하나를 고치는 게 아니라 '왜 틀렸나'를 원천·매핑·계산 단계까지 거슬러 다시 안 나게 막는다.",
+   "why": "같은 팀 DRE 공고는 문제가 나면 원천부터 고객 노출 지점까지 추적해 원인을 해결하고 재발을 막는다고 적었습니다.[2] 금융 데이터의 틀림은 대개 한 줄이 아니라 구조(매핑 기간, 단위 정의, 공시 시점)에서 옵니다 {추론}.",
+   "actually": {
+    "intro": "예: 어떤 종목의 PER 이 하루 만에 5배가 됐다 {추론}.",
+    "items": [
+     "가격 쪽 — 분할이 수정주가에 반영됐나?",
+     "재무 쪽 — 단위가 원 ↔ 백만원으로 바뀌었나, 정정 공시가 들어왔나?",
+     "매핑 쪽 — 티커가 바뀌며 다른 회사 재무가 붙었나?",
+     "막기 — 원인이 매핑이면 대응표에 기간 겹침 검사를, 단위면 벤더 명세 대응표에 단위 칸을 넣는다."
+    ]
+   },
+   "refs": [
+    2
+   ],
+   "study": [
+    "fde-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "복수 금융 벤더의 데이터를 비교·통합하거나, 이를 금융 서비스에서 활용할 수 있도록 설계해본 경험이 있으면 더 좋아요.",
+   "short": "업무③ 그 자체 — 벤더 둘 이상을 하나로 묶어 서비스에 내 본 사람은 바로 일할 수 있어서.",
+   "why": "이 팀은 국내 서비스 확장과 글로벌 성장에 맞춰 여러 나라 데이터를 다뤄야 하고, 나라가 늘면 벤더도 늘어납니다.[1]",
+   "refs": [
+    1
+   ],
+   "study": [
+    "lseg-symbology"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Kotlin, Java 등 JVM 계열 언어로 서비스를 개발해본 경험이 있으면 더 좋아요.",
+   "short": "데이터를 화면에 내주는 서버가 JVM 이라, 파이프라인 끝에서 서버 코드까지 손댈 수 있으면 좋아서.",
+   "why": "이 팀은 데이터를 입수·가공에서 끝내지 않고 '제공'하는 데까지 맡습니다.[1] 제공 쪽 서버가 JVM 이면 그 코드까지 손댈 수 있는 사람이 편합니다 {추론}. 같은 팀 DRE 공고 기술 목록에는 JVM 언어가 없어, 필수가 아니라 덤입니다.[2]",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "kotlin-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Kubernetes 환경에서 서비스를 배포·운영해본 경험이 있으면 더 좋아요.",
+   "short": "파이프라인과 수집기가 쿠버네티스 위에서 돌아서, 파드가 죽거나 자원이 모자랄 때 스스로 볼 수 있으면 좋다.",
+   "why": "같은 팀 DRE 공고는 Airflow·Kubernetes 기반 파이프라인과 ArgoCD 를 적었습니다.[2] 토스증권 뉴스 팀도 학습 파이프라인을 쿠버네티스 기반 Argo Workflows 로 자동화했습니다.[8]",
+   "how_far": "클러스터 운영이 아니라 **자기 작업을 배포하고, 로그·자원 한도·재시작을 읽는** 정도입니다. {추론}",
+   "refs": [
+    2,
+    8
+   ],
+   "study": [
+    "k8s-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "LLM 등 AI 기술로 비정형 공시 데이터를 구조화하는 파이프라인을 실무에 적용해본 경험이 있으면 더 좋아요.",
+   "short": "업무② 를 실제로 운영해 본 사람 — 모양 강제·검사·재처리·비용까지 겪어 봤다는 뜻이라서.",
+   "why": "회사는 2026년 1월 AI 전담 조직을 만들었고, 자체 모델과 외부 LLM 을 함께 쓰며 대량 전처리와 금융 특화 일에는 자체 모델을 쓴다고 밝혔습니다.[6] 토스증권 ML 글은 LLM 앞단의 분류·필터·평가가 프롬프트보다 큰 몫이라고 정리했습니다.[4]",
+   "refs": [
+    4,
+    6
+   ],
+   "study": [
+    "tosstech-ai",
+    "claude-structured"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "재무·시세 데이터 기반의 투자 지표(퀀트 팩터) 계산 로직을 파이프라인으로 구현해본 경험이 있으면 더 좋아요.",
+   "short": "업무⑤ 를 해 본 사람 — 시점·수정주가 함정을 이미 밟아 봤을 테니까.",
+   "why": "팩터 계산은 공식보다 재료(그날 알 수 있던 값, 수정주가)가 어렵습니다.[15][16] S&P 자료는 기간 끝 날짜로 붙인 재무에는 시차를 가정해야 한다고 설명합니다.[15]",
+   "refs": [
+    15,
+    16
+   ],
+   "study": [
+    "quant-py",
+    "french-lib",
+    "sp-pit"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Claude Code, Cursor 등 AI 개발 도구를 개발·운영 워크플로우에 통합해 활용해보신 분이면 더 좋아요.",
+   "short": "벤더 명세 읽기·매핑 코드·장애 원인 찾기 같은 반복 일을 AI 도구로 줄여 본 경험.",
+   "why": "같은 팀 DRE 공고는 데이터 장애 수집·원인 추적 같은 반복 운영을 AI 에이전트로 자동화한다고 적었습니다.[2] 같은 그룹 자문 데이터 공고에도 같은 우대 줄이 있습니다.[3]",
+   "refs": [
+    2,
+    3
+   ],
+   "study": [
+    "claude-code-docs"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "숫자가 '어디서 왔나'를 끝까지 따라가는 게 재미있는 사람[1]",
+   "주식·공시를 직접 읽어 본 사람 — 도메인이 일의 절반이다",
+   "남의 API·파일 명세를 꼼꼼히 읽는 사람",
+   "LLM 을 파이프라인 부품으로 써 보고 싶은 사람[4][6]"
+  ],
+  "hard": [
+   "벤더 명세·기업 이벤트 처리는 화려하지 않은 반복 일이 많다",
+   "고객 화면에 바로 나가는 숫자라 틀림에 대한 압박이 크다[2]",
+   "벤더 데이터는 계약·라이선스가 걸려 개인 공부용으로 구하기 어렵다[14] {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "티커가 바뀐 회사의 5년 치 데이터를 어떻게 한 회사로 이어 보나요?",
+   "a": "기간을 가진 식별자 대응표 — 업무④의 핵심.[3][12]"
+  },
+  {
+   "q": "1년 전 날짜로 PER 을 다시 계산하는데, 그 뒤에 정정 공시가 있었다면요?",
+   "a": "공시일 기준(point-in-time) 조인.[15][16]"
+  },
+  {
+   "q": "두 벤더의 매출이 3% 다르면 어떻게 하나요?",
+   "a": "정의·단위·연결/별도부터 맞춰 보고, 항목별 우선순위를 정하는 일 — 업무③.[1]"
+  },
+  {
+   "q": "LLM 이 공시에서 뽑은 금액이 맞는지 어떻게 아나요?",
+   "a": "스키마 강제 + 값 검사 + 검수·실패 사례 환류.[4][6][17]"
+  },
+  {
+   "q": "분석 쿼리 때문에 서비스용 집계가 늦어지면 어떻게 하나요?",
+   "a": "토스증권이 ClickHouse 를 따로 세운 이유.[7]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 토스증권 데이터 엔지니어 (금융데이터/재무)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7827711003",
+   "kind": "posting",
+   "note": "팀 소개·업무·요건·팀원 코멘트·합류 여정"
+  },
+  {
+   "n": 2,
+   "title": "토스 채용 · 토스증권 데이터 엔지니어 (금융데이터/DRE)",
+   "url": "https://toss.im/career/job-detail?gh_jid=8006361003",
+   "kind": "posting",
+   "note": "같은 AI Info & Data Silo — 데이터 계약·계보·교차 검증, 기술 목록"
+  },
+  {
+   "n": 3,
+   "title": "토스 채용 · 토스증권 데이터 엔지니어 (금융데이터/자문)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7834735003",
+   "kind": "posting",
+   "note": "WM Domain Advisory Silo — 같은 식별자 매핑·품질 업무 줄"
+  },
+  {
+   "n": 4,
+   "title": "토스 기술 블로그 · AI에게 투자정보를 말하게 하기까지",
+   "url": "https://toss.tech/article/tech_talk_talk_1",
+   "kind": "company",
+   "date": "2026-08-13",
+   "note": "토스증권 ML 엔지니어 — 입수 시점 분류, 단계형 생성, 평가"
+  },
+  {
+   "n": 5,
+   "title": "전자신문 · 김규빈 토스증권 대표 \"공시·어닝콜·뉴스까지…AI로 투자 여정 돕는다\"",
+   "url": "https://m.etnews.com/20251211000238",
+   "kind": "news",
+   "date": "2025-12-11",
+   "note": "스마트금융컨퍼런스 기조강연 — 미국 공시 실시간 파이프라인, 금융 온톨로지, 해외 뉴스 하루 4,000~6,000건 번역"
+  },
+  {
+   "n": 6,
+   "title": "지디넷코리아 · 출범 5주년 토스증권, 승부수는 'AI'",
+   "url": "https://v.daum.net/v/20260429142502536",
+   "kind": "news",
+   "date": "2026-04-29",
+   "note": "AI 트라이브(2026-01), 자체·외부 LLM 병행, AI 시그널 Z-score, 검증 루프·검수"
+  },
+  {
+   "n": 7,
+   "title": "SLASH 24 · ClickHouse로 토스증권 랭킹 서비스 구조 개선하기",
+   "url": "https://www.youtube.com/watch?v=8P2OL7cwFEU",
+   "kind": "company",
+   "date": "2024-10",
+   "note": "토스증권 Data Engineer · 자막 전부 확인"
+  },
+  {
+   "n": 8,
+   "title": "SLASH 23 · 머신러닝으로 더 똑똑하게 증권 뉴스 제공하기",
+   "url": "https://www.youtube.com/watch?v=dnxaTrKJr0c",
+   "kind": "company",
+   "date": "2023-06",
+   "note": "토스증권 Data Scientist · 자막 전부 확인 — 종목 매칭·중요도·번역 모델"
+  },
+  {
+   "n": 9,
+   "title": "SLASH 24 · 전천후 데이터 분석을 위한 DW 설계 및 운영하기 / SLASH 23 · 은행 데이터플랫폼 오픈소스로 전환하기",
+   "url": "https://www.youtube.com/watch?v=MWDVBZycou4",
+   "kind": "company",
+   "date": "2024-10",
+   "note": "토스증권 DW 팀(백필·우선순위). 표 대조 방식은 토스뱅크 발표(https://www.youtube.com/watch?v=RjsG-zKMuX8) — 같은 그룹 다른 회사"
+  },
+  {
+   "n": 10,
+   "title": "금융감독원 OpenDART · 개발가이드",
+   "url": "https://opendart.fss.or.kr/guide/main.do",
+   "kind": "reference",
+   "note": "공시검색·고유번호·단일회사 전체 재무제표(연결/별도, 보고서 코드)"
+  },
+  {
+   "n": 11,
+   "title": "SEC · Accessing EDGAR Data / EDGAR APIs",
+   "url": "https://www.sec.gov/os/accessing-edgar-data",
+   "kind": "reference",
+   "note": "초당 10건 한도·User-Agent 표기, data.sec.gov companyfacts"
+  },
+  {
+   "n": 12,
+   "title": "ISO 6166 · International securities identification number (ISIN)",
+   "url": "https://www.iso.org/standard/78502.html",
+   "kind": "reference",
+   "note": "12자리 — 나라 2 + 기본 9 + 검사 1"
+  },
+  {
+   "n": 13,
+   "title": "OpenFIGI · API Documentation",
+   "url": "https://www.openfigi.com/api/documentation",
+   "kind": "reference",
+   "note": "ISIN·티커 → FIGI 매핑(/v3/mapping)"
+  },
+  {
+   "n": 14,
+   "title": "LSEG · Connecting your data through symbology",
+   "url": "https://www.lseg.com/en/data-analytics/market-data/data-analytics-pricing/data-symbology",
+   "kind": "reference",
+   "note": "RIC·PermID 와 다른 식별자. RIC 표기(IBM.N)와 권리 문제는 Wikipedia 'Reuters Instrument Code' 참조"
+  },
+  {
+   "n": 15,
+   "title": "S&P Global · Capital IQ Quantamental — Point-in-Time vs Lagged Fundamentals",
+   "url": "https://spglobal.com/content/dam/spglobal/mi/en/documents/general/sp-capitaliq-quantamental-point-in-time-vs-lagged-fundamentals.pdf",
+   "kind": "reference",
+   "note": "공시일 기준 데이터와 기간 끝 기준 데이터의 차이"
+  },
+  {
+   "n": 16,
+   "title": "LSEG · Backtest your portfolio performance",
+   "url": "https://www.lseg.com/en/data-analytics/asset-management-solutions/portfolio-management/backtest-your-portfolio-performance",
+   "kind": "reference",
+   "note": "PIT 데이터는 잠정·확정·정정 값을 모두 남긴다"
+  },
+  {
+   "n": 17,
+   "title": "Claude Docs · Structured outputs",
+   "url": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+   "kind": "reference",
+   "note": "JSON 스키마로 출력 모양 강제"
+  },
+  {
+   "n": 18,
+   "title": "Kenneth R. French · Data Library",
+   "url": "https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html",
+   "kind": "reference",
+   "note": "가치·규모·모멘텀 등 표준 팩터의 정의와 값"
+  },
+  {
+   "n": 19,
+   "title": "자소설닷컴 — 토스증권 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/13103",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음. 같은 집계의 다른 증권사 값도 이 페이지에 함께 실림"
+  },
+  {
+   "n": 20,
+   "title": "토스증권 — 사이트 하단 회사 정보",
+   "url": "https://tossinvest.com/",
+   "kind": "company"
+  },
+  {
+   "n": 21,
+   "title": "국가기술표준원 · 국제표준 등록기관 안내(ISIN — 한국거래소)",
+   "url": "https://kats.go.kr/content.do?cmsid=528",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "ClickHouse Docs · ReplacingMergeTree",
+   "url": "https://clickhouse.com/docs/engines/table-engines/mergetree-family/replacingmergetree",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  }
+ ],
+ "caveat": "이 팀(AI Info & Data Silo)이 직접 쓴 재무·벤더 데이터 발표·글은 찾지 못했습니다. 회사 근거는 이 공고와 같은 팀·그룹 공고, 토스증권의 다른 팀 발표(랭킹·뉴스 ML·DW)와 대표 강연 기사입니다. 벤더 매핑·식별자·시점 처리의 구체적 방식은 공개되지 않아 국제 표준·벤더 공식 문서로 '보통 이런 것'을 보였습니다. 발표는 2023~2024년 것이라 지금은 달라졌을 수 있습니다.",
+ "resources": [
+  {
+   "id": "slash24-ch",
+   "title": "SLASH 24 · ClickHouse로 토스증권 랭킹 서비스 구조 개선하기",
+   "by": "토스증권 Data Engineer · 17분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=8P2OL7cwFEU",
+   "why": "토스증권 데이터가 Kafka → HDFS/Kudu → Impala 로 흐르는 그림과, 서비스용 ClickHouse 를 왜 따로 세웠는지. 요건⑤의 바닥을 이해한다."
+  },
+  {
+   "id": "slash23-news",
+   "title": "SLASH 23 · 머신러닝으로 더 똑똑하게 증권 뉴스 제공하기",
+   "by": "토스증권 Data Scientist · 15분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=dnxaTrKJr0c",
+   "why": "글을 종목에 잇는 일이 왜 어려운지(동명이인)와, 데이터 구축부터 배포까지 자동화한 파이프라인. 업무②④의 감을 잡는다."
+  },
+  {
+   "id": "slash24dw",
+   "title": "SLASH 24 · 전천후 데이터 분석을 위한 DW 설계 및 운영하기",
+   "by": "토스증권 DW 팀 · 25분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=MWDVBZycou4",
+   "why": "같은 회사 DW 팀의 표 이름 규칙·이력 표·백필 DAG. Airflow 운영 요건을 이 회사 방식으로 본다."
+  },
+  {
+   "id": "tosstech-ai",
+   "title": "AI에게 투자정보를 말하게 하기까지",
+   "by": "토스 기술 블로그 · 토스증권 ML 엔지니어 · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/tech_talk_talk_1",
+   "why": "뉴스·공시를 입수 때 분류하고, LLM 을 단계가 정해진 흐름의 끝에만 두고, 결과를 평가하는 구조. 업무②의 회사 쪽 설명."
+  },
+  {
+   "id": "opendart-guide",
+   "title": "OpenDART 개발가이드",
+   "by": "금융감독원",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://opendart.fss.or.kr/guide/main.do",
+   "why": "무료 인증키로 공시 목록·재무제표를 직접 받아 볼 수 있다. 요건③의 '외부 API 수집'을 실제 공시 데이터로 연습한다."
+  },
+  {
+   "id": "sec-edgar-api",
+   "title": "EDGAR Application Programming Interfaces",
+   "by": "U.S. SEC",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.sec.gov/search-filings/edgar-application-programming-interfaces",
+   "why": "미국 공시·XBRL 재무를 키 없이 받는 공식 API. 요청 한도·신원 표기 같은 '남의 서버 예절'도 같이 익힌다."
+  },
+  {
+   "id": "openfigi-docs",
+   "title": "OpenFIGI API Documentation",
+   "by": "OpenFIGI (Bloomberg)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.openfigi.com/api/documentation",
+   "why": "ISIN·티커를 공개 식별자로 바꿔 보는 무료 API. 업무④의 식별자 매핑을 유료 벤더 없이 연습한다."
+  },
+  {
+   "id": "lseg-symbology",
+   "title": "Connecting your data through symbology",
+   "by": "LSEG",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.lseg.com/en/data-analytics/market-data/data-analytics-pricing/data-symbology",
+   "why": "공고에 이름이 나온 벤더가 RIC·PermID·ISIN 등 식별자를 어떻게 잇는지 직접 설명한 글. 업무③④의 벤더 쪽 시각."
+  },
+  {
+   "id": "sp-pit",
+   "title": "Point-in-Time vs Lagged Fundamentals",
+   "by": "S&P Global Market Intelligence",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://spglobal.com/content/dam/spglobal/mi/en/documents/general/sp-capitaliq-quantamental-point-in-time-vs-lagged-fundamentals.pdf",
+   "why": "공시일 기준 데이터가 왜 필요한지를 공고에 나온 벤더가 직접 쓴 자료. 업무⑤⑥의 시점 함정."
+  },
+  {
+   "id": "quant-py",
+   "title": "파이썬을 이용한 퀀트 투자 포트폴리오 만들기",
+   "by": "이현열 · 제이펍 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000005264717",
+   "why": "국내외 주식 데이터 수집부터 멀티팩터 종목 선정·백테스트까지 파이썬으로. 업무⑤의 팩터 계산을 손으로 해 본다."
+  },
+  {
+   "id": "french-lib",
+   "title": "Kenneth R. French Data Library",
+   "by": "Kenneth R. French · Dartmouth Tuck",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html",
+   "why": "표준 팩터의 정의와 값. 내가 계산한 팩터를 공개된 값과 대조해 보는 기준점."
+  },
+  {
+   "id": "fde-ko",
+   "title": "견고한 데이터 엔지니어링",
+   "by": "조 라이스 · 맷 하우슬리 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B2%AC%EA%B3%A0%ED%95%9C%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81",
+   "why": "수집·저장·변환·서빙 수명 주기와 원천 시스템 다루기, 데이터 품질. 이 공고의 업무 흐름 전체를 한 번에 정리한다."
+  },
+  {
+   "id": "airflow-book",
+   "title": "Apache Airflow 기반의 데이터 파이프라인",
+   "by": "바스 하렌슬락 · 율리안 더라위터르 · 제이펍 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000002993441",
+   "why": "DAG·의존성·날짜 인자·백필·테스트. 요건④를 처음부터. Airflow 3 변경은 공식 문서로 보충."
+  },
+  {
+   "id": "airflow-docs",
+   "title": "Airflow Core Concepts",
+   "by": "Apache Airflow 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/index.html",
+   "why": "DAG·센서·재실행(catchup·backfill)의 정확한 정의."
+  },
+  {
+   "id": "clickhouse-rmt",
+   "title": "ReplacingMergeTree",
+   "by": "ClickHouse 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://clickhouse.com/docs/engines/table-engines/mergetree-family/replacingmergetree",
+   "why": "토스증권이 최신 시세만 남기는 데 쓴 엔진. 병합이 언제 일어나는지(바로 지워지지 않는다)를 알아야 결과를 믿을 수 있다."
+  },
+  {
+   "id": "claude-structured",
+   "title": "Structured outputs",
+   "by": "Claude Docs",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+   "why": "LLM 답을 JSON 스키마 모양으로 받는 법. 업무②에서 공시를 표로 바꾸는 첫 단계."
+  },
+  {
+   "id": "sql-levelup",
+   "title": "SQL 레벨업",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=SQL%20%EB%A0%88%EB%B2%A8%EC%97%85",
+   "why": "윈도우 함수·CASE 로 반복문 없이 한 번에 — 전일 대비 튐·중복 제거·기간 조인 같은 검증 쿼리 연습."
+  },
+  {
+   "id": "py-decimal",
+   "title": "decimal — 십진 고정소수점 및 부동소수점 산술",
+   "by": "Python 공식 문서(한국어)",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.python.org/ko/3/library/decimal.html",
+   "why": "금액·비율을 float 로 다루지 않는 이유. 벤더 대조에서 0.01 차이가 진짜인지 가르는 기본기."
+  },
+  {
+   "id": "kotlin-docs",
+   "title": "Kotlin Docs",
+   "by": "JetBrains",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://kotlinlang.org/docs/home.html",
+   "why": "우대 JVM 언어. 데이터를 내주는 서버 코드를 읽고 고칠 정도까지."
+  },
+  {
+   "id": "k8s-docs",
+   "title": "쿠버네티스 문서",
+   "by": "Kubernetes 공식 문서(한국어)",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://kubernetes.io/ko/docs/home/",
+   "why": "파드·잡·자원 한도·로그. 내 수집기·작업이 왜 재시작되는지 읽는 수준까지."
+  },
+  {
+   "id": "claude-code-docs",
+   "title": "Claude Code overview",
+   "by": "Anthropic",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.claude.com/en/docs/claude-code/overview",
+   "why": "우대 AI 개발 도구. 벤더 명세 → 매핑 코드 초안, 장애 로그 정리 같은 반복 일에 붙여 본다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사와 바닥 보기",
+   "time": "1주",
+   "goal": "토스증권 데이터가 어디로 흐르고, 이 팀이 무엇을 만드는지 말로 설명할 수 있다.",
+   "resources": [
+    "slash24-ch",
+    "slash23-news",
+    "tosstech-ai"
+   ],
+   "task": "영상 둘과 글 하나를 보고 '원천 → 저장 → 서비스 화면' 그림을 한 장 그린다. 이 공고 업무 여섯 줄이 그림의 어디에 붙는지 표시한다."
+  },
+  {
+   "title": "공시를 직접 받아 쌓기",
+   "time": "2~3주",
+   "goal": "외부 API 를 날짜 인자로 받아 원본 보관 → 파싱 → 표 적재를 매일 돌리고, 지난 날짜를 다시 채울 수 있다.",
+   "resources": [
+    "opendart-guide",
+    "sec-edgar-api",
+    "airflow-book",
+    "airflow-docs"
+   ],
+   "task": "OpenDART 로 관심 종목 10곳의 분기 재무를, EDGAR companyfacts 로 미국 5곳의 매출을 받는 Airflow DAG 를 만든다. 원본 JSON 을 날짜별로 저장하고, 한 분기를 지웠다가 백필로 되살린다."
+  },
+  {
+   "title": "식별자와 기업 이벤트",
+   "time": "2주",
+   "goal": "기간을 가진 식별자 대응표를 만들고, 분할·티커 변경이 나도 시계열이 이어지게 한다.",
+   "resources": [
+    "openfigi-docs",
+    "lseg-symbology",
+    "sql-levelup"
+   ],
+   "task": "가상 종목 20개로 '티커·ISIN·시작일·종료일' 표를 만들고, 티커 변경 1건·1:5 분할 1건을 넣는다. 수정주가와 '날짜 → 회사' 조인 쿼리를 짜고, 기간이 겹치는 대응을 잡는 검사 쿼리를 붙인다. ISIN 검사 숫자 함수도 넣는다."
+  },
+  {
+   "title": "팩터와 시점",
+   "time": "2~3주",
+   "goal": "그날 알 수 있던 값만으로 PER·모멘텀을 계산하고, 공개 값과 대조해 검증할 수 있다.",
+   "resources": [
+    "quant-py",
+    "sp-pit",
+    "french-lib",
+    "py-decimal"
+   ],
+   "task": "2단계 데이터에 공시일을 붙여 월말마다 PER 을 계산하고, 기간 끝 날짜로 붙였을 때와 결과가 어떻게 다른지 표로 비교한다. 정정 공시 1건을 가상으로 넣어 차이를 확인한다."
+  },
+  {
+   "title": "LLM 구조화와 품질 검사",
+   "time": "2주",
+   "goal": "공시 글을 스키마에 맞는 표로 바꾸고, 완전성·적시성·정합성 검사로 걸러 낼 수 있다.",
+   "resources": [
+    "claude-structured",
+    "tosstech-ai",
+    "fde-ko"
+   ],
+   "task": "실적 공시 본문 20건을 LLM 으로 '회사·기간·매출·영업이익·단위' JSON 으로 뽑고, 2단계의 API 재무 값과 대조해 틀린 건수를 센다. 틀린 것의 원인(단위·연결/별도·정정)을 분류해 검사 규칙을 하나씩 더한다."
+  }
+ ],
+ "pay": {
+  "summary": "공공데이터 집계로 신입 초봉 **약 5,000만원**, 평균 **약 7,000만원** — 비상장이라 공시된 평균 급여는 찾지 못했다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,003만원",
+    "amount": 5003,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 적혀 있지 않고 직군 구분도 없어 개발자 계약 연봉과 다를 수 있다 [19]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 7,007만원",
+    "amount": 7007,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균(월 약 584만원으로 함께 표기) [19]"
+   },
+   {
+    "label": "한국투자증권 초봉",
+    "value": "약 4,803만원",
+    "amount": 4803,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트가 같은 페이지에 함께 보여 주는 값 — 견주어 보기용 [19]"
+   },
+   {
+    "label": "한국투자증권 평균",
+    "value": "약 7,389만원",
+    "amount": 7389,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 회사 전체 평균 [19]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고, 직무·문화적합성 인터뷰와 레퍼런스 체크 뒤 **처우 협의** 단계에서 사람마다 정한다 [1]. 토스증권은 상장사가 아니라 사업보고서의 '직원 평균 급여'가 없어 공시 숫자를 싣지 못했다. 집계값은 공공데이터로 계산한 추정이고, 평균은 경력직이 섞인 회사 전체 값이라 신입이 받는 금액이 아니다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 전체를 기준으로 한 2021년 공식 소개 글이다 [23]. 계열사인 토스증권에 그대로 적용되는지, 지금도 같은지는 글에 적혀 있지 않으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스증권",
+  "address": "서울특별시 강남구 테헤란로 133, 7층 (역삼동, 한국타이어빌딩)",
+  "postal": "06133",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20133",
+  "near": "2호선 역삼역과 강남역 사이 테헤란로 {추론}",
+  "note": "주소는 토스증권 사이트 하단의 회사 정보다 [20]. 공고의 근무지 표기는 'Seoul' 뿐이라 팀 자리가 이 주소와 다를 수 있다 {추론}."
+ }
+}
