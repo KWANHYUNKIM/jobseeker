@@ -33,6 +33,7 @@
   "ats-toss:group:7795677003": "toss-gpu-systems-engineer",
   "wanted-347560": "toss-gpu-systems-engineer",
   "ats-toss:group:8035179003": "toss-ml-engineer-ocr",
+  "ats-toss:group:7821080003": "toss-network-engineer-edge",
   "ats-toss:group:6620395003": "toss-network-software-engineer",
   "ats-toss:group:8047064003": "toss-p2p-lending-server-developer",
   "ats-toss:group:7901191003": "toss-platform-analytics-engineer",
@@ -352,6 +353,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 18
+  },
+  {
+   "id": "toss-network-engineer-edge",
+   "company": "토스",
+   "role": "네트워크 엔지니어 (Edge)",
+   "jobs": [
+    "ats-toss:group:7821080003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 11
   },
   {
    "id": "toss-network-software-engineer",
