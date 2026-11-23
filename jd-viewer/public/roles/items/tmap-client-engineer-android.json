@@ -1,0 +1,1103 @@
+{
+ "id": "tmap-client-engineer-android",
+ "company": "티맵모빌리티",
+ "role": "Client Engineer",
+ "team": "TMAP 앱 Client(Android)",
+ "jobs": [
+  "wanted-393102"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "월 이용자 **1,500만 명 넘는** 내비 앱 TMAP 의 안드로이드 판을 만듭니다 — 검색·경로 탐색·즐겨찾기 같은 핵심 기능을 서버와 이어 붙이고, 고객 불만(VOC)을 읽어 고칩니다.[1][7]",
+  "env": "기획·디자인·서버·QA·운영과 같이 일하는 **서비스 앱 팀**입니다. 같은 일을 하는 iOS 자리가 따로 있고[3], 지도 SDK·차량용(TMAP AUTO) 안드로이드는 다른 자리가 맡습니다.[4][5][6]",
+  "oneline": "기종·OS 가 제각각인 수천만 대 폰에서 **운전 중에도 죽지 않는 앱**을 만드는 5년 차 이상 안드로이드 자리입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "월간 활성 사용자(MAU) 1,500만 명 이상의 TMAP Android 앱을 개발합니다.",
+   "short": "한 달에 1,500만 명이 여는 국민 내비 앱이라, 작은 실수도 수십만 명에게 바로 닿는 자리라서.",
+   "why": "TMAP 의 월간 활성 사용자(MAU, 한 달에 한 번이라도 연 사람)는 2025년에 1,500만 명을 넘어 역대 최대였고[7], 2026년 1~9월에는 1인당 한 달 평균 **30번** 앱을 열었습니다(전년 같은 기간 27번).[8] 같은 기사는 월평균 방문이 약 4억 4,600만 회라고 적었습니다.[8]",
+   "actually": {
+    "intro": "이 숫자가 개발자에게 뜻하는 것입니다.",
+    "items": [
+     "**0.1% 도 큰 숫자** — 1,500만 명의 0.1% 는 1만 5천 명이다. 드문 기종에서만 나는 버그도 실제 사용자 수천 명이 겪는다. {추론}",
+     "**구글 플레이의 품질 기준** — 플레이는 하루 활성 사용자 대비 사용자가 체감한 비정상 종료 비율 **1.09%**, 응답 없음(ANR) 비율 **0.47%** 를 넘으면 앱이 덜 노출된다고 정해 두었다. 기종 하나에서 8% 를 넘으면 그 기종에서 경고가 붙을 수 있다.[10]",
+     "**배포는 나눠서** — 새 버전을 일부 사용자에게만 먼저 내보내고(단계적 출시) 문제가 보이면 멈출 수 있다.[18]",
+     "**앱이 넓다** — 내비 말고도 장소 추천·대리·주차·대중교통 같은 기능이 한 앱에 들어 있고, 장소 탐색·추천 같은 콘텐츠 소비가 전년의 두 배를 넘었다.[8]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "비정상 종료 비율을 플레이 기준과 견주기",
+     "body": "가상의 하루 활성 사용자 200만 명입니다. 새 버전이 나간 뒤 영향을 받은 사용자가 1만 5천 → 2만 6천 명으로 늘면 기준(1.09%)을 넘습니다. 전체는 괜찮아도 기종 하나에서 9% 가 나면 그 기종 기준(8%)을 넘습니다.[10] 직접 돌린 출력입니다(Kotlin 대신 Python).",
+     "lang": "python",
+     "code": "def rate(affected, dau):\n    return affected / dau * 100\n\ndau = 2_000_000\nfor name, aff in [(\"이번 주\", 15_000), (\"새 버전 배포 뒤\", 26_000)]:\n    r = rate(aff, dau)\n    print(f\"{name}: {r:.2f}%\", \"기준 넘음\" if r > 1.09 else \"기준 안\")\nr = rate(900, 10_000)\nprint(f\"기종 A: {r:.1f}%\", \"기종별 기준(8%) 넘음\" if r > 8 else \"기종별 기준 안\")\n# 이번 주: 0.75% 기준 안\n# 새 버전 배포 뒤: 1.30% 기준 넘음\n# 기종 A: 9.0% 기종별 기준(8%) 넘음"
+    }
+   ],
+   "how_far": "앱 전체를 혼자 맡는 게 아니라 여러 명이 기능을 나눠 맡는 큰 코드베이스에서 일합니다 {추론}. 입사자는 **맡은 기능을 출시까지 끌고 가면서 비정상 종료 지표를 같이 보는** 것이 최소선입니다.",
+   "refs": [
+    7,
+    8,
+    10,
+    18
+   ],
+   "study": [
+    "vitals-doc",
+    "play-rollout"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "기획자 및 UI/UX 디자이너와 협업하여 신규 기능을 설계하고 구현합니다.",
+   "short": "기획서·디자인 시안을 받아 화면 상태·예외까지 따져 구조를 정하고, 실제 화면으로 만드는 일.",
+   "why": "TMAP 은 내비에서 시작해 '어디갈까'·로컬 맛집·AI 음성 에이전트 같은 새 서비스를 계속 얹고 있다고 공고가 소개합니다.[1] 새 기능이 계속 나오니 기획 단계부터 같이 보는 개발자가 필요합니다.",
+   "actually": {
+    "items": [
+     "**상태 나눠 보기** — 시안에는 정상 화면만 있는 경우가 많다. 불러오는 중·빈 결과·네트워크 오류·권한 없음 화면을 개발자가 먼저 묻는다. {추론}",
+     "**층 나누기** — 구글의 앱 아키텍처 가이드는 화면(UI) 층과 데이터 층을 나누고, 필요하면 그 사이에 도메인 층을 두라고 권한다. 새 기능도 이 틀 안에 넣는다.[12]",
+     "**운전 중 화면** — 내비 화면은 운전 중에 보므로 누르는 곳이 크고 정보가 적어야 한다는 제약이 디자인과 같이 논의된다. {추론}",
+     "**작게 먼저** — 큰 기능은 일부 사용자에게만 켜는 방식(단계적 출시·실험)으로 반응을 보고 넓힌다.[18][19]"
+    ]
+   },
+   "how_far": "무엇을 만들지는 기획자가, 어떻게 보일지는 디자이너가 정합니다. 개발자는 **할 수 있는지·얼마나 걸리는지·빠진 경우가 없는지**를 말하고 구조를 정합니다. {추론}",
+   "refs": [
+    1,
+    12,
+    18,
+    19
+   ],
+   "study": [
+    "android-arch",
+    "nowinandroid"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "다양한 Android 디바이스와 OS 버전에서 안정적으로 동작하는 기능을 개발합니다.",
+   "short": "삼성·LG·샤오미, 오래된 OS 부터 최신 OS 까지 같은 기능이 똑같이 돌게 만드는 일.",
+   "why": "안드로이드는 제조사와 OS 버전이 제각각이고, 해마다 새 버전이 앱의 동작 규칙을 바꿉니다. 구글 플레이는 앱이 맞추는 OS 기준(target API)을 해마다 올리라고 요구해서, 오래 운영한 앱은 그때마다 바뀐 규칙에 맞춰야 합니다.[22]",
+   "actually": {
+    "intro": "버전이 오를 때마다 실제로 바뀌는 것들의 예입니다.",
+    "items": [
+     "**위치 권한** — 안드로이드 10 부터 백그라운드 위치가 따로 묻는 권한이 됐고, 11 부터는 앱 안에서 바로 허락받지 못하고 설정 화면으로 보내야 한다.[14]",
+     "**포그라운드 서비스** — 안드로이드 14 부터 길 안내처럼 화면 밖에서 도는 서비스는 '위치용'이라고 종류를 밝혀야 한다.[26]",
+     "**화면 가장자리까지** — 안드로이드 15 를 대상으로 하면 앱 화면이 상태 표시줄·내비게이션 바 밑까지 그려지는 게 기본이 돼, 버튼이 가려지지 않게 여백을 다시 잡아야 한다.[25]",
+     "**제조사 차이** — 절전 기능이 제조사마다 달라 백그라운드 작업이 멈추는 정도가 다르다. 실제 기기에서 확인한다. {추론}"
+    ]
+   },
+   "how_far": "모든 기종을 다 갖출 수는 없어서 QA 조직과 시험 기종을 나눕니다(업무⑥).[1] 개발자는 **새 OS 의 동작 변경 문서를 읽고 우리 앱의 어디가 걸리는지 먼저 찾는** 수준이 기본입니다. {추론}",
+   "refs": [
+    1,
+    14,
+    22,
+    25,
+    26
+   ],
+   "study": [
+    "target-sdk",
+    "location-perms"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "고객 VOC를 분석하고, 사용자 경험을 개선하기 위한 기능을 제안·개발합니다.",
+   "short": "앱 리뷰·고객센터 불만을 읽고 재현해서, 고칠 것과 새로 만들 것을 개발자가 직접 제안한다.",
+   "why": "VOC(Voice of Customer)는 앱 리뷰·고객센터 문의·인앱 신고처럼 고객이 직접 남긴 말입니다. 이 공고는 VOC 를 듣고 끝내지 않고 **개선 기능을 제안·개발**하는 것까지 개발자의 일로 적었습니다.[1] 같은 팀의 iOS 공고에도 같은 줄이 있습니다.[3]",
+   "actually": {
+    "items": [
+     "**묶어서 세기** — 비슷한 불만을 주제별로 묶어 어느 것이 가장 많은지 본다(예: '경로 안내가 늦게 바뀐다', '로그인이 풀린다'). {추론}",
+     "**재현하기** — 기종·OS·앱 버전·상황(운전 중·터널)을 받아 같은 조건을 만든다. 로그와 비정상 종료 보고를 같이 본다.[10]",
+     "**숫자로 확인** — 고친 뒤 그 불만이 줄었는지, 지표(사용률·이탈)가 바뀌었는지 본다. 우대사항의 A/B 테스트와 이어진다.[19]"
+    ]
+   },
+   "how_far": "모든 VOC 를 개발자가 받는 건 아니고 운영 조직이 먼저 걸러 넘기는 구조로 읽힙니다(업무⑥). 개발자는 **넘어온 것을 재현하고 원인과 고칠 방법을 말할 수 있는** 수준이면 됩니다. {추론}",
+   "refs": [
+    1,
+    3,
+    10,
+    19
+   ],
+   "study": [
+    "vitals-doc",
+    "firebase-ab"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "백엔드 API와 연동하여 검색, 경로 탐색, 즐겨찾기 등 핵심 서비스 기능을 구현합니다.",
+   "short": "장소 검색·길 찾기·즐겨찾기를 서버에 묻고 받아 화면에 보이는, 앱의 뼈대 기능을 만드는 일.",
+   "why": "검색·경로 탐색·즐겨찾기는 내비 앱이 하는 일의 중심입니다. 경로 계산 자체는 서버와 지도·내비 엔진이 하고, 앱은 그것을 부르고 보여 줍니다 — 지도·내비게이션 SDK 는 따로 뽑는 자리가 있습니다.[4][5]",
+   "flows": [
+    {
+     "caption": "길 찾기 한 번의 흐름 {추론}",
+     "steps": [
+      "검색어 입력 · 자동완성 요청",
+      "장소 고르기 · 목적지 좌표",
+      "경로 요청 · 서버가 계산",
+      "결과 화면 · 경로 여러 개 · 시간·요금",
+      "안내 시작 · 지도·내비 SDK 로 넘김"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "actually": {
+    "items": [
+     "**비동기 처리** — 네트워크는 화면을 그리는 메인 스레드 밖에서 부른다. 코틀린 코루틴과 Flow 로 요청·취소를 다룬다.[11][27]",
+     "**검색 자동완성** — 글자마다 요청하지 않고 잠깐 멈췄을 때만 보내고(디바운스), 이전 요청은 취소한다. {추론}",
+     "**실패 다루기** — 터널·지하 주차장처럼 통신이 끊기는 곳이 많다. 다시 시도·저장해 둔 결과 보여 주기·오류 화면을 정한다. {추론}",
+     "**즐겨찾기 맞추기** — 폰 안 저장소와 서버 값을 맞추는 문제(어느 쪽이 최신인가)가 생긴다. 구글 가이드는 데이터 층 하나가 기준(단일 진실 공급원)이 되게 하라고 한다.[12]"
+    ]
+   },
+   "how_far": "API 모양은 서버 개발자와 같이 정합니다(업무⑥). 이 자리는 **API 를 부르고, 끊기거나 느릴 때도 앱이 멀쩡하게** 만드는 쪽입니다. 경로 알고리즘은 이 자리 몫이 아닙니다. {추론}",
+   "refs": [
+    4,
+    5,
+    11,
+    12,
+    27
+   ],
+   "study": [
+    "coroutine-bp",
+    "moskala-coroutines",
+    "android-arch"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "서버, QA, 운영 등 유관 조직과 협업하여 서비스 품질을 개선합니다.",
+   "short": "앱 혼자서는 품질을 못 지켜서 — 서버·QA·운영과 같이 버그를 찾고, 출시를 막고, 장애에 대응한다.",
+   "why": "앱에서 보이는 문제의 원인이 서버일 때도 있고, 출시 전에 걸러 내는 건 QA 의 시험이며, 사용자 불만을 먼저 받는 건 운영입니다. 이 회사는 QA 자동화 엔지니어도 따로 뽑고 있습니다.[28]",
+   "actually": {
+    "items": [
+     "**출시 전** — QA 가 시험한 결과를 보고 막을 버그와 다음 버전으로 넘길 버그를 같이 정한다. {추론}",
+     "**출시 직후** — 단계적 출시로 일부에게만 내보낸 뒤 비정상 종료·ANR 지표를 보고 넓히거나 멈춘다.[18][10]",
+     "**장애 때** — 서버 응답이 바뀌어 앱이 죽는 일이 있으니, 서버와 같이 원인을 찾고 앱이 이상한 응답에도 버티게 만든다. {추론}"
+    ]
+   },
+   "refs": [
+    10,
+    18,
+    28
+   ],
+   "study": [
+    "play-rollout",
+    "vitals-doc"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Android 네이티브 앱 개발 경력 5년 이상이거나 이에 준하는 경험을 보유하신 분",
+   "short": "크로스플랫폼(Flutter·RN)이 아니라 안드로이드 SDK 로 직접 만든 앱 경력이 5년쯤 있어야 해서.",
+   "why": "'네이티브'는 안드로이드가 직접 주는 도구(코틀린·자바·안드로이드 SDK)로 만든다는 뜻입니다. 위치·백그라운드 서비스·지도처럼 OS 에 깊이 붙는 기능이 많은 앱이라 그렇습니다.[14][26] 같은 회사의 안드로이드 공고는 모두 5년 이상을 요구합니다.[4][5][6]",
+   "how_far": "'이에 준하는 경험'이라 숫자만 보는 건 아닙니다. **혼자서 기능 하나를 설계부터 출시·운영까지 해 본 경험이 여러 번**이면 그 수준으로 읽힙니다. 전형에 코딩테스트가 있습니다.[1] {추론}",
+   "refs": [
+    1,
+    4,
+    5,
+    6,
+    14,
+    26
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Kotlin 기반 Android 앱 개발에 능숙하며 Java 코드의 이해 및 유지보수가 가능하신 분",
+   "short": "새 코드는 코틀린으로 쓰지만, 오래된 앱이라 자바 코드가 남아 있어 그것도 고칠 줄 알아야 해서.",
+   "why": "TMAP 은 20년 넘게 운영해 온 서비스라고 공고가 소개합니다.[1] 오래된 안드로이드 앱은 자바로 시작해 코틀린으로 옮겨 가는 중인 경우가 많고, 두 언어는 한 앱 안에서 서로 부를 수 있습니다.[24] {추론}",
+   "level": {
+    "basic": "널 안전성(?·!!·?.) · data class · 확장 함수 · 람다 · 컬렉션 함수",
+    "work": "코루틴(launch·async·withContext·취소) · Flow · sealed class 로 화면 상태 표현 · 자바 코드 읽고 고치기",
+    "team": "자바 ↔ 코틀린 경계의 널 문제(플랫폼 타입) · @JvmStatic·@JvmOverloads · 자바 코드를 코틀린으로 옮길 때 동작이 바뀌지 않게 하기"
+   },
+   "actually": {
+    "items": [
+     "**플랫폼 타입** — 자바에서 온 값은 코틀린이 널인지 모른다. 자바 쪽이 null 을 주면 코틀린 쪽에서 터진다. 경계에 널 표시(@Nullable)를 붙이거나 받는 쪽에서 막는다.[24]",
+     "**옮기기** — 자바 파일을 코틀린으로 바꿀 때 기능 변경과 섞지 않고 따로 커밋하면 문제를 찾기 쉽다. {추론}",
+     "**코루틴** — 구글은 안드로이드에서 비동기 처리에 코루틴을 권하고, 메인 스레드를 막지 않게 하라고 한다.[27]"
+    ]
+   },
+   "refs": [
+    1,
+    24,
+    27
+   ],
+   "study": [
+    "kotlin-in-action",
+    "kotlin-java-interop",
+    "moskala-coroutines"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Android 앱 아키텍처(MVVM, Clean Architecture 등)를 이해하고 적용한 경험을 보유하신 분",
+   "short": "여러 명이 한 앱을 오래 고치려면 화면·로직·데이터를 나눠 두는 규칙이 있어야 해서.",
+   "why": "MVVM 은 화면(View)과 화면 상태를 들고 있는 층(ViewModel)을 나누는 방식이고, 클린 아키텍처는 업무 규칙을 화면·저장소에서 떼어 두는 방식입니다. 구글의 공식 가이드도 같은 생각으로 UI 층·데이터 층·(선택) 도메인 층을 권합니다.[12] 같은 회사의 iOS·SDK 공고도 MVVM·클린 아키텍처를 같은 요건으로 적었습니다.[3][4]",
+   "actually": {
+    "items": [
+     "**한 방향으로 흐르기** — 화면은 ViewModel 이 내보내는 상태를 그리기만 하고, 사용자 동작은 이벤트로 올려 보낸다(단방향 데이터 흐름).[12]",
+     "**설정 바뀜에 버티기** — 화면을 돌리거나 다크 모드를 켜면 화면이 다시 만들어지는데, 상태를 ViewModel 에 두면 사라지지 않는다.[12]",
+     "**저장소(Repository)** — 서버·폰 저장소 중 어디서 가져오는지를 숨기고 한 곳에서 데이터를 준다.[12]",
+     "**모듈 나누기** — 기능별로 모듈을 쪼개 빌드 시간을 줄이고 담당을 나눈다. 구글 예제 앱 Now in Android 가 이 구조를 보여 준다.[29]"
+    ]
+   },
+   "how_far": "용어를 외우는 것보다 **'이 코드는 왜 이 층에 있나'를 설명하고, 기존 구조에 맞춰 새 기능을 넣는** 것이 기준입니다. 면접에서 내가 정한 구조와 그 대가(파일이 늘어남 등)를 말할 수 있으면 좋습니다. {추론}",
+   "refs": [
+    3,
+    4,
+    12,
+    29
+   ],
+   "study": [
+    "android-arch",
+    "ok-arch-book",
+    "nowinandroid"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "서비스 앱의 기획 검토부터 개발, 출시, 운영까지 경험을 보유하신 분",
+   "short": "코드만 짜고 끝나는 게 아니라 기획 검토·스토어 출시·출시 뒤 지표와 불만까지 책임져 본 경험.",
+   "why": "업무 줄이 기획·디자인 협업(②)에서 VOC(④)·품질 개선(⑥)까지 이어집니다.[1] 한 기능의 처음과 끝을 다 겪어 본 사람이어야 이 흐름을 혼자 끌고 갈 수 있습니다. {추론} 같은 자리의 앞선 공고에도 거의 같은 문장이 있어, 이 팀이 꾸준히 보는 요건입니다.[2]",
+   "flows": [
+    {
+     "caption": "한 기능의 한살이 {추론}",
+     "steps": [
+      "기획 검토 · 할 수 있나·얼마나",
+      "설계 · 층·API·예외",
+      "개발 · 코드 리뷰",
+      "QA · 시험",
+      "단계적 출시 · 일부 사용자",
+      "운영 · 지표·VOC·고침"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "refs": [
+    1,
+    2,
+    18
+   ],
+   "study": [
+    "play-rollout"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "다양한 디바이스 및 OS 환경의 호환성 이슈를 해결한 경험을 보유하신 분",
+   "short": "특정 기종·특정 OS 에서만 죽거나 이상한 문제를 원인까지 찾아 고쳐 본 경험.",
+   "why": "업무③(여러 기기·OS 에서 안정적으로)의 경험 요건입니다.[1] 플레이는 기종 하나에서만 비정상 종료가 많아도 그 기종의 노출을 줄입니다.[10]",
+   "actually": {
+    "items": [
+     "**기종별로 쪼개 보기** — 비정상 종료 보고를 기종·OS 버전별로 나눠 한 곳에 몰렸는지 본다.[10]",
+     "**OS 버전 갈래** — Build.VERSION.SDK_INT 로 나눠 옛 OS 와 새 OS 에서 다른 방법을 쓴다. 권한·알림·백그라운드 규칙이 버전마다 달라서다.[14][26]",
+     "**화면 차이** — 접는 폰·태블릿·글자 크기 키움·화면 잘림(노치) 때문에 레이아웃이 깨진다.[25] {추론}"
+    ]
+   },
+   "how_far": "면접에서 **'어느 기종 · 어떤 증상 · 어떻게 원인을 찾았고 · 어떻게 고쳤나'**를 한 사례로 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    10,
+    14,
+    25,
+    26
+   ],
+   "study": [
+    "target-sdk",
+    "vitals-doc"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "문제를 발견했을 때 주도적으로 해결 방안을 찾고 실행하시는 분",
+   "short": "시키기 전에 문제를 먼저 보고, 해결책을 내서 끝까지 해 보는 사람이어서.",
+   "why": "업무에 'VOC 를 분석하고 개선 기능을 제안'이 들어가 있습니다 — 일감을 받아서만 하는 자리가 아니라는 뜻입니다.[1]",
+   "how_far": "면접에서 **내가 먼저 찾은 문제 → 낸 방법 → 결과(숫자)** 순서로 한 사례를 준비하면 됩니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "동료를 배려하며 원활하게 소통하고 협업하시는 분",
+   "short": "기획·디자인·서버·QA·운영과 매일 맞물려 일하는 자리라서.",
+   "why": "주요업무 여섯 줄 중 세 줄이 다른 직군과의 협업입니다.[1] 회사는 직급 대신 서로 '님'으로 부르는 수평 문화를 지향한다고 적었습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 사용자 기반 서비스 앱을 개발하거나 운영한 경험을 보유하신 분",
+   "short": "사용자가 많으면 드문 버그가 흔한 버그가 되고, 배포 하나가 무거워져서.",
+   "why": "이 앱은 월 1,500만 명이 씁니다.[7] 사용자가 많은 앱은 출시를 나눠 하고, 지표를 보며 넓히는 방식이 일상입니다.[18]",
+   "refs": [
+    7,
+    18
+   ],
+   "study": [
+    "play-rollout"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "앱 시작 속도, 렌더링, 메모리, 네트워크 등 앱 성능을 최적화한 경험을 보유하신 분",
+   "short": "차에 타서 바로 길을 찾아야 하는 앱이라, 늦게 뜨거나 지도가 끊기면 바로 불만이 돼서.",
+   "why": "하루에 여러 번 여는 앱입니다(1인당 한 달 30번).[8] 구글은 앱이 처음부터 뜨는 '콜드 스타트'가 5초 이상이면 지나치게 느리다고 본다고 적었습니다.[13]",
+   "actually": {
+    "items": [
+     "**시작 속도** — 처음 뜰 때(콜드)·다시 띄울 때(웜·핫)를 나눠 재고, 시작에 꼭 필요 없는 초기화를 뒤로 미룬다.[13]",
+     "**기준 프로필(Baseline Profile)** — 자주 쓰는 코드를 미리 컴파일해 두라고 앱에 실어 보내 첫 실행을 빠르게 한다.[23]",
+     "**렌더링** — 60Hz 화면이면 한 장을 16.7ms 안에 그려야 끊기지 않는다. 120Hz 면 8.3ms 다.",
+     "**메모리** — 지도 타일·이미지가 많아 메모리 누수가 쌓이면 오래 운전할수록 느려지거나 죽는다. {추론}",
+     "**네트워크** — 응답을 줄이고(필요한 칸만), 저장해 두고, 이전 요청을 취소한다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "화면 주사율별 한 프레임 시간",
+     "body": "한 장을 이 시간 안에 못 그리면 화면이 끊겨 보입니다. 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "for hz in (60, 90, 120):\n    print(f\"{hz}Hz -> 한 프레임 {1000/hz:.1f}ms\")\n# 60Hz -> 한 프레임 16.7ms\n# 90Hz -> 한 프레임 11.1ms\n# 120Hz -> 한 프레임 8.3ms"
+    }
+   ],
+   "how_far": "우대사항이라 필수는 아닙니다. 있으면 **'무엇을 쟀고(도구·숫자) 무엇을 바꿨고 얼마나 줄었나'**로 말합니다. {추론}",
+   "refs": [
+    8,
+    13,
+    23
+   ],
+   "study": [
+    "launch-time",
+    "baseline-profiles"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "ANR 및 크래시를 분석하고 개선한 경험을 보유하신 분",
+   "short": "앱이 멈추거나(ANR) 죽는(크래시) 비율이 플레이 노출과 운전 중 안전에 바로 닿아서.",
+   "why": "ANR(Application Not Responding)은 화면을 그리는 메인 스레드가 오래 막혀 앱이 응답하지 않는 상태입니다.[11] 플레이는 ANR 0.47%·크래시 1.09% 를 넘는 앱을 덜 노출합니다.[10]",
+   "actually": {
+    "items": [
+     "**ANR 원인 찾기** — 메인 스레드에서 파일·DB·네트워크를 하거나, 잠금(lock)을 기다리거나, 다른 프로세스 응답을 기다리는 것이 흔한 원인이다. 그 순간의 스레드 덤프를 본다.[11]",
+     "**크래시 묶기** — 같은 오류 위치끼리 묶어, 영향받은 사용자가 많은 것부터 고친다.[10]",
+     "**난독화 풀기** — 출시 판은 코드 이름이 줄여져 있어, 매핑 파일로 원래 이름을 되살려야 오류 위치를 읽을 수 있다. {추론}"
+    ]
+   },
+   "refs": [
+    10,
+    11
+   ],
+   "study": [
+    "anr-doc",
+    "vitals-doc"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "CI/CD 파이프라인 구축 및 테스트·배포 자동화 경험을 보유하신 분",
+   "short": "여러 명이 같이 고치는 큰 앱이라, 빌드·시험·배포를 사람 손 대신 자동으로 돌려야 해서.",
+   "why": "CI(지속적 통합)는 코드가 올라올 때마다 자동으로 빌드·시험하는 것이고, CD(지속적 배포)는 그 결과를 자동으로 내보내는 것입니다. 플레이 콘솔은 내부 시험·비공개 시험·단계적 출시처럼 나눠 내보내는 길을 줍니다.[18] 같은 회사의 TMAP AUTO 안드로이드 공고도 테스트·CI/CD 자동화를 우대합니다.[6]",
+   "actually": {
+    "items": [
+     "**올릴 때마다** — 빌드·단위 시험·코드 검사(lint)를 자동으로 돌려 깨지면 합치지 않는다. {추론}",
+     "**배포** — 서명한 앱 묶음을 만들어 내부 시험 트랙에 올리고, 단계적 출시 비율을 정한다.[18]"
+    ]
+   },
+   "refs": [
+    6,
+    18
+   ],
+   "study": [
+    "play-rollout",
+    "nowinandroid"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "A/B 테스트와 데이터 분석을 기반으로 기능을 개선한 경험을 보유하신 분",
+   "short": "새 화면이 정말 나은지 느낌이 아니라 사용자 일부로 실험해서 숫자로 정하기 때문에.",
+   "why": "A/B 테스트는 사용자를 무작위로 두 묶음으로 나눠 한쪽에만 바뀐 것을 보여 주고 결과를 견주는 실험입니다. 파이어베이스 같은 도구가 앱 설정 값을 사용자 묶음마다 달리 내려 주는 방식으로 이걸 지원합니다.[19]",
+   "examples": [
+    {
+     "title": "같은 0.6%p 차이도 표본에 따라 다르다",
+     "body": "가상의 실험입니다. 전환율 10.0% → 10.6% 차이가 각 2천 명일 때는 우연일 수 있고(p=0.53), 각 5만 명이면 우연이라 보기 어렵습니다(p=0.002). 두 비율 비교(z 검정), 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "from math import sqrt, erf\n\ndef ztest(c1, n1, c2, n2):\n    p1, p2 = c1 / n1, c2 / n2\n    p = (c1 + c2) / (n1 + n2)\n    z = (p2 - p1) / sqrt(p * (1 - p) * (1 / n1 + 1 / n2))\n    pval = 2 * (1 - 0.5 * (1 + erf(abs(z) / sqrt(2))))\n    return p1, p2, z, pval\n\nfor n in (2_000, 50_000):\n    p1, p2, z, pv = ztest(int(n * 0.100), n, int(n * 0.106), n)\n    print(f\"각 {n:,}명: A {p1:.1%} B {p2:.1%} z={z:.2f} p={pv:.3f}\")\n# 각 2,000명: A 10.0% B 10.6% z=0.62 p=0.532\n# 각 50,000명: A 10.0% B 10.6% z=3.12 p=0.002"
+    }
+   ],
+   "how_far": "실험 설계·분석은 보통 기획·데이터 쪽이 같이 합니다. 개발자는 **실험 갈래를 앱에 넣고, 로그가 빠짐없이 찍히게** 하는 것이 기본입니다. {추론}",
+   "refs": [
+    19
+   ],
+   "study": [
+    "firebase-ab"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Jetpack Compose를 활용한 서비스 개발 경험을 보유하신 분",
+   "short": "새 화면을 Compose 로 만드는 쪽으로 가고 있을 가능성이 커서 — 옛 XML 화면과 섞어 쓴다.",
+   "why": "Compose 는 화면을 코틀린 함수로 그리는 안드로이드의 새 UI 도구입니다. 구글은 기존 XML(View) 화면과 섞어 쓸 수 있어 앱 전체를 다시 쓰지 않고 조금씩 옮길 수 있다고 안내합니다.[15] 같은 회사의 TMAP AUTO 안드로이드 공고도 Compose 를 우대합니다.[6]",
+   "actually": {
+    "items": [
+     "**섞어 쓰기** — 옛 화면 안에 Compose 조각을 넣거나(ComposeView), Compose 안에 옛 View 를 넣는다(AndroidView). 지도처럼 View 로 된 부품이 남기 쉽다.[15]",
+     "**다시 그리기(리컴포지션)** — 상태가 바뀌면 그 상태를 읽는 함수만 다시 불린다. 너무 자주 다시 그리면 느려진다.[30]"
+    ]
+   },
+   "refs": [
+    6,
+    15,
+    30
+   ],
+   "study": [
+    "compose-adopt",
+    "compose-perf",
+    "compose-internals-kr"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "위치 권한, 백그라운드 위치, 지도 또는 경로 탐색 등 위치 기반 모바일 서비스 개발 경험을 보유하신 분",
+   "short": "내비는 화면이 꺼져도 위치를 계속 받아야 하고, 그 권한 규칙이 OS 마다 까다로워서.",
+   "why": "길 안내 중에는 사용자가 다른 앱을 보거나 화면을 꺼도 위치를 계속 받아야 합니다. 안드로이드는 백그라운드 위치를 별도 권한으로 두고 따로 허락받게 하며[14], 화면 밖에서 도는 위치 작업은 위치용 포그라운드 서비스로 밝히게 합니다.[26]",
+   "actually": {
+    "items": [
+     "**권한 순서** — 먼저 앱 쓰는 동안의 위치를 받고, 백그라운드 위치는 그다음에 따로 묻는다. 대략 위치만 허락하는 사용자도 있다.[14]",
+     "**포그라운드 서비스** — 안내 중임을 알림으로 늘 보이고, 서비스 종류를 location 으로 밝힌다.[26]",
+     "**좌표 계산** — 두 GPS 점 사이 거리로 경로에서 벗어났는지 본다. 실제 내비는 지도 도로에 맞추는 계산(맵 매칭)을 더 하고, 그건 SDK 자리가 맡는다.[5] {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "경로 위 점과 지금 GPS 사이 거리(하버사인)",
+     "body": "가상의 좌표입니다. 50m 를 넘으면 '이탈 후보'로 봅니다(문턱값은 예시). 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "from math import radians, sin, cos, asin, sqrt\n\ndef dist_m(lat1, lon1, lat2, lon2):\n    R = 6_371_000\n    dlat, dlon = radians(lat2 - lat1), radians(lon2 - lon1)\n    a = sin(dlat / 2) ** 2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dlon / 2) ** 2\n    return 2 * R * asin(sqrt(a))\n\nroute_pt = (37.5609, 126.9946)\nfor gps in [(37.5611, 126.9948), (37.5620, 126.9960)]:\n    d = dist_m(*route_pt, *gps)\n    print(f\"{d:.0f}m\", \"경로 이탈 후보\" if d > 50 else \"경로 위\")\n# 28m 경로 위\n# 174m 경로 이탈 후보"
+    }
+   ],
+   "refs": [
+    5,
+    14,
+    26
+   ],
+   "study": [
+    "location-perms"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "모바일 앱 보안에 대한 이해와 적용 경험을 보유하신 분",
+   "short": "위치·로그인·결제(대리·주차) 정보를 다루는 앱이라, 폰 안의 데이터와 통신을 지켜야 해서.",
+   "why": "TMAP 은 이동 기록·장소처럼 민감한 데이터를 다룹니다.[1] OWASP 의 모바일 앱 보안 기준(MASVS)은 저장·암호·인증·네트워크·플랫폼 연동·코드 품질·변조 방지 같은 갈래로 앱이 지킬 것을 정리해 둡니다.[16]",
+   "actually": {
+    "items": [
+     "**저장** — 토큰 같은 비밀은 평문 파일이 아니라 안드로이드 키스토어 등 안전한 저장소에 둔다.[17]",
+     "**통신** — HTTPS 만 쓰고, 다른 앱이 부를 수 있는 컴포넌트(exported)는 꼭 필요한 것만 연다.[17]",
+     "**로그** — 위치·개인정보를 로그에 남기지 않는다. {추론}",
+     "**변조·분석 막기** — 코드 난독화, 루팅 기기 탐지 같은 방법이 있다. MASVS 의 '복원력' 갈래다.[16]"
+    ]
+   },
+   "refs": [
+    1,
+    16,
+    17
+   ],
+   "study": [
+    "masvs",
+    "security-tips"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "android-arch",
+   "title": "앱 아키텍처 가이드",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/topic/architecture?hl=ko",
+   "why": "자격요건 MVVM·클린 아키텍처 줄의 기준선. UI 층·데이터 층·도메인 층과 단방향 데이터 흐름을 구글 말로 정리했다."
+  },
+  {
+   "id": "ok-arch-book",
+   "title": "아키텍처를 알아야 앱 개발이 보인다",
+   "by": "옥수환 · 비제이퍼블릭 · 2020",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002986668",
+   "why": "Dagger2·Jetpack·RxJava 로 안드로이드 앱을 층으로 나누는 법을 한국어로 다룬다. 오래된 앱의 구조(Rx·Dagger)를 읽을 때도 도움이 된다."
+  },
+  {
+   "id": "nowinandroid",
+   "title": "Now in Android",
+   "by": "Android (GitHub)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/android/nowinandroid",
+   "why": "구글이 만든 예제 앱. 기능별 모듈 나누기·Compose·코루틴·시험·CI 설정이 한 저장소에 다 있어 '큰 앱은 이렇게 짠다'를 코드로 본다."
+  },
+  {
+   "id": "kotlin-in-action",
+   "title": "Kotlin in Action, Second Edition",
+   "by": "Sebastian Aigner · Roman Elizarov · Svetlana Isakova · Dmitry Jemerov · Manning · 2024",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.manning.com/books/kotlin-in-action-second-edition",
+   "why": "코틀린을 만든 쪽 사람들이 쓴 책. 2판에 코루틴·Flow 장이 새로 들어갔고, 자바와 섞어 쓰는 법도 다룬다(자격요건 Kotlin·Java 줄)."
+  },
+  {
+   "id": "kotlin-java-interop",
+   "title": "Calling Java from Kotlin",
+   "by": "JetBrains · Kotlin 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kotlinlang.org/docs/java-interop.html",
+   "why": "자바 코드를 코틀린에서 부를 때 생기는 플랫폼 타입·널 표시를 정리한 공식 문서. 자바가 남은 앱을 고칠 때 먼저 볼 곳."
+  },
+  {
+   "id": "coroutine-bp",
+   "title": "Android의 코루틴 권장사항",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/kotlin/coroutines/coroutines-best-practices?hl=ko",
+   "why": "업무⑤ API 연동에서 메인 스레드를 막지 않고, 디스패처를 주입하고, 취소를 다루는 법."
+  },
+  {
+   "id": "moskala-coroutines",
+   "title": "코틀린 코루틴",
+   "by": "마르친 모스카와 · 신성열 옮김 · 인사이트 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.yes24.com/Product/Search?query=%EC%BD%94%ED%8B%80%EB%A6%B0%20%EC%BD%94%EB%A3%A8%ED%8B%B4",
+   "why": "구조화된 동시성·취소·Flow 를 깊게. 검색 자동완성처럼 요청을 취소하고 다시 보내는 코드를 제대로 짜려면 필요하다."
+  },
+  {
+   "id": "compose-adopt",
+   "title": "팀을 위해 Compose 채택",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/develop/ui/compose/adopt?hl=ko",
+   "why": "기존 View 앱에 Compose 를 조금씩 넣는 방법. 우대사항 Compose 줄 — 오래된 앱에서 실제로 하는 일이 이것이다."
+  },
+  {
+   "id": "compose-perf",
+   "title": "Compose 성능 · 권장사항",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/develop/ui/compose/performance/bestpractices",
+   "why": "remember·지연 읽기·안정적인 키 같은, 쓸데없이 다시 그리지 않게 하는 규칙."
+  },
+  {
+   "id": "compose-internals-kr",
+   "title": "Jetpack Compose Internals (한국어판)",
+   "by": "Jorge Castillo · 번역 엄재웅·류기민 · Leanpub",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://leanpub.com/composeinternalskor",
+   "why": "컴파일러·런타임이 리컴포지션을 어떻게 하는지. 성능 문제를 원인까지 설명하고 싶을 때."
+  },
+  {
+   "id": "vitals-doc",
+   "title": "Android vitals",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/topic/performance/vitals",
+   "why": "크래시 1.09%·ANR 0.47% 기준과 기종별 기준, 하루 활성 사용자로 비율을 재는 법. 이 공고의 품질 줄 전부의 바탕."
+  },
+  {
+   "id": "anr-doc",
+   "title": "ANR 진단 및 수정",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/topic/performance/anrs/diagnose-and-fix-anrs?hl=ko",
+   "why": "우대사항 ANR 줄. 흔한 원인(메인 스레드 I/O·잠금·바인더 호출)과 스레드 덤프 읽는 법."
+  },
+  {
+   "id": "launch-time",
+   "title": "앱 시작 시간",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/topic/performance/vitals/launch-time?hl=ko",
+   "why": "콜드·웜·핫 시작의 차이와 재는 법, 느린 시작의 기준. 우대사항 성능 줄의 '앱 시작 속도'."
+  },
+  {
+   "id": "baseline-profiles",
+   "title": "기준 프로필 개요",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "https://developer.android.com/topic/performance/baselineprofiles/overview?hl=ko",
+   "why": "첫 실행·화면 전환을 빠르게 하는 기준 프로필을 만들고 재는 법(Macrobenchmark)."
+  },
+  {
+   "id": "location-perms",
+   "title": "위치 권한 요청",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/develop/sensors-and-location/location/permissions?hl=ko",
+   "why": "포그라운드·백그라운드 위치, 대략·정확 위치를 버전별로 묻는 순서. 우대사항 위치 줄과 업무③의 OS 차이."
+  },
+  {
+   "id": "target-sdk",
+   "title": "Google Play 대상 API 수준 요구사항",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/google/play/requirements/target-sdk?hl=ko",
+   "why": "해마다 대상 OS 를 올려야 하는 규칙. 업무③·자격요건 호환성 줄에서 '왜 해마다 바뀐 규칙을 맞추나'의 답."
+  },
+  {
+   "id": "play-rollout",
+   "title": "단계적 출시로 앱 업데이트 배포하기",
+   "by": "Play Console 고객센터",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://support.google.com/googleplay/android-developer/answer/6346149?hl=ko",
+   "why": "일부 사용자에게 먼저 내보내고 멈추는 법. 대규모 앱 출시·운영 줄의 기본 도구."
+  },
+  {
+   "id": "firebase-ab",
+   "title": "Firebase A/B Testing",
+   "by": "Firebase 공식 문서",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://firebase.google.com/docs/ab-testing?hl=ko",
+   "why": "앱에서 실험 갈래를 나눠 내려 주고 결과를 보는 대표 도구. 우대사항 A/B 줄."
+  },
+  {
+   "id": "masvs",
+   "title": "OWASP MASVS (Mobile Application Security Verification Standard)",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://mas.owasp.org/MASVS/",
+   "why": "모바일 앱 보안을 갈래별로 점검표처럼 정리한 국제 기준. 우대사항 보안 줄에서 '무엇을 지켜야 하나'의 목록."
+  },
+  {
+   "id": "security-tips",
+   "title": "보안 도움말",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/privacy-and-security/security-tips?hl=ko",
+   "why": "저장소·권한·컴포넌트 공개·네트워크를 안드로이드에서 안전하게 쓰는 구글 권장."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "코틀린과 자바 같이 읽기",
+   "time": "1~2주",
+   "goal": "자바로 된 화면 하나를 코틀린으로 옮기면서 동작이 바뀌지 않게 할 수 있다.",
+   "resources": [
+    "kotlin-in-action",
+    "kotlin-java-interop"
+   ],
+   "task": "자바로 쓴 작은 '즐겨찾기 목록' 화면(가상 데이터 20건)을 만든 뒤 코틀린으로 옮긴다. 옮기기 커밋과 기능 커밋을 나누고, 자바 쪽이 null 을 줄 때 터지는지 시험한다."
+  },
+  {
+   "title": "층 나누기와 비동기",
+   "time": "2~3주",
+   "goal": "UI·ViewModel·Repository 로 나눈 구조에서 검색 자동완성(디바운스·취소)을 만든다.",
+   "resources": [
+    "android-arch",
+    "ok-arch-book",
+    "coroutine-bp",
+    "moskala-coroutines"
+   ],
+   "task": "가상 장소 1,000개를 주는 로컬 가짜 서버를 두고, 글자를 칠 때 300ms 멈추면 요청·이전 요청 취소·불러오는 중/빈 결과/오류 상태를 sealed class 로 그리는 검색 화면을 만든다."
+  },
+  {
+   "title": "Compose 섞어 쓰기",
+   "time": "1~2주",
+   "goal": "XML 화면 안에 Compose 를 넣고, 다시 그리기 횟수를 재서 줄인다.",
+   "resources": [
+    "compose-adopt",
+    "compose-perf",
+    "nowinandroid"
+   ],
+   "task": "2단계 검색 결과 목록만 Compose 로 바꾸고(나머지는 XML), 레이아웃 검사기로 리컴포지션 횟수를 본 뒤 키·remember 로 줄인다."
+  },
+  {
+   "title": "위치와 백그라운드",
+   "time": "1~2주",
+   "goal": "포그라운드·백그라운드 위치를 버전별 순서로 묻고, 화면이 꺼져도 위치를 받는 서비스를 띄운다.",
+   "resources": [
+    "location-perms",
+    "target-sdk"
+   ],
+   "task": "가상 경로(좌표 50개)를 따라가며 지금 위치와 경로 사이 거리가 50m 를 넘으면 알림을 띄우는 '이탈 알림' 앱. 안드로이드 10·13·14 에뮬레이터에서 권한 흐름이 어떻게 다른지 기록한다."
+  },
+  {
+   "title": "품질 지표와 출시",
+   "time": "계속",
+   "goal": "시작 시간·ANR·크래시를 재고 고친 결과를 숫자로 말할 수 있다.",
+   "resources": [
+    "vitals-doc",
+    "anr-doc",
+    "launch-time",
+    "baseline-profiles",
+    "play-rollout",
+    "masvs"
+   ],
+   "task": "4단계 앱에 일부러 메인 스레드 파일 읽기를 넣어 ANR 을 만들고 스레드 덤프로 찾는다. 콜드 스타트를 Macrobenchmark 로 재고 기준 프로필을 넣어 전후를 비교한다. 마지막에 MASVS 저장·네트워크 항목으로 앱을 점검한다."
+  }
+ ],
+ "pay": {
+  "summary": "공시 숫자는 없다(비상장). 집계 사이트 기준 초봉 **약 4,793만원**, 평균 **약 7,049만원** — 이 자리는 5년 차 이상이라 처우 협의로 정한다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,793만원",
+    "amount": 4793,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 기준일 표기가 없고 직군 구분도 없다 [20]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "약 7,049만원",
+    "amount": 7049,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계(사원 수 359명으로 표시) — 경력직이 섞인 회사 전체 값이다 [20]"
+   }
+  ],
+  "how": "티맵모빌리티는 비상장사라 사업보고서의 직원 평균 급여 공시가 없다. 공고는 연봉을 적지 않았고, 전형이 서류 → 코딩테스트 → 1·2차 인터뷰 → 레퍼런스 체크 → **처우협의** 순서라 연봉은 마지막에 정한다 [1]. 집계 평균은 신입부터 섞인 값이라 5년 차 이상 경력직이 받는 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무 시간",
+    "detail": "4주 단위 160시간 안에서 스스로 계획, 매월 금요일 하루 쉬는 Happy Friday"
+   },
+   {
+    "name": "재택",
+    "detail": "주 1회"
+   },
+   {
+    "name": "휴가",
+    "detail": "연차 외 체력단련휴가 연 최대 5일, 사유·승인 없는 연차·반차·반반차"
+   },
+   {
+    "name": "장기 근속",
+    "detail": "재직 3년마다 30일 유급 휴가"
+   },
+   {
+    "name": "복리후생비",
+    "detail": "연 360만원(IT 기기·교육·여행·운동·가족 건강검진·휴양소 등)"
+   },
+   {
+    "name": "건강",
+    "detail": "협약 건강검진 연 40만원 한도, 본인·배우자·자녀·양가 부모 의료비, 독감 예방접종비"
+   },
+   {
+    "name": "교육",
+    "detail": "직무 교육비 연 100만원까지"
+   },
+   {
+    "name": "통신비",
+    "detail": "SKT 이용자 월 최대 10만원"
+   },
+   {
+    "name": "포인트",
+    "detail": "생일 TMAP Point 10만, 농수산물 '자연이랑' 연 60만 포인트"
+   },
+   {
+    "name": "가족·주거",
+    "detail": "자녀 학자금, 금융기관 대출 이자 일부 지원"
+   },
+   {
+    "name": "사내",
+    "detail": "헬스키퍼 안마 월 4회, 라운지·휴게실·수면실·폰부스, 최신형 업무 장비·허먼밀러 의자, AI 도구(ChatGPT·Gemini·Claude·Codex)"
+   }
+  ],
+  "note": "이 공고의 '혜택 및 복지' 칸이다(2026년 10월 게시) [1]. 정규직 전체 기준으로 읽히지만 적용 조건은 처우 협의 때 확인한다 {추론}. 모든 직무에 3개월 시용기간이 있고 그 동안 급여는 100% 준다고 적혀 있다 [1]."
+ },
+ "location": {
+  "name": "티맵모빌리티 본사 (SK-C타워)",
+  "address": "서울특별시 중구 충무로 15, SK-C타워 7-9층",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%A4%91%EA%B5%AC%20%EC%B6%A9%EB%AC%B4%EB%A1%9C%2015",
+  "note": "원티드 공고의 근무지 표기다 [1]. 사옥 취재 기사도 중구 SKC 타워 7~9층이라고 적었다 [21]. 우편번호는 확인하지 못했다."
+ },
+ "fit": {
+  "good": [
+   "내가 만든 기능을 수백만 명이 매일 쓰는 걸 보고 싶은 사람[7][8]",
+   "기종·OS 마다 다른 이상한 버그를 끝까지 파는 게 즐거운 사람",
+   "고객 불만을 읽고 '이건 이렇게 고치면 된다'를 먼저 말하는 사람[1]",
+   "오래된 코드를 망가뜨리지 않고 조금씩 새 구조로 옮기는 일을 좋아하는 사람 {추론}"
+  ],
+  "hard": [
+   "20년 넘은 서비스라 자바·옛 구조가 남아 있을 가능성이 크다[1] {추론}",
+   "지도·경로 엔진은 다른 자리 몫이라, 내비 알고리즘을 직접 하고 싶다면 Navigation SDK 자리가 더 맞다[5]",
+   "사용자가 많아 배포 하나에도 검증·단계적 출시가 따라붙는다[18]",
+   "코딩테스트가 전형에 있다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "특정 기종에서만 크래시가 몰린다면 어떻게 원인을 찾겠어요?",
+   "a": "플레이가 기종별 기준(8%)을 따로 보는 이유와 업무③.[10]"
+  },
+  {
+   "q": "ANR 이 난 스레드 덤프를 받았어요. 무엇부터 보나요?",
+   "a": "메인 스레드가 무엇을 기다리는지 — 흔한 원인 목록.[11]"
+  },
+  {
+   "q": "길 안내 중 화면을 꺼도 위치를 받으려면 무엇이 필요하고, 안드로이드 10·11·14 에서 무엇이 달라졌나요?",
+   "a": "백그라운드 위치 권한과 위치용 포그라운드 서비스.[14][26]"
+  },
+  {
+   "q": "검색 자동완성에서 빨리 치면 결과 순서가 뒤집히는 문제를 어떻게 막겠어요?",
+   "a": "이전 요청 취소·디바운스 — 업무⑤ API 연동.[27]"
+  },
+  {
+   "q": "자바 화면을 코틀린·Compose 로 옮길 때, 기능을 안 깨뜨리는 순서는?",
+   "a": "자바 코드 유지보수 요건과 Compose 섞어 쓰기.[15][24]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · [티맵모빌리티] Client Engineer (Android)",
+   "url": "https://www.wanted.co.kr/wd/393102",
+   "kind": "posting",
+   "date": "2026-10",
+   "note": "이 공고 — 회사 소개·업무·요건·우대·복지·전형(서류 → 코딩테스트 → 1·2차 인터뷰 → 레퍼런스 체크 → 처우협의), 근무지 충무로 15"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · [티맵모빌리티] Client Engineer (Android) (마감된 앞 공고)",
+   "url": "https://www.wanted.co.kr/wd/379430",
+   "kind": "posting",
+   "note": "같은 자리의 앞선 공고 — 내용이 거의 같다"
+  },
+  {
+   "n": 3,
+   "title": "원티드 · [티맵모빌리티] Client Engineer (iOS)",
+   "url": "https://www.wanted.co.kr/wd/393103",
+   "kind": "posting",
+   "note": "같은 TMAP 앱의 iOS 자리 — VOC·API 연동·MVVM 줄이 같다"
+  },
+  {
+   "n": 4,
+   "title": "원티드 · [티맵모빌리티] Android SDK Engineer",
+   "url": "https://www.wanted.co.kr/wd/378307",
+   "kind": "posting",
+   "note": "지도·내비게이션 SDK, AAOS 대응, MVVM·클린 아키텍처"
+  },
+  {
+   "n": 5,
+   "title": "원티드 · [티맵모빌리티] Navigation SDK Engineer",
+   "url": "https://www.wanted.co.kr/wd/393106",
+   "kind": "posting",
+   "note": "내비게이션 SDK·Android Auto/CarPlay — 경로·지도 쪽은 이 자리 몫"
+  },
+  {
+   "n": 6,
+   "title": "원티드 · [티맵모빌리티] Client Engineer (Android) – TMAP AUTO 개발",
+   "url": "https://www.wanted.co.kr/wd/399666",
+   "kind": "posting",
+   "note": "차량용(AAOS) 안드로이드 자리 — Compose·테스트·CI/CD 우대"
+  },
+  {
+   "n": 7,
+   "title": "한국경제 · AI 서비스 품은 티맵…月이용자 1500만명 돌파",
+   "url": "https://www.hankyung.com/article/2026030238721",
+   "kind": "news",
+   "date": "2026-03",
+   "note": "2025년 MAU 1,500만 명 돌파, 역대 최대"
+  },
+  {
+   "n": 8,
+   "title": "바이라인네트워크 · 티맵, 월평균 방문 4억4600만회…차량 탑재 115만대 돌파",
+   "url": "https://byline.network/2026/10/21_2018283/",
+   "kind": "news",
+   "date": "2026-10-21",
+   "note": "2026년 1~9월 1인당 월 30회 방문(전년 27회), 콘텐츠 소비 두 배, TMAP AUTO 115만 대"
+  },
+  {
+   "n": 10,
+   "title": "Android vitals",
+   "url": "https://developer.android.com/topic/performance/vitals",
+   "kind": "reference",
+   "note": "체감 크래시 1.09%·ANR 0.47%, 기종별 8%, 하루 활성 사용자 기준"
+  },
+  {
+   "n": 11,
+   "title": "Android Developers · ANR 진단 및 수정",
+   "url": "https://developer.android.com/topic/performance/anrs/diagnose-and-fix-anrs",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "Android Developers · 앱 아키텍처 가이드",
+   "url": "https://developer.android.com/topic/architecture",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "Android Developers · 앱 시작 시간",
+   "url": "https://developer.android.com/topic/performance/vitals/launch-time",
+   "kind": "reference",
+   "note": "콜드 5초·웜 2초·핫 1.5초 이상을 지나치게 느린 시작으로 본다"
+  },
+  {
+   "n": 14,
+   "title": "Android Developers · 위치 권한 요청",
+   "url": "https://developer.android.com/develop/sensors-and-location/location/permissions",
+   "kind": "reference",
+   "note": "안드로이드 10 백그라운드 위치 별도 권한, 11 설정 화면으로 보내기"
+  },
+  {
+   "n": 15,
+   "title": "Android Developers · 팀을 위해 Compose 채택",
+   "url": "https://developer.android.com/develop/ui/compose/adopt",
+   "kind": "reference",
+   "note": "기존 View 와 상호 운용 — 앱 전체를 다시 쓰지 않아도 된다"
+  },
+  {
+   "n": 16,
+   "title": "OWASP MASVS",
+   "url": "https://mas.owasp.org/MASVS/",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Android Developers · 보안 도움말",
+   "url": "https://developer.android.com/privacy-and-security/security-tips",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Play Console 고객센터 · 단계적 출시",
+   "url": "https://support.google.com/googleplay/android-developer/answer/6346149",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Firebase A/B Testing",
+   "url": "https://firebase.google.com/docs/ab-testing",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "자소설닷컴 · 티맵모빌리티 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11668",
+   "kind": "reference",
+   "note": "기준일 표기 없음 — 같은 회사의 보안 기술 엔지니어 풀이(2026-11-23)에서 확인한 값"
+  },
+  {
+   "n": 21,
+   "title": "머니투데이 · [IT사파] 티맵모빌리티, 왜 사옥에 엔진을 심었을까",
+   "url": "https://www.mt.co.kr/tech/2026/01/19/2026011615574546384",
+   "kind": "news",
+   "date": "2026-01-19",
+   "note": "사옥(중구 SKC 타워 7~9층) 취재"
+  },
+  {
+   "n": 22,
+   "title": "Android Developers · Google Play 대상 API 수준 요구사항",
+   "url": "https://developer.android.com/google/play/requirements/target-sdk",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Android Developers · 기준 프로필 개요",
+   "url": "https://developer.android.com/topic/performance/baselineprofiles/overview",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "Kotlin 문서 · Calling Java from Kotlin",
+   "url": "https://kotlinlang.org/docs/java-interop.html",
+   "kind": "reference",
+   "note": "플랫폼 타입·널 표시"
+  },
+  {
+   "n": 25,
+   "title": "Android Developers · Android 15 동작 변경사항(타깃 앱) — 더 넓은 화면 기본 적용",
+   "url": "https://developer.android.com/about/versions/15/behavior-changes-15",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "Android Developers · 포그라운드 서비스 유형",
+   "url": "https://developer.android.com/develop/background-work/services/fgs/service-types",
+   "kind": "reference",
+   "note": "안드로이드 14 부터 서비스 유형 선언 필수 — location"
+  },
+  {
+   "n": 27,
+   "title": "Android Developers · Android의 코루틴 권장사항",
+   "url": "https://developer.android.com/kotlin/coroutines/coroutines-best-practices",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "잡코리아 · [티맵모빌리티] QA Automation Engineer",
+   "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50073105",
+   "kind": "posting",
+   "note": "같은 회사의 QA 자동화 자리"
+  },
+  {
+   "n": 29,
+   "title": "GitHub · android/nowinandroid",
+   "url": "https://github.com/android/nowinandroid",
+   "kind": "reference",
+   "note": "구글 예제 앱 — 기능별 모듈 구조"
+  },
+  {
+   "n": 30,
+   "title": "Android Developers · Compose 성능 권장사항",
+   "url": "https://developer.android.com/develop/ui/compose/performance/bestpractices",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "티맵모빌리티의 안드로이드 앱 팀이 직접 쓴 기술 블로그·컨퍼런스 발표는 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고와 같은 회사의 iOS·SDK·TMAP AUTO·QA 공고, 이용자 수 기사뿐이고, 앱이 어떤 구조·라이브러리로 되어 있는지, 자바가 얼마나 남았는지, Compose 를 쓰는지는 공개되지 않았습니다. 그 부분은 구글 안드로이드 공식 문서와 OWASP 기준으로 '보통 이런 일'을 보였고 {추론} 으로 표시했습니다."
+}
