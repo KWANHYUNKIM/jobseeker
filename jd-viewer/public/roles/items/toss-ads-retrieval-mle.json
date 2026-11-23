@@ -1,0 +1,919 @@
+{
+ "id": "toss-ads-retrieval-mle",
+ "company": "토스",
+ "role": "ML 엔지니어 (Ads Retrieval)",
+ "team": "Applied AI Chapter · 광고 도메인",
+ "jobs": [
+  "ats-toss:group:7998953003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "토스 안 상품광고의 **맨 앞 단계** — 수백만 상품 중 이 사용자에게 보일 만한 광고 후보를 여러 갈래(Retrieval Source)로 건져 내고, 가벼운 랭커(Light Ranker)로 추려 최종 랭커에 넘기는 모델과 시스템을 만듭니다. 새 상품이 노출 기회를 얻게 하는 cold-start도 이 자리 몫입니다.[1]",
+  "env": "Applied AI Chapter 소속으로 광고 도메인에 배치되고, PO·MLE·분석가·서버 개발자가 한 팀입니다.[1] 뒤에서 정밀하게 줄 세우는 Ads Ranking, 입찰·예산의 Ads Bidding & Pacing 자리가 따로 있습니다.[2][3] 토스 쇼핑 추천은 Retrieval → Ranking → Re-ranking 구조입니다.[5]",
+  "oneline": "광고 줄 세우기의 입구 — '빠뜨리지 않기'와 '시간 안에 찾기'를 같이 잡는 후보 생성 ML 엔지니어."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "**방대한 상품 카탈로그에서 사용자에게 적합한 광고 후보를 찾아요.** 다양한 Retrieval Source를 만들고 개선하며, 기존 추천이 놓치던 상품과 사용자의 연결을 넓혀요.",
+   "short": "수백만 상품 중 이 사람에게 보일 만한 광고 상품 수천 개를 여러 갈래로 빠르게 건져 내는 일.",
+   "why": "토스 쇼핑은 수백만 사용자와 수백만 상품을 다루고, 맨 앞 Retrieval(후보 찾기) 단계가 수천 개 후보를 뽑아 뒤 단계로 넘깁니다.[5] 뒤의 랭킹 모델은 넘겨받은 후보 안에서만 고를 수 있어서, 여기서 빠진 상품은 아무리 잘 맞아도 광고로 보이지 않습니다. {추론} 공고가 '기존 추천이 놓치던 연결을 넓힌다'고 쓴 이유입니다.[1]",
+   "actually": {
+    "intro": "토스 쇼핑 글이 든 후보 찾기 방법과, 여러 갈래(Retrieval Source)를 두는 보통의 모습입니다.",
+    "items": [
+     "**투타워(Two-Tower)** — 사용자 탑과 상품 탑이 각각 벡터를 만들고, 두 벡터의 내적이 큰 상품을 벡터 검색으로 찾는다.[5]",
+     "**그래프** — '함께 본·함께 산' 관계를 그래프로 보고 GNN으로 상품 벡터를 만든다. 토스 글은 GraphSAGE·PinSage·LightGCN을 들었다.[5][21]",
+     "**시퀀스** — 최근에 본 상품 순서로 다음에 볼 상품을 맞힌다(SASRec·BERT4Rec).[5][22]",
+     "**규칙 갈래** — 인기 상품, 같은 카테고리, 신상품 몫처럼 모델이 아닌 갈래도 흔히 같이 둔다. {추론}",
+     "**합치기** — 갈래마다 몇 개씩 받을지 정하고 겹친 것은 하나로 합친다. 토스 글은 합치는 방법은 밝히지 않았다.[5] {추론}"
+    ]
+   },
+   "how_far": "광고 쪽 **후보 생성 전체**가 이 자리입니다 — 후보를 받아 정밀하게 줄 세우는 일은 Ads Ranking, 입찰·예산은 Ads Bidding & Pacing 자리가 따로 맡습니다.[2][3] 최소선은 갈래 하나(예: 투타워)를 직접 학습해 서빙하고, 갈래를 더했을 때 재현율이 얼마나 오르는지 숫자로 말할 수 있는 것입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    5,
+    21,
+    22
+   ],
+   "study": [
+    "toss-reco",
+    "youtube-dnn",
+    "pinsage",
+    "sasrec"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "**Retrieval과 Light Ranker의 후보 품질을 높여요.** 제한된 응답 시간 안에서 좋은 후보를 확보하고, 최종 랭커가 더 좋은 선택을 할 수 있도록 후보 생성과 선별 구조를 개선해요.",
+   "short": "정해진 몇십 ms 안에 좋은 후보를 건지고, 가벼운 랭커가 최종 랭커가 좋아할 것을 남기게 만드는 일.",
+   "why": "모든 상품을 무거운 모델로 채점할 수 없어서 단계를 나눕니다 — 앞 단계일수록 다루는 상품이 많아 빨라야 합니다.[5][7] 토스 MLE는 사용자가 기다려 주지 않는 서비스라 빠른 응답과 한정된 자원 안의 서빙을 먼저 고려했다고 발표했습니다.[6] 같은 광고 도메인의 Ranking 공고는 Retrieval·Light Ranker에서 온 후보를 '최종 랭킹의 목적에 맞게' 다듬는 일을 따로 뽑습니다.[2]",
+   "flows": [
+    {
+     "caption": "광고 한 번 노출까지 {추론}[5][2]",
+     "steps": [
+      "Retrieval · 카탈로그 전체 → 수천 개(투타워·그래프·시퀀스·규칙 갈래)",
+      "Light Ranker · 가벼운 모델로 수백 개로",
+      "Final Ranker · pCTR·pCVR 정밀 예측",
+      "Calibration · Value Model · 확률 보정 + 입찰을 한 점수로",
+      "Re-ranking · 광고·일반 상품 섞기"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "actually": {
+    "items": [
+     "**시간 예산 나누기** — 갈래마다, 단계마다 쓸 수 있는 시간을 정한다. 알리바바 광고는 가벼운 1차 랭커를 계산 비용까지 같이 설계했다.[12]",
+     "**미리 계산해 두기** — 상품 벡터는 미리 만들어 두고 요청 때는 사용자 벡터만 계산해 근사 최근접 검색(ANN)으로 찾는다.[7][11]",
+     "**후보 재현율** — 최종 랭커가 높게 매겼을 상품이 앞 단계에서 얼마나 잘렸나를 잰다. {추론}",
+     "**Light Ranker 맞추기** — 가벼운 랭커가 최종 랭커의 점수·순서를 따라 배우게 해 두 단계가 같은 방향을 보게 한다.[12] {추론}",
+     "**토스의 두 길** — 미리 계산해 저장소(Redis·Phoenix)에서 꺼내는 배치 추론과, 피처 스토어·ONNX Runtime으로 요청 때 계산하는 실시간 추론을 섞어 쓴다.[6]"
+    ]
+   },
+   "how_far": "후보 생성과 Light Ranker까지가 이 자리이고, 최종 랭커 자체는 Ads Ranking 몫입니다.[1][2] 최소선은 '후보 수를 두 배로 늘리면 지연은 얼마 늘고 재현율은 얼마 오르나'를 재서 선을 정할 수 있는 것입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    5,
+    6,
+    7,
+    11,
+    12
+   ],
+   "study": [
+    "youtube-dnn",
+    "cold",
+    "faiss",
+    "slash24-reco"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "**신규 상품과 행동 데이터가 부족한 상품의 Cold-start 문제를 풀어요.** 상품의 가능성을 발견하고 적절한 노출 기회를 제공하면서, 사용자 경험과 광고 성과를 함께 높여요.",
+   "short": "아직 아무도 안 눌러 본 새 상품에도 노출 기회를 나눠 주고, 반응을 보며 몫을 늘리거나 줄이는 일.",
+   "why": "행동 데이터로 배우는 모델은 데이터가 없는 상품을 잘 못 고르고, 안 고르면 데이터가 계속 안 쌓입니다. 같은 커머스의 Data Graph 공고는 이것을 cold item의 악순환이라고 불렀습니다.[4] 토스 쇼핑은 새 상품이 빠르게 등록되는 서비스여서 첫 추천부터 cold-start 완화를 조건으로 두었고, 재정렬 단계에서도 신상품을 일정 비율 넣습니다.[6][5] 광고에서는 광고비를 낸 새 상품이 노출을 못 받으면 광고주 성과도 없습니다. {추론}",
+   "actually": {
+    "intro": "토스 커머스가 발표한 방법입니다.[6]",
+    "items": [
+     "**코호트 밴딧** — 고객을 연령·성별 등으로 묶은 코호트마다 Thompson Sampling 밴딧을 돌려, 잘 팔리는 상품을 쓰면서(활용) 새 상품도 시도한다(탐색).[6][13]",
+     "**신뢰구간 하한으로 거르기** — 상품이 늘자 앞에 필터 층을 뒀다. 날 구매율 대신 신뢰구간 하한(LCB)을 써서 노출이 충분히 쌓여 믿을 만한 상품을 고른다.[6][14]",
+     "**신상품 무작위 노출** — 하한으로만 거르면 새 상품이 빠지니, 신상품을 무작위로 뽑아 노출하는 몫을 따로 넣었다.[6]",
+     "**콘텐츠로 출발** — 상품 탑에 브랜드·카테고리와 글·이미지에서 미리 뽑은 벡터를 넣어, 클릭이 없는 상품도 벡터를 갖게 했다.[6]",
+     "**데이터 적은 고객** — 행동이 적은 고객은 데이터 많은 고객으로 만든 코호트에 다시 배정해 그 반응을 빌려 쓴다.[6]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "날 구매율 대신 신뢰구간 하한으로 거르기 (직접 돌린 출력, 가상 숫자)",
+     "body": "노출 20번에 한 번 팔린 새 상품 C는 날 구매율로는 1등이지만, 하한으로는 노출이 충분한 B 아래로 내려갑니다. 데이터가 없는 D는 하한이 0이라 따로 탐색 몫을 줘야 기회를 얻습니다.[6][14]",
+     "lang": "python",
+     "code": "# 새 상품 거르기: 날 구매율 대신 윌슨 신뢰구간 하한(LCB) (가상 숫자)\nimport math\n\ndef wilson_lcb(k, n, z=1.96):\n    if n == 0:\n        return 0.0\n    p = k / n\n    c = p + z * z / (2 * n)\n    m = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n))\n    return max(0.0, (c - m) / (1 + z * z / n))\n\nitems = [  # 상품, 노출, 구매\n    (\"오래된 A\", 10_000, 200),\n    (\"오래된 B\", 2_000, 60),\n    (\"새 상품 C\", 20, 1),\n    (\"새 상품 D\", 5, 0),\n]\nfor rule in (\"날 구매율\", \"하한\"):\n    key = (lambda r: r[2] / r[1]) if rule == \"날 구매율\" else (lambda r: wilson_lcb(r[2], r[1]))\n    order = sorted(items, key=lambda r: -key(r))\n    print(f\"{rule}: \" + \" > \".join(f\"{r[0]}({key(r):.2%})\" for r in order))\n# 날 구매율 은 노출 20번에 1번 산 C 를 1등으로, 하한 은 노출이 충분한 B 를 1등으로 세운다.\n# 데이터가 없는 D 는 하한이 0 — 그래서 새 상품에는 따로 노출 몫(탐색)을 준다.\n# 날 구매율: 새 상품 C(5.00%) > 오래된 B(3.00%) > 오래된 A(2.00%) > 새 상품 D(0.00%)\n# 하한: 오래된 B(2.34%) > 오래된 A(1.74%) > 새 상품 C(0.89%) > 새 상품 D(0.00%)"
+    }
+   ],
+   "how_far": "새 상품에 몫을 얼마나 줄지는 사용자 경험·광고 성과의 맞교환이라 PO·분석가와 실험으로 정합니다.[1] {추론} 이 자리는 탐색 방법을 만들고 노출 배분 실험을 설계·해석하는 쪽입니다(우대④가 '실험을 주도'라고 적었다).[1]",
+   "refs": [
+    1,
+    4,
+    5,
+    6,
+    13,
+    14
+   ],
+   "study": [
+    "slash24-reco",
+    "ts-tutorial",
+    "linucb"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "**후보 품질의 개선을 실제 성과로 연결해요.** 어떤 상품이 후보에서 누락되고 어떤 후보가 성과에 기여하는지 분석하고, 실험을 통해 추천과 광고 성과를 개선해요.",
+   "short": "산 상품이 후보에 있었나, 어느 갈래가 실제 클릭·구매를 냈나를 세어 보고 A/B로 확인하는 일.",
+   "why": "후보 단계의 개선은 최종 성과까지 몇 단계를 거쳐야 보여서 바로 드러나지 않습니다. {추론} 그래서 공고가 '누락'과 '기여'를 따로 분석하라고 적었습니다.[1] 로그에는 옛 시스템이 보여 준 상품의 반응만 남아, 오프라인 숫자만으로는 새 후보가 좋은지 알기 어렵습니다.[16] 토스 커머스도 추천 성과를 A/B 테스트로 확인했습니다.[6]",
+   "actually": {
+    "items": [
+     "**누락 분석** — 실제로 클릭·구매된 광고 상품이 그 요청의 후보에 있었나(후보 재현율). 없었다면 어느 갈래가 찾을 수 있었나. {추론}",
+     "**기여 분석** — 최종 노출·클릭·구매가 어느 갈래에서 왔나, 그 갈래만 낸 후보가 얼마인가. {추론}",
+     "**빼기 실험** — 갈래 하나를 빼고 재현율·성과가 얼마나 떨어지나를 오프라인과 A/B로 본다. {추론}",
+     "**실험 읽기** — 표본 비율 어긋남(SRM), 지표 묶음(광고 매출·클릭·사용자 경험).[17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "갈래별 기여·중복·빼기 실험 (직접 돌린 출력, 가상 숫자)",
+     "body": "후보를 가장 많이 내는 투타워를 빼도 재현율이 그대로입니다 — 투타워가 맞힌 정답은 다른 갈래도 냈기 때문입니다. 후보는 적어도 혼자만 정답을 낸 '함께본'·'신상품'은 빼면 재현율이 떨어집니다. 상품 14는 어느 갈래도 못 찾았으니 새 갈래가 필요한 자리입니다.",
+     "lang": "python",
+     "code": "# 여러 Retrieval Source 의 기여도·중복·커버리지 (가상 숫자)\nsources = {\n    \"투타워\": {1, 2, 3, 4, 5, 6, 7, 8},\n    \"함께본\": {2, 3, 4, 9, 10},\n    \"인기\":   {1, 2, 3, 11},\n    \"신상품\": {12, 13},\n}\nbought = {2, 4, 9, 12, 14}  # 실제로 산 광고 상품(정답)\nunion = set().union(*sources.values())\nprint(f\"후보 합 {len(union)}개, 재현율 {len(bought & union)}/{len(bought)}\")\nfor name, s in sources.items():\n    others = set().union(*(v for k, v in sources.items() if k != name))\n    only = s - others\n    print(f\"{name} 후보 {len(s)} 정답 {len(s & bought)} 혼자만 낸 후보 {len(only)} 혼자만 맞힌 정답 {len(only & bought)}\")\nfor name in sources:  # 소스 하나를 빼 보기\n    rest = set().union(*(v for k, v in sources.items() if k != name))\n    print(f\"{name} 빼면 재현율 {len(bought & rest)}/{len(bought)}\")\nprint(\"아무 소스도 못 찾은 정답:\", bought - union)\n# 후보 합 13개, 재현율 4/5\n# 투타워 후보 8 정답 2 혼자만 낸 후보 4 혼자만 맞힌 정답 0\n# 함께본 후보 5 정답 3 혼자만 낸 후보 2 혼자만 맞힌 정답 1\n# 인기 후보 4 정답 1 혼자만 낸 후보 1 혼자만 맞힌 정답 0\n# 신상품 후보 2 정답 1 혼자만 낸 후보 2 혼자만 맞힌 정답 1\n# 투타워 빼면 재현율 4/5\n# 함께본 빼면 재현율 3/5\n# 인기 빼면 재현율 4/5\n# 신상품 빼면 재현율 3/5\n# 아무 소스도 못 찾은 정답: {14}"
+    }
+   ],
+   "how_far": "분석과 실험 설계·해석을 MLE가 직접 합니다 — 같은 팀에 분석가가 있지만 공고는 분석부터 개선까지를 이 자리에 기대합니다.[1] 최소선은 위와 같은 갈래별 표를 실제 로그로 만들고, 그 표로 다음 실험을 고를 수 있는 것입니다. {추론}",
+   "refs": [
+    1,
+    6,
+    16,
+    17
+   ],
+   "study": [
+    "kohavi-ko",
+    "ultr",
+    "dmls-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "**추천, 검색 또는 광고 서비스에서 후보 생성이나 선별 모델을 직접 개발한 경험이 필요해요.** Retrieval이나 Light Ranker 등 관련 모델을 학습하고, 서비스 적용에 필요한 코드를 직접 구현해 본 분을 찾고 있어요.",
+   "short": "후보 생성·1차 선별 모델을 남이 만든 걸 돌린 게 아니라, 직접 학습하고 서빙 코드까지 짜 본 사람이라서.",
+   "why": "후보 모델은 학습만으로 끝나지 않습니다 — 상품 벡터를 미리 만들어 색인에 넣고, 요청 때 사용자 벡터를 계산해 시간 안에 찾는 코드까지 있어야 서비스가 됩니다.[7][11] 토스 커머스는 학습은 Hadoop·Spark·Airflow, 서빙은 Spring·Java와 ONNX Runtime으로 나눠 만들었다고 발표했습니다.[6]",
+   "actually": {
+    "items": [
+     "**투타워 학습** — 사용자 쪽(클릭·결제·검색 이력)과 상품 쪽(브랜드·카테고리·글·이미지 벡터) 입력으로 두 탑을 학습.[6]",
+     "**색인 만들기** — 상품 벡터를 주기적으로 다시 만들고 ANN 색인(HNSW·IVF 등)을 갈아 끼운다.[10][11]",
+     "**요청 때** — 사용자 벡터 계산 → 색인 검색 → 갈래 합치기 → Light Ranker.[7] {추론}",
+     "**Light Ranker** — 피처를 적게 쓰는 작은 모델로 수천 개를 수백 개로.[12]"
+    ]
+   },
+   "how_far": "'직접 구현'이라 라이브러리 모델을 돌려 본 수준이 아니라 **학습 → 색인 → 서빙 → 성과 확인**을 한 바퀴 돈 경험입니다.[1] 경력 연차는 공고에 없습니다.",
+   "refs": [
+    1,
+    6,
+    7,
+    10,
+    11,
+    12
+   ],
+   "study": [
+    "slash24-reco",
+    "youtube-dnn",
+    "faiss",
+    "dmls-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "**학습 데이터부터 후보 품질까지 함께 다룰 수 있는 분이면 좋아요.** 사용자 행동과 상품 데이터로 학습셋을 구성하고, 모델의 성능을 평가하고 추적한 경험을 중요하게 생각해요. 최종 랭커의 목적을 고려해 후보 생성과 선별 방식을 개선해 본 분을 찾고 있어요.",
+   "short": "후보 모델은 '무엇을 정답·오답으로 줄지'가 성능을 정해서, 학습셋 설계부터 평가 추적까지 맡아야 해서.",
+   "why": "토스 커머스 발표는 '산 상품 = 정답, 보였지만 안 산 상품 = 오답'으로 두면 노출 데이터가 시끄럽고, 많이 노출되는 인기 상품이 오히려 불이익을 받는다고 짚었습니다.[6] 그래서 오답을 뽑는 방식을 바꿨습니다.[6] 또 이 자리의 후보는 최종 랭커가 고를 재료라, 후보가 최종 랭커의 목적(클릭·구매·광고 가치)과 같은 쪽을 보는지 계속 재야 합니다.[1][2]",
+   "actually": {
+    "items": [
+     "**Mixed Random Sampling** — 토스는 오답을 전체 상품에서 무작위로 뽑은 것(재현율을 올림)과 같은 배치의 다른 정답에서 뽑은 것(다양성을 올림)을 섞었다(예: 1:1).[6] 구글이 발표한 Mixed Negative Sampling과 같은 생각이다.[9]",
+     "**인기 편향 보정** — 배치 안 오답은 인기 상품일수록 자주 뽑혀 벌을 많이 받는다. 뽑힐 확률의 로그(logQ)를 빼서 맞춘다 — 토스 슬라이드도 logQ 보정을 적었다.[6][8]",
+     "**평가** — 그 시점 뒤의 실제 클릭·구매로 Recall@K(정답이 상위 K 후보에 들었나)를 재고, 갈래별·신상품별로 나눠 본다. {추론}",
+     "**누수 막기** — 학습 기간 뒤에 생긴 행동을 피처에 넣지 않는다.[18]",
+     "**최종 랭커와 맞추기** — 후보 중 최종 랭커가 높게 매길 비율을 재고, 필요하면 최종 랭커 점수를 학습 신호로 쓴다.[12] {추론}"
+    ]
+   },
+   "how_far": "학습셋 구성·평가 지표·추적을 스스로 정하는 수준입니다.[1] 최소선은 오답 뽑는 방식을 바꿨을 때 Recall@K와 인기 상품 쏠림이 어떻게 달라지는지 보일 수 있는 것입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    6,
+    8,
+    9,
+    12,
+    18
+   ],
+   "study": [
+    "mns",
+    "logq",
+    "slash24-reco",
+    "dmls-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "**Problem Solver를 찾고 있어요.** 데이터로 문제를 정의하고, 직접 구현과 실험을 반복하며 개선을 만들어 본 분이면 좋아요. 오프라인 평가와 A/B 실험 결과를 해석하고, 다음 가설과 실행으로 연결한 경험을 중요하게 생각해요.",
+   "short": "정해진 과제를 받는 게 아니라 '무엇이 문제인가'부터 데이터로 정하고 실험을 돌려야 해서.",
+   "why": "광고 도메인 팀은 PO·MLE·분석가·서버 개발자가 한 팀으로 작은 스타트업처럼 일한다고 공고가 소개합니다.[1] 이 줄은 광고 도메인 MLE 공고 셋에 똑같이 들어 있습니다.[1][2][3] 토스 커머스도 무거운 모델을 처음부터 만들기보다 빠르게 적용하고 실험으로 고쳐 가는 과정을 중요하게 봤다고 발표했습니다.[6]",
+   "actually": {
+    "items": [
+     "**문제 정의** — '새 상품 광고 매출이 낮다' → 후보에 새 상품이 몇 %나 드나 → 0%에 가깝다면 후보 문제로 정의. {추론}",
+     "**가설 → 실험** — 바꿀 것 하나, 볼 지표, 기간, 표본 수를 미리 정한다.[17]",
+     "**오프라인과 온라인** — 후보 재현율이 올랐는데 성과가 그대로면, 최종 랭커가 새 후보를 안 고르는지·노출 편향인지 순서대로 본다.[16] {추론}",
+     "**면접** — 직무 인터뷰는 심층 기술 면접과 ML 시스템 설계로 진행된다.[1]"
+    ]
+   },
+   "how_far": "실험 하나를 끝까지 돌리고, 결과가 기대와 달랐을 때 **다음 실험으로 무엇을 했는지** 이야기할 수 있으면 됩니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    6,
+    16,
+    17
+   ],
+   "study": [
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "**커머스 상품 카탈로그에서 Retrieval을 개발한 경험**이 있으면 좋아요.",
+   "short": "상품 카탈로그는 상품 수가 많고 매일 새로 들어오고 같은 상품이 여러 판매자에 흩어져 있어서.",
+   "why": "토스 쇼핑은 수백만 상품을 다루고[5] 새 상품이 빠르게 등록됩니다.[6] 토스애즈는 앱 안 탐색부터 토스페이 결제까지 잇는 커머스 광고 '바이 앳 토스'를 내놓았고[20], 광고주에게는 구매 확률로 보여 줄 사람을 고른다고 소개합니다.[19] 광고 후보도 이 카탈로그 위에서 찾게 됩니다. {추론}",
+   "actually": {
+    "items": [
+     "**규모** — 상품 벡터 수백만 개를 매일 다시 만들고 색인을 갈아 끼운다. {추론}",
+     "**새 상품** — 등록 당일에는 행동 데이터가 없어 글·이미지·카테고리 벡터로 출발한다.[6]",
+     "**광고 대상만** — 광고를 켠 상품·예산이 남은 상품만 후보가 되도록 걸러야 한다. {추론}",
+     "**다른 회사 예** — Pinterest는 수십억 개 핀을 그래프 임베딩으로 표현해 후보 찾기에 썼다.[21]"
+    ]
+   },
+   "refs": [
+    5,
+    6,
+    19,
+    20,
+    21
+   ],
+   "study": [
+    "toss-reco",
+    "pinsage"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "다양한 Retrieval Source를 직접 만들고, 각 Source의 기여도와 중복, 커버리지를 분석해 조합을 개선한 경험이 있으면 좋아요.",
+   "short": "갈래마다 '얼마나 새 정답을 더하나 · 다른 갈래와 얼마나 겹치나 · 상품을 얼마나 고루 덮나'를 재서 몫을 정해 본 경험.",
+   "why": "업무①이 여러 갈래를 만들라고 하고[1], 업무④가 어느 후보가 성과에 기여하는지 분석하라고 합니다.[1] 갈래를 늘리기만 하면 겹치는 후보가 시간만 잡아먹습니다. {추론}",
+   "actually": {
+    "items": [
+     "**기여도** — 갈래별로 최종 클릭·구매가 몇 건 나왔나, 그 갈래만 낸 정답이 몇 건인가. {추론}",
+     "**중복** — 두 갈래 후보가 얼마나 겹치나(겹친 수 ÷ 합친 수). 많이 겹치면 한쪽 몫을 줄인다. {추론}",
+     "**커버리지** — 카탈로그 상품 중 한 번이라도 후보에 오른 비율, 신상품·작은 광고주 상품 비율. {추론}",
+     "**몫 정하기** — 갈래별 후보 수를 바꿔 가며 같은 시간 예산에서 재현율이 가장 높은 조합을 찾고 A/B로 확인한다.[17] {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    17
+   ],
+   "study": [
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Two-Tower와 ANN 기반 검색을 서비스에 적용하거나, 최종 랭커의 판단을 Light Ranker에 반영해 본 경험이 있으면 좋아요.",
+   "short": "투타워로 만든 벡터를 근사 검색으로 몇 ms 안에 찾는 길을 서비스에 올려 보고, 최종 랭커 판단을 가벼운 랭커에 옮겨 본 경험.",
+   "why": "투타워는 상품 벡터를 미리 계산할 수 있어 효율적이고, 토스 커머스의 유저 임베딩 투타워는 두 단계 랭킹의 앞쪽 후보 생성기 역할도 한다고 발표했습니다.[6] 수백만 벡터와 전부 내적하면 느려서 근사 최근접 검색(ANN)을 씁니다.[7][11]",
+   "actually": {
+    "items": [
+     "**ANN** — 정확도를 조금 내주고 속도를 얻는다. 그래프(HNSW)나 묶음 나누기(IVF) 방식이 흔하다.[10][11]",
+     "**재야 할 것** — 정확 검색 대비 재현율, 지연(p99), 색인 메모리, 다시 만드는 데 걸리는 시간.[11]",
+     "**학습 손실** — 배치 안 다른 상품을 오답으로 쓰는 sampled softmax와 logQ 보정.[6][8]",
+     "**최종 랭커 판단 옮기기** — 가벼운 랭커가 최종 랭커의 점수를 따라 배우게(증류) 하거나, 최종 랭커가 고른 상품을 정답으로 학습한다.[12] {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "투타워 벡터로 후보 찾기 — 정확 검색과 ANN (직접 돌린 출력, 가상 벡터)",
+     "body": "상품 1만 개를 64 묶음으로 나눠 가까운 4묶음(748개)만 뒤졌더니 상위 5개 중 4개를 같게 찾았습니다. 뒤지는 묶음 수가 속도와 재현율을 맞바꾸는 손잡이입니다.[11]",
+     "lang": "python",
+     "code": "# 투타워 후보 찾기: 사용자 벡터 · 상품 벡터 내적 → 위에서 K개 (가상 숫자)\nimport numpy as np\n\nrng = np.random.default_rng(0)\nitems = rng.normal(size=(10_000, 32)).astype(np.float32)   # 상품 탑이 미리 만들어 둔 벡터\nitems /= np.linalg.norm(items, axis=1, keepdims=True)\nuser = items[42] + 0.3 * rng.normal(size=32).astype(np.float32)  # 상품 42 와 비슷한 취향\nuser /= np.linalg.norm(user)\n\nscores = items @ user                     # 정확 검색: 1만 개 전부와 내적\ntop = np.argsort(-scores)[:5]\nprint(\"정확 검색 상위 5:\", top.tolist())\n\n# ANN 흉내: 상품을 64 묶음으로 나눠 두고, 사용자와 가까운 묶음 4개만 뒤진다(IVF 방식)\ncent = items[rng.choice(len(items), 64, replace=False)]\nassign = np.argmax(items @ cent.T, axis=1)\nnear = np.argsort(-(cent @ user))[:4]\ncand = np.where(np.isin(assign, near))[0]\ntop_ann = cand[np.argsort(-(items[cand] @ user))[:5]]\nprint(f\"ANN 이 본 상품 {len(cand)}개 / 10000\")\nprint(\"ANN 상위 5:\", top_ann.tolist())\nprint(\"상위 5 재현율\", len(set(top) & set(top_ann)), \"/ 5\")\n# 정확 검색 상위 5: [9384, 9539, 1328, 4698, 42]\n# ANN 이 본 상품 748개 / 10000\n# ANN 상위 5: [9384, 9539, 1328, 4698, 9566]\n# 상위 5 재현율 4 / 5"
+    }
+   ],
+   "refs": [
+    6,
+    7,
+    8,
+    10,
+    11,
+    12
+   ],
+   "study": [
+    "faiss",
+    "hnsw",
+    "logq",
+    "cold"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "콘텐츠 기반 추천이나 Bandit 기반 탐색 등으로 Cold-start를 개선한 경험이 있으면 좋아요. 초기 반응을 예상하고 노출 배분 실험을 주도해 본 경험을 환영해요.",
+   "short": "행동이 없는 새 상품을 글·이미지로 먼저 알아보고, 밴딧으로 노출을 나눠 반응을 보며 키우는 실험을 이끈 경험.",
+   "why": "토스 커머스의 첫 추천 모델이 바로 밴딧이었고, 상품 탑에 글·이미지 벡터를 넣어 콘텐츠로 출발하게 했습니다.[6] 우대 줄의 '초기 반응 예상'과 '노출 배분 실험'은 업무③의 실행 방법입니다.[1]",
+   "actually": {
+    "items": [
+     "**콘텐츠 기반** — 상품명·이미지·카테고리 벡터로 비슷한 기존 상품의 반응을 빌려 첫 점수를 매긴다.[6] {추론}",
+     "**Thompson Sampling** — 상품마다 구매율의 분포를 두고 거기서 뽑은 값으로 고른다. 데이터가 적을수록 넓게 뽑혀 자연스럽게 탐색한다.[13]",
+     "**사전 분포 조정** — 토스는 과한 탐색을 막으려 사전 분포(prior)를 조정했고, 결과가 늦게 돌아오는 배치 구조에서 Thompson Sampling이 잘 맞는다고 했다.[6]",
+     "**문맥 밴딧** — 사용자·상품 특징을 넣어 탐색하는 LinUCB. Yahoo 뉴스 첫 화면처럼 새 기사가 계속 들어오는 곳에서 썼다.[15]",
+     "**노출 배분 실험** — 신상품 몫(예: 5%·10%)을 A/B로 나눠 사용자 지표·광고 성과와 신상품이 데이터를 모으는 속도를 같이 본다.[17] {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    6,
+    13,
+    15,
+    17
+   ],
+   "study": [
+    "ts-tutorial",
+    "linucb",
+    "slash24-reco"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "'그 상품이 왜 후보에 없었지?'를 끝까지 추적하는 사람[1]",
+   "모델 학습뿐 아니라 색인·지연·메모리 같은 서빙 숫자까지 직접 재는 게 즐거운 사람[1][6]",
+   "새 상품에 기회를 주는 탐색 실험을 설계해 보고 싶은 사람[1][6]",
+   "PO·분석가·서버 개발자와 한 팀에서 가설부터 실험까지 직접 하고 싶은 사람[1]"
+  ],
+  "hard": [
+   "후보 생성·선별 모델을 직접 만든 경험이 필수라 추천·검색·광고를 처음 하는 사람에게는 문이 좁다[1]",
+   "후보 단계의 개선은 최종 성과까지 몇 단계를 거쳐야 보여, 성과를 증명하는 데 시간이 걸린다 {추론}",
+   "최종 줄 세우기·입찰은 다른 자리라 광고 시스템 전체를 혼자 맡고 싶은 사람에게는 범위가 좁게 느껴질 수 있다[2][3] {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "광고 후보 갈래가 다섯 개예요. 하나를 빼도 되는지 어떻게 판단하겠어요?",
+   "a": "업무④·우대② — 혼자만 낸 정답·빼기 실험·A/B.[1][17]"
+  },
+  {
+   "q": "투타워의 오답을 배치 안 다른 상품으로 쓰면 무엇이 치우치나요? 어떻게 고치나요?",
+   "a": "인기 편향과 logQ 보정, 무작위 오답 섞기.[6][8][9]"
+  },
+  {
+   "q": "후보 수를 2천에서 4천으로 늘리자는 제안이 왔어요. 무엇을 재고 정하겠어요?",
+   "a": "업무② — 재현율 대 지연·자원.[6][11]"
+  },
+  {
+   "q": "노출 20번에 한 번 팔린 새 상품과 2천 번에 60번 팔린 상품, 무엇을 먼저 보이겠어요?",
+   "a": "신뢰구간 하한과 탐색 몫 — 토스 커머스가 실제로 한 일.[6][14]"
+  },
+  {
+   "q": "후보 재현율은 올랐는데 A/B에서 광고 매출이 그대로예요. 무엇부터 보겠어요?",
+   "a": "최종 랭커가 새 후보를 고르나, 노출 편향, 지표 묶음.[2][16][17]"
+  },
+  {
+   "q": "광고 후보 생성 시스템을 설계해 보세요 — 상품 300만 개, 응답 50ms.",
+   "a": "직무 인터뷰가 ML 시스템 설계로 진행된다.[1]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · ML 엔지니어 (Ads Retrieval)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7998953003",
+   "kind": "posting",
+   "note": "팀 소개(Applied AI Chapter 소속 · 광고 도메인 배치, PO·MLE·분석가·서버 개발자 한 팀)·업무·요건·우대·합류 여정(심층 기술 면접·ML 시스템 설계)"
+  },
+  {
+   "n": 2,
+   "title": "토스 채용 · ML 엔지니어 (Ads Ranking)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7998956003",
+   "kind": "posting",
+   "note": "같은 광고 도메인 — pCTR·pCVR 최종 예측·Calibration·Value Model, Retrieval·Light Ranker 후보를 넘겨받음"
+  },
+  {
+   "n": 3,
+   "title": "토스 채용 · ML 엔지니어 (Ads Bidding & Pacing)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7998957003",
+   "kind": "posting",
+   "note": "같은 광고 도메인 — 입찰·경매·과금·예산 페이싱"
+  },
+  {
+   "n": 4,
+   "title": "토스 채용 · ML 엔지니어 (Commerce Data Graph)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7827378003",
+   "kind": "posting",
+   "note": "같은 커머스 — 데이터가 적은 상품이 덜 노출되고 그래서 더 데이터가 안 쌓이는 cold item 악순환"
+  },
+  {
+   "n": 5,
+   "title": "Toss Tech · 토스 쇼핑 추천 시스템: 멀티 스테이지 접근법",
+   "url": "https://toss.tech/article/toss-shopping-recommendation-system",
+   "kind": "company",
+   "date": "2025-04-17",
+   "note": "토스 커머스 개인화팀 ML 엔지니어 — Retrieval(Two-Tower·그래프·시퀀스, 수백만 상품에서 수천 개로)·Ranking(pCTR·pCVR)·Re-ranking(신상품 일정 비율·광고 섞기). 수치·합치는 방법은 없음"
+  },
+  {
+   "n": 6,
+   "title": "SLASH 24 · 기반 데이터가 부족해도 OK! 커머스 추천 시스템 제작기",
+   "url": "https://www.youtube.com/watch?v=LAD6LYnkPsA",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스 커머스 데이터 사이언티스트·ML 엔지니어 · 자막·슬라이드 전부 확인(코호트 밴딧·필터 층의 신뢰구간 하한·신상품 무작위 노출·cold-start 고객 코호트·투타워 유저 임베딩이 후보 생성기 역할·Mixed Random Sampling·sampled softmax logQ·temperature scaling·계속 학습·배치/실시간 추론·피처 스토어·ONNX Runtime·A/B)"
+  },
+  {
+   "n": 7,
+   "title": "Covington 외 · Deep Neural Networks for YouTube Recommendations (RecSys 2016)",
+   "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/",
+   "kind": "reference",
+   "date": "2016",
+   "note": "다른 회사 — 후보 생성 + 랭킹 두 단계, 후보 생성을 최근접 이웃 검색으로"
+  },
+  {
+   "n": 8,
+   "title": "Yi 외 · Sampling-Bias-Corrected Neural Modeling for Large Corpus Item Recommendations (RecSys 2019)",
+   "url": "https://doi.org/10.1145/3298689.3346996",
+   "kind": "reference",
+   "date": "2019",
+   "note": "다른 회사(YouTube) — 투타워 배치 안 음성의 인기 편향을 logQ로 보정"
+  },
+  {
+   "n": 9,
+   "title": "Yang 외 · Mixed Negative Sampling for Learning Two-tower Neural Networks in Recommendations (WWW 2020)",
+   "url": "https://research.google/pubs/mixed-negative-sampling-for-learning-two-tower-neural-networks-in-recommendations/",
+   "kind": "reference",
+   "date": "2020",
+   "note": "다른 회사(Google Play) — 배치 안 음성 + 전체에서 고른 음성 섞기"
+  },
+  {
+   "n": 10,
+   "title": "Malkov · Yashunin · Efficient and robust approximate nearest neighbor search using HNSW graphs (2016)",
+   "url": "https://arxiv.org/abs/1603.09320",
+   "kind": "reference",
+   "date": "2016"
+  },
+  {
+   "n": 11,
+   "title": "Douze 외 · The Faiss library (2024)",
+   "url": "https://arxiv.org/abs/2401.08281",
+   "kind": "reference",
+   "date": "2024",
+   "note": "IVF·양자화 등 근사 최근접 검색의 속도·정확도 맞교환"
+  },
+  {
+   "n": 12,
+   "title": "Wang 외 · COLD: Towards the Next Generation of Pre-Ranking System (DLP-KDD 2020)",
+   "url": "https://arxiv.org/abs/2007.16122",
+   "kind": "reference",
+   "date": "2020",
+   "note": "다른 회사(알리바바 광고) — 계산 비용을 함께 설계한 가벼운 1차 랭커"
+  },
+  {
+   "n": 13,
+   "title": "Russo 외 · A Tutorial on Thompson Sampling (2017)",
+   "url": "https://arxiv.org/abs/1707.02038",
+   "kind": "reference",
+   "date": "2017"
+  },
+  {
+   "n": 14,
+   "title": "Wikipedia · Binomial proportion confidence interval (Wilson score interval)",
+   "url": "https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "Li 외 · A Contextual-Bandit Approach to Personalized News Article Recommendation (LinUCB, WWW 2010)",
+   "url": "https://arxiv.org/abs/1003.0146",
+   "kind": "reference",
+   "date": "2010",
+   "note": "다른 회사(Yahoo) — 새 기사가 계속 들어오는 상황의 탐색"
+  },
+  {
+   "n": 16,
+   "title": "Joachims 외 · Unbiased Learning-to-Rank with Biased Feedback (WSDM 2017)",
+   "url": "https://arxiv.org/abs/1608.04468",
+   "kind": "reference",
+   "date": "2017",
+   "note": "로그는 옛 시스템이 보여 준 것만 담는다 — 오프라인 평가가 치우치는 이유"
+  },
+  {
+   "n": 17,
+   "title": "론 코하비 외 · 신뢰할 수 있는 온라인 종합 대조 실험 (Trustworthy Online Controlled Experiments 한국어판, 이기홍·김기영 옮김)",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000005201885",
+   "kind": "reference",
+   "note": "SRM·지표 묶음·실험 단위"
+  },
+  {
+   "n": 18,
+   "title": "칩 후옌 · 머신러닝 시스템 설계 (한빛미디어, 2023)",
+   "url": "https://www.oreilly.com/library/view/-/9791169210850/",
+   "kind": "reference",
+   "date": "2023",
+   "note": "Designing Machine Learning Systems 한국어판 — 데이터 누수·학습/서빙 어긋남·배포 뒤 감시"
+  },
+  {
+   "n": 19,
+   "title": "토스 비즈니스 · 광고",
+   "url": "https://toss.im/business/advertising",
+   "kind": "company",
+   "date": "2026",
+   "note": "구매 확률 기반 타겟팅·결제 데이터로 매출 검증"
+  },
+  {
+   "n": 20,
+   "title": "토스피드 · 토스애즈 광고 파트너 행사 '터처블 2026'",
+   "url": "https://toss.im/tossfeed/article/46893",
+   "kind": "company",
+   "date": "2026-03-20",
+   "note": "커머스 광고 '바이 앳 토스(Buy at Toss)' — 앱 안 탐색부터 토스페이 결제까지"
+  },
+  {
+   "n": 21,
+   "title": "Ying 외 · Graph Convolutional Neural Networks for Web-Scale Recommender Systems (PinSage, KDD 2018)",
+   "url": "https://arxiv.org/abs/1806.01973",
+   "kind": "reference",
+   "date": "2018",
+   "note": "다른 회사(Pinterest) — 그래프로 아이템 임베딩, 후보 찾기에 사용"
+  },
+  {
+   "n": 22,
+   "title": "Kang · McAuley · Self-Attentive Sequential Recommendation (SASRec, ICDM 2018)",
+   "url": "https://arxiv.org/abs/1808.09781",
+   "kind": "reference",
+   "date": "2018"
+  },
+  {
+   "n": 23,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 24,
+   "title": "자소설닷컴 — 토스뱅크 연봉(같은 집계)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "토스 — 회사 소개(사이트 하단 회사 정보)",
+   "url": "https://toss.im/company",
+   "kind": "company"
+  },
+  {
+   "n": 26,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  }
+ ],
+ "caveat": "광고 후보 생성 쪽이 직접 한 공개 발표·기술 글은 찾지 못했습니다. 팀의 일은 이 공고[1]와 같은 광고 도메인의 Ranking·Bidding & Pacing 공고[2][3]로, 단계 구조와 갈래는 토스 커머스 개인화팀 글[5], 밴딧·투타워·오답 뽑기·서빙 구조는 2024년 SLASH 커머스 추천 발표[6]로 보였는데 둘 다 광고가 아니라 쇼핑 추천 이야기이고 지금 광고 시스템은 다를 수 있습니다. 갈래 합치기·기여 분석·ANN의 '보통 이런 것'은 다른 회사의 공개 논문[7]~[16]으로 보였고, 예시 숫자는 모두 설명용 가정입니다.",
+ "resources": [
+  {
+   "id": "toss-reco",
+   "title": "토스 쇼핑 추천 시스템: 멀티 스테이지 접근법",
+   "by": "토스 커머스 개인화팀 · Toss Tech · 2025",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://toss.tech/article/toss-shopping-recommendation-system",
+   "why": "이 자리가 맡는 Retrieval 단계와 투타워·그래프·시퀀스 갈래를 회사 쪽 말로. 업무①을 읽기 전에 먼저 본다."
+  },
+  {
+   "id": "slash24-reco",
+   "title": "SLASH 24 · 기반 데이터가 부족해도 OK! 커머스 추천 시스템 제작기",
+   "by": "토스 데이터 사이언티스트 · ML 엔지니어 · 20분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=LAD6LYnkPsA",
+   "why": "코호트 밴딧·신뢰구간 하한·신상품 노출(업무③·우대④)과 투타워·Mixed Random Sampling(요건②)의 토스 쪽 실제 모습."
+  },
+  {
+   "id": "youtube-dnn",
+   "title": "Deep Neural Networks for YouTube Recommendations",
+   "by": "Covington 외 · Google · RecSys 2016",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/",
+   "why": "후보 생성과 랭킹을 나누는 두 단계 구조의 원형. 업무①②."
+  },
+  {
+   "id": "mns",
+   "title": "Mixed Negative Sampling for Learning Two-tower Neural Networks in Recommendations",
+   "by": "Yang 외 · Google · WWW 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://research.google/pubs/mixed-negative-sampling-for-learning-two-tower-neural-networks-in-recommendations/",
+   "why": "투타워 오답을 어떻게 섞어 뽑나. 토스의 Mixed Random Sampling과 같은 생각 — 요건②."
+  },
+  {
+   "id": "logq",
+   "title": "Sampling-Bias-Corrected Neural Modeling for Large Corpus Item Recommendations",
+   "by": "Yi 외 · Google · RecSys 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://doi.org/10.1145/3298689.3346996",
+   "why": "배치 안 오답의 인기 편향과 logQ 보정. 요건②·우대③의 학습 손실."
+  },
+  {
+   "id": "faiss",
+   "title": "Faiss 위키 (facebookresearch/faiss)",
+   "by": "Meta · 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/facebookresearch/faiss/wiki",
+   "why": "IVF·HNSW·양자화 색인을 직접 만들고 재현율·속도를 재 본다. 우대③ ANN."
+  },
+  {
+   "id": "hnsw",
+   "title": "Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs",
+   "by": "Malkov · Yashunin · 2016",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1603.09320",
+   "why": "가장 널리 쓰는 그래프 ANN의 원 논문. 우대③."
+  },
+  {
+   "id": "cold",
+   "title": "COLD: Towards the Next Generation of Pre-Ranking System",
+   "by": "Wang 외 · Alibaba · DLP-KDD 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2007.16122",
+   "why": "광고 시스템의 가벼운 1차 랭커를 계산 비용까지 같이 설계한 사례. 업무②의 Light Ranker."
+  },
+  {
+   "id": "pinsage",
+   "title": "Graph Convolutional Neural Networks for Web-Scale Recommender Systems (PinSage)",
+   "by": "Ying 외 · Pinterest · KDD 2018",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1806.01973",
+   "why": "그래프 갈래로 큰 카탈로그의 후보를 찾는 실서비스 사례. 업무①·우대①."
+  },
+  {
+   "id": "sasrec",
+   "title": "Self-Attentive Sequential Recommendation (SASRec)",
+   "by": "Kang · McAuley · ICDM 2018",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1808.09781",
+   "why": "최근 본 순서로 다음 상품을 맞히는 시퀀스 갈래. 토스 쇼핑 글이 든 모델."
+  },
+  {
+   "id": "ts-tutorial",
+   "title": "A Tutorial on Thompson Sampling",
+   "by": "Russo 외 · 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1707.02038",
+   "why": "토스 첫 추천 모델이 쓴 Thompson Sampling의 원리와 예제. 업무③·우대④."
+  },
+  {
+   "id": "linucb",
+   "title": "A Contextual-Bandit Approach to Personalized News Article Recommendation",
+   "by": "Li 외 · Yahoo · WWW 2010",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1003.0146",
+   "why": "새 항목이 계속 들어오는 곳의 문맥 밴딧(LinUCB)과 오프라인 평가법. 우대④."
+  },
+  {
+   "id": "ultr",
+   "title": "Unbiased Learning-to-Rank with Biased Feedback",
+   "by": "Joachims 외 · WSDM 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1608.04468",
+   "why": "로그가 옛 시스템이 보여 준 것으로 치우친 이유. 업무④ 누락 분석을 오프라인으로만 믿으면 안 되는 이유."
+  },
+  {
+   "id": "kohavi-ko",
+   "title": "신뢰할 수 있는 온라인 종합 대조 실험",
+   "by": "론 코하비 · 다이앤 탕 · 야 쉬 (이기홍 · 김기영 옮김)",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000005201885",
+   "why": "A/B 실험 설계·SRM·지표 묶음. 업무④·요건③·우대②④의 실험."
+  },
+  {
+   "id": "dmls-ko",
+   "title": "머신러닝 시스템 설계",
+   "by": "칩 후옌 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EC%B9%A9%20%ED%9B%84%EC%98%8C",
+   "why": "데이터 누수·학습/서빙 어긋남·배포 뒤 감시. 요건①②와 직무 인터뷰의 ML 시스템 설계 대비."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "광고 후보 찾기 한 바퀴",
+   "time": "1주",
+   "goal": "광고 노출 한 번이 후보 찾기 → 가벼운 랭킹 → 최종 랭킹 → 섞기를 지나는 길과, 이 자리가 맡는 칸을 말로 설명할 수 있다.",
+   "resources": [
+    "toss-reco",
+    "slash24-reco",
+    "youtube-dnn"
+   ],
+   "task": "가상 쇼핑 앱 광고 한 번을 따라가는 표를 만든다 — 칸: 단계, 후보 수, 시간 예산, 입력, 출력, 틀어지면 무엇이 깨지나."
+  },
+  {
+   "title": "투타워 직접 학습",
+   "time": "2~3주",
+   "goal": "행동 로그로 학습셋을 만들고 오답 뽑기를 바꿔 가며 투타워를 학습해 Recall@K로 비교한다.",
+   "resources": [
+    "mns",
+    "logq",
+    "dmls-ko"
+   ],
+   "task": "사용자 1만·상품 5천·클릭 50만 건 가상 로그(인기 상품 쏠림을 심어 둠)로 투타워를 학습하고, 배치 안 오답 / 무작위 오답 / 섞기 / logQ 보정 네 가지의 Recall@50과 상위 후보의 인기 상품 비율을 표로 낸다."
+  },
+  {
+   "title": "ANN 색인과 시간 예산",
+   "time": "1~2주",
+   "goal": "상품 벡터를 색인에 넣고 재현율·지연·메모리를 재서 설정을 고를 수 있다.",
+   "resources": [
+    "faiss",
+    "hnsw"
+   ],
+   "task": "2단계 상품 벡터를 100만 개로 늘려 정확 검색·IVF·HNSW의 Recall@100과 p99 지연을 재고, 10ms 안에서 가장 좋은 설정을 고른다."
+  },
+  {
+   "title": "갈래 여러 개와 기여 분석",
+   "time": "2주",
+   "goal": "갈래를 셋 이상 합치고 갈래별 기여·중복·커버리지 표로 몫을 정한다.",
+   "resources": [
+    "sasrec",
+    "pinsage",
+    "cold",
+    "kohavi-ko"
+   ],
+   "task": "투타워 + 함께 본 상품 + 인기 + 신상품 갈래를 합쳐 위 풀이의 '빼기 실험' 표를 가상 로그로 만들고, 같은 후보 수에서 재현율이 가장 높은 몫 조합을 찾는다."
+  },
+  {
+   "title": "새 상품 탐색 (선택)",
+   "time": "계속",
+   "goal": "Thompson Sampling과 신뢰구간 하한으로 새 상품 노출을 나누고 맞교환을 보인다.",
+   "resources": [
+    "ts-tutorial",
+    "linucb",
+    "slash24-reco",
+    "ultr"
+   ],
+   "task": "하루 상품 100개씩 새로 들어오는 시뮬레이터에서 '하한만 / 하한 + 무작위 5% / Thompson Sampling' 세 방식의 30일 누적 구매와 신상품 중 좋은 상품을 찾아내는 데 걸린 날 수를 견준다."
+  }
+ ],
+ "pay": {
+  "summary": "공공데이터 집계로 회사 전체 신입 초봉 **약 4,200만원**, 평균 **약 6,200만원** — 공시된 평균 급여는 없다(비상장). 이 자리는 후보 생성 모델 실무 경력직이라 초봉과는 거리가 멀다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 없고 직군 구분도 없다 [23]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 — 경력직이 섞인 값 [23]"
+   },
+   {
+    "label": "토스뱅크 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 계열사 값 — 견주어 보기용 [24]"
+   },
+   {
+    "label": "토스뱅크 평균",
+    "value": "약 7,208만원",
+    "amount": 7208,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 계열사 평균 [24]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고, 레퍼런스 체크 뒤 **처우 협의** 단계에서 사람마다 정한다 [1]. 비바리퍼블리카는 상장사가 아니라 사업보고서의 '직원 평균 급여'가 없다(공시 숫자 없음). 평균은 경력직이 섞인 회사 전체 값이라 초봉이 아니고, 이 자리처럼 추천·광고 ML 경력직의 제안은 이전 처우와 협의로 정해져 집계값과 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 복지를 소개한 2021년 공식 글이다 [26]. 지금도 같은지, 광고 도메인에도 그대로 적용되는지는 글에 없으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스(비바리퍼블리카) 본사",
+  "address": "서울특별시 강남구 테헤란로 142, 4·10~13·22·23층",
+  "postal": "06236",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "주소는 토스 회사 소개 페이지 하단의 회사 정보다 [25]. 공고의 근무지는 'Seoul'로만 적혀 있어 광고 도메인의 자리가 본사와 다를 수 있다 {추론}."
+ }
+}
