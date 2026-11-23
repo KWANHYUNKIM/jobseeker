@@ -96,6 +96,38 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "팬 3개·2.5슬롯·통풍 백플레이트·16핀 1개는 공식 문구·스펙. 공식 대표 정면 사진(세션 임시 폴더에서 보기만): 무광 검정 쉬라우드를 가는 은색 선이 팬마다 칸으로 나누고, 윗 모서리 앞면에 흰 GEFORCE RTX 글자와 검정 광택의 큰 PRIME 양각 글자, 검정 날개에 은색 허브(PRIME·ASUS·PRIME). 조명은 공식 페이지에 언급이 없어 fan_light 는 비웠다. 갤러리(/gallery/)는 404 라 윗면·뒷면 사진을 못 봐 16핀 자리(power)·플로스루를 비웠다 — 렌더러가 보통 자리에 그린다. 날개 수는 사진으로 확실히 세지 못했고 팬 지름은 자료에 없다. 다나와는 쓰지 않았다."
+  },
+  "galax-rtx5080-exg-1clickoc": {
+   "kind": "gpu",
+   "fans": [
+    92,
+    102,
+    92
+   ],
+   "fan_blades": 7,
+   "fan_light": "argb",
+   "light": "side",
+   "slots": 2.5,
+   "backplate": true,
+   "flow_through": true,
+   "color": "#141518",
+   "accent": "#9fe6ff",
+   "marks": [
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#e8eaec"
+    }
+   ],
+   "sources": [
+    {
+     "title": "GALAX GeForce RTX 5080 EX Gamer 1-Click OC — 공식 제품 페이지(Fan Feature 92mm*102mm*92mm · 7 larger WINGS 3.0 blades · Front & Side Dual-Face ARGB · ENHANCED BACKPLATE · 2.5 slot · 16-pin · 정면/켠 정면/비스듬한 윗면·아랫면/백플레이트 사진)",
+     "url": "https://galax.com/en/product/geforce-rtx-5080-16gb-ex-gamer-1-click-oc-3x/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 92·102·92mm(가운데가 크다)·날개 7장·2.5슬롯·16핀 1개는 공식 표·문구. 사진(세션 임시 폴더에서 보기만): 검정 쉬라우드에 탄소 무늬 판과 각진 홈, 반투명 회색 날개에 고리(ring blade), 허브는 검정 바탕 GALAX. 켠 사진에서 팬이 청록·연두·노랑으로 빛나 fan_light=argb, 백플레이트 사진에서 끝 모서리에 하늘색 줄 세 가닥이 빛나 light=side(공식 문구 Front & Side) — 색은 그 하늘색을 accent 로. 백플레이트 사진: 끝 쪽 약 40% 가 X 자 막대만 남기고 뚫려 핀이 보인다 → flow_through. 윗 모서리 브래킷 쪽에 흰 GEFORCE RTX 글자. 16핀 자리는 백플레이트 사진이 비스듬해 비율을 못 재 power 는 비웠다(models 의 16핀 x1 로 그린다). 국내 EX GAMER BLACK OC 짝은 models 노트의 추정을 따른다. 다나와는 쓰지 않았다."
   }
  }
 }

@@ -94,6 +94,38 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "팬 2개·2.5슬롯·통풍 백플레이트·8핀 1개는 공식 문구·스펙. 공식 대표 정면 사진(보기만): 검정 쉬라우드에 은색 판(팬 사이·양 끝), 브래킷 쪽 위 DUAL 양각, 검정 날개에 은색 테 ASUS 허브 — 8GB 판(gpu-rtx-5060-ti-8)과 같은 겉모양. 8GB 판은 윗면 사진으로 8핀이 약 92% 자리였지만, 이 제품은 갤러리가 404 라 윗면을 직접 못 봐 power·모서리 글자는 옮기지 않았다. 조명은 공식 언급이 없어 비웠다. 날개 수·팬 지름·플로스루도 비웠다. 다나와는 쓰지 않았다."
+  },
+  "palit-rtx5060ti-infinity3-16g": {
+   "kind": "gpu",
+   "fan_count": 3,
+   "slots": 2,
+   "color": "#141517",
+   "accent": "#3a3d42",
+   "marks": [
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#e6e8ea"
+    },
+    {
+     "text": "INFINITY",
+     "where": "edge",
+     "color": "#e6e8ea"
+    }
+   ],
+   "sources": [
+    {
+     "title": "Palit GeForce RTX 5060 Ti Infinity 3 16GB — 공식 제품 페이지(0-dB 팬 · ThunderMaster LED 효과 · 대표 사진 1장)",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5495&lang=en"
+    },
+    {
+     "title": "Palit GeForce RTX 5060 Ti Infinity 3 16GB — 공식 사양 탭(2 Slot · 8-pin x 1 · 291.9 x 116.6 x 41.3 mm)",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5495&lang=en&pn=NE7506T019T1-GB2061S&tab=sp"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "2슬롯·8핀 1개는 공식 사양 탭. 공식 대표 사진(상자와 같이 세운 정면, 세션 임시 폴더에서 보기만): 무광 검정 쉬라우드에 같은 크기 팬 3개(검정 날개, 허브에 흰 PALIT) — models 의 팬 3개(이름으로 추정)를 사진이 뒷받침한다. 윗 모서리에 흰 GEFORCE RTX(브래킷 쪽)와 INFINITY(끝 쪽) 글자. 팬 지름·날개 수는 자료에 없고 사진이 작아 비웠다. 사양 탭에 백플레이트·조명 언급이 없고(ThunderMaster 의 'LED 효과' 한 줄뿐) 사진이 꺼진 정면이라 backplate·fan_light·light 는 비웠다. 갤러리 탭은 같은 사진 한 장뿐이라 8핀 자리·플로스루도 비웠다. 다나와는 쓰지 않았다."
   }
  }
 }

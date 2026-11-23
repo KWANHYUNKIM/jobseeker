@@ -70,6 +70,41 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "팬 2개·92mm·날개 7장·2슬롯·8핀 1개·백플레이트는 공식 표·문구, 날개 7장은 정면 사진과도 같다. 공식 사진(보기만): 흰 쉬라우드에 양각 회로 무늬·탄소 무늬, 반투명 흰 날개에 검정 GALAX 허브, 켠 사진에서 팬이 흰색으로 빛난다 — fan_light 형식에 흰 단색이 없어 비웠다(기존 REQUESTS). 비스듬한 윗면 사진: 모서리에 검정 GEFORCE RTX 글자, 끝 쪽 윗면에 회색 회로 그림(accent), 8핀은 PCB 끝 홈 속 카드 길이의 약 절반 자리(at=0.5, 판독), 홈 뒤로 히트파이프가 보인다. 뒷면 사진은 못 봐 플로스루를 비웠다. models 의 국내명↔글로벌명 짝짓기는 추정(models 노트). 다나와는 쓰지 않았다."
+  },
+  "galax-black-oc-v2-rtx5060": {
+   "kind": "gpu",
+   "fans": [
+    92,
+    92
+   ],
+   "fan_blades": 7,
+   "fan_light": "none",
+   "slots": 2,
+   "backplate": true,
+   "flow_through": true,
+   "power": {
+    "type": "8pin",
+    "n": 1,
+    "at": 0.6
+   },
+   "color": "#17181b",
+   "accent": "#d6dadf",
+   "marks": [
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#e8eaec"
+    }
+   ],
+   "sources": [
+    {
+     "title": "GALAX GeForce RTX 5060 1-Click OC 2X V2 — 공식 제품 페이지(2*92mm WINGS 3.0 · 7 larger fan blades · fan lighting switch · ENHANCED BACKPLATE · 2 slot · 1 x 8-pin · 정면/켠 정면/윗면/I/O/끝/뒷면 사진)",
+     "url": "https://galax.com/en/product/geforce-rtx-5060-1-click-oc-2x-v2/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "92mm 팬 2개·날개 7장·2슬롯·8핀 1개는 공식 표·문구. 국내 BLACK OC V2 = 글로벌 1-Click OC 2X V2 짝은 models 이미지 주소를 따른다. 사진(세션 임시 폴더에서 보기만): 검정 쉬라우드(탄소 무늬 + 끝 쪽 은색 회로 무늬), 반투명 회색 날개, 허브는 검정 바탕 GALAX — 5050 BLACK OC V2 와 같은 앞판. 켠 사진에서 팬이 흰색으로만 빛나 fan_light 는 none(형식에 흰 단색이 없다 — 기존 REQUESTS). 뒷면 정면 사진: 검정 백플레이트에 흰 줄무늬·GEFORCE RTX, PCB 가 끝나는 자리(약 60%)부터 끝까지 X 자 막대만 남기고 뚫려 → flow_through, 8핀은 그 PCB 끝(브래킷부터 약 60%). 끝 면에 불빛 스위치. 다나와는 쓰지 않았다."
   }
  }
 }
