@@ -1,0 +1,1334 @@
+{
+  "id": "toss-ai-platform-infra",
+  "company": "토스",
+  "role": "AI 플랫폼 엔지니어 (Infra)",
+  "team": "ML/AI Infra 팀",
+  "jobs": [
+    "ats-toss:group:8007436003"
+  ],
+  "researched_at": "2026-11-23",
+  "tldr": {
+    "what": "토스의 LLM이 여러 GPU·여러 서버에 나뉘어 돌아가도록 **GPU 쿠버네티스 클러스터, 서버 사이 고속망, AI 전용 스토리지**를 설계·구축하고, 분산 추론 배포를 커스텀 리소스로 자동화합니다.[1]",
+    "env": "온프레미스 ML 전용 쿠버네티스에 AWS(EKS·EKS Hybrid)·GCP가 붙은 하이브리드 환경이고,[1] 그 위에서 서빙 팀이 40개 넘는 모델을 InfiniBand로 이어진 여러 세대 GPU에 Dynamo로 띄웁니다.[2]",
+    "oneline": "모델을 만드는 자리도, 엔진을 고치는 자리도 아니라 **그 엔진들이 수십 대 GPU 위에서 한 몸처럼 돌게 하는 바닥**을 만드는 자리입니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "온프레미스와 멀티 클라우드(AWS, GCP) 를 아우르는 하이브리드 GPU Kubernetes 클러스터와 Istio, Cilium 기반의 네트워크 환경을 구축해요",
+      "short": "회사 IDC의 GPU 서버와 AWS·GCP의 GPU를 '한 쿠버네티스처럼' 쓰게 묶고, 그 사이 네트워크를 깐다.",
+      "why": "팀 소개에 따르면 ML/AI Infra 팀은 온프레미스의 ML 전용 쿠버네티스 클러스터와 AWS(EKS, EKS Hybrid)·GCP를 함께 쓰는 멀티 클라우드로 설계돼 있고, **클라우드 GPU를 온프레미스에 편입하는** 것처럼 정답이 정해지지 않은 문제를 다룹니다.[1] 토스는 Istio와 mTLS로 클러스터 안팎의 통신을 잠그는 제로 트러스트를 발표한 적이 있고,[6] 같은 그룹 은행도 서비스 메시를 운영합니다.[7] 금융 회사라 GPU 클러스터도 같은 보안 규칙 안에 들어와야 합니다.{추론}",
+      "actually": {
+        "intro": "토스가 구성을 자세히 공개하지 않은 부분은 공식 문서로 '보통 이런 것'을 보입니다.",
+        "items": [
+          "**하이브리드 노드 붙이기** — EKS Hybrid Nodes는 회사 데이터센터의 서버를 AWS가 관리하는 EKS 클러스터의 노드로 붙입니다. 컨트롤 플레인(클러스터의 두뇌)은 AWS가 맡고, 서버와 AWS는 VPN이나 Direct Connect(전용선)로 잇습니다.[10]",
+          "**주소 계획** — 원격 노드와 원격 파드의 주소 대역(CIDR)을 클러스터에 미리 등록해야 하고, 각각 최대 15개까지입니다.[10] IDC 쪽 주소와 겹치지 않게 대역을 나누는 일이 먼저입니다.{추론}",
+          "**Cilium** — eBPF(커널 안에서 작은 프로그램을 돌리는 기술)로 파드 네트워크를 만드는 CNI(파드에 네트워크를 붙이는 플러그인)입니다. IP 대신 '어떤 서비스인가'로 정책을 걸고, kube-proxy를 대신할 수 있으며, Hubble로 흐름을 봅니다.[12]",
+          "**Istio와 같이 쓰기** — Cilium 문서는 Istio와 함께 쓸 때 kube-proxy를 남겨 두는 설정을 권하고, 빼려면 socket LB를 호스트 네임스페이스로 한정하는 등 몇 가지를 꼭 맞추라고 합니다. Cilium의 L7 정책과 Istio mTLS를 겹쳐 쓰지 말라는 주의도 있습니다.[13]",
+          "**사이드카 없는 메시** — Istio ambient 모드는 파드마다 프록시를 넣지 않고 노드마다 ztunnel이 mTLS를 맡으며, L7 규칙이 필요할 때만 waypoint를 둡니다.[11] GPU 파드에 프록시를 붙일지 말지가 설계 선택지가 됩니다.{추론}"
+        ]
+      },
+      "flows": [
+        {
+          "caption": "클라우드 GPU 한 대가 사내 ML 클러스터에 들어오기까지 (보통의 순서)",
+          "steps": [
+            "연결 · VPN·전용선, 주소 대역 계획",
+            "노드 등록 · EKS Hybrid 등으로 클러스터에 합류",
+            "CNI · Cilium으로 파드 네트워크·정책",
+            "메시 · Istio mTLS·인가 정책",
+            "GPU 스택 · GPU Operator가 드라이버·플러그인 설치",
+            "검증 · 파드 통신·GPU 점검 뒤 작업 받기"
+          ],
+          "mine_from": 0
+        }
+      ],
+      "how_far": "어떤 클라우드를 얼마나 쓸지 같은 비용·계약 판단은 조직이 같이 정하고, 이 자리는 **그 결정을 실제로 붙는 클러스터와 네트워크로 만드는 설계·구축**을 맡습니다.{추론} 최소선: 온프레미스 노드와 클라우드 노드가 섞인 클러스터에서 파드끼리 mTLS로 통신하게 만들고, 정책 하나가 왜 막는지 Hubble·Istio 로그로 설명할 수 있는 것.{추론}",
+      "refs": [
+        1,
+        6,
+        7,
+        10,
+        11,
+        12,
+        13
+      ],
+      "study": [
+        "eks-hybrid",
+        "cilium-docs",
+        "istio-ambient",
+        "slash23-istio",
+        "slash24-ebpf"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "GPU Operator 스택을 활용한 딥다이브 트러블슈팅과 선제적인 용량 계획으로 최적의 리소스 효율을 달성해요.",
+      "short": "GPU가 쿠버네티스에서 안 잡히거나 놀고 있는 원인을 끝까지 파고, 모자라기 전에 늘릴 양을 계산한다.",
+      "why": "쿠버네티스가 GPU를 쓰려면 드라이버·컨테이너 툴킷·장치 플러그인·모니터링 수집기가 노드마다 맞물려야 하고, GPU Operator가 이 묶음을 설치·관리합니다.[14][15] 같은 그룹 토스증권은 데이터를 보니 **작업의 약 1/3이 GPU의 1/4도 못 쓰고** 있었다고 밝혔습니다.[4] 토스 서빙 팀은 낮에 몰리는 실시간 트래픽과 밤 배치를 나눠 GPU를 돌려 쓴다고 했습니다.[2]",
+      "actually": {
+        "items": [
+          "**스택 순서 알기** — 기본 설치에서는 노드마다 드라이버, Container Toolkit, Device Plugin, GPU Feature Discovery, DCGM Exporter, MIG Manager, validator 파드가 뜹니다.[15] 앞 단계가 실패하면 뒤 단계가 줄줄이 멈추므로, 어느 파드에서 멈췄는지가 첫 단서입니다.{추론}",
+          "**'GPU가 0개로 보인다'** — 드라이버 컨테이너 로그 → toolkit → device plugin 순으로 내려가며 노드의 nvidia.com/gpu 수가 왜 0인지 찾는 것이 흔한 딥다이브입니다.{추론}",
+          "**MIG로 쪼개 쓰기** — 토스증권은 device plugin의 MIG 전략을 mixed로 두고, 파드가 nvidia.com/mig-1g.10gb 같은 이름으로 조각을 요청하게 했습니다. MIG를 켜면 NVLink 연결이 끊긴다는 점도 적었습니다.[4]",
+          "**용량 계획** — 할당률(요청된 GPU ÷ 전체)과 실제 사용률(DCGM 지표)을 함께 보고, 대기 중인 요청 수와 KV 캐시 사용률 같은 서빙 지표[41]로 '언제 몇 장 더'를 계산합니다.{추론}",
+          "**시간대 돌려쓰기** — 낮엔 실시간 모델, 밤엔 백필·배치 모델로 일꾼을 바꿔 띄우고 아침에 되돌리는 방식이 토스 발표에 나옵니다.[2]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "토스증권이 계산한 '안 쓰는 GPU'의 값 (Toss Tech 글의 단순 계산)",
+          "body": "AWS H100 한 장을 하루 약 38만 원(1달러 1,300원 가정)으로 잡고, 1/4만 쓰는 작업이면 한 장당 한 달 약 855만 원, GPU 8장 서버 기준 약 6,840만 원이 낭비된다고 계산했습니다.[4] 용량 계획을 '돈'으로 말하는 출발점입니다."
+        }
+      ],
+      "how_far": "어느 서비스에 GPU를 먼저 줄지는 서비스·플랫폼 팀과 같이 정하고, 이 자리는 **GPU가 실제로 잡히고·쓰이고·모자라지 않게 하는 쪽**을 책임집니다.{추론} 최소선: GPU Operator를 직접 깔아 보고, 노드에서 GPU가 안 잡힐 때 어느 파드 로그부터 볼지 순서대로 말할 수 있는 것.{추론}",
+      "refs": [
+        2,
+        4,
+        14,
+        15,
+        41
+      ],
+      "study": [
+        "gpu-operator-docs",
+        "toss-mig",
+        "dcgm-docs",
+        "sre-book"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "대규모 LLM 서빙을 위해 vLLM, SGLang 등의 엔진을 다루고, NVIDIA Dynamo 기반의 분산 추론 아키텍처를 설계해요. 복잡한 서빙 워크로드를 K8s Custom Resource와 Operator 패턴을 활용해 배포 자동화 체계를 구축해요.",
+      "short": "LLM 하나를 여러 GPU·서버에 나눠 띄우는 구조를 짜고, 그걸 YAML 한 장으로 배포되게 만든다.",
+      "why": "토스 서빙 팀은 40개가 넘는 모델을 vLLM·SGLang과 자체 엔진으로 띄우고, 그 위에 Dynamo 부품을 붙여 KV 인지 라우팅·입장 제한·자동 확장을 한다고 발표했습니다.[2] 발표 화면에는 Prefill 일꾼 3개와 Decode 일꾼 8개가 NIXL(InfiniBand 위)로 이어진 그림과 Grove·Planner가 나옵니다.[2] 팀 소개도 대형 LLM 분산 서빙 구조를 **직접 검증해 플랫폼 팀에 제공**한다고 적었습니다.[1]",
+      "actually": {
+        "items": [
+          "**엔진 위의 층** — Dynamo는 SGLang·TensorRT-LLM·vLLM 위에서 여러 GPU·노드를 한 추론 시스템처럼 묶는 층입니다. prefill(질문 읽기)과 decode(답 쓰기)를 다른 GPU 무리로 나누고, KV 캐시가 겹치는 일꾼으로 요청을 보냅니다.[20][38]",
+          "**한 리소스로 묶기** — Grove는 prefill·decode·라우터처럼 여러 부품으로 된 추론 서비스를 쿠버네티스 리소스 하나(PodCliqueSet)로 적고, 같이 떠야 하는 묶음은 '전부 아니면 하나도'로 올리며, NVLink 도메인 같은 위치를 따져 배치합니다.[22]",
+          "**Operator 패턴** — 커스텀 리소스(우리가 만든 쿠버네티스 객체)와 그것을 지켜보는 컨트롤러로, 사람이 하던 배포·복구 지식을 코드로 옮기는 방식입니다.[18] 컨트롤러는 '원하는 상태'와 '지금 상태'를 계속 견줘 차이를 메웁니다.[18]",
+          "**노드 안·노드 사이 나누기** — vLLM 문서는 보통 노드 안은 텐서 병렬, 노드 사이는 파이프라인 병렬로 나누라고 하고, NVLink가 없는 GPU(L40S 등)에선 파이프라인 병렬을 권합니다.[23] 토스는 Hopper·Blackwell·L40S가 섞여 있어[2] GPU 종류마다 나누는 법이 달라집니다.{추론}",
+          "**자동 확장** — 토스는 prefill과 decode 중 어느 쪽 부하가 큰지 계산해 Planner가 자동으로 일꾼 수를 늘린다고 했습니다.[2]"
+        ]
+      },
+      "flows": [
+        {
+          "caption": "분리 서빙 요청 하나가 지나가는 길 (토스 발표 화면 + Dynamo 문서)",
+          "steps": [
+            "게이트웨이 · GPU 종류별 용량에 맞춰 보냄",
+            "KV 인지 라우터 · 캐시가 겹치고 덜 바쁜 일꾼 고르기",
+            "Prefill 일꾼 · 질문을 읽어 KV 캐시 만들기",
+            "NIXL · KV 캐시를 InfiniBand로 Decode 쪽에 넘기기",
+            "Decode 일꾼 · 토큰을 한 개씩 써서 돌려주기",
+            "Planner · 부하를 보고 일꾼 수 조절"
+          ],
+          "mine_from": 3
+        }
+      ],
+      "examples": [
+        {
+          "title": "reconcile 한 바퀴 흉내 — 원하는 일꾼 수와 지금 일꾼 수를 맞춘다",
+          "body": "Operator가 하는 일의 뼈대입니다. 실제 컨트롤러는 쿠버네티스 API를 부르고 이벤트로 깨어나지만, 판단은 이 비교와 같습니다.[18][19] 가상 데이터로 직접 돌린 출력: `create decode pod #7`, `create decode pod #8`, 다음 바퀴 `['nothing to do']`.",
+          "lang": "python",
+          "code": "spec = {\"prefill\": 3, \"decode\": 8}\nactual = {\"prefill\": [\"p1\", \"p2\", \"p3\"], \"decode\": [\"d1\", \"d2\", \"d3\", \"d4\", \"d5\", \"d6\"]}\n\ndef reconcile(spec, actual):\n    actions = []\n    for role in (\"prefill\", \"decode\"):\n        have, want = len(actual[role]), spec[role]\n        if have < want:\n            actions += [f\"create {role} pod #{i}\" for i in range(have + 1, want + 1)]\n        elif have > want:\n            actions += [f\"delete {p}\" for p in actual[role][want:]]\n    return actions or [\"nothing to do\"]\n\nfor a in reconcile(spec, actual):\n    print(a)\nactual[\"decode\"] += [\"d7\", \"d8\"]\nprint(\"다음 바퀴:\", reconcile(spec, actual))"
+        }
+      ],
+      "how_far": "엔진 코드·커널을 고치는 일은 서빙 자리가 맡고,[8] 이 자리는 **그 엔진들이 여러 노드에 걸쳐 제대로 묶여 뜨는 구조와 배포 틀**을 맡습니다.{추론} 최소선: vLLM을 GPU 두 대 이상에 나눠 띄워 보고, 같은 배포를 커스텀 리소스 하나로 적었을 때 컨트롤러가 무엇을 만들어야 하는지 그려 보는 것.{추론}",
+      "refs": [
+        1,
+        2,
+        8,
+        18,
+        19,
+        20,
+        22,
+        23,
+        38
+      ],
+      "study": [
+        "slashlive-serving",
+        "dynamo-docs",
+        "grove",
+        "vllm-docs",
+        "k8s-operator",
+        "kubebuilder",
+        "distserve"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "LLM 분산 추론 시 발생하는 노드 간 통신과 I/O 병목을 해결하기 위해 RDMA(IB/RoCE) 기반의 고속 GPU 네트워크를 설계해요. 대용량 모델 로딩과 KV Cache 관리에 최적화된 VAST 등 고성능 AI 스토리지를 도입해 클러스터의 성능을 극대화해요.",
+      "short": "서버끼리 KV 캐시를 주고받는 길과, 수백 GB 모델 파일·캐시를 빨리 읽고 쓰는 저장소를 만든다.",
+      "why": "토스 GPU 서버는 InfiniBand 풀 메시로 이어져 있어 특정 decode 일꾼만 늘리기 쉽다고 발표했습니다.[2] 같은 발표 화면은 KV 캐시를 **L1 GPU HBM → L2 DRAM → L3 VAST 스토리지** 세 층에 둡니다.[2] 토스증권은 체크포인트를 저장할 때 쓰기가 느린 스토리지 하나가 클러스터 전체를 멈출 수 있다고 적었습니다.[3]",
+      "actually": {
+        "items": [
+          "**RDMA** — CPU를 거치지 않고 다른 서버 메모리에 바로 쓰는 통신입니다. InfiniBand는 전용 망이고, RoCE는 이더넷 위의 RDMA라 PFC·ECN으로 패킷이 버려지지 않게(무손실) 스위치를 맞춰야 합니다.[27]",
+          "**정말 RDMA를 타나** — vLLM 문서는 NCCL_DEBUG=TRACE로 로그를 켜서 `NET/IB/GDRDMA`가 보이면 좋고 `NET/Socket`이면 느린 길이라고 안내합니다. GPUDirect RDMA를 쓰려면 컨테이너에 IPC_LOCK 권한과 /dev/shm이 필요합니다.[23] 어떤 카드·인터페이스를 쓸지는 NCCL 환경 변수로 정합니다.[25]",
+          "**속도를 숫자로** — nccl-tests의 busbw(버스 대역폭)는 all-reduce에서 algbw × 2(n-1)/n으로 계산해 링크 속도와 바로 견줄 수 있게 한 값입니다.[26]",
+          "**KV 캐시를 넘기는 길** — NIXL은 GPU·CPU 메모리와 파일·블록·오브젝트 스토리지 사이를 잇는 전송 라이브러리로, 기본 통로는 UCX이고 GPUDirect Storage 같은 플러그인을 씁니다.[21] GPUDirect Storage는 스토리지에서 GPU 메모리로 CPU 경유 버퍼 없이 읽습니다.[28]",
+          "**왜 공유 스토리지인가(업체 주장)** — VAST는 서버마다 붙은 NVMe에 KV 캐시를 내리면 드라이브가 빨리 닳고 요청이 그 서버에만 붙어야 한다며 공유 스토리지를 권합니다.[29] 판매 회사의 글이므로 직접 재 보고 판단할 몫입니다.{추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "70B 모델 하나가 GPU 메모리를 얼마나 쓰나 (공개 설정값으로 직접 계산)",
+          "body": "Llama 3.3 70B 설정(층 80, KV 헤드 8, 헤드 크기 128)[33]으로 bf16 기준을 계산했습니다. 토큰 하나당 KV 캐시 320KiB, 3만 2천 토큰 대화 하나에 10GiB입니다. 가중치만 140GB라 80GB GPU[40] 두 장 가까이 차고, 8장 묶음에서 남는 메모리로는 이런 긴 대화를 46개쯤만 담습니다(활성값 등은 뺀 이론값). 이래서 캐시를 DRAM·스토리지로 내리는 층이 필요해집니다.{추론} 출력: `토큰 1개당 KV 캐시: 327,680 B = 320 KiB` / `32,768 토큰 대화 1개: 10.0 GiB` / `가중치(bf16): 140 GB -> 80GB GPU 1.75장 분량` / `8장(640GB)에서 남는 메모리로 담는 32k 대화 수: 46개`",
+          "lang": "python",
+          "code": "layers, kv_heads, head_dim, bytes_ = 80, 8, 128, 2\nper_token = 2 * layers * kv_heads * head_dim * bytes_   # K와 V 두 벌\nprint(f\"토큰 1개당 KV 캐시: {per_token:,} B = {per_token/1024:.0f} KiB\")\nfor ctx in (4_096, 32_768, 131_072):\n    print(f\"  {ctx:>7,} 토큰 대화 1개: {per_token*ctx/2**30:6.1f} GiB\")\nweights = 70e9 * 2\nprint(f\"가중치(bf16): {weights/1e9:.0f} GB -> 80GB GPU {weights/80e9:.2f}장 분량\")\nfree = 8 * 80e9 - weights\nprint(f\"8장(640GB)에서 남는 메모리로 담는 32k 대화 수: {int(free // (per_token * 32_768))}개\")"
+        },
+        {
+          "title": "모델 파일 140GB를 읽는 시간 — 저장소 속도가 곧 확장 속도",
+          "body": "이론값입니다. 1GB/s면 140초, 10GB/s면 14초, 50GB/s면 2.8초. decode 일꾼 8개가 한꺼번에 새로 뜨면 같은 파일을 1,120GB 읽습니다. 트래픽이 몰려 일꾼을 늘리는 순간[2] 이 시간이 그대로 대기 시간이 됩니다.{추론}",
+          "lang": "python",
+          "code": "size_gb = 140\nfor name, gbps in [(\"1GB/s\", 1), (\"10GB/s\", 10), (\"50GB/s\", 50)]:\n    print(f\"{name:7s} -> {size_gb / gbps:6.1f}초\")\nprint(\"디코드 일꾼 8대가 한꺼번에 새로 뜨면 읽는 양:\", 8 * size_gb, \"GB\")"
+        }
+      ],
+      "how_far": "스위치·케이블 같은 물리 망과 IDC 쪽은 시스템 엔지니어(GPU) 자리와 나뉘는 것으로 보이고,[9] 이 자리는 **쿠버네티스 위의 파드가 그 망과 스토리지를 제대로 쓰게 하는 설계**가 중심입니다.{추론} 최소선: 두 노드 사이 nccl-tests를 돌려 busbw를 읽고, 로그에서 RDMA를 탔는지 확인해 '왜 이 숫자인지' 설명할 수 있는 것.{추론}",
+      "refs": [
+        2,
+        3,
+        9,
+        21,
+        23,
+        25,
+        26,
+        27,
+        28,
+        29,
+        33,
+        40
+      ],
+      "study": [
+        "nccl-docs",
+        "nccl-tests",
+        "roce-lossless",
+        "gds-docs",
+        "ml-eng-book",
+        "toss-gpu-cluster-1",
+        "cs336-parallel"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "5년 이상 또는 그에 준하는 인프라 역량으로, Kubernetes 기반의 공용 플랫폼을 직접 설계하고 운영해 본 분과 함께하고 싶어요.",
+      "short": "남의 클러스터를 쓰기만 한 게 아니라, 여러 팀이 같이 쓰는 쿠버네티스를 직접 짓고 지켜 본 경험.",
+      "why": "이 팀이 만든 인프라는 토스의 **모든 ML/AI 워크로드**가 올라가는 바닥이고,[1] 그 위에서 서빙·검색 같은 다른 자리가 일합니다.[8] 그래서 '내 서비스 하나'가 아니라 여러 팀이 나눠 쓰는 클러스터를 운영해 본 사람을 찾습니다.{추론}",
+      "actually": {
+        "items": [
+          "**공용이라 생기는 일** — 팀마다 네임스페이스·쿼터·권한을 나누고, 한 팀의 실수가 다른 팀을 멈추지 않게 막는 장치가 필요합니다.{추론}",
+          "**업그레이드** — 클러스터·CNI·메시·GPU 드라이버 버전을 서비스 중단 없이 올리는 계획을 세웁니다.{추론}",
+          "**장애와 기록** — 이력서 안내도 플랫폼을 운영하며 겪은 치명적 장애를 해결했거나 성능·리소스를 최적화한 경험을 적으라고 합니다.[1]"
+        ]
+      },
+      "level": {
+        "basic": "파드·디플로이먼트·서비스를 만들고 kubectl로 문제를 찾는다.",
+        "work": "여러 팀이 쓰는 클러스터의 네트워크·권한·쿼터·업그레이드를 설계하고 장애를 이끌어 해결한다.",
+        "team": "온프레미스와 클라우드가 섞인 GPU 클러스터에서 같은 일을 하고, 서빙 팀이 바로 쓸 수 있는 형태로 내놓는다.[1]"
+      },
+      "how_far": "'5년'은 '그에 준하는 역량'과 함께 적혀 있어 햇수보다 **직접 설계·운영한 범위**를 봅니다.[1] 이력서에는 무엇을 썼는지보다 어떤 목적의 과제였고 어떻게 풀었는지를 적으라고 합니다.[1]",
+      "refs": [
+        1,
+        8
+      ],
+      "study": [
+        "k8s-in-action",
+        "kube-book",
+        "sre-book"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "대규모 GPU 클러스터 및 GPU Operator 스택 프로덕션 운영 경험이 있는 분과 함께하고 싶어요",
+      "short": "GPU 서버 여러 대를 쿠버네티스로 실제 서비스에 돌려 보고, 드라이버·플러그인 문제를 직접 겪어 본 경험.",
+      "why": "토스는 Hopper·Blackwell·L40S·A100처럼 여러 세대 GPU를 섞어 쓰고,[2] 같은 그룹 토스증권도 H100·H200 클러스터를 직접 운영합니다.[4] 세대마다 드라이버·MIG·NVLink 조건이 달라 GPU Operator 설정이 한 벌로 끝나지 않습니다.{추론}",
+      "actually": {
+        "items": [
+          "**운영 범위** — GPU Operator가 관리하는 드라이버·toolkit·device plugin·GPU Feature Discovery·DCGM Exporter·MIG Manager의 버전과 설정을 맞추는 일입니다.[15]",
+          "**노드 라벨** — GPU Feature Discovery가 붙인 GPU 종류 라벨로 어떤 파드가 어떤 GPU에 갈지 정합니다.[14]",
+          "**고장 대응** — 점검 도구(dcgmi diag)로 GPU를 단계별로 검사하고,[32] 이상한 노드를 작업에서 빼는 흐름을 만듭니다.{추론}"
+        ]
+      },
+      "how_far": "'대규모'의 숫자는 공고에 없습니다. 적어도 GPU 노드 여러 대를 프로덕션에서 운영하며 **드라이버 업그레이드나 GPU 고장을 직접 처리해 본 이야기**가 있어야 이 줄을 채웁니다.{추론}",
+      "refs": [
+        2,
+        4,
+        14,
+        15,
+        32
+      ],
+      "study": [
+        "gpu-operator-docs",
+        "toss-mig",
+        "dcgm-docs",
+        "ml-eng-book"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "vLLM, SGLang 등 LLM 서빙 엔진을 활용한 대용량 트래픽 처리 및 분산 추론 인프라의 프로덕션 운영 을 해본 분과 함께하고 싶어요",
+      "short": "LLM을 실제 사용자 트래픽에 띄워 보고, 여러 GPU에 나눠 띄운 걸 운영해 본 경험.",
+      "why": "토스 LLM 트래픽은 업무 시간에 몰리고, 갑자기 몰리는 요청은 입장 제한(429)으로, 계속되는 부하는 자동 확장으로 막는다고 발표했습니다.[2] 인프라 자리도 이 패턴을 알아야 노드·네트워크·스토리지를 맞게 준비합니다.{추론}",
+      "actually": {
+        "items": [
+          "**엔진이 내는 지표** — vLLM은 /metrics로 첫 토큰까지 시간, KV 캐시 사용률, 기다리는 요청 수를 냅니다.[41] 인프라 쪽 경보와 확장도 이 숫자에 맞춥니다.{추론}",
+          "**분산 추론의 고장 지점** — 여러 노드에 걸친 모델은 한 노드·한 링크만 느려도 전체가 느려집니다.{추론} vLLM 문서는 노드 사이 통신이 어떤 길로 가는지 로그로 확인하라고 합니다.[23]",
+          "**엔진 둘** — SGLang은 RadixAttention으로 앞부분이 같은 요청의 캐시를 재사용하는 서빙 프레임워크입니다.[24] 토스는 모델마다 엔진을 고른다고 했습니다.[2]"
+        ]
+      },
+      "how_far": "엔진 내부를 고치는 깊이는 서빙 자리의 몫이고,[8] 이 줄은 **엔진을 프로덕션 트래픽에서 안정적으로 돌리는 인프라 쪽 경험**을 묻습니다.{추론} 최소선: 엔진 지표를 모아 대시보드·경보를 만들고, 트래픽이 몰릴 때 무엇이 먼저 무너지는지 겪어 본 것.{추론}",
+      "refs": [
+        2,
+        8,
+        23,
+        24,
+        41
+      ],
+      "study": [
+        "vllm-docs",
+        "sglang-docs",
+        "slashlive-serving",
+        "cs336-inference"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Python, Go 등을 활용한 인프라 자동화, 또는 K8s CRD/Controller 패턴을 직접 구현해 시스템을 구조적으로 추상화해 본 분이면 좋아요",
+      "short": "반복 운영을 스크립트로 없애 봤거나, 쿠버네티스에 우리만의 리소스를 만들어 컨트롤러로 돌려 본 경험.",
+      "why": "업무 셋째 줄이 서빙 워크로드를 커스텀 리소스와 Operator로 배포 자동화하는 것입니다.[1] Dynamo도 쿠버네티스 오퍼레이터와 Grove 같은 CRD로 배포합니다.[20][22] 이런 도구를 쓰기만 하는 게 아니라 고치거나 감쌀 수 있어야 합니다.{추론}",
+      "actually": {
+        "items": [
+          "**CRD + 컨트롤러** — 커스텀 리소스로 '원하는 상태'를 적게 하고, 컨트롤러가 그 상태를 지키게 만드는 것이 Operator 패턴입니다.[18]",
+          "**Go가 흔한 이유** — Kubebuilder는 CRD와 컨트롤러를 Go로 만드는 프레임워크입니다.[19] 쿠버네티스 생태계 도구 다수가 Go로 쓰여 있어 고치려면 읽어야 합니다.{추론}",
+          "**Python 자동화** — 노드 점검·용량 보고서·장애 노드 격리처럼 클러스터 밖의 반복 일을 스크립트로 묶습니다.{추론}"
+        ]
+      },
+      "level": {
+        "basic": "Python이나 Go로 쿠버네티스 API를 불러 리소스를 읽고 바꾼다.",
+        "work": "Kubebuilder 등으로 CRD와 컨트롤러를 만들어 상태 차이를 메우고, 실패·재시도·삭제 정리(finalizer)를 다룬다.",
+        "team": "여러 부품으로 된 분산 추론 서비스를 리소스 하나로 감싸 배포·확장되게 만든다.[1][22]"
+      },
+      "how_far": "공고 표현이 '이면 좋아요'라 둘 중 하나 — 인프라 자동화 **또는** CRD/Controller — 를 보여 주면 됩니다.[1] 오픈소스를 쓰다 생긴 버그를 고치거나 기여한 경험도 이력서에 적으라고 합니다.[1]",
+      "refs": [
+        1,
+        18,
+        19,
+        20,
+        22
+      ],
+      "study": [
+        "kubebuilder",
+        "k8s-operator",
+        "grove"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "AI/ML 모델링에 대한 완벽한 도메인 지식이 없어도 괜찮아요. 탄탄한 K8s 역량과 인프라 최적화 경험을 바탕으로, 데이터 및 AI 조직과 협업하며 토스의 압도적인 LLM 시스템 생태계를 함께 고도화해 나갈 수 있으면 충분해요.",
+      "short": "모델을 만들 줄 몰라도 된다. 대신 서빙·AI 팀의 요구를 인프라 언어로 바꿔 들을 수 있어야 한다.",
+      "why": "이 자리는 모델을 만드는 곳이 아니라 모델이 돌아가는 바닥을 만드는 곳입니다.[1] 다만 직무 인터뷰에 **ML 시스템 설계**가 들어 있어,[1] 서빙이 무엇에 민감한지는 알고 들어가야 대화가 됩니다.{추론}",
+      "actually": {
+        "items": [
+          "**알면 되는 정도** — prefill과 decode가 다르게 GPU를 쓰고,[38] KV 캐시가 대화 길이만큼 메모리를 먹는다는 것.[33]",
+          "**협업 상대** — 서빙 엔지니어는 엔진·커널을, 이 자리는 그 엔진이 올라갈 클러스터·네트워크·스토리지를 봅니다.[1][8]",
+          "**같은 숫자로 말하기** — 서빙 팀의 첫 토큰 시간·KV 캐시 사용률 같은 지표[41]를 인프라 쪽 노드·링크 지표와 이어서 봅니다.{추론}"
+        ]
+      },
+      "how_far": "모델 학습·튜닝은 요구하지 않습니다.[1] 최소선: 70B 모델을 띄우려면 GPU 몇 장·메모리 얼마·노드 사이 대역폭이 얼마나 필요한지 손으로 어림할 수 있는 것.{추론}",
+      "refs": [
+        1,
+        8,
+        33,
+        38,
+        41
+      ],
+      "study": [
+        "cs336-gpus",
+        "cs336-inference",
+        "slashlive-serving"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "NVIDIA Dynamo 등 분산 추론 아키텍처나 RDMA(IB/RoCE), NCCL 기반의 고속 GPU 네트워크 환경을 이해하고 계신 분이면 잘 맞아요.",
+      "short": "추론을 여러 서버에 나누면 무엇이 오가는지, 그 통신이 어떤 망·라이브러리로 가는지 아는 사람.",
+      "why": "토스 서빙은 Dynamo 위에서 돌고 GPU 서버가 InfiniBand로 이어져 있습니다.[2] 동료 한마디도 Dynamo 같은 분산 추론 프레임워크가 완벽하게 돌도록 GPU 고속 네트워크와 시스템 자원을 직접 제어하는 경험을 꼽습니다.[1]",
+      "actually": {
+        "items": [
+          "**NCCL** — GPU 사이 집단 통신 라이브러리로, NVLink·InfiniBand·소켓 중 길을 고르고 환경 변수로 카드·인터페이스를 지정합니다.[25]",
+          "**NVLink와 서버 사이 망** — 서버 안 GPU끼리는 NVLink(H100은 초당 900GB)로,[40] 서버 사이는 InfiniBand·RoCE로 잇습니다. 두 속도 차이가 어디에 무엇을 나눌지를 정합니다.{추론}",
+          "**Dynamo의 통신** — KV 캐시를 일꾼 사이에 넘기는 일은 NIXL이 맡습니다.[20][21]"
+        ]
+      },
+      "how_far": "'이해'라는 낱말을 썼습니다.[1] 직접 망을 깔아 본 적이 없어도, 두 노드에서 NCCL 시험을 돌리고 결과를 읽을 수 있으면 이야기할 거리가 됩니다.{추론}",
+      "refs": [
+        1,
+        2,
+        20,
+        21,
+        25,
+        40
+      ],
+      "study": [
+        "nccl-docs",
+        "nccl-tests",
+        "dynamo-docs",
+        "cs336-parallel"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "Volcano, Kueue 등을 활용해 대규모 멀티테넌트 GPU 자원을 스케줄링해 보셨으면 더욱 환영해요.",
+      "short": "여러 팀이 GPU를 나눠 쓸 때 누가 먼저·얼마나·같이 뜨게 할지 정하는 스케줄러를 써 본 경험.",
+      "why": "기본 쿠버네티스 스케줄러는 파드 하나씩 자리를 찾습니다. 여러 팀 쿼터, 빌려 쓰기, '여러 파드가 한꺼번에 떠야 하는' 분산 작업은 따로 다뤄야 합니다.{추론} 토스는 낮엔 실시간, 밤엔 배치로 GPU를 돌려 씁니다.[2]",
+      "actually": {
+        "items": [
+          "**Kueue** — 작업을 언제 들여보낼지(admit)·기다리게 할지·밀어낼지(preempt)를 쿼터로 정하고, 실제 노드 배치는 여전히 kube-scheduler가 합니다.[16]",
+          "**쿼터와 빌려 쓰기** — ClusterQueue마다 기본 몫(nominalQuota)을 두고, 같은 cohort 안에서는 남는 몫을 빌려 쓰다가 주인이 필요하면 돌려줍니다. ResourceFlavor로 GPU 종류를 노드 묶음에 짝짓습니다.[16]",
+          "**Volcano의 gang** — PodGroup의 minMember를 못 채우면 그룹의 파드를 하나도 올리지 않아, 반만 떠서 GPU를 붙잡고 기다리는 일을 막습니다.[17]",
+          "**추론에도 gang** — Grove도 같이 떠야 하는 추론 부품을 '전부 아니면 하나도'로 올립니다.[22]"
+        ]
+      },
+      "how_far": "우대 사항입니다. 써 본 적이 없다면 kind 같은 작은 클러스터에서 팀 둘의 쿼터와 빌려 쓰기를 설정해 보고, 선점이 언제 일어나는지 확인해 보면 대화할 수 있습니다.{추론}",
+      "refs": [
+        2,
+        16,
+        17,
+        22
+      ],
+      "study": [
+        "kueue-docs",
+        "volcano-docs",
+        "grove"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "온프레미스와 퍼블릭 클라우드가 결합된 하이브리드 환경, 혹은 VAST 등 고성능 AI 스토리지를 다뤄본 경험이 있으시면 더욱 좋아요.",
+      "short": "IDC와 클라우드를 한 시스템처럼 묶어 봤거나, GPU에 데이터를 빨리 먹이는 전용 저장소를 다뤄 본 경험.",
+      "why": "이 팀 환경이 온프레미스 ML 클러스터 + AWS(EKS, EKS Hybrid) + GCP이고,[1] 토스 서빙은 KV 캐시의 셋째 층으로 VAST 스토리지를 씁니다.[2]",
+      "actually": {
+        "items": [
+          "**하이브리드의 어려움** — 노드와 AWS 사이 연결이 안정적이어야 하고, 연결이 자주 끊기는 환경엔 Hybrid Nodes가 맞지 않다고 문서가 적습니다.[10] 사내망과 클라우드 사이 대역·지연이 곧 설계 조건입니다.{추론}",
+          "**스토리지가 성능인 이유** — 체크포인트·모델 로딩·KV 캐시 내리기가 모두 스토리지를 거칩니다. 토스증권은 느린 스토리지 하나가 전체를 멈출 수 있다고 했습니다.[3]",
+          "**재는 법** — 모델 파일을 여러 노드에서 동시에 읽을 때의 처리량, GPU로 바로 읽기(GPUDirect Storage)가 되는지를 확인합니다.[28]{추론}"
+        ]
+      },
+      "how_far": "VAST는 '등'으로 예를 든 것입니다.[1] 병렬 파일시스템이나 고성능 NAS를 GPU 작업에 붙여 본 경험도 같은 줄로 읽힐 가능성이 큽니다.{추론}",
+      "refs": [
+        1,
+        2,
+        3,
+        10,
+        28
+      ],
+      "study": [
+        "eks-hybrid",
+        "gds-docs",
+        "toss-gpu-cluster-1",
+        "sysperf-book"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "단순 운영을 넘어 DCGM 지표, XID, NVLink 등 GPU 하드웨어 레벨의 장애를 깊이 있게 분석하고 진단해 본 분이면 ML/AI Infra 팀의 방향과 완벽하게 잘 맞을 거예요.",
+      "short": "'파드를 다시 띄웠다'에서 멈추지 않고, GPU 오류 번호·지표로 고장 난 부품까지 짚어 본 경험.",
+      "why": "GPU가 많아질수록 하드웨어 고장은 드문 일이 아니라 매일의 일이 되고, 분산 추론에선 GPU 한 장이 전체를 멈춥니다.{추론} 토스증권도 하드웨어를 고르게 유지하고 성능 시험으로 튀는 장비를 찾아야 한다고 적었습니다.[3]",
+      "actually": {
+        "items": [
+          "**XID** — NVIDIA 드라이버가 커널 로그에 남기는 GPU 오류 번호입니다. 예를 들어 Xid 79는 GPU가 버스에서 떨어졌다는 뜻이고, NVLink 관련 사건은 Xid 144~150으로 따로 해석합니다.[30]",
+          "**DCGM 지표** — dcgm-exporter는 마지막 XID 값을 DCGM_FI_DEV_XID_ERROR로 냅니다. NVLink 오류 카운터는 기본 목록에서 꺼져 있고, GPU 세대마다 이름이 다릅니다.[31] 켜야 볼 수 있습니다.{추론}",
+          "**NVLink** — 서버 안 GPU 묶음은 Fabric Manager가 NVSwitch 패브릭을 설정하고 NVLink 오류를 감시합니다.[39] MIG를 켜면 NVLink 연결이 끊긴다는 점도 진단 때 헷갈리는 지점입니다.[4]",
+          "**점검** — 의심 노드는 dcgmi diag로 단계별 진단을 돌립니다.[32]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "커널 로그에서 XID를 세어 '격리할 노드'를 고르는 작은 스크립트 (가상 로그)",
+          "body": "같은 GPU에서 하드웨어 쪽 오류(여기선 Xid 79)가 반복되면 격리, 나머지는 응용 쪽부터 보는 규칙의 뼈대입니다. 어떤 번호를 하드웨어로 볼지는 NVIDIA의 Xid 카탈로그에서 번호별 조치를 보고 정합니다.[30] 출력: `0000:1b:00  Xid  13 × 2  → 앱 쪽 먼저 확인` / `0000:9a:00  Xid  79 × 2  → 노드 격리 → 점검`",
+          "lang": "python",
+          "code": "import re\nfrom collections import Counter\n\nlog = \"\"\"\\\n[1021.1] NVRM: Xid (PCI:0000:1b:00): 13, pid=4411, Graphics Exception\n[3310.4] NVRM: Xid (PCI:0000:9a:00): 79, pid=0, GPU has fallen off the bus.\n[5120.9] NVRM: Xid (PCI:0000:1b:00): 13, pid=4520, Graphics Exception\n[7002.2] NVRM: Xid (PCI:0000:9a:00): 79, pid=0, GPU has fallen off the bus.\n\"\"\"\nhits = Counter(re.findall(r\"Xid \\(PCI:([0-9a-f:]+)\\): (\\d+)\", log))\nfor (bus, xid), n in sorted(hits.items()):\n    hw = xid in {\"79\"}\n    verdict = \"노드 격리 → 점검\" if hw and n >= 2 else \"앱 쪽 먼저 확인\"\n    print(f\"{bus}  Xid {xid:>3} × {n}  → {verdict}\")"
+        }
+      ],
+      "how_far": "공고가 '팀의 방향'이라고 짚은 줄입니다.[1] 최소선: XID 번호를 카탈로그로 찾아 읽고, DCGM 지표로 '이 GPU만 이상하다'를 보이고, 노드를 빼고 진단을 돌리는 흐름을 설명할 수 있는 것.{추론}",
+      "refs": [
+        1,
+        3,
+        4,
+        30,
+        31,
+        32,
+        39
+      ],
+      "study": [
+        "xid-docs",
+        "dcgm-docs",
+        "toss-mig",
+        "ml-eng-book"
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "slashlive-serving",
+      "title": "SlashLive · 토스는 AI모델을 어떻게 서빙할까",
+      "by": "토스 서빙 엔지니어링 · 21분",
+      "kind": "video",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "https://www.youtube.com/watch?v=t_35VpGYgiY",
+      "why": "이 인프라의 가장 큰 손님이 직접 말한 발표. InfiniBand 풀 메시, Prefill·Decode 일꾼, KV 캐시 3층(HBM·DRAM·VAST), Grove·Planner — 업무 셋째·넷째 줄의 회사 쪽 근거."
+    },
+    {
+      "id": "toss-gpu-cluster-1",
+      "title": "고성능 GPU 클러스터 도입기 #1",
+      "by": "토스증권 ML Engineer · Toss Tech · 2024",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://toss.tech/article/securities_llm_1",
+      "why": "같은 그룹이 GPU 클러스터를 직접 들인 이유와, 스토리지 하나가 전체를 멈추는 문제. 업무 '스토리지 병목'을 왜 신경 쓰는지 감을 잡는다."
+    },
+    {
+      "id": "toss-mig",
+      "title": "GPU를 밀도 있게 쓰는 방법 — 토스증권의 GPU 가상화(MIG) 도입기",
+      "by": "토스증권 ML Engineer · Toss Tech · 2025",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "https://toss.tech/article/toss-securities-gpu-mig",
+      "why": "device plugin·dcgm-exporter 설정까지 나온 한국어 글. 업무 'GPU Operator 스택·리소스 효율'을 실제 설정으로 본다."
+    },
+    {
+      "id": "slash23-istio",
+      "title": "SLASH 23 · 고객 불안을 0으로 만드는 토스의 Istio Zero Trust",
+      "by": "토스 DevOps · 28분",
+      "kind": "video",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "https://www.youtube.com/watch?v=4sJd6PIkP_s",
+      "why": "토스가 Istio·mTLS를 실제로 옮긴 순서와 생긴 문제. 업무 첫 줄 'Istio 기반 네트워크'의 회사 쪽 출발점."
+    },
+    {
+      "id": "slash22-mesh",
+      "title": "SLASH 22 · 은행 앱에도 Service Mesh 도입이 가능한가요?",
+      "by": "토스뱅크 DevOps · 20분",
+      "kind": "video",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "https://www.youtube.com/watch?v=ftFHZwyUN38",
+      "why": "같은 그룹이 서비스 메시를 운영하며 걸린 것들. 메시가 커지면 무엇이 무거워지는지."
+    },
+    {
+      "id": "slash24-ebpf",
+      "title": "SLASH 24 · 미처 알지 못했던 Kernel까지 Observability 향상시키기",
+      "by": "토스 DevOps · 22분",
+      "kind": "video",
+      "lang": "ko",
+      "free": true,
+      "level": "심화",
+      "url": "https://www.youtube.com/watch?v=e8cEDhAPm-E",
+      "why": "eBPF로 네트워크 문제를 커널 함수까지 좁혀 가는 토스 사례. Cilium(eBPF 기반) 트러블슈팅의 바탕."
+    },
+    {
+      "id": "kube-book",
+      "title": "쿠버네티스 입문 (우리 사이트 책)",
+      "by": "우리 사이트 책장",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "/wiki/kubernetes",
+      "why": "kubectl이 돌려준 것을 읽는 법 — Pending·CrashLoopBackOff부터. GPU 파드가 안 뜰 때 제일 먼저 보는 것."
+    },
+    {
+      "id": "k8s-in-action",
+      "title": "쿠버네티스 인 액션",
+      "by": "마르코 룩샤 · 강인호 외 옮김 · 에이콘출판 · 2020",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=235962702",
+      "why": "API 서버·컨트롤러·스케줄러가 안에서 어떻게 움직이나까지. 요건 '쿠버네티스 공용 플랫폼 설계·운영'의 기초 체력."
+    },
+    {
+      "id": "k8s-operator",
+      "title": "Kubernetes 문서 · Operator pattern",
+      "by": "Kubernetes",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://kubernetes.io/docs/concepts/extend-kubernetes/operator/",
+      "why": "커스텀 리소스 + 컨트롤러로 운영 지식을 코드로 옮긴다는 뜻을 공식 정의로. 업무 'Custom Resource와 Operator 패턴'."
+    },
+    {
+      "id": "kubebuilder",
+      "title": "The Kubebuilder Book",
+      "by": "Kubernetes SIG API Machinery",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://book.kubebuilder.io/",
+      "why": "CronJob 컨트롤러를 따라 만들며 CRD·reconcile을 손에 익히는 공식 안내서. 요건 'K8s CRD/Controller 직접 구현'."
+    },
+    {
+      "id": "gpu-operator-docs",
+      "title": "NVIDIA GPU Operator 문서",
+      "by": "NVIDIA",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/overview.html",
+      "why": "드라이버·toolkit·device plugin·DCGM exporter·MIG manager가 어떤 순서로 깔리고 어디서 막히는지. 업무·요건의 'GPU Operator 스택'."
+    },
+    {
+      "id": "dcgm-docs",
+      "title": "NVIDIA DCGM 문서 · Diagnostics",
+      "by": "NVIDIA",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.nvidia.com/datacenter/dcgm/latest/user-guide/dcgm-diagnostics.html",
+      "why": "GPU 점검 단계(r1~r4). 우대 'DCGM 지표로 장애 진단'."
+    },
+    {
+      "id": "xid-docs",
+      "title": "NVIDIA Xid Errors 문서",
+      "by": "NVIDIA",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.nvidia.com/deploy/xid-errors/index.html",
+      "why": "커널 로그의 GPU 오류 번호를 읽는 법과 번호별 조치 카탈로그. 우대 'XID·NVLink 장애 분석'."
+    },
+    {
+      "id": "nccl-docs",
+      "title": "NVIDIA NCCL 사용자 가이드 (개요·환경 변수)",
+      "by": "NVIDIA",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/overview.html",
+      "why": "GPU 사이 통신이 NVLink·InfiniBand·소켓 중 어느 길로 가는지, 어떤 변수로 바꾸는지. 우대 'NCCL 기반 고속 GPU 네트워크'."
+    },
+    {
+      "id": "nccl-tests",
+      "title": "nccl-tests · PERFORMANCE.md",
+      "by": "NVIDIA · GitHub",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://github.com/NVIDIA/nccl-tests/blob/master/doc/PERFORMANCE.md",
+      "why": "클러스터 통신 속도를 재고 읽는 표준 도구. RDMA 네트워크를 '설계했다'를 숫자로 보이는 법."
+    },
+    {
+      "id": "roce-lossless",
+      "title": "NVIDIA Networking · RoCEv2 무손실 패브릭 설정 방법",
+      "by": "NVIDIA Networking",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://networking-docs.nvidia.com/sol/howto-configure-rocev2-lossless-fabric-for-vmware-esxi-6-5-and-above",
+      "why": "RoCE에 PFC·ECN이 왜 필요한지 스위치 설정으로(2019~2020년 장비 기준). 업무 'RDMA(IB/RoCE) 네트워크 설계'."
+    },
+    {
+      "id": "ml-eng-book",
+      "title": "Machine Learning Engineering Open Book",
+      "by": "Stas Bekman · GitHub",
+      "kind": "book",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://github.com/stas00/ml-engineering",
+      "why": "가속기·네트워크·스토리지·디버깅을 대규모 GPU 클러스터를 운영한 사람 눈으로 정리한 무료 책. 업무 대부분에 걸친다."
+    },
+    {
+      "id": "dynamo-docs",
+      "title": "NVIDIA Dynamo (문서·GitHub)",
+      "by": "NVIDIA",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://github.com/ai-dynamo/dynamo",
+      "why": "분리 서빙·KV 라우팅·NIXL·Planner·쿠버네티스 오퍼레이터 — 업무 'Dynamo 기반 분산 추론 아키텍처'의 공식 자료."
+    },
+    {
+      "id": "grove",
+      "title": "ai-dynamo/grove",
+      "by": "NVIDIA · GitHub",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://github.com/ai-dynamo/grove",
+      "why": "여러 부품짜리 추론 서비스를 쿠버네티스 리소스 하나로 묶는 실제 CRD·컨트롤러. 'CR과 Operator로 배포 자동화'의 살아 있는 예."
+    },
+    {
+      "id": "vllm-docs",
+      "title": "vLLM 문서 (Parallelism and Scaling · Metrics)",
+      "by": "vLLM 프로젝트",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.vllm.ai/en/latest/serving/parallelism_scaling.html",
+      "why": "여러 GPU·여러 노드에 모델을 나눠 띄우는 법과 InfiniBand·NCCL 확인법. 요건 'vLLM 분산 추론 인프라 운영'."
+    },
+    {
+      "id": "sglang-docs",
+      "title": "SGLang 문서",
+      "by": "SGLang 프로젝트",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.sglang.io/",
+      "why": "공고가 vLLM과 나란히 꼽은 엔진. 같은 모델을 두 엔진으로 띄워 비교해 볼 때."
+    },
+    {
+      "id": "kueue-docs",
+      "title": "Kueue 문서 (ClusterQueue · ResourceFlavor · Cohort)",
+      "by": "Kubernetes SIG Scheduling",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://kueue.sigs.k8s.io/docs/concepts/cluster_queue/",
+      "why": "팀별 GPU 쿼터·빌려 쓰기·선점. 우대 'Kueue로 멀티테넌트 GPU 스케줄링'."
+    },
+    {
+      "id": "volcano-docs",
+      "title": "Volcano 문서 (PodGroup · Queue)",
+      "by": "Volcano (CNCF)",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://volcano.sh/docs/Concepts/PodGroup",
+      "why": "여러 파드를 '전부 아니면 하나도' 올리는 gang 스케줄링. 우대 'Volcano'."
+    },
+    {
+      "id": "cilium-docs",
+      "title": "Cilium 문서 (Introduction · Integration with Istio)",
+      "by": "Cilium (CNCF)",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.cilium.io/en/stable/overview/intro/",
+      "why": "eBPF 네트워킹·kube-proxy 대체·Hubble, 그리고 Istio와 같이 쓸 때의 설정. 업무 첫 줄 'Istio, Cilium 기반 네트워크'."
+    },
+    {
+      "id": "istio-ambient",
+      "title": "Istio 문서 · Ambient mode",
+      "by": "Istio",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://istio.io/latest/docs/ambient/overview/",
+      "why": "사이드카 없는 메시 — GPU 파드마다 프록시를 붙이지 않는 선택지. 업무 첫 줄."
+    },
+    {
+      "id": "eks-hybrid",
+      "title": "Amazon EKS · Hybrid Nodes",
+      "by": "AWS",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.aws.amazon.com/eks/latest/userguide/hybrid-nodes-overview.html",
+      "why": "온프레미스 서버를 EKS 노드로 붙이는 법과 네트워크 조건. 팀 소개의 'EKS Hybrid'와 업무 '하이브리드 클러스터'."
+    },
+    {
+      "id": "gds-docs",
+      "title": "NVIDIA GPUDirect Storage 개요",
+      "by": "NVIDIA",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://docs.nvidia.com/gpudirect-storage/overview-guide/index.html",
+      "why": "스토리지에서 GPU 메모리로 CPU를 건너뛰어 읽는 길. 업무 '대용량 모델 로딩·고성능 AI 스토리지'."
+    },
+    {
+      "id": "distserve",
+      "title": "DistServe: Disaggregating Prefill and Decoding for Goodput-optimized LLM Serving",
+      "by": "Zhong 외 · OSDI 2024",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://arxiv.org/abs/2401.09670",
+      "why": "prefill과 decode를 왜 다른 GPU로 나누는지의 원 논문. 분리 서빙이 네트워크에 무엇을 요구하는지 이해할 때."
+    },
+    {
+      "id": "cs336-inference",
+      "title": "Stanford CS336 · Lecture 10: Inference (강의 노트)",
+      "by": "우리 사이트 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "/lectures/EfM546A79aM",
+      "why": "prefill·decode·KV 캐시가 메모리·대역폭을 왜 먹는지. 인프라 쪽에서 서빙 요구를 숫자로 읽는 바탕."
+    },
+    {
+      "id": "cs336-parallel",
+      "title": "Stanford CS336 · Lecture 7: Parallelism (강의 노트)",
+      "by": "우리 사이트 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "/lectures/SzpOcwdIL0Y",
+      "why": "모델을 여러 GPU·노드에 나누면 무엇이 오가는지. 노드 간 통신이 왜 병목이 되는지."
+    },
+    {
+      "id": "cs336-gpus",
+      "title": "Stanford CS336 · Lecture 5: GPUs, TPUs (강의 노트)",
+      "by": "우리 사이트 강의 노트",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "/lectures/izZba4UA7iY",
+      "why": "GPU 메모리 계층과 대역폭. 'AI/ML 도메인 지식이 완벽하지 않아도' 이 정도는 알고 들어가면 대화가 된다."
+    },
+    {
+      "id": "sre-book",
+      "title": "Site Reliability Engineering (온라인 무료판)",
+      "by": "Google · O'Reilly · 2016",
+      "kind": "book",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://sre.google/sre-book/table-of-contents/",
+      "why": "모니터링·용량 계획·장애 대응·포스트모템 장. 업무 '선제적인 용량 계획'과 이력서 안내의 '치명적 장애 해결'."
+    },
+    {
+      "id": "sysperf-book",
+      "title": "시스템 성능 엔지니어링",
+      "by": "브렌던 그레그 · 이호연 옮김 · 인사이트",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "심화",
+      "url": "https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=Book&SearchWord=%EC%8B%9C%EC%8A%A4%ED%85%9C+%EC%84%B1%EB%8A%A5+%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81",
+      "why": "CPU·메모리·디스크·네트워크 병목을 찾는 방법론. 업무 'I/O 병목 해결'의 바탕."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "그림 잡기",
+      "time": "1주",
+      "goal": "토스 LLM 서빙이 어떤 층(게이트웨이·엔진·Dynamo·쿠버네티스·GPU·망·스토리지)으로 쌓였고, 이 자리가 어디인지 설명할 수 있다.",
+      "task": "토스 서빙 발표를 보고 'Prefill·Decode 일꾼 – NIXL – InfiniBand – KV 캐시 3층' 그림을 한 장 그린다. 층마다 '여기가 느려지면 사용자에게 무엇이 늦어지나'를 한 줄씩 적는다.",
+      "resources": [
+        "slashlive-serving",
+        "cs336-inference",
+        "cs336-gpus",
+        "toss-gpu-cluster-1"
+      ]
+    },
+    {
+      "title": "쿠버네티스 위에 GPU 올리기",
+      "time": "2~3주",
+      "goal": "GPU 노드에 GPU Operator를 깔고, MIG·쿼터로 여러 팀이 나눠 쓰게 만들 수 있다.",
+      "task": "클라우드 GPU 노드 한두 대로 작은 클러스터를 만들고 GPU Operator를 깐다. 팀 둘을 가정해 Kueue ClusterQueue 두 개와 cohort를 만들고, 한 팀이 남는 GPU를 빌렸다가 돌려주는 과정을 로그로 남긴다.",
+      "resources": [
+        "kube-book",
+        "k8s-in-action",
+        "gpu-operator-docs",
+        "toss-mig",
+        "kueue-docs",
+        "volcano-docs"
+      ]
+    },
+    {
+      "title": "LLM을 여러 GPU에 나눠 띄우기",
+      "time": "2주",
+      "goal": "vLLM을 여러 GPU·노드에 나눠 띄우고, 통신이 어떤 길로 가는지 확인할 수 있다.",
+      "task": "작은 모델을 vLLM으로 텐서 병렬 2로 띄우고 /metrics를 Prometheus로 모은다. 두 노드에서 nccl-tests all_reduce를 돌려 busbw를 표로 만들고, NCCL 로그에서 소켓인지 RDMA인지 확인한다.",
+      "resources": [
+        "vllm-docs",
+        "sglang-docs",
+        "nccl-docs",
+        "nccl-tests",
+        "cs336-parallel"
+      ]
+    },
+    {
+      "title": "Operator 하나 만들기",
+      "time": "2~3주",
+      "goal": "'추론 서비스' 커스텀 리소스를 만들고, 컨트롤러가 prefill·decode 디플로이먼트를 원하는 수로 맞추게 할 수 있다.",
+      "task": "Kubebuilder로 InferenceService(가상) CRD를 만들고 spec에 prefill·decode 수를 적으면 컨트롤러가 디플로이먼트를 만들고 지우게 한다. 같은 일을 Grove 예제와 비교해 무엇이 빠졌는지(gang·기동 순서·배치) 적는다.",
+      "resources": [
+        "kubebuilder",
+        "k8s-operator",
+        "grove",
+        "dynamo-docs"
+      ]
+    },
+    {
+      "title": "고장 내고 진단하기",
+      "time": "1~2주",
+      "goal": "GPU·망·스토리지 문제를 지표와 로그로 짚고 노드를 빼는 흐름을 만든다.",
+      "task": "dcgm-exporter → Prometheus → Grafana를 띄우고 XID·온도 경보를 건다. 가상 XID 로그를 흘려 같은 GPU에서 반복되면 노드를 cordon하고 dcgmi diag를 돌리는 스크립트를 만든다. 모델 파일 로딩 시간을 저장소별로 재 표로 남긴다.",
+      "resources": [
+        "dcgm-docs",
+        "xid-docs",
+        "gds-docs",
+        "ml-eng-book",
+        "sre-book"
+      ]
+    }
+  ],
+  "pay": {
+    "summary": "공고에 연봉은 없다. 공공데이터 집계로 신입 초봉 **약 4,200만원**, 평균 **약 6,200만원** — 공시된 평균 급여는 없다. 이 자리는 5년 이상 또는 그에 준하는 경력직이다",
+    "rows": [
+      {
+        "label": "신입 초봉",
+        "value": "약 4,206만원",
+        "amount": 4206,
+        "basis": "공공데이터 집계",
+        "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없고, 이 공고는 경력직이라 참고만 한다 [34]"
+      },
+      {
+        "label": "평균 연봉",
+        "value": "약 6,163만원",
+        "amount": 6163,
+        "basis": "공공데이터 집계",
+        "note": "같은 집계의 회사 전체 평균 — 경력직이 섞인 값이다 [34]"
+      },
+      {
+        "label": "토스뱅크 초봉",
+        "value": "약 5,146만원",
+        "amount": 5146,
+        "basis": "공공데이터 집계",
+        "peer": true,
+        "note": "같은 집계 사이트의 계열사 값 — 견주어 보기용 [35]"
+      },
+      {
+        "label": "토스뱅크 평균",
+        "value": "약 7,208만원",
+        "amount": 7208,
+        "basis": "공공데이터 집계",
+        "peer": true,
+        "note": "같은 집계의 계열사 평균 [35]"
+      }
+    ],
+    "how": "공고는 레퍼런스 체크 뒤 **처우 협의** 단계에서 정한다고 적었다 [1]. 요건이 '5년 이상 또는 그에 준하는 인프라 역량'이라 [1] 신입 초봉은 이 자리의 기준이 아니다. 비바리퍼블리카는 상장사가 아니라 사업보고서의 '직원 평균 급여'가 없어 공시 숫자를 싣지 못했다. 평균은 경력직이 섞인 회사 전체 값이고, 집계값은 추정이라 실제 제안과 차이가 클 수 있다 {추론}."
+  },
+  "benefits": {
+    "items": [
+      {
+        "name": "식대",
+        "detail": "1인 1법인카드, 금액 제한 없음"
+      },
+      {
+        "name": "업무 비용",
+        "detail": "책·사무용품·업무 교육 100% 지원"
+      },
+      {
+        "name": "장비",
+        "detail": "최고급 노트북·모니터·소프트웨어"
+      },
+      {
+        "name": "근무 장소",
+        "detail": "재택 여부를 스스로 정하고 팀에 공유"
+      },
+      {
+        "name": "자율 휴가",
+        "detail": "보고·승인 없이, 당일 오전에도 사용"
+      },
+      {
+        "name": "리프레쉬 휴가",
+        "detail": "근속 3년마다 1개월 유급"
+      },
+      {
+        "name": "주택 자금 대출",
+        "detail": "1억원 한도 무이자(6개월 이상 재직)"
+      },
+      {
+        "name": "건강",
+        "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+      },
+      {
+        "name": "단체 보험",
+        "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+      },
+      {
+        "name": "교통",
+        "detail": "주차비·택시비 100%(법인카드)"
+      },
+      {
+        "name": "통신비",
+        "detail": "매월 10만원"
+      },
+      {
+        "name": "경조사",
+        "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+      },
+      {
+        "name": "사내 시설",
+        "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+      }
+    ],
+    "note": "토스 팀 복지를 소개한 2021년 공식 글이다 [37]. 지금도 같은지는 글에 없으니 처우 협의 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "토스(비바리퍼블리카) 본사",
+    "address": "서울특별시 강남구 테헤란로 142, 4·10~13·22·23층",
+    "postal": "06236",
+    "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+    "near": "2호선 역삼역 근처 테헤란로 {추론}",
+    "note": "주소는 토스 회사 소개 페이지 하단의 회사 정보다 [36]. 공고 근무지는 'Seoul'로만 적혀 있다 [1]."
+  },
+  "fit": {
+    "good": [
+      "쿠버네티스를 '쓰는' 것보다 GPU·망·스토리지가 맞물리는 아래층에서 원인을 찾는 게 즐거운 사람",
+      "서빙 팀이 새 모델을 출시 당일 올리는 속도를 받쳐 주는 기반을 만들고 싶은 사람[2]",
+      "Dynamo·Grove 같은 새 오픈소스를 들여다보고 고치거나 기여하는 데 거부감이 없는 사람[1]",
+      "모델링을 몰라도 GPU 메모리·대역폭 숫자로 서빙 팀과 대화할 수 있는 사람[1]"
+    ],
+    "hard": [
+      "온프레미스·AWS·GCP가 섞여 있어 같은 문제도 환경마다 답이 다르다[1]",
+      "여러 세대 GPU가 섞여 드라이버·MIG·NVLink 조건 조합이 많다[2][4]",
+      "새 프레임워크(Dynamo·Grove 등)는 문서와 버전이 빨리 바뀐다{추론}",
+      "분산 추론에선 GPU 한 장·링크 하나의 고장이 전체 지연으로 번진다{추론}"
+    ]
+  },
+  "interview": [
+    {
+      "q": "온프레미스 GPU 노드와 EKS의 GPU 노드를 한 클러스터처럼 쓰려면 무엇부터 정하겠어요? Cilium과 Istio는 어떻게 같이 두겠어요?",
+      "a": "팀 소개의 하이브리드 환경과 업무 첫 줄. 연결·주소 대역, kube-proxy 대체 여부, mTLS와 L7 정책 겹침.[1][10][13]"
+    },
+    {
+      "q": "새 GPU 노드에서 nvidia.com/gpu가 0으로 보여요. 어디부터 보겠어요?",
+      "a": "GPU Operator 스택의 설치 순서(드라이버 → toolkit → device plugin)와 validator.[15]"
+    },
+    {
+      "q": "70B 모델을 prefill·decode로 나눠 띄우려 해요. 노드 수, GPU 수, 노드 사이 대역폭을 어떻게 어림하겠어요?",
+      "a": "ML 시스템 설계 면접 주제. KV 캐시 크기, 텐서·파이프라인 병렬, NIXL·InfiniBand.[1][20][23][33]"
+    },
+    {
+      "q": "두 노드 사이 nccl-tests busbw가 기대의 절반이에요. 무엇을 확인하겠어요?",
+      "a": "NCCL이 소켓으로 떨어졌는지, IPC_LOCK·/dev/shm, 쓰는 카드, RoCE라면 PFC·ECN.[23][25][26][27]"
+    },
+    {
+      "q": "분산 추론 중 한 GPU에서 Xid가 반복돼요. 어떻게 진단하고 무엇을 자동화하겠어요?",
+      "a": "우대 마지막 줄. Xid 카탈로그, DCGM 지표, 노드 격리와 dcgmi diag.[1][30][31][32]"
+    },
+    {
+      "q": "여러 팀이 GPU를 나눠 쓰는데 밤엔 배치, 낮엔 실시간이 우선이에요. 쿼터와 선점을 어떻게 설계하겠어요?",
+      "a": "Kueue의 cohort 빌려 쓰기·선점, 토스의 낮·밤 돌려쓰기.[2][16]"
+    }
+  ],
+  "sources": [
+    {
+      "n": 1,
+      "title": "토스 채용 · AI 플랫폼 엔지니어 (Infra) (AI Platform Engineer)",
+      "url": "https://toss.im/career/job-detail?gh_jid=8007436003",
+      "kind": "posting",
+      "note": "ML/AI Infra 팀 소개(온프레미스 ML 쿠버네티스 + AWS EKS·EKS Hybrid + GCP)·업무·요건·우대·이력서 안내·합류 여정(직무 인터뷰: 심층 기술 + ML 시스템 설계)·동료 한마디"
+    },
+    {
+      "n": 2,
+      "title": "SlashLive · 토스는 AI모델을 어떻게 서빙할까",
+      "url": "https://www.youtube.com/watch?v=t_35VpGYgiY",
+      "kind": "company",
+      "date": "2026-10-14",
+      "note": "토스 서빙 엔지니어링(21분). 공식 자막 전부와 화면 확인 — GPU 서버 InfiniBand 풀 메시, Prefill 3·Decode 8 일꾼을 NIXL로 잇는 그림, KV 캐시 L1 GPU HBM·L2 DRAM·L3 VAST 스토리지, Grove·Planner 자동 확장, Hopper·Blackwell·L40S·A100 혼용, 40개 넘는 모델, 입장 제한 429, 밤 배치"
+    },
+    {
+      "n": 3,
+      "title": "Toss Tech · 고성능 GPU 클러스터 도입기 #1",
+      "url": "https://toss.tech/article/securities_llm_1",
+      "kind": "company",
+      "date": "2024-07-19",
+      "note": "토스증권 ML Engineer — 자체 GPU 클러스터를 들인 이유, 체크포인트 저장 때 느린 스토리지 하나가 클러스터 전체를 멈추는 '아웃라이어' 문제"
+    },
+    {
+      "n": 4,
+      "title": "Toss Tech · GPU를 밀도 있게 쓰는 방법 — 토스증권의 GPU 가상화(MIG) 도입기",
+      "url": "https://toss.tech/article/toss-securities-gpu-mig",
+      "kind": "company",
+      "date": "2025-07-10",
+      "note": "작업의 약 1/3이 GPU의 1/4도 못 씀, H100·H200 클러스터, device plugin MIG_STRATEGY=mixed, dcgm-exporter 설정, MIG를 켜면 NVLink 연결이 끊김"
+    },
+    {
+      "n": 5,
+      "title": "TMC 25 · 비싼 GPU, 낭비 없이 제대로 운영하는 법",
+      "url": "https://toss.im/tmc-25/sessions/engineering/ml-10",
+      "kind": "company",
+      "date": "2025-07",
+      "note": "토스증권 ML Platform 세션 소개문 — 직접 구축한 GPU 클러스터를 효율적으로 쓰는 문제"
+    },
+    {
+      "n": 6,
+      "title": "SLASH 23 · 고객 불안을 0으로 만드는 토스의 Istio Zero Trust",
+      "url": "https://toss.im/slash-23/session-detail/A1-7",
+      "kind": "company",
+      "date": "2023",
+      "note": "토스코어 DevOps — Istio와 mTLS로 클러스터 안팎에 제로 트러스트(세션 소개 페이지)"
+    },
+    {
+      "n": 7,
+      "title": "SLASH 22 · 은행 앱에도 Service Mesh 도입이 가능한가요?",
+      "url": "https://toss.im/slash-22/sessions/3-8",
+      "kind": "company",
+      "date": "2022",
+      "note": "토스뱅크 DevOps — MSA·서비스 메시 운영(세션 소개 페이지)"
+    },
+    {
+      "n": 8,
+      "title": "토스 채용 · AI 플랫폼 엔지니어 (Serving)",
+      "url": "https://toss.im/career/job-detail?gh_jid=7786567003",
+      "kind": "posting",
+      "note": "같은 AI Platform 직군의 서빙 자리 — vLLM·SGLang·Dynamo로 모델을 띄우고 고치는 쪽"
+    },
+    {
+      "n": 9,
+      "title": "토스 채용 · 시스템 엔지니어 (GPU)",
+      "url": "https://toss.im/career/job-detail?gh_jid=7795677003",
+      "kind": "posting",
+      "note": "같은 회사의 베어메탈 GPU 서버·IDC 쪽 자리 — 이 자리의 아래층"
+    },
+    {
+      "n": 10,
+      "title": "Amazon EKS 사용자 가이드 · Hybrid Nodes 개요",
+      "url": "https://docs.aws.amazon.com/eks/latest/userguide/hybrid-nodes-overview.html",
+      "kind": "reference",
+      "note": "온프레미스 서버를 EKS 클러스터의 노드로 붙임, 컨트롤 플레인은 AWS, VPN·Direct Connect 연결, 원격 노드·파드 CIDR 각 15개까지, 연결이 불안정한 곳엔 맞지 않음"
+    },
+    {
+      "n": 11,
+      "title": "Istio 문서 · Ambient mode overview",
+      "url": "https://istio.io/latest/docs/ambient/overview/",
+      "kind": "reference",
+      "note": "사이드카 없는 모드 — 노드마다 ztunnel(L4·mTLS), 필요하면 waypoint(L7)"
+    },
+    {
+      "n": 12,
+      "title": "Cilium 문서 · Introduction",
+      "url": "https://docs.cilium.io/en/stable/overview/intro/",
+      "kind": "reference",
+      "note": "eBPF 기반 CNI, identity 기반 정책, kube-proxy 대체, Hubble 관측"
+    },
+    {
+      "n": 13,
+      "title": "Cilium 문서 · Integration with Istio",
+      "url": "https://docs.cilium.io/en/stable/network/servicemesh/istio/",
+      "kind": "reference",
+      "note": "권장은 kube-proxy를 두고 kubeProxyReplacement=false, 빼려면 socketLB.hostNamespaceOnly=true·cni.exclusive=false, Cilium L7 정책과 Istio mTLS를 같이 쓰지 말 것"
+    },
+    {
+      "n": 14,
+      "title": "NVIDIA GPU Operator 문서 · Overview",
+      "url": "https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/overview.html",
+      "kind": "reference"
+    },
+    {
+      "n": 15,
+      "title": "NVIDIA GPU Operator 문서 · Getting Started",
+      "url": "https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/getting-started.html",
+      "kind": "reference",
+      "note": "기본 설치 때 노드마다 드라이버·Container Toolkit·Device Plugin·GFD·DCGM Exporter·MIG Manager·validator 파드, NFD 의존"
+    },
+    {
+      "n": 16,
+      "title": "Kueue 문서 · Cluster Queue",
+      "url": "https://kueue.sigs.k8s.io/docs/concepts/cluster_queue/",
+      "kind": "reference",
+      "note": "쿼터(nominalQuota·borrowingLimit·lendingLimit), ResourceFlavor, cohort 빌려 쓰기, 선점 정책. 파드 배치는 여전히 kube-scheduler"
+    },
+    {
+      "n": 17,
+      "title": "Volcano 문서 · PodGroup",
+      "url": "https://volcano.sh/docs/Concepts/PodGroup",
+      "kind": "reference",
+      "note": "minMember를 못 채우면 그룹의 파드를 하나도 올리지 않는 gang 스케줄링. 같은 문서 Queue 장(capability·deserved·guarantee·weight)"
+    },
+    {
+      "n": 18,
+      "title": "Kubernetes 문서 · Operator pattern",
+      "url": "https://kubernetes.io/docs/concepts/extend-kubernetes/operator/",
+      "kind": "reference"
+    },
+    {
+      "n": 19,
+      "title": "The Kubebuilder Book",
+      "url": "https://book.kubebuilder.io/",
+      "kind": "reference",
+      "note": "CRD와 컨트롤러를 Go로 만드는 프레임워크·안내서"
+    },
+    {
+      "n": 20,
+      "title": "NVIDIA Dynamo (GitHub · README)",
+      "url": "https://github.com/ai-dynamo/dynamo",
+      "kind": "reference",
+      "note": "SGLang·TensorRT-LLM·vLLM 위의 분산 추론 층 — 분리 서빙, KV 인지 라우팅, NIXL, KV 캐시 계층·스토리지 내려 두기, Planner, 쿠버네티스 오퍼레이터와 Grove"
+    },
+    {
+      "n": 21,
+      "title": "NIXL — NVIDIA Inference Xfer Library (GitHub)",
+      "url": "https://github.com/ai-dynamo/nixl",
+      "kind": "reference",
+      "note": "GPU·CPU 메모리와 파일·블록·오브젝트 스토리지 사이 점대점 전송. 기본 통로 UCX, GDS 등 플러그인"
+    },
+    {
+      "n": 22,
+      "title": "ai-dynamo/grove (GitHub)",
+      "url": "https://github.com/ai-dynamo/grove",
+      "kind": "reference",
+      "note": "PodClique·PodCliqueScalingGroup·PodCliqueSet — 여러 부품 추론을 한 리소스로, gang·기동 순서·NVLink 도메인 같은 토폴로지 배치"
+    },
+    {
+      "n": 23,
+      "title": "vLLM 문서 · Parallelism and Scaling",
+      "url": "https://docs.vllm.ai/en/latest/serving/parallelism_scaling.html",
+      "kind": "reference",
+      "note": "노드 안 텐서 병렬·노드 사이 파이프라인 병렬, 멀티 노드엔 InfiniBand, NCCL_DEBUG=TRACE로 NET/IB/GDRDMA 확인, GPUDirect RDMA엔 IPC_LOCK·/dev/shm"
+    },
+    {
+      "n": 24,
+      "title": "SGLang 문서",
+      "url": "https://docs.sglang.io/",
+      "kind": "reference",
+      "note": "LLM·멀티모달 서빙 프레임워크, RadixAttention·prefix 캐시"
+    },
+    {
+      "n": 25,
+      "title": "NVIDIA NCCL 문서 · Environment Variables",
+      "url": "https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/env.html",
+      "kind": "reference",
+      "note": "NCCL_DEBUG·NCCL_IB_HCA·NCCL_SOCKET_IFNAME"
+    },
+    {
+      "n": 26,
+      "title": "nccl-tests · PERFORMANCE.md",
+      "url": "https://github.com/NVIDIA/nccl-tests/blob/master/doc/PERFORMANCE.md",
+      "kind": "reference",
+      "note": "algbw·busbw 정의와 all-reduce 환산식 2(n-1)/n"
+    },
+    {
+      "n": 27,
+      "title": "NVIDIA Networking · HowTo Configure RoCEv2 Lossless Fabric",
+      "url": "https://networking-docs.nvidia.com/sol/howto-configure-rocev2-lossless-fabric-for-vmware-esxi-6-5-and-above",
+      "kind": "reference",
+      "date": "2020-03",
+      "note": "PFC(IEEE 802.1Qbb)·ECN으로 무손실 RoCE"
+    },
+    {
+      "n": 28,
+      "title": "NVIDIA GPUDirect Storage 개요",
+      "url": "https://docs.nvidia.com/gpudirect-storage/overview-guide/index.html",
+      "kind": "reference",
+      "note": "스토리지 ↔ GPU 메모리 DMA, CPU 경유 버퍼를 건너뜀, cuFile API"
+    },
+    {
+      "n": 29,
+      "title": "VAST Data 블로그 · Rethinking KV Cache Offloading",
+      "url": "https://www.vastdata.com/blog/rethinking-kv-cache-offloading",
+      "kind": "reference",
+      "date": "2026-11-11",
+      "note": "스토리지 회사의 글 — 로컬 NVMe에 KV 캐시를 내리면 드라이브 마모와 '붙박이 라우팅'이 생긴다며 공유 NVMe-oF를 권함. 회사 홍보 성격"
+    },
+    {
+      "n": 30,
+      "title": "NVIDIA Xid Errors 문서 · Analyzing the Xid Catalog",
+      "url": "https://docs.nvidia.com/deploy/xid-errors/analyzing-xid-catalog.html",
+      "kind": "reference",
+      "note": "Xid 79 = GPU가 버스에서 떨어짐, NVLink 관련 Xid 144~150은 따로 해석표. 번호별 설명은 카탈로그 표"
+    },
+    {
+      "n": 31,
+      "title": "dcgm-exporter · default-counters.csv",
+      "url": "https://github.com/NVIDIA/dcgm-exporter/blob/main/etc/default-counters.csv",
+      "kind": "reference",
+      "note": "DCGM_FI_DEV_XID_ERROR, NVLink 오류 카운터(세대별 이름이 다름)는 기본으로 꺼져 있음"
+    },
+    {
+      "n": 32,
+      "title": "NVIDIA DCGM 문서 · Diagnostics",
+      "url": "https://docs.nvidia.com/datacenter/dcgm/latest/user-guide/dcgm-diagnostics.html",
+      "kind": "reference",
+      "note": "dcgmi diag r1~r4"
+    },
+    {
+      "n": 33,
+      "title": "Llama-3.3-70B-Instruct config.json (Hugging Face, unsloth 공개 사본)",
+      "url": "https://huggingface.co/unsloth/Llama-3.3-70B-Instruct/blob/main/config.json",
+      "kind": "reference",
+      "note": "층 80, KV 헤드 8, 헤드 크기 128 — Meta 원본은 로그인해야 보여 공개 사본으로 확인"
+    },
+    {
+      "n": 34,
+      "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(공공데이터 집계: 초봉·평균)",
+      "url": "https://jasoseol.com/companies/11256",
+      "kind": "reference",
+      "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+    },
+    {
+      "n": 35,
+      "title": "자소설닷컴 — 토스뱅크 연봉(같은 집계)",
+      "url": "https://jasoseol.com/companies/13930/insights",
+      "kind": "reference"
+    },
+    {
+      "n": 36,
+      "title": "토스 — 회사 소개(사이트 하단 주소)",
+      "url": "https://toss.im/company",
+      "kind": "company"
+    },
+    {
+      "n": 37,
+      "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+      "url": "https://toss.im/tossfeed/article/employee-benefits",
+      "kind": "company",
+      "date": "2021-03-10"
+    },
+    {
+      "n": 38,
+      "title": "DistServe: Disaggregating Prefill and Decoding for Goodput-optimized LLM Serving",
+      "url": "https://arxiv.org/abs/2401.09670",
+      "kind": "reference",
+      "date": "2024"
+    },
+    {
+      "n": 39,
+      "title": "NVIDIA Fabric Manager 사용자 가이드",
+      "url": "https://docs.nvidia.com/datacenter/tesla/fabric-manager-user-guide/index.html",
+      "kind": "reference",
+      "note": "NVSwitch 메모리 패브릭 설정·NVLink 오류 감시"
+    },
+    {
+      "n": 40,
+      "title": "NVIDIA H100 제품 페이지",
+      "url": "https://www.nvidia.com/en-us/data-center/h100/",
+      "kind": "reference",
+      "note": "SXM 메모리 80GB, NVLink 초당 900GB"
+    },
+    {
+      "n": 41,
+      "title": "vLLM 문서 · Metrics",
+      "url": "https://docs.vllm.ai/en/latest/design/metrics.html",
+      "kind": "reference",
+      "note": "/metrics — time_to_first_token_seconds, kv_cache_usage_perc, num_requests_waiting"
+    }
+  ],
+  "caveat": "ML/AI Infra 팀이 직접 클러스터 구성을 발표한 자료는 찾지 못했습니다. 회사 근거는 이 공고[1], 같은 직군 서빙 팀의 발표[2](GPU 망·KV 캐시 층·Dynamo), 같은 그룹 토스증권의 GPU 클러스터 글[3][4][5], Istio·서비스 메시 발표 소개[6][7]입니다. 하이브리드 노드·Cilium·GPU Operator·Kueue·Dynamo 등의 '보통 이런 것'은 각 공식 문서로 보였고, 토스가 그 설정을 그대로 쓰는지는 공개되지 않았습니다. VAST 글[29]은 판매 회사의 주장입니다."
+}
