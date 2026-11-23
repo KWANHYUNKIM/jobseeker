@@ -49,6 +49,7 @@
   "ats-toss:group:8047064003": "toss-p2p-lending-server-developer",
   "ats-toss:group:7901191003": "toss-platform-analytics-engineer",
   "ats-toss:group:5960616003": "toss-product-analytics-engineer",
+  "ats-toss:group:4071141003": "toss-product-server-developer",
   "ats-toss:group:7992229003": "toss-search-conversion-ranking-mle",
   "ats-toss:group:7411370003": "toss-security-analysis-ir",
   "ats-toss:group:7411162003": "toss-security-analysis-platform",
@@ -529,6 +530,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 23
+  },
+  {
+   "id": "toss-product-server-developer",
+   "company": "토스",
+   "role": "서버 개발자 (Product)",
+   "jobs": [
+    "ats-toss:group:4071141003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 8
   },
   {
    "id": "toss-search-conversion-ranking-mle",
