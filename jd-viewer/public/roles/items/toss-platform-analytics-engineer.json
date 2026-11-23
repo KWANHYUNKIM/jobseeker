@@ -1,0 +1,1177 @@
+{
+  "id": "toss-platform-analytics-engineer",
+  "company": "토스",
+  "role": "데이터 분석 엔지니어 (Platform)",
+  "team": "토스 · Data Intelligence Platform 팀",
+  "jobs": [
+    "ats-toss:group:7901191003"
+  ],
+  "researched_at": "2026-11-23",
+  "tldr": {
+    "what": "도메인마다 따로 만든 표준 마트를 **통합소비·통합잔고 같은 전사 통합마트**로 묶고, 유저·가맹점·서비스 **프로파일**을 만들어, 그것을 **온톨로지**(대상과 관계의 지도)에 이어 사람과 AI 에이전트가 바로 쓰게 합니다.[1]",
+    "env": "토스 코어 데이터는 Hadoop 위에서 주로 Impala SQL로 만들고 Spark·Hive도 씁니다. 메인 배치는 Airflow DAG 약 200개·태스크 6,000개 이상이고, 데이터 조직은 2024년부터 도메인마다 DAE가 들어간 데이터 메시 구조입니다.[2]",
+    "oneline": "도메인 데이터 위에 회사 공통의 기준과 의미를 세우는 엔지니어. **차원 모델링·SQL·PySpark·Airflow·정합성 검증**이 바닥이고, 그 위에 **온톨로지·AI-Ready 데이터**를 얹습니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "전사 통합마트 설계·개발",
+      "short": "도메인마다 따로 쌓인 마트를 회사 전체가 같은 숫자로 보는 한 벌의 마트로 묶는 일.",
+      "why": "토스 데이터 조직은 2024년부터 데이터 메시(도메인이 제 데이터를 책임지는 구조)로 바뀌어 도메인마다 DAE(데이터 애널리틱스 엔지니어)가 들어갔습니다.[2] 발표자는 누군가 도메인 데이터를 같이 보지 않으면 **도메인 단위의 사일로**(서로 안 맞는 섬)가 다시 생긴다고 했고, 어느 도메인에도 속하지 않는 전사 마트·공통 표는 중앙의 마트 플랫폼 팀이 소유한다고 밝혔습니다.[2] 이 공고의 팀이 그 자리를 잇는 것으로 보입니다.{추론}",
+      "refs": [
+        2
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "IR·Finance·제품통합분석 등 전사 관점의 마트 설계 및 개발",
+      "short": "투자자 보고·재무·여러 제품을 가로지르는 분석처럼 '회사 전체 숫자'를 내는 마트를 만드는 일.",
+      "why": "한 제품 안의 지표는 도메인 DAE가 표준 마트로 만들지만[2], 회사 전체 이용자 수나 전체 거래액처럼 여러 도메인을 더해야 나오는 숫자는 주인이 없기 쉽습니다.{추론} TMC25 발표는 토스 코어 메인 배치에 '전사 집계' 단계가 따로 있고 SLA(약속한 완료 시각)를 엄격히 지킨다고 했습니다.[2]",
+      "actually": {
+        "items": [
+          "**IR(투자자 관계)** — 밖에 내보내는 숫자라 한 번 낸 값이 나중에 바뀌면 안 된다. 기준일에 고정한 값(스냅숏)을 따로 남기는 것이 보통이다.{추론}",
+          "**Finance(재무)** — 매출·비용을 서비스·법인별로 나눠 세는 마트. 회계 숫자와 맞춰 보는 대사(대조)가 붙는다.{추론}",
+          "**제품통합분석** — 한 유저가 송금·결제·투자·쇼핑을 어떻게 오가는지 보려면 제품마다 다른 유저 키와 시각 기준을 하나로 맞춰야 한다.{추론}",
+          "**바탕은 표준 마트** — 도메인마다 '기본 개념 마트 → 지표 기본 마트'를 같은 필수 칸(시각·유저·로그 이름)으로 만들기 때문에 위에서 합칠 수 있다.[2]"
+        ]
+      },
+      "how_far": "숫자의 정의(무엇을 매출로 볼지)는 재무·IR 담당과 함께 정하고, 이 자리는 그 정의를 **한 곳에서만 계산되게** 마트로 굳히는 쪽입니다.{추론}",
+      "refs": [
+        2
+      ],
+      "study": [
+        "kimball",
+        "tmc25-mesh"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "전사 통합마트(통합소비·통합잔고 등) 오너십 — 통합 기준을 정의하고, 도메인이 만든 표준마트를 그 기준에 맞춰 전사 통합 구조로 연결",
+      "short": "카드·페이·계좌 등 여러 곳의 소비·잔고를 한 기준으로 합치는 규칙을 정하고, 그 마트의 주인이 되는 일.",
+      "why": "토스 안에는 소비와 잔고가 생기는 곳이 여럿이고 도메인마다 제 표준 마트를 만듭니다.[2] 같은 팀 데이터 사이언티스트 공고는 이 팀이 **거래·가맹점·유저를 관통하는 SSOT**(하나뿐인 기준 데이터)를 설계한다고 적었습니다.[4]",
+      "actually": {
+        "items": [
+          "**통합 기준** — 무엇을 '소비 한 건'으로 셀지, 취소·환불은 어떻게 빼는지, 날짜는 승인일인지 매입일인지 정한다.{추론}",
+          "**중복 지우기** — 같은 결제가 두 원천에 다 찍힐 수 있다(예: 페이로 결제했는데 수단이 카드). 기준 없이 더하면 두 번 센다(아래 예).{추론}",
+          "**공통 차원** — Kimball은 여러 사실 표가 같이 쓰는 표준 차원(유저·날짜·가맹점)을 한 번만 관리해 재사용하는 것을 '부합 차원(conformed dimension)'이라 부르고, 여러 업무를 가로질러 합쳐 보는 바탕으로 삼는다.[8]",
+          "**오너십** — 마트의 정의·SLA·품질 검사·문서가 이 팀 책임이 된다. 토스는 DQ 모니터링·충분한 설명·지속적 현행화가 갖춰져야 '표준 마트'라 부른다고 했다.[2]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "같은 결제를 두 번 세지 않기",
+          "body": "유저 1의 12,000원은 카드 원천과 페이 원천에 다 찍혔습니다. 그냥 더하면 32,000원, 결제 참조번호로 겹친 건을 빼면 20,000원입니다(sqlite로 직접 돌린 출력 · 가상 데이터).",
+          "lang": "python",
+          "code": "import sqlite3\nc = sqlite3.connect(\":memory:\")\nc.executescript(\"\"\"\ncreate table card_spend(user_id int, d text, amt int, pay_ref text);\ncreate table pay_spend(user_id int, d text, amt int, pay_ref text, method text);\ninsert into card_spend values (1,'2026-11-01',12000,'P9'),(1,'2026-11-02',8000,NULL),(2,'2026-11-01',5000,NULL);\ninsert into pay_spend values (1,'2026-11-01',12000,'P9','card'),(2,'2026-11-03',3000,'P7','account');\n\"\"\")\nnaive = c.execute(\"\"\"select user_id, sum(amt) from (\n  select user_id, amt from card_spend union all select user_id, amt from pay_spend)\n  group by user_id order by user_id\"\"\").fetchall()\nprint(\"그냥 더하면:\", naive)\nmerged = c.execute(\"\"\"select user_id, sum(amt) from (\n  select user_id, amt from card_spend\n  union all\n  select user_id, amt from pay_spend p\n  where not exists (select 1 from card_spend k where k.pay_ref = p.pay_ref))\n  group by user_id order by user_id\"\"\").fetchall()\nprint(\"기준대로 합치면:\", merged)\n# 그냥 더하면: [(1, 32000), (2, 8000)]\n# 기준대로 합치면: [(1, 20000), (2, 8000)]"
+        }
+      ],
+      "how_far": "최소선은 **'무엇을 한 건으로 세나 · 어디서 중복이 생기나 · 어느 원천이 이기나'**를 문서로 적고, 그대로 계산하는 마트와 검증 쿼리를 함께 내는 것입니다.{추론}",
+      "refs": [
+        2,
+        4,
+        8
+      ],
+      "study": [
+        "kimball",
+        "inmon"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "유저·가맹점·서비스 프로파일 구축·운영",
+      "short": "유저·가맹점·서비스마다 '이 대상은 어떤 곳인가'를 칸으로 정리한 표를 만들고 날마다 돌리는 일.",
+      "why": "같은 팀 공고들이 유저 세분화, 가맹점 단위 핵심 지표, 거래 유저 로열티·가맹점 등급을 이 팀의 일로 꼽습니다.[4] 데이터 사이언티스트가 모델로 점수를 내면, 이 자리는 그 재료와 결과를 매일 믿을 수 있게 쌓는 쪽입니다.{추론}",
+      "refs": [
+        4
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "분석가 협업을 통해 복잡한 룰 기반·추정 로직을 설계해 프로파일 항목을 직접 산출",
+      "short": "'주로 쓰는 업종'·'출퇴근하는 직장인 같다' 같은 항목을 규칙과 추정으로 계산해 칸으로 만드는 일.",
+      "why": "프로파일 칸 중에는 원천에 그대로 있는 값(가입일)도 있지만, 거래 기록에서 **추정해야 하는 값**(주 소비 업종, 생활 패턴)이 많습니다.[4]{추론} 같은 팀은 토스 카테고리·브랜드 분류 체계를 운영하며 거래를 분류한다고 했습니다.[4]",
+      "actually": {
+        "items": [
+          "**규칙 기반** — '최근 30일 평일 아침 결제가 2건 이상이면 출퇴근 추정'처럼 사람이 읽을 수 있는 규칙.{추론}",
+          "**추정 로직** — 분류가 비어 있는 거래 적요(결제 내역 문구)를 브랜드·업종으로 맞히는 일. 같은 팀은 상품명·거래 적요 같은 텍스트 분류 경험을 우대한다.[4]",
+          "**기준 시점** — 항목마다 '언제 기준, 며칠 창'을 칸에 남긴다. 그래야 지난 값과 비교할 수 있다.{추론}",
+          "**규칙 버전** — 규칙이 바뀌면 숫자가 바뀐다. 결과에 규칙 버전을 같이 적어 두면 '데이터가 바뀐 것'과 '규칙이 바뀐 것'을 가를 수 있다.{추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "거래 기록 → 유저 프로파일 한 줄",
+          "body": "11월 10일 기준 최근 30일 거래로 소비액·주 업종·출퇴근 추정을 계산합니다. 10월 1일 여행 결제는 창 밖이라 빠집니다(직접 돌린 출력 · 가상 데이터).",
+          "lang": "python",
+          "code": "from collections import Counter\nfrom datetime import date, timedelta\ntx = [  # (유저, 날짜, 카테고리, 금액, 시각)\n    (\"u1\", date(2026, 11, 3), \"카페\", 4500, 8), (\"u1\", date(2026, 11, 4), \"카페\", 4800, 8),\n    (\"u1\", date(2026, 11, 5), \"편의점\", 3000, 12), (\"u1\", date(2026, 10, 1), \"여행\", 300000, 15),\n    (\"u2\", date(2026, 11, 8), \"배달\", 21000, 22), (\"u2\", date(2026, 11, 9), \"배달\", 18000, 23),\n]\ndef profile(user, as_of, days=30):\n    rows = [t for t in tx if t[0] == user and as_of - timedelta(days=days) < t[1] <= as_of]\n    cats = Counter(t[2] for t in rows)\n    morning = sum(1 for t in rows if 7 <= t[4] <= 9 and t[1].weekday() < 5)\n    return {\"user\": user, \"as_of\": str(as_of), \"spend_30d\": sum(t[3] for t in rows),\n            \"top_category\": cats.most_common(1)[0][0] if cats else None,\n            \"commuter_guess\": morning >= 2,  # 규칙: 평일 아침 결제 2건 이상\n            \"rule_version\": \"v1\"}\nfor u in (\"u1\", \"u2\"):\n    print(profile(u, date(2026, 11, 10)))\n# {'user': 'u1', 'as_of': '2026-11-10', 'spend_30d': 12300, 'top_category': '카페', 'commuter_guess': True, 'rule_version': 'v1'}\n# {'user': 'u2', 'as_of': '2026-11-10', 'spend_30d': 39000, 'top_category': '배달', 'commuter_guess': False, 'rule_version': 'v1'}"
+        }
+      ],
+      "how_far": "규칙의 '뜻'은 분석가와 같이 정하고, 이 자리는 **규칙을 코드로 옮겨 날마다 같은 결과가 나오게 하고, 결과가 그럴듯한지 검증**하는 데까지입니다. 공고가 '직접 산출'이라 썼으니 계산 코드는 이 자리 몫입니다.[1]",
+      "refs": [
+        1,
+        4
+      ],
+      "study": [
+        "learning-spark",
+        "pyspark-docs"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "변화에 강하고 검증 가능한 형태로 프로파일을 유지 (정합성 검증, 품질 모니터링)",
+      "short": "서비스나 원천이 바뀌어도 프로파일이 조용히 틀어지지 않게, 검사와 감시를 붙여 두는 일.",
+      "why": "토스는 제품이 빠르게 바뀌어 중앙 팀이 모든 변화를 데이터에 반영하기 어려웠다고 했습니다.[2] 프로파일은 여러 원천을 섞어 만드니 원천 하나가 바뀌어도 값이 흔들립니다.{추론}",
+      "actually": {
+        "items": [
+          "**정합성** — 프로파일의 소비액 합이 통합소비 마트 합과 맞는지, 유저 수가 유저 원장과 맞는지 매일 대조한다.{추론}",
+          "**분포 감시** — '출퇴근 추정' 비율이 하루 만에 30%에서 5%로 떨어지면 규칙이나 원천이 깨진 것이다.{추론}",
+          "**변화에 강하게** — 항목 계산을 원천 표가 아니라 표준 마트(정해진 필수 칸)에서 시작하면 원천 구조 변화가 덜 번진다.[2]{추론}",
+          "**재사용 검사** — 빈값·고유·허용값 같은 검사는 칸에 이름만 붙여 재사용하는 방식이 흔하다.[14]"
+        ]
+      },
+      "refs": [
+        2,
+        14
+      ],
+      "study": [
+        "dbt-docs"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "온톨로지에 연결되는 데이터 구조 설계",
+      "short": "표들을 '유저·가맹점·계좌' 같은 대상과 그 사이 관계로 이어서, 데이터 지도를 만드는 일.",
+      "why": "팀 소개가 이 일을 직접 말합니다 — 흩어진 원천을 공통 자산으로 만들고, 그 뜻을 정의해 온톨로지(대상과 관계를 정한 체계)로 연결하고, 사람과 AI 에이전트가 쓰게 하는 데까지 한 팀이 맡는다.[1] 같은 팀은 Agent가 쓸 지식 체계(Knowledge Base)를 만드는 프로젝트를 진행 중입니다.[4]",
+      "refs": [
+        1,
+        4
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "마트와 프로파일이 중앙 온톨로지의 엔티티·관계로 이어지도록 데이터 구조와 메타를 설계",
+      "short": "표의 키와 칸이 온톨로지의 '대상'과 '관계'에 정확히 맞물리도록 키·이름·설명(메타)을 설계하는 일.",
+      "why": "온톨로지는 표가 아니라 대상을 기준으로 데이터를 봅니다.[10] 그러려면 각 마트가 어느 대상의 무엇인지, 어떤 키로 다른 대상과 이어지는지 정해져 있어야 합니다.{추론}",
+      "actually": {
+        "items": [
+          "**엔티티(대상)** — 팔란티어 Foundry는 데이터를 대상 유형(object type)·속성(property)·관계 유형(link type)으로 옮겨 조직의 세계를 그린다. 대상 유형은 실제 대상이나 사건을 나타낸다.[10]",
+          "**관계** — '유저가 가맹점에서 결제한다'처럼 두 대상을 잇는다. 관계마다 연결 키가 있는 표가 있어야 한다.[10]",
+          "**메타** — 칸 설명·단위·코드값의 뜻·갱신 주기·담당자. 토스는 표준 마트를 만들 때 표·칸 설명을 카탈로그에 넣고 SQL에 주석을 단다.[2]",
+          "**키 설계** — 프로파일이 유저 키 하나로 대상에 붙어야 여러 마트가 같은 유저로 이어진다(앞의 공통 차원).[8]{추론}"
+        ]
+      },
+      "refs": [
+        2,
+        8,
+        10
+      ],
+      "study": [
+        "palantir-ontology",
+        "kimball"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "도메인이 자기 데이터를 온톨로지에 올릴 때 필요한 데이터 구조 정의와 검증 방식을 함께 설계",
+      "short": "도메인 DAE가 제 마트를 온톨로지에 붙일 때 지켜야 할 틀과, 맞게 붙었는지 자동으로 보는 검사를 만드는 일.",
+      "why": "데이터 메시의 원칙 중 하나가 **연합 거버넌스**(각 도메인 자율을 해치지 않으면서 공통 규칙을 지키게 하는 것)이고, 토스는 아직 구글 시트와 수작업 관리가 남아 있어 관리 도구로 옮기는 중이라고 했습니다.[2] 표준 준수 검토에는 LLM 기반 자동 도구도 들였습니다.[2]",
+      "actually": {
+        "items": [
+          "**구조 정의** — 대상 키 칸, 필수 메타(설명·담당자·갱신 주기), 이름 규칙을 정한다.{추론}",
+          "**자동 검증** — 연결 키가 실제 표에 있나, 설명이 비지 않았나, 관계의 양쪽 대상이 정의돼 있나를 올리는 순간 검사한다(아래 예).{추론}",
+          "**같은 흐름의 선례** — 표준 마트도 카탈로그 설명·DQ 테스트·동료 리뷰를 거쳐야 '표준 도장'을 받는다.[2]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "온톨로지에 올리기 전 검사",
+          "body": "관계 PAYS_AT이 쓰는 표에 가맹점 키가 없고, 가맹점 등급 칸에 설명이 비어 있어 두 건이 걸립니다(직접 돌린 출력 · 가상 정의).",
+          "lang": "python",
+          "code": "ontology = {\n    \"entities\": {\"User\": \"mart.user_profile.user_id\", \"Merchant\": \"mart.merchant_profile.merchant_id\"},\n    \"relations\": [{\"name\": \"PAYS_AT\", \"from\": \"User\", \"to\": \"Merchant\",\n                   \"table\": \"mart.integrated_spend\", \"keys\": [\"user_id\", \"merchant_id\"]}],\n}\ntables = {  # 칸 이름: 설명(비어 있으면 AI가 뜻을 모른다)\n    \"mart.user_profile\": {\"user_id\": \"토스 유저 번호\", \"spend_30d\": \"최근 30일 소비액(원)\"},\n    \"mart.merchant_profile\": {\"merchant_id\": \"가맹점 번호\", \"grade\": \"\"},\n    \"mart.integrated_spend\": {\"user_id\": \"토스 유저 번호\", \"amt\": \"결제 금액(원)\"},\n}\nproblems = []\nfor ent, ref in ontology[\"entities\"].items():\n    t, col = ref.rsplit(\".\", 1)\n    if col not in tables.get(t, {}):\n        problems.append(f\"{ent}: {t} 에 키 {col} 없음\")\nfor r in ontology[\"relations\"]:\n    for k in r[\"keys\"]:\n        if k not in tables[r[\"table\"]]:\n            problems.append(f\"{r['name']}: {r['table']} 에 연결 키 {k} 없음\")\nfor t, cols in tables.items():\n    problems += [f\"{t}.{c}: 설명 없음\" for c, desc in cols.items() if not desc]\nprint(\"\\n\".join(problems) or \"통과\")\n# PAYS_AT: mart.integrated_spend 에 연결 키 merchant_id 없음\n# mart.merchant_profile.grade: 설명 없음"
+        }
+      ],
+      "refs": [
+        2
+      ],
+      "study": [
+        "tmc25-mesh",
+        "palantir-ontology"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "사람이 아니라 AI 에이전트가 읽는 것을 전제로 데이터에 컨텍스트를 입히는 일",
+      "short": "AI가 표를 보고 오해하지 않도록 뜻·계산법·쓰면 안 되는 경우를 기계가 읽을 수 있게 적어 두는 일.",
+      "why": "사람은 동료에게 물어보며 맥락을 채우지만 에이전트는 적힌 것만 봅니다.{추론} 같은 팀은 골든셋(정답을 아는 질문 묶음)으로 에이전트 답의 정확도를 재고 데이터 구조와 프롬프트를 고친다고 했습니다.[4]",
+      "actually": {
+        "items": [
+          "**컨텍스트의 예** — 칸 뜻, 단위(원·건), 코드값 사전, 취소 포함 여부, 같이 쓰면 틀리는 표.{추론}",
+          "**지표는 한 번만 정의** — 시멘틱 레이어(지표 정의를 한 곳에 두는 층)를 쓰면 누가 묻든 같은 계산이 나온다.[13]",
+          "**왜 효과가 있나** — dbt Labs의 2026년 비교 실험은 지표 질문에서 시멘틱 레이어를 거친 답이 SQL을 바로 짜게 한 답보다 정확했다고 보고했다.[12]",
+          "**온톨로지 = 맥락 층** — Databricks는 에이전트에 빠진 '맥락 층'으로 데이터 온톨로지를 설명한다.[11]"
+        ]
+      },
+      "how_far": "최소선은 **골든셋 질문 몇 개로 에이전트에게 물어 보고, 틀린 답마다 무엇(설명·정의·관계)이 모자랐는지 고쳐 다시 재는 것**입니다.[4]{추론}",
+      "refs": [
+        4,
+        11,
+        12,
+        13
+      ],
+      "study": [
+        "dbt-sl",
+        "mcp-docs"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "중앙 데이터 자산의 정합성과 신뢰성",
+      "short": "회사 전체가 기대는 중앙 마트·프로파일의 숫자가 늘 맞고, 제때 있다는 것을 이 팀이 보증한다는 뜻.",
+      "why": "토스는 마트를 요청대로 만들던 시절 기준이 없어 결과 품질이 사람마다 달랐고, 시간이 지나 데이터가 '녹슬었다'고 돌아봤습니다.[2] 팀 소개도 성공 기준을 '얼마나 많이 만들었나'가 아니라 '전사에서 얼마나 쓰이나'로 둡니다.[1] 믿지 못하면 쓰지 않습니다.{추론}",
+      "refs": [
+        1,
+        2
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "테이블 정합성 검증, 이상 감지, health check 지표화",
+      "short": "표끼리 숫자가 맞는지 보고, 평소와 다른 변화를 잡고, 표마다 '건강 점수'를 숫자로 보이는 일.",
+      "why": "Hadoop에는 일반 DB의 제약 조건(빈값 금지·고유 키)이 없어 이런 검사를 따로 만들어야 한다고 토스가 직접 말했습니다.[3] 토스는 품질을 완전성·유일성·유효성·시의적절성·정확성·일관성 여섯 가지로 나눠 검사해 왔습니다.[3]",
+      "actually": {
+        "items": [
+          "**정합성** — 통합 마트 합계 = 도메인 마트 합계, 프로파일 유저 수 = 유저 원장 수.{추론}",
+          "**이상 감지** — 오늘 행 수를 지난 7일 중앙값과 비교해 크게 벗어나면 멈춘다(아래 예).{추론}",
+          "**신선도** — 원천이 마지막으로 갱신된 시각을 보고 늦으면 경고한다. dbt는 이를 'source freshness'로 제공한다.[15]",
+          "**지표화** — 표마다 검사 통과율·지연 시간·마지막 실패를 모아 대시보드로 보인다. 토스는 도메인별 데이터 품질 지표 시각화를 준비 중이라고 했다.[2]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "행 수가 평소의 61% — 아래 작업을 멈춘다",
+          "body": "지난 7일 중앙값 1,005,000행에 비해 11월 8일은 612,000행입니다. 0.8~1.2를 벗어나 이상으로 판정합니다(직접 돌린 출력 · 가상 숫자).",
+          "lang": "python",
+          "code": "from statistics import median\ncounts = {\"11-01\": 1_020_000, \"11-02\": 998_000, \"11-03\": 1_005_000, \"11-04\": 1_011_000,\n          \"11-05\": 990_000, \"11-06\": 1_003_000, \"11-07\": 1_015_000, \"11-08\": 612_000}\ndays = list(counts)\nfor i in range(7, len(days)):\n    base = median(counts[d] for d in days[i - 7:i])\n    ratio = counts[days[i]] / base\n    status = \"정상\" if 0.8 <= ratio <= 1.2 else \"이상 — 아래 작업 멈춤\"\n    print(f\"{days[i]} 행 수 {counts[days[i]]:,} / 지난 7일 중앙값 {base:,.0f} = {ratio:.2f} → {status}\")\n# 11-08 행 수 612,000 / 지난 7일 중앙값 1,005,000 = 0.61 → 이상 — 아래 작업 멈춤"
+        }
+      ],
+      "how_far": "최소선은 검사마다 **'실패하면 멈출지 · 경고만 할지'**를 정하고, 그 결과를 표 단위 점수로 모아 보이는 것입니다.[14]{추론}",
+      "refs": [
+        2,
+        3,
+        14,
+        15
+      ],
+      "study": [
+        "dbt-docs",
+        "slash21dw"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "전사 데이터 표준·품질 체계를 함께 정립하고 적용",
+      "short": "이름 규칙·필수 메타·품질 검사 기준을 회사 공통으로 정하고, 실제 마트들에 붙게 만드는 일.",
+      "why": "토스 데이터 조직은 메타데이터·용어·보안 정책을 표준화하면서 팀별 자율은 최대한 지키는 것을 거버넌스의 방향으로 밝혔습니다.[2] 마트 플랫폼 팀은 도메인 표준 마트를 모니터링하고 데이터 성숙도를 재는 도구를 만들어 왔습니다.[2]",
+      "actually": {
+        "items": [
+          "**표준** — 표준 마트 두 층(기본 개념 → 지표 기본), 필수 칸, 카탈로그 설명, DQ 테스트, 동료 리뷰.[2]",
+          "**적용** — 새 마트는 기준대로 만들어지지만 예전 레거시 마트는 미흡해 신뢰할 수 있는 제품처럼 리팩터링하는 중이다.[2]",
+          "**자동 검토** — 마트가 표준에 맞는지 정량·정성으로 보는 LLM 기반 도구를 운영한다.[2]"
+        ]
+      },
+      "how_far": "'함께'라고 썼듯 혼자 정하는 일이 아닙니다.[1] 기준안을 내고, 도메인 DAE가 지키기 쉬운 도구(검사·템플릿)까지 붙이는 것이 이 자리의 몫입니다.{추론}",
+      "refs": [
+        1,
+        2
+      ],
+      "study": [
+        "tmc25-mesh"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Hadoop 에코시스템과 데이터 분산 처리에 대한 기본적인 이해",
+      "short": "HDFS·Hive·Impala·Spark가 각각 무슨 일을 하고, 큰 작업이 여러 노드에 어떻게 나뉘는지 설명할 수 있으면 된다.",
+      "why": "토스 코어는 표 대부분을 Impala에서 SQL로 만들고 Spark·Kafka·Hive·구글 시트로도 표가 만들어집니다.[2]",
+      "actually": {
+        "items": [
+          "**HDFS** — 큰 파일을 블록으로 쪼개 여러 서버에 복제해 둔다.[20]",
+          "**셔플** — 조인·집계를 위해 같은 키를 같은 노드로 모은다. 한 키에 몰리면 한 노드만 오래 일한다.[16]",
+          "**통합 마트에서 특히** — 여러 도메인의 큰 표를 유저 키로 합치므로 셔플이 크다.{추론}"
+        ]
+      },
+      "level": {
+        "basic": "HDFS 블록·복제 · 파티션 · 열 저장 파일",
+        "work": "Hive 메타스토어 · Impala와 Spark의 쓰임 차이 · 셔플과 쏠림",
+        "team": "전사 집계 1,000개 넘는 작업이 도는 클러스터에서 무거운 통합 마트를 SLA 안에 끝내기"
+      },
+      "how_far": "'기본적인 이해'라 엔진 내부 구현까지는 아닙니다. 느린 작업을 **읽은 양·섞은 양·쏠림·메모리**로 나눠 말할 수 있으면 됩니다.[16]{추론}",
+      "refs": [
+        2,
+        16,
+        20
+      ],
+      "study": [
+        "hadoop-guide",
+        "fde-book"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Data Warehouse의 기본 특성(Subject-Oriented, Integrated, Non-Volatile, Time-Variant)과 정규화·차원 모델링에 대한 명확한 이해",
+      "short": "DW의 네 가지 성질(주제별·통합·쌓기만·시점 보존)과 정규화·사실/차원 표 나누기를 이 일에 대어 설명할 수 있어야 한다.",
+      "why": "네 특성은 인먼(W. H. Inmon)의 DW 정의에서 나온 말입니다.[7][24] 이 자리의 업무가 그대로 이 넷입니다 — 대상별 프로파일(주제), 통합소비·통합잔고(통합), 한 번 낸 IR 숫자(쌓기만), 지난 시점의 등급(시점 보존).[1]{추론}",
+      "actually": {
+        "items": [
+          "**주제 중심** — 업무 시스템별이 아니라 '소비'·'유저' 같은 주제별로 모은다.[7]",
+          "**통합** — 시스템마다 다른 이름·형식·단위를 하나로 맞춘다.[7]",
+          "**비휘발** — 들어온 데이터는 고치거나 지우지 않고 쌓는다.[7]",
+          "**시간 변화** — 지금 값뿐 아니라 과거 값을 시점과 함께 남긴다.[7] 차원 값의 변화를 '언제부터 언제까지' 행으로 남기는 방식이 Kimball의 SCD 2형이다(아래 예).[9]",
+          "**정규화 vs 차원 모델** — 정규화는 중복을 없애 쓰기에 맞추고, 차원 모델은 사실 표 하나에 차원 표를 붙여 읽기·집계에 맞춘다.[9]{추론}"
+        ]
+      },
+      "level": {
+        "basic": "네 특성의 뜻 · 1~3 정규형 · 사실 표와 차원 표",
+        "work": "스타 스키마 · 공통(부합) 차원 · 천천히 변하는 차원(SCD) 2형",
+        "team": "여러 도메인 표준 마트를 공통 차원으로 이어 전사 통합 구조를 세우고, 온톨로지 대상과 맞물리게 하기"
+      },
+      "examples": [
+        {
+          "title": "가맹점 등급을 덮어쓰지 않고 남기기(SCD 2형)",
+          "body": "9월 1일 등급이 B → A로 바뀌어도 옛 행을 닫고 새 행을 더합니다. 그래서 8월 기준으로 물으면 B, 11월 기준이면 A가 나옵니다(직접 돌린 출력 · 가상 데이터).",
+          "lang": "python",
+          "code": "from datetime import date\n# 시간 변화(Time-Variant): 덮어쓰지 않고 '언제부터 언제까지' 를 남긴다(SCD 2형)\nhistory = [{\"merchant\": \"m1\", \"grade\": \"B\", \"valid_from\": date(2026, 1, 1), \"valid_to\": None}]\ndef change(merchant, grade, on):\n    cur = next(h for h in history if h[\"merchant\"] == merchant and h[\"valid_to\"] is None)\n    if cur[\"grade\"] != grade:\n        cur[\"valid_to\"] = on\n        history.append({\"merchant\": merchant, \"grade\": grade, \"valid_from\": on, \"valid_to\": None})\ndef grade_at(merchant, d):\n    return next(h[\"grade\"] for h in history if h[\"merchant\"] == merchant\n                and h[\"valid_from\"] <= d and (h[\"valid_to\"] is None or d < h[\"valid_to\"]))\nchange(\"m1\", \"A\", date(2026, 9, 1))\nprint(\"8월 기준 등급:\", grade_at(\"m1\", date(2026, 8, 15)))\nprint(\"11월 기준 등급:\", grade_at(\"m1\", date(2026, 11, 1)))\nprint(\"이력 행 수:\", len(history))\n# 8월 기준 등급: B\n# 11월 기준 등급: A\n# 이력 행 수: 2"
+        }
+      ],
+      "refs": [
+        1,
+        7,
+        9
+      ],
+      "study": [
+        "inmon",
+        "kimball"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "여러 도메인에 흩어진 개념을 하나의 공통 구조로 정의하고, 효율적인 데이터 모델을 설계·제안할 수 있는 능력",
+      "short": "'유저'·'결제'처럼 도메인마다 조금씩 다르게 쓰는 개념을 하나로 정의하고, 그 구조를 먼저 제안할 수 있어야 한다.",
+      "why": "토스는 도메인마다 DAE가 제 서비스의 주요 개념을 정의해 기본 개념 마트를 만듭니다.[2] 도메인이 일곱 개가 넘으니 같은 '결제'도 도메인마다 뜻이 조금씩 다를 수 있습니다.[2]{추론}",
+      "actually": {
+        "items": [
+          "**버스 매트릭스** — Kimball은 업무 과정(행)과 그 과정이 쓰는 차원(열)을 표로 그려 어느 차원을 공통으로 맞춰야 하는지 보이는 도구를 쓴다.[8]",
+          "**개념 사전** — '활성 유저'·'결제 완료'를 도메인별 정의와 전사 정의로 나란히 적고 차이를 드러낸다.{추론}",
+          "**효율** — 공통 구조는 쓰는 쪽이 조인을 적게 하고, 만드는 쪽이 다시 계산하지 않게 한다.{추론}"
+        ]
+      },
+      "refs": [
+        2,
+        8
+      ],
+      "study": [
+        "kimball"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "높은 수준의 SQL 활용 능력. SQL 안티패턴을 이해하고, 읽는 사람을 고려해 효율적인 쿼리를 작성할 수 있는 능력",
+      "short": "틀린 숫자·느린 쿼리를 만드는 습관을 피하고, 남이 읽어도 의도가 보이는 SQL을 쓴다.",
+      "why": "토스 코어는 표 대부분을 SQL로 만들고[2], 통합 마트는 여러 팀이 읽고 고칩니다.{추론} 토스는 쿼리 안에 기준을 CASE WHEN으로 박지 말고 차원 표로 빼라고 짚은 적이 있습니다.[3]",
+      "actually": {
+        "items": [
+          "**조인 뒤 합계** — 1:N 조인 뒤 금액을 더하면 부풀려진다. 붙일 쪽을 먼저 키 하나에 한 줄로 줄인다(아래 예).{추론}",
+          "**읽는 사람** — 단계마다 이름 붙인 CTE, 칸 주석. 토스 표준 마트도 SQL 주석을 단다.[2]",
+          "**효율** — 날짜 파티션 칸은 그대로 비교해 필요한 파티션만 읽게 한다.{추론}"
+        ]
+      },
+      "level": {
+        "basic": "조인·집계·윈도 함수 · NULL 다루기",
+        "work": "조인 뒤 부풀려진 합계 · 칸에 함수를 씌운 조건 · 불필요한 DISTINCT · 하드코딩된 CASE WHEN",
+        "team": "수억 행 통합 마트를 CTE로 단계 나눠 읽히게 쓰고, 실행 계획으로 비용을 확인하기"
+      },
+      "examples": [
+        {
+          "title": "쿠폰 두 장 붙은 주문 — 합계가 40,000이 된다",
+          "body": "주문 합은 30,000원인데 쿠폰 표를 그대로 붙이면 주문 1이 두 줄이 되어 40,000원이 나옵니다. 쿠폰을 주문당 한 줄로 줄여 붙이면 맞습니다(sqlite로 직접 돌린 출력).",
+          "lang": "python",
+          "code": "import sqlite3\nc = sqlite3.connect(\":memory:\")\nc.executescript(\"\"\"\ncreate table orders(order_id int, user_id int, amt int);\ncreate table coupons(order_id int, coupon text);\ninsert into orders values (1,10,10000),(2,10,20000);\ninsert into coupons values (1,'A'),(1,'B');\n\"\"\")\nprint(\"조인 뒤 합계:\", c.execute(\"\"\"select sum(o.amt) from orders o\n  left join coupons k on k.order_id = o.order_id\"\"\").fetchone()[0])\nprint(\"단위를 맞춘 뒤:\", c.execute(\"\"\"select sum(o.amt) from orders o\n  left join (select order_id, count(*) n from coupons group by order_id) k\n  on k.order_id = o.order_id\"\"\").fetchone()[0])\n# 조인 뒤 합계: 40000\n# 단위를 맞춘 뒤: 30000"
+        }
+      ],
+      "refs": [
+        2,
+        3
+      ],
+      "study": [
+        "sql-antipatterns"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Python으로 Airflow DAG와 재사용 가능한 배치 모듈을 작성하고, pyspark로 대용량 배치를 직접 개발할 수 있는 역량",
+      "short": "배치 흐름(DAG)을 Python으로 짜고, 반복되는 처리를 모듈로 묶고, SQL로 안 되는 큰 계산은 PySpark로 쓴다.",
+      "why": "토스 코어 메인 배치는 Airflow DAG 약 200개, 태스크 6,000개 이상이고, 전사 집계 1,000개 넘는 작업에 테이블 센서를 달아 병렬로 돌게 했습니다.[2] 프로파일의 규칙·추정 로직처럼 SQL로 쓰기 까다로운 계산은 PySpark가 맞습니다.{추론}",
+      "actually": {
+        "items": [
+          "**DAG** — 작업과 그 순서를 Python 코드로 적는 Airflow의 단위.[17]",
+          "**재사용 모듈** — 프로파일 항목마다 '기준일·창·규칙'만 바꿔 끼우는 함수나 작업 틀.{추론}",
+          "**PySpark** — 데이터프레임 API와 Spark SQL을 Python에서 쓴다.[18] 큰 조인은 쏠림·브로드캐스트를 알고 써야 한다.[16]",
+          "**순서 최적화** — 같은 그룹 토스증권 DW 팀은 오래 걸리는 작업에 우선순위 가중치를 줬다.[6][25]"
+        ]
+      },
+      "how_far": "최소선은 **같은 날짜를 두 번 돌려도 같은 결과**(멱등)인 DAG와, 날짜를 인자로 받는 PySpark 작업 하나를 혼자 만들어 보는 것입니다.{추론}",
+      "refs": [
+        2,
+        6,
+        16,
+        17,
+        18,
+        25
+      ],
+      "study": [
+        "airflow-book",
+        "airflow-docs",
+        "learning-spark",
+        "pyspark-docs"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "단순 요청 처리가 아니라, 데이터 구조와 활용 관점에서 기준을 먼저 제시할 수 있는 분",
+      "short": "'이 숫자 뽑아 주세요'에 그대로 답하지 않고, 어떤 기준과 구조로 만들어야 하는지 먼저 내놓는다.",
+      "why": "토스 마트 팀은 요청에 따라 마트를 만들다 보니 기준이 없어 품질이 갈리고 소유권이 흐려졌다고 돌아봤습니다.[2] 그래서 직관적인 표준 구조를 만들어 예외 없이 적용하기로 했습니다.[2]",
+      "how_far": "면접에서는 '요청 → 기준 제안 → 합의 → 마트'의 순서로 내가 먼저 내놓은 기준이 무엇이었는지 말할 수 있어야 합니다. 이력서에도 설계의 선택 근거와 버린 대안을 쓰라고 합니다.[1]",
+      "refs": [
+        1,
+        2
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "여러 직군의 이해관계자와 소통하며 데이터 요구사항을 구체화하고 합의를 만들어낸 경험",
+      "short": "분석가·재무·서버 개발자·도메인 DAE와 '무엇을 어떤 기준으로 셀지'를 문장으로 합의해 본 경험.",
+      "why": "통합 기준은 한 팀이 정할 수 없습니다 — 도메인 DAE가 제 마트를 만들고[2], 프로파일 로직은 분석가와 같이 짜고[1], IR·재무 숫자는 그 담당이 씁니다.[1]{추론}",
+      "refs": [
+        1,
+        2
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "대용량 데이터 처리 경험, 대규모 배치의 성능·안정성을 개선해본 경험",
+      "short": "느린 큰 배치를 빠르게 하고, 자주 실패하던 배치를 덜 깨지게 고쳐 본 경험.",
+      "why": "토스 코어는 서브 DAG의 태스크 하나만 실패해도 전사 집계 전체가 늦어지던 구조를 테이블 센서로 끊었습니다.[2] 센서가 한꺼번에 뜨며 연결 문제가 나서 동시 실행 수를 모니터링하며 조절하기도 했습니다.[2]",
+      "actually": {
+        "items": [
+          "**성능** — Spark 적응형 실행(AQE)은 쏠린 조인을 쪼개고, 작은 표는 복사해 셔플 없이 붙인다.[16]",
+          "**백필** — 토스증권 DW 팀은 긴 기간을 일정 단위로 잘라 메모리 초과 없이 다시 채웠다.[6]",
+          "**안정성** — 의존을 '시각'이 아니라 '읽을 표가 준비됐나'로 건다.[2]"
+        ]
+      },
+      "refs": [
+        2,
+        6,
+        16
+      ],
+      "study": [
+        "spark-tuning",
+        "slash24dw"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "행동·거래 로그를 유저·가맹점 단위의 속성(프로파일)으로 설계하고 집계해본 경험",
+      "short": "클릭·결제 같은 기록을 '유저 한 줄·가맹점 한 줄'의 속성 표로 바꿔 본 경험.",
+      "why": "업무의 프로파일 구축·운영과 같은 일이고, 같은 팀 공고는 가맹점 로열티·등급 같은 속성을 예로 듭니다.[1][4]",
+      "actually": {
+        "items": [
+          "**창과 기준일** — 최근 7·30·90일 같은 창을 정하고 기준일을 칸으로 남긴다(업무 줄의 예).{추론}",
+          "**희소한 대상** — 거래가 몇 건 없는 가맹점은 점수가 흔들린다. 최소 건수를 두고 모자라면 비워 둔다.{추론}"
+        ]
+      },
+      "refs": [
+        1,
+        4
+      ],
+      "study": [
+        "learning-spark"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "전사 표준을 따르는 데이터 구조를 설계하거나, 표준·품질 체계에 맞춰 마트를 정착시켜본 경험",
+      "short": "표준을 문서로 두는 데서 끝내지 않고, 실제 마트들이 그 표준대로 바뀌게 만든 경험.",
+      "why": "토스는 새 마트는 기준대로 만들지만 레거시 마트가 미흡해 리팩터링하는 중이라고 했습니다.[2] '정착'은 그 리팩터링을 끝까지 하는 일입니다.{추론}",
+      "refs": [
+        2
+      ],
+      "study": [
+        "tmc25-mesh"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "시멘틱 레이어, 지표 사전, 온톨로지 등 데이터에 의미를 입히는 작업 경험",
+      "short": "지표 정의를 한 곳에 모으거나, 대상과 관계를 정의해 데이터를 이어 본 경험.",
+      "why": "업무의 '온톨로지에 연결되는 데이터 구조 설계'와 같은 축입니다.[1] 토스는 일찍이 서비스별 '활성 행동' 코드를 정의해 활성 유저 통합 마트를 만든 적이 있습니다 — 지표 사전의 이른 형태입니다.[3]{추론}",
+      "actually": {
+        "items": [
+          "**시멘틱 레이어** — 지표를 YAML 같은 정의로 한 번만 적고 도구들이 그 정의로 계산한다.[13]",
+          "**온톨로지** — 대상·속성·관계로 데이터를 그린다.[10]"
+        ]
+      },
+      "refs": [
+        1,
+        3,
+        10,
+        13
+      ],
+      "study": [
+        "dbt-sl",
+        "palantir-ontology"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "LLM·AI 에이전트가 데이터를 제대로 활용하게 만드는 작업(AI-Ready Data)에 대한 관심과 시도",
+      "short": "AI가 맞는 표를 찾고 맞게 세도록 데이터 쪽을 고쳐 본 시도 — 작아도 된다.",
+      "why": "'경험'이 아니라 '관심과 시도'라고 썼습니다.[1] 같은 그룹 DW 공고도 이 영역을 시장에서 막 생기는 일로 보고 실패해 볼 재량을 준다고 했습니다.[5]",
+      "actually": {
+        "items": [
+          "**MCP** — 에이전트가 표 검색·칸 설명·지표 조회 같은 도구를 부르게 하는 공개 규약.[19]",
+          "**골든셋** — 정답을 아는 질문으로 답의 정확도를 잰다.[4]"
+        ]
+      },
+      "how_far": "작은 데이터로 에이전트에게 질문하고, 틀린 답의 원인을 고쳐 정확도가 오른 과정을 숫자로 말할 수 있으면 충분합니다.{추론}",
+      "refs": [
+        1,
+        4,
+        5,
+        19
+      ],
+      "study": [
+        "mcp-docs",
+        "dbt-sl"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "반복적인 문제를 도구로 만들어 팀 생산성을 올려본 경험",
+      "short": "같은 수고를 세 번 하기 전에 스크립트·검사기·화면으로 만들어 팀이 같이 쓰게 한 경험.",
+      "why": "토스 데이터 조직은 상용·오픈소스가 맞지 않으면 쉬운 방법으로 빨리 직접 만들어 고쳐 가는 방식으로 카탈로그·배치·품질 도구를 만들어 왔습니다.[3] 마트 플랫폼 팀도 데이터 성숙도를 재는 도구를 만들었습니다.[2]",
+      "refs": [
+        2,
+        3
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "# 이런 경험이 있다면 이력서에 꼭 작성해 주세요",
+      "short": "아래 네 가지는 서류에서 직접 보겠다는 항목 — 경험을 이 틀에 맞춰 다시 쓰면 된다.",
+      "why": "토스는 서류 접수 뒤 직무 인터뷰가 이어지므로[1] 이력서의 이 네 항목이 인터뷰 질문의 재료가 됩니다.{추론}",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "경험한 업무 중 임팩트가 컸던 프로젝트와, 그 안에서 본인이 담당한 부분",
+      "short": "팀이 한 일과 내가 한 일을 갈라 쓴다 — '마트를 만들었다'가 아니라 '통합 기준과 검증 쿼리를 내가 정했다'.",
+      "why": "여러 직군이 함께 만드는 통합 마트에서는 기여가 흐려지기 쉽습니다.{추론}",
+      "refs": []
+    },
+    {
+      "section": "preference",
+      "quote": "데이터 구조를 설계할 때의 선택 근거와, 검토했지만 택하지 않은 대안",
+      "short": "'왜 이 구조인가'와 '버린 안은 무엇이고 왜 버렸나'를 같이 쓴다.",
+      "why": "자격요건의 '기준을 먼저 제시'와 짝을 이루는 요구입니다.[1] 예: 프로파일을 넓은 한 표로 둘지, 항목별 좁은 표로 둘지 — 읽는 편의와 갱신 비용 중 무엇을 택했나.{추론}",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "데이터 문제를 해결하며 배운 점",
+      "short": "틀린 숫자를 찾고 고친 일 하나와, 그 뒤로 바꾼 습관(검사·문서·규칙)을 쓴다.",
+      "why": "이 팀의 일 절반이 정합성·품질입니다.[1] 문제를 고친 뒤 '다시 안 생기게' 무엇을 붙였는지가 핵심입니다.{추론}",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "실제 서비스에 적용된 개선을 가능한 한 수치로 (민감 정보는 제외해주세요)",
+      "short": "배치 시간·실패 횟수·조회 수처럼 전후를 숫자로 쓰되, 매출·유저 수 같은 민감한 값은 빼거나 비율로.",
+      "why": "팀 성공 기준이 '전사에서 얼마나 쓰이나'이므로[1] 만든 마트의 사용 팀 수·조회 수 같은 숫자가 잘 맞습니다.{추론}",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "# 합류하시면 이런 걸 얻어가실 수 있어요",
+      "short": "회사가 약속하는 경험 세 가지 — 지원 동기를 쓸 때 이 중 무엇에 끌렸는지 짚으면 된다.",
+      "why": "아래 세 줄은 요건이 아니라 회사가 내세우는 이 자리의 매력입니다.[1]",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "금융·커머스·광고를 아우르는 국내 손꼽히는 규모와 복잡도의 데이터를, 전사 공통 자산 관점에서 직접 설계하는 경험",
+      "short": "한 도메인이 아니라 금융·커머스·광고를 가로지르는 공통 구조를 처음부터 설계해 볼 수 있다는 뜻.",
+      "why": "토스 데이터 조직은 커머스·페이·광고처럼 작은 회사 같은 도메인들이 생기며 메시 구조로 바뀌었고, 지금 일곱 개 도메인에 깊이 관여합니다.[2]",
+      "refs": [
+        2
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "마트 개발에서 끝나지 않고, 그 데이터가 온톨로지로 연결되어 사람과 AI에게 실제로 쓰이는 데까지 이어지는 전 과정",
+      "short": "마트를 넘겨주고 끝이 아니라, 그 마트가 온톨로지·AI 답변으로 쓰이는 모습까지 본다는 뜻.",
+      "why": "팀 소개가 원천 → 공통 자산 → 의미 정의(온톨로지) → 사람·AI 활용을 한 팀이 맡는다고 했습니다.[1]",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "온톨로지·AI-Ready Data처럼 아직 정답이 없는 영역을 전사 규모에서 먼저 시도해볼 기회",
+      "short": "정해진 방법이 없는 일을 먼저 해 본다 — 대신 결과가 늘 나오지는 않는다.",
+      "why": "같은 그룹 DW 공고도 이 영역을 시장에서 막 형성되는 일로 부릅니다.[5] 외부에서도 에이전트용 맥락 층으로 온톨로지를 다루는 글이 이제 나오는 단계입니다.[11]{추론}",
+      "refs": [
+        5,
+        11
+      ]
+    }
+  ],
+  "fit": {
+    "good": [
+      "'이 숫자는 왜 두 마트에서 다르지?'를 끝까지 파는 사람[1]",
+      "요청을 받기 전에 기준을 먼저 내놓고 여러 팀을 설득하는 일이 즐거운 사람[1][2]",
+      "모델링 이론(인먼·Kimball)을 실제 대규모 데이터에 대 보고 싶은 사람[1]",
+      "온톨로지·AI-Ready 데이터처럼 정답이 없는 일을 먼저 시도해 보고 싶은 사람[1]"
+    ],
+    "hard": [
+      "합의가 일의 절반이다 — 혼자 빨리 만드는 것을 좋아하면 답답할 수 있다{추론}",
+      "Hadoop 계열(Impala·Hive·Spark)이 바닥이라 클라우드 DW만 써 온 사람은 익힐 것이 있다[2]",
+      "온톨로지·에이전트 쪽은 결과가 늘 나오는 일이 아니다[5]"
+    ]
+  },
+  "interview": [
+    {
+      "q": "카드·페이·계좌에서 같은 결제가 두 번 찍혀요. 통합소비 마트의 기준을 어떻게 정하겠어요?",
+      "a": "업무 '통합 기준을 정의' 줄과 Kimball의 부합 차원.[1][8]"
+    },
+    {
+      "q": "가맹점 등급이 바뀌었는데 지난달 리포트 숫자가 바뀌면 안 돼요. 어떻게 저장하겠어요?",
+      "a": "DW의 비휘발·시간 변화 특성과 SCD 2형.[7][9]"
+    },
+    {
+      "q": "'출퇴근하는 직장인' 추정 비율이 하루 만에 크게 떨어졌어요. 무엇부터 보겠어요?",
+      "a": "프로파일 품질 모니터링 — 원천 변화와 규칙 변화를 가르기.[1]"
+    },
+    {
+      "q": "도메인 DAE가 자기 마트를 온톨로지에 올리려 해요. 무엇을 자동으로 검사하겠어요?",
+      "a": "업무 '도메인 데이터 구조 정의와 검증 방식'.[1][2]"
+    },
+    {
+      "q": "AI 에이전트가 '활성 유저'를 틀리게 세요. 데이터 쪽에서 무엇을 고치겠어요?",
+      "a": "컨텍스트·시멘틱 레이어·골든셋.[4][13]"
+    },
+    {
+      "q": "읽는 사람을 고려한 쿼리란 무엇인가요? 최근에 쓴 긴 쿼리를 어떻게 나눴는지 말해 주세요.",
+      "a": "필수 'SQL 안티패턴과 읽는 사람'.[1]"
+    }
+  ],
+  "sources": [
+    {
+      "n": 1,
+      "title": "토스 채용 · 데이터 분석 엔지니어 (Platform)",
+      "url": "https://toss.im/career/job-detail?gh_jid=7901191003",
+      "kind": "posting",
+      "note": "Data Intelligence Platform 팀 소개·업무·요건·우대·이력서 요구·합류 여정"
+    },
+    {
+      "n": 2,
+      "title": "TMC25 · 중앙에서 Data Mesh로 Data Ownership 강화를 위한 변화",
+      "url": "https://www.youtube.com/watch?v=P00wKMrqBwE",
+      "kind": "company",
+      "date": "2025",
+      "note": "토스 DAE 챕터 리드·DW 팀 DAE 발표. 자막 전부 읽음 — 메시 전환, 표준 마트, 마트 플랫폼 팀의 전사 마트 소유, LLM 기반 표준 검토, 메인 배치 네 단계"
+    },
+    {
+      "n": 3,
+      "title": "SLASH 21 · 빠르게 성장하는 스타트업의 DW",
+      "url": "https://www.youtube.com/watch?v=6CZwKUp1ozw",
+      "kind": "company",
+      "date": "2021-04",
+      "note": "토스 Data Service 팀 — 디멘션 표, 활성 행동 코드, DQ 센터(2021년 기준)"
+    },
+    {
+      "n": 4,
+      "title": "토스 채용 · 데이터 사이언티스트 (Data Intelligence Platform)",
+      "url": "https://toss.im/career/job-detail?gh_jid=8003064003",
+      "kind": "posting",
+      "note": "같은 팀 — 거래·가맹점·유저 SSOT, 카테고리·브랜드 분류, 온톨로지·Knowledge Base, 골든셋"
+    },
+    {
+      "n": 5,
+      "title": "토스 채용 · 데이터 분석 엔지니어 (DW)",
+      "url": "https://toss.im/career/job-detail?gh_jid=7818488003",
+      "kind": "posting",
+      "note": "같은 회사 DW 팀 — AI-Ready 데이터를 막 생기는 영역으로 소개"
+    },
+    {
+      "n": 6,
+      "title": "SLASH 24 · 전천후 데이터 분석을 위한 DW 설계 및 운영하기",
+      "url": "https://www.youtube.com/watch?v=MWDVBZycou4",
+      "kind": "company",
+      "date": "2024",
+      "note": "토스증권 DW 팀 — 같은 그룹 다른 회사(우선순위·백필 나누기)"
+    },
+    {
+      "n": 7,
+      "title": "Oracle · What Is a Data Warehouse?",
+      "url": "https://www.oracle.com/uk/database/what-is-a-data-warehouse/",
+      "kind": "reference",
+      "note": "인먼의 네 특성 풀이"
+    },
+    {
+      "n": 8,
+      "title": "Kimball Group · Kimball Data Warehouse Bus Architecture",
+      "url": "https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/kimball-data-warehouse-bus-architecture/",
+      "kind": "reference",
+      "note": "부합 차원·버스 매트릭스"
+    },
+    {
+      "n": 9,
+      "title": "Kimball Group · Dimensional Modeling Techniques",
+      "url": "https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/",
+      "kind": "reference",
+      "note": "사실·차원 표, 천천히 변하는 차원"
+    },
+    {
+      "n": 10,
+      "title": "Palantir Foundry 문서 · Ontology core concepts",
+      "url": "https://palantir.com/docs/foundry/ontology/core-concepts/",
+      "kind": "reference",
+      "note": "대상 유형·속성·관계 유형 — 기업 온톨로지의 공개된 예"
+    },
+    {
+      "n": 11,
+      "title": "Databricks 블로그 · 데이터 온톨로지, AI 에이전트에 빠진 맥락 층",
+      "url": "https://www.databricks.com/kr/blog/data-ontology-defined-context-layer-your-ai-agents-are-missing",
+      "kind": "reference"
+    },
+    {
+      "n": 12,
+      "title": "dbt Labs 블로그 · Semantic layer vs. text-to-SQL (2026)",
+      "url": "https://docs.getdbt.com/blog/semantic-layer-vs-text-to-sql-2026",
+      "kind": "reference",
+      "note": "지표 질문 정확도 비교 실험"
+    },
+    {
+      "n": 13,
+      "title": "dbt 문서 · dbt Semantic Layer",
+      "url": "https://docs.getdbt.com/docs/use-dbt-semantic-layer/dbt-sl",
+      "kind": "reference"
+    },
+    {
+      "n": 14,
+      "title": "dbt 문서 · Data tests",
+      "url": "https://docs.getdbt.com/docs/build/data-tests",
+      "kind": "reference"
+    },
+    {
+      "n": 15,
+      "title": "dbt 문서 · Source freshness",
+      "url": "https://docs.getdbt.com/docs/deploy/source-freshness",
+      "kind": "reference"
+    },
+    {
+      "n": 16,
+      "title": "Spark 문서 · Performance Tuning",
+      "url": "https://spark.apache.org/docs/latest/sql-performance-tuning.html",
+      "kind": "reference"
+    },
+    {
+      "n": 17,
+      "title": "Airflow 문서 · DAGs",
+      "url": "https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/dags.html",
+      "kind": "reference"
+    },
+    {
+      "n": 18,
+      "title": "PySpark 문서",
+      "url": "https://spark.apache.org/docs/latest/api/python/index.html",
+      "kind": "reference"
+    },
+    {
+      "n": 19,
+      "title": "Model Context Protocol · Introduction",
+      "url": "https://modelcontextprotocol.io/introduction",
+      "kind": "reference"
+    },
+    {
+      "n": 20,
+      "title": "Hadoop 문서 · HDFS Architecture",
+      "url": "https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HdfsDesign.html",
+      "kind": "reference"
+    },
+    {
+      "n": 21,
+      "title": "토스 · 회사 소개(사이트 하단 회사 정보)",
+      "url": "https://toss.im/company",
+      "kind": "company",
+      "note": "사업장 주소·우편번호"
+    },
+    {
+      "n": 22,
+      "title": "토스피드 · 출근 첫날 만나는 토스 복지 패키지",
+      "url": "https://toss.im/tossfeed/article/employee-benefits",
+      "kind": "company",
+      "date": "2021-03-10"
+    },
+    {
+      "n": 23,
+      "title": "원티드 · 비바리퍼블리카(토스) 기업 정보",
+      "url": "https://www.wanted.co.kr/company/6e7c9aaabe84eba898328836e7cf85b1a1f8e67d",
+      "kind": "reference",
+      "note": "집계 사이트의 평균 연봉 — 산출 기준·기준일 표기 없음"
+    },
+    {
+      "n": 24,
+      "title": "Inmon · Building the Data Warehouse",
+      "url": "https://gov.wiley.com/WileyCDA/WileyTitle/productCd-0764599445.html",
+      "kind": "reference",
+      "note": "네 특성 정의의 원전(책)"
+    },
+    {
+      "n": 25,
+      "title": "Airflow 문서 · Priority Weights",
+      "url": "https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/priority-weight.html",
+      "kind": "reference"
+    }
+  ],
+  "resources": [
+    {
+      "id": "tmc25-mesh",
+      "title": "TMC25 · 중앙에서 Data Mesh로 Data Ownership 강화를 위한 변화",
+      "by": "토스 DW 팀 · 26분",
+      "kind": "video",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.youtube.com/watch?v=P00wKMrqBwE",
+      "why": "토스 데이터 조직이 직접 말한 메시 전환·표준 마트·마트 플랫폼 팀의 전사 마트 소유. 업무 '전사 통합마트'와 '표준·품질 체계'의 원본."
+    },
+    {
+      "id": "slash21dw",
+      "title": "SLASH 21 · 빠르게 성장하는 스타트업의 DW",
+      "by": "토스 Data Service 팀 · 20분",
+      "kind": "video",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.youtube.com/watch?v=6CZwKUp1ozw",
+      "why": "디멘션 표·활성 행동 코드·DQ 센터. 업무 'health check 지표화'와 우대 '지표 사전'의 이른 예."
+    },
+    {
+      "id": "slash24dw",
+      "title": "SLASH 24 · 전천후 데이터 분석을 위한 DW 설계 및 운영하기",
+      "by": "토스증권 DW 팀 · 25분",
+      "kind": "video",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.youtube.com/watch?v=MWDVBZycou4",
+      "why": "같은 그룹 DW 팀의 백필 나누기·우선순위. 우대 '대규모 배치 성능·안정성 개선'."
+    },
+    {
+      "id": "hadoop-guide",
+      "title": "하둡 완벽 가이드 (4판)",
+      "by": "톰 화이트 · 한빛미디어 · 2017",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://www.oreilly.com/library/view/-/9788968484599/",
+      "why": "HDFS·YARN·Hive·Spark를 한 권으로. 필수 'Hadoop 에코시스템과 분산 처리 기본 이해'."
+    },
+    {
+      "id": "learning-spark",
+      "title": "러닝 스파크 (개정판)",
+      "by": "제이펍",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EB%9F%AC%EB%8B%9D%20%EC%8A%A4%ED%8C%8C%ED%81%AC",
+      "why": "Spark SQL·데이터프레임·조인. 필수 'pyspark로 대용량 배치'와 업무 '프로파일 항목 산출'."
+    },
+    {
+      "id": "spark-tuning",
+      "title": "Spark SQL Performance Tuning",
+      "by": "Apache Spark 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://spark.apache.org/docs/latest/sql-performance-tuning.html",
+      "why": "적응형 실행·쏠린 조인·브로드캐스트·파티션 수. 우대 'OLAP 엔진 동작 원리와 튜닝'."
+    },
+    {
+      "id": "fde-book",
+      "title": "견고한 데이터 엔지니어링",
+      "by": "조 라이스 · 맷 하우슬리 · 한빛미디어 · 2023",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "입문",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B2%AC%EA%B3%A0%ED%95%9C%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81",
+      "why": "생성·수집·저장·변환·서빙으로 이어지는 전체 그림. 업무 '입수 레이어 설계'와 필수 'DW 기본 이해'."
+    },
+    {
+      "id": "sql-antipatterns",
+      "title": "SQL AntiPatterns (한국어판)",
+      "by": "빌 카윈",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000009184734",
+      "why": "흔한 SQL 실수를 장마다 원인과 해법으로. 필수 'SQL 안티패턴 이해'."
+    },
+    {
+      "id": "airflow-book",
+      "title": "Apache Airflow 기반의 데이터 파이프라인",
+      "by": "바스 하렌슬락 · 율리안 더라위터르 · 제이펍 · 2022",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000002993441",
+      "why": "DAG·의존성·센서·백필·테스트. 우대 'Airflow 운영·트러블슈팅'. Airflow 3 변경은 공식 문서로 보충."
+    },
+    {
+      "id": "airflow-docs",
+      "title": "Airflow Core Concepts",
+      "by": "Apache Airflow 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/index.html",
+      "why": "센서·풀·우선순위·재시도의 정확한 정의. 토스 코어가 겪은 센서 순환·풀 조절을 이해하는 바탕."
+    },
+    {
+      "id": "dbt-docs",
+      "title": "dbt 공식 문서 · Best practices",
+      "by": "dbt Labs",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.getdbt.com/best-practices",
+      "why": "재사용 가능한 테스트·신선도·계약. 업무 '정합성 검증·이상 감지'."
+    },
+    {
+      "id": "dbt-sl",
+      "title": "dbt Semantic Layer 문서",
+      "by": "dbt Labs",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://docs.getdbt.com/docs/use-dbt-semantic-layer/dbt-sl",
+      "why": "지표를 한 번만 정의해 사람·AI가 같은 숫자를 받게 하는 법. 업무 'AI 에이전트가 읽는 컨텍스트'."
+    },
+    {
+      "id": "mcp-docs",
+      "title": "Model Context Protocol 문서",
+      "by": "modelcontextprotocol.io",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://modelcontextprotocol.io/introduction",
+      "why": "에이전트에 데이터 도구를 여는 규약. 우대 'AI-Ready Data' 시도를 작게 만들어 보는 데 필요."
+    },
+    {
+      "id": "kimball",
+      "title": "The Data Warehouse Toolkit (3판)",
+      "by": "Ralph Kimball · Margy Ross · Wiley · 2013",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "url": "https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/books/",
+      "why": "사실·차원 표, 부합 차원, 버스 매트릭스, SCD. 필수 '차원 모델링'과 업무 '전사 통합 구조로 연결'의 원전."
+    },
+    {
+      "id": "inmon",
+      "title": "Building the Data Warehouse (4판)",
+      "by": "W. H. Inmon · Wiley · 2005",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "url": "https://gov.wiley.com/WileyCDA/WileyTitle/productCd-0764599445.html",
+      "why": "공고가 그대로 쓴 네 특성(주제 중심·통합·비휘발·시간 변화)의 원전. 필수 'DW 기본 특성' 줄."
+    },
+    {
+      "id": "pyspark-docs",
+      "title": "PySpark 공식 문서",
+      "by": "Apache Spark",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://spark.apache.org/docs/latest/api/python/index.html",
+      "why": "데이터프레임 API·윈도 함수·Spark SQL을 Python에서. 필수 'pyspark로 대용량 배치를 직접 개발'."
+    },
+    {
+      "id": "palantir-ontology",
+      "title": "Foundry Ontology · Core concepts",
+      "by": "Palantir 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://palantir.com/docs/foundry/ontology/core-concepts/",
+      "why": "데이터를 대상·속성·관계로 옮기는 기업 온톨로지의 공개된 예. 업무 '마트·프로파일을 온톨로지 엔티티·관계로'."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "DW의 네 특성과 차원 모델",
+      "time": "2주",
+      "goal": "주제 중심·통합·비휘발·시간 변화를 예로 설명하고, 사실·차원 표와 SCD 2형을 직접 설계한다.",
+      "resources": [
+        "kimball",
+        "inmon",
+        "tmc25-mesh"
+      ],
+      "task": "가상 카드·페이·계좌 결제 원천 세 개로 '통합소비' 사실 표와 유저·가맹점·날짜 차원을 설계한다. 버스 매트릭스를 한 장 그리고, 가맹점 등급을 SCD 2형으로 남겨 지난 시점 기준 질문에 답한다."
+    },
+    {
+      "title": "통합 기준을 SQL로",
+      "time": "1~2주",
+      "goal": "중복·취소·기준일을 정의한 문서와 그대로 계산하는 SQL·검증 쿼리를 낸다.",
+      "resources": [
+        "sql-antipatterns",
+        "kimball"
+      ],
+      "task": "1단계 데이터에 같은 결제가 두 원천에 찍힌 경우와 취소 건을 일부러 섞는다. 통합 기준 문서를 쓰고, 기준대로 합친 마트와 '원천 합계 − 중복 = 통합 합계' 대조 쿼리를 만든다. 조인 뒤 부풀려진 합계 같은 함정도 넣어 확인한다."
+    },
+    {
+      "title": "프로파일을 배치로",
+      "time": "2~3주",
+      "goal": "기준일·창·규칙 버전을 칸으로 가진 유저·가맹점 프로파일을 PySpark와 Airflow로 매일 만든다.",
+      "resources": [
+        "learning-spark",
+        "pyspark-docs",
+        "airflow-book",
+        "airflow-docs",
+        "hadoop-guide"
+      ],
+      "task": "가상 거래 100만 줄로 최근 30일 소비액·주 업종·출퇴근 추정을 PySpark로 계산한다. 날짜를 인자로 받는 Airflow DAG를 만들고 같은 날짜를 두 번 돌려 결과가 같은지(멱등) 확인한다."
+    },
+    {
+      "title": "정합성과 health check",
+      "time": "1~2주",
+      "goal": "표마다 재사용 검사와 이상 감지를 붙이고 건강 점수를 한 화면에 모은다.",
+      "resources": [
+        "dbt-docs",
+        "slash21dw"
+      ],
+      "task": "2·3단계 마트에 빈값·고유·관계·신선도 검사와 '행 수 ÷ 지난 7일 중앙값' 이상 감지를 붙인다. 하루치 데이터를 일부러 40% 지워 검사가 아래 작업을 멈추는지 보고, 표별 통과율을 표 하나로 모은다."
+    },
+    {
+      "title": "온톨로지와 AI가 읽는 데이터",
+      "time": "계속",
+      "goal": "마트를 대상·관계로 잇는 정의와 검사기를 만들고, 골든셋으로 에이전트 답을 잰다.",
+      "resources": [
+        "palantir-ontology",
+        "dbt-sl",
+        "mcp-docs"
+      ],
+      "task": "유저·가맹점·계좌와 '결제한다'·'보유한다' 관계를 YAML로 정의하고, 키·설명이 빠지면 실패하는 검사기를 붙인다. 표 검색·칸 설명·지표 조회 세 도구만 여는 작은 MCP 서버를 만들어 정답을 아는 질문 10개를 묻고, 틀린 답마다 무엇을 고쳤는지와 정확도 변화를 적는다."
+    }
+  ],
+  "pay": {
+    "summary": "공고에 연봉은 없고, 공시 원문을 찾지 못했다 — 집계 사이트 평균 **약 6,082만원** 하나만 확인(기준 표기 없음)",
+    "rows": [
+      {
+        "label": "직원 평균 연봉(집계)",
+        "value": "6,082만원",
+        "amount": 6082,
+        "basis": "집계 사이트 · 기준일 표기 없음",
+        "note": "원티드 기업 정보의 평균 연봉. 같은 페이지에 국민연금 가입 사원 1,769명이 함께 적혀 있으나 평균 연봉을 무엇으로 계산했는지는 밝히지 않았다 [23]"
+      }
+    ],
+    "how": "토스 채용은 직무·문화 인터뷰와 레퍼런스 체크 뒤에 **처우 협의** 단계가 따로 있어 연봉을 사람마다 정한다 [1]. 집계 사이트마다 평균값이 크게 다르고(산출 기준이 서로 다르다) 경력직이 섞인 회사 전체 값이라, 신입이나 이 자리의 금액으로 읽으면 안 된다 {추론}."
+  },
+  "benefits": {
+    "items": [
+      {
+        "name": "식대",
+        "detail": "1인 1법인카드, 금액 제한 없음"
+      },
+      {
+        "name": "업무 비용",
+        "detail": "업무 관련 비용 100% 지원"
+      },
+      {
+        "name": "자율 휴가",
+        "detail": "보고·승인 없이 사용"
+      },
+      {
+        "name": "리프레쉬 휴가",
+        "detail": "근속 3년마다 1개월 유급"
+      },
+      {
+        "name": "주택 자금 대출",
+        "detail": "1억원 한도 무이자(6개월 이상 재직)"
+      },
+      {
+        "name": "건강",
+        "detail": "매년 1회 종합건강검진·독감 예방, 체력 단련비 월 10만원"
+      },
+      {
+        "name": "단체 보험",
+        "detail": "보험료 전액 회사 부담"
+      },
+      {
+        "name": "교통",
+        "detail": "주차비 개인 부담 0원, 택시비 100%"
+      },
+      {
+        "name": "통신비",
+        "detail": "매월 10만원"
+      },
+      {
+        "name": "경조사",
+        "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+      },
+      {
+        "name": "인재 추천",
+        "detail": "인재추천비 500만원"
+      },
+      {
+        "name": "사내 시설",
+        "detail": "커피·사내 편의점 무료, 사내 헤어살롱"
+      }
+    ],
+    "note": "토스 팀 전체를 기준으로 한 2021년 공식 소개 글이다 [22]. 글 스스로 복지가 계속 바뀐다고 적었으니, 지금도 같은지는 처우 협의 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "토스(비바리퍼블리카) 본사",
+    "address": "서울특별시 강남구 테헤란로 142, 4층, 10층, 11층, 12층, 13층, 22층, 23층",
+    "postal": "06236",
+    "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+    "near": "2호선 역삼역 근처 테헤란로 {추론}",
+    "note": "공고의 근무지 표기는 'Seoul'이고, 주소는 토스 회사 소개 페이지 하단의 회사 정보다 [21]. 팀 자리가 이 건물과 다를 수 있다 {추론}."
+  },
+  "caveat": "이 팀(Data Intelligence Platform)이 직접 한 공개 발표는 찾지 못했습니다. 팀의 일은 이 공고[1]와 같은 팀 데이터 사이언티스트 공고[4]로, 토스 데이터 조직 전체의 구조는 TMC25 발표[2]로 보였고, 이 팀이 발표 속 '마트 플랫폼 팀'의 일을 잇는다는 것은 추론입니다. SLASH 21[3]은 2021년 것이라 도구 이름·규모는 지금과 다를 수 있습니다. 온톨로지·시멘틱 레이어의 '보통 이런 것'은 팔란티어·dbt·Databricks 공개 문서[10][11][12][13]로 보였습니다. 연봉은 공시 원문을 찾지 못해 집계 사이트 값 하나만 실었습니다."
+}
