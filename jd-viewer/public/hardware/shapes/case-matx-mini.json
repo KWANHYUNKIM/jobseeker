@@ -87,6 +87,48 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "공식 표: 재질 'ABS + SPCC, 전면/좌측면 4mm 두께 강화유리', 부제 'COMPACT AND PANORAMA GLASS' → 앞·왼쪽 유리가 기둥 없이 이어진 어항형(panoramic). 기본 팬은 뒤 120mm 1개 'RGB - 3색 고정'(주소 지정 안 되는 RGB → fan_light rgb). 상세 사진(세션 임시 폴더에서 PIL 로 잘라 보기만): 본체 칸 아래가 통째로 막힌 높은 받침(파워 커버)이고 그 앞면에 USB·전원 단추, 받침 아래 네 귀퉁이가 사다리꼴로 파인 다리(블록 발과 같은 꼴이라 feet 는 비웠다). 트레이 뒷면 사진: 고무 없이 뚫린 세로 선 구멍 둘·큰 CPU 뒷면 구멍. 뒷면 사진: 확장 슬롯 4개(판독), 윗면 메시. 하드는 겸용 베이 1개인데 자리가 안 보여 drive_cage 는 비웠다. 날개 수는 켠 팬 사진이라 세지 못했다. 다나와는 쓰지 않았다."
+  },
+  "3rsys-r370-rgb": {
+   "kind": "case",
+   "front": "mesh",
+   "glass_side": true,
+   "panoramic": false,
+   "shroud": true,
+   "shroud_side": "solid",
+   "drive_cage": false,
+   "grommet_style": "open",
+   "cpu_cutout": true,
+   "expansion_slots": 4,
+   "feet": "round",
+   "fan_blades": 9,
+   "fan_light": "rgb",
+   "color": "#151618",
+   "sources": [
+    {
+     "title": "3RSYS 공식 — R370 RGB 제품 상세(사양 줄: 전면 메쉬 · 측면 강화유리 · LED 색상 RGB, 사진 4장, 상세 이미지의 제품 스펙 표: 패널 '좌측 슬라이딩 강화 유리 / 우측 일반 철판 / 전면 메쉬' · PCI 슬롯 4 · 저장장치 HDD 1 / SSD 3 · 기본 팬 그림)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1758587790"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "PCI 4·패널 종류·LED RGB 는 공식 스펙 표(상세 이미지를 PIL 로 잘라 봄). 하드는 '하드베이 없이 섀시에 고정'(파워 덮개 안 바닥 구멍 + 트레이 뒤 SSD 자리)이라 drive_cage false. 상세 사진: 본체 칸 아래가 통째로 막힌 높은 파워 덮개, 그 윗면에 바닥 팬 자리 120×2. 트레이 뒷면 사진: 고무 없이 뚫린 세로 선 구멍들(open)과 큰 CPU 뒷면 구멍. 앞판은 세로 줄 무늬 메시이고 양옆에 세로 틈새 흡기 띠. 발은 작은 원통 발 4개. 스펙 표의 팬 그림에서 날개 9장, 가운데 Socoool 마크. 트레이 위쪽 안에 3RSYS 글자가 있으나 형식의 자리(front·shroud)가 아니라 적지 않았다. 다나와는 쓰지 않았다."
+  },
+  "darkflash-dmo11": {
+   "kind": "case",
+   "front": "mesh",
+   "glass_side": false,
+   "panoramic": false,
+   "color": "#5b5d61",
+   "accent": "#2a2b2e",
+   "sources": [
+    {
+     "title": "다크플래쉬 코리아(투웨이) DMO11 (블랙) 상품 페이지 — 대표·추가 사진 3장(앞·왼쪽 비스듬히, 앞·오른쪽 비스듬히, 앞면 정면)",
+     "url": "https://www.darkflash.co.kr/product/detail2.html?product_no=706"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "공식 사진(세션 임시 폴더에서 보기만): 사무용 꼴의 미니타워. 앞판은 검정 플라스틱에 세로 갈비 + 비스듬한 틈이 촘촘한 통풍 판(공식 문구 '에어 벤트 홀' — 메시 천은 아니지만 바람이 드나드는 앞판이라 mesh 로 적었다), 앞판 오른쪽 위에 전원 단추·이어폰·USB-A 둘·USB-C, 그 밑 세로 홈 세 줄. 몸통은 짙은 회색 철판(accent 가 앞판 검정), 왼쪽 판은 유리 없는 철판에 뒤쪽 위 네모난 타공 흡기 자리 하나(공식 문구 '좌측 쿨링 에어홀'), 왼쪽 판 앞쪽 아래 모서리에 darkFlash 글자(케이스 옆면 marks 자리가 없어 적지 않았다). 파워는 위쪽(models 문구 '상단 파워 조립부') — 렌더러가 바닥에 둘 수 있다. 상세 사양 이미지는 스크립트로 불러와 못 봐 확장 슬롯·덮개·선 구멍·발 모양은 비웠다. 다나와는 쓰지 않았다."
   }
  }
 }

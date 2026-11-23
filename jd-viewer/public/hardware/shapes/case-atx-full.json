@@ -179,6 +179,52 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "확장 슬롯 7·왼쪽 통풍 메시 판(유리 아님 — glass_side false)·오른쪽 철판은 공식 사양. 공식 사진(세션 임시 폴더에서 보기만): 앞면은 검정 틀 안에 세로 월넛 각재 11개가 틈을 두고 서 있고 그 뒤로 140mm 팬 3개(검정, 불빛 없음 — Aspect 14 비발광)가 비친다 — front mesh 로 근사(각재는 형식에 칸 없음, accent = 월넛색). 윗면은 메시 + 앞쪽 띠에 황동 전원 버튼·I/O. 발은 황동 테두리 둥근 발 4개(round). 뒷면: 확장 슬롯 7, 위쪽 세로 긴 타공 판, 아래 파워 자리. 내부 사진을 못 봐 파워 덮개·그로밋 자리·CPU 구멍은 비웠다(그로밋은 공식 사양에 있음). 다나와는 쓰지 않았다."
+  },
+  "darkflash-dlx-ultra-mesh-argb": {
+   "kind": "case",
+   "front": "mesh",
+   "glass_side": true,
+   "panoramic": false,
+   "shroud": true,
+   "shroud_side": "mesh",
+   "fan_light": "argb",
+   "color": "#e9eaec",
+   "marks": [
+    {
+     "text": "darkFlash",
+     "where": "shroud",
+     "color": "#3a3c40"
+    }
+   ],
+   "sources": [
+    {
+     "title": "다크플래쉬 한국 공식 사이트(투웨이) — DLX ULTRA MESH ARGB (화이트) 상품 페이지 대표·추가 사진 5장(앞·옆 비스듬히, 연출 사진, 흰색·검정 나란히)",
+     "url": "https://darkflash.co.kr/product/dlx-ultra-mesh-argb-%ED%99%94%EC%9D%B4%ED%8A%B8/966/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "공식 사진(세션 임시 폴더에서 보기만): 앞판은 다면체(폴리곤) 무늬를 찍은 메시 판 한 장, 그 위 띠에 USB·전원 단추. 왼쪽 판은 유리이고 앞판과 사이에 흰 기둥이 있어 어항형이 아니다. 본체 칸 아래에 높은 받침이 있고 그 옆면이 세로 둘로 나뉜 타공 판(shroud_side mesh), 받침 윗면에 바닥 팬 3개가 앉는다. 받침 바로 위 유리 오른쪽 아래 모서리에 작은 darkFlash 글자. 보드 오른쪽 칸막이에 세운 측면 팬 자리가 사진에 보인다. 발은 네 귀퉁이 사다리꼴 블록이라 feet 는 비웠다(기존 REQUESTS ①). models 의 사진·출처가 흰색 판이라 흰색으로 적었다(검정 판도 있다 — 사진 5에 나란히). 상세 사양 이미지는 이번에도 스크립트로 불러와 못 봐 확장 슬롯·선 구멍·날개 수는 비웠다. 다나와는 쓰지 않았다."
+  },
+  "3rsys-t840": {
+   "kind": "case",
+   "front": "mesh",
+   "glass_side": true,
+   "panoramic": false,
+   "shroud": false,
+   "cpu_cutout": true,
+   "expansion_slots": 9,
+   "feet": "round",
+   "color": "#141416",
+   "sources": [
+    {
+     "title": "3RSYS 공식 — T840 풍통 제품 상세(SPEC 줄: 빅타워 · 측면 강화유리 · 전면 140mm LED ×3 · 후면 140mm LED ×2 · 파워 위치 상단 + 블랙 사진 4장 — 앞·옆 비스듬히, 앞면 정면, 빈 케이스 치수 사진)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1610008937"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "공식 SPEC 줄: 측면 강화유리, 파워 위치 '상단'. 공식 사진(세션 임시 폴더에서 보기만): 앞판은 통째로 미세 타공 메시(안쪽에 육각 보강 틀이 비친다), 왼쪽 판은 테두리 없는 유리를 네 귀퉁이 나사로 고정, 바닥은 파워 덮개 없이 육각 타공 바닥판(바닥 팬 자리 — 완성 사진에 바닥 팬 3개), 윗면 메시 + 앞쪽 위 I/O, 발은 크롬 원통 발 4개. 빈 케이스 사진에서 가로 확장 슬롯 9칸(PIL 로 잘라 셈)과 그 왼쪽 세로 슬롯 2칸, 트레이 가운데 큰 검은 사각 구멍(CPU 뒷면 구멍으로 판독). 파워가 위라 shroud false — 렌더러가 파워를 바닥에 두면 실물과 다르다(REQUESTS [3D 렌더러]). 팬 불빛은 공식 표가 'LED' 라고만 해 RGB/ARGB 를 못 갈라 비웠고, 날개 수는 흐려 못 셌다. 흰색 판도 있지만 models 에 따로 없어 검정으로 적었다. 상세 이미지는 10MB 를 넘어 못 열었다. 다나와는 쓰지 않았다."
   }
  }
 }
