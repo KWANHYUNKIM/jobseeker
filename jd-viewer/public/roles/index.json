@@ -10,6 +10,7 @@
   "wanted-391368": "litalico-sre-product",
   "wanted-394202": "mediphone-platform-engineer",
   "wanted-394722": "nhn-japan-frontend",
+  "wanted-393626": "recruit-data-engineer-japan",
   "ats-skcareers:sk:R262457": "skax-ai-studio-mlops-pl",
   "jobkorea-50384147": "skax-ai-studio-mlops-pl",
   "jobkorea-50384195": "skax-ai-studio-mlops-pl",
@@ -218,6 +219,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 30
+  },
+  {
+   "id": "recruit-data-engineer-japan",
+   "company": "리크루트 (株式会社リクルート)",
+   "role": "데이터 엔지니어 (일본 근무)",
+   "jobs": [
+    "wanted-393626"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 27
   },
   {
    "id": "skax-ai-studio-mlops-pl",
