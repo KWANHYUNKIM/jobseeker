@@ -30,6 +30,7 @@
   "ats-toss:group:8003156003": "toss-compliance-data-analyst",
   "ats-toss:group:7825079003": "toss-credit-modeling-css-mle",
   "ats-toss:group:4071131003": "toss-dba",
+  "ats-toss:group:4773317003": "toss-devops-engineer-military",
   "ats-toss:group:4071151003": "toss-devops-engineer",
   "ats-toss:group:7830958003": "toss-dia-data-analyst",
   "ats-toss:group:8003064003": "toss-dip-data-scientist",
@@ -352,6 +353,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 11
+  },
+  {
+   "id": "toss-devops-engineer-military",
+   "company": "토스",
+   "role": "DevOps 엔지니어 (산업기능요원/전문연구요원)",
+   "jobs": [
+    "ats-toss:group:4773317003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 7
   },
   {
    "id": "toss-devops-engineer",
