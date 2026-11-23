@@ -68,6 +68,8 @@
   "ats-toss:group:6067282003": "tossbank-data-analytics-engineer",
   "ats-toss:group:6092477003": "tossbank-data-engineer-finance",
   "ats-toss:group:4695176003": "tossbank-data-engineer-platform",
+  "ats-toss:group:8039958003": "tossbank-data-engineering-specialist",
+  "jobkorea-50239684": "tossbank-data-engineering-specialist",
   "saramin-55630375": "tossbank-data-product-manager-ai",
   "ats-toss:group:8043933003": "tossbank-dba",
   "wanted-385879": "tossbank-devops-engineer",
@@ -745,6 +747,17 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 14
+  },
+  {
+   "id": "tossbank-data-engineering-specialist",
+   "company": "토스뱅크",
+   "role": "데이터 엔지니어링 스페셜리스트",
+   "jobs": [
+    "ats-toss:group:8039958003",
+    "jobkorea-50239684"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 9
   },
   {
    "id": "tossbank-data-product-manager-ai",
