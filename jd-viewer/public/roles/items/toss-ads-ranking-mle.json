@@ -1,0 +1,1024 @@
+{
+ "id": "toss-ads-ranking-mle",
+ "company": "토스",
+ "role": "ML 엔지니어 (Ads Ranking)",
+ "team": "Applied AI Chapter · 광고 도메인",
+ "jobs": [
+  "ats-toss:group:7998956003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "토스 안 상품광고가 **어떤 순서로 보일지**를 정하는 예측 모델을 만듭니다 — 사용자가 누를 확률(pCTR)·살 확률(pCVR)을 맞히고, 그 확률을 실제에 맞게 보정해 입찰과 함께 한 점수로 묶습니다.[1]",
+  "env": "Applied AI Chapter 소속으로 광고 도메인에 배치되고, PO·MLE·분석가·서버 개발자가 한 팀입니다.[1] 앞에는 후보를 찾는 Ads Retrieval, 옆에는 입찰·예산을 맡는 Ads Bidding & Pacing 자리가 따로 있습니다.[2][3] 토스 쇼핑 추천은 Retrieval → Ranking → Re-ranking 구조이고 마지막에 광고와 일반 상품을 섞습니다.[5]",
+  "oneline": "광고 줄 세우기의 한가운데 — 확률을 '순서'가 아니라 '돈이 되는 크기'까지 맞춰야 하는 랭킹 ML 엔지니어."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "**사용자의 반응을 예측해 상품광고의 노출 순서를 개선해요.** 클릭과 구매로 이어질 가능성을 더 정확하게 예측하고, 사용자에게 적합한 상품과 광고주의 성과를 연결해요.",
+   "short": "\"이 사람이 이 광고 상품을 누를까, 살까\"를 확률로 맞히고, 그 확률로 광고 줄 순서를 정하는 일.",
+   "why": "토스 쇼핑 추천은 수백만 상품을 몇천 개 후보로 줄인 뒤 랭킹 단계에서 **pCTR(예상 클릭률)·pCVR(예상 구매 전환율)**을 매겨 순서를 정합니다. 마지막 단계에서는 광고 상품과 일반 상품을 섞어 보여 줍니다.[5] 광고 순서가 틀리면 사용자는 관심 없는 상품을 보고, 광고주는 안 팔리는 노출에 돈을 냅니다. {추론} 토스는 첫 기술 경진대회 주제도 실제 앱 광고 데이터로 **광고 클릭 확률을 맞히는 일**로 잡았습니다.[7]",
+   "actually": {
+    "items": [
+     "**예측 두 개** — 클릭 확률(pCTR)과, 클릭한 뒤 살 확률(pCVR).[5]",
+     "**모델 계열** — 토스 쇼핑 글이 랭킹 후보로 든 DeepFM·DLRM·DCN과, 클릭과 구매를 함께 배우는 ESMM.[5][17]",
+     "**입력** — 사용자 쪽(최근 본·누른·산 상품, 검색), 상품 쪽(브랜드·카테고리, 글·이미지에서 뽑은 벡터), 그 사이(이 사용자가 이 카테고리를 얼마나 눌렀나). 같은 커머스 발표의 사용자·상품 피처 구성이다.[6]",
+     "**광고 순서** — 예측 확률에 광고주가 낸 값(입찰)을 곱해 '노출 한 번의 기대 가치'로 줄 세우는 것이 광고의 기본 틀이다.[20] {추론}",
+     "**광고주 성과** — 토스애즈는 구매 확률로 타겟을 고르고 결제 데이터로 매출 효과를 잰다고 소개한다.[8][29]"
+    ]
+   },
+   "how_far": "광고 상품 노출 순서의 **예측 모델 쪽**이 이 자리입니다. 후보를 찾는 쪽(Ads Retrieval)과 입찰·예산(Ads Bidding & Pacing)은 같은 광고 도메인의 다른 MLE 자리로 따로 뽑습니다.[2][3] 최소선은 pCTR·pCVR 모델을 직접 학습해 오프라인 지표와 A/B 결과로 설명할 수 있는 것입니다.[1]",
+   "refs": [
+    1,
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    17,
+    20,
+    29
+   ],
+   "study": [
+    "toss-reco",
+    "slash24-reco",
+    "fb-ads-ctr",
+    "esmm"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "**후보 선별부터 최종 노출까지 랭킹 품질을 높여요.** Retrieval과 Light Ranker에서 전달되는 후보를 살피고, 각 단계가 최종 랭킹의 목적에 맞게 동작하도록 개선해요.",
+   "short": "후보 찾기 → 가벼운 랭킹 → 최종 랭킹이 서로 다른 목표로 엇나가지 않게 맞추는 일.",
+   "why": "모든 상품을 무거운 모델로 매번 채점할 수는 없어서, 토스 쇼핑은 Retrieval(후보 찾기, 수천 개로 줄임)·Ranking·Re-ranking으로 나눕니다.[5] 앞 단계가 최종 랭커가 좋아할 후보를 빠뜨리면 최종 모델이 아무리 좋아도 고를 수 없습니다. {추론} 같은 광고 도메인의 Retrieval 공고도 '최종 랭커의 목적을 고려한 후보 생성'을 요구합니다.[2]",
+   "flows": [
+    {
+     "caption": "광고 한 번 노출까지 {추론}[5][2]",
+     "steps": [
+      "Retrieval · 카탈로그 전체에서 수천 개 후보(투타워·그래프·시퀀스)",
+      "Light Ranker · 가벼운 모델로 수백 개로",
+      "Final Ranker · pCTR·pCVR 정밀 예측",
+      "Calibration · 확률을 실제에 맞춤",
+      "Value Model · 여러 예측 + 입찰을 한 점수로",
+      "Re-ranking · 광고·일반 상품 섞기, 쏠림 막기"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "items": [
+     "**단계마다 시간 예산** — 앞 단계일수록 후보가 많아 빨라야 한다. 알리바바 광고는 가벼운 1차 랭커(pre-ranking)를 계산 비용까지 함께 설계했다.[16]",
+     "**두 단계 구조의 원형** — 유튜브는 후보 생성 모델과 랭킹 모델을 나눠 수백만 개에서 수백 개로 줄였다.[15]",
+     "**어긋남 찾기** — 최종 랭커가 높게 매겼을 상품이 앞 단계에서 얼마나 잘려 나갔나(후보 재현율)를 잰다. {추론}",
+     "**학습 데이터 편향** — 앞 단계가 고른 것만 노출되고, 노출된 것만 라벨이 생긴다. 그래서 다음 모델이 그 편향을 그대로 배운다.[30]",
+     "**토스 커머스의 투타워** — 같은 커머스 발표의 사용자 임베딩 모델은 두 단계 랭킹 시스템의 앞쪽 후보 생성기 역할도 한다고 했다.[6]"
+    ]
+   },
+   "how_far": "Retrieval 모델을 직접 만드는 건 Ads Retrieval 자리 몫입니다.[2] 이 자리는 넘겨받은 후보를 **살피고**, Light Ranker가 최종 랭커와 같은 방향으로 고르게 만드는 쪽입니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    5,
+    6,
+    15,
+    16,
+    30
+   ],
+   "study": [
+    "toss-reco",
+    "youtube-dnn",
+    "cold"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "**예측값을 신뢰할 수 있는 추천 가치로 연결해요.** 예측과 실제 반응의 차이를 줄이고, 여러 예측 신호를 최종 점수에 반영하는 Calibration과 Value Model을 발전시켜요.",
+   "short": "'클릭 확률 4%'가 실제로도 4%가 되게 맞추고, 클릭·구매·입찰을 한 점수로 묶는 공식을 다듬는 일.",
+   "why": "광고에서는 예측 확률이 곧 돈입니다. 확률이 1.5배 부풀려지면 그 광고의 기대 가치도 1.5배로 계산돼 순서와 과금이 틀어집니다. {추론} Facebook 광고 논문은 예측 평균 ÷ 실제 클릭률(calibration)을 따로 재야 한다고 했고[11], Google 광고 논문은 모델 출력에 보정 층을 덧대 체계적 치우침을 고쳤습니다.[12] 같은 조직의 Commerce Ads 공고도 예측 출력이 광고비 계산과 랭킹에 안정적으로 들어가도록 보정을 설계한다고 적었습니다.[4]",
+   "actually": {
+    "items": [
+     "**Calibration(보정)** — '4%라고 말한 노출들을 모아 보면 실제 4%가 눌렸나'를 구간마다 재고 맞춘다. 흔한 방법: 플랫 스케일링, 등위 회귀(isotonic), temperature scaling.[13][24]",
+     "**토스 커머스의 쓰임** — 같은 커머스 발표는 보정 효과를 주려고 temperature scaling을 넣었고 모든 모델을 계속 학습한다고 했다.[6]",
+     "**표본을 줄이면 부풀려진다** — 안 누른 노출을 일부만 남겨 학습하면 확률이 커진다. Facebook 논문이 되돌리는 식을 적었다.[11]",
+     "**Value Model(가치 모델)** — pCTR·pCVR·입찰·사용자 경험 신호를 한 점수로. Meta는 광고 경매를 '입찰 · 예상 행동률 · 광고 품질'을 합친 총 가치로 정한다고 공개했다.[20]",
+     "**구매까지의 확률** — 노출 한 번이 구매로 이어질 확률 = pCTR × pCVR(ESMM의 pCTCVR).[17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "표본 줄인 확률 되돌리기와 구간별 예측/실제 (직접 돌린 출력, 가상 숫자)",
+     "body": "음성을 10%만 남겨 학습한 모델이 10%라고 말하면 실제는 약 1.1%입니다.[11] 아래쪽 표처럼 구간마다 예측/실제가 1.3~1.5배면 그만큼 기대 가치가 부풀려져 있습니다.",
+     "lang": "python",
+     "code": "# 1) 음성 표본을 줄여 학습한 모델의 확률 되돌리기\ndef recalibrate(p, w):\n    # w: 음성을 남긴 비율(0.1 = 10%만 남김)\n    return p / (p + (1 - p) / w)\n\nfor p in (0.10, 0.05, 0.02):\n    print(f\"학습 모델 {p:.2f} -> 되돌린 확률 {recalibrate(p, 0.1):.4f}\")\n\n# 2) 구간별로 예측 평균과 실제 비율 견주기\nbuckets = [  # (구간, 노출 수, 예측 pCTR 평균, 실제 클릭 수)\n    (\"0~1%\",  600_000, 0.006, 2_700),\n    (\"1~3%\",  300_000, 0.018, 4_200),\n    (\"3~10%\",  90_000, 0.055, 3_600),\n    (\"10%~\",   10_000, 0.150, 1_000),\n]\ntot_n = sum(b[1] for b in buckets)\nece = 0.0\nfor name, n, pred, clicks in buckets:\n    actual = clicks / n\n    ece += n / tot_n * abs(pred - actual)\n    print(f\"{name:6} 예측 {pred:.3%} 실제 {actual:.3%} 예측/실제 {pred/actual:.2f}\")\nprint(f\"ECE(노출 가중) {ece:.4%}\")\n# 학습 모델 0.10 -> 되돌린 확률 0.0110\n# 학습 모델 0.05 -> 되돌린 확률 0.0052\n# 학습 모델 0.02 -> 되돌린 확률 0.0020\n# 0~1%   예측 0.600% 실제 0.450% 예측/실제 1.33\n# 1~3%   예측 1.800% 실제 1.400% 예측/실제 1.29\n# 3~10%  예측 5.500% 실제 4.000% 예측/실제 1.38\n# 10%~   예측 15.000% 실제 10.000% 예측/실제 1.50\n# ECE(노출 가중) 0.3950%"
+    },
+    {
+     "title": "여러 신호를 한 점수로 — 가중치 하나로 순서가 바뀐다 (직접 돌린 출력, 가상 숫자)",
+     "body": "광고 매출만 보면 A와 C가 같은 점수인데, 사용자 반응에 가중을 주면 C가 앞섭니다. pCTR이 1.5배 부풀려지면 eCPM(1000회 노출당 기대 광고 매출)도 그대로 1.5배가 됩니다. {추론}",
+     "lang": "python",
+     "code": "# 여러 예측을 한 점수로: 기대 광고 가치 + 사용자 가치\nads = [  # 이름, 클릭당 입찰(원), pCTR, pCVR(클릭 뒤 구매), 상품가(원)\n    (\"A 양말\",   300, 0.040, 0.020, 12_000),\n    (\"B 이어폰\", 900, 0.012, 0.050, 89_000),\n    (\"C 생수\",   200, 0.060, 0.080,  9_900),\n]\nW_USER = 100  # 사용자 가치(클릭+구매)에 매기는 원 단위 가중 — 실험으로 정하는 손잡이\n\ndef score(bid, pctr, pcvr, w):\n    ecpm = bid * pctr * 1000            # 1000회 노출당 기대 광고 매출\n    user = w * pctr * (1 + pcvr) * 1000  # 클릭과 구매를 사용자 만족의 대리로\n    return ecpm, user, ecpm + user\n\nfor w in (0, W_USER):\n    rows = sorted(((n, *score(b, c, v, w)) for n, b, c, v, _ in ads), key=lambda r: -r[3])\n    print(f\"사용자 가중 {w}: \" + \" > \".join(f\"{n}({t:,.0f})\" for n, _, _, t in rows))\n\n# pCTR 이 1.5배 부풀려진 B\nn, b, c, v, _ = ads[1]\nprint(f\"B 정상 eCPM {score(b, c, v, 0)[0]:,.0f}원 / 1.5배 부풀림 {score(b, c*1.5, v, 0)[0]:,.0f}원\")\n# 구매 확률(전체 노출 기준) = pCTR × pCVR (ESMM 의 pCTCVR)\nfor n, b, c, v, _ in ads:\n    print(f\"{n} 노출당 구매 확률 {c*v:.4%}\")\n# 사용자 가중 0: A 양말(12,000) > C 생수(12,000) > B 이어폰(10,800)\n# 사용자 가중 100: C 생수(18,480) > A 양말(16,080) > B 이어폰(12,060)\n# B 정상 eCPM 10,800원 / 1.5배 부풀림 16,200원\n# A 양말 노출당 구매 확률 0.0800%\n# B 이어폰 노출당 구매 확률 0.0600%\n# C 생수 노출당 구매 확률 0.4800%"
+    }
+   ],
+   "how_far": "보정 방식과 가치 공식을 **설계하고 실험으로 고르는 것**까지가 이 자리입니다.[1] 가치 공식의 가중(광고 매출 대 사용자 경험)은 사업 목표라 PO·분석가와 함께 정합니다.[1] {추론} 최소선은 구간별 보정 곡선을 재고, 보정을 바꿨을 때 순서와 기대 가치가 얼마나 움직이는지 미리 계산할 수 있는 것입니다. {추론}",
+   "refs": [
+    1,
+    4,
+    6,
+    11,
+    12,
+    13,
+    17,
+    20,
+    24
+   ],
+   "study": [
+    "fb-ads-ctr",
+    "calibration",
+    "sklearn-calib",
+    "trenches"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "**모델의 개선을 실제 서비스 성과로 이어가요.** 오프라인 평가와 온라인 결과가 달라지는 원인을 찾고, 데이터와 모델, 점수 산정 방식에 대한 실험을 반복해요.",
+   "short": "오프라인 지표는 올랐는데 A/B 실험에서 안 오를 때, 왜 그런지 찾아 고치는 일.",
+   "why": "오프라인 평가는 '과거에 노출된 것'만 보고 매기므로, 새 모델이 고를 다른 상품의 반응은 알 수 없습니다.[30] 그래서 같은 광고 도메인 공고 셋이 모두 '오프라인 평가와 A/B 실험 결과를 해석하는 경험'을 요건에 넣었습니다.[1][2][3] 토스 커머스도 추천 모델의 성과를 A/B 테스트로 확인했다고 발표했습니다.[6]",
+   "actually": {
+    "items": [
+     "**AUC는 순서만 본다** — 확률을 두 배로 부풀려도 AUC는 같다. 광고 가치는 확률 크기를 쓰므로 logloss·보정을 같이 본다.[11]",
+     "**노출 편향** — 과거 로그는 옛 모델이 고른 것만 담는다. 자리 효과(위 칸일수록 더 눌린다)도 섞인다.[30]",
+     "**학습과 서빙이 다르다** — 학습 때 쓴 피처 값과 서빙 순간의 값이 다르면 오프라인 점수가 거짓말을 한다. 토스 커머스는 실시간 추론에 피처 스토어·ONNX Runtime을 쓴다.[6][23]",
+     "**전환 지연** — 구매는 클릭 며칠 뒤에 들어온다. 최근 데이터의 CVR은 낮게 보인다.[21]",
+     "**점수 공식의 효과** — 모델이 같아도 가치 공식·보정이 바뀌면 노출이 바뀐다. 그래서 '데이터·모델·점수 산정 방식'을 각각 실험한다.[1]",
+     "**실험 읽기** — 표본 비율 어긋남(SRM), 지표 묶음, 장기 효과.[22]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "AUC는 그대로인데 logloss는 나빠진다 (직접 돌린 출력, 가상 숫자)",
+     "body": "순서가 같으면 AUC는 똑같이 1.000이지만, 평균 예측이 실제 0.30에서 0.53으로 부풀면 logloss가 나빠집니다. 광고 가치 계산에는 이 차이가 그대로 돈으로 갑니다. {추론}",
+     "lang": "python",
+     "code": "# 순서만 보는 AUC 는 보정 전후가 같고, 확률을 보는 logloss 는 달라진다\nimport math\n\ny = [1, 0, 0, 1, 0, 0, 0, 1, 0, 0]\np = [0.60, 0.20, 0.10, 0.70, 0.30, 0.15, 0.20, 0.55, 0.10, 0.10]\n\ndef auc(y, p):\n    pos = [s for s, t in zip(p, y) if t == 1]\n    neg = [s for s, t in zip(p, y) if t == 0]\n    win = sum((a > b) + 0.5 * (a == b) for a in pos for b in neg)\n    return win / (len(pos) * len(neg))\n\ndef logloss(y, p):\n    return -sum(t * math.log(s) + (1 - t) * math.log(1 - s) for t, s in zip(y, p)) / len(y)\n\ndoubled = [min(s * 2, 0.99) for s in p]  # 확률을 두 배로 부풀린 모델(순서는 그대로)\nprint(f\"원래   AUC {auc(y, p):.3f}  logloss {logloss(y, p):.3f}  평균예측 {sum(p)/len(p):.3f}\")\nprint(f\"두 배  AUC {auc(y, doubled):.3f}  logloss {logloss(y, doubled):.3f}  평균예측 {sum(doubled)/len(doubled):.3f}\")\nprint(f\"실제 클릭률 {sum(y)/len(y):.3f}\")\n# 원래   AUC 1.000  logloss 0.275  평균예측 0.300\n# 두 배  AUC 1.000  logloss 0.299  평균예측 0.527\n# 실제 클릭률 0.300"
+    }
+   ],
+   "how_far": "실험 설계와 지표 해석을 **스스로** 하는 수준입니다 — 같은 팀에 분석가가 있지만, 공고가 가설 → 실행을 MLE에게 기대합니다.[1] 최소선은 \"오프라인 +x인데 온라인 0\"을 보고 원인 후보(편향·지연·학습/서빙 차이·보정)를 순서대로 확인할 수 있는 것입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    6,
+    11,
+    21,
+    22,
+    23,
+    30
+   ],
+   "study": [
+    "kohavi-ko",
+    "dmls-ko",
+    "ultr"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "**pCTR이나 pCVR 등 사용자 반응 예측 모델을 직접 개발한 경험이 필요해요.** 행동 로그에서 학습 라벨과 피처를 구성하고, 모델을 직접 구현하고 학습해 서비스 성과를 개선한 분을 찾고 있어요.",
+   "short": "로그에서 '무엇을 정답으로 볼지'부터 정하고 모델을 손으로 만들어 서비스에 올려 본 사람이라서.",
+   "why": "라벨 정의가 모델을 정합니다. 토스 커머스 발표는 '구매 = 양성, 노출됐지만 안 산 것 = 음성'으로 두면 노출 데이터가 시끄럽고, 인기 상품일수록 많이 노출돼 오히려 불이익을 받는 편향이 생겨 음성을 뽑는 방식을 바꿨다고 했습니다.[6] 이런 판단을 남에게 맡기지 않고 직접 해 본 사람을 찾는 줄입니다.[1]",
+   "actually": {
+    "items": [
+     "**라벨** — 노출 뒤 몇 분 안의 클릭을 클릭으로 볼지, 구매는 며칠까지 기다릴지(전환 지연).[21] {추론}",
+     "**음성 고르기** — 노출됐지만 안 누른 것을 전부 쓸지, 일부만 쓸지. 일부만 쓰면 확률을 되돌려야 한다.[11]",
+     "**피처** — 사용자 행동 이력(최근 본·누른·산 것), 상품 메타(브랜드·카테고리), 글·이미지 벡터.[6]",
+     "**누수 막기** — 노출 시점 뒤에 생긴 값(그날 하루 클릭 수 등)을 피처로 쓰지 않는다.[23]",
+     "**구현** — 토스 쇼핑 글이 랭킹 모델로 든 DeepFM·DLRM·DCN 같은 구조를 직접 짜고 학습.[5]"
+    ]
+   },
+   "how_far": "\"직접 구현하고 학습\"이라 라이브러리 모델을 돌려 본 정도가 아니라 **라벨 설계 → 피처 → 학습 → 서비스 반영 → 성과 확인**을 한 바퀴 돈 경험입니다.[1] 경력 연차는 공고에 없습니다.",
+   "refs": [
+    1,
+    5,
+    6,
+    11,
+    21,
+    23
+   ],
+   "study": [
+    "slash24-reco",
+    "fb-ads-ctr",
+    "dmls-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "**Calibration으로 예측값의 신뢰도를 높여 본 경험이 필요해요.** 예측 확률과 실제 클릭률이나 전환율의 차이를 분석하고 보정해 본 분을 찾고 있어요.",
+   "short": "광고는 확률의 '크기'를 돈 계산에 쓰니까, 순서만 맞는 모델로는 안 돼서.",
+   "why": "추천은 순서만 맞으면 되지만 광고는 확률 × 입찰로 가치를 매깁니다.[20] 그래서 보정이 업무③과 우대②에도 다시 나옵니다.[1] Facebook 광고 논문은 보정 비율(예측 평균 ÷ 실제)이 1에서 벗어나는 것 자체를 모델 문제로 다뤘습니다.[11]",
+   "actually": {
+    "items": [
+     "**보정 곡선** — 예측을 구간으로 나눠 구간마다 예측 평균과 실제 비율을 견준다. 노출 가중 차이의 평균이 ECE.[13]",
+     "**방법** — 플랫 스케일링(로지스틱 회귀로 다시 맞춤), 등위 회귀(순서는 지키며 계단으로 맞춤), temperature scaling(로짓을 한 숫자로 나눔).[13][24]",
+     "**언제 틀어지나** — 표본 줄이기, 데이터가 바뀜(세일 기간), 새 상품, 학습 기간과 다른 트래픽.[11][12] {추론}",
+     "**어디에 맞추나** — 보정용 데이터는 학습에 안 쓴 최근 데이터로 따로 둔다.[24]"
+    ]
+   },
+   "how_far": "보정 곡선을 그리고 방법을 골라 적용한 뒤, **보정 전후로 실제 광고 성과가 어떻게 달라졌는지**까지 말할 수 있으면 됩니다.[1] {추론}",
+   "refs": [
+    1,
+    11,
+    12,
+    13,
+    20,
+    24
+   ],
+   "study": [
+    "calibration",
+    "sklearn-calib",
+    "fb-ads-ctr"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "**모델의 성능을 전체 추천 성과와 연결해 볼 수 있는 분이면 좋아요.** 입력 후보의 특성과 예측값이 최종 점수와 노출에 반영되는 방식을 이해하고, 서비스 적용 이후 성능을 추적하고 개선한 경험을 중요하게 생각해요.",
+   "short": "모델 하나의 AUC가 아니라 '노출 → 클릭 → 구매 → 광고 매출'까지 이어서 볼 수 있어야 해서.",
+   "why": "이 자리 모델은 여러 단계 중 하나입니다 — 앞에서 후보가 들어오고, 뒤에서 보정·가치 공식·섞기가 이어집니다.[5][1] 모델이 좋아져도 후보가 나쁘거나 공식이 다른 신호를 누르면 성과로 안 나옵니다. {추론}",
+   "actually": {
+    "items": [
+     "**후보 특성** — 어떤 Retrieval에서 온 후보인지, 새 상품 비율은 얼마인지에 따라 예측 정확도가 다르다.[2] {추론}",
+     "**최종 점수 반영** — 예측값이 가치 공식을 지나 실제 노출 순서를 얼마나 바꿨나.[20] {추론}",
+     "**배포 뒤 추적** — 매일 보정 비율·예측 분포·피처 분포를 재고, 틀어지면 알림.[12][23]",
+     "**사업 지표** — 토스 쇼핑 글은 랭킹 모델이 GMV(거래액)·주문 수 같은 지표를 높이는 데 쓰인다고 했다.[5]"
+    ]
+   },
+   "how_far": "서비스 적용 뒤에도 모델을 **계속 지켜본 경험**이 핵심입니다.[1] 대시보드를 남이 만들어 줬어도, 어떤 숫자를 왜 보는지 설명할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    2,
+    5,
+    12,
+    20,
+    23
+   ],
+   "study": [
+    "dmls-ko",
+    "trenches",
+    "toss-reco"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "**Problem Solver를 찾고 있어요.** 데이터로 문제를 정의하고, 직접 구현과 실험을 반복하며 개선을 만들어 본 분이면 좋아요. 오프라인 평가와 A/B 실험 결과를 해석하고, 다음 가설과 실행으로 연결한 경험을 중요하게 생각해요.",
+   "short": "정해진 과제를 받는 게 아니라 '무엇이 문제인가'부터 데이터로 정하고 실험을 돌려야 해서.",
+   "why": "광고 도메인 팀은 PO·MLE·분석가·서버 개발자가 한 팀으로 작은 스타트업처럼 자율적으로 일한다고 공고가 소개합니다.[1] 이 줄은 광고 도메인 MLE 공고 셋에 똑같이 들어 있습니다.[1][2][3]",
+   "actually": {
+    "items": [
+     "**문제 정의** — \"새 상품 광고의 CTR이 낮다\" → 데이터를 쪼개 보니 예측이 과소였다 → 보정 문제로 정의. {추론}",
+     "**가설 → 실험** — 바꿀 것 하나, 볼 지표, 기간, 표본 수를 미리 정한다.[22]",
+     "**결과 해석** — 오프라인과 온라인이 다르면 업무④의 원인 목록으로 좁힌다.[1]",
+     "**면접** — 직무 인터뷰가 심층 기술 면접과 ML 시스템 설계로 진행된다.[1]"
+    ]
+   },
+   "how_far": "실험 하나를 끝까지 돌리고, 결과가 기대와 달랐을 때 **다음 실험으로 무엇을 했는지** 이야기할 수 있으면 됩니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    22
+   ],
+   "study": [
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Multi-Task Learning으로 여러 사용자 반응을 함께 학습하거나, Light Ranker와 Final Ranker의 목적함수를 함께 고려해 랭킹을 개선한 경험이 있으면 좋아요.",
+   "short": "클릭·구매를 한 모델로 같이 배우고, 가벼운 랭커와 최종 랭커가 같은 걸 노리게 해 본 경험.",
+   "why": "구매는 클릭보다 훨씬 드물어 따로 배우면 데이터가 모자랍니다. 클릭 데이터로 함께 배우면 서로 돕습니다.[17][18] 업무②의 단계 어긋남을 줄이는 쪽이 Light·Final 목적 맞추기입니다.[1]",
+   "actually": {
+    "items": [
+     "**ESMM** — 구매는 클릭한 것에서만 보여 pCVR이 치우친다. 노출 전체에서 pCTR과 pCTR × pCVR을 같이 배워 푼다.[17]",
+     "**MMoE** — 여러 작업이 전문가 망을 나눠 쓰고, 작업마다 문(gate)이 섞는 비율을 따로 배운다.[18]",
+     "**유튜브 랭킹** — 참여(클릭·시청)와 만족(좋아요 등) 작업을 MMoE로 함께 배우고 가중 합으로 점수를 냈다.[19]",
+     "**Light ↔ Final 맞추기** — 가벼운 랭커가 최종 랭커의 점수를 따라 배우게 하거나(증류), 계산 비용까지 같이 설계한다.[16] {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    16,
+    17,
+    18,
+    19
+   ],
+   "study": [
+    "esmm",
+    "mmoe",
+    "youtube-mtl",
+    "cold"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Post-calibration 체계를 설계하고, 상품이나 트래픽 구간별 예측 편향을 운영 환경에서 개선한 경험이 있으면 좋아요.",
+   "short": "전체 평균은 맞는데 카테고리·지면·새 상품 구간마다 틀린 예측을, 운영 중에 구간별로 고쳐 본 경험.",
+   "why": "전체 보정이 1.00이어도 구간마다 반대로 틀리면 서로 상쇄돼 안 보입니다. 필드별 보정 논문은 AUC·logloss가 좋아도 특정 필드(카테고리 같은 입력 칸)에서는 보정 오차가 클 수 있다고 보였습니다.[14]",
+   "actually": {
+    "items": [
+     "**구간을 정한다** — 카테고리·가격대·지면·시간대·새 상품 여부·광고주 규모. {추론}",
+     "**구간별 사후 보정** — 구간마다 배수나 작은 보정 모델. 필드별 보정 논문은 원 예측과 다른 피처를 함께 받는 보정 신경망을 제안했다.[14]",
+     "**표본 적은 구간** — 날 배수를 쓰면 흔들리니 전체 쪽으로 당긴다(수축). {추론}",
+     "**운영** — 보정은 모델보다 자주(예: 매일) 다시 맞추고, 바뀐 배수를 기록해 되돌릴 수 있게 한다.[12] {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "전체는 1.000인데 카테고리마다 틀린 경우 (직접 돌린 출력, 가상 숫자)",
+     "body": "패션은 1.33배 부풀리고 식품은 0.75배로 낮춰 말해 합치면 딱 맞습니다. 노출 5천 건짜리 새 카테고리는 날 배수 0.40 대신 가상의 사전 표본으로 당겨 0.97을 씁니다. {추론}",
+     "lang": "python",
+     "code": "# 구간(카테고리)별 보정: 전체 평균은 맞는데 구간마다 틀린 경우\nsegs = {  # 카테고리: (노출, 예측 클릭 합, 실제 클릭)\n    \"패션\":  (500_000, 10_000, 7_500),\n    \"식품\":  (300_000,  6_000, 8_000),\n    \"가전\":  (200_000,  3_000, 3_500),\n}\nN = sum(s[0] for s in segs.values())\nP = sum(s[1] for s in segs.values())\nA = sum(s[2] for s in segs.values())\nprint(f\"전체 예측/실제 {P/A:.3f}\")\nfor k, (n, pred, act) in segs.items():\n    factor = act / pred  # 가장 단순한 사후 보정: 구간별 배수\n    print(f\"{k} 예측/실제 {pred/act:.2f} -> 보정 배수 {factor:.3f}\")\n\n# 표본이 적은 구간은 배수를 전체 쪽으로 당긴다(가상의 사전 표본 k=2000 클릭)\ndef shrunk(pred, act, k=2000):\n    return (act + k) / (pred + k)\nfor k_, (n, pred, act) in {\"새 카테고리\": (5_000, 100, 40)}.items():\n    print(f\"{k_} 날 배수 {act/pred:.2f} / 당긴 배수 {shrunk(pred, act):.3f}\")\n# 전체 예측/실제 1.000\n# 패션 예측/실제 1.33 -> 보정 배수 0.750\n# 식품 예측/실제 0.75 -> 보정 배수 1.333\n# 가전 예측/실제 0.86 -> 보정 배수 1.167\n# 새 카테고리 날 배수 0.40 / 당긴 배수 0.971"
+    }
+   ],
+   "refs": [
+    12,
+    14
+   ],
+   "study": [
+    "field-calib",
+    "sklearn-calib"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "**상품 카탈로그 기반 광고를 다뤄 본 경험**이 있으면 좋아요. 광고 클릭 이후 외부 쇼핑몰에서 발생하는 전환 데이터를 다룬 경험을 환영해요.",
+   "short": "광고주가 올린 상품 목록으로 광고를 자동으로 만들고, 클릭 뒤 남의 쇼핑몰에서 일어난 구매를 다뤄 본 경험.",
+   "why": "토스애즈는 앱 안 탐색부터 토스페이 결제까지 잇는 커머스 광고 '바이 앳 토스'를 2026년에 내놓았습니다.[9] 광고주 사이트에서 일어난 전환은 광고주가 심은 토스 픽셀이 이벤트를 보내 줘야 알 수 있습니다.[10]",
+   "actually": {
+    "items": [
+     "**카탈로그 광고** — 광고주가 상품 목록(이름·가격·이미지·카테고리)을 올리면 상품마다 광고가 된다. 상품 수가 많아 상품 단위 예측과 새 상품 문제가 커진다. {추론}",
+     "**외부 전환** — 픽셀은 광고 계정 단위 코드로 결제·구매 완료 같은 이벤트를 보낸다.[10] 늦게 오고, 빠지고, 중복될 수 있다. {추론}",
+     "**전환 지연** — 클릭 뒤 며칠 지나 들어오는 구매를 기다리지 않고 학습하면 최근 CVR이 낮게 보인다.[21]",
+     "**결제 데이터** — 토스는 결제·금융 데이터로 광고가 만든 추가 매출을 잰다고 했다.[29]"
+    ]
+   },
+   "refs": [
+    9,
+    10,
+    21,
+    29
+   ],
+   "study": [
+    "delayed-fb",
+    "toss-pixel"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Value Model이나 Score Blending으로 여러 신호를 조합해 본 경험이 있으면 좋아요. 점수 변경에 따른 반응을 예상하고, 서로 다른 목표 사이의 균형을 실험으로 찾아본 경험을 환영해요.",
+   "short": "광고 매출·사용자 만족·광고주 성과처럼 엇갈리는 목표를 한 점수로 섞고, 그 비율을 실험으로 정해 본 경험.",
+   "why": "광고를 더 앞에 두면 단기 매출은 오르지만 사용자 경험이 나빠질 수 있습니다. 토스 쇼핑은 광고가 과도하게 몰리지 않게 일반 상품과 섞는다고 했습니다.[5] Meta도 경매 점수에 입찰만이 아니라 예상 행동률과 광고 품질을 넣는다고 공개했습니다.[20]",
+   "actually": {
+    "items": [
+     "**가중 합·곱** — 점수 = 입찰 × pCTR + α × 사용자 가치 같은 꼴. α가 실험으로 정하는 손잡이다.[19][20] {추론}",
+     "**반응 예상** — 공식을 바꾸기 전에 과거 로그로 순서가 얼마나 바뀌나, 광고 매출이 얼마나 움직이나를 미리 계산한다. {추론}",
+     "**균형 찾기** — α 몇 개를 A/B로 나란히 돌려 광고 매출과 사용자 지표의 맞교환 곡선을 그린다.[22] {추론}",
+     "**유튜브 예** — 여러 작업의 예측을 가중 합해 최종 점수를 냈고, 가중은 실험으로 골랐다.[19]"
+    ]
+   },
+   "refs": [
+    5,
+    19,
+    20,
+    22
+   ],
+   "study": [
+    "youtube-mtl",
+    "kohavi-ko"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "AUC보다 '예측이 실제와 몇 배 어긋나나'가 더 신경 쓰이는 사람[1][11]",
+   "오프라인 숫자와 A/B 결과가 다를 때 원인을 끝까지 파는 사람[1]",
+   "PO·분석가·서버 개발자와 한 팀에서 가설부터 실험까지 직접 하고 싶은 사람[1]",
+   "결제까지 이어지는 데이터로 광고 효과를 재 보고 싶은 사람[9][29]"
+  ],
+  "hard": [
+   "pCTR·pCVR 모델을 직접 만들고 보정해 본 경험이 필수라 광고·추천을 처음 하는 사람에게는 문이 좁다[1]",
+   "후보 찾기·입찰은 다른 자리라, 시스템 전체를 혼자 맡고 싶은 사람에게는 범위가 좁게 느껴질 수 있다[2][3] {추론}",
+   "광고 매출과 사용자 경험이 엇갈리는 결정을 계속 실험으로 설득해야 한다[1] {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "pCTR 모델의 AUC가 올랐는데 A/B에서 광고 매출이 그대로예요. 무엇부터 보겠어요?",
+   "a": "업무④ — 보정·노출 편향·학습/서빙 차이·전환 지연 순서로.[1][11][30]"
+  },
+  {
+   "q": "음성 표본을 10%만 남겨 학습했어요. 예측 0.1은 실제로 얼마인가요?",
+   "a": "확률 되돌리기 — 약 0.011.[11]"
+  },
+  {
+   "q": "전체 보정 비율은 1.00인데 새 상품 광고만 CTR이 낮게 나와요. 어떻게 고치겠어요?",
+   "a": "우대② 구간별 사후 보정과 표본 적은 구간의 수축.[14]"
+  },
+  {
+   "q": "구매는 클릭한 것에서만 보이는데 pCVR 모델을 어떻게 학습하겠어요?",
+   "a": "ESMM — 노출 전체에서 pCTR × pCVR.[17]"
+  },
+  {
+   "q": "Light Ranker가 최종 랭커가 좋아할 후보를 자꾸 빠뜨려요. 어떻게 맞추겠어요?",
+   "a": "업무② — 후보 재현율 재기, 최종 랭커 점수 따라 배우기.[2][16]"
+  },
+  {
+   "q": "점수 공식에 사용자 가치 가중을 넣자는 제안이 왔어요. 값은 어떻게 정하겠어요?",
+   "a": "우대④ — 과거 로그로 미리 계산, A/B로 맞교환 곡선.[19][22]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · ML 엔지니어 (Ads Ranking)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7998956003",
+   "kind": "posting",
+   "note": "팀 소개(Applied AI Chapter 소속 · 광고 도메인 배치, PO·MLE·분석가·서버 개발자 한 팀)·업무·요건·우대·합류 여정(심층 기술 면접·ML 시스템 설계)"
+  },
+  {
+   "n": 2,
+   "title": "토스 채용 · ML 엔지니어 (Ads Retrieval)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7998953003",
+   "kind": "posting",
+   "note": "같은 광고 도메인 — 후보 생성·Light Ranker·Cold-start·최종 랭커 목적 고려"
+  },
+  {
+   "n": 3,
+   "title": "토스 채용 · ML 엔지니어 (Ads Bidding & Pacing)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7998957003",
+   "kind": "posting",
+   "note": "같은 광고 도메인 — 입찰·경매·과금·예산 페이싱·전환 지연"
+  },
+  {
+   "n": 4,
+   "title": "토스 채용 · ML 엔지니어 (Commerce Ads)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7784598003",
+   "kind": "posting",
+   "note": "같은 회사 커머스 광고 — 예측 출력의 보정·점수 변환·불확실성 보정"
+  },
+  {
+   "n": 5,
+   "title": "Toss Tech · 토스 쇼핑 추천 시스템: 멀티 스테이지 접근법",
+   "url": "https://toss.tech/article/toss-shopping-recommendation-system",
+   "kind": "company",
+   "date": "2025-04-17",
+   "note": "토스 커머스 개인화팀 ML 엔지니어 — Retrieval(투타워·그래프·시퀀스, 수천 개로)·Ranking(pCTR·pCVR, DeepFM·DLRM·DCN·ESMM)·Re-ranking(새 상품·광고 섞기·다양성). 보정·지표·수치는 없음"
+  },
+  {
+   "n": 6,
+   "title": "SLASH 24 · 기반 데이터가 부족해도 OK! 커머스 추천 시스템 제작기",
+   "url": "https://www.youtube.com/watch?v=LAD6LYnkPsA",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스 커머스 데이터 사이언티스트·ML 엔지니어 · 자막 전부 읽음(코호트 밴딧·신뢰구간 하한·라벨 정의의 노출 잡음·인기 편향·mixed random sampling·temperature scaling·계속 학습·투타워가 후보 생성기 역할·배치/실시간 추론·피처 스토어·ONNX Runtime·A/B 테스트)"
+  },
+  {
+   "n": 7,
+   "title": "토스피드 · 첫 기술 경진대회 'NEXT ML 챌린지'",
+   "url": "https://toss.im/tossfeed/article/nextml",
+   "kind": "company",
+   "date": "2025-09-01",
+   "note": "주제: 실제 토스 앱 광고 데이터로 광고 클릭 확률(CTR) 예측 · 데이콘 운영 · 본선 30팀 서류 면제"
+  },
+  {
+   "n": 8,
+   "title": "토스 비즈니스 · 광고",
+   "url": "https://toss.im/business/advertising",
+   "kind": "company",
+   "date": "2026",
+   "note": "구매 확률 기반 타겟팅·전환 예측 모델·결제 데이터로 매출 검증"
+  },
+  {
+   "n": 9,
+   "title": "토스피드 · 토스애즈 광고 파트너 행사 '터처블 2026'",
+   "url": "https://toss.im/tossfeed/article/46893",
+   "kind": "company",
+   "date": "2026-03-20",
+   "note": "커머스 광고 '바이 앳 토스(Buy at Toss)' — 앱 안 탐색부터 토스페이 결제까지"
+  },
+  {
+   "n": 10,
+   "title": "앱인토스 개발자센터 · 토스 픽셀",
+   "url": "https://developers-apps-in-toss.toss.im/guide/marketing/pixel",
+   "kind": "company",
+   "note": "광고 콘솔에서 광고 계정 단위 전환 추적 코드 발급 → 미니앱에 심어 전환 이벤트 수집(웹 환경)"
+  },
+  {
+   "n": 11,
+   "title": "He 외 · Practical Lessons from Predicting Clicks on Ads at Facebook (ADKDD 2014)",
+   "url": "https://ai.meta.com/research/publications/practical-lessons-from-predicting-clicks-on-ads-at-facebook/",
+   "kind": "reference",
+   "date": "2014",
+   "note": "다른 회사 — 정규화 엔트로피·보정 비율·음성 표본 줄인 뒤 확률 되돌리기"
+  },
+  {
+   "n": 12,
+   "title": "McMahan 외 · Ad Click Prediction: a View from the Trenches (KDD 2013)",
+   "url": "https://research.google/pubs/ad-click-prediction-a-view-from-the-trenches/",
+   "kind": "reference",
+   "date": "2013",
+   "note": "다른 회사(Google) — 보정 층·감시"
+  },
+  {
+   "n": 13,
+   "title": "Guo 외 · On Calibration of Modern Neural Networks (2017)",
+   "url": "https://arxiv.org/abs/1706.04599",
+   "kind": "reference",
+   "date": "2017",
+   "note": "ECE·temperature scaling"
+  },
+  {
+   "n": 14,
+   "title": "Pan 외 · Field-aware Calibration: A Simple and Empirically Strong Method for Reliable Probabilistic Predictions (WWW 2020)",
+   "url": "https://arxiv.org/abs/1905.10713",
+   "kind": "reference",
+   "date": "2020",
+   "note": "필드별 보정 오차 — AUC·logloss가 좋아도 필드 단위로는 크게 틀릴 수 있음, Neural Calibration"
+  },
+  {
+   "n": 15,
+   "title": "Covington 외 · Deep Neural Networks for YouTube Recommendations (RecSys 2016)",
+   "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/",
+   "kind": "reference",
+   "date": "2016",
+   "note": "다른 회사 — 후보 생성 + 랭킹 두 단계"
+  },
+  {
+   "n": 16,
+   "title": "Wang 외 · COLD: Towards the Next Generation of Pre-Ranking System (DLP-KDD 2020)",
+   "url": "https://arxiv.org/abs/2007.16122",
+   "kind": "reference",
+   "date": "2020",
+   "note": "다른 회사(알리바바 디스플레이 광고) — 계산 비용을 함께 설계한 가벼운 1차 랭커"
+  },
+  {
+   "n": 17,
+   "title": "Ma 외 · Entire Space Multi-Task Model (ESMM, SIGIR 2018)",
+   "url": "https://arxiv.org/abs/1804.07931",
+   "kind": "reference",
+   "date": "2018",
+   "note": "클릭한 것에서만 보이는 구매 — pCVR 선택 편향, pCTCVR = pCTR × pCVR"
+  },
+  {
+   "n": 18,
+   "title": "Ma 외 · Modeling Task Relationships in Multi-task Learning with Multi-gate Mixture-of-Experts (KDD 2018)",
+   "url": "https://dl.acm.org/doi/10.1145/3219819.3220007",
+   "kind": "reference",
+   "date": "2018"
+  },
+  {
+   "n": 19,
+   "title": "Zhao 외 · Recommending What Video to Watch Next: A Multitask Ranking System (RecSys 2019)",
+   "url": "https://dl.acm.org/doi/10.1145/3298689.3346997",
+   "kind": "reference",
+   "date": "2019",
+   "note": "다른 회사(YouTube) — 참여·만족 작업을 MMoE로, 가중 합 점수"
+  },
+  {
+   "n": 20,
+   "title": "Instagram 고객센터(Meta) · How Instagram ads use machine learning",
+   "url": "https://help.instagram.com/119516847899397",
+   "kind": "reference",
+   "note": "다른 회사 — 경매의 총 가치 = 입찰 · 예상 행동률 · 광고 품질, 최고 입찰이 늘 이기지 않음"
+  },
+  {
+   "n": 21,
+   "title": "Chapelle · Modeling Delayed Feedback in Display Advertising (KDD 2014)",
+   "url": "https://doi.org/10.1145/2623330.2623634",
+   "kind": "reference",
+   "date": "2014",
+   "note": "클릭 뒤 늦게 오는 전환 — 최근 데이터의 CVR 과소평가"
+  },
+  {
+   "n": 22,
+   "title": "론 코하비 외 · 신뢰할 수 있는 온라인 종합 대조 실험 (Trustworthy Online Controlled Experiments 한국어판, 이기홍·김기영 옮김)",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000005201885",
+   "kind": "reference",
+   "note": "SRM·지표 묶음·장기 효과"
+  },
+  {
+   "n": 23,
+   "title": "칩 후옌 · 머신러닝 시스템 설계 (한빛미디어, 2023)",
+   "url": "https://www.oreilly.com/library/view/-/9791169210850/",
+   "kind": "reference",
+   "date": "2023",
+   "note": "Designing Machine Learning Systems 한국어판 — 데이터 누수·학습/서빙 어긋남·배포 뒤 감시"
+  },
+  {
+   "n": 24,
+   "title": "scikit-learn 문서 · Probability calibration",
+   "url": "https://scikit-learn.org/stable/modules/calibration.html",
+   "kind": "reference",
+   "note": "보정 곡선·플랫 스케일링·등위 회귀, 보정용 데이터 분리"
+  },
+  {
+   "n": 25,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 26,
+   "title": "자소설닷컴 — 토스뱅크 연봉(같은 집계)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "토스 — 회사 소개(사이트 하단 회사 정보)",
+   "url": "https://toss.im/company",
+   "kind": "company"
+  },
+  {
+   "n": 28,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 29,
+   "title": "토스피드 · 토스애즈 '광고 성과 측정 리포트' 공개",
+   "url": "https://toss.im/tossfeed/article/42357",
+   "kind": "company",
+   "date": "2025-11-05",
+   "note": "결제·금융 데이터로 광고가 만든 추가 성과를 매출 단위로 측정"
+  },
+  {
+   "n": 30,
+   "title": "Joachims 외 · Unbiased Learning-to-Rank with Biased Feedback (WSDM 2017)",
+   "url": "https://arxiv.org/abs/1608.04468",
+   "kind": "reference",
+   "date": "2017",
+   "note": "자리 편향·노출 편향 — 로그로 한 오프라인 평가가 치우치는 이유"
+  }
+ ],
+ "caveat": "광고 랭킹 쪽이 직접 한 공개 발표·기술 글은 찾지 못했습니다. 팀의 일은 이 공고[1]와 같은 광고 도메인의 Retrieval·Bidding & Pacing 공고[2][3], 같은 회사 Commerce Ads 공고[4]로, 단계 구조와 모델 후보는 토스 커머스 개인화팀 글[5]과 2024년 SLASH 커머스 추천 발표[6]로 보였는데 둘 다 광고가 아니라 쇼핑 추천 이야기이고 지금 광고 시스템은 다를 수 있습니다. 보정·가치 공식·다중 작업 학습·단계 맞추기의 '보통 이런 것'은 다른 회사의 공개 논문과 도움말[11]~[21]로 보였고, 예시의 숫자는 모두 설명용 가정입니다.",
+ "resources": [
+  {
+   "id": "toss-reco",
+   "title": "토스 쇼핑 추천 시스템: 멀티 스테이지 접근법",
+   "by": "토스 커머스 개인화팀 · Toss Tech · 2025",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://toss.tech/article/toss-shopping-recommendation-system",
+   "why": "이 자리가 놓일 Retrieval → Ranking → Re-ranking 구조와 랭킹 단계가 pCTR·pCVR을 쓴다는 회사 쪽 설명. 업무①②를 읽기 전에 먼저 본다."
+  },
+  {
+   "id": "slash24-reco",
+   "title": "SLASH 24 · 기반 데이터가 부족해도 OK! 커머스 추천 시스템 제작기",
+   "by": "토스 데이터 사이언티스트 · ML 엔지니어 · 20분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=LAD6LYnkPsA",
+   "why": "라벨 정의(노출 잡음·인기 편향)·temperature scaling·실시간 추론 구조. 요건①(라벨·피처 구성)과 업무④(학습/서빙)의 토스 쪽 실제 모습."
+  },
+  {
+   "id": "fb-ads-ctr",
+   "title": "Practical Lessons from Predicting Clicks on Ads at Facebook",
+   "by": "He 외 · ADKDD 2014",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://ai.meta.com/research/publications/practical-lessons-from-predicting-clicks-on-ads-at-facebook/",
+   "why": "광고 CTR 모델을 정규화 엔트로피·보정 비율로 재는 법과 표본 줄인 뒤 확률 되돌리기. 업무③·요건② 바탕."
+  },
+  {
+   "id": "trenches",
+   "title": "Ad Click Prediction: a View from the Trenches",
+   "by": "McMahan 외 · Google · KDD 2013",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://research.google/pubs/ad-click-prediction-a-view-from-the-trenches/",
+   "why": "대규모 광고 예측 시스템의 보정 층과 배포 뒤 감시. 요건③(서비스 적용 뒤 추적)."
+  },
+  {
+   "id": "calibration",
+   "title": "On Calibration of Modern Neural Networks",
+   "by": "Guo 외 · 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1706.04599",
+   "why": "ECE와 temperature scaling의 원 논문. 요건② Calibration."
+  },
+  {
+   "id": "sklearn-calib",
+   "title": "Probability calibration (scikit-learn User Guide)",
+   "by": "scikit-learn · 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://scikit-learn.org/stable/modules/calibration.html",
+   "why": "보정 곡선 그리기와 플랫 스케일링·등위 회귀를 코드로 바로 해 본다. 요건②의 첫 연습."
+  },
+  {
+   "id": "field-calib",
+   "title": "Field-aware Calibration: A Simple and Empirically Strong Method for Reliable Probabilistic Predictions",
+   "by": "Pan 외 · WWW 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1905.10713",
+   "why": "구간(필드)별 보정 오차를 재고 고치는 법. 우대② Post-calibration을 그대로 다룬다."
+  },
+  {
+   "id": "esmm",
+   "title": "Entire Space Multi-Task Model: An Effective Approach for Estimating Post-Click Conversion Rate",
+   "by": "Ma 외 · Alibaba · SIGIR 2018",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1804.07931",
+   "why": "pCVR의 선택 편향과 클릭·구매 함께 배우기. 업무①과 우대①, 토스 쇼핑 글이 든 모델."
+  },
+  {
+   "id": "mmoe",
+   "title": "Modeling Task Relationships in Multi-task Learning with Multi-gate Mixture-of-Experts",
+   "by": "Ma 외 · Google · KDD 2018",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://dl.acm.org/doi/10.1145/3219819.3220007",
+   "why": "여러 사용자 반응을 한 모델로 배우는 대표 구조. 우대① Multi-Task Learning."
+  },
+  {
+   "id": "youtube-mtl",
+   "title": "Recommending What Video to Watch Next: A Multitask Ranking System",
+   "by": "Zhao 외 · Google · RecSys 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://dl.acm.org/doi/10.1145/3298689.3346997",
+   "why": "여러 작업 예측을 가중 합으로 섞는 실서비스 사례. 우대①④(MTL·Score Blending)."
+  },
+  {
+   "id": "youtube-dnn",
+   "title": "Deep Neural Networks for YouTube Recommendations",
+   "by": "Covington 외 · Google · RecSys 2016",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/",
+   "why": "후보 생성과 랭킹을 나누는 두 단계 구조의 원형. 업무②."
+  },
+  {
+   "id": "cold",
+   "title": "COLD: Towards the Next Generation of Pre-Ranking System",
+   "by": "Wang 외 · Alibaba · DLP-KDD 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2007.16122",
+   "why": "광고 시스템의 가벼운 1차 랭커를 계산 비용까지 같이 설계한 사례. 업무②·우대①의 Light Ranker."
+  },
+  {
+   "id": "ultr",
+   "title": "Unbiased Learning-to-Rank with Biased Feedback",
+   "by": "Joachims 외 · WSDM 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1608.04468",
+   "why": "로그가 옛 모델이 고른 것과 자리 효과로 치우친 이유와 보정. 업무④ 오프라인/온라인 괴리."
+  },
+  {
+   "id": "delayed-fb",
+   "title": "Modeling Delayed Feedback in Display Advertising",
+   "by": "Olivier Chapelle · KDD 2014",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://doi.org/10.1145/2623330.2623634",
+   "why": "클릭 뒤 늦게 오는 구매를 다루는 기본 논문. 우대③(외부 쇼핑몰 전환)과 요건①(라벨 정의)."
+  },
+  {
+   "id": "toss-pixel",
+   "title": "토스 픽셀 (앱인토스 개발자센터)",
+   "by": "토스 · 공식 문서",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://developers-apps-in-toss.toss.im/guide/marketing/pixel",
+   "why": "광고주 쪽에서 전환 이벤트가 어떻게 들어오는지. 우대③ 외부 전환 데이터의 출발점."
+  },
+  {
+   "id": "kohavi-ko",
+   "title": "신뢰할 수 있는 온라인 종합 대조 실험",
+   "by": "론 코하비 · 다이앤 탕 · 야 쉬 (이기홍 · 김기영 옮김)",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000005201885",
+   "why": "A/B 실험 설계·SRM·지표 묶음. 요건④ Problem Solver와 우대④의 균형 실험."
+  },
+  {
+   "id": "dmls-ko",
+   "title": "머신러닝 시스템 설계",
+   "by": "칩 후옌 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EC%B9%A9%20%ED%9B%84%EC%98%8C",
+   "why": "데이터 누수·학습/서빙 어긋남·배포 뒤 감시. 요건①③과 직무 인터뷰의 ML 시스템 설계 대비."
+  },
+  {
+   "id": "cross-entropy-note",
+   "title": "But what is cross-entropy? (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/GlYgs6v2YfU",
+   "why": "CTR 모델의 logloss가 무엇을 재는지 그림으로. 업무④의 'AUC는 같은데 logloss는 다르다'를 읽는 바탕."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "광고 랭킹 한 바퀴",
+   "time": "1주",
+   "goal": "광고 노출 한 번이 후보 찾기 → 가벼운 랭킹 → 최종 예측 → 보정 → 가치 공식 → 섞기를 지나는 길과, 이 자리가 맡는 칸을 말로 설명할 수 있다.",
+   "resources": [
+    "toss-reco",
+    "slash24-reco",
+    "youtube-dnn"
+   ],
+   "task": "가상 쇼핑 앱 광고 한 번을 따라가는 표를 만든다 — 칸: 단계, 후보 수, 입력, 출력, 누가 맡나, 틀어지면 무엇이 깨지나."
+  },
+  {
+   "title": "pCTR·pCVR 모델 직접 만들기",
+   "time": "2~3주",
+   "goal": "노출 로그에서 라벨과 피처를 만들고 로지스틱 회귀와 작은 신경망으로 pCTR을, ESMM 꼴로 pCVR을 학습한다.",
+   "resources": [
+    "fb-ads-ctr",
+    "esmm",
+    "dmls-ko",
+    "cross-entropy-note"
+   ],
+   "task": "사용자 1만·상품 2천·노출 100만 건 가상 로그(클릭률·구매율을 심어 둠)를 만들고, 노출 시점 뒤의 값을 피처에서 빼는 검사를 넣은 뒤 AUC·logloss·보정 비율을 표로 낸다."
+  },
+  {
+   "title": "보정과 구간별 사후 보정",
+   "time": "2주",
+   "goal": "보정 곡선·ECE를 재고 플랫 스케일링·등위 회귀·temperature scaling을 비교하고, 카테고리별 편향을 수축 배수로 고친다.",
+   "resources": [
+    "sklearn-calib",
+    "calibration",
+    "field-calib",
+    "trenches"
+   ],
+   "task": "2단계 모델을 음성 10%만 남겨 다시 학습해 일부러 부풀린 뒤, 세 가지 보정 전후의 구간별 예측/실제 표와 카테고리 5개의 보정 비율을 비교한다."
+  },
+  {
+   "title": "여러 신호를 한 점수로",
+   "time": "2주",
+   "goal": "입찰 × pCTR에 사용자 가치 항을 더한 점수를 만들고, 가중 α를 바꿀 때 광고 매출과 사용자 클릭이 어떻게 맞바뀌는지 보인다.",
+   "resources": [
+    "youtube-mtl",
+    "mmoe",
+    "cold"
+   ],
+   "task": "광고주 50곳(입찰 다름)·하루 10만 노출 시뮬레이터에 α 5가지를 넣어 광고 매출·사용자 클릭·구매 수의 맞교환 곡선을 그린다."
+  },
+  {
+   "title": "오프라인과 온라인이 다를 때 (선택)",
+   "time": "계속",
+   "goal": "로그의 노출 편향·전환 지연을 알고 A/B 실험 결과를 읽을 수 있다.",
+   "resources": [
+    "ultr",
+    "delayed-fb",
+    "kohavi-ko"
+   ],
+   "task": "4단계 시뮬레이터에서 옛 모델이 고른 노출로만 새 모델을 오프라인 평가한 값과, 사용자를 반으로 나눠 실제로 돌린 값을 견주고, 구매가 3일 늦게 들어오게 했을 때 1일·7일 시점의 결론이 어떻게 달라지는지 보인다."
+  }
+ ],
+ "pay": {
+  "summary": "공공데이터 집계로 회사 전체 신입 초봉 **약 4,200만원**, 평균 **약 6,200만원** — 공시된 평균 급여는 없다(비상장). 이 자리는 pCTR·pCVR 모델 실무 경력직이라 초봉과는 거리가 멀다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 없고 직군 구분도 없다 [25]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 — 경력직이 섞인 값 [25]"
+   },
+   {
+    "label": "토스뱅크 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 계열사 값 — 견주어 보기용 [26]"
+   },
+   {
+    "label": "토스뱅크 평균",
+    "value": "약 7,208만원",
+    "amount": 7208,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 계열사 평균 [26]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고, 레퍼런스 체크 뒤 **처우 협의** 단계에서 사람마다 정한다 [1]. 비바리퍼블리카는 상장사가 아니라 사업보고서의 '직원 평균 급여'가 없다(공시 숫자 없음). 평균은 경력직이 섞인 회사 전체 값이라 초봉이 아니고, 이 자리처럼 광고 ML 경력직의 제안은 이전 처우와 협의로 정해져 집계값과 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 복지를 소개한 2021년 공식 글이다 [28]. 지금도 같은지, 광고 도메인에도 그대로 적용되는지는 글에 없으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스(비바리퍼블리카) 본사",
+  "address": "서울특별시 강남구 테헤란로 142, 4·10~13·22·23층",
+  "postal": "06236",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "주소는 토스 회사 소개 페이지 하단의 회사 정보다 [27]. 공고의 근무지는 'Seoul'로만 적혀 있어 광고 도메인의 자리가 본사와 다를 수 있다 {추론}."
+ }
+}
