@@ -6,6 +6,7 @@
   "wanted-368239": "finatext-brokerage-fullstack",
   "wanted-368237": "finatext-frontend",
   "wanted-385077": "go-android-in-vehicle",
+  "wanted-342854": "henry-senior-sre-japan",
   "wanted-377335": "ldf-ebookjapan-web-frontend",
   "wanted-377332": "ldf-linemanga-data-scientist",
   "wanted-391370": "litalico-data-engineer",
@@ -34,6 +35,8 @@
   "wanted-396834": "skax-nova-bss-oss-app-dev",
   "ats-skcareers:sk:R262392": "skax-sap-bw-bdc-data-analytics",
   "ats-skcareers:sk:R262430": "skax-security-architect",
+  "ats-skcareers:sk:R262135": "skax-security-operations-pm",
+  "jobkorea-50267139": "skax-security-operations-pm",
   "ats-skcareers:sk:R262252": "skax-vision-image-platform-pl-mle",
   "saramin-55459415": "skax-vision-image-platform-pl-mle",
   "ats-skcareers:sk:R262308": "skax-whitehat-pentest",
@@ -187,6 +190,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 22
+  },
+  {
+   "id": "henry-senior-sre-japan",
+   "company": "株式会社ヘンリー (Henry)",
+   "role": "Senior Site Reliability Engineer (SRE)",
+   "jobs": [
+    "wanted-342854"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 29
   },
   {
    "id": "ldf-ebookjapan-web-frontend",
@@ -383,7 +396,7 @@
     "wanted-396834"
    ],
    "researched_at": "2026-11-23",
-   "lines": 31
+   "lines": 34
   },
   {
    "id": "skax-sap-bw-bdc-data-analytics",
@@ -404,6 +417,17 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 35
+  },
+  {
+   "id": "skax-security-operations-pm",
+   "company": "SK주식회사(AX)",
+   "role": "정보보안 운영 전문가 (보안솔루션 운영 총괄 PM)",
+   "jobs": [
+    "ats-skcareers:sk:R262135",
+    "jobkorea-50267139"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 30
   },
   {
    "id": "skax-vision-image-platform-pl-mle",
