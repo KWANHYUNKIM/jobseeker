@@ -147,6 +147,129 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "3.5슬롯·16핀 1개는 공식 표. 대표 사진(상자와 카드 한 장): 검정 쉬라우드에 검정 날개 팬 3개, 팬을 감싼 곡선 Chameleon Panel 이 보는 각도로 연두·금·보라로 바뀐다(accent 는 가장 넓게 보이는 연두-금) — 비OC GameRock(palit-rtx5090-gamerock)과 같은 겉모양. 윗 모서리에 GAMEROCK·GEFORCE RTX 글자. 팬 자체에는 불빛이 없어 보인다. 팬 지름·날개 수·백플레이트·플로스루·16핀 자리는 공식 자료에 없고 사진 한 장으로 안 보여 비웠다. 다나와는 쓰지 않았다."
+  },
+  "asus-tuf-rtx5090-32g": {
+   "kind": "gpu",
+   "fan_count": 3,
+   "fan_blades": 7,
+   "fan_light": "none",
+   "slots": 3.6,
+   "backplate": true,
+   "flow_through": true,
+   "color": "#3a3b3e",
+   "accent": "#b9bcc0",
+   "marks": [
+    {
+     "text": "TUF GAMING",
+     "where": "shroud",
+     "color": "#e6e7e9"
+    },
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#d9dadc"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "sources": [
+    {
+     "title": "ASUS TUF Gaming RTX 5090 — 공식 제품 페이지(three Axial-tech fans · 3.6-slot · diecast shroud · Vented Exoskeleton · aluminum backplate with large vents · Aura ARGB on the shroud · 정면·비스듬한 정면·끝 통풍구·조명 사진)",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/tuf-gaming/tuf-rtx5090-32g-gaming/"
+    },
+    {
+     "title": "ASUS TUF Gaming RTX 5090 — 공식 스펙(3.6 Slot · 1 x 16-pin · AURA SYNC ARGB)",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/tuf-gaming/tuf-rtx5090-32g-gaming/techspec/"
+    }
+   ],
+   "note": "팬 3개·3.6슬롯·16핀 1개·알루미늄 백플레이트·ARGB 는 공식 문구·스펙. 정면 사진(세션 임시 폴더에서 보기만): 건메탈 다이캐스트 쉬라우드(color)에 네 모서리 은색 덧판(accent), 검정 날개 7장(정면 사진에서 셈)에 은색 고리 허브(TUF·ASUS·TUF), TUF GAMING·GET TUF GAME TOUGH 글자 — TUF 5060 Ti 와 같은 틀을 키운 모양. 비스듬한 사진: 윗면 GEFORCE RTX 글자, 끝 쪽 덮개에 큰 창. 'Vented Exoskeleton' 사진: 끝 쪽 백플레이트가 크게 뚫려 핀 사이로 바람이 위로 빠진다 → flow_through. 조명 사진: 끝 윗 모서리의 TUF 로고와 짧은 줄 네 개·LED 다섯 점이 노랗게 빛난다 — 공식 문구 'ARGB on the shroud', 팬에는 불빛이 없다(fan_light none). 발광 로고는 적을 칸이 없다(REQUESTS 의 marks glow 요청). 16핀은 윗면 끝 덮개 앞 창 안에 보이나 비스듬한 사진이라 비율을 못 재 power 는 비웠다. 다나와는 쓰지 않았다."
+  },
+  "asus-tuf-rtx5090-o32g": {
+   "kind": "gpu",
+   "fan_count": 3,
+   "fan_blades": 7,
+   "fan_light": "none",
+   "slots": 3.6,
+   "backplate": true,
+   "flow_through": true,
+   "color": "#3a3b3e",
+   "accent": "#b9bcc0",
+   "marks": [
+    {
+     "text": "TUF GAMING",
+     "where": "shroud",
+     "color": "#e6e7e9"
+    },
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#d9dadc"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "sources": [
+    {
+     "title": "ASUS TUF Gaming RTX 5090 — 공식 제품 페이지(three Axial-tech fans · 3.6-slot · diecast shroud · Vented Exoskeleton · aluminum backplate with large vents · Aura ARGB on the shroud · 정면·비스듬한 정면·끝 통풍구·조명 사진)",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/tuf-gaming/tuf-rtx5090-32g-gaming/"
+    },
+    {
+     "title": "ASUS TUF Gaming RTX 5090 OC — 공식 스펙(3.6 Slot · 1 x 16-pin · AURA SYNC ARGB)",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/tuf-gaming/tuf-rtx5090-o32g-gaming/techspec/"
+    }
+   ],
+   "note": "팬 3개·3.6슬롯·16핀 1개·알루미늄 백플레이트·ARGB 는 공식 문구·스펙. 정면 사진(세션 임시 폴더에서 보기만): 건메탈 다이캐스트 쉬라우드(color)에 네 모서리 은색 덧판(accent), 검정 날개 7장(정면 사진에서 셈)에 은색 고리 허브(TUF·ASUS·TUF), TUF GAMING·GET TUF GAME TOUGH 글자 — TUF 5060 Ti 와 같은 틀을 키운 모양. 비스듬한 사진: 윗면 GEFORCE RTX 글자, 끝 쪽 덮개에 큰 창. 'Vented Exoskeleton' 사진: 끝 쪽 백플레이트가 크게 뚫려 핀 사이로 바람이 위로 빠진다 → flow_through. 조명 사진: 끝 윗 모서리의 TUF 로고와 짧은 줄 네 개·LED 다섯 점이 노랗게 빛난다 — 공식 문구 'ARGB on the shroud', 팬에는 불빛이 없다(fan_light none). 발광 로고는 적을 칸이 없다(REQUESTS 의 marks glow 요청). 16핀은 윗면 끝 덮개 앞 창 안에 보이나 비스듬한 사진이라 비율을 못 재 power 는 비웠다. OC 판은 공식 스펙상 클럭만 다르고(치수·슬롯·전원 같음) 사진은 비OC 제품 페이지의 것을 같은 겉모양으로 썼다. 다나와는 쓰지 않았다."
+  },
+  "asus-rog-astral-lc-rtx5090-o32g": {
+   "kind": "gpu",
+   "fan_count": 1,
+   "fan_blades": 7,
+   "fan_light": "none",
+   "light": "side",
+   "slots": 2.5,
+   "backplate": true,
+   "flow_through": false,
+   "power": {
+    "type": "12v-2x6",
+    "n": 1,
+    "at": 0.78
+   },
+   "color": "#2b2c2f",
+   "accent": "#7a4dff",
+   "marks": [
+    {
+     "text": "ASTRAL",
+     "where": "shroud",
+     "color": "#3a3b3e"
+    },
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#d9dadc"
+    },
+    {
+     "text": "GEFORCE RTX",
+     "where": "backplate",
+     "color": "#d9dadc"
+    }
+   ],
+   "sources": [
+    {
+     "title": "ASUS ROG Astral LC RTX 5090 OC — 공식 제품 페이지(360mm AIO · full-coverage copper plate · integrated axial-tech fan · indirect Aura ARGB)",
+     "url": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-lc-rtx5090-o32g-gaming/"
+    },
+    {
+     "title": "ASUS ROG Astral LC RTX 5090 OC — 공식 갤러리(2D+lighting 정면 · back-2D · side+lighting · Hero 사진)",
+     "url": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-lc-rtx5090-o32g-gaming/gallery/"
+    },
+    {
+     "title": "ASUS ROG Astral LC RTX 5090 OC — 공식 스펙(2.5 Slot · 1 x 16-pin · Radiator 400 x 120 x 65mm)",
+     "url": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-lc-rtx5090-o32g-gaming/spec/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "일체형 수랭 — GPU·메모리는 수랭 블록이 식히고 카드 위에는 전원부용 axial-tech 팬 1개만 있다(공식 문구 'integrated fan'). 그래서 fan_count 는 카드 팬 1개이고, 라디에이터 팬 3개(models 의 fans 3)·360mm 라디에이터·호스는 형식에 칸이 없다(REQUESTS [3D 렌더러]). 공식 정면 사진(세션 임시 폴더에서 보기만): 짙은 검정 틀(color) 안에 브래킷 쪽 2/3 는 은색 헤어라인 판(ROG | ASTRAL 글자 판), 끝 쪽 1/3 에 은색 눈금 고리를 두른 팬 하나(날개 7장, 불빛 없음)와 그 뒤 검정 핀. 윗 모서리를 따라 파랑→보라 Aura 띠, 윗면 사진에서 GEFORCE RTX 글자 위로 파랑·분홍 발광 창 두 개(REPUBLIC OF GAMERS 글자) → light=side, accent 보라(ARGB 라 바뀐다). 호스 두 가닥은 윗면 브래킷 쪽 약 1/3 에서 나온다. 16핀은 윗면 끝 쪽 — 윗면·뒷면 사진 둘 다 브래킷부터 길이의 약 78%. 뒷면 사진: 검정 백플레이트(GPU 뒤 십자 보강판, GEFORCE RTX·ASTRAL 글자), 끝이 뚫린 창 없이 막혀 있다 → flow_through false. 모서리 은색 고리·끝 팬만 있는 비대칭 쉬라우드는 렌더러가 팬을 가운데에 놓을 수 있다. 다나와는 쓰지 않았다."
   }
  }
 }

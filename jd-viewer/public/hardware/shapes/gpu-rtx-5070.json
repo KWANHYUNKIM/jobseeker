@@ -40,6 +40,43 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "92mm 팬 2개·날개 7장·2슬롯 공간·16핀 1개는 공식 표·문구. 정면 사진: 광택 검정 쉬라우드에 탄소 무늬 가운데 판 + 양 끝 회로 무늬 양각, 반투명 날개, 검정 허브에 흰 GALAX. 켠 정면 사진: 팬이 흰색으로만 빛난다 — 형식에 흰 단색이 없어 fan_light 는 none(REQUESTS 의 흰 단색 요청 그대로). 비스듬한 사진: 윗면 흰 GEFORCE RTX 글자. 뒷면 사진: 검정 백플레이트에 흰 줄무늬·GEFORCE RTX, 끝 약 30% 가 사선 창으로 뚫린 플로스루('Expanded Opening'), 16핀은 PCB 끝 모서리 — 브래킷부터 약 62%(판독). 회로·탄소 무늬는 단색 판이다. 다나와는 쓰지 않았다."
+  },
+  "galax-rtx5070-exg-1clickoc": {
+   "kind": "gpu",
+   "fans": [
+    92,
+    102,
+    92
+   ],
+   "fan_blades": 7,
+   "fan_light": "argb",
+   "light": "side",
+   "slots": 2.5,
+   "backplate": true,
+   "flow_through": true,
+   "power": {
+    "type": "12v-2x6",
+    "n": 1,
+    "at": 0.51
+   },
+   "color": "#141518",
+   "accent": "#d9c88a",
+   "marks": [
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#e8eaec"
+    }
+   ],
+   "sources": [
+    {
+     "title": "GALAX GeForce RTX 5070 EX Gamer 1-Click OC — 공식 제품 페이지(Triple wings 3.0 92mm*102mm*92mm · 7 larger WINGS 3.0 blades · Front & Side Dual-Face ARGB · ENHANCED BACKPLATE Expanded Opening · 2.5 slot · 16-pin · 정면/켠 비스듬한 정면/아랫면/세운 옆면/윗면 사진)",
+     "url": "https://galax.com/en/product/geforce-rtx-5070-ex-gamer-12gb-1-click-oc-3x/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 92·102·92mm·날개 7장·2.5슬롯·16핀 1개는 공식 표·문구 — 5080 EX Gamer 와 같은 틀. 사진(세션 임시 폴더에서 보기만): 검정 쉬라우드에 탄소 무늬 판·각진 홈, 반투명 회색 날개에 고리, 검정 허브 GALAX. 켠 사진에서 팬이 청록·연두·노랑으로 빛나 fan_light=argb, 끝 모서리 세로 줄 세 가닥이 금빛으로 빛나 light=side(공식 문구 Front & Side) — accent 는 그 금빛(ARGB 라 바뀐다). 윗면 직교 사진: 흰 GEFORCE RTX 글자(브래킷 쪽), 16핀은 브래킷부터 길이의 약 51%, 그 자리에서 PCB 가 끝나고 끝 쪽 약 40% 는 핀만 보인다 — 공식 'Expanded Opening' 백플레이트와 합쳐 flow_through(뒷면 사진은 이 제품 페이지에 없다). 국내 EX GAMER BLACK OC 짝은 models 노트를 따른다. 다나와는 쓰지 않았다."
   }
  }
 }
