@@ -1,0 +1,932 @@
+{
+ "id": "tossbank-system-security-engineer",
+ "company": "토스뱅크",
+ "role": "보안 엔지니어 (시스템 보안)",
+ "team": "Security Division · System Security Team",
+ "jobs": [
+  "ats-toss:group:6607772003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "임직원 PC·서버에 깔린 **보안 솔루션(EDR·백신·DLP·MDM·접근제어 등)이 실제로 돌고 회사 기준대로 걸려 있는지** 지키고, 오픈소스·AI 가 들여오는 위험(공급망)까지 맡습니다.[1]",
+  "env": "Security Division 8개 팀 중 System Security Team. 제품 조직, 그리고 규제·내부통제 때문에 Legal & Compliance·Platform Engineering·Internal Audit 과 같이 일합니다.[1] 은행이라 단말·계정·망분리 규칙이 법으로 정해져 있습니다.[11]",
+  "oneline": "솔루션을 '사서 켜 두는' 사람이 아니라, 콘솔 열 개에 흩어진 상태를 **코드로 모아 증명하는** 7년 차 이상 운영 엔지니어."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "토스뱅크의 고객을 보호하기 위한 정보보안 솔루션을 운영하는 활동을 해요.",
+   "short": "회사가 들여온 보안 제품들이 꺼지거나 설정이 풀리지 않게, 매일 상태를 보고 정책을 고치는 일.",
+   "why": "은행은 해킹 사고를 막기 위해 정보보호시스템(보안 솔루션)을 설치·운영해야 하고, 시스템마다 담당자를 정하고 운영 결과를 1년 이상 남겨야 합니다.[11] 같은 그룹 토스의 발표는 조사 기업의 58%가 보안 솔루션을 25개 넘게 쓰고, 관리의 빈틈이 '예외 정책 미회수 · 정책 변경 누락 · 패치·EOL(지원 종료) 대응 누락 · 교체 뒤 재구성 누락'에서 생긴다고 정리했습니다.[3]",
+   "actually": {
+    "intro": "같은 그룹 토스·토스증권이 공개한 '솔루션을 잘 관리한다'의 내용입니다. 토스뱅크의 솔루션 목록은 공개되지 않았습니다.[3][4]",
+    "items": [
+     "**정책 유지** — 도입 목적대로 기능·정책을 켜 두고 그 상태를 지킨다. 예: EDR(단말 위협 탐지·대응 제품)의 탐지 임계치, 센서 변조 방지, 의심 파일 검사.[3]",
+     "**데이터 제공** — 탐지·통제 결과가 관제(SIEM, 로그를 모아 분석하는 시스템)로 빠짐없이 가게 한다.[3]",
+     "**최신 상태** — 에이전트·관리 서버 패치, EOL 일정과 라이선스 만료를 챙긴다. 토스는 벤더마다 다른 정기점검 보고서를 AI 로 한 양식으로 모아 EOL·라이선스 만료를 매달 리포트로 받는다.[3]",
+     "**예외 처리** — '이것만 잠깐 열어 주세요' 요청이 매일 들어온다. 열어 준 예외마다 대상·유지 기간·대신 지키는 통제(예: USB 쓰기 허용 → DLP 반출 감시)를 붙이지 않으면 위험이 보이지 않는다.[4]",
+     "**문의 대응** — '보안 프로그램 때문에 ○○이 안 돼요'를 어느 솔루션 탓인지 가려낸다.[4]",
+     "**감사 대응** — '전 단말 설치율 뽑아 주세요' 같은 요청에 증적(증거 자료)을 낸다.[4]"
+    ]
+   },
+   "how_far": "어떤 솔루션을 살지는 보안 조직이 정하고, 이 자리는 **이미 있는 솔루션이 기준대로 돌고 있다는 것을 언제든 숫자로 답하는** 일을 맡습니다 {추론}. 최소선은 EDR·DLP·MDM 콘솔 하나를 열어 '이 정책이 무엇을 막고 무엇을 남기나'를 설명할 수 있는 것입니다 {추론}.",
+   "refs": [
+    3,
+    4,
+    11
+   ],
+   "study": [
+    "g26-ssorbit",
+    "g26-tera",
+    "efsr"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "토스뱅크의 단말보안, 접근제어 솔루션 운영 및 AI와 공급망 보안에 대해서 포괄적인 업무를 수행해요.",
+   "short": "PC 지키기, 누가 어디에 들어가나 정하기, 그리고 오픈소스·AI 가 들여오는 위험 막기까지 넓게 맡는다.",
+   "why": "감독규정은 단말기를 인가된 사람만 쓰게 하고, 접속 기록을 남기고, 중요 단말기는 인터넷을 막고, USB 같은 보조기억매체를 통제하라고 요구합니다.[11] 계정은 OS 로그인에 2단계 인증을 걸고, 부서 이동·퇴직 때 바로 지우거나 막아야 합니다.[11] 공급망은 토스뱅크 발표가 'npm 을 이용한 공급망 공격이 너무 많다'는 데서 출발했습니다.[2]",
+   "actually": {
+    "intro": "네 갈래로 나눠 보면 이렇습니다. 앞의 둘은 그룹 발표, 공급망은 토스뱅크 발표입니다.",
+    "items": [
+     "**단말보안** — 백신·EDR·DLP(정보 유출 방지)·MDM(단말 관리)·매체 제어가 PC 마다 깔려 있고 돌고 있는지. 토스증권은 9개 솔루션 상태를 단말 한 대 기준으로 합쳐 본다.[4][5]",
+     "**접근제어** — 업무 시스템 로그인은 사내 인증(Keycloak) + 앱 인증 뒤 단말 보안 수준을 한 번 더 검사하고, 접속 중에도 수준이 떨어지면 모든 세션을 끊는다(토스).[6] VDI(원격 가상 PC)는 기기 점수가 관리자가 정한 점수를 못 넘으면 사내망에 못 붙는다.[7]",
+     "**공급망 보안** — 외부 패키지 저장소(Maven·npm·PyPI)는 사내 Nexus 를 거쳐서만 받고, 새 패키지는 검역을 통과해야 쓸 수 있게 한다(토스뱅크).[2]",
+     "**AI 보안** — 토스는 설치 스크립트를 LLM 으로 읽어 악성 여부를 판단하는 '아티팩트 방화벽'을 직접 만들었다.[8] 반대로 AI 앱 자체의 위험(프롬프트 주입·민감 정보 노출·공급망 등)은 OWASP 가 10가지로 정리해 두었다.[17]"
+    ]
+   },
+   "how_far": "'포괄적'이라 한 사람이 모든 제품의 전문가일 필요는 없지만, 네 갈래 모두에서 **무엇을 확인해야 하는지는 알아야** 합니다 {추론}. 법 조항(제12·13·15조)을 운영 규칙으로 옮겨 읽을 줄 아는 것이 은행 보안 엔지니어의 기본입니다 {추론}.",
+   "refs": [
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    11,
+    17
+   ],
+   "study": [
+    "efsr",
+    "kisa-guide",
+    "g25-iam",
+    "g25-vdi",
+    "g25-oss",
+    "owasp-llm"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "보안 가시성 확보와 접근체계 고도화를 위한 시스템을 기획하고 운영 해요.",
+   "short": "콘솔마다 흩어진 상태를 한곳에 모아 '이 PC 는 지금 안전한가'를 답하고, 그 답으로 접속을 열고 닫는다.",
+   "why": "토스뱅크 발표는 교훈 첫째로 '보안의 시작은 가시화'를 꼽았습니다 — 식별되지 않은 자산이 큰 피해를 낸다는 것입니다.[2] 토스증권도 '모든 단말의 솔루션이 실제로 돌고 있나'에 콘솔마다·담당자마다 따로 확인해 모아야 겨우 답했다고 했습니다.[4]",
+   "flows": [
+    {
+     "caption": "토스증권 TERA(자체 개발) — 같은 그룹 다른 회사[4][5]",
+     "steps": [
+      "모으기 · 솔루션 API + PC 의 센서 스크립트",
+      "한 대로 합치기 · 시리얼 → 호스트명+MAC",
+      "판정 · 설치·동작·보호·정책, 근거와 함께",
+      "등급 · A~D, 모르면 U(판단 불가)",
+      "접근 정책 · IAM·ZTNA 가 등급을 읽는다"
+     ],
+     "mine_from": 0
+    },
+    {
+     "caption": "제로 트러스트에서 그 자리[4][12]",
+     "steps": [
+      "PIP · 판단에 쓸 정보(단말 상태)",
+      "PDP · 허용할지 판단",
+      "PEP · 실제로 열고 끊는 곳(IAM·ZTNA)"
+     ]
+    }
+   ],
+   "actually": {
+    "items": [
+     "**한 대로 합치기** — 같은 PC 가 EDR 엔 'DEV-0142', MDM 엔 'dev-0142.example' 로 찍힌다. 시리얼 번호를 1순위, 호스트명+MAC 을 2순위로 묶는다.[5]",
+     "**교차 검증** — EDR·DLP 는 몇 분 전에 통신했는데 MDM 만 232일째 끊긴 PC 가 나왔다. 그동안 MDM 정책 변경이 그 PC 엔 안 내려갔다.[4]",
+     "**콘솔은 정상, PC 는 아님** — 콘솔엔 정상으로 보이는데 PC 에서 직접 보니 DLP 에이전트가 안 돌고 있었다. 서버 API 와 PC 쪽 확인을 둘 다 본다.[5]",
+     "**정책을 로그인에 잇기** — 디스크 암호화가 꺼진 맥으로도 업무 앱 로그인이 됐다. 로그인 정책이 단말 상태를 안 쓰고 있었기 때문이고, 다음 단계는 판정을 접속 조건으로 쓰는 것이다.[4]",
+     "**모르면 정상 아님** — 데이터가 없으면 '판단 불가'로 따로 둔다.[4]",
+     "**토스뱅크 쪽 도구** — Nessus 로 네트워크 전체를 훑어 모르는 자산을 찾고, 전체 서버에 오픈소스 Wazuh 를 깔아 패키지·취약점을 보고, PC 에 깔면 브라우저 확장 프로그램까지 본다고 했다.[2][16]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "솔루션 셋의 목록을 PC 한 대로 합치고, 기준 설정과 비교",
+     "body": "TERA 의 합치기·판정[5]과 SSORBIT 의 '기준 vs 지금' 비교[3]를 아주 작게 따라 한 것입니다(가상 데이터, 직접 돌린 출력은 맨 아래 주석).",
+     "lang": "python",
+     "code": "from datetime import datetime, timedelta\n\nnow = datetime(2026, 11, 23, 10, 0)\nedr = [{\"serial\": \"SN-A1\", \"last\": now - timedelta(minutes=23)},\n       {\"serial\": \"SN-B2\", \"last\": now - timedelta(days=3)}]\nmdm = [{\"serial\": \"SN-A1\", \"last\": now - timedelta(days=232)},\n       {\"serial\": \"SN-B2\", \"last\": now - timedelta(hours=1)},\n       {\"serial\": \"SN-C3\", \"last\": now - timedelta(minutes=5)}]\ndlp = [{\"serial\": \"SN-A1\", \"last\": now - timedelta(minutes=5)},\n       {\"serial\": \"SN-C3\", \"last\": now - timedelta(minutes=9)}]\nsources = {\"EDR\": edr, \"MDM\": mdm, \"DLP\": dlp}\n\ndevices = {}\nfor name, rows in sources.items():\n    for r in rows:\n        devices.setdefault(r[\"serial\"], {})[name] = r[\"last\"]\n\nfor serial, seen in sorted(devices.items()):\n    bad = []\n    for name in sources:\n        if name not in seen:\n            bad.append(f\"{name}:미설치\")\n        elif now - seen[name] > timedelta(days=1):\n            bad.append(f\"{name}:미통신 {(now - seen[name]).days}일\")\n    print(serial, \"정상\" if not bad else \", \".join(bad))\n\nbaseline = {\"detection_threshold\": 30, \"suspicious_file_scan\": True}\ncurrent = {\"detection_threshold\": 30, \"suspicious_file_scan\": False}\nfor k, v in baseline.items():\n    if current.get(k) != v:\n        print(\"차이:\", k, \"기준\", v, \"지금\", current.get(k))\n\n# SN-A1 MDM:미통신 232일\n# SN-B2 EDR:미통신 3일, DLP:미설치\n# SN-C3 EDR:미설치\n# 차이: suspicious_file_scan 기준 True 지금 False"
+    }
+   ],
+   "how_far": "'기획하고 운영'이라 남이 만든 대시보드를 보는 데서 그치지 않습니다. **무엇을 모을지·어떻게 판정할지·그 판정을 어느 접근 정책에 넘길지 설계하고, 직접 만들어 돌리는** 데까지입니다 {추론}. 탐지 자체는 SIEM 이 하고 이 시스템은 그 결과를 단말 상태로 본다는 식의 경계 긋기도 설계에 들어갑니다.[4]",
+   "refs": [
+    2,
+    3,
+    4,
+    5,
+    12,
+    16
+   ],
+   "study": [
+    "g26-tera",
+    "g25-oss",
+    "nist-zt",
+    "ztn-ko",
+    "wazuh-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "7년 이상 다양한 보안솔루션 운영 경험이 있으신 분이 필요해요.",
+   "short": "한두 제품이 아니라 여러 종류를 도입·교체·장애까지 겪어 본 시니어를 찾는다는 뜻.",
+   "why": "관리의 빈틈은 대부분 '담당자가 바뀌며 빠진 인수인계', '솔루션·담당자마다 제각각인 관리', '업그레이드·교체 뒤 옛 설정 미반영'처럼 시간이 지나야 보이는 곳에서 생깁니다.[3] 여러 제품의 한 주기(도입 → 운영 → EOL → 교체)를 겪어 봐야 이걸 미리 막을 수 있습니다 {추론}.",
+   "how_far": "'다양한'이 핵심입니다. 단말(EDR·백신·DLP·MDM)·네트워크(방화벽·NAC)·계정(IAM·PAM) 중 **두세 갈래 이상**을 직접 운영해 본 경험을 사례로 보여 주는 게 좋습니다 {추론}. 연차가 모자라도 지원은 되지만, 그 경우 아래 '딥다이브' 사례가 더 무거워집니다 {추론}.",
+   "refs": [
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "보안솔루션의 동작 원리에 대해서 이해가 깊고, 운영 정책에 대해서 스스로 기준을 수립할 수 있는 분을 찾고 있어요.",
+   "short": "콘솔 버튼이 아니라 에이전트가 PC 안에서 무엇을 보고 막는지 알고, '어떻게 걸려 있어야 하나'를 직접 정한다.",
+   "why": "토스는 '규정과 심사를 관행으로 대하지 않기'를 기준의 중심으로 삼았습니다. 전자금융감독규정·ISMS-P·ISO 27001·PCI-DSS 등 7개 규정·심사를 58개 점검 항목으로 합치고, 항목마다 Lv0(취약)~Lv3(최적) 수준을 한 문장으로 정의했습니다. 예전엔 같은 항목에 담당자 A 는 '잘 되어 있음', B 는 장문의 설명을 썼기 때문입니다.[3]",
+   "actually": {
+    "items": [
+     "**동작 원리로 판정하기** — 설치(실행 파일이 있나), 동작(프로세스가 도나 · 최근 통신), 보호(실시간 보호·시스템 확장이 켜져 있나), 정책(승인된 정책인가)을 각각 따로 본다. 맥이라면 프로세스 목록·시스템 확장 목록을 직접 읽는다.[5]",
+     "**'기능 축소 모드'를 아는 것** — EDR 은 설치·동작이 정상이어도 탐지·차단 기능이 제한된 상태로 돌 수 있다. 토스증권은 이런 API 필드를 판정 기준으로 넣었다.[5]",
+     "**기준을 버전으로 관리** — 메뉴별로 '이렇게 되어 있어야 한다'를 정해 v1 로 저장하고, 기준을 바꾸면 v2 로. 실제 설정과 다르면 바로 알림.[3]",
+     "**수준 정의 예** — 접근권한 정기 재검토: Lv1 감사 지적 때만 → Lv2 월 단위 검토·회수 → Lv3 인사 DB 와 이어 퇴직·이동 때 자동 회수.[3]",
+     "**공격자 눈으로** — EDR 이 커널 콜백·이벤트 추적 같은 센서로 무엇을 보고, 그걸 어떻게 피하는지를 알아야 '이 설정이 왜 필요한가'를 말할 수 있다.[22]"
+    ]
+   },
+   "how_far": "규정은 '무엇을'까지만 말합니다(예: 단말 보조기억매체 통제[11]). **'우리 회사에선 어떤 설정값으로, 예외는 누가 몇 일까지'를 정해 문서와 시스템에 넣는 것**이 이 줄의 '스스로 기준 수립'입니다 {추론}.",
+   "refs": [
+    3,
+    5,
+    11,
+    22
+   ],
+   "study": [
+    "g26-ssorbit",
+    "evading-edr",
+    "cis-bench",
+    "kisa-guide"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "반복 업무를 자동화하여 생산성을 높이고, 문제 해결을 위해 딥다이브한 경험을 갖고 있는 분들 찾고 있어요.",
+   "short": "매일 손으로 하던 확인·권한 처리를 코드로 없앤 경험, 그리고 원인을 끝까지 파 본 경험을 본다.",
+   "why": "같은 그룹 사례들이 다 이 이야기입니다. 토스는 계정 권한 신청·회수를 통합 시스템으로 묶어 퇴사 때 사람 손 없이 회수되게 했고,[6] VDI 담당자 한 명이 전체 가상 PC 의 윈도우 11 전환을 스크립트로 한 달 안에 끝냈습니다.[7]",
+   "actually": {
+    "intro": "'자동화'와 '딥다이브'의 실제 예입니다.",
+    "items": [
+     "**권한 회수 자동화** — 인사 시스템에 퇴직 발령이 나면 정책 시스템이 받아 인증 시스템의 권한을 모두 지운다. 신청 안 했는데 있는 권한·장기 미접속 권한도 찾아 회수 요청.[6]",
+     "**VDI 할당 자동화** — 입사자가 몇 분 간격으로 신청할 때마다 손이 끊기던 일을 Selenium(브라우저 자동 조작 도구)으로 한 번에.[7]",
+     "**딥다이브 예 ① 부팅 완료 판단** — '3분이면 충분'하다고 봤지만 업데이트가 걸리면 15~20분. 시간 대신 VM 안 도구의 서비스 상태 신호를 기다리게 바꿨다.[7]",
+     "**딥다이브 예 ② 사내/외부 구분** — 사용자 IP 가 안 보이는 구조에서, 주소 하나로 사내·외부를 가르려고 DNS 정책(접속한 커넥터에 따라 다른 응답)으로 풀었다.[7]",
+     "**딥다이브 예 ③ 232일 미통신** — '서랍 속 PC 겠지' 하고 넘기지 않고 다른 솔루션 기록과 맞춰 보니 쓰는 중인 PC 였다.[4]"
+    ]
+   },
+   "how_far": "규모보다 **'무엇이 반복됐고, 몇 분/몇 건을 줄였고, 어디서 막혔고, 어떻게 확인했나'**가 보이면 됩니다 {추론}. 11줄짜리 스크립트가 요구가 붙어 500줄이 됐다는 이야기처럼 운영하며 고친 과정이 점수가 됩니다.[7]",
+   "refs": [
+    4,
+    6,
+    7
+   ],
+   "study": [
+    "g25-iam",
+    "g25-vdi",
+    "linux-cmd",
+    "ps-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "다양한 오픈소스 활용 경험과 AI를 업무에 적극적으로 활용이 가능한 분을 찾고 있어요.",
+   "short": "상용 제품이 못 메우는 칸을 오픈소스로 채우고, 사내 규칙 안에서 AI 로 분석·판정을 돕게 한다.",
+   "why": "토스뱅크 발표에서 쓰는 도구 대부분이 오픈소스였고 '당장 쓸 수 있다'고 권했습니다 — Wazuh·Trivy·Syft·Grype·OSV-Scanner·pnpm 등. 필요하면 상용(Sonatype)도 삽니다.[2] AI 쪽은 토스뱅크 블루팀이 2026년 9월 알림 20,749건 중 오탐 6,063건(건당 5분이면 월 약 500시간)을 사내 모델로 먼저 판정하게 하고 있습니다.[9]",
+   "actually": {
+    "items": [
+     "**오픈소스 예(토스뱅크)** — 서버·PC 가시화는 Wazuh, 컨테이너 이미지는 Harbor 저장소 + Trivy 스캐너, 파일·이미지의 부품 목록(SBOM)은 Syft, 그 목록의 취약점은 Grype.[2]",
+     "**망분리 안에서 쓰기** — 이런 도구는 화면 없는 명령줄이라 내부망에서도 쓰지만, 취약점 정보를 최신으로 두려면 패턴 업데이트를 주기적으로 들여오는 자동화가 필요하다.[2]",
+     "**AI 예(토스뱅크 블루팀)** — 모델은 사내 vLLM 으로 띄워 외부 전송이 없다. 네트워크·웹·단말(EDR·백신)·데이터(DLP·DB)·계정(IAM·인증) 영역별 에이전트가 판정한다.[9]",
+     "**AI 예(토스)** — 솔루션 콘솔의 메뉴·설정을 AI + 크롤링으로 모아 같은 형식으로 옮기고, 솔루션마다 다른 수집 방법은 담당자가 AI 와 함께 짠 어댑터(main.py)로 하나로 맞춘다.[3]",
+     "**AI 를 믿는 법** — 토스증권은 AI 가 제안한 판정 규칙을 다른 AI 가 반박하고, 실제 데이터로 SQL 을 돌려 본 뒤 담당자가 채택한다.[5] 토스는 환각 때문에 오히려 일이 늘어난 적이 있어 온도를 낮추고 일을 잘게 나눴다.[8]"
+    ]
+   },
+   "how_far": "AI 는 '썼다'가 아니라 **어디까지 맡기고 무엇을 사람이 확인했나**를 말할 수 있어야 합니다.[5][8] 은행은 고객·인증 데이터가 망분리 안에 있으니, 외부 AI 에 무엇을 넣으면 안 되는지 아는 것도 최소선입니다 {추론}.",
+   "refs": [
+    2,
+    3,
+    5,
+    8,
+    9
+   ],
+   "study": [
+    "g25-oss",
+    "wazuh-docs",
+    "g25-artifact",
+    "owasp-llm"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Bash, Python 등 스크립트 개발 경험 및 시스템간 연계를 위한 API 사용 경험이 있는 분들 찾고 있어요",
+   "short": "솔루션 콘솔의 API 로 상태를 받아 다른 시스템(인사·IAM·티켓)에 넘기는 접착 코드를 직접 짠다.",
+   "why": "보안 솔루션마다 현재 설정을 꺼내는 방법이 API 호출·콘솔 크롤링·CSV 내보내기로 제각각이라, 토스는 어댑터마다 결과를 같은 output.json 으로 내게 했습니다.[3] 권한 회수도 인사 시스템 → 정책 시스템 → 인증 시스템으로 이어지는 연계입니다.[6]",
+   "level": {
+    "basic": "Bash 파이프·grep·cron, Python 으로 JSON·CSV 읽고 쓰기, REST API 호출(토큰 인증·페이지 넘기기)",
+    "work": "실패 재시도·타임아웃·로그, 여러 API 결과를 키로 합치기, 웹훅·티켓 자동 생성, 윈도우 PC 면 PowerShell",
+    "team": "솔루션별 어댑터를 같은 형식으로 묶기, 수집 → 판정 → 알림을 배치로 돌리기, 판정 근거를 DB 에 남기기"
+   },
+   "actually": {
+    "items": [
+     "**PC 쪽 확인 스크립트** — 실행 파일이 있나, 프로세스가 도나, 실시간 보호가 켜졌나를 셸 명령으로 확인해 서버 API 와 맞춰 본다.[5]",
+     "**수집은 따로, 판정은 한곳** — 토스증권은 솔루션마다 수집 배치를 따로 두고 통합 배치가 PC 한 대 기준으로 합쳐 PostgreSQL 에 기준·결과·근거·이력을 남긴다.[5]",
+     "**공급망 연계** — 빌드마다 Sonatype Lifecycle 을 명령줄로 돌리고 형상관리 저장소 전체를 매일 스캔, 결과는 VMS(자체 취약점 관리 시스템)로 모으며 고칠 게 있으면 자동으로 PR·티켓을 만든다.[2]",
+     "**우선순위 매기기** — 토스뱅크는 실제 악용 목록(KEV)에 오른 것부터, 그다음 CVSS(심각도)·EPSS(30일 안 악용 확률)를 본다.[2][13][14]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "취약점 고칠 순서 — KEV 먼저, 그다음 EPSS·CVSS",
+     "body": "토스뱅크 발표의 순서[2]를 정렬 한 줄로 옮긴 것입니다. CVSS 가 가장 높은 CVE-A 가 맨 뒤로 갑니다(가상 데이터, 직접 돌린 출력).",
+     "lang": "python",
+     "code": "vulns = [\n    {\"cve\": \"CVE-A\", \"cvss\": 9.8, \"epss\": 0.02, \"kev\": False},\n    {\"cve\": \"CVE-B\", \"cvss\": 7.5, \"epss\": 0.91, \"kev\": False},\n    {\"cve\": \"CVE-C\", \"cvss\": 6.5, \"epss\": 0.10, \"kev\": True},\n]\nfor v in sorted(vulns, key=lambda v: (not v[\"kev\"], -v[\"epss\"], -v[\"cvss\"])):\n    print(v[\"cve\"], \"KEV\" if v[\"kev\"] else \"-\", v[\"epss\"], v[\"cvss\"])\n\n# CVE-C KEV 0.1 6.5\n# CVE-B - 0.91 7.5\n# CVE-A - 0.02 9.8"
+    }
+   ],
+   "how_far": "개발자 수준의 서비스 개발까지는 요구하지 않지만, **API 문서를 읽고 인증·페이지·에러를 처리해 매일 도는 배치로 만드는** 데까지는 혼자 해야 합니다 {추론}.",
+   "refs": [
+    2,
+    3,
+    5,
+    6,
+    13,
+    14
+   ],
+   "study": [
+    "linux-cmd",
+    "ps-docs",
+    "bhp-ko",
+    "cisa-kev",
+    "first-epss"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "# 이력서에는 아래 내용을 꼭 포함해 주세요",
+   "short": "아래 네 줄은 서류에서 직접 보겠다는 것 — 기술 이름 나열이 아니라 사례로 쓰라는 주문.",
+   "why": "공고가 요건과 따로 서류 안내 네 줄을 달았습니다.[1] 연차가 높은 자리일수록 '무엇을 써 봤나'보다 '무엇을 바꿨나'가 갈린다는 뜻으로 읽힙니다 {추론}.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "자유양식의 이력서와 함께 포트폴리오를 제출해 주시는 걸 추천해요.",
+   "short": "양식은 자유, 대신 포트폴리오로 내가 만든 것(스크립트·대시보드·정책 문서)을 보여 주라는 것.",
+   "why": "운영 엔지니어의 일은 결과물이 콘솔 안에 있어 이력서 문장만으로는 안 보입니다. 포트폴리오로 **기준 문서·자동화 코드·전후 숫자**를 보여 주는 게 효과적입니다 {추론}.[1]",
+   "how_far": "회사 자료를 그대로 낼 수는 없으니, 가상 데이터로 다시 만든 판정 스크립트나 '예외 정책 관리 규칙' 같은 문서가 좋습니다 {추론}.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "단순한 프로젝트 나열식 서류는 통과의견을 받기 어려워요. 담당하셨던 업무에 대한 상세 설명과 함께 구체적인 사례가 꼭 포함될 수 있도록 작성해 주세요.",
+   "short": "'EDR 도입·운영' 한 줄은 떨어진다 — 한두 건을 골라 문제·내 몫·결과를 길게 쓴다.",
+   "why": "공고가 직접 '나열식은 어렵다'고 못 박았습니다.[1] 그룹 발표들이 모두 '문제 → 왜 쉽게 안 메워졌나 → 만든 것 → 숫자' 순서로 짜여 있는 것도 참고가 됩니다.[3][4]",
+   "how_far": "예: '단말 1천여 대의 솔루션 상태를 엑셀로 대조하던 일을 수집 → 판정 배치로 바꿔, 감사 때 콘솔을 하나씩 열던 일을 없앴다'처럼 전후가 보이게.[4] {추론}",
+   "refs": [
+    1,
+    3,
+    4
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "해당 업무 영역의 경험 및 지식을 기반으로 작성해주시는 것을 추천해요.",
+   "short": "이 자리의 네 갈래(단말·접근제어·AI·공급망)에 닿는 경험부터 앞에 놓으라는 것.",
+   "why": "업무 줄이 단말보안·접근제어·AI·공급망·가시성을 짚었으니,[1] 그와 무관한 경력은 뒤로 미는 게 읽는 사람에게 편합니다 {추론}.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "포트폴리오에는 보안기술 관련 분야에 대한 학습 내용이나, 실습 내용에 대해 어떤 내용을 공부했고 어느정도의 이해를 얻었는지 작성해 주시는 걸 추천해요.",
+   "short": "회사 일 말고도 직접 깔아 보고 깨 본 실습 기록(무엇을, 어디까지 이해했나)을 같이 내라는 것.",
+   "why": "토스뱅크 발표자는 소개한 도구 대부분이 오픈소스라 '당장 써 볼 수 있다'고 했습니다.[2] 집에서 Wazuh·Trivy·Grype 를 깔아 결과를 읽어 본 기록이 바로 이 줄의 실습 내용이 됩니다 {추론}.",
+   "how_far": "'설치했다'에서 멈추지 말고 **결과를 어떻게 해석했고 무엇이 아직 모르는지**까지 적습니다 — 이 줄이 '어느 정도의 이해'를 묻고 있습니다.[1]",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "wazuh-docs",
+    "pnpm-sc"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "콘솔에 '정상'이라 떠도 PC 에서 직접 확인해 보는 사람[5]",
+   "같은 확인을 세 번 하면 스크립트로 바꾸는 사람[6][7]",
+   "규정 조항을 운영 설정값으로 옮겨 적는 게 재미있는 사람[3]",
+   "오픈소스를 먼저 써 보고 모자라면 사는 쪽을 고르는 사람[2]"
+  ],
+  "hard": [
+   "예외 요청·문의·감사 대응이 매일 먼저 들어와 개선 작업이 밀리기 쉽다[4]",
+   "망분리 규제 때문에 외부 도구·AI 를 마음대로 붙일 수 없다[2][11]",
+   "7년 이상·여러 솔루션 운영 경험이 요건이라 주니어에겐 문이 좁다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "EDR 콘솔에는 정상인데 실제 PC 에서는 에이전트가 안 돌고 있다면, 그걸 어떻게 알아내겠어요?",
+   "a": "서버 API 와 PC 쪽 확인을 교차하는 이유.[5]"
+  },
+  {
+   "q": "열어 준 예외 정책이 수십 개 쌓였습니다. 무엇을 기록하고 언제 닫겠어요?",
+   "a": "대상·유지 기간·대체 통제가 없는 예외는 위험이 안 보인다.[4]"
+  },
+  {
+   "q": "npm 패키지가 설치되는 순간 악성 코드를 실행했다면, 사전에 막을 장치는 무엇이 있나요?",
+   "a": "사내 저장소 경유·검역·설치 스크립트 제한·최소 공개 기간.[2][8][15]"
+  },
+  {
+   "q": "CVSS 9.8 짜리와 KEV 에 오른 6.5 짜리 중 무엇부터 고치나요?",
+   "a": "실제 악용 여부가 먼저.[2][13]"
+  },
+  {
+   "q": "퇴사자의 권한·장비가 남아 있지 않은지 매일 어떻게 확인하겠어요?",
+   "a": "인사 시스템 연계와 이상 권한 탐지.[6][5]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 보안 엔지니어 (시스템 보안) (Security Engineer) — 토스뱅크",
+   "url": "https://toss.im/career/job-detail?gh_jid=6607772003",
+   "kind": "posting",
+   "note": "Security Division 8개 팀 구성, System Security Team 소속, 협업 조직, 업무·요건·이력서 안내·합류 여정(처우협의)·팀원 코멘트"
+  },
+  {
+   "n": 2,
+   "title": "GUARDIANS 25 · 오픈소스 보안관리 체계",
+   "url": "https://www.youtube.com/watch?v=XYaaQnPOgbo",
+   "kind": "company",
+   "date": "2025-11",
+   "note": "토스뱅크 Security Engineering Team Leader 발표 20분 · 자막 전부 읽음(발견·분석·평가·조치 4단계, VMS·Nessus·Wazuh·Sonatype·Harbor+Trivy·Syft·Grype·OSV-Scanner·pnpm, KEV→CVSS·EPSS, VEX 스터디, Chainguard 검토, 교훈: 가시화·사람·민첩함·문화)"
+  },
+  {
+   "n": 3,
+   "title": "GUARDIANS 26 · SSORBIT, 보안솔루션 관리 안정 궤도 안착 시키기 (발표자료)",
+   "url": "https://static.toss.im/GUARDIANS26_session_slides.zip",
+   "kind": "company",
+   "date": "2026-11",
+   "note": "토스 Security Engineer · 40쪽 전부 읽음(관리의 빈틈 4가지, 7개 규정·심사 → 58개 항목, Lv0~Lv3, 기준 설정 버전·차이 알림, 어댑터 output.json, 정기점검 통합 양식·AI 리포트) · 같은 그룹 다른 회사"
+  },
+  {
+   "n": 4,
+   "title": "GUARDIANS 26 · 엔드포인트 보안 통제, 데이터로 증명하기 (발표자료)",
+   "url": "https://static.toss.im/GUARDIANS26_session_slides.zip",
+   "kind": "company",
+   "date": "2026-11",
+   "note": "토스증권 Security Engineer · 45쪽 전부 읽음(단말 1천여 대·솔루션 9종, TERA, MDM 232일 미통신·FileVault 꺼짐 로그인·예외 정책 사례, Device Trust Score A~D·U, NIST PIP/PDP/PEP, SSF) · 같은 그룹 다른 회사"
+  },
+  {
+   "n": 5,
+   "title": "GUARDIANS 26 · 엔드포인트 위험 평가 플랫폼 내재화 과정 (발표자료)",
+   "url": "https://static.toss.im/GUARDIANS26_session_slides.zip",
+   "kind": "company",
+   "date": "2026-11",
+   "note": "토스증권 Security Engineer · 26쪽 전부 읽음(데이터 출처, 시리얼→호스트명+MAC 통합, 설치·동작·보호·정책 판정과 근거 테이블, 기능 축소 모드, 교차 검증 사례 3개, AI 규칙 제안·반박·SQL 검증, 퇴직자 장치)"
+  },
+  {
+   "n": 6,
+   "title": "GUARDIANS 25 · 계정권한 관리 자동화 프로세스",
+   "url": "https://www.youtube.com/watch?v=ou3aTgaLVQw",
+   "kind": "company",
+   "date": "2025-11",
+   "note": "토스 Information Security Manager 발표 20분 · 자막 전부 읽음(요청·정책·인증(Keycloak)·모니터링 시스템, 디바이스 포스처로 실시간 세션 종료, 퇴직 자동 회수, 이상 권한 탐지)"
+  },
+  {
+   "n": 7,
+   "title": "GUARDIANS 25 · 망분리 환경 운영 (VDI, 원격접속 통제)",
+   "url": "https://www.youtube.com/watch?v=K6_SlWOotow",
+   "kind": "company",
+   "date": "2025-11",
+   "note": "토스 Internal System Engineer 발표 21분 · 자막 전부 읽음(기기 점수로 사내망 접근, 비정상 위치 차단, MFA, True SSO, DNS 정책으로 사내/외부 구분, 사용자 기반 ACL, 미사용·퇴사 회수, 윈도우 11 전환 자동화, Selenium)"
+  },
+  {
+   "n": 8,
+   "title": "GUARDIANS 25 · AI 기반 Artifact Firewall: 자동화된 공급망 보안",
+   "url": "https://www.youtube.com/watch?v=k6Ire4XB5C4",
+   "kind": "company",
+   "date": "2025-11",
+   "note": "토스 Security Researcher 발표 22분 · 자막 전부 읽음(인라인 프록시, GitHub 악성 DB 하루 1회 동기화, BK-트리·레벤슈타인 오타 검사, gpt-oss-20b 설치 스크립트 분석, ReAct 에이전트 전체 코드 분석, 환각 한계와 사용 팁)"
+  },
+  {
+   "n": 9,
+   "title": "GUARDIANS 26 · Cheer up? Tier up! 자율형 보안운영체계 구축기 (발표자료)",
+   "url": "https://static.toss.im/GUARDIANS26_session_slides.zip",
+   "kind": "company",
+   "date": "2026-11",
+   "note": "토스뱅크 Security Analyst · 앞 28쪽 읽음(2026년 9월 알림 20,749건·오탐 29%, 사내 vLLM 분석, 영역별 에이전트, Detection as Code)"
+  },
+  {
+   "n": 10,
+   "title": "토스 · GUARDIANS 26 세션 목록",
+   "url": "https://toss.im/guardians-26",
+   "kind": "company",
+   "note": "3트랙 세션·발표자 소속(토스뱅크 세션 2개) · 발표자료 묶음 링크"
+  },
+  {
+   "n": 11,
+   "title": "전자금융감독규정 (금융위원회고시 제2025-4호)",
+   "url": "https://ko.wikisource.org/wiki/%EC%A0%84%EC%9E%90%EA%B8%88%EC%9C%B5%EA%B0%90%EB%8F%85%EA%B7%9C%EC%A0%95_(%EC%A0%9C2025-4%ED%98%B8)",
+   "kind": "reference",
+   "note": "제12조 단말기 보호대책, 제13조 전산자료 보호대책(계정 삭제·접근 기록), 제14조(OS 계정 2단계 인증), 제15조 해킹 등 방지대책(정보보호시스템 운영·결과 1년 보관·망분리) · 위키문헌 사본이라 공식 원문은 국가법령정보센터로 확인"
+  },
+  {
+   "n": 12,
+   "title": "NIST SP 800-207 · Zero Trust Architecture",
+   "url": "https://nvlpubs.nist.gov/nistpubs/specialpublications/NIST.SP.800-207.pdf",
+   "kind": "reference",
+   "note": "정책 판단 지점(PDP)·집행 지점(PEP)·정보 지점(PIP) — 발표[4]가 기준으로 쓴 문서"
+  },
+  {
+   "n": 13,
+   "title": "CISA · Known Exploited Vulnerabilities Catalog",
+   "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+   "kind": "reference",
+   "note": "실제로 악용된 취약점 목록 — 우선순위 판단의 입력으로 쓰라고 권한다"
+  },
+  {
+   "n": 14,
+   "title": "FIRST · EPSS",
+   "url": "https://www.first.org/epss/",
+   "kind": "reference",
+   "note": "공개된 CVE 가 앞으로 30일 안에 악용될 확률(0~1)을 매일 낸다"
+  },
+  {
+   "n": 15,
+   "title": "pnpm · Supply Chain Security",
+   "url": "https://pnpm.io/supply-chain-security",
+   "kind": "reference",
+   "note": "minimumReleaseAge(분 단위, 기본 1440), 빌드 스크립트 허용 목록(allowBuilds)·strictDepBuilds"
+  },
+  {
+   "n": 16,
+   "title": "Wazuh 문서 · Use cases",
+   "url": "https://documentation.wazuh.com/current/getting-started/use-cases/index.html",
+   "kind": "reference",
+   "note": "설정 점검·악성코드 탐지·파일 무결성·취약점 탐지·IT 위생·규정 준수 등"
+  },
+  {
+   "n": 17,
+   "title": "OWASP Top 10 for LLM Applications (2025)",
+   "url": "https://genai.owasp.org/llm-top-10/",
+   "kind": "reference",
+   "note": "프롬프트 주입·민감 정보 노출·공급망·데이터와 모델 오염·과도한 권한 등 10가지"
+  },
+  {
+   "n": 18,
+   "title": "뉴시스 — 3년 근무 직원 1억4000만원… 인터넷은행 평균 급여(각사 사업보고서)",
+   "url": "https://www.newsis.com/view/NISX20250812_0003287731",
+   "kind": "news",
+   "date": "2025-08-13"
+  },
+  {
+   "n": 19,
+   "title": "SBS Biz — 인뱅 3사도 연봉 1억원대로(은행연합회 2025 지배구조 및 보수체계 연차보고서)",
+   "url": "https://biz.sbs.co.kr/amp/article/20000297249",
+   "kind": "news",
+   "date": "2026-03-13"
+  },
+  {
+   "n": 20,
+   "title": "자소설닷컴 — 토스뱅크 연봉(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 21,
+   "title": "토스뱅크 — 회사 정보(사이트 하단 주소)",
+   "url": "https://tossbank.com/esg",
+   "kind": "company"
+  },
+  {
+   "n": 22,
+   "title": "Evading EDR (Matt Hand · No Starch Press · 2023)",
+   "url": "https://nostarch.com/book-edr",
+   "kind": "reference",
+   "note": "EDR 의 센서(커널 콜백·이벤트 추적 등)가 무엇을 보고 어떻게 우회되는지 다룬 책"
+  },
+  {
+   "n": 23,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  }
+ ],
+ "caveat": "토스뱅크 System Security Team 이 쓰는 솔루션 목록·기준값·자체 시스템 구조는 공개되지 않았습니다. 토스뱅크 자신의 발표(오픈소스 보안관리·보안관제)를 먼저 쓰고, 단말 가시화·솔루션 관리·권한 자동화는 같은 그룹 토스·토스증권의 발표로 '보통 이렇게 한다'를 보였습니다. 토스뱅크가 GUARDIANS 26 에 낸 두 세션은 취약점 점검 에이전트와 보안관제 자동화라, 솔루션 운영을 직접 다루지는 않습니다.[10] 규정은 위키문헌 사본 기준이라 최신 개정과 다를 수 있습니다.",
+ "resources": [
+  {
+   "id": "g25-oss",
+   "title": "GUARDIANS 25 · 오픈소스 보안관리 체계",
+   "by": "토스뱅크 Security Engineering Team Leader · 20분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=XYaaQnPOgbo",
+   "why": "이 회사가 공급망·가시화를 실제로 어떤 도구로 하는지 가장 직접적인 자료. 지원 전에 꼭 본다."
+  },
+  {
+   "id": "g26-ssorbit",
+   "title": "GUARDIANS 26 · SSORBIT, 보안솔루션 관리 안정 궤도 안착 시키기 (발표자료)",
+   "by": "토스 Security Engineer · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://static.toss.im/GUARDIANS26_session_slides.zip",
+   "why": "'보안 솔루션을 잘 운영한다'를 기준 설정·버전·차이 알림·Lv0~Lv3 로 쪼갠 자료. 운영 정책 기준 수립 요건의 교과서."
+  },
+  {
+   "id": "g26-tera",
+   "title": "GUARDIANS 26 · 엔드포인트 보안 통제, 데이터로 증명하기 / 엔드포인트 위험 평가 플랫폼 내재화 과정 (발표자료)",
+   "by": "토스증권 Security Engineer · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://static.toss.im/GUARDIANS26_session_slides.zip",
+   "why": "단말 솔루션 9종의 상태를 한 대 기준으로 합쳐 판정·등급까지 만든 과정. 가시성·접근체계 고도화 업무를 그대로 보여 준다."
+  },
+  {
+   "id": "g25-iam",
+   "title": "GUARDIANS 25 · 계정권한 관리 자동화 프로세스",
+   "by": "토스 Information Security Manager · 20분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=ou3aTgaLVQw",
+   "why": "권한 신청·회수·이상 권한 탐지와 단말 수준 검증을 한 시스템으로 묶은 이야기. 접근제어와 자동화 요건."
+  },
+  {
+   "id": "g25-vdi",
+   "title": "GUARDIANS 25 · 망분리 환경 운영 (VDI, 원격접속 통제)",
+   "by": "토스 Internal System Engineer · 21분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=K6_SlWOotow",
+   "why": "기기 점수·MFA·DNS 정책·자동 회수·대량 전환 스크립트 — 망분리 은행에서 접근제어를 운영하는 실제 모습과 딥다이브 사례."
+  },
+  {
+   "id": "g25-artifact",
+   "title": "GUARDIANS 25 · AI 기반 Artifact Firewall: 자동화된 공급망 보안",
+   "by": "토스 Security Researcher · 22분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.youtube.com/watch?v=k6Ire4XB5C4",
+   "why": "패키지 설치 경로에 LLM 판정을 넣은 사례. AI 와 공급망 보안 요건을 한 번에, 한계(환각)까지."
+  },
+  {
+   "id": "efsr",
+   "title": "전자금융감독규정 (제2025-4호)",
+   "by": "금융위원회",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://ko.wikisource.org/wiki/%EC%A0%84%EC%9E%90%EA%B8%88%EC%9C%B5%EA%B0%90%EB%8F%85%EA%B7%9C%EC%A0%95_(%EC%A0%9C2025-4%ED%98%B8)",
+   "why": "제12조(단말)·제13조(계정·기록)·제14조·제15조(정보보호시스템·망분리)만 먼저. 은행 보안 운영 기준의 바닥."
+  },
+  {
+   "id": "kisa-guide",
+   "title": "주요정보통신기반시설 기술적 취약점 분석·평가 방법 상세가이드 (2026)",
+   "by": "한국인터넷진흥원 · 2025-12 게시",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.kisa.or.kr/2060204/form?postSeq=22&page=1",
+   "why": "PC·Windows·보안 장비 분야 점검 항목과 판단 기준. 단말 정책 기준을 세울 때 항목표로 쓴다."
+  },
+  {
+   "id": "cis-bench",
+   "title": "CIS Benchmarks",
+   "by": "Center for Internet Security",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.cisecurity.org/cis-benchmarks",
+   "why": "Windows·macOS 보안 설정 기준값. '이 설정이 왜 이 값이어야 하나'의 근거로 쓴다."
+  },
+  {
+   "id": "nist-zt",
+   "title": "NIST SP 800-207 · Zero Trust Architecture",
+   "by": "NIST · 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://nvlpubs.nist.gov/nistpubs/specialpublications/NIST.SP.800-207.pdf",
+   "why": "단말 판정을 접근 정책에 잇는 구조(PIP·PDP·PEP)의 원문. 접근체계 고도화를 설명할 때의 공통어."
+  },
+  {
+   "id": "ztn-ko",
+   "title": "제로 트러스트 네트워크 — 안전한 네트워크를 만드는 보안 모델",
+   "by": "에반 길먼·더그 바르트 · 에이콘출판 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=298090378",
+   "why": "기기 신뢰·사용자 신뢰·정책 엔진을 한국어로. NIST 문서 전에 개념을 잡는다."
+  },
+  {
+   "id": "evading-edr",
+   "title": "Evading EDR",
+   "by": "Matt Hand · No Starch Press · 2023",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://nostarch.com/book-edr",
+   "why": "EDR 이 PC 안에서 무엇으로 보고 무엇을 놓치는지. '솔루션 동작 원리에 대한 깊은 이해' 요건에 가장 직접적."
+  },
+  {
+   "id": "wazuh-docs",
+   "title": "Wazuh 문서",
+   "by": "Wazuh",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://documentation.wazuh.com/current/getting-started/use-cases/index.html",
+   "why": "토스뱅크가 서버 가시화에 쓴다는 오픈소스. 집에서 깔아 설정 점검·취약점 탐지 결과를 읽어 보는 실습용."
+  },
+  {
+   "id": "cisa-kev",
+   "title": "Known Exploited Vulnerabilities Catalog",
+   "by": "CISA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+   "why": "토스뱅크가 '가장 먼저 본다'는 지표. 목록 구조와 기한 필드를 직접 받아 본다."
+  },
+  {
+   "id": "first-epss",
+   "title": "Exploit Prediction Scoring System (EPSS)",
+   "by": "FIRST",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.first.org/epss/",
+   "why": "CVSS 와 다른 '악용 확률' 점수. 둘을 같이 읽는 법을 익힌다."
+  },
+  {
+   "id": "pnpm-sc",
+   "title": "pnpm · Supply Chain Security",
+   "by": "pnpm",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://pnpm.io/supply-chain-security",
+   "why": "토스뱅크가 권한 '설치 스크립트 제한·최소 공개 기간'의 실제 설정 이름과 단위."
+  },
+  {
+   "id": "owasp-llm",
+   "title": "OWASP Top 10 for LLM Applications (2025)",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://genai.owasp.org/llm-top-10/",
+   "why": "사내에 들어오는 AI 도구·에이전트를 점검할 때 볼 위험 10가지. AI 보안 업무의 체크리스트."
+  },
+  {
+   "id": "linux-cmd",
+   "title": "The Linux Command Line",
+   "by": "William Shotts",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://linuxcommand.org/tlcl.php",
+   "why": "Bash 스크립트 요건의 기초. 셸 스크립트 장만 먼저 본다(무료 PDF)."
+  },
+  {
+   "id": "ps-docs",
+   "title": "PowerShell 문서",
+   "by": "Microsoft Learn(한국어)",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://learn.microsoft.com/ko-kr/powershell/scripting/overview",
+   "why": "윈도우 PC·서버의 서비스·프로세스 상태를 스크립트로 확인할 때."
+  },
+  {
+   "id": "bhp-ko",
+   "title": "Black Hat Python 2/e — 해커와 모의 침투 연구자를 위한 파이썬 프로그래밍",
+   "by": "저스틴 지이츠·팀 아널드 · 에이콘출판 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=292509384",
+   "why": "보안 업무용 파이썬(네트워크·프로세스·윈도우 다루기). 공격 쪽 예제로 솔루션이 무엇을 막는지 감을 잡는다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "이 회사의 바닥 보기",
+   "time": "1주",
+   "goal": "토스뱅크 보안 운영이 지켜야 할 법 조항과, 그룹이 공개한 운영 방식을 말로 설명할 수 있다.",
+   "resources": [
+    "g25-oss",
+    "efsr",
+    "g26-ssorbit",
+    "g26-tera"
+   ],
+   "task": "감독규정 제12·13·15조에서 단말·계정·정보보호시스템 요건만 뽑아, 각각 '어떤 솔루션의 어떤 설정으로 지키나'를 표 한 장으로 만든다."
+  },
+  {
+   "title": "솔루션 동작 원리",
+   "time": "2~4주",
+   "goal": "EDR·백신·DLP 가 PC 안에서 무엇을 보고 막는지, 설치·동작·보호·정책 상태를 각각 어떻게 확인하는지 안다.",
+   "resources": [
+    "evading-edr",
+    "cis-bench",
+    "kisa-guide",
+    "wazuh-docs"
+   ],
+   "task": "가상 PC 두 대(윈도우·리눅스)에 Wazuh 에이전트를 깔고, 설정 점검 결과 중 실패 항목 5개를 골라 '왜 위험한가·기준값·예외 조건'을 정책 문서 형식으로 쓴다."
+  },
+  {
+   "title": "스크립트와 API 로 묶기",
+   "time": "2~3주",
+   "goal": "두 개 이상의 시스템 결과를 키로 합쳐 판정하고, 차이를 알리는 배치를 만든다.",
+   "resources": [
+    "linux-cmd",
+    "ps-docs",
+    "bhp-ko"
+   ],
+   "task": "Wazuh API 의 에이전트 목록과 손으로 만든 '자산 목록' CSV 를 호스트명으로 합쳐 미설치·미통신 PC 를 뽑고, 기준 설정 JSON 과 다르면 메시지를 남기는 스크립트를 cron 으로 돌린다."
+  },
+  {
+   "title": "공급망과 우선순위",
+   "time": "1~2주",
+   "goal": "SBOM 을 만들고 취약점을 KEV·EPSS·CVSS 순서로 줄 세워 고칠 목록을 낸다.",
+   "resources": [
+    "g25-oss",
+    "cisa-kev",
+    "first-epss",
+    "pnpm-sc"
+   ],
+   "task": "작은 Node·Python 프로젝트에 Syft 로 SBOM, Grype 로 취약점을 뽑은 뒤 KEV·EPSS 를 붙여 정렬하고, pnpm 으로 바꿔 최소 공개 기간·빌드 스크립트 허용 목록을 걸어 본다."
+  },
+  {
+   "title": "접근체계와 AI (심화)",
+   "time": "계속",
+   "goal": "단말 판정을 접근 정책에 잇는 구조와, AI 를 판정 보조로 쓸 때의 위험을 설명할 수 있다.",
+   "resources": [
+    "nist-zt",
+    "ztn-ko",
+    "g25-iam",
+    "g25-vdi",
+    "g25-artifact",
+    "owasp-llm"
+   ],
+   "task": "3단계 판정 결과로 A~D 등급을 매기는 규칙을 정하고, '등급 C 이하면 로그인 차단' 같은 정책을 PIP·PDP·PEP 그림으로 그린다. 로컬 LLM 에 판정 근거를 요약시키되 틀린 요약 사례를 기록한다."
+  }
+ ],
+ "pay": {
+  "summary": "직원 평균은 **약 1억 1,600만원**(공시) — 이 공고는 7년 이상 경력직이라 신입 초봉(약 5,100만원, 집계값)은 참고만 한다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없고, 이 공고는 경력직이라 해당하지 않는다 [20]"
+   },
+   {
+    "label": "직원 평균 보수",
+    "value": "1억 1,600만원",
+    "amount": 11600,
+    "basis": "공시 · 2025년",
+    "note": "은행연합회 공시(지배구조·보수체계 연차보고서), 임원을 뺀 직원만 [19]"
+   },
+   {
+    "label": "임직원 평균 급여",
+    "value": "1억 1,700만원",
+    "amount": 11700,
+    "basis": "사업보고서 · 2024년",
+    "note": "임직원 684명 기준 [18]"
+   },
+   {
+    "label": "카카오뱅크 평균",
+    "value": "1억 2,200만원",
+    "amount": 12200,
+    "basis": "공시 · 2025년",
+    "peer": true,
+    "note": "같은 공시의 평균 보수 [19]"
+   },
+   {
+    "label": "케이뱅크 평균",
+    "value": "1억 200만원",
+    "amount": 10200,
+    "basis": "공시 · 2025년",
+    "peer": true,
+    "note": "같은 공시의 임직원 평균 보수(임원 포함) [19]"
+   }
+  ],
+  "how": "공고에는 연봉이 적혀 있지 않다. 합류 여정이 서류 → 직무 인터뷰 → 문화적합성 인터뷰 → 레퍼런스 체크 → **처우협의** 순이라 연봉은 사람마다 정한다 [1]. 평균 보수는 회사 전체 값이라 7년 차 경력직이 받는 금액과는 다를 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 전체를 기준으로 한 2021년 공식 소개 글이다 [23]. 토스뱅크에 그대로 적용되는지, 지금도 같은지는 글에 적혀 있지 않으니 처우협의 때 확인한다 {추론}. 망분리 때문에 재택 범위는 업무에 따라 다를 수 있다 {추론}."
+ },
+ "location": {
+  "name": "토스뱅크 본사",
+  "address": "서울특별시 강남구 테헤란로 131, 13층 (역삼동, 한국지식재산센터)",
+  "postal": "06133",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20131",
+  "near": "2호선 역삼역과 강남역 사이 테헤란로 {추론}",
+  "note": "공고의 근무지 표기는 'Seoul'뿐이고, 주소는 토스뱅크 사이트 하단의 회사 정보다 [21]. 팀 자리가 본사와 다를 수 있다 {추론}."
+ }
+}
