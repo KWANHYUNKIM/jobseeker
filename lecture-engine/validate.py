@@ -182,6 +182,21 @@ def busy(vid: str) -> bool:
     return d.exists() and time.time() - d.stat().st_mtime < IN_PROGRESS_SEC
 
 
+def last_written(have: set[str]) -> str | None:
+    """가장 최근에 쓴 노트의 id — written_at 으로, 같으면 파일 수정 시각으로."""
+    best: tuple[str, float, str] | None = None
+    for vid in have:
+        p = ITEMS / f"{vid}.json"
+        try:
+            w = json.loads(p.read_text(encoding="utf-8")).get("written_at") or ""
+            key = (w, p.stat().st_mtime, vid)
+        except (OSError, json.JSONDecodeError):
+            continue
+        if best is None or key > best:
+            best = key
+    return best[2] if best else None
+
+
 def gaps(have: set[str]) -> list[str]:
     """다음 일감 — QUEUE.md 에 손으로 올린 것 먼저, 그다음 paths.json 의 로드맵 순서.
 
@@ -203,6 +218,13 @@ def gaps(have: set[str]) -> list[str]:
         lanes.append(lane)
     rest = [l["id"] for k, s in series.items() if k not in placed for l in s["lectures"]]
     seen = set(todo)
+    # 회차마다 새로 계산하므로 늘 첫 트랙(AI)부터 돌면 맨 위는 영영 AI 다(2026-11-23 — 148편이 다 AI 였다).
+    # 마지막으로 쓴 노트의 트랙 다음부터 돌린다 → 회차마다 AI·코딩테스트·백엔드… 가 한 편씩 돌아간다.
+    lane_of = {v: i for i, lane in enumerate(lanes) for v in lane}
+    last = last_written(have)
+    if last in lane_of:
+        k = (lane_of[last] + 1) % len(lanes)
+        lanes = lanes[k:] + lanes[:k]
     lanes = [[v for v in lane if v not in have] for lane in lanes]
     while any(lanes):
         for lane in lanes:
