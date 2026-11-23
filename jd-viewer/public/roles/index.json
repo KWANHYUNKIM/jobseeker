@@ -1,6 +1,8 @@
 {
  "updated_at": "2026-11-23",
  "jobs": {
+  "ats-toss:group:7986152003": "toss-ai-platform-inference-pipeline",
+  "ats-toss:group:7798373003": "toss-call-infra-engineer",
   "ats-toss:group:7989660003": "toss-client-platform-engineer",
   "ats-toss:group:7992223003": "toss-commerce-search-relevance-mle",
   "ats-toss:group:8003064003": "toss-dip-data-scientist",
@@ -18,6 +20,26 @@
   "saramin-55608860": "tossbank-finance-data-system"
  },
  "roles": [
+  {
+   "id": "toss-ai-platform-inference-pipeline",
+   "company": "토스",
+   "role": "AI 플랫폼 엔지니어 (Inference Pipeline)",
+   "jobs": [
+    "ats-toss:group:7986152003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 17
+  },
+  {
+   "id": "toss-call-infra-engineer",
+   "company": "토스",
+   "role": "콜 인프라 엔지니어 (IPCC, AICC 구축 운영)",
+   "jobs": [
+    "ats-toss:group:7798373003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 16
+  },
   {
    "id": "toss-client-platform-engineer",
    "company": "토스",

@@ -1,0 +1,1010 @@
+{
+ "id": "toss-call-infra-engineer",
+ "company": "토스",
+ "role": "콜 인프라 엔지니어 (IPCC, AICC 구축 운영)",
+ "team": "Infra Engineering Tribe · 콜 인프라",
+ "jobs": [
+  "ats-toss:group:7798373003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "토스 고객센터로 걸려 오는 전화를 받는 **전화 인프라**(IPCC, 인터넷으로 전화를 주고받는 상담 센터 설비)를 설계하고 운영합니다. 여기에 **음성 인식·음성 합성·콜봇**(AICC, AI가 붙은 상담 센터)을 얹는 일이 목표입니다.[1]",
+  "env": "회사 안 설비(온프레미스)와 클라우드에 걸쳐 있고, 전화 통화는 **SIP(통화를 거는 약속)·RTP(목소리를 실어 나르는 약속)** 로 오갑니다.[1][10][11] 금융 회사라 **녹취와 통화 기록을 법이 정한 대로 남겨야** 합니다.[1][19]",
+  "oneline": "웹 서버 대신 **전화 통화**를 다루는 인프라 엔지니어. 패킷을 읽어 '왜 소리가 안 들리나'를 찾는 일과, 통화가 늘어도 끊기지 않게 짓는 일이 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "대규모 상담 트래픽을 처리하는 콜 인프라를 온프레미스·클라우드에 걸쳐 설계·구축하고 운영해요.",
+   "short": "고객센터로 몰리는 전화를 회사 설비와 클라우드 양쪽에서 받아 상담사에게 이어 주는 바닥을 짓고 돌리는 일.",
+   "why": "팀 소개는 IPCC·AICC 인프라 전반을 설계·운영하고, 단순 운영을 넘어 구조 자체를 고치는 것을 목표로 적었습니다.[1] 토스 계열 상담 회사 토스씨엑스는 동료가 500명 넘고 외부 고객사 상담(BPO, 남의 회사 상담을 대신 맡는 사업)으로 넓히는 중이라, 센터·고객사가 늘 때마다 콜 인프라를 새로 짓는다고 했습니다.[3] 같은 그룹 토스증권은 고객센터를 클라우드 상담 서비스(Amazon Connect)로 옮긴 사례를 냈습니다.[5]",
+   "actually": {
+    "intro": "콜 인프라를 이루는 보통의 부품입니다. 토스가 어떤 제품을 쓰는지는 공개되지 않았습니다.",
+    "items": [
+     "**통신사 회선(SIP 트렁크)** — 통신사에서 전화가 SIP로 들어오는 입구. 클라우드에서는 기존 전화 설비에 SIP 트렁크를 대 주는 서비스가 따로 있다.[14]",
+     "**SBC(세션 경계 장치)** — 바깥 회선과 안쪽 설비 사이의 문지기. 주소 바꾸기·암호화·과부하 차단을 맡는다.{추론}",
+     "**교환기(IP-PBX)·IVR(자동 응답 메뉴)·CTI(전화와 상담 화면을 잇는 장치)** — 토스씨엑스 공고가 콜센터 인프라로 꼽은 것들이다.[3]",
+     "**녹취·상담 VDI(상담사용 가상 PC)** — 같은 공고가 함께 꼽았다.[3]",
+     "**클라우드 상담 서비스** — 음성·채팅·IVR·상담 화면을 한데 묶은 관리형 서비스가 있다.[15] 토스증권이 이 방식으로 옮겼다.[5]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "전화 한 통이 지나가는 길 {추론}",
+     "steps": [
+      "통신사 · 고객이 대표번호로 건다",
+      "SIP 트렁크 · 회사로 들어오는 입구",
+      "SBC · 바깥과 안쪽의 경계",
+      "IVR · 메뉴 안내·콜봇",
+      "라우팅 · 맞는 상담 그룹 고르기",
+      "상담사 전화·화면(CTI)",
+      "녹취·CDR 저장"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "통신사 회선 계약·상담 운영 정책은 다른 팀(토스씨엑스의 콜 인프라 매니저는 벤더 계약·SLA·상담사 단말을 맡는다[3])과 나눕니다. 이 자리는 **그 사이의 구조를 정하고, 늘어나는 통화를 견디게** 짓는 쪽입니다. 최소선은 위 길을 그려 놓고 칸마다 무엇이 고장 나면 어떤 증상이 나는지 말할 수 있는 것입니다.{추론}",
+   "refs": [
+    1,
+    3,
+    5,
+    14,
+    15
+   ],
+   "study": [
+    "linecard-sip",
+    "connect-docs",
+    "chime-vc"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "장애 도메인 분리, Failover 등 고가용성 콜 인프라 구조를 설계하고 운영해요.",
+   "short": "한 곳이 고장 나도 상담 전체가 멈추지 않게 칸을 나누고, 고장 나면 다른 쪽으로 넘기는 구조를 짓는 일.",
+   "why": "고객센터 전화가 멈추면 사고 신고·분실 신고 같은 급한 일이 막힙니다.{추론} 공고는 '장애 도메인 분리'(고장이 번지는 범위를 쪼개기)와 Failover(고장 난 쪽에서 살아 있는 쪽으로 넘기기)를 직접 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**칸 나누기** — 회선·SBC·교환기·녹취를 센터·데이터센터·클라우드 리전별로 따로 두어 한 칸이 죽어도 나머지가 받게 한다. 칸이 작을수록 번지는 범위가 작다.[26]",
+     "**SIP 재시도** — SIP는 상대가 답하지 않으면 정해진 시간 동안 다시 보내고, INVITE(통화 요청)는 기본값으로 32초 안에 답이 없으면 실패로 본다. 넘기기 규칙은 이 시간을 알고 짜야 한다.[10]",
+     "**SIP 응답 코드로 넘기기** — 503(서비스 불가)·408(시간 초과)이 오면 다음 경로로, 486(통화 중)은 넘기지 않는 식으로 응답 종류마다 다르게 다룬다.[10]",
+     "**진행 중 통화는 어렵다** — 목소리(RTP)는 장비를 거쳐 흐르므로 장비가 죽으면 진행 중 통화는 대개 끊긴다. 새 통화를 살아 있는 쪽으로 보내는 것과, 진행 중 통화를 살리는 것은 다른 문제다.{추론}",
+     "**연쇄 장애 막기** — 한쪽이 죽어 다른 쪽으로 몰리면 그쪽도 넘칠 수 있다. 받을 수 있는 양을 넘으면 일찍 거절해 전체가 무너지지 않게 한다.[26]"
+    ]
+   },
+   "how_far": "Failover를 '켜 둔 것'과 '실제로 넘어가는 것'은 다릅니다. 최소선은 한 칸을 일부러 끊어 보는 훈련을 하고, 넘어가는 데 몇 초 걸렸고 몇 통이 끊겼는지 숫자로 말하는 것입니다.{추론}",
+   "refs": [
+    1,
+    10,
+    26
+   ],
+   "study": [
+    "rfc3261",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SIP·RTP 등 통신 프로토콜 레벨에서 발생하는 장애를 분석하고 근본 원인을 제거해요.",
+   "short": "'전화가 안 걸린다·소리가 한쪽만 들린다·끊긴다'를 패킷으로 따라가 진짜 원인을 찾아 없애는 일.",
+   "why": "콜 장애는 화면 오류가 아니라 '소리'로 드러나서, 통화를 거는 신호(SIP)와 목소리 패킷(RTP)을 직접 봐야 원인이 나옵니다.[10][11] 이력서에도 장애 대응 경험을 상황과 해결 방법까지 적어 달라고 했습니다.[1]",
+   "actually": {
+    "intro": "흔한 증상과 볼 곳입니다.",
+    "items": [
+     "**전화가 안 걸린다** — SIP 응답 코드부터 본다. 4xx는 요청 쪽 문제(주소·인증), 5xx는 받는 서버 문제, 6xx는 전역 실패다.[10]",
+     "**소리가 한쪽만 들린다** — 통화 조건을 적는 SDP(어느 주소·포트·코덱으로 받을지)에 사설 주소가 적혀 상대가 그쪽으로 소리를 못 보내는 경우가 흔하다.[12]",
+     "**소리가 끊기고 뭉개진다** — RTP 순번이 빠졌는지(손실), 도착 간격이 흔들리는지(지터)를 본다. RTP 머리에는 순번과 시각이 들어 있어 계산할 수 있다.[11]",
+     "**버튼(DTMF)이 안 먹는다** — 숫자 버튼을 소리로 보내는지 별도 이벤트로 보내는지 양쪽이 다르게 약속한 경우다.[27]",
+     "**도구** — Wireshark의 VoIP 통화 기능은 SIP 통화마다 RTP 흐름을 묶어 보여 주고 재생해 볼 수 있다.[16] HOMER는 SIP·RTC 패킷을 늘 받아 두는 오픈소스 수집기다.[17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "RTP 지터 계산 (RFC 3550 식)",
+     "body": "20ms마다 보낸 패킷이 0·20·41·59·85·100ms에 왔을 때, 표준이 정한 이동 평균(흔들림의 16분의 1씩 반영)으로 지터를 냅니다(직접 돌린 출력).[11]",
+     "lang": "python",
+     "code": "arrive = [0, 20, 41, 59, 85, 100]   # ms, 보낸 간격은 20ms\nsend = [0, 20, 40, 60, 80, 100]\nJ = 0.0\nfor i in range(1, len(arrive)):\n    D = (arrive[i] - arrive[i-1]) - (send[i] - send[i-1])\n    J += (abs(D) - J) / 16\nprint(\"지터:\", round(J, 2), \"ms\")\n# 지터: 0.83 ms"
+    }
+   ],
+   "how_far": "'근본 원인 제거'라서 재부팅으로 끝내지 않고 **같은 장애가 다시 안 나게** 설정·구조를 바꾸는 데까지입니다. 최소선은 패킷 캡처 하나를 열어 통화 요청부터 끊기까지 순서를 읽고 어디서 어긋났는지 짚는 것입니다.{추론}",
+   "refs": [
+    1,
+    10,
+    11,
+    12,
+    16,
+    17,
+    27
+   ],
+   "study": [
+    "rfc3261",
+    "rfc3550",
+    "wireshark-voip",
+    "homer"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "상담 트래픽 성장에 따른 용량·비용을 예측하고, 표준 콜 인프라 아키텍처를 정의해요.",
+   "short": "통화가 얼마나 늘지 보고 회선·장비·대역폭·돈이 얼마 필요한지 미리 셈하고, 새 센터에 쓸 표준 설계를 정하는 일.",
+   "why": "토스씨엑스는 고객사·거점이 늘 때마다 콜 인프라를 새로 설계해야 한다고 했습니다.[3] 매번 처음부터 짓지 않으려면 '표준 설계'가 필요하고, 그 크기를 정하려면 통화량을 셈해야 합니다.{추론}",
+   "actually": {
+    "items": [
+     "**얼랑(Erlang)** — 통화량의 단위. 시간당 통화 수 × 평균 통화 시간 ÷ 3600. 동시에 몇 회선이 필요한지의 출발점이다.[18]",
+     "**Erlang C** — 기다리게 하는 상담 센터에서 '몇 명이면 몇 %를 몇 초 안에 받나'를 계산하는 식이다.[18]",
+     "**대역폭** — 코덱마다 한 통화가 먹는 양이 다르다. 패킷 머리(RTP·UDP·IP)까지 더해야 실제 값이 나온다.[11]",
+     "**녹취 저장량** — 통화 시간 × 코덱 크기 × 보관 연수로 늘어난다. 보관 기간이 길면 저장 비용이 커진다.{추론}",
+     "**표준 설계** — 센터 크기(좌석 수)별로 회선·SBC·녹취·네트워크 구성을 정해 둔 틀. 토스씨엑스 공고도 이력서에 좌석 수·센터 수·고객사 수를 적게 한다.[3]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "G.711 한 통화의 대역폭과 Erlang C로 상담사 수 세기",
+     "body": "20ms 패킷이면 목소리 160바이트에 RTP 12·UDP 8·IP 20·이더넷 18바이트가 붙어 한 방향 87.2kbps입니다. 시간당 600통·평균 180초(30얼랑)를 80%는 20초 안에 받으려면 35명이 필요합니다(직접 돌린 출력).[11][18]",
+     "lang": "python",
+     "code": "import math\nkbps = (160 + 12 + 8 + 20 + 18) * 8 * 50 / 1000\nprint(\"G.711 한 방향:\", kbps, \"kbps\")\nprint(\"동시 1,000콜(양방향):\", round(kbps * 2 * 1000 / 1000, 1), \"Mbps\")\n\ndef erlang_c(a, n):\n    s = sum(a**k / math.factorial(k) for k in range(n))\n    top = a**n / math.factorial(n) * n / (n - a)\n    return top / (s + top)\n\na = 600 * 180 / 3600   # 30 얼랑\nfor n in range(31, 40):\n    sl = 1 - erlang_c(a, n) * math.exp(-(n - a) * 20 / 180)\n    if sl >= 0.8:\n        print(\"상담사\", n, \"명, 20초 안 응답\", round(sl * 100, 1), \"%\")\n        break\n# G.711 한 방향: 87.2 kbps\n# 동시 1,000콜(양방향): 174.4 Mbps\n# 상담사 35 명, 20초 안 응답 83.7 %"
+    }
+   ],
+   "how_far": "상담사 인원은 상담 운영 쪽이 정합니다. 이 자리는 그 인원과 통화량에서 **회선·장비·대역폭·저장 공간·클라우드 비용**을 뽑아 내고, 온프레미스와 클라우드 중 어느 쪽이 싼지 비교하는 데까지입니다.{추론}",
+   "refs": [
+    3,
+    11,
+    18
+   ],
+   "study": [
+    "erlang",
+    "rfc3550"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "STT/TTS·콜봇 등 AICC 컴포넌트가 상담 인프라에 안정적으로 연동될 수 있도록 구조를 설계하고 운영해요.",
+   "short": "통화 목소리를 글로 바꾸는 STT, 글을 목소리로 바꾸는 TTS, 대신 받는 콜봇이 통화 길목에 끊김 없이 붙게 하는 일.",
+   "why": "팀 목표에 'AICC 전환'이 들어 있습니다.[1] 토스의 AIOC 팀은 AI가 업무 매뉴얼을 이해해 인바운드 상담부터 아웃바운드 영업 전화까지 전화 업무를 자동화한다고 했고, 그 자리 우대에 WebRTC 같은 실시간 연결 경험을 넣었습니다.[4] 같은 그룹 토스뱅크는 LLM 상담 에이전트로 혁신금융서비스 지정을 받았고[9], 채팅 AI가 상담의 70%를 맡지만 만족도는 콜센터보다 낮았다는 보도도 있습니다.[8] 전화에 AI를 얹는 일이 다음 과제인 셈입니다.{추론}",
+   "actually": {
+    "items": [
+     "**목소리 꺼내기** — 통화 중인 RTP를 복사해 STT로 흘려 보낸다. 클라우드 상담 서비스는 통화 음성을 실시간 스트림으로 내보내는 기능을 둔다.[15]",
+     "**콜봇 붙이기** — IVR 자리에 콜봇을 두고, 사람이 필요하면 상담사에게 넘긴다(전환). 넘길 때 앞선 대화 요약을 같이 넘겨야 고객이 같은 말을 두 번 하지 않는다.{추론}",
+     "**지연** — 사람 대화는 응답이 늦으면 어색하다. STT → 판단 → TTS를 거치는 시간을 줄이려 스트리밍으로 조금씩 주고받는다.{추론}",
+     "**버튼 입력** — 콜봇 메뉴에서도 숫자 버튼(DTMF)이 오니, 음성과 따로 받는다.[27]",
+     "**통화 뒤 분석** — 토스증권은 통화 뒤 STT로 상담 내용을 분석하는 것을 과제로 꼽았다.[5]"
+    ]
+   },
+   "how_far": "모델을 만드는 건 AI 팀 몫입니다(AIOC 공고도 'AI를 깊이 연구하기보다 현장에서 동작하게'라고 적었다[4]). 이 자리는 **음성이 AI까지 빠짐없이 가고, AI가 죽어도 통화는 상담사로 넘어가게** 하는 길을 맡습니다.{추론}",
+   "refs": [
+    1,
+    4,
+    5,
+    8,
+    9,
+    15,
+    27
+   ],
+   "study": [
+    "connect-docs",
+    "hpbn-webrtc",
+    "toss-connect"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "금융권 컴플라이언스를 충족하는 녹취·CDR 데이터 인프라를 안정적으로 운영하고 최적화해요.",
+   "short": "통화 녹음과 통화 기록(누가·언제·얼마나)을 법이 정한 기간 동안 빠짐없이, 안전하게 남기는 저장소를 돌리는 일.",
+   "why": "금융상품을 팔면 계약 체결·이행 자료를 정해진 기간(기본 10년) 동안 남겨야 합니다.[19] 전화로 상담·권유했다면 녹취와 통화 기록이 그 자료가 됩니다.{추론}",
+   "actually": {
+    "items": [
+     "**CDR(통화 상세 기록)** — 건 번호·받은 번호·시작·끝·통화 시간·결과를 한 줄씩 남긴 기록. 정산·분석·분쟁 대응에 쓴다.[20]",
+     "**보관 기간** — 금융소비자보호법 시행령은 기본 10년, 보장·계약 기간이 10년을 넘는 상품은 그 기간으로 정한다.[19]",
+     "**녹취 표준 방식** — SIP로 녹취 서버에 통화 사본을 보내는 표준(SIPREC)이 있다.[30]",
+     "**빠짐 검사** — CDR에는 있는데 녹음 파일이 없는 통화를 날마다 찾아낸다.{추론}",
+     "**보호** — 녹음에는 개인정보가 담겨 암호화·접근 기록이 필요하다. 목소리 패킷 자체를 암호화하는 표준(SRTP)도 있다.[25]",
+     "**최적화** — 10년치 녹음은 크다. 오래된 것은 싼 저장소로 옮기고, 압축 코덱을 고르는 식으로 비용을 줄인다.{추론}"
+    ]
+   },
+   "how_far": "어떤 통화를 몇 년 둘지는 준법·법무가 정합니다. 이 자리는 **정한 대로 빠짐없이 남고, 찾을 때 바로 꺼내지는** 저장소를 맡습니다. 최소선은 'CDR과 녹음이 짝이 맞는지' 매일 확인하는 검사를 만들 줄 아는 것입니다.{추론}",
+   "refs": [
+    19,
+    20,
+    25,
+    30
+   ],
+   "study": [
+    "rfc7866",
+    "fcpa"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "대규모 IPCC/AICC 콜 인프라를 직접 설계·운영한 경험이 필요해요",
+   "short": "웹 인프라와 규칙이 달라서. 실제 상담 센터의 전화 설비를 맡아 본 사람이어야 바로 일할 수 있다.",
+   "why": "전화는 통신사 회선·교환기·녹취·상담 화면이 얽히고, 장비마다 벤더 제품이라 경험이 곧 실력입니다.{추론} 이력서에도 3rd party 솔루션 연동 경험과 AICC 구축 경험을 적어 달라고 했습니다.[1]",
+   "how_far": "'대규모'는 숫자로 보여 줘야 합니다. 같은 그룹 토스씨엑스 공고처럼 좌석 수·센터 수·동시 통화 수와 본인이 맡은 칸을 적는 것이 기준이 됩니다.[3] 경력 3~12년으로 올라온 자리입니다.[2]",
+   "refs": [
+    1,
+    2,
+    3
+   ],
+   "study": [
+    "linecard-sip",
+    "johnston-sip"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "SIP·RTP·WebRTC 등 실시간 통신 프로토콜을 실무에서 깊이 다뤄본 경험이 필요해요",
+   "short": "장애 원인이 거의 다 이 세 약속 안에 있어서. 패킷을 열어 읽을 수 있어야 한다.",
+   "why": "SIP는 통화를 열고 닫고[10], RTP는 목소리를 나르고[11], WebRTC는 브라우저·앱에서 바로 통화하는 방식입니다.[13] 상담사 화면에서 바로 받는 전화나 앱 통화가 WebRTC로 올 수 있습니다.{추론}",
+   "level": {
+    "basic": "SIP 요청(INVITE·ACK·BYE)과 응답 코드 · SDP에 무엇이 적히나 · RTP 순번·시각",
+    "work": "통화 흐름 읽기(재전송·타이머) · NAT 때문에 한쪽 소리만 나는 문제 · 코덱 협상 · DTMF 방식",
+    "team": "SBC·교환기 사이 SIP 헤더 고치기 · ICE·DTLS-SRTP(WebRTC의 연결·암호화) · 대량 통화 중 손실·지터 원인 가르기"
+   },
+   "actually": {
+    "items": [
+     "**SIP 세 걸음** — 거는 쪽이 INVITE, 받는 쪽이 180(울림)·200(받음), 거는 쪽이 ACK. 끊을 때는 BYE.[10]",
+     "**SDP 제안과 답** — 거는 쪽이 받을 수 있는 코덱·주소를 적어 보내고 받는 쪽이 고른다.[12]",
+     "**WebRTC** — 연결을 찾는 ICE·STUN·TURN, 암호화하는 DTLS·SRTP 위에서 돈다. 신호를 어떻게 주고받을지는 앱이 정해서 SIP와 이을 수 있다.[13]"
+    ]
+   },
+   "refs": [
+    10,
+    11,
+    12,
+    13
+   ],
+   "study": [
+    "rfc3261",
+    "rfc3550",
+    "hpbn-webrtc",
+    "johnston-sip"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "콜 인프라 장애를 직접 분석하고 근본 원인을 규명해 본 경험이 필요해요",
+   "short": "업무 셋째 줄을 혼자 해낼 수 있어야 해서. '어디서 무엇이 어긋났나'를 증거로 말한 경험.",
+   "why": "업무에 '근본 원인 제거'가 있고[1], 이력서에는 장애 대응·안정성 개선 경험을 상황과 해결 방법까지 적어 달라고 했습니다.[1]",
+   "how_far": "좋은 사례는 '증상 → 캡처·로그로 좁히기 → 원인 → 고친 것 → 재발 방지'가 다 있습니다. 회고 문서를 남기는 습관이 이 줄을 보여 줍니다.[26]",
+   "refs": [
+    1,
+    26
+   ],
+   "study": [
+    "wireshark-voip",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "REST API·SIP 기반으로 콜 시스템을 외부 서비스와 연동한 경험이 필요해요",
+   "short": "전화가 상담 화면·고객 정보·AI·통신사와 이어져야 일이 되기 때문. 신호는 SIP로, 데이터는 API로.",
+   "why": "토스증권은 전화 자동 응답(IVR)과 증권 서비스를 잇는 일을 과제로 꼽았습니다.[5] 토스씨엑스 공고도 3rd party 솔루션 연동 경험을 이력서에 적게 했습니다.[3]",
+   "actually": {
+    "items": [
+     "**SIP 쪽** — 통신사 회선·다른 교환기·콜봇 서버와 SIP로 통화를 넘기고 받는다. 통화에 고객 번호 같은 값을 헤더로 실어 보내기도 한다.[10]",
+     "**API 쪽** — 전화가 오면 고객 정보를 조회해 상담 화면에 띄우고(CTI), 통화가 끝나면 CDR을 다른 시스템으로 보낸다.{추론}",
+     "**클라우드 회선** — 기존 교환기·SBC에 클라우드 SIP 트렁크를 붙이는 방식도 있다.[14]"
+    ]
+   },
+   "refs": [
+    3,
+    5,
+    10,
+    14
+   ],
+   "study": [
+    "chime-vc",
+    "toss-connect"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "확장성·안정성·비용을 고려한 인프라 아키텍처 설계와 의사결정 경험이 필요해요",
+   "short": "업무 넷째 줄(표준 설계·비용 예측)을 정하는 사람이라서. 무엇을 포기하고 무엇을 골랐는지 말할 수 있어야 한다.",
+   "why": "업무에 용량·비용 예측과 표준 아키텍처 정의가 있습니다.[1] 회사 설비와 클라우드에 걸쳐 짓는 자리라 어느 쪽에 둘지가 늘 결정거리입니다.[1]",
+   "how_far": "정답보다 **근거**를 봅니다. 예를 들어 '동시 1,000통이면 대역폭 약 174Mbps, 회선·SBC는 두 곳에 나눠 한 곳이 죽어도 절반은 받는다' 같은 숫자로 말하는 수준입니다(대역폭 값은 업무 넷째 줄 예시의 계산).[11]{추론}",
+   "refs": [
+    1,
+    11
+   ],
+   "study": [
+    "sre-book",
+    "erlang"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AWS 등 퍼블릭 클라우드에서 콜 인프라를 설계·운영한 경험",
+   "short": "클라우드 쪽 반을 맡을 사람이라서. 클라우드 상담 서비스나 클라우드 SIP 트렁크를 다뤄 본 경험.",
+   "why": "업무가 온프레미스·클라우드에 걸쳐 있고[1], 같은 그룹 토스증권은 AWS의 클라우드 상담 서비스로 고객센터를 옮겼습니다.[5]",
+   "actually": {
+    "items": [
+     "**관리형 상담 서비스** — 음성·채팅·IVR·상담 화면·분석을 묶은 서비스.[15]",
+     "**SIP 트렁크 서비스** — 기존 교환기·SBC를 클라우드 회선에 붙인다. 서울 리전에도 SIP 신호·미디어 주소가 있다.[14]",
+     "**네트워크** — 목소리는 UDP로 넓은 포트 범위를 쓰므로 방화벽·보안 그룹을 그에 맞게 연다.[14]"
+    ]
+   },
+   "refs": [
+    1,
+    5,
+    14,
+    15
+   ],
+   "study": [
+    "connect-docs",
+    "chime-vc",
+    "toss-connect"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Java(Spring), Python 등으로 운영 자동화 도구나 연동 모듈을 개발한 경험",
+   "short": "벤더 장비만으로 안 되는 틈(연동·점검·자동화)을 직접 코드로 메울 수 있어서.",
+   "why": "콜 인프라는 벤더 제품이 많아 그 사이를 잇는 작은 프로그램이 필요합니다.{추론} 공고의 기술 목록에 Java·Spring·Python이 있습니다.[1]",
+   "actually": {
+    "items": [
+     "CDR을 받아 다른 시스템으로 보내는 연동 모듈.{추론}",
+     "SIP OPTIONS(살아 있니?)를 주기적으로 보내 회선·SBC 상태를 재는 점검 도구.[10]",
+     "녹음 누락 검사·오래된 녹음 옮기기 같은 매일 돌리는 작업.{추론}"
+    ]
+   },
+   "refs": [
+    1,
+    10
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "STT/TTS·콜봇 등 AICC 컴포넌트 구조를 이해하고 Redis·Kafka 등 미들웨어와 연동해 개선한 경험",
+   "short": "통화 상태와 음성 인식 결과를 여러 시스템이 같이 쓰려면 빠른 저장소(Redis)와 메시지 통로(Kafka)가 필요해서.",
+   "why": "업무 다섯째 줄의 AICC 연동을 실제로 짤 때 쓰는 부품입니다.[1] AIOC 공고도 실시간 연결 상태를 관리하는 시스템 경험을 우대했습니다.[4]",
+   "actually": {
+    "items": [
+     "**Redis** — '이 통화는 지금 콜봇과 이야기 중' 같은 짧게 살다 사라지는 통화 상태를 둔다.{추론}",
+     "**Kafka** — STT 결과·CDR 같은 사건을 차례대로 쌓아 두고 여러 시스템이 각자 읽어 가게 한다.[28]",
+     "콜봇이 느려지거나 죽었을 때 통화를 상담사로 넘기는 판단에 이 상태 값을 쓴다.{추론}"
+    ]
+   },
+   "refs": [
+    1,
+    4,
+    28
+   ],
+   "study": [
+    "kafka-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Terraform·Ansible 등으로 인프라 구성과 배포를 자동화한 경험",
+   "short": "새 센터·새 고객사마다 같은 구성을 손으로 다시 짓지 않으려고. 표준 설계를 코드로 박아 둔다.",
+   "why": "업무에 '표준 콜 인프라 아키텍처'가 있고[1], 거점·고객사가 늘 때마다 새로 짓는다는 같은 그룹 공고가 있습니다.[3] 토스는 인프라 자동화를 SLASH 22에서 발표한 적이 있습니다.[29]",
+   "actually": {
+    "items": [
+     "**Terraform** — 클라우드 자원(네트워크·서버·보안 그룹)을 코드로 적어 만들고 바꾼다.[31]",
+     "**Ansible** — 이미 있는 서버에 같은 설정(SBC·교환기 설정 파일, 패키지)을 여러 대에 똑같이 깐다.[32]"
+    ]
+   },
+   "refs": [
+    1,
+    3,
+    29,
+    31,
+    32
+   ],
+   "study": [
+    "terraform-docs",
+    "ansible-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "금융·통신 등 규제 산업에서 상담 시스템 컴플라이언스에 대응한 경험",
+   "short": "녹취 보관·개인정보 보호·감사 대응을 처음부터 설계에 넣을 수 있어서.",
+   "why": "업무 여섯째 줄이 '금융권 컴플라이언스를 충족하는 녹취·CDR'입니다.[1] 금융상품 자료는 기본 10년 보관이 법으로 정해져 있습니다.[19]",
+   "how_far": "법 조문을 외우는 것보다 '이 요구가 저장소·권한·기록 설계에 무엇을 뜻하나'로 옮겨 본 경험이 중요합니다.{추론}",
+   "refs": [
+    1,
+    19
+   ],
+   "study": [
+    "fcpa"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "패킷 캡처를 열어 한 줄씩 따라가는 게 재미있는 사람",
+   "전화라는 오래된 기술에 AI를 얹는 전환을 직접 해 보고 싶은 사람[1]",
+   "숫자로 용량·비용을 셈해 설계를 정하는 걸 좋아하는 사람",
+   "벤더 장비 사이를 코드로 잇는 일이 귀찮지 않은 사람"
+  ],
+  "hard": [
+   "필수 요건이 모두 '직접 해 본 경험'이라 콜 인프라를 처음 하는 사람에겐 문턱이 높다[1]",
+   "장애가 곧 고객이 못 거는 전화라 압박이 크다{추론}",
+   "녹취·보관 같은 규제 요구가 설계를 많이 묶는다[19]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "상담사는 고객 목소리가 들리는데 고객은 상담사 목소리를 못 듣는다고 해요. 무엇부터 보겠어요?",
+   "a": "SDP의 주소·포트와 NAT — 한쪽 소리 장애의 단골 원인.[12]"
+  },
+  {
+   "q": "SBC 한 대가 죽었어요. 새 통화와 진행 중 통화는 각각 어떻게 되나요?",
+   "a": "업무 둘째 줄의 Failover와 장애 범위.[1][10]"
+  },
+  {
+   "q": "시간당 600통, 평균 3분이면 동시 회선과 대역폭을 얼마로 잡겠어요?",
+   "a": "얼랑과 코덱 대역폭 — 업무 넷째 줄의 용량 예측.[11][18]"
+  },
+  {
+   "q": "콜봇이 응답을 못 하면 통화는 어디로 가야 하나요?",
+   "a": "AICC 연동에서 통화를 살리는 길.[1][4]"
+  },
+  {
+   "q": "CDR에는 있는데 녹음 파일이 없는 통화를 어떻게 찾고 막겠어요?",
+   "a": "녹취·CDR 인프라의 빠짐 검사와 보관 의무.[19][20]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 콜 인프라 엔지니어 (IPCC, AICC 구축 운영)",
+   "url": "https://toss.im/career/job-detail?job_id=7798373003",
+   "kind": "posting",
+   "note": "팀 소개·업무·요건·우대·이력서 안내. 팀원 코멘트 없음"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · 비바리퍼블리카(토스) Call Infra Engineer (IPCC, AICC)",
+   "url": "https://www.wanted.co.kr/wd/382282",
+   "kind": "posting",
+   "note": "같은 공고 — 경력 3~12년, 근무지 토스 신논현 오피스"
+  },
+  {
+   "n": 3,
+   "title": "토스 채용 · Call Infra Manager (토스씨엑스)",
+   "url": "https://toss.im/career/job-detail?gh_jid=8044385003",
+   "kind": "posting",
+   "note": "같은 그룹 상담 계열사 — 500명 넘는 동료, 외부 BPO, 콜 시스템 1차 운영·벤더 SLA, 좌석 수·센터 수 기재 요청"
+  },
+  {
+   "n": 4,
+   "title": "토스 채용 · AI Solution Engineer (AIOC)",
+   "url": "https://toss.im/career/job-detail?job_id=8000575003",
+   "kind": "posting",
+   "note": "AI로 인바운드·아웃바운드 전화 업무를 자동화하는 팀"
+  },
+  {
+   "n": 5,
+   "title": "AWS 기술 블로그 · Amazon Connect를 활용한 토스증권의 고객 센터 혁신 사례",
+   "url": "https://aws.amazon.com/ko/blogs/tech/toss-securities-amazon-connect-migration-journey",
+   "kind": "company",
+   "note": "같은 그룹 다른 회사. 본문을 끝까지 받지 못해 검색 요약(IVR–증권 서비스 연동·통화 뒤 STT 분석·상담 화면 맞춤)만 썼다"
+  },
+  {
+   "n": 6,
+   "title": "이코노미스트 · 토스뱅크, 통합 상담 플랫폼 '헬프데스크' 전면 도입",
+   "url": "https://economist.co.kr/article/view/ecn202601150011",
+   "kind": "news",
+   "date": "2026-01",
+   "note": "자체 개발 상담 플랫폼 — 채팅 상담 시간 56%·콜 상담 시간 26% 감소"
+  },
+  {
+   "n": 7,
+   "title": "CEO스코어데일리 · 토스뱅크, 상담 지식 관리 시스템 '헬프닥스' 도입",
+   "url": "https://ceoscoredaily.com/page/view/2026052216022658806",
+   "kind": "news",
+   "date": "2026-05"
+  },
+  {
+   "n": 8,
+   "title": "머니투데이 · \"차라리 상담원 바꿔줘\"…AI 챗봇 한계, 더 똑똑한 AI로 넘는다",
+   "url": "https://www.mt.co.kr/future/2026/05/05/2026042117032871034",
+   "kind": "news",
+   "date": "2026-05",
+   "note": "토스뱅크 AI 챗봇이 상담 70% 처리, 만족도 36% 대 콜센터 72%"
+  },
+  {
+   "n": 9,
+   "title": "아시아경제 · 토스뱅크, 금융상담 돕는 'AI 에이전트' 도입",
+   "url": "https://view.asiae.co.kr/article/2025121814245881645",
+   "kind": "news",
+   "date": "2025-12"
+  },
+  {
+   "n": 10,
+   "title": "RFC 3261 · SIP: Session Initiation Protocol",
+   "url": "https://www.rfc-editor.org/rfc/rfc3261",
+   "kind": "reference"
+  },
+  {
+   "n": 11,
+   "title": "RFC 3550 · RTP: A Transport Protocol for Real-Time Applications",
+   "url": "https://www.rfc-editor.org/rfc/rfc3550",
+   "kind": "reference",
+   "note": "머리 12바이트·순번·시각·지터 식"
+  },
+  {
+   "n": 12,
+   "title": "RFC 8866 · SDP: Session Description Protocol",
+   "url": "https://www.rfc-editor.org/rfc/rfc8866",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "High Performance Browser Networking · WebRTC 장",
+   "url": "https://hpbn.co/webrtc/",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Amazon Chime SDK 문서 · Voice Connector(SIP 트렁크)와 네트워크 구성",
+   "url": "https://docs.aws.amazon.com/chime-sdk/latest/ag/voice-connectors.html",
+   "kind": "reference",
+   "note": "기존 IP-PBX·SBC에 SIP 트렁크, 서울 리전 SIP·미디어 주소(네트워크 구성 페이지)"
+  },
+  {
+   "n": 15,
+   "title": "Amazon Connect 관리자 안내서 · What is Amazon Connect",
+   "url": "https://docs.aws.amazon.com/connect/latest/adminguide/what-is-amazon-connect.html",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Wireshark Wiki · VoIP calls",
+   "url": "https://wiki.wireshark.org/VoIP_calls",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "HOMER (sipcapture) · 오픈소스 SIP·RTC 패킷 수집·모니터링",
+   "url": "https://github.com/sipcapture/homer",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Wikipedia · Erlang (unit) — Erlang B·C",
+   "url": "https://en.wikipedia.org/wiki/Erlang_(unit)",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "금융소비자 보호에 관한 법률 시행령 (제26조 자료의 기록·유지·관리)",
+   "url": "https://www.ulex.co.kr/%EB%B2%95%EB%A5%A0/255121-014044-%EA%B8%88%EC%9C%B5%EC%86%8C%EB%B9%84%EC%9E%90%EB%B3%B4%ED%98%B8%EC%97%90%EA%B4%80%ED%95%9C%EB%B2%95",
+   "kind": "reference",
+   "note": "기본 10년, 보장·계약 기간이 10년 넘는 상품은 그 기간. 현행 조문은 국가법령정보센터로 다시 확인"
+  },
+  {
+   "n": 20,
+   "title": "Wikipedia · Call detail record",
+   "url": "https://en.wikipedia.org/wiki/Call_detail_record",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 22,
+   "title": "자소설닷컴 — 토스뱅크 연봉(같은 집계)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 24,
+   "title": "토스 — 회사 소개(사이트 하단 주소)",
+   "url": "https://toss.im/company",
+   "kind": "company"
+  },
+  {
+   "n": 25,
+   "title": "RFC 3711 · SRTP: The Secure Real-time Transport Protocol",
+   "url": "https://www.rfc-editor.org/rfc/rfc3711",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "Google · Site Reliability Engineering (연쇄 장애·포스트모템 장)",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "RFC 4733 · RTP Payload for DTMF Digits, Telephony Tones, and Telephony Signals",
+   "url": "https://www.rfc-editor.org/rfc/rfc4733",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "Apache Kafka 문서 · Introduction",
+   "url": "https://kafka.apache.org/documentation/#introduction",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "SLASH 22 · 토스팀 인프라 자동화의 시작",
+   "url": "https://toss.im/slash-22/sessions/3-1",
+   "kind": "company",
+   "date": "2022",
+   "note": "세션 제목만 확인 — 영상 자막은 받지 않았다"
+  },
+  {
+   "n": 30,
+   "title": "RFC 7866 · Session Recording Protocol (SIPREC)",
+   "url": "https://www.rfc-editor.org/rfc/rfc7866",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "Terraform 문서",
+   "url": "https://developer.hashicorp.com/terraform/docs",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "Ansible 문서",
+   "url": "https://docs.ansible.com/",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "토스 콜 인프라 팀이 직접 발표한 자료(블로그·SLASH 세션)는 찾지 못했습니다. 팀의 일은 이 공고[1]와 같은 그룹의 토스씨엑스·AIOC 공고[3][4], 토스증권·토스뱅크 상담 사례[5][6][7][8][9]로 보였고, 콜 인프라가 '보통 어떻게 생겼나'는 SIP·RTP 표준 문서와 클라우드 공식 문서로 보였습니다. 토스가 쓰는 교환기·녹취 제품, 통화량, 이 팀과 토스씨엑스의 일 나눔은 공개되지 않았습니다. 토스증권 AWS 글은 본문을 끝까지 받지 못해 검색 요약만 썼습니다.",
+ "resources": [
+  {
+   "id": "linecard-sip",
+   "title": "인터넷 전화와 SIP의 이해 [개정판]",
+   "by": "라인하트 · 브런치 연재(네이버 프리미엄 구독) · 2026",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://brunch.co.kr/@linecard/724",
+   "why": "PSTN·SIP 메서드와 응답·SDP·RTP·NAT까지 한국어로 한 줄기. 필수 'SIP·RTP 실무' 요건의 첫걸음."
+  },
+  {
+   "id": "johnston-sip",
+   "title": "SIP: Understanding the Session Initiation Protocol (4판)",
+   "by": "Alan B. Johnston · Artech House · 2015",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://us.artechhouse.com/SIPUnderstanding-the-Session-Initiation-Protocol-Fourth-Edition-P1764.aspx",
+   "why": "SIP 표준을 함께 쓴 저자의 책. 통화 흐름·보안·WebRTC와 SIP 장까지 있어 '깊이 다뤄본 경험'의 바탕."
+  },
+  {
+   "id": "rfc3261",
+   "title": "RFC 3261 · SIP",
+   "by": "IETF",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.rfc-editor.org/rfc/rfc3261",
+   "why": "응답 코드·재전송 타이머·트랜잭션의 원본 정의. 장애 분석과 Failover 규칙을 짤 때 찾아본다."
+  },
+  {
+   "id": "rfc3550",
+   "title": "RFC 3550 · RTP",
+   "by": "IETF",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.rfc-editor.org/rfc/rfc3550",
+   "why": "RTP 머리·순번·지터 계산과 RTCP 보고. '소리가 끊긴다'를 숫자로 재는 법."
+  },
+  {
+   "id": "hpbn-webrtc",
+   "title": "High Performance Browser Networking · WebRTC 장",
+   "by": "Ilya Grigorik · O'Reilly",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://hpbn.co/webrtc/",
+   "why": "ICE·STUN·TURN·DTLS·SRTP를 한 장으로. 요건의 WebRTC와 AICC 실시간 연결의 바탕."
+  },
+  {
+   "id": "wireshark-voip",
+   "title": "Wireshark Wiki · VoIP calls",
+   "by": "Wireshark",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://wiki.wireshark.org/VoIP_calls",
+   "why": "캡처에서 SIP 통화와 RTP 흐름을 묶어 보는 법. 업무 'SIP·RTP 장애 분석'을 손으로 해 보는 도구."
+  },
+  {
+   "id": "homer",
+   "title": "HOMER (sipcapture)",
+   "by": "sipcapture · 오픈소스",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://github.com/sipcapture/homer",
+   "why": "SIP·RTC 패킷을 늘 받아 두고 찾는 수집기. 장애가 난 뒤에야 캡처를 켜지 않으려면 이런 바닥이 필요하다."
+  },
+  {
+   "id": "connect-docs",
+   "title": "Amazon Connect 관리자 안내서",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/connect/latest/adminguide/what-is-amazon-connect.html",
+   "why": "클라우드 상담 서비스가 IVR·라우팅·녹취·분석을 어떻게 묶는지. 우대 '퍼블릭 클라우드 콜 인프라'."
+  },
+  {
+   "id": "chime-vc",
+   "title": "Amazon Chime SDK · Voice Connector",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/chime-sdk/latest/ag/voice-connectors.html",
+   "why": "기존 교환기·SBC에 클라우드 SIP 트렁크를 붙이는 방법과 열어야 할 포트. 온프레미스·클라우드 걸치기의 실제."
+  },
+  {
+   "id": "toss-connect",
+   "title": "Amazon Connect를 활용한 토스증권의 고객 센터 혁신 사례",
+   "by": "AWS 기술 블로그",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://aws.amazon.com/ko/blogs/tech/toss-securities-amazon-connect-migration-journey",
+   "why": "같은 그룹 회사가 고객센터를 클라우드로 옮기며 IVR 연동·통화 뒤 STT 분석을 어떻게 풀었나."
+  },
+  {
+   "id": "erlang",
+   "title": "Erlang (unit) — Erlang B·C",
+   "by": "Wikipedia",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://en.wikipedia.org/wiki/Erlang_(unit)",
+   "why": "통화량 단위와 회선·상담사 수 계산식. 업무 '용량·비용 예측'의 출발점."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering",
+   "by": "Google · O'Reilly · 2016",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "why": "연쇄 장애·과부하 처리·포스트모템 장. 업무 '장애 도메인 분리·근본 원인 제거'의 일반 원칙."
+  },
+  {
+   "id": "rfc7866",
+   "title": "RFC 7866 · Session Recording Protocol (SIPREC)",
+   "by": "IETF",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.rfc-editor.org/rfc/rfc7866",
+   "why": "SIP로 녹취 서버에 통화 사본을 넘기는 표준. 업무 '녹취 데이터 인프라'의 구조."
+  },
+  {
+   "id": "fcpa",
+   "title": "금융소비자 보호에 관한 법률 시행령",
+   "by": "국가법령정보센터",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.law.go.kr/%EB%B2%95%EB%A0%B9/%EA%B8%88%EC%9C%B5%EC%86%8C%EB%B9%84%EC%9E%90%EB%B3%B4%ED%98%B8%EC%97%90%EA%B4%80%ED%95%9C%EB%B2%95%EB%A5%A0%EC%8B%9C%ED%96%89%EB%A0%B9",
+   "why": "자료 보관 기간(제26조)을 원문으로. 우대 '규제 산업 컴플라이언스'와 녹취 보관 설계."
+  },
+  {
+   "id": "kafka-docs",
+   "title": "Apache Kafka 문서",
+   "by": "Apache",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kafka.apache.org/documentation/",
+   "why": "토픽·파티션·소비자 그룹. 우대 'AICC를 Kafka와 연동'에서 STT 결과·CDR을 흘리는 통로."
+  },
+  {
+   "id": "terraform-docs",
+   "title": "Terraform 문서",
+   "by": "HashiCorp",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.hashicorp.com/terraform/docs",
+   "why": "클라우드 자원을 코드로. 우대 '인프라 구성 자동화'와 표준 설계를 코드로 박는 일."
+  },
+  {
+   "id": "ansible-docs",
+   "title": "Ansible 문서",
+   "by": "Red Hat",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.ansible.com/",
+   "why": "여러 서버에 같은 설정을 까는 법. SBC·교환기 설정을 손으로 고치지 않으려면."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "전화 한 통 따라가기",
+   "time": "1~2주",
+   "goal": "통화 요청부터 끊기까지 SIP·SDP·RTP가 어떤 순서로 오가는지 그림으로 설명할 수 있다.",
+   "resources": [
+    "linecard-sip",
+    "rfc3261",
+    "wireshark-voip"
+   ],
+   "task": "PC 두 대(또는 가상 머신 둘)에 무료 소프트폰을 깔고 서로 건 통화를 Wireshark로 잡는다. INVITE·180·200·ACK·BYE와 RTP 흐름을 표시하고, 응답 코드 하나를 일부러 내 본다(없는 번호로 걸기)."
+  },
+  {
+   "title": "작은 교환기와 장애 재현",
+   "time": "2~3주",
+   "goal": "오픈소스 교환기 위에서 한쪽 소리 장애·패킷 손실을 일부러 만들고 원인을 짚는다.",
+   "resources": [
+    "johnston-sip",
+    "rfc3550",
+    "homer"
+   ],
+   "task": "가상 머신에 오픈소스 교환기를 띄우고 두 소프트폰을 등록한다. NAT 뒤에 한쪽을 두어 한쪽 소리 문제를 만들고, 네트워크에 손실 5%를 걸어 RTP 손실·지터를 이 풀이의 지터 식으로 직접 계산해 Wireshark 값과 견준다."
+  },
+  {
+   "title": "용량과 비용 셈하기",
+   "time": "1주",
+   "goal": "가상 상담 센터의 통화량으로 상담사·회선·대역폭·녹취 저장량을 뽑는다.",
+   "resources": [
+    "erlang",
+    "sre-book"
+   ],
+   "task": "가상 센터(시간대별 통화 수·평균 통화 시간 표)를 만들고 Erlang C로 시간대별 필요 인원, 코덱별 대역폭, 10년치 녹취 저장량을 계산하는 스크립트를 짠다. 통화가 두 배가 되면 무엇이 먼저 모자라는지 적는다."
+  },
+  {
+   "title": "클라우드에 반 올리기",
+   "time": "2주",
+   "goal": "클라우드 SIP 트렁크·상담 서비스를 코드로 만들고, 한쪽이 죽어도 통화가 다른 쪽으로 가게 한다.",
+   "resources": [
+    "connect-docs",
+    "chime-vc",
+    "terraform-docs",
+    "ansible-docs",
+    "toss-connect"
+   ],
+   "task": "Terraform으로 클라우드 SIP 트렁크와 보안 그룹을, Ansible로 2단계 교환기 설정을 만든다. 교환기 두 대 중 하나를 꺼서 새 통화가 다른 쪽으로 몇 초 만에 가는지 잰다."
+  },
+  {
+   "title": "AI와 녹취 붙이기 (선택)",
+   "time": "계속",
+   "goal": "통화 음성을 STT로 흘리고, 녹취·CDR이 짝이 맞는지 매일 검사한다.",
+   "resources": [
+    "rfc7866",
+    "kafka-docs",
+    "fcpa",
+    "hpbn-webrtc"
+   ],
+   "task": "가상 통화 녹음 파일과 CDR(일부러 몇 건을 빼 둔다)을 만들고, CDR을 Kafka로 흘려 '녹음 없는 통화'를 찾는 검사기를 만든다. 오래된 녹음을 다른 저장소로 옮기는 규칙도 적는다."
+  }
+ ],
+ "pay": {
+  "summary": "공공데이터 집계로 신입 초봉 **약 4,200만원**, 평균 **약 6,200만원** — 이 자리는 경력 3~12년이라 초봉과는 멀다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 없고 직군 구분도 없다 [21]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균(사원 1,636명) — 경력직이 섞인 값이다 [21]"
+   },
+   {
+    "label": "토스뱅크 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 계열사 값 — 견주어 보기용 [22]"
+   },
+   {
+    "label": "토스뱅크 평균",
+    "value": "약 7,208만원",
+    "amount": 7208,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 계열사 평균 [22]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고, 레퍼런스 체크 뒤 **처우 협의** 단계에서 정한다 [1]. 비바리퍼블리카는 상장사가 아니라 사업보고서의 '직원 평균 급여' 같은 공시 숫자가 없다. 평균은 회사 전체 값이라 초봉도, 이 경력직 자리의 제안액도 아니다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 복지를 소개한 2021년 공식 글이다 [23]. 지금도 같은지는 글에 없으니 처우 협의 때 확인한다 {추론}. 콜 인프라는 장애 대응이 있어 근무 장소·시간이 다를 수 있다 {추론}."
+ },
+ "location": {
+  "name": "토스 신논현 오피스",
+  "address": "서울특별시 서초구 강남대로 459",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%84%9C%EC%B4%88%EA%B5%AC%20%EA%B0%95%EB%82%A8%EB%8C%80%EB%A1%9C%20459",
+  "near": "9호선 신논현역",
+  "note": "근무지는 같은 공고의 원티드 게재분에 적힌 것이다 [2]. 본사 주소는 토스 회사 소개 페이지 하단에 따로 있다 [24]. 상담 센터 설비가 있는 곳(토스씨엑스는 신도림 디큐브시티 [3])으로 오갈 일이 있을 수 있다 {추론}."
+ }
+}
