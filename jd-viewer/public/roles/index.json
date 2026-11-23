@@ -71,6 +71,7 @@
   "ats-toss:group:7702579003": "tossbank-infra-operations-engineer",
   "ats-toss:group:5498959003": "tossbank-ml-llm-ops",
   "ats-toss:group:4542935003": "tossbank-product-foundation-server",
+  "ats-toss:group:4076109003": "tossbank-product-server",
   "ats-toss:group:5847765003": "tossbank-security-researcher",
   "ats-toss:group:7998884003": "tossbank-senior-data-analyst",
   "ats-toss:group:4521687003": "tossbank-server-platform"
@@ -757,6 +758,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 36
+  },
+  {
+   "id": "tossbank-product-server",
+   "company": "토스뱅크",
+   "role": "서버 개발자 (Product)",
+   "jobs": [
+    "ats-toss:group:4076109003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 16
   },
   {
    "id": "tossbank-security-researcher",

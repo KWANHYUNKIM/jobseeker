@@ -1,0 +1,417 @@
+{
+ "id": "tossbank-product-server",
+ "company": "토스뱅크",
+ "role": "서버 개발자 (Product)",
+ "team": "제품 스쿼드(여신·수신·카드 등) · 스쿼드마다 서버 개발자 3~5명",
+ "jobs": [
+  "ats-toss:group:4076109003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "대출(여신)·예금(수신)·카드 같은 **은행 상품을 고객 앱 뒤에서 돌리는 서버**를 만듭니다. PO·디자이너·데이터 분석가와 한 스쿼드(작은 제품 팀)로 일하고, 직원이 쓰는 관리 화면도 만듭니다.[1]",
+  "env": "Kotlin·Spring·JPA·MySQL·Redis·Kafka 를 Kubernetes 위에서 씁니다.[1] 상품 서버는 마이크로서비스로 나뉘어 있고, 옛 방식의 코어뱅킹과는 **전문(고정 길이 통신 규격)이 아니라 HTTP API** 로 말을 주고받습니다.[2]",
+  "oneline": "은행 상품 백엔드. 화면 기능보다 **돈이 틀리지 않는 데이터 모델·API**, 그리고 사람이 몰리는 날(대출 오픈런·이자 받기)에 **안 무너지는 것**이 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "복잡한 은행 시스템을 빠르고 간결한 구조로 고객에게 제공할 수 있는 방법에 대해 고민하고 실행해요.",
+   "short": "옛 은행 시스템의 복잡한 규칙을 고객이 몰라도 되게, 작게 쪼갠 서버와 API 로 다시 짠다.",
+   "why": "전통 은행은 업무 규칙 대부분이 하나로 뭉친 코어뱅킹(모놀리식) 안에 있어, 새 기능 하나에도 영향 범위를 따지는 데 오래 걸린다고 토스뱅크 대출 개발자가 발표했습니다.[2] 토스뱅크는 상품 서버를 마이크로서비스로 두고, 상품 서버가 업무 규칙을 직접 풀게 했습니다.[2]",
+   "actually": {
+    "items": [
+     "**상품마다 따로 서버** — 대출 하나에도 사용자·약관·상품·대출 서버가 따로 있고, 서버마다 자기 표(스키마)를 가진다. 필요한 정보는 API 로 묻는다.[2]",
+     "**코어뱅킹도 API 하나로** — 코어뱅킹을 '전문을 주고받는 상대'가 아니라 HTTP API 를 가진 서비스 하나로 다룬다.[2]",
+     "**뭉친 것 떼어 내기** — 지금이자 받기는 코어뱅킹 안에 있던 이자 지급을 독립 서버로 떼어, 이자 계산 코드가 10만 줄에서 2천 줄로 줄었다.[3]",
+     "**한 번에 갈아엎지 않기** — 여신 공고는 MDD(모델 기반 개발)·Java 로 만든 옛 코어뱅킹을 유지하면서 Kotlin·Spring Boot 마이크로서비스로 조금씩 옮기는 중이라고 적었다.[7][4]"
+    ]
+   },
+   "how_far": "업무 규칙은 상품·법무·리스크 부서가 정합니다. 개발자는 **그 규칙이 어느 서버의 책임인지 나누고, 고객 화면에는 필요한 것만 보이게 API 를 짜는 것**을 맡습니다. {추론} 면접에서 '이 기능을 어느 서버에 둘까, 왜'를 설명할 수 있으면 됩니다. {추론}",
+   "refs": [2, 3, 4, 7],
+   "study": ["slash22-loan", "slash23-msa", "ddd-start"]
+  },
+  {
+   "section": "task",
+   "quote": "고객에게 좋은 경험을 제공할 수 있도록 빠르고 유연하며, 확장이 용이한 시스템을 개발해요.",
+   "short": "상품 규칙이 자주 바뀌어도 서버를 크게 뜯지 않고, 표 변경도 안전하게 같이 나가게 만든다.",
+   "why": "토스뱅크 대출 서버는 조직 변화에 맞춰 DB 표 구조가 계속 바뀌어야 했고, 잦은 변경이 협업을 어렵게 하고 오류를 낳는다는 문제를 처음부터 풀어야 했습니다.[2]",
+   "actually": {
+    "items": [
+     "**표 변경도 코드처럼** — 표를 바꾸는 SQL 을 버전 번호가 붙은 파일로 Git 에 두고(Flyway), 서버 코드와 같이 리뷰한다.[2][21]",
+     "**서버가 켜질 때 맞춘다** — 개발·테스트 DB 는 서버가 뜰 때 아직 안 들어간 버전만 차례로 적용한다. 새로 온 개발자도 서버만 켜면 그 브랜치의 표가 생긴다.[2]",
+     "**운영은 사람이 한 번 더** — 운영 DB 에는 개발자가 쓴 SQL 을 바로 돌리지 않고, 같은 파일을 근거로 DBA(DB 관리자)에게 작업을 요청한다.[2]",
+     "**어긋나면 아예 안 뜬다** — 코드의 엔티티와 실제 표가 다르면 서버가 시작을 거부하게(Hibernate validate) 해서, 틀린 서버로 요청이 가는 것을 막았다.[2][22]",
+     "**진짜 DB 로 시험** — 통합 테스트 전에 시험용 스키마를 만들고 Flyway 로 최신 구조를 깔아, DB 를 흉내 내지 않고 트랜잭션까지 시험한다.[2]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "어느 단계에 무엇을 더 적용하나 (발표의 예를 흉내 냄, 직접 돌린 출력)",
+     "body": "브랜치에 V1~V17 SQL 파일이 있고, 개발 DB 는 V15, 테스트 DB 는 V14 까지 적용된 상황입니다.[2] 서버가 뜰 때 빠진 버전만 차례로 적용됩니다.",
+     "lang": "python",
+     "code": "branch = [f'V{n}' for n in range(1, 18)]\napplied = {'local': 17, 'dev': 15, 'test': 14}\nfor stage, v in applied.items():\n    pending = [x for x in branch if int(x[1:]) > v]\n    print(f'{stage}: V{v} 까지 적용됨 -> 서버 시작 때 적용할 것 {pending}')\n# local: V17 까지 적용됨 -> 서버 시작 때 적용할 것 []\n# dev: V15 까지 적용됨 -> 서버 시작 때 적용할 것 ['V16', 'V17']\n# test: V14 까지 적용됨 -> 서버 시작 때 적용할 것 ['V15', 'V16', 'V17']"
+    },
+    {
+     "title": "엔티티와 표가 다르면 시작 거부 (validate 흉내, 직접 돌린 출력)",
+     "body": "코드에는 금리(rate) 칸이 생겼는데 운영 표에 아직 없으면, 요청을 받기 전에 멈추는 편이 낫습니다. 실제로는 Spring Boot 설정 `spring.jpa.hibernate.ddl-auto=validate` 가 이 일을 합니다.[22]",
+     "lang": "python",
+     "code": "entity = {'loan_id': 'bigint', 'amount': 'decimal(18,0)', 'rate': 'decimal(7,4)', 'status': 'varchar(20)'}\nschema = {'loan_id': 'bigint', 'amount': 'decimal(18,0)', 'status': 'varchar(20)'}\ndef validate(entity, schema):\n    for col, typ in entity.items():\n        if col not in schema:\n            raise SystemExit(f'시작 거부: 표에 {col} 칸이 없다 (엔티티는 {typ})')\n        if schema[col] != typ:\n            raise SystemExit(f'시작 거부: {col} 형이 다르다')\n    print('검증 통과 -> 서버 시작')\nvalidate(schema, schema)\ntry:\n    validate(entity, schema)\nexcept SystemExit as e:\n    print(e)\n# 검증 통과 -> 서버 시작\n# 시작 거부: 표에 rate 칸이 없다 (엔티티는 decimal(7,4))"
+    }
+   ],
+   "how_far": "Flyway 를 꼭 써 봤을 필요는 없습니다. **'표를 바꾸는 배포를 어떻게 안전하게 하나'** — 순서(표 먼저, 코드 나중), 되돌리기, 운영 DB 는 승인 거쳐 적용 — 를 설명할 수 있으면 됩니다. {추론}",
+   "refs": [2, 21, 22],
+   "study": ["slash22-loan", "flyway-docs", "boot-dbinit", "wiki-practical-testing"]
+  },
+  {
+   "section": "task",
+   "quote": "대용량 트래픽을 빠르고 안정적으로 처리할 수 있도록 튼튼하고 안전한 시스템을 개발해요.",
+   "short": "대출 오픈런·이자 받기처럼 사람이 한꺼번에 몰려도, 우리도 바깥 기관도 무너지지 않게 만든다.",
+   "why": "대출 심사에는 신용평가사(NICE·KCB)·신용정보원 같은 바깥 기관 조회가 꼭 필요합니다. 예전엔 새 은행이 문을 열면 요청이 몰려 바깥 기관이 먼저 마비되고 한동안 대출 신청이 안 되는 일이 잦았다고 합니다.[2] 2022년 1월 1일 토스뱅크 대출 재개 때 실제로 사람이 몰렸고, 아래 장치들이 그때 작동했습니다.[2]",
+   "actually": {
+    "items": [
+     "**바깥 기관 앞에 줄 세우기** — 고객 요청을 Kafka 에 넣고, 파티션마다 컨슈머 하나, 컨슈머마다 스레드 풀 하나를 둬 기관이 견디는 만큼(약속된 TPS)만 내보낸다.[2]",
+     "**풀 크기를 바꿔 끼우기** — 크기가 다른 스레드 풀을 여러 개 만들어 두고, 기관 상태와 몰린 사람 수에 따라 골라 쓴다. TPS 를 정확히 재려고 기관 호출은 동기로 했다.[2]",
+     "**지표를 분 단위로** — 기관에 보내기 직전 시작 시각, 끝난 뒤 완료 시각·성공 여부를 Redis 에 분 단위로 쌓고, 통계는 MySQL 로 옮긴다. 지표 수집이 서비스를 느리게 하지 않게 코루틴·WebClient 로 막힘 없이(non-blocking) 했다.[2]",
+     "**대신할 길로 돌리기** — 마이데이터 API 실패가 늘면 서킷 브레이커를 반쯤 열어 인증서가 있는 고객은 앱 스크래핑으로 돌리고, 더 나빠지면 전부 돌린다. 대신할 곳이 없는 신용평가사가 아프면 대출 상품 입구 자체를 닫는다.[2]",
+     "**대기열** — 그래도 넘치면 Redis 정렬 집합(zset) 두 개(대기열·입장열)로, 일정 주기마다 정해진 인원만 입장시킨다. 몇 명씩 들일지는 지표에 따라 바뀐다.[2][20]",
+     "**몰리는 기능 떼어 내기** — 지금이자 받기는 하루 70만 명 넘게 쓰며 은행 전체를 느리게 하던 기능이라 독립 서버로 떼었고, 평균 응답이 약 40배 빨라졌다.[3]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "3,000명이 한꺼번에 — 기관 한도대로 내보내면 (가상 값, 직접 돌린 출력)",
+     "body": "줄을 세우면 기관은 버티지만 고객 대기는 길어집니다. 그래서 발표는 줄 세우기(유량 제어) 다음에 대기열과 '대신할 길'을 붙였습니다.[2]",
+     "lang": "python",
+     "code": "def drain(burst, tps):\n    sec, left, waits = 0, burst, []\n    while left > 0:\n        sec += 1\n        sent = min(tps, left); left -= sent\n        waits += [sec] * sent\n    return sec, max(waits), sum(waits) / len(waits)\nfor tps in (50, 100):\n    s, mx, avg = drain(3000, tps)\n    print(f'요청 3,000건 · 기관 한도 {tps} TPS -> {s}초에 다 나감, 최대 대기 {mx}초, 평균 {avg:.1f}초')\n# 요청 3,000건 · 기관 한도 50 TPS -> 60초에 다 나감, 최대 대기 60초, 평균 30.5초\n# 요청 3,000건 · 기관 한도 100 TPS -> 30초에 다 나감, 최대 대기 30초, 평균 15.5초"
+    },
+    {
+     "title": "대기열 → 입장열, 주기마다 M명씩 (zset 흉내, 직접 돌린 출력)",
+     "body": "점수를 들어온 시각으로 두면 먼저 온 사람이 먼저 들어갑니다. 실제로는 Redis 정렬 집합에서 점수 낮은 순으로 꺼냅니다.[20]",
+     "lang": "python",
+     "code": "import heapq\nwait = []\nfor i, t in enumerate([0.1, 0.2, 0.2, 0.5, 0.9, 1.3, 1.4, 1.8]):\n    heapq.heappush(wait, (t, f'u{i}'))\nM, tick = 3, 0\nwhile wait:\n    tick += 1\n    moved = [heapq.heappop(wait)[1] for _ in range(min(M, len(wait)))]\n    print(f'{tick}번째 주기: 입장 {moved} / 남은 대기 {len(wait)}명')\n# 1번째 주기: 입장 ['u0', 'u1', 'u2'] / 남은 대기 5명\n# 2번째 주기: 입장 ['u3', 'u4', 'u5'] / 남은 대기 2명\n# 3번째 주기: 입장 ['u6', 'u7'] / 남은 대기 0명"
+    }
+   ],
+   "how_far": "처음부터 이런 장치를 혼자 설계하는 수준은 아닙니다. **'느린 상대를 기다리다 우리 서버가 같이 죽는 일'(연쇄 장애)을 시간 제한·서킷 브레이커·줄 세우기로 막는다**는 생각을 설명하고, 하나라도 직접 써 본 경험이 있으면 좋습니다.[18][19] {추론}",
+   "refs": [2, 3, 18, 19, 20],
+   "study": ["slash22-loan", "slash23-msa", "sre-book", "resilience4j", "redis-zset", "release-it"]
+  },
+  {
+   "section": "task",
+   "quote": "혁신적인 뱅킹 서비스를 위한 아이디어를 먼저 제안하고, 실제 서비스를 설계부터 개발까지 할 수 있어요.",
+   "short": "기획서를 받아 만드는 자리가 아니라, 스쿼드 안에서 아이디어를 내고 설계·개발까지 직접 끝낸다.",
+   "why": "이 자리는 PO·디자이너·데이터 분석가와 한 스쿼드를 이뤄 작은 스타트업처럼 자율적으로 일한다고 공고가 소개합니다.[1] 토스뱅크는 출범 전부터 고객 불편을 알아채고 고치기까지 12일 걸리던 것을 12시간으로 줄이겠다고 했습니다.[12]",
+   "actually": {
+    "items": [
+     "**은행의 당연한 문법 의심하기** — 공고는 서버 개발자 대부분이 금융권 밖에서 와서, 은행이 당연하게 여기던 방식을 묻는 데서 제품을 설계해 왔다고 적었다.[1]",
+     "**예: 지금이자 받기** — 이자를 한 달에 한 번이 아니라 고객이 원할 때 받게 한 상품. 서버 쪽에서는 이자 계산을 떼어 다시 짜는 일이 따라왔다.[3]",
+     "**예: 대출 대기열** — 사람이 몰리는 날 '오류'가 아니라 '순서대로 들어가는' 경험을 주는 것도 서버 개발자가 설계했다.[2]",
+     "**제안의 재료는 숫자** — 같은 스쿼드의 데이터 분석가와 함께 고객이 어디서 멈추는지 보고 제안한다. {추론}"
+    ]
+   },
+   "how_far": "제안은 서버 개발자만의 일은 아니고 스쿼드가 같이 합니다. 개발자 몫은 **'이건 기술로 이렇게 하면 된다/안 된다'를 빨리 판단하고, 결정된 것을 설계부터 운영까지 책임지는 것**입니다. {추론} 지원서에 '스스로 제안해 만든 기능'이 있으면 이 줄에 맞습니다. {추론}",
+   "refs": [1, 2, 3, 12],
+   "study": ["toss-faq10", "slash23-msa"]
+  },
+  {
+   "section": "task",
+   "quote": "대고객 서비스와 함께 뱅킹 시스템 혁신을 위한 내부 관리 웹 서비스를 개발하기도 해요.",
+   "short": "고객 앱 뒤의 서버뿐 아니라, 직원이 상품·심사·민원을 다루는 관리 화면(어드민)의 서버도 만든다.",
+   "why": "은행에는 고객 화면 뒤에 직원이 하는 일(상품 설정·심사 확인·원장 정정·상담)이 많습니다. 토스뱅크는 상담 플랫폼을 외부 솔루션에서 자체 개발로 바꿔 상담 시간을 줄였다고 밝혔고[9], 2026년 엔화 환율 오류 뒤에는 원장 정정·배포를 미리 점검하는 팀까지 따로 만들었습니다.[10]",
+   "actually": {
+    "items": [
+     "**누가 무엇을 할 수 있나** — 직원 화면은 역할에 권한을 묶어 주고(RBAC), 위험한 일은 요청한 사람과 승인하는 사람을 나눈다.[29] 같은 회사의 Product Foundation 공고는 이것을 모든 내부 시스템이 쓰는 공통 플랫폼으로 만든다.[8] 같은 그룹 토스는 요청 입구(게이트웨이)에서 사용자 정보를 확인해 뒤 서버로 넘긴다.[13]",
+     "**이력 남기기** — 누가 언제 무엇을 왜 바꿨는지 지우지 못하게 남긴다. 감독 당국이 자료를 요청하면 여기서 뽑는다.[10]",
+     "**한 화면에 모으기** — 헬프데스크는 상담·연체 관리·전화 응대를 한 화면에 모아 채팅 상담 시간을 56%, 전화 상담 시간을 26% 줄였다(회사 발표).[9]"
+    ]
+   },
+   "how_far": "공통 권한·결재 플랫폼은 Product Foundation 쪽이 만들고, 이 자리는 **자기 상품의 관리 기능(조회·수정·승인 요청)을 그 위에 얹는 일**이 많을 것입니다. {추론} 관리 화면이라도 돈을 바꾸는 기능이면 고객 API 만큼 권한·이력을 꼼꼼히 해야 합니다. {추론}",
+   "refs": [8, 9, 10, 13, 29],
+   "study": ["nist-rbac", "toss-gateway"]
+  },
+  {
+   "section": "qualification",
+   "quote": "Kotlin/Java로 Spring Framework 기반의 서비스를 개발한 경험이 있는 분이 필요해요.",
+   "short": "토스뱅크 서비스 서버는 Kotlin·Spring 이라서. Java 만 했어도 Spring 실무 경험이면 출발선이다.",
+   "why": "공고의 기술 목록이 Kotlin·Java·Gradle, Spring MVC·WebFlux·Boot·Cloud Gateway, JPA/Hibernate 입니다.[1] 대출 발표는 토스뱅크의 서비스 서버가 **100% Kotlin** 으로 쓰였다고 했고, 코루틴·WebClient 로 막힘 없는 지표 수집을 만들었습니다.[2]",
+   "level": {
+    "basic": "Spring Boot 로 REST API · JPA 엔티티와 조회 · @Transactional · 단위·통합 테스트",
+    "work": "트랜잭션 범위와 전파 · 잠금(비관·낙관) · N+1 · 외부 API 호출의 시간 제한 · DB 를 띄운 통합 테스트",
+    "team": "Kotlin 코루틴과 WebClient · Flyway 로 스키마 관리 · validate 로 엔티티·표 대조 · 여러 서버에 걸친 정합성"
+   },
+   "actually": {
+    "items": [
+     "**JPA + MySQL** — 상품 데이터는 MySQL, 접근은 JPA/Hibernate 다.[1][2]",
+     "**코루틴** — 기다리는 시간(IO) 동안 스레드를 붙잡지 않으려고 쓴다. 대출 서버의 지표 수집이 그 예다.[2]",
+     "**동시성** — 잔액처럼 여러 경로가 같은 행을 바꾸면 행 잠금(SELECT … FOR UPDATE)으로 순서를 세운다.[3][17]"
+    ]
+   },
+   "how_far": "Java 만 써 봤어도 됩니다 — Kotlin 은 같은 JVM 위라 옮기기 쉽습니다. {추론} 최소선은 **Spring 으로 만든 서비스를 실제로 운영해 본 경험 하나**이고, 그 안에서 트랜잭션·잠금을 왜 그렇게 잡았는지 말할 수 있으면 좋습니다.[1] {추론}",
+   "refs": [1, 2, 3, 17],
+   "study": ["kotlin-docs", "wiki-jpa-app-1", "wiki-spring-db-1", "real-mysql"]
+  },
+  {
+   "section": "qualification",
+   "quote": "비즈니스 요건을 빠르게 이해하고 능숙하게 데이터 모델과 API를 디자인할 수 있는 분이 필요해요.",
+   "short": "'대출 신청→심사→승인→실행' 같은 업무 흐름을 표와 상태, API 로 옮겨 돈이 틀리지 않게 하는 능력.",
+   "why": "토스뱅크는 서버마다 자기 스키마를 갖고 API 로만 데이터를 주고받기 때문에, 표와 API 를 잘못 나누면 나중에 고치기 어렵습니다.[2] 여신 공고도 정책 중심 로직을 도메인 구조로 다시 풀고, 정합성·트랜잭션을 직접 설계하는 일을 적었습니다.[7]",
+   "actually": {
+    "items": [
+     "**상태와 허용된 길** — 대출 신청 건은 정해진 상태만 오가게 한다(심사 중에서 곧바로 실행으로는 못 감). {추론}",
+     "**같은 요청이 두 번 와도 한 번만** — 재시도·중복 클릭에 대비해 요청 키로 한 번만 반영한다(멱등). 지금이자 받기도 실패를 다시 돌릴 때 두 번 반영되지 않게 API 를 만들었다.[3]",
+     "**묶을 것과 뗄 것** — 이자 지급 한 번에 20개 표·80번 쓰기가 걸려 있었는데, 잔액·통장처럼 바로 맞아야 하는 것만 트랜잭션에 남기고 세금 기록은 Kafka 로 떼어 80번을 50번으로 줄였다.[3]",
+     "**서버를 넘는 일** — 환전처럼 여러 서버에 걸친 일은 뒤 단계가 실패하면 앞 단계를 되돌리는 보상 트랜잭션(사가)으로 맞춘다.[5][14]",
+     "**돈은 정수·고정소수로** — 금액은 float 가 아니라 원 단위 정수나 decimal 로 둔다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "대출 신청 상태 + 같은 요청 한 번만 (가상 값, 직접 돌린 출력)",
+     "body": "심사 중인 건을 바로 '실행'으로 바꾸는 요청은 막고, 같은 요청 키(k3)가 다시 오면 다시 반영하지 않습니다.",
+     "lang": "python",
+     "code": "NEXT = {'신청': {'심사중'}, '심사중': {'승인', '거절'}, '승인': {'실행'}, '거절': set(), '실행': set()}\nloans, seen = {}, {}\ndef apply(key, loan_id, to):\n    if key in seen: return f'{seen[key]} (같은 요청 다시 옴 - 한 번만 반영)'\n    cur = loans.get(loan_id, '신청')\n    if to not in NEXT[cur]: return f'거부: {cur} -> {to} 은 없는 길'\n    loans[loan_id] = to; seen[key] = f'{cur} -> {to}'; return seen[key]\nprint(apply('k1', 'L1', '심사중'))\nprint(apply('k2', 'L1', '실행'))\nprint(apply('k3', 'L1', '승인'))\nprint(apply('k3', 'L1', '승인'))\nprint(apply('k4', 'L1', '실행'))\n# 신청 -> 심사중\n# 거부: 심사중 -> 실행 은 없는 길\n# 심사중 -> 승인\n# 심사중 -> 승인 (같은 요청 다시 옴 - 한 번만 반영)\n# 승인 -> 실행"
+    }
+   ],
+   "how_far": "업무 규칙은 현업이 정하지만, **그 규칙을 표·상태·API 로 옮기는 설계는 개발자가 정합니다**. 면접에서 작은 업무(예: 예금 해지, 카드 분실 신고)를 받아 표와 API 를 그려 보라고 해도 당황하지 않을 정도가 목표입니다. {추론}",
+   "refs": [2, 3, 5, 7, 14],
+   "study": ["ddd-start", "msa-patterns", "slash24-fx", "wiki-jpa-app-1"]
+  },
+  {
+   "section": "qualification",
+   "quote": "변화를 두려워하지 않고 지속적인 성장을 원하시는 분이면 잘 맞으실 거예요.",
+   "short": "옛 시스템을 계속 새 구조로 옮기는 중이라, 바뀌는 코드와 일하는 방식에 익숙해야 한다.",
+   "why": "토스뱅크는 차세대(한 번에 갈아엎기) 대신 기능 하나씩 옮기는 방식(옛것을 살려 둔 채 조금씩 대체하는 '스트랭글러 피그')을 골라 지금도 계속 옮기고 있습니다.[4][23] 같은 발표는 코어뱅킹 개발자와 채널(상품) 개발자의 직무 경계를 없앴다고 했습니다 — 상품 서버 개발자도 코어뱅킹 코드를 만지게 된다는 뜻입니다.[4]",
+   "how_far": "지원서에 '처음 보는 기술·도메인을 맡아 얼마 만에 무엇을 해냈나'를 하나 적으면 이 줄에 맞습니다. {추론}",
+   "refs": [4, 23],
+   "study": ["slash24-migration"]
+  },
+  {
+   "section": "qualification",
+   "quote": "동료에게 필요한 지식을 전파하고 협업을 즐기시는 분이면 좋아요.",
+   "short": "스쿼드마다 서버 개발자가 3~5명이라, 아는 것을 문서·리뷰로 나누는 사람이 필요하다.",
+   "why": "공고는 한 스쿼드에 서버 개발자가 여러 명이라 주니어도 성장할 수 있다고 소개합니다.[1] 토스뱅크 대출 개발자들은 도메인 지식을 그림 많은 설계 문서로 남기고 동료 리뷰를 거쳐, 담당자가 바뀌어도 이어 가게 한다고 했습니다.[4] 표 변경 SQL 까지 코드 리뷰에 올리는 것도 협업 장치입니다.[2]",
+   "how_far": "발표·글이 아니어도 됩니다. **팀 문서·README·코드 리뷰로 남이 이어받게 만든 경험**이면 충분합니다. {추론}",
+   "refs": [1, 2, 4],
+   "study": ["slash24-migration"]
+  },
+  {
+   "section": "qualification",
+   "quote": "대용량 트래픽을 안정적으로 운영해본 경험이 있는 분이면 좋아요.",
+   "short": "몰리는 날 어디가 먼저 막혔고 무엇으로 풀었는지 숫자로 말할 수 있는 경험.",
+   "why": "토스뱅크 상품 서버는 대출 오픈런(2022-01-01)과 하루 70만 명 넘는 지금이자 받기 같은 몰림을 실제로 겪었습니다.[2][3] 토스뱅크 약관 서버는 TPS 1만을 캐시로 버텼습니다.[6]",
+   "actually": {
+    "items": [
+     "**떼어서 늘리기** — 몰리는 기능만 독립 서버로 떼면 그것만 늘리고, 장애가 다른 곳으로 번지지 않는다.[3]",
+     "**캐시** — 하루에 한 번만 바뀌는 이자값은 하루짜리 캐시로 DB 조회를 줄였다.[3] 캐시를 지우는 순서(DB 커밋 뒤)를 틀리면 옛 값이 남는다.[6]",
+     "**상대를 지키기** — 바깥 기관 요청은 줄을 세워 한도만큼만 보낸다.[2]",
+     "**연쇄 장애 막기** — 느린 의존 서비스 때문에 스레드가 다 묶이는 일을 시간 제한·서킷 브레이커·부하 덜기로 막는다.[18][19]"
+    ]
+   },
+   "how_far": "'초당 몇 건, 어디가 병목, 무엇을 바꿔 몇으로'를 말할 수 있으면 됩니다. 대용량 운영 경험이 없으면 부하 시험으로 병목을 직접 찾아 고친 경험도 쓸 만합니다. {추론}",
+   "refs": [2, 3, 6, 18, 19],
+   "study": ["system-design", "toss-terms-cache", "sre-book", "release-it"]
+  },
+  {
+   "section": "qualification",
+   "quote": "Redis와 Kafka를 다뤄본 경험이 있는 분이면 좋아요.",
+   "short": "Redis 는 캐시·지표·대기열, Kafka 는 줄 세우기와 '나중에 해도 되는 일' 떼어 보내기에 쓴다.",
+   "why": "대출 서버는 Kafka 로 바깥 기관 요청의 줄을 세우고, Redis 에 분 단위 지표와 대기열을 뒀습니다.[2] 지금이자 받기는 Redis 를 하루짜리 이자 캐시와 잠금에, Kafka 를 세금 기록 분리에 썼습니다.[3]",
+   "actually": {
+    "items": [
+     "**Kafka 파티션 = 줄** — 파티션마다 컨슈머 하나를 붙이면 내보내는 속도를 컨슈머 쪽에서 정할 수 있다.[2]",
+     "**메시지는 두 번 올 수 있다** — Kafka 는 기본적으로 '최소 한 번' 전달이라, 받는 쪽이 같은 메시지를 두 번 받아도 한 번만 반영되게 만든다.[16][3]",
+     "**DB 와 메시지를 같이** — DB 에 쓰고 메시지는 못 보낸 채 죽는 일을 막으려고, 보낼 메시지를 같은 트랜잭션 안의 표에 먼저 적는다(아웃박스).[15]",
+     "**Redis 정렬 집합** — 점수 순으로 꺼낼 수 있어 대기열에 맞는다.[20][2]"
+    ]
+   },
+   "how_far": "써 본 적이 없으면 **'캐시가 옛 값을 주는 경우', '메시지가 두 번 오는 경우'를 어떻게 막나**를 설명할 수 있는 정도가 최소선입니다. {추론}",
+   "refs": [2, 3, 15, 16, 20],
+   "study": ["kafka-guide", "kafka-docs", "wiki-kafka", "redis-zset", "toss-terms-cache"]
+  },
+  {
+   "section": "qualification",
+   "quote": "# 이력서에는 아래 내용을 꼭 포함해 주세요.",
+   "short": "아래 네 줄은 요건이 아니라 이력서에 꼭 넣을 내용이다.",
+   "why": "회사가 이력서 형식을 직접 정한 부분입니다.[1] 서류 다음이 사전 인터뷰·직무 인터뷰라 여기 쓴 사례가 질문의 출발점이 됩니다.[1] {추론}",
+   "how_far": "네 가지를 빠뜨리지 않는 것이 최소선입니다.[1]",
+   "refs": [1]
+  },
+  {
+   "section": "qualification",
+   "quote": "실제 본인이 참여한 프로젝트와 기여 정도, 어려운 과제를 극복한 과정이 드러날 수 있는 구체적인 사례가 최소 1가지 이상 필요해요.",
+   "short": "팀이 한 일이 아니라 '내가 맡은 부분'과 막혔다가 넘은 과정이 보이는 사례를 하나 이상 쓴다.",
+   "why": "회사가 이력서에 넣으라고 한 내용입니다.[1] 토스 서버 개발자 직무 인터뷰는 코딩 테스트 없이 지원자가 한 일을 깊게 묻는다고 소개됐습니다.[11]",
+   "how_far": "'우리 팀이 MSA 로 바꿨다'가 아니라 '나는 대출 상태 전이를 다시 설계했고 중복 실행이 0건이 됐다'처럼 씁니다. {추론}",
+   "refs": [1, 11],
+   "study": ["toss-faq10"]
+  },
+  {
+   "section": "qualification",
+   "quote": "서비스 개발을 담당하는 만큼, 문제 해결 역량을 중요하게 생각하고 있어요. 마주한 문제를 정의하고 이를 해결하기 위해 어떤 시도를 했는지, 나아가 그 결과는 어땠는지 등이 확인될 수 있도록 문제 해결의 과정을 상세하게 적어주세요.",
+   "short": "문제 정의 → 시도(실패 포함) → 결과(숫자) 순서로 쓴다.",
+   "why": "회사가 이력서에 넣으라고 한 내용입니다.[1] 토스뱅크 발표도 같은 순서로 말합니다 — 새 은행 오픈 때 바깥 기관이 마비되던 문제(정의) → 줄 세우기·서킷·대기열(시도) → 오픈런 날 기관에 정해진 TPS 만 보내고 고객을 순서대로 받음(결과).[2]",
+   "how_far": "실패한 시도도 적으면 '왜 다음 시도를 골랐나'가 보여 더 좋습니다. {추론}",
+   "refs": [1, 2],
+   "study": ["slash22-loan"]
+  },
+  {
+   "section": "qualification",
+   "quote": "대규모 트래픽을 다뤄보신 경험 또는 기존 대비 더 나은 결과를 위해 개선을 시도해 보신 경험이 있다면 꼭 공유해 주세요.",
+   "short": "큰 트래픽 경험이 없으면 '전보다 나아지게 바꾼 경험'이라도 숫자와 함께 쓴다.",
+   "why": "회사가 이력서에 넣으라고 한 내용이고, '또는'으로 두 길을 열어 두었습니다.[1] 토스뱅크 발표들도 개선을 늘 전후 숫자로 말합니다 — 응답 평균 약 40배·최대 약 170배, 이자 계산 코드 10만 줄 → 2천 줄[3], 대출 상환 도메인 약 42배.[4]",
+   "how_far": "규모보다 **전후를 어떻게 쟀나**가 중요합니다. 측정 없이 '빨라졌다'만 쓰면 약합니다. {추론}",
+   "refs": [1, 3, 4],
+   "study": ["slash23-msa", "slash24-migration"]
+  },
+  {
+   "section": "qualification",
+   "quote": "개발자로서 어떤 성장을 생각하고 계시고, 성장을 위해 어떤 노력을 하고 계신지 적어주세요.",
+   "short": "어떤 개발자가 되고 싶은지와, 지금 그쪽으로 무엇을 하고 있는지를 같이 쓴다.",
+   "why": "회사가 이력서에 넣으라고 한 내용입니다.[1] 공고는 스쿼드에 여러 서버 개발자가 있어 주니어도 성장할 기반이 있다고 적었습니다.[1]",
+   "how_far": "'금융 상품을 처음부터 끝까지 책임지는 백엔드'처럼 이 공고와 이어지는 방향이면 좋고, 노력은 읽은 것보다 **만든 것(작은 프로젝트·글)**으로 보여 줍니다. {추론}",
+   "refs": [1]
+  }
+ ],
+ "fit": {
+  "good": [
+   "고객이 쓰는 상품을 PO·디자이너와 같이 처음부터 끝까지 만들고 싶은 사람[1]",
+   "'이 금액, 정말 맞나?'를 끝까지 확인하는 사람",
+   "사람이 몰리는 날을 대비해 미리 장치를 만드는 게 즐거운 사람[2]",
+   "금융 경험은 없어도 은행의 당연한 방식을 의심해 볼 사람 — 팀 대부분이 금융권 밖에서 왔다[1]"
+  ],
+  "hard": [
+   "운영 DB 변경은 DBA 를 거치는 등 금융권 절차가 있다[2]",
+   "옛 코어뱅킹과 새 구조가 같이 돌아 두 세계를 다 알아야 한다[4][7]",
+   "공고에 어느 상품 스쿼드(여신·수신·카드)로 가는지 적혀 있지 않다[1]",
+   "돈이 오가는 서버라 작은 실수도 사고가 된다 — 사고 뒤 배포 전 점검 팀까지 생겼다[10]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "신용평가사가 초당 50건만 받는데 3,000명이 한꺼번에 대출 심사를 누르면요?",
+   "a": "Kafka 줄 세우기·스레드 풀·대기열.[2]"
+  },
+  {
+   "q": "마이데이터 조회 실패율이 오르면 어떻게 하겠어요? 대신할 길이 없는 기관이면요?",
+   "a": "서킷 반열림 → 스크래핑 전환, 없으면 상품 입구 차단.[2]"
+  },
+  {
+   "q": "운영 DB 에 칸을 하나 추가하는 배포를 어떻게 안전하게 하나요?",
+   "a": "Flyway 버전 파일·DBA 적용·validate.[2]"
+  },
+  {
+   "q": "잔액 100원에 이자 100원과 타행 입금 300원이 동시에 들어오면?",
+   "a": "잠금 없이 400원이 되는 이유와 행 잠금.[3]"
+  },
+  {
+   "q": "이자 지급과 세금 기록을 한 트랜잭션에 묶을까요, 뗄까요? 떼었는데 세금 쪽이 실패하면요?",
+   "a": "Kafka 분리·재처리·멱등.[3]"
+  },
+  {
+   "q": "대출 신청 건의 표와 API 를 그려 보세요. 같은 요청이 두 번 오면요?",
+   "a": "상태 전이와 요청 키.[3]"
+  }
+ ],
+ "sources": [
+  {"n": 1, "title": "토스 채용 · 서버 개발자 (Product)", "url": "https://toss.im/career/job-detail?gh_jid=4076109003", "kind": "posting", "note": "스쿼드 소개(여신·수신·카드, 스쿼드당 3~5명)·업무·요건·이력서 안내·쓰는 기술·합류 여정·동료 한마디"},
+  {"n": 2, "title": "SLASH 22 · 토스뱅크의 완전히 새로운 대출 시스템", "url": "https://www.youtube.com/watch?v=SLamxuykpnw", "kind": "company", "date": "2022", "note": "토스뱅크 대출 서버 개발자 · 23분 · 공식 자막 전부·장면 확인(HTTP API 로 코어뱅킹 연동, 서버별 스키마, Flyway·Hibernate validate, Kafka 파이프라인·동적 스레드 풀, Redis 분 단위 지표, 서킷 연동, zset 대기열, 2022-01-01 대출 재개)"},
+  {"n": 3, "title": "SLASH 23 · 은행 최초 코어뱅킹 MSA 전환기 (feat. 지금 이자 받기)", "url": "https://www.youtube.com/watch?v=amTJyIE1wO0", "kind": "company", "date": "2023-06", "note": "토스뱅크 코어뱅킹 개발자 · 하루 70만 명+, 80→50번 쓰기, 재처리·멱등, 하루 캐시, 약 40배·170배, 10만→2천 줄 (다른 풀이 회차에서 자막 읽음)"},
+  {"n": 4, "title": "SLASH 24 · 토스뱅크가 차세대를 하지 않는 이유: 지속 가능한 마이그레이션 전략", "url": "https://www.youtube.com/watch?v=LwH9h8dG3PQ", "kind": "company", "date": "2024-09", "note": "토스뱅크 대출 시스템 개발자 · 기능 단위 이관, 설계 문서, 직무 통합, 약 42배 (다른 풀이 회차에서 자막 읽음)"},
+  {"n": 5, "title": "SLASH 24 · 보상 트랜잭션으로 분산 환경에서도 안전하게 환전하기", "url": "https://www.youtube.com/watch?v=xpwRTu47fqY", "kind": "company", "date": "2024-09", "note": "토스뱅크 FX 스쿼드"},
+  {"n": 6, "title": "토스 테크 · 캐시를 적용하기까지의 험난한 길 (TPS 1만 안정적으로 서비스하기)", "url": "https://toss.tech/article/34481", "kind": "company", "date": "2025-03-31", "note": "토스뱅크 약관 서버"},
+  {"n": 7, "title": "토스 채용 · 서버 개발자 (여신)", "url": "https://toss.im/career/job-detail?gh_jid=7695933003", "kind": "posting", "note": "같은 회사 여신 자리 — MDD·Java 모놀리식 코어뱅킹을 유지하며 Kotlin·Spring Boot MSA 로 단계 전환, 정합성·트랜잭션 설계"},
+  {"n": 8, "title": "토스 채용 · 서버 개발자 (Product Foundation)", "url": "https://toss.im/career/job-detail?gh_jid=4542935003", "kind": "posting", "note": "같은 회사 — 내부 시스템 게이트웨이·RBAC·결재·이력 공통 플랫폼"},
+  {"n": 9, "title": "이코노미스트 · 토스뱅크, 통합 상담 플랫폼 '헬프데스크' 전면 도입", "url": "https://economist.co.kr/article/view/ecn202601150011", "kind": "news", "date": "2026-01-15", "note": "자체 개발 · 채팅 56%·콜 26% 시간 감소(회사 발표)"},
+  {"n": 10, "title": "MTN · '반값 엔화' 재발 막는다…토스뱅크, IT 사전검증팀 신설", "url": "https://news.mtn.co.kr/news-detail/2026080312331150007", "kind": "news", "date": "2026-08-03", "note": "원장 정정·배포 전 점검, 감독 대응"},
+  {"n": 11, "title": "토스피드 · 토스 서버 개발자들이 가장 많이 받는 질문 10가지", "url": "https://toss.im/tossfeed/article/toss-serverchapter-faq10", "kind": "company", "date": "2022-02-22", "note": "직무 인터뷰에서 보는 것, 코딩 테스트 없음"},
+  {"n": 12, "title": "토스피드 · 토스가 꿈꾸는 은행, 어떤 모습일까?", "url": "https://toss.im/tossfeed/article/bank-team-interview", "kind": "company", "date": "2020-04-29", "note": "출범 전 인터뷰 — 12일 → 12시간 목표"},
+  {"n": 13, "title": "토스 테크 · 토스는 Gateway 이렇게 씁니다 (SLASH 23)", "url": "https://toss.tech/article/slash23-server", "kind": "company", "date": "2023-10-12", "note": "토스 서버플랫폼팀 — 같은 그룹 다른 회사"},
+  {"n": 14, "title": "microservices.io · Pattern: Saga", "url": "https://microservices.io/patterns/data/saga.html", "kind": "reference"},
+  {"n": 15, "title": "microservices.io · Pattern: Transactional outbox", "url": "https://microservices.io/patterns/data/transactional-outbox.html", "kind": "reference"},
+  {"n": 16, "title": "Apache Kafka 문서 · Message Delivery Semantics", "url": "https://kafka.apache.org/documentation/#semantics", "kind": "reference"},
+  {"n": 17, "title": "MySQL 8.0 문서 · Locking Reads (SELECT … FOR UPDATE)", "url": "https://dev.mysql.com/doc/refman/8.0/en/innodb-locking-reads.html", "kind": "reference"},
+  {"n": 18, "title": "Google SRE Book · Addressing Cascading Failures", "url": "https://sre.google/sre-book/addressing-cascading-failures/", "kind": "reference"},
+  {"n": 19, "title": "Resilience4j 문서 · CircuitBreaker", "url": "https://resilience4j.readme.io/docs/circuitbreaker", "kind": "reference", "note": "닫힘·열림·반열림 상태"},
+  {"n": 20, "title": "Redis 문서 · Sorted sets", "url": "https://redis.io/docs/latest/develop/data-types/sorted-sets/", "kind": "reference"},
+  {"n": 21, "title": "Flyway 문서", "url": "https://documentation.red-gate.com/flyway", "kind": "reference", "note": "버전 붙은 SQL 마이그레이션"},
+  {"n": 22, "title": "Spring Boot 문서 · Database Initialization (ddl-auto)", "url": "https://docs.spring.io/spring-boot/how-to/data-initialization.html", "kind": "reference"},
+  {"n": 23, "title": "Martin Fowler · Strangler Fig Application", "url": "https://martinfowler.com/bliki/StranglerFigApplication.html", "kind": "reference"},
+  {"n": 24, "title": "자소설닷컴 — 토스뱅크 연봉(공공데이터 집계: 초봉·평균)", "url": "https://jasoseol.com/companies/13930/insights", "kind": "reference", "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"},
+  {"n": 25, "title": "뉴시스 — 3년 근무 직원 1억4000만원… 인터넷은행 평균 급여(각사 사업보고서)", "url": "https://www.newsis.com/view/NISX20250812_0003287731", "kind": "news", "date": "2025-08-13"},
+  {"n": 26, "title": "SBS Biz — 인뱅 3사도 연봉 1억원대로(은행연합회 2025 지배구조 및 보수체계 연차보고서)", "url": "https://biz.sbs.co.kr/amp/article/20000297249", "kind": "news", "date": "2026-03-13"},
+  {"n": 27, "title": "토스뱅크 — 회사 정보(사이트 하단 주소)", "url": "https://tossbank.com/esg", "kind": "company"},
+  {"n": 28, "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지", "url": "https://toss.im/tossfeed/article/employee-benefits", "kind": "company", "date": "2021-03-10"},
+  {"n": 29, "title": "NIST · Role Based Access Control", "url": "https://csrc.nist.gov/projects/role-based-access-control", "kind": "reference", "note": "역할·권한·직무 분리 표준 모델"}
+ ],
+ "caveat": "대출 시스템 발표는 2022년, 코어뱅킹·이관 발표는 2023~2024년 것이라 지금 구조와 다를 수 있습니다. 수신·카드 스쿼드의 서버 구조는 공개 발표를 찾지 못해 대출·코어뱅킹·약관 서버 사례로 대신했습니다. 공고는 어느 스쿼드로 배치되는지 적지 않았습니다.",
+ "resources": [
+  {"id": "slash22-loan", "title": "SLASH 22 · 토스뱅크의 완전히 새로운 대출 시스템", "by": "토스뱅크 대출 서버 개발자 · 23분", "kind": "video", "lang": "ko", "free": true, "level": "입문", "url": "https://www.youtube.com/watch?v=SLamxuykpnw", "why": "이 자리의 일을 가장 가깝게 보여 주는 발표. 서버별 스키마·Flyway·바깥 기관 줄 세우기·서킷·대기열 — 업무 ①②③ 줄의 정답지."},
+  {"id": "slash23-msa", "title": "SLASH 23 · 은행 최초 코어뱅킹 MSA 전환기 (feat. 지금 이자 받기)", "by": "토스뱅크 코어뱅킹 개발자 · 24분", "kind": "video", "lang": "ko", "free": true, "level": "입문", "url": "https://www.youtube.com/watch?v=amTJyIE1wO0", "why": "잔액 동시성·트랜잭션 쪼개기·Kafka·Redis 캐시를 은행 상품 예로 본다. 데이터 모델 요건과 Redis·Kafka 요건."},
+  {"id": "slash24-migration", "title": "SLASH 24 · 토스뱅크가 차세대를 하지 않는 이유: 지속 가능한 마이그레이션 전략", "by": "토스뱅크 대출 시스템 개발자 · 20분", "kind": "video", "lang": "ko", "free": true, "level": "입문", "url": "https://www.youtube.com/watch?v=LwH9h8dG3PQ", "why": "옛 시스템을 끄지 않고 옮기는 법과 설계 문서로 지식을 나누는 법. '변화'·'지식 전파' 요건."},
+  {"id": "slash24-fx", "title": "SLASH 24 · 보상 트랜잭션으로 분산 환경에서도 안전하게 환전하기", "by": "토스뱅크 FX 스쿼드 · 20분", "kind": "video", "lang": "ko", "free": true, "level": "실무", "url": "https://www.youtube.com/watch?v=xpwRTu47fqY", "why": "상품 스쿼드가 여러 서버에 걸친 정합성을 사가로 푼 사례. 데이터 모델·API 요건."},
+  {"id": "toss-terms-cache", "title": "캐시를 적용하기까지의 험난한 길 (TPS 1만 안정적으로 서비스하기)", "by": "토스뱅크 · toss.tech", "kind": "doc", "lang": "ko", "free": true, "level": "실무", "url": "https://toss.tech/article/34481", "why": "같은 회사 서버가 캐시를 넣다 겪은 불일치와 순서 문제. 대용량·Redis 요건."},
+  {"id": "toss-gateway", "title": "토스는 Gateway 이렇게 씁니다", "by": "토스 서버플랫폼팀 · toss.tech", "kind": "doc", "lang": "ko", "free": true, "level": "실무", "url": "https://toss.tech/article/slash23-server", "why": "요청 입구에서 인증·권한을 거는 방식. 내부 관리 웹 서비스 줄."},
+  {"id": "toss-faq10", "title": "토스 서버 개발자들이 가장 많이 받는 질문 10가지", "by": "토스피드 · 2022", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://toss.im/tossfeed/article/toss-serverchapter-faq10", "why": "직무 인터뷰에서 무엇을 묻는지 — 이력서 네 줄을 쓰기 전에."},
+  {"id": "flyway-docs", "title": "Flyway 문서", "by": "Redgate", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://documentation.red-gate.com/flyway", "why": "버전 붙은 SQL 로 스키마를 관리하는 법. 대출 서버가 쓴 도구."},
+  {"id": "boot-dbinit", "title": "Spring Boot · Database Initialization", "by": "Spring 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.spring.io/spring-boot/how-to/data-initialization.html", "why": "ddl-auto(validate 등)와 Flyway 연동 설정. 엔티티·표 대조."},
+  {"id": "redis-zset", "title": "Redis · Sorted sets", "by": "Redis 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://redis.io/docs/latest/develop/data-types/sorted-sets/", "why": "점수 순으로 넣고 꺼내는 자료구조. 대기열을 만드는 재료."},
+  {"id": "resilience4j", "title": "Resilience4j 문서 · CircuitBreaker", "by": "Resilience4j", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://resilience4j.readme.io/docs/circuitbreaker", "why": "닫힘·열림·반열림 — 바깥 기관이 아플 때 우리 서버를 지키는 법."},
+  {"id": "sre-book", "title": "Site Reliability Engineering · Addressing Cascading Failures", "by": "Google", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://sre.google/sre-book/addressing-cascading-failures/", "why": "한 곳이 느려져 전체가 무너지는 연쇄 장애와 막는 법. 대용량 요건."},
+  {"id": "kafka-docs", "title": "Apache Kafka 문서 · Message Delivery Semantics", "by": "Apache Kafka", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://kafka.apache.org/documentation/#semantics", "why": "메시지가 두 번 올 수 있는 이유. 멱등이 필요한 까닭."},
+  {"id": "nist-rbac", "title": "Role Based Access Control", "by": "NIST", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://csrc.nist.gov/projects/role-based-access-control", "why": "역할·권한·직무 분리의 표준 모델. 내부 관리 화면의 권한 설계."},
+  {"id": "kotlin-docs", "title": "Kotlin 문서", "by": "JetBrains", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://kotlinlang.org/docs/home.html", "why": "Java 개발자가 Kotlin 으로 옮길 때 — 문법·null 안전·코루틴."},
+  {"id": "wiki-jpa-app-1", "title": "스프링 부트와 JPA 활용 1편", "by": "우리 사이트의 책", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/wiki/jpa-app-1", "why": "엔티티·표 설계 결정이 DDL·SQL·HTTP 로 어떻게 번지는지. 데이터 모델·API 요건."},
+  {"id": "wiki-spring-db-1", "title": "스프링 DB 1편", "by": "우리 사이트의 책", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/wiki/spring-db-1", "why": "커넥션·트랜잭션을 로그로 본다. @Transactional 이 실제로 무엇을 하는지."},
+  {"id": "wiki-kafka", "title": "아파치 카프카 애플리케이션 프로그래밍", "by": "우리 사이트의 책", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/wiki/kafka", "why": "보냈다는 것과 처리됐다는 것 사이 — 파티션·컨슈머·재처리. Kafka 요건."},
+  {"id": "wiki-practical-testing", "title": "Practical Testing — 실용적인 테스트 가이드", "by": "우리 사이트의 책", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/wiki/practical-testing", "why": "DB 를 띄운 통합 테스트까지. 표 변경을 안전하게 내보내는 바탕."},
+  {"id": "real-mysql", "title": "Real MySQL 8.0 (1·2권)", "by": "백은빈 · 이성욱 · 위키북스", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://search.kyobobook.co.kr/search?keyword=Real%20MySQL%208.0", "why": "회사가 쓰는 MySQL 의 잠금·트랜잭션·인덱스. 잔액 동시성의 바탕."},
+  {"id": "ddd-start", "title": "도메인 주도 개발 시작하기", "by": "최범균 · 한빛미디어", "kind": "book", "lang": "ko", "free": false, "level": "입문", "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942620", "why": "업무 규칙을 도메인 모델·상태로 옮기는 기본. '데이터 모델과 API 디자인' 요건."},
+  {"id": "msa-patterns", "title": "마이크로서비스 패턴", "by": "크리스 리처드슨 · 길벗", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A7%88%EC%9D%B4%ED%81%AC%EB%A1%9C%EC%84%9C%EB%B9%84%EC%8A%A4%20%ED%8C%A8%ED%84%B4%20%EB%A6%AC%EC%B2%98%EB%93%9C%EC%8A%A8", "why": "서버 나누기·사가·아웃박스. 서버마다 스키마를 가진 구조에서 정합성을 맞추는 법."},
+  {"id": "kafka-guide", "title": "카프카 핵심 가이드 (2판)", "by": "그웬 샤피라 외 · 제이펍", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://search.kyobobook.co.kr/search?keyword=%EC%B9%B4%ED%94%84%EC%B9%B4%20%ED%95%B5%EC%8B%AC%20%EA%B0%80%EC%9D%B4%EB%93%9C", "why": "파티션·컨슈머 그룹·전달 보장. Kafka 요건."},
+  {"id": "system-design", "title": "가상 면접 사례로 배우는 대규모 시스템 설계 기초", "by": "알렉스 쉬 · 인사이트", "kind": "book", "lang": "ko", "free": false, "level": "입문", "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%80%EC%83%81%20%EB%A9%B4%EC%A0%91%20%EC%82%AC%EB%A1%80%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%8C%80%EA%B7%9C%EB%AA%A8%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EA%B8%B0%EC%B4%88", "why": "처리율 제한·캐시·메시지 큐의 기본 그림. 대용량 요건의 출발점."},
+  {"id": "release-it", "title": "Release의 모든 것 2판", "by": "마이클 나이가드 · 한빛미디어", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://ridibooks.com/books/443001250", "why": "시간 제한·서킷 브레이커·격벽 같은 운영 안정성 패턴. 바깥 기관 연동이 많은 상품 서버에."}
+ ],
+ "study_path": [
+  {"title": "회사가 어떻게 만들었나 보기", "time": "1주", "goal": "토스뱅크 상품 서버가 코어뱅킹·바깥 기관과 어떻게 이어지고, 몰리는 날 무엇으로 버티는지 말로 설명할 수 있다.", "resources": ["slash22-loan", "slash23-msa", "toss-faq10"], "task": "SLASH 22 발표의 '줄 세우기 → 서킷 → 대기열'과 SLASH 23 의 '지금이자 받기 분리'를 각각 그림 한 장으로 다시 그린다."},
+  {"title": "Spring·JPA·MySQL 로 상품 하나", "time": "2~4주", "goal": "가상 대출 신청 API 를 상태 전이·멱등·행 잠금까지 갖춰 만든다.", "resources": ["kotlin-docs", "wiki-jpa-app-1", "wiki-spring-db-1", "real-mysql", "ddd-start"], "task": "Kotlin 이나 Java 로 '신청 → 심사중 → 승인/거절 → 실행' API 를 만들고, 없는 길의 전이 거부·요청 키 중복 무시·같은 신청 건 동시 요청 100개 시험을 붙인다."},
+  {"title": "표 변경을 안전하게", "time": "1주", "goal": "버전 붙은 SQL 로 스키마를 관리하고, 엔티티와 표가 어긋나면 서버가 뜨지 않게 한다.", "resources": ["flyway-docs", "boot-dbinit", "wiki-practical-testing"], "task": "2단계 프로젝트에 Flyway 를 붙이고 V1~V3 를 만든다. ddl-auto=validate 를 켠 채 칸 하나를 엔티티에만 추가해 시작이 실패하는 것을 확인하고, MySQL 을 띄운 통합 테스트를 하나 만든다."},
+  {"title": "바깥 기관 연동과 몰림 대비", "time": "2~3주", "goal": "느린 외부 API 앞에 줄을 세우고, 실패가 늘면 우회하고, 넘치면 대기열로 받는다.", "resources": ["wiki-kafka", "kafka-guide", "kafka-docs", "resilience4j", "redis-zset", "sre-book", "release-it"], "task": "초당 20건만 받는 가짜 신용조회 서버를 만든다. 신청 요청을 Kafka 에 넣고 컨슈머가 한도만큼만 부르게 한 뒤, 가짜 서버 실패율을 올려 서킷이 열리고 '대신할 길'로 바뀌는지, Redis zset 대기열이 주기마다 M명씩 입장시키는지 본다."},
+  {"title": "여러 서버에 걸친 정합성", "time": "2주", "goal": "트랜잭션을 떼어 메시지로 보내고, 실패·중복에도 한 번만 반영되게 만든다.", "resources": ["slash24-fx", "msa-patterns", "system-design"], "task": "대출 실행과 '실행 알림 기록'을 아웃박스 + Kafka 로 떼고, 컨슈머를 일부러 죽였다 살려 중복 없이 처리되는지, 뒤 단계 실패 때 보상 동작이 도는지 시험한다."}
+ ],
+ "pay": {
+  "summary": "신입 초봉은 **약 5,100만원**(집계값), 직원 평균은 **약 1억 1,600만원**(공시) — 평균은 경력직이 대부분이라 초봉과 다르다",
+  "rows": [
+   {"label": "신입 초봉", "value": "약 5,146만원", "amount": 5146, "basis": "공공데이터 집계", "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 적혀 있지 않고 직군 구분도 없어 개발자 계약 연봉과 다를 수 있다 [24]"},
+   {"label": "직원 평균 보수", "value": "1억 1,600만원", "amount": 11600, "basis": "공시 · 2025년", "note": "은행연합회 공시(지배구조·보수체계 연차보고서), 임원을 뺀 직원만 [26]"},
+   {"label": "임직원 평균 급여", "value": "1억 1,700만원", "amount": 11700, "basis": "사업보고서 · 2024년", "note": "임직원 684명 기준 [25]"},
+   {"label": "카카오뱅크 평균", "value": "1억 2,200만원", "amount": 12200, "basis": "공시 · 2025년", "peer": true, "note": "같은 공시의 평균 보수 [26]"},
+   {"label": "케이뱅크 평균", "value": "1억 200만원", "amount": 10200, "basis": "공시 · 2025년", "peer": true, "note": "같은 공시의 임직원 평균 보수(임원 포함) [26]"}
+  ],
+  "how": "공고에는 연봉이 적혀 있지 않고, 합류 여정에 레퍼런스 체크 뒤 **처우 협의** 단계가 따로 있다 [1]. 평균 보수는 경력직이 많은 회사 전체 값이라 신입이 받는 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {"name": "식대", "detail": "1인 1법인카드, 금액 제한 없음"},
+   {"name": "업무 비용", "detail": "책·사무용품·업무 교육 100% 지원"},
+   {"name": "장비", "detail": "최고급 노트북·모니터·소프트웨어"},
+   {"name": "근무 장소", "detail": "재택 여부를 스스로 정하고 팀에 공유"},
+   {"name": "자율 휴가", "detail": "보고·승인 없이, 당일 오전에도 사용"},
+   {"name": "리프레쉬 휴가", "detail": "근속 3년마다 1개월 유급"},
+   {"name": "주택 자금 대출", "detail": "1억원 한도 무이자(6개월 이상 재직)"},
+   {"name": "건강", "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"},
+   {"name": "단체 보험", "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"},
+   {"name": "교통", "detail": "주차비·택시비 100%(법인카드)"},
+   {"name": "통신비", "detail": "매월 10만원"},
+   {"name": "경조사", "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"},
+   {"name": "사내 시설", "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"}
+  ],
+  "note": "토스 팀 전체를 기준으로 한 2021년 공식 소개 글이다 [28]. 토스뱅크에 그대로 적용되는지, 지금도 같은지는 글에 적혀 있지 않으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스뱅크 본사",
+  "address": "서울특별시 강남구 테헤란로 131, 13층 (역삼동, 한국지식재산센터)",
+  "postal": "06133",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20131",
+  "near": "2호선 역삼역과 강남역 사이 테헤란로 {추론}",
+  "note": "공고의 근무지 표기는 'Seoul'이고, 주소는 토스뱅크 사이트 하단의 회사 정보다 [27]. 팀 자리가 본사와 다를 수 있다 {추론}."
+ }
+}
