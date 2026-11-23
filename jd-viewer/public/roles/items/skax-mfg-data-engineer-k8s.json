@@ -1,0 +1,1689 @@
+{
+ "id": "skax-mfg-data-engineer-k8s",
+ "company": "SK주식회사(AX)",
+ "role": "제조 AI · Data 분야 Data Engineer / DevOps(k8s) 전문가",
+ "team": "제조AI Data팀",
+ "jobs": [
+  "ats-skcareers:sk:R262415",
+  "wanted-396609",
+  "jobkorea-50308626"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "SK하이닉스·SK이노베이션·SK온 공장 데이터를 모아 **AI가 바로 쓸 수 있게 정리하는 데이터 레이크(트랙 1)**와, 그 데이터·AI 플랫폼이 올라갈 **대규모 쿠버네티스 클러스터(트랙 2)**를 만드는 두 자리입니다.[1]",
+  "env": "쿠버네티스(CNCF) 위에 Cilium 네트워크·API Gateway·GitOps, 우대에 **온프레미스 빅데이터 클러스터**가 있습니다.[1] 같은 팀의 앞선 공고는 Azure·AWS를 적었습니다.[5]",
+  "oneline": "제조 시계열 데이터 엔지니어 또는 쿠버네티스 클러스터 엔지니어로 3년 이상 — 두 트랙이 같은 요건 묶음을 공유한다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "제조AI Data팀을 소개합니다.😊",
+   "short": "공고를 낸 곳은 SK AX 안의 '제조AI Data팀' — 계열사 공장의 AI·데이터를 맡는 팀이다.",
+   "why": "같은 팀이 같은 달에 AI Studio(사내 MLOps 플랫폼) 개발·운영 PL도 뽑고 있고,[4] 2026년 5월에는 데이터·생성형 AI·에이전트·플랫폼 네 트랙 공채를 냈습니다.[5] 이번 공고는 그중 **데이터 레이크를 만드는 사람**과 **그 밑의 쿠버네티스 클러스터를 만드는 사람** 두 자리입니다.[1] SK AX는 별도 법인이 아니라 SK주식회사 안의 사업 조직이라 회사 이름이 'SK주식회사(AX)'로 적힙니다.[18]",
+   "refs": [
+    1,
+    4,
+    5,
+    18
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SK하이닉스, SK Innovation, SK온 등 주요 계열사 제조 현장에서 AI와 Data 기반 디지털 전환을 리드하는 전문가 조직입니다.",
+   "short": "고객은 반도체·정유화학·배터리 공장 — 계열사 공장 데이터를 모아 AI가 쓰게 만드는 일이다.",
+   "why": "고객사 SK하이닉스는 스스로 AX(AI 전환)를 설명하며 **흩어진 데이터를 표준화해 통합하는 일이 다른 AI 과제의 출발점**이라고 적었고, 팹(반도체 공장)의 장비·물류 데이터를 실시간으로 분석해 장애 징후를 먼저 잡는 일을 꼽았습니다.[7] 이 공고의 트랙 1 'AI Ready Data'가 바로 그 출발점 쪽입니다. {추론}",
+   "actually": {
+    "intro": "회사·고객이 공개한 것입니다.",
+    "items": [
+     "**반도체(SK하이닉스)** — 장비 센서·공정 이력·검사 이미지가 초 단위로 쌓인다. 데이터 통합과 실시간 분석이 회사가 꼽은 첫 과제다.[7]",
+     "**옛 SK C&C의 제조 데이터 도구** — 2021년에 제조 특화 데이터 처리 엔진을 내놨고,[9] 제조 플랫폼 iFacts 소개서에는 개발 플랫폼 칸에 DevOps·API Gateway가 들어 있다.[8]",
+     "**제조 현장의 모델 수** — 옛 SK C&C는 제조 현장이 제품마다 모델 100~200개를 필요로 한다고 설명했다.[11] 모델이 많으면 같은 데이터를 여러 모델이 다시 쓰게 정리해 두는 일이 커진다. {추론}"
+    ]
+   },
+   "how_far": "어느 계열사 프로젝트에 들어갈지는 공고에 없습니다. 반도체·배터리 공정 지식은 입사 뒤 배우는 쪽이고, 지원 단계에서는 **'센서·설비·공정 이력' 같은 시계열 데이터를 다뤄 봤다**는 경험이 가장 가깝게 닿습니다. {추론}",
+   "refs": [
+    7
+   ],
+   "study": [
+    "isa95"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "제조 현장의 복잡한 문제를 AI 모델과 데이터 플랫폼으로 해결하며, 고객 가치 창출을 최우선으로 합니다.",
+   "short": "모델만 만드는 팀이 아니라 모델이 먹을 데이터와 돌아갈 플랫폼까지 맡는다는 뜻이다.",
+   "why": "같은 팀의 AI Studio 공고는 모델 개발부터 서빙·운영까지 잇는 플랫폼을 쿠버네티스 위에 올린다고 적었습니다.[4] 이 공고의 두 트랙은 그 플랫폼의 **아래 두 층** — 데이터(트랙 1)와 컨테이너 인프라(트랙 2) — 입니다. {추론}",
+   "flows": [
+    {
+     "caption": "이 팀이 맡는 층(같은 팀 공고 두 개를 겹쳐 본 것) {추론}",
+     "steps": [
+      "공장 원천 · 설비 센서·MES·검사 장비",
+      "데이터 레이크 · 수집·적재·정제(트랙 1)",
+      "컨테이너 인프라 · 쿠버네티스·네트워크(트랙 2)",
+      "AI 플랫폼 · 학습·서빙(AI Studio PL 공고)",
+      "현장 서비스 · 이상 감지·예측 화면"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "refs": [
+    4
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "팀원 간 상호 존중과 격려를 바탕으로, 지속적인 학습과 성장을 통해 제조 AI·Data 혁신을 주도하고 있습니다.",
+   "short": "팀 분위기 소개 문장 — 기술 요건은 아니다.",
+   "why": "공고가 스스로 내세운 팀 문화입니다.[1] 실제 분위기는 공개 자료로 확인할 수 없으니 면접에서 '학습 지원이 어떤 형태로 있나'를 물어보는 편이 낫습니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "구성원의 성장이 곧 회사의 성장이라는 믿음 아래, 신기술 교육·자기계발·실전 프로젝트 경험을 적극 지원합니다.",
+   "short": "교육 지원이 있다는 말 — SK AX 채용 사이트에는 사내 교육·학습 예산이 적혀 있다.",
+   "why": "SK AX 채용 사이트의 복리후생 페이지에는 사내 학습 체계(mySUNI 등)와 해마다 쓰는 학습 예산(Learning Account)이 적혀 있습니다.[16] 자격증 응시료 지원 같은 세부는 페이지에 없습니다.[16]",
+   "refs": [
+    16
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AI·Data·플랫폼 전문가들이 함께 협업하며, 서로의 전문성을 존중하는 문화를 지향합니다.",
+   "short": "데이터 엔지니어·쿠버네티스 엔지니어·AI 엔지니어가 한 팀에서 같이 일한다는 뜻이다.",
+   "why": "같은 팀이 AI Studio PL,[4] 데이터·LLM·에이전트·플랫폼 트랙[5]을 함께 뽑고 있어 한 프로젝트에 여러 직무가 섞여 들어가는 구조로 보입니다. {추론} 그래서 요건에 '협업·커뮤니케이션'이 따로 들어가 있습니다.[1]",
+   "refs": [
+    1,
+    4,
+    5
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "아이디어 제안부터 실제 서비스 적용까지, 도전과 실험이 장려되는 환경입니다.",
+   "short": "새 오픈소스·새 구조를 직접 제안해 볼 여지가 있다는 문장이다.",
+   "why": "우대사항에 '다양한 오픈소스 AI·Data 프레임워크 활용'과 'LLM·Agent 트렌드 조사·현업 적용'이 있어,[1] 새 도구를 시험해 보고 고객 현장에 넣는 일이 실제 업무에 포함된다고 읽힙니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "✅ [트랙 1] Data Lake · AI Ready Data Platform Engineering 전문가",
+   "short": "트랙 1 = 공장 데이터를 모아 AI가 바로 쓸 수 있게 정리해 두는 데이터 플랫폼 엔지니어.",
+   "why": "'AI Ready'는 데이터가 쌓여만 있는 게 아니라 **찾을 수 있고(메타데이터), 믿을 수 있고(품질), 권한이 정리돼 있어** 모델·RAG가 바로 가져다 쓸 수 있는 상태를 말합니다. {추론} SK AX가 같은 해 공개한 SKI E&S 사례가 이 모습을 보여 줍니다 — 원본 층·분석 층·화면/생성형 AI용 층 세 층에 기술·업무 메타데이터 카탈로그와 역할별 권한을 붙였습니다.[6]",
+   "flows": [
+    {
+     "caption": "SK AX 사례의 데이터 층(SKI E&S, AWS 위)[6]",
+     "steps": [
+      "수집 · DB 복제(DMS)·스트림(MSK)",
+      "L0 Lake · 원본 그대로",
+      "L1 DW · 분석·실험용으로 정제",
+      "L2 Mart · 화면(BI)·생성형 AI용",
+      "카탈로그·권한 · 메타 검색·역할별 접근"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "그 사례는 에너지 회사·퍼블릭 클라우드였고, 이 공고는 제조 현장이고 우대에 '온프레미스 빅데이터 클러스터'가 있습니다.[1][6] 같은 층 구조를 사내 서버 위 오픈소스로 만드는 일까지 생각해 두는 편이 안전합니다. {추론}",
+   "refs": [
+    6
+   ],
+   "study": [
+    "fde-ko",
+    "lakehouse-paper"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "대용량 제조 데이터 수집·적재·정제·서빙을 위한 데이터 파이프라인 설계 및 운영",
+   "short": "설비 센서·공정 데이터를 끌어와(수집) 저장하고(적재) 다듬어(정제) 꺼내 주는(서빙) 흐름을 만든다.",
+   "why": "AI 과제의 출발점이 표준화된 데이터라고 고객사가 직접 적었습니다.[7] 제조 데이터는 설비 수천 대가 초 단위로 값을 내서 양이 크고, 늦게 오거나 빠지거나 겹치는 값이 흔합니다. {추론}",
+   "actually": {
+    "intro": "보통 이런 단계입니다. 이 팀이 쓰는 도구 이름은 공고에 없습니다.",
+    "items": [
+     "**수집** — DB의 바뀐 행만 복제(CDC)하거나, 센서 값을 메시지 큐(Kafka 같은 것)로 흘려받는다. SK AX 사례는 DB 복제 도구와 관리형 Kafka를 썼다.[6][31]",
+     "**적재** — 원본은 지우지 않고 날짜·설비별로 나눠 파일(Parquet 등)로 쌓는다. 표 형식(Iceberg 같은 것)을 쓰면 나중에 스키마를 바꾸거나 과거 시점을 다시 읽을 수 있다.[26]",
+     "**정제** — 단위 맞추기, 설비 코드 표준화, 빈 값·범위 밖 값·중복 처리, 늦게 온 값 다시 반영. Spark 작업으로 돌리고 Airflow로 순서를 잡는 구성이 흔하다.[28][30]",
+     "**서빙** — 분석가용 SQL 표, 모델 학습용 묶음(피처), 화면용 집계, RAG용 문서 조각처럼 쓰는 쪽에 맞는 꼴로 내준다.[6]",
+     "**운영** — 하루치가 다 들어왔나, 행 수가 평소와 같나를 매일 확인하고 실패하면 그 구간만 다시 돌린다(백필).[30]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "하루치 센서 데이터가 얼마나 되나(가상 값)",
+     "body": "설비 센서 5,000개가 초당 10번 값을 내면 하루 43억 행입니다. 파일을 설비마다 나누면 파일이 너무 잘아지고(4MB), 라인 단위로 묶으면 적당해집니다(수백 MB). 나누는 단위를 정하는 것이 설계의 첫 결정입니다.",
+     "lang": "python",
+     "code": "sensors, hz, bytes_per_row = 5000, 10, 40\nrows_day = sensors * hz * 86400\nraw_gb = rows_day * bytes_per_row / 1e9\nprint(f\"하루 {rows_day:,}행 · 원본 약 {raw_gb:,.0f}GB · 압축 1/8이면 약 {raw_gb/8:,.0f}GB\")\nfor part, files in ((\"날짜×설비\", sensors), (\"날짜×라인(50개)\", 50)):\n    print(f\"분할 {part}: 파일 {files:,}개, 개당 약 {raw_gb/8/files*1000:,.0f}MB\")\n# 출력:\n# 하루 4,320,000,000행 · 원본 약 173GB · 압축 1/8이면 약 22GB\n# 분할 날짜×설비: 파일 5,000개, 개당 약 4MB\n# 분할 날짜×라인(50개): 파일 50개, 개당 약 432MB"
+    }
+   ],
+   "how_far": "어떤 데이터를 어떤 규칙으로 표준화할지는 고객 현업(공정 엔지니어)과 정합니다. 데이터 엔지니어는 그 규칙을 **다시 돌려도 같은 결과가 나오는 파이프라인**으로 만들고, 늦은 데이터·실패·재실행까지 견디게 운영합니다. {추론}",
+   "refs": [
+    6,
+    7,
+    26,
+    28,
+    30,
+    31
+   ],
+   "study": [
+    "fde-ko",
+    "kafka-book",
+    "iceberg-docs",
+    "airflow-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "데이터 파이프라인 설계/구축 및 데이터엔지니어링 언어 활용 능력",
+   "short": "파이프라인을 코드로 짜는 힘 — 보통 SQL·Python, 대용량이면 Spark(Scala/PySpark)다.",
+   "why": "공고는 언어 이름을 적지 않았습니다.[1] 같은 팀의 5월 공고는 필수 요건에 **Python과 SQL**, ETL/ELT·배치·스트리밍 파이프라인 경험을 적었습니다.[5]",
+   "level": {
+    "basic": "SQL로 조인·집계·윈도우 함수를 쓰고, Python으로 파일·API에서 데이터를 받아 표로 넣는다.",
+    "work": "PySpark로 수억 행을 날짜 구간별로 처리하고, 셔플·파티션 수를 보고 느린 작업을 고친다.[29] 같은 구간을 다시 돌려도 결과가 겹치지 않게(멱등) 쓴다.",
+    "team": "제조 시계열(설비 × 시각)을 다루고, 결과를 컨테이너로 묶어 쿠버네티스에서 돌린다 — 트랙 2와 맞물리는 부분.[1] {추론}"
+   },
+   "refs": [
+    1,
+    5,
+    29
+   ],
+   "study": [
+    "spark-guide",
+    "spark-docs",
+    "ddia"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Data Lake, Data Warehouse, Data Platform 구축/운영 경험",
+   "short": "레이크(원본 창고)·웨어하우스(정리된 분석 표)·그 둘을 묶은 플랫폼을 만들어 본 경험.",
+   "why": "레이크는 싸게 많이 담고, 웨어하우스는 빠르고 정확하게 묻습니다. 둘을 따로 두면 같은 데이터를 두 벌 관리해야 해서 하나의 열린 표 형식 위에 둘을 합치자는 것이 '레이크하우스'입니다.[27] 같은 팀 5월 공고도 레이크·웨어하우스·**레이크하우스** 설계를 업무로 적었습니다.[5]",
+   "actually": {
+    "items": [
+     "**레이크** — 원본 파일을 날짜·출처별 폴더(객체 저장소·HDFS)에 그대로. 스키마는 읽을 때 정한다.",
+     "**웨어하우스** — 사실 표(측정값·생산 실적)와 기준 표(설비·제품·라인)로 정리한 분석용 표.",
+     "**층 나누기** — SK AX 사례는 L0(원본)·L1(분석)·L2(화면·AI용) 세 층이었다.[6]",
+     "**플랫폼** — 위 저장소에 카탈로그·권한·비용 추적·작업 실행 환경을 붙여 여러 팀이 같이 쓰게 하는 것.[6]"
+    ]
+   },
+   "how_far": "지원서에는 '무엇을 만들었다'보다 **몇 TB를, 몇 개 원천에서, 어떤 층으로 나눠, 누가 썼는지**를 숫자로 적는 편이 이 줄에 맞습니다. {추론}",
+   "refs": [
+    5,
+    6,
+    27
+   ],
+   "study": [
+    "kimball",
+    "lakehouse-paper",
+    "fde-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "✅ [트랙 2] DevOps k8s Engineering 전문가",
+   "short": "트랙 2 = AI·데이터 플랫폼이 올라갈 쿠버네티스 클러스터를 설계·구축·운영하는 엔지니어.",
+   "why": "옛 SK C&C는 자체 쿠버네티스 컨테이너 플랫폼(ZCP)을 갖고 있고 MLOps·컨테이너 단위 GPU 스케줄링을 그 위에 얹었다고 밝혔습니다.[10] 같은 팀의 AI Studio도 쿠버네티스 위에 있습니다.[4] 이 트랙은 그 아래 클러스터 자체를 맡는 자리로 읽힙니다. {추론}",
+   "refs": [
+    4,
+    10
+   ],
+   "study": [
+    "kubernetes-book",
+    "k8s-in-action"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "대규모 k8s(CNCF) 클러스터 아키텍처 설계 및 구축",
+   "short": "노드 수백 대급 클러스터의 뼈대 — 제어부 이중화, etcd, 주소 대역, 노드 묶음 — 를 정하고 세운다.",
+   "why": "쿠버네티스 한 클러스터는 공식적으로 노드 5,000대·파드 15만 개·노드당 파드 110개까지를 기준으로 시험됩니다.[19] '대규모'는 이 한계 가까이 가거나, 여러 공장·계열사용 클러스터를 여럿 두는 상황을 말합니다. {추론}",
+   "actually": {
+    "intro": "공식 문서가 대규모 클러스터에서 짚는 것입니다.",
+    "items": [
+     "**제어부 이중화** — API 서버·etcd를 3대 이상 두고 앞에 로드밸런서. etcd를 같은 서버에 둘지 따로 둘지 고른다.[21]",
+     "**etcd 정족수** — 홀수 대수로 두고 과반이 살아 있어야 쓴다. 정기 스냅숏으로 백업하고 복구를 연습한다.[20]",
+     "**주소 대역** — 파드·서비스 IP 대역을 처음에 넉넉히 잡는다. 나중에 바꾸기 매우 어렵다.[44] {추론}",
+     "**노드 묶음** — 일반 서비스 노드, GPU 노드, 데이터(Spark) 노드를 라벨·taint로 나눠 서로 밀어내지 않게 한다.",
+     "**한계 지표** — API 서버 응답 시간·etcd 크기를 지켜보고 넘치기 전에 클러스터를 나눈다.[19]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "etcd 는 왜 3대·5대인가",
+     "body": "과반이 살아 있어야 쓰기를 받습니다. 4대는 3대보다 견디는 대수가 늘지 않습니다.",
+     "lang": "python",
+     "code": "for n in (1, 3, 5, 7):\n    print(f\"etcd {n}대: 과반 {n//2+1} · 죽어도 되는 대수 {(n-1)//2}\")\n# 출력:\n# etcd 1대: 과반 1 · 죽어도 되는 대수 0\n# etcd 3대: 과반 2 · 죽어도 되는 대수 1\n# etcd 5대: 과반 3 · 죽어도 되는 대수 2\n# etcd 7대: 과반 4 · 죽어도 되는 대수 3"
+    },
+    {
+     "title": "파드 주소 대역이 노드 수를 막는다",
+     "body": "노드마다 /24(주소 256개)를 떼어 주면, 클러스터 대역이 /16일 때 노드는 256대가 끝입니다. 대규모라면 처음부터 넓게 잡습니다.",
+     "lang": "python",
+     "code": "import ipaddress\nfor cidr in (\"10.244.0.0/16\", \"10.0.0.0/12\"):\n    net = ipaddress.ip_network(cidr)\n    print(f\"클러스터 {net} · 노드당 /24 → 노드 최대 {2 ** (24 - net.prefixlen):,}대\")\n# 출력:\n# 클러스터 10.244.0.0/16 · 노드당 /24 → 노드 최대 256대\n# 클러스터 10.0.0.0/12 · 노드당 /24 → 노드 최대 4,096대"
+    }
+   ],
+   "how_far": "어떤 배포판(직접 kubeadm·관리형·자체 ZCP)인지는 공고에 없습니다.[1] 최소선은 **제어부 이중화·etcd 백업 복구·업그레이드를 손으로 해 본 것**이고, 이 자리는 그 위에 용량 계획(노드·IP·etcd 크기)을 세우는 데까지 갑니다. {추론}",
+   "refs": [
+    19,
+    20,
+    21,
+    44
+   ],
+   "study": [
+    "k8s-ha",
+    "k8s-large",
+    "k8s-docs",
+    "cncf-certs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "API Gateway 등 클라우드 네이티브 네트워크(CNI - Cilium 등) 환경 구성",
+   "short": "파드끼리 통신하는 길(CNI, Cilium)과 밖에서 들어오는 문(API Gateway)을 깔고 규칙을 건다.",
+   "why": "쿠버네티스는 파드마다 IP를 주고 NAT 없이 서로 닿게 하라는 규칙만 정하고, 실제 길은 CNI 플러그인이 깝니다.[44] Cilium은 리눅스 커널의 eBPF로 그 길을 만들고 네트워크 정책·kube-proxy 대체·흐름 관측(Hubble)을 같이 줍니다.[22] 제조 고객사 데이터는 계열사·공정마다 누가 볼 수 있나가 갈려 **네트워크 정책으로 막는 일**이 중요해집니다. {추론}",
+   "actually": {
+    "items": [
+     "**CNI 설치·설정** — 파드 대역, 노드 사이 터널이냐 직접 경로냐, kube-proxy를 Cilium으로 바꿀지.[22]",
+     "**네트워크 정책** — 기본은 막고, 'ingest 네임스페이스만 Kafka 9092로' 같은 허용 규칙을 쌓는다.[22]",
+     "**관측** — Hubble로 어느 파드가 어디로 가다 막혔는지 본다.[22]",
+     "**입구** — Gateway API의 Gateway(인프라 담당)와 HTTPRoute(앱 담당)로 역할을 나눠 외부 요청을 서비스로 보낸다.[23]",
+     "**API Gateway** — 인증·호출량 제한·경로 묶기를 앞단에서. SK AX 제조 플랫폼 소개서에도 개발 플랫폼에 API Gateway가 들어 있다.[8]"
+    ]
+   },
+   "how_far": "Cilium은 '등'이라 다른 CNI(Calico 등) 경험도 통합니다.[1] 최소선은 **CNI를 직접 설치해 정책으로 막고 여는 것을 해 본 것**, 이 자리는 그 위에 다중 클러스터·외부 입구 설계까지 갑니다. {추론}",
+   "refs": [
+    8,
+    22,
+    23,
+    44
+   ],
+   "study": [
+    "cilium-docs",
+    "gateway-api"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AI· Big Data 플랫폼을 위한 컨테이너 기반 인프라 설계 및 구축/운영",
+   "short": "Spark·Kafka·모델 서빙·GPU 작업이 쿠버네티스 위에서 서로 안 부딪히게 자리를 깔아 준다.",
+   "why": "데이터 작업(Spark)과 AI 작업(학습·서빙)은 일반 웹 서비스와 달리 짧게 많은 자원을 쓰고 디스크·GPU를 많이 씁니다. Spark는 쿠버네티스를 직접 자원 관리자로 쓸 수 있고,[28] 모델 서빙은 KServe 같은 도구로 올립니다.[43] 옛 SK C&C는 컨테이너 단위 GPU 모니터링·스케줄링을 자기 플랫폼의 기능으로 내세웠습니다.[10]",
+   "actually": {
+    "items": [
+     "**저장소** — 상태가 있는 것(Kafka·DB·카탈로그)에 쓸 영구 볼륨과 저장소 클래스.",
+     "**Spark on k8s** — 드라이버·실행기를 파드로 띄우고 작업이 끝나면 지운다.[28]",
+     "**GPU 노드** — 장치 플러그인으로 GPU를 요청받고, 팀별 한도를 건다.[10]",
+     "**서빙** — 모델을 API로 올리고 요청량에 따라 늘리고 줄인다.[43]"
+    ]
+   },
+   "how_far": "모델·파이프라인 자체는 다른 트랙·AI 엔지니어 몫이고, 이 자리는 **그것들이 올라갈 자리(자원·저장소·네트워크·관측)**까지입니다. {추론}",
+   "refs": [
+    10,
+    28,
+    43
+   ],
+   "study": [
+    "spark-k8s",
+    "kserve-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "※ 근무지 : 경기도 분당",
+   "short": "근무지는 분당 — 공고 사본의 주소 칸은 정자동 SK u-타워다.",
+   "why": "원티드 사본의 근무지 칸이 '성남대로 343번길 9 (정자동, SK-U타워)'입니다.[2] 고객이 계열사 공장이라 프로젝트에 따라 고객 현장에 나가는 일이 있을 수 있지만 공고에는 적혀 있지 않습니다.[1] {추론}",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Tech R&D - Data Engineering",
+   "short": "잡코리아 사본에만 있는 직무 분류 표시 — 이 공고를 데이터 엔지니어링 직군으로 묶었다.",
+   "why": "잡코리아 사본의 직무 분류 줄입니다.[3] 트랙 2(쿠버네티스)도 같은 공고 안에 있지만 분류는 데이터 엔지니어링 하나로 걸려 있습니다.[3]",
+   "refs": [
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "이런 경험을 갖고 계시다면 저희가 찾는 그분입니다! ✨",
+   "short": "아래 다섯 줄이 필수 요건 — 두 트랙 공통이다.",
+   "why": "공고는 트랙별로 요건을 나누지 않고 한 묶음으로 적었습니다.[1] 그래서 데이터 엔지니어에게도 쿠버네티스 CI/CD가, 쿠버네티스 엔지니어에게도 프로젝트 관리가 요구되는 꼴입니다. 실제로는 트랙에 맞는 줄에 무게가 실릴 것으로 보입니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "프로젝트 일정 및 리소스 관리, 산출물 품질 관리 경험이 있으신 분",
+   "short": "고객 프로젝트로 일한다는 뜻 — 일정표·사람·산출물(설계서·테스트 결과)을 챙겨 본 경험이다.",
+   "why": "SK AX는 계열사·대외 고객의 프로젝트를 맡는 IT 서비스 회사라 일이 '프로젝트' 단위로 돌아갑니다.[5][12] 프로젝트 관리 지식 체계(PMBOK)는 일정·자원·품질을 따로 관리 영역으로 둡니다.[42]",
+   "actually": {
+    "items": [
+     "**일정** — 데이터 원천 연결·파이프라인·검증·이관 순서로 일을 쪼개고 늦어지는 칸을 먼저 알린다.",
+     "**자원** — 사람뿐 아니라 서버·GPU·저장소 용량도 자원이다. 고객 장비 반입이 일정의 병목이 되기 쉽다. {추론}",
+     "**산출물 품질** — 설계서·데이터 사전·테스트 결과서·운영 매뉴얼을 고객이 받아들일 수준으로."
+    ]
+   },
+   "how_far": "PM 자리가 아니라 엔지니어 자리입니다. **내 몫의 일정과 산출물을 스스로 관리해 본 경험**(작은 단위 리드)이면 이 줄을 채운다고 보는 편이 맞습니다. {추론}",
+   "refs": [
+    5,
+    12,
+    42
+   ],
+   "study": [
+    "pmbok"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "고객 요구사항 분석·설계를 통한 개발/품질 점검 역량이 뛰어나신 분",
+   "short": "고객(공장 현업·계열사 IT)이 말한 것을 구조로 옮기고, 만든 게 그대로인지 확인하는 힘.",
+   "why": "고객이 계열사 제조 현장이라[1] 요구는 '설비 이상을 빨리 알고 싶다' 같은 말로 옵니다. 그것을 어떤 데이터·주기·지연 허용치·보존 기간으로 바꿀지가 설계입니다. {추론}",
+   "actually": {
+    "items": [
+     "**말을 숫자로** — '실시간' → '센서 값이 5초 안에 화면에', '오래' → '원본 3년 보존' 같은 목표값으로.[41]",
+     "**데이터 사전** — 설비 코드·태그 이름·단위를 고객과 같이 정한 표.",
+     "**점검** — 원천 행 수와 적재 행 수 대조, 표본 값 비교, 장애 시나리오(노드 하나 죽이기) 시험."
+    ]
+   },
+   "refs": [
+    1,
+    41
+   ],
+   "study": [
+    "sre-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "제조 AI· Big Data 플랫폼을 위한 컨테이너 기반 인프라 설계 및 운영 경험이 있으신 분",
+   "short": "Spark·Kafka 같은 빅데이터 도구를 컨테이너(쿠버네티스) 위에서 돌려 본 경험.",
+   "why": "업무 트랙 2의 셋째 줄이 그대로 필수 요건으로 올라온 것입니다.[1] 빅데이터 도구는 원래 전용 서버(Hadoop YARN)에서 돌던 것이 많아, 쿠버네티스로 옮기면 저장소·네트워크·자원 한도를 새로 맞춰야 합니다.[28][46] {추론}",
+   "how_far": "'제조'가 붙어 있지만 제조 경험이 필수라는 뜻인지는 분명하지 않습니다.[1] **대용량 데이터 도구를 컨테이너로 운영해 본 것**이 핵심이고, 제조 데이터 경험은 더하기로 보는 편이 맞습니다. {추론}",
+   "refs": [
+    1,
+    28,
+    46
+   ],
+   "study": [
+    "spark-k8s",
+    "k8s-in-action"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "k8s 기반 CI/CD 및 GitOps 파이프라인 적용 및 운영 경험해 보신 분",
+   "short": "코드를 올리면 이미지가 만들어지고, Git에 적힌 상태대로 클러스터가 저절로 맞춰지게 하는 것.",
+   "why": "GitOps는 **원하는 상태를 Git에 선언으로 적고, 클러스터 안의 도구가 그것을 당겨 와 계속 맞추는** 운영 방식입니다(원칙 넷: 선언형·버전 관리·자동으로 당겨 옴·계속 맞춤).[24] Argo CD 같은 도구가 Git과 실제 상태를 비교해 다르면 되돌리고, Git에 없는 자원은 지웁니다(prune).[25] 손으로 바꾼 설정이 쌓여 클러스터마다 달라지는 일을 막습니다. {추론}",
+   "flows": [
+    {
+     "caption": "보통의 쿠버네티스 CI/CD + GitOps 흐름[24][25]",
+     "steps": [
+      "코드 푸시 · 앱 저장소",
+      "CI · 테스트·이미지 빌드·레지스트리 올림",
+      "설정 저장소 · 이미지 태그를 바꾼 커밋",
+      "GitOps 도구 · 차이 감지·동기화",
+      "클러스터 · 원하는 상태로 맞춰짐"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "examples": [
+    {
+     "title": "GitOps 도구가 하는 일을 작게 흉내 내기",
+     "body": "Git의 원하는 상태와 실제 상태를 비교해, 다르면 되돌리고 Git에 없으면 지웁니다.",
+     "lang": "python",
+     "code": "desired = {\"api-gw\": {\"replicas\": 3, \"image\": \"gw:1.4\"}, \"ingest\": {\"replicas\": 2, \"image\": \"ing:2.1\"}}\nactual = {\"api-gw\": {\"replicas\": 1, \"image\": \"gw:1.4\"}, \"ingest\": {\"replicas\": 2, \"image\": \"ing:2.1\"},\n          \"debug-pod\": {\"replicas\": 1, \"image\": \"busybox\"}}\nfor name in sorted(set(desired) | set(actual)):\n    d, a = desired.get(name), actual.get(name)\n    if d == a:\n        print(f\"{name}: 같음\")\n    elif d is None:\n        print(f\"{name}: Git에 없음 → 지운다(prune)\")\n    else:\n        diff = {k: (a.get(k), v) for k, v in d.items() if a.get(k) != v}\n        print(f\"{name}: 다름 {diff} → Git 쪽으로 되돌린다\")\n# 출력:\n# api-gw: 다름 {'replicas': (1, 3)} → Git 쪽으로 되돌린다\n# debug-pod: Git에 없음 → 지운다(prune)\n# ingest: 같음"
+    }
+   ],
+   "how_far": "최소선은 **Helm이나 Kustomize로 묶은 앱을 Argo CD(또는 Flux)로 배포하고 되돌려 본 것**. 이 자리는 클러스터 자체 설정(애드온·정책)까지 Git으로 관리하는 데까지 갑니다. {추론}",
+   "refs": [
+    24,
+    25
+   ],
+   "study": [
+    "opengitops",
+    "argocd-docs",
+    "docker-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "LLM, Agent 기반 최신 AI 기술 트렌드 조사 및 현업 적용을 해보신 분",
+   "short": "LLM·에이전트를 조사해 실제 업무에 붙여 본 경험 — 같은 팀이 생성형 AI 트랙도 돌린다.",
+   "why": "같은 팀의 5월 공고는 모든 트랙 필수 요건에 LLM·RAG·벡터 DB·에이전트 이해를 넣었습니다.[5] 데이터 엔지니어 쪽에서는 공장 문서·정비 기록을 LLM이 찾아 쓰게 정리하는 일로, 쿠버네티스 쪽에서는 LLM 서빙 자원을 까는 일로 닿습니다. {추론}",
+   "actually": {
+    "items": [
+     "**조사** — 모델·프레임워크를 고객 데이터로 작게 시험해 보고 비교표를 만든다.",
+     "**적용** — 정해진 순서로 LLM을 부르는 '워크플로'와 LLM이 다음 행동을 고르는 '에이전트'를 구분하고, 단순한 것부터 쓴다.[47]"
+    ]
+   },
+   "how_far": "AI 엔지니어 자리가 아니므로 모델을 만들 필요는 없습니다. **LLM을 붙인 작은 도구를 만들어 업무에 써 본 경험**과, 그때 데이터·인프라에서 무엇이 필요했는지 설명할 수 있으면 충분합니다. {추론}",
+   "refs": [
+    5,
+    47
+   ],
+   "study": [
+    "anthropic-agents"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "해외여행에 결격사유가 없는 분 (병역 대상자의 경우 병역필 또는 면제자)",
+   "short": "SK 공고 공통 조건 — 해외 출장이 가능해야 하고 병역을 마쳤거나 면제여야 한다.",
+   "why": "SK Careers 원문에서는 '지원 전 확인' 공통 요건이고, 원티드 사본에서는 자격요건 칸에 들어가 있습니다.[1][2]",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "채용 분야의 경력을 3년 이상 보유하신 분",
+   "short": "경력 3년 이상 — 데이터 엔지니어링이나 쿠버네티스 운영 경력으로 센다.",
+   "why": "공통 요건입니다.[1][2] 같은 팀 AI Studio PL은 5년 이상이었으니,[4] 이 자리는 그 밑에서 직접 만드는 실무자 급으로 읽힙니다. {추론}",
+   "refs": [
+    1,
+    2,
+    4
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "최종합격 후 회사가 지정하는 날짜에 입사 가능하신 분",
+   "short": "입사일을 회사가 정한다 — 이직 시 퇴사 통보 기간을 미리 따져 둔다.",
+   "why": "공통 요건입니다.[1][2] 전형이 서류 → SKCT(심층역량검사) → 면접 2회 → 채용검진·처우협의 순이라[1] 지원부터 입사까지 몇 주가 걸립니다. {추론}",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "이런 경험과 역량이 있으면 더 좋아요! 👍",
+   "short": "아래 열 줄이 우대 — 두 트랙이 섞여 있다. 내 트랙 줄부터 본다.",
+   "why": "데이터 쪽(대규모 처리·온프레미스 클러스터·거버넌스·벡터 DB·온톨로지)과 쿠버네티스 쪽(데이터 플랫폼 운영·고가용성·MLOps 연계)이 섞여 있습니다.[1] {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "CNCF(k8s)기반 데이터플랫폼 개발/운영 경험이 있으신 분",
+   "short": "데이터 플랫폼(Spark·Kafka·Trino·Airflow 등)을 쿠버네티스 위에 올려 운영해 본 경험.",
+   "why": "두 트랙이 만나는 줄입니다. 데이터 도구를 쿠버네티스에 올리면 한 클러스터에서 자원을 나눠 쓰고 GitOps로 같이 관리할 수 있지만, 상태가 있는 도구(Kafka·메타스토어)는 저장소·업그레이드가 까다로워집니다. {추론} Spark는 쿠버네티스를 직접 자원 관리자로 씁니다.[28]",
+   "actually": {
+    "items": [
+     "Spark 작업을 쿠버네티스 파드로 띄우기(spark-submit 또는 오퍼레이터).[28]",
+     "Airflow 작업을 파드 단위로 실행하기.[30]",
+     "Kafka를 오퍼레이터로 운영하고 파티션·보존 기간을 정하기.[31]"
+    ]
+   },
+   "refs": [
+    28,
+    30,
+    31
+   ],
+   "study": [
+    "spark-k8s",
+    "airflow-docs",
+    "kafka-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 제조 데이터 처리 및 성능 튜닝 역량이 있으신 분",
+   "short": "수십억 행 센서 데이터를 느리지 않게 — 파티션·파일 크기·셔플·쏠림을 다룬다.",
+   "why": "제조 데이터는 설비 × 시각으로 행이 아주 많고, 특정 설비·라인에 값이 쏠리기 쉽습니다. {추론} Spark SQL 공식 조정 지침은 실행 중 셔플 파티션 합치기, 쏠린 조인 쪼개기, 작은 표 브로드캐스트 같은 수단을 듭니다.[29]",
+   "actually": {
+    "items": [
+     "**파티션 단위** — 너무 잘게 나누면 작은 파일이 수만 개가 된다(위 업무 예시). 표 형식의 숨은 파티션·파일 합치기로 관리한다.[26]",
+     "**셔플 줄이기** — 조인·집계 전에 필요한 열·구간만 남긴다.",
+     "**쏠림** — 값이 몰린 설비 키를 쪼개거나 실행 중 쏠림 처리를 켠다.[29]",
+     "**재는 법** — 작업 화면에서 단계별 시간·셔플 크기를 보고 가장 느린 단계부터 고친다."
+    ]
+   },
+   "refs": [
+    26,
+    29
+   ],
+   "study": [
+    "spark-docs",
+    "ddia"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "On-Prem. 기반 Big Data Cluster 구축/운영 경험이 있으신 분",
+   "short": "클라우드가 아닌 회사 서버실에 Hadoop·Spark·Kafka 클러스터를 직접 세우고 돌려 본 경험.",
+   "why": "반도체 공장 데이터는 공정 기밀이라 사내에 두는 경우가 많습니다. {추론} 옛 SK C&C의 ML 분석 플랫폼 사례도 민감한 데이터는 사내에 둔다고 했습니다.[11] 온프레미스에서는 디스크 고장·랙 배치·네트워크 대역까지 직접 챙깁니다 — HDFS가 블록을 기본 3벌 복제하고 랙을 나눠 두는 것도 그 때문입니다.[46]",
+   "how_far": "같은 팀 5월 공고는 Azure·AWS를 적었고[5] 이 공고는 온프레미스를 우대로 적었습니다.[1] 고객마다 다르다고 보고 **두 쪽 모두에서 같은 구조를 설명할 수 있는 것**이 좋습니다. {추론}",
+   "refs": [
+    1,
+    5,
+    11,
+    46
+   ],
+   "study": [
+    "hdfs-docs",
+    "fde-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "데이터 거버넌스, 메타데이터, 데이터 품질 관리 체계 구축 경험이 있으신 분",
+   "short": "누가 어떤 데이터를 볼 수 있나·이 표가 무엇이고 어디서 왔나·값이 믿을 만한가를 체계로 만든다.",
+   "why": "'AI Ready'의 핵심이 이 줄입니다. {추론} SK AX의 SKI E&S 사례는 기술 메타와 업무 메타를 합친 카탈로그, 역할별 권한, 데이터를 만드는 쪽과 쓰는 쪽의 구독 방식을 붙였습니다.[6] 같은 팀 5월 공고도 품질·계보(lineage) 관리를 업무로 적었습니다.[5] 데이터 관리 지식 체계(DMBOK)는 거버넌스·메타데이터·품질을 각각 영역으로 둡니다.[32]",
+   "actually": {
+    "items": [
+     "**메타데이터 카탈로그** — 표마다 설명·소유자·갱신 주기·민감 여부. DataHub 같은 오픈소스가 흔하다.[34]",
+     "**계보** — 이 표가 어느 원천·작업에서 왔나를 작업 실행 때 자동으로 남긴다(OpenLineage).[33]",
+     "**품질 규칙** — 빈 값 비율·범위·유일 키·도착 시간을 코드로 적고 매 적재마다 검사한다.[35]",
+     "**권한** — 계열사·공정·역할별로 볼 수 있는 표·열을 나눈다.[6]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "적재마다 도는 품질 검사(가상 값)",
+     "body": "빈 값·범위 밖 값·중복 키를 세어, 기준을 넘으면 적재를 멈추고 알립니다.",
+     "lang": "python",
+     "code": "rows = [\n    {\"eq\": \"ETCH-01\", \"ts\": \"2026-11-23T09:00:00\", \"temp\": 61.2},\n    {\"eq\": \"ETCH-01\", \"ts\": \"2026-11-23T09:00:01\", \"temp\": None},\n    {\"eq\": \"ETCH-01\", \"ts\": \"2026-11-23T09:00:01\", \"temp\": 61.3},\n    {\"eq\": \"ETCH-02\", \"ts\": \"2026-11-23T09:00:00\", \"temp\": 950.0},\n    {\"eq\": \"ETCH-02\", \"ts\": \"2026-11-23T09:00:01\", \"temp\": 60.8},\n]\nnulls = sum(r[\"temp\"] is None for r in rows)\nout = [r for r in rows if r[\"temp\"] is not None and not (0 <= r[\"temp\"] <= 200)]\nkeys = [(r[\"eq\"], r[\"ts\"]) for r in rows]\nprint(f\"행 {len(rows)} · 빈 값 {nulls} · 범위 밖 {len(out)} ({out[0]['eq']} {out[0]['temp']}) · 중복 키 {len(keys) - len(set(keys))}\")\n# 출력: 행 5 · 빈 값 1 · 범위 밖 1 (ETCH-02 950.0) · 중복 키 1"
+    }
+   ],
+   "how_far": "무엇을 민감 데이터로 볼지·누가 승인할지는 고객 데이터 담당 조직이 정합니다. 엔지니어는 **그 규칙이 자동으로 지켜지게** 카탈로그·계보·검사를 파이프라인에 심습니다. {추론}",
+   "refs": [
+    5,
+    6,
+    32,
+    33,
+    34,
+    35
+   ],
+   "study": [
+    "dmbok",
+    "datahub-docs",
+    "openlineage-docs",
+    "gx-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "다양한 오픈소스 AI·Data 프레임워크 활용 경험이 있으신 분",
+   "short": "Spark·Kafka·Airflow·Iceberg·Trino·MLflow 같은 오픈소스를 직접 깔고 써 본 폭.",
+   "why": "온프레미스 우대와 CNCF 기반 데이터 플랫폼 우대가 함께 있어,[1] 상용 관리형 서비스 대신 오픈소스를 조합해 세우는 일이 많다고 읽힙니다. {추론}",
+   "how_far": "이름을 많이 아는 것보다 **두세 개를 깊게 — 설치·업그레이드·장애를 겪어 본 것**이 설명하기 좋습니다. {추론}",
+   "refs": [
+    1,
+    26,
+    30,
+    31
+   ],
+   "study": [
+    "iceberg-docs",
+    "airflow-docs",
+    "kafka-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "고가용성, 확장성, 장애 대응을 고려한 인프라 설계 및 운영 경험이 있으신 분",
+   "short": "하나가 죽어도 서비스가 서고(고가용성), 늘어나도 버티고(확장성), 터지면 빨리 되살리는(장애 대응) 설계.",
+   "why": "공장 데이터는 끊기면 그 구간이 영영 비거나 재전송 부담이 큽니다. {추론} 쿠버네티스 쪽은 제어부 3대·etcd 정족수·백업 복구가 공식 문서의 기본입니다.[20][21] 얼마나 멈춰도 되는지는 목표값(SLO)으로 정해야 설계 기준이 섭니다.[41]",
+   "actually": {
+    "items": [
+     "**한 곳 죽이기** — 노드·영역(랙) 하나가 사라져도 파드가 다른 곳에 다시 뜨게 분산 규칙을 건다.",
+     "**etcd 백업·복구** — 스냅숏을 정기적으로 뜨고 복구를 실제로 해 본다.[20]",
+     "**관측** — 지표를 모으고 알림을 건다(Prometheus).[45]",
+     "**목표값** — 가용성·지연 목표를 숫자로 정하고 그 안에서 변경 속도를 조절한다.[41]"
+    ]
+   },
+   "refs": [
+    20,
+    21,
+    41,
+    45
+   ],
+   "study": [
+    "sre-book",
+    "k8s-ha",
+    "prom-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI/데이터 플랫폼 또는 MLOps/LLMOps 환경과 연계된 Kubernetes 운영을 경험해 보신 분",
+   "short": "학습·서빙·LLM 작업이 쿠버네티스 위에서 돌 때 생기는 일 — GPU·큰 이미지·긴 작업 — 을 겪어 본 경험.",
+   "why": "같은 팀의 AI Studio는 Kubeflow·MLflow·KServe 같은 도구를 쿠버네티스 위에서 쓰고 GPU를 여러 팀이 나눠 씁니다.[4] 이 클러스터를 받치는 것이 트랙 2입니다. {추론} SK AX는 GPU·MLOps·LLMOps 체계 구축을 서비스로도 팝니다.[12]",
+   "refs": [
+    4,
+    12,
+    43
+   ],
+   "study": [
+    "kserve-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI 및 RAG연계/벡터DB 구축을 수행해 보신 분",
+   "short": "공장 문서·정비 기록을 잘게 쪼개 벡터로 만들어 두고, LLM이 질문에 맞는 조각을 찾아 쓰게 하는 것.",
+   "why": "RAG는 모델이 답하기 전에 바깥 문서에서 관련 조각을 찾아 붙이는 방식입니다.[37] 데이터 엔지니어 몫은 **그 조각을 만들고 최신으로 유지하는 파이프라인**입니다 — SK AX 사례도 화면·생성형 AI용 층(L2)을 따로 두었습니다.[6] 벡터 DB는 PostgreSQL 확장(pgvector)부터 전용 DB까지 있습니다.[36]",
+   "actually": {
+    "items": [
+     "**쪼개기** — 정비 매뉴얼·작업 표준서를 문단 단위로 자르고 설비·공정 이름 같은 메타데이터를 붙인다.",
+     "**벡터 만들기** — 임베딩 모델로 조각마다 숫자 벡터를 만든다. 문서가 바뀌면 그 조각만 다시.",
+     "**색인** — 근사 최근접 색인(HNSW 등)을 걸어 수백만 조각에서도 빨리 찾는다.[36]",
+     "**권한** — 볼 수 없는 문서 조각은 검색에서 빼야 한다(거버넌스 줄과 이어짐). {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "가장 가까운 문서 찾기(가상 벡터)",
+     "body": "질문 벡터와 문서 벡터의 코사인 유사도로 순서를 매깁니다. 실제로는 차원이 수백~수천이고 색인이 이 계산을 줄여 줍니다.",
+     "lang": "python",
+     "code": "import math\ndocs = {\"식각 장비 온도 이상 조치\": [0.9, 0.1, 0.0],\n        \"배터리 셀 불량 분류\": [0.1, 0.9, 0.2],\n        \"식각 챔버 점검 주기\": [0.8, 0.0, 0.3]}\nq = [1.0, 0.0, 0.1]   # '식각 온도 알람' 질문을 흉내 낸 벡터\ndef cos(a, b):\n    return sum(x*y for x, y in zip(a, b)) / (math.sqrt(sum(x*x for x in a)) * math.sqrt(sum(y*y for y in b)))\nfor t, v in sorted(docs.items(), key=lambda kv: -cos(q, kv[1])):\n    print(f\"{cos(q, v):.3f}  {t}\")\n# 출력:\n# 0.989  식각 장비 온도 이상 조치\n# 0.967  식각 챔버 점검 주기\n# 0.129  배터리 셀 불량 분류"
+    }
+   ],
+   "refs": [
+    6,
+    36,
+    37
+   ],
+   "study": [
+    "rag-paper",
+    "pgvector-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Onthology 개발/운영 경험이 있으신 분",
+   "short": "온톨로지(Ontology, 공고 표기는 'Onthology') — 설비·공정·제품·불량 같은 개념과 관계를 정해 둔 지도.",
+   "why": "온톨로지는 개념(설비·공정 단계·제품)과 관계('이 설비는 이 라인에 속한다')를 기계가 읽을 수 있게 정의한 것입니다.[38] 다른 회사(Palantir)는 데이터 위에 객체·관계·행동을 얹은 '운영 온톨로지'를 제품 중심에 둡니다.[39] 공장 쪽에는 기업 → 현장 → 라인 → 설비 계층을 정한 국제 표준(ISA-95)이 있어 출발점이 됩니다.[40] LLM 에이전트가 공장 데이터를 정확히 찾게 하려는 흐름과 맞물려 있습니다. {추론}",
+   "actually": {
+    "items": [
+     "**개념 정하기** — 설비·센서 태그·공정 단계·로트·불량 유형과 그 관계.[40]",
+     "**데이터 잇기** — 레이크의 표·열을 그 개념에 연결(설비 코드 → 설비 객체).",
+     "**쓰기** — '이 불량이 난 로트가 지나간 설비들'처럼 관계를 따라가는 질문에 답한다.[39]"
+    ]
+   },
+   "how_far": "우대 줄 하나라 필수는 아닙니다.[1] **ISA-95 계층으로 작은 공장 모델을 그려 보고, 표 데이터를 그 모델에 연결해 본 것**이면 면접에서 말할 거리가 됩니다. {추론}",
+   "refs": [
+    38,
+    39,
+    40
+   ],
+   "study": [
+    "owl-primer",
+    "palantir-ontology",
+    "isa95"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "외국어 능력으로 글로벌 커뮤니케이션에 능하신 분",
+   "short": "해외 공장·해외 협력사와 일할 때를 위한 우대 — 영어 기술 문서 읽기는 기본이다.",
+   "why": "고객사 SK온·SK이노베이션 등은 해외에도 생산 거점이 있어 해외 현장과 일할 일이 생길 수 있습니다. {추론} 같은 팀 5월 공고에도 외국어 우대가 있었습니다.[5]",
+   "refs": [
+    5
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "복잡한 문제 해결에 적극적이며 새로운 기술 도입과 학습에 빠르게 적응하시는 분",
+   "short": "성향 요건 — 처음 보는 공장 데이터·새 오픈소스를 스스로 파고드는 사람.",
+   "why": "공고의 '성향 및 캐릭터' 묶음입니다.[1] 면접에서는 '처음 보는 장애를 어떻게 좁혀 갔나' 같은 구체 사례로 확인될 가능성이 큽니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI·Data·플랫폼 간 협업을 즐기고 커뮤니케이션과 책임감이 뛰어난 분",
+   "short": "데이터·AI·인프라 사이 경계 일 — 누구 몫인지 애매한 장애를 끝까지 챙기는 사람.",
+   "why": "같은 팀이 AI·데이터·플랫폼 직무를 함께 뽑고 있어[4][5] 한 장애가 세 층에 걸치는 일이 흔할 것으로 보입니다. {추론} 탓하지 않는 장애 회고 문화가 그런 협업의 흔한 도구입니다.[41]",
+   "refs": [
+    1,
+    4,
+    5,
+    41
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "수십억 행 시계열을 다뤄 봤고 '그 데이터를 AI가 쓰게' 정리하는 쪽으로 넓히고 싶은 데이터 엔지니어",
+   "쿠버네티스를 직접 세워 봤고(제어부·CNI·etcd) 데이터·GPU 작업까지 받치는 클러스터를 해 보고 싶은 사람",
+   "반도체·배터리 공장처럼 데이터가 크고 기밀인 현장을 다루고 싶은 사람[7][11]",
+   "오픈소스를 직접 깔고 업그레이드하는 일이 즐거운 사람[1]"
+  ],
+  "hard": [
+   "경력 3년 이상 공통 조건이라 신입은 지원이 어렵다[1]",
+   "필수 요건에 프로젝트 일정·산출물 관리가 있다 — 고객 프로젝트형 일이다[1]",
+   "어느 고객·어떤 기술 스택(클라우드인지 사내 서버인지)인지 공고에 없다[1][2]",
+   "두 트랙이 한 요건 묶음이라 내 트랙과 먼 줄(데이터 엔지니어에게 Cilium 등)도 질문받을 수 있다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "설비 5,000대가 초당 10번 값을 내요. 하루 데이터는 얼마고, 파일을 어떤 단위로 나누겠어요?",
+   "a": "트랙 1 수집·적재 줄과 성능 튜닝 우대 — 작은 파일 문제.[26][29]"
+  },
+  {
+   "q": "센서 값이 3시간 늦게 들어왔어요. 이미 만든 집계 표는 어떻게 고치나요?",
+   "a": "파이프라인 운영·재실행(백필)과 멱등.[30]"
+  },
+  {
+   "q": "레이크·웨어하우스·레이크하우스를 설명하고, 이 팀이 왜 층을 나누는지 말해 보세요.",
+   "a": "SK AX 사례의 L0·L1·L2와 레이크하우스 논문.[6][27]"
+  },
+  {
+   "q": "etcd를 4대 두면 3대보다 나은가요? 백업은 어떻게 하고 복구해 봤나요?",
+   "a": "대규모 클러스터 설계 줄 — 정족수·스냅숏.[20][21]"
+  },
+  {
+   "q": "Cilium 네트워크 정책으로 'ingest 네임스페이스만 Kafka에 닿게' 하려면? 막혔을 때 어디서 확인하나요?",
+   "a": "CNI·API Gateway 줄.[22]"
+  },
+  {
+   "q": "누가 클러스터에서 replicas를 손으로 바꿨어요. GitOps 환경에서는 무슨 일이 생기나요?",
+   "a": "GitOps 요건 — 계속 맞춤과 prune.[24][25]"
+  },
+  {
+   "q": "RAG용 문서 조각에서 권한이 없는 사람에게 보이면 안 되는 문서는 어떻게 거르나요?",
+   "a": "거버넌스 우대와 RAG 우대가 만나는 곳.[6][37]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "SK Careers · 제조 AI · Data 분야 [Data Engineer / DevOps(k8s)] 전문가 영입",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262415",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "조직 소개·트랙 두 개·요건·우대·전형(서류 > SKCT > 면접 2회 > 처우협의)·공통 요건(경력 3년 이상). 마감 2026-12-25"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · [SK inc.(AX)] 제조 AI · Data 분야 [Data Engineer / DevOps(k8s)] 전문가",
+   "url": "https://www.wanted.co.kr/wd/396609",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 공고 사본 — 근무지 칸(성남대로 343번길 9, SK-U타워). 기술 스택 태그 칸은 비어 있다"
+  },
+  {
+   "n": 3,
+   "title": "잡코리아 · SK주식회사(AX) 제조 AI/Data 분야 [Data Engineer/DevOps(k8s)] 전문가 영입",
+   "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50308626",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 공고 사본 — 직무 분류 'Tech R&D - Data Engineering'"
+  },
+  {
+   "n": 4,
+   "title": "SK Careers · 제조 AI · Data 분야 AI Studio(AI/ML DevOps 플랫폼) 개발/운영 PL 영입",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262457",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 팀의 동시 공고 — Spring Boot MSA·쿠버네티스·Kubeflow·MLflow·KServe·GPU"
+  },
+  {
+   "n": 5,
+   "title": "인크루트 · SK주식회사(AX) Cloud-native AI/Data Platform Engineer 영입",
+   "url": "https://jlab.incruit.com/jobs/2605270000053",
+   "kind": "posting",
+   "date": "2026-05",
+   "note": "같은 팀 네 트랙 공채(마감) — 데이터 엔지니어링 트랙: Azure/AWS 파이프라인·레이크하우스·품질·계보·FinOps, 우대 EKS·AKS"
+  },
+  {
+   "n": 6,
+   "title": "SK AX 사례 · SKI E&S 통합 데이터·AI 플랫폼 구축",
+   "url": "https://www.skax.co.kr/case-study/story/3614",
+   "kind": "company",
+   "date": "2026-07-09",
+   "note": "L0 Lake·L1 DW·L2 Mart 세 층, DMS·MSK 수집, 기술·업무 메타 카탈로그, Lake Formation 권한, 프로젝트별 비용 추적"
+  },
+  {
+   "n": 7,
+   "title": "SK하이닉스 뉴스룸 · [하이피디아] 데이터부터 팹, 일하는 방식까지… 'AX'",
+   "url": "https://news.skhynix.co.kr/?p=68874",
+   "kind": "company",
+   "date": "2026-11-17",
+   "note": "고객사 쪽 설명 — 표준화된 데이터 통합이 AX 과제의 출발점, 장비·물류 데이터 실시간 분석"
+  },
+  {
+   "n": 8,
+   "title": "SK AX · iFacts 제조 플랫폼 솔루션 소개서(미리보기)",
+   "url": "https://www.skax.co.kr/wp-content/uploads/SK-AX_iFacts_%EC%A0%9C%EC%A1%B0%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%86%94%EB%A3%A8%EC%85%98-%EC%86%8C%EA%B0%9C-preview.pdf",
+   "kind": "company",
+   "note": "제조 플랫폼 모듈 구성과 개발 플랫폼(표준 프레임워크·DevOps·API Gateway)"
+  },
+  {
+   "n": 9,
+   "title": "아시아경제 · SK C&C, 제조 특화 데이터 처리 엔진 출시",
+   "url": "https://view.asiae.co.kr/en/article/2021052009104673909",
+   "kind": "news",
+   "date": "2021-05-20",
+   "note": "옛 SK C&C의 제조 데이터 처리 엔진(I-FACTs DiFlow)"
+  },
+  {
+   "n": 10,
+   "title": "IT데일리 · SK C&C, AI 파워드 클라우드 서비스",
+   "url": "https://www.itdaily.kr/news/articleView.html?idxno=230903",
+   "kind": "news",
+   "date": "2025-02-11",
+   "note": "자체 컨테이너 플랫폼 ZCP의 MLOps·컨테이너 단위 GPU 모니터링·스케줄링"
+  },
+  {
+   "n": 11,
+   "title": "Google Cloud 고객 사례 · SK C&C AccuInsight+",
+   "url": "https://cloud.google.com/customers/skcc?hl=ko",
+   "kind": "news",
+   "note": "옛 SK C&C의 ML 분석 플랫폼 — GKE·GPU, 제조 현장은 제품마다 모델 100~200개"
+  },
+  {
+   "n": 12,
+   "title": "SK AX · Data to AI 설계/구축 서비스",
+   "url": "https://www.skax.co.kr/cloud/ai-cloud",
+   "kind": "company",
+   "note": "GPU·MLOps·LLMOps 체계 구축 서비스 소개"
+  },
+  {
+   "n": 13,
+   "title": "FETV · SK 계열사 직원 평균 급여(2024 사업보고서)",
+   "url": "https://www.fetv.co.kr/news/articleView.html?idxno=198852",
+   "kind": "news",
+   "date": "2025-08-14"
+  },
+  {
+   "n": 14,
+   "title": "CEO스코어데일리 · 삼성SDS 직원 평균 급여",
+   "url": "https://www.ceoscoredaily.com/page/view/2025070116383437395",
+   "kind": "news",
+   "date": "2025-07-02"
+  },
+  {
+   "n": 15,
+   "title": "CEO스코어데일리 · LG CNS 직원 평균 급여",
+   "url": "https://www.ceoscoredaily.com/page/view/2025072516400745114",
+   "kind": "news",
+   "date": "2025-07-27"
+  },
+  {
+   "n": 16,
+   "title": "SK AX Careers · 복리후생",
+   "url": "https://skax.skcareers.com/page/HR/Welfare",
+   "kind": "company",
+   "note": "2026-11-23 확인, 연도 표기 없음"
+  },
+  {
+   "n": 17,
+   "title": "SK AX · 사업장 안내",
+   "url": "https://www.skax.co.kr/company/office",
+   "kind": "company"
+  },
+  {
+   "n": 18,
+   "title": "KPI뉴스 · SK C&C, 'SK㈜ AX'로 이름 바꿔",
+   "url": "https://kpinews.kr/newsView/1065576140213162",
+   "kind": "news",
+   "date": "2025-05"
+  },
+  {
+   "n": 19,
+   "title": "Kubernetes 문서 · Considerations for large clusters",
+   "url": "https://kubernetes.io/docs/setup/best-practices/cluster-large/",
+   "kind": "reference",
+   "note": "한 클러스터 한계 — 노드 5,000·파드 150,000·노드당 파드 110"
+  },
+  {
+   "n": 20,
+   "title": "Kubernetes 문서 · Operating etcd clusters for Kubernetes",
+   "url": "https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/",
+   "kind": "reference",
+   "note": "홀수 대수·정족수·스냅숏 백업과 복구"
+  },
+  {
+   "n": 21,
+   "title": "Kubernetes 문서 · Creating Highly Available Clusters with kubeadm",
+   "url": "https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/high-availability/",
+   "kind": "reference",
+   "note": "제어부 3대 + 로드밸런서, etcd 겹침형·분리형"
+  },
+  {
+   "n": 22,
+   "title": "Cilium 문서 · Introduction to Cilium",
+   "url": "https://docs.cilium.io/en/stable/overview/intro/",
+   "kind": "reference",
+   "note": "eBPF 기반 CNI — 네트워크 정책·kube-proxy 대체·Hubble 관측"
+  },
+  {
+   "n": 23,
+   "title": "Kubernetes Gateway API",
+   "url": "https://gateway-api.sigs.k8s.io/",
+   "kind": "reference",
+   "note": "GatewayClass·Gateway·HTTPRoute — 인프라 담당과 앱 담당이 나눠 쥐는 역할 모델"
+  },
+  {
+   "n": 24,
+   "title": "OpenGitOps · GitOps Principles v1.0",
+   "url": "https://opengitops.dev/",
+   "kind": "reference",
+   "note": "선언형·버전 관리·자동으로 당겨 옴·계속 맞춤 네 원칙"
+  },
+  {
+   "n": 25,
+   "title": "Argo CD 문서",
+   "url": "https://argo-cd.readthedocs.io/en/stable/",
+   "kind": "reference",
+   "note": "Git 의 원하는 상태와 클러스터 실제 상태 비교·동기화·prune"
+  },
+  {
+   "n": 26,
+   "title": "Apache Iceberg 문서",
+   "url": "https://iceberg.apache.org/docs/latest/",
+   "kind": "reference",
+   "note": "열린 표 형식 — 스냅숏·스키마 변경·숨은 파티션·시간 여행"
+  },
+  {
+   "n": 27,
+   "title": "Armbrust 외 · Lakehouse (CIDR 2021)",
+   "url": "https://www.cidrdb.org/cidr2021/papers/cidr2021_paper17.pdf",
+   "kind": "reference",
+   "note": "레이크와 웨어하우스 두 벌 운영의 문제와 레이크하우스 제안"
+  },
+  {
+   "n": 28,
+   "title": "Apache Spark 문서 · Running Spark on Kubernetes",
+   "url": "https://spark.apache.org/docs/latest/running-on-kubernetes.html",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "Apache Spark 문서 · Performance Tuning (Spark SQL)",
+   "url": "https://spark.apache.org/docs/latest/sql-performance-tuning.html",
+   "kind": "reference",
+   "note": "AQE·셔플 파티션 합치기·쏠림 조인·브로드캐스트"
+  },
+  {
+   "n": 30,
+   "title": "Apache Airflow 문서 · Core Concepts",
+   "url": "https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "Apache Kafka 문서",
+   "url": "https://kafka.apache.org/documentation/",
+   "kind": "reference",
+   "note": "토픽·파티션·소비자 그룹·보존"
+  },
+  {
+   "n": 32,
+   "title": "DAMA International · DMBOK(데이터 관리 지식 체계)",
+   "url": "https://www.dama.org/cpages/body-of-knowledge",
+   "kind": "reference",
+   "note": "거버넌스·메타데이터·데이터 품질 영역의 정의"
+  },
+  {
+   "n": 33,
+   "title": "OpenLineage",
+   "url": "https://openlineage.io/",
+   "kind": "reference",
+   "note": "작업·데이터셋 계보를 남기는 열린 표준"
+  },
+  {
+   "n": 34,
+   "title": "DataHub 문서",
+   "url": "https://datahubproject.io/docs/",
+   "kind": "reference",
+   "note": "오픈소스 메타데이터 카탈로그·계보·소유자"
+  },
+  {
+   "n": 35,
+   "title": "Great Expectations 문서",
+   "url": "https://docs.greatexpectations.io/docs/home/",
+   "kind": "reference",
+   "note": "데이터 품질 규칙(Expectation)을 코드로 검사"
+  },
+  {
+   "n": 36,
+   "title": "pgvector · GitHub",
+   "url": "https://github.com/pgvector/pgvector",
+   "kind": "reference",
+   "note": "PostgreSQL 벡터 검색 — HNSW·IVFFlat 색인"
+  },
+  {
+   "n": 37,
+   "title": "Lewis 외 · Retrieval-Augmented Generation (NeurIPS 2020)",
+   "url": "https://arxiv.org/abs/2005.11401",
+   "kind": "reference"
+  },
+  {
+   "n": 38,
+   "title": "W3C · OWL 2 Web Ontology Language Primer",
+   "url": "https://www.w3.org/TR/owl2-primer/",
+   "kind": "reference"
+  },
+  {
+   "n": 39,
+   "title": "Palantir Foundry 문서 · Ontology overview",
+   "url": "https://www.palantir.com/docs/foundry/ontology/overview/",
+   "kind": "reference",
+   "note": "다른 회사 — 데이터 위에 객체·관계·행동을 얹는 '운영 온톨로지'"
+  },
+  {
+   "n": 40,
+   "title": "ISA · ISA-95 표준",
+   "url": "https://www.isa.org/standards-and-publications/isa-standards/isa-95-standard",
+   "kind": "reference",
+   "note": "공장 계층(기업·현장·라인·설비)과 MES-ERP 사이 정보 모델"
+  },
+  {
+   "n": 41,
+   "title": "Google SRE Book · Service Level Objectives",
+   "url": "https://sre.google/sre-book/service-level-objectives/",
+   "kind": "reference"
+  },
+  {
+   "n": 42,
+   "title": "PMI · PMBOK Guide",
+   "url": "https://www.pmi.org/standards/pmbok",
+   "kind": "reference"
+  },
+  {
+   "n": 43,
+   "title": "KServe 문서",
+   "url": "https://kserve.github.io/website/",
+   "kind": "reference",
+   "note": "쿠버네티스 위 모델 서빙"
+  },
+  {
+   "n": 44,
+   "title": "Kubernetes 문서 · Cluster Networking",
+   "url": "https://kubernetes.io/docs/concepts/cluster-administration/networking/",
+   "kind": "reference",
+   "note": "파드마다 IP·NAT 없이 통신하는 네트워크 모델과 CNI"
+  },
+  {
+   "n": 45,
+   "title": "Prometheus 문서 · Overview",
+   "url": "https://prometheus.io/docs/introduction/overview/",
+   "kind": "reference"
+  },
+  {
+   "n": 46,
+   "title": "Apache Hadoop 문서 · HDFS Architecture",
+   "url": "https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HdfsDesign.html",
+   "kind": "reference",
+   "note": "블록 복제(기본 3벌)·NameNode·랙 인식"
+  },
+  {
+   "n": 47,
+   "title": "Anthropic · Building effective agents",
+   "url": "https://www.anthropic.com/engineering/building-effective-agents",
+   "kind": "reference",
+   "date": "2024-12",
+   "note": "워크플로와 에이전트 구분, 단순한 것부터"
+  }
+ ],
+ "resources": [
+  {
+   "id": "fde-ko",
+   "title": "견고한 데이터 엔지니어링",
+   "by": "조 라이스 · 맷 하우슬리 · 김인범 옮김 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.oreilly.com/library/view/-/9791169211222/",
+   "why": "수집·저장·변환·서빙의 데이터 엔지니어링 생애주기 전체 그림. 트랙 1 업무 세 줄의 뼈대."
+  },
+  {
+   "id": "ddia",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+   "why": "복제·파티셔닝·일관성·배치와 스트림. 대규모 처리·고가용성 우대를 원리로 설명할 말."
+  },
+  {
+   "id": "kimball",
+   "title": "The Data Warehouse Toolkit (3판)",
+   "by": "Ralph Kimball · Margy Ross · Wiley · 2013",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/books/",
+   "why": "사실 표·기준 표 차원 모델링. 웨어하우스·마트 층(L1·L2) 설계."
+  },
+  {
+   "id": "lakehouse-paper",
+   "title": "Lakehouse: A New Generation of Open Platforms (CIDR 2021)",
+   "by": "Armbrust 외",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.cidrdb.org/cidr2021/papers/cidr2021_paper17.pdf",
+   "why": "레이크·웨어하우스를 두 벌 두면 생기는 문제와 열린 표 형식으로 합치는 이유. 'Data Lake, DW, Platform' 줄."
+  },
+  {
+   "id": "iceberg-docs",
+   "title": "Apache Iceberg 문서",
+   "by": "Apache Iceberg",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://iceberg.apache.org/docs/latest/",
+   "why": "스냅숏·스키마 변경·숨은 파티션·파일 합치기. 적재 설계와 성능 튜닝."
+  },
+  {
+   "id": "spark-guide",
+   "title": "스파크 완벽 가이드",
+   "by": "빌 체임버스 · 마테이 자하리아 · 한빛미디어 · 2019",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%8A%A4%ED%8C%8C%ED%81%AC%20%EC%99%84%EB%B2%BD%20%EA%B0%80%EC%9D%B4%EB%93%9C",
+   "why": "DataFrame·Spark SQL·조인·집계. '데이터엔지니어링 언어' 줄의 실무선. 스파크 2 기준이라 공식 문서로 보충."
+  },
+  {
+   "id": "spark-docs",
+   "title": "Spark SQL Performance Tuning",
+   "by": "Apache Spark 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://spark.apache.org/docs/latest/sql-performance-tuning.html",
+   "why": "AQE·쏠림 조인·브로드캐스트. 우대 '대규모 제조 데이터 처리 및 성능 튜닝'."
+  },
+  {
+   "id": "spark-k8s",
+   "title": "Running Spark on Kubernetes",
+   "by": "Apache Spark 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://spark.apache.org/docs/latest/running-on-kubernetes.html",
+   "why": "드라이버·실행기를 파드로. 두 트랙이 만나는 'CNCF 기반 데이터 플랫폼' 줄."
+  },
+  {
+   "id": "airflow-book",
+   "title": "Apache Airflow 기반의 데이터 파이프라인",
+   "by": "바스 하렌슬락 · 율리안 더라위터르 · 제이펍 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000002993441",
+   "why": "DAG·스케줄·의존성·백필·테스트. 파이프라인 운영. Airflow 3 변경은 공식 문서로."
+  },
+  {
+   "id": "airflow-docs",
+   "title": "Airflow Core Concepts",
+   "by": "Apache Airflow 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/index.html",
+   "why": "DAG·태스크·재실행의 정확한 정의와 쿠버네티스 실행기."
+  },
+  {
+   "id": "kafka-book",
+   "title": "아파치 카프카 애플리케이션 프로그래밍 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kafka",
+   "why": "토픽·파티션·소비자 그룹을 실제 명령과 레코드로. 센서 스트림 '수집' 칸."
+  },
+  {
+   "id": "kubernetes-book",
+   "title": "쿠버네티스 입문 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "kubectl 출력 읽기 — Pending·CrashLoopBackOff부터. 트랙 2의 바닥."
+  },
+  {
+   "id": "docker-book",
+   "title": "개발자를 위한 도커 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "이미지 빌드와 레지스트리. CI/CD 줄의 첫 칸."
+  },
+  {
+   "id": "k8s-in-action",
+   "title": "쿠버네티스 인 액션",
+   "by": "마르코 룩샤 · 강인호 외 옮김 · 에이콘출판 · 2020",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=235962702",
+   "why": "API 서버·스케줄러·컨트롤러의 속. 클러스터 아키텍처 설계의 기초 체력."
+  },
+  {
+   "id": "k8s-docs",
+   "title": "쿠버네티스 공식 문서(한국어)",
+   "by": "Kubernetes",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://kubernetes.io/ko/docs/home/",
+   "why": "클러스터 관리·네트워킹·저장소 장. 트랙 2 업무의 기준 문서."
+  },
+  {
+   "id": "k8s-ha",
+   "title": "Creating Highly Available Clusters with kubeadm",
+   "by": "Kubernetes 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/high-availability/",
+   "why": "제어부 3대·로드밸런서·etcd 배치. '대규모 클러스터 설계'와 고가용성 우대."
+  },
+  {
+   "id": "k8s-large",
+   "title": "Considerations for large clusters",
+   "by": "Kubernetes 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kubernetes.io/docs/setup/best-practices/cluster-large/",
+   "why": "한 클러스터 한계값과 대규모에서 챙길 것. '대규모'의 기준."
+  },
+  {
+   "id": "cilium-docs",
+   "title": "Cilium 문서",
+   "by": "Cilium (CNCF)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.cilium.io/en/stable/",
+   "why": "eBPF CNI 설치·네트워크 정책·kube-proxy 대체·Hubble. 공고에 이름이 나온 도구."
+  },
+  {
+   "id": "gateway-api",
+   "title": "Kubernetes Gateway API",
+   "by": "Kubernetes SIG Network",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://gateway-api.sigs.k8s.io/",
+   "why": "인프라 담당·앱 담당이 나눠 쥐는 입구 설정. 'API Gateway 등' 줄."
+  },
+  {
+   "id": "opengitops",
+   "title": "OpenGitOps 원칙",
+   "by": "OpenGitOps (CNCF)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://opengitops.dev/",
+   "why": "GitOps가 무엇인지 네 원칙으로. 요건 'GitOps 파이프라인'의 정의."
+  },
+  {
+   "id": "argocd-docs",
+   "title": "Argo CD 문서",
+   "by": "Argo Project",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://argo-cd.readthedocs.io/en/stable/",
+   "why": "Git과 클러스터 비교·동기화·prune·되돌리기를 손으로 해 본다."
+  },
+  {
+   "id": "cncf-certs",
+   "title": "CKA · CKAD · CKS 시험 안내",
+   "by": "Linux Foundation · CNCF",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://training.linuxfoundation.org/certification/certified-kubernetes-administrator-cka/",
+   "why": "시험 범위표 자체가 쿠버네티스 운영 공부 목록. 경력 증빙으로도 쓴다."
+  },
+  {
+   "id": "kserve-docs",
+   "title": "KServe 문서",
+   "by": "KServe (CNCF)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kserve.github.io/website/",
+   "why": "모델을 쿠버네티스 위 API로. 'MLOps/LLMOps 연계 쿠버네티스 운영' 줄."
+  },
+  {
+   "id": "hdfs-docs",
+   "title": "HDFS Architecture",
+   "by": "Apache Hadoop 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HdfsDesign.html",
+   "why": "블록 복제·NameNode·랙 인식. 우대 '온프레미스 빅데이터 클러스터'의 기본 그림."
+  },
+  {
+   "id": "dmbok",
+   "title": "DAMA-DMBOK (데이터 관리 지식 체계)",
+   "by": "DAMA International",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.dama.org/cpages/body-of-knowledge",
+   "why": "거버넌스·메타데이터·품질을 영역별로 정의. 우대 '거버넌스 체계 구축'의 말."
+  },
+  {
+   "id": "datahub-docs",
+   "title": "DataHub 문서",
+   "by": "DataHub (오픈소스)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://datahubproject.io/docs/",
+   "why": "메타데이터 카탈로그·소유자·계보를 실제로 세워 본다."
+  },
+  {
+   "id": "openlineage-docs",
+   "title": "OpenLineage",
+   "by": "LF AI & Data",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://openlineage.io/",
+   "why": "작업 실행 때 계보를 자동으로 남기는 표준. Airflow·Spark 연동."
+  },
+  {
+   "id": "gx-docs",
+   "title": "Great Expectations 문서",
+   "by": "Great Expectations",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.greatexpectations.io/docs/home/",
+   "why": "품질 규칙을 코드로 적고 적재마다 검사. '데이터 품질 관리 체계'."
+  },
+  {
+   "id": "rag-paper",
+   "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+   "by": "Lewis 외 · NeurIPS 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2005.11401",
+   "why": "RAG의 원래 정의. 'RAG 연계' 줄을 설명할 출발점."
+  },
+  {
+   "id": "pgvector-docs",
+   "title": "pgvector",
+   "by": "GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/pgvector/pgvector",
+   "why": "익숙한 PostgreSQL에서 벡터 저장·HNSW 색인을 해 본다. '벡터 DB 구축'의 첫걸음."
+  },
+  {
+   "id": "anthropic-agents",
+   "title": "Building effective agents",
+   "by": "Anthropic · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.anthropic.com/engineering/building-effective-agents",
+   "why": "워크플로와 에이전트의 차이, 단순한 것부터. 'LLM·Agent 현업 적용' 줄."
+  },
+  {
+   "id": "owl-primer",
+   "title": "OWL 2 Web Ontology Language Primer",
+   "by": "W3C",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.w3.org/TR/owl2-primer/",
+   "why": "개념·관계·제약을 정의하는 표준. 우대 '온톨로지'의 원래 뜻."
+  },
+  {
+   "id": "palantir-ontology",
+   "title": "Foundry Ontology overview",
+   "by": "Palantir 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.palantir.com/docs/foundry/ontology/overview/",
+   "why": "데이터 위에 객체·관계·행동을 얹는 실무형 온톨로지 — 산업 현장에서 온톨로지가 어떻게 쓰이나."
+  },
+  {
+   "id": "isa95",
+   "title": "ISA-95 표준",
+   "by": "ISA (국제자동화학회)",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.isa.org/standards-and-publications/isa-standards/isa-95-standard",
+   "why": "공장 계층과 MES-ERP 정보 모델. 제조 데이터 표준화·온톨로지의 출발점."
+  },
+  {
+   "id": "sre-book",
+   "title": "사이트 신뢰성 엔지니어링",
+   "by": "Google · 한국어판 제이펍 · 2018 (원서는 sre.google 무료)",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "why": "SLO·모니터링·장애 대응·회고. 고가용성·장애 대응 우대와 요구사항을 숫자로 바꾸기."
+  },
+  {
+   "id": "prom-docs",
+   "title": "Prometheus 문서",
+   "by": "Prometheus 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://prometheus.io/docs/introduction/overview/",
+   "why": "지표 수집·알림의 바닥. 인프라 운영 관측."
+  },
+  {
+   "id": "pmbok",
+   "title": "PMBOK Guide",
+   "by": "PMI",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.pmi.org/standards/pmbok",
+   "why": "일정·자원·품질 관리 용어. 요건 '프로젝트 일정·리소스·산출물 품질 관리'."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "제조 데이터와 레이크 그림 잡기",
+   "time": "1~2주",
+   "goal": "공장 데이터가 원천 → 레이크 → 분석 표 → AI용 층으로 흐르는 그림과, 레이크·웨어하우스·레이크하우스 차이를 설명한다.",
+   "task": "ISA-95 계층(공장·라인·설비·센서)으로 가상 공장 하나를 그리고, 거기서 나오는 데이터 5종(센서 값·공정 이력·검사 결과·정비 기록·작업 표준서)을 L0·L1·L2 중 어디에 둘지 표로 적는다.",
+   "resources": [
+    "fde-ko",
+    "lakehouse-paper",
+    "isa95"
+   ]
+  },
+  {
+   "title": "파이프라인 직접 만들기(트랙 1 중심)",
+   "time": "3~4주",
+   "goal": "센서 스트림을 받아 쌓고, 정제하고, 품질 검사까지 하루 단위로 다시 돌려도 같은 결과가 나오는 파이프라인을 만든다.",
+   "task": "가상 설비 100대가 초당 1번 값을 내는 생성기를 Kafka로 흘리고, Spark로 Iceberg 표에 날짜별 적재 → 정제 표 → 설비·시간별 집계 마트를 만든다. Airflow DAG로 엮고 빈 값·범위·중복 검사를 붙여 하루치를 두 번 돌려 행 수가 같은지 확인한다.",
+   "resources": [
+    "kafka-book",
+    "spark-guide",
+    "iceberg-docs",
+    "airflow-book",
+    "gx-docs"
+   ]
+  },
+  {
+   "title": "쿠버네티스 클러스터 세우기(트랙 2 중심)",
+   "time": "3~4주",
+   "goal": "제어부 3대 클러스터를 손으로 세우고, Cilium으로 네트워크 정책을 걸고, etcd를 백업·복구한다.",
+   "task": "가상 머신 5대로 kubeadm 고가용성 클러스터(제어부 3·작업 노드 2)를 세운다. Cilium을 깔고 '기본 차단 + ingest만 Kafka 허용' 정책을 건 뒤 Hubble로 막힌 흐름을 확인한다. etcd 스냅숏을 뜨고 지운 네임스페이스를 복구해 본다.",
+   "resources": [
+    "kubernetes-book",
+    "k8s-in-action",
+    "k8s-ha",
+    "cilium-docs",
+    "k8s-large"
+   ]
+  },
+  {
+   "title": "두 트랙을 잇기 — GitOps 로 데이터 플랫폼 올리기",
+   "time": "2~3주",
+   "goal": "2단계 파이프라인을 3단계 클러스터 위에 올리고, 모든 설정을 Git에서 Argo CD로 배포한다.",
+   "task": "Spark 작업·Airflow·Kafka를 쿠버네티스에 올리고 설정을 Git 저장소 하나로 모아 Argo CD로 동기화한다. 손으로 replicas를 바꿨다가 Argo CD가 되돌리는 것, Git에서 지운 자원이 prune 되는 것을 확인한다. Gateway API로 집계 API 하나를 밖으로 연다.",
+   "resources": [
+    "spark-k8s",
+    "opengitops",
+    "argocd-docs",
+    "gateway-api",
+    "docker-book"
+   ]
+  },
+  {
+   "title": "AI Ready 로 마무리 — 카탈로그·계보·RAG(선택)",
+   "time": "2주~",
+   "goal": "표마다 설명·소유자·계보가 남고, 정비 문서를 벡터로 찾아 쓰는 작은 RAG 파이프라인을 돌린다.",
+   "task": "DataHub에 2단계 표들을 등록하고 OpenLineage로 계보를 남긴다. 가상 정비 매뉴얼 50쪽을 문단으로 쪼개 pgvector에 넣고 '식각 온도 알람 조치' 질문에 맞는 조각 3개를 찾는다. 설비 계층을 작은 온톨로지 표로 만들어 조각 메타데이터에 잇는다.",
+   "resources": [
+    "datahub-docs",
+    "openlineage-docs",
+    "pgvector-docs",
+    "rag-paper",
+    "palantir-ontology"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없고 SK AX만의 공시도 없다 — SK주식회사 전체 직원 평균은 **1억 1,600만원**(2024 사업보고서), 초봉 공개 자료는 못 찾았다",
+  "rows": [
+   {
+    "label": "직원 평균 급여(SK주식회사 전체)",
+    "value": "1억 1,600만원",
+    "amount": 11600,
+    "basis": "사업보고서 · 2024년",
+    "note": "SK AX는 별도 회사가 아니라 SK주식회사 안의 사업 조직이라[18] 공시 숫자는 지주 부문을 합친 회사 전체 값이다 [13]"
+   },
+   {
+    "label": "삼성SDS 평균",
+    "value": "1억 3,400만원",
+    "amount": 13400,
+    "basis": "사업보고서 · 2024년",
+    "peer": true,
+    "note": "같은 해 사업보고서 기준 [14]"
+   },
+   {
+    "label": "LG CNS 평균",
+    "value": "1억 1,600만원",
+    "amount": 11600,
+    "basis": "사업보고서 · 2024년",
+    "peer": true,
+    "note": "같은 해 사업보고서 기준, 직원 6,891명 [15]"
+   }
+  ],
+  "how": "경력 3년 이상을 뽑는 경력직 공고이고 전형 끝에 **처우협의** 단계가 있어 연봉은 사람마다 정한다 [1]. 평균은 경력직·지주 부문이 모두 섞인 회사 전체 값이라 이 자리 제안 금액으로 읽으면 안 된다 {추론}. 공공데이터 집계 사이트의 SK AX 초봉·평균은 이번 조사에서도 확인하지 못했다."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "성장",
+    "detail": "9개 단과대 College·mySUNI, 해마다 Learning Account 예산, MARU 도서관, 사내 직무 공모"
+   },
+   {
+    "name": "장기근속",
+    "detail": "10·15·20·25·30년에 포상금과 포상 휴가"
+   },
+   {
+    "name": "주택 자금",
+    "detail": "구입·전세 최대 6,000만원, 생활안정자금 최대 1,500만원(100만원 단위)"
+   },
+   {
+    "name": "자녀 학자금",
+    "detail": "유치원부터 대학까지, 자녀 수 제한 없음"
+   },
+   {
+    "name": "식대·통신비",
+    "detail": "식대 월 4만원, 통신비 월 7만원(SKT 가입자)"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 100만원 + 월 20만원, SK 패밀리카드 연회비 10만원, 창립기념일 OK캐쉬백 20만 포인트"
+   },
+   {
+    "name": "동호회",
+    "detail": "분기 최대 150만원"
+   },
+   {
+    "name": "건강",
+    "detail": "나이에 따라 종합 25만원·정밀 40만원 검진, 난임 지원, 단체보험 3종, 사내 의원 With Care, 심리 상담 공감플러스+"
+   },
+   {
+    "name": "시설",
+    "detail": "피트니스(트레이너), 행복날개수련원, 제휴 리조트(호텔 60%·콘도 법인가), 어린이집·수유실"
+   },
+   {
+    "name": "그 밖",
+    "detail": "외부 사이트 근무자 복지 포인트, 통근·셔틀 버스, 경조 휴가·경조금"
+   }
+  ],
+  "note": "SK AX 채용 사이트의 복리후생 페이지다(연도 표기 없음, 2026-11-23 확인) [16]. 공고 자체에는 복리후생 칸이 없다 [1]. 근무 시간제·재택 여부는 페이지에 없으니 처우협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "SK AX 본사 · SK u-타워",
+  "address": "경기도 성남시 분당구 성남대로 343번길 9 (정자동, SK u-타워)",
+  "postal": "13558",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%EC%84%B1%EB%82%A8%EB%8C%80%EB%A1%9C%20343%EB%B2%88%EA%B8%B8%209",
+  "near": "신분당선·수인분당선 정자역 근처 {추론}",
+  "note": "공고 근무지는 '경기도 분당'이고 [1], 원티드 사본의 근무지 칸이 이 주소다 [2]. 주소·우편번호는 SK AX 사업장 안내와 같다 [17]. 고객 공장 현장 근무 여부는 공고에 없다."
+ },
+ "caveat": "이 팀의 데이터 레이크·쿠버네티스 클러스터의 실제 구조(클라우드인지 사내 서버인지, 어떤 오픈소스인지)는 공개 자료가 없습니다. 회사 자료는 이 공고와 같은 팀의 다른 공고 둘, SK AX의 SKI E&S 데이터 플랫폼 사례(에너지 회사·AWS), 옛 SK C&C의 제조·컨테이너 플랫폼 보도, 고객사 SK하이닉스의 AX 설명뿐입니다. 나머지는 공식 문서(쿠버네티스·Cilium·Spark·Iceberg·Airflow·Argo CD·DMBOK·ISA-95)로 '보통 이런 것'을 보였습니다. 이 팀·SK AX의 관련 발표 영상은 찾지 못했습니다."
+}

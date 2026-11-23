@@ -14,6 +14,9 @@
   "ats-skcareers:sk:R262275": "skax-ax-ai-pm-pl",
   "ats-skcareers:sk:R262283": "skax-ax-ai-project-pm-pl",
   "ats-skcareers:sk:R262418": "skax-contact-center-application",
+  "ats-skcareers:sk:R262415": "skax-mfg-data-engineer-k8s",
+  "wanted-396609": "skax-mfg-data-engineer-k8s",
+  "jobkorea-50308626": "skax-mfg-data-engineer-k8s",
   "ats-skcareers:sk:R262252": "skax-vision-image-platform-pl-mle",
   "saramin-55459415": "skax-vision-image-platform-pl-mle",
   "wanted-386999": "speee-dx-sre",
@@ -209,6 +212,18 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 36
+  },
+  {
+   "id": "skax-mfg-data-engineer-k8s",
+   "company": "SK주식회사(AX)",
+   "role": "제조 AI · Data 분야 Data Engineer / DevOps(k8s) 전문가",
+   "jobs": [
+    "ats-skcareers:sk:R262415",
+    "wanted-396609",
+    "jobkorea-50308626"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 39
   },
   {
    "id": "skax-vision-image-platform-pl-mle",
