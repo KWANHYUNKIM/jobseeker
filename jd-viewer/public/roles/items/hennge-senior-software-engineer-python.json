@@ -1,0 +1,1278 @@
+{
+ "id": "hennge-senior-software-engineer-python",
+ "company": "HENNGE株式会社 (HENNGE Inc.)",
+ "role": "Senior Software Engineer (Python · Web)",
+ "team": "Cloud Product Development · Access Control 팀 (HENNGE One Identity Edition, LAPRAS Global Bridge 연계 · 근무지 일본 도쿄)",
+ "jobs": [
+  "wanted-353016"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "일본 기업 4,000곳 넘게 쓰는 클라우드 보안 서비스 **HENNGE One** 의 '정문' — 누가 어떤 SaaS 에 들어갈 수 있나를 정하는 **접근 제어·SSO(한 번 로그인으로 여러 서비스 쓰기)·Secure Browser** — 를 Python 으로 만드는 백엔드 시니어입니다.[1][2][10]",
+  "env": "공고의 기술은 Tornado·FastAPI·DynamoDB·PostgreSQL·AWS 이고, 회사 소개 자료는 이 팀 칸에 React·Terraform·Rust·Kotlin/Swift 도 적었습니다.[1][3] 업무 언어는 **영어**(일본어 불필요, CEFR B2 이상)이고 도쿄 시부야 사무실로 **이주가 필수**입니다.[1][2]",
+  "oneline": "로그인 한 번이 수백만 명의 하루를 여는 자리 — **인증 표준(SAML·OIDC)·대규모 동시 요청·영어 협업**이 일의 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "・Design, build, and maintain new features for HENNGE One, using Python and other web technologies.",
+   "short": "HENNGE One 의 로그인·접근 정책 기능을 Python 으로 새로 만들고 계속 고쳐 나가는 일.",
+   "why": "공고는 이 자리를 Access Control 팀, 곧 280만 명 넘게 쓰는 HENNGE One Identity Edition 담당이라고 적었고, 핵심 기능으로 접근 제어·SSO·Secure Browser 를 꼽았습니다.[1] 회사 소개 자료(2026년 11월 판)는 사용자를 약 327만 명, 고객사를 약 4,058곳으로 적었습니다.[3] 회사는 엔지니어의 약 절반이 Python 으로 제품을 만든다고 말했습니다.[7]",
+   "actually": {
+    "intro": "이 팀 사람들이 인터뷰에서 말한 실제 일입니다.",
+    "items": [
+     "**SSO 포털** — 사용자가 한 번 로그인하면 연결된 SaaS 로 넘어가게 하는 화면과 그 뒤의 인증 처리.[5]",
+     "**접근 허용·거부 로직** — 관리자가 정한 조건(기기 인증서·다단계 인증 등)을 AND·OR 로 묶은 정책을 요청마다 판정한다.[5][11]",
+     "**공개 API·관리자 보안 도구** — 고객사 관리자가 쓰는 API 와 설정 화면.[5]",
+     "**로그 기록·조회 개선** — DB 부터 화면까지 이어지는 작업으로, 한 엔지니어가 맡은 큰 과제였다.[5]",
+     "**셀프 비밀번호 재설정** — 백엔드와 화면을 한 사람이 끝까지 만든 기능의 예.[5]",
+     "**연동 SaaS 늘리기** — SSO 연동을 검증한 서비스가 500개를 넘었고, 연동 수로 요금을 받지 않는다.[12][17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "AND·OR 로 묶은 접근 정책을 판정하기 (가상 정책, 직접 돌린 출력)",
+     "body": "회사가 말한 '여러 조건을 AND·OR 로 묶는 정책'[11]을 가장 작게 흉내 낸 것입니다. 모르는 조건은 거부하는 **기본 거부**가 보안 제품의 출발점입니다 {추론}. 출력: 허용 / 거부 / 허용 / 거부.",
+     "lang": "python",
+     "code": "import ipaddress\n\nPOLICY = {\"or\": [\n    {\"and\": [{\"ip_in\": \"203.0.113.0/24\"}, {\"device_cert\": True}]},\n    {\"mfa\": True},\n]}\n\ndef allowed(rule, req):\n    if \"or\" in rule:\n        return any(allowed(r, req) for r in rule[\"or\"])\n    if \"and\" in rule:\n        return all(allowed(r, req) for r in rule[\"and\"])\n    if \"ip_in\" in rule:\n        return ipaddress.ip_address(req[\"ip\"]) in ipaddress.ip_network(rule[\"ip_in\"])\n    if \"device_cert\" in rule:\n        return req.get(\"device_cert\", False) == rule[\"device_cert\"]\n    if \"mfa\" in rule:\n        return req.get(\"mfa\", False) == rule[\"mfa\"]\n    return False  # 모르는 조건은 거부\n\nfor req in [{\"ip\": \"203.0.113.7\", \"device_cert\": True},\n            {\"ip\": \"203.0.113.7\", \"device_cert\": False},\n            {\"ip\": \"198.51.100.9\", \"mfa\": True},\n            {\"ip\": \"198.51.100.9\"}]:\n    print(\"허용\" if allowed(POLICY, req) else \"거부\")"
+    }
+   ],
+   "how_far": "기능을 무엇으로 할지는 Tech Product Manager 가 고객 요구로 정하고, 엔지니어는 **설계부터 운영까지** 맡습니다 — 회사는 팀이 UX·아키텍처·배포까지 스스로 정한다고 적었습니다.[1][3] 시니어라 '맡은 티켓 구현'보다 **기능 하나를 끝까지 책임지는 것**이 최소선입니다 {추론}.",
+   "refs": [
+    1,
+    3,
+    5,
+    7,
+    11,
+    12,
+    17
+   ],
+   "study": [
+    "hennge-deck",
+    "hennge-ac-interview",
+    "fluent-python-ko",
+    "fastapi-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・Architect scalable, fault-tolerant services deployed in cloud environments",
+   "short": "사용자가 몰려도 버티고, 한 부분이 고장 나도 로그인 전체가 멈추지 않게 짜는 일.",
+   "why": "회사 채용 페이지는 이 팀을 HENNGE One 생태계의 '정문'이라 부르며 **동시 요청이 많고 규모가 큰** 일이라고 적었습니다.[2] 정문이 멈추면 고객사 직원 전원이 메일·파일 같은 모든 SaaS 에 못 들어갑니다 {추론}. 회사는 HENNGE One 가용성을 99.9% 넘게 유지한다고 밝혔습니다.[3]",
+   "actually": {
+    "intro": "회사가 구조를 공개하지 않아서, AWS 가 공개한 신뢰성 원칙으로 '보통 이런 것'을 보입니다.[21][22]",
+    "items": [
+     "**수평 확장** — 서버를 상태 없이 만들어 대수를 늘리면 처리량이 같이 늘게 한다. 세션 같은 상태는 DynamoDB 같은 바깥 저장소에 둔다.[22][23]",
+     "**여러 가용 영역(AZ)** — 데이터센터 하나가 나가도 다른 곳에서 계속 돌게 둔다.[22]",
+     "**타임아웃·재시도·지터** — 느린 하위 서비스를 무한정 기다리지 않고, 재시도는 간격을 지수로 늘리되 무작위로 흩어 동시에 몰리지 않게 한다.[21]",
+     "**멱등성** — 같은 요청이 두 번 와도 결과가 한 번 온 것과 같게 만들어 재시도를 안전하게 한다.[21]",
+     "**뜨거운 파티션 피하기** — DynamoDB 는 파티션 키가 한쪽에 몰리면 그 칸만 막힌다. 키를 고르게 퍼뜨린다.[23]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "지수 백오프 + 전체 지터 (직접 돌린 출력, 시드 42)",
+     "body": "AWS 가 권하는 방식[21]입니다. 상한은 0.1·0.2·0.4…초로 두 배씩 늘고 5초에서 멈추며, 실제 대기는 0~상한 사이 무작위입니다. 출력의 마지막 세 줄: `시도 4: 상한 1.6s, 이번 대기 1.178s` / `시도 5: 상한 3.2s, 이번 대기 2.165s` / `시도 6: 상한 5.0s, 이번 대기 4.461s`.",
+     "lang": "python",
+     "code": "import random\n\ndef backoff(attempt, base=0.1, cap=5.0, rng=random.Random(42)):\n    return rng.uniform(0, min(cap, base * 2 ** attempt))\n\nfor a in range(7):\n    print(f\"시도 {a}: 상한 {min(5.0, 0.1 * 2 ** a):.1f}s, 이번 대기 {backoff(a):.3f}s\")"
+    }
+   ],
+   "how_far": "AWS 계정·네트워크 바닥은 사내 Platform 팀과 Infra 쪽이 있습니다.[3][4] 이 자리는 **자기 서비스가 고장 날 때 어떻게 버틸지를 설계 문서로 설명하고 코드로 넣는** 수준입니다 {추론}.",
+   "refs": [
+    2,
+    3,
+    4,
+    21,
+    22,
+    23
+   ],
+   "study": [
+    "aws-builders-retry",
+    "aws-wa-reliability",
+    "ddia",
+    "ddia-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・Automate deployment, testing, monitoring and documentation via CI/CD pipelines and infrastructure-as-code.",
+   "short": "코드를 올리면 시험·배포·감시 설정이 손을 안 대도 자동으로 되게 만드는 일.",
+   "why": "Access Control 팀 리드는 **Terraform 으로 배포를 자동화**했다고 말했고, 테스트 담당자는 수동 시험을 자동화로 옮기는 중이라고 했습니다.[4] 회사 소개 자료의 공통 도구에는 CircleCI·GitHub Actions·Datadog·Sentry·Playwright 가 있습니다.[3]",
+   "actually": {
+    "items": [
+     "**인프라를 코드로(IaC)** — 서버·DB·권한을 Terraform 파일로 적고, 바꿀 때는 PR 로 '무엇이 바뀌나(plan)'를 먼저 보고 적용한다.[4][26]",
+     "**CI** — PR 마다 단위 테스트·정적 검사를 돌려 통과해야 합친다. 백엔드는 pytest(인터뷰 녹취에는 'PyTex' 로 적힘)를 쓴다고 했다.[4][5]",
+     "**화면 시험** — 프런트는 React Testing Library, 사람 손 시험은 Katalon 같은 도구로 자동화 중.[4]",
+     "**감시** — Datadog(지표·로그)·Sentry(오류 추적)로 배포 뒤 이상을 잡는다.[3]",
+     "**문서 자동화** — FastAPI 는 코드의 타입 정보로 API 문서(OpenAPI)를 자동으로 만든다.[25]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "CI 가 돌릴 경계값 테스트 (직접 돌린 출력)",
+     "body": "위 접근 정책 예시에 경계값(대역 끝 `203.0.113.255`, 바로 밖 `203.0.114.0`)과 '모르는 조건은 거부'를 시험합니다. 출력: `Ran 2 tests ... OK`.",
+     "lang": "python",
+     "code": "import unittest\nfrom ex_policy import POLICY, allowed\n\nCASES = [\n    ({\"ip\": \"203.0.113.255\", \"device_cert\": True}, True),\n    ({\"ip\": \"203.0.114.0\", \"device_cert\": True}, False),\n    ({\"ip\": \"198.51.100.9\", \"mfa\": False}, False),\n]\n\nclass PolicyTest(unittest.TestCase):\n    def test_cases(self):\n        for req, expected in CASES:\n            with self.subTest(req=req):\n                self.assertIs(allowed(POLICY, req), expected)\n\n    def test_unknown_condition_is_denied(self):\n        self.assertIs(allowed({\"geo\": \"JP\"}, {\"ip\": \"203.0.113.7\"}), False)\n\nif __name__ == \"__main__\":\n    unittest.main(verbosity=2)"
+    }
+   ],
+   "how_far": "파이프라인의 바닥(공용 CI 설정·Kubernetes·Argo CD)은 Platform 팀 몫입니다.[3] 이 자리는 **자기 서비스의 파이프라인과 Terraform 모듈을 직접 고치고, 빠진 자동화를 찾아 넣는** 수준입니다 {추론}.",
+   "refs": [
+    3,
+    4,
+    5,
+    25,
+    26
+   ],
+   "study": [
+    "terraform-docs",
+    "pytest-book",
+    "gha-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・Collaborate closely with Product Management, Design, and Customer Success teams to deliver high-quality user experiences.",
+   "short": "무엇을 만들지 정하는 PM·디자이너, 고객 문의를 받는 팀과 같이 기능을 정하는 일.",
+   "why": "회사 소개 자료의 팀 구성에는 엔지니어링 매니저 옆에 **Tech Product Manager** 가 따로 있습니다.[3] 고객은 일본 기업의 정보시스템 담당자이고, SSO 연동은 새 서비스마다 무료로 검증해 준다고 안내합니다 — 고객 지원과 개발이 맞물리는 지점입니다.[12]",
+   "actually": {
+    "items": [
+     "**요구 정리** — PM 이 가져온 고객 요구를 '무엇을 만들고 무엇은 안 만드나'로 좁힌다. 새 기술은 비용과 투자 대비 효과를 먼저 견준다.[4]",
+     "**디자인과 맞추기** — 관리자 화면·로그인 화면을 디자이너 시안과 맞춘다. 회사 공통 도구에 Figma 가 있다.[3]",
+     "**고객 문의 되먹임** — Customer Success 가 받은 장애·불편을 원인까지 따라가 고친다 {추론}.",
+     "**주간 체크인** — 팀은 매주 확인 회의, 한 달에 한 번 사무실에 모이는 날이 있다고 했다(2024년 인터뷰).[4]"
+    ]
+   },
+   "how_far": "제품 방향은 PM 이 정합니다. 엔지니어는 **기술로 되는 것·안 되는 것·드는 시간**을 영어로 분명히 말해 결정을 돕는 수준이면 됩니다 {추론}.",
+   "refs": [
+    2,
+    3,
+    4,
+    12
+   ],
+   "study": [
+    "hennge-ac-interview"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・Participate actively in code reviews, discussions and technical decision-making.",
+   "short": "남의 PR 을 읽고 고칠 점을 말하고, 어떤 기술로 갈지 정하는 자리에 의견을 내는 일.",
+   "why": "이 팀 백엔드 엔지니어는 하루 일로 **동료 PR 리뷰**를 먼저 꼽았고, 자동 테스트와 PR 리뷰 요건이 있다고 했습니다. 가장 중요한 건 서로 묻기를 권하는 문화라고 했습니다.[5] 팀에는 백엔드·프런트 리드가 따로 있습니다.[3]",
+   "actually": {
+    "intro": "회사가 리뷰 규칙을 공개하지 않아서, 공개된 리뷰 지침(Google)으로 '보통 이런 것'을 보입니다.[27]",
+    "items": [
+     "**리뷰의 기준** — 완벽한 코드가 아니라 '코드베이스 전체를 낫게 만드나'로 승인한다.[27]",
+     "**보는 순서** — 설계 → 기능 → 복잡도 → 테스트 → 이름 → 주석 → 스타일.[27]",
+     "**빠른 응답** — 리뷰가 늦으면 팀 전체 속도가 떨어져, 하루 안에 답하는 걸 권한다.[27]",
+     "**결정 남기기** — 큰 기술 결정은 이유와 대안을 글로 남긴다(설계 문서·ADR) {추론}.",
+     "**영어 리뷰** — 20개 넘는 나라 사람이 섞인 팀이라 짧고 분명한 영어로 쓴다.[1][4]"
+    ]
+   },
+   "how_far": "시니어라 **리뷰 받는 쪽보다 하는 쪽**이 중심입니다 — 지적에 '왜'와 대안을 같이 적는 정도가 최소선입니다 {추론}.",
+   "refs": [
+    1,
+    3,
+    4,
+    5,
+    27
+   ],
+   "study": [
+    "google-review"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・Mentor junior engineers, and contribute to improving team processes and engineering culture.",
+   "short": "후배를 키우고, 팀이 일하는 방식을 더 낫게 바꾸는 데 손을 보태는 일.",
+   "why": "회사는 승급(벨트) 심사 항목에 **전문성·리더십·소통·팀 육성**을 넣었습니다.[3][8] 이 팀에는 인턴으로 시작해 정규직이 된 엔지니어들이 있고(글로벌 인턴십), 정규직 엔지니어가 인턴 면접도 봅니다.[4][5]",
+   "actually": {
+    "items": [
+     "**짝 작업·리뷰로 가르치기** — 후배 PR 에 고칠 점만이 아니라 이유를 남긴다.[5][27]",
+     "**인턴·신입 면접** — 정규직 엔지니어가 인턴 지원자를 면접한다.[5]",
+     "**사내 기술 발표(MTS)** — 매달 열리는 Monthly Technical Session 에서 발표한다.[3][5]",
+     "**바깥 발표** — 이 팀 엔지니어는 대만·뉴질랜드·홍콩·인도네시아 PyCon 에서 발표했고 회사가 출장비를 댔다. 그 일은 승급 근거로도 쓰였다.[5]",
+     "**탐구 시간** — 팀은 본업 80%·탐구 20% 로 나눠 쓴다고 했다.[4]"
+    ]
+   },
+   "how_far": "관리직이 아니어도 되는 일입니다 — 회사는 엔지니어에게 관리 경로와 기술 경로를 따로 둡니다.[9] 최소선은 **후배 한 명의 첫 기능을 끝까지 같이 봐 준 경험**을 말할 수 있는 정도입니다 {추론}.",
+   "refs": [
+    3,
+    4,
+    5,
+    8,
+    9,
+    27
+   ],
+   "study": [
+    "staff-path",
+    "hennge-belt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・5+ years of experience developing production-scale web applications using Python.",
+   "short": "실제 사용자가 쓰는 Python 웹 서비스를 5년 넘게 만들고 운영해 봤어야 한다는 뜻.",
+   "why": "회사 채용 페이지는 이 줄을 **자동 탈락 기준**으로 씁니다 — 온라인 코딩 과제에서 직업 Python 경력이 5년 미만이거나 Python 이 아닌 언어로 풀면 자동으로 떨어집니다.[2] 과제가 전형의 **유일한 기술 시험**이고 면접에는 라이브 코딩이 없습니다.[2][3]",
+   "level": {
+    "basic": "함수·클래스·예외·컬렉션·가상 환경·패키지 관리",
+    "work": "타입 힌트·async/await·제너레이터·컨텍스트 매니저·테스트(pytest)·로깅·프로파일링",
+    "team": "Tornado(콜백·코루틴 시절 코드)와 FastAPI(타입 기반 새 코드)를 같이 읽고, 동시 요청이 많은 비동기 서버의 병목을 찾는 수준"
+   },
+   "actually": {
+    "items": [
+     "**Tornado** — 하나의 스레드에서 이벤트 루프로 많은 연결을 동시에 받는 Python 웹 프레임워크이자 비동기 네트워크 라이브러리.[24]",
+     "**FastAPI** — 타입 힌트로 입력 검사와 API 문서를 자동으로 만드는 비동기 프레임워크.[25] 회사 소개 자료의 이 팀 칸에는 FastAPI 만 있다.[3]",
+     "**둘이 같이 있는 이유** — 공고는 둘 다 적었다.[1] 오래된 서비스는 Tornado, 새 서비스는 FastAPI 일 가능성이 크다 {추론}.",
+     "**production-scale** — 이 팀 엔지니어는 '매일 수백만 명이 쓰는 제품'이라고 했다.[5]",
+     "**Rust 도** — SSO 쪽은 주로 Python 이지만 최근 Rust 를 들이기 시작했다(2024년).[6]"
+    ]
+   },
+   "how_far": "연차보다 **'운영 중인 서비스에서 내가 만든 것·고친 장애'를 영어로 설명**할 수 있는가가 면접에서 갈립니다 {추론}. 코딩 과제는 시간 제한이 없으니 테스트·문서까지 갖춘 코드로 내는 것이 좋습니다.[2] {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    5,
+    6,
+    24,
+    25
+   ],
+   "study": [
+    "fluent-python-ko",
+    "tornado-docs",
+    "fastapi-docs",
+    "cosmic-python-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Ability to mentor junior engineers and work collaboratively in a team environment.",
+   "short": "혼자 잘하는 것보다 후배를 이끌고 여러 나라 사람과 같이 일할 수 있어야 해서.",
+   "why": "이 팀은 2024년 기준 17명이고 인도네시아·필리핀·미얀마·홍콩·스위스·남아공·미국·일본 사람이 섞여 있으며, 구조가 '꽤 평평하다'고 했습니다.[4] 회사 전체로는 31개 나라 사람이 일합니다.[3] 회사 채용 페이지 판은 이 줄을 '기술 과제를 이끌고 후배를 멘토링하는 능력'으로 적었습니다.[2]",
+   "how_far": "면접에서는 **후배를 도운 구체 장면 하나**(무엇이 막혔고, 무엇을 했고, 무엇이 바뀌었나)를 준비하면 됩니다 {추론}. 업무 ⑥과 같은 요건을 경험으로 확인하는 줄입니다.",
+   "refs": [
+    2,
+    3,
+    4
+   ],
+   "study": [
+    "staff-path",
+    "google-review"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Hands-on experience with cloud infrastructure (AWS, GCP or Azure) and distributed system concepts.",
+   "short": "클라우드에 서비스를 직접 올려 봤고, 여러 서버가 나눠 일할 때 생기는 문제를 알아야 해서.",
+   "why": "회사 소개 자료의 모든 제품 팀 칸에 AWS 가 있습니다.[3] 공고는 AWS·GCP·Azure 중 하나면 된다고 열어 두었지만, 실제 바닥은 AWS 입니다.[1][3]",
+   "actually": {
+    "intro": "'분산 시스템 개념'이 실제로 뜻하는 것입니다(일반론).[22][28]",
+    "items": [
+     "**부분 실패** — 서버 하나·네트워크 한 구간만 고장 나는 일이 늘 있다. 응답이 없을 때 '실패'인지 '느림'인지 알 수 없다.[28]",
+     "**일관성** — 여러 복사본 중 하나가 늦게 따라올 때, 방금 바꾼 권한이 다른 서버에선 아직 옛 값일 수 있다.[28]",
+     "**DynamoDB 의 읽기** — 기본은 '결국 일관된 읽기'이고, 강한 일관성은 따로 골라야 한다.[23]",
+     "**AWS 기본기** — 계산(ECS·Lambda 등)·저장(DynamoDB·RDS PostgreSQL)·권한(IAM)·네트워크(VPC)의 관계 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "DynamoDB 한 표 설계를 흉내 내기 (직접 돌린 출력)",
+     "body": "DynamoDB 는 파티션 키로 칸을 찾고 정렬 키 앞부분으로 좁힙니다.[23] 키에 없는 조건(그룹)으로 찾으면 전체를 훑어야 합니다. 출력: `acme 사용자: ['USER#alice', 'USER#bob']` / `Scan 으로 dev: ['USER#alice', 'USER#carol'] (읽은 항목 4 개)`.",
+     "lang": "python",
+     "code": "items = [\n    {\"PK\": \"TENANT#acme\", \"SK\": \"USER#alice\", \"group\": \"dev\"},\n    {\"PK\": \"TENANT#acme\", \"SK\": \"USER#bob\", \"group\": \"sales\"},\n    {\"PK\": \"TENANT#acme\", \"SK\": \"POLICY#office-only\", \"rule\": \"ip+cert\"},\n    {\"PK\": \"TENANT#beta\", \"SK\": \"USER#carol\", \"group\": \"dev\"},\n]\n\ndef query(pk, sk_prefix):\n    return [i[\"SK\"] for i in items if i[\"PK\"] == pk and i[\"SK\"].startswith(sk_prefix)]\n\nprint(\"acme 사용자:\", query(\"TENANT#acme\", \"USER#\"))\nprint(\"Scan 으로 dev:\", [i[\"SK\"] for i in items if i.get(\"group\") == \"dev\"], \"(읽은 항목\", len(items), \"개)\")"
+    }
+   ],
+   "how_far": "자격증보다 **'내 서비스를 AWS 에 올리고 장애를 겪어 본 이야기'**가 필요합니다 {추론}. DynamoDB 는 우대가 아니라 공고 기술 목록에 있으니 키 설계 정도는 알고 가는 편이 좋습니다.[1][2]",
+   "refs": [
+    1,
+    2,
+    3,
+    22,
+    23,
+    28
+   ],
+   "study": [
+    "ddia",
+    "ddia-ko",
+    "dynamodb-book",
+    "ddb-best"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Experience with CI/CD, automated testing, code documentation, and clean-code practices.",
+   "short": "자동 시험·자동 배포를 늘 쓰고, 남이 읽기 쉬운 코드와 문서를 남겨 왔어야 해서.",
+   "why": "이 팀에는 자동 테스트와 PR 리뷰 요건이 있습니다.[5] 업무 ③(자동화)을 맡으려면 그 바탕을 이미 써 봤어야 합니다.",
+   "level": {
+    "basic": "PR 마다 테스트가 돌게 하는 CI 설정 하나를 직접 쓴다",
+    "work": "단위·통합 테스트 나누기, 목(mock)·픽스처, 커버리지보다 경계값, 타입 검사·린터",
+    "team": "Terraform 까지 포함한 배포 자동화, 배포 뒤 감시(Datadog·Sentry) 확인까지 한 흐름"
+   },
+   "how_far": "도구 이름(CircleCI·GitHub Actions)보다 **'이 테스트가 무엇을 지키나'를 설명**하는 게 중요합니다 {추론}. 회사 코딩 과제가 유일한 기술 시험이니 과제 제출물이 이 줄의 증거가 됩니다.[2]",
+   "refs": [
+    2,
+    3,
+    5
+   ],
+   "study": [
+    "pytest-book",
+    "gha-docs",
+    "cosmic-python-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Fluency in English (Japanese is not required), equivalent to CEFR B2 level or above (e.g., TOEIC 785+).",
+   "short": "회의·리뷰·문서가 전부 영어라서. 기준은 CEFR B2, TOEIC 785점 이상.",
+   "why": "회사 소개 자료는 영어를 **공식 언어**로 적었습니다.[3] 원티드 공고 머리말도 모든 업무를 영어로 하고 영문 이력서만 받으며, 국문·일문 이력서만 내면 서류에서 뺀다고 했습니다.[1]",
+   "actually": {
+    "items": [
+     "**B2 가 뜻하는 것** — 자기 분야의 기술 토론을 포함해 복잡한 글의 요지를 이해하고, 원어민과 큰 부담 없이 대화할 수 있는 수준.[29][30]",
+     "**785 의 출처** — ETS 의 매핑표에서 B2 최소선이 듣기 400·읽기 385 이고, 더하면 785 다.[30]",
+     "**말하기도 본다** — ETS 는 이 숫자를 고정 합격선이 아니라 지침으로 쓰라고 하고[30], 회사 면접은 전부 영어다.[1] {추론}",
+     "**영어 수당** — 회사는 CEFR-J 기준으로 듣기·읽기·말하기·쓰기를 평가해 매달 영어 수당을 준다(신청 필요).[3]"
+    ]
+   },
+   "how_far": "점수는 서류 통과 기준이고, 실제로는 **기술 결정을 영어로 설명하고 반론에 답하는** 수준이 필요합니다 {추론}. 일본어는 필요 없지만, 일본어를 잘하면 별도 수당(월 최대 13만 엔 칸)이 있습니다.[1][3]",
+   "refs": [
+    1,
+    3,
+    29,
+    30
+   ],
+   "study": [
+    "cefr-scale",
+    "ets-mapping"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Interest in open source or tech community activities.",
+   "short": "회사가 PyCon 을 오래 후원하고, 발표·기여를 일로 인정하는 문화라서.",
+   "why": "HENNGE 는 2013년부터 PyCon JP 를, 2014년부터 해외 아홉 지역의 PyCon 을 후원했고, 사원 한 명은 PyCon JP 협회 이사입니다.[7] 2026년에도 PyCon JP 후원사로 나섭니다.[31] 한 엔지니어는 20% 규칙(본업 밖 시간)으로 오픈소스에 기여했다고 했습니다.[6]",
+   "how_far": "큰 기여가 아니어도 됩니다 — **고친 이슈 하나·쓴 글 하나·밋업 발표 하나**를 링크로 보여 주는 정도면 '관심'을 증명합니다 {추론}. 이 줄은 회사가 지원서 첫 화면에서 보는 문화 신호입니다 {추론}.",
+   "refs": [
+    6,
+    7,
+    31
+   ],
+   "study": [
+    "hennge-pycon"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Fluent Level English",
+   "short": "위 영어 요건을 한 번 더 못 박은 줄 — 서류도 면접도 영어로만 본다.",
+   "why": "원티드 공고는 영문 레쥬메가 필수이고 영어 소통이 안 되면 통보 없이 서류에서 뺀다고 따로 적었습니다.[1] 회사 지원 절차는 이력서와 **커버레터**를 같이 받습니다.[2]",
+   "how_far": "영문 이력서는 **숫자로 된 성과**(사용자 수·응답 시간·장애 감소)와 Python 경력 연수가 첫 줄에 보이게 씁니다 {추론}. 커버레터에는 Access Control 과 Secure Transfer 자리 중 어디에 관심이 있는지 적을 수 있습니다 — 두 자리가 같은 전형을 씁니다.[2]",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "cefr-scale"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Relocation to Japan required",
+   "short": "원격 채용이 아니라 도쿄 사무실로 옮겨 와 일하는 자리라서.",
+   "why": "회사 채용 페이지는 이 자리를 '상근·도쿄'로 적었습니다.[2] 사무실에 나와 동료와 만나면 하루 단위로 **Physical Communication Bonus** 를 줍니다(원티드 판 하루 4,000엔, 회사 판 5,000엔).[1][2] 대신 항공권·비자·일본어 수업 같은 이주 지원이 있습니다.[1][3]",
+   "actually": {
+    "items": [
+     "**취업 비자** — 보통 '기술·인문지식·국제업무' 체류 자격이다. 관련 전공 학위나 10년 실무 경력 같은 요건이 있다.[32]",
+     "**회사 지원** — 일본 밖에 사는 사람에게 항공권, 비자 준비, 숙소 안내.[3]",
+     "**근무 방식** — 원티드 공고는 '원격 근무 가능'이라 적었고 회사 판은 '상근'이라 적었다. 하루 출근 보너스가 있는 걸 보면 출근이 기본이다.[1][2] {추론}",
+     "**사무실 이전** — 한 채용 사이트는 2027년 4월부터 신주쿠로 옮긴다고 적었다(회사 판에는 없음).[33]"
+    ]
+   },
+   "how_far": "입사 전 **비자 요건(학위 전공과 직무의 관계)**을 먼저 확인하세요. 학위가 없으면 경력 증명이 필요합니다.[32]",
+   "refs": [
+    1,
+    2,
+    3,
+    32,
+    33
+   ],
+   "study": [
+    "isa-gijinkoku"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・Degree in Computer Science or related technical field.",
+   "short": "실력의 증거이기도 하지만, 일본 취업 비자를 받는 데 학위가 가장 쉬운 길이라서.",
+   "why": "취업 비자의 기본 요건이 관련 전공 학위 또는 10년 실무 경력입니다.[32] 회사 공고는 이 줄을 필수가 아니라 우대로 둡니다.[1][2]",
+   "how_far": "비전공이면 **10년 경력 증명**이나 다른 체류 자격 길을 회사와 상의해야 합니다.[32] 실력 면에서는 자료구조·네트워크·OS 기초를 설명할 수 있으면 학위의 빈자리를 메웁니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    32
+   ],
+   "study": [
+    "isa-gijinkoku",
+    "http-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・Experience building large-scale distributed systems or SaaS products.",
+   "short": "여러 고객사가 한 서비스를 나눠 쓰는 SaaS 를 키워 본 사람은 이 제품의 고민을 바로 알아서.",
+   "why": "HENNGE One 은 4,000곳 넘는 회사가 같이 쓰는 B2B SaaS 이고, 회사 판 공고는 이 줄을 'B2B 분야의 SaaS'로 좁혀 적었습니다.[2][3]",
+   "actually": {
+    "items": [
+     "**멀티테넌시** — 고객사마다 데이터·설정·정책을 섞이지 않게 나눈다. 앞의 DynamoDB 예처럼 키 앞에 테넌트를 붙이는 방식이 흔하다.[23] {추론}",
+     "**시끄러운 이웃** — 큰 고객사 하나가 요청을 몰아도 다른 고객이 느려지지 않게 한다.[22] {추론}",
+     "**가용성 약속** — 회사는 99.9% 넘는 가용성을 밝혔다.[3]",
+     "**연동 늘리기** — SaaS 500개 넘는 SSO 연동을 유지한다.[12][17]"
+    ]
+   },
+   "refs": [
+    2,
+    3,
+    12,
+    17,
+    22,
+    23
+   ],
+   "study": [
+    "ddia",
+    "ddia-ko",
+    "dynamodb-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・Knowledge of web-security, access-control, email-or-storage-systems domains.",
+   "short": "이 팀 제품이 곧 접근 제어이고, 형제 제품이 메일·파일 보안이라서.",
+   "why": "HENNGE One 은 Identity(접근 제어·SSO)·DLP(메일·파일 유출 방지·아카이브)·Cybersecurity(피싱 훈련) 판으로 나뉩니다.[3] 회사 판 공고는 이 줄을 '웹 보안, ID 관리(SAML·OIDC), Tornado 나 DynamoDB'로 더 구체적으로 적었습니다.[2]",
+   "actually": {
+    "items": [
+     "**SAML 2.0** — 로그인한 쪽(IdP)이 서명한 XML '증명서'를 서비스(SP)에 넘겨 로그인을 대신한다. 서비스가 먼저 묻는 방식(SP-initiated)과 IdP 가 먼저 보내는 방식이 있다.[18]",
+     "**OIDC** — OAuth 2.0 위에서 '누구인가'를 서명된 토큰(ID 토큰)으로 넘기는 방식. 권한 코드 흐름이 기본이다.[19]",
+     "**SAML 에서 자주 뚫리는 곳** — 서명 검증 빠뜨리기, 서명된 부분과 읽는 부분이 다른 'XML 서명 감싸기', 재사용(리플레이) — 검증 순서를 지켜야 한다.[20]",
+     "**기기 인증서** — 제3자 인증기관이 발급한 인증서로 '허가된 기기인가'를 판정한다.[11]",
+     "**Secure Browser** — HENNGE One 계정으로 연동된 클라우드 서비스에 안전하게 들어가는 전용 브라우저 앱(Windows·macOS·모바일).[13]"
+    ]
+   },
+   "how_far": "표준 문서를 외울 필요는 없고, **SSO 로그인 한 번이 브라우저·IdP·SP 사이를 어떻게 오가는지 그림으로 그리고, 어디서 서명을 검증하나**를 말할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    2,
+    3,
+    11,
+    13,
+    18,
+    19,
+    20
+   ],
+   "study": [
+    "saml-overview",
+    "oidc-core",
+    "owasp-saml",
+    "http-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・Knowledge of DevOps tools and practices (CI/CD, Infrastructure as Code).",
+   "short": "이 팀은 배포를 Terraform 으로 자동화했고, 엔지니어가 배포까지 맡아서.",
+   "why": "팀 리드가 Terraform 으로 배포를 자동화했다고 말했고, 회사 소개 자료의 이 팀 칸에도 Terraform 이 있습니다.[3][4] 회사는 팀이 개발부터 배포까지 정한다고 적었습니다.[1]",
+   "how_far": "업무 ③·요건 ⑩과 겹칩니다. 우대 수준은 **Terraform 으로 리소스를 직접 만들고 plan 을 읽어 위험한 변경(삭제·교체)을 알아보는** 정도입니다 {추론}.[26]",
+   "refs": [
+    1,
+    3,
+    4,
+    26
+   ],
+   "study": [
+    "terraform-docs",
+    "gha-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・Knowledge of Linux / MacOS / Unix-like environments.",
+   "short": "개발은 대부분 Mac, 서버는 Linux 라서 터미널에서 일하는 게 기본이어서.",
+   "why": "회사 엔지니어 인터뷰는 개발을 주로 Mac 에서 하고 VS Code·Vim/Neovim·PyCharm 을 쓴다고 했습니다.[6] 서버와 컨테이너(Docker)는 Linux 위에서 돕니다.[3] {추론}",
+   "how_far": "셸·프로세스·파일 권한·네트워크 확인 명령(curl·ss·dig)·로그 보기 정도면 됩니다 {추론}.",
+   "refs": [
+    3,
+    6
+   ],
+   "study": [
+    "docker-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・Team leadership experience.",
+   "short": "팀마다 리드 자리가 있고, 승급할수록 팀을 이끄는 일이 평가에 들어가서.",
+   "why": "회사 소개 자료의 팀 구성에는 백엔드·프런트·모바일 리드가 따로 있습니다.[3] 벨트가 올라갈수록 사업에 주는 영향이 큰 일을 맡고, 심사 항목에 리더십과 팀 육성이 있습니다.[3][8]",
+   "how_far": "필수가 아니라 우대입니다. 리드 경험이 있으면 입사 벨트(곧 연봉 범위)를 정할 때 근거가 됩니다 {추론}.[8][9]",
+   "refs": [
+    3,
+    8,
+    9
+   ],
+   "study": [
+    "staff-path",
+    "hennge-belt"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "hennge-deck",
+   "title": "Company Introduction Deck — HENNGE",
+   "by": "HENNGE · Speaker Deck · 2026년 11월 갱신",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://speakerdeck.com/hennge/company-introduction-deck-hennge",
+   "why": "팀 구성·팀별 기술·벨트 연봉 범위·전형 단계가 다 있다. 지원 전에 꼭 볼 자료이고 공고가 연봉 근거로 직접 가리킨다."
+  },
+  {
+   "id": "hennge-ac-interview",
+   "title": "Access All Areas: Get to Know the People and Innovation Behind HENNGE One Access Control",
+   "by": "HENNGE · Life At HENNGE · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://hennge.com/global/info/henka/interview/202404-get_to_know_the_people_and_innovation_behind_hennge_access_control/",
+   "why": "이 팀(17명) 사람들이 직접 말한 도구·회의·테스트 방식. 업무 ①③④의 회사 근거."
+  },
+  {
+   "id": "hennge-belt",
+   "title": "Level Up Your Career at HENNGE: MON, Belt, and Subrank Explained",
+   "by": "HENNGE · Life At HENNGE · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://hennge.com/global/info/henka/blog/level-up-your-career-at-hennge-mon-belt-and-subrank-explained/",
+   "why": "연봉 범위를 정하는 벨트 7단계와 서브랭크. 연봉 협상 전에 읽는다."
+  },
+  {
+   "id": "hennge-pycon",
+   "title": "“PyCon”: HENNGE continues to support the open source programming event globally",
+   "by": "HENNGE · Life At HENNGE · 2022",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://hennge.com/global/info/henka/interview/pycon-20220301/",
+   "why": "요건 '오픈소스·커뮤니티 관심'의 배경 — 회사가 PyCon 에 왜 오래 관여하나."
+  },
+  {
+   "id": "fluent-python-ko",
+   "title": "전문가를 위한 파이썬 (2판)",
+   "by": "루시아누 하말류",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%A0%84%EB%AC%B8%EA%B0%80%EB%A5%BC%20%EC%9C%84%ED%95%9C%20%ED%8C%8C%EC%9D%B4%EC%8D%AC",
+   "why": "요건 ① 'Python 5년'의 깊이 — 데이터 모델·제너레이터·async·타입 힌트를 시니어 눈높이로."
+  },
+  {
+   "id": "cosmic-python-ko",
+   "title": "파이썬으로 살펴보는 아키텍처 패턴",
+   "by": "해리 퍼시벌 · 밥 그레고리 · 오현석 옮김 · 한빛미디어 · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/-/9791162244319/",
+   "why": "깨끗한 코드·테스트하기 쉬운 구조(저장소·서비스 계층). 원서는 cosmicpython.com 에서 무료로 읽을 수 있다."
+  },
+  {
+   "id": "tornado-docs",
+   "title": "Tornado Web Server 공식 문서",
+   "by": "Tornado",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.tornadoweb.org/en/stable/",
+   "why": "공고 기술 Tornado — 이벤트 루프·코루틴·비동기 요청 처리."
+  },
+  {
+   "id": "fastapi-docs",
+   "title": "FastAPI 공식 문서",
+   "by": "FastAPI",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://fastapi.tiangolo.com/",
+   "why": "이 팀의 새 코드 바탕. 타입으로 입력 검사·OpenAPI 문서 자동 생성까지(업무 ③ 문서 자동화)."
+  },
+  {
+   "id": "pytest-book",
+   "title": "Python Testing with pytest, Second Edition",
+   "by": "Brian Okken · Pragmatic Bookshelf · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/python-testing-with/9781680509427/",
+   "why": "요건 ④ 자동 테스트 — 픽스처·매개변수화·목을 pytest 로."
+  },
+  {
+   "id": "ddia",
+   "title": "Designing Data-Intensive Applications",
+   "by": "Martin Kleppmann · O'Reilly · 2017",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://dataintensive.net/",
+   "why": "요건 ③ '분산 시스템 개념'의 표준 교재 — 복제·일관성·부분 실패."
+  },
+  {
+   "id": "ddia-ko",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+   "why": "위 책의 한국어판. 개념은 한국어로 잡고 면접 용어는 영어로 옮긴다."
+  },
+  {
+   "id": "dynamodb-book",
+   "title": "The DynamoDB Book",
+   "by": "Alex DeBrie · 2020",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.dynamodbbook.com/",
+   "why": "공고 기술 DynamoDB 의 키 설계·한 표 설계·접근 패턴 먼저 정하기."
+  },
+  {
+   "id": "ddb-best",
+   "title": "Amazon DynamoDB · Best practices for designing and architecting",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/best-practices.html",
+   "why": "파티션 키 고르기·뜨거운 파티션·보조 색인. 업무 ②와 요건 ③."
+  },
+  {
+   "id": "aws-builders-retry",
+   "title": "Timeouts, retries, and backoff with jitter",
+   "by": "Amazon Builders' Library",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+   "why": "업무 ② '고장에 견디는 서비스'의 실전 규칙 — 타임아웃·재시도·지터·멱등성."
+  },
+  {
+   "id": "aws-wa-reliability",
+   "title": "AWS Well-Architected · Reliability Pillar",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+   "why": "여러 가용 영역·수평 확장·장애 격리 원칙. 설계 면접의 공용어."
+  },
+  {
+   "id": "terraform-docs",
+   "title": "Terraform 공식 문서",
+   "by": "HashiCorp",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.hashicorp.com/terraform/docs",
+   "why": "이 팀이 배포 자동화에 쓰는 IaC 도구. 업무 ③·우대 ③."
+  },
+  {
+   "id": "gha-docs",
+   "title": "GitHub Actions 공식 문서",
+   "by": "GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.github.com/en/actions",
+   "why": "회사 공통 CI 도구 중 하나. PR 마다 테스트를 돌리는 첫 파이프라인을 만든다."
+  },
+  {
+   "id": "google-review",
+   "title": "Google Engineering Practices · Code Review",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://google.github.io/eng-practices/review/",
+   "why": "업무 ⑤ 코드 리뷰 — 승인 기준·보는 순서·리뷰 말투. 영어 리뷰 문장의 본보기도 된다."
+  },
+  {
+   "id": "staff-path",
+   "title": "The Staff Engineer's Path",
+   "by": "Tanya Reilly · O'Reilly · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/the-staff-engineers/9781098118723/",
+   "why": "관리직이 아닌 기술 경로에서 멘토링·기술 결정·팀 문화 개선을 어떻게 하나(업무 ⑥, 우대 ⑥)."
+  },
+  {
+   "id": "saml-overview",
+   "title": "Security Assertion Markup Language (SAML) V2.0 Technical Overview",
+   "by": "OASIS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html",
+   "why": "이 팀 제품의 핵심 표준. IdP·SP·어서션·바인딩의 뜻."
+  },
+  {
+   "id": "oidc-core",
+   "title": "OpenID Connect Core 1.0",
+   "by": "OpenID Foundation",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://openid.net/specs/openid-connect-core-1_0.html",
+   "why": "SAML 다음 표준. ID 토큰·권한 코드 흐름."
+  },
+  {
+   "id": "owasp-saml",
+   "title": "OWASP · SAML Security Cheat Sheet",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/SAML_Security_Cheat_Sheet.html",
+   "why": "우대 ② 웹 보안 — SAML 구현에서 실제로 뚫리는 곳과 막는 순서."
+  },
+  {
+   "id": "cefr-scale",
+   "title": "CEFR · Common Reference Levels: global scale",
+   "by": "Council of Europe",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.coe.int/en/web/common-european-framework-reference-languages/table-1-cefr-3.3-common-reference-levels-global-scale",
+   "why": "요건 '영어 B2' 가 무엇을 할 수 있다는 뜻인지 원문 기준."
+  },
+  {
+   "id": "ets-mapping",
+   "title": "Mapping the TOEIC tests on the CEFR",
+   "by": "ETS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.ets.org/pdfs/toeic/toeic-mapping-cefr-reference.pdf",
+   "why": "TOEIC 785 = B2 최소선(듣기 400 + 읽기 385)의 근거."
+  },
+  {
+   "id": "isa-gijinkoku",
+   "title": "在留資格「技術・人文知識・国際業務」",
+   "by": "出入国在留管理庁",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html",
+   "why": "요건 '일본 이주' 와 우대 '학위' — 엔지니어 취업 비자의 요건(일본어 페이지)."
+  },
+  {
+   "id": "http-book",
+   "title": "모든 개발자를 위한 HTTP 웹 기본 지식 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/http-basic",
+   "why": "SSO 가 기대는 리다이렉트·쿠키·헤더를 실제로 오간 요청·응답으로."
+  },
+  {
+   "id": "docker-book",
+   "title": "개발자를 위한 도커 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "우대 'Linux 환경' — 컨테이너 안의 Linux 를 실제로 친 명령과 출력으로."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "이 회사·이 팀 읽기",
+   "time": "1주",
+   "goal": "HENNGE One 의 판 구성, Access Control 팀이 맡는 것, 벨트·전형을 영어로 설명할 수 있다.",
+   "resources": [
+    "hennge-deck",
+    "hennge-ac-interview",
+    "hennge-belt"
+   ],
+   "task": "회사 자료를 읽고 'HENNGE One Identity 가 무엇을 막고 무엇을 여나'를 영어 A4 한 장으로 정리한다 — 커버레터의 첫 문단 재료."
+  },
+  {
+   "title": "SSO 를 손으로 따라가기",
+   "time": "2주",
+   "goal": "SAML·OIDC 로그인 한 번의 리다이렉트·서명 검증 흐름을 그림으로 그리고 어디가 위험한지 말할 수 있다.",
+   "resources": [
+    "saml-overview",
+    "oidc-core",
+    "owasp-saml",
+    "http-book"
+   ],
+   "task": "FastAPI 로 가상 IdP 와 가상 SP 를 따로 띄우고, 권한 코드 흐름으로 로그인한 뒤 서명이 틀린 토큰·만료된 토큰·재사용한 코드를 넣어 셋 다 거부되는지 테스트로 확인한다."
+  },
+  {
+   "title": "Python 비동기 서버 두 벌",
+   "time": "2~3주",
+   "goal": "Tornado 와 FastAPI 로 같은 API 를 만들고, 동시 요청에서 둘의 차이와 막히는 지점을 잰다.",
+   "resources": [
+    "fluent-python-ko",
+    "tornado-docs",
+    "fastapi-docs",
+    "pytest-book"
+   ],
+   "task": "가상 접근 정책 판정 API(AND·OR 정책, 기본 거부)를 두 프레임워크로 만들고 pytest 로 같은 시험을 돌린다. 판정 중에 일부러 동기 함수(time.sleep)를 끼워 넣어 동시 요청 100개의 응답 시간이 어떻게 무너지는지 비교한다."
+  },
+  {
+   "title": "DynamoDB·AWS·Terraform 로 올리기",
+   "time": "2~3주",
+   "goal": "테넌트별 키 설계로 표를 만들고, 서비스를 Terraform 과 CI 로 배포하며, 재시도·지터를 넣을 수 있다.",
+   "resources": [
+    "dynamodb-book",
+    "ddb-best",
+    "terraform-docs",
+    "gha-docs",
+    "aws-builders-retry"
+   ],
+   "task": "가상 고객사 3곳·사용자 1만 명의 정책·로그인 기록을 DynamoDB Local 에 PK=TENANT#…, SK=USER#…/POLICY#… 로 넣고 '고객사 하나의 최근 로그인 50건'을 Scan 없이 읽는다. GitHub Actions 로 테스트 → terraform plan 을 PR 에 붙이는 흐름까지 만든다."
+  },
+  {
+   "title": "영어로 설명하고 리뷰하기",
+   "time": "계속",
+   "goal": "설계 결정과 리뷰 의견을 영어로 짧고 분명하게 쓸 수 있다.",
+   "resources": [
+    "google-review",
+    "staff-path",
+    "ddia",
+    "cefr-scale"
+   ],
+   "task": "3·4단계 결과물에 영어 설계 문서(배경·대안·결정·위험) 한 편을 쓰고, 일부러 실수를 넣은 PR 하나에 Google 지침 순서대로 영어 리뷰 코멘트 다섯 개를 단다."
+  }
+ ],
+ "pay": {
+  "summary": "공고 연봉 **850만~1,250만 엔**(영어 수당·출근 보너스 포함). 회사 직원 평균 급여는 **847.8만 엔**(유가증권보고서, 2025년 9월 기준 — 경력직이 섞인 전체 평균)",
+  "rows": [
+   {
+    "label": "공고 표기 연봉",
+    "value": "850만~1,250만 엔",
+    "basis": "공고",
+    "note": "영어 수당과 Physical Communication Bonus 를 포함한 금액. 정확한 범위는 평가 제도·벨트로 정한다. 수습 3개월, 수습 중 조건 같음 [1][2]"
+   },
+   {
+    "label": "직원 평균 연간 급여",
+    "value": "847.8만 엔 (8,478천 엔)",
+    "basis": "유가증권보고서 · 2025년 9월 기준",
+    "note": "제29기, 제출 회사(단체) 378명 · 평균 35.3세 · 평균 근속 4.5년. 상여·기준 외 임금 포함, 영업·관리 직원 포함 [15]"
+   },
+   {
+    "label": "직원 평균 연간 급여 (전년)",
+    "value": "827만 엔 (8,270천 엔)",
+    "basis": "유가증권보고서 · 2024년 9월 기준",
+    "note": "제28기, 305명 · 평균 35.6세. 같은 보고서의 표로는 2023년 9월 789.7만 엔 [16]"
+   },
+   {
+    "label": "Henry Senior SRE",
+    "value": "800만~1,400만 엔",
+    "basis": "공고",
+    "peer": true,
+    "note": "같은 경로(원티드·LAPRAS)의 일본 시니어 공고, 일본어 필수 [34]"
+   },
+   {
+    "label": "MEGAZONE 시니어 클라우드 엔지니어",
+    "value": "850만~1,000만 엔",
+    "basis": "공고",
+    "peer": true,
+    "note": "같은 경로의 일본 근무 시니어 공고 [35]"
+   },
+   {
+    "label": "일본 민간 평균 급여(참고)",
+    "value": "478만 엔 (정사원 545만 엔)",
+    "basis": "국세청 민간급여실태통계 · 2024년분",
+    "note": "일본 전체 민간 급여 소득자 평균 — 회사·직군 구분 없는 나라 전체 값 [36]"
+   }
+  ],
+  "how": "연봉은 벨트(White → Green → Brown → Bronze → Silver → Gold → Platinum 7단계)마다 범위가 있고, 그 안의 정확한 금액은 서브랭크가 정합니다 [8]. 벨트는 승급 시험(위 벨트 심사자 4명 이상)으로 오르고, 서브랭크는 해마다 평가로 다시 정합니다 [9]. 회사 소개 자료의 벨트 표는 300만~1,650만 엔 눈금에 2,500만 엔 이상까지 그려져 있습니다 [3]. 평균 847.8만 엔은 신입·영업·관리직까지 섞인 회사 전체 값이라 초봉이 아니고, 이 공고 범위와 같은 기준도 아닙니다. 공고 금액에는 영어 수당(월 1만~13만 엔 칸)과 출근 보너스가 **들어 있어서** 기본급만은 그보다 낮습니다 [1]. 엔화 그대로, 세금·사회보험이 빠지기 전 금액입니다."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "영어 수당 · 고급 언어 수당",
+    "detail": "요건을 채우면 월 1만~13만 엔, 기본급과 같이 지급. CEFR-J 기준 네 기능 평가, 신청 필요"
+   },
+   {
+    "name": "Physical Communication Bonus",
+    "detail": "사무실에 나와 동료와 교류한 날마다 지급(원티드 판 하루 4,000엔 · 회사 판 5,000엔), 일수에 따라 상여로. 세부는 오퍼 면담에서"
+   },
+   {
+    "name": "교통비",
+    "detail": "월 최대 3만 5,000엔"
+   },
+   {
+    "name": "근무 시간",
+    "detail": "플렉스 + 코어타임 11:00~16:00, 보통 하루 8시간·휴게 1시간. 소정 시간 넘는 노동 있음"
+   },
+   {
+    "name": "휴일",
+    "detail": "주 2일(토·일·공휴일)"
+   },
+   {
+    "name": "이주 지원",
+    "detail": "일본 밖 거주자 항공권, 비자 준비, 숙소 안내, 일본어 수업"
+   },
+   {
+    "name": "주식",
+    "detail": "종업원 지주회"
+   },
+   {
+    "name": "배움",
+    "detail": "국내외 컨퍼런스 참가, 기술 자격·학습 프로그램 비용 지원, 온라인 학습 플랫폼, 영어·일본어 학습 지원"
+   },
+   {
+    "name": "보험",
+    "detail": "건강·고용·산재·후생연금"
+   },
+   {
+    "name": "사내 문화",
+    "detail": "Slack 사내 동호회 채널 200개 넘음, 월례 기술 발표(MTS)와 맥주 모임, 커뮤니케이션 점심"
+   },
+   {
+    "name": "흡연",
+    "detail": "실내 금연"
+   }
+  ],
+  "note": "원티드 공고의 복리후생 칸, 회사 채용 페이지의 같은 자리, 회사 소개 자료(2026년 11월 판) 기준이다 [1][2][3]. 출근 보너스 금액이 두 판에서 다르다 — 오퍼 면담에서 확인한다. 회사 자료는 일본어를 잘하면 받는 수당 칸을 따로 두었다 [3]."
+ },
+ "location": {
+  "name": "HENNGE 본사 · 大和渋谷スクエア(Daiwa Shibuya Square) 11층",
+  "address": "東京都渋谷区南平台町16番28号 大和渋谷スクエア 11F",
+  "postal": "〒150-0036",
+  "map_url": "https://map.naver.com/p/search/%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B8%8B%E8%B0%B7%E5%8C%BA%E5%8D%97%E5%B9%B3%E5%8F%B0%E7%94%BA16-28",
+  "near": "시부야역 서쪽 난페이다이(南平台) 일대 {추론}",
+  "note": "유가증권보고서의 본점 소재지와 회사 개요 페이지(접수 11층) [14][15], 공고의 근무지 [1]. 한 채용 사이트는 2027년 4월부터 신주쿠로 옮긴다고 적었지만 회사 자료에서는 확인하지 못했다 [33]."
+ },
+ "fit": {
+  "good": [
+   "로그인·권한처럼 '틀리면 바로 사고'인 코드를 꼼꼼히 다루는 게 즐거운 사람[2]",
+   "영어로 일하며 20개 넘는 나라 동료와 섞이고 싶은 사람[1][3]",
+   "PyCon 발표·오픈소스 기여를 일의 일부로 인정받고 싶은 사람[5][7]",
+   "관리직이 아닌 기술 경로로 계속 크고 싶은 사람[9]"
+  ],
+  "hard": [
+   "일본으로 이주해야 하고, 사무실 출근이 기본이다[1][2]",
+   "공고 연봉에 영어 수당·출근 보너스가 들어 있어 기본급은 표기보다 낮다[1]",
+   "코딩 과제가 유일한 기술 시험이고 Python 5년 미만이면 자동 탈락이다[2]",
+   "Tornado 와 FastAPI 가 같이 있어 오래된 코드와 새 코드를 같이 돌봐야 할 수 있다[1] {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "SAML 로그인에서 SP 는 IdP 가 보낸 어서션의 무엇을, 어떤 순서로 검증해야 하나요?",
+   "a": "이 팀 제품의 핵심이자 실제로 뚫리는 곳.[18][20]"
+  },
+  {
+   "q": "관리자가 접근 정책을 바꿨는데 어떤 서버에서는 아직 옛 정책으로 판정합니다. 왜 그럴 수 있고 어떻게 하겠어요?",
+   "a": "분산 시스템의 일관성 문제 — DynamoDB 읽기 일관성과 캐시.[23][28]"
+  },
+  {
+   "q": "Tornado 서비스에서 응답이 갑자기 전부 느려졌습니다. 무엇부터 의심하나요?",
+   "a": "이벤트 루프를 막는 동기 호출 — 공고의 기술 스택.[1][24]"
+  },
+  {
+   "q": "로그인 요청이 월요일 아침에 몰립니다. 하위 서비스가 느려질 때 재시도를 어떻게 설계하겠어요?",
+   "a": "'정문'의 동시 요청 문제와 재시도 폭주 막기.[2][21]"
+  },
+  {
+   "q": "후배의 PR 이 동작은 하지만 구조가 나쁩니다. 리뷰에 무엇을, 어떻게 쓰겠어요?",
+   "a": "업무 ⑤⑥ — 이 팀의 리뷰·질문 문화.[5][27]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · [HENNGE Inc.] Senior Software Engineer (Python/Web Dev)_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/353016",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "LAPRAS Global Bridge 연계 · 회사·팀 소개, 업무·요건·우대, 연봉·수당·근무 조건, 영문 이력서 필수 안내"
+  },
+  {
+   "n": 2,
+   "title": "HENNGE 채용 · Senior Software Engineer (Python/Web Dev) - HENNGE Access Control",
+   "url": "https://recruit.hennge.com/en/mid-career-ngh/senior-software-engineer-python-web-dev-hennge-access-control/",
+   "kind": "posting",
+   "note": "회사 자체 채용 페이지 — '정문'·동시 요청, 우대에 SAML/OIDC·Tornado/DynamoDB, 전형(코딩 과제 자동 탈락 기준·라이브 코딩 없음·CEO 면접), 출근 보너스 5,000엔, Secure Transfer 자리와 같은 전형"
+  },
+  {
+   "n": 3,
+   "title": "HENNGE · Company Introduction Deck",
+   "url": "https://speakerdeck.com/hennge/company-introduction-deck-hennge",
+   "kind": "company",
+   "date": "2026-11",
+   "note": "31장 전부 확인 — 사원 432명·31개국, 엔지니어 50명 넘음, 팀별 기술(Access Control: AWS·React·FastAPI·Terraform·DynamoDB·Rust·Kotlin/Swift), 공통 도구, 벨트·평가, 수당·복지·이주 지원, 사용자 약 327만·고객 약 4,058곳·가용성 99.9% 넘음, 전형"
+  },
+  {
+   "n": 4,
+   "title": "Life At HENNGE · Access All Areas: Get to Know the People and Innovation Behind HENNGE One Access Control",
+   "url": "https://hennge.com/global/info/henka/interview/202404-get_to_know_the_people_and_innovation_behind_hennge_access_control/",
+   "kind": "company",
+   "date": "2024-04",
+   "note": "팀 17명·국적 구성·평평한 구조, Python 백엔드·React/TypeScript/Redux, Terraform 배포 자동화, GitHub·Katalon·React Testing Library, 주간 체크인·월 1회 출근일·80/20"
+  },
+  {
+   "n": 5,
+   "title": "Life At HENNGE · Life as a Back-End Engineer: An Interview with Jon Gaul",
+   "url": "https://hennge.com/global/info/henka/interview/202409-life-as-a-back-end-engineer/",
+   "kind": "company",
+   "date": "2024-09",
+   "note": "Access Control 백엔드 — SSO 포털·접근 로직·공개 API·관리자 보안 도구, PR 리뷰·자동 테스트 요건, 로그 개선·셀프 비밀번호 재설정, 해외 PyCon 발표 지원"
+  },
+  {
+   "n": 6,
+   "title": "Life At HENNGE · Development engineers embody the freedom and diversity of HENNGE",
+   "url": "https://hennge.com/global/info/henka/interview/202407_hiroshima/",
+   "kind": "company",
+   "date": "2024-07",
+   "note": "SSO 백엔드는 주로 Python, 최근 Rust 도입 · 개발은 주로 Mac · 20% 규칙으로 오픈소스 기여"
+  },
+  {
+   "n": 7,
+   "title": "Life At HENNGE · “PyCon”: HENNGE continues to support the open source programming event globally",
+   "url": "https://hennge.com/global/info/henka/interview/pycon-20220301/",
+   "kind": "company",
+   "date": "2022-04",
+   "note": "엔지니어 약 50% 가 Python · PyCon JP 2013년부터·해외 9개 지역 2014년부터 후원 · 사원이 PyCon JP 협회 이사"
+  },
+  {
+   "n": 8,
+   "title": "Life At HENNGE · Level Up Your Career at HENNGE: MON, Belt, and Subrank Explained",
+   "url": "https://hennge.com/global/info/henka/blog/level-up-your-career-at-hennge-mon-belt-and-subrank-explained/",
+   "kind": "company",
+   "date": "2025-04",
+   "note": "직종(MON) 9개, 벨트 7단계, 서브랭크가 벨트 안 연봉을 정함"
+  },
+  {
+   "n": 9,
+   "title": "Life At HENNGE · Assessment System at HENNGE: A General Overview",
+   "url": "https://hennge.com/global/info/henka/article/assessment-system-at-hennge-a-general-overview/",
+   "kind": "company",
+   "date": "2025-09",
+   "note": "연간 평가(SMART 목표, 반기 점검)와 승급 시험(위 벨트 심사자 4명 이상), 엔지니어 관리·기술 이중 경로"
+  },
+  {
+   "n": 10,
+   "title": "HENNGE One Identity Edition",
+   "url": "https://hennge.com/global/service/one/identity/",
+   "kind": "company",
+   "note": "Microsoft 365·Google Workspace·Box 등 클라우드 접근 제어"
+  },
+  {
+   "n": 11,
+   "title": "HENNGE One · Access Control",
+   "url": "https://hennge.com/global/service/one/identity/access/",
+   "kind": "company",
+   "note": "기기 인증서(제3자 인증기관)·다단계·비밀번호 없는 인증, AND·OR 조합 정책, 그룹별 적용"
+  },
+  {
+   "n": 12,
+   "title": "HENNGE One · Single Sign-On",
+   "url": "https://hennge.com/global/service/one/identity/sso/",
+   "kind": "company",
+   "note": "클라우드 서비스 500개 넘게 연동, 연동 수로 과금하지 않음, 새 연동 검증 지원"
+  },
+  {
+   "n": 13,
+   "title": "HENNGE Secure Browser",
+   "url": "https://hennge.com/global/service/browser/",
+   "kind": "company",
+   "note": "HENNGE One 계정으로 연동 서비스에 들어가는 앱 · Windows·macOS·iOS·Android"
+  },
+  {
+   "n": 14,
+   "title": "HENNGE · Company Profile",
+   "url": "https://hennge.com/global/outline/",
+   "kind": "company",
+   "note": "본사 주소·11층 접수"
+  },
+  {
+   "n": 15,
+   "title": "HENNGE株式会社 · 有価証券報告書 第29期 (2024.10~2025.9)",
+   "url": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XCC9.pdf",
+   "kind": "company",
+   "date": "2025-12",
+   "note": "EDINET · 従業員の状況(378명·35.3세·4.5년·8,478천 엔, 상여 포함)·인적자본 지표·본점 소재지"
+  },
+  {
+   "n": 16,
+   "title": "HENNGE株式会社 · 有価証券報告書 第28期 (2023.10~2024.9)",
+   "url": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100V02M.pdf",
+   "kind": "company",
+   "date": "2024-12",
+   "note": "EDINET · 305명·35.6세·8,270천 엔, 2022~2024 평균 급여 표"
+  },
+  {
+   "n": 17,
+   "title": "ScanNetSecurity · HENNGE One、SSO連携検証済みSaaSが500サービス突破 契約社4,000社超",
+   "url": "https://scan.netsecurity.ne.jp/article/2026/11/19/56832.html",
+   "kind": "news",
+   "date": "2026-11"
+  },
+  {
+   "n": 18,
+   "title": "OASIS · SAML V2.0 Technical Overview",
+   "url": "https://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "OpenID Connect Core 1.0",
+   "url": "https://openid.net/specs/openid-connect-core-1_0.html",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "OWASP Cheat Sheet Series · SAML Security",
+   "url": "https://cheatsheetseries.owasp.org/cheatsheets/SAML_Security_Cheat_Sheet.html",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Amazon Builders' Library · Timeouts, retries, and backoff with jitter",
+   "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "AWS Well-Architected · Reliability Pillar",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Amazon DynamoDB Developer Guide · Best practices",
+   "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/best-practices.html",
+   "kind": "reference",
+   "note": "파티션 키 설계·읽기 일관성·보조 색인"
+  },
+  {
+   "n": 24,
+   "title": "Tornado Web Server documentation",
+   "url": "https://www.tornadoweb.org/en/stable/",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "FastAPI documentation",
+   "url": "https://fastapi.tiangolo.com/",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "Terraform documentation",
+   "url": "https://developer.hashicorp.com/terraform/docs",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "Google Engineering Practices · How to do a code review",
+   "url": "https://google.github.io/eng-practices/review/reviewer/",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "Martin Kleppmann · Designing Data-Intensive Applications",
+   "url": "https://dataintensive.net/",
+   "kind": "reference",
+   "note": "8장 분산 시스템의 문제, 5·9장 복제와 일관성"
+  },
+  {
+   "n": 29,
+   "title": "Council of Europe · CEFR Common Reference Levels: global scale",
+   "url": "https://www.coe.int/en/web/common-european-framework-reference-languages/table-1-cefr-3.3-common-reference-levels-global-scale",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "ETS · Mapping the TOEIC tests on the CEFR",
+   "url": "https://www.ets.org/pdfs/toeic/toeic-mapping-cefr-reference.pdf",
+   "kind": "reference",
+   "note": "B2 최소선 듣기 400·읽기 385, 고정 합격선이 아닌 지침"
+  },
+  {
+   "n": 31,
+   "title": "PyCon JP 2026 · Sponsor: HENNGE",
+   "url": "https://2026.pycon.jp/en/sponsors/hennge",
+   "kind": "company",
+   "date": "2026"
+  },
+  {
+   "n": 32,
+   "title": "出入国在留管理庁 · 在留資格「技術・人文知識・国際業務」",
+   "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html",
+   "kind": "reference",
+   "note": "관련 전공 학위 또는 실무 10년 등 요건"
+  },
+  {
+   "n": 33,
+   "title": "Japan Dev · HENNGE Senior Software Engineer (Python / Web Dev)",
+   "url": "https://japan-dev.com/jobs/hennge/hennge-senior-software-engineer-python-lr0ht8",
+   "kind": "community",
+   "date": "2026-07",
+   "note": "채용 중개 사이트 — 근무지 '2027년 4월부터 신주쿠로 이전' 표기(회사 자료에선 미확인)"
+  },
+  {
+   "n": 34,
+   "title": "원티드 · [株式会社ヘンリー] Senior Site Reliability Engineer（SRE）_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/342854",
+   "kind": "posting",
+   "date": "2026-11"
+  },
+  {
+   "n": 35,
+   "title": "원티드 · [MEGAZONE株式会社] Cloud Engineer (Senior)_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/306087",
+   "kind": "posting",
+   "date": "2026-11"
+  },
+  {
+   "n": 36,
+   "title": "国税庁 · 令和6年分 民間給与実態統計調査結果",
+   "url": "https://www.nta.go.jp/information/release/kokuzeicho/2025/minkan_2025/pdf/01.pdf",
+   "kind": "reference",
+   "date": "2025-09"
+  }
+ ],
+ "caveat": "회사 엔지니어의 기술 발표 영상은 찾지 못했고(PyCon 발표 기록은 있으나 이 팀 기술 주제는 없음), 회사 Medium 블로그(henngeblog)는 접근이 막혀(403) 읽지 못했습니다. 그래서 서비스 구조·트래픽 숫자·Tornado 에서 FastAPI 로의 전환 여부는 공개 근거가 없어 일반론과 {추론}으로 적었습니다. 출근 보너스 금액(4,000/5,000엔)과 원격 근무 표기는 원티드 판과 회사 판이 다르고, 신주쿠 이전은 중개 사이트에만 있습니다 — 오퍼 면담에서 확인합니다. 회사 소개 자료의 사용자 수(약 327만)와 공고의 '280만 명 넘게'는 시점이 다릅니다."
+}
