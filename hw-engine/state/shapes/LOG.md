@@ -242,3 +242,13 @@
   Thermalright Phantom Spirit 120 EVO(high — 사양 표 6mm 히트파이프 7개·C1100 니켈 도금 베이스·TL-K12 ARGB 3핀, 사진 10장: 전부 검정, 팬 2(앞면 + 가운데), 정면 사진에서 날개 9장, 팬 틀 모서리 호 띠만 빛남).
 - 사진 보는 법(이번 회차): `python -I -c` 의 urllib 로 공식 CDN 사진을 시스템 임시 폴더(`%TEMP%/hw3d_*`, 저장소 밖)에 받아 PIL 로 모음 판·조각을 만들어 Read 로 봤다 — 3RSYS 상세 이미지(세로 2~3만 px)는 6줄로 잘라 한 장에 늘어놓으면 글이 읽힌다.
 - 실물과 아직 다른 점: 두 DeepCool 의 네모 펌프·MYSTIQUE 의 LCD·LE240 V2 의 젖빛 펌프 테두리, RC1910 의 덮개 숫자 화면, PS120 EVO 의 '틀 모서리만 빛나는' 팬, RC1080 의 덮개 없는 꼭지 윗면은 렌더러가 못 그린다(REQUESTS [3D 렌더러] 새 줄 — 기존 display·pump_shape·fan_light_at 요청에 더함). PS120 EVO 의 models `fans`, 두 DeepCool 의 `height_mm` 이 null 이라 [hw-models] 새 줄. 네 제품은 켜진 사진·각도 때문에 날개 수를 비웠고, SOCOOOL 글자는 지난 회차처럼 marks 에 넣지 않았다.
+
+## 2026-11-23 · 25회차(무인) — 쿨러 넷(수랭 360 넷)
+
+- 12번 맨 앞 그래픽카드 COLORFUL(403)·ZOTAC(468)와 case-atx-mid·cooler-air-single(다른 세션의 미커밋 파일) 항목은 지난 회차처럼 미루고, cooler-aio-360 의 남은 넷을 적었다(공식 사양 표·도면·상세 이미지 + 공식 사진을 저장소 밖 임시 폴더 `%TEMP%/hw3d25` 에서 보기만, 다나와는 쓰지 않음):
+  DEEPCOOL LE360 V2 ARGB(high — 사양 표 펌프 91×78×65mm·호스 410mm·LED 펌프 + 팬×3, 갤러리 6장: 젖빛 테두리 네모 펌프, 팬 단품 사진에서 날개 9장) ·
+  3RSYS 라니 SF 360 ARGB(high — 사양 호스 400mm, 상세 '제품 스펙' 팬 120×120×28mm, '제품 사이즈' 펌프 73×58×85 네모 블록 앞면에 ARGB 팬) ·
+  3RSYS 라니 FC 360 ARGB(high — 사양 호스 450mm, 상세 '제품 사이즈' 도면 둥근 펌프 68mm·높이 56.5mm, 1.6형 둥근 화면, 램 쿨러 121×65×25mm 동봉) ·
+  Thermalright FROZEN HORIZON 360 Digital ARGB(high — 사양 표 펌프 70.4×69.4×53.2mm, 공식 Blueprint 도면 팬 3개·호스 400mm, 사진 6장: 숫자 화면 네모 펌프, 팬 틀 테두리만 빛나는 검정 날개).
+- 알게 된 것: 3RSYS 사양의 '25T'·'28T' 는 날개 수가 아니라 팬 두께(mm)다 — 상세 '제품 스펙' 표의 120×120×25/28mm 와 맞는다.
+- 실물과 아직 다른 점: LE360 V2·SF 360·FROZEN HORIZON 의 네모 펌프(SF 는 앞면 팬 달린 블록, FROZEN HORIZON 은 세븐 세그먼트 숫자 화면), FC 360 의 둥근 화면과 동봉 램 쿨러, FROZEN HORIZON 의 '틀 테두리만 빛나는' 팬, SF 360 의 28mm 두께 팬은 렌더러가 못 그린다(REQUESTS [3D 렌더러] 새 줄 — 기존 pump_shape·display·fan_light_at 요청에 더함). 네 제품 models 의 `height_mm`(펌프 높이)가 null 이라 [hw-models] 새 줄. 켜진 사진·각도 때문에 LE360 V2 밖의 셋은 날개 수를 비웠다.

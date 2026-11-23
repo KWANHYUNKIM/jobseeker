@@ -65,6 +65,83 @@
    "confidence": "high",
    "checked_at": "2026-11-23",
    "note": "펌프 머리가 둥글지 않고 187.2×81.7mm 가로로 긴 상자라 pump_mm(지름)을 적지 않았다 — 앞면 전체가 6.86형 가로 화면(사진은 시계·온도·배경 그림)이고 그 밑 받침에 THERMALRIGHT 글자, 피팅 두 개는 펌프 아래쪽에서 나온다. 호스 400mm 는 도면 값, 검정 편조 피복. 팬 3개는 날개가 검정 불투명이고 팬 틀 네 모서리의 호(弧) 모양 띠만 ARGB 로 빛난다(날개 자체는 안 빛남), 허브에 금색 나사 + 점선 원 무늬. 라디에이터 옆판에 세로로 긴 ARGB 띠 한 줄과 THERMALRIGHT 글자. 전부 검정(흰 판은 따로). 날개 수는 확실히 세지 못해 비웠다."
+  },
+  "deepcool-le360v2": {
+   "kind": "cooler",
+   "fans": 3,
+   "fan_mm": 120,
+   "fan_blades": 9,
+   "tube_mm": 410,
+   "color": "#151619",
+   "fan_light": "argb",
+   "sources": [
+    {
+     "title": "DEEPCOOL LE360 V2 ARGB — 공식 제품 페이지(사양 표: 라디에이터 402×120×27mm 알루미늄, 호스 410mm, 펌프 91×78×65mm, 팬 120×120×25mm, Addressable RGB LED 2.8W(PUMP)/3.15W(FAN×3) · 문구 'frosted pump head' · 갤러리 800X800 01~06 — 비스듬한 정면·펌프 바닥·팬 단품·라디에이터)",
+     "url": "https://www.deepcool.com/products/Cooling/cpuliquidcoolers/LE360-V2-Liquid-CPU-Cooler-1851-1700-AM5/2025/20138.shtml"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "펌프 머리가 둥글지 않고 91×78mm 모서리 둥근 네모 상자라 pump_mm(지름)을 적지 않았다 — 윗면 가운데 검정 로고 판(DeepCool 표식)을 젖빛 반투명 ARGB 테두리가 두르고, 바닥은 나사 10개로 고정한 구리판, 피팅 두 개는 펌프 옆면 한쪽에서 나와 검정 편조 피복 호스. 팬 3개는 날개가 반투명 흰빛 9장(팬 단품 사진으로 셈, medium)이고 날개 전체가 ARGB 로 빛난다, 허브 가운데 검정 원판에 로고. 팬 틀·라디에이터 모두 검정(흰 판 WH 따로)."
+  },
+  "3rsys-rani-sf360-argb": {
+   "kind": "cooler",
+   "fans": 3,
+   "fan_mm": 120,
+   "tube_mm": 400,
+   "color": "#141518",
+   "fan_light": "argb",
+   "sources": [
+    {
+     "title": "3RSYS 라니 SF 360 ARGB BLACK — 공식 쇼핑몰 제품 페이지(사양: 라디에이터 397mm·두께 27mm, 호스 400mm, 팬 120mm 3개 28T · 대표 사진 4장 · 상세 이미지 '제품 스펙' 팬 120×120×28mm·펌프 쿨러 팬 2400RPM, '제품 사이즈' 그림 펌프 73×58×85)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1761789754"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "펌프가 둥근 머리가 아니라 73×58×85mm 네모 워터블록이고 앞면 전체에 작은 ARGB 팬(반투명 날개, 가운데 검정 원판)이 달려 보드 전원부·램 쪽으로 바람을 보낸다 — pump_mm(지름)을 적지 않았다. 피팅 두 개는 블록 옆면에서 나오고 호스는 검정 편조 피복. 팬 3개는 두께 28mm(사양 '28T' 는 날개 수가 아니라 두께다)이고 반투명 날개 전체가 ARGB 로 빛나 날개 수는 못 셌다, 허브에 흰 날개살 무늬. 팬 틀·라디에이터 검정(흰 판 따로)."
+  },
+  "3rsys-rani-fc360-argb": {
+   "kind": "cooler",
+   "fans": 3,
+   "fan_mm": 120,
+   "pump_mm": 68,
+   "tube_mm": 450,
+   "color": "#141518",
+   "fan_light": "argb",
+   "sources": [
+    {
+     "title": "3RSYS 라니 FC 360 ARGB BLACK — 공식 쇼핑몰 제품 페이지(사양: 라디에이터 394mm·두께 27mm, 호스 450mm, 팬 120mm 3개 25T · 대표 사진 5장 — 정면·펌프 화면·램 쿨러 · 상세 이미지 '제품 사이즈' 도면: 라디에이터 394×120·팬 포함 52mm, 펌프 68×68mm·높이 56.5mm, 램 쿨러 121×65×25mm · '1.6inch 펌프 디스플레이')",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1753143518"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "둥근 펌프 머리(지름 68mm, 도면) 윗면이 1.6형 둥근 화면(점 글씨 온도 숫자 + RANNI)이고 가장자리를 ARGB 고리가 두른다, 화면 판은 돌려 달 수 있다. 피팅 두 개는 펌프 옆면에서 나와 검정 편조 피복(라디에이터 쪽은 끝이 꺾여 들어가는 HYDRO-STEALTH FIT). 팬 3개는 두께 25mm('25T' 는 두께), 날개 전체가 ARGB 로 빛나고 허브는 크고 납작한 검정 금속 원판이라 날개 수는 못 셌다. 상자에 램 위에 거는 팬 2개짜리 램 쿨러(121×65×25mm, 검정 헤어라인 판 + ARGB 고리)가 같이 온다 — 렌더러에 자리가 없다. 전부 검정(흰 판 따로)."
+  },
+  "thermalright-frozen-horizon-360-digital-argb": {
+   "kind": "cooler",
+   "fans": 3,
+   "fan_mm": 120,
+   "tube_mm": 400,
+   "color": "#141517",
+   "fan_light": "argb",
+   "marks": [
+    { "text": "THERMALRIGHT", "where": "side" }
+   ],
+   "sources": [
+    {
+     "title": "Thermalright FROZEN HORIZON 360 Digital ARGB BLACK — 공식 제품 페이지(사양 표: 펌프 W70.4×D69.4×H53.2mm, 라디에이터 397×120×27mm 알루미늄, TL-Q12 팬 120×120×25mm · 3핀 5V ARGB · 사진 6장 — 비스듬한 정면·윗면)",
+     "url": "https://www.thermalright.com/product/frozen-horizon-360-digital-argb/"
+    },
+    {
+     "title": "Thermalright FROZEN HORIZON 360 Digital — 공식 치수 도면(Blueprint Dimension: 라디에이터 397×120, 두께 27mm·팬 포함 52mm, 호스 400±1mm, 펌프 70.4×69.4mm·높이 53.2mm, 팬 3개)",
+     "url": "https://www.thermalright.com/wp-content/uploads/2025/09/FH360-Digital-scaled.jpg"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "펌프 머리가 70.4×69.4mm 모서리 둥근 네모라 pump_mm(지름)을 적지 않았다 — 윗면 검정 판에 세븐 세그먼트 숫자 화면(CPU 온도 두 자리 + 작은 로고)과 THERMALRIGHT 글자, 옆 테두리 전체가 ARGB 띠. 피팅 두 개는 펌프 한쪽 옆으로 나란히 나와 검정 편조 피복 호스. 팬 3개는 날개가 불투명 검정이고 팬 틀 둘레의 가는 테두리 선만 ARGB 로 빛난다(날개는 안 빛남), 허브에 로고 원판. 라디에이터 모서리를 따라 점선 무늬와 THERMALRIGHT 글자. 날개 수는 확실히 세지 못해 비웠다. 전부 검정."
   }
  }
 }
