@@ -16,6 +16,7 @@
   "wanted-393885": "litalico-sre-tech-lead",
   "wanted-387807": "medcom-android-engineer",
   "wanted-394202": "mediphone-platform-engineer",
+  "wanted-306088": "megazone-japan-cloud-engineer-associate",
   "wanted-306087": "megazone-japan-cloud-engineer-senior",
   "wanted-394722": "nhn-japan-frontend",
   "wanted-395799": "progrit-frontend-tech-lead",
@@ -300,6 +301,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 27
+  },
+  {
+   "id": "megazone-japan-cloud-engineer-associate",
+   "company": "MEGAZONE株式会社 (메가존클라우드 일본 법인)",
+   "role": "클라우드 엔지니어 Associate (일본 근무)",
+   "jobs": [
+    "wanted-306088"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 23
   },
   {
    "id": "megazone-japan-cloud-engineer-senior",
