@@ -8,6 +8,8 @@
   "ats-toss:group:7985496003": "toss-dw-global-analytics-engineer",
   "ats-toss:group:7702871003": "toss-finops-analytics-engineer",
   "ats-toss:group:7987773003": "toss-global-data-engineer",
+  "ats-toss:group:7795677003": "toss-gpu-systems-engineer",
+  "wanted-347560": "toss-gpu-systems-engineer",
   "ats-toss:group:8035179003": "toss-ml-engineer-ocr",
   "ats-toss:group:7901191003": "toss-platform-analytics-engineer",
   "ats-toss:group:5960616003": "toss-product-analytics-engineer",
@@ -84,6 +86,17 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 25
+  },
+  {
+   "id": "toss-gpu-systems-engineer",
+   "company": "토스",
+   "role": "시스템 엔지니어 (GPU)",
+   "jobs": [
+    "ats-toss:group:7795677003",
+    "wanted-347560"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 17
   },
   {
    "id": "toss-ml-engineer-ocr",

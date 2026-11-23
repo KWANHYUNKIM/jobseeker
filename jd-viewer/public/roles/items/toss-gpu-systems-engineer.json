@@ -1,0 +1,753 @@
+{
+ "id": "toss-gpu-systems-engineer",
+ "company": "토스",
+ "role": "시스템 엔지니어 (GPU)",
+ "team": "System Platform 팀 (Infra Engineering Tribe)",
+ "jobs": [
+  "ats-toss:group:7795677003",
+  "wanted-347560"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "토스가 쓰는 **GPU 서버를 IDC(데이터센터)에 직접 들여와 켜고, 묶고, 지키는** 자리입니다. 어떤 GPU를 어떤 구조로 살지 정하는 로드맵까지 맡습니다.[1]",
+  "env": "토스는 2018년부터 서로 다른 지역의 IDC 두 곳을 액티브-액티브(두 곳이 같이 일하는 구조)로 운영합니다.[6][7] GPU 서버는 InfiniBand로 서로 연결돼 있고, Hopper·Blackwell·L40S·A100처럼 여러 세대 GPU가 섞여 40개가 넘는 모델을 돌립니다.[5]",
+  "oneline": "쿠버네티스 위에서 GPU를 '빌려 쓰는' 자리가 아니라, **그 아래 베어메탈 — OS·드라이버·네트워크·스토리지·전력·랙 — 을 책임지는** 자리입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "GPU 컴퓨팅 클러스터 인프라를 설계하고, 베어메탈부터 구축해 운영해요.",
+   "short": "빈 랙에 GPU 서버를 꽂는 일부터, AI 팀이 바로 쓸 수 있는 클러스터로 묶어 계속 돌리는 일까지 한다.",
+   "why": "System Platform 팀은 IDC 베어메탈(가상화 없이 맨 서버)부터 퍼블릭 클라우드까지 서비스가 올라가는 시스템 기반을 직접 설계·운영하고, 이 자리는 그중 AI/ML 워크로드용 GPU 인프라를 맡습니다.[1] 토스는 IDC를 직접 운영해 왔고,[6] GPU도 클라우드만이 아니라 온프레미스(자체 IDC) 쿠버네티스 클러스터와 함께 씁니다.[8]",
+   "actually": {
+    "intro": "베어메탈 GPU 클러스터는 보통 이런 층으로 쌓입니다. 토스 내부 구성은 공고에 나온 만큼만 알려져 있습니다.",
+    "items": [
+     "**서버** — 한 대에 GPU 8장을 넣은 서버가 흔하다. 예: NVIDIA DGX H100은 8U 크기에 H100 8장, 최대 10.2kW 전력을 쓴다.[10]",
+     "**서버 안 연결** — GPU끼리는 NVLink·NVSwitch로 묶여 장당 초당 900GB를 주고받는다.[11] 이 묶음을 설정하는 Fabric Manager 같은 소프트웨어가 따로 필요하다.[19]",
+     "**서버 간 연결** — 서버마다 400Gb/s 네트워크 카드 8장을 달아 GPU 하나에 카드 하나를 붙이는 구성이 있다.[10] 토스의 GPU 서버는 InfiniBand로 연결돼 있다고 발표했다.[5]",
+     "**공용 플랫폼과의 경계** — 그 위의 GPU 쿠버네티스·LLM 서빙은 ML/AI Infra 팀(AI 플랫폼 엔지니어)이 만든다.[8] 이 자리는 그 아래 서버·OS·네트워크·스토리지 층이다.[1]{추론}"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "GPU 서버 한 대가 일하기까지 (보통의 순서)",
+     "steps": [
+      "입고 · 랙 장착 · 전원·케이블",
+      "BMC 설정 · 펌웨어·BIOS 맞추기",
+      "OS 설치(PXE) · 드라이버·CUDA",
+      "네트워크·스토리지 연결 · 점검(DCGM·NCCL)",
+      "클러스터 편입 · ML 플랫폼에 넘김",
+      "운영 · 모니터링·장애·교체"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "어떤 GPU를 얼마나 살지는 로드맵을 같이 만들며 정합니다.[1] 이 자리는 **설계 문서 → 실제 구축 → 운영까지 한 사람이 이어서** 봅니다. 최소선은 GPU 서버 한 대를 맨 상태에서 'NCCL 점검까지 통과한 노드'로 만드는 과정을 단계별로 설명하고 재현할 수 있는 것입니다.{추론}",
+   "refs": [1, 5, 6, 8, 10, 11, 19],
+   "study": ["dgx-h100-guide", "ml-eng-book", "cs336-gpus"]
+  },
+  {
+   "section": "task",
+   "quote": "최신 GPU 라인업과 아키텍처 변화를 추적하고, PoC와 벤치마크로 도입을 검증하며 인프라 로드맵을 세워요.",
+   "short": "새 GPU가 나오면 '우리 일에 몇 배 빠르고 얼마나 드나'를 직접 재서 다음에 무엇을 살지 정한다.",
+   "why": "공고가 '어떤 GPU를 어떤 구조로 도입하고 어떻게 확장할지 판단'한다고 적었습니다.[1] 토스 서빙 팀은 Hopper·Blackwell·L40S 같은 서로 다른 GPU에 같은 모델을 3~4가지 방식으로 올리고, A100에서 안 돌던 모델은 커널을 새로 짜서 돌렸습니다 — 어떤 세대를 몇 장 갖고 있느냐가 서비스 설계를 바꿉니다.[5]",
+   "actually": {
+    "items": [
+     "**라인업 추적** — 세대가 바뀌면 메모리 양·대역폭, 지원하는 숫자 형식(FP8 등), NVLink 세대, 전력(H100 SXM은 최대 700W)이 같이 바뀐다.[11]",
+     "**PoC** — 빌려 온 장비나 클라우드에서 실제 사내 모델을 돌려 본다. 서빙 팀은 모델마다 'SLA를 지키는 데 GPU가 몇 장·얼마 드나'를 시뮬레이션한다.[5]",
+     "**벤치마크** — 공개 잣대(목표 품질까지 학습에 걸린 시간을 재는 MLPerf Training 등)[22]와 사내 잣대(우리 모델의 처리량·지연)를 같이 본다.{추론}",
+     "**로드맵** — 무엇을 언제 몇 대 들일지, 그때 전력·냉각·랙이 되는지까지 한 장으로 묶는다.[1][9]"
+    ]
+   },
+   "how_far": "로드맵의 최종 결정은 회사가 하지만, **판단 근거(숫자표)를 만드는 것은 이 자리**입니다.[1] 최소선: GPU 두 종류에 같은 작업을 돌려 처리량·전력·가격으로 '1달러당·1kW당 성능'을 비교한 표를 내본 경험.{추론}",
+   "refs": [1, 5, 9, 11, 22],
+   "study": ["slashlive-serving", "cs336-gpus", "mlperf", "dc-internal"]
+  },
+  {
+   "section": "task",
+   "quote": "GPU 서버의 표준 OS와 소프트웨어 스택을 구성하고, 대규모 노드를 재현 가능하게 프로비저닝해요.",
+   "short": "GPU 서버 수백 대가 OS·드라이버·CUDA 버전까지 똑같도록, 손이 아니라 코드로 찍어 낸다.",
+   "why": "GPU 서버는 드라이버·CUDA·NCCL·펌웨어 버전이 한 대만 달라도 분산 학습 전체가 느려지거나 멈춥니다.{추론} 토스 인프라 팀은 이미 서버 배포를 자동화해 왔습니다 — SLASH 22 발표에서 운영자는 포털에 서비스 정보만 넣고, OS 설치(PXE)·IP·OS 설정·패키지 설치(SaltStack)·DNS·접근통제까지 한 번에 진행되게 했습니다.[3]",
+   "actually": {
+    "items": [
+     "**표준 이미지** — OS 버전, 커널, GPU 드라이버, CUDA, NCCL, 컨테이너 런타임 조합을 하나로 정해 버전을 붙인다.{추론}",
+     "**PXE 부팅 설치** — 서버가 네트워크로 부팅해 OS를 스스로 설치하게 한다. 토스 발표의 자동화 서비스에도 PXE 플러그인이 있었다.[3] 공개 도구로는 맨 서버를 클라우드처럼 프로비저닝하는 MAAS 같은 것이 있다.[29]",
+     "**설정 관리** — 설치 뒤의 설정·패키지를 SaltStack·Ansible 같은 도구로 코드로 맞춘다. 토스 발표엔 SaltStack 플러그인과 Ansible 작업 서버(AWX)가 나왔다.[3][28]",
+     "**쿠버네티스 쪽 연결** — 쿠버네티스에서는 드라이버·장치 플러그인·모니터링 수집기 설치를 GPU Operator가 자동으로 해 준다.[18] 토스 ML 플랫폼도 GPU Operator를 쓴다.[8] 운영체제 바닥과 이 Operator 중 어디서 무엇을 깔지 나누는 것이 표준 스택 설계다.{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "토스가 서버 배포를 자동화하고 얻은 숫자 (SLASH 22 발표 화면)",
+     "body": "서버 20대 규모 서비스를 준비하는 데 걸린 시간이 1,470분 → 160분(약 90% 절약), 그중 서버 구축이 1,200분 → 120분, 단계는 4단계 → 1단계로 줄었고 형상 정보(어느 서버가 어디에 어떤 설정으로 있나)는 손으로 적던 것을 자동 수집으로 바꿨습니다.[3]"
+    }
+   ],
+   "how_far": "버전 조합을 정하는 일은 ML 플랫폼·서빙 팀과 같이 하고, **그 조합을 서버 수백 대에 똑같이 깔고 바뀐 것을 추적하는 것**이 이 자리의 몫입니다.{추론} 최소선: 맨 서버를 PXE로 설치하고 설정 관리 도구로 드라이버·CUDA까지 올리는 과정을 코드 저장소 하나로 재현해 본 경험.{추론}",
+   "refs": [3, 8, 18, 28, 29],
+   "study": ["slash22-automation", "gpu-operator-docs", "maas"]
+  },
+  {
+   "section": "task",
+   "quote": "고성능 네트워크와 스토리지를 설계해 클러스터 성능을 최적화해요.",
+   "short": "GPU가 데이터를 기다리느라 노는 시간이 없도록, 서버 사이 길과 저장소를 넉넉하고 빠르게 깐다.",
+   "why": "여러 서버에 나눠 학습·서빙하면 GPU끼리 계산 결과를 계속 주고받아서, 네트워크가 느리면 비싼 GPU가 놉니다.{추론} 토스 서빙 팀은 GPU 서버가 InfiniBand로 연결돼 있어 특정 디코드 서버를 늘리는 일이 쉽다고 했고, 대화 기억(KV 캐시)을 GPU 메모리 → 서버 메모리 → VAST 스토리지 세 층에 나눠 둡니다.[5] AI 플랫폼 공고에도 RDMA(IB/RoCE)·NCCL·VAST가 나옵니다.[8]",
+   "actually": {
+    "items": [
+     "**GPU 간 통신 라이브러리** — NCCL은 PCIe·NVLink·InfiniBand·IP 소켓을 알아서 골라 쓰며 all-reduce(모두의 값을 더해 모두에게 돌려주기) 같은 집단 통신을 해 준다.[15]",
+     "**서버 간 네트워크** — InfiniBand 또는 RoCE(이더넷 위의 RDMA, 즉 CPU를 거치지 않고 다른 서버 메모리에 바로 쓰기). 대역폭과 함께 '어떤 GPU가 어느 스위치에 붙나'라는 배치가 성능을 정한다.{추론}",
+     "**스토리지** — 학습 데이터·체크포인트(학습 중간 저장)·모델 파일을 수십 대가 동시에 읽고 쓴다. 토스는 KV 캐시의 세 번째 층으로 VAST 스토리지를 쓴다.[5]",
+     "**잘 깔렸나 재기** — nccl-tests로 통신 속도를 잰다. 결과의 busbw는 GPU 수와 상관없이 하드웨어 병목과 견줄 수 있게 환산한 값이다.[17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "nccl-tests 숫자 읽기 — algbw 와 busbw (직접 돌린 출력)",
+     "body": "같은 8GB를 40ms에 all-reduce해도 GPU가 많을수록 각 링크가 실제로 나른 양(busbw)은 커집니다. 공식은 nccl-tests 문서 그대로입니다.[17] 이 값을 NVLink·네트워크 카드의 이론값과 견줘 '제 속도가 나오나'를 봅니다.",
+     "lang": "python",
+     "code": "size_gb, sec = 8.0, 0.040\nalgbw = size_gb / sec\nfor n in (2, 8, 16):\n    print(f\"GPU {n:>2}장: algbw {algbw:.0f} GB/s -> busbw {algbw * 2 * (n - 1) / n:.0f} GB/s\")\n# GPU  2장: algbw 200 GB/s -> busbw 200 GB/s\n# GPU  8장: algbw 200 GB/s -> busbw 350 GB/s\n# GPU 16장: algbw 200 GB/s -> busbw 375 GB/s"
+    }
+   ],
+   "how_far": "스위치 장비 자체는 같은 Tribe의 Network Engineer와 나눠 맡습니다.[1] 이 자리는 **서버 쪽(네트워크 카드·드라이버·NCCL 설정)과 '설계대로 속도가 나오는지' 증명하는 것**까지가 중심입니다.{추론} 최소선: 두 대 이상에서 nccl-tests를 돌려 busbw를 읽고, 기대보다 낮을 때 어디부터 볼지 말할 수 있는 것.",
+   "refs": [1, 5, 8, 15, 17],
+   "study": ["nccl-docs", "nccl-tests", "ml-eng-book", "cs336-parallel"]
+  },
+  {
+   "section": "task",
+   "quote": "GPU 자원을 모니터링하고, 장애를 진단하고 근본 원인을 찾아 대응하며 운영을 자동화해요.",
+   "short": "GPU 고장·느려짐을 먼저 알아채고, 하드웨어·드라이버·사용자 코드 중 어디 탓인지 가려 고친다.",
+   "why": "GPU 수가 늘면 고장은 '언젠가'가 아니라 '매주'의 일이 됩니다.{추론} 토스 인프라 팀은 메트릭 기반으로 장애를 미리 감지하는 것을 중요하게 꼽았고,[6] SLASH 22 발표는 다음 목표로 장애 추적 시간을 줄이고 장애 유형별 자가 복구까지 자동화하겠다고 했습니다.[3]",
+   "actually": {
+    "items": [
+     "**지표 수집** — NVIDIA DCGM이 GPU 사용률·온도·전력·메모리 오류를 모으고, dcgm-exporter가 Prometheus 형식으로 내보낸다.[13]",
+     "**점검** — `dcgmi diag -r 1~4`로 짧은(수 초)·중간·긴·확장 점검을 돌린다. Hopper 8장 서버에서 확장 점검은 2시간 넘게 걸릴 수 있어 언제 돌릴지가 운영 판단이다.[12]",
+     "**로그 읽기** — 드라이버가 커널 로그에 남기는 Xid 오류가 첫 단서다. Xid는 하드웨어·NVIDIA 소프트웨어·사용자 프로그램 어느 쪽 문제든 가리킬 수 있고, 예컨대 79는 'GPU가 버스에서 떨어졌다'는 뜻이다.[14]",
+     "**자동화** — 같은 오류가 반복된 서버를 작업 배정에서 빼고(cordon), 점검을 돌리고, 교체 요청까지 이어지게 한다.{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "커널 로그에서 GPU별 Xid 세기 (가상 로그, 직접 돌린 출력)",
+     "body": "같은 GPU에서 79가 반복되면 하드웨어 쪽을, 여러 GPU에 흩어진 13은 사용자 코드 쪽을 먼저 의심하는 식으로 갈래를 나눕니다.{추론}",
+     "lang": "python",
+     "code": "import re\nfrom collections import Counter\nlog = \"\"\"\\\n[Mon Nov 17 02:11:04 2026] NVRM: Xid (PCI:0000:18:00): 79, pid=0, GPU has fallen off the bus.\n[Mon Nov 17 03:40:12 2026] NVRM: Xid (PCI:0000:3b:00): 13, pid=4412, Graphics Exception\n[Tue Nov 18 09:02:55 2026] NVRM: Xid (PCI:0000:3b:00): 13, pid=4519, Graphics Exception\n[Wed Nov 19 22:15:30 2026] NVRM: Xid (PCI:0000:18:00): 79, pid=0, GPU has fallen off the bus.\n\"\"\"\npat = re.compile(r\"Xid \\(PCI:([0-9a-f:]+)\\): (\\d+)\")\nfor (bus, xid), c in sorted(Counter(pat.findall(log)).items()):\n    print(f\"GPU {bus}  Xid {xid}  {c}회\")\n# GPU 0000:18:00  Xid 79  2회\n# GPU 0000:3b:00  Xid 13  2회"
+    }
+   ],
+   "how_far": "모든 고장을 혼자 고치는 자리는 아닙니다 — 부품 교체는 제조사·IDC와, 사용자 코드 문제는 ML 팀과 나눕니다.{추론} 이 자리의 핵심은 **'누구 탓인지'를 증거로 가르고, 반복되는 대응을 코드로 바꾸는 것**입니다.[1] 최소선: DCGM 지표를 Prometheus·Grafana에 띄우고, Xid가 나면 알림과 함께 그 노드를 작업에서 빼는 자동화를 만들어 본 경험.{추론}",
+   "refs": [1, 3, 6, 12, 13, 14],
+   "study": ["dcgm-docs", "xid-docs", "sre-book", "ml-eng-book"]
+  },
+  {
+   "section": "task",
+   "quote": "사용률과 용량 지표를 근거로 증설 시점을 판단해 전력, 냉각, 랙 등 인프라 환경을 고려하여 안정적으로 증설해요.",
+   "short": "GPU가 언제 모자랄지 숫자로 미리 읽고, IDC 전력·냉각·랙이 감당되는 모양으로 늘린다.",
+   "why": "GPU 서버는 일반 서버보다 훨씬 많은 전력을 씁니다 — DGX H100 한 대가 최대 10.2kW입니다.[10] 랙 하나에 넣을 수 있는 대수는 랙 전력·냉각이 정합니다.{추론} 토스뱅크 IDC 매니저 공고도 전력·냉각·공간 용량을 AI/GPU 환경까지 고려해 확장 계획을 세운다고 적었습니다.[9] 토스는 과거 트래픽이 몰려 6개월 동안 인프라를 5배 넘게 늘린 적이 있습니다.[6]",
+   "actually": {
+    "items": [
+     "**사용률 읽기** — 할당률(누가 잡고 있나)과 실제 사용률(정말 계산 중인가)을 따로 본다. 토스 서빙 팀은 낮에 몰리는 트래픽을 피해 배치 작업을 밤에 돌려 같은 GPU를 더 쓴다.[5]",
+     "**증설 시점** — 추세로 '몇 주 뒤 한계'를 읽고, 주문부터 랙에 꽂아 켜기까지 걸리는 시간(리드타임)을 거꾸로 빼서 주문 시점을 정한다.{추론}",
+     "**전력·냉각·랙** — 랙당 전력 한도, 공랭이 감당하는 열, 바닥 하중, 네트워크 케이블 길이까지 같이 본다. 랙 전력이 모자라면 서버를 여러 랙에 흩어야 해 네트워크 배선이 바뀐다.{추론}",
+     "**안정적으로** — 액티브-액티브 IDC 두 곳의 균형, 증설 중에도 서비스가 멈추지 않는 순서.[7]{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "랙 전력이 서버 대수를 정한다 / 언제 주문하나 (가상 숫자, 직접 돌린 출력)",
+     "body": "DGX H100 최대 전력 10.2kW[10]를 기준으로 랙 전력별로 몇 대가 들어가는지, 그리고 주별 할당률 추세로 85%에 닿는 시점과 리드타임 12주(가정)를 견줍니다.",
+     "lang": "python",
+     "code": "node_kw = 10.2\nfor rack_kw in (17, 24, 41):\n    n = int(rack_kw // node_kw)\n    print(f\"랙 전력 {rack_kw}kW: 서버 {n}대 (남는 전력 {rack_kw - n * node_kw:.1f}kW)\")\nused = [40, 42, 45, 47, 50, 52, 55, 57]  # 주별 GPU 할당률(%)\nstep = (used[-1] - used[0]) / (len(used) - 1)\nlead = 12\nweeks_to_85 = (85 - used[-1]) / step\nprint(f\"주당 +{step:.1f}%p, 85% 도달까지 {weeks_to_85:.1f}주, 리드타임 {lead}주 -> 지금 주문해야 하나: {weeks_to_85 <= lead}\")\n# 랙 전력 17kW: 서버 1대 (남는 전력 6.8kW)\n# 랙 전력 24kW: 서버 2대 (남는 전력 3.6kW)\n# 랙 전력 41kW: 서버 4대 (남는 전력 0.2kW)\n# 주당 +2.4%p, 85% 도달까지 11.5주, 리드타임 12주 -> 지금 주문해야 하나: True"
+    }
+   ],
+   "how_far": "전력·냉각 설비 자체는 IDC 담당(그룹엔 IDC 매니저 직무가 따로 있다)과 사업자가 맡습니다.[9] 이 자리는 **'GPU 몇 대를 언제, 어느 랙에' 넣을지 숫자로 요구하고 검증하는 쪽**입니다.{추론} 최소선: 서버 사양서의 최대 전력으로 랙 배치표를 짜고, 사용률 추세로 증설 시점을 설명할 수 있는 것.",
+   "refs": [5, 6, 7, 9, 10],
+   "study": ["dgx-h100-guide", "dc-internal", "cs153-gigawatt"]
+  },
+  {
+   "section": "qualification",
+   "quote": "시스템 엔지니어로 3년 이상, 대규모 Linux 서버 인프라를 운영해 보신 분이면 좋아요.",
+   "short": "GPU 서버도 결국 Linux 서버라서, 수백 대를 운영해 본 감각이 GPU 지식보다 먼저 필요하다.",
+   "why": "원티드 공고도 '경력 3년 이상'으로 올렸습니다.[2] GPU 노드의 OS 설치·커널·네트워크·패키지 관리는 일반 서버와 같은 기술 위에 있고,[3] 토스 시스템 엔지니어는 서비스가 생기면 서버를 할당하고 클라우드 인프라도 같이 구축해 왔습니다.[6]",
+   "actually": {
+    "items": [
+     "**'대규모'의 뜻** — 한 대씩 접속해 고치지 않고 수십~수백 대를 한 번에 다루는 방식(설정 관리·자동 설치·중앙 로그)을 써 본 것.{추론}",
+     "**Linux 운영** — 부팅 과정, systemd, 디스크·파일시스템, 네트워크 설정, 커널 파라미터, 성능 도구(top·sar·perf 등)로 병목 찾기.[30]{추론}"
+    ]
+   },
+   "how_far": "이력서에는 **운영한 서버 수, 자동화로 줄인 시간, 맡은 장애**를 숫자로 적는 것이 가장 잘 읽힙니다 — 토스 발표가 성과를 그렇게 보였습니다(1,470분 → 160분).[3]{추론}",
+   "refs": [2, 3, 6, 30],
+   "study": ["sysperf-book", "sre-book"]
+  },
+  {
+   "section": "qualification",
+   "quote": "OS, 커널, 드라이버 중 한 영역 이상을 깊이 다뤄 문제를 해결해 본 분이면 좋아요.",
+   "short": "GPU 장애는 대부분 OS·커널·드라이버 경계에서 나서, 그 아래를 들여다볼 줄 알아야 원인을 찾는다.",
+   "why": "GPU 드라이버는 커널 모듈이고, 오류(Xid)도 커널 로그에 남습니다.[14] GPU 서버는 드라이버·커널 버전 조합이 맞아야 하고, NVSwitch 서버는 Fabric Manager 같은 별도 서비스까지 버전을 맞춰야 합니다.[19]",
+   "actually": {
+    "items": [
+     "**OS** — 부팅이 안 되는 노드, 파일시스템·메모리 문제, 패키지 충돌.{추론}",
+     "**커널** — 커널 업그레이드 뒤 드라이버가 안 올라오는 문제, 커널 파라미터(메모리 고정·대용량 페이지 등)로 인한 성능 차이.{추론}",
+     "**드라이버** — Xid 해석,[14] 드라이버·CUDA·NCCL 버전 호환, GPU 메모리 오류 처리.{추론}"
+    ]
+   },
+   "how_far": "'깊이'는 **증상 → 로그 → 원인 → 재발 방지**를 한 사건으로 설명할 수 있는 정도입니다. 커널 개발자일 필요는 없습니다.{추론} 직무 인터뷰 전에 사전 과제가 있습니다.[1]",
+   "refs": [1, 14, 19],
+   "study": ["linux-kernel-book", "xid-docs", "sysperf-book"]
+  },
+  {
+   "section": "qualification",
+   "quote": "GPU 서버를 활용한 HPC 또는 AI 클러스터를 구축하고 운영해 본 경험이 있으신 분이면 좋아요.",
+   "short": "GPU 여러 대가 한 작업을 같이 하는 클러스터는 서버 한 대 운영과 다른 문제(통신·동기·고장 전파)가 생겨서.",
+   "why": "이 자리가 만드는 것이 GPU 컴퓨팅 클러스터이고,[1] 그룹 안에서도 토스증권이 온프레미스 GPU 클러스터 운영 인력을 따로 뽑을 만큼 GPU 운영 경험이 귀합니다.[1]{추론}",
+   "actually": {
+    "items": [
+     "**HPC** — 슈퍼컴퓨터식 묶음. 작업 배정기(Slurm 등)가 GPU를 나눠 주고, 한 작업이 여러 노드를 동시에 잡는다.[23]",
+     "**AI 클러스터** — 쿠버네티스 위에서 GPU를 나눠 쓰는 형태가 많다. 토스 ML 플랫폼은 온프레미스·AWS·GCP를 묶은 GPU 쿠버네티스를 쓴다.[8]",
+     "**한 대가 전체를 멈춘다** — 여러 노드가 같이 도는 학습은 한 GPU가 느리거나 죽으면 전체가 기다린다. 그래서 작업 전 점검(DCGM 진단)이 중요하다.[12][23]"
+    ]
+   },
+   "how_far": "규모보다 **'여러 노드가 한 작업을 같이 할 때 생긴 문제를 풀어 봤나'**가 핵심입니다.{추론} 경험이 없다면 클라우드 GPU 두 대로 분산 학습을 돌리고 NCCL 로그를 읽어 보는 것부터.{추론}",
+   "refs": [1, 8, 12, 23],
+   "study": ["ml-eng-book", "cs25-ultrascale", "cs336-parallel"]
+  },
+  {
+   "section": "qualification",
+   "quote": "반복되는 운영을 코드로 자동화하고, 표준과 문서로 남겨 본 분이면 좋아요.",
+   "short": "토스 인프라 팀은 손으로 하던 서버 준비를 코드로 바꿔 90%를 줄였고, 그 방식을 GPU에도 이어 가서.",
+   "why": "SLASH 22 발표에서 토스 InfraOps 엔지니어는 엑셀·텍스트로 관리하던 정보를 시스템으로 모으고, 서버·네트워크·로드밸런서·방화벽 설정과 형상 관리를 자동화했습니다.[3] 인프라 팀도 IaC(코드로 인프라 관리)와 자동화를 중요한 흐름으로 꼽았습니다.[6]",
+   "actually": {
+    "items": [
+     "**정보부터 모으기** — 토스는 자동화의 핵심을 '정보와 운영 서비스의 통합'이라 했다. 담당자별 엑셀을 한 시스템으로 모은 뒤에야 자동화가 붙었다.[3]",
+     "**플러그인처럼 잇기** — 서버·PXE·SaltStack·DNS·접근통제·Slack 알림을 한 흐름으로 묶었다.[3]",
+     "**표준과 문서** — GPU 서버 표준 스택표, 장애 대응 절차서(런북), 증설 체크리스트처럼 사람이 바뀌어도 같은 결과가 나오게 남긴다.[30]{추론}"
+    ]
+   },
+   "how_far": "도구 이름보다 **'무엇을 몇 분에서 몇 분으로 줄였고, 다른 사람이 그 코드로 같은 일을 할 수 있나'**를 보여 주면 됩니다.[3]{추론}",
+   "refs": [3, 6, 30],
+   "study": ["slash22-automation", "sre-book"]
+  },
+  {
+   "section": "qualification",
+   "quote": "여러 팀과 기술적인 논리에 기반해 협업할 수 있는 분이면 좋아요.",
+   "short": "GPU 한 대를 켜려 해도 네트워크·IDC·ML 플랫폼·서빙 팀이 다 엮여서, 숫자와 근거로 맞춰 가야 한다.",
+   "why": "System Platform 팀은 Network Engineer·InfraOps Engineer와 같은 Tribe에 있고,[1] 그 위에서 ML/AI Infra 팀이 GPU 쿠버네티스를 만들며,[8] 서빙 팀이 GPU를 가장 많이 씁니다.[5]",
+   "actually": {
+    "items": [
+     "**네트워크 팀과** — 스위치·배선·IP 설계를 나누고 성능 시험 결과를 같이 본다.[1]{추론}",
+     "**IDC 담당과** — 랙 전력·냉각 요구를 숫자로 건넨다.[9]",
+     "**ML 플랫폼·서빙 팀과** — 'GPU가 느리다'는 말을 하드웨어·설정·코드 중 어디 문제인지 지표로 가른다.{추론}"
+    ]
+   },
+   "how_far": "토스는 데이터 기반으로 토론하며 가장 효율적인 해결을 찾는 방식을 일하는 방법으로 꼽았습니다.[2] 면접에선 **다른 팀과 의견이 갈렸을 때 무엇을 근거로 정했나**를 사례로 말할 수 있으면 됩니다.{추론}",
+   "refs": [1, 2, 5, 8, 9],
+   "study": ["sre-book"]
+  },
+  {
+   "section": "preference",
+   "quote": "CUDA, NCCL, NVLink, RDMA와 같은 GPU 컴퓨팅 기술에 대한 이해가 있으면 더 좋아요.",
+   "short": "GPU 위에서 도는 프로그램이 이 기술들로 통신·계산해서, 알아야 '왜 느린가'를 설명할 수 있다.",
+   "why": "토스 서빙 팀은 CUDA·Triton 커널을 직접 짜고 InfiniBand 위 NIXL로 GPU 간 데이터를 옮깁니다.[5] AI 플랫폼 공고도 RDMA·NCCL을 적었습니다.[8]",
+   "actually": {
+    "items": [
+     "**CUDA** — GPU에서 계산을 돌리는 NVIDIA의 기반. 인프라 쪽에선 드라이버·CUDA 버전 호환이 주 관심사다.{추론}",
+     "**NCCL** — GPU 간 집단 통신 라이브러리. 통신 경로를 알아서 고르지만, 어떤 네트워크 장치·인터페이스를 쓸지 환경 변수로 지정할 수 있고 디버그 로그도 켤 수 있다.[15][16]",
+     "**NVLink** — 서버 안 GPU끼리 잇는 빠른 길(H100은 장당 초당 900GB).[11]",
+     "**RDMA** — 다른 서버의 메모리에 CPU를 거치지 않고 바로 읽고 쓰기. InfiniBand와 RoCE가 이것을 제공한다.[20]{추론}"
+    ]
+   },
+   "how_far": "커널 프로그래밍까지는 서빙 팀 몫입니다.[5] 이 자리는 **NCCL 로그를 읽고 '지금 NVLink를 타나, 네트워크를 타나, 어느 카드를 쓰나'를 확인할 수 있는** 정도면 됩니다.{추론}",
+   "refs": [5, 8, 11, 15, 16, 20],
+   "study": ["nccl-docs", "cs336-gpus", "slashlive-serving"]
+  },
+  {
+   "section": "preference",
+   "quote": "InfiniBand 또는 RoCE 기반 고속 네트워크를 설계하고 운영해 본 경험이 있으면 더 좋아요.",
+   "short": "토스 GPU 서버는 InfiniBand로 이어져 있고, 이 길이 막히면 여러 GPU가 같이 하는 일 전체가 느려져서.",
+   "why": "토스 서빙 발표가 GPU 서버들이 InfiniBand로 연결돼 있다고 밝혔습니다.[5] AI 플랫폼 공고는 RDMA(IB/RoCE)를 같이 적었습니다.[8]",
+   "actually": {
+    "items": [
+     "**InfiniBand** — 처음부터 RDMA용으로 만든 네트워크. 서브넷 관리자(SM)가 경로를 잡는다.{추론}",
+     "**RoCE** — 이더넷 위에서 RDMA를 쓰는 방식. 패킷이 버려지면 성능이 크게 떨어져서, 혼잡할 때 멈춤 신호를 보내는 PFC와 혼잡을 표시해 알리는 ECN으로 '손실 없는' 네트워크를 만들어야 한다.[20]",
+     "**설계** — GPU 하나에 네트워크 카드 하나를 짝지우고(DGX H100은 400Gb/s 카드 8장),[10] 스위치 층과 배선을 정한다.{추론}",
+     "**운영** — 링크 오류·속도 저하 감시, 펌웨어 버전 관리, 고장 케이블·트랜시버 교체.{추론}"
+    ]
+   },
+   "how_far": "'우대'라 필수는 아닙니다. 대화가 되려면 **IB와 RoCE의 차이, RoCE에 왜 PFC·ECN이 필요한지, 성능을 어떻게 재는지(nccl-tests)**를 설명할 수 있으면 됩니다.[17][20]{추론}",
+   "refs": [5, 8, 10, 17, 20],
+   "study": ["roce-lossless", "ml-eng-book", "nccl-tests"]
+  },
+  {
+   "section": "preference",
+   "quote": "펌웨어, BIOS, BMC 등 하드웨어 레벨을 직접 다뤄본 경험이 있으면 더 좋아요.",
+   "short": "베어메탈은 OS 아래도 내 일이라서 — 펌웨어 버전 하나, BIOS 설정 하나가 GPU 성능과 고장을 바꾼다.",
+   "why": "공고가 '베어메탈부터 구축'이라고 적었습니다.[1] GPU 서버의 관리 칩(BMC)은 Redfish·IPMI 같은 원격 관리 방식을 지원합니다.[10]",
+   "actually": {
+    "items": [
+     "**BMC** — 서버 안의 작은 관리용 컴퓨터. OS가 죽어도 전원 켜고 끄기·센서 읽기·원격 화면을 할 수 있다.[10]",
+     "**Redfish** — 서버·스토리지·네트워크를 REST API로 관리하는 DMTF의 업계 표준. 수백 대의 펌웨어·BIOS 설정을 스크립트로 맞출 때 쓴다.[21]",
+     "**펌웨어·BIOS** — GPU·NVSwitch·네트워크 카드·BMC 각각의 펌웨어 버전, 그리고 PCIe·전원 관리 같은 BIOS 설정을 서버 전체에서 똑같이 맞춘다.{추론}"
+    ]
+   },
+   "how_far": "부품 수리는 제조사 몫이고, 이 자리는 **원격으로 상태를 읽고 버전·설정을 코드로 맞추는** 데까지입니다.{추론} 최소선: Redfish API로 서버 전원·센서·펌웨어 버전을 읽는 스크립트를 짜 본 경험.{추론}",
+   "refs": [1, 10, 21],
+   "study": ["dgx-h100-guide", "redfish"]
+  },
+  {
+   "section": "preference",
+   "quote": "DCGM, Prometheus, Grafana 등으로 모니터링 체계를 구축해 본 경험이 있으면 더 좋아요.",
+   "short": "GPU 수백 장의 건강을 사람이 볼 수 없어서, 지표를 모으고 그리고 알리는 체계가 운영의 바닥이다.",
+   "why": "업무 다섯째 줄이 GPU 모니터링과 장애 진단입니다.[1] 토스 AI 플랫폼 공고도 DCGM 지표·XID·NVLink로 GPU 하드웨어 장애를 진단한 경험을 우대합니다.[8]",
+   "actually": {
+    "items": [
+     "**DCGM** — GPU 상태 수집·점검 도구.[12] **dcgm-exporter** — 그 지표를 Prometheus가 읽는 형식으로 내보낸다.[13]",
+     "**Prometheus** — 지표를 주기적으로 긁어 모아 저장하고 알림 규칙을 건다. **Grafana** — 그 지표를 대시보드로 그린다.{추론}",
+     "**무엇을 보나** — GPU별 사용률·메모리·온도·전력, 메모리 오류, NVLink 오류, Xid 발생.[13][14]{추론}"
+    ]
+   },
+   "how_far": "대시보드 예쁘게 만들기보다 **'어떤 지표가 어떤 값이면 누구에게 알리고 무엇을 자동으로 하나'**를 정한 경험이 핵심입니다.{추론}",
+   "refs": [1, 8, 12, 13, 14],
+   "study": ["dcgm-docs", "sre-book"]
+  },
+  {
+   "section": "preference",
+   "quote": "AI/ML 조직과 협업하거나 MLOps 파이프라인을 이해하고 있으면 더 좋아요.",
+   "short": "이 클러스터의 손님이 AI·ML 팀이라서, 그들이 GPU를 어떻게 쓰는지 알아야 맞는 인프라를 만든다.",
+   "why": "토스 서빙 팀은 모델이 나오면 시뮬레이션 → 업로드 → 검증 → 벤치마크 → 배포 승인까지 자동화했고, 낮에는 실시간 서비스, 밤에는 배치 작업으로 GPU를 돌려 씁니다.[5] 이 쓰임새가 인프라 요구(GPU 종류·수·네트워크)를 정합니다.{추론}",
+   "actually": {
+    "items": [
+     "**학습과 서빙의 차이** — 학습은 오래 여러 노드를 묶어 쓰고, 서빙은 지연이 짧아야 하고 트래픽 따라 늘고 준다.[5]{추론}",
+     "**파이프라인** — 데이터 → 학습 → 평가 → 모델 저장 → 배포. 인프라 쪽에선 단계마다 GPU·스토리지·네트워크 요구가 다르다.{추론}",
+     "**토스 서빙의 요구 예** — 서로 다른 GPU에 같은 모델을 올리고, 디코드 서버를 늘리고, KV 캐시를 스토리지까지 내린다.[5]"
+    ]
+   },
+   "how_far": "MLOps를 직접 만드는 것은 ML/AI Infra 팀입니다.[8] 이 자리는 **그 요구를 인프라 언어(장수·대역폭·용량)로 바꿀 수 있는** 정도면 됩니다.{추론}",
+   "refs": [5, 8],
+   "study": ["slashlive-serving", "cs336-inference"]
+  },
+  {
+   "section": "preference",
+   "quote": "IDC 전력, 냉각, 랙 등 물리 인프라를 고려해 대규모 컴퓨팅 환경을 설계해 본 경험이 있으면 더 좋아요.",
+   "short": "GPU 증설의 한계는 GPU 재고보다 IDC 전력·냉각인 경우가 많아서.",
+   "why": "업무 마지막 줄이 전력·냉각·랙을 고려한 증설입니다.[1] 그룹 IDC 매니저 공고도 AI/GPU 고밀도 환경의 전력·냉각 운영을 우대합니다.[9]",
+   "actually": {
+    "items": [
+     "**전력** — 서버 최대 전력(DGX H100 10.2kW)[10]과 전원 이중화(DGX H100은 3.3kW 전원 6개를 4+2로 둔다)[10]를 랙 전력 한도와 맞춘다.",
+     "**냉각** — 공랭이 감당하는 랙당 열에 한계가 있어 고밀도로 갈수록 냉각 방식이 바뀐다.{추론}",
+     "**랙·배선** — 서버 크기(8U),[10] 랙 높이, 스위치와의 케이블 길이, 하중.{추론}"
+    ]
+   },
+   "how_far": "설비 설계는 IDC 담당·사업자가 합니다.[9] 이 자리는 **GPU 쪽 요구를 숫자로 정리해 건네고, 받은 조건 안에서 배치를 설계**하는 쪽입니다.{추론}",
+   "refs": [1, 9, 10],
+   "study": ["dgx-h100-guide", "dc-internal", "cs153-gigawatt"]
+  }
+ ],
+ "resources": [
+  {
+   "id": "slash22-automation",
+   "title": "SLASH 22 · 토스팀 인프라 자동화의 시작",
+   "by": "토스 InfraOps Engineer · 8분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=eVtoW-S6hV0",
+   "why": "같은 Tribe가 서버 배포(PXE·SaltStack)·네트워크·방화벽·형상 관리를 어떻게 자동화했는지 숫자와 함께. 업무 '재현 가능한 프로비저닝'과 요건 '운영을 코드로 자동화'의 회사 쪽 출발점."
+  },
+  {
+   "id": "slashlive-serving",
+   "title": "SlashLive · 토스는 AI모델을 어떻게 서빙할까",
+   "by": "토스 서빙 엔지니어링 · 21분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=t_35VpGYgiY",
+   "why": "이 클러스터의 가장 큰 손님이 GPU를 어떻게 쓰는지 — 여러 세대 GPU, InfiniBand, 밤낮 사용 패턴, KV 캐시 스토리지. 로드맵·증설 판단의 배경."
+  },
+  {
+   "id": "dgx-h100-guide",
+   "title": "NVIDIA DGX H100 사용자 가이드 · 소개",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.nvidia.com/dgx/dgxh100-user-guide/introduction-to-dgxh100.html",
+   "why": "GPU 8장 서버 한 대의 전력·크기·네트워크 카드·BMC 사양. 랙 배치와 증설 계산의 기본 숫자."
+  },
+  {
+   "id": "dcgm-docs",
+   "title": "NVIDIA DCGM 문서 · Diagnostics",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/datacenter/dcgm/latest/user-guide/dcgm-diagnostics.html",
+   "why": "GPU 점검 단계(r1~r4)와 걸리는 시간. 우대 'DCGM 모니터링'과 업무 '장애 진단'."
+  },
+  {
+   "id": "xid-docs",
+   "title": "NVIDIA Xid Errors 문서",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/deploy/xid-errors/index.html",
+   "why": "커널 로그에 남는 GPU 오류 번호를 읽는 법. 요건 '드라이버를 깊이 다뤄 문제 해결'의 첫 자료."
+  },
+  {
+   "id": "nccl-docs",
+   "title": "NVIDIA NCCL 사용자 가이드 (개요·환경 변수)",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/overview.html",
+   "why": "GPU 간 집단 통신이 어떤 길(NVLink·InfiniBand·소켓)로 가는지, 어떤 설정으로 바꾸는지. 우대 'CUDA·NCCL·RDMA 이해'."
+  },
+  {
+   "id": "nccl-tests",
+   "title": "nccl-tests · PERFORMANCE.md (algbw·busbw)",
+   "by": "NVIDIA · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/NVIDIA/nccl-tests/blob/master/doc/PERFORMANCE.md",
+   "why": "클러스터 통신 속도를 재고 읽는 표준 도구. 업무 '네트워크 설계로 성능 최적화'를 숫자로 증명할 때."
+  },
+  {
+   "id": "gpu-operator-docs",
+   "title": "NVIDIA GPU Operator 문서 · 개요",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/overview.html",
+   "why": "쿠버네티스가 드라이버·장치 플러그인·DCGM 수집기를 어떻게 깔아 주는지. 표준 OS 스택과 플랫폼 경계를 나눌 때."
+  },
+  {
+   "id": "roce-lossless",
+   "title": "NVIDIA Networking · RoCEv2 무손실 패브릭 설정 방법",
+   "by": "NVIDIA Networking",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://networking-docs.nvidia.com/sol/howto-configure-rocev2-lossless-fabric-for-vmware-esxi-6-5-and-above",
+   "why": "RoCE에 PFC·ECN이 왜·어떻게 필요한지 스위치 설정으로 보여 준다(문서는 2019~2020년 장비 기준). 우대 'InfiniBand 또는 RoCE'."
+  },
+  {
+   "id": "redfish",
+   "title": "DMTF Redfish 개발자 허브",
+   "by": "DMTF",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://redfish.dmtf.org/",
+   "why": "BMC를 REST API로 다루는 표준의 사양·예제. 우대 '펌웨어·BIOS·BMC'를 코드로 다룰 때."
+  },
+  {
+   "id": "maas",
+   "title": "Canonical MAAS (베어메탈 프로비저닝)",
+   "by": "Canonical",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://canonical.com/maas/",
+   "why": "맨 서버를 네트워크로 설치·관리하는 공개 도구. 업무 '대규모 노드를 재현 가능하게 프로비저닝'을 집에서 연습할 때."
+  },
+  {
+   "id": "mlperf",
+   "title": "MLCommons · MLPerf Training",
+   "by": "MLCommons",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://mlcommons.org/benchmarks/training/",
+   "why": "GPU 시스템을 '목표 품질까지 학습에 걸린 시간'으로 견주는 공개 벤치마크. 업무 'PoC와 벤치마크로 도입 검증'의 잣대."
+  },
+  {
+   "id": "ml-eng-book",
+   "title": "Machine Learning Engineering Open Book",
+   "by": "Stas Bekman · GitHub",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/stas00/ml-engineering",
+   "why": "가속기·네트워크·스토리지·Slurm·디버깅을 대규모 학습 클러스터를 운영한 사람 눈으로 정리한 무료 책. 이 공고 업무 대부분에 걸친다."
+  },
+  {
+   "id": "sre-book",
+   "title": "사이트 신뢰성 엔지니어링 (원서 무료 공개)",
+   "by": "구글 SRE 팀 · 제이펍 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "why": "반복 운영 줄이기·모니터링·장애 대응·용량 계획을 한 흐름으로. 요건 '운영을 코드로 자동화하고 문서로'와 업무 '증설 판단'."
+  },
+  {
+   "id": "sysperf-book",
+   "title": "시스템 성능 엔지니어링",
+   "by": "브렌던 그레그 · 이호연 옮김 · 인사이트",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=Book&SearchWord=%EC%8B%9C%EC%8A%A4%ED%85%9C+%EC%84%B1%EB%8A%A5+%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81",
+   "why": "Linux 서버의 CPU·메모리·디스크·네트워크 병목을 찾는 방법론. 요건 '대규모 Linux 서버 운영'의 바탕."
+  },
+  {
+   "id": "linux-kernel-book",
+   "title": "디버깅을 통해 배우는 리눅스 커널의 구조와 원리",
+   "by": "김동현",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=Book&SearchWord=%EB%94%94%EB%B2%84%EA%B9%85%EC%9D%84+%ED%86%B5%ED%95%B4+%EB%B0%B0%EC%9A%B0%EB%8A%94+%EB%A6%AC%EB%88%85%EC%8A%A4+%EC%BB%A4%EB%84%90",
+   "why": "ftrace 같은 도구로 커널 동작을 직접 따라가는 한국어 책. 요건 'OS·커널·드라이버 중 하나를 깊이'."
+  },
+  {
+   "id": "cs336-gpus",
+   "title": "Stanford CS336 · Lecture 5: GPUs, TPUs (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/izZba4UA7iY",
+   "why": "GPU가 메모리·연산을 어떻게 나눠 쓰는지. GPU 세대를 비교·추적하는 바탕."
+  },
+  {
+   "id": "cs336-parallel",
+   "title": "Stanford CS336 · Lecture 7: Parallelism (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/SzpOcwdIL0Y",
+   "why": "여러 GPU·여러 서버에 학습을 나누면 무엇이 오가는지. 네트워크 설계가 왜 성능을 정하는지."
+  },
+  {
+   "id": "cs25-ultrascale",
+   "title": "Stanford CS25 · Scaling Training to Thousands of GPUs (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "/lectures/I5BKi32IEa8",
+   "why": "수천 장 GPU 학습에서 통신·고장이 어떻게 문제가 되는지. 요건 'HPC 또는 AI 클러스터 구축·운영'."
+  },
+  {
+   "id": "cs336-inference",
+   "title": "Stanford CS336 · Lecture 10: Inference (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/EfM546A79aM",
+   "why": "서빙이 GPU 메모리·배칭에 왜 민감한지. 우대 'AI/ML 조직과 협업'에서 서빙 팀의 요구를 이해할 때."
+  },
+  {
+   "id": "cs153-gigawatt",
+   "title": "Stanford CS153 · The Discipline of Delivering Value per Gigawatt (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "/lectures/VeTqsCpcDgg",
+   "why": "AI 컴퓨팅에서 전력이 왜 한계가 되는지. 업무 '전력·냉각·랙을 고려한 증설'의 큰 그림."
+  },
+  {
+   "id": "dc-internal",
+   "title": "AI 데이터센터 — 보유 칩·성능·금액 (우리 사이트)",
+   "by": "우리 사이트 하드웨어 조사",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/hardware/datacenter",
+   "why": "회사·기관별 GPU 수와 H100 환산, 전력·건설비. 로드맵·증설을 '몇 장·몇 kW'로 생각하는 연습."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "그림 잡기",
+   "time": "1주",
+   "goal": "토스 인프라가 어떤 층(IDC·서버·네트워크·쿠버네티스·서빙)으로 쌓였고 이 자리가 어디인지 말로 설명할 수 있다.",
+   "task": "토스 발표 두 편을 보고 'IDC → GPU 서버 → InfiniBand → ML 쿠버네티스 → 서빙' 그림을 한 장 그린 뒤, 층마다 '여기가 고장나면 사용자에게 무슨 일이 생기나'를 한 줄씩 적는다.",
+   "resources": ["slash22-automation", "slashlive-serving", "dgx-h100-guide"]
+  },
+  {
+   "title": "Linux 서버를 코드로 찍어 내기",
+   "time": "2~3주",
+   "goal": "맨 서버(가상 머신)를 네트워크 설치 → 설정 관리 도구로 같은 상태로 만들 수 있다.",
+   "task": "가상 머신 3대를 MAAS(또는 PXE 서버)로 설치하고, Ansible이나 Salt로 표준 패키지·커널 파라미터를 맞춘 뒤, 한 대를 지우고 다시 만들어 똑같은지 비교하는 스크립트를 짠다. 걸린 시간을 손 작업과 비교해 표로 남긴다.",
+   "resources": ["maas", "sysperf-book", "sre-book", "slash22-automation"]
+  },
+  {
+   "title": "GPU 한 대 · 여러 대",
+   "time": "2주",
+   "goal": "GPU 드라이버·CUDA·NCCL을 올리고, 두 대 이상에서 통신 속도를 재고 읽을 수 있다.",
+   "task": "클라우드 GPU 서버 2대(각 1~2장)를 빌려 드라이버·CUDA를 깔고 nccl-tests의 all_reduce를 돌린다. NCCL 디버그 로그를 켜서 어떤 길(소켓·RDMA)을 탔는지 확인하고, busbw를 카드 사양과 견준 표를 만든다.",
+   "resources": ["nccl-docs", "nccl-tests", "cs336-gpus", "cs336-parallel", "ml-eng-book"]
+  },
+  {
+   "title": "지켜보고 고치기",
+   "time": "2주",
+   "goal": "GPU 지표를 모아 알림을 걸고, 오류가 나면 노드를 자동으로 빼는 흐름을 만든다.",
+   "task": "dcgm-exporter → Prometheus → Grafana를 띄우고, 온도·Xid 알림 규칙을 건다. 가상 Xid 로그를 흘려 '같은 GPU에서 반복되면 노드를 작업에서 빼고 점검(dcgmi diag -r 2)을 돌리는' 스크립트를 만든다.",
+   "resources": ["dcgm-docs", "xid-docs", "gpu-operator-docs", "sre-book"]
+  },
+  {
+   "title": "증설 계획서 한 장",
+   "time": "1주",
+   "goal": "GPU 수요 추세와 랙 전력·냉각 조건으로 '언제, 몇 대, 어느 랙에'를 숫자로 제안한다.",
+   "task": "가상의 8주 할당률 데이터와 랙 전력 한도(예: 17·24·41kW)를 두고, DGX H100 사양으로 랙 배치표와 주문 시점을 계산한 한 장짜리 계획서를 쓴다. 다음 세대 GPU 하나를 골라 같은 계획을 다시 세워 차이를 적는다.",
+   "resources": ["dgx-h100-guide", "dc-internal", "cs153-gigawatt", "mlperf"]
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 공공데이터 집계로 신입 초봉 **약 4,200만원**, 평균 **약 6,200만원** — 공시된 평균 급여는 없다. 이 자리는 경력 3년 이상이다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없고, 이 공고는 경력직이라 참고만 한다 [24]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 — 경력직이 섞인 값이다 [24]"
+   },
+   {
+    "label": "토스뱅크 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 계열사 값 — 견주어 보기용 [25]"
+   },
+   {
+    "label": "토스뱅크 평균",
+    "value": "약 7,208만원",
+    "amount": 7208,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 계열사 평균 [25]"
+   }
+  ],
+  "how": "공고는 레퍼런스 체크 뒤 **처우 협의** 단계에서 정한다고 적었다 [1]. 원티드 공고는 '경력 3년 이상'으로 올라 있어 [2] 신입 초봉은 이 자리의 기준이 아니다. 비바리퍼블리카는 상장사가 아니라 사업보고서의 '직원 평균 급여'가 없어 공시 숫자를 싣지 못했다. 평균은 경력직이 섞인 회사 전체 값이고, 집계값은 추정이라 실제 제안과 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {"name": "식대", "detail": "1인 1법인카드, 금액 제한 없음"},
+   {"name": "업무 비용", "detail": "책·사무용품·업무 교육 100% 지원"},
+   {"name": "장비", "detail": "최고급 노트북·모니터·소프트웨어"},
+   {"name": "근무 장소", "detail": "재택 여부를 스스로 정하고 팀에 공유"},
+   {"name": "자율 휴가", "detail": "보고·승인 없이, 당일 오전에도 사용"},
+   {"name": "리프레쉬 휴가", "detail": "근속 3년마다 1개월 유급"},
+   {"name": "주택 자금 대출", "detail": "1억원 한도 무이자(6개월 이상 재직)"},
+   {"name": "건강", "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"},
+   {"name": "단체 보험", "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"},
+   {"name": "교통", "detail": "주차비·택시비 100%(법인카드)"},
+   {"name": "통신비", "detail": "매월 10만원"},
+   {"name": "경조사", "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"},
+   {"name": "사내 시설", "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"}
+  ],
+  "note": "토스 팀 복지를 소개한 2021년 공식 글이다 [27]. 이 자리는 IDC 현장 작업이 섞여 재택 범위가 다를 수 있고 {추론}, 지금도 같은지는 글에 없으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스(비바리퍼블리카) 본사",
+  "address": "서울특별시 강남구 테헤란로 142, 4·10~13·22·23층",
+  "postal": "06236",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "주소는 토스 회사 소개 페이지 하단의 회사 정보다 [26]. 공고 근무지는 'Seoul'(원티드는 서울 강남구)로만 적혀 있고 [1][2], IDC는 서로 다른 지역 두 곳이라 [6] 현장 출장이 있을 수 있다 {추론}."
+ },
+ "fit": {
+  "good": [
+   "쿠버네티스 위보다 그 아래 — 서버·커널·네트워크 카드·전력 — 에서 문제를 찾는 게 즐거운 사람",
+   "손으로 하던 일을 코드로 바꿔 시간을 줄이는 데서 보람을 느끼는 사람[3]",
+   "새 GPU가 나오면 직접 재 보고 '무엇을 살지' 판단에 참여하고 싶은 사람[1]",
+   "서빙·ML 팀이 하루 만에 새 모델을 올리는 속도를 받쳐 주는 기반을 만들고 싶은 사람[5]"
+  ],
+  "hard": [
+   "물리 장비를 다루는 일이라 IDC 현장 작업·장애 대응이 생긴다{추론}",
+   "GPU 클러스터 운영 경험을 먼저 꼽는다 — 일반 서버 경험만으로는 문턱이 있다[1]",
+   "여러 세대 GPU가 섞여 있어 버전·설정 조합 관리가 복잡하다[5]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "GPU 서버 200대를 새로 받았어요. 드라이버·CUDA·펌웨어까지 똑같이 맞추고, 나중에 한 대가 달라졌는지 어떻게 알겠어요?",
+   "a": "재현 가능한 프로비저닝과 형상 관리 — 토스가 일반 서버에서 이미 한 방식.[1][3]"
+  },
+  {
+   "q": "두 서버에서 nccl-tests busbw가 기대의 절반이에요. 무엇부터 보겠어요?",
+   "a": "NCCL이 어떤 길·카드를 탔는지, 링크 속도, RoCE면 PFC·ECN 설정.[16][17][20]"
+  },
+  {
+   "q": "한 GPU에서 Xid 79가 하루 두 번 났어요. 어떻게 대응하고 무엇을 자동화하겠어요?",
+   "a": "Xid 해석, 노드 격리, DCGM 점검, 교체 흐름.[12][14]"
+  },
+  {
+   "q": "다음 분기 GPU를 30% 늘려야 해요. 랙 전력이 모자라면 어떻게 하겠어요?",
+   "a": "사용률 추세·리드타임, 서버 최대 전력과 랙 배치, IDC 담당과의 협의.[9][10]"
+  },
+  {
+   "q": "새 세대 GPU 도입을 검토한다면 PoC에서 무엇을 재고 어떤 표로 보고하겠어요?",
+   "a": "사내 모델 처리량·전력·가격, 공개 벤치마크, 기존 GPU와의 혼용.[1][5][22]"
+  }
+ ],
+ "sources": [
+  {"n": 1, "title": "토스 채용 · 시스템 엔지니어 (GPU) (Systems Engineer)", "url": "https://toss.im/career/job-detail?gh_jid=7795677003", "kind": "posting", "note": "팀 소개·업무·요건·우대·합류 여정(사전 과제 포함). 같은 페이지에 토스증권 온프레미스 GPU 클러스터 시스템 엔지니어 등 계열사 공고가 함께 열려 있다"},
+  {"n": 2, "title": "원티드 · [토스] System Engineer (GPU)", "url": "https://www.wanted.co.kr/wd/347560", "kind": "posting", "date": "2026-11", "note": "경력 3년 이상, 서울 강남구, 일하는 방식 소개"},
+  {"n": 3, "title": "SLASH 22 · 토스팀 인프라 자동화의 시작", "url": "https://www.youtube.com/watch?v=eVtoW-S6hV0", "kind": "company", "date": "2022-06", "note": "토스 InfraOps Engineer. 자막·화면 전부 확인 — 1,470분→160분, 서버 구축 1,200분→120분, PXE·SaltStack·AWX 플러그인, 자가 복구 계획"},
+  {"n": 4, "title": "SLASH 22 세션 소개 · 토스팀 인프라 자동화의 시작", "url": "https://toss.im/slash-22/sessions/3-1", "kind": "company", "note": "세션 요약 — 운영 업무 시간 90% 절약한 물리 인프라 자동화"},
+  {"n": 5, "title": "SlashLive · 토스는 AI모델을 어떻게 서빙할까", "url": "https://www.youtube.com/watch?v=t_35VpGYgiY", "kind": "company", "date": "2026-10-14", "note": "토스 서빙 엔지니어링. 자막·화면 전부 확인 — InfiniBand 연결, Hopper·Blackwell·L40S·A100 혼용, 40개 넘는 모델, KV 캐시 HBM·DRAM·VAST 3층, 밤 배치"},
+  {"n": 6, "title": "토스피드 · 토스 서비스의 근간을 다지는 사람들, 인프라 엔지니어링 팀을 만나다", "url": "https://toss.im/tossfeed/article/infraengineeringteam-interview", "kind": "company", "date": "2020-01-10", "note": "IDC 두 곳(다른 지역)·액티브-액티브, 6개월간 5배 증설, IaC·자동화·메트릭 기반 장애 감지"},
+  {"n": 7, "title": "토스피드 · 토스, 데이터센터 완전 차단 재해복구훈련 실시", "url": "https://toss.im/tossfeed/article/DisasterResponseSystem", "kind": "company", "date": "2024-10-28", "note": "2018년부터 IDC 이중화 액티브-액티브, 한쪽 IDC 차단 훈련"},
+  {"n": 8, "title": "토스 채용 · AI 플랫폼 엔지니어 (Infra)", "url": "https://toss.im/career/job-detail?gh_jid=8007436003", "kind": "posting", "note": "온프레미스 ML 쿠버네티스 + AWS·GCP, GPU Operator·NCCL·RDMA(IB/RoCE)·VAST, DCGM·XID·NVLink 장애 진단 우대"},
+  {"n": 9, "title": "토스뱅크 채용 · IDC Manager", "url": "https://toss.im/career/job-detail?gh_jid=7821171003", "kind": "posting", "note": "같은 그룹 다른 회사. 전력·냉각·공간 용량과 AI/GPU 환경을 고려한 확장 계획, 고밀도 전력·냉각 우대"},
+  {"n": 10, "title": "NVIDIA DGX H100 사용자 가이드 · 소개", "url": "https://docs.nvidia.com/dgx/dgxh100-user-guide/introduction-to-dgxh100.html", "kind": "reference", "note": "최대 10.2kW, 3.3kW 전원 6개(4+2), 8U, H100 8장, 400Gb/s ConnectX-7 8장, BMC는 Redfish·IPMI 지원"},
+  {"n": 11, "title": "NVIDIA H100 제품 페이지", "url": "https://www.nvidia.com/en-us/data-center/h100/", "kind": "reference", "note": "SXM 최대 700W, NVLink 초당 900GB"},
+  {"n": 12, "title": "NVIDIA DCGM 문서 · Diagnostics", "url": "https://docs.nvidia.com/datacenter/dcgm/latest/user-guide/dcgm-diagnostics.html", "kind": "reference", "note": "dcgmi diag r1~r4와 Hopper 시스템 소요 시간"},
+  {"n": 13, "title": "NVIDIA dcgm-exporter (GitHub)", "url": "https://github.com/NVIDIA/dcgm-exporter", "kind": "reference", "note": "DCGM 지표를 Prometheus 형식으로"},
+  {"n": 14, "title": "NVIDIA Xid Errors 문서", "url": "https://docs.nvidia.com/deploy/xid-errors/index.html", "kind": "reference", "note": "Xid의 뜻, Xid 79"},
+  {"n": 15, "title": "NVIDIA NCCL 문서 · Overview", "url": "https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/overview.html", "kind": "reference"},
+  {"n": 16, "title": "NVIDIA NCCL 문서 · Environment Variables", "url": "https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/env.html", "kind": "reference", "note": "NCCL_DEBUG·NCCL_IB_HCA·NCCL_SOCKET_IFNAME"},
+  {"n": 17, "title": "nccl-tests · PERFORMANCE.md", "url": "https://github.com/NVIDIA/nccl-tests/blob/master/doc/PERFORMANCE.md", "kind": "reference", "note": "algbw·busbw 정의와 all-reduce 환산식 2(n-1)/n"},
+  {"n": 18, "title": "NVIDIA GPU Operator 문서 · Overview", "url": "https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/overview.html", "kind": "reference"},
+  {"n": 19, "title": "NVIDIA Fabric Manager 사용자 가이드", "url": "https://docs.nvidia.com/datacenter/tesla/fabric-manager-user-guide/index.html", "kind": "reference", "note": "NVSwitch 메모리 패브릭 설정·NVLink 오류 감시"},
+  {"n": 20, "title": "NVIDIA Networking · HowTo Configure RoCEv2 Lossless Fabric", "url": "https://networking-docs.nvidia.com/sol/howto-configure-rocev2-lossless-fabric-for-vmware-esxi-6-5-and-above", "kind": "reference", "date": "2020-03", "note": "PFC(IEEE 802.1Qbb)·ECN으로 무손실 RoCE"},
+  {"n": 21, "title": "위키백과 · Redfish (specification)", "url": "https://en.wikipedia.org/wiki/Redfish_(specification)", "kind": "reference", "note": "DMTF의 RESTful 관리 표준, 1.0은 2015년 8월"},
+  {"n": 22, "title": "MLCommons · MLPerf Training", "url": "https://mlcommons.org/benchmarks/training/", "kind": "reference"},
+  {"n": 23, "title": "Machine Learning Engineering Open Book (Stas Bekman)", "url": "https://github.com/stas00/ml-engineering", "kind": "reference", "note": "가속기·네트워크·스토리지·Slurm·디버깅 장"},
+  {"n": 24, "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(공공데이터 집계: 초봉·평균)", "url": "https://jasoseol.com/companies/11256", "kind": "reference", "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"},
+  {"n": 25, "title": "자소설닷컴 — 토스뱅크 연봉(같은 집계)", "url": "https://jasoseol.com/companies/13930/insights", "kind": "reference"},
+  {"n": 26, "title": "토스 — 회사 소개(사이트 하단 주소)", "url": "https://toss.im/company", "kind": "company"},
+  {"n": 27, "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지", "url": "https://toss.im/tossfeed/article/employee-benefits", "kind": "company", "date": "2021-03-10"},
+  {"n": 28, "title": "Ansible AWX (GitHub)", "url": "https://github.com/ansible/awx", "kind": "reference", "note": "Ansible 위의 웹 UI·REST API·작업 엔진"},
+  {"n": 29, "title": "Canonical MAAS", "url": "https://canonical.com/maas/", "kind": "reference", "note": "베어메탈 프로비저닝"},
+  {"n": 30, "title": "Google SRE 책 · 목차(무료 공개)", "url": "https://sre.google/sre-book/table-of-contents/", "kind": "reference", "note": "한국어판 『사이트 신뢰성 엔지니어링』(제이펍, 2018)"}
+ ],
+ "caveat": "토스 System Platform 팀이 GPU 클러스터를 직접 발표한 자료는 찾지 못했습니다. 회사 근거는 이 공고[1][2], 같은 Tribe의 인프라 자동화 발표[3][4], GPU를 가장 많이 쓰는 서빙 팀 발표[5], 인프라 팀 소개·훈련 보도[6][7], 그룹의 관련 공고[8][9]입니다. 서버·네트워크·모니터링의 '보통 이런 것'은 NVIDIA 등 공식 문서로 보였고, 토스가 그대로 쓰는지는 공개되지 않았습니다."
+}
