@@ -298,3 +298,14 @@
   Performance II PV 700W Surge 4K(medium — 사양 줄 + 대표 사진 3장, FDB 판과 같은 벌집 판 + 구리 3×3 배지·모서리 띠).
 - 알게 된 것: FSP 한국어 페이지는 `<base href=".../kr/">` 라 `../upload/…` 사진은 `https://www.fsplifestyle.com/upload/…` 에 있다(/kr/upload 는 404). 사진 주소가 글로 보인다.
 - 실물과 아직 다른 점: 파워 렌더러는 여전히 색·덮개 모양을 받지 않아 철사 격자 + 구리 허브·노란 선·가로 구멍 격자·벌집 판이 모두 둥근 메시로 보인다(REQUESTS [3D 렌더러] — accent 가 칠해질 자리를 고르는 칸 요청을 더함). 다섯 다 덮개에 가려 날개 수를 비웠다. FSP 600W 의 models `modular` 가 비어 있어 [hw-models] 한 줄(사진상 논모듈러), 나머지 치수는 공식 값과 맞다.
+
+## 2026-11-23 · 31회차(무인) — 파워 넷
+
+- 12번 맨 앞 그래픽카드 COLORFUL(403)·ZOTAC(468)와 case-atx-mid·cooler-air-single(여전히 다른 세션의 미커밋 파일) 항목은 지난 회차처럼 미루고, 파워 인기순 다음 다섯 중 넷을 적었다(공식 제품 페이지 사진·상세 이미지를 저장소 밖 임시 폴더 `%TEMP%/hw3d31` 에서 모음 판·잘라 본 판으로 보기만, 다나와는 쓰지 않음):
+  FSP HYPER K PRO(ATX3.1) 700W(high — 한국어 제품 페이지 120mm HYB 팬·올 블랙 플랫 케이블, 사진 4장 + 설명 그림 2장: 600W 판과 같은 몸통·철사 격자·노란 선 딱지) ·
+  아툼 POWECRASH 700W(high — 상세 이미지(세로 1.5만 px, PIL 로 잘라 봄)의 사양 표 140×150×85mm·120mm 팬·커넥터 표, 사진: X 자로 엇갈린 비스듬한 살 격자 + 금색 둥근 배지, 옆면 금색 딱지) ·
+  아툼 RageX Enertic 700W(high — 같은 꼴의 상세 이미지, 같은 몸통에 은백색 RAGE X 배지·짙은 회색 옆 딱지) ·
+  에디 REACTOR 700W(high — 요약 정보 케이블 일체형·플랫 + 상세 이미지 끝 SPECIFICATIONS 120mm Fan, 사진: 벽돌처럼 엇갈린 굵은 사선 살 격자 + 흰 배지, 옆면 큰 초록 고리 그림).
+- 넘긴 것: BABEL BM-700VP-F — babeltek.com 이 http 는 HTTP 500, https 는 자체 서명 인증서라 열지 못했다(우회하지 않는다). 다음 회차에 다시 본다.
+- 알게 된 것: 아툼(rage-x.co.kr, 워드프레스)은 본문이 대표 사진 하나 + 세로 긴 상세 이미지 하나라 주소가 글로 보인다(`-768x768` 를 떼면 원본). 에디(eddy.kr)는 Framer 사이트로 `framerusercontent.com/images/…` 주소가 글로 보이고 끝의 세로 긴 jpg 가 상세 이미지다. 세 제품(POWECRASH·RageX Enertic·REACTOR)은 KC 인증번호·회로 사진이 같은 한 기판(Boluo Xurong GL-700)이다.
+- 실물과 아직 다른 점: 파워 렌더러가 여전히 색·덮개 모양을 받지 않아 X 자 사선 살 격자·벽돌 사선 격자와 금·은·흰 둥근 배지, 에디 옆면 초록 고리 그림이 둥근 메시로 보인다(REQUESTS [3D 렌더러] 새 줄 — 기존 덮개 요청에 더함). 넷 다 격자에 가려 날개 수를 비웠다. 에디 700W 의 models `fan_mm`·FSP 700W 의 `modular` 가 비어 있어 [hw-models] 두 줄.

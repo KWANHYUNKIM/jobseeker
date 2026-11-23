@@ -228,6 +228,117 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "FDB 판·600W Surge 4K 와 같은 몸통. 사진: 짙은 회색 무광 상자, 앞뒤 끝 모서리를 감싸는 구리(주황)색 띠, 팬 덮개는 판 전체 벌집 타공(네 귀를 비스듬히 깎은 테) 가운데에 구리색 3×3 네모 배지. 옆면 검정 딱지에 구리색 테 'PERFORMANCE II PV 700W'. 뒤판도 벌집 타공 + 스위치·전원 단자, 케이블 직결. 날개는 타공판에 가려 세지 못했다."
+  },
+  "fsp-hyper-k-pro-700w-bronze-atx31": {
+   "kind": "psu",
+   "modular": "none",
+   "fan_mm": 120,
+   "color": "#1e1f21",
+   "accent": "#e3b21c",
+   "fan_light": "none",
+   "marks": [
+    {
+     "text": "HYPER K PRO",
+     "where": "side"
+    },
+    {
+     "text": "FSP",
+     "where": "side"
+    }
+   ],
+   "sources": [
+    {
+     "title": "FSP HYPER K PRO(ATX3.1) 700W 브론즈 — 공식 제품 페이지(한국어, 120mm HYB 팬·올 블랙 플랫 케이블, 제품 사진 4장 + 몸통 설명 그림 2장)",
+     "url": "https://www.fsplifestyle.com/kr/product/HYPER_K_PRO700W_BR_ATX31.html"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "600W 판과 같은 몸통·같은 사진 구성. 무광 검정 상자, 옆면 검정 딱지에 위아래 노란 가는 선 + 흰 HYPER·노란 K·흰 바탕 PRO 상자·FSP 로고. 팬은 둥근 철사 격자(동심 고리 + 바퀴살, 허브 앞 작은 원) 밑 검정 날개, 뒤판 벌집 타공 + 세로 흰 POWER NEVER ENDS·전원 단자·스위치. 검정 플랫 선 다발 직결(사진상 논모듈러 — models 의 modular 는 비어 있다). 날개는 격자에 가려 세지 못했다."
+  },
+  "atum-powercrash-700w-atx31": {
+   "kind": "psu",
+   "modular": "none",
+   "fan_mm": 120,
+   "color": "#1f2022",
+   "accent": "#b8893f",
+   "fan_light": "none",
+   "marks": [
+    {
+     "text": "POWECRASH",
+     "where": "side",
+     "color": "#b8893f"
+    },
+    {
+     "text": "700W",
+     "where": "side",
+     "color": "#b8893f"
+    }
+   ],
+   "sources": [
+    {
+     "title": "아툼 POWECRASH 700W 80PLUS BRONZE ATX 3.1 — 공식 제품 페이지(대표 사진 + 상세 이미지: 사양 표 140×150×85mm·120mm 팬·커넥터 표, 겉·옆·뒤·속 사진)",
+     "url": "https://rage-x.co.kr/powecrash-700w-80plus-bronze-atx-3-1/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "공식 표기는 POWECRASH. 무광 검정 상자, 팬 덮개는 네 귀를 깎은 테 안에 비스듬한 가는 살을 X 자로 엇갈려 놓은 격자, 가운데 금(구리)색 둥근 배지에 POWECRASH. 옆면 큰 딱지는 금색 바탕에 산 모양 무늬·700W·ATX 3.1. 뒤판·옆판 벌집 타공 + 전원 단자·스위치. 케이블 일체형 검정 엠보싱 플랫 선(PCIe 단자 파랑). 날개는 격자에 가려 세지 못했다. RageX Enertic 700W 와 같은 몸통(KC 인증번호 같음), 배지·딱지만 다르다."
+  },
+  "atum-ragex-enertic-700w": {
+   "kind": "psu",
+   "modular": "none",
+   "fan_mm": 120,
+   "color": "#1f2022",
+   "accent": "#c9ccd0",
+   "fan_light": "none",
+   "marks": [
+    {
+     "text": "RAGE X",
+     "where": "side"
+    },
+    {
+     "text": "700W",
+     "where": "side"
+    }
+   ],
+   "sources": [
+    {
+     "title": "아툼 RageX Enertic 700W 80PLUS BRONZE ATX 3.0 박스 — 공식 제품 페이지(대표 사진 + 상세 이미지: 사양 표·겉·옆·뒤·속 사진)",
+     "url": "https://rage-x.co.kr/atum-ragex-enertic-700w-80plus-bronze-atx-3-0-%eb%b0%95%ec%8a%a4/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "POWECRASH 700W 와 같은 몸통·같은 격자(네 귀 깎은 테 + X 자로 엇갈린 비스듬한 살). 다른 점: 가운데 배지가 은백색 원에 RAGE X 글자(X 빨강), 옆면 딱지는 짙은 회색 바탕에 흐린 700W 큰 글자·사양 표·RAGE X 로고(빨간 X). 벌집 타공 옆·뒤판, 케이블 일체형 검정 엠보싱 플랫 선. 날개는 격자에 가려 세지 못했다."
+  },
+  "eddy-reactor-700w-atx31": {
+   "kind": "psu",
+   "modular": "none",
+   "fan_mm": 120,
+   "color": "#1d1e20",
+   "accent": "#3ec46d",
+   "fan_light": "none",
+   "marks": [
+    {
+     "text": "EDDY REACTOR",
+     "where": "side"
+    },
+    {
+     "text": "700W",
+     "where": "side",
+     "color": "#3ec46d"
+    }
+   ],
+   "sources": [
+    {
+     "title": "에디 REACTOR 700W 80PLUS 브론즈 ATX 3.1 — 공식 제품 페이지(요약 정보 케이블 일체형·플랫 케이블·깊이 140mm, 사진 4장 + 상세 이미지 끝 SPECIFICATIONS 140×150×85mm·120mm Fan)",
+     "url": "https://eddy.kr/product-details/eddy-reactor-700w-80plus-box"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "무광 검정 상자. 팬 덮개는 비스듬히 기운 굵은 살이 벽돌 쌓듯 엇갈린 격자(네 귀 깎은 테), 허브 앞에 흰 둥근 배지(과녁 모양 로고). 한쪽 옆면은 흰 EDDY REACTOR 글자 + 아래 귀퉁이에 큰 초록 고리(과녁) 그림, 반대 옆면은 검정 사양 딱지에 초록 칸·초록 700W. 옆·뒤판 둥근 구멍 타공, 케이블 일체형 검정 엠보싱 플랫 선. 날개는 격자에 가려 세지 못했다. 회로·KC 인증번호(R-R-BcX-XR-ATX4380E)가 아툼 POWECRASH·RageX Enertic 과 같다."
   }
  }
 }
