@@ -81,6 +81,44 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "공식 문구: 팬 2개·검정 쉬라우드·옆면 RGB·2슬롯·8핀 1개. 갤러리 사진(보기만): 무광 검정 쉬라우드에 검정 팬 2개(허브 검정 바탕 로고), 윗면 GHOST 글자 위 가늘고 긴 반투명 띠가 옆 RGB 자리(light=side — 꺼진 사진이라 accent 는 띠의 흰 반투명 색, 켰을 때 색은 모른다). 윗면 사진에서 8핀은 길이의 가운데(약 50%) 홈 속. 뒷면 사진: 검은 헤어라인 금속 백플레이트, 끝 쪽 약 40% 는 쉐브론 모양으로 뚫린 플로스루. 팬 지름·날개 수는 자료에 없고 사진으로 확실히 세지 못해 비웠다. 다나와는 쓰지 않았다."
+  },
+  "asus-dual-rtx5060ti-o8g": {
+   "kind": "gpu",
+   "fan_count": 2,
+   "slots": 2.5,
+   "backplate": true,
+   "power": {
+    "type": "8pin",
+    "n": 1,
+    "at": 0.92
+   },
+   "color": "#141518",
+   "accent": "#c9ccd0",
+   "marks": [
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#c9ccd0"
+    },
+    {
+     "text": "ASUS",
+     "where": "edge",
+     "color": "#c9ccd0"
+    }
+   ],
+   "sources": [
+    {
+     "title": "ASUS Dual RTX 5060 Ti OC 8GB — 공식 제품 페이지(two Axial-tech fans · Vented/Protective Backplate · 정면·비스듬한 정면·윗면 사진)",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/dual/dual-rtx5060ti-o8g/"
+    },
+    {
+     "title": "ASUS Dual RTX 5060 Ti OC 8GB — 공식 스펙(2.5 slot · 8-pin x1 · 229x120x50mm)",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/dual/dual-rtx5060ti-o8g/techspec/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 2개·2.5슬롯·8핀 1개·백플레이트는 공식 문구·스펙. 공식 정면 사진: 검정 쉬라우드에 은색 판(팬 사이·양 끝 모서리), 검정 날개에 은색 ASUS 허브, 브래킷 쪽 위에 DUAL 양각. 공식 윗면 사진: 모서리에 은색 GEFORCE RTX · ASUS 글자, PCB 가 카드 길이의 약 3/4 에서 끝나고 8핀은 그 PCB 끝(약 92%) 자리. 스펙에 조명 항목이 없고 사진도 꺼진 모양이지만 '없다'는 문구가 아니라 fan_light 는 비웠다. 갤러리(/gallery/)는 404. 날개 수는 사진 각도로 확실히 세지 못해, 팬 지름은 공식 자료에 없어 비웠다. PCB 뒤로 방열판이 이어져 뒤가 뚫렸을 가능성이 크지만 뒷면 사진을 못 봐 flow_through 는 비웠다. 다나와는 쓰지 않았다."
   }
  }
 }

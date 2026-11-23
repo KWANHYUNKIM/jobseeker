@@ -1,0 +1,27 @@
+{
+ "schema": 1,
+ "part": "gpu-rtx-5070-ti",
+ "shapes": {
+  "galax-rtx5070ti-1clickoc-2x": {
+   "kind": "gpu",
+   "fans": [
+    92,
+    92
+   ],
+   "fan_blades": 7,
+   "fan_light": "none",
+   "slots": 2.2,
+   "backplate": true,
+   "color": "#141517",
+   "sources": [
+    {
+     "title": "GALAX GeForce RTX 5070 Ti 1-Click OC 2X — 공식 제품 페이지(2*92mm WINGS 3.0 · 7 larger fan blades · White LED with on/off switch · ENHANCED BACKPLATE · 2.2 slot · 16-pin · 정면/불 켠 정면 사진)",
+     "url": "https://galax.com/en/product/geforce-rtx-5070-ti-1-click-oc-2x/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "92mm 팬 2개·날개 7장·2.2슬롯·16핀 1개·백플레이트·흰 LED 는 공식 표. 국내 BLACK 2X OC = 글로벌 1-Click OC 2X 짝은 models 노트의 추정. 공식 정면 사진: 광택 검정 쉬라우드에 탄소 무늬 + 양 끝 회로 무늬 양각, 반투명 날개, 검정 허브에 흰 GALAX. 불 켠 공식 사진에서 팬이 흰색으로만 빛난다 — 형식에 흰 단색이 없어 fan_light 는 none(REQUESTS 의 흰 단색 요청 그대로). 윗면·뒷면 사진을 못 봐 16핀 자리(power)·플로스루는 비웠다 — 렌더러가 models 의 16핀을 급의 보통 자리에 그린다. 다나와는 쓰지 않았다."
+  }
+ }
+}

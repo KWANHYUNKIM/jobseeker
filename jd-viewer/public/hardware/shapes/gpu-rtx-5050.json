@@ -85,6 +85,55 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "92mm 팬 2개·날개 7장·2슬롯·8핀·백플레이트는 공식 표. 국내 BLACK OC V2 = 글로벌 1-Click OC 2X V2 짝은 models 노트의 추정을 따른다. 사진: 검정 쉬라우드(탄소 무늬 + 끝 쪽 회로 무늬 양각), 반투명 회색 날개, 허브는 검정 바탕 GALAX. 불 켠 사진에서 팬이 흰색으로만 빛난다 — 형식에 흰 단색이 없어 fan_light 는 none(REQUESTS 의 흰 단색 요청, 카드 끝 스위치로 끈다). 윗면 사진: 은색 회로 무늬 인쇄(accent), 8핀은 브래킷부터 약 57% 자리. Expanded Opening 백플레이트가 끝에서 뚫렸는지는 뒷면 사진을 못 봐 flow_through 는 비웠다. 다나와는 쓰지 않았다."
+  },
+  "pny-rtx5050-dual-fan": {
+   "kind": "gpu",
+   "fan_count": 2,
+   "slots": 2,
+   "backplate": true,
+   "color": "#141516",
+   "accent": "#3a3c3f",
+   "marks": [
+    {
+     "text": "PNY GEFORCE RTX 5050",
+     "where": "edge",
+     "color": "#d9dadc"
+    }
+   ],
+   "sources": [
+    {
+     "title": "PNY 공식 브로슈어 — GeForce RTX 5050 8GB Dual Fan(VCG50508DFXPB1 · 2 Slot · 1x8 · 정면·분해도·윗면 사진)",
+     "url": "https://www.pny.com/file%20library/company/support/product%20brochures/geforce%20graphics/english/rtx-5050-8gb-dual-fan-brochure.pdf"
+    },
+    {
+     "title": "PNY 공식 제품 페이지 — GeForce RTX 5050 models",
+     "url": "https://www.pny.com/geforce-rtx-5050-models"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "2슬롯·8핀 1개는 공식 표, 팬 2개는 제품명(Dual Fan)과 브로슈어 정면 사진. 사진: 무광 검정 쉬라우드에 짙은 회색 사선 홈, 두 팬이 가운데서 맞닿는 꼴, 검정 날개에 흰 PNY 허브. 분해도에 검정 금속 백플레이트가 보인다(문구에는 없다 — 사진 판독). 윗면 모서리에 흰 'PNY GEFORCE RTX 5050' 글자. 불빛은 자료에 없고 사진도 꺼진 모양이라 fan_light 는 비웠다. 날개 수·팬 지름·8핀 자리·플로스루는 사진 해상도·각도로 못 읽어 비웠다. 다나와는 쓰지 않았다."
+  },
+  "galax-black-oc-rtx5050": {
+   "kind": "gpu",
+   "fans": [
+    92,
+    92
+   ],
+   "fan_blades": 7,
+   "fan_light": "none",
+   "slots": 2,
+   "backplate": true,
+   "color": "#17181b",
+   "sources": [
+    {
+     "title": "GALAX GeForce RTX 5050 1-Click OC — 공식 제품 페이지(2*92mm WINGS 3.0 · 7 larger fan blades · 조명 스위치 · ENHANCED BACKPLATE · 2 slot · 8-pin · 정면/불 켠 정면 사진)",
+     "url": "https://galax.com/en/product/geforce-rtx-5050-1-click-oc/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "92mm 팬 2개·날개 7장·2슬롯·8핀·백플레이트는 공식 표. 국내 BLACK OC = 글로벌 1-Click OC 짝은 models 노트의 추정을 따른다. 공식 정면 사진: 검정 쉬라우드(탄소 무늬 + 끝 쪽 회로 무늬 양각), 반투명 회색 날개, 검정 허브에 흰 GALAX — V2 와 같은 앞판. 불 켠 공식 사진에서 팬이 흰색으로만 빛난다 — 형식에 흰 단색이 없어 fan_light 는 none(REQUESTS 의 흰 단색 요청 그대로). 윗면·뒷면 사진을 못 봐 8핀 자리·플로스루·윗면 글자는 비웠다(V2 는 8핀 약 57%). 다나와는 쓰지 않았다."
   }
  }
 }
