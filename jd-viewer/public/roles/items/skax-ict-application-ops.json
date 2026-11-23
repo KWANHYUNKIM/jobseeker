@@ -1,0 +1,1174 @@
+{
+ "id": "skax-ict-application-ops",
+ "company": "SK주식회사(AX)",
+ "role": "Application 구축/운영 전문가",
+ "team": "ICT 서비스팀",
+ "jobs": [
+  "ats-skcareers:sk:R262281"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "SK 그룹 계열사가 쓰는 **교육 시스템·제조 쪽 업무 시스템·영업 시스템**을 맡아, 장애가 나면 원인을 찾고 데이터가 맞는지 점검하고, 고객이 낸 요청(SR)을 영향도 분석 → 테스트 → 배포까지 처리합니다.[1]",
+  "env": "Java · Spring Boot · React · MySQL · Kafka로 된 애플리케이션이고, 팀은 다른 회사가 돌리던 시스템을 넘겨받는 **ITO 운영 전환**을 겪는 중입니다.[1] 회사는 운영(ITO)을 SLA(약속한 서비스 수준)로 관리하고 AI 운영 자동화를 밀고 있습니다.[2][4]",
+  "oneline": "새 기능을 만드는 시간보다 **남이 만든 시스템을 이해하고, 멈추지 않게 지키고, 고친 것이 다른 데를 깨지 않게 하는** 시간이 긴 운영 개발 자리. 경력 5년 이상."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "ICT 서비스팀을 소개합니다 😊\n조직 소개\nSK멤버사의 핵심 비즈니스 시스템 운영(SM) 및 신규 구축(SI) 프로젝트 등을 담당하고 있습니다.",
+   "short": "고객은 SK 그룹 계열사다. 새로 짓는 일(SI)과 지어 둔 것을 돌리는 일(SM)을 둘 다 한다.",
+   "why": "SK AX(옛 SK C&C)는 2025년 6월 이름을 바꾸며 AI 전환(AX) 서비스 회사를 내걸었지만[9], 이 팀의 바탕은 계열사(멤버사) 시스템의 구축·운영입니다.[1] SI(System Integration)는 정해진 기간 안에 시스템을 만들어 넘기는 일이고, SM(System Management)은 넘겨받은 시스템을 매달 돌리고 고치는 일입니다. {추론}",
+   "how_far": "이 공고의 담당 업무 줄은 거의 SM 쪽(장애·정합성·SR·배포)입니다.[1] 구축(SI)은 '새 기능을 붙이는 고도화' 정도로 섞인다고 보고 준비합니다. {추론}",
+   "refs": [
+    1,
+    9
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "기존 레거시 시스템의 안정적인 무중단 운영과 기능 고도화를 책임지는 한편, 최신 AI/DT 기술을 실무에 접목하는 혁신 과제를 주도합니다.",
+   "short": "오래된 시스템을 멈추지 않게 지키는 게 먼저이고, 그 위에 AI·디지털 기술을 얹는 과제가 따라온다.",
+   "why": "레거시(오래돼서 만든 사람도 문서도 부족한 시스템)는 한 번에 갈아엎기 어렵습니다. 그래서 흔히 옛 시스템을 돌리면서 기능을 하나씩 새 구조로 옮기는 방식(스트랭글러 패턴)을 씁니다.[28] SK AX도 MSA 설계부터 MVP 개발까지 돕는 현대화 서비스(AMF)와 CI/CD·표준 개발 환경을 자동화하는 플랫폼(AMDP)을 공개했습니다.[5]",
+   "actually": {
+    "intro": "'무중단 운영과 고도화'를 같이 할 때 실제로 하는 일입니다. {추론}",
+    "items": [
+     "**무중단 배포** — 서버 여러 대 중 하나씩 내려 새 버전을 올리고, 헬스 체크가 통과해야 다음 대로 넘어간다.[13]",
+     "**뒤로 맞는 변경** — DB 칸을 지우기 전에 '새 칸 추가 → 코드가 둘 다 읽게 → 옛 칸 제거' 순서로 나눠 배포한다.",
+     "**기능 하나씩 옮기기** — 새로 만든 기능만 새 서비스로 보내고 나머지는 옛 시스템이 그대로 받는다.[28]"
+    ]
+   },
+   "refs": [
+    5,
+    13,
+    28
+   ],
+   "study": [
+    "release-it",
+    "fowler-strangler"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "생성형 AI(LLM, Multi-Agent, RAG 등) 기반의 업무 혁신 과제와 전통적인 엔터프라이즈 개발 사업이 함께 공존하여 폭넓은 기술적 도전을 장려합니다.",
+   "short": "같은 팀에 AI 과제와 일반 업무 시스템 일이 섞여 있다. 이 자리는 일반 업무 시스템 쪽이 중심이다.",
+   "why": "SK AX는 운영 일에도 AI를 붙이고 있습니다 — 2026년 4월 공개한 운영 서비스는 탐지·분석·영향도·조치 에이전트가 로그·지표·이벤트를 보고 장애를 이어서 처리하는 구조라고 발표했습니다.[4] 다만 성능 수치는 공개되지 않은 회사 발표입니다.[4]",
+   "how_far": "이 공고의 필수 요건에는 AI가 없고 '성향' 칸에 관심과 학습 의지로만 들어 있습니다.[1] AI 모델을 만들 줄 몰라도 되고, 운영에 쓰는 AI 도구(로그 요약·코드 도우미)를 써 본 경험 정도면 이야깃거리가 됩니다. {추론}",
+   "refs": [
+    1,
+    4
+   ],
+   "study": [
+    "skax-npo"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "고객사의 전략적 파트너로서 비즈니스 문제를 IT 솔루션으로 풀어내는 주도적인 역할을 담당합니다.",
+   "short": "고객이 시키는 것만 고치지 말고, 왜 그 요청이 나왔는지 묻고 더 나은 방법을 제안하라는 뜻.",
+   "why": "SK AX가 저축은행 유지보수 사업에서 내건 성과 지표는 장애 건수·**같은 장애 재발률**·품질 개선 항목 수·비용 효율화였습니다.[3] 요청을 처리한 건수보다 '문제가 줄었나'를 본다는 뜻입니다.",
+   "how_far": "운영 개발자 수준에서 '주도'는 반복 요청을 모아 '이건 화면 하나 고치면 다시 안 옵니다'를 데이터로 제안하는 정도입니다. {추론}",
+   "refs": [
+    3
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "신규 ITO 운영전환 과정에서 업무와 기술구조를 체계적으로 이해하고, 서비스 운영 품질을 지속적으로 높이는 조직입니다.",
+   "short": "다른 회사가 돌리던 시스템을 새로 넘겨받는 중이라, 먼저 업무와 구조를 빨리 파악해야 한다.",
+   "why": "ITO(IT Outsourcing)는 고객이 IT 운영을 통째로 맡기는 계약입니다. SK AX의 ITO 소개는 애플리케이션·인프라·보안 전체를 맡고 SLA 기반으로 품질을 관리하며, 제조·반도체·에너지화학 같은 산업을 대상으로 한다고 적었습니다.[2] '신규 운영전환'은 그 계약이 새로 시작돼 인수인계를 받는 단계라는 뜻입니다.[1]",
+   "actually": {
+    "intro": "운영을 넘겨받을 때 보통 하는 일입니다. SK AX가 자기 절차를 공개하지는 않았습니다. {추론}",
+    "items": [
+     "**목록 만들기** — 서버·DB·배치 작업·외부 연동(누가 누구를 부르나)·계정·인증서 만료일을 한 장에 모은다.",
+     "**같이 돌기(병행 운영)** — 이전 운영사와 몇 주 같이 장애·요청을 처리하며 '이건 왜 이렇게 하나'를 받아 적는다.",
+     "**자주 나는 장애 정리** — 최근 몇 달의 장애·요청 기록에서 반복되는 것을 뽑아 대응 절차서(런북)로 만든다.",
+     "**기준선 재기** — 넘겨받은 날의 응답 시간·오류율·배치 완료 시각을 재 둔다. 나중에 '나아졌다'를 말하려면 처음 숫자가 있어야 한다."
+    ]
+   },
+   "how_far": "인수인계 계획은 PM이 세우고, 개발자는 맡은 시스템의 코드·DB·배치를 직접 읽어 **문서에 없는 것을 찾아 적는** 몫입니다. 우대사항의 '운영지식 문서화'가 이 일입니다.[1] {추론}",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "skax-ito",
+    "sre-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "업무 환경 및 문화\n수평적이고 자율적인 분위기 속에서 자유롭게 의견을 나누고 문제를 함께 해결하는 원팀 문화를 지향합니다.",
+   "short": "팀 분위기 소개다. 면접에서 '다른 사람과 같이 푼 장애' 이야기를 물을 수 있다.",
+   "why": "회사 소개 문장이라 따로 검증할 근거는 없습니다. SK 채용 사이트는 출퇴근 시간·근무 장소를 스스로 정하는 제도를 그룹 문화로 소개합니다.[23]",
+   "refs": [
+    23
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "PM/PL 각자에게 명확한 권한과 책임을 부여하여, 프로젝트의 방향성을 주도적으로 결정할 수 있는 환경을 제공합니다.",
+   "short": "같은 팀의 PM·PL 공고와 같은 소개 문장이다. 이 자리는 PM·PL이 이끄는 운영 과제를 맡는 개발자다.",
+   "why": "같은 ICT 서비스팀이 같은 시기에 'AX/AI 프로젝트 PM/PL' 공고를 따로 냈고, 소개 문장이 거의 같습니다.[1][26] 이 공고는 제목이 'Application 구축/운영 전문가'라 프로젝트를 이끄는 자리가 아니라 시스템을 맡는 자리입니다.[1]",
+   "how_far": "자격요건에 '리딩 역량'이 있으니[1] 작은 과제(개선 한 건, 배포 한 번)를 혼자 끝까지 책임진 경험은 말할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    26
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "실패를 두려워하지 않고 새로운 기술(AI 툴, 최신 개발 프레임워크 등)을 업무에 빠르게 테스트하고 적용해보는 시도를 적극 지원합니다.",
+   "short": "AI 코딩 도구 같은 새 도구를 써 보라는 뜻. 회사도 개발 전 과정에 AI를 쓴 사례를 공개했다.",
+   "why": "SK AX는 한 고객 프로젝트에서 설계 산출물을 먼저 정리한 뒤 AI로 코드를 만들게 했고, 회사 발표로 생산성이 30% 넘게 올랐다고 밝혔습니다. 그 숫자는 한 프로젝트 값이라고 글이 스스로 적었습니다.[8]",
+   "how_far": "운영 쪽에서는 로그 요약, 낯선 레거시 코드 읽기, 테스트 코드 초안처럼 **결과를 사람이 검증할 수 있는 곳**부터 쓰는 게 안전합니다. 고객사 코드·데이터를 외부 AI에 넣어도 되는지는 고객사 보안 규칙이 정합니다. {추론}",
+   "refs": [
+    8
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "고객 업무담당자 및 기술 담당자와 협업하며 실제 비즈니스 흐름을 이해할 수 있습니다",
+   "short": "계열사 현업(교육 담당·영업 담당)과 직접 이야기하며 일한다는 뜻.",
+   "why": "운영 요청은 대부분 현업의 말('이 보고서 숫자가 이상해요')로 들어옵니다. 그 말을 테이블·화면·배치 이름으로 바꾸려면 업무 흐름을 알아야 합니다.[10]",
+   "refs": [
+    10
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "담당 업무\n✅ Application 구축 및 운영을 담당합니다. (그룹공통 교육 시스템 / 제조 ITO / 영업 시스템 )",
+   "short": "맡는 시스템은 셋 — SK 그룹 공통 교육 시스템, 제조 계열사 ITO, 영업 시스템.",
+   "why": "SK 그룹에는 계열사 구성원이 같이 쓰는 학습 플랫폼 mySUNI가 있고[7], SK AX 사례 목록에는 '교육 S사 온라인 교육 플랫폼 운영 고도화'(클라우드, 2023년)가 있습니다.[6] 공고의 '그룹공통 교육 시스템'이 그것인지는 공고가 밝히지 않았습니다. {추론} 제조 ITO는 제조 계열사의 IT 운영을 통째로 맡는 계약입니다.[2]",
+   "actually": {
+    "intro": "이런 시스템이 보통 다루는 데이터입니다. {추론}",
+    "items": [
+     "**교육** — 과정·차수·수강 신청·진도율·이수 판정·수료증. 연말·평가 시즌에 몰린다.",
+     "**제조 ITO** — 생산·품질·설비·구매 같은 공장 쪽 업무 화면과 배치, 다른 시스템(ERP 등)과의 연동.",
+     "**영업** — 거래처·견적·주문·실적 집계. 월말 마감에 숫자가 맞아야 한다."
+    ]
+   },
+   "how_far": "세 시스템을 한 사람이 다 맡는지, 나눠 맡는지는 면접에서 묻습니다. {추론}",
+   "refs": [
+    2,
+    6,
+    7
+   ],
+   "study": [
+    "skax-ito"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Java / Spring Boot / React / mySQL / Kafka 기반 Application",
+   "short": "서버는 Java·Spring Boot, 화면은 React, DB는 MySQL, 시스템 사이 메시지는 Kafka.",
+   "why": "공고가 적은 기술 구성입니다.[1] Kafka는 시스템끼리 메시지를 주고받는 중간 저장소인데, 기본은 '적어도 한 번' 전달이라 같은 메시지가 두 번 올 수 있습니다.[14] 운영에서 Kafka가 끼면 '안 왔다'와 '두 번 왔다'가 단골 장애입니다. {추론}",
+   "actually": {
+    "items": [
+     "**Spring Boot** — 서버 상태(헬스·지표)를 Actuator로 내보내고 그걸로 모니터링·배포 판단을 한다.[13]",
+     "**MySQL** — 느린 쿼리는 EXPLAIN으로 실행계획을 본다.[16]",
+     "**Kafka** — 컨슈머가 처리 뒤 커밋 전에 죽으면 다시 받는다. 받는 쪽이 같은 메시지를 두 번 처리해도 결과가 같게(멱등) 만든다.[14]",
+     "**DB와 메시지를 같이 쓸 때** — DB에는 썼는데 메시지는 못 보내는 틈을 막으려고 같은 트랜잭션에 '보낼 메시지' 표를 쓰고 따로 내보내는 방식(아웃박스)을 쓴다.[15]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "같은 메시지가 두 번 오면 (직접 돌린 출력)",
+     "body": "evt-2가 다시 전달된 상황입니다. 그냥 더하면 1만 2천 원이 더 붙고, 이벤트 id로 거르면 맞습니다. 실제로는 id를 메모리가 아니라 DB 유일 키로 지킵니다. {추론}",
+     "lang": "python",
+     "code": "events = [(\"evt-1\", 30000), (\"evt-2\", 12000), (\"evt-2\", 12000), (\"evt-3\", 5000)]\nnaive = sum(amt for _, amt in events)\nseen, safe = set(), 0\nfor eid, amt in events:\n    if eid in seen:\n        continue\n    seen.add(eid)\n    safe += amt\nprint(\"그냥 더하면:\", naive)   # 59000\nprint(\"id 로 거르면:\", safe)  # 47000"
+    }
+   ],
+   "how_far": "React는 화면 고치기·오류 재현 정도, 중심은 Java·Spring Boot 서버와 SQL입니다. Kafka는 클러스터를 운영하는 게 아니라 **보내고 받는 애플리케이션 쪽**을 이해하면 됩니다(토픽·파티션·컨슈머 그룹·오프셋·재처리). {추론}",
+   "refs": [
+    1,
+    13,
+    14,
+    15,
+    16
+   ],
+   "study": [
+    "spring-boot-book",
+    "kafka-book",
+    "kafka-docs",
+    "outbox",
+    "spring-boot-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "시스템 장애 원인 분석, 데이터 정합성 점검, 반복 이슈 개선을 수행합니다.",
+   "short": "장애가 나면 원인을 찾고, 표끼리 숫자가 맞는지 정기적으로 점검하고, 자꾸 나는 문제는 뿌리를 고친다.",
+   "why": "SK AX가 운영 사업에서 내건 지표에 **같은 장애 재발률**이 들어 있고, 고객사가 AI 기반 장애 분석 체계를 갖추도록 돕는다고 했습니다.[3] Google SRE 책은 장애마다 원인과 재발 방지 조치를 남기는 포스트모템(사후 분석)을 권하고, 사람이 손으로 반복하는 일(토일)을 줄이라고 합니다.[12][27]",
+   "actually": {
+    "items": [
+     "**장애 원인 분석** — 언제부터(배포·설정 변경·트래픽)·어디서(화면·서버·DB·연동)·얼마나(몇 명·몇 건)를 로그와 지표로 좁힌다. 평균 말고 느린 쪽(p95)을 본다.",
+     "**데이터 정합성 점검** — 짝이 있어야 할 데이터를 서로 대조하는 쿼리를 매일 돌린다(신청은 있는데 진도가 없는 것, 주인 없는 기록, 취소인데 진행 중인 것). Kafka로 옮긴 데이터는 양쪽 건수·합계를 맞춰 본다.",
+     "**반복 이슈 개선** — 같은 요청·장애를 묶어 세고, 손으로 고치던 것을 화면 기능·검증 규칙·자동 배치로 바꾼다.[27]",
+     "**포스트모템** — 무슨 일이 언제·왜·어떻게 막았나·다시 안 나게 무엇을 바꾸나를 한 장에.[12]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "정합성 점검 쿼리 (가상 수강 데이터, SQLite로 직접 돌린 출력)",
+     "body": "세 가지 어긋남을 한 번에 뽑습니다. 결과: 4번 신청은 진도가 없고, 9번 진도는 신청이 없고, 3번은 취소인데 진도가 남았습니다.",
+     "lang": "sql",
+     "code": "SELECT 'no_progress' AS kind, e.id FROM enroll e\n  LEFT JOIN progress p ON p.enroll_id = e.id\n  WHERE e.status = 'ACTIVE' AND p.enroll_id IS NULL\nUNION ALL\nSELECT 'orphan_progress', p.enroll_id FROM progress p\n  LEFT JOIN enroll e ON e.id = p.enroll_id\n  WHERE e.id IS NULL\nUNION ALL\nSELECT 'canceled_but_progress', e.id FROM enroll e\n  JOIN progress p ON p.enroll_id = e.id\n  WHERE e.status = 'CANCELED';\n-- ('no_progress', 4)\n-- ('orphan_progress', 9)\n-- ('canceled_but_progress', 3)"
+    },
+    {
+     "title": "평균만 보면 안 보이는 것 (직접 돌린 출력)",
+     "body": "요청 100건 중 6건이 4.8초 걸렸습니다. 평균은 0.4초라 괜찮아 보이지만 p95(느린 쪽 5% 경계)는 4.8초입니다.",
+     "lang": "python",
+     "code": "times = sorted([120] * 90 + [130] * 4 + [4800] * 6)\navg = sum(times) / len(times)\np95 = times[int(len(times) * 0.95) - 1]\nprint(f\"평균 {avg:.0f}ms · p95 {p95}ms\")  # 평균 401ms · p95 4800ms"
+    }
+   ],
+   "how_far": "어떤 대조를 할지는 업무 규칙이라 현업과 정하고, 개발자는 **쿼리를 만들어 매일 돌게 하고 어긋나면 알림이 오게** 합니다. 고친 데이터는 누가·왜 고쳤는지 기록을 남깁니다. {추론}",
+   "refs": [
+    3,
+    12,
+    27
+   ],
+   "study": [
+    "sre-ko",
+    "sre-free",
+    "spring-db-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "고객 요구사항과 서비스 요청(SR)을 기술 과제로 구체화하고 변경 영향도 분석, 테스트 및 배포 지원을 수행합니다.",
+   "short": "'이 기능 바꿔 주세요'를 받아, 무엇을 고치면 어디가 같이 바뀌는지 따지고, 시험하고, 내보내는 일.",
+   "why": "SR(Service Request)은 장애가 아닌 정해진 종류의 요청(권한 추가·데이터 수정·기능 변경)입니다.[10] 변경은 영향과 위험을 따져 승인받고 나가야 장애가 덜 납니다 — IT 서비스 관리에서 '변경 관리'라 부르는 절차입니다.[11]",
+   "flows": [
+    {
+     "caption": "SR 한 건이 지나가는 길 {추론}[10][11]",
+     "steps": [
+      "접수 · 요청 내용 확인",
+      "구체화 · 화면·API·테이블 단위로",
+      "영향도 분석 · 같이 바뀌는 곳",
+      "개발 · 테스트",
+      "변경 승인 · 배포",
+      "확인 · 종료"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "items": [
+     "**구체화** — '수료 기준을 80%로'를 어느 테이블의 어느 값, 어느 배치·화면·보고서가 읽는지로 바꾼다.",
+     "**영향도 분석** — 그 칸·API를 쓰는 곳을 코드 검색·DB 의존성·Kafka 토픽 구독자로 찾는다. 다른 계열사 시스템이 받아 가는 연동이 가장 놓치기 쉽다.",
+     "**테스트** — 바꾼 곳 + 영향 받는 곳의 회귀 시험. 운영 데이터 모양을 흉내 낸 데이터로.",
+     "**배포 지원** — 배포 시간·되돌리기 방법·배포 뒤 확인 항목을 적어 변경 요청에 붙인다.[11]"
+    ]
+   },
+   "how_far": "승인과 배포 창구는 고객사·운영 절차가 정하고, 개발자는 **영향 범위와 되돌리기 계획을 빠짐없이 적는 것**까지 책임집니다. {추론}",
+   "refs": [
+    10,
+    11
+   ],
+   "study": [
+    "atlassian-change",
+    "practical-testing"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "유관 부서와의 원활한 커뮤니케이션 및 협업을 통해 개선 포인트를 찾고 실행합니다.",
+   "short": "인프라·보안·DB 담당, 고객사 현업과 같이 문제를 풀고 고칠 거리를 찾는다.",
+   "why": "운영 장애의 원인은 애플리케이션 밖(네트워크·DB·인증서·방화벽)에 있을 때가 많아 혼자 끝낼 수 없습니다. 자격요건이 이해관계자로 현업·보안·인프라를 직접 꼽았습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "※ 근무지 : 서울 종로권",
+   "short": "서울 종로 쪽이다. SK AX 본사(분당)가 아니다.",
+   "why": "SK AX 사업장 안내의 본사는 분당 SK u-타워이고 종로에는 SK AX 이름의 사무실이 없습니다.[25] 종로 26은 SK㈜ 공시의 본점 주소입니다.[24] 그래서 SK㈜ 본점 쪽이거나 고객 계열사 가까이일 수 있습니다. {추론}",
+   "how_far": "운영(ITO)은 고객사 건물에 상주하는 경우가 흔하니 실제 출근지는 면접 때 확인합니다. {추론}",
+   "refs": [
+    24,
+    25
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "이런 경험을 갖고 계시다면 저희가 찾는 그분입니다! ✨\n필요 역량 및 경험\nJava 및 Spring Boot 기반 Web Application 개발 또는 운영 경험이 있으신 분 (5년이상)",
+   "short": "Java·Spring Boot 웹 서버를 만들거나 운영한 경력 5년 이상. 공통 요건에도 '채용 분야 5년 이상'이 있다.",
+   "why": "맡을 시스템이 Java·Spring Boot 기반입니다.[1] 공고 끝의 공통 요건에도 채용 분야 경력 5년 이상이 따로 적혀 있습니다.[1]",
+   "level": {
+    "basic": "컨트롤러·서비스·리포지토리 구조 · JPA/MyBatis로 DB 읽고 쓰기 · 예외 처리",
+    "work": "트랜잭션 범위 · 커넥션 풀 · 설정 분리(profile) · Actuator로 상태 보기 · 로그 남기기",
+    "team": "남이 짠 코드 빨리 읽기 · 스레드 덤프·GC 로그로 멈춤 원인 찾기 · 무중단 배포"
+   },
+   "how_far": "'개발 또는 운영'이라 운영만 해 본 경력도 됩니다.[1] 면접에서는 '직접 원인을 찾아 고친 장애'를 코드·설정 수준으로 설명할 수 있어야 합니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "toby-spring",
+    "spring-boot-book",
+    "spring-boot-docs",
+    "jvm-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "시스템 성능 개선 및 장애 원인 분석/기술 지원 등 다양한 경험이 있으신 분",
+   "short": "느린 곳을 찾아 빠르게 해 보고, 장애 원인을 찾아 본 경험. 이 자리의 핵심이다.",
+   "why": "담당 업무 셋째 줄(장애·정합성·반복 이슈)과 짝을 이루는 요건입니다.[1] 운영 사업 성과를 장애 건수·재발률로 재는 회사라[3] 면접에서 가장 많이 파고들 곳입니다. {추론}",
+   "actually": {
+    "items": [
+     "**어디가 느린가** — 화면 → API → DB 쿼리 → 외부 연동 중 시간이 쌓이는 칸을 찾는다(로그의 구간별 시간, APM).",
+     "**DB** — 실행계획에서 전체 스캔·잘못된 조인 순서를 찾고 인덱스·쿼리를 고친다.[16][17]",
+     "**JVM** — 멈춤이 GC 때문인지, 스레드가 락이나 커넥션을 기다리는지 덤프로 본다.",
+     "**용량** — 커넥션 풀·스레드 풀 크기와 동시 요청 수가 맞는지."
+    ]
+   },
+   "how_far": "고친 전후를 **숫자(응답 시간 p95, 배치 시간, 오류 수)로 말할 수 있는** 사례 2~3개가 최소선입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    16,
+    17
+   ],
+   "study": [
+    "release-it",
+    "jvm-book",
+    "thread-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Oracle DB /MySQL DB를 활용한 SQL 작성·분석 및 데이터 처리 역량",
+   "short": "운영 질문 대부분이 SQL로 풀려서. 오라클·MySQL 둘 다 쓰는 시스템이 섞여 있다.",
+   "why": "담당 시스템은 MySQL 기반이고[1], 제조·영업 쪽 계열사 시스템에는 Oracle이 남아 있을 수 있어 둘을 같이 적은 것으로 보입니다. {추론} 둘은 같은 SQL도 다르게 동작하는 곳이 있습니다 — 예를 들어 Oracle은 빈 문자열을 NULL로 다룹니다.[29]",
+   "level": {
+    "basic": "JOIN · GROUP BY · 서브쿼리 · CASE · NULL 처리",
+    "work": "실행계획(EXPLAIN) 읽기 · 인덱스 설계 · 윈도우 함수 · 대량 수정은 나눠서(잠금 줄이기)",
+    "team": "Oracle↔MySQL 차이(빈 문자열·날짜·페이징·자동 증가) · 운영 데이터 고칠 때 백업·검증 쿼리 먼저"
+   },
+   "examples": [
+    {
+     "title": "인덱스 하나로 바뀌는 실행계획 (가상 주문 10만 건, SQLite로 직접 돌린 출력)",
+     "body": "MySQL은 EXPLAIN, Oracle은 EXPLAIN PLAN으로 같은 것을 봅니다.[16][17] 아래는 원리를 보이려고 SQLite로 돌렸습니다.",
+     "lang": "sql",
+     "code": "EXPLAIN QUERY PLAN SELECT SUM(amt) FROM orders WHERE cust_id = 42;\n-- SCAN orders                       (전체를 다 읽는다)\nCREATE INDEX ix_orders_cust ON orders(cust_id);\nEXPLAIN QUERY PLAN SELECT SUM(amt) FROM orders WHERE cust_id = 42;\n-- SEARCH orders USING INDEX ix_orders_cust (cust_id=?)"
+    }
+   ],
+   "how_far": "'작성·분석·데이터 처리'라 튜닝 전문가 수준까지는 아니고, **운영 데이터를 안전하게 조회·수정하고 느린 쿼리 원인을 말할 수 있는** 수준입니다. {추론}",
+   "refs": [
+    1,
+    16,
+    17,
+    29
+   ],
+   "study": [
+    "sql-tuning",
+    "real-mysql",
+    "mysql-explain"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "다양한 이해관계자(현업, 보안, 인프라 등)와의 원활한 커뮤니케이션 및 리딩 역량을 보유하신 분",
+   "short": "장애·변경 때 현업·보안·인프라 담당을 모아 같은 그림을 보게 하고 결론을 끌어내는 능력.",
+   "why": "계열사 시스템은 방화벽 열기·계정·개인정보 처리 하나에도 보안·인프라 승인이 필요합니다. {추론} 장애 때는 누가 무엇을 맡는지 정하고 상황을 알리는 역할이 따로 있어야 혼란이 줄어든다고 SRE 책은 말합니다.[12]",
+   "how_far": "현업에게는 기술 말 없이 '무엇이 언제 되나'로, 인프라·보안에게는 '어느 서버·포트·데이터가 왜 필요한가'로 바꿔 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    12
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "이런 경험과 역량이 있으면 더 좋아요! 👍\n우대사항\n교육 또는 영업 관련 시스템 구축/운영 프로젝트 수행 경험을 보유하신 분",
+   "short": "맡을 시스템이 교육·영업이라, 그 업무 용어와 데이터 흐름을 이미 알면 인수인계가 빠르다.",
+   "why": "담당 업무에 그룹 공통 교육 시스템과 영업 시스템이 직접 적혀 있습니다.[1]",
+   "how_far": "경험이 없다면 수강 신청 → 진도 → 이수, 견적 → 주문 → 실적 같은 흐름을 표로 그려 설명할 수 있을 정도면 대화가 됩니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AWS, Kubernetes(EKS), Docker 등 Cloud·Container 환경 기반 수행 경험을 보유하신 분",
+   "short": "일부 시스템이 AWS 컨테이너 위에서 돈다고 보면 된다. 배포·장애를 그 환경에서 다뤄 본 경험.",
+   "why": "SK AX는 2026년 10월 AWS 현대화 역량 인증을 받았다며 클라우드 전환·현대화 사업을 내세웠고[5], ITO 소개에도 클라우드 중심 전환이 들어 있습니다.[2] EKS는 AWS가 관리해 주는 쿠버네티스입니다.[18]",
+   "how_far": "클러스터를 짓는 건 인프라 담당 몫이고, 이 자리는 **내 애플리케이션을 컨테이너로 묶어 올리고, 파드가 왜 안 뜨는지 로그·이벤트로 읽는** 수준이면 됩니다. {추론}",
+   "refs": [
+    2,
+    5,
+    18
+   ],
+   "study": [
+    "docker-book",
+    "k8s-book",
+    "eks-bp"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "MSA, REST API 기반 시스템 개발 또는 연계 경험을 보유하신 분",
+   "short": "시스템이 여러 서비스로 나뉘어 API로 서로 부르는 구조라, 그 연동을 다뤄 본 경험.",
+   "why": "MSA(마이크로서비스)는 기능별로 따로 배포되는 작은 서비스들이 API·메시지로 협력하는 구조입니다.[19] 계열사 시스템끼리 잇는 연계가 많은 그룹 운영에서는 'A가 B를 부를 때 실패하면?'이 매일의 질문입니다. {추론}",
+   "actually": {
+    "items": [
+     "**시간 제한·재시도** — 상대가 느릴 때 무한히 기다리지 않게. 재시도는 중복 처리가 안전할 때만.",
+     "**서비스별 DB** — 서비스마다 DB가 따로라 조인 대신 API·이벤트로 데이터를 맞춘다. 그래서 정합성 점검이 필요해진다.[19]",
+     "**API 계약** — 응답 모양을 바꿀 때 받는 쪽이 깨지지 않게 버전·호환을 지킨다."
+    ]
+   },
+   "refs": [
+    19
+   ],
+   "study": [
+    "fowler-ms",
+    "http-book",
+    "release-it"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "서비스 장애분석, SQL 성능개선, 운영 자동화 또는 운영지식 문서화 경험",
+   "short": "운영 개발자의 네 가지 기본기 — 장애 분석, 느린 SQL 고치기, 반복 일 자동화, 아는 것을 글로 남기기.",
+   "why": "넷 다 담당 업무 줄(장애·정합성·반복 이슈, ITO 전환)에서 바로 쓰입니다.[1] SK AX는 운영 자동화(AIOps)를 ITO의 핵심으로 소개합니다.[2]",
+   "actually": {
+    "items": [
+     "**운영 자동화** — 매일 아침 손으로 보던 배치 결과·정합성 쿼리·디스크 사용량을 스크립트와 알림으로.[27]",
+     "**운영지식 문서화** — 런북(이 알림이 오면 무엇을 보고 무엇을 하나), 시스템 구성도, 자주 오는 SR 처리법."
+    ]
+   },
+   "how_far": "자동화는 거창하지 않아도 됩니다 — '하루 30분 하던 점검을 알림으로 바꿨다'처럼 줄어든 시간을 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    2,
+    27
+   ],
+   "study": [
+    "sre-free",
+    "sql-tuning"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "외국어 능력으로 글로벌 커뮤니케이션에 능하신 분",
+   "short": "해외 법인·해외 공장 시스템과 일할 때가 있어서. 영어 문서·메일을 다룰 수 있으면 우대.",
+   "why": "같은 팀의 다른 공고에도 똑같이 들어 있는 줄입니다.[26] 제조 계열사는 해외 생산 거점이 있어 그쪽 담당자와 일할 수 있습니다. {추론}",
+   "refs": [
+    26
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "성향 및 캐릭터\n새로운 AI/DT 기술 트렌드에 대한 관심과 학습의지가 높으신 분",
+   "short": "AI·디지털 도구를 운영 일에 써 보려는 사람. 회사가 운영 AI를 밀고 있다.",
+   "why": "SK AX는 운영 장애를 AI 에이전트로 탐지·분석·조치하는 서비스를 공개했습니다.[4]",
+   "refs": [
+    4
+   ],
+   "study": [
+    "skax-npo"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "고객과 기술 기반 원활한 Communication이 가능하신 분",
+   "short": "고객에게 '안 됩니다'가 아니라 '이렇게 하면 됩니다, 대신 이만큼 걸립니다'를 말할 수 있는 사람.",
+   "why": "SR을 기술 과제로 바꾸는 일 자체가 고객과의 대화입니다.[1][10]",
+   "refs": [
+    1,
+    10
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "팀원들과 협업하며 시너지를 낼 수 있는 개방적이고 긍정적인 태도를 가지신 분",
+   "short": "운영은 교대·인수인계가 잦아 혼자 아는 것을 줄이고 같이 나누는 사람이 필요하다.",
+   "why": "SRE 책은 포스트모템을 남 탓 없이(blameless) 써야 사람들이 사실을 숨기지 않는다고 말합니다.[12]",
+   "refs": [
+    12
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "장애 대응에 그치지 않고 원인과 재발방지 방안을 끝까지 고민하는 분",
+   "short": "불을 끈 뒤에 '왜 났고, 다시 안 나게 무엇을 바꾸나'까지 가는 사람.",
+   "why": "회사가 운영 성과를 같은 장애 재발률로 재기 때문입니다.[3] 포스트모템의 핵심도 재발 방지 조치와 그 조치를 끝까지 챙기는 것입니다.[12]",
+   "refs": [
+    3,
+    12
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "현장 업무를 배우며 운영 품질과 개발 생산성을 함께 높이는 데 보람을 느끼는 분",
+   "short": "고객 업무를 배워 가며 운영도 안정시키고 개발도 빨라지게 하는 데서 재미를 찾는 사람.",
+   "why": "ITO 전환 직후라 업무를 배우는 시간이 길고[1], 회사는 개발·운영 자동화 플랫폼으로 생산성을 높이겠다고 합니다.[5]",
+   "refs": [
+    1,
+    5
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "장애가 나면 원인을 끝까지 파고드는 사람[1]",
+   "남이 만든 코드를 읽고 구조를 그려 내는 게 괴롭지 않은 사람",
+   "반복하는 일을 스크립트·알림으로 없애는 게 즐거운 사람[1]",
+   "교육·영업·제조 업무를 배워 가며 일하고 싶은 사람[1]"
+  ],
+  "hard": [
+   "새 서비스를 처음부터 만드는 일보다 운영·요청 처리 비중이 크다[1]",
+   "운영 전환 초기라 문서 없는 시스템을 파악하는 시간이 길 수 있다 {추론}",
+   "고객사 보안·변경 절차 때문에 배포가 빠르지 않다 {추론}",
+   "공통 요건이 경력 5년 이상이다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "월요일 아침 수강 신청 화면이 느리다는 연락이 왔어요. 무엇부터 보나요?",
+   "a": "언제부터·어디서·얼마나 — 배포·트래픽·구간별 시간·실행계획 순서.[16]"
+  },
+  {
+   "q": "Kafka로 받은 주문이 두 번 반영됐습니다. 왜 그럴 수 있고 어떻게 막나요?",
+   "a": "적어도 한 번 전달과 멱등 처리.[14]"
+  },
+  {
+   "q": "DB에는 저장됐는데 다른 시스템으로 이벤트가 안 나갔어요. 구조적으로 막는 방법은?",
+   "a": "아웃박스 패턴.[15]"
+  },
+  {
+   "q": "수료 기준을 바꿔 달라는 SR이 왔어요. 영향도 분석을 어떻게 하나요?",
+   "a": "그 값을 읽는 배치·화면·보고서·연동을 찾고 되돌리기 계획까지.[11]"
+  },
+  {
+   "q": "넘겨받은 지 한 달 된 시스템에서 같은 장애가 세 번 났습니다. 무엇을 하겠어요?",
+   "a": "포스트모템과 재발 방지 조치, 재발률 지표.[3][12]"
+  },
+  {
+   "q": "Oracle에서 MySQL로 옮긴 쿼리 결과 건수가 다릅니다. 어디를 의심하나요?",
+   "a": "빈 문자열과 NULL 같은 두 DB의 차이.[29]"
+  }
+ ],
+ "caveat": "SK AX가 이 팀의 운영 방식(도구·SR 절차·인수인계 단계)을 직접 밝힌 자료는 없습니다. 회사 근거는 공고와 SK AX의 ITO·운영 AI·현대화 소개(대부분 홍보 성격)이고, SR·변경 관리·포스트모템·Kafka 처리 방식은 일반 공개 문서로 '보통 이런 것'을 보였습니다. '그룹공통 교육 시스템'이 mySUNI인지, 제조 ITO의 고객이 어느 계열사인지는 공개되지 않았습니다.",
+ "resources": [
+  {
+   "id": "skax-ito",
+   "title": "SK AX · ITO 서비스 소개",
+   "by": "SK AX",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.skax.co.kr/enterprisesolution/ito",
+   "why": "이 팀이 하는 ITO가 무엇을 맡고(애플리케이션·인프라·보안) 무엇으로 재는지(SLA) — 운영 전환 줄을 읽기 전에."
+  },
+  {
+   "id": "skax-npo",
+   "title": "SK AX · 에이전틱 AI 기반 운영 혁신 발표",
+   "by": "SK AX 뉴스룸 · 2026-04",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.skax.co.kr/company/news-room/sk-ax-에이전틱ai-기반-운영혁신으로-시스템장애-방/",
+   "why": "회사가 운영 장애 처리에 AI를 어떤 단계(탐지·분석·영향도·조치)로 붙이려는지 — AI/DT 관심 줄의 대화거리."
+  },
+  {
+   "id": "sre-ko",
+   "title": "사이트 신뢰성 엔지니어링",
+   "by": "베이어 외 · 장현희 옮김 · 제이펍 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=129407308",
+   "why": "포스트모템·토일 줄이기·장애 대응 역할 — 장애 원인 분석·반복 이슈 개선·재발 방지 줄의 공통 언어."
+  },
+  {
+   "id": "sre-free",
+   "title": "Google SRE 책 (무료 공개)",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/books/",
+   "why": "위 책 원서를 무료로. 'Postmortem Culture'와 'Eliminating Toil' 장부터."
+  },
+  {
+   "id": "release-it",
+   "title": "Release의 모든 것 (2판)",
+   "by": "마이클 나이가드 · 박성철 옮김 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ridibooks.com/books/443001250",
+   "why": "운영에서 시스템이 무너지는 모양(연쇄 장애·시간 제한 없는 호출)과 막는 법 — 성능·장애 요건과 MSA 연계 줄에."
+  },
+  {
+   "id": "toby-spring",
+   "title": "토비의 스프링 3.1",
+   "by": "이일민 · 에이콘 · 2012",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=19505747",
+   "why": "트랜잭션·AOP·의존성 주입의 원리. 남이 짠 Spring 코드가 왜 그렇게 동작하는지 읽는 바탕."
+  },
+  {
+   "id": "sql-tuning",
+   "title": "친절한 SQL 튜닝",
+   "by": "조시형 · 디비안 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=148233799",
+   "why": "오라클 인덱스·조인·실행계획. Oracle SQL 요건과 SQL 성능 개선 우대 줄."
+  },
+  {
+   "id": "real-mysql",
+   "title": "Real MySQL 8.0 (1·2권)",
+   "by": "백은빈 · 이성욱 · 위키북스 · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/search/wsearchresult.aspx?SearchWord=Real+MySQL+8.0",
+   "why": "MySQL 인덱스·잠금·실행계획을 한국어로. 이 팀의 주 DB가 MySQL이다."
+  },
+  {
+   "id": "mysql-explain",
+   "title": "MySQL 8.0 참조 매뉴얼 · EXPLAIN",
+   "by": "Oracle(MySQL)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://dev.mysql.com/doc/refman/8.0/en/explain.html",
+   "why": "실행계획의 칸(type·key·rows)이 무슨 뜻인지 정확히 확인하는 원문."
+  },
+  {
+   "id": "spring-boot-docs",
+   "title": "Spring Boot 문서 · Actuator",
+   "by": "Spring",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/index.html",
+   "why": "헬스 체크·지표 내보내기 — 운영 중인 Spring Boot 서버의 상태를 보는 창구."
+  },
+  {
+   "id": "kafka-docs",
+   "title": "Apache Kafka 문서 · 전달 보장(Message Delivery Semantics)",
+   "by": "Apache Kafka",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kafka.apache.org/documentation/#semantics",
+   "why": "'적어도 한 번'·'정확히 한 번'이 무엇을 보장하고 무엇을 안 하는지 — 중복·유실 장애를 따질 때."
+  },
+  {
+   "id": "outbox",
+   "title": "Pattern: Transactional outbox",
+   "by": "Chris Richardson · microservices.io",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+   "why": "DB 저장과 메시지 발행이 어긋나는 문제를 막는 표준 방법. 데이터 정합성 줄."
+  },
+  {
+   "id": "fowler-ms",
+   "title": "Microservices",
+   "by": "James Lewis · Martin Fowler",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://martinfowler.com/articles/microservices.html",
+   "why": "MSA가 무엇이고 무엇을 대가로 치르는지(분산 데이터·운영 복잡도) — MSA 우대 줄의 출발점."
+  },
+  {
+   "id": "fowler-strangler",
+   "title": "Strangler Fig Application",
+   "by": "Martin Fowler",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+   "why": "레거시를 멈추지 않고 조금씩 새 구조로 옮기는 방법. '무중단 운영과 고도화' 줄."
+  },
+  {
+   "id": "eks-bp",
+   "title": "Amazon EKS 모범 사례 가이드",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.aws.amazon.com/eks/latest/best-practices/introduction.html",
+   "why": "EKS 위 애플리케이션의 안정성·확장·보안 점검 항목. 클라우드·컨테이너 우대 줄."
+  },
+  {
+   "id": "atlassian-change",
+   "title": "IT 변경 관리 소개",
+   "by": "Atlassian",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.atlassian.com/ko/itsm/change-management",
+   "why": "변경을 위험도별로 나누고 승인·검토하는 절차의 기본 — SR·영향도 분석·배포 지원 줄."
+  },
+  {
+   "id": "spring-boot-book",
+   "title": "스프링 부트 — 핵심 원리와 활용",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/spring-boot",
+   "why": "기동 로그·Actuator 응답으로 부트가 대신 해 주는 일을 본다. Spring Boot 요건."
+  },
+  {
+   "id": "kafka-book",
+   "title": "아파치 카프카 애플리케이션 프로그래밍",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/kafka",
+   "why": "보냈다는 것과 처리됐다는 것 사이 — 오프셋·재처리·중복을 명령과 출력으로."
+  },
+  {
+   "id": "spring-db-book",
+   "title": "스프링 DB 1편",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/spring-db-1",
+   "why": "커넥션·트랜잭션 로그 읽기. 데이터가 반쯤 저장되는 장애의 원인을 이해한다."
+  },
+  {
+   "id": "jvm-book",
+   "title": "자바 성능 튜닝 — JVM 과 GC",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/jvm-tuning",
+   "why": "GC 로그와 힙 스냅숏 읽기. Java 서버가 멈추거나 느려질 때."
+  },
+  {
+   "id": "thread-book",
+   "title": "실전 자바 — 멀티스레드와 동시성",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/java-thread",
+   "why": "스레드 이름·실행 순서 읽기 — 스레드 덤프로 '누가 무엇을 기다리나' 찾기."
+  },
+  {
+   "id": "practical-testing",
+   "title": "Practical Testing — 실용적인 테스트 가이드",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/practical-testing",
+   "why": "바꾼 곳과 영향 받는 곳을 테스트로 지키기 — SR 처리의 테스트 단계."
+  },
+  {
+   "id": "docker-book",
+   "title": "개발자를 위한 도커",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "애플리케이션을 이미지로 묶고 띄우기. 컨테이너 우대 줄."
+  },
+  {
+   "id": "k8s-book",
+   "title": "쿠버네티스 입문",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "kubectl 출력 읽기 — Pending·CrashLoopBackOff. EKS 위 장애를 읽는 바탕."
+  },
+  {
+   "id": "http-book",
+   "title": "모든 개발자를 위한 HTTP 웹 기본 지식",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/http-basic",
+   "why": "REST API의 상태 코드·헤더·캐시 — 연계 장애 때 '누가 무엇을 돌려줬나' 읽기."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "작은 업무 시스템 하나 만들기",
+   "time": "2~3주",
+   "goal": "Spring Boot + MySQL + React로 수강 신청 → 진도 → 이수 흐름을 가진 시스템을 직접 만들고 구조를 설명한다.",
+   "resources": [
+    "spring-boot-book",
+    "toby-spring",
+    "spring-db-book",
+    "http-book"
+   ],
+   "task": "가상 사용자 1천 명·과정 50개로 수강 신청·진도 기록·이수 판정 API와 간단한 화면을 만든다. Actuator로 헬스·지표가 나오게 한다."
+  },
+  {
+   "title": "Kafka로 시스템 두 개 잇기",
+   "time": "2주",
+   "goal": "이벤트를 보내고 받는 두 서비스를 만들고, 중복·유실을 일부러 만들어 막는다.",
+   "resources": [
+    "kafka-book",
+    "kafka-docs",
+    "outbox",
+    "fowler-ms"
+   ],
+   "task": "이수 이벤트를 Kafka로 '수료증 서비스'에 보낸다. 컨슈머를 처리 중에 강제로 죽여 같은 이벤트가 다시 오게 하고, 이벤트 id 유일 키로 두 번 발급을 막는다. 아웃박스 표로 'DB엔 있는데 이벤트는 없음'도 막는다."
+  },
+  {
+   "title": "정합성 점검과 느린 쿼리",
+   "time": "2주",
+   "goal": "매일 도는 정합성 점검 쿼리를 만들고, 느린 쿼리를 실행계획으로 찾아 고친다.",
+   "resources": [
+    "real-mysql",
+    "mysql-explain",
+    "sql-tuning"
+   ],
+   "task": "진도 기록 100만 건을 넣고 위 풀이의 대조 쿼리 3종을 배치로 돌려 어긋나면 로그로 알린다. 가장 느린 조회 하나를 EXPLAIN으로 보고 인덱스로 고친 전후 시간을 적는다."
+  },
+  {
+   "title": "장애 내고 포스트모템 쓰기",
+   "time": "1~2주",
+   "goal": "일부러 낸 장애를 지표·로그·스레드 덤프로 찾고, 재발 방지까지 한 장에 쓴다.",
+   "resources": [
+    "sre-ko",
+    "sre-free",
+    "release-it",
+    "jvm-book",
+    "thread-book"
+   ],
+   "task": "커넥션 풀을 2개로 줄이고 느린 쿼리를 섞어 부하를 준다. p95가 튀는 것을 확인하고 스레드 덤프로 '커넥션을 기다리는 스레드'를 찾은 뒤, 원인·조치·재발 방지를 포스트모템 한 장으로 쓴다."
+  },
+  {
+   "title": "SR 하나를 끝까지 (선택: 컨테이너로)",
+   "time": "1~2주",
+   "goal": "변경 요청 하나를 영향도 분석 → 테스트 → 배포 → 되돌리기 계획까지 문서와 함께 처리한다.",
+   "resources": [
+    "atlassian-change",
+    "practical-testing",
+    "docker-book",
+    "k8s-book",
+    "eks-bp"
+   ],
+   "task": "'이수 기준 80% → 90%'를 SR로 가정해 그 값을 읽는 곳을 모두 찾아 영향도 표를 쓰고, 회귀 테스트를 붙인다. 컨테이너로 묶어 로컬 쿠버네티스에 한 대씩 바꿔 배포하고 되돌리기를 한 번 해 본다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다(경력직 처우협의). 회사 전체(SK㈜) 평균은 **약 1억 1,600만원**(2024년 사업보고서) — SK AX만 따로 낸 숫자는 없다",
+  "rows": [
+   {
+    "label": "직원 1인 평균 급여(SK㈜ 전체)",
+    "value": "1억 1,600만원",
+    "amount": 11600,
+    "basis": "사업보고서 · 2024년",
+    "note": "SK AX는 별도 회사가 아니라 SK㈜ 안의 사업이라 공시는 SK㈜ 전체 값이다. 기사는 지주 부문과 사업 부문의 급여 차이가 섞인 값이라고 설명했다 [20]"
+   },
+   {
+    "label": "평균 연봉(집계)",
+    "value": "1억 1,627만원",
+    "amount": 11627,
+    "basis": "공공데이터 집계 · 2025년",
+    "note": "공시·공공자료로 계산한 집계 사이트 값, 사업부문 구분 없음 [21]"
+   },
+   {
+    "label": "SK텔레콤 평균",
+    "value": "1억 6,100만원",
+    "amount": 16100,
+    "basis": "사업보고서 · 2024년",
+    "peer": true,
+    "note": "같은 기사의 같은 기준(2024년 사업보고서) 값 [20]"
+   },
+   {
+    "label": "SK하이닉스 평균",
+    "value": "1억 1,700만원",
+    "amount": 11700,
+    "basis": "사업보고서 · 2024년",
+    "peer": true,
+    "note": "같은 기사의 같은 기준 값 [20]"
+   }
+  ],
+  "how": "전형이 서류 → SKCT → 1차·2차 면접 → **채용검진/처우협의** 순서라 연봉은 경력에 따라 따로 정한다 [1]. 평균 급여는 지주 부문·오래 다닌 직원이 모두 섞인 회사 전체 값이라 이 자리의 제안 금액으로 읽으면 안 된다 {추론}. 경력 5년 이상 공고라 신입 초봉은 싣지 않았다."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "재산 형성",
+    "detail": "저축 장려, 우리사주조합, 주택 구입·전세 자금 지원"
+   },
+   {
+    "name": "교육",
+    "detail": "본인 학자금, 자녀 학비 지원"
+   },
+   {
+    "name": "생활",
+    "detail": "경조사 지원, 휴양소, 여가·취미 활동 지원"
+   },
+   {
+    "name": "건강·노후",
+    "detail": "건강검진, 의료보험, 개인연금, 퇴직 관리 지원"
+   },
+   {
+    "name": "근무 방식",
+    "detail": "출퇴근 시간을 스스로 정하는 근무제, 그날의 근무 장소 선택"
+   },
+   {
+    "name": "성장",
+    "detail": "그룹 학습 플랫폼 mySUNI와 육성 프로그램"
+   }
+  ],
+  "note": "앞 네 줄은 SK㈜ 공식 채용 정책 페이지 [22], 뒤 두 줄은 SK 그룹 채용 사이트의 문화 소개다 [23]. 둘 다 금액·조건·작성 연도가 없고 SK AX에 그대로 적용되는지도 적혀 있지 않다. 고객사 상주라면 근무 방식이 다를 수 있으니 처우협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "SK㈜ 본점(서린동)",
+  "address": "서울특별시 종로구 종로 26 (서린동)",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%A2%85%EB%A1%9C%EA%B5%AC%20%EC%A2%85%EB%A1%9C%2026",
+  "near": "1호선 종각역과 5호선 광화문역 사이 청계천 옆 {추론}",
+  "note": "공고는 '서울 종로권'까지만 적었다 [1]. 종로 26은 SK㈜ 공시의 본점 주소이고 [24], SK AX 사업장 안내(본사는 분당 SK u-타워)에는 종로 사무실이 따로 없다 [25]. 그래서 이 주소는 가장 가능성 높은 곳일 뿐이고, 고객 계열사 상주일 수도 있다 {추론}."
+ },
+ "sources": [
+  {
+   "n": 1,
+   "title": "SK Careers · Application 구축/운영 전문가 영입",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262281",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "ICT 서비스팀 · 조직 소개·업무·요건·우대·전형(서류→SKCT→면접 2회→처우협의)·공통 요건(경력 5년 이상), 마감 12-01. 같은 내용의 계약직 공고(R262274)가 따로 있다"
+  },
+  {
+   "n": 2,
+   "title": "SK AX · ITO 서비스",
+   "url": "https://www.skax.co.kr/enterprisesolution/ito",
+   "kind": "company",
+   "note": "애플리케이션·인프라·보안 전체, SLA 기반 품질 관리, AIOps·클라우드 전환·FinOps, 제조·반도체·에너지화학 등. 수치 없음"
+  },
+  {
+   "n": 3,
+   "title": "바이라인네트워크 · SK AX, SBI저축은행 AX 파트너로 IT운영 혁신",
+   "url": "https://byline.network/2025/08/5-307/",
+   "kind": "news",
+   "date": "2025-08-05",
+   "note": "통합유지보수 2025~2028, 지표: 장애 건수·동일 장애 재발률·품질 개선 항목 수·비용 효율화, AI 장애 분석 체계 — 회사 발표를 옮긴 기사"
+  },
+  {
+   "n": 4,
+   "title": "SK AX 뉴스룸 · 에이전틱AI 기반 운영혁신으로 '시스템 장애' 방지",
+   "url": "https://www.skax.co.kr/company/news-room/sk-ax-에이전틱ai-기반-운영혁신으로-시스템장애-방/",
+   "kind": "company",
+   "date": "2026-04-02",
+   "note": "탐지·분석·영향도·조치 에이전트, 로그·지표·이벤트, 설치형·BPO·ITO. 성능 수치 없음"
+  },
+  {
+   "n": 5,
+   "title": "SK AX 인사이트 · AWS Migration and Modernization Competency로 검증된 클라우드 전환·현대화 역량",
+   "url": "https://www.skax.co.kr/insight/trend/3906/",
+   "kind": "company",
+   "date": "2026-10-29",
+   "note": "AMDP(CI/CD·표준 개발 환경 자동화), AMF(MSA 설계~MVP), 2026-10 현대화 인증"
+  },
+  {
+   "n": 6,
+   "title": "SK AX 고객 사례 · 교육 S사의 온라인 교육 플랫폼 운영 고도화",
+   "url": "https://www.skax.co.kr/case-study/story/2360",
+   "kind": "company",
+   "date": "2023-12-29",
+   "note": "분류 Cloud. 본문은 읽지 못해 제목·날짜만 확인"
+  },
+  {
+   "n": 7,
+   "title": "테크42 · SK그룹 사내 교육플랫폼 '마이써니' 주목",
+   "url": "https://www.tech42.co.kr/?p=2743",
+   "kind": "news",
+   "note": "SK 그룹 구성원 학습 플랫폼 mySUNI",
+   "date": "2020-06-16"
+  },
+  {
+   "n": 8,
+   "title": "SK AX 뉴스룸 · [AX Now] AI가 코드를 빨리 작성해도 개발이 늦어지는 이유는 무엇일까요?",
+   "url": "https://www.skax.co.kr/company/news-room/ax-now-ai가-코드를-빨리-작성해도-개발이-늦어지는-이유는/",
+   "kind": "company",
+   "date": "2026-11-19",
+   "note": "설계 산출물 → AI 코딩, 생산성 30%+는 한 프로젝트의 발표 값이라고 글이 밝힘"
+  },
+  {
+   "n": 9,
+   "title": "데일리안 · SK C&C, 'SK AX'로 사명 변경…AI 중심 사업 재편",
+   "url": "https://www.dailian.co.kr/news/view/1496674",
+   "kind": "news",
+   "date": "2025-05-13"
+  },
+  {
+   "n": 10,
+   "title": "Atlassian · 서비스 요청 관리",
+   "url": "https://www.atlassian.com/ko/itsm/service-request-management",
+   "kind": "reference",
+   "note": "SR과 장애(인시던트)의 구분"
+  },
+  {
+   "n": 11,
+   "title": "Atlassian · IT 변경 관리",
+   "url": "https://www.atlassian.com/ko/itsm/change-management",
+   "kind": "reference",
+   "note": "변경 유형·승인·검토"
+  },
+  {
+   "n": 12,
+   "title": "Google SRE Book · Postmortem Culture",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "kind": "reference",
+   "note": "남 탓 없는 사후 분석, 재발 방지 조치 추적. 장애 대응 역할 나누기는 같은 책의 Managing Incidents 장"
+  },
+  {
+   "n": 13,
+   "title": "Spring Boot 문서 · Actuator",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Apache Kafka 문서 · Message Delivery Semantics",
+   "url": "https://kafka.apache.org/documentation/#semantics",
+   "kind": "reference",
+   "note": "커밋 전에 처리하고 죽으면 다시 받는다(적어도 한 번)"
+  },
+  {
+   "n": 15,
+   "title": "microservices.io · Transactional outbox",
+   "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "MySQL 8.0 참조 매뉴얼 · EXPLAIN",
+   "url": "https://dev.mysql.com/doc/refman/8.0/en/explain.html",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Oracle Database 19c · SQL Tuning Guide",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/tgsql/",
+   "kind": "reference",
+   "note": "실행계획 보기(EXPLAIN PLAN)"
+  },
+  {
+   "n": 18,
+   "title": "AWS · Amazon EKS 모범 사례 가이드",
+   "url": "https://docs.aws.amazon.com/eks/latest/best-practices/introduction.html",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Martin Fowler · Microservices",
+   "url": "https://martinfowler.com/articles/microservices.html",
+   "kind": "reference",
+   "note": "서비스별 데이터 관리(분산 데이터)"
+  },
+  {
+   "n": 20,
+   "title": "FETV · '월급이 연봉 수준' SK그룹, 급여 Top 계열사는 어디?",
+   "url": "http://www.fetv.co.kr/news/articleView.html?idxno=198852",
+   "kind": "news",
+   "date": "2025-08-14",
+   "note": "2024년 사업보고서 기준 상장사 1인 평균 급여"
+  },
+  {
+   "n": 21,
+   "title": "잡코리아 · SK㈜ 연봉정보",
+   "url": "https://www.jobkorea.co.kr/Recruit/Salary/1329051",
+   "kind": "reference",
+   "note": "공시·공공자료로 계산한 집계(2025년 기준 표기). 사업부문 구분 없음"
+  },
+  {
+   "n": 22,
+   "title": "SK㈜ · Careers Policy(복리후생)",
+   "url": "https://sk.co.kr/en/careers/policy.jsp",
+   "kind": "company",
+   "note": "항목만 있고 금액·조건·작성일 없음"
+  },
+  {
+   "n": 23,
+   "title": "SK Careers · Culture",
+   "url": "https://www.skcareers.com/Culture",
+   "kind": "company",
+   "note": "그룹 채용 사이트의 근무 제도 소개 — 금액·연도 없음"
+  },
+  {
+   "n": 24,
+   "title": "KRX KIND · SK 주식회사 분기보고서(제34기 1분기)",
+   "url": "https://kind.krx.co.kr/external/2024/05/16/002060/20240516004803/11013.htm",
+   "kind": "company",
+   "date": "2024-05-16",
+   "note": "표지의 본점 주소"
+  },
+  {
+   "n": 25,
+   "title": "SK AX · 사업장 안내",
+   "url": "https://www.skax.co.kr/company/office",
+   "kind": "company"
+  },
+  {
+   "n": 26,
+   "title": "SK Careers · AX/AI 프로젝트 PM/PL 영입(같은 ICT 서비스팀)",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262283",
+   "kind": "posting",
+   "date": "2026-10",
+   "note": "팀 소개 문장이 거의 같고 외국어 우대 줄도 같다"
+  },
+  {
+   "n": 27,
+   "title": "Google SRE Book · Eliminating Toil",
+   "url": "https://sre.google/sre-book/eliminating-toil/",
+   "kind": "reference",
+   "note": "손으로 반복하는 운영 일(토일)의 정의와 줄이는 법"
+  },
+  {
+   "n": 28,
+   "title": "Martin Fowler · Strangler Fig Application",
+   "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "Oracle Database 19c SQL Language Reference · Nulls",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/Nulls.html",
+   "kind": "reference",
+   "note": "길이 0인 문자 값을 NULL로 다룬다"
+  }
+ ]
+}

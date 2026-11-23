@@ -17,6 +17,7 @@
   "ats-skcareers:sk:R262275": "skax-ax-ai-pm-pl",
   "ats-skcareers:sk:R262283": "skax-ax-ai-project-pm-pl",
   "ats-skcareers:sk:R262418": "skax-contact-center-application",
+  "ats-skcareers:sk:R262281": "skax-ict-application-ops",
   "ats-skcareers:sk:R262415": "skax-mfg-data-engineer-k8s",
   "wanted-396609": "skax-mfg-data-engineer-k8s",
   "jobkorea-50308626": "skax-mfg-data-engineer-k8s",
@@ -248,6 +249,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 36
+  },
+  {
+   "id": "skax-ict-application-ops",
+   "company": "SK주식회사(AX)",
+   "role": "Application 구축/운영 전문가",
+   "jobs": [
+    "ats-skcareers:sk:R262281"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 29
   },
   {
    "id": "skax-mfg-data-engineer-k8s",
