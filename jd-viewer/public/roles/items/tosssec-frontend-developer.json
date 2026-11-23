@@ -1,0 +1,1157 @@
+{
+ "id": "tosssec-frontend-developer",
+ "company": "토스증권",
+ "role": "프론트엔드 개발자",
+ "team": "프론트엔드 챕터 · 제품 팀(홈·종목 상세·매매·계좌·채권·AI 등) 중 한 곳",
+ "jobs": [
+  "ats-toss:group:4076141003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "토스 앱 안의 웹 화면(MTS), PC 브라우저 화면(WTS), 사내 운영 화면을 React로 만듭니다. 중심은 시세·체결 같은 **실시간 데이터를 끊김 없이, 정확하게** 보여 주는 일입니다.[1][2]",
+  "env": "화면을 페이지 단위로 쪼갠 **마이크로 프론트엔드**입니다. 팀마다 따로 빌드·배포하고, 쿠키 번호 기준으로 일부 사용자에게 먼저 내보내는 카나리 배포를 씁니다.[4][5]",
+  "oneline": "실시간 금융 화면을 만드는 프론트엔드. 예쁜 화면보다 **빠르고 정확하고 바꾸기 쉬운 코드**가 평가 기준입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Android, iOS 앱의 웹뷰에서 동작하는 모바일 제품과 PC 브라우저에서 동작하는 데스크탑 제품, 운영을 위한 백오피스까지 모던 웹 기술로 만들어요.",
+   "short": "토스 앱 속 웹 화면(MTS)·PC 웹(WTS)·사내 운영 화면, 세 가지를 모두 웹 기술로 만든다.",
+   "why": "토스증권의 모바일 주식 거래 화면(MTS)은 앱의 기본 화면이 아니라, 토스 앱 안에 웹 페이지를 띄우는 **웹뷰**(앱 속 브라우저)입니다. Next.js·React로 만듭니다.[4] PC 브라우저용 거래 화면(WTS)은 나중에 나왔습니다. 그 전에는 휴대폰 앱으로만 들어올 수 있었습니다.[3] 팀원들은 합류하면 팀 업무에 따라 WTS와 MTS를 모두 다룬다고 소개합니다.[2]",
+   "actually": {
+    "intro": "회사 발표에 나온 세 제품의 모습입니다.",
+    "items": [
+     "**MTS(모바일)** — 토스 앱의 증권 탭 전체가 웹입니다. 한때 Next.js 앱 하나에 페이지가 450개 넘게 들어 있었습니다.[4]",
+     "**WTS(PC)** — 탭을 여러 개 열거나 창을 나란히 놓고 쓰는 환경을 전제로 합니다. 그래서 탭마다 서버 연결이 하나씩 생기는 문제를 따로 풀었습니다.[3]",
+     "**도구가 두 벌** — 스타일은 모바일 emotion·PC vanilla-extract, 패키지 관리자는 모바일 Yarn Berry·PC pnpm, 코드 변환기는 PC SWC·모바일 Babel입니다.[1][2]",
+     "**백오피스** — 운영 팀이 쓰는 사내 화면입니다. 팀원들은 어드민·백오피스의 개발 효율을 높이는 데 관심 있는 사람도 반긴다고 말합니다.[2]",
+     "**서비스 단위** — 홈·종목 상세·매매·계좌·채권 같은 서비스가 각각 따로 빌드·배포됩니다.[4][5]"
+    ]
+   },
+   "how_far": "제품 개발자는 보통 한 팀의 서비스(화면 영역)를 맡습니다. 배포 인프라와 마이크로 프론트엔드 틀은 클라이언트 플랫폼 쪽이 만듭니다.[5][8] 입사 전에는 웹뷰 안에서 도는 웹과 PC 웹의 차이(화면 크기·탭 여러 개·입력 방식)를 설명할 수 있으면 충분합니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    8
+   ],
+   "study": [
+    "toss-recruit-video",
+    "toss-mfa-tmc25"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "증권 거래 시스템, 복잡한 계좌 체계 등 어렵고 복잡한 투자 상품을 누구나 쉽게 이용할 수 있도록 매끄러운 투자 경험을 제공하는 서비스를 만들고 있어요.",
+   "short": "주문·계좌·채권처럼 규칙이 많은 금융 기능을 초보자도 헷갈리지 않는 화면으로 옮긴다.",
+   "why": "팀이 스스로 정한 목표가 '금융은 어렵다, 증권은 어렵다'는 문제를 좋은 매매 경험과 쉬운 화면으로 푸는 것입니다.[1] 팀원들은 디자이너의 시안을 코드로 옮기다 보면 도메인 지식이 자연스럽게 따라온다고 말합니다.[2]",
+   "actually": {
+    "items": [
+     "**국내·해외 주식의 차이** — 팀원들은 입사 뒤 국내와 해외 주식 시스템이 어떻게 다른지 많이 알게 됐다고 말합니다. 그 차이가 화면 규칙이 됩니다.[2]",
+     "**서비스가 많다** — 매매·계좌·채권 서비스가 따로 있습니다.[4][5] 채권 서비스를 열 때는 사내 애널리스트가 개발자 대상 설명 세션을 열었습니다.[2]",
+     "**데이터 시각화** — 팀원들은 차트·그래프·표가 다른 계열사보다 다양하다는 점을 증권의 장점으로 꼽습니다. 증권 전용 디자인 시스템 부품(차트 등)도 만듭니다.[2]",
+     "**새 제품** — 'AI 시그널'은 순수 웹 서비스입니다. 애니메이션과 스크롤 동작까지 프론트엔드가 직접 만들었습니다.[6]"
+    ]
+   },
+   "how_far": "투자 지식은 지원 조건이 아닙니다. 팀원들은 투자에 관심만 있어도 되고, 지식은 일하면서 따라온다고 말합니다.[2] 지원 전 최소선은 토스증권 앱과 PC 웹을 직접 써 보고, 주문 화면의 규칙(시장가·지정가, 거래 시간)을 말로 설명할 수 있는 정도입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    4,
+    5,
+    6
+   ],
+   "study": [
+    "toss-recruit-video"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "웹소켓, Web Worker, 자체 구현 모듈 등 최적의 엔지니어링 기술을 활용해 실시간 데이터를 정확하고 끊김 없이 제공하고, 유저가 신뢰할 수 있는 정보를 바탕으로 거래할 수 있는 제품을 만들어요.",
+   "short": "시세·체결을 끊김 없이 받아 정확히 보여 준다. 탭이 많아도 서버 연결은 하나로 줄이는 식의 일.",
+   "why": "토스증권은 종목별 현재가·등락률을 **웹소켓**(브라우저와 서버가 연결을 열어 두고 양쪽에서 데이터를 보내는 방식)으로 받아 화면에 보여 줍니다. 산 주식이 체결되면 바로 알려 주는 것도 실시간입니다.[3] 서버 쪽에서는 화면 이동마다 구독·해지를 주고받는 시세는 웹소켓으로, 서버가 알려 주기만 하면 되는 이벤트는 **SSE**로 나눠 씁니다.[7]",
+   "actually": {
+    "intro": "회사 발표에 나온 실제 일입니다.",
+    "items": [
+     "**탭이 많아도 소켓 하나** — PC에서는 탭마다 웹소켓이 하나씩 생겨, 사용자 한 명의 연결이 두세 배 이상 늘 수 있었습니다. '보고 있는 탭만 연결'이나 '화면에 보이는 탭만 연결'은 탭을 나란히 띄우면 풀리지 않았습니다. 그래서 소켓을 **SharedWorker**(여러 탭이 함께 쓰는 백그라운드 스레드)에 올려 브라우저당 하나로 줄였습니다.[3]",
+     "**공유 조건** — 같은 출처(origin)에서, 같은 스크립트 경로로 만든 워커만 공유됩니다.[3][12]",
+     "**지원 안 되는 브라우저** — 일부 브라우저는 SharedWorker가 없습니다. 그때는 탭 전용 워커(Dedicated Worker)에서 같은 코드를 돌려, 연결은 탭마다 생기지만 코드는 한 벌로 유지했습니다.[3][13] 두 워커 모두 탭과는 메시지(postMessage)로만 주고받습니다.[14]",
+     "**번들러와 워커 경로** — 빌드하면 파일 이름이 바뀝니다. 그래서 워커 경로를 URL 객체로 넘겨 webpack이 실제 경로로 바꾸게 했습니다.[3][18]",
+     "**닫힌 탭 정리** — 탭이 닫혔다는 이벤트가 따로 없고, 닫기 직전 이벤트(beforeunload)는 믿을 수 없습니다. 그래서 각 탭과 이어진 포트를 **WeakRef**(가비지 컬렉터가 거둬 갈 수 있는 약한 참조)로 들고, 타이머로 사라졌는지 확인해 정리했습니다.[3][17]",
+     "**폴링 줄이기** — 보유 자산을 3초마다 다시 묻던 화면을, 체결 이벤트가 SSE로 올 때만 다시 묻게 바꿔 약 30% 개선했습니다.[7]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "소켓 하나를 탭 여러 개가 나눠 쓰기 — 종목별로 보고 있는 탭 수 세기",
+     "body": "워커가 소켓 하나만 들고 있으면, 서버에 구독을 보낼지는 '그 종목을 보는 탭이 처음 생겼나 / 마지막으로 떠났나'로 정합니다. 발표의 구조[3]를 작게 옮긴 것이고, 실제 코드는 JavaScript지만 생각이 같아 파이썬으로 돌려 확인했습니다. 직접 돌린 출력: `SUB 005930 | SUB AAPL | UNSUB AAPL` · 남은 구독 `{'005930': 1}` — 탭 세 개가 삼성전자를 봐도 구독은 한 번이고, 탭 셋 중 하나가 남아 있어 해지하지 않습니다.",
+     "lang": "python",
+     "code": "sent, subs = [], {}  # 종목 → 보고 있는 탭 집합\n\ndef subscribe(tab, code):\n    s = subs.setdefault(code, set())\n    if not s:\n        sent.append(f\"SUB {code}\")\n    s.add(tab)\n\ndef unsubscribe(tab, code):\n    s = subs.get(code)\n    if s is None:\n        return\n    s.discard(tab)\n    if not s:\n        sent.append(f\"UNSUB {code}\")\n        del subs[code]\n\ndef close_tab(tab):\n    for code in list(subs):\n        unsubscribe(tab, code)\n\nsubscribe(\"tab1\", \"005930\"); subscribe(\"tab2\", \"005930\"); subscribe(\"tab3\", \"005930\")\nsubscribe(\"tab2\", \"AAPL\")\nclose_tab(\"tab1\"); close_tab(\"tab2\")\nprint(\" | \".join(sent))\nprint({c: len(s) for c, s in subs.items()})"
+    },
+    {
+     "title": "닫힌 탭 알아채기 — 약한 참조",
+     "body": "워커가 포트를 보통 참조로 쥐고 있으면 탭이 닫혀도 메모리에서 안 사라집니다. 약한 참조로만 들고 있으면, 아무도 안 쓰게 된 포트는 가비지 컬렉터가 거둬 가고 그걸로 '닫혔다'를 압니다.[3][17] 브라우저의 MessagePort 대신 객체로 흉내 냈습니다. 직접 돌린 출력: `tab1 사라짐 → 핸들러 정리` · `tab2 살아 있음`.",
+     "lang": "python",
+     "code": "import gc, weakref\n\nclass Port:  # 브라우저 MessagePort 대신\n    def __init__(self, name):\n        self.name = name\n\ntab1, tab2 = Port(\"tab1\"), Port(\"tab2\")\nrefs = [weakref.ref(tab1), weakref.ref(tab2)]  # 워커는 약하게만 들고 있다\ndel tab1  # 탭 1을 닫아 아무도 안 쓰게 됐다\ngc.collect()\nfor name, r in zip([\"tab1\", \"tab2\"], refs):\n    print(name, \"사라짐 → 핸들러 정리\" if r() is None else \"살아 있음\")"
+    }
+   ],
+   "how_far": "소켓 서버와 메시지 브로커는 서버 팀 몫입니다(토스증권 서버는 SSE 쪽에 NATS를 골랐습니다).[7] 서버의 시세 플랫폼 구조도 따로 발표됐습니다.[38] 프론트엔드는 **언제 구독·해지하나, 끊기면 어떻게 다시 붙나, 받은 값을 얼마나 빨리 화면에 반영하나**를 맡습니다. {추론}",
+   "refs": [
+    3,
+    7,
+    12,
+    13,
+    17,
+    18,
+    38
+   ],
+   "study": [
+    "toss-sharedworker",
+    "toss-sse",
+    "mdn-sharedworker",
+    "mdn-workers",
+    "hpbn"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "React 기반의 웹 서비스를 개발하고 운영해본 경험이 있으신 분을 찾고 있어요.",
+   "short": "React로 만든 서비스를 실제 사용자에게 내보내고, 오류·느림을 보며 고쳐 본 경험.",
+   "why": "팀원들은 웹 기반 서비스를 한 번이라도 운영해 본 사람이면 좋겠다고 말합니다. 연차와 관계없이 뽑고, 혼자 만든 서비스를 운영해 본 경험도 환영한다고 합니다.[2] 핵심은 **운영**입니다 — 내 서비스에 오류가 얼마나 있고 얼마나 빨리 알아채는지에 관심을 갖는 사람을 원합니다.[2] React 자체의 기본(상태·다시 그리기·효과)은 공식 문서가 가장 정확합니다.[30]",
+   "level": {
+    "basic": "컴포넌트 · props · state · 훅(useState·useEffect) · 목록과 key · 폼 입력",
+    "work": "서버 데이터 캐시(React Query) · 불필요한 다시 그리기 줄이기 · 오류 경계 · Next.js 라우팅·SSR · 배포 뒤 오류 수집",
+    "team": "페이지 단위 마이크로앱으로 따로 배포 · 일부 사용자 먼저 내보내며 지켜보기 · 실시간 값이 많은 화면을 빠르게 그리기[4][5]"
+   },
+   "how_far": "회사 경력이 없어도 됩니다. 개인 프로젝트라도 배포 → 오류 수집 → 사용자 반응 보고 고치기를 한 바퀴 돌려 봤다면 쓸 수 있는 경험입니다.[2] 경력이 없는 사람을 위한 채용 프로그램도 따로 있다고 소개합니다.[2]",
+   "refs": [
+    2,
+    4,
+    5
+   ],
+   "study": [
+    "react-docs",
+    "modern-react",
+    "nextjs-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "복잡하고 어려운 요구사항을 단순한 문제로 추상화하고, 변경에 유연한 아키텍처에 대해 고민하는 분을 찾고 있어요.",
+   "short": "복잡한 요구를 몇 개의 규칙으로 줄이고, 다음 변경 때 한 곳만 고치면 되게 짜는 감각.",
+   "why": "팀에서는 다른 사람이 맡던 제품을 넘겨받는 일이 흔합니다. 그래서 **예측 가능한 코드**가 중요하고, 금융이라 안정성도 중요합니다. 팀원들은 누가 봐도 상식적이고 간결하며 변화에 유연한 코드를 선호한다고 말합니다.[2] 이력서 안내도 '복잡하거나 반복되는 문제를 단순한 형태로 추상화한 경험'을 쓰라고 합니다.[1] 토스 프론트엔드 챕터는 좋은 코드의 기준(읽기 쉬움·예측 가능·응집도·결합도)을 공개해 두었습니다.[10]",
+   "actually": {
+    "intro": "이 팀이 직접 한 추상화입니다.",
+    "items": [
+     "**쪼개는 규칙 하나** — 화면을 살펴보니 한 페이지에는 거의 한 도메인만 나왔습니다. 그래서 '한 페이지에는 마이크로앱 하나'라는 규칙으로 큰 앱을 나눴습니다.[4]",
+     "**라우터 직접 만들기** — 이름난 라우팅 라이브러리는 앱 하나를 전제로 해서 맞지 않았습니다. 마이크로앱을 오가는 자체 라우터를 만들었습니다.[4]",
+     "**레이아웃 라이브러리** — PC 화면의 격자 배치를 기존 라이브러리가 못 맞춰 이진 트리 구조로 직접 만들었습니다. 다른 계열사도 가져다 씁니다.[2]",
+     "**스크롤을 카메라로** — 한 방향으로만 스크롤되고 나중에 확대도 붙을 화면을, 3D 그래픽의 '카메라 이동' 개념(Three.js)으로 추상화했습니다.[6]",
+     "**로그 자동화** — 코드 변환기(Babel·SWC) 플러그인으로, 개발자가 손으로 붙이지 않아도 분석가가 볼 형식의 로그가 자동으로 남습니다.[2]"
+    ]
+   },
+   "how_far": "이력서와 면접에서는 사례 하나를 '무엇이 복잡했나 → 어떤 규칙으로 줄였나 → 그 뒤 변경이 얼마나 쉬워졌나' 순서로 말할 수 있으면 됩니다. 디자인 패턴 이름보다 **바뀌는 부분과 안 바뀌는 부분을 나눈 이유**가 중요합니다. {추론}",
+   "refs": [
+    1,
+    2,
+    4,
+    6,
+    10
+   ],
+   "study": [
+    "toss-ff",
+    "refactoring2",
+    "toss-mfa-tmc25"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "브라우저 렌더링 성능을 고려해서 개발하고 최적화하신 경험이 있는 분을 찾고 있어요.",
+   "short": "화면을 다시 그리는 횟수와 메인 스레드 일을 재고 줄여 본 경험. 숫자로 말하면 더 좋다.",
+   "why": "다루는 제품이 웹이라 브라우저 렌더링 성능이 매우 중요하고, 개선을 **수치로** 보여 준 사람이면 크게 환영한다고 팀원들이 말합니다.[2] 실시간으로 바뀌는 차트·표의 성능 최적화를 다루게 됩니다.[2]",
+   "level": {
+    "basic": "렌더링 단계(스타일 → 레이아웃 → 페인트 → 합성) · 리플로·리페인트가 언제 생기나",
+    "work": "DevTools 성능 패널로 긴 작업·리페인트 찾기 · 다시 그리기 줄이기(memo·가상 스크롤) · transform·opacity 애니메이션",
+    "team": "실시간 시세와 애니메이션 여러 개가 한 화면에서 같이 돌 때, 휴대폰 웹뷰에서도 끊기지 않게[6]"
+   },
+   "actually": {
+    "items": [
+     "**리페인트 500번 → 1번** — AI 시그널 화면의 '흐르는 화살표' 애니메이션 하나가 리페인트를 500번 일으켰고, 한 화면에 최대 10개라 접속마다 5,000번이었습니다. 휴대폰이 뜨거워지고 끊겼습니다. 화살표 모양 틀 아래의 그라디언트를 가로 이동(translateX)으로만 움직이게 바꿔 1번으로 줄였습니다.[6]",
+     "**합성 스레드에 맡기기** — transform·opacity 애니메이션은 JavaScript 스레드를 거치지 않고 브라우저의 합성(컴포지터) 단계에서 처리됩니다. 그만큼 JavaScript 스레드가 다른 일을 할 수 있습니다.[6][19]",
+     "**Web Animations API 먼저** — Motion 라이브러리를 고른 이유가 이 API를 우선 쓰고, 오래된 브라우저에서는 requestAnimationFrame으로 물러서기 때문이었습니다.[6]",
+     "**인트로 영상** — 움직이는 이미지보다 배경이 투명한 영상 두 개를 겹치는 쪽이 제어하기 쉬웠고, Cache API로 기기에 미리 저장해 네트워크 영향을 줄였습니다.[6]",
+     "**재는 도구** — 브라우저 개발자 도구의 성능 패널로 레이아웃·페인트가 어디서 얼마나 생기는지 기록합니다.[21][20]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "시세는 자주 와도 그리기는 프레임마다 한 번",
+     "body": "메시지가 올 때마다 화면을 그리면 브라우저가 그릴 수 있는 속도(초당 약 60번)를 넘습니다. 종목마다 마지막 값만 남겨 두었다가 프레임마다 바뀐 칸만 그리는 흔한 방법입니다. 토스증권이 이렇게 한다는 공개 자료는 없습니다 {추론}. 숫자는 가상입니다(1초 동안 600건, 종목 3개). 직접 돌린 출력: `받은 메시지 600건 → 그린 횟수 190번 (3.2배 적게)`.",
+     "lang": "python",
+     "code": "latest, renders, messages = {}, 0, 0\ncodes = [\"005930\", \"000660\", \"AAPL\"]\n\ndef on_message(code, price):\n    global messages\n    messages += 1\n    latest[code] = price  # 마지막 값만 남긴다\n\ndef on_frame():\n    global renders\n    renders += len(latest)  # 바뀐 종목 칸만 다시 그린다\n    latest.clear()\n\nfor ms in range(1000):\n    if ms % 5 in (0, 2, 4):\n        on_message(codes[(ms + ms % 5) % 3], 70000 + ms)\n    if ms % 16 == 0:  # 약 60fps\n        on_frame()\non_frame()\nprint(f\"받은 메시지 {messages}건 → 그린 횟수 {renders}번 ({messages / renders:.1f}배 적게)\")"
+    }
+   ],
+   "how_far": "'최적화했다'보다 **무엇을 재서 몇에서 몇으로 줄였나**가 있어야 합니다.[2] 최소선은 내 프로젝트 한 화면을 성능 패널로 녹화해 가장 오래 걸린 작업을 찾고, 고친 뒤 다시 재서 비교해 본 경험입니다. {추론}",
+   "refs": [
+    2,
+    6,
+    19,
+    20,
+    21
+   ],
+   "study": [
+    "toss-ai-interaction",
+    "webdev-rendering",
+    "devtools-perf",
+    "fe-perf-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "단순히 주어진 업무를 해내는 것보다, 문제를 주도적으로 정의하고 기술적으로 해결한 경험이 있는 분을 찾고 있어요.",
+   "short": "시킨 일을 끝낸 것보다, 무엇이 문제인지 먼저 찾아내 기술로 푼 사례를 본다.",
+   "why": "이력서 안내에도 같은 말이 있습니다 — 주어진 업무가 아니라 스스로 정의하고 해결한 사례를 쓰라고 합니다.[1] 이 팀의 발표들이 그 모양입니다.",
+   "actually": {
+    "items": [
+     "**서버 증설 대신** — 탭마다 연결이 늘자 서버를 늘리는 대신 프론트엔드에서 풀 방법을 찾았고, 시도했다 버린 두 방법까지 같이 발표했습니다.[3]",
+     "**문제부터 다시 정의** — 한 빌드에 PR이 많게는 40개 섞여 롤백이 부담스럽고, 빌드 30분·개발 서버 5분이 걸렸습니다. 근본 원인을 '모든 변경이 한 배포로 나간다'로 정의하고 마이크로 프론트엔드로 바꿔 **빌드 1분·개발 서버 5초**가 됐습니다.[4]",
+     "**도구를 직접** — 리뷰 때 빠뜨리기 쉬운 것을 짚어 주는 리뷰 봇 플러그인을 저녁 시간 세 시간 만에 만들었고, 서버·데이터 챕터도 가져다 씁니다.[2]"
+    ]
+   },
+   "how_far": "사례 하나를 **문제 → 원인 → 고려한 방법(버린 것 포함) → 고른 이유 → 결과 숫자**로 쓸 수 있으면 됩니다. SharedWorker 발표의 흐름이 좋은 본보기입니다.[3] 전형에 사전 과제와 직무 인터뷰가 두 번 있어, 이 사례를 깊게 물을 가능성이 큽니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "study": [
+    "toss-sharedworker",
+    "toss-mfa-tmc25"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "# 이런 기술을 사용하고 있어요",
+   "short": "아래 여덟 줄은 갖춰야 할 요건이 아니라, 팀이 지금 쓰는 도구 목록이다.",
+   "why": "팀원들은 상태 관리나 기능 구현 라이브러리를 고를 선택권이 충분하다고 말합니다. 그리고 유명한지보다 **우리 제품에 맞는지**로 고른다고 합니다.[2] 그래서 도구 이름을 많이 아는 것보다 '왜 이걸 골랐고 무엇을 포기했나'를 설명할 수 있는 쪽이 중요합니다. {추론}",
+   "refs": [
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "React, Next.js, Typescript : 컴포넌트 기반의 아키텍쳐로 UI를 효율적으로 구축하고, 정적 타입 검사를 통해 버그를 줄여요.",
+   "short": "화면을 부품(컴포넌트)으로 쌓고, 타입으로 실수를 미리 막는 기본 바탕.",
+   "why": "MTS는 Next.js·React로 개발됐습니다.[4] 지금은 페이지 묶음마다 따로 빌드한 마이크로앱이, 정해 둔 렌더 함수로 React 화면을 띄우는 구조입니다.[4]",
+   "actually": {
+    "items": [
+     "**출발은 Next.js 한 덩어리** — 초창기에는 모든 서비스를 Next.js 앱 하나로 만들었습니다.[4][5]",
+     "**지금은 페이지 단위 마이크로앱** — 각 서비스가 브라우저 표준 모듈(ESM) 묶음으로 빌드되고, 서버가 HTML에 '주소 → 서비스' 표와 '서비스 → 파일 위치' 표(import map)를 넣어 보냅니다.[4][5]",
+     "**타입이 막는 실수** — 주문 상태처럼 경우가 정해진 값을 유니언 타입으로 적으면, 빠뜨린 경우를 컴파일 때 잡을 수 있습니다.[31] {추론}"
+    ]
+   },
+   "how_far": "Next.js 고유 기능보다 React와 TypeScript 기본기가 먼저입니다. 서버 렌더링(SSR)이 무엇이고 언제 필요한지 설명할 수 있으면 됩니다.[37] {추론}",
+   "refs": [
+    4,
+    5,
+    31
+   ],
+   "study": [
+    "react-docs",
+    "ts-handbook",
+    "effective-ts",
+    "nextjs-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "React-Query, Recoil, Jotai : 서버와 클라이언트 상태 관리를 용도에 맞게 사용해요.",
+   "short": "서버에서 온 데이터(캐시)와 화면에만 있는 상태를 나눠, 각자 맞는 도구로 다룬다.",
+   "why": "팀원들은 React Query로 서버 상태를 캐싱하고, Recoil·Jotai는 상황에 맞게 쓴다고 말합니다.[2]",
+   "actually": {
+    "items": [
+     "**서버 상태** — 보유 종목·계좌 잔액처럼 원본이 서버에 있는 데이터입니다. 언제 캐시를 쓰고 언제 다시 불러올지가 핵심입니다.[22]",
+     "**다시 부르는 시점** — 토스증권은 보유 자산을 3초마다 묻던 것을, 체결 이벤트가 올 때만 다시 묻게 바꿨습니다.[7] 화면에서는 이벤트를 받으면 그 데이터의 캐시를 낡았다고 표시하는 방식이 흔합니다.[22] {추론}",
+     "**화면 상태** — 선택한 탭, 입력 중인 주문 수량처럼 화면에만 있는 값입니다. Recoil·Jotai는 이런 값을 작은 단위(atom)로 나눠 필요한 부품만 다시 그리게 합니다.[23][24]"
+    ]
+   },
+   "how_far": "세 라이브러리를 다 알 필요는 없습니다. 서버 상태와 화면 상태를 **왜 나누는지** 설명하고, 하나(React Query)를 깊게 써 봤으면 충분합니다. {추론}",
+   "refs": [
+    2,
+    7,
+    22,
+    23,
+    24
+   ],
+   "study": [
+    "tanstack-query",
+    "jotai",
+    "modern-react"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Emotion, Vanilla-extract : 모바일 제품의 스타일은 emotion을, 데스크탑 제품의 스타일은 vanilla-extract를 사용하고 있어요.",
+   "short": "모바일은 실행 중에 CSS를 만드는 emotion, PC는 빌드 때 CSS 파일을 뽑는 vanilla-extract.",
+   "why": "PC 제품(WTS)이 vanilla-extract를 쓴다는 말에 다른 토스 개발자가 놀랐다고 합니다 — 덜 알려진 도구라 고민하다 안 썼다는 것입니다. 이 팀은 장단점을 비교해 그때 제품에 맞는 것을 골랐다고 말합니다.[2] vanilla-extract는 TypeScript로 스타일을 쓰고 **빌드할 때** 보통 CSS 파일로 뽑습니다.[25] emotion은 JavaScript로 쓴 스타일을 **실행 중에** 페이지에 넣습니다.[26]",
+   "how_far": "둘 다 몰라도 됩니다. CSS 기본기와, '실행 중에 스타일 만들기 vs 빌드 때 뽑기'가 성능과 개발 편의에서 무엇이 다른지 설명할 수 있으면 됩니다. {추론}",
+   "refs": [
+    2,
+    25,
+    26
+   ],
+   "study": [
+    "vanilla-extract"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "TDS(Toss Design System) : 강력한 디자인 시스템 TDS를 이용해 개발 생산성을 높여요. 버그 제보부터 컴포넌트 제작까지 기여하기도 해요.",
+   "short": "토스 공통 디자인 부품으로 화면을 짓고, 모자라면 버그 제보·새 부품 만들기로 고친다.",
+   "why": "팀원들은 TDS 크롬 확장을 누르면 코드 조각까지 보여 주고, 디자인 도구(Framer)와 직접 연동해 그대로 가져다 쓸 수 있는 수준이라고 소개합니다.[2] 증권은 차트가 많아 **증권용 TDS**도 만듭니다.[2] 외부 미니앱 개발자에게 공개된 TDS 문서가 있지만, 사내판과 같다는 보장은 없습니다.[11]",
+   "how_far": "입사 전에는 디자인 시스템이 무엇을 나누는지(색·간격 같은 토큰, 버튼 같은 부품, 부품의 변형)를 이해하고, 공개 문서로 부품 구성을 한번 훑어보면 충분합니다. {추론}",
+   "refs": [
+    2,
+    11
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "웹소켓, SSE : 실시간 데이터를 효율적으로 처리하여 서버 요청을 최적화하고 있어요.",
+   "short": "구독을 주고받는 시세는 웹소켓, 서버가 알려 주기만 하면 되는 이벤트는 SSE로 나눈다.",
+   "why": "토스증권 서버 팀 발표 기준입니다. 화면을 옮길 때마다 시세를 구독·해지해야 하니 양방향인 웹소켓을 쓰고, 불필요한 폴링을 없애거나 사람마다 다른 이벤트를 보낼 때는 SSE를 씁니다.[7]",
+   "actually": {
+    "items": [
+     "**SSE의 모양** — 브라우저가 HTTP 요청을 한 번 보내면 서버가 이벤트 스트림 형식의 응답을 열어 두고, 일이 생길 때마다 이어서 흘려보냅니다. 끊기면 브라우저가 알아서 다시 붙습니다.[16][7]",
+     "**웹소켓의 모양** — 주소로 연결을 만들고, 보낼 때는 send, 받을 때는 message 이벤트를 씁니다.[15][3]",
+     "**접속한 사람은 SSE로** — 최고가 알림 같은 푸시가 모바일 푸시(FCM) 용량을 넘자, 지금 접속해 있는 사람에게는 SSE로 보내고 접속 안 한 사람만 FCM으로 보냈습니다. 약 10%가 SSE로 나갔습니다.[7]",
+     "**좀비 연결** — 연결이 언제 끊겼는지 알기 어려워 주기적인 생존 신호(하트비트)로 확인합니다. 2초·4초·6초처럼 이상한 간격으로 끊기던 문제는 중간 프록시 장비 설정이 원인이었습니다.[7]"
+    ]
+   },
+   "how_far": "서버 쪽 구현은 맡지 않습니다. 브라우저의 EventSource·WebSocket API를 쓰고, **끊김·재연결·중복·순서**를 화면 쪽에서 어떻게 다룰지 설명할 수 있으면 됩니다. {추론}",
+   "refs": [
+    3,
+    7,
+    15,
+    16
+   ],
+   "study": [
+    "toss-sse",
+    "mdn-websocket",
+    "mdn-sse",
+    "hpbn"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "YarnBerry, PNPM : 패키지관리자의 장점에 맞춰 사용하고 있어요.",
+   "short": "모바일은 Yarn Berry, PC는 pnpm — 제품 성격에 맞춰 패키지 관리자를 골랐다.",
+   "why": "모바일 제품은 Yarn Berry, 데스크탑 제품은 pnpm을 쓰고, 각 관리자와 제품의 장점에 맞췄다고 말합니다.[2] 토스는 Yarn Berry의 PnP 방식으로 의존성 용량을 1.2GB에서 139MB로 줄이고 CI 설치를 수 초로 줄인 경험을 공개했습니다.[9] pnpm은 패키지를 한 저장소에 한 번만 두고 링크로 이어 디스크를 아끼고, 선언하지 않은 패키지는 못 쓰게 엄격하게 막습니다.[27]",
+   "how_far": "잠금 파일(lockfile)·워크스페이스·'선언 안 했는데 쓰이는 패키지(유령 의존성)'가 무엇인지 설명할 수 있으면 됩니다. {추론}",
+   "refs": [
+    2,
+    9,
+    27
+   ],
+   "study": [
+    "toss-yarn-berry"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Webpack, SWC, Babel : 빠른 빌드와 배포 속도로 개발 생산성을 높이고 있어요.",
+   "short": "묶기는 webpack, 코드 변환은 PC SWC·모바일 Babel. 자체 플러그인으로 로그를 자동으로 붙인다.",
+   "why": "모바일·데스크탑 모두 webpack을 쓰고, 변환기는 데스크탑 SWC·모바일 Babel입니다. 증권에 맞는 플러그인을 직접 만들 자유가 있어, 로그를 자동으로 남기는 플러그인을 두 변환기 모두에 만들었습니다.[2] SWC는 Rust로 만든 빠른 변환기입니다.[28]",
+   "actually": {
+    "items": [
+     "**워커 경로** — 빌드하면 파일 이름이 바뀌어, SharedWorker 경로를 URL 객체로 넘겨 webpack이 실제 경로로 바꾸게 했습니다.[3][18]",
+     "**공용 모듈** — 서비스마다 따로 빌드하다 보니 Sentry 같은 무거운 라이브러리가 중복으로 들어갔습니다. 공통 모듈을 따로 빌드해 import map에 한 번만 올렸습니다.[4]",
+     "**오래된 브라우저** — import map과 ESM을 못 쓰는 브라우저는 SystemJS로 대신 불러옵니다.[4]"
+    ]
+   },
+   "how_far": "설정 파일을 직접 고쳐 본 경험과, 변환기 플러그인이 코드의 구조(AST)를 읽어 바꾼다는 개념 정도면 됩니다. 빌드 도구 자체를 만드는 일은 플랫폼 쪽 공고가 따로 있습니다.[8] {추론}",
+   "refs": [
+    2,
+    3,
+    4,
+    8,
+    18,
+    28
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Github, Github Action : 소스 코드는 Github으로 관리하고 코드리뷰해요. 최소 두명 이상의 리뷰어가 자동으로 지정돼요. 각종 Github Bot이 정적 분석과 테스트를 수행하고 리포트를 작성해줘요.",
+   "short": "PR마다 리뷰어 두 명 이상이 자동 지정되고, 봇이 정적 분석·테스트 결과를 먼저 단다.",
+   "why": "리뷰어 지정 봇은 휴가 중인 사람을 빼고, 바뀐 코드를 원래 쓴 사람을 먼저 고릅니다. 코드에서 빠뜨리기 쉬운 것을 짚어 주는 플러그인도 있습니다.[2] GitHub 기본 기능으로는 경로별 담당자 파일(CODEOWNERS)이 리뷰어를 자동으로 붙입니다.[29]",
+   "actually": {
+    "intro": "PR을 올린 뒤와 머지한 뒤에 일어나는 일입니다.",
+    "items": [
+     "**QA 목록 자동 생성** — PR의 제목·본문·요구 사항·코드 변경을 사내 LLM에 넘기면, 어느 화면에서 무엇을 확인할지 사람 말로 된 QA 목록을 만들어 줍니다.[5]",
+     "**사내 질문 봇** — 문서와 코드를 검색해 '일봉 차트는 어떤 API를 부르나' 같은 질문에 답하는 챕터 봇이 있습니다.[5]",
+     "**배포** — 빌드 결과는 S3에 올리고 CloudFront가 내려 줍니다. 사용자마다 쿠키에 1~100 번호를 주고, 정한 비율만 새 버전을 보게 합니다. 비율은 스케줄로 자동으로 올리고, 문제가 보이면 자동으로 되돌립니다.[5]",
+     "**이중화** — 같은 배포를 Cloudflare에도 두고, 문제가 생기면 트래픽을 돌립니다. 인프라는 Terraform 코드로 관리합니다.[5]"
+    ]
+   },
+   "how_far": "PR을 작게 나누고 설명을 잘 쓰는 습관, 리뷰 의견에 근거로 답하는 태도가 최소선입니다. 배포 인프라는 플랫폼 팀이 만들고 제품 개발자는 그 위에서 비율을 올리며 지켜봅니다.[5] {추론}",
+   "refs": [
+    2,
+    5,
+    29
+   ],
+   "study": [
+    "toss-fe-infra"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "실시간으로 바뀌는 숫자·차트를 빠르게 그리는 일이 재미있는 사람[2]",
+   "투자에 관심이 있고 자기가 만든 제품을 직접 써 보는 사람[2]",
+   "불편한 걸 보면 도구(플러그인·라이브러리)를 직접 만드는 사람[2]",
+   "성능 개선을 숫자로 보여 줄 수 있는 사람[2]"
+  ],
+  "hard": [
+   "금융 제품이라 안정성과 리뷰 기준이 높다[2]",
+   "PC와 모바일의 도구(스타일·패키지 관리자·변환기)가 달라 두 벌을 익혀야 한다[1][2]",
+   "전형이 길다 — 사전 과제와 직무 인터뷰 두 번, 문화 인터뷰, 레퍼런스 체크[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "PC에서 탭 열 개를 띄우면 웹소켓 연결은 몇 개가 되나요? 줄이려면요?",
+   "a": "이 팀이 SharedWorker로 실제로 푼 문제. 버린 방법 둘도 같이.[3]"
+  },
+  {
+   "q": "SharedWorker를 지원하지 않는 브라우저에서는 어떻게 하겠어요?",
+   "a": "탭 전용 워커로 같은 코드를 돌린 대체 경로.[3][13]"
+  },
+  {
+   "q": "워커는 탭이 닫혔다는 걸 어떻게 알 수 있나요?",
+   "a": "닫힘 이벤트가 없어 WeakRef로 푼 부분.[3][17]"
+  },
+  {
+   "q": "애니메이션 때문에 휴대폰이 뜨거워진다는 제보가 왔어요. 무엇부터 재겠어요?",
+   "a": "리페인트 500번을 1번으로 줄인 사례와 합성 단계.[6][19]"
+  },
+  {
+   "q": "폴링·SSE·웹소켓 중 무엇을 고를지 어떻게 정하나요?",
+   "a": "토스증권 서버가 실제로 나눈 기준.[7]"
+  },
+  {
+   "q": "서버 상태와 화면 상태를 왜 나누고, 체결 이벤트가 오면 무엇을 다시 불러야 하나요?",
+   "a": "React Query와 SSE 폴링 제거가 만나는 곳.[2][7][22]"
+  },
+  {
+   "q": "큰 앱을 여러 팀이 따로 배포하게 쪼갠다면 어떤 단위로 나누겠어요?",
+   "a": "'한 페이지에 마이크로앱 하나' 규칙과 import map.[4]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 토스증권 프론트엔드 개발자 (Frontend Developer)",
+   "url": "https://toss.im/career/job-detail?gh_jid=4076141003",
+   "kind": "posting",
+   "note": "업무·요건·사용 기술·이력서 안내·합류 여정(사전 과제·처우협의 포함)·동료 한마디"
+  },
+  {
+   "n": 2,
+   "title": "토스증권 · 채용공고 읽어주는 개발자 (feat. 프론트엔드 개발 챕터)",
+   "url": "https://www.youtube.com/watch?v=oZj-BpxkNTE",
+   "kind": "company",
+   "note": "공고 배너가 링크한 영상 · 16분 · 프론트엔드 챕터원 셋 · 자동 자막 전부 읽음(WTS·MTS·백오피스, 도구 선택 이유, TDS 크롬 확장, 로그 자동화 플러그인, 리뷰 봇, 격주 엔지니어링 데이, 증권용 TDS, 연차 무관·경력 없는 사람 채용 프로그램, 렌더링 성능을 수치로)"
+  },
+  {
+   "n": 3,
+   "title": "SLASH 24 · N개의 탭, 단 하나의 웹소켓: SharedWorker",
+   "url": "https://www.youtube.com/watch?v=SVt1-Opp3Wo",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스증권 Frontend Developer 박건영 · 18분 · 자동 자막 전부 읽음(탭마다 연결이 늘어나는 문제, 버린 두 방법, SharedWorker 공유 조건, Dedicated Worker 대체, 번들러 경로, WeakRef로 닫힌 탭 감지)"
+  },
+  {
+   "n": 4,
+   "title": "TMC25 · Native ESM에 올라탄 마이크로 프론트엔드",
+   "url": "https://www.youtube.com/watch?v=6g49EaSKZHg",
+   "kind": "company",
+   "date": "2025-07",
+   "note": "토스증권 프론트엔드 박건영·장재영 · 21분 · 자동 자막 전부 읽음(페이지 450개+·한 빌드 PR 40개·빌드 30분→1분·개발 서버 5분→5초, 한 페이지 한 마이크로앱, import map·라우팅 표, 쿠키 카나리·프리뷰 배포, 공용 모듈, SystemJS 대체)"
+  },
+  {
+   "n": 5,
+   "title": "테크톡톡 2026 · 토스증권 FE 인프라 전반",
+   "url": "https://www.youtube.com/watch?v=7lOahOMThrA",
+   "kind": "company",
+   "date": "2026",
+   "note": "토스증권 클라이언트 플랫폼 팀 · 23분 · 자동 자막 전부 읽음(S3·CloudFront·Lambda@Edge, 쿠키 1~100 카나리, EventBridge 자동 점진 배포·자동 롤백, Cloudflare 이중화, Terraform, 서비스별 카나리, 사내 LLM QA 목록·질문 봇·CS 분류)"
+  },
+  {
+   "n": 6,
+   "title": "테크톡톡 2026 · 토스증권 AI 개발로 배운 실전 인터랙션 팁",
+   "url": "https://www.youtube.com/watch?v=G7yn-oqYcUA",
+   "kind": "company",
+   "date": "2026",
+   "note": "토스증권 AI 프론트엔드 · 13분 · 자동 자막 전부 읽음(AI 시그널, Motion·Web Animations API, 리페인트 500번→1번, Three.js 카메라로 스크롤, 투명 영상·Cache API)"
+  },
+  {
+   "n": 7,
+   "title": "SLASH 24 · SSE 이벤트 푸쉬로 불필요한 Polling 제거하기",
+   "url": "https://www.youtube.com/watch?v=ovGgdPPUZ2I",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스증권 서버 플랫폼 팀 · 20분 · 자동 자막 전부 읽음(웹소켓 vs SSE 쓰임새, 보유 자산 3초 폴링→이벤트 때만 약 30%, 접속자 SSE·미접속자 FCM 약 10%, Redis Pub/Sub→NATS, 하트비트·프록시 문제)"
+  },
+  {
+   "n": 8,
+   "title": "토스 채용 · 토스증권 프론트엔드 플랫폼 엔지니어",
+   "url": "https://toss.im/career/job-detail?gh_jid=5130165003",
+   "kind": "posting",
+   "note": "같은 회사 — 400만+ DAU·30만+ 동시 접속, 자체 MFA·배포 인프라·로그 시스템, SharedWorker 모듈"
+  },
+  {
+   "n": 9,
+   "title": "토스 테크 · node_modules로부터 우리를 구원해 줄 Yarn Berry",
+   "url": "https://toss.tech/article/node-modules-and-yarn-berry",
+   "kind": "company",
+   "date": "2021-05-07",
+   "note": "토스(같은 그룹 다른 회사)"
+  },
+  {
+   "n": 10,
+   "title": "Frontend Fundamentals — 토스 프론트엔드 챕터의 좋은 코드 기준",
+   "url": "https://frontend-fundamentals.com/",
+   "kind": "company"
+  },
+  {
+   "n": 11,
+   "title": "앱인토스 개발자센터 · TDS 컴포넌트",
+   "url": "https://developers-apps-in-toss.toss.im/design/components",
+   "kind": "company",
+   "note": "외부 미니앱용 공개판 — 사내 TDS와 같은지는 공개되지 않았다"
+  },
+  {
+   "n": 12,
+   "title": "MDN · SharedWorker",
+   "url": "https://developer.mozilla.org/ko/docs/Web/API/SharedWorker",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "Can I use · Shared Web Workers",
+   "url": "https://caniuse.com/sharedworkers",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "MDN · 웹 워커 사용하기",
+   "url": "https://developer.mozilla.org/ko/docs/Web/API/Web_Workers_API/Using_web_workers",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "MDN · WebSocket API",
+   "url": "https://developer.mozilla.org/ko/docs/Web/API/WebSockets_API",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "MDN · 서버 전송 이벤트 사용하기",
+   "url": "https://developer.mozilla.org/ko/docs/Web/API/Server-sent_events/Using_server-sent_events",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "MDN · WeakRef",
+   "url": "https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/WeakRef",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "webpack 문서 · Web Workers",
+   "url": "https://webpack.js.org/guides/web-workers/",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "web.dev · 합성 전용 속성 사용과 레이어 수 관리",
+   "url": "https://web.dev/articles/stick-to-compositor-only-properties-and-manage-layer-count",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "web.dev · 렌더링 성능",
+   "url": "https://web.dev/articles/rendering-performance",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Chrome DevTools · 성능 패널",
+   "url": "https://developer.chrome.com/docs/devtools/performance",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "TanStack Query 문서",
+   "url": "https://tanstack.com/query/latest/docs/framework/react/overview",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Jotai 문서",
+   "url": "https://jotai.org/docs/introduction",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "Recoil 문서",
+   "url": "https://recoiljs.org/docs/introduction/core-concepts",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "vanilla-extract 문서",
+   "url": "https://vanilla-extract.style/documentation/getting-started/",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "Emotion 문서",
+   "url": "https://emotion.sh/docs/introduction",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "pnpm 문서 · 동기(Motivation)",
+   "url": "https://pnpm.io/motivation",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "SWC 문서",
+   "url": "https://swc.rs/docs/getting-started",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "GitHub Docs · 코드 소유자 정보",
+   "url": "https://docs.github.com/ko/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "React 공식 문서(한국어)",
+   "url": "https://ko.react.dev/learn",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "TypeScript Handbook · Narrowing",
+   "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+   "kind": "reference",
+   "note": "유니언 좁히기·빠진 경우 검사(never)"
+  },
+  {
+   "n": 32,
+   "title": "자소설닷컴 — 토스증권 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/13103",
+   "kind": "reference",
+   "note": "다른 토스증권 풀이에서 검색 결과 요약으로 확인한 값(페이지 직접 열람은 막힘). 사원수 292명 표기 — 2023년 말 수준으로 보인다"
+  },
+  {
+   "n": 33,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(같은 집계)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference"
+  },
+  {
+   "n": 34,
+   "title": "토스증권 — 사이트 하단 회사 정보",
+   "url": "https://tossinvest.com/",
+   "kind": "company"
+  },
+  {
+   "n": 35,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 36,
+   "title": "CEO스코어데일리 · '호황' 증권가, 임직원 수 2% 늘 때 급여는 48% 증가",
+   "url": "https://www.ceoscoredaily.com/page/view/2026052816034001002",
+   "kind": "news",
+   "date": "2026-05-29",
+   "note": "금융투자협회 공시 1분기 — 토스증권 직원 380명 → 516명, 직원 급여 21.4% 증가"
+  },
+  {
+   "n": 37,
+   "title": "Next.js 문서",
+   "url": "https://nextjs.org/docs",
+   "kind": "reference"
+  },
+  {
+   "n": 38,
+   "title": "SLASH 23 세션 소개 · 실시간 시세 데이터 안전하고 빠르게 처리하기",
+   "url": "https://toss.im/slash-23/session-detail/B1-7",
+   "kind": "company",
+   "date": "2023-06",
+   "note": "토스증권 Server Developer — 서버 쪽 시세 플랫폼. 세션 소개만 확인했고 영상은 읽지 않았다"
+  }
+ ],
+ "caveat": "2026-11-23 기준입니다. 회사 발표는 모두 유튜브 자동 자막으로 읽어 고유명사·숫자가 일부 깨졌을 수 있고, 확신이 없는 숫자(시세가 몰릴 때 초당 건수 등)는 싣지 않았습니다. SharedWorker 모듈·자체 라우터·증권용 TDS의 코드는 공개되지 않았습니다. 코드 예시는 생각을 보이려고 파이썬으로 옮겨 직접 돌린 것이고 회사 코드가 아닙니다.",
+ "resources": [
+  {
+   "id": "toss-recruit-video",
+   "title": "채용공고 읽어주는 개발자 (feat. 프론트엔드 개발 챕터)",
+   "by": "토스증권 · 유튜브",
+   "kind": "video",
+   "url": "https://www.youtube.com/watch?v=oZj-BpxkNTE",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "이 공고를 챕터원이 직접 풀어 준 16분 영상. 도구를 왜 골랐는지, 어떤 사람을 원하는지 공고보다 자세하다."
+  },
+  {
+   "id": "toss-sharedworker",
+   "title": "SLASH 24 · N개의 탭, 단 하나의 웹소켓: SharedWorker",
+   "by": "토스증권 박건영 · 2024",
+   "kind": "video",
+   "url": "https://www.youtube.com/watch?v=SVt1-Opp3Wo",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "업무③ 실시간 데이터의 실제 사례. 문제 정의 → 버린 방법 → 선택 → 구현의 함정까지 한 흐름이라 요건④(문제 정의) 이력서 쓰기의 본보기로도 좋다."
+  },
+  {
+   "id": "toss-mfa-tmc25",
+   "title": "TMC25 · Native ESM에 올라탄 마이크로 프론트엔드",
+   "by": "토스증권 박건영·장재영 · 2025",
+   "kind": "video",
+   "url": "https://www.youtube.com/watch?v=6g49EaSKZHg",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "why": "입사하면 일하게 될 구조 그 자체. 요건②(추상화·변경에 유연한 아키텍처)를 이 팀이 어떻게 했는지 보인다."
+  },
+  {
+   "id": "toss-fe-infra",
+   "title": "테크톡톡 2026 · 토스증권 FE 인프라 전반",
+   "by": "토스증권 클라이언트 플랫폼 팀 · 2026",
+   "kind": "video",
+   "url": "https://www.youtube.com/watch?v=7lOahOMThrA",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "PR을 올린 뒤 배포·카나리·롤백이 어떻게 돌아가는지. GitHub·배포 줄을 이해하는 데 필요하다."
+  },
+  {
+   "id": "toss-ai-interaction",
+   "title": "테크톡톡 2026 · 토스증권 AI 개발로 배운 실전 인터랙션 팁",
+   "by": "토스증권 · 2026",
+   "kind": "video",
+   "url": "https://www.youtube.com/watch?v=G7yn-oqYcUA",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "요건③(렌더링 성능)의 실제 사례 — 리페인트 500번을 1번으로 줄인 과정과 합성 단계 애니메이션."
+  },
+  {
+   "id": "toss-sse",
+   "title": "SLASH 24 · SSE 이벤트 푸쉬로 불필요한 Polling 제거하기",
+   "by": "토스증권 서버 플랫폼 팀 · 2024",
+   "kind": "video",
+   "url": "https://www.youtube.com/watch?v=ovGgdPPUZ2I",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "웹소켓과 SSE를 언제 나눠 쓰는지 서버 쪽 시각으로. 프론트엔드가 받는 이벤트가 어디서 오는지 알 수 있다."
+  },
+  {
+   "id": "toss-ff",
+   "title": "Frontend Fundamentals",
+   "by": "토스 프론트엔드 챕터",
+   "kind": "doc",
+   "url": "https://frontend-fundamentals.com/",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "요건②의 '변경에 유연한 코드'를 토스가 어떤 기준으로 보는지. 예제마다 고치기 전·후가 있다."
+  },
+  {
+   "id": "toss-yarn-berry",
+   "title": "node_modules로부터 우리를 구원해 줄 Yarn Berry",
+   "by": "토스 테크 · 2021",
+   "kind": "doc",
+   "url": "https://toss.tech/article/node-modules-and-yarn-berry",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "모바일 제품이 쓰는 Yarn Berry를 왜 골랐는지, 무엇이 빨라졌는지."
+  },
+  {
+   "id": "react-docs",
+   "title": "React 공식 문서 · 학습하기",
+   "by": "react.dev(한국어)",
+   "kind": "doc",
+   "url": "https://ko.react.dev/learn",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "요건①의 바탕. 상태를 어디에 둘지, 언제 다시 그려지는지를 공식 설명으로."
+  },
+  {
+   "id": "nextjs-docs",
+   "title": "Next.js Docs",
+   "by": "Vercel 공식 문서",
+   "kind": "doc",
+   "url": "https://nextjs.org/docs",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "MTS가 출발한 프레임워크. 서버 렌더링과 라우팅이 무엇을 해 주는지."
+  },
+  {
+   "id": "ts-handbook",
+   "title": "TypeScript Handbook",
+   "by": "TypeScript 공식 문서",
+   "kind": "doc",
+   "url": "https://www.typescriptlang.org/docs/handbook/intro.html",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "유니언 좁히기로 주문 상태 같은 값의 빠진 경우를 컴파일 때 잡는 법."
+  },
+  {
+   "id": "js-deepdive",
+   "title": "모던 자바스크립트 Deep Dive",
+   "by": "이웅모 · 위키북스 · 2020",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%AA%A8%EB%8D%98%20%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8%20Deep%20Dive",
+   "lang": "ko",
+   "level": "입문",
+   "why": "이벤트 루프·비동기·가비지 컬렉션처럼 워커와 실시간 처리를 이해하는 데 필요한 JavaScript 바탕."
+  },
+  {
+   "id": "modern-react",
+   "title": "모던 리액트 Deep Dive",
+   "by": "김용찬 · 위키북스 · 2023",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%AA%A8%EB%8D%98%20%EB%A6%AC%EC%95%A1%ED%8A%B8%20Deep%20Dive",
+   "lang": "ko",
+   "level": "실무",
+   "why": "React 렌더링 원리, 상태 관리 라이브러리 비교, Next.js까지 — 요건①과 상태 관리 줄을 한 권으로."
+  },
+  {
+   "id": "effective-ts",
+   "title": "이펙티브 타입스크립트",
+   "by": "댄 밴더캄 · 장원호 옮김 · 인사이트 · 2021",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C%20%ED%83%80%EC%9E%85%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8",
+   "lang": "ko",
+   "level": "실무",
+   "why": "'정적 타입 검사로 버그를 줄인다'를 실제로 하는 법 — 타입 설계를 항목별로."
+  },
+  {
+   "id": "fe-perf-book",
+   "title": "프론트엔드 성능 최적화 가이드",
+   "by": "유동균 · 인사이트 · 2022",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C%20%EC%84%B1%EB%8A%A5%20%EC%B5%9C%EC%A0%81%ED%99%94%20%EA%B0%80%EC%9D%B4%EB%93%9C",
+   "lang": "ko",
+   "level": "실무",
+   "why": "요건③ — 성능 패널로 문제를 찾고 고친 뒤 다시 재는 과정을 예제 서비스로 따라 한다."
+  },
+  {
+   "id": "refactoring2",
+   "title": "리팩터링 2판",
+   "by": "마틴 파울러 · 개앞맵시·남기혁 옮김 · 한빛미디어 · 2020",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A6%AC%ED%8C%A9%ED%84%B0%EB%A7%81%202%ED%8C%90",
+   "lang": "ko",
+   "level": "실무",
+   "why": "요건②의 '변경에 유연한' 코드를 작은 단계로 만드는 법. 예제가 JavaScript다."
+  },
+  {
+   "id": "hpbn",
+   "title": "High Performance Browser Networking",
+   "by": "Ilya Grigorik · O'Reilly · 2013",
+   "kind": "book",
+   "url": "https://hpbn.co/",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "웹소켓·SSE·폴링이 네트워크에서 실제로 어떻게 다른지(연결 수·지연·재연결). 웹에서 무료로 읽을 수 있다."
+  },
+  {
+   "id": "mdn-workers",
+   "title": "웹 워커 사용하기",
+   "by": "MDN",
+   "kind": "doc",
+   "url": "https://developer.mozilla.org/ko/docs/Web/API/Web_Workers_API/Using_web_workers",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "공고 업무③의 Web Worker — 전용 워커와 공유 워커, postMessage·포트로 주고받는 법."
+  },
+  {
+   "id": "mdn-sharedworker",
+   "title": "SharedWorker",
+   "by": "MDN",
+   "kind": "doc",
+   "url": "https://developer.mozilla.org/ko/docs/Web/API/SharedWorker",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "탭 여러 개가 워커 하나를 나눠 쓰는 조건과 connect 이벤트."
+  },
+  {
+   "id": "mdn-websocket",
+   "title": "WebSocket API",
+   "by": "MDN",
+   "kind": "doc",
+   "url": "https://developer.mozilla.org/ko/docs/Web/API/WebSockets_API",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "시세 구독에 쓰는 브라우저 API의 기본 — 연결·send·message·close."
+  },
+  {
+   "id": "mdn-sse",
+   "title": "서버 전송 이벤트 사용하기",
+   "by": "MDN",
+   "kind": "doc",
+   "url": "https://developer.mozilla.org/ko/docs/Web/API/Server-sent_events/Using_server-sent_events",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "EventSource로 서버 이벤트를 받는 법과 재연결 동작."
+  },
+  {
+   "id": "webdev-rendering",
+   "title": "Rendering performance",
+   "by": "web.dev",
+   "kind": "doc",
+   "url": "https://web.dev/articles/rendering-performance",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "요건③의 바탕 — 화면이 그려지는 단계와 어느 단계를 건너뛰면 빨라지는지."
+  },
+  {
+   "id": "devtools-perf",
+   "title": "Chrome DevTools · 성능 패널",
+   "by": "Chrome for Developers",
+   "kind": "doc",
+   "url": "https://developer.chrome.com/docs/devtools/performance",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "성능 개선을 숫자로 말하려면 먼저 재야 한다 — 녹화하고 긴 작업·페인트를 읽는 법."
+  },
+  {
+   "id": "tanstack-query",
+   "title": "TanStack Query 문서",
+   "by": "TanStack 공식 문서",
+   "kind": "doc",
+   "url": "https://tanstack.com/query/latest/docs/framework/react/overview",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "서버 상태 캐시와 다시 불러오기(무효화) — 체결 이벤트가 오면 무엇을 다시 부를지."
+  },
+  {
+   "id": "jotai",
+   "title": "Jotai 문서",
+   "by": "Jotai 공식 문서",
+   "kind": "doc",
+   "url": "https://jotai.org/docs/introduction",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "화면 상태를 작은 atom으로 나눠 필요한 부품만 다시 그리는 방식."
+  },
+  {
+   "id": "vanilla-extract",
+   "title": "vanilla-extract 문서",
+   "by": "vanilla-extract 공식 문서",
+   "kind": "doc",
+   "url": "https://vanilla-extract.style/documentation/getting-started/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "PC 제품이 쓰는 스타일 도구 — TypeScript로 쓰고 빌드 때 CSS로 뽑는 방식."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "React와 TypeScript 바탕",
+   "time": "2~4주",
+   "goal": "상태가 바뀌면 무엇이 다시 그려지는지 설명하고, 경우가 정해진 값을 타입으로 막을 수 있다.",
+   "resources": [
+    "react-docs",
+    "ts-handbook",
+    "js-deepdive",
+    "effective-ts"
+   ],
+   "task": "가상 종목 20개의 관심 목록과 주문 폼(매수·매도, 시장가·지정가, 수량·가격 검사)을 만든다. 주문 상태를 유니언 타입으로 적고, 한 경우를 빼먹으면 컴파일이 실패하게 한다."
+  },
+  {
+   "title": "서버 상태와 화면 상태 나누기",
+   "time": "1~2주",
+   "goal": "서버에서 온 데이터는 캐시로, 화면에만 있는 값은 따로 두고 각자 다시 그리는 범위를 줄인다.",
+   "resources": [
+    "tanstack-query",
+    "jotai",
+    "modern-react"
+   ],
+   "task": "가짜 API로 '보유 종목'을 React Query로 불러온다. 3초 폴링판과, 가짜 '체결됐다' 이벤트가 올 때만 캐시를 무효화하는 판을 둘 다 만들고 요청 수를 센다."
+  },
+  {
+   "title": "실시간 연결",
+   "time": "2~3주",
+   "goal": "웹소켓·SSE를 쓰고, 탭 여러 개가 연결 하나를 나눠 쓰게 만들 수 있다.",
+   "resources": [
+    "mdn-websocket",
+    "mdn-sse",
+    "mdn-workers",
+    "mdn-sharedworker",
+    "toss-sharedworker",
+    "toss-sse",
+    "hpbn"
+   ],
+   "task": "가상 시세를 초당 수백 건 보내는 로컬 웹소켓 서버를 띄운다. SharedWorker에 소켓 하나만 두고 탭 세 개가 나눠 쓰게 하며, 종목별 구독 수를 세서 마지막 탭이 떠날 때만 해지하고, 닫힌 탭을 WeakRef로 정리한다. 서버 쪽 연결 수를 탭 수와 비교해 적는다."
+  },
+  {
+   "title": "렌더링 성능을 숫자로",
+   "time": "2주",
+   "goal": "성능 패널로 문제를 찾고, 고친 전후를 숫자로 비교할 수 있다.",
+   "resources": [
+    "webdev-rendering",
+    "devtools-perf",
+    "fe-perf-book",
+    "toss-ai-interaction"
+   ],
+   "task": "3단계 화면에서 '메시지마다 그리기'와 '프레임마다 바뀐 칸만 그리기'를 성능 패널로 녹화해 비교한다. 흐르는 배경 애니메이션을 배경 위치로 만든 판과 transform으로 만든 판의 페인트 횟수도 잰다."
+  },
+  {
+   "title": "추상화와 배포 구조",
+   "time": "계속",
+   "goal": "내 작업을 '문제 → 버린 방법 → 선택 → 숫자'로 설명하고, 페이지를 따로 배포하는 구조를 이해한다.",
+   "resources": [
+    "toss-ff",
+    "refactoring2",
+    "toss-mfa-tmc25",
+    "toss-fe-infra",
+    "toss-yarn-berry",
+    "vanilla-extract"
+   ],
+   "task": "두 페이지를 각각 ESM 파일로 빌드하고, import map 하나로 불러오는 작은 호스트 페이지를 만든다. 한 페이지만 새 버전으로 바꿔 다시 올려도 다른 페이지가 그대로인지 확인한다. 3·4단계 결과를 이력서 사례 하나로 정리한다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 공공데이터 집계로 신입 초봉 **약 5,000만원**, 평균 **약 7,000만원** — 비상장사라 공시 평균 급여는 없다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,003만원",
+    "amount": 5003,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없고 사원수 표기(292명)로 보아 2023년 무렵 값으로 보인다 [32]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 7,007만원",
+    "amount": 7007,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 — 경력직이 섞인 값이다 [32]"
+   },
+   {
+    "label": "토스(비바리퍼블리카) 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 그룹 모회사 값 — 견주어 보기용 [33]"
+   },
+   {
+    "label": "토스(비바리퍼블리카) 평균",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 회사 전체 평균 [33]"
+   }
+  ],
+  "how": "합류 여정은 서류 → 사전 과제 → 직무 인터뷰 두 번 → 문화적합성 인터뷰 → 레퍼런스 체크 → **처우협의** 순서이고, 연봉은 처우협의에서 사람마다 정한다 [1]. 토스증권은 비상장사라 사업보고서의 '직원 1인 평균 급여'를 찾지 못했다. 금융투자협회 공시로 직원 수가 2026년 1분기 516명으로 늘고 직원 급여가 21.4% 늘었다는 보도는 있지만 1인 금액은 없다 [36]. 평균은 초봉이 아니라 경력직이 섞인 회사 전체 값이고, 집계값은 추정이라 실제 제안과 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 전체를 기준으로 한 2021년 공식 소개 글이다 [35]. 토스증권에 그대로 적용되는지, 지금도 같은지는 글에 없으니 처우협의 때 확인한다 {추론}. 팀 문화로는 격주 '엔지니어링 데이'의 자유 주제 테크톡이 있다 [2]."
+ },
+ "location": {
+  "name": "토스증권 본사",
+  "address": "서울특별시 강남구 테헤란로 133, 7층 (역삼동, 한국타이어빌딩)",
+  "postal": "06133",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20133",
+  "near": "2호선 역삼역과 강남역 사이 테헤란로 {추론}",
+  "note": "주소는 토스증권 사이트 하단의 회사 정보다 [34]. 공고 근무지는 'Seoul'로만 적혀 있어 팀 자리는 다를 수 있다 [1]."
+ }
+}
