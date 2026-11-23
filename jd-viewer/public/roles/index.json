@@ -167,6 +167,7 @@
   "ats-toss:group:4521687003": "tossbank-server-platform",
   "ats-toss:group:6607772003": "tossbank-system-security-engineer",
   "ats-toss:group:7788403003": "tosssec-community-reco-mle",
+  "ats-toss:group:8006361003": "tosssec-data-engineer-dre",
   "ats-toss:group:7827711003": "tosssec-data-engineer-financial-data",
   "ats-toss:group:7575603003": "tosssec-ml-engineer-llm",
   "ats-toss:group:7810517003": "tosssec-senior-data-analyst",
@@ -1670,6 +1671,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 27
+  },
+  {
+   "id": "tosssec-data-engineer-dre",
+   "company": "토스증권",
+   "role": "데이터 엔지니어 (금융데이터/DRE)",
+   "jobs": [
+    "ats-toss:group:8006361003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 18
   },
   {
    "id": "tosssec-data-engineer-financial-data",
