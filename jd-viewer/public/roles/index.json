@@ -2,6 +2,7 @@
  "updated_at": "2026-11-23",
  "jobs": {
   "ats-toss:group:7989660003": "toss-client-platform-engineer",
+  "ats-toss:group:7992223003": "toss-commerce-search-relevance-mle",
   "ats-toss:group:8003064003": "toss-dip-data-scientist",
   "ats-toss:group:7818488003": "toss-dw-analytics-engineer",
   "ats-toss:group:7985496003": "toss-dw-global-analytics-engineer",
@@ -21,6 +22,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 19
+  },
+  {
+   "id": "toss-commerce-search-relevance-mle",
+   "company": "토스",
+   "role": "ML 엔지니어 (Search Relevance)",
+   "jobs": [
+    "ats-toss:group:7992223003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 17
   },
   {
    "id": "toss-dip-data-scientist",

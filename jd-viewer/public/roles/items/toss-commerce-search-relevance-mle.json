@@ -1,0 +1,826 @@
+{
+ "id": "toss-commerce-search-relevance-mle",
+ "company": "토스",
+ "role": "ML 엔지니어 (Search Relevance)",
+ "team": "토스 커머스 · Commerce Search Relevance Silo",
+ "jobs": [
+  "ats-toss:group:7992223003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "토스쇼핑 검색에서 **'이 상품이 이 검색어에 정말 맞나'를 판단하는 모델**을 처음부터 끝까지 맡습니다. LLM이 단 정답으로 가벼운 임베딩 모델을 가르치고, 그 위에 상품명·브랜드·카테고리 일치 신호를 더한 무거운 모델로 마지막 순서를 다듬습니다.[1]",
+  "env": "하루 수십만 건의 검색이 들어오는데 아직 원하는 상품을 못 찾는 검색이 적지 않다고 팀이 직접 적었습니다.[1] 검색은 질의 이해(QU)·후보 찾기(Retrieval)·순서 매기기(Ranking) 층을 따로 실험할 수 있게 바꾸는 중이고[3], 같은 Silo에 전환(구매) 랭킹 자리가 따로 있습니다.[2]",
+  "oneline": "검색 ML 3년 차 이상이 **정답 만들기(LLM·사람) → 증류 → 임베딩·랭킹 학습 → 오프라인 지표 → A/B**를 혼자 끝까지 끌고 가는 자리."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "LLM Teacher 모델을 활용해 relevance 레이블을 설계하고, 이를 distillation한 Student 임베딩 모델을 학습시켜요. 이 모델은 ANN 기반으로 대규모 후보군의 relevance를 판별하는 foundation 역할을 해요.",
+   "short": "비싼 LLM이 '맞다/아니다'를 매기고, 그 판단을 흉내 내는 빠른 임베딩 모델을 만들어 수많은 상품에 한 번에 쓰는 일.",
+   "why": "LLM에게 검색어·상품 쌍을 하나하나 물으면 정확하지만 하루 수십만 질의 × 수천 후보에 쓰기엔 느리고 비쌉니다.[1]{추론} 토스는 다른 업무에서도 같은 길을 갔습니다 — '두 상품이 같은 판매 단위인가'를 LLM이 판단한 결과를 정답으로 작은 모델을 학습해, 확신이 높은 34.74%를 LLM 없이 처리하면서 LLM과의 일치율 99.9%를 지켰습니다.[5] 같은 커머스의 Data Graph 팀도 LLM 레이블을 가벼운 분류 모델로 증류(distillation, 큰 모델의 판단을 작은 모델이 배우게 하는 것)해 전체 상품에 넓힌다고 적었습니다.[4]",
+   "actually": {
+    "intro": "회사가 구조를 공개하지 않아, 같은 일을 한 공개 논문의 보통 방식을 보입니다.",
+    "items": [
+     "**레이블 설계** — '정확히 맞음·대체품·보완품·무관'처럼 등급을 정한다. 아마존 쇼핑 검색 공개 데이터(ESCI)가 이 네 등급을 쓴다.[13]",
+     "**LLM에게 매기게 하기** — 검색어·상품 정보·등급 기준을 프롬프트로 주고 등급을 받는다. Bing 연구는 잘 짠 프롬프트의 LLM 판정이 사람 판정과 비슷한 수준으로 맞는다고 보고했다.[14]",
+     "**학생 모델** — 검색어와 상품을 따로 벡터로 바꾸는 두 갈래 모델(Bi-Encoder·Two-Tower). 상품 벡터는 미리 계산해 둘 수 있어 빠르다.[11][12]",
+     "**증류 손실** — 선생님 점수 분포를 학생의 유사도 분포가 따라가도록 KL 발산을 줄이거나[9], 두 후보 사이 점수 차이(margin)를 맞춘다.[10]",
+     "**ANN에 싣기** — 학습한 상품 벡터를 근사 최근접 검색(ANN, 정확도를 조금 내주고 수백만 개 중 가까운 것을 빨리 찾는 방법) 색인에 넣는다.[15][16]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "증류 — 학생 분포가 선생님 쪽으로 (직접 돌린 출력)",
+     "body": "검색어 '무선 이어폰', 후보는 무선 이어폰·유선 이어폰·이어폰 케이스. 학습 전 학생은 유선을 더 가깝다고 봐서 KL이 크고, 학습 뒤 순서가 바로잡히며 줄어듭니다.[9] 숫자는 설명용 가상값입니다.",
+     "lang": "python",
+     "code": "import math\ndef softmax(xs, T=1.0):\n    m = max(xs); e = [math.exp((x - m) / T) for x in xs]; s = sum(e)\n    return [v / s for v in e]\nkl = lambda p, q: sum(a * math.log(a / b) for a, b in zip(p, q))\n\nteacher = softmax([3, 1, 0])                # LLM 등급 정확3·부분1·무관0\nbefore = softmax([0.80, 0.82, 0.30], 0.05)  # 학생 코사인 유사도(학습 전)\nafter  = softmax([0.86, 0.78, 0.30], 0.05)  # 학습 뒤\nprint(round(kl(teacher, before), 3))  # 0.763\nprint(round(kl(teacher, after), 3))   # 0.313"
+    }
+   ],
+   "how_far": "등급 기준을 무엇으로 할지(대체품을 맞다고 볼지)는 제품·검색 품질 목표와 같이 정하고[3], 이 자리는 **레이블 설계·학생 학습·색인 반영까지** 맡습니다.[1] 최소선은 문장 임베딩 모델을 직접 미세 조정해 보고, 증류 전·후 Recall이 어떻게 바뀌는지 숫자로 말할 수 있는 정도입니다. {추론}",
+   "refs": [1, 4, 5, 9, 10, 11, 12, 13, 14, 15, 16],
+   "study": ["snap-blog", "hinton-kd", "hofstatter-kd", "sbert-docs", "esci-data"]
+  },
+  {
+   "section": "task",
+   "quote": "Student 임베딩에 더해 상품의 다양한 컬럼(상품명·브랜드·카테고리·속성 등) 기반 lexical 매칭 피처를 결합한 Heavy Relevance 모델을 설계·학습해, 최종 랭킹 단계의 정확도를 끌어올려요.",
+   "short": "임베딩의 '뜻이 비슷하다'에 '글자가 정확히 맞는다'(브랜드·용량·색) 신호를 더해 마지막 순서를 정밀하게 고르는 모델을 만드는 일.",
+   "why": "임베딩은 뜻은 잘 잡지만 숫자·모델명·브랜드 같은 정확한 글자에 약합니다. 토스증권 검색팀도 도메인 특화 임베딩을 학습했지만 키워드 중심 질의에 약해, 텍스트 검색과 벡터 검색을 섞고 분류 태그를 점수 신호로 더했다고 밝혔습니다.[8] 쇼핑에서 '아이폰 15 케이스'에 '아이폰 14 케이스'가 뜨면 뜻은 가까워도 틀린 결과입니다. {추론}",
+   "actually": {
+    "items": [
+     "**컬럼별 일치 피처** — 검색어 낱말이 상품명·브랜드·카테고리·속성 칸에 각각 몇 개 들어 있나, 칸마다 BM25 점수.[17]",
+     "**정확 일치 신호** — 브랜드 완전 일치 여부, 숫자(용량·사이즈·세대) 일치 여부, 카테고리 경로 일치 깊이. {추론}",
+     "**임베딩 신호** — Student 임베딩의 코사인 유사도를 피처 하나로 넣는다.[1]",
+     "**무거운 모델** — 검색어와 상품 글을 한꺼번에 읽는 Cross-Encoder나, 위 피처들을 받는 트리·딥러닝 모델. 후보 수백 개에만 쓰니 느려도 된다.[10][11]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "BM25 — 칸 안에서 글자가 맞는 정도 (직접 돌린 출력)",
+     "body": "검색어 '무선 이어폰'으로 상품명 세 개에 점수를 매깁니다. 두 낱말이 다 있는 A가 가장 높고, 한 낱말만 있는 B·C는 같습니다 — 'C는 충전기'라는 걸 BM25는 모릅니다. 그래서 임베딩·카테고리 신호와 섞습니다.[17]",
+     "lang": "python",
+     "code": "import math\ndocs = {\"A\": \"무선 이어폰 블루투스 이어폰\", \"B\": \"이어폰 케이스 실리콘\", \"C\": \"무선 충전기 고속\"}\nq, k1, b = [\"무선\", \"이어폰\"], 1.2, 0.75\ntoks = {d: t.split() for d, t in docs.items()}\nN = len(docs); avgdl = sum(len(t) for t in toks.values()) / N\nidf = lambda w: math.log(1 + (N - sum(w in t for t in toks.values()) + 0.5) / (sum(w in t for t in toks.values()) + 0.5))\nfor d, t in toks.items():\n    s = sum(idf(w) * t.count(w) * (k1 + 1) / (t.count(w) + k1 * (1 - b + b * len(t) / avgdl)) for w in q)\n    print(d, round(s, 3))\n# A 1.046\n# B 0.49\n# C 0.49"
+    }
+   ],
+   "how_far": "상품 칸(브랜드·속성)이 어떻게 정리돼 있느냐는 상품 지식 구조를 맡는 쪽과 같이 봅니다 — 검색 PO 공고는 Knowledge Manager와 상품 분류 체계·속성을 발전시킨다고 적었습니다.[3] 이 자리는 **그 칸들을 피처로 바꾸고 모델을 설계·학습**합니다.[1]",
+   "refs": [1, 3, 8, 10, 11, 17],
+   "study": ["es-similarity", "ir-book", "sbert-docs"]
+  },
+  {
+   "section": "task",
+   "quote": "Light/Heavy 2-tier 구조 전반의 학습 데이터 파이프라인을 직접 설계해요. 로그·행동 데이터에서 학습셋을 구성하고, LLM 레이블링 프롬프트와 휴먼 레이블링 루프를 함께 운영해요.",
+   "short": "가벼운 모델·무거운 모델 둘 다 먹일 정답 데이터를 클릭 로그·LLM·사람 검수로 계속 만들어 내는 공장을 짓는 일.",
+   "why": "검색 relevance에는 정답표가 따로 없어서 만들어야 합니다. 클릭은 많지만 '눈에 띄어서 누른 것'이 섞이고, LLM 판정은 싸지만 틀릴 수 있고, 사람 판정은 정확하지만 비쌉니다.[14]{추론} 같은 커머스 Data Graph 팀도 LLM 레이블링 파이프라인에 사람 검수와 능동 학습(active learning, 모델이 헷갈리는 것부터 사람에게 묻기)을 붙인다고 적었습니다.[4]",
+   "flows": [
+    {
+     "caption": "보통 이렇게 돈다 {추론}[4][14]",
+     "steps": [
+      "로그에서 검색어·노출 상품·클릭·구매 뽑기",
+      "검색어별 후보 고르기 · 쉬운 음성·어려운 음성 섞기",
+      "LLM 프롬프트로 등급 매기기",
+      "확신 낮은 것·LLM과 행동이 엇갈린 것만 사람에게",
+      "사람 판정으로 프롬프트 고치고 골든셋 늘리기",
+      "Light·Heavy 학습셋으로 내보내기"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "actually": {
+    "items": [
+     "**로그 → 학습셋** — 검색어·노출·클릭·장바구니·구매를 묶는다. 같은 Silo의 전환 랭킹 공고는 노출 위치·선택 편향 보정을 우대한다 — 같은 로그를 쓰는 문제다.[2]",
+     "**어려운 음성(hard negative)** — '아이폰 15 케이스'의 음성으로 '아이폰 14 케이스'를 넣어야 모델이 세밀해진다. {추론}",
+     "**프롬프트 운영** — 등급 기준·예시를 버전으로 관리하고, 골든셋(사람이 확정한 정답 묶음)과의 일치율로 바꿀지 정한다.[14]",
+     "**사람 루프** — 토스는 LLM 판정을 정답으로 쓸 때 확신도 문턱을 정해 일치율·처리 비율을 같이 봤다(99.9%·34.74%).[5] 문턱 아래를 사람이나 더 큰 모델로 넘기는 구조가 같은 생각이다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "LLM 판정이 사람과 얼마나 맞나 — 코헨 카파 (직접 돌린 출력)",
+     "body": "10쌍 중 8쌍이 같아도(80%), 우연히 맞을 몫을 빼면 카파는 0.524입니다. 둘 다 '맞음'이 많을 때 일치율만 보면 과대평가합니다. 숫자는 가상값입니다.",
+     "lang": "python",
+     "code": "llm   = [1, 1, 0, 1, 0, 1, 1, 0, 1, 1]\nhuman = [1, 0, 0, 1, 0, 1, 1, 1, 1, 1]\nn = len(llm)\npo = sum(a == h for a, h in zip(llm, human)) / n\np1, p2 = sum(llm) / n, sum(human) / n\npe = p1 * p2 + (1 - p1) * (1 - p2)\nprint(po, round((po - pe) / (1 - pe), 3))  # 0.8 0.524"
+    }
+   ],
+   "how_far": "공고가 '직접 설계'라고 적었습니다 — 데이터 엔지니어가 만들어 주는 표를 받는 게 아니라 **어떤 로그를 어떻게 정답으로 바꿀지부터 이 자리 몫**입니다.[1] 사람 판정을 누가 하는지(내부·외부)는 공개되지 않았습니다.",
+   "refs": [1, 2, 4, 5, 14],
+   "study": ["llm-judge", "esci-data", "snap-blog"]
+  },
+  {
+   "section": "task",
+   "quote": "오프라인 평가 프레임워크(정확도·Recall·Defect Rate 등)를 정의하는 것부터 A/B 실험까지 엔드투엔드로 오너십을 가져요.",
+   "short": "'좋아졌다'를 무엇으로 잴지 정하고, 실험실 점수와 실제 서비스 실험(A/B)까지 이어 증명하는 일.",
+   "why": "검색 PO 공고는 오프라인 평가 → 온라인 A/B로 이어지는 실험 사이클과 성공 기준·가드레일(나빠지면 안 되는 지표)을 설계한다고 적었습니다.[3] 이 자리는 그 안에서 relevance 모델의 평가를 맡습니다.[1]",
+   "actually": {
+    "items": [
+     "**정확도** — 골든셋에서 모델 등급이 사람 등급과 같은 비율.[13]",
+     "**Recall@k** — 정답 상품 중 상위 k개 안에 들어온 비율. 후보를 넓게 건지는 Light 단계의 핵심.[20]",
+     "**Defect Rate** — 상위 k개 중 '무관'으로 판정된 상품 비율. 유저 눈에 바로 띄는 품질이다. {추론}",
+     "**A/B** — 유저를 무작위로 나눠 새 모델·옛 모델을 보여 주고 클릭·구매·검색 이탈을 비교한다. 표본 비율이 어긋나는지(SRM)부터 확인한다.[19]",
+     "**오프라인과 온라인이 엇갈릴 때** — 같은 Silo 전환 랭킹 공고는 이 괴리를 진단해 본 경험을 요건에 넣었다.[2]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "Recall@5 와 Defect@5 (직접 돌린 출력)",
+     "body": "정답 4개 중 상위 5개에 2개 → Recall 0.5. 상위 5개 중 '무관' 2개 → Defect 0.4. 같은 결과도 두 숫자가 다른 걸 말합니다.",
+     "lang": "python",
+     "code": "relevant = {\"p1\", \"p2\", \"p3\", \"p4\"}\nirrelevant = {\"p9\", \"p7\"}\ntop5 = [\"p1\", \"p9\", \"p3\", \"p5\", \"p7\"]\nprint(len(relevant & set(top5)) / len(relevant))   # 0.5\nprint(len(irrelevant & set(top5)) / len(top5))    # 0.4"
+    }
+   ],
+   "how_far": "어떤 비즈니스 지표를 목표로 둘지는 PO가 정합니다.[3] 이 자리는 **relevance 지표의 정의·골든셋·실험 설계와 결과 읽기**까지 혼자 합니다.[1] 최소선: 지표 셋이 서로 반대로 움직이는 상황을 예로 설명할 수 있어야 합니다. {추론}",
+   "refs": [1, 2, 3, 13, 19, 20],
+   "study": ["abtest-book", "ir-book"]
+  },
+  {
+   "section": "task",
+   "quote": "relevance 모델이 QU·Retrieval·Ranking과 맞물리는 지점에서 발생하는 품질 이슈를 진단하고, 크로스팀 개선 과제를 설계·리드해요.",
+   "short": "결과가 이상할 때 '검색어를 잘못 읽었나·후보를 못 건졌나·순서를 잘못 매겼나'를 가려 고칠 팀과 같이 푸는 일.",
+   "why": "토스 쇼핑 검색은 질의 이해·후보 찾기·순서 매기기 층을 따로 실험·측정할 수 있게 바꾸는 중이고, PO가 이 팀들(QU·Retrieval·Ranking·플랫폼)의 우선순위를 조율합니다.[3] 한 층만 고쳐서는 안 풀리는 문제가 있어 이 문장이 들어가 있습니다. {추론}",
+   "actually": {
+    "items": [
+     "**층별로 자르기** — 정답 상품이 후보에 아예 없으면 Retrieval, 있는데 뒤에 있으면 Ranking, 검색어를 다른 카테고리로 읽었으면 QU 문제. {추론}",
+     "**전환 랭킹과의 경계** — 같은 Silo의 Conversion 모델은 pCTR·pCVR(클릭·구매 확률)로 순서를 만든다.[2] 잘 팔리지만 검색어와 안 맞는 상품이 위로 오면 relevance가 막아야 한다. {추론}",
+     "**임베딩 버전 맞추기** — 토스증권은 벡터마다 만든 모델 버전을 적고, 모델을 바꿀 때 벡터 재생성·새 색인·전환을 한 작업으로 묶었다. Student 모델을 바꿀 때도 같은 문제가 생긴다.[8]",
+     "**상품 데이터 문제** — 브랜드·카테고리 칸이 비거나 틀리면 모델 탓이 아니다. 상품 분류·속성은 Data Graph·Knowledge 쪽과 이어진다.[3][4]"
+    ]
+   },
+   "how_far": "공고는 '설계·리드'라고 적었습니다 — 다른 팀 코드를 대신 고치는 게 아니라 **데이터로 원인을 보여 주고 과제를 쪼개 제안**하는 쪽입니다.[1] {추론}",
+   "refs": [1, 2, 3, 4, 8],
+   "study": ["ai-powered-search", "toss-reco-blog"]
+  },
+  {
+   "section": "qualification",
+   "quote": "검색 도메인에서 3년 이상의 실무 경험이 있는 분",
+   "short": "검색 특유의 문제(정답표가 없음·질의가 짧음·후보가 많음)를 이미 겪어 본 사람이 필요해서.",
+   "why": "이 자리는 모델을 처음부터 끝까지 책임지는 자리라[1], 같은 Silo 전환 랭킹 자리도 검색·추천·광고 3~4년 이상을 요구합니다.[2]",
+   "how_far": "'검색 도메인'이라 추천·광고 경험만 있으면 덜 맞습니다. 검색어-상품 relevance를 다뤄 본 경험을 숫자(지표 몇에서 몇으로)로 보여 주는 게 핵심입니다 — 이력서 안내도 문제·접근·실험·성능 개선을 정량으로 쓰라고 합니다.[1]",
+   "refs": [1, 2],
+   "study": ["ir-book", "ai-powered-search"]
+  },
+  {
+   "section": "qualification",
+   "quote": "대규모 로그·행동 데이터를 직접 다루고, 학습 데이터셋을 스스로 설계·구축할 수 있는 분",
+   "short": "정답이 주어지지 않는 일이라, 로그에서 정답을 뽑아내는 것까지 스스로 해야 해서.",
+   "why": "업무③(학습 데이터 파이프라인)을 직접 설계하는 자리입니다.[1] 하루 수십만 질의의 로그가 재료입니다.[1]",
+   "level": {
+    "basic": "SQL로 검색 로그에서 검색어별 노출·클릭·구매 집계 · Python(pandas)으로 표 다루기",
+    "work": "Spark 같은 분산 처리로 몇 달 치 로그 묶기 · 세션 단위로 검색 → 클릭 → 구매 잇기 · 학습/평가 기간 나누기",
+    "team": "노출 위치·선택 편향 다루기[2] · 어려운 음성 뽑기 · LLM·사람 레이블과 행동 로그 합치기 {추론}"
+   },
+   "how_far": "로그 수집 자체(이벤트 정의)는 플랫폼 쪽일 수 있지만, **어떤 로그를 학습셋으로 바꿀지는 스스로** 정합니다.[1] {추론}",
+   "refs": [1, 2],
+   "study": ["esci-data", "spark-docs"]
+  },
+  {
+   "section": "qualification",
+   "quote": "임베딩·랭킹 모델을 직접 학습시키고 성능을 끌어올려본 분",
+   "short": "업무①(Student 임베딩)과 업무②(Heavy 모델)가 바로 이 두 모델이라서.",
+   "why": "Light 단계는 임베딩, Heavy 단계는 랭킹 모델입니다.[1] 토스 쇼핑 추천도 Two-Tower 임베딩으로 후보를 찾고 랭킹 모델로 순서를 정하는 단계 구조를 씁니다.[6]",
+   "actually": {
+    "items": [
+     "**임베딩** — 대조 학습(contrastive, 맞는 쌍은 가깝게·틀린 쌍은 멀게), 배치 안 음성, 어려운 음성.[11][12]",
+     "**랭킹** — 점수 하나씩 맞추기(pointwise)·두 개 비교(pairwise)·목록 전체(listwise). LambdaMART가 대표적인 목록 학습 방법이다.[18]",
+     "**끌어올리기** — 어디서 틀리는지(카테고리별·질의 길이별) 쪼개 보고 데이터·피처·손실을 고친다. {추론}"
+    ]
+   },
+   "how_far": "'직접 학습'이라 공개 모델을 그대로 쓴 경험보다 **미세 조정하고 지표를 올린 경험**을 봅니다.[1] 직무 인터뷰가 심층 기술 면접과 ML 시스템 설계입니다.[1]",
+   "refs": [1, 6, 11, 12, 18],
+   "study": ["sbert-docs", "lambdamart", "toss-reco-blog"]
+  },
+  {
+   "section": "qualification",
+   "quote": "LLM을 레이블링·데이터 생성·평가 등 문제 해결을 위한 도구로 능숙하게 활용할 수 있는 분",
+   "short": "LLM을 서비스에 붙이는 게 아니라, 정답을 만들고 검사하는 일꾼으로 쓰는 자리라서.",
+   "why": "업무①의 선생님 모델, 업무③의 레이블링 프롬프트가 모두 LLM입니다.[1] 토스는 LLM 판단을 정답으로 작은 모델을 학습하는 일을 사내 체계(SNAP)로 만들었고[5], 상품 속성 뽑기·같은 상품 판단을 사내 벤치마크로 재서 모델을 고릅니다.[7]",
+   "actually": {
+    "items": [
+     "**레이블링** — 등급 기준과 예시를 담은 프롬프트, 출력 형식 고정(JSON), 일치율 검사.[14]",
+     "**데이터 생성** — 음성 예 만들기, 같은 뜻 다른 검색어 만들기(질의 확장). {추론}",
+     "**평가** — LLM-as-a-Judge(LLM이 채점자) — 단, 사람 골든셋과 주기적으로 맞춰 본다.[14]",
+     "**모델 고르기** — 토스 벤치마크에서 일반 리더보드 점수는 사내 실제 작업 성적과 거의 상관이 없었고(스피어만 +0.02), 형식 지시 준수 점수가 더 잘 맞았다(+0.71).[7]"
+    ]
+   },
+   "how_far": "프롬프트 몇 줄이 아니라 **비용·일치율·처리 비율을 숫자로 관리**하는 수준입니다.[5] {추론}",
+   "refs": [1, 5, 7, 14],
+   "study": ["llm-judge", "snap-blog", "toss-benchmark", "llm-app"]
+  },
+  {
+   "section": "qualification",
+   "quote": "데이터 분석부터 모델 학습, 서빙 반영까지 혼자 끌고 갈 수 있는 분",
+   "short": "relevance 모델을 '처음부터 끝까지 책임지는' 자리라 중간에 넘길 사람이 없어서.",
+   "why": "팀 소개가 모델을 처음부터 끝까지 책임진다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**서빙 반영** — 임베딩은 상품 벡터를 다시 계산해 ANN 색인을 교체하고, 검색어 벡터는 요청마다 계산한다.[15]",
+     "**지연 예산** — 토스는 작은 분류 모델을 L4 GPU 한 장에서 초당 1,203건, p99 15.23ms로 돌렸다.[5] 검색은 이런 수 ms 단위 예산 안에 들어와야 한다. {추론}",
+     "**버전 맞추기** — 모델·색인 버전을 같이 바꾼다.[8]"
+    ]
+   },
+   "how_far": "서빙 플랫폼을 짓는 건 아니고, **내 모델을 그 위에 올리고 지연·비용을 확인해 배포**하는 데까지입니다. {추론}",
+   "refs": [1, 5, 8, 15],
+   "study": ["faiss-docs", "snap-blog"]
+  },
+  {
+   "section": "qualification",
+   "quote": "품질 개선을 가로막는 진짜 원인이 무엇인지 데이터로 밝혀내고, 실험을 설계해 그 결과에서 다음 스텝을 직접 읽어낼 수 있는 Problem Solver",
+   "short": "'모델을 바꿔 보자'보다 '왜 틀리나'를 먼저 숫자로 밝히는 사람이 필요해서.",
+   "why": "아직 원하는 상품을 못 찾는 검색이 적지 않다는 게 팀이 적은 출발점입니다.[1] 원인이 모델인지, 상품 데이터인지, 다른 층인지 갈라야 맞는 과제가 나옵니다(업무⑤).[1][3]",
+   "how_far": "실패 검색 수백 개를 직접 열어 유형별로 세고, 가장 큰 유형부터 실험을 거는 수준. 이력서 안내도 '본인이 정의한 문제·선택한 접근법·실험 방법'을 쓰라고 합니다.[1]",
+   "refs": [1, 3],
+   "study": ["abtest-book"]
+  },
+  {
+   "section": "preference",
+   "quote": "Knowledge Distillation·Two-Tower·Bi-Encoder·Cross-Encoder 등 relevance 모델 학습과 실서비스 적용 경험",
+   "short": "업무①②의 부품 이름 그대로 — 빠른 두 갈래 모델과 느리지만 정확한 한 덩어리 모델, 그리고 그 사이의 증류.",
+   "why": "Light(Student 임베딩)와 Heavy(정밀 모델) 두 단계 구조가 이 조합입니다.[1]",
+   "actually": {
+    "items": [
+     "**Bi-Encoder·Two-Tower** — 검색어와 상품을 따로 벡터로. 미리 계산 가능, ANN과 짝.[11][12]",
+     "**Cross-Encoder** — 검색어와 상품을 한 입력으로 읽어 점수 하나. 정확하지만 후보마다 다시 계산.[11]",
+     "**증류** — Cross-Encoder나 LLM의 점수를 Bi-Encoder가 배우게. 점수 차이를 맞추는 방식이 잘 알려져 있다.[10]"
+    ]
+   },
+   "refs": [1, 10, 11, 12],
+   "study": ["hofstatter-kd", "sbert-docs"]
+  },
+  {
+   "section": "preference",
+   "quote": "ANN(Milvus·FAISS 등) 기반 벡터 검색 실무 경험",
+   "short": "학습한 상품 벡터 수백만 개에서 가까운 것을 몇 ms 안에 찾아오는 일을 해 봤으면 좋아서.",
+   "why": "Student 임베딩이 ANN으로 대규모 후보의 relevance를 가르는 기반이라고 공고가 적었습니다.[1] 토스증권도 벡터 DB를 실제 요청 패턴으로 지연·처리량·GC까지 검증했습니다.[8]",
+   "actually": {
+    "items": [
+     "**색인 종류** — 그래프 방식(HNSW), 군집으로 나누는 방식(IVF), 벡터 압축(PQ).[15][16]",
+     "**조정** — 찾는 범위를 넓히면 Recall이 오르고 느려진다. 이 둘의 곡선을 그려 고른다.[15]",
+     "**필터** — 품절·판매 중지 같은 조건을 벡터 검색과 같이 건다. Milvus 같은 벡터 DB는 속성 필터를 붙인 검색을 기본 기능으로 둔다.[25]"
+    ]
+   },
+   "refs": [1, 8, 15, 16, 25],
+   "study": ["faiss-docs", "milvus-docs"]
+  },
+  {
+   "section": "preference",
+   "quote": "LLM-as-a-Judge 기반 relevance 레이블 설계와 품질 검증 경험",
+   "short": "LLM을 채점자로 쓰되, 그 채점이 믿을 만한지까지 검사해 봤으면 좋아서.",
+   "why": "업무①③의 정답이 LLM 판정이라, 판정이 틀리면 학생 모델도 같이 틀립니다.[1]{추론}",
+   "actually": {
+    "items": [
+     "**설계** — 등급 정의, 경계 사례 예시, 검색어 의도 설명을 프롬프트에 넣는다. Bing 연구는 이런 설명을 더하면 사람 판정과의 일치가 오른다고 보고했다.[14]",
+     "**검증** — 사람 골든셋과의 일치율·카파, 등급별 오판 표, 보기 순서를 바꿔도 같은 답인지.[7][14]",
+     "**문턱** — 확신이 낮은 것만 사람에게. 토스 SNAP의 확신도 문턱과 같은 생각이다.[5]"
+    ]
+   },
+   "refs": [1, 5, 7, 14],
+   "study": ["llm-judge", "toss-benchmark"]
+  },
+  {
+   "section": "preference",
+   "quote": "Elasticsearch 기반 BM25·lexical 피처 설계 경험",
+   "short": "업무②의 '글자가 맞는 정도' 피처를 검색 엔진에서 뽑아 본 경험이 있으면 좋아서.",
+   "why": "Heavy 모델이 상품 칸별 lexical 매칭 피처를 쓰고[1], 토스증권 검색도 Elasticsearch로 텍스트·벡터 하이브리드 검색을 합니다.[8]",
+   "actually": {
+    "items": [
+     "**BM25** — 낱말 빈도와 드문 정도(IDF), 문서 길이 보정(k1·b). Elasticsearch 기본 점수다.[17]",
+     "**칸별 점수** — 상품명·브랜드·카테고리에 따로 걸고 가중치를 준다. {추론}",
+     "**형태소 분석** — 한국어는 띄어쓰기·복합어 때문에 분석기와 사전이 점수를 좌우한다. 토스증권은 사전을 계속 관리해야 했다.[8]"
+    ]
+   },
+   "refs": [1, 8, 17],
+   "study": ["es-similarity", "ir-book"]
+  },
+  {
+   "section": "preference",
+   "quote": "LTR·Multi-task 딥러닝 랭킹 모델의 실서비스 적용 경험",
+   "short": "여러 신호를 섞어 '목록의 순서'를 직접 배우게 하는 모델을 실제로 띄워 봤으면 좋아서.",
+   "why": "Heavy 모델이 최종 랭킹 단계에 들어가고[1], 같은 Silo 전환 랭킹은 pCTR·pCVR·장바구니·좋아요를 다중 작업(Multi-task)으로 묶고 목록 순서 학습으로 옮기는 중입니다.[2] 두 모델이 같은 랭킹에서 만납니다. {추론}",
+   "actually": {
+    "items": [
+     "**LTR(Learning to Rank)** — 목록의 좋은 순서를 직접 배우는 방법. 지표(NDCG)를 직접 올리도록 기울기를 준 LambdaMART가 대표.[18]",
+     "**Multi-task** — 한 모델이 relevance·클릭·구매를 같이 예측하고 점수를 합친다.[2]"
+    ]
+   },
+   "refs": [1, 2, 18],
+   "study": ["lambdamart", "lightgbm-docs"]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 커머스 또는 검색 플랫폼에서 A/B 실험 설계·운영 경험",
+   "short": "모델이 좋아졌다는 마지막 증거가 A/B라서, 설계부터 함정까지 아는 사람이면 좋아서.",
+   "why": "업무④가 A/B까지 책임지라고 적었고[1], 검색 PO가 성공 기준·가드레일을 설계합니다.[3]",
+   "actually": {
+    "items": [
+     "**설계** — 실험 단위(유저·세션), 표본 크기, 기간, 주 지표와 가드레일.[19]",
+     "**함정** — 나눈 비율이 어긋남(SRM), 여러 지표를 보다 우연히 유의함, 새로움 효과.[19]"
+    ]
+   },
+   "refs": [1, 3, 19],
+   "study": ["abtest-book"]
+  }
+ ],
+ "fit": {
+  "good": [
+   "검색 결과를 직접 수백 개 열어 보는 걸 마다하지 않는 사람",
+   "모델보다 정답 데이터를 잘 만드는 데서 재미를 느끼는 사람 {추론}",
+   "LLM을 '비싼 채점자'로 다루며 비용·정확도를 숫자로 저울질하는 사람[5]",
+   "한 모델을 처음부터 끝까지 맡고 싶은 사람[1]"
+  ],
+  "hard": [
+   "검색 실무 3년 이상이 첫 요건 — 추천·광고만 했으면 불리하다[1]",
+   "QU·Retrieval·Ranking·전환 랭킹 팀과 맞물려 혼자 결정할 수 없는 일이 많다[2][3]",
+   "직무 인터뷰가 심층 기술 + ML 시스템 설계라 준비 범위가 넓다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "LLM 판정 1천만 쌍이 필요해요. 비용을 어떻게 줄이고, 판정이 믿을 만한지 어떻게 확인하겠어요?",
+   "a": "작은 모델 + 확신도 문턱, 골든셋 일치율 — 토스가 SNAP에서 한 일.[5][14]"
+  },
+  {
+   "q": "'아이폰 15 케이스'에 '아이폰 14 케이스'가 1등으로 떠요. 어느 층 문제이고 어떻게 고치나요?",
+   "a": "임베딩의 숫자 약점 → 정확 일치 피처·어려운 음성.[1][8]"
+  },
+  {
+   "q": "Bi-Encoder와 Cross-Encoder를 각각 어디에 쓰고, 둘을 어떻게 잇나요?",
+   "a": "Light/Heavy 2단과 증류.[1][10][11]"
+  },
+  {
+   "q": "오프라인 Recall은 올랐는데 A/B에서 구매가 안 늘었어요. 무엇부터 보나요?",
+   "a": "지표 정의·전환 랭킹과의 경계·실험 함정.[2][19]"
+  },
+  {
+   "q": "Student 모델을 새 버전으로 바꿀 때 서빙에서 무엇이 깨질 수 있나요?",
+   "a": "벡터 공간이 섞임 — 버전 기록과 색인 일괄 교체.[8]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · ML 엔지니어 (Search Relevance)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7992223003",
+   "kind": "posting",
+   "note": "팀 소개(하루 수십만 질의)·업무·요건·우대·이력서 안내·합류 여정"
+  },
+  {
+   "n": 2,
+   "title": "토스 채용 · ML 엔지니어 (Search Conversion/Ranking)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7992229003",
+   "kind": "posting",
+   "note": "같은 Silo — Light/Heavy 랭커, pCTR·pCVR 다중 작업, listwise, 편향 보정"
+  },
+  {
+   "n": 3,
+   "title": "토스 채용 · Technical Product Owner (Search)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7668948003",
+   "kind": "posting",
+   "note": "QU·Retrieval·Ranking 층 분리, 오프라인 → A/B 실험 사이클·가드레일, Knowledge Manager"
+  },
+  {
+   "n": 4,
+   "title": "토스 채용 · ML 엔지니어 (Commerce Data Graph)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7827378003",
+   "kind": "posting",
+   "note": "같은 커머스 — LLM 레이블링 → 경량 모델 증류, 사람 검수·능동 학습"
+  },
+  {
+   "n": 5,
+   "title": "Toss Tech · 손가락 튕기기로 LLM 비용 줄이기 (SNAP)",
+   "url": "https://toss.tech/article/snap-llm-cost-reduction",
+   "kind": "company",
+   "date": "2026-10-27",
+   "note": "LLM 판단을 정답으로 작은 분류 모델 학습 · 확신도 문턱(99.9% 일치·34.74% 처리) · L4 p99 15.23ms"
+  },
+  {
+   "n": 6,
+   "title": "Toss Tech · 토스 쇼핑 추천 시스템: 멀티 스테이지 접근법",
+   "url": "https://toss.tech/article/toss-shopping-recommendation-system",
+   "kind": "company",
+   "date": "2025-04-17",
+   "note": "커머스 개인화팀 — Retrieval(Two-Tower)·Ranking·Re-ranking"
+  },
+  {
+   "n": 7,
+   "title": "Toss Tech · 리더보드 1등 LLM, 토스에서도 1등일까? (Toss Benchmark)",
+   "url": "https://toss.tech/article/toss-benchmark",
+   "kind": "company",
+   "date": "2026-09-16",
+   "note": "LLM Modeling 팀 — 상품 속성 추출·동일성 판단·커머스 지식, 운영 작업과의 상관"
+  },
+  {
+   "n": 8,
+   "title": "Toss Tech · 토스증권 추천과 검색은 어떻게 진화하고 있을까?",
+   "url": "https://toss.tech/article/tech_talk_talk_3",
+   "kind": "company",
+   "date": "2026-08-26",
+   "note": "같은 그룹 다른 회사 — Elasticsearch 하이브리드 검색·LLM 리랭커·임베딩 버전 관리·형태소 사전"
+  },
+  {
+   "n": 9,
+   "title": "Hinton 외 · Distilling the Knowledge in a Neural Network (2015)",
+   "url": "https://arxiv.org/abs/1503.02531",
+   "kind": "reference"
+  },
+  {
+   "n": 10,
+   "title": "Hofstätter 외 · Improving Efficient Neural Ranking Models with Cross-Architecture Knowledge Distillation (2020)",
+   "url": "https://arxiv.org/abs/2010.02666",
+   "kind": "reference",
+   "note": "Cross-Encoder → Bi-Encoder 증류, 점수 차이(Margin-MSE)"
+  },
+  {
+   "n": 11,
+   "title": "Reimers & Gurevych · Sentence-BERT (2019)",
+   "url": "https://arxiv.org/abs/1908.10084",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "Li 외 · Embedding-based Product Retrieval in Taobao Search (2021)",
+   "url": "https://arxiv.org/abs/2106.09297",
+   "kind": "reference",
+   "note": "다른 회사 — 쇼핑 검색의 임베딩 후보 찾기"
+  },
+  {
+   "n": 13,
+   "title": "Reddy 외 · Shopping Queries Dataset (ESCI, 2022)",
+   "url": "https://arxiv.org/abs/2206.06588",
+   "kind": "reference",
+   "note": "아마존 — 검색어·상품 쌍의 4등급 relevance 레이블"
+  },
+  {
+   "n": 14,
+   "title": "Thomas 외 · Large language models can accurately predict searcher preferences (2023)",
+   "url": "https://arxiv.org/abs/2309.10621",
+   "kind": "reference",
+   "note": "Bing — LLM relevance 판정과 사람 판정 비교, 프롬프트 설계"
+  },
+  {
+   "n": 15,
+   "title": "Douze 외 · The Faiss library (2024)",
+   "url": "https://arxiv.org/abs/2401.08281",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Malkov & Yashunin · HNSW (2016)",
+   "url": "https://arxiv.org/abs/1603.09320",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Elasticsearch 문서 · Similarity module (BM25)",
+   "url": "https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules-similarity.html",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Burges · From RankNet to LambdaRank to LambdaMART: An Overview (2010)",
+   "url": "https://www.microsoft.com/en-us/research/publication/from-ranknet-to-lambdarank-to-lambdamart-an-overview/",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Kohavi · Tang · Xu · Trustworthy Online Controlled Experiments (Cambridge, 2020)",
+   "url": "https://experimentguide.com/",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Manning · Raghavan · Schütze · Introduction to Information Retrieval",
+   "url": "https://nlp.stanford.edu/IR-book/",
+   "kind": "reference",
+   "note": "8장 검색 평가(Recall·Precision)"
+  },
+  {
+   "n": 21,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 22,
+   "title": "자소설닷컴 — 토스뱅크 연봉(같은 집계)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "토스 — 회사 소개(사이트 하단 회사 정보)",
+   "url": "https://toss.im/company",
+   "kind": "company"
+  },
+  {
+   "n": 24,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 25,
+   "title": "Milvus 문서",
+   "url": "https://milvus.io/docs",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "이 팀(Commerce Search Relevance Silo)이 직접 한 공개 발표·글은 찾지 못했습니다. 팀의 일은 이 공고[1]와 같은 Silo·같은 커머스의 다른 공고[2][3][4]로, 토스가 LLM 판단을 작은 모델로 옮기는 방식은 SNAP 글[5]로 보였는데 그 글은 검색이 아니라 상품 동일성 판단 작업입니다. 레이블 등급·증류 손실·피처 구성의 '보통 이런 것'은 아마존·Bing·타오바오 등 공개 논문[10][12][13][14]으로 보였고, 토스가 그대로 하는지는 알 수 없습니다.",
+ "resources": [
+  {
+   "id": "snap-blog",
+   "title": "손가락 튕기기로 LLM 비용 줄이기 (SNAP)",
+   "by": "Toss Tech · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://toss.tech/article/snap-llm-cost-reduction",
+   "why": "토스가 LLM 판단을 정답으로 작은 모델을 학습하고 확신도 문턱으로 일부만 넘긴 실제 사례. 업무①③의 회사식 사고방식을 먼저 본다."
+  },
+  {
+   "id": "toss-reco-blog",
+   "title": "토스 쇼핑 추천 시스템: 멀티 스테이지 접근법",
+   "by": "Toss Tech · 커머스 개인화팀 · 2025",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://toss.tech/article/toss-shopping-recommendation-system",
+   "why": "같은 커머스의 후보 찾기 → 순서 매기기 단계 구조와 Two-Tower. Light/Heavy 2단을 이해하는 바탕."
+  },
+  {
+   "id": "toss-benchmark",
+   "title": "리더보드 1등 LLM, 토스에서도 1등일까?",
+   "by": "Toss Tech · LLM Modeling 팀 · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/toss-benchmark",
+   "why": "레이블러로 쓸 LLM을 무엇으로 고르나 — 커머스 작업과 맞는 지표가 무엇이었는지 숫자로 보여 준다."
+  },
+  {
+   "id": "ir-book",
+   "title": "Introduction to Information Retrieval",
+   "by": "Manning · Raghavan · Schütze · Cambridge (온라인 무료판)",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://nlp.stanford.edu/IR-book/",
+   "why": "역색인·tf-idf·평가 지표(8장)의 교과서. BM25·Recall을 정확히 말하려면 이 바탕이 필요하다."
+  },
+  {
+   "id": "ai-powered-search",
+   "title": "AI-Powered Search",
+   "by": "Trey Grainger · Doug Turnbull · Max Irwin · Manning · 2025",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.manning.com/books/ai-powered-search",
+   "why": "질의 이해·임베딩 검색·학습형 랭킹·클릭 신호를 검색 엔진 위에서 엮는 법. 업무⑤의 층별 진단 어휘."
+  },
+  {
+   "id": "llm-app",
+   "title": "LLM을 활용한 실전 AI 애플리케이션 개발",
+   "by": "허정준",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=LLM%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EC%8B%A4%EC%A0%84%20AI%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EA%B0%9C%EB%B0%9C",
+   "why": "문장 임베딩·벡터 검색·리랭킹·LLM 평가를 한국어로. 요건④와 업무①의 기본기."
+  },
+  {
+   "id": "sbert-docs",
+   "title": "Sentence Transformers 문서",
+   "by": "공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.sbert.net/",
+   "why": "Bi-Encoder 미세 조정·Cross-Encoder·어려운 음성 뽑기 예제 코드. Student 모델을 직접 학습해 보는 출발점."
+  },
+  {
+   "id": "hinton-kd",
+   "title": "Distilling the Knowledge in a Neural Network",
+   "by": "Hinton · Vinyals · Dean · 2015",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1503.02531",
+   "why": "선생님의 부드러운 분포(온도)를 학생이 배우는 증류의 원전. 업무①의 'distillation'이 무엇인지."
+  },
+  {
+   "id": "hofstatter-kd",
+   "title": "Cross-Architecture Knowledge Distillation (Margin-MSE)",
+   "by": "Hofstätter 외 · 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2010.02666",
+   "why": "정확한 Cross-Encoder의 점수 차이를 빠른 Bi-Encoder가 배우게 하는 검색용 증류. 우대①과 가장 가깝다."
+  },
+  {
+   "id": "esci-data",
+   "title": "Shopping Queries Dataset (ESCI)",
+   "by": "Amazon Science",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/amazon-science/esci-data",
+   "why": "검색어·상품 쌍에 사람이 단 4등급 relevance 공개 데이터. 레이블 설계·학습·평가를 실제 쇼핑 데이터로 연습한다."
+  },
+  {
+   "id": "llm-judge",
+   "title": "Large language models can accurately predict searcher preferences",
+   "by": "Thomas 외 · Microsoft Bing · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2309.10621",
+   "why": "LLM relevance 판정 프롬프트를 어떻게 짜고 사람 판정과 어떻게 견주는지. 우대③의 교본."
+  },
+  {
+   "id": "faiss-docs",
+   "title": "Faiss 위키",
+   "by": "Meta · 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/facebookresearch/faiss/wiki",
+   "why": "IVF·HNSW·PQ 색인을 고르고 Recall-속도 곡선을 그리는 법. 우대②."
+  },
+  {
+   "id": "milvus-docs",
+   "title": "Milvus 문서",
+   "by": "공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://milvus.io/docs",
+   "why": "서비스용 벡터 DB — 색인 교체·필터 검색·운영. 공고에 이름이 나온 도구."
+  },
+  {
+   "id": "es-similarity",
+   "title": "Elasticsearch · Similarity module",
+   "by": "Elastic 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules-similarity.html",
+   "why": "BM25의 k1·b가 무엇을 바꾸는지. 우대④와 업무②의 lexical 피처."
+  },
+  {
+   "id": "lambdamart",
+   "title": "From RankNet to LambdaRank to LambdaMART: An Overview",
+   "by": "Chris Burges · Microsoft Research · 2010",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.microsoft.com/en-us/research/publication/from-ranknet-to-lambdarank-to-lambdamart-an-overview/",
+   "why": "목록 순서를 직접 배우는 LTR의 대표 계보. 우대⑤."
+  },
+  {
+   "id": "lightgbm-docs",
+   "title": "LightGBM 문서",
+   "by": "Microsoft · 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://lightgbm.readthedocs.io/en/latest/",
+   "why": "lambdarank 목적 함수로 피처 기반 랭커를 바로 만들어 볼 수 있다. Heavy 모델의 첫 기준선."
+  },
+  {
+   "id": "spark-docs",
+   "title": "Spark SQL, DataFrames and Datasets Guide",
+   "by": "Apache Spark 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://spark.apache.org/docs/latest/sql-programming-guide.html",
+   "why": "몇 달 치 검색 로그를 묶어 학습셋을 만드는 분산 처리. 요건②."
+  },
+  {
+   "id": "abtest-book",
+   "title": "신뢰도 높은 온라인 통제 실험",
+   "by": "론 코하비 · 다이앤 탕 · 야 쉬 (이기홍 · 김기영 옮김)",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000005201885",
+   "why": "Trustworthy Online Controlled Experiments 한국어판. 지표·가드레일·SRM 같은 A/B 함정 — 업무④와 우대⑥."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "토스가 하는 방식 먼저",
+   "time": "1주",
+   "goal": "Light/Heavy 2단, LLM 레이블 → 작은 모델, 층(QU·Retrieval·Ranking) 구분을 말로 설명할 수 있다.",
+   "resources": ["snap-blog", "toss-reco-blog", "toss-benchmark"],
+   "task": "이 풀이의 업무 다섯 줄을 그림 하나로 그린다 — 칸: 입력, 모델, 출력, 재는 지표, 맞물리는 팀."
+  },
+  {
+   "title": "검색 기본기와 지표",
+   "time": "2~3주",
+   "goal": "BM25로 기준선을 만들고 Recall@k·NDCG·Defect Rate를 직접 계산한다.",
+   "resources": ["ir-book", "es-similarity", "esci-data"],
+   "task": "ESCI 데이터에서 검색어 500개를 골라 BM25(상품명·브랜드 칸 따로) 기준선을 만들고, 세 지표를 표로 낸다."
+  },
+  {
+   "title": "임베딩 학습과 ANN",
+   "time": "3~4주",
+   "goal": "Bi-Encoder를 미세 조정해 BM25보다 Recall을 올리고 ANN 색인에 싣는다.",
+   "resources": ["sbert-docs", "llm-app", "faiss-docs", "milvus-docs"],
+   "task": "2단계 데이터로 문장 임베딩 모델을 미세 조정(배치 안 음성 + 어려운 음성)하고, Faiss HNSW 색인의 Recall-지연 곡선을 그린다."
+  },
+  {
+   "title": "LLM 레이블과 증류",
+   "time": "2~3주",
+   "goal": "LLM 판정으로 정답을 만들고, 사람 정답과 견주고, 그 판정을 학생 모델로 증류한다.",
+   "resources": ["llm-judge", "hinton-kd", "hofstatter-kd"],
+   "task": "검색어·상품 쌍 300개를 LLM으로 4등급 매기고 ESCI 사람 정답과 카파를 계산한다. 프롬프트를 두 번 고쳐 카파 변화를 적고, LLM 등급으로 3단계 모델을 다시 학습해 Recall 차이를 낸다."
+  },
+  {
+   "title": "Heavy 모델과 실험 (선택)",
+   "time": "계속",
+   "goal": "임베딩 점수 + lexical 피처로 랭커를 만들고, A/B 설계서를 쓴다.",
+   "resources": ["lightgbm-docs", "lambdamart", "abtest-book", "ai-powered-search"],
+   "task": "임베딩 유사도·칸별 BM25·브랜드·숫자 일치 피처로 LightGBM lambdarank 랭커를 학습해 Defect@10을 비교하고, 이 모델을 내보낼 A/B 설계서(주 지표·가드레일·표본·기간) 한 장을 쓴다."
+  }
+ ],
+ "pay": {
+  "summary": "공공데이터 집계로 신입 초봉 **약 4,200만원**, 평균 **약 6,200만원** — 공시된 평균 급여는 없다(비상장). 이 자리는 3년 이상 경력직이라 초봉과 거리가 멀다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 없고 직군 구분도 없어 ML 엔지니어 계약 연봉과 다를 수 있다 [21]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 [21]"
+   },
+   {
+    "label": "토스뱅크 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 계열사 값 — 견주어 보기용 [22]"
+   },
+   {
+    "label": "토스뱅크 평균",
+    "value": "약 7,208만원",
+    "amount": 7208,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 계열사 평균 [22]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고, 인터뷰·레퍼런스 체크 뒤 **처우 협의** 단계에서 사람마다 정한다 [1]. 비바리퍼블리카는 상장사가 아니라 사업보고서의 '직원 평균 급여'가 없다. 평균은 경력직이 섞인 회사 전체 값이라 초봉이 아니고, 집계값은 추정이라 3년 이상 경력 ML 엔지니어가 받는 제안과는 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {"name": "식대", "detail": "1인 1법인카드, 금액 제한 없음"},
+   {"name": "업무 비용", "detail": "책·사무용품·업무 교육 100% 지원"},
+   {"name": "장비", "detail": "최고급 노트북·모니터·소프트웨어"},
+   {"name": "근무 장소", "detail": "재택 여부를 스스로 정하고 팀에 공유"},
+   {"name": "자율 휴가", "detail": "보고·승인 없이, 당일 오전에도 사용"},
+   {"name": "리프레쉬 휴가", "detail": "근속 3년마다 1개월 유급"},
+   {"name": "주택 자금 대출", "detail": "1억원 한도 무이자(6개월 이상 재직)"},
+   {"name": "건강", "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"},
+   {"name": "단체 보험", "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"},
+   {"name": "교통", "detail": "주차비·택시비 100%(법인카드)"},
+   {"name": "통신비", "detail": "매월 10만원"},
+   {"name": "경조사", "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"},
+   {"name": "사내 시설", "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"}
+  ],
+  "note": "토스 팀 복지를 소개한 2021년 공식 글이다 [24]. 지금도 같은지는 글에 없으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스(비바리퍼블리카) 본사",
+  "address": "서울특별시 강남구 테헤란로 142, 4·10~13·22·23층",
+  "postal": "06236",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "주소는 토스 회사 소개 페이지 하단의 회사 정보다 [23]. 공고의 근무지는 'Seoul'로만 적혀 있어 커머스 팀 자리가 본사와 다를 수 있다 {추론}."
+ }
+}
