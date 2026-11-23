@@ -20,6 +20,7 @@
   "ats-toss:group:7997231003": "toss-catalog-mle",
   "ats-toss:group:7989660003": "toss-client-platform-engineer",
   "ats-toss:group:7784598003": "toss-commerce-ads-mle",
+  "ats-toss:group:6545457003": "toss-commerce-ai-engineer",
   "ats-toss:group:7827378003": "toss-commerce-data-graph-mle",
   "ats-toss:group:7992223003": "toss-commerce-search-relevance-mle",
   "ats-toss:group:6085421003": "toss-commerce-server-developer",
@@ -249,6 +250,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 14
+  },
+  {
+   "id": "toss-commerce-ai-engineer",
+   "company": "토스",
+   "role": "AI 엔지니어 (Commerce)",
+   "jobs": [
+    "ats-toss:group:6545457003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 8
   },
   {
    "id": "toss-commerce-data-graph-mle",
