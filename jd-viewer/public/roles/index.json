@@ -67,6 +67,7 @@
   "saramin-55608860": "tossbank-finance-data-system",
   "ats-toss:group:7702579003": "tossbank-infra-operations-engineer",
   "ats-toss:group:4542935003": "tossbank-product-foundation-server",
+  "ats-toss:group:5847765003": "tossbank-security-researcher",
   "ats-toss:group:7998884003": "tossbank-senior-data-analyst",
   "ats-toss:group:4521687003": "tossbank-server-platform"
  },
@@ -712,6 +713,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 36
+  },
+  {
+   "id": "tossbank-security-researcher",
+   "company": "토스뱅크",
+   "role": "모의해킹 및 취약점 분석 전문가",
+   "jobs": [
+    "ats-toss:group:5847765003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 21
   },
   {
    "id": "tossbank-senior-data-analyst",

@@ -1,0 +1,1189 @@
+{
+ "id": "tossbank-security-researcher",
+ "company": "토스뱅크",
+ "role": "모의해킹 및 취약점 분석 전문가",
+ "team": "Security Division · Security Red Team",
+ "jobs": [
+  "ats-toss:group:5847765003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "은행의 서버·네트워크·DB·보안 장비를 **법이 정한 점검표**로 진단하고, 웹·앱·API·사내망을 공격자처럼 뚫어 보며, 그 점검을 돌리는 **자체 진단 도구**를 직접 만듭니다.[1][2]",
+  "env": "Security Division 의 Security Red Team. 외주 없이 기획·점검·분석·대응을 팀이 다 하고, 찾은 취약점은 자체 취약점 관리 시스템(VMS)으로 조치될 때까지 쫓습니다.[1][2]",
+  "oneline": "점검표를 코드로 돌리는 개발자이자, 그 결과로 실제 침투까지 이어 보는 공격자. 은행이라 **법정 점검**이 일의 바닥입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "토스뱅크의 시스템에 대한 정기 및 비정기 인프라(서버, 네트워크, DBMS, 정보보호솔루션 등) 취약점 진단을 수행해요.",
+   "short": "서버·네트워크 장비·DB·보안 장비의 설정을 항목별 점검표로 하나씩 확인해 '취약'을 찾아내는 일.",
+   "why": "은행은 전자금융기반시설(전자금융에 쓰는 전산 설비)의 취약점 분석·평가를 법으로 해야 합니다. 큰 금융회사는 연 1회 이상, 홈페이지는 6개월에 1회 이상입니다.[5] 금융위원회는 2026년 11월, 대형사는 연 2회로 늘리고 기반시설에 직간접으로 이어진 시스템도 빠짐없이 넣게 하겠다고 예고했고 이 두 가지는 11월 말부터 행정지도로 먼저 시행합니다.[6] '비정기'는 새 시스템이 들어오거나 큰 공개 취약점이 나왔을 때 하는 수시 점검으로 읽힙니다 {추론}. 토스뱅크 팀은 이 인프라 진단에서 나온 데이터를 다시 침투테스트의 근거로 씁니다.[2]",
+   "actually": {
+    "intro": "국가 기준 점검표(KISA 2026 상세가이드)가 항목을 묶는 방식입니다. 토스뱅크가 쓰는 실제 항목표는 공개되지 않았습니다.[4]",
+    "items": [
+     "**Unix 서버 67개(U-01~U-67)** — 계정·파일 권한·서비스·패치·로그 다섯 묶음. 예: U-01 root 원격 접속 제한, U-28 접속 IP·포트 제한.[4]",
+     "**Windows 서버 64개(W-)** — Administrator 이름 바꾸기, Guest 끄기, 계정 잠금 임계값 같은 항목.[4]",
+     "**네트워크 장비 38개(N-) · 보안 장비 23개(S-)** — 기본 계정 바꾸기, 비밀번호 복잡성, 접근 관리, 로그, 기능 설정.[4]",
+     "**DBMS 26개(D-)** — 기본 계정 비밀번호 변경, 원격 접속 제한, 리스너 비밀번호, 시스템 테이블 접근 제한.[4]",
+     "**그 밖의 분야** — 웹 서비스 26 · PC 18 · 가상화 장비 25 · 클라우드 19 · 웹 애플리케이션 21 등 모두 12분야. 항목마다 중요도(상·중·하), 양호/취약 판단 기준, 조치 방법, 조치 시 영향이 붙어 있다.[4]",
+     "**판정은 사람이 마무리** — 가이드는 판단 기준이 '권고'이고, 취약으로 나와도 그 위험을 감당할 보안 조치와 근거가 있으면 양호로 볼 수 있다고 적는다.[4]"
+    ]
+   },
+   "how_far": "점검 항목과 판단 기준은 가이드·감독규정과 회사 정책이 정합니다.[4][5] 리서처는 **많은 장비에서 그 항목을 빠짐없이 걷어 오고, 예외(양호로 볼 근거)를 가리고, 조치까지 쫓는** 일을 맡습니다.[2] 최소선은 리눅스·윈도우 설정 파일을 직접 열어 보고 '이 값이 왜 위험한가'를 말할 수 있는 것입니다 {추론}.",
+   "refs": [
+    2,
+    4,
+    5,
+    6
+   ],
+   "study": [
+    "kisa-guide",
+    "efsr",
+    "cis-bench"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "전자금융기반시설 취약점 분석/평가, 주요정보통신기반시설 취약점 분석/평가 수행을 위한 자체 진단 도구를 개발하고 유지하는 활동을 수행해요.",
+   "short": "위 점검표를 사람이 손으로 보지 않게, 설정을 걷어 와 판정까지 하는 도구를 팀이 직접 만들고 고친다.",
+   "why": "토스뱅크 팀은 외부 솔루션이 커스터마이징이 어렵고 없는 기능이 많아 취약점 관리 시스템(VMS, Vulnerability Management System)을 직접 만들었다고 했습니다. 상용 제품처럼 정해진 체크리스트에 맞추지 않고, 새 취약점 유형이 나오면 바로 '모듈'로 만들어 넣을 수 있다는 것이 이유입니다.[2] VMS 는 지금 사내 주요 인프라의 점검과 결과 관리에 쓰이고, 이를 보완할 '정보 수집 시스템'을 새로 짓고 있습니다.[2]",
+   "actually": {
+    "intro": "자체 진단 도구는 보통 이런 부품으로 나뉩니다. 모듈·자산 관리는 토스뱅크가 말한 것이고, 나머지는 같은 그룹 토스의 발표와 공개 도구의 구조입니다.",
+    "items": [
+     "**점검 모듈** — 항목 하나(U-01 등)를 '무엇을 읽어 어떻게 판정하나'로 적은 작은 단위. 토스뱅크 VMS 는 찾은 취약점을 모듈 형태의 카테고리로 정의해 관리한다.[2]",
+     "**수집 스크립트** — 리눅스는 Shell, 윈도우는 PowerShell 로 설정값·파일 권한·서비스 목록을 걷어 온다. 공고가 두 언어를 같이 적은 까닭으로 보인다 {추론}.",
+     "**자산 목록과 잇기** — 어느 서버가 어떤 OS·역할인지 알아야 맞는 모듈을 돌린다. 토스뱅크는 VMS 로 자동 점검과 자산 관리를 함께 한다.[2] 금융위 개정안도 IT 자산을 식별해 중요도별로 나누고 책임자를 정하라고 한다.[6]",
+     "**결과 관리 웹** — 점검 결과·예외·조치 기한을 쌓는 화면. 오픈소스 취약점 관리 도구 DefectDojo 가 Django 로 만든 웹앱이듯, 이런 도구는 흔히 Python 웹 프레임워크 위에 선다.[12]",
+     "**보고서 자동 생성** — 같은 그룹 토스의 점검 자동화는 결과 JSON 으로 PDF·DOCX 보고서(목적·일정·범위·심각도별 요약·조치 권고)를 자동으로 만든다.[3]"
+    ]
+   },
+   "how_far": "무엇을 점검할지는 가이드가 정하고[4], 이 자리는 **그 항목을 코드로 옮기고, OS 버전이 바뀌어도 판정이 틀리지 않게 유지**합니다. 가이드도 점검 대상의 세부 버전·패치에 따라 점검 방법이 언제든 바뀔 수 있다고 적었습니다.[4]",
+   "refs": [
+    2,
+    3,
+    4,
+    6,
+    12
+   ],
+   "study": [
+    "tb-redteam",
+    "kisa-guide",
+    "defectdojo",
+    "ps-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "웹/모바일/침투테스트 등 다양한 관점에서 토스뱅크의 안전을 위해 취약점 진단을 수행해요.",
+   "short": "고객이 쓰는 웹·앱·API와 사내망을 실제 공격자처럼 두드려, 어디까지 들어갈 수 있는지 확인하는 일.",
+   "why": "토스뱅크 Red Team 은 외주에 기대지 않고 침투테스트를 직접 하고, '어디까지 뚫을 수 있는가'를 검증한 뒤 Blue Team(방어 팀)과 바로 방어를 보완한다고 했습니다.[2] 카드 정보 보호 인증(PCI-DSS)의 침투테스트 요건도 이 팀이 맡습니다.[2] PCI DSS 는 내부·외부 침투테스트를 최소 12개월마다, 그리고 큰 변경 뒤에 하도록 요구합니다.[10]",
+   "actually": {
+    "items": [
+     "**웹 애플리케이션** — KISA 가이드의 21개 항목: 코드·SQL 인젝션, XSS, CSRF, SSRF, 불충분한 인증·권한 검증, 파일 업로드·다운로드, 세션 관리, 자동화 공격 등.[4] 국제적으로는 OWASP 테스트 가이드(WSTG)가 같은 일을 단계별로 묶는다.[7]",
+     "**모바일** — 앱이 기기에 남기는 데이터, 통신 암호화, 위변조·디버깅 방지를 본다. 국제 기준은 OWASP MASTG 다.[13]",
+     "**침투테스트** — 취약점 하나가 아니라 '들어와서 → 권한을 올리고 → 옆 서버로 → 데이터까지'의 길을 실제로 이어 본다. 토스뱅크는 인프라 진단 데이터를 실제 공격 시나리오와 묶어 이 길을 검증한다.[2]",
+     "**Adversary Simulation** — 실존 공격 기법을 흉내 내 탐지가 울리는지, 우회되는지를 재는 훈련. 팀이 탐지 우회·방어 성능 평가용 Red Team Tool 을 직접 만든다.[2]"
+    ]
+   },
+   "how_far": "공격은 미리 정한 범위(시스템·기간·방법) 안에서만 합니다 {추론}. 공고 마지막 업무 줄처럼, 들어온 뒤 인프라 진단 쪽과 모의해킹 쪽 중 어디에 무게를 둘지 정합니다.[1]",
+   "refs": [
+    1,
+    2,
+    4,
+    7,
+    10,
+    13
+   ],
+   "study": [
+    "wstg",
+    "wsa",
+    "mastg"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "소스코드 레벨에서의 취약점을 발견하고 실제 위협인지 테스트를 수행해요.",
+   "short": "코드를 읽어 위험한 줄을 찾고, 그게 진짜 공격에 쓰이는지 직접 돌려서 가려내는 일.",
+   "why": "도구가 내놓는 '의심'이 모두 실제 위험은 아닙니다. 토스뱅크 팀은 취약점이 발견됐다고 곧바로 리스크가 되는 것은 아니라며, 위험을 '가능성'이 아니라 '현실성'으로 확인한다고 했습니다.[2] KISA 가이드도 인젝션 항목에 소스코드 점검이 필요하다고 적고 점검 대상에 웹 애플리케이션 소스코드를 넣었습니다.[4]",
+   "actually": {
+    "items": [
+     "**입력에서 위험한 함수까지 따라가기** — 사용자 입력이 들어오는 곳(source)에서 쿼리 실행·명령 실행·파일 열기 같은 위험한 곳(sink)까지 중간 검증 없이 이어지는지 본다. Semgrep 의 taint 규칙이 이 모양이다.[22]",
+     "**도구로 넓게, 사람이 깊게** — 자동 검사기가 후보를 뽑고, 사람이 맥락(그 값이 정말 사용자 것인가, 앞에서 막히나)을 읽는다. 둘은 서로를 대신하지 못한다.[23]",
+     "**재현(PoC)** — 실제로 터지는 입력을 만들어 증거를 남긴다. 팀원은 어떤 취약점을 어떤 증거·PoC 로 입증했는지를 서류에서 보고 싶다고 했다.[2]",
+     "**권한 검사 빠짐** — 금융 API 에서 흔한 '남의 번호로 부르면 남의 것이 나온다'(OWASP API1, BOLA)도 코드에서 소유자 확인 줄이 있나로 찾는다.[8]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "코드에서 찾은 줄이 '실제 위협'인지 돌려 보기 (가상 데이터)",
+     "body": "입력을 문자열로 이어 붙인 쿼리에 조작한 값을 넣으면 남의 대출까지 나옵니다. 자리표시자로 고친 쪽은 아무것도 안 나옵니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE loan(id INTEGER, owner TEXT, amount INTEGER)\")\ndb.executemany(\"INSERT INTO loan VALUES (?,?,?)\", [(1, \"alice\", 300), (2, \"bob\", 9000)])\n\ndef find_bad(owner):        # 소스에서 찾은 줄: 입력을 문자열로 이어 붙인다\n    return db.execute(f\"SELECT * FROM loan WHERE owner = '{owner}'\").fetchall()\n\ndef find_good(owner):       # 고친 줄: 자리표시자(?)로 값만 넘긴다\n    return db.execute(\"SELECT * FROM loan WHERE owner = ?\", (owner,)).fetchall()\n\npayload = \"alice' OR '1'='1\"\nprint(\"bad \", find_bad(payload))     # '실제 위협인가' 확인 — 남의 대출까지 나온다\nprint(\"good\", find_good(payload))\n# bad  [(1, 'alice', 300), (2, 'bob', 9000)]\n# good []"
+    }
+   ],
+   "how_far": "언어 하나(Java·Kotlin·Python·JS 중)는 남의 코드를 따라 읽을 수 있어야 하고, 찾은 줄을 **고친 코드로 제안**할 수 있으면 충분합니다 {추론}.",
+   "refs": [
+    2,
+    4,
+    8,
+    22,
+    23
+   ],
+   "study": [
+    "owasp-crg",
+    "semgrep",
+    "wsa"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "발견된 취약점 조치를 이행하기 위해 다양한 팀의 담당자와 협업을 통해 개선활동을 수행해요.",
+   "short": "찾은 것을 고칠 사람에게 넘기고, 기한 안에 실제로 고쳐졌는지 끝까지 쫓는 일.",
+   "why": "토스뱅크 팀은 대부분의 기업이 찾기는 잘하지만 조치될 때까지 추적 관리하는 것을 어려워한다며, 그 부분을 위해 VMS 를 직접 만들었다고 했습니다.[2] 감독규정도 평가 뒤 이행계획을 세워 취약점을 없애거나 상응 조치를 하고, 그럴 수 없으면 최고경영자 승인을 받아 결과를 보고하게 합니다.[5] Red Team 은 제품 조직, 그리고 Legal & Compliance·Platform Engineering·Internal Audit 조직과 협업합니다.[1]",
+   "actually": {
+    "items": [
+     "**주인 찾기** — 서버·서비스마다 책임 팀을 자산 목록에서 찾아 조치를 요청한다. 금융위 개정안이 IT 자산마다 책임자를 정하라는 것과 같은 축이다.[6]",
+     "**고치는 법을 그 사람의 말로** — 'U-01 취약'이 아니라 '이 파일의 이 줄을 이렇게, 서비스 영향 없음'. 가이드는 항목마다 조치 방법과 조치 시 영향을 적어 둔다.[4]",
+     "**기한과 예외** — 심각도별 기한을 두고, 당장 못 고치면 대신 막는 조치와 승인 기록을 남긴다.[5]",
+     "**다시 점검** — 고쳤다는 것을 다시 돌려 확인한다. 팀원은 한 번 점검·조치했다고 보안 수준이 유지되지 않는다며 주기적이고 자동화된 라이프사이클을 말했다.[2]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "조치 기한 쫓기 — VMS 가 하는 일을 작게 (가상 값)",
+     "body": "기한(상 30일·중 60일·하 90일)은 예시로 정한 값입니다. 고친 것은 빼고, 남은 것의 경과일과 기한을 셉니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "from datetime import date\n\nSLA = {\"상\": 30, \"중\": 60, \"하\": 90}   # 조치 기한(일) — 예시 값\nfindings = [\n    (\"U-01\", \"db-01\", \"상\", date(2026, 9, 1), None),\n    (\"U-28\", \"api-03\", \"상\", date(2026, 11, 1), None),\n    (\"W-02\", \"ad-01\", \"중\", date(2026, 8, 20), date(2026, 9, 10)),\n    (\"IN\",  \"web-loan\", \"상\", date(2026, 10, 2), None),   # 웹 '불충분한 권한 검증'\n]\ntoday = date(2026, 11, 23)\nfor code, asset, sev, found, fixed in findings:\n    if fixed:\n        continue\n    age = (today - found).days\n    left = SLA[sev] - age\n    print(f\"{code:5} {asset:9} {sev} {age:3}일째\", \"기한 넘김\" if left < 0 else f\"{left}일 남음\")\n# U-01  db-01     상  83일째 기한 넘김\n# U-28  api-03    상  22일째 8일 남음\n# IN    web-loan  상  52일째 기한 넘김"
+    }
+   ],
+   "how_far": "고치는 손은 각 팀이고, 리서처는 **고칠 수 있는 형태로 넘기고 닫힐 때까지 쫓는** 사람입니다.[2]",
+   "refs": [
+    1,
+    2,
+    4,
+    5,
+    6
+   ],
+   "study": [
+    "tb-redteam",
+    "defectdojo"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "서류검토 및 인터뷰 과정에서 후보자분의 전문성에 따라 합류 후 담당하실 업무 범위도 함께 고려할 예정이에요. 인프라 진단 영역에 집중할 수도, 모의해킹 및 침투테스트 영역에 집중하게 될 수도 있어요!",
+   "short": "한 사람이 위 다섯 가지를 다 하는 게 아니라, 인프라 진단과 모의해킹 중 강한 쪽으로 자리를 정한다는 뜻.",
+   "why": "실제 팀도 그렇게 나뉩니다 — 한 명은 인프라 취약점 진단과 그 자동화 개발, 한 명은 모의해킹, 한 명은 인증(PCI-DSS 침투테스트)과 애플리케이션 보안을 맡습니다. 그러면서도 칼같이 나누지 않고 셋이 침투테스트와 분석을 같이 하는 구조라고 했습니다.[2]",
+   "how_far": "서류에 내 무게중심이 어느 쪽인지 분명히 쓰는 것이 좋습니다 {추론}. 인프라 쪽이면 업무 첫째·둘째 줄, 모의해킹 쪽이면 셋째·넷째 줄의 사례가 중심이 됩니다.",
+   "refs": [
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "기본적인 IT 및 보안 인프라 환경에 대한 이해가 있는 분이 필요해요.",
+   "short": "서버·네트워크·DB·방화벽이 어떻게 이어져 도는지 알아야, 점검표 한 줄이 왜 위험한지 판단한다.",
+   "why": "점검 대상이 서버·네트워크·DBMS·정보보호솔루션입니다.[1] 팀원은 네트워크·OS·클라우드·컨테이너·CI/CD 같은 실행 환경과 인증·인가·API 같은 애플리케이션 층을 함께 보고, 그 경계에서 취약점이 실제 공격으로 이어지는 길을 가정할 수 있어야 한다고 했습니다.[2]",
+   "level": {
+    "basic": "리눅스 계정·파일 권한(chmod·SUID)·서비스, 윈도우 계정·그룹, TCP/IP·포트·방화벽 규칙",
+    "work": "SSH·SNMP·DNS·NTP 설정, DB 계정·리스너, 보안 장비(방화벽·IPS·WAF) 정책 읽기",
+    "team": "KISA 12분야 항목을 보고 '이 설정이 공격 길의 어디에 쓰이나'를 설명하기 {추론}"
+   },
+   "refs": [
+    1,
+    2,
+    4
+   ],
+   "study": [
+    "book-http",
+    "linux-cmd",
+    "kisa-guide"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "자체 취약점 진단 도구의 개발 및 유지를 위해 개발 역량이 필요해요.",
+   "short": "진단 도구를 '쓰는' 사람이 아니라 '만들고 고치는' 사람을 찾아서 — 그 도구가 이 팀의 코드다.",
+   "why": "팀이 VMS·정보 수집 시스템·Red Team Tool 을 직접 개발합니다.[2] 인프라 담당 팀원은 진단과 함께 그 과정을 자동화하는 개발에도 집중한다고 소개했습니다.[2]",
+   "actually": {
+    "items": [
+     "**모듈 더하기·고치기** — 새 취약점 유형이 나오면 바로 점검 모듈로.[2]",
+     "**실행부** — 많은 서버에 스크립트를 돌리고 결과를 모으는 부분(동시 실행·재시도·시간 제한) {추론}.",
+     "**API·큐** — 같은 그룹 토스는 Flask API 서버가 스캔 요청을 큐에 넣고 작업 스레드가 차례로 처리하며, Jenkins 가 15초마다 상태(대기·스캔 중·완료·실패)를 묻는 구조를 썼다.[3]",
+     "**외부 도구 엮기** — 템플릿 스캐너 Nuclei 는 넣은 URL 만 보므로 크롤러(Katana·ParamSpider)를 붙여 URL 을 모은 뒤 한꺼번에 스캔했다.[3][14]"
+    ]
+   },
+   "how_far": "대규모 서비스 개발자 수준까지는 아니고, **팀이 매일 쓰는 내부 도구를 혼자 고치고 배포할 수 있는** 수준으로 읽힙니다 {추론}.",
+   "refs": [
+    2,
+    3,
+    14
+   ],
+   "study": [
+    "g25-nuclei",
+    "nuclei-docs",
+    "flask-docs",
+    "django-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "취약점 진단 스크립트를 이해하고 진단 및 결과를 해석하는 역량이 필요해요.",
+   "short": "스크립트가 '취약'이라 찍어도 그대로 믿지 않고, 무엇을 읽어 그렇게 판정했는지 따져 오탐을 가려낸다.",
+   "why": "가이드부터 판단 기준은 권고이고 양호·취약의 최종 판단은 점검하는 사람이 운용 상황을 보고 한다고 적었습니다.[4] 토스뱅크 팀은 진단 데이터를 침투테스트의 근거로 다시 씁니다 — 해석이 틀리면 다음 단계가 틀립니다.[2]",
+   "actually": {
+    "items": [
+     "**같은 설정이 두 번 나오면** — sshd 는 처음 나온 값을 쓴다. 아래 예의 첫 줄처럼 뒤의 yes 는 무시된다.[11]",
+     "**설정이 없을 때** — PermitRootLogin 의 기본값은 prohibit-password 라, 비밀번호로는 막혀도 키로는 root 가 들어온다. 가이드는 No 로 두라고 한다.[4][11]",
+     "**배포판 차이** — CentOS 8·Ubuntu 20.04 이상은 /etc/securetty 가 없고 Telnet 이 기본으로 꺼져 있다고 가이드가 따로 적는다.[4]",
+     "**보상 통제** — 취약 판정이어도 다른 보안 조치와 근거가 있으면 양호로 볼 수 있다.[4]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "U-01 판정 스크립트 — 결과를 해석하는 연습",
+     "body": "같은 키워드는 처음 값이 이기고, 아예 없으면 기본값을 따집니다. 셋째 입력은 뒤에 no 가 있어도 취약입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "def check_u01(sshd_config: str) -> str:\n    # sshd 는 같은 키워드가 여러 번 나오면 '처음 나온 값'을 쓴다(Match 블록 밖)\n    for line in sshd_config.splitlines():\n        line = line.strip()\n        if not line or line.startswith(\"#\"):\n            continue\n        if line.lower().startswith(\"match \"):\n            break\n        key, _, value = line.partition(\" \")\n        if key.lower() == \"permitrootlogin\":\n            v = value.strip().lower()\n            return \"양호\" if v == \"no\" else f\"취약 (PermitRootLogin {v})\"\n    return \"취약 (설정 없음 → 기본값 prohibit-password, 키로 root 접속 가능)\"\n\nprint(check_u01(\"PermitRootLogin no\\nPermitRootLogin yes\"))\nprint(check_u01(\"#PermitRootLogin no\\nPasswordAuthentication no\"))\nprint(check_u01(\"PermitRootLogin yes\\nPermitRootLogin no\"))\n# 양호\n# 취약 (설정 없음 → 기본값 prohibit-password, 키로 root 접속 가능)\n# 취약 (PermitRootLogin yes)"
+    }
+   ],
+   "refs": [
+    2,
+    4,
+    11
+   ],
+   "study": [
+    "kisa-guide",
+    "linux-cmd"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Django, Flask, Python, Powershell, Shell 등 개발 경험이 필요해요.",
+   "short": "진단 도구의 몸(Python 웹·API)과 손발(리눅스 Shell·윈도우 PowerShell 수집 스크립트)을 다 짜야 해서.",
+   "why": "진단 대상이 리눅스·윈도우 서버에 걸쳐 있고[1][4], 결과를 쌓고 보여 주는 도구는 웹앱입니다.[2] 같은 그룹 토스의 점검 자동화는 Flask API 서버로 만들었습니다.[3]",
+   "level": {
+    "basic": "Python 스크립트(파일·정규식·subprocess·JSON), Bash 파이프·grep·awk, PowerShell 의 Get- 명령과 객체 출력",
+    "work": "Flask·Django 로 API·관리 화면, DB 모델·마이그레이션, 큐와 작업자로 오래 걸리는 일 돌리기",
+    "team": "많은 서버에 원격 실행·결과 수집, 점검 모듈을 플러그인처럼 끼우는 구조 {추론}"
+   },
+   "actually": {
+    "items": [
+     "**Shell** — U-16 처럼 /etc/passwd 소유자·권한을 읽는 항목은 stat 한 줄로 걷을 수 있는 값이다.[4] {추론}",
+     "**PowerShell** — W-02 Guest 계정 비활성화처럼 윈도우 계정·서비스 상태를 읽는 항목을 맡는다.[4]",
+     "**Flask** — 시작·상태·보고서 API 세 개로 스캐너를 감싼 토스의 구조.[3]",
+     "**Django** — 모델·관리자 화면이 기본으로 있어 결과 관리 웹에 흔히 쓰인다(DefectDojo).[12]"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    12
+   ],
+   "study": [
+    "flask-docs",
+    "django-docs",
+    "ps-docs",
+    "bhp-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "MSA 아키텍처를 이해하고 RestAPI 취약점 진단을 할 수 있는 역량이 필요해요.",
+   "short": "서비스가 잘게 쪼개져 API로 서로 부르니, 들어오는 문은 화면이 아니라 API 하나하나다.",
+   "why": "MSA(서비스를 작은 서버 여럿으로 나눈 구조)에서는 기능마다 API 가 따로 열립니다 {추론}. 같은 그룹 토스도 URL 중심 점검을 API 단위로 넓혀, API 별 점검 체크리스트와 맞춤 템플릿으로 자동 진단하겠다고 했습니다.[3] 팀원은 인증·인가·API 설계를 함께 볼 수 있어야 한다고 했습니다.[2]",
+   "actually": {
+    "items": [
+     "**객체 권한(BOLA)** — 계좌 번호만 바꿔 부르면 남의 계좌가 나오는가. OWASP API 보안 1위.[8]",
+     "**기능 권한** — 일반 사용자 토큰으로 관리자 API 를 부를 수 있나.[8]",
+     "**서비스 사이 신뢰** — 내부 API 가 '게이트웨이를 지났으니 믿는다'며 사용자 확인을 빼먹지 않았나 {추론}.",
+     "**자원 소비·속성 권한** — 호출 횟수 제한이 없는지, 응답에 필요 없는 칸이 나가거나 요청에 몰래 넣은 칸(role 등)이 먹히는지.[8]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "BOLA — 로그인만 보고 '누구 것인지'는 안 보는 API (가상 데이터)",
+     "body": "alice 로 로그인한 채 번호만 202 로 바꿔 부릅니다. 소유자 확인이 없는 쪽은 bob 의 계좌를 내줍니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "ACCOUNTS = {101: {\"owner\": \"alice\", \"balance\": 500_000},\n            202: {\"owner\": \"bob\", \"balance\": 9_000_000}}\n\ndef get_account_bad(user, account_id):      # 로그인만 확인\n    return ACCOUNTS[account_id]\n\ndef get_account_good(user, account_id):     # 이 계좌가 '그 사람 것'인지 확인\n    acc = ACCOUNTS.get(account_id)\n    if acc is None or acc[\"owner\"] != user:\n        return {\"status\": 404}\n    return acc\n\n# 진단: alice 로 로그인한 채 번호만 바꿔 남의 계좌를 부른다\nfor fn in (get_account_bad, get_account_good):\n    print(fn.__name__, fn(\"alice\", 202))\n# get_account_bad {'owner': 'bob', 'balance': 9000000}\n# get_account_good {'status': 404}"
+    }
+   ],
+   "how_far": "프록시 도구로 요청을 가로채 값을 바꿔 보는 데서 시작해, API 명세로 '누가 무엇을 부를 수 있나' 표를 만들어 빠진 칸을 찾는 수준까지 {추론}.",
+   "refs": [
+    2,
+    3,
+    8
+   ],
+   "study": [
+    "owasp-api",
+    "hacking-apis",
+    "wsa",
+    "book-http"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "다양한 팀과 원활한 협업을 위해 탁월한 커뮤니케이션 능력 보유하신 분이 필요해요.",
+   "short": "고치는 건 남의 팀이라, 위험을 그 팀이 받아들일 말로 설명하지 못하면 아무것도 고쳐지지 않는다.",
+   "why": "Red Team 은 제품 조직과, 규제 준수·내부 통제를 위해 Legal & Compliance·Platform Engineering·Internal Audit 과 협업합니다.[1] 팀원은 개발·운영팀이 수용할 수 있는 방식으로 재발 방지책을 제안할 수 있어야 한다고 했습니다.[2]",
+   "actually": {
+    "items": [
+     "**개발자에게** — 재현 요청·응답과 고친 코드 한 줄.",
+     "**운영(인프라)에게** — 바꿀 설정과 조치 시 영향.[4]",
+     "**준법·감사에게** — 어떤 기준(감독규정·가이드)의 몇 항목 중 몇 개가 언제 닫혔나.[5]"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    4,
+    5
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "MITRE ATT&CK Framework를 이해하고 AD/xNix 환경에서 침투테스트를 수행할 수 있는 역량이 있는 분이면 더 좋아요.",
+   "short": "실제 공격 집단이 쓰는 기법 사전(ATT&CK)대로 윈도우 사내망(AD)·리눅스 서버를 뚫어 보는 능력.",
+   "why": "팀은 Adversary Simulation 에 집중하고, 시나리오 설계 → 실행 → 취약점 도출 → 개선 반영을 더 빠르게 돌리려 합니다.[2] ATT&CK 은 실제 공격 관찰로 쌓은 전술·기법 사전이라 시나리오를 짜고 방어 팀과 같은 말로 결과를 나누는 틀이 됩니다.[9]",
+   "actually": {
+    "items": [
+     "**AD(Active Directory, 윈도우 사내망의 계정·권한 중앙 관리)** — 서비스 계정의 티켓을 받아 비밀번호를 오프라인으로 푸는 Kerberoasting(T1558.003) 같은 기법.[15]",
+     "**관계 그래프** — BloodHound 로 '이 계정에서 도메인 관리자까지 가는 길'을 그린다.[16]",
+     "**xNix(리눅스·유닉스)** — 권한 상승 길. SUID 파일·sudo 설정 실수는 KISA U-23·U-63 이 보는 곳과 같다.[4]",
+     "**탐지 확인** — 기법마다 Blue Team 탐지가 울렸는지 함께 본다.[2]"
+    ]
+   },
+   "refs": [
+    2,
+    4,
+    9,
+    15,
+    16
+   ],
+   "study": [
+    "mitre",
+    "isakov-ad",
+    "goad",
+    "bloodhound"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Native Cloud(Kubernetes, AWS 등)환경에 대한 이해가 있는 분이면 더 좋아요.",
+   "short": "점검 대상이 물리 서버만이 아니라 컨테이너·클라우드 설정까지 넓어져서.",
+   "why": "KISA 2026 가이드에는 가상화 장비(25항목)와 클라우드(19항목 — 계정·권한·가상 리소스·운영 관리) 분야가 들어 있습니다.[4] 팀원도 클라우드·컨테이너·CI/CD 를 함께 봐야 한다고 했습니다.[2] 같은 그룹 토스는 스캐너를 AWS 위에 올려 완전 외부자 관점에서 자산을 진단했습니다.[3]",
+   "actually": {
+    "items": [
+     "**쿠버네티스** — 컨테이너 탈출, 서비스 계정 토큰 탈취, 과한 RBAC 권한. 마이크로소프트가 ATT&CK 꼴로 정리해 두었다.[17]",
+     "**AWS** — 과한 IAM 권한, 공개된 저장소·보안 그룹, MFA 없는 계정(KISA CA-03 이 MFA 설정을 본다).[4]",
+     "**설정 기준** — CIS 벤치마크가 OS·클라우드·쿠버네티스의 보안 설정 기준을 낸다.[18]"
+    ]
+   },
+   "refs": [
+    2,
+    3,
+    4,
+    17,
+    18
+   ],
+   "study": [
+    "k8s-matrix",
+    "cis-bench",
+    "book-kubernetes",
+    "book-docker"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "보안관련 자격증(CISSP, 보안기사, OSCP, CREST 등)을 보유하고 계시면 더 좋아요.",
+   "short": "필수가 아니라, 지식(CISSP·보안기사)이나 실기(OSCP·CREST)를 남이 확인해 준 증거로 본다.",
+   "why": "'더 좋아요' 줄이라 없어도 지원할 수 있습니다.[1] 넷은 성격이 다릅니다 — CISSP 는 경력 요건이 붙은 보안 관리 전반의 지식 자격[19], OSCP 는 실습 장비를 정해진 시간 안에 뚫고 보고서를 내는 실기 시험[20], CREST 는 침투테스트 회사·인력을 인증하는 기관입니다.[21] 정보보안기사는 국내 국가기술자격입니다 {추론}.",
+   "how_far": "모의해킹 쪽이면 OSCP 같은 실기 자격이, 인프라 진단 쪽이면 점검 항목 지식을 보여 주는 자격이 말이 잘 통합니다 {추론}. 다만 이력서 안내의 요지는 자격보다 사례(PoC·도구)입니다.[1]",
+   "refs": [
+    1,
+    19,
+    20,
+    21
+   ],
+   "study": [
+    "oscp"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "# 이력서에는 아래 내용을 꼭 포함해 주세요",
+   "short": "아래 다섯 줄은 서류에서 직접 보겠다는 것 — 기술 나열이 아니라 사례로 쓰라는 주문.",
+   "why": "팀원들은 '잘한다, 해봤다' 대신 사례와 근거, 문제를 어떻게 풀었는지의 과정을 보고 싶다고 했습니다.[2]",
+   "refs": [
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "실제 업무나 프로젝트에서 AI 도구를 활용한 경험이 있다면, 어떤 상황에서 왜 사용했는지 구체적으로 꼭 작성해주세요.",
+   "short": "팀이 AI 를 점검 도구에 붙이는 중이라, '썼다'가 아니라 어디에 왜 썼고 결과를 어떻게 확인했는지 본다.",
+   "why": "팀은 VMS 에 AI 를 붙여 방대한 취약점 데이터를 찾기 쉽게 하고, AI 로 취약점 탐지·위협 인텔리전스 분석을 자동화하는 실험을 한다고 했습니다.[2] 같은 그룹 토스의 점검 자동화도 코드·API 정보를 넣으면 AI 가 템플릿을 만들고 결과 판정·조치 제안까지 돕게 할 계획입니다.[3]",
+   "how_far": "예: 'LLM 으로 스캐너 템플릿 초안을 만들고, 오탐을 줄이려 실제 응답을 확인해 판정 조건을 고쳤다'처럼 상황·이유·검증을 한 묶음으로 {추론}.",
+   "refs": [
+    2,
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "단순한 프로젝트 나열식 서류는 통과의견을 받기 어려워요. 담당하셨던 업무에 대한 상세 설명과 함께 구체적인 사례가 꼭 포함될 수 있도록 작성해 주세요.",
+   "short": "프로젝트 이름 목록은 떨어진다 — 한두 개를 골라 내가 맡은 일과 한 방법을 길게 쓴다.",
+   "why": "팀원은 어떤 시스템·자산을 어떤 방법으로 분석했고, 어떤 취약점을 어떤 증거로 입증했으며, 조직에 어떤 영향이 있었고 어떻게 개선했는지의 흐름이 중요하다고 했습니다.[2]",
+   "refs": [
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "특히 취약점 점검 사례나 모의해킹 관련 사례는 그 배경과 과정, 본인이 기여한 부분이 명확히 드러나야 해요.",
+   "short": "사례마다 '왜 시작했나 → 어떻게 찾았나 → 그중 내 몫은 무엇인가'가 보여야 한다.",
+   "why": "이 팀은 외주 없이 기획·점검·분석·대응을 모두 안에서 하므로, 한 사람이 그 과정 전체를 끌고 갈 수 있는지를 봅니다.[2]",
+   "how_far": "고객사 이름·취약점 세부는 비밀유지에 걸릴 수 있으니 가려 쓰고, 개인 연구는 CTF·버그바운티·직접 만든 실습 환경으로 보여 주면 됩니다 {추론}.",
+   "refs": [
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "취약점 진단 스크립트를 개발하고 이를 개선한 경험, 난이도 높았던 업무 사례나 직접 개발에 기여한 경험이 있다면 더 좋아요.",
+   "short": "스크립트를 '만든' 것보다 '고친' 이야기 — 오탐·속도·새 OS 대응을 어떻게 풀었나가 이 팀의 일이다.",
+   "why": "인프라 담당 팀원의 일이 진단과 그 자동화 개발이고, 팀은 새 취약점 유형을 바로 모듈로 만드는 유연성을 자체 개발의 장점으로 꼽았습니다.[2]",
+   "how_far": "숫자로 쓰면 좋습니다 — 점검 시간, 대상 수, 오탐 비율이 어떻게 바뀌었나 {추론}.",
+   "refs": [
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "수많은 팀과 협업이 필요한 만큼, 다양한 조직과 복잡한 문제를 해결해본 경험이 있다면 꼭 어필해 주세요.",
+   "short": "조치는 남의 팀 손으로 끝나니, 다른 조직을 설득해 끝까지 닫아 본 경험이 점수가 된다.",
+   "why": "Red Team 은 제품·준법·플랫폼·감사 조직과 일하고[1], 찾은 취약점을 조치될 때까지 추적하는 것을 팀의 핵심 일로 봅니다.[2]",
+   "refs": [
+    1,
+    2
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "점검표 한 줄을 코드로 바꾸는 게 즐거운 사람[2]",
+   "찾은 취약점이 닫힐 때까지 놓지 않는 사람 — 팀원이 꼽은 '집요함'[2]",
+   "외주 없이 기획부터 대응까지 넓게 해 보고 싶은 사람[2]",
+   "공격 결과를 방어 팀과 바로 맞춰 보는 레드·블루 협업을 원하는 사람[2]"
+  ],
+  "hard": [
+   "법정 점검 주기가 있어 반복 업무가 많고, 대형사는 연 2회로 늘어난다 — 그래서 자동화가 일이다[5][6]",
+   "PCI-DSS 같은 인증 요건과 보고 문서가 따라온다[2]",
+   "공격은 정해진 범위·시간 안에서만 한다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "sshd_config 에 PermitRootLogin 이 두 번 있으면 어느 값이 적용되나요? 아예 없으면요?",
+   "a": "진단 스크립트 해석 요건 — 처음 값 원칙과 기본값.[11]"
+  },
+  {
+   "q": "점검 결과가 '취약'인데 운영팀이 당장 못 고친다고 하면 어떻게 하겠어요?",
+   "a": "보상 통제와 예외 승인 — 가이드와 감독규정이 둘 다 다룬다.[4][5]"
+  },
+  {
+   "q": "계좌 조회 API 에서 권한 검증 빠짐을 어떻게 찾고, 배포마다 어떻게 자동으로 다시 확인하겠어요?",
+   "a": "BOLA 와, 같은 그룹이 계획한 API 단위 자동 점검.[3][8]"
+  },
+  {
+   "q": "서버 수백 대에 점검 스크립트를 돌린다면 실행·실패·결과 수집을 어떻게 설계하겠어요?",
+   "a": "자체 진단 도구 요건 — 큐·작업자·폴링 구조의 실제 예.[3]"
+  },
+  {
+   "q": "AD 에서 일반 계정 하나로 도메인 관리자까지 가는 길을 어떻게 찾나요? 그때 무엇이 탐지돼야 하나요?",
+   "a": "ATT&CK·AD 우대 요건과 Adversary Simulation.[2][15][16]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 모의해킹 및 취약점 분석 전문가 (Security Researcher) — 토스뱅크",
+   "url": "https://toss.im/career/job-detail?gh_jid=5847765003",
+   "kind": "posting",
+   "note": "Security Division 8개 팀 구성, Security Red Team 소속, 협업 조직, 업무·요건·이력서 안내·합류 여정(처우협의)"
+  },
+  {
+   "n": 2,
+   "title": "토스 채용 아티클 · 위험을 발견하면 실전적인 검증을 통해 현실에 적용해요 — 토스뱅크 Cybersecurity Tech Team, Security Researcher",
+   "url": "https://toss.im/career/article/42773",
+   "kind": "company",
+   "date": "2025-11-21",
+   "note": "공고가 링크한 팀원 3명 인터뷰 전부 읽음 — 외주 없이 전 과정, 인프라 진단 데이터 → 침투테스트, 자체 VMS(모듈·자산 관리), 정보 수집 시스템, Adversary Simulation, AI 접목 계획, 서류·면접 팁"
+  },
+  {
+   "n": 3,
+   "title": "GUARDIANS 25 · Nuclei를 활용한 취약점 점검 자동화",
+   "url": "https://www.youtube.com/watch?v=qendLTd6vZU",
+   "kind": "company",
+   "date": "2025-11-20",
+   "note": "토스(같은 그룹 다른 회사) Security Researcher 발표 25분 · 자막 전부 읽음(외부 공개 홈페이지 정기 점검, Flask API 3개·큐·작업 스레드, Jenkins 15초 폴링, PDF·DOCX 보고서, Katana·ParamSpider 결합, AWS 위 외부자 관점, 탐지 검증, 내부망·API 단위 확장, AI 템플릿 생성 계획)"
+  },
+  {
+   "n": 4,
+   "title": "KISA · 2026 주요정보통신기반시설 기술적 취약점 분석·평가 방법 상세가이드",
+   "url": "https://www.kisa.or.kr/2060204/form?postSeq=22&page=1",
+   "kind": "reference",
+   "date": "2025-12-24",
+   "note": "873쪽 PDF 의 항목표 확인 — 12분야(Unix 67·Windows 64·웹 서비스 26·보안 장비 23·네트워크 38·제어시스템 51·PC 18·DBMS 26·이동통신 4·웹 애플리케이션 21·가상화 25·클라우드 19), 판단 기준은 권고"
+  },
+  {
+   "n": 5,
+   "title": "전자금융감독규정 (금융위원회고시 제2025-4호) — 제37조의2 취약점 분석·평가, 제37조의3 평가전문기관",
+   "url": "https://ko.wikisource.org/wiki/%EC%A0%84%EC%9E%90%EA%B8%88%EC%9C%B5%EA%B0%90%EB%8F%85%EA%B7%9C%EC%A0%95_(%EC%A0%9C2025-4%ED%98%B8)",
+   "kind": "reference",
+   "date": "2025-02-05",
+   "note": "총자산 2조원·종업원 300명 이상 연 1회 이상(홈페이지 6개월 1회 이상), 자체전담반 또는 평가전문기관, 이행계획·제거 또는 상응 조치·불가 시 최고경영자 승인"
+  },
+  {
+   "n": 6,
+   "title": "금융위원회 보도자료 · IT자산 식별·관리 의무화, 취약점 점검·평가 제도 내실화",
+   "url": "https://m.korea.kr/briefing/pressReleaseView.do?newsId=156789689",
+   "kind": "news",
+   "date": "2026-11-18",
+   "note": "규정변경예고 — 대형사 연 1회→2회, 연결된 시스템 빠짐없이 포함, IT 자산 식별·중요도 분류·책임자 지정, 2027년 1분기 시행 목표 · 두 가지는 11월 말부터 행정지도"
+  },
+  {
+   "n": 7,
+   "title": "OWASP Web Security Testing Guide (WSTG)",
+   "url": "https://owasp.org/www-project-web-security-testing-guide/",
+   "kind": "reference"
+  },
+  {
+   "n": 8,
+   "title": "OWASP API Security Top 10 (2023)",
+   "url": "https://owasp.org/API-Security/editions/2023/en/0x11-t10/",
+   "kind": "reference",
+   "note": "API1 객체 수준 권한(BOLA), API3 속성 수준 권한, API4 자원 소비, API5 기능 수준 권한"
+  },
+  {
+   "n": 9,
+   "title": "MITRE ATT&CK",
+   "url": "https://attack.mitre.org/",
+   "kind": "reference",
+   "note": "실제 공격 관찰로 쌓은 전술·기법 사전"
+  },
+  {
+   "n": 10,
+   "title": "PCI Security Standards Council · 문서 자료실(PCI DSS v4)",
+   "url": "https://www.pcisecuritystandards.org/document_library/",
+   "kind": "reference",
+   "note": "요구사항 11.4 — 내부·외부 침투테스트를 최소 12개월마다, 큰 변경 뒤에"
+  },
+  {
+   "n": 11,
+   "title": "OpenBSD manual · sshd_config(5)",
+   "url": "https://man.openbsd.org/sshd_config",
+   "kind": "reference",
+   "note": "키워드는 처음 얻은 값을 쓴다, PermitRootLogin 기본값 prohibit-password"
+  },
+  {
+   "n": 12,
+   "title": "DefectDojo (django-DefectDojo)",
+   "url": "https://github.com/DefectDojo/django-DefectDojo",
+   "kind": "reference",
+   "note": "Django 로 만든 오픈소스 취약점 관리 도구 — '보통 이런 것'의 예"
+  },
+  {
+   "n": 13,
+   "title": "OWASP Mobile Application Security Testing Guide (MASTG)",
+   "url": "https://mas.owasp.org/MASTG/",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "ProjectDiscovery · Katana",
+   "url": "https://github.com/projectdiscovery/katana",
+   "kind": "reference",
+   "note": "발표[3]가 Nuclei 에 붙인 크롤러"
+  },
+  {
+   "n": 15,
+   "title": "MITRE ATT&CK · T1558.003 Kerberoasting",
+   "url": "https://attack.mitre.org/techniques/T1558/003/",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "SpecterOps · BloodHound 문서",
+   "url": "https://bloodhound.specterops.io/",
+   "kind": "reference",
+   "note": "AD 관계를 그래프로 그려 공격 길을 찾는 도구"
+  },
+  {
+   "n": 17,
+   "title": "Microsoft · Threat Matrix for Kubernetes",
+   "url": "https://microsoft.github.io/Threat-Matrix-for-Kubernetes/",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "CIS Benchmarks",
+   "url": "https://www.cisecurity.org/cis-benchmarks",
+   "kind": "reference",
+   "note": "OS·클라우드·쿠버네티스 보안 설정 기준"
+  },
+  {
+   "n": 19,
+   "title": "ISC2 · CISSP",
+   "url": "https://www.isc2.org/certifications/cissp",
+   "kind": "reference",
+   "note": "8개 영역 중 2개 이상에서 유급 경력 5년 요건"
+  },
+  {
+   "n": 20,
+   "title": "OffSec · PEN-200 (OSCP)",
+   "url": "https://www.offsec.com/courses/pen-200/",
+   "kind": "reference",
+   "note": "실습 장비를 뚫는 실기 시험과 보고서"
+  },
+  {
+   "n": 21,
+   "title": "CREST",
+   "url": "https://www.crest-approved.org/",
+   "kind": "reference",
+   "note": "침투테스트 회사·인력 인증 기관"
+  },
+  {
+   "n": 22,
+   "title": "Semgrep 문서",
+   "url": "https://semgrep.dev/docs/",
+   "kind": "reference",
+   "note": "패턴 규칙과 taint(입력 → 위험한 곳) 분석"
+  },
+  {
+   "n": 23,
+   "title": "OWASP Code Review Guide",
+   "url": "https://owasp.org/www-project-code-review-guide/",
+   "kind": "reference",
+   "note": "자동 도구와 사람의 코드 리뷰를 함께 쓰는 법"
+  },
+  {
+   "n": 24,
+   "title": "뉴시스 — 3년 근무 직원 1억4000만원… 인터넷은행 평균 급여(각사 사업보고서)",
+   "url": "https://www.newsis.com/view/NISX20250812_0003287731",
+   "kind": "news",
+   "date": "2025-08-13"
+  },
+  {
+   "n": 25,
+   "title": "SBS Biz — 인뱅 3사도 연봉 1억원대로(은행연합회 2025 지배구조 및 보수체계 연차보고서)",
+   "url": "https://biz.sbs.co.kr/amp/article/20000297249",
+   "kind": "news",
+   "date": "2026-03-13"
+  },
+  {
+   "n": 26,
+   "title": "자소설닷컴 — 토스뱅크 연봉(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 27,
+   "title": "토스뱅크 — 회사 정보(사이트 하단 주소)",
+   "url": "https://tossbank.com/esg",
+   "kind": "company"
+  },
+  {
+   "n": 28,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  }
+ ],
+ "caveat": "토스뱅크 자체 진단 도구(VMS)의 내부 구조·점검 항목표·조치 기한은 공개되지 않았습니다. 점검 항목은 KISA 2026 가이드, 도구 구조는 같은 그룹 토스의 발표와 공개 도구로 '보통 이런 것'을 보였습니다. 감독규정 개정(연 2회 등)은 2026-11 예고 단계라 확정 내용과 다를 수 있습니다.",
+ "resources": [
+  {
+   "id": "tb-redteam",
+   "title": "위험을 발견하면 실전적인 검증을 통해 현실에 적용해요 — 토스뱅크 Cybersecurity Tech Team",
+   "by": "토스 채용 아티클 · 2025",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://toss.im/career/article/42773",
+   "why": "이 팀 세 명이 직접 말한 일의 모양(VMS·침투테스트·Adversary Simulation)과 서류 팁. 지원 전에 꼭 읽을 글."
+  },
+  {
+   "id": "g25-nuclei",
+   "title": "GUARDIANS 25 · Nuclei를 활용한 취약점 점검 자동화",
+   "by": "토스 Security Researcher · 25분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=qendLTd6vZU",
+   "why": "자체 진단 도구를 Flask API·큐·Jenkins 로 짓는 실제 구조. 업무 둘째 줄과 개발 요건의 본보기."
+  },
+  {
+   "id": "kisa-guide",
+   "title": "주요정보통신기반시설 기술적 취약점 분석·평가 방법 상세가이드 (2026)",
+   "by": "한국인터넷진흥원 · 2025-12 게시",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.kisa.or.kr/2060204/form?postSeq=22&page=1",
+   "why": "인프라 진단 항목 12분야의 판단 기준·점검 명령·조치 방법. 자체 진단 도구가 코드로 옮기는 원본."
+  },
+  {
+   "id": "efsr",
+   "title": "전자금융감독규정 (제2025-4호)",
+   "by": "금융위원회",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://ko.wikisource.org/wiki/%EC%A0%84%EC%9E%90%EA%B8%88%EC%9C%B5%EA%B0%90%EB%8F%85%EA%B7%9C%EC%A0%95_(%EC%A0%9C2025-4%ED%98%B8)",
+   "why": "제37조의2~3만 먼저 — 누가, 얼마나 자주, 평가 뒤 무엇을 해야 하나. 은행 점검 일정의 법적 바닥."
+  },
+  {
+   "id": "cis-bench",
+   "title": "CIS Benchmarks",
+   "by": "Center for Internet Security",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.cisecurity.org/cis-benchmarks",
+   "why": "OS·클라우드·쿠버네티스 설정 기준. KISA 항목과 견주면 같은 설정을 다른 기준이 어떻게 보는지 보인다."
+  },
+  {
+   "id": "defectdojo",
+   "title": "DefectDojo",
+   "by": "OWASP 출신 오픈소스 · Django",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/DefectDojo/django-DefectDojo",
+   "why": "취약점을 모아 중복을 지우고 조치까지 쫓는 관리 도구의 공개 본보기. VMS 가 하는 일을 직접 띄워 본다."
+  },
+  {
+   "id": "ps-docs",
+   "title": "PowerShell 문서",
+   "by": "Microsoft Learn(한국어)",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://learn.microsoft.com/ko-kr/powershell/scripting/overview",
+   "why": "윈도우 서버 항목(W-)을 걷는 수집 스크립트의 기본기."
+  },
+  {
+   "id": "linux-cmd",
+   "title": "The Linux Command Line",
+   "by": "William Shotts",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://linuxcommand.org/tlcl.php",
+   "why": "무료 공개 책. 권한·프로세스·셸 스크립트 — Unix 항목(U-)을 읽고 Shell 로 걷는 바탕."
+  },
+  {
+   "id": "wstg",
+   "title": "OWASP Web Security Testing Guide",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://owasp.org/www-project-web-security-testing-guide/",
+   "why": "웹 진단을 단계별로 빠짐없이 하는 국제 절차서."
+  },
+  {
+   "id": "wsa",
+   "title": "Web Security Academy",
+   "by": "PortSwigger",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://portswigger.net/web-security",
+   "why": "무료 실습실. SQL 인젝션·접근 통제·API 테스트를 직접 뚫어 보며 익힌다."
+  },
+  {
+   "id": "mastg",
+   "title": "OWASP Mobile Application Security Testing Guide (MASTG)",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://mas.owasp.org/MASTG/",
+   "why": "모바일 앱 진단의 국제 기준. 앱 저장소·통신·위변조 방지 점검 방법."
+  },
+  {
+   "id": "owasp-crg",
+   "title": "OWASP Code Review Guide",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://owasp.org/www-project-code-review-guide/",
+   "why": "소스코드에서 취약점을 찾는 순서와 자동 도구의 한계. 업무 넷째 줄을 위해."
+  },
+  {
+   "id": "semgrep",
+   "title": "Semgrep 문서",
+   "by": "Semgrep",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://semgrep.dev/docs/",
+   "why": "패턴·taint 규칙을 직접 써서 '입력 → 위험한 함수' 후보를 뽑는 법."
+  },
+  {
+   "id": "owasp-api",
+   "title": "OWASP API Security Top 10 (2023)",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://owasp.org/API-Security/editions/2023/en/0x11-t10/",
+   "why": "REST API 진단에서 먼저 볼 열 가지. BOLA 가 왜 1위인지."
+  },
+  {
+   "id": "hacking-apis",
+   "title": "Hacking APIs",
+   "by": "Corey J. Ball · No Starch Press · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://nostarch.com/hacking-apis",
+   "why": "API 정찰부터 권한·인젝션 공격까지 실습 위주. RestAPI 진단 요건을 채우는 책."
+  },
+  {
+   "id": "flask-docs",
+   "title": "Flask 문서",
+   "by": "Pallets",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://flask.palletsprojects.com/",
+   "why": "시작·상태·보고서 같은 작은 내부 API 를 짓는 데 필요한 만큼."
+  },
+  {
+   "id": "django-docs",
+   "title": "Django 문서(한국어)",
+   "by": "Django Software Foundation",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.djangoproject.com/ko/",
+   "why": "모델·관리자 화면·인증 — 결과 관리 웹을 짓는 바탕. 튜토리얼 1~7부터."
+  },
+  {
+   "id": "nuclei-docs",
+   "title": "Nuclei 문서",
+   "by": "ProjectDiscovery",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.projectdiscovery.io/tools/nuclei/overview",
+   "why": "YAML 템플릿으로 점검 규칙을 쓰고 판정 조건(matcher)을 거는 법."
+  },
+  {
+   "id": "bhp-ko",
+   "title": "Black Hat Python 2/e — 해커와 모의 침투 연구자를 위한 파이썬 프로그래밍",
+   "by": "저스틴 지이츠·팀 아널드 · 에이콘출판 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=292509384",
+   "why": "보안 도구를 Python 으로 직접 짜는 연습 — 스캐너·수집기 감각."
+  },
+  {
+   "id": "mitre",
+   "title": "MITRE ATT&CK",
+   "by": "MITRE",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://attack.mitre.org/",
+   "why": "공격 시나리오를 짜고 결과를 방어 팀과 같은 말로 나누는 사전."
+  },
+  {
+   "id": "isakov-ad",
+   "title": "Pentesting Active Directory and Windows-based Infrastructure",
+   "by": "Denis Isakov · Packt · 2023",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.packtpub.com/en-us/product/pentesting-active-directory-and-windows-based-infrastructure-9781804611364",
+   "why": "AD 침투의 단계(정찰·권한 상승·이동)를 탐지 관점과 함께."
+  },
+  {
+   "id": "goad",
+   "title": "GOAD (Game of Active Directory)",
+   "by": "Orange Cyberdefense",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://github.com/Orange-Cyberdefense/GOAD",
+   "why": "일부러 취약하게 만든 AD 실습 환경. 집에서 AD 침투를 해 볼 수 있다."
+  },
+  {
+   "id": "bloodhound",
+   "title": "BloodHound 문서",
+   "by": "SpecterOps",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://bloodhound.specterops.io/",
+   "why": "AD 권한 관계를 그래프로 그려 공격 길을 찾는 도구."
+  },
+  {
+   "id": "k8s-matrix",
+   "title": "Threat Matrix for Kubernetes",
+   "by": "Microsoft",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://microsoft.github.io/Threat-Matrix-for-Kubernetes/",
+   "why": "쿠버네티스 공격 기법을 ATT&CK 꼴로 정리한 표."
+  },
+  {
+   "id": "oscp",
+   "title": "PEN-200: Penetration Testing with Kali Linux (OSCP)",
+   "by": "OffSec",
+   "kind": "course",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.offsec.com/courses/pen-200/",
+   "why": "실기 자격 OSCP 의 과정. 모의해킹 쪽 자리를 노린다면."
+  },
+  {
+   "id": "book-http",
+   "title": "모든 개발자를 위한 HTTP 웹 기본 지식",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/http-basic",
+   "why": "요청·응답·헤더·쿠키를 원문으로 읽는 눈 — API 진단의 바탕."
+  },
+  {
+   "id": "book-docker",
+   "title": "개발자를 위한 도커",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "컨테이너가 무엇을 나누고 무엇을 같이 쓰는지 — 컨테이너 탈출을 이해하는 바탕."
+  },
+  {
+   "id": "book-kubernetes",
+   "title": "쿠버네티스 입문",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "파드·서비스 계정·RBAC 이 실제로 어떻게 생겼는지."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사 말과 법 읽기",
+   "time": "1주",
+   "goal": "이 팀이 무엇을 왜 하는지, 점검이 법으로 언제 얼마나 필요한지 말할 수 있다.",
+   "resources": [
+    "tb-redteam",
+    "g25-nuclei",
+    "efsr"
+   ],
+   "task": "인터뷰·발표·감독규정 제37조의2를 읽고 '연간 점검 달력'(정기·홈페이지·수시)과 팀 업무 흐름(진단 → 침투 → 조치 추적)을 한 장으로 그린다."
+  },
+  {
+   "title": "인프라 항목을 손으로",
+   "time": "2~3주",
+   "goal": "리눅스·윈도우 서버에서 KISA 항목을 직접 확인하고 양호·취약과 예외를 판단한다.",
+   "resources": [
+    "kisa-guide",
+    "linux-cmd",
+    "ps-docs",
+    "cis-bench"
+   ],
+   "task": "가상 머신 리눅스 1대·윈도우 1대를 일부러 잘못 설정하고(root 원격 접속, Guest 켜기, world writable 파일), U-·W- 항목 20개를 손으로 점검해 판정표를 만든다."
+  },
+  {
+   "title": "점검 도구 만들기",
+   "time": "3~4주",
+   "goal": "점검 모듈·수집 스크립트·결과 관리 API 로 이뤄진 작은 자체 진단 도구를 만든다.",
+   "resources": [
+    "flask-docs",
+    "django-docs",
+    "defectdojo",
+    "nuclei-docs",
+    "bhp-ko"
+   ],
+   "task": "2단계 항목 10개를 Shell·PowerShell 모듈로 옮기고, Flask 로 시작·상태·보고서 API 를 붙여 결과를 JSON 과 표로 낸다. 조치 기한이 지난 항목을 뽑는 화면까지."
+  },
+  {
+   "title": "웹·API·코드 진단",
+   "time": "3~4주",
+   "goal": "웹·REST API 의 권한·인젝션 취약점을 찾고, 코드에서 원인을 짚어 고친 코드를 제안한다.",
+   "resources": [
+    "wsa",
+    "owasp-api",
+    "hacking-apis",
+    "wstg",
+    "semgrep",
+    "owasp-crg"
+   ],
+   "task": "가상 '계좌 조회 API'(Flask)를 BOLA·SQL 인젝션이 있게 만들고, 바깥에서 공격 → Semgrep 규칙으로 코드에서 찾기 → 고치기 → 다시 공격해 닫혔는지 확인하는 보고서 한 편."
+  },
+  {
+   "title": "침투테스트 심화 (선택)",
+   "time": "계속",
+   "goal": "AD·리눅스·쿠버네티스에서 ATT&CK 기법으로 공격 길을 이어 보고 탐지 여부를 적는다.",
+   "resources": [
+    "mitre",
+    "goad",
+    "bloodhound",
+    "isakov-ad",
+    "k8s-matrix",
+    "oscp"
+   ],
+   "task": "GOAD 실습 환경에서 일반 계정 → 도메인 관리자까지의 길을 BloodHound 로 찾고, 단계마다 ATT&CK 기법 번호와 '탐지됐나'를 표로 남긴다."
+  }
+ ],
+ "pay": {
+  "summary": "신입 초봉은 **약 5,100만원**(집계값), 직원 평균은 **약 1억 1,600만원**(공시) — 평균은 경력직이 대부분이라 초봉과 다르다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없어 보안 직군 계약 연봉과 다를 수 있다 [26]"
+   },
+   {
+    "label": "직원 평균 보수",
+    "value": "1억 1,600만원",
+    "amount": 11600,
+    "basis": "공시 · 2025년",
+    "note": "은행연합회 공시(지배구조·보수체계 연차보고서), 임원을 뺀 직원만 [25]"
+   },
+   {
+    "label": "임직원 평균 급여",
+    "value": "1억 1,700만원",
+    "amount": 11700,
+    "basis": "사업보고서 · 2024년",
+    "note": "임직원 684명 기준 [24]"
+   },
+   {
+    "label": "카카오뱅크 평균",
+    "value": "1억 2,200만원",
+    "amount": 12200,
+    "basis": "공시 · 2025년",
+    "peer": true,
+    "note": "같은 공시의 평균 보수 [25]"
+   },
+   {
+    "label": "케이뱅크 평균",
+    "value": "1억 200만원",
+    "amount": 10200,
+    "basis": "공시 · 2025년",
+    "peer": true,
+    "note": "같은 공시의 임직원 평균 보수(임원 포함) [25]"
+   }
+  ],
+  "how": "공고에는 연봉과 경력 연차가 적혀 있지 않다. 합류 여정이 서류 → 직무 인터뷰 → 문화적합성 인터뷰 → 레퍼런스 체크 → **처우협의** 순이라 연봉은 사람마다 정한다 [1]. 평균 보수는 경력직이 많은 회사 전체 값이라 신입이 받는 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 전체를 기준으로 한 2021년 공식 소개 글이다 [28]. 토스뱅크에 그대로 적용되는지, 지금도 같은지는 글에 적혀 있지 않으니 처우협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스뱅크 본사",
+  "address": "서울특별시 강남구 테헤란로 131, 13층 (역삼동, 한국지식재산센터)",
+  "postal": "06133",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20131",
+  "near": "2호선 역삼역과 강남역 사이 테헤란로 {추론}",
+  "note": "공고의 근무지 표기는 'Seoul'뿐이고, 주소는 토스뱅크 사이트 하단의 회사 정보다 [27]. 팀 자리가 본사와 다를 수 있다 {추론}."
+ }
+}
