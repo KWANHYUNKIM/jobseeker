@@ -12,6 +12,7 @@
   "ats-toss:group:7784598003": "toss-commerce-ads-mle",
   "ats-toss:group:7827378003": "toss-commerce-data-graph-mle",
   "ats-toss:group:7992223003": "toss-commerce-search-relevance-mle",
+  "ats-toss:group:7795787003": "toss-commerce-signal-data-scientist",
   "ats-toss:group:8003064003": "toss-dip-data-scientist",
   "ats-toss:group:7818488003": "toss-dw-analytics-engineer",
   "ats-toss:group:7985496003": "toss-dw-global-analytics-engineer",
@@ -137,6 +138,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 17
+  },
+  {
+   "id": "toss-commerce-signal-data-scientist",
+   "company": "토스",
+   "role": "데이터 사이언티스트 (Commerce Signal)",
+   "jobs": [
+    "ats-toss:group:7795787003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 14
   },
   {
    "id": "toss-dip-data-scientist",

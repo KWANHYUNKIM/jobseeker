@@ -1,0 +1,1123 @@
+{
+ "id": "toss-commerce-signal-data-scientist",
+ "company": "토스",
+ "role": "데이터 사이언티스트 (Commerce Signal)",
+ "team": "토스 커머스 · CSI(Commerce Signal Intelligence) 팀",
+ "jobs": [
+  "ats-toss:group:7795787003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "토스쇼핑의 추천·검색·광고 모델이 **무엇을 보고 판단할지**를 만드는 자리입니다 — 상품·셀러·유저·리뷰·이미지 데이터에서 신호를 찾고, 피처와 라벨(정답)을 정의하고, A/B로 효과를 증명해 ML 엔지니어와 모델에 넣습니다.[1]",
+  "env": "커머스 도메인은 여러 Tribe와 PO·서버 개발자·ML 엔지니어·데이터 분석가가 모인 작은 팀들로 나뉩니다.[1] 토스쇼핑은 2023년 3월 시작해 코호트 + 밴딧에서 Two-Tower 임베딩·실시간 추론으로 옮겨 왔고, 라벨 잡음과 인기 편향을 직접 다뤘다고 발표했습니다.[2] 전형에 2시간 쿼리 테스트와 라이브 쿼리가 있습니다.[1]",
+  "oneline": "리포트를 쓰는 분석가가 아니라 **모델의 입력을 설계하는** 데이터 사이언티스트. 성과는 오프라인 점수가 아니라 실험에서 오른 전환으로 증명한다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "신호 발굴부터 피처 선택, 실험, 모델 반영까지 한 흐름의 오너십을 갖고, 그 신호가 실제 모델 품질과 전환을 끌어올리는지 끝까지 확인해요.",
+   "short": "'이 데이터가 모델에 도움 될까?'를 떠올리는 데서 A/B로 전환이 올랐는지 보는 데까지 한 사람이 끌고 가는 일.",
+   "why": "CSI(Commerce Signal Intelligence) 팀은 상품·셀러·유저·리뷰·이미지 데이터에서 신호를 찾아 추천·검색·광고 모델에 공급하는 팀이고, 이 자리는 신호 발굴부터 모델 반영까지 책임진다고 공고가 적었습니다.[1] 공고는 이 자리를 '현황을 분석하고 리포트로 정리하는 데서 한발 더 들어가는 역할'이라고 불렀습니다.[1] 모델을 만드는 ML 엔지니어 공고들은 따로 열려 있어서[4][5][6] 이 자리의 몫은 '모델에 무엇을 먹일지'입니다.{추론}",
+   "actually": {
+    "intro": "여기서 **신호(signal)**는 모델이 판단에 쓸 수 있는 정보 한 조각, **피처(feature)**는 그 신호를 모델이 읽을 수 있는 숫자 칸으로 만든 것입니다.",
+    "items": [
+     "**발굴** — 로그·상품 정보를 뒤져 '이게 구매를 가르는데 모델은 모르는 것 같다'는 후보를 찾는다(예: 재구매 주기, 가격 민감도).[1]",
+     "**피처로 만들기** — SQL로 유저·상품마다 값을 계산해 표로 만든다. 학습 때와 서빙 때 같은 값이 나오게 정의하는 것까지 포함된다.[1][18]",
+     "**오프라인 검증** — 피처를 넣은 모델과 뺀 모델을 같은 기간 데이터로 비교한다(AUC·nDCG).[1]",
+     "**온라인 실험** — A/B로 실제 클릭·구매 전환이 변하는지 본다.[1][10]",
+     "**반영 뒤 추적** — ML 엔지니어가 모델에 넣은 뒤에도 지표가 유지되는지 본다.[1]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "신호 하나가 모델에 들어가기까지",
+     "steps": [
+      "발굴 · 로그·상품 데이터에서 후보 신호를 찾는다",
+      "정의 · SQL로 피처·라벨을 만들고 시점을 맞춘다",
+      "오프라인 검증 · AUC·nDCG, 세그먼트별 차이",
+      "A/B 실험 · 전환·가드레일 지표",
+      "모델 반영 · ML 엔지니어와 함께 학습·서빙에 넣는다",
+      "사후 추적 · 반영 뒤 지표가 유지되나"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "'끝까지 확인'이라 오프라인 점수에서 멈추면 반쯤 한 것입니다.[1] 모델 코드·서빙은 ML 엔지니어와 같이 하지만[1] 신호가 **전환을 올렸는가**의 답은 이 자리가 냅니다. 최소선은 공개 데이터로 피처 하나를 추가해 오프라인 지표 차이를 보이고, 그걸 검증할 A/B 설계서를 쓸 수 있는 정도입니다.{추론}",
+   "refs": [
+    1,
+    4,
+    5,
+    6,
+    10,
+    18
+   ],
+   "study": [
+    "slash24-reco",
+    "toss-reco-blog",
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "유저 의도와 맥락 이해 : 같은 유저라도 지금 무엇을 원하는지는 구매 주기, 재구매 시점, 카테고리 관심, 가격 민감도처럼 여러 맥락에서 달라져요. 이런 의도를 분류하고, 급상승 상품과 시즈널한 흐름까지 읽어내 모델이 활용할 신호로 만들어요.",
+   "short": "'생수 살 때가 됐다', '요즘 캠핑에 관심', '할인할 때만 산다' 같은 지금의 의도를 숫자로 만들어 모델에 주는 일.",
+   "why": "토스쇼핑 초기 추천은 나이·성별 같은 인구 정보로 나눈 코호트(cohort, 비슷한 사람끼리 묶은 무리)에서 시작했고, 이후 행동 데이터로 학습한 유저 임베딩으로 코호트를 다시 짰다고 발표했습니다.[2] 공고는 같은 유저라도 '지금' 원하는 것이 맥락마다 다르다고 적어서[1] 사람을 한 번 묶는 데서 시점의 의도로 내려가는 일입니다.{추론}",
+   "actually": {
+    "intro": "공고가 든 맥락마다 흔히 만드는 신호입니다. 토스가 실제로 어떤 식을 쓰는지는 공개되지 않았습니다.",
+    "items": [
+     "**구매 주기·재구매 시점** — 유저 × 카테고리별 구매 간격의 중앙값과 '지난 구매 뒤 며칠'의 비율. 고객이 다시 살 확률을 구매 빈도·최근성으로 모델링하는 BG/NBD가 고전적인 바탕이다.[23]",
+     "**카테고리 관심** — 최근 n일 클릭·검색의 카테고리 분포, 오래된 행동일수록 줄이는 가중치(시간 감쇠).{추론}",
+     "**가격 민감도** — 할인 중일 때만 산 비율, 같은 카테고리 안에서 고른 상품의 가격 위치(하위 몇 %).{추론}",
+     "**급상승 상품** — 최근 몇 시간 판매·클릭이 평소 대비 얼마나 튀었나(평소 평균·표준편차 대비 z점수).{추론}",
+     "**시즈널 흐름** — 작년 같은 주의 카테고리 수요, 명절·장마 같은 달력 신호.{추론}",
+     "**의도 분류** — 위 신호를 묶어 '보충 구매 / 탐색 / 선물'처럼 이름 붙인 무리로 나누면 모델과 사람이 같이 읽기 쉽다.{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "재구매 임박도 — 간격의 중앙값으로 주기를 잡는다 (직접 돌린 출력)",
+     "body": "비율이 1에 가까우면 살 때가 됐고, 0.27이면 아직 이르고, 3.93이면 주기를 훌쩍 넘겼습니다 — 다른 곳에서 샀거나 그만 쓰는 것일 수 있어 '임박'과는 다른 신호입니다.{추론} 숫자는 설명용 가상값입니다.",
+     "lang": "python",
+     "code": "buys = {\"생수\": [1, 31, 60, 92], \"기저귀\": [3, 17, 32, 45]}  # 산 날(일)\ntoday = 100\nfor item, days in buys.items():\n    gaps = [b - a for a, b in zip(days, days[1:])]\n    cycle = sorted(gaps)[len(gaps) // 2]          # 주기 = 간격의 중앙값\n    since = today - days[-1]\n    print(item, \"주기\", cycle, \"일 · 지난 구매 후\", since, \"일 · 비율\", round(since / cycle, 2))\n# 생수 주기 30 일 · 지난 구매 후 8 일 · 비율 0.27\n# 기저귀 주기 14 일 · 지난 구매 후 55 일 · 비율 3.93"
+    }
+   ],
+   "how_far": "어떤 의도를 나눌지는 추천·검색·광고 팀이 무엇에 쓰느냐에 달려서 같이 정합니다.[1]{추론} 이 자리는 **정의 → 계산 SQL → 모델에 넣었을 때 효과 검증**까지 맡습니다.[1] 최소선은 재구매 주기·카테고리 관심 같은 신호 두세 개를 로그에서 계산하고, 그 신호가 있는 유저와 없는 유저의 구매율 차이를 보여 줄 수 있는 정도입니다.{추론}",
+   "refs": [
+    1,
+    2,
+    23
+   ],
+   "study": [
+    "slash24-reco",
+    "sql-recipe",
+    "btyd-paper"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "신호 관점의 모델 진단 : 모델이 어떤 신호를 충분히 활용하지 못하는지, 어떤 유저, 상품군, 상황에서 새로운 신호가 필요한지를 데이터로 짚어내 개선 우선순위를 정해요.",
+   "short": "전체 점수는 좋아도 '새 유저'·'신상품'처럼 모델이 헤매는 구간을 찾아내, 거기에 맞는 신호부터 만들자고 정하는 일.",
+   "why": "공고가 이 자리를 '모델이 왜 그렇게 판단했는지 진단'하는 역할이라고 적었습니다.[1] 토스쇼핑은 초기부터 데이터가 적은 고객(cold-start)을 따로 다뤘고[2], 같은 커머스의 Data Graph 팀도 로그 없는 새 상품이 노출을 못 받는 악순환을 문제로 적었습니다.[7] 평균 하나로는 이런 구간이 가려집니다.{추론}",
+   "actually": {
+    "items": [
+     "**세그먼트별로 쪼개 보기** — 신규/기존 유저, 카테고리, 가격대, 앱 진입 경로, 시간대별로 같은 지표(AUC·nDCG·전환)를 따로 낸다.{추론}",
+     "**오류 모아 보기** — 모델이 자신 있게 틀린 예(높은 점수인데 안 삼, 낮은 점수인데 삼)를 모아 공통점을 찾는다.{추론}",
+     "**피처 기여 보기** — 어떤 피처가 예측에 얼마나 쓰이는지(Feature Importance·SHAP) 보고, 중요해야 할 신호가 거의 안 쓰이면 값이 비었거나 정의가 틀렸는지 의심한다.[15][26]",
+     "**우선순위** — '영향 받는 트래픽 크기 × 그 구간 성능 차이'로 줄을 세운다.{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "전체 AUC 0.8 뒤에 숨은 구간 (직접 돌린 출력)",
+     "body": "AUC(Area Under the ROC Curve)는 '산 것 하나와 안 산 것 하나를 뽑았을 때 산 쪽 점수가 더 높을 확률'입니다. 아래 가상값에서 전체는 0.8이지만 새 유저만 보면 0.312 — 무작위(0.5)보다도 못합니다. 이런 구간이 '새로운 신호가 필요한 곳'입니다.{추론}",
+     "lang": "python",
+     "code": "def auc(rows):  # rows = (점수, 샀나)\n    pos = [s for s, y in rows if y]; neg = [s for s, y in rows if not y]\n    win = sum((p > n) + 0.5 * (p == n) for p in pos for n in neg)\n    return round(win / (len(pos) * len(neg)), 3)\nheavy = [(0.9,1),(0.8,1),(0.7,0),(0.3,0),(0.2,0),(0.6,1),(0.1,0),(0.4,0)]\ncold  = [(0.5,1),(0.5,0),(0.4,0),(0.6,0),(0.45,1),(0.55,0)]\nprint(\"전체\", auc(heavy + cold), \"· 구매 많은 유저\", auc(heavy), \"· 새 유저\", auc(cold))\n# 전체 0.8 · 구매 많은 유저 0.933 · 새 유저 0.312"
+    }
+   ],
+   "how_far": "공고가 '개선 우선순위를 정해요'라고 적어서[1] 진단 결과를 **다음에 무엇을 만들지 순서**로 바꾸는 것까지가 이 자리입니다. 최소선은 한 모델의 예측 결과를 세그먼트별로 쪼개 표를 만들고, 가장 나쁜 구간에서 왜 나쁜지 가설 두세 개를 데이터로 확인해 보는 정도입니다.{추론}",
+   "refs": [
+    1,
+    2,
+    7,
+    15,
+    26
+   ],
+   "study": [
+    "shap-docs",
+    "sklearn-pi",
+    "slash24-reco"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "신호, 피처, 라벨 설계와 검증 : 유저와 상품의 적합도, 상품 간 연관도 같은 신호와 노출 대비 무반응을 뜻하는 네거티브 라벨을 직접 정의하고, AUC, nDCG를 비롯한 다각도의 지표로 온, 오프라인 효과와 성능을 검증해요.",
+   "short": "모델에게 '이건 맞는 답, 이건 틀린 답'을 무엇으로 알려 줄지 정하고, 그 정의로 점수가 진짜 오르는지 재는 일.",
+   "why": "토스 커머스 발표에서 유저 임베딩 모델의 라벨을 '구매한 상품 = 정답(positive), 노출됐지만 안 산 상품 = 오답(negative)'으로 두면 노출 데이터가 시끄럽고 인기 상품이 오히려 벌을 받는 편향이 생긴다고 짚었습니다.[2] 그래서 무작위로 뽑은 오답과 배치 안의 다른 정답을 섞는 Mixed Random Sampling, 인기 편향을 덜어 내는 logQ 보정을 썼다고 했습니다.[2][19][20] 라벨 정의 하나가 모델이 배우는 것을 바꾼다는 회사 사례입니다.",
+   "actually": {
+    "intro": "**라벨(label)**은 모델이 맞히려는 정답 칸입니다. '노출 대비 무반응'은 보여 줬는데 아무 반응이 없던 것입니다.",
+    "items": [
+     "**네거티브 라벨 정의** — '노출됐다'의 기준을 정한다: 화면에 몇 초 이상, 몇 % 이상 보였나, 스크롤로 스쳐 간 건 빼나. 안 본 것을 '싫다'로 세면 잡음이 된다.[28]{추론}",
+     "**음성 고르기** — 노출 무반응만 쓰면 인기 상품이 자주 음성이 된다. 무작위 음성을 섞거나 뽑힐 확률로 보정한다.[2][19][20]",
+     "**적합도·연관도 신호** — 유저-상품 적합도(임베딩 내적), 상품-상품 연관도(같이 산 횟수를 각자 인기로 나눈 값).[2]{추론}",
+     "**오프라인 지표** — AUC는 '순서를 잘 가르나', nDCG(Normalized Discounted Cumulative Gain)는 '좋은 것을 위에 놓나'를 본다.[11] 후보 일부만 뽑아 재면 순위가 뒤집힐 수 있다.[22]",
+     "**온라인 지표** — 같은 신호를 A/B로 CTR·CVR·거래액에 견준다.[1][10]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "nDCG — 같은 다섯 개라도 순서가 점수를 바꾼다 (직접 돌린 출력)",
+     "body": "관련도를 구매 3·클릭 1·무반응 0으로 두고 위에서부터 놓았습니다. 아래로 갈수록 log₂(순위+1)로 나눠 깎습니다.[11] 구매가 4위로 내려가면 0.964가 0.494가 됩니다. 관련도를 몇 점으로 줄지도 라벨 설계의 일부입니다.{추론}",
+     "lang": "python",
+     "code": "import math\ndef dcg(rel): return sum(r / math.log2(i + 2) for i, r in enumerate(rel))\ndef ndcg(rel, k=5):\n    return round(dcg(rel[:k]) / dcg(sorted(rel, reverse=True)[:k]), 3)\n# 관련도: 구매 3 · 클릭 1 · 무반응 0, 화면 위에서부터\nprint(\"구매가 1위\", ndcg([3,0,1,0,0]), \"· 구매가 4위\", ndcg([0,0,1,3,0]))\n# 구매가 1위 0.964 · 구매가 4위 0.494"
+    }
+   ],
+   "how_far": "정의는 이 자리가 직접 합니다.[1] 최소선은 노출 로그로 정답·오답 표를 만들고, 오답 정의를 두 가지로 바꿔 같은 모델의 AUC·nDCG가 어떻게 달라지는지 비교해 보는 정도입니다. 이 팀 수준은 그 차이가 **온라인 전환과도 같은 방향인지**까지 확인하는 것입니다.[1]{추론}",
+   "refs": [
+    1,
+    2,
+    10,
+    11,
+    19,
+    20,
+    22,
+    28
+   ],
+   "study": [
+    "slash24-reco",
+    "mns",
+    "ndcg-paper",
+    "sampled-metrics"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "실험을 통한 모델 반영 : 가설 수립부터 A/B 테스트 설계, 결과 분석까지 직접 주도해 검증된 신호를 ML Engineer와 함께 모델에 녹이고, 반영 이후의 지표 변화까지 함께 책임져요.",
+   "short": "'이 신호를 넣으면 구매가 오른다'를 A/B로 증명하고, 엔지니어와 모델에 넣은 뒤에도 지표를 지켜보는 일.",
+   "why": "토스쇼핑 추천은 처음부터 무거운 모델 대신 가볍게 시작해 실험으로 고쳐 나가는 과정을 중요하게 여겼고, 성과도 A/B로 확인했다고 발표했습니다.[2] 같은 커머스 검색 쪽 공고도 오프라인 검증 → A/B 실험 사이클과 가드레일을 적었습니다.[8]",
+   "actually": {
+    "items": [
+     "**가설** — '재구매 임박 신호를 랭킹에 넣으면 생필품 카테고리 CVR이 오른다'처럼 대상·지표·방향을 적는다.{추론}",
+     "**설계** — 주 지표(Overall Evaluation Criterion), 가드레일(나빠지면 안 되는 지표: 응답 속도·반품률), 실험 단위(유저), 표본 크기, 기간.[10]",
+     "**분석** — 비율 차이의 유의성, 나눈 비율이 어긋나지 않았나(SRM), 세그먼트별 효과. 실험 전 데이터로 분산을 줄이는 CUPED도 흔히 쓴다.[10][24]",
+     "**반영** — ML 엔지니어가 피처를 학습·서빙 파이프라인에 넣는다. 토스쇼핑은 배치 추론(미리 계산해 저장)과 실시간 추론(피처 스토어 + 모델 서버)을 함께 쓴다고 발표했다.[2]",
+     "**반영 뒤** — 실험 때 효과가 반영 뒤에도 남는지, 새로움 효과(novelty)로 처음만 오른 건 아닌지 본다.[10]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "전환율 2% → 2.15%: 유의한가, 몇 명이 필요한가 (직접 돌린 출력)",
+     "body": "두 비율의 z검정과, 실험 설계 책이 쓰는 표본 크기 어림식(그룹당 16·σ²/Δ², 유의수준 5%·검정력 80%)입니다.[10] 전환율 2%에서 상대 5%의 변화를 보려면 그룹당 30만 명이 넘게 필요합니다 — 작은 카테고리 실험이 왜 오래 걸리는지 보여 줍니다. 숫자는 가상값입니다.",
+     "lang": "python",
+     "code": "import math\ndef ztest(c1, n1, c2, n2):\n    p1, p2 = c1/n1, c2/n2; p = (c1+c2)/(n1+n2)\n    se = math.sqrt(p*(1-p)*(1/n1 + 1/n2)); z = (p2-p1)/se\n    return round(p1,4), round(p2,4), round(z,2), round(math.erfc(abs(z)/math.sqrt(2)),4)\nprint(\"A, B, z, p =\", ztest(2000, 100000, 2150, 100000))\np, lift = 0.02, 0.05                       # CVR 2%, 상대 5% 개선\nprint(\"그룹당 약\", round(16*p*(1-p) / (p*lift)**2), \"명\")   # 16·σ²/Δ² 어림\n# A, B, z, p = (0.02, 0.0215, 2.35, 0.0186)\n# 그룹당 약 313600 명"
+    }
+   ],
+   "how_far": "'직접 주도'와 '함께 책임'이 같이 적혀 있습니다.[1] 실험 설계·분석은 이 자리가 주도하고, 모델 코드·배포는 ML 엔지니어와 나눕니다.[1] 최소선은 A/B 설계서(가설·주 지표·가드레일·표본·기간)를 혼자 쓰고 결과표를 읽어 '내보낸다/접는다'를 근거와 함께 말할 수 있는 정도입니다.{추론}",
+   "refs": [
+    1,
+    2,
+    8,
+    10,
+    24
+   ],
+   "study": [
+    "kohavi-ko",
+    "slash24-reco"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "SQL을 활용해 자유롭게 원하는 데이터를 추출하고 분석까지 진행 가능하신 분",
+   "short": "서류 다음 전형이 2시간짜리 쿼리 테스트고 면접에서도 라이브로 쿼리를 짤 수 있으니까.",
+   "why": "합류 여정에 사전 과제(약 2시간 쿼리 테스트, 5일 응시 기간)가 있고 직무 인터뷰 중 라이브 쿼리 테스트가 진행될 수 있다고 적었습니다.[1] 같은 회사의 다른 데이터 사이언티스트 공고도 같은 쿼리 테스트 전형을 둡니다.[9] 신호·라벨을 만드는 일 자체가 로그 테이블을 SQL로 다루는 일입니다.{추론}",
+   "actually": {
+    "items": [
+     "**윈도 함수** — LAG·ROW_NUMBER·누적합으로 재구매 간격, 세션 안 순서, 최근 n일 합계를 만든다.{추론}",
+     "**조인과 시점** — 노출·클릭·구매 로그를 이으면서 '그때까지의 값'만 쓰기.[18]",
+     "**집계와 비율** — 세그먼트별 전환율, 분모(노출)와 분자(구매)의 기준 맞추기.{추론}",
+     "**큰 표 다루기** — 파티션 조건을 먼저 걸고 필요한 열만 읽기.{추론}"
+    ]
+   },
+   "level": {
+    "basic": "SELECT·JOIN·GROUP BY로 하루치 구매 건수를 카테고리별로 센다.",
+    "work": "윈도 함수로 유저 × 카테고리 재구매 간격, 최근 7일 클릭 수 같은 피처 표를 만든다.",
+    "team": "노출·클릭·구매 로그를 시점에 맞게 이어 라벨과 피처를 한 번에 뽑고, 2시간 안에 분석 질문 여러 개를 푼다.[1]{추론}"
+   },
+   "examples": [
+    {
+     "title": "재구매 간격 피처를 SQL 한 번으로 (SQLite에서 직접 돌린 출력)",
+     "body": "LAG로 같은 유저·같은 카테고리의 직전 구매일을 붙이고 간격을 평균냅니다. 한 번만 산 조합은 간격이 비어(None) 따로 다뤄야 합니다.{추론} 데이터는 가상 주문 여섯 건입니다.",
+     "lang": "sql",
+     "code": "-- 유저 × 카테고리마다 재구매 간격(일)과 마지막 구매일 (SQLite 로 돌림)\nwith g as (\n  select user_id, category, ordered_on,\n         julianday(ordered_on) - julianday(lag(ordered_on) over (\n           partition by user_id, category order by ordered_on)) as gap\n  from orders)\nselect user_id, category, count(gap) as n_gaps, avg(gap) as avg_gap,\n       max(ordered_on) as last_on\nfrom g group by user_id, category order by user_id, category;\n-- (1, '생수', 2, 30.5, '2026-10-01')\n-- (2, '기저귀', 0, None, '2026-10-01')   ← 한 번만 사서 간격이 없다\n-- (2, '생수', 1, 44.0, '2026-10-15')"
+    }
+   ],
+   "how_far": "'자유롭게'라 문법을 아는 것보다 **질문을 쿼리로 바로 옮기는 속도**를 봅니다.[1]{추론} 최소선은 윈도 함수·CTE를 막힘없이 쓰고, 결과의 분모·중복을 스스로 검산하는 습관입니다.{추론}",
+   "refs": [
+    1,
+    9,
+    18
+   ],
+   "study": [
+    "sql-recipe",
+    "sql-levelup"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "추천, 검색, 타겟팅 등 Machine Learning 모델의 평가방법을 이해하고, 모델 관점에서 성능이 어디서 왜 저하되는지 진단해보신 분",
+   "short": "이 자리는 모델을 만들기보다 '모델이 어디서 틀리나'를 찾아 신호로 메우는 자리라서.",
+   "why": "공고가 팀의 일을 '모델이 왜 그렇게 판단했는지 진단'하고 품질을 판단하는 것으로 적었습니다.[1] 같은 커머스 랭킹 공고도 오프라인 지표와 온라인 성과가 어긋나는 문제를 다룹니다.[5]",
+   "actually": {
+    "items": [
+     "**추천·검색** — 순위 지표(nDCG·Recall@k·MRR). 전체 후보 대신 일부만 뽑아 재면 모델 순서가 뒤집힐 수 있다.[11][22]",
+     "**타겟팅·광고** — 분류 지표(AUC·로그 손실)와 예측 확률이 실제 비율과 맞는지(보정, calibration).[16]",
+     "**저하 원인 찾기** — 데이터가 바뀌었나(분포 이동), 피처가 비었나, 특정 세그먼트만 나쁜가, 학습·서빙 값이 다른가.[18]{추론}",
+     "**시간 순 검증** — 무작위로 나누지 않고 과거로 학습해 미래로 잰다. 섞어 나누면 미래 정보가 새서 점수가 부풀려진다.{추론}"
+    ]
+   },
+   "how_far": "'진단해보신'이라 지표 이름을 아는 것에서 그치지 않고 **성능이 떨어진 구간을 찾아 원인까지 짚은 경험**을 봅니다.[1] 최소선은 공개 추천 데이터로 모델 하나를 학습해 세그먼트별·기간별로 지표를 쪼개고, 나쁜 구간의 원인을 한 가지 이상 데이터로 확인해 보는 정도입니다.{추론}",
+   "refs": [
+    1,
+    5,
+    11,
+    16,
+    18,
+    22
+   ],
+   "study": [
+    "ndcg-paper",
+    "sampled-metrics",
+    "calibration",
+    "rules-of-ml"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "분석에서 멈추지 않고, 모델이 학습하고 추론할 신호, 피처, 라벨을 직접 설계하고 검증해본 경험이 있으신 분",
+   "short": "리포트로 끝나는 분석가가 아니라 모델 입력을 직접 바꿔 본 사람을 찾는다는 뜻.",
+   "why": "공고가 '현황을 분석하고 리포트로 정리하는 데서 한발 더 들어가는 역할'이라고 했고, 이력서에도 데이터 분석이 모델 개선(신호·피처·라벨)으로 이어진 경험을 적어 달라고 했습니다.[1]",
+   "actually": {
+    "items": [
+     "**신호 → 피처** — 아이디어를 모델이 읽는 칸으로 옮긴다(결측 처리, 스케일, 범주 인코딩).{추론}",
+     "**라벨 바꾸기** — '클릭'에서 '구매' 또는 '일정 시간 이상 본 클릭'으로 정답을 바꾸고 모델이 무엇을 배우는지 비교한다.[2][28]{추론}",
+     "**기여 검증** — 넣은 모델과 뺀 모델의 오프라인 차이, 피처를 섞었을 때 성능이 얼마나 떨어지나(permutation importance).[25][26]",
+     "**학습·추론 양쪽** — 공고가 '학습하고 추론할'을 같이 적었다. 추론 때 바로 구할 수 없는 값은 신호로 못 쓴다.[1][18]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "피처를 섞어 보면 쓰이는지 안다 — permutation importance (직접 돌린 출력)",
+     "body": "한 열만 무작위로 섞었을 때 성능이 크게 떨어지면 모델이 그 신호에 기대고 있다는 뜻입니다.[25][26] 가상 데이터라 정답이 첫 신호로만 정해지게 만들었습니다.",
+     "lang": "python",
+     "code": "import random\nrandom.seed(0)\nX = [(random.random(), random.random()) for _ in range(2000)]\ny = [1 if a > 0.5 else 0 for a, b in X]          # 정답은 첫 신호로만 정해진다\nmodel = lambda a, b: 1 if a > 0.5 else 0\nacc = lambda XX: sum(model(*x) == t for x, t in zip(XX, y)) / len(y)\nfor j, name in enumerate([\"재구매 임박도\", \"리뷰 수\"]):\n    col = [x[j] for x in X]; random.shuffle(col)  # 그 열만 섞는다\n    XX = [tuple(col[i] if k == j else x[k] for k in range(2)) for i, x in enumerate(X)]\n    print(name, \"섞으면 정확도\", acc(X), \"->\", round(acc(XX), 3))\n# 재구매 임박도 섞으면 정확도 1.0 -> 0.502\n# 리뷰 수 섞으면 정확도 1.0 -> 1.0"
+    }
+   ],
+   "how_far": "이력서에 '문제정의-가설설정-실험설계-검증-결과'가 드러나길 바란다고 적었습니다.[1] 최소선은 프로젝트 하나에서 **내가 정의한 피처·라벨 → 모델 지표 변화 → (가능하면) 온라인 결과**를 숫자로 말할 수 있는 것입니다.{추론}",
+   "refs": [
+    1,
+    2,
+    18,
+    25,
+    26,
+    28
+   ],
+   "study": [
+    "sklearn-pi",
+    "shap-docs",
+    "rules-of-ml"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "대규모 행동 로그에서 유저의 의도를 읽어내고, 이를 모델이 쓸 수 있는 지표로 정의해본 경험이 있으신 분",
+   "short": "토스쇼핑은 클릭·검색·구매 로그가 대량으로 쌓이고, 그 로그를 '의도'로 번역하는 게 이 팀 일이라서.",
+   "why": "토스쇼핑 유저 임베딩 모델은 유저 쪽에 클릭·결제·검색 같은 행동 데이터를 넣는다고 발표했고[2], 토스 서비스는 천만 명 넘는 고객을 대상으로 한다고 했습니다.[2] 공고는 의도를 구매 주기·재구매 시점·카테고리 관심·가격 민감도로 예를 들었습니다.[1]",
+   "actually": {
+    "items": [
+     "**세션 나누기** — 일정 시간 이상 끊기면 새 세션으로 보고, 한 세션 안의 검색어·클릭 카테고리로 지금의 관심을 본다.{추론}",
+     "**행동 강도** — 노출 < 클릭 < 장바구니 < 구매처럼 무게를 다르게 둔다. 암묵적 피드백은 '확신의 정도'로 다루는 게 고전적인 방법이다.[28]",
+     "**의도 지표 예** — 재구매 임박도(주기 대비 경과), 카테고리 관심도(최근 클릭 비중 × 시간 감쇠), 할인 반응도.{추론}",
+     "**대규모 처리** — 토스쇼핑 추천 학습은 Hadoop·Spark·Airflow로 배치 처리한다고 발표했다.[2]"
+    ]
+   },
+   "how_far": "최소선은 공개 이커머스 로그(클릭·장바구니·구매)로 세션을 나누고 의도 지표 두세 개를 정의해, 그 지표가 다음 구매를 얼마나 가르는지(AUC) 보여 주는 정도입니다.{추론} '모델이 쓸 수 있는'이라 서빙 때도 계산 가능한 정의인지가 같이 평가됩니다.[1]{추론}",
+   "refs": [
+    1,
+    2,
+    28
+   ],
+   "study": [
+    "sql-recipe",
+    "implicit-cf",
+    "slash24-reco"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "가설을 세워 A/B 테스트를 설계하고 검증하며 지속해서 개선해 나간 경험이 있으신 분",
+   "short": "신호가 효과 있는지 마지막 판정은 A/B이고, 한 번이 아니라 여러 번 이어 돌려야 하니까.",
+   "why": "공고의 업무 다섯 줄 중 첫 줄과 마지막 줄이 실험을 통한 확인입니다.[1] 토스쇼핑 추천도 가볍게 시작해 실험으로 고쳐 나가는 과정을 중요하게 여겼다고 발표했습니다.[2]",
+   "actually": {
+    "items": [
+     "**설계** — 주 지표·가드레일·표본 크기·기간·실험 단위.[10]",
+     "**함정** — 나눈 비율 어긋남(SRM), 여러 지표를 보다 우연히 유의함, 새로움 효과, 같은 유저가 여러 실험에 겹침.[10]",
+     "**감도 높이기** — 실험 전 행동으로 분산을 줄이는 CUPED.[24]",
+     "**이어 가기** — 실패한 실험에서 '어느 세그먼트에서만 됐나'를 다음 가설로 잇는다.{추론}"
+    ]
+   },
+   "how_far": "'지속해서 개선'이라 한 번의 성공보다 **실험 → 해석 → 다음 실험**의 고리를 몇 번 돌렸는지를 봅니다.[1]{추론} 최소선은 실험 하나의 설계서와 결과 해석(유의성·효과 크기·세그먼트)을 스스로 쓸 수 있는 것입니다.{추론}",
+   "refs": [
+    1,
+    2,
+    10,
+    24
+   ],
+   "study": [
+    "kohavi-ko",
+    "cuped"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Candidate Generation 과 Ranking 으로 구성된 Multi-Stage 추천, 검색 모델 구조에 대한 이해",
+   "short": "같은 신호라도 후보 뽑기 단계에 넣을지 순위 매기기 단계에 넣을지에 따라 효과와 비용이 달라서.",
+   "why": "토스 커머스 개인화팀은 쇼핑 추천을 후보 찾기(Retrieval) → 랭킹(Ranking) → 재정렬(Re-ranking)의 여러 단계로 나눠 설명했습니다.[3] SLASH 24 발표의 유저 임베딩 모델도 두 단계 랭킹 시스템의 앞쪽에서 후보를 고르는 역할을 한다고 했습니다.[2] 이 구조는 YouTube 추천 논문이 대표적으로 보인 방식입니다.[12]",
+   "actually": {
+    "items": [
+     "**후보 생성(Candidate Generation)** — 수백만 상품에서 수백 개를 빠르게 고른다. 유저·상품 벡터를 따로 만드는 Two-Tower가 흔하다.[2][3][12]",
+     "**랭킹(Ranking)** — 고른 수백 개에 무거운 모델로 클릭·구매 확률을 매긴다. 피처를 많이 넣을 수 있는 곳.[3][12]",
+     "**재정렬** — 다양성·사업 규칙을 반영해 마지막 순서를 고친다.[3]",
+     "**신호를 어디에** — 후보 단계에 없는 상품은 랭킹이 아무리 좋아도 못 보인다. 어떤 단계가 병목인지 먼저 재야 한다.{추론}"
+    ]
+   },
+   "how_far": "우대 사항이라 모델을 직접 짜는 수준은 아닙니다. 단계별로 쓰는 지표(후보 단계 Recall@k, 랭킹 단계 nDCG·AUC)가 다르다는 것과, 신호를 어느 단계에 넣을지 판단할 수 있으면 됩니다.[3][12]{추론}",
+   "refs": [
+    2,
+    3,
+    12
+   ],
+   "study": [
+    "toss-reco-blog",
+    "youtube-dnn"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "오프라인 모델 지표와 온라인 실험 지표를 연결해본 경험",
+   "short": "오프라인 AUC가 올라도 A/B 구매가 안 오르는 일이 흔해서, 둘을 잇는 눈이 귀하니까.",
+   "why": "같은 커머스 랭킹 공고가 오프라인 지표와 온라인 성과가 어긋나는 문제를 다룬다고 적었고[5], 이 공고도 '온, 오프라인 효과와 성능'을 같이 검증한다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**왜 어긋나나** — 오프라인 데이터는 지난 모델이 보여 준 것만 담고 있다(노출 편향), 지표가 사업 목표와 다르다(클릭 vs 구매), 상위 몇 개만 화면에 보인다.[13][21]{추론}",
+     "**이어 보기** — 지난 실험들의 '오프라인 지표 변화 vs 온라인 지표 변화'를 표로 쌓아 어떤 오프라인 지표가 온라인을 잘 따라가는지 본다.{추론}",
+     "**오프라인 A/B** — 로그된 노출 확률로 가중해 새 정책의 온라인 성과를 미리 추정하는 방법이 연구돼 있다.[21]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "지난 실험 다섯 개로 본 '오프라인이 온라인을 따라가나' (직접 돌린 출력)",
+     "body": "가상의 실험 기록에서 오프라인 AUC 상승폭과 온라인 CVR 상승의 상관이 -0.79로 나왔습니다. 이렇게 나오면 'AUC를 더 올리는 것'이 목표가 될 수 없다는 신호입니다.{추론} 실제로는 실험 수가 적으면 상관 자체가 흔들립니다.{추론}",
+     "lang": "python",
+     "code": "import math\n# 지난 실험 다섯 개: (이름, 오프라인 AUC 상승, 온라인 CVR 상승 %)\nexps = [(\"A\",0.004,1.2), (\"B\",0.010,0.3), (\"C\",0.002,0.9), (\"D\",0.012,-0.4), (\"E\",0.006,1.5)]\nxs = [e[1] for e in exps]; ys = [e[2] for e in exps]\nmx, my = sum(xs)/len(xs), sum(ys)/len(ys)\ncov = sum((a-mx)*(b-my) for a, b in zip(xs, ys))\nr = cov / math.sqrt(sum((a-mx)**2 for a in xs) * sum((b-my)**2 for b in ys))\nprint(\"상관 r =\", round(r, 2))\n# 상관 r = -0.79"
+    }
+   ],
+   "how_far": "최소선은 오프라인 지표가 좋아졌는데 온라인이 안 오른 사례 하나를 원인과 함께 설명할 수 있는 것입니다.{추론}",
+   "refs": [
+    1,
+    5,
+    13,
+    21
+   ],
+   "study": [
+    "offline-ab",
+    "kohavi-ko",
+    "unbiased-ltr"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Feature Importance 분석, 편향 보정, 불확실성 처리 방법론을 활용해본 경험",
+   "short": "어떤 신호가 먹히는지(중요도), 보여 준 것만 학습되는 문제(편향), 데이터 적은 상품의 들쑥날쑥함(불확실성)을 다루니까.",
+   "why": "토스쇼핑 발표에서 인기 상품이 벌을 받는 편향을 logQ 보정으로 덜어 냈고[2][19], 신상품이 섞인 랭킹에서는 노출이 충분해 믿을 만한 상품을 고르려고 신뢰구간 아래 끝(LCB, Lower Confidence Bound)으로 거른 뒤 톰슨 샘플링(Thompson sampling)으로 순위를 매겼다고 했습니다.[2][17] 세 방법이 모두 회사 사례에 나옵니다.",
+   "actually": {
+    "items": [
+     "**Feature Importance** — 트리 모델의 분할 기준 중요도는 값 종류가 많은 피처를 부풀릴 수 있어 permutation importance나 SHAP를 같이 본다.[15][26]",
+     "**편향 보정** — 위쪽에 놓인 상품이 더 클릭되는 위치 편향은 '보였을 확률'로 나눠 가중하는 역성향 가중(IPS)으로 보정한다.[13][14]",
+     "**인기 편향** — 배치 안 음성은 인기 상품이 더 자주 음성이 되므로 뽑힐 확률(logQ)로 보정한다.[2][19]",
+     "**불확실성** — 노출 10번에 2번 산 신상품과 3,000번에 150번 산 상품의 전환율 20%와 5%는 믿을 정도가 다르다. 신뢰구간·베이즈 사후분포·MC dropout 같은 방법으로 '얼마나 확실한가'를 같이 낸다.[2][17][27]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "위치 편향 보정 — 3위에서 받은 클릭 하나의 무게 (직접 돌린 출력)",
+     "body": "3위가 보일 확률을 0.25로 두면, 거기서 받은 클릭 1번은 1위 클릭 4번만큼의 무게가 됩니다.[13] 보일 확률은 설명용 가정값이고, 실제로는 순서를 섞는 실험 등으로 추정합니다.[13]",
+     "lang": "python",
+     "code": "prop = {1: 1.0, 2: 0.5, 3: 0.25}      # 위치별로 '보일' 확률(가정값)\nclicks = [(1, \"A\"), (1, \"A\"), (3, \"B\")]\nnaive, ips = {}, {}\nfor pos, item in clicks:\n    naive[item] = naive.get(item, 0) + 1\n    ips[item] = ips.get(item, 0) + 1 / prop[pos]   # 덜 보이던 자리의 클릭은 무겁게\nprint(\"단순 클릭\", naive, \"· 위치 보정\", ips)\n# 단순 클릭 {'A': 2, 'B': 1} · 위치 보정 {'A': 2.0, 'B': 4.0}"
+    },
+    {
+     "title": "전환율 20% vs 5% — 하한으로 보면 순서가 바뀐다 (직접 돌린 출력)",
+     "body": "Wilson 신뢰구간의 아래 끝입니다. 신상품의 20%는 노출이 10번뿐이라 하한이 5.67%, 스테디셀러의 5%는 하한 4.28%로 둘이 거의 붙습니다. 토스쇼핑이 LCB로 거른 것도 '노출이 충분해 믿을 만한 상품'을 고르기 위해서였다고 했습니다.[2] 숫자는 가상값입니다.",
+     "lang": "python",
+     "code": "import math\ndef wilson_low(c, n, z=1.96):          # 전환율 95% 신뢰구간의 아래 끝\n    p = c/n; d = 1 + z*z/n\n    return round((p + z*z/(2*n) - z*math.sqrt(p*(1-p)/n + z*z/(4*n*n))) / d, 4)\nfor name, c, n in [(\"신상품\", 2, 10), (\"스테디\", 150, 3000)]:\n    print(name, \"CVR\", round(c/n, 3), \"하한\", wilson_low(c, n))\n# 신상품 CVR 0.2 하한 0.0567\n# 스테디 CVR 0.05 하한 0.0428"
+    }
+   ],
+   "how_far": "우대 사항입니다. 세 가지 중 하나라도 **실제 데이터에 써서 결론이 바뀐 경험**이 있으면 강점입니다.{추론} 최소선은 각 방법이 무엇을 막으려는 것인지와, 이 공고의 커머스 상황(신상품·인기 상품·위치)에서 어디에 쓸지를 말할 수 있는 것입니다.{추론}",
+   "refs": [
+    2,
+    13,
+    14,
+    15,
+    17,
+    19,
+    26,
+    27
+   ],
+   "study": [
+    "shap-docs",
+    "unbiased-ltr",
+    "ts-tutorial",
+    "slash24-reco"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "학습과 서빙 시점의 정합성까지 고려해 피처를 설계해본 경험",
+   "short": "학습 땐 미래 정보가 섞이고 서빙 땐 그 값이 없으면, 오프라인에선 좋던 신호가 실제로는 무너지니까.",
+   "why": "토스쇼핑은 배치 추론과 실시간 추론을 같이 쓰고, 실시간 쪽은 사내 피처 스토어에서 유저·상품 피처를 꺼내 모델에 넣는다고 발표했습니다.[2] 이 자리는 그 피처를 정의하는 쪽이라[1] 학습 때 만든 값과 서빙 때 꺼내는 값이 같아야 합니다. Google의 ML 규칙도 서빙 때 쓴 피처를 그대로 기록해 학습에 쓰라고 권합니다.[18]",
+   "actually": {
+    "items": [
+     "**시점 맞추기(point-in-time)** — 라벨이 생긴 시각 이전의 행동만으로 피처를 계산한다. 섞이면 미래 정보 누수(leakage)다.[18]{추론}",
+     "**계산 경로 하나로** — 학습용 SQL과 서빙용 코드가 따로면 값이 어긋난다(training-serving skew). 같은 정의를 같이 쓰거나 서빙 값을 로그로 남겨 학습한다.[18]",
+     "**신선도** — 배치로 하루 한 번 갱신되는 피처는 서빙 때 최대 하루 늦다. 학습 때도 같은 지연을 넣어야 공정하다.{추론}",
+     "**결측** — 새 유저는 피처가 비어 있다. 학습 때 비어 있던 비율과 서빙 때 비율이 같은지 본다.{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "같은 '클릭 수' 피처가 15와 5로 갈린다 (SQLite에서 직접 돌린 출력)",
+     "body": "10월 6일에 산 사실을 맞힐 피처로 클릭 수를 쓰는데, 시점을 안 보면 10월 9일 클릭까지 더해져 15가 됩니다. 서빙 때는 미래를 모르니 5만 알 수 있습니다 — 오프라인 점수만 부풀립니다.{추론} 데이터는 가상값입니다.",
+     "lang": "sql",
+     "code": "-- 라벨(10-06 에 샀다)을 맞힐 피처 = 그 유저의 클릭 수\n-- events: (1,'10-01',2) (1,'10-05',3) (1,'10-09',10)\nselect sum(cnt) from events where user_id = 1;               -- 15 (미래 클릭까지 섞임)\nselect sum(e.cnt) from labels l join events e\n  on e.user_id = l.user_id and e.clicked_on < l.label_on;    -- 5 (그 시점에 알 수 있던 값)"
+    }
+   ],
+   "how_far": "최소선은 피처를 정의할 때 '언제 계산되고 서빙 때 언제 갱신되나'를 같이 적고, 라벨 시점 이전 데이터만 쓰는 조인을 쓸 수 있는 것입니다.{추론} 피처 스토어를 만드는 일은 이 자리가 아닙니다.[2]{추론}",
+   "refs": [
+    1,
+    2,
+    18
+   ],
+   "study": [
+    "rules-of-ml",
+    "slash24-reco"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "분석 결과가 보고서가 아니라 모델 변화로 이어지길 바라는 사람[1]",
+   "SQL로 로그를 바로 뒤져 가설을 확인하는 게 빠른 사람[1]",
+   "'전체 점수' 뒤의 세그먼트를 쪼개 보는 게 습관인 사람[1]{추론}",
+   "ML 엔지니어와 실험 결과를 두고 길게 이야기하는 게 즐거운 사람[1]"
+  ],
+  "hard": [
+   "성과가 모델 반영 뒤 지표로 나타나 혼자 끝낼 수 없다[1]",
+   "모델을 직접 만드는 자리가 아니라 모델링만 하고 싶은 사람에겐 답답할 수 있다{추론}",
+   "쿼리 테스트·라이브 쿼리가 있어 SQL 속도가 전형에서 바로 갈린다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "노출됐는데 안 산 상품을 오답으로 두면 어떤 문제가 생기나요? 어떻게 고치겠어요?",
+   "a": "토스쇼핑이 발표에서 짚은 라벨 잡음·인기 편향과 음성 섞기·logQ.[2][19][20]"
+  },
+  {
+   "q": "전체 AUC는 그대로인데 신규 유저 전환이 떨어졌어요. 무엇부터 보나요?",
+   "a": "공고의 '신호 관점의 모델 진단' — 세그먼트 쪼개기와 피처 결측.[1]"
+  },
+  {
+   "q": "'생수 살 때가 됐다'를 피처로 만든다면 어떻게 정의하고, 학습·서빙에서 무엇을 조심하겠어요?",
+   "a": "공고의 구매 주기·재구매 시점과 정합성 우대 사항.[1][18]"
+  },
+  {
+   "q": "오프라인 nDCG가 2% 올랐는데 A/B에서 CVR이 그대로예요. 어떻게 해석하나요?",
+   "a": "공고가 온·오프라인 효과를 같이 검증한다고 적었다.[1][5][21]"
+  },
+  {
+   "q": "노출 10번에 2번 팔린 신상품과 3,000번에 150번 팔린 상품, 어느 쪽을 위에 놓겠어요?",
+   "a": "토스쇼핑이 쓴 LCB 필터와 톰슨 샘플링 — 불확실성 처리.[2][17]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 데이터 사이언티스트 (Commerce Signal)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7795787003",
+   "kind": "posting",
+   "note": "팀(CSI) 소개·업무·요건·우대·이력서 안내·합류 여정(쿼리 테스트·라이브 쿼리)·동료 한마디"
+  },
+  {
+   "n": 2,
+   "title": "SLASH 24 · 기반 데이터가 부족해도 OK! 커머스 추천 시스템 제작기",
+   "url": "https://www.youtube.com/watch?v=LAD6LYnkPsA",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스 Data Scientist·Server Developer 발표 · 자막 전부와 장면 확인 — 2023년 3월 시작, 코호트 + 톰슨 샘플링, LCB 필터 + 랭킹 2층 밴딧, Two-Tower 유저 임베딩(클릭·결제·검색 / 브랜드·카테고리·텍스트·이미지 임베딩), 라벨(구매=정답·노출 후 미구매=오답)의 잡음·인기 편향, Mixed Random Sampling·sampled softmax(logQ), 배치(Spark·Airflow → Redis·Phoenix → Spring)·실시간(MLflow·피처 스토어·ONNX Runtime)"
+  },
+  {
+   "n": 3,
+   "title": "Toss Tech · 토스 쇼핑 추천 시스템: 멀티 스테이지 접근법",
+   "url": "https://toss.tech/article/toss-shopping-recommendation-system",
+   "kind": "company",
+   "date": "2025-04-17",
+   "note": "커머스 개인화팀 — Retrieval·Ranking·Re-ranking"
+  },
+  {
+   "n": 4,
+   "title": "토스 채용 · ML 엔지니어 (Commerce Recommendation)",
+   "url": "https://toss.im/career/job-detail?gh_jid=6543801003",
+   "kind": "posting",
+   "note": "같은 커머스 — CTR/CVR 예측·리랭킹·온라인 지표 검증"
+  },
+  {
+   "n": 5,
+   "title": "토스 채용 · ML 엔지니어 (Search Conversion/Ranking)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7992229003",
+   "kind": "posting",
+   "note": "같은 커머스 — pCTR·pCVR, 오프라인·온라인 괴리"
+  },
+  {
+   "n": 6,
+   "title": "토스 채용 · ML 엔지니어 (Commerce Ads)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7784598003",
+   "kind": "posting",
+   "note": "같은 커머스 광고 — CTR/CVR 예측·보정·온라인 실험"
+  },
+  {
+   "n": 7,
+   "title": "토스 채용 · ML 엔지니어 (Commerce Data Graph)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7827378003",
+   "kind": "posting",
+   "note": "같은 커머스 — 로그 없는 새 상품(cold item) 악순환"
+  },
+  {
+   "n": 8,
+   "title": "토스 채용 · Technical Product Owner (Search)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7668948003",
+   "kind": "posting",
+   "note": "같은 커머스 검색 — 오프라인 → A/B 실험 사이클·가드레일"
+  },
+  {
+   "n": 9,
+   "title": "토스 채용 · 데이터 사이언티스트 (Data Intelligence Platform)",
+   "url": "https://toss.im/career/job-detail?gh_jid=8003064003",
+   "kind": "posting",
+   "note": "같은 회사 다른 DS 자리 — 같은 쿼리 테스트 전형"
+  },
+  {
+   "n": 10,
+   "title": "Kohavi · Tang · Xu · Trustworthy Online Controlled Experiments (Cambridge, 2020)",
+   "url": "https://experimentguide.com/",
+   "kind": "reference",
+   "note": "OEC·가드레일·SRM·새로움 효과·표본 크기 어림식"
+  },
+  {
+   "n": 11,
+   "title": "Järvelin · Kekäläinen · Cumulated Gain-Based Evaluation of IR Techniques (ACM TOIS, 2002)",
+   "url": "https://doi.org/10.1145/582415.582418",
+   "kind": "reference",
+   "note": "nDCG"
+  },
+  {
+   "n": 12,
+   "title": "Covington 외 · Deep Neural Networks for YouTube Recommendations (RecSys 2016)",
+   "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/",
+   "kind": "reference",
+   "note": "다른 회사 — 후보 생성 + 랭킹 2단 구조"
+  },
+  {
+   "n": 13,
+   "title": "Joachims · Swaminathan · Schnabel · Unbiased Learning-to-Rank with Biased Feedback (WSDM 2017)",
+   "url": "https://arxiv.org/abs/1608.04468",
+   "kind": "reference",
+   "note": "위치 편향·역성향 가중"
+  },
+  {
+   "n": 14,
+   "title": "Schnabel 외 · Recommendations as Treatments: Debiasing Learning and Evaluation (ICML 2016)",
+   "url": "https://arxiv.org/abs/1602.05352",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "Lundberg · Lee · A Unified Approach to Interpreting Model Predictions (SHAP, NeurIPS 2017)",
+   "url": "https://arxiv.org/abs/1705.07874",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Guo 외 · On Calibration of Modern Neural Networks (ICML 2017)",
+   "url": "https://arxiv.org/abs/1706.04599",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Russo 외 · A Tutorial on Thompson Sampling (2017)",
+   "url": "https://arxiv.org/abs/1707.02038",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Google for Developers · Rules of Machine Learning (Zinkevich)",
+   "url": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+   "kind": "reference",
+   "note": "다른 회사 — 학습·서빙 불일치(training-serving skew), 서빙 피처를 기록해 학습에 쓰기"
+  },
+  {
+   "n": 19,
+   "title": "Yi 외 · Sampling-Bias-Corrected Neural Modeling for Large Corpus Item Recommendations (RecSys 2019)",
+   "url": "https://doi.org/10.1145/3298689.3346996",
+   "kind": "reference",
+   "note": "다른 회사(YouTube) — 배치 음성의 인기 편향을 logQ로 보정"
+  },
+  {
+   "n": 20,
+   "title": "Yang 외 · Mixed Negative Sampling for Learning Two-tower Neural Networks in Recommendations (WWW 2020)",
+   "url": "https://research.google/pubs/pub50257/",
+   "kind": "reference",
+   "note": "다른 회사(Google Play)"
+  },
+  {
+   "n": 21,
+   "title": "Gilotte 외 · Offline A/B Testing for Recommender Systems (WSDM 2018)",
+   "url": "https://arxiv.org/abs/1801.07030",
+   "kind": "reference",
+   "note": "다른 회사(Criteo)"
+  },
+  {
+   "n": 22,
+   "title": "Krichene · Rendle · On Sampled Metrics for Item Recommendation (KDD 2020)",
+   "url": "https://doi.org/10.1145/3394486.3403226",
+   "kind": "reference",
+   "note": "후보 일부만 뽑아 잰 지표의 함정"
+  },
+  {
+   "n": 23,
+   "title": "Fader · Hardie · Lee · \"Counting Your Customers\" the Easy Way: An Alternative to the Pareto/NBD Model (Marketing Science, 2005)",
+   "url": "https://doi.org/10.1287/mksc.1040.0098",
+   "kind": "reference",
+   "note": "BG/NBD — 구매 빈도·최근성으로 재구매 예측"
+  },
+  {
+   "n": 24,
+   "title": "Deng 외 · Improving the Sensitivity of Online Controlled Experiments by Utilizing Pre-Experiment Data (CUPED, WSDM 2013)",
+   "url": "https://doi.org/10.1145/2433396.2433413",
+   "kind": "reference",
+   "note": "다른 회사(Microsoft)"
+  },
+  {
+   "n": 25,
+   "title": "Breiman · Random Forests (Machine Learning, 2001)",
+   "url": "https://doi.org/10.1023/A:1010933404324",
+   "kind": "reference",
+   "note": "permutation importance의 원형"
+  },
+  {
+   "n": 26,
+   "title": "scikit-learn 문서 · Permutation feature importance",
+   "url": "https://scikit-learn.org/stable/modules/permutation_importance.html",
+   "kind": "reference",
+   "note": "불순도 기반 중요도의 함정 비교"
+  },
+  {
+   "n": 27,
+   "title": "Gal · Ghahramani · Dropout as a Bayesian Approximation (ICML 2016)",
+   "url": "https://arxiv.org/abs/1506.02142",
+   "kind": "reference",
+   "note": "MC dropout 불확실성"
+  },
+  {
+   "n": 28,
+   "title": "Hu · Koren · Volinsky · Collaborative Filtering for Implicit Feedback Datasets (ICDM 2008)",
+   "url": "https://doi.org/10.1109/ICDM.2008.22",
+   "kind": "reference",
+   "note": "암묵적 피드백 — 선호와 확신도를 나눠 다룬다"
+  },
+  {
+   "n": 29,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 30,
+   "title": "자소설닷컴 — 토스뱅크 연봉(같은 집계)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "토스 — 회사 소개(사이트 하단 회사 정보)",
+   "url": "https://toss.im/company",
+   "kind": "company"
+  },
+  {
+   "n": 32,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  }
+ ],
+ "caveat": "CSI 팀이 직접 한 공개 발표·글은 찾지 못했습니다. 팀의 일은 공고[1]와 같은 커머스의 다른 공고[4][5][6][7][8]로, 토스쇼핑의 라벨·편향·밴딧·서빙 방식은 2024년 SLASH 24 발표[2]와 2025년 기술 블로그[3]로 보였습니다 — 지금 CSI 팀이 같은 방식을 쓰는지는 알 수 없습니다. 재구매·편향 보정·실험 방법의 '보통 이런 것'은 다른 회사·학계의 공개 논문과 책[10]~[28]이고, 예시 숫자는 모두 가상값입니다.",
+ "resources": [
+  {
+   "id": "slash24-reco",
+   "title": "SLASH 24 · 기반 데이터가 부족해도 OK! 커머스 추천 시스템 제작기",
+   "by": "토스 커머스 Data Scientist · Server Developer · 20분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=LAD6LYnkPsA",
+   "why": "토스쇼핑 데이터 사이언티스트가 라벨 정의의 함정(노출 잡음·인기 편향)과 음성 섞기, LCB·톰슨 샘플링을 직접 설명한다. 이 공고의 라벨·편향·불확실성 요건을 회사 목소리로 처음 본다."
+  },
+  {
+   "id": "toss-reco-blog",
+   "title": "토스 쇼핑 추천 시스템: 멀티 스테이지 접근법",
+   "by": "Toss Tech · 커머스 개인화팀 · 2025",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://toss.tech/article/toss-shopping-recommendation-system",
+   "why": "우대 사항의 Multi-Stage 구조를 토스쇼핑 기준으로 본다. 만든 신호가 어느 단계에 꽂힐지 감을 잡는다."
+  },
+  {
+   "id": "sql-recipe",
+   "title": "데이터 분석을 위한 SQL 레시피",
+   "by": "가사키 나가토 · 다미야 나오토",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942290",
+   "why": "사용자 행동 분석·추천용 SQL을 상황별로 모은 책. 쿼리 테스트와 '로그에서 의도 지표 만들기' 요건에 바로 쓰인다."
+  },
+  {
+   "id": "sql-levelup",
+   "title": "SQL 레벨업",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=SQL%20%EB%A0%88%EB%B2%A8%EC%97%85",
+   "why": "윈도 함수·CASE로 반복문 없이 푸는 법. 2시간 쿼리 테스트에서 속도를 낸다."
+  },
+  {
+   "id": "kohavi-ko",
+   "title": "A/B 테스트: 신뢰도 높은 온라인 통제 실험",
+   "by": "론 코하비 · 다이앤 탕 · 야 쉬 (이기홍 · 김기영 옮김)",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000005201885",
+   "why": "주 지표·가드레일·SRM·표본 크기·새로움 효과. 업무 다섯째 줄과 A/B 자격요건의 기본서."
+  },
+  {
+   "id": "cuped",
+   "title": "Improving the Sensitivity of Online Controlled Experiments by Utilizing Pre-Experiment Data (CUPED)",
+   "by": "Deng 외 · WSDM 2013",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://doi.org/10.1145/2433396.2433413",
+   "why": "실험 전 데이터로 분산을 줄여 같은 기간에 작은 효과를 잡는다. 작은 카테고리 실험이 많을 때 쓴다."
+  },
+  {
+   "id": "ndcg-paper",
+   "title": "Cumulated Gain-Based Evaluation of IR Techniques",
+   "by": "Järvelin · Kekäläinen · ACM TOIS 2002",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://doi.org/10.1145/582415.582418",
+   "why": "공고가 이름을 든 nDCG의 원전. 관련도 점수를 어떻게 매기느냐가 라벨 설계라는 걸 이해한다."
+  },
+  {
+   "id": "sampled-metrics",
+   "title": "On Sampled Metrics for Item Recommendation",
+   "by": "Krichene · Rendle · KDD 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://doi.org/10.1145/3394486.3403226",
+   "why": "후보 일부만 뽑아 잰 추천 지표가 모델 순서를 뒤집을 수 있다는 것. 평가 방법 이해 요건의 함정."
+  },
+  {
+   "id": "calibration",
+   "title": "On Calibration of Modern Neural Networks",
+   "by": "Guo 외 · 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1706.04599",
+   "why": "예측 확률이 실제 비율과 맞는지 재고 고치는 법(온도 조절). 타겟팅·광고 모델 평가에 쓴다."
+  },
+  {
+   "id": "mns",
+   "title": "Mixed Negative Sampling for Learning Two-tower Neural Networks in Recommendations",
+   "by": "Yang 외 · WWW 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://research.google/pubs/pub50257/",
+   "why": "토스가 쓴 음성 섞기의 바탕. 네거티브 라벨을 무엇으로 고르느냐가 모델을 어떻게 바꾸나."
+  },
+  {
+   "id": "youtube-dnn",
+   "title": "Deep Neural Networks for YouTube Recommendations",
+   "by": "Covington · Adams · Sargin · 2016",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/",
+   "why": "후보 생성 + 랭킹 2단 구조의 대표 논문. 우대 사항 Multi-Stage 이해."
+  },
+  {
+   "id": "unbiased-ltr",
+   "title": "Unbiased Learning-to-Rank with Biased Feedback",
+   "by": "Joachims · Swaminathan · Schnabel · WSDM 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1608.04468",
+   "why": "위치 편향을 역성향 가중으로 보정하는 법. 편향 보정과 오프라인-온라인 괴리 요건."
+  },
+  {
+   "id": "ts-tutorial",
+   "title": "A Tutorial on Thompson Sampling",
+   "by": "Russo 외 · 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1707.02038",
+   "why": "토스쇼핑이 쓴 톰슨 샘플링과 '불확실성을 탐색에 쓰는 법'."
+  },
+  {
+   "id": "shap-docs",
+   "title": "SHAP 문서",
+   "by": "SHAP 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://shap.readthedocs.io/",
+   "why": "예측 하나하나에 피처가 얼마나 기여했나를 본다. 모델 진단·Feature Importance 요건."
+  },
+  {
+   "id": "sklearn-pi",
+   "title": "Permutation feature importance",
+   "by": "scikit-learn 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://scikit-learn.org/stable/modules/permutation_importance.html",
+   "why": "피처를 섞어 기여를 재는 가장 쉬운 방법과 불순도 중요도의 함정. 신호 검증의 첫 도구."
+  },
+  {
+   "id": "rules-of-ml",
+   "title": "Rules of Machine Learning: Best Practices for ML Engineering",
+   "by": "Martin Zinkevich · Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+   "why": "학습·서빙 불일치, 피처를 어떻게 기록하고 다시 쓰나. 정합성 우대 사항과 진단 요건."
+  },
+  {
+   "id": "btyd-paper",
+   "title": "\"Counting Your Customers\" the Easy Way: An Alternative to the Pareto/NBD Model",
+   "by": "Fader · Hardie · Lee · Marketing Science 2005",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://doi.org/10.1287/mksc.1040.0098",
+   "why": "구매 빈도·최근성으로 재구매를 예측하는 고전 모델. 구매 주기·재구매 시점 신호를 만드는 바탕."
+  },
+  {
+   "id": "implicit-cf",
+   "title": "Collaborative Filtering for Implicit Feedback Datasets",
+   "by": "Hu · Koren · Volinsky · ICDM 2008",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://doi.org/10.1109/ICDM.2008.22",
+   "why": "클릭·구매 같은 암묵적 행동을 '선호'와 '확신'으로 나눠 다루는 법. 행동 로그로 의도 지표를 만들 때 바탕."
+  },
+  {
+   "id": "offline-ab",
+   "title": "Offline A/B Testing for Recommender Systems",
+   "by": "Gilotte 외 · WSDM 2018",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1801.07030",
+   "why": "로그로 새 추천 정책의 온라인 성과를 미리 추정하는 법. 오프라인-온라인 연결 우대 사항."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "토스 커머스가 지금 하는 방식",
+   "time": "1주",
+   "goal": "토스쇼핑 추천의 단계 구조와, 라벨 정의·인기 편향·LCB를 회사 사례로 설명할 수 있다.",
+   "resources": [
+    "slash24-reco",
+    "toss-reco-blog"
+   ],
+   "task": "발표를 보고 '신호 → 피처 → 라벨 → 모델 → 지표' 칸으로 토스쇼핑 유저 임베딩 모델을 한 장에 그린다. 칸마다 '여기서 무엇이 틀어질 수 있나'를 한 줄씩 적는다."
+  },
+  {
+   "title": "쿼리 테스트 대비 SQL",
+   "time": "2~3주",
+   "goal": "윈도 함수·CTE로 행동 로그에서 재구매 간격·세션·최근 n일 지표를 막힘없이 뽑는다.",
+   "resources": [
+    "sql-recipe",
+    "sql-levelup"
+   ],
+   "task": "가상 주문 1만 건·클릭 10만 건 표를 만들고, 유저 × 카테고리 재구매 간격, 세션 수, 최근 7일 카테고리 관심 비중을 각각 쿼리 하나로 뽑는다. 문제 다섯 개를 2시간 안에 풀어 본다."
+  },
+  {
+   "title": "평가와 진단",
+   "time": "2~3주",
+   "goal": "AUC·nDCG·보정을 직접 계산하고, 세그먼트별로 쪼개 모델이 약한 구간을 찾는다.",
+   "resources": [
+    "ndcg-paper",
+    "sampled-metrics",
+    "calibration",
+    "sklearn-pi",
+    "shap-docs"
+   ],
+   "task": "공개 이커머스 로그로 구매 예측 모델(LightGBM 등)을 학습하고, 신규/기존 유저·카테고리별 AUC 표와 permutation importance 표를 만든다. 가장 나쁜 구간에 필요한 신호 하나를 제안한다."
+  },
+  {
+   "title": "신호·라벨 설계와 편향",
+   "time": "2~3주",
+   "goal": "네거티브 라벨 정의와 음성 고르기, 위치·인기 편향 보정을 바꿔 가며 결과 차이를 설명한다.",
+   "resources": [
+    "mns",
+    "unbiased-ltr",
+    "btyd-paper",
+    "implicit-cf",
+    "rules-of-ml"
+   ],
+   "task": "3단계 데이터에 재구매 임박도 피처를 시점 맞춰(라벨 이전 데이터만) 추가하고, 오답을 '노출 무반응'과 '무작위'로 바꿔 두 모델의 AUC·nDCG를 비교한다. 시점을 안 맞춘 판과 점수 차이도 적는다."
+  },
+  {
+   "title": "실험과 오프라인-온라인 연결",
+   "time": "계속",
+   "goal": "A/B 설계서를 쓰고, 오프라인 지표가 온라인을 따라가는지 판단한다.",
+   "resources": [
+    "kohavi-ko",
+    "cuped",
+    "offline-ab",
+    "ts-tutorial"
+   ],
+   "task": "4단계 피처를 랭킹에 넣는 A/B 설계서(가설·주 지표·가드레일·표본 크기·기간·SRM 점검)를 한 장 쓴다. 가상 결과로 z검정과 CUPED 적용 전후 신뢰구간 폭을 비교한다."
+  }
+ ],
+ "pay": {
+  "summary": "공공데이터 집계로 신입 초봉 **약 4,200만원**, 평균 **약 6,200만원** — 공시된 평균 급여는 없다(비상장). 이 자리는 모델 진단·A/B 경험을 요구하는 경력직이라 초봉과 거리가 멀다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 없고 직군 구분도 없어 데이터 사이언티스트 계약 연봉과 다를 수 있다 [29]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 [29]"
+   },
+   {
+    "label": "토스뱅크 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 계열사 값 — 견주어 보기용 [30]"
+   },
+   {
+    "label": "토스뱅크 평균",
+    "value": "약 7,208만원",
+    "amount": 7208,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 계열사 평균 [30]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고, 인터뷰·레퍼런스 체크 뒤 **처우협의** 단계에서 사람마다 정한다 [1]. 비바리퍼블리카는 상장사가 아니라 사업보고서의 '직원 평균 급여'가 없다. 평균은 경력직이 섞인 회사 전체 값이라 초봉이 아니고, 집계값은 추정이라 경력 데이터 사이언티스트가 받는 제안과는 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 복지를 소개한 2021년 공식 글이다 [32]. 지금도 같은지는 글에 없으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스(비바리퍼블리카) 본사",
+  "address": "서울특별시 강남구 테헤란로 142, 4·10~13·22·23층",
+  "postal": "06236",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "주소는 토스 회사 소개 페이지 하단의 회사 정보다 [31]. 공고의 근무지는 'Seoul'로만 적혀 있어 커머스 팀 자리가 본사와 다를 수 있다 {추론}."
+ }
+}
