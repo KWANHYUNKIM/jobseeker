@@ -110,8 +110,8 @@
   "ats-skcareers:sk:R262015": "tmap-mobility-llmops-engineer",
   "ats-skcareers:sk:R262310": "tmap-mobility-service-backend",
   "wanted-393106": "tmap-navigation-sdk-engineer",
-  "ats-skcareers:sk:R261959": "tmap-qa-automation-engineer",
   "jobkorea-50073105": "tmap-qa-automation-engineer",
+  "ats-skcareers:sk:R261959": "tmap-qa-automation-engineer",
   "ats-skcareers:sk:R262485": "tmap-security-assessment-engineer",
   "dev-580895": "tmap-security-assessment-engineer",
   "ats-skcareers:sk:R262516": "tmap-security-technology-engineer",
@@ -1128,11 +1128,11 @@
    "company": "티맵모빌리티",
    "role": "QA Automation Engineer",
    "jobs": [
-    "ats-skcareers:sk:R261959",
-    "jobkorea-50073105"
+    "jobkorea-50073105",
+    "ats-skcareers:sk:R261959"
    ],
    "researched_at": "2026-11-23",
-   "lines": 16
+   "lines": 15
   },
   {
    "id": "tmap-security-assessment-engineer",

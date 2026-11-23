@@ -4,989 +4,710 @@
  "role": "QA Automation Engineer",
  "team": "QA팀",
  "jobs": [
-  "ats-skcareers:sk:R261959",
-  "jobkorea-50073105"
+  "jobkorea-50073105",
+  "ats-skcareers:sk:R261959"
  ],
  "researched_at": "2026-11-23",
  "tldr": {
-  "what": "TMAP 앱·웹(그리고 차량용 TMAP 까지 이어질 수 있는) 서비스를 **출시 전에 자동으로 확인하는 시험 판** — UI·API 시험, 가짜 API, 성능 시험 — 을 세우고 굴립니다.[1][4]",
-  "env": "Python·Java·JavaScript 로 Selenium·Appium·Postman 시험을 짜고, GitHub·Jenkins CI 에 묶습니다.[1] 경력 5년 이상 자리입니다.[2][3]",
-  "oneline": "시험을 '하는' 사람보다 시험이 **저절로 돌게 만드는** 개발자. 비기능 시험과 가짜 API 도구 개발까지 요구한다."
+  "what": "TMAP 앱·웹·서버가 새 버전마다 제대로 도는지 **사람 대신 확인하는 테스트 코드와, 그 코드를 매번 알아서 돌리는 환경(플랫폼)** 을 만듭니다.[1]",
+  "env": "월 이용자 1,500만 명이 넘는 내비·모빌리티 앱이라[8] 안드로이드·iOS·웹·API를 같이 봐야 하고, 같은 회사 QA는 원래 실차 주행 비교까지 해 온 조직입니다.[4]",
+  "oneline": "테스트를 '하는' 사람보다 **테스트가 돌아가는 바닥을 짓는** 개발자. 경력 5년 이상, 코드 작성 능력이 중심입니다.[1]"
  },
  "lines": [
   {
    "section": "task",
-   "quote": "티맵모빌리티의 QA팀을 소개합니다!",
-   "short": "이 자리는 TMAP 앱·차량용 TMAP 의 품질을 맡는 QA팀 소속이라는 뜻.",
-   "why": "같은 회사의 다른 QA 공고(Automotive Test Manager)는 차에 들어가는 내비게이션(TMAP AUTO)의 품질을 책임지는 팀이라고 소개합니다.[4] TMAP 은 휴대폰 앱과 함께 차 115만 대에 들어가 있어,[8] 시험할 대상이 휴대폰·웹·차량 화면과 그 뒤의 서버 API 까지 넓습니다 {추론}.",
-   "how_far": "이 공고의 QA팀이 앱 쪽인지 차량 쪽인지, 둘 다인지는 공고에 적혀 있지 않습니다.[1] 면접에서 시험 대상(모바일 앱·웹·AUTO·서버 API)을 먼저 물어보는 게 좋습니다 {추론}.",
-   "refs": [
-    1,
-    4,
-    8
-   ]
-  },
-  {
-   "section": "task",
    "quote": "제품을 더 안정적으로 서비스 하기 위해 고민하고 개선해 나갑니다.",
-   "short": "버그를 찾는 데서 끝나지 않고, 버그가 덜 나가게 출시 과정을 고치는 팀이라는 뜻.",
-   "why": "QA(Quality Assurance, 품질 보증)는 결함을 찾는 '검사'보다 결함이 사용자에게 닿지 않게 하는 '과정'을 맡습니다. 공고가 '개선'을 세 줄에 걸쳐 반복하는 이유입니다.[1]",
-   "actually": {
-    "intro": "다른 회사 QA 팀이 공개한 같은 고민의 예입니다(티맵모빌리티 것이 아닙니다).[9]",
-    "items": [
-     "**출시 직전에 몰리는 결함** — 토스 앱은 매주 출시하고 출시마다 후보 빌드(RC)가 평균 5번 나온다. 중간 빌드마다 결함이 쌓이면 마지막 회귀 시험에서 한꺼번에 터져 출시가 밀렸다.[9]",
-     "**그래서 스모크 테스트** — 후보 빌드가 나올 때마다 핵심 기능만 먼저 확인해 일정 수준을 보장했다. 손으로 하면 출시 한 번에 약 3시간, 한 해 약 180시간이 들었다.[9]",
-     "**자동화로 옮김** — 그 스모크 테스트를 자동화해 사람 손을 떼고 수행 시간도 절반으로 줄였다.[9]"
-    ]
-   },
+   "short": "팀 소개 머리말 — 이 팀의 목표가 '버그 찾기'보다 '사고 없이 내보내기'라는 뜻.",
+   "why": "TMAP은 운전 중에 쓰는 앱이라 길안내가 멈추거나 경로가 어긋나면 바로 사용자 피해가 됩니다. 같은 회사 품질관리팀은 2020년 소개 글에서 새 버전·안드로이드/iOS 업데이트 때마다 정상 동작을 확인하고, 터널을 나온 뒤 위치를 늦게 다시 잡아 경로를 벗어나는 문제를 어려움으로 꼽았습니다.[4]",
+   "how_far": "팀 소개 문장이라 따로 갖출 요건은 아닙니다. 면접에서는 '안정적'을 무엇으로 쟀는지(장애 건수·배포 후 되돌림·크래시 비율)를 숫자로 말할 수 있으면 좋습니다. {추론}",
    "refs": [
-    1,
-    9
+    4
    ],
    "study": [
-    "slash24-doctor"
+    "tmap-qc2020"
    ]
   },
   {
    "section": "task",
    "quote": "다양한 부서와 협업을 통해 서비스의 완성도를 높여 나갑니다.",
-   "short": "개발·기획·AI 팀과 '무엇을 언제까지 확인하고 내보낼지'를 같이 정한다는 뜻.",
-   "why": "같은 회사 AI Agent Engineer 공고는 기획·디자인·**QA**·AI·데이터 직군과 협업하라고 적었습니다.[5] 차량 쪽 QA 공고는 국내외 자동차 제조사와도 이야기한다고 적었습니다.[4]",
+   "short": "앱·서버·AI 개발팀이 QA와 함께 일하는 구조라, 테스트 결과를 개발팀이 쓰게 만드는 일.",
+   "why": "같은 회사 안드로이드 공고는 서버·QA·운영 조직과 협업해 품질을 높이는 일을 업무로 적었고[6], AI Agent 공고도 QA 직군과의 협업을 요건에 넣었습니다.[7] 2020년 품질관리팀도 앱 검증·콘텐츠(지도·POI) 검증·고객 불편(VOC) 세 갈래로 나뉘어 개발팀에 결과를 넘기고, 고친 뒤 다시 시험했습니다.[4]",
    "actually": {
     "items": [
-     "개발자와 — 결함을 재현 조건·로그·영상으로 넘긴다. 토스 QA 팀은 실행 영상과 로그를 메신저로 보내 개발자와 결함을 이야기할 때 썼다.[9]",
-     "기획과 — 요구사항에서 시험 항목을 뽑고, 요구사항 ↔ 시험 케이스를 양쪽으로 이어 둔다(추적성).[4]",
-     "AI 팀과 — 대화형 에이전트의 응답 품질을 평가 데이터셋으로 자동 채점하는 일이 이 회사 AI 공고에 있다.[5]"
+     "실패한 테스트를 **재현 순서·로그·화면 녹화**와 함께 개발팀 이슈로 넘긴다.",
+     "개발팀이 PR(코드 변경 요청)을 올리면 자동 테스트가 돌고 결과가 PR에 붙게 한다.[16]",
+     "자동차 제조사용 TMAP AUTO 쪽은 요구사항과 테스트 케이스를 양방향으로 잇는 추적표를 Jira·X-ray로 관리한다 — 같은 회사 Test Manager 공고의 업무다.[5]"
     ]
    },
+   "how_far": "협업 대상이 넓어도 이 자리의 몫은 **결과를 믿고 쓸 수 있게 하는 것**(거짓 실패가 적고, 실패하면 원인이 바로 보이는 것)입니다. {추론}",
    "refs": [
     4,
     5,
-    9
+    6,
+    7,
+    16
+   ],
+   "study": [
+    "swe-google"
    ]
   },
   {
    "section": "task",
    "quote": "자동화 기반의 효율적인 업무 수행을 통해 QA 직군의 향상된 경험을 만들어 갑니다.",
-   "short": "반복 확인을 기계에 넘겨, QA 동료들이 새 기능 시험·탐색에 시간을 쓰게 만든다는 뜻.",
-   "why": "손으로 하는 회귀 시험은 출시가 잦을수록 사람 시간을 먹습니다. 토스 QA 팀은 한 해 600번 넘게 나온 후보 빌드를 손으로 시험했다면 약 180시간이 들었을 것이라 계산했고, 자동화로 그 시간을 새 기능 QA 에 돌렸습니다.[9]",
-   "how_far": "이 자리의 '고객'은 앱 사용자이면서 **QA 동료**입니다 — 동료가 버튼 한 번으로 돌리고 결과를 바로 읽을 수 있게 만드는 것까지가 일입니다 {추론}.",
+   "short": "손으로 반복하던 회귀 테스트를 코드로 바꿔, QA가 새 기능·탐색 테스트에 시간을 쓰게 하는 일.",
+   "why": "앱 하나가 바뀔 때마다 OS·기기·로그인 여부·기능 조합을 손으로 다시 보면 사람이 모자랍니다. 구글은 테스트를 하는 큰 이유가 **바뀌어도 안 깨졌는지 빨리 아는 것**이고, 그 일은 자동화 테스트가 맡는다고 설명합니다.[10]",
+   "how_far": "'QA 직군의 경험'이라고 적었으니 다른 QA가 쓰는 도구(테스트 작성 틀·결과 화면·실행 버튼)까지 이 자리의 일로 보입니다. {추론}",
    "refs": [
-    9
+    10
    ],
    "study": [
-    "slash24-doctor"
+    "swe-google",
+    "fowler-pyramid"
    ]
   },
   {
    "section": "task",
    "quote": "자동화 테스트 플랫폼을 구축하고 운영하며 개선합니다.",
-   "short": "시험 스크립트 몇 개가 아니라, 누구나 기기·빌드를 골라 돌리고 결과를 남기는 '판'을 만든다.",
-   "why": "스크립트만 있으면 짠 사람만 돌릴 수 있습니다. 빌드를 받아 깔고, 기기를 고르고, 결과를 시험 관리 도구에 적고, 실패하면 알려 주는 것까지 묶여야 팀이 씁니다.[9]",
+   "short": "테스트 코드를 정해진 때(커밋·야간·배포 전)에 기기·브라우저 여럿에서 돌리고 결과를 모으는 바닥을 만든다.",
+   "why": "테스트를 짜 두어도 누가 언제 돌리는지 정해지지 않으면 금방 멈춥니다. 이 공고는 플랫폼을 '구축·운영·개선'까지 맡기고, 자격요건에 Jenkins·CI/CD를 적었습니다.[1]",
    "actually": {
-    "intro": "토스 QA 팀의 자동화 시험 판(토스 닥터)이 가진 칸입니다 — 티맵모빌리티의 구조는 공개되지 않았습니다.[9]",
+    "intro": "보통 이런 조각으로 이뤄집니다(회사가 구성을 공개하지는 않았습니다).",
     "items": [
-     "**시작** — 사내 메신저 봇으로 실행. 앱 빌드와 코드 저장소를 최신으로 맞추고, 연결된 기기 정보를 확인한다.[9]",
-     "**입력** — 누가 돌리나·어떤 빌드인가·결과를 받을 채널을 받아 시험 계정과 환경을 정한다.[9]",
-     "**실행** — 실제 기기에 빌드를 깔고 정해진 30가지 케이스(가입·로그인·인증서·홈·송금 등)를 차례로 돈다.[9]",
-     "**기록** — pytest 플러그인으로 시험 관리 도구(TestRail)에 실행 회차를 만들고 케이스마다 결과를 적는다.[9]",
-     "**보이게** — 단계마다 성공·실패를 메신저로 보내고, 끝나면 케이스별 영상과 로그를 묶어 보낸다.[9]"
+     "**실행기** — Jenkins 파이프라인(Jenkinsfile)에 '빌드 → API 테스트 → UI 테스트 → 결과 게시' 단계를 코드로 적는다.[16]",
+     "**기기 농장** — 실제 안드로이드·iOS 폰을 모아 두거나 클라우드 실기기(AWS Device Farm 등)를 빌려 Appium 테스트를 나눠 돌린다.[20]",
+     "**브라우저 묶음** — Selenium Grid로 여러 브라우저·기계에 웹 테스트를 동시에 보낸다.[13]",
+     "**결과 저장** — JUnit 형식 결과·스크린샷·로그를 회차마다 남겨 '언제부터 깨졌나'를 본다.[16]",
+     "**흔들리는 테스트 관리** — 코드가 안 바뀌었는데 성공·실패가 오가는 테스트를 골라 격리한다. 구글은 테스트의 약 16%가 조금이라도 흔들리고, 전체 실행의 1.5%가 흔들린 결과라고 밝혔다.[11]"
     ]
    },
-   "flows": [
+   "examples": [
     {
-     "caption": "자동화 시험 한 회차가 지나가는 길 — 토스 닥터 구조를 일반화한 것 {추론}[9]",
-     "steps": [
-      "빌드 · CI 가 새 앱·서버 빌드를 만든다",
-      "요청 · 봇·CI 가 빌드·기기·대상 케이스를 고른다",
-      "준비 · 기기에 설치, 시험 계정·가짜 API 준비",
-      "실행 · UI·API 스크립트가 돈다",
-      "기록 · 케이스별 결과를 시험 관리 도구에",
-      "알림 · 실패 케이스 영상·로그를 채널로"
-     ],
-     "mine_from": 1
+     "title": "같은 테스트를 50번 돌려 흔들리는 것 골라내기",
+     "body": "코드를 바꾸지 않고 반복 실행해 결과가 갈리면 '흔들림'으로 분류합니다(가상 실패 확률로 직접 돌린 출력). 플랫폼이 이런 분류를 회차마다 해 주면 개발팀이 실패를 무시하지 않게 됩니다.[11]",
+     "lang": "python",
+     "code": "import random\nrandom.seed(7)\n# 테스트 3개를 50번씩 돌린다. 코드는 안 바뀌었다.\ntests = {\"login_ok\": 0.0, \"route_search\": 0.04, \"payment_popup\": 0.20}\nfor name, p in tests.items():\n    runs = [random.random() >= p for _ in range(50)]\n    fails = runs.count(False)\n    kind = \"안정\" if fails == 0 else (\"깨짐\" if fails == 50 else \"흔들림(flaky)\")\n    print(f\"{name:14s} 실패 {fails:2d}/50 → {kind}\")\n\n# 출력\n# login_ok       실패  0/50 → 안정\n# route_search   실패  2/50 → 흔들림(flaky)\n# payment_popup  실패 16/50 → 흔들림(flaky)"
     }
    ],
-   "how_far": "플랫폼이라는 말이 크게 들리지만, 최소선은 **CI 에서 버튼 한 번으로 돌고, 결과가 케이스 단위로 남고, 실패 원인을 영상·로그로 바로 볼 수 있는** 상태입니다 {추론}. 시험 대상이 많아지면 실기기를 빌려 쓰는 클라우드 서비스(AWS Device Farm 등)를 붙입니다.[24]",
+   "how_far": "처음부터 거대한 시스템이 아니라 **'커밋하면 15분 안에 결과가 PR에 붙는다'** 같은 한 줄 목표를 정하고 거기까지 끝내는 것이 최소선입니다. 기기 농장·대시보드는 그 다음입니다. {추론}",
    "refs": [
-    9,
-    24
+    1,
+    11,
+    13,
+    16,
+    20
    ],
    "study": [
-    "slash24-doctor",
-    "jenkins-pipeline",
-    "device-farm"
+    "jenkins-docs",
+    "devicefarm-docs",
+    "google-flaky",
+    "docker-book"
    ]
   },
   {
    "section": "task",
    "quote": "자동화 테스트 케이스를 설계하고 수행하며 개선합니다.",
-   "short": "무엇을 자동화할지 고르고(핵심 흐름 먼저), 깨지지 않게 짜고, 자꾸 흔들리는 시험을 고친다.",
-   "why": "자동화는 모든 것을 할 수 없습니다. UI 시험은 느리고 잘 깨져서 적게, 그 아래 API·단위 시험은 많이 두라는 것이 '시험 피라미드'의 요지입니다.[13]",
+   "short": "무엇을 자동화할지 고르고, 적은 수의 테스트로 위험한 조합을 덮도록 케이스를 짠다.",
+   "why": "UI 테스트는 느리고 잘 깨집니다. 그래서 작고 빠른 테스트를 많이, 화면 끝까지 가는 테스트는 아주 적게 두라는 '테스트 피라미드'가 기본 원칙입니다.[9] 구글은 작은·중간·큰 테스트를 대략 80:15:5로 두라고 권합니다.[10]",
    "actually": {
     "items": [
-     "**고르기** — 출시 때마다 확인하는 핵심 흐름(로그인·검색·길 안내 시작·결제)을 먼저. 토스 QA 팀도 스모크 테스트부터 자동화했다.[9]",
-     "**층 나누기** — 화면에서 확인할 것만 UI 시험으로, 계산·규칙은 API 시험으로 내린다.[13]",
-     "**세션 재사용** — 케이스마다 Appium 세션을 새로 만들면 앱이 매번 다시 켜져 느리다. 토스 QA 팀은 pytest 픽스처를 모듈 범위로 두어 30개 케이스가 세션 하나를 같이 썼다.[9][26]",
-     "**흔들리는 시험(flaky)** — 같은 코드인데 통과·실패가 오가는 시험. 구글은 시험 실행의 약 1.5%가 이렇고, 시험의 약 16%가 조금이라도 흔들린다고 밝혔다. 다시 돌려 확인하고 심하면 따로 떼어(격리) 고친다.[23]",
-     "**의존 관계** — 앞 케이스가 실패하면 뒤를 멈출지 건너뛸지 정해 둔다.[9]"
+     "**어디서 잡을지 고르기** — 경로 계산 결과는 API 테스트로, '안내 시작 버튼이 눌리나'만 UI 테스트로.[9]",
+     "**조합 줄이기** — OS·네트워크·로그인·기능 조합을 다 돌리지 않고 두 값씩 짝을 덮는 조합(pairwise)만 고른다. NIST는 대부분의 결함이 한두 개 조건의 만남에서 나온다고 정리했다.[27]",
+     "**경계값** — 0원·최대 경유지 수·자정을 넘는 예약처럼 끝자리 값을 넣는다.",
+     "**실제 길 기준값** — 2020년 품질관리팀은 출퇴근·휴일 혼잡 시간 경로로 시험해 기준 데이터를 만들고, 시험차 3대에 폰 여러 대를 달아 같은 출발·도착을 비교했다. 이런 기준값이 자동 테스트의 '정답'이 된다.[4]",
+     "**개선** — 오래 안 깨진 테스트·늘 같이 깨지는 테스트를 정리하고, 실행 시간이 긴 것부터 쪼갠다. {추론}"
     ]
    },
    "examples": [
     {
-     "title": "세션 하나를 같이 쓰면 — 30개 케이스",
-     "body": "세션 생성에 50ms 가 든다고 가정한 흉내입니다(직접 돌린 출력). 실제 Appium 에서는 앱 재시작까지 겹쳐 차이가 더 큽니다.[9] pytest 에서는 `@pytest.fixture(scope=\"module\")` 한 줄로 같은 효과를 냅니다.[26]",
+     "title": "72가지 조합을 12개로 — 두 값씩 짝 덮기",
+     "body": "OS 4 × 네트워크 3 × 로그인 2 × 기능 3 = 72가지입니다. 어느 두 칸의 값 짝도 한 번은 나오게 고르면 12개면 됩니다(직접 돌린 출력, 단순 탐욕 방식이라 최소는 아닐 수 있습니다).[27]",
      "lang": "python",
-     "code": "import time\n\nclass FakeDriver:                 # Appium 세션 흉내: 만들 때 앱이 다시 켜진다\n    made = 0\n    def __init__(self):\n        FakeDriver.made += 1\n        time.sleep(0.05)          # 앱 재시작 비용(가상 50ms)\n    def tap(self, name):\n        return f\"tap {name}\"\n\ncases = [f\"case{i:02d}\" for i in range(30)]\n\ndef run(shared):\n    FakeDriver.made = 0\n    t = time.perf_counter()\n    d = FakeDriver() if shared else None\n    for c in cases:\n        drv = d if shared else FakeDriver()   # 공유 안 하면 케이스마다 새 세션\n        assert drv.tap(c) == f\"tap {c}\"\n    return FakeDriver.made, time.perf_counter() - t\n\nfor shared in (False, True):\n    n, sec = run(shared)\n    print(f\"shared={shared!s:5}  sessions={n:2d}  {sec:.2f}s\")\n# shared=False  sessions=30  1.51s\n# shared=True   sessions= 1  0.05s"
-    },
-    {
-     "title": "흔들리는 시험과 진짜 실패 가르기",
-     "body": "같은 코드로 20번씩 다시 돌려(가상 값) 통과·실패가 섞이면 flaky 로 격리하고, 늘 실패하면 버그로 올립니다(직접 돌린 출력).[23]",
-     "lang": "python",
-     "code": "import random\nfrom collections import Counter\n\nrandom.seed(3)\n# 같은 코드로 테스트 3개를 20번씩 다시 돌린 결과(가상)\nfail_rate = {\"test_login\": 0.0, \"test_search_poi\": 0.15, \"test_payment\": 1.0}\nruns = {t: [random.random() >= r for _ in range(20)] for t, r in fail_rate.items()}\n\nfor t, rs in runs.items():\n    c = Counter(rs)\n    kind = \"flaky(격리)\" if c[True] and c[False] else (\"pass\" if c[True] else \"real fail(버그)\")\n    print(f\"{t:16s} pass {c[True]:2d} / fail {c[False]:2d} -> {kind}\")\n# test_login       pass 20 / fail  0 -> pass\n# test_search_poi  pass 16 / fail  4 -> flaky(격리)\n# test_payment     pass  0 / fail 20 -> real fail(버그)"
+     "code": "from itertools import product, combinations\nparams = {\n    \"os\": [\"Android 14\", \"Android 15\", \"iOS 17\", \"iOS 18\"],\n    \"net\": [\"5G\", \"LTE\", \"Wi-Fi\"],\n    \"login\": [\"로그인\", \"비로그인\"],\n    \"mode\": [\"길안내\", \"대중교통\", \"대리\"],\n}\nnames = list(params)\nfull = list(product(*params.values()))\nneed = {((a, x), (b, y)) for a, b in combinations(range(len(names)), 2)\n        for x in params[names[a]] for y in params[names[b]]}\ndef pairs(row):\n    return {((a, row[a]), (b, row[b])) for a, b in combinations(range(len(row)), 2)}\npicked = []\nwhile need:\n    best = max(full, key=lambda r: len(pairs(r) & need))\n    picked.append(best); need -= pairs(best)\nprint(\"전체 조합:\", len(full))\nprint(\"두 값씩 짝을 다 덮는 조합:\", len(picked))\n\n# 출력\n# 전체 조합: 72\n# 두 값씩 짝을 다 덮는 조합: 12"
     }
    ],
-   "how_far": "케이스 설계는 QA 매니저·기획과 같이 하지만, **자동화할 가치가 있는지·어느 층에서 시험할지**는 이 자리가 판단합니다 {추론}. 최소선: 핵심 흐름 10~30개를 골라 매 빌드 자동으로 돌리고, flaky 비율을 숫자로 관리할 수 있다.",
+   "how_far": "어떤 기능이 중요한지는 기획·개발과 정하지만, **어느 층(단위·API·UI)에서 잡을지와 몇 개로 덮을지**는 이 자리가 근거를 대고 정해야 합니다. {추론}",
    "refs": [
+    4,
     9,
-    13,
-    23,
-    26
+    10,
+    27
    ],
    "study": [
-    "test-pyramid",
-    "google-flaky",
-    "pytest-fixtures",
-    "unit-testing"
+    "fowler-pyramid",
+    "nist-ct",
+    "practical-testing",
+    "khorikov"
    ]
   },
   {
    "section": "task",
    "quote": "다양한 솔루션 (cloud 서비스, open source, 사내 솔루션 등)을 연동하여 자동화 테스트 환경을 보완하고 개선합니다.",
-   "short": "실기기 클라우드·오픈소스 도구·사내 시스템을 이어 붙여 시험 환경의 빈칸을 메운다.",
-   "why": "한 도구로 다 되지 않습니다. 이 회사는 이미 오픈소스 부하 도구(nGrinder)로 경로 탐색 서버를 재고,[6] 쿠버네티스 위 결제 플랫폼의 배포를 부하 중에 시험해 봤습니다.[7]",
+   "short": "클라우드 실기기·오픈소스 도구·사내 시스템(배포·이슈·메신저)을 테스트 흐름에 이어 붙이는 일.",
+   "why": "한 도구로 앱·웹·API·성능을 다 볼 수 없어서입니다. 이 공고도 Selenium·Appium·Postman과 Jenkins를 같이 적었습니다.[1]",
+   "flows": [
+    {
+     "caption": "자동 테스트 한 회차가 지나가는 길 {추론}",
+     "steps": [
+      "코드 변경 · GitHub PR",
+      "빌드 · Jenkins가 앱/서버를 만든다",
+      "가짜 API 띄우기 · 외부 연동을 흉내",
+      "API 테스트 · Newman",
+      "UI 테스트 · Appium(실기기·클라우드) · Selenium",
+      "성능 점검 · k6 기준선",
+      "결과 · PR 댓글·이슈·메신저 알림"
+     ],
+     "mine_from": 2
+    }
+   ],
    "actually": {
     "items": [
-     "**cloud 서비스** — 실기기 대여(AWS Device Farm 은 실제 휴대폰에서 Appium 시험을 돌린다).[24] 시험 서버를 잠깐 띄웠다 지우는 클라우드 환경.",
-     "**open source** — Selenium(웹)·Appium(모바일)·Postman/Newman(API)·WireMock(가짜 API)·nGrinder·k6(부하).[14][15][16][17][21][22]",
-     "**사내 솔루션** — 빌드 서버·메신저·이슈 관리·시험 관리 도구에 결과를 잇는 일. 토스 QA 팀은 메신저 봇과 TestRail 을 이었다.[9]"
+     "**클라우드** — 실제 폰을 사지 않고 AWS Device Farm 같은 서비스에 Appium 테스트를 올려 여러 기종에서 동시에 돌린다.[20]",
+     "**오픈소스** — API는 Newman(Postman 모음을 명령줄에서 실행, 실패하면 0이 아닌 종료 코드)[14], 가짜 서버는 WireMock[15], 성능은 k6.[17]",
+     "**사내 솔루션** — 이슈 관리(Jira)·테스트 관리(X-ray)는 같은 회사 Test Manager 공고에 이름이 나온다.[5] 나머지 사내 시스템은 공개되지 않았다."
     ]
    },
-   "how_far": "새 도구를 들이는 것보다 **기존 CI·메신저·이슈 관리에 결과가 자연스럽게 흘러가게** 잇는 것이 핵심입니다 {추론}. 도구마다 '왜 이걸 골랐나'를 비교 근거로 말할 수 있으면 됩니다.",
+   "how_far": "새 도구를 붙일 때마다 **실패를 실패로 알려 주는지**(종료 코드·결과 파일)만 확인해도 대부분의 연동 문제는 막힙니다. {추론}",
    "refs": [
-    6,
-    7,
-    9,
+    1,
+    5,
     14,
     15,
-    16,
     17,
-    21,
-    22,
-    24
+    20
    ],
    "study": [
-    "device-farm",
-    "tmap-graviton",
-    "tmap-fargate"
+    "newman-docs",
+    "devicefarm-docs",
+    "jenkins-docs"
    ]
   },
   {
    "section": "qualification",
    "quote": "자동화 테스트 환경 구축/운영/개선 관련 경력 5년 이상이거나 이에 준하는 경험을 보유하신 분",
-   "short": "자동화 시험을 '써 본' 게 아니라 환경을 직접 세우고 몇 년 굴려 본 사람을 찾는다.",
-   "why": "원티드·잡코리아에 올라온 같은 자리도 경력 5년 이상으로 적었습니다.[2][3] 플랫폼을 세우고(업무 1) 운영하며 고치는 일이라, 깨지는 시험·느려지는 실행·늘어나는 기기를 겪어 본 시간이 필요합니다 {추론}.",
-   "how_far": "'이에 준하는 경험'이 열려 있습니다.[1] 개발자로 CI 시험 파이프라인을 맡았거나, 앱 팀에서 E2E 자동화를 세운 경험도 설명할 수 있으면 해당합니다 {추론}. 이력서에는 **처음 상태 → 바꾼 것 → 숫자**(수행 시간·결함 유출·flaky 비율)를 씁니다.",
+   "short": "테스트 코드만이 아니라 그것이 도는 환경을 직접 세워 몇 년 굴려 본 사람을 찾는다는 뜻.",
+   "why": "업무 첫 줄이 플랫폼 '구축·운영·개선'이라 바로 맡길 사람이 필요합니다.[1] 원티드에 같은 제목으로 올라온 공고도 5년 이상을 적었습니다.[3]",
+   "how_far": "'이에 준하는 경험'이 열려 있어서, 개발자로 일하며 팀의 CI 테스트 단계를 직접 만들고 운영한 경험도 설명하기에 따라 해당합니다. 무엇을 세웠고 그 뒤 무엇이 줄었는지(손 테스트 시간·배포 후 장애)를 숫자로 보이는 것이 핵심입니다. {추론}",
    "refs": [
     1,
-    2,
     3
+   ],
+   "study": [
+    "swe-google"
    ]
   },
   {
    "section": "qualification",
    "quote": "ui/api 자동화 테스트 케이스 작성 경험을 보유하신 분 (python, java, javascript 등)",
-   "short": "화면을 누르는 시험과 API 를 직접 부르는 시험을 둘 다 코드로 짜 봤어야 한다.",
-   "why": "TMAP 처럼 앱·웹·차량 화면이 같은 서버 API 를 쓰면, 규칙은 API 시험으로 한 번에 확인하고 화면 시험은 흐름만 보는 편이 빠르고 덜 깨집니다.[13]",
+   "short": "화면을 누르는 테스트와 서버 응답을 확인하는 테스트를 둘 다 코드로 짜 본 경험.",
+   "why": "앱 화면은 Appium·Selenium으로, 서버는 API 호출로 확인합니다. 두 도구 모두 Python·Java·JavaScript 클라이언트를 공식 지원해서 언어가 '등'으로 열려 있습니다.[12][13]",
    "level": {
-    "basic": "Selenium/Appium 으로 요소를 찾아 누르고 확인 · requests/RestAssured 로 상태 코드·JSON 확인",
-    "work": "페이지 객체로 화면 묶기 · 명시적 대기 · 시험 데이터 준비/정리 · API 체인(로그인 → 토큰 → 호출)",
-    "team": "UI·API 시험을 같은 CI 에서 돌리고 결과를 한곳에 모은다 · 앱/웹/차량 화면 공통 시나리오 {추론}"
+    "basic": "pytest/JUnit 한 벌 · 검증문(assert) · 테스트 데이터 준비·정리",
+    "work": "화면 요소를 안정적으로 찾기(접근성 id) · 명시적 기다림 · 페이지 객체 패턴 · API 응답 형식 검사",
+    "team": "같은 시나리오를 안드로이드·iOS·웹에 나눠 돌리고, 흔들림을 줄이는 수준 {추론}"
    },
    "actually": {
     "items": [
-     "**UI** — Selenium 은 브라우저를, Appium 은 같은 WebDriver 방식으로 안드로이드(UiAutomator2)·iOS(XCUITest) 앱을 조종한다.[14][15]",
-     "**API** — 경로 조회 같은 API 에 요청을 보내고 응답 코드·필드·응답 시간을 확인한다. Postman 모음은 Newman 으로 CLI·CI 에서 돌린다.[16]",
-     "**언어** — 공고가 셋 다 '등'으로 열어 두었다. 토스 QA 팀처럼 파이썬 + pytest 가 흔하다.[1][9]"
+     "**UI** — Appium은 W3C WebDriver 규약으로 안드로이드(UiAutomator2)·iOS(XCUITest) 드라이버를 부른다.[12] 웹은 Selenium WebDriver.[13]",
+     "**API** — 상태 코드·응답 칸·응답 시간을 검사하고, 앞 요청의 값을 다음 요청에 넘기는 시나리오로 엮는다.[14]",
+     "**피할 것** — 정해진 시간만큼 멈추는 sleep 대신 '나타날 때까지' 기다린다. 흔들림의 흔한 원인이다.[11][13]"
     ]
    },
-   "how_far": "언어 하나로 UI·API 를 다 해 봤으면 됩니다. 이 회사 서버는 Java·Kotlin 이 많아(백엔드 공고 기술 목록) Java 를 읽을 수 있으면 도움이 됩니다 {추론}.",
+   "how_far": "프레임워크를 새로 만드는 수준까지는 아니어도, **남이 읽고 고칠 수 있는 구조**(공통 동작을 함수로, 데이터와 절차 분리)로 짜는 것이 5년 차 기준입니다. {추론}",
    "refs": [
-    1,
-    9,
+    11,
+    12,
     13,
-    14,
-    15,
-    16
+    14
    ],
    "study": [
-    "selenium-docs",
     "appium-docs",
-    "newman-docs"
+    "appium-book",
+    "selenium-docs",
+    "practical-testing",
+    "http-book"
    ]
   },
   {
    "section": "qualification",
    "quote": "개발 도구 (github, jenkins, CI/CD 등), 테스트 자동화 도구 (Selenium, Appium, postman 등) 사용을 해보신 분",
-   "short": "코드가 올라오면 시험이 저절로 돌도록 CI 에 묶어 봤고, 대표 도구를 손에 익혔어야 한다.",
-   "why": "자동화 시험은 사람이 돌리는 순간 효율이 반으로 줍니다. 빌드가 나오면 CI 가 시험을 돌리고 결과로 다음 단계를 막거나 통과시켜야 합니다.[18][19]",
+   "short": "테스트가 개발 흐름(코드 저장소·빌드 서버) 안에서 돌게 묶을 줄 아는지 묻는 줄.",
+   "why": "자동화 테스트는 사람이 눌러야 도는 순간 덜 쓰입니다. Jenkins 파이프라인은 테스트 단계를 코드로 저장소에 같이 두게 하고[16], Newman은 Postman 테스트를 그 파이프라인에서 돌리게 해 줍니다.[14]",
    "actually": {
     "items": [
-     "**Jenkins** — 저장소의 Jenkinsfile 에 빌드 → 시험 → 결과 보고 단계를 코드로 적는다.[18]",
-     "**GitHub** — PR 마다 시험을 돌리는 워크플로, 실패하면 병합을 막는다.[19]",
-     "**Selenium·Appium·Postman** — 위 줄의 UI·API 시험 도구. 결과(JUnit XML 등)를 CI 가 읽어 화면에 보여 준다.[14][15][16]"
+     "GitHub PR이 열리면 Jenkins가 받아 테스트를 돌리고, 결과를 PR 상태로 돌려준다.[16]",
+     "Jenkinsfile의 `post { always { junit ... } }` 로 실패해도 결과 파일은 꼭 남긴다.[16]",
+     "Postman 모음을 내보내 `newman run` 으로 실행, 결과를 JUnit 형식으로 저장한다.[14]",
+     "Selenium·Appium 서버를 도커로 띄워 테스트 환경을 매번 같게 만든다. {추론}"
     ]
    },
-   "examples": [
-    {
-     "title": "빌드 뒤 API·UI 시험을 단계로 (Jenkinsfile 모양)",
-     "body": "Jenkins 선언형 파이프라인 문서의 기본 형태로 적은 뼈대입니다 — 이 PC 에는 Jenkins 가 없어 실행하지 않았습니다.[18]",
-     "lang": "groovy",
-     "code": "pipeline {\n  agent any\n  stages {\n    stage('API test') { steps { sh 'newman run route.postman_collection.json -r junit' } }\n    stage('UI smoke') { steps { sh 'pytest tests/smoke --junitxml=ui.xml' } }\n  }\n  post { always { junit '**/*.xml' } }\n}"
-    }
-   ],
-   "how_far": "도구 이름보다 **CI 가 언제 무엇을 돌리고, 실패하면 무엇을 막나**를 설명할 수 있는 게 중요합니다 {추론}.",
+   "how_far": "'사용을 해보신 분'이라 세 묶음을 모두 깊게 알 필요는 없습니다. 다만 **파이프라인 한 벌을 처음부터 끝까지 이어 본 경험**은 있어야 업무 첫 줄을 맡을 수 있습니다. {추론}",
    "refs": [
     14,
-    15,
-    16,
-    18,
-    19
+    16
    ],
    "study": [
-    "jenkins-pipeline",
-    "gh-actions",
-    "newman-docs"
+    "jenkins-docs",
+    "newman-docs",
+    "docker-book"
    ]
   },
   {
    "section": "qualification",
    "quote": "비기능 영역에 대한 테스트 경험 및 자동화 도구 개발 경험을 보유하신 분",
-   "short": "'되나'가 아니라 '빠른가·버티나·안전한가'를 재 봤고, 그걸 재는 도구를 직접 만들어 봤어야 한다.",
-   "why": "비기능은 기능 말고 품질 특성 — 성능 효율·신뢰성·호환성·보안 등 — 입니다(ISO/IEC 25010).[20] 이 회사는 경로 탐색 서버를 nGrinder 로 재서 서버 종류를 바꿨을 때 성능 13~16% 향상·비용 20% 절감을 확인했고,[6] 결제 플랫폼은 부하 중 배포하면 Pod 가 갑자기 줄어드는 현상을 시험으로 찾아 설정을 고쳤습니다.[7]",
+   "short": "'되나'가 아니라 '얼마나 빠르고, 버티고, 안전한가'를 재는 테스트와, 그걸 재는 도구를 직접 만든 경험.",
+   "why": "소프트웨어 품질 국제 기준(ISO/IEC 25010)은 기능 말고도 성능 효율·신뢰성·호환성·보안·사용성 같은 특성을 따로 둡니다.[18] 내비는 응답이 늦어도, 배터리를 많이 먹어도, 터널을 나와 위치를 늦게 잡아도 문제라[4] 기능 테스트만으로는 모자랍니다.",
    "actually": {
     "items": [
-     "**성능·부하** — 동시 사용자를 늘리며 응답 시간(p95·p99)·처리량을 잰다. 평균은 느린 소수를 숨긴다.[22]",
-     "**성능 기준으로 막기** — 'p95 300ms 넘으면 실패' 같은 기준을 시험에 넣어 CI 에서 자동 판정한다(k6 의 thresholds).[22]",
-     "**신뢰성** — 외부 API 가 느리거나 503 을 줄 때 앱·서버가 버티나. 가짜 API 로 지연·오류를 만든다.[17]",
-     "**호환성** — 기기·OS 버전·화면 크기별로 같은 흐름을 돈다(실기기 클라우드).[24]",
-     "**앱 성능** — 앱 시작 시간·메모리·배터리 같은 값도 비기능에 든다 {추론}."
+     "**성능·부하** — k6로 요청을 몰아 주고 'p95 응답 500ms 미만' 같은 기준을 걸면 넘을 때 실패로 끝난다.[17]",
+     "**신뢰성** — 외부 API를 일부러 느리게·끊기게 만들어 앱이 버티는지 본다(가짜 서버의 지연·장애 주입).[15]",
+     "**호환성** — OS 판·기종별로 같은 시나리오를 돌린다.[20]",
+     "**앱 자원** — 시작 시간·메모리·배터리 같은 값을 회차마다 재서 이전 판과 비교한다. {추론}",
+     "**도구 개발** — 기성 도구가 못 재는 것(위치 신호 재생, 경로 결과 비교)은 직접 만든다. {추론}"
     ]
    },
    "examples": [
     {
-     "title": "평균은 통과, p99 는 실패",
-     "body": "1,000건 중 2%만 느린 가상 응답 시간입니다. 평균 140ms 로 멀쩡해 보여도 p99 가 기준을 넘습니다(직접 돌린 출력).[22]",
+     "title": "평균은 멀쩡한데 p99 는 실패",
+     "body": "요청 1,000개 중 50개만 아주 느린 가상 데이터입니다. 평균과 p95만 보면 통과지만 p99 기준에서 걸립니다(직접 돌린 출력). 그래서 비기능 기준은 평균이 아니라 백분위로 겁니다.[17]",
      "lang": "python",
-     "code": "import random, statistics\n\nrandom.seed(7)\n# 가상 응답 시간(ms): 대부분 빠르고 2%가 느린 요청\nlat = [random.gauss(120, 20) for _ in range(980)] + [random.uniform(800, 1500) for _ in range(20)]\nlat.sort()\n\ndef pct(p):\n    return lat[int(len(lat) * p) - 1]\n\nprint(f\"mean {statistics.mean(lat):.0f}ms  p50 {pct(.50):.0f}ms  p95 {pct(.95):.0f}ms  p99 {pct(.99):.0f}ms\")\nbudget = {\"p95\": 300, \"p99\": 600}          # 합의한 기준\nfor k, v in budget.items():\n    got = pct(int(k[1:]) / 100)\n    print(k, \"PASS\" if got <= v else f\"FAIL ({got:.0f} > {v})\")\n# mean 140ms  p50 122ms  p95 157ms  p99 1109ms\n# p95 PASS\n# p99 FAIL (1109 > 600)"
+     "code": "import math, random\nrandom.seed(1)\nlat = [random.gauss(120, 20) for _ in range(950)] + [random.uniform(600, 1500) for _ in range(50)]\ndef pct(xs, p):\n    s = sorted(xs); return s[math.ceil(p / 100 * len(s)) - 1]\navg = sum(lat) / len(lat)\np95, p99 = pct(lat, 95), pct(lat, 99)\nprint(f\"평균 {avg:.0f}ms · p95 {p95:.0f}ms · p99 {p99:.0f}ms\")\nprint(\"기준 p95<500ms:\", \"통과\" if p95 < 500 else \"실패\", \"· 기준 p99<800ms:\", \"통과\" if p99 < 800 else \"실패\")\n\n# 출력\n# 평균 168ms · p95 175ms · p99 1368ms\n# 기준 p95<500ms: 통과 · 기준 p99<800ms: 실패"
     }
    ],
-   "how_far": "부하 시나리오와 기준값은 서버·SRE 팀과 정하고, 이 자리는 **재는 도구와 자동 판정**을 맡습니다 {추론}. '자동화 도구 개발'은 남의 도구를 쓰는 데서 한 걸음 더 — 결과 수집·비교·리포트를 직접 짠 경험입니다.",
+   "how_far": "기준값(몇 ms·몇 %)은 서비스·개발팀과 정하고, 이 자리는 **매 회차 같은 조건에서 재고 기준을 넘으면 빨간불을 켜는 것**까지 맡습니다. {추론}",
    "refs": [
-    6,
-    7,
+    4,
+    15,
     17,
-    20,
-    22,
-    24
+    18,
+    20
    ],
    "study": [
+    "k6-docs",
     "iso25010",
-    "k6-thresholds",
-    "ngrinder",
-    "tmap-graviton"
+    "wiremock-docs"
    ]
   },
   {
    "section": "qualification",
    "quote": "API Mocking 관련 테스트 도구 개발 경험 및 활용 경험을 보유하신 분",
-   "short": "진짜 서버 대신 원하는 응답(성공·오류·지연)을 주는 가짜 API 를 만들어 시험해 봤어야 한다.",
-   "why": "앱 시험이 진짜 서버·외부 기관에 기대면, 그쪽이 불안정하거나 특정 상황(오류·지연)을 만들 수 없어 시험이 멈춥니다. 토스 대출 팀은 그래서 제휴사 가짜 서버를 직접 만들었습니다.[10] TMAP 도 교통·결제·차량 연동처럼 바깥 시스템이 많습니다 {추론}.",
+   "short": "진짜 서버 대신 원하는 응답(정상·오류·지연)을 내는 가짜 서버로, 재현하기 어려운 상황을 시험하는 일.",
+   "why": "경로·결제·제휴사 API가 실제로 고장 날 때까지 기다릴 수 없고, 앱 개발이 서버보다 먼저 갈 때도 있습니다. WireMock 같은 도구는 정해진 응답·요청 검증·녹화 후 재생·지연과 잘못된 응답 주입·상태가 바뀌는 시나리오를 지원합니다.[15]",
    "actually": {
-    "intro": "다른 회사가 공개한 가짜 API 도구의 칸입니다.[10][11][17]",
     "items": [
-     "**고르기** — 사용자·단계별로 진짜를 부를지 가짜를 부를지 정하고, 제어 값은 요청 헤더로 넘긴다(개발 환경에서만).[10]",
-     "**상황 만들기** — 정해진 응답·HTTP 오류·고정 지연·연결 끊김을 흉내 낸다(WireMock 의 stub·fault·delay).[17]",
-     "**CI 에서** — 가짜 서버를 Docker 로 띄워 통합 시험을 돈다.[11]",
-     "**따라가게** — 진짜 API 모양이 바뀌면 가짜 응답도 다시 만든다. 토스는 스키마에서 샘플을 뽑아 자동으로 PR 을 열었다.[11]",
-     "**대역은 아껴서** — 가짜가 너무 많으면 진짜와 어긋나도 모른다. 외부 시스템만 가짜로, 나머지는 진짜로.[12]"
+     "**정상 흉내** — 앱이 받을 응답을 미리 적어 두고 화면 테스트를 서버 없이 돌린다.[15]",
+     "**실패 흉내** — 503·시간 초과·깨진 JSON을 돌려 앱의 오류 화면을 확인한다.[15]",
+     "**녹화·재생** — 실제 서버 응답을 한 번 녹화해 같은 응답으로 반복 시험한다.[15]",
+     "**계약 맞추기** — 가짜 응답이 진짜 서버와 어긋나지 않게, 소비자 쪽 기대를 계약으로 남겨 서버 쪽에서 검증하는 방법(Pact)도 있다.[29]"
     ]
    },
    "examples": [
     {
-     "title": "헤더로 상황을 고르는 가짜 경로 API",
-     "body": "표준 라이브러리만으로 띄운 가짜 서버가 헤더(X-Mock)에 따라 정상·503·1.5초 지연을 주고, 시험 대상 코드가 세 상황을 다르게 처리하는지 봅니다(직접 돌린 출력).[10][17]",
+     "title": "가짜 경로 API로 정상·장애·지연 세 상황 시험",
+     "body": "표준 라이브러리만으로 만든 가짜 서버입니다. 진짜 서버로는 만들기 어려운 503과 2초 지연을 주소 하나로 재현합니다(직접 돌린 출력).",
      "lang": "python",
-     "code": "import json, threading, time, urllib.request, urllib.error\nfrom http.server import BaseHTTPRequestHandler, HTTPServer\n\nclass Mock(BaseHTTPRequestHandler):      # 가짜 경로 API: 헤더로 상황을 고른다\n    def do_GET(self):\n        mode = self.headers.get(\"X-Mock\", \"ok\")\n        if mode == \"slow\":\n            time.sleep(1.5)\n        if mode == \"error\":\n            self.send_response(503); self.end_headers(); return\n        body = json.dumps({\"eta_min\": 23}).encode()\n        try:\n            self.send_response(200); self.end_headers(); self.wfile.write(body)\n        except ConnectionError:\n            pass                       # 클라이언트가 먼저 끊은 경우(시간 초과)\n    def log_message(self, *a): pass\n\nsrv = HTTPServer((\"127.0.0.1\", 0), Mock)\nthreading.Thread(target=srv.serve_forever, daemon=True).start()\nurl = f\"http://127.0.0.1:{srv.server_port}/route\"\n\ndef get_eta(mode):                     # 시험 대상: 앱 서버의 ETA 조회\n    req = urllib.request.Request(url, headers={\"X-Mock\": mode})\n    try:\n        with urllib.request.urlopen(req, timeout=1.0) as r:\n            return f\"{json.load(r)['eta_min']}분\"\n    except urllib.error.HTTPError as e:\n        return f\"안내 불가({e.code})\"\n    except Exception:\n        return \"시간 초과 → 이전 경로 유지\"\n\nfor mode in [\"ok\", \"error\", \"slow\"]:\n    print(mode, \"->\", get_eta(mode))\nsrv.shutdown()\n# ok -> 23분\n# error -> 안내 불가(503)\n# slow -> 시간 초과 → 이전 경로 유지"
+     "code": "import json, threading, time, urllib.request\nfrom http.server import BaseHTTPRequestHandler, HTTPServer\n\n# 가짜 '경로 API' — 요청 경로로 응답을 고른다(진짜 서버 없이 실패를 만든다)\nclass Mock(BaseHTTPRequestHandler):\n    def do_GET(self):\n        if self.path == \"/route/slow\":\n            time.sleep(2)\n        code = 503 if self.path == \"/route/down\" else 200\n        body = json.dumps({\"eta_min\": 23} if code == 200 else {\"error\": \"busy\"}).encode()\n        try:\n            self.send_response(code); self.end_headers(); self.wfile.write(body)\n        except ConnectionError:\n            pass  # 앱이 먼저 끊은 경우(시간 초과)\n    def log_message(self, *a): pass\n\nsrv = HTTPServer((\"127.0.0.1\", 0), Mock)\nthreading.Thread(target=srv.serve_forever, daemon=True).start()\nbase = f\"http://127.0.0.1:{srv.server_port}\"\n\ndef eta_text(path):  # 앱이 화면에 띄울 글자(시험 대상)\n    try:\n        with urllib.request.urlopen(base + path, timeout=1) as r:\n            return f\"{json.load(r)['eta_min']}분\"\n    except urllib.error.HTTPError:\n        return \"잠시 후 다시 시도\"\n    except Exception:\n        return \"응답 지연 — 이전 경로 유지\"\n\nfor p in [\"/route/ok\", \"/route/down\", \"/route/slow\"]:\n    print(p, \"→\", eta_text(p))\nsrv.shutdown()\n\n# 출력\n# /route/ok → 23분\n# /route/down → 잠시 후 다시 시도\n# /route/slow → 응답 지연 — 이전 경로 유지"
     }
    ],
-   "how_far": "'개발 경험'까지 요구합니다 — WireMock 을 써 본 것에 더해, 팀에 맞게 **상황 고르기·응답 관리·CI 연동**을 직접 만든 경험이 있으면 좋습니다 {추론}.",
+   "how_far": "'개발 경험'까지 적었으니 기성 도구를 쓰는 데서 그치지 않고 **팀이 쓰는 가짜 서버(시나리오 등록·응답 묶음 관리)를 만들어 본 경험**을 기대합니다. 최소선은 가짜 응답이 진짜와 어긋나는 문제를 어떻게 막았는지 설명할 수 있는 것입니다. {추론}",
    "refs": [
-    10,
-    11,
-    12,
-    17
+    15,
+    29
    ],
    "study": [
-    "wiremock",
-    "toss-mock-1",
-    "toss-mock-2",
-    "toss-test"
+    "wiremock-docs",
+    "pact-docs",
+    "http-book"
    ]
   },
   {
    "section": "preference",
    "quote": "앱/웹 서비스 개발 경험을 보유하신 분",
-   "short": "앱·웹이 어떻게 만들어지는지 알면 어디가 잘 깨질지 알고, 시험하기 쉬운 구조를 개발자에게 요청할 수 있다.",
-   "why": "UI 자동화는 화면 요소에 붙은 이름(접근성 id 등)에 기대는데, 그 이름은 개발자가 넣습니다. 앱을 만들어 본 사람은 이런 요청을 구체적으로 할 수 있습니다.[15] 같은 회사 차량 QA 공고도 안드로이드·리눅스 개발 경험을 우대합니다.[4]",
-   "how_far": "작은 앱 하나를 직접 만들고 그 앱에 자동화 시험을 붙여 본 정도면 이야기할 거리가 됩니다 {추론}.",
+   "short": "앱이 안에서 어떻게 도는지 알아야 테스트가 덜 깨지고, 실패 원인을 개발자 말로 짚을 수 있어서.",
+   "why": "화면 요소에 테스트용 id를 다는 일, 비동기 로딩을 기다리는 법은 앱 구조를 알아야 정할 수 있습니다.[12][13] 같은 회사 앱 개발 공고는 QA와의 협업을 업무로 적었습니다.[6]",
+   "how_far": "제품 기능을 맡아 개발할 정도는 필요 없고, **테스트하기 쉽게 코드를 바꿔 달라고 구체적으로 요청할 수 있는** 수준이면 됩니다. {추론}",
    "refs": [
-    4,
-    15
+    6,
+    12,
+    13
+   ],
+   "study": [
+    "khorikov",
+    "practical-testing"
    ]
   },
   {
    "section": "preference",
    "quote": "신규로 자동화 테스트 환경을 구축해 보신 분",
-   "short": "아무것도 없는 곳에서 도구 고르기 → 첫 시험 → 팀이 쓰게 만들기까지 해 본 사람.",
-   "why": "업무 첫 줄이 플랫폼 '구축'입니다.[1] 처음 세울 때는 무엇부터 자동화할지, 시험 계정·데이터는 어떻게 준비할지 같은 결정을 스스로 해야 합니다 {추론}.",
-   "actually": {
-    "items": [
-     "처음엔 사람이 가장 오래 쓰는 반복 시험(스모크) 하나를 골라 끝까지 자동화한다 — 토스 QA 팀이 간 길.[9]",
-     "그다음 CI 연결 → 결과 기록 → 알림 순서로 넓힌다.[9][18]"
-    ]
-   },
+   "short": "빈 상태에서 도구 고르기·첫 파이프라인·첫 테스트 묶음까지 세워 본 사람이면 더 좋다는 뜻.",
+   "why": "업무 첫 줄이 플랫폼 '구축'이라[1] 무엇부터 자동화할지 정해 본 경험이 바로 쓰입니다. 테스트 피라미드는 처음 세울 때 어느 층에 테스트를 둘지 정하는 기준이 됩니다.[9]",
+   "how_far": "면접에서는 **무엇을 먼저 자동화했고 왜 그것이었나, 처음 몇 달 동안 무엇을 버렸나**를 묻기 좋습니다. {추론}",
    "refs": [
     1,
-    9,
-    18
+    9
+   ],
+   "study": [
+    "fowler-pyramid",
+    "swe-google"
    ]
   },
   {
    "section": "preference",
    "quote": "능동적인 업무 수행 경험 및 업무 개선 방향에 대해 제안을 해 보신 분",
-   "short": "시킨 시험만 하지 않고, 출시 과정의 병목을 숫자로 보여 주고 바꾸자고 해 본 사람.",
-   "why": "토스 QA 팀은 스모크 테스트에 드는 시간을 한 해 단위(약 180시간)로 계산해 자동화를 시작했습니다.[9] 제안은 이렇게 숫자로 할 때 받아들여지기 쉽습니다 {추론}.",
-   "how_far": "면접에서 '무엇이 문제였고, 무엇으로 쟀고, 무엇을 제안했고, 결과가 어땠나'를 말할 사례 하나면 됩니다 {추론}.",
+   "short": "시킨 테스트만 돌리는 게 아니라 '이걸 바꾸면 이만큼 줄어든다'를 먼저 제안해 본 경험.",
+   "why": "팀 소개가 '고민하고 개선해 나간다'·'향상된 경험을 만든다'로 끝나서[1], 플랫폼의 다음 개선을 스스로 찾는 사람을 원한다고 읽힙니다. {추론}",
+   "how_far": "제안은 **전후 숫자**(실행 시간·흔들림 비율·손 테스트 시간)로 말하면 설득력이 큽니다. 흔들림 비율처럼 구글이 공개한 지표가 비교 기준이 됩니다.[11]",
    "refs": [
-    9
+    1,
+    11
+   ],
+   "study": [
+    "google-flaky"
    ]
   },
   {
    "section": "preference",
    "quote": "생성형 AI를 이용한 자동화 테스트 개발/운영 경험을 보유하신 분",
-   "short": "LLM 으로 시험 케이스·스크립트를 만들거나 깨진 시험을 고치게 하고, 그 결과를 검증해 본 경험.",
-   "why": "같은 회사 차량 QA 공고도 생성형 AI·자동화 도구로 시험 설계·결함 분석·리포팅을 개선한 경험을 우대합니다.[4] 회사 서비스 자체가 AI 음성 에이전트로 가고 있어, AI 응답을 시험하는 일도 늘어납니다.[5]",
+   "short": "LLM으로 테스트 코드·데이터를 만들거나 화면을 대신 조작하게 하고, 그 결과를 걸러 쓰는 경험.",
+   "why": "회사가 AI 에이전트 서비스를 키우는 중이고, 같은 회사 AI Agent 공고는 평가 데이터셋과 자동화 체계로 응답 품질을 개선하는 일을 적었습니다.[7] 테스트 쪽에서도 메타는 LLM이 만든 테스트를 '빌드되나 → 반복해도 통과하나 → 커버리지가 늘었나' 세 관문으로 걸러, 75%가 빌드되고 57%가 안정적으로 통과하며 25%가 커버리지를 늘렸다고 보고했습니다.[19]",
    "actually": {
     "items": [
-     "**시험 만들기** — Playwright 1.56 은 계획(planner)·생성(generator)·고치기(healer) 에이전트를 기본으로 넣었다. 앱을 둘러보고 시험 계획을 쓰고, 계획을 시험 코드로 바꾸고, 실패한 시험을 고친다.[25]",
-     "**검증은 사람이** — 고치기 에이전트가 다른 버튼을 눌러 시험을 통과시키면 시험이 증명하던 것이 바뀔 수 있다. 바뀐 부분은 리뷰해서 받는다 {추론}.",
-     "**AI 를 시험하기** — 대화형 에이전트는 같은 질문에도 답이 달라서, 평가 데이터셋과 자동 채점으로 품질을 잰다(이 회사 AI 공고의 업무).[5]",
-     "**결함 분석·리포트** — 실패 로그를 요약하고 비슷한 결함을 묶는 데 쓴다.[4]"
+     "**테스트 코드 초안** — 기존 테스트를 보여 주고 빠진 경우를 더 쓰게 한 뒤, 기계 검사로 걸러 사람이 검토한다.[19]",
+     "**화면 조작** — 브라우저 접근성 정보를 LLM에 넘겨 자연어 시나리오대로 누르게 하는 도구(Playwright MCP)가 있다.[28]",
+     "**테스트 데이터** — 주소·장소명 같은 다양한 입력을 만들게 한다. {추론}",
+     "**운영** — 같은 입력에 결과가 바뀔 수 있어, AI가 만든 테스트도 흔들림 관리 대상에 넣는다. {추론}"
     ]
    },
-   "how_far": "우대 사항이라 없어도 됩니다. 써 봤다면 **얼마나 맞았고, 무엇을 사람이 고쳤나**를 숫자로 말할 수 있어야 경험이 됩니다 {추론}.",
+   "how_far": "AI가 만든 것을 그대로 믿지 않고 **자동으로 거르는 관문을 둔 경험**이 핵심입니다.[19]",
    "refs": [
-    4,
-    5,
-    25
+    7,
+    19,
+    28
    ],
    "study": [
-    "playwright-agents"
+    "testgen-llm",
+    "playwright-mcp"
    ]
   }
  ],
  "fit": {
   "good": [
-   "반복 확인을 보면 자동화하고 싶어지는 사람",
-   "버그를 재현 조건·로그·영상으로 깔끔히 넘기는 걸 좋아하는 사람",
-   "개발자와 '시험하기 쉬운 구조'를 같이 고민하고 싶은 사람",
-   "숫자(수행 시간·flaky 비율·p99)로 개선을 증명하는 게 즐거운 사람"
+   "같은 일을 두 번 손으로 하면 못 참는 사람",
+   "테스트 결과를 다른 팀이 믿게 만드는 데서 보람을 느끼는 사람",
+   "앱·웹·API·성능을 두루 만지는 걸 좋아하는 사람",
+   "내비처럼 현실(길·위치 신호)과 맞닿은 소프트웨어가 궁금한 사람[4]"
   ],
   "hard": [
-   "UI 시험은 화면이 바뀔 때마다 고쳐야 해서 유지보수가 끝없다[13][23]",
-   "결과가 '버그가 안 나간 것'이라 성과가 눈에 잘 안 띈다 {추론}",
-   "시험 대상(앱·웹·차량·서버)이 넓어 도구가 흩어지기 쉽다 {추론}",
-   "경력 5년 이상 — 신입 자리가 아니다[2][3]"
+   "경력 5년 이상 요건이 첫 줄 — 경력이 짧으면 '이에 준하는 경험'을 숫자로 증명해야 한다[1]",
+   "기기·OS 조합이 많아 흔들리는 테스트와 계속 씨름한다[11]",
+   "공고에 팀 규모·사용하는 사내 도구·연봉이 적혀 있지 않다[1]"
   ]
  },
  "interview": [
   {
-   "q": "출시 때마다 손으로 하는 회귀 시험이 3시간 걸립니다. 무엇부터 자동화하겠어요?",
-   "a": "스모크부터 고르고 시간을 숫자로 계산한 실례.[9]"
+   "q": "UI 테스트가 흔들릴 때 어떤 순서로 원인을 찾나요?",
+   "a": "흔들림은 대규모 테스트의 가장 흔한 골칫거리라서.[11]"
   },
   {
-   "q": "같은 코드인데 가끔 실패하는 UI 시험이 있습니다. 어떻게 다루겠어요?",
-   "a": "flaky 의 정의와 재실행·격리.[23]"
+   "q": "새 기능이 들어왔을 때 단위·API·UI 중 어디서 무엇을 확인하겠어요?",
+   "a": "테스트 피라미드와 80:15:5.[9][10]"
   },
   {
-   "q": "외부 교통 API 가 느릴 때 앱이 어떻게 되는지 어떻게 시험하겠어요?",
-   "a": "가짜 API 로 지연·오류 만들기.[10][17]"
+   "q": "외부 API가 503이나 2초 지연을 낼 때 앱을 어떻게 시험하나요? 가짜 응답이 진짜와 어긋나면요?",
+   "a": "자격요건의 API Mocking 줄과 계약 테스트.[15][29]"
   },
   {
-   "q": "평균 응답 시간은 괜찮은데 사용자가 느리다고 합니다. 무엇을 보겠어요?",
-   "a": "p95·p99 와 성능 기준 자동 판정.[22]"
+   "q": "성능 기준을 평균으로 걸면 왜 안 되나요?",
+   "a": "비기능 요건과 백분위 기준.[17]"
   },
   {
-   "q": "Appium 시험 30개가 너무 느립니다. 어디부터 보겠어요?",
-   "a": "세션 재사용과 층 내리기.[9][13]"
+   "q": "LLM이 만든 테스트를 그대로 넣지 않으려면 어떤 관문을 두겠어요?",
+   "a": "생성형 AI 우대 줄 — 메타의 세 관문.[19]"
   },
   {
-   "q": "AI 가 고친 시험을 그대로 받아도 될까요?",
-   "a": "healer 가 시험의 의미를 바꿀 위험.[25]"
+   "q": "OS 4종 × 네트워크 3종 × 기능 3종을 다 돌릴 시간이 없을 때는?",
+   "a": "조합 줄이기(pairwise).[27]"
   }
  ],
- "sources": [
-  {
-   "n": 1,
-   "title": "SK Careers · 티맵모빌리티 QA Automation Engineer",
-   "url": "https://www.skcareers.com/Recruit/Detail/R261959",
-   "kind": "posting",
-   "note": "팀 소개·담당업무·지원자격·우대사항·전형·참고사항(마감 2026-12-31)"
-  },
-  {
-   "n": 2,
-   "title": "잡코리아 · [티맵모빌리티] QA Automation Engineer",
-   "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50073105",
-   "kind": "posting",
-   "date": "2026-09",
-   "note": "같은 자리 — 경력 5년↑, 우대사항 칸 없음, 마감 2026-11-28"
-  },
-  {
-   "n": 3,
-   "title": "원티드 · [티맵모빌리티] QA Automation Engineer",
-   "url": "https://www.wanted.co.kr/wd/341596",
-   "kind": "posting",
-   "note": "같은 자리 — 경력 5년 이상, 근무지 충무로 15 SK-C타워 7-9층"
-  },
-  {
-   "n": 4,
-   "title": "SK Careers · 티맵모빌리티 Automotive Test Manager",
-   "url": "https://www.skcareers.com/Recruit/Detail/R261864",
-   "kind": "posting",
-   "date": "2026-08",
-   "note": "같은 회사 QA 공고 — TMAP AUTO 품질, ASPICE·X-ray, 생성형 AI로 QA 개선 우대"
-  },
-  {
-   "n": 5,
-   "title": "원티드 · [티맵모빌리티] AI Agent Engineer",
-   "url": "https://www.wanted.co.kr/wd/391456",
-   "kind": "posting",
-   "note": "평가 데이터셋·자동화로 응답 품질 개선, QA 직군과 협업"
-  },
-  {
-   "n": 6,
-   "title": "티맵모빌리티 테크노트 11편 · AWS Graviton2 출시 후 바로 도입해본 후기",
-   "url": "https://brunch.co.kr/@@dsaj/14",
-   "kind": "company",
-   "date": "2022-05",
-   "note": "경로 탐색 서버를 nGrinder로 측정 — 성능 약 13~16%↑·비용 20%↓"
-  },
-  {
-   "n": 7,
-   "title": "티맵모빌리티 테크노트 10편 · 결제플랫폼 구축에 EKS on Fargate 적용하기",
-   "url": "https://brunch.co.kr/@@dsaj/13",
-   "kind": "company",
-   "date": "2022-04",
-   "note": "부하 중 배포 시험 3가지 — replicas 설정에 따라 Pod가 줄어드는 현상"
-  },
-  {
-   "n": 8,
-   "title": "바이라인네트워크 · 티맵, 월평균 방문 4억4600만회…차량 탑재 115만대 돌파",
-   "url": "https://byline.network/2026/10/21_2018283/",
-   "kind": "news",
-   "date": "2026-10"
-  },
-  {
-   "n": 9,
-   "title": "SLASH 24 · 약은 약사에게, 테스트는 토스 닥터에게!",
-   "url": "https://www.youtube.com/watch?v=DwqwUsFmoCU",
-   "kind": "reference",
-   "date": "2024",
-   "note": "다른 회사(토스 QA 팀) — 공식 자막 전부 읽음(매주 출시·RC 평균 5회·스모크 약 3시간·Appium 세션 재사용·TestRail 기록·영상/로그 알림·시간 절반)"
-  },
-  {
-   "n": 10,
-   "title": "토스 테크 · 신용대출 찾기 서비스 제휴사 mock 서버 개발기 #1",
-   "url": "https://toss.tech/article/credit-loan-partner-mock-server",
-   "kind": "reference",
-   "date": "2025-06",
-   "note": "다른 회사 — 가짜 제휴사 서버"
-  },
-  {
-   "n": 11,
-   "title": "토스 테크 · 신용대출 찾기 서비스 제휴사 mock 서버 개발기 #2",
-   "url": "https://toss.tech/article/credit-loan-partner-mock-server-2",
-   "kind": "reference",
-   "date": "2025-08",
-   "note": "다른 회사 — Docker·GitHub Actions 통합 시험, 샘플 자동 갱신"
-  },
-  {
-   "n": 12,
-   "title": "토스 테크 · 가치있는 테스트를 위한 전략과 구현",
-   "url": "https://toss.tech/article/test-strategy-server",
-   "kind": "reference",
-   "date": "2024-10",
-   "note": "다른 회사 — 테스트 대역 고르는 기준"
-  },
-  {
-   "n": 13,
-   "title": "Martin Fowler · The Practical Test Pyramid (Ham Vocke)",
-   "url": "https://martinfowler.com/articles/practical-test-pyramid.html",
-   "kind": "reference",
-   "date": "2018"
-  },
-  {
-   "n": 14,
-   "title": "Selenium 공식 문서",
-   "url": "https://www.selenium.dev/documentation/",
-   "kind": "reference"
-  },
-  {
-   "n": 15,
-   "title": "Appium 공식 문서",
-   "url": "https://appium.io/docs/en/latest/",
-   "kind": "reference"
-  },
-  {
-   "n": 16,
-   "title": "Postman 문서 · Newman 으로 명령줄에서 컬렉션 실행",
-   "url": "https://learning.postman.com/docs/collections/using-newman-cli/command-line-integration-with-newman/",
-   "kind": "reference"
-  },
-  {
-   "n": 17,
-   "title": "WireMock 문서",
-   "url": "https://wiremock.org/docs/",
-   "kind": "reference",
-   "note": "stub·응답 지연·fault 흉내"
-  },
-  {
-   "n": 18,
-   "title": "Jenkins 문서 · Pipeline",
-   "url": "https://www.jenkins.io/doc/book/pipeline/",
-   "kind": "reference"
-  },
-  {
-   "n": 19,
-   "title": "GitHub Docs · GitHub Actions",
-   "url": "https://docs.github.com/actions",
-   "kind": "reference"
-  },
-  {
-   "n": 20,
-   "title": "ISO 25000 · ISO/IEC 25010 제품 품질 모델",
-   "url": "https://iso25000.com/index.php/en/iso-25000-standards/iso-25010",
-   "kind": "reference"
-  },
-  {
-   "n": 21,
-   "title": "GitHub · naver/ngrinder",
-   "url": "https://github.com/naver/ngrinder",
-   "kind": "reference"
-  },
-  {
-   "n": 22,
-   "title": "Grafana k6 문서 · Thresholds",
-   "url": "https://grafana.com/docs/k6/latest/using-k6/thresholds/",
-   "kind": "reference"
-  },
-  {
-   "n": 23,
-   "title": "Google Testing Blog · Flaky Tests at Google and How We Mitigate Them",
-   "url": "https://testing.googleblog.com/2016/05/flaky-tests-at-google-and-how-we.html",
-   "kind": "reference",
-   "date": "2016-05",
-   "note": "실행의 약 1.5%·시험의 약 16%"
-  },
-  {
-   "n": 24,
-   "title": "AWS Device Farm 개발자 안내서",
-   "url": "https://docs.aws.amazon.com/devicefarm/latest/developerguide/welcome.html",
-   "kind": "reference"
-  },
-  {
-   "n": 25,
-   "title": "Playwright 문서 · Test agents",
-   "url": "https://playwright.dev/docs/test-agents",
-   "kind": "reference",
-   "note": "planner·generator·healer (1.56)"
-  },
-  {
-   "n": 26,
-   "title": "pytest 문서 · How to use fixtures",
-   "url": "https://docs.pytest.org/en/stable/how-to/fixtures.html",
-   "kind": "reference",
-   "note": "픽스처 범위(function·class·module·package·session)"
-  },
-  {
-   "n": 27,
-   "title": "자소설닷컴 · 티맵모빌리티 기업 정보",
-   "url": "https://jasoseol.com/companies/11668",
-   "kind": "reference",
-   "note": "공공데이터 기반 초봉·평균 연봉 집계"
-  },
-  {
-   "n": 28,
-   "title": "캐치 · 티맵모빌리티 기업 정보",
-   "url": "https://www.catch.co.kr/Comp/CompSummary/MB8295",
-   "kind": "reference",
-   "note": "추정 평균 연봉·직원 수 집계"
-  },
-  {
-   "n": 29,
-   "title": "자소설닷컴 · 카카오모빌리티 기업 정보",
-   "url": "https://jasoseol.com/companies/10478",
-   "kind": "reference"
-  },
-  {
-   "n": 30,
-   "title": "티맵모빌리티 공식 사이트 · 하단 회사 정보",
-   "url": "https://tmapmobility.com/",
-   "kind": "company"
-  },
-  {
-   "n": 31,
-   "title": "리멤버 · 티맵모빌리티 Automotive Test Manager (기타안내)",
-   "url": "https://career.rememberapp.co.kr/job/posting/259031",
-   "kind": "posting",
-   "note": "회사가 공고에 적은 근무 제도·복리후생"
-  },
-  {
-   "n": 32,
-   "title": "티맵모빌리티 조직문화 · 인사 담당자 인터뷰(근무 제도·복지)",
-   "url": "https://tmapmobility.com/people/culture/detail/243",
-   "kind": "company",
-   "date": "2026-06"
-  }
- ],
- "caveat": "티맵모빌리티 QA팀의 자동화 구조·도구·시험 대상은 공개 자료가 없어, 회사 근거는 공고 3판(SK Careers·원티드·잡코리아)과 같은 회사 공고 2건, 서버 쪽 시험을 다룬 테크노트 2편(2022)뿐입니다. 시험 판의 생김새는 토스 QA 팀 발표(자막 전부 읽음)와 토스 테크 글, 공식 문서로 '보통 이런 것'을 보였고 그 사실을 줄마다 밝혔습니다. 원티드·잡코리아 판에는 우대사항이 없고 SK Careers 판에만 있습니다.",
  "resources": [
   {
-   "id": "slash24-doctor",
-   "title": "SLASH 24 · 약은 약사에게, 테스트는 토스 닥터에게!",
-   "by": "토스 QA 팀 · 19분",
-   "kind": "video",
-   "lang": "ko",
-   "free": true,
-   "level": "입문",
-   "url": "https://www.youtube.com/watch?v=DwqwUsFmoCU",
-   "why": "스모크 테스트 자동화의 이유·구조·결과를 20분에. 업무 1·2(플랫폼·케이스)의 한국어 실례."
-  },
-  {
-   "id": "tmap-graviton",
-   "title": "AWS Graviton2 출시 후 바로 도입해본 후기",
-   "by": "티맵모빌리티 테크노트 11편 · 2022-05",
+   "id": "tmap-qc2020",
+   "title": "T map Trend Map 2020 · 품질관리팀 이야기",
+   "by": "티맵 공식 사이트 · 2020",
    "kind": "doc",
-   "lang": "ko",
-   "free": true,
-   "level": "입문",
-   "url": "https://brunch.co.kr/@@dsaj/14",
-   "why": "이 회사가 경로 탐색 서버의 성능을 무엇으로 어떻게 비교했나 — 비기능 요건의 회사 쪽 예."
-  },
-  {
-   "id": "tmap-fargate",
-   "title": "결제플랫폼 구축에 EKS on Fargate 적용하기",
-   "by": "티맵모빌리티 테크노트 10편 · 2022-04",
-   "kind": "doc",
-   "lang": "ko",
-   "free": true,
-   "level": "실무",
-   "url": "https://brunch.co.kr/@@dsaj/13",
-   "why": "부하 중 배포 시험 세 가지로 설정 문제를 찾은 과정 — '시험으로 운영 위험을 찾는다'의 예."
-  },
-  {
-   "id": "test-pyramid",
-   "title": "The Practical Test Pyramid",
-   "by": "Ham Vocke · martinfowler.com · 2018",
-   "kind": "doc",
+   "url": "https://tmap.co.kr/static/trendmap_2020/en/tmap-story/4-02.html",
    "lang": "en",
    "free": true,
    "level": "입문",
-   "url": "https://martinfowler.com/articles/practical-test-pyramid.html",
-   "why": "UI·API·단위 시험을 어느 층에 얼마나 둘지 — 케이스 설계 업무의 기본 틀."
-  },
-  {
-   "id": "unit-testing",
-   "title": "단위 테스트",
-   "by": "블라디미르 코리코프 · 에이콘출판",
-   "kind": "book",
-   "lang": "ko",
-   "free": false,
-   "level": "실무",
-   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8B%A8%EC%9C%84%20%ED%85%8C%EC%8A%A4%ED%8A%B8%20%EC%BD%94%EB%A6%AC%EC%BD%94%ED%94%84",
-   "why": "목(mock)·대역을 언제 쓰고 언제 피하나 — API Mocking 요건과 '깨지지 않는 시험'의 원리."
+   "why": "이 회사 QA가 원래 무엇을 어떻게 시험해 왔나(앱·지도 검증, 실차 비교, 혼잡 시간 기준값) — 업무 '케이스 설계'의 출발점."
   },
   {
    "id": "practical-testing",
    "title": "Practical Testing — 실용적인 테스트 가이드",
-   "by": "우리 서가",
    "kind": "internal",
-   "lang": "ko",
-   "free": true,
-   "level": "실무",
    "url": "/wiki/practical-testing",
-   "why": "실제로 돌린 시험 결과로 배우는 테스트 작성 — 케이스 작성 요건의 손 연습."
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "테스트를 어느 층에 두고 어떻게 짜는지 실제로 돌린 결과로 익힌다 — 요건 'ui/api 테스트 케이스 작성'과 '케이스 설계'."
   },
   {
-   "id": "http-basic",
-   "title": "모든 개발자를 위한 HTTP 웹 기본 지식",
-   "by": "우리 서가",
+   "id": "http-book",
+   "title": "모든 개발자를 위한 HTTP 웹 기본 지식 (우리 사이트 책)",
    "kind": "internal",
-   "lang": "ko",
-   "free": true,
-   "level": "입문",
    "url": "/wiki/http-basic",
-   "why": "API 시험·가짜 API 를 만들려면 메서드·상태 코드·헤더를 정확히 알아야 한다."
-  },
-  {
-   "id": "selenium-docs",
-   "title": "Selenium Documentation",
-   "by": "Selenium 공식 문서",
-   "kind": "doc",
-   "lang": "en",
+   "lang": "ko",
    "free": true,
    "level": "입문",
-   "url": "https://www.selenium.dev/documentation/",
-   "why": "웹 UI 시험 — 요소 찾기·대기·페이지 객체."
+   "why": "API 테스트·가짜 서버를 만들려면 상태 코드·헤더·캐시를 정확히 알아야 한다."
   },
   {
-   "id": "appium-docs",
-   "title": "Appium Documentation",
-   "by": "Appium 공식 문서",
-   "kind": "doc",
-   "lang": "en",
-   "free": true,
-   "level": "실무",
-   "url": "https://appium.io/docs/en/latest/",
-   "why": "안드로이드·iOS 앱 시험 — 드라이버·세션·요소 찾기."
-  },
-  {
-   "id": "newman-docs",
-   "title": "Command-line integration with Newman",
-   "by": "Postman 문서",
-   "kind": "doc",
-   "lang": "en",
-   "free": true,
-   "level": "입문",
-   "url": "https://learning.postman.com/docs/collections/using-newman-cli/command-line-integration-with-newman/",
-   "why": "Postman 으로 만든 API 시험을 CI 에서 돌리는 법."
-  },
-  {
-   "id": "wiremock",
-   "title": "WireMock Documentation",
-   "by": "WireMock 공식 문서",
-   "kind": "doc",
-   "lang": "en",
-   "free": true,
-   "level": "실무",
-   "url": "https://wiremock.org/docs/",
-   "why": "가짜 API — 응답 정의·지연·오류 흉내. API Mocking 요건의 표준 도구."
-  },
-  {
-   "id": "toss-mock-1",
-   "title": "신용대출 찾기 서비스 제휴사 mock 서버 개발기 #1",
-   "by": "토스 테크 · 2025",
-   "kind": "doc",
+   "id": "docker-book",
+   "title": "개발자를 위한 도커 (우리 사이트 책)",
+   "kind": "internal",
+   "url": "/wiki/docker",
    "lang": "ko",
    "free": true,
    "level": "실무",
-   "url": "https://toss.tech/article/credit-loan-partner-mock-server",
-   "why": "가짜 API 도구를 '개발'한 한국어 실례 — 상황 고르기·비동기 응답·중계."
+   "why": "테스트 환경(Selenium·가짜 서버·DB)을 매번 같게 띄우는 법 — 업무 '플랫폼 구축'."
   },
   {
-   "id": "toss-mock-2",
-   "title": "신용대출 찾기 서비스 제휴사 mock 서버 개발기 #2",
-   "by": "토스 테크 · 2025",
-   "kind": "doc",
-   "lang": "ko",
-   "free": true,
-   "level": "실무",
-   "url": "https://toss.tech/article/credit-loan-partner-mock-server-2",
-   "why": "가짜 서버를 CI 에 붙이고 응답을 진짜와 맞춰 가는 법."
-  },
-  {
-   "id": "toss-test",
-   "title": "가치있는 테스트를 위한 전략과 구현",
-   "by": "토스 테크 · 2024",
-   "kind": "doc",
-   "lang": "ko",
-   "free": true,
-   "level": "실무",
-   "url": "https://toss.tech/article/test-strategy-server",
-   "why": "대역을 고르는 기준 — 가짜를 너무 많이 쓰면 생기는 문제."
-  },
-  {
-   "id": "jenkins-pipeline",
-   "title": "Jenkins User Handbook · Pipeline",
-   "by": "Jenkins 공식 문서",
-   "kind": "doc",
+   "id": "swe-google",
+   "title": "Software Engineering at Google",
+   "by": "Titus Winters · Tom Manshreck · Hyrum Wright · O'Reilly · 2020",
+   "kind": "book",
+   "url": "https://abseil.io/resources/swe-book",
    "lang": "en",
    "free": true,
    "level": "실무",
-   "url": "https://www.jenkins.io/doc/book/pipeline/",
-   "why": "Jenkinsfile 로 빌드 → 시험 → 결과 보고를 코드로 — CI/CD 요건."
+   "why": "11~14장이 테스트 규모·흔들림·큰 테스트를 다룬다 — 자동화 플랫폼을 조직 단위로 굴리는 법."
   },
   {
-   "id": "gh-actions",
-   "title": "GitHub Actions documentation",
-   "by": "GitHub Docs",
+   "id": "khorikov",
+   "title": "Unit Testing: Principles, Practices, and Patterns",
+   "by": "Vladimir Khorikov · Manning · 2020",
+   "kind": "book",
+   "url": "https://www.manning.com/books/unit-testing",
+   "lang": "en",
+   "level": "실무",
+   "why": "가짜 객체(mock)를 언제 쓰고 언제 쓰지 말아야 하나 — 요건 'API Mocking'과 우대 '앱/웹 개발 경험'."
+  },
+  {
+   "id": "appium-book",
+   "title": "Mobile Test Automation with Appium",
+   "by": "Nishant Verma · Packt · 2017",
+   "kind": "book",
+   "url": "https://www.packtpub.com/en-us/product/mobile-test-automation-with-appium-9781787280168",
+   "lang": "en",
+   "level": "입문",
+   "why": "요소 찾기·제스처·Jenkins 연동까지 Appium 한 바퀴 — 요건 'UI 자동화'. 판이 오래돼 최신 문서와 같이 본다."
+  },
+  {
+   "id": "fowler-pyramid",
+   "title": "The Practical Test Pyramid",
+   "by": "Ham Vocke · martinfowler.com · 2018",
    "kind": "doc",
+   "url": "https://martinfowler.com/articles/practical-test-pyramid.html",
    "lang": "en",
    "free": true,
    "level": "입문",
-   "url": "https://docs.github.com/actions",
-   "why": "PR 마다 시험을 돌리고 실패하면 병합을 막는 워크플로."
-  },
-  {
-   "id": "pytest-fixtures",
-   "title": "How to use fixtures",
-   "by": "pytest 공식 문서",
-   "kind": "doc",
-   "lang": "en",
-   "free": true,
-   "level": "실무",
-   "url": "https://docs.pytest.org/en/stable/how-to/fixtures.html",
-   "why": "세션·시험 데이터를 범위별로 만들고 치우기 — 세션 재사용의 바탕."
+   "why": "무엇을 단위·API·UI 테스트로 둘지 정하는 기준 — 업무 '케이스 설계'와 우대 '신규 구축'."
   },
   {
    "id": "google-flaky",
    "title": "Flaky Tests at Google and How We Mitigate Them",
    "by": "Google Testing Blog · 2016",
    "kind": "doc",
+   "url": "https://testing.googleblog.com/2016/05/flaky-tests-at-google-and-how-we.html",
    "lang": "en",
    "free": true,
    "level": "실무",
-   "url": "https://testing.googleblog.com/2016/05/flaky-tests-at-google-and-how-we.html",
-   "why": "흔들리는 시험이 얼마나 흔한지와 다루는 법 — 플랫폼 '운영·개선'의 핵심 숫자."
+   "why": "흔들리는 테스트의 규모와 다루는 방법 — 플랫폼 운영에서 가장 먼저 부딪히는 문제."
   },
   {
-   "id": "iso25010",
-   "title": "ISO/IEC 25010 제품 품질 모델",
-   "by": "ISO 25000 포털",
+   "id": "appium-docs",
+   "title": "Appium 공식 문서",
    "kind": "doc",
+   "url": "https://appium.io/docs/en/latest/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "드라이버(UiAutomator2·XCUITest) 구조와 설정 — 요건의 Appium."
+  },
+  {
+   "id": "selenium-docs",
+   "title": "Selenium 공식 문서 (WebDriver · Grid)",
+   "kind": "doc",
+   "url": "https://www.selenium.dev/documentation/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "기다림 전략·페이지 객체·Grid 병렬 실행 — 요건의 Selenium과 업무 '플랫폼'."
+  },
+  {
+   "id": "newman-docs",
+   "title": "Postman Docs · Run collections with Newman",
+   "kind": "doc",
+   "url": "https://learning.postman.com/docs/collections/using-newman-cli/command-line-integration-with-newman/",
    "lang": "en",
    "free": true,
    "level": "입문",
-   "url": "https://iso25000.com/index.php/en/iso-25000-standards/iso-25010",
-   "why": "'비기능'이 무엇을 가리키는지 — 성능 효율·신뢰성·호환성·보안 같은 특성 목록."
+   "why": "Postman 테스트를 CI에서 돌리는 법 — 요건 'postman'과 'CI/CD'."
   },
   {
-   "id": "k6-thresholds",
-   "title": "k6 Thresholds",
-   "by": "Grafana k6 문서",
+   "id": "wiremock-docs",
+   "title": "WireMock 공식 문서",
    "kind": "doc",
+   "url": "https://wiremock.org/docs/",
    "lang": "en",
    "free": true,
    "level": "실무",
-   "url": "https://grafana.com/docs/k6/latest/using-k6/thresholds/",
-   "why": "'p95 가 넘으면 실패'를 시험 코드에 넣어 CI 에서 자동 판정하는 법."
+   "why": "응답 고정·녹화 재생·장애 주입·시나리오 — 요건 'API Mocking 도구 활용·개발'."
   },
   {
-   "id": "ngrinder",
-   "title": "naver/ngrinder",
-   "by": "NAVER · GitHub",
+   "id": "pact-docs",
+   "title": "Pact 공식 문서 (계약 테스트)",
    "kind": "doc",
-   "lang": "en",
-   "free": true,
-   "level": "실무",
-   "url": "https://github.com/naver/ngrinder",
-   "why": "이 회사가 서버 성능 비교에 쓴 부하 도구 — 컨트롤러·에이전트 구조."
-  },
-  {
-   "id": "device-farm",
-   "title": "AWS Device Farm Developer Guide",
-   "by": "AWS 문서",
-   "kind": "doc",
-   "lang": "en",
-   "free": true,
-   "level": "실무",
-   "url": "https://docs.aws.amazon.com/devicefarm/latest/developerguide/welcome.html",
-   "why": "실기기를 클라우드에서 빌려 Appium 시험 — '클라우드 서비스 연동' 업무의 예."
-  },
-  {
-   "id": "playwright-agents",
-   "title": "Playwright Test agents",
-   "by": "Playwright 공식 문서",
-   "kind": "doc",
+   "url": "https://docs.pact.io/",
    "lang": "en",
    "free": true,
    "level": "심화",
-   "url": "https://playwright.dev/docs/test-agents",
-   "why": "생성형 AI 로 시험 계획·코드 생성·고치기 — 우대 사항의 가장 가까운 공식 자료."
+   "why": "가짜 응답이 진짜 서버와 어긋나지 않게 하는 법 — Mocking 도구를 만들 때 함께 고민할 것."
+  },
+  {
+   "id": "jenkins-docs",
+   "title": "Jenkins User Handbook · Pipeline",
+   "kind": "doc",
+   "url": "https://www.jenkins.io/doc/book/pipeline/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "Jenkinsfile로 테스트 단계·결과 게시를 코드로 — 요건 'jenkins, CI/CD'."
+  },
+  {
+   "id": "k6-docs",
+   "title": "Grafana k6 문서 · Thresholds",
+   "kind": "doc",
+   "url": "https://grafana.com/docs/k6/latest/using-k6/thresholds/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "성능 기준을 걸어 넘으면 실패로 끝내기 — 요건 '비기능 테스트'."
+  },
+  {
+   "id": "devicefarm-docs",
+   "title": "AWS Device Farm 개발자 안내서",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/devicefarm/latest/developerguide/welcome.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "실기기 클라우드에서 Appium 테스트를 나눠 돌리기 — 업무 'cloud 서비스 연동'."
+  },
+  {
+   "id": "iso25010",
+   "title": "ISO/IEC 25010 품질 모델 소개",
+   "by": "iso25000.com",
+   "kind": "doc",
+   "url": "https://iso25000.com/index.php/en/iso-25000-standards/iso-25010",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "'비기능'에 무엇이 들어가나를 국제 기준 낱말로 — 요건 '비기능 영역 테스트'."
+  },
+  {
+   "id": "nist-ct",
+   "title": "NIST · Automated Combinatorial Testing for Software",
+   "kind": "doc",
+   "url": "https://csrc.nist.gov/projects/automated-combinatorial-testing-for-software",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "조합 테스트(pairwise 등)로 케이스 수를 줄이는 근거 — 업무 '케이스 설계'."
+  },
+  {
+   "id": "testgen-llm",
+   "title": "Automated Unit Test Improvement using Large Language Models at Meta",
+   "by": "Alshahwan 외 · FSE 2024",
+   "kind": "doc",
+   "url": "https://arxiv.org/abs/2402.09171",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "LLM이 만든 테스트를 자동 관문으로 거르는 실제 사례 — 우대 '생성형 AI 자동화 테스트'."
+  },
+  {
+   "id": "playwright-mcp",
+   "title": "Playwright MCP",
+   "by": "Microsoft · GitHub",
+   "kind": "doc",
+   "url": "https://github.com/microsoft/playwright-mcp",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "LLM이 브라우저를 조작하게 하는 도구 — 우대 '생성형 AI 자동화 테스트'를 직접 해 보기."
   }
  ],
  "study_path": [
   {
-   "title": "시험 층 나누기와 첫 자동화",
+   "title": "테스트 층 나누기",
    "time": "1~2주",
-   "goal": "UI·API·단위 시험이 각각 무엇을 맡는지 설명하고, 웹 화면 하나를 자동으로 확인할 수 있다.",
+   "goal": "기능 하나를 단위·API·UI 중 어디서 확인할지 근거를 대고 정할 수 있다.",
+   "task": "가상 '목적지 검색' 기능(검색어 → 장소 목록 API → 화면)을 정해, 층마다 테스트 목록을 쓰고 pairwise 로 OS·네트워크 조합을 줄여 본다.",
    "resources": [
-    "test-pyramid",
-    "slash24-doctor",
-    "selenium-docs",
-    "practical-testing"
-   ],
-   "task": "공개 지도 웹페이지 대신 직접 만든 작은 '장소 검색' 웹(입력창 + 결과 목록)에 Selenium 시험 5개를 짜고, 같은 규칙을 API 시험으로 내려 본다."
+    "tmap-qc2020",
+    "fowler-pyramid",
+    "practical-testing",
+    "nist-ct"
+   ]
   },
   {
-   "title": "모바일 UI 자동화",
-   "time": "2~3주",
-   "goal": "에뮬레이터의 앱을 Appium 으로 조종하고, 세션을 재사용해 여러 케이스를 빠르게 돈다.",
+   "title": "API 테스트와 가짜 서버",
+   "time": "2주",
+   "goal": "API 시나리오 테스트를 짜고, 정상·오류·지연 응답을 가짜 서버로 재현할 수 있다.",
+   "task": "가상 경로 API에 Postman 모음(정상·잘못된 좌표·인증 실패)을 만들어 Newman으로 돌리고, WireMock으로 503·2초 지연을 주입해 클라이언트의 대응을 검사한다.",
+   "resources": [
+    "http-book",
+    "newman-docs",
+    "wiremock-docs",
+    "khorikov"
+   ]
+  },
+  {
+   "title": "UI 자동화 (앱·웹)",
+   "time": "3주",
+   "goal": "Appium·Selenium 테스트를 흔들림 없이 짜고 페이지 객체로 정리할 수 있다.",
+   "task": "공개 샘플 앱이나 직접 만든 작은 앱에 '검색 → 결과 선택 → 상세' 시나리오를 Appium으로, 같은 흐름의 웹 화면을 Selenium으로 짠다. 50번 반복 실행해 흔들림 비율을 기록한다.",
    "resources": [
     "appium-docs",
-    "pytest-fixtures",
-    "slash24-doctor"
-   ],
-   "task": "안드로이드 에뮬레이터에 샘플 앱을 깔고 로그인 → 검색 → 상세 흐름 10케이스를 pytest + Appium 으로. 케이스마다 세션을 만들 때와 공유할 때 시간을 잰다."
+    "appium-book",
+    "selenium-docs",
+    "google-flaky"
+   ]
   },
   {
-   "title": "API 시험과 가짜 API",
-   "time": "2주",
-   "goal": "API 를 코드로 시험하고, 가짜 API 로 오류·지연 상황을 만든다.",
-   "resources": [
-    "http-basic",
-    "newman-docs",
-    "wiremock",
-    "toss-mock-1",
-    "unit-testing"
-   ],
-   "task": "가상 '경로 조회' API 를 만들고 Postman/Newman 시험을 붙인다. WireMock 으로 503·2초 지연을 만들어 클라이언트가 어떻게 버티는지 시험한다."
-  },
-  {
-   "title": "CI 와 플랫폼 운영",
+   "title": "파이프라인과 비기능",
    "time": "2~3주",
-   "goal": "빌드마다 시험이 저절로 돌고, 결과·영상·로그가 남고, flaky 를 숫자로 관리한다.",
+   "goal": "PR마다 테스트가 돌고, 성능 기준을 넘으면 실패하게 만들 수 있다.",
+   "task": "도커로 가짜 서버·Selenium을 띄우고 Jenkinsfile에 'API → UI → k6(p95 기준)' 단계를 이어, 결과를 JUnit 형식으로 남긴다. 실기기 클라우드에 Appium 테스트를 한 번 올려 본다.",
    "resources": [
-    "jenkins-pipeline",
-    "gh-actions",
-    "google-flaky",
-    "device-farm"
-   ],
-   "task": "1~3단계 시험을 GitHub Actions(또는 Jenkins)에 묶고 JUnit 결과를 모은다. 같은 커밋으로 20번 돌려 flaky 시험을 골라내는 작업을 붙인다."
+    "docker-book",
+    "jenkins-docs",
+    "k6-docs",
+    "devicefarm-docs",
+    "iso25010"
+   ]
   },
   {
-   "title": "비기능과 생성형 AI (심화)",
-   "time": "계속",
-   "goal": "성능 기준으로 자동 판정하고, AI 로 만든 시험을 검증해 받아들인다.",
+   "title": "계약과 생성형 AI",
+   "time": "2주",
+   "goal": "가짜 응답의 어긋남을 막고, AI가 만든 테스트를 자동으로 걸러 쓸 수 있다.",
+   "task": "Pact로 소비자 계약을 하나 만들고 서버 쪽에서 검증한다. LLM에게 기존 테스트를 보여 주고 새 케이스를 쓰게 한 뒤 '빌드 → 5회 반복 통과 → 커버리지 증가' 관문을 스크립트로 만든다.",
    "resources": [
-    "iso25010",
-    "k6-thresholds",
-    "ngrinder",
-    "tmap-graviton",
-    "playwright-agents"
-   ],
-   "task": "3단계 API 에 k6 부하 시험과 p95 기준을 걸어 CI 를 막아 본다. Playwright 에이전트로 1단계 웹의 시험을 생성시켜, 사람이 고친 줄 수를 센다."
+    "pact-docs",
+    "testgen-llm",
+    "playwright-mcp",
+    "swe-google"
+   ]
   }
  ],
  "pay": {
@@ -997,21 +718,21 @@
     "value": "약 4,793만원",
     "amount": 4793,
     "basis": "공공데이터 집계",
-    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없어 5년 차 이상 경력직의 계약 연봉과는 다르다 [27]"
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 직군 구분이 없어 5년 차 이상 QA 자동화 경력직의 계약 연봉과는 다르다 [24]"
    },
    {
     "label": "평균 연봉",
     "value": "약 7,049만원",
     "amount": 7049,
     "basis": "공공데이터 집계",
-    "note": "같은 집계, 사원 359명 기준 [27]"
+    "note": "같은 집계, 사원 359명 기준 [24]"
    },
    {
     "label": "평균 연봉(다른 집계)",
     "value": "약 6,474만원",
     "amount": 6474,
     "basis": "공공데이터 집계",
-    "note": "다른 집계 사이트 값. 고용보험·국민연금 등으로 추정한 참고값이라고 밝힌다 [28]"
+    "note": "다른 집계 사이트 값. 고용보험·국민연금 등으로 추정한 참고값이라고 밝힌다 [25]"
    },
    {
     "label": "카카오모빌리티 초봉",
@@ -1019,7 +740,7 @@
     "amount": 4706,
     "basis": "공공데이터 집계",
     "peer": true,
-    "note": "같은 집계 사이트의 값 [29]"
+    "note": "같은 집계 사이트의 값 [26]"
    },
    {
     "label": "카카오모빌리티 평균",
@@ -1027,65 +748,255 @@
     "amount": 6853,
     "basis": "공공데이터 집계",
     "peer": true,
-    "note": "같은 집계 사이트의 값 [29]"
+    "note": "같은 집계 사이트의 값 [26]"
    }
   ],
-  "how": "공고에는 연봉이 없고, 지원서의 연봉 기입칸에 적은 뒤 면접·레퍼런스 체크 다음 **처우 협의** 단계에서 정한다 [1]. 비상장사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자를 찾지 못했다. 평균은 경력직이 섞인 회사 전체 값이라 신입 초봉으로도, 5년 차 제안액으로도 그대로 읽으면 안 된다 {추론}. 3개월 시용기간에도 급여는 100% 나온다 [1]."
+  "how": "공고에는 연봉이 없고, 지원서의 연봉 기입칸에 적은 뒤 면접·레퍼런스 체크 다음 **처우 협의** 단계에서 정합니다 [1]. 비상장사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자는 없다. 평균은 경력직이 섞인 회사 전체 값이라 경력 5년 이상 제안액으로 그대로 읽으면 안 된다 {추론}. 3개월 시용기간에도 급여는 100% 나온다 [1]."
  },
  "benefits": {
   "items": [
    {
-    "name": "근무 시간",
-    "detail": "4주 160시간 안에서 스스로 계획, 매월 금요일 하루 휴무"
+    "name": "유연근무",
+    "detail": "4주 160시간 안에서 스스로 근무 계획, 공통 협업 시간 10~15시"
+   },
+   {
+    "name": "Happy Friday",
+    "detail": "유연근무를 써서 매월 금요일 하루 쉼"
+   },
+   {
+    "name": "AI Shift",
+    "detail": "매주 금요일 오후는 회의 없이 AI 학습·실습"
+   },
+   {
+    "name": "복리후생비",
+    "detail": "연 360만원(다른 공고 표기), 여행·IT 기기·운동 등에 사용"
    },
    {
     "name": "체력단련휴가",
-    "detail": "연차 외 연 최대 5일"
+    "detail": "연 최대 5일 추가(다른 공고 표기)"
    },
    {
-    "name": "장기 근속 휴가",
-    "detail": "재직 3년마다 30일 유급"
-   },
-   {
-    "name": "자기계발 복리후생비",
-    "detail": "연 360만원(IT 기기·교육·여행·운동·가족 검진·휴양소 등)"
-   },
-   {
-    "name": "직무 교육비",
-    "detail": "연 100만원"
-   },
-   {
-    "name": "건강검진",
-    "detail": "협약 검진 40만원 한도, 독감 예방접종비"
+    "name": "식사",
+    "detail": "조식·석식 지원"
    },
    {
     "name": "의료비",
     "detail": "본인·배우자·자녀·양가 부모"
    },
    {
-    "name": "통신비",
-    "detail": "SKT 이용자 월 최대 10만원"
-   },
-   {
-    "name": "생일",
-    "detail": "SK Pay 10만 포인트"
-   },
-   {
-    "name": "그 밖에",
-    "detail": "자녀 학자금, 금융기관 이자 지원, 허먼밀러 의자, 경조금·경조휴가"
-   },
-   {
-    "name": "사내 공간",
-    "detail": "라운지·휴게실·수면실·폰부스"
+    "name": "교육비",
+    "detail": "연 100만원 한도, AI 교육 무제한 수강"
    }
   ],
-  "note": "회사가 다른 직무 공고(Automotive Test Manager)의 기타안내 칸에 적은 내용이다 [31]. 같은 제도(유연근무·금요일 휴무·교육비 100만원)는 회사 조직문화 글(2026-06)에도 나온다 [32]. 이 공고에는 복리후생 칸이 없으니 처우 협의 때 확인한다 {추론}."
+  "note": "티맵모빌리티 공식 사이트의 조직문화 글(2026-06-30, 인사 담당자 인터뷰)이 기본이고 [22], 복리후생비 금액·체력단련휴가는 같은 회사의 다른 공고(리멤버, 마감)에 적힌 값이다 [30]. 이 공고에는 복리후생 칸이 없어 처우 협의 때 확인한다 {추론}."
  },
  "location": {
   "name": "티맵모빌리티 본사 (SK-C 타워)",
   "address": "서울특별시 중구 충무로 15 SK-C 타워 7~9층",
   "postal": "04554",
   "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%A4%91%EA%B5%AC%20%EC%B6%A9%EB%AC%B4%EB%A1%9C%2015",
-  "note": "주소는 티맵모빌리티 공식 사이트 하단 회사 정보다 [30]. 같은 자리의 원티드 공고도 근무지를 충무로 15 SK-C타워 7-9층으로 적었다 [3]."
- }
+  "note": "주소는 티맵모빌리티 공식 사이트 하단 회사 정보다 [21]. 7~9층을 쓰는 사옥은 2026년 1월 보도에도 나온다 [23]. 잡코리아 공고의 근무지 표기는 '서울 중구'다 [2]."
+ },
+ "sources": [
+  {
+   "n": 1,
+   "title": "SK Careers · 티맵모빌리티 QA Automation Engineer",
+   "url": "https://www.skcareers.com/Recruit/Detail/R261959",
+   "kind": "posting",
+   "note": "팀 소개·업무·요건·우대·전형·시용기간"
+  },
+  {
+   "n": 2,
+   "title": "잡코리아 · [티맵모빌리티] QA Automation Engineer",
+   "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50073105",
+   "kind": "posting",
+   "date": "2026-09",
+   "note": "같은 자리 — 우대사항 칸 없음, 근무지 서울 중구"
+  },
+  {
+   "n": 3,
+   "title": "원티드 · 티맵모빌리티 QA Automation Engineer",
+   "url": "https://www.wanted.co.kr/wd/341596",
+   "kind": "posting",
+   "note": "같은 제목의 상시 공고 — 요건 같음"
+  },
+  {
+   "n": 4,
+   "title": "T map Trend Map 2020 · Quality Control Team 이야기",
+   "url": "https://tmap.co.kr/static/trendmap_2020/en/tmap-story/4-02.html",
+   "kind": "company",
+   "date": "2020",
+   "note": "품질관리팀 세 갈래(앱·콘텐츠·VOC), 실차 비교 시험, 혼잡 시간 기준 경로, 터널 후 위치 재획득 문제"
+  },
+  {
+   "n": 5,
+   "title": "원티드 · 티맵모빌리티 Automotive Test Manager",
+   "url": "https://www.wanted.co.kr/wd/382923",
+   "kind": "posting",
+   "note": "같은 회사 테스트 직무 — ASPICE·양방향 추적성·Jira/Wiki/X-ray"
+  },
+  {
+   "n": 6,
+   "title": "원티드 · 티맵모빌리티 Client Engineer (Android)",
+   "url": "https://www.wanted.co.kr/wd/393102",
+   "kind": "posting",
+   "note": "서버·QA·운영 조직과 협업해 품질 개선"
+  },
+  {
+   "n": 7,
+   "title": "원티드 · 티맵모빌리티 AI Agent Engineer",
+   "url": "https://www.wanted.co.kr/wd/391456",
+   "kind": "posting",
+   "note": "평가 데이터셋·자동화 체계, QA 직군과 협업"
+  },
+  {
+   "n": 8,
+   "title": "바이라인네트워크 · 티맵, 월평균 방문 4억4600만회…차량 탑재 115만대 돌파",
+   "url": "https://byline.network/2026/10/21_2018283/",
+   "kind": "news",
+   "date": "2026-10",
+   "note": "월 이용자 1,500만 명 넘음"
+  },
+  {
+   "n": 9,
+   "title": "martinfowler.com · The Practical Test Pyramid",
+   "url": "https://martinfowler.com/articles/practical-test-pyramid.html",
+   "kind": "reference",
+   "date": "2018"
+  },
+  {
+   "n": 10,
+   "title": "Software Engineering at Google · 11장 Testing Overview",
+   "url": "https://abseil.io/resources/swe-book/html/ch11.html",
+   "kind": "reference",
+   "note": "테스트 규모(작은·중간·큰)와 80:15:5 권장"
+  },
+  {
+   "n": 11,
+   "title": "Google Testing Blog · Flaky Tests at Google and How We Mitigate Them",
+   "url": "https://testing.googleblog.com/2016/05/flaky-tests-at-google-and-how-we.html",
+   "kind": "reference",
+   "date": "2016-05"
+  },
+  {
+   "n": 12,
+   "title": "Appium 공식 문서",
+   "url": "https://appium.io/docs/en/latest/",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "Selenium 공식 문서",
+   "url": "https://www.selenium.dev/documentation/",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Postman Docs · Newman",
+   "url": "https://learning.postman.com/docs/collections/using-newman-cli/command-line-integration-with-newman/",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "WireMock 공식 문서",
+   "url": "https://wiremock.org/docs/",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Jenkins User Handbook · Pipeline",
+   "url": "https://www.jenkins.io/doc/book/pipeline/",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Grafana k6 문서 · Thresholds",
+   "url": "https://grafana.com/docs/k6/latest/using-k6/thresholds/",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "ISO/IEC 25010 품질 모델 소개",
+   "url": "https://iso25000.com/index.php/en/iso-25000-standards/iso-25010",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Automated Unit Test Improvement using Large Language Models at Meta (FSE 2024)",
+   "url": "https://arxiv.org/abs/2402.09171",
+   "kind": "reference",
+   "date": "2024-02"
+  },
+  {
+   "n": 20,
+   "title": "AWS Device Farm 개발자 안내서",
+   "url": "https://docs.aws.amazon.com/devicefarm/latest/developerguide/welcome.html",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "티맵모빌리티 공식 사이트 · 하단 회사 정보",
+   "url": "https://tmapmobility.com/",
+   "kind": "company"
+  },
+  {
+   "n": 22,
+   "title": "티맵모빌리티 조직문화 · 인사 담당자 인터뷰(근무 제도·복지)",
+   "url": "https://tmapmobility.com/people/culture/detail/243",
+   "kind": "company",
+   "date": "2026-06"
+  },
+  {
+   "n": 23,
+   "title": "머니투데이 · [IT사파] 티맵모빌리티, 왜 사옥에 엔진을 심었을까",
+   "url": "https://www.mt.co.kr/tech/2026/01/19/2026011615574546384",
+   "kind": "news",
+   "date": "2026-01"
+  },
+  {
+   "n": 24,
+   "title": "자소설닷컴 · 티맵모빌리티 기업 정보",
+   "url": "https://jasoseol.com/companies/11668",
+   "kind": "reference",
+   "note": "공공데이터 집계 — 직접 열람이 막혀 검색 결과의 값"
+  },
+  {
+   "n": 25,
+   "title": "캐치 · 티맵모빌리티 기업 정보",
+   "url": "https://www.catch.co.kr/Comp/CompSummary/MB8295",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "자소설닷컴 · 카카오모빌리티 기업 정보",
+   "url": "https://jasoseol.com/companies/10478",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "NIST · Automated Combinatorial Testing for Software",
+   "url": "https://csrc.nist.gov/projects/automated-combinatorial-testing-for-software",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "GitHub · microsoft/playwright-mcp",
+   "url": "https://github.com/microsoft/playwright-mcp",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "Pact 공식 문서",
+   "url": "https://docs.pact.io/",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "리멤버 · 티맵모빌리티 Automotive Cybersecurity Manager",
+   "url": "https://career.rememberapp.co.kr/job/posting/271382",
+   "kind": "posting",
+   "note": "마감된 같은 회사 공고 — 복리후생 표기"
+  }
+ ],
+ "caveat": "이 QA팀의 자동화 플랫폼 구성(쓰는 도구·기기 수·사내 솔루션)을 다룬 회사 발표 영상이나 기술 글은 찾지 못했다 — 받은 영상 재료도 없다. 회사 근거는 이 공고와 같은 회사 다른 공고, 그리고 2020년 품질관리팀 소개 글(지금 조직과 다를 수 있다)뿐이라, 플랫폼·비기능·Mocking·생성형 AI 줄은 공식 문서와 구글·메타의 공개 자료로 '보통 이런 것'을 보였다. 연봉 집계 사이트는 직접 열람이 막혀 앞 회차와 같은 검색 결과 값을 실었다."
 }
