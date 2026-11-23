@@ -22,6 +22,36 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "92mm 팬 2개·날개 7장·2.2슬롯·16핀 1개·백플레이트·흰 LED 는 공식 표. 국내 BLACK 2X OC = 글로벌 1-Click OC 2X 짝은 models 노트의 추정. 공식 정면 사진: 광택 검정 쉬라우드에 탄소 무늬 + 양 끝 회로 무늬 양각, 반투명 날개, 검정 허브에 흰 GALAX. 불 켠 공식 사진에서 팬이 흰색으로만 빛난다 — 형식에 흰 단색이 없어 fan_light 는 none(REQUESTS 의 흰 단색 요청 그대로). 윗면·뒷면 사진을 못 봐 16핀 자리(power)·플로스루는 비웠다 — 렌더러가 models 의 16핀을 급의 보통 자리에 그린다. 다나와는 쓰지 않았다."
+  },
+  "pny-rtx5070ti-oc-triple": {
+   "kind": "gpu",
+   "fan_count": 3,
+   "slots": 2.98,
+   "backplate": true,
+   "flow_through": true,
+   "color": "#1a1b1d",
+   "accent": "#3a3c3f",
+   "marks": [
+    {
+     "text": "PNY GEFORCE RTX",
+     "where": "edge",
+     "color": "#d9dadc"
+    },
+    {
+     "text": "GEFORCE RTX 5070 Ti",
+     "where": "backplate",
+     "color": "#d9dadc"
+    }
+   ],
+   "sources": [
+    {
+     "title": "PNY 공식 브로슈어 — GeForce RTX 5070 Ti 16GB Overclocked Triple Fan(VCG5070T16TFXPB1-O · 2.98 Slot · 1x16 · TRIPLE FAN COOLING · METAL BACKPLATE 'vents' · 정면·분해도·윗면·뒷면 사진)",
+     "url": "https://www.pny.com/file%20library/company/support/product%20brochures/geforce%20graphics/english/rtx-5070-ti-16gb-triple-fan-oc-brochure.pdf"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 3개·2.98슬롯·16핀 1개·금속 백플레이트는 공식 표·문구. 브로슈어 정면 사진: 무광 검정·짙은 회색 쉬라우드에 팬 사이 사선 홈, 검정 날개에 회색 원판 PNY 허브. 윗면 사진: 모서리에 흰 PNY(테두리 그림)·GEFORCE RTX 글자. 뒷면 사진: 검정 백플레이트에 GEFORCE RTX 5070Ti·PNY 글자, 끝 쪽에 삼각형으로 뚫린 자리(문구 'vents that enhance passive cooling')가 보여 flow_through(판독). 불빛은 자료에 없고 사진도 꺼진 모양이라 fan_light 는 비웠다. 날개 수·팬 지름·16핀 자리는 사진 해상도·각도로 못 읽어 비웠다. 다나와는 쓰지 않았다."
   }
  }
 }

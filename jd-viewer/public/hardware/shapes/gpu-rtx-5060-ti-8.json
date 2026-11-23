@@ -119,6 +119,36 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "팬 2개·2.5슬롯·8핀 1개·백플레이트는 공식 문구·스펙. 공식 정면 사진: 검정 쉬라우드에 은색 판(팬 사이·양 끝 모서리), 검정 날개에 은색 ASUS 허브, 브래킷 쪽 위에 DUAL 양각. 공식 윗면 사진: 모서리에 은색 GEFORCE RTX · ASUS 글자, PCB 가 카드 길이의 약 3/4 에서 끝나고 8핀은 그 PCB 끝(약 92%) 자리. 스펙에 조명 항목이 없고 사진도 꺼진 모양이지만 '없다'는 문구가 아니라 fan_light 는 비웠다. 갤러리(/gallery/)는 404. 날개 수는 사진 각도로 확실히 세지 못해, 팬 지름은 공식 자료에 없어 비웠다. PCB 뒤로 방열판이 이어져 뒤가 뚫렸을 가능성이 크지만 뒷면 사진을 못 봐 flow_through 는 비웠다. 다나와는 쓰지 않았다."
+  },
+  "galax-ex-black-oc-rtx5060ti-8g": {
+   "kind": "gpu",
+   "fans": [
+    102,
+    102
+   ],
+   "fan_blades": 7,
+   "fan_light": "argb",
+   "light": "side",
+   "slots": 2,
+   "backplate": true,
+   "color": "#141517",
+   "accent": "#c8cbcf",
+   "marks": [
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#eceef0"
+    }
+   ],
+   "sources": [
+    {
+     "title": "GALAX GeForce RTX 5060 Ti EX 8GB — 공식 제품 페이지(2*102mm WINGS 3.0 · 7 larger fan blades · ARGB LIGHTING 'Front & Side Dual-Face Lighting' · ENHANCED BACKPLATE · 2 slot · 16-pin · 정면/불 켠 정면/윗면/비스듬/3색 조명 사진)",
+     "url": "https://galax.com/en/product/geforce-rtx-5060-ti-ex-8gb-2x/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "102mm 팬 2개·날개 7장·2슬롯·백플레이트·ARGB 는 공식 문구·요구 사항. 국내 EX BLACK OC = 글로벌 RTX 5060 Ti EX 짝은 models 노트의 추정. 공식 사진(보기만): 광택 검정 쉬라우드가 두 팬 사이에서 X 자로 좁아지고 가운데 나사 둘, 탄소 무늬·사선 홈, 반투명 날개에 검정 GALAX 허브. 불 켠 사진에서 팬이 여러 색으로 빛나고(ARGB), 3색 사진에서 윗 모서리 끝 쪽 띠도 같이 빛난다 → light side(문구의 '앞·옆 두 면' 중 앞은 팬 불빛으로 봤다). 윗면 사진: 흰 GEFORCE RTX 글자, 끝 쪽 윗면에 은색 선 무늬(accent). 16핀은 PCB 가 끝나는 단 근처에 보이나 비스듬해 비율을 못 재 power 는 비웠다 — 렌더러가 models 의 16핀을 보통 자리에 그린다. 뒷면 사진이 없어 플로스루는 비웠다. 다나와는 쓰지 않았다."
   }
  }
 }

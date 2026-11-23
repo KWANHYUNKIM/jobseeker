@@ -179,6 +179,68 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "팬 2개·2슬롯·통풍 백플레이트·8핀 1개는 공식 문구·스펙. 공식 대표 정면 사진(보기만): 은색 판 없이 온통 검정 — 헤어라인 무늬 쉬라우드, 끝이 크게 둥근 모서리, 검정 날개에 회색 ASUS 글자의 검정 허브(accent 는 그 회색). 5060 Ti Dual 의 은색 판·DUAL 양각은 없다. 조명은 공식 언급이 없어 fan_light 를 비웠다. 갤러리는 404 라 윗면·뒷면을 못 봐 8핀 자리·플로스루·모서리 글자를 비웠다. 날개 수는 사진으로 확실히 세지 못했다. 다나와는 쓰지 않았다."
+  },
+  "galax-white-oc-rtx5050": {
+   "kind": "gpu",
+   "fans": [
+    92,
+    92
+   ],
+   "fan_blades": 7,
+   "slots": 2,
+   "backplate": true,
+   "power": {
+    "type": "8pin",
+    "n": 1,
+    "at": 0.53
+   },
+   "color": "#eceef0",
+   "accent": "#8c8f93",
+   "marks": [
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#2a2b2d"
+    }
+   ],
+   "sources": [
+    {
+     "title": "GALAX GeForce RTX 5050 1-Click OC White — 공식 제품 페이지(2*92mm WINGS 3.0 · 7 larger fan blades · 조명 스위치 · ENHANCED BACKPLATE(Expanded Opening) · 2 slot · 8-pin x1 · 정면/불 켠 정면/비스듬한 앞·윗면 사진)",
+     "url": "https://galax.com/en/product/geforce-rtx-5050-1-click-oc-white-2/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "92mm 팬 2개·날개 7장·2슬롯·8핀 1개·백플레이트는 공식 문구·요구 사항. 국내 WHITE OC = 글로벌 1-Click OC White 짝은 models 노트의 추정. 공식 사진(세션 임시 폴더에서 보기만): 흰 쉬라우드에 양 끝 회로 무늬·가운데 사선 무늬 양각, 반투명 흰 날개 7장, 검정 허브에 흰 GALAX — 5060 White OC V2 와 같은 겉모양. 불 켠 정면 사진에서 팬이 흰색으로만 빛난다 — 형식에 흰 단색이 없어 fan_light 는 비웠다(기존 REQUESTS). 비스듬한 윗면 사진: 모서리에 짙은 회색 GEFORCE RTX 글자, 끝 쪽 윗면·끝면에 회색 회로 그림(accent), 8핀은 PCB 끝 홈 속 브래킷부터 약 53%(판독). 뒷면 사진이 없어 플로스루는 비웠다. 다나와는 쓰지 않았다."
+  },
+  "msi-shadow-2x-oc-rtx5050": {
+   "kind": "gpu",
+   "fan_count": 2,
+   "backplate": true,
+   "flow_through": true,
+   "power": {
+    "type": "8pin",
+    "n": 1,
+    "at": 0.7
+   },
+   "color": "#1c1d1f",
+   "accent": "#3a3c3f",
+   "marks": [
+    {
+     "text": "GEFORCE RTX",
+     "where": "backplate",
+     "color": "#e6e8ea"
+    }
+   ],
+   "sources": [
+    {
+     "title": "MSI GeForce RTX 5050 8G SHADOW 2X OC — 공식 데이터시트 PDF(Dual Fan · TORX FAN 5.0 · flow-through Reinforcing Backplate · 8-pin x1 · 정면·뒷면 사진)",
+     "url": "https://storage-asset.msi.com/datasheet/vga/global/GeForce-RTX-5050-8G-SHADOW-2X-OC.pdf"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 2개·TORX 5.0·플로스루 백플레이트·8핀 1개는 데이터시트 문구. 데이터시트 속 정면 사진: 온통 무광 검정 — 두 팬 사이에 세로 홈, 검정 날개(링으로 이은 TORX)에 흰 msi 허브, 은색 덮개가 없다(VENTUS 와 다른 점). 뒷면 사진: 짙은 회색 백플레이트에 흰 GEFORCE RTX·msi 글자와 나사 넷, 끝 쪽 약 1/5 이 뚫려 방열판 핀이 보인다 → flow_through. 뒷면 사진의 윗 모서리, PCB 가 끝나는 자리 바로 앞(브래킷부터 약 70%)에 8핀 단자 홈이 보여 at=0.7(판독). 슬롯 수·조명은 데이터시트에 없어 비웠다(두께 40mm 는 models). 날개 수·팬 지름은 사진이 작아 못 적었다. msi.com 은 403 이라 쓰지 않았고 다나와도 쓰지 않았다."
   }
  }
 }
