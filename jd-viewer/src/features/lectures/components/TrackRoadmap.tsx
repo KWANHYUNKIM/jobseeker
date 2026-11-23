@@ -74,6 +74,7 @@ export function TrackRoadmap({ t, items }: { t: Track; items: LectureCard[] }) {
                       className="rounded-lg border border-[#d8d8d8] px-3 py-1.5 text-[13px] text-[#272727] hover:border-[#272727]"
                     >
                       {s.title}{' '}
+                      {s.stack && s.stack !== '—' && <span className="font-bold text-[#3b4fc4]">{s.stack} </span>}
                       <span className="text-[#888]">
                         {s.done}/{s.total}
                       </span>

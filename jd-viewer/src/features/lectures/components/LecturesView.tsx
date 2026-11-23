@@ -27,6 +27,8 @@ export function LecturesView({ seg = [] }: { seg?: string[] }) {
   const [topic, setTopic] = useState<string | null>(null)
   const [level, setLevel] = useState<string | null>(null)
   const [query, setQuery] = useState('')
+  // 내용 갈래(네트워크·HTTP / 웹 프레임워크 …) — '백엔드' 하나로 뭉치지 않고 무엇을 배우는지로 가른다
+  const [subject, setSubject] = useState<string | null>(null)
   // 트랙(분야)은 주소에 남긴다(?track=ai) — 노트를 보고 돌아와도 고른 분야가 그대로.
   const [trackKey, setTrackKey] = useState<string | null>(() =>
     typeof window === 'undefined' ? null : new URLSearchParams(window.location.search).get('track'),
@@ -34,6 +36,7 @@ export function LecturesView({ seg = [] }: { seg?: string[] }) {
   const pickTrack = (k: string | null) => {
     setTrackKey(k)
     setTopic(null)
+    setSubject(null)
     const u = new URL(window.location.href)
     if (k) u.searchParams.set('track', k)
     else u.searchParams.delete('track')
@@ -47,13 +50,14 @@ export function LecturesView({ seg = [] }: { seg?: string[] }) {
     const out = inTrack.filter(
       (c) =>
         (!topic || c.topic === topic) &&
+        (!subject || c.subject === subject) &&
         (!level || c.level === level) &&
-        hits(query, c.title, c.title_ko, c.one_line, c.code, c.school, c.speaker, ...(c.tags ?? [])),
+        hits(query, c.title, c.title_ko, c.one_line, c.code, c.school, c.speaker, c.stack, c.subject, ...(c.tags ?? [])),
     )
     if (!track) return out
     const rank = roadmapRank(track) // 트랙을 고르면 최신순이 아니라 공부할 순서대로
     return [...out].sort((a, b) => rank(a) - rank(b))
-  }, [inTrack, topic, level, query, track])
+  }, [inTrack, topic, subject, level, query, track])
   const topicChips = useMemo(() => {
     const n = new Map<string, number>()
     for (const c of inTrack) n.set(c.topic, (n.get(c.topic) ?? 0) + 1)
@@ -67,6 +71,23 @@ export function LecturesView({ seg = [] }: { seg?: string[] }) {
       .filter((s) => (s.track ?? 'ai') === track.key)
       .sort((a, b) => (order.indexOf(a.key) + 1 || 999) - (order.indexOf(b.key) + 1 || 999))
   }, [data, track])
+  // 트랙 안의 내용 갈래 — 과목 순서(공부 순서)대로, 갈래마다 어떤 기술로 배우는지 같이
+  const subjects = useMemo(() => {
+    const m = new Map<string, { stacks: Set<string>; done: number; total: number }>()
+    for (const s of seriesShown) {
+      if (!s.subject) continue
+      const g = m.get(s.subject) ?? { stacks: new Set<string>(), done: 0, total: 0 }
+      if (s.stack && s.stack !== '—') g.stacks.add(s.stack)
+      g.done += s.done
+      g.total += s.total
+      m.set(s.subject, g)
+    }
+    return [...m].map(([key, g]) => ({ key, stacks: [...g.stacks], done: g.done, total: g.total }))
+  }, [seriesShown])
+  const seriesFiltered = useMemo(
+    () => (subject ? seriesShown.filter((s) => s.subject === subject) : seriesShown),
+    [seriesShown, subject],
+  )
   const entry = id ? items.find((c) => c.id === id) : null
   useSeo(
     entry
@@ -118,6 +139,26 @@ export function LecturesView({ seg = [] }: { seg?: string[] }) {
           </div>
         )}
         {track && <TrackRoadmap t={track} items={items} />}
+        {track && subjects.length > 1 && (
+          <section className="mt-[28px]">
+            <h2 className="text-[18px] font-bold text-[#272727]">내용별로 보기</h2>
+            <p className="mt-1 text-sm text-[#888]">무엇을 배우는 강의인지, 어떤 기술로 배우는지로 나눴어요.</p>
+            <div className="mt-3 flex flex-wrap gap-2" aria-label="내용 갈래">
+              <Chip active={!subject} onClick={() => setSubject(null)}>
+                전체
+              </Chip>
+              {subjects.map((g) => (
+                <Chip key={g.key} active={subject === g.key} onClick={() => setSubject(subject === g.key ? null : g.key)}>
+                  {g.key}
+                  {g.stacks.length > 0 && <span className="opacity-60"> · {g.stacks.join(' / ')}</span>}{' '}
+                  <span className="opacity-60">
+                    {g.done}/{g.total}
+                  </span>
+                </Chip>
+              ))}
+            </div>
+          </section>
+        )}
         {!track && tracks.length > 0 && (
           <section className="mt-[28px]">
             <h2 className="text-[22px] font-bold text-[#272727]">무엇부터 공부할까요?</h2>
@@ -155,14 +196,14 @@ export function LecturesView({ seg = [] }: { seg?: string[] }) {
               <Stat label="갱신" value={data?.generated_at.slice(0, 10) ?? '-'} />
             </div>
 
-            {seriesShown.length > 0 && (
+            {seriesFiltered.length > 0 && (
               <section className="mt-[40px]">
                 <h2 className="text-[22px] font-bold text-[#272727]">과목별로 1강부터</h2>
                 <p className="mt-1 text-sm text-[#888]">
                   {track ? '학습 순서대로 놓았어요.' : '공식 재생목록 순서 그대로 묶었어요.'} 아직 정리 안 된 강의는 차례대로 채워집니다.
                 </p>
                 <div className="mt-5 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {seriesShown.map((sr) => (
+                  {seriesFiltered.map((sr) => (
                     <SeriesCard key={sr.key} s={sr} />
                   ))}
                 </div>
@@ -258,6 +299,7 @@ function Card({ c }: { c: LectureCard }) {
           <span className={`ml-auto rounded px-1.5 py-0.5 ${LEVEL_TONE[c.level] ?? ''}`}>{c.level}</span>
         </div>
         <h3 className="mt-2 text-[17px] font-bold leading-6 text-[#272727] group-hover:text-(--color-accent)">{c.title_ko}</h3>
+        {(c.subject || c.stack) && <StackLine subject={c.subject} stack={c.stack} />}
         <p className="mt-1.5 text-sm leading-5 text-[#666] line-clamp-2">{c.one_line}</p>
         <div className="mt-auto pt-3 flex flex-wrap gap-1">
           {c.tags.slice(0, 5).map((t) => (
@@ -591,6 +633,9 @@ function SeriesCard({ s }: { s: Series }) {
     <a href={href} onClick={onLinkClick(href)} className="group rounded-xl border border-[#e5e5e5] px-5 py-4 hover:border-[#272727] transition">
       <div className="text-xs font-bold text-[#888]">{[s.school, s.code, s.term].filter(Boolean).join(' · ')}</div>
       <div className="mt-1 text-[16px] font-bold leading-6 text-[#272727] group-hover:text-(--color-accent)">{s.title}</div>
+      {(s.subject || s.stack) && <StackLine subject={s.subject} stack={s.stack} />}
+      {s.quality?.why && <p className="mt-1.5 text-[13px] leading-5 text-[#555]">{s.quality.why}</p>}
+      {s.quality?.stats && <QualityLine q={s.quality} />}
       <div className="mt-3 h-1.5 rounded-full bg-[#eee] overflow-hidden">
         <div className="h-full bg-(--color-accent)" style={{ width: `${pct}%` }} />
       </div>
@@ -598,6 +643,37 @@ function SeriesCard({ s }: { s: Series }) {
         {s.total}강 중 <b className="text-[#272727]">{s.done}강</b> 정리
       </div>
     </a>
+  )
+}
+
+/** 내용 갈래와 기술 — '웹 프레임워크 · Java · Spring Boot' */
+function StackLine({ subject, stack }: { subject?: string; stack?: string }) {
+  return (
+    <div className="mt-1.5 flex flex-wrap items-center gap-1 text-xs">
+      {subject && <span className="rounded bg-[#eef2ff] px-1.5 py-0.5 text-[#3b4fc4]">{subject}</span>}
+      {stack && stack !== '—' && <span className="rounded border border-[#d8d8d8] px-1.5 py-0.5 font-bold text-[#272727]">{stack}</span>}
+    </div>
+  )
+}
+
+const count = (v?: number | null) =>
+  v == null ? '-' : v >= 10000 ? `${Math.round(v / 1000) / 10}만` : v.toLocaleString('ko-KR')
+
+/** 고른 근거의 숫자 — 1강 조회수·좋아요 비율·끝까지 남은 비율·채널 구독자·올린 해 (series.py quality) */
+function QualityLine({ q }: { q: NonNullable<Series['quality']> }) {
+  const st = q.stats
+  if (!st) return null
+  const parts = [
+    st.channel_followers != null && `구독 ${count(st.channel_followers)}`,
+    `1강 조회 ${count(st.first_views)}`,
+    st.like_per_1k_views != null && `좋아요 ${st.like_per_1k_views}/천`,
+    st.stay_ratio != null && `끝 강까지 ${Math.round(st.stay_ratio * 100)}%`,
+    st.first_uploaded && `${st.first_uploaded.slice(0, 4)}년`,
+  ].filter(Boolean)
+  return (
+    <p className="mt-1 text-[12px] leading-5 text-[#888]" title={`${st.checked} 기준 유튜브 지표`}>
+      {parts.join(' · ')}
+    </p>
   )
 }
 

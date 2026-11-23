@@ -30,6 +30,25 @@ export interface LectureCard {
   no?: number
   /** 학습 트랙(lecture-engine/paths.json 의 key) — ai·coding-test·backend·frontend·design·detail-page·toeic */
   track?: string
+  /** 과목이 쓰는 기술('Java · Spring Boot')과 내용 갈래('네트워크·HTTP') — series.json 에서 온다 */
+  stack?: string
+  subject?: string
+}
+
+/** 과목을 고른 근거 — 손으로 쓴 이유 + series.py quality 가 받은 유튜브 지표 */
+export interface SeriesQuality {
+  why?: string
+  stats?: {
+    checked: string
+    channel?: string
+    channel_followers?: number | null
+    first_views?: number
+    first_likes?: number
+    like_per_1k_views?: number | null
+    first_uploaded?: string | null
+    last_views?: number | null
+    stay_ratio?: number | null
+  }
 }
 
 /** 과목 — 공식 재생목록을 1강부터 N강까지 굳힌 것. 노트가 없는 강의도 '준비 중'으로 들어 있다. */
@@ -40,6 +59,9 @@ export interface Series {
   code?: string
   term?: string
   track?: string
+  stack?: string
+  subject?: string
+  quality?: SeriesQuality
   playlist: string
   total: number
   done: number
@@ -52,7 +74,7 @@ export interface TrackStep {
   level: '입문' | '중급' | '심화'
   why: string
   tip?: string
-  series: { key: string; title: string; school?: string; done: number; total: number }[]
+  series: { key: string; title: string; school?: string; stack?: string; subject?: string; done: number; total: number }[]
   done: number
   total: number
 }
