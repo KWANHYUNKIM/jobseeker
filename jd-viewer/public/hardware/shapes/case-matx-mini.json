@@ -129,6 +129,76 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "공식 사진(세션 임시 폴더에서 보기만): 사무용 꼴의 미니타워. 앞판은 검정 플라스틱에 세로 갈비 + 비스듬한 틈이 촘촘한 통풍 판(공식 문구 '에어 벤트 홀' — 메시 천은 아니지만 바람이 드나드는 앞판이라 mesh 로 적었다), 앞판 오른쪽 위에 전원 단추·이어폰·USB-A 둘·USB-C, 그 밑 세로 홈 세 줄. 몸통은 짙은 회색 철판(accent 가 앞판 검정), 왼쪽 판은 유리 없는 철판에 뒤쪽 위 네모난 타공 흡기 자리 하나(공식 문구 '좌측 쿨링 에어홀'), 왼쪽 판 앞쪽 아래 모서리에 darkFlash 글자(케이스 옆면 marks 자리가 없어 적지 않았다). 파워는 위쪽(models 문구 '상단 파워 조립부') — 렌더러가 바닥에 둘 수 있다. 상세 사양 이미지는 스크립트로 불러와 못 봐 확장 슬롯·덮개·선 구멍·발 모양은 비웠다. 다나와는 쓰지 않았다."
+  },
+  "abko-u20m-cubic-mini": {
+   "kind": "case",
+   "front": "glass",
+   "glass_side": true,
+   "panoramic": true,
+   "shroud": true,
+   "shroud_side": "solid",
+   "expansion_slots": 4,
+   "feet": "round",
+   "fan_light": "rgb",
+   "color": "#1a1b1d",
+   "sources": [
+    {
+     "title": "앱코 공식 — U20M 큐빅 Mini 제품 페이지(대표 사진 6장 + 상세 이미지 2장: 후면 패널 'PCI 슬롯 4개'·'하단 파워 장착부', 쿨링 시스템 그림, LED ON/OFF 팬 사진, 3.5인치 HDD 1·2.5인치 SSD 1 브라켓)",
+     "url": "https://www.abko.co.kr/brand/detail.php?it_id=1770619665"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "공식 사진(세션 임시 폴더에서 보기만): 앞·왼쪽 강화유리가 기둥 없이 이어진 어항형(볼 캐치 고정), 본체 칸 아래는 앞·옆이 막힌 검정 받침(플린스)형 파워 덮개이고 앞면 가운데 삼각 로고(그림이라 적지 않음), 덮개 윗면에 바닥 팬 자리 120×2. 오른쪽 칸막이 쪽에 세운 측면 역날개 팬 2개(오른쪽 판에 큰 타공 흡기 자리), 뒤 팬 1개 — 공식 'FRGB'(고정 RGB, 단추로 켜고 끔)라 rgb 로 적었다. 반투명 날개라 날개 수는 못 셌다. 발은 작은 원통 발 4개. HDD 는 덮개 안 브라켓(1개)이라 하드 칸으로 볼지 몰라 drive_cage 는 비웠다. 트레이 선 구멍 모양·CPU 뒷면 구멍은 사진 각도로 안 보여 비웠다. 흰색 판도 있지만 models 가 블랙이라 검정으로 적었다. 다나와는 쓰지 않았다."
+  },
+  "3rsys-l330-quiet": {
+   "kind": "case",
+   "front": "mesh",
+   "glass_side": true,
+   "panoramic": false,
+   "shroud": true,
+   "shroud_side": "mesh",
+   "drive_cage": true,
+   "expansion_slots": 4,
+   "grommet_style": "open",
+   "cpu_cutout": true,
+   "fan_blades": 5,
+   "fan_light": "none",
+   "color": "#eceef0",
+   "accent": "#d9dcdf",
+   "sources": [
+    {
+     "title": "3RSYS 공식 — L330 Quiet 화이트 제품 상세(사양 줄 '전면 패널 타입: 메쉬 · 측면 패널 타입: 강화유리', 사진 6장, 상세 이미지의 제품 스펙 표: 패널 '좌측 슬라이딩 강화 유리 / 우측 슬라이딩 철판 패널 / 전면 트라이앵글 메쉬' · PCI 슬롯 4 · HDD 최대 2 / SSD 최대 2 · 기본 팬 Silence SE 12C 그림)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1744596532"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "PCI 4·패널 종류는 공식 스펙 표(상세 이미지를 PIL 로 잘라 봄). 공식 사진: 흰 몸통에 세모 무늬 메시 앞판, 앞판 양옆에 흰 세로 기둥 띠, 왼쪽 슬라이딩 유리. 본체 칸 아래는 옆면이 촘촘한 타공 판인 높은 파워 덮개이고, 그 옆면 왼쪽 끝에 I/O(USB·오디오·전원). 덮개 안 앞쪽에 빼낼 수 있는 하단 하드베이(상세 그림) → drive_cage true. 빈 케이스 정면 사진: 트레이에 고무 없이 뚫린 세로 선 구멍들(open)과 큰 CPU 뒷면 구멍. Silence SE 12C 는 흰 날개 5장·불빛 없음. 발은 넓적하고 모서리가 둥근 받침 4개라 round·bar 어느 쪽도 아니어서 비웠다(블록 발 요청과 같은 일). 상세 이미지에 검정 몸통 + 앞판 양옆 원목 띠 판(아이콘 'FRONT PANEL WOOD MESH')도 나오지만 models 는 화이트라 흰색으로 적었다. 다나와는 쓰지 않았다."
+  },
+  "3rsys-r120": {
+   "kind": "case",
+   "front": "solid",
+   "glass_side": true,
+   "panoramic": false,
+   "shroud": true,
+   "shroud_side": "solid",
+   "drive_cage": true,
+   "expansion_slots": 4,
+   "grommet_style": "open",
+   "cpu_cutout": true,
+   "fan_blades": 7,
+   "fan_light": "none",
+   "color": "#1b1c1e",
+   "sources": [
+    {
+     "title": "3RSYS 공식 — R120 블랙 제품 상세(사양 줄 '측면 개폐 방식: 스윙도어 / 측면: 강화유리', 사진 5장, 상세 이미지의 제품 스펙 표: 패널 '좌측 스윙도어식 강화유리 / 우측 일반패널 / 전면 울트라 슬림 베젤' · PCI 슬롯 4 · HDD 최대 2 또는 SSD 최대 3 · 후면 120mm 일반팬 그림)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1681704457"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "PCI 4·패널 종류는 공식 스펙 표(상세 이미지를 PIL 로 잘라 봄). 공식 사진: 앞판은 타공 없는 검정 철판(10mm 울트라 슬림 베젤), I/O 는 윗면 앞쪽(윗면은 자석 먼지 필터 메시). 왼쪽은 경첩으로 여는 스윙도어 유리인데 본체 칸 높이까지만이고, 그 아래는 막힌 검정 파워 덮개 옆면. 덮개 안에 HDD 2 를 다는 하드베이(상세 그림 '하드 베이를 앞으로 당겨 분리') → drive_cage true. 흰색 판 빈 케이스 그림: 트레이 오른쪽에 고무 없는 세로 선 구멍(open), 큰 CPU 뒷면 구멍. 기본 팬은 뒤 120mm 검정 일반팬 하나 — 날개 7장·불빛 없음. 발은 작고 낮은 네모 받침이라 비웠다(블록 발 요청과 같은 일). 흰색 판도 있지만 models 사진이 블랙이라 검정으로 적었다. 다나와는 쓰지 않았다."
   }
  }
 }
