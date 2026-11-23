@@ -1,0 +1,1013 @@
+{
+ "id": "toss-commerce-ads-mle",
+ "company": "토스",
+ "role": "ML 엔지니어 (Commerce Ads)",
+ "team": "토스 커머스 · 커머스 추천팀",
+ "jobs": [
+  "ats-toss:group:7784598003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "토스 쇼핑의 추천 지면에 광고 상품이 끼어들 때 **'이 노출이 얼마짜리인가'를 계산하고, 그 계산으로 입찰가·광고비·자리·예산 속도를 정하는 로직**을 맡습니다. 클릭·구매 예측 모델은 팀의 다른 MLE가 만들고, 이 자리는 그 예측을 보정해 돈 계산과 랭킹에 넣는 쪽입니다.[1]",
+  "env": "커머스 추천팀은 상품 추천과 광고 노출을 함께 최적화합니다.[1] 같은 팀은 2024년 발표에서 밴딧·temperature scaling·배치/실시간 서빙(Redis·Phoenix·피처 스토어·ONNX Runtime)을 썼다고 소개했고[2], 토스애즈는 2026년 토스페이 결제까지 잇는 커머스 광고 '바이 앳 토스'를 내놓았습니다.[7]",
+  "oneline": "예측과 돈 사이를 맡는 사람 — pCTR·pCVR을 믿을 만한 확률로 고치고, 셀러의 목표 ROAS·예산과 유저 경험 사이의 균형을 공식과 실험으로 정하는 광고 ML 엔지니어."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "커머스 추천 지면에서 광고 상품이 노출될 때, 사용자의 반응 가능성과 셀러의 성과 목표를 함께 고려해 광고 노출의 가치를 계산하는 머신러닝 기반 로직을 설계해요.",
+   "short": "추천 칸 하나에 광고를 넣을 때 '이 노출이 유저·셀러·토스에게 얼마짜리인가'를 숫자 하나로 계산하는 일.",
+   "why": "이 자리는 커머스 추천팀 안에 있고, 팀은 상품 추천과 광고 노출을 **함께** 최적화한다고 소개합니다.[1] 같은 칸에 일반 상품과 광고가 같이 서므로, 둘을 견줄 공통 단위가 있어야 순서를 정할 수 있습니다.[5] {추론} 토스애즈도 구매 확률이 높은 고객에게 광고를 더 보여 주고 낮은 고객에게는 덜 보여 준다고 설명합니다.[6]",
+   "actually": {
+    "items": [
+     "**재료** — 클릭 확률(pCTR)·클릭 뒤 구매 확률(pCVR)·상품 가격·셀러가 정한 입찰가와 목표.[1]",
+     "**광고 쪽 가치** — 보통 '입찰가 × 클릭 확률'(1000회 노출당 기대 광고비, eCPM)로 줄 세운다. 검색 광고 경매의 기본 꼴이다.[11]",
+     "**셀러 쪽 가치** — 같은 노출이 만들 기대 매출(pCTR × pCVR × 가격). 광고비는 많이 내도 매출을 못 내는 광고는 셀러를 떠나게 한다.[1] {추론}",
+     "**유저 쪽 가치** — 그 자리에 광고 대신 들어갔을 일반 추천 상품의 반응. 광고는 이 기회비용을 넘어야 한다.[14]",
+     "**하나로 묶기** — 세 값을 정책 가중치로 더해 '광고 노출 가치'를 만들고, 일반 상품 점수와 같은 줄에 세운다(업무④에서 다시 쓴다). {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "광고비 순서와 셀러 매출 순서가 다르다 (직접 돌린 출력, 숫자는 가정값)",
+     "body": "같은 상품을 들고 온 세 광고가 같은 자리에서 다툽니다. 광고비만 보면 C가 1등이지만, C는 셀러 매출을 광고비만큼밖에 못 냅니다. 무엇을 얼마나 무겁게 볼지가 이 줄의 설계입니다. {추론}",
+     "lang": "python",
+     "code": "cands = {\"광고A\": dict(ctr=0.030, cvr=0.05, price=30000, bid=400),\n         \"광고B\": dict(ctr=0.015, cvr=0.12, price=30000, bid=900),\n         \"광고C\": dict(ctr=0.060, cvr=0.01, price=30000, bid=300)}\nfor k, p in cands.items():\n    ad_fee = p[\"ctr\"] * p[\"bid\"] * 1000          # 클릭당 과금일 때 1000회 노출의 광고비\n    gmv = p[\"ctr\"] * p[\"cvr\"] * p[\"price\"] * 1000  # 같은 노출이 만드는 셀러 매출\n    print(k, \"광고비\", round(ad_fee), \"원 · 셀러 매출\", round(gmv), \"원\")\n# 광고A 광고비 12000 원 · 셀러 매출 45000 원\n# 광고B 광고비 13500 원 · 셀러 매출 54000 원\n# 광고C 광고비 18000 원 · 셀러 매출 18000 원"
+    }
+   ],
+   "flows": [
+    {
+     "caption": "추천 지면 한 번에 광고가 지나가는 길 — 이 공고와 같은 조직 Ads 공고로 본 단계 {추론}",
+     "steps": [
+      "후보 찾기(Retrieval) · 광고 후보",
+      "Light 랭커 · 후보 줄이기",
+      "CTR·CVR 예측 · 팀 내 다른 MLE",
+      "보정·후처리 · 예측을 믿을 만한 확률로",
+      "가치 계산·입찰가 · 광고비와 셀러 목표",
+      "지면 배치 · 일반 추천과 섞기",
+      "과금·페이싱 · 예산 소진 속도",
+      "로그·실험 · 매출·소진·셀러 성과"
+     ],
+     "mine_from": 3
+    }
+   ],
+   "how_far": "예측 모델 자체는 팀의 다른 MLE가 맡고, 이 자리는 **그 예측을 받아 '가치'로 바꾸는 공식과 그 공식이 지켜야 할 조건**을 맡습니다.[1] 가중치(셀러 매출을 얼마나 볼지 같은 정책)는 PM·분석가와 같이 정하고, MLE는 바꿨을 때 지표가 어떻게 움직이는지 보여 줍니다. {추론}",
+   "refs": [
+    1,
+    5,
+    6,
+    11,
+    14
+   ],
+   "study": [
+    "slash24-reco",
+    "fb-ads-ctr",
+    "gsp"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "운영 중인 CTR, CVR 예측 모델의 결과와 상품 가격, 전환 가치, 셀러가 설정한 target ROAS 등을 활용해 광고비와 입찰가 산정 로직을 고도화해요.",
+   "short": "셀러가 '광고비 1원에 매출 5원'처럼 목표만 정하면, 노출마다 얼마를 걸지(입찰가)를 모델 예측으로 대신 계산하는 일.",
+   "why": "공고가 이미 CTR·CVR 예측 모델이 운영 중이고, 셀러가 target ROAS(광고비 대비 매출 목표)를 정한다고 밝혔습니다.[1] 같은 조직 Bidding & Pacing 공고도 광고주의 목표와 예산에 맞는 입찰 전략과 목표 CPA·ROAS 최적화를 다룹니다.[4] 토스애즈 소개는 한 고객사가 결제 데이터 기반 타겟팅으로 ROAS 목표를 달성했다고 적었습니다.[6]",
+   "actually": {
+    "items": [
+     "**ROAS** — 광고로 생긴 매출 ÷ 광고비. 500%면 1원을 써서 5원을 번다는 뜻이다.[12]",
+     "**자동 입찰의 꼴** — 셀러가 목표 ROAS를 주면 시스템이 클릭마다 입찰가를 정해 전환 가치를 최대로 하면서 평균 ROAS를 목표에 맞춘다(Google Ads의 공개 설명).[12]",
+     "**가장 단순한 식** — 클릭당 입찰 ≈ pCVR × 전환 가치 ÷ 목표 ROAS. 예측이 틀리면 입찰도 그만큼 틀린다.[12] {추론}",
+     "**전환 가치** — 보통은 결제 금액. 토스는 토스페이로 앱 안 결제까지 이어지는 커머스 광고(Buy at Toss)를 2026년에 내놓아 결제 데이터가 바로 전환 가치가 된다.[7]",
+     "**전환 지연** — 클릭하고 며칠 뒤에 사는 사람이 있어, 어제 광고의 ROAS는 아직 다 안 찍혔다. 이를 무시하면 최근 광고를 과소평가한다.[16][4]",
+     "**경매에서 실제 내는 값** — 입찰가가 곧 과금액은 아니다. 2위 가격 경매(GSP)에서는 바로 아래 광고를 이길 만큼만 낸다.[11]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "목표 ROAS를 바꾸면 입찰가가 어떻게 바뀌나 (직접 돌린 출력, pCVR 4%·객단가 3만원 가정)",
+     "body": "목표 ROAS를 높게 잡을수록 시스템이 클릭마다 덜 걸고, 그만큼 노출이 줄어듭니다. Google Ads 설명도 목표를 너무 높게 잡으면 트래픽이 줄 수 있다고 적었습니다.[12]",
+     "lang": "python",
+     "code": "def bid_per_click(pcvr, value, troas):\n    # 클릭 하나가 벌어 올 전환 가치 ÷ 셀러가 원하는 광고비 대비 매출 배수\n    return pcvr * value / troas\nfor troas in (3.0, 5.0, 8.0):\n    print(\"target ROAS\", f\"{int(troas * 100)}%\", \"→ 클릭당 입찰\", round(bid_per_click(0.04, 30000, troas)), \"원\")\n# target ROAS 300% → 클릭당 입찰 400 원\n# target ROAS 500% → 클릭당 입찰 240 원\n# target ROAS 800% → 클릭당 입찰 150 원"
+    }
+   ],
+   "how_far": "공고 표현은 '고도화'입니다 — 산정 로직은 이미 있고, **예측 오차·전환 지연·경쟁 상황을 넣어 더 맞게 만드는 것**이 일입니다.[1] 경매·과금 정책 자체의 설계는 같은 조직의 Bidding & Pacing 자리가 따로 있어, 이 자리는 그 정책과 맞물리는 계산 쪽으로 읽힙니다.[4] {추론}",
+   "refs": [
+    1,
+    4,
+    6,
+    7,
+    11,
+    12,
+    16
+   ],
+   "study": [
+    "troas-help",
+    "gsp",
+    "delayed-fb"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "예측 모델의 출력이 실제 광고비 계산과 랭킹에 안정적으로 반영될 수 있도록 calibration, score transformation, uncertainty 보정 등 모델 후처리 전략을 설계해요.",
+   "short": "모델이 말한 '클릭 확률 4%'가 정말 4%가 되게 맞추고, 그 숫자를 돈 계산에 넣어도 흔들리지 않게 다듬는 일.",
+   "why": "광고에서는 예측 확률이 그대로 돈이 됩니다. 확률이 1.6배 부풀려져 있으면 입찰과 과금도 1.6배 틀립니다. {추론} Facebook 광고 논문은 예측 평균과 실제 클릭률의 비(calibration)를 따로 재야 한다고 했고[9], Google 광고 논문은 모델 출력에 보정 층을 덧대 체계적인 치우침을 고친다고 적었습니다.[10] 같은 조직 Ads Ranking 공고도 Calibration과 구간별 예측 편향 개선을 요건으로 둡니다.[3]",
+   "actually": {
+    "items": [
+     "**calibration(보정)** — '4%라고 한 것들을 모아 보면 실제로 4%가 눌렸나'를 구간별로 재고 맞춘다. 흔한 방법: 플랫 스케일링(로지스틱으로 다시 맞추기), 등위 회귀(isotonic), temperature scaling.[17][18]",
+     "**토스 커머스의 쓰임** — 같은 팀 발표는 추천 모델에 보정 효과를 주려고 temperature scaling을 썼다고 했다.[2]",
+     "**왜 틀어지나** — 학습할 때 음성(안 누른 노출)을 덜어 내 표본을 줄이면 확률이 부풀려진다. Facebook 논문은 이를 되돌리는 식을 적었다.[9]",
+     "**score transformation(점수 변환)** — 확률을 그대로 쓰지 않고 지수·로그·상한을 걸어 한 신호가 최종 점수를 독차지하지 않게 한다. {추론}",
+     "**uncertainty(불확실성) 보정** — 노출이 적은 새 광고는 같은 4%라도 믿을 만하지 않다. 신뢰구간 하한을 쓰거나[21], 분포에서 뽑아 가끔 기회를 준다(Thompson Sampling).[20][2]",
+     "**구간별로 본다** — 전체 평균이 맞아도 신상품·특정 카테고리·트래픽 구간에서는 틀릴 수 있다.[3]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "부풀려진 pCTR을 구간별로 재고 바로잡기 (직접 돌린 출력, seed 3)",
+     "body": "아래 모델은 늘 1.6배 부풀려 말합니다. 구간마다 예측과 실제를 견주면 바로 보이고, 보정 배수 0.63을 곱하면 기대 광고비가 2만원에서 약 1.26만원으로 바로잡힙니다.[9][10]",
+     "lang": "python",
+     "code": "import random\nrandom.seed(3)\nbuckets = {}\nfor _ in range(200000):\n    true = random.uniform(0.005, 0.05)\n    pred = true * 1.6                      # 모델이 1.6배 부풀려 말한다\n    y = random.random() < true\n    b = min(int(pred / 0.02), 3)\n    s = buckets.setdefault(b, [0, 0, 0]); s[0] += pred; s[1] += y; s[2] += 1\nfor b in sorted(buckets):\n    p, y, n = buckets[b]\n    print(\"구간\", b, \"예측 평균\", round(p / n, 4), \"실제\", round(y / n, 4))\nratio = sum(v[1] for v in buckets.values()) / sum(v[0] for v in buckets.values())\nprint(\"전체 보정 배수\", round(ratio, 3))\nprint(\"pCTR 0.04·입찰 500원의 1000회 기대 광고비: 보정 전\", round(0.04 * 500 * 1000), \"보정 후\", round(0.04 * ratio * 500 * 1000))\n# 구간 0 예측 평균 0.014 실제 0.0082\n# 구간 1 예측 평균 0.03 실제 0.0189\n# 구간 2 예측 평균 0.05 실제 0.0315\n# 구간 3 예측 평균 0.07 실제 0.0444\n# 전체 보정 배수 0.63\n# pCTR 0.04·입찰 500원의 1000회 기대 광고비: 보정 전 20000 보정 후 12591"
+    }
+   ],
+   "how_far": "모델을 다시 학습하는 쪽이 아니라 **모델 출력과 돈 계산 사이의 층**을 설계하는 자리입니다.[1] 최소선은 구간별 보정 곡선을 매일 재고, 틀어졌을 때 알림이 오고, 보정을 바꿨을 때 광고비가 얼마나 움직이는지 미리 계산하는 것입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    9,
+    10,
+    17,
+    18,
+    20,
+    21
+   ],
+   "study": [
+    "calibration",
+    "sklearn-calib",
+    "fb-ads-ctr",
+    "trenches"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "광고 상품이 무조건 많이 노출되는 것이 아니라, 사용자 경험을 해치지 않으면서도 셀러의 목표 성과를 달성할 수 있도록 추천 랭킹 내 광고 노출 전략을 개선해요.",
+   "short": "추천 목록의 몇 번째 칸에, 몇 개까지 광고를 넣을지 — 광고가 일반 상품을 이겨야만 그 칸을 갖게 하는 규칙을 다듬는 일.",
+   "why": "광고를 많이 넣을수록 당장은 광고비가 늘지만 유저가 추천 지면을 덜 믿게 됩니다.[15] 같은 회사 커머스 추천 공고도 광고·프로모션이 함께 있는 지면에서 사용자 경험과 비즈니스 성과를 함께 고려한 랭킹·블렌딩을 업무로 둡니다.[5]",
+   "actually": {
+    "items": [
+     "**같은 줄에 세우기** — 광고 점수 = 유저 반응 + 정책 가중치 × 기대 광고비. 그 칸의 일반 상품 점수를 넘을 때만 광고가 들어간다. {추론}",
+     "**자리 규칙** — 첫 칸 금지, 광고 사이 최소 간격, 한 화면 광고 수 상한 같은 제약을 둔다. LinkedIn 피드는 광고 배치를 '참여를 일정 이상 지키며 매출을 최대로'라는 제약 최적화로 풀어 전 트래픽에 적용했다.[14]",
+     "**광고도 추천이다** — 유저 관심과 맞는 광고는 일반 상품만큼 눌린다. 관심에 안 맞는 광고를 줄이는 것이 셀러 성과도 올린다.[1][6] {추론}",
+     "**지면마다 다르다** — 홈 피드·상품 상세 아래·검색 결과는 유저가 견디는 광고량이 다르다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "일반 상품 6칸에 광고 넣기 — 점수와 간격 규칙 (직접 돌린 출력, 값은 가정)",
+     "body": "광고X는 클릭률이 높고 입찰도 있어 2번째 칸을 얻었지만, 광고Y는 간격 규칙과 점수에 막혀 들어가지 못합니다. lam(광고비를 얼마나 쳐줄지)과 간격이 정책 손잡이입니다. {추론}",
+     "lang": "python",
+     "code": "organic = [(\"상품1\", 0.050), (\"상품2\", 0.040), (\"상품3\", 0.035),\n           (\"상품4\", 0.030), (\"상품5\", 0.028), (\"상품6\", 0.025)]\nads = [(\"광고X\", 0.045, 600), (\"광고Y\", 0.020, 900)]   # (이름, pCTR, 입찰가)\nlam = 1 / 5000   # 광고비 1원을 클릭 몇 개만큼으로 칠지 — 정책 값\ndef ad_score(ctr, bid): return ctr + lam * ctr * bid\nfeed, oi, ai, last_ad = [], 0, 0, -9\nwhile len(feed) < 6:\n    o = organic[oi]\n    a = ads[ai] if ai < len(ads) else None\n    can_ad = a and len(feed) >= 1 and len(feed) - last_ad >= 3   # 첫 칸 금지·광고 사이 2칸\n    if can_ad and ad_score(a[1], a[2]) > o[1]:\n        feed.append(a[0]); last_ad = len(feed) - 1; ai += 1\n    else:\n        feed.append(o[0]); oi += 1\nprint(feed)\n# ['상품1', '광고X', '상품2', '상품3', '상품4', '상품5']"
+    }
+   ],
+   "how_far": "광고를 몇 개까지 허용할지 같은 큰 정책은 PM·사업 쪽과 같이 정합니다. MLE는 **그 정책을 점수 공식과 자리 규칙으로 옮기고, 손잡이를 돌렸을 때 광고 매출과 유저 지표가 어떻게 바뀌는지** 실험으로 보입니다.[1] {추론}",
+   "refs": [
+    1,
+    5,
+    6,
+    14,
+    15
+   ],
+   "study": [
+    "feed-ads",
+    "long-term",
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "광고 시스템이 실제 매출, 광고비 소진, 셀러 성과, 사용자 행동에 어떤 영향을 주는지 온라인 실험과 지표를 통해 정량적으로 검증해요.",
+   "short": "광고 로직을 바꾸면 A/B 실험을 돌려 '토스 매출·셀러 ROAS·유저 클릭'이 각각 어떻게 움직였는지 숫자로 보여 주는 일.",
+   "why": "광고 실험은 한 지표만 보면 속기 쉽습니다 — 광고 매출이 올라도 유저 이탈이 늘 수 있습니다.[15] 팀 소개도 광고 노출의 가치를 계산한 뒤 실험과 지표로 실제 비즈니스 임팩트를 검증한다고 적었습니다.[1] 같은 팀 추천 발표도 A/B 테스트 성과로 모델을 평가했습니다.[2]",
+   "actually": {
+    "items": [
+     "**지표 묶음** — 플랫폼(광고 매출·전체 거래액), 셀러(ROAS·전환 수), 유저(추천 지면 클릭·구매·재방문), 시스템(응답 시간)을 같이 둔다.[19]",
+     "**나누는 단위** — 유저 단위로 나누면 유저 쪽 효과를, 광고주 단위로 나누면 셀러 쪽 효과를 본다. 예산을 나눠 쓰는 광고는 군끼리 서로 영향을 줄 수 있다(예산이 한 군에서 먼저 바닥나는 식). {추론}",
+     "**광고 효과 재기** — 토스애즈는 결제·금융 데이터로 광고가 만든 '추가 성과'를 매출 단위로 재는 리포트를 낸다.[27] 클릭이 아니라 결제까지 잴 수 있다는 것이 토스 쪽 조건이다.[6]",
+     "**믿을 수 있는가부터** — 실험 결과를 읽기 전에 군별 유저 수가 설계 비율과 맞는지(SRM) 본다.[19]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "실험 결과를 읽기 전 — 배정 비율 검사(SRM) (직접 돌린 출력)",
+     "body": "50:50으로 나눴는데 1,200명쯤 차이가 나면 우연으로 보기 어렵습니다. 이때는 효과를 읽지 말고 배정·로그부터 고칩니다.[19]",
+     "lang": "python",
+     "code": "a, b = 50421, 49210          # 50:50으로 나눈 실험군·대조군의 실제 유저 수\ne = (a + b) / 2\nchi = (a - e) ** 2 / e + (b - e) ** 2 / e\nprint(\"카이제곱\", round(chi, 1), \"→ 3.84보다 크면 배정이 깨졌다고 본다\")\n# 카이제곱 14.7 → 3.84보다 크면 배정이 깨졌다고 본다"
+    }
+   ],
+   "how_far": "실험 플랫폼을 만드는 자리가 아니라 **실험을 설계하고(지표·단위·기간) 결과를 해석해 다음 결정을 내리는 자리**입니다.[1] 분석가와 함께하지만, 광고 로직을 바꾼 사람이 결과를 설명할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    2,
+    6,
+    15,
+    19,
+    27
+   ],
+   "study": [
+    "kohavi-ko",
+    "long-term"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "광고 예산이 특정 시간대나 일부 상품에 비효율적으로 소진되지 않도록, 노출 기회와 예산 소진 속도를 함께 고려하는 페이싱 로직을 설계하고 개선해요.",
+   "short": "하루 예산이 아침에 다 타 버리지 않게, 시간대별 트래픽에 맞춰 경매 참여를 조절하는 일(페이싱).",
+   "why": "페이싱이 없으면 예산은 트래픽이 처음 몰리는 시간에 다 쓰이고, 쇼핑이 활발한 저녁에는 광고가 꺼집니다. {추론} 같은 조직 Bidding & Pacing 공고도 시간대와 경쟁 환경에 따라 달라지는 기회를 살펴 예산 소진과 성과의 균형을 맞추는 일을 둡니다.[4] Yahoo의 Smart Pacing 논문은 예산을 고르게 쓰면서 성과도 올리는 제어 방식을 실제 광고 시스템에 넣었습니다.[13]",
+   "actually": {
+    "items": [
+     "**고르게 쓰기** — 하루 트래픽 곡선을 예측하고 시간마다 그 몫만큼만 쓰게 한다.[13]",
+     "**조절 방법 둘** — 경매에 참여할 확률을 낮추기(throttling), 또는 입찰가를 낮추기(bid shading). {추론}[13]",
+     "**성과까지 보는 페이싱** — 같은 시간이라도 전환이 잘 나는 노출에 예산을 더 쓴다. Smart Pacing은 이 둘을 함께 맞췄다.[13]",
+     "**일부 상품 쏠림** — 한 셀러의 여러 상품 중 클릭률 높은 하나가 예산을 다 먹지 않도록 상품별로 나눈다(공고의 '일부 상품'). {추론}",
+     "**되먹임** — 실제 소진이 계획보다 빠르면 다음 시간 참여율을 낮추는 식으로 매 시간 고친다.[13]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "페이싱 없이·있이 — 예산이 바닥나는 시각 (직접 돌린 출력, 트래픽 곡선은 가정값)",
+     "body": "트래픽이 저녁에 몰리는 하루인데, 페이싱이 없으면 예산 60만원이 오전 8시에 바닥납니다. 시간 몫만큼만 쓰면 밤 11시까지 광고가 살아 있습니다. 실제 시스템은 트래픽 예측이 틀리는 것까지 되먹임으로 고칩니다.[13] {추론}",
+     "lang": "python",
+     "code": "hours = [1,1,1,1,1,2,4,6,8,8,7,9,10,8,7,7,8,9,12,14,15,12,8,3]  # 시간대별 트래픽 비중\nbudget, cpc, ctr = 600000, 500, 0.02\ndef run(pace):\n    spent, out_at, total = 0, None, sum(hours)\n    for h, w in enumerate(hours):\n        traffic = w * 3000\n        share = 1.0\n        if pace:   # 그 시간 몫의 예산만큼만 경매에 참여\n            share = min(1.0, (budget * w / total) / (traffic * ctr * cpc))\n        cost = min(traffic * share * ctr * cpc, budget - spent)\n        spent += cost\n        if spent >= budget and out_at is None: out_at = h\n    return round(spent), out_at\nprint(\"페이싱 없음 (소진액, 예산 바닥난 시) =\", run(False))\nprint(\"페이싱 있음 (소진액, 예산 바닥난 시) =\", run(True))\n# 페이싱 없음 (소진액, 예산 바닥난 시) = (600000, 8)\n# 페이싱 있음 (소진액, 예산 바닥난 시) = (600000, 23)"
+    }
+   ],
+   "how_far": "**트래픽 예측·참여율 계산·되먹임 규칙**을 설계하고, 페이싱을 바꿨을 때 셀러 ROAS와 소진율이 어떻게 바뀌는지 보이는 것까지입니다.[1] 경매 서버에 실제로 끼워 넣는 일은 서버 엔지니어와 함께합니다.[1] {추론}",
+   "refs": [
+    4,
+    13
+   ],
+   "study": [
+    "smart-pacing"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "CTR/CVR 예측 모델을 담당하는 팀 내 MLE들과 긴밀하게 협업하고, 데이터 분석가·서버 엔지니어·프로덕트 매니저와 함께 모델의 예측 결과가 광고비 계산, 랭킹, 서빙 시스템에 안정적으로 반영되도록 만들어요.",
+   "short": "예측은 옆 MLE가, 서버는 서버 엔지니어가 맡으니, 그 사이에서 '예측 → 돈 계산 → 화면'이 끊기지 않게 잇는 일.",
+   "why": "이 자리는 예측 모델을 직접 담당하지 않고 그 결과를 쓴다고 공고가 밝혔습니다.[1] 같은 조직은 PO·MLE·분석가·서버 개발자가 한 팀을 이뤄 작은 스타트업처럼 일한다고 소개합니다.[3][4]",
+   "actually": {
+    "items": [
+     "**MLE와** — 예측 모델이 바뀔 때(새 피처·새 구조) 보정과 가치 계산이 같이 따라가게 맞춘다. 모델 교체 하나로 광고비가 출렁이지 않게 한다. {추론}",
+     "**서버 엔지니어와** — 계산을 요청마다 할지, 미리 해 둘지. 같은 팀 발표는 미리 계산해 Redis·Phoenix에 넣는 배치 방식과, 피처 스토어·ONNX Runtime으로 요청마다 추론하는 실시간 방식을 섞어 쓴다고 했다.[2]",
+     "**분석가와** — 실험 지표 정의와 결과 해석.[1]",
+     "**PM과** — 광고량·셀러 정책 같은 손잡이의 범위를 정한다.[1] {추론}"
+    ]
+   },
+   "how_far": "협업 자체보다 **경계에서 생기는 사고(모델 교체·피처 지연·보정 누락)를 먼저 막는 장치**를 만드는 쪽이 이 자리의 일입니다. 같은 회사 추천 공고도 배치·실시간 서빙과 모니터링까지 전 과정을 다룬다고 적었습니다.[5] {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "study": [
+    "slash24-reco",
+    "dmls-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "광고 도메인에서 머신러닝 모델, 랭킹, 입찰, 과금, 예산 최적화 중 하나 이상의 문제를 직접 다뤄본 경험이 있는 분을 찾고 있어요.",
+   "short": "광고 시스템의 다섯 부품(모델·랭킹·입찰·과금·예산) 중 하나라도 실서비스에서 직접 만져 봤어야 한다.",
+   "why": "업무 일곱 줄이 이 다섯 부품을 잇는 일이라, 하나를 깊게 알면 나머지와의 연결을 빨리 배울 수 있습니다.[1] {추론} 같은 조직에 Ads Ranking·Bidding & Pacing 자리가 따로 있어 각 부품의 전문가가 옆에 있습니다.[3][4]",
+   "actually": {
+    "items": [
+     "**모델** — pCTR·pCVR 예측.[9][10] 토스는 2025년 첫 기술 경진대회 주제를 실제 앱 광고 데이터로 클릭 확률을 맞히는 일로 잡았다.[8]",
+     "**랭킹** — 예측과 입찰로 광고 순서 정하기(eCPM).[11]",
+     "**입찰** — 목표 ROAS·CPA에 맞춘 자동 입찰.[12]",
+     "**과금** — 2위 가격 경매처럼 실제로 얼마를 받을지.[11]",
+     "**예산** — 페이싱·예산 배분.[13]"
+    ]
+   },
+   "how_far": "'하나 이상'이라 다섯을 다 할 필요는 없습니다.[1] 대신 **내가 만진 부품이 나머지 넷과 어떻게 맞물렸는지**를 설명할 수 있어야 합니다 — 직무 인터뷰가 ML 시스템 설계입니다.[1] {추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+   ],
+   "study": [
+    "fb-ads-ctr",
+    "gsp",
+    "troas-help",
+    "smart-pacing"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "모델 성능 지표뿐 아니라 실제 광고 매출, 광고비 소진, 셀러 성과, 사용자 반응까지 함께 보며 의사결정할 수 있는 분을 찾고 있어요.",
+   "short": "AUC가 올랐다는 말로 끝내지 않고, 광고 매출·소진율·셀러 ROAS·유저 클릭을 한 표에 놓고 고를 수 있어야 한다.",
+   "why": "광고 시스템의 성과는 모델 지표가 아니라 돈과 행동으로 나타납니다.[1] Facebook 광고 논문도 모델 품질 지표와 별개로 보정(예측 평균/실제)을 따로 봐야 한다고 했습니다.[9]",
+   "actually": {
+    "items": [
+     "**모델 지표** — AUC·logloss·정규화 엔트로피(NE).[9]",
+     "**돈 지표** — 광고 매출, 광고비 소진율(예산 중 실제로 쓴 비율), 셀러 ROAS.[1][12]",
+     "**사람 지표** — 추천 지면 클릭·구매, 광고 숨기기, 재방문.[1][15] {추론}",
+     "**서로 엇갈릴 때** — 소진율이 올랐는데 ROAS가 떨어지면 '셀러 돈을 더 썼을 뿐'일 수 있다. {추론}"
+    ]
+   },
+   "how_far": "면접에서 '어떤 지표가 오르고 어떤 지표가 내렸을 때 무엇을 택했나'를 실제 예로 말할 수 있으면 됩니다. 이력서 안내도 결과를 정량적으로 적으라고 합니다.[1]",
+   "refs": [
+    1,
+    9,
+    12,
+    15
+   ],
+   "study": [
+    "fb-ads-ctr",
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "광고 시스템의 특성상 단기 성과를 높이는 선택이 장기적으로 사용자 경험이나 플랫폼 신뢰를 해칠 수 있다는 점을 이해하고, 균형 있게 판단할 수 있는 분이면 좋아요.",
+   "short": "광고를 더 넣으면 이번 주 매출은 오르지만 유저가 광고를 피하게 돼 길게는 손해일 수 있다는 걸 알아야 한다.",
+   "why": "Google 연구진은 광고를 늘린 효과가 짧은 실험에서는 좋아 보여도, 유저가 광고를 덜 보게 되는 학습(광고 맹목) 때문에 길게는 달라진다는 것을 실험으로 재고, 그 결과로 모바일 검색 광고량을 약 절반으로 줄였다고 적었습니다.[15] 팀 소개도 사용자 경험을 해치지 않으면서 셀러와 플랫폼 모두에게 성과가 나게 한다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**장기 효과 재기** — 광고량이 다른 군을 몇 주~몇 달 유지하고, 그 뒤 같은 조건에서 유저 반응이 다르게 굳었는지 본다.[15]",
+     "**단기 지표로 장기 예측** — 길게 못 돌리면, 짧은 실험의 유저 지표로 장기 효과를 추정하는 모델을 만든다.[15]",
+     "**플랫폼 신뢰** — 토스는 금융 앱이라 광고가 '믿고 쓰는 앱'의 인상을 해치지 않는지가 따로 걸린다. {추론}"
+    ]
+   },
+   "how_far": "장기 실험을 직접 설계해 봤다면 강점이지만, 최소선은 **단기 지표만으로 광고량을 늘리자는 결정에 '무엇을 더 봐야 하는지' 말할 수 있는 것**입니다. {추론}",
+   "refs": [
+    1,
+    15
+   ],
+   "study": [
+    "long-term",
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "모델을 만드는 것만큼이나, 그 모델이 실제 서빙 환경에서 안정적으로 동작하고 제품 임팩트로 이어지는지까지 책임감 있게 보는 분을 찾고 있어요.",
+   "short": "모델을 넘기고 끝이 아니라, 서비스에서 보정이 틀어지거나 광고비가 튀지 않는지 끝까지 지켜보는 사람이어야 한다.",
+   "why": "광고에서는 예측이 조금만 틀어져도 바로 광고비와 셀러 성과가 틀어집니다.[9][10] {추론} 같은 팀 발표는 천만 명 넘는 고객을 받으면서 빠르게 답해야 하고 자원이 한정돼 있다는 것을 서빙의 조건으로 꼽았고, 모든 모델을 계속 학습한다고 했습니다.[2]",
+   "actually": {
+    "items": [
+     "**감시** — 구간별 보정, 예측 평균 대 실제, 시간당 광고비, 셀러별 ROAS를 대시보드와 알림으로 본다.[10] {추론}",
+     "**학습·서빙 어긋남** — 학습 때와 서빙 때 피처 계산이 다르면 오프라인 성능이 서비스에서 안 나온다.[22]",
+     "**안전장치** — 보정 배수 상한, 입찰가 상·하한, 이상할 때 이전 규칙으로 돌아가는 스위치. {추론}"
+    ]
+   },
+   "how_far": "최소선은 **내 로직이 들어간 뒤 무엇을 매일 보는지 정해 두고, 틀어졌을 때 원인을 찾아 고쳐 본 사례**입니다. {추론}",
+   "refs": [
+    2,
+    9,
+    10,
+    22
+   ],
+   "study": [
+    "dmls-ko",
+    "trenches"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "주어진 요구사항을 구현하는 데서 멈추지 않고, 광고 성과와 사용자 경험 사이에서 더 중요한 문제가 무엇인지 스스로 정의하고 해결해 나가는 분이면 좋아요.",
+   "short": "'광고 클릭률 올려 주세요' 같은 요청을 받으면, 진짜 막힌 곳이 예측인지·입찰인지·배치인지 먼저 찾아 문제를 다시 정하는 사람.",
+   "why": "팀 소개가 단순히 클릭률·전환율을 높이는 것을 넘어선다고 적었습니다.[1] 같은 조직 공고들도 데이터로 문제를 정의하고 직접 구현·실험을 반복하는 Problem Solver를 찾습니다.[3][4]",
+   "actually": {
+    "items": [
+     "**문제 쪼개기** — 셀러 ROAS가 낮다면: 예측이 부풀었나(보정)·입찰이 높나·노출 자리가 나쁜가·예산이 엉뚱한 시간에 탔나. {추론}",
+     "**우선순위** — 고쳤을 때 움직일 돈과 유저 수로 줄 세운다. {추론}",
+     "**토스 커머스의 예** — 같은 팀은 데이터가 없던 초기에 무거운 모델 대신 가볍고 고치기 쉬운 밴딧부터 시작해 실험으로 키웠다.[2]"
+    ]
+   },
+   "how_far": "이력서에 **'요청은 A였지만 데이터를 보니 진짜 문제는 B라서 B를 고쳤다'** 같은 사례가 하나 있으면 이 줄을 채웁니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "study": [
+    "slash24-reco"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "정답이 명확하지 않은 문제를 좋아하고, 실험 결과나 지표가 기대와 다를 때 원인을 집요하게 파고들 수 있는 분이면 잘 맞아요.",
+   "short": "실험 결과가 예상과 다르면 '실패'로 덮지 않고, 배정·로그·지표·로직 순으로 원인을 끝까지 찾는 사람.",
+   "why": "광고 실험은 예산·경쟁·전환 지연이 얽혀 결과가 예상과 다르게 나오기 쉽습니다.[4][16] 같은 조직 Ads Ranking 공고도 오프라인 평가와 온라인 결과가 달라지는 원인을 찾는 일을 업무로 둡니다.[3]",
+   "actually": {
+    "items": [
+     "**먼저 실험이 건강한가** — 배정 비율(SRM), 로그 누락.[19]",
+     "**전환이 다 찍혔나** — 전환 지연 때문에 최근 날짜의 ROAS가 낮게 보일 수 있다.[16]",
+     "**군끼리 새는가** — 같은 셀러 예산을 두 군이 나눠 쓰면 한쪽이 먼저 소진해 다른 쪽에 영향을 준다. {추론}",
+     "**구간으로 나누기** — 신규·기존 유저, 카테고리, 시간대별로 갈라 어디서 차이가 나는지 본다.[19]"
+    ]
+   },
+   "how_far": "면접에서 **기대와 다른 실험 하나를 골라 원인을 어떻게 좁혔는지** 순서대로 말할 수 있으면 됩니다. 직무 인터뷰가 심층 기술 면접입니다.[1]",
+   "refs": [
+    1,
+    3,
+    4,
+    16,
+    19
+   ],
+   "study": [
+    "kohavi-ko",
+    "delayed-fb"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "팀 내 ML Engineer, 데이터 분석가, 서버 엔지니어, 프로덕트 매니저와 함께 모호한 문제를 구체화하고, 필요한 논의를 먼저 제안하며 협업할 수 있는 분이면 좋아요.",
+   "short": "광고 문제는 여러 직군에 걸쳐 있어, 누가 무엇을 정해야 하는지 먼저 꺼내고 문서로 정리하는 사람이 필요해서.",
+   "why": "업무 마지막 줄이 이 네 직군과의 협업이고[1], 같은 조직은 직군이 섞인 작은 팀이 자율적으로 일한다고 소개합니다.[3][4]",
+   "actually": {
+    "items": [
+     "**먼저 꺼낼 논의** — 광고량 상한, 셀러 목표를 못 맞출 때의 정책, 보정을 바꾸는 날 공지 같은 것. {추론}",
+     "**공통 언어 만들기** — 'ROAS'를 무엇으로 셀지(며칠 안 전환까지·어떤 결제까지)처럼 정의를 맞춘다.[12][16] {추론}",
+     "**토스 커머스의 모습** — 같은 팀 발표는 데이터 사이언티스트가 모델을, ML 엔지니어가 서빙 구조를 나눠 설명했다.[2]"
+    ]
+   },
+   "how_far": "최소선은 **내가 시작한 논의가 결정·문서로 남은 사례**를 말할 수 있는 것입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    12,
+    16
+   ],
+   "study": [
+    "dmls-ko"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "모델 구조보다 '예측이 돈으로 바뀌는 길'에 관심이 많은 사람[1]",
+   "광고 매출·셀러 성과·유저 경험이 엇갈릴 때 숫자로 균형을 찾는 게 즐거운 사람[1][15]",
+   "정답 없는 실험 결과를 끝까지 파고드는 사람[1]",
+   "결제까지 이어지는 데이터로 광고 효과를 재 보고 싶은 사람[6][27]"
+  ],
+  "hard": [
+   "광고 도메인(모델·랭킹·입찰·과금·예산) 실무 경험을 요구해 광고를 처음 하는 사람에게는 문이 좁다[1]",
+   "예측 모델 자체를 만드는 자리가 아니라, 모델링만 하고 싶은 사람에게는 맞지 않을 수 있다[1] {추론}",
+   "돈이 걸린 로직이라 작은 실수가 셀러 광고비로 바로 번진다[1][9] {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "pCTR 모델이 평균 1.3배 부풀려 말하는 걸 발견했어요. 광고비와 랭킹에 무슨 일이 생기고, 무엇부터 고치겠어요?",
+   "a": "업무③ calibration — 과금·입찰이 그대로 틀어진다. 구간별 보정과 표본 비율 되돌리기.[1][9][10]"
+  },
+  {
+   "q": "셀러가 목표 ROAS 500%를 걸었는데 실제는 300%예요. 원인을 어떻게 좁히겠어요?",
+   "a": "업무② — 예측 오차·전환 지연·경쟁 입찰 중 어디인지.[1][12][16]"
+  },
+  {
+   "q": "추천 피드에 광고를 한 칸 더 넣자는 제안이 왔어요. 무엇을 재고 어떻게 결정하겠어요?",
+   "a": "업무④·요건 3번 — 단기 광고 매출과 장기 유저 반응.[1][14][15]"
+  },
+  {
+   "q": "하루 예산이 오전에 다 소진되는 셀러가 많아요. 페이싱을 어떻게 설계하겠어요?",
+   "a": "업무⑥ — 트래픽 예측과 참여율 되먹임.[1][13]"
+  },
+  {
+   "q": "노출이 거의 없는 새 광고의 pCTR을 어떻게 다루겠어요?",
+   "a": "업무③ uncertainty 보정 — 신뢰구간 하한·Thompson Sampling(같은 팀이 실제로 쓴 방법).[2][20][21]"
+  },
+  {
+   "q": "추천 지면의 광고 시스템을 처음부터 설계해 보세요(예측·보정·가치·배치·과금·페이싱).",
+   "a": "직무 인터뷰 주제가 ML 시스템 설계다.[1]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · ML 엔지니어 (Commerce Ads)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7784598003",
+   "kind": "posting",
+   "note": "팀 소개(커머스 추천팀 — 상품 추천과 광고 노출을 함께 최적화)·업무·요건·이력서 안내·합류 여정(심층 기술 면접·ML 시스템 설계)"
+  },
+  {
+   "n": 2,
+   "title": "SLASH 24 · 기반 데이터가 부족해도 OK! 커머스 추천 시스템 제작기",
+   "url": "https://www.youtube.com/watch?v=LAD6LYnkPsA",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스 커머스 데이터 사이언티스트·ML 엔지니어 발표 · 자막 전부 읽음(Thompson Sampling 코호트 밴딧·신뢰구간 하한 필터·신상품 무작위 노출·투타워 유저 임베딩·mixed negative sampling·temperature scaling·계속 학습·Hadoop/Spark/Airflow·Redis/Phoenix·Spring/Java 서빙·MLflow·피처 스토어·ONNX Runtime·A/B 테스트)"
+  },
+  {
+   "n": 3,
+   "title": "토스 채용 · ML 엔지니어 (Ads Ranking)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7998956003",
+   "kind": "posting",
+   "note": "같은 회사 광고 도메인 — Retrieval·Light Ranker·Calibration·Value Model·오프라인/온라인 괴리·직군 섞인 팀"
+  },
+  {
+   "n": 4,
+   "title": "토스 채용 · ML 엔지니어 (Ads Bidding & Pacing)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7998957003",
+   "kind": "posting",
+   "note": "같은 회사 광고 도메인 — 입찰·경매·과금·예산 페이싱·전환 지연·목표 CPA/ROAS"
+  },
+  {
+   "n": 5,
+   "title": "토스 채용 · ML 엔지니어 (Commerce Recommendation)",
+   "url": "https://toss.im/career/job-detail?gh_jid=6543801003",
+   "kind": "posting",
+   "note": "같은 팀의 추천 자리 — 광고·프로모션이 섞인 지면의 랭킹·블렌딩, 배치·실시간 서빙·모니터링"
+  },
+  {
+   "n": 6,
+   "title": "토스애즈 · 광고 소개 페이지",
+   "url": "https://toss.im/business/advertising",
+   "kind": "company",
+   "date": "2026",
+   "note": "구매 확률 기반 타겟팅·전환 예측 모델·결제 데이터로 오프라인 매출 검증·고객사 ROAS/CPA 사례(페이지 안 수치는 2026년 6월 내부 데이터 기준)"
+  },
+  {
+   "n": 7,
+   "title": "토스피드 · 토스애즈 광고 파트너 행사 '터처블 2026'",
+   "url": "https://toss.im/tossfeed/article/46893",
+   "kind": "company",
+   "date": "2026-03-20",
+   "note": "커머스 광고 상품 '바이 앳 토스(Buy at Toss)' — 앱 안 탐색부터 토스페이 결제까지"
+  },
+  {
+   "n": 8,
+   "title": "토스피드 · 첫 기술 경진대회 'NEXT ML 챌린지'",
+   "url": "https://toss.im/tossfeed/article/nextml",
+   "kind": "company",
+   "date": "2025-09-01",
+   "note": "주제가 실제 토스 앱 광고 데이터로 광고 클릭 확률을 예측하는 모델"
+  },
+  {
+   "n": 9,
+   "title": "He 외 · Practical Lessons from Predicting Clicks on Ads at Facebook (ADKDD 2014)",
+   "url": "https://ai.meta.com/research/publications/practical-lessons-from-predicting-clicks-on-ads-at-facebook/",
+   "kind": "reference",
+   "note": "다른 회사 — 정규화 엔트로피·보정(예측 평균/실제)·음성 표본 줄인 뒤 확률 되돌리기"
+  },
+  {
+   "n": 10,
+   "title": "McMahan 외 · Ad Click Prediction: a View from the Trenches (KDD 2013)",
+   "url": "https://research.google/pubs/ad-click-prediction-a-view-from-the-trenches/",
+   "kind": "reference",
+   "note": "다른 회사 — 광고 클릭 예측의 보정 층·감시"
+  },
+  {
+   "n": 11,
+   "title": "Edelman · Ostrovsky · Schwarz · Internet Advertising and the Generalized Second-Price Auction (AER 2007)",
+   "url": "https://www.aeaweb.org/articles?id=10.1257/aer.97.1.242",
+   "kind": "reference",
+   "note": "검색 광고 경매(GSP)의 기본 — 입찰·순위·2위 가격 과금"
+  },
+  {
+   "n": 12,
+   "title": "Google Ads 고객센터 · About Target ROAS bidding",
+   "url": "https://support.google.com/google-ads/answer/6268637?hl=en",
+   "kind": "reference",
+   "note": "다른 회사 — 목표 ROAS 자동 입찰의 공개 설명(목표가 높으면 트래픽 감소)"
+  },
+  {
+   "n": 13,
+   "title": "Xu 외 · Smart Pacing for Effective Online Ad Campaign Optimization (KDD 2015)",
+   "url": "https://arxiv.org/abs/1506.05851",
+   "kind": "reference",
+   "note": "다른 회사(Yahoo) — 예산 페이싱과 성과를 함께 맞추는 제어 방식"
+  },
+  {
+   "n": 14,
+   "title": "Yan 외 · Ads Allocation in Feed via Constrained Optimization (KDD 2020)",
+   "url": "https://doi.org/10.1145/3394486.3403391",
+   "kind": "reference",
+   "note": "다른 회사(LinkedIn) — 피드 안 광고 배치를 참여 제약 아래 매출 최대화로"
+  },
+  {
+   "n": 15,
+   "title": "Hohnhold · O'Brien · Tang · Focus on the Long-Term: It's Better for Users and Business (KDD 2015)",
+   "url": "https://research.google/pubs/focus-on-the-long-term-its-better-for-users-and-business/",
+   "kind": "reference",
+   "note": "다른 회사(Google) — 광고 맹목 학습의 장기 효과 측정, 모바일 검색 광고량 약 50% 감축"
+  },
+  {
+   "n": 16,
+   "title": "Chapelle · Modeling Delayed Feedback in Display Advertising (KDD 2014)",
+   "url": "https://doi.org/10.1145/2623330.2623634",
+   "kind": "reference",
+   "note": "클릭 뒤 늦게 오는 전환 — 최근 데이터의 CVR 과소평가"
+  },
+  {
+   "n": 17,
+   "title": "Guo 외 · On Calibration of Modern Neural Networks (2017)",
+   "url": "https://arxiv.org/abs/1706.04599",
+   "kind": "reference",
+   "note": "temperature scaling"
+  },
+  {
+   "n": 18,
+   "title": "scikit-learn 문서 · Probability calibration",
+   "url": "https://scikit-learn.org/stable/modules/calibration.html",
+   "kind": "reference",
+   "note": "보정 곡선·플랫 스케일링·등위 회귀"
+  },
+  {
+   "n": 19,
+   "title": "론 코하비 외 · 신뢰할 수 있는 온라인 종합 대조 실험 (Trustworthy Online Controlled Experiments 한국어판, 이기홍·김기영 옮김)",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000005201885",
+   "kind": "reference",
+   "note": "지표 묶음·실험 단위·SRM·구간 나눠 보기"
+  },
+  {
+   "n": 20,
+   "title": "Russo 외 · A Tutorial on Thompson Sampling (2017)",
+   "url": "https://arxiv.org/abs/1707.02038",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Wikipedia · Binomial proportion confidence interval (Wilson score interval)",
+   "url": "https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "칩 후옌 · 머신러닝 시스템 설계 (한빛미디어, 2023)",
+   "url": "https://www.oreilly.com/library/view/-/9791169210850/",
+   "kind": "reference",
+   "note": "Designing Machine Learning Systems 한국어판 — 학습/서빙 어긋남·배포 뒤 감시"
+  },
+  {
+   "n": 23,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 24,
+   "title": "자소설닷컴 — 토스뱅크 연봉(같은 집계)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "토스 — 회사 소개(사이트 하단 회사 정보)",
+   "url": "https://toss.im/company",
+   "kind": "company"
+  },
+  {
+   "n": 26,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 27,
+   "title": "토스피드 · 토스애즈 '광고 성과 측정 리포트' 공개",
+   "url": "https://toss.im/tossfeed/article/42357",
+   "kind": "company",
+   "date": "2025-11-05",
+   "note": "결제·금융 데이터로 광고가 만든 추가 성과를 매출 단위로 측정"
+  }
+ ],
+ "caveat": "커머스 광고 쪽이 직접 한 공개 발표·기술 글은 찾지 못했습니다. 팀의 일은 이 공고[1]와 같은 조직의 Ads Ranking·Bidding & Pacing 공고[3][4], 같은 팀 추천 공고[5]로, 데이터를 다루고 서빙하는 방식은 같은 팀의 2024년 SLASH 추천 시스템 발표[2]로 보였는데 그 발표는 광고가 아니라 추천이고 시점도 이르므로 지금 광고 시스템의 구조는 다를 수 있습니다. 토스애즈 자료[6][7][27]는 광고주를 위한 소개라 내부 계산 방식은 없습니다. eCPM·목표 ROAS 입찰·보정·페이싱·피드 광고 배치의 '보통 이런 것'은 다른 회사의 공개 논문과 도움말[9]~[16]로 보였고, 예시의 숫자·가중치·트래픽 곡선은 모두 설명용 가정입니다.",
+ "resources": [
+  {
+   "id": "slash24-reco",
+   "title": "SLASH 24 · 기반 데이터가 부족해도 OK! 커머스 추천 시스템 제작기",
+   "by": "토스 데이터 사이언티스트 · ML 엔지니어 · 20분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=LAD6LYnkPsA",
+   "why": "이 자리가 속한 커머스 추천팀의 발표. 밴딧·신뢰구간 하한·temperature scaling·배치/실시간 서빙이 나와, 불확실성 보정(업무③)과 서빙 협업(업무⑦)의 회사 쪽 실제 모습을 본다."
+  },
+  {
+   "id": "fb-ads-ctr",
+   "title": "Practical Lessons from Predicting Clicks on Ads at Facebook",
+   "by": "He 외 · ADKDD 2014",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://ai.meta.com/research/publications/practical-lessons-from-predicting-clicks-on-ads-at-facebook/",
+   "why": "광고 CTR 모델을 보정·정규화 엔트로피로 재는 법과 표본 줄인 뒤 확률 되돌리기. 업무③과 요건 2번의 '모델 지표' 바탕."
+  },
+  {
+   "id": "trenches",
+   "title": "Ad Click Prediction: a View from the Trenches",
+   "by": "McMahan 외 · Google · KDD 2013",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://research.google/pubs/ad-click-prediction-a-view-from-the-trenches/",
+   "why": "대규모 광고 예측 시스템의 보정 층과 감시. 예측을 돈 계산에 넣을 때 무엇이 틀어지는지(업무③·요건 4번)."
+  },
+  {
+   "id": "calibration",
+   "title": "On Calibration of Modern Neural Networks",
+   "by": "Guo 외 · 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1706.04599",
+   "why": "같은 팀이 쓴 temperature scaling의 원 논문. 업무③ calibration."
+  },
+  {
+   "id": "sklearn-calib",
+   "title": "Probability calibration (scikit-learn User Guide)",
+   "by": "scikit-learn · 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://scikit-learn.org/stable/modules/calibration.html",
+   "why": "보정 곡선 그리기와 플랫 스케일링·등위 회귀를 코드로 바로 해 본다. 업무③의 첫 연습."
+  },
+  {
+   "id": "gsp",
+   "title": "Internet Advertising and the Generalized Second-Price Auction",
+   "by": "Edelman · Ostrovsky · Schwarz · AER 2007",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.aeaweb.org/articles?id=10.1257/aer.97.1.242",
+   "why": "입찰가 × 클릭 확률로 줄 세우고 2위 가격으로 받는 광고 경매의 기본. 업무①②와 요건 1번(랭킹·과금)."
+  },
+  {
+   "id": "troas-help",
+   "title": "About Target ROAS bidding (Google Ads 고객센터)",
+   "by": "Google · 공식 도움말",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://support.google.com/google-ads/answer/6268637?hl=en",
+   "why": "셀러 입장에서 목표 ROAS 자동 입찰이 무엇을 약속하는지. 업무② target ROAS 로직의 '바깥 모습'을 먼저 본다."
+  },
+  {
+   "id": "delayed-fb",
+   "title": "Modeling Delayed Feedback in Display Advertising",
+   "by": "Olivier Chapelle · KDD 2014",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://doi.org/10.1145/2623330.2623634",
+   "why": "클릭 뒤 늦게 오는 전환을 다루는 기본 논문. 입찰(업무②)과 실험 해석(요건 6번)에서 최근 ROAS가 낮게 보이는 이유."
+  },
+  {
+   "id": "smart-pacing",
+   "title": "Smart Pacing for Effective Online Ad Campaign Optimization",
+   "by": "Xu 외 · Yahoo · KDD 2015",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1506.05851",
+   "why": "예산을 고르게 쓰면서 성과도 맞추는 제어 방식. 업무⑥ 페이싱 로직의 출발점."
+  },
+  {
+   "id": "feed-ads",
+   "title": "Ads Allocation in Feed via Constrained Optimization",
+   "by": "Yan 외 · LinkedIn · KDD 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://doi.org/10.1145/3394486.3403391",
+   "why": "피드 안에 광고 자리를 정하는 일을 제약 최적화로 푼 실서비스 사례. 업무④ 추천 랭킹 내 광고 노출 전략."
+  },
+  {
+   "id": "long-term",
+   "title": "Focus on the Long-Term: It's Better for Users and Business",
+   "by": "Hohnhold · O'Brien · Tang · Google · KDD 2015",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://research.google/pubs/focus-on-the-long-term-its-better-for-users-and-business/",
+   "why": "광고를 늘린 단기 이익과 장기 손해를 실험으로 잰 사례. 요건 3번(단기 성과 대 장기 신뢰)을 그대로 다룬다."
+  },
+  {
+   "id": "kohavi-ko",
+   "title": "신뢰할 수 있는 온라인 종합 대조 실험",
+   "by": "론 코하비 · 다이앤 탕 · 야 쉬 (이기홍 · 김기영 옮김)",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000005201885",
+   "why": "지표 묶음·실험 단위·SRM·장기 효과. 업무⑤의 온라인 검증과 요건 6번의 원인 찾기 기본서."
+  },
+  {
+   "id": "dmls-ko",
+   "title": "머신러닝 시스템 설계",
+   "by": "칩 후옌 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EC%B9%A9%20%ED%9B%84%EC%98%8C",
+   "why": "학습/서빙 어긋남·배포 뒤 감시·피처 파이프라인. 요건 4번(서빙에서 안정적으로)과 직무 인터뷰의 ML 시스템 설계 대비."
+  },
+  {
+   "id": "ts-tutorial",
+   "title": "A Tutorial on Thompson Sampling",
+   "by": "Russo 외 · 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1707.02038",
+   "why": "노출이 적은 광고의 불확실성을 다루는 대표 방법이자 같은 팀이 첫 추천에 쓴 방법. 업무③ uncertainty 보정."
+  },
+  {
+   "id": "cross-entropy-note",
+   "title": "But what is cross-entropy? (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/GlYgs6v2YfU",
+   "why": "CTR 모델의 logloss가 무엇을 재는지 그림으로. 보정과 모델 지표를 읽는 바탕."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "광고 시스템 한 바퀴",
+   "time": "1~2주",
+   "goal": "광고 노출 한 번이 예측 → 보정 → 가치·입찰 → 배치 → 과금 → 페이싱 → 실험으로 지나가는 길과, 이 자리가 맡는 칸을 말로 설명할 수 있다.",
+   "resources": [
+    "slash24-reco",
+    "troas-help",
+    "gsp",
+    "cross-entropy-note"
+   ],
+   "task": "가상 쇼핑 앱의 광고 한 번을 따라가는 표를 만든다 — 칸: 단계, 입력, 출력, 누가 맡나, 틀어지면 무엇이 깨지나."
+  },
+  {
+   "title": "예측을 믿을 만한 확률로",
+   "time": "2~3주",
+   "goal": "pCTR 모델의 보정 곡선을 그리고, 플랫 스케일링·등위 회귀·temperature scaling으로 고친 뒤 기대 광고비가 얼마나 바뀌는지 계산한다.",
+   "resources": [
+    "sklearn-calib",
+    "calibration",
+    "fb-ads-ctr",
+    "trenches"
+   ],
+   "task": "노출 50만 건 가상 로그(실제 클릭률을 심어 둠)로 로지스틱 회귀를 학습하되 음성을 10%만 남겨 일부러 부풀린 뒤, 세 가지 보정 전·후의 구간별 예측/실제 표와 1000회 노출당 기대 광고비를 비교한다."
+  },
+  {
+   "title": "가치와 입찰",
+   "time": "2~3주",
+   "goal": "pCTR·pCVR·가격·목표 ROAS로 클릭당 입찰을 계산하고, 2위 가격 경매로 실제 과금과 셀러 ROAS를 시뮬레이션한다.",
+   "resources": [
+    "gsp",
+    "troas-help",
+    "delayed-fb"
+   ],
+   "task": "셀러 20곳(목표 ROAS 각각 다름)·하루 10만 노출의 경매 시뮬레이터를 만들고, 예측 오차(±20%)와 전환 지연(3일)을 넣었을 때 셀러별 실제 ROAS가 목표에서 얼마나 벗어나는지 표로 낸다."
+  },
+  {
+   "title": "지면 배치와 페이싱",
+   "time": "2~3주",
+   "goal": "일반 추천 목록에 광고를 넣는 점수·간격 규칙과 시간대 페이싱을 만들고, 손잡이를 돌렸을 때 광고 매출·유저 클릭·소진율이 어떻게 움직이는지 보인다.",
+   "resources": [
+    "feed-ads",
+    "smart-pacing"
+   ],
+   "task": "3단계 시뮬레이터에 24시간 트래픽 곡선과 10칸 피드를 붙여, 광고 가중치 3가지 × 간격 규칙 2가지 × 페이싱 유무의 결과(광고 매출·일반 상품 클릭·예산 바닥 시각)를 한 표로 비교한다."
+  },
+  {
+   "title": "실험과 장기 효과 (선택)",
+   "time": "계속",
+   "goal": "광고 로직 변경을 A/B 실험으로 설계하고, SRM·전환 지연·예산 간섭을 걸러 결과를 읽을 수 있다.",
+   "resources": [
+    "kohavi-ko",
+    "long-term",
+    "dmls-ko"
+   ],
+   "task": "4단계 시뮬레이터의 유저를 두 군으로 나눠 광고량을 다르게 하고, 유저가 광고를 볼수록 클릭이 조금씩 줄도록(광고 맹목) 심은 뒤, 1주 결과와 8주 결과의 광고 매출 결론이 어떻게 달라지는지 보인다."
+  }
+ ],
+ "pay": {
+  "summary": "공공데이터 집계로 회사 전체 신입 초봉 **약 4,200만원**, 평균 **약 6,200만원** — 공시된 평균 급여는 없다(비상장). 이 자리는 광고 도메인 실무 경력직이라 초봉과는 거리가 멀다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 없고 직군 구분도 없다 [23]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 — 경력직이 섞인 값 [23]"
+   },
+   {
+    "label": "토스뱅크 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 계열사 값 — 견주어 보기용 [24]"
+   },
+   {
+    "label": "토스뱅크 평균",
+    "value": "약 7,208만원",
+    "amount": 7208,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 계열사 평균 [24]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고, 레퍼런스 체크 뒤 **처우 협의** 단계에서 사람마다 정한다 [1]. 비바리퍼블리카는 상장사가 아니라 사업보고서의 '직원 평균 급여'가 없다. 평균은 경력직이 섞인 회사 전체 값이라 초봉이 아니고, 이 자리처럼 광고 도메인 경력직의 제안은 이전 처우와 협의로 정해져 집계값과 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 복지를 소개한 2021년 공식 글이다 [26]. 지금도 같은지, 커머스 조직에도 그대로 적용되는지는 글에 없으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스(비바리퍼블리카) 본사",
+  "address": "서울특별시 강남구 테헤란로 142, 4·10~13·22·23층",
+  "postal": "06236",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "주소는 토스 회사 소개 페이지 하단의 회사 정보다 [25]. 공고의 근무지는 'Seoul'로만 적혀 있어 커머스 조직의 자리가 본사와 다를 수 있다 {추론}."
+ }
+}
