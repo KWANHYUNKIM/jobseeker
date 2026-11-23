@@ -1,0 +1,1089 @@
+{
+  "id": "tmap-auto-android-client",
+  "company": "티맵모빌리티",
+  "role": "Client Engineer (Android) – TMAP AUTO 개발",
+  "team": "TMAP AUTO Client 개발팀",
+  "jobs": [
+    "wanted-399666"
+  ],
+  "researched_at": "2026-11-23",
+  "tldr": {
+    "what": "볼보·BMW·벤츠·르노·GM 같은 완성차의 화면에 들어가는 **차량용 TMAP 내비 앱(TMAP AUTO)과 그 공통 SDK**(다른 앱이 가져다 쓰는 부품 묶음)를 만듭니다.[1][12] 탑재 차량은 2026년 9월 115만 대를 넘었습니다.[13]",
+    "env": "휴대폰이 아니라 **차 안에 깔린 안드로이드(AAOS)** 위에서, 차 속도·기어 같은 차량 신호와 회사마다 다른 요구사항, 그리고 출시 뒤 바꾸기 어려운 **양산 일정** 아래서 일합니다.[1][7][15]",
+    "oneline": "휴대폰 앱 경험 5년 위에 '차'를 얹는 자리. 화면 개발보다 **OEM 대응 · SDK 호환성 · 차 안의 위치 정확도**가 무게 중심입니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "TMAP AUTO Client 개발팀은 글로벌 완성차 업체 및 파트너와 협력하여 차량용 Android 애플리케이션과 SDK를 개발합니다.",
+      "short": "만드는 것이 둘이라서. 차에 깔리는 내비 앱과, 완성차·파트너가 가져다 쓰는 SDK.",
+      "why": "TMAP AUTO 는 차에 기본으로 들어가는 내비입니다. 처음 통합 인포테인먼트(내비·음성·음악을 한 화면에 묶은 차량 시스템)로 들어간 볼보는 300억원을 들여 티맵모빌리티와 **안드로이드 오토모티브 OS 기반**으로 공동 개발했습니다.[7] 같은 회사의 Android SDK 공고는 SDK 를 설계하고 API 문서·샘플 앱으로 **외부 개발자 연동**을 돕는 일이라고 적었습니다.[5]",
+      "actually": {
+        "items": [
+          "**앱** — TMAP 이 직접 화면을 그리는 완성 제품. 볼보·폴스타처럼 차 화면 자체가 TMAP 인 경우 {추론}",
+          "**SDK** — 지도·경로·안내 기능을 부품으로 묶어 OEM(완성차 회사)·파트너가 자기 화면 안에 넣게 하는 것.[5]",
+          "고객은 20여 개 브랜드다(볼보·폴스타·BMW·벤츠·JLR·마세라티·지프·BYD·르노·GM 등).[13]"
+        ]
+      },
+      "how_far": "이 자리는 두 가지를 다 만집니다. 앱만 해 본 사람은 '남이 내 코드를 가져다 쓴다'는 SDK 감각을, SDK 만 해 본 사람은 완성 화면 감각을 채우면 됩니다. {추론}",
+      "refs": [
+        1,
+        5,
+        7,
+        13
+      ],
+      "study": [
+        "aaos-docs"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "UI와 내비게이션 기능 개발부터 차량 시스템 연동, 양산 대응 및 출시 이후 품질 개선까지 담당합니다.",
+      "short": "만들고 끝이 아니라서. 차가 팔리기 전 검증부터 팔린 뒤 고치는 것까지 한 팀이 맡는다.",
+      "why": "같은 회사의 TMAP AUTO 개발 PM 공고는 요구사항 정의 → 개발 → 검증 → 릴리즈 → **양산 대응** → 운영 이슈까지를 한 흐름으로 적었습니다.[2] 벤츠 차량은 출시 뒤 서비스센터에서 TMAP AUTO 소프트웨어를 새로 올려 주는 방식으로 업데이트했습니다.[11]",
+      "flows": [
+        {
+          "caption": "차량용 앱 한 판이 차에 실리기까지(같은 회사 PM 공고의 흐름)[2]",
+          "steps": [
+            "요구사항 · OEM 이 원하는 기능·화면·신호",
+            "개발 · 앱·SDK 코드",
+            "검증 · 실제 차·벤치에서 시험",
+            "릴리즈 · OEM 에 납품",
+            "양산 대응 · 공장에서 깔리는 판 맞추기",
+            "운영 · 출시 뒤 업데이트·필드 이슈"
+          ],
+          "mine_from": 1
+        }
+      ],
+      "how_far": "일정·범위는 PM 이 잡고[2], 이 자리는 개발부터 출시 뒤 이슈까지 **코드로 답하는 쪽**입니다. {추론}",
+      "refs": [
+        2,
+        11
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "Software-Defined Vehicle(SDV) 시대를 선도할 TMAP 인포테인먼트를 함께 만들어가며,",
+      "short": "차의 기능을 소프트웨어가 정하는 흐름(SDV)이라서. 내비가 차의 중심 앱이 된다.",
+      "why": "SDV(소프트웨어 중심 자동차)는 차를 판 뒤에도 소프트웨어를 바꿔 기능을 더하는 차입니다. 회사는 TMAP AUTO 를 SDV 시대의 통합 인포테인먼트로 소개하고, 고객사 18곳에 내비와 콘텐츠를 함께 공급한다고 밝혔습니다(2024).[8] BMW 와는 BMW 의 SDV 전략에 맞춘 버전을 공동 개발했습니다.[10]",
+      "actually": {
+        "items": [
+          "BMW — HUD(앞유리에 띄우는 화면)·AR 내비, 충전소를 목적지로 잡으면 배터리 예열.[10]",
+          "벤츠 — 3세대 MBUX 에 맞춰 음성·터치·운전대 버튼으로 조작.[11]",
+          "다음 — 자체 고정밀 지도로 **3D 차로 단위 안내**(2027년 상용화 목표), 차 안의 AI 에이전트.[13]"
+        ]
+      },
+      "refs": [
+        8,
+        10,
+        11,
+        13
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "고객 만족을 직접 체감하는 짜릿한 경험을 함께할 멤버를 찾습니다.",
+      "short": "만든 것이 실제 차 화면에 바로 보여서. 반대로 버그도 운전자 눈앞에 보인다.",
+      "why": "TMAP AUTO 탑재 차량은 2025년 1월 77만 대에서 2026년 9월 115만 대 이상으로 늘었습니다.[13] 이 숫자만큼의 운전자가 이 팀이 만든 화면을 봅니다. {추론}",
+      "refs": [
+        13
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "AAOS 기반 TMAP AUTO 애플리케이션의 UI 및 내비게이션 기능을 설계 및 개발합니다.",
+      "short": "차 안 안드로이드(AAOS) 위의 내비 화면이라서. 폰 앱과 화면·입력·주행 중 제약이 다르다.",
+      "why": "AAOS(Android Automotive OS)는 휴대폰을 연결하는 안드로이드 오토와 달리 **차 자체에 깔린 안드로이드**입니다.[15] 볼보와 공동 개발한 TMAP 인포테인먼트가 이 OS 기반입니다.[7]",
+      "actually": {
+        "intro": "폰 앱과 달라지는 점(AAOS 공식 문서 기준).",
+        "items": [
+          "**주행 중 제약** — 차가 움직이면 동영상·키보드·긴 글을 막는 규칙(UX 제한)이 켜지고, 앱은 그 신호를 받아 화면을 줄여야 한다.[18]",
+          "**화면** — 가로로 긴 화면, 운전석에서 먼 터치, 회사마다 다른 해상도·비율.{추론}",
+          "**입력** — 터치 외에 운전대 버튼·로터리 노브·음성.[11]",
+          "**내비 기능** — 경로 탐색 결과 그리기, 재탐색, 차로 안내, 계기판·HUD 로 안내 보내기.[10]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "주행 상태 → 화면 제한(공식 문서의 기본 규칙)",
+          "body": "주차 중에는 제한이 없고, 주행 중에는 전부 제한됩니다.[18] 예: 주차 중에는 검색창에 글자를 치게 하고, 출발하면 키보드를 닫고 음성 검색 버튼만 남기는 식입니다. {추론}"
+        }
+      ],
+      "how_far": "디자인·주행 중 규칙은 OEM 과 기획이 정합니다. 개발자는 **UX 제한 신호를 받아 화면을 바꾸는 코드**와 여러 화면 크기에서 깨지지 않는 레이아웃을 맡습니다. {추론}",
+      "refs": [
+        7,
+        10,
+        11,
+        15,
+        18
+      ],
+      "study": [
+        "aaos-docs",
+        "car-uxr",
+        "android-cars"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "공통 SDK의 아키텍처·API 설계, 개발·배포 및 OEM·파트너 연동을 지원합니다.",
+      "short": "회사마다 따로 만들지 않으려고. 한 SDK 를 여러 OEM 이 쓰게 API 를 설계·배포한다.",
+      "why": "고객이 20여 개 브랜드라[13] 브랜드마다 내비를 새로 짜면 감당이 안 됩니다. {추론} 같은 회사 SDK 공고는 **모듈화된 SDK 구조, 안정적이고 확장 가능한 API, API 문서·샘플 앱**을 업무로 적었습니다.[5] 3D 지도 공고에는 TMAP Map SDK 로 차로 단위 안내를 만드는 일이 나옵니다.[3]",
+      "actually": {
+        "items": [
+          "**API 설계** — OEM 앱이 부를 함수(경로 시작·멈춤)와 받을 알림(재탐색·차로 안내)을 정한다.[5]",
+          "**버전 관리** — 판을 올릴 때 OEM 이 이미 쓰는 함수를 지우면 그쪽 빌드가 깨진다. 지우려면 주 버전을 올린다(유의적 버전).[25]",
+          "**자동 검사** — 공개 API 목록을 파일로 떠 두고, 바뀌면 빌드가 멈추게 한다(Kotlin binary-compatibility-validator).[24]",
+          "**배포** — 라이브러리(AAR) 판을 만들어 저장소에 올리고, 문서·샘플 앱을 같이 준다.[5]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "두 판의 공개 API 비교 — 깨지나?",
+          "body": "1.4 → 1.5 에서 startRoute(dest) 를 startRoute(dest, options) 로 바꾸면 '없어진 것'이 생깁니다. 그러면 1.5 가 아니라 2.0 이거나, 옛 함수를 남겨 둬야 합니다.[25]",
+          "lang": "python",
+          "code": "v14 = {\"NaviSdk.startRoute(dest)\", \"NaviSdk.stop()\", \"NaviListener.onReroute(route)\"}\nv15 = {\"NaviSdk.startRoute(dest, options)\", \"NaviSdk.stop()\", \"NaviListener.onReroute(route)\",\n       \"NaviListener.onLaneGuide(lanes)\"}\nremoved, added = sorted(v14 - v15), sorted(v15 - v14)\nprint(\"없어진 것:\", removed)\nprint(\"새로 생긴 것:\", added)\nprint(\"판정:\", \"주 버전(2.0)을 올리거나 옛 함수를 남겨야 함\" if removed else \"부 버전(1.5)으로 충분\")\n# 없어진 것: ['NaviSdk.startRoute(dest)']\n# 새로 생긴 것: ['NaviListener.onLaneGuide(lanes)', 'NaviSdk.startRoute(dest, options)']\n# 판정: 주 버전(2.0)을 올리거나 옛 함수를 남겨야 함"
+        }
+      ],
+      "how_far": "SDK 의 큰 구조는 팀이 이미 갖고 있을 것이고, 5년 차에게는 **새 기능의 API 를 깨지지 않게 얹고, OEM 개발자가 막힌 곳을 문서·샘플로 풀어 주는 일**이 기대됩니다. {추론}",
+      "refs": [
+        3,
+        5,
+        13,
+        24,
+        25
+      ],
+      "study": [
+        "semver",
+        "bcv",
+        "android-library"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "OEM별 요구사항 반영 및 차량 신호·시스템 API·백엔드를 연동합니다.",
+      "short": "차마다 원하는 게 달라서. 차 속도·기어 같은 신호를 받아 내비에 쓰고 서버와도 잇는다.",
+      "why": "같은 TMAP AUTO 라도 BMW 는 HUD·AR·배터리 예열[10], 벤츠는 MBUX 조작 방식[11]처럼 OEM 마다 붙는 기능이 다릅니다. 르노·GM 은 전 차종, 현대차·기아는 일부 차종에 들어가 있어[12] 맞춰야 할 조합이 많습니다.",
+      "actually": {
+        "intro": "AAOS 에서 차량 신호는 VHAL(차량 하드웨어 추상 계층) 속성으로 오고, 앱은 Car API 의 CarPropertyManager 로 읽습니다.[16][17]",
+        "items": [
+          "**차량 신호** — 차 속도(m/s, 후진이면 음수), 기어, 주차 브레이크, 배터리 잔량 같은 값을 구독한다.[16][17]",
+          "**시스템 API** — 계기판·HUD 에 다음 회전 안내 보내기, 음성 비서와 목적지 주고받기.[10][11]",
+          "**백엔드** — 실시간 교통·경로 서버, 휴대폰 앱에서 보낸 목적지 받기(BMW 앱 연동).[10]",
+          "**OEM별 분기** — 같은 코드에서 회사·차종마다 켜고 끄는 설정(기능 플래그) {추론}"
+        ]
+      },
+      "how_far": "어떤 신호를 줄지는 OEM 이 정하고 권한도 OEM 이 줍니다. 개발자는 **신호가 늦거나 없을 때도 앱이 버티게** 받아 쓰는 쪽입니다. {추론}",
+      "refs": [
+        10,
+        11,
+        12,
+        16,
+        17
+      ],
+      "study": [
+        "vhal-docs",
+        "car-property"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "기존 코드 분석, 리팩터링·모듈화 및 앱·SDK 성능·안정성을 개선합니다.",
+      "short": "10년 넘게 쌓인 코드라서. 쪼개고 정리해 차 안의 한정된 성능에서 안 죽게 만든다.",
+      "why": "TMAP 은 2012년 르노코리아(당시 르노삼성)부터 완성차에 내비를 공급했고[7], 14년 만에 누적 100만 대에 이르렀습니다.[12] 오래 쌓인 코드를 앱·SDK 가 같이 쓰려면 모듈로 나눠야 합니다. {추론}",
+      "actually": {
+        "items": [
+          "**모듈화** — 지도 그리기·경로·안내·차량 신호를 따로 빌드되는 모듈로 나눠, SDK 에 필요한 것만 싣는다.[20]",
+          "**성능** — 지도를 그리는 동안 화면이 끊기지 않게(프레임), 앱이 5초 넘게 멈춰 ANR(응답 없음)이 나지 않게.[21]",
+          "**안정성** — 메모리 누수·충돌을 줄인다. 차는 휴대폰처럼 사용자가 앱을 껐다 켜지 않는다. {추론}"
+        ]
+      },
+      "how_far": "구조를 한꺼번에 갈아엎기보다 **기능 하나씩 모듈로 떼어 내며 테스트를 붙이는 방식**이 보통입니다. {추론}",
+      "refs": [
+        7,
+        12,
+        20,
+        21
+      ],
+      "study": [
+        "android-modular",
+        "nowinandroid",
+        "android-memory"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "OEM 이슈 재현·원인 분석, 양산 전 검증 및 출시 이후 업데이트·필드 이슈를 대응합니다.",
+      "short": "버그가 실제 차·실제 길에서만 나와서. 그 상황을 되살려 원인을 찾고 고친 판을 낸다.",
+      "why": "티맵모빌리티는 2023년 A-SPICE(자동차 소프트웨어 개발 과정 평가 모델)를, 2021년부터 ISO/SAE 21434(차량 사이버보안) 등을 취득했습니다.[9] A-SPICE 는 요구사항이 코드·시험까지 이어지는지 따지는 기준이라[29], 이슈 하나를 고쳐도 **어느 요구사항의 어떤 시험이 바뀌었나**를 남깁니다. 같은 회사는 TMAP AUTO 제품군의 취약점 분석·시큐어 코딩 가이드를 맡는 차량 사이버보안 자리도 따로 뽑았습니다.[4]",
+      "actually": {
+        "items": [
+          "**재현** — OEM 이 보낸 로그·영상·주행 경로를 받아 같은 상황을 벤치나 에뮬레이터에서 다시 만든다. {추론}",
+          "**양산 전 검증** — 공장에서 깔릴 판을 실차·벤치에서 시험한다.[2]",
+          "**출시 뒤** — 업데이트 판 배포(벤츠는 서비스센터 업데이트[11]), 필드(실제 운행) 이슈 대응.[2]"
+        ]
+      },
+      "how_far": "인증 문서 작성은 품질 조직(Mobility QE)이 주도합니다.[9] 개발자는 **재현 절차·원인·고친 범위를 기록으로 남기는 습관**이면 됩니다. {추론}",
+      "refs": [
+        2,
+        9,
+        11,
+        29
+      ],
+      "study": [
+        "aspice"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Android 앱 또는 SDK 개발 경력 5년 이상이거나 이에 준하는 경험을 보유하신 분",
+      "short": "차 쪽 일을 바로 받으려면 안드로이드 기본은 이미 몸에 있어야 해서. 차 경험은 우대일 뿐.",
+      "why": "AAOS·차량 신호는 우대사항에 있고[1], 필수는 안드로이드입니다. 같은 회사의 휴대폰 TMAP 앱 공고도 5년 이상을 요구합니다.[6]",
+      "how_far": "숫자보다 **출시해 본 앱·SDK 가 있고 그 안의 구조를 설명할 수 있는지**가 중요합니다. 전형에 코딩테스트가 있습니다.[1]",
+      "refs": [
+        1,
+        6
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Kotlin 기반 개발 및 Java 코드 분석 및 유지보수 역량을 보유하신 분",
+      "short": "새 코드는 Kotlin 으로, 오래된 코드는 Java 로 남아 있어서. 둘 다 읽어야 한다.",
+      "why": "공고 기술 꼬리표가 Android·Java·Kotlin 입니다.[1] 오래된 내비 코드는 Java 일 가능성이 높습니다. {추론}",
+      "level": {
+        "basic": "Kotlin 문법(널 안전성·확장 함수·데이터 클래스), Java 를 읽고 고칠 수 있다.",
+        "work": "Kotlin 과 Java 가 섞인 모듈에서 서로 부르는 코드(@JvmStatic·@JvmOverloads 등)를 쓴다.",
+        "team": "SDK 를 Java 로 쓰는 OEM 도 있을 수 있어, Kotlin 으로 짠 API 가 Java 에서 자연스럽게 불리는지 신경 쓴다. {추론}"
+      },
+      "refs": [
+        1
+      ],
+      "study": [
+        "kotlin-coroutine-jo",
+        "kotlin-docs"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "Android UI 개발 및 다양한 디바이스·화면 환경 대응 경험을 보유하신 분",
+      "short": "차마다 화면 크기·비율·해상도가 달라서. 한 코드가 여러 화면에서 맞게 보여야 한다.",
+      "why": "20여 개 브랜드[13]의 차 화면은 가로형·세로형·계기판·HUD 로 다양합니다.[10] {추론}",
+      "how_far": "폰에서 태블릿·접는 폰 대응을 해 봤다면 그 경험이 그대로 쓰입니다. 화면 밀도(dp)·레이아웃 분기·여러 화면 동시 표시를 다뤄 봤으면 충분합니다. {추론}",
+      "refs": [
+        10,
+        13
+      ],
+      "study": [
+        "android-cars"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "앱 아키텍처·모듈 설계와 생명주기·메모리·비동기 처리에 대한 이해도를 보유하신 분",
+      "short": "내비는 몇 시간씩 켜져 신호를 계속 받아서. 생명주기·메모리·스레드를 잘못 다루면 차에서 죽는다.",
+      "why": "내비는 주행 내내 위치·차량 신호·서버 응답을 동시에 받습니다. {추론} 같은 회사 SDK 공고도 생명주기·메모리 관리·성능 최적화를 '기본기'로 적었습니다.[5]",
+      "actually": {
+        "items": [
+          "**아키텍처** — 화면·로직·데이터를 나누는 층 구조(UI·도메인·데이터).[19]",
+          "**생명주기** — 화면이 가려지거나 다시 그려질 때 구독을 끊고 다시 잇는다. 끊지 않은 리스너가 화면을 붙잡으면 메모리가 샌다.[22]",
+          "**비동기** — 코루틴으로 경로 요청·신호 처리를 메인 스레드 밖에서 하고, 화면이 사라지면 같이 취소한다.[23]",
+          "**메모리** — 지도 타일·이미지 캐시 크기를 정하고, 시스템이 메모리를 돌려 달라고 할 때 줄인다.[21]"
+        ]
+      },
+      "how_far": "면접에서는 **'이 객체는 언제 생기고 언제 사라지나'**를 그림으로 설명할 수 있는 정도가 기준이 됩니다. {추론}",
+      "refs": [
+        5,
+        19,
+        21,
+        22,
+        23
+      ],
+      "study": [
+        "android-arch",
+        "arch-ok",
+        "kotlin-coroutine-jo",
+        "android-lifecycle",
+        "android-memory"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "API·SDK 연동 및 제품 출시·유지보수 경험을 보유하신 분",
+      "short": "남의 SDK 를 붙여 봤어야 남이 쓸 SDK 를 만들 수 있어서. 출시 뒤 유지보수까지.",
+      "why": "이 팀은 SDK 를 쓰기도(지도·음성) 하고 만들기도 합니다.[1][3] 3D 지도 공고도 외부 SDK 연동 경험을 요구했습니다.[3]",
+      "how_far": "외부 SDK 버전을 올리다 깨진 경험, 출시한 앱을 몇 판 이상 유지보수한 경험을 구체적으로 말할 수 있으면 됩니다. {추론}",
+      "refs": [
+        1,
+        3
+      ],
+      "study": [
+        "android-library"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "주도적인 문제 해결 능력과 원활한 커뮤니케이션 및 협업 역량을 보유하신 분",
+      "short": "상대가 회사 밖(완성차·파트너)이라서. 내부 기획자보다 말이 덜 통하고 일정은 더 딱딱하다.",
+      "why": "이 팀은 글로벌 완성차·파트너와 협력한다고 적었고[1], 3D 지도 공고는 내비 엔진·서버·디자인 조직과의 협업을 적었습니다.[3]",
+      "how_far": "OEM 이슈를 받았을 때 **재현 → 원인 → 고칠 범위 → 일정**을 먼저 정리해 돌려주는 정도. {추론}",
+      "refs": [
+        1,
+        3
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "AAOS·IVI·차량용 내비게이션 개발 또는 OEM·Tier-1 양산 프로젝트 경험을 보유하신 분",
+      "short": "차 쪽 일의 박자(양산 일정·OEM 승인)를 이미 알면 적응이 빨라서. 없어도 지원은 된다.",
+      "why": "IVI(차량 인포테인먼트)와 Tier-1(완성차에 부품을 직접 대는 1차 협력사) 양산은 일정이 공장 생산에 묶여 있습니다. {추론} 티맵모빌리티 자신도 완성차에 소프트웨어를 대는 공급사로서 자동차 품질·보안 인증을 갖췄습니다.[9]",
+      "how_far": "AAOS 경험이 없다면 에뮬레이터로 AAOS 앱을 띄워 UX 제한·차량 속성을 만져 본 작은 프로젝트가 설명거리가 됩니다. {추론}",
+      "refs": [
+        9
+      ],
+      "study": [
+        "aaos-docs",
+        "embedded-android"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "Map·Navigation SDK 개발·활용 또는 SDK API 설계·호환성 관리·배포 경험을 보유하신 분",
+      "short": "이 팀이 만드는 것이 바로 지도·내비 SDK 라서. 호환성을 지켜 판을 내 본 경험이 그대로 쓰인다.",
+      "why": "공통 SDK 의 API 설계·배포가 주요업무에 있고[1], 같은 회사에 Android SDK 전담 공고(지도·내비 기능·AAOS 대응)가 따로 있습니다.[5]",
+      "how_far": "API 를 지울 때 바로 지우지 않고 '곧 없어짐(deprecated)'으로 한두 판 두는 절차, 공개 API 자동 검사[24], 유의적 버전[25]을 써 봤으면 강점입니다.",
+      "refs": [
+        1,
+        5,
+        24,
+        25
+      ],
+      "study": [
+        "bcv",
+        "semver"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "Dead Reckoning·Map Matching 등 위치 추정·보정 알고리즘 개발·튜닝·검증 경험을 보유하신 분",
+      "short": "터널·고가 밑에서 GPS 가 틀려서. 차 속도·회전으로 위치를 이어 가고 지도 위 길에 맞춘다.",
+      "why": "회사는 차로 단위 위치 정확도를 높이는 정밀측위와 3D 차로 안내를 2027년 목표로 잡았습니다.[13] 내비는 GPS 가 끊긴 순간에도 화살표가 움직여야 합니다. {추론}",
+      "actually": {
+        "items": [
+          "**Dead Reckoning(추측 항법)** — 마지막으로 확실한 위치에서 차 속도 × 시간, 회전 속도(요레이트) × 시간으로 다음 위치를 계산한다.[27]",
+          "**오차가 쌓인다** — 센서가 조금만 치우쳐도 시간이 갈수록 위치가 벌어지므로 GPS 가 돌아오면 다시 맞춘다.[27]",
+          "**Map Matching** — 흔들리는 GPS 점을 실제 도로 위에 올린다. 점에서 가까운 길만 보지 않고, 진행 방향·직전에 있던 길을 함께 본다(은닉 마르코프 모델로 가장 그럴듯한 길 순서를 고르는 방식이 대표적).[26]",
+          "**검증** — 같은 길을 여러 번 달린 기록으로 '엉뚱한 길로 튄 횟수'를 센다. {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "터널 10초 — 추측 항법과 센서 치우침",
+          "body": "초속 20m 로 5초 직진, 5초 우회전(초당 3도). 회전 센서가 초당 0.5도만 치우쳐도 10초 뒤 9.5m 가 벌어집니다 — 차로 두세 개 폭입니다.",
+          "lang": "python",
+          "code": "import math\nx = y = 0.0; hd = 0.0\nsig = [(20, 0)] * 5 + [(20, 3)] * 5   # (속도 m/s, 요레이트 도/s)\nfor t, (v, yaw) in enumerate(sig, 1):\n    hd += yaw\n    x += v * math.sin(math.radians(hd)); y += v * math.cos(math.radians(hd))\nprint(f\"10s 방향 {hd:.0f}도 동 {x:.1f}m 북 {y:.1f}m\")\nx2 = y2 = h2 = 0.0\nfor v, yaw in sig:\n    h2 += yaw + 0.5; x2 += v * math.sin(math.radians(h2)); y2 += v * math.cos(math.radians(h2))\nprint(f\"치우침 0.5도/s 일 때 10초 뒤 오차 {math.hypot(x2 - x, y2 - y):.1f}m\")\n# 10s 방향 15도 동 15.6m 북 198.5m\n# 치우침 0.5도/s 일 때 10초 뒤 오차 9.5m"
+        },
+        {
+          "title": "고가도로와 그 밑 길 — 직전 길을 보면 갈린다",
+          "body": "GPS 점이 고가(0m)와 하부도로(-4m) 사이 -2.5m 에 찍혔습니다. 거리만 보면 하부도로가 가깝지만, 직전에 고가에 있었다는 사실(길 바꾸기 벌점)을 넣으면 고가가 이깁니다. 진행 방향이 북쪽이면 골목으로 갑니다.",
+          "lang": "python",
+          "code": "import math\n# (시작점, 끝점, 진행 방향) — 고가 / 4m 남쪽 하부도로 / 북쪽 골목\nroads = {\"고가도로\": ((0, 0), (200, 0), 90), \"하부도로\": ((0, -4), (200, -4), 90), \"골목\": ((100, -50), (100, 50), 0)}\ndef dist(p, a, b):\n    (ax, ay), (bx, by), (px, py) = a, b, p\n    t = max(0, min(1, ((px-ax)*(bx-ax) + (py-ay)*(by-ay)) / ((bx-ax)**2 + (by-ay)**2)))\n    return math.dist(p, (ax + t*(bx-ax), ay + t*(by-ay)))\ndef match(p, heading, prev=None):\n    # 점수 = 길까지 거리 + 0.5 × 방향 차이(도) + (직전 길과 다르면 3)\n    return sorted((round(dist(p, a, b) + 0.5*abs((heading-h+180) % 360 - 180) + (0 if n == prev else 3), 1), n)\n                  for n, (a, b, h) in roads.items())\nprint(match((101, -2.5), 90, \"고가도로\"))\nprint(match((101, -2.5), 90))\nprint(match((101, -2.5), 5, \"고가도로\"))\n# 출력 —\n# [(2.5, '고가도로'), (4.5, '하부도로'), (49.0, '골목')]\n# [(4.5, '하부도로'), (5.5, '고가도로'), (49.0, '골목')]\n# [(6.5, '골목'), (45.0, '고가도로'), (47.0, '하부도로')]"
+        }
+      ],
+      "how_far": "알고리즘 연구는 엔진·측위 쪽 몫일 수 있습니다. {추론} 이 자리에서는 **엔진이 낸 위치를 화면에 부드럽게 잇고, 튀는 경우를 재현·검증하는** 데까지만 해도 우대가 됩니다. {추론}",
+      "refs": [
+        13,
+        26,
+        27
+      ],
+      "study": [
+        "newson-krumm",
+        "groves"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "GNSS·차량 신호·센서 데이터 및 Car API·Vehicle HAL 연동 경험을 보유하신 분",
+      "short": "위치 보정에 차 속도·바퀴·자이로 신호가 들어가서. 그 신호를 AAOS 의 정해진 길로 받는다.",
+      "why": "GNSS 는 GPS 를 포함한 위성 측위 전체를 말합니다. AAOS 에서 차량 신호는 Vehicle HAL 속성으로 정의되고[16], 앱은 Car API(CarPropertyManager)로 구독합니다.[17] 앞 줄의 추측 항법이 바로 이 신호를 씁니다.[27]",
+      "actually": {
+        "items": [
+          "차 속도 속성은 m/s 단위이고, 앞으로 가면 양수·뒤로 가면 음수다(기어와 상관없이).[16]",
+          "계기판에 보이는 속도는 별도 속성이고 실제 속도보다 조금 낮게 보이기도 한다 — 계산에는 실제 속도 쪽을 쓴다.[16]",
+          "속성마다 읽기 권한이 따로 있어 OEM 이 앱에 권한을 준다.[17]"
+        ]
+      },
+      "how_far": "VHAL 자체(차 쪽 구현)는 OEM·Tier-1 몫입니다. 이 자리는 **앱 쪽에서 구독·해제·단위·빈 값을 바르게 다루는 수준**이면 됩니다. {추론}",
+      "refs": [
+        16,
+        17,
+        27
+      ],
+      "study": [
+        "vhal-docs",
+        "car-property",
+        "groves"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "Jetpack Compose·Custom UI 개발, 성능 최적화 또는 테스트·CI/CD 자동화 경험을 보유하신 분",
+      "short": "지도 위 안내 화면은 기본 위젯으로 안 돼서 직접 그리고, 차마다 판이 많아 시험을 자동으로 돌린다.",
+      "why": "차로 안내·3D 지도 위 표시는 직접 그리는 화면(Custom UI)입니다.[3] OEM·차종마다 판이 갈려 손 시험만으로는 감당하기 어렵습니다. {추론}",
+      "actually": {
+        "items": [
+          "**Compose** — 선언형으로 화면을 짜되, 불필요한 다시 그리기(recomposition)를 줄여 프레임을 지킨다.[28]",
+          "**Custom UI** — 회전 안내 화살표·차로 그림을 Canvas 로 직접 그린다. {추론}",
+          "**테스트** — 로직 단위 테스트, 화면 테스트, 에뮬레이터 위 계측 테스트.[30]",
+          "**CI/CD** — 커밋마다 빌드·테스트·공개 API 검사를 자동으로 돌린다.[24]"
+        ]
+      },
+      "refs": [
+        3,
+        24,
+        28,
+        30
+      ],
+      "study": [
+        "compose-perf",
+        "android-testing"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "글로벌 OEM·파트너와 영어 기술 문서 검토 및 이메일·회의를 통한 기술 협의 가능하신 분",
+      "short": "고객이 볼보·BMW·벤츠·BYD 같은 해외 회사라서. 요구사항 문서와 이슈 메일이 영어로 온다.",
+      "why": "공급 브랜드 대부분이 해외 완성차입니다.[13] TMAP AUTO 개발 PM 공고도 기본 비즈니스 영어를 요구합니다.[2] AAOS 문서도 영어가 원본입니다.[15]",
+      "how_far": "유창한 회화보다 **영어 이슈 티켓을 읽고 재현 조건·원인을 짧게 적어 보내는** 수준이 먼저입니다. {추론}",
+      "refs": [
+        2,
+        13,
+        15
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "aaos-docs",
+      "title": "Android Automotive OS 개요 (AOSP 문서)",
+      "by": "Google · source.android.com",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://source.android.com/docs/automotive",
+      "why": "업무 첫 줄의 'AAOS 기반'이 무엇인지 — 차에 깔린 안드로이드의 구성(Car 서비스·VHAL·화면)을 한 번에 본다."
+    },
+    {
+      "id": "android-cars",
+      "title": "Android for Cars (개발자 문서)",
+      "by": "Google · developer.android.com",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://developer.android.com/training/cars",
+      "why": "차량 화면용 앱을 만들 때의 화면·입력·품질 기준. 요건 '다양한 화면 환경 대응'의 차 버전."
+    },
+    {
+      "id": "car-uxr",
+      "title": "Car User Experience Restrictions (주행 중 UX 제한)",
+      "by": "Google · source.android.com",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "https://source.android.com/docs/automotive/driver_distraction/car_uxr",
+      "why": "주차·공회전·주행 상태에 따라 무엇이 막히는지. AAOS 내비 UI 를 설계할 때 먼저 알아야 하는 규칙."
+    },
+    {
+      "id": "vhal-docs",
+      "title": "Vehicle HAL (VHAL) 문서",
+      "by": "Google · source.android.com",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://source.android.com/docs/automotive/vhal",
+      "why": "차량 신호가 어떤 이름·단위·권한으로 오는지. 우대 'Vehicle HAL 연동'과 업무 '차량 신호 연동'용."
+    },
+    {
+      "id": "car-property",
+      "title": "CarPropertyManager API 레퍼런스",
+      "by": "Google · developer.android.com",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://developer.android.com/reference/android/car/hardware/property/CarPropertyManager",
+      "why": "앱 쪽에서 차 속도·기어를 구독·해제하는 실제 API. 우대 'Car API 연동'."
+    },
+    {
+      "id": "embedded-android",
+      "title": "Embedded Android",
+      "by": "Karim Yaghmour · O'Reilly · 2013",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "url": "https://www.oreilly.com/library/view/embedded-android/9781449327958/",
+      "why": "앱 밑의 안드로이드(시스템 서비스·HAL·빌드)가 어떻게 돌아가는지. 오래된 판이지만 IVI·OEM 쪽 대화를 알아듣는 바탕."
+    },
+    {
+      "id": "android-arch",
+      "title": "앱 아키텍처 가이드",
+      "by": "Google · developer.android.com",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://developer.android.com/topic/architecture",
+      "why": "요건 '앱 아키텍처'의 기준점 — UI·도메인·데이터 층과 단방향 데이터 흐름."
+    },
+    {
+      "id": "arch-ok",
+      "title": "아키텍처를 알아야 앱 개발이 보인다 — Dagger2, Jetpack, RxJava를 통한 안드로이드 클린 코드 설계",
+      "by": "옥수환 · 비제이퍼블릭 · 2020",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002986668",
+      "why": "의존성 주입·Jetpack 으로 층을 나누는 법을 한국어로. 요건 '아키텍처·모듈 설계' 면접 준비."
+    },
+    {
+      "id": "android-modular",
+      "title": "Android 앱 모듈화 가이드",
+      "by": "Google · developer.android.com",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "https://developer.android.com/topic/modularization",
+      "why": "업무 '리팩터링·모듈화' — 기능 모듈·공통 모듈을 어떻게 나누고 의존을 어떻게 끊나."
+    },
+    {
+      "id": "nowinandroid",
+      "title": "Now in Android (공식 예제 앱 저장소)",
+      "by": "Google · GitHub",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://github.com/android/nowinandroid",
+      "why": "모듈화·Compose·테스트가 실제 앱 하나에 다 들어간 코드. 모듈 나누기를 눈으로 본다."
+    },
+    {
+      "id": "android-lifecycle",
+      "title": "수명 주기 인식 구성요소로 수명 주기 처리",
+      "by": "Google · developer.android.com",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://developer.android.com/topic/libraries/architecture/lifecycle",
+      "why": "요건 '생명주기' — 화면 상태에 맞춰 구독을 잇고 끊는 기본."
+    },
+    {
+      "id": "android-memory",
+      "title": "앱 메모리 관리",
+      "by": "Google · developer.android.com",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "https://developer.android.com/topic/performance/memory",
+      "why": "요건 '메모리'와 업무 '성능·안정성' — 누수 찾기, 시스템이 메모리를 돌려 달라고 할 때 대응."
+    },
+    {
+      "id": "kotlin-coroutine-jo",
+      "title": "코틀린 코루틴의 정석",
+      "by": "조세영 · 에이콘출판 · 2024",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000007956109",
+      "why": "요건 '비동기 처리' — 구조화된 동시성·취소·예외를 한국어로 끝까지. 저자의 인프런 강의 '코틀린 코루틴 완전 정복'도 있다."
+    },
+    {
+      "id": "kotlin-docs",
+      "title": "Kotlin 공식 문서 · Java 에서 Kotlin 부르기",
+      "by": "JetBrains · kotlinlang.org",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://kotlinlang.org/docs/java-to-kotlin-interop.html",
+      "why": "요건 'Kotlin 개발 + Java 유지보수' — 섞인 코드에서 서로 부를 때의 규칙(@JvmStatic·@JvmOverloads)."
+    },
+    {
+      "id": "android-library",
+      "title": "Android 라이브러리 만들기",
+      "by": "Google · developer.android.com",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://developer.android.com/studio/projects/android-library",
+      "why": "업무 'SDK 개발·배포' — AAR 라이브러리 모듈을 만들고 다른 앱에 붙이는 기본."
+    },
+    {
+      "id": "semver",
+      "title": "유의적 버전 2.0.0",
+      "by": "semver.org",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://semver.org/lang/ko/",
+      "why": "우대 'SDK 호환성 관리' — 언제 주·부·수 버전을 올리나."
+    },
+    {
+      "id": "bcv",
+      "title": "Kotlin binary-compatibility-validator",
+      "by": "JetBrains · GitHub",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://github.com/Kotlin/binary-compatibility-validator",
+      "why": "공개 API 목록을 파일로 떠서 바뀌면 빌드를 막는 도구. SDK 호환성을 CI 로 지키는 법."
+    },
+    {
+      "id": "newson-krumm",
+      "title": "Hidden Markov Map Matching Through Noise and Sparseness",
+      "by": "Paul Newson · John Krumm · ACM SIGSPATIAL GIS 2009",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://www.microsoft.com/research/publication/hidden-markov-map-matching-noise-sparseness/",
+      "why": "우대 'Map Matching' — GPS 점 순서를 도로 순서로 바꾸는 대표 방법. 8쪽짜리라 한 번에 읽힌다."
+    },
+    {
+      "id": "groves",
+      "title": "Principles of GNSS, Inertial, and Multisensor Integrated Navigation Systems (2판)",
+      "by": "Paul D. Groves · Artech House · 2013",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "url": "https://uk.artechhouse.com/Principles-of-GNSS-Inertial-and-Multisensor-Integrated-Navigation-Systems-Second-Edition-P2033.aspx",
+      "why": "우대 'Dead Reckoning·GNSS·센서' — 위성·관성·추측 항법을 묶는 원리. 필요한 장만 골라 본다."
+    },
+    {
+      "id": "compose-perf",
+      "title": "Compose 성능",
+      "by": "Google · developer.android.com",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "https://developer.android.com/develop/ui/compose/performance",
+      "why": "우대 'Jetpack Compose·성능 최적화' — 다시 그리기를 줄이는 법."
+    },
+    {
+      "id": "android-testing",
+      "title": "Android 앱 테스트",
+      "by": "Google · developer.android.com",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://developer.android.com/training/testing",
+      "why": "우대 '테스트·CI/CD 자동화' — 단위·화면·계측 테스트를 어디에 두나."
+    },
+    {
+      "id": "aspice",
+      "title": "Automotive SPICE (VDA QMC)",
+      "by": "VDA QMC",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://vda-qmc.de/en/automotive-spice/",
+      "why": "업무 '양산 전 검증'이 왜 기록을 남기는지 — 회사가 받은 A-SPICE 가 무엇을 보나."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "차 안의 안드로이드 감 잡기",
+      "time": "1~2주",
+      "goal": "AAOS 가 폰 안드로이드와 무엇이 다른지(UX 제한·차량 속성·화면) 말로 설명할 수 있다.",
+      "task": "Android Studio 의 AAOS 에뮬레이터에 빈 앱을 띄우고, 주행 상태를 바꿔 가며 UX 제한 신호를 받아 화면(키보드·목록 길이)을 바꾸는 작은 화면을 만든다.",
+      "resources": [
+        "aaos-docs",
+        "android-cars",
+        "car-uxr"
+      ]
+    },
+    {
+      "title": "차량 신호 받기",
+      "time": "1~2주",
+      "goal": "CarPropertyManager 로 속도·기어를 구독하고, 화면 생명주기에 맞춰 해제할 수 있다.",
+      "task": "에뮬레이터의 차량 속성 값을 바꿔 가며 속도(m/s → km/h)·기어를 띄우는 화면을 만든다. 화면을 닫았다 열어도 구독이 두 번 걸리지 않는지 로그로 확인한다.",
+      "resources": [
+        "vhal-docs",
+        "car-property",
+        "android-lifecycle"
+      ]
+    },
+    {
+      "title": "작은 내비 SDK 를 모듈로",
+      "time": "2~3주",
+      "goal": "기능을 모듈로 나누고, 공개 API 를 정해 다른 앱에서 붙여 쓰게 할 수 있다.",
+      "task": "가상 경로(좌표 목록)를 따라 '다음 회전까지 남은 거리'를 알려 주는 라이브러리 모듈을 만들고 샘플 앱에서 붙인다. 공개 API 자동 검사를 걸고, 함수 하나를 바꿔 검사가 빌드를 막는지 본다.",
+      "resources": [
+        "android-modular",
+        "nowinandroid",
+        "android-library",
+        "bcv",
+        "semver"
+      ]
+    },
+    {
+      "title": "비동기와 메모리",
+      "time": "2주",
+      "goal": "코루틴으로 신호·서버 응답을 받고, 화면이 사라지면 같이 취소되게 짤 수 있다. 누수를 찾아 고칠 수 있다.",
+      "task": "3단계 SDK 에 가짜 재탐색 서버(지연 2초)를 붙여 코루틴으로 부르고, 화면을 빠르게 껐다 켰을 때 요청이 취소되는지 확인한다. 일부러 리스너를 안 끊어 누수를 만들고 메모리 도구로 찾아낸다.",
+      "resources": [
+        "kotlin-coroutine-jo",
+        "android-arch",
+        "arch-ok",
+        "android-memory"
+      ]
+    },
+    {
+      "title": "위치 보정 맛보기 (선택)",
+      "time": "계속",
+      "goal": "추측 항법과 지도 맞추기가 왜 필요한지, 어디서 틀리는지 숫자로 보일 수 있다.",
+      "task": "가상 주행 기록(속도·요레이트·GPS 점)을 만들어 터널 구간을 추측 항법으로 잇고, 고가·하부도로가 겹친 지도에서 직전 길을 고려한 매칭과 안 한 매칭의 '튄 횟수'를 비교한다.",
+      "resources": [
+        "newson-krumm",
+        "groves"
+      ]
+    }
+  ],
+  "pay": {
+    "summary": "공시 숫자는 없다(비상장). 집계 사이트 기준 초봉 **약 4,793만원**, 평균 **약 7,049만원** — 이 자리는 5년 차 이상이라 처우 협의로 정한다",
+    "rows": [
+      {
+        "label": "신입 초봉",
+        "value": "약 4,793만원",
+        "amount": 4793,
+        "basis": "공공데이터 집계",
+        "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 기준일 표기가 없고 직군 구분도 없다 [14]"
+      },
+      {
+        "label": "직원 평균 연봉",
+        "value": "약 7,049만원",
+        "amount": 7049,
+        "basis": "공공데이터 집계",
+        "note": "같은 집계 — 경력직이 섞인 회사 전체 값이다 [14]"
+      }
+    ],
+    "how": "티맵모빌리티는 비상장사라 사업보고서의 직원 평균 급여 공시가 없다. 공고는 연봉을 적지 않고, 레퍼런스 체크 다음의 **처우협의 및 채용검진** 단계에서 정한다 [1]. 집계 평균은 신입부터 섞인 값이라 5년 차 이상 경력직이 받는 금액으로 읽으면 안 된다 {추론}."
+  },
+  "benefits": {
+    "items": [
+      {
+        "name": "근무 시간",
+        "detail": "4주 단위 160시간 안에서 스스로 계획, 매월 금요일 하루 쉬는 Happy Friday"
+      },
+      {
+        "name": "재택",
+        "detail": "주 1회"
+      },
+      {
+        "name": "휴가",
+        "detail": "연차 외 체력단련휴가 연 최대 5일, 사유·승인 없는 연차·반차·반반차"
+      },
+      {
+        "name": "장기 근속",
+        "detail": "재직 3년마다 30일 유급 휴가"
+      },
+      {
+        "name": "복리후생비",
+        "detail": "연 360만원(IT 기기·교육·여행·운동·가족 건강검진·휴양소 등)"
+      },
+      {
+        "name": "건강",
+        "detail": "협약 건강검진 연 40만원 한도, 본인·배우자·자녀·양가 부모 의료비, 독감 예방접종비, 헬스키퍼 안마 월 4회"
+      },
+      {
+        "name": "교육",
+        "detail": "직무 교육비 연 100만원까지"
+      },
+      {
+        "name": "통신비",
+        "detail": "SKT 이용자 월 최대 10만원"
+      },
+      {
+        "name": "포인트",
+        "detail": "생일 TMAP Point 10만, 농수산물 '자연이랑' 연 60만 포인트"
+      },
+      {
+        "name": "가족·주거",
+        "detail": "자녀 학자금, 금융기관 대출 이자 일부 지원"
+      },
+      {
+        "name": "사내",
+        "detail": "라운지·휴게실·수면실·폰부스, 최신 업무 장비·허먼밀러 의자, AI 도구(ChatGPT·Gemini·Claude·Codex)"
+      }
+    ],
+    "note": "이 공고의 '혜택 및 복지'를 그대로 옮겼다(2026-11 게시) [1]. 정규직 전체 기준으로 읽히지만 적용 조건은 처우 협의 때 확인한다 {추론}. 모든 직무에 3개월 시용기간이 있고 그동안 급여는 100% 지급된다 [1]."
+  },
+  "location": {
+    "name": "티맵모빌리티 본사 (SK-C타워)",
+    "address": "서울특별시 중구 충무로 15, SK-C타워 7-9층",
+    "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%A4%91%EA%B5%AC%20%EC%B6%A9%EB%AC%B4%EB%A1%9C%2015",
+    "note": "이 공고의 근무지는 '서울 중구'이고 [1], 같은 TMAP AUTO 개발 PM 공고가 충무로 15, SK-C타워 7-9층으로 적었다 [2]. 우편번호는 확인하지 못했다."
+  },
+  "fit": {
+    "good": [
+      "내가 만든 화면이 실제 차에 실리는 걸 보고 싶은 사람[13]",
+      "남이 쓰는 라이브러리(SDK)의 API 를 깨지 않게 다듬는 일이 즐거운 사람[5]",
+      "버그를 '현장에서만 나는 상황'까지 파고들어 재현하는 사람[1]",
+      "위치·센서처럼 숫자로 맞고 틀림이 갈리는 문제가 궁금한 사람[13]"
+    ],
+    "hard": [
+      "출시 주기가 완성차 양산 일정에 묶여, 폰 앱처럼 매주 마음대로 내보내기 어렵다[2]",
+      "실제 차·벤치가 없으면 재현이 안 되는 이슈가 있다 {추론}",
+      "고객사(해외 OEM)마다 요구가 달라 같은 기능을 여러 판으로 유지한다[12][13]",
+      "품질 인증(A-SPICE) 때문에 고칠 때마다 기록이 따라붙는다[9]"
+    ]
+  },
+  "interview": [
+    {
+      "q": "차가 움직이기 시작하면 내비 검색 화면은 어떻게 바뀌어야 하나요? 그 신호는 어디서 받나요?",
+      "a": "AAOS 의 주행 상태 → UX 제한 규칙.[18]"
+    },
+    {
+      "q": "SDK 에서 함수 인자를 하나 더하고 싶어요. OEM 앱이 안 깨지게 하려면?",
+      "a": "기본값·오버로드, 옛 함수 유지, 유의적 버전, 공개 API 자동 검사.[24][25]"
+    },
+    {
+      "q": "터널에서 GPS 가 끊겼을 때 화살표는 무엇으로 움직이나요? 오래 끊기면 무슨 일이 생기나요?",
+      "a": "차 속도·요레이트로 추측 항법, 시간이 갈수록 오차가 쌓인다.[27]"
+    },
+    {
+      "q": "고가도로 위인데 지도는 밑의 길로 안내해요. 원인과 고칠 방법은?",
+      "a": "거리만 보는 매칭의 한계 — 방향·직전 경로를 같이 본다.[26]"
+    },
+    {
+      "q": "차량 속도 속성을 구독하는 화면이 회전·재생성될 때 생길 수 있는 문제는?",
+      "a": "구독 중복·해제 누락으로 인한 누수.[17][22]"
+    },
+    {
+      "q": "해외 OEM 이 '가끔 경로 안내가 멈춘다'는 영어 메일만 보냈어요. 무엇부터 물어보겠어요?",
+      "a": "재현 조건(차종·판·경로·로그) 수집 — 업무의 'OEM 이슈 재현'.[1]"
+    }
+  ],
+  "sources": [
+    {
+      "n": 1,
+      "title": "원티드 · [티맵모빌리티] Client Engineer (Android) – TMAP AUTO 개발",
+      "url": "https://www.wanted.co.kr/wd/399666",
+      "kind": "posting",
+      "date": "2026-11-23",
+      "note": "팀 소개·업무·요건·우대·복지·전형(서류 → 코딩테스트 → 1·2차 인터뷰 → 레퍼런스 체크 → 처우협의)"
+    },
+    {
+      "n": 2,
+      "title": "원티드 · [티맵모빌리티] 개발 Project Manager - TMAP AUTO 개발 프로젝트 리딩",
+      "url": "https://www.wanted.co.kr/wd/361653",
+      "kind": "posting",
+      "note": "같은 제품의 PM 자리 — 요구사항 → 개발 → 검증 → 릴리즈 → 양산 대응 → 운영, 기본 비즈니스 영어, 근무지 충무로 15 SK-C타워 7-9층"
+    },
+    {
+      "n": 3,
+      "title": "원티드 · [티맵모빌리티] 3D Map Client Engineer",
+      "url": "https://www.wanted.co.kr/wd/367677",
+      "kind": "posting",
+      "note": "마감 — OEM향 차량 내비의 3D 지도, TMAP Map SDK 로 차로 단위 안내, ADAS 실시간 데이터 표시, 외부 SDK 연동"
+    },
+    {
+      "n": 4,
+      "title": "원티드 · [티맵모빌리티] Automotive Cybersecurity Manager",
+      "url": "https://www.wanted.co.kr/wd/375202",
+      "kind": "posting",
+      "note": "마감 — TMAP AUTO 제품군 취약점 분석·시큐어 코딩 가이드, ISO/SAE 21434"
+    },
+    {
+      "n": 5,
+      "title": "원티드 · [티맵모빌리티] Android SDK Engineer",
+      "url": "https://www.wanted.co.kr/wd/378307",
+      "kind": "posting",
+      "note": "모듈화된 SDK 구조·API·문서·샘플 앱, 지도/내비 기능, AAOS 대응, 생명주기·메모리 기본기"
+    },
+    {
+      "n": 6,
+      "title": "원티드 · [티맵모빌리티] Client Engineer (Android)",
+      "url": "https://www.wanted.co.kr/wd/393102",
+      "kind": "posting",
+      "note": "휴대폰 TMAP 앱(MAU 1,500만 이상) 자리 — 같은 5년 이상 요건"
+    },
+    {
+      "n": 7,
+      "title": "전자신문 · 티맵 오토, 볼보·지프·BMW 등 7곳 '러브콜'",
+      "url": "https://www.etnews.com/20220727000185",
+      "kind": "news",
+      "date": "2022-07-27",
+      "note": "볼보 300억 공동 개발 — 안드로이드 오토모티브 OS 기반, NUGU·FLO 내장. 르노코리아 2012년부터 공급"
+    },
+    {
+      "n": 8,
+      "title": "전자신문 · [카&테크] 소프트웨어 중심 자동차(SDV)를 위한 '티맵' 인포테인먼트",
+      "url": "https://m.etnews.com/20240404000247",
+      "kind": "news",
+      "date": "2024-04-04",
+      "note": "고객사 18곳, 내비+콘텐츠 풀 시스템, 자체 ADAS 지도"
+    },
+    {
+      "n": 9,
+      "title": "바이라인네트워크 · 'A-SPICE' 인증 획득한 TMAP AUTO… 더 똑똑하고 안전해졌다",
+      "url": "https://byline.network/2023/12/18-287/",
+      "kind": "news",
+      "date": "2023-12-18",
+      "note": "A-SPICE 획득, 2021년부터 ISO/SAE 21434·TISAX 등, Mobility QE 리더 발언"
+    },
+    {
+      "n": 10,
+      "title": "테크42 · 티맵-BMW 공동개발한 TMAP 오토…BMW X1, 2 시리즈 액티브 투어러에 탑재",
+      "url": "https://www.tech42.co.kr/%ed%8b%b0%eb%a7%b5-bmw-%ea%b3%b5%eb%8f%99%ea%b0%9c%eb%b0%9c%ed%95%9c-tmap-%ec%98%a4%ed%86%a0bmw-x1-2-%ec%8b%9c%eb%a6%ac%ec%a6%88-%ec%95%a1%ed%8b%b0%eb%b8%8c-%ed%88%ac%ec%96%b4%eb%9f%ac/",
+      "kind": "news",
+      "date": "2024-02-14",
+      "note": "HUD·AR 내비, 충전소 목적지 시 배터리 예열, My BMW 앱 목적지 전송"
+    },
+    {
+      "n": 11,
+      "title": "CEO스코어데일리 · 티맵모빌리티-벤츠 코리아, 티맵 오토 차량 탑재 협력",
+      "url": "https://www.ceoscoredaily.com/page/view/2024121809241493587",
+      "kind": "news",
+      "date": "2024-12-18",
+      "note": "3세대 MBUX, 음성·터치·운전대 버튼 조작, 기존 차량 서비스센터 업데이트"
+    },
+    {
+      "n": 12,
+      "title": "CEO스코어데일리 · 14년 만에 차량 100만대… 글로벌 완성차 20여곳으로 확산",
+      "url": "https://www.ceoscoredaily.com/page/view/2026040810153439395",
+      "kind": "news",
+      "date": "2026-04-08",
+      "note": "2026년 2월 누적 100만 대, 르노·GM 전 차종, 현대차·기아 일부 차종"
+    },
+    {
+      "n": 13,
+      "title": "바이라인네트워크 · 티맵, 월평균 방문 4억4600만회…차량 탑재 115만대 돌파",
+      "url": "https://byline.network/2026/10/21_2018283/",
+      "kind": "news",
+      "date": "2026-10-21",
+      "note": "77만(2025-01) → 115만 대 이상(2026-09), 20여 브랜드, 3D 차로 인식 2027년 목표, 정밀측위, AI 에이전트"
+    },
+    {
+      "n": 14,
+      "title": "자소설닷컴 · 티맵모빌리티 기업정보(공공데이터 집계: 초봉·평균)",
+      "url": "https://jasoseol.com/companies/11668",
+      "kind": "reference",
+      "note": "기준일 표기 없음 — 같은 회사 다른 풀이(tmap-security-technology-engineer)에서 확인한 값"
+    },
+    {
+      "n": 15,
+      "title": "AOSP · Android Automotive",
+      "url": "https://source.android.com/docs/automotive",
+      "kind": "reference"
+    },
+    {
+      "n": 16,
+      "title": "AOSP · Vehicle HAL (VHAL)",
+      "url": "https://source.android.com/docs/automotive/vhal",
+      "kind": "reference",
+      "note": "PERF_VEHICLE_SPEED(m/s, 앞 양수·뒤 음수)·PERF_VEHICLE_SPEED_DISPLAY 정의는 AOSP types.hal"
+    },
+    {
+      "n": 17,
+      "title": "Android 레퍼런스 · CarPropertyManager",
+      "url": "https://developer.android.com/reference/android/car/hardware/property/CarPropertyManager",
+      "kind": "reference"
+    },
+    {
+      "n": 18,
+      "title": "AOSP · Car User Experience Restrictions",
+      "url": "https://source.android.com/docs/automotive/driver_distraction/car_uxr",
+      "kind": "reference",
+      "note": "주차 = 제한 없음, 주행 = 전부 제한"
+    },
+    {
+      "n": 19,
+      "title": "Android Developers · 앱 아키텍처 가이드",
+      "url": "https://developer.android.com/topic/architecture",
+      "kind": "reference"
+    },
+    {
+      "n": 20,
+      "title": "Android Developers · 앱 모듈화 가이드",
+      "url": "https://developer.android.com/topic/modularization",
+      "kind": "reference"
+    },
+    {
+      "n": 21,
+      "title": "Android Developers · 앱 메모리 관리",
+      "url": "https://developer.android.com/topic/performance/memory",
+      "kind": "reference"
+    },
+    {
+      "n": 22,
+      "title": "Android Developers · 수명 주기 인식 구성요소",
+      "url": "https://developer.android.com/topic/libraries/architecture/lifecycle",
+      "kind": "reference"
+    },
+    {
+      "n": 23,
+      "title": "Android Developers · Android 의 Kotlin 코루틴",
+      "url": "https://developer.android.com/kotlin/coroutines",
+      "kind": "reference"
+    },
+    {
+      "n": 24,
+      "title": "Kotlin · binary-compatibility-validator",
+      "url": "https://github.com/Kotlin/binary-compatibility-validator",
+      "kind": "reference"
+    },
+    {
+      "n": 25,
+      "title": "유의적 버전 2.0.0",
+      "url": "https://semver.org/lang/ko/",
+      "kind": "reference"
+    },
+    {
+      "n": 26,
+      "title": "Newson & Krumm · Hidden Markov Map Matching Through Noise and Sparseness (ACM SIGSPATIAL GIS 2009)",
+      "url": "https://www.microsoft.com/research/publication/hidden-markov-map-matching-noise-sparseness/",
+      "kind": "reference"
+    },
+    {
+      "n": 27,
+      "title": "Groves · Principles of GNSS, Inertial, and Multisensor Integrated Navigation Systems, 2판 (Artech House, 2013)",
+      "url": "https://uk.artechhouse.com/Principles-of-GNSS-Inertial-and-Multisensor-Integrated-Navigation-Systems-Second-Edition-P2033.aspx",
+      "kind": "reference",
+      "note": "추측 항법·관성 센서 오차·GNSS 결합"
+    },
+    {
+      "n": 28,
+      "title": "Android Developers · Compose 성능",
+      "url": "https://developer.android.com/develop/ui/compose/performance",
+      "kind": "reference"
+    },
+    {
+      "n": 29,
+      "title": "VDA QMC · Automotive SPICE",
+      "url": "https://vda-qmc.de/en/automotive-spice/",
+      "kind": "reference"
+    },
+    {
+      "n": 30,
+      "title": "Android Developers · 앱 테스트",
+      "url": "https://developer.android.com/training/testing",
+      "kind": "reference"
+    }
+  ],
+  "caveat": "TMAP AUTO Client 개발팀의 기술 발표·블로그는 찾지 못했다(받은 영상 없음). 회사 근거는 이 공고·같은 회사 다른 공고·보도(2022~2026)이고, AAOS 기반이 명시된 것은 볼보 공동 개발 건과 이 공고다 — 다른 브랜드 차량이 어떤 OS 위에서 도는지는 공개되지 않았다. 위치 보정·SDK 호환성·차량 신호 처리의 구체 방식은 AOSP 공식 문서와 공개 논문·교재로 '보통 이런 것'을 보였다."
+}
