@@ -3,6 +3,7 @@
  "jobs": {
   "wanted-395987": "datax-software-engineer-japan",
   "wanted-368239": "finatext-brokerage-fullstack",
+  "wanted-385077": "go-android-in-vehicle",
   "wanted-377332": "ldf-linemanga-data-scientist",
   "wanted-391370": "litalico-data-engineer",
   "wanted-397938": "litalico-frontend-b2b-saas",
@@ -17,6 +18,7 @@
   "ats-skcareers:sk:R262275": "skax-ax-ai-pm-pl",
   "ats-skcareers:sk:R262283": "skax-ax-ai-project-pm-pl",
   "ats-skcareers:sk:R262418": "skax-contact-center-application",
+  "ats-skcareers:sk:R262274": "skax-ict-application-contract",
   "ats-skcareers:sk:R262281": "skax-ict-application-ops",
   "ats-skcareers:sk:R262415": "skax-mfg-data-engineer-k8s",
   "wanted-396609": "skax-mfg-data-engineer-k8s",
@@ -148,6 +150,16 @@
    "lines": 25
   },
   {
+   "id": "go-android-in-vehicle",
+   "company": "GO株式会社 (GO Inc.)",
+   "role": "Android 엔지니어 — 차량용 앱",
+   "jobs": [
+    "wanted-385077"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 22
+  },
+  {
    "id": "ldf-linemanga-data-scientist",
    "company": "LINE Digital Frontier",
    "role": "LINE 만화 데이터 사이언티스트 (일본 도쿄 근무)",
@@ -250,6 +262,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 36
+  },
+  {
+   "id": "skax-ict-application-contract",
+   "company": "SK주식회사(AX)",
+   "role": "Application 구축/운영 전문가 (계약직)",
+   "jobs": [
+    "ats-skcareers:sk:R262274"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 29
   },
   {
    "id": "skax-ict-application-ops",

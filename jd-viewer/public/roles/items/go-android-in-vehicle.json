@@ -1,0 +1,1006 @@
+{
+ "id": "go-android-in-vehicle",
+ "company": "GO株式会社 (GO Inc.)",
+ "role": "Android 엔지니어 — 차량용 앱",
+ "team": "IoT本部 IoT開発部 · 차량 시스템 소프트웨어 그룹",
+ "jobs": [
+  "wanted-385077"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "일본 택시 호출 앱 『GO』의 **택시 안에 달린 기계**에서 도는 안드로이드 앱을 만듭니다 — 기사용 업무 앱, 뒷좌석 결제·광고 태블릿, GPS로 요금을 계산하는 소프트메터, 그리고 이 앱들을 켜고 고치고 기기와 이어 주는 바탕 앱입니다.[1]",
+  "env": "회사가 직접 만든 단말 위에서 Kotlin·Jetpack·코루틴으로 개발하고, 단말은 택시 메터·결제기·BLE 로거와 블루투스·시리얼로 붙습니다. 약 10만 대 규모 택시가 하루 24시간 돌리는 기계라 **끊김·열·배터리**가 일상 문제입니다.[1][4][5]",
+  "oneline": "화면만 만드는 안드로이드가 아니라 **하드웨어에 붙는 안드로이드**. 비즈니스 일본어와 일본 이주가 필수인 5~15년 경력 자리입니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "タクシー車両で動くAndroidアプリ（車載アプリ）の開発をお任せします。",
+   "short": "택시 안에 고정된 회사 단말에서 하루 종일 도는 안드로이드 앱을 만든다.",
+   "why": "GO는 택시 앱만 파는 회사가 아니라 택시 안의 단말(기사 태블릿·뒷좌석 태블릿·드라이브 레코더)을 **직접 설계해 싣는** 회사입니다.[8][9] 뒷좌석 태블릿 개발은 2016년에 시작했고, 2025년부터 36개 도도부현 약 7만 1천 대의 뒷좌석 단말을 새 기종으로 바꾸고 있습니다.[8] 그 단말 위에서 도는 소프트웨어를 이 팀이 맡습니다.[1]",
+   "actually": {
+    "intro": "보통 스마트폰 앱과 다른 점입니다.",
+    "items": [
+     "**Play 스토어가 아니다** — 앱이 회사가 손본 전용 단말에 깔리므로, 화면 배치도 하드웨어 팀과 같이 정한다. 새 단말이라 OS 쪽까지 건드릴 수 있었다.[7]",
+     "**사람이 거의 안 만진다** — 단말이 켜져 있는 동안 계속 돌고, 야외·무인 차량·터널·산간·한랭지·고온지에서 쓴다.[5]",
+     "**기계가 뜨겁다** — 설치 자리는 여름에 80℃를 넘고, 시중 태블릿은 배터리가 부풀어 못 썼다.[7] 택시는 자가용의 약 7배를 달린다.[8]",
+     "**멈추면 영업이 멈춘다** — 단말이 GO 주문 받기·결제·광고를 하므로 멈추면 택시 영업에 큰 손해가 난다.[5]",
+     "**사무실 책상에 택시가 있다** — 개발자가 메터·결제기·로거를 상자에 담아 집에서 시험하는 사진을 발표에서 보였다.[3]"
+    ]
+   },
+   "how_far": "경력 5~15년 조건이라 화면 하나가 아니라 **앱 하나를 책임지는** 수준입니다.[1] 제품마다 안드로이드 엔지니어 5명 안팎이 붙습니다.[1]",
+   "refs": [
+    1,
+    3,
+    5,
+    7,
+    8,
+    9
+   ],
+   "study": [
+    "go-techtalk2",
+    "go-logdeck"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "車載アプリにはいくつか種類がありますが、Bluetoothやシリアル通信などのハードウェア連携、位置情報、MQTTなどIoTならではの技術や工夫が多くあります。",
+   "short": "앱이 서버뿐 아니라 메터·결제기 같은 기계와 블루투스·시리얼로 말을 주고받아야 해서.",
+   "why": "택시 안에는 메터, 결제기, 영수증 프린터, BLE 로거, 뒷좌석 태블릿, 차량 신호, 드라이브 레코더가 있고 기사 단말이 이들을 묶습니다. 밖으로는 4G와 AWS IoT로 이어집니다.[3][4] 메터는 요금 계산과 영업 상태(빈차·영업 중)를 맡는 **택시 업무의 중심**이라 앱이 메터 상태를 따라 움직입니다.[3][5]",
+   "actually": {
+    "intro": "회사 발표에 나온 연결 방식입니다.[3][4]",
+    "items": [
+     "**메터 ↔ 기사 단말** — 메터를 BLE 로거가 받아 블루투스 저전력(BLE)으로 넘긴다. 앱 안에서는 메터를 한 겹 감싼 객체(추상화)로 다룬다.",
+     "**바이트 읽기** — 메터 사양서는 값마다 형식이 다르다: 상태는 BCD(10진 한 자리를 4비트에 담는 꼴), 요금은 16진, 번호는 ASCII. 사양서마다 바이트 순서(빅·리틀 엔디언)도 다르다.",
+     "**결제기** — 영수증 출력과 결제 상세를 주고받는다. 영수증 글자 인코딩(Shift JIS)도 맞춰야 한다. 결제기는 유선(USB)인데도 인식이 안 될 때가 있다.[5]",
+     "**뒷좌석 태블릿** — SIM 없는 태블릿을 Wi-Fi Direct로 기사 단말에 붙이고 VpnService로 통신을 넘겨 통신비를 줄였다. 이때 TCP·IP 머리말을 직접 만들어야 했다.",
+     "**MQTT** — 기기와 서버 사이에 쓰는 가벼운 메시지 규약. 같은 메시지가 두 번 올 수 있는 수준(QoS 1)을 쓰면 받는 쪽이 중복을 걸러야 한다.[22]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "메터 프레임 읽기 — 같은 4바이트가 순서에 따라 1000 또는 38억",
+     "body": "가상의 프레임입니다(발표의 사양서 예처럼 상태 BCD·요금 16진·번호 ASCII로 나눴습니다).[4] 마지막 줄처럼 BCD 0x12는 정수로 읽으면 18이지만 뜻은 12입니다. 직접 돌린 출력입니다(Kotlin 대신 Python).",
+     "lang": "python",
+     "code": "import struct\n\nframe = bytes([0x02, 0x00, 0x00, 0x03, 0xE8]) + b\"0012345\"\n\ndef bcd(b):\n    return (b >> 4) * 10 + (b & 0x0F)\n\nprint(\"state =\", bcd(frame[0]))\nbig, = struct.unpack(\">I\", frame[1:5])\nlittle, = struct.unpack(\"<I\", frame[1:5])\nprint(\"fare big =\", big, \"/ little =\", little)\nprint(\"no =\", frame[5:12].decode(\"ascii\"))\nprint(\"bcd(0x12) =\", bcd(0x12), \"/ as int =\", 0x12)\n\n# state = 2\n# fare big = 1000 / little = 3892510720\n# no = 0012345\n# bcd(0x12) = 12 / as int = 18"
+    },
+    {
+     "title": "MQTT 같은 주문 두 번 받기",
+     "body": "QoS 1은 '적어도 한 번' 배달이라 끊겼다 붙으면 같은 메시지가 또 올 수 있습니다.[22] 주문 번호로 한 번만 보여 줍니다(가상 데이터, 직접 돌린 출력).",
+     "lang": "python",
+     "code": "received = [\n    {\"order\": \"A-101\"}, {\"order\": \"A-101\"}, {\"order\": \"A-102\"},\n]\nseen, shown = set(), []\nfor m in received:\n    if m[\"order\"] in seen:\n        print(\"skip duplicate\", m[\"order\"])\n        continue\n    seen.add(m[\"order\"])\n    shown.append(m[\"order\"])\nprint(\"shown to driver:\", shown)\n\n# skip duplicate A-101\n# shown to driver: ['A-101', 'A-102']"
+    }
+   ],
+   "how_far": "통신 칩을 설계하는 일이 아닙니다. **사양서를 읽고 바이트를 정확히 해석하고, 끊겼을 때 앱이 버티게** 하는 쪽입니다. 발표자가 'Kotlin으로 비트 연산을 하게 될 줄은 몰랐다'고 할 만큼 보통 앱 개발과 결이 다릅니다.[3]",
+   "refs": [
+    3,
+    4,
+    5,
+    22
+   ],
+   "study": [
+    "go-techtalk2",
+    "ble-overview",
+    "usb-host",
+    "mqtt5"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 車載Androidプロダクト（アプリケーション層）\n・タクシー業務アプリ\nタクシー乗務員の日々の営業をサポートするためAndroidアプリです。カーナビのような車を利用する業務で一般的に利用する機能を備えていることはもちろん、タクシーアプリ『GO』の注文を受け付ける役割も担っています。『GO』で注文いただいたお客様を、快適に目的地までお送りできるようサポートしています。",
+   "short": "기사가 GO 주문을 받고 손님까지 길을 찾아가는 기사용 앱. 운전 중에도 안전하게 누를 수 있어야 한다.",
+   "why": "GO 주문은 결국 이 앱에서 기사에게 닿습니다. 회사 임원은 차량 단말이 택시 메터와 기사 앱을 잇고, 운전 중에도 기사가 안전하게 조작할 수 있도록 화면에 공을 들인다고 설명했습니다.[9]",
+   "actually": {
+    "items": [
+     "**배차 흐름** — 손님 앱에서 주문 → 기사 단말에 '迎車(데리러 가는 중)' → 태우면 '実車(손님 태움)' → 결제. 화면 위쪽에 빈차·영업 중 같은 상태와 요금이 늘 보인다.[3]",
+     "**내비** — 손님 위치까지 길 안내. 기사 의견으로 지도 표시를 사람마다 바꾸는 기능, 시설 이름 검색이 들어갔다.[7]",
+     "**통화** — 기사가 손님에게 전화하는 기능에 잡음이 심했는데, 쓰던 통화 서비스가 OS의 잡음 제거를 거치지 않아서였다. 하드웨어 그룹과 신바시역 현장 시험·로그로 고쳤다.[7]",
+     "**지역마다 다른 운영** — 무전 배차를 안 쓰는 지역은 빈차일 때 GO 주문을 받는 식으로, 회사·지역마다 조작이 다르다.[5]",
+     "**8인치 택시 전용 태블릿** — 2023년 10월 기준 새 기사 단말을 1년 반 걸려 개발 중이었다.[7]"
+    ]
+   },
+   "how_far": "새 화면을 만드는 것보다 **상태(빈차·데리러 감·손님 태움·결제)가 메터와 어긋나지 않게** 지키는 것이 핵심입니다. {추론}",
+   "refs": [
+    3,
+    5,
+    7,
+    9
+   ],
+   "study": [
+    "go-techtalk2",
+    "android-arch"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・後部座席設置タブレット向けアプリ\nタクシー後部座席に設置されている端末向けのAndroidアプリです。デジタルサイネージ機能の他、「GO Pay」をはじめとする各種決済機能（クレカ/QRコード/電子マネーetc.）など、乗車いただいたお客様により快適にタクシーをご利用いただくための機能を提供しています。",
+   "short": "뒷좌석 화면에서 광고를 틀고, 손님이 카드·QR·교통카드로 직접 결제하게 하는 앱.",
+   "why": "뒷좌석 단말은 결제·통역·광고(TOKYO PRIME) 세 가지를 합니다. 2025년 새 기종은 결제기의 물리 버튼을 없애고 화면을 10인치에서 13인치로 키웠고, 결제 중 통신을 안정시키려고 기사 단말과 연동합니다. 통신사 장애에 대비해 SIM을 두 개 꽂습니다.[8]",
+   "actually": {
+    "items": [
+     "**결제 수단이 많다** — 신용카드, Suica·PASMO 같은 교통 전자화폐, iD·QUICPay·nanaco·WAON·Rakuten Edy, PayPay·d払い 등 QR, Apple Pay·Google Pay. 지역마다 안 되는 수단이 있다.[8]",
+     "**외국인 손님** — 일본어·영어 표시와 음성 통역.[8]",
+     "**광고** — 승차 중 영상 광고(디지털 사이니지).[1][8]",
+     "**통신비** — SIM 없는 태블릿을 기사 단말의 통신으로 내보내는 방식을 직접 만들었다(Wi-Fi Direct + VpnService).[3]",
+     "**결제 성공률** — 회사는 로그로 결제 성공률을 올리는 것을 목표로 적었다.[5]"
+    ]
+   },
+   "how_far": "결제 규격 자체는 결제기·결제사 몫이고, 앱은 **결제 중 끊기거나 두 번 눌러도 돈이 두 번 빠지지 않게** 화면과 상태를 지킵니다. {추론}",
+   "refs": [
+    1,
+    3,
+    5,
+    8
+   ],
+   "study": [
+    "go-logdeck",
+    "coroutine-bp"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・ソフトメーター（位置情報などを利用した新タイプのタクシーメーター）\nソフトメーターとは、車両に専用機器を載せる代わりに、GPS情報とソフトウェアによって運賃を計算する新しい仕組みです。\n従来のタクシーメーターはタイヤの回転数から走行距離を計測していましたが、ソフトメーターではこれらをプログラム上で処理します。\n弊社でも開発に取り組んでおり、ダイナミックプライシングの実現など、新たな価値の提供を目指しています。",
+   "short": "바퀴 회전 대신 GPS로 달린 거리를 재서 요금을 내는 '소프트웨어 메터'를 만든다.",
+   "why": "기존 메터는 바퀴 회전으로 거리를 재고 계량법 검정을 받아야 해서, 요금이 바뀔 때마다 메터를 고치는 비용이 듭니다. 국토교통성은 2021년 10월부터 두 달간 GPS로 거리를 추정하는 소프트메터 실증을 했고[13], 2023년 4월 정부 규제 개혁 회의에도 소프트메터 도입이 안건으로 올랐습니다.[14] 시간대·수요에 따라 요금을 바꾸는 변동 요금도 소프트웨어 메터라야 쉽습니다.[1][13]",
+   "actually": {
+    "intro": "회사가 구현을 공개하지 않아, 실증과 요금표로 '보통 이런 계산'을 보입니다.",
+    "items": [
+     "**거리 쌓기** — GPS 점 사이 거리를 더한다. 실증은 터널·산길처럼 GPS가 약한 곳에서 기존 메터와 얼마나 어긋나는지를 중점으로 봤다.[13]",
+     "**튀는 점 버리기** — 건물 사이에서 위치가 수백 미터 튀면 요금이 뛴다. 택시가 낼 수 없는 속도의 점은 버린다. {추론}",
+     "**요금표 적용** — 도쿄 23구 등의 상한 요금(2026년 4월 20일부터)은 첫 1.0km 500엔, 이후 232m마다 100엔, 느리게 갈 때는 1분 25초마다 100엔이다.[15]",
+     "**누가 맞다고 하나** — 요금은 법정 기준을 따라야 하므로, 계산 규칙은 회사·당국이 정하고 앱은 그대로 옮긴다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "GPS 한 번 튀면 요금이 6배",
+     "body": "가상 경로의 네 번째 점만 북쪽으로 6km 튀었습니다. 5초에 6km(시속 4천 km 넘음)는 버리면 요금이 바로 돌아옵니다. 요금은 도쿄 상한 요금의 거리 부분만 썼습니다(시간 가산 생략).[15] 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "from math import radians, sin, cos, asin, sqrt\n\ndef dist_m(p, q):\n    la1, lo1, la2, lo2 = map(radians, (*p, *q))\n    h = sin((la2-la1)/2)**2 + cos(la1)*cos(la2)*sin((lo2-lo1)/2)**2\n    return 2 * 6_371_000 * asin(sqrt(h))\n\ndef fare(m, base=500, base_m=1000, step=100, step_m=232):\n    return base if m <= base_m else base + step * int(-(-(m - base_m) // step_m))\n\npts = [(35.660, 139.74, 0), (35.665, 139.74, 60), (35.670, 139.74, 120),\n       (35.730, 139.74, 125), (35.675, 139.74, 180), (35.680, 139.74, 240)]\nraw = sum(dist_m(pts[i-1][:2], pts[i][:2]) for i in range(1, len(pts)))\nclean, prev = 0.0, pts[0]\nfor p in pts[1:]:\n    d = dist_m(prev[:2], p[:2])\n    if d / (p[2] - prev[2]) * 3.6 > 150:\n        continue\n    clean, prev = clean + d, p\nprint(f\"raw   {raw:7.0f} m -> {fare(raw)} yen\")\nprint(f\"clean {clean:7.0f} m -> {fare(clean)} yen\")\n\n# raw     14455 m -> 6300 yen\n# clean    2224 m -> 1100 yen"
+    }
+   ],
+   "how_far": "측량 수학을 새로 만드는 자리가 아닙니다. **위치가 끊기거나 튀어도 요금이 틀리지 않게** 걸러 내고, 그 근거를 기록으로 남기는 쪽입니다. {추론}",
+   "refs": [
+    1,
+    13,
+    14,
+    15
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 車載Androidプラットフォーム（基盤・システム層）\n・基盤アプリ群\nDeviceOwner権限を持ってAndroid端末を操作したり、業務アプリの起動とアップデート、各デバイスとの通信を抽象化など、業務アプリを支える役割を担う基盤アプリです。このように複数のアプリを連動させることで車載システムを実現しています。",
+   "short": "단말 관리자 권한으로 업무 앱을 켜고 업데이트하고, 기기 통신을 대신 맡는 바탕 앱들.",
+   "why": "택시 단말에는 기사가 앱을 깔거나 설정을 바꾸면 안 됩니다. 안드로이드는 '기기 소유자(Device Owner)'로 등록된 관리 앱에 기기 전체 설정·초기화 같은 권한을 줍니다.[19] 회사는 업무 앱 여러 개를 이 바탕 앱 위에 묶어 차량 시스템을 만든다고 적었습니다.[1]",
+   "actually": {
+    "intro": "안드로이드 공식 문서의 전용 단말 기능과, 회사 발표에 나온 바탕 작업입니다.",
+    "items": [
+     "**키오스크** — 관리 앱이 허용한 앱만 화면에 뜨게 잠근다(lock task mode). 알림·홈 버튼도 막힌다.[18] 회사 발표 목록 첫 줄도 'Kiosk 앱'이다.[3]",
+     "**업데이트** — Play 스토어를 안 쓰므로 업무 앱을 받아 깔고 다시 켜는 일을 바탕 앱이 한다.[1][7] SIM 제약을 피하려고 **나눠 받기**를 만들었다.[3]",
+     "**기기 통신 한곳에** — 메터·결제기 연결을 바탕 앱이 감싸고, 업무 앱은 그 결과만 받는다.[1] 여러 앱이 소스를 나눠 쓰는 구조, 단말 제조사와 협의해 만든 전용 브로드캐스트, signature 권한으로 OS 동작을 바꾼 일도 있다.[3]",
+     "**원격 로그** — 단말 로그를 모아 헬프데스크가 문의의 약 90%를 대시보드만 보고 해결하고, 나머지 10%만 개발자가 본다.[5]"
+    ]
+   },
+   "how_far": "OS 이미지를 직접 빌드하는 자리는 아닙니다. 단말 관리자 권한으로 **무엇을 할 수 있고 무엇은 위험한지** 알고, 앱 여러 개가 서로 어긋나지 않게 버전을 맞추는 정도가 출발선입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    5,
+    7,
+    18,
+    19
+   ],
+   "study": [
+    "lock-task",
+    "dpc-prov",
+    "go-logdeck"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■開発環境\nプログラミング言語：Kotlin\nライブラリ類等：Android Jetpack, Kotlin coroutines, Firebase, AWS etc.\nCI/CD：CircleCI, Bitrise, GitHub Actions",
+   "short": "Kotlin·Jetpack·코루틴이 기본이고, 서버 쪽은 Firebase·AWS, 빌드는 CI 세 가지를 쓴다.",
+   "why": "이 목록이 그대로 자격요건 첫 두 줄(AAC·코루틴)과 이어집니다.[1] AWS는 차량 단말이 AWS IoT로 서버와 이어지는 데 쓰입니다.[3]",
+   "actually": {
+    "items": [
+     "**Firebase** — 같은 회사 손님 앱 팀은 배포 뒤 Crashlytics(오류 수집)로 새 오류가 늘었는지를 먼저 본다.[6]",
+     "**AWS** — 단말 ↔ 서버는 AWS IoT. 발표 목록에 'AWS IoT 포크'가 있다.[3]",
+     "**CI** — CircleCI·Bitrise·GitHub Actions가 같이 적혀 있다. 어느 앱이 어느 것을 쓰는지는 공개되지 않았다.[1] 회사 자체 채용 페이지의 같은 공고도 목록이 같다.[2]",
+     "**AI 도구** — GitHub Copilot·Claude Code를 정액으로 쓰고, 다른 API도 쓸 수 있다.[1]"
+    ]
+   },
+   "refs": [
+    1,
+    3,
+    6
+   ],
+   "study": [
+    "android-arch",
+    "nowinandroid"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Android Architecture Components を使った開発経験",
+   "short": "ViewModel·Room·WorkManager 같은 Jetpack 부품으로 화면과 데이터를 나눠 짜 봤어야 한다.",
+   "why": "차량 앱은 메터·결제기·서버에서 상태가 동시에 들어옵니다. 안드로이드 공식 가이드는 화면 층과 데이터 층을 나누고, 상태는 아래로·사건은 위로 한 방향으로만 흐르게(단방향 데이터 흐름) 하라고 권합니다.[16] 회사 발표 목록에도 여러 모듈로 나누기·상태 기계(state machine)가 있습니다.[3]",
+   "level": {
+    "basic": "ViewModel · LiveData/StateFlow · Lifecycle · Room",
+    "work": "화면·데이터 층 나누기 · Repository · 단방향 데이터 흐름 · WorkManager(재부팅 뒤에도 남는 작업)",
+    "team": "기기 상태를 상태 기계로 · 여러 모듈 · 여러 앱이 나눠 쓰는 코드"
+   },
+   "actually": {
+    "items": [
+     "**ViewModel** — 화면이 돌거나 다시 만들어져도 상태를 들고 있는 칸.[16]",
+     "**WorkManager** — 앱이 화면에서 사라져도, 재부팅 뒤에도 남아 도는 작업(로그 올리기·업데이트 받기 같은 일).[24]",
+     "**상태 기계** — 빈차 → 데리러 감 → 손님 태움 → 결제처럼 정해진 순서로만 바뀌게.[3][4]"
+    ]
+   },
+   "how_far": "부품 이름을 아는 것보다 **'이 상태는 어디가 원본인가'**를 설명할 수 있어야 합니다. 공식 샘플 Now in Android 구조를 읽고 따라 짤 수 있으면 출발선입니다. {추론}",
+   "refs": [
+    3,
+    4,
+    16,
+    24
+   ],
+   "study": [
+    "android-arch",
+    "nowinandroid",
+    "workmanager"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Kotlin Coroutinesによる非同期処理の実装経験",
+   "short": "기계 연결·서버 호출·타이머가 동시에 도는 일을 코루틴으로 끊김·취소까지 처리해 봤어야 한다.",
+   "why": "BLE 연결은 오래 끊기면 단말이 아무것도 못 하고[5], 결제·서버 응답은 기다리는 동안 화면이 멈추면 안 됩니다. 공식 모범 사례는 메인 스레드에서 불러도 안전한 suspend 함수, ViewModel이 코루틴을 만들기, GlobalScope 피하기, 취소 가능하게 짜기, 예외 조심하기를 듭니다.[17]",
+   "actually": {
+    "items": [
+     "**제한 시간과 재시도** — 메터 연결이 안 되면 기다리는 시간을 늘려 가며 다시 붙는다.",
+     "**취소** — 화면이 사라지면 그 화면이 시작한 연결 시도도 같이 멈춰야 한다(구조적 동시성).[17]",
+     "**흐름(Flow)** — 메터 상태처럼 계속 들어오는 값을 화면에 흘려보낸다.[17]",
+     "**시험** — 디스패처를 주입해 시험에서 시간을 마음대로 돌린다.[17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "끊긴 메터에 다시 붙기 — 제한 시간·두 배씩 기다리기·취소",
+     "body": "Kotlin의 withTimeout·delay·Job.cancel과 같은 구조를 Python asyncio로 돌렸습니다(가상 연결, 두 번 실패 후 성공). 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "import asyncio\n\nattempts = iter([False, False, True])\n\nasync def connect_meter():\n    await asyncio.sleep(0.01)\n    return next(attempts)\n\nasync def connect_with_retry(max_try=5, timeout=0.5):\n    delay = 0.05\n    for n in range(1, max_try + 1):\n        try:\n            ok = await asyncio.wait_for(connect_meter(), timeout)\n        except asyncio.TimeoutError:\n            ok = False\n        print(f\"try {n}: {'connected' if ok else 'failed'}\")\n        if ok:\n            return True\n        await asyncio.sleep(delay)\n        delay = min(delay * 2, 1.0)\n    return False\n\nasync def main():\n    print(\"result:\", await connect_with_retry())\n    t2 = asyncio.create_task(asyncio.sleep(10))\n    await asyncio.sleep(0.01); t2.cancel()\n    try:\n        await t2\n    except asyncio.CancelledError:\n        print(\"cancelled with screen\")\n\nasyncio.run(main())\n\n# try 1: failed\n# try 2: failed\n# try 3: connected\n# result: True\n# cancelled with screen"
+    }
+   ],
+   "how_far": "launch·async 쓰는 법보다 **어느 범위(scope)에서 시작해 언제 끝나고, 실패하면 누가 받나**를 말할 수 있어야 합니다. {추론}",
+   "refs": [
+    5,
+    17
+   ],
+   "study": [
+    "coroutine-bp",
+    "kotlin-coroutines-guide",
+    "moskala-coroutines",
+    "coroutine-jeongseok"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・開発をリードした経験",
+   "short": "기능 하나를 설계부터 출시·운영까지 앞장서 끌고 간 경험. 5명 안팎 팀에서 방향을 잡는 역할.",
+   "why": "회사는 자율주행 택시를 위한 '무인 차량과 만나기', '차량 상태 실시간 파악' 같은 **전례 없는 과제**를 지금 팀이 검토·개발 중이라고 적었습니다.[1] 답이 정해지지 않은 일이라 누군가 길을 정해야 합니다.",
+   "actually": {
+    "items": [
+     "**설계 정하기** — 하드웨어 엔지니어·PM·디자이너·영업과 날마다 논의하며 만든다.[1]",
+     "**출시 판단** — 같은 회사 손님 앱 팀은 Play 단계별 배포를 99%로 걸고 다음 날 11시에 오류를 본 뒤 100%로 올리거나 0%로 멈춘다.[6]",
+     "**속도와 품질** — 결재에 2~3주 걸리지 않고 빨리 정하되, 품질은 양보하지 않는다고 팀원들이 말했다.[7]"
+    ]
+   },
+   "how_far": "직책이 아니라 **기능 하나를 맡아 끝까지 책임진 사례**를 숫자와 함께 말하는 수준이면 됩니다. {추론}",
+   "refs": [
+    1,
+    6,
+    7
+   ],
+   "study": [
+    "go-release"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・GItを使ったチーム開発の経験",
+   "short": "여러 명이 한 저장소에서 브랜치·리뷰로 일해 봤어야 한다. 이 팀은 기능 플래그로 충돌을 줄였다.",
+   "why": "이 팀은 사람이 많아 풀 리퀘스트끼리, 그리고 release 브랜치와 자주 충돌했습니다. 그래서 만들다 만 기능은 **기능 플래그**(코드는 넣되 기본으로 꺼 두는 스위치) 뒤에 숨기고 작게 자주 master에 합쳐 충돌을 거의 0으로 줄였습니다.[3][4]",
+   "actually": {
+    "items": [
+     "**스위치 인터페이스** — '이 기능 켜졌나'를 묻는 함수 하나와 기능 목록 enum을 두고, 사내 도구로 켜고 끈다.[4]",
+     "**스위치는 빚** — 오래 둔 플래그는 지워야 하는 부채라는 것이 일반론이다.[23]"
+    ]
+   },
+   "refs": [
+    3,
+    4,
+    23
+   ],
+   "study": [
+    "feature-toggles"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・チームに知識を伝えることが好きな方、チームの同僚から学ぶことが好きな方",
+   "short": "메터 바이트·결제 규칙처럼 문서로 안 남은 지식이 많아, 서로 가르치고 배우는 사람이 필요해서.",
+   "why": "발표에 '보통 안드로이드 엔지니어가 받은 문화 충격' 꼭지가 따로 있을 만큼, 메터·결제기·통신 지식은 들어와서 배우는 것입니다.[3] 회사는 2주를 새 기술 공부에 쓰는 'Engineer Challenge Week', 책 구입·컨퍼런스 참가비 지원, DroidKaigi 후원을 운영합니다.[1]",
+   "refs": [
+    1,
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本語レベル: ビジネス",
+   "short": "하드웨어·영업·기사 응대 부서와 일본어로 논의하고, 일본어 사양서를 읽어야 해서.",
+   "why": "원티드 공고는 일본어 이력서·직무경력서를 내지 않거나 일본어 소통이 안 되면 통보 없이 서류에서 떨어진다고 적었습니다.[1] 기기 사양서와 사내 논의가 일본어입니다.[1][4]",
+   "how_far": "비즈니스 수준 — 회의에서 설계를 설명하고 사양서를 읽을 수 있어야 합니다. 원티드 판은 일본어 전용 자리라고 못 박았습니다.[1]",
+   "refs": [
+    1,
+    4
+   ],
+   "study": [
+    "jlpt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本国内への移住が必要",
+   "short": "완전 재택이 되지만 '일본 안에서만'이라 일본에 살아야 한다.",
+   "why": "이 자리는 출근일 지정이 없는 완전 원격 근무지만 국내 한정이고, 입사일·퇴사일 등 회사가 지정하면 출근합니다.[1] 개발직은 지방에서 일하는 '오피스 프리' 제도가 있습니다.[11]",
+   "refs": [
+    1,
+    11
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・チームの立ち上げに携わり目的を達成した経験",
+   "short": "자율주행 택시 관련 새 기능을 맡을 팀을 세우는 시기라서.",
+   "why": "공고는 자율주행 택시 구현을 위한 과제를 '지금 팀이 검토·개발 중'이라 하고, 이 **시작 단계에 합류하는 것**을 자리의 가장 큰 매력으로 꼽았습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・開発するシステムで、技術選定を行った経験",
+   "short": "어떤 라이브러리·통신 방식·구조를 쓸지 이유를 대고 고르고, 틀린 선택을 되돌려 본 경험.",
+   "why": "이 팀은 gRPC·여러 모듈·상태 기계를 들였고, Flux 구조는 시도했다가 실패했다고 스스로 적었습니다.[3] 고르고 되돌리는 일이 실제로 있었다는 뜻입니다.",
+   "how_far": "무엇을 골랐는지보다 **무엇과 비교했고, 무엇을 버렸고, 어떻게 되돌렸나**를 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    3
+   ],
+   "study": [
+    "android-arch"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・開発プロセスの構築・改善の経験",
+   "short": "배포·시험·분기 전략처럼 팀이 일하는 방식을 만들고 고쳐 본 경험.",
+   "why": "회사가 공개한 사례가 그대로 '과정 고치기'입니다 — 충돌을 줄인 기능 플래그[4], 로그 기반으로 헬프데스크가 90%를 처리하게 한 일[5], 단계별 배포를 99%로 거는 출시 흐름[6].",
+   "actually": {
+    "items": [
+     "**로그로 운영 바꾸기** — Elasticsearch·Kibana로 단기 조회, BigQuery로 장기 집계. 남은 숙제는 필드 이름 충돌, 숫자를 글자로 저장해 집계가 안 되는 것, 자동 경보 부족이었다.[5]",
+     "**출시 흐름** — 99.99999%로 걸면 사실상 100%이면서 멈출 수 있는 상태가 된다는 것을 발견했다.[6]"
+    ]
+   },
+   "refs": [
+    4,
+    5,
+    6
+   ],
+   "study": [
+    "go-logdeck",
+    "go-release",
+    "feature-toggles"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・何らかのデバイスと連携するアプリを開発した経験\n※GPS、Bluetooth、デバイスオーナー等の利用経験が活かせます",
+   "short": "GPS·블루투스·단말 관리자 권한처럼 이 팀이 매일 쓰는 것을 미리 다뤄 봤으면 빨리 적응해서.",
+   "why": "업무 줄 2·5·6과 같은 이야기입니다 — 메터는 BLE·시리얼[3], 소프트메터는 GPS[1], 바탕 앱은 Device Owner[1]입니다.",
+   "actually": {
+    "items": [
+     "**BLE** — GATT(기기가 값을 '특성(characteristic)' 단위로 내놓는 규칙)로 값을 읽고 쓴다.[20] 이 팀은 BLE 로거에 특성이 새로 생겨도 다시 짝짓지 않고 알아채는 방법을 만들었다.[3]",
+     "**USB** — 안드로이드가 호스트가 되어 연결된 기기를 찾는다.[21]",
+     "**Device Owner** — 공장 초기화 상태에서 QR·NFC 등으로 관리 앱을 등록한다.[19]"
+    ]
+   },
+   "refs": [
+    1,
+    3,
+    19,
+    20,
+    21
+   ],
+   "study": [
+    "ble-overview",
+    "usb-host",
+    "dpc-prov"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "■求める人物像\n・モビリティ領域の進化や社会貢献に興味がある方",
+   "short": "택시가 지역의 교통 기반이라, 일을 '앱'보다 '교통'으로 보는 사람이 맞아서.",
+   "why": "회사는 2026년 6월 상장하며 '일본을 움직이는 사회 인프라'를 새 비전으로 걸었고[1], 임원은 GO를 인프라 수준의 서비스로 보고 가용성을 다시 본다고 말했습니다.[9] 전 47개 도도부현에서 서비스합니다.[1]",
+   "refs": [
+    1,
+    9
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・物事を進めるために周りを巻き込みリーダーシップを発揮できる方",
+   "short": "하드웨어·PM·영업·현장 기사까지 엮어야 일이 끝나서.",
+   "why": "IoT 개발부(약 40명) 안에 하드웨어 그룹과 소프트웨어 그룹이 같이 있고, 다른 부서와 날마다 논의하며 개발합니다.[1] 통화 잡음 문제도 소프트웨어·하드웨어 그룹이 현장 시험으로 같이 풀었습니다.[7]",
+   "refs": [
+    1,
+    7
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・1人で成果を出すより、周りをサポートしてチームで成果を出すのが好きな方",
+   "short": "제품마다 5명 안팎이 함께 맡는 구조라, 혼자 잘하는 것보다 팀을 받쳐 주는 사람을 찾는다.",
+   "why": "제품별 안드로이드 엔지니어가 5명 안팎이고[1], 원격 근무가 많아 회의에 잡담 시간을 일부러 두고 당일치기 워케이션으로 교류합니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "GO Inc.のプロダクトは今後、タクシーの領域に留まらず、様々なモビリティ領域への展開を見据えています。そのためにも、更に一段上のエンジニアチームを一緒に作ってくれる方をお待ちしています！",
+   "short": "택시 밖(셔틀·자율주행 등)으로 넓힐 계획이라 팀을 한 단계 키울 사람을 찾는다는 맺음말.",
+   "why": "회사는 탈탄소·자율주행·물류 사업을 함께 벌이고 있다고 소개했고[1], DroidKaigi 2025 부스에는 새 서비스 'GO 셔틀' 차량과 차량 태블릿·결제기를 전시했다는 참가 후기가 있습니다.[25]",
+   "refs": [
+    1,
+    25
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "go-techtalk2",
+   "title": "MoT Tech Talk #2 車載Androidシステムの技術と開発チーム",
+   "by": "Mobility Technologies(현 GO) 차량 시스템 팀 · 2021",
+   "kind": "video",
+   "url": "https://www.youtube.com/watch?v=E_Z6V-TIx-w",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "why": "이 팀이 직접 설명한 택시 안 기기 구성·메터 통신·기능 플래그·뒷좌석 통신비 줄이기. 업무 줄 2·6과 Git 요건의 출발점."
+  },
+  {
+   "id": "go-logdeck",
+   "title": "24時間走り続けるタクシー車載器の安定稼働を目指したログ基盤の開発",
+   "by": "Mobility Technologies IoT統括部 · Developers Summit 2022",
+   "kind": "doc",
+   "url": "https://speakerdeck.com/mot_techtalk/24shi-jian-zou-risok-kerutakusiche-zai-qi-falsean-ding-jia-dong-womu-zhi-sitaroguji-pan-falsekai-fa",
+   "lang": "ja",
+   "free": true,
+   "level": "실무",
+   "why": "현장 단말에서 무엇이 깨지는지(BLE 끊김·USB 인식·배터리·온도)와 그것을 로그로 잡는 법. 운영·과정 개선 우대사항의 실제 예."
+  },
+  {
+   "id": "go-release",
+   "title": "タクシーアプリ『GO』Androidのリリースフロー",
+   "by": "GO株式会社 · DroidKaigi 2023 後夜祭",
+   "kind": "doc",
+   "url": "https://speakerdeck.com/gya/release-go-app",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "why": "같은 회사 손님 앱의 단계별 배포·출시 뒤 확인 순서. '개발 리드' 요건에서 출시 판단을 설명할 재료."
+  },
+  {
+   "id": "android-arch",
+   "title": "Guide to app architecture",
+   "by": "Android Developers",
+   "kind": "doc",
+   "url": "https://developer.android.com/topic/architecture",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "화면 층·데이터 층·단방향 데이터 흐름 — AAC 요건이 묻는 구조의 공식 기준."
+  },
+  {
+   "id": "nowinandroid",
+   "title": "Now in Android",
+   "by": "Android (GitHub)",
+   "kind": "doc",
+   "url": "https://github.com/android/nowinandroid",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "Kotlin·Jetpack으로 끝까지 만든 공식 샘플 앱. 여러 모듈·층 나누기를 실제 코드로 본다."
+  },
+  {
+   "id": "workmanager",
+   "title": "WorkManager",
+   "by": "Android Developers",
+   "kind": "doc",
+   "url": "https://developer.android.com/topic/libraries/architecture/workmanager",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "재부팅 뒤에도 남는 작업 — 단말 로그 올리기·업데이트 받기 같은 차량 앱 작업에 맞는 부품."
+  },
+  {
+   "id": "coroutine-bp",
+   "title": "Best practices for coroutines in Android",
+   "by": "Android Developers",
+   "kind": "doc",
+   "url": "https://developer.android.com/kotlin/coroutines/coroutines-best-practices",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "디스패처 주입·ViewModel 범위·취소·예외 — 코루틴 요건의 면접 질문이 대부분 여기서 나온다."
+  },
+  {
+   "id": "kotlin-coroutines-guide",
+   "title": "Coroutines guide",
+   "by": "JetBrains (Kotlin 문서)",
+   "kind": "doc",
+   "url": "https://kotlinlang.org/docs/coroutines-guide.html",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "취소·제한 시간·Flow·채널을 짧은 예제로. 메터 재연결 같은 코드를 짜기 전 기본."
+  },
+  {
+   "id": "moskala-coroutines",
+   "title": "코틀린 코루틴",
+   "by": "마르친 모스카와 · 신성열 옮김 · 인사이트 · 2023",
+   "kind": "book",
+   "url": "https://www.yes24.com/Product/Search?query=%EC%BD%94%ED%8B%80%EB%A6%B0%20%EC%BD%94%EB%A3%A8%ED%8B%B4",
+   "lang": "ko",
+   "level": "실무",
+   "why": "구조적 동시성·예외 전파·시험까지 한 권으로. '실패하면 누가 받나'를 설명할 수 있게 된다."
+  },
+  {
+   "id": "coroutine-jeongseok",
+   "title": "코틀린 코루틴의 정석",
+   "by": "조세영 · 에이콘출판 · 2024",
+   "kind": "book",
+   "url": "https://www.yes24.com/Product/Search?query=%EC%BD%94%ED%8B%80%EB%A6%B0%20%EC%BD%94%EB%A3%A8%ED%8B%B4%EC%9D%98%20%EC%A0%95%EC%84%9D",
+   "lang": "ko",
+   "level": "입문",
+   "why": "한국어로 처음부터 코루틴을 쌓는 책. 코루틴 요건의 바닥을 다진다."
+  },
+  {
+   "id": "lock-task",
+   "title": "Lock task mode",
+   "by": "Android Developers",
+   "kind": "doc",
+   "url": "https://developer.android.com/work/dpc/dedicated-devices/lock-task-mode",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "전용 단말에서 허용한 앱만 띄우는 법 — 바탕 앱 업무 줄의 '키오스크'."
+  },
+  {
+   "id": "dpc-prov",
+   "title": "Provision devices (Android Enterprise)",
+   "by": "Google for Developers",
+   "kind": "doc",
+   "url": "https://developers.google.com/android/work/prov-devices",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "기기 소유자(Device Owner) 관리 앱을 등록하는 방법들 — 우대사항의 '디바이스 오너'."
+  },
+  {
+   "id": "ble-overview",
+   "title": "Bluetooth Low Energy overview",
+   "by": "Android Developers",
+   "kind": "doc",
+   "url": "https://developer.android.com/develop/connectivity/bluetooth/ble/ble-overview",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "GATT·서비스·특성 — 메터와 BLE 로거를 잇는 방식의 기본."
+  },
+  {
+   "id": "usb-host",
+   "title": "USB host overview",
+   "by": "Android Developers",
+   "kind": "doc",
+   "url": "https://developer.android.com/develop/connectivity/usb/host",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "결제기처럼 유선으로 붙는 기기를 앱이 찾고 쓰는 법."
+  },
+  {
+   "id": "mqtt5",
+   "title": "MQTT Version 5.0",
+   "by": "OASIS · 2019",
+   "kind": "doc",
+   "url": "https://docs.oasis-open.org/mqtt/mqtt/v5.0/mqtt-v5.0.html",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "QoS 0·1·2, 남겨 두는 메시지, 마지막 유언(Will) — 공고의 MQTT를 정확히 말하기 위한 원문 규격."
+  },
+  {
+   "id": "feature-toggles",
+   "title": "Feature Toggles (aka Feature Flags)",
+   "by": "Pete Hodgson · martinfowler.com · 2017",
+   "kind": "doc",
+   "url": "https://martinfowler.com/articles/feature-toggles.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "이 팀이 충돌을 줄인 기능 플래그의 종류와 지우는 법. Git 요건·과정 개선 우대사항."
+  },
+  {
+   "id": "jlpt",
+   "title": "日本語能力試験 JLPT",
+   "by": "国際交流基金・日本国際教育支援協会",
+   "kind": "doc",
+   "url": "https://www.jlpt.jp/",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "why": "비즈니스 일본어 요건을 숫자로 보여 줄 시험의 공식 안내."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "택시 안을 먼저 본다",
+   "time": "3일",
+   "goal": "택시 안 기기(메터·BLE 로거·기사 단말·뒷좌석 태블릿·결제기)가 어떻게 이어지는지 그림으로 설명할 수 있다.",
+   "task": "회사 발표 두 편을 보고 기기 연결도를 직접 다시 그린 뒤, 각 선에 '끊기면 무엇이 멈추나'를 한 줄씩 단다.",
+   "resources": [
+    "go-techtalk2",
+    "go-logdeck"
+   ]
+  },
+  {
+   "title": "Jetpack 구조로 기사 앱 흉내",
+   "time": "2~3주",
+   "goal": "빈차 → 데리러 감 → 손님 태움 → 결제 상태를 상태 기계로 짜고 ViewModel·StateFlow로 화면에 흘린다.",
+   "task": "가상 메터가 1초마다 상태·요금을 내보내는 모듈을 만들고, 정해진 순서를 어기는 입력(빈차에서 바로 결제)을 거부하는 단위 시험을 쓴다.",
+   "resources": [
+    "android-arch",
+    "nowinandroid",
+    "workmanager"
+   ]
+  },
+  {
+   "title": "코루틴으로 끊김 다루기",
+   "time": "2주",
+   "goal": "연결 재시도·제한 시간·취소·예외를 코루틴 범위 안에서 처리하고 가상 시간으로 시험한다.",
+   "task": "가상 메터 연결이 무작위로 끊기게 하고, 두 배씩 기다리며 다시 붙는 코드를 TestDispatcher로 시험한다. 화면을 닫으면 시도가 멈추는지도 확인한다.",
+   "resources": [
+    "coroutine-bp",
+    "kotlin-coroutines-guide",
+    "moskala-coroutines",
+    "coroutine-jeongseok"
+   ]
+  },
+  {
+   "title": "기계와 말하기",
+   "time": "2~3주",
+   "goal": "바이트 프레임(BCD·엔디언·ASCII)을 읽고, BLE·USB로 값을 받고, MQTT 중복을 거른다.",
+   "task": "아두이노나 휴대폰 두 대로 BLE 특성 하나를 주고받고, 가상 메터 프레임 해석기를 시험 10개와 함께 만든다. MQTT 브로커를 로컬에 띄워 QoS 1 중복을 일부러 만들어 거른다. 단말 한 대를 lock task로 잠가 본다.",
+   "resources": [
+    "ble-overview",
+    "usb-host",
+    "mqtt5",
+    "lock-task",
+    "dpc-prov"
+   ]
+  },
+  {
+   "title": "팀 방식과 일본어 서류",
+   "time": "2주~",
+   "goal": "기능 플래그·단계별 배포로 출시를 설명하고, 일본어 직무경력서에 리드 경험을 숫자로 쓴다.",
+   "task": "위 과제 저장소에 기능 플래그 하나와 CI를 붙이고, 일본어 README와 직무경력서(리드한 기능·결과 숫자)를 쓴다.",
+   "resources": [
+    "feature-toggles",
+    "go-release",
+    "jlpt"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "이 자리는 **연 700만~1,200만 엔**(공고, 월 45시간분 고정 잔업 수당 포함). 회사 직원 평균 연봉은 **879만 4천 엔**(유가증권보고서, 2026년 5월기) — 경력직이 섞인 회사 전체 평균이다",
+  "rows": [
+   {
+    "label": "공고 표기 연봉",
+    "value": "700만~1,200만 엔",
+    "basis": "공고 · 2026년",
+    "note": "기술·경험으로 정한다. 월 45시간분 고정 잔업 수당이 들어 있고(관리감독자로 뽑히면 없음), 급여 개정 연 2회·성과 연동 일시금 연 1회. 수습 3개월도 같은 조건 [1]"
+   },
+   {
+    "label": "회사 직원 평균 연봉",
+    "value": "879만 4천 엔 (평균 38세 · 근속 4년)",
+    "basis": "공시 · 유가증권보고서 2026년 5월기",
+    "note": "제출 회사 단체 기준. 원본은 EDINET 유가증권보고서이고, 그 값을 옮긴 집계 사이트에서 읽었다 [12]"
+   }
+  ],
+  "how": "금액은 일본 엔이다(원화로 바꾸지 않았다). 평균은 초봉이 아니다 — 개발·영업·관리 전 직군과 경력직이 섞인 회사 전체 값이다 [12]. 공고 연봉에는 잔업 45시간분이 이미 들어 있어서, 잔업이 그보다 적어도 그 수당은 받고 넘으면 따로 받는 구조로 읽힌다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무 방식",
+    "detail": "완전 원격 가능(일본 안에서만), 출근일 지정 없음. 코어타임 없는 슈퍼 플렉스. 개발직은 지방에서 일하는 오피스 프리 제도"
+   },
+   {
+    "name": "휴일·휴가",
+    "detail": "토·일·공휴일, 연말연시, 경조 휴가. 연차는 첫해 입사 달에 따라 최대 10일(입사일에 부여). 간병 휴가 가족 1명당 연 5일, 자녀 간호 휴가 초3 수료까지 1명당 연 5일(시간 단위 가능)"
+   },
+   {
+    "name": "트라이얼 택시",
+    "detail": "택시를 알기 위해 업무 밖 택시비 일부 지원 — 월 1만 엔까지, 1회 4천 엔까지"
+   },
+   {
+    "name": "뉴노멀 수당",
+    "detail": "월 1만 엔"
+   },
+   {
+    "name": "아동 수당",
+    "detail": "자녀 1명당 월 5천 엔, 셋째부터 월 1만 엔"
+   },
+   {
+    "name": "교통비",
+    "detail": "월 5만 엔까지"
+   },
+   {
+    "name": "직원 지주회",
+    "detail": "월 1천 엔부터, 회사가 20% 장려금"
+   },
+   {
+    "name": "공부",
+    "detail": "책 구입·기술 컨퍼런스 참가비 지원, 2주를 새 기술 공부에 쓰는 Engineer Challenge Week, 유료 AI 도구 계정 지급"
+   },
+   {
+    "name": "그 밖",
+    "detail": "환영 점심, 동아리 활동(회비 일부 지원), 당일치기 워케이션, 사복 근무, 사회보험 완비"
+   }
+  ],
+  "note": "공고의 복리후생 칸[1]과 회사 채용 사이트 근무 환경 페이지[11]를 합친 것이다(2026-11 기준, GO 주식회사 정사원). 지주회·워케이션·오피스 프리는 채용 사이트에만 있다."
+ },
+ "location": {
+  "name": "GO 본사 (아자부다이 힐스 모리 JP 타워)",
+  "address": "東京都港区麻布台1丁目3-1 麻布台ヒルズ森JPタワー 23F",
+  "postal": "106-0041",
+  "map_url": "https://www.google.com/maps/search/?api=1&query=%E9%BA%BB%E5%B8%83%E5%8F%B0%E3%83%92%E3%83%AB%E3%82%BA%E6%A3%AEJP%E3%82%BF%E3%83%AF%E3%83%BC",
+  "near": "롯폰기잇초메역 걸어서 7분 · 가미야초역 9분 · 롯폰기역 10분 [1]",
+  "note": "주소는 회사 개요[10], 공고의 근무지도 같다[1]. 이 자리는 일본 안에서 완전 원격이 되므로 출근은 회사가 지정한 날(입사일 등)뿐이다[1]. 일본 주소라 구글 지도 검색 링크를 달았다."
+ },
+ "fit": {
+  "good": [
+   "앱이 실제 기계를 움직이는 게 재미있는 사람 — 메터·결제기를 상자에 담아 집에서 시험한다[3]",
+   "끊김·열·배터리 같은 현장 문제를 로그로 쫓는 걸 좋아하는 사람[5]",
+   "답이 없는 새 과제(자율주행 택시 연동)를 처음부터 세우고 싶은 사람[1]",
+   "가르치고 배우는 팀 문화를 원하는 사람[1]"
+  ],
+  "hard": [
+   "비즈니스 일본어와 일본 이주가 필수 — 원티드 판은 일본어 서류가 없으면 서류에서 떨어진다[1]",
+   "Play 스토어 앱과 달리 하드웨어·현장 사정에 일정이 묶인다[7] {추론}",
+   "최신 화면 기술보다 바이트·통신·상태 관리가 일의 중심이다[3]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "메터와 BLE 연결이 터널에서 30초 끊겼다가 돌아왔어요. 앱은 그동안 무엇을 보여 주고, 돌아오면 무엇을 맞춰야 하나요?",
+   "a": "메터 연결이 끊기면 단말이 아무것도 못 한다는 회사 발표.[5]"
+  },
+  {
+   "q": "사양서에 4바이트 요금 값이 있는데 바이트 순서가 안 적혀 있으면 어떻게 확인하나요?",
+   "a": "사양서마다 엔디언이 달랐다는 회사 발표.[4]"
+  },
+  {
+   "q": "화면이 닫혔는데 그 화면이 시작한 재연결 시도가 계속 돌면 무엇이 문제고, 어떻게 막나요?",
+   "a": "코루틴 범위와 취소.[17]"
+  },
+  {
+   "q": "Play 스토어 없이 수만 대 단말의 업무 앱을 업데이트하려면 무엇을 조심하나요?",
+   "a": "바탕 앱이 업데이트를 맡고 SIM 제약 때문에 나눠 받기를 만든 일.[1][3]"
+  },
+  {
+   "q": "만들다 만 기능을 master에 합치면서도 출시에 안 나가게 하려면요?",
+   "a": "이 팀이 충돌을 거의 0으로 줄인 기능 플래그.[4]"
+  },
+  {
+   "q": "GPS가 튀어서 요금이 이상하게 나왔다는 문의가 오면 어떻게 확인하나요?",
+   "a": "소프트메터 업무와 실증에서 본 GPS 약한 구간.[1][13]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · [GO株式会社]Android 엔지니어 (GO 사업 / 차량용 앱 개발)_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/385077",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "LAPRAS Global Bridge 경유 · 회사·부서 소개(IoT 개발부 약 40명), 업무·요건·우대·인물상, 연봉·근무 조건·복리후생"
+  },
+  {
+   "n": 2,
+   "title": "HRMOS · Androidエンジニア【タクシーアプリ『GO』の車載向けアプリ】",
+   "url": "https://hrmos.co/pages/goinc/jobs/2100000",
+   "kind": "posting",
+   "note": "회사 자체 채용 페이지의 같은 자리 — 업무·요건이 원티드 판과 같다"
+  },
+  {
+   "n": 3,
+   "title": "GO TechTalk · MoT Tech Talk #2 車載Androidシステムの技術と開発チーム",
+   "url": "https://www.youtube.com/watch?v=E_Z6V-TIx-w",
+   "kind": "company",
+   "date": "2021-03",
+   "note": "60분 · 자막이 없어(실시간 채팅만) 30초 간격 장면의 슬라이드를 전부 읽었다 — 기기 연결도, 메터 통신(BCD·엔디언), 결제기, Wi-Fi Direct+VpnService, 다룬 주제 목록"
+  },
+  {
+   "n": 4,
+   "title": "Speaker Deck · MoT Online Tech Talk Vol.2 車載Androidシステムの技術と開発チーム",
+   "url": "https://speakerdeck.com/mot_techtalk/mot-online-tech-talk-vol-dot-2-che-zai-androidsisutemufalseji-shu-tokai-fa-timu",
+   "kind": "company",
+   "date": "2021-03",
+   "note": "[3] 발표의 슬라이드 — 기능 플래그 인터페이스, 메터 사양서 예"
+  },
+  {
+   "n": 5,
+   "title": "Speaker Deck · 24時間走り続けるタクシー車載器の安定稼働を目指したログ基盤の開発",
+   "url": "https://speakerdeck.com/mot_techtalk/24shi-jian-zou-risok-kerutakusiche-zai-qi-falsean-ding-jia-dong-womu-zhi-sitaroguji-pan-falsekai-fa",
+   "kind": "company",
+   "date": "2022-02",
+   "note": "Developers Summit 2022 · IoT 통괄부 — 약 10만 대·24시간, 수집 로그 종류, 헬프데스크 90%/개발 10%"
+  },
+  {
+   "n": 6,
+   "title": "Speaker Deck · タクシーアプリ『GO』Androidのリリースフロー",
+   "url": "https://speakerdeck.com/gya/release-go-app",
+   "kind": "company",
+   "date": "2023-10",
+   "note": "DroidKaigi 2023 후야제 · 손님 앱 팀(다른 부서)의 단계별 배포"
+  },
+  {
+   "n": 7,
+   "title": "Wantedly · 「ないなら、つくろう」が叶う。ハードウェア×ソフトウェアで目指す“タクシー体験”の向上",
+   "url": "https://www.wantedly.com/companies/GOinc/post_articles/911516",
+   "kind": "company",
+   "date": "2024-06",
+   "note": "2023년 10월 기준 · 차량 시스템 제1그룹 매니저·개발자·하드웨어 그룹 인터뷰"
+  },
+  {
+   "n": 8,
+   "title": "PR TIMES · GOが展開する後部座席タブレットの次世代端末が今夏より本格導入開始",
+   "url": "https://www.excite.co.jp/news/article/Prtimes_2025-07-28-30664-325/",
+   "kind": "company",
+   "date": "2025-07",
+   "note": "회사 보도자료(엑사이트 전재) — 약 7만 1천 대, 13인치, 듀얼 SIM, 결제 수단"
+  },
+  {
+   "n": 9,
+   "title": "週刊アスキー · もはやインフラレベルのサービス「GO」 改めて可用性とセキュリティに向き合う",
+   "url": "https://weekly.ascii.jp/elem/000/004/387/4387580/",
+   "kind": "news",
+   "date": "2026-04",
+   "note": "개발본부장 발표 기사('10만 대 규모 택시 배차') — 1쪽만 읽음"
+  },
+  {
+   "n": 10,
+   "title": "GO株式会社 · 会社概要",
+   "url": "https://goinc.jp/company",
+   "kind": "company",
+   "note": "본사 주소·도쿄증권거래소 그로스(581A)"
+  },
+  {
+   "n": 11,
+   "title": "GO株式会社 · 採用 働く環境",
+   "url": "https://goinc.jp/career/environment/",
+   "kind": "company",
+   "note": "복리후생 금액·오피스 프리(개발직)·직원 약 600명(2026년 6월)"
+  },
+  {
+   "n": 12,
+   "title": "GO株式会社 の財務分析 (EDINET 유가증권보고서 집계)",
+   "url": "https://companydata.tsujigawa.com/financial/581A/",
+   "kind": "reference",
+   "note": "제50기(2025-06~2026-05) 유가증권보고서 XBRL 에서 뽑은 평균 연봉·나이·근속(제출 회사), 연결 종업원 606명"
+  },
+  {
+   "n": 13,
+   "title": "乗りものニュース · タクシーに「GPSメーター」「ダイナミックプライシング」導入へ実証実験 10月から",
+   "url": "https://trafficnews.jp/post/110047",
+   "kind": "news",
+   "date": "2021-08",
+   "note": "국토교통성 소프트메터 실증 발표"
+  },
+  {
+   "n": 14,
+   "title": "内閣府 規制改革推進会議 · 国土交通省資料(2023-04-06)",
+   "url": "https://www8.cao.go.jp/kisei-kaikaku/kisei/meeting/wg/2210_01startup/230406/startup10_03.pdf",
+   "kind": "reference",
+   "date": "2023-04",
+   "note": "안건에 '소프트메터 도입'·'사전 확정형 변동 운임 제도화'"
+  },
+  {
+   "n": 15,
+   "title": "東京ハイヤー・タクシー協会 · 運賃改定のお知らせ(2026-04-03)",
+   "url": "https://www.taxi-tokyo.or.jp/assets/pdf/home/info20260403.pdf",
+   "kind": "reference",
+   "date": "2026-04",
+   "note": "특별구·무사시노·미타카 상한 운임 — 첫 1.0km 500엔, 232m마다 100엔, 1분 25초마다 100엔"
+  },
+  {
+   "n": 16,
+   "title": "Android Developers · Guide to app architecture",
+   "url": "https://developer.android.com/topic/architecture",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Android Developers · Best practices for coroutines in Android",
+   "url": "https://developer.android.com/kotlin/coroutines/coroutines-best-practices",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Android Developers · Lock task mode",
+   "url": "https://developer.android.com/work/dpc/dedicated-devices/lock-task-mode",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Google for Developers · Provision devices",
+   "url": "https://developers.google.com/android/work/prov-devices",
+   "kind": "reference",
+   "note": "기기 소유자 관리 앱의 권한·등록 방법"
+  },
+  {
+   "n": 20,
+   "title": "Android Developers · Bluetooth Low Energy overview",
+   "url": "https://developer.android.com/develop/connectivity/bluetooth/ble/ble-overview",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Android Developers · USB host overview",
+   "url": "https://developer.android.com/develop/connectivity/usb/host",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "OASIS · MQTT Version 5.0",
+   "url": "https://docs.oasis-open.org/mqtt/mqtt/v5.0/mqtt-v5.0.html",
+   "kind": "reference",
+   "date": "2019-03"
+  },
+  {
+   "n": 23,
+   "title": "martinfowler.com · Feature Toggles (aka Feature Flags)",
+   "url": "https://martinfowler.com/articles/feature-toggles.html",
+   "kind": "reference",
+   "date": "2017-10"
+  },
+  {
+   "n": 24,
+   "title": "Android Developers · WorkManager",
+   "url": "https://developer.android.com/topic/libraries/architecture/workmanager",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "Wantedly · DroidKaigi 2025で感じた、Android開発の“今”と“これから”",
+   "url": "https://sg.wantedly.com/companies/company_3530336/post_articles/1014394",
+   "kind": "community",
+   "date": "2025-10",
+   "note": "다른 회사(ルクレ) 개발자의 참가 후기 — GO 부스의 'GO 셔틀' 차량 전시"
+  }
+ ],
+ "caveat": "회사 발표는 2021~2023년 것이 많아(당시 사명 Mobility Technologies) 지금 구조와 다를 수 있다. 소프트메터·바탕 앱의 구현, MQTT를 어디에 쓰는지는 공개되지 않았다 — 해당 칸은 공식 문서·실증 자료로 '보통 이런 것'을 보였다. GO 노트(go-on.goinc.jp) 글 두 편과 CodeZine 인터뷰는 로그인·403으로 못 읽었다."
+}
