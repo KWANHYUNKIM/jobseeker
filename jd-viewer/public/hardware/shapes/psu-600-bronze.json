@@ -1,0 +1,47 @@
+{
+ "schema": 1,
+ "part": "psu-600-bronze",
+ "shapes": {
+  "micronics-classic-ii-fullchange-600w-atx31": {
+   "kind": "psu",
+   "modular": "none",
+   "fan_mm": 120,
+   "color": "#232426",
+   "accent": "#b8955a",
+   "fan_light": "none",
+   "marks": [
+    { "text": "CLASSIC II FULL CHANGE", "where": "side", "color": "#b8955a" }
+   ],
+   "sources": [
+    {
+     "title": "마이크로닉스 Classic II 풀체인지 600W ATX3.1 — 공식 제품 페이지(블랙, 대표 사진 3장: 비스듬한 윗면·팬 정면·상자)",
+     "url": "https://www.micronics.co.kr/micronics/view_product.php?product_id=P5MIZ"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "블랙 판. 사진: 무광 검정 상자에 옆면·윗면 모서리를 따라 금색 가는 선, 옆면에 금색 'CLASSIC II FULL CHANGE' 글자. 팬 덮개는 둥근 철망이 아니라 판을 뚫은 가로 긴 구멍 격자(가운데 둥근 MICRONICS 배지), 덮개 둘레가 살짝 솟은 테. 뒤판은 네모 타공 + 전원 단자·스위치, 케이블은 본체 직결(논모듈러). 날개는 격자에 가려 세지 못했다."
+  },
+  "zalman-megamax-ii-600w": {
+   "kind": "psu",
+   "modular": "none",
+   "fan_mm": 120,
+   "color": "#1b1c1f",
+   "accent": "#1d2b45",
+   "fan_light": "none",
+   "marks": [
+    { "text": "MegaMax II 600W", "where": "side" },
+    { "text": "zalman", "where": "side" }
+   ],
+   "sources": [
+    {
+     "title": "잘만 MegaMax II 600W(ZM600-GV2SE) — 공식 제품 페이지(사양 표 140×150×86mm·120mm HDB 팬, 갤러리 4장·상세 이미지)",
+     "url": "https://www.zalman.com/KO/Product/ProductDetail.do?productSeq=1609"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "갤러리 4장: 검정 상자 옆면 대부분을 덮는 남색 판(잔 비늘 무늬)에 흰 'MegaMax II 600W'·'zalman' 글자와 80PLUS 브론즈 표지. 팬은 둥근 철사 격자(바퀴살 4개) 밑의 검정 날개, 가운데 허브가 구리색 원판에 Z 로고. 뒤판은 벌집 타공 + 전원 단자·스위치, 케이블 직결. 날개 수는 정면 사진에서도 격자에 겹쳐 확실히 세지 못해 비웠다."
+  }
+ }
+}
