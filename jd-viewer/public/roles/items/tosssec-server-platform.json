@@ -1,0 +1,893 @@
+{
+ "id": "tosssec-server-platform",
+ "company": "토스증권",
+ "role": "서버 개발자 (Platform)",
+ "team": "서버 플랫폼팀",
+ "jobs": [
+  "ats-toss:group:4168349003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "증권 서비스를 만드는 작은 팀(사일로)들이 **같이 쓰는 공통 기능·프레임워크**를 만들고, 여러 서비스에 걸친 느려짐·장애를 찾아 고칩니다.[1] 예를 들어 3초마다 묻던 화면을 **이벤트가 날 때만 밀어 주는 푸시 서버**로 바꾼 것이 이 팀의 일입니다 — 발표한 사람이 이 팀 리더입니다.[2][3]",
+  "env": "Java·Kotlin·Spring이 중심이고 Go·Netty도 씁니다. 저장·전달은 MySQL·Oracle·Redis·MongoDB·Kafka·Elasticsearch입니다.[1]",
+  "oneline": "다른 개발자가 고객인 서버 개발자. 기능보다 **공통 라이브러리 · 성능 분석 · 장애 원인 찾기**가 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "다른 개발자들이 불편한 것들을 모아서 공통화하고, 요구사항을 모아 새로운 기능을 추가하고, 여러 영역에 걸쳐 발생하는 문제를 해결하는 역할을 하고 있어요.",
+   "short": "팀마다 따로 만들던 것을 한 벌로 모아 주고, 한 팀이 혼자 못 푸는 문제를 대신 푸는 일.",
+   "why": "토스증권은 기획자·디자이너·개발자가 기능 단위로 모인 작은 팀(사일로)이 제품을 만듭니다. 그러면 팀마다 같은 것을 따로 만들게 되는데, 서버 플랫폼팀은 그 공통 기능과 프레임워크를 맡습니다. 올해 목표도 **증권 서비스가 더 쉽고 빠르게 열리고 안정적으로 돌게** 하는 것입니다.[1] 팀원은 무엇이 필요한지 직접 의견을 모아 방향을 정하는 '기획자이자 개발자'입니다.[1]",
+   "actually": {
+    "intro": "이 팀과 같은 그룹 서버 플랫폼 팀이 공개한 실제 사례입니다.",
+    "items": [
+     "**폴링 없애기** — 보유 자산 화면이 3초마다 서버에 묻느라 Redis·Oracle·MySQL 부하와 CPU가 기준(50%)을 넘었다. 체결 같은 이벤트가 날 때만 화면에 알려 주는 **SSE 푸시 서버**(SSE: 서버가 한 번 연결로 계속 데이터를 내려 보내는 HTTP 방식)를 두어 약 30%를 줄였다.[2]",
+     "**알림 용량 넘침** — 메시지 플랫폼 팀이 \"FCM(구글 앱 푸시) 요청이 용량을 넘는다\"고 알려 오자, 지금 앱을 켠 사람에게는 SSE로, 안 켠 사람에게만 FCM으로 보내게 바꿨다. 약 10%가 SSE로 나갔다.[2]",
+     "**배포가 느림** — 설정 서버(Spring Cloud Config)가 암호화된 값을 하나씩 풀어 1,000개면 5초가 걸렸다. 추적 도구로 찾아 여러 스레드로 나눠 풀게 고쳤다.[4]",
+     "**게이트웨이 메모리** — 요청마다 라우트 수만큼 주소를 다시 해석하던 것을 미리 해석해 캐시했다.[4]",
+     "**공통 입구** — 토스 서버플랫폼팀은 인증·암호 풀기·사용자 정보(Passport) 만들기를 게이트웨이 한 곳에 모아 서비스마다 반복하지 않게 했다.[7]"
+    ]
+   },
+   "how_far": "\"무엇을 공통으로 만들까\"를 스스로 찾는 것까지가 일입니다 — 이력서 안내도 **공통 기능을 스스로 도출해서 만든 경험**을 묻습니다.[1] 최소선은 한 서비스에서 반복되던 코드를 라이브러리로 떼어 다른 팀이 의존성 한 줄로 쓰게 만들어 본 경험입니다.{추론}",
+   "refs": [
+    1,
+    2,
+    4,
+    7
+   ],
+   "study": [
+    "toss-sse",
+    "toss-gateway",
+    "toss-profiler"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "서버 개발 환경으로 Java/Kotlin, Spring Framework를 많이 사용하고 있어요. 따라서 관련된 작업들을 많이 하게 되는데요, 다양한 라이브러리와 개발 방식 중에서 합리적이고 효율적인 방식을 찾아 선택하고 공통화시키는 작업을 해요.",
+   "short": "여러 방법 중 회사 표준을 골라 공용 라이브러리·스타터로 만들어 모든 팀이 같은 방식으로 쓰게 하는 일.",
+   "why": "서비스 수십 개가 HTTP 클라이언트·로그·캐시·락·메시지를 저마다 다르게 쓰면, 장애 때 원인을 찾기 어렵고 고칠 곳도 수십 군데가 됩니다.{추론} 토스증권 원장 팀은 검증 기능을 **라이브러리로 만들어 쓰는 쪽 코드를 고치지 않고** 붙게 했습니다 — 공통화가 실제로 이런 모양입니다.[5]",
+   "actually": {
+    "items": [
+     "**고르기** — 같은 일을 하는 라이브러리 두세 개를 성능·운영 편의·팀 숙련도로 견주고 하나로 정한다. 같은 그룹 서버 플랫폼 공고는 PoC(작게 먼저 만들어 확인)와 **하위 호환**(이미 쓰는 팀을 깨지 않기)을 따로 적었다.[11]",
+     "**스타터로 만들기** — 스프링 부트 자동 설정으로 의존성만 넣으면 지표·로그·추적이 켜지게 한다.{추론}",
+     "**끼워 넣기** — 원장 팀은 쿼리 로깅 라이브러리(p6spy)로 트랜잭션 안의 쿼리를 모으고, 구문 분석기로 바꾸는 쿼리만 골라 조회 쿼리로 바꿨다. 이 기능을 라이브러리로 묶어 각 프로젝트는 수정 없이 썼다.[5]",
+     "**비동기 서버** — 푸시 서버는 Spring WebFlux(논블로킹 웹 프레임워크)로 만들었다. 연결마다 스레드를 잡지 않아 연결을 오래 붙잡는 SSE에 맞는다.[2]",
+     "**언어** — 기술 목록에 Go·Netty도 있다.[1] 시세처럼 빠른 경로는 Netty(이벤트 루프 기반 네트워크 라이브러리)를 쓴다.[8]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "\"하나로 고른다\"의 판단 근거 — 메시지 브로커",
+     "body": "SSE 서버 뒤의 메시지 전달자를 Kafka·Redis Pub/Sub·NATS 셋 중에서 고른 과정입니다.[2] Kafka는 서버마다 모든 메시지를 받아 걸러야 해서 접속 안 한 사람 몫까지 네트워크를 썼습니다. Redis Pub/Sub은 접속한 사람 채널만 구독해 그 낭비가 없고 초당 약 6만 건이 나왔습니다. NATS(Go로 만든 발행·구독 전용 서버)는 그보다 약 5배가 나와 최종으로 골랐습니다.[2][13] 숫자는 이 팀이 잰 것이라 환경마다 다릅니다."
+    }
+   ],
+   "how_far": "\"남들이 쓰기 좋은가\"가 기준입니다. 기능 하나를 짜는 것보다 **기본값·설정 이름·버전 올리는 법·문서**까지 만들 수 있어야 합니다.{추론} 최소선은 스프링 자동 설정(@AutoConfiguration·조건부 빈)이 어떻게 켜지는지 설명할 수 있는 정도입니다.{추론}",
+   "refs": [
+    1,
+    2,
+    5,
+    8,
+    11,
+    13
+   ],
+   "study": [
+    "wiki-spring-boot",
+    "wiki-spring-advanced",
+    "toby-spring",
+    "kotlin-in-action"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "성능 개선을 위해 여러 프로파일링 툴을 다루고, 성능 개선을 어떻게 할지 고민해보고, 실제 action item 들을 뽑아내곤 해요.",
+   "short": "느린 곳을 짐작하지 않고 도구로 재서 찾고, 고칠 일 목록으로 바꾸는 일.",
+   "why": "코드 변경을 되짚어 못 찾는 장애가 있습니다. 같은 그룹 서버 플랫폼 팀장은 프로파일러로 서비스 안에서 무슨 일이 일어나는지 봐야 원인을 정확히 안다고 했고, 상황마다 다른 도구를 쓴 사례를 공개했습니다.[4]",
+   "actually": {
+    "intro": "SLASH 23 발표에서 이 그룹 서버 플랫폼이 쓰는 도구와 쓰임입니다.[4]",
+    "items": [
+     "**Pinpoint**(분산 추적) — 요청 하나가 여러 서버를 지나며 어디서 얼마나 걸렸나. 설정 서버의 느린 메서드를 찾았다.",
+     "**힙 덤프 + MAT** — 오래 사는 객체가 늘 때. 덤프를 뜨면 GC가 먼저 돌아 증거가 사라질 수 있어 옵션으로 살린다. 원인은 Redis 응답 지표가 새 객체를 계속 만든 것, JSON 라이브러리가 새 필드 이름을 계속 기억한 것이었다.",
+     "**jemalloc** — 힙 밖(네이티브) 메모리가 늘 때. 압축 스트림을 닫지 않은 코드를 찾았다.",
+     "**async-profiler** — CPU·메모리·멈춘 스레드(벽시계 모드)를 샘플링해 플레임 그래프로. Elasticsearch가 긴 ISO 날짜 문자열을 해석하느라 CPU를 쓰는 걸 찾아 숫자(epoch 밀리초) 형식으로 바꿨다.[4][14]",
+     "**strace·perf·tcpdump** — 앱 문제인지 시스템 문제인지 가를 때. read 시스템 콜이 240ms 뒤에야 돌아온 것을 찾았고, 커널을 올린 뒤 사라졌다.",
+     "**action item** — 찾은 패턴을 배포 과정에 넣어 자동으로 잡고, JFR(자바 실행 기록) 분석을 자동화해 크게 늘어난 부분을 담당자에게 알리는 계획까지.[4]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "날짜 형식 하나가 CPU를 먹는다 (직접 돌린 출력)",
+     "body": "발표의 Elasticsearch 사례[4]를 파이썬으로 흉내 냈습니다. 같은 시각을 20만 번 해석할 때 긴 문자열이 숫자보다 16배 느렸습니다(이 PC 기준, 돌릴 때마다 조금 다름).",
+     "lang": "python",
+     "code": "import timeit\nfrom datetime import datetime, timezone\n\niso = \"2026-11-23T09:00:00.123+09:00\"\nepoch = \"1795392000123\"\nn = 200_000\nt_iso = timeit.timeit(lambda: datetime.strptime(iso, \"%Y-%m-%dT%H:%M:%S.%f%z\"), number=n)\nt_ep = timeit.timeit(lambda: datetime.fromtimestamp(int(epoch) / 1000, tz=timezone.utc), number=n)\nprint(f\"ISO 문자열  : {t_iso:.3f}초 / 20만 건\")\nprint(f\"epoch 밀리초: {t_ep:.3f}초 / 20만 건\")\nprint(f\"ISO 쪽이 {t_iso / t_ep:.1f}배 느림\")\n# ISO 문자열  : 1.005초 / 20만 건\n# epoch 밀리초: 0.063초 / 20만 건\n# ISO 쪽이 16.1배 느림"
+    }
+   ],
+   "how_far": "도구 이름을 아는 것보다 **증상 → 도구 고르기**가 핵심입니다: 느린 요청은 추적, 힙이 차면 덤프, 힙은 멀쩡한데 메모리가 늘면 네이티브, CPU면 샘플링, 그래도 모르면 시스템 콜·패킷.[4] 최소선은 플레임 그래프 하나를 읽고 \"어느 함수가 몇 %를 먹는다\"를 말할 수 있는 것입니다.{추론}",
+   "refs": [
+    4,
+    14
+   ],
+   "study": [
+    "toss-profiler",
+    "async-profiler",
+    "wiki-jvm",
+    "java-performance"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "또한, 전체적인 관점에서 좋은 아키텍처에 대한 고민을 하고 개선해 나가는 작업을 하는데요. 배포하기 쉬운 구조, 운영하기 쉬운 구조, 안정성을 위한 구조, 성능 개선을 위한 구조에 대해서 고민하고 실행에 옮겨요.",
+   "short": "서비스 하나가 아니라 전체 구조를 보고, 배포·운영·장애·속도 네 가지가 쉬워지게 바꾸는 일.",
+   "why": "증권은 장중에 멈추면 안 되고, 바꿀 때도 옛 것과 같은 결과가 나와야 합니다. 토스증권은 C로 된 옛 원장을 Kotlin 서비스들로 바꾸면서 API·DB 구조·주요 로직을 그대로 두어 **언제든 되돌릴 수 있게** 했습니다.[5]",
+   "actually": {
+    "intro": "네 가지 '구조'의 실제 예입니다. 토스증권 것과 같은 그룹 다른 회사 것을 구분했습니다.",
+    "items": [
+     "**배포하기 쉬운** — 토스뱅크는 고객용 서비스를 트래픽 1%부터 점점 넘기는 카나리 배포로 내보낸다. 사용자 키를 해시해 0~99 값을 만들고 그 값으로 버전을 고정(스티키)해, 화면이 새 버전·옛 버전을 오가다 '없는 페이지'가 뜨는 일을 막았다.[6]",
+     "**운영하기 쉬운** — 같은 발표에서 배포 중 Elasticsearch의 에러 로그 수가 기준을 넘거나 로그가 늦게 쌓이면 자동으로 되돌리고 담당자에게 알린다. 오픈소스를 들이지 않고 사내 배포 도구에 스레드 하나로 붙였다.[6]",
+     "**안정성을 위한** — 토스증권 원장 팀은 게이트웨이로 들어온 실제 요청·응답을 Kafka로 흘려 새 시스템에도 보내고 결과를 비교했다(조회 API). 바꾸는 API는 새 시스템에서 먼저 처리한 뒤 트랜잭션을 되돌리고, 옛 시스템 결과와 DB 값을 비교했다.[5]",
+     "**성능을 위한** — 3초 폴링을 이벤트 푸시로 바꿨다.[2] 서비스 사이 프록시(Istio)가 연결을 세 번 맺는 비용을 줄이려 HTTP/2와 유닉스 도메인 소켓을 시험했다.[4]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "폴링을 이벤트로 바꾸면 요청이 얼마나 주나 (직접 돌린 출력)",
+     "body": "숫자는 가상입니다. 발표의 3초 주기[2]에 체결이 한 사람당 한 시간에 두 번 난다고 두면, 서버에 묻는 횟수가 600배 차이 납니다. 실제 개선이 30%였던 건 화면에 다른 요청도 있고 연결 유지 비용이 있기 때문입니다.{추론}",
+     "lang": "python",
+     "code": "users = 100_000          # 화면을 열어 둔 사람(가상)\ninterval = 3             # 3초마다 폴링\nfills_per_user_hour = 2  # 한 사람에게 한 시간에 체결이 나는 횟수(가상)\n\npoll_rps = users / interval\npush_rps = users * fills_per_user_hour / 3600\nprint(f\"폴링  : 초당 {poll_rps:,.0f}건\")\nprint(f\"이벤트: 초당 {push_rps:,.1f}건\")\nprint(f\"{poll_rps / push_rps:,.0f}배 차이\")\n# 폴링  : 초당 33,333건\n# 이벤트: 초당 55.6건\n# 600배 차이"
+    }
+   ],
+   "flows": [
+    {
+     "caption": "토스증권의 SSE 푸시 흐름[2]",
+     "steps": [
+      "이벤트 만드는 곳 · 주문 체결·배치·API·컨슈머",
+      "메시지 브로커 · 최종 NATS",
+      "SSE 서버 · 사람별 채널(유니캐스트)·전체 방송(브로드캐스트)",
+      "앱·웹 화면 · 이벤트가 오면 그때 API를 다시 부름"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "구조를 혼자 다 바꾸는 자리가 아니라, 바꿀 이유를 숫자로 보이고(CPU·응답 시간·장애 시간) 작게 먼저 해 보는 자리입니다.{추론} 카나리 발표도 \"가장 간단한 방법부터 MVP로\"를 결론으로 꼽았습니다.[6]",
+   "refs": [
+    2,
+    4,
+    5,
+    6
+   ],
+   "study": [
+    "toss-replay",
+    "toss-canary",
+    "toss-sse",
+    "alex-xu"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Java/Kotlin, Spring Framework에 능숙하신 분이면 좋아요.",
+   "short": "공용 라이브러리는 남의 코드에 붙으므로, 스프링이 빈·프록시·자동 설정을 어떻게 만드는지까지 알아야 해서.",
+   "why": "이 팀이 만드는 것은 다른 팀의 스프링 앱 안에서 돕니다. 서비스 하나를 짜는 것과 달리, 남의 앱에 끼워져도 깨지지 않게 만들어야 합니다.{추론} 기술 목록의 첫머리도 Java·Kotlin·Spring입니다.[1]",
+   "level": {
+    "basic": "Kotlin·Java 문법 · 스프링 빈과 의존성 주입 · REST API · JPA 기본",
+    "work": "자동 설정·조건부 빈 · AOP 프록시 · 트랜잭션 전파 · 코루틴/WebFlux 비동기 · 스레드 풀",
+    "team": "라이브러리 설계(기본값·하위 호환) · 프레임워크 내부 수정(예: 시간 함수를 바꾼 시뮬레이션[5]) · 비동기 서버의 연결 관리"
+   },
+   "actually": {
+    "items": [
+     "토스뱅크 대출 팀은 프레임워크의 시간 함수를 고쳐 시뮬레이션마다 Redis에 둔 날짜를 쓰게 했다 — 10년 뒤 금리 변경을 오늘 시험하려고.[5]",
+     "토스증권 푸시 서버는 WebFlux로, 사람마다 Flux 스트림을 만들고 연결이 끊기면 구독을 해지한다.[2]",
+     "토스 게이트웨이는 Spring Cloud Gateway 필터를 Kotlin 코루틴으로 짠다.[7]"
+    ]
+   },
+   "how_far": "\"능숙\"은 API를 만들 줄 아는 수준을 넘어 **스프링이 내 코드를 어떻게 감싸는지**(프록시·자동 설정)를 설명할 수 있는 수준입니다.{추론} 전형에 라이브 코딩 테스트가 있으니 Java나 Kotlin으로 손이 바로 나와야 합니다.[1]",
+   "refs": [
+    1,
+    2,
+    5,
+    7
+   ],
+   "study": [
+    "wiki-spring-boot",
+    "wiki-spring-advanced",
+    "toby-spring",
+    "kotlin-in-action",
+    "webflux-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Redis, Kafka, ELK 스택 운영경험까지 있으면 더 좋아요.",
+   "short": "이 셋이 모든 서비스의 캐시·메시지·로그라서, 쓰는 법을 넘어 고장 났을 때의 모습을 알아야 해서.",
+   "why": "토스증권 서비스들의 데이터 원천·전달·로그가 이 위에 있습니다 — 보유 자산 API는 Redis·MySQL에서 읽고[2], 원장 검증은 Kafka로 요청을 흘렸고[5], 로그는 Elasticsearch로 찾습니다.[4] 플랫폼팀은 이것들을 다른 팀이 안전하게 쓰는 방법까지 정합니다.{추론}",
+   "actually": {
+    "items": [
+     "**Redis** — 캐시·분산 락·Pub/Sub. 해외주식 원장은 Redis 분산 락과 낙관적 잠금을 같이 썼다.[10] Pub/Sub의 '구독자 수' 응답으로 지금 접속한 사람을 따로 세션 표 없이 가렸다.[2]",
+     "**Kafka** — 토스증권은 데이터센터 두 곳에 Kafka를 두고 미러링·오프셋 맞추기로 한쪽이 죽어도 이어받게 했다.[9] 다만 \"모든 서버가 다 받는\" 성질 때문에 사람별 푸시에는 맞지 않았다.[2]",
+     "**ELK** — 로그가 많아 Elasticsearch CPU가 올라 프로파일러로 날짜 형식을 고쳤다.[4] 토스뱅크 배포 자동 되돌리기는 Elasticsearch의 에러 로그 수와 로그 지연을 기준으로 쓴다.[6]"
+    ]
+   },
+   "how_far": "\"운영경험\"이라 설치보다 **문제가 났을 때 무엇을 보나**입니다: Redis 메모리·느린 명령, Kafka 컨슈머 지연(lag)·리밸런스, Elasticsearch 샤드·색인 부하.{추론} 우대 조건이라 없어도 지원은 되지만, 각각 한 번은 띄워 놓고 일부러 망가뜨려 본 경험이 있으면 면접에서 말할 거리가 됩니다.{추론}",
+   "refs": [
+    2,
+    4,
+    5,
+    6,
+    9,
+    10
+   ],
+   "study": [
+    "toss-kafka-dr",
+    "wiki-kafka",
+    "redis-lock"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Spring Framework, Tomcat, JVM, OS, 네트워크, 인프라 등 다양한 레이어에서의 트러블 슈팅 경험, 그를 위한 모니터링과 나아가서 성능 튜닝 경험도 가지고 있다면 더 좋아요.",
+   "short": "장애 원인이 코드가 아니라 JVM·커널·네트워크 장비에 있을 때가 많아, 층을 내려가며 찾을 줄 알아야 해서.",
+   "why": "이 팀이 공개한 장애 원인은 자주 코드 밖에 있었습니다. SSE 연결이 2초·4초·6초처럼 2의 배수 초로 끊겨 tcpdump를 떠 보니, L7 프록시 장비가 하트비트 뒤 FIN 없이 RST를 보내고 있었습니다. TCP 프록시 모드로 바꿔 고쳤습니다.[2] 같은 그룹에서는 Redis가 느린 줄 알았는데 커널에서 read가 늦게 올라온 경우도 있었습니다.[4]",
+   "actually": {
+    "intro": "층마다 보는 곳입니다.",
+    "items": [
+     "**Spring·Tomcat** — 스레드 풀이 다 찼나, 커넥션 풀 대기, 느린 필터.{추론}",
+     "**JVM** — GC 시간·Old 영역 증가 → 힙 덤프, 힙 밖 메모리 → jemalloc.[4]",
+     "**OS** — 시스템 콜이 어디서 멈췄나(strace·perf), 커널 버전 차이.[4][20]",
+     "**네트워크** — tcpdump로 FIN·RST, 수신 큐가 쌓이나(ss·netstat). 토스증권 시세 팀은 TCP 흐름 제어와 수신 큐를 보며 처리량을 맞췄다.[2][8]",
+     "**인프라** — 서비스 메시 프록시가 연결을 세 번 맺는 비용, L7 장비 설정.[2][4]",
+     "**모니터링** — 좀비 연결을 찾으려면 연결이 정상으로 닫혔는지 재는 지표가 따로 있어야 한다고 발표가 결론지었다.[2]"
+    ]
+   },
+   "how_far": "이력서 안내가 가장 듣고 싶다고 한 것이 **서비스 장애 경험 — 어떻게 풀고 무엇을 배웠나**입니다.[1] 최소선은 장애 하나를 '증상 → 가설 → 확인한 도구 → 원인 → 재발 방지'로 숫자와 함께 말할 수 있는 것입니다.{추론}",
+   "refs": [
+    1,
+    2,
+    4,
+    8,
+    20
+   ],
+   "study": [
+    "toss-profiler",
+    "gregg-sysperf",
+    "wiki-jvm",
+    "java-performance"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "실시간 데이터 처리, 네트워크 프로그래밍 경험이 있는 분이면 더 좋아요.",
+   "short": "시세·체결·잔고를 화면에 바로 보내는 푸시 서버가 이 팀 몫이라, 연결을 오래 붙잡는 서버를 짤 줄 알아야 해서.",
+   "why": "토스증권은 화면을 옮길 때마다 시세를 구독·해지해야 해서 양방향이 필요한 곳은 WebSocket, 서버가 알리기만 하면 되는 곳(폴링 제거·개인 알림)은 SSE를 씁니다.[2] 시세 팀은 거래소 데이터를 받아 초당 약 22,000건을 1ms 안에 넘기는 구조를 만들었습니다.[8]",
+   "actually": {
+    "items": [
+     "**SSE** — 화면이 HTTP로 한 번 부르면 서버가 text/event-stream으로 답하고 연결을 열어 둔 채 이벤트마다 한 덩어리씩 보낸다. 끊기면 브라우저가 알아서 다시 붙는다.[2][12]",
+     "**방송 vs 개인** — 전체에 같은 것(FOMC 실시간 의견 채팅방)은 브로드캐스트, 사람마다 다른 것(보유 자산)은 사람별 채널.[2]",
+     "**연결 관리** — 클라이언트가 언제 끊겼는지 서버가 모르므로 하트비트로 좀비 연결을 찾는다.[2]",
+     "**NATS 클러스터** — 구독·해지 때 모든 노드에 '누가 무엇을 구독하나' 장부를 퍼뜨려, 발행한 노드가 구독자 있는 노드로 넘긴다.[2][13]",
+     "**시세 경로** — 거래소 UDP 멀티캐스트 수신, 이중 수신 그룹 전환, 사내 전달은 Kafka(약 15ms)보다 Redis Pub/Sub(약 3ms)이 빨랐다.[8]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "SSE가 실제로 오가는 모양 (직접 돌린 출력)",
+     "body": "파이썬 표준 라이브러리로 만든 작은 SSE 서버를 클라이언트로 읽은 결과입니다. 한 연결로 0.5초 간격 이벤트 두 개가 왔고, 이벤트는 빈 줄로 끝납니다.[12]",
+     "lang": "python",
+     "code": "# 서버 — 한 연결을 열어 두고 이벤트마다 보낸다\nself.send_header(\"Content-Type\", \"text/event-stream\")\nfor i, ev in enumerate([\"체결 삼성전자 1주\", \"잔고 갱신\"], 1):\n    self.wfile.write(f\"id: {i}\\nevent: fill\\ndata: {ev}\\n\\n\".encode())\n    self.wfile.flush()\n    time.sleep(0.5)\n\n# 클라이언트가 받은 줄(받은 시각)\n# 200 text/event-stream\n#  0.0s 'id: 1\\n'\n#  0.0s 'event: fill\\n'\n#  0.0s 'data: 체결 삼성전자 1주\\n'\n#  0.0s '\\n'\n#  0.5s 'id: 2\\n'\n#  0.5s 'event: fill\\n'\n#  0.5s 'data: 잔고 갱신\\n'\n#  0.5s '\\n'"
+    }
+   ],
+   "how_far": "우대 조건입니다. 최소선은 WebSocket과 SSE를 언제 고르는지, 연결 수가 많을 때 왜 논블로킹 서버가 필요한지, 끊긴 연결을 어떻게 아는지 설명하는 것입니다.[2]{추론}",
+   "refs": [
+    2,
+    8,
+    12,
+    13
+   ],
+   "study": [
+    "toss-sse",
+    "toss-market",
+    "mdn-sse",
+    "nats-docs",
+    "wiki-java-io"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "변화를 두려워하지 않고 새로운 기술을 도입하여 서비스와 인프라 환경을 꾸준히 발전시키려는 분과 함께 하고 싶어요.",
+   "short": "옛 방식이 멀쩡히 도는 상태에서 새 것을 들이고, 안 깨진다는 걸 증명하는 일까지가 몫이라서.",
+   "why": "이 팀은 폴링이라는 잘 돌던 방식을 푸시로 바꿨고, 브로커도 Kafka → Redis → NATS로 재 보며 골랐습니다.[2] 원장 팀은 C로 된 원장을 Kotlin으로 바꾸며 실제 트래픽을 흘려 비교하는 검증기를 만들었습니다.[5]",
+   "actually": {
+    "items": [
+     "새 기술을 들일 때 **잰 숫자**를 같이 낸다(브로커 처리량 비교, CPU 30% 감소).[2]",
+     "새 시스템을 바로 켜지 않고 실제 요청으로 비교하고, 관리 화면에서 API별로 켜기·비율·시간을 바꿔 가며 넓힌다.[5]",
+     "반대로 \"새 도구 리서치부터 하지 말고 가장 간단한 방법을 먼저\"라는 원칙도 같은 그룹 발표에 있다 — 새 것 자체가 목적은 아니다.[6]",
+     "팀원 코멘트는 \"개발 속도를 높이면서도 보안·장애에 해가 없는 환경\"을 만든다고 했다.[1]"
+    ]
+   },
+   "how_far": "면접에서는 \"무엇을 새로 들였나\"보다 **왜·어떻게 안전하게 들였고 결과가 몇이었나**를 묻게 됩니다.{추론} 이력서에도 경험을 나열하지 말고 배운 점을 쓰라고 합니다.[1]",
+   "refs": [
+    1,
+    2,
+    5,
+    6
+   ],
+   "study": [
+    "toss-replay",
+    "toss-canary"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "다른 개발자가 불편해하는 걸 보면 고쳐 주고 싶은 사람",
+   "장애 원인을 끝까지 파는 걸 즐기는 사람 — 이력서 안내가 가장 듣고 싶어 하는 이야기[1]",
+   "무엇을 만들지 스스로 정하고 싶은 사람 — 팀원이 곧 기획자[1]",
+   "JVM·커널·네트워크처럼 아래층이 궁금한 사람[4]"
+  ],
+  "hard": [
+   "내가 만든 기능이 고객 화면에 바로 보이는 맛은 적다{추론}",
+   "공용 라이브러리는 한 번 퍼지면 바꾸기 어렵고, 실수가 모든 서비스에 번진다{추론}",
+   "전형에 라이브 코딩 테스트가 있다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "3초마다 폴링하는 화면의 서버 부하를 줄이려면? WebSocket과 SSE 중 무엇을 왜 고르나요?",
+   "a": "이 팀이 실제로 한 일 — 방향(단방향/양방향)과 재연결.[2]"
+  },
+  {
+   "q": "사람별 푸시에 Kafka를 그대로 쓰면 무엇이 문제인가요?",
+   "a": "모든 서버가 모든 메시지를 받는 낭비와 필터링.[2]"
+  },
+  {
+   "q": "SSE 연결이 2초·4초·6초에 끊긴다는 로그가 있다면 어디부터 보겠어요?",
+   "a": "tcpdump로 찾은 L7 장비의 RST.[2]"
+  },
+  {
+   "q": "Old 영역이 계속 늘어요. 힙 덤프를 뜨면 원인이 사라진다면? 힙은 멀쩡한데 컨테이너 메모리가 넘친다면?",
+   "a": "덤프 옵션과 네이티브 메모리 도구.[4]"
+  },
+  {
+   "q": "옛 시스템을 새 시스템으로 바꿀 때 결과가 같은지 어떻게 증명하나요? 쓰기 API는요?",
+   "a": "원장 팀의 읽기·쓰기 검증기.[5]"
+  },
+  {
+   "q": "공용 라이브러리 새 버전이 몇 팀에서 문제를 일으켰어요. 어떻게 막았어야 했나요?",
+   "a": "하위 호환과 점진 배포.[6][11]{추론}"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 토스증권 서버 개발자 (Platform)",
+   "url": "https://toss.im/career/job-detail?gh_jid=4168349003",
+   "kind": "posting",
+   "note": "팀 소개(사일로·올해 목표), 업무·요건, 이력서 안내(장애 경험·공통 기능·모니터링), 팀 기술, 합류 여정(라이브코테·처우협의), 팀원 코멘트"
+  },
+  {
+   "n": 2,
+   "title": "SLASH 24 · SSE 이벤트 푸쉬로 불필요한 Polling 제거하기",
+   "url": "https://www.youtube.com/watch?v=ovGgdPPUZ2I",
+   "kind": "company",
+   "date": "2024-09",
+   "note": "토스증권 서버 플랫폼팀 · 20분 · 자막 전부 읽음(3초 폴링·CPU 50%, WebFlux, 브로드캐스트/유니캐스트, 보유 자산 30%, FCM 대신 SSE 10%, Redis Pub/Sub 구독자 수, Kafka·Redis 6만·NATS 5배, 2N초 끊김 RST)"
+  },
+  {
+   "n": 3,
+   "title": "SLASH 24 세션 소개 · SSE 이벤트 푸쉬로 불필요한 Polling 제거하기",
+   "url": "https://toss.im/slash-24/sessions/12",
+   "kind": "company",
+   "note": "발표자 소속 — 토스증권 Server Platform Team Leader"
+  },
+  {
+   "n": 4,
+   "title": "SLASH 23 · 프로파일러로 시스템 성능 향상시키기",
+   "url": "https://www.youtube.com/watch?v=tZjjqhnwtYY",
+   "kind": "company",
+   "date": "2023-06",
+   "note": "토스(토스코어) Server Platform 팀장 — 같은 그룹 다른 회사 · 17분 · 자막 전부 읽음(Pinpoint·힙 덤프·jemalloc·async-profiler·strace·perf·Istio 연결·바이너리 분석·자동화 계획)"
+  },
+  {
+   "n": 5,
+   "title": "SLASH 24 · 리플레이 검증으로 새로운 금융 시스템 안전하게 도입하기",
+   "url": "https://www.youtube.com/watch?v=D3p-V5Sr7gk",
+   "kind": "company",
+   "date": "2024-09",
+   "note": "토스증권 국내주식 원장 팀(앞부분) + 토스뱅크 대출(뒷부분) · 20분 · 자막 전부 읽음(C → Kotlin 원장, 읽기·쓰기 검증기, p6spy, 라이브러리화, 시간 함수 바꾼 시뮬레이션)"
+  },
+  {
+   "n": 6,
+   "title": "SLASH 24 · 생산성과 안정성 모두 잡는 마스터키, Canary 배포 개선기",
+   "url": "https://www.youtube.com/watch?v=ApNj9MZU7Ak",
+   "kind": "company",
+   "date": "2024-09",
+   "note": "토스뱅크 DevOps·SRE — 같은 그룹 다른 회사 · 21분 · 자막 전부 읽음(스티키 카나리 해시 mod 100, Istio 헤더 라우팅, 에러 로그·로그 지연 기준 자동 되돌리기, 서비스 400개 넘음)"
+  },
+  {
+   "n": 7,
+   "title": "토스 테크 · 토스는 Gateway 이렇게 씁니다 (SLASH 23)",
+   "url": "https://toss.tech/article/slash23-server",
+   "kind": "company",
+   "date": "2023-10-12",
+   "note": "토스 서버플랫폼팀 — Spring Cloud Gateway·Kotlin 코루틴 필터·Passport·종단 암호화"
+  },
+  {
+   "n": 8,
+   "title": "SLASH 23 · 실시간 시세 데이터 안전하고 빠르게 처리하기",
+   "url": "https://www.youtube.com/watch?v=SF7eqlL0mjw",
+   "kind": "company",
+   "date": "2023-06",
+   "note": "토스증권 마켓 플랫폼 팀 · 다른 회차에서 자막 전부 읽음(UDP 멀티캐스트, A/B 전환, Kafka 15ms vs Redis Pub/Sub 3ms, TCP 흐름 제어, 수신 큐, 22,000 TPS · 1ms 이하)"
+  },
+  {
+   "n": 9,
+   "title": "SLASH 23 · Kafka 이중화로 다양한 장애 상황 완벽 대처하기",
+   "url": "https://www.youtube.com/watch?v=Pzkioe7Dvo4",
+   "kind": "company",
+   "date": "2023-06",
+   "note": "토스증권 데이터 플랫폼팀 · 다른 회차에서 자막 전부 읽음(두 센터 미러링·오프셋 싱크)"
+  },
+  {
+   "n": 10,
+   "title": "SLASH 22 · 애플 한 주가 고객에게 전달 되기까지",
+   "url": "https://www.youtube.com/watch?v=UOWy6zdsD-c",
+   "kind": "company",
+   "date": "2022-06",
+   "note": "토스증권 해외주식 원장 · 다른 회차에서 자막 전부 읽음(Redis 분산 락·낙관적 잠금, 체결 수신 후 Kafka)"
+  },
+  {
+   "n": 11,
+   "title": "토스 채용 · Server Developer (Server Platform Team)",
+   "url": "https://toss.im/career/job-detail?job_id=4071145003",
+   "kind": "posting",
+   "note": "같은 그룹 토스의 서버 플랫폼 팀 — 분산락·하위 호환·PoC, 이력서에 RPS·SLA·전후 숫자"
+  },
+  {
+   "n": 12,
+   "title": "MDN · 서버 전송 이벤트 사용하기",
+   "url": "https://developer.mozilla.org/ko/docs/Web/API/Server-sent_events/Using_server-sent_events",
+   "kind": "reference",
+   "note": "text/event-stream 형식(id·event·data·빈 줄)과 자동 재연결"
+  },
+  {
+   "n": 13,
+   "title": "NATS 공식 문서",
+   "url": "https://docs.nats.io/",
+   "kind": "reference",
+   "note": "주제(subject) 기반 발행·구독, 클러스터"
+  },
+  {
+   "n": 14,
+   "title": "async-profiler (GitHub)",
+   "url": "https://github.com/async-profiler/async-profiler",
+   "kind": "reference",
+   "note": "CPU·할당·벽시계 샘플링, 플레임 그래프·JFR 출력"
+  },
+  {
+   "n": 15,
+   "title": "토스증권 — 사이트 하단 회사 정보",
+   "url": "https://tossinvest.com/",
+   "kind": "company",
+   "note": "토스증권(주), 06133 서울특별시 강남구 테헤란로 133, 7층 (역삼동, 한국타이어빌딩) — 앞선 회차에서 직접 확인"
+  },
+  {
+   "n": 16,
+   "title": "자소설닷컴 — 토스증권(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/13103",
+   "kind": "reference",
+   "note": "평균 7,007만원·초봉 5,003만원·사원 292명, 기준일 표기 없음(앞선 회차 확인값)"
+  },
+  {
+   "n": 17,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 18,
+   "title": "CEO스코어데일리 · '브로커리지 의존 탈피'…토스·카카오페이·키움증권 인원 확충 활발",
+   "url": "https://ceoscoredaily.com/page/view/2026031715402230471",
+   "kind": "news",
+   "date": "2026-03-17",
+   "note": "금융투자협회 자료 — 토스증권 임직원 371명 → 485명(+30.73%)"
+  },
+  {
+   "n": 19,
+   "title": "CEO스코어데일리 · '호황' 증권가, 임직원 수 2% 늘 때 급여는 48% 증가",
+   "url": "https://www.ceoscoredaily.com/page/view/2026052816034001002",
+   "kind": "news",
+   "date": "2026-05-29",
+   "note": "금융투자협회 공시, 2026년 1분기 — 토스증권 직원 380명 → 516명, 직원 급여 총액 +21.4%(금액은 기사에 없음)"
+  },
+  {
+   "n": 20,
+   "title": "Brendan Gregg · Linux Performance",
+   "url": "https://www.brendangregg.com/linuxperf.html",
+   "kind": "reference",
+   "note": "층별 관측 도구 지도(perf·strace·ss·tcpdump)"
+  }
+ ],
+ "caveat": "발표는 2023~2024년 것이라 지금 구조와 다를 수 있습니다. 프로파일러·카나리 발표는 같은 그룹 다른 회사(토스·토스뱅크) 것이고, 토스증권 서버 플랫폼팀의 공용 라이브러리 목록·내부 프레임워크 구조는 공개되지 않았습니다. 그 부분은 공식 문서로 '보통 이런 것'을 보였고 {추론} 으로 표시했습니다.",
+ "resources": [
+  {
+   "id": "toss-sse",
+   "title": "SLASH 24 · SSE 이벤트 푸쉬로 불필요한 Polling 제거하기",
+   "by": "토스증권 서버 플랫폼팀 · 20분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=ovGgdPPUZ2I",
+   "why": "이 팀 자신의 발표. 공통 기능을 왜·어떻게 만들고 브로커를 어떻게 골랐는지, 장애를 어떻게 찾았는지가 한 편에 다 있다. 지원 전에 꼭 볼 영상."
+  },
+  {
+   "id": "toss-profiler",
+   "title": "SLASH 23 · 프로파일러로 시스템 성능 향상시키기",
+   "by": "토스 Server Platform 팀 · 17분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=tZjjqhnwtYY",
+   "why": "업무 셋째 줄(프로파일링)과 요건 셋째 줄(층별 트러블슈팅)의 실제 모습 — 증상마다 어떤 도구를 꺼내나."
+  },
+  {
+   "id": "toss-replay",
+   "title": "SLASH 24 · 리플레이 검증으로 새로운 금융 시스템 안전하게 도입하기",
+   "by": "토스증권 국내주식 원장 팀 · 토스뱅크 · 20분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=D3p-V5Sr7gk",
+   "why": "'안정성을 위한 구조'와 '새 기술 도입'을 토스증권이 실제로 한 방법 — 실제 트래픽으로 새 시스템을 비교하는 검증기."
+  },
+  {
+   "id": "toss-canary",
+   "title": "SLASH 24 · 생산성과 안정성 모두 잡는 마스터키, Canary 배포 개선기",
+   "by": "토스뱅크 DevOps·SRE · 21분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=ApNj9MZU7Ak",
+   "why": "'배포하기 쉬운 구조'의 그룹 사례 — 사용자를 한 버전에 묶는 카나리와 로그 기준 자동 되돌리기."
+  },
+  {
+   "id": "toss-market",
+   "title": "SLASH 23 · 실시간 시세 데이터 안전하고 빠르게 처리하기",
+   "by": "토스증권 마켓 플랫폼 팀",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.youtube.com/watch?v=SF7eqlL0mjw",
+   "why": "우대 '실시간 데이터·네트워크 프로그래밍'이 토스증권에서 어떤 수준인지 — 멀티캐스트 수신부터 1ms 전달까지."
+  },
+  {
+   "id": "toss-kafka-dr",
+   "title": "SLASH 23 · Kafka 이중화로 다양한 장애 상황 완벽 대처하기",
+   "by": "토스증권 데이터 플랫폼팀",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=Pzkioe7Dvo4",
+   "why": "Kafka '운영경험'이 무엇인지 — 두 센터에 걸친 클러스터를 어떻게 맞추나."
+  },
+  {
+   "id": "toss-gateway",
+   "title": "토스는 Gateway 이렇게 씁니다 (SLASH 23 글판)",
+   "by": "토스 서버플랫폼팀 · 토스 테크",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://toss.tech/article/slash23-server",
+   "why": "공통 로직을 한 곳에 모으는 '공통화'의 그룹 사례를 글로 읽는다."
+  },
+  {
+   "id": "wiki-spring-boot",
+   "title": "스프링 부트 — 핵심 원리와 활용",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/spring-boot",
+   "why": "자동 설정·스타터·액추에이터 — 공용 라이브러리를 '의존성 한 줄'로 만드는 원리."
+  },
+  {
+   "id": "wiki-spring-advanced",
+   "title": "스프링 핵심 원리 — 고급편",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/spring-advanced",
+   "why": "프록시·AOP·로그 추적기 — 남의 코드에 지표·로그·검증을 끼워 넣는 방법."
+  },
+  {
+   "id": "wiki-jvm",
+   "title": "자바 성능 튜닝 — JVM 과 GC",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/jvm-tuning",
+   "why": "GC 로그·힙 스냅숏 읽기 — 프로파일링 업무의 첫 도구."
+  },
+  {
+   "id": "wiki-kafka",
+   "title": "아파치 카프카 애플리케이션 프로그래밍",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/kafka",
+   "why": "오프셋·컨슈머 그룹 — 왜 Kafka는 '모든 서버가 다 받는' 사람별 푸시에 맞지 않았나를 이해하는 바닥."
+  },
+  {
+   "id": "wiki-java-io",
+   "title": "실전 자바 — I/O, 네트워크, 리플렉션",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/java-io",
+   "why": "소켓에 실제로 오간 바이트를 보며 네트워크 프로그래밍의 기본기를 잡는다."
+  },
+  {
+   "id": "toby-spring",
+   "title": "토비의 스프링 3.1",
+   "by": "이일민 · 에이콘출판",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%ED%86%A0%EB%B9%84%EC%9D%98%20%EC%8A%A4%ED%94%84%EB%A7%81",
+   "why": "스프링이 왜 이렇게 생겼는지(의존성 주입·프록시·추상화)를 처음부터. 프레임워크를 '만드는 쪽'에 서려면 필요한 시야."
+  },
+  {
+   "id": "kotlin-in-action",
+   "title": "Kotlin in Action",
+   "by": "드미트리 제메로프 · 스베트라나 이사코바 · 에이콘출판",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=Kotlin%20in%20Action",
+   "why": "코틀린을 만든 팀원이 쓴 책. 확장 함수·DSL처럼 공용 라이브러리를 '쓰기 좋게' 만드는 문법이 많다."
+  },
+  {
+   "id": "java-performance",
+   "title": "자바 최적화",
+   "by": "벤저민 J. 에번스 · 제임스 고프 · 크리스 뉴랜드 · 한빛미디어",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9E%90%EB%B0%94%20%EC%B5%9C%EC%A0%81%ED%99%94",
+   "why": "JVM 성능을 재는 법·GC·JIT·프로파일링 함정. '짐작 말고 재라'는 이 자리의 일하는 방식."
+  },
+  {
+   "id": "gregg-sysperf",
+   "title": "Systems Performance (2판)",
+   "by": "Brendan Gregg · Addison-Wesley · 2020",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.brendangregg.com/systems-performance-2nd-edition-book.html",
+   "why": "OS·네트워크 층 트러블슈팅의 교과서. 필요한 장(CPU·메모리·네트워크·perf)만 골라 읽는다."
+  },
+  {
+   "id": "async-profiler",
+   "title": "async-profiler",
+   "by": "GitHub 공식 저장소",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/async-profiler/async-profiler",
+   "why": "발표에서 쓴 샘플링 프로파일러. 자기 앱에 붙여 플레임 그래프를 뽑아 보는 첫 실습."
+  },
+  {
+   "id": "webflux-docs",
+   "title": "Spring WebFlux 레퍼런스",
+   "by": "Spring 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.spring.io/spring-framework/reference/web/webflux.html",
+   "why": "푸시 서버를 만든 프레임워크. 논블로킹·Flux 스트림·SSE 응답을 공식 예제로."
+  },
+  {
+   "id": "mdn-sse",
+   "title": "서버 전송 이벤트 사용하기",
+   "by": "MDN",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.mozilla.org/ko/docs/Web/API/Server-sent_events/Using_server-sent_events",
+   "why": "SSE 형식(id·event·data)과 브라우저 쪽 EventSource·재연결 규칙."
+  },
+  {
+   "id": "nats-docs",
+   "title": "NATS 공식 문서",
+   "by": "Synadia · NATS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nats.io/",
+   "why": "이 팀이 최종으로 고른 브로커. 주제 구독과 클러스터 라우팅을 직접 띄워 본다."
+  },
+  {
+   "id": "redis-lock",
+   "title": "Distributed Locks with Redis",
+   "by": "Redis 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://redis.io/docs/latest/develop/clients/patterns/distributed-locks/",
+   "why": "원장들이 쓰는 Redis 분산 락의 기본 꼴 — 공용 락 라이브러리를 만들 때 지킬 것."
+  },
+  {
+   "id": "alex-xu",
+   "title": "가상 면접 사례로 배우는 대규모 시스템 설계 기초",
+   "by": "알렉스 쉬 · 인사이트",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%80%EC%83%81%20%EB%A9%B4%EC%A0%91%20%EC%82%AC%EB%A1%80%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%8C%80%EA%B7%9C%EB%AA%A8%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EA%B8%B0%EC%B4%88",
+   "why": "'좋은 아키텍처' 업무의 기초 어휘(부하 분산·캐시·메시지 큐·알림 시스템)."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "이 팀의 일 감 잡기",
+   "time": "1주",
+   "goal": "서버 플랫폼팀이 무엇을 만들고 어떤 문제를 푸는지 사례 다섯 개로 설명할 수 있다.",
+   "resources": [
+    "toss-sse",
+    "toss-profiler",
+    "toss-replay",
+    "toss-gateway"
+   ],
+   "task": "발표 세 편을 보고 '문제 → 잰 숫자 → 바꾼 구조 → 결과'로 한 장씩 정리한다."
+  },
+  {
+   "title": "스프링을 만드는 쪽에서 보기",
+   "time": "3~4주",
+   "goal": "자동 설정·프록시로 남의 앱에 기능을 끼워 넣는 공용 스타터를 만들 수 있다.",
+   "resources": [
+    "wiki-spring-boot",
+    "wiki-spring-advanced",
+    "toby-spring",
+    "kotlin-in-action"
+   ],
+   "task": "Kotlin으로 '요청마다 처리 시간 지표와 추적 ID 로그를 남기는' 스프링 부트 스타터를 만들고, 빈 프로젝트 두 개에 의존성 한 줄로 붙여 본다. 설정으로 끄고 켜기와 버전 1 → 2 하위 호환까지."
+  },
+  {
+   "title": "재고 찾기 — 프로파일링",
+   "time": "2~3주",
+   "goal": "증상에 맞는 도구를 골라 원인을 찾고, 고친 전후를 숫자로 보인다.",
+   "resources": [
+    "wiki-jvm",
+    "async-profiler",
+    "java-performance",
+    "gregg-sysperf"
+   ],
+   "task": "일부러 문제를 심은 가상 API(객체가 쌓이는 캐시, 닫지 않는 스트림, 느린 날짜 해석)를 만들고 힙 덤프·async-profiler·strace로 하나씩 찾아 고친다. 전후 응답 시간·메모리 그래프를 남긴다."
+  },
+  {
+   "title": "푸시 서버 만들기",
+   "time": "2~3주",
+   "goal": "폴링 화면을 이벤트 푸시로 바꾸고, 브로커를 재서 고를 수 있다.",
+   "resources": [
+    "webflux-docs",
+    "mdn-sse",
+    "nats-docs",
+    "wiki-kafka",
+    "toss-market"
+   ],
+   "task": "가상 '체결 → 잔고 갱신' 이벤트를 WebFlux SSE 서버로 사람별 채널에 보낸다. 브로커를 Redis Pub/Sub과 NATS로 바꿔 끼워 초당 처리량을 재고, 하트비트로 끊긴 연결을 정리하고 닫힌 연결 수를 지표로 남긴다."
+  },
+  {
+   "title": "안전하게 바꾸기 (선택)",
+   "time": "계속",
+   "goal": "새 구조를 실제 요청으로 비교·점진 배포하는 방법을 설계할 수 있다.",
+   "resources": [
+    "toss-replay",
+    "toss-canary",
+    "toss-kafka-dr",
+    "alex-xu"
+   ],
+   "task": "4단계 서버의 새 버전을 사용자 키 해시로 10% → 50% → 100% 넘기고, 옛 버전과 응답을 비교하는 검증기를 붙인다. 에러 로그가 기준을 넘으면 자동으로 되돌리게 한다."
+  }
+ ],
+ "pay": {
+  "summary": "공시된 직원 평균 급여 숫자는 찾지 못했다 — 공공데이터 집계로 **초봉 약 5,000만원 · 평균 약 7,000만원**(기준일 없음). 연봉은 처우 협의로 사람마다 정한다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,003만원",
+    "amount": 5003,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 기준일 표기가 없고 사원 수가 292명으로 적혀 있어 최근 인원(2026년 1분기 516명)보다 예전 값으로 보인다. 직군 구분 없음 [16][19]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 7,007만원",
+    "amount": 7007,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계 사이트의 평균 — 경력직이 섞인 회사 전체 값이다 [16]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고, 전형 끝에 **처우협의** 단계가 따로 있다 [1]. 토스증권은 사업보고서 평균 급여 공시 숫자를 찾지 못했다(**공시 숫자 없음**). 금융투자협회 공시를 분석한 기사는 2026년 1분기에 직원이 380명에서 516명으로 늘고 직원 급여 총액은 21.4% 늘었다고만 적었다 [19]. 2025년 한 해 임직원은 371명에서 485명으로 30.73% 늘었다 [18]. 평균은 경력직이 많은 회사 전체 값이라 신입이 받는 금액으로 읽으면 안 된다 {추론}. 같은 기준의 동종사 값을 찾지 못해 비교 줄은 싣지 않았다."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통·통신",
+    "detail": "주차비·택시비 100%(법인카드), 통신비 매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   }
+  ],
+  "note": "토스 팀 전체를 기준으로 한 2021년 공식 소개 글이다 [17]. 토스증권에 그대로 적용되는지, 지금도 같은지는 글에 적혀 있지 않아 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스증권 본사",
+  "address": "서울특별시 강남구 테헤란로 133, 7층 (역삼동, 한국타이어빌딩)",
+  "postal": "06133",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20133",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "공고의 근무지 표기는 'Seoul'뿐이고, 주소는 토스증권 사이트 하단의 회사 정보다 [15]."
+ }
+}
