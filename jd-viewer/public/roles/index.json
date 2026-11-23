@@ -62,6 +62,8 @@
   "ats-toss:group:4555752003": "toss-security-researcher-apt",
   "ats-toss:group:7780944003": "toss-security-researcher-mobile",
   "ats-toss:group:4076085003": "toss-security-researcher-pentest",
+  "wanted-392448": "tossbank-aiops-platform-engineer",
+  "ats-toss:group:7702581003": "tossbank-aiops-platform-engineer",
   "ats-toss:group:4103438003": "tossbank-data-analyst",
   "wanted-385879": "tossbank-devops-engineer",
   "ats-toss:group:7757550003": "tossbank-devops-engineer",
@@ -677,6 +679,17 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 12
+  },
+  {
+   "id": "tossbank-aiops-platform-engineer",
+   "company": "토스뱅크",
+   "role": "AIOps 플랫폼 엔지니어",
+   "jobs": [
+    "wanted-392448",
+    "ats-toss:group:7702581003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 13
   },
   {
    "id": "tossbank-data-analyst",
