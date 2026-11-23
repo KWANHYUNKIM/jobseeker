@@ -1,0 +1,1144 @@
+{
+ "id": "tosssec-ai-engineer-wm",
+ "company": "토스증권",
+ "role": "AI 엔지니어",
+ "team": "WM Domain (자산관리 — 생애 주기 투자 전략 플랫폼)",
+ "jobs": [
+  "ats-toss:group:7825510003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "투자 질문에 답하는 **'투자 AI Agent'** 를 처음부터 만듭니다 — 질문을 나눠 보내는 라우터, 시세·계좌·뉴스를 부르는 도구, 대화 기억, 그리고 그 품질을 재는 평가 체계까지.[1]",
+  "env": "자산관리(WM)를 새로 키우는 조직입니다.[1][12][14] 바닥에는 같은 회사가 이미 만든 투자 정보 파이프라인(뉴스 분류·공통 RAG·금융 지식 그래프)이 있고[2][3], 금융 규제와 준법 조직이 답의 범위를 함께 정합니다.[1][11]",
+  "oneline": "모델을 학습시키기보다 **LLM을 엮어 수많은 투자자 앞에서 믿을 만하게 일하게 만드는** 자리. 평가와 운영이 일의 절반입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "AI Agent 오케스트레이션을 구축하고 운영해요 — 멀티 에이전트 협업 구조, Tool Use / Function Calling, 메모리 관리, 라우터를 설계하고 대규모 사용자 환경에서 안정적으로 서빙해요.",
+   "short": "질문을 받아 어느 에이전트·도구로 보낼지 정하고, 대화를 기억하며, 수백만 명 앞에서 안 죽게 띄우는 뼈대를 만든다.",
+   "why": "공고는 이 팀이 소수의 전유물이던 **투자 자문을 AI로 모두에게** 주는 '투자 AI Agent'를 처음부터 만든다고 적었습니다.[1] 토스증권 고객은 이미 커뮤니티 월 이용자만 약 400만 명이고[9], AI 어닝콜은 엔비디아 실적 발표 때 동시 접속 10만 명을 넘었습니다.[6] 투자 질문은 종목 시세·내 계좌·뉴스·공시처럼 서로 다른 자료가 한 번에 필요해서, LLM 하나에 다 맡기기보다 일을 나눠 맡길 구조가 필요합니다 {추론}.",
+   "actually": {
+    "intro": "낱말부터 풀면 이렇습니다. 토스증권이 이 에이전트의 구조를 공개한 적은 없어서, 같은 회사의 투자 정보 파이프라인 글[2]과 다른 회사의 공개 문서로 '보통 이런 것'을 보입니다.",
+    "items": [
+     "**라우터**(질문을 알맞은 처리 길로 보내는 첫 관문) — '내 포트폴리오 괜찮아?'는 계좌 조회 길, '엔비디아 왜 올랐어?'는 뉴스 설명 길, 답할 수 없는 질문은 정중히 거절하는 길로 보낸다. 분류 모델이나 작은 LLM이 맡는 경우가 많다.[20]",
+     "**Tool Use / Function Calling**(LLM이 '이 함수를 이 값으로 불러 달라'고 구조화된 요청을 내면 코드가 실제로 실행) — 시세 조회·보유 종목·재무 지표·뉴스 검색을 도구로 준다. 도구 이름과 입력 형식을 헷갈리지 않게 적는 것이 품질을 가른다.[21][31] 토스증권은 고객이 발급받은 오픈API 키를 외부 LLM에 이어 자연어로 조회·주문하는 길도 열어 두었다 — 같은 시세·계좌·주문 기능이 도구 꼴로 이미 있다는 뜻이다.[10]",
+     "**멀티 에이전트**(역할이 다른 여러 LLM이 나눠 일하기) — 지휘 에이전트가 하위 에이전트(뉴스 조사·종목 분석·포트폴리오 점검)에 일을 나눠 준다. 한 사례는 멀티 에이전트가 일반 채팅보다 토큰을 약 15배 쓴다고 밝혔다.[22] 실패는 설계 잘못·에이전트끼리 엇갈림·검증 부족 세 갈래로 나뉜다는 연구도 있다.[23]",
+     "**토스증권이 밝힌 선택** — 고객에게 바로 나가는 투자 정보는 요건이 분명해서 LLM이 스스로 다음 단계를 고르는 자율형 대신 **필요한 단계만 둔 작업 그래프**를 썼다. 근거 기록·재현·지연과 비용 예측·실패 지점 추적 때문이다.[2] 이렇게 만든 그래프는 나중에 다른 에이전트가 부르는 '기능'(입력: 종목·방향·기간 → 출력: 설명·근거 목록)이 된다고 봤다.[2]",
+     "**메모리** — 이번 대화의 앞부분(단기), 고객이 전에 밝힌 투자 성향·관심 종목(장기)을 따로 둔다. 창(컨텍스트)이 길수록 앞뒤 정보를 흐리게 기억하므로 요약해 줄여 넣는다.[21]",
+     "**서빙** — 같은 시스템 지시문을 매번 다시 계산하지 않게 앞부분을 캐시해 첫 글자까지 걸리는 시간(TTFT)을 줄인 사례가 같은 회사에 있다.[5] 외부 LLM이 멈춘 장애를 겪은 뒤 자체 모델로 옮겨 온 이야기도 있다.[4]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "투자 질문 하나가 지나가는 길(일반적인 꼴 — 토스증권 구조는 비공개)",
+     "steps": [
+      "질문 · '내 미국 주식 너무 몰려 있어?'",
+      "라우터 · 포트폴리오 질문으로 분류, 답할 수 없는 질문은 거절 길로",
+      "메모리 읽기 · 전에 말한 투자 성향·이전 대화 요약",
+      "도구 호출 · 보유 종목·현재가·업종 비중 조회",
+      "하위 에이전트 · 비중 계산·관련 뉴스 요약",
+      "답 만들기 · 숫자와 근거 목록, 권유가 아닌 설명 말투",
+      "검사 · 숫자 대조·금지 표현·근거 유무 — 걸리면 고쳐 쓰거나 거절",
+      "기록 · 전 과정을 trace 로 남겨 평가에 씀"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "어떤 질문에 어디까지 답할지는 PO·컴플라이언스와 정합니다(업무 ④).[1] 이 자리는 그 결정을 **라우팅 규칙·도구 권한·안전장치 코드**로 옮기고, 피크 시간에도 응답이 늦지 않게 운영까지 맡습니다. 최소선은 도구 호출 루프를 직접 짜서(프레임워크 없이도) 실패·재시도·타임아웃을 다뤄 본 경험입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    4,
+    5,
+    6,
+    9,
+    10,
+    20,
+    21,
+    22,
+    23,
+    31
+   ],
+   "study": [
+    "toss-invest-ai",
+    "anthropic-agents",
+    "cs329z-tools",
+    "cs329z-patterns",
+    "cs329z-multi",
+    "anthropic-multi"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "에이전트 품질을 측정하고 개선해요 — 평가(Eval) 데이터셋과 하네스를 구축하고, 비즈니스 요건에 따른 루프 엔지니어링으로 응답 품질을 지속적으로 끌어올려요.",
+   "short": "'좋아졌다'를 감이 아니라 숫자로 말하려고 시험 문항과 채점기를 만들고, 틀린 사례를 다시 시험지로 돌리는 일.",
+   "why": "토스증권 ML 엔지니어는 운영에서 나온 실패를 이슈로 닫지 않고 **평가셋과 어려운 예시로 되돌린다**고 썼고, 프롬프트 판·모델 판·평가셋이 함께 묶여야 개선 효과를 숫자로 볼 수 있다고 했습니다.[2] 공개 순위표 1등 모델이 토스 업무에서도 1등은 아니어서 토스는 자체 시험지를 만들었습니다.[18] 투자 정보는 시장 국면이 바뀌면 예전에 맞춘 프롬프트가 계속 통한다고 가정할 수 없습니다.[2]",
+   "actually": {
+    "items": [
+     "**평가 데이터셋** — 실제 질문 유형(종목 설명·포트폴리오 점검·용어 풀이·답하면 안 되는 질문)별 문항과 '좋은 답의 조건'. 운영 로그에서 틀린 사례를 계속 보탠다.[2][26]",
+     "**하네스**(평가를 자동으로 돌리는 틀) — 새 프롬프트·모델·도구를 넣으면 같은 문항을 돌려 점수표를 낸다. 에이전트는 같은 질문에도 답이 흔들려 여러 번 돌려 본다 — k번 모두 성공한 비율(pass^k)을 쓰는 평가법이 있다.[24]",
+     "**채점 세 겹** — 코드로 잴 수 있는 것(숫자가 원문과 같은가·필수 도구를 불렀나), LLM 심판(다른 LLM이 기준표로 채점 — 위치·길이 치우침이 있다)[25], 사람 검토.[26]",
+     "**범주로 채점** — 토스증권은 LLM이 답과 함께 '왜 올랐나 유형·실패 사유' 같은 범주를 내게 하고, 정밀도·재현율·F1로 개선 방향을 쟀다.[2]",
+     "**루프 엔지니어링** — 운영 로그 → 실패 분류 → 평가셋에 추가 → 프롬프트·검색·도구 수정 → 하네스로 재측정 → 배포. 비슷한 예시를 검색해 넣는 동적 few-shot으로 재현율은 지키며 정밀도를 올렸다.[2]",
+     "**오차 막대** — 문항 수가 적으면 1~2점 차이는 우연일 수 있다. 같은 문항으로 두 판을 짝지어 비교하고 표준오차를 같이 적는다.[27]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "같은 질문 5개를 4번씩 돌리면 — 한 번 성공률과 '매번 성공률'은 다르다",
+     "body": "pass^1 은 한 번 돌렸을 때 맞을 확률, pass^k 는 k번 돌려 모두 맞을 확률입니다(τ-bench 의 정의를 따라 조합으로 계산).[24] 고객은 같은 질문을 여러 번 하니 뒤쪽 숫자가 실제 체감에 가깝습니다 {추론}. 직접 돌린 출력: pass^1 = 0.80, pass^2 = 0.63, pass^4 = 0.40.",
+     "lang": "python",
+     "code": "from math import comb\n\n# 같은 질문 5개를 4번씩 돌린 결과(True = 성공)\nruns = {\n    \"q1\": [True, True, True, True],\n    \"q2\": [True, False, True, True],\n    \"q3\": [True, True, True, True],\n    \"q4\": [False, True, False, True],\n    \"q5\": [True, True, True, False],\n}\n\ndef pass_hat_k(results, k):\n    n, c = len(results), sum(results)\n    return comb(c, k) / comb(n, k)\n\nfor k in (1, 2, 4):\n    avg = sum(pass_hat_k(r, k) for r in runs.values()) / len(runs)\n    print(f\"pass^{k} = {avg:.2f}\")"
+    }
+   ],
+   "how_far": "무엇이 '좋은 답'인지(비즈니스 요건)는 PO·도메인 전문가·컴플라이언스가 정합니다.[1][6] 이 자리는 그 기준을 **돌릴 수 있는 시험지와 채점기**로 만들고, 바꿀 때마다 숫자로 보고합니다. 최소선은 평가셋 수백 문항 + 자동 채점 + 판끼리 비교표를 직접 만들어 본 것 {추론}.",
+   "refs": [
+    1,
+    2,
+    6,
+    18,
+    24,
+    25,
+    26,
+    27
+   ],
+   "study": [
+    "toss-invest-ai",
+    "toss-benchmark",
+    "hamel-evals",
+    "tau-bench",
+    "llm-judge",
+    "error-bars",
+    "cs329z-terminal"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "정형·비정형 금융 데이터를 AI Agent가 활용할 수 있는 형태로 검증·정제하고 데이터 파이프라인을 만들어요.",
+   "short": "시세·재무 같은 표 데이터와 뉴스·공시 같은 글을, 에이전트가 틀리지 않게 쓸 수 있는 꼴로 다듬어 흘려보내는 일.",
+   "why": "에이전트가 아무리 잘 말해도 도구가 돌려준 숫자가 낡았거나 틀리면 답이 틀립니다 {추론}. 토스증권은 뉴스·공시가 들어오는 순간 자체 분류 모델로 태그·관련 기업·임베딩을 붙여 두고[2], LLM 서비스마다 검색 방식이 제각각이라 **공통 RAG 플랫폼**으로 묶었습니다.[3] 대표도 RAG와 금융 온톨로지(회사·산업·이벤트의 관계 사전)를 AI 서비스의 바탕으로 소개했습니다.[17] 번역에서 숫자가 틀리는 것을 잡는 후처리 모델도 따로 둡니다.[16] 같은 WM Domain의 데이터 엔지니어 공고도 투자 전략·성과 데이터의 정확성 검증을 업무로 적었습니다.[15]",
+   "actually": {
+    "items": [
+     "**정형 데이터**(표) — 시세·보유 종목·재무제표·ETF 구성. 빠진 값·낡은 값·단위(원·달러, 억·백만)·적자 기업의 음수 PER 같은 함정을 도구가 돌려주기 전에 걸러 낸다.",
+     "**비정형 데이터**(글) — 뉴스·공시·어닝콜. 같은 사건을 다룬 기사를 묶어 하나만 남기고, 홍보성 기사·이름만 비슷한 회사를 걸러 낸다.[2]",
+     "**검색 가능한 꼴로** — 질문 이해(분류·날짜 범위) → 글자 검색 + 벡터 검색 → 리랭커로 노이즈 제거. 쓸데없는 뉴스 한두 건만 섞여도 사용자가 시스템을 의심한다고 했다.[3]",
+     "**관계 데이터** — 회사·종목·제품·이벤트·테마를 잇는 금융 지식 그래프. 3홉만 넘어도 후보 경로가 약 4,900만 개라 홉마다 상위 후보만 남긴다.[3]",
+     "**판 관리** — 임베딩 모델을 바꾸면 벡터에 모델 판을 적고, 벡터 재생성·새 색인·전환을 한 작업으로 묶는다.[3]",
+     "**에이전트용 요약 표** — 원본을 그대로 주지 않고 '종목·지표·값·기준 시각·출처' 열로 줄여 준다. 기준 시각이 없으면 LLM이 지난주 값을 '현재'라고 말한다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "도구가 돌려주기 전에 거르는 세 가지 — 빈 값·뜻이 바뀌는 값·낡은 값",
+     "body": "가상의 종목 데이터입니다. 직접 돌린 출력: 삼성전자 → 통과 / 애플 → 가격 없음 / 테슬라 → PER 음수(적자) — '저평가'로 쓰면 안 됨, 30분 넘게 낡음.",
+     "lang": "python",
+     "code": "# 에이전트 도구가 돌려줄 종목 데이터를 넘기기 전에 검사한다\nfrom datetime import datetime, timedelta\n\nnow = datetime(2026, 11, 23, 10, 0)\nrows = [\n    {\"symbol\": \"005930\", \"name\": \"삼성전자\", \"price\": 98000, \"per\": 14.2, \"as_of\": now - timedelta(minutes=1)},\n    {\"symbol\": \"AAPL\", \"name\": \"애플\", \"price\": None, \"per\": 31.0, \"as_of\": now - timedelta(minutes=2)},\n    {\"symbol\": \"TSLA\", \"name\": \"테슬라\", \"price\": 351.2, \"per\": -5.0, \"as_of\": now - timedelta(days=3)},\n]\n\ndef validate(r):\n    errs = []\n    if r[\"price\"] is None or r[\"price\"] <= 0:\n        errs.append(\"가격 없음\")\n    if r[\"per\"] is not None and r[\"per\"] < 0:\n        errs.append(\"PER 음수(적자) — '저평가'로 쓰면 안 됨\")\n    if now - r[\"as_of\"] > timedelta(minutes=30):\n        errs.append(\"30분 넘게 낡음\")\n    return errs\n\nfor r in rows:\n    e = validate(r)\n    print(r[\"name\"], \"→\", \"통과\" if not e else \", \".join(e))"
+    }
+   ],
+   "how_far": "원천 수집·대규모 파이프라인은 데이터 엔지니어 팀이 있습니다(같은 회사의 AI Service·금융데이터 공고).[15] 이 자리는 **에이전트 쪽 끝** — 도구가 무엇을 어떤 꼴로 돌려줄지 정하고, 검증 규칙과 검색 품질을 책임집니다 {추론}. 최소선은 RAG를 직접 붙여 검색 단계와 생성 단계를 따로 재 본 경험입니다.",
+   "refs": [
+    2,
+    3,
+    15,
+    16,
+    17
+   ],
+   "study": [
+    "toss-sec-search",
+    "cs329z-rag",
+    "llm-app-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "금융 서비스에 요구되는 신뢰성·설명가능성·컴플라이언스를 갖춘 AI 제품을 만들기 위해 사일로의 PO·디자이너·서버 개발자, 그리고 컴플라이언스 조직과 긴밀하게 협업해요.",
+   "short": "투자 답변은 규제를 받는 말이라, 무엇을 어디까지 말할지 PO·준법 조직과 정해 제품에 박아 넣는 일.",
+   "why": "2026년 6월 금융위원회의 「금융분야 인공지능 가이드라인」은 AI를 보조 수단으로 보고 사람의 개입 수단(긴급 정지·재정의)을 요구하며, **투자 권유**처럼 고객 결정에 직접 영향을 주는 업무에는 설명가능성과 이의제기 창구가 필요하다고 정리됐습니다.[11] 종목·포트폴리오를 권하는 순간 자본시장법의 투자자문·일임 영역이 걸릴 수 있어[36], 토스증권은 커뮤니티 AI 기능을 두고도 감독 규정이 아직 없는 영역이라는 지적을 받았습니다.[9] 외부 LLM을 쓰는 데도 혁신금융서비스 같은 절차가 따랐습니다.[4]",
+   "actually": {
+    "items": [
+     "**사일로**(토스의 작은 제품 팀 단위) — PO·디자이너·서버·AI 엔지니어가 한 팀. 공고도 기획·디자인·개발·운영이 한 팀으로 빠르게 실험한다고 적었다.[1]",
+     "**신뢰성** — 숫자는 도구에서 온 값만 쓰고, 근거 문서를 같이 보여 준다. 토스증권은 결과마다 근거를 남기고 재현할 수 있어야 한다고 했다.[2]",
+     "**설명가능성** — '왜 이렇게 말했나'를 근거 목록·추론 유형으로 남긴다. 토스증권 그래프 검색은 찾은 관계 경로를 같이 돌려줘 근거로 쓴다.[3]",
+     "**컴플라이언스** — 금지 표현(매수·매도 권유, 수익 보장), 필수 안내 문구, 답하지 말아야 할 질문 목록을 준법 조직과 정하고 출력 검사 코드로 만든다 {추론}.",
+     "**사람 검수** — 토스증권은 AI 결과를 전문 인력이 상시 점검하고[6], 한 서비스는 하루 약 300건을 직접 보며 오탐 2~3%를 관리한다고 했다.[16]",
+     "**보안** — 사용자가 프롬프트로 지시를 바꾸려는 공격(프롬프트 인젝션), 도구 권한을 넘는 행동(과도한 권한)을 막는다.[28]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "실행 기록(trajectory)을 규칙으로 검사하기",
+     "body": "가상의 한 번 실행 기록입니다. 라우터가 정한 길에서 허용된 도구만 불렀는지, 보유 종목을 보고 답했는지, 권유 표현이 있는지를 코드로 봅니다. 직접 돌린 출력: [\"권유 표현: '지금 사세요'\"]. 금지 표현 목록은 예시일 뿐 실제 목록은 준법 조직이 정합니다 {추론}.",
+     "lang": "python",
+     "code": "# 에이전트 한 번의 실행 기록(trajectory)을 규칙으로 검사한다\ntrace = [\n    {\"step\": \"router\", \"out\": \"portfolio_question\"},\n    {\"step\": \"tool\", \"name\": \"get_holdings\", \"args\": {\"user\": \"u1\"}},\n    {\"step\": \"tool\", \"name\": \"get_price\", \"args\": {\"symbol\": \"AAPL\"}},\n    {\"step\": \"answer\", \"text\": \"보유 중인 애플 비중이 42%입니다. 지금 사세요.\"},\n]\n\nALLOWED = {\"portfolio_question\": {\"get_holdings\", \"get_price\", \"get_news\"}}\nBANNED = [\"지금 사세요\", \"무조건\", \"확실히 오릅니다\"]\n\ndef check(trace):\n    problems = []\n    route = trace[0][\"out\"]\n    for s in trace:\n        if s[\"step\"] == \"tool\" and s[\"name\"] not in ALLOWED[route]:\n            problems.append(f\"허용 안 된 도구: {s['name']}\")\n    tools = [s[\"name\"] for s in trace if s[\"step\"] == \"tool\"]\n    if \"get_holdings\" not in tools:\n        problems.append(\"보유 종목을 안 보고 답함\")\n    answer = trace[-1][\"text\"]\n    for w in BANNED:\n        if w in answer:\n            problems.append(f\"권유 표현: '{w}'\")\n    return problems or [\"통과\"]\n\nprint(check(trace))"
+    }
+   ],
+   "how_far": "규제 해석은 컴플라이언스가 하고, 개발자는 그 결정을 **검사 코드·로그·사람에게 넘기는 길**로 만듭니다. 법을 외울 필요는 없지만 '정보 제공'과 '투자 권유'가 다르다는 감각, 그리고 왜 그렇게 답했는지 나중에 보여 줄 수 있는 기록을 남기는 습관이 최소선입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    6,
+    9,
+    11,
+    16,
+    28,
+    36
+   ],
+   "study": [
+    "fsc-ai-guide",
+    "owasp-llm",
+    "toss-invest-ai"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "대규모 사용자를 대상으로 AI Agent 기반 서비스를 운영해본 경험이 있으신 분을 찾아요.",
+   "short": "사내 도구나 데모가 아니라, 많은 사람이 실제로 쓰는 에이전트를 띄우고 장애·비용·품질을 겪어 본 사람.",
+   "why": "토스증권의 AI 서비스는 출시하자마자 큰 트래픽을 받습니다 — AI 어닝콜은 9개월 만에 누적 150만 명, 엔비디아 실적 발표 때 동시 접속 10만 명을 넘었습니다.[6] 에이전트는 한 질문에 LLM과 도구를 여러 번 부르므로 사용자가 늘면 지연·비용·외부 API 한도가 한꺼번에 문제가 됩니다.[22] 토스는 같은 일을 작은 모델에 넘겨 비용을 줄인 사례도 공개했습니다.[19]",
+   "actually": {
+    "items": [
+     "**지연** — 첫 글자까지 시간(TTFT)·전체 응답 시간을 피크 시간에 재고, 앞부분 캐시·스트리밍으로 줄여 본 경험.[5]",
+     "**비용** — 질문 하나당 토큰·도구 호출 수를 세고, 쉬운 질문은 작은 모델로 보내는 계단식 처리.[19]",
+     "**장애** — 외부 LLM이 멈추거나 느려질 때 다른 모델·간단한 답으로 물러서는 길(폴백).[2][4]",
+     "**품질 감시** — 배포 뒤 실제 대화에서 실패율·거절률·사용자 피드백을 매일 본다.[2]"
+    ]
+   },
+   "how_far": "'대규모'의 숫자는 공고에 없습니다. 면접에서는 몇 명이 썼고, 무엇이 터졌고, 어떻게 고쳤는지를 숫자로 말할 수 있어야 합니다 {추론}. 이력서 안내도 어떤 부분을 직접 설계·구현했는지 구체적으로 쓰라고 했습니다.[1]",
+   "refs": [
+    1,
+    2,
+    4,
+    5,
+    6,
+    19,
+    22
+   ],
+   "study": [
+    "snap-blog",
+    "tmc25-steal",
+    "ai-eng"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AI Agent 애플리케이션 개발 경험이 있으신 분 - 대고객 서비스 환경에서의 비즈니스 요건과 성능을 고려한 Agent 구조설계 및 Observability, Memory 등의 필요한 미들웨어 구축 경험, Agent trajectory 추적 및 평가 등을 해보신 분을 찾아요.",
+   "short": "에이전트를 만들 때 필요한 뒷받침 — 실행 기록 보기·기억 저장·실행 경로 채점 — 을 직접 짜 본 사람.",
+   "why": "토스증권은 품질 개선에 프롬프트 판 관리·평가셋 관리·트레이싱·모니터링·관리 도구가 필요하다고 적었습니다.[2] 자율형 루프는 실행 경로가 매번 달라 추적할 기록이 많아진다는 점도 짚었습니다.[2] 고객 앞 서비스라 '맞는 답'만큼 '어떤 길로 그 답에 왔나'(trajectory)를 봐야 합니다.[24]",
+   "actually": {
+    "items": [
+     "**구조 설계** — 요건이 분명한 일은 고정 그래프, 탐색이 필요한 일만 자율형. 지연 목표에 맞춰 단계 수를 정한다.[2][20]",
+     "**Observability**(밖에서 안 상태를 볼 수 있게 하기) — 요청 하나의 LLM 호출·도구 호출·토큰·지연을 한 줄기 trace 로 묶는다. OpenTelemetry 는 생성 AI 호출의 기록 항목 이름을 표준으로 정해 두었다.[29]",
+     "**Memory 미들웨어** — 대화 요약 저장, 사용자별 장기 기억, 오래된 기억 지우기와 개인정보 가리기.[21]",
+     "**trajectory 평가** — 답만 보지 않고 '필요한 도구를 불렀나·불필요한 호출이 없었나·허용 안 된 도구는 없었나'를 채점한다.[24]",
+     "**도구 연결 표준** — 도구를 여러 에이전트가 같이 쓰게 하는 MCP(모델과 도구를 잇는 공개 규약) 같은 방식.[30]"
+    ]
+   },
+   "level": {
+    "basic": "LLM API 로 도구 호출 루프를 직접 짜고, 호출마다 입력·출력·지연을 로그로 남긴다.",
+    "work": "요청 단위 trace 와 대시보드, 대화 메모리 저장소, 실행 경로 채점 하네스를 서비스에 붙여 운영한다.",
+    "team": "수많은 고객 대화의 trace 를 평가셋·배포 판과 이어 '어느 판이 어떤 실패를 줄였나'를 숫자로 보인다.[2]"
+   },
+   "how_far": "특정 프레임워크(LangGraph 등) 이름은 공고에 없습니다. 쓴 도구보다 **왜 그 구조를 골랐고 무엇을 포기했나**를 말하는 것이 이력서 안내와 맞습니다.[1]",
+   "refs": [
+    1,
+    2,
+    20,
+    21,
+    24,
+    29,
+    30
+   ],
+   "study": [
+    "otel-genai",
+    "anthropic-context",
+    "cs329z-context",
+    "mcp-spec",
+    "tau-bench"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "프로덕션 환경에서 서비스를 만들고 운영해본 소프트웨어 엔지니어링 기본기를 갖추신 분이 필요해요.",
+   "short": "프롬프트만 다루는 사람이 아니라, API 서버·배포·장애 대응을 해 본 개발자여야 한다는 뜻.",
+   "why": "에이전트는 결국 서버 위에서 도는 프로그램입니다 — 도구는 사내 API를 부르고, 대화는 저장되고, 배포·롤백이 있습니다 {추론}. 같은 회사의 LLM 서빙 글도 공용 이미지·쿠버네티스 배포·지표 관찰을 다뤘습니다.[5] 사일로 안에서 서버 개발자와 같이 일하므로 같은 말을 써야 합니다.[1]",
+   "actually": {
+    "items": [
+     "타임아웃·재시도·동시성 — LLM 호출은 수 초 걸리고 실패도 잦다.",
+     "테스트 — 프롬프트·도구 스키마가 바뀌어도 깨지지 않는지 자동 검사.",
+     "배포와 되돌리기 — 프롬프트·모델 판도 코드처럼 판 번호를 두고 되돌릴 수 있게.[2]",
+     "모니터링·알림 — 오류율·지연·토큰 비용을 지표로.[5]"
+    ]
+   },
+   "how_far": "언어는 공고에 적혀 있지 않습니다. 파이썬으로 비동기 API 서버를 운영해 본 수준이면 출발선으로 무리가 없어 보입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    5
+   ],
+   "study": [
+    "ai-eng"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "데모에서 멈추지 않고, 실제 사용자가 쓰는 제품의 품질을 데이터와 평가 체계로 증명해본 경험이 있으신 분이 필요해요.",
+   "short": "'잘 돌아가요'가 아니라 '이 판이 저 판보다 몇 % 낫다'를 평가셋과 실사용 데이터로 보여 본 사람.",
+   "why": "토스는 공개 순위표 점수와 실제 운영 성능의 상관이 거의 없고(+0.02) 자체 시험지와는 높았다(+0.71)고 밝혔습니다.[18] 토스증권 ML 엔지니어 발표도 상용 LLM으로 먼저 내고, 사용자 반응을 본 뒤, 자동 평가를 거쳐 자체 모델로 바꾸는 순서를 보였습니다.[4] 이력서 안내 역시 품질을 어떻게 측정하고 개선했는지 드러나게 쓰라고 했습니다.[1]",
+   "actually": {
+    "items": [
+     "출시 전: 평가셋 점수(업무 ②)로 판끼리 비교.[2]",
+     "출시 후: 실제 대화의 실패율·재질문율·사람 검수 오탐률.[16]",
+     "A/B — 두 판을 사용자에게 나눠 보여 주고 행동 지표로 비교 {추론}.",
+     "오프라인 점수와 실사용 지표가 엇갈리면 시험지를 고친다.[18]"
+    ]
+   },
+   "how_far": "모든 걸 숫자로 바꿀 수는 없지만, 적어도 **개선 전·후 비교표 하나**를 자신의 경험으로 보여 줄 수 있어야 합니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    4,
+    16,
+    18
+   ],
+   "study": [
+    "toss-benchmark",
+    "hamel-evals",
+    "tmc25-steal"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "사용자의 트래픽을 직접 받는 AI Agent 기반의 챗 서비스를 운영해보신 경험이 있으시다면 더 좋아요.",
+   "short": "사람과 여러 번 주고받는 채팅형 에이전트를 직접 운영해 봤다면 — 대화가 길어질수록 생기는 문제를 안다.",
+   "why": "토스증권은 실시간 이슈 화면에 'AI 채팅'을 붙여 이슈를 물으면 관련 기사를 근거로 답하게 했습니다.[8] 같은 그룹 토스뱅크의 AI 채팅 에이전트처럼 챗 형태는 대화가 길어질수록 맥락 관리·끼어든 다른 질문·같은 질문 반복이 어려워집니다 {추론}.",
+   "actually": {
+    "items": [
+     "스트리밍 응답과 끊김 처리.",
+     "긴 대화 요약·중간 화제 전환.[21]",
+     "같은 질문에 다르게 답하는 흔들림을 pass^k 로 재기.[24]",
+     "말이 안 통할 때 사람(상담) 또는 정해진 화면으로 넘기기 {추론}."
+    ]
+   },
+   "refs": [
+    8,
+    21,
+    24
+   ],
+   "study": [
+    "cs329z-context",
+    "tau-bench"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "증권사·자산운용사·로보어드바이저·핀테크 등 금융 서비스 개발 경험이나 투자에 대한 개인적인 관심이 있으시다면 더 좋아요.",
+   "short": "투자 용어와 상품을 알면 '좋은 답'을 스스로 판별할 수 있어서 — 직접 투자해 본 관심도 쳐 준다.",
+   "why": "이 팀이 속한 WM Domain은 단기 시세 차익을 넘어 생애 주기에 맞춰 자산을 불리는 투자 전략 플랫폼을 만든다고 적었습니다.[1] 토스증권은 2026년 WM 조직을 새로 만들고[12] 연금저축 다음으로 랩어카운트·자문 서비스를 검토한다고 보도됐습니다.[13] 회사는 11월에도 WM을 초기 단계라고 설명했습니다.[14]",
+   "actually": {
+    "items": [
+     "**로보어드바이저**(알고리즘으로 자산 배분을 권하는 서비스) — 투자 성향 진단 → 자산 배분 → 재조정의 흐름을 안다.",
+     "포트폴리오 지표 — 비중·수익률·변동성·최대 낙폭을 계산해 설명할 수 있다.[15]",
+     "상품 — 주식·ETF·채권·연금저축·랩어카운트의 차이.[13]",
+     "토스증권 앱의 AI 시그널·AI 어닝콜을 직접 써 보고 무엇이 아쉬운지 말할 수 있다.[7]"
+    ]
+   },
+   "refs": [
+    1,
+    7,
+    12,
+    13,
+    14,
+    15
+   ],
+   "study": [
+    "toss-invest-ai",
+    "tmc25-steal"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "사용자 경험, 신뢰, 설명가능성, 컴플라이언스, 운영 안정성을 고려해 AI 제품을 개선해본 경험이 있으시다면 더 좋아요.",
+   "short": "정확도 말고도 '믿고 쓰게 만드는' 것들 — 근거 보여 주기·거절 문구·장애 대응 — 을 고쳐 본 경험.",
+   "why": "업무 ④와 같은 이야기를 경험으로 묻는 줄입니다.[1] 금융위 가이드라인의 신뢰성·보조수단성 원칙[11]과, 토스증권이 AI 결과를 사람이 상시 점검하는 방식[6]이 그 배경입니다.",
+   "actually": {
+    "items": [
+     "답 옆에 근거 기사·공시 링크를 붙인다.[8]",
+     "못 하는 질문에는 왜 못 하는지 말하고 대신 볼 화면을 준다 {추론}.",
+     "AI 결과를 사람이 뒤집을 수 있는 버튼·기록(재정의).[11]",
+     "외부 모델 장애 때 기능을 끄는 스위치(긴급 정지).[11]"
+    ]
+   },
+   "refs": [
+    1,
+    6,
+    8,
+    11
+   ],
+   "study": [
+    "fsc-ai-guide",
+    "owasp-llm"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "데모보다 '실제로 몇 명이 썼고 몇 %가 틀렸나'가 더 궁금한 사람[1][2]",
+   "실패한 대화 로그를 읽고 분류하는 일이 지루하지 않은 사람[2]",
+   "주식·ETF·연금을 직접 굴려 보며 '좋은 설명'을 스스로 판별할 수 있는 사람[1]",
+   "준법 조직과 문장 하나를 두고 논의하는 것을 제품 일로 받아들이는 사람[1][11]"
+  ],
+  "hard": [
+   "투자 권유로 읽힐 수 있는 말은 못 하므로 '똑똑한 답'보다 '안전한 답'이 먼저인 순간이 많다[11][36] {추론}",
+   "WM은 회사 스스로 초기 단계라고 한 영역이라 제품 방향이 바뀔 수 있다[13][14]",
+   "외부 LLM 사용에도 규제 절차가 따라 원하는 모델을 바로 쓰지 못할 수 있다[4]",
+   "자율 에이전트를 마음껏 실험하는 자리라기보다 고정 절차로 통제하는 쪽을 택해 온 회사다[2]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "투자 질문에 답하는 에이전트를 자율형(ReAct)으로 만들겠어요, 고정 그래프로 만들겠어요?",
+   "a": "토스증권은 근거·재현·지연·비용·추적 때문에 고객용 투자 정보에 절차형 그래프를 골랐다.[2]"
+  },
+  {
+   "q": "새 프롬프트가 기존보다 낫다는 걸 어떻게 보이겠어요? 문항이 50개뿐이라면?",
+   "a": "평가셋·자동 채점·짝 비교와 오차 막대.[2][27]"
+  },
+  {
+   "q": "같은 질문에 에이전트가 가끔 다른 답을 해요. 무엇으로 재고 어떻게 줄이나요?",
+   "a": "pass^k 와 흔들림의 원인(라우팅·도구 결과·온도).[24]"
+  },
+  {
+   "q": "‘이 종목 지금 사도 돼요?’라는 질문에는 어떻게 답하게 설계하겠어요?",
+   "a": "정보 제공과 투자 권유의 경계, 사람의 개입·설명가능성 원칙.[11][36]"
+  },
+  {
+   "q": "에이전트가 엉뚱한 답을 했다는 신고가 들어왔어요. 무엇부터 보나요?",
+   "a": "trace — 라우터 결정·도구 입력과 결과·컨텍스트에 들어간 근거.[2][29]"
+  },
+  {
+   "q": "피크 시간에 응답이 10초를 넘어요. 모델을 바꾸기 전에 무엇을 하겠어요?",
+   "a": "단계 수·도구 병렬화·앞부분 캐시·작은 모델로 쉬운 질문 보내기.[5][19]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 토스증권 AI 엔지니어 (AI Engineer)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7825510003",
+   "kind": "posting",
+   "note": "WM Domain 소속·팀 소개·업무·요건·우대·이력서 안내(기술 선택 이유·트레이드오프·품질 측정)·합류 여정(처우협의 포함)·동료 한마디('투자 AI Agent'를 처음부터)"
+  },
+  {
+   "n": 2,
+   "title": "Toss Tech · AI에게 투자정보를 말하게 하기까지",
+   "url": "https://toss.tech/article/tech_talk_talk_1",
+   "kind": "company",
+   "date": "2026-08-13",
+   "note": "토스증권 ML 엔지니어 정현규 — 투자 정보의 네 특성, 자율 에이전트 대신 절차형 작업 그래프(근거·재현·지연·비용·추적), 입수 시 BERT 분류, 하이브리드 검색 → 중복 제거 → 리랭킹·실패 사유 필터 → 4단 컨텍스트 정렬 → 생성, 범주형 루브릭·정밀도/재현율/F1, 동적 few-shot, 실패를 평가셋으로, 프롬프트·모델·평가셋 판 연결. 성능 수치는 이미지에만 있어 싣지 않음"
+  },
+  {
+   "n": 3,
+   "title": "Toss Tech · 토스증권 추천과 검색은 어떻게 진화하고 있을까?",
+   "url": "https://toss.tech/article/tech_talk_talk_3",
+   "kind": "company",
+   "date": "2026-08-26",
+   "note": "토스증권 AI 데이터 플랫폼 팀 황호익 — 공통 RAG(질문 이해·하이브리드 검색·파인튜닝 리랭커), 분류 태그 가점, 그래프 RAG 1홉 1,105 → 2홉 134,520 → 3홉 49,241,786 경로·빔 탐색·경로 반환, 임베딩 판·색인 함께 교체"
+  },
+  {
+   "n": 4,
+   "title": "TMC25 · STEAL THE SHOW: 작고 빠르게, 자동화로 만드는 금융 특화 LLM 내재화 전략",
+   "url": "https://www.youtube.com/watch?v=VulWhToQUp8",
+   "kind": "company",
+   "date": "2025",
+   "note": "토스증권 ML 엔지니어 발표(22분) — 상용 LLM 한계·외부 장애, 출시 → 반응 → 내재화, 자동 평가, 외부 LLM 사용의 규제 절차(혁신금융서비스). 자막은 같은 회사 ML 엔지니어 풀이 회차에서 전부 읽은 내용"
+  },
+  {
+   "n": 5,
+   "title": "Toss Tech · LLM 서빙, 띄우는 것과 잘 띄우는 것 사이",
+   "url": "https://toss.tech/article/tech_talk_talk_2",
+   "kind": "company",
+   "date": "2026-08-21",
+   "note": "토스증권 ML 엔지니어 — TTFT·초당 토큰, prefix caching, 지표 관찰"
+  },
+  {
+   "n": 6,
+   "title": "지디넷코리아(다음) · 출범 5주년 토스증권, 승부수는 ‘AI’",
+   "url": "https://v.daum.net/v/20260429142502536",
+   "kind": "news",
+   "date": "2026-04-29",
+   "note": "AI 트라이브 2026-01 신설, 자체 모델·외부 LLM 병행, AI 어닝콜 누적 150만·엔비디아 동시 접속 10만+, 검증 루프·전문 인력 상시 검수"
+  },
+  {
+   "n": 7,
+   "title": "스트레이트뉴스 · [판 뒤집는 토스증권] ④ AI와 함께 만드는 브랜드 가치",
+   "url": "https://www.straightnews.co.kr/news/articleView.html?idxno=298041",
+   "kind": "news",
+   "date": "2026-03-20",
+   "note": "AI 어닝콜(2025-05)·AI 시그널(2025-11, 뉴스 분류·금융 번역·추론), AI 트라이브 구성, 핵심 처리는 자체·기반 LLM 일부 외부"
+  },
+  {
+   "n": 8,
+   "title": "더팩트 · 토스증권, AI 기반 투자정보 서비스 강화",
+   "url": "https://m.tf.co.kr/amp/economy/2376047.htm",
+   "kind": "news",
+   "date": "2026-10-14",
+   "note": "'시장' 탭·매시간 AI 시장 요약, 실시간 이슈의 AI 위키·이슈 타임라인·AI 채팅(관련 기사를 근거로 답함)"
+  },
+  {
+   "n": 9,
+   "title": "지디넷코리아 · 400만 토스증권 커뮤니티 AI 큐레이션 도입?…투자자 보호 과제",
+   "url": "https://zdnet.co.kr/view/?no=20261103133940",
+   "kind": "news",
+   "date": "2026-11-03",
+   "note": "커뮤니티 월 이용자 약 400만, 회사는 AI를 위반 콘텐츠 검수 수단이라 설명, 금감원은 특화 감독 규정이 아직 없다고 답함·금융권 AI 가이드라인 갱신 예정"
+  },
+  {
+   "n": 10,
+   "title": "아시아경제 · 토스증권 오픈API 정식 출시",
+   "url": "https://core.asiae.co.kr/article/2026081310375054345",
+   "kind": "news",
+   "date": "2026-08-13",
+   "note": "국내·해외 주식 통합 API(조회·일반/조건 주문·실시간 시세), 발급 키를 외부 LLM에 연결해 자연어로 조회·주문"
+  },
+  {
+   "n": 11,
+   "title": "법률신문 · 금융위원회의 ‘금융분야 인공지능 가이드라인’ 발표 (대륙아주 기고)",
+   "url": "https://www.lawtimes.co.kr/news/articleView.html?idxno=223806",
+   "kind": "reference",
+   "date": "2026-07-21",
+   "note": "2026-06-18 발표·06-22 시행, 자율규제, 7대 원칙(거버넌스·합법성·보조수단성(HITL·긴급정지·재정의)·신뢰성(투자 권유 등에 설명가능성·이의제기)·금융안정성·신의성실·보안성)"
+  },
+  {
+   "n": 12,
+   "title": "아시아투데이 · VIP 자산관리에서 대중형 WM으로…토스의 승부수",
+   "url": "https://www.asiatoday.co.kr/kn/view.php?key=20260323010006922",
+   "kind": "news",
+   "date": "2026-03-23",
+   "note": "WM 조직 신설·PB 대신 AI·데이터 — 구조는 관측 보도"
+  },
+  {
+   "n": 13,
+   "title": "아시아투데이 · 연금저축 다음은 ‘랩어카운트’…토스증권, WM 스펙트럼 확장 가속",
+   "url": "https://www.asiatoday.co.kr/kn/view.php?key=20260805010001714",
+   "kind": "news",
+   "date": "2026-08-05",
+   "note": "WM 부문 Advisory Silo·랩 운용체계·자문 마켓플레이스 검토 — 회사는 특정 출시를 전제하지 않는다고 함"
+  },
+  {
+   "n": 14,
+   "title": "글로벌이코노믹 · 대형사 ‘텃밭’ 노리는 카카오페이·토스證, WM 부문 키운다",
+   "url": "https://www.g-enews.com/article/Securities/2026/11/202611171207546549923c501012_1",
+   "kind": "news",
+   "date": "2026-11-17",
+   "note": "WM은 연금저축 등 초기 단계(회사 설명)"
+  },
+  {
+   "n": 15,
+   "title": "토스 채용 · 토스증권 데이터 엔지니어 (금융데이터/자문)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7834735003",
+   "kind": "posting",
+   "note": "같은 WM Domain(Advisory Silo) — 투자 전략 데이터·계좌 성과 계산·정확성 검증"
+  },
+  {
+   "n": 16,
+   "title": "바이라인네트워크 · 토스증권은 왜 2025년을 AI 원년으로 삼았나",
+   "url": "https://byline.network/2025/12/1217-3/",
+   "kind": "news",
+   "date": "2025-12-17",
+   "note": "AI 서비스 PO 인터뷰 — 숫자 정합성 후처리 모델, 하루 약 300건 직접 검토·오탐 2~3%"
+  },
+  {
+   "n": 17,
+   "title": "전자신문 · 김규빈 토스증권 대표 “공시·어닝콜·뉴스까지…AI로 투자 여정 돕는다”",
+   "url": "https://www.etnews.com/20251211000238",
+   "kind": "news",
+   "date": "2025-12-11",
+   "note": "스마트금융컨퍼런스 기조강연 — 해외 뉴스 자체 번역, RAG·금융 온톨로지"
+  },
+  {
+   "n": 18,
+   "title": "Toss Tech · 리더보드 1등 LLM, 토스에서도 1등일까? — Toss Benchmark 구축기",
+   "url": "https://toss.tech/article/toss-benchmark",
+   "kind": "company",
+   "date": "2026-09-16",
+   "note": "토스 LLM Modeling 팀(같은 그룹) — 공개 지표와 운영 성능 상관 +0.02, 자체 벤치마크 +0.71"
+  },
+  {
+   "n": 19,
+   "title": "Toss Tech · 손가락 튕기기로 LLM 비용 줄이기 (SNAP)",
+   "url": "https://toss.tech/article/snap-llm-cost-reduction",
+   "kind": "company",
+   "date": "2026-10-27",
+   "note": "토스 그룹 글 — 반복 판단을 작은 모델로, 자신감 문턱별 처리 비율"
+  },
+  {
+   "n": 20,
+   "title": "Anthropic · Building effective agents",
+   "url": "https://www.anthropic.com/engineering/building-effective-agents",
+   "kind": "reference",
+   "date": "2024-12",
+   "note": "워크플로와 에이전트 구분, 라우팅·오케스트레이터-작업자 패턴, 단순한 구조부터"
+  },
+  {
+   "n": 21,
+   "title": "Anthropic · Effective context engineering for AI agents",
+   "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+   "kind": "reference",
+   "date": "2025",
+   "note": "긴 컨텍스트에서 기억이 흐려짐, 헷갈리지 않는 도구 설명, 요약·메모로 창 관리"
+  },
+  {
+   "n": 22,
+   "title": "Anthropic · How we built our multi-agent research system",
+   "url": "https://www.anthropic.com/engineering/multi-agent-research-system",
+   "kind": "reference",
+   "date": "2025-06",
+   "note": "다른 회사 — 지휘·하위 에이전트, 멀티 에이전트는 채팅보다 토큰 약 15배"
+  },
+  {
+   "n": 23,
+   "title": "Cemri 외 · Why Do Multi-Agent LLM Systems Fail?",
+   "url": "https://arxiv.org/abs/2503.13657",
+   "kind": "reference",
+   "date": "2025",
+   "note": "실패 유형을 설계·에이전트 사이 엇갈림·검증 세 갈래로"
+  },
+  {
+   "n": 24,
+   "title": "Yao 외 · τ-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains",
+   "url": "https://arxiv.org/abs/2406.12045",
+   "kind": "reference",
+   "date": "2024",
+   "note": "사용자 시뮬레이터 + 도구 멀티턴 평가, pass^k"
+  },
+  {
+   "n": 25,
+   "title": "Zheng 외 · Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena",
+   "url": "https://arxiv.org/abs/2306.05685",
+   "kind": "reference",
+   "date": "2023",
+   "note": "LLM 채점의 사람 일치도와 위치·길이·자기 선호 치우침"
+  },
+  {
+   "n": 26,
+   "title": "Hamel Husain · Your AI Product Needs Evals",
+   "url": "https://hamel.dev/blog/posts/evals/",
+   "kind": "reference",
+   "date": "2024",
+   "note": "코드 검사·사람 검토·모델 채점 세 층, 실패 사례를 평가셋으로"
+  },
+  {
+   "n": 27,
+   "title": "Miller · Adding Error Bars to Evals",
+   "url": "https://arxiv.org/abs/2411.00640",
+   "kind": "reference",
+   "date": "2024",
+   "note": "표준오차·짝 비교·검정력"
+  },
+  {
+   "n": 28,
+   "title": "OWASP Top 10 for LLM Applications",
+   "url": "https://genai.owasp.org/llm-top-10/",
+   "kind": "reference",
+   "note": "프롬프트 인젝션·과도한 권한(Excessive Agency) 등"
+  },
+  {
+   "n": 29,
+   "title": "OpenTelemetry · Semantic conventions for generative AI systems",
+   "url": "https://opentelemetry.io/docs/specs/semconv/gen-ai/",
+   "kind": "reference",
+   "note": "LLM 호출·에이전트·도구 실행의 span·속성 이름 표준"
+  },
+  {
+   "n": 30,
+   "title": "Model Context Protocol 문서",
+   "url": "https://modelcontextprotocol.io/",
+   "kind": "reference",
+   "note": "모델과 도구·자료를 잇는 공개 규약 — 토스증권이 쓴다는 뜻은 아니다"
+  },
+  {
+   "n": 31,
+   "title": "OpenAI API 문서 · Function calling",
+   "url": "https://platform.openai.com/docs/guides/function-calling",
+   "kind": "reference",
+   "note": "도구 스키마 정의와 호출·결과 반환 흐름"
+  },
+  {
+   "n": 32,
+   "title": "뉴스토마토 · 토스증권, 급여도 정상급…카카오페이증권, 사실상 꼴찌",
+   "url": "https://www.newstomato.com/ReadNews.aspx?no=1236020",
+   "kind": "news",
+   "date": "2024-07-24",
+   "note": "각 사 사업보고서·금융투자협회 공시, 2023년 기준 — 토스증권 1인당 평균 임금 1억2,500만원(계약직 포함 292명), 24개사 평균 1억2,579만원"
+  },
+  {
+   "n": 33,
+   "title": "CEO스코어데일리 · ‘호황’ 증권가, 임직원 수 2% 늘 때 급여는 48% 증가",
+   "url": "https://www.ceoscoredaily.com/page/view/2026052816034001002",
+   "kind": "news",
+   "date": "2026-05-29",
+   "note": "금융투자협회 공시 2026년 1분기 — 토스증권 직원 380 → 516명, 직원 급여 21.4% 증가"
+  },
+  {
+   "n": 34,
+   "title": "토스증권 · 사이트 하단 회사 정보",
+   "url": "https://www.tossinvest.com/",
+   "kind": "company",
+   "note": "토스증권(주) 주소·사업자 정보"
+  },
+  {
+   "n": 35,
+   "title": "토스피드 · 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 36,
+   "title": "국가법령정보센터 · 자본시장과 금융투자업에 관한 법률",
+   "url": "https://www.law.go.kr/법령/자본시장과금융투자업에관한법률",
+   "kind": "reference",
+   "note": "투자자문업·투자일임업의 정의(제6조)와 등록 — 이 에이전트가 어느 쪽인지는 회사가 밝히지 않았다"
+  }
+ ],
+ "caveat": "토스증권이 이 '투자 AI Agent'의 구조·사용 모델·평가 숫자를 공개한 적은 없습니다. 그래서 같은 회사의 투자 정보 파이프라인 글(2026-08)과 다른 회사의 공개 문서로 '보통 이런 것'을 보였고, 그 사실을 줄마다 밝혔습니다. 이 자리를 직접 다룬 발표 영상은 찾지 못했습니다. 규제 내용은 법률 해설 기사의 정리이며 법률 판단이 아닙니다.",
+ "resources": [
+  {
+   "id": "toss-invest-ai",
+   "title": "AI에게 투자정보를 말하게 하기까지",
+   "by": "Toss Tech · 토스증권 ML 엔지니어 · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/tech_talk_talk_1",
+   "why": "이 회사가 투자 정보를 LLM으로 내보낼 때 고른 구조(작업 그래프)와 평가 고리. 업무 ①②④의 출발점 — 지원 전에 꼭 읽을 글."
+  },
+  {
+   "id": "toss-sec-search",
+   "title": "토스증권 추천과 검색은 어떻게 진화하고 있을까?",
+   "by": "Toss Tech · 토스증권 AI 데이터 플랫폼 팀 · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/tech_talk_talk_3",
+   "why": "에이전트가 부를 검색 도구(공통 RAG·그래프 RAG)의 실제 모습. 업무 ③."
+  },
+  {
+   "id": "tmc25-steal",
+   "title": "TMC25 · STEAL THE SHOW: 작고 빠르게, 자동화로 만드는 금융 특화 LLM 내재화 전략",
+   "by": "토스증권 ML 엔지니어 · 22분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=VulWhToQUp8",
+   "why": "출시 → 반응 → 자동 평가 → 내재화 순서. 요건 ①④의 '운영하며 증명하기'."
+  },
+  {
+   "id": "toss-benchmark",
+   "title": "리더보드 1등 LLM, 토스에서도 1등일까? — Toss Benchmark 구축기",
+   "by": "Toss Tech · 토스 LLM Modeling 팀 · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/toss-benchmark",
+   "why": "자체 시험지를 왜·어떻게 만드나. 업무 ②, 요건 ④."
+  },
+  {
+   "id": "snap-blog",
+   "title": "손가락 튕기기로 LLM 비용 줄이기 (SNAP)",
+   "by": "Toss Tech · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/snap-llm-cost-reduction",
+   "why": "대규모 트래픽에서 비용을 줄이는 계단식 처리. 요건 ①."
+  },
+  {
+   "id": "anthropic-agents",
+   "title": "Building effective agents",
+   "by": "Anthropic · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.anthropic.com/engineering/building-effective-agents",
+   "why": "워크플로와 에이전트의 차이, 라우팅·오케스트레이터 같은 기본 패턴. 업무 ①."
+  },
+  {
+   "id": "anthropic-context",
+   "title": "Effective context engineering for AI agents",
+   "by": "Anthropic · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+   "why": "메모리·도구 설명·창 관리. 업무 ①, 요건 ②."
+  },
+  {
+   "id": "anthropic-multi",
+   "title": "How we built our multi-agent research system",
+   "by": "Anthropic · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.anthropic.com/engineering/multi-agent-research-system",
+   "why": "멀티 에이전트의 실제 구조·비용·평가. 업무 ①."
+  },
+  {
+   "id": "cs329z-tools",
+   "title": "Stanford CS329Z · How AI Agents Use Tools: Function Calling & MCP (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/s0S38lz6O7M",
+   "why": "Function Calling 과 MCP 가 안에서 어떻게 도는지. 업무 ①."
+  },
+  {
+   "id": "cs329z-patterns",
+   "title": "Stanford CS329Z · AI Agent Design Patterns: ReAct, CodeAct & More (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/JC_pLC5EX_w",
+   "why": "자율 루프(ReAct)와 그 대안. 토스증권이 왜 고정 그래프를 골랐는지 견주어 보기. 업무 ①."
+  },
+  {
+   "id": "cs329z-multi",
+   "title": "Stanford CS329Z · Multi-Agent Systems: When More Agents Help or Hurt (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/TlX_ft_PQIM",
+   "why": "에이전트를 늘리면 언제 낫고 언제 망가지나. 업무 ①."
+  },
+  {
+   "id": "cs329z-context",
+   "title": "Stanford CS329Z · LLMs for Agent Builders: Context Engineering (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/Vr1NzH8bT44",
+   "why": "긴 대화의 메모리와 창 관리. 요건 ②, 우대 ①."
+  },
+  {
+   "id": "cs329z-rag",
+   "title": "Stanford CS329Z · RAG Explained: From BM25 to Agentic RAG (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/psLc-46GqY0",
+   "why": "글자 검색·벡터 검색·리랭킹. 업무 ③."
+  },
+  {
+   "id": "cs329z-terminal",
+   "title": "Stanford CS329Z · Terminal-Bench: Evaluating AI Agents (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/7GW-9ug2nvw",
+   "why": "에이전트 시험지를 만들고 속지 않는 법. 업무 ②."
+  },
+  {
+   "id": "hamel-evals",
+   "title": "Your AI Product Needs Evals",
+   "by": "Hamel Husain · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://hamel.dev/blog/posts/evals/",
+   "why": "평가 세 겹과 실패 사례를 평가셋으로 돌리는 고리. 업무 ②, 요건 ④."
+  },
+  {
+   "id": "tau-bench",
+   "title": "τ-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains",
+   "by": "Yao 외 · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2406.12045",
+   "why": "가상 고객과 도구로 멀티턴 에이전트를 재는 법, pass^k. 업무 ②, 요건 ②."
+  },
+  {
+   "id": "llm-judge",
+   "title": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena",
+   "by": "Zheng 외 · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2306.05685",
+   "why": "LLM 심판을 쓸 때 생기는 치우침. 업무 ②."
+  },
+  {
+   "id": "error-bars",
+   "title": "Adding Error Bars to Evals: A Statistical Approach to Language Model Evaluations",
+   "by": "Miller · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2411.00640",
+   "why": "점수 차이가 우연인지 가르는 법. 업무 ②."
+  },
+  {
+   "id": "otel-genai",
+   "title": "OpenTelemetry · Semantic conventions for generative AI systems",
+   "by": "OpenTelemetry",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://opentelemetry.io/docs/specs/semconv/gen-ai/",
+   "why": "LLM·도구 호출을 trace 로 남길 때 쓰는 표준 항목. 요건 ②의 Observability."
+  },
+  {
+   "id": "mcp-spec",
+   "title": "Model Context Protocol 문서",
+   "by": "modelcontextprotocol.io",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://modelcontextprotocol.io/",
+   "why": "여러 에이전트가 도구를 같이 쓰는 공개 규약. 업무 ①."
+  },
+  {
+   "id": "openai-fc",
+   "title": "Function calling",
+   "by": "OpenAI API 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://platform.openai.com/docs/guides/function-calling",
+   "why": "도구 스키마를 어떻게 적고 호출 결과를 어떻게 돌려주나. 업무 ①."
+  },
+  {
+   "id": "owasp-llm",
+   "title": "OWASP Top 10 for LLM Applications",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://genai.owasp.org/llm-top-10/",
+   "why": "프롬프트 인젝션·과도한 권한 같은 에이전트 위험. 업무 ④, 우대 ③."
+  },
+  {
+   "id": "fsc-ai-guide",
+   "title": "금융위원회의 ‘금융분야 인공지능 가이드라인’ 발표 (해설 기사)",
+   "by": "법률신문 · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.lawtimes.co.kr/news/articleView.html?idxno=223806",
+   "why": "7대 원칙(보조수단성·신뢰성 등)과 투자 권유의 설명가능성. 업무 ④를 말로 설명하기 위해."
+  },
+  {
+   "id": "ai-eng",
+   "title": "AI 엔지니어링",
+   "by": "칩 후옌 · 변성윤 옮김 · 한빛미디어 · 2025",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=AI%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81%20%EC%B9%A9%20%ED%9B%84%EC%98%8C",
+   "why": "기초 모델로 제품 만들기 전체 — 평가·RAG·에이전트·지연과 비용. 이 공고 대부분의 줄."
+  },
+  {
+   "id": "llm-app-book",
+   "title": "LLM을 활용한 실전 AI 애플리케이션 개발",
+   "by": "허정준",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=LLM%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EC%8B%A4%EC%A0%84%20AI%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EA%B0%9C%EB%B0%9C",
+   "why": "RAG·에이전트를 한국어로 실습. 업무 ③."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "이 팀의 방식 알기",
+   "time": "1주",
+   "goal": "토스증권이 투자 정보를 LLM으로 만들 때 왜 자율 에이전트 대신 작업 그래프를 골랐는지, 평가 고리가 어떻게 도는지 말로 설명할 수 있다.",
+   "resources": [
+    "toss-invest-ai",
+    "toss-sec-search",
+    "tmc25-steal",
+    "toss-benchmark"
+   ],
+   "task": "토스증권 앱에서 AI 시그널·AI 채팅을 써 보고, 질문 하나가 거칠 것 같은 단계(라우터·검색·검증·생성)를 그림 한 장으로 그린다. 각 단계에서 틀릴 수 있는 것을 하나씩 적는다."
+  },
+  {
+   "title": "도구 쓰는 에이전트 직접 짜기",
+   "time": "2주",
+   "goal": "프레임워크 없이 도구 호출 루프·라우터·대화 메모리를 짜고, 실패·타임아웃을 다룰 수 있다.",
+   "resources": [
+    "anthropic-agents",
+    "openai-fc",
+    "cs329z-tools",
+    "cs329z-patterns",
+    "cs329z-context"
+   ],
+   "task": "가상의 계좌·시세 데이터(JSON 몇 개)를 두고 get_holdings·get_price·search_news 세 도구를 가진 '포트폴리오 설명' 에이전트를 만든다. 질문을 세 길(포트폴리오·종목 설명·거절)로 보내는 라우터와, 대화 5턴을 넘으면 요약해 줄이는 메모리를 붙인다."
+  },
+  {
+   "title": "평가 하네스와 trace",
+   "time": "2~3주",
+   "goal": "평가셋·자동 채점·pass^k·판끼리 비교표를 내고, 실행 기록을 trace 로 남겨 실패를 분류할 수 있다.",
+   "resources": [
+    "hamel-evals",
+    "tau-bench",
+    "llm-judge",
+    "error-bars",
+    "otel-genai",
+    "cs329z-terminal"
+   ],
+   "task": "2단계 에이전트에 질문 100개(유형 4개, 답하면 안 되는 질문 20개 포함)를 만들고 각 4번씩 돌린다. 숫자 대조·필수 도구·금지 표현은 코드로, 설명 품질은 LLM 심판으로 채점해 pass^1·pass^4 와 실패 유형 표를 낸다. 프롬프트를 한 번 고쳐 두 판을 짝지어 비교하고 표준오차를 적는다."
+  },
+  {
+   "title": "데이터 검증과 검색",
+   "time": "2주",
+   "goal": "에이전트 도구가 돌려줄 표·글 데이터를 검증하고, 검색 단계와 생성 단계를 따로 잴 수 있다.",
+   "resources": [
+    "toss-sec-search",
+    "cs329z-rag",
+    "llm-app-book"
+   ],
+   "task": "공개 뉴스 제목 500건으로 글자 + 벡터 검색과 중복 묶기를 만들고, 검색 상위 5건 적중률을 잰다. 시세 표에는 빈 값·단위·기준 시각 검사를 넣어 3단계 하네스에서 숫자 오류가 줄었는지 본다."
+  },
+  {
+   "title": "금융 규칙과 운영 (선택)",
+   "time": "계속",
+   "goal": "권유와 설명의 차이를 검사 코드로 옮기고, 비용·지연을 숫자로 관리할 수 있다.",
+   "resources": [
+    "fsc-ai-guide",
+    "owasp-llm",
+    "snap-blog",
+    "anthropic-multi",
+    "cs329z-multi",
+    "ai-eng"
+   ],
+   "task": "금지 표현·필수 안내·사람에게 넘기기 규칙을 출력 검사기로 만들고, 프롬프트 인젝션 시도 20개로 뚫리는지 시험한다. 질문당 토큰·도구 호출 수·응답 시간을 재서 쉬운 질문을 작은 모델로 보냈을 때 비용이 얼마나 주는지 표로 남긴다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 공시 기준 1인당 평균 임금 **약 1억 2,500만원**(2023년) — 경력직이 대부분인 회사 전체 값이다",
+  "rows": [
+   {
+    "label": "1인당 평균 임금",
+    "value": "1억 2,500만원",
+    "amount": 12500,
+    "basis": "사업보고서·금융투자협회 공시 · 2023년",
+    "note": "계약직 포함 임직원 292명 기준이라고 보도됐다 [32]"
+   },
+   {
+    "label": "메리츠증권 평균",
+    "value": "1억 8,300만원",
+    "amount": 18300,
+    "basis": "사업보고서·금융투자협회 공시 · 2023년",
+    "peer": true,
+    "note": "같은 기사의 24개 증권사 중 1위. 24개사 평균은 1억 2,579만원 [32]"
+   },
+   {
+    "label": "카카오페이증권 평균",
+    "value": "9,840만원",
+    "amount": 9840,
+    "basis": "사업보고서·금융투자협회 공시 · 2023년",
+    "peer": true,
+    "note": "같은 기사 — 임원 제외 직원 기준, 24개사 중 최하위 [32]"
+   }
+  ],
+  "how": "공고는 레퍼런스 체크 뒤 **처우협의** 단계에서 사람마다 정한다고 적었다 [1]. 2023년 숫자라 낡았다 — 2026년 1분기 공시에서 직원은 380명에서 516명으로 늘고 직원 급여는 21.4% 늘었다 [33]. 평균은 초봉이 아니라 경력직이 섞인 회사 전체 값이라 이 자리의 제안액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 전체를 기준으로 한 2021년 공식 소개 글이다 [35]. 토스증권에 그대로 적용되는지, 지금도 같은지는 글에 없으니 처우협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스증권 본사",
+  "address": "서울특별시 강남구 테헤란로 133, 7층 (역삼동, 한국타이어빌딩)",
+  "postal": "06133",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20133",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "공고의 근무지 표기는 ‘Seoul’이고, 주소는 토스증권 사이트 하단의 회사 정보다 [34]. 팀 자리가 본사와 다를 수 있다 {추론}."
+ }
+}
