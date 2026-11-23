@@ -198,7 +198,7 @@ REGISTRY: list[Loop] = [
              "읽는다)를 먼저 찾고, 공개되지 않은 부분은 다른 곳의 공개 문서로 '보통 이런 것'을 보인다. 문장마다 [n] 출처, "
              "근거 없는 판단은 {추론}. 지어낸 1인칭 생각·원문 전재 금지. 코드 예시는 직접 돌려 출력을 확인한다. "
              "validate.py 가 통과하면 state/LOG.md 에 한 줄 쓰고 feat(roles) 로 커밋한다(git add 는 jd-viewer/public/roles "
-             "engine/roles/state 만, git add -A 금지). 커밋 뒤 catch_capture 에서 `python -m store.ingest.docs` 로 DB 에 옮긴다. "
+             "engine/roles/state 만, git add -A 금지). 커밋 뒤 catch_capture 에서 `.venv` 의 python(윈도우 `.venv/Scripts/python`, 맥 `.venv/bin/python`)으로 `-m store.ingest.docs` 를 돌려 DB 에 옮긴다. "
              "받은 영상 재료(catch_capture/var/lectures/<id>)는 다 읽은 뒤 지운다. 푸시하지 않는다. 무엇을 했는지 한두 줄로 보고한다.")),
     Loop("study-engine", "기술 백과사전", "claude-loop", "any", "자율(화면에서는 빠져 있다)", 24 * 30,
          "/loop <prompt>", ["study-engine/state", "jd-viewer/public/study"],

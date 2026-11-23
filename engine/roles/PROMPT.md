@@ -42,7 +42,7 @@
 6. **눈높이**: 처음 보는 낱말은 처음 나올 때 괄호로 풀이. 한 문장에 새 개념 하나. 세부 기술 이름은 줄이고 뜻을 먼저.
 7. **검사·커밋**: `python engine/roles/validate.py` 통과 → `state/LOG.md` 한 줄 →
    `git add jd-viewer/public/roles engine/roles/state` → `feat(roles): <회사> <직무> 공고 풀이`. 푸시하지 않는다.
-   커밋 뒤 `cd catch_capture && python -m store.ingest.docs` 로 DB(viewer_doc)에 옮긴다(뷰어는 API 먼저 읽는다).
+   커밋 뒤 `cd catch_capture && .venv/Scripts/python -m store.ingest.docs`(맥은 `.venv/bin/python`) 로 DB(viewer_doc)에 옮긴다(뷰어는 API 먼저 읽는다).
 
 ## 하지 않는 것
 - 공고에 없는 요건을 지어내지 않는다. 공고 줄 순서·문장을 바꾸지 않는다.
