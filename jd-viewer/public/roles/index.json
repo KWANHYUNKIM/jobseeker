@@ -44,8 +44,10 @@
   "wanted-387807": "medcom-android-engineer",
   "wanted-387811": "medcom-cloud-infra-engineer-japan",
   "wanted-394202": "mediphone-platform-engineer",
+  "jobkorea-50142477": "megazone-air-ai-engineer",
   "jobkorea-50272885": "megazone-air-platform-backend",
   "jobkorea-50249597": "megazone-cloud-ai-soc",
+  "saramin-55435593": "megazone-cloud-security-consultant-grc",
   "wanted-306088": "megazone-japan-cloud-engineer-associate",
   "wanted-306087": "megazone-japan-cloud-engineer-senior",
   "saramin-55340311": "megazone-multicloud-ops-engineer",
@@ -594,6 +596,16 @@
    "lines": 27
   },
   {
+   "id": "megazone-air-ai-engineer",
+   "company": "메가존클라우드",
+   "role": "AIR 부문 AI 전문 Engineer",
+   "jobs": [
+    "jobkorea-50142477"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 103
+  },
+  {
    "id": "megazone-air-platform-backend",
    "company": "메가존클라우드",
    "role": "AIR Platform Backend Developer · 플랫폼 기획",
@@ -612,6 +624,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 44
+  },
+  {
+   "id": "megazone-cloud-security-consultant-grc",
+   "company": "메가존클라우드(주)",
+   "role": "클라우드 보안 컨설턴트",
+   "jobs": [
+    "saramin-55435593"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 27
   },
   {
    "id": "megazone-japan-cloud-engineer-associate",
