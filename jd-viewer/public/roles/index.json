@@ -2,6 +2,7 @@
  "updated_at": "2026-11-23",
  "jobs": {
   "wanted-335089": "aldagram-kanna-web-engineer",
+  "wanted-383708": "creationline-fullstack-sherpa-japan",
   "wanted-395987": "datax-software-engineer-japan",
   "wanted-368239": "finatext-brokerage-fullstack",
   "wanted-368237": "finatext-frontend",
@@ -14,6 +15,7 @@
   "wanted-389086": "litalico-new-grad-engineer",
   "wanted-391368": "litalico-sre-product",
   "wanted-393885": "litalico-sre-tech-lead",
+  "wanted-296040": "mantra-langaku-mobile-lead",
   "wanted-387807": "medcom-android-engineer",
   "wanted-394202": "mediphone-platform-engineer",
   "wanted-306088": "megazone-japan-cloud-engineer-associate",
@@ -31,6 +33,7 @@
   "ats-skcareers:sk:R262275": "skax-ax-ai-pm-pl",
   "ats-skcareers:sk:R262283": "skax-ax-ai-project-pm-pl",
   "ats-skcareers:sk:R262418": "skax-contact-center-application",
+  "ats-skcareers:sk:R262544": "skax-hotel-ito-app-ops-pl",
   "ats-skcareers:sk:R262274": "skax-ict-application-contract",
   "ats-skcareers:sk:R262281": "skax-ict-application-ops",
   "ats-skcareers:sk:R262415": "skax-mfg-data-engineer-k8s",
@@ -163,6 +166,16 @@
    "lines": 22
   },
   {
+   "id": "creationline-fullstack-sherpa-japan",
+   "company": "クリエーションライン株式会社 (Creationline)",
+   "role": "풀스택 엔지니어 (Sherpa Engineer · 리드 후보)",
+   "jobs": [
+    "wanted-383708"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 23
+  },
+  {
    "id": "datax-software-engineer-japan",
    "company": "데이터X (株式会社データX)",
    "role": "신입 소프트웨어 엔지니어 (일본 근무)",
@@ -281,6 +294,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 31
+  },
+  {
+   "id": "mantra-langaku-mobile-lead",
+   "company": "Mantra (Mantra株式会社)",
+   "role": "모바일 앱 엔지니어 · 영어학습 앱 개발 리드",
+   "jobs": [
+    "wanted-296040"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 26
   },
   {
    "id": "medcom-android-engineer",
@@ -415,6 +438,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 36
+  },
+  {
+   "id": "skax-hotel-ito-app-ops-pl",
+   "company": "SK주식회사(AX)",
+   "role": "호텔 분야 ITO Application 운영 PL",
+   "jobs": [
+    "ats-skcareers:sk:R262544"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 21
   },
   {
    "id": "skax-ict-application-contract",

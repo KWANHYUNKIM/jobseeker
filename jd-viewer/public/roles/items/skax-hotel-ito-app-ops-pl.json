@@ -1,0 +1,991 @@
+{
+ "id": "skax-hotel-ito-app-ops-pl",
+ "company": "SK주식회사(AX)",
+ "role": "호텔 분야 ITO Application 운영 PL",
+ "team": "ITO(제조·공공·호텔) 조직",
+ "jobs": [
+  "ats-skcareers:sk:R262544"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "호텔 고객의 업무 시스템을 계약(ITO)으로 맡아 **고객 요청(SR)을 받아 나누고 기한 안에 끝내게 하고, 장애·변경을 협력사와 함께 처리하고, 운영 결과를 숫자로 보고**하는 운영 리더 자리입니다.[1]",
+  "env": "기술 요건은 Java·Spring Boot·React 웹 구조의 '기본 이해'이고[1], 회사는 ITO 를 SLA 로 관리하며 운영에 AI(AIOps)를 붙이는 중입니다.[2][8] SK AX 는 호텔 그룹 ITO(파라다이스)와 호텔 ERP 구축(파르나스)을 맡아 왔지만, 이 공고의 고객이 누구인지는 공개되지 않았습니다.[3][4]",
+  "oneline": "코드를 짜는 시간보다 **요청을 줄 세우고, 사람과 업체를 엮고, 멈추지 않게 지키는** 시간이 긴 자리. 운영(SM·ITO) 경력 5년 이상."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "우리팀을 소개합니다 😊\n조직 소개\n제조, 공공, 호텔 서비스 분야의 Application과 인프라 영역에서 IT 아웃소싱을 사업을 수행하고 있습니다.",
+   "short": "남의 회사(고객사) 시스템을 계약으로 맡아 돌리는 ITO 팀이고, 이 자리는 그중 호텔 고객을 맡는다.",
+   "why": "ITO(IT 아웃소싱)는 고객사가 IT 운영을 통째로 맡기고 서비스 수준(SLA, 약속한 품질 기준)으로 결과를 재는 계약입니다.[2] SK AX(옛 SK C&C)는 2024년 1월부터 3년 동안 파라다이스 그룹(호텔·카지노·리조트)의 인프라와 애플리케이션을 통합 운영하는 ITO 사업을 맡았다고 발표했고[3], 2025년에는 파르나스호텔의 ERP(회계·구매 같은 경영 시스템) 구축도 시작했습니다.[4] 호텔 디지털 경험(챗봇·셀프 체크인)과 객실 단가 최적화를 서비스로 따로 내걸고 있기도 합니다.[5][6]",
+   "how_far": "이 공고가 어느 호텔 고객을 맡는지는 공개되지 않았습니다.[1] 근무지가 '서울 강남권'이라 강남에 있는 고객사 사무실일 가능성이 있지만 확인된 사실은 아닙니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "ITO 운영 체계를 이해하고 AX 도구를 활용하여 AIops 체계를 사업에 적용합니다.",
+   "short": "운영을 사람 손으로만 하지 않고, 장애 탐지·원인 분석에 AI 도구를 붙여 가는 중이라는 뜻.",
+   "why": "AIOps는 로그·지표·이벤트를 기계가 먼저 읽고 이상을 알려 주거나 원인 후보를 좁혀 주는 운영 방식입니다. SK AX는 2026년 4월 운영 장애를 탐지·분석·영향도 파악·조치 단계로 나눠 각각 AI 에이전트가 돕는 체계를 발표했고, ITO 고객에게도 적용한다고 밝혔습니다.[8] 저축은행 통합 유지보수 사업에서는 장애 건수·같은 장애 재발률·품질 개선 항목 수를 성과 지표로 내걸었습니다.[9]",
+   "actually": {
+    "intro": "운영 PL이 AIOps 쪽에서 실제로 만지게 될 일입니다. {추론}",
+    "items": [
+     "**알림 정리** — 같은 원인에서 나온 경보 수십 개를 한 건의 장애로 묶는 규칙을 고친다.",
+     "**반복 SR 자동화** — 비밀번호 초기화·권한 신청처럼 매주 오는 요청을 스크립트·워크플로로 바꾼다.[15]",
+     "**장애 기록 쌓기** — AI가 원인을 추천하려면 지난 장애의 증상·원인·조치가 정리돼 있어야 한다.[14]",
+     "**효과 숫자로 보고** — 재발률·처리 시간이 줄었는지를 월간 보고에 싣는다.[9]"
+    ]
+   },
+   "how_far": "AI 모델을 직접 만드는 자리는 아닙니다. 운영 데이터(SR·장애 기록)를 깨끗하게 쌓고, 회사 도구를 현장에 붙이고, 효과를 숫자로 보이는 데까지가 PL 몫입니다. {추론}",
+   "refs": [
+    8,
+    9,
+    14,
+    15
+   ],
+   "study": [
+    "skax-npo",
+    "sre-free"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "업무 환경 및 문화\n수평적인 소통문화와 자율적 업무 환경 속에서 최선의 서비스를 제공할 수 있도록 지원합니다.",
+   "short": "팀 분위기 소개 문장. 업무 요건은 아니다.",
+   "why": "회사가 적은 팀 문화 소개입니다.[1] 고객사에 상주하는 ITO 자리는 근무 시간·보안 규정을 고객사 기준으로 따르는 경우가 많으니, 자율의 범위는 면접에서 묻는 편이 정확합니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "구성원을 위한 지속적인 교육 투자와 자기계발을 지원받으며 일할 수 있습니다.",
+   "short": "교육 지원이 있다는 말. SK 그룹 학습 플랫폼과 개인 학습 예산이 있다.",
+   "why": "SK AX 채용 사이트는 그룹 학습 플랫폼 mySUNI, 해마다 주는 개인 학습 예산(Learning Account), 사내 도서관을 복리후생으로 적었습니다.[26] 자격증 우대 줄과 이어서 보면 운영 중에 ITIL·클라우드 자격을 따는 데 쓸 수 있습니다. {추론}",
+   "refs": [
+    1,
+    26
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "젊고 활기찬 팀원들과 전문 분야에 대한 고민을 나누며 같이 성장할 수 있습니다.",
+   "short": "팀 분위기 소개 문장. 업무 요건은 아니다.",
+   "why": "회사가 적은 팀 소개입니다.[1] PL 자리라 같이 일할 팀원과 협력사 인원을 이끄는 쪽에 서게 됩니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "담당 업무\nApplication 유지/운영 및 고객 서비스 요청(SR)의 접수·분석·배정·진행을 관리합니다.",
+   "short": "고객이 낸 요청(SR)이 들어오면 무엇인지 보고, 누구에게 맡길지 정하고, 기한 안에 끝나게 챙기는 일.",
+   "why": "SR(서비스 요청)은 '고장'이 아니라 '해 달라'는 요청입니다 — 화면 문구 수정, 보고서 추가, 권한 부여 같은 것. 장애(인시던트)는 서비스가 멈추거나 나빠진 것이라 따로 다룹니다.[10][12] ITO 계약은 이 요청을 얼마나 빨리, 제대로 처리했는지를 SLA 로 잽니다.[2] 파라다이스 ITO 에서도 SK C&C는 SLA 체계와 ITSM(요청·장애·변경을 한 도구로 관리하는 체계)을 먼저 깔았다고 밝혔습니다.[3]",
+   "flows": [
+    {
+     "caption": "SR 한 건이 지나가는 길 {추론}[10][11]",
+     "steps": [
+      "접수 · 요청자·내용·희망 일자 확인",
+      "분석 · 무엇을 바꾸면 되나, 얼마나 걸리나",
+      "배정 · 담당 개발자·협력사 정하기",
+      "진행 · 개발·테스트·변경 승인·배포",
+      "확인 · 요청자 확인 받고 종료",
+      "집계 · 기한 준수율·반복 요청 보고"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "actually": {
+    "intro": "호텔 시스템에서 흔히 올 SR 예입니다. 호텔 고객이 어떤 시스템을 쓰는지는 공개되지 않아 일반적인 호텔 시스템 기준입니다. {추론}",
+    "items": [
+     "**객실 관리 시스템(PMS) 쪽** — 새 객실 요금 코드 추가, 체크인 화면 항목 변경, 보고서 칸 추가.[16]",
+     "**식음(F&B)·POS 쪽** — 레스토랑 메뉴·가격 변경을 POS 와 PMS 정산에 같이 반영.[18]",
+     "**홈페이지·예약 엔진** — 프로모션 페이지 열기, 회원 등급별 할인 조건 바꾸기.[6]",
+     "**권한·계정** — 신규 직원 계정, 퇴사자 권한 회수(감사 대상이다).",
+     "**데이터 추출** — 마케팅팀이 요청한 투숙 이력 추출(개인정보라 승인 절차가 붙는다)."
+    ]
+   },
+   "examples": [
+    {
+     "title": "SR 처리 기한 지켰나 세기 (직접 돌린 출력)",
+     "body": "우선순위마다 기한(긴급 4시간·높음 24시간·보통 72시간 — 가상 값)을 두고, 접수 시각에서 기한을 계산해 준수 여부를 셉니다. 진행 중인 건은 '지금' 기준으로 봅니다. 실제 기한은 고객과 맺은 SLA 가 정합니다.[2][3]",
+     "lang": "python",
+     "code": "from datetime import datetime, timedelta\n# SR 접수 시각, 우선순위 → 처리 기한(시간) 표 (가상 SLA)\nsla = {\"긴급\": 4, \"높음\": 24, \"보통\": 72}\nsrs = [(\"SR-101\", \"긴급\", \"2026-11-23 09:00\", \"2026-11-23 12:30\"),\n       (\"SR-102\", \"높음\", \"2026-11-22 10:00\", \"2026-11-23 13:00\"),\n       (\"SR-103\", \"보통\", \"2026-11-20 15:00\", None),\n       (\"SR-104\", \"보통\", \"2026-11-21 09:00\", \"2026-11-22 18:00\")]\nnow = datetime(2026, 11, 23, 18, 0)\nok = 0\nfor sid, pr, opened, closed in srs:\n    o = datetime.fromisoformat(opened)\n    due = o + timedelta(hours=sla[pr])\n    end = datetime.fromisoformat(closed) if closed else now\n    hit = end <= due\n    ok += hit\n    print(sid, pr, \"기한\", due.strftime(\"%m-%d %H:%M\"), \"준수\" if hit else \"초과\", \"\" if closed else \"(진행중)\")\nprint(f\"준수율 {ok}/{len(srs)} = {ok/len(srs):.0%}\")\n# 출력\n# SR-101 긴급 기한 11-23 13:00 준수\n# SR-102 높음 기한 11-23 10:00 초과\n# SR-103 보통 기한 11-23 15:00 초과 (진행중)\n# SR-104 보통 기한 11-24 09:00 준수\n# 준수율 2/4 = 50%"
+    }
+   ],
+   "how_far": "PL 은 SR 을 직접 다 고치는 사람이 아니라 **분류·배정·기한·우선순위를 정하고 막히면 푸는** 사람입니다. 개발자에게 넘기기 전에 '무엇을, 어디를, 언제까지'를 한 장으로 정리할 수 있으면 최소선입니다. {추론}",
+   "refs": [
+    2,
+    3,
+    6,
+    10,
+    11,
+    12,
+    16,
+    18
+   ],
+   "study": [
+    "atlassian-sr",
+    "skax-ito"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "협력사 및 유관부서와 협업하여 변경작업, 장애·운영이슈를 신속히 조치합니다.",
+   "short": "고치는 손은 협력사·다른 부서에 있는 경우가 많다. 그 손들을 모아 변경과 장애 조치를 끝내는 일.",
+   "why": "ITO 현장에서는 패키지 업체(예: 호텔 PMS 공급사), 인프라 운영 부서, 보안 부서가 각각 자기 몫을 맡습니다. 변경은 위험도에 따라 승인 절차를 거치고[11], 장애는 영향 범위에 따라 등급을 매겨 대응합니다 — 전체 고객이 못 쓰면 가장 높은 등급, 일부만이면 그 아래 식입니다.[12] 장애가 끝난 뒤에는 원인과 재발 방지 조치를 기록하는 사후 분석이 이어집니다.[14]",
+   "actually": {
+    "intro": "호텔에서 장애·변경이 특히 까다로운 이유입니다.",
+    "items": [
+     "**밤에도 쉬지 않는다** — 체크인·예약은 24시간이라 변경 작업 시간을 잡기 어렵다. {추론}",
+     "**야간 마감(Night Audit)** — 밤마다 영업일을 넘기며 객실료를 올리고 보고서를 만든다. 이게 멈추면 다음 날 정산이 꼬인다.[17]",
+     "**연동이 많다** — PMS 하나에 POS·예약 채널·도어락·회계가 붙어 있어 한쪽 변경이 다른 쪽을 깬다.[18]",
+     "**카드 정보** — 결제 카드 데이터를 다루는 시스템은 국제 카드 보안 기준(PCI DSS)의 관리 대상이라 변경 기록·접근 통제가 엄격하다.[19]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "야간 마감이 하는 일 하나 (직접 돌린 출력)",
+     "body": "투숙 중인 객실에만 하루치 객실료와 세금을 올리는 단계를 흉내 냈습니다.[17] 마감이 중간에 멈춰 다시 돌릴 때 같은 객실에 두 번 올리지 않도록 (영업일, 객실) 기록으로 거릅니다. 세율·객실 상태는 가상 값입니다.",
+     "lang": "python",
+     "code": "# 야간 마감: 투숙 중인 객실에만 하루치 객실료+세금을 올린다 (가상 값)\nrooms = [(\"1203\", 250000, \"in-house\"), (\"1507\", 320000, \"in-house\"),\n         (\"0811\", 180000, \"due-in\"), (\"2001\", 410000, \"checked-out\")]\ntax = 0.10\nposted = [(no, rate, round(rate * tax)) for no, rate, st in rooms if st == \"in-house\"]\nfor no, rate, t in posted:\n    print(\"객실\", no, \"객실료\", rate, \"세금\", t)\nprint(\"올린 객실\", len(posted), \"합계\", sum(r + t for _, r, t in posted))\n# 마감이 중간에 멈춰 다시 돌면? (영업일, 객실) 기록으로 두 번 올리기를 막는다\ndone = {(\"2026-11-23\", \"1203\")}\nskip = [no for no, _, _ in posted if (\"2026-11-23\", no) in done]\nprint(\"다시 돌 때 건너뛸 객실:\", skip)\n# 출력\n# 객실 1203 객실료 250000 세금 25000\n# 객실 1507 객실료 320000 세금 32000\n# 올린 객실 2 합계 627000\n# 다시 돌 때 건너뛸 객실: ['1203']"
+    }
+   ],
+   "how_far": "장애가 나면 PL 은 직접 디버깅하기보다 **누가 무엇을 보고 있는지, 고객에게 언제 무엇을 알릴지**를 잡습니다.[12] 변경은 '영향 범위·되돌리기 방법·작업 시간'이 적힌 계획서를 협력사에서 받아 검토할 수 있으면 됩니다. {추론}",
+   "refs": [
+    11,
+    12,
+    14,
+    17,
+    18,
+    19
+   ],
+   "study": [
+    "atlassian-change",
+    "atlassian-incident",
+    "opera-eod",
+    "pci-dss"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "운영현황·실적·이슈 보고자료를 관리하고 안정적인 IT 서비스 운영을 지원합니다.",
+   "short": "한 달 동안 몇 건 들어와 몇 건 기한 안에 끝냈고, 무슨 장애가 왜 났는지를 고객에게 숫자로 보고하는 일.",
+   "why": "ITO 는 계약서의 SLA 지표로 품질을 증명해야 합니다.[2] SK C&C는 파라다이스 ITO 에서 IT 서비스 관리 지표 300여 개 가운데 계약에 쓸 것을 골랐다고 밝혔습니다.[3] 저축은행 사업의 지표(장애 건수·재발률·개선 항목 수·비용 효율화)도 이런 보고의 뼈대입니다.[9]",
+   "actually": {
+    "intro": "월간 운영 보고에 흔히 들어가는 칸입니다. {추론}",
+    "items": [
+     "SR 접수·완료 건수, 기한 준수율, 평균 처리 시간",
+     "장애 건수·등급별 복구 시간, 같은 장애 재발 여부[9]",
+     "변경 작업 건수·실패해 되돌린 건수[11]",
+     "반복 요청 상위 5개와 없애기 위한 개선 과제[15]",
+     "다음 달 예정 작업(점검·버전 올리기)"
+    ]
+   },
+   "how_far": "엑셀·ITSM 도구에서 숫자를 뽑아 한 장짜리 현황표로 만들고, 숫자가 나빠진 이유를 한 줄로 설명할 수 있으면 됩니다. 지표 정의(무엇을 언제부터 셀지)를 고객과 맞추는 것도 PL 일입니다. {추론}",
+   "refs": [
+    2,
+    3,
+    9,
+    11,
+    15
+   ],
+   "study": [
+    "sre-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "※ 근무지 : 서울 강남권",
+   "short": "근무지는 서울 강남 쪽. SK AX 자기 사무실이 아니라 고객사 쪽일 가능성이 크다.",
+   "why": "SK AX 사업장 안내에는 분당 본사(SK u-타워)·판교·수내 사무실이 나오고 강남 사무실은 없습니다.[27] 그래서 강남권 근무는 호텔 고객사 상주일 가능성이 큽니다. {추론} SK AX가 ERP 구축을 맡은 파르나스호텔의 본사는 강남구 삼성동 파르나스타워에 있지만[4], 이 공고의 고객이 그곳이라는 근거는 없습니다. {추론}",
+   "how_far": "정확한 건물·출근 방식(상주 여부)은 처우협의 때 확인합니다. {추론}",
+   "refs": [
+    4,
+    27
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "이런 경험을 갖고 계시다면 저희가 찾는 그분입니다! ✨\n필요 역량 및 경험\n5년 이상의 Application 유지운영(SM·ITO) 및 Service Request관리 경험을 보유하신 분",
+   "short": "개발 경력 5년이 아니라 '운영하면서 요청을 받아 처리해 본' 경력 5년을 본다.",
+   "why": "공고의 공통 요건도 '채용 분야 경력 5년 이상'입니다.[1] SM(System Management)은 이미 만든 시스템을 넘겨받아 돌리고 고치는 일이고, ITO 는 그것을 계약으로 통째로 맡는 형태입니다.[2] 신규 구축(SI)만 해 왔다면 SR 을 접수·처리하고 SLA 로 재 본 경험을 따로 보여 줘야 합니다. {추론}",
+   "level": {
+    "basic": "SR 과 장애의 차이 · 처리 순서(접수→분석→처리→확인) · 변경 승인을 받는 이유",
+    "work": "우선순위·기한 정하기 · 영향도 분석 · ITSM 도구(Jira Service Management·ServiceNow 같은 것)로 요청 관리",
+    "team": "여러 시스템의 요청을 한 줄로 세우기 · 반복 요청을 없애는 개선 과제 · SLA 지표 보고"
+   },
+   "how_far": "이력서에 '몇 개 시스템을, 월 몇 건의 SR 로, 어떤 SLA 아래서 운영했나'를 숫자로 적을 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "atlassian-sr",
+    "skax-ito"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "다수 시스템·협력사의 일정, 운영현황 및 이슈를 체계적으로 관리 가능하신 분",
+   "short": "PMS·POS·홈페이지·ERP 처럼 여러 시스템과 각각의 업체 일정을 한 판에 놓고 챙길 수 있어야 한다.",
+   "why": "호텔의 시스템들은 서로 엮여 있어 한 업체의 작업 일정이 다른 시스템에 영향을 줍니다.[18] 파르나스 사례처럼 흩어진 시스템을 하나로 합치는 사업이 생기는 것도 시스템·업체가 많아서입니다.[4]",
+   "actually": {
+    "intro": "체계적 관리의 실제 모양입니다. {추론}",
+    "items": [
+     "**작업 달력** — 시스템별 점검·배포·버전 올리기를 한 달력에 올려 겹치는 날을 막는다.",
+     "**이슈 대장** — 열린 이슈마다 담당·기한·다음 행동을 적고 주간 회의에서 줄인다.",
+     "**연동 지도** — 어느 시스템이 어디로 데이터를 보내는지 한 장 그림으로 둔다.[18]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "채널 셋에서 판 방 대조 (직접 돌린 출력)",
+     "body": "스위트 1실이 두 예약 채널에서 같은 날 팔린 상황입니다. 객실 타입·날짜별로 판매 수를 모아 남은 방과 대조하면 초과 판매가 바로 보입니다. 값은 가상입니다. {추론}",
+     "lang": "python",
+     "code": "# 판매 채널 셋에서 들어온 예약을 객실 타입·날짜별로 모아 남은 방과 대조 (가상 값)\ninventory = {\"DLX\": 5, \"STE\": 1}\nbookings = [(\"OTA-A\", \"STE\", \"11-30\"), (\"OTA-B\", \"STE\", \"11-30\"), (\"WEB\", \"DLX\", \"11-30\")]\nsold = {}\nfor ch, rt, d in bookings:\n    sold[(rt, d)] = sold.get((rt, d), 0) + 1\nfor (rt, d), n in sold.items():\n    left = inventory[rt] - n\n    print(rt, d, \"판매\", n, \"남음\", left, \"<- 초과 판매\" if left < 0 else \"\")\n# 출력\n# STE 11-30 판매 2 남음 -1 <- 초과 판매\n# DLX 11-30 판매 1 남음 4"
+    }
+   ],
+   "how_far": "도구는 무엇이든 좋고, 이슈 하나도 주인 없이 남지 않게 하는 습관이 핵심입니다. {추론}",
+   "refs": [
+    4,
+    18
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "고객·현업·개발·인프라·보안 등 이해관계자와 원활히 소통·조율하실 수 있는 분",
+   "short": "호텔 현업(프런트·식음·회계)의 말을 개발·인프라·보안 쪽 말로 옮기고, 서로 다른 요구를 맞추는 일.",
+   "why": "ITO 운영에는 계약 상대(고객 IT 부서), 실제 사용자(현업), 고치는 사람(개발·협력사), 서버를 맡은 사람(인프라), 막는 사람(보안)이 다 다릅니다.[2] 변경 하나에도 이들이 승인·검토에 들어갑니다.[11] 호텔은 고객 개인정보와 카드 정보를 다뤄 보안 부서의 목소리가 큽니다.[19] SK AX가 호텔 고객의 외부 접속을 망분리 VDI(원격 가상 PC)로 바꾼 사례도 보안 쪽 요구에서 나왔습니다.[7]",
+   "how_far": "'프런트가 체크인이 느리다'를 '체크인 API 응답이 몇 초, 어느 구간에서'로 바꿔 전달할 수 있으면 최소선입니다. {추론}",
+   "refs": [
+    2,
+    7,
+    11,
+    19
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "장애 대응·보고 역량과 Java, Spring Boot, React 등 웹 시스템 구조의 기본 이해 보유하신 분",
+   "short": "장애 때 상황을 정리해 보고할 수 있어야 하고, 코드는 직접 짜기보다 구조를 읽을 수 있으면 된다.",
+   "why": "공고는 기술을 '기본 이해'로 적었습니다.[1] 장애 대응에서는 첫 보고(무엇이·언제부터·누구에게 영향), 중간 보고, 종료 후 원인·재발 방지 보고가 이어집니다.[12][14] 웹 시스템 구조를 알아야 '화면(React)이 느린지, 서버(Spring Boot)가 느린지, DB 인지'를 가를 수 있습니다. {추론}",
+   "level": {
+    "basic": "브라우저 → 웹 서버 → 애플리케이션 서버 → DB 흐름 · HTTP 상태 코드(4xx·5xx) 뜻 · 로그 위치",
+    "work": "Spring Boot 헬스 체크·지표(Actuator) 보기 · 브라우저 개발자 도구로 느린 요청 찾기 · 장애 보고서 쓰기",
+    "team": "여러 시스템이 엮인 장애에서 영향 범위 가르기 · 사후 분석 주재"
+   },
+   "how_far": "직접 고치지 않아도 장애 보고서에 '증상·영향·원인·조치·재발 방지'를 빠짐없이 쓸 수 있으면 됩니다.[14] Spring Boot 는 헬스 체크 주소로 서버 상태를 확인하는 정도까지 해 보면 좋습니다.[20]",
+   "refs": [
+    1,
+    12,
+    14,
+    20
+   ],
+   "study": [
+    "atlassian-incident",
+    "sre-ko",
+    "spring-boot-book",
+    "http-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "이런 경험과 역량이 있으면 더 좋아요! 👍\n우대사항\nIT 운영 사업에서 Application 운영 PL 또는 운영 리딩 경험을 보유하신 분",
+   "short": "운영 팀을 이끌어 본 경험. 이 자리 이름이 'PL'이라 사실상 핵심 우대다.",
+   "why": "PL(Project/Part Leader)은 운영 인원의 일을 나누고 고객 앞에서 운영 결과를 책임지는 자리입니다. 공고 제목부터 '운영 PL 영입'입니다.[1] 운영 PL 은 SLA 지표 보고와 개선 과제를 이끄는 사람이기도 합니다.[2][9]",
+   "how_far": "몇 명을, 몇 개 시스템에서, 어떤 지표를 얼마나 바꿨는지(예: 재발 장애 감소, 처리 기한 준수율 개선)를 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    2,
+    9
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "호텔 서비스 분야에서 IT 시스템 구축 또는 운영을 경험하신 분",
+   "short": "PMS(객실)·POS(식음)·예약 채널·야간 마감 같은 호텔 업무 흐름을 알면 적응이 빠르다.",
+   "why": "호텔 IT 의 중심은 객실 예약·체크인·정산을 맡는 PMS 이고[16], 여기에 식음 POS·예약 채널·회원(CRM)이 붙습니다.[6][18] SK AX가 내건 호텔 서비스도 챗봇·셀프 체크인·IoT 객실 관리(경험 쪽)와 다이내믹 프라이싱·예약 엔진(수익 쪽)으로 나뉩니다.[5][6]",
+   "actually": {
+    "intro": "호텔 경험이 없을 때 먼저 알아 둘 낱말입니다.",
+    "items": [
+     "**PMS** — 객실 예약·배정·체크인/아웃·청구를 관리하는 호텔의 중심 시스템.[16]",
+     "**야간 마감(Night Audit / End of Day)** — 밤마다 영업일을 닫고 객실료·노쇼를 처리하는 일괄 작업.[17]",
+     "**POS 연동** — 레스토랑 계산을 객실 청구서로 넘기는 연결.[18]",
+     "**OTA·채널** — 예약 사이트 여러 곳에 남은 방과 요금을 똑같이 맞춰 두는 일. 어긋나면 초과 판매가 난다.[6]",
+     "**다이내믹 프라이싱** — 수요·경쟁 요금에 따라 객실 요금을 바꾸는 것.[6]"
+    ]
+   },
+   "how_far": "호텔 경험이 없다면 위 낱말과 하루 흐름(예약 → 체크인 → 투숙 중 청구 → 체크아웃 → 야간 마감)을 설명할 수 있을 정도로 준비합니다. {추론}",
+   "refs": [
+    5,
+    6,
+    16,
+    17,
+    18
+   ],
+   "study": [
+    "oracle-pms",
+    "opera-eod"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AWS, Kubernetes(EKS), Docker 등 Cloud 등 Cloud 기술 경험을 갖추신 분",
+   "short": "운영하는 시스템 일부가 클라우드·컨테이너 위에 있거나 옮겨 갈 예정일 수 있어서.",
+   "why": "SK AX의 ITO 서비스는 클라우드 전환과 비용 관리(FinOps)를 같이 내겁니다.[2] 호텔 쪽 서비스 소개에도 클라우드 기반 호텔 운영 시스템 연결이 나옵니다.[5] 운영 PL 이 직접 클러스터를 만들 일은 적어도, 배포·장애가 컨테이너 단위로 일어나니 기본 구조는 알아야 합니다. {추론}",
+   "how_far": "Docker 로 애플리케이션을 띄우고, 쿠버네티스에서 파드 상태(Pending·CrashLoopBackOff)를 읽고, AWS 콘솔에서 지표를 볼 수 있으면 충분합니다. {추론} EKS 위 애플리케이션의 안정성 점검 항목은 AWS 모범 사례 가이드에 정리돼 있습니다.[21]",
+   "refs": [
+    2,
+    5,
+    21
+   ],
+   "study": [
+    "docker-book",
+    "k8s-book",
+    "eks-bp"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "IT관련 자격 보유하신 분",
+   "short": "어느 자격인지는 안 적혀 있다. 운영 직무라면 정보처리기사·ITIL·클라우드 자격이 흔히 쓰인다.",
+   "why": "공고는 자격 이름을 적지 않았습니다.[1] 국내에서 가장 흔한 것은 국가기술자격 정보처리기사이고[28], 운영 관리 쪽은 ITIL(IT 서비스 관리 모범 사례 묶음) 자격이 운영 용어를 맞추는 데 쓰입니다.[13] 클라우드 우대 줄과 이어서 AWS 자격도 고려할 만합니다. {추론}",
+   "how_far": "자격은 우대일 뿐이니 하나를 고른다면 운영 경력과 맞는 것(ITIL 또는 클라우드)을 권합니다. {추론}",
+   "refs": [
+    1,
+    13,
+    28
+   ],
+   "study": [
+    "qnet-engineer",
+    "atlassian-itil"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "외국어 능력으로 글로벌 커뮤니케이션에 능하신 분",
+   "short": "호텔 패키지·체인 본사 쪽 지원 창구가 영어인 경우가 많아서일 수 있다.",
+   "why": "호텔 PMS·POS 같은 패키지는 해외 업체 제품이 많아 기술 지원·문서가 영어입니다 — 오라클의 호텔 제품 문서도 영어가 원본입니다.[17] 글로벌 체인 브랜드 호텔이면 체인 본사 IT 와 소통할 일도 생깁니다. {추론}",
+   "how_far": "영어 장애 문의 메일을 쓰고 공급사 문서를 읽을 수 있으면 됩니다. {추론}",
+   "refs": [
+    17
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "성향 및 캐릭터\n맡은 업무를 끝까지 책임지고, 고객 서비스 안정성을 최우선으로 생각하시는 분",
+   "short": "새 기능보다 '멈추지 않게' 가 먼저인 자리. 장애 뒤 재발 방지까지 끝내는 사람.",
+   "why": "ITO 성과 지표가 장애 건수와 같은 장애 재발률을 직접 셉니다.[9] 사후 분석에서 정한 재발 방지 조치를 끝까지 추적하는 것이 '끝까지 책임'의 실제 모양입니다.[14]",
+   "refs": [
+    9,
+    14
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "다양한 이해관계자의 의견을 경청하고, 협업을 통해 문제를 해결하시는 분",
+   "short": "현업·협력사·보안 쪽 요구가 부딪힐 때 한쪽 편을 들기보다 같이 풀 방법을 찾는 성향.",
+   "why": "변경 승인에는 여러 부서가 들어가고[11], 장애 대응에서는 역할을 나눠 각자 맡은 것을 보고하게 합니다.[12] 사후 분석은 사람 탓을 하지 않는 방식이 권장됩니다.[14]",
+   "refs": [
+    11,
+    12,
+    14
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "변화와 새로운 기술에 열린 자세로 배우며 함께 성장하시는 분",
+   "short": "AIOps·클라우드 같은 새 도구를 운영 현장에 들이는 중이라 배우는 태도를 본다.",
+   "why": "팀 소개가 AX 도구로 AIOps 체계를 사업에 적용한다고 적었고[1], 회사도 운영 AI 에이전트를 내놓았습니다.[8] 손으로 반복하던 운영 일을 줄이는 것이 새 기술을 들이는 가장 흔한 이유입니다.[15]",
+   "refs": [
+    1,
+    8,
+    15
+   ],
+   "study": [
+    "skax-npo"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "요청과 일정을 표로 정리해 하나도 놓치지 않는 게 즐거운 사람[1]",
+   "장애 때 침착하게 상황을 정리해 보고하는 사람[12]",
+   "개발자·협력사·현업 사이에서 말을 옮기고 조율하는 일이 괴롭지 않은 사람[1]",
+   "호텔 업무(객실·식음·정산)를 배워 가며 일하고 싶은 사람[16]"
+  ],
+  "hard": [
+   "직접 코드를 짜는 비중이 작다 — 공고의 기술 요건이 '기본 이해'다[1]",
+   "호텔은 24시간 돌아가 야간·주말 장애 대응이 생길 수 있다 {추론}",
+   "고객사 상주라면 근무 방식·보안 규정을 고객사 기준으로 따른다 {추론}",
+   "공통 요건이 경력 5년 이상이다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "같은 날 긴급 SR 두 건과 장애 한 건이 동시에 들어왔습니다. 무엇부터 하나요?",
+   "a": "장애 등급부터 — 영향 범위로 우선순위를 정하고 SR 요청자에게 기한 조정을 알린다.[10][12]"
+  },
+  {
+   "q": "밤사이 야간 마감이 중간에 멈췄습니다. 아침까지 무엇을 확인하나요?",
+   "a": "어느 단계에서 멈췄는지, 이미 올라간 객실료가 두 번 올라가지 않게 다시 돌리는 법.[17]"
+  },
+  {
+   "q": "협력사가 금요일 저녁에 변경 작업을 하겠다고 합니다. 무엇을 받아 보나요?",
+   "a": "영향 범위·되돌리기 계획·작업 시간·승인자.[11]"
+  },
+  {
+   "q": "같은 장애가 석 달에 세 번 났습니다. 월간 보고에 무엇을 쓰나요?",
+   "a": "재발률과 사후 분석의 재발 방지 조치·진행 상황.[9][14]"
+  },
+  {
+   "q": "같은 SR 이 매주 옵니다. 어떻게 줄이나요?",
+   "a": "반복 요청을 세어 자동화·화면 개선 과제로 제안 — 줄어든 시간을 숫자로.[15]"
+  },
+  {
+   "q": "예약 채널 두 곳에서 같은 방이 팔렸습니다. 어디를 의심하나요?",
+   "a": "채널과 PMS 사이 재고 동기화(연동 지연·실패).[6][18]"
+  }
+ ],
+ "caveat": "SK AX 가 이 팀의 고객 호텔·사용 시스템(PMS 제품 등)·SLA 수치를 공개한 자료는 없습니다. 회사 근거는 공고와 ITO·운영 AI·호텔 서비스 소개, 파라다이스 ITO·파르나스 ERP 보도이고, SR·변경·장애·야간 마감·카드 보안은 일반 공개 문서(Atlassian·Google SRE·Oracle OPERA·PCI SSC)로 '보통 이런 것'을 보였습니다. 회사의 발표 영상은 찾지 못했습니다.",
+ "resources": [
+  {
+   "id": "skax-ito",
+   "title": "SK AX · ITO 서비스 소개",
+   "by": "SK AX",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.skax.co.kr/enterprisesolution/ito",
+   "why": "이 팀이 하는 ITO 가 무엇을 맡고 무엇(SLA)으로 재는지 — SR·보고 줄을 읽기 전에."
+  },
+  {
+   "id": "skax-npo",
+   "title": "SK AX · 에이전틱 AI 기반 운영 혁신 발표",
+   "by": "SK AX 뉴스룸 · 2026-04",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.skax.co.kr/company/news-room/sk-ax-에이전틱ai-기반-운영혁신으로-시스템장애-방/",
+   "why": "AIOps 줄 — 회사가 장애 처리에 AI 를 어느 단계로 붙이려는지."
+  },
+  {
+   "id": "atlassian-sr",
+   "title": "서비스 요청 관리",
+   "by": "Atlassian",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.atlassian.com/ko/itsm/service-request-management",
+   "why": "SR 과 장애를 가르고 요청을 처리하는 기본 흐름 — 담당 업무 첫 줄과 SR 경력 요건."
+  },
+  {
+   "id": "atlassian-change",
+   "title": "IT 변경 관리",
+   "by": "Atlassian",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.atlassian.com/ko/itsm/change-management",
+   "why": "변경을 위험도별로 나누고 승인받는 절차 — 협력사 변경작업 줄."
+  },
+  {
+   "id": "atlassian-incident",
+   "title": "인시던트 관리",
+   "by": "Atlassian",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.atlassian.com/ko/itsm/incident-management",
+   "why": "장애 등급·역할·보고 순서 — 장애 대응·보고 요건."
+  },
+  {
+   "id": "atlassian-itil",
+   "title": "ITIL 4 소개",
+   "by": "Atlassian",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.atlassian.com/ko/itsm/itil",
+   "why": "운영 관리의 공통 용어 묶음. ITIL 자격을 준비하기 전 전체 그림."
+  },
+  {
+   "id": "sre-ko",
+   "title": "사이트 신뢰성 엔지니어링",
+   "by": "베이어 외 · 장현희 옮김 · 제이펍 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=129407308",
+   "why": "포스트모템·토일 줄이기·장애 대응 역할 — 운영 보고와 재발 방지 줄의 공통 언어."
+  },
+  {
+   "id": "sre-free",
+   "title": "Google SRE 책 (무료 공개)",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/books/",
+   "why": "위 책 원서. 'Postmortem Culture'·'Eliminating Toil'·'Managing Incidents' 장부터."
+  },
+  {
+   "id": "oracle-pms",
+   "title": "호텔 자산 관리 시스템(PMS)이란 무엇인가?",
+   "by": "Oracle",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.oracle.com/kr/hospitality/what-is-hotel-pms/",
+   "why": "호텔 경험 우대 줄 — 호텔 IT 의 중심 시스템이 무엇을 하는지 한국어로."
+  },
+  {
+   "id": "opera-eod",
+   "title": "OPERA Cloud · About End of Day",
+   "by": "Oracle 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.oracle.com/en/industries/hospitality/opera-cloud/26.2/ocsuh/c_endofday_procedures.htm",
+   "why": "호텔 야간 마감이 어떤 단계로 도는지 — 밤사이 장애가 왜 다음 날 정산을 꼬이게 하는지."
+  },
+  {
+   "id": "pci-dss",
+   "title": "PCI 데이터 보안 표준 (한국어판)",
+   "by": "PCI Security Standards Council",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "https://listings.pcisecuritystandards.org/pdfs/pci_dss_korean.pdf",
+   "why": "카드 결제를 받는 호텔 시스템의 변경·접근 통제가 왜 엄격한지 — 보안 부서와 조율하는 줄. 한국어판은 옛 판이라 현행 4.0.1 은 원문으로 확인."
+  },
+  {
+   "id": "eks-bp",
+   "title": "Amazon EKS 모범 사례 가이드",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.aws.amazon.com/eks/latest/best-practices/introduction.html",
+   "why": "클라우드 우대 줄 — EKS 위 애플리케이션의 안정성 점검 항목."
+  },
+  {
+   "id": "qnet-engineer",
+   "title": "정보처리기사 시험 안내",
+   "by": "Q-Net(한국산업인력공단)",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.q-net.or.kr/crf005.do?id=crf00505&jmCd=1320",
+   "why": "IT 자격 우대 줄 — 국내에서 가장 흔한 IT 국가기술자격의 시험 과목·일정."
+  },
+  {
+   "id": "spring-boot-book",
+   "title": "스프링 부트 — 핵심 원리와 활용",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/spring-boot",
+   "why": "Spring Boot 구조의 기본 이해 요건 — 기동 로그와 Actuator 응답으로 서버 상태 보기."
+  },
+  {
+   "id": "http-book",
+   "title": "모든 개발자를 위한 HTTP 웹 기본 지식",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/http-basic",
+   "why": "웹 시스템 구조 요건 — 화면·서버·DB 중 어디가 느린지 가르는 바탕."
+  },
+  {
+   "id": "docker-book",
+   "title": "개발자를 위한 도커",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/docker",
+   "why": "Docker 우대 줄 — 명령과 출력으로 컨테이너 다루기."
+  },
+  {
+   "id": "k8s-book",
+   "title": "쿠버네티스 입문",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/kubernetes",
+   "why": "Kubernetes(EKS) 우대 줄 — Pending·CrashLoopBackOff 읽기."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "운영 언어 익히기 — SR·장애·변경",
+   "time": "1~2주",
+   "goal": "SR·장애·변경·문제 관리를 구분하고, 각각의 처리 순서와 승인 이유를 설명한다.",
+   "resources": [
+    "skax-ito",
+    "atlassian-sr",
+    "atlassian-incident",
+    "atlassian-change",
+    "atlassian-itil"
+   ],
+   "task": "가상의 호텔 시스템에 SR 20건·장애 3건·변경 5건을 지어 표로 만들고, 우선순위·기한·승인자를 칸마다 채운다. 위 SR 기한 계산 코드로 준수율을 낸다."
+  },
+  {
+   "title": "호텔 하루 흐름 그리기",
+   "time": "1~2주",
+   "goal": "예약 → 체크인 → 투숙 중 청구 → 체크아웃 → 야간 마감 흐름과 그 사이를 잇는 시스템(PMS·POS·채널·회계)을 그림 한 장으로 설명한다.",
+   "resources": [
+    "oracle-pms",
+    "opera-eod",
+    "pci-dss"
+   ],
+   "task": "객실 30개짜리 가상 호텔의 하루를 데이터로 만들고(예약 50건, 레스토랑 계산 20건), 야간 마감 흉내 스크립트로 객실료를 올린 뒤 같은 날 두 번 돌려도 금액이 안 바뀌게 만든다."
+  },
+  {
+   "title": "웹 시스템 구조와 장애 보고",
+   "time": "2주",
+   "goal": "Spring Boot + React 작은 시스템에서 느린 구간을 찾아 장애 보고서(증상·영향·원인·조치·재발 방지)를 쓴다.",
+   "resources": [
+    "http-book",
+    "spring-boot-book",
+    "sre-ko",
+    "sre-free"
+   ],
+   "task": "체크인 API 하나를 만들고 DB 조회에 일부러 2초 지연을 넣는다. 브라우저 개발자 도구와 Actuator 지표로 느린 구간을 찾고, 포스트모템 한 장을 쓴다."
+  },
+  {
+   "title": "운영 보고서 한 장",
+   "time": "1주",
+   "goal": "한 달 운영 데이터를 SLA 지표 현황표로 만들고, 반복 요청을 없앨 개선 과제를 숫자로 제안한다.",
+   "resources": [
+    "sre-ko",
+    "skax-npo"
+   ],
+   "task": "1단계의 가상 SR·장애 표를 석 달 치로 늘려 월별 준수율·재발 장애·반복 요청 상위 5개를 뽑고, '이 요청을 자동화하면 월 몇 시간 준다'는 제안 한 줄을 붙인다."
+  },
+  {
+   "title": "(선택) 컨테이너 위 운영",
+   "time": "1~2주",
+   "goal": "같은 시스템을 컨테이너로 묶어 로컬 쿠버네티스에 올리고, 파드 상태로 장애를 읽는다.",
+   "resources": [
+    "docker-book",
+    "k8s-book",
+    "eks-bp"
+   ],
+   "task": "3단계 시스템을 Docker 이미지로 만들고 잘못된 환경 변수로 일부러 CrashLoopBackOff 를 낸 뒤 로그로 원인을 찾아 고친다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다(경력직 처우협의). 회사 전체(SK㈜) 평균은 **약 1억 1,600만원**(2024년 사업보고서) — SK AX 만 따로 낸 숫자는 없다",
+  "rows": [
+   {
+    "label": "직원 1인 평균 급여(SK㈜ 전체)",
+    "value": "1억 1,600만원",
+    "amount": 11600,
+    "basis": "사업보고서 · 2024년",
+    "note": "SK AX 는 별도 회사가 아니라 SK㈜ 안의 사업 조직이라[22] 공시 숫자는 지주 부문을 합친 회사 전체 값이다 [23]"
+   },
+   {
+    "label": "삼성SDS 평균",
+    "value": "1억 3,400만원",
+    "amount": 13400,
+    "basis": "사업보고서 · 2024년",
+    "peer": true,
+    "note": "같은 해 사업보고서 기준 [24]"
+   },
+   {
+    "label": "LG CNS 평균",
+    "value": "1억 1,600만원",
+    "amount": 11600,
+    "basis": "사업보고서 · 2024년",
+    "peer": true,
+    "note": "같은 해 사업보고서 기준 [25]"
+   }
+  ],
+  "how": "전형 끝에 **채용검진/처우협의** 단계가 있어 연봉은 경력에 따라 따로 정한다 [1]. 평균 급여는 지주 부문·오래 다닌 직원이 모두 섞인 회사 전체 값이라 이 자리의 제안 금액으로 읽으면 안 된다 {추론}. 경력 5년 이상 공고라 신입 초봉은 싣지 않았다."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "성장",
+    "detail": "9개 단과대 College·mySUNI, 해마다 Learning Account 예산, MARU 도서관, 사내 직무 공모"
+   },
+   {
+    "name": "장기근속",
+    "detail": "10·15·20·25·30년에 포상금과 포상 휴가"
+   },
+   {
+    "name": "주택 자금",
+    "detail": "구입·전세 최대 6,000만원, 생활안정자금 최대 1,500만원(100만원 단위)"
+   },
+   {
+    "name": "자녀 학자금",
+    "detail": "유치원부터 대학까지, 자녀 수 제한 없음"
+   },
+   {
+    "name": "식대·통신비",
+    "detail": "식대 월 4만원, 통신비 월 7만원(SKT 가입자)"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 100만원 + 월 20만원, SK 패밀리카드 연회비 10만원, 창립기념일 OK캐쉬백 20만 포인트"
+   },
+   {
+    "name": "동호회",
+    "detail": "분기 최대 150만원"
+   },
+   {
+    "name": "건강",
+    "detail": "나이에 따라 종합 25만원·정밀 40만원 검진, 난임 지원, 단체보험 3종, 사내 의원, 심리 상담"
+   },
+   {
+    "name": "시설",
+    "detail": "피트니스(트레이너), 행복날개수련원, 제휴 리조트(호텔 60%·콘도 법인가), 어린이집·수유실"
+   },
+   {
+    "name": "그 밖",
+    "detail": "외부 사이트 근무자 복지 포인트, 통근·셔틀 버스, 경조 휴가·경조금"
+   }
+  ],
+  "note": "SK AX 채용 사이트의 복리후생 페이지다(연도 표기 없음) [26]. '외부 사이트 근무자 복지 포인트'가 있어 고객사 상주 인력도 염두에 둔 제도로 보인다 {추론}. 사내 의원·피트니스처럼 본사 시설에 묶인 항목은 강남권 상주 근무에서는 쓰기 어려울 수 있다 {추론}."
+ },
+ "location": {
+  "name": "SK AX 본사 (SK u-타워)",
+  "address": "경기도 성남시 분당구 성남대로 343번길 9 (정자동, SK u-타워)",
+  "postal": "13558",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%EC%84%B1%EB%82%A8%EB%8C%80%EB%A1%9C%20343%EB%B2%88%EA%B8%B8%209",
+  "near": "신분당선·수인분당선 정자역 근처 {추론}",
+  "note": "공고 근무지는 '서울 강남권'까지만 적혔다 [1]. SK AX 사업장 안내에는 강남 사무실이 없어(분당 본사·판교·수내) [27] 실제 근무지는 호텔 고객사 사무실일 가능성이 크다 {추론}. 여기 주소는 소속 회사 본사다."
+ },
+ "sources": [
+  {
+   "n": 1,
+   "title": "SK Careers · 호텔 분야 ITO Application 운영 PL 영입",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262544",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "조직 소개(제조·공공·호텔 ITO, AIOps)·업무 3줄·요건·우대·전형(서류 > SKCT > 면접 > 채용검진/처우협의)·공통 요건(경력 5년 이상)·근무지 서울 강남권, 마감 2026-12-29"
+  },
+  {
+   "n": 2,
+   "title": "SK AX · ITO 서비스",
+   "url": "https://www.skax.co.kr/enterprisesolution/ito",
+   "kind": "company",
+   "note": "애플리케이션·인프라·보안, SLA 기반 품질 관리, AIOps·클라우드 전환·FinOps. 수치 없음"
+  },
+  {
+   "n": 3,
+   "title": "바이라인네트워크 · SK C&C, 파라다이스 그룹 IT 인프라 통합 지원한다",
+   "url": "https://byline.network/2024/01/240117_005/",
+   "kind": "news",
+   "date": "2024-01-17",
+   "note": "3년 통합 ITO, 운영 진단·EOS 점검·SLA·ITSM(ITIL 4.0), 서비스 관리 지표 300여 개 중 선정 — 회사 발표를 옮긴 기사"
+  },
+  {
+   "n": 4,
+   "title": "바이라인네트워크 · SK AX, 파르나스호텔 ERP DX 컨설팅 및 구축 사업 착수",
+   "url": "https://byline.network/2025/05/20-450/",
+   "kind": "news",
+   "date": "2025-05-20",
+   "note": "SAP S/4HANA ERP, F&B 자재·회계·구매~정산, 분산 시스템 통합. 파르나스호텔 본사·호텔은 강남구 삼성동 파르나스타워. ITO 언급 없음"
+  },
+  {
+   "n": 5,
+   "title": "SK AX · 디지털 기술로 차별화된 호텔 경험 제공",
+   "url": "https://www.skax.co.kr/service/customer-experience-innovation",
+   "kind": "company",
+   "note": "호텔 A사 챗봇(레스토랑 7곳 예약), 셀프·모바일 체크인, IoT 객실, 클라우드 호텔 운영 시스템 연결. 날짜 없음"
+  },
+  {
+   "n": 6,
+   "title": "SK AX · 객실 단가 최적화로 호텔 수익 확대",
+   "url": "https://www.skax.co.kr/service/room-rate-optimiation",
+   "kind": "company",
+   "note": "PMS·CRM·통합 예약·예약 엔진·다이내믹 프라이싱, 국내 숙박 예약 플랫폼 200여 개. 매출 27% 성장은 기준 시점 없는 회사 주장"
+  },
+  {
+   "n": 7,
+   "title": "SK AX 고객 사례 · 호텔 A사의 보안 VDI 기반 데이터 보안 강화",
+   "url": "https://www.skax.co.kr/case-study/story/3042",
+   "kind": "company",
+   "date": "2024-11-27",
+   "note": "외부 접속을 망분리 VDI 로, 패치 자동화·단말 통합 관리. 수치 없음"
+  },
+  {
+   "n": 8,
+   "title": "SK AX 뉴스룸 · 에이전틱AI 기반 운영혁신으로 '시스템 장애' 방지",
+   "url": "https://www.skax.co.kr/company/news-room/sk-ax-에이전틱ai-기반-운영혁신으로-시스템장애-방/",
+   "kind": "company",
+   "date": "2026-04-02",
+   "note": "탐지·분석·영향도·조치 에이전트, 설치형·BPO·ITO. 성능 수치 없음"
+  },
+  {
+   "n": 9,
+   "title": "바이라인네트워크 · SK AX, SBI저축은행 AX 파트너로 IT운영 혁신",
+   "url": "https://byline.network/2025/08/5-307/",
+   "kind": "news",
+   "date": "2025-08-05",
+   "note": "통합유지보수 성과 지표: 장애 건수·동일 장애 재발률·품질 개선 항목 수·비용 효율화"
+  },
+  {
+   "n": 10,
+   "title": "Atlassian · 서비스 요청 관리",
+   "url": "https://www.atlassian.com/ko/itsm/service-request-management",
+   "kind": "reference",
+   "note": "SR 과 인시던트의 구분"
+  },
+  {
+   "n": 11,
+   "title": "Atlassian · IT 변경 관리",
+   "url": "https://www.atlassian.com/ko/itsm/change-management",
+   "kind": "reference",
+   "note": "변경 유형·승인·검토"
+  },
+  {
+   "n": 12,
+   "title": "Atlassian · 인시던트 관리",
+   "url": "https://www.atlassian.com/ko/itsm/incident-management",
+   "kind": "reference",
+   "note": "ITIL 의 인시던트 정의, 심각도 등급·역할"
+  },
+  {
+   "n": 13,
+   "title": "Atlassian · ITIL 4",
+   "url": "https://www.atlassian.com/ko/itsm/itil",
+   "kind": "reference",
+   "note": "ITIL 4 의 34개 실천 항목"
+  },
+  {
+   "n": 14,
+   "title": "Google SRE Book · Postmortem Culture",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "kind": "reference",
+   "note": "남 탓 없는 사후 분석, 재발 방지 조치 추적"
+  },
+  {
+   "n": 15,
+   "title": "Google SRE Book · Eliminating Toil",
+   "url": "https://sre.google/sre-book/eliminating-toil/",
+   "kind": "reference",
+   "note": "손으로 반복하는 운영 일의 정의와 줄이는 법"
+  },
+  {
+   "n": 16,
+   "title": "Oracle · 호텔 자산 관리 시스템(PMS)이란 무엇인가?",
+   "url": "https://www.oracle.com/kr/hospitality/what-is-hotel-pms/",
+   "kind": "reference",
+   "note": "PMS 의 역할(예약·프런트·청구·하우스키핑)"
+  },
+  {
+   "n": 17,
+   "title": "Oracle OPERA Cloud 문서 · About End of Day",
+   "url": "https://docs.oracle.com/en/industries/hospitality/opera-cloud/26.2/ocsuh/c_endofday_procedures.htm",
+   "kind": "reference",
+   "note": "영업일 넘기기, 노쇼 처리, 객실료·세금 자동 게시 같은 야간 마감 단계"
+  },
+  {
+   "n": 18,
+   "title": "Oracle · 자산 관리 및 POS를 위한 Hospitality 통합",
+   "url": "https://www.oracle.com/kr/hospitality/pms-pos-integration-partners/",
+   "kind": "reference",
+   "note": "PMS·POS 와 외부 시스템 통합(검증 통합과 고객별 통합의 구분)"
+  },
+  {
+   "n": 19,
+   "title": "PCI SSC · PCI 데이터 보안 표준(한국어판)",
+   "url": "https://listings.pcisecuritystandards.org/pdfs/pci_dss_korean.pdf",
+   "kind": "reference",
+   "note": "카드 데이터를 저장·처리·전송하는 곳의 12개 요건. 현행은 4.0.1"
+  },
+  {
+   "n": 20,
+   "title": "Spring Boot 문서 · Actuator",
+   "url": "https://docs.spring.io/spring-boot/reference/actuator/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "AWS · Amazon EKS 모범 사례 가이드",
+   "url": "https://docs.aws.amazon.com/eks/latest/best-practices/introduction.html",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "KPI뉴스 · SK C&C, 'SK㈜ AX'로 이름 바꿔",
+   "url": "https://kpinews.kr/newsView/1065576140213162",
+   "kind": "news",
+   "date": "2025-05",
+   "note": "SK AX 는 SK㈜ 안의 사업 조직"
+  },
+  {
+   "n": 23,
+   "title": "FETV · SK 계열사 직원 평균 급여(2024 사업보고서)",
+   "url": "https://www.fetv.co.kr/news/articleView.html?idxno=198852",
+   "kind": "news",
+   "date": "2025-08-14"
+  },
+  {
+   "n": 24,
+   "title": "CEO스코어데일리 · 삼성SDS 직원 평균 급여",
+   "url": "https://www.ceoscoredaily.com/page/view/2025070116383437395",
+   "kind": "news",
+   "date": "2025-07-02"
+  },
+  {
+   "n": 25,
+   "title": "CEO스코어데일리 · LG CNS 직원 평균 급여",
+   "url": "https://www.ceoscoredaily.com/page/view/2025072516400745114",
+   "kind": "news",
+   "date": "2025-07-27"
+  },
+  {
+   "n": 26,
+   "title": "SK AX Careers · 복리후생",
+   "url": "https://skax.skcareers.com/page/HR/Welfare",
+   "kind": "company",
+   "note": "연도 표기 없음 — 다른 풀이(skax-contact-center-application)에서 확인한 항목"
+  },
+  {
+   "n": 27,
+   "title": "SK AX · 사업장 안내",
+   "url": "https://www.skax.co.kr/company/office",
+   "kind": "company",
+   "note": "본사 SK u-타워(분당)·판교·수내 — 강남 사무실 없음"
+  },
+  {
+   "n": 28,
+   "title": "Q-Net · 정보처리기사",
+   "url": "https://www.q-net.or.kr/crf005.do?id=crf00505&jmCd=1320",
+   "kind": "reference",
+   "note": "한국산업인력공단 국가기술자격 안내"
+  }
+ ]
+}
