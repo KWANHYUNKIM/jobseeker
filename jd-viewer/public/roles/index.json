@@ -32,6 +32,7 @@
   "ats-toss:group:7901191003": "toss-platform-analytics-engineer",
   "ats-toss:group:5960616003": "toss-product-analytics-engineer",
   "ats-toss:group:7992229003": "toss-search-conversion-ranking-mle",
+  "ats-toss:group:4076085003": "toss-security-researcher-pentest",
   "saramin-55608860": "tossbank-finance-data-system"
  },
  "roles": [
@@ -335,6 +336,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 18
+  },
+  {
+   "id": "toss-security-researcher-pentest",
+   "company": "토스",
+   "role": "보안 리서처 (모의해킹/취약점 분석)",
+   "jobs": [
+    "ats-toss:group:4076085003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 12
   },
   {
    "id": "tossbank-finance-data-system",
