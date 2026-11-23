@@ -44,7 +44,7 @@
   ],
   "pay": {
     "summary": "string — 한 줄(초봉 · 평균, 무엇이 다른지)",
-    "rows": [{ "label": "string — 신입 초봉 · 직원 평균 보수 · 공고 표기 연봉 · 다른 회사 비교", "value": "string — 금액(원문 숫자 그대로)", "basis": "string — 공시 · 2025년 / 사업보고서 · 2024년 / 공공데이터 집계 / 공고", "note": "string — 기준 설명 + [n] 필수" }],
+    "rows": [{ "label": "string — 신입 초봉 · 직원 평균 보수 · 공고 표기 연봉 · 다른 회사 비교", "value": "string — 금액(원문 숫자 그대로)", "amount": "number (선택) — 만원 단위, 막대 그래프 길이", "peer": "boolean (선택) — 다른 회사 비교 줄(줄 하나에 회사 하나)", "basis": "string — 공시 · 2025년 / 사업보고서 · 2024년 / 공공데이터 집계 / 공고", "note": "string — 기준 설명 + [n] 필수" }],
     "how": "string (선택) — 읽는 법(연봉을 정하는 절차, 평균 ≠ 초봉)"
   },
   "benefits": { "items": [{ "name": "string", "detail": "string — 조건·금액 그대로" }], "note": "string — 출처 [n]·기준 연도·적용 범위" },

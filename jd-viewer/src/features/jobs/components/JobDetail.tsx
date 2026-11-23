@@ -245,11 +245,11 @@ export function JobDetail({ job, onOpenUrl }: Props) {
 
               {reading && <RolePayBenefits r={reading} />}
 
+              {reading && <RoleLocation r={reading} />}
+
               {job.full_jd && <FullJd text={job.full_jd} />}
 
               {co && <CompanyInfo co={co} location={job.location} />}
-
-              {reading && <RoleLocation r={reading} />}
             </div>
           </div>
         </article>

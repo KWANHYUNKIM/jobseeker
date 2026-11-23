@@ -71,7 +71,8 @@ export interface RoleReading {
 
 export interface RolePay {
   summary: string
-  rows: { label: string; value: string; basis: string; note?: string }[]
+  /** amount — 만원 단위 숫자(막대 길이). peer — 다른 회사 비교 줄(회색 막대). */
+  rows: { label: string; value: string; amount?: number; peer?: boolean; basis: string; note?: string }[]
   how?: string
 }
 

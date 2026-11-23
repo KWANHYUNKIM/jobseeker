@@ -123,6 +123,8 @@ def check(d: dict, path: Path, jobs_by_key: dict) -> tuple[list[str], list[str]]
                     errs.append(f"{w} pay.rows[{i}]: '{k}' 없음")
             if not REF.search(row.get("note", "")):
                 errs.append(f"{w} pay.rows[{i}]: note 에 출처 [n] 이 없다 — 연봉 숫자는 출처 없이 싣지 않는다")
+            if "amount" in row and not (isinstance(row["amount"], (int, float)) and row["amount"] > 0):
+                errs.append(f"{w} pay.rows[{i}]: amount 는 만원 단위 양수(막대 길이)")
     ben = d.get("benefits")
     if ben:
         if not ben.get("items"):

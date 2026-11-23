@@ -1,5 +1,5 @@
 import { Fragment, useState } from 'react'
-import type { RoleLine, RoleReading, RoleResource, RoleSource } from '../hooks/useRoleReading'
+import type { RoleLine, RolePay, RoleReading, RoleResource, RoleSource } from '../hooks/useRoleReading'
 import { roleTokens } from '../utils/roleText'
 
 // 공고 한 줄씩 읽기 — 읽는 순서를 세 겹으로 둔다(가독성 설계, 2026-11-23).
@@ -329,6 +329,69 @@ function H3({ title, sub }: { title: string; sub?: string }) {
   )
 }
 
+/** 연봉 막대 — 0 부터 같은 눈금. 이 회사는 파랑, 비교 회사는 회색. 금액은 막대 끝 바깥 글자로(색은 글자에 안 쓴다),
+ *  기준·출처는 막대 밑에 늘 보인다. 막대에 올리면 같은 내용이 툴팁으로 — 금액(amount)이 없는 줄은 글로만 그린다. */
+function PayChart({ rows, company, sources }: { rows: RolePay['rows']; company: string; sources: RoleSource[] }) {
+  const [hover, setHover] = useState<number | null>(null)
+  const max = Math.max(...rows.map((x) => x.amount || 0))
+  const hasPeer = rows.some((x) => x.peer)
+  return (
+    <div className="rounded-lg border border-[#e4e4e4] px-4 pt-4 pb-2">
+      {hasPeer && (
+        <div className="mb-3 flex flex-wrap gap-x-4 gap-y-1 text-[12.5px] text-[#555]">
+          <span className="inline-flex items-center gap-1.5">
+            <i className="inline-block h-2.5 w-2.5 rounded-sm bg-[#3657c8]" />
+            {company}
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <i className="inline-block h-2.5 w-2.5 rounded-sm bg-[#b8bdc8]" />
+            다른 회사(비교)
+          </span>
+        </div>
+      )}
+      <ul role="list" aria-label="연봉 막대 그래프">
+        {rows.map((row, i) => {
+          const w = max && row.amount ? Math.max(2, (row.amount / max) * 100) : 0
+          return (
+            <li
+              key={i}
+              className={'grid grid-cols-1 gap-1 rounded-md px-1 py-2.5 sm:grid-cols-[112px_minmax(0,1fr)] sm:gap-3 [&>*]:min-w-0 ' + (hover === i ? 'bg-[#f6f8fc]' : '')}
+              onMouseEnter={() => setHover(i)}
+              onMouseLeave={() => setHover(null)}
+            >
+              <div className={'pt-0.5 text-[13.5px] font-semibold ' + (row.peer ? 'text-[#888]' : 'text-[#444]')}>{row.label}</div>
+              <div>
+                {row.amount ? (
+                  <div className="flex items-center gap-2" title={`${row.label} ${row.value} · ${row.basis}`} aria-label={`${row.label} ${row.value}, ${row.basis}`}>
+                    <div className="relative h-5 min-w-0 flex-1">
+                      <div
+                        className={'h-full rounded-r-[4px] transition-[filter] ' + (row.peer ? 'bg-[#b8bdc8]' : 'bg-[#3657c8]') + (hover === i ? ' brightness-110' : '')}
+                        style={{ width: `${w}%` }}
+                      />
+                    </div>
+                    <span className={'w-[112px] shrink-0 text-[15px] font-bold tabular-nums ' + (row.peer ? 'text-[#666]' : 'text-[#272727]')}>{row.value}</span>
+                  </div>
+                ) : (
+                  <span className="text-[15px] font-bold text-[#272727]">{row.value}</span>
+                )}
+                <div className="mt-1 flex flex-wrap items-baseline gap-x-2 text-[12.5px] leading-[19px] text-[#777]">
+                  <span className="rounded-full bg-[#eef2fb] px-2 text-[11px] font-semibold leading-[18px] text-[#3657c8]">{row.basis}</span>
+                  {row.note && (
+                    <span>
+                      <RichText text={row.note} sources={sources} />
+                    </span>
+                  )}
+                </div>
+              </div>
+            </li>
+          )
+        })}
+      </ul>
+      <div className="mt-1 border-t border-[#efefef] pt-1.5 text-right text-[11.5px] text-[#999]">막대는 0원부터 같은 눈금 · 단위 만원</div>
+    </div>
+  )
+}
+
 /** 공고 원문 위 — 초봉·평균 연봉(숫자마다 기준과 출처) · 복지. */
 export function RolePayBenefits({ r }: { r: RoleReading }) {
   const { pay, benefits, sources } = r
@@ -341,24 +404,7 @@ export function RolePayBenefits({ r }: { r: RoleReading }) {
           <p className="mb-4 text-[15.5px] leading-[25px] text-[#272727]">
             <RichText text={pay.summary} sources={sources} />
           </p>
-          <div className="overflow-hidden rounded-lg border border-[#e4e4e4]">
-            {pay.rows.map((row, i) => (
-              <div key={i} className="grid grid-cols-1 gap-1 border-b border-[#efefef] px-4 py-3 last:border-b-0 sm:grid-cols-[120px_minmax(0,1fr)] sm:gap-4 [&>*]:min-w-0">
-                <div className="text-[13.5px] font-semibold text-[#555]">{row.label}</div>
-                <div>
-                  <div className="flex flex-wrap items-baseline gap-x-2">
-                    <span className="text-[17px] font-bold text-[#272727]">{row.value}</span>
-                    <span className="rounded-full bg-[#eef2fb] px-2 text-[11.5px] font-semibold leading-[20px] text-[#3657c8]">{row.basis}</span>
-                  </div>
-                  {row.note && (
-                    <p className="mt-1 text-[13.5px] leading-[21px] text-[#666]">
-                      <RichText text={row.note} sources={sources} />
-                    </p>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+          <PayChart rows={pay.rows} company={r.company} sources={sources} />
           {pay.how && (
             <p className="mt-3 rounded-lg bg-[#f5f8ff] px-3.5 py-2.5 text-[14px] leading-[23px] text-[#3a3a3a]">
               <b className="font-semibold text-[#3657c8]">읽는 법</b> · <RichText text={pay.how} sources={sources} />
