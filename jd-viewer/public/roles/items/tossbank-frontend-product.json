@@ -1,0 +1,976 @@
+{
+ "id": "tossbank-frontend-product",
+ "company": "토스뱅크",
+ "role": "Frontend Developer (Product)",
+ "team": "Frontend 챕터 · 서비스 스쿼드(Loan · Customer Asset · Product Foundation 등)",
+ "jobs": [
+  "ats-toss:group:5622038003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "토스 앱 안에서 열리는 **웹 화면**으로 은행을 만듭니다 — 계좌 개설·카드·적금·대출 같은 고객 화면과, 상담·운영에 쓰는 내부 도구까지.[1][2]",
+  "env": "React · TypeScript · Next.js(SSR)로 짓고, 대고객·내부 도구·공통 패키지 **3개의 모노레포**에 100개 넘는 서비스가 모여 있습니다. 화면 요소 하나가 **법·규제**와 닿아 있습니다.[1][2]",
+  "oneline": "화면을 예쁘게 만드는 것보다, **긴 금융 절차를 끊김 없이·틀림 없이** 화면으로 옮기는 프론트엔드 자리입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "계좌 개설, 카드 신청, 저축, 대출 실행 등 고객이 직접 이용하는 금융 서비스부터 내부 운영 시스템까지, 토스뱅크 서비스 전 영역을 개발해요.",
+   "short": "토스뱅크는 따로 앱이 없어서, 고객 화면과 직원용 도구가 전부 웹(웹뷰)이라 그 화면을 다 만든다.",
+   "why": "토스뱅크는 별도 앱 없이 **토스 앱 안**에서 서비스됩니다. 그래서 대부분의 화면이 웹뷰(앱 안에 띄운 웹 페이지)로 돌아갑니다.[2] 프론트엔드는 서비스 단위 스쿼드(목적 조직)에 1~3명씩 들어가 그 상품을 끝까지 맡습니다.[1]",
+   "actually": {
+    "intro": "챕터가 밝힌 도메인별 실제 일입니다.[2]",
+    "items": [
+     "**Loan(대출)** — 한도조회 → 신청 → 서류 스크래핑 → 심사 → 계약·실행 → 상환까지 대출과 만나는 모든 화면. 개인 신용·사장님·전월세보증금 대출.",
+     "**Customer Asset(자산)** — 입출금·예금·적금·카드·투자·외환 다섯 축. 상품마다 독립 서비스로 배포해 1~7월에만 약 2,000회, 프론트엔드 전체 배포의 절반.",
+     "**Product Foundation(기반)** — 회원·인증, 고객센터 상담 경험, 어드민, 보이스피싱 탐지·자금세탁 방지·거래 제한 같은 리스크 화면.",
+     "**Platform** — 모노레포·CI/배포, 에러·성능 로깅과 모니터링, 웹뷰가 앱(네이티브)과 대화하는 브릿지."
+    ]
+   },
+   "how_far": "무엇을 만들지는 스쿼드(PO·디자이너·서버 개발자 등 4~8명)가 정하고, **어떻게 만들지**(코드 리뷰·아키텍처·공통 라이브러리·기술 표준)는 챕터가 함께 정합니다.[2] 입사하면 한 도메인의 상품 화면부터 맡고, 도메인을 옮겨 가며 넓히는 구조입니다.[2]",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "fe-bank",
+    "react-docs",
+    "nextjs-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "금융 도메인을 깊이 파고들어 계좌·카드·여신 각각의 규칙과 제약을 이해하고, 그 위에서 화면과 흐름을 설계해요. 규제가 만든 제약을 유저가 느끼지 않게 만들어요.",
+   "short": "버튼 문구·약관 동의 순서도 법적 요건이라, 규칙을 지키면서 고객은 막힘을 못 느끼게 흐름을 짠다.",
+   "why": "대출 화면은 모든 요소가 법·규제·여신 정책과 직결되고, **버튼 문구 하나·약관 동의 순서 하나도 법적 요건**인 경우가 많다고 챕터가 설명했습니다.[2] 금융상품을 팔 때는 중요한 내용을 설명하고 이해했는지 확인받아야 하는 설명의무가 법에 있습니다.[14] 토스와 토스뱅크는 별개 법인이라 토스뱅크 전용 인증이 필요한데, 이미 토스에 로그인한 고객에게 다시 로그인을 시킬 수는 없었습니다.[2]",
+   "actually": {
+    "items": [
+     "**인증을 안 보이게** — 인증 계층을 따로 떼어 만료·갱신·실패 처리를 그 안에서 끝내, 서비스 개발자는 인증 코드 없이 API를 부르고 고객은 별도 인증을 느끼지 못하게 했다.[2]",
+     "**열 단계가 넘는 퍼널** — 서류를 내다 앱을 끄고 며칠 뒤 돌아오는 일이 흔하다. 가능한 상태와 전이를 한곳에 선언하고 화면은 결과만 그리게 설계한다.[2]",
+     "**서버 사실 vs 화면 기억** — 3일 뒤 돌아왔을 때 심사가 만료됐거나 정책이 바뀌었을 수 있어, 어디서 이어 줄지는 서버 상태와 맞춰 정한다.[2]",
+     "**되돌릴 수 없는 지점** — 코드는 롤백되지만 이미 개설된 계좌·발급된 카드는 없던 일로 못 만든다. 그래서 E2E 테스트를 2시간마다 돌린다.[2]",
+     "**같은 화면, 다른 정책** — 제휴사마다 정책만 다른 증권계좌 개설 화면을 코드 복제 대신 SDUI(서버가 화면 구성을 내려 주는 방식)로 바꿔 배포 없이 새 지면을 만든다.[2]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "퍼널 상태를 한곳에 선언하기 (직접 돌린 출력)",
+     "body": "챕터가 말한 '상태와 전이를 한곳에 선언'[2]을 작게 옮긴 것입니다. 실제 코드는 React이지만 생각은 같아 파이썬으로 돌려 확인했습니다. '이 단계에서 저 단계로 갈 수 있나'를 정의만 보고 답하고, 돌아온 고객은 서버가 가진 사실을 우선합니다. 출력: True / False / 심사중 / 한도조회.",
+     "lang": "python",
+     "code": "TRANSITIONS = {\n    \"한도조회\": [\"서류제출\"],\n    \"서류제출\": [\"심사중\"],\n    \"심사중\": [\"승인\", \"거절\"],\n    \"승인\": [\"약정\"],\n    \"약정\": [\"실행완료\"],\n}\n\ndef can_go(src, dst):\n    return dst in TRANSITIONS.get(src, [])\n\n# 3일 뒤 돌아온 고객: 화면이 기억한 단계보다 서버의 사실이 우선\ndef resume(saved, server):\n    if server.get(\"review_expired\"):\n        return \"한도조회\"          # 심사 만료 → 처음부터\n    return server.get(\"status\") or saved\n\nprint(can_go(\"심사중\", \"승인\"))     # True\nprint(can_go(\"서류제출\", \"약정\"))   # False\nprint(resume(\"서류제출\", {\"status\": \"심사중\"}))                 # 심사중\nprint(resume(\"약정\", {\"status\": \"약정\", \"review_expired\": True}))  # 한도조회"
+    }
+   ],
+   "how_far": "규칙(어떤 문구·순서·동의가 필요한가)은 법무·준법·상품 담당이 정합니다 {추론}. 개발자는 그 규칙을 **빠짐없이 화면에 옮기면서 고객의 흐름을 끊지 않는 방법**을 찾습니다. 챕터는 금융 경험이 없어도 괜찮고 용어는 동료에게 물어 배우면 된다고 했습니다 — 대신 정책이 자주 바뀌어 경력자도 도메인을 새로 배워야 합니다.[2]",
+   "refs": [
+    2,
+    14
+   ],
+   "study": [
+    "fe-bank",
+    "slash23-funnel",
+    "use-funnel"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "토스뱅크 홈페이지, 법인 서비스 같은 공통 서비스도 함께 만들어요.",
+   "short": "앱 밖에서 브라우저로 여는 홈페이지·법인용 서비스도 맡는다 — 검색 노출과 데스크톱 화면이 따로 있다.",
+   "why": "앱 안 웹뷰와 달리 홈페이지는 검색 엔진과 일반 브라우저에서 열립니다. 서버에서 완성된 HTML을 주는 SSR은 첫 화면을 빨리 띄우고 검색 노출(SEO)에도 유리합니다.[8]",
+   "how_far": "홈페이지·법인 서비스도 같은 챕터 모노레포와 공통 패키지 위에서 만들어집니다.[2] 특별한 기술보다 **모바일 웹뷰와 데스크톱 브라우저 둘 다**에서 맞게 동작시키는 감각이면 됩니다 {추론}.",
+   "refs": [
+    2,
+    8
+   ],
+   "study": [
+    "nextjs-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "SSR 및 인앱 웹앱 개발 경험이 있으신 분을 찾고 있어요.",
+   "short": "토스뱅크 화면은 거의 다 '토스 앱 안의 웹'이고 Next.js SSR로 돌아서, 둘 다 해 봤어야 한다.",
+   "why": "토스뱅크 화면은 대부분 웹뷰에서 돌고, 웹뷰에서는 로그가 사라지거나 에러가 엉뚱하게 묶여 관측 자체가 흔들린다고 챕터가 말했습니다.[2] SSR은 첫 화면을 서버에서 그려 주지만, 그만큼 서버를 따로 운영해야 합니다.[7]",
+   "actually": {
+    "intro": "SSR과 인앱 웹앱에서 실제로 부딪히는 것들입니다.",
+    "items": [
+     "**서버엔 브라우저가 없다** — 서버 렌더링 중에 `location`·`window`를 만지면 'is not defined' 에러가 난다.[8]",
+     "**하이드레이션 불일치** — 서버가 그린 HTML과 브라우저가 처음 그린 결과가 다르면 React가 이어 붙이지 못한다. 서버·브라우저 어디서나 같은 결과를 내는(isomorphic) 코드로 쓴다.[8][13]",
+     "**서버 비용** — 토스는 SSR 서버 성능을 매 PR마다 같은 조건에서 재고, React Query 캐시 직렬화·Express를 걷어내 CPU를 20% 가까이 줄였다(토스 본사 사례).[7]",
+     "**웹뷰 ↔ 앱 브릿지** — 셀피 인증·신분증 촬영처럼 앱 기능이 섞인 흐름은 웹만 떼어 테스트할 수 없어 시뮬레이터로 자동 테스트한다.[2]"
+    ]
+   },
+   "how_far": "Next.js로 서버에서 데이터를 받아 그리는 화면을 만들어 봤고, 하이드레이션 오류를 **원인부터 설명하고 고쳐 본** 정도가 최소선입니다 {추론}. SSR 서버 튜닝은 플랫폼 쪽 일이 먼저입니다.[2][7]",
+   "refs": [
+    2,
+    7,
+    8,
+    13
+   ],
+   "study": [
+    "nextjs-docs",
+    "toss-isomorphic",
+    "toss-ssr",
+    "modern-react"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "기능 구현을 넘어 사용자 흐름을 깊이 이해하고 개선하는 데서 즐거움을 느끼는 분이면 좋아요.",
+   "short": "은행 화면은 한 단계라도 막히면 고객이 떠나서, 화면 하나보다 '처음부터 끝까지의 흐름'을 본다.",
+   "why": "토스는 여러 화면에서 정보를 모아 끝 화면으로 가는 패턴을 **퍼널**(깔때기 — 단계마다 사람이 조금씩 빠져나가서)이라 부르고, 긴 신청서를 한 번에 하나씩 묻는 화면으로 쪼갭니다.[10] 토스뱅크 대출은 열 단계가 넘습니다.[2]",
+   "actually": {
+    "items": [
+     "**흐름을 한곳에** — 페이지마다 흩어진 '다음으로 가기'와 전역 상태를 한 컴포넌트로 모아 흐름과 데이터가 한눈에 보이게.[10]",
+     "**뒤로 가기가 남긴 값** — A→B→C→B→A→D로 움직이면 고르지도 않은 B의 값이 D까지 따라와 서버로 갈 수 있다. 이 문제로 토스는 @use-funnel을 새로 만들어 공개했다.[11]",
+     "**모두가 쓸 수 있게** — 토스뱅크 '나눠모으기 통장'은 드래그 순서 변경을 스크린 리더 사용자도 쓰도록 탭 조작·초점 이동·순서 안내 문구를 따로 만들었다.[6]",
+     "**잠깐 멈추게 하는 것도 흐름** — 디자이너·리서처와 함께 '일부러 어렵게'가 어디까지 괜찮은지도 정한다(토스뱅크 잠금 저금통은 버튼을 몇 초 누르게 했다).[23]"
+    ]
+   },
+   "how_far": "흐름을 정하는 건 PO·디자이너와 함께지만, **이탈이 생기는 지점과 예외 상태(뒤로 가기·중단·재진입·실패)**를 먼저 찾아 말하는 건 개발자의 몫입니다 {추론}. 접근성은 ARIA 기본 속성과 초점 관리를 아는 수준부터.[6][17]",
+   "refs": [
+    2,
+    6,
+    10,
+    11,
+    17,
+    23
+   ],
+   "study": [
+    "slash23-funnel",
+    "use-funnel",
+    "wai-apg"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "문제 해결을 주도하고 논리적으로 의견을 제시할 수 있는 분을 기대해요.",
+   "short": "50명 넘는 챕터가 리뷰·기술그룹으로 기준을 같이 정해서, 문제를 찾고 근거로 설득하는 사람이 필요하다.",
+   "why": "챕터는 50명이 넘으며 네 도메인과 소그룹으로 나뉘고, '깨창'(깨진 창문) 같은 기술그룹이 방향을 정하면 소그룹이 자기 서비스에 옮깁니다.[2] 동료들은 '왜 이렇게 동작하지?'에서 멈추지 않고 코드를 열어 이슈를 올리고 고쳐 놓는 사람, 어려운 문제를 끝까지 추적해 본 사람을 원한다고 했습니다.[2]",
+   "actually": {
+    "items": [
+     "**스스로 찾은 문제** — 로깅 속성을 매번 손으로 붙이다 빠뜨리는 문제를, 컴파일 도구(Babel·SWC) 플러그인이 자동으로 넣게 바꿨다.[5]",
+     "**기준을 글로** — 공통 패키지를 ESM 하나로만 내고, 문법 변환은 쓰는 쪽에 맡기는 이유를 근거와 함께 정리해 공유했다.[3][4]",
+     "**대여섯이 같이 만든 도구** — 퍼널 문제로 12명이 토론회를 열고 5명 워킹그룹이 두 달 만에 라이브러리를 만들어 공개했다(토스 본사 사례).[11]"
+    ]
+   },
+   "how_far": "이력 인터뷰에서 **내가 발견한 문제 → 근거 → 선택지 → 결과**를 말할 수 있는 경험 하나가 있으면 됩니다 {추론}. 전형은 라이브코딩 인터뷰 → 이력 인터뷰 → 문화적합성 순입니다.[1]",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    11
+   ],
+   "study": [
+    "fe-bank",
+    "toss-ff"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "CI/CD 등 Frontend Operation의 자동화와 편의성에 관심이 많은 분이면 좋아요.",
+   "short": "서비스 100개가 넘는 모노레포에서 하루에도 여러 번 배포해서, 빌드·배포·검사를 자동으로 굴려야 한다.",
+   "why": "토스뱅크 프론트엔드는 3개 모노레포에 100개 넘는 서비스·라이브러리가 있고, 한 도메인만 7개월에 약 2,000회 배포합니다.[2] Client Platform 팀이 런타임·패키지 관리를 표준화하고 모노레포와 CI/CD 파이프라인을 운영합니다.[2]",
+   "actually": {
+    "items": [
+     "**병렬 빌드** — 서비스 3개 × 환경 3개(개발·스테이징·라이브) × 5분이면 차례로 45분. 빌드마다 독립 러너에서 돌려 '1분 + 5분'으로 줄였다(토스 본사 모노레포).[9]",
+     "**미리 받아 둔 저장소** — 40GB 넘는 저장소 checkout 36분을, 매일 아침 구운 도커 이미지로 22초로.[9]",
+     "**가벼운 SSR 이미지** — 실행에 필요한 파일만 골라 4GB → 약 200MB, 배포 때 이미지 받는 시간 단축.[9]",
+     "**배포 전 자동 검사** — 시뮬레이터 E2E 2시간 주기, API를 일부러 500 에러로 바꿔 화면이 어디까지 무너지는지 보는 실험.[2]",
+     "**되돌리기 쉬운 배포 단위** — 공통 로직은 버전 고정 패키지로 공유해 한 팀의 변경이 다른 상품의 장애로 번지지 않게.[2]"
+    ]
+   },
+   "how_far": "\"관심이 많은 분\"이라 파이프라인을 처음부터 짓는 실력까지는 아닙니다. GitHub Actions로 테스트·빌드를 자동으로 돌려 봤고, 빌드가 왜 느린지 한 번 재 보고 줄여 본 정도면 충분합니다 {추론}.[15]",
+   "refs": [
+    2,
+    9,
+    15
+   ],
+   "study": [
+    "toss-monorepo",
+    "gha-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "# 합류하면 담당할 서비스를 소개해 드려요",
+   "short": "아래 두 줄은 요건이 아니라 '들어가면 맡을 수 있는 서비스' 목록이다.",
+   "why": "공고가 자격요건 칸 뒤에 이어 붙인 소개입니다. 대고객 금융 서비스와 은행 운영 시스템 두 갈래로 나뉩니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "토스뱅크의 예적금, 대출, 카드, 펀드, 외환, 자산관리 등 고객이 직접 사용하는 금융 서비스를 만들어요. ‘모임통장’, ‘키워봐요 적금’ 같은 혁신적인 예적금 상품부터, 자체 신용평가모델을 활용한 신용·기업여신 대출, 카드 발급·사용 경험까지 전 과정을 책임져요. 또 데이터 기반 실험과 빠른 실행을 통해 MAU, 수익성, 고객 경험을 동시에 성장시키는 그로스 영역을 주도하며, 자산 관리 플랫폼으로의 확장까지 이끌어가요.",
+   "short": "고객이 쓰는 상품 화면 — 예적금·대출·카드·투자 — 과 실험으로 숫자를 키우는 그로스 화면을 만든다.",
+   "why": "Customer Asset(입출금·예금·적금·카드·투자·외환)과 Loan(대출) 도메인이 이 영역입니다.[2] 그로스는 화면을 바꿔 실험하고 숫자로 확인하는 일이라, 클릭 같은 사용자 활동 기록(로깅)이 빠짐없이 쌓여야 합니다.[5]",
+   "actually": {
+    "items": [
+     "**대출 아키텍처 3세대** — 한 서비스에 모든 상품이 있던 1세대 → 전세대출을 떼어 낸 2세대 → 스쿼드가 자기 퍼널을 소유하고 공통 로직은 버전 고정 패키지로 쓰는 3세대(런타임 공유 → 빌드타임 공유).[2]",
+     "**멈추지 않고 바꾸기** — 대출은 24시간 돌아서, 새 퍼널부터 새 구조를 적용하고 검증된 만큼만 넓히는 교살자 무화과(Strangler Fig) 방식으로 옮긴다.[2][12]",
+     "**자동 클릭 로깅** — 클릭 핸들러가 있는 요소에 로그 속성을 컴파일 단계에서 자동으로 넣어, 누가 만들어도 같은 로그가 남게.[5]"
+    ]
+   },
+   "how_far": "어느 상품을 맡을지는 스쿼드 배치에 따릅니다 {추론}. 상품 지식보다 **긴 퍼널과 실험을 다뤄 본 경험**이 먼저 쓰입니다.[2]",
+   "refs": [
+    2,
+    5,
+    12
+   ],
+   "study": [
+    "fe-bank",
+    "strangler-fig",
+    "use-funnel"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "토스뱅크의 고객에게 매끄러운 서비스를 제공할 수 있도록 기반이 되는 은행 운영 시스템을 만들어요. 예를 들면 대면 센터와 고객 센터에서 사용하는 상담운영 시스템이나, 팀원들이 은행 운영 업무를 쉽고 효율적으로 할 수 있도록 만든 토스뱅크 고유의 시스템 ‘DIG’가 있어요. 또 빠른 본인 인증 플로우를 만들거나 유저 정보 관리와 같은 핵심 업무를 맡을 수도 있어요.",
+   "short": "직원이 쓰는 상담·운영 도구(DIG)와, 모든 상품이 거치는 본인 인증·회원 정보 화면을 만든다.",
+   "why": "Product Foundation 도메인이 회원·인증, 고객센터 상담, 어드민, 금융사기 탐지·자금세탁 방지·거래 제한을 맡습니다.[2] 계좌 개설이나 본인 인증 같은 공통 구간은 여러 상품이 얽혀 있어 한 곳을 고치면 어디까지 영향이 가는지 눈으로 보기 어렵습니다.[2]",
+   "actually": {
+    "items": [
+     "**흩어진 저장소를 하나로** — 이 도메인 서비스들을 한 모노레포로 합쳤고, 그 위에서 갈라진 기술 스택을 다시 모은다.[2]",
+     "**새 기술 시험** — 온디바이스 ML 실행과 그 UX, LLM 상담 에이전트, 화면·조건 분기·API 호출을 조합해 대고객 퍼널을 만드는 노코드 도구.[2]",
+     "**DIG의 내부 구조는 공개되지 않았다** — 공고가 밝힌 것은 '팀원들이 은행 운영 업무를 쉽고 효율적으로 하게 만든 토스뱅크 고유의 시스템'이라는 것까지다.[1]"
+    ]
+   },
+   "how_far": "내부 도구는 표·폼·권한이 중심이라 데스크톱 화면과 복잡한 폼 상태를 다뤄 본 경험이 쓸모 있습니다 {추론}. 인증 계층 자체는 Platform 쪽이 이미 떼어 두었습니다.[2]",
+   "refs": [
+    2
+   ],
+   "study": [
+    "fe-bank",
+    "tanstack-query"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "# 토스뱅크가 사용하는 기술",
+   "short": "아래 여섯 줄은 지금 쓰는 도구 목록이다 — 다 써 봤을 필요는 없고 왜 그걸 쓰는지가 중요하다.",
+   "why": "챕터는 모든 팀이 같은 기술을 쓸 필요는 없고, 충분히 시도한 뒤 조직에 맞는 기술로 다시 모은다고 했습니다. 그래서 같은 칸에 도구가 여러 개 적혀 있습니다.[2]",
+   "refs": [
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "코어: React, TypeScript, Next.js",
+   "short": "화면은 React, 타입은 TypeScript, 서버 렌더링은 Next.js — 이 셋은 바로 써야 한다.",
+   "why": "1차 직무 인터뷰가 라이브코딩이라 이 셋은 손에 익어 있어야 합니다.[1] Next.js App Router에서는 'use client'를 단 파일이 클라이언트 코드의 경계가 되어, 공통 패키지도 파일 경계를 지켜 배포합니다.[4]",
+   "level": {
+    "basic": "컴포넌트·props·state·effect · TypeScript 기본 타입·제네릭",
+    "work": "Next.js 서버/클라이언트 컴포넌트 경계 · 데이터 받아 그리기 · 하이드레이션 오류 고치기",
+    "team": "공통 패키지의 타입 설계 · 모듈 경계를 지키는 배포 · 런타임별 호환성 확인"
+   },
+   "refs": [
+    1,
+    4
+   ],
+   "study": [
+    "react-docs",
+    "nextjs-docs",
+    "ts-handbook",
+    "effective-ts"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "상태 관리: React-Query, Jotai, Zustand",
+   "short": "서버에서 받은 데이터는 React Query, 화면에만 있는 값은 Jotai·Zustand로 나눠 둔다.",
+   "why": "토스 프론트엔드는 원격 데이터를 React Query로 가져오고, SSR에서 미리 받은 데이터를 브라우저로 넘겨 다시 살립니다.[7] 퍼널처럼 여러 화면에 걸친 값은 전역 상태에 흩지 말고 한곳에 모으는 쪽을 권합니다.[10]",
+   "how_far": "\"서버 상태(캐시·재요청·무효화)\"와 \"클라이언트 상태\"를 구분해 설명할 수 있으면 됩니다. 셋 중 하나만 깊게 써 봤어도 나머지는 문서로 금방 따라갑니다 {추론}.",
+   "refs": [
+    7,
+    10
+   ],
+   "study": [
+    "tanstack-query"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "스타일링: Emotion, Panda CSS",
+   "short": "CSS-in-JS(Emotion)와, 빌드 때 CSS를 뽑아 주는 Panda CSS를 함께 쓴다.",
+   "why": "Emotion은 실행 중에 스타일을 만들고, Panda CSS는 빌드 때 정적 CSS를 만들어 서버 렌더링과 잘 맞는 쪽입니다.[16] 서비스마다 고른 도구가 달라 두 가지가 같이 적혀 있습니다 {추론}.",
+   "how_far": "둘 중 하나를 몰라도 됩니다. 디자인 시스템 컴포넌트를 가져다 쓰는 일이 대부분이라, CSS 기본기(레이아웃·반응형)가 더 중요합니다 {추론}. 동료는 높은 수준의 디자인 시스템과 공용 라이브러리를 장점으로 꼽았습니다.[1]",
+   "refs": [
+    1,
+    16
+   ],
+   "study": [
+    "panda-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "패키지 매니저: Yarn Berry, Bun",
+   "short": "node_modules 대신 Yarn Berry(PnP)로 의존성을 관리하고, 일부는 Bun을 쓴다.",
+   "why": "토스 프론트엔드는 Yarn Berry의 PnP(node_modules 없이 의존성 위치를 표로 찾는 방식)를 쓰며, 이 때문에 Next.js 기본 기능을 그대로 못 쓰고 직접 만든 경우도 있었습니다.[9] Yarn PnP 버전 하나 올린 것으로 SSR 서버 성능이 크게 달라진 일도 있었습니다.[7]",
+   "how_far": "워크스페이스(모노레포 안 여러 패키지)와 lock 파일이 왜 필요한지 알면 충분합니다 {추론}.",
+   "refs": [
+    7,
+    9
+   ],
+   "study": [
+    "toss-yarn-berry"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "빌드: Webpack, Rollup, ESBuild, SWC, Babel",
+   "short": "번들러·트랜스파일러가 여럿인데, 도구를 '쓰는' 걸 넘어 플러그인으로 '활용'하는 팀이다.",
+   "why": "토스뱅크는 마이크로 프론트엔드 구조라 서비스마다 Babel·SWC를 골라 쓰고, 클릭 로깅·다국어 처리를 트랜스파일러 플러그인으로 자동화했습니다.[5] 공통 패키지는 문법 변환과 최종 번들링을 쓰는 서비스에 맡기는 기준을 세웠습니다.[4]",
+   "actually": {
+    "items": [
+     "**트랜스파일러** — 최신 문법·JSX·TypeScript를 브라우저가 아는 JavaScript로 바꾼다(Babel·SWC).[5]",
+     "**코드 트리(AST)를 고친다** — 클릭 핸들러가 있는 JSX 태그를 찾아 로그 속성을 붙이는 Babel 플러그인 하나로 사람 실수를 없앴다.[5]",
+     "**ESM 하나로** — ESM·CJS 두 형식으로 내면 같은 패키지의 React 컨텍스트가 둘로 갈려 Provider 값을 못 읽는 일(dual package hazard)이 생겨 ESM으로만 낸다.[3]",
+     "**폴리필의 한계** — 도구가 지원하지 않는 문법 변환은 낮은 target을 줘도 안 되고, Proxy처럼 폴리필로 못 채우는 API도 있다.[4]"
+    ]
+   },
+   "how_far": "Webpack 설정을 외울 필요는 없습니다. **빌드가 코드에 무엇을 하는지**(변환·번들·트리 셰이킹·소스맵)를 설명할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    3,
+    4,
+    5
+   ],
+   "study": [
+    "toss-transpiler",
+    "toss-pkg",
+    "fe-perf-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "CI/CD: GitHub Actions, GoCD",
+   "short": "검사·빌드는 GitHub Actions, 배포 단계는 GoCD 같은 파이프라인 도구로 흘려보낸다.",
+   "why": "GitHub Actions는 저장소에 올린 코드마다 테스트·빌드를 자동으로 돌리고[15], GoCD는 빌드 → 테스트 → 배포 같은 단계를 이어 보여 주는 배포 파이프라인 도구입니다.[24] 두 도구를 어떤 단계에 나눠 쓰는지는 공개되지 않았습니다 {추론}.",
+   "how_far": "GitHub Actions 워크플로 파일을 직접 써서 PR마다 테스트를 돌려 본 정도면 됩니다. GoCD는 입사 뒤 익혀도 됩니다 {추론}.",
+   "refs": [
+    15,
+    24
+   ],
+   "study": [
+    "gha-docs",
+    "gocd-docs"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "긴 신청 흐름의 예외(중단·재진입·뒤로 가기)를 끝까지 챙기는 게 즐거운 사람",
+   "남의 코드를 매일 리뷰하고 기준을 같이 만드는 걸 좋아하는 사람 — 리뷰를 많이 하면 '리뷰왕'으로 뽑힌다[2]",
+   "'왜 이렇게 동작하지?'에서 코드를 열어 보는 사람[2]",
+   "금융은 처음이어도 낯선 규칙을 빨리 배우는 사람[2]"
+  ],
+  "hard": [
+   "화면 문구·순서까지 규제에 묶여 마음대로 바꿀 수 없는 부분이 있다[2]",
+   "계좌 개설·카드 발급처럼 되돌릴 수 없는 일이 있어 검증 절차가 많다[2]",
+   "웹뷰라 문제 재현·관측이 일반 웹보다 어렵다[2]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "대출 신청 중 앱을 끄고 3일 뒤 돌아온 고객을 어디서부터 이어 주겠어요?",
+   "a": "서버 사실과 화면 기억 맞추기 — Loan 도메인이 꼽은 실제 난이도.[2]"
+  },
+  {
+   "q": "A→B→C→B→A→D로 움직였을 때 B에서 고른 값은 어떻게 되나요?",
+   "a": "뒤로 가기가 남긴 상태 — @use-funnel을 만든 이유.[11]"
+  },
+  {
+   "q": "서버에서 `location`을 읽으면 무슨 일이 생기고, 하이드레이션 불일치는 왜 나나요?",
+   "a": "isomorphic 코드.[8]"
+  },
+  {
+   "q": "공통 패키지를 ESM·CJS 두 형식으로 내면 무엇이 문제일 수 있나요?",
+   "a": "컨텍스트가 둘로 갈리는 dual package hazard.[3]"
+  },
+  {
+   "q": "서비스 3개가 바뀌었고 환경이 3개, 빌드가 5분이면 배포까지 얼마나 걸리고 어떻게 줄이겠어요?",
+   "a": "45분 → 독립 러너 병렬.[9]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 토스뱅크 Frontend Developer (Product)",
+   "url": "https://toss.im/career/job-detail?gh_jid=5622038003",
+   "kind": "posting",
+   "note": "팀 소개·업무·요건·기술·전형·동료 한마디"
+  },
+  {
+   "n": 2,
+   "title": "토스 채용 아티클 · 화면 뒤의 토대까지 책임지는 사람들, 토스뱅크 Frontend Chapter",
+   "url": "https://toss.im/career/article/FE-bank",
+   "kind": "company",
+   "date": "2026-08-26",
+   "note": "챕터 리드와 Loan·Customer Asset·Product Foundation 도메인 인터뷰 — 본문 전부 확인"
+  },
+  {
+   "n": 3,
+   "title": "토스 테크 · 토스뱅크가 패키지를 관리하는 방식 #1: 패키지를 ESM으로만 제공하기로 했어요",
+   "url": "https://toss.tech/article/package-management-1",
+   "kind": "company",
+   "date": "2026-10-15",
+   "note": "토스뱅크 프론트엔드 챕터"
+  },
+  {
+   "n": 4,
+   "title": "토스 테크 · 토스뱅크가 패키지를 관리하는 방식 #2: 토스뱅크 패키지의 세 가지 기준",
+   "url": "https://toss.tech/article/package-management-2",
+   "kind": "company",
+   "date": "2026-10-16",
+   "note": "토스뱅크 프론트엔드 챕터"
+  },
+  {
+   "n": 5,
+   "title": "토스 테크 · Transpiler, \"사용\"말고 \"활용\"하기",
+   "url": "https://toss.tech/article/27750",
+   "kind": "company",
+   "date": "2024-05-24",
+   "note": "토스뱅크 Frontend Developer"
+  },
+  {
+   "n": 6,
+   "title": "토스 테크 · 드래그 앤 드롭은 사실 편한 UX가 아니다?",
+   "url": "https://toss.tech/article/27752",
+   "kind": "company",
+   "date": "2024-05-30",
+   "note": "토스뱅크 Frontend Developer — 나눠모으기 통장 접근성"
+  },
+  {
+   "n": 7,
+   "title": "토스 테크 · SSR 서버 최적화로 비용 아끼기",
+   "url": "https://toss.tech/article/ssr-server",
+   "kind": "company",
+   "date": "2024-06-26",
+   "note": "토스(비바리퍼블리카) Frontend Platform — 같은 그룹 다른 회사"
+  },
+  {
+   "n": 8,
+   "title": "토스 테크 · 환경 고민없이 개발하기(isomorphic JavaScript)",
+   "url": "https://toss.tech/article/isomorphic-javascript",
+   "kind": "company",
+   "date": "2023-09-01",
+   "note": "토스 Frontend Developer — 같은 그룹 다른 회사"
+  },
+  {
+   "n": 9,
+   "title": "토스 테크 · 200여개 서비스 모노레포의 파이프라인 최적화",
+   "url": "https://toss.tech/article/monorepo-pipeline",
+   "kind": "company",
+   "date": "2024-06-14",
+   "note": "토스 Frontend Platform — 같은 그룹 다른 회사(CircleCI 사례)"
+  },
+  {
+   "n": 10,
+   "title": "SLASH 23 · 퍼널: 쏟아지는 페이지 한 방에 관리하기",
+   "url": "https://www.youtube.com/watch?v=NwLWX2RNVcw",
+   "kind": "company",
+   "date": "2023-06",
+   "note": "토스 모바일 프론트엔드 — 자막 전부 확인"
+  },
+  {
+   "n": 11,
+   "title": "토스 테크 · @use-funnel 개발기 #1: 왜 기존 라이브러리를 두고 새로 만들었나?",
+   "url": "https://toss.tech/article/use-funnel-1",
+   "kind": "company",
+   "date": "2024-12-09",
+   "note": "토스 Frontend Developer"
+  },
+  {
+   "n": 12,
+   "title": "Martin Fowler · Strangler Fig Application",
+   "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "Next.js 문서 · Text content does not match server-rendered HTML(하이드레이션 오류)",
+   "url": "https://nextjs.org/docs/messages/react-hydration-error",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "국가법령정보센터 · 금융소비자 보호에 관한 법률(제19조 설명의무)",
+   "url": "https://www.law.go.kr/%EB%B2%95%EB%A0%B9/%EA%B8%88%EC%9C%B5%EC%86%8C%EB%B9%84%EC%9E%90%EB%B3%B4%ED%98%B8%EC%97%90%EA%B4%80%ED%95%9C%EB%B2%95%EB%A5%A0",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "GitHub Docs · GitHub Actions",
+   "url": "https://docs.github.com/ko/actions",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Panda CSS 문서 · Getting Started",
+   "url": "https://panda-css.com/docs/overview/getting-started",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "W3C · ARIA Authoring Practices Guide",
+   "url": "https://www.w3.org/WAI/ARIA/apg/",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "뉴시스 — 3년 근무 직원 1억4000만원… 인터넷은행 평균 급여(각사 사업보고서)",
+   "url": "https://www.newsis.com/view/NISX20250812_0003287731",
+   "kind": "news",
+   "date": "2025-08-13"
+  },
+  {
+   "n": 19,
+   "title": "SBS Biz — 인뱅 3사도 연봉 1억원대로(은행연합회 2025 지배구조 및 보수체계 연차보고서)",
+   "url": "https://biz.sbs.co.kr/amp/article/20000297249",
+   "kind": "news",
+   "date": "2026-03-13"
+  },
+  {
+   "n": 20,
+   "title": "자소설닷컴 — 토스뱅크 연봉(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 21,
+   "title": "토스뱅크 — 회사 정보(사이트 하단 주소)",
+   "url": "https://tossbank.com/esg",
+   "kind": "company"
+  },
+  {
+   "n": 22,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 23,
+   "title": "토스 테크 · 사용자를 위해 일부러 어렵게 만드는 경험, 어디까지 괜찮을까?",
+   "url": "https://toss.tech/article/lockbank",
+   "kind": "company",
+   "date": "2026-09-18",
+   "note": "토스뱅크 Product Designer — 잠금 저금통"
+  },
+  {
+   "n": 24,
+   "title": "GoCD User Documentation",
+   "url": "https://docs.gocd.org/current/",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "토스뱅크 프론트엔드가 직접 쓴 글(챕터 인터뷰·패키지·트랜스파일러·접근성)을 먼저 썼고, SSR 서버·모노레포 CI·퍼널 라이브러리는 같은 그룹 토스 본사의 사례라 토스뱅크 설정과 다를 수 있습니다. 내부 운영 시스템 DIG와 GitHub Actions·GoCD를 어느 단계에 쓰는지는 공개 자료가 없습니다.",
+ "resources": [
+  {
+   "id": "fe-bank",
+   "title": "화면 뒤의 토대까지 책임지는 사람들, 토스뱅크 Frontend Chapter",
+   "by": "토스 채용 아티클 · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://toss.im/career/article/FE-bank",
+   "why": "업무 세 줄이 실제로 무슨 일인지 도메인별로 나온다(대출 퍼널·배포 2,000회·인증 계층). 지원 전에 꼭 읽을 글."
+  },
+  {
+   "id": "slash23-funnel",
+   "title": "SLASH 23 · 퍼널: 쏟아지는 페이지 한 방에 관리하기",
+   "by": "토스 프론트엔드 · 16분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=NwLWX2RNVcw",
+   "why": "흩어진 페이지 흐름과 상태를 한곳에 모으고 라이브러리로 묶는 과정. '사용자 흐름' 요건과 대출 퍼널 업무를 위한 설계 감각."
+  },
+  {
+   "id": "use-funnel",
+   "title": "@use-funnel 문서",
+   "by": "토스 오픈소스(slash)",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://use-funnel.slash.page",
+   "why": "단계별 상태 타입·뒤로 가기·오버레이 스텝을 다루는 토스의 퍼널 라이브러리. 개발기 글(toss.tech/article/use-funnel-1)과 함께 본다."
+  },
+  {
+   "id": "react-docs",
+   "title": "React 공식 문서 · 학습하기",
+   "by": "react.dev(한국어)",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://ko.react.dev/learn",
+   "why": "코어 기술 첫 줄. state를 어디에 둘지(끌어올리기)·effect를 언제 쓰지 말지가 퍼널 설계의 기초다."
+  },
+  {
+   "id": "nextjs-docs",
+   "title": "Next.js Docs",
+   "by": "Vercel 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://nextjs.org/docs",
+   "why": "SSR 요건 — 서버/클라이언트 컴포넌트 경계('use client'), 데이터 받아 그리기, 하이드레이션 오류 설명."
+  },
+  {
+   "id": "toss-isomorphic",
+   "title": "환경 고민없이 개발하기",
+   "by": "토스 테크 · 2023",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://toss.tech/article/isomorphic-javascript",
+   "why": "SSR에서 처음 만나는 'is not defined'와 하이드레이션 불일치를 예제 하나로 따라간다."
+  },
+  {
+   "id": "toss-ssr",
+   "title": "SSR 서버 최적화로 비용 아끼기",
+   "by": "토스 테크 · 2024",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "https://toss.tech/article/ssr-server",
+   "why": "SSR 서버를 같은 조건에서 재고(k6·이벤트 루프 지표) 줄이는 법. SSR을 '운영'까지 이해하고 싶을 때."
+  },
+  {
+   "id": "modern-react",
+   "title": "모던 리액트 Deep Dive",
+   "by": "김용찬 · 위키북스 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%AA%A8%EB%8D%98%20%EB%A6%AC%EC%95%A1%ED%8A%B8%20Deep%20Dive",
+   "why": "React 동작 원리부터 Next.js SSR·상태 관리 라이브러리 비교까지 한 권. 라이브코딩·이력 인터뷰 대비."
+  },
+  {
+   "id": "ts-handbook",
+   "title": "TypeScript Handbook",
+   "by": "TypeScript 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.typescriptlang.org/docs/handbook/intro.html",
+   "why": "코어 기술 둘째 줄. 유니온·제네릭·좁히기 — 퍼널 단계마다 다른 상태 타입을 안전하게 쓰는 기초."
+  },
+  {
+   "id": "effective-ts",
+   "title": "이펙티브 타입스크립트",
+   "by": "댄 밴더캄 · 인사이트",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C%20%ED%83%80%EC%9E%85%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8",
+   "why": "타입 설계 습관 62가지. 공통 패키지·API 응답 타입을 any 없이 잇는 감각."
+  },
+  {
+   "id": "tanstack-query",
+   "title": "TanStack Query 문서",
+   "by": "TanStack 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://tanstack.com/query/latest/docs/framework/react/overview",
+   "why": "상태 관리 첫 칸. 캐시·재요청·무효화와 SSR에서 미리 받아 넘기기(hydration)."
+  },
+  {
+   "id": "panda-docs",
+   "title": "Panda CSS 문서",
+   "by": "Chakra 팀 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://panda-css.com/docs/overview/getting-started",
+   "why": "스타일링 칸. 빌드 때 CSS를 뽑는 방식이 런타임 CSS-in-JS(Emotion)와 무엇이 다른지."
+  },
+  {
+   "id": "toss-yarn-berry",
+   "title": "node_modules로부터 우리를 구원해 줄 Yarn Berry",
+   "by": "토스 테크 · 2021",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://toss.tech/article/node-modules-and-yarn-berry",
+   "why": "패키지 매니저 칸. 토스가 PnP를 고른 이유와 node_modules의 문제."
+  },
+  {
+   "id": "toss-transpiler",
+   "title": "Transpiler, \"사용\"말고 \"활용\"하기",
+   "by": "토스뱅크 프론트엔드 · 토스 테크 · 2024",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/27750",
+   "why": "빌드 칸. 이 팀이 Babel 플러그인으로 반복 작업을 없앤 실제 예 — AST를 고치는 감을 잡는다."
+  },
+  {
+   "id": "toss-pkg",
+   "title": "토스뱅크가 패키지를 관리하는 방식 #1 · #2",
+   "by": "토스뱅크 프론트엔드 챕터 · 토스 테크 · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "https://toss.tech/article/package-management-1",
+   "why": "ESM-only·문법 변환은 쓰는 쪽에·declaration sourcemap — 공통 패키지를 만드는 이 팀의 기준. #2 는 package-management-2."
+  },
+  {
+   "id": "fe-perf-book",
+   "title": "프론트엔드 성능 최적화 가이드",
+   "by": "유동균 · 인사이트 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C%20%EC%84%B1%EB%8A%A5%20%EC%B5%9C%EC%A0%81%ED%99%94%20%EA%B0%80%EC%9D%B4%EB%93%9C",
+   "why": "번들 분석·코드 분할·이미지·로딩 측정을 실습으로. 빌드가 결과물에 무엇을 하는지 눈으로 본다."
+  },
+  {
+   "id": "toss-monorepo",
+   "title": "200여개 서비스 모노레포의 파이프라인 최적화",
+   "by": "토스 테크 · 2024",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/monorepo-pipeline",
+   "why": "CI/CD 요건. 병렬 빌드·미리 구운 이미지·가벼운 SSR 이미지로 배포 시간을 줄인 숫자가 있다."
+  },
+  {
+   "id": "gha-docs",
+   "title": "GitHub Actions 문서",
+   "by": "GitHub Docs(한국어)",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.github.com/ko/actions",
+   "why": "PR마다 테스트·빌드를 돌리는 워크플로 작성법. CI/CD 칸의 첫 도구."
+  },
+  {
+   "id": "gocd-docs",
+   "title": "GoCD User Documentation",
+   "by": "GoCD 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.gocd.org/current/",
+   "why": "파이프라인·스테이지·잡 개념과 값 흐름 지도(value stream). 배포 단계를 어떻게 잇는지."
+  },
+  {
+   "id": "strangler-fig",
+   "title": "Strangler Fig Application",
+   "by": "Martin Fowler",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+   "why": "대출 3세대 전환이 따르는 '멈추지 않고 조금씩 바꾸기' 패턴의 원문."
+  },
+  {
+   "id": "wai-apg",
+   "title": "ARIA Authoring Practices Guide",
+   "by": "W3C WAI",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.w3.org/WAI/ARIA/apg/",
+   "why": "버튼·바텀시트·목록 순서 바꾸기 같은 패턴의 키보드·스크린 리더 동작 기준. 나눠모으기 통장 사례와 함께."
+  },
+  {
+   "id": "toss-ff",
+   "title": "Frontend Fundamentals",
+   "by": "토스 프론트엔드 챕터",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://frontend-fundamentals.com/",
+   "why": "토스가 말하는 '좋은 코드' 기준(가독성·예측 가능성·응집도·결합도). 코드 리뷰에서 근거로 의견을 내는 연습."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "React·TypeScript 손에 익히기",
+   "time": "2~4주",
+   "goal": "라이브코딩에서 상태를 어디에 둘지 망설이지 않고 타입이 맞는 컴포넌트를 짠다.",
+   "resources": [
+    "react-docs",
+    "ts-handbook",
+    "effective-ts",
+    "toss-ff"
+   ],
+   "task": "가상의 '적금 가입' 화면(금액·기간·자동이체일 입력 → 확인 → 완료)을 상태 하나로 만들고, 단계별 상태 타입을 유니온으로 나눠 잘못된 단계 이동이 타입 에러가 나게 한다."
+  },
+  {
+   "title": "Next.js SSR과 인앱 웹 감각",
+   "time": "2~3주",
+   "goal": "서버에서 데이터를 받아 그리는 화면을 만들고 하이드레이션 오류를 원인부터 고친다.",
+   "resources": [
+    "nextjs-docs",
+    "toss-isomorphic",
+    "tanstack-query",
+    "modern-react"
+   ],
+   "task": "가상 계좌 목록 API(목업)를 서버에서 미리 받아 React Query 캐시로 넘기는 Next.js 페이지를 만든다. 일부러 `window`를 서버에서 읽게 해 에러를 내 보고 고친다. 모바일 화면 크기로 확인한다."
+  },
+  {
+   "title": "긴 퍼널 설계",
+   "time": "2주",
+   "goal": "열 단계짜리 흐름의 상태·전이를 한곳에 선언하고 중단·재진입·뒤로 가기를 처리한다.",
+   "resources": [
+    "fe-bank",
+    "slash23-funnel",
+    "use-funnel",
+    "wai-apg"
+   ],
+   "task": "가상 신용대출 퍼널(한도조회 → 서류 → 심사 → 약정 → 실행)을 @use-funnel로 만든다. 새로 고침·뒤로 가기·'3일 뒤 심사 만료' 응답에서 어디로 보낼지 규칙을 표로 쓰고, 버튼에 aria-label·초점 이동을 붙인다."
+  },
+  {
+   "title": "빌드와 배포 자동화",
+   "time": "1~2주",
+   "goal": "모노레포에서 바뀐 패키지만 검사·빌드하는 CI를 돌리고, 빌드가 코드에 무엇을 하는지 설명한다.",
+   "resources": [
+    "toss-yarn-berry",
+    "toss-transpiler",
+    "toss-pkg",
+    "toss-monorepo",
+    "gha-docs",
+    "gocd-docs",
+    "fe-perf-book"
+   ],
+   "task": "1~3단계 결과를 Yarn 워크스페이스 모노레포(앱 2개 + 공통 패키지 1개)로 묶고, GitHub Actions로 PR마다 바뀐 워크스페이스만 테스트·빌드한다. 공통 패키지는 ESM으로만 내고, 클릭 핸들러에 data 속성을 붙이는 Babel 플러그인을 하나 써 본다."
+  }
+ ],
+ "pay": {
+  "summary": "신입 초봉은 **약 5,100만원**(집계값), 직원 평균은 **약 1억 1,600만원**(공시) — 평균은 경력직이 대부분이라 초봉과 다르다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 적혀 있지 않고 직군 구분도 없어 개발자 계약 연봉과 다를 수 있다 [20]"
+   },
+   {
+    "label": "직원 평균 보수",
+    "value": "1억 1,600만원",
+    "amount": 11600,
+    "basis": "공시 · 2025년",
+    "note": "은행연합회 공시(지배구조·보수체계 연차보고서), 임원을 뺀 직원만. 전년보다 300만원 올랐다 [19]"
+   },
+   {
+    "label": "임직원 평균 급여",
+    "value": "1억 1,700만원",
+    "amount": 11700,
+    "basis": "사업보고서 · 2024년",
+    "note": "임직원 684명 기준 [18]"
+   },
+   {
+    "label": "카카오뱅크 평균",
+    "value": "1억 2,200만원",
+    "amount": 12200,
+    "basis": "공시 · 2025년",
+    "peer": true,
+    "note": "같은 공시의 평균 보수 [19]"
+   },
+   {
+    "label": "케이뱅크 평균",
+    "value": "1억 200만원",
+    "amount": 10200,
+    "basis": "공시 · 2025년",
+    "peer": true,
+    "note": "같은 공시의 임직원 평균 보수(임원 포함) [19]"
+   }
+  ],
+  "how": "공고에는 연봉이 적혀 있지 않다. 전형에 레퍼런스 체크 뒤 **처우 협의** 단계가 따로 있어 연봉을 사람마다 정한다 [1]. 공고는 연차보다 '밀도 있는 경험'을 본다고 적었다 [1]. 평균 보수는 경력직이 많은 회사 전체 값이라 신입이 받는 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 전체를 기준으로 한 2021년 공식 소개 글이다 [22]. 토스뱅크에 그대로 적용되는지, 지금도 같은지는 글에 적혀 있지 않으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스뱅크 본사",
+  "address": "서울특별시 강남구 테헤란로 131, 13층 (역삼동, 한국지식재산센터)",
+  "postal": "06133",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20131",
+  "near": "2호선 역삼역과 강남역 사이 테헤란로 {추론}",
+  "note": "공고의 근무지 표기는 'Seoul'뿐이고, 주소는 토스뱅크 사이트 하단의 회사 정보다 [21]. 팀 자리가 본사와 다를 수 있다 {추론}."
+ }
+}
