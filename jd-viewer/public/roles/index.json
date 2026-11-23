@@ -67,6 +67,7 @@
   "ats-skcareers:sk:R262308": "skax-whitehat-pentest",
   "wanted-386999": "speee-dx-sre",
   "wanted-393877": "speee-realestate-senior-product-engineer",
+  "wanted-389900": "technopro-cloud-engineer-aws-japan",
   "wanted-394499": "technopro-lowcode-java-lead-japan",
   "ats-toss:group:7990802003": "toss-ads-ai-engineer",
   "ats-toss:group:7998957003": "toss-ads-bidding-pacing-mle",
@@ -710,6 +711,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 33
+  },
+  {
+   "id": "technopro-cloud-engineer-aws-japan",
+   "company": "株式会社テクノプロ (테크노프로) · コンサルティング・パートナーズ社",
+   "role": "클라우드 엔지니어 (AWS) · 인프라 사업본부 (일본 근무)",
+   "jobs": [
+    "wanted-389900"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 11
   },
   {
    "id": "technopro-lowcode-java-lead-japan",

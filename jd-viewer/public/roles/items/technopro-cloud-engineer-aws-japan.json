@@ -1,0 +1,906 @@
+{
+ "id": "technopro-cloud-engineer-aws-japan",
+ "company": "株式会社テクノプロ (테크노프로) · コンサルティング・パートナーズ社",
+ "role": "클라우드 엔지니어 (AWS) · 인프라 사업본부 (일본 근무)",
+ "team": "コンサルティング・パートナーズ社 인프라 사업본부 · LAPRAS Global Bridge 연계 채용",
+ "jobs": [
+  "wanted-389900"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "일본 최대 규모 기술자 파견·도급 그룹 테크노프로가 새로 만든 **도급형(일을 통째로 맡는) 조직**에서, 고객사 시스템을 **AWS 위에 설계·구축·시험·보수**합니다 — 금융사 컨테이너 기반(ROSA), 의료 회사 분석 기반(Glue), 교통 회사 핵심 시스템의 온프레 → AWS 교체가 예입니다.[1][3][4]",
+  "env": "AWS 중심. 요건은 SAA 자격(또는 같은 지식)과 온프레미스 구축·운영 경험이고, 일은 일본 SI 공정(기본 설계 → 상세 설계 → 구축 → 시험 → 보수)과 일본어 설계서로 돌아갑니다. 안건에 따라 고객사 상주가 있습니다.[1][14]",
+  "oneline": "온프레 서버를 만져 본 사람이 클라우드 이전·구축 일로 옮겨 가는 자리. 문턱은 기술보다 **일본어 설계서와 일본 이주**입니다."
+ },
+ "fit": {
+  "good": [
+   "사내 서버·망을 짓고 지켜 봤고 이제 AWS 일로 넓히고 싶은 사람[1]",
+   "자격을 따며 공부하는 것이 맞는 사람 — 회사가 AWS 자격 취득을 밀어 왔다[5]",
+   "금융·의료·교통처럼 업종이 다른 안건을 두루 겪어 보고 싶은 사람[1]",
+   "설계서·시험 증적처럼 문서로 일을 마무리하는 방식이 편한 사람 {추론}"
+  ],
+  "hard": [
+   "안건에 따라 고객사 상주가 있어 근무지·시간이 바뀔 수 있다[1]",
+   "일본어 서류·면접이 기본이라 일본어가 약하면 서류에서 빠진다[1]",
+   "공고 연봉 상한(650만 엔)이 같은 경로의 다른 일본 클라우드 공고보다 낮은 편이다[1][2] {추론}",
+   "새로 만든 조직이라 팀 규모·안건 구성이 공고 밖으로는 공개되지 않았다[1][4]",
+   "모회사가 2025년 사모펀드(블랙스톤) 공개매수로 비상장이 됐다 — 조직 개편이 이어질 수 있다[25] {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "온프레 파일 서버와 웹 서버를 AWS로 옮긴다면 서버마다 무엇을 먼저 조사하겠어요?",
+   "a": "의존 관계·주소·백업 방식 조사 후 7가지 이전 길 중 하나.[10][11]"
+  },
+  {
+   "q": "기본 설계서와 상세 설계서에는 각각 무엇을 쓰나요?",
+   "a": "구성·방침(고객 승인용) 대 파라미터 시트(그대로 치면 똑같이 만들어지는 수준).[14] {추론}"
+  },
+  {
+   "q": "ROSA에서 Red Hat이 맡는 것과 우리가 맡는 것은?",
+   "a": "클러스터 운영·SLA 대 그 위의 앱·권한·배포.[7][8]"
+  },
+  {
+   "q": "Glue 크롤러와 ETL 작업은 무엇이 다른가요? 파티션은 왜 나누나요?",
+   "a": "표 모양을 목록에 올리기 대 데이터 다듬기, 읽는 양 줄이기.[9][24]"
+  },
+  {
+   "q": "사내 망과 VPC를 전용선으로 잇는데 주소 범위가 겹치면 어떻게 되나요?",
+   "a": "경로가 꼬여 통신이 안 된다 — 설계 전에 거른다.[17][23]"
+  },
+  {
+   "q": "고객사에 상주할 때 고객 담당자가 직접 작업 지시를 하면 어떻게 하겠어요?",
+   "a": "도급이면 지시는 자사 리더를 거친다 — 파견·도급 구분.[13]"
+  }
+ ],
+ "lines": [
+  {
+   "section": "task",
+   "quote": "主なプロジェクト例\n1）コンテナ実行基盤開発\n　概要：某金融系企業のマイクロサービス化実装に向け、コンテナ実行基盤をAWS（ROSA）上に開発",
+   "short": "금융사가 큰 시스템을 작은 서비스로 쪼개 돌릴 컨테이너 바닥을 AWS 위의 OpenShift로 짓는 일.",
+   "why": "이 자리가 속한 컨설팅·파트너스사는 그룹 곳곳의 도급형(일을 통째로 맡는) 안건을 모은 새 조직이고, '레거시 시스템 현대화'를 중심 영역으로 꼽았습니다.[1][4] ROSA(Red Hat OpenShift Service on AWS)는 Red Hat의 쿠버네티스 제품 OpenShift를 AWS가 관리형으로 파는 것으로, AWS와 Red Hat이 함께 운영하고 클러스터마다 Red Hat SRE가 24시간 붙습니다.[7] 금융사가 이 길을 고르는 이유는 공개되지 않았지만, 운영 책임 일부를 벤더에 넘기고 지원 계약을 갖는 쪽이 금융권 감사에 설명하기 쉽다는 점이 흔히 꼽힙니다. {추론}",
+   "actually": {
+    "intro": "ROSA 위 컨테이너 기반을 지을 때 보통 정하는 것입니다. 이 프로젝트의 실제 구성은 공개되지 않았습니다.",
+    "items": [
+     "**어느 구조로** — 제어부(control plane)를 Red Hat 계정에 두는 HCP와 고객 계정에 두는 classic 중 고른다. 비용·생성 속도·네트워크 모양이 다르다.[8]",
+     "**망 설계** — 클러스터가 들어갈 VPC·서브넷을 잡고, 사내 망과 겹치지 않는 주소 범위를 정한다.[23]",
+     "**누가 무엇을** — 클러스터 자체는 Red Hat SRE가 지키고, 그 위의 앱·네임스페이스·권한·배포 방식은 고객과 이 팀이 맡는다.[7] {추론}",
+     "**요금 계산** — ROSA 서비스 요금(워커 4 vCPU 당 시간 요금)과 EC2·EBS 같은 AWS 요금이 따로 나온다.[7]",
+     "**금융권 규칙** — 일본 금융사는 FISC 안전 기준(현재 제14판)을 기준표로 삼는 경우가 많아 설계서에 대응표가 붙는다.[15] {추론}"
+    ]
+   },
+   "how_far": "마이크로서비스를 설계하는 자리가 아니라 그것이 올라갈 **바닥(클러스터·망·권한·배포 길)**을 만드는 자리입니다. 쿠버네티스의 파드·서비스·네임스페이스를 설명하고, ROSA에서 Red Hat이 맡는 칸과 우리가 맡는 칸을 가를 수 있으면 최소선입니다. {추론}",
+   "refs": [
+    1,
+    4,
+    7,
+    8,
+    15,
+    23
+   ],
+   "study": [
+    "rosa-docs",
+    "k8s-book",
+    "ko-aws-container"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "工程：基本設計、詳細設計、構築、テスト、保守",
+   "short": "일본 SI의 공정 이름 — 설계서 두 단계를 쓰고, 짓고, 시험하고, 넘긴 뒤에도 지키는 전 과정을 맡는다는 뜻.",
+   "why": "일본 SI(시스템 구축 회사)는 공정을 이름으로 나눠 계약하고, 그 이름이 공고에 그대로 실립니다. IPA가 낸 '공통 프레임 2013'이 이런 공정과 용어의 공통 틀입니다.[14] 이 자리는 요건 정의를 뺀 **기본 설계부터 보수까지** 맡는다고 적혀 있습니다.[1]",
+   "actually": {
+    "intro": "인프라 쪽에서 각 공정이 보통 내놓는 것입니다. 회사 양식은 공개되지 않았습니다. {추론}",
+    "items": [
+     "**基本設計(기본 설계)** — 구성도, 계정·VPC 나누기, 가용 영역, 백업·감시 방침. 고객이 읽고 승인하는 문서다.",
+     "**詳細設計(상세 설계)** — 파라미터 시트: 서브넷 주소, 보안 그룹 규칙 한 줄 한 줄, 인스턴스 크기. 이대로 치면 똑같이 만들어지는 수준.",
+     "**構築(구축)** — 설계서대로 짓는다. 요즘은 Terraform·CloudFormation 같은 코드로 짓는 일이 많다.",
+     "**テスト(시험)** — 단위 시험(설정이 설계서와 같나) → 결합 시험(서로 붙나) → 장애 시험(한 대 내려도 버티나). 증적(화면·로그)을 남긴다.",
+     "**保守(보수)** — 넘긴 뒤 패치·장애 대응·작은 변경."
+    ]
+   },
+   "how_far": "공정마다 무엇을 내야 하는지 알고, 상세 설계서(파라미터 시트)를 직접 쓸 수 있으면 됩니다. 고객 승인을 받는 문서라 **일본어로 쓰는 설계서**가 실제 일의 큰 몫입니다. {추론}",
+   "refs": [
+    1,
+    14
+   ],
+   "study": [
+    "ipa-cf2013",
+    "ipa-hikinou"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "2）データ分析基盤開発\n　概要：某医療系企業の顧客データや、SNS情報などのデータを有効活用するべくAWS（Glueなど）上にデータ分析基盤を開発",
+   "short": "흩어진 고객 데이터와 SNS 데이터를 S3에 모으고 Glue로 다듬어 분석할 수 있게 하는 바닥을 짓는 일.",
+   "why": "회사는 '데이터 연계·데이터 기반 정비'를 새 조직의 중심 영역으로 꼽았습니다.[1] AWS Glue는 서버를 두지 않고 돌리는 데이터 통합 서비스로, 데이터 목록(Data Catalog)·스키마를 알아서 읽는 크롤러·Spark 기반 변환 작업을 줍니다.[9]",
+   "flows": [
+    {
+     "caption": "AWS 위 분석 기반의 보통 흐름 {추론}[9][24]",
+     "steps": [
+      "원천(고객 DB·SNS)",
+      "S3 원본 층",
+      "Glue 크롤러 · Data Catalog",
+      "Glue ETL · 정제 층",
+      "조회·대시보드"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "intro": "AWS 위 분석 기반의 보통 모양입니다. 이 프로젝트의 실제 구성은 공개되지 않았습니다.",
+    "items": [
+     "**모으기** — 고객 DB·SNS 데이터를 S3에 원본 그대로 쌓는다. {추론}",
+     "**목록 만들기** — Glue 크롤러가 파일을 읽어 표 모양(스키마)을 Data Catalog에 올린다.[9]",
+     "**다듬기** — Glue ETL 작업(Spark)으로 중복 제거·형식 맞추기·개인 정보 가리기를 해 정제 층에 쓴다.[9]",
+     "**나눠 두기** — 날짜 같은 열로 파티션을 나누면 조회가 읽는 양과 요금이 준다.[24]",
+     "**의료 데이터라서** — 일본 의료 정보는 후생노동성 안전관리 가이드라인(제7.0판)이 기준이 되는 일이 많아, 접근 권한·암호화·기록을 설계 단계부터 넣는다.[16] {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "파티션을 나누면 얼마나 덜 읽나 (가상 값, 직접 돌린 출력)",
+     "body": "하루 2GB씩 1년 쌓인 데이터에서 한 달만 조회할 때입니다. 날짜 파티션이 있으면 그 달 폴더만 읽습니다.[24]",
+     "lang": "python",
+     "code": "days = 365\ngb_per_day = 2.0\nwhole = days * gb_per_day\none_month = 30 * gb_per_day\nprint(f\"파티션 없음: {whole:.0f} GB 를 읽는다\")\nprint(f\"dt=YYYY-MM-DD 파티션: {one_month:.0f} GB 만 읽는다 ({one_month/whole:.1%})\")\n# 파티션 없음: 730 GB 를 읽는다\n# dt=YYYY-MM-DD 파티션: 60 GB 만 읽는다 (8.2%)"
+    }
+   ],
+   "how_far": "데이터 분석가가 아니라 **분석이 돌아갈 바닥**을 짓는 자리입니다. S3 → Glue → 조회(Athena 같은 것)로 이어지는 흐름을 직접 한 번 만들어 보고, 파티션·권한을 설명할 수 있으면 최소선입니다. {추론}",
+   "refs": [
+    1,
+    9,
+    16,
+    24
+   ],
+   "study": [
+    "glue-docs",
+    "athena-part",
+    "de-aws"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "工程：要件定義、基本設計、詳細設計、構築、テスト、保守",
+   "short": "이 프로젝트는 맨 앞 '요건 정의'부터 들어간다 — 고객에게 무엇이 필요한지 묻고 적는 일까지 맡는다는 뜻.",
+   "why": "세 프로젝트 중 이것만 요건 정의(要件定義)가 공정에 들어 있습니다.[1] 공통 프레임 2013은 요건 정의를 별도 프로세스로 두고 국제 기준(ISO/IEC/IEEE 29148)을 따릅니다.[14]",
+   "actually": {
+    "items": [
+     "**무엇을 볼 건가** — 누가 어떤 숫자를 얼마나 자주 보나, 원천은 어디서 언제 들어오나. {추론}",
+     "**비기능 요구** — 얼마나 늦어도 되나, 몇 년치를 두나, 누가 어디까지 보나. IPA의 비기능 요구 그레이드가 가용성·성능·운용·이전·보안·환경 6축으로 물을 거리를 정리해 둔다.[18]",
+     "**결과물** — 요건 정의서. 이후 기본 설계의 기준이 된다. {추론}"
+    ]
+   },
+   "how_far": "요건 정의를 혼자 이끄는 자리라기보다 회의에 들어가 **기술 쪽 질문을 하고 받아 적는** 몫으로 보는 것이 맞습니다(원티드 표기 경력 3~15년으로 폭이 넓습니다).[1] {추론}",
+   "refs": [
+    1,
+    14,
+    18
+   ],
+   "study": [
+    "ipa-hikinou",
+    "ipa-cf2013"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "3）基幹システムリプレース\n　概要：某交通企業の基幹システムをオンプレからクラウド（AWS）へリプレース\n　工程：基本設計、詳細設計、構築、テスト、保守",
+   "short": "회사 안 서버실에서 돌던 핵심 업무 시스템을 AWS로 옮겨 다시 세우는 일.",
+   "why": "같은 회사의 다른 사내 컴퍼니 공고도 '온프레미스에서 클라우드로 옮기는 안건'이 많다고 적었습니다.[6] 이 공고의 요건 둘째 줄과 우대 줄이 온프레미스 경험인 이유가 여기 있습니다.[1]",
+   "actually": {
+    "intro": "AWS가 정리한 이전 방식과 도구입니다. 이 프로젝트가 어느 길로 가는지는 공개되지 않았습니다.",
+    "items": [
+     "**옮기는 길 고르기** — AWS는 시스템마다 7가지 길(없애기·그대로 두기·그대로 옮기기·위치만 옮기기·다른 제품으로 바꾸기·조금 고쳐 옮기기·다시 짜기) 중 하나를 고르게 한다.[11] 공고의 'リプレース(교체)'는 그대로 옮기기보다 다시 세우기 쪽일 수 있다. {추론}",
+     "**그대로 옮길 때** — AWS Transform MGN(옛 Application Migration Service)이 원본 서버를 블록 단위로 계속 복제하고, 시험 인스턴스로 확인한 뒤 전환한다.[10]",
+     "**사내 망과 잇기** — 옮기는 동안 남은 서버와 통신해야 해서 전용선(Direct Connect)이나 VPN으로 잇는다.[17] 이때 주소 범위가 겹치면 안 된다.[23]",
+     "**전환 리허설** — 데이터 옮기기·전환·되돌리기를 미리 몇 번 해 보고 걸린 시간을 잰다. 교통 회사 핵심 시스템이라 멈출 수 있는 시간이 짧다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "사내 망과 새 VPC 주소가 겹치나 (가상 값, 직접 돌린 출력)",
+     "body": "겹치면 전용선·VPN으로 이어도 경로가 꼬입니다.[23] 설계서를 쓰기 전에 이렇게 한 번 걸러 봅니다.",
+     "lang": "python",
+     "code": "import ipaddress\nonprem = [\"10.0.0.0/16\", \"172.16.0.0/20\", \"192.168.10.0/24\"]\nfor vpc in [\"10.0.128.0/17\", \"10.50.0.0/16\"]:\n    v = ipaddress.ip_network(vpc)\n    hit = [n for n in onprem if v.overlaps(ipaddress.ip_network(n))]\n    print(vpc, \"→ 겹침:\", hit if hit else \"없음\")\n# 10.0.128.0/17 → 겹침: ['10.0.0.0/16']\n# 10.50.0.0/16 → 겹침: 없음"
+    }
+   ],
+   "how_far": "이전 전략을 고르는 자리는 위쪽(PM·설계 리더)입니다. 이 자리는 **정해진 길대로 서버·망을 짓고, 전환 절차서를 쓰고 리허설에서 손을 움직이는** 몫이 중심입니다. {추론}",
+   "refs": [
+    1,
+    6,
+    10,
+    11,
+    17,
+    23
+   ],
+   "study": [
+    "aws-7rs",
+    "mgn-docs",
+    "ko-aws-net"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "※担当案件によっては当社正社員として、客先企業へ常駐となる可能性があります。",
+   "short": "안건에 따라 고객 회사 사무실에 나가 일할 수 있다 — 고용은 테크노프로 정사원 그대로.",
+   "why": "테크노프로 그룹은 기술자 파견·도급이 본업이고, 기술자 대부분이 그룹 정사원인 채로 고객에게 배속됩니다.[3] 같은 회사 다른 공고도 배속 장소를 '전국 거점·고객사'로 적었습니다.[6] 새 조직은 도급형 일을 모은 곳이라 자사 사무실 일이 많을 수 있지만, 고객사 상주도 열려 있다는 뜻입니다.[1][4] {추론}",
+   "actually": {
+    "items": [
+     "**도급(請負)으로 상주** — 일을 통째로 맡고 지시는 테크노프로 쪽 리더가 한다. 고객이 직접 지시하면 '위장 도급'이 될 수 있어, 일본은 파견과 도급을 계약 이름이 아니라 실태로 가른다.[13]",
+     "**출근지·시간** — 고객사 규칙(입관증·반입 금지 기기·근무 시간)을 따른다. 공고도 근무 시간이 안건마다 다를 수 있다고 적었다.[1]",
+     "**물어볼 것** — 면접에서 '이 프로젝트는 자사 도급인가 상주인가, 지시는 누가 하나'를 확인한다. {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    3,
+    4,
+    6,
+    13
+   ],
+   "study": [
+    "mhlw-37"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・AWS Certified Solutions Architect – Associateの資格保有、または保有同等の知識を保有している方",
+   "short": "AWS로 보안·복원력·성능·비용을 따져 구성을 고르는 기초를 갖췄는지 보는 줄 — 자격증이 없어도 같은 지식이면 된다.",
+   "why": "테크노프로는 AWS가 인정한 '인재 서비스형 AWS 파트너'이고, 2022년 450건이던 AWS 자격 보유를 3년 안에 3,000건으로 늘리겠다고 했습니다. 그 목표에 '어소시에이트(SAA) 이상 자격자 양성'이 들어 있었습니다.[5] 회사가 기술자 자격을 영업의 근거로 쓰는 구조라 공고 첫 요건이 자격 이름입니다. {추론}",
+   "actually": {
+    "intro": "SAA-C03 시험이 묻는 네 영역과 비중입니다.[12]",
+    "items": [
+     "**보안 설계 30%** — IAM 최소 권한, 암호화, 사설 서브넷·보안 그룹.",
+     "**복원력 설계 26%** — 여러 가용 영역, 오토 스케일링, 백업·복구.",
+     "**고성능 설계 24%** — 저장소·DB·캐시 고르기.",
+     "**비용 최적화 20%** — 구매 방식(온디맨드·예약·스팟), 저장 등급.",
+     "채점 50문항 + 비채점 15문항, 합격선 720/1000.[12]"
+    ]
+   },
+   "how_far": "자격이 없다면 '같은 지식'을 보여야 합니다 — 가장 쉬운 증명은 자격을 따 오는 것입니다. 입사 뒤에도 회사가 자격 취득 보조·AWS 교육 콘텐츠를 줍니다.[1][5]",
+   "refs": [
+    1,
+    5,
+    12
+   ],
+   "study": [
+    "aws-saa",
+    "skillbuilder",
+    "ko-aws-textbook"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・オンプレミス環境構築/運用経験",
+   "short": "회사 서버실의 서버·망·저장소를 직접 짓고 지켜 본 경험 — 옮길 대상을 읽으려면 그게 무엇인지 알아야 해서.",
+   "why": "세 프로젝트 중 셋째가 온프레미스에서 AWS로의 교체이고, 같은 회사 다른 공고도 이전 안건이 많다고 했습니다.[1][6] 옮기려면 지금 서버가 무엇에 기대어 돌고 있는지(공유 디스크·고정 IP·사내 DNS·배치 일정)를 알아봐야 합니다. {추론}",
+   "actually": {
+    "intro": "같은 회사 인프라 공고가 우대로 든 기술입니다.[6]",
+    "items": [
+     "**OS** — Windows Server·Linux·UNIX 설치·설정·패치.[6]",
+     "**가상화** — VMware·Hyper-V 위 가상 서버 운영.[6]",
+     "**네트워크 기초** — 주소·라우팅·방화벽·DNS.[6]",
+     "**운영** — 감시·백업·장애 대응 절차. 옮긴 뒤에도 같은 운영 수준을 요구받는다. {추론}"
+    ]
+   },
+   "how_far": "'구축/운영' 둘 중 하나라도 실제로 해 봤어야 하는 줄입니다. 서버 한 대를 설치부터 감시·백업까지 맡아 본 적이 있고, 그 구성을 그림 한 장으로 설명할 수 있으면 최소선입니다. {추론}",
+   "refs": [
+    1,
+    6
+   ],
+   "study": [
+    "linux-woo",
+    "nw-intro"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本語レベル: ビジネス",
+   "short": "고객과 일본어로 회의하고 설계서·보고서를 일본어로 쓸 수 있는 수준.",
+   "why": "서류는 일본어 이력서·직무경력서만 받고, 일본어로 소통이 안 되면 따로 알리지 않고 서류에서 뺀다고 적혀 있습니다.[1] 일의 상당 부분이 고객이 승인하는 설계서·시험 증적·회의라 일본어가 그대로 일의 도구입니다. {추론}",
+   "how_far": "공식 기준으로는 JLPT N1이 '폭넓은 장면의 일본어를 이해'하는 단계입니다.[21] 자격 숫자보다 **설계서 한 장을 일본어로 써 보일 수 있나**가 실제 관문입니다. {추론}",
+   "refs": [
+    1,
+    21
+   ],
+   "study": [
+    "jlpt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本国内への移住が必要",
+   "short": "원격 해외 근무가 아니라 일본에 살며 일한다 — 취업 비자부터 준비해야 한다.",
+   "why": "근무지가 도쿄 롯폰기 본사이고 고객사 상주 가능성도 있어 일본 안에 있어야 합니다.[1] 개발·인프라 엔지니어는 보통 재류자격 '기술·인문지식·국제업무'로 일하고, 학력·경력 기준이 있습니다.[22]",
+   "how_far": "공고 복리후생에 부임 수당·부임 일시금·이사 비용 보조가 적혀 있지만, 해외에서 오는 사람에게도 같게 적용되는지는 공고에 없습니다 — 면접 때 확인합니다.[1] {추론}",
+   "refs": [
+    1,
+    22
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "＃求める人物像\n・オンプレミス環境構築/運用経験をお持ちで、クラウド案件で活躍されたい方。",
+   "short": "온프레 경력을 클라우드 일로 옮겨 가고 싶은 사람 — 클라우드 경력이 짧아도 이 줄에 맞으면 환영한다는 뜻.",
+   "why": "요건과 인물상이 둘 다 온프레미스 경험을 말합니다.[1] 회사는 기술자에게 AWS 교육 환경과 자격 뒤 프로젝트 경험 기회를 준다고 밝혀 왔습니다.[5] 이전 안건에서는 옛 환경을 읽는 눈이 그대로 쓰입니다. {추론}",
+   "actually": {
+    "items": [
+     "**지원서에 쓸 것** — 맡았던 온프레 구성(대수·OS·가상화·백업 방식)과, 그것을 AWS로 옮긴다면 무엇에 대응시킬지(예: 공유 디스크 → EFS·FSx, 사내 DNS → Route 53). {추론}",
+     "**설계 기준** — AWS Well-Architected 6개 축으로 옛 구성과 새 구성을 견주면 고객 앞에서도 같은 말로 설명할 수 있다.[19]"
+    ]
+   },
+   "refs": [
+    1,
+    5,
+    19
+   ],
+   "study": [
+    "aws-wa",
+    "aws-7rs"
+   ]
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · [株式会社テクノプロ] 클라우드 엔지니어 (AWS) (인프라 사업본부)_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/389900",
+   "kind": "posting",
+   "note": "LAPRAS Global Bridge 연계 · 컨설팅·파트너스사 소개(새 조직·데이터 기반·레거시 현대화)·프로젝트 예 3개·상주 가능성·요건·연봉(400만~650만 엔)·복리후생·근무지·선발 순서. 원티드 표기 경력 3~15년"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · [株式会社テクノプロ] 로우코드 웹 개발 리더 (소규모 팀 리딩)_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/394499",
+   "kind": "posting",
+   "note": "같은 컨설팅·파트너스사의 다른 자리 — Java 스크래치 개발·2~5명 팀 관리, 연봉 480만~800만 엔(상여 포함), 요코하마 사업소"
+  },
+  {
+   "n": 3,
+   "title": "テクノプロ・ホールディングス · 有価証券報告書 第20期 (2024-07~2025-06)",
+   "url": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100WRK2.pdf",
+   "kind": "company",
+   "date": "2025-09",
+   "note": "사업의 내용(기술자 파견·도급, ㈱テクノプロ 기술자 24,673명·고객 2,054곳, 사내 컴퍼니 넷), 종업원 현황(연결 30,649명, 제출회사 186명·평균 45.0세·근속 15.3년·평균 연간 급여 638.5만 엔), 본점 미나토구 롯폰기 6-10-1"
+  },
+  {
+   "n": 4,
+   "title": "PR TIMES · テクノプロ・ホールディングス 상무집행임원 취임 안내",
+   "url": "https://prtimes.jp/main/html/rd/p/000000009.000177691.html",
+   "kind": "company",
+   "date": "2026-11",
+   "note": "コンサルティング・パートナーズ社는 ㈱テクノプロ의 사내 컴퍼니 — 컴퍼니 사장 취임, 그룹 기술자 약 3만 명"
+  },
+  {
+   "n": 5,
+   "title": "共同通信PRワイヤー · テクノプロ, 「人材サービス型AWSパートナー」 인정 · 3년간 AWS 자격 연 3,000건 목표",
+   "url": "https://kyodonewsprwire.jp/release/202203158647",
+   "kind": "company",
+   "date": "2022-03",
+   "note": "2020-02 AWS 셀렉트 티어 서비스 파트너, 2022-02 기준 자격 450건 → 2025-06 기말 3,000건 목표, AWS 교육 콘텐츠·전국 연수 시설 4곳·Winスクール 53교실, 자격 딴 뒤 프로젝트 경험 기회"
+  },
+  {
+   "n": 6,
+   "title": "HRMOS · 株式会社テクノプロ テクノプロ・エンジニアリング社 인프라 엔지니어(AWS·Azure 등) 공고",
+   "url": "https://hrmos.co/pages/technoproeg/jobs/2271206301118545920",
+   "kind": "posting",
+   "note": "같은 회사 다른 사내 컴퍼니 — 대형 제조사 직접 거래·온프레→클라우드 이전 안건이 많다, PM·PL/PMO/설계 구축/운용 보수, 연봉 예 3년차 450만·5년차 리더 550만·10년차 매니저 800만 엔, 배속은 전국 거점·고객사"
+  },
+  {
+   "n": 7,
+   "title": "AWS · What is Red Hat OpenShift Service on AWS (ROSA)?",
+   "url": "https://docs.aws.amazon.com/rosa/latest/userguide/what-is-rosa.html",
+   "kind": "reference",
+   "note": "AWS 와 Red Hat 이 함께 지원·운영, 클러스터마다 Red Hat SRE 24시간 지원·99.95% 가동 SLA, 요금은 ROSA 서비스 요금(워커 4 vCPU 당 시간 요금 등) + AWS 인프라 요금"
+  },
+  {
+   "n": 8,
+   "title": "AWS · ROSA architecture (HCP 와 classic)",
+   "url": "https://docs.aws.amazon.com/rosa/latest/userguide/rosa-architecture-models.html",
+   "kind": "reference",
+   "note": "HCP 는 제어부를 Red Hat 계정에, classic 은 고객 계정에 둔다"
+  },
+  {
+   "n": 9,
+   "title": "AWS Glue 개발자 안내서 · What is AWS Glue?",
+   "url": "https://docs.aws.amazon.com/glue/latest/dg/what-is-glue.html",
+   "kind": "reference",
+   "note": "서버리스 데이터 통합, Data Catalog·크롤러(스키마 추정)·Spark 기반 ETL 작업·Glue Studio"
+  },
+  {
+   "n": 10,
+   "title": "AWS Transform MGN (옛 Application Migration Service) · 사용 설명서",
+   "url": "https://docs.aws.amazon.com/mgn/latest/ug/what-is-application-migration-service.html",
+   "kind": "reference",
+   "note": "원본 서버를 블록 단위로 계속 복제, 시험 인스턴스로 확인한 뒤 전환(cutover), 전환 확정 때 복제 중지"
+  },
+  {
+   "n": 11,
+   "title": "AWS Prescriptive Guidance · 이전 전략(7 Rs)",
+   "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/large-migration-guide/migration-strategies.html",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "AWS Certified Solutions Architect – Associate (SAA-C03) 시험 안내서",
+   "url": "https://docs.aws.amazon.com/aws-certification/latest/solutions-architect-associate-03/solutions-architect-associate-03.html",
+   "kind": "reference",
+   "note": "보안 30%·복원력 26%·고성능 24%·비용 최적화 20%, 채점 50문항 + 비채점 15문항, 합격 720/1000"
+  },
+  {
+   "n": 13,
+   "title": "厚生労働省 · 労働者派遣事業と請負により行われる事業との区分に関する基準(37号告示) 관련 의의응답집",
+   "url": "https://www.mhlw.go.jp/bunya/koyou/gigi_outou01.html",
+   "kind": "reference",
+   "note": "파견이냐 도급이냐는 계약 이름이 아니라 실태로 판단, 제3집에 애자일 개발 사례"
+  },
+  {
+   "n": 14,
+   "title": "IPA · SEC BOOKS 共通フレーム2013",
+   "url": "https://www.ipa.go.jp/publish/secbooks20130304.html",
+   "kind": "reference",
+   "note": "일본 소프트웨어 개발 공정·용어의 공통 틀(2013-03, 408쪽), 요구 정의 프로세스는 ISO/IEC/IEEE 29148 을 따른다"
+  },
+  {
+   "n": 15,
+   "title": "FISC (金融情報システムセンター)",
+   "url": "https://www.fisc.or.jp/",
+   "kind": "reference",
+   "note": "「金融機関等コンピュータシステムの安全対策基準・解説書」 第14版 — 일본 금융권 시스템 안전 기준"
+  },
+  {
+   "n": 16,
+   "title": "厚生労働省 · 医療情報システムの安全管理に関するガイドライン 第7.0版",
+   "url": "https://www.mhlw.go.jp/stf/shingi/0000516275_00006.html",
+   "kind": "reference",
+   "date": "2026-06"
+  },
+  {
+   "n": 17,
+   "title": "AWS Direct Connect 사용 설명서",
+   "url": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/Welcome.html",
+   "kind": "reference",
+   "note": "사내 망과 AWS 를 인터넷을 거치지 않는 전용선으로 잇는다"
+  },
+  {
+   "n": 18,
+   "title": "IPA · 非機能要求グレード",
+   "url": "https://www.ipa.go.jp/archive/digital/iot-en-ci/jyouryuu/hikinou/ent03-b.html",
+   "kind": "reference",
+   "note": "가용성·성능/확장성·운용/보수성·이전성·보안·시스템 환경 6개 축의 비기능 요구 정리표"
+  },
+  {
+   "n": 19,
+   "title": "AWS Well-Architected Framework",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html",
+   "kind": "reference",
+   "note": "운영 우수성·보안·안정성·성능 효율·비용 최적화·지속가능성 6개 축"
+  },
+  {
+   "n": 20,
+   "title": "일본 국세청 · 2024년분 민간급여실태통계조사 결과",
+   "url": "https://www.nta.go.jp/publication/statistics/kokuzeicho/minkan/gaiyou/2024.htm",
+   "kind": "reference",
+   "note": "1년 근무한 급여소득자 평균 478만 엔(남성 587만 엔)"
+  },
+  {
+   "n": 21,
+   "title": "JLPT · N1~N5 認定の目安",
+   "url": "https://www.jlpt.jp/about/levelsummary.html",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "일본 출입국재류관리청 · 재류자격 '기술·인문지식·국제업무'",
+   "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html",
+   "kind": "reference",
+   "note": "학력·경력 기준 세부는 원문에서 확인"
+  },
+  {
+   "n": 23,
+   "title": "Amazon VPC 사용 설명서 · VPC CIDR blocks",
+   "url": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-cidr-blocks.html",
+   "kind": "reference",
+   "note": "VPC 주소 범위 정하기 — 연결할 다른 망과 겹치지 않게"
+  },
+  {
+   "n": 24,
+   "title": "Amazon Athena 사용 설명서 · Partition your data",
+   "url": "https://docs.aws.amazon.com/athena/latest/ug/partitions.html",
+   "kind": "reference",
+   "note": "파티션으로 나눠 두면 조회가 읽는 데이터 양과 비용이 준다"
+  },
+  {
+   "n": 25,
+   "title": "Blackstone · テクノプロに対する公開買付けの意向を発表",
+   "url": "https://www.blackstone.com/ja-jp/insights/article/blackstone-announces-a-tender-offer-for-japans-leading-it-services-provider-technopro-its-largest-investment-ever-in-japan/",
+   "kind": "news",
+   "date": "2025-08",
+   "note": "블랙스톤 펀드의 테크노프로 HD 공개매수(1주 4,870엔) — 2025-09 성립, 같은 해 12월 도쿄증권거래소 상장 폐지로 알려짐"
+  }
+ ],
+ "caveat": "테크노프로의 기술 블로그·컨퍼런스 발표는 찾지 못해 받은 영상 재료가 없습니다. 회사 근거는 이 공고와 같은 조직의 다른 공고, 다른 사내 컴퍼니의 인프라 공고, 그룹 사업보고서, 보도자료(새 조직 사장 취임·2022년 AWS 파트너 인정)뿐입니다. 컨설팅·파트너스사 설립 보도자료 원문은 열리지 않아 공고 본문의 조직 소개로 대신했습니다. 세 프로젝트의 실제 구성·팀 규모·상주 비율은 공개되지 않아, 공정·이전·분석 기반은 AWS 공식 문서와 IPA·후생노동성·FISC 같은 일본 공공 기준으로 '보통 이런 것'을 보였습니다. 원티드 표기 경력(3~15년)은 폭이 넓어 맡는 공정의 무게는 면접에서 확인해야 합니다.",
+ "resources": [
+  {
+   "id": "aws-saa",
+   "title": "AWS Certified Solutions Architect – Associate",
+   "kind": "course",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://aws.amazon.com/certification/certified-solutions-architect-associate/",
+   "why": "자격요건 첫 줄 그 자체. 시험 범위(보안·복원력·성능·비용)가 기본 설계의 판단 기준과 겹친다.",
+   "by": "AWS"
+  },
+  {
+   "id": "skillbuilder",
+   "title": "AWS Skill Builder",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://skillbuilder.aws/",
+   "why": "SAA 준비용 공식 무료 과정 — 서비스별 기본을 먼저 잡는다.",
+   "by": "AWS"
+  },
+  {
+   "id": "ko-aws-textbook",
+   "title": "AWS 교과서",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=Book&SearchWord=AWS+%EA%B5%90%EA%B3%BC%EC%84%9C+%EA%B9%80%EC%9B%90%EC%9D%BC",
+   "why": "컴퓨팅·네트워크·부하 분산·저장소·DB·IAM·오토 스케일링을 이론 뒤 실습으로 — SAA 범위의 한국어 바탕.",
+   "by": "김원일 · 길벗 · 2023"
+  },
+  {
+   "id": "ko-aws-net",
+   "title": "따라하며 배우는 AWS 네트워크 입문",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=253645476",
+   "why": "VPC·서브넷·라우팅·VPN을 손으로 — 온프레와 AWS를 잇는 이전 프로젝트의 망 부분.",
+   "by": "김원일·서종호 · 부크크 · 2020"
+  },
+  {
+   "id": "nw-intro",
+   "title": "IT 엔지니어를 위한 네트워크 입문",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ridibooks.com/books/754029945",
+   "why": "온프레 망(주소·라우팅·방화벽)을 읽는 기본기 — 요건 둘째 줄.",
+   "by": "고재성 외"
+  },
+  {
+   "id": "linux-woo",
+   "title": "이것이 리눅스다 with Rocky Linux",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=Book&SearchWord=%EC%9D%B4%EA%B2%83%EC%9D%B4+%EB%A6%AC%EB%88%85%EC%8A%A4%EB%8B%A4",
+   "why": "서버 설치·설정·서비스 운영을 실습으로 — 온프레 구축/운영 경험이 얕을 때 채우는 책.",
+   "by": "우재남 · 한빛미디어"
+  },
+  {
+   "id": "aws-7rs",
+   "title": "AWS Prescriptive Guidance · Migration strategies (7 Rs)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/large-migration-guide/migration-strategies.html",
+   "why": "업무 ③ 교체 프로젝트 — 시스템마다 옮기는 7가지 길의 공통어.",
+   "by": "AWS"
+  },
+  {
+   "id": "mgn-docs",
+   "title": "AWS Transform MGN (옛 Application Migration Service) 사용 설명서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/mgn/latest/ug/what-is-application-migration-service.html",
+   "why": "서버를 그대로 옮길 때의 복제 → 시험 → 전환 순서를 공식 도구로 익힌다.",
+   "by": "AWS"
+  },
+  {
+   "id": "rosa-docs",
+   "title": "Red Hat OpenShift Service on AWS (ROSA) 사용 설명서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/rosa/latest/userguide/what-is-rosa.html",
+   "why": "업무 ① — HCP·classic 구조, 운영 책임, 요금이 어떻게 나뉘나.",
+   "by": "AWS"
+  },
+  {
+   "id": "k8s-book",
+   "title": "쿠버네티스 입문 (우리 사이트 책)",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "OpenShift도 바탕은 쿠버네티스 — 파드·서비스·네임스페이스를 kubectl 출력으로 익힌다.",
+   "by": "우리 사이트 책장"
+  },
+  {
+   "id": "docker-book",
+   "title": "개발자를 위한 도커 (우리 사이트 책)",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "컨테이너가 처음이면 쿠버네티스 전에 이미지·컨테이너부터.",
+   "by": "우리 사이트 책장"
+  },
+  {
+   "id": "ko-aws-container",
+   "title": "AWS 컨테이너 설계와 구축 철저 입문",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=296061083",
+   "why": "일본 엔지니어가 쓴 AWS 컨테이너 설계 책의 한국어판 — 망·보안·CI/CD를 일본 SI 감각으로.",
+   "by": "아라이 마사야·우마카츠 아츠시 · 양현 옮김 · 위키북스 · 2022"
+  },
+  {
+   "id": "glue-docs",
+   "title": "AWS Glue 개발자 안내서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.aws.amazon.com/glue/latest/dg/what-is-glue.html",
+   "why": "업무 ② — Data Catalog·크롤러·ETL 작업이 각각 무엇을 하나.",
+   "by": "AWS"
+  },
+  {
+   "id": "athena-part",
+   "title": "Amazon Athena · Partition your data",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/athena/latest/ug/partitions.html",
+   "why": "분석 기반의 비용·속도를 가르는 파티션 설계.",
+   "by": "AWS"
+  },
+  {
+   "id": "de-aws",
+   "title": "Data Engineering with AWS (2판)",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/data-engineering-with/9781804614426/",
+   "why": "S3·Glue·Athena로 데이터 레이크를 짓는 전체 흐름 — 업무 ②를 한 권으로.",
+   "by": "Gareth Eagar · Packt · 2023"
+  },
+  {
+   "id": "ipa-cf2013",
+   "title": "共通フレーム2013",
+   "kind": "book",
+   "lang": "ja",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.ipa.go.jp/publish/secbooks20130304.html",
+   "why": "공고의 '工程' 낱말(요건 정의·설계·시험)의 원본 틀 — 일본 SI가 공정을 어떻게 부르나.",
+   "by": "IPA · 2013"
+  },
+  {
+   "id": "ipa-hikinou",
+   "title": "非機能要求グレード",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.ipa.go.jp/archive/digital/iot-en-ci/jyouryuu/hikinou/ent03-b.html",
+   "why": "요건 정의·기본 설계에서 고객에게 물을 비기능 질문 목록.",
+   "by": "IPA"
+  },
+  {
+   "id": "aws-wa",
+   "title": "AWS Well-Architected Framework",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html",
+   "why": "옛 구성과 새 구성을 견주는 6개 축 — 기본 설계서의 뼈대.",
+   "by": "AWS 공식 문서"
+  },
+  {
+   "id": "fisc",
+   "title": "金融機関等コンピュータシステムの安全対策基準・解説書 (第14版)",
+   "kind": "doc",
+   "lang": "ja",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.fisc.or.jp/",
+   "why": "업무 ① 금융사 안건 — 설계서에 붙는 안전 기준 대응표의 원본.",
+   "by": "FISC"
+  },
+  {
+   "id": "mhlw-gl7",
+   "title": "医療情報システムの安全管理に関するガイドライン 第7.0版",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.mhlw.go.jp/stf/shingi/0000516275_00006.html",
+   "why": "업무 ② 의료 회사 안건 — 접근 권한·암호화·기록을 설계에 넣을 근거.",
+   "by": "厚生労働省 · 2026-06"
+  },
+  {
+   "id": "mhlw-37",
+   "title": "労働者派遣事業と請負により行われる事業との区分に関する基準 · 疑義応答集",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.mhlw.go.jp/bunya/koyou/gigi_outou01.html",
+   "why": "상주 줄 — 고객사에서 일할 때 누가 지시하나(파견과 도급의 차이).",
+   "by": "厚生労働省"
+  },
+  {
+   "id": "jlpt",
+   "title": "JLPT · N1~N5 認定の目安",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.jlpt.jp/about/levelsummary.html",
+   "why": "'비즈니스 레벨'을 공식 단계로 가늠한다.",
+   "by": "日本語能力試験"
+  }
+ ],
+ "study_path": [
+  {
+   "title": "AWS 뼈대와 SAA",
+   "time": "4~6주",
+   "goal": "VPC·EC2·S3·IAM·RDS를 엮은 구성을 만들고, 보안·복원력·성능·비용으로 왜 그렇게 골랐는지 설명할 수 있다.",
+   "resources": [
+    "ko-aws-textbook",
+    "skillbuilder",
+    "ko-aws-net",
+    "aws-saa"
+   ],
+   "task": "개인 계정에 두 가용 영역짜리 VPC(공개·사설 서브넷)를 만들고 사설 쪽 EC2가 IAM 역할로 S3 버킷 하나만 읽게 한다. 끝나면 지워 요금을 막고, 구성도 한 장과 SAA 연습 문제 점수를 남긴다."
+  },
+  {
+   "title": "온프레를 읽는 눈",
+   "time": "2~3주",
+   "goal": "리눅스 서버 한 대를 설치부터 감시·백업까지 운영하고, 그 구성을 AWS 서비스에 대응시킬 수 있다.",
+   "resources": [
+    "linux-woo",
+    "nw-intro",
+    "aws-wa"
+   ],
+   "task": "가상 머신(VirtualBox 등) 두 대에 웹 서버와 DB를 올리고 cron 백업을 건다. 서버마다 OS·포트·의존(공유 폴더·DNS)을 표로 적고, 옆 칸에 옮길 AWS 서비스를 적는다."
+  },
+  {
+   "title": "옮기기 연습",
+   "time": "2~3주",
+   "goal": "7가지 이전 길 중 하나를 골라 이유를 쓰고, 전환 절차서와 되돌리기 절차를 쓸 수 있다.",
+   "resources": [
+    "aws-7rs",
+    "mgn-docs",
+    "ipa-cf2013"
+   ],
+   "task": "2단계의 가상 사내 시스템을 AWS로 옮기는 기본 설계서(구성도·주소 범위·백업 방침)와 상세 파라미터 시트를 일본어로 쓰고, 실제로 지은 뒤 단위·결합 시험 증적(화면)을 남긴다."
+  },
+  {
+   "title": "컨테이너와 OpenShift",
+   "time": "2~3주",
+   "goal": "쿠버네티스 기본 객체를 다루고, ROSA에서 Red Hat과 고객이 맡는 칸을 가를 수 있다.",
+   "resources": [
+    "docker-book",
+    "k8s-book",
+    "ko-aws-container",
+    "rosa-docs"
+   ],
+   "task": "작은 웹 앱 두 개를 컨테이너로 만들어 로컬 쿠버네티스(kind·minikube)에 올리고 서비스로 잇는다. ROSA HCP와 classic을 비용·망·책임으로 견준 한 장짜리 표를 쓴다."
+  },
+  {
+   "title": "분석 기반 한 바퀴",
+   "time": "1~2주",
+   "goal": "S3 → Glue → Athena 흐름을 만들고 파티션·권한을 설명할 수 있다.",
+   "resources": [
+    "glue-docs",
+    "athena-part",
+    "de-aws",
+    "ipa-hikinou"
+   ],
+   "task": "가상의 고객·구매 CSV를 날짜 폴더로 S3에 올리고, Glue 크롤러로 표를 만들고, Athena로 한 달 조회 때 읽은 양을 파티션 전후로 견준다. 비기능 요구 질문 10개를 일본어로 덧붙인다."
+  }
+ ],
+ "pay": {
+  "summary": "공고 표기 **연 400만~650만 엔**(IT 실무 경험자, 월급 28만~50만 엔 + 상여 연 2회) — 기술자 회사 ㈱テクノプロ의 평균 연봉은 공시되지 않았다",
+  "rows": [
+   {
+    "label": "공고 표기 연봉",
+    "value": "400만~650만 엔",
+    "basis": "공고",
+    "note": "IT 실무 경험자 월급 28만~50만 엔, 상여 연 2회(결산 상여 별도 있을 수 있음), 수습 2개월 같은 조건 [1]"
+   },
+   {
+    "label": "같은 조직 로우코드 개발 리더 공고",
+    "value": "480만~800만 엔",
+    "basis": "공고",
+    "note": "같은 컨설팅·파트너스사, Java 경력 4년 이상·2~5명 팀 관리, 상여 포함 [2]"
+   },
+   {
+    "label": "같은 회사 인프라 엔지니어 공고의 연봉 예",
+    "value": "3년차 450만 · 5년차 리더 550만 · 10년차 매니저 800만 엔",
+    "basis": "공고 · 회사 채용 페이지",
+    "note": "テクノプロ・エンジニアリング社(다른 사내 컴퍼니)의 HRMOS 공고 [6]"
+   },
+   {
+    "label": "지주회사 직원 평균 연간 급여",
+    "value": "638.5만 엔",
+    "basis": "공시 · 2025년 6월 기준",
+    "note": "テクノプロ・ホールディングス 사업보고서(有価証券報告書) — 지주회사 직원 186명(평균 45.0세·근속 15.3년)만의 값. 기술자가 속한 ㈱テクノプロ 값이 아니다 [3]"
+   },
+   {
+    "label": "일본 급여소득자 평균(참고)",
+    "value": "478만 엔",
+    "basis": "통계 · 2024년",
+    "note": "일본 국세청 민간급여실태통계조사, 1년 내내 근무한 급여소득자 전체 평균. 공고 숫자와 기준이 달라 견주지 않는다 [20]"
+   }
+  ],
+  "how": "모회사 テクノプロ・ホールディングス는 2025년 6월기까지 상장사여서 사업보고서가 있지만(그 뒤 블랙스톤 공개매수로 상장 폐지돼 다음 공시는 기대하기 어렵다[25]), 거기 실린 평균 급여는 지주회사 본사 직원 186명의 것이고 경력직·관리직이 섞인 회사 전체 평균이지 초봉이 아니다[3]. 기술자 2만 4천여 명이 속한 ㈱テクノプロ의 평균은 공시되지 않았다 — 공시 숫자 없음[3]. 공고의 월급 상한(50만 엔 × 12 = 600만 엔)에 상여를 더하면 연봉 상한 650만 엔을 넘을 수 있어, 상여 규모와 잔업 수당 계산은 면접에서 확인한다 {추론}. 숫자는 모두 엔화이고 원화 환산은 싣지 않았다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "휴일",
+    "detail": "연간 휴일 122일 · 주 2일(토·일·공휴일, 연 2회 토요 출근 있음) · 연말연시"
+   },
+   {
+    "name": "휴가",
+    "detail": "유급휴가(여름 취득 권장일 있음) · 경조 휴가 · 특별 휴가 · 입사 때 휴가(최대 5일) · 재해 때 휴가(연 5회, 최대 5일)"
+   },
+   {
+    "name": "육아·간병",
+    "detail": "육아휴업 · 간병휴업"
+   },
+   {
+    "name": "수당",
+    "detail": "부임 수당 · 전근 부임 일시금 · 귀성 여비 보조 · 이사 비용 보조"
+   },
+   {
+    "name": "교육",
+    "detail": "사내외 강습 보조 · 공부 모임 강사료 보조 · 통신 교육 보조 · 자격 취득 보조 · 도서 구입 보조 · 사외 기술 연수 참가비 · 자기 계발 지원"
+   },
+   {
+    "name": "퇴직·저축",
+    "detail": "퇴직금 제도(확정기여연금) · 재형저축 · 정년 재고용(60세 정년)"
+   },
+   {
+    "name": "기타",
+    "detail": "경조 위문금 · 사내 동아리 지원 · 건강보험조합 · 복리후생 서비스 'ベネフィット・ステーション' · 종합복지 단체정기보험 · 사회보험 완비"
+   },
+   {
+    "name": "근무 시간",
+    "detail": "9:00~18:00(휴게 60분), 안건에 따라 다를 수 있음 · 소정 시간 넘는 근무 있음 · 실내 원칙 금연"
+   }
+  ],
+  "note": "원티드 공고의 복리후생 칸 그대로다 [1]. 같은 조직 로우코드 리더 공고에도 같은 휴일·수당·교육 항목이 적혀 있다 [2]. AWS 교육 콘텐츠·전국 연수 시설은 2022년 그룹 발표에 나온 것이다 [5]."
+ },
+ "location": {
+  "name": "株式会社テクノプロ コンサルティング・パートナーズ社 본사 (롯폰기 힐스 모리 타워)",
+  "address": "東京都港区六本木6-10-1 六本木ヒルズ森タワー35階 (도쿄도 미나토구 롯폰기 6-10-1, 롯폰기 힐스 모리 타워 35층)",
+  "map_url": "https://map.naver.com/p/search/%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B8%AF%E5%8C%BA%E5%85%AD%E6%9C%AC%E6%9C%A86-10-1",
+  "near": "롯폰기역에서 걸어서 5분(역과 바로 이어짐)",
+  "note": "근무지와 오는 길은 공고의 근무지 칸이다 [1]. 그룹 지주회사 본점도 같은 주소다 [3][4]. 안건에 따라 고객사 상주가 있을 수 있다 [1]. 일본 주소는 도로명이 아니라 지번(정·번지·호)으로 쓴다 {추론}."
+ }
+}
