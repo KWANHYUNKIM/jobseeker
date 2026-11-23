@@ -99,8 +99,10 @@
   "ats-skcareers:sk:R262196": "tmap-ai-agent-engineer",
   "ats-skcareers:sk:R261800": "tmap-auto-ai-agent-tpm",
   "wanted-399666": "tmap-auto-android-client",
+  "wanted-361653": "tmap-auto-dev-pm",
   "wanted-393102": "tmap-client-engineer-android",
   "ats-skcareers:sk:R262169": "tmap-data-analytics-lead",
+  "wanted-393103": "tmap-mobility-ios-client-engineer",
   "ats-skcareers:sk:R262015": "tmap-mobility-llmops-engineer",
   "ats-skcareers:sk:R262310": "tmap-mobility-service-backend",
   "ats-skcareers:sk:R262485": "tmap-security-assessment-engineer",
@@ -1004,6 +1006,16 @@
    "lines": 21
   },
   {
+   "id": "tmap-auto-dev-pm",
+   "company": "티맵모빌리티",
+   "role": "개발 Project Manager (TMAP AUTO)",
+   "jobs": [
+    "wanted-361653"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 16
+  },
+  {
    "id": "tmap-client-engineer-android",
    "company": "티맵모빌리티",
    "role": "Client Engineer",
@@ -1022,6 +1034,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 24
+  },
+  {
+   "id": "tmap-mobility-ios-client-engineer",
+   "company": "티맵모빌리티",
+   "role": "iOS 클라이언트 엔지니어",
+   "jobs": [
+    "wanted-393103"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 22
   },
   {
    "id": "tmap-mobility-llmops-engineer",
