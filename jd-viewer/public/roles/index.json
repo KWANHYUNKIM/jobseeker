@@ -76,6 +76,8 @@
   "ats-toss:group:6118752003": "tossbank-ml-product",
   "ats-toss:group:4542935003": "tossbank-product-foundation-server",
   "ats-toss:group:4076109003": "tossbank-product-server",
+  "saramin-55608433": "tossbank-security-audit-manager",
+  "ats-toss_group_5988332003": "tossbank-security-audit-manager",
   "ats-toss:group:5847765003": "tossbank-security-researcher",
   "ats-toss:group:7998884003": "tossbank-senior-data-analyst",
   "ats-toss:group:4521687003": "tossbank-server-platform"
@@ -803,6 +805,17 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 16
+  },
+  {
+   "id": "tossbank-security-audit-manager",
+   "company": "토스뱅크",
+   "role": "보안 자체 감사 담당자",
+   "jobs": [
+    "saramin-55608433",
+    "ats-toss_group_5988332003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 14
   },
   {
    "id": "tossbank-security-researcher",
