@@ -1,0 +1,286 @@
+{
+  "id": "hyundai-autoever-classic-autosar-com",
+  "company": "현대오토에버",
+  "role": "Classic AUTOSAR 통신 스택 개발",
+  "team": "클래식오토사3팀 (차량 SW 플랫폼 mobilgene Classic)",
+  "jobs": ["jobkorea-50301694", "wanted-395348", "saramin-55552392"],
+  "researched_at": "2026-11-23",
+  "tldr": {
+    "what": "현대차·기아·제네시스 양산차의 제어기(ECU) 수백 종에 깔리는 회사 자체 차량 SW 플랫폼 **mobilgene Classic** 안에서, 제어기끼리 말을 주고받게 하는 **CAN·LIN·이더넷 통신 모듈**을 새로 만들고 고치고 고객 문의에 답합니다.[2][4][7]",
+    "env": "C 로 짠 AUTOSAR 기본 소프트웨어(BSW)가 MCU(작은 차량용 칩) 위에서 돌고, 기능안전 최고 등급(ASIL-D)과 개발 절차 인증(A-SPICE CL3)을 지키는 절차 안에서 일합니다.[2][7][9]",
+    "oneline": "앱을 만드는 자리가 아니라, 수많은 제어기 개발자가 그 위에서 앱을 짜는 **차량 통신의 바닥층**을 만드는 자리입니다 — 국제 표준 문서와 현대차 사양서를 코드로 옮기는 일이 중심입니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "- 국제 표준 및 OEM 요구사양 기반 CAN/ETH/LIN BSW 개발",
+      "short": "AUTOSAR 표준 문서와 현대차 전용 사양서대로, 제어기가 CAN·이더넷·LIN 으로 데이터를 주고받게 하는 기본 SW 를 짜는 일.",
+      "why": "팀은 mobilgene Classic 의 **CAN·LIN·ETH 통신 스택 개발과 지원**을 맡고, AUTOSAR 표준과 OEM(완성차 회사, 여기서는 현대차그룹) 특화 사양에 맞춘 통신 모듈의 새 기능 개발·유지보수·기술지원을 한다고 소개합니다.[2] 같은 플랫폼은 2016년 IG 그랜저 바디·편의 제어기에 처음 들어간 뒤 전 도메인으로 넓어져, 2021년 발표 기준 180개 프로젝트·70여 종 제어기에 양산 적용됐습니다.[5] 2025년에는 플랫폼 63개 모듈 전체가 ASIL-D 인증을 받았는데 회사는 모듈을 통신·시스템·메모리 묶음으로 나눈다고 밝혔습니다.[7] 제어기가 하나라도 신호를 늦게 보내거나 잘못 읽으면 차 전체 기능이 흔들리므로, 이 바닥층은 표준대로·빠짐없이 동작해야 합니다.{추론}",
+      "actually": {
+        "intro": "모듈 이름은 AUTOSAR 공개 표준의 것입니다. 회사 발표에서 확인한 것과 표준 문서의 일반 내용을 나눠 적습니다.",
+        "items": [
+          "**층 나누기** — AUTOSAR Classic 은 칩을 직접 만지는 드라이버(MCAL) → 그 위를 감싸는 인터페이스 → 기능 단위 관리자(시스템) 층으로 쌓고, 가운데 RTE(런타임 환경)가 응용 SW(ASW)와 BSW 를 잇는다.[5][14] CAN 이라면 Can 드라이버 → CanIf → PduR(경로 배정) → Com(신호 꾸러미) 순이다.[14][16]",
+          "**신호 ↔ 프레임** — Com 은 '차속'·'기어' 같은 신호를 정해진 비트 자리에 넣어 PDU(통신 한 덩어리)를 만들고, 받는 쪽은 꺼낸다. 언제 보낼지(주기·이벤트·둘 다 = MIXED)와 '얼마나 안 오면 끊긴 걸로 볼지'(수신 감시 시간)를 설정으로 정한다.[15]",
+          "**버스 상태 관리** — CanSM 은 버스오프(오류가 쌓여 칩이 스스로 버스에서 빠진 상태)가 나면 정해진 시간 뒤 다시 붙인다. 처음 몇 번은 짧게(L1), 계속 실패하면 길게(L2) 기다린다.[17]",
+          "**잠들고 깨기** — CanNm 은 제어기들이 서로 '아직 깨어 있다'는 메시지를 돌려, 다 조용해지면 함께 잠든다(Repeat Message → Normal → Ready Sleep → Prepare Bus-Sleep → Bus-Sleep).[18] 회사 4.0.3 판은 AUTOSAR NM·부분 네트워크(Partial Network) 모듈을 상위 판으로 올려 넣었다.[5]",
+          "**LIN** — 한 주인(마스터)이 일정표(스케줄 테이블)에 따라 차례로 물어보고, 정해진 칸이 오면 슬레이브가 답한다. 산발(sporadic)·이벤트 프레임처럼 자리만 잡아 두는 칸도 있다.[19]",
+          "**이더넷** — SoAd(소켓 어댑터)가 PDU 를 UDP/TCP 소켓 연결에 얹고, 그 아래 TcpIp·EthIf·이더넷 드라이버가 있다.[20] 회사는 4.0.3 판에 CAN FD·이더넷·E2E·J1939 모듈을 상위 판으로 넣었고, OEM 전용으로 이더넷 진단(EthDiag)·CanCM 모듈을 따로 둔다.[5]",
+          "**새 프로토콜** — 팀 소개에 따르면 최근 DDS(데이터를 주제별로 발행·구독하는 미들웨어)·10BASE-T1S(한 가닥 선에 여러 제어기를 매다는 10Mbps 차량 이더넷)와 섞는 일을 준비하고 있다.[2] 10BASE-T1S 는 PLCA(차례표로 충돌을 피하는 방식)로 CAN·LIN 같은 저속 버스 자리를 노린다.[23]"
+        ]
+      },
+      "flows": [
+        {
+          "caption": "신호 하나가 CAN 선 위로 나가기까지 (AUTOSAR 표준 구조)[14]",
+          "steps": [
+            "응용 SW · '차속 87.5' 를 RTE 에 쓴다",
+            "RTE · 값을 Com 에 넘긴다",
+            "Com · 신호를 비트 자리에 넣어 PDU 를 만들고 보낼 때를 정한다",
+            "PduR · 이 PDU 가 어느 버스(CAN/LIN/이더넷)로 갈지 고른다",
+            "CanIf · 칩의 송신 칸(하드웨어 객체)에 맞춰 넘기고 결과를 되돌린다",
+            "Can 드라이버(MCAL) · 칩 레지스터에 써서 실제 프레임을 쏜다"
+          ],
+          "mine_from": 2
+        }
+      ],
+      "examples": [
+        {
+          "title": "신호를 프레임 비트 자리에 넣고 빼기 (Com 이 하는 일을 줄인 것)",
+          "body": "차속 87.5km/h 를 한 칸 0.0625 로 바꾸면 1400. 4번 비트부터 12비트에 넣고, 기어 2비트를 16번 비트에 넣으면 8바이트가 `80 57 02 00 00 00 00 00` 이 됩니다. 받는 쪽은 같은 자리에서 꺼내 87.5 와 2 를 얻습니다. 실제로는 이 자리표를 OEM 이 준 통신 DB 가 정하고 설정 도구가 코드를 만듭니다.[5][15]",
+          "lang": "python",
+          "code": "def pack(data, start_bit, length, value):\n    for i in range(length):\n        byte, pos = divmod(start_bit + i, 8)\n        if (value >> i) & 1: data[byte] |= 1 << pos\n        else:                data[byte] &= ~(1 << pos)\n\ndef unpack(data, start_bit, length):\n    v = 0\n    for i in range(length):\n        byte, pos = divmod(start_bit + i, 8)\n        v |= ((data[byte] >> pos) & 1) << i\n    return v\n\nframe = bytearray(8)\npack(frame, 4, 12, int(87.5 / 0.0625))   # 1400\npack(frame, 16, 2, 0b10)\nprint(frame.hex(' '))                     # 80 57 02 00 00 00 00 00\nprint(unpack(frame, 4, 12) * 0.0625, unpack(frame, 16, 2))  # 87.5 2"
+        },
+        {
+          "title": "주기 + 이벤트 송신(MIXED)과 최소 간격",
+          "body": "100ms 주기 신호에 35·42·150ms 에 값이 바뀌고 최소 간격이 20ms 면, 송신은 0·35·55·100·150·200·300ms 에 나갑니다 — 42ms 변화는 35ms 송신과 너무 붙어 55ms 로 밀립니다. 표준의 최소 지연 시간(ComMinimumDelayTime)이 막으려는 것이 이렇게 몰아 보내기입니다.[15] (아래 코드는 주기와 이벤트를 단순하게 합친 흉내입니다.)",
+          "lang": "python",
+          "code": "def mixed(events, period=100, min_delay=20, until=300):\n    sent, last, pending = [], -10**9, sorted(events)\n    for t in range(until + 1):\n        due = t % period == 0\n        ev = bool(pending) and pending[0] <= t\n        if (due or ev) and t - last >= min_delay:\n            sent.append(t); last = t\n            while pending and pending[0] <= t: pending.pop(0)\n    return sent\n\nprint(mixed([35, 42, 150]))   # [0, 35, 55, 100, 150, 200, 300]"
+        }
+      ],
+      "how_far": "무엇을 보낼지(통신 DB — CAN 은 DBC, LIN 은 LDF, 이더넷 DB)는 OEM 이 정해 넘기고, 고객 제어기 개발자는 그 위에 응용 SW 를 올립니다.[5] 이 자리는 그 사이의 **표준 모듈 자체**를 만들고, 새 AUTOSAR 판이 나오면 올리고, 현대차 특화 기능을 넣습니다.[4][5] 최소선은 CAN 한 갈래(Can → CanIf → PduR → Com)의 흐름과 상태 기계(CanSM·CanNm)를 표준 문서를 보며 설명하고, 칩 레지스터 수준에서 프레임 하나를 직접 보내 본 정도입니다.{추론}",
+      "refs": [2, 4, 5, 7, 14, 15, 17, 18, 19, 20, 23],
+      "study": ["autosar-lsa", "mathworks-autosar-ko", "soffar-autosar", "sws-com", "sws-canif-cansm", "vector-can", "vector-lin", "vector-eth", "matheus-ethernet"]
+    },
+    {
+      "section": "qualification",
+      "quote": "ㆍEmbedded, A-SPICE, C, C++",
+      "short": "임베디드 C 로 짜고, 요구사항→설계→시험이 서로 이어지는 A-SPICE 절차대로 남기는 것이 기본기라서.",
+      "why": "공고가 붙인 기술 꼬리표다(원티드·잡코리아 같음).[1][2] mobilgene Classic 2.0 은 2024년 A-SPICE **레벨 3(CL3)** 인증을 국내 최초로 받았고, 2021년 레벨 1 뒤 3년 만에 레벨 2 를 건너뛰었다고 보도됐습니다.[9] 팀도 이 인증을 바탕으로 표준화된 개발 절차를 운영한다고 밝힙니다.[2] 유럽 완성차는 SW 공급에 레벨 2 이상을 요구한다는 보도도 있습니다.[9]",
+      "actually": {
+        "intro": "A-SPICE 는 '무엇을 만들었나'가 아니라 '어떤 절차로 만들었나'를 재는 모델입니다. 일반 내용은 공개된 평가 모델(PAM 4.0)에서 옮깁니다.",
+        "items": [
+          "**요구사항부터 시험까지 줄 긋기** — SW 요구사항 → 아키텍처 → 상세 설계·구현 → 단위 검증 → 통합 시험 → 요구사항 시험의 V 자 단계마다 산출물을 남기고, 위아래를 추적(traceability)으로 잇는다.[21]",
+          "**레벨의 뜻** — 레벨 1 은 '일을 했다', 2 는 '계획·관리하며 했다', 3 은 '회사 표준 절차를 정하고 프로젝트가 그것을 따른다'.[21] 회사는 약 130개 항목을 0~5 단계로 평가받았다고 밝혔다.[9]",
+          "**C 가 주력** — AUTOSAR Classic BSW 는 C 로 정의된 API 이고, 회사 설정 도구가 설정값에서 C 코드를 만든 뒤 컴파일러를 불러 실행 파일까지 만든다.[5][14] C++ 은 꼬리표에 있지만 이 자리에서 어디에 쓰는지는 공개되지 않았다.{추론}",
+          "**자동 생성 코드와 규칙** — 대부분 코드가 자동 생성되므로 MISRA C 같은 코딩 규칙 준수가 중요해졌다는 설명이 회사 행사 기조연설에 나온다.[6]"
+        ]
+      },
+      "level": {
+        "basic": "포인터·비트 연산·구조체·volatile·인터럽트 · 정적 메모리(동적 할당 없이)",
+        "work": "MCU 데이터시트·레지스터 읽기 · 크로스 컴파일·링커 맵 · 요구사항 ID 로 코드·시험을 잇기",
+        "team": "AUTOSAR SWS 요구사항을 한 줄씩 구현·추적 · MISRA 규칙 · A-SPICE 산출물(설계서·단위·통합 시험 보고서)"
+      },
+      "how_far": "절차 자체는 품질 조직과 인증 체계가 정합니다. 개발자는 **내가 짠 코드가 어느 요구사항에서 왔고 어느 시험으로 확인됐는지**를 남기면 됩니다.{추론} 처음 오는 사람에게 레벨 3 경험까지 요구하지는 않고, 꼬리표 수준(경험 있음)이면 됩니다 — 공고의 자격요건은 임베디드 경험 하나입니다.[1]",
+      "refs": [1, 2, 5, 6, 9, 14, 21],
+      "study": ["aspice-pam40", "grenning-tdd"]
+    },
+    {
+      "section": "qualification",
+      "quote": "OS/Mode 모듈 개발 및 플랫폼 개발",
+      "short": "잡코리아 판의 포지션 칸에 옆 팀 공고 이름이 같이 실린 줄 — 이 자리의 일은 통신이지만 OS·모드 모듈과 맞물려 돈다.",
+      "why": "잡코리아의 이 공고 화면은 '포지션 및 자격요건' 칸 제목이 'OS/Mode 모듈 개발 및 플랫폼 개발'로 되어 있는데, 바로 아래 담당업무는 통신 스택(CAN/ETH/LIN BSW)입니다.[1] 같은 회사가 같은 날 잡코리아에 'OS/Mode 모듈 개발 및 플랫폼 개발'이라는 별도 공고를 올렸으므로[24], 공고를 옮겨 쓰면서 포지션 이름이 섞인 것으로 보입니다.{추론} 원티드·사람인 판에는 이 줄이 없습니다.[2][3] 다만 통신 모듈은 OS·모드 관리 모듈과 늘 같이 움직이므로, 무엇인지는 알아 두는 편이 좋습니다.{추론}",
+      "actually": {
+        "intro": "통신 개발자가 OS·모드 쪽과 만나는 자리입니다(AUTOSAR 표준 구조).",
+        "items": [
+          "**OS** — 통신 모듈의 주기 함수(MainFunction)는 OS 태스크가 정해진 주기로 부른다. 회사 R4.4 판은 멀티코어 칩에서 BSW 를 코어별로 나눠 놓을 수 있게 해, CAN·이더넷을 한 코어에 몰던 병목을 풀었다(한 코어 23.9% → 코어 둘로 16.6%·8.6%).[5]",
+          "**모드 관리** — 제어기가 켜지고 꺼질 때 EcuM·BswM 이 통신 관리자(ComM)에 '통신해도 된다/안 된다'를 알리고, ComM 이 CanSM·CanNm 에 버스를 열고 닫게 한다.[14][18]",
+          "**포스트 빌드** — 회사 R4.4 판은 롬 하나에 여러 CAN DB 사양을 넣고 부팅 때 골라 쓰는 기능을 넣었다. 예전에는 메시지가 바뀌면 롬을 따로 만들어야 했다.[5]"
+        ]
+      },
+      "how_far": "OS·모드 모듈 자체는 따로 공고를 낸 옆 자리 몫으로 보입니다.[24]{추론} 이 자리에서는 '내 통신 모듈이 어느 태스크에서 얼마 주기로 불리고, 어떤 모드에서 켜지고 꺼지나'를 설명할 수 있으면 됩니다.{추론}",
+      "refs": [1, 2, 3, 5, 14, 18, 24],
+      "study": ["autosar-lsa", "soffar-autosar"]
+    },
+    {
+      "section": "qualification",
+      "quote": "ㆍ임베디드 SW 개발 경험",
+      "short": "PC 가 아니라 작은 칩 위에서, 메모리·시간이 빠듯한 채로 하드웨어를 직접 다뤄 본 경험이 필요해서.",
+      "why": "팀원은 이 플랫폼이 하드웨어를 제어하는 MCAL 부터 자체 OS·차량 통신 모듈·서비스 모듈까지 품고 있어, SW 개발 실력 외에 **MCU 분석 능력과 컴퓨터공학 지식**이 도움이 된다고 말했습니다.[4] 회사는 고객이 쓸 제어기 칩에 맞춰 클럭·메모리·CAN 통신·진단까지 직접 띄워(브링업) '동작하는 패키지'로 넘기고, 평균 6주 안에 배포하는 것을 목표로 한다고 발표했습니다.[5]",
+      "actually": {
+        "items": [
+          "**칩 문서 읽기** — 4.4 판은 Infineon AURIX TC36x·TC38x·TC39x 세 종을 지원한다고 발표됐다.[5] CAN 컨트롤러의 메시지 칸·필터·인터럽트를 데이터시트에서 찾아 드라이버 설정과 맞춘다.{추론}",
+          "**시간 지키기** — 통신 주기 함수가 몇 µs 안에 끝나야 다른 태스크가 밀리지 않는다. 회사는 R4.4 에서 통신 송수신 처리량을 110%·141%(CAN·이더넷) 개선했다고 발표했다.[5]",
+          "**메모리 아끼기** — 같은 발표에서 플랫폼 RAM·ROM 을 각각 8%·7% 줄였다고 했다.[5] 동적 할당 없이 설정 단계에서 버퍼 크기를 정해 두는 방식이 보통이다.{추론}",
+          "**고장 상황 재현** — 버스오프·수신 시간 초과·버퍼 넘침 같은 상황을 일부러 만들어 상태 기계가 표준대로 움직이는지 본다.[15][17]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "버스오프 복구 간격 (CanSM 의 L1 → L2)",
+          "body": "L1 10ms · L2 1000ms · L1→L2 전환 5회로 두면, 연달아 버스오프가 나도 처음 다섯 번은 10ms 만에 다시 붙고(누적 50ms) 여섯 번째부터 1초씩 기다립니다(누적 1050·2050ms). 고장 난 제어기가 버스를 계속 어지럽히지 않게 하는 장치입니다. 숫자는 예시이고 실제 값은 OEM 사양이 정합니다.[17]",
+          "lang": "python",
+          "code": "def recovery_times(busoffs, l1_ms=10, l2_ms=1000, l1_to_l2=5):\n    t, out = 0, []\n    for n in range(busoffs):\n        wait = l1_ms if n < l1_to_l2 else l2_ms\n        t += wait\n        out.append((n + 1, wait, t))\n    return out\n\nfor n, wait, t in recovery_times(7):\n    print(n, wait, t)\n# 1 10 10 / 2 10 20 / 3 10 30 / 4 10 40 / 5 10 50\n# 6 1000 1050 / 7 1000 2050"
+        }
+      ],
+      "how_far": "자동차일 필요는 없습니다 — 공고는 '임베디드 SW 개발 경험'만 적었고 자동차 제어기는 우대사항으로 따로 뒀습니다.[1] 최소선은 MCU 위에서 주변장치(UART·CAN·타이머)를 레지스터나 HAL 로 직접 다루고, 인터럽트와 주기 태스크가 섞인 펌웨어를 디버거로 잡아 본 경험입니다.{추론}",
+      "refs": [1, 4, 5, 15, 17],
+      "study": ["grenning-tdd", "vector-can", "sws-canif-cansm"]
+    },
+    {
+      "section": "qualification",
+      "quote": "ㆍ경력 : 경력2년↑",
+      "short": "잡코리아는 2년 이상, 원티드·사람인은 3~7년 — 표준을 읽고 혼자 모듈 하나를 맡을 수 있는 중간 연차를 찾는다.",
+      "why": "같은 자리를 잡코리아는 '경력 2년↑', 원티드·사람인은 '경력 3~7년'으로 적었습니다.[1][2][3] 전형은 서류 → 서류 검토 → 직무역량테스트(코딩)·인성검사 → 1차·2차 면접 → 처우협의·채용검진입니다.[1][3]",
+      "actually": {
+        "items": [
+          "**코딩 테스트가 있다** — 세 판 모두 직무역량테스트(코딩)를 전형에 넣었다.[1][2][3]",
+          "**연차 폭의 뜻** — 2~7년이면 신입처럼 가르쳐야 하는 단계는 지났고, 리드보다는 모듈 담당자를 찾는 폭으로 읽힌다.{추론}",
+          "**연봉은 처우협의에서** — 공고에 금액이 없고 '면접 후 결정'으로 적었다.[3]"
+        ]
+      },
+      "how_far": "연차는 숫자보다 '무슨 일을 혼자 끝까지 했나'로 봅니다.{추론} 임베디드 2년이라면 모듈 하나(드라이버·통신·부트로더 등)를 설계부터 시험까지 맡아 본 이야기를 준비합니다.{추론}",
+      "refs": [1, 2, 3],
+      "study": []
+    },
+    {
+      "section": "preference",
+      "quote": "ㆍ전장 제어기 개발 경험",
+      "short": "차 안의 제어기(ECU)를 만들어 봤다면 CAN DB·진단·양산 시험이 왜 그렇게 까다로운지 이미 알아서.",
+      "why": "이 플랫폼의 고객은 제어기를 만드는 쪽이고, 팀은 도메인별 요구사항을 플랫폼에 통합해 양산차에 넣고 심층 기술 문의·이슈 분석에 대응한다고 소개합니다.[4] 바디·편의(IBU·스마트키 등)·ADAS·친환경(수소 연료전지 FCU, 충전 제어기 CCM)·섀시·인포테인먼트까지 적용 제어기가 넓습니다.[5]",
+      "actually": {
+        "items": [
+          "**고객 쪽 시선** — 제어기 개발자는 OEM 에서 받은 통신 DB 를 회사 설정 도구로 가져와 BSW 를 설정하고, 진단 제품번호·DTC(고장 코드) 같은 값을 채우고, 제어기 전용 드라이버(CDD)를 직접 짠다.[5]",
+          "**양산 품질 관문** — 회사는 15개 모듈 160여 항목의 오프라인 '테크니컬 리뷰'로 플랫폼을 잘못 쓰는 것을 막는다고 발표했다.[5]",
+          "**재프로그래밍** — 패키지에 CAN 재프로그래밍 시험 설정(CRT)을 넣어 준다. OEM 사양 진단과 재프로그래밍 검증은 일이 많다고 회사가 직접 말했다.[5]",
+          "**기능안전** — 통신 데이터가 깨지거나 늦는 것을 잡는 E2E 보호·변환기(ComXf·SomeIpXf) 모듈도 ASIL-D 대상에 들어갔다.[5][7] 국제 표준 ISO 26262 의 SW 편이 설계·단위 검증·통합의 요구를 정한다.[22]"
+        ]
+      },
+      "how_far": "우대사항이라 없어도 지원할 수 있습니다.[1] 있다면 '어느 제어기에서 어떤 통신 문제(버스오프·타임아웃·진단 실패)를 어떻게 찾았나'를 CANoe 같은 도구 로그와 함께 말할 수 있으면 강점이 됩니다.{추론}",
+      "refs": [1, 4, 5, 7],
+      "study": ["vector-can", "iso26262-6", "sws-com"]
+    },
+    {
+      "section": "preference",
+      "quote": "ㆍmobilgene Classic 플랫폼 사용 경험",
+      "short": "이 팀이 만드는 바로 그 플랫폼을 써 본 사람은 설정 도구·패키지 구조·현대차 특화 모듈을 배우는 시간이 줄어서.",
+      "why": "mobilgene Classic 은 팀이 직접 개발하는 클래식 AUTOSAR 플랫폼의 제품명이고, 그룹사에는 '현대 AUTOSAR 클래식 플랫폼'이라는 이름으로 서비스한다고 팀원이 설명했습니다.[4] 2012년 개발을 시작해 2016년 그랜저 IG 에 처음 들어갔고, 2020년 시작한 2.0 은 새 AUTOSAR 사양을 따릅니다.[8] 현대차·기아·제네시스 모든 양산차에 쓰인다고 보도됩니다.[7][10]",
+      "actually": {
+        "items": [
+          "**두 판** — 2021년 발표 기준 4.0.3 판(AUTOSAR 4.0.3 + 일부 4.2/4.3 모듈, 70개 모듈, MCU 13종)과 4.4.0 판(전 모듈 4.4, MCU 3종, 기능안전 강화)이 있었다.[5]",
+          "**한 도구** — 설정 도구 하나로 BSW 와 응용 SW 컴포넌트(포트·러너블)를 함께 설정하고 코드 생성·컴파일까지 부른다. 다른 회사 도구는 BSW·SWC 설정 도구가 나뉜 경우가 많다고 회사가 비교했다.[5]",
+          "**인증** — 2021년 4.4 판이 DNV 에게서 ASIL-D 를 받았고[13], 2021년 8개 모듈 → 2025년 63개 전 모듈로 넓혔다[7], 2024년 A-SPICE CL3[9]. 검증 자동화 도구 mobilgene x-Studio 도 2026년 ISO 26262 도구 인증을 받았다.[12]",
+          "**배우는 길** — 회사는 기본 과정(외부 교육 회사)·심화 과정(회사 직접)·하루 워크숍 세 가지 교육을 운영한다고 발표했다.[5] 2023년에는 현대차와 함께 사용자 행사(AUTOSAR Day)를 열어 2.0 판의 구조·기능안전·멀티호스트 사례를 소개했다.[11]"
+        ]
+      },
+      "how_far": "회사 고객사(1·2차 협력사) 출신이 아니면 써 볼 길이 거의 없어 우대로 둔 것으로 보입니다.{추론} 없으면 다른 AUTOSAR 도구(벡터·일렉트로비트 등)로 BSW 를 설정해 본 경험, 그것도 없으면 표준 문서로 CAN 한 갈래를 설명하는 수준이면 출발선입니다.{추론}",
+      "refs": [4, 5, 7, 8, 9, 10, 12],
+      "study": ["hae-webinar", "hae-job-video", "soffar-autosar"]
+    }
+  ],
+  "fit": {
+    "good": [
+      "표준 문서 수백 쪽을 한 줄씩 코드로 옮기는 일이 지루하지 않은 사람",
+      "비트 하나·1ms 하나 어긋난 것을 끝까지 추적하는 사람",
+      "내 코드가 수많은 제어기에 깔려 오래 쓰이는 것이 보람인 사람 — 플랫폼은 전 양산차에 들어간다[7]",
+      "앞으로 AUTOSAR 표준에 개념을 먼저 제안하는 쪽으로 가고 싶은 사람 — 팀원이 꼽은 방향이다[4]"
+    ],
+    "hard": [
+      "A-SPICE CL3·ASIL-D 절차라 코드보다 문서·추적·리뷰에 드는 시간이 크다[9][21]{추론}",
+      "고객 기술지원·이슈 분석이 업무에 들어 있어 남의 제어기 문제를 같이 파야 한다[2][4]",
+      "C 와 MCU 중심이라 서버·앱 개발에서 옮겨 오면 처음 몇 달이 가파르다{추론}"
+    ]
+  },
+  "interview": [
+    {"q": "응용 SW 가 쓴 신호 하나가 CAN 선에 나가기까지 어떤 모듈을 지나나요?", "a": "RTE → Com → PduR → CanIf → Can 드라이버, 각 층이 무엇을 맡는지.[14][15]"},
+    {"q": "제어기 하나가 버스오프를 반복하면 CanSM 은 무엇을 하나요? 왜 두 단계로 기다리죠?", "a": "L1 빠른 복구 → 횟수 넘으면 L2 느린 복구, 버스를 지키려고.[17]"},
+    {"q": "주기 신호에 이벤트 송신을 섞으면 무엇을 조심해야 하나요?", "a": "MIXED 모드, 최소 지연 시간, 수신 쪽 감시 시간.[15]"},
+    {"q": "멀티코어 MCU 에서 CAN 과 이더넷을 같은 코어에 두면 무엇이 문제인가요?", "a": "회사 R4.4 의 BSW 분산 배치 발표 — 한 코어 부하 23.9%.[5]"},
+    {"q": "A-SPICE 에서 요구사항과 시험 사이 추적은 왜 필요하죠? 직접 해 본 예가 있나요?", "a": "CL3 인증 플랫폼이라 산출물 습관을 본다.[9][21]"},
+    {"q": "10BASE-T1S 가 CAN 을 대신할 수 있다면, 통신 스택에서는 무엇이 달라지나요?", "a": "팀이 준비 중이라고 밝힌 주제, PLCA 와 이더넷 쪽 모듈 경로.[2][20][23]"}
+  ],
+  "resources": [
+    {"id": "hae-job-video", "title": "[직무 자기소개서] 현대오토에버 클래식오토사팀 (mobilgene)", "by": "현대오토에버 유튜브 · 2023", "kind": "video", "lang": "ko", "free": true, "level": "입문", "url": "https://www.youtube.com/watch?v=q-hh5hiND1w", "why": "팀원이 직접 말하는 3분짜리 일 소개. 모듈 개발·현대차 특화 기능·MCU 분석 능력이 왜 필요한지 먼저 잡힌다."},
+    {"id": "hae-webinar", "title": "[웨비나] mobilgene Classic과 모빌리티 소프트웨어", "by": "현대오토에버 유튜브 · 2022 게시", "kind": "video", "lang": "ko", "free": true, "level": "입문", "url": "https://www.youtube.com/watch?v=zH29jB2LJfg", "why": "우대사항 'mobilgene Classic 사용 경험'을 대신할 가장 가까운 공개 자료. 제품 두 판·지원 모듈·설정 도구·적용 흐름·R4.4 개선점(20분부터)이 나온다."},
+    {"id": "autosar-lsa", "title": "AUTOSAR Layered Software Architecture (R22-11)", "by": "AUTOSAR", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_EXP_LayeredSoftwareArchitecture.pdf", "why": "주요업무의 'CAN/ETH/LIN BSW'가 어느 층의 어떤 모듈인지 그림으로 보는 지도. 통신 스택 쪽 쪽수부터 읽는다."},
+    {"id": "mathworks-autosar-ko", "title": "AUTOSAR란?", "by": "MathWorks 도움말(한국어)", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://kr.mathworks.com/help/autosar/ug/what-is-autosar.html", "why": "응용 SW·RTE·BSW 의 관계를 한국어로 짧게 먼저 잡는다."},
+    {"id": "soffar-autosar", "title": "AUTOSAR Fundamentals and Applications", "by": "Hossam Soffar · Packt · 2024", "kind": "book", "lang": "en", "level": "입문", "url": "https://www.oreilly.com/library/view/autosar-fundamentals-and/9781805120872/", "why": "표준 문서 전에 Classic 플랫폼 전체(층·RTE·BSW·설정 흐름)를 책 한 권으로 훑는다."},
+    {"id": "sws-com", "title": "AUTOSAR Specification of Communication (COM, R22-11)", "by": "AUTOSAR", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_SWS_COM.pdf", "why": "신호 넣기·송신 모드·수신 감시 — 통신 스택 개발자가 매일 펼치는 문서. 7장(기능 설명)부터."},
+    {"id": "sws-canif-cansm", "title": "AUTOSAR Specification of CAN Interface · CAN State Manager (R22-11)", "by": "AUTOSAR", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_SWS_CANInterface.pdf", "why": "CanIf(송수신·버퍼링)와 CanSM(버스오프 복구 L1/L2) — CAN 갈래의 핵심 두 모듈. CanSM 은 같은 폴더의 AUTOSAR_SWS_CANStateManager.pdf."},
+    {"id": "vector-can", "title": "Vector E-Learning · CAN", "by": "Vector Informatik", "kind": "course", "lang": "en", "level": "입문", "url": "https://elearning.vector.com/course/view.php?id=20", "why": "프레임·중재·오류 처리·CAN FD 를 그림으로. 버스오프가 왜 생기는지 여기서 먼저 이해한다."},
+    {"id": "vector-lin", "title": "Vector E-Learning · LIN", "by": "Vector Informatik", "kind": "course", "lang": "en", "level": "입문", "url": "https://elearning.vector.com/course/view.php?id=21", "why": "마스터·슬레이브·스케줄 테이블 — LIN BSW 의 바탕."},
+    {"id": "vector-eth", "title": "Vector E-Learning · Ethernet", "by": "Vector Informatik", "kind": "course", "lang": "en", "level": "입문", "url": "https://elearning.vector.com/course/view.php?id=14", "why": "이더넷·IP 통신 기본. SoAd·TcpIp 모듈을 읽기 전 준비."},
+    {"id": "matheus-ethernet", "title": "Automotive Ethernet (3판)", "by": "Kirsten Matheus · Thomas Königseder · Cambridge University Press · 2021", "kind": "book", "lang": "en", "level": "심화", "url": "https://doi.org/10.1017/9781108895248", "why": "차량 이더넷 물리층부터 프로토콜까지. 3판에 팀이 준비한다는 10BASE-T1S 가 들어갔다."},
+    {"id": "aspice-pam40", "title": "Automotive SPICE PAM 4.0", "by": "VDA QMC · 2023", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://vda-qmc.de/wp-content/uploads/2023/12/Automotive-SPICE-PAM-v40.pdf", "why": "꼬리표 'A-SPICE'의 원문 모델. SW 엔지니어링 프로세스(SWE.1~6) 부분만 읽어도 무엇을 남겨야 하는지 보인다."},
+    {"id": "iso26262-6", "title": "ISO 26262-6:2018 — 소프트웨어 수준 제품 개발", "by": "ISO", "kind": "doc", "lang": "en", "level": "심화", "url": "https://www.iso.org/standard/68388.html", "why": "ASIL-D 플랫폼이 지키는 SW 개발 요구(설계·단위 검증·통합). 유료라 목차와 공개 해설부터 본다."},
+    {"id": "grenning-tdd", "title": "임베디드 C를 위한 TDD", "by": "제임스 그레닝 · 인사이트 · 2012", "kind": "book", "lang": "ko", "level": "실무", "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000012556079", "why": "하드웨어 없이 C 모듈을 단위 시험하는 법. A-SPICE 단위 검증 산출물을 만드는 습관과 바로 이어진다."}
+  ],
+  "study_path": [
+    {"title": "회사 말로 지도 잡기", "time": "2~3일", "goal": "mobilgene Classic 이 무엇이고 이 팀이 어느 칸을 만드는지 설명할 수 있다.", "task": "웨비나를 보고 'AUTOSAR 층 그림'을 손으로 그린 뒤, 통신 모듈(Com·PduR·CanIf·CanSM·CanNm·LinIf·SoAd)에 색을 칠한다.", "resources": ["hae-job-video", "hae-webinar", "mathworks-autosar-ko", "autosar-lsa"]},
+    {"title": "버스 셋의 기본기", "time": "1~2주", "goal": "CAN 중재·오류 카운터·버스오프, LIN 스케줄, 이더넷 UDP/TCP 를 그림 없이 설명한다.", "task": "가상 CAN DB(메시지 3개·신호 8개)를 표로 만들고, 신호를 8바이트에 넣고 빼는 C 함수를 짠 뒤 경계값(최댓값·음수·바이트 경계 걸침)으로 시험한다.", "resources": ["vector-can", "vector-lin", "vector-eth"]},
+    {"title": "표준 문서로 CAN 한 갈래 따라가기", "time": "2~3주", "goal": "Com → PduR → CanIf → Can 의 API 와 콜백 순서, CanSM 상태 기계를 문서 번호로 짚는다.", "task": "PC 에서 가짜 Can 드라이버를 두고 Com 의 주기·MIXED 송신, 수신 감시 시간 초과, 버스오프 L1/L2 복구를 흉내 내는 작은 C 프로그램을 만들고 로그로 확인한다.", "resources": ["soffar-autosar", "sws-com", "sws-canif-cansm"]},
+    {"title": "시험과 절차 습관", "time": "1~2주", "goal": "요구사항 ID → 코드 → 단위 시험을 잇고, 하드웨어 없이 모듈을 시험한다.", "task": "앞 단계 모듈에 요구사항 표(ID 10개)를 붙이고 단위 시험 20개를 짜서, 어느 요구사항이 어느 시험으로 확인됐는지 추적표를 만든다.", "resources": ["grenning-tdd", "aspice-pam40", "iso26262-6"]},
+    {"title": "이더넷 쪽으로 넓히기", "time": "2주~", "goal": "SoAd·TcpIp 위로 PDU 가 나가는 길과 10BASE-T1S 가 바꾸는 것을 설명한다.", "task": "PC 에서 UDP 소켓 두 개로 'PDU ID + 길이 + 데이터' 헤더를 붙여 주고받는 흉내를 만들고, 같은 신호를 CAN 판과 비교한다.", "resources": ["matheus-ethernet", "vector-eth", "autosar-lsa"]}
+  ],
+  "pay": {
+    "summary": "공고는 '면접 후 결정'. 직원 1인 평균 급여는 **9,900만원**(2025년 사업보고서), 2026년 상반기는 **4,500만원**(반기 공시) — 경력직이 섞인 회사 전체 평균이다",
+    "rows": [
+      {"label": "직원 1인 평균 급여", "value": "9,900만원", "amount": 9900, "basis": "사업보고서 · 2025년", "note": "직원 5,753명·평균 근속 6.8년 기준. 2024년은 1억 100만원(5,421명) [26]"},
+      {"label": "직원 1인 평균 급여(반기)", "value": "4,500만원", "amount": 4500, "basis": "공시 · 2026년 상반기", "note": "반기보고서 기준을 옮긴 기사. 6월 말 본사 직원 5,749명, 평균 근속 7.2년, 상반기 급여 총액 2,591억원 [25]"},
+      {"label": "연 환산(단순)", "value": "약 9,000만원", "amount": 9000, "basis": "공시 · 2026년 상반기 × 2", "note": "같은 기사가 반기 값을 두 배로 환산한 수치. 하반기 상여에 따라 실제 연간 값과 다를 수 있다 [25]"}
+    ],
+    "how": "사람인 판은 급여를 '면접 후 결정'으로 적었고 전형 끝에 처우협의가 있다 [3]. 평균은 신입부터 고참까지 섞인 회사 전체 값이라 경력 2~7년 자리의 제안 금액으로 읽으면 안 된다 {추론}. 신입 초봉 공개 숫자는 이번 조사에서 확인하지 못해 싣지 않았다."
+  },
+  "benefits": {
+    "items": [
+      {"name": "통신비", "detail": "월 최대 6만원"},
+      {"name": "차량 구입", "detail": "현대차그룹 차량 최대 30% 지원, 입사 후 첫 차 20%"},
+      {"name": "학자금 대출 이자", "detail": "한국장학재단 본인 학자금 대출 이자 지원"},
+      {"name": "주거", "detail": "주택 구입·임차 때 사내 대출제도"},
+      {"name": "하계 휴가", "detail": "연차 외 5일 추가 + 하계 휴가비"},
+      {"name": "복지포인트·명절", "detail": "복지포인트, 명절 귀향비"},
+      {"name": "자녀", "detail": "유치원~대학교 학자금, 초등학교 입학 선물, 강남구 사내 어린이집 2곳"},
+      {"name": "출산·육아", "detail": "산전후·배우자 출산·태아 검진·난임 치료 휴가"},
+      {"name": "건강", "detail": "종합검진·의료비·독감 접종·단체 상해보험·심리상담(EAP), 본인과 가족"},
+      {"name": "휴양", "detail": "전국 40여 개 리조트 이용 지원"},
+      {"name": "그 밖의", "detail": "경조휴가·경조비, 동호회 지원, 직원식당"}
+    ],
+    "note": "현대오토에버 채용 사이트의 복리후생 소개다 [27]. 원티드 공고는 '회사 내규에 따름'으로만 적었다 [2]. 게시 연도가 적혀 있지 않으니 처우 협의 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "현대오토에버 본사",
+    "address": "서울특별시 강남구 테헤란로 510",
+    "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20510",
+    "near": "2호선 삼성역과 선릉역 사이 테헤란로 {추론}",
+    "note": "사람인 판의 근무지는 '서울 강남구 대치동'이고 [3], 주소는 회사 국내 사업장 페이지의 본사다(테헤란로 510 은 대치동) [28]. 같은 강남구에 다른 사옥도 있어 팀 자리가 본사와 다를 수 있다 [28]."
+  },
+  "sources": [
+    {"n": 1, "title": "잡코리아 · 현대오토에버 Classic Autosar 통신 스택 개발", "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50301694", "kind": "posting", "date": "2026-11", "note": "담당업무·스킬·자격·우대·전형. 포지션 칸 제목이 'OS/Mode 모듈 개발 및 플랫폼 개발'로 실려 있다"},
+    {"n": 2, "title": "원티드 · [SDV] 임베디드SW플랫폼디벨로퍼 - Classic Autosar 통신 스택 개발", "url": "https://www.wanted.co.kr/wd/395348", "kind": "posting", "date": "2026-11", "note": "팀 소개(클래식오토사3팀 — CAN·LIN·ETH 통신 스택, ASIL-D, A-SPICE, DDS·10BASE-T1S)"},
+    {"n": 3, "title": "사람인 · [SDV] Embedded SW Platform Developer - Classic Autosar 통신", "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?rec_idx=55552392", "kind": "posting", "date": "2026-11", "note": "경력 3~7년, 급여 면접 후 결정, 근무지 대치동"},
+    {"n": 4, "title": "현대오토에버 유튜브 · [직무 자기소개서] 현대오토에버 클래식오토사팀 (mobilgene)", "url": "https://www.youtube.com/watch?v=q-hh5hiND1w", "kind": "company", "date": "2023-02-06", "note": "팀원 직무 소개 — 자막 전부 읽음"},
+    {"n": 5, "title": "현대오토에버 유튜브 · [웨비나] mobilgene Classic과 모빌리티 소프트웨어", "url": "https://www.youtube.com/watch?v=zH29jB2LJfg", "kind": "company", "date": "2022-02-21 게시(2021년 통합 뒤 발표)", "note": "클래식오토사팀 수석연구원 발표 — 자막 전부 읽고 제품 정보·R4.4·적용 방안 장면으로 숫자 확인"},
+    {"n": 6, "title": "현대오토에버 유튜브 · [웨비나] AUTOSAR Day With mobilgene - AUTOSAR의 발전과 SDV의 진화", "url": "https://www.youtube.com/watch?v=1i8ubsrySz4", "kind": "company", "date": "2024-07 게시(행사 2023-11)", "note": "회사 행사 기조연설(국민대 정구민 교수) — 자막 전부 읽음"},
+    {"n": 7, "title": "현대자동차그룹 · 현대오토에버, 모빌진 클래식 2.0 전체 모듈 ASIL-D 인증 획득", "url": "https://www.hyundaimotorgroup.com/ko/news/CONT0000000000181767", "kind": "company", "date": "2025-07-24"},
+    {"n": 8, "title": "현대자동차그룹 · Everything about Hyundai Autoever Mobilgene", "url": "https://www.hyundaimotorgroup.com/en/story/CONT0000000000114499", "kind": "company", "date": "2023-09-22"},
+    {"n": 9, "title": "전자신문 · 현대오토에버 '모빌진 클래식 2.0', A-SPICE 레벨3 인증", "url": "https://m.etnews.com/20241022000224", "kind": "news", "date": "2024-10-22"},
+    {"n": 10, "title": "비즈워치 · 현대오토에버, \"차량 SW 코드설계 분석해 품질 개선\"", "url": "https://news.bizwatch.co.kr/article/mobile/2025/05/30/0020", "kind": "news", "date": "2025-05-30", "note": "제16회 AUTOSAR 오픈 콘퍼런스 발표"},
+    {"n": 11, "title": "보안뉴스 · 현대오토에버, 'AUTOSAR Day With mobilgene 2023' 개최", "url": "http://www.boannews.com/news/articleView.html?idxno=123363", "kind": "news", "date": "2023-11-03"},
+    {"n": 12, "title": "현대자동차그룹 · 현대오토에버, 차량 SW 검증 자동화 도구 '기능안전 국제표준' 인증", "url": "https://www.hyundaimotorgroup.com/ko/news/CONT0000000000200858", "kind": "company", "date": "2026-01-26", "note": "mobilgene x-Studio"},
+    {"n": 13, "title": "아주경제 · 현대오토에버 '모빌진클래식', 차량SW 기능안전 최고등급 인증받아", "url": "https://www.ajunews.com/view/20210515105838746", "kind": "news", "date": "2021-05-15", "note": "4.4 판 ASIL-D(DNV)"},
+    {"n": 14, "title": "AUTOSAR · Layered Software Architecture (R22-11)", "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_EXP_LayeredSoftwareArchitecture.pdf", "kind": "reference"},
+    {"n": 15, "title": "AUTOSAR · Specification of Communication (COM, R22-11)", "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_SWS_COM.pdf", "kind": "reference", "note": "송신 모드(DIRECT·MIXED)·최소 지연·수신 감시(ComFirstTimeout·ComTimeout)"},
+    {"n": 16, "title": "AUTOSAR · Specification of CAN Interface (R22-11)", "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_SWS_CANInterface.pdf", "kind": "reference"},
+    {"n": 17, "title": "AUTOSAR · Specification of CAN State Manager (R22-11)", "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_SWS_CANStateManager.pdf", "kind": "reference", "note": "버스오프 복구 CanSMBorTimeL1·L2·CanSMBorCounterL1ToL2"},
+    {"n": 18, "title": "AUTOSAR · Specification of CAN Network Management (R22-11)", "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_SWS_CANNetworkManagement.pdf", "kind": "reference"},
+    {"n": 19, "title": "AUTOSAR · Specification of LIN Interface (R22-11)", "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_SWS_LINInterface.pdf", "kind": "reference"},
+    {"n": 20, "title": "AUTOSAR · Specification of Socket Adaptor (R22-11)", "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_SWS_SocketAdaptor.pdf", "kind": "reference"},
+    {"n": 21, "title": "VDA QMC · Automotive SPICE PAM 4.0", "url": "https://vda-qmc.de/wp-content/uploads/2023/12/Automotive-SPICE-PAM-v40.pdf", "kind": "reference", "date": "2023-11-29"},
+    {"n": 22, "title": "ISO · ISO 26262-6:2018 Road vehicles — Functional safety — Part 6", "url": "https://www.iso.org/standard/68388.html", "kind": "reference"},
+    {"n": 23, "title": "Analog Devices · Why 10BASE-T1S Is the Missing Ethernet Link", "url": "https://www.analog.com/en/signals/thought-leadership/why-10base-t1s-is-the-missing-ethernet-link.html", "kind": "reference", "note": "다른 회사 문서 — 10BASE-T1S·PLCA 일반 설명"},
+    {"n": 24, "title": "잡코리아 · 현대오토에버 OS/Mode 모듈 개발 및 플랫폼 개발", "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50301680", "kind": "posting", "date": "2026-11", "note": "같은 회사가 같은 무렵 올린 OS/Mode 공고"},
+    {"n": 25, "title": "지디넷코리아 · 현대오토에버, 상반기 매출 2.2조 돌파…SI 부문 26% 급성장", "url": "https://zdnet.co.kr/view/?no=20260814185634", "kind": "news", "date": "2026-08-14", "note": "2026년 반기보고서 기준 직원 수·급여"},
+    {"n": 26, "title": "DART · 현대오토에버 2025 사업보고서(직원 등의 현황)", "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001324", "kind": "company", "date": "2026-03-18"},
+    {"n": 27, "title": "현대오토에버 채용 · Life(복리후생)", "url": "https://career.hyundai-autoever.com/ko/life", "kind": "company"},
+    {"n": 28, "title": "현대오토에버 · 국내 사업장", "url": "https://www.hyundai-autoever.com/kor/about/workplace/domestic/contents.do?cntnSeq=239", "kind": "company"}
+  ],
+  "caveat": "회사 웨비나는 2021년 무렵 발표라 모듈 수·지원 MCU·판 번호는 지금 달라졌을 수 있습니다(2025년 기사는 2.0 판 63개 모듈). 팀의 통신 모듈 내부 설계·현대차 특화 사양은 공개되지 않아, 모듈 동작은 AUTOSAR 공개 표준 문서로 '보통 이런 것'을 보였습니다. 잡코리아 판의 'OS/Mode' 줄은 옆 팀 공고 이름이 섞인 것으로 보이며 회사가 확인한 것은 아닙니다."
+}

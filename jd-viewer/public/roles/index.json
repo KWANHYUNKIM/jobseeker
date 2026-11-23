@@ -16,9 +16,12 @@
   "wanted-385554": "hyundai-autoever-ai-researcher",
   "jobkorea-50301716": "hyundai-autoever-ai-researcher",
   "wanted-385488": "hyundai-autoever-auth-account-backend",
-  "jobkorea-50301680": "hyundai-autoever-os-mode-platform",
-  "wanted-395350": "hyundai-autoever-os-mode-platform",
+  "jobkorea-50301694": "hyundai-autoever-classic-autosar-com",
+  "wanted-395348": "hyundai-autoever-classic-autosar-com",
+  "saramin-55552392": "hyundai-autoever-classic-autosar-com",
   "saramin-55552527": "hyundai-autoever-os-mode-platform",
+  "wanted-395350": "hyundai-autoever-os-mode-platform",
+  "jobkorea-50301680": "hyundai-autoever-os-mode-platform",
   "wanted-385504": "hyundai-autoever-physical-ai-engineer",
   "jobkorea-50301916": "hyundai-autoever-physical-ai-engineer",
   "jobkorea-50301866": "hyundai-autoever-robot-backend",
@@ -350,6 +353,30 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 13
+  },
+  {
+   "id": "hyundai-autoever-classic-autosar-com",
+   "company": "현대오토에버",
+   "role": "Classic AUTOSAR 통신 스택 개발",
+   "jobs": [
+    "jobkorea-50301694",
+    "wanted-395348",
+    "saramin-55552392"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 7
+  },
+  {
+   "id": "hyundai-autoever-classic-autosar-os-mode",
+   "company": "현대오토에버",
+   "role": "[SDV] Embedded SW Platform Developer - OS/Mode 모듈 개발 및 플랫폼 개발",
+   "jobs": [
+    "saramin-55552527",
+    "wanted-395350",
+    "jobkorea-50301680"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 12
   },
   {
    "id": "hyundai-autoever-os-mode-platform",
