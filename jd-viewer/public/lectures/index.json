@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-23T10:25:26",
- "count": 145,
+ "generated_at": "2026-11-23T11:33:29",
+ "count": 146,
  "topics": [
   {
    "key": "llm",
@@ -10,7 +10,7 @@
   {
    "key": "ml-basics",
    "label": "머신러닝 기초",
-   "count": 24
+   "count": 25
   },
   {
    "key": "deep-learning",
@@ -102,7 +102,7 @@
        "key": "statquest-ml",
        "title": "StatQuest 머신러닝 기초 — 아주 쉽게 설명하기",
        "school": "StatQuest",
-       "done": 9,
+       "done": 10,
        "total": 25
       },
       {
@@ -115,7 +115,7 @@
      ],
      "why": "교차검증·과적합·회귀·분류 같은 용어를 하나씩 아주 쉽게 푼다. '모두를 위한 딥러닝'은 같은 내용을 한국어로 10~15분씩 짧게.",
      "tip": "둘 중 편한 쪽 하나만 끝까지. 한국어가 편하면 모두의 딥러닝 lec 01~07(회귀·분류)부터.",
-     "done": 9,
+     "done": 10,
      "total": 49
     },
     {
@@ -246,7 +246,7 @@
      "total": 50
     }
    ],
-   "done": 142,
+   "done": 143,
    "total": 202
   },
   {
@@ -1732,7 +1732,7 @@
    "track": "ai",
    "playlist": "https://www.youtube.com/playlist?list=PLblh5JKOoLUICTaGLRoHQDuF_7q2GfuJF",
    "total": 25,
-   "done": 9,
+   "done": 10,
    "lectures": [
     {
      "no": 1,
@@ -1802,7 +1802,7 @@
      "id": "7ArmBVF2dCs",
      "title": "Linear Regression, Clearly Explained!!!",
      "duration_sec": 1647,
-     "done": false
+     "done": true
     },
     {
      "no": 11,
@@ -5417,6 +5417,36 @@
    "written_at": "2026-11-23",
    "series": "statquest-ml",
    "no": 8,
+   "track": "ai"
+  },
+  {
+   "id": "7ArmBVF2dCs",
+   "title": "Linear Regression, Clearly Explained!!!",
+   "title_ko": "선형 회귀 — 선을 긋고(최소 제곱법), 얼마나 설명하나 재고(R²), 우연이 아닌지 따진다(F 와 p 값)",
+   "school": "StatQuest",
+   "code": "StatQuest",
+   "term": "기초 25편",
+   "speaker": "Josh Starmer",
+   "topic": "ml-basics",
+   "tags": [
+    "Machine Learning",
+    "Statistics",
+    "Python",
+    "NumPy",
+    "scikit-learn"
+   ],
+   "level": "입문",
+   "one_line": "선형 회귀는 세 걸음이다 — 최소 제곱으로 선을 긋고, R² 로 '흔들림을 얼마나 줄였나'를 재고, F 로 만든 p 값으로 '우연은 아닌가'를 본다",
+   "duration_sec": 1646,
+   "published": "2022-11-18",
+   "views": 773607,
+   "url": "https://www.youtube.com/watch?v=7ArmBVF2dCs",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/7ArmBVF2dCs/mqdefault.jpg",
+   "chapters": 12,
+   "written_at": "2026-11-23",
+   "series": "statquest-ml",
+   "no": 10,
    "track": "ai"
   },
   {
