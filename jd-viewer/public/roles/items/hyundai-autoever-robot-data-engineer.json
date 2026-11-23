@@ -1,0 +1,1103 @@
+{
+ "id": "hyundai-autoever-robot-data-engineer",
+ "company": "현대오토에버",
+ "role": "Robot Data Engineer",
+ "team": "SDF데이터팀(스마트팩토리 데이터) · SDx 조직",
+ "jobs": [
+  "jobkorea-50301905",
+  "wanted-385505"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "로봇 공장·로봇 운영·로봇 학습에서 나오는 데이터 — 로봇 상태, 센서 값, 설비 신호, 주행 기록 — 를 **로봇과 설비에서 직접 받아 와 정리하고 쌓는 길(파이프라인)**과 그 길이 모이는 **로봇 데이터 플랫폼**을 설계·구축합니다.[1][2]",
+  "env": "스마트팩토리의 데이터 기반을 만들어 온 SDF데이터팀입니다. 이 팀은 이기종(서로 다른 회사·방식의) 설비와 IoT 데이터를 빅데이터 플랫폼에 모으고, 국내외 제조 공장에 파이프라인을 깔고 운영해 왔습니다.[2] 그 일을 이제 **로봇** 쪽으로 넓히는 자리입니다.",
+  "oneline": "공장 통신(PLC·OPC-UA·Modbus·MQTT)과 로봇 통신(ROS 2)을 둘 다 읽을 줄 아는 **경력 9년 이상의 데이터 엔지니어**. 화면보다 **받아 오는 쪽(수집)**이 일의 무게중심입니다.[1][2]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "로봇 제조 공장, 로봇 운영, 로봇 학습 등 다양한 데이터의 수집·가공·적재를 위한 데이터 엔지니어링 수행",
+   "short": "로봇을 만드는 공장·현장에서 일하는 로봇·학습용 기록, 세 곳의 데이터를 받아 와 다듬어 쌓는 일.",
+   "why": "현대차그룹은 공장 설비·물류·로봇·작업 데이터를 한 네트워크로 잇고, 사람 작업 동작 데이터로 로봇을 학습시키는 거점을 운영한다고 밝혔습니다. 그 안에서 현대오토에버의 몫은 스마트팩토리 플랫폼으로 **공장과 물류 시스템을 잇는 것**입니다.[9] 그룹은 한·미·중에 로봇 학습센터를 세워 **현장 실증 데이터**를 모아 AI 모델을 고도화하겠다고도 했습니다.[10] 데이터가 쌓이려면 먼저 누군가 받아 와야 합니다 — 이 자리가 그 일입니다 {추론}.",
+   "actually": {
+    "intro": "세 갈래는 데이터의 성질이 다릅니다. 보통 이렇게 나뉩니다 {추론}.",
+    "items": [
+     "**로봇 제조 공장** — 로봇을 조립·검사하는 라인의 설비 신호(PLC 값·검사 결과·가동/정지). 회사의 스마트팩토리 제품도 센서·PLC·현장 시스템·옛 IT 시스템에서 데이터를 받아 실시간·준실시간·배치로 처리한다고 설명한다.[6]",
+     "**로봇 운영** — 현장에서 일하는 로봇의 상태(위치·배터리·임무·오류 코드)와 관제 기록. 같은 회사의 로봇 관제 팀은 여러 회사 로봇을 한 관제 시스템으로 묶는 일을 한다.[4]",
+     "**로봇 학습** — 로봇을 가르칠 재료. 카메라 영상, 관절·바퀴 상태, 사람이 조종한 시연 기록 같은 것이다. 공개 로봇 학습 도구 LeRobot 은 영상은 MP4, 상태·동작 값은 Parquet(열 단위로 저장하는 파일 형식)으로 묶어 둔다.[28]",
+     "**가공** — 단위 맞추기(밀리미터 → 미터, 도 → 라디안), 시각 맞추기, 중복 제거, 깨진 값 걸러내기. ROS 는 길이는 미터·시간은 초·각도는 라디안으로 통일하자는 규칙을 둔다.[19]",
+     "**적재** — 바로 볼 값(최근 상태)은 빠른 저장소에, 분석·학습용 원본은 큰 저장소(파일·데이터 레이크)에 나눠 쌓는다. 회사의 빅데이터 플랫폼은 로그·관계형 DB·NoSQL 에서 정형·비정형 데이터를 모아 분산 저장한다고 소개한다.[7]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "로봇 데이터 한 건이 쌓이기까지 (보통의 구조) {추론}",
+     "steps": [
+      "현장 · 로봇·센서·PLC 가 값을 낸다",
+      "수집 · 게이트웨이가 ROS 2·MQTT·OPC-UA 로 받아 온다",
+      "버퍼 · Kafka 같은 메시지 브로커에 줄 세운다",
+      "가공 · 단위·시각 맞추고 중복·깨진 값 걸러낸다",
+      "적재 · 실시간 저장소 + 원본 보관소",
+      "쓰기 · 관제 화면·분석·학습 데이터셋"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "어떤 데이터를 왜 모을지는 로봇 사업·학습 쪽 고객이 정합니다.[1] 이 자리는 **세 갈래 데이터를 한 체계로 빠짐없이 받아 오고, 받은 그대로의 원본을 잃지 않게 보관하는 것**까지 맡습니다. 학습 모델을 직접 만드는 일은 공고에 없습니다.[1]",
+   "refs": [
+    1,
+    4,
+    6,
+    7,
+    9,
+    10,
+    19,
+    28
+   ],
+   "study": [
+    "fde-book",
+    "lerobot",
+    "rep103"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "로봇, 센서, 설비, 외부 시스템과의 데이터 인터페이스를 정의하고 수집 체계 구축",
+   "short": "상대 장비가 어떤 말(통신 방식)로 무슨 값을 얼마나 자주 주는지 문서로 정하고, 그대로 받아 오는 장치를 만든다.",
+   "why": "공장과 로봇 현장에는 회사마다 다른 장비가 섞여 있습니다. 회사의 IoT 플랫폼 소개도 이기종 장비의 데이터를 **하나의 통신 채널로** 모아 기업 시스템과 잇는 것을 목표로 듭니다.[6] 같은 데이터를 두고 장비 쪽과 받는 쪽이 다르게 이해하면 숫자가 조용히 틀립니다 {추론}.",
+   "actually": {
+    "intro": "'데이터 인터페이스를 정의한다'는 보통 이런 표를 장비 담당자와 같이 채우는 일입니다 {추론}.",
+    "items": [
+     "**어디서** — 장비 주소, 통신 방식(ROS 2 토픽 이름 / MQTT 토픽 / OPC-UA 노드 / Modbus 레지스터 번호).",
+     "**무엇을** — 값 이름·자료형·단위·배율. Modbus 레지스터는 16비트 칸이라 32비트 실수는 두 칸에 나눠 실리고, 정수에 배율(×0.01)을 곱해 써야 하는 장비도 많다.[23]",
+     "**얼마나 자주** — 주기(100ms·1초)인지, 값이 바뀔 때만 주는지(OPC-UA 구독).[22]",
+     "**시각은 누구 것** — 장비가 잰 시각인지 받은 쪽 시각인지. 둘이 다르면 순서가 뒤집힌다.",
+     "**끊기면** — 다시 붙을 때 빠진 구간을 다시 받을 수 있나, 같은 값이 두 번 오면 어떻게 아나."
+    ]
+   },
+   "examples": [
+    {
+     "title": "PLC 레지스터 두 칸을 실수 하나로 — 순서를 바꾸면 엉뚱한 값",
+     "body": "온도 23.5 가 40001·40002 두 칸에 실려 있습니다. 높은 칸을 먼저 읽으면 23.5, 순서를 바꾸면 0 에 가까운 값이 나옵니다. 어느 순서인지는 장비 문서에만 있어서 **인터페이스 정의서에 적어 두는 칸**입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "import struct\nregs = [0x41BC, 0x0000]  # 40001, 40002\nbe = struct.unpack('>f', struct.pack('>HH', regs[0], regs[1]))[0]\nsw = struct.unpack('>f', struct.pack('>HH', regs[1], regs[0]))[0]\nprint(\"높은 워드 먼저:\", be)\nprint(\"순서를 바꿔 읽으면:\", sw)\nprint(\"정수 2357 x 배율 0.01 =\", round(2357 * 0.01, 2))\n\n# 높은 워드 먼저: 23.5\n# 순서를 바꿔 읽으면: 2.358105055765802e-41\n# 정수 2357 x 배율 0.01 = 23.57"
+    }
+   ],
+   "how_far": "장비 안쪽 프로그램(PLC 로직·로봇 펌웨어)을 고치는 건 설비·로봇 담당입니다 {추론}. 이 자리는 **받는 쪽 규칙을 정하고 그 규칙대로 받는 프로그램을 만드는 것**이 몫입니다. 최소선은 정의서 한 장으로 장비 담당자와 '이 값은 이 단위로 이 주기에 온다'를 맞출 수 있는 것입니다.",
+   "refs": [
+    0,
+    1,
+    6,
+    22,
+    23
+   ],
+   "study": [
+    "modbus-wiki",
+    "opcua-p1",
+    "mqtt5"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "ROS/ROS2, API, 로그, 메시지 브로커 등 다양한 채널을 통해 로봇 데이터를 수집하는 파이프라인 구축",
+   "short": "로봇 내부 통신(ROS 2)·회사 API·로그 파일·메시지 브로커, 길이 다른 데이터를 한곳으로 끌어오는 길을 만든다.",
+   "why": "로봇마다 데이터를 내보내는 방법이 다릅니다. ROS 2 로 움직이는 로봇은 안에서 토픽(이름 붙은 데이터 통로)으로 값을 주고받고, 상용 로봇은 제조사 API 를 주고, 관제 서버는 로그를 남깁니다. 같은 회사 로봇 관제 공고도 ROS 2·MQTT·실시간 양방향 통신을 함께 요구합니다.[4]",
+   "actually": {
+    "items": [
+     "**ROS 2 토픽 받기** — 토픽마다 전달 방식(QoS)이 있다. ROS 2 기본값은 '빠짐없이 전달·최근 10개 보관'이고, 센서용 기본값은 '빠져도 되니 최신 것만·5개 보관'이다.[16] 받는 쪽이 '빠짐없이'를 요구하는데 보내는 쪽이 센서용이면 연결이 안 되는 일이 생긴다 {추론}.",
+     "**녹화 파일(bag)** — ROS 2 의 녹화 도구 rosbag2 는 MCAP(여러 채널을 시각 순으로 담는 기록 파일 형식)과 SQLite 두 저장 방식을 갖고 있고, 기본은 MCAP 이며 압축은 기본으로 꺼져 있다.[17][18]",
+     "**메시지 브로커** — 현장에서는 가벼운 MQTT 로 받고, 뒤에서는 Kafka 에 줄 세우는 구성이 흔하다 {추론}. Kafka 는 같은 키(예: 로봇 id)의 이벤트를 같은 파티션(줄)에 넣고, 한 파티션 안에서만 쓴 순서대로 읽힘을 보장한다.[24]",
+     "**전달 보장** — MQTT 는 QoS 0(많아야 한 번)·1(적어도 한 번)·2(정확히 한 번) 셋이 있다.[21] 1 은 같은 메시지가 두 번 올 수 있어 받는 쪽에서 중복을 지워야 한다.",
+     "**로그·API** — 관제 서버 로그는 파일을 따라 읽고(tail), 제조사 API 는 주기적으로 묻는다(polling). 둘 다 '어디까지 읽었나'를 기록해야 끊겨도 이어 받는다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "로봇 id 를 키로 — 같은 로봇은 한 줄에, 중복은 순번으로 지우기",
+     "body": "Kafka 는 실제로 murmur2 해시를 쓰지만 여기서는 crc32 로 흉내만 냈습니다. amr-01 의 1·2·3 번이 한 파티션 안에서 순서대로 남습니다. 키 종류가 적으면 파티션 0 처럼 빈 줄이 생기는 것(쏠림)도 보입니다. 아래는 QoS 1 로 두 번 온 2번을 (로봇, 순번)으로 지운 것입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "import zlib\nP = 3\nmsgs = [(\"amr-01\", 1), (\"amr-02\", 1), (\"amr-01\", 2), (\"amr-03\", 1), (\"amr-01\", 3), (\"amr-02\", 2)]\nparts = {p: [] for p in range(P)}\nfor key, seq in msgs:\n    parts[zlib.crc32(key.encode()) % P].append(f\"{key}#{seq}\")\nfor p, xs in parts.items():\n    print(\"파티션\", p, xs)\nrecv = [(\"amr-01\", 1), (\"amr-01\", 2), (\"amr-01\", 2), (\"amr-01\", 3)]\nseen, out = set(), []\nfor m in recv:\n    if m in seen:\n        continue\n    seen.add(m)\n    out.append(m)\nprint(\"받은\", len(recv), \"건 → 중복 뺀 뒤\", len(out), \"건:\", out)\n\n# 파티션 0 []\n# 파티션 1 ['amr-01#1', 'amr-02#1', 'amr-01#2', 'amr-01#3', 'amr-02#2']\n# 파티션 2 ['amr-03#1']\n# 받은 4 건 → 중복 뺀 뒤 3 건: [('amr-01', 1), ('amr-01', 2), ('amr-01', 3)]"
+    }
+   ],
+   "how_far": "로봇 소프트웨어(ROS 노드)를 짜는 건 로봇 개발 팀 몫입니다.[4] 이 자리는 **ROS 2 토픽을 구독해 밖으로 내보내는 다리**와 그 뒤의 파이프라인을 만듭니다. 최소선은 ROS 2 토픽·QoS·bag 파일을 읽을 줄 알고, '적어도 한 번' 전달에서 중복과 순서를 처리할 수 있는 것입니다 {추론}.",
+   "refs": [
+    4,
+    16,
+    17,
+    18,
+    21,
+    24
+   ],
+   "study": [
+    "ros2-book-ko",
+    "ros2-docs",
+    "rosbag2",
+    "kafka-book",
+    "mqtt5"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "로봇 데이터 플랫폼 및 아키텍처 기획 및 설계",
+   "short": "어디서 받아 어디에 몇 단계로 쌓고 누가 꺼내 쓰는지, 로봇 데이터 전체의 설계도를 그린다.",
+   "why": "회사의 스마트팩토리 제품군에는 이미 데이터 파이프라인·로봇 통합 모니터링·3D 통합 관제·디지털 트윈(공장을 그대로 본뜬 가상 공장)이 들어 있습니다.[6] 로봇 데이터 플랫폼은 이것들과 따로 놀지 않고 같은 데이터를 나눠 써야 합니다 {추론}. 공고가 경력 9년 이상을 요구하는 것도 설계를 맡기기 때문으로 보입니다 {추론}.[1]",
+   "actually": {
+    "intro": "설계도에 보통 들어가는 결정입니다 {추론}.",
+    "items": [
+     "**현장(엣지)과 중앙을 어떻게 나누나** — 공장 안에서 먼저 거르고 줄여 보낼지, 원본을 다 보낼지. AWS 의 엣지 도구 Greengrass 도 '데이터가 생긴 곳 가까이에서 거르고 모아서' 클라우드로 보내는 구조를 내세운다.[29] 현대차그룹도 로봇이 클라우드 없이 스스로 처리하는 온디바이스 AI 를 키운다고 했다.[9]",
+     "**층 나누기** — 받은 그대로(원본) → 정리한 것(단위·시각 통일) → 쓰기 좋게 모은 것(로봇별·임무별 집계). 원본을 남겨야 규칙이 바뀌어도 다시 만들 수 있다.",
+     "**저장소 고르기** — 최근 상태는 빠른 DB, 시계열(시각이 붙은 값의 연속)은 시간으로 잘라 저장하는 DB, 영상·라이다 같은 큰 파일은 객체 저장소.[27]",
+     "**흐름 두 갈래** — 관제용 실시간 흐름과 분석·학습용 배치 흐름을 나눈다. 회사 제품 설명도 실시간·준실시간·배치 처리를 따로 든다.[6]",
+     "**공통 규칙** — 로봇 id·시각·좌표계 이름을 한 가지로 정한다. ROS 의 좌표 규칙은 로봇 몸 기준 x 앞·y 왼쪽·z 위다.[19]"
+    ]
+   },
+   "how_far": "플랫폼의 쓰임새(관제·분석·학습 중 무엇이 먼저인가)는 고객·사업 조직과 정합니다.[1] 이 자리는 **그 쓰임새에 맞춰 층·저장소·흐름을 고르고, 왜 그렇게 골랐는지 문서로 남기는 것**을 맡습니다.",
+   "refs": [
+    1,
+    6,
+    9,
+    19,
+    27,
+    29
+   ],
+   "study": [
+    "ddia",
+    "fde-book",
+    "greengrass"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "고객 및 유관 조직과 협업하여 데이터 요구사항을 정의하고 기술적·운영적 협의 수행",
+   "short": "로봇 팀·공장·고객사와 '무엇을, 얼마나 자주, 얼마나 오래' 모을지 정하고 장비 접속·운영 규칙을 맞춘다.",
+   "why": "SDF데이터팀은 자동차 회사와 다른 제조사에 파이프라인 컨설팅도 해 왔습니다.[2] 회사는 로봇 사업에서도 현장 기획·구축·운영 안정화·통합 관제·유지보수까지 한꺼번에 맡는 **로봇 SI(시스템 통합)**를 내세웁니다.[8] 고객 현장의 장비에 붙으려면 기술보다 협의가 먼저 필요합니다 {추론}.",
+   "actually": {
+    "items": [
+     "**데이터 요구사항** — '로봇 고장을 미리 알고 싶다' 같은 바람을 '모터 전류를 100ms 마다, 1년 보관' 같은 숫자로 바꾼다 {추론}.",
+     "**기술적 협의** — 장비 쪽에 어떤 통신을 열어 줄지(포트·인증서·계정). OPC-UA 는 인증서로 상대를 확인하고 메시지를 암호화·서명할 수 있어서, 이걸 켤지부터 정한다.[22]",
+     "**운영적 협의** — 공장 망과 사무 망 사이에 데이터를 어떻게 넘길지, 장애가 나면 누구에게 알리는지, 장비 점검일엔 수집을 어떻게 멈추는지 {추론}.",
+     "**바뀜 관리** — 장비 교체·펌웨어 업데이트로 값 이름이나 단위가 바뀌면 미리 알려 달라는 약속 {추론}."
+    ]
+   },
+   "how_far": "사업 계약과 범위는 영업·PM 이 정합니다 {추론}. 이 자리는 **회의에서 나온 말을 정의서와 일정으로 바꾸는 것**까지입니다. 우대사항에 데이터 PM·Tech Lead 경험이 있는 것도 같은 이유입니다.[1]",
+   "refs": [
+    1,
+    2,
+    8,
+    22
+   ],
+   "study": [
+    "fde-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "로봇/산업 데이터 인터페이스 경험이 있으신 분 (ROS/ROS2, PLC, MQTT, OPC-UA, Modbus, WebSocket, REST API)",
+   "short": "로봇·공장 장비가 쓰는 통신 방식 중 몇 가지로 실제 값을 받아 본 경험. 다 써 봤을 필요는 없다.",
+   "why": "괄호 속 7가지는 이 자리가 실제로 만날 '상대 장비의 말'입니다. 잡코리아 판에만 이 줄이 있고 원티드 판에는 없습니다.[1][2]",
+   "actually": {
+    "intro": "하나씩 한 줄로 풀면 이렇습니다.",
+    "items": [
+     "**ROS/ROS 2** — 로봇 소프트웨어의 표준 뼈대. 토픽으로 값을 주고받는다. ROS 1 의 마지막 판 Noetic 은 2025년 5월에 지원이 끝났고, ROS 2 Humble 은 2027년 5월·Jazzy 는 2029년 5월까지다.[20]",
+     "**PLC** — 공장 설비를 움직이는 산업용 컴퓨터. 값은 아래 프로토콜로 꺼낸다.",
+     "**Modbus** — 오래되고 단순한 공장 통신. 1비트 칸(코일·입력)과 16비트 칸(레지스터)을 번호로 읽고 쓴다. 여러 레지스터 읽기는 기능 코드 3번이다.[23]",
+     "**OPC-UA** — 2008년에 나온 산업 통신 표준. 값을 나무 모양의 주소 공간으로 보여 주고, 읽기·쓰기·구독(바뀔 때 알림)·보안을 갖췄다.[22]",
+     "**MQTT** — 가벼운 발행/구독 메시지 규약. 센서·로봇이 브로커에 올리고 받는 쪽이 구독한다.[21]",
+     "**WebSocket · REST API** — 관제 서버·상용 로봇 제조사가 주는 웹 방식 통로. 같은 회사 백엔드 공고도 로봇·IoT 연동(gRPC·MQTT)을 우대로 적었다.[5]"
+    ]
+   },
+   "level": {
+    "basic": "MQTT 브로커에 값을 올리고 구독해 받기 · REST API 를 주기적으로 불러 저장하기",
+    "work": "OPC-UA 구독 · Modbus 레지스터 맵 읽기(배율·워드 순서) · ROS 2 토픽 구독과 QoS 맞추기",
+    "team": "서로 다른 7가지 통로를 한 수집 체계로 묶고, 끊김·중복·시각 차이를 처리하기"
+   },
+   "how_far": "\"경험이 있으신 분\"이라 전부가 아니라 **로봇 쪽 하나(ROS 2)와 공장 쪽 하나(OPC-UA·Modbus 중 하나)**를 실제 장비나 시뮬레이터로 받아 본 수준이면 이야기가 됩니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    5,
+    20,
+    21,
+    22,
+    23
+   ],
+   "study": [
+    "ros2-book-ko",
+    "modbus-wiki",
+    "opcua-p1",
+    "mqtt5"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "로봇 또는 스마트팩토리의 데이터 수집 경험",
+   "short": "실제 현장 장비에서 데이터를 받아 본 경험 — 정리된 파일이 아니라 끊기고 틀리는 원본을 다뤄 본 사람.",
+   "why": "이 팀은 국내외 제조 공장에 파이프라인을 직접 깔고 운영해 왔습니다.[2] 팀 리더도 제조 현장 IoT 부터 데이터 서비스 공급까지 처음부터 끝까지 다룬다고 소개했습니다.[2]",
+   "actually": {
+    "items": [
+     "현장 수집에서 흔히 겪는 일 {추론}:",
+     "**끊김** — 공장 무선·로봇 이동으로 통신이 끊긴다. 다시 붙었을 때 빠진 구간을 채우거나 '빠졌음'을 표시한다.",
+     "**시각 차이** — 장비 시계가 서로 다르다. 로봇이 잰 시각과 서버가 받은 시각을 둘 다 남긴다.",
+     "**값 이상** — 센서 고장으로 0·최댓값이 계속 나온다. 범위 검사로 걸러 따로 둔다.",
+     "**장비 교체** — 같은 자리 장비가 바뀌며 값 이름·단위가 바뀐다."
+    ]
+   },
+   "how_far": "로봇이든 공장이든 **한쪽 현장**이면 됩니다(공고가 '또는'이라 적었습니다).[1] 이력서에는 '몇 대에서 무엇을 몇 초 간격으로, 끊김을 어떻게 처리했나'가 보여야 합니다 {추론}.",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "fde-book",
+    "ddia"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "데이터 플랫폼 구축 또는 데이터 엔지니어링 경험",
+   "short": "데이터를 모아 쌓고 남이 꺼내 쓰게 하는 바닥을 만들어 본 경험. 분석·모델링보다 길을 만드는 쪽.",
+   "why": "팀 리더는 이 팀이 IoT·ETL(뽑고 바꾸고 싣기)·Hadoop·Spark 로 이기종 시스템 데이터를 빅데이터 플랫폼에 모으고, 스마트팩토리 데이터 모델을 적용한 DW(분석용 창고)를 만든다고 소개했습니다.[2]",
+   "actually": {
+    "items": [
+     "**뽑기·싣기(ETL/ELT)** — 원천에서 꺼내 정해진 형식으로 싣는다.",
+     "**저장 층** — 원본 보관소 → 정리 층 → 분석 창고(DW).[2]",
+     "**작업 예약** — 매시·매일 도는 작업을 순서대로 엮는다(Airflow).[26]",
+     "**품질 감시** — 건수·빈 값·늦게 온 비율을 날마다 잰다 {추론}."
+    ]
+   },
+   "how_far": "\"또는\"이라 플랫폼을 처음부터 지은 경험이 없어도 **파이프라인을 운영해 본 데이터 엔지니어**면 됩니다.[1] 다만 경력 9년 이상 자리라 설계 결정을 내려 본 이야기가 필요합니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    26
+   ],
+   "study": [
+    "fde-book",
+    "airflow-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Python 또는 Java 기반 실시간/배치 데이터 처리 경력 5년 이상 또는 이에 준하는 전문성",
+   "short": "들어오는 즉시 처리(실시간)와 모아서 한 번에 처리(배치)를 Python 이나 Java 로 5년쯤 해 본 사람.",
+   "why": "회사 스마트팩토리 제품은 실시간·준실시간·배치 처리를 모두 갖추고 있습니다.[6] 관제는 몇 초 안에 봐야 하고, 학습·분석은 하루치를 모아 돌려도 됩니다 {추론}.",
+   "level": {
+    "basic": "Python/Java 로 파일·DB 를 읽어 바꿔 싣기 · 예외·재시도 처리",
+    "work": "Kafka 소비자 그룹으로 실시간 처리 · Spark 로 하루치 배치 · 이벤트 시각 기준 집계",
+    "team": "늦게 온 데이터(워터마크) · 다시 돌려도 같은 결과(멱등) · 실시간과 배치 결과 맞추기"
+   },
+   "actually": {
+    "items": [
+     "**이벤트 시각 vs 도착 시각** — 로봇이 통신이 끊겼다 다시 붙으면 몇 분 전 값이 지금 도착한다. 집계는 로봇이 잰 시각으로 해야 맞다.",
+     "**워터마크** — '이만큼 늦은 것까지는 받아 준다'는 선. Spark 는 지금까지 본 가장 늦은 이벤트 시각에서 정한 지연만큼 뺀 선보다 오래된 데이터를 버린다.[25]",
+     "**배치 다시 돌리기** — 규칙이 바뀌면 지난 몇 달을 다시 계산한다. 같은 입력이면 같은 결과가 나와야 한다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "1분 창 집계 + 2분 워터마크 — 너무 늦게 온 한 건은 버린다",
+     "body": "도착 순서대로 처리합니다. amr-02 의 40초 값은 늦게 왔지만 선 안이라 0분 창에 들어갑니다. 250초 값이 온 뒤 선이 130초로 올라가서, 20초짜리 amr-03 값은 버립니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "events = [(\"amr-01\", 10), (\"amr-02\", 50), (\"amr-01\", 70), (\"amr-03\", 130),\n          (\"amr-02\", 40), (\"amr-01\", 250), (\"amr-03\", 20)]\nWM = 120\nmax_t, win, dropped = 0, {}, []\nfor rid, t in events:\n    max_t = max(max_t, t)\n    watermark = max_t - WM\n    w = t // 60\n    if (w + 1) * 60 <= watermark:\n        dropped.append((rid, t))\n        continue\n    win[w] = win.get(w, 0) + 1\nprint(\"창별 건수:\", dict(sorted(win.items())))\nprint(\"버린 늦은 이벤트:\", dropped)\n\n# 창별 건수: {0: 3, 1: 1, 2: 1, 4: 1}\n# 버린 늦은 이벤트: [('amr-03', 20)]"
+    }
+   ],
+   "how_far": "\"5년 이상 또는 이에 준하는 전문성\"이라 연수보다 **실시간과 배치를 둘 다 운영해 본 이야기**가 중요합니다.[1] 언어는 Python·Java 중 하나면 됩니다.[1]",
+   "refs": [
+    1,
+    6,
+    25
+   ],
+   "study": [
+    "kafka-book",
+    "spark-guide",
+    "spark-ss"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Kafka, Airflow, Spark 등 데이터 파이프라인 관련 기술 활용 경험",
+   "short": "줄 세우기(Kafka)·작업 순서 예약(Airflow)·큰 계산(Spark), 데이터 엔지니어의 기본 도구 셋을 써 본 경험.",
+   "why": "팀 리더가 직접 Hadoop·Spark·ETL 을 팀의 기술로 꼽았습니다.[2] 로봇 데이터는 로봇 수 × 센서 수 × 초당 횟수로 빨리 커져서 줄 세우기와 나눠 계산하기가 필요합니다 {추론}.",
+   "actually": {
+    "items": [
+     "**Kafka** — 받은 데이터를 잠시 쌓아 두는 줄. 이벤트는 읽어도 지워지지 않고 토픽마다 정한 기간 동안 남아서, 처리 쪽이 멈췄다 와도 다시 읽는다.[24]",
+     "**Airflow** — 파이썬 코드로 작업 순서(DAG)를 적고 예약·감시한다. 지금 판은 3.x 다.[26]",
+     "**Spark** — 하루치 로봇 기록 같은 큰 데이터를 여러 대에서 나눠 계산한다. 실시간 처리(Structured Streaming)도 같은 문법으로 쓴다.[25]"
+    ]
+   },
+   "how_far": "\"등\"이라 셋 다가 아니라 **그중 둘쯤을 실제 운영 파이프라인에서 써 본 것**이 최소선입니다 {추론}. 비슷한 도구(Flink·Kinesis·Dagster)를 썼다면 무엇이 같은지 설명할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    2,
+    24,
+    25,
+    26
+   ],
+   "study": [
+    "kafka-guide",
+    "airflow-book",
+    "spark-guide"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "#로봇 #데이터파이프라인 #OLAP #OLTP #TimeSeries",
+   "short": "다룰 저장소의 성격 셋 — 한 건씩 빨리 쓰는 쪽(OLTP), 많이 모아 분석하는 쪽(OLAP), 시각이 붙은 값(시계열).",
+   "why": "해시태그는 이 자리가 고를 저장소의 종류를 알려 줍니다.[1][2] 관제(지금 로봇 상태)와 분석(지난달 고장 패턴)은 같은 데이터라도 맞는 저장소가 다릅니다.[30]",
+   "actually": {
+    "items": [
+     "**OLTP** — 한 건씩 자주 쓰고 읽는 업무용 DB. 예: 로봇 임무 배정·상태 갱신.[30]",
+     "**OLAP** — 많은 행을 훑어 모아 보는 분석용 저장소. 열 단위로 저장해 몇 개 칸만 빨리 읽는다. 예: 로봇별 월간 가동률.[30]",
+     "**TimeSeries(시계열)** — '시각 + 값'이 끝없이 쌓이는 데이터. TimescaleDB 같은 시계열 DB 는 PostgreSQL 표를 시간 구간(하루·한 주) 조각으로 자동으로 잘라, 질의가 필요한 조각만 읽게 한다.[27]"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    27,
+    30
+   ],
+   "study": [
+    "ddia",
+    "timescale"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "데이터 모델링 경험(정규화/비정규화, 시계열 데이터 구조 설계 등)",
+   "short": "표를 어떻게 나누고 합칠지 정하는 일. 로봇 데이터는 '시각이 붙은 값'이라 그에 맞는 모양이 따로 있다.",
+   "why": "팀 리더는 스마트팩토리 데이터 모델링을 적용한 DW 를 만든다고 했습니다.[2] 로봇 데이터는 같은 로봇·같은 센서에서 시각만 바뀌며 끝없이 들어옵니다 {추론}.",
+   "actually": {
+    "items": [
+     "**정규화** — 로봇 정보(모델·설치 장소)는 한 표에 한 번만 두고, 측정값 표에는 로봇 id 만 둔다. 고칠 때 한 곳만 고치면 된다.[30]",
+     "**비정규화** — 분석 표에는 로봇 모델·라인 이름을 미리 붙여 둔다. 조인 없이 바로 모아 본다.[30]",
+     "**시계열 모양 — 넓게 vs 길게** — 센서마다 칸을 만들지(넓은 표), '센서 이름·값' 두 칸에 줄을 늘릴지(긴 표). 센서가 자주 늘면 긴 표가 편하다 {추론}.",
+     "**시간으로 자르기** — 하루·한 주 단위로 잘라 두면 오래된 조각을 통째로 지우거나 압축하기 쉽다.[27]",
+     "**주기가 다른 센서 맞추기** — IMU 는 1초에 수백 번, 라이다는 10번 남짓이라 한 줄로 합치려면 가장 가까운 시각끼리 붙인다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "200Hz IMU 와 10Hz 라이다를 가장 가까운 시각끼리 붙이기",
+     "body": "라이다 스캔 시각은 IMU 시각과 딱 맞지 않습니다. 앞뒤 두 IMU 값 중 가까운 쪽을 고르면 차이가 2ms 안에 듭니다(가상 데이터, 직접 돌린 출력).",
+     "lang": "python",
+     "code": "import bisect\nimu_t = [i * 5 for i in range(61)]          # 5ms 간격 = 200Hz\nimu_yaw = [round(0.01 * i, 2) for i in range(61)]\nfor t in [3, 103, 207]:                       # 라이다 스캔 시각(ms)\n    i = bisect.bisect_left(imu_t, t)\n    cand = [j for j in (i - 1, i) if 0 <= j < len(imu_t)]\n    j = min(cand, key=lambda k: abs(imu_t[k] - t))\n    print(f\"라이다 {t:3d}ms ↔ IMU {imu_t[j]:3d}ms (차 {abs(imu_t[j]-t)}ms) yaw={imu_yaw[j]}\")\n\n# 라이다   3ms ↔ IMU   5ms (차 2ms) yaw=0.01\n# 라이다 103ms ↔ IMU 105ms (차 2ms) yaw=0.21\n# 라이다 207ms ↔ IMU 205ms (차 2ms) yaw=0.41"
+    }
+   ],
+   "refs": [
+    2,
+    27,
+    30
+   ],
+   "study": [
+    "ddia",
+    "timescale"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "데이터 관련 PM/Tech Lead/서비스 기획 경험",
+   "short": "일정·범위를 잡고 다른 엔지니어를 이끌어 본 경험. 경력 9년 이상 자리라 혼자 짜는 것 이상을 본다.",
+   "why": "업무에 플랫폼 기획·설계와 고객 협의가 들어 있고,[1] 이 팀은 고객사에 파이프라인 컨설팅도 합니다.[2] 원티드 판은 경력을 9~17년으로 적었습니다.[2]",
+   "actually": {
+    "items": [
+     "**PM** — 요구사항 정리 → 범위·일정 → 진행 관리 → 인수 확인.",
+     "**Tech Lead** — 기술 선택을 정하고 이유를 문서로 남긴다. 코드 리뷰와 장애 대응의 마지막 판단 {추론}.",
+     "**서비스 기획** — '로봇 데이터로 고객이 무엇을 얻나'를 화면·지표로 정한다 {추론}."
+    ]
+   },
+   "how_far": "우대사항이라 없어도 지원할 수 있습니다. 있다면 **한 프로젝트를 처음부터 끝까지 이끈 이야기 하나**가 있으면 됩니다 {추론}.",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "fde-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "LiDAR, IMU, 카메라, 주행 로그, 맵 데이터 등 로봇 센서 및 주행 데이터 처리 경험",
+   "short": "레이저 거리 센서·관성 센서·영상·주행 기록·지도처럼 크고 빠른 로봇 센서 데이터를 다뤄 본 경험.",
+   "why": "회사가 순찰 관제에 쓰는 모바일 로봇 모베드 프로는 라이다 2개와 심도 카메라 3개를 달고 스스로 달립니다.[8] 로봇 학습에도 영상과 동작 기록이 주재료입니다.[28]",
+   "actually": {
+    "items": [
+     "**LiDAR(라이다)** — 레이저로 거리를 재 점 수만~수십만 개의 점구름을 1초에 여러 번 낸다. 공장 설비 값보다 훨씬 크다 {추론}.",
+     "**IMU** — 가속도·회전 속도 센서. 작지만 1초에 수백 번 나온다 {추론}.",
+     "**카메라** — 영상은 압축 파일로 따로 두고 시각만 다른 데이터와 맞춘다. LeRobot 도 영상은 MP4, 나머지는 Parquet 로 나눈다.[28]",
+     "**주행 로그** — ROS 2 bag(MCAP) 파일 한 개에 여러 센서가 시각 순으로 담긴다.[17][18]",
+     "**맵 데이터** — 로봇이 만든 지도와 좌표계. 좌표·회전 표기는 ROS 규칙(오른손 좌표계, 회전은 쿼터니언 권장)을 따른다.[19]"
+    ]
+   },
+   "how_far": "센서 데이터로 인식 모델을 만드는 게 아니라 **센서 데이터를 잃지 않고 시각을 맞춰 쌓고, 학습 팀이 꺼내 쓰기 좋게 정리하는 것**이 이 자리의 몫입니다 {추론}.",
+   "refs": [
+    8,
+    17,
+    18,
+    19,
+    28
+   ],
+   "study": [
+    "rosbag2",
+    "mcap",
+    "lerobot",
+    "rep103"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "실시간/대용량 데이터 처리 환경(Spark, Kafka 등) 구축 및 운영 경험",
+   "short": "Kafka·Spark 를 쓰는 데서 그치지 않고 직접 깔고 늘리고 장애를 막아 본 경험.",
+   "why": "자격요건은 '활용 경험'이고 이 줄은 '구축 및 운영'입니다.[1] 이 팀은 국내외 공장에 파이프라인을 깔고 운영하는 DevOps 조직이라고 스스로 소개합니다.[2]",
+   "actually": {
+    "items": [
+     "**용량 잡기** — 로봇 수 × 초당 메시지 × 크기 × 보관 기간으로 저장 공간과 파티션 수를 계산한다 {추론}.",
+     "**복제** — Kafka 는 운영에서 복제 수 3을 흔히 쓴다.[24]",
+     "**감시** — 처리 쪽이 얼마나 밀렸나(소비 지연), 실패한 작업 수를 늘 본다 {추론}.",
+     "**다른 장소에 깔기** — 해외 공장에 같은 파이프라인을 깔려면 설치를 코드로 만들어 둔다 {추론}.[2]"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    24
+   ],
+   "study": [
+    "kafka-guide",
+    "spark-guide"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "클라우드 환경(AWS, GCP 등) 기반 데이터 플랫폼 설계 및 운영 경험",
+   "short": "공장 밖 클라우드에 데이터 플랫폼을 올려 본 경험. 현장(엣지)과 클라우드를 어떻게 나눌지가 핵심.",
+   "why": "로봇 학습센터를 한·미·중에 둔다는 그룹 계획처럼 데이터가 여러 나라에서 생깁니다.[10] 한곳으로 모으려면 클라우드가 자연스러운 선택지입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**엣지 → 클라우드** — 현장에서 먼저 거르고 모아 보내는 구성. AWS Greengrass 가 그런 엣지 실행 환경이다.[29]",
+     "**관리형 서비스** — Kafka·Spark·Airflow 를 직접 깔지 않고 클라우드가 운영해 주는 판을 쓸지 정한다 {추론}.",
+     "**비용** — 라이다·영상처럼 큰 데이터는 저장·전송비가 커서 무엇을 원본으로 남길지 고른다 {추론}."
+    ]
+   },
+   "refs": [
+    10,
+    29
+   ],
+   "study": [
+    "greengrass",
+    "fde-book"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "ros2-book-ko",
+   "title": "ROS 2로 시작하는 로봇 프로그래밍",
+   "by": "표윤석 · 임태훈",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=ROS%202%EB%A1%9C%20%EC%8B%9C%EC%9E%91%ED%95%98%EB%8A%94%20%EB%A1%9C%EB%B4%87%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D",
+   "why": "토픽·QoS·bag 녹화까지 ROS 2 의 기본을 한국어로. 요건 첫 줄의 ROS/ROS2 와 업무③의 'ROS 로 받기'를 위한 첫 책."
+  },
+  {
+   "id": "ros2-docs",
+   "title": "ROS 2 Documentation (Jazzy)",
+   "by": "Open Robotics",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.ros.org/en/jazzy/Tutorials.html",
+   "why": "토픽 구독·QoS 설정·bag 녹화 튜토리얼. 손으로 따라 하며 로봇 데이터가 어떻게 흐르는지 본다."
+  },
+  {
+   "id": "rosbag2",
+   "title": "rosbag2 (GitHub)",
+   "by": "ROS 2 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/ros2/rosbag2",
+   "why": "주행 로그 파일의 저장 방식(MCAP·SQLite)·압축 옵션. 우대사항의 '주행 로그 처리'에 바로 쓰인다."
+  },
+  {
+   "id": "mcap",
+   "title": "MCAP",
+   "by": "mcap.dev",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://mcap.dev/",
+   "why": "여러 센서를 시각 순으로 담는 기록 파일 형식의 구조(채널·색인·조각 압축). bag 파일을 파이썬으로 직접 읽어 보는 데 필요하다."
+  },
+  {
+   "id": "rep103",
+   "title": "REP 103 · Standard Units of Measure and Coordinate Conventions",
+   "by": "ROS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://github.com/ros-infrastructure/rep/blob/master/rep-0103.rst",
+   "why": "단위(미터·초·라디안)와 좌표계(x 앞·y 왼쪽·z 위) 규칙. 가공 단계에서 단위·좌표를 통일하는 기준."
+  },
+  {
+   "id": "modbus-wiki",
+   "title": "Modbus (Wikipedia)",
+   "by": "Wikipedia",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://en.wikipedia.org/wiki/Modbus",
+   "why": "코일·레지스터 네 가지 표와 기능 코드를 한 페이지로. 요건 첫 줄의 PLC·Modbus 를 처음 잡을 때."
+  },
+  {
+   "id": "opcua-p1",
+   "title": "OPC Unified Architecture – Part 1: Overview and Concepts",
+   "by": "OPC Foundation",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://reference.opcfoundation.org/specs/OPC-10000-1/full",
+   "why": "주소 공간·구독·보안 모델의 개요. 공장 장비와 인터페이스를 정의할 때 무엇을 물어야 하는지 알게 된다."
+  },
+  {
+   "id": "mqtt5",
+   "title": "MQTT Version 5.0",
+   "by": "OASIS · 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.oasis-open.org/mqtt/mqtt/v5.0/mqtt-v5.0.html",
+   "why": "QoS 0·1·2 가 실제로 어떤 패킷을 주고받는지. 중복·유실을 어디서 처리할지 정하는 근거."
+  },
+  {
+   "id": "kafka-book",
+   "title": "아파치 카프카 애플리케이션 프로그래밍 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kafka",
+   "why": "직접 친 명령과 오간 레코드로 파티션·키·소비자 그룹을 본다. 업무③의 '메시지 브로커'를 위한 첫걸음."
+  },
+  {
+   "id": "kafka-guide",
+   "title": "카프카 핵심 가이드 (2판)",
+   "by": "그웬 샤피라 외 · 제이펍",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%B9%B4%ED%94%84%EC%B9%B4%20%ED%95%B5%EC%8B%AC%20%EA%B0%80%EC%9D%B4%EB%93%9C",
+   "why": "복제·용량 잡기·운영 감시까지. 우대사항의 'Kafka 구축 및 운영'을 위한 책."
+  },
+  {
+   "id": "airflow-book",
+   "title": "Apache Airflow 기반의 데이터 파이프라인",
+   "by": "바스 하렌슬락 · 율리안 더라위터르 · 제이펍 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000002993441",
+   "why": "DAG 작성·예약·재실행·백필. 배치 파이프라인을 엮는 요건을 채운다(2.x 기준이라 3.x 차이는 공식 문서로)."
+  },
+  {
+   "id": "spark-guide",
+   "title": "스파크 완벽 가이드",
+   "by": "빌 체임버스 · 마테이 자하리아 · 한빛미디어 · 2019",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%8A%A4%ED%8C%8C%ED%81%AC%20%EC%99%84%EB%B2%BD%20%EA%B0%80%EC%9D%B4%EB%93%9C",
+   "why": "DataFrame·집계·구조적 스트리밍 장. 하루치 로봇 기록을 나눠 계산하는 배치 요건."
+  },
+  {
+   "id": "spark-ss",
+   "title": "Structured Streaming Programming Guide",
+   "by": "Apache Spark 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://spark.apache.org/docs/latest/streaming/apis-on-dataframes-and-datasets.html",
+   "why": "이벤트 시각 창·워터마크·늦은 데이터 처리. 끊겼다 붙는 로봇 데이터를 실시간으로 집계하는 법."
+  },
+  {
+   "id": "ddia",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+   "why": "OLTP 와 OLAP, 열 저장, 정규화, 스트림 처리의 원리. 플랫폼 설계(업무④)와 해시태그 줄의 바탕."
+  },
+  {
+   "id": "fde-book",
+   "title": "견고한 데이터 엔지니어링",
+   "by": "조 라이스 · 맷 하우슬리 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B2%AC%EA%B3%A0%ED%95%9C%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81",
+   "why": "수집 → 저장 → 변환 → 제공의 수명 주기와 요구사항 잡는 법. 업무①④⑤를 한 그림으로 보게 한다."
+  },
+  {
+   "id": "timescale",
+   "title": "Understand hypertables",
+   "by": "Tiger Data(TimescaleDB) 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.tigerdata.com/docs/use-timescale/latest/hypertables",
+   "why": "시계열 표를 시간 조각으로 자르는 방식. 우대사항의 '시계열 데이터 구조 설계'를 손으로 해 보기 좋다."
+  },
+  {
+   "id": "lerobot",
+   "title": "LeRobot (GitHub)",
+   "by": "Hugging Face",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/huggingface/lerobot",
+   "why": "로봇 학습 데이터셋을 영상(MP4)·상태(Parquet)·에피소드로 묶는 공개 형식. '로봇 학습 데이터 적재'가 어떤 모양인지 본다."
+  },
+  {
+   "id": "greengrass",
+   "title": "What is AWS IoT Greengrass?",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/greengrass/v2/developerguide/what-is-iot-greengrass.html",
+   "why": "현장에서 거르고 모아 클라우드로 보내는 엣지 구성의 예. 우대사항의 클라우드 플랫폼 설계."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "1. 로봇이 데이터를 내는 방식 익히기",
+   "time": "2~3주",
+   "goal": "ROS 2 토픽을 구독하고 bag 파일로 녹화·재생하며 QoS 차이를 설명할 수 있다.",
+   "task": "시뮬레이터 거북이(turtlesim)나 가상 노드로 위치 토픽을 내고, 기본 QoS·센서용 QoS 로 각각 받아 보며 bag(MCAP)으로 녹화한 뒤 파이썬으로 열어 메시지 수와 시각 간격을 표로 낸다.",
+   "resources": [
+    "ros2-book-ko",
+    "ros2-docs",
+    "rosbag2",
+    "mcap"
+   ]
+  },
+  {
+   "title": "2. 공장 장비의 말 익히기",
+   "time": "2주",
+   "goal": "Modbus 레지스터 맵과 OPC-UA 노드를 읽고 인터페이스 정의서 한 장을 쓸 수 있다.",
+   "task": "파이썬 Modbus 시뮬레이터와 OPC-UA 예제 서버를 띄워 가상 설비(온도·전류·가동 상태)를 만들고, 배율·워드 순서·주기·단위를 적은 정의서를 쓴 뒤 그대로 읽는 수집기를 짠다.",
+   "resources": [
+    "modbus-wiki",
+    "opcua-p1",
+    "mqtt5"
+   ]
+  },
+  {
+   "title": "3. 실시간 파이프라인 만들기",
+   "time": "3주",
+   "goal": "MQTT → Kafka → 실시간 집계 흐름을 만들고 중복·늦은 데이터를 처리할 수 있다.",
+   "task": "가상 로봇 20대가 MQTT QoS 1 로 1초마다 상태를 올리게 하고, Kafka 에 로봇 id 키로 넣은 뒤 Spark 구조적 스트리밍으로 1분 가동률을 낸다. 일부러 통신을 끊었다 붙여 워터마크로 늦은 값을 처리한다.",
+   "resources": [
+    "kafka-book",
+    "kafka-guide",
+    "spark-ss"
+   ]
+  },
+  {
+   "title": "4. 쌓는 모양 정하기",
+   "time": "2주",
+   "goal": "원본·정리·집계 층과 OLTP·OLAP·시계열 저장소를 골라 이유를 설명할 수 있다.",
+   "task": "3단계 데이터를 TimescaleDB 시계열 표(하루 조각)와 Parquet 원본 보관소에 나눠 싣고, 넓은 표·긴 표 두 모양으로 같은 질의를 돌려 시간을 비교한다. Airflow DAG 로 매일 밤 집계 표를 만든다.",
+   "resources": [
+    "timescale",
+    "ddia",
+    "airflow-book",
+    "spark-guide"
+   ]
+  },
+  {
+   "title": "5. 설계 문서로 묶기",
+   "time": "1~2주",
+   "goal": "로봇 데이터 플랫폼 설계도 한 장과 결정 이유를 면접에서 설명할 수 있다.",
+   "task": "1~4단계를 '현장(엣지) → 버퍼 → 가공 → 저장 → 관제·학습' 그림 한 장으로 그리고, 로봇 학습용으로 영상 MP4 + 상태 Parquet 데이터셋을 내보내는 단계까지 붙인 뒤 결정마다 대안과 버린 이유를 적는다.",
+   "resources": [
+    "fde-book",
+    "lerobot",
+    "greengrass"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "직원 평균은 **반기 4,500만원**(2026년 상반기 공시, 연으로 단순 환산 약 9,000만원) — 경력직이 섞인 회사 전체 값이다. 이 자리는 경력 9년 이상이라 신입 초봉은 해당하지 않는다",
+  "rows": [
+   {
+    "label": "직원 1인 평균 급여(반기)",
+    "value": "4,500만원",
+    "amount": 4500,
+    "basis": "반기보고서 · 2026년 상반기",
+    "note": "6월 말 본사 직원 5,749명, 평균 근속 7.2년. 기사는 연으로 단순 환산하면 약 9,000만원이라고 적었다 [13]"
+   },
+   {
+    "label": "직원 1인 평균 급여(반기)",
+    "value": "4,200만원",
+    "amount": 4200,
+    "basis": "반기보고서 · 2025년 상반기",
+    "note": "1년 새 13.5% 올랐다 [14]"
+   },
+   {
+    "label": "평균 연봉(집계)",
+    "value": "6,855만원",
+    "amount": 6855,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 기준일이 적혀 있지 않고, 같은 페이지에서 신입 연봉은 '수집 중'이다 [15]"
+   },
+   {
+    "label": "삼성SDS 평균(반기)",
+    "value": "6,600만원",
+    "amount": 6600,
+    "basis": "반기보고서 · 2025년 상반기",
+    "peer": true,
+    "note": "같은 기사의 1인당 직원 평균 급여 [14]"
+   },
+   {
+    "label": "LG CNS 평균(반기)",
+    "value": "6,500만원",
+    "amount": 6500,
+    "basis": "반기보고서 · 2025년 상반기",
+    "peer": true,
+    "note": "같은 기사의 직원 1인 평균 급여액 [14]"
+   }
+  ],
+  "how": "공고에 연봉은 '연봉협의'뿐이고, 전형 끝에 **처우협의** 단계가 따로 있다 [3]. 평균은 경력이 다 섞인 회사 전체 값이라 경력 9년 이상인 이 자리 제시액과 다를 수 있다 {추론}. 반기 값에는 상여가 몰리는 시기가 섞여 있어 2배가 그해 연봉과 같지는 않다 {추론}. 회사끼리 견줄 때는 같은 해 같은 반기 값끼리만 본다."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "차량구입지원금",
+    "detail": "현대자동차그룹 차량을 살 때 최대 30%, 입사 후 첫 차는 20%"
+   },
+   {
+    "name": "통신비",
+    "detail": "휴대전화 통신비 월 최대 6만원"
+   },
+   {
+    "name": "하계 휴가",
+    "detail": "연차 외에 5일 더, 하계 휴가비"
+   },
+   {
+    "name": "휴양소",
+    "detail": "전국 40여 개 리조트 이용 지원"
+   },
+   {
+    "name": "복지포인트",
+    "detail": "금액은 페이지에 적혀 있지 않음"
+   },
+   {
+    "name": "주거",
+    "detail": "주택 구입·임차 때 사내 대출"
+   },
+   {
+    "name": "학자금",
+    "detail": "자녀 학자금(유치원~대학교), 본인 한국장학재단 학자금 대출 이자"
+   },
+   {
+    "name": "건강",
+    "detail": "종합검진·의료비·독감 예방접종·단체 상해보험(본인과 가족), EAP(심리 상담)"
+   },
+   {
+    "name": "육아",
+    "detail": "직장 어린이집(강남구 안 2곳), 출산 전후·배우자 출산·난임치료 휴가, 자녀 초등학교 입학 선물"
+   },
+   {
+    "name": "생활",
+    "detail": "경조사 지원(휴가·경조비), 명절 귀향비, 사내 동호회"
+   }
+  ],
+  "note": "현대오토에버 채용 사이트 'Life' 페이지의 목록이다(작성 날짜 없음, 회사 전체 기준) [11]. 금액이 적히지 않은 항목은 처우협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "현대오토에버 본사",
+  "address": "서울특별시 강남구 테헤란로 510",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20510",
+  "near": "2호선 삼성역 근처 테헤란로 {추론}",
+  "note": "주소는 회사 사이트 '국내 사업장'의 본사 항목이다 [12]. 같은 페이지에 삼성 사옥(테헤란로 113길 12)·R&D 센터(테헤란로 114길 38)도 있다. 공고 근무지는 잡코리아 '서울 강남구', 원티드 '강남구 대치동'뿐이라 팀이 어느 건물인지는 적혀 있지 않다 [1][2]."
+ },
+ "fit": {
+  "good": [
+   "공장 설비 데이터를 받아 본 데이터 엔지니어가 로봇으로 넓혀 가고 싶을 때 — 팀이 바로 그 길을 걷는 중이다[2]",
+   "장비 담당자와 앉아 레지스터 번호·단위를 맞추는 일이 싫지 않은 사람",
+   "그룹이 키우는 로봇 학습 데이터의 바닥을 만들고 싶은 사람[9][10]",
+   "팀 분위기 — 동료가 협력과 소통을 가장 중요하게 여기고 팀 빌딩도 즐기는 팀이라고 소개했다[2]"
+  ],
+  "hard": [
+   "경력 9년 이상(원티드 9~17년)이라 문턱이 높다[1][2]",
+   "공장 통신과 로봇 통신을 둘 다 요구한다 — 한쪽만 해 본 사람은 다른 쪽을 따로 채워야 한다[1]",
+   "고객 현장·해외 공장에 파이프라인을 까는 팀이라 현장 일정과 협의가 많다[2]",
+   "로봇 데이터 플랫폼은 새로 그리는 단계라 정해진 답보다 정할 것이 많다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "PLC 에서 온도를 두 레지스터로 받는데 값이 0 에 가깝게 나옵니다. 무엇부터 의심하나요?",
+   "a": "16비트 칸 두 개에 실린 실수의 워드 순서 — 인터페이스 정의서에 적어야 하는 칸이다.[23]"
+  },
+  {
+   "q": "ROS 2 라이다 토픽을 구독했는데 아무것도 안 들어옵니다. 왜일까요?",
+   "a": "보내는 쪽 센서용 QoS(빠져도 됨)와 받는 쪽 '빠짐없이' 요구가 안 맞는 경우.[16]"
+  },
+  {
+   "q": "MQTT QoS 1 로 받으면 무엇을 따로 처리해야 하나요?",
+   "a": "적어도 한 번 전달이라 중복이 온다 — (로봇, 순번)으로 지운다.[21]"
+  },
+  {
+   "q": "로봇이 10분 끊겼다 다시 붙어 10분 치 값을 한꺼번에 보냅니다. 1분 가동률 집계는 어떻게 되나요?",
+   "a": "이벤트 시각 기준 집계와 워터마크로 얼마나 늦은 것까지 받을지.[25]"
+  },
+  {
+   "q": "같은 로봇의 메시지 순서를 Kafka 에서 지키려면?",
+   "a": "로봇 id 를 키로 — 한 파티션 안에서만 순서가 보장된다.[24]"
+  },
+  {
+   "q": "관제 화면용 저장소와 학습용 저장소를 하나로 할까요, 나눌까요?",
+   "a": "OLTP·OLAP·시계열의 차이 — 해시태그가 가리키는 결정.[27][30]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "잡코리아 · 현대오토에버 Robot Data Engineer",
+   "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50301905",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "업무·요건(인터페이스 7종 포함)·우대·해시태그, 경력 9년 이상"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · 현대오토에버 [SDx] Data Engineer - Robot Data Engineer",
+   "url": "https://www.wanted.co.kr/wd/385505",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 자리 — SDF데이터팀 소개·동료와 팀 리더 코멘트, 경력 9~17년, 인터페이스 7종 줄은 없음"
+  },
+  {
+   "n": 3,
+   "title": "리멤버 · 현대오토에버 Robot Data Engineer 경력직",
+   "url": "https://career.rememberapp.co.kr/job/posting/328288",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 공고 — 연봉협의, 전형(서류 → 코딩 테스트·인성검사 → 면접 2회 → 처우협의·채용검진)"
+  },
+  {
+   "n": 4,
+   "title": "잡코리아 · 현대오토에버 Platform Developer - Robot",
+   "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50301861",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 회사 RX기술팀 — 이기종 로봇 관제·실시간 양방향 통신·ROS 2·MQTT"
+  },
+  {
+   "n": 5,
+   "title": "잡코리아 · 현대오토에버 Backend Developer - Robot/Smart Factory",
+   "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50301866",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 회사 — 로봇·IoT 연동(gRPC·MQTT) 우대"
+  },
+  {
+   "n": 6,
+   "title": "현대오토에버 · SDF(Factory)",
+   "url": "https://www.hyundai-autoever.com/kor/business-area/digital-transformation/sdf/contents.do?cntnSeq=455",
+   "kind": "company",
+   "note": "FactoryBI(센서·PLC·현장 시스템·레거시 IT 파이프라인, 실시간·준실시간·배치), IoT 플랫폼, 로봇 통합 모니터링, 디지털 트윈 — 작성 날짜 없음"
+  },
+  {
+   "n": 7,
+   "title": "현대오토에버 · 빅데이터",
+   "url": "https://www.hyundai-autoever.com/kor/business-area/core-technology/bigdata/contents.do?cntnSeq=361",
+   "kind": "company",
+   "note": "로그·RDBMS·NoSQL 수집, 분산 저장"
+  },
+  {
+   "n": 8,
+   "title": "아시아경제 CORE · 현대오토에버, 로봇 '모베드' 기반 AI 순찰·관제 솔루션 공개",
+   "url": "https://core.asiae.co.kr/article/2026102208300974305",
+   "kind": "news",
+   "date": "2026-10-22",
+   "note": "회사 발표 보도 — 모베드 프로 라이다 2·심도 카메라 3, 로봇 SI 전 과정"
+  },
+  {
+   "n": 9,
+   "title": "현대자동차그룹 저널 · 왜 현대차그룹은 피지컬 AI에 강한가",
+   "url": "https://www.hyundaimotorgroup.com/ko/story/hyundai-motor-group-physical-ai-strength",
+   "kind": "company",
+   "date": "2026-02-24",
+   "note": "그룹 공식 글 — 현대오토에버는 공장·물류 시스템을 잇는다, 설비·물류·로봇·작업 데이터 연결, 작업 동작 데이터로 로봇 학습, 온디바이스 AI"
+  },
+  {
+   "n": 10,
+   "title": "ZDNet Korea · 현대차그룹, 한·미·중에 '로봇 학습센터' 세운다…\"실증 데이터가 승부처\"",
+   "url": "https://zdnet.co.kr/view/?no=20260806154145",
+   "kind": "news",
+   "date": "2026-08-06",
+   "note": "국회 포럼 발언 — 학습센터에서 현장 실증 데이터 수집·가공"
+  },
+  {
+   "n": 11,
+   "title": "현대오토에버 채용 · 복리후생(Life)",
+   "url": "https://career.hyundai-autoever.com/ko/life",
+   "kind": "company"
+  },
+  {
+   "n": 12,
+   "title": "현대오토에버 · 국내 사업장",
+   "url": "https://www.hyundai-autoever.com/kor/about/workplace/domestic/contents.do?cntnSeq=239",
+   "kind": "company",
+   "note": "본사·삼성 사옥·R&D 센터 주소"
+  },
+  {
+   "n": 13,
+   "title": "ZDNet Korea · 현대오토에버, 상반기 매출 2.2조 돌파…SI 부문 26% 급성장",
+   "url": "https://zdnet.co.kr/view/?no=20260814185634",
+   "kind": "news",
+   "date": "2026-08-14",
+   "note": "2026년 반기보고서 — 직원 수·근속·1인 평균 급여"
+  },
+  {
+   "n": 14,
+   "title": "ZDNet Korea · 올해 상반기 대기업 SI 톱4 '연봉킹' 누구?",
+   "url": "https://zdnet.co.kr/view/?no=20250816174726",
+   "kind": "news",
+   "date": "2025-08-16",
+   "note": "4사 2025년 반기보고서 — 직원 1인 평균 급여"
+  },
+  {
+   "n": 15,
+   "title": "자소설닷컴 · 현대오토에버 기업정보",
+   "url": "https://jasoseol.com/companies/269",
+   "kind": "reference",
+   "note": "공공데이터 집계 — 평균 연봉, 신입 연봉은 '수집 중'"
+  },
+  {
+   "n": 16,
+   "title": "ros2/rmw · qos_profiles.h",
+   "url": "https://github.com/ros2/rmw/blob/rolling/rmw/include/rmw/qos_profiles.h",
+   "kind": "reference",
+   "note": "기본값: 최근 10개·빠짐없이 / 센서용: 최근 5개·최선 노력"
+  },
+  {
+   "n": 17,
+   "title": "rosbag2 (GitHub)",
+   "url": "https://github.com/ros2/rosbag2",
+   "kind": "reference",
+   "note": "저장 방식 MCAP·SQLite, 압축 기본 꺼짐(zstd)"
+  },
+  {
+   "n": 18,
+   "title": "MCAP",
+   "url": "https://mcap.dev/",
+   "kind": "reference",
+   "note": "여러 채널 시각 순 기록 형식, 색인·조각 압축"
+  },
+  {
+   "n": 19,
+   "title": "REP 103 · Standard Units of Measure and Coordinate Conventions",
+   "url": "https://github.com/ros-infrastructure/rep/blob/master/rep-0103.rst",
+   "kind": "reference",
+   "note": "SI 단위·라디안, 몸 기준 x 앞·y 왼쪽·z 위, 회전은 쿼터니언 권장"
+  },
+  {
+   "n": 20,
+   "title": "endoflife.date · ROS 2",
+   "url": "https://endoflife.date/ros-2",
+   "kind": "reference",
+   "note": "Humble 2027-05-31·Jazzy 2029-05-31 지원 종료, ROS 1 Noetic 2025-05 종료(endoflife.date/ros)"
+  },
+  {
+   "n": 21,
+   "title": "OASIS · MQTT Version 5.0",
+   "url": "https://docs.oasis-open.org/mqtt/mqtt/v5.0/mqtt-v5.0.html",
+   "kind": "reference",
+   "date": "2019-03"
+  },
+  {
+   "n": 22,
+   "title": "OPC Foundation · Unified Architecture",
+   "url": "https://opcfoundation.org/about/opc-technologies/opc-ua/",
+   "kind": "reference",
+   "note": "2008년 공개, 주소 공간·구독·인증서 보안"
+  },
+  {
+   "n": 23,
+   "title": "Wikipedia · Modbus",
+   "url": "https://en.wikipedia.org/wiki/Modbus",
+   "kind": "reference",
+   "note": "코일·입력 1비트, 레지스터 16비트, 기능 코드 3·16"
+  },
+  {
+   "n": 24,
+   "title": "Apache Kafka · Introduction",
+   "url": "https://kafka.apache.org/intro",
+   "kind": "reference",
+   "note": "같은 키 = 같은 파티션, 파티션 안 순서 보장, 토픽별 보관 기간, 운영 복제 수 3"
+  },
+  {
+   "n": 25,
+   "title": "Apache Spark · Structured Streaming (이벤트 시각 창·워터마크)",
+   "url": "https://spark.apache.org/docs/latest/streaming/apis-on-dataframes-and-datasets.html",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "Apache Airflow 문서 (3.x)",
+   "url": "https://airflow.apache.org/docs/apache-airflow/stable/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "Tiger Data(TimescaleDB) · Understand hypertables",
+   "url": "https://www.tigerdata.com/docs/use-timescale/latest/hypertables",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "Hugging Face LeRobot (GitHub)",
+   "url": "https://github.com/huggingface/lerobot",
+   "kind": "reference",
+   "note": "LeRobotDataset — 영상 MP4, 상태·동작 Parquet"
+  },
+  {
+   "n": 29,
+   "title": "AWS · What is AWS IoT Greengrass?",
+   "url": "https://docs.aws.amazon.com/greengrass/v2/developerguide/what-is-iot-greengrass.html",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "Martin Kleppmann · Designing Data-Intensive Applications",
+   "url": "https://dataintensive.net/",
+   "kind": "reference",
+   "note": "3장 — OLTP 와 OLAP, 열 저장 / 2장 — 정규화"
+  }
+ ],
+ "caveat": "현대오토에버가 로봇 데이터 플랫폼이나 SDF데이터팀의 기술을 직접 설명한 블로그 글·발표 영상은 찾지 못했다(2026-11-23 기준, 받은 영상 없음). 회사 근거는 이 공고(세 사이트)·같은 회사 로봇 공고 두 건·스마트팩토리와 빅데이터 제품 페이지·순찰 관제 발표 보도·그룹 공식 글이고, '실제로는'의 통신·저장 방식은 ROS·OPC·OASIS·Kafka·Spark 공식 문서로 보인 '보통 이런 것'이다. 이 팀이 실제로 어떤 저장소·브로커를 쓰는지는 공개되지 않았다."
+}

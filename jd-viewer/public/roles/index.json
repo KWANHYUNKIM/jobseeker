@@ -18,8 +18,8 @@
   "wanted-385488": "hyundai-autoever-auth-account-backend",
   "wanted-385504": "hyundai-autoever-physical-ai-engineer",
   "jobkorea-50301916": "hyundai-autoever-physical-ai-engineer",
-  "wanted-385505": "hyundai-autoever-robot-data-engineer",
   "jobkorea-50301905": "hyundai-autoever-robot-data-engineer",
+  "wanted-385505": "hyundai-autoever-robot-data-engineer",
   "jobkorea-50301861": "hyundai-autoever-robot-platform-developer",
   "wanted-387536": "hyundai-sdf-data-architect",
   "wanted-377335": "ldf-ebookjapan-web-frontend",
@@ -360,10 +360,10 @@
   {
    "id": "hyundai-autoever-robot-data-engineer",
    "company": "현대오토에버",
-   "role": "로봇 데이터 엔지니어",
+   "role": "Robot Data Engineer",
    "jobs": [
-    "wanted-385505",
-    "jobkorea-50301905"
+    "jobkorea-50301905",
+    "wanted-385505"
    ],
    "researched_at": "2026-11-23",
    "lines": 16
