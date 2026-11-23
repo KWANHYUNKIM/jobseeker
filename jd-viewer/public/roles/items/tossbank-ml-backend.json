@@ -1,0 +1,1183 @@
+{
+ "id": "tossbank-ml-backend",
+ "company": "토스뱅크",
+ "role": "ML 백엔드 엔지니어",
+ "team": "ML Service Team",
+ "jobs": [
+  "ats-toss:group:6600650003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "토스뱅크의 AI 제품 — 신분증 사본 탐지, 상담 음성·문서 인식, 상담 에이전트 — 이 **은행 서비스 안에서 멈추지 않고 제때 답하도록** 그 뒤의 서버와 공통 서빙 플랫폼을 만듭니다.[1][2] 모델은 같은 팀 데이터 사이언티스트가 만들고, 이 자리는 그 모델을 받아 서비스로 내보내는 서버 쪽이 중심입니다.[1]",
+  "env": "쿠버네티스 위 MSA(작은 서비스 여럿이 서로 부르는 구조)[10], 서비스 사이를 잇는 분산 추적[1], 같은 챕터 플랫폼 팀이 운영하는 GPU 서빙 엔진·피처 저장소[8], 그리고 배포마다 검증·승인이 붙는 **은행 규제** 안에서 일합니다.[6]",
+  "oneline": "\"ML 경험은 없어도 좋다\"[1] — 무거운 모델을 **정해진 응답 시간과 처리량 안에서** 돌리는 서버를 짜고 운영하는 백엔드 개발자."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "ML Service Team 이 담당하는 다양한 AI 제품이 안정적으로 서빙될 수 있도록 기반이 되는 서버 아키텍처를 설계하고 개발해요.",
+   "short": "모델이 늘 때마다 서버를 새로 짜지 않도록, 모든 AI 제품이 같이 올라탈 공통 서빙 틀을 만드는 일.",
+   "why": "이 팀은 신분증 OCR·사후 검증, 상담 통화 음성 인식, 문서 OCR 같은 모델을 함께 서빙합니다.[2] 예전에는 데이터 사이언티스트의 노트북 코드를 ML 엔지니어가 처음부터 다시 짰는데, 모델이 5~6개가 되자 이 방식이 무너졌다고 팀이 직접 썼습니다.[2] 공고도 이 자리를 'AI 제품의 백엔드 서버 및 **공통 서비스 플랫폼**' 개발로 소개합니다.[1] 그래서 '기반 아키텍처'는 모델이 계속 늘어도 버티는 틀을 뜻합니다. {추론}",
+   "actually": {
+    "intro": "이 팀이 글로 공개한 틀과, 같은 그룹 토스가 발표한 서빙 방식입니다.",
+    "items": [
+     "**모델과 서버 사이의 약속** — 모든 모델이 전처리·추론·후처리 세 칸을 구현하는 추상 클래스를 따르고, 데이터 사이언티스트는 세 칸만 채워 패키지로 낸다. 서버 쪽은 패키지를 설치해 부른다.[2]",
+     "**공통 일은 한 곳에서** — 기본 클래스의 실행 함수가 추적 id·시간 재기·로그·지표를 감싸서 모델마다 다시 쓰지 않는다.[2]",
+     "**한 저장소(모노레포)** — 모델 패키지와 공통 코드를 한 저장소에 두고 한 번에 바꾼다. 대신 공통 코드 한 줄이 모든 모델에 퍼진다.[2]",
+     "**새 인프라를 만들지 않기** — 토스 ML 엔지니어는 ML 서비스도 '서비스'라서 로그·정책·보안·카나리 배포 같은 것을 ML용으로 새로 만들지 않고 기존 서버 체계에 그대로 올렸다고 발표했다.[3]",
+     "**오픈소스는 얇게 감싸기** — 같은 발표는 MLflow(모델 기록 도구)를 모델 정보 관리 정도로만 쓰고 자체 라이브러리로 감싸, 나중에 걷어낼 수 있게 했다고 했다.[3]",
+     "**두 갈래 실행** — 토스 ML 플랫폼은 실시간 추론을 Triton(GPU 서빙 서버)이나 Kotlin 서버 둘 중 하나로 돌린다.[12]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "요청 하나의 시간 예산 나누기 (가상 값, 직접 돌린 출력)",
+     "body": "호출한 서비스가 300ms 안에 답하라고 정했다면, 피처 조회·추론·후처리가 그 예산을 나눠 씁니다. 추론이 느려지면 끝까지 가지 말고 미리 멈춰 대체 응답을 돌려줘야 호출한 쪽이 같이 멈추지 않습니다.[31]",
+     "lang": "python",
+     "code": "BUDGET_MS = 300                       # 호출한 서비스가 준 전체 마감\nfor case, infer in ((\"평소\", 180), (\"GPU 붐빔\", 260)):\n    print(f\"-- {case}\")\n    left = BUDGET_MS\n    for name, cost in ((\"피처 조회\", 40), (\"모델 추론\", infer), (\"후처리·로그\", 20)):\n        if cost > left:\n            print(f\"{name}: 남은 {left}ms < 필요 {cost}ms -> 중단, 대체 응답\")\n            break\n        left -= cost\n        print(f\"{name} {cost}ms, 남은 예산 {left}ms\")\n    else:\n        print(\"마감 안에 응답\")\n# -- 평소\n# 피처 조회 40ms, 남은 예산 260ms\n# 모델 추론 180ms, 남은 예산 80ms\n# 후처리·로그 20ms, 남은 예산 60ms\n# 마감 안에 응답\n# -- GPU 붐빔\n# 피처 조회 40ms, 남은 예산 260ms\n# 모델 추론 260ms, 남은 예산 0ms\n# 후처리·로그: 남은 0ms < 필요 20ms -> 중단, 대체 응답"
+    }
+   ],
+   "how_far": "GPU 클러스터와 서빙 엔진 설치·운영은 같은 챕터 ML Platform 팀이 맡습니다.[8] 이 자리는 그 위에서 **제품들이 공통으로 쓰는 서버 쪽 틀** — 모델 호출 규약, 시간 제한·대체 응답, 공통 로그·지표 — 을 설계하고 코드로 만드는 데까지라고 보면 됩니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    8,
+    12,
+    31
+   ],
+   "study": [
+    "toss-dsmle",
+    "slash22-mlservice",
+    "mlsd-book",
+    "system-design"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "견고한 서버 아키텍처를 기반으로 대규모 트래픽을 안정적으로 받을 수 있는 개별 서비스를 개발해요.",
+   "short": "공통 틀 위에 제품마다 서비스를 하나씩 올리고, 몰리는 시간에도 버티게 만드는 일.",
+   "why": "토스뱅크의 AI는 따로 노는 분석 도구가 아니라 은행 흐름 한가운데서 불립니다. 신분증 사본 탐지는 계좌 개설과 대출 신청 순간에 실시간으로 불리고[5], 2026년 10월에는 AI 채팅 에이전트가 전 고객에게 열렸습니다.[14] 같은 챕터의 피처 저장소는 초당 약 12만 건을 쓰고 P99(100번 중 가장 느린 1번) 5ms 이하를 목표로 합니다.[13] 같은 챕터의 ML 엔지니어(Product) 공고도 '대규모 트래픽과 높은 SLA'를 첫 업무로 적었습니다.[7]",
+   "actually": {
+    "intro": "'대규모 트래픽을 안정적으로'를 서버 코드로 옮기면 이런 일들입니다.",
+    "items": [
+     "**동시 처리량 어림** — 초당 요청 × 평균 처리 시간 = 동시에 붙잡고 있는 요청 수(리틀의 법칙).[23] 추론이 느릴수록 같은 트래픽에도 파드(쿠버네티스 실행 단위)가 많이 든다.",
+     "**과부하 때 덜 중요한 것부터 버리기** — 서버가 감당 못 할 요청은 빨리 거절하고, 중요한 요청을 먼저 받는다.[17]",
+     "**재시도 폭풍 막기** — 실패할 때마다 다시 보내면 부하가 몇 배가 된다. 재시도 횟수 상한·지터(무작위 대기)를 둔다.[37][18]",
+     "**옆 서비스 보호** — 학습 데이터를 모을 때 고객용 신원 서비스에 부하를 주지 않으려고 속도를 조절하는 다운로드 프록시를 따로 둔 사례가 이 은행에 있다.[5]",
+     "**자동 확장** — 부하 지표를 보고 파드 수를 늘린다.[25] 모델을 메모리에 올리는 시간이 길면 확장이 늦게 효과를 내니 여유분을 둔다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "추론 시간이 파드 수와 재시도 부하를 어떻게 바꾸나 (가상 값, 직접 돌린 출력)",
+     "body": "파드 하나가 동시에 8건을 처리한다고 가정했습니다. 같은 초당 2,000건이라도 추론이 50ms에서 1.2초로 늘면 필요한 파드가 13개에서 300개가 됩니다. 실패율이 90%까지 오르면 3번 재시도하는 호출자 때문에 모델 서버가 받는 부하가 3.4배가 됩니다.",
+     "lang": "python",
+     "code": "# 리틀의 법칙: 동시에 처리 중인 요청 = 초당 요청 x 평균 처리 시간\nfor rps, sec in ((2000, 0.05), (2000, 0.3), (2000, 1.2)):\n    inflight = rps * sec\n    pods = -(-inflight // 8)            # 파드 하나가 동시에 8개 처리한다고 가정\n    print(f\"{rps} rps x {sec*1000:.0f}ms -> 동시 {inflight:.0f}건, 파드 {pods:.0f}개\")\n# 실패하면 3번까지 다시 보내는 호출자: 실패율 p 일 때 모델 서버가 받는 부하\nfor p in (0.01, 0.5, 0.9):\n    print(f\"실패율 {p:.0%}: 받는 부하 x{sum(p**k for k in range(4)):.2f}\")\n# 2000 rps x 50ms -> 동시 100건, 파드 13개\n# 2000 rps x 300ms -> 동시 600건, 파드 75개\n# 2000 rps x 1200ms -> 동시 2400건, 파드 300개\n# 실패율 1%: 받는 부하 x1.01\n# 실패율 50%: 받는 부하 x1.88\n# 실패율 90%: 받는 부하 x3.44"
+    }
+   ],
+   "how_far": "트래픽 규모와 목표 숫자는 상품 조직과 함께 정합니다(공고가 상품 조직의 PO·개발자와 처음부터 끝까지 함께 만든다고 적었다).[1] 이 자리는 **그 숫자를 견디는 서비스 코드와 설정**(시간 제한·재시도·거절·확장)을 만들고, 부하 시험으로 어디서 무너지는지 확인하는 데까지 맡습니다. {추론}",
+   "refs": [
+    1,
+    5,
+    7,
+    13,
+    14,
+    17,
+    18,
+    23,
+    25,
+    37
+   ],
+   "study": [
+    "sre-book",
+    "aws-retries",
+    "release-it",
+    "system-design",
+    "k8s-hpa"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "무거운 연산을 필요로 하는 AI 모델을 안정적인 응답 속도 및 처리량으로 서빙할 수 있는 서버를 개발해요.",
+   "short": "한 번 계산에 수백 ms 걸리는 모델을, 요청을 묶고 줄 세워 빠르면서도 많이 처리하게 만드는 일.",
+   "why": "토스뱅크는 신분증 사본 탐지 모델을 고를 때 ResNet50(100ms)보다 무거운 RegNet(300ms)을 택했습니다 — 정확도가 올랐고 300ms가 업무 흐름에 문제되지 않는다고 판단했기 때문입니다.[5] 이렇게 모델이 무거워지면 서버가 '응답 속도'(한 건이 얼마나 빨리)와 '처리량'(초당 몇 건)을 동시에 지켜야 합니다.[1]",
+   "actually": {
+    "intro": "무거운 모델 앞에서 서버가 하는 일입니다.",
+    "items": [
+     "**동적 배칭** — 요청을 아주 잠깐 모아 한 번에 계산한다. GPU는 묶어 돌릴수록 건당 비용이 싸지지만, 얼마나 기다릴지가 지연과 처리량의 거래다.[22]",
+     "**계산을 서버 밖으로** — 파이썬 웹서버의 이벤트 루프(요청을 번갈아 처리하는 한 줄기) 안에서 무거운 계산을 돌리면 그동안 다른 요청이 전부 멈춘다. 스레드·프로세스·별도 추론 서버로 뺀다.[26]",
+     "**모델 형식 바꾸기** — 토스는 모델을 ONNX(여러 실행기가 읽는 공통 모델 형식)로 내보내 Kotlin·Java 서버나 스트림 처리 안에서도 돌리고, 같은 코드에서 실행기만 GPU판으로 바꿔 가속했다고 발표했다.[3][30]",
+     "**변환이 실패하는 곳** — 같은 발표는 일부 연산이 변환은 되는데 실행할 때 오류가 나는 경우가 있어, 모델 코드를 처음부터 표준 연산으로 짜는 가이드를 둔다고 했다.[3]",
+     "**대기열 상한** — 줄이 너무 길어지면 기다려 봐야 마감을 넘기니 더 받지 않는다.[17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "배칭을 켜면 지연과 처리량이 어떻게 바뀌나 (가상 모델 비용, 직접 돌린 시뮬레이션)",
+     "body": "1초에 400건이 들어오고, 모델 한 번 실행에 고정 20ms + 건당 2ms가 든다고 가정했습니다. 한 건씩 돌리면 처리 능력(초당 약 45건)을 넘어서 줄이 끝없이 길어지고, 배치를 키우면 같은 장비로 다 받아 냅니다. 실제 숫자는 모델과 장비마다 직접 재야 합니다.[22]",
+     "lang": "python",
+     "code": "import random\nrandom.seed(3)\n# 모델 한 번 실행 = 고정 20ms + 건당 2ms (GPU는 묶어 돌릴수록 건당 비용이 싸다고 가정)\ndef run_ms(n): return 20 + 2 * n\narrivals = sorted(random.uniform(0, 1000) for _ in range(400))   # 1초에 400건\n\ndef simulate(max_batch, max_wait):\n    t_free, i, lat = 0.0, 0, []\n    while i < len(arrivals):\n        start = max(t_free, arrivals[i])\n        deadline = max(start, arrivals[i] + max_wait)\n        j = i\n        while j < len(arrivals) and j - i < max_batch and arrivals[j] <= deadline:\n            j += 1\n        go = max(start, arrivals[j - 1]) if j - i == max_batch else deadline\n        go = max(go, t_free)\n        done = go + run_ms(j - i)\n        lat += [done - a for a in arrivals[i:j]]\n        t_free, i = done, j\n    lat.sort()\n    return lat[len(lat) // 2], lat[int(len(lat) * 0.99)], t_free\n\nfor mb, mw in ((1, 0), (8, 5), (32, 20)):\n    p50, p99, end = simulate(mb, mw)\n    print(f\"배치 최대 {mb:2d}, 대기 {mw:2d}ms -> p50 {p50:6.1f}ms p99 {p99:7.1f}ms, 400건 끝 {end:6.0f}ms\")\n# 배치 최대  1, 대기  0ms -> p50 3916.6ms p99  7744.8ms, 400건 끝   8802ms\n# 배치 최대  8, 대기  5ms -> p50  430.7ms p99   833.5ms, 400건 끝   1827ms\n# 배치 최대 32, 대기 20ms -> p50  132.8ms p99   213.3ms, 400건 끝   1142ms"
+    }
+   ],
+   "how_far": "모델 구조를 바꾸거나 GPU 커널을 짜는 일은 이 자리의 몫이 아닙니다 — 공고가 ML 경험을 요구하지 않습니다.[1] **배치 크기·대기 시간·동시 실행 수 같은 서버 쪽 손잡이를 재 보고 고르는 것**, 그리고 무거운 계산이 다른 요청을 막지 않게 구조를 나누는 것까지가 이 줄입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    5,
+    17,
+    22,
+    26,
+    30
+   ],
+   "study": [
+    "triton-server",
+    "onnxruntime-docs",
+    "cs336-inference",
+    "slash22-mlservice",
+    "fluent-python"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "MSA 환경에서 분산 추적이 가능한 서비스를 운영하며 장애를 최소화 하기 위한 환경을 구축해요.",
+   "short": "요청 하나가 여러 서비스를 지나도 같은 추적 번호로 이어 보게 해서, 어디서 느리고 어디서 터졌는지 바로 찾게 하는 일.",
+   "why": "MSA에서는 요청 하나가 여러 서버와 네트워크를 지나가서, 각 서버 로그만으로는 '이 실패가 어느 요청의 어디서 났나'를 답하기 어렵습니다.[4] 이 팀의 공통 실행 코드가 모델 실행마다 추적 id를 남기는 것도 같은 이유입니다.[2] 토스뱅크는 Istio(서비스 사이 통신을 맡는 서비스 메시)를 은행 앱에 들여 운영하고 있습니다.[10]",
+   "actually": {
+    "intro": "같은 그룹 토스페이먼츠가 SLASH 23에서 공개한 방식(회사가 다르다)과 표준입니다.[4]",
+    "items": [
+     "**좋은 로그부터** — 로그를 JSON으로 정형화하고, 어느 API·어느 사용자 요청인지 같은 맥락과 요청마다 발급한 추적 id(trace ID)를 모든 줄에 남긴다.[4]",
+     "**추적 id 넘기기** — 다른 서버를 부를 때 HTTP 헤더에 추적 id를 실어 보낸다. 이것이 분산 추적이고(구글 Dapper 논문 이후 퍼진 방식이다[21]), 지금은 W3C Trace Context 표준과 OpenTelemetry 계측 도구로 모이고 있다.[4][19][20]",
+     "**요청보다 큰 묶음** — 화면 여러 개를 지나는 사용자 시나리오 전체를 묶는 '글로벌 추적 id'를 따로 둔다.[4]",
+     "**헤더를 못 붙이는 곳까지** — DB는 쿼리 주석에 추적 정보를 넣고, TCP 서버는 본문 첫 줄에 약속한 형식으로 싣는다.[4]",
+     "**도구와 잇기** — 에러 추적(Sentry)·성능 추적(Pinpoint)에도 같은 id를 넣어 한 번에 검색한다.[4] 토스 게이트웨이도 trace ID를 만들어 뒤 서비스로 넘긴다.[11]",
+     "**추적 길을 디버깅에 재활용** — 특정 헤더가 있는 요청만 개발자가 따로 띄운 서버로 보내는 Istio 라우팅으로 테스트 환경을 만든다.[4]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "추적 id를 헤더로 넘기고 JSON 로그에 남기기 (가상 서비스, 직접 돌린 출력)",
+     "body": "W3C traceparent 형식(버전-추적 id-스팬 id-플래그)을 손으로 만든 것입니다.[19] 실제로는 OpenTelemetry 같은 계측 라이브러리가 대신합니다.[20] 출력의 추적 id는 실행할 때마다 바뀝니다.",
+     "lang": "python",
+     "code": "import json, secrets\n\ndef new_traceparent():                       # W3C Trace Context: 버전-추적id-스팬id-플래그\n    return f\"00-{secrets.token_hex(16)}-{secrets.token_hex(8)}-01\"\n\ndef child(tp):                               # 같은 추적 id, 새 스팬 id\n    v, trace, _, flags = tp.split(\"-\")\n    return f\"{v}-{trace}-{secrets.token_hex(8)}-{flags}\"\n\ndef log(service, tp, **ctx):                 # JSON 한 줄 로그 — 항목 순서가 바뀌어도 파싱된다\n    print(json.dumps({\"svc\": service, \"trace_id\": tp.split(\"-\")[1][:8] + \"…\", **ctx}, ensure_ascii=False))\n\ntp = new_traceparent()                       # 앱(클라이언트)이 처음 만든다\nlog(\"app-server\", tp, api=\"/loan/apply\", user=\"u37\")\ntp_ml = child(tp)                            # 헤더 traceparent 로 넘긴다\nlog(\"ml-server\", tp_ml, model=\"idcard-fake-v3\", ms=212)\nlog(\"feature-db\", child(tp_ml), sql=\"/* traceparent=\" + tp_ml[:20] + \"… */ SELECT ...\")\nprint(\"같은 추적 id:\", tp.split(\"-\")[1] == tp_ml.split(\"-\")[1])\n# {\"svc\": \"app-server\", \"trace_id\": \"63ef9afd…\", \"api\": \"/loan/apply\", \"user\": \"u37\"}\n# {\"svc\": \"ml-server\", \"trace_id\": \"63ef9afd…\", \"model\": \"idcard-fake-v3\", \"ms\": 212}\n# {\"svc\": \"feature-db\", \"trace_id\": \"63ef9afd…\", \"sql\": \"/* traceparent=00-63ef9afdf5cc073e3… */ SELECT ...\"}\n# 같은 추적 id: True"
+    }
+   ],
+   "how_far": "추적 저장소·대시보드 같은 공용 관측 인프라는 보통 플랫폼·DevOps 쪽이 운영합니다. {추론} 이 자리는 **자기 서비스가 추적 id를 받고, 남기고, 다음 서비스로 넘기게** 하고, 그 기록으로 장애 원인을 좁혀 고치는 데까지 맡습니다 — 공고가 '운영하며'라고 적었습니다.[1]",
+   "refs": [
+    1,
+    2,
+    4,
+    10,
+    11,
+    19,
+    20,
+    21
+   ],
+   "study": [
+    "slash23-tracing",
+    "otel-docs",
+    "slash23-gateway",
+    "slash22-mesh",
+    "dapper"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Python, Kotlin, Go 등 하나 이상의 언어로 서버를 개발하고 운영해 본 경험이 필요해요.",
+   "short": "언어는 하나면 된다 — 대신 그 언어로 짠 서버를 실제 사용자 앞에서 굴려 본 경험이 필요하다.",
+   "why": "이 팀의 모델 패키지와 서빙 서버는 파이썬입니다(신분증 탐지는 파이썬 웹서버, 모델 패키지는 uv 파이썬 모노레포).[5][2] 토스뱅크 상품 서버는 Kotlin·Spring으로 옮겨 가고 있고[15], 토스는 ONNX 모델을 Kotlin 서버 안에서도 돌립니다.[3] 그래서 공고가 언어를 셋이나 열어 둔 것으로 보입니다. {추론}",
+   "level": {
+    "basic": "한 언어로 HTTP API 서버를 만들고 테스트·배포해 봤다. 요청 처리 중 예외·시간 초과를 다룬다.",
+    "work": "동시성 모델을 안다 — 파이썬의 이벤트 루프·GIL(한 번에 한 스레드만 파이썬 코드를 돌리는 잠금), Kotlin 코루틴, Go 고루틴 중 자기 언어 것. 무거운 계산이 다른 요청을 막는 상황을 설명할 수 있다.",
+    "team": "모델을 부르는 서버에서 메모리(모델 적재)·CPU/GPU 사용·지연을 재 보고, 운영 중 문제를 로그·지표로 찾아 고친 경험이 있다. {추론}"
+   },
+   "actually": {
+    "intro": "'운영해 본 경험'에서 보통 묻는 것들입니다. {추론}",
+    "items": [
+     "**동시성** — 파이썬 비동기 서버에서 무거운 계산을 그대로 돌리면 그 시간 동안 헬스 체크까지 멈춘다. 스레드·프로세스로 빼는 법은 언어 공식 문서에 있다.[26]",
+     "**배포와 되돌리기** — 새 버전을 올리고 문제가 보이면 되돌린 경험.",
+     "**장애 하나를 끝까지** — 증상 → 로그·지표로 좁히기 → 원인 → 재발 방지까지 한 사례."
+    ]
+   },
+   "examples": [
+    {
+     "title": "이벤트 루프 안에서 무거운 계산을 돌리면 (직접 돌린 출력)",
+     "body": "0.3초짜리 CPU 계산과 10ms짜리 가벼운 요청을 같이 보냈습니다. 루프 안에서 돌리면 가벼운 요청도 300ms를 기다립니다. 스레드로 빼면 58ms로 줄지만 10ms까지는 안 내려옵니다 — 순수 파이썬 계산은 GIL을 붙잡기 때문입니다. 넘파이·ONNX Runtime처럼 계산 중 GIL을 놓는 라이브러리나 별도 프로세스·추론 서버를 쓰는 이유입니다. {추론}",
+     "lang": "python",
+     "code": "import asyncio, time\n\ndef heavy():                      # 무거운 계산(모델 추론) 흉내 — 0.3초 CPU를 붙잡는다\n    t = time.perf_counter()\n    while time.perf_counter() - t < 0.3: pass\n\nasync def health(start):          # 같은 서버의 가벼운 요청\n    await asyncio.sleep(0.01)\n    return f\"{(time.perf_counter() - start) * 1000:.0f}ms\"\n\nasync def main():\n    s = time.perf_counter()\n    async def bad(): heavy()      # 이벤트 루프 안에서 직접 돌림\n    _, h = await asyncio.gather(bad(), health(s))\n    print(\"루프 안에서 추론: 헬스 체크 응답\", h)\n    s = time.perf_counter()\n    _, h = await asyncio.gather(asyncio.to_thread(heavy), health(s))\n    print(\"스레드로 뺀 추론: 헬스 체크 응답\", h)\n\nasyncio.run(main())\n# 루프 안에서 추론: 헬스 체크 응답 300ms\n# 스레드로 뺀 추론: 헬스 체크 응답 58ms"
+    }
+   ],
+   "how_far": "세 언어를 다 알 필요는 없습니다 — 공고가 '하나 이상'이라고 적었습니다.[1] 전형에 **라이브 코딩 테스트**가 있으니 고른 언어로 자료구조·동시성 코드를 막힘없이 짤 수 있어야 합니다.[1]",
+   "refs": [
+    1,
+    2,
+    3,
+    5,
+    15,
+    26
+   ],
+   "study": [
+    "fluent-python",
+    "coroutines-book",
+    "go-net-book",
+    "book-thread"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "견고한 서비스 아키텍처를 설계하고 안정적인 구조의 코드를 구현할 수 있는 역량이 필요해요.",
+   "short": "한 부분이 망가져도 전체가 같이 쓰러지지 않게 나누고, 그 경계를 코드로 지킬 수 있어야 한다.",
+   "why": "이력서 안내가 '아키텍처의 복잡도와 개발 구현 리소스의 트레이드오프 사이에서 비용 효율을 비교해 우선순위를 정한 경험'을 쓰라고 합니다.[1] 이 팀의 모노레포 결정도 장점(한 번에 같이 변경)과 비용(공통 코드 변경이 모든 모델에 퍼짐)을 같이 적었습니다.[2]",
+   "flows": [
+    {
+     "caption": "AI 판정 요청이 지나가는 길 — 보통 이런 모양 {추론}",
+     "steps": [
+      "상품 서비스 · 대출·계좌 개설 흐름",
+      "게이트웨이·메시 · 추적 id·인증",
+      "ML 백엔드 서버 · 시간 예산·서킷·배칭",
+      "모델 실행 · 파이썬 패키지 또는 GPU 서빙",
+      "피처 저장소·로그 · 입력 조회·결과 기록"
+     ],
+     "mine_from": 2
+    }
+   ],
+   "actually": {
+    "items": [
+     "**서킷 브레이커** — 모델 서버가 계속 실패하면 잠시 부르지 않고 바로 대체 응답을 준다. 토스 게이트웨이는 라우트·기능 단위로 서킷을 건다.[11][27]",
+     "**격리** — 한 프로세스에 모델 여럿을 올리면 자원은 아끼지만 한 모델의 전역 설정·메모리가 이웃을 건드린다.[2]",
+     "**대체 경로** — AI가 답하지 못할 때의 기본값을 업무와 정해 둔다. 신분증 탐지는 수기 검증이 늘 뒤에 있다.[5]",
+     "**같은 입력 같은 결과** — 신용 모형은 같은 고객에게 같은 점수가 나와야 해 새 버전을 섀도(실제 요청을 복사해 결과만 비교)로 2~3주 대조했다.[6][9]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "서킷 브레이커의 세 상태 (직접 돌린 출력)",
+     "body": "연속 3번 실패하면 열리고, 한 번 쉬고 나서 반쯤 열어 한 건만 시험합니다. 시험이 실패하면 다시 열리고, 성공하면 닫힙니다.[27]",
+     "lang": "python",
+     "code": "class Breaker:                    # 닫힘 -> (연속 실패) 열림 -> (쉬고 나서) 반열림 -> 닫힘\n    def __init__(self, fails=3, cool=2):\n        self.state, self.n, self.fails, self.cool, self.wait = \"닫힘\", 0, fails, cool, 0\n    def call(self, ok):\n        if self.state == \"열림\":\n            self.wait -= 1\n            if self.wait > 0: return \"바로 대체 응답(모델 서버 안 부름)\"\n            self.state = \"반열림\"\n        if ok:\n            self.state, self.n = \"닫힘\", 0\n            return \"정상\"\n        self.n += 1\n        if self.state == \"반열림\" or self.n >= self.fails:\n            self.state, self.wait = \"열림\", self.cool\n        return \"실패\"\n\nb = Breaker()\nfor i, ok in enumerate([True, False, False, False, False, False, True, True], 1):\n    r = b.call(ok)\n    print(f\"{i}: 서버 {'정상' if ok else '오류'} -> {r:<22} 상태 {b.state}\")\n# 1: 서버 정상 -> 정상                     상태 닫힘\n# 2: 서버 오류 -> 실패                     상태 닫힘\n# 3: 서버 오류 -> 실패                     상태 닫힘\n# 4: 서버 오류 -> 실패                     상태 열림\n# 5: 서버 오류 -> 바로 대체 응답(모델 서버 안 부름)   상태 열림\n# 6: 서버 오류 -> 실패                     상태 열림\n# 7: 서버 정상 -> 바로 대체 응답(모델 서버 안 부름)   상태 열림\n# 8: 서버 정상 -> 정상                     상태 닫힘"
+    }
+   ],
+   "how_far": "면접 화이트보드에서 위 길을 그리고, 상자마다 **무엇을 맡고, 무엇이 죽으면 어떻게 되며, 왜 이렇게 나눴는지**를 한두 문장으로 말할 수 있으면 됩니다. {추론} 이력서에는 실제로 고른 구조와 버린 대안을 적습니다.[1]",
+   "refs": [
+    1,
+    2,
+    5,
+    6,
+    9,
+    11,
+    27
+   ],
+   "study": [
+    "msa-patterns",
+    "release-it",
+    "ddia-ko",
+    "slash23-gateway"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "쿠버네티스 환경 위에서 서버를 배포하고 모니터링하며 안정적으로 운영한 경험이 있으면 좋아요.",
+   "short": "모델 서버를 쿠버네티스에 올리고, 모델 적재가 끝난 뒤에만 트래픽을 받게 하는 식의 운영 경험.",
+   "why": "토스뱅크 ML 플랫폼은 쿠버네티스 위에서 GPU 서빙 엔진을 운영하고[8], 은행 서비스 전체가 쿠버네티스·Istio 위에서 돕니다.[10] 모델 서버는 일반 API 서버보다 뜨는 데 오래 걸리고(모델을 메모리에 올림) 메모리를 많이 써서, 쿠버네티스 설정이 곧 안정성입니다. {추론}",
+   "actually": {
+    "items": [
+     "**준비 확인(readiness)** — 모델 적재가 끝나기 전에는 트래픽을 받지 않게 한다. 뜨는 데 오래 걸리면 시작 확인(startup probe)으로 그동안 재시작되지 않게 한다.[24]",
+     "**자원 요청·한도** — CPU·메모리·GPU를 얼마나 쓸지 적는다. 메모리 한도를 넘으면 컨테이너가 죽는다(OOM).[24]",
+     "**확장** — 지표를 보고 파드 수를 늘린다.[25]",
+     "**새 버전 비교** — 실제 요청을 복사해 새 버전에도 보내는 미러링(섀도)으로 결과를 대조한다.[28][6]",
+     "**모니터링** — 지연 백분위·오류율·처리량, 그리고 모델 쪽 지표(점수 분포). 토스 ML 플랫폼은 모델 서버가 10분마다 새 판을 확인하고 점수 분포를 감시한다.[12]"
+    ]
+   },
+   "how_far": "우대 줄입니다('있으면 좋아요'). 클러스터를 직접 세우는 것보다 **배포 설정(YAML)을 쓰고, 파드가 안 뜰 때 이유를 읽고 고치는** 정도면 이야기가 됩니다. {추론}",
+   "refs": [
+    6,
+    8,
+    10,
+    12,
+    24,
+    25,
+    28
+   ],
+   "study": [
+    "internal-k8s",
+    "k8s-in-action",
+    "k8s-probes",
+    "istio-mirror"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "대규모 트래픽을 받거나 SLA가 높은 서비스를 프로덕션으로 개발하고 운영한 경험과 역량이 있으면 좋아요.",
+   "short": "\"얼마나 자주, 얼마나 빨리 답해야 하나\"를 숫자로 약속하고 지켜 본 경험 — 은행 흐름에 붙은 서버라서.",
+   "why": "SLA(서비스 수준 약속)는 서비스가 얼마나 자주·빨리 답해야 하는지 정한 약속입니다.[16] 이 팀의 모델은 계좌 개설·대출 흐름 안에서 실시간으로 불리고[5], 상담 에이전트는 전 고객이 씁니다.[14] 한 요청이 여러 서비스를 거치면 각자의 가용성이 곱해져 전체가 낮아집니다.[16] {추론}",
+   "actually": {
+    "items": [
+     "**목표를 백분위로** — 평균이 아니라 p99 같은 꼬리 지연으로 잡는다. 평균이 멀쩡해도 1%가 1초를 넘으면 그 고객은 멈춘 화면을 본다.[16]",
+     "**오류 예산** — 99.9% 목표면 남은 0.1%가 이번 달 '써도 되는 실패'다. 다 쓰면 새 배포보다 안정화를 먼저 한다.[16]",
+     "**연쇄 장애 막기** — 한 서비스가 느려지면 부르는 쪽의 스레드·연결이 쌓여 같이 죽는다. 시간 제한·과부하 거절이 이를 끊는다.[18]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "거치는 서비스가 늘면 가용성이 곱해진다 (가상 값, 직접 돌린 출력)",
+     "body": "각자 99.9%인 서비스 다섯 개를 차례로 거치면 전체는 99.5%가 됩니다.",
+     "lang": "python",
+     "code": "for n in (1, 3, 5, 10):\n    print(f\"99.9% 서비스 {n:2d}개를 차례로 거침 -> {0.999 ** n:.2%}\")\ntotal = 20_000_000 * 30\nprint(f\"30일 허용 실패 요청 {total * 0.001:,.0f}건\")\n# 99.9% 서비스  1개를 차례로 거침 -> 99.90%\n# 99.9% 서비스  3개를 차례로 거침 -> 99.70%\n# 99.9% 서비스  5개를 차례로 거침 -> 99.50%\n# 99.9% 서비스 10개를 차례로 거침 -> 99.00%\n# 30일 허용 실패 요청 600,000건"
+    }
+   ],
+   "how_far": "'대규모'의 기준은 공고에 없습니다. 지원서에는 **초당 요청 수·지연 목표·겪은 장애와 고친 방법**을 숫자로 적으면 이 줄에 답한 것입니다 — 이력서 안내가 구현 내용과 성과 지표를 함께 쓰라고 합니다.[1]",
+   "refs": [
+    1,
+    5,
+    14,
+    16,
+    18
+   ],
+   "study": [
+    "sre-book",
+    "system-design",
+    "ddia-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "크고 복잡한 문제를 소프트웨어 기술로 해결하거나, 혹은 서비스나 제품으로 비즈니스 임팩트를 낸 경험이 있으면 좋아요.",
+   "short": "기술 자체보다 \"그래서 처리 시간·사기·비용이 얼마나 줄었나\"를 말할 수 있는 경험.",
+   "why": "토스뱅크 PF ML 팀장은 \"모델이 아니라 서비스를 만든다\"며 정책·영업 팀과 함께 적용 방법을 고민해야 한다고 했습니다.[9] 이력서 안내도 비즈니스 임팩트와, 프로덕션에 적용한 뒤 성과 지표를 보며 고도화한 경험을 자세히 쓰라고 합니다.[1]",
+   "actually": {
+    "intro": "이 회사가 스스로 내놓은 '임팩트' 숫자의 모양입니다.",
+    "items": [
+     "사본 신분증 대출 신청의 82%를 사전에 막았고, 거래 제한의 정확도는 약 94%였다.[5]",
+     "상담 대기 5분 이상 → 30초 안팎.[14]",
+     "모델 서빙에 며칠 걸리던 일 → 패키지 설치 한 줄, 첫 커밋 당일 운영 반영.[2]",
+     "토스는 이 방식으로 모델 100여 개를 동시에 운영한다고 발표했다.[3]"
+    ]
+   },
+   "how_far": "규모가 작아도 됩니다. **전·후 숫자, 무엇과 비교했는지, 내가 맡은 부분**이 드러나면 됩니다. {추론} 백엔드 개발자라면 '서빙 시간을 줄여 제품이 더 많은 요청에 AI를 쓰게 됐다' 같은 연결도 임팩트입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    5,
+    9,
+    14
+   ],
+   "study": [
+    "slash23-fakeid",
+    "mlsd-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "ML 경험은 없어도 좋아요. AI/ML 분야에 관심이 많고 이 방향으로의 경험을 쌓고 싶은 분이면 좋아요.",
+   "short": "모델을 만들 줄 몰라도 된다 — 모델이 서버 입장에서 어떤 '무거운 함수'인지 알아 가려는 관심이면 된다.",
+   "why": "동료 한마디가 'AI/ML 경험은 입사 후에도 충분히 쌓을 수 있고, 중요한 건 서버 설계 역량·실전 운영 경험·AI라는 새 영역을 두려워하지 않는 호기심'이라고 적었습니다.[1] 팀은 모델을 만드는 데이터 사이언티스트와 서버를 맡는 ML 엔지니어로 나뉘어 있습니다.[1][2]",
+   "actually": {
+    "intro": "입사 전에 알아 두면 대화가 쉬워지는 정도입니다. {추론}",
+    "items": [
+     "**모델 = 입력을 받아 확률을 주는 함수** — 신분증 탐지 모델은 '원본이 아닐 확률'만 주고, 어디서 막을지(임계값)는 서비스가 고른다.[5]",
+     "**모델 파일과 실행기** — 학습한 모델을 ONNX 같은 형식으로 내보내 실행기로 돌린다.[29][30]",
+     "**모델 버전 관리** — 어떤 판이 운영 중인지 기록하고 바꾼다. 토스는 MLflow를 얇게 감싸 쓴다.[3]",
+     "**GPU가 왜 필요한가** — 큰 행렬 곱을 한꺼번에 하기 때문에 묶어 보낼수록 효율이 좋다.[22]"
+    ]
+   },
+   "how_far": "이 줄은 자격을 낮추는 문장입니다. 작은 공개 모델 하나를 ONNX로 내보내 내 서버에서 불러 보고, 지연을 재 본 정도면 '관심'을 보이기에 충분합니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    5,
+    22,
+    29,
+    30
+   ],
+   "study": [
+    "onnxruntime-docs",
+    "mlsd-book",
+    "toss-dsmle",
+    "slash22-mlservice"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "toss-dsmle",
+   "title": "DS와 MLE가 함께 일하는 법",
+   "by": "토스뱅크 ML Service 팀 · Toss Tech · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/ds-mle-cowork",
+   "why": "바로 이 팀이 모델을 서버로 받는 방식(세 칸 약속·공통 실행 코드·모노레포). 업무 첫 줄 '기반 서버 아키텍처'를 이 글로 먼저 본다."
+  },
+  {
+   "id": "slash22-mlservice",
+   "title": "SLASH 22 · 물 흐르듯 자연스러운 ML 서비스 만들기",
+   "by": "토스 ML 엔지니어 · 15분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=EEsYbiqqcc0",
+   "why": "ML 서비스를 특별한 인프라 없이 기존 서버 체계에 올린 같은 그룹 사례 — ONNX로 Kotlin 서버에서도 모델을 돌리는 이야기. ML 경험 없는 백엔드 개발자에게 가장 가까운 출발점."
+  },
+  {
+   "id": "slash23-tracing",
+   "title": "SLASH 23 · 분산 추적 체계 & 로그 중심으로 Observability 확보하기",
+   "by": "토스페이먼츠 Server Platform 팀 · 29분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=Ifz0LsfAG94",
+   "why": "업무 넷째 줄 그 자체 — 좋은 로그에서 시작해 추적 id 전파, DB·TCP까지 넓히는 순서를 같은 그룹이 실제로 한 대로 보여 준다."
+  },
+  {
+   "id": "slash23-gateway",
+   "title": "SLASH 23 · 토스는 Gateway 이렇게 씁니다",
+   "by": "토스 Server Platform 팀 · 27분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=Zs3jVelp0L8",
+   "why": "토스 서버 요청이 지나가는 공통 길 — trace ID·서킷 브레이커·로그와 지표. 아키텍처 요건과 분산 추적 업무의 바닥."
+  },
+  {
+   "id": "slash22-mesh",
+   "title": "SLASH 22 · 은행 앱에도 Service Mesh 도입이 가능한가요?",
+   "by": "토스뱅크 DevOps · 20분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=ftFHZwyUN38",
+   "why": "토스뱅크 서비스들이 서로 부르는 길(Istio)을 왜 들였고 운영하며 무엇에 걸렸나. MSA·쿠버네티스 줄의 은행 쪽 배경."
+  },
+  {
+   "id": "slash23-fakeid",
+   "title": "SLASH 23 · AI와 함께 가짜 신분증 찾아내기",
+   "by": "토스뱅크 · 11분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=9JGZxmZxAAM",
+   "why": "이 은행 AI 제품 하나가 실시간 서버로 나가 효과를 내기까지. 무거운 모델 선택(300ms)과 임팩트 숫자의 회사 사례."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering (온라인 무료판)",
+   "by": "Google",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "why": "SLO·과부하 처리·연쇄 장애 장. 대규모 트래픽·높은 SLA 줄의 원리를 이 세 장으로 채운다."
+  },
+  {
+   "id": "aws-retries",
+   "title": "Timeouts, retries, and backoff with jitter",
+   "by": "Amazon Builders' Library",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+   "why": "시간 제한을 얼마로 잡고 재시도를 어떻게 제한하나. 업무 둘째 줄 '대규모 트래픽을 안정적으로'의 가장 짧은 실무 글."
+  },
+  {
+   "id": "release-it",
+   "title": "Release의 모든 것 2판",
+   "by": "마이클 나이가드 · 박성철 옮김 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ridibooks.com/books/443001250",
+   "why": "타임아웃·서킷 브레이커·격벽처럼 운영에서 서비스가 죽는 방식과 막는 장치를 사례로. 아키텍처 요건과 트래픽 업무."
+  },
+  {
+   "id": "system-design",
+   "title": "가상 면접 사례로 배우는 대규모 시스템 설계 기초",
+   "by": "알렉스 쉬",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%80%EC%83%81%20%EB%A9%B4%EC%A0%91%20%EC%82%AC%EB%A1%80%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%8C%80%EA%B7%9C%EB%AA%A8%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84",
+   "why": "트래픽 어림·캐시·큐·확장을 면접 화이트보드 눈높이로. 아키텍처 질문에 상자를 그려 답하는 연습."
+  },
+  {
+   "id": "msa-patterns",
+   "title": "마이크로서비스 패턴",
+   "by": "크리스 리처드슨",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A7%88%EC%9D%B4%ED%81%AC%EB%A1%9C%EC%84%9C%EB%B9%84%EC%8A%A4%20%ED%8C%A8%ED%84%B4%20%EB%A6%AC%EC%B2%98%EB%93%9C%EC%8A%A8",
+   "why": "서비스 나누기·서비스 간 통신·관측성 패턴(분산 추적 포함). MSA 업무와 아키텍처 요건의 교과서."
+  },
+  {
+   "id": "ddia-ko",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+   "why": "신뢰성·확장성·유지보수성의 뜻부터 복제·분할까지. 트레이드오프를 말로 설명하는 바탕."
+  },
+  {
+   "id": "otel-docs",
+   "title": "OpenTelemetry 문서",
+   "by": "OpenTelemetry (CNCF)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://opentelemetry.io/docs/",
+   "why": "trace·span·context 전파와 언어별 자동 계측. 업무 넷째 줄의 추적 id 넘기기를 표준 도구로 직접 해 본다."
+  },
+  {
+   "id": "dapper",
+   "title": "Dapper, a Large-Scale Distributed Systems Tracing Infrastructure",
+   "by": "Google · 2010",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://research.google/pubs/dapper-a-large-scale-distributed-systems-tracing-infrastructure/",
+   "why": "분산 추적의 원조 논문(발표에서도 언급). 표본 추출·낮은 부담 같은 설계 이유를 알면 추적 도구 설정을 고를 수 있다."
+  },
+  {
+   "id": "triton-server",
+   "title": "Triton Inference Server 사용자 가이드 · Dynamic Batcher",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/user_guide/batcher.html",
+   "why": "업무 셋째 줄 — 배치 크기와 대기 시간을 설정으로 바꿔 지연·처리량을 직접 재 본다."
+  },
+  {
+   "id": "onnxruntime-docs",
+   "title": "ONNX Runtime 문서",
+   "by": "Microsoft · ONNX Runtime",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://onnxruntime.ai/docs/",
+   "why": "모델 파일을 파이썬·Java 등에서 불러 돌리는 실행기. 토스가 발표한 'ONNX로 서버 안에서 서빙'을 손으로 해 볼 때."
+  },
+  {
+   "id": "cs336-inference",
+   "title": "Stanford CS336 · Lecture 10: Inference (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "/lectures/EfM546A79aM",
+   "why": "큰 모델 추론이 왜 무겁고 무엇이 지연·처리량을 정하나. '무거운 연산을 필요로 하는 AI 모델' 줄의 배경."
+  },
+  {
+   "id": "mlsd-book",
+   "title": "머신러닝 시스템 설계",
+   "by": "칩 후옌 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EC%B9%A9%20%ED%9B%84%EC%98%8C",
+   "why": "배포·모니터링·온라인 추론과 배치 추론 장. ML 경험 없는 서버 개발자가 '모델이 서비스 안에서 어떻게 사는지' 감을 잡는 책."
+  },
+  {
+   "id": "fluent-python",
+   "title": "전문가를 위한 파이썬 (2판)",
+   "by": "루시아누 하말류 · 한빛미디어",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%A0%84%EB%AC%B8%EA%B0%80%EB%A5%BC%20%EC%9C%84%ED%95%9C%20%ED%8C%8C%EC%9D%B4%EC%8D%AC",
+   "why": "파이썬을 고른다면 — 동시성(스레드·프로세스·asyncio) 장이 '무거운 계산이 요청을 막는' 문제의 바탕."
+  },
+  {
+   "id": "coroutines-book",
+   "title": "코틀린 코루틴의 정석",
+   "by": "조세영 · 에이콘출판 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000007956109",
+   "why": "Kotlin을 고른다면 — 여러 호출을 동시에 보내고 시간 제한·취소·예외를 다루는 법."
+  },
+  {
+   "id": "go-net-book",
+   "title": "Go 언어를 활용한 네트워크 프로그래밍",
+   "by": "애덤 우드벡 · 김찬빈 옮김 · 제이펍 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002993437",
+   "why": "Go를 고른다면 — 서버와 클라이언트를 짜며 타임아웃·연결 관리까지."
+  },
+  {
+   "id": "book-thread",
+   "title": "실전 자바 — 멀티스레드와 동시성",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/java-thread",
+   "why": "JVM(Kotlin) 쪽 서버라면 스레드 풀·대기·경합. 요청이 왜 줄을 서나를 스레드 이름과 실행 순서로 본다."
+  },
+  {
+   "id": "internal-k8s",
+   "title": "쿠버네티스 입문",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "kubectl 결과로 Pending·CrashLoopBackOff를 읽는 연습. 쿠버네티스 우대 줄의 첫걸음."
+  },
+  {
+   "id": "k8s-in-action",
+   "title": "쿠버네티스 인 액션",
+   "by": "마르코 룩샤 · 강인호 외 옮김 · 에이콘출판 · 2020",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=235962702",
+   "why": "파드·디플로이먼트·자원·확인(probe) — 모델 서버를 올리기 전 기초 체력."
+  },
+  {
+   "id": "k8s-probes",
+   "title": "Kubernetes 문서 · Liveness, Readiness, and Startup Probes",
+   "by": "Kubernetes",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/",
+   "why": "모델 적재가 끝나기 전에 트래픽을 받지 않게 하는 세 가지 확인. 쿠버네티스 우대 줄."
+  },
+  {
+   "id": "k8s-hpa",
+   "title": "Kubernetes 문서 · Horizontal Pod Autoscaling",
+   "by": "Kubernetes",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/",
+   "why": "지표를 보고 파드 수를 늘리는 기본 장치. 트래픽 업무 줄."
+  },
+  {
+   "id": "istio-mirror",
+   "title": "Istio 문서 · Mirroring",
+   "by": "Istio",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://istio.io/latest/docs/tasks/traffic-management/mirroring/",
+   "why": "실제 요청을 복사해 새 버전에도 보내는 섀도 비교를 직접 해 본다. 금융에서 모델 서버를 안전하게 바꾸는 법."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "이 팀과 그룹이 공개한 것 읽기",
+   "time": "1주",
+   "goal": "토스뱅크 AI 제품 하나가 상품 서비스 → ML 서버 → 모델 → 수기 검증으로 이어지는 길을 그리고, 상자마다 죽으면 무슨 일이 나는지 말할 수 있다.",
+   "task": "팀 글과 영상 넷을 보고 위 'AI 판정 요청이 지나가는 길'을 내 말로 다시 그린다. 상자마다 시간 예산(ms)과 실패 시 대체 응답을 한 줄씩 적는다.",
+   "resources": [
+    "toss-dsmle",
+    "slash22-mlservice",
+    "slash23-fakeid",
+    "slash23-tracing",
+    "slash22-mesh"
+   ]
+  },
+  {
+   "title": "모델을 부르는 서버 만들기",
+   "time": "2주",
+   "goal": "고른 언어로 모델 서버를 만들고, 무거운 계산이 다른 요청을 막지 않게 구조를 나눈다.",
+   "task": "작은 공개 이미지 분류 모델을 ONNX로 내보내 내 서버(FastAPI·Spring·Go 중 하나)에서 불러 '가상 서류 사진'에 점수를 돌려준다. 같은 서버의 헬스 체크 지연을 재며, 추론을 루프 안·스레드·별도 프로세스로 옮겨 비교한 표를 남긴다.",
+   "resources": [
+    "onnxruntime-docs",
+    "fluent-python",
+    "coroutines-book",
+    "go-net-book",
+    "mlsd-book"
+   ]
+  },
+  {
+   "title": "트래픽에 버티게 하기",
+   "time": "2주",
+   "goal": "부하 시험으로 p99가 무너지는 지점을 찾고, 배칭·시간 제한·서킷·과부하 거절로 다시 세운다.",
+   "task": "부하 도구로 초당 요청을 늘리며 p50·p99·오류율을 기록한다. 동적 배칭(최대 배치·대기 시간 세 조합)을 켜고 끈 표, 재시도 상한·지터를 넣기 전후의 서버 부하 그래프를 만든다.",
+   "resources": [
+    "triton-server",
+    "aws-retries",
+    "sre-book",
+    "release-it",
+    "system-design"
+   ]
+  },
+  {
+   "title": "서비스 셋으로 나누고 추적하기",
+   "time": "2주",
+   "goal": "가상 '대출 신청 → ML 판정 → 피처 조회' 세 서비스를 하나의 추적 id로 이어 보고, 느린 구간을 추적 화면에서 찾는다.",
+   "task": "세 서비스에 OpenTelemetry를 붙여 JSON 로그와 트레이스를 한곳에 모은다. 피처 조회에 일부러 지연을 넣고, 사용자 id 하나로 그 요청의 전 구간 로그를 찾는 질의를 적는다. DB 쿼리 주석에 추적 id를 넣어 본다.",
+   "resources": [
+    "otel-docs",
+    "slash23-tracing",
+    "slash23-gateway",
+    "msa-patterns",
+    "dapper"
+   ]
+  },
+  {
+   "title": "쿠버네티스에 올리고 안전하게 바꾸기",
+   "time": "2주",
+   "goal": "kind 클러스터에 모델 서버를 올려 적재가 끝난 뒤에만 트래픽을 받게 하고, 새 버전을 섀도로 비교한다.",
+   "task": "startup·readiness 확인과 메모리 한도를 넣은 배포 YAML을 쓰고, 메모리를 일부러 넘겨 OOM을 읽어 본다. HPA로 확장시키고, Istio 미러링으로 새 모델 판에 요청을 복사해 결과가 다른 비율을 센다.",
+   "resources": [
+    "internal-k8s",
+    "k8s-in-action",
+    "k8s-probes",
+    "k8s-hpa",
+    "istio-mirror"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "신입 초봉은 **약 5,100만원**(집계값), 직원 평균은 **약 1억 1,600만원**(공시) — 평균은 경력직이 대부분이라 초봉과 다르다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 적혀 있지 않고 직군 구분도 없어 개발자 계약 연봉과 다를 수 있다 [34]"
+   },
+   {
+    "label": "직원 평균 보수",
+    "value": "1억 1,600만원",
+    "amount": 11600,
+    "basis": "공시 · 2025년",
+    "note": "은행연합회 공시(지배구조·보수체계 연차보고서), 임원을 뺀 직원만. 전년보다 300만원 올랐다 [33]"
+   },
+   {
+    "label": "임직원 평균 급여",
+    "value": "1억 1,700만원",
+    "amount": 11700,
+    "basis": "사업보고서 · 2024년",
+    "note": "임직원 684명 기준 [32]"
+   },
+   {
+    "label": "카카오뱅크 평균",
+    "value": "1억 2,200만원",
+    "amount": 12200,
+    "basis": "공시 · 2025년",
+    "peer": true,
+    "note": "같은 공시의 평균 보수 [33]"
+   },
+   {
+    "label": "케이뱅크 평균",
+    "value": "1억 200만원",
+    "amount": 10200,
+    "basis": "공시 · 2025년",
+    "peer": true,
+    "note": "같은 공시의 임직원 평균 보수(임원 포함) [33]"
+   }
+  ],
+  "how": "공고에는 연봉도 연차도 적혀 있지 않다. 토스 채용은 레퍼런스 체크 뒤에 **처우 협의** 단계가 따로 있어 연봉을 사람마다 정한다 [1]. 평균 보수는 경력직이 많은 회사 전체 값이라 신입이 받는 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 전체를 기준으로 한 2021년 공식 소개 글이다 [36]. 토스뱅크에 그대로 적용되는지, 지금도 같은지는 글에 적혀 있지 않으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스뱅크 본사",
+  "address": "서울특별시 강남구 테헤란로 131, 13층 (역삼동, 한국지식재산센터)",
+  "postal": "06133",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20131",
+  "near": "2호선 역삼역과 강남역 사이 테헤란로 {추론}",
+  "note": "공고의 근무지 표기는 'Seoul'뿐이고, 주소는 토스뱅크 사이트 하단의 회사 정보다 [35]. 팀 자리가 본사와 다를 수 있다 {추론}."
+ },
+ "fit": {
+  "good": [
+   "서버를 운영해 봤고 AI 쪽으로 넘어가고 싶은 백엔드 개발자 — 공고가 ML 경험을 요구하지 않는다[1]",
+   "지연·처리량 숫자를 재 보고 손잡이를 돌리는 일이 재미있는 사람[22]",
+   "장애가 나면 로그와 추적을 따라 원인을 끝까지 찾는 사람[4]",
+   "상품 조직과 함께 AI 제품을 처음부터 끝까지 만들고 싶은 사람[1]"
+  ],
+  "hard": [
+   "모델을 직접 만들고 연구하고 싶은 사람에게는 맞지 않는다 — 모델은 데이터 사이언티스트 몫이다[1]",
+   "GPU·서빙 엔진 인프라는 같은 챕터 플랫폼 팀 몫이라 직접 만지는 범위가 제한될 수 있다[8] {추론}",
+   "배포마다 섀도 비교·승인 절차가 붙어 속도감은 덜하다[6]",
+   "전형에 라이브 코딩 테스트와 레퍼런스 체크가 있다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "한 번 추론에 300ms 걸리는 모델로 초당 2,000건을 받아야 합니다. 서버를 어떻게 구성하겠어요?",
+   "a": "리틀의 법칙으로 동시 처리량을 어림하고, 배칭·확장·대기열 상한을 고르는지 본다.[23][22][17]"
+  },
+  {
+   "q": "파이썬 비동기 서버에서 모델 추론을 돌렸더니 헬스 체크가 실패합니다. 왜일까요?",
+   "a": "이벤트 루프를 막는 계산과 GIL, 스레드·프로세스·별도 추론 서버로 빼는 선택지.[26]"
+  },
+  {
+   "q": "'대출 신청이 가끔 느리다'는 문의가 왔는데 사용자 id만 압니다. 어떻게 원인을 찾나요?",
+   "a": "맥락을 담은 JSON 로그와 추적 id 전파로 전 구간을 잇는 토스페이먼츠 방식.[4]"
+  },
+  {
+   "q": "모델 서버가 계속 실패할 때 호출하는 상품 서비스는 어떻게 지켜야 하나요?",
+   "a": "시간 제한·서킷 브레이커·대체 응답, 재시도 폭풍.[27][37][18]"
+  },
+  {
+   "q": "모델 여러 개를 한 프로세스에 올릴 때와 모델마다 서버를 따로 둘 때, 무엇을 얻고 잃나요?",
+   "a": "이 팀이 직접 적은 공통 코드·전역 설정의 위험과 자원 효율의 거래.[2]"
+  },
+  {
+   "q": "새 모델 판을 운영에 안전하게 올리는 방법은요?",
+   "a": "준비 확인과 섀도(미러링) 대조 — 신용 모형의 2~3주 대조.[24][28][6]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 토스뱅크 ML 백엔드 엔지니어 (ML Backend Engineer)",
+   "url": "https://toss.im/career/job-detail?gh_jid=6600650003",
+   "kind": "posting",
+   "note": "ML Service Team(DS + ML Engineer, 상품 조직과 협업) 소개·업무·요건·이력서 안내(트레이드오프·비즈니스 임팩트·성과 지표)·합류 여정(라이브 코딩·처우협의)·동료 한마디(ML 경험 없어도 됨)"
+  },
+  {
+   "n": 2,
+   "title": "Toss Tech · DS와 MLE가 함께 일하는 법",
+   "url": "https://toss.tech/article/ds-mle-cowork",
+   "kind": "company",
+   "date": "2026-08-03",
+   "note": "토스뱅크 ML Service 팀 — 신분증 OCR·사후 검증, 상담 음성 인식, 문서 OCR. 노트북 이식이 모델 5~6개에서 무너짐 → 세 칸 약속·공통 run()(추적 id·시간·로그·지표)·uv 모노레포, 첫 커밋 당일 운영 반영, 공통 코드·전역 설정의 위험"
+  },
+  {
+   "n": 3,
+   "title": "SLASH 22 · 물 흐르듯 자연스러운 ML 서비스 만들기",
+   "url": "https://www.youtube.com/watch?v=EEsYbiqqcc0",
+   "kind": "company",
+   "date": "2022",
+   "note": "토스(같은 그룹 다른 회사) ML 엔지니어 · 15분 · 자동 자막 전부 읽음(고유명사가 많이 깨져 문맥으로 확인, 장면은 안 봄) — 오픈소스는 들이고 걷어낼 계획부터, MLflow는 모델 정보 관리 정도로 얇게 감쌈, ONNX 변환을 표준으로(변환은 되는데 실행에서 오류 나는 연산은 모델 코드 가이드로 피함), Kotlin·Java 서버·스트림 처리 안에서 실행, 실행기만 GPU판으로 바꿔 가속, Kafka로 이벤트·결과, 모델 100여 개 동시 운영, ML 서비스도 기존 로깅·보안·카나리 체계에 그대로"
+  },
+  {
+   "n": 4,
+   "title": "SLASH 23 · 분산 추적 체계 & 로그 중심으로 Observability 확보하기",
+   "url": "https://www.youtube.com/watch?v=Ifz0LsfAG94",
+   "kind": "company",
+   "date": "2023",
+   "note": "토스페이먼츠(같은 그룹 다른 회사) Server Platform 팀장 · 29분 · 자막 전부 읽음 — 맥락 정보·요청 식별자·JSON 로그, HTTP 헤더로 추적 id 전파, W3C Trace Context·OpenTelemetry, 글로벌 추적 id, 전파 항목 확장, CDN·방화벽·로드밸런서·DB(쿼리 주석)·TCP(첫 줄)까지, 클라이언트가 추적 id 발급, Sentry 태그·Pinpoint 연계, 재시도 판별·API 의존 관계 질의, Istio 헤더 라우팅 디버깅 환경"
+  },
+  {
+   "n": 5,
+   "title": "SLASH 23 · AI와 함께 가짜 신분증 찾아내기",
+   "url": "https://www.youtube.com/watch?v=9JGZxmZxAAM",
+   "kind": "company",
+   "date": "2023",
+   "note": "토스뱅크 · 자막은 앞선 회차(ML Product 풀이)에서 전부 읽음 — 파이썬 실시간 웹서버, 신원·대출 서비스가 호출, 다운로드 프록시로 신원 서비스 보호, ResNet50 100ms → RegNet 300ms, 정확도 약 94%·82% 사전 차단"
+  },
+  {
+   "n": 6,
+   "title": "SLASH 24 · 유연하면서도 안정적인, 토스뱅크만의 신용 모형/전략 시스템 구축하기",
+   "url": "https://www.youtube.com/watch?v=4fk3TxgQ9Ks",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스뱅크 Data Platform · 자막은 앞선 회차에서 전부 읽음 — 트래픽 복사로 2~3주 대조(섀도 배포), 전자금융감독규정 승인 절차"
+  },
+  {
+   "n": 7,
+   "title": "토스 채용 · 토스뱅크 ML 엔지니어 (Product)",
+   "url": "https://toss.im/career/job-detail?gh_jid=6118752003",
+   "kind": "posting",
+   "note": "같은 챕터의 제품 쪽 ML 엔지니어 — 높은 SLA 서비스, 모델·LLM 서빙, RAG·에이전트"
+  },
+  {
+   "n": 8,
+   "title": "토스 채용 · 토스뱅크 ML 엔지니어 (ML/LLM Ops)",
+   "url": "https://toss.im/career/job-detail?gh_jid=5498959003",
+   "kind": "posting",
+   "note": "같은 챕터의 ML Platform 팀 — 쿠버네티스 위 Triton·vLLM·SGLang, 피처 저장소, GPU 워크로드 운영"
+  },
+  {
+   "n": 9,
+   "title": "바이라인네트워크 · 정민정 토스뱅크 PF ML 팀장 \"AI모델, 서비스관점에서 개발해야\"",
+   "url": "https://byline.network/2025/09/0930/",
+   "kind": "news",
+   "date": "2025-09-30",
+   "note": "모델이 아니라 서비스, 정책·영업과 함께, 신용평가는 같은 고객 같은 결과·섀도 검증"
+  },
+  {
+   "n": 10,
+   "title": "SLASH 22 · 은행 앱에도 Service Mesh 도입이 가능한가요?",
+   "url": "https://www.youtube.com/watch?v=ftFHZwyUN38",
+   "kind": "company",
+   "date": "2022",
+   "note": "토스뱅크 DevOps · 자막은 앞선 회차(DevOps 풀이)에서 전부 읽음 — 쿠버네티스 위 Istio 도입과 운영"
+  },
+  {
+   "n": 11,
+   "title": "SLASH 23 · 토스는 Gateway 이렇게 씁니다",
+   "url": "https://www.youtube.com/watch?v=Zs3jVelp0L8",
+   "kind": "company",
+   "date": "2023",
+   "note": "토스 Server Platform 팀 · 자막은 앞선 회차에서 전부 읽음 — trace ID·내부 헤더, 라우트·기능 단위 서킷 브레이커, 로그·지표"
+  },
+  {
+   "n": 12,
+   "title": "SLASH 24 · ML 플랫폼으로 개발 속도와 안정성 높이기",
+   "url": "https://www.youtube.com/watch?v=-im8Gzmf3TM",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스(같은 그룹 다른 회사) ML Chapter Lead · 자막은 앞선 회차에서 전부 읽음 — Triton 또는 Kotlin 실시간 추론, 모델 서버가 10분마다 새 판 확인, 점수 분포 감시"
+  },
+  {
+   "n": 13,
+   "title": "TMC25 · ScyllaDB, 토스뱅크 Online Feature Store",
+   "url": "https://www.youtube.com/watch?v=dvijQIfYYb0",
+   "kind": "company",
+   "date": "2025",
+   "note": "토스뱅크 ML Platform 팀 · 자막은 앞선 회차에서 전부 읽음 — 초당 약 12만 쓰기·P99 5ms 이하"
+  },
+  {
+   "n": 14,
+   "title": "파이낸셜뉴스 · 토스뱅크 AI 채팅 에이전트 전 고객 확대",
+   "url": "https://www.fnnews.com/news/202610071024425706",
+   "kind": "news",
+   "date": "2026-10-07",
+   "note": "5분 넘던 상담을 30초 안팎, 전 고객 확대"
+  },
+  {
+   "n": 15,
+   "title": "토스 채용 · 토스뱅크 서버 개발자 (여신)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7695933003",
+   "kind": "posting",
+   "note": "같은 회사 — Java 모놀리식 코어뱅킹을 유지하며 Kotlin·Spring Boot MSA로 단계 전환"
+  },
+  {
+   "n": 16,
+   "title": "Google SRE Book · Service Level Objectives",
+   "url": "https://sre.google/sre-book/service-level-objectives/",
+   "kind": "reference",
+   "note": "SLI·SLO·SLA 구분, 평균보다 백분위 지연, 오류 예산"
+  },
+  {
+   "n": 17,
+   "title": "Google SRE Book · Handling Overload",
+   "url": "https://sre.google/sre-book/handling-overload/",
+   "kind": "reference",
+   "note": "과부하 때 거절·중요도별 처리"
+  },
+  {
+   "n": 18,
+   "title": "Google SRE Book · Addressing Cascading Failures",
+   "url": "https://sre.google/sre-book/addressing-cascading-failures/",
+   "kind": "reference",
+   "note": "연쇄 장애·재시도 증폭·마감 전파"
+  },
+  {
+   "n": 19,
+   "title": "W3C · Trace Context",
+   "url": "https://www.w3.org/TR/trace-context/",
+   "kind": "reference",
+   "note": "traceparent 헤더(버전-추적 id-부모 id-플래그)"
+  },
+  {
+   "n": 20,
+   "title": "OpenTelemetry 문서 · Context propagation",
+   "url": "https://opentelemetry.io/docs/concepts/context-propagation/",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Dapper, a Large-Scale Distributed Systems Tracing Infrastructure",
+   "url": "https://research.google/pubs/dapper-a-large-scale-distributed-systems-tracing-infrastructure/",
+   "kind": "reference",
+   "date": "2010"
+  },
+  {
+   "n": 22,
+   "title": "Triton Inference Server 사용자 가이드 · Dynamic Batcher",
+   "url": "https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/user_guide/batcher.html",
+   "kind": "reference",
+   "note": "선호 배치 크기·최대 대기 시간"
+  },
+  {
+   "n": 23,
+   "title": "Wikipedia · Little's law",
+   "url": "https://en.wikipedia.org/wiki/Little%27s_law",
+   "kind": "reference",
+   "note": "평균 동시 작업 수 = 처리량 × 평균 처리 시간"
+  },
+  {
+   "n": 24,
+   "title": "Kubernetes 문서 · Liveness, Readiness, and Startup Probes",
+   "url": "https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/",
+   "kind": "reference",
+   "note": "같은 문서 묶음의 '파드와 컨테이너 리소스 관리'가 요청·한도와 OOM"
+  },
+  {
+   "n": 25,
+   "title": "Kubernetes 문서 · Horizontal Pod Autoscaling",
+   "url": "https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "Python 문서 · asyncio — Running in Threads (to_thread)",
+   "url": "https://docs.python.org/3/library/asyncio-task.html#running-in-threads",
+   "kind": "reference",
+   "note": "막는(blocking) 함수를 스레드로 빼기, GIL 때문에 CPU 계산은 프로세스가 맞을 수 있음"
+  },
+  {
+   "n": 27,
+   "title": "Azure Architecture Center · Circuit Breaker pattern",
+   "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker",
+   "kind": "reference",
+   "note": "닫힘·열림·반열림"
+  },
+  {
+   "n": 28,
+   "title": "Istio 문서 · Mirroring",
+   "url": "https://istio.io/latest/docs/tasks/traffic-management/mirroring/",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "PyTorch 문서 · torch.onnx (ONNX로 내보내기)",
+   "url": "https://pytorch.org/docs/stable/onnx.html",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "ONNX Runtime 문서",
+   "url": "https://onnxruntime.ai/docs/",
+   "kind": "reference",
+   "note": "여러 언어 API, 실행 공급자(CPU·CUDA)"
+  },
+  {
+   "n": 31,
+   "title": "gRPC 문서 · Deadlines",
+   "url": "https://grpc.io/docs/guides/deadlines/",
+   "kind": "reference",
+   "note": "호출마다 마감을 정하고 뒤 서비스로 전파"
+  },
+  {
+   "n": 32,
+   "title": "뉴시스 — 3년 근무 직원 1억4000만원… 인터넷은행 평균 급여(각사 사업보고서)",
+   "url": "https://www.newsis.com/view/NISX20250812_0003287731",
+   "kind": "news",
+   "date": "2025-08-13"
+  },
+  {
+   "n": 33,
+   "title": "SBS Biz — 인뱅 3사도 연봉 1억원대로(은행연합회 2025 지배구조 및 보수체계 연차보고서)",
+   "url": "https://biz.sbs.co.kr/amp/article/20000297249",
+   "kind": "news",
+   "date": "2026-03-13"
+  },
+  {
+   "n": 34,
+   "title": "자소설닷컴 — 토스뱅크 연봉(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 35,
+   "title": "토스뱅크 — 회사 정보(사이트 하단 주소)",
+   "url": "https://tossbank.com/esg",
+   "kind": "company"
+  },
+  {
+   "n": 36,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 37,
+   "title": "Amazon Builders' Library · Timeouts, retries, and backoff with jitter",
+   "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+   "kind": "reference",
+   "note": "재시도 상한·지수 백오프·지터, 재시도가 부하를 키우는 경우"
+  }
+ ],
+ "caveat": "토스뱅크 ML Service 팀이 직접 말한 자료는 팀 글(2026)과 신분증 사본 탐지 발표(2023)이고, 이 백엔드 자리의 서버 구조(어떤 언어·프레임워크·서빙 서버를 쓰는지)는 공개되지 않았습니다. 그래서 같은 그룹 토스의 ML 서비스 발표(2022, 자동 자막이 많이 깨져 문맥으로 읽음)·ML 플랫폼 발표, 토스페이먼츠의 분산 추적 발표를 '같은 그룹 다른 회사'로 밝혀 썼고, 나머지는 SRE·W3C·쿠버네티스 같은 공개 문서로 '보통 이런 것'을 보였습니다. 코드는 모두 가상 값이고 발표 숫자를 재현한 것이 아닙니다. 공고에 연차·연봉 표기는 없습니다."
+}
