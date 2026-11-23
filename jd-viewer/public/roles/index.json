@@ -54,6 +54,7 @@
   "ats-skcareers:sk:R262430": "skax-security-architect",
   "ats-skcareers:sk:R262135": "skax-security-operations-pm",
   "jobkorea-50267139": "skax-security-operations-pm",
+  "ats-skcareers:sk:R262445": "skax-semicon-mdm-sap-mdg",
   "ats-skcareers:sk:R262477": "skax-semicon-rnd-app-architect",
   "wanted-398293": "skax-semicon-rnd-app-architect",
   "ats-skcareers:sk:R262455": "skax-semicon-utility-ax",
@@ -610,6 +611,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 30
+  },
+  {
+   "id": "skax-semicon-mdm-sap-mdg",
+   "company": "SK주식회사(AX)",
+   "role": "반도체 제조 기준정보(MDM) 전문가 (계약직)",
+   "jobs": [
+    "ats-skcareers:sk:R262445"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 18
   },
   {
    "id": "skax-semicon-rnd-app-architect",

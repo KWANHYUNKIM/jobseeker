@@ -1,0 +1,861 @@
+{
+  "id": "skax-semicon-mdm-sap-mdg",
+  "company": "SK주식회사(AX)",
+  "role": "반도체 제조 기준정보(MDM) 전문가 (계약직)",
+  "team": "제조AX서비스5팀",
+  "jobs": [
+    "ats-skcareers:sk:R262445"
+  ],
+  "researched_at": "2026-11-23",
+  "tldr": {
+    "what": "반도체 공장의 **기준정보** — 제품·공정·장비·자재·설비 같은 \"이 물건·이 단계는 이 코드, 이 속성\"이라는 공통 사전 — 를 만들고 고치고 없애는 시스템을 개발합니다.[1] 고객 SK하이닉스는 이 기준정보를 2007년부터 9개 분야로 나눠 관리해 왔고, 2017~2020년에 전사 TF로 다시 표준화했습니다.[3]",
+    "env": "도구는 **SAP MDG**(SAP 의 기준정보 관리 제품)와 그 위의 ABAP 개발이고, 여기에 머신러닝·파이썬으로 AI 기능을 붙입니다.[1] 근무지는 경기도 이천, 계약직입니다.[1][2]",
+    "oneline": "ERP 개발자 중에서도 **\"데이터의 출생신고와 사망신고\"를 맡는 자리**. 화면보다 코드 체계·승인 흐름·검증 규칙이 일의 중심입니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "제조AX서비스5팀을 소개합니다 😊",
+      "short": "공고를 낸 곳은 SK AX 의 제조 서비스 조직 가운데 한 팀이다 — 번호가 붙은 걸 보면 같은 일을 하는 팀이 여럿이다.",
+      "why": "SK AX 는 별도 법인이 아니라 SK주식회사 안의 사업 조직이라 회사 이름이 'SK주식회사(AX)'로 적힙니다.[18] 같은 공고가 다른 채용 사이트에는 'SK(주) 반도체 제조 기준정보(MDM)담당'으로 올라 있습니다.[2] 팀 이름의 '5'는 제조 서비스 팀이 여럿으로 나뉘어 있다는 뜻으로 읽힙니다. {추론}",
+      "refs": [
+        1,
+        2,
+        18
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "SK하이닉스, SK온 등 주요 계열사와 대외 제조 현장에서 Industry 4.0 시대의 디지털 혁신을 선도하는 전문가 조직입니다.",
+      "short": "고객은 주로 SK하이닉스·SK온 같은 계열사 공장이다 — 일하는 곳도 대개 그 공장 가까이다.",
+      "why": "SK하이닉스는 플랫폼 개발을 SK(주)C&C(지금의 SK AX)·SK텔레콤과 함께 한다고 2019년 CIO 인터뷰에서 밝혔습니다.[5] 이 공고의 근무지가 SK하이닉스 본사가 있는 이천인 것도 같은 이유로 보입니다.[1][19] {추론}",
+      "how_far": "'대외 제조 현장'은 계열사 밖 고객입니다.[1] 이 자리는 업무 문장이 모두 '반도체'라 SK하이닉스 일이 중심일 가능성이 큽니다. 면접에서 고객사와 상주 여부를 확인합니다. {추론}",
+      "refs": [
+        1,
+        5,
+        19
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "최첨단 반도체/배터리 분야의 스마트 팩토리를 실현하며, 최고 수준의 기술력과 노하우를 바탕으로 고객의 제조 경쟁력 향상을 이끌어가고 있습니다.",
+      "short": "스마트 팩토리의 바닥은 데이터다 — 이 자리는 그 데이터의 '이름표'를 맡는다.",
+      "why": "SK AX 는 공장의 생산·품질·설비 에이전트를 한 플랫폼에서 잇는 제조 에이전틱 AI 를 내세웁니다.[7] SK하이닉스 CEO 는 마스터 데이터 표준화를 마치며 앞으로의 AI 도입과 디지털 전환이 모두 이 데이터 위에서 이뤄진다고 했습니다.[3]",
+      "refs": [
+        3,
+        7
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "글로벌 파트너들과의 협업을 통해 세계적 수준의 기술력을 확보하고 있습니다. 구성원의 성장이 곧 회사의 성장이라는 믿음으로, 지속적인 교육과 자기계발을 지원합니다. 다양한 아이디어를 자유롭게 제안하고 실현할 수 있는 창의적인 문화를 추구합니다. 열정 넘치는 팀원들과 함께 전문성을 키우며 성장해 나갈 수 있습니다.",
+      "short": "팀 문화 소개 네 줄 — 확인할 것은 교육 지원의 실체(예산·사내 대학)와 계약직에도 같은지다.",
+      "why": "SK AX 채용 사이트의 복리후생 페이지에는 사내 교육 체계(mySUNI·단과대 College)와 해마다 주는 학습 예산(Learning Account)이 있습니다.[22] 이 자리의 '글로벌 파트너'는 SAP 같은 솔루션 회사로 읽힙니다. {추론}",
+      "how_far": "계약직에게도 교육 예산·복지가 똑같이 적용되는지는 페이지에 없습니다. 처우협의 때 묻습니다. {추론}",
+      "refs": [
+        22
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "최첨단 반도체 제조 Master Data(제품/공정/장비/자재/설비 등 9대 Master) 시스템 개발 업무를 수행합니다.",
+      "short": "공장 전체가 같이 쓰는 '사전' 아홉 권 — 제품·공정·장비·자재·설비 코드와 속성 — 을 관리하는 시스템을 만든다.",
+      "why": "마스터 데이터(기준정보)는 거래·생산 기록이 가리키는 '기준'입니다. 제품 코드·자재 코드와 그 속성이 대표적이고, 여기가 틀리면 운영 데이터와 분석 데이터까지 틀립니다.[4] SK하이닉스는 2007년부터 제품·공정·장비·설비·자재 등 **9개 분야**를 마스터 데이터로 정해 자체 체계로 관리했습니다.[3] 공고의 '9대 Master'가 바로 그 9개 분야로 보입니다. {추론}",
+      "actually": {
+        "intro": "SK하이닉스가 2017~2020년 표준화에서 분야별로 바꾼 것입니다.[3] 이름이 공개된 것은 다섯 분야뿐이고 나머지 넷은 기사에 없습니다.",
+        "items": [
+          "**제품·공정** — 제품 코드와 공정 단계(Step) 코드의 **자릿수가 모자라** 표준을 벗어난 코드가 생기고 있었다. 뜻을 자리마다 담는 코드 대신 섞은(하이브리드) 코드 체계로 바꿨다.[3]",
+          "**원팹(One Fab)** — 개발 팹과 양산 팹, 양산 팹끼리 서로 다르던 코드를 하나로 맞췄다.[3]",
+          "**자재** — 한 물건에 코드 하나(1물1코드). 재고·수급이 한눈에 보이게 하고, 유해물질 정보가 빠지지 않게 했다.[3]",
+          "**장비·설비** — 장비의 생애(구매·설치·운영·폐기)를 따라가는 ELM 개념을 들이고, 설비 BOM(부품 목록)·공급 계통·배관 계장도(P&ID)를 이어 설비를 새로 들일 때 등록 시간을 줄였다.[3]",
+          "**속성 정의** — 장비·자재마다 유형을 나누고, 유형별 속성 항목과 값의 범위·의미를 정했다.[3]"
+        ]
+      },
+      "how_far": "코드 체계와 속성 정의는 고객사 현업(기준정보 담당 부서)이 정합니다. SK하이닉스도 표준화 때 조직 간 역할 분담(R&R)을 새로 정했습니다.[3] 개발자는 그 규칙을 **시스템이 강제하게** 만듭니다 — 규칙을 벗어난 코드는 아예 등록이 안 되게. {추론}",
+      "refs": [
+        3,
+        4
+      ],
+      "study": [
+        "hynix-mdm-2020",
+        "hynix-why-mdm",
+        "dama-dmbok"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "제조 장비/자재를 포함한 Master Data의 LifeCycle 관리 및 시스템 구축 업무를 수행합니다.",
+      "short": "기준정보 한 건이 '요청 → 검토 → 승인 → 사용 → 중지 → 폐기'를 정해진 길로만 지나가게 만든다.",
+      "why": "기준정보의 흔한 문제 넷 가운데 하나가 생애주기 — 언제 만들고 바꾸고 없애는지 — 를 관리하지 않는 것입니다.[4] SK하이닉스는 표준화 때 생애주기·품질·운영 기준을 관리하는 업무 절차를 따로 표준화했습니다.[3]",
+      "actually": {
+        "intro": "SAP MDG 에서는 이 생애주기가 **변경 요청(Change Request)** 이라는 단위로 돕니다.[8][9] 고객사가 어떻게 설정했는지는 공개되지 않아, SAP 문서의 표준 구성을 옮깁니다.",
+        "items": [
+          "**요청 종류** — 자재 생성·변경·삭제 표시 같은 업무 활동마다 변경 요청 유형이 따로 있다. 유형이 어느 승인 흐름(워크플로)을 탈지, 어느 데이터 모델·항목을 다룰지를 정한다.[8][9]",
+          "**상태** — '검토 대기 → 변경 실행 → 최종 확인 → 승인 → 다른 시스템으로 복제' 같은 표준 상태가 번호로 정해져 있다.[8]",
+          "**단계** — 변경 실행·검증·최종 확인·활성화·반려 후 수정·폐기 같은 단계가 있다.[9]",
+          "**임시 칸과 본 칸** — 승인 전 데이터는 임시 영역(staging)에 있고, 승인돼야 실제로 쓰는 영역(active)으로 옮겨진다.[10]",
+          "**장비의 생애** — 장비는 투자·설치·운영·폐기까지 따라가야 자산 장부와 현장이 맞는다(SK하이닉스의 ELM).[3]"
+        ]
+      },
+      "flows": [
+        {
+          "caption": "기준정보 한 건의 생애 — SAP MDG 표준 흐름[8][9][10][11]",
+          "steps": [
+            "현업 등록 요청",
+            "검증 규칙 확인 · 중복 확인",
+            "기준정보 담당 승인",
+            "본 영역 반영(활성화)",
+            "ERP·MES 로 복제",
+            "변경·사용 중지·폐기 요청"
+          ],
+          "mine_from": 1
+        }
+      ],
+      "examples": [
+        {
+          "title": "정해진 길로만 상태가 바뀌게 — 가상 상태 이름",
+          "body": "승인 없이 바로 '활성'으로 갈 수 없게 막는 최소한의 상태 전이표입니다(직접 돌린 출력). MDG 에서는 이 표가 워크플로 설정이 맡습니다.[9]",
+          "lang": "python",
+          "code": "ALLOWED = {\n    \"요청\": {\"검토\"},\n    \"검토\": {\"활성\", \"반려\"},\n    \"반려\": {\"요청\"},\n    \"활성\": {\"사용중지\"},\n    \"사용중지\": {\"활성\", \"폐기\"},\n}\n\ndef move(state, to):\n    if to not in ALLOWED.get(state, set()):\n        raise ValueError(f\"{state} -> {to} 은(는) 허용되지 않음\")\n    return to\n\ns = \"요청\"\nfor to in [\"검토\", \"활성\", \"사용중지\", \"폐기\"]:\n    s = move(s, to)\n    print(\"현재:\", s)\ntry:\n    move(\"요청\", \"활성\")\nexcept ValueError as e:\n    print(\"거부:\", e)\n\n# 현재: 검토\n# 현재: 활성\n# 현재: 사용중지\n# 현재: 폐기\n# 거부: 요청 -> 활성 은(는) 허용되지 않음"
+        }
+      ],
+      "how_far": "어떤 단계에서 누가 승인할지는 고객사가 정합니다. 개발자는 **유형별 흐름·승인자 규칙을 설정하고, 표준으로 안 되는 부분을 ABAP 로 채웁니다**. 사용 중인 코드를 폐기하려 할 때 막는 확인(그 자재를 쓰는 생산 기록이 남아 있나)처럼 다른 시스템을 봐야 하는 규칙이 손이 많이 갑니다. {추론}",
+      "refs": [
+        3,
+        4,
+        8,
+        9,
+        10
+      ],
+      "study": [
+        "sap-mdg-course",
+        "sap-mdg-help",
+        "sap-press-mdg"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "데이터 품질과 일관성을 유지하며 제조 핵심 Master Data를 효율적으로 관리하며, SAP MDG 기반 AI 업무를 구축합니다.",
+      "short": "중복·누락·틀린 값을 등록 순간에 걸러 내고, 그 일을 AI 가 돕게 만든다.",
+      "why": "기준정보 품질 문제는 보통 **중복**(같은 물건에 코드 둘), **분류 체계**(겹치거나 빠진 분류), **일관성**(시스템마다 다른 값), **생애주기** 넷입니다.[4] SK하이닉스는 표준화로 중복 데이터를 없애 생산성이 올랐다고 했습니다.[3] SAP 는 MDG 에서 자연어로 변경 요청을 만들고 요약하는 AI 기능을 내놓았습니다.[12]",
+      "actually": {
+        "items": [
+          "**검증·보강** — 필수 값, 값 범위, 다른 항목과의 관계를 규칙으로 확인하고, 계산할 수 있는 값은 자동으로 채운다. MDG 는 이 규칙을 BRF+(SAP 의 규칙 엔진)나 ABAP 확장(BAdI)으로 건다.[9]",
+          "**중복 확인** — MDG 는 표준 검사 → 보강 → (바뀌었으면) 다시 검사 → **마지막에 중복 확인** 순서로 돈다.[9] 중복 후보를 찾아 하나로 합치는 기능도 있다.[17]",
+          "**복제와 키 맞추기** — 승인된 값만 ERP·MES 같은 다른 시스템으로 보낸다. 같은 물건의 번호가 시스템마다 다르면 '키 매핑' 표로 잇는다.[11]",
+          "**AI 기능** — 자연어로 변경 요청 만들기·변경 내용 요약.[12] 자연어로 속성 값을 고치는 '도움 변경'과 쓸 언어 모델을 고객이 고르는 구조.[17] SAP 가 밝힌 효과(요청 작성 품 60%·검토 품 20% 감소)는 회사 주장이다.[12]",
+          "**AI 를 붙이는 다른 자리** {추론} — 비슷한 이름의 자재 찾기(중복 후보), 공급사 사양서에서 속성 뽑기, 분류 추천."
+        ]
+      },
+      "examples": [
+        {
+          "title": "같은 물건, 다른 표기 — 중복 후보 찾기 (가상 자재)",
+          "body": "대소문자·띄어쓰기·기호를 지운 열쇠로 묶으면 표기만 다른 같은 자재가 드러납니다(직접 돌린 출력). 실제로는 이 위에 유사도·속성 비교를 얹습니다.",
+          "lang": "python",
+          "code": "import re, unicodedata\nfrom collections import defaultdict\n\ndef key(name, spec):\n    s = unicodedata.normalize(\"NFKC\", f\"{name} {spec}\").upper()\n    return re.sub(r\"[\\s\\-_/,()]+\", \"\", s)\n\nreqs = [\n    (\"M-1001\", \"O-RING\", \"VITON 50 mm\"),\n    (\"M-2087\", \"O-Ring\", \"Viton 50MM\"),\n    (\"M-3110\", \"O-RING\", \"VITON 60 mm\"),\n]\ngroups = defaultdict(list)\nfor code, name, spec in reqs:\n    groups[key(name, spec)].append(code)\nfor k, codes in groups.items():\n    print(k, codes, \"-> 중복 의심\" if len(codes) > 1 else \"\")\n\n# ORINGVITON50MM ['M-1001', 'M-2087'] -> 중복 의심\n# ORINGVITON60MM ['M-3110']"
+        },
+        {
+          "title": "유형별 필수 속성과 값 범위 — 규칙을 표로 (가상 규칙)",
+          "body": "SK하이닉스가 표준화 때 정한 '유형별 속성 항목과 값 범위'[3]를 검사로 옮기면 이런 모양입니다(직접 돌린 출력). MDG 에서는 같은 일을 BRF+ 규칙으로 겁니다.[9]",
+          "lang": "python",
+          "code": "RULES = {  # 자재 유형별 필수 속성과 값 범위 (가상)\n    \"가스\": {\"순도_pct\": (99.0, 100.0), \"유해물질\": {\"Y\", \"N\"}},\n    \"부품\": {\"수명_시간\": (1, 100000), \"유해물질\": {\"Y\", \"N\"}},\n}\n\ndef check(rec):\n    errs = []\n    for attr, rule in RULES[rec[\"유형\"]].items():\n        v = rec.get(attr)\n        if v is None:\n            errs.append(f\"{attr} 없음\")\n        elif isinstance(rule, tuple) and not (rule[0] <= v <= rule[1]):\n            errs.append(f\"{attr}={v} 범위 {rule} 밖\")\n        elif isinstance(rule, set) and v not in rule:\n            errs.append(f\"{attr}={v} 허용값 아님\")\n    return errs or [\"통과\"]\n\nprint(check({\"유형\": \"가스\", \"순도_pct\": 99.999, \"유해물질\": \"Y\"}))\nprint(check({\"유형\": \"가스\", \"순도_pct\": 101, \"유해물질\": \"?\"}))\nprint(check({\"유형\": \"부품\", \"수명_시간\": 5000}))\n\n# ['통과']\n# ['순도_pct=101 범위 (99.0, 100.0) 밖', '유해물질=? 허용값 아님']\n# ['유해물질 없음']"
+        }
+      ],
+      "how_far": "품질 기준(무엇이 중복이고 무엇이 필수인가)은 현업이 정합니다. 개발자는 **규칙을 시스템에 걸고, 위반 건수를 매일 보이게** 합니다. AI 는 사람이 승인하기 전의 '추천'까지가 보통입니다 — 기준정보는 틀리면 생산이 멈추기 때문입니다. {추론}",
+      "refs": [
+        3,
+        4,
+        9,
+        11,
+        12,
+        17
+      ],
+      "study": [
+        "sap-mdg-course",
+        "bloor-mdg",
+        "hynix-why-mdm"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "※ 근무지 : 경기도 이천",
+      "short": "근무지는 이천 — SK하이닉스 본사·팹이 있는 곳이다. 분당 본사 출근 자리가 아니다.",
+      "why": "같은 팀 계열의 다른 SK AX 공고는 '분당 주, 이천은 사업에 따라'로 적는데, 이 공고는 이천만 적었습니다.[1] SK하이닉스 본사 주소는 이천시 부발읍입니다.[19]",
+      "how_far": "고객사 안 상주인지, 출퇴근 셔틀이 되는지는 처우협의 때 확인합니다. SK AX 복리후생 페이지에 통근·셔틀 버스 항목이 있습니다.[22]",
+      "refs": [
+        1,
+        19,
+        22
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "이런 경험을 갖고 계시다면 저희가 찾는 그분입니다! ✨",
+      "short": "아래 세 줄이 필수 — 셋 다 'SAP MDG 를 실제로 구축해 봤나'로 모인다.",
+      "why": "필수 요건 머리말입니다.[1] 세 줄 가운데 둘이 SAP MDG 를 직접 이름으로 적었고, 나머지 하나는 제조 사업을 이끈 경험입니다.[1] 공통 요건으로 그 분야 경력 3년 이상이 따로 붙습니다.[1]",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "제조 제품, 공정, 장비, 자재, 설비 등 Master Data를 이해하고, SAP MDG 기반 시스템 구축 경험이 있으신 분",
+      "short": "기준정보가 공장에서 무슨 뜻인지 알고, MDG 의 데이터 모델·승인 흐름·복제를 실제로 설정해 본 사람.",
+      "why": "MDG 는 설치만으로 돌지 않습니다. 어떤 항목을 관리할지(데이터 모델), 누가 승인할지(워크플로), 어디로 보낼지(복제)를 모두 설정해야 합니다.[8][9][11] 그래서 '사용 경험'이 아니라 **'구축 경험'**을 적었습니다.[1]",
+      "actually": {
+        "intro": "MDG 구축에서 손이 가는 다섯 군데입니다(SAP 문서 기준).",
+        "items": [
+          "**데이터 모델** — 관리할 대상(엔티티)·속성·관계. 자재는 표준 모델 'MM' 이 있고, 메인 대상은 MATERIAL 이다.[8]",
+          "**관리 범위** — 모델 가운데 변경 요청으로만 고칠 수 있게 묶을 항목을 고른다. 묶인 대상의 키·필수 속성은 같이 묶인다.[9]",
+          "**규칙 기반 워크플로** — 단계·다음 승인자·상태를 BRF+ 결정 표 세 개로 정한다(표준 템플릿 WS60800086).[8][9]",
+          "**화면 속성** — 단계마다 어떤 칸을 읽기 전용·필수로 둘지. 단계 설정이 가장 먼저고, 다음이 BAdI, 그다음 데이터 모델 설정 순서로 이긴다.[9]",
+          "**복제** — 승인된 데이터를 데이터 복제 프레임워크(DRF)로 ERP·다른 시스템에 보내고, 번호가 다르면 키·값 매핑을 시스템마다 한 번씩 잡는다.[11]"
+        ]
+      },
+      "how_far": "MDG 를 안 써 봤다면 불리한 줄입니다. 최소선은 **자재 한 건이 변경 요청으로 만들어져 승인·활성화·복제되기까지를 설정 화면 이름과 함께 설명**할 수 있는 정도입니다. SAP Learning 의 MDG 과정 차례가 이 순서입니다.[9] {추론}",
+      "refs": [
+        1,
+        8,
+        9,
+        11
+      ],
+      "study": [
+        "sap-mdg-course",
+        "sap-mdg-help",
+        "sap-press-mdg",
+        "hynix-mdm-2020"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "SAP MDG 기반한 ABAP Programming, Machine Learning, AI 관련 프로젝트 및 파이썬 개발에 유능하신 분",
+      "short": "MDG 를 넘는 규칙은 ABAP 로, 중복 찾기·추천 같은 AI 는 파이썬으로 — 두 언어를 다 쓰는 사람.",
+      "why": "MDG 의 표준 설정으로 안 되는 검증·화면 제어는 ABAP 확장(BAdI)으로 채웁니다.[9] AI 쪽은 SAP 가 HANA 데이터베이스 안에서 머신러닝을 돌리는 파이썬 도구(hana-ml)를 따로 냅니다 — 데이터를 밖으로 꺼내지 않고 HANA 안의 표를 데이터프레임처럼 다룹니다.[13]",
+      "level": {
+        "basic": "ABAP 기본 문법·내부 테이블·SELECT, 파이썬 pandas 로 기준정보 표를 읽고 비교한다.",
+        "work": "MDG BAdI·BRF+ 로 검증·파생 규칙을 걸고, 파이썬으로 문자열 유사도·분류 모델을 만들어 결과를 표로 돌려준다.",
+        "team": "AI 추천 결과를 변경 요청 흐름에 끼워 넣는다 — 추천은 자동, 승인은 사람."
+      },
+      "actually": {
+        "items": [
+          "**ABAP** — 변경 요청 단계별 필수 칸 제어, 다른 표를 조회하는 검증, 키 매핑 보조 같은 확장.[9][11]",
+          "**파이썬·머신러닝** — HANA 의 예측 분석 라이브러리(PAL)·자동 예측(APL)을 파이썬에서 부르거나, 꺼내서 pandas 로 다룬다.[13]",
+          "**AI 업무** — 자연어로 변경 요청 만들기·요약은 SAP 제품 기능이고,[12] 그 밖의 AI(중복 후보·속성 추천)는 직접 만드는 몫으로 보인다. {추론}"
+        ]
+      },
+      "how_far": "ABAP 와 파이썬을 똑같이 깊게 할 필요는 없습니다. 지원서에는 **ABAP 로 MDG 를 확장한 사례 하나와, 파이썬으로 기준정보 품질을 개선한 사례 하나**를 숫자(중복 몇 건 → 몇 건)와 함께 쓰는 편이 낫습니다. {추론}",
+      "refs": [
+        9,
+        11,
+        12,
+        13
+      ],
+      "study": [
+        "sap-abap-journey",
+        "easy-abap",
+        "hana-ml-docs",
+        "py-ml-guide"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "제조 분야 사업 수행 PM 또는 개발PL, 개발 역량을 갖추신 분",
+      "short": "개발만이 아니라 제조 고객 프로젝트를 이끌어 본 사람 — 일정·범위·현업 조율까지.",
+      "why": "기준정보 프로젝트는 부서마다 쓰던 코드를 하나로 합치는 일이라 조율이 절반입니다. SK하이닉스 표준화도 5개 분과 TF 로 3년이 걸렸고, 조직 간 역할 분담을 새로 정했습니다.[3]",
+      "how_far": "PM(사업 관리)이나 PL(개발 리더) 경험 **중 하나**와 개발 역량입니다.[1] 최소선은 고객 요구를 받아 범위를 나누고 개발자 몇 명의 일을 배분해 끝낸 경험을 설명하는 정도입니다. {추론}",
+      "refs": [
+        1,
+        3
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "채용 분야의 경력을 3년 이상 보유하신 분",
+      "short": "공통 요건 — 이 분야(제조 기준정보·SAP) 경력 3년 이상.",
+      "why": "공고 끝의 공통 요건입니다.[1] 전형은 서류 → SKCT 심층역량검사 → 면접 → 채용검진·처우협의 순서입니다.[1]",
+      "how_far": "SKCT(SK 종합역량검사)가 경력직에도 있습니다. 짧게라도 유형을 미리 봐 둡니다. {추론}",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "이런 경험과 역량이 있으면 더 좋아요! 👍",
+      "short": "아래 우대 셋은 '앞으로 할 일'(에이전트), '옆 시스템'(MES·품질), '해외'다.",
+      "why": "우대사항 머리말입니다.[1] 뒤의 성향 세 줄은 우대라기보다 일하는 태도 설명입니다.[1]",
+      "refs": [
+        1
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "제조 기준정보(MDM)를 활용한 Agentic AI 서비스 개발 경험을 보유하신 분",
+      "short": "기준정보를 읽고 쓰는 AI 에이전트를 만들어 본 사람 — 회사가 가려는 방향이다.",
+      "why": "SK AX 는 2026년 1월 제조 에이전틱 AI 포트폴리오를 내며 생산·품질·설비 에이전트를 한 플랫폼에서 잇고 여러 에이전트를 조율하는 구조를 내세웠습니다.[7] 에이전트가 '이 장비의 이 공정'을 말하려면 코드와 뜻이 맞아야 하므로 기준정보가 그 바닥입니다. {추론}",
+      "actually": {
+        "intro": "공개된 회사 사례는 아직 없습니다. 보통 이런 모양입니다.",
+        "items": [
+          "**물어보기** — \"이 자재를 쓰는 공정은?\" 같은 질문을 기준정보 조회 도구로 답한다. {추론}",
+          "**요청 쓰기** — 자연어로 변경 요청 초안을 만들고 사람이 승인한다. SAP 도 MDG 에 같은 기능을 넣었다.[12]",
+          "**도구 나누기** — 에이전트에게 조회·검증·요청 작성 같은 작은 도구를 주고, 바꾸는 일은 승인 흐름을 거치게 한다.[20]"
+        ]
+      },
+      "how_far": "우대입니다. 없으면 **기준정보 표를 조회 도구로 감싸고, 질문에 답하는 작은 에이전트**를 가상 데이터로 만들어 보는 정도가 준비가 됩니다. {추론}",
+      "refs": [
+        7,
+        12,
+        20
+      ],
+      "study": [
+        "anthropic-agents",
+        "skax-agentic"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "제조 기준정보(MDM), 생산(MES), 품질(TAS) 시스템 운영/개발 경험을 보유하신 분",
+      "short": "기준정보를 받아 쓰는 쪽 — 생산 실행 시스템(MES)·품질 시스템 — 을 알면 규칙을 덜 틀린다.",
+      "why": "MES 는 공장 층에서 생산을 실행·기록하는 시스템으로, 국제 표준 ISA-95 의 층 구분에서 ERP 와 장비 제어 사이에 있습니다.[14] MES 가 쓰는 제품·공정 단계 코드가 기준정보에서 옵니다 — SK하이닉스가 팹끼리 다르던 코드를 하나로 맞춘 이유도 여기 있습니다.[3] 팹마다 용어·이상 판단 기준이 달라 생긴 문제는 장비 쪽에서도 따로 겪었습니다.[6]",
+      "how_far": "공고의 'TAS' 가 무엇의 줄임말인지는 공개 자료에서 찾지 못했습니다 — 공고는 품질 시스템이라고만 적었습니다.[1] 면접에서 그대로 물어도 되는 부분입니다. {추론}",
+      "refs": [
+        1,
+        3,
+        6,
+        14
+      ],
+      "study": [
+        "isa95"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "글로벌 커뮤니케이션이 가능한 어학 능력을 갖추고, 해외 출장에 거부감이 없으신 분",
+      "short": "해외 공장과 같은 코드를 써야 해서 — 출장과 영어 회의가 있을 수 있다.",
+      "why": "SK하이닉스는 이천·청주와 중국 우시에 팹이 있고, 팹끼리 데이터 기준이 다른 문제를 표준 시스템으로 맞춘 적이 있습니다.[6] 기준정보는 '원팹'처럼 모든 팹이 같은 코드를 쓰는 게 목표입니다.[3] SAP 솔루션 회사·해외 파트너와의 협업도 영어로 합니다. {추론}",
+      "how_far": "출장 빈도·나라는 공고에 없습니다. 공통 요건에 '해외여행에 결격사유가 없는 분'이 있습니다.[1]",
+      "refs": [
+        1,
+        3,
+        6
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "새로운 기술에 대한 호기심과 빠른 습득력을 갖추신 분 고객 대응에 적극적이며 진취적인 자세로 성실함과 책임감을 갖추신 분 원활한 소통과 열정적인 태도로 팀원들과 시너지를 만들어낼 수 있는 분",
+      "short": "성향 세 줄 — 고객사 현장에서 현업 요청을 직접 받는 자리라 '고객 대응'이 실제로 중요하다.",
+      "why": "기준정보는 현업 부서가 매일 등록·변경을 요청하는 데이터입니다.[4] 근무지가 고객사가 있는 이천이라 요청을 가까이서 받습니다.[1] {추론}",
+      "how_far": "면접에서는 **현업 요청을 거절하거나 바꾼 경험** — 예를 들어 표준에 안 맞는 코드 요청을 어떻게 설득했나 — 을 준비하는 편이 낫습니다. {추론}",
+      "refs": [
+        1,
+        4
+      ]
+    }
+  ],
+  "fit": {
+    "good": [
+      "코드 하나, 속성 하나가 어긋나는 걸 못 참는 사람",
+      "SAP·ERP 개발을 해 봤고 '데이터의 기준'을 맡고 싶은 사람",
+      "현업과 자주 부딪혀도 규칙을 지켜 내는 사람",
+      "AI 를 '사람 승인 앞의 추천'으로 붙여 보고 싶은 사람[12]"
+    ],
+    "hard": [
+      "SAP MDG 구축 경험이 필수라 SAP 밖 개발자는 진입이 어렵다[1]",
+      "계약직이다 — 기간·전환 조건이 공고에 없다[1][2]",
+      "근무지가 이천이다[1]",
+      "새 기능보다 규칙·설정·검증이 일의 대부분이다 {추론}"
+    ]
+  },
+  "interview": [
+    {
+      "q": "자재 한 건이 MDG 에서 요청되어 ERP 에 반영되기까지 어떤 설정을 거치나요?",
+      "a": "변경 요청 유형 → 워크플로 → staging/active → DRF 복제.[8][9][10][11]"
+    },
+    {
+      "q": "같은 O-ring 이 코드 두 개로 등록돼 있다면 어떻게 찾고 합치겠어요?",
+      "a": "중복 확인은 검사 순서의 마지막, 1물1코드.[3][9]"
+    },
+    {
+      "q": "제품 코드 자릿수가 모자라면 어떻게 하겠어요?",
+      "a": "SK하이닉스가 실제로 겪고 하이브리드 코드로 바꾼 일.[3]"
+    },
+    {
+      "q": "표준 설정으로 안 되는 검증은 어디에 어떻게 넣나요?",
+      "a": "BRF+ 규칙과 BAdI, 화면 속성의 우선순위.[9]"
+    },
+    {
+      "q": "기준정보를 다루는 AI 에이전트가 직접 값을 바꿔도 될까요?",
+      "a": "추천과 승인의 분리.[12][20]"
+    }
+  ],
+  "sources": [
+    {
+      "n": 1,
+      "title": "SK Careers · 반도체 제조 기준정보 (MDM) 전문가 영입 (계약직)",
+      "url": "https://www.skcareers.com/Recruit/Detail/R262445",
+      "kind": "posting",
+      "date": "~ 2026-12-23",
+      "note": "제조AX서비스5팀 소개·업무·요건·우대·전형(서류 > SKCT > 면접 > 채용검진/처우협의)·공통 요건(경력 3년 이상). 근무지 이천. 복리후생 칸 없음"
+    },
+    {
+      "n": 2,
+      "title": "리멤버 · SK(주) 반도체 제조 기준정보(MDM)담당 (계약직)",
+      "url": "https://career.rememberapp.co.kr/job/posting/304633",
+      "kind": "posting",
+      "note": "같은 공고의 사본 — 근무지 이천시, 경력 3년 이상, 학력 전문학사 이상, 연봉협의, 계약 기간 표기 없음. 2026-11-23 확인 때 마감 표시. 수집본에 없어 jobs 에는 넣지 않았다"
+    },
+    {
+      "n": 3,
+      "title": "SK하이닉스 뉴스룸 · 디지털 혁신의 근간, 데이터를 잡아라! Master Data 표준 체계 재정립",
+      "url": "https://news.skhynix.co.kr/?p=17712",
+      "kind": "company",
+      "date": "2020-09-21",
+      "note": "고객사 자료 — 2007년 9개 분야 자체 관리, 2017년 전사 TF(5개 분과), 설비·자재·제품·장비·공정 우선, 1물1코드·원팹·하이브리드 코드·ELM, R&R. 이름이 나온 분야는 다섯뿐"
+    },
+    {
+      "n": 4,
+      "title": "SK하이닉스 뉴스룸 · 왜 지금 다시 '마스터 데이터(Master Data)'가 중요한가?",
+      "url": "https://news.skhynix.co.kr/?p=17215",
+      "kind": "company",
+      "date": "2021-01-15",
+      "note": "고객사 사내 필진 기고 — 마스터·운영·분석 데이터 구분, 문제 넷(중복·분류 체계·일관성·생애주기)"
+    },
+    {
+      "n": 5,
+      "title": "CIO Korea · \"모든 의사결정은 데이터를 기반으로\" SK하이닉스 송창록 담당",
+      "url": "https://www.cio.com/article/3532586/",
+      "kind": "news",
+      "date": "2019-08-30",
+      "note": "마스터 데이터 구축 조직 신설, ERP 를 SAP S/4HANA 로 교체, 플랫폼 개발은 SK(주)C&C·SK텔레콤과 협력"
+    },
+    {
+      "n": 6,
+      "title": "SK하이닉스 뉴스룸 · 제1호 SK하이닉스 '마스터'의 탄생",
+      "url": "https://news.skhynix.co.kr/post/the-first-master",
+      "kind": "company",
+      "date": "2023-01-16",
+      "note": "Global FDC System — 이천·청주·우시 팹 간 용어·이상 판단 기준이 달라 표준 시스템으로 통일"
+    },
+    {
+      "n": 7,
+      "title": "SK AX 인사이트 · 제조 산업을 위한 Vertical AI 전략: SK AX 에이전틱 AI 포트폴리오",
+      "url": "https://www.skax.co.kr/insight/trend/3638",
+      "kind": "company",
+      "date": "2026-01-30",
+      "note": "공정 운영 지능 에이전트(생산·품질·설비 에이전트 연결), 멀티에이전트 조율 플랫폼. 기준정보·SAP 언급은 없음"
+    },
+    {
+      "n": 8,
+      "title": "SAP Help · MDG 8.0 Configure Change Request Settings",
+      "url": "https://help.sap.com/saphelp_mdg80/helpdata/en/60/a3cb5285135721e10000000a423f68/content.htm",
+      "kind": "reference",
+      "note": "변경 요청 상태 번호, 자재 업무 활동(MAT1·MAT2·MAT6…)·요청 유형, 데이터 모델 MM·메인 엔티티 MATERIAL, 규칙 기반 템플릿 WS60800086. 옛 판(8.0) 문서"
+    },
+    {
+      "n": 9,
+      "title": "SAP Learning · Master Data Governance on S/4HANA — Learning Workflow Basics",
+      "url": "https://learning.sap.com/courses/master-data-governance-on-s-4hana/learning-workflow-basics_ca6792fb-8d70-4f68-ae9e-d2abdd0b5c56",
+      "kind": "reference",
+      "note": "관리 범위, 요청 유형이 워크플로·모델을 정함, BRF+ 결정 표, 검사 순서(중복 확인 마지막), 화면 속성 우선순위, 단계 목록, 과정 차례"
+    },
+    {
+      "n": 10,
+      "title": "SAP Help · MDG 8.0 Data Modeling (staging 과 active 영역)",
+      "url": "https://help.sap.com/saphelp_mdg80/helpdata/en/cf/9b0955b37e3d6ae10000000a44176d/content.htm",
+      "kind": "reference",
+      "note": "승인 전 staging, 재사용 영역이 있으면 active 로 옮김 — 검색 요약으로 확인"
+    },
+    {
+      "n": 11,
+      "title": "SAP · MDG-M: Using Data Replication Framework",
+      "url": "https://www.sap.com/documents/2021/07/3a4f35f1-ea7d-0010-bca6-c68f7e60039b.html",
+      "kind": "reference",
+      "date": "2021-07",
+      "note": "DRF 가 활성 데이터만 복제, 키·값 매핑을 연결 시스템마다 — 검색 요약과 SAP Help 배경 문서로 확인"
+    },
+    {
+      "n": 12,
+      "title": "SAP · Master Data Governance on SAP S/4HANA Cloud Private Edition",
+      "url": "https://www.sap.com/products/erp/s4hana-cloud-private-edition-master-data-governance.html",
+      "kind": "reference",
+      "note": "자연어로 변경 요청 만들기·요약(Joule), 작성 품 60%·검토 품 20% 감소는 회사 주장. 날짜 표기 없음 — 검색 요약으로 확인"
+    },
+    {
+      "n": 13,
+      "title": "PyPI · hana-ml (Python Machine Learning Client for SAP HANA)",
+      "url": "https://pypi.org/project/hana-ml/",
+      "kind": "reference",
+      "note": "hdbcli 로 연결, HANA 데이터프레임은 사본이 아닌 뷰, PAL·APL 패키지, collect() 로 pandas 변환"
+    },
+    {
+      "n": 14,
+      "title": "ISA · ISA-95 Enterprise-Control System Integration",
+      "url": "https://www.isa.org/standards-and-publications/isa-standards/isa-95-standard",
+      "kind": "reference",
+      "note": "층 0~4 — MES 는 3층, ERP 는 4층(층 설명은 업계 요약)"
+    },
+    {
+      "n": 17,
+      "title": "Bloor InBrief · SAP Master Data Governance",
+      "url": "https://www.sap.com/documents/2023/11/c0018b8c-987e-0010-bca6-c68f7e60039b.html",
+      "kind": "reference",
+      "date": "2023-11",
+      "note": "중복 식별·병합, 자연어 '도움 변경', 언어 모델 선택 — 외부 분석가 평가(검색 요약으로 확인)"
+    },
+    {
+      "n": 18,
+      "title": "KPI뉴스 · SK C&C, 'SK㈜ AX'로 이름 바꿔",
+      "url": "https://kpinews.kr/newsView/1065576140213162",
+      "kind": "news",
+      "note": "SK AX 는 SK주식회사 안의 사업 조직"
+    },
+    {
+      "n": 19,
+      "title": "SK하이닉스 홈페이지(회사 주소)",
+      "url": "https://www.skhynix.com/",
+      "kind": "company",
+      "note": "본사 경기도 이천시 부발읍 경충대로 2091"
+    },
+    {
+      "n": 20,
+      "title": "Anthropic · Building effective agents",
+      "url": "https://www.anthropic.com/research/building-effective-agents",
+      "kind": "reference",
+      "date": "2024-12",
+      "note": "다른 곳의 공개 글 — 작은 도구로 나누기, 사람 확인 지점 두기"
+    },
+    {
+      "n": 21,
+      "title": "FETV · SK 계열사 직원 평균 급여(2024 사업보고서)",
+      "url": "https://www.fetv.co.kr/news/articleView.html?idxno=198852",
+      "kind": "news",
+      "date": "2025-08-14"
+    },
+    {
+      "n": 22,
+      "title": "SK AX Careers · 복리후생",
+      "url": "https://skax.skcareers.com/page/HR/Welfare",
+      "kind": "company",
+      "note": "연도 표기 없음 — 같은 날 다른 풀이(skax-semicon-utility-ax 등)에서 확인한 항목"
+    },
+    {
+      "n": 23,
+      "title": "ZDNet Korea · 올해 상반기 대기업 SI 톱4 '연봉킹' 누구?",
+      "url": "https://zdnet.co.kr/view/?no=20250816174726",
+      "kind": "news",
+      "date": "2025-08-16",
+      "note": "4사 2025년 반기보고서 1인 평균 급여"
+    },
+    {
+      "n": 24,
+      "title": "원티드 · 에스케이 에이엑스(SK AX) 기업정보",
+      "url": "https://www.wanted.co.kr/company/25949",
+      "kind": "reference",
+      "note": "평균 연봉(집계값)"
+    },
+    {
+      "n": 25,
+      "title": "SK AX · 사업장 안내",
+      "url": "https://www.skax.co.kr/company/office",
+      "kind": "company",
+      "note": "본사 SK u-타워(분당, 13558)"
+    }
+  ],
+  "caveat": "이 팀(제조AX서비스5팀)이나 SK AX 가 기준정보·SAP MDG 를 주제로 낸 기술 글·발표 영상은 찾지 못해 받은 영상이 없습니다. 고객사 쪽 근거는 SK하이닉스 뉴스룸(2020·2021·2023)과 2019년 CIO 인터뷰라 지금 구성과 다를 수 있고, SK하이닉스가 기준정보에 SAP MDG 를 쓴다는 회사 발표는 찾지 못했습니다 — 공고가 MDG 를 적은 것이 근거입니다. 공고의 'TAS' 는 풀이를 찾지 못했습니다. MDG 의 구조는 SAP 문서(일부는 옛 8.0 판·검색 요약)로 '보통 이런 것'을 보였습니다. 코드 예시의 자재·규칙은 모두 가상 값입니다.",
+  "resources": [
+    {
+      "id": "hynix-mdm-2020",
+      "title": "디지털 혁신의 근간, 데이터를 잡아라! Master Data 표준 체계 재정립",
+      "by": "SK하이닉스 뉴스룸 · 2020",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://news.skhynix.co.kr/?p=17712",
+      "why": "고객사가 9개 분야 기준정보를 어떻게 다시 세웠는지 — 1물1코드·원팹·하이브리드 코드·ELM. 지원 전에 꼭 읽을 글."
+    },
+    {
+      "id": "hynix-why-mdm",
+      "title": "왜 지금 다시 '마스터 데이터(Master Data)'가 중요한가?",
+      "by": "SK하이닉스 뉴스룸 · 2021",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://news.skhynix.co.kr/?p=17215",
+      "why": "중복·분류 체계·일관성·생애주기 — 업무③ '데이터 품질'이 무엇을 막는 일인지 한 번에."
+    },
+    {
+      "id": "dama-dmbok",
+      "title": "DAMA-DMBOK: Data Management Body of Knowledge (2판)",
+      "by": "DAMA International",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "url": "https://dama.org/content/body-knowledge",
+      "why": "마스터·참조 데이터 관리와 데이터 품질 장만 골라 읽는다. 기준정보 거버넌스의 일반 용어를 잡는다."
+    },
+    {
+      "id": "sap-mdg-course",
+      "title": "Master Data Governance on S/4HANA",
+      "by": "SAP Learning",
+      "kind": "course",
+      "lang": "en",
+      "level": "실무",
+      "url": "https://learning.sap.com/courses/master-data-governance-on-s-4hana/learning-workflow-basics_ca6792fb-8d70-4f68-ae9e-d2abdd0b5c56",
+      "why": "데이터 모델·워크플로·검증·복제·사용자 정의 대상까지 MDG 구축 순서 그대로의 과정. 요건① 'MDG 구축 경험'을 말로 설명하는 바탕."
+    },
+    {
+      "id": "sap-mdg-help",
+      "title": "MDG Configure Change Request Settings",
+      "by": "SAP Help Portal",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://help.sap.com/saphelp_mdg80/helpdata/en/60/a3cb5285135721e10000000a423f68/content.htm",
+      "why": "자재 변경 요청 유형·상태·표준 워크플로 템플릿이 실제 이름으로 나온다. 옛 판이라 최신 판 문서와 같이 본다."
+    },
+    {
+      "id": "sap-press-mdg",
+      "title": "SAP Master Data Governance: The Comprehensive Guide to SAP MDG",
+      "by": "SAP PRESS",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "url": "https://www.sap-press.com/sap-master-data-governance_5580/",
+      "why": "MDG 데이터 모델링·UI·프로세스·복제·확장을 한 권으로. 구축 경험이 짧다면 필요한 장을 사전처럼 찾는다."
+    },
+    {
+      "id": "bloor-mdg",
+      "title": "Bloor InBrief — SAP Master Data Governance",
+      "by": "Bloor Research · 2023",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.sap.com/documents/2023/11/c0018b8c-987e-0010-bca6-c68f7e60039b.html",
+      "why": "MDG 가 중복 식별·병합·자연어 변경을 어디까지 하는지 짧게 훑는다 — 업무③ 'AI 업무'의 출발선."
+    },
+    {
+      "id": "sap-abap-journey",
+      "title": "Acquiring Core ABAP Skills",
+      "by": "SAP Learning",
+      "kind": "course",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://learning.sap.com/learning-journeys/acquiring-core-abap-skills",
+      "why": "SAP 가 직접 낸 무료 ABAP 학습 경로. 기초 문법부터 사전·CDS 까지 — 요건② ABAP 의 최소선."
+    },
+    {
+      "id": "easy-abap",
+      "title": "기본 이론에서 실무 예제까지, HANA 기반 Easy ABAP 3.0",
+      "by": "임재원·장성일 외 · 프리렉 · 2025",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000012174400",
+      "why": "한국어로 된 HANA 기반 ABAP 책. 실무 예제로 내부 테이블·SELECT·확장을 손에 익힌다."
+    },
+    {
+      "id": "hana-ml-docs",
+      "title": "hana-ml — Python Machine Learning Client for SAP HANA",
+      "by": "SAP · PyPI",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://pypi.org/project/hana-ml/",
+      "why": "HANA 안의 표를 파이썬에서 다루고 PAL 알고리즘을 부르는 법. 요건② '파이썬·머신러닝'을 SAP 위에서 하는 길."
+    },
+    {
+      "id": "py-ml-guide",
+      "title": "파이썬 머신러닝 완벽 가이드",
+      "by": "권철민 · 위키북스",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%ED%8C%8C%EC%9D%B4%EC%8D%AC%20%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%20%EC%99%84%EB%B2%BD%20%EA%B0%80%EC%9D%B4%EB%93%9C",
+      "why": "pandas·scikit-learn 으로 분류·군집을 직접 돌린다. 자재 분류 추천·중복 후보 찾기에 쓸 기본기."
+    },
+    {
+      "id": "anthropic-agents",
+      "title": "Building effective agents",
+      "by": "Anthropic · 2024",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.anthropic.com/research/building-effective-agents",
+      "why": "에이전트를 작은 도구와 사람 확인 지점으로 나누는 법. 우대① 기준정보 에이전트를 설계할 때 출발점."
+    },
+    {
+      "id": "skax-agentic",
+      "title": "제조 산업을 위한 Vertical AI 전략: SK AX 에이전틱 AI 포트폴리오",
+      "by": "SK AX 인사이트 · 2026",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.skax.co.kr/insight/trend/3638",
+      "why": "이 회사가 제조 에이전트를 어떤 그림으로 파는지. 면접에서 '기준정보가 그 에이전트들의 어디에 들어가나'를 말할 재료."
+    },
+    {
+      "id": "isa95",
+      "title": "ISA-95 Enterprise-Control System Integration",
+      "by": "ISA",
+      "kind": "doc",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "url": "https://www.isa.org/standards-and-publications/isa-standards/isa-95-standard",
+      "why": "ERP·MES·장비 제어가 층으로 어떻게 나뉘는지. 기준정보가 어느 층에서 어느 층으로 흐르는지 설명하는 공통 언어."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "기준정보 감 잡기",
+      "time": "1주",
+      "goal": "기준정보가 무엇이고 공장에서 틀리면 무엇이 멈추는지 고객사 사례로 설명할 수 있다.",
+      "resources": [
+        "hynix-mdm-2020",
+        "hynix-why-mdm",
+        "isa95"
+      ],
+      "task": "가상 팹 하나를 정하고 제품·공정·장비·자재·설비 다섯 표의 키와 핵심 속성 5개씩을 적은 뒤, 표끼리 어떤 코드로 이어지는지 그림으로 그린다."
+    },
+    {
+      "title": "MDG 구조 따라가기",
+      "time": "2~3주",
+      "goal": "자재 한 건이 변경 요청으로 만들어져 승인·활성화·복제되기까지를 설정 이름과 함께 말할 수 있다.",
+      "resources": [
+        "sap-mdg-course",
+        "sap-mdg-help",
+        "bloor-mdg"
+      ],
+      "task": "1단계 자재 표로 '생성·변경·폐기' 세 요청 유형의 단계·승인자·상태 표를 만들고, 요청 → 검증 → 중복 확인 → 승인 → 복제 순서도를 그린다."
+    },
+    {
+      "title": "ABAP 손에 익히기",
+      "time": "3~4주",
+      "goal": "ABAP 로 표를 읽고 검증 규칙 하나를 짤 수 있다.",
+      "resources": [
+        "sap-abap-journey",
+        "easy-abap",
+        "sap-press-mdg"
+      ],
+      "task": "SAP 체험 환경에서 가상 자재 표를 만들고, 유형별 필수 속성·값 범위를 검사해 위반 목록을 내는 ABAP 리포트를 만든다."
+    },
+    {
+      "title": "파이썬으로 품질 지키기",
+      "time": "2~3주",
+      "goal": "중복 후보 찾기와 분류 추천을 파이썬으로 만들고 결과를 표로 돌려줄 수 있다.",
+      "resources": [
+        "py-ml-guide",
+        "hana-ml-docs"
+      ],
+      "task": "표기가 일부러 흐트러진 가상 자재 1,000건으로 정규화 열쇠 + 문자열 유사도 중복 후보를 뽑고, 몇 건이 맞았는지 재 본다."
+    },
+    {
+      "title": "기준정보 에이전트 (선택)",
+      "time": "2주",
+      "goal": "기준정보를 조회하고 변경 요청 초안을 쓰는 작은 에이전트를 만들 수 있다.",
+      "resources": [
+        "anthropic-agents",
+        "skax-agentic"
+      ],
+      "task": "4단계 표를 조회·검증·요청 초안 세 도구로 감싸고, \"이 자재를 쓰는 공정은?\"·\"이 O-ring 의 규격을 바꿔 줘\" 질문에 답하되 바꾸는 일은 사람 승인 대기로 남기게 한다."
+    }
+  ],
+  "pay": {
+    "summary": "공고에 연봉은 없고 계약직이다. SK주식회사 전체 직원 평균은 **1억 1,600만원**(2024 사업보고서), SK AX 상반기 평균은 **7,300만원**(6개월치) — 계약직 제시액은 처우협의에서 정한다",
+    "rows": [
+      {
+        "label": "직원 평균 급여(SK주식회사 전체)",
+        "value": "1억 1,600만원",
+        "amount": 11600,
+        "basis": "사업보고서 · 2024년",
+        "note": "SK AX 는 SK주식회사 안의 사업 조직이라[18] 지주 부문을 합친 회사 전체 값이다 [21]"
+      },
+      {
+        "label": "SK AX 1인 평균 급여 (6개월)",
+        "value": "7,300만원",
+        "amount": 7300,
+        "basis": "반기보고서 · 2025년 상반기",
+        "note": "1~6월 반년치다. 1년 연봉이 아니다 [23]"
+      },
+      {
+        "label": "평균 연봉",
+        "value": "6,082만원",
+        "amount": 6082,
+        "basis": "공공데이터 집계",
+        "note": "채용 사이트가 공공 자료로 계산한 값, 계산 기간은 적혀 있지 않다 [24]"
+      },
+      {
+        "label": "삼성SDS 평균 (6개월)",
+        "value": "6,600만원",
+        "amount": 6600,
+        "basis": "반기보고서 · 2025년 상반기",
+        "peer": true,
+        "note": "같은 기사의 같은 기준 [23]"
+      },
+      {
+        "label": "LG CNS 평균 (6개월)",
+        "value": "6,500만원",
+        "amount": 6500,
+        "basis": "반기보고서 · 2025년 상반기",
+        "peer": true,
+        "note": "같은 기사의 같은 기준 [23]"
+      }
+    ],
+    "how": "공고 사본에 '연봉협의'라고 적혀 있고 [2], 전형 끝에 **채용검진/처우협의** 단계가 있다 [1]. 위 평균은 정규직 신입부터 고참까지 섞인 회사 전체 값이라 **계약직** 제시액으로 읽으면 안 된다 {추론}. 계약 기간·정규직 전환 여부는 공고에 없으니 처우협의 때 묻는다 {추론}."
+  },
+  "benefits": {
+    "items": [
+      {
+        "name": "성장",
+        "detail": "9개 단과대 College·mySUNI, 해마다 Learning Account 예산, MARU 도서관, 사내 직무 공모"
+      },
+      {
+        "name": "장기근속",
+        "detail": "10·15·20·25·30년에 포상금과 포상 휴가"
+      },
+      {
+        "name": "주택 자금",
+        "detail": "구입·전세 최대 6,000만원, 생활안정자금 최대 1,500만원(100만원 단위)"
+      },
+      {
+        "name": "자녀 학자금",
+        "detail": "유치원부터 대학까지, 자녀 수 제한 없음"
+      },
+      {
+        "name": "식대·통신비",
+        "detail": "식대 월 4만원, 통신비 월 7만원(SKT 가입자)"
+      },
+      {
+        "name": "복지 포인트",
+        "detail": "연 100만원 + 월 20만원, SK 패밀리카드 연회비 10만원, 창립기념일 OK캐쉬백 20만 포인트"
+      },
+      {
+        "name": "건강",
+        "detail": "나이에 따라 종합 25만원·정밀 40만원 검진, 난임 지원, 단체보험 3종, 사내 의원, 심리 상담"
+      },
+      {
+        "name": "그 밖",
+        "detail": "외부 사이트 근무자 복지 포인트, 통근·셔틀 버스, 경조 휴가·경조금"
+      }
+    ],
+    "note": "SK AX 채용 사이트의 복리후생 페이지다(연도 표기 없음) [22]. 이 공고 자체에는 복리후생 칸이 없다 [1]. 정규직 기준으로 보이는 항목이라 **계약직**에게 어디까지 적용되는지, '외부 사이트 근무자 복지 포인트'가 이천 고객사 근무에도 붙는지는 처우협의 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "근무지 이천 (SK하이닉스 본사 소재지)",
+    "address": "경기도 이천시 부발읍 경충대로 2091",
+    "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%9D%B4%EC%B2%9C%EC%8B%9C%20%EB%B6%80%EB%B0%9C%EC%9D%8D%20%EA%B2%BD%EC%B6%A9%EB%8C%80%EB%A1%9C%202091",
+    "near": "경강선 부발역 근처 {추론}",
+    "note": "공고 근무지는 '경기도 이천'뿐이고 [1] 사본도 이천시다 [2]. 위 주소는 SK하이닉스 본사 주소로 [19], 실제 자리가 고객사 안인지는 공고에 없다 {추론}. 소속 회사 SK AX 의 본사는 분당 SK u-타워(성남대로 343번길 9)다 [25]."
+  }
+}
