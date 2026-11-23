@@ -95,6 +95,21 @@ def command(prompt: str) -> list[str]:
     return [exe, "-p", "--output-format", "json", *args]
 
 
+def _after(args: list[str], root) -> str:
+    """회차 뒤처리(DB 옮기기 등) — 무인 세션에 venv 실행 권한을 주지 않고 러너가 직접 돌린다."""
+    cc = _Path(root) / "catch_capture"
+    py = next((p for p in (cc / ".venv" / "Scripts" / "python.exe", cc / ".venv" / "bin" / "python") if p.exists()), None)
+    if not py:
+        return "건너뜀: catch_capture/.venv 없음"
+    try:
+        p = subprocess.run([str(py), *args], cwd=str(cc), capture_output=True, text=True, encoding="utf-8",
+                           errors="replace", timeout=900, env={**os.environ, "PYTHONIOENCODING": "utf-8"})
+        tail = (p.stdout or p.stderr or "").strip().splitlines()[-1:] or [""]
+        return f"{'ok' if p.returncode == 0 else f'실패({p.returncode})'} {tail[0][:200]}"
+    except Exception as e:  # noqa: BLE001 — 뒤처리가 실패해도 회차 기록은 남긴다
+        return f"실패: {e}"
+
+
 def run_once(loop, root, timeout_s: int = TIMEOUT_S, dry_run: bool = False) -> dict:
     """엔진 한 회차. 반환은 last.json 에 적는 것과 같다."""
     if not loop.prompt:
@@ -133,6 +148,8 @@ def run_once(loop, root, timeout_s: int = TIMEOUT_S, dry_run: bool = False) -> d
             summary=(result.get("result") or err or "")[-1500:].strip(),
             log=str(log.relative_to(VAR_DIR.parent)),
         )
+        if rec["ok"] and getattr(loop, "after", None):
+            rec["after"] = _after(loop.after, root)
     finally:
         _unlock(loop.key)
     (d / "last.json").write_text(json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8")
