@@ -172,6 +172,7 @@
   "ats-toss:group:7827711003": "tosssec-data-engineer-financial-data",
   "ats-toss:group:5863983003": "tosssec-fep-server-developer",
   "ats-toss:group:7575603003": "tosssec-ml-engineer-llm",
+  "ats-toss:group:4154060003": "tosssec-product-data-analyst",
   "ats-toss:group:7810517003": "tosssec-senior-data-analyst",
   "ats-toss:group:7834735003": "tosssecurities-data-engineer-advisory",
   "ats-toss:group:8006356003": "tosssecurities-dataops-engineer",
@@ -1723,6 +1724,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 20
+  },
+  {
+   "id": "tosssec-product-data-analyst",
+   "company": "토스증권",
+   "role": "데이터 분석가 (7년 미만)",
+   "jobs": [
+    "ats-toss:group:4154060003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 16
   },
   {
    "id": "tosssec-senior-data-analyst",
