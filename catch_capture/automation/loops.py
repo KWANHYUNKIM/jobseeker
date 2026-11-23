@@ -520,6 +520,12 @@ def status_all() -> list[dict]:
 
 
 def main(argv: list[str]) -> int:
+    # 윈도우 콘솔(cp949)이 회차 요약의 한글 밖 글자(é 등)를 못 찍어 러너가 죽었다 — 못 찍는 글자는 ? 로.
+    for s in (_sys.stdout, _sys.stderr):
+        try:
+            s.reconfigure(errors="replace")
+        except AttributeError:
+            pass
     cmd = argv[0] if argv else "list"
     if cmd == "list":
         rows = status_all()
