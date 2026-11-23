@@ -1,0 +1,1008 @@
+{
+ "id": "toss-nodejs-mobile-automation",
+ "company": "토스",
+ "role": "Node.js 개발자 (모바일 자동화 플랫폼)",
+ "team": "모바일 자동화 플랫폼 팀 · Node.js 챕터",
+ "jobs": [
+  "ats-toss:group:7734083003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "진짜 휴대폰 **수백 대**를 서버에서 원격으로 조종해 사람이 손으로 하던 모바일 일을 대신 시키는 **자동화 플랫폼**과, 토스 개발자들이 쓰는 공용 라이브러리·CLI 같은 **생산성 도구**를 만듭니다.[1]",
+  "env": "TypeScript · Node.js · Nest.js 가 중심이고 Go 도 씁니다. 기기와는 **WebSocket · gRPC** 로 실시간으로 주고받고, MongoDB · Redis · Kafka · Electron · Docker · Kubernetes 위에서 돕니다.[1]",
+  "oneline": "화면 대신 **기기와 메시지**를 다루는 백엔드 개발자. 기능 개발보다 **끊기지 않게 굴리기 · 실패를 다시 시도하기 · 테스트**가 일의 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "모바일 자동화 플랫폼을 설계하고 개발해요. 안정적인 자동화 인프라를 구축하여 토스의 서비스 품질을 높여요.",
+   "short": "휴대폰에 '이 버튼 눌러, 이 글자 넣어'를 대신 시키는 공용 기반을 만들어 여러 팀이 같이 쓰게 하는 일.",
+   "why": "토스 앱은 플랫폼마다 **매주** 출시되고, 출시 한 번에 후보 빌드가 평균 5번쯤 나옵니다. QA 팀은 그때마다 실제 기기에서 핵심 기능 30가지를 확인하는 데 한 번에 약 3시간을 썼고, 이를 자동화해 시간을 절반으로 줄였습니다.[6] 이런 자동화를 팀마다 따로 만들면 도구가 흩어져 효율이 떨어진다는 것을 토스페이먼츠도 겪었습니다 — 그래서 모두가 쓰는 플랫폼 하나를 만들었습니다.[7] 이 자리의 팀도 토스 전체 개발자의 생산성을 높이는 기반을 만든다고 적었습니다.[1]",
+   "actually": {
+    "intro": "토스 그룹의 자동화 플랫폼들이 실제로 가진 칸입니다.[6][7] 이 팀의 내부 구조는 공개되지 않았습니다.",
+    "items": [
+     "**요청 받는 서버(어드민)** — 누가 어떤 기기·빌드로 무엇을 돌릴지 받고 결과를 저장한다.[7]",
+     "**대기열(큐)** — 요청과 실행기 사이에 두어 실행기가 감당할 만큼만 꺼내 가게 한다. 쌓인 양을 보고 실행기를 늘린다(수평 확장).[7]",
+     "**실행기(러너)** — 자동화 스크립트를 자식 프로세스로 띄우고, 한 대에서 동시에 띄우는 개수에 상한을 둔다. 상한이 없을 때 자원이 모자라 전체가 실패했다.[7][21]",
+     "**스크립트 배포** — 스크립트를 의존성째 한 파일로 묶어 저장소에 올리고, 사람은 파일 이름 대신 '테스트 케이스' 이름으로 찾아 실행한다.[7]",
+     "**결과 남기기** — 단계마다 성공·실패를 메신저로 바로 보내고, 실행 영상과 로그를 끝난 뒤 묶어 보낸다.[6]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "자동화 작업 한 건이 지나가는 길 — 토스페이먼츠 플랫폼 구조를 모바일 기기에 옮긴 것 {추론}[7]",
+     "steps": [
+      "요청 · 어드민에서 시나리오·기기 조건 선택",
+      "대기열 · 실행할 수 있는 만큼만 꺼냄",
+      "기기 빌리기 · 쉬는 기기 하나를 잡음",
+      "실행 · 스크립트가 기기를 조종",
+      "기록 · 단계별 결과·영상·로그 저장",
+      "반납 · 기기를 처음 상태로 돌려 놓음"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "무엇을 자동화할지는 쓰는 팀이 정하고, 이 자리는 **그 일을 돌릴 판** — 대기열·실행기·기기 관리·기록 — 을 맡습니다. 최소선은 '작업 하나가 실패해도 다른 작업과 기기가 멀쩡한' 구조를 설명하고 만들어 볼 수 있는 정도입니다 {추론}. 이력서에는 자동화 프레임워크·CI/CD 파이프라인처럼 **자동화 인프라를 만든 경험**을 쓰라고 했습니다.[1]",
+   "refs": [
+    1,
+    6,
+    7,
+    21
+   ],
+   "study": [
+    "slash24-payments-test",
+    "slash24-doctor",
+    "node-patterns"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "모바일 디바이스를 원격으로 제어하고 모니터링하는 시스템을 개발해요. 실시간으로 디바이스 상태를 파악하고 제어할 수 있는 환경을 만들어요.",
+   "short": "책상 위가 아니라 서버에 꽂힌 휴대폰을 멀리서 터치·입력·화면 보기 하고, 지금 살아 있는지 늘 아는 일.",
+   "why": "공고는 수백 대의 기기를 안정적으로 제어하는 것을 이 팀의 기술적 도전으로 꼽았습니다.[1] 기기가 많아지면 한 대씩 사람이 들여다볼 수 없어서, **어느 기기가 쉬고 · 일하고 · 끊겼는지**를 시스템이 알아야 작업을 맡길 수 있습니다 {추론}.",
+   "actually": {
+    "intro": "토스의 방식은 공개되지 않았습니다. 같은 일을 하는 공개 도구들은 보통 이렇게 합니다.",
+    "items": [
+     "**안드로이드는 ADB** — 컴퓨터 쪽 클라이언트·서버와 기기 안의 데몬(adbd)이 나뉜 구조로, 앱 설치·명령 실행·파일 옮기기를 한다.[11]",
+     "**화면을 보내고 터치를 받기** — 오픈소스 기기 농장 STF 는 Node.js 로 만들어졌고 화면은 minicap, 터치는 minitouch 로 주고받는다.[13] scrcpy 는 ADB 로 연결해 화면을 영상으로 보내고 마우스·키보드 입력을 기기로 넘긴다.[14]",
+     "**화면 요소 다루기** — Appium 은 WebDriver 규약으로 '이 버튼을 찾아 눌러'를 받아 안드로이드(UiAutomator2)·iOS(XCUITest) 드라이버로 넘긴다.[12][24][30]",
+     "**상태 알기** — 기기 쪽 대리 프로그램이 일정 간격으로 '살아 있음(heartbeat)'을 보내고, 정해진 시간 넘게 소식이 없으면 끊긴 것으로 본다 {추론}.",
+     "**실시간 통로** — 서버와 기기 대리 프로그램 사이는 계속 열어 두는 양방향 연결(WebSocket[15] 또는 gRPC 양방향 스트리밍[16])로 명령과 상태를 주고받는다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "heartbeat 로 기기 상태를 정하고 쉬는 기기만 빌려주기",
+     "body": "30초 넘게 소식 없는 기기는 끊긴 것으로 보고 작업을 맡기지 않습니다(가상 값, 직접 돌린 출력). 실무에서는 TypeScript 로 쓰겠지만 같은 생각을 파이썬으로 돌렸습니다.",
+     "lang": "python",
+     "code": "now = 100_000  # ms\ndevices = [dict(id=\"A1\", beat=now - 2_000, busy=False),\n           dict(id=\"A2\", beat=now - 4_000, busy=True),\n           dict(id=\"I1\", beat=now - 45_000, busy=False)]\nstate = lambda d: \"offline\" if now - d[\"beat\"] > 30_000 else (\"busy\" if d[\"busy\"] else \"idle\")\nfor d in devices:\n    print(d[\"id\"], state(d))\n\ndef lease(job):\n    d = next((x for x in devices if state(x) == \"idle\"), None)\n    if not d:\n        return f\"{job}: queued\"\n    d[\"busy\"] = True\n    return f\"{job} -> {d['id']}\"\nprint(lease(\"job-1\")); print(lease(\"job-2\"))\n# A1 idle\n# A2 busy\n# I1 offline\n# job-1 -> A1\n# job-2: queued"
+    }
+   ],
+   "how_far": "ADB·Appium 의 내부를 새로 짤 필요는 없습니다. 이 자리는 그것들을 **수백 대 규모로 묶어 굴리는 쪽** — 연결이 끊기면 다시 잇고, 기기를 빌려주고 돌려받고, 상태를 화면에 보여 주는 일 — 입니다 {추론}. 기기를 직접 꽂아 ADB 명령으로 앱을 깔고 화면을 받아 보는 것이 최소선입니다.",
+   "refs": [
+    1,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    24,
+    30
+   ],
+   "study": [
+    "adb-docs",
+    "appium-docs",
+    "stf-github",
+    "scrcpy-github"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "다양한 조직의 모바일 업무 자동화를 직접 실행해요. 요구사항을 분석하고 최적의 자동화 솔루션을 설계해요.",
+   "short": "다른 팀이 '이거 매번 손으로 해요'라고 가져온 일을 듣고, 기기 위 자동화로 바꿔 직접 돌려 주는 일.",
+   "why": "토스 Node.js 챕터의 자동화는 원래 다른 팀의 제품이 세상에 나오도록 막힌 곳을 뚫어 주는 역할이었습니다 — 국민지원금 신청을 토스 정보로 한 번에 하게 만든 것이 그 예입니다.[9] 그때도 요구는 서비스 팀이 가져오고 자동화는 이 챕터가 만들었습니다.[2]",
+   "actually": {
+    "intro": "토스가 발표한 웹 자동화(CA)에서 일을 쪼갠 방식입니다.[2] 모바일 기기 자동화도 같은 순서로 나눌 수 있습니다 {추론}.",
+    "items": [
+     "**흐름을 단계로 나누기** — 국민지원금 신청을 '페이지 확인 → 자격 조회 → 개인정보 입력 → 신청 → 결과' 단계로 자르고, 단계마다 클래스 하나를 둔다.[2]",
+     "**지금 어디인지 보고 맞는 단계 실행** — 현재 주소를 보고 맞는 단계를 골라 실행하는 관리자를 둔다.[2]",
+     "**점검 중 먼저 확인** — 점검 안내 요소가 있으면 사용자에게 알리고 흐름을 멈춘다.[2]",
+     "**사람 손이 꼭 필요한 곳** — 인증번호처럼 자동으로 못 채우는 값은 화면에 입력 창을 띄워 받아 오고, 잘못 넣을 수 있으니 다시 시도 로직을 꼭 넣는다.[2]",
+     "**이미 아는 값은 앱에서** — 이름·전화번호처럼 토스가 가진 값은 사용자에게 다시 묻지 않는다. 그래서 신청이 클릭 다섯 번과 입력 한 번으로 끝났다.[2]"
+    ]
+   },
+   "how_far": "요구를 그대로 받아 짜는 게 아니라 **자동화할 단계와 사람이 해야 할 단계를 가르는 것**까지가 이 자리 몫입니다 — 공고가 '최적의 솔루션을 설계'라고 쓴 까닭입니다.[1] 토스 문화에서는 맡은 사람이 끝까지 결정하는 DRI 방식으로 일합니다.[4]",
+   "refs": [
+    1,
+    2,
+    4,
+    9
+   ],
+   "study": [
+    "slash22-ca",
+    "toss-feed-wa"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "사용자의 모바일 금융 활동이 더 쉽고 자연스러워질 수 있도록, 다양한 모바일 데이터를 자동으로 수집하고 처리하는 시스템을 개발해요.",
+   "short": "다른 금융 앱·사이트에 흩어진 정보를 사용자 대신 자동으로 모아 토스 화면에 보여 주는 바탕을 만드는 일.",
+   "why": "토스는 2010년대부터 은행·카드사 사이트를 보이지 않는 웹뷰로 대신 조회하는 **스크래핑**으로 계좌·카드 조회를 해 왔습니다. 그러지 않으면 사용자가 매번 그 회사에 직접 로그인해야 했습니다.[3] 숨은 보험금 찾기·계좌·카드 조회 같은 서비스에 이 기술이 들어가 있습니다.[9] 당시 토스 금융 서비스 50여 개 중 거의 모든 곳이 이 챕터의 기술을 썼습니다.[4]",
+   "actually": {
+    "intro": "토스 스크래핑 팀이 오류율을 30% → 0.5%, 평균 시간을 20초 → 5초로 줄인 방법입니다.[3]",
+    "items": [
+     "**구간마다 기록** — 요청이 대기열에 들어간 시각, 실행 프로세스가 뜬 시각, 스크립트를 불러온 시각, 실제 조회 시간을 따로 남겨 어디서 막히는지 봤다.[3]",
+     "**동시에 도는 개수 제한** — 작업자 풀(iframe·웹 워커)로 최대 실행 수를 정하고, 생산자–소비자 방식으로 대기열에서 꺼내 실행했다.[3]",
+     "**사이트마다 다른 규칙** — 어떤 사이트는 동시에, 어떤 사이트는 하나씩만 돌아야 해서(동시에 돌면 로그인이 풀린 카드사도 있었다) 병렬·순차 소비자와 잠금을 나눠 썼다.[3]",
+     "**로그인 다시 쓰기** — 조회마다 새로 로그인하던 것을 세션을 저장해 다시 쓰도록 바꿨다.[3]",
+     "**같은 요청 합치기와 캐시** — 진행 중인 같은 요청은 한 번만 돌리고, 결과는 브라우저 저장소(IndexedDB)에 잠시 둔다.[3]",
+     "**배포 없이 설정 바꾸기** — 10분 넘던 빌드·배포 대신 어드민에서 클릭 두 번으로 사이트별 실행 방식을 바꿨다.[3]"
+    ]
+   },
+   "how_far": "모바일 기기에서 무엇을 모으는지는 공고에 없습니다 {추론}. 다만 금융 정보를 다루므로 **필요한 것만 모으고, 사용자 동의를 받고, 처리 중 개인정보를 남기지 않는** 습관이 기본입니다 — CA 발표도 개인정보를 쓰는 단계마다 동의를 받는다고 했습니다.[2] 수집 파이프라인은 대기열·작업자 수 제한·재시도·구간 기록 네 가지를 설명할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    2,
+    3,
+    4,
+    9
+   ],
+   "study": [
+    "slash22-scraping",
+    "ddia"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "공용 라이브러리, CLI 도구 등 개발자 생산성 도구를 만들고 개선해요.",
+   "short": "토스 개발자 여럿이 똑같이 겪는 귀찮음을 npm 패키지·명령줄 도구 하나로 없애는 일.",
+   "why": "토스 Node.js 챕터는 2021년 4월 첫 모노레포(여러 패키지를 한 저장소에 두는 방식)를 만들었고, 그 한 곳에만 라이브러리가 100개 넘게 쌓였습니다. 코어에서 운영하는 라이브러리 모노레포만 6개입니다.[5] 배포 시간을 30분에서 초 단위로 줄인 것도 이 챕터의 일이었습니다.[4]",
+   "actually": {
+    "intro": "토스 Node.js 챕터가 배포 CLI 를 고친 사례입니다.[5]",
+    "items": [
+     "**옵션이 불어난 CLI** — 요구가 생길 때마다 배포 CLI 에 옵션을 붙이다 보니, 새 요구 하나에 공통 도구를 고쳐 다시 배포해야 했다.[5]",
+     "**플러그인으로 나누기** — ESLint 처럼 플러그인을 npm 패키지로 따로 내고, '전체 시작 전·패키지마다 배포 전·후' 같은 시점에 코드를 걸게 했다.[5]",
+     "**쓰는 곳 모으기** — 라이브러리 버전별 공개 API 를 어느 서비스가 쓰는지 모아 바꿀 때의 영향을 미리 본다.[5]",
+     "**가볍게** — 패키지 메타데이터가 MB 단위로 커져 설치가 느려지자 오래된 알파 버전을 정리하고 배포물에서 README 등을 뺐다.[5]",
+     "**의존 버전 자동 올리기** — 어떤 API 가 몇 버전에 생겼는지 추적해 쓰는 쪽의 최소 버전을 자동으로 올린다.[5]"
+    ]
+   },
+   "how_far": "직접 npm 패키지를 하나 내 보고, 버전을 올리면 쓰는 쪽이 어떻게 깨지는지(유의적 버전) 설명할 수 있으면 출발선입니다 {추론}. 이 팀은 Electron 도 쓴다고 적었는데[1], 개발자가 자기 컴퓨터에서 쓰는 데스크톱 도구를 만들 때 흔히 쓰는 틀입니다.[22]",
+   "refs": [
+    1,
+    4,
+    5,
+    22
+   ],
+   "study": [
+    "toss-pipeline-plugin",
+    "effective-ts",
+    "node-patterns"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "OOP와 FP 기반의 높은 코드 품질과 충분한 테스트 커버리지를 갖춘 프로젝트를 운영하며, 기능 추가와 유지보수가 쉬운 코드를 지향해요.",
+   "short": "기기 없이도 돌릴 수 있는 테스트를 많이 두려고, 계산(순수 함수)과 기기 다루기(객체)를 갈라 짜는 일.",
+   "why": "토스 Web Automation 챕터는 2021년에 테스트 커버리지(테스트가 실행해 본 코드 비율) 70% 이상을 유지한다고 밝혔습니다.[4] 토스뱅크의 한 서버는 커버리지가 100% 아래로 내려가면 빌드가 실패하게 걸어 1년 반 동안 100%를 지켰고, 그 덕에 하루에도 여러 번 배포하면서 큰 리팩터링을 할 수 있었다고 했습니다.[8]",
+   "actually": {
+    "items": [
+     "**FP(함수형)** — '시나리오 단계 → 기기 명령 목록'처럼 입력이 같으면 결과가 같은 순수 함수로 짜면 기기 없이 테스트된다 {추론}.",
+     "**OOP(객체지향)** — 기기·세션·페이지처럼 상태가 있는 것은 객체로 감싸고 인터페이스로 바꿔 끼우게 해, 테스트에서는 가짜 기기를 넣는다 {추론}. CA 도 단계마다 같은 인터페이스를 따르는 페이지 클래스를 두었다.[2]",
+     "**테스트가 느려지면 원인부터** — 토스뱅크 서버는 테스트 400개에 1분이 넘자 프로파일러로 원인을 찾아 6초까지 줄였다.[8]",
+     "**커버리지 100%도 버그를 다 못 막는다** — 더하기를 빼기로 바꿔도 통과하는 테스트가 있어 돌연변이 테스트(코드를 일부러 바꿔 보기)를 시험했다.[8]",
+     "**함께 리뷰** — 새 시스템을 만들 때는 팀원 여럿이 모여 버그·이름 짓기·컴포넌트 설계를 함께 본다.[1][4]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "순수 함수는 기기 없이 테스트된다",
+     "body": "글자 입력 단계는 '칸 누르기 + 글자 넣기' 두 명령이 됩니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "def to_commands(steps):\n    out = []\n    for s in steps:\n        if s[\"kind\"] == \"type\":\n            out += [{\"op\": \"tap\", \"target\": s[\"target\"]}, {\"op\": \"input\", \"text\": s[\"text\"]}]\n        else:\n            out.append({\"op\": s[\"kind\"], \"target\": s[\"target\"]})\n    return out\n\ngot = to_commands([{\"kind\": \"type\", \"target\": \"#phone\", \"text\": \"010\"},\n                   {\"kind\": \"tap\", \"target\": \"#ok\"}])\nassert got == [{\"op\": \"tap\", \"target\": \"#phone\"},\n               {\"op\": \"input\", \"text\": \"010\"},\n               {\"op\": \"tap\", \"target\": \"#ok\"}]\nprint(\"pass:\", got)\n# pass: [{'op': 'tap', 'target': '#phone'}, {'op': 'input', 'text': '010'}, {'op': 'tap', 'target': '#ok'}]"
+    }
+   ],
+   "how_far": "이력서에 FP·OOP·TDD 경험을 적으라고 했습니다.[1] 용어보다 **'어디까지 순수하게, 어디부터 객체로'를 내 코드로 보여 주는 것**이 낫습니다 {추론}. 사전과제가 1차 인터뷰의 재료가 되므로 과제 코드에 테스트를 붙이는 것이 가장 직접적인 준비입니다.[1]",
+   "refs": [
+    1,
+    2,
+    4,
+    8
+   ],
+   "study": [
+    "slash21-coverage",
+    "unit-testing",
+    "grokking-fp",
+    "refactoring"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "모바일 자동화 또는 자동화 인프라를 설계하거나 개발해 본 경험이 있으신 분을 찾고 있어요.",
+   "short": "기기·브라우저를 코드로 조종해 본 경험, 또는 그런 작업을 여러 개 돌리는 판을 만들어 본 경험.",
+   "why": "업무 첫 줄이 모바일 자동화 플랫폼입니다.[1] 이 분야는 따라 할 참고 코드가 드물다고 같은 그룹 자동화 챕터가 말했습니다 — 직접 부딪혀 본 사람을 찾는 이유입니다.[4]",
+   "level": {
+    "basic": "Appium·Playwright 같은 도구로 화면 요소를 찾아 누르고 입력하는 스크립트를 짜 봤다",
+    "work": "그런 스크립트를 CI 나 큐로 여러 개 돌리고, 실패를 다시 시도하고, 결과·영상을 남겨 봤다",
+    "team": "실제 기기 여러 대를 묶어 빌려주고 돌려받는 판을 설계했다 — 동시 실행 상한·기기 상태·재연결"
+   },
+   "actually": {
+    "items": [
+     "**모바일 자동화 경험** — 토스 QA 팀은 Appium 으로 실제 기기에 빌드를 깔고 30가지 시나리오를 돌렸다. 시나리오마다 세션을 새로 만들면 앱이 매번 다시 켜져 느려서 세션 하나를 모듈 전체에서 같이 썼다.[6]",
+     "**자동화 인프라 경험** — 토스페이먼츠는 Node.js + Playwright 로 45만 개 넘는 테스트를 관리하고, 메모리가 넘치지 않게 결과를 덩어리로 나눠 처리했다.[7]",
+     "**웹 자동화 경험** — Puppeteer·Playwright 는 보통 서버에서 돌지만, 토스 CA 는 모바일 브라우저 안에서 도는 자동화 틀을 따로 만들었다.[2]"
+    ]
+   },
+   "how_far": "모바일이 아니어도 됩니다 — 공고가 '또는 자동화 인프라'라고 열어 두었고 CI/CD 파이프라인 경험도 적으라고 했습니다.[1] 경험이 없다면 안드로이드 에뮬레이터 하나에 Appium 스크립트를 붙이고, 실패하면 다시 시도하고 영상·로그를 남기는 작은 판을 만들어 보는 것이 최소선입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    4,
+    6,
+    7
+   ],
+   "study": [
+    "appium-docs",
+    "slash24-doctor",
+    "slash24-payments-test"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "분산 시스템이나 실시간 통신(WebSocket, gRPC 등) 기반 서비스를 개발해 본 경험이 있으신 분과 함께하고 싶어요.",
+   "short": "서버 여러 대와 기기 수백 대가 끊기지 않는 연결로 명령·상태를 주고받아서.",
+   "why": "공고가 쓰는 기술에 gRPC·WebSocket·Kafka 가 함께 있습니다.[1] 요청 한 번에 답 한 번인 HTTP 로는 '기기가 지금 상태를 계속 보내는' 일을 하기 어렵습니다. WebSocket 은 한 연결로 양쪽이 아무 때나 보내는 통로이고[15], gRPC 는 정해진 형식(Protocol Buffers)으로 함수 부르듯 주고받으며 양방향 스트리밍도 된다.[16]",
+   "level": {
+    "basic": "WebSocket 서버를 띄워 연결·끊김·재연결을 다뤄 봤다. gRPC 의 네 가지 호출 방식(한 번·서버 스트림·클라이언트 스트림·양방향)을 안다[16]",
+    "work": "비동기 메시지에 id 를 붙여 요청–응답으로 묶고 시간 제한을 둔다. Kafka 같은 메시지 큐로 서버 간 일을 나눈다[20]",
+    "team": "기기 수백 대의 연결을 서버 여러 대에 나눠 들고, 서버 하나가 죽어도 기기 연결과 작업을 다른 곳에서 이어 간다 {추론}"
+   },
+   "actually": {
+    "items": [
+     "**비동기 메시지를 깔끔한 API 로** — 토스 CA 는 앱·웹뷰 사이에 보내고 받는 통로만 있는 상태에서, 메시지에 콜백 id 를 붙여 Promise 로 묶었다. 받은 쪽은 같은 id 로 답하고, 보낸 쪽은 id 로 맞는 Promise 를 찾아 끝낸다.[2]",
+     "**흐름을 거르기** — 특정 종류만 고르기, 중복 거르기, 꼭 한 번만 처리하기가 필요해 RxJS 의 흐름(Observable)으로 메시지를 다뤘다.[2]",
+     "**약속(프로토콜)을 타입으로** — 주고받는 메시지 형식을 공통 패키지로 만들고 TypeScript 타입으로 양쪽을 맞췄다.[2] gRPC 는 같은 일을 .proto 파일로 한다.[16]",
+     "**Nest.js 에서는** — WebSocket 은 Gateway, gRPC 는 마이크로서비스 전송 방식으로 붙인다.[17][18]",
+     "**한 프로세스가 막히지 않게** — Node.js 는 이벤트 루프 하나로 많은 연결을 들고 있으므로, 무거운 계산을 그 위에서 오래 돌리면 모든 기기의 응답이 같이 늦어진다.[29]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "콜백 id 로 비동기 메시지를 요청–응답으로 묶기",
+     "body": "발표가 설명한 방식[2]을 작게 만든 것입니다. 답이 안 오면 시간 제한으로 끝내고 대기표에서 지웁니다(직접 돌린 출력). 실무에서는 TypeScript 의 Promise 로 쓰겠지만 같은 생각을 파이썬 asyncio 로 돌렸습니다.",
+     "lang": "python",
+     "code": "import asyncio, itertools\n\nasync def main():\n    pending, seq = {}, itertools.count(1)\n    async def device(msg):                  # 기기: tap 만 50ms 뒤 답한다\n        if msg[\"type\"] == \"tap\":\n            await asyncio.sleep(0.05)\n            pending.pop(msg[\"id\"]).set_result(f\"tapped {msg['x']},{msg['y']}\")\n    async def request(type_, timeout=1.0, **kw):\n        mid = next(seq)\n        fut = asyncio.get_running_loop().create_future()\n        pending[mid] = fut\n        asyncio.create_task(device({\"id\": mid, \"type\": type_, **kw}))\n        try:\n            return await asyncio.wait_for(fut, timeout)\n        except asyncio.TimeoutError:\n            pending.pop(mid, None)\n            return f\"timeout {type_}#{mid}\"\n    print(await request(\"tap\", x=120, y=640))\n    print(await request(\"screenshot\", timeout=0.2))\n    print(\"pending left:\", len(pending))\n\nasyncio.run(main())\n# tapped 120,640\n# timeout screenshot#2\n# pending left: 0"
+    }
+   ],
+   "how_far": "이력서에 실시간 통신이나 분산 시스템을 **구축한** 경험을 쓰라고 했습니다.[1] 채팅 서버처럼 연결을 오래 들고 있는 서비스를 만들어 끊김·재연결·순서·중복을 다뤄 본 경험이면 이야기가 됩니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    15,
+    16,
+    17,
+    18,
+    20,
+    29
+   ],
+   "study": [
+    "slash22-ca",
+    "mdn-websocket",
+    "grpc-docs",
+    "nest-docs",
+    "ddia"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "고객에게 안정적으로 서비스를 제공하고, 장애 상황에서도 서비스가 중단되지 않도록 모니터링하고 대응해 본 경험이 있으신 분을 찾고 있어요.",
+   "short": "기기·외부 사이트는 수시로 말썽이라, 먼저 알아채고 일부가 망가져도 나머지는 계속 돌게 해 본 경험.",
+   "why": "자동화는 내 코드가 멀쩡해도 바깥 때문에 깨집니다 — 사이트 점검, 화면 변경, 기기 끊김. 토스 스크래핑 팀은 '어디서 오류가 나고 어디서 막히는지 보이게 하는 것'을 가장 중요한 교훈으로 꼽았습니다.[3] Web Automation 챕터는 외부 상황으로 서비스가 끊기지 않도록 데이터를 모아 지켜보고, 백오피스로 몇 분 안에 원인을 찾는다고 했습니다.[4]",
+   "actually": {
+    "items": [
+     "**무엇을 볼까** — 구글 SRE 책은 지연 시간·트래픽·오류·포화(얼마나 꽉 찼나) 네 가지 신호를 기본으로 든다.[19] 기기 농장이라면 작업 대기 시간·초당 작업 수·실패율·쉬는 기기 수로 옮길 수 있다 {추론}.",
+     "**다시 시도는 간격을 늘려서** — 실패하자마자 바로 다시 하면 막힌 곳에 더 몰린다. 간격을 두 배씩 늘리고 무작위로 흩어 동시에 몰리지 않게 한다.[23]",
+     "**일부만 끄기** — 문제 있는 사이트나 기기만 배포 없이 설정으로 빼서 나머지는 계속 돈다 — 토스 스크래핑 팀이 클릭 두 번으로 바꾸게 만든 것.[3]",
+     "**사람이 볼 증거 남기기** — 단계별 로그와 실행 영상이 있으면 개발자와 결함을 이야기할 때 바로 쓸 수 있다.[6]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "실패한 단계를 간격을 늘려 다시 시도",
+     "body": "100ms → 200ms 로 기다리다 세 번째에 성공합니다(직접 돌린 출력). 실제로는 무작위 흔들기(jitter)도 더합니다.[23]",
+     "lang": "python",
+     "code": "import asyncio\n\nasync def main():\n    calls = 0\n    async def flaky():\n        nonlocal calls\n        calls += 1\n        if calls < 3:\n            raise RuntimeError(\"element not found\")\n        return \"ok\"\n    for i in range(4):\n        try:\n            print(await flaky(), \"after\", calls, \"calls\"); break\n        except RuntimeError as e:\n            wait = 100 * 2 ** i\n            print(f\"try {i+1} failed: {e}, wait {wait}ms\")\n            await asyncio.sleep(wait / 1000)\n\nasyncio.run(main())\n# try 1 failed: element not found, wait 100ms\n# try 2 failed: element not found, wait 200ms\n# ok after 3 calls"
+    }
+   ],
+   "how_far": "장애 대응 경험은 '무엇을 보고 알았고, 무엇을 먼저 끊었고, 다음에 안 나게 무엇을 바꿨나' 세 문장으로 말할 수 있으면 됩니다 {추론}. 이 팀은 Docker·Kubernetes·AWS 위에서 돈다고 적었고, 그 경험이 있으면 적으라고 했습니다.[1]",
+   "refs": [
+    1,
+    3,
+    4,
+    6,
+    19,
+    23
+   ],
+   "study": [
+    "sre-book",
+    "aws-backoff",
+    "slash22-scraping"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "유연하면서도 가독성이 좋은 코드, 유지보수가 가능한 코드를 작성하실 수 있는 분을 찾고 있어요.",
+   "short": "여러 팀의 자동화가 한 판 위에 계속 쌓이므로, 남이 읽고 고쳐도 안 깨지는 코드가 필요해서.",
+   "why": "이 문장은 토스증권·토스플레이스 Node.js 공고에도 똑같이 들어 있는 챕터 공통 요건입니다.[9][10] 새 시스템을 만들 때 팀원 여럿이 함께 리뷰하며 버그·이름 짓기·컴포넌트 설계를 본다고 적었습니다.[1] Web Automation 챕터는 하루 한 시간 스터디로 『데이터 중심 애플리케이션 설계』를 마치고 『리팩터링』을 읽었다고 했습니다.[4]",
+   "actually": {
+    "items": [
+     "**유연함 = 바꿔 끼우기** — 배포 CLI 에 옵션을 계속 붙이는 대신 플러그인 시점을 열어 둔 것이 이 챕터가 보여 준 '유연한 코드'다.[5]",
+     "**읽기 좋음 = 이름과 크기** — 함께 하는 리뷰에서 이름 짓기를 따로 본다.[1]",
+     "**유지보수 = 테스트가 받쳐 줌** — 테스트가 충분하면 큰 리팩터링을 두려움 없이 한다.[8]"
+    ]
+   },
+   "how_far": "토스 채용은 사전과제를 내고, 1차 인터뷰는 그 과제를 놓고 이야기합니다.[1] 과제 코드 자체가 이 요건의 증거이니 이름·나누기·테스트를 신경 써서 냅니다 {추론}. 토스증권 공고는 '내가 생각하는 좋은 코드'를 이력서에 짧게 적으라고까지 했습니다.[9]",
+   "refs": [
+    1,
+    4,
+    5,
+    8,
+    9,
+    10
+   ],
+   "study": [
+    "refactoring",
+    "effective-ts"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "화면을 예쁘게 만드는 것보다 '이게 사람 손 없이 밤새 돈다'에 기쁜 사람",
+   "실제 기기·외부 사이트처럼 내 마음대로 안 되는 것과 씨름하는 게 재미있는 사람",
+   "다른 팀의 막힌 곳을 뚫어 주는 일이 보람인 사람 — 토스는 이 일을 '돌격대'에 빗댔다[9]",
+   "코드 리뷰·테스트·리팩터링을 귀찮아하지 않는 사람[1][4]"
+  ],
+  "hard": [
+   "사용자가 직접 보는 기능보다 내부 도구가 많아 성과가 바깥에 덜 보인다 {추론}",
+   "실패 원인이 내 코드가 아니라 기기·OS 업데이트·외부 화면 변경인 경우가 많다[3]",
+   "Node.js 하나로 끝나지 않는다 — Go·Kubernetes·Electron·모바일 OS 도구까지 넓게 만진다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "기기 수백 대 중 하나가 작업 도중 끊기면 그 작업과 기기를 어떻게 처리하겠어요?",
+   "a": "공고가 꼽은 수백 대 제어와 장애 중에도 멈추지 않기.[1]"
+  },
+  {
+   "q": "WebSocket 위에서 '보낸 명령에 대한 답'을 어떻게 짝지어요? 답이 안 오면요?",
+   "a": "토스 CA 가 콜백 id 와 Promise 로 푼 문제.[2]"
+  },
+  {
+   "q": "실행기 한 대에서 자동화를 몇 개까지 동시에 돌릴지 어떻게 정하고, 넘치면 어떻게 하나요?",
+   "a": "토스페이먼츠가 상한과 큐로 푼 문제.[7]"
+  },
+  {
+   "q": "시나리오 30개마다 앱 세션을 새로 열면 무엇이 문제고 어떻게 줄이나요?",
+   "a": "토스 닥터의 세션 재사용.[6]"
+  },
+  {
+   "q": "자동화 성공률이 갑자기 떨어졌어요. 무엇부터 보나요?",
+   "a": "구간별 기록으로 원인을 찾은 스크래핑 팀 사례.[3]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · Node.js 개발자 (Node.js Developer)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7734083003",
+   "kind": "posting",
+   "note": "모바일 자동화 플랫폼 팀 소개(코드 리뷰·주 1회 엔지니어링 데이)·업무·요건·이력서 안내·쓰는 기술·합류 과정(사전과제 → 직무 인터뷰 2번 → 문화적합성 → 레퍼런스 체크 → 처우협의)·동료 한마디(수백 대의 기기)"
+  },
+  {
+   "n": 2,
+   "title": "SLASH 22 · 금융의 모든 순간을 자동화할 때까지 Toss Crazy Activation",
+   "url": "https://www.youtube.com/watch?v=ScZT51pZ5MQ",
+   "kind": "company",
+   "date": "2022",
+   "note": "토스 Web Automation 챕터 발표 — 자막 전부 읽음(자동 자막이라 고유명사는 제목·문맥으로 확인). 앱·프론트 웹뷰·보이지 않는 CA 웹뷰 셋, 페이지 클래스와 관리자, 점검 확인·인증번호 재시도, 콜백 id + Promise, RxJS, 공통 프로토콜 패키지, 국민지원금 클릭 5번 + 입력 1번"
+  },
+  {
+   "n": 3,
+   "title": "SLASH 22 · 스크래핑으로 우아한 조회 경험을 만든 방법",
+   "url": "https://www.youtube.com/watch?v=dP8S3kIQysk",
+   "kind": "company",
+   "date": "2022",
+   "note": "토스 Web Automation 발표 — 자막 전부 읽음. 오류 30% → 0.5%, 평균 20초 → 5초, 구간별 로그, iframe·웹 워커 풀, 병렬·순차 소비자와 잠금, 세션 재사용, 같은 요청 합치기·IndexedDB 캐시, 배포 10분+ → 클릭 두 번"
+  },
+  {
+   "n": 4,
+   "title": "토스피드 · 모든 금융 서비스가 토스로 통하게 만드는 사람들, Web Automation 챕터를 만나다",
+   "url": "https://toss.im/tossfeed/article/web-automation-chapter-interview",
+   "kind": "company",
+   "date": "2021-06-08",
+   "note": "2021년 새로 생긴 챕터, 금융 서비스 50여 개 중 거의 전부가 사용, 배포 30분 → 초 단위, 커버리지 70% 이상, 하루 1시간 스터디, 챕터 전원 리뷰, 백오피스로 몇 분 안에 원인, DRI"
+  },
+  {
+   "n": 5,
+   "title": "토스 테크 · Node.js 라이브러리 배포 파이프라인에 플러그인 시스템 도입기",
+   "url": "https://toss.tech/article/nodejs_pipeline_plugin",
+   "kind": "company",
+   "date": "2024-08-14",
+   "note": "토스 Node.js Developer 글 — 2021년 4월 첫 모노레포, 라이브러리 100개+, 모노레포 6개, deploy-cli 옵션 문제, ESLint 식 플러그인, codegen·collect-usage·lightweight·bump"
+  },
+  {
+   "n": 6,
+   "title": "SLASH 24 · 약은 약사에게, 테스트는 토스 닥터에게!",
+   "url": "https://www.youtube.com/watch?v=DwqwUsFmoCU",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스 QA 팀 발표 — 자막 전부 읽음. 플랫폼별 주 1회 출시·후보 빌드 약 5회, 실제 단말 30개 시나리오, Appium 세션 재사용(pytest fixture), TestRail 자동 기록, 메신저 실시간 로그·영상, 스모크 시간 절반, 한 해 후보 빌드 600회+"
+  },
+  {
+   "n": 7,
+   "title": "SLASH 24 · 클릭 한 번으로 테스트 45만 개 완료! 테스트 자동화 플랫폼 구축기",
+   "url": "https://www.youtube.com/watch?v=cGks5f2f0YE",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스페이먼츠 Node.js Developer 발표 — 자막 전부 읽음. Node.js + Playwright, 어드민·러너·배포 서버, 큐와 동시 실행 상한·수평 확장, spawn, 결과 덩어리 처리, 테스트 케이스 id 로 값 주입, webpack 묶음 → S3, MVP 한 달"
+  },
+  {
+   "n": 8,
+   "title": "SLASH 21 · 테스트 커버리지 100%",
+   "url": "https://www.youtube.com/watch?v=jdlBu2vFv58",
+   "kind": "company",
+   "date": "2021",
+   "note": "토스뱅크 서버 개발자 발표 — 자막 전부 읽음. 50% → 100%(인스트럭션), 낮으면 빌드 실패, 1년 반 유지, 400개 1분 → 6초, 돌연변이 테스트, 소비자 주도 계약(Pact)"
+  },
+  {
+   "n": 9,
+   "title": "토스 채용 · 토스증권 Node.js 개발자 (Node.js Developer)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7571171003",
+   "kind": "posting",
+   "note": "같은 직무의 계열사 공고 — Automation Platform Team, Web Automation 을 '돌격대'에 비유, 국민지원금·숨은 보험금 찾기·계좌/카드 조회, 같은 코드 품질 요건, '좋은 코드' 이력서 안내"
+  },
+  {
+   "n": 10,
+   "title": "토스 채용 · 토스플레이스 Node.js 개발자 (Node.js Developer)",
+   "url": "https://toss.im/career/job-detail?gh_jid=6679884003",
+   "kind": "posting",
+   "note": "같은 직무의 계열사 공고 — 같은 코드 품질 요건"
+  },
+  {
+   "n": 11,
+   "title": "Android Developers · Android Debug Bridge (adb)",
+   "url": "https://developer.android.com/tools/adb",
+   "kind": "reference",
+   "note": "클라이언트·서버·기기 데몬 구조, 설치·셸 명령·파일 옮기기"
+  },
+  {
+   "n": 12,
+   "title": "Appium 공식 문서",
+   "url": "https://appium.io/docs/en/latest/",
+   "kind": "reference",
+   "note": "WebDriver 규약 위의 모바일 자동화, 플랫폼별 드라이버"
+  },
+  {
+   "n": 13,
+   "title": "GitHub · DeviceFarmer/stf (Smartphone Test Farm)",
+   "url": "https://github.com/DeviceFarmer/stf",
+   "kind": "reference",
+   "note": "Node.js 로 만든 오픈소스 기기 농장 — 브라우저에서 기기 원격 조종, 화면 minicap·터치 minitouch"
+  },
+  {
+   "n": 14,
+   "title": "GitHub · Genymobile/scrcpy",
+   "url": "https://github.com/Genymobile/scrcpy",
+   "kind": "reference",
+   "note": "ADB 로 안드로이드 화면을 보내고 입력을 넘기는 도구"
+  },
+  {
+   "n": 15,
+   "title": "MDN · 웹소켓 API",
+   "url": "https://developer.mozilla.org/ko/docs/Web/API/WebSockets_API",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "gRPC · Core concepts, architecture and lifecycle",
+   "url": "https://grpc.io/docs/what-is-grpc/core-concepts/",
+   "kind": "reference",
+   "note": "서비스 정의(.proto)와 네 가지 호출 방식(단일·서버 스트리밍·클라이언트 스트리밍·양방향)"
+  },
+  {
+   "n": 17,
+   "title": "NestJS 공식 문서 · Gateways",
+   "url": "https://docs.nestjs.com/websockets/gateways",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "NestJS 공식 문서 · Microservices gRPC",
+   "url": "https://docs.nestjs.com/microservices/grpc",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Google SRE Book · Monitoring Distributed Systems",
+   "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+   "kind": "reference",
+   "note": "네 가지 황금 신호(지연·트래픽·오류·포화)"
+  },
+  {
+   "n": 20,
+   "title": "Apache Kafka 공식 문서",
+   "url": "https://kafka.apache.org/documentation/",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Node.js 공식 문서 · Child process",
+   "url": "https://nodejs.org/api/child_process.html",
+   "kind": "reference",
+   "note": "spawn 으로 자식 프로세스 띄우기"
+  },
+  {
+   "n": 22,
+   "title": "Electron 공식 문서",
+   "url": "https://www.electronjs.org/docs/latest/",
+   "kind": "reference",
+   "note": "웹 기술로 데스크톱 앱 만들기 — 메인·렌더러 프로세스"
+  },
+  {
+   "n": 23,
+   "title": "AWS Builders' Library · Timeouts, retries, and backoff with jitter",
+   "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+   "kind": "reference",
+   "note": "시간 제한·재시도·지수 백오프·무작위 흔들기"
+  },
+  {
+   "n": 24,
+   "title": "Appium XCUITest Driver 문서",
+   "url": "https://appium.github.io/appium-xcuitest-driver/latest/",
+   "kind": "reference",
+   "note": "iOS 실기기·시뮬레이터 자동화 드라이버(WebDriverAgent)"
+  },
+  {
+   "n": 25,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 26,
+   "title": "자소설닷컴 — 토스뱅크 연봉(같은 집계)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "토스 — 회사 소개(사이트 하단 주소)",
+   "url": "https://toss.im/company",
+   "kind": "company"
+  },
+  {
+   "n": 28,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 29,
+   "title": "Node.js 공식 문서 · Don't Block the Event Loop (or the Worker Pool)",
+   "url": "https://nodejs.org/en/learn/asynchronous-work/dont-block-the-event-loop",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "Android Developers · UI Automator",
+   "url": "https://developer.android.com/training/testing/other-components/ui-automator",
+   "kind": "reference",
+   "note": "앱 밖 화면까지 요소를 찾아 조작하는 안드로이드 공식 테스트 틀"
+  }
+ ],
+ "caveat": "토스가 모바일 기기 자동화 플랫폼의 구조를 직접 발표한 자료는 찾지 못했습니다. 그래서 같은 그룹의 가까운 일 — 웹 자동화(CA)·스크래핑 발표(2022), QA 실기기 자동화(2024), 토스페이먼츠 테스트 플랫폼(2024) — 과 공개 도구(ADB·Appium·STF·scrcpy) 문서로 '보통 이렇게 한다'를 보였습니다. 자동 자막으로 읽어 고유명사가 깨진 곳은 발표 제목·문맥으로 맞췄습니다. 예시 코드는 실무 언어(TypeScript) 대신 같은 생각을 파이썬으로 돌린 것입니다.",
+ "resources": [
+  {
+   "id": "slash22-ca",
+   "title": "SLASH 22 · 금융의 모든 순간을 자동화할 때까지 Toss Crazy Activation",
+   "by": "토스 Web Automation 챕터 · 12분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=ScZT51pZ5MQ",
+   "why": "업무③과 요건②의 바탕 — 자동화 흐름을 단계로 쪼개는 법과 비동기 메시지를 요청–응답으로 묶는 법을 이 챕터가 직접 설명한다."
+  },
+  {
+   "id": "slash22-scraping",
+   "title": "SLASH 22 · 스크래핑으로 우아한 조회 경험을 만든 방법",
+   "by": "토스 Web Automation · 14분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=dP8S3kIQysk",
+   "why": "업무④·요건③ — 수집 파이프라인의 작업자 수 제한·병렬/순차·세션 재사용·구간 기록을 숫자와 함께 본다."
+  },
+  {
+   "id": "slash24-doctor",
+   "title": "SLASH 24 · 약은 약사에게, 테스트는 토스 닥터에게!",
+   "by": "토스 QA 팀 · 19분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=DwqwUsFmoCU",
+   "why": "업무①·요건① — 토스가 실제 기기에 Appium 을 붙여 매주 무엇을 자동으로 돌리는지, 세션 재사용·결과 기록을 본다."
+  },
+  {
+   "id": "slash24-payments-test",
+   "title": "SLASH 24 · 클릭 한 번으로 테스트 45만 개 완료! 테스트 자동화 플랫폼 구축기",
+   "by": "토스페이먼츠 Node.js Developer · 19분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=cGks5f2f0YE",
+   "why": "업무① — Node.js 로 자동화 '판'을 짓는 구조(어드민·큐·러너·배포 서버)와 운영하며 부딪힌 자원·메모리 문제."
+  },
+  {
+   "id": "slash21-coverage",
+   "title": "SLASH 21 · 테스트 커버리지 100%",
+   "by": "토스뱅크 서버 개발자 · 26분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=jdlBu2vFv58",
+   "why": "업무⑥ — 커버리지를 빌드 관문으로 거는 법, 느려진 테스트를 프로파일링으로 고친 과정, 커버리지의 한계."
+  },
+  {
+   "id": "toss-feed-wa",
+   "title": "토스피드 · 모든 금융 서비스가 토스로 통하게 만드는 사람들, Web Automation 챕터를 만나다",
+   "by": "토스 · 2021",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://toss.im/tossfeed/article/web-automation-chapter-interview",
+   "why": "이 챕터가 어떤 일을 해 왔고 어떻게 일하는지(함께 리뷰·스터디·DRI) — 지원 전 문화 맞춤 확인."
+  },
+  {
+   "id": "toss-pipeline-plugin",
+   "title": "토스 테크 · Node.js 라이브러리 배포 파이프라인에 플러그인 시스템 도입기",
+   "by": "토스 Node.js Developer · 2024",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/nodejs_pipeline_plugin",
+   "why": "업무⑤ — 이 챕터가 공용 라이브러리·CLI 를 실제로 어떻게 고치는지. 플러그인 시점 설계를 따라 해 보기 좋다."
+  },
+  {
+   "id": "adb-docs",
+   "title": "Android Debug Bridge (adb)",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/tools/adb",
+   "why": "업무② — 기기를 원격으로 다루는 가장 밑바닥 통로. 연결·설치·셸 명령·화면 캡처를 직접 쳐 본다."
+  },
+  {
+   "id": "appium-docs",
+   "title": "Appium Documentation",
+   "by": "Appium 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://appium.io/docs/en/latest/",
+   "why": "업무②·요건① — 화면 요소를 찾아 누르는 모바일 자동화의 표준 도구. 드라이버·세션·기능 설정(capabilities)."
+  },
+  {
+   "id": "stf-github",
+   "title": "DeviceFarmer/stf (Smartphone Test Farm)",
+   "by": "DeviceFarmer · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://github.com/DeviceFarmer/stf",
+   "why": "업무② — Node.js 로 만든 기기 농장의 실제 코드. 여러 기기를 브라우저에서 빌려 쓰는 구조를 읽어 볼 수 있다."
+  },
+  {
+   "id": "scrcpy-github",
+   "title": "Genymobile/scrcpy",
+   "by": "Genymobile · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/Genymobile/scrcpy",
+   "why": "업무② — 화면을 영상으로 받고 입력을 보내는 방식을 직접 써 보며 '원격 제어'가 무엇인지 감을 잡는다."
+  },
+  {
+   "id": "mdn-websocket",
+   "title": "웹소켓 API",
+   "by": "MDN",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.mozilla.org/ko/docs/Web/API/WebSockets_API",
+   "why": "요건② — 연결을 열어 두고 양쪽이 아무 때나 보내는 통로의 기본."
+  },
+  {
+   "id": "grpc-docs",
+   "title": "gRPC Core concepts",
+   "by": "gRPC 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://grpc.io/docs/what-is-grpc/core-concepts/",
+   "why": "요건② — .proto 로 약속을 정하고 네 가지 호출 방식(특히 양방향 스트리밍)을 고르는 법."
+  },
+  {
+   "id": "nest-docs",
+   "title": "NestJS Documentation",
+   "by": "NestJS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nestjs.com/",
+   "why": "쓰는 기술의 중심 틀 — 모듈·의존성 주입, WebSocket Gateway, gRPC 마이크로서비스를 한 문서에서."
+  },
+  {
+   "id": "node-patterns",
+   "title": "Node.js 디자인 패턴 바이블",
+   "by": "마리오 카시아로 · 루치아노 맘미노 · 길벗",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=Node.js%20%EB%94%94%EC%9E%90%EC%9D%B8%20%ED%8C%A8%ED%84%B4%20%EB%B0%94%EC%9D%B4%EB%B8%94",
+   "why": "업무①·⑤ — 이벤트 루프·스트림·동시 실행 제한·메시지 기반 분산 패턴을 Node.js 로. 자동화 판을 짤 때 그대로 쓴다."
+  },
+  {
+   "id": "effective-ts",
+   "title": "이펙티브 타입스크립트",
+   "by": "댄 밴더캄 · 인사이트",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C%20%ED%83%80%EC%9E%85%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8",
+   "why": "업무⑤·요건④ — 공용 라이브러리의 타입을 남이 쓰기 좋게 설계하는 법. 메시지 프로토콜을 타입으로 맞출 때 필요하다."
+  },
+  {
+   "id": "ddia",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+   "why": "요건② — 분산 시스템의 메시지·복제·장애. 토스 Web Automation 챕터가 스터디로 끝낸 책이다."
+  },
+  {
+   "id": "refactoring",
+   "title": "리팩터링 (2판)",
+   "by": "마틴 파울러 · 한빛미디어",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A6%AC%ED%8C%A9%ED%84%B0%EB%A7%81%202%ED%8C%90",
+   "why": "요건④·업무⑥ — 2판 예제가 JavaScript 라 바로 옮겨 쓸 수 있다. 같은 챕터가 스터디로 읽은 책."
+  },
+  {
+   "id": "unit-testing",
+   "title": "단위 테스트",
+   "by": "블라디미르 코리코프 · 에이콘출판",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8B%A8%EC%9C%84%20%ED%85%8C%EC%8A%A4%ED%8A%B8%20%EC%BD%94%EB%A6%AC%EC%BD%94%ED%94%84",
+   "why": "업무⑥ — 무엇을 테스트하고 무엇을 가짜로 바꿀지. 기기처럼 바깥과 닿는 코드를 테스트하기 쉬운 모양으로 나누는 기준."
+  },
+  {
+   "id": "grokking-fp",
+   "title": "쏙쏙 들어오는 함수형 코딩",
+   "by": "에릭 노먼드 · 제이펍",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%8F%99%EC%8F%99%20%EB%93%A4%EC%96%B4%EC%98%A4%EB%8A%94%20%ED%95%A8%EC%88%98%ED%98%95%20%EC%BD%94%EB%94%A9",
+   "why": "업무⑥의 FP — 계산·액션·데이터를 가르는 법을 JavaScript 예제로. '순수 함수로 뺄 부분'을 보는 눈."
+  },
+  {
+   "id": "sre-book",
+   "title": "사이트 신뢰성 엔지니어링",
+   "by": "벳시 베이어 외 · 제이펍",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%82%AC%EC%9D%B4%ED%8A%B8%20%EC%8B%A0%EB%A2%B0%EC%84%B1%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81",
+   "why": "요건③ — 무엇을 지켜보고 언제 사람을 깨울지. 모니터링 장은 원서가 sre.google 에 무료로도 있다."
+  },
+  {
+   "id": "aws-backoff",
+   "title": "Timeouts, retries, and backoff with jitter",
+   "by": "AWS Builders' Library",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+   "why": "요건③ — 다시 시도가 장애를 키우지 않게 하는 시간 제한·백오프·무작위 흔들기."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "이 팀이 하는 일 보기",
+   "time": "1주",
+   "goal": "토스 그룹의 자동화가 어떤 문제를 어떤 구조로 풀었는지 말로 설명할 수 있다.",
+   "resources": [
+    "slash22-ca",
+    "slash22-scraping",
+    "slash24-doctor",
+    "slash24-payments-test",
+    "toss-feed-wa"
+   ],
+   "task": "발표 넷을 보고 '요청 → 대기열 → 실행기 → 기기 → 기록' 그림을 한 장 그린 뒤, 칸마다 발표에서 나온 문제 하나와 해결 하나를 적는다."
+  },
+  {
+   "title": "기기 하나를 코드로 조종하기",
+   "time": "1~2주",
+   "goal": "에뮬레이터나 내 폰 하나에 앱을 깔고, 화면 요소를 찾아 누르고, 화면을 받아 오는 스크립트를 쓴다.",
+   "resources": [
+    "adb-docs",
+    "appium-docs",
+    "scrcpy-github"
+   ],
+   "task": "안드로이드 에뮬레이터에서 설정 앱을 열어 Wi‑Fi 화면까지 들어가는 Appium 스크립트를 쓰고, 단계마다 스크린샷과 소요 시간을 남긴다. 일부러 없는 버튼을 찾게 해 실패 로그도 남긴다."
+  },
+  {
+   "title": "Node.js 로 실시간 제어 서버",
+   "time": "2~3주",
+   "goal": "기기 대리 프로그램과 서버가 WebSocket(또는 gRPC 스트림)으로 명령·상태를 주고받고, 끊기면 다시 잇는다.",
+   "resources": [
+    "node-patterns",
+    "nest-docs",
+    "mdn-websocket",
+    "grpc-docs",
+    "effective-ts"
+   ],
+   "task": "Nest.js 로 서버를 만들고 가짜 기기 프로그램 10개를 띄운다. 기기는 5초마다 heartbeat 를 보내고, 서버는 명령에 id 를 붙여 Promise 로 답을 기다린다(시간 제한 포함). 메시지 형식은 공통 TypeScript 타입 패키지 하나로 맞춘다."
+  },
+  {
+   "title": "여러 대를 굴리는 판",
+   "time": "2~3주",
+   "goal": "작업 대기열·기기 빌려주기·동시 실행 상한·재시도·기록이 있는 작은 자동화 플랫폼을 운영해 본다.",
+   "resources": [
+    "slash24-payments-test",
+    "aws-backoff",
+    "sre-book",
+    "ddia"
+   ],
+   "task": "3단계 서버에 Redis 대기열을 붙여 가짜 작업 100개를 기기 10대에 나눠 돌린다. 기기 하나를 중간에 꺼서 작업이 다른 기기로 넘어가는지 보고, 대기 시간·실패율·쉬는 기기 수를 화면 하나에 띄운다."
+  },
+  {
+   "title": "테스트와 코드 품질 (계속)",
+   "time": "계속",
+   "goal": "기기 없이 도는 테스트로 플랫폼 핵심 로직을 덮고, 리뷰 받을 만한 코드로 다듬는다.",
+   "resources": [
+    "slash21-coverage",
+    "unit-testing",
+    "grokking-fp",
+    "refactoring",
+    "toss-pipeline-plugin"
+   ],
+   "task": "시나리오 → 명령 변환, 기기 상태 판정, 재시도 규칙을 순수 함수로 빼고 테스트 커버리지 80% 아래면 CI 가 실패하게 건다. 마지막에 배포 CLI 하나를 만들어 플러그인 시점 두 개(배포 전·후)를 열어 본다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 공공데이터 집계로 신입 초봉 **약 4,200만원**, 평균 **약 6,200만원** — 공시된 평균 급여는 없다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없어 이 자리의 계약 연봉과 다를 수 있다 [25]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 — 경력직이 섞인 값이다 [25]"
+   },
+   {
+    "label": "토스뱅크 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 계열사 값 — 견주어 보기용 [26]"
+   },
+   {
+    "label": "토스뱅크 평균",
+    "value": "약 7,208만원",
+    "amount": 7208,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 계열사 평균 [26]"
+   }
+  ],
+  "how": "공고는 레퍼런스 체크 뒤 **처우협의** 단계에서 정한다고 적었다 [1]. 경력 연차는 공고에 없다 — 같은 챕터의 토스증권 공고는 2년차 이상을 환영한다고 적었다 [9]. 비바리퍼블리카는 상장사가 아니라 사업보고서의 '직원 평균 급여'가 없어 공시 숫자를 싣지 못했다. 평균은 경력직이 섞인 회사 전체 값이고, 집계값은 추정이라 실제 제안과 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "업무 관련 비용 100% 지원"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 1회 종합건강검진·독감 예방, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "보험료 전액 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비 개인 부담 0원, 택시비 100%"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·사내 편의점 무료, 사내 헤어살롱"
+   }
+  ],
+  "note": "토스 팀 복지를 소개한 2021년 공식 글이다 [28]. 지금도 같은지는 글에 없으니 처우협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스(비바리퍼블리카) 본사",
+  "address": "서울특별시 강남구 테헤란로 142, 4·10~13·22·23층",
+  "postal": "06236",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "주소는 토스 회사 소개 페이지 하단의 회사 정보다 [27]. 공고 근무지는 'Seoul'로만 적혀 있고, 기기가 꽂힌 자리가 본사 건물인지는 공고에 없다 [1]."
+ }
+}

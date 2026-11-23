@@ -37,6 +37,7 @@
   "ats-toss:group:8035179003": "toss-ml-engineer-ocr",
   "ats-toss:group:7821080003": "toss-network-engineer-edge",
   "ats-toss:group:6620395003": "toss-network-software-engineer",
+  "ats-toss:group:7734083003": "toss-nodejs-mobile-automation",
   "ats-toss:group:8047064003": "toss-p2p-lending-server-developer",
   "ats-toss:group:7901191003": "toss-platform-analytics-engineer",
   "ats-toss:group:5960616003": "toss-product-analytics-engineer",
@@ -397,6 +398,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 11
+  },
+  {
+   "id": "toss-nodejs-mobile-automation",
+   "company": "토스",
+   "role": "Node.js 개발자 (모바일 자동화 플랫폼)",
+   "jobs": [
+    "ats-toss:group:7734083003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 10
   },
   {
    "id": "toss-p2p-lending-server-developer",
