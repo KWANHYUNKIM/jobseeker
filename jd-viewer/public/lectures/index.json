@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-23T09:20:11",
- "count": 144,
+ "generated_at": "2026-11-23T10:25:26",
+ "count": 145,
  "topics": [
   {
    "key": "llm",
@@ -10,7 +10,7 @@
   {
    "key": "ml-basics",
    "label": "머신러닝 기초",
-   "count": 23
+   "count": 24
   },
   {
    "key": "deep-learning",
@@ -102,7 +102,7 @@
        "key": "statquest-ml",
        "title": "StatQuest 머신러닝 기초 — 아주 쉽게 설명하기",
        "school": "StatQuest",
-       "done": 8,
+       "done": 9,
        "total": 25
       },
       {
@@ -115,7 +115,7 @@
      ],
      "why": "교차검증·과적합·회귀·분류 같은 용어를 하나씩 아주 쉽게 푼다. '모두를 위한 딥러닝'은 같은 내용을 한국어로 10~15분씩 짧게.",
      "tip": "둘 중 편한 쪽 하나만 끝까지. 한국어가 편하면 모두의 딥러닝 lec 01~07(회귀·분류)부터.",
-     "done": 8,
+     "done": 9,
      "total": 49
     },
     {
@@ -246,7 +246,7 @@
      "total": 50
     }
    ],
-   "done": 141,
+   "done": 142,
    "total": 202
   },
   {
@@ -1732,7 +1732,7 @@
    "track": "ai",
    "playlist": "https://www.youtube.com/playlist?list=PLblh5JKOoLUICTaGLRoHQDuF_7q2GfuJF",
    "total": 25,
-   "done": 8,
+   "done": 9,
    "lectures": [
     {
      "no": 1,
@@ -1795,7 +1795,7 @@
      "id": "PaFPbb66DxQ",
      "title": "The Main Ideas of Fitting a Line to Data (The Main Ideas of Least Squares and Linear Regression.)",
      "duration_sec": 562,
-     "done": false
+     "done": true
     },
     {
      "no": 10,
@@ -5627,6 +5627,36 @@
    "written_at": "2026-11-23",
    "series": "statquest-ml",
    "no": 2,
+   "track": "ai"
+  },
+  {
+   "id": "PaFPbb66DxQ",
+   "title": "The Main Ideas of Fitting a Line to Data (The Main Ideas of Least Squares and Linear Regression.)",
+   "title_ko": "데이터에 선 긋기 — 점과 선 사이 거리를 제곱해 더하고(잔차 제곱합), 그 합이 가장 작은 선을 고른다(최소 제곱법)",
+   "school": "StatQuest",
+   "code": "StatQuest",
+   "term": "기초 25편",
+   "speaker": "Josh Starmer",
+   "topic": "ml-basics",
+   "tags": [
+    "Machine Learning",
+    "Statistics",
+    "Python",
+    "NumPy",
+    "scikit-learn"
+   ],
+   "level": "입문",
+   "one_line": "여러 선 가운데 '점과 선 사이 거리를 제곱해 모두 더한 값'이 가장 작은 선이 가장 잘 맞는 선이고, 그 자리는 합의 그래프가 평평해지는 곳(미분 = 0)이다",
+   "duration_sec": 561,
+   "published": "2017-05-22",
+   "views": 866120,
+   "url": "https://www.youtube.com/watch?v=PaFPbb66DxQ",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/PaFPbb66DxQ/mqdefault.jpg",
+   "chapters": 8,
+   "written_at": "2026-11-23",
+   "series": "statquest-ml",
+   "no": 9,
    "track": "ai"
   },
   {
