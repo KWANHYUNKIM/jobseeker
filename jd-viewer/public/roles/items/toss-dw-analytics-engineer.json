@@ -1,0 +1,971 @@
+{
+  "id": "toss-dw-analytics-engineer",
+  "company": "토스",
+  "role": "데이터 분석 엔지니어 (DW)",
+  "team": "토스 코어 · Data Warehouse 팀",
+  "jobs": [
+    "ats-toss:group:7818488003"
+  ],
+  "researched_at": "2026-11-23",
+  "tldr": {
+    "what": "토스 앱의 로그·서비스 DB·외부 파일을 DW(데이터 웨어하우스, 분석용으로 정리한 데이터 저장소)로 들여오고, **제때·빠짐없이·맞는 값으로** 쌓이게 하는 전사 배치 파이프라인과 그 도구를 만듭니다.[1] 요즘은 사람뿐 아니라 **AI 에이전트가 읽을 데이터**(시멘틱 레이어·온톨로지)까지 맡습니다.[1]",
+    "env": "토스 코어 DW는 Hadoop 위에서 주로 **Impala SQL**로 표를 만들고, Spark·Hive·Kafka도 씁니다.[2][8] 메인 배치는 **Airflow DAG 약 200개 · 태스크 6,000개 이상**이고[2], 다음 파이프라인에 **dbt**를 섞는 구상을 밝혔습니다.[2]",
+    "oneline": "전사 데이터의 관문과 배관을 책임지는 엔지니어. **SQL·Python·Airflow·데이터 품질·계보(리니지)**가 중심이고, 필요하면 도구와 화면까지 직접 만듭니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "저희 팀의 업무는 크게 다섯 갈래로 나눌 수 있어요. 다섯 가지를 모두 하시는 건 아니고, 강점과 관심에 따라 무게중심을 잡되 나머지도 자연스럽게 경험하게 돼요.",
+      "short": "입수·파이프라인·품질·AI용 데이터·도구 만들기 중 한두 갈래에 무게를 두고 나머지는 곁에서 겪는 자리.",
+      "why": "이 팀은 2023년까지 한 팀이던 중앙 데이터 팀이 둘로 나뉘며 생긴 팀입니다.**전사 파이프라인을 운영하고 데이터·업무 도구를 만드는 DW 팀**과, 분석용 마트를 설계하는 마트 팀으로 갈라졌습니다.[2] 그래서 다섯 갈래가 모두 '배관과 도구' 쪽입니다.{추론}",
+      "actually": {
+        "items": [
+          "**입수** — 원천을 DW로 들여오는 첫 층.[1]",
+          "**파이프라인** — Airflow로 도는 전사 배치를 빠르고 덜 깨지게.[1][2]",
+          "**품질** — 서빙 전에 잡는 DQ(데이터 품질) 규칙과 마트 간 정합성.[1]",
+          "**AI-Ready** — 시멘틱 레이어·온톨로지·MCP로 AI가 데이터를 쓰게.[1]",
+          "**도구** — 배치 오퍼레이터·백필 CLI·영향도 분석기, 필요하면 화면까지.[1]"
+        ]
+      },
+      "how_far": "다섯 갈래를 다 잘할 필요는 없다고 공고가 직접 말합니다.[1] 지원서에는 **내 무게중심 한 갈래**를 분명히 하고, 나머지는 겪어 본 만큼만 쓰면 됩니다.{추론}",
+      "refs": [1, 2]
+    },
+    {
+      "section": "task",
+      "quote": "데이터 배치 입수 — 모든 데이터가 들어오는 관문",
+      "short": "토스의 모든 분석 숫자가 이 팀이 들여온 데이터에서 시작한다는 뜻.",
+      "why": "토스 코어 메인 파이프라인의 첫 단계가 입수(서비스 DB·앱 로그·API)이고, 그 뒤에 기본 마트 → 전사 집계 → 서브·백필이 이어집니다.[2] 첫 단계가 늦거나 빠지면 뒤 세 단계가 다 밀립니다.{추론}",
+      "flows": [
+        {
+          "caption": "토스 코어 DW 메인 파이프라인의 네 단계[2]",
+          "steps": [
+            "입수 · 서비스 DB·앱 로그·API를 가져온다(일부는 CDC, 대부분 배치)",
+            "기본 마트 · 기본 개념 마트와 지표 기본 마트",
+            "전사 집계 · 도메인 데이터를 전사 지표로 다시 만든다(SLA 엄격)",
+            "서브·백필 · 도메인별 추가 데이터, 보정이 필요한 기간 다시 채우기"
+          ],
+          "mine_from": 0
+        }
+      ],
+      "refs": [2]
+    },
+    {
+      "section": "task",
+      "quote": "실시간 입수를 제외한 앱·서버 로그부터 서비스 DB, 외부 파일까지 수십 종의 원천을 DW로 들여오는 입수 레이어를 설계하고 운영해요.",
+      "short": "로그·서비스 DB·외부 파일 수십 종을 날마다 빠짐없이 DW로 옮겨 오는 첫 층을 만들고 돌리는 일.",
+      "why": "토스 코어는 서비스 DB·앱 로그·API 데이터를 대부분 배치로 맨 앞단에서 가져온다고 밝혔습니다.[2] 2019년에 이미 하루 수십억 줄·수십 TB가 쌓였다고 했으니[8] 지금은 그보다 큽니다.{추론}",
+      "actually": {
+        "items": [
+          "**서비스 DB** — 표를 하루 한 번 통째로 또는 바뀐 것만 복사해 날짜별로 쌓는다. 일부는 CDC(변경 기록을 바로 흘려보내는 방식)로 들어온다.[2]",
+          "**로그** — 양이 많고 늦게 도착하는 것이 섞인다. 늦게 온 것까지 받으려면 최근 며칠을 다시 덮어쓰는 방식이 흔하다.[25]",
+          "**외부 파일·시트** — SLASH 21 발표는 구글 스프레드시트를 파이썬으로 MySQL과 맞추고 Sqoop(DB → Hadoop 복사 도구)으로 Hadoop에 올린 예를 보였다.[3]",
+          "**실시간은 빠진다** — 실시간 입수는 다른 곳 몫이라고 공고가 선을 그었다.[1] 2019년 인터뷰에서는 Kafka 운영을 다른 담당자가 맡았다.[8]"
+        ]
+      },
+      "how_far": "원천은 서비스 팀 것이고, 이 자리는 **받아 오는 쪽의 설계와 운영**입니다. 최소선은 원천마다 '언제·무엇을·어떤 단위로' 받는지 적고, 다시 돌려도 빠짐·중복이 없게 만드는 것입니다.{추론}",
+      "refs": [1, 2, 3, 8, 25],
+      "study": ["fde-book", "hadoop-guide"]
+    },
+    {
+      "section": "task",
+      "quote": "원천이 늘어날 때마다 사람이 붙지 않도록, 입수 요청부터 적재·검증까지 이어지는 자동화 시스템을 직접 만들어요.",
+      "short": "새 원천을 들일 때 사람이 매번 코드를 짜지 않고, 요청서 한 장으로 적재·검사까지 돌게 만드는 일.",
+      "why": "원천이 수십 종이고 제품이 계속 늘기 때문입니다.[1] 토스는 SLASH 21에서 이미 '분석가가 쿼리를 등록하면 작업이 하나 더 붙는' 자동화를 보였습니다 — 새 행동 코드가 등록되면 Airflow에 태스크가 하나 늘고 통합 마트로 합쳐집니다.[3]",
+      "actually": {
+        "items": [
+          "**요청을 설정으로** — 원천 이름·주기·키·적재 방식을 표나 YAML 한 줄로 받는다.{추론}",
+          "**설정 → 작업** — 설정을 읽어 Airflow 태스크를 만들어 낸다. 토스 코어는 센서 태스크도 사람이 매번 만들지 않게 자동화했다.[2]",
+          "**적재 뒤 검증** — 행 수·키 중복·빈 날을 같은 규칙으로 바로 검사한다(아래 품질 줄).[13]",
+          "**작업 기록** — SLASH 21의 배치 센터는 작업을 누가·언제·왜 만들었는지 저장해 담당자를 분명히 했다.[3]"
+        ]
+      },
+      "how_far": "최소선은 **새 원천 하나를 들일 때 손대는 곳이 설정 파일 하나**인 구조를 설명하고 작게 만들어 본 것입니다.{추론}",
+      "refs": [1, 2, 3, 13],
+      "study": ["airflow-book", "airflow-docs"]
+    },
+    {
+      "section": "task",
+      "quote": "스키마가 바뀌거나 데이터가 유실되는 상황을 감지하고, 원천을 만드는 팀과 구조 단계에서 함께 해결해요.",
+      "short": "원천 표가 바뀌거나 데이터가 빠진 것을 먼저 알아채고, 표를 만드는 팀과 설계 단계부터 맞추는 일.",
+      "why": "토스는 서버 개발자가 표를 만들거나 바꿀 때 DBA 리뷰를 거치고, 필요하면 데이터 엔지니어도 그 리뷰에 들어간다고 했습니다.[3] 리뷰는 개인정보 암호화·권한 같은 규정, 인덱스·파티션, 그리고 **명확한 데이터 모델과 칸 설명·용어 표준**을 봅니다.[3] 공고의 '구조 단계에서 함께'가 이 자리입니다.{추론}",
+      "actually": {
+        "items": [
+          "**변경 감지** — 어제와 오늘의 칸 목록·형식을 비교해 달라진 것을 알린다.{추론}",
+          "**유실 감지** — 날짜별 행 수가 평소보다 크게 줄거나 하루가 통째로 비면 알린다.[3]",
+          "**사전 리뷰** — 표가 만들어지기 전에 칸 이름·설명·키를 맞춘다. 발표자는 속도를 중시해도 이 리뷰는 건너뛰지 않는다고 했다.[3]"
+        ]
+      },
+      "how_far": "원천 표의 주인은 서비스 팀입니다. 이 자리는 **바뀐 것을 먼저 알고, 다음에는 안 깨지게 구조를 제안**하는 쪽입니다.{추론}",
+      "refs": [3],
+      "study": ["fde-book"]
+    },
+    {
+      "section": "task",
+      "quote": "대규모 파이프라인 엔지니어링 — 빠르고, 잘 깨지지 않게",
+      "short": "DAG 200개·태스크 6,000개짜리 매일 배치를 더 빨리 끝내고, 하나가 실패해도 전체가 멈추지 않게 하는 일.",
+      "why": "토스 코어 메인 배치는 DAG 약 200개, 태스크 6,000개 이상입니다.[2] 예전에는 서브 DAG의 태스크 하나만 실패해도 전체 파이프라인이 늦어졌습니다.[2]",
+      "refs": [2]
+    },
+    {
+      "section": "task",
+      "quote": "Hadoop 에코시스템을 포함한 Airflow, DBT 등 문제 해결을 위한 다양한 도구들을 발굴 및 활용해 위에서 전사 배치 파이프라인을 설계·개발·최적화해요.",
+      "short": "Hadoop 위의 Impala·Spark SQL 작업을 Airflow로 엮고, 필요하면 dbt 같은 새 도구를 들여 전사 배치를 다듬는 일.",
+      "why": "토스 코어는 표 대부분을 Impala에서 SQL로 만들고 Spark·Kafka·Hive·구글 시트로도 만듭니다.[2] DW 팀은 기존 파이프라인과 dbt 같은 오픈소스의 장점을 합친 새 파이프라인을 구상 중이라고 했습니다.[2]",
+      "actually": {
+        "items": [
+          "**메인 DAG · 서브 DAG** — 메인의 태스크 하나가 여러 태스크를 품은 서브 DAG를 띄우는 구조다. 중앙에서 여러 도메인 DAG를 관리하기 쉬우라고 썼다.[2]",
+          "**테이블 센서** — 태스크끼리 직접 잇지 않고, '내가 읽을 표가 다 만들어졌나'를 보고 시작하게 바꿨다. 1,000개 넘는 전사 집계 작업에 센서를 달아 기본 마트가 끝나는 대로 병렬로 돌게 했고 실행 시간이 크게 줄었다.[2]",
+          "**센서의 대가** — 센서가 한꺼번에 떠서 연결 문제가 났고, 태스크마다 센서가 짝으로 붙어 태스크 수가 두 배가 됐다. 동시 실행 한도(풀)를 모니터링하며 조절했다.[2] Airflow 풀은 동시에 도는 태스크 수를 묶는 장치다.[27]",
+          "**우선순위** — 같은 그룹 토스증권 DW 팀은 오래 걸리는 작업에 우선순위 가중치를 줘 전체 시간을 줄였다.[4][26]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "계보(리니지)만 있으면 의존을 손으로 잇지 않아도 된다",
+          "body": "작업마다 '읽는 표·만드는 표'만 적어 두면, 기다릴 작업과 깨졌을 때 번지는 범위를 코드가 계산합니다. 토스 코어가 센서에 쓴 것도 이런 메타데이터입니다[2](직접 돌린 출력).",
+          "lang": "python",
+          "code": "from collections import deque\njobs = {  # 작업: (읽는 표, 만드는 표)\n    \"ingest_log\": ([], [\"raw.app_log\"]),\n    \"basis_click\": ([\"raw.app_log\"], [\"basis.shop_click\"]),\n    \"metric_act\": ([\"basis.shop_click\"], [\"metric.shop_activation\"]),\n    \"company_kpi\": ([\"metric.shop_activation\"], [\"kpi.daily\"]),\n}\nmade_by = {t: j for j, (_, outs) in jobs.items() for t in outs}\ndeps = {j: sorted({made_by[t] for t in ins if t in made_by}) for j, (ins, _) in jobs.items()}\nprint(\"센서가 기다릴 작업:\", deps)\ndown = {}\nfor j, ds in deps.items():\n    for d in ds:\n        down.setdefault(d, []).append(j)\nq, seen = deque([\"basis_click\"]), []\nwhile q:\n    for n in down.get(q.popleft(), []):\n        if n not in seen:\n            seen.append(n); q.append(n)\nprint(\"basis_click 이 깨지면:\", seen)\n# 센서가 기다릴 작업: {'ingest_log': [], 'basis_click': ['ingest_log'], 'metric_act': ['basis_click'], 'company_kpi': ['metric_act']}\n# basis_click 이 깨지면: ['metric_act', 'company_kpi']"
+        }
+      ],
+      "how_far": "최소선은 **Airflow DAG를 짜고, 의존을 '시각'이 아니라 '데이터가 준비됐나'로 거는 방법**(센서·데이터 기준 일정)을 설명할 수 있는 것입니다.[12]{추론}",
+      "refs": [2, 4, 12, 26, 27],
+      "study": ["airflow-book", "airflow-docs", "tmc25-mesh"]
+    },
+    {
+      "section": "task",
+      "quote": "오래 걸리는 쿼리의 실행 계획을 뜯어보고 파티셔닝·셔플·리소스 설정을 바꿔 수행 시간을 큰 폭으로 줄이는 일을 해요.",
+      "short": "느린 Impala·Spark 쿼리의 실행 계획을 읽고, 읽는 양·섞는 양·메모리를 고쳐 시간을 줄이는 일.",
+      "why": "토스 코어의 표 대부분이 Impala SQL로 만들어지고[2], 전사 집계는 SLA(약속한 완료 시각)를 엄격히 지켜야 합니다.[2] 느린 쿼리 하나가 그 시각을 밀어냅니다.{추론}",
+      "actually": {
+        "items": [
+          "**실행 계획 읽기** — Impala의 EXPLAIN은 각 단계(스캔·조인·집계)와 데이터가 노드 사이를 오가는 교환(exchange) 지점을 보여 준다. 실행 뒤 프로필로 단계별 시간·메모리를 본다.[10]",
+          "**파티셔닝** — 날짜 같은 칸으로 나눠 저장하면 조건에 맞는 파티션만 읽는다. 칸에 함수를 씌워 거르면 이 이점을 잃기 쉽다.{추론}",
+          "**셔플** — 조인·집계를 위해 같은 키를 같은 노드로 모으는 일. 한 키에 데이터가 몰리면(쏠림) 한 노드만 오래 일한다. Spark의 적응형 실행(AQE)은 쏠린 조인 칸을 쪼개고, 작은 표는 전부 복사해 셔플 없이 붙인다(브로드캐스트).[9]",
+          "**리소스** — 토스증권 DW 팀은 무거운 작업에만 메모리를 더 주도록 작업마다 설정을 따로 넘겼다.[4]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "한 유저가 9,000건이면 8칸 중 한 칸이 9,124건 — 소금을 치면 고르게",
+          "body": "키 해시로 8칸에 나누면 큰 키가 한 칸에 몰립니다. 큰 키에만 0~7 꼬리표(소금)를 붙이면 1,250건 안팎으로 고르게 퍼집니다(직접 돌린 출력). 실제 Spark에서는 AQE가 비슷한 일을 자동으로 합니다.[9]",
+          "lang": "python",
+          "code": "from collections import Counter\nfrom zlib import crc32\nkeys = [\"u1\"] * 9000 + [f\"u{i}\" for i in range(2, 1002)]  # u1 한 명이 9,000건\npart = lambda k: crc32(k.encode()) % 8                      # 8칸으로 나누기(셔플)\nprint(\"그냥:\", sorted(Counter(part(k) for k in keys).values(), reverse=True))\nsalted = [k + f\"#{i % 8}\" if k == \"u1\" else k for i, k in enumerate(keys)]\nprint(\"소금:\", sorted(Counter(part(k) for k in salted).values(), reverse=True))\n# 그냥: [9124, 126, 126, 125, 125, 125, 125, 124]\n# 소금: [1251, 1251, 1250, 1250, 1250, 1250, 1249, 1249]"
+        }
+      ],
+      "how_far": "최소선은 실행 계획에서 **'많이 읽었나 · 많이 섞었나 · 한쪽에 몰렸나 · 메모리가 넘쳤나'**를 구분해 원인을 말하는 것입니다.[9][10]{추론}",
+      "refs": [2, 4, 9, 10],
+      "study": ["learning-spark", "spark-tuning", "hadoop-guide"]
+    },
+    {
+      "section": "task",
+      "quote": "dbt 기반의 선언적 파이프라인처럼, 장애가 난 뒤에 고치는 게 아니라 컴파일과 CI 단계에서 미리 막는 구조를 연구하고 도입해요.",
+      "short": "잘못된 SQL 변경이 운영 숫자를 망치기 전에, 코드를 합치는 단계(CI)에서 먼저 걸러내는 구조를 들이는 일.",
+      "why": "토스 코어는 파이프라인을 도메인별로 나눈 뒤 '문제를 일으킬 쿼리나 방식을 쓰지 않게 중앙에서 안내하는 일'이 중요해졌는데, 지나친 통제는 토스의 속도와 맞지 않는다고 했습니다.[2] 그 해법으로 dbt 같은 오픈소스를 섞은 새 파이프라인을 구상 중입니다.[2]",
+      "actually": {
+        "items": [
+          "**선언적** — 무엇을 만들지(모델·관계·테스트)를 적으면 dbt가 실행 순서를 계산한다. 의존이 코드에 그대로 보인다.{추론}",
+          "**컴파일에서 막기** — 없는 표·칸을 참조하면 실행 전에 실패한다.{추론}",
+          "**모델 계약** — 칸 이름·형식 계약을 걸어 두면 어긋날 때 만드는 순간 실패한다.[14]",
+          "**바뀐 것만 CI** — 직전 배포와 비교해 바뀐 모델과 그 아래만 골라 돌리고 테스트한다.[15]",
+          "**예전 방식** — SLASH 21의 배치 센터는 시스템에 부하를 줄 무거운 쿼리 패턴이 보이면 경고하고 배치 생성을 멈췄다. 같은 '미리 막기'의 이른 형태다.[3]"
+        ]
+      },
+      "how_far": "공고가 '연구하고 도입'이라 썼듯 아직 정해진 답이 아닙니다.[1] 최소선은 **PR 하나에 모델 + 테스트가 같이 들어가고 CI가 바뀐 것만 돌려 보는 흐름**을 작게라도 만들어 본 것입니다.[15]{추론}",
+      "refs": [1, 2, 3, 14, 15],
+      "study": ["dbt-learn", "dbt-docs"]
+    },
+    {
+      "section": "task",
+      "quote": "데이터 품질 — 신뢰를 시스템으로 보장하기",
+      "short": "사람이 눈으로 보는 대신, 규칙과 시스템이 숫자를 지키게 하겠다는 뜻.",
+      "why": "토스는 SLASH 21에서 이미 품질 관리 시스템(DQ 센터)을 자체 개발 중이라고 밝혔습니다.[3] 마트 팀도 DQ 테스트 배치를 붙이는 것을 '표준 마트'의 조건으로 둡니다.[2]",
+      "refs": [2, 3]
+    },
+    {
+      "section": "task",
+      "quote": "DQ 룰을 일회성 작업이 아닌 재사용 가능한 자산으로 만들고, 사후 인지가 아니라 데이터가 서빙되기 전에 탐지하는 체계를 만들어요.",
+      "short": "표마다 검사를 새로 짜지 않고 한 번 만든 품질 규칙을 여러 표에 붙이고, 쓰이기 전에 잡는 일.",
+      "why": "Hadoop에는 일반 DB의 제약 조건(빈값 금지·고유 키)이 없어서 이런 검사도 DQ로 따로 구현해야 한다고 토스가 직접 말했습니다.[3]",
+      "actually": {
+        "items": [
+          "**처음엔 간단히** — 탐지 SQL을 받아 결과를 슬랙으로 알리는 파이썬 프로그램을 만들고, 규칙마다 작업을 하나씩 등록했다. 규칙이 많아지자 관리가 어려워졌다.[3]",
+          "**여섯 가지 유형** — DQ 센터는 품질을 완전성·유일성·유효성(칸 메타데이터로 단순하게 검사)과 시의적절성·정확성·일관성(데이터 처리 로직이 필요)으로 나눴다.[3]",
+          "**네 개의 층** — 검사 시점을 실시간 흐름·원천 DB·적재(ETL)·DW 집계로 나눠 각각 다르게 처리한다.[3]",
+          "**재사용** — dbt도 고유·빈값 없음·허용값·관계 테스트를 칸에 이름만 붙여 쓰고, 직접 만든 테스트도 같은 방식으로 재사용한다.[13]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "규칙은 한 번, 표는 여럿",
+          "body": "규칙 두 개(빈값·중복)를 SQL 틀로 두고 표·칸만 바꿔 끼웁니다. transfer 표는 둘 다 걸리고 shop_click은 통과합니다(sqlite로 직접 돌린 출력).",
+          "lang": "python",
+          "code": "import sqlite3\nRULES = {\n    \"not_null\": \"SELECT COUNT(*) FROM {t} WHERE {c} IS NULL\",\n    \"unique\": \"SELECT COUNT(*) FROM (SELECT {c} FROM {t} GROUP BY {c} HAVING COUNT(*) > 1)\",\n}\nc = sqlite3.connect(\":memory:\")\nc.executescript(\"\"\"\ncreate table transfer(id int, user_id int); insert into transfer values (1,10),(2,NULL),(2,11);\ncreate table shop_click(id int, user_id int); insert into shop_click values (1,10),(2,12);\n\"\"\")\nfor t, col, r in [(\"transfer\", \"id\", \"unique\"), (\"transfer\", \"user_id\", \"not_null\"),\n                  (\"shop_click\", \"id\", \"unique\"), (\"shop_click\", \"user_id\", \"not_null\")]:\n    bad = c.execute(RULES[r].format(t=t, c=col)).fetchone()[0]\n    print(f\"{t}.{col} {r}: {'실패 ' + str(bad) if bad else '통과'}\")\n# transfer.id unique: 실패 1\n# transfer.user_id not_null: 실패 1\n# shop_click.id unique: 통과\n# shop_click.user_id not_null: 통과"
+        }
+      ],
+      "how_far": "최소선은 **규칙을 틀(템플릿)과 대상 목록으로 나누고, 실패하면 아래 작업을 멈출지 경고만 할지 정하는 것**입니다.[13]{추론}",
+      "refs": [3, 13],
+      "study": ["dbt-docs", "slash21dw"]
+    },
+    {
+      "section": "task",
+      "quote": "마트 간 정합성을 검증하고, 문제가 생기면 영향 범위를 추적해 관련된 사람들에게 바로 알리는 체계를 만들어요.",
+      "short": "마트끼리 같은 숫자가 맞는지 보고, 틀리면 어느 표·누구까지 번지는지 찾아 바로 알리는 일.",
+      "why": "토스는 표마다 어디에 어떻게 쓰이는지 메타데이터를 모아 변경 전에 영향도를 미리 보게 했고(테이블 센터)[3], 지금은 Impala·Spark·Kafka·Hive·구글 시트·Jenkins에서 쿼리·DDL·감사 로그를 모아 영향도(계보) 데이터를 만듭니다.[2] 이 데이터는 담당자 찾기에도 쓰입니다.[2]",
+      "actually": {
+        "items": [
+          "**정합성** — 같은 날 결제 합계가 두 마트에서 같은지, 일관성 규칙으로 비교한다.[3]{추론}",
+          "**영향 범위** — 계보를 따라 깨진 표 아래의 표·대시보드를 찾는다(위 파이프라인 줄의 예). OpenLineage 같은 공개 표준도 작업 간 계보를 기록한다.[19]",
+          "**계보의 빈틈** — Iceberg(표 형식)를 들이며 생긴 MERGE INTO 문은 기존 계보 수집이 읽지 못해 따로 해석해야 했다.[2][11]",
+          "**바로 알리기** — 계보에 담당자가 붙어 있으면 알림을 그 사람에게 보낼 수 있다.[2]{추론}"
+        ]
+      },
+      "refs": [2, 3, 11, 19],
+      "study": ["tmc25-mesh", "slash21dw", "slash23"]
+    },
+    {
+      "section": "task",
+      "quote": "AI-Ready 데이터와 에이전트 — 지금 팀에서 가장 빠르게 커지는 영역",
+      "short": "AI가 데이터를 오해 없이 꺼내 쓰게 만드는 일이 지금 이 팀에서 가장 빨리 늘고 있다는 뜻.",
+      "why": "팀이 '사람이 잘 쓰는 데이터'에서 'AI도 잘 쓰는 데이터'로 축을 넓히고 있고, 표준 마트 위에 시멘틱 레이어와 온톨로지를 얹는 중이라고 공고가 밝혔습니다.[1]",
+      "refs": [1]
+    },
+    {
+      "section": "task",
+      "quote": "데이터에 컨텍스트를 입혀 LLM이 이해할 수 있는 형태로 만들어요. 시멘틱 레이어와 온톨로지를 설계하고, 지식 그래프로 개념 간 관계를 연결해요.",
+      "short": "AI가 표를 보고 '이 칸이 무슨 뜻이고 매출은 어떻게 세나'를 알 수 있게 뜻과 관계를 적어 두는 일.",
+      "why": "토스의 표준 마트는 이미 그 바탕입니다. 서비스마다 주요 개념을 정의하고 **한 마트에 한 개념만** 담아 표·칸 이름만으로 이해되게 만들고, 그 위에 AARRR(유입·활성·유지·추천·매출) 지표 마트를 쌓습니다.[2] 같은 회사 Platform 팀도 마트와 프로파일을 온톨로지로 잇는다고 밝혔습니다.[7]",
+      "actually": {
+        "items": [
+          "**컨텍스트** — 표·칸 설명, 단위, 코드값의 뜻, 쓰면 안 되는 경우. 토스는 표준 마트를 만들 때 칸 설명을 카탈로그에 넣고 SQL에 주석을 단다.[2]",
+          "**시멘틱 레이어** — '활성 유저' 같은 지표를 한 곳에서 한 번만 정의해 누가 묻든 같은 계산이 나오게 한다. dbt는 YAML로 지표를 정의하는 기능을 준다.[16]",
+          "**온톨로지·지식 그래프** — 유저·계좌·상품·거래 같은 대상과 관계(유저가 상품을 산다)를 정의해 표를 잇는다.[7]",
+          "**코드로 된 지표의 선례** — SLASH 21에서 토스는 서비스마다 '활성 행동' 코드를 정의하고 그 코드로 활성 유저 통합 마트를 만들어 지표 계산을 단순하게 했다.[3]"
+        ]
+      },
+      "how_far": "공고 스스로 '시장에서 이제 막 형성되는 영역'이라 부르고 실패해 볼 재량을 준다고 했습니다.[1] 최소선은 **지표 몇 개를 정의해 AI에게 물어 보고, 틀린 답의 원인(설명·정의·권한 중 무엇)을 찾아 본 경험**입니다.{추론}",
+      "refs": [1, 2, 3, 7, 16],
+      "study": ["dbt-sl", "kimball"]
+    },
+    {
+      "section": "task",
+      "quote": "사내 데이터 자산을 MCP·API로 열어서, AI 에이전트가 직접 테이블을 찾고 쿼리를 만들 수 있는 환경을 만들어요.",
+      "short": "AI 에이전트가 표를 찾고 쿼리를 짜 볼 수 있도록 표 설명·계보·지표를 MCP·API로 열어 주는 일.",
+      "why": "토스 마트 플랫폼 쪽도 '자연어로 정확한 데이터를 찾는 환경'을 가까운 목표로 꼽았습니다.[2] 카탈로그와 계보가 이미 있으니 그것을 에이전트가 부를 수 있는 도구로 바꾸는 일입니다.{추론}",
+      "actually": {
+        "items": [
+          "**MCP** — LLM 앱이 바깥 데이터·도구에 붙는 공개 규약. 서버가 도구 목록을 내놓으면 에이전트가 골라 부른다.[18]",
+          "**dbt의 MCP 서버** — dbt 프로젝트의 모델 설명·계보·지표를 AI 도구에 내주는 공식 서버가 있다.[17]",
+          "**열어 줄 도구의 예** — 표 검색, 칸 설명 보기, 지표로 묻기, 읽기 전용 쿼리 실행.{추론}",
+          "**권한** — 토스는 담당자가 맡은 영역의 데이터만 보게 접근 권한을 나눈다고 밝혔다.[2] 에이전트도 같은 규칙 안에 둬야 한다.{추론}"
+        ]
+      },
+      "refs": [2, 17, 18],
+      "study": ["mcp-docs", "dbt-sl"]
+    },
+    {
+      "section": "task",
+      "quote": "운영을 사람 손에서 떼어내는 실험도 연구 / 집중하고 있어요. 장애를 감지해 원인을 분석하고 수정 PR까지 올리는 에이전트를 직접 만들고 있어요.",
+      "short": "배치가 실패하면 원인 후보를 모으고 고친 코드를 PR로 올리는 AI를 만드는 일.",
+      "why": "태스크 6,000개짜리 배치를 사람이 매일 지켜보는 비용이 크기 때문입니다.[2]{추론} 토스는 마트가 표준에 맞는지 검토하는 일에도 LLM 기반 자동 도구를 들였다고 했습니다.[2]",
+      "actually": {
+        "items": [
+          "**장애 → 원인** — 실패한 작업의 로그, 바로 위 표의 신선도·행 수, 최근 바뀐 코드를 묶어 원인 후보를 만든다.[21]{추론}",
+          "**계보가 바탕** — 어느 표가 늦어서 깨졌는지는 계보 데이터로 찾는다.[2]",
+          "**PR까지만** — 고친 코드는 사람이 검토할 PR로 올린다. 운영에 바로 쓰지 않는다.{추론}"
+        ]
+      },
+      "how_far": "에이전트가 **무엇까지 해도 되는지(읽기 전용·PR까지)**의 선을 먼저 정하는 것이 핵심입니다.{추론}",
+      "refs": [2, 21],
+      "study": ["mcp-docs"]
+    },
+    {
+      "section": "task",
+      "quote": "우리가 쓸 도구를 직접 만드는 일",
+      "short": "필요한 도구가 없으면 기다리지 않고 직접 만든다는 이 팀의 오래된 방식.",
+      "why": "SLASH 21의 정리가 이랬습니다 — 상용·오픈소스가 있어도 맞지 않으면 직접 만들되, 처음부터 완벽을 노리지 말고 쉬운 방법으로 빨리 만든 뒤 고쳐 간다.[3] 테이블 센터·배치 센터·DQ 센터가 그렇게 나왔습니다.[3]",
+      "refs": [3]
+    },
+    {
+      "section": "task",
+      "quote": "배치 오퍼레이터, 입수 자동화, 백필 CLI, 영향도 분석기 — 필요하다고 판단하면 직접 만들어요.",
+      "short": "지난 기간 다시 채우기·영향 범위 찾기처럼 반복되는 운영 일을 명령줄 도구로 만들어 없애는 일.",
+      "why": "토스 코어 파이프라인의 마지막 단계가 '서브·백필'이고[2], 계보(영향도) 데이터는 이미 사내에서 널리 쓰입니다.[2]",
+      "actually": {
+        "items": [
+          "**백필 CLI** — 토스증권 DW 팀은 시작·끝 날짜와 자를 단위(예: 30일)를 주면 겹치지도 빠지지도 않게 작업을 나눠, 망가진 표만 다시 돌리게 했다. 몇 달 치를 한 번에 돌리면 메모리가 터지기 때문이다.[4]",
+          "**영향도 분석기** — 표 하나를 넣으면 계보를 따라 아래 표와 담당자를 돌려준다.[2]{추론}",
+          "**배치 오퍼레이터** — 우리 규칙(센서·알림·리소스)을 미리 넣어 둔 Airflow 작업 틀.{추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "백필을 30일씩 — 겹침도 빈틈도 없이",
+          "body": "1월 1일~3월 15일을 30일 단위로 자르면 세 덩어리가 나오고, 다음 덩어리는 앞 덩어리 다음 날부터 시작합니다(직접 돌린 출력).[4]",
+          "lang": "python",
+          "code": "from datetime import date, timedelta\ndef chunks(start, end, days):\n    s = start\n    while s <= end:\n        e = min(s + timedelta(days=days - 1), end)\n        yield s, e\n        s = e + timedelta(days=1)\nfor s, e in chunks(date(2026, 1, 1), date(2026, 3, 15), 30):\n    print(s, \"~\", e)\n# 2026-01-01 ~ 2026-01-30\n# 2026-01-31 ~ 2026-03-01\n# 2026-03-02 ~ 2026-03-15"
+        }
+      ],
+      "refs": [2, 4],
+      "study": ["slash24dw", "airflow-book"]
+    },
+    {
+      "section": "task",
+      "quote": "도구에 화면이 필요하면 프론트엔드도 직접 만들어요. 실제로 팀원이 직접 만든 시각화 도구가 사내에서 쓰이고 있어요.",
+      "short": "다른 팀이 쓸 도구라면 명령줄로 두지 않고 화면까지 붙여 끝까지 만드는 일.",
+      "why": "SLASH 21의 배치 센터는 Jenkins 앞에 웹 화면을 붙여 분석가가 직접 작업을 만들고 고치게 했고[3], 테이블 센터는 표 설명·영향도·질문 남기기를 웹으로 보였습니다.[3]",
+      "how_far": "프론트엔드 전문가 수준이 아니라 **내부용 화면을 혼자 붙일 수 있는** 정도면 됩니다.{추론}",
+      "refs": [3]
+    },
+    {
+      "section": "task",
+      "quote": "직군의 경계보다 문제를 끝까지 푸는 것을 우선해요.",
+      "short": "'그건 플랫폼 팀 일'이라고 넘기지 않고, 필요하면 도구·화면·협의까지 직접 하는 태도.",
+      "why": "토스의 데이터 애널리틱스 엔지니어(DAE)는 데이터 엔지니어와 일이 많이 겹치고, 작은 회사라면 한 사람이 다 하는 일이라고 팀장이 설명했습니다.[2] 차이는 DAE가 **비즈니스 로직을 이해해 쓸 수 있는 형태로 가공·표준화**하는 데 더 집중한다는 점입니다.[2]",
+      "refs": [2]
+    },
+    {
+      "section": "qualification",
+      "quote": "Hadoop-Ecosystem, Database, Data Warehouse, 데이터 분산 처리에 대한 기본적인 이해가 있으신 분",
+      "short": "HDFS·Hive·Impala·Spark가 각각 무슨 일을 하고, 큰 쿼리가 여러 노드에서 어떻게 나뉘어 도는지 설명할 수 있으면 된다.",
+      "why": "토스 코어가 Hadoop 위에서 Hive·Impala·Spark를 쓰고 표 대부분을 Impala SQL로 만듭니다.[2][8]",
+      "level": {
+        "basic": "HDFS 복제 · 파티션 · 행 저장과 열 저장 · 트랜잭션과 인덱스",
+        "work": "Hive 메타스토어 · Impala와 Spark의 차이 · 셔플·조인 방식 · 파일 크기와 작은 파일 문제",
+        "team": "Impala 실행 계획으로 병목을 찾고 파티셔닝·리소스로 고치기, Iceberg 표 다루기"
+      },
+      "actually": {
+        "items": [
+          "**HDFS** — 큰 파일을 블록으로 쪼개 여러 서버에 복제해 둔다. 2019년 토스는 데이터 한 건마다 복사본 셋을 둔다고 소개했다.[8][20]",
+          "**Hive·Impala·Spark** — 같은 Hadoop 데이터를 Hive는 표로 정의하고, Impala는 빠른 SQL 조회에, Spark는 큰 가공·복잡한 로직에 주로 쓴다.[8]{추론}",
+          "**DB와 DW의 차이** — 서비스 DB는 한 건씩 빨리 쓰고 읽는 데 맞추고, DW는 많은 행을 한꺼번에 읽어 집계하는 데 맞춘다.{추론}",
+          "**분산 처리** — 큰 조인·집계는 데이터를 키로 나눠 여러 노드가 나눠 맡는다. 한 키에 몰리면 느려진다(위 업무 줄의 예).[9]"
+        ]
+      },
+      "how_far": "'기본적인 이해'이므로 엔진 내부 구현까지는 아닙니다. 쿼리 하나가 왜 느린지 **읽은 양·섞은 양·쏠림·메모리**로 말할 수 있으면 충분합니다.[9][10]{추론}",
+      "refs": [2, 8, 9, 10, 20],
+      "study": ["hadoop-guide", "fde-book", "learning-spark"]
+    },
+    {
+      "section": "qualification",
+      "quote": "SQL 안티 패턴을 잘 이해하고 있고, Python 으로 기본적인 어플리케이션을 만들 수 있는 기술 역량이 있으신 분",
+      "short": "틀린 답이나 느린 쿼리를 만드는 SQL 습관을 알아보고, 도구를 만들 만큼 Python을 쓴다.",
+      "why": "표 대부분을 SQL로 만들고[2], 도구는 직접 만듭니다.[1] 토스는 일찍부터 무거운 쿼리 패턴을 탐지해 배치 생성을 막는 기능까지 두었습니다.[3]",
+      "level": {
+        "basic": "NULL 비교 · 조인 뒤 중복 · GROUP BY 규칙",
+        "work": "NOT IN과 NULL · 칸에 함수를 씌운 조건 · 불필요한 DISTINCT · CASE WHEN 하드코딩",
+        "team": "실행 계획으로 안티패턴 찾기 · 코드값을 디멘션 표로 빼기 · CLI·API 도구 작성"
+      },
+      "actually": {
+        "items": [
+          "**NOT IN에 NULL** — 하위 쿼리에 NULL이 하나라도 있으면 NOT IN은 아무 행도 돌려주지 않는다(아래 예).{추론}",
+          "**조인 뒤 중복** — 1:N 조인 뒤 합계를 내면 금액이 부풀려진다. 키 단위를 먼저 맞춘다.{추론}",
+          "**CASE WHEN 하드코딩** — 수수료·계약 같은 기준을 쿼리 안 CASE WHEN에 박아 두지 말고 디멘션(기준) 표로 빼라고 SLASH 21이 짚었다. 당장은 번거로워도 길게 보면 훨씬 효율적이라는 것이다.[3]",
+          "**Python** — 구글 시트를 DB와 맞추는 동기화 프로그램, DQ 결과를 슬랙으로 보내는 프로그램 같은 것이 토스가 보인 예다.[3]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "NOT IN 의 함정 — 결과가 0 이 된다",
+          "body": "막힌 유저 목록에 NULL 이 하나 섞이면 NOT IN 은 0, NOT EXISTS 는 맞게 2 를 돌려줍니다(sqlite 로 직접 돌린 출력: 0, 2).",
+          "lang": "sql",
+          "code": "-- users: 1,2,3   blocked: 2, NULL\nSELECT COUNT(*) FROM users WHERE id NOT IN (SELECT user_id FROM blocked);        -- 0\nSELECT COUNT(*) FROM users u\nWHERE NOT EXISTS (SELECT 1 FROM blocked b WHERE b.user_id = u.id);              -- 2"
+        }
+      ],
+      "refs": [1, 2, 3],
+      "study": ["sql-antipatterns", "slash21dw"]
+    },
+    {
+      "section": "qualification",
+      "quote": "복잡하거나 반복적인 문제를 데이터 모델을 이용해 단순화·자동화하여 해결한 경험이 있으신 분",
+      "short": "매번 새로 짜던 쿼리를, 표 구조를 잘 잡아 한두 줄로 답하게 바꿔 본 경험.",
+      "why": "토스 DW가 걸어온 길이 이것입니다. 서비스마다 분석가가 활성 유저 지표를 따로 집계하던 것을, '활성 행동' 코드 체계와 활성 유저 통합 마트(ODS, 중간 가공 층)로 바꿔 지표 쿼리를 단순하게 만들었습니다.[3]",
+      "actually": {
+        "items": [
+          "**코드 체계** — 서비스의 활성 행동을 코드로 정의하고 디멘션 표로 관리한다.[3]",
+          "**등록하면 자동** — 분석가가 행동 코드와 추출 쿼리를 등록하면 활성 유저 목록과 서비스별 최초 활성 표가 만들어진다.[3]",
+          "**그 위의 사실 표** — 활성 유저 마트를 기준으로 기간별 지표를 사실 표로 집계한다. 조건이 바뀌면 백필로 다시 만든다.[3]",
+          "**같은 생각의 최신판** — TMC25의 표준 마트는 '기본 개념 마트 → 지표 기본 마트' 두 층으로, 어느 서비스든 같은 필수 칸을 갖게 했다.[2]"
+        ]
+      },
+      "refs": [2, 3],
+      "study": ["kimball", "slash21dw", "slash24dw"]
+    },
+    {
+      "section": "qualification",
+      "quote": "단순히 요청을 처리하는 것이 아니라, 명확한 데이터 구조와 효율적인 활용 관점에서 기준을 제시할 수 있는 분",
+      "short": "'이 표 하나 뽑아 주세요'에 그대로 답하지 않고, 어떤 표를 어떻게 써야 하는지 기준을 먼저 내놓는다.",
+      "why": "토스 마트 팀은 요청대로 마트를 만들다 보니 작업자마다 품질이 다르고 소유권이 흐려져 데이터가 '녹슬었다'고 돌아봤습니다.[2] 그래서 직관적인 표준 구조를 만들어 예외 없이 적용하기로 했습니다.[2]",
+      "actually": {
+        "items": [
+          "**표준 마트의 도장** — 주요 개념 정의 → 기본 개념 마트 → 지표 기본 마트 → 카탈로그 설명·SQL 주석 → DQ 테스트 → 동료 리뷰를 거쳐야 '표준'이 된다.[2]",
+          "**쇼핑의 예** — 메인 방문·상품 클릭·구매 완료 같은 개념 마트 15개쯤과, 유입·전환·매출 지표 마트를 만들었다.[2]",
+          "**지표 정의 하나** — 같은 지표는 한 곳에서만 정의한다(시멘틱 레이어).[16]"
+        ]
+      },
+      "refs": [2, 16],
+      "study": ["kimball", "tmc25-mesh"]
+    },
+    {
+      "section": "qualification",
+      "quote": "여러 직군의 이해관계자와 소통하며 데이터 요구사항을 구체화하고 합의를 만들어보신 분",
+      "short": "서버 개발자·분석가·도메인 DAE와 '무엇을 어떤 기준으로 만들지'를 문장으로 합의해 본 경험.",
+      "why": "원천 팀과 구조 단계부터 함께 풀고[1], 2024년부터는 도메인마다 DAE가 들어가 개발자·분석가와 기획 초기부터 일합니다.[2] DW 팀은 그 도메인들이 같이 쓰는 파이프라인과 규칙을 맡습니다.[2]",
+      "how_far": "이력서에 설계한 구조가 왜 그 모양이어야 했는지, 어떤 대안을 검토했는지 쓰라고 합니다.[1] 합의 과정을 그렇게 설명할 수 있으면 됩니다.",
+      "refs": [1, 2]
+    },
+    {
+      "section": "preference",
+      "quote": "Airflow 운영 및 트러블슈팅, 배치 안정성 개선 경험이 있으신 분",
+      "short": "DAG를 짜는 것을 넘어, 밀리고 실패하는 배치의 원인을 찾아 덜 깨지게 고쳐 본 경험.",
+      "why": "토스 코어가 실제로 겪은 문제가 여기에 다 있습니다 — 잘못 이어진 의존, 센서를 걸자 생긴 의존 순환, 센서가 한꺼번에 떠서 생긴 연결 문제, 태스크 풀 크기 조절.[2]",
+      "actually": {
+        "items": [
+          "**의존 순환** — 의존이 잘못 이어진 채 센서를 걸면 앞 작업이 뒤 작업을 기다리는 순환이 생긴다. 토스 코어는 태스크를 다시 배치해 풀었다.[2]",
+          "**동시 실행 한도** — 풀로 동시에 도는 태스크 수를 묶고, 모니터링하며 숫자를 맞춘다.[2][27]",
+          "**순서 최적화** — 오래 걸리는 작업에 우선순위 가중치를 준다.[4][26]",
+          "**안정성** — 다시 돌려도 같은 결과(멱등), 재시도 횟수·간격, 실패 알림.{추론}"
+        ]
+      },
+      "refs": [2, 4, 26, 27],
+      "study": ["airflow-book", "airflow-docs"]
+    },
+    {
+      "section": "preference",
+      "quote": "OLAP 쿼리 엔진의 동작 원리를 이해하고 성능을 튜닝해보신 분",
+      "short": "Impala·Spark SQL·StarRocks 같은 분석용 엔진이 쿼리를 어떻게 나눠 도는지 알고, 실제로 빠르게 고쳐 본 경험.",
+      "why": "표 대부분이 Impala로 만들어지고[2], 토스는 StarRocks 같은 오픈소스 엔진도 도메인에서 쉽게 쓰도록 넓히는 중입니다.[2]",
+      "actually": {
+        "items": [
+          "**열 저장** — 필요한 칸만 읽어 많은 행을 빨리 집계한다.{추론}",
+          "**실행 계획** — 스캔·조인·집계 단계와 노드 사이 교환을 읽는다.[10]",
+          "**조인 방식** — 큰 표끼리는 셔플 조인, 한쪽이 작으면 복사(브로드캐스트) 조인.[9]",
+          "**엔진 고르기** — StarRocks는 빠른 대화형 분석을 내세우는 MPP(여러 노드 동시 처리) 엔진이다.[28]"
+        ]
+      },
+      "refs": [2, 9, 10, 28],
+      "study": ["spark-tuning", "learning-spark"]
+    },
+    {
+      "section": "preference",
+      "quote": "데이터 플랫폼이나 도구를 직접 만들어 팀의 생산성을 올려보신 분 (마트 작업과 플랫폼 작업을 함께 하실 수 있는 분)",
+      "short": "마트를 만들면서 반복되는 수고를 도구로 바꿔 팀 전체가 빨라지게 해 본 경험.",
+      "why": "토스 DAE는 예전부터 데이터 카탈로그 같은 내부 도구, 수백 개 Airflow 파이프라인, 분석 마트를 한 팀에서 같이 해 왔습니다.[2]",
+      "how_far": "이력서에 개선 결과를 숫자로 쓰라고 하니, 도구를 만들었다면 **줄어든 시간·건수**를 적을 수 있어야 합니다.[1]",
+      "refs": [1, 2]
+    },
+    {
+      "section": "preference",
+      "quote": "대용량 데이터 처리 및 분석을 위한 시스템 요구사항을 도출하고 구축해본 경험이 있으신 분",
+      "short": "'얼마나 많이·얼마나 빨리·누가 쓰나'에서 저장소·엔진·주기를 정하고 실제로 세워 본 경험.",
+      "why": "하루 수십억 줄 규모를 다루고[8], 전사 집계는 SLA를 지켜야 합니다.[2] 같은 그룹 토스뱅크는 오라클에서 오픈소스로 옮기며 두 시스템 숫자를 매일 600개 넘는 표로 대조했습니다.[5]",
+      "actually": {
+        "items": [
+          "**요구사항의 예** — 데이터 양·늘어나는 속도, 완료 시각(SLA), 동시 사용자, 보관 기간, 권한.{추론}",
+          "**구축의 예** — 엔진 고르기, 파티션·파일 형식, 작업 주기, 품질 검사 위치.{추론}"
+        ]
+      },
+      "refs": [2, 5, 8],
+      "study": ["fde-book", "slash23"]
+    },
+    {
+      "section": "preference",
+      "quote": "dbt, 데이터 카탈로그, 메타데이터·리니지 관리 도구를 도입하거나 내재화해보신 분",
+      "short": "표 설명을 찾아보는 목록(카탈로그)과 표의 출생 기록(리니지)을 들여와 실제로 쓰게 만든 경험.",
+      "why": "토스는 테이블 센터라는 자체 카탈로그를 만들어 왔고[3], 계보 데이터는 센서의 바탕이 됐으며[2], 새 파이프라인에 dbt를 섞으려 합니다.[2]",
+      "actually": {
+        "items": [
+          "**카탈로그** — 표·칸 설명, 담당자, 질문과 답, Airflow 작업과의 연결.[3]",
+          "**리니지** — 쿼리·DDL·감사 로그를 모아 만든다. 새 문법(Iceberg MERGE INTO)이 들어오면 수집을 고쳐야 한다.[2][11]",
+          "**dbt** — 모델 의존 그래프 자체가 계보이고, 테스트·문서가 같은 코드에 붙는다.[13]",
+          "**내재화** — 들여온 도구를 우리 이름 규칙·권한·알림에 맞게 고쳐 붙인다.{추론}"
+        ]
+      },
+      "refs": [2, 3, 11, 13],
+      "study": ["dbt-learn", "dbt-docs", "slash21dw"]
+    },
+    {
+      "section": "preference",
+      "quote": "토스의 데이터를 AI가 더 잘 이해할 수 있도록 데이터에 컨텍스트를 입히거나, 시멘틱 레이어 구축과 AI 레디를 위한 작업을 진행해본 경험이 있으신 분",
+      "short": "AI가 표를 오해하지 않도록 설명·지표 정의를 갖추고, 실제로 AI에게 물어 검증해 본 경험.",
+      "why": "DW·글로벌 DW·Platform 공고가 모두 이 경험을 찾습니다.[1][6][7]",
+      "how_far": "아직 '시장 초기 영역'이라[1] 큰 구축 경험보다 **작게라도 해 보고 무엇이 안 됐는지 말할 수 있는 것**이 중요해 보입니다.{추론}",
+      "refs": [1, 6, 7],
+      "study": ["dbt-sl", "mcp-docs"]
+    }
+  ],
+  "fit": {
+    "good": [
+      "같은 일을 두 번 하면 도구로 만들고 싶은 사람[1][3]",
+      "수천 개 작업이 얽힌 배치를 덜 깨지게 바꾸는 일이 재미있는 사람[2]",
+      "정답이 정해지지 않은 AI용 데이터 일을 실험해 보고 싶은 사람[1]",
+      "입수부터 품질·활용까지 전 구간을 한 팀에서 보고 싶은 사람[1]"
+    ],
+    "hard": [
+      "Hadoop 계열(Impala·Hive·Spark)이 바닥이라 클라우드 DW만 써 온 사람에겐 익힐 것이 있다[2]",
+      "운영 비중이 크다 — 전사 집계 SLA와 장애 대응이 이 팀 몫이다[2]",
+      "AI 에이전트 일은 공고 스스로 실패해 볼 수 있는 영역이라 했다 — 결과가 늘 나오지는 않는다[1]"
+    ]
+  },
+  "interview": [
+    {
+      "q": "태스크 하나가 실패해서 전사 집계 전체가 늦어졌어요. 구조를 어떻게 바꾸겠어요?",
+      "a": "토스 코어가 실제로 겪고 테이블 센서로 푼 문제.[2]"
+    },
+    {
+      "q": "계보 데이터로 센서를 걸었더니 의존 순환이 생겼어요. 왜 그렇고 어떻게 찾겠어요?",
+      "a": "잘못 이어진 의존과 센서의 만남 — 발표에 나온 함정.[2]"
+    },
+    {
+      "q": "Hadoop에는 고유 키·NOT NULL 제약이 없어요. 품질 규칙을 어떻게 재사용 가능하게 만들겠어요?",
+      "a": "DQ 센터의 유형·층 나누기와 재사용 규칙.[3][13]"
+    },
+    {
+      "q": "Impala 쿼리가 오늘따라 세 배 느려요. 실행 계획에서 무엇부터 보겠어요?",
+      "a": "업무의 실행 계획·파티셔닝·셔플·리소스 줄.[1][10]"
+    },
+    {
+      "q": "AI 에이전트가 '활성 유저'를 틀리게 세지 않게 하려면 무엇을 준비하겠어요?",
+      "a": "표준 마트·지표 정의 하나·시멘틱 레이어.[2][16]"
+    }
+  ],
+  "sources": [
+    {
+      "n": 1,
+      "title": "토스 채용 · 데이터 분석 엔지니어 (DW)",
+      "url": "https://toss.im/career/job-detail?gh_jid=7818488003",
+      "kind": "posting",
+      "note": "팀 소개(토스 코어 DW 팀)·다섯 업무 갈래·요건·우대·이력서 요구·합류 여정"
+    },
+    {
+      "n": 2,
+      "title": "TMC25 · 중앙에서 Data Mesh로 Data Ownership 강화를 위한 변화",
+      "url": "https://www.youtube.com/watch?v=P00wKMrqBwE",
+      "kind": "company",
+      "date": "2025-09",
+      "note": "토스 DW 팀 리더·DW 팀 DAE 발표. 자막 전부와 장면 확인 — 팀 분리, 표준 마트, 메인 파이프라인 네 단계, 테이블 센서·영향도 데이터"
+    },
+    {
+      "n": 3,
+      "title": "SLASH 21 · 빠르게 성장하는 스타트업의 DW",
+      "url": "https://www.youtube.com/watch?v=6CZwKUp1ozw",
+      "kind": "company",
+      "date": "2021-04",
+      "note": "토스 Data Service 팀 리더 발표. 자막 전부와 장면 확인 — DB 리뷰, 디멘션 표, ODS, 배치 센터, 테이블 센터, DQ 센터"
+    },
+    {
+      "n": 4,
+      "title": "SLASH 24 · 전천후 데이터 분석을 위한 DW 설계 및 운영하기",
+      "url": "https://www.youtube.com/watch?v=MWDVBZycou4",
+      "kind": "company",
+      "date": "2024-10",
+      "note": "토스증권 DW 팀 — 같은 그룹 다른 회사(우선순위·작업별 자원·백필 나누기)"
+    },
+    {
+      "n": 5,
+      "title": "SLASH 23 · 은행 데이터플랫폼 오픈소스로 전환하기",
+      "url": "https://www.youtube.com/watch?v=RjsG-zKMuX8",
+      "kind": "company",
+      "date": "2023-06",
+      "note": "토스뱅크 Data Platform — 같은 그룹 다른 회사(매일 600개 넘는 표 대조)"
+    },
+    {
+      "n": 6,
+      "title": "토스 채용 · 데이터 분석 엔지니어 (DW/Global)",
+      "url": "https://toss.im/career/job-detail?gh_jid=7985496003",
+      "kind": "posting",
+      "note": "같은 팀의 해외 DW 공고 — Snowflake·dbt 기반"
+    },
+    {
+      "n": 7,
+      "title": "토스 채용 · 데이터 분석 엔지니어 (Platform)",
+      "url": "https://toss.im/career/job-detail?gh_jid=7901191003",
+      "kind": "posting",
+      "note": "Data Intelligence Platform 팀 — 마트·프로파일·온톨로지"
+    },
+    {
+      "n": 8,
+      "title": "토스피드 · 토스팀에 데이터가 흐르게 하는 데이터 플랫폼 팀을 만나다",
+      "url": "https://toss.im/tossfeed/article/toss-dataplatformteam-interview",
+      "kind": "company",
+      "date": "2019-04-29",
+      "note": "Hadoop·Hive·Impala·Spark·Kafka 운영, 하루 수십억 줄·수십 TB — 2019년 기준"
+    },
+    {
+      "n": 9,
+      "title": "Spark 문서 · Performance Tuning (Adaptive Query Execution)",
+      "url": "https://spark.apache.org/docs/latest/sql-performance-tuning.html",
+      "kind": "reference"
+    },
+    {
+      "n": 10,
+      "title": "Impala 문서 · EXPLAIN 계획과 쿼리 프로필 이해하기",
+      "url": "https://impala.apache.org/docs/build/html/topics/impala_explain_plan.html",
+      "kind": "reference"
+    },
+    {
+      "n": 11,
+      "title": "Iceberg 문서 · Spark Writes (MERGE INTO)",
+      "url": "https://iceberg.apache.org/docs/latest/spark-writes/",
+      "kind": "reference"
+    },
+    {
+      "n": 12,
+      "title": "Airflow 문서 · Sensors",
+      "url": "https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/sensors.html",
+      "kind": "reference"
+    },
+    {
+      "n": 13,
+      "title": "dbt 문서 · Data tests",
+      "url": "https://docs.getdbt.com/docs/build/data-tests",
+      "kind": "reference"
+    },
+    {
+      "n": 14,
+      "title": "dbt 문서 · Model contracts",
+      "url": "https://docs.getdbt.com/docs/mesh/govern/model-contracts",
+      "kind": "reference"
+    },
+    {
+      "n": 15,
+      "title": "dbt 문서 · Node selector methods (state)",
+      "url": "https://docs.getdbt.com/reference/node-selection/methods",
+      "kind": "reference"
+    },
+    {
+      "n": 16,
+      "title": "dbt 문서 · dbt Semantic Layer",
+      "url": "https://docs.getdbt.com/docs/use-dbt-semantic-layer/dbt-sl",
+      "kind": "reference"
+    },
+    {
+      "n": 17,
+      "title": "dbt 문서 · About dbt MCP server",
+      "url": "https://docs.getdbt.com/docs/dbt-ai/about-mcp",
+      "kind": "reference"
+    },
+    {
+      "n": 18,
+      "title": "Model Context Protocol · Introduction",
+      "url": "https://modelcontextprotocol.io/introduction",
+      "kind": "reference"
+    },
+    {
+      "n": 19,
+      "title": "OpenLineage 문서",
+      "url": "https://openlineage.io/docs/",
+      "kind": "reference"
+    },
+    {
+      "n": 20,
+      "title": "Hadoop 문서 · HDFS Architecture",
+      "url": "https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HdfsDesign.html",
+      "kind": "reference"
+    },
+    {
+      "n": 21,
+      "title": "dbt 문서 · Source freshness",
+      "url": "https://docs.getdbt.com/docs/deploy/source-freshness",
+      "kind": "reference"
+    },
+    {
+      "n": 22,
+      "title": "토스 · 회사 소개(사이트 하단 회사 정보)",
+      "url": "https://toss.im/company",
+      "kind": "company",
+      "note": "사업장 주소·우편번호"
+    },
+    {
+      "n": 23,
+      "title": "토스피드 · 출근 첫날 만나는 토스 복지 패키지",
+      "url": "https://toss.im/tossfeed/article/employee-benefits",
+      "kind": "company",
+      "date": "2021-03-10"
+    },
+    {
+      "n": 24,
+      "title": "원티드 · 비바리퍼블리카(토스) 기업 정보",
+      "url": "https://www.wanted.co.kr/company/6e7c9aaabe84eba898328836e7cf85b1a1f8e67d",
+      "kind": "reference",
+      "note": "집계 사이트의 평균 연봉 — 산출 기준·기준일 표기 없음"
+    },
+    {
+      "n": 25,
+      "title": "dbt 문서 · Incremental models",
+      "url": "https://docs.getdbt.com/docs/build/incremental-models",
+      "kind": "reference"
+    },
+    {
+      "n": 26,
+      "title": "Airflow 문서 · Priority Weights",
+      "url": "https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/priority-weight.html",
+      "kind": "reference"
+    },
+    {
+      "n": 27,
+      "title": "Airflow 문서 · Pools",
+      "url": "https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/pools.html",
+      "kind": "reference"
+    },
+    {
+      "n": 28,
+      "title": "StarRocks 문서",
+      "url": "https://docs.starrocks.io/",
+      "kind": "reference"
+    }
+  ],
+  "caveat": "팀의 일하는 방식은 토스 DW 팀이 직접 한 발표(TMC25)[2]와 그 전신 팀의 발표(SLASH 21)[3]로 보였습니다. SLASH 21은 2021년, 데이터 플랫폼 인터뷰[8]는 2019년 것이라 도구 이름·규모는 지금과 다를 수 있습니다. 같은 그룹 토스증권·토스뱅크 발표[4][5]는 '같은 그룹의 예'로만 썼고, 그 밖의 '보통 이런 것'은 Spark·Impala·Airflow·dbt 공식 문서로 보였습니다. 연봉은 공시 원문을 찾지 못해 집계 사이트 값 하나만 실었습니다.",
+  "pay": {
+    "summary": "공고에 연봉은 없고, 공시 원문을 찾지 못했다 — 집계 사이트 평균 **약 6,082만원** 하나만 확인(기준 표기 없음)",
+    "rows": [
+      {
+        "label": "직원 평균 연봉(집계)",
+        "value": "6,082만원",
+        "amount": 6082,
+        "basis": "집계 사이트 · 기준일 표기 없음",
+        "note": "원티드 기업 정보의 평균 연봉. 같은 페이지에 국민연금 가입 사원 1,769명이 함께 적혀 있으나 평균 연봉을 무엇으로 계산했는지는 밝히지 않았다 [24]"
+      }
+    ],
+    "how": "토스 채용은 직무·문화 인터뷰와 레퍼런스 체크 뒤에 **처우 협의** 단계가 따로 있어 연봉을 사람마다 정한다 [1]. 집계 사이트마다 평균값이 크게 다르고(산출 기준이 서로 다르다) 경력직이 섞인 회사 전체 값이라, 신입이나 이 자리의 금액으로 읽으면 안 된다 {추론}."
+  },
+  "benefits": {
+    "items": [
+      { "name": "식대", "detail": "1인 1법인카드, 금액 제한 없음" },
+      { "name": "업무 비용", "detail": "업무 관련 비용 100% 지원" },
+      { "name": "자율 휴가", "detail": "보고·승인 없이 사용" },
+      { "name": "리프레쉬 휴가", "detail": "근속 3년마다 1개월 유급" },
+      { "name": "주택 자금 대출", "detail": "1억원 한도 무이자(6개월 이상 재직)" },
+      { "name": "건강", "detail": "매년 1회 종합건강검진·독감 예방, 체력 단련비 월 10만원" },
+      { "name": "단체 보험", "detail": "보험료 전액 회사 부담" },
+      { "name": "교통", "detail": "주차비 개인 부담 0원, 택시비 100%" },
+      { "name": "통신비", "detail": "매월 10만원" },
+      { "name": "경조사", "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원" },
+      { "name": "인재 추천", "detail": "인재추천비 500만원" },
+      { "name": "사내 시설", "detail": "커피·사내 편의점 무료, 사내 헤어살롱" }
+    ],
+    "note": "토스 팀 전체를 기준으로 한 2021년 공식 소개 글이다 [23]. 글 스스로 복지가 계속 바뀐다고 적었으니, 지금도 같은지는 처우 협의 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "토스(비바리퍼블리카) 본사",
+    "address": "서울특별시 강남구 테헤란로 142, 4층, 10층, 11층, 12층, 13층, 22층, 23층",
+    "postal": "06236",
+    "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+    "near": "2호선 역삼역 근처 테헤란로 {추론}",
+    "note": "공고의 근무지 표기는 'Seoul'이고, 주소는 토스 회사 소개 페이지 하단의 회사 정보다 [22]. 팀 자리가 이 건물과 다를 수 있다 {추론}."
+  },
+  "resources": [
+    {
+      "id": "tmc25-mesh",
+      "title": "TMC25 · 중앙에서 Data Mesh로 Data Ownership 강화를 위한 변화",
+      "by": "토스 DW 팀 · 26분",
+      "kind": "video",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.youtube.com/watch?v=P00wKMrqBwE",
+      "why": "이 팀이 직접 말한 지금의 파이프라인 — DAG 200개, 테이블 센서, 영향도 데이터, 표준 마트. 업무 '대규모 파이프라인'과 '영향 범위 추적' 줄의 원본."
+    },
+    {
+      "id": "slash21dw",
+      "title": "SLASH 21 · 빠르게 성장하는 스타트업의 DW",
+      "by": "토스 Data Service 팀 · 20분",
+      "kind": "video",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.youtube.com/watch?v=6CZwKUp1ozw",
+      "why": "디멘션 표·ODS·카탈로그·DQ 센터를 어떻게 '쉬운 방법부터' 만들었나. 요건 '데이터 모델로 단순화·자동화'와 업무 'DQ 룰을 자산으로'."
+    },
+    {
+      "id": "slash24dw",
+      "title": "SLASH 24 · 전천후 데이터 분석을 위한 DW 설계 및 운영하기",
+      "by": "토스증권 DW 팀 · 25분",
+      "kind": "video",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.youtube.com/watch?v=MWDVBZycou4",
+      "why": "같은 그룹 DW 팀의 표 이름 규칙·지표 코드화·백필 나누기. 업무 '백필 CLI'와 요건 '데이터 모델로 단순화'의 다른 예."
+    },
+    {
+      "id": "slash23",
+      "title": "SLASH 23 · 은행 데이터플랫폼 오픈소스로 전환하기",
+      "by": "토스뱅크 Data Platform · 21분",
+      "kind": "video",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.youtube.com/watch?v=RjsG-zKMuX8",
+      "why": "두 시스템 숫자를 매일 대조한 이야기 — 업무 '마트 간 정합성'과 우대 '대용량 시스템 요구사항 도출'."
+    },
+    {
+      "id": "hadoop-guide",
+      "title": "하둡 완벽 가이드 (4판)",
+      "by": "톰 화이트 · 한빛미디어 · 2017",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://www.oreilly.com/library/view/-/9788968484599/",
+      "why": "HDFS·YARN·Hive·Spark·파일 형식을 한 권으로. 필수 'Hadoop 에코시스템·분산 처리 기본 이해'."
+    },
+    {
+      "id": "learning-spark",
+      "title": "러닝 스파크 (개정판)",
+      "by": "제이펍",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EB%9F%AC%EB%8B%9D%20%EC%8A%A4%ED%8C%8C%ED%81%AC",
+      "why": "Spark SQL·셔플·조인·튜닝. 업무 '실행 계획을 보고 파티셔닝·셔플·리소스 조정'."
+    },
+    {
+      "id": "spark-tuning",
+      "title": "Spark SQL Performance Tuning",
+      "by": "Apache Spark 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://spark.apache.org/docs/latest/sql-performance-tuning.html",
+      "why": "적응형 실행·쏠린 조인·브로드캐스트·파티션 수. 우대 'OLAP 엔진 동작 원리와 튜닝'."
+    },
+    {
+      "id": "fde-book",
+      "title": "견고한 데이터 엔지니어링",
+      "by": "조 라이스 · 맷 하우슬리 · 한빛미디어 · 2023",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "입문",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B2%AC%EA%B3%A0%ED%95%9C%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81",
+      "why": "생성·수집·저장·변환·서빙으로 이어지는 전체 그림. 업무 '입수 레이어 설계'와 필수 'DW 기본 이해'."
+    },
+    {
+      "id": "sql-antipatterns",
+      "title": "SQL AntiPatterns (한국어판)",
+      "by": "빌 카윈",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000009184734",
+      "why": "흔한 SQL 실수를 장마다 원인과 해법으로. 필수 'SQL 안티 패턴 이해'에 이름이 그대로 맞는 책."
+    },
+    {
+      "id": "airflow-book",
+      "title": "Apache Airflow 기반의 데이터 파이프라인",
+      "by": "바스 하렌슬락 · 율리안 더라위터르 · 제이펍 · 2022",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000002993441",
+      "why": "DAG·의존성·센서·백필·테스트. 우대 'Airflow 운영·트러블슈팅'. Airflow 3 변경은 공식 문서로 보충."
+    },
+    {
+      "id": "airflow-docs",
+      "title": "Airflow Core Concepts",
+      "by": "Apache Airflow 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/index.html",
+      "why": "센서·풀·우선순위·재시도의 정확한 정의. 토스 코어가 겪은 센서 순환·풀 조절을 이해하는 바탕."
+    },
+    {
+      "id": "dbt-learn",
+      "title": "dbt Fundamentals (dbt Learn)",
+      "by": "dbt Labs",
+      "kind": "course",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.getdbt.com/dbt-learn",
+      "why": "모델·ref·소스·테스트·문서를 한 번에. 업무 'dbt 기반 선언적 파이프라인'과 우대 'dbt 도입'."
+    },
+    {
+      "id": "dbt-docs",
+      "title": "dbt 공식 문서 · Best practices",
+      "by": "dbt Labs",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.getdbt.com/best-practices",
+      "why": "층 나누기·테스트·계약·바뀐 것만 돌리는 CI. 업무 '컴파일과 CI에서 미리 막기'와 'DQ 룰 재사용'."
+    },
+    {
+      "id": "dbt-sl",
+      "title": "dbt Semantic Layer 문서",
+      "by": "dbt Labs",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://docs.getdbt.com/docs/use-dbt-semantic-layer/dbt-sl",
+      "why": "지표를 한 번만 정의해 사람·AI가 같은 숫자를 받게 하는 방법. 업무 '시멘틱 레이어' 줄."
+    },
+    {
+      "id": "mcp-docs",
+      "title": "Model Context Protocol 문서",
+      "by": "modelcontextprotocol.io",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://modelcontextprotocol.io/introduction",
+      "why": "AI 에이전트에 데이터 도구를 여는 규약. 업무 'MCP·API로 데이터 자산 개방'과 '장애 에이전트'를 작게 만들어 보는 데 필요."
+    },
+    {
+      "id": "kimball",
+      "title": "The Data Warehouse Toolkit (3판)",
+      "by": "Ralph Kimball · Margy Ross · Wiley · 2013",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "url": "https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/books/",
+      "why": "사실 표·디멘션 표 나누기의 원전. 요건 '데이터 모델로 단순화'와 '명확한 데이터 구조 제시'."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "그림 잡기",
+      "time": "1~2주",
+      "goal": "입수 → 기본 마트 → 전사 집계 → 서브·백필이 어떻게 이어지고 어디서 깨지는지 말로 설명할 수 있다.",
+      "resources": ["tmc25-mesh", "slash21dw", "fde-book"],
+      "task": "두 발표를 보고 토스 코어 파이프라인 네 단계를 한 장 그림으로 그린다. 칸마다 '여기가 늦으면 누가 언제 알게 되나'를 한 줄씩 적는다."
+    },
+    {
+      "title": "Hadoop 위의 SQL",
+      "time": "2~3주",
+      "goal": "Hive 표를 날짜 파티션으로 만들고, Spark SQL 실행 계획에서 스캔·셔플·쏠림을 찾는다.",
+      "resources": ["hadoop-guide", "learning-spark", "spark-tuning", "sql-antipatterns"],
+      "task": "로컬 Spark로 가상 송금 로그 1,000만 줄(한 유저에 30% 몰리게)을 만들고 유저 표와 조인한다. AQE를 끄고 켜서 시간과 실행 계획을 비교하고, NOT IN·조인 뒤 합계 같은 함정 쿼리를 일부러 넣어 결과가 틀리는 것을 확인한다."
+    },
+    {
+      "title": "센서로 엮는 배치",
+      "time": "2주",
+      "goal": "Airflow DAG를 '시각'이 아니라 '읽을 표가 준비됐나'로 엮고, 실패가 번지는 범위를 줄인다.",
+      "resources": ["airflow-book", "airflow-docs", "tmc25-mesh"],
+      "task": "입수·기본 마트·집계 DAG 세 개를 만들고, 작업마다 읽는 표·만드는 표를 YAML에 적어 센서를 자동으로 만든다. 일부러 의존을 잘못 이어 순환을 만들고 찾아내는 검사를 붙인다. 풀 크기를 바꿔 가며 끝나는 시간을 잰다."
+    },
+    {
+      "title": "규칙으로 지키는 품질",
+      "time": "1~2주",
+      "goal": "재사용 가능한 DQ 규칙을 만들고, 실패하면 아래 작업이 멈추게 한다.",
+      "resources": ["dbt-learn", "dbt-docs", "slash21dw", "kimball"],
+      "task": "3단계 데이터로 dbt 프로젝트를 만들어 '기본 개념 마트 → 지표 마트' 두 층을 쌓고, 고유·빈값·관계·신선도 테스트를 붙인다. 테스트가 실패하면 집계 DAG가 시작하지 않는지 확인하고, 바뀐 모델만 도는 CI를 만든다."
+    },
+    {
+      "title": "AI가 읽는 데이터 (선택)",
+      "time": "계속",
+      "goal": "지표를 시멘틱 레이어로 정의하고 AI 에이전트가 MCP로 맞게 답하는지 확인한다.",
+      "resources": ["dbt-sl", "mcp-docs"],
+      "task": "'일간 활성 유저'·'송금액' 지표를 정의하고, 표 검색·칸 설명·지표 조회 세 도구만 여는 작은 MCP 서버를 만들어 에이전트에게 질문 10개를 던진다. 틀린 답마다 무엇(설명·정의·권한)이 부족했는지 적는다."
+    }
+  ]
+}
