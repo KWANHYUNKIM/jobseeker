@@ -31,6 +31,7 @@
   "ats-toss:group:4071101003": "toss-frontend-developer",
   "ats-toss:group:7545902003": "toss-frontend-platform-engineer",
   "ats-toss:group:7987773003": "toss-global-data-engineer",
+  "ats-toss:group:7742346003": "toss-global-growth-data-analyst",
   "ats-toss:group:7795677003": "toss-gpu-systems-engineer",
   "wanted-347560": "toss-gpu-systems-engineer",
   "ats-toss:group:8035179003": "toss-ml-engineer-ocr",
@@ -344,6 +345,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 25
+  },
+  {
+   "id": "toss-global-growth-data-analyst",
+   "company": "토스",
+   "role": "데이터 분석가 (Growth)",
+   "jobs": [
+    "ats-toss:group:7742346003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 11
   },
   {
    "id": "toss-gpu-systems-engineer",
