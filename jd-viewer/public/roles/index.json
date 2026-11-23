@@ -18,6 +18,7 @@
   "wanted-385488": "hyundai-autoever-auth-account-backend",
   "wanted-385504": "hyundai-autoever-physical-ai-engineer",
   "jobkorea-50301916": "hyundai-autoever-physical-ai-engineer",
+  "jobkorea-50301866": "hyundai-autoever-robot-backend",
   "jobkorea-50301905": "hyundai-autoever-robot-data-engineer",
   "wanted-385505": "hyundai-autoever-robot-data-engineer",
   "jobkorea-50301861": "hyundai-autoever-robot-platform-developer",
@@ -356,6 +357,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 19
+  },
+  {
+   "id": "hyundai-autoever-robot-backend",
+   "company": "현대오토에버",
+   "role": "Backend Developer - Robot/Smart Factory",
+   "jobs": [
+    "jobkorea-50301866"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 17
   },
   {
    "id": "hyundai-autoever-robot-data-engineer",
