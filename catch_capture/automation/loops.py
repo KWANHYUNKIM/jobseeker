@@ -600,7 +600,9 @@ def main(argv: list[str]) -> int:
         times = opt("--times")
         workers = int(opt("--workers", "1"))
         if workers > 1:
-            lr.repeat_parallel(l, ROOT, workers, lr.parse_every(opt("--every", "20m")), int(times) if times else None, timeout_s)
+            # --first: 이미 도는 러너 옆에 일꾼을 더 붙일 때 번호를 이어 간다(잠금이 겹치지 않게)
+            lr.repeat_parallel(l, ROOT, workers, lr.parse_every(opt("--every", "20m")), int(times) if times else None, timeout_s,
+                               first=int(opt("--first", "1")))
         else:
             lr.repeat(l, ROOT, lr.parse_every(opt("--every", "20m")), int(times) if times else None, timeout_s)
         return 0

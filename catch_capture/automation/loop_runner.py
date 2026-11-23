@@ -175,13 +175,14 @@ def parse_every(text: str) -> int:
     return int(m.group(1)) * {"s": 1, "m": 60, "h": 3600}[m.group(2)]
 
 
-def repeat_parallel(loop, root, workers: int, every_s: int, times: int | None = None, timeout_s: int = TIMEOUT_S) -> None:
+def repeat_parallel(loop, root, workers: int, every_s: int, times: int | None = None, timeout_s: int = TIMEOUT_S,
+                    first: int = 1) -> None:
     """같은 엔진을 일꾼 N 개로 — 일꾼마다 잠금·로그가 따로다(키@번호). 같은 일감을 안 잡게 하는 건 엔진 몫이다
     (직무 역설계는 validate.py --claim). 일꾼끼리 시작을 20초씩 어긋나게 해 같은 순간에 집지 않게 한다."""
     import threading
     from dataclasses import replace
     ts = []
-    for i in range(1, workers + 1):
+    for i in range(first, first + workers):
         w = replace(loop, key=f"{loop.key}@{i}")
         t = threading.Thread(target=repeat, args=(w, root, every_s, times, timeout_s), daemon=False)
         t.start()
