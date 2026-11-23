@@ -11,13 +11,15 @@
   "wanted-385077": "go-android-in-vehicle",
   "wanted-353016": "hennge-senior-software-engineer-python",
   "wanted-342854": "henry-senior-sre-japan",
-  "wanted-385555": "hyundai-autoever-ai-agent-engineer",
   "jobkorea-50301726": "hyundai-autoever-ai-agent-engineer",
+  "wanted-385555": "hyundai-autoever-ai-agent-engineer",
   "wanted-385554": "hyundai-autoever-ai-researcher",
   "jobkorea-50301716": "hyundai-autoever-ai-researcher",
   "wanted-385488": "hyundai-autoever-auth-account-backend",
   "wanted-385504": "hyundai-autoever-physical-ai-engineer",
   "jobkorea-50301916": "hyundai-autoever-physical-ai-engineer",
+  "wanted-385505": "hyundai-autoever-robot-data-engineer",
+  "jobkorea-50301905": "hyundai-autoever-robot-data-engineer",
   "jobkorea-50301861": "hyundai-autoever-robot-platform-developer",
   "wanted-387536": "hyundai-sdf-data-architect",
   "wanted-377335": "ldf-ebookjapan-web-frontend",
@@ -317,8 +319,8 @@
    "company": "현대오토에버",
    "role": "AI Agent 엔지니어",
    "jobs": [
-    "wanted-385555",
-    "jobkorea-50301726"
+    "jobkorea-50301726",
+    "wanted-385555"
    ],
    "researched_at": "2026-11-23",
    "lines": 15
@@ -354,6 +356,17 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 19
+  },
+  {
+   "id": "hyundai-autoever-robot-data-engineer",
+   "company": "현대오토에버",
+   "role": "로봇 데이터 엔지니어",
+   "jobs": [
+    "wanted-385505",
+    "jobkorea-50301905"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 16
   },
   {
    "id": "hyundai-autoever-robot-platform-developer",
