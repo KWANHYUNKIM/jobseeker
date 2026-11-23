@@ -66,7 +66,9 @@
   "ats-toss:group:7702581003": "tossbank-aiops-platform-engineer",
   "ats-toss:group:4103438003": "tossbank-data-analyst",
   "ats-toss:group:6067282003": "tossbank-data-analytics-engineer",
+  "ats-toss:group:6092477003": "tossbank-data-engineer-finance",
   "ats-toss:group:4695176003": "tossbank-data-engineer-platform",
+  "saramin-55630375": "tossbank-data-product-manager-ai",
   "ats-toss:group:8043933003": "tossbank-dba",
   "wanted-385879": "tossbank-devops-engineer",
   "ats-toss:group:7757550003": "tossbank-devops-engineer",
@@ -723,6 +725,16 @@
    "lines": 12
   },
   {
+   "id": "tossbank-data-engineer-finance",
+   "company": "토스뱅크",
+   "role": "데이터 엔지니어 (Finance)",
+   "jobs": [
+    "ats-toss:group:6092477003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 9
+  },
+  {
    "id": "tossbank-data-engineer-platform",
    "company": "토스뱅크",
    "role": "데이터 엔지니어 (Platform)",
@@ -731,6 +743,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 14
+  },
+  {
+   "id": "tossbank-data-product-manager-ai",
+   "company": "토스뱅크",
+   "role": "데이터 프로덕트 매니저 (AI)",
+   "jobs": [
+    "saramin-55630375"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 12
   },
   {
    "id": "tossbank-dba",
