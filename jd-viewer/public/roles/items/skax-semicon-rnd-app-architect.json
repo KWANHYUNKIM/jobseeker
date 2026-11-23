@@ -1,0 +1,546 @@
+{
+  "id": "skax-semicon-rnd-app-architect",
+  "company": "SK주식회사(AX)",
+  "role": "반도체 R&D 시스템 어플리케이션 설계 및 리딩 전문가",
+  "team": "제조R&D AX팀",
+  "jobs": ["ats-skcareers:sk:R262477", "wanted-398293"],
+  "researched_at": "2026-11-23",
+  "tldr": {
+    "what": "반도체·배터리 계열사(SK하이닉스 등)와 대외 고객의 **연구원이 쓰는 업무 시스템** — 과제관리·개발품질·분석 — 을 Java·Spring Boot·React 웹으로 설계하고, 그 개발 표준과 코드 품질을 쥐는 자리입니다.[1]",
+    "env": "Spring Boot + React, Docker·쿠버네티스 배포, AI를 붙인 서비스까지.[1] 회사 자체 Java 프레임워크(NEXCORE)는 Spring Boot 기반입니다.[4] 주 근무지는 분당, 사업에 따라 이천에서도 일합니다.[1]",
+    "oneline": "Java 웹 5년 이상 — 남이 만든 화면을 고치는 사람이 아니라, 연구 업무를 데이터 모델·API로 바꾸고 팀의 코드 기준을 세우는 사람을 뽑는다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "제조R&D AX팀을 소개합니다 😊",
+      "short": "공고를 낸 곳은 SK AX 안의 '제조R&D AX팀' — 공장 생산이 아니라 연구개발(R&D) 쪽 시스템을 맡는다.",
+      "why": "SK AX는 별도 법인이 아니라 SK주식회사 안의 사업 조직이라 회사 이름이 'SK주식회사(AX)'로 적힙니다.[18] 같은 사업의 PM(사업 관리) 자리도 따로 뽑은 적이 있어서, 이 공고는 그 사업의 **기술 쪽 리더**를 찾는 자리로 읽힙니다.[3] {추론}",
+      "refs": [3, 18]
+    },
+    {
+      "section": "task",
+      "quote": "반도체, 배터리 관련 SK그룹 멤버사 및 대외 고객을 대상으로 R&D 엔지니어 활용 시스템 (과제관리, 개발품질, 분석 영역 등) 에 대한 구축 사업 및 운영 업무를 수행합니다.",
+      "short": "연구원이 매일 쓰는 시스템 세 종류 — 과제 진척 관리, 개발품질 관리, 실험 데이터 분석 — 을 만들고 운영한다.",
+      "why": "고객 쪽 SK하이닉스는 신제품 주기가 짧아지고 미세 공정이 한계에 닿아 **R&D 자체를 AI·시스템 중심으로 바꾸겠다**고 2026년 2월 세미콘 코리아에서 밝혔습니다.[8][9] 같은 회사는 한 개발 플랫폼을 여러 세대에 다시 쓰는 '플랫폼 기반 R&D'를 내부 목표로 둡니다.[10] 이런 방식은 과제·실험·결과가 시스템에 남아 있어야 돌아갑니다. {추론}",
+      "actually": {
+        "intro": "이 팀 시스템의 화면·구조는 공개되지 않았습니다. 다른 IT 회사들이 '제품 개발 관리'라고 파는 묶음을 보면 보통 이렇습니다.",
+        "items": [
+          "**과제관리** — 과제마다 목표·일정·인력·예산·위험을 적고, 단계마다 심사(게이트 리뷰)를 거친다. LG CNS는 이것을 PMS라 부르고 PLM 안에 둔다.[22]",
+          "**개발품질** — 사양서·도면·자재 목록(BOM)·변경 이력을 등록하고, 바뀔 때마다 누가 왜 바꿨는지 남긴다(PDM).[22][21]",
+          "**분석** — 실험 조건별 측정값을 모아 비교하고 보고서를 만든다. SK하이닉스는 소재 탐색·식각 레시피 개발에 AI 모델을 쓴다고 했다.[8]",
+          "**운영** — 이미 돌고 있는 시스템의 요청 처리·장애 대응·개선. 공고에 '구축 사업 및 운영'이 같이 적혀 있다.[1]"
+        ]
+      },
+      "flows": [
+        {
+          "caption": "연구 과제 하나가 시스템을 지나가는 길(일반적인 꼴)",
+          "steps": ["과제 등록 · 목표·기간·인력", "실험 계획 · 조건(스플릿)·웨이퍼 배정", "측정·분석 · 조건별 결과 비교", "게이트 심사 · 다음 단계로 갈지", "양산 이관 · 공정·품질 기준 넘김"],
+          "mine_from": 0
+        }
+      ],
+      "how_far": "어떤 단계·항목을 관리할지는 고객사 연구 조직과 그 IT 부서가 정합니다. 이 자리는 그 업무를 **데이터 모델·화면·API로 옮기고 오래 고칠 수 있는 구조로 만드는 쪽**입니다.[1][3] {추론}",
+      "refs": [1, 3, 8, 9, 10, 21, 22],
+      "study": ["lgcns-pdm", "sds-plm"]
+    },
+    {
+      "section": "task",
+      "quote": "최신 DT 기술을 바탕으로 고객의 요구를 충족시켜 만족도를 높이고, 고객의 비즈니스 목표 달성에 기여하고 있습니다.",
+      "short": "DT(디지털 전환) — 종이·엑셀·메일로 하던 연구 업무를 시스템으로 옮기는 일. 고객 프로젝트로 돈다.",
+      "why": "SK하이닉스 뉴스룸은 DX(업무를 디지털로 옮기기) 위에 AI를 얹는 것을 AX라고 설명합니다.[11] 같은 회사의 옛 인터뷰에는 플랫폼 개발을 SK(주) C&C(지금의 SK AX)와 함께 한다는 대목이 있습니다.[12][18]",
+      "how_far": "회사 소개 줄입니다. 면접에서는 '내가 만든 시스템으로 고객 업무가 무엇이 빨라졌나'를 숫자로 말할 준비를 하면 이 줄과 맞습니다. {추론}",
+      "refs": [11, 12, 18]
+    },
+    {
+      "section": "task",
+      "quote": "50여 명의 다양한 Industry의 전문가들이 개발·운영 업무를 수행하고 있습니다.",
+      "short": "팀은 50명 남짓 — 여러 시스템을 나눠 맡는 규모라, 들어가면 한 시스템의 기술 책임을 질 가능성이 크다.",
+      "why": "50명이 개발·운영을 같이 한다고 공고가 적었습니다.[1] 이 규모면 시스템별로 작은 개발 묶음이 여럿 있고, 그 묶음들이 같은 기술 표준을 써야 운영이 덜 아픕니다 — 아래 '개발 표준 수립' 줄이 그 이유입니다. {추론}",
+      "refs": [1]
+    },
+    {
+      "section": "task",
+      "quote": "수평적인 소통문화와 자율적 업무 환경을 통해 구성원 역량을 최대한 발휘할 수 있도록 지원합니다.",
+      "short": "팀 문화 소개 줄 — 확인할 것은 '자율'이 어디까지인지(기술 선택권, 근무 방식)다.",
+      "why": "공고의 문화 소개입니다.[1] SK AX 채용 사이트의 복리후생 페이지에는 교육·휴게 시설은 나오지만 재택·유연근무 규정은 없습니다.[16]",
+      "how_far": "근무 방식(고객사 상주 여부·출근 빈도)은 면접에서 직접 묻는 편이 낫습니다. {추론}",
+      "refs": [1, 16]
+    },
+    {
+      "section": "task",
+      "quote": "고객사 접점에서 IT서비스를 제공 중이고, 장기간 운영 경험을 바탕으로 고객을 leading 하며 DT과제를 주도적으로 수행하고 있습니다.",
+      "short": "고객 바로 옆에서 오래 운영해 온 팀 — 요청을 받아 적는 쪽이 아니라 '이렇게 바꾸자'를 먼저 내는 쪽이라는 뜻.",
+      "why": "'고객사 접점', '장기간 운영'은 이 팀이 고객 현장(이천 등)에서 오래 시스템을 맡아 왔다는 말입니다.[1] 근무지에 이천이 따로 적힌 것도 같은 맥락으로 보입니다 — SK하이닉스 본사가 이천에 있습니다.[19] {추론}",
+      "how_far": "오래 운영된 시스템에는 옛 코드가 쌓여 있습니다. 새 표준을 세울 때 **옛 시스템을 한 번에 갈지, 조금씩 옮길지**를 정하는 것도 이 자리의 몫이 됩니다. {추론}",
+      "refs": [1, 19]
+    },
+    {
+      "section": "task",
+      "quote": "시스템 분석 및 아키텍처 설계 : 반도체 제조 R&D 비즈니스 로직을 분석하여, 확장 가능한 Java 기반 웹 Appl. 설계합니다.",
+      "short": "연구 업무 규칙(과제 단계·실험 조건·승인)을 뜯어보고, 기능이 늘어도 안 무너지는 Java 웹 구조를 그린다.",
+      "why": "공고의 첫 번째 업무입니다.[1] '확장 가능한'은 고객이 반도체·배터리 두 업종이고 계열사·대외 고객이 섞여 있어서, 같은 뼈대를 여러 고객에 맞춰 늘려야 하기 때문으로 보입니다.[1] {추론}",
+      "actually": {
+        "items": [
+          "**업무 규칙 뽑기** — '검증 단계 과제는 심사를 통과해야 양산 이관할 수 있다'처럼 상태와 전이 규칙을 표로 적는다.",
+          "**경계 나누기** — 과제·실험·품질·분석을 한 덩어리로 짤지 모듈로 나눌지. 처음부터 마이크로서비스로 쪼개기보다 모듈이 잘 나뉜 하나의 앱(모듈러 모놀리스)에서 시작하라는 조언이 널리 쓰인다.[33][32]",
+          "**바뀌는 것 떼어 두기** — 고객마다 다른 단계 이름·승인선은 코드가 아니라 설정·기준 정보로 뺀다. {추론}",
+          "**회사 프레임워크** — SK AX의 NEXCORE는 Spring Boot 기반이고 표준 템플릿으로 코드·SQL을 만들어 준다. SK그룹 제조 시스템에 쓰였다고 회사가 소개한다.[4]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "과제 상태 전이를 코드로 막기(가상 규칙)",
+          "body": "'개발 → 양산이관'처럼 심사를 건너뛰는 전이를 화면이 아니라 서버 규칙으로 거부합니다. 실제 서비스에서는 Java enum·도메인 객체로 옮길 내용을 파이썬으로 줄였습니다.",
+          "lang": "python",
+          "code": "ALLOWED = {\"기획\": {\"개발\"}, \"개발\": {\"검증\", \"중단\"}, \"검증\": {\"양산이관\", \"개발\", \"중단\"}}\ndef move(cur, nxt):\n    if nxt not in ALLOWED.get(cur, set()):\n        return f\"거부: {cur} -> {nxt}\"\n    return f\"허용: {cur} -> {nxt}\"\nfor c, n in [(\"기획\",\"개발\"),(\"개발\",\"양산이관\"),(\"검증\",\"개발\"),(\"양산이관\",\"개발\")]:\n    print(move(c, n))\n# 출력:\n# 허용: 기획 -> 개발\n# 거부: 개발 -> 양산이관\n# 허용: 검증 -> 개발\n# 거부: 양산이관 -> 개발"
+        }
+      ],
+      "how_far": "업무 규칙의 '정답'은 고객 연구원·IT 담당이 갖고 있습니다. 이 자리는 그 규칙을 **빠짐없이 묻고, 코드 구조(모듈·계층·상태)로 옮기고, 설계 문서로 남기는 것**까지입니다. {추론}",
+      "refs": [1, 4, 32, 33],
+      "study": ["ddd-evans", "clean-arch", "spring-modulith", "toby-spring"]
+    },
+    {
+      "section": "task",
+      "quote": "기술 스택 리딩 : Spring Boot 및 React 기반의 개발 표준 수립 및 코드 품질을 관리합니다.",
+      "short": "팀이 같은 방식으로 짜게 만드는 일 — 폴더 구조·API 꼴·예외 처리·테스트 기준을 정하고 리뷰로 지킨다.",
+      "why": "50명이 여러 시스템을 만지는 팀이라 표준이 없으면 시스템마다 짜는 법이 달라져 운영이 어려워집니다.[1] {추론} SK AX는 회사 차원에서도 표준 템플릿 기반 코드 생성(NEXCORE)과, 전사 표준을 담은 룰셋을 AI 코드 생성에 먼저 주는 방식을 쓴다고 밝혔습니다.[4][6][7]",
+      "actually": {
+        "items": [
+          "**백엔드 표준** — 패키지 구조, 응답·오류 꼴, 트랜잭션 경계, 로그 형식, 설정 분리(프로파일). Spring Boot 공식 문서가 기준이다.[23]",
+          "**프론트 표준** — 컴포넌트 나누기, 상태 관리, API 호출 묶음, 폴더 규칙. React 공식 문서의 '생각하는 법'이 출발점이다.[24]",
+          "**자동 검사** — 정적 분석(SonarQube 같은 것)으로 중복·복잡도·커버리지 문턱(품질 게이트)을 정하고, 구조 규칙(예: 컨트롤러가 저장소를 직접 부르지 않기)은 ArchUnit 같은 테스트로 막는다.[37][38]",
+          "**코드 리뷰** — 무엇을 보고 언제 승인하나를 문서로. 구글 공개 리뷰 지침은 '코드베이스 전체 건강이 나아지면 승인'을 기준으로 둔다.[28]",
+          "**AI 시대의 표준** — SK AX는 AI가 코드를 짜기 전에 개발 지침서·룰셋을 먼저 만들게 해 한 고객 프로젝트에서 생산성 30% 이상을 냈다고 했다(그 프로젝트 하나의 결과라고 회사가 직접 단서를 달았다).[6][7]"
+        ]
+      },
+      "how_far": "표준은 문서로 끝나면 안 지켜집니다. **템플릿 프로젝트 + 자동 검사 + 리뷰 체크리스트** 셋이 있어야 '수립·관리'를 했다고 말할 수 있습니다. {추론}",
+      "refs": [1, 4, 6, 7, 23, 24, 28, 37, 38],
+      "study": ["spring-boot-book", "spring-boot-docs", "react-docs", "google-review", "archunit"]
+    },
+    {
+      "section": "task",
+      "quote": "컨테이너 환경의 이해 : Docker/K8S 등 컨테이너 환경 기반의 서비스를 배포하고 최적화합니다.",
+      "short": "만든 앱을 컨테이너 이미지로 굽고 쿠버네티스에 올린 뒤, 자원·기동·헬스체크를 맞춘다.",
+      "why": "공고 제목은 '어플리케이션 설계'지만 배포·최적화까지 같이 적혔습니다.[1] 이 줄의 낱말이 '이해'라서 클러스터를 세우는 일보다 **앱이 클러스터에서 잘 돌게 하는 일**에 가깝습니다.[1] {추론}",
+      "actually": {
+        "items": [
+          "**이미지 굽기** — Spring Boot는 Dockerfile 없이도 빌드 도구로 계층 나뉜 이미지를 만들 수 있다(의존성과 내 코드를 다른 층에).[36]",
+          "**자원 요청·한도** — 파드마다 CPU·메모리 요청값을 적어야 스케줄러가 노드를 고른다. 한도를 넘은 메모리는 강제 종료(OOMKilled)된다.[26]",
+          "**헬스체크** — 기동이 느린 Java 앱은 시작 확인(startup)·준비 확인(readiness)을 따로 두지 않으면 뜨기도 전에 재시작된다.[27]",
+          "**최적화** — JVM 힙을 컨테이너 메모리 한도에 맞추고, 파드 수·노드 수를 요청값으로 어림한다."
+        ]
+      },
+      "examples": [
+        {
+          "title": "파드 30개를 올리려면 노드가 몇 대 필요한가(가상 값)",
+          "body": "파드당 CPU 0.5코어·메모리 1GiB 요청, 노드는 8코어·32GiB에 20%를 시스템 몫으로 남긴다고 두었습니다. 이 경우 CPU가 먼저 모자랍니다.",
+          "lang": "python",
+          "code": "import math\npods, cpu_req, mem_req = 30, 0.5, 1.0\nnode_cpu, node_mem, reserve = 8, 32, 0.2\nn_cpu = math.ceil(pods*cpu_req / (node_cpu*(1-reserve)))\nn_mem = math.ceil(pods*mem_req / (node_mem*(1-reserve)))\nprint(f\"CPU 기준 {n_cpu}대, 메모리 기준 {n_mem}대 → 최소 {max(n_cpu,n_mem)}대 + 장애 대비 1대 = {max(n_cpu,n_mem)+1}대\")\n# 출력:\n# CPU 기준 3대, 메모리 기준 2대 → 최소 3대 + 장애 대비 1대 = 4대"
+        }
+      ],
+      "how_far": "클러스터 자체(네트워크·etcd·노드 증설)는 인프라 담당이 맡는 경우가 많습니다. 이 자리 최소선은 **내 서비스의 이미지·배포 설정(yaml 또는 Helm)·자원값·헬스체크를 스스로 쓰고, 파드가 죽었을 때 원인을 읽어 내는 것**입니다. {추론}",
+      "refs": [1, 26, 27, 36],
+      "study": ["docker-book", "kubernetes-book", "k8s-docs"]
+    },
+    {
+      "section": "task",
+      "quote": "신기술 접목 : R&D 생산성 향상을 위한 AI를 활용한 서비스를 구현합니다.",
+      "short": "연구원이 덜 찾고 덜 쓰게 — 실험 보고서 검색·요약, 비슷한 과거 실험 찾기 같은 AI 기능을 시스템에 붙인다.",
+      "why": "SK하이닉스는 AI로 소재 탐색 시간을 400분의 1로 줄였고, 식각 레시피 개발에서 웨이퍼 시험 횟수를 10분의 1로 줄였다고 발표했습니다.[8] 이건 연구 조직 쪽 모델 이야기이고, 업무 시스템 쪽에서는 자료 검색·문서 작성 같은 반복 일을 AI로 줄이는 것이 고객사가 밝힌 AX 방향입니다.[11]",
+      "actually": {
+        "items": [
+          "**문서 검색(RAG)** — 과거 실험 보고서를 조각내 색인하고, 질문과 가까운 조각을 찾아 LLM 답변에 붙인다. 원래 정의는 2020년 논문이다.[31]",
+          "**Java에서 부르기** — Spring 진영에는 모델 호출·벡터 저장소·프롬프트를 묶은 Spring AI가 있다.[29]",
+          "**사내 모델 연동** — 연구 조직이 만든 예측 모델을 API로 받아 화면에 결과를 보여 준다(아래 우대 'AI/ML 모델 서빙' 줄).",
+          "**권한** — 연구 자료는 기밀이 많아 검색 결과도 열람 권한을 따라야 한다. {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "실험 보고서 찾기의 가장 작은 꼴(가상 문서)",
+          "body": "실제로는 낱말 겹침 대신 임베딩(문장을 숫자 벡터로) 거리로 순위를 매기지만, '질문과 가까운 문서를 먼저'라는 뼈대는 같습니다.",
+          "lang": "python",
+          "code": "docs = {\"RPT-101\":\"식각 레시피 변경 후 CD 편차 증가 원인 분석\",\n        \"RPT-102\":\"증착 두께 균일도 개선 실험 결과\",\n        \"RPT-103\":\"식각 챔버 온도 조건별 CD 비교\"}\nq = \"식각 CD 편차\"\ndef score(t): return len(set(q.split()) & set(t.split()))\nfor k, v in sorted(docs.items(), key=lambda kv: -score(kv[1])):\n    print(k, score(v), v)\n# 출력:\n# RPT-101 3 식각 레시피 변경 후 CD 편차 증가 원인 분석\n# RPT-103 2 식각 챔버 온도 조건별 CD 비교\n# RPT-102 0 증착 두께 균일도 개선 실험 결과"
+        }
+      ],
+      "how_far": "모델을 처음부터 학습시키는 자리는 아닙니다. **모델·LLM을 API로 불러 업무 화면에 녹이고, 권한·로그·실패 처리를 갖춘 서비스로 만드는 것**이 이 줄의 몫으로 보입니다.[1] {추론}",
+      "refs": [1, 8, 11, 29, 31],
+      "study": ["spring-ai-docs", "rag-paper"]
+    },
+    {
+      "section": "task",
+      "quote": "※ 근무지 : 경기도 분당/ 이천 (주 근무지는 분당이나, 사업 성격에 따라 이천에서 근무할 수 있습니다.)",
+      "short": "평소엔 분당(SK u-타워), 사업에 따라 이천 — 이천은 SK하이닉스 본사가 있는 곳이다.",
+      "why": "원티드 사본의 근무지 칸은 분당 SK u-타워 주소입니다.[2] SK하이닉스 본사 주소는 이천시 부발읍입니다.[19] 같은 사업의 PM 공고도 '분당 주, 이천은 사업에 따라'로 적었습니다.[3]",
+      "how_far": "이천 근무 빈도·출퇴근 지원(셔틀)은 면접·처우협의에서 확인합니다. SK AX 복리후생 페이지에 출근 셔틀이 있습니다.[16]",
+      "refs": [2, 3, 16, 19]
+    },
+    {
+      "section": "qualification",
+      "quote": "이런 경험을 갖고 계시다면 저희가 찾는 그분입니다! ✨",
+      "short": "아래 세 줄이 필수 — 모두 'Java 웹을 오래, 깊게'로 모인다.",
+      "why": "필수 요건 머리말입니다.[1] 세 줄 가운데 둘이 Java 웹 경력·실무이고 하나가 분석·설계라서, 프론트(React)나 쿠버네티스는 필수가 아닙니다.[1]",
+      "refs": [1]
+    },
+    {
+      "section": "qualification",
+      "quote": "5년 이상의 Java 기반 웹 어플리케이션 개발 경력을 보유하신 분",
+      "short": "Java 웹 개발 5년 — 공통 조건(3년)보다 높다. 표준을 세우는 자리라 연차를 올려 잡았다.",
+      "why": "공고 하단 공통 요건은 '채용 분야 경력 3년 이상'인데 이 자리는 5년을 따로 적었습니다.[1] 개발 표준 수립·코드 품질 관리·리딩이 업무라 다른 사람의 코드를 판단할 연차를 본다고 읽힙니다.[1] {추론}",
+      "level": {
+        "basic": "Spring MVC로 CRUD API를 만들고 JPA·MyBatis로 DB를 다룬다.",
+        "work": "트랜잭션·예외·로그·테스트를 스스로 설계하고, 운영 장애를 로그로 추적해 고친다.",
+        "team": "여러 시스템이 같이 쓸 공통 모듈·템플릿을 만들고, 남의 코드를 리뷰해 표준으로 끌어온다."
+      },
+      "how_far": "연차보다 **그 5년 동안 설계를 맡은 몫**을 묻게 됩니다. 이력서에 '내가 정한 구조·표준'을 따로 적는 편이 좋습니다. {추론}",
+      "refs": [1],
+      "study": ["toby-spring", "spring-core-book", "spring-mvc-book"]
+    },
+    {
+      "section": "qualification",
+      "quote": "복잡한 비즈니스 요구사항을 데이터 모델 및 API 스펙으로 정의할 수 있는 분석/설계 능력을 갖추신 분",
+      "short": "연구원의 말('조건별로 비교하고 싶다')을 표 구조(ERD)와 API 명세(OpenAPI)로 바꿔 적을 수 있어야 한다.",
+      "why": "R&D 업무는 과제 → 실험 → 조건 → 웨이퍼 → 측정값처럼 층이 깊고, 같은 실험을 조건만 바꿔 여러 갈래(스플릿)로 돌립니다.[20] {추론} 이걸 표로 잘못 잡으면 나중에 '조건별 비교' 화면을 못 만듭니다. {추론} SK AX도 AI에게 코드를 맡기기 전에 화면 설계서·태스크 정의서를 먼저 만드는 것을 핵심으로 듭니다.[7]",
+      "actually": {
+        "items": [
+          "**개념 뽑기** — 과제, 실험, 실험 조건, 웨이퍼(시료), 측정 항목, 측정값, 보고서, 승인.",
+          "**관계 정하기** — 실험 1 : 조건 N, 조건 1 : 웨이퍼 N, 웨이퍼 1 : 측정값 N. 측정 항목이 실험마다 다르면 항목을 행으로 두는 구조를 검토한다. {추론}",
+          "**API 명세** — 'GET /projects/{id}/experiments' 같은 자원 경로, 요청·응답 꼴, 오류 코드, 페이지 나누기를 OpenAPI 문서로 먼저 쓴다.[25]",
+          "**이력 남기기** — 조건·결과가 바뀌면 덮어쓰지 않고 판(버전)을 남긴다. 품질 감사에서 묻는다. {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "스플릿 실험을 조건별로 비교하는 화면이 원하는 데이터(가상 값)",
+          "body": "조건 A·B에 웨이퍼를 두 장씩, 장당 칩 25개를 두었습니다. 데이터 모델이 '조건 → 웨이퍼 → 칩 결과'로 잡혀 있어야 이 집계가 SQL 한 번으로 나옵니다.",
+          "lang": "python",
+          "code": "good = {\"A(350도)\":[22,21],\"B(380도)\":[24,23]}\nfor cond, gs in good.items():\n    g = sum(gs); t = 25*len(gs)\n    print(f\"조건 {cond}: 칩 {t}개 중 양품 {g}개 → 수율 {g/t:.0%}\")\n# 출력:\n# 조건 A(350도): 칩 50개 중 양품 43개 → 수율 86%\n# 조건 B(380도): 칩 50개 중 양품 47개 → 수율 94%"
+        }
+      ],
+      "how_far": "**요구사항 한 묶음을 받아 ERD + OpenAPI 명세 + 상태 전이표를 스스로 써 본 경험**이 최소선입니다. 면접에서 화이트보드로 그려 보라고 할 수 있는 줄입니다. {추론}",
+      "refs": [7, 20, 25],
+      "study": ["ddd-evans", "openapi-spec", "ddia", "jpa-book"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Java 기반 웹 어플리케이션 실무 활용에 능숙하신 분",
+      "short": "경력 연수와 별개로 지금 손이 빨라야 한다 — 직접 짜고 고치는 리더를 찾는다.",
+      "why": "경력 줄과 따로 '실무 활용에 능숙'을 한 번 더 적었습니다.[1] 표준을 세우는 사람이 직접 템플릿·공통 모듈을 짜야 팀이 따라오기 때문으로 보입니다. {추론}",
+      "level": {
+        "basic": "Spring Boot 프로젝트를 처음부터 세우고 설정·빌드·테스트를 돌린다.",
+        "work": "JPA 성능 문제(N+1)·트랜잭션 전파·동시성 문제를 재현하고 고친다.",
+        "team": "AOP·프록시로 공통 관심사(로그·권한·감사 이력)를 한 곳에서 처리하는 구조를 만든다."
+      },
+      "how_far": "실무형 코딩 과제나 기술 면접에서 Spring·JPA 동작 원리를 묻는다고 보고 준비합니다. {추론}",
+      "refs": [1],
+      "study": ["spring-boot-book", "jpa-app-book", "spring-advanced-book", "practical-testing-book"]
+    },
+    {
+      "section": "qualification",
+      "quote": "해외여행에 결격사유가 없는 분 (병역 대상자의 경우 병역필 또는 면제자)",
+      "short": "SK 공통 요건 — 해외 출장이 가능하고 병역을 마쳤거나 면제여야 한다.",
+      "why": "SK Careers 공고 하단의 공통 요건이고 원티드 사본에서는 자격요건 칸에 들어가 있습니다.[1][2]",
+      "refs": [1, 2]
+    },
+    {
+      "section": "qualification",
+      "quote": "채용 분야의 경력을 3년 이상 보유하신 분",
+      "short": "공통 최소선은 3년, 이 자리 필수 요건은 Java 웹 5년 — 높은 쪽이 기준이다.",
+      "why": "공통 요건은 3년이지만 이 자리 필수 요건에 5년이 따로 있습니다.[1][2] 같은 사업의 PM 공고(계약직)는 공통 요건을 5년으로 적었습니다.[3]",
+      "refs": [1, 2, 3]
+    },
+    {
+      "section": "qualification",
+      "quote": "최종합격 후 회사가 지정하는 날짜에 입사 가능하신 분",
+      "short": "입사일을 회사가 정한다 — 이직 시 퇴사 일정 조율이 필요하다.",
+      "why": "공통 요건입니다.[1][2] 전형은 서류 → SKCT 심층역량검사 → 1차 면접 → 2차 면접 → 채용검진·처우협의 순서입니다.[1]",
+      "refs": [1, 2]
+    },
+    {
+      "section": "preference",
+      "quote": "이런 경험과 역량이 있으면 더 좋아요! 👍",
+      "short": "우대 줄은 크게 셋 — 쿠버네티스·AI 연동(기술), 반도체·PLM(도메인), 리딩·소통(사람).",
+      "why": "우대사항 머리말입니다.[1] 원티드 사본에도 같은 우대 줄이 실려 있습니다.[2]",
+      "refs": [1, 2]
+    },
+    {
+      "section": "preference",
+      "quote": "컨테이너 기반 환경(K8S) 구축·운영 경험을 보유하신 분",
+      "short": "업무 줄은 '배포·최적화'였는데 우대는 '구축·운영' — 클러스터까지 만져 봤으면 더 좋다는 뜻.",
+      "why": "같은 회사의 제조 데이터 쪽 다른 팀은 쿠버네티스 클러스터 설계를 아예 한 자리로 뽑고 있어, 큰 클러스터는 따로 맡는 사람이 있을 수 있습니다.[1] {추론} 그래도 고객 현장 규모가 작으면 앱 리더가 클러스터까지 챙기게 됩니다. {추론}",
+      "actually": {
+        "items": [
+          "**구축** — 네임스페이스·권한(RBAC)·인그레스·저장소 클래스를 서비스에 맞게 잡기.",
+          "**운영** — 롤링 업데이트·되돌리기, 로그·지표 보기, 노드 자원 부족(Pending) 풀기.[26]",
+          "**헬스체크와 자원값** — 운영에서 가장 자주 사고 나는 두 칸.[26][27]"
+        ]
+      },
+      "how_far": "우대 한 줄이라 필수는 아닙니다.[1] **작은 클러스터에 내 서비스를 올리고, 일부러 메모리 한도를 넘겨 OOMKilled 를 보고 고쳐 본 경험**이면 말할 거리가 됩니다. {추론}",
+      "refs": [1, 26, 27],
+      "study": ["kubernetes-book", "k8s-docs"]
+    },
+    {
+      "section": "preference",
+      "quote": "AI/ML 모델 서빙 및 연동 서비스 개발을 수행하신 분",
+      "short": "연구 조직이 만든 예측 모델을 API로 띄우고(서빙), 업무 시스템이 그걸 불러 쓰게 이어 본 경험.",
+      "why": "SK하이닉스는 연구 단계에 AI 모델(예측 시스템·식각 레시피 모델)을 쓰고 있다고 밝혔습니다.[8] 모델이 업무 시스템과 이어지지 않으면 연구원이 결과를 따로 옮겨 적어야 합니다. {추론} SK AX는 GPU·MLOps 체계 구축을 서비스로 팝니다.[34]",
+      "actually": {
+        "items": [
+          "**서빙** — 모델을 HTTP 엔드포인트로 띄운다. 쿠버네티스 위에서는 KServe 같은 도구가 버전·자동 확장을 맡는다.[30]",
+          "**연동** — Java 서비스가 모델 API를 부르고, 느리거나 실패할 때 시간 제한·재시도·대체 응답을 둔다. {추론}",
+          "**결과 저장** — 어떤 모델 판이 어떤 입력에 무슨 값을 냈는지 남겨야 나중에 연구원이 믿고 쓴다. {추론}"
+        ]
+      },
+      "how_far": "모델 학습은 데이터 과학자 몫입니다. 이 자리는 **모델을 부르는 쪽(연동)과 띄우는 쪽(서빙)의 계약 — 입력·출력·지연·실패 — 을 정하는 것**까지입니다. {추론}",
+      "refs": [8, 30, 34],
+      "study": ["kserve-docs", "spring-ai-docs"]
+    },
+    {
+      "section": "preference",
+      "quote": "반도체 제조 공정 또는 R&D 관련 시스템 구축·운영 경험을 보유하신 분",
+      "short": "반도체 용어(웨이퍼·로트·스플릿·수율·공정 단계)를 알아듣고 시스템으로 옮겨 본 경험.",
+      "why": "고객이 반도체 연구원이라 요구사항이 공정 용어로 옵니다.[1] SK하이닉스 뉴스룸 칼럼은 흔히 말하는 8대 공정(웨이퍼 제조·산화·포토·식각·증착·금속 배선·테스트·패키징)을 소개하면서, 이 분류가 교육용 묶음이라는 단서도 답니다.[20]",
+      "actually": {
+        "items": [
+          "**공정 흐름** — 한 웨이퍼가 수백 단계를 지나고, 단계마다 장비·레시피·측정이 붙는다. {추론}",
+          "**R&D 특유의 것** — 같은 로트를 조건만 바꿔 나누는 스플릿, 시험 웨이퍼, 신소재 평가. 생산 시스템(MES)보다 '비교'와 '변경'이 많다.[8] {추론}",
+          "**보안** — 공정 조건은 회사 핵심 기밀이라 접근 권한·반출 통제가 엄하다. {추론}"
+        ]
+      },
+      "how_far": "경험이 없으면 **용어를 먼저 익히고, 데이터 모델로 그려 보는 것**으로 대신합니다. 아래 성향 줄에 '새 도메인을 빠르게 학습'이 따로 있어 경험 없는 지원자도 염두에 둔 자리로 보입니다.[1] {추론}",
+      "refs": [1, 8, 20],
+      "study": ["skhynix-column"]
+    },
+    {
+      "section": "preference",
+      "quote": "PLM 영역 경험 및 솔루션 기반 사업 수행 이력을 갖추신 분",
+      "short": "PLM(제품 수명주기 관리) — 사양·자재목록(BOM)·변경 이력·과제를 한 곳에서 관리하는 시스템. 상용 솔루션 위 구축 경험.",
+      "why": "LG CNS는 PLM을 PDM(제품 데이터)·PMS(과제 관리)·ALM(소프트웨어 수명주기)으로 나눕니다 — 이 공고의 '과제관리·개발품질'과 겹칩니다.[22][1] 삼성SDS는 AI 시대 PLM이 데이터 저장소에서 여러 시스템을 잇고 AI가 변경 영향 분석·설계 검토를 돕는 쪽으로 바뀐다고 정리했고, 그 사례로 SK하이닉스의 AI 기반 R&D도 듭니다.[21]",
+      "actually": {
+        "items": [
+          "**BOM** — 무엇이 무엇으로 이루어지나의 나무 구조. 판이 바뀌면 이전 판을 남긴다.[22]",
+          "**설계 변경(ECO)** — 변경 요청 → 영향 분석 → 승인 → 반영의 결재 흐름.[22][21]",
+          "**솔루션 기반 사업** — 상용 PLM 제품을 들여와 고객 업무에 맞게 설정·확장하는 사업. 처음부터 짜는 개발과 달리 제품의 확장 방식을 따라야 한다. {추론}",
+          "**연결** — PLM·ERP·MES 사이 데이터를 잇는 '디지털 스레드'.[21]"
+        ]
+      },
+      "how_far": "특정 상용 PLM 제품 경험을 가리키지만 어떤 제품인지는 공고에 없습니다.[1] 경험이 없으면 **BOM·변경 결재를 데이터 모델로 그려 보고, 공개된 PLM 소개 자료로 용어를 익히는 것**이 현실적인 준비입니다. {추론}",
+      "refs": [1, 21, 22],
+      "study": ["lgcns-pdm", "sds-plm"]
+    },
+    {
+      "section": "preference",
+      "quote": "대규모 프로젝트에서 Tech. Leader 로 코드 리뷰 및 팀원을 가이드 해보신 분",
+      "short": "여러 명의 코드를 리뷰하고, 막힌 팀원을 풀어 주고, 기술 결정을 책임져 본 경험.",
+      "why": "업무 줄의 '기술 스택 리딩·코드 품질 관리'를 해 본 증거를 묻는 우대입니다.[1] 구글 공개 리뷰 지침은 완벽한 코드가 아니라 '전체가 나아지면 승인', 의견에는 이유를 달고 취향 문제는 표시하라고 권합니다.[28]",
+      "actually": {
+        "items": [
+          "**리뷰 기준** — 설계·기능·복잡도·테스트·이름·주석 순으로 본다.[28]",
+          "**가이드** — 새로 온 사람에게 템플릿 프로젝트·표준 문서·첫 과제를 준다. {추론}",
+          "**결정 기록** — 왜 이 라이브러리·구조를 골랐는지 짧은 문서(ADR 같은 것)로 남긴다. {추론}"
+        ]
+      },
+      "how_far": "직함보다 **리뷰를 몇 명에게 얼마나 했고, 그 결과 무엇이 표준이 됐나**를 말할 수 있어야 합니다. {추론}",
+      "refs": [1, 28],
+      "study": ["google-review", "clean-arch"]
+    },
+    {
+      "section": "preference",
+      "quote": "외국어 능력으로 글로벌 커뮤니케이션에 능하신 분",
+      "short": "대외·해외 고객이나 외산 솔루션 업체와 일할 때 쓴다 — 영어 문서·회의.",
+      "why": "고객에 '대외 고객'이 있고, PLM 같은 솔루션은 외산 제품이 많아 문서·지원 창구가 영어인 경우가 흔합니다.[1] {추론}",
+      "refs": [1]
+    },
+    {
+      "section": "preference",
+      "quote": "새로운 도메인(반도체 R&D)을 빠르게 학습하려는 적극적인 태도를 가지신 분",
+      "short": "반도체 경험이 없어도 된다는 신호 — 대신 용어·업무를 빨리 익히는 사람이어야 한다.",
+      "why": "도메인 경험 우대 줄이 따로 있는데 성향 줄에 '빠르게 학습'을 다시 넣었습니다.[1] 반도체 업무 경험이 없는 Java 리더도 받겠다는 뜻으로 읽힙니다. {추론} 회사 쪽 공개 자료로는 SK하이닉스 뉴스룸의 공정 해설 연재가 입문에 쓸 만합니다.[20]",
+      "how_far": "면접 전에 **공정 이름과 R&D 흐름(과제 → 실험 → 평가 → 이관)을 자기 말로 설명할 수 있을 만큼**은 익혀 갑니다. {추론}",
+      "refs": [1, 20],
+      "study": ["skhynix-column"]
+    },
+    {
+      "section": "preference",
+      "quote": "새로운 AI/DT 기술 트렌드에 대한 관심과 학습의지가 높으신 분",
+      "short": "AI 코딩 도구·LLM 연동을 실제 업무에 써 보는 사람 — 회사가 그 방향으로 일하는 법을 바꾸고 있다.",
+      "why": "SK AX는 요구사항 정리·코드 생성·테스트 생성·현행 시스템 분석에 AI 에이전트를 쓰는 'AI 소프트웨어 엔지니어링'을 서비스로 내세웁니다.[5] 고객사 SK하이닉스도 구성원이 직접 AI 서비스를 만드는 방향을 AX의 한 축으로 둡니다.[11]",
+      "how_far": "관심을 말로 하기보다 **AI 도구를 써서 무엇을 얼마나 줄였는지, 어디서 틀렸는지**를 예로 드는 편이 낫습니다. 회사 글도 AI가 빨라져도 설계 산출물이 없으면 늦어진다고 씁니다.[7]",
+      "refs": [5, 7, 11]
+    },
+    {
+      "section": "preference",
+      "quote": "다양한 이해관계자와 원활한 Communication이 가능하신 분",
+      "short": "연구원·고객 IT 부서·PM·외주 개발자 사이에서 같은 말을 다른 말로 옮기는 일.",
+      "why": "같은 사업의 PM 공고는 고객사 현업·IT 요구사항 협의와 기술 이슈를 비즈니스 언어로 조율하는 일을 적었습니다.[3] 기술 리더는 그 반대 방향 — 업무 말을 기술 결정으로 — 을 맡게 됩니다. {추론}",
+      "refs": [3]
+    },
+    {
+      "section": "preference",
+      "quote": "적극적이고 주도적인 태도로 팀웍 향상에 기여하실 분",
+      "short": "표준을 세우는 자리는 사람을 설득하는 자리 — 강요보다 먼저 써 보이고 같이 고치는 태도.",
+      "why": "성향 줄의 마지막입니다.[1] 기술 표준은 팀이 받아들여야 지켜지기 때문에, 리더 자리에서 협업 태도를 함께 봅니다. {추론}",
+      "refs": [1]
+    }
+  ],
+  "resources": [
+    {"id": "toby-spring", "title": "토비의 스프링 3.1", "by": "이일민 · 에이콘출판 · 2012", "kind": "book", "lang": "ko", "free": false, "level": "심화", "url": "https://search.kyobobook.co.kr/search?keyword=%ED%86%A0%EB%B9%84%EC%9D%98%20%EC%8A%A4%ED%94%84%EB%A7%81%203.1", "why": "의존성 주입·AOP·트랜잭션 추상화가 왜 이렇게 생겼나. 팀 표준을 세울 때 '왜 이 구조인가'를 설명할 말."},
+    {"id": "spring-core-book", "title": "스프링 핵심 원리 (우리 사이트 책)", "by": "우리 사이트 책장", "kind": "internal", "lang": "ko", "free": true, "level": "입문", "url": "/wiki/spring-core", "why": "컨테이너·빈·의존성 주입을 실행 결과로 확인. Java 웹 5년 요건의 바닥 다지기."},
+    {"id": "spring-mvc-book", "title": "스프링 MVC (우리 사이트 책)", "by": "우리 사이트 책장", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/wiki/spring-mvc-1", "why": "요청이 컨트롤러까지 가는 길과 오류 응답. API 표준(응답·오류 꼴)을 정할 때 쓴다."},
+    {"id": "spring-boot-book", "title": "스프링 부트 — 핵심 원리와 활용 (우리 사이트 책)", "by": "우리 사이트 책장", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/wiki/spring-boot", "why": "자동 구성·외부 설정·액추에이터. 팀 템플릿 프로젝트를 만들 때 필요한 것."},
+    {"id": "jpa-book", "title": "자바 ORM 표준 JPA 프로그래밍 (우리 사이트 책)", "by": "우리 사이트 책장", "kind": "internal", "lang": "ko", "free": true, "level": "입문", "url": "/wiki/jpa-basic", "why": "연관관계 매핑을 나가는 SQL로 확인. '데이터 모델로 정의' 요건을 코드로 옮기는 법."},
+    {"id": "jpa-app-book", "title": "스프링 부트와 JPA 활용 (우리 사이트 책)", "by": "우리 사이트 책장", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/wiki/jpa-app-1", "why": "도메인 설계부터 API까지 한 흐름, 쿼리 개수 줄이기. '실무 활용 능숙' 줄."},
+    {"id": "spring-advanced-book", "title": "스프링 핵심 원리 — 고급편 (우리 사이트 책)", "by": "우리 사이트 책장", "kind": "internal", "lang": "ko", "free": true, "level": "심화", "url": "/wiki/spring-advanced", "why": "프록시·AOP로 로그·권한·감사 이력 같은 공통 관심사를 한 곳에. 공통 모듈을 만드는 리더의 도구."},
+    {"id": "practical-testing-book", "title": "Practical Testing — 실용적인 테스트 가이드 (우리 사이트 책)", "by": "우리 사이트 책장", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/wiki/practical-testing", "why": "계층별 테스트 기준. '코드 품질 관리' 표준의 테스트 칸."},
+    {"id": "docker-book", "title": "개발자를 위한 도커 (우리 사이트 책)", "by": "우리 사이트 책장", "kind": "internal", "lang": "ko", "free": true, "level": "입문", "url": "/wiki/docker", "why": "이미지 빌드·실행·막힌 출력 읽기. 컨테이너 배포 업무 줄의 첫 칸."},
+    {"id": "kubernetes-book", "title": "쿠버네티스 입문 (우리 사이트 책)", "by": "우리 사이트 책장", "kind": "internal", "lang": "ko", "free": true, "level": "입문", "url": "/wiki/kubernetes", "why": "Pending·CrashLoopBackOff 읽기. 배포·최적화 업무와 K8S 우대 줄."},
+    {"id": "k8s-docs", "title": "쿠버네티스 공식 문서(한국어)", "by": "Kubernetes", "kind": "doc", "lang": "ko", "free": true, "level": "실무", "url": "https://kubernetes.io/ko/docs/home/", "why": "자원 요청·한도, 헬스체크(probe)의 정확한 정의."},
+    {"id": "ddd-evans", "title": "도메인 주도 설계", "by": "에릭 에반스 · 이대엽 옮김 · 위키북스 · 2011", "kind": "book", "lang": "ko", "free": false, "level": "심화", "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8F%84%EB%A9%94%EC%9D%B8%20%EC%A3%BC%EB%8F%84%20%EC%84%A4%EA%B3%84%20%EC%97%90%EB%A6%AD%20%EC%97%90%EB%B0%98%EC%8A%A4", "why": "업무 전문가의 말을 모델로 옮기고 경계를 나누는 법. '비즈니스 로직 분석·데이터 모델 정의' 두 줄의 뼈대."},
+    {"id": "clean-arch", "title": "클린 아키텍처", "by": "로버트 C. 마틴 · 인사이트 · 2019", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://search.kyobobook.co.kr/search?keyword=%ED%81%B4%EB%A6%B0%20%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98", "why": "의존 방향·계층 규칙. 개발 표준의 '어디가 어디를 부를 수 있나'를 정할 말."},
+    {"id": "ddia", "title": "데이터 중심 애플리케이션 설계", "by": "마틴 클레프만 · 위키북스 · 2018", "kind": "book", "lang": "ko", "free": false, "level": "심화", "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84", "why": "데이터 모델 선택·이력·일관성. 실험 데이터처럼 층이 깊은 데이터를 어떻게 담을지."},
+    {"id": "spring-modulith", "title": "Spring Modulith 참고 문서", "by": "Spring 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.spring.io/spring-modulith/reference/", "why": "한 Spring Boot 앱 안에서 모듈 경계를 검사하는 법. '확장 가능한 구조'를 쪼개기 전에 해 볼 것."},
+    {"id": "spring-boot-docs", "title": "Spring Boot 참고 문서", "by": "Spring 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.spring.io/spring-boot/index.html", "why": "설정·프로파일·컨테이너 이미지·액추에이터의 기준 문서. 백엔드 표준의 근거."},
+    {"id": "react-docs", "title": "React 공식 문서(한국어)", "by": "React", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://ko.react.dev/", "why": "컴포넌트 나누기·상태 끌어올리기. 프론트 표준을 세울 최소 지식."},
+    {"id": "openapi-spec", "title": "OpenAPI Specification", "by": "OpenAPI Initiative", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://spec.openapis.org/oas/latest.html", "why": "API 스펙을 기계가 읽는 문서로. 'API 스펙으로 정의' 요건의 표준 꼴."},
+    {"id": "google-review", "title": "Google Engineering Practices — Code Review", "by": "Google", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://google.github.io/eng-practices/review/", "why": "무엇을 보고 언제 승인하나. 코드 리뷰·팀원 가이드 우대 줄."},
+    {"id": "archunit", "title": "ArchUnit", "by": "TNG Technology Consulting (오픈소스)", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://www.archunit.org/", "why": "계층·패키지 규칙을 테스트로 막는다. 문서로만 있는 표준을 자동으로 지키게."},
+    {"id": "spring-ai-docs", "title": "Spring AI 참고 문서", "by": "Spring 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.spring.io/spring-ai/reference/", "why": "Java에서 LLM 호출·벡터 저장소·RAG. 'AI를 활용한 서비스 구현' 줄."},
+    {"id": "rag-paper", "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks", "by": "Lewis 외 · NeurIPS 2020", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://arxiv.org/abs/2005.11401", "why": "문서 검색을 붙인 생성의 원래 정의. 실험 보고서 검색 서비스를 설명할 출발점."},
+    {"id": "kserve-docs", "title": "KServe 문서", "by": "KServe (CNCF)", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://kserve.github.io/website/", "why": "쿠버네티스 위 모델 서빙. 'AI/ML 모델 서빙' 우대 줄."},
+    {"id": "skhynix-column", "title": "SK하이닉스 뉴스룸 · 반도체 전공정 연재(정인성 칼럼)", "by": "SK하이닉스 뉴스룸 · 2022", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://news.skhynix.co.kr/post/jeonginseong-column-oxidation", "why": "공정 이름과 흐름을 한국어로. 반도체 도메인 우대·'새 도메인 빠르게 학습' 줄."},
+    {"id": "lgcns-pdm", "title": "LG CNS · Product Development Management", "by": "LG CNS", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://www.lgcns.com/en/service/smart-factory/product-development-management", "why": "PDM·PMS·ALM으로 나눈 '제품 개발 관리' 시스템의 구성. 과제관리·개발품질이 무엇을 담는지."},
+    {"id": "sds-plm", "title": "삼성SDS 인사이트 · AI 시대, PLM은 어떻게 진화해야 하는가", "by": "삼성SDS · 2026", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://www.samsungsds.com/kr/insights/plm-evolution-in-the-ai-era.html", "why": "PLM에 AI가 붙는 단계(검색·요약 → 데이터 연결 → 에이전트). PLM 우대와 AI 업무 줄이 만나는 곳."}
+  ],
+  "study_path": [
+    {
+      "title": "연구 업무를 모델로 그리기",
+      "time": "1~2주",
+      "goal": "반도체 R&D의 과제 → 실험 → 조건 → 웨이퍼 → 측정 흐름을 설명하고, 그걸 ERD와 상태 전이표로 그린다.",
+      "task": "가상 과제 3개·실험 6개·조건 2갈래씩으로 ERD를 그리고, 과제 상태(기획·개발·검증·양산이관·중단) 전이표와 '조건별 수율 비교' SQL 한 개를 써서 가상 데이터로 결과를 확인한다.",
+      "resources": ["skhynix-column", "lgcns-pdm", "ddd-evans", "ddia"]
+    },
+    {
+      "title": "API 먼저 쓰고 Spring Boot로 세우기",
+      "time": "2~3주",
+      "goal": "OpenAPI 명세를 먼저 쓰고, 그대로 동작하는 Spring Boot + JPA 서비스를 만든다.",
+      "task": "1단계 모델로 과제·실험·측정값 API 10개 안팎의 OpenAPI 문서를 쓰고 구현한다. 상태 전이 규칙은 도메인 객체에서 막고, 변경 이력은 별도 표에 남긴다. 테스트로 '개발 → 양산이관' 거부를 확인한다.",
+      "resources": ["openapi-spec", "spring-boot-book", "jpa-app-book", "practical-testing-book"]
+    },
+    {
+      "title": "팀 표준 만들기 — 템플릿·자동 검사·리뷰 기준",
+      "time": "2주",
+      "goal": "남이 이 프로젝트를 복사해 새 시스템을 시작해도 같은 구조가 나오게 한다.",
+      "task": "2단계 프로젝트를 템플릿으로 정리하고(패키지 규칙·오류 응답 꼴·로그 형식), ArchUnit으로 '컨트롤러는 저장소를 직접 부르지 않는다' 테스트를 넣는다. 리뷰 체크리스트 한 장과 React 화면 하나(조건별 비교 표)를 같은 규칙으로 붙인다.",
+      "resources": ["clean-arch", "archunit", "google-review", "react-docs", "spring-modulith"]
+    },
+    {
+      "title": "컨테이너로 올리고 맞추기",
+      "time": "1~2주",
+      "goal": "이미지를 굽고 쿠버네티스에 올려 자원값·헬스체크를 스스로 맞춘다.",
+      "task": "Spring Boot 빌드 도구로 이미지를 만들고 로컬 클러스터에 배포한다. 시작 확인을 빼고 기동이 늦을 때 재시작되는 것을 본 뒤 고치고, 메모리 한도를 일부러 낮춰 OOMKilled를 재현·해결한다. 파드 수에 맞는 노드 수를 어림해 적는다.",
+      "resources": ["docker-book", "kubernetes-book", "k8s-docs", "spring-boot-docs"]
+    },
+    {
+      "title": "AI 기능 하나 붙이기",
+      "time": "2주~",
+      "goal": "가상 실험 보고서를 검색·요약하는 기능을 권한 검사와 함께 서비스에 넣는다.",
+      "task": "가상 보고서 50건을 조각내 벡터로 색인하고 Spring AI로 '식각 CD 편차' 같은 질문에 맞는 조각 3개와 요약을 돌려준다. 사용자 권한에 없는 과제의 보고서는 검색 결과에서 빠지는지 테스트한다. 간단한 예측 모델 하나를 HTTP로 띄워 시간 제한·실패 대체 응답도 붙인다.",
+      "resources": ["spring-ai-docs", "rag-paper", "kserve-docs", "sds-plm"]
+    }
+  ],
+  "pay": {
+    "summary": "공고에 연봉이 없고 SK AX만의 공시도 없다 — SK주식회사 전체 직원 평균은 **1억 1,600만원**(2024 사업보고서), 초봉 공개 자료는 못 찾았다",
+    "rows": [
+      {"label": "직원 평균 급여(SK주식회사 전체)", "value": "1억 1,600만원", "amount": 11600, "basis": "사업보고서 · 2024년", "note": "SK AX는 별도 회사가 아니라 SK주식회사 안의 사업 조직이라[18] 공시 숫자는 지주 부문을 합친 회사 전체 값이다 [13]"},
+      {"label": "삼성SDS 평균", "value": "1억 3,400만원", "amount": 13400, "basis": "사업보고서 · 2024년", "peer": true, "note": "같은 해 사업보고서 기준 [14]"},
+      {"label": "LG CNS 평균", "value": "1억 1,600만원", "amount": 11600, "basis": "사업보고서 · 2024년", "peer": true, "note": "같은 해 사업보고서 기준 [15]"}
+    ],
+    "how": "경력직 공고이고 전형 끝에 **처우협의** 단계가 있어 연봉은 사람마다 정한다 [1]. 평균은 경력직·지주 부문이 모두 섞인 회사 전체 값이라 이 자리 제안 금액으로 읽으면 안 된다 {추론}. 공공데이터 집계 사이트의 SK AX 초봉·평균은 확인하지 못했다."
+  },
+  "benefits": {
+    "items": [
+      {"name": "성장", "detail": "9개 단과대 College·mySUNI, 해마다 Learning Account 예산, MARU 도서관, 사내 공모, 온보딩"},
+      {"name": "장기근속", "detail": "10년부터 30년까지 근속 포상"},
+      {"name": "주택 자금", "detail": "주택 최대 6,000만원, 생활안정자금 최대 1,500만원 대출"},
+      {"name": "자녀 학자금", "detail": "학자금 지원"},
+      {"name": "식대·통신비", "detail": "친환경 먹거리 월 4만원, 통신비 월 7만원(SKT 이용자)"},
+      {"name": "복지 포인트", "detail": "연 100만원 + 월 20만원, SK 패밀리카드 연회비 10만원, 창립기념일 포인트 20만원"},
+      {"name": "동호회", "detail": "분기 최대 150만원"},
+      {"name": "건강", "detail": "종합 25만원·집중 40만원 검진, 시험관 시술 지원, 단체보험, 심리 상담 공감플러스+, 의무실"},
+      {"name": "시설", "detail": "헬스센터, 휴게·수면실, 휴양소, 어린이집·수유실"},
+      {"name": "그 밖", "detail": "출근 셔틀, 경조사 지원, SK Family Mall"}
+    ],
+    "note": "SK AX 채용 사이트의 복리후생 페이지다(연도 표기 없음, 2026-11-23 확인) [16]. 공고 자체에는 복리후생 칸이 없고 원티드 사본은 '홈페이지 참조'로만 적었다 [2]."
+  },
+  "location": {
+    "name": "SK AX 본사 · SK u-타워",
+    "address": "경기도 성남시 분당구 성남대로 343번길 9 (정자동, SK u-타워)",
+    "postal": "13558",
+    "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%EC%84%B1%EB%82%A8%EB%8C%80%EB%A1%9C%20343%EB%B2%88%EA%B8%B8%209",
+    "near": "신분당선·수인분당선 정자역 근처 {추론}",
+    "note": "공고 근무지는 '분당 주, 사업에 따라 이천'이고 [1], 원티드 사본의 근무지 칸이 이 주소다 [2]. 주소·우편번호는 SK AX 사업장 안내와 같다 [17]. 이천 쪽 근무 장소는 공고에 없다 — SK하이닉스 본사는 경기도 이천시 부발읍 경충대로 2091이다 [19]."
+  },
+  "fit": {
+    "good": [
+      "Spring Boot 서비스를 처음부터 설계해 봤고, 이제 여러 시스템의 표준을 세우는 쪽으로 가고 싶은 Java 개발자",
+      "업무 규칙이 복잡한 도메인(제조·금융·공공)을 데이터 모델로 옮겨 본 사람[1]",
+      "반도체 연구 현장처럼 데이터가 깊고 기밀인 업무에 관심 있는 사람[8]",
+      "AI 기능을 업무 시스템에 붙이는 일을 직접 해 보고 싶은 사람[1][5]"
+    ],
+    "hard": [
+      "Java 웹 5년 이상이 필수라 연차가 모자라면 어렵다[1]",
+      "고객 프로젝트형 일이고 사업에 따라 이천 근무가 있다[1]",
+      "PLM이 어떤 제품인지, 시스템이 지금 어떤 구조인지 공고에 없다[1]",
+      "프론트(React)·쿠버네티스까지 범위가 넓어 백엔드만 한 사람은 리딩 범위가 부담일 수 있다 {추론}"
+    ]
+  },
+  "interview": [
+    {"q": "연구원이 '같은 실험을 조건만 바꿔 여러 갈래로 돌리고 결과를 나란히 보고 싶다'고 해요. 표를 어떻게 잡겠어요?", "a": "데이터 모델·API 스펙 필수 요건 — 스플릿 실험 구조.[20]"},
+    {"q": "과제 상태가 '개발'인데 누가 바로 '양산이관'으로 바꿔 달라고 해요. 어디서 막고, 예외는 어떻게 열어 두나요?", "a": "비즈니스 로직 분석·아키텍처 설계 줄 — 상태 전이 규칙.[1]"},
+    {"q": "팀에 Spring Boot 개발 표준을 새로 세운다면 맨 먼저 무엇을 정하고, 어떻게 지키게 하겠어요?", "a": "기술 스택 리딩 줄 — 템플릿·자동 검사·리뷰.[4][28][38]"},
+    {"q": "Java 앱이 쿠버네티스에서 뜨자마자 재시작을 반복해요. 무엇부터 보나요?", "a": "컨테이너 배포·최적화 줄 — 헬스체크·메모리 한도.[26][27]"},
+    {"q": "실험 보고서 검색에 LLM을 붙인다면, 권한 없는 과제 문서가 답에 섞이지 않게 어떻게 하나요?", "a": "AI 서비스 구현 줄 — RAG와 권한.[29][31]"},
+    {"q": "PLM의 BOM과 설계 변경(ECO)을 설명하고, 변경 이력을 어떻게 남기겠어요?", "a": "PLM 우대 줄.[21][22]"},
+    {"q": "주니어의 PR에 고칠 점이 열 개 있어요. 리뷰를 어떻게 남기겠어요?", "a": "Tech Leader 코드 리뷰 우대 줄.[28]"}
+  ],
+  "caveat": "이 팀이 만드는 과제관리·개발품질·분석 시스템의 실제 화면·구조·사용 중인 PLM 제품은 공개 자료가 없습니다. 회사 자료는 이 공고와 원티드 사본, 같은 사업의 PM 공고(마감), SK AX의 NEXCORE·AI 소프트웨어 엔지니어링 소개와 한 고객 사례, 고객사 SK하이닉스의 AI 기반 R&D 발표 보도·뉴스룸 글뿐입니다. 나머지는 다른 회사(LG CNS·삼성SDS)의 PLM 소개와 공식 문서(Spring·React·쿠버네티스·OpenAPI·KServe)로 '보통 이런 것'을 보였습니다. 이 팀·SK AX의 관련 발표 영상은 찾지 못해 영상 자막은 받지 않았습니다.",
+  "sources": [
+    {"n": 1, "title": "SK Careers · 반도체 R&D 시스템 어플리케이션 설계 및 리딩 전문가 영입", "url": "https://www.skcareers.com/Recruit/Detail/R262477", "kind": "posting", "date": "2026-11", "note": "제조R&D AX팀 소개·업무 4줄·요건·우대·전형(서류 > SKCT > 면접 2회 > 처우협의)·공통 요건(경력 3년 이상). 지원 2026-11-11 ~ 12-31"},
+    {"n": 2, "title": "원티드 · [SK inc.(AX)] 반도체 R&D 시스템 어플리케이션 설계 및 리딩 전문가", "url": "https://www.wanted.co.kr/wd/398293", "kind": "posting", "date": "2026-11", "note": "같은 공고 사본 — 근무지 칸(성남대로 343번길 9, SK-U타워), 공통 요건을 자격요건 칸에 넣음"},
+    {"n": 3, "title": "리멤버 · SK(주) 반도체 R&D 시스템 사업 전문가(계약직)", "url": "https://career.rememberapp.co.kr/job/posting/304628", "kind": "posting", "note": "같은 사업의 PM 자리(마감) — 마일스톤·진척·리스크, 고객 요구사항 협의, 공수·산출물 품질, 분당 주·이천"},
+    {"n": 4, "title": "SK AX · NEXCORE", "url": "https://www.skax.co.kr/enterprisesolution/nexcore", "kind": "company", "note": "Spring Boot 기반 회사 프레임워크 — 표준 템플릿 코드·SQL 생성, SK그룹 제조·통신·유통 시스템 적용"},
+    {"n": 5, "title": "SK AX · AI 소프트웨어 엔지니어링", "url": "https://www.skax.co.kr/ax-services/ai-software-engineering", "kind": "company", "note": "요구사항 정형화·표준 코드 생성·AI 테스트 생성·현행 시스템 분석 에이전트"},
+    {"n": 6, "title": "SK AX 사례 · 라이프스타일 브랜드 C사 글로벌 플랫폼 구축", "url": "https://www.skax.co.kr/case-study/story/3616", "kind": "company", "date": "2026-07-23", "note": "태스크 정의서·화면 설계서·개발 지침서·룰셋을 먼저 만들고 AI로 코드 생성, 생산성 30% 이상"},
+    {"n": 7, "title": "SK AX 뉴스룸 · [AX Now] AI가 코드를 빨리 작성해도 개발이 늦어지는 이유는 무엇일까요?", "url": "https://www.skax.co.kr/company/news-room/ax-now-ai%EA%B0%80-%EC%BD%94%EB%93%9C%EB%A5%BC-%EB%B9%A8%EB%A6%AC-%EC%9E%91%EC%84%B1%ED%95%B4%EB%8F%84-%EA%B0%9C%EB%B0%9C%EC%9D%B4-%EB%8A%A6%EC%96%B4%EC%A7%80%EB%8A%94-%EC%9D%B4%EC%9C%A0%EB%8A%94/", "kind": "company", "date": "2026-11-19", "note": "설계 산출물이 먼저라는 주장, 30%는 그 프로젝트 하나의 결과라는 단서"},
+    {"n": 8, "title": "디지털데일리 · 이성훈 SK하이닉스 \"반도체 R&D, 이제 AI 없인 불가능\"", "url": "https://www.ddaily.co.kr/page/view/2026021115112477090", "kind": "news", "date": "2026-02-11", "note": "세미콘 코리아 2026 기조연설 — 소재 탐색 400분의 1, 식각 레시피 웨이퍼 시험 1/10"},
+    {"n": 9, "title": "한국경제 · SK하이닉스 \"메모리 기술 한계, AI R&D로 돌파\"", "url": "https://www.hankyung.com/article/202602119346i", "kind": "news", "date": "2026-02-11"},
+    {"n": 10, "title": "SK하이닉스 뉴스룸 · 김재범 부사장 국가전략기술 유공 표창 — 플랫폼 기반 R&D 체계", "url": "https://news.skhynix.co.kr/national-strategic-technology-awards-2026/", "kind": "company", "date": "2026-02-26", "note": "한 개발 플랫폼을 3세대 이상 쓰는 목표, AI 기반 R&D 체계 구상"},
+    {"n": 11, "title": "SK하이닉스 뉴스룸 · [하이피디아] 데이터부터 팹, 일하는 방식까지… 'AX'", "url": "https://news.skhynix.co.kr/?p=68874", "kind": "company", "date": "2026-11-17", "note": "DX 위에 AI — 데이터 통합·제조 시스템 고도화·반복 업무 줄이기"},
+    {"n": 12, "title": "CIO Korea · \"모든 의사결정은 데이터를 기반으로\" SK하이닉스 송창록 담당", "url": "https://www.cio.com/article/3532586/", "kind": "news", "date": "2019-08-30", "note": "플랫폼 개발을 SK(주) C&C·SK텔레콤과 협력. 오래된 기사"},
+    {"n": 13, "title": "FETV · SK 계열사 직원 평균 급여(2024 사업보고서)", "url": "https://www.fetv.co.kr/news/articleView.html?idxno=198852", "kind": "news", "date": "2025-08-14"},
+    {"n": 14, "title": "CEO스코어데일리 · 삼성SDS 직원 평균 급여", "url": "https://www.ceoscoredaily.com/page/view/2025070116383437395", "kind": "news", "date": "2025-07-02"},
+    {"n": 15, "title": "CEO스코어데일리 · LG CNS 직원 평균 급여", "url": "https://www.ceoscoredaily.com/page/view/2025072516400745114", "kind": "news", "date": "2025-07-27"},
+    {"n": 16, "title": "SK AX Careers · 복리후생", "url": "https://skax.skcareers.com/page/HR/Welfare", "kind": "company", "note": "2026-11-23 확인, 연도 표기 없음"},
+    {"n": 17, "title": "SK AX · 사업장 안내", "url": "https://www.skax.co.kr/company/office", "kind": "company"},
+    {"n": 18, "title": "KPI뉴스 · SK C&C, 'SK㈜ AX'로 이름 바꿔", "url": "https://kpinews.kr/newsView/1065576140213162", "kind": "news", "date": "2025-05"},
+    {"n": 19, "title": "SK하이닉스 홈페이지(회사 주소)", "url": "https://www.skhynix.com/", "kind": "company", "note": "하단 주소 — 경기도 이천시 부발읍 경충대로 2091"},
+    {"n": 20, "title": "SK하이닉스 뉴스룸 · [반도체 전공정 2편] 반도체 공정 개괄과 산화", "url": "https://news.skhynix.co.kr/post/jeonginseong-column-oxidation", "kind": "company", "date": "2022-09-22", "note": "외부 전문가 칼럼 — 8대 공정 분류와 그 한계"},
+    {"n": 21, "title": "삼성SDS 인사이트 · AI 시대, PLM은 어떻게 진화해야 하는가", "url": "https://www.samsungsds.com/kr/insights/plm-evolution-in-the-ai-era.html", "kind": "reference", "date": "2026-08-19", "note": "다른 회사 — 데이터 모델·디지털 스레드·AI 에이전트, SK하이닉스 AI Based R&D 언급"},
+    {"n": 22, "title": "LG CNS · Product Development Management", "url": "https://www.lgcns.com/en/service/smart-factory/product-development-management", "kind": "reference", "note": "다른 회사 — PLM = PDM·PMS·ALM, BOM·ECO·게이트 리뷰"},
+    {"n": 23, "title": "Spring Boot 참고 문서", "url": "https://docs.spring.io/spring-boot/index.html", "kind": "reference"},
+    {"n": 24, "title": "React 공식 문서(한국어)", "url": "https://ko.react.dev/", "kind": "reference"},
+    {"n": 25, "title": "OpenAPI Specification", "url": "https://spec.openapis.org/oas/latest.html", "kind": "reference"},
+    {"n": 26, "title": "Kubernetes 문서 · Resource Management for Pods and Containers", "url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/", "kind": "reference", "note": "요청·한도, 메모리 한도 초과 시 종료"},
+    {"n": 27, "title": "Kubernetes 문서 · Liveness, Readiness, and Startup Probes", "url": "https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/", "kind": "reference"},
+    {"n": 28, "title": "Google Engineering Practices · Code Review", "url": "https://google.github.io/eng-practices/review/", "kind": "reference"},
+    {"n": 29, "title": "Spring AI 참고 문서", "url": "https://docs.spring.io/spring-ai/reference/", "kind": "reference"},
+    {"n": 30, "title": "KServe 문서", "url": "https://kserve.github.io/website/", "kind": "reference", "note": "쿠버네티스 위 모델 서빙"},
+    {"n": 31, "title": "Lewis 외 · Retrieval-Augmented Generation (NeurIPS 2020)", "url": "https://arxiv.org/abs/2005.11401", "kind": "reference"},
+    {"n": 32, "title": "Spring Modulith 참고 문서", "url": "https://docs.spring.io/spring-modulith/reference/", "kind": "reference", "note": "한 앱 안의 모듈 경계 검사"},
+    {"n": 33, "title": "Martin Fowler · MonolithFirst", "url": "https://martinfowler.com/bliki/MonolithFirst.html", "kind": "reference", "note": "처음엔 잘 나뉜 하나의 앱부터"},
+    {"n": 34, "title": "SK AX · Data to AI 설계/구축 서비스", "url": "https://www.skax.co.kr/cloud/ai-cloud", "kind": "company", "note": "GPU·MLOps·LLMOps 체계 구축 서비스"},
+    {"n": 36, "title": "Spring Boot 문서 · Container Images", "url": "https://docs.spring.io/spring-boot/reference/packaging/container-images/index.html", "kind": "reference", "note": "계층 나뉜 이미지·빌드팩"},
+    {"n": 37, "title": "SonarQube 문서 · Quality gates", "url": "https://docs.sonarsource.com/sonarqube-server/latest/quality-standards-administration/managing-quality-gates/introduction-to-quality-gates/", "kind": "reference"},
+    {"n": 38, "title": "ArchUnit", "url": "https://www.archunit.org/", "kind": "reference", "note": "아키텍처 규칙을 단위 테스트로"}
+  ]
+}

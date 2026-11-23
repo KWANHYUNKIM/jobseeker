@@ -43,6 +43,8 @@
   "ats-skcareers:sk:R262430": "skax-security-architect",
   "ats-skcareers:sk:R262135": "skax-security-operations-pm",
   "jobkorea-50267139": "skax-security-operations-pm",
+  "ats-skcareers:sk:R262477": "skax-semicon-rnd-app-architect",
+  "wanted-398293": "skax-semicon-rnd-app-architect",
   "ats-skcareers:sk:R262455": "skax-semicon-utility-ax",
   "ats-skcareers:sk:R262252": "skax-vision-image-platform-pl-mle",
   "saramin-55459415": "skax-vision-image-platform-pl-mle",
@@ -495,6 +497,17 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 30
+  },
+  {
+   "id": "skax-semicon-rnd-app-architect",
+   "company": "SK주식회사(AX)",
+   "role": "반도체 R&D 시스템 어플리케이션 설계 및 리딩 전문가",
+   "jobs": [
+    "ats-skcareers:sk:R262477",
+    "wanted-398293"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 29
   },
   {
    "id": "skax-semicon-utility-ax",
