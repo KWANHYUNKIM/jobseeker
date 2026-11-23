@@ -1,6 +1,7 @@
 {
  "updated_at": "2026-11-23",
  "jobs": {
+  "wanted-391370": "litalico-data-engineer",
   "wanted-391368": "litalico-sre-product",
   "ats-skcareers:sk:R262457": "skax-ai-studio-mlops-pl",
   "jobkorea-50384147": "skax-ai-studio-mlops-pl",
@@ -8,7 +9,10 @@
   "jobkorea-50384211": "skax-ai-studio-mlops-pl",
   "dev-581141": "skax-ai-studio-mlops-pl",
   "ats-skcareers:sk:R262275": "skax-ax-ai-pm-pl",
+  "ats-skcareers:sk:R262283": "skax-ax-ai-project-pm-pl",
   "ats-skcareers:sk:R262418": "skax-contact-center-application",
+  "ats-skcareers:sk:R262252": "skax-vision-image-platform-pl-mle",
+  "saramin-55459415": "skax-vision-image-platform-pl-mle",
   "wanted-386999": "speee-dx-sre",
   "wanted-393877": "speee-realestate-senior-product-engineer",
   "ats-toss:group:7990802003": "toss-ads-ai-engineer",
@@ -105,9 +109,20 @@
   "ats-toss:group:7998884003": "tossbank-senior-data-analyst",
   "ats-toss:group:4521687003": "tossbank-server-platform",
   "ats-toss:group:6607772003": "tossbank-system-security-engineer",
+  "wanted-390470": "visasq-data-platform-engineer",
   "wanted-390176": "visasq-data-platform-engineer"
  },
  "roles": [
+  {
+   "id": "litalico-data-engineer",
+   "company": "LITALICO",
+   "role": "데이터 엔지니어",
+   "jobs": [
+    "wanted-391370"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 29
+  },
   {
    "id": "litalico-sre-product",
    "company": "LITALICO",
@@ -143,6 +158,16 @@
    "lines": 41
   },
   {
+   "id": "skax-ax-ai-project-pm-pl",
+   "company": "SK주식회사(AX)",
+   "role": "AX/AI 프로젝트 PM/PL",
+   "jobs": [
+    "ats-skcareers:sk:R262283"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 44
+  },
+  {
    "id": "skax-contact-center-application",
    "company": "SK주식회사(AX)",
    "role": "컨택센터 Application 운영/개발 전문가",
@@ -151,6 +176,17 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 36
+  },
+  {
+   "id": "skax-vision-image-platform-pl-mle",
+   "company": "SK주식회사(AX)",
+   "role": "전사 통합 Image 솔루션 제공 플랫폼 Application PL 및 ML 엔지니어",
+   "jobs": [
+    "ats-skcareers:sk:R262252",
+    "saramin-55459415"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 41
   },
   {
    "id": "speee-dx-sre",
@@ -1069,13 +1105,14 @@
   },
   {
    "id": "visasq-data-platform-engineer",
-   "company": "비자스크 (株式会社ビザスク)",
+   "company": "ビザスク(VisasQ)",
    "role": "데이터 플랫폼 엔지니어",
    "jobs": [
+    "wanted-390470",
     "wanted-390176"
    ],
    "researched_at": "2026-11-23",
-   "lines": 31
+   "lines": 25
   }
  ]
 }
