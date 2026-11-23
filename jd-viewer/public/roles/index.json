@@ -1,6 +1,12 @@
 {
  "updated_at": "2026-11-23",
  "jobs": {
+  "ats-skcareers:sk:R262457": "skax-ai-studio-mlops-pl",
+  "jobkorea-50384147": "skax-ai-studio-mlops-pl",
+  "jobkorea-50384195": "skax-ai-studio-mlops-pl",
+  "jobkorea-50384211": "skax-ai-studio-mlops-pl",
+  "dev-581141": "skax-ai-studio-mlops-pl",
+  "wanted-386999": "speee-dx-sre",
   "ats-toss:group:7990802003": "toss-ads-ai-engineer",
   "ats-toss:group:7998957003": "toss-ads-bidding-pacing-mle",
   "ats-toss:group:6619423003": "toss-ads-data-analyst",
@@ -97,6 +103,30 @@
   "ats-toss:group:6607772003": "tossbank-system-security-engineer"
  },
  "roles": [
+  {
+   "id": "skax-ai-studio-mlops-pl",
+   "company": "SK주식회사(AX)",
+   "role": "제조 AI · Data 분야 AI Studio 개발/운영 PL",
+   "jobs": [
+    "ats-skcareers:sk:R262457",
+    "jobkorea-50384147",
+    "jobkorea-50384195",
+    "jobkorea-50384211",
+    "dev-581141"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 46
+  },
+  {
+   "id": "speee-dx-sre",
+   "company": "Speee(스피)",
+   "role": "SRE 엔지니어 · 현장산업 DX 분야",
+   "jobs": [
+    "wanted-386999"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 39
+  },
   {
    "id": "toss-ads-ai-engineer",
    "company": "토스",
