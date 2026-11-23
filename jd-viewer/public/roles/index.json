@@ -11,6 +11,7 @@
   "ats-toss:group:8009061003": "toss-ai-platform-retrieval",
   "ats-toss:group:7786567003": "toss-ai-platform-serving",
   "ats-toss:group:8000575003": "toss-aioc-ai-solution-engineer",
+  "ats-toss:group:7503655003": "toss-aioc-brain-ai-engineer",
   "ats-toss:group:7798373003": "toss-call-infra-engineer",
   "ats-toss:group:7997231003": "toss-catalog-mle",
   "ats-toss:group:7989660003": "toss-client-platform-engineer",
@@ -30,6 +31,7 @@
   "ats-toss:group:7795677003": "toss-gpu-systems-engineer",
   "wanted-347560": "toss-gpu-systems-engineer",
   "ats-toss:group:8035179003": "toss-ml-engineer-ocr",
+  "ats-toss:group:6620395003": "toss-network-software-engineer",
   "ats-toss:group:8047064003": "toss-p2p-lending-server-developer",
   "ats-toss:group:7901191003": "toss-platform-analytics-engineer",
   "ats-toss:group:5960616003": "toss-product-analytics-engineer",
@@ -137,6 +139,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 16
+  },
+  {
+   "id": "toss-aioc-brain-ai-engineer",
+   "company": "토스",
+   "role": "AI 엔지니어 (Brain, AIOC)",
+   "jobs": [
+    "ats-toss:group:7503655003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 12
   },
   {
    "id": "toss-call-infra-engineer",
@@ -318,6 +330,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 18
+  },
+  {
+   "id": "toss-network-software-engineer",
+   "company": "토스",
+   "role": "네트워크 소프트웨어 엔지니어",
+   "jobs": [
+    "ats-toss:group:6620395003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 11
   },
   {
    "id": "toss-p2p-lending-server-developer",

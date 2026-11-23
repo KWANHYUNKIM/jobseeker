@@ -1,0 +1,912 @@
+{
+ "id": "toss-network-software-engineer",
+ "company": "토스",
+ "role": "네트워크 소프트웨어 엔지니어",
+ "team": "보안 조직 · 사내 ZTNA VPN 팀",
+ "jobs": [
+  "ats-toss:group:6620395003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "토스 직원이 사내 시스템에 들어갈 때 반드시 거치는 **사내 VPN(ZTNA)** 의 서버와 PC 클라이언트를 직접 만들고 24시간 운영합니다. '누가 어디에 접근할 수 있나'를 이 제품이 정합니다.[1][5]",
+  "env": "Go 로 짜고 gVisor netstack(프로그램 안에서 도는 TCP/IP 스택)·MySQL·Kafka·Kubernetes 를 씁니다.[1] 토스는 외산 보안 서비스를 걷어 내고 사내 접속·인터넷 보호를 자체 제품으로 바꾸는 중입니다.[4]",
+  "oneline": "보안 제품을 만드는 **네트워크 개발자**. 보안 지식보다 **장애에 강한 설계와 TCP/IP 기본기**를 먼저 봅니다 — Go·보안 경험은 없어도 된다고 공고가 적었습니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "토스의 내부 보안을 책임지는 VPN 서버/클라이언트를 설계하고 개발해요.",
+   "short": "직원 노트북에 깔리는 접속 프로그램과, 그 연결을 받아 사내 시스템으로 이어 주는 서버를 둘 다 만든다.",
+   "why": "이 VPN 은 토스 팀원이 일을 시작하려면 꼭 거쳐야 하는 관문이고, 누가 어디에 접근할 수 있는지를 정하는 곳이라 내부 보안의 가장 앞단이라고 회사가 소개했습니다.[5] 토스는 2023년에 IP 로 허용하던 방식을 사용자·기기 기준으로 바꾸는 제로 트러스트(Zero Trust — 네트워크 안에 있다고 믿지 않고 접속마다 사람·기기를 확인하는 방식)를 도입했는데, 그때는 외부 솔루션을 썼습니다.[2] 2026년 인터뷰에서 CISO 는 약 4년 쓴 외산 서비스(지스케일러)를 약 2년 걸려 만든 자체 제품 '타이탄'으로 바꿨고, 원인을 알려 주지 않는 외부 업체 때문에 한 문제가 한 달 넘게 안 풀린 일이 계기였다고 말했습니다.[4] 이 공고의 VPN 이 타이탄의 사내 접속 기능과 같은 것인지는 공고·기사 어디에도 이어 적혀 있지 않습니다 {추론}.",
+   "actually": {
+    "intro": "ZTNA VPN 의 서버·클라이언트에 보통 들어가는 부분입니다. 앞의 둘은 토스가 발표에서 직접 말한 것이고, 나머지는 공개 표준·다른 회사 공개 문서로 본 '보통 이런 것'입니다.",
+    "items": [
+     "**로그인과 기기 확인** — 토스는 사내 계정(IAM)으로 지문 한 번에 로그인하고, 그 순간 '확인된 사람인가, 믿을 수 있는 네트워크·기기인가, 보안 설정을 지키고 있나'를 같이 본다고 발표했다.[2]",
+     "**세그먼트 단위 허용** — VPN 이 네트워크 전체를 열어 준다면 ZTNA 는 '이 애플리케이션'만 열어 준다. 인사 정보에서 가져온 역할(Role), 사내 자산을 앱 단위로 묶은 세그먼트(Segment), 둘을 잇는 정책(Policy) 세 칸으로 관리한다.[2]",
+     "**클라이언트 쪽 가상 랜카드** — 노트북에 가상 네트워크 장치(TUN)를 만들어 사내 주소로 가는 패킷만 가로채 터널에 싣는다. 윈도우는 Wintun 같은 드라이버[18], 맥은 운영체제의 패킷 터널 확장(NEPacketTunnelProvider)[17]을 쓰는 것이 흔하다.",
+     "**프로그램 안의 TCP/IP 스택** — 공고가 적은 gVisor netstack 은 TCP/IP 를 운영체제 커널이 아니라 Go 프로그램 안에서 돌리는 라이브러리다.[1][11] Tailscale 은 이것으로 터널에서 온 TCP·UDP 연결을 받아 끊고, 목적지로 새 연결을 열어 이어 준다.[12]",
+     "**암호화 터널** — WireGuard 같은 프로토콜은 UDP 위에 암호화된 패킷을 싣고, 공개키 하나로 상대를 확인한다.[10] 토스가 어떤 프로토콜을 쓰는지는 공개되지 않았다.",
+     "**정책 내려받기와 기록** — 서버는 정책 저장소(공고의 MySQL)에서 규칙을 읽고, 접속 기록을 메시지 큐(공고의 Kafka)로 흘려 보안 팀이 모니터링하게 한다 {추론}[1]."
+    ]
+   },
+   "flows": [
+    {
+     "caption": "직원이 사내 관리자 화면을 여는 한 번의 접속 (NIST 제로 트러스트 구성[7]과 토스 발표[2]로 그린 일반 흐름 {추론})",
+     "steps": [
+      "로그인 · 사내 계정 + 지문(패스워드 없음)",
+      "기기 점검 · 회사 자산인가, 디스크 암호화·OS 업데이트를 지키나",
+      "정책 판정 · 역할 × 세그먼트 × 기기 상태 → 허용/거부",
+      "터널 · 노트북의 가상 랜카드 → 암호화 → 게이트웨이",
+      "전달 · 게이트웨이가 허용된 앱 주소로만 연결을 이어 줌",
+      "기록 · 누가 언제 어디에 붙었나를 남겨 보안 팀이 봄"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "무엇을 막을지(정책 내용)는 보안 엔지니어·화이트해커와 같이 정하고, 이 자리는 그 정책이 **틀림없이 집행되는 제품**을 만듭니다.[1] 서버와 클라이언트를 둘 다 맡으니 최소선은 'TCP 서버를 Go 나 다른 언어로 짜서 직접 운영해 봤다' 정도이고, 가상 랜카드·커널 기능은 들어와서 배워도 된다고 공고가 열어 두었습니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    4,
+    5,
+    7,
+    10,
+    11,
+    12,
+    17,
+    18
+   ],
+   "study": [
+    "slash23-zt",
+    "nist-800-207",
+    "zt-networks",
+    "wg-paper",
+    "gvisor-netstack"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "24시간 동작하며, Active-Active 이중화 등 고가용성을 요구하는 네트워크 제품을 직접 개발하고 운영해요.",
+   "short": "VPN 이 멈추면 전 직원이 일을 못 한다. 서버 여러 대가 동시에 일하다 한 대가 죽어도 접속이 안 끊기게 만든다.",
+   "why": "토스는 제로 트러스트 뒤로 사무실·재택·해외 구분 없이 노트북만 열면 일하는 환경이 됐다고 발표했습니다.[2] 그 말은 모든 업무 접속이 이 제품 하나를 지난다는 뜻이라, 멈추면 약 2,000명[4]이 동시에 멈춥니다 {추론}. 자체 제품으로 바꾼 뒤 대부분의 장애를 몇 시간 안에 고친다고 CISO 가 말했는데, 그만큼 고치는 책임도 이 팀에 있습니다.[4]",
+   "actually": {
+    "intro": "Active-Active 는 '예비 서버가 기다리는' 방식(Active-Standby)과 달리 여러 대가 늘 같이 일을 나누는 방식입니다. 보통 이런 것을 다룹니다.",
+    "items": [
+     "**연결 나누기** — 앞단에서 접속을 서버 여러 대에 나눈다. 구글 SRE 책은 DNS 로 한 번, 그 뒤 로드밸런서로 한 번 나누는 구조를 설명한다.[14]",
+     "**세션이 붙은 서버** — VPN 연결은 오래 유지되는 상태라 같은 사용자를 같은 서버로 보내야 한다. 서버가 빠질 때 그 서버 몫만 옮겨지는 해싱을 쓴다(아래 예).",
+     "**상태 나누기** — 누가 어떤 정책으로 붙어 있는지를 서버 한 대 메모리에만 두면 그 서버가 죽을 때 사라진다. 공유 저장소(공고의 MySQL)나 이벤트(Kafka)로 다른 서버도 알게 한다 {추론}[1].",
+     "**한꺼번에 다시 붙기** — 서버 한 대가 죽으면 그쪽 클라이언트 수백 대가 동시에 재접속한다. 몰린 요청이 남은 서버까지 쓰러뜨리는 연쇄 장애를 막는 것이 핵심이다.[15]",
+     "**무중단 배포** — 서버를 하나씩 빼고 새 버전을 올린다. 클라이언트도 수천 대 PC 에 나눠서 업데이트한다 — 토스는 타이탄을 위험을 줄이려고 조금씩 넓혀 깔았다고 했다.[4]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "서버 한 대가 죽으면 어떤 세션이 옮겨지나",
+     "body": "렌데부 해싱(세션마다 서버별 점수를 매겨 가장 큰 곳으로)은 서버가 빠지거나 늘 때 **그 몫만** 옮깁니다. 가상 세션 1,000개로 직접 돌린 출력입니다. 나머지(%) 로 나누면 서버가 하나 늘 때 대부분이 옮겨집니다.",
+     "lang": "python",
+     "code": "import hashlib\ndef pick(session, nodes):  # 렌데부 해싱: 세션마다 점수가 가장 큰 서버\n    return max(nodes, key=lambda n: hashlib.sha256(f\"{n}:{session}\".encode()).hexdigest())\n\nsessions = [f\"user-{i}\" for i in range(1000)]\nbefore = {s: pick(s, [\"gw-a\", \"gw-b\"]) for s in sessions}\nafter  = {s: pick(s, [\"gw-a\"]) for s in sessions}          # gw-b 장애\nthree  = {s: pick(s, [\"gw-a\", \"gw-b\", \"gw-c\"]) for s in sessions}\nprint(\"gw-a:\", sum(v == \"gw-a\" for v in before.values()),\n      \"gw-b:\", sum(v == \"gw-b\" for v in before.values()))\nprint(\"gw-b 장애 뒤 옮겨진 세션:\", sum(before[s] != after[s] for s in sessions))\nprint(\"gw-c 추가 시 옮겨진 세션:\", sum(before[s] != three[s] for s in sessions))\n# gw-a: 489 gw-b: 511\n# gw-b 장애 뒤 옮겨진 세션: 511   (gw-b 에 있던 것만)\n# gw-c 추가 시 옮겨진 세션: 335   (약 1/3 만)"
+    }
+   ],
+   "how_far": "처음부터 이중화 설계를 혼자 할 필요는 없습니다. 최소선은 **'이 서버가 죽으면 무슨 일이 생기나'를 묻고 답할 수 있는 것** — 헬스체크, 타임아웃, 재시도, 상태를 어디에 두나. 이력서 안내도 운영 중 장애를 어떻게 분석하고 고쳤는지 적으라고 합니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    4,
+    14,
+    15
+   ],
+   "study": [
+    "sre-book",
+    "aws-backoff",
+    "go-net-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "화이트해커, 보안 엔지니어와 함께 접근제어·모니터링 요구사항을 구체화하고, 필요한 정책과 기능을 설계·구현해요.",
+   "short": "'이 팀은 이 서버만, 회사 기기로만' 같은 규칙을 보안 팀과 정하고, 그 규칙을 판정하고 기록하는 기능으로 만든다.",
+   "why": "토스 보안 조직은 공격을 재현해 빈틈을 찾는 화이트해커(Security Assessment)와 네트워크·엔드포인트 통제를 설계하는 보안 엔지니어(Security Infrastructure) 팀이 따로 있습니다.[5][6] 대규모 채용 글은 이 자리가 그들과 함께 접근제어와 모니터링을 **제품 안에 녹여 낸다**고 소개했습니다.[5] 토스는 제로 트러스트 도입 효과로 역할 기반(RBAC)·속성 기반(ABAC) 접근제어를 꼽았습니다.[2]",
+   "actually": {
+    "items": [
+     "**역할 기반(RBAC)** — 인사 시스템의 팀·직군으로 권한을 준다. 토스는 인사 이동이 생기면 네트워크·앱 권한이 자동으로 회수·조정된다고 했다.[2]",
+     "**속성 기반(ABAC)** — 역할이 있어도 접속 순간의 조건(회사 기기인가, 보안 설정을 지키나)을 보고 막는다.[2]",
+     "**IP 가 아니라 사람** — 예전 IP 허용 방식은 퇴사자의 IP 를 새 입사자가 물려받으면 받지 말아야 할 권한까지 받을 수 있었다고 토스가 직접 말했다.[2]",
+     "**정책 결정과 집행 나누기** — NIST 는 '허용할까'를 계산하는 정책 결정 지점(PDP)과, 그 답대로 길을 막는 정책 집행 지점(PEP)을 나눈다.[7] VPN 게이트웨이는 집행 쪽이다.",
+     "**모니터링** — 누가 언제 어떤 세그먼트에 붙었고 무엇이 거부됐나를 남겨 탐지 팀이 이상 접속을 찾게 한다 {추론}[1]."
+    ]
+   },
+   "examples": [
+    {
+     "title": "역할 × 세그먼트 × 기기 상태로 판정하기",
+     "body": "기본은 거부, 표에 있는 조합만 허용합니다. 역할이 맞아도 기기 조건이 어긋나면 막는 것이 ABAC 입니다. 가상 사용자로 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "POLICY = [  # (역할, 세그먼트) 허용 표. 표에 없으면 거부\n    (\"payments-dev\", \"payments-admin\"),\n    (\"security\", \"payments-admin\"),\n    (\"all\", \"wiki\"),\n]\ndef decide(user, device, segment):\n    roles = set(user[\"roles\"]) | {\"all\"}\n    if not any(r in roles and s == segment for r, s in POLICY):\n        return \"deny: 역할 없음\"\n    if not device[\"managed\"]:\n        return \"deny: 회사 기기 아님\"\n    if device[\"os_patch_days\"] > 30:\n        return \"deny: OS 업데이트 30일 넘음\"\n    return \"allow\"\n\nkim = {\"name\": \"kim\", \"roles\": [\"payments-dev\"]}\nlee = {\"name\": \"lee\", \"roles\": [\"marketing\"]}\nok, old = {\"managed\": True, \"os_patch_days\": 3}, {\"managed\": True, \"os_patch_days\": 45}\nfor u, d, s in [(kim, ok, \"payments-admin\"), (lee, ok, \"payments-admin\"),\n                (kim, old, \"payments-admin\"), (lee, ok, \"wiki\")]:\n    print(u[\"name\"], s, \"->\", decide(u, d, s))\n# kim payments-admin -> allow\n# lee payments-admin -> deny: 역할 없음\n# kim payments-admin -> deny: OS 업데이트 30일 넘음\n# lee wiki -> allow"
+    }
+   ],
+   "how_far": "무엇을 허용할지는 보안 팀이 정합니다. 개발자는 **요구를 되물어 빈칸을 찾는 것**(규칙이 겹치면? 기기 정보가 늦게 오면? 정책 서버가 죽으면 열까 닫을까)과, 그 답을 틀림없이 판정하는 코드를 맡습니다. 요건 2번 '이해관계자와 대화하며 문제를 정의'와 같은 말입니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    5,
+    6,
+    7
+   ],
+   "study": [
+    "nist-800-207",
+    "beyondcorp",
+    "zt-networks"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "보안이 생산성을 저해한다는 관념을 깨고 토스 내부의 생산성과 안정성을 함께 개선해 나가요.",
+   "short": "보안을 세게 하면 일하기 불편해진다는 상식을 거꾸로 — 더 안전하면서 로그인·접속은 더 빠르게 만든다.",
+   "why": "토스 보안 엔지니어의 SLASH 23 발표는 '보안을 강화할수록 왜 일은 불편해지나'를 주제로 내걸었고[3], 바로 이 질문에서 시작했습니다 —3개월마다 바뀌는 비밀번호, 시스템마다 휴대폰 OTP, 재택 때마다 따로 로그인하는 SSL VPN, 사무실·재택이 둘로 나뉜 권한 신청, 보안 프로그램과 개발 도구가 부딪혀 노트북이 재부팅되던 일.[2] 제로 트러스트 뒤 로그인 단계는 약 5분의 1로 줄고 보안은 3배 이상 나아졌다고 발표했습니다.[2]",
+   "actually": {
+    "items": [
+     "**접속을 잊게 만들기** — 사무실·재택·해외 어디서든 같은 보안 환경으로, 노트북만 열면 바로 일하게.[2]",
+     "**느리지 않게** — 모든 사내 트래픽이 이 제품을 지나므로 터널이 느리면 모든 업무가 느려진다. 패킷 크기(MTU)가 맞지 않으면 일부 사이트만 멈추는 문제가 대표적이다 {추론}.",
+     "**충돌 줄이기** — PC 에 까는 보안 프로그램 수를 줄이면서 보안은 올리는 것이 토스가 내건 요구였다.[2]",
+     "**사용자 피드백** — 팀 소개에 실제로 쓰는 동료의 피드백으로 사용성을 고친다고 적혀 있다.[1]"
+    ]
+   },
+   "how_far": "사내 사용자가 곧 고객입니다. '안 된다'가 아니라 **왜 안 되는지 화면에 알려 주고, 어떻게 하면 되는지**까지 제품에 넣는 감각이 필요합니다 {추론}. 지표로 말할 수 있으면 더 좋습니다 — 접속까지 걸린 시간, 하루 접속 실패율, 문의 건수 {추론}.",
+   "refs": [
+    1,
+    2,
+    3
+   ],
+   "study": [
+    "slash23-zt",
+    "hpbn"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "장애와 예외 상황을 고려해 소프트웨어를 설계·개발하고, 운영 중 발생한 문제를 분석하고 개선해 본 분을 찾고 있어요.",
+   "short": "만들고 끝이 아니라, 돌리다 터진 문제를 직접 원인까지 파고들어 고쳐 본 경험이 핵심이다.",
+   "why": "이 제품은 직원 PC 수천 대라는 제각각인 환경에서 돈다. CISO 는 다양한 PC 환경과 트래픽에서 문제가 생겼는데 외부 업체가 원인을 설명하지 않아 자체 개발을 택했고, 이제 원인을 빠르고 투명하게 분석한다고 했습니다.[4] 그러니 원인 분석이 이 팀이 존재하는 이유입니다 {추론}.",
+   "actually": {
+    "intro": "네트워크 제품에서 흔한 예외 상황입니다.",
+    "items": [
+     "**네트워크가 바뀜** — 와이파이 → 휴대폰 테더링, 노트북 덮개 닫았다 열기. 클라이언트가 조용히 다시 붙어야 한다.",
+     "**재시도 폭풍** — 수백 대가 같은 순간 재접속하면 서버가 다시 쓰러진다. 지수 백오프에 무작위 흔들기(jitter)를 섞는다.[20]",
+     "**타임아웃이 없음** — 응답 없는 연결을 영원히 기다리면 자원이 바닥난다. 모든 네트워크 호출에 시간 제한을.[20]",
+     "**과부하** — 감당 못 할 요청은 일찍 거절해 나머지를 살린다.[15]",
+     "**회사 밖 방해** — 호텔·카페 와이파이의 방화벽, 공유기 뒤 주소 변환(NAT)이 연결을 끊는다.[13]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "재접속 간격: 지수 백오프 + 지터",
+     "body": "AWS 가 공개한 방식(full jitter)입니다.[20] 시드를 고정해 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "import random\nrandom.seed(7)\ndef backoff(attempt, base=0.5, cap=30):\n    # 지수로 늘리되(0.5, 1, 2, 4 …초) 그 안에서 무작위로 고른다(full jitter)\n    return random.uniform(0, min(cap, base * 2 ** attempt))\nprint([round(backoff(a), 2) for a in range(8)])\n# [0.16, 0.15, 1.3, 0.29, 4.29, 5.85, 1.74, 15.22]\n# 2,000대가 같은 순간 끊겨도 다시 붙는 시각이 흩어진다"
+    }
+   ],
+   "how_far": "규모는 상관없습니다. 회사·개인 프로젝트에서 **'증상 → 가설 → 확인 → 고침 → 재발 방지'** 한 사례를 숫자와 함께 말할 수 있으면 됩니다. 이력서 안내가 그대로 이것을 적으라고 합니다.[1] {추론}",
+   "refs": [
+    1,
+    4,
+    13,
+    15,
+    20
+   ],
+   "study": [
+    "sre-book",
+    "aws-backoff"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "이해관계자와 대화하며 해결할 문제를 정의하고, 보안과 안정성을 고려해 해결 방안을 설계할 수 있는 분과 함께하고 싶어요.",
+   "short": "보안 팀·IT 팀·쓰는 동료 사이에서 진짜 문제를 골라내고, 막는 것과 안 멈추는 것을 같이 따지는 설계를 한다.",
+   "why": "이 제품에는 요구하는 쪽이 여럿입니다 — 막고 싶은 보안 팀, 쓰는 직원, 기기를 관리하는 IT 팀.[1][2] 토스 보안 조직은 규제 점검이 아니라 실제 위험을 줄이는 것을 성과로 삼는다고 밝혔습니다.[5]",
+   "actually": {
+    "items": [
+     "**실패 방향 정하기** — 정책 서버에 닿지 않을 때 모두 막을지(fail-closed) 마지막 정책으로 계속 열어 둘지(fail-open)는 보안과 안정성이 정면으로 부딪히는 결정이다 {추론}.",
+     "**요구를 숫자로** — '빨라야 한다'를 '접속 3초 안' 같은 목표로 바꾼다 {추론}.",
+     "**단계로 나눠 들이기** — 국내 제로트러스트 가이드라인 2.0 은 초기·기존·향상·최적화 단계의 성숙도와 도입 절차를 제시한다. 한 번에 다 바꾸지 않고 단계를 정해 합의하는 틀로 쓸 수 있다.[8]",
+     "**대안 비교** — 공고의 이력서 안내는 비교한 대안, 고른 이유, 맡은 역할을 적으라고 한다.[1]"
+    ]
+   },
+   "how_far": "설계 문서 한 장에 **문제 · 선택지 2~3개 · 고른 이유 · 버린 것의 위험**을 적어 본 경험이면 충분합니다. 과제 전형이 있으니[1] 거기서도 이 습관이 보일 것입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    5,
+    8
+   ],
+   "study": [
+    "beyondcorp",
+    "kisa-zt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "TCP/IP 등 네트워크의 기본 동작을 이해하고, 낯선 기술이나 도메인도 학습하며 문제를 해결할 수 있는 분을 찾고 있어요.",
+   "short": "패킷이 어떻게 오가는지(IP·TCP·UDP·라우팅·MTU)를 알아야 'VPN 켜면 이 사이트만 안 열려요'를 풀 수 있다.",
+   "why": "VPN 은 남의 패킷을 받아 포장해서 다시 보내는 프로그램이라, 문제의 대부분이 패킷 수준에서 납니다 {추론}. 공고가 쓰는 gVisor netstack 은 TCP 연결 상태·재전송까지 프로그램 안에서 처리하는 스택이라, 그 동작을 알아야 디버깅할 수 있습니다.[11][12]",
+   "level": {
+    "basic": "3방향 핸드셰이크, 포트, TCP 와 UDP 차이, 서브넷·라우팅 표를 설명할 수 있다.[16]",
+    "work": "패킷 캡처(Wireshark·tcpdump)로 재전송·RST·조각난 패킷을 찾고, MTU·MSS 문제를 고친다.",
+    "team": "터널 안에서 다시 TCP 를 돌리는 구조(TCP 위의 TCP 가 아닌 UDP 터널을 쓰는 이유), 주소 변환(NAT) 통과, 프로그램 안 TCP/IP 스택의 동작까지.[10][12][13] {추론}"
+   },
+   "actually": {
+    "items": [
+     "**터널은 패킷을 키운다** — 바깥 IP·UDP·암호 머리가 붙어 안쪽에 실을 수 있는 크기가 줄어든다(아래 예).",
+     "**UDP 위 터널** — WireGuard 는 UDP 로만 보낸다. TCP 위에 TCP 를 실으면 재전송이 겹쳐 느려지는 문제를 피한다.[10]",
+     "**NAT 통과** — 집·카페 공유기 뒤의 기기끼리 잇는 방법은 Tailscale 이 공개한 긴 글이 잘 정리했다.[13]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "터널을 지나면 한 패킷에 실을 수 있는 크기가 줄어든다",
+     "body": "WireGuard 데이터 메시지는 머리 16바이트 + 인증 태그 16바이트를 붙입니다.[10] 바깥 이더넷 MTU 1,500 에서 직접 계산한 출력입니다. WireGuard 기본 MTU 가 1420 인 이유가 IPv6 바깥 줄에 보입니다.",
+     "lang": "python",
+     "code": "def inner(mtu_outer, outer_ip):\n    wg = 32  # WireGuard 데이터 메시지 머리 16 + 인증 태그 16\n    return mtu_outer - outer_ip - 8 - wg   # 8 = UDP 머리\n\nfor name, ip in [(\"IPv4 바깥\", 20), (\"IPv6 바깥\", 40)]:\n    m = inner(1500, ip)\n    print(f\"{name}: 안쪽 MTU {m}, 안쪽 TCP MSS(IPv4) {m - 20 - 20}\")\n# IPv4 바깥: 안쪽 MTU 1440, 안쪽 TCP MSS(IPv4) 1400\n# IPv6 바깥: 안쪽 MTU 1420, 안쪽 TCP MSS(IPv4) 1380"
+    }
+   ],
+   "how_far": "네트워크 전공일 필요는 없습니다. **패킷 캡처를 열어 TCP 연결 하나를 처음부터 끝까지 읽을 수 있는 것**이 최소선입니다 {추론}. 공고가 '낯선 기술도 학습하며'라고 적은 만큼, 들어와서 가상 랜카드·커널 기능은 배우는 것을 전제합니다.[1]",
+   "refs": [
+    1,
+    10,
+    11,
+    12,
+    13,
+    16
+   ],
+   "study": [
+    "hpbn",
+    "go-net-book",
+    "wg-paper",
+    "tailscale-nat"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "보안 제품 개발이나 Go 경험이 없어도, 다른 분야에서 쌓은 설계·개발 경험을 바탕으로 지원하실 수 있어요.",
+   "short": "보안·Go 는 들어와서 배워도 된다. 서버·인프라 등 다른 분야의 설계·운영 경험을 그대로 가져오면 된다.",
+   "why": "토스의 자체 보안 제품 '타이탄'도 보안·서버·프론트엔드·DevOps 사람이 모인 TF 로 시작했다고 CISO 가 말했습니다.[4] 보안 전문가만이 아니라 제품을 만들 줄 아는 개발자가 필요한 자리입니다 {추론}.",
+   "actually": {
+    "items": [
+     "**옮겨 오기 좋은 경험** — 오래 붙어 있는 연결을 다루는 서버(채팅·게임·푸시), 프록시·게이트웨이, 데스크톱 앱 {추론}.",
+     "**Go 로 넘어오기** — 공식 투어로 며칠이면 문법을 익히고, 고루틴·채널로 연결 여러 개를 다루는 코드가 이 일의 중심이다.[21]",
+     "**보안은 개념부터** — 제로 트러스트의 뜻과 구성(NIST 800-207)을 알면 대화가 된다.[7]"
+    ]
+   },
+   "how_far": "지원 전에 Go 로 **작은 TCP 프록시 하나**를 짜 보면 '배울 수 있다'를 보여 주기 좋습니다 {추론}.",
+   "refs": [
+    4,
+    7,
+    21
+   ],
+   "study": [
+    "go-tour",
+    "learning-go",
+    "nist-800-207"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "로드밸런서나 게이트웨이, 접근제어 시스템을 개발·운영해 본 경험이 있으면 좋아요.",
+   "short": "요청을 받아 판단하고 다음으로 넘기는 '중간 상자'를 만들어 봤다면 VPN 게이트웨이와 거의 같은 일이다.",
+   "why": "ZTNA 게이트웨이는 연결을 받아(로드밸런서), 정책으로 판정하고(접근제어), 허용된 곳으로만 이어 주는(게이트웨이) 일을 한 번에 합니다.[2][7] {추론}",
+   "actually": {
+    "items": [
+     "**L4 와 L7** — 연결 단위로 나누는 로드밸런서(TCP)와 요청 내용을 보고 나누는 것(HTTP)의 차이.[14]",
+     "**헬스체크와 빼기** — 아픈 서버를 자동으로 빼고, 진행 중 연결은 마무리하게 기다린다(드레이닝).[14]",
+     "**인증 붙은 프록시** — 구글 BeyondCorp 는 모든 사내 앱 앞에 접근 프록시를 두고 사용자·기기를 확인했다.[19]"
+    ]
+   },
+   "how_far": "우대 사항입니다. 없다면 Nginx·Envoy 같은 프록시를 앞에 두고 설정·장애 대응을 해 본 경험도 이야기거리가 됩니다 {추론}.",
+   "refs": [
+    2,
+    7,
+    14,
+    19
+   ],
+   "study": [
+    "beyondcorp",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "OS의 네트워크 기능을 활용하거나 클라이언트 소프트웨어를 개발해 본 경험이 있으면 좋아요.",
+   "short": "윈도우·맥의 가상 랜카드·라우팅 표·DNS 설정을 건드리는 PC 프로그램이라, 이 경험이 있으면 바로 쓴다.",
+   "why": "VPN 클라이언트는 직원 PC 에 깔려 운영체제의 네트워크 설정을 바꿉니다. 토스는 PC 마다 다른 환경에서 생기는 문제가 자체 개발의 계기였다고 했습니다.[4]",
+   "actually": {
+    "items": [
+     "**가상 랜카드** — 윈도우의 Wintun[18], 맥의 패킷 터널 확장[17] 위에 터널을 만든다.",
+     "**라우팅·DNS 바꾸기** — 사내 주소·사내 도메인만 터널로 보내고(split tunnel) 나머지는 그대로 두는 설정 {추론}.",
+     "**배포와 업데이트** — 수천 대 PC 에 조용히 깔고 올리고, 실패하면 되돌린다. 토스는 기기 관리(UEM)로 필수 프로그램을 자동 설치한다고 발표했다.[2]",
+     "**다른 보안 프로그램과의 충돌** — 토스 발표가 직접 든 불편이다.[2]"
+    ]
+   },
+   "how_far": "우대 사항입니다. 데스크톱·모바일 앱이나 네트워크 설정을 다루는 스크립트라도 'OS 마다 다르게 동작해서 고친 경험'이면 좋은 이야기입니다 {추론}.",
+   "refs": [
+    2,
+    4,
+    17,
+    18
+   ],
+   "study": [
+    "wintun",
+    "apple-ne",
+    "gvisor-netstack"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Go로 소프트웨어를 개발해 본 경험이 있으면 좋아요.",
+   "short": "이 팀의 언어가 Go 다. 연결 수천 개를 고루틴으로 다루고, gVisor netstack 같은 Go 네트워크 라이브러리를 쓴다.",
+   "why": "공고의 기술 스택 첫 줄이 Go 이고 프레임워크로 gVisor/netstack 을 적었습니다.[1] netstack 도 Go 로 쓰여 있고[11], 같은 계열 제품인 Tailscale 도 Go 로 이것을 붙여 씁니다.[12]",
+   "actually": {
+    "items": [
+     "**연결마다 고루틴** — 접속 하나에 가벼운 실행 단위 하나, 채널로 주고받는다.[21]",
+     "**context 로 끊기** — 타임아웃·취소를 모든 호출에 넘긴다.[9]",
+     "**net 패키지** — TCP·UDP 서버와 클라이언트를 표준 라이브러리로 짠다.[9]"
+    ]
+   },
+   "how_far": "자격요건에 'Go 경험 없어도 된다'고 따로 적었으니 우대일 뿐입니다.[1] 있다면 동시성 버그(경쟁 상태·고루틴 누수)를 찾아 고친 경험을 말할 수 있으면 좋습니다 {추론}.",
+   "refs": [
+    1,
+    9,
+    11,
+    12,
+    21
+   ],
+   "study": [
+    "learning-go",
+    "go-net-book",
+    "go-tour"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "보안 제품을 '쓰는 사람'이 아니라 '만드는 사람'이 되고 싶은 서버·네트워크 개발자[1][4]",
+   "장애 원인을 패킷 수준까지 내려가 찾는 게 재미있는 사람[1][4]",
+   "사내 동료가 매일 쓰는 제품이라 피드백이 바로 오는 환경을 좋아하는 사람[1]",
+   "외산 제품을 걷어 내고 자체 제품으로 바꾸는 초기 단계에 들어가고 싶은 사람 — 자체 제품을 계열사 10곳으로 넓힐 계획이라고 했다[4]"
+  ],
+  "hard": [
+   "24시간 멈추면 안 되는 제품이라 장애 대응 부담이 있다 {추론}[1]",
+   "서버와 Windows·macOS 클라이언트를 함께 다루니 범위가 넓다[1]",
+   "금융 쪽 전자금융업자로 분류돼 보안 규정을 함께 지켜야 한다[4][6]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "VPN 게이트웨이 두 대를 Active-Active 로 돌리다 한 대가 죽었습니다. 사용자는 무엇을 겪고, 어떻게 줄이겠어요?",
+   "a": "업무 2번 — 세션 재배치·재접속 폭주·상태 공유.[14][15]"
+  },
+  {
+   "q": "VPN 을 켜면 특정 사이트만 로딩이 멈춥니다. 어디부터 보겠어요?",
+   "a": "요건 3번 — 터널 오버헤드로 인한 MTU·MSS 문제의 전형.[10]"
+  },
+  {
+   "q": "정책 서버에 닿지 않을 때 접속을 모두 막을까요, 마지막 정책으로 열어 둘까요?",
+   "a": "요건 2번 — 보안과 안정성이 부딪히는 결정을 설명하는가.[1]"
+  },
+  {
+   "q": "IP 기반 접근제어의 문제를 하나 들고, 사용자 기반으로 바꾸면 무엇이 나아지나요?",
+   "a": "토스가 SLASH 23 에서 직접 든 IP 재사용 사례.[2]"
+  },
+  {
+   "q": "운영 중 겪은 장애 하나를 증상부터 재발 방지까지 말해 주세요.",
+   "a": "요건 1번과 이력서 안내 그대로.[1]"
+  },
+  {
+   "q": "TCP 연결이 끊길 때 FIN 과 RST 는 어떻게 다르고, 각각 언제 보나요?",
+   "a": "요건 3번 TCP/IP 기본 동작.[16]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 네트워크 소프트웨어 엔지니어 (Network Software Engineer)",
+   "url": "https://toss.im/career/job-detail?gh_jid=6620395003",
+   "kind": "posting",
+   "note": "팀 소개(ZTNA VPN)·업무·요건·우대·이력서 안내·과제 전형 포함 전형·기술 스택(Go, gVisor/netstack, MySQL, Kafka, Kubernetes)"
+  },
+  {
+   "n": 2,
+   "title": "SLASH 23 · 금융사 최초의 Zero Trust 아키텍처 도입기",
+   "url": "https://www.youtube.com/watch?v=2V2xYeqUsWw",
+   "kind": "company",
+   "date": "2023-06",
+   "note": "토스 Security Engineer 발표 15분 · 자막·화면 전부 읽음(예전 로그인·SSL VPN 불편, IP 재사용, IAM·SASE·ZTNA·UEM·EPP, Role·Segment·Policy, 약 5개월 전환, 로그인 5배 간소화·보안 3배, RBAC·ABAC)"
+  },
+  {
+   "n": 3,
+   "title": "SLASH 23 세션 소개 · 금융사 최초의 Zero Trust 아키텍처 도입기",
+   "url": "https://toss.im/slash-23/session-detail/A2-3",
+   "kind": "company",
+   "date": "2023-06"
+  },
+  {
+   "n": 4,
+   "title": "지디넷코리아 · 토스 \"외산 SASE 대신 자체 개발…'타이탄' 2000명 사용\"",
+   "url": "https://zdnet.co.kr/view?no=20260831231056",
+   "kind": "news",
+   "date": "2026-08-31",
+   "note": "비바리퍼블리카 CISO 인터뷰 — 지스케일러 약 4년 사용 후 자체 SASE '타이탄'(인터넷 보호·사내 접속) 약 2년 개발, 약 2,000명, 계열사 10곳 확대 예정, 보안·서버·프론트엔드·DevOps TF 로 시작"
+  },
+  {
+   "n": 5,
+   "title": "토스 채용 · 토스 보안 전직군 대규모 채용 (2026-11-01~15)",
+   "url": "https://toss.im/career/job-detail?gh_jid=8044485003",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "Network Software Engineer 소개 — 업무를 시작하려면 꼭 거치는 관문 VPN, 내부 보안의 가장 앞단"
+  },
+  {
+   "n": 6,
+   "title": "토스 채용 · 보안 엔지니어 (네트워크 보안) — Security Infrastructure 팀",
+   "url": "https://toss.im/career/job-detail?gh_jid=6959638003",
+   "kind": "posting",
+   "note": "같은 보안 조직의 네트워크 보안 팀 — 망분리·접근 통제·SASE·ZTNA·VPN 운영"
+  },
+  {
+   "n": 7,
+   "title": "NIST SP 800-207 · Zero Trust Architecture",
+   "url": "https://nvlpubs.nist.gov/nistpubs/specialpublications/NIST.SP.800-207.pdf",
+   "kind": "reference",
+   "date": "2020-08",
+   "note": "토스 발표가 검토 때 가장 많이 참고했다고 밝힌 문서 — 정책 결정 지점(PDP)·집행 지점(PEP)"
+  },
+  {
+   "n": 8,
+   "title": "과기정통부 '제로트러스트 가이드라인 2.0' 공개 (바이라인네트워크)",
+   "url": "https://byline.network/2024/12/3-220/",
+   "kind": "news",
+   "date": "2024-12-03",
+   "note": "성숙도 모델·도입 절차를 구체화한 국내 가이드"
+  },
+  {
+   "n": 9,
+   "title": "Go 표준 라이브러리 · net 패키지 문서",
+   "url": "https://pkg.go.dev/net",
+   "kind": "reference"
+  },
+  {
+   "n": 10,
+   "title": "WireGuard: Next Generation Kernel Network Tunnel (Jason A. Donenfeld, NDSS 2017)",
+   "url": "https://www.wireguard.com/papers/wireguard.pdf",
+   "kind": "reference",
+   "note": "UDP 위 터널, 공개키로 상대 확인, 데이터 메시지 머리 16바이트 + 태그 16바이트"
+  },
+  {
+   "n": 11,
+   "title": "gVisor · tcpip(netstack) 패키지 문서",
+   "url": "https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip",
+   "kind": "reference",
+   "note": "Go 로 쓴 사용자 공간 TCP/IP 스택"
+  },
+  {
+   "n": 12,
+   "title": "Tailscale 문서 · Kernel vs. netstack subnet routing & exit nodes",
+   "url": "https://tailscale.com/docs/reference/kernel-vs-userspace-routers",
+   "kind": "reference",
+   "note": "gVisor netstack 으로 TCP·UDP 연결을 끊고 목적지로 새 연결을 여는 방식, ICMP 등은 넘기지 않음"
+  },
+  {
+   "n": 13,
+   "title": "Tailscale 블로그 · How NAT traversal works",
+   "url": "https://tailscale.com/blog/how-nat-traversal-works",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Google SRE 책 · Load Balancing at the Frontend / in the Datacenter",
+   "url": "https://sre.google/sre-book/load-balancing-frontend/",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "Google SRE 책 · Addressing Cascading Failures",
+   "url": "https://sre.google/sre-book/addressing-cascading-failures/",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "RFC 9293 · Transmission Control Protocol (TCP)",
+   "url": "https://www.rfc-editor.org/rfc/rfc9293",
+   "kind": "reference",
+   "date": "2022-08"
+  },
+  {
+   "n": 17,
+   "title": "Apple 개발자 문서 · NEPacketTunnelProvider",
+   "url": "https://developer.apple.com/documentation/networkextension/nepackettunnelprovider",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Wintun · Layer 3 TUN driver for Windows",
+   "url": "https://www.wintun.net/",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Google · BeyondCorp: A New Approach to Enterprise Security (;login:, 2014)",
+   "url": "https://research.google/pubs/beyondcorp-a-new-approach-to-enterprise-security/",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Amazon Builders' Library · Timeouts, retries, and backoff with jitter",
+   "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "A Tour of Go",
+   "url": "https://go.dev/tour/",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 23,
+   "title": "자소설닷컴 — 토스뱅크 연봉(같은 집계)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 25,
+   "title": "토스 — 회사 소개(사이트 하단 주소)",
+   "url": "https://toss.im/company",
+   "kind": "company"
+  }
+ ],
+ "caveat": "이 팀 자체의 발표·기술 글은 찾지 못했습니다. 회사 근거는 2023년 SLASH 제로 트러스트 발표(당시는 외부 솔루션)와 2026년 CISO 인터뷰(자체 SASE '타이탄')이고, 공고의 VPN 이 타이탄과 같은 제품인지는 확인하지 못했습니다. 터널 프로토콜·이중화 구조·클라이언트 구현은 공개되지 않아 NIST·WireGuard·Tailscale·구글 SRE 의 공개 문서로 '보통 이런 것'을 보였습니다. 코드 예시는 모두 가상 값으로 직접 돌린 것입니다.",
+ "resources": [
+  {
+   "id": "slash23-zt",
+   "title": "SLASH 23 · 금융사 최초의 Zero Trust 아키텍처 도입기",
+   "by": "토스 Security Engineer · 15분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=2V2xYeqUsWw",
+   "why": "업무 1·4번 — 토스가 왜 IP·SSL VPN 을 버리고 사용자·기기 기준 접속으로 갔는지, Role·Segment·Policy 를 어떻게 나눴는지. 지원 전 꼭 볼 영상."
+  },
+  {
+   "id": "nist-800-207",
+   "title": "NIST SP 800-207 · Zero Trust Architecture",
+   "by": "NIST · 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://nvlpubs.nist.gov/nistpubs/specialpublications/NIST.SP.800-207.pdf",
+   "why": "업무 1·3번 — 제로 트러스트 구성 요소(정책 엔진·결정·집행 지점)의 공용어. 토스가 검토 때 가장 많이 참고했다고 밝힌 문서."
+  },
+  {
+   "id": "kisa-zt",
+   "title": "제로트러스트 가이드라인 2.0 (과학기술정보통신부·한국인터넷진흥원)",
+   "by": "과기정통부·KISA · 2024",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.kisa.or.kr/2060204",
+   "why": "요건 2번 — 국내 기업이 제로 트러스트를 어떤 단계로 들이는지, 한국어로 개념과 성숙도를 잡는다."
+  },
+  {
+   "id": "zt-networks",
+   "title": "Zero Trust Networks, 2nd Edition",
+   "by": "Razi Rais · Christina Morillo · Evan Gilman · Doug Barth · O'Reilly · 2024",
+   "kind": "book",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/zero-trust-networks/9781492096580/",
+   "why": "업무 1·3번 — 기기·사용자 신뢰, 정책, 트래픽 신뢰를 시스템 설계 관점에서. 한국어판은 확인하지 못했다."
+  },
+  {
+   "id": "beyondcorp",
+   "title": "BeyondCorp: A New Approach to Enterprise Security",
+   "by": "Google · 2014",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://research.google/pubs/beyondcorp-a-new-approach-to-enterprise-security/",
+   "why": "업무 3번·우대 1번 — VPN 없이 접근 프록시로 사내 앱을 여는 원조 사례. 짧다."
+  },
+  {
+   "id": "wg-paper",
+   "title": "WireGuard: Next Generation Kernel Network Tunnel",
+   "by": "Jason A. Donenfeld · NDSS 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.wireguard.com/papers/wireguard.pdf",
+   "why": "업무 1번·요건 3번 — 현대 VPN 터널이 패킷을 어떻게 싸고 상대를 확인하나. 토스가 쓰는 프로토콜은 공개되지 않았다."
+  },
+  {
+   "id": "gvisor-netstack",
+   "title": "gVisor tcpip(netstack) 패키지 문서",
+   "by": "gVisor",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://pkg.go.dev/gvisor.dev/gvisor/pkg/tcpip",
+   "why": "공고 기술 스택의 netstack — 프로그램 안 TCP/IP 스택의 구조(스택·엔드포인트·링크)."
+  },
+  {
+   "id": "tailscale-nat",
+   "title": "How NAT traversal works",
+   "by": "Tailscale 블로그",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://tailscale.com/blog/how-nat-traversal-works",
+   "why": "요건 3번 — 집·카페 공유기 뒤에서 VPN 이 연결되는 원리를 그림으로."
+  },
+  {
+   "id": "hpbn",
+   "title": "High Performance Browser Networking",
+   "by": "Ilya Grigorik · O'Reilly · 2013",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://hpbn.co/",
+   "why": "요건 3번 — TCP·UDP·TLS 의 동작과 지연을 개발자 눈높이로. 온라인 무료."
+  },
+  {
+   "id": "go-net-book",
+   "title": "Go 언어를 활용한 네트워크 프로그래밍",
+   "by": "애덤 우드벡 · 김찬빈 옮김 · 제이펍 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002993437",
+   "why": "요건 3번·우대 3번 — Go 로 TCP·UDP·TLS 서버와 클라이언트를 짜며 타임아웃·하트비트까지. 이 공고에 가장 가까운 한국어 책."
+  },
+  {
+   "id": "learning-go",
+   "title": "러닝 Go",
+   "by": "존 보드너 · 윤대석 옮김 · 한빛미디어 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%9F%AC%EB%8B%9D%20Go",
+   "why": "요건 4번·우대 3번 — 다른 언어를 아는 개발자가 Go 답게 쓰는 법(고루틴·채널·context·에러)."
+  },
+  {
+   "id": "go-tour",
+   "title": "A Tour of Go",
+   "by": "Go 팀",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://go.dev/tour/",
+   "why": "요건 4번 — Go 를 처음 쓰면 며칠 안에 문법과 동시성을 손으로 익힌다(한국어 번역 있음)."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering (부하 분산·연쇄 장애 장)",
+   "by": "Google · O'Reilly · 2016",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/load-balancing-frontend/",
+   "why": "업무 2번·요건 1번 — 이중화·부하 분산·연쇄 장애를 막는 원칙. 온라인 무료."
+  },
+  {
+   "id": "aws-backoff",
+   "title": "Timeouts, retries, and backoff with jitter",
+   "by": "Amazon Builders' Library",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+   "why": "요건 1번 — 수천 대 클라이언트가 동시에 재접속할 때 서버를 지키는 재시도 설계."
+  },
+  {
+   "id": "wintun",
+   "title": "Wintun · Layer 3 TUN driver for Windows",
+   "by": "WireGuard 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.wintun.net/",
+   "why": "우대 2번 — 윈도우에서 VPN 클라이언트가 가상 랜카드를 만드는 방법."
+  },
+  {
+   "id": "apple-ne",
+   "title": "NEPacketTunnelProvider",
+   "by": "Apple 개발자 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://developer.apple.com/documentation/networkextension/nepackettunnelprovider",
+   "why": "우대 2번 — 맥에서 VPN 클라이언트가 패킷을 받아 터널로 보내는 공식 방법."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "이 팀의 일 이해하기",
+   "time": "1주",
+   "goal": "토스가 왜 IP·SSL VPN 대신 사용자·기기 기준 접속으로 갔는지, Role·Segment·Policy 가 무엇인지 말로 설명할 수 있다.",
+   "resources": [
+    "slash23-zt",
+    "beyondcorp",
+    "nist-800-207",
+    "kisa-zt"
+   ],
+   "task": "가상 회사(3팀·5개 사내 앱)의 Role·Segment·Policy 표를 만들고, IP 허용 방식이면 생기는 문제 3가지를 적는다."
+  },
+  {
+   "title": "TCP/IP 다시 보기",
+   "time": "2주",
+   "goal": "패킷 캡처로 TCP 연결 하나를 핸드셰이크부터 종료까지 읽고, MTU·NAT 문제를 설명할 수 있다.",
+   "resources": [
+    "hpbn",
+    "tailscale-nat"
+   ],
+   "task": "내 PC 에서 웹 접속 하나를 Wireshark 로 잡아 SYN·ACK·재전송·FIN 을 표시한 캡처 해설 한 장을 만든다."
+  },
+  {
+   "title": "Go 로 연결 다루기",
+   "time": "2~3주",
+   "goal": "Go 로 동시 연결 수백 개를 받는 TCP 서버와, 타임아웃·재접속하는 클라이언트를 짤 수 있다.",
+   "resources": [
+    "go-tour",
+    "learning-go",
+    "go-net-book"
+   ],
+   "task": "Go 로 TCP 포워딩 프록시를 만들고, 허용 목록(가상 사용자 × 목적지 포트)에 없는 연결은 끊고 기록하게 한다."
+  },
+  {
+   "title": "터널 만들어 보기",
+   "time": "2~3주",
+   "goal": "가상 랜카드·암호화 터널·프로그램 안 TCP/IP 스택이 어떻게 맞물리는지 직접 돌려 본다.",
+   "resources": [
+    "wg-paper",
+    "gvisor-netstack",
+    "wintun",
+    "apple-ne"
+   ],
+   "task": "가상 머신 두 대에 WireGuard 를 띄워 사설 대역을 잇고, MTU 를 바꿔 가며 특정 크기 이상 요청이 멈추는 현상을 재현·기록한다."
+  },
+  {
+   "title": "멈추지 않게",
+   "time": "2주",
+   "goal": "게이트웨이 여러 대에 세션을 나누고, 한 대가 죽었을 때의 재접속 폭주를 설계로 막을 수 있다.",
+   "resources": [
+    "sre-book",
+    "aws-backoff",
+    "zt-networks"
+   ],
+   "task": "직접 만든 프록시를 두 대로 늘려 해싱으로 세션을 나누고, 한 대를 죽였을 때 클라이언트 100개의 재접속 시각 분포를 지터 유무로 비교한 그래프를 만든다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 공공데이터 집계로 신입 초봉 **약 4,200만원**, 평균 **약 6,200만원** — 공시된 평균 급여는 없다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없다 [22]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 — 경력직이 섞인 값이다 [22]"
+   },
+   {
+    "label": "토스뱅크 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 계열사 값 — 견주어 보기용 [23]"
+   },
+   {
+    "label": "토스뱅크 평균",
+    "value": "약 7,208만원",
+    "amount": 7208,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 계열사 평균 [23]"
+   }
+  ],
+  "how": "공고는 레퍼런스 체크 뒤 **처우 협의** 단계에서 정한다고 적었다 [1]. 경력 연차는 공고에 없다. 비바리퍼블리카는 상장사가 아니라 사업보고서의 '직원 평균 급여'가 없어 공시 숫자를 싣지 못했다. 평균은 경력직이 섞인 회사 전체 값이고, 집계값은 추정이라 실제 제안과 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 복지를 소개한 2021년 공식 글이다 [24]. 지금도 같은지는 글에 없으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스(비바리퍼블리카) 본사",
+  "address": "서울특별시 강남구 테헤란로 142, 4·10~13·22·23층",
+  "postal": "06236",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "주소는 토스 회사 소개 페이지 하단의 회사 정보다 [25]. 공고 근무지는 'Seoul'로만 적혀 있다 [1]."
+ }
+}
