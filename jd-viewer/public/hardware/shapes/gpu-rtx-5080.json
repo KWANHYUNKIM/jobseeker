@@ -268,6 +268,194 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "팬 3개·100mm·ARGB·알루미늄 백플레이트·16핀 1개는 공식 문구. 사진: 흰 쉬라우드에 은회색 덧판, 반투명 흰 날개가 ARGB 로 빛난다(fan_light argb). 윗면 모서리에 빛나는 MIRACLE 글자와 GEFORCE RTX(끝 쪽 은색 덧판). 백플레이트 사진: 흰 알루미늄 판에 GEFORCE RTX·MIRACLE 각인, 끝 약 1/3 이 계단 모양 창으로 뚫려 방열판이 보이는 플로스루, 16핀은 PCB 끝(브래킷에서 약 65%, 비스듬한 사진 판독). 날개 수는 사진에서 반투명이라 못 셌다. 슬롯 수는 공식 표에 없어(두께 62mm) 비웠다. 다나와는 쓰지 않았다."
+  },
+  "asus-rog-astral-rtx5080-o16g": {
+   "kind": "gpu",
+   "fan_count": 3,
+   "light": "side",
+   "slots": 3.8,
+   "backplate": true,
+   "power": {
+    "type": "12v-2x6",
+    "n": 1,
+    "at": 0.64
+   },
+   "flow_through": true,
+   "color": "#2a2b2e",
+   "accent": "#8a5cff",
+   "marks": [
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#e6e7e9"
+    },
+    {
+     "text": "REPUBLIC OF GAMERS",
+     "where": "edge",
+     "color": "#3a3b3e"
+    },
+    {
+     "text": "ASTRAL",
+     "where": "backplate",
+     "color": "#e6e7e9"
+    },
+    {
+     "text": "GEFORCE RTX",
+     "where": "backplate",
+     "color": "#e6e7e9"
+    }
+   ],
+   "sources": [
+    {
+     "title": "ASUS ROG Astral RTX 5080 OC — 공식 제품 소개(ROG's first quad-fan · Indirect Aura Lighting ARGB · diecast backplate · 정면/뒷면/전원부 팬/조명 사진)",
+     "url": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-rtx5080-o16g-gaming/"
+    },
+    {
+     "title": "ASUS ROG Astral RTX 5080 OC — 공식 스펙(3.8 Slot · 1 x 16-pin · 357.6x149.3x76mm)",
+     "url": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-rtx5080-o16g-gaming/spec/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "3.8슬롯·16핀 1개·팬 4개(쿼드 팬)는 공식 스펙·문구. 제품 소개 본문 사진(세션 임시 폴더에서 보기만): 앞면은 건메탈 쉬라우드에 팬 3개(검정 날개·은색 고리, 끝 팬 고리는 좌표 각인)가 앞에, 넷째 팬은 뒷면 백플레이트 끝에 붙어 방열판을 통과한 바람을 뽑는다 — 끝 쪽은 그 팬 자리만큼 뚫린 플로스루. 렌더러는 앞면 팬만 그리므로 fan_count 는 앞면 3개로 적었다(뒷면 팬은 REQUESTS). 윗 모서리 앞·위에 보라-파랑 Aura 띠(light side, accent 그 보라). 16핀은 뒷면 사진에서 윗 모서리 홈(브래킷에서 약 64%, 비스듬한 사진 판독). 백플레이트는 짙은 회색 다이캐스트에 ROG ASTRAL 글자·GPU 뒤 보강틀, 윗 모서리에 흰 GEFORCE RTX. 날개 수·팬 지름은 자료에 없고 사진으로 확실히 세지 못해 비웠다. 다나와는 쓰지 않았다."
+  },
+  "gainward-rtx5080-phoenix": {
+   "kind": "gpu",
+   "fan_count": 3,
+   "slots": 3,
+   "backplate": true,
+   "power": {
+    "type": "12v-2x6",
+    "n": 1,
+    "at": 0.5
+   },
+   "flow_through": true,
+   "color": "#141517",
+   "accent": "#b9bcc0",
+   "marks": [
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#eceef0"
+    },
+    {
+     "text": "PHOENIX",
+     "where": "edge",
+     "color": "#55585c"
+    },
+    {
+     "text": "PHOENIX",
+     "where": "backplate",
+     "color": "#eceef0"
+    },
+    {
+     "text": "GEFORCE RTX",
+     "where": "backplate",
+     "color": "#eceef0"
+    }
+   ],
+   "sources": [
+    {
+     "title": "Gainward GeForce RTX 5080 Phoenix — 공식 제품 페이지(3 Slot Fan Cooler · 16-pin x1 · ARGB on the side logo · Ultra-Dense Protection Plate)",
+     "url": "https://www.gainward.com/main/vgapro.php?id=1229&lang=en"
+    },
+    {
+     "title": "같은 제품 공식 갤러리(정면·비스듬한·윗면·뒷면 직교 사진)",
+     "url": "https://www.gainward.com/main/vgapro.php?id=1229&lang=en&tab=gy"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "3슬롯·16핀 1개는 공식 표, 'ARGB on the side logo' 는 공식 문구. 갤러리 사진(세션 임시 폴더에서 보기만): 무광 검정 쉬라우드에 날개 모양 사선 홈, 팬 3개(광택 검정 날개, 가운데 허브 은색 불사조·양 끝 GAINWARD), 가운데 팬 위 윗 모서리에 은색 금속 덧판(PHOENIX 양각) → accent 은색. 윗면 직교 사진: 16핀이 덧판 밑 가운데(브래킷에서 약 50%), 끝 쪽 모서리에 흰 GEFORCE RTX. 뒷면 직교 사진: 검정 금속 백플레이트(PHOENIX·GEFORCE RTX 흰 글자, 불사조 무늬), 끝 약 42% 는 깃털 모양 살대만 남기고 뚫려 핀이 보인다 → flow_through. 발광은 옆 로고(PHOENIX 덧판)뿐이라 light·fan_light 는 비웠다(marks 발광은 기존 REQUESTS). 날개 수는 광택 반사로 세지 못했고 팬 지름은 자료에 없다. 다나와는 쓰지 않았다."
+  },
+  "galax-hof-rtx5080": {
+   "kind": "gpu",
+   "fans": [
+    102,
+    92,
+    102
+   ],
+   "fan_blades": 7,
+   "fan_light": "none",
+   "light": "both",
+   "slots": 3,
+   "backplate": true,
+   "flow_through": true,
+   "color": "#eef0f2",
+   "accent": "#a79cf0",
+   "marks": [
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#1c1d1f"
+    },
+    {
+     "text": "Hall Of Fame",
+     "where": "edge",
+     "color": "#f2f3f4"
+    },
+    {
+     "text": "GEFORCE RTX",
+     "where": "backplate",
+     "color": "#1c1d1f"
+    },
+    {
+     "text": "HOF",
+     "where": "backplate",
+     "color": "#c8a878"
+    }
+   ],
+   "sources": [
+    {
+     "title": "GALAX GeForce RTX 5080 HOF Gaming — 공식 제품 페이지(Fan 2*102mm, 1*92mm · 7-blade WINGS 3.0 · RGB Top/front/back/HOF crown · 3 slot · native 16-pin, 정면·켠 정면·비스듬한·I/O·아래·뒷면 사진)",
+     "url": "https://galax.com/en/product/geforce-rtx-hof-5080-white-edition/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 102·92·102mm·날개 7장·3슬롯·16핀은 공식 표·문구. 사진(세션 임시 폴더에서 보기만): 블랙 에디션(galax-hof-rtx5080-black)과 같은 틀의 흰 판 — 각진 다면체 무늬 흰 쉬라우드, 가운데 92mm 팬을 육각 틀이 감싸고 위에 왕관 막대, 허브는 금빛 HOF 왕관. 켠 사진: 육각 틀과 왕관 막대가 연보라로 빛나고 흰 날개는 안 빛난다 → light both(공식 Top/front/back), fan_light none, accent 그 연보라. 윗면 쪽 사진: 흰 GEFORCE RTX 판에 검정 글자, 검정 띠에 흰 'Hall Of Fame'. 뒷면 사진: 흰 금속 백플레이트에 금빛 선 HOF 무늬·검정 GEFORCE RTX, 끝 약 18% 가 가로 막대로 뚫린 플로스루. 16핀 자리는 흰 판 사진에서 확실히 못 찾아 비웠다(블랙 에디션은 약 68%). 다나와는 쓰지 않았다."
+  },
+  "pny-rtx5080-slim-oc-dual": {
+   "kind": "gpu",
+   "fans": [
+    120,
+    120
+   ],
+   "slots": 2,
+   "backplate": true,
+   "power": {
+    "type": "12v-2x6",
+    "n": 1,
+    "at": 0.5
+   },
+   "flow_through": true,
+   "color": "#1e1f21",
+   "accent": "#6a6c70",
+   "marks": [
+    {
+     "text": "PNY",
+     "where": "backplate",
+     "color": "#f0f1f2"
+    },
+    {
+     "text": "GEFORCE RTX 5080",
+     "where": "backplate",
+     "color": "#f0f1f2"
+    }
+   ],
+   "sources": [
+    {
+     "title": "PNY 공식 데이터시트 — GeForce RTX 5080 Slim 16GB OC Dual Fan(VCG508016DFSXPB1-O · 2 Slot · 120mm dual-fans · metal backplate · Power Input 1x16)",
+     "url": "https://www.pny.com/file%20library/company/support/product%20brochures/geforce%20graphics/english/rtx-5080-slim-16gb-dual-fan-oc-brochure.pdf"
+    },
+    {
+     "title": "PNY RTX 5080 Slim 제품 페이지(정면·비스듬한·I/O·백플레이트 사진)",
+     "url": "https://www.pny.com/geforce-rtx-5080-slim-models"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "2슬롯·120mm 팬 2개·금속 백플레이트·16핀 1개는 공식 데이터시트(PyMuPDF 로 글만 뽑아 읽음). 제품 페이지 사진(세션 임시 폴더에서 보기만): 무광 검정 쉬라우드를 사선으로 나눈 두 면(약간 밝은 회색 면), 검정 날개에 PNY 허브. 백플레이트 사진: 짙은 회색 판에 흰 PNY·GEFORCE RTX 5080, 끝 쪽 팬 자리만큼 둥근 창이 뚫려 핀과 뒤 팬이 보인다 → flow_through. 16핀은 PCB 끝 윗 모서리 홈(브래킷에서 약 50%). 불빛은 자료에 없고 사진도 꺼진 모양이라 fan_light 는 비웠다. 날개 수는 확실히 세지 못했다. 다나와는 쓰지 않았다."
   }
  }
 }

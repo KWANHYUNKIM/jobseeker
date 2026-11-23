@@ -136,3 +136,13 @@
   Gainward RTX 5070 Python III(공식 문구·표 — 팬 3개·2슬롯·16핀, 갤러리 윗면·뒷면 직교 사진 — 16핀 약 57%, 끝 약 45% 사선 살대 창 플로스루, 뱀 비늘 양각). 다나와는 쓰지 않았다.
 - 막힌 것: 맨 앞 COLORFUL 7개(공식 이미지 403)·ZOTAC(468)는 지난 회차처럼 우회하지 않고 넘겼다. manli.com 은 web-fetch 연결이 끊겨(상태 코드 없음) 공식 사양표를 못 봤다 — 유통사 기사엔 크기·팬 지름·전원 문구가 없다. PNY 브로슈어는 PyMuPDF 로 글·쪽 그림을 세션 임시 폴더에 뽑아 봤다.
 - 실물과 아직 다른 점: MANLI 는 models 의 specs 가 전부 null 이라 급의 보통 크기로 그려진다(REQUESTS [hw-models] 새 줄), 플로스루·날개 수도 사진이 작아 비웠다. PNY EPIC-X 의 반원 발광 띠·팬 사이 막대는 light 'both' 의 고리로, 백플레이트의 빛나는 V 는 기존 marks glow 요청 그대로 못 그린다. GALAX 흰 단색 팬 불빛은 기존 REQUESTS 그대로. PNY 두 장의 8핀 자리, Gainward·MANLI 날개 수는 비웠다. 회로·뱀 비늘·캐릭터 그림은 단색 판이다.
+
+## 2026-11-23 · 15회차(무인) — 그래픽카드 인기순위 없는 5080·5090 다섯
+
+- 적은 것(모두 medium, 공식 문구·표 + 공식 사진을 세션 임시 폴더에서 보기만): ASUS ROG Astral RTX 5080 OC(공식 스펙 3.8슬롯·16핀, 제품 소개 본문 `files/media` 정면·뒷면·전원부 팬·조명 사진 — 건메탈 앞면 팬 3개 + 백플레이트 끝 뒷면 팬 1개, 윗 모서리 보라 Aura 띠, 16핀 약 64%, 끝 플로스루) ·
+  Gainward RTX 5080 Phoenix(공식 표 3슬롯·16핀·'ARGB on the side logo', 갤러리 정면·윗면·뒷면 직교 사진 — 검정 + 은색 PHOENIX 덧판, 16핀 약 50%, 끝 약 42% 깃털 살대 창 플로스루, 백플레이트 있음) ·
+  GALAX RTX 5080 HOF Gaming 흰색(공식 표 102·92·102mm·날개 7장·3슬롯, 사진 16장 중 8장 — 블랙 판과 같은 틀의 흰 판, 켠 사진의 연보라 육각 틀·왕관, 흰 백플레이트 금빛 HOF 선·끝 약 18% 플로스루) ·
+  PNY RTX 5080 Slim OC Dual Fan(공식 데이터시트 2슬롯·120mm×2·금속 백플레이트, 제품 페이지 정면·I/O·백플레이트 사진 — 끝 둥근 창 플로스루, 16핀 약 50%) ·
+  INNO3D RTX 5090 iCHILL X3(공식 문구 98mm·팬 3개·RGB·Multifunctional Backplate, 공식 기능 그림 정면·윗면·뒷면 — 은색 헤어라인 판 경계의 사선 RGB 선, 16핀 약 53%, 끝 약 40% 플로스루). 다나와는 쓰지 않았다.
+- 막힌 것: 앞의 COLORFUL(403)·ZOTAC(468) 제품은 지난 회차처럼 우회하지 않고 넘겼다. PNY 데이터시트 PDF 는 web-fetch 가 글로 못 읽어 세션 임시 폴더의 파일을 PyMuPDF 로 글만 뽑았다. GALAX·Gainward 갤러리는 파일 이름에 보는 면이 없어 열어 보고 골랐다.
+- 실물과 아직 다른 점: Astral 5080 의 뒷면 팬은 형식에 칸이 없어 fan_count 3(앞면)만 적었다(기존 `rear_fans` 요청). INNO3D 의 사선 RGB 선은 light 'both' 의 고리·띠로 그려진다(REQUESTS 새 줄). Gainward 의 빛나는 옆 로고는 기존 marks glow 요청 그대로라 light 는 비웠다. HOF 흰 판의 16핀 자리는 사진에서 못 찾아 비웠다(블랙 판 68%). Gainward·HOF 흰 판 models 의 backplate null 은 [hw-models] 새 줄. 날개 수는 HOF 말고는 비웠다.
