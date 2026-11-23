@@ -27,6 +27,7 @@
   "ats-toss:group:8003064003": "toss-dip-data-scientist",
   "ats-toss:group:7818488003": "toss-dw-analytics-engineer",
   "ats-toss:group:7985496003": "toss-dw-global-analytics-engineer",
+  "ats-toss:group:7864347003": "toss-fds-data-scientist",
   "ats-toss:group:7702871003": "toss-finops-analytics-engineer",
   "ats-toss:group:4071101003": "toss-frontend-developer",
   "ats-toss:group:7545902003": "toss-frontend-platform-engineer",
@@ -308,6 +309,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 34
+  },
+  {
+   "id": "toss-fds-data-scientist",
+   "company": "토스",
+   "role": "데이터 사이언티스트 (FDS)",
+   "jobs": [
+    "ats-toss:group:7864347003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 10
   },
   {
    "id": "toss-finops-analytics-engineer",
