@@ -105,6 +105,48 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "사진: 짙은 회색 무광 상자, 앞뒤 끝 모서리를 감싸는 구리(주황)색 띠, 팬 덮개는 판 전체를 벌집 타공한 판(둥근 철망 아님) 가운데에 구리색 3×3 네모 배지. 옆면 검정 딱지에 구리색 테 'PERFORMANCE II PV 600W'. 뒤판도 벌집 타공 + 스위치·전원 단자, 케이블 직결(논모듈러). 날개는 타공판에 가려 세지 못했다."
+  },
+  "energyoptimus-excel-classic-600w": {
+   "kind": "psu",
+   "modular": "none",
+   "fan_mm": 120,
+   "color": "#1a1a1b",
+   "accent": "#c9ccd0",
+   "fan_light": "none",
+   "marks": [
+    { "text": "EXCEL CLASSIC", "where": "side" },
+    { "text": "BRONZE 600W", "where": "side", "color": "#b8862f" }
+   ],
+   "sources": [
+    {
+     "title": "에너지옵티머스 EXCEL CLASSIC 600W(EOP600) — 공식 제품 페이지(대표 사진 + 비스듬한 윗면·옆면 사양 딱지·팬 정면 사진)",
+     "url": "https://eoptimus.kr/product/detail.html?product_no=56"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "사진: 무광 검정 상자, 팬 덮개는 둥근 철망이 아니라 판을 뚫은 벌집 격자이고 그 둘레를 은색 판(네 귀를 비스듬히 깎은 팔각 테, 네 귀 나사)이 감싼다. 가운데 둥근 구리색 고리 배지에 'Energy OPTIMUS'. 옆면은 검정 사양 딱지에 흰 'EXCEL CLASSIC'·금색 'BRONZE 600W'·80PLUS 브론즈 마크와 금색 띠, 윗면(케이블 쪽 끝)에 금색 '600W' 띠. 뒤판·옆면 아래는 벌집 타공. 700W 와 같은 몸통이고 케이블은 본체 직결(사진에는 선이 안 찍혔다). 날개는 격자에 가려 세지 못했다."
+  },
+  "micronics-performance-ii-pv-600w-surge-4k": {
+   "kind": "psu",
+   "modular": "none",
+   "fan_mm": 120,
+   "color": "#26272a",
+   "accent": "#c06a2b",
+   "fan_light": "none",
+   "marks": [
+    { "text": "PERFORMANCE II PV", "where": "side" },
+    { "text": "600W", "where": "side", "color": "#c06a2b" }
+   ],
+   "sources": [
+    {
+     "title": "마이크로닉스 Performance II PV 600W 80Plus Bronze Surge 4K(HPW-600BR-F12S) — 공식 제품 페이지(사양 줄 120mm 팬 1개·Reform 케이블, 대표 사진 3장: 비스듬한 윗면·옆면·팬 정면)",
+     "url": "https://www.micronics.co.kr/micronics/view_product.php?product_id=60DW6"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "FDB 판과 같은 몸통. 사진: 짙은 회색 무광 상자, 앞뒤 끝 모서리를 감싸는 구리(주황)색 띠, 팬 덮개는 판 전체를 벌집 타공한 판(둥근 철망 아님, 네 귀를 비스듬히 깎은 테) 가운데에 구리색 3×3 네모 배지. 옆면 검정 딱지에 구리색 테 'PERFORMANCE II PV 600W'. 뒤판·옆면 아래도 벌집 타공 + 스위치·전원 단자, 케이블 직결(논모듈러). 날개는 타공판에 가려 세지 못했다."
   }
  }
 }

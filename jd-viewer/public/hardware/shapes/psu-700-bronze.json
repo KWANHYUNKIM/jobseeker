@@ -104,6 +104,68 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "사진: 짙은 회색 무광 상자, 앞뒤 끝 모서리를 감싸는 구리(주황)색 띠, 팬 덮개는 판 전체를 벌집 타공한 판(둥근 철망 아님) 가운데에 구리색 3×3 네모 배지. 옆면 검정 딱지에 구리색 테 'PERFORMANCE II PV 700W'. 뒤판도 벌집 타공 + 스위치·전원 단자, 케이블 직결(논모듈러). 날개는 타공판에 가려 세지 못했다."
+  },
+  "energyoptimus-excel-classic-700w-full-modular": {
+   "kind": "psu",
+   "modular": "full",
+   "fan_mm": 120,
+   "color": "#1a1a1b",
+   "accent": "#c9ccd0",
+   "fan_light": "none",
+   "marks": [
+    { "text": "EXCEL CLASSIC", "where": "side" },
+    { "text": "FULL MODULAR BRONZE 700W", "where": "side", "color": "#b8862f" }
+   ],
+   "sources": [
+    {
+     "title": "에너지옵티머스 EXCEL CLASSIC 700W 풀모듈러(EOP700-F) — 공식 제품 페이지(대표 사진 + 비스듬한 윗면·옆면 사양 딱지·팬 정면 사진 — 케이블 쪽 모듈 단자 PCI-E·CPU·PERIPHERAL/SATA·M/B 인쇄)",
+     "url": "https://eoptimus.kr/product/detail.html?product_no=57"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "사진: 무광 검정 상자, 팬 덮개는 둥근 철망이 아니라 판을 뚫은 벌집 격자이고 그 둘레를 은색 판(네 귀를 비스듬히 깎은 팔각 테, 네 귀 나사)이 감싼다. 가운데 둥근 구리색 고리 배지에 'Energy OPTIMUS'. 옆면은 검정 사양 딱지에 흰 'EXCEL CLASSIC'·금색 'FULL MODULAR BRONZE 700W'·80PLUS 브론즈 마크와 금색 띠, 윗면(케이블 쪽 끝)에 금색 '700W' 띠. 뒤판·옆면 아래는 벌집 타공. 케이블 쪽 면은 모듈 단자 판(PCI-E·CPU·PERIPHERAL/SATA·M/B 칸 인쇄)이라 선이 없다. 날개는 격자에 가려 세지 못했다."
+  },
+  "darkflash-perfectmost-700w-bronze-atx31": {
+   "kind": "psu",
+   "modular": "none",
+   "fan_mm": 120,
+   "color": "#2b2c2e",
+   "accent": "#d8d9db",
+   "fan_light": "none",
+   "marks": [
+    { "text": "pmT PERFECTMOST", "where": "side" }
+   ],
+   "sources": [
+    {
+     "title": "darkFlash 퍼펙트모스트 700W 80PLUS BRONZE ATX3.1 블랙(PMT_BE_700W) — 공식 제품 페이지(사진 4장: 상자와 본체·비스듬한 윗면 둘·직결 케이블 다발)",
+     "url": "https://www.darkflash.co.kr/product/detail2.html?product_no=897&cate_no=1&display_group=4"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "블랙 판(화이트 판은 색만 다르다). 사진: 짙은 회색 무광 상자, 팬 덮개는 둥근 철망이 아니라 테 안에 네모 구멍을 바둑판으로 뚫은 판(네 귀 나사, 귀퉁이에 작은 darkFlash 로고). 옆면에 흰 'pmT PERFECTMOST' 큰 글자(딱지 없이 바로 인쇄). 뒤판·옆면은 벌집 타공 + 로커 스위치·전원 단자. 케이블은 본체 직결 검정 메시 피복 다발(논모듈러). 날개는 격자에 가려 세지 못했다."
+  },
+  "energyoptimus-excel-classic-700w": {
+   "kind": "psu",
+   "modular": "none",
+   "fan_mm": 120,
+   "color": "#1a1a1b",
+   "accent": "#c9ccd0",
+   "fan_light": "none",
+   "marks": [
+    { "text": "EXCEL CLASSIC", "where": "side" },
+    { "text": "BRONZE 700W", "where": "side", "color": "#b8862f" }
+   ],
+   "sources": [
+    {
+     "title": "에너지옵티머스 EXCEL CLASSIC 700W(EOP700) — 공식 제품 페이지(대표 사진 + 비스듬한 윗면·옆면 사양 딱지·팬 정면 사진)",
+     "url": "https://eoptimus.kr/product/detail.html?product_no=55"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "사진: 무광 검정 상자, 팬 덮개는 둥근 철망이 아니라 판을 뚫은 벌집 격자이고 그 둘레를 은색 판(네 귀를 비스듬히 깎은 팔각 테, 네 귀 나사)이 감싼다. 가운데 둥근 구리색 고리 배지에 'Energy OPTIMUS'. 옆면은 검정 사양 딱지에 흰 'EXCEL CLASSIC'·금색 'BRONZE 700W'·80PLUS 브론즈 마크와 금색 띠, 윗면(케이블 쪽 끝)에 금색 '700W' 띠. 뒤판·옆면 아래는 벌집 타공. 풀모듈러 판과 같은 몸통이고 케이블은 본체 직결(사진에는 선이 안 찍혔다). 날개는 격자에 가려 세지 못했다."
   }
  }
 }
