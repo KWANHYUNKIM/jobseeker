@@ -62,7 +62,8 @@
   "ats-toss:group:4555752003": "toss-security-researcher-apt",
   "ats-toss:group:7780944003": "toss-security-researcher-mobile",
   "ats-toss:group:4076085003": "toss-security-researcher-pentest",
-  "saramin-55608860": "tossbank-finance-data-system"
+  "saramin-55608860": "tossbank-finance-data-system",
+  "ats-toss:group:7702579003": "tossbank-infra-operations-engineer"
  },
  "roles": [
   {
@@ -675,6 +676,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 9
+  },
+  {
+   "id": "tossbank-infra-operations-engineer",
+   "company": "토스뱅크",
+   "role": "인프라 운영 엔지니어",
+   "jobs": [
+    "ats-toss:group:7702579003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 29
   }
  ]
 }
