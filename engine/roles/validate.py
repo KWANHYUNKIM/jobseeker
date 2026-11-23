@@ -112,6 +112,33 @@ def check(d: dict, path: Path, jobs_by_key: dict) -> tuple[list[str], list[str]]
     for where, r in wanted:
         if r not in res_ids:
             errs.append(f"{w} {where}: 공부 자료 '{r}' 가 resources 에 없다")
+    # 연봉·복지·위치 — 숫자마다 기준(basis)과 출처. 근거가 없으면 칸을 비운다(지어내지 않는다).
+    pay = d.get("pay")
+    if pay:
+        if not pay.get("summary") or not pay.get("rows"):
+            errs.append(f"{w} pay: summary·rows 가 있어야 한다")
+        for i, row in enumerate(pay.get("rows", [])):
+            for k in ("label", "value", "basis"):
+                if not row.get(k):
+                    errs.append(f"{w} pay.rows[{i}]: '{k}' 없음")
+            if not REF.search(row.get("note", "")):
+                errs.append(f"{w} pay.rows[{i}]: note 에 출처 [n] 이 없다 — 연봉 숫자는 출처 없이 싣지 않는다")
+    ben = d.get("benefits")
+    if ben:
+        if not ben.get("items"):
+            errs.append(f"{w} benefits: items 없음")
+        if not REF.search(ben.get("note", "")):
+            errs.append(f"{w} benefits: note 에 출처 [n] 이 없다")
+    loc = d.get("location")
+    if loc:
+        for k in ("name", "address"):
+            if not loc.get(k):
+                errs.append(f"{w} location: '{k}' 없음")
+        if not REF.search(loc.get("note", "")):
+            errs.append(f"{w} location: note 에 출처 [n] 이 없다")
+    for k in ("pay", "benefits", "location"):
+        if k not in d:
+            warns.append(f"{w}: '{k}' 가 없다 — 공개된 근거가 있으면 채운다(PROMPT 4-2)")
     # 공고의 모든 줄에 풀이가 붙었나 — 수집된 공고가 있을 때만 대조한다
     quotes = {norm(ln["quote"]) for ln in d["lines"] if ln.get("quote")}
     for key in d["jobs"]:

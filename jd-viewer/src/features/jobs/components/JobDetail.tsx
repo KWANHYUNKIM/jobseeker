@@ -23,7 +23,7 @@ import { JobGuide } from './JobGuide'
 import { parseJdText, type JdBlock } from '../utils/jdText'
 import { useRoleReading } from '../hooks/useRoleReading'
 import { matchRoleLine } from '../utils/roleText'
-import { RoleAside, RoleLineNote, RoleStudyPath, RoleSummary } from './RoleReading'
+import { RoleAside, RoleLineNote, RoleLocation, RolePayBenefits, RoleStudyPath, RoleSummary } from './RoleReading'
 
 interface Props {
   job: Job
@@ -243,9 +243,13 @@ export function JobDetail({ job, onOpenUrl }: Props) {
                 </Section>
               )}
 
+              {reading && <RolePayBenefits r={reading} />}
+
               {job.full_jd && <FullJd text={job.full_jd} />}
 
               {co && <CompanyInfo co={co} location={job.location} />}
+
+              {reading && <RoleLocation r={reading} />}
             </div>
           </div>
         </article>

@@ -63,7 +63,25 @@ export interface RoleReading {
   sources: RoleSource[]
   resources?: RoleResource[]
   study_path?: RoleStudyStep[]
+  pay?: RolePay
+  benefits?: { items: { name: string; detail: string }[]; note?: string }
+  location?: RoleLocation
   caveat?: string
+}
+
+export interface RolePay {
+  summary: string
+  rows: { label: string; value: string; basis: string; note?: string }[]
+  how?: string
+}
+
+export interface RoleLocation {
+  name: string
+  address: string
+  postal?: string
+  map_url?: string
+  near?: string
+  note?: string
 }
 
 interface RoleIndex {

@@ -320,6 +320,109 @@ export function RoleStudyPath({ r }: { r: RoleReading }) {
   )
 }
 
+function H3({ title, sub }: { title: string; sub?: string }) {
+  return (
+    <h3 className="flex flex-wrap items-baseline gap-x-2 pb-3 mb-4 border-b-2 border-[#272727] text-xl font-bold leading-[29px] text-[#272727]">
+      {title}
+      {sub && <span className="text-[13px] font-normal text-[#777]">{sub}</span>}
+    </h3>
+  )
+}
+
+/** 공고 원문 위 — 초봉·평균 연봉(숫자마다 기준과 출처) · 복지. */
+export function RolePayBenefits({ r }: { r: RoleReading }) {
+  const { pay, benefits, sources } = r
+  if (!pay && !benefits) return null
+  return (
+    <>
+      {pay && (
+        <section>
+          <H3 title="연봉" sub="숫자마다 기준이 다릅니다 — 기준 칸을 같이 보세요" />
+          <p className="mb-4 text-[15.5px] leading-[25px] text-[#272727]">
+            <RichText text={pay.summary} sources={sources} />
+          </p>
+          <div className="overflow-hidden rounded-lg border border-[#e4e4e4]">
+            {pay.rows.map((row, i) => (
+              <div key={i} className="grid grid-cols-1 gap-1 border-b border-[#efefef] px-4 py-3 last:border-b-0 sm:grid-cols-[120px_minmax(0,1fr)] sm:gap-4 [&>*]:min-w-0">
+                <div className="text-[13.5px] font-semibold text-[#555]">{row.label}</div>
+                <div>
+                  <div className="flex flex-wrap items-baseline gap-x-2">
+                    <span className="text-[17px] font-bold text-[#272727]">{row.value}</span>
+                    <span className="rounded-full bg-[#eef2fb] px-2 text-[11.5px] font-semibold leading-[20px] text-[#3657c8]">{row.basis}</span>
+                  </div>
+                  {row.note && (
+                    <p className="mt-1 text-[13.5px] leading-[21px] text-[#666]">
+                      <RichText text={row.note} sources={sources} />
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+          {pay.how && (
+            <p className="mt-3 rounded-lg bg-[#f5f8ff] px-3.5 py-2.5 text-[14px] leading-[23px] text-[#3a3a3a]">
+              <b className="font-semibold text-[#3657c8]">읽는 법</b> · <RichText text={pay.how} sources={sources} />
+            </p>
+          )}
+        </section>
+      )}
+      {benefits && benefits.items.length > 0 && (
+        <section>
+          <H3 title="복지" sub="회사가 공식으로 밝힌 것" />
+          <ul className="grid gap-x-6 gap-y-2.5 sm:grid-cols-2">
+            {benefits.items.map((b, i) => (
+              <li key={i} className="flex gap-2 text-[14.5px] leading-[22px]">
+                <span className="shrink-0 font-semibold text-[#272727]">{b.name}</span>
+                <span className="text-[#555]">{b.detail}</span>
+              </li>
+            ))}
+          </ul>
+          {benefits.note && (
+            <p className="mt-3 text-[13px] leading-[21px] text-[#888]">
+              <RichText text={benefits.note} sources={sources} />
+            </p>
+          )}
+        </section>
+      )}
+    </>
+  )
+}
+
+/** 맨 밑 — 회사 위치. */
+export function RoleLocation({ r }: { r: RoleReading }) {
+  const loc = r.location
+  if (!loc) return null
+  return (
+    <section>
+      <H3 title="회사 위치" />
+      <div className="flex flex-col gap-3 rounded-lg border border-[#e4e4e4] px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <div className="text-[15px] font-bold text-[#272727]">{loc.name}</div>
+          <div className="mt-0.5 text-[15px] leading-[23px] text-[#3a3a3a]">
+            {loc.postal && <span className="mr-1 text-[#999]">({loc.postal})</span>}
+            {loc.address}
+          </div>
+          {loc.near && (
+            <div className="mt-1 text-[13.5px] text-[#666]">
+              <RichText text={loc.near} sources={r.sources} />
+            </div>
+          )}
+        </div>
+        {loc.map_url && (
+          <a href={loc.map_url} target="_blank" rel="noopener noreferrer" className="shrink-0 rounded-lg bg-[#3657c8] px-4 py-2 text-center text-[14px] font-semibold text-white no-underline hover:bg-[#2c49ab]">
+            지도에서 보기
+          </a>
+        )}
+      </div>
+      {loc.note && (
+        <p className="mt-2 text-[13px] leading-[21px] text-[#888]">
+          <RichText text={loc.note} sources={r.sources} />
+        </p>
+      )}
+    </section>
+  )
+}
+
 /** 오른쪽 칸 — 맞는 사람 · 면접 질문 · 출처. */
 export function RoleAside({ r }: { r: RoleReading }) {
   const [allSrc, setAllSrc] = useState(false)
