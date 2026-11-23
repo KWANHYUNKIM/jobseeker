@@ -1,0 +1,840 @@
+{
+  "id": "hyundai-autoever-smart-tag-service-engineer",
+  "company": "현대오토에버",
+  "role": "Service Engineer — 스마트팩토리 시스템(스마트태그) 개발 및 운영",
+  "team": "IoT솔루션팀 (SDx)",
+  "jobs": [
+    "wanted-385521"
+  ],
+  "researched_at": "2026-11-23",
+  "tldr": {
+    "what": "자동차 공장 조립 라인에서 **차와 조임 공구에 붙인 무선 태그로 위치를 30cm 안팎까지 추적**해, 어느 차에 어떤 볼트를 조였는지 맞추고 빠지면 라인을 멈추게 하는 '스마트태그' 시스템을 **운영하고 고치는** 자리입니다.[1][2][3]",
+    "env": "웹·애플리케이션·위치 처리 모듈로 된 자체 플랫폼(SDOP)을 Java Spring·RDBMS로 다루고, 설비(PLC)·공구 컨트롤러·품질 시스템과 통신으로 이어져 있습니다. 근무지는 **현대차 울산공장이 있는 울산 양정**입니다.[1][2]",
+    "oneline": "IoT·위치추적 위에 얹은 **공장 백엔드 + 현장 운영** 자리. 경력 5~11년, 코드보다 '라인이 멈추지 않게 지키는 일'의 비중이 큽니다.[1][2]"
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "스마트태그 시스템 운영/개선",
+      "short": "차·공구 위치를 맞춰 체결 누락을 막는 공장 시스템이 매일 멈추지 않게 돌리고, 공장마다 더 붙인다.",
+      "why": "스마트태그는 현대오토에버가 직접 만든 제품입니다. 예전 공장은 작업자가 바코드 스캐너로 위치를 일일이 찍어 데이터가 복잡하고, 볼트를 잘못 조이거나 빠뜨리는 품질 문제가 있었다고 회사 발표자가 설명했습니다.[2] 2018년 기아 화성공장에서 시작해 현대차·기아 공장으로 단계별로 넓히는 중이라, 운영할 대상과 고칠 곳이 계속 늘어납니다.[2]",
+      "actually": {
+        "intro": "회사 발표와 제품 페이지에 나온 시스템의 생김새입니다.[2][3]",
+        "items": [
+          "**현장 장치 다섯 가지** — 차량 태그(차의 사양 정보를 담고 위치를 보냄, 자석으로 차체에 붙임) · 공구 태그 · 앵커(천장 등에 고정해 태그 위치를 재는 기준점) · 스마트 커넥터 · 운영 플랫폼 SDOP(Smart Device Operation Platform).[2]",
+          "**SDOP 구조** — 사용자·공장 운영용 **웹**, 설비 통신과 판정 로직을 맡는 **애플리케이션**, 실시간 좌표를 받아 위치 변화에 따른 이벤트를 만드는 **위치 처리 모듈**, 그리고 DB와 실시간 DB.[2]",
+          "**측위** — UWB(초광대역 무선, 짧은 펄스로 거리를 재는 방식)로 실내에서 오차 30cm 안팎. 제품 페이지는 UWB·RTK·BLE를 쓴다고 적었다.[2][3]",
+          "**주로 쓰는 곳** — 프레스·차체·도장·의장(부품을 다는 조립) 공장 중 **의장 공장**.[2]",
+          "**단계** — 1단계 태그·앵커 없이 가상 트래킹으로 품질 시스템과 연동 → 2단계 메인 라인에 태그·앵커를 깔아 차·공구 실시간 추적 → 3단계 라인 밖(오프라인) 공정까지 전 공정 추적. 국내 신공장에서는 빠질 수 없는 시스템이 됐다고 했다.[2]",
+          "**넓히는 쪽** — 무게를 재는 대차로 부품 수량을 스스로 세 자동 창고에 공급을 지시하는 부품 관리, 작업자의 위험 구역 출입 감시·위치 이력 관리.[2]",
+          "**밖으로 파는 제품** — 2025년 스마트공장·자동화산업전에서 회사의 SDF 솔루션 시연 차량에 스마트태그를 달아 실시간 측위·트래킹을 보였다.[5] 팀 리더가 말한 '대외 고객사'로 넓히는 쪽이다.[1]"
+        ]
+      },
+      "how_far": "'개선'은 새 제품을 처음부터 만드는 일보다 **이미 돌아가는 시스템에 공장·공정을 더 붙이고, 현장 요청에 맞게 판정 로직과 화면을 고치는 일**에 가깝습니다. 하드웨어(태그·앵커) 자체 설계는 이 자리의 몫이 아닐 가능성이 큽니다. {추론}",
+      "refs": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "study": [
+        "webinar-smarttag",
+        "sdf-page",
+        "zebra-uwb"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "고객사/사용자 소통 및 요건 정의",
+      "short": "공장 생산·품질 담당자가 원하는 것을 듣고 '어떤 조건이면 라인을 멈추나' 같은 규칙으로 바꿔 적는 일.",
+      "why": "고객은 현대차·기아 공장이고, 팀 리더는 그룹 밖 고객사에도 서비스한다고 적었습니다.[1] 공장마다 라인 길이·공정·요청이 달라 회사도 '적용 공장 규모와 공정 요구사항에 따라 맞춤·최적화해서 구성한다'고 발표했습니다.[2]",
+      "actually": {
+        "items": [
+          "**판정 기준 정하기** — 공구가 차에서 몇 m 안이면 그 차 작업으로 인정할지, 볼트가 몇 개 다 조여져야 통과인지, 빠지면 차를 세울지 경고만 할지.[2]",
+          "**연동 범위 정하기** — 서열 정보(어느 차가 어떤 순서로 오나)·설비 센서·공구 컨트롤러·품질 시스템 중 어디와 무엇을 주고받나.[2]",
+          "**화면 요구** — 작업 결과를 모니터링 PC와 PLC 화면에서 실시간으로 보이게 하는 부분.[2]",
+          "**해외 공장** — 동료가 북미·유럽 출장이 많다고 했다. 현지 공장과 요건을 맞추는 일이 포함된다.[1]"
+        ]
+      },
+      "how_far": "생산·품질 기준 자체는 공장이 정합니다. 개발자는 그 기준을 **빠짐없이 숫자와 조건으로 적고, 할 수 있는 것과 없는 것(측위 오차 30cm 안팎 등)을 설명**하는 쪽입니다.[2] {추론}",
+      "refs": [
+        1,
+        2
+      ],
+      "study": [
+        "wiegers-req",
+        "isa95"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "일일/정기 점검 및 상시 모니터링",
+      "short": "라인이 도는 동안 태그·앵커·서버·연동이 살아 있는지 매일 보고, 이상하면 생산 전에 먼저 잡는다.",
+      "why": "이 시스템은 체결 결과로 다음 공정을 막는 인터락(조건이 안 맞으면 기계가 다음 동작을 못 하게 잠그는 장치)과 품질 sign-off 게이트에 쓰입니다.[2] 시스템이 틀리거나 멈추면 차가 서거나, 반대로 불량이 그냥 빠져나갑니다. {추론}",
+      "actually": {
+        "intro": "회사가 공개한 구성 요소에서 보이는 '살펴야 할 칸'입니다.[2] 점검 항목 자체는 공개되지 않아 {추론}입니다.",
+        "items": [
+          "**장치** — 앵커가 신호를 받고 있나, 차량·공구 태그 배터리와 마지막 수신 시각.",
+          "**위치 처리** — 좌표가 끊기거나 튀지 않나(차가 라인 밖으로 순간 이동하는 식).",
+          "**연동** — PLC·공구 컨트롤러·서열·품질 시스템과의 통신이 밀리지 않나, 재접속이 되나.",
+          "**서버·DB** — 실시간 DB와 이력 DB 용량, 느린 쿼리, 디스크·메모리.",
+          "**경보 원칙** — 사람을 부르는 경보는 '지금 조치할 수 있고 생산에 보이는 문제'에만. 구글 SRE 책은 원인보다 증상으로 경보하라고 권한다.[13]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "마지막 소식이 오래된 장치 찾기 (직접 돌린 출력)",
+          "body": "상시 모니터링의 가장 작은 꼴입니다. 장치 종류마다 '이만큼 조용하면 이상'을 다르게 둡니다(숫자는 예시). {추론}",
+          "lang": "python",
+          "code": "from datetime import datetime, timedelta\n\nnow = datetime(2026, 11, 23, 8, 0, 0)\nlast_seen = {\n    \"ANCHOR-A01\": now - timedelta(seconds=2),\n    \"ANCHOR-A02\": now - timedelta(seconds=95),\n    \"TAG-CAR-1001\": now - timedelta(seconds=1),\n    \"TOOL07\": now - timedelta(minutes=12),\n}\nlimit = {\"ANCHOR\": 30, \"TAG\": 10, \"TOOL\": 300}   # 종류별 허용 침묵(초)\nfor dev, t in sorted(last_seen.items()):\n    kind = dev.split(\"-\")[0] if not dev.startswith(\"TOOL\") else \"TOOL\"\n    gap = (now - t).total_seconds()\n    flag = \"경보\" if gap > limit[kind] else \"정상\"\n    print(f\"{dev:13s} {int(gap):4d}초 전  {flag}\")\n\n# ANCHOR-A01       2초 전  정상\n# ANCHOR-A02      95초 전  경보\n# TAG-CAR-1001     1초 전  정상\n# TOOL07         720초 전  경보"
+        }
+      ],
+      "how_far": "공장 운영 시간에 맞춘 대응이 따라올 수 있습니다(교대 근무·주말 특근 시간대 연락 등). 실제 당직 방식은 공고에 없으니 면접에서 묻습니다. {추론}",
+      "refs": [
+        2,
+        13
+      ],
+      "study": [
+        "sre-monitoring",
+        "spring-boot-docs"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "응용프로그램 개발(Java Spring) 경험",
+      "short": "운영 플랫폼(SDOP)의 웹·판정 로직이 이 언어로 돼 있어서. 읽고 고칠 수 있는 실무 수준이 필요하다.",
+      "why": "공고의 기술 태그가 Java·Spring이고, SDOP는 웹(관리·공장 운영 화면)과 애플리케이션(설비 통신·판정 로직)으로 나뉩니다.[1][2] 위치 이벤트를 받아 '이 공구가 어느 차를 조였나'를 판정하는 부분이 비즈니스 로직의 중심입니다.[2]",
+      "level": {
+        "basic": "Spring Boot로 REST API · 트랜잭션 · JDBC/JPA로 DB 읽고 쓰기",
+        "work": "스케줄러·비동기 처리 · 여러 DB 연결 · 로그·예외 처리 · 운영 중 설정 바꾸기",
+        "team": "실시간 이벤트(좌표·체결 결과)를 놓치지 않고 순서대로 판정하기 · 소켓 연동 코드 · 장애 때 로그로 원인 찾기 {추론}"
+      },
+      "actually": {
+        "items": [
+          "공구 태그 좌표가 들어오면 가장 가까운 차를 찾고, 정해진 반경 밖이면 오작업으로 본다.[2] {추론}",
+          "공구 컨트롤러가 보낸 체결 결과(OK/NG)를 그 차의 사양·서열 정보와 짝지어 저장한다.[2]",
+          "필요한 체결이 다 안 됐으면 PLC로 인터락 신호를 보내고 품질 시스템에 결과를 넘긴다.[2]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "공구 위치로 '어느 차를 조였나' 정하기 (직접 돌린 출력)",
+          "body": "발표가 말한 '차와 공구의 실시간 위치를 맞춰 작업 결과를 처리하고, 누락이면 멈춘다'를 가장 작게 옮긴 것입니다.[2] 반경·볼트 수는 예시입니다. 실제 시스템은 Java지만 짧게 보이려고 파이썬으로 썼습니다.",
+          "lang": "python",
+          "code": "cars = {\"BODY-1001\": 12.4, \"BODY-1002\": 18.1, \"BODY-1003\": 23.9}   # 라인 위 x 좌표(m)\nneed = {\"BODY-1001\": 4, \"BODY-1002\": 4, \"BODY-1003\": 4}           # 이 공정 볼트 수\nevents = [(\"TOOL07\", 12.6, \"OK\"), (\"TOOL07\", 12.2, \"OK\"), (\"TOOL07\", 12.5, \"OK\"),\n          (\"TOOL07\", 12.3, \"OK\"), (\"TOOL07\", 18.0, \"OK\"), (\"TOOL07\", 18.3, \"NG\"),\n          (\"TOOL07\", 18.2, \"OK\"), (\"TOOL07\", 21.0, \"OK\")]\nRADIUS = 1.0   # 차 중심에서 1m 안이어야 그 차의 작업으로 인정\ndone = {c: 0 for c in cars}\nfor tool, x, res in events:\n    car = min(cars, key=lambda c: abs(cars[c] - x))\n    if abs(cars[car] - x) > RADIUS:\n        print(f\"{tool} x={x}: 1m 안에 차 없음 -> 버림(오작업 의심)\")\n        continue\n    if res == \"OK\":\n        done[car] += 1\nfor c in cars:\n    state = \"통과\" if done[c] >= need[c] else f\"인터락 — {need[c] - done[c]}개 부족\"\n    print(c, done[c], \"/\", need[c], state)\n\n# TOOL07 x=21.0: 1m 안에 차 없음 -> 버림(오작업 의심)\n# BODY-1001 4 / 4 통과\n# BODY-1002 2 / 4 인터락 — 2개 부족\n# BODY-1003 0 / 4 인터락 — 4개 부족"
+        }
+      ],
+      "how_far": "경력 5~11년 자리라 Spring 문법보다 **남이 짠 운영 코드를 빨리 읽고, 고친 뒤 공장 생산을 멈추지 않게 배포하는 경험**을 볼 가능성이 큽니다. 전형에 코딩 테스트가 있습니다.[1] {추론}",
+      "refs": [
+        1,
+        2
+      ],
+      "study": [
+        "toby-spring",
+        "spring-boot-docs",
+        "book-spring-core"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "RDBMS(Tibero/MySQL/Maria/Postgre SQL 중 2개 이상) 경험",
+      "short": "공장·고객사마다 쓰는 DB가 달라서. 같은 일을 두 가지 이상의 DB 문법으로 해 본 경험을 본다.",
+      "why": "현대차그룹 공장과 그룹 밖 고객사에 같은 제품을 넣으니, 들어가는 곳의 DB에 맞춰야 합니다.[1] 'Tibero'는 국산 상용 DB(티맥스티베로)이고 공식 매뉴얼은 Tibero 7 기준입니다.[14] 공고가 '2개 이상'을 콕 집은 것은 한 DB만 써 본 사람보다 **문법·동작 차이를 겪어 본 사람**을 찾는다는 뜻으로 읽힙니다. {추론}",
+      "level": {
+        "basic": "JOIN · GROUP BY · 인덱스 · 트랜잭션",
+        "work": "DB마다 다른 문법(upsert · 페이징 · 날짜 함수 · 시퀀스) · 실행계획 보기",
+        "team": "위치·체결 이력처럼 빨리 쌓이는 표 관리(기간별 정리·인덱스) · 두 DB에서 같은 결과 확인 {추론}"
+      },
+      "actually": {
+        "items": [
+          "**최신 상태 표와 이력 표** — 태그마다 '마지막 위치' 한 줄을 덮어쓰는 표와, 체결 결과를 계속 쌓는 표를 나눈다. {추론}",
+          "**문법 차이** — 같은 '있으면 고치고 없으면 넣기'가 MySQL은 `INSERT … ON DUPLICATE KEY UPDATE`, PostgreSQL은 `INSERT … ON CONFLICT`, Tibero는 `MERGE INTO`로 다르다. {추론}",
+          "SDOP는 DB와 실시간 DB를 따로 둔다 — 빨리 바뀌는 좌표와 오래 남길 기록을 다른 곳에 둔다는 뜻이다.[2]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "태그의 마지막 위치를 덮어쓰기 — upsert (직접 돌린 출력)",
+          "body": "sqlite 로 돌렸습니다. 이 `ON CONFLICT` 문법은 PostgreSQL 과 같고, MySQL·Tibero 에서는 위 줄의 다른 문법으로 같은 일을 합니다.",
+          "lang": "python",
+          "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE tag_last (tag_id TEXT PRIMARY KEY, x REAL, y REAL, seen_at TEXT)\")\nsql = \"\"\"INSERT INTO tag_last (tag_id, x, y, seen_at) VALUES (?, ?, ?, ?)\n         ON CONFLICT (tag_id) DO UPDATE SET x = excluded.x, y = excluded.y, seen_at = excluded.seen_at\"\"\"\nfor row in [(\"CAR-1001\", 12.4, 3.1, \"08:00:01\"), (\"TOOL07\", 12.6, 3.0, \"08:00:01\"),\n            (\"CAR-1001\", 12.9, 3.1, \"08:00:02\")]:\n    db.execute(sql, row)\nfor r in db.execute(\"SELECT * FROM tag_last ORDER BY tag_id\"):\n    print(r)\n\n# ('CAR-1001', 12.9, 3.1, '08:00:02')\n# ('TOOL07', 12.6, 3.0, '08:00:01')"
+        }
+      ],
+      "how_far": "DB 관리자(DBA) 수준까지는 아닙니다. **두 DB에서 같은 기능을 짜 보고, 느린 쿼리를 실행계획으로 고쳐 본 경험**을 말할 수 있으면 됩니다. {추론}",
+      "refs": [
+        1,
+        2,
+        14
+      ],
+      "study": [
+        "real-mysql",
+        "pg-docs",
+        "tibero-docs"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "센서/RFID 연동 시스템 개발/운영",
+      "short": "태그·앵커·센서가 보내는 신호를 받아 '사건'(차 도착·작업 완료)으로 바꾸는 일을 해 봤나를 본다.",
+      "why": "스마트태그는 무선 태그와 앵커, 그리고 리밋 스위치·센서·경광등 같은 현장 장치를 함께 씁니다.[2] 회사가 2017년 처음 공개할 때도 '위치추적 센서 + 고용량 메모리 + 무선통신 칩'을 차체에 붙여 로봇이 차종을 알아보게 한다고 소개했습니다.[4]",
+      "actually": {
+        "items": [
+          "**RFID** — 칩과 안테나로 물건을 자동 식별한다. 배터리 없는 패시브 태그는 리더의 전파로 동작하고 읽기 거리는 약 1.5~9m.[10] '여기 있다/없다'는 알려 주지만 연속 좌표는 못 준다.",
+          "**UWB** — 짧은 펄스로 거리를 재 연속 좌표를 준다. 일반 정확도는 5~10cm, 제품에 따라 30cm.[9] 스마트태그는 오차 30cm 안팎이라고 발표했다.[2]",
+          "**섞어 쓰기** — 다른 회사는 지게차·AGV 위치는 UWB로, 짐을 실었나 내렸나는 RFID로 알아보게 조합했다.[11]",
+          "**신호를 사건으로** — 좌표가 어느 구역에 들어왔다·나갔다, 센서가 켜졌다 같은 원시 신호를 '차 1002가 3번 작업장 도착' 같은 업무 사건으로 바꾸는 것이 소프트웨어 몫이다. 발표의 위치 처리 모듈이 하는 일이다.[2]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "앵커 3개까지의 거리로 위치 구하기 — 삼변측량 (직접 돌린 출력)",
+          "body": "발표는 삼각측량 방식으로 위치를 낸다고 했습니다.[2] 거리마다 30cm 오차가 끼면 위치도 그만큼 흔들립니다 — 그래서 판정 반경을 너무 좁게 잡을 수 없습니다. {추론}",
+          "lang": "python",
+          "code": "import math\nanchors = [(0.0, 0.0), (20.0, 0.0), (0.0, 10.0)]\ntrue = (12.0, 4.0)\n\ndef solve(d):\n    (x1, y1), (x2, y2), (x3, y3) = anchors\n    # 원의 방정식 두 개를 서로 빼면 직선 두 개 -> 연립방정식\n    A = 2 * (x2 - x1); B = 2 * (y2 - y1); C = d[0]**2 - d[1]**2 - x1**2 + x2**2 - y1**2 + y2**2\n    D = 2 * (x3 - x1); E = 2 * (y3 - y1); F = d[0]**2 - d[2]**2 - x1**2 + x3**2 - y1**2 + y3**2\n    det = A * E - B * D\n    return ((C * E - B * F) / det, (A * F - C * D) / det)\n\nexact = [math.dist(true, a) for a in anchors]\nprint(\"정확한 거리:\", [round(v, 2) for v in exact], \"->\", tuple(round(v, 2) for v in solve(exact)))\nnoisy = [exact[0] + 0.3, exact[1] - 0.3, exact[2] + 0.3]   # 거리마다 30cm 오차\np = solve(noisy)\nprint(\"30cm 오차:\", tuple(round(v, 2) for v in p), \"실제와\", round(math.dist(p, true), 2), \"m 차이\")\n\n# 정확한 거리: [12.65, 8.94, 13.42] -> (12.0, 4.0)\n# 30cm 오차: (12.32, 3.98) 실제와 0.32 m 차이"
+        }
+      ],
+      "how_far": "전파·안테나를 설계하는 하드웨어 경험까지는 아닙니다. **장치가 보내는 데이터를 받아 업무 규칙으로 판정하고, 장치가 이상할 때 소프트웨어 쪽에서 원인을 좁혀 본 경험**이 핵심입니다. {추론}",
+      "refs": [
+        2,
+        4,
+        9,
+        10,
+        11
+      ],
+      "study": [
+        "zebra-uwb",
+        "zebra-rfid",
+        "webinar-smarttag"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "설비, 단말, 시스템 간 인터페이스 경험(PLC통신, Socket통신, EAI통신 등)",
+      "short": "공장 기계(PLC)·공구 컨트롤러·다른 회사 시스템과 데이터를 주고받는 통로를 만들고 지켜 본 경험.",
+      "why": "스마트태그는 공정 PLC로 '차량별 작업 완료·누락·오작업' 정보를 실시간으로 보내 인터락을 걸고, 생산 데이터를 품질 시스템으로 넘겨 sign-off 게이트를 운영합니다.[2] 공구 컨트롤러의 체결 결과, 서열 PC의 서열 정보, MES와도 이어져 있습니다.[2]",
+      "flows": [
+        {
+          "caption": "의장 라인의 차·공구 트래킹 공정 (발표 장면)[2]",
+          "steps": [
+            "차량·공구 위치 인식 · 태그 신호를 앵커가 받음",
+            "데이터 수집 · 설비·센서 신호",
+            "작업·사양 지시 · SDOP → 설비",
+            "설비 정보 수집 · 체결 결과",
+            "작업 정합성 판정 · SDOP → 모니터링 PC·PLC·품질"
+          ],
+          "mine_from": 1
+        }
+      ],
+      "actually": {
+        "items": [
+          "**PLC 통신** — PLC(공장 기계를 움직이는 산업용 컴퓨터)와 값을 주고받는다. 회사가 어떤 규약을 쓰는지는 공개되지 않았다. 널리 쓰이는 Modbus 를 예로 들면, TCP 502번 포트로 1비트(코일)·16비트(레지스터) 값을 읽고 쓴다.[12][16]",
+          "**Socket 통신** — 공구 컨트롤러·단말과 TCP로 직접 붙는 경우가 많다. TCP는 메시지가 아니라 **바이트 흐름**이라 시작·끝 표시나 길이로 메시지를 잘라야 하고, 끊기면 다시 붙어야 한다. {추론}",
+          "**EAI 통신** — 여러 사내 시스템(MES·품질·서열)을 메시지로 잇는 통합 방식. 메시지 채널·변환·라우팅 같은 패턴이 정리돼 있다.[17]",
+          "**층 이해** — 국제 표준 ISA-95는 센서(1층)·PLC(2층)·MES(3층)·ERP(4층)로 나눈다. 스마트태그는 2층과 3층 사이를 잇는 자리다.[15] {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "TCP 로 온 바이트를 메시지로 자르기 (직접 돌린 출력)",
+          "body": "한 번에 읽은 덩어리에 메시지 반쪽이나 두 개가 섞여 옵니다. 시작(STX)·끝(ETX) 바이트로 자르는 흔한 방식입니다. 실제 전문 형식은 설비마다 다릅니다. {추론}",
+          "lang": "python",
+          "code": "STX, ETX = b\"\\x02\", b\"\\x03\"\nchunks = [b\"\\x02TOOL07|OK|\", b\"35.2\\x03\\x02TOOL07|N\", b\"G|0.0\\x03\"]\nbuf = b\"\"\nfor c in chunks:\n    buf += c\n    while STX in buf and ETX in buf:\n        s = buf.index(STX)\n        e = buf.index(ETX, s)\n        msg, buf = buf[s + 1:e], buf[e + 1:]\n        print(\"메시지:\", msg.decode())\nprint(\"남은 바이트:\", buf)\n\n# 메시지: TOOL07|OK|35.2\n# 메시지: TOOL07|NG|0.0\n# 남은 바이트: b''"
+        }
+      ],
+      "how_far": "세 가지를 다 깊게 할 필요는 없고 '등'이 붙어 있습니다. **적어도 하나는 직접 짜고 장애를 겪어 본 경험**(끊김·재접속·밀림·형식 불일치)을 구체적으로 말할 수 있어야 합니다. {추론}",
+      "refs": [
+        2,
+        12,
+        15,
+        16,
+        17
+      ],
+      "study": [
+        "modbus-spec",
+        "socket-book",
+        "eip",
+        "isa95",
+        "book-java-io"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "제조 비즈니스에 대한 이해",
+      "short": "서열·공정·인터락·품질 게이트 같은 공장 말을 알아야 현장 요청을 바로 알아듣는다.",
+      "why": "발표에는 서열 정보, 의장 공장, 인터락, sign-off 게이트, 체결 정합성 같은 공장 용어가 계속 나옵니다.[2] 팀 소개도 '불필요한 생산 공정을 간소화하고 재고 관리 및 불량률을 낮추는 것'을 성과로 꼽았습니다.[1]",
+      "actually": {
+        "items": [
+          "**공장 네 단계** — 프레스(철판 찍기) → 차체(용접) → 도장(칠) → 의장(부품 달기). 스마트태그는 주로 의장에 들어간다.[2]",
+          "**서열** — 한 라인에 여러 차종·사양이 섞여 흐르므로 '몇 번째 차가 무엇인가'를 따라가야 맞는 부품을 단다.[4]",
+          "**인터락·sign-off** — 작업이 안 끝났으면 다음 공정이나 출고를 막는 장치.[2]"
+        ]
+      },
+      "refs": [
+        1,
+        2,
+        4
+      ],
+      "study": [
+        "hyundai-ulsan",
+        "isa95"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "컴퓨터, SW 등 IT관련 전공",
+      "short": "기본기(네트워크·DB·운영체제)를 따로 가르치지 않아도 되는 사람을 바란다는 뜻.",
+      "why": "우대사항이라 필수는 아닙니다.[1] 이 자리는 소켓 통신·DB·서버 운영을 함께 다뤄, 전공 과목에서 배우는 네트워크·DB·운영체제 기초가 바로 쓰입니다. {추론}",
+      "how_far": "전공이 아니면 **네트워크(TCP)·DB(트랜잭션·인덱스)·운영체제(프로세스·메모리) 기초를 실제 장애 경험으로 설명**할 수 있으면 메울 수 있습니다. {추론}",
+      "refs": [
+        1
+      ],
+      "study": [
+        "socket-book",
+        "real-mysql"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "Unity 3D 기반 서비스 개발 경험",
+      "short": "공장 안 차·공구 움직임을 3D 화면(디지털 트윈)으로 보여 주는 일이 있을 수 있어서.",
+      "why": "회사 발표는 차량 트래킹 화면을 보여 주며 차가 라인을 따라 도는 모습과 작업자 위치를 그렸습니다.[2] 같은 회사의 스마트팩토리 팀은 디지털 트윈(현실 공장을 화면 속에 똑같이 만든 것)의 시각화 개발을 하고 있다고 소개했습니다.[6] 스마트태그 화면이 Unity로 만들어졌다는 공개 자료는 없습니다 — 우대 이유는 {추론}입니다.",
+      "how_far": "우대사항입니다. 웹 백엔드 경력자에게 필수가 아니고, 있으면 좌표 데이터를 3D 화면에 올리는 일을 맡을 수 있다는 정도로 읽힙니다. {추론}",
+      "refs": [
+        2,
+        6
+      ],
+      "study": [
+        "unity-manual"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "MES 및 제조 관련 IT 시스템 개발/운영 경험",
+      "short": "스마트태그가 MES·품질 시스템과 맞물려 돌아서, 그쪽을 해 본 사람은 연동 문제를 빨리 푼다.",
+      "why": "발표의 시스템 연계 그림에서 SDOP는 MES, 서열 PC, 품질 시스템과 이어져 있습니다.[2] 회사의 IoT 플랫폼도 MES·Factory-BI·빅데이터·예지보전 시스템과 연계한다고 소개합니다.[3]",
+      "actually": {
+        "items": [
+          "**MES** — 공장의 생산 실행 시스템. 작업 지시·실적·품질 기록을 맡는다. ISA-95에서는 3층이다.[15]",
+          "**IoT 플랫폼** — 같은 팀 제품. 기계마다 다른 통신 방식을 하나의 통로로 모아 MES 등에 넘기는 것이 목적이다.[3]",
+          "같은 회사 IoT 플랫폼 담당자는 싱가포르 HMGICS 스마트팩토리, 현대모비스 반도체 장비, 현대케피코 시험 장비 연동에 이 플랫폼을 쓴다고 소개했다.[6]"
+        ]
+      },
+      "refs": [
+        2,
+        3,
+        6,
+        15
+      ],
+      "study": [
+        "isa95",
+        "sdf-page"
+      ]
+    }
+  ],
+  "fit": {
+    "good": [
+      "화면 속 숫자가 공장에서 실제로 차를 세우고 움직이는 걸 보고 싶은 사람[2]",
+      "소켓·PLC처럼 '선 너머의 기계'와 씨름하는 게 재미있는 사람",
+      "해외 공장 출장을 반기는 사람 — 동료가 북미·유럽 출장이 많다고 했다[1]",
+      "운영에서 출발해 PM·컨설턴트로 넓히고 싶은 사람 — 팀 리더가 그 길을 말했다[1]"
+    ],
+    "hard": [
+      "근무지가 서울이 아니라 울산 양정(공장 쪽)이다[1]",
+      "운영 업무라 생산 시간에 맞춘 대응이 따라올 수 있다 {추론}",
+      "새 서비스를 처음부터 짓기보다 이미 깔린 시스템을 지키고 넓히는 일이 중심이다[1][2]"
+    ]
+  },
+  "interview": [
+    {
+      "q": "공구 태그 좌표로 어느 차를 조였는지 어떻게 정하겠어요? 위치 오차가 30cm면요?",
+      "a": "이 시스템의 핵심이 차·공구 위치 매칭이라고 발표했다.[2]"
+    },
+    {
+      "q": "TCP로 설비와 붙었는데 메시지가 가끔 둘이 붙어 오거나 잘려 와요. 어떻게 고치나요?",
+      "a": "자격요건의 Socket 통신 줄.[1]"
+    },
+    {
+      "q": "PLC로 인터락 신호를 보내는데 서버가 잠깐 죽으면 라인은 어떻게 돼야 하나요?",
+      "a": "체결 결과로 인터락을 거는 구조.[2]"
+    },
+    {
+      "q": "MySQL에서 돌던 기능을 Tibero 쓰는 공장에 넣어야 한다면 무엇부터 확인하나요?",
+      "a": "공고가 DB 2개 이상 경험을 요구했다.[1]"
+    },
+    {
+      "q": "매일 아침 무엇을 점검하고, 어떤 경보로 사람을 깨우겠어요?",
+      "a": "일일·정기 점검과 상시 모니터링 업무.[1][13]"
+    }
+  ],
+  "sources": [
+    {
+      "n": 1,
+      "title": "원티드 · 현대오토에버 [SDx] Service Engineer - 스마트팩토리 시스템(스마트태그) 개발 및 운영",
+      "url": "https://www.wanted.co.kr/wd/385521",
+      "kind": "posting",
+      "date": "2026-11",
+      "note": "팀 소개·동료와 팀 리더 코멘트·근무지 울산 양정·코딩 테스트·처우협의"
+    },
+    {
+      "n": 2,
+      "title": "현대오토에버 웨비나 · 정밀위치 측위 기반(RTLS) 제조 트래킹 실현, 스마트 태그",
+      "url": "https://www.youtube.com/watch?v=k4qzcd5d4lY",
+      "kind": "company",
+      "date": "2024-05",
+      "note": "SF솔루션개발2팀 책임 발표 13분 · 자막 전부와 장면(구성 요소·아키텍처·공정·단계 표) 확인"
+    },
+    {
+      "n": 3,
+      "title": "현대오토에버 · SDF(Factory) — 스마트 태그 시스템 · IoT플랫폼",
+      "url": "https://www.hyundai-autoever.com/kor/business-area/digital-transformation/sdf/contents.do?cntnSeq=455",
+      "kind": "company",
+      "note": "제품 소개 — UWB·RTK·BLE, 차량·공구 매칭, IoT 플랫폼의 MES 등 연계"
+    },
+    {
+      "n": 4,
+      "title": "현대자동차그룹 · 더 나은 미래를 위한 현대자동차그룹의 스마트 팩토리 기술",
+      "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000003222",
+      "kind": "company",
+      "date": "2020-06-25",
+      "note": "2017년 스마트태그 공개 — 위치추적 센서·메모리·무선통신 칩, 로봇의 차종 식별"
+    },
+    {
+      "n": 5,
+      "title": "산업일보 · [AW 2025] 현대오토에버, 제조 혁신 지원하는 SDF 솔루션 시연",
+      "url": "https://kidd.co.kr/news/240817",
+      "kind": "news",
+      "date": "2025-03-14",
+      "note": "시연 차량에 스마트태그를 달아 실시간 측위·트래킹"
+    },
+    {
+      "n": 6,
+      "title": "현대오토에버 · 스마트팩토리 SF혁신기술팀을 소개합니다",
+      "url": "https://www.youtube.com/watch?v=d_ud80ggqYE",
+      "kind": "company",
+      "date": "2022-11",
+      "note": "같은 회사 스마트팩토리 팀 — IoT 플랫폼·디지털 트윈·엣지 CMS. 자막 전부 읽음"
+    },
+    {
+      "n": 7,
+      "title": "현대오토에버 채용 · Life(복리후생)",
+      "url": "https://career.hyundai-autoever.com/ko/life",
+      "kind": "company"
+    },
+    {
+      "n": 8,
+      "title": "ZDNet Korea · 현대오토에버, 상반기 매출 2.2조 돌파…SI 부문 26% 급성장",
+      "url": "https://zdnet.co.kr/view/?no=20260814185634",
+      "kind": "news",
+      "date": "2026-08-14",
+      "note": "반기보고서 직원 평균 급여"
+    },
+    {
+      "n": 9,
+      "title": "Zebra · UWB란 무엇인가요",
+      "url": "https://www.zebra.com/kr/ko/resource-library/faq/what-is-uwb.html",
+      "kind": "reference"
+    },
+    {
+      "n": 10,
+      "title": "Zebra · RFID 태그란 무엇인가요",
+      "url": "https://www.zebra.com/kr/ko/resource-library/faq/what-is-an-rfid-tag.html",
+      "kind": "reference"
+    },
+    {
+      "n": 11,
+      "title": "전자신문 · 와이파이브, '사람 없는 공장' 물류 길잡이로 UWB 제시",
+      "url": "https://m.etnews.com/20261006000251",
+      "kind": "news",
+      "date": "2026-10",
+      "note": "다른 회사 — UWB(장비 위치)와 RFID(적재 여부) 조합"
+    },
+    {
+      "n": 12,
+      "title": "Modbus Organization · Modbus 사양 모음 (Application Protocol V1.1b3)",
+      "url": "https://modbus.org/modbus-specifications",
+      "kind": "reference"
+    },
+    {
+      "n": 13,
+      "title": "Google SRE 책 · Monitoring Distributed Systems",
+      "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+      "kind": "reference"
+    },
+    {
+      "n": 14,
+      "title": "TmaxTibero · Tibero 매뉴얼",
+      "url": "https://docs.tibero.com/tibero-manuals",
+      "kind": "reference"
+    },
+    {
+      "n": 15,
+      "title": "Siemens · ISA-95 framework and layers",
+      "url": "https://www.siemens.com/en-us/technology/isa-95-framework-layers/",
+      "kind": "reference",
+      "note": "ISA-95(IEC 62264) 0~4층과 PLC·MES·ERP 자리"
+    },
+    {
+      "n": 16,
+      "title": "Wikipedia · Modbus",
+      "url": "https://en.wikipedia.org/wiki/Modbus",
+      "kind": "reference",
+      "note": "TCP 502번 포트·코일/레지스터 데이터 모델"
+    },
+    {
+      "n": 17,
+      "title": "Enterprise Integration Patterns",
+      "url": "https://www.enterpriseintegrationpatterns.com/",
+      "kind": "reference"
+    },
+    {
+      "n": 18,
+      "title": "현대자동차 · 울산공장 소개",
+      "url": "https://www.hyundai.com/kr/ko/brand/factory-tour/introduction/ulsan",
+      "kind": "reference",
+      "note": "정문 주소 염포로 700(양정동 700번지)"
+    }
+  ],
+  "caveat": "스마트태그 발표는 2024년 5월 것이고 적용 공장 수는 그 뒤 늘었을 수 있습니다. PLC 통신 규약·전문 형식·점검 항목·당직 방식은 공개되지 않아 Modbus·SRE 같은 일반 문서로 '보통 이런 것'을 보였습니다. 코드 예시의 반경·볼트 수·경보 시간은 설명용 숫자입니다.",
+  "resources": [
+    {
+      "id": "webinar-smarttag",
+      "title": "정밀위치 측위 기반(RTLS) 제조 트래킹 실현, 스마트 태그",
+      "by": "현대오토에버 웨비나 · 13분",
+      "kind": "video",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.youtube.com/watch?v=k4qzcd5d4lY",
+      "why": "이 자리가 운영할 시스템을 만든 회사가 직접 설명한다. 구성 요소·아키텍처·공정·확대 단계 — 지원 전에 꼭 볼 영상."
+    },
+    {
+      "id": "sdf-page",
+      "title": "SDF(Factory) — 스마트 태그 시스템 · IoT플랫폼",
+      "by": "현대오토에버",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.hyundai-autoever.com/kor/business-area/digital-transformation/sdf/contents.do?cntnSeq=455",
+      "why": "스마트태그와 IoT 플랫폼이 무엇을 풀려고 만들어졌는지 회사 말로 정리돼 있다. 요건 정의 업무에서 쓸 말을 익힌다."
+    },
+    {
+      "id": "zebra-uwb",
+      "title": "UWB란 무엇인가요",
+      "by": "Zebra",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.zebra.com/kr/ko/resource-library/faq/what-is-uwb.html",
+      "why": "UWB가 어떻게 위치를 재고 정확도가 얼마인지 — 센서/RFID 연동 요건의 출발점."
+    },
+    {
+      "id": "zebra-rfid",
+      "title": "RFID 태그란 무엇인가요",
+      "by": "Zebra",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.zebra.com/kr/ko/resource-library/faq/what-is-an-rfid-tag.html",
+      "why": "패시브·액티브 태그 차이와 읽기 거리. RFID가 UWB와 무엇이 다른지 가른다."
+    },
+    {
+      "id": "modbus-spec",
+      "title": "Modbus Application Protocol Specification V1.1b3",
+      "by": "Modbus Organization",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://modbus.org/modbus-specifications",
+      "why": "PLC 통신의 가장 흔한 규약. 함수 코드·레지스터 읽기/쓰기를 직접 짜 보면 'PLC통신' 요건의 감이 잡힌다."
+    },
+    {
+      "id": "socket-book",
+      "title": "윤성우의 열혈 TCP/IP 소켓 프로그래밍",
+      "by": "윤성우",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EC%97%B4%ED%98%88%20TCP%2FIP%20%EC%86%8C%EC%BC%93%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D",
+      "why": "TCP가 바이트 흐름인 이유, 경계 처리, 연결 끊김 — Socket통신 요건의 기초. 예제는 C지만 개념은 Java에 그대로 옮겨진다."
+    },
+    {
+      "id": "book-java-io",
+      "title": "실전 자바 — I/O, 네트워크, 리플렉션 (우리 사이트 책)",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "/wiki/java-io",
+      "why": "Java 소켓에 실제로 오간 바이트를 찍어 보며 읽는다. 설비 연동 코드를 Java로 짤 때 바로 쓰인다."
+    },
+    {
+      "id": "eip",
+      "title": "Enterprise Integration Patterns",
+      "by": "Gregor Hohpe · Bobby Woolf",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "심화",
+      "url": "https://www.enterpriseintegrationpatterns.com/",
+      "why": "EAI의 말(채널·변환·라우터·정규화)을 정리한 원전. 사이트에 패턴 목록이 무료로 있어 필요한 것만 찾아본다."
+    },
+    {
+      "id": "isa95",
+      "title": "ISA-95 framework and layers",
+      "by": "Siemens",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.siemens.com/en-us/technology/isa-95-framework-layers/",
+      "why": "센서·PLC·MES·ERP가 어느 층인지 한 장으로. 제조 IT 대화에서 서로 같은 그림을 보게 해 준다."
+    },
+    {
+      "id": "hyundai-ulsan",
+      "title": "현대자동차 울산공장 소개",
+      "by": "현대자동차",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.hyundai.com/kr/ko/brand/factory-tour/introduction/ulsan",
+      "why": "근무지 쪽 공장의 규모(공장 5개·생산 차종)를 먼저 본다. 제조 비즈니스 이해 우대사항의 출발점."
+    },
+    {
+      "id": "toby-spring",
+      "title": "토비의 스프링 3.1",
+      "by": "이일민",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "심화",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%ED%86%A0%EB%B9%84%EC%9D%98%20%EC%8A%A4%ED%94%84%EB%A7%81",
+      "why": "오래된 Spring 운영 코드(XML 설정·템플릿·트랜잭션 추상화)를 읽어야 할 때 왜 그렇게 짰는지 알려 준다."
+    },
+    {
+      "id": "book-spring-core",
+      "title": "스프링 핵심 원리 — 기본편 (우리 사이트 책)",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "/wiki/spring-core",
+      "why": "빈·의존성 주입·컨테이너 — Java Spring 요건의 바닥을 실행 결과로 확인하며 읽는다."
+    },
+    {
+      "id": "spring-boot-docs",
+      "title": "Spring Boot Reference Documentation",
+      "by": "Spring 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.spring.io/spring-boot/index.html",
+      "why": "설정·스케줄링·Actuator(상태 확인 엔드포인트) — 운영과 상시 모니터링에 쓰는 기능을 정확히 찾는다."
+    },
+    {
+      "id": "real-mysql",
+      "title": "Real MySQL 8.0",
+      "by": "백은빈 · 이성욱 · 위키북스 · 2021",
+      "kind": "book",
+      "lang": "ko",
+      "free": false,
+      "level": "실무",
+      "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002928544",
+      "why": "인덱스·실행계획·잠금을 MySQL 기준으로 깊게. 계속 쌓이는 이력 표를 다룰 때 필요한 감각."
+    },
+    {
+      "id": "pg-docs",
+      "title": "PostgreSQL Documentation",
+      "by": "PostgreSQL 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://www.postgresql.org/docs/current/",
+      "why": "MySQL과 다른 문법(ON CONFLICT·시퀀스·날짜 함수)을 나란히 확인한다 — 'DB 2개 이상' 요건."
+    },
+    {
+      "id": "tibero-docs",
+      "title": "Tibero 매뉴얼",
+      "by": "TmaxTibero",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.tibero.com/tibero-manuals",
+      "why": "Tibero 7 개발자·관리자 안내서. 써 본 적 없으면 SQL 참조와 개발자 안내서부터 훑는다."
+    },
+    {
+      "id": "sre-monitoring",
+      "title": "Monitoring Distributed Systems (Site Reliability Engineering 6장)",
+      "by": "Google · 무료 공개",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+      "why": "무엇을 재고 언제 사람을 부르나 — 지연·트래픽·오류·포화 네 신호와 '조치할 수 있는 경보' 원칙. 상시 모니터링 업무의 기준."
+    },
+    {
+      "id": "wiegers-req",
+      "title": "Software Requirements (3판)",
+      "by": "Karl Wiegers · Joy Beatty · Microsoft Press · 2013",
+      "kind": "book",
+      "lang": "en",
+      "free": false,
+      "level": "실무",
+      "url": "https://www.microsoftpressstore.com/store/software-requirements-9780735679665",
+      "why": "고객 요청을 검증할 수 있는 요건으로 바꾸는 법. 필요한 장(요건 끌어내기·명세 쓰기)만 골라 읽는다."
+    },
+    {
+      "id": "unity-manual",
+      "title": "Unity Manual",
+      "by": "Unity 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://docs.unity3d.com/Manual/index.html",
+      "why": "우대사항 Unity 3D — 좌표 데이터를 받아 3D 장면의 물체를 움직이는 기초(씬·게임오브젝트·스크립트)."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "스마트태그가 무엇인지 알기",
+      "time": "3~5일",
+      "goal": "차·공구 위치 매칭과 인터락이 왜 필요한지, 시스템이 어떤 조각으로 돼 있는지 남에게 설명할 수 있다.",
+      "resources": [
+        "webinar-smarttag",
+        "sdf-page",
+        "isa95",
+        "hyundai-ulsan"
+      ],
+      "task": "발표를 보며 구성 요소 다섯 가지와 공정 다섯 단계를 한 장 그림으로 다시 그리고, 각 화살표에 '무엇이 오가나'를 적는다."
+    },
+    {
+      "title": "위치 데이터 다루기",
+      "time": "1~2주",
+      "goal": "UWB·RFID 차이를 알고, 좌표 흐름을 '구역 진입·작업 완료' 같은 사건으로 바꾸는 코드를 짤 수 있다.",
+      "resources": [
+        "zebra-uwb",
+        "zebra-rfid"
+      ],
+      "task": "가상 차 20대가 라인을 도는 좌표를 1초마다 만들고(30cm 잡음 포함), 작업장 구역에 들어오고 나간 사건만 뽑는 프로그램을 만든다."
+    },
+    {
+      "title": "설비와 말하기",
+      "time": "2~3주",
+      "goal": "TCP 소켓으로 가짜 설비와 메시지를 주고받고, 끊김·재접속·메시지 경계를 처리한다.",
+      "resources": [
+        "socket-book",
+        "book-java-io",
+        "modbus-spec",
+        "eip"
+      ],
+      "task": "Java로 가짜 공구 컨트롤러(체결 결과를 STX/ETX 전문으로 보냄)와 받는 서버를 만든다. 서버를 중간에 죽였다 살려도 결과가 빠지지 않게 하고, Modbus TCP 시뮬레이터로 레지스터 하나를 읽고 쓴다."
+    },
+    {
+      "title": "판정 서비스와 DB",
+      "time": "2~3주",
+      "goal": "Spring Boot로 위치·체결 결과를 받아 차별로 판정하고, 두 DB에서 똑같이 돌게 한다.",
+      "resources": [
+        "book-spring-core",
+        "toby-spring",
+        "spring-boot-docs",
+        "real-mysql",
+        "pg-docs",
+        "tibero-docs"
+      ],
+      "task": "2·3단계 결과를 받아 '차 × 공정 × 볼트 수'를 판정하는 Spring Boot 서비스를 만들고, 마지막 위치 표(upsert)와 체결 이력 표를 MySQL과 PostgreSQL 두 곳에 붙여 같은 결과가 나오는지 비교한다."
+    },
+    {
+      "title": "운영처럼 돌리기",
+      "time": "1~2주",
+      "goal": "매일 점검표와 경보 규칙을 만들고, 장애를 일부러 내서 찾는 연습을 한다.",
+      "resources": [
+        "sre-monitoring",
+        "spring-boot-docs",
+        "wiegers-req"
+      ],
+      "task": "4단계 서비스에 Actuator 상태 확인과 '마지막 수신 시각' 경보를 붙인다. 앵커 하나를 끊고, DB를 느리게 하고, 소켓을 막아 본 뒤 각각 무엇으로 알아챘는지 점검표에 적는다."
+    }
+  ],
+  "pay": {
+    "summary": "공고에 연봉 표기는 없고, 공시로 본 직원 평균은 **2026년 상반기 4,500만원(연으로 약 9,000만원)** — 경력직이 섞인 회사 전체 값이다",
+    "rows": [
+      {
+        "label": "직원 1인 평균 급여(상반기)",
+        "value": "4,500만원",
+        "amount": 4500,
+        "basis": "반기보고서 · 2026년 상반기",
+        "note": "6월 말 본사 직원 5,749명 기준, 상반기 6개월 치다 [8]"
+      },
+      {
+        "label": "직원 1인 평균 급여(연 환산)",
+        "value": "약 9,000만원",
+        "amount": 9000,
+        "basis": "반기보고서 · 2026년 상반기 × 2",
+        "note": "상반기 값을 두 배 한 기사 환산이라 하반기 성과급은 반영되지 않았을 수 있다 [8]"
+      }
+    ],
+    "how": "공고에는 연봉이 없고 전형 끝에 **처우협의** 단계가 따로 있다 [1]. 이 자리는 경력 5~11년이라 신입 초봉은 해당하지 않는다 [1]. 평균은 경력·직군이 다 섞인 회사 전체 값이라 이 자리의 제안 금액으로 읽으면 안 된다 {추론}. 지방 근무에 따른 수당 여부는 공개 자료가 없어 처우협의 때 확인한다 {추론}."
+  },
+  "benefits": {
+    "items": [
+      {
+        "name": "통신비",
+        "detail": "휴대전화 통신비 월 최대 6만원"
+      },
+      {
+        "name": "차량 구입",
+        "detail": "현대자동차그룹 차량 구입 시 최대 30%, 입사 후 첫 차는 20% 지원"
+      },
+      {
+        "name": "하계 휴가",
+        "detail": "연차 외 5일 추가, 하계 휴가비"
+      },
+      {
+        "name": "건강",
+        "detail": "직원 본인·가족 종합검진(전국 의료기관), 의료비, 독감 예방접종, 단체 상해보험"
+      },
+      {
+        "name": "주거",
+        "detail": "주택 구입·임차 때 사내 대출제도"
+      },
+      {
+        "name": "학자금",
+        "detail": "본인 학자금 대출(한국장학재단) 이자 지원, 자녀 학자금(유치원~대학교)"
+      },
+      {
+        "name": "육아",
+        "detail": "강남구 안 사내 어린이집 2곳, 산전후·배우자 출산·난임치료 휴가, 자녀 초등학교 입학 선물"
+      },
+      {
+        "name": "휴양·여가",
+        "detail": "전국 40여 곳 리조트, 복지포인트, 사내 동호회"
+      },
+      {
+        "name": "경조·명절",
+        "detail": "경조휴가·경조비, 설·추석 귀향비"
+      },
+      {
+        "name": "상담",
+        "detail": "외부 전문가 심리 상담(EAP)"
+      }
+    ],
+    "note": "공고가 가리키는 현대오토에버 채용 사이트 Life 메뉴 기준이다 [1][7]. 사내 어린이집은 강남구에 있어 울산 근무자에게는 해당하지 않을 수 있다 {추론}. 페이지에 기준 연도는 적혀 있지 않다."
+  },
+  "location": {
+    "name": "울산 양정 (현대자동차 울산공장 쪽)",
+    "address": "울산광역시 북구 염포로 700",
+    "map_url": "https://map.naver.com/p/search/%EC%9A%B8%EC%82%B0%EA%B4%91%EC%97%AD%EC%8B%9C%20%EB%B6%81%EA%B5%AC%20%EC%97%BC%ED%8F%AC%EB%A1%9C%20700",
+    "near": "울산 북구 양정동, 태화강 하구 북쪽 {추론}",
+    "note": "공고의 근무지는 '울산 양정'뿐이다 [1]. 양정동에 있는 현대자동차 울산공장 정문 주소가 염포로 700(양정동 700번지)이라 그 주소를 적었다 [18]. 현대오토에버가 공장 안 어느 건물에서 일하는지는 공개 자료에서 찾지 못했다 {추론}. 팀 리더는 서울 본사나 다른 공장 쪽 근무도 연고에 따라 고를 수 있다고 했다 [1]."
+  }
+}

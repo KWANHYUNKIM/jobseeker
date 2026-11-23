@@ -22,6 +22,7 @@
   "jobkorea-50301905": "hyundai-autoever-robot-data-engineer",
   "wanted-385505": "hyundai-autoever-robot-data-engineer",
   "jobkorea-50301861": "hyundai-autoever-robot-platform-developer",
+  "wanted-385521": "hyundai-autoever-smart-tag-service-engineer",
   "wanted-387536": "hyundai-sdf-data-architect",
   "wanted-377335": "ldf-ebookjapan-web-frontend",
   "wanted-377332": "ldf-linemanga-data-scientist",
@@ -388,6 +389,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 15
+  },
+  {
+   "id": "hyundai-autoever-smart-tag-service-engineer",
+   "company": "현대오토에버",
+   "role": "Service Engineer — 스마트팩토리 시스템(스마트태그) 개발 및 운영",
+   "jobs": [
+    "wanted-385521"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 11
   },
   {
    "id": "hyundai-sdf-data-architect",
