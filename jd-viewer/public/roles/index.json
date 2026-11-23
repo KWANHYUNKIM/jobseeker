@@ -63,7 +63,10 @@
   "ats-toss:group:7780944003": "toss-security-researcher-mobile",
   "ats-toss:group:4076085003": "toss-security-researcher-pentest",
   "saramin-55608860": "tossbank-finance-data-system",
-  "ats-toss:group:7702579003": "tossbank-infra-operations-engineer"
+  "ats-toss:group:7702579003": "tossbank-infra-operations-engineer",
+  "ats-toss:group:4542935003": "tossbank-product-foundation-server",
+  "ats-toss:group:7998884003": "tossbank-senior-data-analyst",
+  "ats-toss:group:4521687003": "tossbank-server-platform"
  },
  "roles": [
   {
@@ -686,6 +689,36 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 29
+  },
+  {
+   "id": "tossbank-product-foundation-server",
+   "company": "토스뱅크",
+   "role": "서버 개발자 (Product Foundation)",
+   "jobs": [
+    "ats-toss:group:4542935003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 36
+  },
+  {
+   "id": "tossbank-senior-data-analyst",
+   "company": "토스뱅크",
+   "role": "데이터 분석가 (7년 이상)",
+   "jobs": [
+    "ats-toss:group:7998884003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 24
+  },
+  {
+   "id": "tossbank-server-platform",
+   "company": "토스뱅크",
+   "role": "서버 개발자 (Platform)",
+   "jobs": [
+    "ats-toss:group:4521687003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 18
   }
  ]
 }
