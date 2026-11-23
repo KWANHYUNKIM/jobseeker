@@ -1,0 +1,1192 @@
+{
+ "id": "aldagram-kanna-web-engineer",
+ "company": "아르다그람 (株式会社アルダグラム)",
+ "role": "웹 애플리케이션 엔지니어",
+ "team": "개발부 · KANNA(현장 프로젝트 관리·디지털 장부) · 근무지 일본 도쿄",
+ "jobs": [
+  "wanted-335089"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "건설·제조 같은 **현장 일**을 위한 앱 KANNA(공정표·채팅·사진 관리 + 엑셀로 만드는 디지털 장부)의 서버와 웹 화면을 만들고, 설계·코드·테스트 설계를 서로 리뷰합니다.[1]",
+  "env": "서버는 Rails(핵심 API)와 Kotlin + Spring Boot(레포트·결재·결제), 화면은 Next.js + TypeScript, GraphQL 로 잇고 AWS + GCP 위에서 돕니다. Claude·Cursor 같은 AI 코딩 도구를 전원에게 줍니다. **일본어 비즈니스 수준 + 일본 근무 경험 + 일본 이주**가 조건입니다.[1][3]",
+  "oneline": "엔지니어 30명 회사의 웹 풀스택 — 숫자로 개선을 말하고, AI 가 쓴 코드와 테스트 관점을 사람이 걸러 내는 자리입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "KANNAにおけるプロダクト開発業務全般に携わっていただきます。\n\n具体的な業務",
+   "short": "건설·제조 현장용 앱 KANNA 를 서버·화면·설계 리뷰까지 넓게 맡는다 — 한 칸만 하는 자리가 아니다.",
+   "why": "KANNA 는 공정표·채팅·사진을 묶은 프로젝트 관리 'KANNA 프로젝트'와, 엑셀을 올리면 현장용 디지털 장부를 만들어 주는 'KANNA 레포트' 두 제품으로 되어 있고 웹·모바일 양쪽에서 씁니다.[1] 개발자는 약 30명, 엔지니어링 매니저 4명, 디자이너 3명이 7개 팀으로 나뉘어 스크럼으로 일합니다.[1] 사람이 적은 만큼 한 사람이 서버·화면·리뷰를 같이 보는 구조입니다.{추론}",
+   "actually": {
+    "intro": "회사 기술 블로그가 보여 준 실제 일감입니다.",
+    "items": [
+     "**대량 가져오기 고치기** — 엑셀로 안건을 한꺼번에 넣는 기능이 메모리를 1.5GB 넘게 써서, 단계별로 재고 캐시를 비워 약 800MB 로 줄였다.[9]",
+     "**느린 화면 고치기** — 날짜 입력칸 100줄짜리 창이 열리는 데 3.5초 걸려, 누른 칸만 입력 부품을 띄우게 바꿔 0.2초로 줄였다.[10]",
+     "**느린 GraphQL 찾기** — 대기업 고객이 늘며 느려진 요청을 찾으려고, 개발 환경 응답마다 프로파일러 주소를 붙였다.[4]",
+     "**테스트를 고르기** — 바뀐 화면에 걸린 E2E 테스트만 골라 돌리는 설계를 검토 중이다(아직 운영 전).[8]"
+    ]
+   },
+   "how_far": "회사 채용 페이지의 같은 직무 공고는 업무를 '백엔드·웹 화면 설계와 개발을 **이끈다**', 기술 부채 줄이기를 제안·추진한다, 버그 수정·라이브러리 갱신 같은 운영까지로 적었습니다.[2] 경력 5~20년 자리라 시키는 화면 하나보다 **기능 하나를 처음부터 끝까지** 책임지는 수준입니다.{추론}",
+   "refs": [
+    1,
+    2,
+    4,
+    8,
+    9,
+    10
+   ],
+   "study": [
+    "zenn-infra",
+    "zenn-import",
+    "zenn-mui"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・Ruby on Rails または Kotlin(Spring Boot) を利用したバックエンドの開発(設計/運用を含む)",
+   "short": "핵심 API 는 Rails, 레포트·결재·결제는 Kotlin(Spring Boot) — 두 언어의 서버를 설계·운영까지 맡는다.",
+   "why": "KANNA 는 처음부터 Rails 로 만든 핵심 API 위에, 뒤에 생긴 레포트·결재 흐름·결제 서비스를 Kotlin + Spring Boot 로 따로 세웠습니다.[3] 그래서 한 기능이 두 언어의 서버를 같이 건드릴 수 있습니다.{추론}",
+   "actually": {
+    "items": [
+     "**Rails 쪽** — 핵심 API 와 Sidekiq(비동기 작업 큐)로 도는 뒤처리. DB 는 Aurora MySQL(쓰기·읽기 분리, 분석용 복제본).[3]",
+     "**Kotlin 쪽** — 레포트·결재·결제 서비스. 새 서비스들은 PostgreSQL 을 쓴다.[3]",
+     "**GraphQL** — Rails 는 graphql-ruby, Kotlin 은 Netflix DGS 로 스키마부터 정하고 만든다.[4][5]",
+     "**운영** — Datadog 으로 지표·로그·추적을 보고, ECS(Fargate)에 Blue/Green 으로 배포한다.[3]",
+     "**콜백이 만드는 비용** — 저장할 때마다 감사 로그·알림 작업이 행마다 붙어 대량 처리에서 메모리가 커졌다. 다음 과제로 '몇백 줄마다 커밋'과 '부분 성공'을 적었다.[9]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "몇백 줄마다 커밋 — 한 줄이 틀려도 전부 날리지 않기",
+     "body": "회사 글이 다음 과제로 적은 '청크 단위 트랜잭션'[9]을 SQLite 로 작게 흉내 낸 것입니다(가상 데이터, 직접 돌린 출력). 3,000줄을 500줄씩 넣고 1,701번째 줄에 빈 이름을 넣었더니, 그 묶음만 되돌리고 2,500줄은 남았습니다. 결과가 '성공/실패' 둘에서 '일부 성공'이 더해진 셋이 되어 화면·API 도 같이 바뀌어야 한다는 점이 글에 적힌 어려움입니다.[9]",
+     "lang": "python",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\", isolation_level=None)\ndb.execute(\"CREATE TABLE item(id INTEGER PRIMARY KEY, name TEXT NOT NULL)\")\nrows = [f\"안건{i}\" for i in range(1, 3001)]\nrows[1700] = None          # 1,701번째 줄에 빈 이름 — NOT NULL 위반\n\ndef import_chunked(rows, size=500):\n    ok, failed = 0, []\n    for start in range(0, len(rows), size):\n        chunk = rows[start:start + size]\n        try:\n            db.execute(\"BEGIN\")\n            db.executemany(\"INSERT INTO item(name) VALUES (?)\", [(r,) for r in chunk])\n            db.execute(\"COMMIT\")\n            ok += len(chunk)\n        except sqlite3.IntegrityError:\n            db.execute(\"ROLLBACK\")\n            failed.append(f\"{start + 1}~{start + len(chunk)}\")\n    return ok, failed\n\nprint(import_chunked(rows))\nprint(\"저장된 행:\", db.execute(\"SELECT COUNT(*) FROM item\").fetchone()[0])\n\n# 출력\n# (2500, ['1501~2000'])\n# 저장된 행: 2500"
+    }
+   ],
+   "how_far": "두 언어를 다 잘할 필요는 없습니다 — 공고도 'Rails **또는** Kotlin'이라고 썼습니다.[1] 한쪽으로 서비스를 운영해 봤고 다른 쪽 코드를 읽고 고칠 수 있으면 출발선입니다.{추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    5,
+    9
+   ],
+   "study": [
+    "rails-guides",
+    "spring-kotlin",
+    "kotlin-in-action",
+    "zenn-import"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・Next.js, TypeScript を利用したフロントエンドの開発(設計/運用を含む)",
+   "short": "웹 화면은 Next.js + TypeScript — 현장 사람이 쓰는 큰 표·입력 화면을 빠르고 틀리지 않게 만든다.",
+   "why": "고객 화면과 사내 관리 도구가 둘 다 TypeScript + Next.js 입니다.[3][22]서버와는 GraphQL(Apollo Client)로 이어집니다.[4]",
+   "actually": {
+    "items": [
+     "**큰 입력 화면 속도** — 줄마다 날짜·글 입력칸이 있는 100줄 창(React Hook Form)이 3,525ms 걸리던 것을, 입력 부품을 누를 때만 띄워 195ms 로 줄였다. 화면 밖 줄을 지우는 가상 스크롤은 값 보존이 어려워 버렸다.[10]",
+     "**디자인 시스템** — Figma 를 기준으로 디자인 시스템을 만들어 새 테마를 모든 화면에 한 번에 입혔다는 글이 있다.[30]",
+     "**테스트 손잡이** — 모든 화면에 `data-testid` 를 달아 E2E·단위 테스트·화면 비교 테스트에 같이 쓴다.[12]"
+    ]
+   },
+   "how_far": "백엔드 중심 사람이라도 **React 화면 하나를 서버 연결부터 테스트까지 혼자 붙일 수 있는** 수준이 기대치입니다.{추론} 화면 성능은 '느낌'이 아니라 React DevTools Profiler 숫자로 말하는 게 이 팀 방식입니다.[10]",
+   "refs": [
+    3,
+    4,
+    10,
+    12,
+    22,
+    30
+   ],
+   "study": [
+    "nextjs-docs",
+    "zenn-mui"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・マイクロサービスで構成されるバックエンドのシステム設計",
+   "short": "여러 서비스(Rails·Kotlin·Nest.js)로 나뉜 서버에서 어디에 무엇을 둘지, 서로 어떻게 부를지 정한다.",
+   "why": "회사 SRE 글은 KANNA 를 스스로 '마이크로서비스가 아니라 **모노레포(한 저장소)를 바탕으로 한 여러 서비스 구성**'이라고 부릅니다 — 서비스마다 따로 배포하고 맞는 기술을 고르되, 한 저장소에 둡니다.[3] 공고의 '마이크로서비스'는 이 구성을 가리킵니다.{추론}",
+   "actually": {
+    "intro": "서비스가 여럿이면 생기는 결정입니다(일반론은 Fowler 의 정의[17]).",
+    "items": [
+     "**나누는 선** — 핵심 API(Rails), 외부 공개 API(Nest.js), 레포트·결재·결제(Kotlin), 관리 도구(Next.js) 식으로 서비스가 나뉘어 있다.[3]",
+     "**데이터 주인** — 서비스마다 DB 가 다르다(Aurora MySQL / PostgreSQL / 실시간 채팅·알림은 Firestore).[3]",
+     "**부르는 길** — 서비스끼리 로드밸런서(ALB)를 거쳐 부르고 있어, 이를 안쪽 통신으로 바꾸는 것을 앞으로의 과제로 적었다.[3]",
+     "**스키마 먼저** — 서버·웹·앱 팀이 GraphQL 스키마를 먼저 합의하고 각자 만든다.[5]"
+    ]
+   },
+   "how_far": "새 서비스를 쪼갤지 말지 정하는 건 리드·EM 과 함께입니다.{추론} 개발자는 '이 기능의 데이터는 누구 것인가, 다른 서비스가 죽으면 이 화면은 어떻게 되나'를 설계 문서에 쓸 수 있어야 합니다.[17]{추론}",
+   "refs": [
+    3,
+    5,
+    17
+   ],
+   "study": [
+    "zenn-infra",
+    "newman-msa",
+    "fowler-msa"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・チーム内の設計レビュー・コードレビュー",
+   "short": "구현 전에 설계 문서를, 구현 뒤에 코드를 서로 읽고 고치게 한다 — AI 가 쓴 코드도 포함이다.",
+   "why": "이 회사는 Claude Max·Cursor Ultra 를 원하는 사람 모두에게 주고 OpenAI·Anthropic API 를 자유롭게 쓰게 합니다.[1] 코드를 쓰는 속도가 빨라질수록 사람이 하는 일은 **읽고 판단하는 리뷰** 쪽으로 옮겨 갑니다.{추론} 회사 채용 페이지 공고는 아예 AI 코딩 도구 경험을 필수로 적었습니다.[2]",
+   "actually": {
+    "items": [
+     "**AI 도구 자체도 리뷰한다** — Claude Code 의 skill 문서를 ① 커밋 전 정적 검사 10가지 ② 읽기만 하는 AI 리뷰어 11가지 ③ 리뷰 안 된 변경은 push 를 막는 3단 문으로 걸렀다. 지적마다 '원인'과 '재발 방지 규칙'을 꼭 쓰게 했다.[7]",
+     "**막는 것과 알리는 것 나누기** — 심각한 것만 커밋을 막고 나머지는 경고만 한다. 다 막으면 사람들이 검사를 건너뛰는 옵션을 습관처럼 쓸 것이라는 이유다.[7]",
+     "**코드 리뷰의 기준** — 일반론으로는 '코드 품질을 조금이라도 낫게 하면 승인한다'는 구글 기준이 흔히 쓰인다.[15]"
+    ]
+   },
+   "how_far": "설계 리뷰는 '이 방법이 맞나'를, 코드 리뷰는 '이 코드가 그 설계대로인가·읽히나·테스트가 있나'를 봅니다.[15] 경력 자리라 **남의 PR 에 근거 있는 지적을 하고, 내 PR 을 리뷰하기 쉽게 작게 나누는 것**이 최소선입니다.{추론}",
+   "refs": [
+    1,
+    2,
+    7,
+    15
+   ],
+   "study": [
+    "google-review",
+    "zenn-skill-review"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・各施策のテスト設計のレビュー",
+   "short": "기능마다 무엇을 어디까지 시험할지(테스트 관점)를 개발팀이 먼저 짜고 서로 검토한다.",
+   "why": "2026년 6월부터 QA 를 팀마다 붙이지 않고 한 곳에 모아 두고, 기능의 위험도에 따라 배정합니다. 위험이 중간인 기능은 **개발팀이 만든 테스트 케이스와 관점을 QA 가 리뷰**하고, 낮은 기능은 QA 가 들어가지 않습니다.[11] 즉 테스트 설계의 첫 책임이 개발팀에 있습니다.",
+   "actually": {
+    "items": [
+     "**위험도 점수** — 개발 규모·보안·영향 범위·난이도·팀 숙련도 5축을 1~3점(숙련도는 최대 2점)으로 매긴다. 한 축이라도 3점이면 합계와 상관없이 A.[11]",
+     "**A·B·C** — A(10~14점 또는 고위험)는 QA 가 킥오프부터, B(7~9점)는 개발팀 관점을 QA 가 리뷰, C(5~6점)는 개발팀이 스스로.[11]",
+     "**AI 가 빠뜨리는 관점 채우기** — Claude Code 기반 QA 에이전트가 '더 불러오기 되나·일괄 선택에 추가로 불러온 것도 들어가나·삭제가 다른 화면 목록에도 반영되나' 같은 관점을 자주 놓쳐, 화면 부품 종류 × 역할로 **관점 목록**을 만들었다. 한 기능에서 리뷰를 통과한 관점 188개 중 92개가 이 목록에서 나왔다.[6]",
+     "**자동 E2E** — 전체 회귀 테스트는 MagicPod 로 돌리고, 100개 중 5개쯤 깨지는 것은 건강한 수준으로 본다고 했다(2023년).[12]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "위험도 점수로 QA 수준 고르기",
+     "body": "회사 글의 5축 규칙[11]을 그대로 옮긴 작은 함수입니다(직접 돌린 출력). 합계가 7점이어도 보안 한 축이 3점이면 A 가 됩니다.",
+     "lang": "python",
+     "code": "# 5축(규모·보안·영향 범위·난이도·팀 숙련도) 각 1~3점, 숙련도는 최대 2점\ndef qa_level(scale, security, impact, difficulty, skill):\n    scores = [scale, security, impact, difficulty, skill]\n    total = sum(scores)\n    if 3 in scores or total >= 10:\n        return \"A\", total   # QA 가 킥오프부터 설계·실행\n    if total >= 7:\n        return \"B\", total   # 개발팀이 짠 테스트 관점을 QA 가 리뷰\n    return \"C\", total       # 개발팀이 스스로\n\nprint(qa_level(1, 1, 1, 1, 1))  # 문구 수정\nprint(qa_level(2, 1, 2, 2, 1))  # 화면 하나 추가\nprint(qa_level(1, 3, 1, 1, 1))  # 권한 제어 변경 — 한 축이 3\n\n# 출력\n# ('C', 5)\n# ('B', 8)\n# ('A', 7)"
+    }
+   ],
+   "how_far": "자기 기능의 **테스트 관점표(정상·경계·권한·다른 화면 영향)**를 쓰고, 남의 관점표에서 빠진 것을 짚을 수 있으면 됩니다.[6][11]{추론} 이 회사에선 그 관점표를 AI 가 초안 잡고 사람이 고치는 흐름입니다.[6]",
+   "refs": [
+    6,
+    11,
+    12
+   ],
+   "study": [
+    "zenn-qa-pool",
+    "zenn-catalog"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・チームの生産性や品質向上に向けた取り組みの提案・実行",
+   "short": "느린 배포·불안정한 테스트·반복 작업을 찾아 도구와 규칙으로 고치자고 제안하고 직접 한다.",
+   "why": "이 팀의 글 대부분이 이런 개선 기록입니다 — 2주에 한 번이던 배포를 매일 정해진 시각에 내보내는 방식으로 바꾸려 했고, 자동 E2E 전체 실행을 약 4시간에서 약 2시간으로 줄였습니다(2023년).[12]",
+   "actually": {
+    "items": [
+     "**배포 흐름** — 버그 하나가 묶음 전체를 막던 2주 배포 대신, 기능마다 QA 환경에서 확인하고 매일 고정 시각에 내보내는 '릴리스 열차'.[12]",
+     "**테스트 덜 돌리기** — 바뀐 파일 → import 를 거슬러 화면 → 그 화면을 쓰는 테스트만 고른다. 한 PR 에서 27개 중 2개만 골랐지만, 놓친 테스트가 없는지는 아직 확인 전이라고 밝혔다.[8]",
+     "**QA 배정 자동화** — 개발 유닛장이 Claude Skill 에 입력하면 AI 가 위험도를 판정하고 사람이 승인, Slack 으로 QA 리더에게 넘어간다. 테스트 설계 공수가 약 45% 줄었다고 적었다(계산 근거는 글에 없음).[11]",
+     "**CI/CD·인프라 코드** — 빌드·테스트·배포는 GitHub Actions, 인프라는 Terraform + Terragrunt 로 통일했다.[3]"
+    ]
+   },
+   "how_far": "'느리다'가 아니라 **전후 숫자**(시간·메모리·테스트 개수)로 제안하는 것이 이 팀의 글 쓰는 방식입니다.[8][9][10] 전사 도구를 갈아엎기보다 내 팀의 반복 작업 하나를 없애는 데서 시작합니다.{추론}",
+   "refs": [
+    3,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "study": [
+    "zenn-e2e-route",
+    "zenn-qa-pool"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "※KANNAプロジェクトはRuby on Rails、KANNAレポートはKotlin (Spring Boot) で開発されています。",
+   "short": "제품마다 서버 언어가 달라서 — 프로젝트 관리는 Rails, 디지털 장부(레포트)는 Kotlin.",
+   "why": "두 제품의 서버가 다른 언어로 되어 있다는 안내입니다.[1] 회사 SRE 글에서도 레포트·결재·결제가 Kotlin + Spring Boot 서비스로, 핵심 API 는 Rails 로 나뉘어 있습니다.[3]",
+   "actually": {
+    "items": [
+     "**Kotlin 쪽 설계** — EM 이 발표에서 KANNA 의 Kotlin 서버를 GraphQL 과 함께 **CQRS(쓰기와 읽기 모델을 나눔) + 이벤트 소싱(바뀐 사건을 차례로 쌓아 상태를 만듦)**으로 만든다고 소개했다(2024년).[5]",
+     "**스키마로 코드 만들기** — DGS 가 GraphQL 스키마에서 null 여부를 지킨 Kotlin 데이터 클래스와 클라이언트를 만들어 준다.[5][27]"
+    ]
+   },
+   "how_far": "지원 전에 '내가 어느 제품(언어) 팀에 들어가고 싶은가'를 정해 두면 면접 대화가 쉬워집니다.{추론}",
+   "refs": [
+    1,
+    3,
+    5,
+    27
+   ],
+   "study": [
+    "dgs-talk",
+    "dgs-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■開発環境\n・バックエンド：Ruby on Rails / Kotlin (Spring Boot ) / GraphQL\n・Webフロントエンド: React / Next.js / TypeScript\n・インフラ：AWS / GCP / Firebase / Elasticsearch / Terraform\n・DB：MySQL / PostgreSQL / Firestore / Redis\n・モバイルアプリ：Kotlin Multiplatform / Compose Multiplatform / SwiftUI / React Native",
+   "short": "서버 Rails·Kotlin·GraphQL, 화면 React·Next.js, 클라우드 AWS+GCP, DB 넷 — 다 알 필요는 없다.",
+   "why": "회사 SRE 글이 같은 구성을 쓰임새와 함께 풀었습니다.[3]",
+   "actually": {
+    "items": [
+     "**AWS** — 서버는 ECS on Fargate(ARM·Spot), Blue/Green 배포, WAF·GuardDuty, 사내 로그인은 Cognito.[3]",
+     "**GCP·Firebase** — 로그인(Authentication), 채팅·알림 실시간 동기화(Firestore), 푸시(Cloud Messaging), 로그·이용 데이터는 BigQuery → Redash.[3]",
+     "**DB** — Rails 는 Aurora MySQL, 새 Kotlin 서비스는 PostgreSQL, 실시간은 Firestore, 캐시·작업 큐는 Redis.[3]",
+     "**모바일** — Kotlin Multiplatform·Compose Multiplatform·SwiftUI·React Native. 이 자리는 웹이라 읽을 줄만 알면 된다.{추론}",
+     "**도구** — GitHub·Bitrise·Slack·Notion·JIRA·Datadog·MagicPod.[1]"
+    ]
+   },
+   "how_far": "이 자리가 매일 만지는 건 서버(Rails 또는 Kotlin) + Next.js + MySQL/PostgreSQL 입니다.{추론} 인프라는 SRE 팀이 따로 있어 Terraform 을 읽고 작은 변경을 PR 로 낼 수 있으면 충분합니다.[3]{추론}",
+   "refs": [
+    1,
+    3
+   ],
+   "study": [
+    "zenn-infra",
+    "terraform-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Webアプリケーション開発の実務経験3年以上",
+   "short": "웹 서비스를 실제로 만들고 운영해 본 3년 이상 — 회사 채용 페이지 판은 5년 이상이다.",
+   "why": "원티드 공고는 3년 이상이지만[1], 같은 이름의 회사 채용 페이지 공고는 **5년 이상**에 아키텍처·DB 설계·보안 요건 지식, AI 코딩 도구 경험까지 필수로 적었습니다.[2] 원티드 공고 위쪽의 경력 칸도 '5~20년'입니다.[1]",
+   "how_far": "회사 판의 5년 기준과 연봉 폭(800만~1,500만 엔)을 보면 **혼자 기능을 끝내는 중견 이상**을 찾는 자리입니다.[2]{추론} 3~4년차라면 운영 중 장애를 직접 고쳐 본 경험·숫자로 남긴 개선 하나를 앞세웁니다.{추론}",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・SQLを用いたRDBMSの操作および開発経験",
+   "short": "ORM 뒤에 숨지 않고 SQL 을 직접 읽고 쓸 줄 알아야 한다 — 느린 화면 대부분이 SQL 이라서.",
+   "why": "회사 엔지니어는 GraphQL 이 느린 원인을 체감상 **약 90% 가 SQL**, 9% 가 메모리, 1% 가 GraphQL 라이브러리라고 적었습니다(측정값이 아닌 경험).[4] 그래서 개발 환경 응답마다 SQL 을 보여 주는 프로파일러 주소를 붙였습니다.[4]",
+   "level": {
+    "basic": "JOIN · GROUP BY · 서브쿼리 · 인덱스가 무엇인지",
+    "work": "N+1 찾기 · 실행 계획(EXPLAIN) 읽기 · 트랜잭션 범위 · MySQL 과 PostgreSQL 차이",
+    "team": "ORM(ActiveRecord·Kotlin 쪽)이 만든 SQL 을 프로파일러로 보고 고치기 · 읽기 복제본 쓰임새"
+   },
+   "actually": {
+    "items": [
+     "**N+1** — 목록 1번 + 줄마다 1번씩 부르는 실수. Rails 는 `includes` 같은 미리 불러오기로 막는다.[20]",
+     "**대량 처리** — 한 번에 너무 많은 행을 한 트랜잭션에 넣으면 메모리와 잠금이 커진다.[9]",
+     "**읽기 분리** — 쓰기·읽기 DB 를 나누고 분석은 복제본에서 한다.[3]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "N+1 — 51번 대 1번",
+     "body": "현장 50곳의 사진 수를 세는 같은 결과를, 줄마다 묻기와 JOIN + GROUP BY 로 비교했습니다(SQLite, 가상 데이터, 직접 돌린 출력).",
+     "lang": "python",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ndb.executescript(\"\"\"\nCREATE TABLE project(id INTEGER PRIMARY KEY, name TEXT);\nCREATE TABLE photo(id INTEGER PRIMARY KEY, project_id INTEGER, taken_on TEXT);\n\"\"\")\ndb.executemany(\"INSERT INTO project VALUES (?,?)\", [(i, f\"현장{i}\") for i in range(1, 51)])\ndb.executemany(\"INSERT INTO photo(project_id, taken_on) VALUES (?,?)\",\n               [(i % 50 + 1, \"2026-11-01\") for i in range(1000)])\ncount = 0\ndef q(sql, args=()):\n    global count; count += 1\n    return db.execute(sql, args).fetchall()\n\n# N+1: 목록 1번 + 현장마다 1번\ncount = 0\nfor pid, name in q(\"SELECT id, name FROM project\"):\n    q(\"SELECT COUNT(*) FROM photo WHERE project_id = ?\", (pid,))\nprint(\"N+1 쿼리 수:\", count)\n\n# 한 번에: JOIN + GROUP BY\ncount = 0\nrows = q(\"\"\"SELECT p.id, p.name, COUNT(ph.id) FROM project p\n            LEFT JOIN photo ph ON ph.project_id = p.id GROUP BY p.id\"\"\")\nprint(\"JOIN+GROUP BY 쿼리 수:\", count, \"/ 첫 줄:\", rows[0])\n\n# 출력\n# N+1 쿼리 수: 51\n# JOIN+GROUP BY 쿼리 수: 1 / 첫 줄: (1, '현장1', 20)"
+    }
+   ],
+   "how_far": "SQL 을 손으로 써서 결과를 맞히고, ORM 코드가 몇 번 SQL 을 부르는지 로그로 셀 수 있으면 출발선입니다.[4][20]{추론}",
+   "refs": [
+    3,
+    4,
+    9,
+    20
+   ],
+   "study": [
+    "real-mysql",
+    "sql-levelup",
+    "rails-guides"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Gitを利用したチームでの開発経験",
+   "short": "브랜치·PR·리뷰·충돌 풀기로 여러 사람과 한 저장소에서 일해 봤어야 한다.",
+   "why": "약 30명이 한 모노레포(서비스 여럿을 한 저장소에)에서 일하고, 빌드·테스트·배포가 그 저장소의 GitHub Actions 로 돕니다.[1][3] 커밋·push 단계에 검사(git hooks)도 겁니다.[7]",
+   "actually": {
+    "items": [
+     "**PR 단위 일** — 기능 브랜치 → PR → 리뷰 → 병합. 테스트도 PR 의 변경에서 골라 돌리려 한다.[8]",
+     "**hooks** — 커밋 전 정적 검사, push 전 '리뷰 안 된 변경' 막기. hooks 경로를 하나만 지정할 수 있어 나눠 부르는 방식(dispatcher)을 썼다.[7]"
+    ]
+   },
+   "how_far": "rebase·충돌 해결·되돌리기(revert)를 겁내지 않고, 리뷰하기 쉬운 크기로 커밋을 나눌 줄 알면 됩니다.[23]{추론}",
+   "refs": [
+    1,
+    3,
+    7,
+    8,
+    23
+   ],
+   "study": [
+    "pro-git"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本国内勤務経験",
+   "short": "일본에서 일해 본 적이 있어야 한다 — 한국에서만 일했다면 이 줄에서 걸린다.",
+   "why": "공고는 이유를 적지 않았습니다.[1] 일본 직장의 일하는 방식(보고·회의·문서 문화)에 이미 익숙하고, 일본에서 일할 수 있는 체류 자격을 갖고 있거나 다시 받기 쉬운 사람을 찾는 것으로 보입니다.{추론}",
+   "actually": {
+    "items": [
+     "**체류 자격** — 개발자는 흔히 '기술·인문지식·국제업무' 자격으로 일하고, 학력이나 실무 경력 요건이 있다.[25]",
+     "**비자 지원** — 이 공고에는 비자 지원 문구가 없다.[1] 지원 전에 확인할 항목이다.{추론}"
+    ]
+   },
+   "how_far": "필수 요건이라 일본 근무 경력이 전혀 없으면 서류에서 불리합니다.{추론} 일본 회사의 한국 법인·원격 근무가 '일본 국내 근무'로 인정되는지는 지원 전에 물어봅니다.{추론}",
+   "refs": [
+    1,
+    25
+   ],
+   "study": [
+    "isa-visa"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本語レベル: ビジネス",
+   "short": "일본어로 설계 리뷰·회의·문서를 해야 한다 — 일본어 이력서가 없으면 서류에서 떨어진다.",
+   "why": "원티드 공고 머리말은 일본어 전용 자리이고 일문 이력서·직무경력서가 필수이며, 국문·영문만 내면 통보 없이 서류에서 빠진다고 적었습니다.[1] 업무에 설계 리뷰·코드 리뷰·테스트 설계 리뷰가 들어 있어 쓰기 일본어가 많습니다.[1]{추론}",
+   "actually": {
+    "items": [
+     "**비즈니스 수준** — 공식 정의는 없지만 흔히 JLPT N2 이상을 가리킨다. N1 은 폭넓은 장면의 일본어를 이해하는 수준이다.[24]{추론}",
+     "**다국어 제품** — KANNA 는 일본어·영어·태국어·스페인어·베트남어·인도네시아어를 지원하고 방콕 사무소가 있다.[1][13] 복지에 영어 공부 지원도 있다.[1]"
+    ]
+   },
+   "how_far": "점수보다 **일본어로 기술 면접을 치를 수 있는가**가 기준입니다.{추론}",
+   "refs": [
+    1,
+    13,
+    24
+   ],
+   "study": [
+    "jlpt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本国内への移住が必要",
+   "short": "근무지가 도쿄 도라노몬이고 주 2일(화·금) 출근이라 일본으로 이사해야 한다.",
+   "why": "출근 주 2일(화·금)·재택 주 3일이라 해외에서 완전 원격은 안 됩니다.[1]",
+   "how_far": "이주 비용·집 구하기 지원은 공고에 없으니 오퍼 면담에서 확인합니다.{추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "isa-visa"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "※1つでもあれば尚可ですが、どの経験もない方でも大丈夫です。\n・静的型付け言語を用いたバックエンド開発経験",
+   "short": "Kotlin·Java·TypeScript 처럼 타입을 컴파일 때 검사하는 언어로 서버를 만들어 봤다면 좋다.",
+   "why": "새 서비스들이 Kotlin + Spring Boot 이고[3], 머리말대로 하나도 없어도 지원할 수 있습니다.[1] Ruby(동적 타입)만 해 본 사람과 Kotlin 쪽을 메울 사람을 같이 찾는 것으로 보입니다.{추론}",
+   "how_far": "Java/Spring 경험이 있으면 Kotlin 은 문법 차이 정도라 빨리 넘어옵니다.[21]{추론}",
+   "refs": [
+    1,
+    3,
+    21
+   ],
+   "study": [
+    "kotlin-in-action",
+    "spring-kotlin"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・マイクロサービスアーキテクチャの設計・開発・運用経験",
+   "short": "서비스를 여러 개로 나눈 시스템을 설계하고 장애·배포까지 운영해 본 경험.",
+   "why": "KANNA 서버가 Rails·Kotlin·Nest.js 여러 서비스로 되어 있고, 서비스 간 통신을 안쪽으로 바꾸는 등 구조 과제가 남아 있습니다.[3]",
+   "how_far": "'나눴다'보다 **나눠서 생긴 문제(서비스 간 데이터 맞추기·장애 전파·배포 순서)를 어떻게 풀었나**를 말할 수 있어야 경험으로 칩니다.[17]{추론}",
+   "refs": [
+    3,
+    17
+   ],
+   "study": [
+    "newman-msa",
+    "fowler-msa"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・GraphQLやgRPCを用いたスキーマ駆動開発の経験",
+   "short": "API 모양(스키마)을 먼저 정하고 서버·화면이 그에 맞춰 만드는 방식을 해 봤다면 좋다.",
+   "why": "EM 은 스키마를 먼저 두면 서버·웹·앱 팀이 구현 전에 합의해 어긋남이 줄어든다고 발표했습니다. Kotlin 쪽은 Netflix DGS 로 스키마에서 코드를 만듭니다.[5]",
+   "actually": {
+    "items": [
+     "**GraphQL** — 화면이 필요한 칸만 골라 받는 질의 언어. 스키마가 계약서다.[18]",
+     "**gRPC** — 서비스끼리 정의 파일(.proto)로 함수를 부르듯 통신하는 방식.[19]",
+     "**N+1 은 GraphQL 에서도** — 줄마다 붙는 필드가 따로 DB 를 부르기 쉬워, 묶어서 부르는 Dataloader 를 쓴다.[29]",
+     "**페이지 넘기기** — 스키마에 Relay 식 커서 페이지(`@connection`)를 선언해 쓴다.[5]"
+    ]
+   },
+   "how_far": "스키마를 바꿀 때 기존 클라이언트(앱은 바로 업데이트가 안 된다)를 깨지 않게 칸을 더하고 빼는 법을 알면 됩니다.[18]{추론}",
+   "refs": [
+    5,
+    18,
+    19,
+    29
+   ],
+   "study": [
+    "graphql-learn",
+    "dgs-docs",
+    "dgs-talk"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・AWSやGCPを用いたインフラの構築・運用経験",
+   "short": "AWS·GCP 위에 서버·네트워크·DB 를 직접 깔고 운영해 본 경험 — 이 회사는 둘 다 쓴다.",
+   "why": "본 서버는 AWS(ECS·Aurora), 로그인·실시간·데이터 분석은 GCP(Firebase·BigQuery)입니다. 인프라는 Terraform + Terragrunt 로 관리합니다.[3][28]",
+   "how_far": "SRE 팀이 따로 있으므로 이 자리는 **내 서비스의 배포 설정·Terraform 을 읽고 고치는** 정도면 충분합니다.[3]{추론}",
+   "refs": [
+    3,
+    28
+   ],
+   "study": [
+    "zenn-infra",
+    "terraform-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・スクラムでの開発経験",
+   "short": "스프린트·백로그 정리·회고로 일하는 스크럼 경험 — 이 팀이 그렇게 일한다.",
+   "why": "개발 조직 전체가 스크럼을 바탕으로 운영합니다.[1] QA 도 위험이 큰 기능은 킥오프·백로그 정리(refinement)·스프린트 계획에 들어옵니다.[11]",
+   "actually": {
+    "items": [
+     "**스크럼 기본** — 제품 책임자·개발자·스크럼 마스터, 스프린트·계획·데일리·리뷰·회고.[16]",
+     "**데모 모임** — 버그 찾기 모임(Bugbash)을 CS 직원도 오는 '데모 모임'으로 바꿨다는 글이 있다.[31]"
+    ]
+   },
+   "how_far": "용어보다 **스프린트 안에 끝낼 크기로 일을 쪼개고 추정하는 습관**을 보여 주면 됩니다.[16]{추론}",
+   "refs": [
+    1,
+    11,
+    16,
+    31
+   ],
+   "study": [
+    "scrum-guide"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・開発チームをリードした経験",
+   "short": "개발팀의 일정·설계·리뷰를 이끌어 본 경험 — 7개 팀이라 리드 자리가 열려 있다.",
+   "why": "엔지니어 약 30명이 7개 팀으로 나뉘고 EM 은 4명입니다.[1] 회사 채용 페이지 공고는 PdM·테크 리드·EM·모바일/SRE 로 가는 경력 길을 적었습니다.[2]",
+   "how_far": "직함보다 '설계를 정하고, 리뷰 기준을 만들고, 막힌 사람을 풀어 준' 장면 하나를 숫자와 함께 말할 수 있으면 됩니다.{추론}",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "google-review"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "【本ポジションと相性の良い方】\n・社会的な課題を解決したい\n・急成長企業のコアメンバーとして一緒に成長したい\n・モダンな技術構成でUXが最高なプロダクトを開発したい\n・チームワークで成果を出したい",
+   "short": "인물상 — 사회 문제(현장 일손)에 관심, 빨리 크는 회사에서 같이 크기, UX 집착, 팀워크.",
+   "why": "개발부의 기술 비전은 'Extreme UX 로 세계 현장의 생산성을 바꾸는 기술 집단'이고, 고객과 닿는 모든 곳에서 철저히 사용자 눈으로 본다는 뜻이라고 설명합니다.[1] 회사는 직원 74명(2026년 9월)이고 도쿄·방콕에 사무소가 있습니다.[13]",
+   "how_far": "'UX 가 최고'는 화면 예쁨이 아니라 **현장에서 장갑 낀 손·느린 회선으로도 쓰이나**에 가깝습니다 — 100줄 입력 창을 0.2초로 줄인 글이 그 예입니다.[10]{추론}",
+   "refs": [
+    1,
+    10,
+    13
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "Rails 나 Kotlin 한쪽은 자신 있고 다른 쪽도 배울 사람[1]",
+   "'느리다'를 Profiler·메모리 숫자로 바꿔 고치는 게 즐거운 사람[9][10]",
+   "AI 코딩 도구를 매일 쓰고, 그 결과를 리뷰하는 규칙까지 만들고 싶은 사람[1][7]",
+   "현장(건설·제조) 사용자의 불편을 직접 줄이고 싶은 사람[1]"
+  ],
+  "hard": [
+   "일본어 서류·일본 근무 경험·이주가 모두 필수다[1]",
+   "언어가 둘(Ruby·Kotlin)이라 한쪽만 깊게 파기 어렵다[3]",
+   "테스트 설계를 QA 에게 넘기지 못하고 개발팀이 먼저 책임진다[11]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "목록 화면의 GraphQL 응답이 느리다는 제보가 왔어요. 무엇부터 보나요?",
+   "a": "이 팀은 느린 원인의 대부분을 SQL 로 보고 개발 환경에 프로파일러를 붙였다.[4]"
+  },
+  {
+   "q": "엑셀 3,000줄 가져오기가 메모리를 1.5GB 넘게 씁니다. 동작을 안 바꾸고 줄이려면? 근본적으로는?",
+   "a": "회사 글의 단계별 계측·캐시 비우기와 다음 과제(청크 커밋·부분 성공).[9]"
+  },
+  {
+   "q": "입력칸 200개짜리 창이 열리는 데 3.5초 걸려요. 가상 스크롤을 안 쓴다면?",
+   "a": "누른 칸만 입력 부품을 띄우고 값은 폼 상태에 둔 방식.[10]"
+  },
+  {
+   "q": "이 기능의 테스트 관점을 짜 보세요. 다른 화면 목록에도 삭제가 반영되나요?",
+   "a": "QA 에이전트가 자주 놓친 관점과 개발팀이 관점표를 먼저 쓰는 체제.[6][11]"
+  },
+  {
+   "q": "Rails 핵심 API 에서 레포트 기능을 Kotlin 서비스로 뗀다면 데이터와 호출은 어떻게 나누나요?",
+   "a": "실제로 그렇게 나뉜 구성과 남은 과제(서비스 간 통신).[3][17]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · [株式会社アルダグラム] Web애플리케이션 엔지니어_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/335089",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "LAPRAS Global Bridge 채용 · 사업·조직·개발 환경·업무·요건·우대·급여·근무지·복리후생"
+  },
+  {
+   "n": 2,
+   "title": "HERP · Webアプリケーションエンジニア (아르다그람 채용 페이지)",
+   "url": "https://herp.careers/v1/aldagram0508/yTIztJYvA9l7",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 직무의 회사 판 — 경력 5년 이상·AI 코딩 도구 필수, 연봉 800만~1,500만 엔, 경력 길"
+  },
+  {
+   "n": 3,
+   "title": "Aldagram Tech Blog · マルチプロダクト構成を支える KANNA のインフラアーキテクチャ",
+   "url": "https://zenn.dev/aldagram_tech/articles/98351f4a862301",
+   "kind": "company",
+   "date": "2025-08-28",
+   "note": "SRE 팀 — 서비스별 언어, Aurora MySQL·PostgreSQL, ECS·Firebase·BigQuery, Terraform (일본어)"
+  },
+  {
+   "n": 4,
+   "title": "Aldagram Tech Blog · レスポンスヘッダにプロファイラのURLを含めるとGraphQLのパフォーマンスチューニングに便利という話",
+   "url": "https://zenn.dev/aldagram_tech/articles/53cca9acf68e48",
+   "kind": "company",
+   "date": "2023-08-31",
+   "note": "Rails + graphql-ruby + Apollo Client, 느린 원인 체감 비율 (일본어)"
+  },
+  {
+   "n": 5,
+   "title": "Speaker Deck · Kotlin + DGS で始めるスキーマファーストな GraphQL サーバー開発",
+   "url": "https://speakerdeck.com/sukechannnn/kotlin-plus-dgs-deshi-merusukimahuasutona-graphql-sabakai-fa",
+   "kind": "company",
+   "date": "2024-03",
+   "note": "아르다그람 EM·PdM 小幡洋介, 서버사이드 Kotlin LT vol.11 — 슬라이드만(영상 없음)"
+  },
+  {
+   "n": 6,
+   "title": "Aldagram Tech Blog · AIのテスト観点を「決定論的」にする - テスト観点カタログを作った",
+   "url": "https://zenn.dev/aldagram_tech/articles/316c4d944fd9d5",
+   "kind": "company",
+   "date": "2026-09-11",
+   "note": "QA 에이전트가 놓치는 관점, 관점 목록 188건 중 92건 (일본어)"
+  },
+  {
+   "n": 7,
+   "title": "Aldagram Tech Blog · Claude Codeのskillをskillでレビューする ― 静的チェック×LLMレビュー×git hooksの3層ゲート",
+   "url": "https://zenn.dev/aldagram_tech/articles/c407ae672c9c0e",
+   "kind": "company",
+   "date": "2026-07-16",
+   "note": "정적 검사·AI 리뷰·push 막기 3단 (일본어)"
+  },
+  {
+   "n": 8,
+   "title": "Aldagram Tech Blog · Playwright の E2E を、ページオブジェクトの route で変更から選んで回す（設計編）",
+   "url": "https://zenn.dev/aldagram_tech/articles/c49627d2b063b8",
+   "kind": "company",
+   "date": "2026-10-29",
+   "note": "검토 단계 — 27개 중 2개 선택, 누락 확인 전 (일본어)"
+  },
+  {
+   "n": 9,
+   "title": "Aldagram Tech Blog · [Rails]一括インポート処理におけるメモリ改善",
+   "url": "https://zenn.dev/aldagram_tech/articles/rails-bulk-import-memory-improvement",
+   "kind": "company",
+   "date": "2026-06-11",
+   "note": "3,000행 1.5GB → 약 800MB, 청크 트랜잭션은 다음 과제 (일본어)"
+  },
+  {
+   "n": 10,
+   "title": "Aldagram Tech Blog · MUI の DatePicker と TextField が100個あるモーダルの初期表示を、遅延マウントで94%短縮した話",
+   "url": "https://zenn.dev/aldagram_tech/articles/f95ec27d51176b",
+   "kind": "company",
+   "date": "2026-08-20",
+   "note": "3,525ms → 195ms (일본어)"
+  },
+  {
+   "n": 11,
+   "title": "Aldagram Tech Blog · 固定制インプロセスQAからプール制へ——QA体制を再設計した話",
+   "url": "https://zenn.dev/aldagram_tech/articles/e3f8d39f6eb5a1",
+   "kind": "company",
+   "date": "2026-07-02",
+   "note": "5축 점수·A/B/C, 2026-06 정식 운영 (일본어)"
+  },
+  {
+   "n": 12,
+   "title": "Speaker Deck · 自動E2Eテストを活用した デプロイフロー改善",
+   "url": "https://speakerdeck.com/sukechannnn/zi-dong-e2etesutowohuo-yong-sita-depuroihurogai-shan",
+   "kind": "company",
+   "date": "2023-04-26",
+   "note": "MagicPod 밋업 — 릴리스 열차, 전체 실행 4시간 → 2시간, data-testid"
+  },
+  {
+   "n": 13,
+   "title": "아르다그람 · 회사 정보",
+   "url": "https://aldagram.com/company/",
+   "kind": "company",
+   "date": "2026-11",
+   "note": "직원 74명(2026-09), 도쿄 본사·방콕 사무소 주소, ISO/IEC 27001"
+  },
+  {
+   "n": 14,
+   "title": "HERP · 아르다그람 회사 페이지",
+   "url": "https://herp.careers/careers/companies/aldagram0508",
+   "kind": "company",
+   "date": "2026-11",
+   "note": "설립 2019-05, 본사 주소, 사업 영역"
+  },
+  {
+   "n": 15,
+   "title": "Google Engineering Practices · Code Review",
+   "url": "https://google.github.io/eng-practices/review/",
+   "kind": "reference",
+   "note": "리뷰어·작성자 지침"
+  },
+  {
+   "n": 16,
+   "title": "스크럼 가이드 (2020)",
+   "url": "https://scrumguides.org/scrum-guide.html",
+   "kind": "reference",
+   "date": "2020-11",
+   "note": "스크럼의 역할·이벤트·산출물"
+  },
+  {
+   "n": 17,
+   "title": "Martin Fowler · Microservices",
+   "url": "https://martinfowler.com/articles/microservices.html",
+   "kind": "reference",
+   "date": "2014-03",
+   "note": "마이크로서비스의 특징 — 서비스별 배포·데이터 분산"
+  },
+  {
+   "n": 18,
+   "title": "GraphQL 공식 · Learn",
+   "url": "https://graphql.org/learn/",
+   "kind": "reference",
+   "note": "스키마·질의·스키마 바꾸기"
+  },
+  {
+   "n": 19,
+   "title": "gRPC 공식 · Introduction to gRPC",
+   "url": "https://grpc.io/docs/what-is-grpc/introduction/",
+   "kind": "reference",
+   "note": ".proto 로 서비스 정의"
+  },
+  {
+   "n": 20,
+   "title": "Rails Guides · Active Record Query Interface — Eager Loading Associations",
+   "url": "https://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations",
+   "kind": "reference",
+   "note": "N+1 과 includes"
+  },
+  {
+   "n": 21,
+   "title": "Spring 공식 · Building web applications with Spring Boot and Kotlin",
+   "url": "https://spring.io/guides/tutorials/spring-boot-kotlin",
+   "kind": "reference",
+   "note": "Kotlin 으로 Spring Boot 시작"
+  },
+  {
+   "n": 22,
+   "title": "Next.js 공식 문서",
+   "url": "https://nextjs.org/docs",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Pro Git (한국어)",
+   "url": "https://git-scm.com/book/ko/v2",
+   "kind": "reference",
+   "note": "브랜치·리베이스·되돌리기"
+  },
+  {
+   "n": 24,
+   "title": "JLPT · N1~N5 인정 기준",
+   "url": "https://www.jlpt.jp/about/levelsummary.html",
+   "kind": "reference",
+   "note": "급수별로 할 수 있는 일본어"
+  },
+  {
+   "n": 25,
+   "title": "일본 출입국재류관리청 · 在留資格「技術・人文知識・国際業務」",
+   "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html",
+   "kind": "reference",
+   "note": "개발자가 흔히 받는 체류 자격의 요건"
+  },
+  {
+   "n": 26,
+   "title": "Google 지도 · 住友不動産虎ノ門タワー 검색",
+   "url": "https://www.google.com/maps/search/%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B8%AF%E5%8C%BA%E8%99%8E%E3%83%8E%E9%96%802-2-1%20%E4%BD%8F%E5%8F%8B%E4%B8%8D%E5%8B%95%E7%94%A3%E8%99%8E%E3%83%8E%E9%96%80%E3%82%BF%E3%83%AF%E3%83%BC",
+   "kind": "reference",
+   "note": "지도 검색 링크"
+  },
+  {
+   "n": 27,
+   "title": "Netflix DGS Framework 문서",
+   "url": "https://netflix.github.io/dgs/",
+   "kind": "reference",
+   "note": "Spring Boot 위의 GraphQL 서버, 스키마로 코드 생성"
+  },
+  {
+   "n": 28,
+   "title": "Terraform 공식 문서",
+   "url": "https://developer.hashicorp.com/terraform/docs",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "graphql-ruby · Dataloader",
+   "url": "https://graphql-ruby.org/dataloader/overview.html",
+   "kind": "reference",
+   "note": "GraphQL 의 N+1 을 묶어 부르기"
+  },
+  {
+   "n": 30,
+   "title": "Aldagram Tech Blog · Figma を SoT としてデザインシステムを作り、新 theme を全ページに一括適用しました",
+   "url": "https://zenn.dev/aldagram_tech/articles/figma-sot-design-system",
+   "kind": "company",
+   "date": "2026-10-07",
+   "note": "제목만 확인 (일본어)"
+  },
+  {
+   "n": 31,
+   "title": "Aldagram Tech Blog · Bugbash改め『デモ会』へ。CSメンバーが参加するようになって変わったこと",
+   "url": "https://zenn.dev/aldagram_tech/articles/b34049a1af68ec",
+   "kind": "company",
+   "date": "2026-10-08",
+   "note": "제목만 확인 (일본어)"
+  }
+ ],
+ "caveat": "원티드 공고 본문의 모집 배경 문단은 '전임 iOS·Android 엔지니어를 모집한다'고 적혀 있어 이 웹 직무와 맞지 않습니다 — 다른 공고에서 옮겨 온 문단으로 보입니다{추론}. 원티드 판(경력 3년 이상·700만~1,000만 엔)과 회사 채용 페이지 판(5년 이상·AI 코딩 도구 필수·800만~1,500만 엔)의 요건이 달라 둘 다 적었습니다[1][2]. 회사가 Kotlin 서버의 CQRS·이벤트 소싱을 말한 건 2024년 슬라이드이고, 발표 영상·유튜브 발표는 찾지 못해 받은 영상 재료가 없습니다. 서비스 간 통신 방식·팀 배치·평가 기준은 공개 자료가 없어 일반론과 {추론} 으로 보였습니다.",
+ "resources": [
+  {
+   "id": "zenn-infra",
+   "title": "マルチプロダクト構成を支える KANNA のインフラアーキテクチャ",
+   "by": "Aldagram Tech Blog · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://zenn.dev/aldagram_tech/articles/98351f4a862301",
+   "why": "이 자리가 일하는 시스템 전체 지도 — 어느 서비스가 무슨 언어·DB 인지. 지원 전에 먼저 읽을 것. (일본어 자료)"
+  },
+  {
+   "id": "zenn-import",
+   "title": "[Rails]一括インポート処理におけるメモリ改善",
+   "by": "Aldagram Tech Blog · 2026",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://zenn.dev/aldagram_tech/articles/rails-bulk-import-memory-improvement",
+   "why": "Rails 백엔드 업무의 실제 모습 — 재고, 원인 찾고, 동작을 안 바꾸고 줄이는 순서. (일본어 자료)"
+  },
+  {
+   "id": "zenn-mui",
+   "title": "MUI の DatePicker と TextField が100個あるモーダルの初期表示を、遅延マウントで94%短縮した話",
+   "by": "Aldagram Tech Blog · 2026",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://zenn.dev/aldagram_tech/articles/f95ec27d51176b",
+   "why": "Next.js 화면 업무의 실제 모습 — 대안 넷을 왜 버렸는지까지. (일본어 자료)"
+  },
+  {
+   "id": "zenn-qa-pool",
+   "title": "固定制インプロセスQAからプール制へ——QA体制を再設計した話",
+   "by": "Aldagram Tech Blog · 2026",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://zenn.dev/aldagram_tech/articles/e3f8d39f6eb5a1",
+   "why": "업무 '테스트 설계 리뷰'가 어떤 체제에서 도는지 — 위험도 점수와 개발팀의 몫. (일본어 자료)"
+  },
+  {
+   "id": "zenn-catalog",
+   "title": "AIのテスト観点を「決定論的」にする - テスト観点カタログを作った",
+   "by": "Aldagram Tech Blog · 2026",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://zenn.dev/aldagram_tech/articles/316c4d944fd9d5",
+   "why": "테스트 관점을 빠짐없이 뽑는 법 — 화면 부품 × 역할 목록. (일본어 자료)"
+  },
+  {
+   "id": "zenn-skill-review",
+   "title": "Claude Codeのskillをskillでレビューする ― 静的チェック×LLMレビュー×git hooksの3層ゲート",
+   "by": "Aldagram Tech Blog · 2026",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://zenn.dev/aldagram_tech/articles/c407ae672c9c0e",
+   "why": "AI 도구를 쓰는 팀의 리뷰 문 — 막을 것과 알릴 것을 나누는 기준. (일본어 자료)"
+  },
+  {
+   "id": "zenn-e2e-route",
+   "title": "Playwright の E2E を、ページオブジェクトの route で変更から選んで回す（設計編）",
+   "by": "Aldagram Tech Blog · 2026",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://zenn.dev/aldagram_tech/articles/c49627d2b063b8",
+   "why": "업무 '생산성 향상'의 예 — 변경에서 테스트를 고르는 설계와 아직 못 푼 것. (일본어 자료)"
+  },
+  {
+   "id": "dgs-talk",
+   "title": "Kotlin + DGS で始めるスキーマファーストな GraphQL サーバー開発",
+   "by": "小幡洋介(아르다그람) · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://speakerdeck.com/sukechannnn/kotlin-plus-dgs-deshi-merusukimahuasutona-graphql-sabakai-fa",
+   "why": "KANNA 레포트 쪽 Kotlin 서버의 스키마 먼저 방식 — 우대 'GraphQL 스키마 주도 개발'. (일본어 슬라이드)"
+  },
+  {
+   "id": "dgs-docs",
+   "title": "Netflix DGS Framework 문서",
+   "by": "Netflix",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://netflix.github.io/dgs/",
+   "why": "Kotlin + Spring Boot 로 GraphQL 서버를 만드는 공식 안내 — 코드 생성·테스트."
+  },
+  {
+   "id": "graphql-learn",
+   "title": "GraphQL 공식 · Learn",
+   "by": "GraphQL Foundation",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://graphql.org/learn/",
+   "why": "스키마·질의·변경 — GraphQL 을 처음 잡을 때."
+  },
+  {
+   "id": "rails-guides",
+   "title": "Rails Guides",
+   "by": "Ruby on Rails",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://guides.rubyonrails.org/",
+   "why": "Rails 쪽 서버 — Active Record 질의·연관·미리 불러오기(N+1)부터."
+  },
+  {
+   "id": "spring-kotlin",
+   "title": "Building web applications with Spring Boot and Kotlin",
+   "by": "Spring 공식 튜토리얼",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://spring.io/guides/tutorials/spring-boot-kotlin",
+   "why": "Kotlin 쪽 서버 — Spring Boot 를 Kotlin 으로 처음 띄워 보기."
+  },
+  {
+   "id": "kotlin-in-action",
+   "title": "Kotlin in Action (2판)",
+   "by": "Sebastian Aigner · Roman Elizarov · Svetlana Isakova · Dmitry Jemerov · Manning",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.manning.com/books/kotlin-in-action-second-edition",
+   "why": "우대 '정적 타입 언어로 백엔드' — 코틀린 언어를 제대로. 2판에 코루틴·Flow 장이 있다."
+  },
+  {
+   "id": "nextjs-docs",
+   "title": "Next.js 공식 문서",
+   "by": "Vercel",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://nextjs.org/docs",
+   "why": "업무 '프런트엔드 개발' — 라우팅·데이터 불러오기·렌더링 방식."
+  },
+  {
+   "id": "real-mysql",
+   "title": "Real MySQL 8.0 (1·2권)",
+   "by": "백은빈 · 이성욱 · 위키북스",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002928545",
+   "why": "요건 'SQL 로 RDBMS 다루기' — KANNA 핵심 DB 가 MySQL(Aurora). 인덱스·실행 계획·트랜잭션."
+  },
+  {
+   "id": "sql-levelup",
+   "title": "SQL 레벨업",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=SQL%20%EB%A0%88%EB%B2%A8%EC%97%85",
+   "why": "반복문 대신 집합으로, CASE·윈도우 함수로 한 번에 — N+1 을 SQL 쪽에서 피하는 연습."
+  },
+  {
+   "id": "newman-msa",
+   "title": "마이크로서비스 아키텍처 구축 (전면 개정판)",
+   "by": "샘 뉴먼 · 정성권 옮김 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.oreilly.com/library/view/maikeuroseobiseu-akitegceo-gucug-jeonmyeon/9791169211192/",
+   "why": "업무 '마이크로서비스 설계' — 어디서 나누고, 데이터는 누구 것이고, 어떻게 배포하나."
+  },
+  {
+   "id": "fowler-msa",
+   "title": "Microservices",
+   "by": "Martin Fowler · James Lewis · 2014",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://martinfowler.com/articles/microservices.html",
+   "why": "마이크로서비스가 무엇인지 정의부터 — 서비스별 배포·데이터 분산."
+  },
+  {
+   "id": "google-review",
+   "title": "Google Engineering Practices · Code Review",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://google.github.io/eng-practices/review/",
+   "why": "업무 '설계·코드 리뷰' — 리뷰어가 볼 것, 작성자가 PR 을 작게 나누는 법."
+  },
+  {
+   "id": "pro-git",
+   "title": "Pro Git (2판, 한국어)",
+   "by": "Scott Chacon · Ben Straub",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://git-scm.com/book/ko/v2",
+   "why": "요건 'Git 으로 팀 개발' — 브랜치·리베이스·충돌·hooks."
+  },
+  {
+   "id": "scrum-guide",
+   "title": "스크럼 가이드 (2020)",
+   "by": "Ken Schwaber · Jeff Sutherland",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://scrumguides.org/scrum-guide.html",
+   "why": "우대 '스크럼 개발' — 13쪽짜리 원전. 역할·이벤트를 정확히."
+  },
+  {
+   "id": "terraform-docs",
+   "title": "Terraform 공식 문서",
+   "by": "HashiCorp",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.hashicorp.com/terraform/docs",
+   "why": "우대 'AWS·GCP 인프라' — 이 회사 인프라가 Terraform 코드라 읽고 고치는 법."
+  },
+  {
+   "id": "jlpt",
+   "title": "JLPT · N1~N5 인정 기준",
+   "by": "일본국제교육지원협회·국제교류기금",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.jlpt.jp/about/levelsummary.html",
+   "why": "요건 '일본어 비즈니스' — 급수별로 할 수 있는 일본어. 내 수준을 가늠."
+  },
+  {
+   "id": "isa-visa",
+   "title": "在留資格「技術・人文知識・国際業務」",
+   "by": "일본 출입국재류관리청",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html",
+   "why": "요건 '일본 근무 경험·이주' — 개발자가 받는 체류 자격의 조건. (일본어 자료)"
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사와 시스템 알기",
+   "time": "1주",
+   "goal": "KANNA 두 제품이 어떤 서비스·언어·DB 로 되어 있는지 그림 한 장으로 설명할 수 있다.",
+   "resources": [
+    "zenn-infra",
+    "dgs-talk",
+    "zenn-qa-pool"
+   ],
+   "task": "SRE 글을 읽고 '화면(Next.js) → 핵심 API(Rails)·레포트(Kotlin) → MySQL/PostgreSQL/Firestore' 구성도를 그리고, 내가 들어갈 쪽과 그 이유를 일본어 세 문장으로 쓴다."
+  },
+  {
+   "title": "서버 하나 + SQL",
+   "time": "2~3주",
+   "goal": "Rails 나 Kotlin(Spring Boot) 중 하나로 GraphQL API 를 만들고 N+1 을 찾아 없앤다.",
+   "resources": [
+    "rails-guides",
+    "spring-kotlin",
+    "graphql-learn",
+    "real-mysql",
+    "sql-levelup"
+   ],
+   "task": "가상 '현장 50곳 × 사진 1,000장' 데이터로 현장 목록 + 사진 수 GraphQL 질의를 만들고, SQL 로그로 51번 → 1~2번으로 줄인 전후를 README 에 남긴다."
+  },
+  {
+   "title": "화면 하나 + 성능 숫자",
+   "time": "2주",
+   "goal": "Next.js 로 100줄짜리 입력 표를 만들고 Profiler 숫자로 빠르게 만든다.",
+   "resources": [
+    "nextjs-docs",
+    "zenn-mui"
+   ],
+   "task": "줄마다 날짜·메모 입력칸이 있는 100줄 표를 만들어 첫 표시 시간을 재고, 누른 칸만 입력 부품을 띄우는 방식으로 바꿔 전후 ms 를 비교한다(값이 사라지지 않는지 테스트 포함)."
+  },
+  {
+   "title": "리뷰·테스트 관점·대량 처리",
+   "time": "2주",
+   "goal": "내 기능의 테스트 관점표를 쓰고, 대량 가져오기를 몇백 줄 단위 커밋으로 바꾼다.",
+   "resources": [
+    "zenn-catalog",
+    "zenn-import",
+    "google-review",
+    "pro-git"
+   ],
+   "task": "2단계 API 에 엑셀(CSV) 3,000줄 가져오기를 붙여 500줄 단위 커밋·실패 줄 보고를 만들고, 정상·경계·권한·다른 화면 영향으로 나눈 관점표를 쓴 뒤 PR 설명을 리뷰받기 좋게 작성한다."
+  },
+  {
+   "title": "구조와 일본 지원 준비 (계속)",
+   "time": "계속",
+   "goal": "서비스를 나누는 기준을 말할 수 있고, 일본어 이력서·직무경력서를 낸다.",
+   "resources": [
+    "newman-msa",
+    "fowler-msa",
+    "dgs-docs",
+    "scrum-guide",
+    "jlpt",
+    "isa-visa"
+   ],
+   "task": "2~4단계 결과물을 '레포트 서비스를 따로 뗀다면' 설계 문서 한 장(데이터 주인·호출 방식·장애 시 동작)으로 정리하고, 같은 내용을 일본어 직무경력서의 프로젝트 한 칸으로 옮긴다."
+  }
+ ],
+ "pay": {
+  "summary": "공고 표기 연봉 **700만~1,000만 엔**(고정 잔업 45시간분 포함), 회사 채용 페이지 같은 직무는 **800만~1,500만 엔** — 비상장이라 공시 평균은 없다",
+  "rows": [
+   {
+    "label": "공고 표기 연봉",
+    "value": "700만~1,000만 엔",
+    "basis": "공고 · 2026년",
+    "note": "목안이며 하한을 보장하지 않는다고 적었다. 700만 엔이면 월 584,000엔(기본급 433,897엔 + 고정 잔업 45시간분 150,103엔), 45시간을 넘는 잔업은 따로 준다. 시용 기간 3개월(조건 같음) [1]"
+   },
+   {
+    "label": "회사 채용 페이지 같은 직무",
+    "value": "800만~1,500만 엔",
+    "basis": "공고 · 2026년",
+    "note": "HERP 의 Webアプリケーションエンジニア — 경력 5년 이상 요건. 800만 엔이면 월 667,000엔(기본급 494,539엔 + 고정 잔업 45시간분 172,461엔) [2]"
+   }
+  ],
+  "how": "아르다그람은 비상장사라 유가증권보고서의 평균 급여가 없다 [13][14]. 연봉은 희망과 경험을 보고 회사 규정으로 정하고, 스톡옵션은 부여 예정이며 오퍼 면담에서 설명한다고 적었다 [1]. **고정 잔업 읽는 법**: 150,103엔 ÷ 45시간 = 시간당 약 3,336엔이고, 일본 법정 최저 할증 1.25배로 나누면 기본 시급 약 2,668엔, 기본급은 월 약 163시간분이다 {추론}. 즉 연봉의 약 4분의 1이 잔업 45시간을 미리 넣은 몫이다 {추론}. 엔을 원화로 바꾼 값은 환율 기준을 정하지 않아 싣지 않는다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무 방식",
+    "detail": "출근 주 2일(화·금)·재택 주 3일(월·수·목)"
+   },
+   {
+    "name": "근무 시간",
+    "detail": "플렉스 — 코어 10:00~16:00, 플렉시블 7:00~10:00·16:00~22:00, 하루 8시간 × 영업일"
+   },
+   {
+    "name": "휴일",
+    "detail": "연간 휴일 120일 이상, 완전 주 5일(토·일), 공휴일, 연말연시, 경조 휴가"
+   },
+   {
+    "name": "유급 휴가",
+    "detail": "입사 3개월 뒤 10일"
+   },
+   {
+    "name": "AI 도구",
+    "detail": "OpenAI·Anthropic API 자유 사용, 원하는 사람 전원에게 Claude Max·Cursor Ultra 무료, JetBrains·GitHub Copilot"
+   },
+   {
+    "name": "장비",
+    "detail": "최신 MacBook Pro"
+   },
+   {
+    "name": "책",
+    "detail": "월 5,000엔까지 원하는 책 구입"
+   },
+   {
+    "name": "컨퍼런스",
+    "detail": "업무로 참가 가능, 유료 컨퍼런스도 가능"
+   },
+   {
+    "name": "영어",
+    "detail": "영어 실력 향상 제도"
+   },
+   {
+    "name": "사내",
+    "detail": "동아리 제도, 무료 정수기, 복장 자유, 월 1회 셔플 점심, 주 1회 성과 발표 'Win Session'"
+   },
+   {
+    "name": "교통·보험",
+    "detail": "통근 교통비, 사회보험 완비"
+   },
+   {
+    "name": "부업",
+    "detail": "가능"
+   },
+   {
+    "name": "스톡옵션",
+    "detail": "부여 예정(오퍼 면담에서 설명)"
+   }
+  ],
+  "note": "원티드 공고의 복리후생·개발 환경 칸(2026년, 회사가 쓴 조건 그대로)이다 [1]. 회사 채용 페이지 판에도 같은 항목과 책 대여 제도가 적혀 있다 [2]. 비자·이주 지원은 어느 쪽에도 없다 {추론}."
+ },
+ "location": {
+  "name": "아르다그람 도쿄 본사",
+  "address": "東京都港区虎ノ門二丁目2番1号 住友不動産虎ノ門タワー 26階",
+  "postal": "105-0001",
+  "map_url": "https://www.google.com/maps/search/%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B8%AF%E5%8C%BA%E8%99%8E%E3%83%8E%E9%96%802-2-1%20%E4%BD%8F%E5%8F%8B%E4%B8%8D%E5%8B%95%E7%94%A3%E8%99%8E%E3%83%8E%E9%96%80%E3%82%BF%E3%83%AF%E3%83%BC",
+  "near": "히비야선 도라노몬힐스역(虎ノ門ヒルズ) A2 출구 걸어서 3분, 긴자선 도라노몬역(虎ノ門) 3번 출구 4분, 다메이케산노역(溜池山王) 9번 출구 5분",
+  "note": "공고의 근무지와 회사 정보 페이지의 도쿄 본사 주소가 같다 [1][13]. 일본 주소라 네이버 지도 대신 구글 지도 검색 링크를 단다 [26]. 방콕에도 사무소가 있다 [13]."
+ }
+}
