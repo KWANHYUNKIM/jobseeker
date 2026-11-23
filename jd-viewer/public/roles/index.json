@@ -16,6 +16,9 @@
   "wanted-385554": "hyundai-autoever-ai-researcher",
   "jobkorea-50301716": "hyundai-autoever-ai-researcher",
   "wanted-385488": "hyundai-autoever-auth-account-backend",
+  "jobkorea-50301680": "hyundai-autoever-os-mode-platform",
+  "wanted-395350": "hyundai-autoever-os-mode-platform",
+  "saramin-55552527": "hyundai-autoever-os-mode-platform",
   "wanted-385504": "hyundai-autoever-physical-ai-engineer",
   "jobkorea-50301916": "hyundai-autoever-physical-ai-engineer",
   "jobkorea-50301866": "hyundai-autoever-robot-backend",
@@ -347,6 +350,18 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 13
+  },
+  {
+   "id": "hyundai-autoever-os-mode-platform",
+   "company": "현대오토에버",
+   "role": "OS/Mode 모듈 개발 및 플랫폼 개발",
+   "jobs": [
+    "jobkorea-50301680",
+    "wanted-395350",
+    "saramin-55552527"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 12
   },
   {
    "id": "hyundai-autoever-physical-ai-engineer",

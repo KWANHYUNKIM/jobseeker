@@ -1,0 +1,370 @@
+{
+ "id": "hyundai-autoever-os-mode-platform",
+ "company": "현대오토에버",
+ "role": "OS/Mode 모듈 개발 및 플랫폼 개발",
+ "team": "클래식오토사1팀 (mobilgene Classic)",
+ "jobs": [
+  "jobkorea-50301680",
+  "wanted-395350",
+  "saramin-55552527"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "현대·기아 차 제어기(ECU) 속 **기본 소프트웨어(mobilgene Classic)** 중에서 태스크를 돌리는 **OS**와 시동·절전을 맡는 **Mode(상태 관리)** 모듈을 만들고, 그걸 고객 제어기 보드 위에 통합해 '돌아가는 플랫폼'으로 넘기는 일입니다.[2][4][5]",
+  "env": "국제 표준 **Classic AUTOSAR** 위에서, 인피니언·NXP·르네사스·ST 같은 여러 **MCU(작은 차량용 칩)**마다, **기능안전 ISO 26262 ASIL-D** 기준으로 C 코드를 씁니다.[5][6][12]",
+  "oneline": "자동차 속 작은 컴퓨터의 '윈도우' 중에서도 심장부(OS)와 전원 스위치(Mode)를 만드는 사람. 앱 개발이 아니라 **칩·시간·메모리**를 다룹니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "OS, Mode 모듈 개발/검증",
+   "short": "제어기 안에서 일을 정해진 시간에 돌리는 OS와, 켜고 끄고 잠드는 순서를 정하는 Mode 모듈을 만든다.",
+   "why": "팀 소개에 'OS 와 Mode 모듈을 개발 및 검증'이 업무로 따로 적혀 있습니다.[2] 회사 플랫폼은 하드웨어를 직접 움직이는 MCAL(칩 드라이버 층)부터 **자체 OS**, 통신, 여러 서비스 모듈까지 다 갖고 있습니다.[4] 그중 OS는 기능안전 최고 등급(ASIL-D)을 처음부터 받은 8개 모듈에 들어갑니다.[5] OS가 틀리면 그 위의 브레이크·조향 소프트웨어도 정해진 시간에 못 돕니다 {추론}.",
+   "actually": {
+    "intro": "AUTOSAR OS와 Mode 관리가 하는 일입니다. 표준 문서와 회사 발표 슬라이드 기준입니다.[5][13][14]",
+    "items": [
+     "**태스크 돌리기** — 일을 '태스크'로 나눠 우선순위를 주고, 더 급한 일이 오면 지금 일을 멈추고(선점) 그 일부터 한다. 1ms·10ms마다 도는 주기 작업은 카운터·알람·스케줄 테이블로 건다.[13]",
+     "**시간 지키기(타이밍 보호)** — 한 태스크·인터럽트가 정해진 시간보다 오래 돌면 OS가 잡아낸다. 회사 슬라이드는 이것을 SC2 기능으로 적었다.[5]",
+     "**메모리 지키기(메모리 보호)** — 응용 소프트웨어와 기본 소프트웨어가 서로의 메모리 영역을 쓰지 못하게 칩의 MPU(메모리 보호 장치)를 설정한다. SC3 기능이다.[5]",
+     "**멀티코어** — 코어가 2개 이상인 칩에서 코어마다 태스크를 나누고, 코어 사이 공유 자원은 스핀락(돌면서 기다리는 잠금)으로 지킨다.[13]",
+     "**Mode 관리** — EcuM(ECU 상태 관리)이 켜짐 → 동작 → 끄기 전 정리 → 절전/꺼짐 순서를 맡고, BswM(기본 소프트웨어 모드 관리)이 '조건이 맞으면 이 일들을 한다'는 규칙을 매 주기 돌린다.[14][15]",
+     "**검증** — 표준에 적힌 요구사항 하나하나에 테스트를 붙이고, 기능안전 프로젝트면 안전 매뉴얼·테스트 결과까지 낸다.[5]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "타이밍 보호가 없으면 — 고장 난 태스크가 CPU를 붙잡는다",
+     "body": "5ms 태스크 A(우선순위 높음)와 10ms 태스크 B(예산 3틱)를 1ms 틱으로 흉내 냈습니다. 20ms 회차의 B가 버그로 6틱을 쓰려 하면, 보호가 없을 땐 B가 27ms까지 CPU를 쓰고(25ms의 A만 끼어듦), 보호가 있으면 23ms에 잘립니다(직접 돌린 출력, '.'은 쉬는 시간).",
+     "lang": "python",
+     "code": "TASKS = {\"A\": {\"prio\": 2, \"period\": 5, \"cost\": 1, \"budget\": 1},\n         \"B\": {\"prio\": 1, \"period\": 10, \"cost\": 3, \"budget\": 3}}\n\ndef run(protect):\n    ready, used, line = {}, {}, []\n    for t in range(30):\n        for n, c in TASKS.items():\n            if t % c[\"period\"] == 0:\n                ready[n] = 6 if (n == \"B\" and t == 20) else c[\"cost\"]\n                used[n] = 0\n        if not ready:\n            line.append(\".\"); continue\n        n = max(ready, key=lambda k: TASKS[k][\"prio\"])\n        ready[n] -= 1; used[n] += 1; line.append(n)\n        if protect and used[n] >= TASKS[n][\"budget\"] and ready[n] > 0:\n            print(f\"  t={t}ms ProtectionHook: {n} 예산 초과 -> 강제 종료\")\n            del ready[n]\n        elif ready[n] == 0:\n            del ready[n]\n    return \"\".join(line)\n\nprint(\"보호 없음:\", run(False))\nprint(\"보호 있음:\", run(True))\n# 보호 없음: ABBB.A....ABBB.A....ABBBBABB..\n#   t=23ms ProtectionHook: B 예산 초과 -> 강제 종료\n# 보호 있음: ABBB.A....ABBB.A....ABBB.A...."
+    },
+    {
+     "title": "Mode 관리 — 시동을 끄면 바로 꺼지지 않는다",
+     "body": "BswM 규칙처럼 '시동 꺼짐 + 통신 요청 없음이면 저장 시작' 같은 조건을 주기마다 평가해 상태를 옮긴 흉내입니다. 실제 EcuM·BswM 상태 이름과 규칙은 표준 문서를 따릅니다[14] (직접 돌린 출력).",
+     "lang": "text",
+     "code": "입력(시동, 통신 요청): (1,1) (0,1) (0,0) (0,0) (0,0) (0,0) (1,0)\n\n0: RUN 유지\n1: RUN 유지\n2: 시동 꺼짐·통신 요청 없음 -> POST_RUN, 비휘발 메모리 저장 시작\n3: POST_RUN 저장 중\n4: 저장 끝 -> SLEEP(전류 최소, 깨움 신호 대기)\n5: SLEEP 유지\n6: 깨움(시동) -> STARTUP 거쳐 RUN"
+    }
+   ],
+   "how_far": "무엇을 만들지는 AUTOSAR 표준과 현대차 사양이 정합니다.[4] 이 자리는 그것을 **C 코드와 설정 생성기로 옮기고, 칩마다 실제로 돌려 증명**하는 쪽입니다. 최소선은 '태스크·인터럽트·우선순위·선점·스택'을 RTOS 하나로 직접 짜 본 경험과, 표준 문서의 요구사항 번호를 읽고 테스트로 바꿀 수 있는 정도입니다 {추론}.",
+   "refs": [2, 4, 5, 13, 14, 15],
+   "study": ["autosar-os", "autosar-mode", "freertos-book", "trampoline"]
+  },
+  {
+   "section": "task",
+   "quote": "여러 MCU 군에 대해 OS, Mode 를 개발하고 검증함",
+   "short": "칩 회사마다 레지스터·인터럽트·메모리 보호 장치가 달라, 같은 OS를 칩별로 따로 맞추고 따로 검증한다.",
+   "why": "mobilgene Classic 4.0.3판은 **13종 MCU**를 지원했고, 4.4.0판은 처음에 인피니언 AURIX 2세대 3종(TC36x·TC38x·TC39x)에서 시작해 늘려 간다고 했습니다.[5] 같은 회사 다른 팀 공고도 인피니언·NXP·르네사스·ST와 SoC를 주요 개발 대상으로 적었습니다.[12]",
+   "actually": {
+    "intro": "OS 중에서 칩마다 다시 짜야 하는 부분입니다(보통 '포팅 층'이라 부릅니다). 오픈소스 AUTOSAR OS도 아키텍처마다 이 부분을 따로 둡니다.[18]",
+    "items": [
+     "**문맥 전환(context switch)** — 태스크를 바꿀 때 CPU 레지스터를 저장·복원하는 코드. 칩 구조(TriCore·Arm·RH850)마다 레지스터가 달라 어셈블리가 섞인다 {추론}.",
+     "**인터럽트** — 칩의 인터럽트 컨트롤러에서 우선순위·벡터를 설정하고, OS가 관리하는 인터럽트(카테고리 2)와 아닌 것을 나눈다.[13]",
+     "**메모리 보호 장치(MPU)** — 칩마다 영역 개수·정렬 규칙이 달라, OS 애플리케이션별 메모리 범위를 그 칩 규칙에 맞게 나눈다.[13]",
+     "**타이머** — OS 카운터를 움직일 하드웨어 타이머를 골라 1틱 길이를 맞춘다 {추론}.",
+     "**멀티코어 시작** — 코어 0이 다른 코어를 깨우는 순서, 코어 사이 잠금은 칩이 주는 원자적 명령으로 만든다.[13]",
+     "**코어 배치 효과** — 회사 발표에서 CAN·이더넷 처리를 코어 0에만 두면 코어 0 부하 23.9%·코어 1은 1.5%였고, 나눠 배치하니 16.6%·8.6%가 됐다.[5]"
+    ]
+   },
+   "how_far": "칩 회사의 데이터시트·레퍼런스 매뉴얼을 읽고 '이 레지스터를 이렇게 쓰면 이 일이 된다'를 찾아내는 능력이 핵심입니다. 팀 사람도 소프트웨어 실력 외에 **MCU 분석 능력과 컴퓨터공학 지식**이 도움이 된다고 했습니다.[4]",
+   "refs": [4, 5, 12, 13, 18],
+   "study": ["autosar-os", "trampoline", "making-embedded"]
+  },
+  {
+   "section": "task",
+   "quote": "AUTOSAR 사양, OEM 사양을 분석함",
+   "short": "국제 표준 문서와 현대차가 따로 요구하는 사양을 읽고, 무엇을 새로 만들고 바꿀지 정리한다.",
+   "why": "AUTOSAR 표준은 해마다 여러 회사의 제안을 받아 새 판이 나오고, 팀은 그때마다 모듈을 고치고 새 기능을 만듭니다. 표준 밖의 **현대차 특화 기능**도 플랫폼에 넣습니다.[4] 회사는 현대차 사양을 설계할 때부터 함께하고 정기 '사양 협의회'로 필요한 기능을 먼저 만든다고 했습니다.[5]",
+   "actually": {
+    "items": [
+     "**표준 판 따라가기** — 4.0.3 기반 제품에 CAN FD·이더넷 같은 새 기능은 4.2·4.3 모듈을 섞어 넣었고, 4.4.0판에서는 모듈 전부를 새 사양으로 올렸다.[5]",
+     "**요구사항 번호 읽기** — 표준 문서(SWS)는 'SWS_Os_xxxxx' 같은 번호가 붙은 문장의 모음이다. 문장마다 구현했는지·시험했는지 짝을 맞춘다.[13]",
+     "**OEM 사양** — 현대차 전용 진단·이더넷·보안(HSM, 보안 부팅) 같은 기능이 표준 모듈 옆에 붙는다.[5]",
+     "**변경 영향 보기** — 판이 바뀌면 설정 항목(ARXML)이 바뀌어 설정 도구·코드 생성기도 같이 고쳐야 한다. 같은 회사 2팀이 OS·RTE·모드 모듈과 설정 도구를 함께 맡는 이유다.[11]"
+    ]
+   },
+   "how_far": "표준을 처음부터 쓰는 게 아니라 **읽고 차이를 찾는** 일입니다. 영어 표준 문서 수백 쪽(OS 문서만 300쪽 넘음)을 겁내지 않고, 요구사항 한 줄을 코드·테스트 한 묶음으로 바꿀 수 있으면 됩니다.[13] {추론}",
+   "refs": [4, 5, 11, 13],
+   "study": ["autosar-os", "autosar-mode", "soffar"]
+  },
+  {
+   "section": "task",
+   "quote": "플랫폼 개발/검증 및 통합",
+   "short": "모듈 수십 개를 한 묶음(소프트웨어 플랫폼)으로 합쳐, 고객 제어기에서 실제로 돌아가게 만드는 일.",
+   "why": "팀 소개에 'BSW 및 MCAL 통합 기술 개발'과 '통합 자동화 도구로 플랫폼을 통합·배포'가 들어 있습니다.[2] 플랫폼의 표준 모듈은 약 70개이고[5], 2025년 기준 기능안전 인증을 받은 모듈만 63개입니다.[6]",
+   "flows": [
+    {
+     "caption": "회사가 설명한 플랫폼 납품 흐름[5]",
+     "steps": [
+      "고객 요구사항 · 소프트웨어 플랫폼 요구서(SRS)로 정리",
+      "타깃 보드에서 켜기 · MCU 클럭·비휘발 메모리·CAN 통신·진단 설정",
+      "통합·검증 · 고객 보드에서 직접 돌려 시험",
+      "패키지 · 설정·통신 DB·예제 SWC·릴리스 노트·테스트 리포트",
+      "고객 개발 · 제품 번호·고장 코드 등 제어기 고유 설정"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "items": [
+     "**켜 보기(bring-up)** — 제어기를 처음 살리려면 클럭·메모리·CAN·진단부터 맞아야 하고 시간이 많이 든다. 회사는 이 일을 고객 보드 위에서 직접 해서 '돌아가는 상태'로 넘긴다고 했다.[5]",
+     "**납기** — 통합해 배포하는 데 평균 6주를 목표로 한다.[5]",
+     "**기술 검토** — 15개 모듈·약 160개 항목의 점검표로 플랫폼 오용을 막는 리뷰를 한다.[5]",
+     "**자동화** — 같은 회사 어댑티브 플랫폼 팀은 Jira·Git·Jenkins로 풀 리퀘스트마다 빌드·단위 시험(5~15분), 매일 밤 시스템 시험(약 100개, 2시간 50분)을 돌린다. 클래식 팀이 같은 방식인지는 공개되지 않았다.[10]"
+    ]
+   },
+   "how_far": "모듈 하나를 깊게 아는 것에 더해, **다른 모듈과 붙였을 때 왜 안 도는지** 찾아내는 능력이 필요합니다. 통합 담당자는 '어느 모듈에서 난 문제인지'부터 가려야 한다고 발표에 나옵니다.[10]",
+   "refs": [2, 5, 6, 10],
+   "study": ["webinar", "tdd-embedded"]
+  },
+  {
+   "section": "task",
+   "quote": "고객에게 전달되는 플랫폼을 개발/검증하고 통합함",
+   "short": "현대·기아와 부품사 제어기에 실제 양산으로 들어가는 소프트웨어라, 시험 결과와 문서까지 같이 넘긴다.",
+   "why": "mobilgene Classic은 2016년 그랜저(IG) 전자편의 제어기에 처음 양산 적용됐고, 2021년 발표 때 약 180개 프로젝트·70여 종 제어기에 들어가 있었습니다.[5] 2025년에는 현대·기아·제네시스 양산차 전반에 적용된다고 했습니다.[6] 고객은 현대차뿐 아니라 이를 쓰는 부품 협력사입니다.[5]",
+   "actually": {
+    "items": [
+     "**함께 넘기는 것** — 릴리스 노트, 요구서(SRS), 테스트 리포트, 고객 보드에서 확인한 MCAL·BSW 설정.[5]",
+     "**재프로그래밍 시험 설정** — 차에서 소프트웨어를 다시 쓰는(리프로그래밍) 진단 시험 설정도 패키지에 넣는다.[5]",
+     "**기능안전 프로젝트** — 고객의 안전 개념에 맞춰 안전 매뉴얼·테스트 케이스와 결과를 주고, 다른 모듈이 안전 모듈 메모리를 침범하지 않는지 따로 시험(MIVT)한다.[5]",
+     "**인증** — 플랫폼은 개발 프로세스 A-SPICE CL3, 기능안전 ASIL-D 인증을 받았다.[6][23]",
+     "**지원** — 고객 프로젝트마다 기술 담당자와 이슈 추적 시스템을 둔다.[5]"
+    ]
+   },
+   "how_far": "'내 보드에선 됐다'가 아니라 **고객이 같은 결과를 재현할 수 있게** 증거를 남기는 데까지가 일입니다 {추론}. 문서·시험 산출물 비중이 큰 것이 일반 소프트웨어 회사와 다른 점입니다.",
+   "refs": [5, 6, 23],
+   "study": ["webinar", "hmg-journal"]
+  },
+  {
+   "section": "task",
+   "quote": "신규 MCU 에 맞는 플랫폼을 개발/검증함",
+   "short": "새 칩이 나오면 OS를 그 칩에 옮기고(포팅) 그 위에 기본 소프트웨어 전체가 돌게 맞춘다.",
+   "why": "팀 소개에 '신규 MCU 개발을 위한 Porting 및 BSW 개발 리딩'이 적혀 있습니다.[2] 같은 회사 2팀도 신규 MCU 확대에 가장 먼저 솔루션을 내는 그룹이라고 소개합니다.[11]",
+   "flows": [
+    {
+     "caption": "새 칩에 플랫폼 올리기 — 보통 이런 순서 {추론}[13][18]",
+     "steps": [
+      "칩 자료 읽기 · 코어 구조·인터럽트·MPU·타이머",
+      "칩 회사 MCAL 받기 · 드라이버 층",
+      "OS 포팅 · 문맥 전환·인터럽트·보호 장치",
+      "BSW 올리기 · 통신·메모리·진단",
+      "검증 · 칩별 테스트·성능 측정"
+     ],
+     "mine_from": 2
+    }
+   ],
+   "actually": {
+    "items": [
+     "**판별 지원 범위** — 4.4.0판은 AURIX TC3xx 3종으로 시작해 넓혀 간다고 했다.[5]",
+     "**성능 측정** — 4.4.0판으로 올리며 비휘발 메모리 읽기 203%·쓰기 111%, 통신 처리 110%·141% 빨라졌고 RAM·ROM 크기는 8%·7% 줄었다고 발표했다.[5]",
+     "**칩의 안전 장치** — 차량용 칩은 메모리 오류를 고치는 ECC, 같은 계산을 두 코어가 겹쳐 하는 락스텝 코어를 넣는다. 그래서 칩마다 플랫폼이 써야 하는 장치가 다르다.[9]"
+    ]
+   },
+   "how_far": "칩 하나를 데이터시트부터 켜 본 경험이 있으면 크게 유리합니다. 처음이라면 공개 RTOS 하나를 개발 보드에 직접 올려 보는 것이 가장 가까운 연습입니다 {추론}.",
+   "refs": [2, 5, 9, 11, 13, 18],
+   "study": ["trampoline", "making-embedded"]
+  },
+  {
+   "section": "qualification",
+   "quote": "Embedded, Autosar, C, C++",
+   "short": "일하는 언어는 사실상 C. AUTOSAR는 '알면 좋다'가 아니라 매일 읽는 규칙서다.",
+   "why": "클래식 AUTOSAR 기본 소프트웨어는 C로 쓰고, 코드 대부분이 설정에서 자동 생성되기 때문에 MISRA C(차량용 C 코딩 규칙)를 지키는 것이 중요하다고 회사 행사 기조 발표에서 설명했습니다.[9] 같은 발표는 클래식은 '꽉 짜인 플랫폼', 어댑티브는 C++로 코딩하는 플랫폼이라 서로 전혀 다른 영역이라고 했습니다.[9]",
+   "level": {
+    "basic": "포인터·구조체·비트 연산·volatile·전처리기(#if 로 설정 나누기)",
+    "work": "인터럽트와 공유 변수, 스택 크기 계산, 링커 스크립트로 메모리 배치, MISRA C 규칙",
+    "team": "칩 레지스터 수준 코드(약간의 어셈블리), 설정 → C 코드 생성 구조 이해, AUTOSAR 모듈 사이 API"
+   },
+   "actually": {
+    "items": [
+     "**C++** — 공고 해시태그에 있지만, 이 팀 모듈 코드보다는 테스트·도구 쪽이나 어댑티브와 맞닿는 부분일 가능성이 크다 {추론}.",
+     "**설정 도구** — 회사 설정 도구(mobilgene Studio) 하나로 MCAL·BSW·응용 컴포넌트를 설정하고 코드 생성·컴파일까지 한다.[5]"
+    ]
+   },
+   "how_far": "전형에 **코딩 테스트(직무역량테스트)**가 있습니다.[1] C로 자료구조·비트 연산 문제를 막힘없이 풀 수 있는 정도는 기본으로 보세요 {추론}.",
+   "refs": [1, 5, 9],
+   "study": ["inflearn-autosar", "soffar", "making-embedded"]
+  },
+  {
+   "section": "qualification",
+   "quote": "임베디드 SW 개발 경험",
+   "short": "운영체제가 거의 없는 작은 칩에서, 메모리·시간이 빠듯한 코드를 직접 돌려 본 경험.",
+   "why": "OS를 만드는 자리라 OS 위에서 앱만 짜 본 경험과는 다릅니다. 인터럽트가 언제 끼어드는지, 스택이 얼마 남았는지, 한 주기 안에 끝나는지를 신경 써 본 경험이 필요합니다 {추론}. 팀 사람은 MCU 분석 능력과 컴퓨터공학 지식을 같이 꼽았습니다.[4]",
+   "actually": {
+    "items": [
+     "RTOS(실시간 운영체제) 위에서 태스크 여러 개와 인터럽트를 같이 돌려 본 것 — FreeRTOS 무료 책의 태스크·큐·인터럽트 장이 같은 개념을 다룬다.[24]",
+     "디버거로 레지스터·메모리를 직접 보며 멈춘 원인을 찾은 것.",
+     "CAN 같은 차량 통신을 한 번이라도 다뤄 본 것 — 같은 회사 진단 팀 공고는 CAN/Eth 경험을 요건으로 적었다.[12]"
+    ]
+   },
+   "how_far": "경력 공고라 '수업 과제' 수준이면 약합니다. 실제 제품 또는 그에 준하는 개인 프로젝트에서 **칩을 직접 켜고 RTOS를 올린** 이야기가 있으면 좋습니다 {추론}.",
+   "refs": [4, 12, 24],
+   "study": ["freertos-book", "making-embedded"]
+  },
+  {
+   "section": "qualification",
+   "quote": "경력 : 경력2년↑",
+   "short": "잡코리아는 2년 이상, 원티드·사람인은 3~7년으로 적었다. 실무 3년 안팎을 보고 있다.",
+   "why": "같은 자리가 세 사이트에 올라왔고, 원티드·사람인은 3~7년, 잡코리아는 2년 이상입니다.[1][2][3] 경력 범위 위쪽이 7년으로 닫혀 있어 팀장급이 아니라 모듈을 직접 맡을 사람을 찾는 것으로 보입니다 {추론}.",
+   "how_far": "연차 숫자보다 '그 기간에 칩·RTOS·차량 통신 중 무엇을 직접 했나'가 서류에서 읽혀야 합니다 {추론}.",
+   "refs": [1, 2, 3]
+  },
+  {
+   "section": "preference",
+   "quote": "mobilgene Classic 플랫폼 경험",
+   "short": "회사 자체 플랫폼을 고객(부품사) 쪽에서 써 봤다면 바로 일할 수 있어서.",
+   "why": "mobilgene Classic은 현대오토에버의 클래식 AUTOSAR 플랫폼 이름이고, 그룹사에는 '현대 오토사 클래식 플랫폼'이라는 이름으로 제공합니다.[4] 국내 OEM·부품사 제어기에 널리 쓰여[6][7] 협력사 개발자가 이 플랫폼 경험을 가진 경우가 많습니다 {추론}.",
+   "actually": {
+    "items": [
+     "**쓰는 쪽에서의 경험** — 배포된 플랫폼 위에 제어기 고유 설정(제품 번호·고장 코드)과 응용 기능을 얹어 본 것.[5]",
+     "**교육 과정** — 회사는 입문(외부 교육 회사)·심화(회사가 직접, 선행·양산 업체 대상)·하루짜리 워크숍 세 가지 교육이 있다고 했다.[5]",
+     "**행사** — 매년 'AUTOSAR Day with mobilgene'을 열어 새 기능·아키텍처·기능안전 사례를 소개한다(2023년 300여 명 참석).[8]"
+    ]
+   },
+   "how_far": "없어도 지원 가능한 우대 사항입니다. 대신 다른 클래식 AUTOSAR 스택 경험이 있으면 같은 개념(OS·BswM·EcuM·RTE)을 이름만 바꿔 설명할 수 있어야 합니다 {추론}.",
+   "refs": [4, 5, 6, 7, 8],
+   "study": ["team-video", "webinar", "hmg-journal"]
+  },
+  {
+   "section": "preference",
+   "quote": "타 플랫폼 경험 (V사, E사 등)",
+   "short": "다른 회사 클래식 AUTOSAR 스택(V·E사)을 써 봤다면 같은 개념을 이미 아는 것이라서.",
+   "why": "공고는 회사 이름을 적지 않았습니다. 클래식 AUTOSAR 기본 소프트웨어를 파는 대표 업체로 Vector(MICROSAR Classic)[16]와 Elektrobit(EB tresos AutoCore)[17]가 있어 이 둘을 가리키는 것으로 보입니다 {추론}. 회사는 mobilgene의 강점으로 '고객 보드에서 직접 켜 본 상태로 납품'을 들며, 다른 제품은 스택만 주고 사용자가 직접 켜야 한다고 비교했습니다.[5]",
+   "actually": {
+    "items": [
+     "같은 표준이라 OS·EcuM·BswM 같은 모듈 이름과 역할이 같다 — 설정 도구와 생성 코드 모양이 다를 뿐이다.[16][17]",
+     "다른 스택에서 겪은 통합 문제(설정 충돌·코어 배치·시간 초과)를 말할 수 있으면 그대로 이 팀의 일이다 {추론}."
+    ]
+   },
+   "how_far": "경쟁 제품 경험이 있으면 **'그 스택은 이렇게 하는데 표준은 이렇다'**를 구분해 말할 수 있으면 됩니다 {추론}.",
+   "refs": [5, 16, 17]
+  },
+  {
+   "section": "preference",
+   "quote": "임베디드 코딩 및 디버깅 경험",
+   "short": "OS 버그는 재현이 어렵고 칩 위에서만 보여, 디버거로 원인을 끝까지 찾는 힘이 중요해서.",
+   "why": "고객 문의 중 플랫폼 깊은 기술 문의와 이슈 분석에 대응하는 것도 팀 일입니다.[4] 회사는 2025 AUTOSAR 컨퍼런스에서 AUTOSAR 기반 OS를 계속 시험(Continuous Test)할 때 결과를 그림으로 보여 주는 것이 품질에 도움이 된다고 발표했습니다.[19]",
+   "actually": {
+    "items": [
+     "**멈춤** — 스택 넘침, 우선순위 뒤집힘, 인터럽트 안에서 금지된 API 호출. 원인 지점과 증상이 나타나는 지점이 멀다 {추론}.",
+     "**시간 문제** — 한 태스크가 가끔만 예산을 넘는 경우. 위 예시처럼 타이밍 보호 훅이 잡아도, 왜 길어졌는지는 추적 도구로 본다.[5]",
+     "**메모리 침범** — 다른 모듈이 안전 모듈 영역을 쓰는지 도구로 검사하는 시험(MIVT)을 따로 한다.[5]",
+     "**자동 시험과 대조** — 같은 회사 다른 팀은 실패한 시나리오·단계 번호가 아침에 바로 보이게 야간 시험을 돌린다.[10]"
+    ]
+   },
+   "how_far": "디버거로 중단점·레지스터·호출 스택을 읽고, 증상에서 원인까지 가설을 세워 줄여 간 사례 하나를 구체적으로 말할 수 있으면 됩니다 {추론}.",
+   "refs": [4, 5, 10, 19],
+   "study": ["tdd-embedded", "making-embedded"]
+  }
+ ],
+ "fit": {
+  "good": [
+   "앱보다 '컴퓨터가 어떻게 도는가'(스케줄러·인터럽트·메모리)가 더 궁금한 사람",
+   "표준 문서를 한 줄씩 읽고 맞추는 꼼꼼한 일이 잘 맞는 사람",
+   "만든 코드가 국내 양산차 대부분에 들어가는 규모를 원하는 사람[6]",
+   "AUTOSAR 표준에 먼저 제안하는 쪽으로 가고 싶은 사람 — 팀이 말한 미래 방향[4]"
+  ],
+  "hard": [
+   "문서·시험 산출물(요구서·테스트 리포트·안전 매뉴얼) 비중이 크다[5]",
+   "칩·사양이 바뀔 때마다 같은 일을 다시 맞추는 반복이 있다 {추론}",
+   "클래식 AUTOSAR 경험은 어댑티브(C++·리눅스)로 바로 이어지지 않는다[9]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "태스크 하나가 가끔 정해진 시간을 넘깁니다. OS는 무엇을 할 수 있고, 원인은 어떻게 찾겠어요?",
+   "a": "타이밍 보호(SC2)는 이 플랫폼이 ASIL-D로 인증받은 OS 기능입니다.[5]"
+  },
+  {
+   "q": "코어가 둘인 칩에서 CAN·이더넷 처리를 어디에 두겠어요? 공유 자원은 어떻게 지키나요?",
+   "a": "회사가 4.4판에서 BSW 분산 배치로 코어 부하를 바꾼 사례.[5]"
+  },
+  {
+   "q": "시동을 끄면 ECU는 바로 꺼지나요? 그 사이 무엇을 해야 하나요?",
+   "a": "Mode 모듈(EcuM·BswM)의 일 그 자체입니다.[14]"
+  },
+  {
+   "q": "새 MCU에 OS를 옮길 때 칩마다 다시 짜야 하는 부분은 무엇인가요?",
+   "a": "팀 업무의 '신규 MCU 포팅'.[2]"
+  },
+  {
+   "q": "AUTOSAR 요구사항 한 줄을 테스트로 바꿔 보세요.",
+   "a": "표준 분석·검증이 업무 두 줄을 차지합니다.[1][13]"
+  }
+ ],
+ "sources": [
+  {"n": 1, "title": "잡코리아 · 현대오토에버 OS/Mode 모듈 개발 및 플랫폼 개발", "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50301680", "kind": "posting", "date": "2026-11", "note": "업무·스킬·요건(경력 2년↑)·우대·전형(코딩 테스트·처우협의)"},
+  {"n": 2, "title": "원티드 · [SDV] 임베디드SW플랫폼디벨로퍼 - OS/Mode 모듈 개발 및 플랫폼 개발", "url": "https://www.wanted.co.kr/wd/395350", "kind": "posting", "date": "2026-11", "note": "클래식오토사1팀 소개(BSW·MCAL 통합, 통합 자동화 도구, 신규 MCU 포팅, OS·Mode)·경력 3~7년"},
+  {"n": 3, "title": "사람인 · [SDV] Embedded SW Platform Developer - OS/Mode 모듈 개발", "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?rec_idx=55552527", "kind": "posting", "date": "2026-11", "note": "경력 3~7년·근무지 서울 강남구 대치동·마감 2026-11-26"},
+  {"n": 4, "title": "현대오토에버 · [직무 자기소개서] 현대오토에버 클래식오토사팀 (mobilgene)", "url": "https://www.youtube.com/watch?v=q-hh5hiND1w", "kind": "company", "date": "2023-02", "note": "팀원(모듈 개발 담당) 직무 소개 3분 — 자막 전부 확인"},
+  {"n": 5, "title": "현대오토에버 · [웨비나] mobilgene Classic과 모빌리티 소프트웨어", "url": "https://www.youtube.com/watch?v=zH29jB2LJfg", "kind": "company", "date": "2021 (영상 게시 2022-02)", "note": "클래식오토사팀 강인원 수석연구원 발표 — 자막 전부와 슬라이드(제품 표·납품 강점·양산 현황·R4.4 성능·기능안전 모듈) 확인. 수치는 발표 당시 것"},
+  {"n": 6, "title": "현대자동차그룹 뉴스 · 현대오토에버, 모빌진 클래식 2.0 전체 모듈 ASIL-D 인증 획득", "url": "https://www.hyundaimotorgroup.com/ko/news/CONT0000000000181767", "kind": "company", "date": "2025-07-24", "note": "DNV 인증·63개 모듈(2021년 8개)·그룹 양산차 적용"},
+  {"n": 7, "title": "HMG 저널 · 모빌리티의 핵심 구성 요소, 현대오토에버 모빌진의 모든 것", "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000107771", "kind": "company", "date": "2023-08-31", "note": "2012년 개발 착수·2016 그랜저 최초 적용·200종 이상 제어기"},
+  {"n": 8, "title": "보안뉴스 · 현대오토에버, 'AUTOSAR Day With mobilgene 2023' 개최", "url": "https://www.boannews.com/news/articleView.html?idxno=123363", "kind": "news", "date": "2023-11-03", "note": "300여 명·Classic 2.0 멀티코어·기능안전"},
+  {"n": 9, "title": "현대오토에버 · [웨비나] AUTOSAR Day With mobilgene - AUTOSAR의 발전과 SDV의 진화", "url": "https://www.youtube.com/watch?v=1i8ubsrySz4", "kind": "company", "date": "영상 게시 2024-07", "note": "회사 행사의 기조 발표(국민대 정구민 교수 — 외부 발표자) — 자막 전부 확인. 기능안전·MISRA C·ECC·락스텝·클래식/어댑티브 차이"},
+  {"n": 10, "title": "HMG Developer Relations · [제2회 HMG 개발자 컨퍼런스] 차량 전장 SW 플랫폼에서의 CICD 적용 사례", "url": "https://www.youtube.com/watch?v=IsBdk4rbkxo", "kind": "company", "date": "2022-11", "note": "현대오토에버 어댑티브 플랫폼 팀 발표 — 같은 회사 다른 팀. 자막 전부 확인"},
+  {"n": 11, "title": "원티드 · 현대오토에버 Embedded SW Platform Developer - 클래식 오토사 툴 개발", "url": "https://www.wanted.co.kr/wd/398512", "kind": "posting", "date": "2026-11", "note": "클래식오토사2팀 소개 — 시스템 모듈(OS·RTE·모드)·설정 도구·신규 MCU"},
+  {"n": 12, "title": "원티드 · [SDV] Embedded SW 플랫폼 디벨로퍼 - 진단/Crypto 모듈 개발", "url": "https://www.wanted.co.kr/wd/395347", "kind": "posting", "date": "2026-11", "note": "클래식오토사4팀 소개 — 인피니언·NXP·르네사스·ST·SoC, ASPICE CL3"},
+  {"n": 13, "title": "AUTOSAR · Specification of Operating System (CP R20-11)", "url": "https://www.autosar.org/fileadmin/standards/R20-11/CP/AUTOSAR_SWS_OS.pdf", "kind": "reference", "note": "표준 원문 — 스케일러빌리티 클래스·보호·멀티코어"},
+  {"n": 14, "title": "AUTOSAR · Guide to Mode Management (CP R22-11)", "url": "https://autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_EXP_ModeManagementGuide.pdf", "kind": "reference", "note": "EcuM·BswM·ComM 이 함께 ECU 상태를 바꾸는 방법 해설"},
+  {"n": 15, "title": "AUTOSAR · Specification of Basic Software Mode Manager (CP R20-11)", "url": "https://www.autosar.org/fileadmin/standards/R20-11/CP/AUTOSAR_SWS_BSWModeManager.pdf", "kind": "reference"},
+  {"n": 16, "title": "Vector · MICROSAR Classic", "url": "https://www.vector.com/microsar-classic", "kind": "reference", "note": "다른 회사의 클래식 AUTOSAR 기본 소프트웨어"},
+  {"n": 17, "title": "MathWorks 파트너 소개 · EB tresos Studio and EB tresos AutoCore", "url": "https://de.mathworks.com/products/connections/product_detail/eb-tresos.html", "kind": "reference", "note": "Elektrobit 의 클래식 AUTOSAR 기본 소프트웨어·설정 도구"},
+  {"n": 18, "title": "Trampoline RTOS · OSEK/VDX·AUTOSAR OS 오픈소스", "url": "https://github.com/TrampolineRTOS/trampoline", "kind": "reference", "note": "GPL-2.0 — 직접 읽고 돌려 볼 수 있는 AUTOSAR OS 구현"},
+  {"n": 19, "title": "아시아경제 · Hyundai AutoEver Participates in 'AUTOSAR Conference'", "url": "https://www.asiae.co.kr/en/article/2025053009354760960", "kind": "news", "date": "2025-05-30", "note": "AUTOSAR 기반 OS 지속 시험 결과 시각화 발표"},
+  {"n": 20, "title": "지디넷코리아 · 현대오토에버, 상반기 매출 2.2조 돌파…SI 부문 26% 급성장", "url": "https://zdnet.co.kr/view/?no=20260814185634", "kind": "news", "date": "2026-08-14", "note": "2026년 반기보고서(DART) 기준 직원 수·급여"},
+  {"n": 21, "title": "현대오토에버 채용 · Life(복리후생)", "url": "https://career.hyundai-autoever.com/ko/life", "kind": "company"},
+  {"n": 22, "title": "현대오토에버 · 국내 사업장", "url": "https://www.hyundai-autoever.com/kor/about/workplace/domestic/contents.do?cntnSeq=239", "kind": "company"},
+  {"n": 23, "title": "현대자동차그룹 뉴스 · 현대오토에버 차량SW플랫폼, 글로벌 최고 수준 안전성 인증", "url": "https://www.hyundaimotorgroup.com/ko/news/CONT0000000000168324", "kind": "company", "date": "2025-01-21", "note": "모빌진 클래식 A-SPICE CL3·ASIL-D, 클래식=MCU / 어댑티브=AP"},
+  {"n": 24, "title": "FreeRTOS · Mastering the FreeRTOS Real Time Kernel (v1.0)", "url": "https://www.freertos.org/Documentation/02-Kernel/07-Books-and-manual/01-RTOS_book", "kind": "reference", "note": "무료 책 — RTOS 기본 개념"}
+ ],
+ "caveat": "회사 발표 영상은 2021~2024년 것이라 지원 MCU 수·프로젝트 수 같은 숫자는 지금과 다를 수 있습니다. 팀의 OS 내부 구조·코드 생성기·시험 체계는 공개되지 않아, AUTOSAR 표준 문서와 오픈소스 OS로 '보통 이런 것'을 보였습니다. 우대 사항의 V사·E사가 어느 회사인지는 공고에 적혀 있지 않습니다.",
+ "resources": [
+  {"id": "team-video", "title": "[직무 자기소개서] 현대오토에버 클래식오토사팀 (mobilgene)", "by": "현대오토에버 · 3분", "kind": "video", "url": "https://www.youtube.com/watch?v=q-hh5hiND1w", "lang": "ko", "free": true, "level": "입문", "why": "이 팀이 무엇을 하는지 팀원이 직접 말한다. MCAL부터 자체 OS까지 맡는다는 것, MCU 분석 능력이 필요하다는 것 — 지원서 첫 문단의 근거."},
+  {"id": "webinar", "title": "[웨비나] mobilgene Classic과 모빌리티 소프트웨어", "by": "현대오토에버 · 60분", "kind": "video", "url": "https://www.youtube.com/watch?v=zH29jB2LJfg", "lang": "ko", "free": true, "level": "입문", "why": "20분부터 보면 된다. 계층 구조·납품 방식·멀티코어 배치·기능안전 모듈 표 — 업무 '플랫폼 개발/검증 및 통합'이 실제로 어떤 일인지."},
+  {"id": "hmg-journal", "title": "모빌리티의 핵심 구성 요소, 현대오토에버 모빌진의 모든 것", "by": "HMG 저널 · 2023", "kind": "doc", "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000107771", "lang": "ko", "free": true, "level": "입문", "why": "mobilgene 의 역사(2012 착수·2016 첫 양산)와 클래식·어댑티브 구분을 한 번에."},
+  {"id": "inflearn-autosar", "title": "[AUTOSAR] 신입사원에게 들려주는 AUTOSAR기초 개념 완성", "by": "인프런", "kind": "course", "url": "https://www.inflearn.com/course/autosar-기초-개념-완성", "lang": "ko", "level": "입문", "why": "AUTOSAR 계층 구조와 BSW 모듈(OS·통신·메모리·진단)을 한국어로 처음 잡기."},
+  {"id": "soffar", "title": "AUTOSAR Fundamentals and Applications", "by": "Hossam Soffar · Packt · 2024", "kind": "book", "url": "https://www.oreilly.com/library/view/autosar-fundamentals-and/9781805120872/", "lang": "en", "free": false, "level": "입문", "why": "계층 구조·기본 소프트웨어·통신 스택을 책 한 권으로. 표준 문서로 들어가기 전 지도."},
+  {"id": "autosar-os", "title": "Specification of Operating System (CP R20-11)", "by": "AUTOSAR", "kind": "doc", "url": "https://www.autosar.org/fileadmin/standards/R20-11/CP/AUTOSAR_SWS_OS.pdf", "lang": "en", "free": true, "level": "실무", "why": "이 자리가 매일 읽을 문서. 스케일러빌리티 클래스·타이밍/메모리 보호·멀티코어 장부터."},
+  {"id": "autosar-mode", "title": "Guide to Mode Management (CP R22-11)", "by": "AUTOSAR", "kind": "doc", "url": "https://autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_EXP_ModeManagementGuide.pdf", "lang": "en", "free": true, "level": "실무", "why": "'Mode 모듈'의 정체. EcuM·BswM·ComM 이 시동·절전·깨움을 어떻게 나눠 맡는지 해설서 형식으로."},
+  {"id": "freertos-book", "title": "Mastering the FreeRTOS Real Time Kernel", "by": "FreeRTOS 공식 · 무료", "kind": "book", "url": "https://www.freertos.org/Documentation/02-Kernel/07-Books-and-manual/01-RTOS_book", "lang": "en", "free": true, "level": "입문", "why": "태스크·우선순위·선점·인터럽트·큐를 예제로. AUTOSAR OS 를 읽기 전 RTOS 기본기."},
+  {"id": "trampoline", "title": "Trampoline — OSEK/VDX·AUTOSAR OS", "by": "TrampolineRTOS · GitHub · GPL-2.0", "kind": "doc", "url": "https://github.com/TrampolineRTOS/trampoline", "lang": "en", "free": true, "level": "심화", "why": "AUTOSAR OS 를 코드로 읽을 수 있는 공개 구현. 칩별 포팅 코드와 설정 → 코드 생성 구조를 직접 본다."},
+  {"id": "making-embedded", "title": "Making Embedded Systems (2판)", "by": "Elecia White · O'Reilly · 2024", "kind": "book", "url": "https://www.oreilly.com/search/?q=Making%20Embedded%20Systems", "lang": "en", "free": false, "level": "실무", "why": "데이터시트 읽기·인터럽트·메모리·디버깅 — '임베디드 SW 개발 경험'과 '디버깅 경험' 요건의 기본기."},
+  {"id": "tdd-embedded", "title": "Test Driven Development for Embedded C", "by": "James W. Grenning · Pragmatic Bookshelf", "kind": "book", "url": "https://pragprog.com/titles/jgade/test-driven-development-for-embedded-c/", "lang": "en", "free": false, "level": "실무", "why": "하드웨어 없이 PC에서 C 모듈을 시험하는 방법. 업무의 '개발/검증' 절반을 자동 시험으로 만드는 연습."}
+ ],
+ "study_path": [
+  {"title": "회사와 팀 그림 잡기", "time": "2~3일", "goal": "mobilgene Classic 이 무엇이고 이 팀이 그중 어디를 맡는지 말로 설명할 수 있다.", "task": "웨비나 20분 이후와 팀 영상을 보고, 계층 그림(MCU → MCAL → ECU 추상화 → 서비스 → RTE → 응용)에 OS·EcuM·BswM 의 자리를 표시한 그림 한 장을 그린다.", "resources": ["team-video", "webinar", "hmg-journal"]},
+  {"title": "RTOS 기본기", "time": "2~3주", "goal": "태스크·우선순위·선점·인터럽트·공유 자원 보호를 코드로 보여 줄 수 있다.", "task": "개발 보드(또는 PC 시뮬레이터)에 FreeRTOS 를 올려 1ms·10ms 주기 태스크 2개와 버튼 인터럽트 하나를 돌리고, 우선순위를 바꿔 실행 순서가 어떻게 바뀌는지 로그로 남긴다.", "resources": ["freertos-book", "making-embedded"]},
+  {"title": "AUTOSAR OS 와 Mode 관리 읽기", "time": "2~4주", "goal": "표준의 OS 보호 기능과 EcuM·BswM 상태 흐름을 그림과 예로 설명할 수 있다.", "task": "OS 문서의 타이밍·메모리 보호 장에서 요구사항 5개를 골라 '시험 방법' 표로 바꾸고, Mode 가이드로 시동 끔 → 저장 → 절전 → 깨움 순서도를 그린다.", "resources": ["autosar-os", "autosar-mode", "inflearn-autosar", "soffar"]},
+  {"title": "공개 AUTOSAR OS 를 직접 돌리기", "time": "3~4주", "goal": "설정 → 코드 생성 → 빌드 → 실행 흐름과 칩별 포팅 코드를 찾아 설명할 수 있다.", "task": "Trampoline 을 PC(POSIX) 대상으로 빌드해 태스크 2개와 알람을 설정하고, 한 태스크가 일부러 오래 돌게 만든 뒤 무슨 일이 생기는지 기록한다. 포팅 코드에서 문맥 전환 부분을 찾아 한 쪽짜리 메모로 정리한다.", "resources": ["trampoline", "autosar-os"]},
+  {"title": "검증을 자동으로", "time": "계속", "goal": "C 모듈을 하드웨어 없이 시험하고, 시험을 매번 자동으로 돌릴 수 있다.", "task": "4단계의 상태 관리(시동 → POST_RUN → 절전) 로직을 C 모듈로 떼어 단위 시험 10개를 붙이고, GitHub Actions 같은 CI에서 커밋마다 돌게 한다.", "resources": ["tdd-embedded"]}
+ ],
+ "pay": {
+  "summary": "공고에 연봉이 없다. 2026년 상반기 직원 1인 평균 급여는 **4,500만원**(반기 공시), 1년으로 단순 환산하면 **약 9,000만원** — 경력직이 섞인 회사 전체 평균이다",
+  "rows": [
+   {"label": "직원 1인 평균 급여(반기)", "value": "4,500만원", "amount": 4500, "basis": "공시 · 2026년 상반기", "note": "금융감독원 전자공시 반기보고서 기준을 옮긴 기사. 6월 말 본사 직원 5,749명, 평균 근속 7.2년 [20]"},
+   {"label": "연 환산(단순)", "value": "약 9,000만원", "amount": 9000, "basis": "공시 · 2026년 상반기 × 2", "note": "같은 기사가 반기 값을 두 배로 환산한 수치. 하반기 상여에 따라 실제 연간 값과 다를 수 있다 [20]"}
+  ],
+  "how": "공고에는 '면접 후 결정'으로 적혀 있고, 전형 끝에 **처우협의** 단계가 따로 있다 [1][3]. 이 자리는 경력 2~7년을 찾는 자리라 신입 초봉은 해당하지 않는다 [1][2]. 평균은 신입부터 고참까지 섞인 회사 전체 값이라 이 자리의 제안 금액으로 읽으면 안 된다 {추론}. 연간 사업보고서 평균과 공공데이터 집계 초봉은 이번에 원문을 확인하지 못해 싣지 않았다."
+ },
+ "benefits": {
+  "items": [
+   {"name": "통신비", "detail": "휴대전화 통신비 월 최대 6만원"},
+   {"name": "차량 구입", "detail": "현대자동차그룹 차량 구입 시 최대 30%, 입사 후 첫 차는 20% 지원"},
+   {"name": "하계 휴가", "detail": "연차 외 5일 추가, 하계 휴가비"},
+   {"name": "건강", "detail": "직원 본인·가족 종합검진(전국 의료기관), 의료비, 독감 예방접종, 단체 상해보험"},
+   {"name": "주거", "detail": "주택 구입·임차 때 사내 대출제도"},
+   {"name": "학자금", "detail": "본인 학자금 대출(한국장학재단) 이자 지원, 자녀 학자금(유치원~대학교)"},
+   {"name": "육아", "detail": "강남구 안 사내 어린이집 2곳, 산전후·배우자 출산·난임치료 휴가, 자녀 초등학교 입학 선물"},
+   {"name": "휴양·여가", "detail": "전국 40여 곳 리조트, 복지포인트, 사내 동호회"},
+   {"name": "경조·명절", "detail": "경조휴가·경조비, 설·추석 귀향비"},
+   {"name": "상담", "detail": "외부 전문가 심리 상담(EAP)"}
+  ],
+  "note": "현대오토에버 채용 사이트 Life 메뉴 기준이다 [21]. 공고 자체에는 '회사 내규에 따름'만 적혀 있다 [2]. 페이지에 기준 연도는 적혀 있지 않아, 금액은 처우협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "현대오토에버 본사",
+  "address": "서울특별시 강남구 테헤란로 510",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20510",
+  "near": "2호선 삼성역 근처 {추론}",
+  "note": "주소는 회사 사이트 국내 사업장 페이지의 본사다 [22]. 공고 근무지는 '서울 강남구 대치동'이고 [3], 같은 페이지에 삼성 사옥·R&D 센터 주소도 있어 팀 자리가 어느 건물인지는 공고만으로 알 수 없다 {추론}."
+ }
+}
