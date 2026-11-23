@@ -178,12 +178,14 @@
   "ats-toss:group:4076141003": "tosssec-frontend-developer",
   "ats-toss:group:5130165003": "tosssec-frontend-platform-engineer",
   "ats-toss:group:7986136003": "tosssec-japan-product-server",
+  "ats-toss:group:7696445003": "tosssec-market-platform-server",
   "ats-toss:group:7575603003": "tosssec-ml-engineer-llm",
   "ats-toss:group:7598977003": "tosssec-network-security-engineer-junior",
   "ats-toss:group:5398782003": "tosssec-network-security-engineer",
   "ats-toss:group:4154060003": "tosssec-product-data-analyst",
   "ats-toss:group:4076140003": "tosssec-product-server-developer",
   "ats-toss:group:8011230003": "tosssec-security-engineer-infra",
+  "ats-toss:group:4299403003": "tosssec-security-engineer-ir",
   "ats-toss:group:8039740003": "tosssec-security-engineering-lead",
   "ats-toss:group:7810517003": "tosssec-senior-data-analyst",
   "ats-toss:group:4168349003": "tosssec-server-platform",
@@ -1800,6 +1802,16 @@
    "lines": 13
   },
   {
+   "id": "tosssec-market-platform-server",
+   "company": "토스증권",
+   "role": "서버 개발자 (Market Platform)",
+   "jobs": [
+    "ats-toss:group:7696445003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 8
+  },
+  {
    "id": "tosssec-ml-engineer-llm",
    "company": "토스증권",
    "role": "ML 엔지니어 (LLM)",
@@ -1858,6 +1870,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 15
+  },
+  {
+   "id": "tosssec-security-engineer-ir",
+   "company": "토스증권",
+   "role": "Security Engineer (이벤트 분석/사고 대응)",
+   "jobs": [
+    "ats-toss:group:4299403003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 9
   },
   {
    "id": "tosssec-security-engineering-lead",

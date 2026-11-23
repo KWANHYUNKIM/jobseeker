@@ -1,0 +1,870 @@
+{
+ "id": "tosssec-market-platform-server",
+ "company": "토스증권",
+ "role": "서버 개발자 (Market Platform)",
+ "team": "시세팀 (Market Platform Team) — 토스증권 시세 플랫폼",
+ "jobs": [
+  "ats-toss:group:7696445003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "한국거래소·해외 시세 제공처가 보내는 **시세 전문**(체결가·호가·거래정지 같은 정보를 정해진 바이트 모양으로 담은 메시지)을 가장 먼저 받아 풀고, 차트용으로 쌓고, 사내 서비스와 토스증권 앱(API·WebSocket)에 나눠 주는 **시세 플랫폼**을 만듭니다.[1][2][3]",
+  "env": "피크는 장 시작 직후 몇 분입니다. 처리부 목표는 **초당 22,000건을 1ms 안에** 처리하는 것이었고,[2] 팀이 쓰는 기술은 Go·Kotlin/Spring Boot·Netty, Redis·MySQL·Kafka·NATS입니다.[1]",
+  "oneline": "CRUD 서버보다 **지연시간(latency)·순서·장애 전환**을 숫자로 다루는 서버 개발자. 시세가 늦거나 틀리면 투자자 전체가 바로 압니다.[2]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "대고객 API/WebSocket부터 대외기관 통신까지 넓은 영역을 개발해요.",
+   "short": "거래소에서 시세를 받는 입구부터 앱에 실시간으로 밀어 주는 출구까지, 시세가 지나가는 길 전체를 맡아서.",
+   "why": "토스증권 앱의 현재가·차트·호가·관심종목에 나오는 가격은 모두 이 팀을 거쳐 나갑니다.[5] 한쪽 끝은 한국거래소(국내)·연합인포맥스(해외) 같은 시세 제공처이고,[3] 다른 쪽 끝은 앱입니다 — 그 사이 전부가 '넓은 영역'입니다.[1][2][3]",
+   "actually": {
+    "intro": "두 번의 공개 발표(2022·2023, 둘 다 이 팀)를 이으면 이런 부품입니다.[2][3]",
+    "items": [
+     "**수신부** — 거래소가 UDP 멀티캐스트(한 번 보내면 그 그룹에 가입한 모든 수신자가 받는 방식)로 보내는 시세를 읽고, 받은 시각을 머리에 붙여 넘긴다. 이 시각으로 끝까지 걸린 시간을 잰다.[2]",
+     "**처리부** — 전문을 풀어 차트용 과거 데이터를 쌓고 여러 정보를 합쳐 Redis에 저장하거나 사내 서비스에 바로 보낸다. 코드가 가장 자주 바뀌어 장애 확률도 가장 높다.[2]",
+     "**조회부** — 쌓아 둔 시세를 사내 서비스에 REST API로 준다.[2]",
+     "**대고객 WebSocket 서버** — 앱이 보고 있는 종목의 시세를 밀어 준다. Spring WebSocket과 STOMP(WebSocket 위의 간단한 구독·발행 규약)로 만들었고 구독 주제는 '종목코드'와 '사용자' 두 가지다.[3][13]",
+     "**라우팅 서버** — 앱에 '어느 WebSocket 서버로 붙으라'고 알려 주고, 서버별 연결 수를 Redis에 둔다.[3]",
+     "**폴링 API(fallback)** — WebSocket이 실패하거나 늦으면 앱이 일반 API로 물어본다. 출시 초기 안정화 때 큰 역할을 했다.[3]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "국내 시세 한 건이 앱 화면에 닿기까지 (발표 두 편을 이은 그림, 2022~2023 기준)[2][3]",
+     "steps": [
+      "한국거래소 · 시세 전문을 UDP 멀티캐스트로 보낸다",
+      "수신부 · 읽고 수신 시각을 붙인다",
+      "Redis Pub/Sub · 채널(종목 묶음)별로 처리부에 바로 넘긴다",
+      "처리부 · 풀고 합치고 쌓는다(리더 하나만 처리)",
+      "Redis · 조회부 · 사내 서비스가 API로 읽는다",
+      "WebSocket 서버 · 구독한 앱에 밀어 준다(실패하면 폴링 API)"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "처음부터 모든 칸을 맡지는 않습니다. 다만 **한 칸의 지연이 앞뒤 칸에 어떻게 번지는지**(처리부가 느리면 수신 버퍼가 차고, 그러면 보내는 쪽이 멈춘다)는 입사 초기부터 알아야 장애 때 길을 잃지 않습니다.[2] {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    5,
+    13
+   ],
+   "study": [
+    "slash23-quote",
+    "slash22-realtime",
+    "sys-design-interview"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "실시간 대용량 트래픽과 저지연 이벤트 처리를 경험할 수 있고 까다로운 문제들을 자주 접할 수 있어요.",
+   "short": "장 시작 몇 분에 그날 최대 트래픽이 몰리고, 1ms 단위로 순서·지연을 지켜야 해서.",
+   "why": "앱 접속은 장 시작과 함께 2~3분 안에 그날의 최대치가 되고, 체결 시세도 장 시작에 가장 많이 쏟아집니다.[3] 시세가 늦거나 틀리면 투자자가 크게 혼란스러워 **낮은 지연시간과 빠른 장애 복구**가 시세 플랫폼의 첫 목표입니다.[2] 초당 수천 건이 지나가니 찰나의 장애도 셀 수 없는 데이터 오류가 됩니다.[2]",
+   "actually": {
+    "items": [
+     "**메시지 브로커 고르기** — 사내에서 많이 쓰는 Kafka로 시작했지만 같은 부하에서 피크 지연이 약 15ms, Redis Pub/Sub은 약 3ms라 Redis로 바꿨다. Redis Pub/Sub은 받는 즉시 구독자에게 보내고 구독자가 없으면 버린다 — 잃을 수 있는 대신 빠르다.[2][9]",
+     "**순서 지키기** — 삼성전자 체결이 아주 짧은 간격으로 여러 번 오는데 처리 순서가 바뀌면 앱에 엉뚱한 가격이 뜬다. 그래서 여러 스레드에 아무렇게나 나누지 않고, 종목별로 정해진 **이벤트 루프**(스레드 하나 + 줄 하나) 하나가 차례대로 처리한다(아래 예).[2]",
+     "**읽기 스레드를 가볍게** — TCP 흐름 제어 때문에 처리부가 소켓을 늦게 읽으면 수신 버퍼가 차고, 보내는 쪽이 멈춰 지연이 커진다. 소켓을 읽는 Netty 이벤트 루프에서는 객체 변환·로깅 같은 작은 일도 빼고 다른 스레드로 넘겼다.[2][11]",
+     "**막히는 I/O 줄이기** — Redis 저장은 끝날 때까지 기다리지 않게(비동기) 바꾸고, 조회는 순서 때문에 비동기로 못 해서 로컬 캐시를 먼저 보게 했다. 배치·MySQL 저장 같은 무거운 일은 따로 만든 이벤트 루프 묶음으로 보냈다.[2]",
+     "**줄이 넘칠 때** — 이벤트 루프 앞 줄이 꽉 차면 가장 오래된 것을 버리게(DiscardOldestPolicy) 했다. 줄이 너무 짧으면 피크에 잃고, 너무 길면 낡은 값이 쌓여 실시간이 아니게 된다 — 정답이 없어 성능 시험에서 줄마다 대기를 보며 정했다.[2]",
+     "**Kafka 설정으로 지연 줄이기** — 원장(C) → 앱 서버(Java) 구간은 Kafka를 쓰는데, 1KB 메시지 100만 개로 직접 재 보니 acks=all 평균 8ms · acks=1 1.4ms(약 5.7배 차이)였고 압축은 lz4가 생산·소비를 합쳐 가장 나았다. acks=1·lz4·파티션 수 조정으로 거래소 수신부터 WebSocket 서버 송신까지 평균 수십 ms 안으로 맞췄다.[3][10]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "아무 스레드에나 나누면 마지막 가격이 틀어진다 — 종목코드로 줄을 고르면 안 틀어진다 (직접 돌린 출력)",
+     "body": "같은 종목 체결가 71,000 → 71,300 이 차례로 들어올 때입니다. 출력: `스레드 풀  -> {'005930': 71200, '000660': 180500}` / `종목별 루프 -> {'000660': 180500, '005930': 71300}` / `루프별 줄 길이: [2, 0, 4, 0]` — 스레드 풀은 마지막 가격을 71,200 으로 남겼습니다. 줄 길이가 한쪽에 몰리는 것(4 대 0)도 보이는데, 발표가 이벤트 루프 수를 성능 시험으로 맞춘 이유입니다.[2]",
+     "lang": "python",
+     "code": "import random\nrandom.seed(7)\nmsgs = [(\"005930\", p) for p in (71000, 71100, 71200, 71300)] + [(\"000660\", p) for p in (180000, 180500)]\n\n# ① 아무 일꾼 스레드나 집어 가는 풀: 끝나는 순서가 처리 시간에 달려 있다\ndone = sorted(msgs, key=lambda m: msgs.index(m) + random.uniform(0, 3))\nlast = {}\nfor code, p in done:\n    last[code] = p\nprint(\"스레드 풀  ->\", last)\n\n# ② 종목코드로 이벤트 루프를 고른다(hash % N): 한 종목은 늘 같은 한 줄로 선다\nN = 4\nloops = [[] for _ in range(N)]\nfor code, p in msgs:\n    loops[int(code) % N].append((code, p))\nlast = {}\nfor q in loops:\n    for code, p in q:\n        last[code] = p\nprint(\"종목별 루프 ->\", last)\nprint(\"루프별 줄 길이:\", [len(q) for q in loops])"
+    },
+    {
+     "title": "줄이 꽉 차면 가장 오래된 시세를 버린다 (직접 돌린 출력)",
+     "body": "Java의 DiscardOldestPolicy와 같은 뜻을 deque 로 흉내 냈습니다.[2] 출력: `남은 줄: [71200, 71300, 71400]` — 처리보다 빨리 들어온 71,000·71,100 은 버려집니다. 시세는 '최신 값'이 중요해서 고를 수 있는 정책이고, 주문이라면 이렇게 하면 안 됩니다. {추론}",
+     "lang": "python",
+     "code": "from collections import deque\nq = deque(maxlen=3)\nfor price in [71000, 71100, 71200, 71300, 71400]:\n    q.append(price)\nprint(\"남은 줄:\", list(q))"
+    }
+   ],
+   "how_far": "면접 전까지 **'왜 Kafka가 아니라 Redis Pub/Sub인가', '왜 스레드 풀이 아니라 종목별 이벤트 루프인가'를 잃는 것·얻는 것으로 설명**할 수 있으면 충분합니다.[2] 실제 튜닝 숫자(줄 크기·루프 수)는 팀 시험 환경에서 같이 찾는 일입니다.[2]",
+   "refs": [
+    2,
+    3,
+    9,
+    10,
+    11
+   ],
+   "study": [
+    "slash23-quote",
+    "slash22-realtime",
+    "redis-pubsub",
+    "kafka-docs",
+    "netty-guide",
+    "ddia"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "또한 전체적인 관점에서 좋은 아키텍처를 고민하고 개선해 나가요. 배포하기 쉬운 구조, 운영하기 쉬운 구조, 안정성을 위한 구조, 성능 개선을 위한 구조를 고민하고 실행에 옮겨요.",
+   "short": "장중에도 겁 없이 배포하고, 망가지면 몇 초 만에 멀쩡한 쪽으로 옮겨 타는 구조를 직접 만들어서.",
+   "why": "처리부를 고쳐 장애가 나면, 처리부를 살려도 그동안 잃거나 오염된 데이터 때문에 API를 쓰는 서비스는 계속 장애를 겪습니다 — 초당 수천 건이라 손으로 고칠 수 없습니다.[2] 그래서 이 팀의 구조 고민은 곧 '고치는 대신 바꿔 타기'입니다.[2]",
+   "actually": {
+    "items": [
+     "**A/B 두 벌** — 처리부와 Redis를 A·B 두 그룹으로 두고 평소엔 A만 서비스에 연결, 장애가 나면 B로 바로 돌린다. 장중에 오염된 데이터를 고치기보다 멀쩡한 저장소로 옮기는 쪽이 빠르다.[2]",
+     "**배포하기 쉬운 구조** — A와 B를 번갈아 배포하며 두 쪽 결과를 비교하고, 문제가 있으면 트래픽 전환만으로 되돌린다(롤백). 발표자는 이것으로 배포 부담이 크게 줄었다고 했다.[2]",
+     "**리더 하나만 처리** — 서버가 갑자기 죽을 때를 대비해 그룹마다 처리부를 두 대로 늘리고, ZooKeeper로 리더를 뽑아 리더만 처리하게 해 중복 데이터를 막았다.[2]",
+     "**보내는 쪽을 떼어 내기** — 처리부가 늘수록 수신부가 같은 데이터를 여러 번 보내야 해 느려진다. 메시지 브로커를 사이에 두면 수신부는 한 번만 보낸다(그 브로커가 위의 Redis Pub/Sub).[2]",
+     "**망 분리 규정과 짧은 길** — WebSocket 서버를 DMZ(외부와 내부 사이의 분리된 구역)에 두어 고객이 내부 서버에 바로 붙지 않게 했고, 덕분에 앞단의 L7·nginx·쿠버네티스 단계를 걷어 내 경로가 짧아졌다.[3][7]",
+     "**애플리케이션 밖의 병목** — 출시 한 달여 만에 200만 계좌가 열리며 장 초반 지연이 전체 서비스로 번졌는데, 원인은 시세 서버가 늘린 트래픽을 같이 쓰던 인터넷 회선·방화벽·보안 장비였다. 회선을 나누고 처리량이 큰 방화벽으로 바꿨다.[3]",
+     "**늘리기 쉬운 구조** — 시세 서버는 출시 때의 약 5배 규모에 같은 수의 예비 서버를 두었지만 자체 데이터센터라 늘리는 데 돈·시간이 들어, IDC·AWS 이중화를 거쳐 클라우드로 옮기는 PoC를 마쳤다(2022년 발표 기준).[3][6]"
+    ]
+   },
+   "how_far": "구조 결정은 팀이 같이 하지만 **'이 구조가 무엇을 버리고 무엇을 얻는지'를 숫자 하나로 보여 주는 것**(배포 롤백 시간, 전환 시간, 피크 지연)이 개인에게 기대되는 몫으로 읽힙니다 — 이력서 안내도 '결과가 정량적으로 드러나게'를 첫 줄에 둡니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    6,
+    7
+   ],
+   "study": [
+    "slash23-quote",
+    "slash22-realtime",
+    "sre-book",
+    "ddia"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "복잡한 문제를 잘 해결할 수 있는 분과 함께하고 싶어요.",
+   "short": "원인이 코드 밖(방화벽·소켓 버퍼·라이브러리 속)에 있는 장애가 잦아서 — 끝까지 파고드는 사람이 필요해서.",
+   "why": "이 팀이 공개한 문제들은 원인이 한 겹 아래에 있었습니다. WebSocket 연결 수가 며칠에 걸쳐 조금씩 늘던 문제는 STOMP 세션은 닫히는데 그 아래 Tomcat의 WebSocket 세션이 비정상 종료 때 안 닫히는 것이었고,[3] 장 초반 지연은 공유하던 방화벽 처리량이었습니다.[3]",
+   "actually": {
+    "items": [
+     "**재현하기** — 연결 누수(connection leak)를 쫓을 때 로컬에서 서버·클라이언트를 띄우고 클라이언트가 heartbeat(살아 있음 신호)를 안 보내게 멈춰 비정상 종료를 일부러 만들었다.[3]",
+     "**사례를 모아 보기** — 연결이 끊긴 이벤트를 받아 비정상 종료 코드를 모았더니 1001(GOING_AWAY)·1002(PROTOCOL_ERROR)·1006(닫기 신호 없이 끊김)이 잦았다. 이 코드들은 WebSocket 표준이 정한 것이다.[3][8]",
+     "**라이브러리 속까지** — 닫는 메서드가 소켓 닫기 옵션을 false로 넘기는 곳을 찾아, 데코레이터를 끼워 그 경우에 명시적으로 닫게 고쳤다.[3]",
+     "**숫자로 맞춰 보기** — 서버가 센 연결 수와 따로 잰 동시 접속자 수가 크게 벌어진 것이 단서였다.[3]",
+     "**앱 밖을 의심하기** — 애플리케이션을 튜닝하고 서버를 늘려도 장 초반 지연이 계속되자, 인프라 엔지니어와 여러 번 시험해 방화벽·보안 장비 처리량을 찾아냈다.[3]"
+    ]
+   },
+   "how_far": "면접의 '복잡한 문제'는 **본인이 원인을 찾은 장애 하나를 현상 → 가설 → 재현 → 원인 → 조치 → 숫자 순서로** 말하는 것으로 확인될 가능성이 큽니다. 이력서 안내도 어려웠던 일을 어떻게 풀었고 무엇을 배웠는지 써 달라고 합니다.[1]",
+   "refs": [
+    1,
+    3,
+    8
+   ],
+   "study": [
+    "slash22-realtime",
+    "rfc6455",
+    "gregg-linuxperf"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "변화를 두려워하지 않고, 새로운 기술을 도입하며, 책임감이 강한 분과 함께하고 싶어요.",
+   "short": "폴링 → WebSocket, Kafka → Redis Pub/Sub, IDC → AWS처럼 이 팀은 쓰던 걸 바꿔 온 팀이라서.",
+   "why": "출시 직전에 이미 다 만든 폴링 방식을 두고 실시간 시세를 넣기로 빠르게 정했고,[3] 사내 표준에 가까운 Kafka를 직접 시험한 숫자로 내려놓았습니다.[2] 공고는 팀이 시세 데이터의 **책임자**로서 필요한 기능을 직접 고민하고 의견을 모아 방향을 정한다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**새 기술은 시험 숫자로** — 같은 부하에서 수신부~처리부 지연을 재 비교한 뒤 골랐다(Kafka 15ms vs Redis Pub/Sub 3ms).[2]",
+     "**바꾼 결정을 다시 보기** — WebSocket을 고른 발표자는 나중에 SSE(서버→클라이언트 한 방향 전송)가 방화벽에 더 친화적이라는 걸 알게 됐고, 한 방향 시세라면 SSE도 충분히 고려할 만하다고 스스로 짚었다.[3]",
+     "**책임** — 시세 오류는 전사 서비스에 영향이 크다고 회사가 직접 적었다. 시세 플랫폼 PO 자리의 일에도 거래소 제도·규제 대응과 장애 대응·시세 안정화가 들어 있다.[5]",
+     "**실험하고 접기** — 같은 종목을 동시에 보는 사람 수를 띄우는 기능을 만들어 A/B 시험을 했지만 매매로 이어지지 않아 접었다.[3]"
+    ]
+   },
+   "how_far": "'새 기술 도입'은 유행을 따라가는 것이 아니라 **기존 것과 같은 조건에서 재 보고 고른 경험**을 뜻한다고 읽는 편이 안전합니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    5
+   ],
+   "study": [
+    "slash23-quote",
+    "slash22-realtime"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Go, Kotlin, Spring Framework에 능숙하신 분이면 더 좋아요.",
+   "short": "팀 서버는 Kotlin/Spring Boot와 Go 두 갈래이고, 실시간 부분은 그 아래의 Netty까지 내려가서.",
+   "why": "공고가 밝힌 팀 기술은 Go, Kotlin/Spring Boot, Netty입니다.[1] 발표에 나온 처리부는 Spring Data Redis의 반응형(reactive) 클라이언트와 Spring의 ThreadPoolTaskExecutor로 이벤트 루프를 만들었고,[2] WebSocket 서버는 Spring WebSocket + STOMP였습니다.[3] 어느 부품이 Go인지는 공개되지 않았습니다.{추론}",
+   "level": {
+    "basic": "Kotlin 문법·널 안전 · Spring Boot로 REST API · 스레드와 동시성 기본(경쟁 상태·락) · Go의 고루틴·채널 기본",
+    "work": "Spring의 스레드 풀 설정(core/max/queue·거절 정책) · 비동기·반응형 클라이언트 · Spring WebSocket/STOMP 구독 · Go net 패키지로 TCP/UDP",
+    "team": "Netty 이벤트 루프가 소켓을 읽는 흐름(select → read → decode → 알림) · 이벤트 루프 수와 컨텍스트 스위칭 · Tomcat 스레드 수 같은 기본값 줄이기 · CPU 프로파일링"
+   },
+   "actually": {
+    "items": [
+     "**이벤트 루프 만들기** — ThreadPoolTaskExecutor의 corePoolSize·maxPoolSize를 1로 두면 스레드 하나·줄 하나인 이벤트 루프가 된다. 이것을 여러 개 리스트로 묶어 이벤트 루프 그룹을 만들었다.[2][12]",
+     "**Netty 아래 보기** — Spring Data Redis는 Lettuce를 쓰고 Lettuce는 Netty를 쓴다. Netty의 NIO 이벤트 루프가 소켓 수신 버퍼를 읽는 무한 루프라서 여기서 비즈니스 일을 하면 안 된다.[2][11]",
+     "**기본값 의심하기** — CPU 프로파일링으로 필요 없는 스레드를 찾아 줄였다. 예로 Spring 내장 Tomcat 스레드를 1개로 줄일 수 있다고 했다.[2] 어느 층을 어떤 도구로 볼지는 Gregg의 리눅스 성능 지도가 출발점이다.[22]",
+     "**Go** — UDP·TCP를 직접 다루는 네트워크 프로그램에 잘 맞는 표준 라이브러리(net)를 가졌다.[14] {추론}"
+    ]
+   },
+   "how_far": "'더 좋아요'라 필수는 아닙니다. 하나(Kotlin/Spring 또는 Go)로 **동시성 코드를 자신 있게 짜고, 다른 하나는 읽을 수 있는** 정도면 이 줄을 채웁니다. 면접 첫 관문이 라이브 코딩 테스트라 손에 익은 언어 하나는 꼭 있어야 합니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    11,
+    12,
+    14,
+    22
+   ],
+   "study": [
+    "kotlin-docs",
+    "kotlin-in-action",
+    "spring-websocket",
+    "netty-guide",
+    "go-tour",
+    "learning-go"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Mission-critical 시스템 개발 경험이 있는 분이면 더 좋아요.",
+   "short": "시세가 몇 초만 멈춰도 모든 투자자가 바로 느끼고, 증권사 전산이라 규정상 이중화·복구 목표가 따라와서.",
+   "why": "시세 처리부 장애는 시세를 쓰는 모든 서비스에 번지고 고객센터 전화가 쏟아지는 일입니다.[2] 증권사는 전자금융감독규정에 따라 주요 장비를 이중화하고 재해복구센터를 두며 핵심 업무는 정한 시간 안에 복구해야 합니다.[7]",
+   "actually": {
+    "items": [
+     "**바꿔 타기 연습** — A/B 전환이 실제로 몇 초에 되는지 장 밖 시간에 미리 확인해 둔다.[2] {추론}",
+     "**리더 선출** — 두 대 중 한 대만 처리하게 해야 같은 시세가 두 번 나가지 않는다.[2]",
+     "**잃어도 되는 것과 안 되는 것 가르기** — 시세는 최신 값이 중요해 오래된 것을 버리는 정책을 골랐지만,[2] 같은 회사의 주문 쪽은 응답이 끊겨도 주문을 잃지도 두 번 넣지도 않게 멱등 키와 재시도로 설계했다.[4]",
+     "**제도가 바뀔 때** — 2025년 3월 대체거래소 넥스트레이드가 열려 오전 8시~오후 8시 거래가 생겼다.[16] 시세 출처와 시간표가 늘어나는 변화가 시세 플랫폼에 그대로 들어온다. {추론}",
+     "**운영 지표** — 지연시간·처리량·오류율·포화도 같은 신호를 늘 본다. 구글 SRE 책이 정리한 네 가지 신호가 출발점으로 쓰기 좋다.[23]"
+    ]
+   },
+   "how_far": "금융권 경력이 꼭 필요하다는 뜻은 아닙니다. **멈추면 돈·신뢰가 바로 깨지는 서비스에서 장애 대응·온콜·전환 절차를 직접 해 본 경험**이면 이 줄에 해당합니다. {추론}",
+   "refs": [
+    2,
+    4,
+    7,
+    16,
+    23
+   ],
+   "study": [
+    "sre-book",
+    "efsr",
+    "slash22-order"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "실시간 데이터 처리, 네트워크 프로그래밍 경험이 있는 분이면 더 좋아요.",
+   "short": "입구는 UDP 멀티캐스트, 중간은 TCP 소켓 버퍼, 출구는 WebSocket — 전 구간이 네트워크라서.",
+   "why": "수신부는 거래소 시세를 UDP 멀티캐스트로 받고,[2] 처리 지연의 큰 원인이 TCP 흐름 제어와 수신 버퍼였으며,[2] 고객에게는 WebSocket으로 밀어 줍니다.[3] 공고 '대외기관 통신'과 '대고객 WebSocket'이 같은 사람의 일입니다.[1]",
+   "level": {
+    "basic": "TCP와 UDP의 차이(연결·순서·재전송) · 소켓 수신·송신 버퍼 · HTTP와 WebSocket 핸드셰이크 · 발행·구독(Pub/Sub)",
+    "work": "TCP 흐름 제어와 윈도 · ss/netstat 의 Recv-Q·Send-Q 읽기 · WebSocket 끊김 처리(heartbeat·close 코드) · 로드 밸런싱 방식(round-robin·least-connection)",
+    "team": "UDP 멀티캐스트 수신 · 이벤트 루프 수와 백프레셔(뒤가 느려 앞이 밀리는 현상) · 방화벽·보안 장비 처리량까지 포함한 용량 계획"
+   },
+   "actually": {
+    "items": [
+     "**Recv-Q 보기** — 처리량이 더 안 오르면 `netstat -na | grep <포트>` 나 `ss -t dst :<포트>` 로 소켓의 Recv-Q가 계속 0보다 큰지 본다. 그렇다면 읽는 쪽이 느리다.[2]",
+     "**Recv-Q가 계속 쌓이면** — ① 이벤트 루프의 작은 일(변환·객체 생성·로깅)까지 덜어 내고 ② CPU 프로파일링으로 불필요한 스레드를 줄이고 ③ 그래도 모자라면 Netty 이벤트 루프 수를 늘린다(반응형 Redis 템플릿 여러 개 → 처리량 약 2배).[2]",
+     "**채널로 순서 넘기기** — 수신부가 처리부 이벤트 루프 수만큼 Redis 채널을 나눠 보내면, 처리부는 채널 이름만 보고 루프를 고른다 — 객체로 풀지 않아도 되어 읽기 스레드가 가벼워졌다.[2][9]",
+     "**WebSocket 연결 몰림** — least-connection(연결이 가장 적은 서버로)만 쓰니, 연결 수를 0.5초마다만 갱신하는 사이에 한 서버로 몰려 CPU가 치솟았다. 대부분은 round-robin, 아주 적은 비율만 least-connection으로 섞어 풀었다(아래 예).[3]",
+     "**사용자별 신호** — 체결·입출고로 자산이 바뀌면 원장 → Kafka → 라우팅 서버가 그 사용자가 붙은 WebSocket 서버를 찾아 '자산 갱신하라'는 신호만 보내고, 앱이 자산 API로 새 값을 읽는다.[3]",
+     "**NATS** — 공고의 팀 기술 목록에 있는 가벼운 메시지 시스템이다.[1][15] 시세 팀이 어느 구간에 쓰는지는 공개되지 않았다 — 발표 뒤에 Redis Pub/Sub과 함께 또는 대신 들어왔을 수 있다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "낡은 연결 수로 고르면 least-connection 이 한 서버에 몰아준다 (가상 숫자, 직접 돌린 출력)",
+     "body": "서버 3대(기존 연결 100·100·40)에 장 시작 1초 동안 300명이 붙고, 연결 수는 0.5초에 한 번만 새로 받는다고 놓았습니다. 출력: `least-connection 이번에 받은 [150, 0, 150] -> 총 [250, 100, 190]` / `round-robin 이번에 받은 [100, 100, 100] -> 총 [200, 200, 140]` / `섞기(10건 중 1건 least) 이번에 받은 [90, 90, 120] -> 총 [190, 190, 160]` — 순간 몰림은 round-robin이 막고, 전체 균형은 적은 비율의 least-connection 이 맞춥니다. 발표의 결론을 숫자로 흉내 낸 것이고 비율 10% 는 임의로 고른 값입니다.[3]",
+     "lang": "python",
+     "code": "def run(pick):\n    real = [100, 100, 40]\n    seen = real[:]\n    burst = [0, 0, 0]\n    for i in range(300):\n        if i in (150,):          # 0.5초가 지나면 숫자를 새로 받는다\n            seen = real[:]\n        s = pick(i, seen)\n        real[s] += 1\n        burst[s] += 1\n    return burst, real\n\nleast = lambda i, seen: seen.index(min(seen))\nrr = lambda i, seen: i % 3\nhybrid = lambda i, seen: least(i, seen) if i % 10 == 0 else rr(i, seen)\nfor name, f in [(\"least-connection\", least), (\"round-robin\", rr), (\"섞기(10건 중 1건 least)\", hybrid)]:\n    b, r = run(f)\n    print(f\"{name:22} 이번에 받은 {b} -> 총 {r}\")"
+    }
+   ],
+   "how_far": "**소켓을 직접 열어 본 경험**이 출발선입니다 — 작은 WebSocket 시세 서버를 만들고, 클라이언트를 일부러 멈추거나 끊어 서버의 연결 수가 맞는지 확인해 본 정도면 '경험 있음'으로 말할 수 있습니다. UDP 멀티캐스트까지 해 봤다면 더 좋습니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    9,
+    15
+   ],
+   "study": [
+    "go-net-book",
+    "yoon-tcpip",
+    "rfc6455",
+    "spring-websocket",
+    "redis-pubsub",
+    "nats-docs"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "기능 개수보다 지연시간 그래프가 내려가는 데서 재미를 느끼는 사람[2]",
+   "라이브러리·운영체제·네트워크 장비까지 내려가 원인을 찾는 사람[3]",
+   "주식 앱의 숫자 하나하나가 어디서 오는지 궁금한 사람[2][3]",
+   "새 기술을 시험 숫자로 고르고, 틀렸으면 스스로 고쳐 말하는 사람[2][3]"
+  ],
+  "hard": [
+   "장 시작 직후 몇 분에 문제가 몰린다 — 그 시간에는 바로 대응해야 한다[3]",
+   "시세 오류는 전사 서비스와 고객 전체에 바로 보인다[2][5]",
+   "원인이 코드 밖(방화벽·회선·데이터센터)에 있을 때도 끝까지 같이 파야 한다[3]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "같은 종목 체결이 아주 짧은 간격으로 여러 번 올 때, 처리를 병렬로 하면서도 순서를 지키려면 어떻게 하나요?",
+   "a": "종목코드 해시로 이벤트 루프(스레드 하나·줄 하나)를 고르기, 채널로 미리 나눠 받기.[2]"
+  },
+  {
+   "q": "Kafka와 Redis Pub/Sub 중 무엇을 고르겠어요? 무엇을 잃나요?",
+   "a": "15ms vs 3ms, 구독자 없으면 버림 — 실시간 시세에서는 잃는 쪽을 받아들였다.[2]"
+  },
+  {
+   "q": "처리량이 더 안 오를 때 소켓에서 무엇을 먼저 보나요?",
+   "a": "ss·netstat 의 Recv-Q, TCP 흐름 제어, 읽기 스레드가 하는 일.[2]"
+  },
+  {
+   "q": "WebSocket 서버의 연결 수가 며칠에 걸쳐 조금씩 늘어요. 어떻게 원인을 찾나요?",
+   "a": "비정상 close 코드 모으기·재현·라이브러리 속 세션 닫기.[3][8]"
+  },
+  {
+   "q": "장중에 처리부를 배포했더니 시세가 틀어졌어요. 고치는 것과 되돌리는 것 중 무엇을 먼저 하나요?",
+   "a": "A/B 그룹 전환으로 멀쩡한 저장소로 옮겨 타기.[2]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 토스증권 서버 개발자 (Market Platform)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7696445003",
+   "kind": "posting",
+   "note": "시세팀 소개(국내·해외 시세, 초고효율 시스템, 시세 데이터 책임자), 업무·요건, 이력서 안내(정량 결과·직접 내린 기술 결정), 팀 기술(Go·Kotlin/Spring Boot·Netty·Redis·MySQL·Kafka·NATS), 합류 여정(서류 > 라이브코테 > 직무 > 문화적합성 > 레퍼런스 체크 > 처우협의), 동료 한마디. 2026-11-23 확인"
+  },
+  {
+   "n": 2,
+   "title": "SLASH 23 · 실시간 시세 데이터 안전하고 빠르게 처리하기",
+   "url": "https://www.youtube.com/watch?v=SF7eqlL0mjw",
+   "kind": "company",
+   "date": "2023-06",
+   "note": "토스증권 Market Platform Team 서버 개발자 발표. 자막 전부와 장면 읽음 — 수신부(UDP 멀티캐스트)·처리부·조회부, A/B 그룹 전환, ZooKeeper 리더, Kafka 15ms vs Redis Pub/Sub 3ms, TCP 흐름 제어, Netty NIO 이벤트 루프, 종목별 이벤트 루프·채널 분할, DiscardOldestPolicy, 비동기 저장·로컬 캐시·무거운 작업 분리, Recv-Q 확인, 22,000 TPS · 1ms 이하"
+  },
+  {
+   "n": 3,
+   "title": "SLASH 22 · 토스증권 실시간 시세 적용기",
+   "url": "https://www.youtube.com/watch?v=WKYE-QtzO6g",
+   "kind": "company",
+   "date": "2022-06",
+   "note": "토스증권 마켓 플랫폼 팀 서버 개발자 발표. 자막 전부와 장면 읽음 — 폴링 → WebSocket(SSE 비교), 폴링 fallback, 전체 아키텍처(국내 한국거래소·해외 연합인포맥스, C 원장 → Kafka → Java), DMZ·라우팅 서버·Redis, Spring WebSocket+STOMP, Kafka acks·압축 시험표, 장 시작 2~3분 피크, round-robin+least-connection 혼합, 연결 누수(1001·1002·1006), 방화벽·회선 병목, 약 5배 증설·AWS PoC"
+  },
+  {
+   "n": 4,
+   "title": "SLASH 22 · 애플 한 주가 고객에게 전달 되기까지",
+   "url": "https://www.youtube.com/watch?v=UOWy6zdsD-c",
+   "kind": "company",
+   "date": "2022-06",
+   "note": "토스증권 해외주식 원장 서버 개발자 — 타임아웃 주문의 재시도 대상 분류·멱등 키·늘어나는 재시도 간격·대사 배치(같은 회사 다른 팀, 앞선 FEP 풀이에서 자막을 읽은 것)"
+  },
+  {
+   "n": 5,
+   "title": "토스 채용 · 토스증권 Product Owner (시세 Platform)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7994019003",
+   "kind": "posting",
+   "note": "같은 Market Platform Team — 현재가·차트·호가·관심종목 등 고객이 보는 모든 가격이 이 팀을 거침, 가격 오류의 전사 영향, 반기 목표·거래소 제도/규제 대응·장애 대응. 검색 결과 요약 기준"
+  },
+  {
+   "n": 6,
+   "title": "바이라인네트워크 · 토스뱅크·토스증권 시스템은 어떻게 이뤄졌을까?",
+   "url": "https://byline.network/2022/06/10-234/",
+   "kind": "news",
+   "date": "2022-06-12",
+   "note": "SLASH 22 정리 — 토스증권 실시간 시세 WebSocket, 폴링 fallback, C 원장 → Kafka → WebSocket 서버, IDC·AWS 이중화로 이전 계획"
+  },
+  {
+   "n": 7,
+   "title": "전자금융감독규정 (금융위원회고시 제2025-4호, 위키문헌 사본)",
+   "url": "https://ko.wikisource.org/wiki/%EC%A0%84%EC%9E%90%EA%B8%88%EC%9C%B5%EA%B0%90%EB%8F%85%EA%B7%9C%EC%A0%95_(%EC%A0%9C2025-4%ED%98%B8)",
+   "kind": "reference",
+   "date": "2025-02-05",
+   "note": "제15조 망 분리(발표 장면에 인용됨), 제23조 주요 장비 이중화·재해복구센터·핵심 업무 복구 목표. 현행판은 국가법령정보센터에서 다시 확인"
+  },
+  {
+   "n": 8,
+   "title": "RFC 6455 · The WebSocket Protocol (7.4 Status Codes)",
+   "url": "https://www.rfc-editor.org/rfc/rfc6455#section-7.4",
+   "kind": "reference",
+   "note": "1001 Going Away · 1002 Protocol Error · 1006 닫기 프레임 없이 비정상 종료"
+  },
+  {
+   "n": 9,
+   "title": "Redis 공식 문서 · Pub/Sub",
+   "url": "https://redis.io/docs/latest/develop/interact/pubsub/",
+   "kind": "reference",
+   "note": "at-most-once 전달 — 구독자가 없거나 끊겨 있으면 메시지는 사라진다"
+  },
+  {
+   "n": 10,
+   "title": "Apache Kafka 공식 문서 · Producer Configs (acks, compression.type)",
+   "url": "https://kafka.apache.org/documentation/#producerconfigs",
+   "kind": "reference"
+  },
+  {
+   "n": 11,
+   "title": "Netty · User guide for 4.x",
+   "url": "https://netty.io/wiki/user-guide-for-4.x.html",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "Spring Framework 문서 · Task Execution and Scheduling (ThreadPoolTaskExecutor)",
+   "url": "https://docs.spring.io/spring-framework/reference/integration/scheduling.html",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "Spring Framework 문서 · WebSocket — STOMP",
+   "url": "https://docs.spring.io/spring-framework/reference/web/websocket/stomp.html",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Go 공식 문서 · net 패키지",
+   "url": "https://pkg.go.dev/net",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "NATS 공식 문서",
+   "url": "https://docs.nats.io/",
+   "kind": "reference",
+   "note": "공고의 팀 기술 목록에 있는 메시지 시스템. 시세 팀이 어디에 쓰는지는 공개되지 않음"
+  },
+  {
+   "n": 16,
+   "title": "CEO스코어데일리 · 국내 첫 대체거래소 포문…오전 8시부터 오후 8시까지 12시간 거래",
+   "url": "https://www.ceoscoredaily.com/page/view/2025020715204952857",
+   "kind": "news",
+   "date": "2025-02-07",
+   "note": "넥스트레이드 2025-03-04 개장"
+  },
+  {
+   "n": 17,
+   "title": "토스증권 — 사이트 하단 회사 정보",
+   "url": "https://tossinvest.com/",
+   "kind": "company",
+   "note": "토스증권(주), 06133 서울특별시 강남구 테헤란로 133, 7층 (역삼동, 한국타이어빌딩)"
+  },
+  {
+   "n": 18,
+   "title": "자소설닷컴 — 토스증권(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/13103",
+   "kind": "reference",
+   "note": "앞선 토스증권 풀이에서 검색 결과 요약으로 확인한 값(페이지 직접 열람 403) — 초봉 5,003만원·평균 7,007만원, 기준일 표기 없음"
+  },
+  {
+   "n": 19,
+   "title": "뉴스토마토 · 토스증권, 급여도 정상급…카카오페이증권, 사실상 꼴찌",
+   "url": "https://www.newstomato.com/ReadNews.aspx?no=1236020",
+   "kind": "news",
+   "date": "2024-07-24",
+   "note": "각 사 사업보고서·금융투자협회 공시, 2023년 기준 — 토스증권 1인당 평균 임금 1억2,500만원(계약직 포함 292명), 메리츠증권 1억8,300만원, 카카오페이증권 9,840만원, 24개사 평균 1억2,579만원"
+  },
+  {
+   "n": 20,
+   "title": "CEO스코어데일리 · '호황' 증권가, 임직원 수 2% 늘 때 급여는 48% 증가",
+   "url": "https://www.ceoscoredaily.com/page/view/2026052816034001002",
+   "kind": "news",
+   "date": "2026-05-29",
+   "note": "금융투자협회 공시 2026년 1분기 — 토스증권 직원 380 → 516명, 직원 급여 총액 21.4% 증가(금액은 기사에 없음)"
+  },
+  {
+   "n": 21,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 22,
+   "title": "Brendan Gregg · Linux Performance",
+   "url": "https://www.brendangregg.com/linuxperf.html",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Google SRE Book · Monitoring Distributed Systems (The Four Golden Signals)",
+   "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "근거의 중심은 이 팀(Market Platform)의 공개 발표 두 편이지만 2022·2023년 것이라 지금 구조는 달라졌을 수 있습니다 — 특히 공고에 있는 Go·NATS가 어느 부품에 쓰이는지는 공개되지 않았습니다. 처리부 숫자(15ms·3ms·22,000 TPS·1ms)와 Kafka 시험표는 발표자가 자기 환경에서 잰 값입니다. 시세 플랫폼 PO 공고는 검색 결과 요약으로만 확인했습니다. 연봉 숫자는 앞선 토스증권 풀이들이 확인한 출처를 다시 쓴 것입니다.",
+ "resources": [
+  {
+   "id": "slash23-quote",
+   "title": "SLASH 23 · 실시간 시세 데이터 안전하고 빠르게 처리하기",
+   "by": "토스증권 Market Platform Team · 17분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=SF7eqlL0mjw",
+   "why": "이 자리 처리부의 설계 결정(브로커 선택·종목별 이벤트 루프·A/B 전환·Recv-Q)이 한 편에 다 있다. 지원 전에 꼭 본다."
+  },
+  {
+   "id": "slash22-realtime",
+   "title": "SLASH 22 · 토스증권 실시간 시세 적용기",
+   "by": "토스증권 마켓 플랫폼 팀 · 19분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=WKYE-QtzO6g",
+   "why": "'대고객 WebSocket' 줄의 회사 쪽 답 — 망 분리 구조, STOMP, Kafka 설정 숫자, 연결 몰림·누수·방화벽 장애 넷."
+  },
+  {
+   "id": "slash22-order",
+   "title": "SLASH 22 · 애플 한 주가 고객에게 전달 되기까지",
+   "by": "토스증권 서버 개발자 · 14분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=UOWy6zdsD-c",
+   "why": "시세와 달리 '잃으면 안 되는' 주문 쪽 설계(멱등 키·재시도). Mission-critical 줄에서 둘을 견주어 말할 때."
+  },
+  {
+   "id": "redis-pubsub",
+   "title": "Redis Pub/Sub",
+   "by": "Redis 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://redis.io/docs/latest/develop/interact/pubsub/",
+   "why": "구독자가 없으면 버리는 전달 방식(at-most-once)을 정확히. 팀이 Kafka 대신 고른 이유를 스스로 설명하려면."
+  },
+  {
+   "id": "kafka-docs",
+   "title": "Apache Kafka Documentation",
+   "by": "Apache Kafka 공식",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kafka.apache.org/documentation/",
+   "why": "프로듀서 acks·compression.type·파티션 — 발표의 지연 시험표를 직접 재현해 볼 때 읽는 부분."
+  },
+  {
+   "id": "netty-guide",
+   "title": "Netty User guide for 4.x",
+   "by": "Netty 공식",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://netty.io/wiki/user-guide-for-4.x.html",
+   "why": "팀 기술 목록의 Netty. 이벤트 루프·채널·핸들러가 무엇인지 알아야 '이벤트 루프에서 일을 빼라'가 이해된다."
+  },
+  {
+   "id": "spring-websocket",
+   "title": "WebSocket — STOMP",
+   "by": "Spring Framework 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.spring.io/spring-framework/reference/web/websocket/stomp.html",
+   "why": "종목코드·사용자 주제로 구독하는 시세 서버를 Spring으로 짜 볼 때. heartbeat 설정도 여기."
+  },
+  {
+   "id": "rfc6455",
+   "title": "RFC 6455 · The WebSocket Protocol",
+   "by": "IETF",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.rfc-editor.org/rfc/rfc6455",
+   "why": "핸드셰이크와 닫기 코드(1001·1002·1006). 연결 누수를 쫓을 때 무엇이 '정상 종료'인지의 기준."
+  },
+  {
+   "id": "nats-docs",
+   "title": "NATS Docs",
+   "by": "NATS 공식",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.nats.io/",
+   "why": "팀 기술 목록의 NATS — Core NATS(가볍게 흘려보내기)와 JetStream(저장)의 차이만 먼저 본다."
+  },
+  {
+   "id": "go-tour",
+   "title": "A Tour of Go",
+   "by": "Go 공식",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://go.dev/tour/",
+   "why": "공고 첫 언어 Go를 고루틴·채널까지 하루 이틀에 훑는다."
+  },
+  {
+   "id": "learning-go",
+   "title": "러닝 Go — Go 개발자처럼 생각하는 방법",
+   "by": "존 보드너",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%9F%AC%EB%8B%9D%20Go",
+   "why": "Go 문법을 넘어 동시성·표준 라이브러리를 Go답게 쓰는 법. 'Go에 능숙' 줄을 채우는 한국어 책."
+  },
+  {
+   "id": "go-net-book",
+   "title": "Go 언어를 활용한 네트워크 프로그래밍 (Network Programming with Go)",
+   "by": "애덤 우드벡 · 김찬빈 옮김",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002993437",
+   "why": "Go로 TCP·UDP·타임아웃·WebSocket 서버를 직접 짠다 — '네트워크 프로그래밍 경험'을 만드는 가장 가까운 길(원서는 Go 1.15 기준)."
+  },
+  {
+   "id": "yoon-tcpip",
+   "title": "열혈 TCP/IP 소켓 프로그래밍",
+   "by": "윤성우",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%97%B4%ED%98%88%20TCP%2FIP%20%EC%86%8C%EC%BC%93%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D",
+   "why": "소켓 버퍼·TCP 흐름·멀티캐스트 장까지 한국어로. 발표의 'Recv-Q가 쌓인다'가 무슨 뜻인지 바닥부터."
+  },
+  {
+   "id": "kotlin-docs",
+   "title": "Kotlin Docs",
+   "by": "JetBrains 공식",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://kotlinlang.org/docs/home.html",
+   "why": "Kotlin 문법·코루틴. Spring Boot 서버를 Kotlin으로 옮겨 짜 볼 때."
+  },
+  {
+   "id": "kotlin-in-action",
+   "title": "Kotlin in Action (코틀린 인 액션)",
+   "by": "드미트리 제메로프 · 스베트라나 이사코바",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%BD%94%ED%8B%80%EB%A6%B0%20%EC%9D%B8%20%EC%95%A1%EC%85%98",
+   "why": "Kotlin을 Java 개발자의 눈으로 깊게. 'Kotlin에 능숙' 줄."
+  },
+  {
+   "id": "ddia",
+   "title": "데이터 중심 애플리케이션 설계 (Designing Data-Intensive Applications)",
+   "by": "마틴 클레프만",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+   "why": "메시지 브로커·복제·리더 선출·순서 보장의 교과서. A/B 전환·리더 하나만 처리 같은 결정을 일반론으로 정리."
+  },
+  {
+   "id": "sys-design-interview",
+   "title": "가상 면접 사례로 배우는 대규모 시스템 설계 기초",
+   "by": "알렉스 쉬",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%80%EC%83%81%20%EB%A9%B4%EC%A0%91%20%EC%82%AC%EB%A1%80%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%8C%80%EA%B7%9C%EB%AA%A8%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EA%B8%B0%EC%B4%88",
+   "why": "로드 밸런서·캐시·메시지 큐·채팅(WebSocket) 시스템 장 — 시세 플랫폼 그림을 처음 그릴 때의 말과 틀."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering",
+   "by": "Google",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "why": "모니터링 네 신호·장애 대응·배포 롤백 장 — Mission-critical과 '운영하기 쉬운 구조' 줄."
+  },
+  {
+   "id": "gregg-linuxperf",
+   "title": "Linux Performance",
+   "by": "Brendan Gregg",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.brendangregg.com/linuxperf.html",
+   "why": "CPU·스레드·소켓 중 어디부터 볼지 한 장 지도. CPU 프로파일링으로 쓸데없는 스레드를 찾을 때."
+  },
+  {
+   "id": "efsr",
+   "title": "전자금융감독규정 (2025-4호 사본)",
+   "by": "금융위원회 · 위키문헌",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://ko.wikisource.org/wiki/%EC%A0%84%EC%9E%90%EA%B8%88%EC%9C%B5%EA%B0%90%EB%8F%85%EA%B7%9C%EC%A0%95_(%EC%A0%9C2025-4%ED%98%B8)",
+   "why": "제15조(망 분리)·제23조(이중화·재해복구)만 — WebSocket 서버가 왜 DMZ에 있고 왜 두 벌인지."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "시세가 앱에 닿는 길 그리기",
+   "time": "1주",
+   "goal": "거래소 → 수신부 → 브로커 → 처리부 → 저장·API·WebSocket → 앱의 흐름과, 칸마다 무엇이 느려지고 무엇이 깨질 수 있는지 말로 설명할 수 있다.",
+   "resources": [
+    "slash23-quote",
+    "slash22-realtime",
+    "sys-design-interview"
+   ],
+   "task": "발표 두 편을 보고 한 장짜리 구조도를 그린다. 칸마다 '여기가 1초 멈추면 앱에서 무엇이 보이나'를 한 줄씩 적는다."
+  },
+  {
+   "title": "소켓과 버퍼를 눈으로 보기",
+   "time": "2주",
+   "goal": "TCP·UDP 소켓 프로그램을 짜고, 읽는 쪽을 느리게 했을 때 Recv-Q가 쌓이고 보내는 쪽이 멈추는 것을 확인할 수 있다.",
+   "resources": [
+    "yoon-tcpip",
+    "go-net-book",
+    "go-tour",
+    "gregg-linuxperf"
+   ],
+   "task": "Go로 가짜 거래소(초당 N건 가상 체결가를 UDP 멀티캐스트로 쏘기)와 수신기를 만든다. 수신기에 일부러 sleep 을 넣고 ss 로 버퍼와 손실 건수를 기록한다."
+  },
+  {
+   "title": "순서를 지키며 빠르게 처리하기",
+   "time": "2~3주",
+   "goal": "종목별 이벤트 루프와 크기 제한 줄로 순서를 지키면서 처리량을 올리고, 지연시간을 p50·p99로 잴 수 있다.",
+   "resources": [
+    "redis-pubsub",
+    "kafka-docs",
+    "netty-guide",
+    "kotlin-in-action"
+   ],
+   "task": "2단계 수신기 뒤에 Redis Pub/Sub(채널 4개)과 Kotlin 처리기(스레드 하나짜리 실행기 4개, 오래된 것 버리기)를 붙인다. 같은 부하로 Kafka 경유와 지연을 비교한 표를 만든다."
+  },
+  {
+   "title": "앱까지 밀어 주기 — WebSocket",
+   "time": "2주",
+   "goal": "종목 구독 WebSocket 서버를 만들고, 끊김·몰림 상황에서도 연결 수가 맞게 유지되게 할 수 있다.",
+   "resources": [
+    "spring-websocket",
+    "rfc6455",
+    "nats-docs"
+   ],
+   "task": "Spring WebSocket+STOMP 로 /topic/<종목코드> 구독 서버를 띄운다. 가짜 클라이언트 1,000개를 붙였다가 일부를 heartbeat 없이 멈추게 하고, 서버가 센 연결 수와 실제 수가 맞는지 확인한다. 실패하면 폴링 API로 물러서는 클라이언트도 만든다."
+  },
+  {
+   "title": "망가져도 버티기",
+   "time": "계속",
+   "goal": "A/B 두 벌·리더 하나·전환 절차를 직접 돌려 보고, 장애 하나를 원인·조치·숫자로 쓸 수 있다.",
+   "resources": [
+    "sre-book",
+    "ddia",
+    "efsr",
+    "slash22-order"
+   ],
+   "task": "3단계 처리기를 두 그룹으로 띄우고 한쪽 데이터를 일부러 오염시킨 뒤 트래픽을 다른 쪽으로 돌린다. 전환에 걸린 시간·틀린 시세 건수를 한 장짜리 장애 보고서로 쓴다 — 이력서에 쓸 '숫자로 끝나는 개선'의 연습이다."
+  }
+ ],
+ "pay": {
+  "summary": "공시 기준 1인당 평균 임금 **약 1억 2,500만원**(2023년, 경력직이 대부분인 회사 전체 값) · 공공데이터 집계 초봉 **약 5,000만원**(기준일 없음)",
+  "rows": [
+   {
+    "label": "1인당 평균 임금",
+    "value": "1억 2,500만원",
+    "amount": 12500,
+    "basis": "사업보고서·금융투자협회 공시 · 2023년",
+    "note": "계약직 포함 임직원 292명 기준이라고 보도됐다 [19]"
+   },
+   {
+    "label": "신입 초봉",
+    "value": "약 5,003만원",
+    "amount": 5003,
+    "basis": "공공데이터 집계",
+    "note": "집계 사이트 값, 기준일 표기 없음·직군 구분 없음. 같은 사이트의 평균은 약 7,007만원으로 위 공시 평균과 기준이 달라 나란히 견주지 않는다 [18]"
+   },
+   {
+    "label": "메리츠증권 평균",
+    "value": "1억 8,300만원",
+    "amount": 18300,
+    "basis": "사업보고서·금융투자협회 공시 · 2023년",
+    "peer": true,
+    "note": "같은 기사의 24개 증권사 중 1위. 24개사 평균은 1억 2,579만원 [19]"
+   },
+   {
+    "label": "카카오페이증권 평균",
+    "value": "9,840만원",
+    "amount": 9840,
+    "basis": "사업보고서·금융투자협회 공시 · 2023년",
+    "peer": true,
+    "note": "같은 기사 — 임원 제외 직원 기준 [19]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고, 라이브 코딩·직무·문화적합성 인터뷰와 레퍼런스 체크 뒤 **처우 협의** 단계에서 사람마다 정한다 [1]. 공시 평균은 2023년 숫자라 낡았다 — 2026년 1분기 공시에서 직원은 380명에서 516명으로 늘고 직원 급여 총액은 21.4% 늘었다 [20]. 평균은 경력직이 섞인 회사 전체 값이라 이 자리 제안액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통·통신",
+    "detail": "주차비·택시비 100%(법인카드), 통신비 매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   }
+  ],
+  "note": "토스 팀 전체를 기준으로 한 2021년 공식 소개 글이다 [21]. 토스증권에 그대로 적용되는지, 지금도 같은지는 글에 적혀 있지 않아 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스증권 본사",
+  "address": "서울특별시 강남구 테헤란로 133, 7층 (역삼동, 한국타이어빌딩)",
+  "postal": "06133",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20133",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "공고의 근무지 표기는 'Seoul'뿐이고, 주소는 토스증권 사이트 하단의 회사 정보다 [17]."
+ }
+}
