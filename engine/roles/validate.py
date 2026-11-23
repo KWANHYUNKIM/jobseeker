@@ -200,6 +200,10 @@ def candidates(items: list[dict], jobs: list[dict]) -> list[tuple]:
     done_titles = {(d["company"], norm(d["role"])) for d in items}
     busy = claimed()
     active = [j for j in jobs if j.get("status") != "closed"]
+    # 같은 자리가 여러 사이트에 올라온다(원티드·잡코리아 …) — 집힌 공고와 회사·제목이 같으면 그것도 집힌 것으로 본다.
+    # 키만 보다가 두 일꾼이 같은 자리를 잡아 한쪽이 덮어쓴 일이 있었다(현대오토에버, 2026-11-23).
+    busy_titles = {(j.get("company"), norm(j.get("title", ""))) for j in jobs if f"{j.get('site')}-{j.get('pid')}" in busy}
+    done_titles |= busy_titles
     per_co: dict[str, int] = {}
     for j in active:
         per_co[j.get("company", "")] = per_co.get(j.get("company", ""), 0) + 1
