@@ -44,6 +44,7 @@
   "wanted-387807": "medcom-android-engineer",
   "wanted-387811": "medcom-cloud-infra-engineer-japan",
   "wanted-394202": "mediphone-platform-engineer",
+  "jobkorea-50249597": "megazone-cloud-ai-soc",
   "wanted-306088": "megazone-japan-cloud-engineer-associate",
   "wanted-306087": "megazone-japan-cloud-engineer-senior",
   "saramin-55340311": "megazone-multicloud-ops-engineer",
@@ -587,6 +588,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 27
+  },
+  {
+   "id": "megazone-cloud-ai-soc",
+   "company": "메가존클라우드",
+   "role": "클라우드 AI-SOC 전문가 (CERT·운영·관제)",
+   "jobs": [
+    "jobkorea-50249597"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 44
   },
   {
    "id": "megazone-japan-cloud-engineer-associate",

@@ -1,0 +1,1138 @@
+{
+ "id": "megazone-cloud-ai-soc",
+ "company": "메가존클라우드",
+ "role": "클라우드 AI-SOC 전문가 (CERT·운영·관제)",
+ "team": "보안 사업 조직 HALO — AI-SOC(보안관제센터)",
+ "jobs": [
+  "jobkorea-50249597"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "고객사 클라우드에서 올라오는 보안 경보를 **24시간 지켜보고(관제)**, 진짜 공격이면 **파고들어 원인을 밝히고(CERT)**, 그 일을 받치는 **보안 장비·솔루션을 돌리는(운영)** 자리입니다. 한 공고에 포지션 다섯 개(관제 · 침해사고 분석 신입~10년 · 시니어 분석 · 솔루션 운영 신입~10년 · 시니어 운영)가 묶여 있습니다.[1]",
+  "env": "메가존클라우드의 보안 브랜드 **HALO**(2025년 5월 공개) 안의 AI-SOC입니다. 회사는 24시간 365일 도는 보안운영센터를 두고 AWS·Azure·GCP·네이버클라우드를 함께 관제한다고 밝힙니다.[5][8][25]",
+  "oneline": "클라우드 MSP 회사의 **보안관제 서비스 조직**. 개발보다 **로그 읽기 · 공격 판별 · 교대 근무 · 자동화 스크립트**가 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "보안 침해사고 모니터링",
+   "short": "포지션 ① — 경보가 뜨면 가장 먼저 보고 \"진짜 공격인가\"를 가르는 1선 관제 요원 자리.",
+   "why": "공고의 다섯 포지션 중 유일하게 **신입~경력 5년**이고 **4조 2교대**가 업무 줄에 들어 있습니다.[1] 회사가 24시간 365일 SOC를 운영한다고 밝힌 만큼, 밤에도 화면 앞을 지킬 사람이 필요합니다.[8]",
+   "how_far": "흔히 SOC의 1단계(Tier 1)라고 부르는 자리입니다 — 경보를 분류하고, 확실하지 않으면 분석 담당(이 공고의 CERT 포지션)에 넘깁니다.[14] {추론}",
+   "refs": [
+    1,
+    8,
+    14
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SIEM/SOAR 실시간 모니터링 및 대응",
+   "short": "여러 장비의 로그를 한곳에 모은 화면(SIEM)에서 경보를 보고, 정해진 자동 대응(SOAR)을 돌리는 일.",
+   "why": "고객사마다 방화벽·웹방화벽·서버보안·클라우드 로그가 따로 쌓입니다. 이것을 한곳에 모아 규칙으로 경보를 띄우는 게 **SIEM**(보안 정보·이벤트 관리), 경보가 뜨면 차단·티켓 발행 같은 절차를 자동으로 돌리는 게 **SOAR**(보안 오케스트레이션·자동화·대응)입니다.[18] 메가존 서비스 페이지도 운영 계층을 '24/7 탐지·대응(MSS/MDR/SOC)'과 '분석·대응 플랫폼(SIEM/XDR)'으로 나눕니다.[6]",
+   "actually": {
+    "intro": "관제 화면 앞에서 실제로 하는 일입니다(일반적인 SOC 절차).[14][18]",
+    "items": [
+     "**경보 분류(트리아지)** — 새 경보를 보고 오탐·정상 업무·진짜 공격 중 무엇인지 가른다.",
+     "**맥락 붙이기** — 출발 IP 평판, 같은 IP의 다른 경보, 대상 서버가 무엇인지 확인한다.",
+     "**자동 대응 확인** — SOAR 플레이북(정해진 대응 순서)이 IP 차단·계정 잠금을 했는지 보고, 안 되면 손으로 한다.",
+     "**에스컬레이션** — 확실한 공격이거나 판단이 어려우면 분석 담당과 고객사 담당자에게 넘긴다. 같은 부서 운영 공고에도 '실시간 관제 에스컬레이션 대응'이 따로 적혀 있다.[4]",
+     "**기록** — 무엇을 보고 어떻게 판단했는지 티켓에 남긴다. 교대 때 다음 조가 이어 본다."
+    ]
+   },
+   "examples": [
+    {
+     "title": "SIEM 규칙의 아주 작은 판 — '실패 여러 번 뒤 성공'",
+     "body": "같은 IP가 5분 안에 로그인 실패를 5번 넘게 한 뒤 성공하면 계정 탈취를 의심합니다. 실제 SIEM은 이런 규칙을 쿼리로 씁니다. 아래는 가상 데이터로 직접 돌린 결과입니다.",
+     "lang": "python",
+     "code": "from collections import defaultdict\n\n# (시각 초, 출발 IP, 성공 여부) — 5분 안에 실패 5번 이상 뒤 성공이면 경보\nevents = [(t, \"198.51.100.23\", False) for t in range(0, 50, 10)]\nevents += [(60, \"198.51.100.23\", True), (5, \"10.0.0.8\", False)]\nfails = defaultdict(list)\nfor t, ip, ok in sorted(events):\n    if not ok:\n        fails[ip].append(t)\n        continue\n    recent = [x for x in fails[ip] if t - x <= 300]\n    if len(recent) >= 5:\n        print(f\"경보: {ip} 실패 {len(recent)}번 뒤 {t}초에 로그인 성공 — 계정 탈취 의심\")\n\n# 출력: 경보: 198.51.100.23 실패 5번 뒤 60초에 로그인 성공 — 계정 탈취 의심"
+    }
+   ],
+   "how_far": "규칙과 플레이북을 **만드는** 일은 같은 부서의 보안 데이터 분석(SIEM/SOAR) 엔지니어 몫입니다.[2] 이 자리는 그 결과를 **읽고 판단하고 넘기는** 수준이 최소선입니다. {추론}",
+   "refs": [
+    2,
+    4,
+    6,
+    14,
+    18
+   ],
+   "study": [
+    "splunk-intro",
+    "sentinel-playbooks",
+    "nist-80061"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "주야간/휴일 4조 2교대 근무",
+   "short": "네 조가 돌아가며 12시간씩 낮·밤을 맡아, 하루 24시간 누군가 늘 화면 앞에 있게 하는 근무 방식.",
+   "why": "회사는 SOC를 24시간 365일 운영한다고 밝혔습니다.[8] 공격은 업무 시간에만 오지 않으므로, 관제 1선은 교대 근무가 기본입니다. 자격요건에도 '24/7 교대 근무 가능자'가 따로 있습니다.[1]",
+   "examples": [
+    {
+     "title": "4조 2교대가 도는 모양(한 예)",
+     "body": "조마다 '주간 2일 → 야간 2일 → 휴무 4일' 8일 주기를 두 칸씩 밀면 하루에 늘 주간 한 조·야간 한 조가 섭니다. 실제 메가존의 주기는 공고에 없습니다 — 면접에서 묻습니다. {추론}",
+     "lang": "python",
+     "code": "# 4조 2교대의 한 예: 12시간씩 주간(D)·야간(N), 조마다 '주 주 야 야 휴 휴 휴 휴' 8일 주기\ncycle = \"DDNN----\"\nfor team, off in zip(\"ABCD\", (0, 2, 4, 6)):\n    print(team, \"\".join(cycle[(d + off) % 8] for d in range(8)))\nhours = (cycle.count(\"D\") + cycle.count(\"N\")) * 12\nprint(\"8일에\", hours, \"시간 → 주 평균\", round(hours / 8 * 7, 1), \"시간\")\n\n# 출력:\n# A DDNN----\n# B NN----DD\n# C ----DDNN\n# D --DDNN--\n# 8일에 48 시간 → 주 평균 42.0 시간"
+    }
+   ],
+   "how_far": "야간·휴일 수당, 야간 교통비가 어떻게 붙는지는 공고에 없습니다. 회사 기업정보의 복리후생에 '야간교통비 지급'이 있습니다.[12] 근무표 주기·수당·주간 전환 가능성은 처우 협의 때 확인합니다. {추론}",
+   "refs": [
+    1,
+    8,
+    12
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "FW/WAF/HIPS 이벤트 분석",
+   "short": "방화벽·웹방화벽·서버 침입방지가 막거나 경고한 기록을 보고, 진짜 공격인지 오탐인지 가르는 일.",
+   "why": "관제가 보는 경보의 대부분은 이 장비들에서 옵니다. **FW**(방화벽)는 IP·포트 단위로, **WAF**(웹방화벽)는 HTTP 요청 내용으로, **HIPS**(호스트 침입방지)는 서버 안의 행위로 막습니다. 같은 부서 운영 공고는 Cloudflare·AWS WAF·Deep Security(서버보안)·CrowdStrike(EDR)를 실제로 쓴다고 적었습니다.[4]",
+   "actually": {
+    "items": [
+     "**WAF 차단 로그** — 요청 주소·파라미터에 SQL 인젝션·XSS 흔적이 있나, 차단(403)됐나 통과됐나.",
+     "**통과한 공격이 더 중요하다** — 막힌 건 기록, 통과한 건 서버가 어떻게 응답했는지까지 본다.",
+     "**오탐 가르기** — 고객사 정상 기능(검색어에 따옴표 등)이 규칙에 걸린 경우. 운영 공고의 'WAF 차단 및 오탐 관련 문의 대응'이 이것이다.[4]",
+     "**FW** — 같은 IP가 포트를 차례로 두드리면(포트 스캔) 공격 앞 단계로 본다.",
+     "**HIPS** — 서버에서 웹 서버 프로세스가 셸을 띄우는 것 같은 이상 행위."
+    ]
+   },
+   "examples": [
+    {
+     "title": "WAF 로그에서 '막힌 것'과 '통과한 것' 가르기",
+     "body": "URL 인코딩을 풀고 간단한 패턴을 맞춰 봅니다(가상 로그, 직접 돌린 출력). 마지막 줄처럼 공격 흔적이 있는데 200으로 통과한 요청이 관제가 먼저 볼 것입니다.",
+     "lang": "python",
+     "code": "import re\nfrom urllib.parse import unquote\n\nlogs = [\n    '10.0.0.5 - - [23/Nov/2026:02:11:01] \"GET /item?id=1 HTTP/1.1\" 200',\n    '203.0.113.7 - - [23/Nov/2026:02:11:02] \"GET /item?id=1%27%20OR%201=1-- HTTP/1.1\" 403',\n    '203.0.113.7 - - [23/Nov/2026:02:11:03] \"GET /item?id=1%20UNION%20SELECT%20pw HTTP/1.1\" 403',\n    '198.51.100.9 - - [23/Nov/2026:02:11:04] \"GET /search?q=%3Cscript%3Ealert(1)%3C/script%3E HTTP/1.1\" 200',\n]\nrules = {\"SQLi\": re.compile(r\"('|\\bunion\\b.*\\bselect\\b|\\bor\\b\\s+1=1)\", re.I),\n         \"XSS\": re.compile(r\"<script\", re.I)}\nfor ln in logs:\n    ip, req, code = ln.split()[0], unquote(ln.split('\"')[1]), ln.rsplit(\" \", 1)[1]\n    hit = [k for k, r in rules.items() if r.search(req)]\n    if hit:\n        print(ip, hit, \"차단됨\" if code == \"403\" else \"통과됨(확인 필요)\")\n\n# 출력:\n# 203.0.113.7 ['SQLi'] 차단됨\n# 203.0.113.7 ['SQLi'] 차단됨\n# 198.51.100.9 ['XSS'] 통과됨(확인 필요)"
+    }
+   ],
+   "refs": [
+    4,
+    16
+   ],
+   "study": [
+    "owasp-top10",
+    "packet-analysis"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "OWASP Top 10 및 침입 기법 기초 지식 보유",
+   "short": "웹 공격 10가지 대표 유형과 공격이 진행되는 순서를 알아야 로그만 보고 공격인지 알아본다.",
+   "why": "OWASP Top 10은 웹 보안 위험을 10가지로 묶은 목록이고 2025년판이 최신입니다 — 접근 통제 실패·잘못된 설정·공급망·암호·인젝션 등.[16] WAF 경보를 읽으려면 이 이름들이 로그에서 어떻게 보이는지 알아야 합니다. '침입 기법'은 공격자가 정찰 → 침투 → 확산 → 유출로 가는 단계이고, 이를 정리한 지도가 MITRE ATT&CK입니다.[15]",
+   "how_far": "'기초 지식'입니다. 직접 공격을 할 줄 아는 수준이 아니라 **SQL 인젝션·XSS·명령어 삽입·무차별 로그인이 로그에 어떻게 찍히는지 설명할 수 있는** 정도가 최소선입니다. {추론} 같은 부서 운영 공고도 'HTTP 프로토콜 및 주요 웹 공격 유형(SQL Injection, XSS 등)' 이해를 요건으로 둡니다.[4]",
+   "refs": [
+    4,
+    15,
+    16
+   ],
+   "study": [
+    "owasp-top10",
+    "attack"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "24/7 교대 근무 가능자",
+   "short": "위의 4조 2교대를 실제로 할 수 있는지 — 이 포지션의 거르는 조건이다.",
+   "why": "업무 줄의 '주야간/휴일 4조 2교대'를 자격요건에서 다시 적었습니다.[1] 회사의 SOC가 24시간 365일 돌기 때문입니다.[8]",
+   "how_far": "야간 근무가 몸에 맞는지 미리 따져 봅니다. 교대 근무를 몇 년 하다 주간 분석(CERT)·운영 포지션으로 옮기는 길이 같은 공고 안에 있다는 점은 장점입니다. {추론}",
+   "refs": [
+    1,
+    8
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "정보보호 자격증 보유 및 관련 전공자",
+   "short": "기초를 공부했다는 증거라서. 신입 관제에서는 자격증·전공이 경력 대신 쓰인다.",
+   "why": "신입이 지원할 수 있는 포지션이라, 보안 기초를 따로 공부했다는 증거가 우대 사항이 됩니다.[1] 같은 회사 보안 공고들은 정보보안기사·CISA·CISSP 같은 이름을 구체적으로 적습니다.[3]",
+   "how_far": "관제 1선이면 국내 정보보안기사 수준이 흔히 거론됩니다. {추론} CISSP는 경력 요건이 있는 자격이라 신입용이 아닙니다. {추론}",
+   "refs": [
+    1,
+    3
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "패킷 및 악성코드 분석 가능자",
+   "short": "경보 한 줄로 모자랄 때 실제 오간 패킷과 의심 파일을 열어 볼 수 있으면 판단이 빨라진다.",
+   "why": "관제 1선은 보통 경보만 보지만, 패킷(네트워크에 오간 실제 데이터)과 파일을 직접 볼 줄 알면 오탐을 더 빨리 가르고 분석 담당에 넘길 근거를 붙일 수 있습니다. {추론} 같은 공고의 CERT 포지션 업무가 '악성 파일 행위 분석'입니다 — 다음 단계 일을 미리 할 줄 아는 사람을 우대하는 것입니다.[1]",
+   "refs": [
+    1
+   ],
+   "study": [
+    "packet-analysis",
+    "pma"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "시니어 침해사고 분석(CERT)",
+   "short": "포지션 ② — 경력 10~20년. 큰 사고가 나면 분석과 대응 전체를 지휘하는 자리.",
+   "why": "CERT는 침해사고 대응팀(Computer Emergency Response Team)입니다. 회사는 HALO 서비스 안에 사고 대응 컨설팅(IR)을 두고, AI-SOC와 관제(MIDR)가 실시간 탐지·분석·대응을 맡는다고 설명합니다.[6] 2024년 파이오링크와 맺은 클라우드 보안관제 협력도 침해사고 분석·모의 훈련으로 넓힌다고 했습니다.[10]",
+   "refs": [
+    6,
+    10
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "심층 분석 주도 및 IR 프로세스 총괄",
+   "short": "사고 하나를 끝까지 파고들고, 탐지부터 복구·재발 방지까지 대응 절차 전체를 굴리는 일.",
+   "why": "IR(Incident Response, 사고 대응)은 순서가 정해진 일입니다. NIST의 2025년 지침(SP 800-61 3판)은 사고 대응을 조직의 사이버보안 위험 관리(CSF 2.0) 안에 넣어 준비 → 탐지·분석 → 대응 → 복구 → 개선으로 다룹니다.[14]",
+   "flows": [
+    {
+     "caption": "사고 대응의 흐름(일반론)[14]",
+     "steps": [
+      "준비 · 연락망·권한·도구·플레이북",
+      "탐지·분석 · 관제가 넘긴 경보가 진짜인가, 범위는",
+      "봉쇄 · 서버 격리·계정 잠금·차단",
+      "제거·복구 · 악성 파일 제거·패치·재가동",
+      "사후 검토 · 원인·타임라인·재발 방지"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "'총괄'이라 직접 분석 + **고객사와 일정·우선순위를 정하고 보고하는** 역할까지입니다. 고객사가 여러 곳이라 사고마다 고객의 담당자·규정이 다릅니다. {추론}",
+   "refs": [
+    14
+   ],
+   "study": [
+    "nist-80061"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "디지털 포렌식 및 인텔리전스 보고서 발행",
+   "short": "남은 흔적(디스크·메모리·로그)으로 무슨 일이 있었는지 증명하고, 공격 정보를 보고서로 내는 일.",
+   "why": "고객사는 '무엇이 언제 어떻게 털렸나'를 문서로 받아야 신고·재발 방지를 할 수 있습니다. {추론} KISA도 침해사고 원인 분석 동향과 랜섬웨어 분석 보고서를 꾸준히 공개합니다 — 이런 형식이 '인텔리전스 보고서'의 본보기입니다.[20]",
+   "actually": {
+    "items": [
+     "**타임라인** — 최초 침투 → 권한 상승 → 확산 → 유출을 시각 순으로 맞춘다.",
+     "**흔적(IoC)** — 공격 IP·도메인·파일 해시를 뽑아 다른 고객사 차단 목록에 넣는다. 같은 부서 운영 공고의 'TI/TIP 기반 위협정보(IoC) 관리'가 이것을 받는다.[4]",
+     "**기법 이름 붙이기** — 각 단계를 ATT&CK 기법 번호로 적어 다른 사건과 견준다.[15]"
+    ]
+   },
+   "refs": [
+    4,
+    15,
+    20
+   ],
+   "study": [
+    "kisa-reports",
+    "threat-intel-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "탐지 로직 고도화 및 플레이북 설계",
+   "short": "놓친 공격·쓸데없는 경보를 보고 탐지 규칙을 고치고, 경보마다 할 일 순서(플레이북)를 짜는 일.",
+   "why": "사고를 분석하고 나면 '왜 더 일찍 못 잡았나'가 남습니다. 그 답을 규칙으로 되돌리는 게 탐지 엔지니어링입니다.[17] 위수영 HALO 유닛장은 사람이 1,000건을 하나씩 분류하는 동안 AI는 1,000건을 한꺼번에 볼 수 있다며 통합과 자동화를 강조했습니다.[7]",
+   "actually": {
+    "items": [
+     "**규칙을 코드처럼** — Sigma는 로그 탐지 규칙을 제품에 묶이지 않는 공개 형식으로 적고 여러 SIEM 쿼리로 바꿔 준다.[17]",
+     "**오탐 줄이기** — 많이 울리는데 늘 오탐인 규칙은 예외 조건을 넣거나 점수를 낮춘다.",
+     "**플레이북** — 경보 종류마다 '조회 → 판단 → 차단 → 알림' 순서를 정하고 SOAR에서 자동으로 돌린다.[18]"
+    ]
+   },
+   "refs": [
+    7,
+    17,
+    18
+   ],
+   "study": [
+    "detection-eng-book",
+    "sigma",
+    "sentinel-playbooks"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "직무 경력 10년 이상 및 인프라 전문가",
+   "short": "사고를 지휘하려면 공격만이 아니라 서버·네트워크·클라우드가 어떻게 생겼는지 깊이 알아야 해서.",
+   "why": "침해사고는 결국 고객사 인프라 위에서 일어납니다. 어디를 격리해도 되는지, 어떤 로그가 어디에 남는지는 인프라를 알아야 판단합니다. {추론} 메가존은 MSP(클라우드 관리 서비스) 회사로, 엔지니어 1,000명 이상과 AWS 자격증 1,800여 개를 내세웁니다.[8]",
+   "refs": [
+    8
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "HTTP/MSA 아키텍처 심도 있는 이해",
+   "short": "요즘 고객사 서비스는 작은 서비스 여럿이 HTTP로 주고받는 구조(MSA)라, 공격 경로도 그 길을 따라간다.",
+   "why": "MSA(마이크로서비스 구조)에서는 하나의 요청이 게이트웨이 → 여러 서비스 → DB로 퍼집니다. 침입 흔적도 여러 서비스 로그에 흩어지므로, 요청 하나를 끝까지 따라갈 줄 알아야 합니다. {추론} OWASP 2025년판에 '로깅·경보 실패'와 '접근 통제 실패'가 들어 있는 것도 이런 구조에서 자주 생기는 문제라서입니다.[16]",
+   "how_far": "서비스 간 인증(토큰)·API 게이트웨이·로드밸런서 뒤의 진짜 출발 IP(X-Forwarded-For) 같은 것을 로그에서 읽어 낼 수 있는 수준. {추론}",
+   "refs": [
+    16
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Python/Go 활용 분석 도구 개발 역량",
+   "short": "로그 수십만 줄을 손으로 볼 수 없어서. 파싱·조회·대조를 스스로 도구로 만든다.",
+   "why": "공고의 기술 태그도 Go·Python입니다.[1] 같은 부서 AI 보안 솔루션 공고는 'Python, Go, 스크립트(PowerShell, Bash)로 보안 데이터 분석 및 업무 자동화'를 우대합니다.[3]",
+   "actually": {
+    "items": [
+     "로그 파서(형식이 제각각인 장비 로그를 한 형식으로)",
+     "IoC 일괄 조회(해시·IP를 위협정보 서비스에 묻기)",
+     "타임라인 정리(여러 로그를 시각 순으로 합치기)"
+    ]
+   },
+   "refs": [
+    1,
+    3
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "해킹방어대회(CTF) 입상 및 클라우드 경험",
+   "short": "공격을 직접 풀어 본 실력과, 사고가 나는 바닥인 클라우드를 아는지를 본다.",
+   "why": "CTF(해킹방어대회)는 포렌식·리버싱·웹 문제를 시간 안에 푸는 대회라 분석 실력을 보여 주는 증거가 됩니다. {추론} 클라우드 경험은 고객이 AWS·Azure·GCP·네이버클라우드에 있기 때문입니다.[25]",
+   "refs": [
+    25
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "침해사고 분석(CERT)",
+   "short": "포지션 ③ — 신입~경력 10년. 관제가 넘긴 사고를 실제로 열어 보고 원인을 찾는 분석가 자리.",
+   "why": "시니어 CERT(포지션 ②)가 지휘한다면 이 자리는 손으로 분석을 하는 사람입니다.[1] 회사 서비스 설명의 사고 대응(IR)·위협 탐지 대응(MIDR)이 이 사람들의 일입니다.[6]",
+   "refs": [
+    1,
+    6
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SIEM/EDR 이벤트 분석 및 위협 탐지",
+   "short": "여러 로그(SIEM)와 PC·서버의 행위 기록(EDR)을 엮어, 경보 하나 뒤에 숨은 공격 전체를 찾는 일.",
+   "why": "**EDR**(엔드포인트 탐지·대응)은 PC·서버에서 어떤 프로세스가 무엇을 실행했는지 기록합니다. 같은 부서는 CrowdStrike EDR을 운영합니다.[4] 관제가 '이상하다'고 넘긴 것을 EDR 기록으로 따라가면 처음 들어온 지점이 보입니다. {추론}",
+   "actually": {
+    "items": [
+     "**프로세스 트리** — 워드 문서 → PowerShell → 외부 다운로드처럼 부모·자식 관계가 이상한지.",
+     "**같은 흔적 찾기(헌팅)** — 한 PC에서 나온 해시·도메인이 다른 PC에도 있나 SIEM에서 찾는다.",
+     "**ATT&CK 대응** — 찾은 행위를 기법 번호로 적어 빠진 단계를 찾는다.[15]"
+    ]
+   },
+   "refs": [
+    4,
+    15
+   ],
+   "study": [
+    "attack",
+    "threat-intel-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "포렌식 수행 및 악성 파일 행위 분석",
+   "short": "털린 서버의 디스크·메모리를 보존해 흔적을 찾고, 의심 파일을 격리된 곳에서 돌려 무엇을 하는지 본다.",
+   "why": "원인을 증명하려면 로그만으로는 모자라고, 남은 파일과 메모리를 봐야 합니다. {추론} 악성 파일 분석은 돌리지 않고 보는 정적 분석과 가상 환경에서 돌려 보는 동적 분석이 기본입니다.[22]",
+   "how_far": "신입부터 지원 가능한 포지션이라, 처음에는 **샌드박스(격리 실행 환경)에서 돌린 결과를 읽고 흔적을 뽑는** 정도로 시작합니다. 리버싱(기계어 읽기)까지는 시니어 몫으로 보는 게 자연스럽습니다. {추론}",
+   "refs": [
+    22
+   ],
+   "study": [
+    "pma",
+    "gcfa"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "사고 원인 파악 및 재발 방지 정책 수립",
+   "short": "'어디로 들어왔나'를 밝히고, 같은 구멍이 다시 안 열리게 설정·정책을 바꾸게 하는 일.",
+   "why": "사고 대응의 마지막 단계는 사후 검토와 개선입니다.[14] KISA의 2026년 상반기 침해사고 원인 분석 보고서도 원인과 함께 대응 방안을 싣습니다.[20]",
+   "how_far": "정책을 **바꾸는** 건 고객사입니다. 분석가는 근거와 함께 '무엇을 바꿔야 하나'를 구체적으로(어느 포트·계정·패치) 제안하는 데까지입니다. {추론}",
+   "refs": [
+    14,
+    20
+   ],
+   "study": [
+    "nist-80061",
+    "kisa-reports"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Web/Mobile 아키텍처 및 OS 지식 보유",
+   "short": "공격이 지나가는 길(웹·앱 구조)과 흔적이 남는 곳(OS 로그·파일)을 알아야 분석할 수 있어서.",
+   "why": "웹 서버 로그, 앱이 부르는 API, 윈도우 이벤트 로그·리눅스 auth 로그처럼 흔적이 남는 자리는 구조를 알아야 찾습니다. {추론} 같은 부서 솔루션 공고는 Linux(CentOS, Ubuntu) 지식과 로그 분석 기반 장애 원인 파악을 요건으로 둡니다.[3]",
+   "level": {
+    "basic": "웹 요청이 브라우저 → 웹 서버 → 앱 → DB로 가는 길 · 리눅스 기본 명령 · 윈도우 이벤트 로그가 어디 있나",
+    "work": "로그인·프로세스 생성 이벤트 읽기 · 리눅스 auth·cron·bash 기록 · 모바일 앱이 부르는 API 보기",
+    "team": "여러 고객사 클라우드(AWS·Azure·GCP·네이버) 로그 형식 차이까지[25]"
+   },
+   "refs": [
+    3,
+    25
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "네트워크 보안(TCP/IP, IDS/IPS) 이해",
+   "short": "공격은 결국 네트워크를 지나가므로, 패킷이 어떻게 오가고 탐지 장비가 무엇을 보는지 알아야 한다.",
+   "why": "**IDS/IPS**(침입 탐지·방지 시스템)는 패킷 내용을 규칙과 맞춰 경보·차단합니다. 같은 부서의 모든 보안 공고가 TCP/IP·네트워크 프로토콜·포트 체계를 요건으로 둡니다.[2][3][4]",
+   "how_far": "3-way 핸드셰이크, 포트와 서비스, DNS·HTTP가 패킷으로 어떻게 보이는지를 와이어샤크로 열어 설명할 수 있으면 최소선입니다. {추론}",
+   "refs": [
+    2,
+    3,
+    4
+   ],
+   "study": [
+    "network-book",
+    "packet-analysis"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "보안 자동화 스크립트 제작 가능자",
+   "short": "같은 조회·정리를 사고마다 반복하지 않게 스크립트로 만들어 두는 사람이면 좋다.",
+   "why": "회사는 AI-SOC를 '흩어진 보안 솔루션을 통합하고 자동화로 사람의 실수를 줄이는' 것으로 설명합니다.[6] 다섯 포지션 중 셋의 우대사항에 자동화 스크립트가 들어 있습니다.[1]",
+   "refs": [
+    1,
+    6
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "GCFA, GCIH, CISSP 등 자격증 보유",
+   "short": "포렌식(GCFA)·사고 대응(GCIH)·보안 관리 전반(CISSP)을 공부했다는 국제 자격이라서.",
+   "why": "GCIH는 GIAC의 침해사고 대응 자격으로, 사고 대응 담당·시스템 관리자·보안 설계자를 대상으로 합니다.[22] GCFA는 같은 기관의 포렌식 분석가 자격입니다.[22]",
+   "how_far": "우대사항입니다. GIAC 자격은 응시료가 비싸 신입에게 필수는 아닙니다 — 같은 범위를 공개 자료로 공부하고 분석 보고서를 써 보는 것으로 대신할 수 있습니다. {추론}",
+   "refs": [
+    22
+   ],
+   "study": [
+    "gcih",
+    "gcfa"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "시니어 보안 솔루션 운영",
+   "short": "포지션 ④ — 경력 10~20년. 고객사에 보안 솔루션을 들여놓는 사업을 이끌고 운영 체계를 세우는 자리.",
+   "why": "메가존의 보안 매출은 2025년 700억원을 넘었고, HALO 출범 뒤 보안 매출이 400% 늘고 고객사가 203곳이 됐다고 보도됐습니다.[13][9] 고객이 늘면 솔루션 구축 사업과 운영 표준이 필요합니다. {추론}",
+   "refs": [
+    9,
+    13
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "통합 보안 솔루션 구축 PM 및 운영",
+   "short": "여러 보안 제품을 고객사 환경에 엮어 넣는 프로젝트를 관리(PM)하고, 끝난 뒤 운영까지 맡는 일.",
+   "why": "메가존은 위즈·지스케일러·체크포인트 등과 보안 파트너십을 맺었고[13], 2026년 1월에는 위즈와 클라우드 보안 플랫폼 연계 협력을 발표했습니다.[11] 이 제품들을 고객 환경에 맞게 붙이는 프로젝트를 이끄는 자리입니다. {추론}",
+   "refs": [
+    11,
+    13
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "운영 프로세스 고도화 및 표준화 수립",
+   "short": "고객사가 많아도 같은 품질로 돌도록, 운영 절차·점검표·보고 형식을 하나로 맞추는 일.",
+   "why": "회사는 ISMS-P·ISO 27001·ISO 42001 같은 인증을 보유했다고 밝힙니다.[8] 인증을 유지하려면 운영 절차가 문서로 정해져 있고 지켜져야 합니다. {추론}",
+   "refs": [
+    8
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "고객사 보안 정책 최적화 관리",
+   "short": "고객사마다 방화벽·WAF 규칙이 쌓여 엉키지 않게, 안 쓰는 규칙은 지우고 필요한 규칙은 다듬는 일.",
+   "why": "규칙은 쌓이기만 하면 오탐이 늘고 정작 필요한 차단이 빠집니다. {추론} 같은 부서 운영 공고는 Terraform으로 AWS 보안 서비스(WAF·Shield·GuardDuty 등) 정책을 관리한다고 적었습니다 — 정책을 코드로 관리하는 방식입니다.[4]",
+   "refs": [
+    4
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "보안 운영 경력 10년 이상의 전문가",
+   "short": "여러 제품·여러 고객사의 운영을 표준으로 묶으려면 오래 직접 굴려 본 경험이 필요해서.",
+   "why": "업무 세 줄(구축 PM·표준화·정책 최적화)이 모두 '해 본 사람이 정하는' 일입니다.[1] {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "장애 원인 분석 및 복구 전략 수립 역량",
+   "short": "보안 장비가 서비스를 막거나 멈추면 고객 서비스가 선다 — 원인을 빨리 찾고 되살리는 계획이 필요하다.",
+   "why": "보안 장비는 트래픽 한가운데 서 있어서, 장비 장애나 잘못된 규칙 하나가 고객 서비스 장애가 됩니다. {추론} 같은 부서 운영 공고에도 '보안솔루션 정책 조치 및 장애 대응'이 있습니다.[4]",
+   "refs": [
+    4
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Zero Trust, CNAPP 등 최신 솔루션 경험",
+   "short": "요즘 고객이 사려는 보안이 '아무도 믿지 않고 매번 확인(제로 트러스트)'과 '클라우드 통합 보안(CNAPP)'이라서.",
+   "why": "**제로 트러스트**는 네트워크 안에 있다고 믿지 않고 요청마다 사용자·기기를 확인하는 설계입니다(NIST SP 800-207).[19] **CNAPP**는 클라우드 설정 점검·워크로드 보호·권한 관리를 한 플랫폼으로 묶은 것입니다.[21] 메가존 서비스 페이지는 CNAPP의 예로 위즈를 들고[6], HALO의 네 가지 틀 중 하나가 제로 트러스트라고 보도됐습니다.[8]",
+   "refs": [
+    6,
+    8,
+    19,
+    21
+   ],
+   "study": [
+    "nist-207"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "멀티 클라우드 보안 서비스 운영 경험",
+   "short": "고객이 AWS·Azure·GCP·네이버클라우드에 나눠 있어, 한 곳만 알아서는 운영할 수 없다.",
+   "why": "회사는 멀티 클라우드 보안 운영(AWS·Azure·GCP·네이버클라우드)을 관리형 보안의 핵심 기능으로 듭니다.[25] 2026년 9월 AWS 보안 컴피턴시를 받으며 AWS 역량 11개를 갖췄다고 보도됐습니다.[8]",
+   "refs": [
+    8,
+    25
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "보안 솔루션 운영",
+   "short": "포지션 ⑤ — 신입~경력 10년. EDR·방화벽·IPS 같은 보안 제품이 늘 제대로 돌게 관리하는 자리.",
+   "why": "관제가 볼 경보는 이 솔루션들이 만들어 냅니다. 솔루션이 멈추거나 설정이 틀리면 관제가 장님이 됩니다. {추론} 같은 부서 운영 공고(계약직)가 이 일을 더 자세히 적었습니다 — Cloudflare·AWS WAF·Deep Security·CrowdStrike·위협정보 연동.[4]",
+   "refs": [
+    4
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "보안 솔루션(EDR/FW/IPS 등) 연동 및 운영",
+   "short": "보안 제품의 로그가 관제 화면(SIEM)까지 빠짐없이 들어오게 잇고, 제품이 정상인지 매일 지켜보는 일.",
+   "why": "같은 부서 SIEM 공고는 '데이터 온보딩 및 인프라 연동'을 업무로 둡니다.[2] 로그가 안 들어오면 공격이 있어도 경보가 안 뜹니다 — OWASP 2025년판의 '보안 로깅·경보 실패' 항목이 바로 이 위험입니다.[16]",
+   "actually": {
+    "items": [
+     "**연동** — 제품 로그를 syslog·API로 SIEM에 보내고, 필드가 제대로 나뉘는지(파싱) 확인.",
+     "**살아 있나** — 제품별 로그가 평소만큼 들어오는지, 갑자기 0이 되지 않았는지 본다.",
+     "**정책 배포** — 차단 목록(IoC)을 제품마다 반영한다.[4]"
+    ]
+   },
+   "refs": [
+    2,
+    4,
+    16
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "계정, 설정, 패치, 장애 및 백업 관리",
+   "short": "보안 제품도 서버처럼 관리 대상 — 누가 접속하나, 설정은 맞나, 업데이트·백업은 됐나를 챙긴다.",
+   "why": "보안 장비의 관리자 계정이 털리면 방어가 통째로 뚫립니다. {추론} 회사가 유지하는 ISMS-P·ISO 27001 같은 인증은 계정·변경·백업 관리 기록을 요구하는 체계입니다.[8] {추론}",
+   "refs": [
+    8
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "보안 정책 최적화 및 운영 보고서 작성",
+   "short": "규칙을 손보고, 한 달 동안 무엇을 막았고 무엇을 바꿨는지 고객사에 보고서로 낸다.",
+   "why": "관리형 보안 서비스는 고객이 결과를 숫자로 받아야 계약이 이어집니다. {추론} 같은 부서 SIEM 공고의 시니어 업무에 '보안 이벤트 대시보드 구축 및 가시화'가 있습니다.[2]",
+   "refs": [
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "인프라/네트워크/OS 기본 이해 보유",
+   "short": "보안 제품은 서버·네트워크 위에 얹혀 돌아서, 그 바닥을 알아야 설치·장애 대응을 한다.",
+   "why": "신입이 지원할 수 있는 포지션이라 '기본 이해'입니다.[1] 같은 부서 솔루션 공고는 TCP/IP·HTTP·Linux 지식을 같은 자리에 적었습니다.[3]",
+   "level": {
+    "basic": "IP·서브넷·포트 · 리눅스 계정·서비스·로그 위치 · 윈도우 서비스",
+    "work": "방화벽 규칙 읽기 · 패킷 캡처 · 클라우드 보안그룹·NACL[4]",
+    "team": "Terraform으로 클라우드 보안 정책 관리[4]"
+   },
+   "refs": [
+    1,
+    3,
+    4
+   ],
+   "study": [
+    "network-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "능동적인 문제 해결 및 협업 태도",
+   "short": "운영은 관제·분석·고객사·제조사 사이에 서는 자리라, 기다리지 않고 묻고 엮는 사람이 필요하다.",
+   "why": "같은 부서의 보안 공고 대부분이 같은 요건을 둡니다.[2][3] 솔루션 문제는 제조사(벤더)와 같이 풀어야 할 때가 많고, 운영 공고에는 사용자 문의 대응이 따로 있습니다.[4]",
+   "refs": [
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "보안 자동화 스크립트 경험 보유",
+   "short": "정책 반영·점검·보고를 손으로 하지 않게 스크립트로 바꿔 본 경험이면 좋다.",
+   "why": "같은 부서 운영 공고는 'Python, Terraform 등을 활용한 보안 운영 업무 자동화'를 업무로 적었습니다.[4] 회사가 말하는 AI-SOC의 방향도 자동화입니다.[6][7]",
+   "refs": [
+    4,
+    6,
+    7
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "클라우드 보안 솔루션 운영 경험",
+   "short": "운영 대상이 고객사 클라우드의 보안 서비스(WAF·위협 탐지·로그 기록)라서.",
+   "why": "같은 부서 운영 공고는 AWS WAF·Shield·CloudTrail·DNS Firewall·GuardDuty를 다룬다고 적었습니다.[4] 회사는 멀티 클라우드 보안 운영을 내세웁니다.[25]",
+   "refs": [
+    4,
+    25
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "※ 지원서 내용, 또는 전형 진행 중 허위 사실이 있는 경우 전형 진행이 취소 될 수 있습니다.",
+   "short": "경력·자격증을 부풀리면 전형이 취소된다는 안내 — 보안 직무는 특히 확인한다.",
+   "why": "공고 끝의 공통 안내입니다.[1] 아래 줄의 레퍼런스 체크와 이어집니다.",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "※ 보훈대상자(취업보호대상자) 및 장애인은 관련 법령에 의거해 우대됩니다.",
+   "short": "법에 따른 우대 안내. 해당하면 지원서에 표시한다.",
+   "why": "공고 끝의 공통 안내입니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "※ 필요 시 레퍼런스 체크, 인성검사가 진행 될 수 있습니다.",
+   "short": "경력직은 전 직장 평판 조회, 그리고 인성검사가 있을 수 있다는 안내.",
+   "why": "공고 끝의 공통 안내입니다.[1] 고객사 시스템에 접근하는 자리라 신원 확인을 더 할 수 있습니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "※ 주 근무지는 과천 본사이며, 사업부서에 따라 상세근무지가 달라질 수 있습니다.",
+   "short": "과천 본사(메가존산학연센터)가 기본이고, 고객사 상주가 생길 수 있다는 안내.",
+   "why": "메가존클라우드는 서울 강남에서 과천으로 본사를 옮겼습니다.[24] 관제 교대 근무가 본사에서 하는지, 고객사 상주가 있는지는 포지션마다 다를 수 있으니 면접에서 확인합니다. {추론}",
+   "refs": [
+    1,
+    24
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "로그 한 줄에서 '이건 이상하다'를 찾는 게 재미있는 사람",
+   "교대 근무로 시작해 분석(CERT)·운영·시니어로 올라가는 길을 한 회사 안에서 보고 싶은 사람[1]",
+   "반복 조회·정리를 스크립트로 없애는 게 즐거운 사람[6]",
+   "여러 클라우드(AWS·Azure·GCP·네이버)를 두루 보고 싶은 사람[25]"
+  ],
+  "hard": [
+   "관제 포지션은 주야간·휴일 4조 2교대다[1]",
+   "고객사가 많아 사고마다 환경·담당자·규정이 다르다 {추론}",
+   "제품 개발보다 운영·분석·보고서가 일의 중심이다",
+   "시니어 포지션 둘은 경력 10~20년 — 중간 연차용 칸은 따로 없다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "WAF에서 SQL 인젝션 경보가 떴는데 응답 코드가 200입니다. 무엇부터 확인하겠어요?",
+   "a": "막힌 것보다 통과한 공격이 중요하다 — 관제 1선의 기본 판단.[4][16]"
+  },
+  {
+   "q": "같은 IP가 5분 동안 로그인에 30번 실패하고 한 번 성공했습니다. 다음 행동은?",
+   "a": "SIEM 상관 규칙과 에스컬레이션 기준.[14]"
+  },
+  {
+   "q": "워드 문서가 PowerShell을 띄웠다는 EDR 경보를 받았습니다. 어디까지 따라가겠어요?",
+   "a": "프로세스 트리·ATT&CK 기법으로 범위 정하기.[15]"
+  },
+  {
+   "q": "한 규칙이 하루 500번 울리는데 다 오탐입니다. 끄겠어요, 고치겠어요?",
+   "a": "탐지 로직 고도화 — 이 공고의 시니어 CERT 업무.[17]"
+  },
+  {
+   "q": "어느 날 고객사 방화벽 로그가 SIEM에 하나도 안 들어옵니다. 어떻게 알아채고 무엇을 보겠어요?",
+   "a": "로깅·경보 실패와 연동 운영.[2][16]"
+  },
+  {
+   "q": "4조 2교대를 해 본 적이 있나요? 야간에 혼자 판단하기 어려운 경보가 오면?",
+   "a": "24/7 근무와 에스컬레이션 체계.[1][8]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "잡코리아 · 메가존클라우드 클라우드 AI-SOC 전문가 채용 (CERT·운영·관제)",
+   "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50249597",
+   "kind": "posting",
+   "date": "2026-10-27",
+   "note": "포지션 다섯 개 · 상시채용 · 기술 태그 Go·MSA·Python"
+  },
+  {
+   "n": 2,
+   "title": "잡코리아 · 메가존클라우드 보안 데이터 분석 엔지니어 (SIEM/SOAR/Senior)",
+   "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50249440",
+   "kind": "posting",
+   "note": "같은 부서 — SIEM/SOAR 구성·데이터 온보딩·AI Driven SOC 고도화"
+  },
+  {
+   "n": 3,
+   "title": "잡코리아 · 메가존클라우드 클라우드 보안 솔루션 구축 전문가 (AI/신입/경력)",
+   "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50249295",
+   "kind": "posting",
+   "note": "같은 부서 — EDR·ZTNA·DLP 구축, AI Driven SOC 플랫폼"
+  },
+  {
+   "n": 4,
+   "title": "사람인 · [메가존클라우드] 보안 관제 솔루션 운영 엔지니어 (계약직)",
+   "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?rec_idx=55585657",
+   "kind": "posting",
+   "note": "같은 부서 — Cloudflare·AWS WAF·Deep Security·CrowdStrike·TI/TIP·Terraform"
+  },
+  {
+   "n": 5,
+   "title": "바이라인네트워크 · 메가존클라우드 \"AI 네이티브로의 전환, 준비 끝\" (HALO 공개)",
+   "url": "https://byline.network/2025/05/8-332/",
+   "kind": "news",
+   "date": "2025-05-08",
+   "note": "HALO = 통합 보안 컨설팅·AI-SOC·관리형 보안 서비스 플랫폼"
+  },
+  {
+   "n": 6,
+   "title": "MegazoneCloud · Security 서비스 소개(HALO)",
+   "url": "https://megazone.com/us/service/security",
+   "kind": "company",
+   "note": "진단 → vCISO → ANR → MIDR(24/7) → AI-SOC, MSS/MDR/SOC · SIEM/XDR, CNAPP 예로 Wiz"
+  },
+  {
+   "n": 7,
+   "title": "MegazoneCloud 뉴스룸 · 위수영 HALO 유닛장 인터뷰(이데일리 영문판)",
+   "url": "https://megazone.com/us/resources/newsroom/45",
+   "kind": "company",
+   "date": "2025-08-11",
+   "note": "AI로 경보 전수 검사·통합과 자동화·보안 인력 채용난"
+  },
+  {
+   "n": 8,
+   "title": "바이라인네트워크 · 메가존클라우드, AWS 보안 컴피턴시 획득",
+   "url": "https://byline.network/2026/09/9-493/",
+   "kind": "news",
+   "date": "2026-09-09",
+   "note": "24시간 365일 SOC · ISMS-P·ISO 27001·42001 · AWS 자격증 1,800여 개 · 엔지니어 1,000명 이상 · HALO 네 틀(제로 트러스트 포함)"
+  },
+  {
+   "n": 9,
+   "title": "아이뉴스24 · 메가존클라우드 HALO 매출 400% 성장·고객사 203곳",
+   "url": "https://www.inews24.com/view/1968526",
+   "kind": "news",
+   "date": "2026-05-14"
+  },
+  {
+   "n": 10,
+   "title": "CIO Korea · 메가존클라우드, 파이오링크와 클라우드 보안 서비스 협력",
+   "url": "https://www.cio.com/article/3599107/",
+   "kind": "news",
+   "date": "2024-11-05",
+   "note": "클라우드 보안관제 SECaaS, 침해사고 분석·취약점 진단·모의 훈련으로 확장 계획"
+  },
+  {
+   "n": 11,
+   "title": "CIO Korea · 메가존클라우드–위즈, 클라우드 보안 플랫폼 연계 협력",
+   "url": "https://www.cio.com/article/4118485/",
+   "kind": "news",
+   "date": "2026-01-19"
+  },
+  {
+   "n": 12,
+   "title": "잡코리아 · 메가존클라우드㈜ 기업정보",
+   "url": "https://www.jobkorea.co.kr/company/16154621/?C_IDX=9203",
+   "kind": "company",
+   "date": "2026",
+   "note": "주소·대졸초임·복리후생 목록·연혁(2022년 보안관제센터 오픈)"
+  },
+  {
+   "n": 13,
+   "title": "바이라인네트워크 · 메가존클라우드, 흑자 전환…작년 매출 1조7500억원",
+   "url": "https://byline.network/2026/04/7-412/",
+   "kind": "news",
+   "date": "2026-04-07",
+   "note": "보안 매출 700억원 이상 · 위즈·지스케일러·체크포인트 파트너십"
+  },
+  {
+   "n": 14,
+   "title": "NIST SP 800-61 Rev. 3 · Incident Response Recommendations and Considerations for Cybersecurity Risk Management",
+   "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+   "kind": "reference",
+   "date": "2025-04-03"
+  },
+  {
+   "n": 15,
+   "title": "MITRE ATT&CK",
+   "url": "https://attack.mitre.org/",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "OWASP Top 10:2025",
+   "url": "https://top10.owasp.org/2025/",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "SigmaHQ · Sigma 탐지 규칙 저장소",
+   "url": "https://github.com/SigmaHQ/sigma",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Microsoft Learn · Microsoft Sentinel 플레이북으로 위협 대응 자동화(SOAR)",
+   "url": "https://learn.microsoft.com/en-us/azure/sentinel/automate-responses-with-playbooks",
+   "kind": "reference",
+   "note": "다른 회사 제품 — SOAR 플레이북이 보통 무엇인지"
+  },
+  {
+   "n": 19,
+   "title": "NIST SP 800-207 · Zero Trust Architecture",
+   "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+   "kind": "reference",
+   "date": "2020-08-11"
+  },
+  {
+   "n": 20,
+   "title": "KISA 보호나라 · 보고서/가이드 (2026년 상반기 침해사고 원인분석 동향, 랜섬웨어 분석 보고서)",
+   "url": "https://www.boho.or.kr/kr/bbs/list.do?menuNo=205021&bbsId=B0000127",
+   "kind": "reference",
+   "date": "2026"
+  },
+  {
+   "n": 21,
+   "title": "Microsoft Security 101 · What is a CNAPP?",
+   "url": "https://www.microsoft.com/en-us/security/business/security-101/what-is-cnapp",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "GIAC · Certified Incident Handler (GCIH) / 디지털 포렌식·사고 대응 자격(GCFA)",
+   "url": "https://www.giac.org/certification/gcih",
+   "kind": "reference",
+   "note": "포렌식 계열 목록: giac.org/certifications/digital-forensics-incident-response"
+  },
+  {
+   "n": 23,
+   "title": "Splunk Education · Intro to Splunk (무료 e러닝)",
+   "url": "https://www.splunk.com/en_us/training/courses/intro-to-splunk.html",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "경기일보 · 메가존클라우드 과천 본사 이전",
+   "url": "https://www.kyeonggi.com/article/20250916580179",
+   "kind": "news",
+   "date": "2025-09-16",
+   "note": "서울 강남구 → 과천, 2천여 명 근무"
+  },
+  {
+   "n": 25,
+   "title": "MegazoneCloud · Megazone HALO 제품 소개",
+   "url": "https://www.megazone.com/hk/product/halo",
+   "kind": "company",
+   "note": "24X7 클라우드 보안관제 · AI 기반 탐지·대응 · 멀티 클라우드(AWS·Azure·GCP·Naver Cloud) · ISMS-P·ISO27K·CSAP"
+  }
+ ],
+ "caveat": "메가존 AI-SOC 팀의 기술 블로그·발표 영상은 찾지 못해(받은 영상 없음) 회사 근거는 서비스 페이지·인터뷰·보도·같은 부서 공고 셋에 기댔습니다. 실제 SIEM/SOAR 제품, 교대 주기, 경보 분량은 공개되지 않아 NIST·OWASP·MITRE·다른 회사 문서로 '보통 이런 것'을 보였습니다. 공고가 포지션 다섯 개를 한 줄 목록으로 붙여 올려 수집본에서는 업무·요건·우대가 섞여 보일 수 있습니다 — 이 풀이는 원문 순서(포지션별 업무 3 · 요건 2 · 우대 2)대로 갈랐습니다.",
+ "resources": [
+  {
+   "id": "halo-interview",
+   "title": "위수영 HALO 유닛장 인터뷰(이데일리 영문판)",
+   "by": "MegazoneCloud 뉴스룸 · 2025-08",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://megazone.com/us/resources/newsroom/45",
+   "why": "이 조직의 장이 AI-SOC를 왜·어떻게 하려는지 직접 말한 글. 지원 동기·면접 전에 먼저 읽는다."
+  },
+  {
+   "id": "nist-80061",
+   "title": "NIST SP 800-61 Rev. 3 · Incident Response Recommendations",
+   "by": "NIST · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+   "why": "CERT 포지션의 'IR 프로세스'가 무엇으로 이뤄지는지 — 준비·탐지·대응·복구·개선의 기준 문서."
+  },
+  {
+   "id": "attack",
+   "title": "MITRE ATT&CK — Enterprise Matrix",
+   "by": "MITRE",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://attack.mitre.org/",
+   "why": "'침입 기법 기초 지식'의 지도. 전술(세로줄) 이름부터 외우고, 경보를 볼 때마다 어느 칸인지 찾아본다."
+  },
+  {
+   "id": "owasp-top10",
+   "title": "OWASP Top 10:2025",
+   "by": "OWASP Foundation",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://top10.owasp.org/2025/",
+   "why": "관제 포지션 자격요건 그대로. 항목마다 '이 공격이 WAF 로그에 어떻게 찍히나'를 적어 보며 읽는다."
+  },
+  {
+   "id": "sigma",
+   "title": "Sigma — 탐지 규칙 공개 형식과 규칙 저장소",
+   "by": "SigmaHQ",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/SigmaHQ/sigma",
+   "why": "'탐지 로직 고도화'를 실제 규칙으로 보는 곳. 규칙 하나를 골라 어떤 로그·조건으로 잡는지 읽는다."
+  },
+  {
+   "id": "sentinel-playbooks",
+   "title": "Microsoft Sentinel · 플레이북으로 위협 대응 자동화",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://learn.microsoft.com/en-us/azure/sentinel/automate-responses-with-playbooks",
+   "why": "SOAR 플레이북이 경보 → 조회 → 차단을 어떻게 잇는지 공식 문서로 본다(메가존이 쓰는 제품인지는 공개 안 됨)."
+  },
+  {
+   "id": "splunk-intro",
+   "title": "Intro to Splunk",
+   "by": "Splunk Education · 무료 e러닝",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.splunk.com/en_us/training/courses/intro-to-splunk.html",
+   "why": "SIEM 화면에서 검색·보고서·대시보드를 처음 만져 보는 짧은 강의. 'SIEM 실시간 모니터링'의 손 감각.[23]"
+  },
+  {
+   "id": "kisa-reports",
+   "title": "KISA 보호나라 보고서/가이드 — 침해사고 원인분석 동향·랜섬웨어 분석 보고서",
+   "by": "한국인터넷진흥원",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.boho.or.kr/kr/bbs/list.do?menuNo=205021&bbsId=B0000127",
+   "why": "국내 침해사고 분석 보고서의 실제 모양. CERT 포지션의 '인텔리전스 보고서 발행'을 따라 써 볼 본보기."
+  },
+  {
+   "id": "detection-eng-book",
+   "title": "실전 위협 탐지 엔지니어링",
+   "by": "에이콘출판 · 2026",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000012746248",
+   "why": "탐지 규칙을 설계·개발·검증하는 전 과정. 시니어 CERT의 '탐지 로직 고도화 및 플레이북 설계'에 맞는 한국어 책."
+  },
+  {
+   "id": "threat-intel-book",
+   "title": "위협 인텔리전스와 데이터 기반 위협 사냥",
+   "by": "에이콘출판 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9C%84%ED%98%91%20%EC%9D%B8%ED%85%94%EB%A6%AC%EC%A0%84%EC%8A%A4%EC%99%80%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B8%B0%EB%B0%98%20%EC%9C%84%ED%98%91%20%EC%82%AC%EB%83%A5",
+   "why": "위협정보를 모으고 그것으로 숨은 공격을 찾는(헌팅) 방법. 'SIEM/EDR 위협 탐지'와 '인텔리전스 보고서'용."
+  },
+  {
+   "id": "packet-analysis",
+   "title": "Practical Packet Analysis (3rd Edition)",
+   "by": "Chris Sanders · No Starch Press · 2017",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://nostarch.com/packetanalysis3",
+   "why": "와이어샤크로 패킷을 열어 TCP/IP·포트 스캔·공격 트래픽을 읽는 책. '패킷 분석 가능자'와 'TCP/IP, IDS/IPS 이해'용."
+  },
+  {
+   "id": "pma",
+   "title": "Practical Malware Analysis",
+   "by": "Michael Sikorski · Andrew Honig · No Starch Press · 2012",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://nostarch.com/malware.htm",
+   "why": "악성 파일의 정적·동적 분석과 분석용 가상 환경 만들기. '악성 파일 행위 분석'의 고전(오래된 책이라 도구는 최신으로 바꿔 본다)."
+  },
+  {
+   "id": "network-book",
+   "title": "모두의 네트워크",
+   "by": "미즈구치 카츠야 · 이승룡 옮김",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%AA%A8%EB%91%90%EC%9D%98%20%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC",
+   "why": "OSI 7계층·TCP/IP를 처음 잡는 입문서. 운영 포지션의 '인프라/네트워크 기본 이해'의 출발점."
+  },
+  {
+   "id": "nist-207",
+   "title": "NIST SP 800-207 · Zero Trust Architecture",
+   "by": "NIST · 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+   "why": "시니어 운영 우대사항의 'Zero Trust'가 무엇을 뜻하는지 정의한 원문."
+  },
+  {
+   "id": "gcih",
+   "title": "GIAC Certified Incident Handler (GCIH)",
+   "by": "GIAC",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.giac.org/certification/gcih",
+   "why": "우대 자격증의 시험 범위(사고 대응·공격 기법). 따지 않더라도 범위표를 공부 목록으로 쓴다."
+  },
+  {
+   "id": "gcfa",
+   "title": "GIAC 디지털 포렌식·사고 대응 자격 목록(GCFA 등)",
+   "by": "GIAC",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.giac.org/certifications/digital-forensics-incident-response",
+   "why": "포렌식 분석가 자격(GCFA)의 범위. '포렌식 수행'에 무엇이 들어가는지 목록으로 본다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "바닥 다지기 — 네트워크와 OS",
+   "time": "2~3주",
+   "goal": "패킷 하나·로그 한 줄이 무엇을 뜻하는지 설명할 수 있다.",
+   "resources": [
+    "network-book",
+    "packet-analysis"
+   ],
+   "task": "내 PC에서 웹 사이트 하나를 열며 와이어샤크로 캡처하고, DNS 질의 → TCP 핸드셰이크 → HTTP 요청을 순서대로 짚은 메모를 만든다."
+  },
+  {
+   "title": "공격이 로그에 찍히는 모양",
+   "time": "2주",
+   "goal": "OWASP Top 10과 ATT&CK 전술을 로그 예와 짝지을 수 있다.",
+   "resources": [
+    "owasp-top10",
+    "attack"
+   ],
+   "task": "가상 웹 로그 50줄을 만들어 SQL 인젝션·XSS·무차별 로그인을 섞고, 위 풀이의 WAF 스크립트처럼 '막힘/통과'를 가르는 판별기를 짠다."
+  },
+  {
+   "title": "SIEM 만져 보기와 탐지 규칙",
+   "time": "2~3주",
+   "goal": "SIEM에서 검색·경보를 만들고, 규칙 하나를 Sigma 형식으로 쓸 수 있다.",
+   "resources": [
+    "splunk-intro",
+    "sigma",
+    "detection-eng-book"
+   ],
+   "task": "2단계 로그를 SIEM(무료판)에 넣고 '5분 안 실패 5번 뒤 성공' 경보를 만든 뒤, 같은 규칙을 Sigma YAML로 적어 본다."
+  },
+  {
+   "title": "사고 대응과 보고서",
+   "time": "2~3주",
+   "goal": "가상 사고 하나를 타임라인·IoC·재발 방지까지 보고서로 낼 수 있다.",
+   "resources": [
+    "nist-80061",
+    "kisa-reports",
+    "threat-intel-book"
+   ],
+   "task": "KISA 보고서 형식을 본떠, 3단계에서 잡은 가상 계정 탈취 사건의 타임라인·ATT&CK 기법·IoC·조치 제안을 2쪽짜리 보고서로 쓴다."
+  },
+  {
+   "title": "자동화와 분석 심화 (CERT·시니어 지망)",
+   "time": "계속",
+   "goal": "플레이북을 자동화하고 의심 파일을 격리 환경에서 분석할 수 있다.",
+   "resources": [
+    "sentinel-playbooks",
+    "pma",
+    "gcih",
+    "gcfa",
+    "nist-207",
+    "halo-interview"
+   ],
+   "task": "경보 JSON을 받아 IP 평판 조회 → 위험도 판단 → 차단 목록 파일 갱신까지 하는 파이썬 플레이북을 만들고, 실패했을 때 사람에게 넘기는 분기를 넣는다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없고, 기업정보의 **대졸 초임 3,743만원**이 유일한 공개 숫자다 — 비상장사라 공시 평균 급여는 없다",
+  "rows": [
+   {
+    "label": "대졸 초임",
+    "value": "3,743만원",
+    "amount": 3743,
+    "basis": "채용 사이트 기업정보 · 2026년",
+    "note": "잡코리아 기업정보에 표시된 값이다. 직군 구분이 없어 보안관제·교대 근무 수당이 들어간 금액인지 알 수 없다 [12]"
+  }
+ ],
+ "how": "메가존클라우드는 비상장사라 사업보고서의 '직원 1인 평균 급여액'이 없다 — 공시 숫자 없음. 공공데이터 집계 사이트(자소설닷컴) 페이지는 이번에 열리지 않아 싣지 않았다 {추론}. 관제 포지션은 야간·휴일 교대라 기본급 외 수당이 크게 갈린다 — 처우 협의 때 기본급·교대 수당·야간교통비를 따로 묻는다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무",
+    "detail": "주5일제 · 주52시간 · 칼퇴 권장 · 자율복장"
+   },
+   {
+    "name": "휴가",
+    "detail": "연차제도 · 연차수당 · 자유로운 휴가문화 · 육아휴직 · 임신/출산 지원"
+   },
+   {
+   "name": "교통",
+    "detail": "출퇴근 셔틀버스 · 주차 지원 · 야간교통비 지급"
+   },
+   {
+    "name": "교육·성장",
+    "detail": "임직원 교육비 · 신입 사원 교육 · 직무능력향상교육 · 자격증취득지원 · 도서 구입비 지원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "구내식당 · 헬스시설 · 사내 어린이집"
+   },
+   {
+    "name": "금전 지원",
+    "detail": "복지포인트 · 통신비 · 경조금 · 명절선물/명절상여 · 추천비 지원"
+   },
+   {
+    "name": "건강·장비",
+    "detail": "건강검진 · 장비 지원 · 웰컴키트"
+   },
+   {
+    "name": "보험",
+    "detail": "국민연금 · 고용보험 · 산재보험 · 건강보험"
+   }
+  ],
+  "note": "잡코리아 기업정보의 복리후생 목록(2026년 표시)을 옮겼다 [12]. 금액·조건은 적혀 있지 않고, 계약직·관계사에도 같은지는 알 수 없다 {추론}."
+ },
+ "location": {
+  "name": "메가존클라우드 과천 본사 (메가존산학연센터)",
+  "address": "경기도 과천시 과천대로7길 74 (갈현동, 메가존산학연센터)",
+  "postal": "13840",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EA%B3%BC%EC%B2%9C%EC%8B%9C%20%EA%B3%BC%EC%B2%9C%EB%8C%80%EB%A1%9C7%EA%B8%B8%2074",
+  "near": "과천지식정보타운 일대 {추론}",
+  "note": "주소는 잡코리아 기업정보 [12], 서울 강남에서 과천으로 옮긴 사실은 경기일보 [24]. 공고에 '사업부서에 따라 상세근무지가 달라질 수 있다'고 적혀 있다 [1]. 우편번호는 사업자 정보 사이트 표기다 {추론}."
+ }
+}
