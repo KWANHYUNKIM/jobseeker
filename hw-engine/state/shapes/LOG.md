@@ -252,3 +252,13 @@
   Thermalright FROZEN HORIZON 360 Digital ARGB(high — 사양 표 펌프 70.4×69.4×53.2mm, 공식 Blueprint 도면 팬 3개·호스 400mm, 사진 6장: 숫자 화면 네모 펌프, 팬 틀 테두리만 빛나는 검정 날개).
 - 알게 된 것: 3RSYS 사양의 '25T'·'28T' 는 날개 수가 아니라 팬 두께(mm)다 — 상세 '제품 스펙' 표의 120×120×25/28mm 와 맞는다.
 - 실물과 아직 다른 점: LE360 V2·SF 360·FROZEN HORIZON 의 네모 펌프(SF 는 앞면 팬 달린 블록, FROZEN HORIZON 은 세븐 세그먼트 숫자 화면), FC 360 의 둥근 화면과 동봉 램 쿨러, FROZEN HORIZON 의 '틀 테두리만 빛나는' 팬, SF 360 의 28mm 두께 팬은 렌더러가 못 그린다(REQUESTS [3D 렌더러] 새 줄 — 기존 pump_shape·display·fan_light_at 요청에 더함). 네 제품 models 의 `height_mm`(펌프 높이)가 null 이라 [hw-models] 새 줄. 켜진 사진·각도 때문에 LE360 V2 밖의 셋은 날개 수를 비웠다.
+
+## 2026-11-23 · 26회차(무인) — 쿨러 다섯(듀얼타워 다섯)
+
+- 12번 맨 앞 그래픽카드 COLORFUL(403)·ZOTAC(468)와 case-atx-mid·cooler-air-single(다른 세션의 미커밋 파일) 항목은 지난 회차처럼 미루고, cooler-air-dual 의 남은 다섯을 적었다(공식 사양 표·도면·상세 이미지 + 공식 사진을 저장소 밖 임시 폴더 `%TEMP%/hw3d26` 에서 모음 판으로 보기만, 다나와는 쓰지 않음):
+  3RSYS RC1500N PWM LITE(high — 스펙 120×117×158mm·non-LED, 상세 '6개의 히트파이프 & 쌍철봉 LITE'·'상단 마그네틱 커버'·'120MM NON-RGB 듀얼 팬') ·
+  DEEPCOOL AG620 G2 ARGB(high — 사양 표 Ø6mm×6·팬 120×120×25mm·ARGB 3핀 5V, 갤러리 6장: AG620 G2 와 같은 매트릭스 핀 방열판에 닫힌 날개 ARGB 팬 2) ·
+  Thermalright Peerless Assassin 140 BLACK·140 SE(high — 사양 표 6mm×6·팬 TL-C12B V2(SE 는 TL-C12C-X28 V2, 28mm) 120 + TL-D14CB 140, 사진 8장 + 도면: BLACK 은 전부 검정 도장, SE 는 은색 핀, 둘 다 사선 홈 무늬 덮개) ·
+  Thermalright Phantom Spirit 120 SE(high — 사양 표 6mm×7·TL-C12B V2, 사진 9장 + Blueprint: 은색 핀, 히트파이프 끝 고깔이 솟은 검정 덮개, 날개 9장).
+- 형식 메모: shapes JSON 은 손으로 맞춘 1칸 들여쓰기(marks 는 한 줄)라 `json.dump` 로 통째로 다시 쓰면 기존 줄이 전부 바뀐다 — 새 항목만 같은 꼴로 끝에 붙였다.
+- 실물과 아직 다른 점: PA140·140 SE 의 '앞 120 + 가운데 140' 두 크기 팬(fan_mm 는 앞면 120)과 AG620 G2 ARGB 의 날개 끝 고리는 렌더러가 못 그린다(REQUESTS [3D 렌더러] 새 줄 — 기존 두 크기 팬 요청에 더함). PS120 SE 의 models `fans` 가 null 이라 [hw-models] 새 줄. PA140 두 제품·RC1500N·AG620 G2 ARGB 는 각도·켜진 사진 때문에 앞면 팬 날개 수를 비웠고, PA140 화이트 판의 색은 한 칸에 담지 못한다.

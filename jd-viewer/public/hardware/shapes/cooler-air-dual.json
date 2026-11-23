@@ -258,6 +258,119 @@
    "confidence": "high",
    "checked_at": "2026-11-23",
    "note": "듀얼타워, 핀·히트파이프·윗 덮개·팬까지 전부 검정(무광). 히트파이프 7개(검정 도장)가 니켈 도금 은색 베이스로 모인다. 윗면은 묶음마다 검정 덮개에 사선으로 엇갈린 각진 홈 무늬와 THERMALRIGHT 글자, 옆면 핀 가장자리에도 갈매기(V) 무늬 판. 팬 TL-K12 2개(앞면 + 두 묶음 사이, 철사 클립) — 정면 사진에서 날개 9장, 날개는 불투명 검정이고 팬 틀 네 모서리의 호(弧) 띠만 ARGB 로 빛난다(지금 argb 는 날개 전체를 빛나게 그린다), 허브에 금색 축 + 점선 원. 팬 개수는 공식 표에 없고 사진(앞면 + 가운데)으로 셌다."
+  },
+  "3rsys-rc1500n-lite": {
+   "kind": "cooler",
+   "heatpipes": 6,
+   "stacks": 2,
+   "fans": 2,
+   "fan_mm": 120,
+   "base": "plate",
+   "fin_edge": "flat",
+   "color": "#18191b",
+   "fan_light": "none",
+   "sources": [
+    {
+     "title": "3RSYS RC1500N PWM 쌍철봉 LITE BLACK — 공식 쇼핑몰 제품 페이지(스펙: 120(W)×117(L)×158(H)mm, TDP 260W, 팬 120×120×25mm 2000RPM, non-LED · 사진 4장 + 상세 이미지: '니켈 도금 베이스, 6개의 히트파이프 & 쌍철봉 LITE'·'상단 마그네틱 커버'·'120MM NON-RGB 듀얼 팬'·'제품 사이즈' 도면)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1781068456"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "RC1500 ARGB LITE 와 같은 몸통의 불빛 없는 판 — 듀얼타워, 은색 알루미늄 핀 두 묶음을 한 장으로 덮는 검정 자석 윗 덮개(앞쪽에 길쭉한 홈 두 줄, 모서리에 작은 3RSYS 글자). 히트파이프 6개는 니켈 도금 은색, 니켈 도금 베이스 + 쌍철봉 LITE. 팬 2개(앞면 + 두 묶음 사이) 모두 불투명 검정 날개·검정 틀, 허브에 3RSYS 글자, 철사 클립 대신 'EASY SYSTEM' 고정 틀. 날개 수는 사진 각도로 확실히 세지 못해 비웠다. 덮개 글자는 아주 작아 marks 에 넣지 않았다."
+  },
+  "deepcool-ag620-g2-argb": {
+   "kind": "cooler",
+   "heatpipes": 6,
+   "stacks": 2,
+   "fans": 2,
+   "fan_mm": 120,
+   "base": "plate",
+   "fin_edge": "stepped",
+   "color": "#1c1d20",
+   "fan_light": "argb",
+   "marks": [
+    { "text": "DeepCool", "where": "cover" }
+   ],
+   "sources": [
+    {
+     "title": "DEEPCOOL AG620 G2 ARGB — 공식 제품 페이지(사양 표: 제품 129×136×159mm·방열판 127×110×156mm, 히트파이프 Ø6mm×6, 팬 120×120×25mm 4핀 PWM, Addressable RGB LED 3핀 5V, 니켈 도금 콜드플레이트·CTT 2.0, 'closed-wheel ARGB fans' · 갤러리 사진 6장 — 비스듬한 정면·정면·팬 없는 몸통·윗면·구성품·상자)",
+     "url": "https://www.deepcool.com/products/Cooling/cpuaircoolers/AG620-G2-ARGB-Superior-Performance-6-Heatpipe-Dual-Tower-CPU-Cooler/2026/22801.shtml"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "AG620 G2 와 같은 방열판 — 듀얼타워, 히트파이프 6개(니켈 도금)는 니켈 도금 콜드플레이트 위로. 핀 옆면이 '매트릭스' 바둑판 무늬로 들쭉날쭉해 stepped 로 적었다(렌더러의 톱니 근사). 핀은 은색 그대로, 윗면은 묶음마다 점 무늬 검정 덮개에 작은 DeepCool 글자. 팬 2개(앞면 + 두 묶음 사이, 철사 클립) 모두 ARGB — 반투명 날개 바깥을 고리(closed-wheel)가 두르고 날개 전체가 빛나며 허브는 검정. 켜진 사진이라 날개 수는 비웠고, 팬 바깥 고리는 렌더러가 그리지 않는다."
+  },
+  "thermalright-peerless-assassin-140": {
+   "kind": "cooler",
+   "heatpipes": 6,
+   "stacks": 2,
+   "fans": 2,
+   "fan_mm": 120,
+   "base": "plate",
+   "fin_edge": "flat",
+   "color": "#141517",
+   "fan_light": "none",
+   "marks": [
+    { "text": "THERMALRIGHT", "where": "cover" }
+   ],
+   "sources": [
+    {
+     "title": "Thermalright Peerless Assassin 140 BLACK — 공식 제품 페이지(사양: L140×W132×H158mm, 6mm 히트파이프 6개, C1100 순동 니켈 도금 베이스, TL-C12B V2 120×120×25mm + TL-D14CB 140×140×27mm · 사진 8장 + 도면)",
+     "url": "https://www.thermalright.com/product/peerless-assassin-140/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "블랙 판 기준 — 핀·히트파이프·베이스·덮개·팬까지 전부 검정 도장(140 SE 와 같은 몸통에 색만 다름, 화이트 판은 흰색). 윗면은 묶음마다 검정 덮개에 사선으로 꺾인 홈 무늬와 THERMALRIGHT 글자. 팬 두 크기 — 앞면 120×25mm(TL-C12B V2) + 두 묶음 사이 140×27mm(TL-D14CB, 사진에서 날개 9장) — fan_mm 는 앞면 120, 렌더러는 같은 크기로 그린다. 앞면 팬 날개 수는 세지 못해 비웠다. 불빛 없음. 화이트 판 색은 이 칸에 담지 못한다."
+  },
+  "thermalright-peerless-assassin-140-se": {
+   "kind": "cooler",
+   "heatpipes": 6,
+   "stacks": 2,
+   "fans": 2,
+   "fan_mm": 120,
+   "base": "plate",
+   "fin_edge": "flat",
+   "color": "#161719",
+   "fan_light": "none",
+   "marks": [
+    { "text": "THERMALRIGHT", "where": "cover" }
+   ],
+   "sources": [
+    {
+     "title": "Thermalright Peerless Assassin 140 SE — 공식 제품 페이지(사양: L140×W132×H158mm, 6mm 히트파이프 6개, C1100 순동 니켈 도금 베이스, TL-C12C-X28 V2 120×120×28mm + TL-D14CB 140×140×27mm · 사진 8장 + 도면(140 / 160 / 158))",
+     "url": "https://www.thermalright.com/product/peerless-assassin-140-se/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "듀얼타워, 은색 알루미늄 핀 + 니켈 도금 히트파이프 6개, 니켈 도금 베이스. 윗면은 묶음마다 검정 덮개에 사선으로 꺾인 홈 무늬와 THERMALRIGHT 글자(덮개가 히트파이프 끝을 가린다). 팬 두 크기 — 앞면 120×28mm(TL-C12C-X28, 두꺼운 틀 옆면에 T 모양 구멍) + 두 묶음 사이 140×27mm(TL-D14CB, 사진에서 날개 9장) — fan_mm 는 앞면 120 이고 렌더러는 두 팬을 같은 크기로 그린다. 앞면 120 팬 날개 수는 각도 때문에 세지 못해 fan_blades 는 비웠다. 팬은 불투명 검정·불빛 없음."
+  },
+  "thermalright-phantom-spirit-120-se": {
+   "kind": "cooler",
+   "heatpipes": 7,
+   "stacks": 2,
+   "fans": 2,
+   "fan_mm": 120,
+   "base": "plate",
+   "fin_edge": "flat",
+   "color": "#151618",
+   "fan_blades": 9,
+   "fan_light": "none",
+   "marks": [
+    { "text": "THERMALRIGHT", "where": "cover" }
+   ],
+   "sources": [
+    {
+     "title": "Thermalright Phantom Spirit 120 SE — 공식 제품 페이지(사양: L110×W125×H154mm, 6mm 히트파이프 7개, C1100 순동 니켈 도금 베이스, TL-C12B V2 120×120×25mm 4핀 PWM · 사진 9장 — 비스듬한 윗면·정면·옆면·팬 없는 몸통·윗면·구성품 + Blueprint 도면)",
+     "url": "https://www.thermalright.com/product/phantom-spirit-120-se/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "듀얼타워, 은색 알루미늄 핀 + 니켈 도금 히트파이프 7개가 니켈 도금 베이스로 모인다. 윗면은 묶음마다 검정 덮개에 히트파이프 끝 7개가 은색 고깔로 튀어나오고 THERMALRIGHT 글자와 T 로고, 덮개 앞뒤 모서리가 계단처럼 파였다. 팬 TL-C12B V2 2개(앞면 + 두 묶음 사이, 철사 클립), 정면 사진에서 날개 9장, 불투명 검정·불빛 없음, 허브에 T 로고 원판. 팬 개수는 공식 표에 없고 사진·구성품 사진(팬 2개)으로 셌다."
   }
  }
 }
