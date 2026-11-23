@@ -120,7 +120,7 @@ function LineDetail({ line, sources }: { line: RoleLine; sources: RoleSource[] }
   const t = (s: string) => <RichText text={s} sources={sources} />
   return (
     <div className="mt-2 rounded-xl border border-[#e2e8ec] bg-white px-5 py-4 text-[15px] leading-[25px] text-[#3a3a3a]">
-      <div className="grid grid-cols-[92px_1fr] gap-x-4 gap-y-4 max-sm:grid-cols-1 max-sm:gap-y-1">
+      <div className="grid grid-cols-[92px_minmax(0,1fr)] gap-x-4 gap-y-4 max-sm:grid-cols-1 max-sm:gap-y-1 [&>*]:min-w-0">
         <Label>왜 필요한가</Label>
         <div>{t(line.why)}</div>
 
