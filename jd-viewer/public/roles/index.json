@@ -46,6 +46,7 @@
   "wanted-394202": "mediphone-platform-engineer",
   "wanted-306088": "megazone-japan-cloud-engineer-associate",
   "wanted-306087": "megazone-japan-cloud-engineer-senior",
+  "saramin-55340311": "megazone-multicloud-ops-engineer",
   "wanted-394722": "nhn-japan-frontend",
   "wanted-395799": "progrit-frontend-tech-lead",
   "wanted-393626": "recruit-data-engineer-japan",
@@ -606,6 +607,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 26
+  },
+  {
+   "id": "megazone-multicloud-ops-engineer",
+   "company": "메가존클라우드",
+   "role": "AWS/멀티 클라우드 운영 엔지니어",
+   "jobs": [
+    "saramin-55340311"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 41
   },
   {
    "id": "nhn-japan-frontend",
