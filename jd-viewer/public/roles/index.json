@@ -97,6 +97,7 @@
   "wanted-389900": "technopro-cloud-engineer-aws-japan",
   "wanted-394499": "technopro-lowcode-java-lead-japan",
   "ats-skcareers:sk:R262196": "tmap-ai-agent-engineer",
+  "wanted-378307": "tmap-android-sdk",
   "ats-skcareers:sk:R261800": "tmap-auto-ai-agent-tpm",
   "wanted-399666": "tmap-auto-android-client",
   "wanted-361653": "tmap-auto-dev-pm",
@@ -989,6 +990,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 22
+  },
+  {
+   "id": "tmap-android-sdk",
+   "company": "티맵모빌리티",
+   "role": "Android SDK 엔지니어",
+   "jobs": [
+    "wanted-378307"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 19
   },
   {
    "id": "tmap-auto-ai-agent-tpm",
