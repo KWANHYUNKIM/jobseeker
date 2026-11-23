@@ -1,0 +1,1452 @@
+{
+ "id": "datachain-senior-sre-stablecoin",
+ "company": "Datachain(데이터체인)",
+ "role": "시니어 SRE · 스테이블코인 사업",
+ "team": "ステーブルコイン関連事業 · プロダクト開発 (Datachain Wallet)",
+ "jobs": [
+  "wanted-389061"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "블록체인 위 금융 인프라를 만드는 회사(모회사 Speee)의 **법인용 Web3 지갑 「Datachain Wallet」**과 데이터 프라이버시 제품을 받치는 SRE(서비스가 멈추지 않게 운영을 공학으로 푸는 엔지니어)입니다.[1][2] 사용자 자산을 다루는 시스템이라 신뢰성과 함께 **권한·비밀키를 새지 않게 하는 운영**이 같은 무게로 요구됩니다.[7][9] 회사는 이 밖에 크로스체인 브리지 「TOKI」와, 메가뱅크 그룹과 함께하는 스테이블코인 국제 송금 실증 「Project Pax」도 이끕니다.[5][16]",
+  "env": "**Azure + AKS** 위에 웹앱·블록체인 노드(직접 운영, 8TB 디스크)·체인 사이 미들웨어(Intel SGX 위의 LCP)를 올리고, Terraform 은 plan·apply 를 나눈 Atlantis 로, 감시는 OpenTelemetry·Grafana 로 합니다.[4][5][6][7][9] 2025년 1월 기준 회사 약 20명 중 SRE 4명이었습니다.[6] 일본어(비즈니스, N1 상당)·일본 이주가 필수입니다.[1][3]",
+  "oneline": "웹 SRE 의 기본기 위에 **'노드는 무겁고, 원인은 체인 안에 있고, 권한은 언제든 털릴 수 있다'**는 전제를 더한 자리입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "・Azure AKS環境のインフラ設計・構築・最適化",
+   "short": "Azure 의 관리형 Kubernetes(AKS) 위에 웹앱·블록체인 노드·릴레이어를 올리고 다듬는 일이다.",
+   "why": "이 회사의 서비스 인프라는 **Azure + AKS 가 중심**입니다.[5][6] 크로스체인 브리지(서로 다른 블록체인 사이에서 토큰을 옮기는 서비스) 「TOKI」를 예로 들면, 웹앱(화면·BFF·백엔드·RDB), 블록체인 노드, 체인 사이를 잇는 미들웨어(YUI Relayer + LCP) 세 덩어리가 모두 AKS 위에 있습니다.[5][6] Azure 를 고른 이유도 회사가 밝혔습니다 — LCP 는 Intel SGX(CPU 가 메모리를 암호화해 관리자도 못 들여다보게 하는 기술) 안에서 돌아야 하는데, 세 대형 클라우드 중 SGX VM 을 주는 곳이 Azure 뿐이었다는 것입니다.[7][8] 이 공고의 제품인 법인용 지갑 Datachain Wallet 도 Azure 위에 있습니다.[9][10]",
+   "actually": {
+    "items": [
+     "**노드 풀 나누기** — SGX 가 되는 기밀 컴퓨팅 VM(DCsv2·DCsv3)을 AKS 노드 풀로 따로 두고, SGX device plugin 으로 Pod 에 붙인다.[7][28]",
+     "**Pod 를 한 노드에 묶기** — SGX 로 봉인(sealing)한 데이터는 같은 CPU 에서만 풀린다. 그래서 enclave(SGX 안에서 도는 프로그램)마다 Deployment·노드 풀을 만들고 nodeSelector·taint 로 늘 같은 노드에 뜨게 한다.[7]",
+     "**상태가 있는 워크로드** — Ethereum 노드는 StatefulSet 으로 띄우고 디스크를 8TB 이상 잡는다.[6]",
+     "**클라우드 밖도 설계에 든다** — 화면용 조회는 노드 대행 서비스(NaaS, 예 Chainstack)를 쓰고, 체인 사이 처리용 노드만 직접 운영한다.[5][6]",
+     "**보안 부품** — 시크릿은 Azure Key Vault, DB 는 Azure Database for PostgreSQL, 강한 권한은 Entra PIM 으로 시간 제한을 걸어 빌린다.[9][10]",
+     "**프로젝트마다 클라우드가 다르다** — 같은 회사의 토큰화 예금 쪽 공고는 AWS(ECS·Aurora·Kinesis·CDK)를 적었다. 이 자리는 Azure 쪽이다.[2][3][4]"
+    ]
+   },
+   "how_far": "AKS 는 컨트롤 플레인(클러스터의 두뇌)을 Microsoft 가 맡고, 사용자는 노드 풀·네트워크·스토리지·버전 업그레이드를 맡습니다 — AKS 는 최신 마이너 버전과 그 아래 두 개(N-2)까지만 지원하니 업그레이드가 정기 업무입니다.[29] SGX 를 처음부터 알 필요는 없지만, '왜 이 Pod 는 이 노드에만 떠야 하나'를 설명할 수 있어야 이 클러스터를 고칠 수 있습니다.{추론}",
+   "refs": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    28,
+    29
+   ],
+   "study": [
+    "datachain-sre-kaigi",
+    "datachain-sgx",
+    "aks-docs",
+    "aks-sgx",
+    "k8s-book",
+    "cka"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・SLO/SLI/エラーバジェットの設計・モニタリング改善",
+   "short": "'얼마나 잘 돌아야 하나'를 숫자(SLO)로 정하고, 남은 여유(오류 예산)로 경보와 배포를 정하는 일이다.",
+   "why": "블록체인은 블록이 쌓이는 시간 때문에 지연을 피할 수 없어서, 이 회사는 크로스체인 처리에 1초가 아니라 **분 단위 SLO** 를 둡니다.[6] 처음에는 지연·처리량을 잴 방법조차 없었고, 메트릭을 새로 만들어 SLI(실제로 재는 지표)로 쓸 수 있게 된 뒤 이것이 가장 중요한 SLO 경보가 됐다고 발표했습니다.[5][6]",
+   "actually": {
+    "items": [
+     "**무엇을 재나** — 크로스체인은 패킷 전송 지연·처리량, 노드는 블록 동기화 지연(네트워크 최신 블록을 얼마나 늦게 따라가나).[6]",
+     "**화면과 뒷단은 기준이 다르다** — 화면은 노드를 바로 읽으니 1초도 느리다. 그래서 화면용은 빠르고 안정적인 NaaS, 뒷단은 분 단위 SLO 를 두고 직접 운영한다.[6]",
+     "**노드의 버릇을 알아야 한다** — 쓰는 노드 구현(Lodestar)에는 약 27시간에 한 번 반드시 생기는 현상이 있었고, 메트릭을 보며 이런 버릇을 알아냈다고 했다.[6]",
+     "**오류 예산** — 99.9% 를 30일로 잡으면 허용되는 나쁜 시간은 43.2분이다. 예산을 다 쓰면 급한 수정 말고는 배포를 멈추는 식의 정책을 미리 정해 둔다.[20][22]",
+     "**소진 속도 경보** — '1시간 동안 평소의 14.4배로 예산을 쓰면 호출' 같은 규칙. 1시간에 예산의 2% 가 사라지는 속도다.[21]",
+     "**다른 자리의 방식** — 토큰화 예금 쪽 SRE 공고는 서비스 목록(카탈로그)과 CUJ(사용자가 꼭 해내야 하는 동작) 기준으로 SLO 를 정한다고 적었다.[3]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "99.9% SLO 의 오류 예산과 소진 속도 (직접 실행)",
+     "body": "30일 예산은 43.2분이고, 14.4배 속도로 1시간이면 예산의 2.0%, 6배로 6시간이면 5.0%, 1배로 72시간이면 10.0% 를 씁니다. 경보 기준을 이 숫자로 정합니다.[21]",
+     "lang": "python",
+     "code": "# 예시 1: 99.9% SLO, 30일 창 — 오류 예산과 소진 속도(burn rate)\nslo = 0.999\nwindow_min = 30 * 24 * 60\nbudget_min = window_min * (1 - slo)\nprint(f\"30일 오류 예산: {budget_min:.1f}분\")\nfor rate, look in [(14.4, 60), (6, 360), (1, 4320)]:\n    spent = rate * look * (1 - slo) / budget_min * 100\n    print(f\"소진 속도 {rate:>4} 로 {look/60:>4.0f}시간 → 예산의 {spent:.1f}% 사용\")"
+    }
+   ],
+   "how_far": "목표 숫자(몇 %, 몇 분)는 제품·사업 쪽과 같이 정하고, SRE 는 무엇으로 잴지·대시보드·경보·예산 정책의 초안을 만듭니다.[20]{추론} 시니어 자리이니 '이 지연은 블록체인 탓이라 못 줄인다'와 '우리 릴레이어 탓이다'를 숫자로 가르는 데까지가 기대치로 보입니다.{추론}",
+   "refs": [
+    3,
+    5,
+    6,
+    20,
+    21,
+    22
+   ],
+   "study": [
+    "sre-book-ja",
+    "sre-wb-slo",
+    "hidalgo-slo",
+    "datachain-sre-kaigi"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・CI/CDパイプラインの改善・自動化推進",
+   "short": "코드와 인프라 변경이 운영에 나가는 길을 빠르게, 그리고 권한이 새지 않게 다듬는 일이다.",
+   "why": "Datachain Wallet 은 금융 시스템이라, 회사 SRE 리드는 CI/CD 가 **권한을 훔치는 통로**가 되지 않게 하는 방법을 2026년 발표 주제로 삼았습니다.[9][10] 같은 회사의 다른 공고는 개발 환경으로 GitHub Actions·Argo CD·Argo Workflows 를 적었습니다(프로젝트마다 다를 수 있다는 단서가 붙어 있습니다).[4]",
+   "actually": {
+    "items": [
+     "**흔한 구조의 빈틈** — PR 마다 GitHub Actions 로 plan, 병합하면 apply, plan·apply 가 같은 권한, 개발자 모두 저장소 쓰기 권한. 이러면 pull_request 이벤트가 PR 쪽 워크플로 정의로 돌기 때문에 누구나 워크플로를 고쳐 클라우드 토큰을 꺼낼 수 있다.[9][10]",
+     "**plan 만 해도 위험하다** — terraform init 이 공격자가 고른 provider 를 받아 실행할 수 있고, external 데이터 소스는 plan 중에 아무 명령이나 돌린다.[9][10]",
+     "**이 팀의 구조** — Terraform 실행기 Atlantis 를 plan 용·apply 용 두 대(별도 VM)로 나눠 권한도 따로 준다. PR → plan 결과 댓글 → 1명 이상 승인 → 'atlantis apply' 댓글 → apply 쪽이 저장해 둔 plan 결과를 받아 적용.[9][10][33]",
+     "**비밀은 state 에 안 남긴다** — 시크릿 값은 Terraform 밖에서 넣고 write-only 인수(Terraform 1.11+)를 쓴다. plan 에 시크릿 읽기 권한이 필요한 문제는 값 없이 메타데이터만 보는 자작 provider 로 풀었다.[10][32]",
+     "**스마트 컨트랙트 배포** — 블록체인 위 프로그램도 빌드한 바이트코드를 트랜잭션에 실어 보내 배포하므로 CI/CD 와 닿는다.[6]"
+    ]
+   },
+   "level": {
+    "basic": "GitHub Actions 로 빌드·테스트·이미지 푸시, 환경별 수동 승인 단계를 만든다.",
+    "work": "Terraform plan·apply 를 PR 에 붙이고, OIDC(비밀번호 없이 짧은 토큰을 받는 방식)와 권한 범위를 설명할 수 있다.",
+    "team": "'plan 권한은 언젠가 털린다'를 전제로 plan·apply 권한을 나누고 provider·데이터 소스·state 에 남는 값까지 통제한다.[10]"
+   },
+   "how_far": "이 팀의 기준은 발표에 나온 그대로 'plan 쪽이 털려도 피해가 없게'입니다.[10] 입사 첫 단계에서는 이 구조를 이해하고 새 서비스의 파이프라인을 같은 틀에 맞추는 일이 먼저일 것입니다.{추론}",
+   "refs": [
+    4,
+    6,
+    9,
+    10,
+    32,
+    33
+   ],
+   "study": [
+    "datachain-tf-cicd",
+    "tf-docs",
+    "atlantis-docs",
+    "ko-gha"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・オンコールローテーションへの参画・インシデント対応",
+   "short": "당번을 돌며 경보를 받고, 장애를 멈춘 뒤 원인을 찾아 다시 안 나게 하는 일이다.",
+   "why": "회사 채용 페이지는 이 자리의 미션을 'SRE 리드의 오른팔로서 **온콜 로테이션의 중심**'이라고 적었고, 이 자리에만 온콜 대응 수당이 있습니다.[2] 다루는 것은 사용자 자산입니다 — 회사 발표는 다른 브리지들이 해킹·운영 실수·운영자 내부 범행으로 자산을 잃은 사례를 들며 '운영자와 클라우드조차 믿지 않는' 수준을 요구한다고 했습니다.[7][8]",
+   "actually": {
+    "items": [
+     "**원인이 로그에 없다** — 실패한 트랜잭션의 영수증(receipt)에는 오류 이유가 없어, 릴레이어가 debug_traceTransaction 으로 이유를 캐서 로그에 남기게 고쳤다(예: 'ConsensusState not found').[5]",
+     "**관리형 노드는 원인을 모를 때가 많다** — 노드 대행 서비스를 쓰면 포스트모템(장애 회고) 때 '원인 불명, 지켜보자'로 끝나기 쉽다. 직접 운영하면 로그와 소스를 읽어 원인을 가린다.[6]",
+     "**하드포크** — 블록체인 규칙이 정기적으로 바뀌는데, 따라가지 않으면 노드가 멈추거나 엉뚱하게 돈다. 2025년의 대형 업그레이드 Pectra 를 SRE·R&D 가 같이 준비했다.[6][31]",
+     "**TCB Recovery** — Intel 이 SGX 취약점을 공개하면 CPU 마이크로코드와 enclave 를 새 판으로 바꿔야 하고, 클라우드가 마이크로코드를 늦게 올리면 지원 창구에 재촉하는 일까지 한다.[7][8]",
+     "**당번의 적정량** — 구글 SRE 는 온콜에 쓰는 시간을 업무의 25% 안으로, 12시간 당번에 사건 2건 정도를 상한으로 본다.[23]"
+    ]
+   },
+   "how_far": "처음에는 정해진 절차(런북)로 1차 대응을 하다가 곧 당번 순번의 중심이 되는 그림입니다.[2]{추론} 자격요건에 '장애 대응 경험이 풍부할 것'이 따로 있어서, 장애를 지휘하고 회고를 쓰는 데까지가 시니어 기준입니다.[1]{추론}",
+   "refs": [
+    1,
+    2,
+    5,
+    6,
+    7,
+    8,
+    23,
+    31
+   ],
+   "study": [
+    "sre-book-ja",
+    "sre-oncall",
+    "datachain-sre-kaigi"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・開発チームのインフラ相談対応・Platform Engineering推進",
+   "short": "개발팀이 인프라를 혼자서도 쓰게 공통 틀과 안전장치를 만들고, 막힐 때 상담을 받는 일이다.",
+   "why": "회사는 R&D 중심에서 제품 개발로 넓어지는 중이고, 그 첫 제품이 Datachain Wallet 입니다.[9][10] 2025년 1월 발표 기준으로 회사 약 20명 중 SRE 가 4명(업무 위탁 포함 5명)으로 가장 큰 팀이었습니다.[6] 같은 회사의 다른 SRE 공고는 '기능별 개발팀이 온콜을 주도하고, 플랫폼 SRE 는 공통 기반과 가드레일(넘지 않게 막는 장치)로 돕는다'는 구조를 적었습니다.[3]",
+   "actually": {
+    "items": [
+     "**셀프서비스** — 개발자가 직접 클라우드 자원을 만들 수 있는 환경, IaC 코드가 회사 기준에 맞는지 AI 로 한 번 더 보는 점검(다른 SRE 공고의 업무).[3]",
+     "**남이 운영할 소프트웨어** — LCP·YUI Relayer 는 오픈소스이고, SRE 가 없는 금융기관도 운영할 것을 가정해 만든다. 그래서 운영 기능(메트릭·로그) 자체를 고치는 것이 SRE 일이다.[6][36][37]",
+     "**플랫폼의 뜻** — 내부 사용자(개발팀)가 기다리지 않고 셀프서비스로 쓰는 공통 능력의 묶음.[38]",
+     "**상담의 예** — 새 마이크로서비스의 노드 풀·시크릿·DB 권한을 어떻게 받을지, 경보를 어디로 보낼지.{추론}"
+    ]
+   },
+   "how_far": "조직이 작아서 '플랫폼 팀'이 따로 있는 게 아니라, 이 자리가 상담 창구와 공통 모듈 만들기를 같이 맡는 그림입니다.{추론} 최소선은 개발팀이 같은 질문을 두 번 하지 않게 문서·템플릿으로 남기는 것입니다.{추론}",
+   "refs": [
+    3,
+    6,
+    9,
+    10,
+    36,
+    37,
+    38
+   ],
+   "study": [
+    "cncf-platforms",
+    "ko-team-topo",
+    "ja-platform-eng"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・コスト最適化・パフォーマンスチューニング",
+   "short": "노드 디스크·VM 비용을 줄이고, 노드 읽기 속도 같은 병목을 푸는 일이다.",
+   "why": "Ethereum 노드는 **까다로운 워크로드**라고 회사가 발표했습니다 — 읽기 처리량은 많아야 초당 수십 요청, 디스크는 2TB 이상이 권장이고 실제로는 8TB 이상을 씁니다.[5][6] 대수를 늘리면 디스크 비용이 크게 늘고 새 노드가 데이터를 다 받는 데도 시간이 걸려서, 쉽게 늘릴 수 없습니다.[6] 공식 문서도 클라이언트별 디스크 요구량을 1.7~2.2TB 이상, 권장 4TB SSD 로 적습니다.[30]",
+   "actually": {
+    "items": [
+     "**쓰임새별로 나누기** — 화면용 읽기는 NaaS 에 맡기고, 뒷단용만 직접 운영해 노드 수를 줄인다.[6]",
+     "**구현·옵션 고르기** — Ethereum 은 같은 규약을 Prysm·Lighthouse·Lodestar 등이 따로 구현한다. 이 회사 미들웨어는 라이트 클라이언트 검증을 구현한 Lodestar 에서만 돌고, 기동 옵션에 따라 디스크 사용량도 달라진다.[5][6]",
+     "**AKS 비용 일반론** — Spot VM 은 최대 90%, 예약은 최대 72% 까지 싸고, 클러스터 오토스케일러로 노는 노드를 줄인다.[24][25] 다만 SGX 노드처럼 한 노드에 묶어야 하는 것은 회수될 수 있는 Spot 에 올리기 어렵다.{추론}",
+     "**늘어날 일** — TOKI 는 2체인에서 10체인 정도로 넓히는 것이 목표라고 했고, 체인이 늘면 노드·릴레이어도 같이 는다.[6]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "8TB 노드를 한 대 더 띄우면 (가상 속도, 직접 실행)",
+     "body": "8TB 를 초당 200MB 로 채우면 11.7시간, 500MB 면 4.7시간이 걸리고, 복제본 3개면 디스크가 24TB 입니다. '한 대 더'가 가벼운 결정이 아닌 이유입니다. 속도는 가정한 값입니다.",
+     "lang": "python",
+     "code": "# 예시 3: 노드 한 대에 8TB — 복제본을 늘릴 때 늘어나는 것 (새 노드 동기화 시간, 가상 속도)\ndisk_tb = 8\nfor mbps in (200, 500):\n    hours = disk_tb * 1024 * 1024 / mbps / 3600\n    print(f\"{disk_tb}TB 를 초당 {mbps}MB 로 채우면 {hours:.1f}시간\")\nfor replicas in (1, 2, 3):\n    print(f\"복제본 {replicas}개 → 디스크 {disk_tb * replicas}TB\")"
+    }
+   ],
+   "how_far": "비용 숫자를 매달 보고 '무엇이 왜 비싼가'를 노드·디스크·VM 단위로 설명하고 줄일 안을 내는 데까지입니다.{추론} 성능은 노드 RPC 응답·동기화 지연·릴레이어 처리량처럼 SLO 와 같은 지표로 봅니다.[6]",
+   "refs": [
+    5,
+    6,
+    24,
+    25,
+    30
+   ],
+   "study": [
+    "aks-docs",
+    "eth-node",
+    "datachain-sre-kaigi"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・SREまたはインフラエンジニアとして5年以上の実務経験",
+   "short": "SRE·인프라 실무 5년 이상 — 혼자 설계하고 당번의 중심을 맡을 수 있는 연차를 뜻한다.",
+   "why": "이 자리는 신입 교육용이 아니라 'SRE 리드의 오른팔'입니다.[2] 공고의 경력 범위는 5~20년이고, 연봉 하한도 800만 엔으로 높게 잡혀 있습니다.[1] 지금 팀원 소개를 보면 야후(현 LINE야후) 플랫폼 SRE 출신,[5] 다른 SaaS 회사 플랫폼 엔지니어링 출신이 있습니다.[10]",
+   "actually": {
+    "items": [
+     "블록체인 경험은 묻지 않는다 — CEO 글은 '기존 웹 개발에서 기술적 도전을 해 온 사람'을 찾는다고 적었다.[18]",
+     "발표자도 웹 대기업 SRE 에서 블록체인으로 넘어온 경로였다.[5][6]"
+    ]
+   },
+   "how_far": "5년이라는 숫자보다 **운영 중인 서비스의 인프라를 처음부터 끝까지 맡아 본 경험**을 직무경력서에서 보여 주는 것이 중요합니다.{추론}",
+   "refs": [
+    1,
+    2,
+    5,
+    6,
+    10,
+    18
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Kubernetes（マネージドクラスタ）の本番設計・運用経験",
+   "short": "관리형 Kubernetes(EKS·GKE·AKS 등)를 운영 환경에서 설계하고 굴려 본 경험이다.",
+   "why": "이 회사의 웹앱·노드·미들웨어가 모두 AKS 위에 있습니다.[5][6] 그런데 일반 웹앱과 달리 **상태가 있는(StatefulSet) 대용량 디스크 워크로드**와 **특정 하드웨어 노드에 묶인 Pod** 가 섞여 있습니다.[6][7]",
+   "actually": {
+    "items": [
+     "StatefulSet 과 영구 볼륨(PV) — 8TB 노드 디스크를 잃지 않고 옮기고 늘리기.[6]",
+     "노드 풀·nodeSelector·taint/toleration 으로 Pod 자리 정하기 — SGX 노드 고정.[7]",
+     "클러스터 버전 업그레이드 — AKS 는 N-2 까지 지원하므로 정기적으로 올린다.[29]",
+     "Pending·CrashLoopBackOff 같은 상태를 이벤트·로그로 읽어 원인 가리기.{추론}"
+    ]
+   },
+   "level": {
+    "basic": "Deployment·Service·Ingress 로 앱을 띄우고 kubectl 로 상태를 읽는다.",
+    "work": "운영 클러스터의 노드 풀 설계, 리소스 요청·제한, 업그레이드, 장애 원인 분석.",
+    "team": "StatefulSet 노드 디스크와 하드웨어에 묶인 Pod 를 같이 운영한다.[6][7]"
+   },
+   "how_far": "AKS 가 아니어도 됩니다(우대사항에 AKS 가 따로 있습니다).[1] EKS·GKE 운영 경험을 'AKS 에서는 무엇이 다른가'로 옮겨 말할 수 있으면 충분해 보입니다.{추론}",
+   "refs": [
+    1,
+    5,
+    6,
+    7,
+    29
+   ],
+   "study": [
+    "k8s-book",
+    "k8s-guide-jp",
+    "cka"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Terraform / Helm 等IaCツールの実務経験",
+   "short": "Terraform 으로 클라우드 자원을, Helm 으로 Kubernetes 앱 묶음을 코드로 관리해 본 경험이다.",
+   "why": "이 팀은 Terraform 을 Atlantis 로 돌리고 plan·apply 권한까지 나눠 운영합니다.[9][10] Helm 은 Kubernetes 앱을 '차트'라는 꾸러미로 배포하는 패키지 관리자입니다.[41]",
+   "actually": {
+    "items": [
+     "Azure 공식 provider 를 쓰다가, state 에 남는 값을 통제해야 할 때는 더 낮은 수준의 azapi provider 를 고른다.[9][10]",
+     "Key Vault 시크릿을 Terraform 으로 만들되 값은 밖에서 넣는다(write-only).[10][32]",
+     "노드·릴레이어 같은 자체 워크로드를 Helm 차트로 묶어 체인마다 값만 바꿔 띄운다.{추론}"
+    ]
+   },
+   "how_far": "모듈을 나누고 state 를 원격에 두고 plan 결과를 읽어 위험한 변경(삭제·교체)을 찾는 수준이 기본입니다.{추론} 이 팀에서는 여기에 '이 리소스가 state 에 무엇을 남기나'를 따지는 눈이 더해집니다.[10]",
+   "refs": [
+    9,
+    10,
+    32,
+    41
+   ],
+   "study": [
+    "tf-docs",
+    "ko-tf-iac",
+    "ko-tf-uar",
+    "helm-docs",
+    "datachain-tf-cicd"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・本番環境でのインシデント対応・障害対応の豊富な経験",
+   "short": "운영 환경에서 장애를 직접 맡아 멈추고, 원인을 찾고, 회고까지 해 본 경험이 많아야 한다.",
+   "why": "이 자리는 온콜의 중심을 맡고,[2] 다루는 것이 사용자 자산이라 장애가 곧 돈 문제입니다.[7][8] 회사 발표는 '검증 없이 릴레이어만 믿으면 보내지 않은 100만 엔을 보냈다고 전할 수 있다 — 금융 시스템으로는 파탄'이라는 예로 정합성의 무게를 설명했습니다.[6]",
+   "actually": {
+    "items": [
+     "지휘 — 누가 고치고 누가 알리는지 나누고, 영향 범위를 먼저 판단한다.[23]",
+     "원인 — 노드·릴레이어·클라우드 중 어디인지, 블록체인 쪽 지연인지 우리 쪽인지 가린다.[6]",
+     "회고 — 탓하지 않는 포스트모템과 재발 방지 항목. 단일 사건이 4주 예산의 20% 넘게 쓰면 회고를 필수로 하는 정책 예.[22]"
+    ]
+   },
+   "how_far": "면접에서는 '내가 지휘한 장애 하나'를 시간 순서·판단 근거·숫자(영향 시간·건수)로 말할 수 있어야 합니다.{추론}",
+   "refs": [
+    2,
+    6,
+    7,
+    8,
+    22,
+    23
+   ],
+   "study": [
+    "sre-book-ja",
+    "sre-oncall"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Grafana等を用いた監視基盤の構築・運用経験",
+   "short": "Grafana 같은 도구로 메트릭·로그를 모으고 보여 주고 경보를 거는 감시 체계를 만든 경험이다.",
+   "why": "같은 회사의 공고는 감시 도구로 **OpenTelemetry 와 Grafana** 를 적었습니다.[4] 회사 SRE 는 릴레이어에 메트릭이 아예 없던 상태에서 56개를 새로 만들었고, 그것만으로는 부족해 바깥에서 재는 감시 부품을 OpenTelemetry 로 따로 만들었다고 발표했습니다.[5][6]",
+   "actually": {
+    "items": [
+     "**안쪽 지표** — backlog_packets(보낼 패킷이 몇 개 밀려 있나), processed_block(릴레이어가 최신 블록까지 따라왔나).[5][6]",
+     "**안쪽 지표의 함정** — 릴레이어가 멈추면 메트릭도 같이 멈춰서, 살았는지 죽었는지조차 모르게 된다.[6]",
+     "**바깥 지표** — 양쪽 체인에 기록된 IBC 패킷 번호(ibc_sequence_send·ibc_sequence_recv)를 직접 읽어 '보냈는데 안 받은 것'을 잰다. 사용자 요청이 이상한 경우까지 잡힌다.[5][6]",
+     "**도구** — Grafana 는 메트릭·로그·트레이스를 한 화면에서 보고 경보를 거는 도구이고,[42] Azure 에는 관리형 Prometheus·관리형 Grafana 가 있다.[26][27]",
+     "**다음 단계** — 트레이싱은 2025년 1월 기준 설계를 마치고 개발에 들어간 단계였다.[5]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "보낸 번호와 받은 번호로 재는 바깥 감시 (가상 값, 직접 실행)",
+     "body": "받은 쪽 번호가 3분째 106 에서 멈추면(밀림 12) 경보가 납니다. 릴레이어가 죽어 자기 메트릭을 못 내도 체인에 남은 번호는 거짓말을 하지 않습니다. 기준 3분은 가정한 값입니다.[6]",
+     "lang": "python",
+     "code": "# 예시 2: 릴레이어 바깥에서 재는 감시 — 보낸 쪽 sequence 와 받은 쪽 sequence (가상 값, 1분 간격)\nsend = [100, 103, 107, 110, 114, 118, 121, 125]\nrecv = [99, 102, 106, 106, 106, 106, 106, 109]\nLIMIT = 3  # '받은 쪽 번호가 3분 넘게 그대로면 경보' 라고 가정\nstuck = 0\nfor t, (s, r) in enumerate(zip(send, recv)):\n    gap = s - r\n    stuck = stuck + 1 if t > 0 and gap > 1 and r == recv[t - 1] else 0\n    flag = \"  <- 경보\" if stuck >= LIMIT else \"\"\n    print(f\"{t}분: 보냄 {s} 받음 {r} 밀림 {gap} 멈춤 {stuck}분{flag}\")"
+    }
+   ],
+   "how_far": "대시보드를 그리는 것에서 끝나지 않고, **경보가 사람을 깨울 만한 것인지**(SLO 와 이어지는지)를 고르는 데까지가 요건으로 보입니다.[21]{추론}",
+   "refs": [
+    4,
+    5,
+    6,
+    21,
+    26,
+    27,
+    42
+   ],
+   "study": [
+    "ja-nyumon-kanshi",
+    "o11y-eng-ja",
+    "ko-obs-eng",
+    "grafana-docs",
+    "otel-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本語レベル: ビジネス",
+   "short": "일본어로 회의·문서·장애 보고를 할 수 있어야 한다 — 서류도 일문으로 낸다.",
+   "why": "공고는 일본어 전용 자리라 일문 이력서·직무경력서를 내지 않거나 일본어 소통이 안 되면 서류에서 알림 없이 빠진다고 적었습니다.[1] 같은 회사의 다른 SRE 공고는 이 수준을 'N1 상당'이라고 적었습니다.[3]",
+   "actually": {
+    "items": [
+     "JLPT N1 은 폭넓은 장면의 일본어를 이해하는 수준으로 정의된다.[39]",
+     "전형은 보통 면접 3번, 지원부터 제안까지 약 4주.[11]",
+     "회사는 외국 국적 직원이 21.6% 이고(2025-10), 영어 학습 지원도 있지만 업무 언어는 일본어다.[11][12]"
+    ]
+   },
+   "how_far": "장애 때 일본어로 상황을 짧게 정리해 올릴 수 있는 정도가 실무 최소선입니다.{추론}",
+   "refs": [
+    1,
+    3,
+    11,
+    12,
+    39
+   ],
+   "study": [
+    "jlpt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本国内への移住が必要",
+   "short": "일본에 살면서 일해야 한다 — 국내 풀리모트는 되지만 해외에서 원격은 안 된다.",
+   "why": "개발 조직은 풀리모트가 가능하지만 '국내만'이라고 적혀 있습니다.[1] 고용주는 모회사 Speee 이고 입사와 동시에 Datachain 으로 재적 출향(소속은 Speee, 일은 Datachain)합니다.[1][2]",
+   "actually": {
+    "items": [
+     "외국인 엔지니어는 보통 체류 자격 '기술·인문지식·국제업무'로 일한다.[40]",
+     "회사 원격 근무율 94.4%, 수도권 밖 거주 18.9%(2025-10 기준).[12]"
+    ]
+   },
+   "how_far": "비자 절차·이주 지원 범위는 공고에 없으니 면담 때 확인해야 합니다.{추론}",
+   "refs": [
+    1,
+    2,
+    12,
+    40
+   ],
+   "study": [
+    "isa-visa"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "ブロックチェーンノードの運用経験",
+   "short": "Ethereum 같은 블록체인 노드를 직접 띄우고 동기화·업그레이드를 해 본 경험이 있으면 좋다.",
+   "why": "이 회사는 크로스체인 처리용 노드를 직접 운영합니다 — 미들웨어가 특정 구현(Lodestar)에서만 돌아서 대행 서비스를 쓸 수 없고, 장애 원인을 읽으려면 로그·소스가 필요하기 때문입니다.[6]",
+   "actually": {
+    "items": [
+     "동기화 지연 감시 — SLO 를 두고 '이만큼 늦는 것까지만' 허용한다.[6]",
+     "하드포크 대응 — 업그레이드 날짜에 맞춰 클라이언트를 올린다(예: Pectra, 2025-05-07).[6][31]",
+     "Ethereum 은 실행 클라이언트와 합의 클라이언트 두 개를 같이 돌리고, 디스크를 넉넉히 잡는다.[30]",
+     "IBC — 블록체인 사이에 메시지를 정확히 한 번 전하는 규약. 릴레이어가 나르고, 받는 쪽의 라이트 클라이언트가 증명을 검증한다.[6][35]"
+    ]
+   },
+   "how_far": "없어도 지원할 수 있는 우대 항목입니다.[1] 테스트넷 노드를 직접 동기화해 보고 디스크·지연을 숫자로 재 본 경험이면 이야깃거리가 됩니다.{추론}",
+   "refs": [
+    1,
+    6,
+    30,
+    31,
+    35
+   ],
+   "study": [
+    "eth-node",
+    "mastering-eth",
+    "lcp-repo"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Azure環境（AKS・Azure Monitor等）の実務経験",
+   "short": "Azure 의 AKS·Azure Monitor 를 실무에서 써 봤다면 좋다.",
+   "why": "이 자리의 클러스터가 AKS 이고, 시크릿·DB·권한도 Azure 부품(Key Vault·PostgreSQL·Entra PIM)입니다.[5][9][10]",
+   "actually": {
+    "items": [
+     "Azure Monitor — AKS 의 Prometheus 메트릭·컨테이너 로그를 모으는 관리형 서비스.[26]",
+     "Azure Managed Grafana — Grafana 를 직접 띄우지 않고 쓰는 관리형 판.[27]",
+     "Entra PIM — 강한 역할을 평소엔 없게 두고, 신청·승인을 받아 정해진 시간만 쓴다. 이 팀은 SRE 도 강한 권한을 늘 갖지 않는다.[10][34]",
+     "AKS 기밀 컴퓨팅 노드(SGX) — 다른 클라우드에는 없는 부분이다.[7][28]"
+    ]
+   },
+   "how_far": "AWS·GCP 경험이 있으면 대응 관계(IAM↔Entra·RBAC, CloudWatch↔Azure Monitor)를 정리해 두는 것만으로도 면접에서 쓸 수 있습니다.{추론}",
+   "refs": [
+    5,
+    7,
+    9,
+    10,
+    26,
+    27,
+    28,
+    34
+   ],
+   "study": [
+    "aks-docs",
+    "az-104",
+    "pim-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "大規模・高可用性システムのSRE実績",
+   "short": "사용자가 많고 멈추면 안 되는 시스템에서 SRE 로 성과를 낸 경험이 있으면 좋다.",
+   "why": "Datachain Wallet 은 2026년 7월 선행 평가판을 냈고 연내 정식판을 목표로 합니다.[14][17] 회사는 보안 인증 ISO/IEC 27001 과 SOC 2 Type 1(통제 설계를 평가한 보고서)을 받았고 Type 2(실제 운영을 평가)도 목표로 한다고 밝혔습니다.[15]",
+   "actually": {
+    "items": [
+     "운영 기록이 감사 대상이다 — 지갑은 신청·승인·서명·실행의 작업자와 시각을 남기고 CSV 로 낸다.[17]",
+     "SOC 2 Type 2 는 일정 기간 통제가 실제로 지켜졌는지를 보므로, 권한·변경·장애 기록을 꾸준히 남기는 운영이 필요하다.[15]{추론}",
+     "LCP 로 검증한 거래가 2025년 6월 한 달 780만 달러 상당이었다.[7][8]"
+    ]
+   },
+   "how_far": "'가용성 몇 %를 몇 %로 올렸다', '장애 건수를 얼마로 줄였다'처럼 숫자로 말할 수 있는 실적이 기대됩니다.{추론}",
+   "refs": [
+    7,
+    8,
+    14,
+    15,
+    17
+   ],
+   "study": [
+    "sre-book-ja"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Platform Engineering / 開発者体験改善の推進経験",
+   "short": "공통 기반을 만들어 개발자의 일을 쉽게 바꿔 본(플랫폼 엔지니어링) 경험이 있으면 좋다.",
+   "why": "회사는 R&D 중심에서 여러 제품(지갑·프라이버시·토큰화 예금)으로 넓어지고 있고,[11][12] 다른 SRE 공고는 지금을 '앞으로 몇 년 쓸 구조가 정해지는 Day 1'이라고 표현했습니다.[3]",
+   "actually": {
+    "items": [
+     "새 서비스가 같은 틀(노드 풀·시크릿·경보·파이프라인)로 시작하게 하는 템플릿.{추론}",
+     "개발자 경험 지표 — 배포 빈도·변경 실패율 같은 숫자로 개선을 보인다.[38]"
+    ]
+   },
+   "how_far": "도구를 만든 것보다 '개발팀이 실제로 썼고 무엇이 줄었나'를 보여 주는 것이 핵심입니다.{추론}",
+   "refs": [
+    3,
+    11,
+    12,
+    38
+   ],
+   "study": [
+    "cncf-platforms",
+    "ja-platform-eng",
+    "ko-team-topo"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "＃求める人物像\n・目指す価値をチーム全員で力を合わせて良いシステムを作り上げる人\n・技術的な強みをシステムだけではなく、事業・組織にも適応して、より大きな価値に繋げられる方",
+   "short": "팀이 함께 목표 가치를 만들고, 기술의 강점을 사업·조직의 가치로까지 잇는 사람을 찾는다.",
+   "why": "회사는 '일본발 글로벌 × 딥테크'를 내걸고 기술 개발과 사업 개발의 순환을 중시한다고 적었습니다.[11] CEO 는 수탁 개발이 아니라 자사 제품 회사라는 점을 강조했습니다.[18]",
+   "actually": {
+    "items": [
+     "SRE 가 사업에 닿는 예 — 체인을 10개로 늘리려는 사업 목표가 곧 운영 부담이고, 그것을 해결하는 게 SRE 일이라고 발표자가 말했다.[6]",
+     "직위 계층을 두지 않는다고 회사 소개 자료에 적었다.[12]"
+    ]
+   },
+   "how_far": "면접에서 '기술 선택이 비용·출시 속도에 어떤 영향을 줬나'를 한 사례로 말할 수 있으면 됩니다.{추론}",
+   "refs": [
+    6,
+    11,
+    12,
+    18
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・技術的な発信を内外に行い、ワクワクする開発する組織を作ることに参加できる方",
+   "short": "블로그·발표로 기술을 안팎에 알리고, 신나게 개발하는 조직을 같이 만드는 사람을 찾는다.",
+   "why": "이 회사 SRE 들은 SRE Kaigi 2025, SRE NEXT 2025·2026 에 연달아 발표했고 회사는 후원사로도 나갔습니다.[5][7][9]",
+   "actually": {
+    "items": [
+     "발표 주제가 모두 실제 운영(노드·SGX·Terraform 권한)에서 나왔다.[5][7][9]",
+     "컨퍼런스 참가비·숙박·교통비를 회사가 낸다.[1]"
+    ]
+   },
+   "how_far": "필수는 아니지만, 지원 전에 이 세 발표를 읽고 의견을 갖는 것이 가장 쉬운 준비입니다.{추론}",
+   "refs": [
+    1,
+    5,
+    7,
+    9
+   ],
+   "study": [
+    "datachain-sre-kaigi",
+    "datachain-sgx",
+    "datachain-tf-cicd"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・全てが理想ではないスタートアップ環境で清濁を飲み込みながら価値の実現に邁進できる方",
+   "short": "모든 게 갖춰지지 않은 스타트업에서 궂은일까지 받아들이며 결과를 내는 사람을 찾는다.",
+   "why": "R&D 제품(LCP·릴레이어)은 2024년에야 사용자 환경에서 돌기 시작해 운영 기능이 덜 갖춰진 단계였고, 메트릭이 아예 없던 상태에서 시작했다고 발표했습니다.[5][6]",
+   "actually": {
+    "items": [
+     "처음엔 빨리 세우려고 안쪽 메트릭만으로 버티다가, 안 돼서 바깥 감시를 다시 만들었다 — 시행착오를 공개했다.[6]",
+     "지갑 정식판은 연내 목표, 일부 기능은 아직 평가판에 없다.[14][17]"
+    ]
+   },
+   "how_far": "정리된 운영을 물려받는 자리가 아니라 **빈칸을 채우는 자리**라는 뜻으로 읽힙니다.{추론}",
+   "refs": [
+    5,
+    6,
+    14,
+    17
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・SREの立場からセキュリティ、コスト、パフォーマンスの観点で全社に発信して改善を促せる方",
+   "short": "SRE 자리에서 보안·비용·성능 문제를 회사 전체에 알리고 개선을 이끄는 사람을 찾는다.",
+   "why": "이 팀은 SRE 조차 강한 권한을 늘 갖지 않고 PIM 으로 시간 제한을 걸며,[10] 비밀키 유출을 가장 큰 위험으로 꼽아 HSM·원격 서명·정책 기반 MPC 서명(금액 기준 등에 따라 보안 담당자 승인)을 들였습니다.[5]",
+   "actually": {
+    "items": [
+     "보안 — plan 권한 분리, state 에 비밀 안 남기기, PIM.[9][10]",
+     "비용 — 노드 디스크·대수 결정.[6]",
+     "성능 — 노드 읽기 처리량, 릴레이어 지연.[6]"
+    ]
+   },
+   "how_far": "'이건 위험하다'를 말하는 데서 끝나지 않고, 개발팀이 따를 수 있는 기준·도구로 바꿔 내놓는 것까지입니다.[3]{추론}",
+   "refs": [
+    3,
+    5,
+    6,
+    9,
+    10
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "datachain-sre-kaigi",
+   "title": "ブロックチェーンR&D企業におけるSREの実態 (SRE Kaigi 2025)",
+   "by": "水落啓太 · Datachain · 2025",
+   "kind": "doc",
+   "url": "https://speakerdeck.com/datachain/sre-kaigi-2025",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "why": "이 회사 인프라 3계층·노드 운영·릴레이어 감시·SLO 를 한 번에 — 지원 전에 꼭 본다(영상 31분도 있다)."
+  },
+  {
+   "id": "datachain-sgx",
+   "title": "Intel SGXをAzureで本番運用するための構成事例と実践知見 (SRE NEXT 2025)",
+   "by": "大久保俊彦 · Datachain · 2025",
+   "kind": "doc",
+   "url": "https://speakerdeck.com/datachain/sre-next-2025",
+   "lang": "ja",
+   "free": true,
+   "level": "실무",
+   "why": "왜 Azure 인가, SGX 노드를 AKS 에서 어떻게 묶는가 — AKS 설계 줄의 바탕."
+  },
+  {
+   "id": "datachain-tf-cicd",
+   "title": "Terraform CI/CDに潜む権限昇格リスクと対策 (SRE NEXT 2026)",
+   "by": "荒引健 · Datachain · 2026",
+   "kind": "doc",
+   "url": "https://speakerdeck.com/datachain/sre-next-2026",
+   "lang": "ja",
+   "free": true,
+   "level": "실무",
+   "why": "이 자리의 제품(Datachain Wallet) 파이프라인 구조 — CI/CD·IaC 요건을 이 팀 기준으로 읽게 해 준다."
+  },
+  {
+   "id": "sre-book-ja",
+   "title": "SRE サイトリライアビリティエンジニアリング",
+   "by": "Betsy Beyer 외 편 · オライリー・ジャパン · 2017",
+   "kind": "book",
+   "url": "https://www.oreilly.co.jp/books/9784873117911/",
+   "lang": "ja",
+   "free": false,
+   "level": "입문",
+   "why": "SLO·오류 예산·온콜·포스트모템의 원전. 일본어 면접 용어도 이 책에서 익힌다."
+  },
+  {
+   "id": "ko-sre-book",
+   "title": "사이트 신뢰성 엔지니어링",
+   "by": "Betsy Beyer 외 · 장현희 옮김 · 제이펍 · 2018",
+   "kind": "book",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=129407308",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "why": "같은 책의 한국어판 — 개념을 먼저 한국어로 잡을 때."
+  },
+  {
+   "id": "sre-wb-slo",
+   "title": "The Site Reliability Workbook · Implementing SLOs",
+   "by": "Google",
+   "kind": "doc",
+   "url": "https://sre.google/workbook/implementing-slos/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "SLI 고르기·목표 정하기·예산 정책 문서 쓰기 — SLO 설계 줄을 직접 해 보는 순서."
+  },
+  {
+   "id": "hidalgo-slo",
+   "title": "Implementing Service Level Objectives",
+   "by": "Alex Hidalgo · O'Reilly · 2020",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/implementing-service-level/9781492076803/",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "분 단위 SLO 처럼 일반 웹과 다른 서비스의 SLI 를 정하는 법."
+  },
+  {
+   "id": "sre-oncall",
+   "title": "Site Reliability Engineering · Being On-Call",
+   "by": "Google",
+   "kind": "doc",
+   "url": "https://sre.google/sre-book/being-on-call/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "당번의 적정량·대응 절차 — 온콜 줄."
+  },
+  {
+   "id": "ja-nyumon-kanshi",
+   "title": "入門 監視 — モダンなモニタリングのためのデザインパターン",
+   "by": "Mike Julian · 松浦隼人 訳 · オライリー・ジャパン · 2019",
+   "kind": "book",
+   "url": "https://www.oreilly.co.jp/books/9784873118642/",
+   "lang": "ja",
+   "free": false,
+   "level": "입문",
+   "why": "안쪽·바깥 감시, 사람을 깨울 경보 고르기 — 감시 체계 줄."
+  },
+  {
+   "id": "o11y-eng-ja",
+   "title": "オブザーバビリティ・エンジニアリング",
+   "by": "Charity Majors · Liz Fong-Jones · George Miranda · オライリー・ジャパン · 2023",
+   "kind": "book",
+   "url": "https://www.oreilly.co.jp/books/9784814400126/",
+   "lang": "ja",
+   "free": false,
+   "level": "실무",
+   "why": "메트릭·로그·트레이스를 잇는 법 — 이 팀이 다음에 할 트레이싱까지."
+  },
+  {
+   "id": "ko-obs-eng",
+   "title": "데브옵스 엔지니어를 위한 실전 관찰 가능성 엔지니어링",
+   "by": "Charity Majors 외 · 노승헌 옮김 · 한빛미디어 · 2024",
+   "kind": "book",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=340536001",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "why": "위 책의 한국어판."
+  },
+  {
+   "id": "otel-docs",
+   "title": "OpenTelemetry 공식 문서",
+   "by": "OpenTelemetry",
+   "kind": "doc",
+   "url": "https://opentelemetry.io/docs/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "이 팀이 바깥 감시 부품을 만든 도구 — Collector 로 메트릭을 모으는 법."
+  },
+  {
+   "id": "grafana-docs",
+   "title": "Grafana 문서",
+   "by": "Grafana Labs",
+   "kind": "doc",
+   "url": "https://grafana.com/docs/grafana/latest/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "대시보드·경보 규칙 — 공고에 이름이 나온 도구."
+  },
+  {
+   "id": "k8s-book",
+   "title": "쿠버네티스 입문 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "url": "/wiki/kubernetes",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "Pod·Deployment·StatefulSet·노드 배치를 kubectl 출력으로 익힌다."
+  },
+  {
+   "id": "k8s-guide-jp",
+   "title": "Kubernetes完全ガイド 第2版",
+   "by": "青山真也 · インプレス",
+   "kind": "book",
+   "url": "https://www.kinokuniya.co.jp/f/dsg-01-9784295009795",
+   "lang": "ja",
+   "free": false,
+   "level": "실무",
+   "why": "노드 배치(affinity·taint)·StatefulSet·업그레이드를 일본어 용어로."
+  },
+  {
+   "id": "cka",
+   "title": "Certified Kubernetes Administrator (CKA)",
+   "by": "Linux Foundation · CNCF",
+   "kind": "course",
+   "url": "https://training.linuxfoundation.org/certification/certified-kubernetes-administrator-cka/",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "운영 클러스터를 직접 다루는 실기 시험 — Kubernetes 요건의 증빙."
+  },
+  {
+   "id": "helm-docs",
+   "title": "Helm 문서",
+   "by": "Helm",
+   "kind": "doc",
+   "url": "https://helm.sh/docs/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "차트 만들기·값 바꿔 배포하기 — IaC 줄의 Helm."
+  },
+  {
+   "id": "tf-docs",
+   "title": "Terraform 문서",
+   "by": "HashiCorp",
+   "kind": "doc",
+   "url": "https://developer.hashicorp.com/terraform/docs",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "모듈·state·write-only 인수 — IaC 줄."
+  },
+  {
+   "id": "ko-tf-iac",
+   "title": "테라폼으로 시작하는 IaC (개정판)",
+   "by": "김민수·김재준·이규석·이유종 · 한빛미디어 · 2024",
+   "kind": "book",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=346369474",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "why": "Terraform 을 한국어로 처음부터."
+  },
+  {
+   "id": "ko-tf-uar",
+   "title": "테라폼 업앤러닝 (2판)",
+   "by": "Yevgeniy Brikman · 김문주 옮김 · 루비페이퍼 · 2021",
+   "kind": "book",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=270854635",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "why": "모듈 설계·state 관리·팀 운영 — 실무 수준."
+  },
+  {
+   "id": "atlantis-docs",
+   "title": "Atlantis Documentation",
+   "by": "Atlantis",
+   "kind": "doc",
+   "url": "https://www.runatlantis.io/docs/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "이 팀의 Terraform 실행기 — PR 댓글로 plan·apply 하는 흐름."
+  },
+  {
+   "id": "ko-gha",
+   "title": "러닝 깃허브 액션",
+   "by": "Brent Laster · 정의형·정한결 옮김 · 한빛미디어 · 2024",
+   "kind": "book",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=339921811",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "why": "워크플로 이벤트·권한·시크릿 — pull_request 와 pull_request_target 의 차이를 이해하는 바탕."
+  },
+  {
+   "id": "aks-docs",
+   "title": "AKS 비용 최적화 모범 사례",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "url": "https://learn.microsoft.com/en-us/azure/aks/best-practices-cost",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "노드 풀·Spot·오토스케일러 — AKS 설계·비용 줄."
+  },
+  {
+   "id": "aks-sgx",
+   "title": "AKS 에 Intel SGX enclave 노드 붙이기 (빠른 시작)",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "url": "https://learn.microsoft.com/en-us/azure/confidential-computing/confidential-enclave-nodes-aks-get-started",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "이 회사만의 SGX 노드 풀을 직접 만들어 보는 문서."
+  },
+  {
+   "id": "az-104",
+   "title": "Microsoft Certified: Azure Administrator Associate (AZ-104)",
+   "by": "Microsoft",
+   "kind": "course",
+   "url": "https://learn.microsoft.com/en-us/credentials/certifications/azure-administrator/",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "Azure 의 네트워크·ID·저장소·모니터링을 한 번에 — Azure 우대 항목의 증빙."
+  },
+  {
+   "id": "pim-docs",
+   "title": "What is Privileged Identity Management?",
+   "by": "Microsoft Learn",
+   "kind": "doc",
+   "url": "https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-configure",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "SRE 도 권한을 시간 제한으로 빌리는 이 팀의 방식."
+  },
+  {
+   "id": "eth-node",
+   "title": "Spin up your own Ethereum node",
+   "by": "ethereum.org",
+   "kind": "doc",
+   "url": "https://ethereum.org/en/developers/docs/nodes-and-clients/run-a-node/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "실행·합의 클라이언트, 디스크 요구량 — 노드 운영 우대 항목."
+  },
+  {
+   "id": "mastering-eth",
+   "title": "Mastering Ethereum",
+   "by": "Andreas M. Antonopoulos · Gavin Wood · O'Reilly · 2018 (GitHub 무료 공개)",
+   "kind": "book",
+   "url": "https://github.com/ethereumbook/ethereumbook",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "트랜잭션·서명·스마트 컨트랙트 — 발표 앞부분의 블록체인 기초를 깊게."
+  },
+  {
+   "id": "lcp-repo",
+   "title": "datachainlab/lcp",
+   "by": "Datachain · GitHub",
+   "kind": "doc",
+   "url": "https://github.com/datachainlab/lcp",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "이 회사가 운영하는 미들웨어의 소스 — 무엇을 감시해야 하나를 코드로 본다."
+  },
+  {
+   "id": "cncf-platforms",
+   "title": "CNCF Platforms White Paper",
+   "by": "CNCF TAG App Delivery · 2023",
+   "kind": "doc",
+   "url": "https://tag-app-delivery.cncf.io/whitepapers/platforms/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "플랫폼 엔지니어링이 무엇을 뜻하는지 짧게."
+  },
+  {
+   "id": "ja-platform-eng",
+   "title": "プラットフォームエンジニアリング — 成功するプラットフォームとチームを作るガイドライン",
+   "by": "Camille Fournier·Ian Nowland · 松浦隼人 訳 · オライリー・ジャパン · 2025",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/-/9784814401413/",
+   "lang": "ja",
+   "free": false,
+   "level": "심화",
+   "why": "작은 조직에서 플랫폼을 언제·어디까지 만들지."
+  },
+  {
+   "id": "ko-team-topo",
+   "title": "팀 토폴로지",
+   "by": "Matthew Skelton·Manuel Pais · 김연수 옮김 · 에이콘출판 · 2020",
+   "kind": "book",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=258906450",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "why": "기능 팀이 온콜을 맡고 플랫폼이 돕는 구조의 언어."
+  },
+  {
+   "id": "jlpt",
+   "title": "JLPT · N1~N5 認定の目安",
+   "by": "日本語能力試験",
+   "kind": "doc",
+   "url": "https://www.jlpt.jp/about/levelsummary.html",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "why": "'비즈니스 = N1 상당'이 어떤 수준인지."
+  },
+  {
+   "id": "isa-visa",
+   "title": "在留資格「技術・人文知識・国際業務」",
+   "by": "出入国在留管理庁",
+   "kind": "doc",
+   "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "why": "이주 요건 — 엔지니어가 받는 체류 자격과 서류."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "이 회사의 발표 세 편부터",
+   "time": "3~5일",
+   "goal": "Datachain 인프라의 세 덩어리(웹앱·노드·미들웨어)와 왜 Azure 인지, Terraform 권한을 왜 나누는지 일본어로 설명할 수 있다.",
+   "task": "발표 세 편(SRE Kaigi 2025, SRE NEXT 2025·2026)을 보고, 구조도를 손으로 다시 그린 뒤 '내가 입사하면 먼저 볼 위험 세 가지'를 일본어 다섯 문장으로 쓴다.",
+   "resources": [
+    "datachain-sre-kaigi",
+    "datachain-sgx",
+    "datachain-tf-cicd"
+   ]
+  },
+  {
+   "title": "AKS 에 상태 있는 워크로드 올리기",
+   "time": "2~3주",
+   "goal": "노드 풀을 나누고 StatefulSet 으로 대용량 디스크 Pod 를 띄우고, 특정 Pod 를 특정 노드에 묶을 수 있다.",
+   "task": "무료 크레딧 안에서 AKS(또는 로컬 kind)에 노드 풀 두 개를 만들고, Ethereum 테스트넷 노드를 StatefulSet + PV 로 띄운다. 다른 Pod 하나는 taint·nodeSelector 로 한 노드에만 뜨게 한다. 끝나면 지운다.",
+   "resources": [
+    "k8s-book",
+    "k8s-guide-jp",
+    "aks-docs",
+    "eth-node",
+    "helm-docs"
+   ]
+  },
+  {
+   "title": "Terraform 파이프라인을 '털려도 괜찮게'",
+   "time": "2주",
+   "goal": "PR 로 plan, 승인 뒤 apply 하는 흐름을 만들고 plan·apply 권한을 나눌 수 있다.",
+   "task": "가상 저장소에 Atlantis(또는 GitHub Actions 두 워크플로)로 plan 용·apply 용 자격 증명을 따로 두고, 시크릿 하나를 write-only 인수로 만든 뒤 state 파일에 값이 없는지 직접 확인한다.",
+   "resources": [
+    "tf-docs",
+    "ko-tf-iac",
+    "atlantis-docs",
+    "ko-gha",
+    "datachain-tf-cicd"
+   ]
+  },
+  {
+   "title": "SLO 와 바깥 감시",
+   "time": "2주",
+   "goal": "가상 릴레이어의 SLI 를 정하고, 안쪽 메트릭이 멈춰도 울리는 바깥 감시와 소진 속도 경보를 만든다.",
+   "task": "보낸 번호·받은 번호를 1분마다 내보내는 가상 프로그램을 만들어 OpenTelemetry Collector → Prometheus → Grafana 로 그리고, '받은 번호 3분 멈춤'과 '14.4배 소진' 경보를 건다. 일부러 프로그램을 죽여 두 경보가 어떻게 다른지 본다.",
+   "resources": [
+    "sre-book-ja",
+    "sre-wb-slo",
+    "otel-docs",
+    "grafana-docs",
+    "ja-nyumon-kanshi"
+   ]
+  },
+  {
+   "title": "Azure 자격과 일본어 서류",
+   "time": "계속",
+   "goal": "AZ-104 또는 CKA 하나와 일본어 직무경력서를 갖춘다.",
+   "task": "1~4단계 결과를 직무경력서(職務経歴書)의 프로젝트 셋으로 정리한다 — 무엇을·왜·숫자로 결과. 지휘한 장애 하나를 시간 순서로 일본어 회고문으로 쓴다.",
+   "resources": [
+    "az-104",
+    "cka",
+    "jlpt",
+    "isa-visa"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공고 연봉은 **800만~1,200만 엔**(월 66.2만 엔부터, 45시간분 고정 잔업 포함), 고용주 Speee 의 직원 평균은 **약 573만 엔**(공시, 평균 29.6세) — 평균은 다른 직군이 섞인 값이다",
+  "rows": [
+   {
+    "label": "공고 표기 연봉",
+    "value": "800만~1,200만 엔",
+    "basis": "공고",
+    "note": "경험·능력을 보고 정한다. 회사 채용 페이지는 '800만 엔~'으로만 적었다 [1][2]"
+   },
+   {
+    "label": "공고 표기 월급",
+    "value": "월 66.2만 엔~ (기본급 49.2만 엔~ + 고정 잔업 수당 17만 엔~)",
+    "basis": "공고",
+    "note": "고정 잔업 수당은 잔업 유무와 관계없이 월 45시간분, 넘는 시간·휴일·심야는 따로 준다. 평가 연 1회(등급에 따라 2회) [1]"
+   },
+   {
+    "label": "주식 보상",
+    "value": "모회사 Speee RS(양도 제한 주식)·스톡옵션",
+    "basis": "공고",
+    "note": "RS 는 등급에 따라 줄 수 있다고만 적었고, 스톡옵션 개수는 상장 절차 진행에 따라 정한다 [1]"
+   },
+   {
+    "label": "고용주(Speee) 직원 평균 연간 급여",
+    "value": "573만 1천 엔",
+    "basis": "유가증권보고서 · 2025년 9월 결산",
+    "note": "제출 회사(단독) 601명, 평균 29.6세, 평균 근속 3년 2개월. 상여·기준 외 임금 포함. 이 자리의 고용주는 Speee 이고 Datachain 으로 재적 출향한다 [19][1]"
+   }
+  ],
+  "how": "월 66.2만 엔 × 12 = 약 794만 엔이라, 공고 하한 800만 엔은 상여 없이 월급만으로 거의 채워지는 구조로 보입니다 {추론}. 월급에 45시간분 잔업 수당이 이미 들어 있으니, 기본급(49.2만 엔)만 떼어 다른 회사와 비교해야 합니다 {추론}. Speee 평균은 영업·컨설팅 등 다른 직군과 젊은 직원이 섞인 회사 전체 값이라 이 자리와 바로 비교하지 않습니다 {추론}. Datachain 자체는 비상장이라 공시 평균이 없습니다. 엔화 연봉은 세금·사회보험이 빠지기 전 금액이고 원화로 바꾸지 않았습니다."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무 방식",
+    "detail": "개발 조직은 일본 국내 풀리모트 가능, 플렉스 타임(공고 코어타임 10:30~17:30 · 채용 사이트·회사 자료의 기술직 코어타임 11:00~14:00)"
+   },
+   {
+    "name": "온콜 수당",
+    "detail": "온콜 대응 수당 있음(회사 채용 페이지의 이 자리)"
+   },
+   {
+    "name": "장비",
+    "detail": "고사양 PC(Mac/Windows 선택), 2년 주기 MacBook Pro, 개발 도구 월 최대 200달러"
+   },
+   {
+    "name": "공부",
+    "detail": "도서 구입비 월 1만 엔까지, 사내 도서관(오라일리 신간 수시 입고), 개인 클라우드 사용료 월 1만 엔까지, 업무 관련 자격 취득비 3만 엔까지, 컨퍼런스 참가비(숙박·교통비 포함), 영어 학습 지원(연 최대 60만 엔)"
+   },
+   {
+    "name": "부업",
+    "detail": "가능(개인 서비스 개발·기술 고문 등, 신청제)"
+   },
+   {
+    "name": "수당",
+    "detail": "교통비 전액, 주택 보조·가족 수당(규정에 따라 해당자), 결혼·출산 축하금"
+   },
+   {
+    "name": "휴가",
+    "detail": "완전 주 2일(토·일), 공휴일, 유급, 여름·연말연시 휴가, 아빠 출산 입회 휴가, 임신 검진 휴가·보조"
+   },
+   {
+    "name": "그 밖",
+    "detail": "사회보험 완비, 사내 식사비 지원, 수습 3개월(조건 같음)"
+   }
+  ],
+  "note": "공고 복리후생 칸과 회사 채용 페이지·채용 사이트·회사 소개 자료(2026-11) 기준 [1][2][11][12]. 코어타임은 공고(10:30~17:30)와 채용 사이트의 기술직 표기(11:00~14:00)가 다르니 면담 때 확인한다. 고용주는 Speee 이고 Datachain 에 재적 출향한다 [1]."
+ },
+ "location": {
+  "name": "Datachain 본사 · PMO 히가시신바시",
+  "address": "東京都港区東新橋2-12-1 PMO東新橋4階",
+  "postal": "〒105-0021",
+  "map_url": "https://map.naver.com/p/search/%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B8%AF%E5%8C%BA%E6%9D%B1%E6%96%B0%E6%A9%8B2-12-1",
+  "near": "오나리몬역·다이몬역 걸어서 6분 · 신바시역·하마마쓰초역 걸어서 9분",
+  "note": "공고의 근무지와 회사 개요 [1][13]. 채용 사이트 FAQ 는 최종 면접을 '롯폰기잇초메역 직결 도쿄 본사'에서 한다고 적었고 2026년 보도자료 일부도 롯폰기 그랜드 타워(모회사 Speee 사옥)를 소재지로 적었다 [11][14]. 개발직은 풀리모트라 출근은 드물다 [1]."
+ },
+ "fit": {
+  "good": [
+   "웹 SRE 기본기에 블록체인·암호 같은 낯선 도메인을 얹어 보고 싶은 사람 — 블록체인 경험은 묻지 않는다[18]",
+   "감시가 '거짓말할 수 있다'는 걸 알고 바깥에서 다시 재는 걸 좋아하는 사람[6]",
+   "권한 설계·공급망 보안처럼 SRE 와 보안의 경계 일을 좋아하는 사람[9][10]",
+   "발표·글로 운영 경험을 밖에 내놓고 싶은 사람 — 이 팀은 해마다 SRE 컨퍼런스에 선다[5][7][9]"
+  ],
+  "hard": [
+   "온콜의 중심 자리다 — 사용자 자산이 걸린 경보를 밤·휴일에도 받는다[2][7]",
+   "운영 기능이 덜 갖춰진 신기술(2024년부터 사용자 환경 가동)을 돌보며 빈칸을 채워야 한다[6]",
+   "노드·SGX·하드포크·Intel 취약점 대응처럼 일반 웹 SRE 에 없는 운영이 따라온다[6][7]",
+   "일본어 전용 — 일문 이력서·직무경력서 없이는 서류에서 빠지고, 일본 거주가 필요하다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "릴레이어가 죽으면 자기 메트릭도 멈춥니다. 그걸 어떻게 감시하겠어요?",
+   "a": "이 팀이 안쪽 메트릭만으로 버티다 바깥 감시를 다시 만든 경험.[5][6]"
+  },
+  {
+   "q": "체인 사이 전송의 SLI 를 무엇으로, SLO 를 몇 분으로 잡겠어요? 블록체인 탓 지연은 어떻게 빼나요?",
+   "a": "분 단위 SLO 를 둔다고 발표했다.[6]"
+  },
+  {
+   "q": "PR 마다 terraform plan 을 돌리는 파이프라인에서 권한이 샐 수 있는 길을 세 가지 말해 보세요.",
+   "a": "SRE NEXT 2026 발표 주제 — 워크플로 변조·provider·state.[9][10]"
+  },
+  {
+   "q": "8TB 디스크를 쓰는 노드의 읽기 요청이 늘면, 노드를 늘리겠어요 아니면 다른 방법을 쓰겠어요?",
+   "a": "노드를 쉽게 늘릴 수 없어서 NaaS 와 자체 운영을 나눈 이유.[6]"
+  },
+  {
+   "q": "SGX 노드의 Pod 를 왜 한 노드에 고정해야 하나요? 그 노드가 죽으면?",
+   "a": "sealing 데이터는 같은 CPU 에서만 풀린다.[7]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · [株式会社Datachain] 시니어 SRE (스테이블 코인 사업)_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/389061",
+   "kind": "posting",
+   "note": "LAPRAS Global Bridge 채용 · 업무·요건·우대·급여·복리후생·근무지"
+  },
+  {
+   "n": 2,
+   "title": "Datachain HERP · B-01 シニアSRE (ステーブルコイン関連事業)",
+   "url": "https://herp.careers/v1/datachain/nHSm4S9nHAja",
+   "kind": "posting",
+   "note": "같은 자리의 회사 채용 페이지 — 담당 제품·미션·온콜 대응 수당"
+  },
+  {
+   "n": 3,
+   "title": "Datachain HERP · C-01 Platform SRE - エンジニア (トークン化預金)",
+   "url": "https://herp.careers/v1/datachain/7xY9AglleENT",
+   "kind": "posting",
+   "note": "같은 회사 다른 SRE 자리 — AWS·CUJ 기반 SLO·가드레일·일본어 N1 상당"
+  },
+  {
+   "n": 4,
+   "title": "Datachain HERP · 求人一覧",
+   "url": "https://herp.careers/v1/datachain",
+   "kind": "posting",
+   "note": "프로덕트 보안 공고의 개발 환경(Azure·Kubernetes·GitHub Actions·Argo CD·Argo Workflows·OpenTelemetry·Grafana·PostgreSQL, '프로젝트마다 다를 수 있다')"
+  },
+  {
+   "n": 5,
+   "title": "Datachain · ブロックチェーンR&D企業におけるSREの実態 / SRE Kaigi 2025 (발표 자료)",
+   "url": "https://speakerdeck.com/datachain/sre-kaigi-2025",
+   "kind": "company",
+   "date": "2025-01",
+   "note": "SRE 水落啓太 · 93장"
+  },
+  {
+   "n": 6,
+   "title": "SRE Kaigi 2025 · 『ブロックチェーンR&D企業におけるSREの実態』 水落啓太 (발표 영상)",
+   "url": "https://www.youtube.com/watch?v=tXWXMk55U0s",
+   "kind": "company",
+   "date": "2025-01",
+   "note": "약 31분 · 자동 자막 전부 읽음 — 팀 인원·8TB 디스크·Lodestar·분 단위 SLO 는 말로만 나온다"
+  },
+  {
+   "n": 7,
+   "title": "Datachain · Intel SGXをAzureで本番運用するための構成事例と実践知見 / SRE NEXT 2025 (발표 자료)",
+   "url": "https://speakerdeck.com/datachain/sre-next-2025",
+   "kind": "company",
+   "date": "2025-07",
+   "note": "SRE/테크리드 大久保俊彦 · 48장"
+  },
+  {
+   "n": 8,
+   "title": "SRE NEXT 2025 · Intel SGXをAzureで本番運用するための構成事例と実践知見 (발표 영상)",
+   "url": "https://www.youtube.com/watch?v=DHdnZhTjc6U",
+   "kind": "company",
+   "date": "2025-07",
+   "note": "약 12분 · 자동 자막 전부 읽음"
+  },
+  {
+   "n": 9,
+   "title": "Datachain · Terraform CI/CDに潜む権限昇格リスクと対策 / SRE NEXT 2026 (발표 자료)",
+   "url": "https://speakerdeck.com/datachain/sre-next-2026",
+   "kind": "company",
+   "date": "2026-07",
+   "note": "SRE 리드 荒引健 · Datachain Wallet 의 Terraform 실행 구조"
+  },
+  {
+   "n": 10,
+   "title": "SRE NEXT 2026 · Terraform CI/CDに潜む権限昇格リスクと対策 (발표 영상)",
+   "url": "https://www.youtube.com/watch?v=FrAaqdmYU_o",
+   "kind": "company",
+   "date": "2026-07",
+   "note": "약 17분 · 자동 자막 전부 읽음"
+  },
+  {
+   "n": 11,
+   "title": "Datachain 採用サイト",
+   "url": "https://careers.datachain.jp/",
+   "kind": "company",
+   "date": "2026-10",
+   "note": "멤버 소개·전형(면접 3번, 약 4주)·일하는 방식·복리후생 · 최종 갱신 2026-10-22"
+  },
+  {
+   "n": 12,
+   "title": "Datachain 会社紹介資料（2026年11月） / Company Deck",
+   "url": "https://speakerdeck.com/datachain/company-deck",
+   "kind": "company",
+   "date": "2026-11",
+   "note": "평균 39.8세·원격 94.4%·외국 국적 21.6%(2025-10 기준)·복리후생"
+  },
+  {
+   "n": 13,
+   "title": "Datachain · Company (会社概要)",
+   "url": "https://www.datachain.jp/company",
+   "kind": "company",
+   "note": "설립 2018-03-12 · 자본금 1억 2,500만 엔 · 본사 주소 · Speee(東証スタンダード 4499) 자회사"
+  },
+  {
+   "n": 14,
+   "title": "PR TIMES · Datachain、法人向けWeb3ウォレット「Datachain Wallet」先行評価版をローンチ",
+   "url": "https://prtimes.jp/main/html/rd/p/000000066.000055051.html",
+   "kind": "company",
+   "date": "2026-07-09"
+  },
+  {
+   "n": 15,
+   "title": "PR TIMES · Datachain Wallet で「SOC 2 Type 1保証報告書」を受領",
+   "url": "https://prtimes.jp/main/html/rd/p/000000062.000055051.html",
+   "kind": "company",
+   "date": "2026-06-25",
+   "note": "기준일 2026-04-16 · 같은 해 3월 ISO/IEC 27001"
+  },
+  {
+   "n": 16,
+   "title": "PR TIMES · クロスボーダーステーブルコイン送金基盤構築プロジェクト「Project Pax」の始動",
+   "url": "https://prtimes.jp/main/html/rd/p/000000036.000055051.html",
+   "kind": "company",
+   "date": "2024-09-05",
+   "note": "Progmat 와 공동 · Swift API · IBC·LCP·TOKI"
+  },
+  {
+   "n": 17,
+   "title": "Datachain Wallet 제품 페이지",
+   "url": "https://www.wallet.datachain.jp/",
+   "kind": "company",
+   "date": "2026-11",
+   "note": "Passkey·멀티시그·가스리스·감사 로그·대응 체인·ISO 27001 JQA-IM1686"
+  },
+  {
+   "n": 18,
+   "title": "久田哲史 · デカコーンの目指すプロジェクトへの思い (note)",
+   "url": "https://note.com/hisata/n/n004c3e4fbec1",
+   "kind": "company",
+   "date": "2024-09-05",
+   "note": "CEO 글 · 공고가 직접 링크"
+  },
+  {
+   "n": 19,
+   "title": "株式会社Speee 有価証券報告書 第18期 (2024.10~2025.9)",
+   "url": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XC4C.pdf",
+   "kind": "company",
+   "date": "2025-12",
+   "note": "EDINET · 고용주(Speee)의 종업원 현황"
+  },
+  {
+   "n": 20,
+   "title": "Google SRE Book · Service Level Objectives",
+   "url": "https://sre.google/sre-book/service-level-objectives/",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Google SRE Workbook · Alerting on SLOs",
+   "url": "https://sre.google/workbook/alerting-on-slos/",
+   "kind": "reference",
+   "note": "소진 속도(burn rate) 경보"
+  },
+  {
+   "n": 22,
+   "title": "Google SRE Workbook · Example Error Budget Policy",
+   "url": "https://sre.google/workbook/error-budget-policy/",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Google SRE Book · Being On-Call",
+   "url": "https://sre.google/sre-book/being-on-call/",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "Microsoft Learn · Best practices for cost optimization in AKS",
+   "url": "https://learn.microsoft.com/en-us/azure/aks/best-practices-cost",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "Microsoft Learn · Cluster autoscaling in AKS overview",
+   "url": "https://learn.microsoft.com/en-us/azure/aks/cluster-autoscaler-overview",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "Microsoft Learn · Enable monitoring for AKS clusters (Azure Monitor)",
+   "url": "https://learn.microsoft.com/en-us/azure/azure-monitor/containers/kubernetes-monitoring-enable",
+   "kind": "reference",
+   "note": "관리형 Prometheus 메트릭·컨테이너 로그 켜기"
+  },
+  {
+   "n": 27,
+   "title": "Microsoft Learn · What is Azure Managed Grafana?",
+   "url": "https://learn.microsoft.com/en-us/azure/managed-grafana/overview",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "Microsoft Learn · Deploy an AKS cluster with Intel SGX enclave nodes",
+   "url": "https://learn.microsoft.com/en-us/azure/confidential-computing/confidential-enclave-nodes-aks-get-started",
+   "kind": "reference",
+   "note": "DCsv2/DCsv3 노드 풀"
+  },
+  {
+   "n": 29,
+   "title": "Microsoft Learn · Supported Kubernetes versions in AKS",
+   "url": "https://learn.microsoft.com/en-us/azure/aks/supported-kubernetes-versions",
+   "kind": "reference",
+   "note": "N·N-1·N-2 지원"
+  },
+  {
+   "n": 30,
+   "title": "ethereum.org · Spin up your own Ethereum node",
+   "url": "https://ethereum.org/en/developers/docs/nodes-and-clients/run-a-node/",
+   "kind": "reference",
+   "note": "클라이언트별 디스크 요구량 · 권장 4TB SSD"
+  },
+  {
+   "n": 31,
+   "title": "ethereum.org · Prague-Electra (Pectra)",
+   "url": "https://ethereum.org/en/roadmap/pectra/",
+   "kind": "reference",
+   "note": "메인넷 적용 2025-05-07"
+  },
+  {
+   "n": 32,
+   "title": "HashiCorp · Use temporary write-only arguments",
+   "url": "https://developer.hashicorp.com/terraform/language/resources/ephemeral/write-only",
+   "kind": "reference",
+   "note": "Terraform v1.11 이상"
+  },
+  {
+   "n": 33,
+   "title": "Atlantis Documentation",
+   "url": "https://www.runatlantis.io/docs/",
+   "kind": "reference"
+  },
+  {
+   "n": 34,
+   "title": "Microsoft Learn · What is Privileged Identity Management?",
+   "url": "https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-configure",
+   "kind": "reference"
+  },
+  {
+   "n": 35,
+   "title": "IBC · The Blockchain Interoperability Protocol",
+   "url": "https://ibcprotocol.dev/",
+   "kind": "reference"
+  },
+  {
+   "n": 36,
+   "title": "GitHub · datachainlab/lcp",
+   "url": "https://github.com/datachainlab/lcp",
+   "kind": "company",
+   "note": "TEE 안에서 라이트 클라이언트 검증을 하는 프록시 미들웨어"
+  },
+  {
+   "n": 37,
+   "title": "GitHub · hyperledger-labs/yui-relayer",
+   "url": "https://github.com/hyperledger-labs/yui-relayer",
+   "kind": "company",
+   "note": "이종 블록체인용 IBC 릴레이어"
+  },
+  {
+   "n": 38,
+   "title": "CNCF TAG App Delivery · Platforms White Paper",
+   "url": "https://tag-app-delivery.cncf.io/whitepapers/platforms/",
+   "kind": "reference",
+   "date": "2023"
+  },
+  {
+   "n": 39,
+   "title": "JLPT · N1~N5 認定の目安",
+   "url": "https://www.jlpt.jp/about/levelsummary.html",
+   "kind": "reference"
+  },
+  {
+   "n": 40,
+   "title": "出入国在留管理庁 · 在留資格「技術・人文知識・国際業務」",
+   "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html",
+   "kind": "reference"
+  },
+  {
+   "n": 41,
+   "title": "Helm 문서",
+   "url": "https://helm.sh/docs/",
+   "kind": "reference"
+  },
+  {
+   "n": 42,
+   "title": "Grafana 문서",
+   "url": "https://grafana.com/docs/grafana/latest/",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "회사 발표는 2025년 1월(TOKI 중심)·2025년 7월·2026년 7월(Datachain Wallet) 것이라, 이 자리가 맡는 Wallet 의 지금 구성(노드를 직접 두는지, SGX 를 쓰는지)은 공개되지 않았다 — 인프라 줄의 노드·SGX 이야기는 같은 회사 다른 제품의 사례다. 팀 인원(SRE 4명)은 2025년 1월 발표의 말이고, 지금 인원·온콜 순번·수당 금액은 공개되지 않았다. 회사 note 블로그는 로그인 페이지로 넘어가 읽지 못했다. 연봉은 엔화이고 원화로 바꾸지 않았다."
+}
