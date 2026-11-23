@@ -1,0 +1,908 @@
+{
+ "id": "toss-android-developer",
+ "company": "토스",
+ "role": "Android 개발자",
+ "team": "토스 · 사일로(제품 팀) × Android 챕터 — 플랫폼 팀(TDS·성능·빌드 자동화 등)도 있다",
+ "jobs": [
+  "ats-toss:group:6576715003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "송금·대출·인증·결제·커머스·광고처럼 토스 앱의 **핵심 화면을 네이티브(Kotlin)로** 만듭니다. 앱 시작 속도·메모리·수백 개 모듈의 빌드 같은 문제와, 계열사가 같이 쓰는 공통 플랫폼·디자인 시스템(TDS)도 다룹니다.[1]",
+  "env": "Kotlin · Coroutines · RxJava · Jetpack Compose와 View를 같이 쓰고, 화면은 TDS 컴포넌트로 쌓습니다.[1] 아키텍처는 팀마다 달라도 된다는 뜻으로 'Model-View-Whatever'라고 부릅니다.[1][6] 사일로와 Android 챕터에 동시에 속하고, 매주 목요일 엔지니어링 데이에 챕터가 모입니다.[1]",
+  "oneline": "화면을 빨리 만드는 건 TDS가 거의 해 줍니다. 공고가 보는 것은 **수천만 명 환경에서 생기는 네이티브 문제를 재고, 고치고, 숫자로 말하는 힘**입니다.[1][2][4]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Product Owner, Product Designer, Server Developer 등 다양한 직군의 동료들과 협업하여 토스 Android 서비스를 개발해요.",
+   "short": "PO·디자이너·서버 개발자와 한 팀(사일로)이 되어, 그 팀 제품의 Android 화면을 혼자 또는 둘이 맡는다.",
+   "why": "토스는 6~8명의 서로 다른 직군이 사일로 하나를 이뤄 작은 스타트업처럼 일합니다.[1] 송금 팀을 예로 들면 Android 개발자 한 명, iOS 개발자 한 명, 디자이너 한 명, PO 한 명처럼 직군마다 한두 명입니다.[6] 그래서 그 팀의 Android 쪽 결정은 대부분 내가 내립니다.{추론}",
+   "actually": {
+    "intro": "회사가 밝힌 협업 방식입니다.",
+    "items": [
+     "**사일로 안에서** — 무엇을 만들지는 PO·디자이너와 정하고, 서버 개발자와는 API 모양을 맞춘다. 한 사일로에 Android 개발자가 한두 명이라 리뷰 상대가 팀 밖에 있을 때가 많다.[6]",
+     "**챕터에서** — 같은 직군끼리 모인 조직이 챕터다. 매주 목요일 엔지니어링 데이에 모여 기술을 논의하고 함께 코드 리뷰를 한다.[1][7]",
+     "**새 기술을 쓰고 싶으면** — 챕터 위클리에서 무엇을 왜 쓰려는지 이야기하고, 크게 문제가 없으면 도입한다. 직렬화 라이브러리(kotlinx.serialization) 도입도 이렇게 논의했다.[6]",
+     "**사일로가 없는 일** — 모든 사일로에 Android 개발자가 있지는 않아, 그런 팀의 Android 일은 챕터 단위로 들어와 손을 든 사람이 맡는다는 2020년 인터뷰가 있다.[7]"
+    ]
+   },
+   "how_far": "기획과 디자인은 PO·디자이너가 정합니다. 개발자는 **Android에서 어떻게 만들지, 무엇이 어렵고 얼마나 걸릴지**를 먼저 말해 주는 사람이어야 합니다. 최소선은 디자인 시안을 받아 API 응답 모양과 실패했을 때의 화면까지 스스로 물어볼 수 있는 것입니다.{추론}",
+   "refs": [
+    1,
+    6,
+    7
+   ],
+   "study": [
+    "toss-compose-talk"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "송금, 대출, 인증, 결제, 커머스, 광고 등 MAU 2,000만 이상이 사용하는 토스 앱의 핵심 화면을 직접 만들어요. 한 앱 안에서 여러 도메인을 넘나들며 경험과 노하우를 쌓을 수 있어요.",
+   "short": "돈이 오가는 화면을 만든다. 예쁘게보다 '두 번 눌려도 한 번만 나가고, 앱이 죽었다 살아나도 그대로'가 먼저다.",
+   "why": "토스 앱 하나에 송금·대출·인증·결제·커머스·광고가 다 들어 있습니다.[1] 신용대출·보안 화면은 이미 Compose로 만들어져 있다고 발표에서 소개됐고[6], 인증·알림처럼 토스 전체가 같이 쓰는 기능을 맡은 Android 개발자 인터뷰도 있습니다.[7]",
+   "actually": {
+    "intro": "금융 화면에서 Android 개발자가 실제로 신경 쓰는 것들입니다. 토스 내부 구현은 공개되지 않아 Android 공식 문서로 '보통 이런 것'을 보입니다.",
+    "items": [
+     "**한 번만 실행되게** — 송금 버튼을 빠르게 두 번 눌러도 요청은 한 번만 나가야 한다. 버튼을 잠그고, 서버에 같은 요청임을 알리는 값을 같이 보낸다.{추론}",
+     "**앱이 죽었다 살아나도** — 메모리가 모자라면 Android는 뒤에 있는 앱 프로세스를 끈다. 사용자가 돌아오면 입력하던 금액·단계가 그대로 있어야 한다(저장된 상태로 복원).[17]",
+     "**기다리는 화면** — 대부분의 API는 짧게 끝나서 로딩 표시가 깜빡이기만 한다. 토스는 로딩 표시를 500ms 뒤에야 띄워 깜빡임을 거의 없앴다.[2]",
+     "**도메인 넘나들기** — 인증·결제·광고는 화면 모양도 규칙도 다르다. 같은 앱 안이라 TDS 컴포넌트와 챕터의 공통 코드는 그대로 쓴다.[1][4]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "로딩 표시를 500ms 늦게 띄우면 (가상 응답 시간)",
+     "body": "발표의 방식[2]을 가상 응답 시간 10개로 세어 봤습니다. 바로 띄우면 10번 다 깜빡이고, 500ms 뒤에 띄우면 정말 오래 걸린 2번만 보입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "resp = [80, 120, 95, 300, 450, 60, 700, 150, 1200, 90]  # ms\nflash = lambda delay: sum(1 for r in resp if r > delay)\nprint(\"바로 띄움:\", flash(0), \"번 / 500ms 뒤:\", flash(500), \"번\")\n# 바로 띄움: 10 번 / 500ms 뒤: 2 번"
+    }
+   ],
+   "how_far": "도메인 규칙(한도·약관·인증 단계)은 PO와 서버가 정합니다. Android 개발자는 **어떤 순서로 눌러도, 앱이 언제 끊겨도 화면이 틀린 상태로 남지 않게** 하는 몫을 맡습니다. 최소선은 화면 회전·프로세스 종료 뒤 복원을 직접 시험해 본 경험입니다.{추론}",
+   "refs": [
+    1,
+    2,
+    4,
+    6,
+    7,
+    17
+   ],
+   "study": [
+    "process-doc",
+    "toss-startup-talk",
+    "kkangsam"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "토스는 핵심 사용자 경험일수록 네이티브로 만들어요. 메모리 최적화, 렌더링 속도 개선, 수백 개 모듈의 빌드 시스템처럼 네이티브여서 풀 수 있는 문제를 수천만 사용자 환경에서 다뤄요.",
+   "short": "앱 시작·화면 그리기·메모리를 재서 줄이고, 수백 개로 쪼갠 코드가 빨리 빌드되게 만드는 일.",
+   "why": "토스 앱 안의 여러 서비스는 웹뷰로도 만들지만[1], 핵심 경험은 네이티브로 만든다고 공고가 적었습니다.[1] 기능이 늘면서 앱을 켜고 홈을 보기까지 평균 3.5초가 걸리게 됐고, 클라이언트 플랫폼 팀이 이를 1초 줄인 과정을 발표했습니다.[2] 빌드도 2020년 중반에는 맥북에서 10분이 넘게 걸렸습니다.[3]",
+   "actually": {
+    "intro": "토스가 발표한 실제 작업과, 같은 일을 다루는 Android 공식 문서입니다.",
+    "items": [
+     "**먼저 잰다** — 실제 사용자 기기에서 시작 과정을 구간별로 기록하고, Android Studio 프로파일러의 메서드 추적으로 무엇이 오래 걸리는지 봤다. 프로파일러는 느려지고 난독화된 정식 빌드와 환경이 달라 둘을 같이 썼다.[2]",
+     "**시작을 막는 것 치우기** — 스플래시에서 기다리던 API를 기다리지 않게 바꾸고, 메인 스레드에 있을 필요 없는 일을 다른 스레드로 넘겼다. RxJava 스케줄러가 잘못 지정돼 메인 스레드를 쓰던 곳도 찾았다.[2]",
+     "**초기화를 층으로 병렬화** — 크래시 수집 라이브러리를 가장 먼저 띄우고, 의존 관계가 없는 초기화끼리 묶어 동시에 돌렸다. Jetpack App Startup 라이브러리도 비슷한 일을 한다.[2][10]",
+     "**메모리** — 사진 한 장을 원본 크기로 올리면 수십 MB다. 화면 크기에 맞게 줄여 읽고, 앱이 메모리를 덜 쓰라는 신호를 받으면 캐시를 비운다.[12][13]",
+     "**화면 그리기** — Compose는 바뀐 부분만 다시 그리는데(리컴포지션), 넘기는 값의 모양이 나쁘면 줄 전체가 다시 그려진다. 토스도 리스트 줄 컴포넌트에서 이 문제를 겪었다.[6][14]",
+     "**빌드** — 모듈로 쪼개 바뀐 부분만 다시 빌드하고, 그래도 느려지자 사내 빌드 서버(12코어·128GB)에 원격으로 빌드해 어느 노트북에서든 증분 빌드를 1분 안팎으로 줄였다. 이를 위해 Android Studio 플러그인을 직접 만들었다.[3][15]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "초기화를 순서대로 vs 의존 관계 층별 병렬 (가상 소요 시간)",
+     "body": "발표의 그림[2]처럼 크래시 수집 → (스케줄러·예외 처리) → (사용자 정보·DB·통신사)의 세 층으로 두면, 가장 긴 길만 기다리면 됩니다. 숫자는 가상입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "tasks = {  # 이름: (ms, 먼저 끝나야 하는 것)\n    \"crash\": (40, []),\n    \"scheduler\": (30, [\"crash\"]), \"exception\": (20, [\"crash\"]),\n    \"user\": (80, [\"scheduler\", \"exception\"]),\n    \"database\": (120, [\"scheduler\", \"exception\"]),\n    \"telecom\": (60, [\"scheduler\", \"exception\"]),\n}\nprint(\"순서대로:\", sum(ms for ms, _ in tasks.values()), \"ms\")\ndone = {}\ndef finish(n):\n    if n not in done:\n        ms, deps = tasks[n]\n        done[n] = max((finish(d) for d in deps), default=0) + ms\n    return done[n]\nprint(\"층별 병렬:\", max(finish(n) for n in tasks), \"ms\")\n# 순서대로: 350 ms\n# 층별 병렬: 190 ms"
+    },
+    {
+     "title": "사진 한 장이 메모리를 얼마나 먹나",
+     "body": "비트맵은 가로 × 세로 × 한 점의 바이트입니다(ARGB_8888은 4바이트).[13] 4000×3000 사진은 약 45.8MB, 4분의 1로 줄여 읽으면(1000×750) 약 2.9MB입니다(직접 계산한 값).",
+     "lang": "python",
+     "code": "for w, h in [(1080, 2400), (4000, 3000), (1000, 750)]:\n    print(w, h, round(w * h * 4 / 1024 / 1024, 1), \"MB\")\n# 1080 2400 9.9 MB\n# 4000 3000 45.8 MB\n# 1000 750 2.9 MB"
+    },
+    {
+     "title": "모듈 하나를 고치면 무엇이 다시 빌드되나 (가상 의존 그래프)",
+     "body": "기능 모듈 하나를 고치면 그 모듈과 앱만, 맨 아래 core를 고치면 전부 다시 빌드됩니다. 그래서 자주 바뀌는 코드를 바닥 모듈에 두지 않습니다.[15](직접 돌린 출력)",
+     "lang": "python",
+     "code": "deps = {\"app\": [\"feature-transfer\", \"feature-loan\", \"feature-ads\"],\n        \"feature-transfer\": [\"tds\", \"network\"], \"feature-loan\": [\"tds\", \"network\"],\n        \"feature-ads\": [\"tds\"], \"tds\": [\"core\"], \"network\": [\"core\"], \"core\": []}\ndef rebuild(changed):\n    out, todo = {changed}, [changed]\n    while todo:\n        m = todo.pop()\n        for k, v in deps.items():\n            if m in v and k not in out:\n                out.add(k); todo.append(k)\n    return sorted(out)\nprint(rebuild(\"feature-ads\"))  # ['app', 'feature-ads']\nprint(rebuild(\"core\"))         # 7개 전부"
+    }
+   ],
+   "how_far": "깊은 플랫폼 작업(빌드 시스템 전체·성능 도구)은 플랫폼 팀이 맡지만[1], 사일로 개발자도 **내 화면이 느린지 재고 원인을 찾는 데까지**는 스스로 해야 합니다.{추론} 최소선은 프로파일러로 시작 시간·메모리를 재 본 경험과, 고친 전후를 숫자로 남겨 본 경험입니다 — 이력서 안내도 개선 결과를 수치로 보여 달라고 합니다.[1]",
+   "refs": [
+    1,
+    2,
+    3,
+    6,
+    10,
+    12,
+    13,
+    14,
+    15
+   ],
+   "study": [
+    "toss-startup-talk",
+    "toss-build-talk",
+    "launch-doc",
+    "memory-doc",
+    "modularization-doc",
+    "build-doc"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "토스 전 계열사가 쓰는 공통 플랫폼과 TDS 같은 핵심 기술을 설계해요. 내 결정이 전 계열사의 표준이 되는 경험을 할 수 있어요.",
+   "short": "토스·토스증권·토스플레이스 Android 개발자들이 같이 쓰는 부품을 만든다. 쓰는 사람이 개발자라 '쓰기 편한 모양'이 일이다.",
+   "why": "TDS는 Android 프로젝트에서 별도 모듈로 관리돼 다른 토스 제품을 만들 때도 바로 쓸 수 있게 돼 있습니다.[4] 토스증권은 모든 화면을 Compose로 만들고 있고 토스플레이스 단말기도 대부분 Compose 화면이라, TDS의 Compose 판이 계열사 화면 전체의 바닥이 됐습니다.[6]",
+   "actually": {
+    "intro": "토스가 발표한 공통 부품 설계 사례입니다.",
+    "items": [
+     "**서버와 같은 이름** — TDS 색은 'Blue 500'처럼 이름으로 부르고, 서버가 화면 정보를 줄 때도 색 코드가 아니라 TDS 색 이름을 보낸다. 웹·iOS·Android가 같은 이름을 해석한다.[4]",
+     "**빌드 때 받아 오기** — 색 값은 원격 서버에 있고 빌드할 때 받아 앱 리소스로 만든다. 낮·밤 모드 값도 서버가 함께 갖는다.[4]",
+     "**고칠 곳을 안 건드리고 바꾸기** — 이미 많은 화면이 일반 ScrollView를 쓰고 있어서, 화면을 만들 때(inflate) TDS ScrollView로 바꿔 끼우는 장치를 만들어 기존 코드를 거의 안 고치고 새 규칙을 퍼뜨렸다.[4]",
+     "**Compose 판 만들기** — 처음엔 View 컴포넌트를 2주 만에 Compose로 감싸 내놓고, 반응이 좋자 전부 Compose로 새로 만들었다. 리스트 줄 컴포넌트는 왼쪽·가운데·오른쪽 칸을 람다로 받는 슬롯 방식으로 바꿔, 사일로 개발자가 TDS 팀에 요청하지 않고도 칸을 바꿀 수 있게 했다.[6][22] 기본 색·글꼴은 CompositionLocal(트리 아래로 공통 값을 내려 주는 장치)로 내려 준다.[6][23]",
+     "**도구까지** — 디자인 화면을 기계가 읽는 트리(DST, 디자인 구문 트리)로 바꿔 JSON을 붙여 넣으면 TDS 코드가 생기는 Android Studio 플러그인, 토스 말투에 맞지 않는 문구를 잡는 린트도 만들었다.[5]"
+    ]
+   },
+   "how_far": "공통 부품의 방향은 플랫폼 팀과 챕터가 같이 정합니다.[1][6] 사일로 개발자로 들어가도 쓰다 불편한 것을 챕터에 올리고 고치는 데 참여할 수 있습니다.[6] 최소선은 **남이 쓸 API를 설계할 때 '기본값은 알아서, 바꾸고 싶은 칸은 열어 두기'**를 설명할 수 있는 것입니다.{추론}",
+   "refs": [
+    1,
+    4,
+    5,
+    6,
+    22,
+    23
+   ],
+   "study": [
+    "toss-tds-talk",
+    "toss-uxdx-talk",
+    "toss-compose-talk",
+    "compositionlocal-doc"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "토스만의 고유한 디자인 시스템인 TDS(Toss Design System)를 활용해 어떠한 서비스라도 1분 만에 UI를 완성하고 오직 핵심 로직에만 집중할 수 있어요.",
+   "short": "버튼·목록·하단 버튼 같은 부품이 이미 완성돼 있어, 화면은 블록 쌓듯 만들고 시간은 로직에 쓴다.",
+   "why": "TDS 컴포넌트에는 디자인에 필요한 것이 다 들어 있어 앱 개발자가 따로 손댈 일이 없고, 이름과 속성이 디자인 가이드와 똑같아 디자이너와 짧게 대화해도 같은 화면이 나옵니다.[4] 발표의 예시 화면은 TDS 컴포넌트 네 개(상단·검색창·목록 줄·하단 버튼)로 끝났습니다.[4]",
+   "actually": {
+    "intro": "'1분'을 가능하게 하는 것들입니다.",
+    "items": [
+     "**부품에 이미 들어 있는 것** — 모서리 둥글기(원호가 아니라 베지어 곡선), 위아래 흐림 처리, 상황별 진동 4가지, 하단 시트·알림창의 등장 애니메이션까지 컴포넌트가 갖고 있다.[4]",
+     "**코드 줄이기(TDSL)** — XML 대신 Kotlin으로 컴포넌트를 한두 줄씩 부르는 DSL(전용 문법)을 만들어, 실험용 분기나 간단한 계산을 화면 코드 안에 바로 쓴다.[4][5]",
+     "**붙여 넣기** — 디자인 도구에서 컴포넌트의 JSON을 복사해 Android Studio에 붙이면 TDSL·XML 코드로 바뀌고, 기본값인 속성은 빠진다.[5]",
+     "**Compose에서도** — 지금은 View와 Compose 중 개발자가 좋아하는 쪽을 골라 TDS를 쓸 수 있다.[6]"
+    ]
+   },
+   "how_far": "부품을 새로 만들 일은 적습니다. 대신 **TDS가 없는 모양을 요청받았을 때 부품을 조합해 풀지, 디자이너와 맞출지, TDS에 추가를 요청할지** 고르는 판단이 필요합니다.[4]{추론} 최소선은 Compose의 슬롯·기본값 전달 방식을 이해하고 작은 컴포넌트 라이브러리를 직접 만들어 본 것입니다.{추론}",
+   "refs": [
+    4,
+    5,
+    6
+   ],
+   "study": [
+    "toss-tds-talk",
+    "compose-layout-doc",
+    "compositionlocal-doc"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "천만 명이 넘는 사용자에게 매주 새로운 기능을 릴리즈하는, 누구보다 빠른 이터레이션을 경험할 수 있어요.",
+   "short": "매주 앱을 낸다. 그래서 새 기술을 배울 시간이 빠듯하고, 내보낸 뒤 숫자를 보고 바로 고치는 리듬으로 일한다.",
+   "why": "Compose 도입 발표에서도 일주일에 한 번 기능을 개발해 배포하는 속도 때문에 새 기술을 들이기가 어려웠다고 했습니다.[6] 그래서 엔지니어링 데이 세션·Compose 길드·예시 데모 앱으로 배우는 시간을 줄였습니다.[6]",
+   "actually": {
+    "intro": "매주 배포하는 앱에서 보통 같이 굴러가는 것들입니다. 토스의 배포 절차 자체는 공개되지 않았습니다.",
+    "items": [
+     "**조금씩 퍼뜨리기** — Google Play는 새 버전을 사용자의 일부에게만 먼저 내보내고(단계적 출시), 문제가 보이면 멈출 수 있다.[19]",
+     "**실기기 시험** — 토스는 실기기 100대가 넘는 사내 디바이스 팜을 24시간 돌려 앱 E2E 테스트를 자동화한다.[8]",
+     "**앱 업데이트 없이 바꾸기** — 디자인 플랫폼 팀은 화면 설계를 서버에서 내려 주는 방식(서버 드리븐 UI)으로 네이티브 앱 업데이트 없이 검증·대응하는 것을 목표로 삼았다.[5]",
+     "**실험 분기** — 화면 코드 안에 실험용 분기를 쉽게 넣으려고 TDSL을 만든 것도 같은 이유다.[5]"
+    ]
+   },
+   "how_far": "출시 일정과 범위는 사일로가 정합니다. 개발자는 **이번 주에 낼 수 있는 크기로 쪼개고, 나간 뒤 크래시·지표를 보고 다음 주에 고치는** 몫을 맡습니다.{추론} 최소선은 앱을 스토어에 직접 내보고 단계적 출시·크래시 리포트를 써 본 경험입니다.{추론}",
+   "refs": [
+    5,
+    6,
+    8,
+    19
+   ],
+   "study": [
+    "play-rollout-doc",
+    "toss-compose-talk"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Android 개발 경력 3년 이상에 준하는 실력을 보유한 분이면 좋아요.",
+   "short": "햇수보다 '3년 차쯤이면 혼자 풀 수 있는 문제'를 풀 수 있느냐다. 신입·1년 차도 실력으로 넘을 수 있다.",
+   "why": "공고가 '경력 3년 이상'이 아니라 '3년 이상에 **준하는 실력**'이라고 썼습니다.[1] 공고의 동료 한마디도 스타트업에서 혼자 Android 개발을 1년쯤 하다가 토스에 합류한 사람의 이야기입니다.[1]",
+   "how_far": "사일로에 Android 개발자가 한두 명이라[6] **화면 하나를 기획 확인부터 배포·장애 대응까지 혼자 끝낼 수 있는 정도**가 '3년에 준하는' 선으로 읽힙니다.{추론} 전형에 직무 인터뷰 당일 현장 과제가 있으니[1] 손으로 바로 짜는 실력도 봅니다.",
+   "refs": [
+    1,
+    6
+   ],
+   "study": [
+    "kkangsam",
+    "effective-kotlin",
+    "nowinandroid"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Android 플랫폼에 대한 깊은 이해를 가진 분이면 좋아요.",
+   "short": "API를 쓸 줄 아는 것보다, Android가 앱을 띄우고·멈추고·죽이는 규칙을 알아 이상한 버그의 원인을 짚는 수준.",
+   "why": "토스 앱 시작 속도 개선에서 스플래시 화면을 없애려다, 시작 화면이 singleTask 실행 모드면 아이콘을 누를 때마다 그 화면부터 다시 뜬다는 것을 작업 뒤에야 알고 되돌렸습니다. 결국 Android 12의 기본 스플래시와 겹치는 문제는 SplashScreen API로 풀었습니다.[2] 이런 규칙을 알아야 시간을 덜 씁니다.",
+   "level": {
+    "basic": "Activity·Fragment 수명 주기 · 메인 스레드와 백그라운드 · 권한 · RecyclerView/LazyColumn",
+    "work": "프로세스 종료와 상태 복원 · 실행 모드(launchMode)·태스크 · ANR 원인 · Coroutines/RxJava 스레드 지정 · 메모리 신호",
+    "team": "앱 시작 단계(프로세스 → Application → 첫 화면) 재기 · 프로파일러·추적 읽기 · Gradle 빌드 구조 · Compose 리컴포지션"
+   },
+   "actually": {
+    "intro": "'깊은 이해'가 실제로 쓰이는 자리입니다.",
+    "items": [
+     "**앱 시작 단계** — 앱은 처음 켤 때(콜드 스타트) 프로세스를 만들고 Application을 초기화한 뒤 첫 화면을 그린다. 어느 단계에서 시간이 새는지 알아야 고칠 곳이 보인다.[9]",
+     "**프로세스는 언제든 죽는다** — 시스템은 메모리가 모자라면 중요도가 낮은 프로세스부터 끈다. 그래서 화면 상태를 프로세스 밖에 저장해 둔다.[17]",
+     "**메인 스레드를 오래 잡으면** — 입력에 5초 동안 답하지 못하면 '응답 없음'(ANR)이 뜬다. 무거운 일을 메인 스레드에서 빼는 이유다.[18]",
+     "**OS 버전 차이** — Android 12부터 모든 앱에 시스템 스플래시가 붙어, 직접 만든 스플래시와 두 번 뜨는 문제가 생겼다.[2][11]",
+     "**초기화 순서** — 라이브러리마다 ContentProvider로 초기화하면 비용이 쌓인다. App Startup은 초기화를 하나로 모으고 의존 순서를 정한다.[2][10]",
+     "**어느 스레드에서 도나** — 코루틴은 디스패처로 실행할 스레드를 고른다. 토스가 찾은 \"RxJava 스케줄러가 잘못 지정돼 메인 스레드를 쓰던 곳\"과 같은 종류의 실수를 코루틴에서도 막아야 한다.[2][21]"
+    ]
+   },
+   "how_far": "모든 내부 구조를 외울 필요는 없습니다. **'왜 이렇게 동작하나'를 공식 문서로 확인하고, 재현하고, 설명할 수 있으면** 됩니다.{추론} 최소선은 수명 주기·프로세스 종료·ANR을 직접 재현해 본 것입니다.",
+   "refs": [
+    2,
+    9,
+    10,
+    11,
+    17,
+    18,
+    21
+   ],
+   "study": [
+    "process-doc",
+    "launch-doc",
+    "anr-doc",
+    "coroutines-book",
+    "compose-internals"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "규모가 큰 서비스에서 복잡한 문제를 주도적으로 해결해본 경험이 있으면 더 좋아요.",
+   "short": "사용자·코드가 많아야만 보이는 문제를 스스로 찾아, 원인을 재고, 고친 결과를 숫자로 보여 준 경험.",
+   "why": "이력서 안내가 같은 말을 합니다 — 업무 나열보다 직접 해결한 문제를, 배경·해결 방법·그 방법을 고른 이유와 함께, 결과는 수치로 적어 달라고 합니다.[1] 토스 발표들도 늘 같은 틀입니다: 앱 시작 평균 3.5초 → 1초 단축[2], 맥북 빌드 10분 넘음 → 원격 빌드로 증분 1분 안팎[3], Compose 사용자 8명 → 챕터의 절반 이상·만족도 5점 중 4점.[6]",
+   "actually": {
+    "intro": "'규모가 커야 생기는 문제'의 예입니다.",
+    "items": [
+     "**드문 기기의 크래시** — 사용자가 수천만이면 0.1%도 수만 명이다. 특정 제조사·OS 버전에서만 나는 문제를 재현해 고친다.{추론}",
+     "**느린 인터넷** — 요청 제한 시간이 5초면, 아주 느린 환경의 사용자는 홈을 보기까지 그만큼 기다린다. 토스는 스플래시에서 기다리던 API를 빼서 풀었다.[2]",
+     "**코드가 커서 생기는 문제** — 모듈화 안 된 구조와 낡은 빌드 설정 때문에 빌드가 느려졌고, 보안 프로그램이 디스크 입출력을 막는 것까지 원인이었다.[3]",
+     "**사람이 많아서 생기는 문제** — 개발자가 늘자 TDS 쓰는 방식이 제각각이 돼 디자인 의도와 코드가 어긋났다. 도구(DST·린트)로 맞췄다.[5]",
+     "**지금 쓸 수 있는 수단** — 발표 이후 Android는 자주 쓰는 코드 경로를 미리 컴파일해 두는 기준 프로필(Baseline Profiles)을 내놨다. 시작·스크롤을 줄였다면 전후를 같은 기기에서 재 비교한다.[20]"
+    ]
+   },
+   "how_far": "'주도적'은 시키지 않았는데 문제를 찾고, 재는 방법부터 정했다는 뜻으로 읽힙니다.{추론} 큰 서비스 경험이 없다면, 작은 앱이라도 **시작 시간·메모리·빌드 시간을 재고 → 원인을 하나 고르고 → 전후 숫자를 남긴** 기록이 대신할 수 있습니다.{추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    5,
+    6,
+    20
+   ],
+   "study": [
+    "toss-startup-talk",
+    "toss-build-talk",
+    "baseline-doc"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "느린 것을 보면 '어디서 몇 ms가 새나' 재 보고 싶어지는 사람[2]",
+   "남이 쓸 코드(공통 부품·도구)를 만드는 게 즐거운 사람[4][5]",
+   "팀마다 다른 기술을 쓰는 자유와, 그걸 챕터에서 설득하는 과정을 좋아하는 사람[6]",
+   "작은 팀에서 Android 쪽을 혼자 책임지고 싶은 사람[1][6]"
+  ],
+  "hard": [
+   "매주 배포라 새 기술을 따로 공부할 시간이 빠듯하다[6]",
+   "한 사일로에 Android 개발자가 한두 명이라 바로 옆에서 리뷰해 줄 사람이 적다[6]",
+   "팀마다 아키텍처가 달라(MVW) 다른 팀 코드를 볼 때마다 새로 익혀야 한다[1][6]",
+   "직무 인터뷰 당일 현장 과제가 있다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "앱 시작이 3초 넘게 걸린다면 무엇부터 재겠어요?",
+   "a": "실사용 구간 기록과 프로파일러를 같이 쓴 이유, 스플래시의 API 대기.[2][9]"
+  },
+  {
+   "q": "초기화할 라이브러리가 열 개 있고 그중 몇 개는 순서가 있어요. 어떻게 빠르게 하겠어요?",
+   "a": "의존 관계로 층을 나눠 병렬로 — 크래시 수집은 맨 앞.[2][10]"
+  },
+  {
+   "q": "송금 금액을 입력하던 중 앱 프로세스가 죽었다가 돌아왔어요. 무엇이 남아 있어야 하나요?",
+   "a": "프로세스 종료와 상태 복원.[17]"
+  },
+  {
+   "q": "목록 한 줄의 가운데 글자색만 바꿨는데 줄 전체가 다시 그려져요. 왜이고 어떻게 고치나요?",
+   "a": "토스가 리스트 줄 컴포넌트를 슬롯 방식으로 바꾼 이유.[6][14]"
+  },
+  {
+   "q": "로딩 표시가 짧게 깜빡이는 문제를 어떻게 줄이겠어요?",
+   "a": "500ms 지연 표시.[2]"
+  },
+  {
+   "q": "빌드가 10분 걸린다면 무엇을 해 보겠어요?",
+   "a": "모듈화·빌드 설정, 그래도 안 되면 원격 빌드.[3][15][16]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · Android 개발자 (Android Developer)",
+   "url": "https://toss.im/career/job-detail?gh_jid=6576715003",
+   "kind": "posting",
+   "note": "팀 구조(사일로·챕터·플랫폼 팀)·업무·요건·이력서 안내·기술 스택·합류 여정(현장 과제)·동료 한마디"
+  },
+  {
+   "n": 2,
+   "title": "토스 SLASH 22 · 토스 앱 오픈시간 1초를 줄이기까지",
+   "url": "https://www.youtube.com/watch?v=IVt7HjUM0LQ",
+   "kind": "company",
+   "date": "2022",
+   "note": "클라이언트 플랫폼 팀 Android 개발자 발표 — 자막 전부 확인. 평균 3.5초, 실사용 구간 기록 + 메서드 추적, 스플래시 API 대기 제거, 메인 스레드·RxJava 스케줄러, 층별 병렬 초기화, singleTask 되돌림, SplashScreen API, 페이드아웃, 로딩 500ms 지연"
+  },
+  {
+   "n": 3,
+   "title": "토스 SLASH 21 · Build, Harder Better Faster Stronger",
+   "url": "https://www.youtube.com/watch?v=6y_lR3yjg7k",
+   "kind": "company",
+   "date": "2021",
+   "note": "Android 개발자 발표 — 자막 전부 확인. 빌드 3~5분 → 7분 → 맥북 10분+, 사내 빌드 서버 12코어·128GB, mainframer·rsync, APK만 동기화, 증분 1분 안팎, 원격 빌드 Android Studio 플러그인"
+  },
+  {
+   "n": 4,
+   "title": "토스 SLASH 21 · TDS로 UI 쌓기: 그 많던 코드는 누가 다 치웠을까?",
+   "url": "https://www.youtube.com/watch?v=pfKuEuufgdc",
+   "kind": "company",
+   "date": "2021",
+   "note": "Android 개발자 발표 — 자막 전부 확인. 별도 모듈, 색 이름 팔레트·서버 동기화, 베지어 모서리, inflate 때 ScrollView 바꿔 끼우기, 진동 4패턴, 컴포넌트 넷으로 화면, TDSL"
+  },
+  {
+   "n": 5,
+   "title": "토스 SLASH 22 · UX와 DX, 그 모든 경험을 위한 디자인 시스템",
+   "url": "https://www.youtube.com/watch?v=5WBlhIl8KkY",
+   "kind": "company",
+   "date": "2022",
+   "note": "디자인 플랫폼 팀 Android 개발자 발표 — 자막 전부 확인. 보이스톤 메이커 → 린트·런타임 오버레이, DST(디자인 구문 트리), 서버 드리븐 UI 비전, JSON → TDSL/XML 변환 플러그인"
+  },
+  {
+   "n": 6,
+   "title": "토스 SLASH 24 · Compose를 토스팀에 안착시키기까지",
+   "url": "https://www.youtube.com/watch?v=AN89tT3IppI",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스증권 Android 개발자 발표 — 자막 전부 확인. 사일로 직군별 1~2명, MVW, 위클리 기술 논의, 매주 배포, View 감싸기 2주 → 전부 Compose, 슬롯 컴포넌트·CompositionLocal, 세션·길드·데모 앱, 8명 → 절반 이상·만족도 4/5"
+  },
+  {
+   "n": 7,
+   "title": "토스피드 · 경력보다 실력에 자신있는, 토스팀 개발자를 만나다",
+   "url": "https://toss.im/tossfeed/article/tossdeveloper-interview",
+   "kind": "company",
+   "date": "2020-07-19",
+   "note": "Android 개발자 인터뷰 — 인증·알림 같은 공통 기능, 챕터 단위로 들어오는 Android 일, 사일로 8~9명"
+  },
+  {
+   "n": 8,
+   "title": "토스 테크 · 토스의 디바이스 팜 만들기",
+   "url": "https://toss.tech/article/device-farm-nebula",
+   "kind": "company",
+   "date": "2026-07-30",
+   "note": "실기기 100대+·24시간 E2E 테스트, Android는 ADB·UiAutomation 위 자체 드라이버"
+  },
+  {
+   "n": 9,
+   "title": "Android Developers · 앱 시작 시간",
+   "url": "https://developer.android.com/topic/performance/vitals/launch-time",
+   "kind": "reference",
+   "note": "콜드·웜·핫 스타트와 측정"
+  },
+  {
+   "n": 10,
+   "title": "Android Developers · App Startup",
+   "url": "https://developer.android.com/topic/libraries/app-startup",
+   "kind": "reference",
+   "note": "ContentProvider 하나로 초기화를 모으고 의존 순서 지정"
+  },
+  {
+   "n": 11,
+   "title": "Android Developers · 스플래시 화면",
+   "url": "https://developer.android.com/develop/ui/views/launch/splash-screen",
+   "kind": "reference",
+   "note": "Android 12+ 시스템 스플래시, setKeepOnScreenCondition"
+  },
+  {
+   "n": 12,
+   "title": "Android Developers · 메모리 관리 개요",
+   "url": "https://developer.android.com/topic/performance/memory-overview",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "Android Developers · 큰 비트맵을 효율적으로 로드",
+   "url": "https://developer.android.com/topic/performance/graphics/load-bitmap",
+   "kind": "reference",
+   "note": "inSampleSize로 줄여 읽기"
+  },
+  {
+   "n": 14,
+   "title": "Android Developers · Compose의 안정성",
+   "url": "https://developer.android.com/develop/ui/compose/performance/stability",
+   "kind": "reference",
+   "note": "리컴포지션 건너뛰기와 매개변수 안정성"
+  },
+  {
+   "n": 15,
+   "title": "Android Developers · Android 앱 모듈화 가이드",
+   "url": "https://developer.android.com/topic/modularization",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Android Developers · 빌드 속도 최적화",
+   "url": "https://developer.android.com/build/optimize-your-build",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Android Developers · 프로세스와 앱 수명 주기",
+   "url": "https://developer.android.com/guide/components/activities/process-lifecycle",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Android Developers · ANR",
+   "url": "https://developer.android.com/topic/performance/vitals/anr",
+   "kind": "reference",
+   "note": "입력에 5초 동안 응답하지 못하면 ANR"
+  },
+  {
+   "n": 19,
+   "title": "Play Console 고객센터 · 단계적 출시",
+   "url": "https://support.google.com/googleplay/android-developer/answer/6346149",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Android Developers · 기준 프로필(Baseline Profiles)",
+   "url": "https://developer.android.com/topic/performance/baselineprofiles/overview",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Kotlin 공식 문서 · Coroutines guide",
+   "url": "https://kotlinlang.org/docs/coroutines-guide.html",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "Android Developers · Compose 레이아웃 기본사항(슬롯 기반 레이아웃)",
+   "url": "https://developer.android.com/develop/ui/compose/layouts/basics",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Android Developers · CompositionLocal",
+   "url": "https://developer.android.com/develop/ui/compose/compositionlocal",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "토스 · 회사 소개(사이트 하단 회사 정보)",
+   "url": "https://toss.im/company",
+   "kind": "company",
+   "note": "사업장 주소·우편번호"
+  },
+  {
+   "n": 25,
+   "title": "토스피드 · 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 26,
+   "title": "원티드 · 비바리퍼블리카(토스) 기업 정보",
+   "url": "https://www.wanted.co.kr/company/6e7c9aaabe84eba898328836e7cf85b1a1f8e67d",
+   "kind": "reference",
+   "note": "집계 사이트의 평균 연봉 — 산출 기준·기준일 표기 없음"
+  }
+ ],
+ "caveat": "토스 Android 발표는 2021~2024년 것이라 숫자(빌드 시간·사용자 수·Compose 사용률)는 지금과 다를 수 있습니다. 메모리 최적화·'수백 개 모듈'의 빌드 구조·배포 절차는 토스가 공개한 자료가 없어 Android 공식 문서로 '보통 이런 것'을 보였습니다. 금융 화면의 중복 요청 방지 같은 내용은 {추론}입니다. 코드 예시는 파이썬으로 옮겨 직접 돌렸고 숫자는 가상입니다. 연봉·복지·위치는 같은 회사 다른 풀이와 같은 근거입니다.",
+ "resources": [
+  {
+   "id": "toss-startup-talk",
+   "title": "SLASH 22 · 토스 앱 오픈시간 1초를 줄이기까지",
+   "by": "토스 클라이언트 플랫폼 팀 · 12분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=IVt7HjUM0LQ",
+   "why": "업무 ③과 요건 ③의 본보기 — 재는 법 둘, 고친 것 넷, 실패한 시도 하나를 12분에. 면접 답의 틀로 쓴다."
+  },
+  {
+   "id": "toss-build-talk",
+   "title": "SLASH 21 · Build, Harder Better Faster Stronger",
+   "by": "토스 Android 개발자 · 9분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=6y_lR3yjg7k",
+   "why": "업무 ③의 '빌드 시스템' — 설정으로 안 될 때 원격 빌드까지 간 과정."
+  },
+  {
+   "id": "toss-tds-talk",
+   "title": "SLASH 21 · TDS로 UI 쌓기: 그 많던 코드는 누가 다 치웠을까?",
+   "by": "토스 Android 개발자 · 15분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=pfKuEuufgdc",
+   "why": "업무 ④⑤ — TDS가 무엇을 대신해 주고, 기존 코드를 안 건드리고 규칙을 어떻게 퍼뜨렸나."
+  },
+  {
+   "id": "toss-uxdx-talk",
+   "title": "SLASH 22 · UX와 DX, 그 모든 경험을 위한 디자인 시스템",
+   "by": "토스 디자인 플랫폼 팀 · 15분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=5WBlhIl8KkY",
+   "why": "업무 ④ — 린트·코드 생성 플러그인처럼 '개발자가 쓰는 도구'를 만드는 일이 어떤 것인지."
+  },
+  {
+   "id": "toss-compose-talk",
+   "title": "SLASH 24 · Compose를 토스팀에 안착시키기까지",
+   "by": "토스증권 Android 개발자 · 18분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=AN89tT3IppI",
+   "why": "업무 ①④⑥ — 챕터가 새 기술을 들이는 방식, 슬롯 컴포넌트, 매주 배포 속에서 배우는 법. 지원 전에 꼭 볼 영상."
+  },
+  {
+   "id": "launch-doc",
+   "title": "앱 시작 시간",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/topic/performance/vitals/launch-time",
+   "why": "요건 ②의 앱 시작 단계와 측정법. 발표를 공식 용어로 다시 정리한다."
+  },
+  {
+   "id": "baseline-doc",
+   "title": "기준 프로필(Baseline Profiles) 개요",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "https://developer.android.com/topic/performance/baselineprofiles/overview",
+   "why": "시작·스크롤 속도를 미리 컴파일로 당기는 공식 방법. 발표 이후 나온 수단이라 함께 알아 둔다."
+  },
+  {
+   "id": "memory-doc",
+   "title": "메모리 관리 개요",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/topic/performance/memory-overview",
+   "why": "업무 ③의 '메모리 최적화' — 가비지 컬렉션·메모리 신호·프로세스 종료의 기본."
+  },
+  {
+   "id": "process-doc",
+   "title": "프로세스와 앱 수명 주기",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/guide/components/activities/process-lifecycle",
+   "why": "요건 ②와 업무 ② — 시스템이 언제 앱을 죽이는지 알아야 금융 화면 상태를 지킨다."
+  },
+  {
+   "id": "anr-doc",
+   "title": "ANR",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/topic/performance/vitals/anr",
+   "why": "요건 ② — 메인 스레드를 잡으면 무슨 일이 나는지, 원인 찾는 법."
+  },
+  {
+   "id": "modularization-doc",
+   "title": "Android 앱 모듈화 가이드",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/topic/modularization",
+   "why": "업무 ③의 '수백 개 모듈' — 모듈을 어떻게 나누고 서로 어떻게 의존하게 하나."
+  },
+  {
+   "id": "build-doc",
+   "title": "빌드 속도 최적화",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/build/optimize-your-build",
+   "why": "업무 ③ — 발표가 말한 '일반적인 빌드 속도 개선'의 목록. 빌드 분석기로 재는 법까지."
+  },
+  {
+   "id": "compose-layout-doc",
+   "title": "Compose 레이아웃 기본사항",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/develop/ui/compose/layouts/basics",
+   "why": "업무 ⑤ — 토스가 TDS 목록 줄에 쓴 슬롯 기반 레이아웃의 공식 설명."
+  },
+  {
+   "id": "compositionlocal-doc",
+   "title": "CompositionLocal을 사용한 로컬 범위 지정 데이터",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/develop/ui/compose/compositionlocal",
+   "why": "업무 ④⑤ — 슬롯 컴포넌트에 기본 색·글꼴을 내려 준 방법."
+  },
+  {
+   "id": "compose-stability-doc",
+   "title": "Compose의 안정성",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "https://developer.android.com/develop/ui/compose/performance/stability",
+   "why": "업무 ③의 '렌더링 속도' — 토스 개발자들이 꼽은 Compose 단점(리컴포지션 줄이기)의 원인."
+  },
+  {
+   "id": "play-rollout-doc",
+   "title": "단계적 출시로 앱 업데이트 출시하기",
+   "by": "Play Console 고객센터",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://support.google.com/googleplay/android-developer/answer/6346149",
+   "why": "업무 ⑥ — 매주 내보내는 앱에서 위험을 줄이는 기본 장치."
+  },
+  {
+   "id": "nowinandroid",
+   "title": "Now in Android (GitHub)",
+   "by": "Google · Android 팀",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/android/nowinandroid",
+   "why": "요건 ① — Kotlin·Compose·Coroutines·모듈화를 모두 쓴 공식 예제 앱. 모듈 나눈 방식과 빌드 설정을 읽는다."
+  },
+  {
+   "id": "kkangsam",
+   "title": "깡샘의 안드로이드 앱 프로그래밍 with 코틀린 (개정 5판)",
+   "by": "강성윤 · 이지스퍼블리싱",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B9%A1%EC%83%98%EC%9D%98%20%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C%20%EC%95%B1%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D",
+   "why": "요건 ①의 바닥 — 컴포넌트·수명 주기·권한 같은 Android 기본을 한국어로 한 번에. 이미 아는 장은 건너뛴다."
+  },
+  {
+   "id": "effective-kotlin",
+   "title": "이펙티브 코틀린",
+   "by": "마르친 모스칼라 · 인사이트 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C%20%EC%BD%94%ED%8B%80%EB%A6%B0",
+   "why": "요건 ① — 안전성·가독성·효율을 위한 Kotlin 습관. 남이 쓸 공통 코드(업무 ④)를 짤 때 특히 쓸모 있다."
+  },
+  {
+   "id": "coroutines-book",
+   "title": "코틀린 코루틴의 정석",
+   "by": "조세영 · 에이콘출판 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000007956109",
+   "why": "요건 ② — 공고 스택의 Coroutines. 디스패처(어느 스레드에서 도나)·취소·예외 처리를 메인 스레드 문제와 엮어 이해한다."
+  },
+  {
+   "id": "compose-internals",
+   "title": "Jetpack Compose Internals (한국어판)",
+   "by": "Jorge Castillo · 엄재웅·류기민 옮김 · Leanpub",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://leanpub.com/composeinternalskor",
+   "why": "요건 ② — Compose 컴파일러·런타임이 무엇을 다시 그릴지 정하는 원리. 리컴포지션 문제를 '왜'부터 답하게 된다."
+  },
+  {
+   "id": "coroutines-doc",
+   "title": "Coroutines guide",
+   "by": "Kotlin 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kotlinlang.org/docs/coroutines-guide.html",
+   "why": "책과 함께 보는 원문. 구조화된 동시성·디스패처의 공식 설명."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "토스가 말한 것부터",
+   "time": "1주",
+   "goal": "토스 Android 발표 다섯 편을 '문제 → 잰 방법 → 바꾼 것 → 숫자'로 설명할 수 있다.",
+   "resources": [
+    "toss-startup-talk",
+    "toss-build-talk",
+    "toss-tds-talk",
+    "toss-uxdx-talk",
+    "toss-compose-talk"
+   ],
+   "task": "발표마다 네 칸짜리 표를 만든다. 내가 만든 앱에서 같은 틀로 쓸 수 있는 문제를 하나씩 적어 둔다."
+  },
+  {
+   "title": "Android가 앱을 다루는 규칙",
+   "time": "2주",
+   "goal": "수명 주기·프로세스 종료·ANR을 직접 재현하고 원인을 설명할 수 있다.",
+   "resources": [
+    "kkangsam",
+    "process-doc",
+    "anr-doc",
+    "coroutines-book",
+    "coroutines-doc"
+   ],
+   "task": "가상 송금 화면(금액 → 계좌 → 확인)을 만든다. 개발자 옵션의 '활동 보관 안 함'과 adb로 프로세스를 죽였다 살려 입력값이 남는지 확인하고, 메인 스레드에서 일부러 6초를 잡아 ANR을 띄운 뒤 코루틴으로 옮겨 고친다."
+  },
+  {
+   "title": "Compose와 작은 디자인 시스템",
+   "time": "2주",
+   "goal": "슬롯·기본값 전달로 '쓰기 편하고 바꾸기 쉬운' 컴포넌트를 만들 수 있다.",
+   "resources": [
+    "compose-layout-doc",
+    "compositionlocal-doc",
+    "compose-stability-doc",
+    "compose-internals"
+   ],
+   "task": "왼쪽·가운데·오른쪽 슬롯을 받는 목록 줄 컴포넌트와 색 팔레트를 만들고, Layout Inspector로 가운데 글자색만 바꿨을 때 무엇이 다시 그려지는지 센다. 매개변수를 객체 하나로 받던 판과 비교한다."
+  },
+  {
+   "title": "재고 줄이기",
+   "time": "2주",
+   "goal": "시작 시간·메모리·빌드 시간을 재고, 하나를 골라 줄인 전후 숫자를 남길 수 있다.",
+   "resources": [
+    "launch-doc",
+    "memory-doc",
+    "baseline-doc",
+    "modularization-doc",
+    "build-doc",
+    "nowinandroid"
+   ],
+   "task": "2단계 앱에 일부러 느린 초기화 다섯 개(가상 지연)와 큰 사진 목록을 넣는다. 콜드 스타트 시간과 메모리를 재고, 초기화를 층별 병렬로 바꾸고 사진을 줄여 읽은 뒤 다시 잰다. 앱을 모듈 네 개로 나눠 기능 모듈만 고쳤을 때 빌드 시간을 비교한다."
+  },
+  {
+   "title": "이력서에 옮기기 (선택)",
+   "time": "3일",
+   "goal": "이력서 안내대로 '배경 · 해결 · 고른 이유 · 수치'로 경험을 쓸 수 있다.",
+   "resources": [
+    "effective-kotlin",
+    "play-rollout-doc"
+   ],
+   "task": "앞 단계 결과 둘을 이력서 문단으로 쓴다. 앱을 내부 테스트 트랙에 올려 단계적 출시 설정을 해 보고, 그 과정도 한 줄로 남긴다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없고 공시 원문을 찾지 못했다 — 집계 사이트 평균 **약 6,082만원** 하나만 확인(기준 표기 없음)",
+  "rows": [
+   {
+    "label": "직원 평균 연봉(집계)",
+    "value": "6,082만원",
+    "amount": 6082,
+    "basis": "집계 사이트 · 기준일 표기 없음",
+    "note": "원티드 기업 정보의 평균 연봉. 무엇으로 계산했는지는 밝히지 않았다 [26]"
+   }
+  ],
+  "how": "이 공고의 합류 여정은 서류 → 직무 인터뷰(당일 현장 과제) → 문화적합성 인터뷰 → 레퍼런스 체크 → **처우 협의** 순서라, 연봉은 사람마다 정한다 [1]. 집계값은 경력직이 섞인 회사 전체 값이라 신입이나 이 자리의 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "업무 관련 비용 100% 지원"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 1회 종합건강검진·독감 예방, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "보험료 전액 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비 개인 부담 0원, 택시비 100%"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·사내 편의점 무료, 사내 헤어살롱"
+   },
+   {
+    "name": "AI 도구",
+    "detail": "Claude Code Max 등 AI 개발 도구 지원(공고 표기)"
+   }
+  ],
+  "note": "AI 도구 외에는 토스 팀 전체를 기준으로 한 2021년 공식 소개 글이다 [25]. AI 도구 지원은 이 공고에 적혀 있다 [1]. 지금도 같은지는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스(비바리퍼블리카) 본사",
+  "address": "서울특별시 강남구 테헤란로 142, 4층, 10층, 11층, 12층, 13층, 22층, 23층",
+  "postal": "06236",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "공고의 근무지 표기는 'Seoul'뿐이고, 주소는 토스 회사 소개 페이지 하단의 회사 정보다 [24]. 계열사(토스증권·토스플레이스 등)로 배치되면 근무지가 다를 수 있다 {추론}."
+ }
+}

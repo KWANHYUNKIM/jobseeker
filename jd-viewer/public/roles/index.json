@@ -14,6 +14,7 @@
   "ats-toss:group:7786567003": "toss-ai-platform-serving",
   "ats-toss:group:8000575003": "toss-aioc-ai-solution-engineer",
   "ats-toss:group:7503655003": "toss-aioc-brain-ai-engineer",
+  "ats-toss:group:6576715003": "toss-android-developer",
   "ats-toss:group:7798373003": "toss-call-infra-engineer",
   "ats-toss:group:7997231003": "toss-catalog-mle",
   "ats-toss:group:7989660003": "toss-client-platform-engineer",
@@ -186,6 +187,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 12
+  },
+  {
+   "id": "toss-android-developer",
+   "company": "토스",
+   "role": "Android 개발자",
+   "jobs": [
+    "ats-toss:group:6576715003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 9
   },
   {
    "id": "toss-call-infra-engineer",
