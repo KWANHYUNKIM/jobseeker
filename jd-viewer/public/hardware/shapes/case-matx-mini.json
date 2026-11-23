@@ -1,0 +1,50 @@
+{
+ "schema": 1,
+ "part": "case-matx-mini",
+ "shapes": {
+  "3rsys-l220-led-bar": {
+   "kind": "case",
+   "front": "glass",
+   "glass_side": true,
+   "panoramic": true,
+   "shroud": true,
+   "shroud_side": "solid",
+   "grommet_style": "open",
+   "cpu_cutout": true,
+   "drive_cage": false,
+   "feet": "round",
+   "expansion_slots": 4,
+   "color": "#16171a",
+   "fan_blades": 7,
+   "fan_light": "argb",
+   "sources": [
+    {
+     "title": "3RSYS L220 LED BAR 블랙 — 공식 제품 페이지(정면·비스듬한·옆 사진 4장, 상세 이미지의 제품 스펙 표·호환 그림·뒷면 그림)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1783383067"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "공식 스펙 표: 패널 '좌측 원터치 강화 유리 / 우측 원터치 타공 패널 / 전면 슬라이드 강화 유리', PCI 슬롯 4개, 저장장치 HDD 1·SSD 2(하드베이 없이 바닥에 나사로 고정이라 drive_cage false), 팬 RING FLOW DR-120(5V ARGB, 팬 틀 둘레·허브 고리가 빛난다). 파워는 본체 칸 아래 받침(플린스) 안 뒤쪽에 눕고, 받침 앞면 위 모서리를 가로지르는 LED 바가 이름의 'LED BAR' 다 — 덮개(shroud)로 적었지만 실물은 본체 바닥판(바닥 팬 3개 자리) 밑의 따로 떨어진 받침이다. 뒷면 그림: 트레이 선 구멍은 고무 없는 세로 구멍, CPU 뒷면 구멍이 크다. 발은 둥근 발 4개. 날개 수는 켜지 않은 정면 사진의 팬에서 센 것."
+  },
+  "darkflash-dph70m-argb": {
+   "kind": "case",
+   "front": "glass",
+   "glass_side": true,
+   "panoramic": true,
+   "shroud": false,
+   "feet": "bar",
+   "color": "#121315",
+   "fan_light": "argb",
+   "sources": [
+    {
+     "title": "다크플래쉬 코리아(투웨이) DPH70M ARGB (블랙) 상품 페이지 — 비스듬한 사진 4장(켠 사진 셋·흰 판과 나란히 하나)",
+     "url": "https://www.darkflash.co.kr/product/detail2.html?product_no=980"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "공식 사진: 앞·왼쪽이 기둥 없이 이어진 강화유리(어항형)이고 파워 덮개가 없다 — 파워·저장 장치는 트레이 뒤 칸(듀얼 챔버)에 들어가고 본체 칸 바닥은 팬 자리다. 발은 앞뒤로 길게 뻗은 받침(앞쪽 끝에 비스듬한 I/O 판). 기본 팬은 측면 C22R ARGB 2개·뒤 C22 ARGB 1개 — 팬 틀 둘레 고리와 허브 고리가 빛난다(사진의 바닥·윗 팬은 연출 구성). 상세 사양 이미지는 스크립트로 불러와 못 봐 확장 슬롯 수·트레이 구멍·날개 수는 비웠다."
+  }
+ }
+}

@@ -1,0 +1,29 @@
+{
+ "schema": 1,
+ "part": "case-atx-full",
+ "shapes": {
+  "3rsys-t2000-quiet": {
+   "kind": "case",
+   "front": "mesh",
+   "glass_side": false,
+   "panoramic": false,
+   "shroud": true,
+   "shroud_side": "solid",
+   "grommet_style": "open",
+   "drive_cage": true,
+   "expansion_slots": 9,
+   "color": "#1b1c1e",
+   "fan_blades": 7,
+   "fan_light": "none",
+   "sources": [
+    {
+     "title": "쓰리알시스 T2000 Quiet 블랙 — 공식 제품 페이지(정면·비스듬한·옆판 연 사진 4장, 상세 이미지의 제품 스펙 표·하드베이·팬 그림)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1744089698"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "공식 스펙 표: 패널 '상단 슬라이드 미세 타공 / 전면 원터치 미세타공 / 좌측(상하) 슬라이드 철판 / 우측(상하) 슬라이드 미세 타공', PCI 슬롯 9개, HDD 최대 5·SSD 4(파워 덮개 앞쪽 아래 하드베이, 분리 가능). 기본 팬 Silence SE(앞 120mm 3·뒤 140mm 1)는 불빛 없는 검정, 날개 7장(상세의 팬 그림). 옆판 연 사진: 파워 덮개는 앞·옆이 막힌 판(앞쪽 위에 3RSYS 글자 — 옆판이 철판이라 밖에서 안 보여 marks 는 비웠다), 트레이는 그로밋 없이 세로로 뚫린 선 구멍, 덮개 위 그래픽카드 지지대. 오른쪽 판도 미세 타공(측면 팬·라디에이터 자리)인데 형식에 칸이 없다. 발은 네 귀퉁이의 네모난 블록이라 비웠다."
+  }
+ }
+}
