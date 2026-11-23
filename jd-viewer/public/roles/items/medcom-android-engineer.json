@@ -1,0 +1,934 @@
+{
+ "id": "medcom-android-engineer",
+ "company": "메드콤 (株式会社メドコム)",
+ "role": "모바일 앱 엔지니어 (Android)",
+ "team": "프로덕트 개발부 (プロダクト開発部) · 도쿄 도요스",
+ "jobs": [
+  "wanted-387807"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "병원 안에서 PHS(구내 전화) 대신 쓰는 **의료기관 전용 스마트폰**의 앱을 만듭니다 — 내선 통화·너스콜(병실 호출) 연동·채팅·긴급 호출·전자 차트 연동이 한 폰에 들어갑니다.[4][10]",
+  "env": "지금은 앱을 **새로 짓는 중(리뉴얼)** 입니다. 화면은 Android 는 Jetpack Compose, iOS 는 SwiftUI 로 따로 그리고, 그 아래 로직·통신·데이터는 **Kotlin Multiplatform 으로 한 번만** 씁니다.[6] 일본 정부의 의료정보 시스템 안전관리 지침에 맞추는 것도 리뉴얼 목표입니다.[1][15]",
+  "oneline": "병원 폐쇄망·MDM 단말 위에서 도는 업무용 앱. 화려한 소비자 앱보다 **끊기지 않는 연동·보안·버전 관리**가 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "主にAndroid（Kotlin）／iOSのネイティブアプリの開発を担当していただきます。",
+   "short": "Android(Kotlin) 앱이 주력이고, 2025년에 생긴 iOS 판까지 같이 맡는다.",
+   "why": "메드콤 앱은 원래 Android 전용이었고, 2025년 4월에 iPhone 판이 나왔습니다. iOS 판은 화면 구성이 다르고 일부 기능이 Android 판과 다르다고 회사가 밝혔습니다.[11] 회사 기술 목록에도 Android 는 Kotlin·Java, iOS 는 Swift 로 적혀 있습니다.[4]",
+   "actually": {
+    "intro": "회사가 공개한 앱의 모습입니다.",
+    "items": [
+     "**한 폰에 여러 기능** — 내선 통화, 너스콜 연동, 채팅, 카메라, 긴급 호출(エマージェンシーコール), 전자 차트(電子カルテ, 병원의 진료 기록 시스템) 연동, 로그인 관리.[4]",
+     "**Android 와 iOS 의 차이** — Android 판은 연락처·채팅·할 일·공지를 아이콘 하나에 묶었고, iOS 판은 기능마다 아이콘을 따로 두고 홈 화면 위젯으로 로그인·로그아웃한다.[11]",
+     "**정해진 단말** — 수액 계산 앱은 교세라 DIGNO BX3Plus·샤프 AQUOS wish4(Android 14·15)를 지원 단말로 적었다. 일반 소비자 앱처럼 수천 종 기기를 맞추는 일과 다르다.[12]",
+     "**부가 앱이 늘어난다** — 수액 속도 계산 앱(2025)[12], 녹음·자동 회의록 'AI 議事録'(2026)[13]처럼 메드콤 위에 얹는 앱이 계속 나온다."
+    ]
+   },
+   "how_far": "\"주로\" Android 이고 iOS 는 같이 본다는 뜻입니다. 리뉴얼 뒤로는 로직이 Kotlin 공통 코드라서 **iOS 화면(SwiftUI)을 읽고 고칠 수 있는 정도**면 시작할 수 있습니다.[6] {추론}",
+   "refs": [
+    4,
+    6,
+    10,
+    11,
+    12,
+    13
+   ],
+   "study": [
+    "kotlin-in-action",
+    "android-arch"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・アプリケーションの設計、開発",
+   "short": "화면은 OS마다 따로, 그 아래 로직은 Kotlin 공통 코드로 — 이 층 나누기를 설계하고 만든다.",
+   "why": "회사 기술 블로그(사내 기술 공유회 정리)에 따르면 리뉴얼 앱은 **ViewModel(화면 상태를 들고 있는 층) 아래를 공통화**하고, 화면만 Android 는 Jetpack Compose, iOS 는 SwiftUI 로 각각 만듭니다.[6] 그래서 '설계'는 무엇을 공통 코드에 넣고 무엇을 OS 쪽에 남길지 정하는 일이 큽니다.",
+   "flows": [
+    {
+     "caption": "리뉴얼 앱의 층[6]",
+     "steps": [
+      "화면 · Compose(Android) / SwiftUI(iOS)",
+      "상태 관리 · 공통(Kotlin)",
+      "비즈니스 로직 · 공통",
+      "API 통신 · 데이터 모델 · 공통",
+      "OS 기능 · expect/actual 로 각자"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "actually": {
+    "items": [
+     "**공통 코드(commonMain)** — 비즈니스 로직, API 통신, 데이터 모델, 상태 관리가 여기 있다.[6]",
+     "**OS 마다 다른 것(expect/actual)** — 공통 코드에서 '이런 기능이 필요하다'고 선언(expect)하고, Android 는 SharedPreferences, iOS 는 NSUserDefaults 로 실제 구현(actual)을 붙이는 식.[6]",
+     "**빌드 결과** — 공통 코드가 Android 에는 AAR(라이브러리 묶음), iOS 에는 Kotlin/Native 로 만든 Framework 로 들어간다.[6]",
+     "**작업량이 반으로 주는 건 아니다** — 회사 글은 효과가 주로 로직 층에서 나온다고 적었다. 일부 기능부터 옮겨 실제로 얼마나 줄었는지 재 보는 방식이다.[6]"
+    ]
+   },
+   "how_far": "처음부터 구조를 정하는 사람은 Tech PM·리드입니다 — Tech PM 은 리뉴얼의 새 아키텍처 검토와 개발 방침 설계에 관여한다고 소개됐습니다.[7] 입사자는 **정해진 층 규칙 안에서 기능 하나를 공통 코드 + 두 화면으로 끝까지** 만드는 것이 최소선입니다. {추론}",
+   "refs": [
+    6,
+    7
+   ],
+   "study": [
+    "medcom-kmp",
+    "kmp-codelab",
+    "android-arch"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・バックエンドとの調整、連携",
+   "short": "앱이 부를 API 모양을 서버 팀과 맞추고, 병원 폐쇄망에서 끊겨도 버티게 붙인다.",
+   "why": "같은 회사 백엔드 공고는 Node.js·TypeScript API 와 AWS, OpenID Connect(로그인 표준) 운영을 적었습니다.[3] 인프라 공고는 **멀티테넌트(병원 여러 곳이 한 시스템을 나눠 씀)** 로 바꾸는 중이라고 했습니다.[19] 그래서 앱과 서버 사이 약속(API·인증·병원 구분)이 지금 다시 정해지고 있습니다.",
+   "actually": {
+    "items": [
+     "**API 약속 맞추기** — 요청·응답 모양, 오류 코드, 페이지 나누기를 서버 팀과 정한다. 리뉴얼 앱은 API 통신 코드도 공통 코드에 둔다.[6]",
+     "**로그인** — 메드콤은 2단계 인증을 내세운다.[20] 백엔드 쪽은 OpenID Connect·OAuth2 경험을 우대한다.[3]",
+     "**병원 구분** — AI 회의록 제품은 병원 코드로 데이터를 나누는 '테넌트 분리'를 쓴다고 밝혔다.[13]",
+     "**망이 다르다** — 단말은 병원 폐쇄망에 바로 붙는 전용 회선을 쓴다.[10] 일반 인터넷과 달리 접속처가 정해져 있다 {추론}.",
+     "**끊김 대비** — 통신이 실패하면 기다리는 시간을 늘려 가며 다시 시도하는 것이 보통의 방법이다(아래 예). {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "다시 시도 간격 — 지수 백오프",
+     "body": "실패할 때마다 기다리는 시간을 두 배로(최대 30초) 늘리고, 여러 단말이 한꺼번에 다시 붙지 않게 0~그 시간 사이에서 무작위로 고릅니다. 직접 돌린 출력: 시도 번호 · 최대 대기 · 실제 대기(초). {추론}",
+     "lang": "python",
+     "code": "import random\n\ndef backoff(attempt, base=1.0, cap=30.0):\n    return min(cap, base * 2 ** attempt)\n\nrandom.seed(0)\nfor a in range(6):\n    d = backoff(a)\n    print(a, d, round(random.uniform(0, d), 2))\n\n# 0 1.0 0.84\n# 1 2.0 1.52\n# 2 4.0 1.68\n# 3 8.0 2.07\n# 4 16.0 8.18\n# 5 30.0 12.15"
+    }
+   ],
+   "how_far": "서버를 짜는 게 아니라 **조정**입니다. API 문서를 읽고 \"이 화면엔 이 값이 더 필요하다\"를 서버 팀에 말로 맞추고, 실패·지연을 앱에서 처리하는 데까지가 이 자리 몫입니다. {추론}",
+   "refs": [
+    3,
+    6,
+    10,
+    13,
+    19,
+    20
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・フレームワーク・ライブラリのバージョン更新対応",
+   "short": "Android·Kotlin·Compose·라이브러리 새 버전을 따라가며, 병원 단말에서 안 깨지는지 확인한다.",
+   "why": "메드콤 단말은 MDM(회사가 원격으로 단말을 관리하는 도구)이 기본으로 붙고, 회사는 오래된 Android OS 는 지원이 완전하지 않을 수 있다고 밝혔습니다.[10] 병원에서 쓰는 단말 종류와 OS 버전(예: Android 14·15)이 정해져 있어 새 버전을 올릴 때 그 단말에서 확인이 필요합니다.[12]",
+   "actually": {
+    "items": [
+     "**Kotlin·KMP 버전** — 공통 코드를 쓰면 Kotlin 버전이 Android 와 iOS 빌드를 동시에 건드린다. 회사 글도 KMP 안정화(2023년 11월)·Compose Multiplatform iOS 안정화(2025년 5월) 시점을 짚었다.[6]",
+     "**Compose 묶음 버전** — Compose 라이브러리들은 BOM(버전 묶음표) 하나로 서로 맞는 버전을 한꺼번에 올린다.[21]",
+     "**OS 동작 변화** — 새 Android 버전이 나오면 권한·백그라운드 제한이 바뀌어 통화·알림 같은 기능이 영향을 받을 수 있다. {추론}",
+     "**보안 앱과의 궁합** — 단말에는 MDM(CLOMO)과 AI 백신(Deep Instinct)이 들어가고, 회사는 메드콤과 같이 도는 앱을 위험도로 검사한다.[10] 업데이트가 이 환경에서 문제없는지도 봐야 한다 {추론}."
+    ]
+   },
+   "how_far": "버전 올리기 자체보다 **변경 기록(release notes)을 읽고 무엇이 깨질지 먼저 찾는** 습관이 핵심입니다. 자동 업데이트 도구 설정·테스트는 CI/CD 줄과 이어집니다. {추론}",
+   "refs": [
+    6,
+    10,
+    12,
+    21
+   ],
+   "study": [
+    "compose-bom"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・コードのトラブルシューティング、バグの修正、パフォーマンスの最適化",
+   "short": "의료 현장에서 쓰는 앱의 버그를 잡고, 화면이 버벅이지 않게 다듬는다.",
+   "why": "회사 글은 선언형 UI(SwiftUI·Compose)에서 **상태의 안정성과 재구성(recomposition)** 을 이해하지 못하면 화면이 버벅인다고 강조했습니다.[6] Tech PM 은 장애·재작업이 생기면 원인을 되짚어 재발 방지책을 절차에 넣는 일을 중점 과제로 꼽았습니다.[7]",
+   "actually": {
+    "intro": "Compose 성능은 Google 공식 문서의 기본 수칙부터입니다.[16][17]",
+    "items": [
+     "**배포 빌드로 재기** — 디버그 빌드는 느리다. R8(코드 줄이기·최적화)을 켠 배포 빌드에서 잰다.[16]",
+     "**Baseline Profile** — 자주 쓰는 흐름의 코드를 미리 컴파일해 첫 실행을 빠르게 한다.[16]",
+     "**안정적인 상태** — 값이 안정적이면 Compose 가 바뀌지 않은 부분을 다시 그리지 않고 건너뛴다.[16]",
+     "**무거운 계산은 remember** · 목록에는 겹치지 않는 key · 상태 읽기는 필요한 순간으로 미룬다.[17]",
+     "**재발 막기** — 고친 뒤 원인과 막는 법을 절차(리뷰·테스트)에 남긴다.[7]"
+    ]
+   },
+   "how_far": "Layout Inspector 의 재구성 횟수, 배포 빌드에서의 화면 끊김을 보고 **원인을 숫자로 말할 수 있는** 정도가 목표입니다. 우대사항의 \"Compose 성능 튜닝\"과 같은 축입니다. {추론}",
+   "refs": [
+    6,
+    7,
+    16,
+    17
+   ],
+   "study": [
+    "compose-perf",
+    "compose-internals-kr"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "以下の業務もご希望や状況に応じて担当いただきます。\n・品質改善への取り組み（CI/CD）",
+   "short": "원하면·필요하면, 빌드·테스트·배포를 자동으로 돌리는 틀(CI/CD)도 손본다.",
+   "why": "회사 AI 해커톤 3위가 '릴리스 작업 관리 도구'였을 만큼 배포 과정 개선은 회사 안에서도 다루는 주제입니다.[9] Tech PM 도 개발 품질 향상을 중점 과제로 꼽았습니다.[7]",
+   "actually": {
+    "items": [
+     "PR(코드 변경 요청)이 올라오면 빌드·단위 테스트·정적 검사를 자동으로 돈다. {추론}",
+     "KMP 라 Android 빌드와 iOS Framework 빌드가 둘 다 깨지지 않는지 같이 본다.[6] {추론}",
+     "배포 버전을 만들어 MDM·테스트 단말로 보내는 과정을 자동화한다 — 단말을 MDM 으로 관리하기 때문이다.[10] {추론}",
+     "우대사항에 GitHub Actions·Jenkins·CircleCI 가 같이 적혀 있다 — 특정 도구에 묶이지 않는다.[1]"
+    ]
+   },
+   "how_far": "\"희망과 상황에 따라\"라 필수 업무는 아닙니다.[1] 손을 들면 맡을 수 있는 성장 칸입니다. {추론}",
+   "refs": [
+    1,
+    6,
+    7,
+    9,
+    10
+   ],
+   "study": [
+    "gh-actions"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・新アプリの企画、開発",
+   "short": "메드콤 폰 위에 얹는 새 업무 앱(수액 계산·AI 회의록 같은)을 기획부터 만든다.",
+   "why": "회사는 메드콤을 중심으로 여러 앱·서비스를 이어 병원·지역 의료·환자까지 넓히는 구상을 채용 영상에서 보였습니다.[5] 실제로 수액 속도 계산 앱[12]과 AI 회의록[13]이 나왔고, AI 회의록에는 KMP 와 Compose Multiplatform(화면까지 공통) 을 같이 쓸 예정이라고 했습니다.[6]",
+   "actually": {
+    "items": [
+     "**수액 계산 앱** — 수액 펌프·시린지 펌프 유량 계산, 중력 점적의 방울 수 계산과 속도 안내(아이콘 깜빡임·진동).[12]",
+     "**AI 회의록** — 녹음 → 자동 받아쓰기 → 생성형 AI 요약 → QR 코드로 전자 차트에 넣기. 데이터는 국내에만, 학습에 쓰지 않음, 병원 폐쇄망으로 연결.[13]",
+     "**현장 아이디어** — 사내 AI 해커톤(2026년 3~5월)은 '실제로 돌아가는 것'을 요구했고 최종 7팀이 겨뤘다.[9]"
+    ]
+   },
+   "how_far": "역시 희망·상황에 따라입니다.[1] 의료 업무를 몰라도 되지만, 간호사·의사가 **바쁜 손으로 쓰는 앱**이라는 감각이 필요합니다. {추론}",
+   "refs": [
+    1,
+    5,
+    6,
+    9,
+    12,
+    13
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "※（雇入れ直後）詳細は上記に記載　（変更の範囲）会社の定める業務",
+   "short": "일본 법이 요구하는 표기 — '입사 직후는 위 업무, 나중엔 회사가 정한 업무로 바뀔 수 있음'.",
+   "why": "일본은 2024년 4월부터 채용 때 업무와 근무지의 '변경 범위'까지 밝히게 했습니다. 그래서 일본 공고 끝에 이 문장이 거의 붙습니다.[22]",
+   "how_far": "특별한 조건이 아니라 법정 문구입니다. '회사가 정하는 업무'라 범위가 넓으니, 걱정되면 면접에서 직무 이동 가능성을 물어봅니다. {추론}",
+   "refs": [
+    22
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・ソフトウェアの開発経験2年以上（言語問わず）",
+   "short": "언어 상관없이 개발 2년 — 모바일만 했을 필요는 없다.",
+   "why": "같은 회사 개발부에는 IT 경험 없이 들어와 리뉴얼 PMO 를 맡은 사람, 전기공사 기사에서 웹 개발로 옮긴 사람도 소개돼 있습니다.[8][25]",
+   "how_far": "\"언어 불문\"이라 웹·서버 2년이어도 됩니다. 다만 다음 줄(모바일 경험)이 따로 있으니 둘을 같이 채워야 합니다.[1]",
+   "refs": [
+    1,
+    8
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Android または iOS のモバイルアプリ開発経験",
+   "short": "Android 나 iOS 중 하나라도 실제 앱을 만들어 봤으면 된다.",
+   "why": "리뉴얼 앱은 로직을 Kotlin 공통 코드로 두고 화면만 OS 별로 그리므로[6], 한쪽 경험이 있으면 다른 쪽으로 넓히기 쉽습니다. 회사가 KMP 를 고른 첫 이유도 팀에 Kotlin 으로 Android 앱을 만들어 온 사람이 많아서였습니다.[6]",
+   "how_far": "\"또는\"이라 한쪽이면 됩니다. Android 직무이니 **Kotlin + Compose 로 작은 앱 하나를 끝까지** 만든 경험이 있으면 가장 자연스럽습니다. {추론}",
+   "refs": [
+    6
+   ],
+   "study": [
+    "compose-first",
+    "kotlin-in-action"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・外部システムと連携するアプリの開発経験",
+   "short": "앱 혼자가 아니라 서버·다른 시스템과 데이터를 주고받는 앱을 만들어 봤나.",
+   "why": "메드콤은 PBX(병원 전화 교환기)·너스콜·전자 차트 같은 병원 시스템과 이어지는 것이 핵심 기능입니다.[4] 통신은 폐쇄망으로 구성합니다.[4][10]",
+   "actually": {
+    "items": [
+     "**전화** — 기존 PHS 의 내선 통화와 너스콜 연동을 그대로 이어받는다.[4]",
+     "**전자 차트** — 연동해서 진료 정보를 폰에서 다룬다.[4][20] AI 회의록은 요약을 QR 코드로 차트에 넣는다.[13]",
+     "**서버 API** — Node.js·TypeScript 백엔드와 AWS.[3][4]"
+    ]
+   },
+   "how_far": "병원 시스템 경험이 꼭 필요하지는 않습니다. REST API 를 붙이고, 인증·오류·재시도를 처리해 본 경험이면 이 줄을 설명할 수 있습니다. {추론}",
+   "refs": [
+    3,
+    4,
+    10,
+    13,
+    20
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Git/GitHub/GitLab を用いたチーム開発・コードレビュー・PR運用経験",
+   "short": "브랜치·PR·코드 리뷰로 여러 사람이 한 코드를 고쳐 본 경험.",
+   "why": "리뉴얼은 사내 인원뿐 아니라 **외부 개발 파트너**까지 함께하는, 관여 인원이 많은 프로젝트라고 소개됐습니다.[8] 사람이 많을수록 PR 단위로 나눠 리뷰하는 규칙이 중요해집니다. {추론}",
+   "how_far": "혼자 쓴 저장소가 아니라 **남의 PR 에 리뷰를 달고, 내 PR 이 고쳐 달라는 말을 받아 본** 경험입니다. {추론}",
+   "refs": [
+    8
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日常会話レベルの日本語能力（例：日本語能力試験 N2 相当）",
+   "short": "일본어 N2 정도 — 단, 같은 공고 다른 줄과 머리말은 '비즈니스'를 요구한다.",
+   "why": "N2 는 일상 장면의 글과 대화에 더해 넓은 장면의 내용을 어느 정도 이해하는 수준입니다.[23] 그런데 원티드 공고 머리말은 **비즈니스 수준 이상 필수**, 일본어 이력서·직무경력서 제출 필수라고 적었습니다.[1]",
+   "how_far": "회사 판(hrmos) 공고는 N2 상당을 적었습니다.[2] 실제 서류는 일본어로 내야 하니 **일본어로 자기 개발 경험을 설명할 수 있는** 수준을 기준으로 잡는 것이 안전합니다. {추론}",
+   "refs": [
+    1,
+    2,
+    23
+   ],
+   "study": [
+    "jlpt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本語レベル: ビジネス",
+   "short": "중개 플랫폼이 붙인 표기 — 회의·문서를 일본어로 하는 수준을 뜻한다.",
+   "why": "이 공고는 LAPRAS Global Bridge 를 통한 채용이고, 이 줄과 다음 줄은 원티드 판에만 붙은 공통 항목입니다.[1] 회사 판에는 N2 상당이라고만 있습니다.[2]",
+   "how_far": "개발부는 일본 회사 안에서 QA·PMO·외부 파트너와 조율합니다.[7][8] 사양 회의와 리뷰 댓글을 일본어로 할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    2,
+    7,
+    8
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本国内への移住が必要",
+   "short": "도쿄로 옮겨 살아야 한다 — 출근이 원칙이라 원격 근무로 대신할 수 없다.",
+   "why": "근무지는 도쿄 고토구 도요스 사무소이고, 원격 근무는 허가제·상담이며 조직을 키우는 단계라 출근해 소통하는 것이 원칙이라고 적었습니다.[1]",
+   "how_far": "비자·이주 지원은 공고에 적혀 있지 않습니다.[1] 면접 단계에서 확인합니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・Firebase を用いたモバイルアプリ開発経験",
+   "short": "푸시 알림·충돌 보고 같은 모바일 기본 서비스를 Firebase 로 붙여 봤으면 좋다.",
+   "why": "회사가 Firebase 를 어디에 쓰는지는 공개되지 않았습니다. 인프라 공고 우대사항에 '모바일 백엔드(푸시 알림 등)'가 있어[19] 알림 쪽일 가능성이 있습니다. {추론}",
+   "actually": {
+    "intro": "보통 모바일 앱에서 Firebase 로 하는 일입니다.[24]",
+    "items": [
+     "**Cloud Messaging(FCM)** — 서버가 앱으로 알림·데이터 메시지를 보낸다.[24]",
+     "**Crashlytics** — 앱이 죽은 자리를 모아 본다. {추론}",
+     "**Remote Config·A/B 테스트** — 배포 없이 설정을 바꾼다. {추론}"
+    ]
+   },
+   "how_far": "우대입니다. FCM 으로 알림을 받고 눌렀을 때 맞는 화면을 여는 정도를 해 봤으면 충분합니다. {추론}",
+   "refs": [
+    19,
+    24
+   ],
+   "study": [
+    "fcm-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・CI/CDパイプライン（GitHub Actions, Jenkins, CircleCI等）の構築・運用経験",
+   "short": "빌드·테스트·배포 자동화를 직접 만들어 돌려 봤으면 좋다.",
+   "why": "업무의 '품질 개선(CI/CD)' 줄과 짝입니다.[1] 회사 안에서도 릴리스 작업 관리 도구가 해커톤 3위에 오를 만큼 배포 과정이 관심사입니다.[9]",
+   "how_far": "도구 이름보다 **PR 마다 빌드·테스트가 돌고, 배포 빌드가 자동으로 나오는** 흐름을 한 번 만들어 본 경험이면 됩니다. {추론}",
+   "refs": [
+    1,
+    9
+   ],
+   "study": [
+    "gh-actions"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・Kotlin Multiplatform開発経験",
+   "short": "리뉴얼 앱이 바로 KMP 라서 — 공통 코드·expect/actual 을 써 봤으면 바로 들어간다.",
+   "why": "회사는 리뉴얼 앱에 KMP 를 골랐습니다. 이유는 ① 팀에 Kotlin·Android 경험자가 많고 ② 로직만 공유하는 방식이 위험이 작고 ③ iOS 에서도 가상머신 없이 바이너리로 돌아 성능이 Swift 와 비슷하다는 점이었습니다.[6] Flutter·React Native 는 OS 고유 기능이 있으면 결국 코드가 갈라져 관리 부담이 줄지 않았다는 경험을 들어 고르지 않았습니다.[6]",
+   "actually": {
+    "items": [
+     "**소스 묶음** — commonMain · androidMain · iosMain.[6]",
+     "**공유 범위** — ViewModel 아래(로직·통신·모델·상태). 화면은 공유하지 않는다.[6]",
+     "**웹은 따로** — PC 용 웹은 검토 당시 Kotlin/Wasm 이 베타라 웹 기술로 만든다.[6]",
+     "**다음 단계** — AI 회의록에는 화면까지 공유하는 Compose Multiplatform 을 쓸 예정.[6]"
+    ]
+   },
+   "how_far": "우대입니다. 공식 시작 실습(공유 모듈 하나를 Android·iOS 에서 부르기)을 끝까지 해 보고 expect/actual 을 설명할 수 있으면 대화가 됩니다.[18] {추론}",
+   "refs": [
+    6,
+    18
+   ],
+   "study": [
+    "medcom-kmp",
+    "kmp-codelab",
+    "kmp-why"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・Android Composeを用いたUI開発、パフォマンスチューニング経験",
+   "short": "리뉴얼 Android 화면이 Jetpack Compose 라서 — 재구성을 줄이는 튜닝까지 해 봤으면 좋다.",
+   "why": "리뉴얼 앱의 Android 화면은 Jetpack Compose 이고, 회사 글은 상태 안정성과 재구성을 모르면 화면이 버벅인다고 짚었습니다.[6]",
+   "actually": {
+    "items": [
+     "**안정성** — 바뀌지 않은 입력이면 다시 그리기를 건너뛰게 데이터 클래스를 설계한다.[16]",
+     "**지연 읽기** — 스크롤 위치처럼 자주 바뀌는 상태는 람다 안에서 읽어 필요한 층만 다시 그린다.[17]",
+     "**derivedStateOf** — 자주 바뀌는 값에서 드물게 바뀌는 결과를 뽑을 때 쓴다.[17]",
+     "**목록 key** — LazyColumn 항목마다 겹치지 않고 저장 가능한 key.[17]"
+    ]
+   },
+   "how_far": "Compose 로 화면을 만들어 본 것까지가 기본이고, '왜 여기서 재구성이 일어나는지'를 도구로 찾아 고쳐 본 경험이 우대 포인트입니다. {추론}",
+   "refs": [
+    6,
+    16,
+    17
+   ],
+   "study": [
+    "compose-perf",
+    "compose-internals-kr"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・Claude Code、Cursor などの AI開発支援ツールを活用した開発実務経験",
+   "short": "회사가 'AI 네이티브 회사'를 내걸었다 — AI 코딩 도구로 실제 일을 해 봤으면 좋다.",
+   "why": "회사는 AI 해커톤을 열며 'AI 네이티브 컴퍼니'를 지향한다고 밝혔고, 쓰는 쪽에서 만드는 쪽으로 가자는 것이 목적이었습니다.[9] 채용 배경에도 변화 과정을 AI 로 앞당기겠다고 적었습니다.[1] Tech PM 은 리뉴얼에서 AI 를 쓰는 개발 방식을 제안하고 본인도 AI 로 개발한다고 했습니다.[7]",
+   "how_far": "어떤 도구를 쓰는지는 공개되지 않았습니다.[7] AI 가 짠 코드를 **리뷰·테스트로 검증해 넣은** 경험을 구체적으로 말할 수 있으면 됩니다. 의료 데이터라 무엇을 AI 에 넣으면 안 되는지도 같이 생각해야 합니다. {추론}",
+   "refs": [
+    1,
+    7,
+    9
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・AIを活用したプロダクト / 機能の設計・開発・運用経験",
+   "short": "AI 회의록처럼 AI 를 넣은 기능을 실제로 만들어 운영해 봤으면 좋다.",
+   "why": "회사는 2026년 6월부터 'AI 議事録'(녹음 → 받아쓰기 → 생성형 AI 요약 → 전자 차트)을 팔고 있습니다.[13] 이 제품에 KMP·Compose Multiplatform 을 쓸 예정이라 모바일 개발자가 닿는 곳입니다.[6]",
+   "actually": {
+    "intro": "AI 회의록에 회사가 적은 운영 조건입니다.[13]",
+    "items": [
+     "병원 코드로 데이터를 나누는 테넌트 분리.",
+     "데이터는 일본 밖으로 나가지 않는다.",
+     "넣은 데이터를 학습에 쓰지 않는다.",
+     "병원 폐쇄망으로 연결한다."
+    ]
+   },
+   "how_far": "모델을 만드는 자리는 아닙니다. 녹음·업로드·결과 표시 같은 **앱 쪽 흐름과, 의료 데이터의 보관 조건을 지키는 설계**가 이 직무와 닿는 부분입니다. {추론}",
+   "refs": [
+    6,
+    13
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "求める人物像\nⅰ.挑戦する勇気を持っている人\n未知の領域へ飛び込むことや新たな挑戦をする勇気を起点とし、圧倒的な行動力で、学びの機会を創出することにワクワクする。\n\nⅱ.結果を出す執念を持っている人\n結果を出すことがお客様や社会へ貢献することに繋がると考え、未知の領域や困難な課題にも恐れず向き合う。そして、目標を追い続けるために必要な強い意志を生み出す執念を持ち続ける。\n\nⅲ.成長を楽しむことができる人\n成長とは、少し前の自分よりもできることが増えること、そして何かを成せるようになること。「自分はどうしたいのか／どうありたいのか」を自身に問い続け考え実行し、それに夢中になる。そうした日々に熱狂し、一人一人が着実に成長に向かっていく。",
+   "short": "회사 가치 세 가지(도전하는 용기·결과를 내는 집념·성장을 즐기기) — 면접에서 이 말로 묻는다.",
+   "why": "채용 덱이 '소중히 하는 3요소'로 같은 세 가지를 내걸었습니다.[4] 채용 영상도 같은 차례로 회사를 소개합니다.[5]",
+   "how_far": "세 가지마다 **내가 실제로 한 일 하나**(낯선 기술에 뛰어든 일, 끝까지 밀어붙여 낸 결과, 지난 1년 사이 늘어난 능력)를 일본어로 준비해 둡니다. {추론}",
+   "refs": [
+    4,
+    5
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "화려한 화면보다 **끊기지 않는 업무 도구**를 만드는 데 보람을 느끼는 사람",
+   "Kotlin 을 iOS 까지 넓혀 보고 싶은 Android 개발자 — 리뉴얼이 KMP 다[6]",
+   "의료 현장(PHS·종이·팩스가 남은 곳)을 바꾸는 일에 끌리는 사람[1]",
+   "새로 짓는 앱의 초기에 들어가고 싶은 사람 — 지금이 리뉴얼 중이다[6][7]"
+  ],
+  "hard": [
+   "일본어 서류·면접이 필수이고 도쿄 출근이 원칙이다[1]",
+   "MDM·폐쇄망·정해진 단말이라 최신 기기·기능을 자유롭게 쓰기 어렵다[10] {추론}",
+   "외부 파트너까지 섞인 큰 프로젝트라 조율할 일이 많다[8]",
+   "연봉 상한이 1,000만 엔이고 하한은 월 50만 엔(고정 잔업 포함)부터다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "KMP 에서 무엇을 공통 코드에 넣고 무엇을 OS 쪽에 남기겠어요?",
+   "a": "ViewModel 아래를 공유하고 화면은 각자 — 회사가 실제로 고른 선.[6]"
+  },
+  {
+   "q": "Flutter·React Native 대신 KMP 를 고른다면 이유는요?",
+   "a": "OS 고유 기능 때문에 코드가 갈라지는 문제와 팀의 Kotlin 경험.[6]"
+  },
+  {
+   "q": "Compose 화면이 버벅일 때 어디부터 보나요?",
+   "a": "배포 빌드로 재기, 재구성 횟수, 상태 안정성·지연 읽기.[6][16][17]"
+  },
+  {
+   "q": "병원 폐쇄망에서 서버 응답이 자주 늦거나 끊기면 앱에서 어떻게 하겠어요?",
+   "a": "재시도 간격·타임아웃·사용자에게 보여줄 상태. {추론}"
+  },
+  {
+   "q": "AI 코딩 도구로 만든 코드를 어떻게 검증해서 넣었나요?",
+   "a": "회사가 AI 네이티브를 내걸었고 Tech PM 이 AI 개발 방식을 제안 중.[7][9]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · [株式会社メドコム] 모바일 앱 엔지니어 (Android)(도쿄)_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/387807",
+   "kind": "posting",
+   "date": "2026-10",
+   "note": "LAPRAS Global Bridge 채용 · 사업·팀 미션·채용 배경·업무·요건·우대·급여·근무지·복리후생"
+  },
+  {
+   "n": 2,
+   "title": "HRMOS · モバイルアプリエンジニア(Android)(東京) (메드콤 채용 페이지)",
+   "url": "https://hrmos.co/pages/medcom/jobs/1829060909820698637",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 직무의 회사 판 — 일본어 N2 상당, 월급 50만 엔~"
+  },
+  {
+   "n": 3,
+   "title": "HRMOS · バックエンドエンジニア(東京) (메드콤 채용 페이지)",
+   "url": "https://hrmos.co/pages/medcom/jobs/1829060909820698638",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 회사 백엔드 — Node.js·TypeScript API, AWS, OIDC·OAuth2(Keycloak) 우대"
+  },
+  {
+   "n": 4,
+   "title": "Speaker Deck · メドコム 採用ピッチ資料",
+   "url": "https://speakerdeck.com/medcom/medcom-saiyo",
+   "kind": "company",
+   "date": "2026-07",
+   "note": "제품 기능(PHS 통화·너스콜·채팅·긴급 호출·전자 차트·MDM·폐쇄망)·기술 목록·조직·3요소·복지 · 직원 89명(2026년 7월)"
+  },
+  {
+   "n": 5,
+   "title": "YouTube · 株式会社メドコム 採用ピッチ動画",
+   "url": "https://www.youtube.com/watch?v=Z-nPJFF1PYY",
+   "kind": "company",
+   "note": "6분 14초 · 자막 없음 — 30초 간격 장면 12장을 모두 확인(연혁·랜섬웨어 위협·제품·시장·플랫폼 구상·3요소·복지)"
+  },
+  {
+   "n": 6,
+   "title": "note · 医療現場のアプリを「Kotlinで1回書く」── メドコムが Kotlin Multiplatform を選んだ理由",
+   "url": "https://note.com/medcom_official/n/n6fa7121df0b0",
+   "kind": "company",
+   "date": "2026-10-13",
+   "note": "프로덕트 개발부 테크 블로그 · 사내 기술 공유회 정리 — 공유 범위·고른 이유·expect/actual (일본어)"
+  },
+  {
+   "n": 7,
+   "title": "note · 社員紹介リレー プロダクト開発部 Tech PM",
+   "url": "https://note.com/medcom_official/n/n4743f1db3187",
+   "kind": "company",
+   "date": "2026-09-16",
+   "note": "개발팀·QA 연계, 리뉴얼 아키텍처 검토, 품질·재발 방지, AI 개발 방식 제안 (일본어)"
+  },
+  {
+   "n": 8,
+   "title": "note · 社員紹介リレー プロダクト開発部 開発マネジメント担当",
+   "url": "https://note.com/medcom_official/n/n232452bdd2db",
+   "kind": "company",
+   "date": "2026-06-16",
+   "note": "리뉴얼 PMO — 외부 개발 파트너와 함께하는 큰 프로젝트, 전기공사 기사 → IT 전직 (일본어)"
+  },
+  {
+   "n": 9,
+   "title": "note · 社内ハッカソン実施レポート AIハッカソン2026",
+   "url": "https://note.com/medcom_official/n/n37ce51577f18",
+   "kind": "company",
+   "date": "2026-07-02",
+   "note": "AI 네이티브 컴퍼니 지향, 13팀 응모·최종 7팀, 3위 릴리스 작업 관리 도구 (일본어)"
+  },
+  {
+   "n": 10,
+   "title": "PR TIMES · 사명 변경과 보안 강화 (MDM·AI 백신 표준 탑재)",
+   "url": "https://prtimes.jp/main/html/rd/p/000000042.000064723.html",
+   "kind": "company",
+   "date": "2024-04-17",
+   "note": "폐쇄망 직결 전용 회선, CLOMO MDM, Deep Instinct, 오래된 Android OS 는 지원이 완전하지 않을 수 있음 (일본어)"
+  },
+  {
+   "n": 11,
+   "title": "PR TIMES · 도입 89병원·이용자 5만 명 돌파, iPhone 대응 시작",
+   "url": "https://prtimes.jp/main/html/rd/p/000000048.000064723.html",
+   "kind": "company",
+   "date": "2025-03-28",
+   "note": "원래 Android 전용, 2025년 4월 iOS 판 · 화면 구성 차이 (일본어)"
+  },
+  {
+   "n": 12,
+   "title": "PR TIMES · 수액 업무 지원 앱 발표",
+   "url": "https://prtimes.jp/main/html/rd/p/000000050.000064723.html",
+   "kind": "company",
+   "date": "2025-04-14",
+   "note": "유량·방울 수 계산, 지원 단말 DIGNO BX3Plus·AQUOS wish4(OS 14·15) (일본어)"
+  },
+  {
+   "n": 13,
+   "title": "PR TIMES · メドコムAI議事録 판매 시작",
+   "url": "https://prtimes.jp/main/html/rd/p/000000065.000064723.html",
+   "kind": "company",
+   "date": "2026-05-29",
+   "note": "녹음·받아쓰기·요약·QR 로 전자 차트, 테넌트 분리·국내 보관·학습 미사용·폐쇄망 (일본어)"
+  },
+  {
+   "n": 14,
+   "title": "메드콤 · 企業情報",
+   "url": "https://medcom.ne.jp/company",
+   "kind": "company",
+   "note": "본사 주소(2025-09-01 이전)·대표·설립 2016-07-15·자본금(자본잉여금 포함) 41억 2,500만 엔·지점"
+  },
+  {
+   "n": 15,
+   "title": "厚生労働省 · 医療情報システムの安全管理に関するガイドライン 第6.0版",
+   "url": "https://www.mhlw.go.jp/stf/shingi/0000516275_00006.html",
+   "kind": "reference",
+   "date": "2023-05",
+   "note": "공고 채용 배경의 '준거'가 가리키는 일본 정부 지침"
+  },
+  {
+   "n": 16,
+   "title": "Android Developers · Compose performance",
+   "url": "https://developer.android.com/develop/ui/compose/performance",
+   "kind": "reference",
+   "note": "배포 빌드·R8·Baseline Profile·안정성"
+  },
+  {
+   "n": 17,
+   "title": "Android Developers · Compose 성능 — Follow best practices",
+   "url": "https://developer.android.com/develop/ui/compose/performance/bestpractices",
+   "kind": "reference",
+   "note": "remember·derivedStateOf·지연 읽기·목록 key"
+  },
+  {
+   "n": 18,
+   "title": "Kotlin 문서 · Why try Kotlin Multiplatform",
+   "url": "https://kotlinlang.org/docs/multiplatform/multiplatform-reasons-to-try.html",
+   "kind": "reference",
+   "note": "코드 중복 줄이기·점진 도입"
+  },
+  {
+   "n": 19,
+   "title": "원티드 · [株式会社メドコム] 클라우드 인프라 엔지니어 (도쿄)_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/387811",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 회사 인프라 — 멀티테넌트화·지침 준거, 우대에 모바일 백엔드(푸시 알림)"
+  },
+  {
+   "n": 20,
+   "title": "PR TIMES · 도입 100병원·누적 이용자 7만 명",
+   "url": "https://prtimes.jp/main/html/rd/p/000000060.000064723.html",
+   "kind": "company",
+   "date": "2026-02-27",
+   "note": "2단계 인증·전자 차트 등 원내 시스템 연동 (일본어)"
+  },
+  {
+   "n": 21,
+   "title": "Android Developers · Compose BOM 사용",
+   "url": "https://developer.android.com/develop/ui/compose/bom",
+   "kind": "reference",
+   "note": "Compose 라이브러리 버전 묶음표"
+  },
+  {
+   "n": 22,
+   "title": "山口労働局(厚生労働省) · 2024年4月からの求人・募集時の明示事項の追加",
+   "url": "https://jsite.mhlw.go.jp/yamaguchi-roudoukyoku/news_topics/topics/kyujinn_henkou.html",
+   "kind": "reference",
+   "date": "2024-04",
+   "note": "업무·근무지의 '변경 범위' 명시 의무"
+  },
+  {
+   "n": 23,
+   "title": "日本語能力試験 JLPT · N1~N5 認定の目安",
+   "url": "https://www.jlpt.jp/about/levelsummary.html",
+   "kind": "reference",
+   "note": "N2 수준 설명"
+  },
+  {
+   "n": 24,
+   "title": "Firebase 문서 · Firebase 클라우드 메시징",
+   "url": "https://firebase.google.com/docs/cloud-messaging",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "note · 社員紹介リレー プロダクト開発部",
+   "url": "https://note.com/medcom_official/n/n608245351aad",
+   "kind": "company",
+   "date": "2026-07-30",
+   "note": "IT 경험 없이 입사해 리뉴얼에서 개발과 PM 사이를 맡음 (일본어)"
+  }
+ ],
+ "caveat": "원티드 공고 안에서 일본어 요건이 엇갈립니다 — 자격요건은 '일상 회화 N2 상당', 같은 칸 아래와 머리말은 '비즈니스 수준 필수'입니다[1]. 회사 판은 N2 상당만 적었습니다[2]. 채용 영상은 자막이 없어 30초 간격 장면 12장만 읽었습니다[5]. 앱의 통화 방식(VoIP 여부)·테스트 방식·쓰는 라이브러리·개발 인원은 공개 자료에서 찾지 못해 일반론과 {추론} 으로 보였습니다. Firebase 를 어디에 쓰는지도 공개되지 않았습니다. 도입 시설 수는 자료마다 시점이 달라(101곳 2026년 4월, 106곳 2026년 7월) 숫자가 다릅니다[1][4].",
+ "resources": [
+  {
+   "id": "medcom-kmp",
+   "title": "医療現場のアプリを「Kotlinで1回書く」── メドコムが Kotlin Multiplatform を選んだ理由",
+   "by": "메드콤 프로덕트 개발부 · note · 2026",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "url": "https://note.com/medcom_official/n/n6fa7121df0b0",
+   "why": "이 팀이 리뉴얼 앱을 어떻게 나눴는지(공유 범위·고른 이유) 회사 스스로 쓴 글. 면접 전에 꼭 읽는다."
+  },
+  {
+   "id": "kotlin-in-action",
+   "title": "Kotlin in Action, Second Edition",
+   "by": "Sebastian Aigner · Roman Elizarov · Svetlana Isakova · Dmitry Jemerov · Manning · 2024",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.manning.com/books/kotlin-in-action-second-edition",
+   "why": "Kotlin 문법부터 코루틴·Flow 까지. 공통 코드(로직·통신·상태)를 쓰는 데 필요한 언어 기본기."
+  },
+  {
+   "id": "android-arch",
+   "title": "앱 아키텍처 가이드",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/topic/architecture?hl=ko",
+   "why": "UI 층·ViewModel·데이터 층 나누기. 회사가 'ViewModel 아래를 공통화'한다고 할 때의 그 층이 무엇인지."
+  },
+  {
+   "id": "kmp-codelab",
+   "title": "Kotlin 멀티플랫폼 시작하기 (Codelab)",
+   "by": "Android Developers",
+   "kind": "course",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/codelabs/kmp-get-started?hl=ko",
+   "why": "공유 모듈 하나를 만들어 Android·iOS 에서 부르는 실습. 우대사항 'KMP 경험'의 첫걸음."
+  },
+  {
+   "id": "kmp-why",
+   "title": "Why try Kotlin Multiplatform",
+   "by": "JetBrains · Kotlin 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://kotlinlang.org/docs/multiplatform/multiplatform-reasons-to-try.html",
+   "why": "KMP 를 왜 쓰는지 공식 쪽 설명. 회사 글의 이유와 나란히 읽으면 면접 답이 정리된다."
+  },
+  {
+   "id": "compose-first",
+   "title": "Jetpack Compose 시작하기",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/develop/ui/compose/first?hl=ko",
+   "why": "리뉴얼 Android 화면이 Compose. Compose 를 처음 보는 경우의 출발점."
+  },
+  {
+   "id": "compose-perf",
+   "title": "Compose 성능 · 권장사항",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/develop/ui/compose/performance/bestpractices",
+   "why": "재구성을 줄이는 수칙(remember·derivedStateOf·지연 읽기·key). 업무 '성능 최적화'와 우대 'Compose 튜닝'에 바로 쓴다."
+  },
+  {
+   "id": "compose-internals-kr",
+   "title": "Jetpack Compose Internals (한국어판)",
+   "by": "Jorge Castillo · 번역 엄재웅·류기민 · Leanpub",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://leanpub.com/composeinternalskor",
+   "why": "컴파일러·런타임이 재구성을 어떻게 정하는지. '왜 여기서 다시 그려지나'를 설명하려면 필요한 속 이야기."
+  },
+  {
+   "id": "compose-bom",
+   "title": "BOM(Bill of Materials) 사용",
+   "by": "Android Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.android.com/develop/ui/compose/bom",
+   "why": "Compose 라이브러리 버전을 한 번에 맞춰 올리는 법. 업무 '라이브러리 버전 업데이트'의 기본 도구."
+  },
+  {
+   "id": "gh-actions",
+   "title": "GitHub Actions 문서",
+   "by": "GitHub",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.github.com/ko/actions",
+   "why": "PR 마다 빌드·테스트를 돌리는 워크플로 만들기. 업무 'CI/CD'와 같은 이름의 우대사항."
+  },
+  {
+   "id": "fcm-docs",
+   "title": "Firebase 클라우드 메시징",
+   "by": "Firebase 공식 문서",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://firebase.google.com/docs/cloud-messaging?hl=ko",
+   "why": "알림을 받아 화면을 여는 흐름. 우대 'Firebase 경험'에서 가장 흔한 쓰임."
+  },
+  {
+   "id": "jlpt",
+   "title": "N1~N5 認定の目安",
+   "by": "日本語能力試験 JLPT",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.jlpt.jp/about/levelsummary.html",
+   "why": "N2 가 어느 정도인지 공식 기준. 서류·면접이 일본어라 실제 목표는 그보다 위로 잡는다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사와 구조 읽기",
+   "time": "2~3일",
+   "goal": "메드콤 앱이 무엇이고 리뉴얼 앱을 어떻게 나눴는지 일본어로 설명할 수 있다.",
+   "resources": [
+    "medcom-kmp",
+    "android-arch"
+   ],
+   "task": "회사 KMP 글을 읽고 '공유하는 층 / OS 마다 다른 층'을 그림 한 장으로 그린 뒤, 일본어 세 문장으로 요약한다."
+  },
+  {
+   "title": "Kotlin + Compose 로 작은 앱",
+   "time": "2~3주",
+   "goal": "Compose 화면과 ViewModel, 서버 API 연동을 갖춘 앱 하나를 끝까지 만든다.",
+   "resources": [
+    "kotlin-in-action",
+    "compose-first",
+    "android-arch"
+   ],
+   "task": "가상 병동 호출 목록 앱 — 가짜 API(JSON)에서 호출 목록을 받아 LazyColumn 에 보이고, 실패하면 지수 백오프로 다시 시도한다."
+  },
+  {
+   "title": "로직을 KMP 로 옮기기",
+   "time": "2~3주",
+   "goal": "2단계 앱의 로직·통신·모델을 공유 모듈로 옮겨 iOS(SwiftUI)에서도 부른다.",
+   "resources": [
+    "kmp-codelab",
+    "kmp-why",
+    "medcom-kmp"
+   ],
+   "task": "expect/actual 로 '마지막 로그인 사용자 저장'을 Android SharedPreferences·iOS NSUserDefaults 로 나눠 구현하고, 같은 단위 테스트를 공통 코드에서 돌린다."
+  },
+  {
+   "title": "성능·버전·자동화",
+   "time": "1~2주",
+   "goal": "재구성을 숫자로 재서 줄이고, PR 마다 빌드·테스트가 도는 틀을 만든다.",
+   "resources": [
+    "compose-perf",
+    "compose-internals-kr",
+    "compose-bom",
+    "gh-actions"
+   ],
+   "task": "호출 목록 1,000건에서 Layout Inspector 로 재구성 횟수를 재고 key·안정성으로 줄인 전후를 기록한다. GitHub Actions 로 Android 빌드와 공유 모듈 테스트를 PR 마다 돌린다."
+  },
+  {
+   "title": "알림과 일본어 서류",
+   "time": "1~2주",
+   "goal": "알림을 받아 맞는 화면을 열고, 위 결과물을 일본어 직무경력서로 설명한다.",
+   "resources": [
+    "fcm-docs",
+    "jlpt"
+   ],
+   "task": "FCM 으로 '새 호출' 알림을 보내 누르면 그 호출 상세가 열리게 한다. 1~4단계를 일본어 직무경력서(職務経歴書) 한 쪽으로 정리한다."
+  }
+ ],
+ "pay": {
+  "summary": "공고 표기 연봉 **600만~1,000만 엔**, 월급 50만 엔부터(고정 잔업분 포함) — 비상장이라 공시 평균은 없다",
+  "rows": [
+   {
+    "label": "공고 표기 연봉",
+    "value": "600만~1,000만 엔",
+    "basis": "공고 · 2026년",
+    "note": "월급제. 월 500,000엔~ = 기본급 432,425엔~ + 고정 잔업수당 67,575엔~. 시용 기간 3개월(조건 같음) [1]"
+   },
+   {
+    "label": "회사 채용 페이지 월급",
+    "value": "월 50만 엔~",
+    "basis": "공고 · 2026년",
+    "note": "회사 판(HRMOS)도 같은 월급 구성이고 연봉 표기는 없다 [2]"
+   }
+  ],
+  "how": "메드콤은 비상장사라 유가증권보고서의 평균 급여가 없다 [14]. 월 50만 엔 × 12 = 600만 엔이라 하한은 상여 없이 월급만으로 맞춰진 숫자로 보인다 {추론}. **고정 잔업 읽는 법**: 휴일(토·일·공휴일·연말연시 6일·여름 3일[1])로 연간 근무일을 약 240~245일로 잡으면 월 소정 근로 약 160~163시간, 기본 시급 약 2,650~2,700엔이고, 법정 최저 할증 1.25배로 나누면 67,575엔은 **약 20시간분**이다(직접 계산) {추론}. 회사가 몇 시간분인지 적지 않았으니 면접에서 확인한다. 엔을 원화로 바꾼 값은 환율 기준을 정하지 않아 싣지 않는다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무 시간",
+    "detail": "플렉스 타임 — 코어 11:00~15:00, 하루 표준 8시간"
+   },
+   {
+    "name": "근무 방식",
+    "detail": "출근 원칙. 원격 근무는 허가제·상담(가정 사정이면 상담 가능)"
+   },
+   {
+    "name": "휴일",
+    "detail": "완전 주 5일(토·일·공휴일), 연말연시(12/29~1/3), 여름 휴가 3일, 경조 휴가"
+   },
+   {
+    "name": "유급 휴가",
+    "detail": "연 10~20일, 입사일에 10일 부여, 시간 단위 사용 가능"
+   },
+   {
+    "name": "건강",
+    "detail": "본인·가족 종합 건강검진(人間ドック) 보조"
+   },
+   {
+    "name": "공부",
+    "detail": "자격 취득 지원·참고서 구입 보조"
+   },
+   {
+    "name": "사내",
+    "detail": "셔플 런치 제도"
+   },
+   {
+    "name": "할인",
+    "detail": "복리후생 시설(숙박·레스토랑 등) 할인 프로그램"
+   },
+   {
+    "name": "교통·보험",
+    "detail": "교통비 지급(특급 요금 제외), 고용·건강(관동 IT 소프트웨어 건강보험조합)·후생연금·산재 보험"
+   },
+   {
+    "name": "경조",
+    "detail": "결혼·출산 축하금, 입원·재해 위로금, 육아·간병 휴업(채용 덱)"
+   }
+  ],
+  "note": "원티드 공고의 복리후생 칸(2026년, 회사가 쓴 조건 그대로)이다 [1]. 마지막 줄 경조 항목은 채용 덱에만 있고 금액은 적혀 있지 않다 [4]. 비자·이주 지원은 어느 쪽에도 없다 {추론}."
+ },
+ "location": {
+  "name": "메드콤 본사 (도요스)",
+  "address": "東京都江東区豊洲3-2-24 豊洲フォレシア9階",
+  "postal": "135-0061",
+  "map_url": "https://www.google.com/maps/search/%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B1%9F%E6%9D%B1%E5%8C%BA%E8%B1%8A%E6%B4%B23-2-24%20%E8%B1%8A%E6%B4%B2%E3%83%95%E3%82%A9%E3%83%AC%E3%82%B7%E3%82%A2",
+  "near": "도쿄메트로 유라쿠초선 도요스역(豊洲) 1C 출구 걸어서 1분(지붕 있는 보도로 이어짐), 유리카모메 도요스역 6분",
+  "note": "공고의 근무지와 회사 정보 페이지의 본사 주소가 같다(2025년 9월 1일 이전) [1][14]. 일본 주소라 네이버 지도 대신 구글 지도 검색 링크를 단다. 삿포로·센다이·나고야·오사카·후쿠오카에 지점, 우에노하라에 단말 세팅 센터가 있다 [14]."
+ }
+}
