@@ -22,8 +22,25 @@
       "flows": [{ "caption": "string", "steps": ["string — '이름 · 설명'"], "mine_from": "number (선택) — 이 직무가 맡는 첫 단계 번호(0부터)" }],
       "examples": [{ "title": "string", "body": "string", "lang": "string (code 가 있으면 필수)", "code": "string (선택) — 직접 돌려 본 짧은 코드" }],
       "how_far": "string (선택) — 어디까지 하면 되나",
-      "refs": ["number — 이 줄이 기대는 출처"]
+      "refs": ["number — 이 줄이 기대는 출처"],
+      "study": ["string — resources.id. 이 요건을 채우려면 볼 것"]
     }
+  ],
+  "resources": [
+    {
+      "id": "string",
+      "title": "string — 실제 제목(존재를 확인한 것만)",
+      "by": "string (선택) — 저자 · 출판사 · 연도. 확인 못 한 칸은 뺀다",
+      "kind": "book | course | doc | video | internal(우리 사이트의 강의 노트·책)",
+      "url": "string — 상품·공식 페이지, 못 찾으면 서점 검색 링크",
+      "lang": "ko | en",
+      "free": "boolean (선택)",
+      "level": "입문 | 실무 | 심화",
+      "why": "string — 이 공고의 어느 요건을 위해 무엇을 얻나"
+    }
+  ],
+  "study_path": [
+    { "title": "string", "time": "string (선택) — 1~2주", "goal": "string — 할 수 있게 되는 것", "task": "string — 가상 데이터로 직접 만들어 볼 작은 결과물", "resources": ["string — resources.id"] }
   ],
   "fit": { "good": ["string"], "hard": ["string"] },
   "interview": [{ "q": "string", "a": "string — 왜 이 질문인가(근거 번호)" }],

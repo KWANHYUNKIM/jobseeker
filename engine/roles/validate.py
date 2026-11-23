@@ -23,6 +23,8 @@ JOBS = PUBLIC / "all_jobs_enriched.json"
 
 SECTIONS = {"task": "main_tasks", "qualification": "qualifications", "preference": "preferences"}
 SOURCE_KINDS = {"company", "posting", "news", "reference", "community"}
+RES_KINDS = {"book", "course", "doc", "video", "internal"}
+LEVELS = ["입문", "실무", "심화"]
 REF = re.compile(r"\[(\d{1,2})\]")
 SHORT_MAX = 90            # 공고 줄 바로 밑에 늘 보이는 한 줄 — 길면 훑어 읽기가 깨진다
 LONG_ENGLISH = re.compile(r"[A-Za-z ,.'\"()\-:;]{220,}")   # 영어 원문을 옮긴 흔적
@@ -89,6 +91,27 @@ def check(d: dict, path: Path, jobs_by_key: dict) -> tuple[list[str], list[str]]
         for ex in ln.get("examples", []):
             if ex.get("code") and not ex.get("lang"):
                 errs.append(f"{lw}: 코드 예시에 lang 없음")
+    # 공부 자료 — 실제로 있는 책·강의·문서만(조사에서 존재를 확인한 것). 줄·로드맵은 id 로만 가리킨다.
+    res_ids = set()
+    for x in d.get("resources", []):
+        rw = f"{w} resources[{x.get('id')}]"
+        for k in ("id", "title", "kind", "url", "why", "lang", "level"):
+            if not x.get(k):
+                errs.append(f"{rw}: '{k}' 없음")
+        if x.get("kind") not in RES_KINDS:
+            errs.append(f"{rw}: kind 는 {sorted(RES_KINDS)}")
+        if x.get("level") not in LEVELS:
+            errs.append(f"{rw}: level 은 {LEVELS}")
+        res_ids.add(x.get("id"))
+    wanted = [(f"lines[{i}]", r) for i, ln in enumerate(d["lines"]) for r in ln.get("study", [])]
+    for i, st in enumerate(d.get("study_path", [])):
+        for k in ("title", "goal", "task", "resources"):
+            if not st.get(k):
+                errs.append(f"{w} study_path[{i}]: '{k}' 없음")
+        wanted += [(f"study_path[{i}]", r) for r in st.get("resources", [])]
+    for where, r in wanted:
+        if r not in res_ids:
+            errs.append(f"{w} {where}: 공부 자료 '{r}' 가 resources 에 없다")
     # 공고의 모든 줄에 풀이가 붙었나 — 수집된 공고가 있을 때만 대조한다
     quotes = {norm(ln["quote"]) for ln in d["lines"] if ln.get("quote")}
     for key in d["jobs"]:

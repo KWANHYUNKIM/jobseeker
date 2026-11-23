@@ -1,5 +1,5 @@
 import { Fragment, useState } from 'react'
-import type { RoleLine, RoleReading, RoleSource } from '../hooks/useRoleReading'
+import type { RoleLine, RoleReading, RoleResource, RoleSource } from '../hooks/useRoleReading'
 import { roleTokens } from '../utils/roleText'
 
 // 공고 한 줄씩 읽기 — 읽는 순서를 세 겹으로 둔다(가독성 설계, 2026-11-23).
@@ -90,7 +90,7 @@ export function RoleSummary({ r, allOpen, onToggleAll }: { r: RoleReading; allOp
 }
 
 /** 공고 줄 하나 밑 — 늘 보이는 한 줄 + 펼치면 풀이. */
-export function RoleLineNote({ line, sources, open, onToggle }: { line: RoleLine; sources: RoleSource[]; open: boolean; onToggle: () => void }) {
+export function RoleLineNote({ line, sources, resources = [], open, onToggle }: { line: RoleLine; sources: RoleSource[]; resources?: RoleResource[]; open: boolean; onToggle: () => void }) {
   return (
     <div className="mt-2">
       <button
@@ -107,7 +107,7 @@ export function RoleLineNote({ line, sources, open, onToggle }: { line: RoleLine
           {open ? '접기 ▴' : '자세히 ▾'}
         </span>
       </button>
-      {open && <LineDetail line={line} sources={sources} />}
+      {open && <LineDetail line={line} sources={sources} resources={resources} />}
     </div>
   )
 }
@@ -116,7 +116,8 @@ function Label({ children }: { children: React.ReactNode }) {
   return <div className="pt-[2px] text-[13px] font-semibold text-[#777]">{children}</div>
 }
 
-function LineDetail({ line, sources }: { line: RoleLine; sources: RoleSource[] }) {
+function LineDetail({ line, sources, resources }: { line: RoleLine; sources: RoleSource[]; resources: RoleResource[] }) {
+  const study = (line.study || []).map((id) => resources.find((x) => x.id === id)).filter((x): x is RoleResource => !!x)
   const t = (s: string) => <RichText text={s} sources={sources} />
   return (
     <div className="mt-2 rounded-xl border border-[#e2e8ec] bg-white px-5 py-4 text-[15px] leading-[25px] text-[#3a3a3a]">
@@ -207,6 +208,17 @@ function LineDetail({ line, sources }: { line: RoleLine; sources: RoleSource[] }
             <div className="rounded-lg bg-[#f7f9fa] px-3 py-2">{t(line.how_far)}</div>
           </>
         )}
+
+        {study.length > 0 && (
+          <>
+            <Label>공부할 것</Label>
+            <div className="space-y-2">
+              {study.map((x) => (
+                <ResourceCard key={x.id} x={x} compact />
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
@@ -230,6 +242,81 @@ function Example({ ex, sources }: { ex: NonNullable<RoleLine['examples']>[number
         </div>
       )}
     </div>
+  )
+}
+
+const RES_KIND: Record<RoleResource['kind'], { label: string; tone: string }> = {
+  book: { label: '책', tone: 'bg-[#efe9ff] text-[#5b3fc4]' },
+  course: { label: '강의', tone: 'bg-[#e6f6ec] text-[#16794a]' },
+  doc: { label: '문서', tone: 'bg-[#eef1f4] text-[#4a5563]' },
+  video: { label: '영상', tone: 'bg-[#fdeceb] text-[#b42318]' },
+  internal: { label: '우리 자료', tone: 'bg-[#e7edff] text-[#3657c8]' },
+}
+
+function ResourceCard({ x, compact = false }: { x: RoleResource; compact?: boolean }) {
+  const k = RES_KIND[x.kind]
+  return (
+    <a
+      href={x.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={'group block rounded-lg border border-[#e2e8ec] bg-white hover:border-[#9db3ea] ' + (compact ? 'px-3 py-2' : 'px-4 py-3')}
+    >
+      <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+        <span className={'rounded px-1.5 text-[11px] font-bold leading-[18px] ' + k.tone}>{k.label}</span>
+        <span className={'font-semibold text-[#272727] group-hover:underline ' + (compact ? 'text-[14px]' : 'text-[15px]')}>{x.title}</span>
+        <span className="text-[11.5px] text-[#999]">
+          {x.lang === 'ko' ? '한국어' : '영어'} · {x.level}
+          {x.free && ' · 무료'}
+        </span>
+      </div>
+      {x.by && <div className="mt-0.5 text-[12px] text-[#999]">{x.by}</div>}
+      <div className={'mt-1 text-[#555] ' + (compact ? 'text-[13px] leading-[19px]' : 'text-[14px] leading-[21px]')}>{x.why}</div>
+    </a>
+  )
+}
+
+/** 공고 본문 아래 — 이 자리 준비 로드맵(단계 · 목표 · 해 볼 과제 · 자료). */
+export function RoleStudyPath({ r }: { r: RoleReading }) {
+  const steps = r.study_path || []
+  const res = r.resources || []
+  if (!steps.length) return null
+  return (
+    <section>
+      <h3 className="flex flex-wrap items-baseline gap-x-2 pb-3 mb-4 border-b-2 border-[#272727] text-xl font-bold leading-[29px] text-[#272727]">
+        이 자리 준비 로드맵
+        <span className="text-[13px] font-normal text-[#777]">위 자격요건을 공부 순서로 — 단계마다 목표 · 해 볼 과제 · 자료</span>
+      </h3>
+      <ol>
+        {steps.map((st, i) => {
+          const items = st.resources.map((id) => res.find((x) => x.id === id)).filter((x): x is RoleResource => !!x)
+          return (
+            <li key={i} className="relative pl-12 pb-8 last:pb-0">
+              <span className="absolute left-0 top-0 grid h-8 w-8 place-items-center rounded-full bg-[#3657c8] text-[14px] font-bold text-white">{i + 1}</span>
+              {i < steps.length - 1 && <span aria-hidden className="absolute left-[15.5px] top-9 bottom-1 w-px bg-[#d9e2f5]" />}
+              <div className="flex flex-wrap items-baseline gap-x-2">
+                <span className="text-[17px] font-bold text-[#272727]">{st.title}</span>
+                {st.time && <span className="text-[13px] text-[#777]">{st.time}</span>}
+              </div>
+              <p className="mt-1 text-[15px] leading-[24px] text-[#3a3a3a]">
+                <b className="font-semibold text-[#272727]">목표</b> · {st.goal}
+              </p>
+              <div className="mt-2 rounded-lg bg-[#f5f8ff] px-3.5 py-2.5 text-[14.5px] leading-[23px] text-[#3a3a3a]">
+                <b className="font-semibold text-[#3657c8]">해 볼 과제</b> · {st.task}
+              </div>
+              {items.length > 0 && (
+                <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                  {items.map((x) => (
+                    <ResourceCard key={x.id} x={x} compact />
+                  ))}
+                </div>
+              )}
+            </li>
+          )
+        })}
+      </ol>
+      <p className="mt-4 text-[12.5px] text-[#999]">책·강의는 조사 때 실제로 있는지 확인한 것만 실었습니다. 가격·최신판은 링크에서 확인하세요.</p>
+    </section>
   )
 }
 

@@ -23,7 +23,7 @@ import { JobGuide } from './JobGuide'
 import { parseJdText, type JdBlock } from '../utils/jdText'
 import { useRoleReading } from '../hooks/useRoleReading'
 import { matchRoleLine } from '../utils/roleText'
-import { RoleAside, RoleLineNote, RoleSummary } from './RoleReading'
+import { RoleAside, RoleLineNote, RoleStudyPath, RoleSummary } from './RoleReading'
 
 interface Props {
   job: Job
@@ -97,7 +97,7 @@ export function JobDetail({ job, onOpenUrl }: Props) {
   const noteFor = reading
     ? (text: string) => {
         const line = matchRoleLine(reading.lines, text)
-        return line ? <RoleLineNote line={line} sources={reading.sources} open={openLines.has(line.quote)} onToggle={() => toggleLine(line.quote)} /> : null
+        return line ? <RoleLineNote line={line} sources={reading.sources} resources={reading.resources} open={openLines.has(line.quote)} onToggle={() => toggleLine(line.quote)} /> : null
       }
     : undefined
 
@@ -234,6 +234,8 @@ export function JobDetail({ job, onOpenUrl }: Props) {
               <Section title="우대 사항" marks={marksBySection.preference.length}>
                 <FieldOrPlaceholder text={job.preferences} url={job.url} noteFor={noteFor} marks={marksBySection.preference} activeQuote={activeQuote} onQuote={jumpToGuide} />
               </Section>
+
+              {reading && <RoleStudyPath r={reading} />}
 
               {job.benefits && (
                 <Section title="복지 / 혜택">

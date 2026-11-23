@@ -17,6 +17,27 @@ export interface RoleLine {
   examples?: { title: string; body: string; lang?: string; code?: string }[]
   how_far?: string
   refs?: number[]
+  study?: string[]
+}
+
+export interface RoleResource {
+  id: string
+  title: string
+  by?: string
+  kind: 'book' | 'course' | 'doc' | 'video' | 'internal'
+  url: string
+  lang: 'ko' | 'en'
+  free?: boolean
+  level: '입문' | '실무' | '심화'
+  why: string
+}
+
+export interface RoleStudyStep {
+  title: string
+  time?: string
+  goal: string
+  task: string
+  resources: string[]
 }
 
 export interface RoleSource {
@@ -40,6 +61,8 @@ export interface RoleReading {
   fit?: { good: string[]; hard: string[] }
   interview?: { q: string; a: string }[]
   sources: RoleSource[]
+  resources?: RoleResource[]
+  study_path?: RoleStudyStep[]
   caveat?: string
 }
 
