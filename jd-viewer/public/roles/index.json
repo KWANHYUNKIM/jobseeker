@@ -65,6 +65,7 @@
   "wanted-392448": "tossbank-aiops-platform-engineer",
   "ats-toss:group:7702581003": "tossbank-aiops-platform-engineer",
   "ats-toss:group:4103438003": "tossbank-data-analyst",
+  "ats-toss:group:4695176003": "tossbank-data-engineer-platform",
   "wanted-385879": "tossbank-devops-engineer",
   "ats-toss:group:7757550003": "tossbank-devops-engineer",
   "ats-toss:group:5622017003": "tossbank-fe-platform-engineer",
@@ -701,6 +702,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 17
+  },
+  {
+   "id": "tossbank-data-engineer-platform",
+   "company": "토스뱅크",
+   "role": "데이터 엔지니어 (Platform)",
+   "jobs": [
+    "ats-toss:group:4695176003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 14
   },
   {
    "id": "tossbank-devops-engineer",
