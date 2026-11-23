@@ -4,6 +4,7 @@
   "wanted-335089": "aldagram-kanna-web-engineer",
   "wanted-395987": "datax-software-engineer-japan",
   "wanted-368239": "finatext-brokerage-fullstack",
+  "wanted-368237": "finatext-frontend",
   "wanted-385077": "go-android-in-vehicle",
   "wanted-377335": "ldf-ebookjapan-web-frontend",
   "wanted-377332": "ldf-linemanga-data-scientist",
@@ -20,6 +21,7 @@
   "jobkorea-50384195": "skax-ai-studio-mlops-pl",
   "jobkorea-50384211": "skax-ai-studio-mlops-pl",
   "dev-581141": "skax-ai-studio-mlops-pl",
+  "ats-skcareers:sk:R262523": "skax-aidc-power-construction",
   "ats-skcareers:sk:R262275": "skax-ax-ai-pm-pl",
   "ats-skcareers:sk:R262283": "skax-ax-ai-project-pm-pl",
   "ats-skcareers:sk:R262418": "skax-contact-center-application",
@@ -28,6 +30,8 @@
   "ats-skcareers:sk:R262415": "skax-mfg-data-engineer-k8s",
   "wanted-396609": "skax-mfg-data-engineer-k8s",
   "jobkorea-50308626": "skax-mfg-data-engineer-k8s",
+  "jobkorea-50340705": "skax-nova-bss-oss-app-dev",
+  "wanted-396834": "skax-nova-bss-oss-app-dev",
   "ats-skcareers:sk:R262392": "skax-sap-bw-bdc-data-analytics",
   "ats-skcareers:sk:R262430": "skax-security-architect",
   "ats-skcareers:sk:R262252": "skax-vision-image-platform-pl-mle",
@@ -165,6 +169,16 @@
    "lines": 25
   },
   {
+   "id": "finatext-frontend",
+   "company": "Finatext (株式会社Finatext)",
+   "role": "프론트엔드 엔지니어",
+   "jobs": [
+    "wanted-368237"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 21
+  },
+  {
    "id": "go-android-in-vehicle",
    "company": "GO株式会社 (GO Inc.)",
    "role": "Android 엔지니어 — 차량용 앱",
@@ -289,6 +303,16 @@
    "lines": 46
   },
   {
+   "id": "skax-aidc-power-construction",
+   "company": "SK주식회사(AX)",
+   "role": "AI 데이터센터 전력설비 구축 전문가",
+   "jobs": [
+    "ats-skcareers:sk:R262523"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 25
+  },
+  {
    "id": "skax-ax-ai-pm-pl",
    "company": "SK주식회사(AX)",
    "role": "AX/AI 프로젝트 PM/PL",
@@ -349,6 +373,17 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 39
+  },
+  {
+   "id": "skax-nova-bss-oss-app-dev",
+   "company": "SK주식회사(AX)",
+   "role": "AI 기반 차세대 통신 BSS/OSS(NOVA) 응용개발 전문가",
+   "jobs": [
+    "jobkorea-50340705",
+    "wanted-396834"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 31
   },
   {
    "id": "skax-sap-bw-bdc-data-analytics",
