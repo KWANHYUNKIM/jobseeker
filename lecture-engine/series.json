@@ -2421,336 +2421,6 @@
   }
  },
  {
-  "key": "cs50w-2020",
-  "playlist": "PLhQjrBD2T380xvFSUmToMMzERZ3qB5Ueu",
-  "match": null,
-  "title": "CS50 웹 프로그래밍 (Python·JavaScript·Django)",
-  "school": "Harvard",
-  "code": "CS50W",
-  "term": "2020",
-  "track": "backend",
-  "max": null,
-  "playlist_title": "CS50's Web Programming with Python and JavaScript (CS50W) 2020",
-  "lectures": [
-   {
-    "no": 1,
-    "id": "zFZrkCIc2Oc",
-    "title": "CS50W - Lecture 0 - HTML and CSS",
-    "duration": 7412
-   },
-   {
-    "no": 2,
-    "id": "Nn7EX3zkGUo",
-    "title": "CS50W - Introduction",
-    "duration": 133
-   },
-   {
-    "no": 3,
-    "id": "NcoBAfJ6l2Q",
-    "title": "CS50W - Lecture 1 - Git",
-    "duration": 3196
-   },
-   {
-    "no": 4,
-    "id": "EOLPQdVj5Ac",
-    "title": "CS50W - Lecture 2 - Python",
-    "duration": 4062
-   },
-   {
-    "no": 5,
-    "id": "w8q0C-C1js4",
-    "title": "CS50W - Lecture 3 - Django",
-    "duration": 5945
-   },
-   {
-    "no": 6,
-    "id": "YzP164YANAU",
-    "title": "CS50W - Lecture 4 - SQL, Models and Migrations",
-    "duration": 6847
-   },
-   {
-    "no": 7,
-    "id": "x5trGVMKTdY",
-    "title": "CS50W - Lecture 5 - JavaScript",
-    "duration": 6686
-   },
-   {
-    "no": 8,
-    "id": "jrBhi8wbzPw",
-    "title": "CS50W - Lecture 6 - User Interfaces",
-    "duration": 6015
-   },
-   {
-    "no": 9,
-    "id": "WbRDkJ4lPdY",
-    "title": "CS50W - Lecture 7 - Testing and CI/CD",
-    "duration": 5639
-   },
-   {
-    "no": 10,
-    "id": "6PWTxRGh_dk",
-    "title": "CS50W - Lecture 8 - Scalability and Security",
-    "duration": 5266
-   }
-  ],
-  "stack": "Python · Django · JavaScript",
-  "subject": "웹 프레임워크",
-  "quality": {
-   "why": "Harvard 공식 — 단, 국내 채용 주류(Java·Spring)와 다르다",
-   "stats": {
-    "checked": "2026-11-23",
-    "channel": "CS50",
-    "channel_followers": 2540000,
-    "first_views": 1403460,
-    "first_likes": 26579,
-    "like_per_1k_views": 18.9,
-    "first_uploaded": "2021-06-21",
-    "last_views": 145509,
-    "stay_ratio": 0.104,
-    "subtitles": [
-     "en"
-    ],
-    "auto_subtitles": true
-   }
-  }
- },
- {
-  "key": "hongpark-boot",
-  "playlist": "PLyebPLlVYXCiYdYaWRKgCqvnCFrLEANXt",
-  "match": null,
-  "title": "스프링 부트, 입문!",
-  "school": "홍팍",
-  "code": "스프링 부트",
-  "term": "입문",
-  "track": "backend",
-  "max": null,
-  "playlist_title": "스프링 부트, 입문!",
-  "lectures": [
-   {
-    "no": 1,
-    "id": "_vDACE13Ubc",
-    "title": "[스프링 부트 입문 00] 강의를 소개합니다",
-    "duration": 146
-   },
-   {
-    "no": 2,
-    "id": "HAlcc-HMz7k",
-    "title": "[Spring Boot Introduction 01] What is Spring Boot?",
-    "duration": 132
-   },
-   {
-    "no": 3,
-    "id": "EYmVJuRLHDQ",
-    "title": "[Spring Boot Introduction 02] Creating a Development Environment",
-    "duration": 1222
-   },
-   {
-    "no": 4,
-    "id": "-B60B9eAIyU",
-    "title": "[Spring Boot Introduction 03] How Web Services Work",
-    "duration": 417
-   },
-   {
-    "no": 5,
-    "id": "Y_gkH0nLMY8",
-    "title": "[스프링 부트 입문 04] 뷰 템플릿과 MVC 패턴",
-    "duration": 847
-   },
-   {
-    "no": 6,
-    "id": "5vfxeRJJsWo",
-    "title": "[Spring Boot Introduction 05] MVC Roles and Execution Flow",
-    "duration": 559
-   },
-   {
-    "no": 7,
-    "id": "AIsz-FTvGgQ",
-    "title": "[Book Advertisement] Introduction to Spring Boot! Also available as a book, thank you.",
-    "duration": 181
-   },
-   {
-    "no": 8,
-    "id": "TgMPJ-TLgVc",
-    "title": "[Spring Boot Introduction 06] View Templates and Layouts",
-    "duration": 845
-   },
-   {
-    "no": 9,
-    "id": "rzjudEZ8bt0",
-    "title": "[스프링 부트 입문 07] 폼 데이터 주고 받기",
-    "duration": 913
-   },
-   {
-    "no": 10,
-    "id": "ZGgf_1OXcAY",
-    "title": "[Spring Boot Introduction 08] Data Generation with JPA",
-    "duration": 1004
-   },
-   {
-    "no": 11,
-    "id": "76a6YMmpZmY",
-    "title": "[스프링 부트 입문 09] DB 테이블과 SQL",
-    "duration": 565
-   },
-   {
-    "no": 12,
-    "id": "2VYBQ_99RJg",
-    "title": "[Spring Boot Introduction 10] Lombok and Refactoring",
-    "duration": 827
-   },
-   {
-    "no": 13,
-    "id": "E0YO0XqpBIY",
-    "title": "[스프링 부트 입문 11] 데이터 조회하기 with JPA",
-    "duration": 1003
-   },
-   {
-    "no": 14,
-    "id": "rxRcIxU_d4I",
-    "title": "[스프링 부트 입문 12] 데이터 목록조회",
-    "duration": 689
-   },
-   {
-    "no": 15,
-    "id": "T_najiNzQGw",
-    "title": "[Spring Boot Introduction 13] Links and Redirects",
-    "duration": 857
-   },
-   {
-    "no": 16,
-    "id": "5jUowGLS-9s",
-    "title": "[Spring Boot Introduction 14] Creating a Modification Form",
-    "duration": 820
-   },
-   {
-    "no": 17,
-    "id": "pNz7fjZzdck",
-    "title": "[스프링 부트 입문 15] 데이터 수정하기",
-    "duration": 1236
-   },
-   {
-    "no": 18,
-    "id": "2IuZs5I5KJg",
-    "title": "[스프링 부트 입문 16] 데이터 삭제하기",
-    "duration": 1197
-   },
-   {
-    "no": 19,
-    "id": "RUsTFA5GCiM",
-    "title": "[스프링 부트 입문 17] CRUD와 SQL 쿼리",
-    "duration": 1044
-   },
-   {
-    "no": 20,
-    "id": "UjBXb3m1uY0",
-    "title": "[스프링 부트 입문 18] RestAPI와 JSON",
-    "duration": 1100
-   },
-   {
-    "no": 21,
-    "id": "Q_B5c6eChDo",
-    "title": "[Spring Boot Introduction 19] HTTP and RestController",
-    "duration": 1742
-   },
-   {
-    "no": 22,
-    "id": "l5Va-XbwR04",
-    "title": "[Spring Boot Introduction 20] Service Layer and Transactions",
-    "duration": 1765
-   },
-   {
-    "no": 23,
-    "id": "XYghe60uIOs",
-    "title": "[Spring Boot Introduction 21] Writing Tests",
-    "duration": 1519
-   },
-   {
-    "no": 24,
-    "id": "LNW-pFxLWq4",
-    "title": "[스프링 부트 입문 22] 댓글 엔티티와 리파지터리(feat. 테스트)",
-    "duration": 2140
-   },
-   {
-    "no": 25,
-    "id": "sCsPk-ZgXa0",
-    "title": "[Spring Boot Introduction 23] Comment Service and Controller",
-    "duration": 2361
-   },
-   {
-    "no": 26,
-    "id": "PY5EeW4FXxU",
-    "title": "[스프링 부트 입문 24] 댓글 목록 뷰 만들기",
-    "duration": 643
-   },
-   {
-    "no": 27,
-    "id": "qbXs0gkfTfU",
-    "title": "[Spring Boot Introduction 25] Commenting with JavaScript",
-    "duration": 1565
-   },
-   {
-    "no": 28,
-    "id": "9nmFotwDOig",
-    "title": "[스프링 부트 입문 26] 댓글 수정 with 자바스크립트",
-    "duration": 1734
-   },
-   {
-    "no": 29,
-    "id": "Sg8ibALgdT8",
-    "title": "[스프링 부트 입문 27] 댓글 삭제 with 자바스크립트",
-    "duration": 1131
-   },
-   {
-    "no": 30,
-    "id": "Ym7cAtE2jQs",
-    "title": "[Spring Boot Introduction 28] Connecting to a Database",
-    "duration": 969
-   },
-   {
-    "no": 31,
-    "id": "5d3wEN0_MLY",
-    "title": "[스프링 부트 입문 29] IoC와 DI(객체를 주입한다고?)",
-    "duration": 1305
-   },
-   {
-    "no": 32,
-    "id": "xmiIJvGsvUc",
-    "title": "[스프링 부트 입문 30] AOP, 관점 지향 프로그래밍(부가 기능을 주입한다고?)",
-    "duration": 1764
-   },
-   {
-    "no": 33,
-    "id": "9-8aE9GonlM",
-    "title": "[스프링 부트 입문 31] ObjectMapper(JSON을 객체로 변환한다고?)",
-    "duration": 1321
-   },
-   {
-    "no": 34,
-    "id": "woJP-wMKO7U",
-    "title": "[Spring Boot Introduction 32] Concluding the lecture..!",
-    "duration": 213
-   }
-  ],
-  "stack": "Java · Spring Boot",
-  "subject": "웹 프레임워크",
-  "quality": {
-   "why": "국내 채용에서 가장 많이 쓰는 스프링 부트의 한국어 입문",
-   "stats": {
-    "checked": "2026-11-23",
-    "channel": "홍팍",
-    "channel_followers": 8880,
-    "first_views": 56812,
-    "first_likes": 295,
-    "like_per_1k_views": 5.2,
-    "first_uploaded": "2022-04-29",
-    "last_views": 3624,
-    "stay_ratio": 0.064,
-    "subtitles": [],
-    "auto_subtitles": true
-   }
-  }
- },
- {
   "key": "opentutorials-html",
   "playlist": "PLuHgQVnccGMDUzDDCKW-pCZQY-MMCX5yB",
   "match": null,
@@ -4702,5 +4372,1171 @@
     "auto_subtitles": true
    }
   }
+ },
+ {
+  "key": "brocode-java-2024",
+  "playlist": "PLZPZq0r_RZOOj_NOZYq_R2PECIMglLemc",
+  "match": null,
+  "title": "자바 기초 (Bro Code, 2024)",
+  "school": "Bro Code",
+  "code": "Java",
+  "term": "2024-12",
+  "track": "backend",
+  "max": null,
+  "stack": "Java 17+",
+  "subject": "언어 기초",
+  "quality": {
+   "why": "2024년 말 새로 찍은 입문 71편 — 짧은 편으로 하나씩, 구독 345만 채널",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "Bro Code",
+    "channel_followers": 3450000,
+    "first_views": 748054,
+    "first_likes": 7674,
+    "like_per_1k_views": 10.3,
+    "first_uploaded": "2024-12-30",
+    "last_views": 29417,
+    "stay_ratio": 0.039,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  },
+  "playlist_title": "Java tutorial for beginners ☕",
+  "lectures": [
+   {
+    "no": 1,
+    "id": "23HFxAPyJ9U",
+    "title": "Start coding with JAVA in 10 minutes! ☕",
+    "duration": 659
+   },
+   {
+    "no": 2,
+    "id": "TGVLmr194DI",
+    "title": "Java variables are easy! ❎",
+    "duration": 1232
+   },
+   {
+    "no": 3,
+    "id": "RAthlOQUMkc",
+    "title": "User input in Java is easy! ⌨️",
+    "duration": 955
+   },
+   {
+    "no": 4,
+    "id": "7QlOxkzFOYw",
+    "title": "Let's code a mad libs game with Java! 📖",
+    "duration": 403
+   },
+   {
+    "no": 5,
+    "id": "QAD5unRlCyo",
+    "title": "Java arithmetic is easy! 🧮",
+    "duration": 502
+   },
+   {
+    "no": 6,
+    "id": "P8CVPIaRmys",
+    "title": "Code a simple java shopping cart program in 6 minutes! 🛒",
+    "duration": 391
+   },
+   {
+    "no": 7,
+    "id": "Q_ll-EKocuI",
+    "title": "Java if statements are easy! 🤔",
+    "duration": 809
+   },
+   {
+    "no": 8,
+    "id": "-tt98ICTHtQ",
+    "title": "Generate random numbers using Java! 🔀",
+    "duration": 301
+   },
+   {
+    "no": 9,
+    "id": "nle8CQXYhl4",
+    "title": "The Java Math class + exercises! 📐",
+    "duration": 910
+   },
+   {
+    "no": 10,
+    "id": "nTBDjxWAcoE",
+    "title": "Java printf() is really useful! 🖨️",
+    "duration": 817
+   },
+   {
+    "no": 11,
+    "id": "IgdIfGW-cVU",
+    "title": "Code a Java compound interest calculator in 7 minutes! 💸",
+    "duration": 454
+   },
+   {
+    "no": 12,
+    "id": "23VT2wh3BG4",
+    "title": "Nested if statements are easy! 🎟️",
+    "duration": 393
+   },
+   {
+    "no": 13,
+    "id": "Ntl3DxhyrQQ",
+    "title": "Useful string methods in Java! 🧵",
+    "duration": 516
+   },
+   {
+    "no": 14,
+    "id": "44iQGNUcik0",
+    "title": "Java substrings are easy! 📧",
+    "duration": 485
+   },
+   {
+    "no": 15,
+    "id": "DFhpzaEOoxs",
+    "title": "Let's code a WEIGHT CONVERTER in Java! 🏋️",
+    "duration": 500
+   },
+   {
+    "no": 16,
+    "id": "t2PcC-FYFmI",
+    "title": "Learn the Java ternary operator in 5 minutes! ❔",
+    "duration": 351
+   },
+   {
+    "no": 17,
+    "id": "iF9OVaBdxBQ",
+    "title": "Code a Java temperature converter in 7 minutes! 🌡️",
+    "duration": 476
+   },
+   {
+    "no": 18,
+    "id": "6q2JKiynteM",
+    "title": "Learn Java enhanced switches in 8 minutes! 💡",
+    "duration": 518
+   },
+   {
+    "no": 19,
+    "id": "1An1DH79e5Y",
+    "title": "Let's code a simple calculator with Java! 🖩",
+    "duration": 736
+   },
+   {
+    "no": 20,
+    "id": "4ezfRdg6Z7E",
+    "title": "Java LOGICAL OPERATORS are easy! ❕",
+    "duration": 686
+   },
+   {
+    "no": 21,
+    "id": "ZjHJrmYknrk",
+    "title": "Learn Java while loops in 12 minutes! ♾️",
+    "duration": 744
+   },
+   {
+    "no": 22,
+    "id": "QSSmxYRgi5o",
+    "title": "Let's code a NUMBER GUESSING GAME in Java! 🔢",
+    "duration": 586
+   },
+   {
+    "no": 23,
+    "id": "vOmZ4JFhRds",
+    "title": "Java for loops are easy! 🔂",
+    "duration": 601
+   },
+   {
+    "no": 24,
+    "id": "iGo1Syv4YuM",
+    "title": "Learn BREAK & CONTINUE in 2 minutes! 🚦",
+    "duration": 132
+   },
+   {
+    "no": 25,
+    "id": "sd4x2QG2K6U",
+    "title": "Learn Java nested loops in 8 minutes! ➿",
+    "duration": 524
+   },
+   {
+    "no": 26,
+    "id": "JKecvKiNX2I",
+    "title": "METHODS in Java are easy 📞",
+    "duration": 925
+   },
+   {
+    "no": 27,
+    "id": "nhnAx79gxCM",
+    "title": "Learn Java overloaded methods in 6 minutes! 🍕",
+    "duration": 368
+   },
+   {
+    "no": 28,
+    "id": "eVCK1jlopmY",
+    "title": "Learn VARIABLE SCOPE in 4 minutes! 🏠",
+    "duration": 299
+   },
+   {
+    "no": 29,
+    "id": "49bIIa6id08",
+    "title": "Code a simple banking program with Java! 💰",
+    "duration": 1229
+   },
+   {
+    "no": 30,
+    "id": "sGevUtru91I",
+    "title": "Code a dice roller program with Java! 🎲",
+    "duration": 721
+   },
+   {
+    "no": 31,
+    "id": "9dr2mHYYoug",
+    "title": "Learn Java arrays in 9 minutes! 🍎",
+    "duration": 549
+   },
+   {
+    "no": 32,
+    "id": "ah5bAnGpmKY",
+    "title": "Enter USER INPUT into an ARRAY! ➡️",
+    "duration": 484
+   },
+   {
+    "no": 33,
+    "id": "EB9-OOnCthg",
+    "title": "How to SEARCH an ARRAY easy! 🔎",
+    "duration": 450
+   },
+   {
+    "no": 34,
+    "id": "2knxgAFqwKk",
+    "title": "Learn VARARGS in 6 minutes! 💬",
+    "duration": 390
+   },
+   {
+    "no": 35,
+    "id": "Qf3Nczxm2AY",
+    "title": "Learn Java 2D arrays in 9 minutes! ⬜",
+    "duration": 578
+   },
+   {
+    "no": 36,
+    "id": "WmksoCCwGlk",
+    "title": "Code this quiz game with java! 💯",
+    "duration": 901
+   },
+   {
+    "no": 37,
+    "id": "GsuEJ9QOPgk",
+    "title": "Code a rock paper scissors game with Java! 🗿",
+    "duration": 949
+   },
+   {
+    "no": 38,
+    "id": "oPmlnKaHUNs",
+    "title": "Let's code a Java SLOT MACHINE! 🎰",
+    "duration": 1606
+   },
+   {
+    "no": 39,
+    "id": "DYbi93vuSaU",
+    "title": "Learn Java Object Oriented Programming in 10 minutes! 🧱",
+    "duration": 591
+   },
+   {
+    "no": 40,
+    "id": "ZD7CB6wKg8A",
+    "title": "Learn CONSTRUCTORS in 10 minutes! 🔨",
+    "duration": 608
+   },
+   {
+    "no": 41,
+    "id": "iLrY412dFwo",
+    "title": "Learn OVERLOADED CONSTRUCTORS in 6 minutes! 🛠️",
+    "duration": 397
+   },
+   {
+    "no": 42,
+    "id": "cMJeCs0n6BY",
+    "title": "Learn Java ARRAY OF OBJECTS in 5 minutes! 🗃️",
+    "duration": 346
+   },
+   {
+    "no": 43,
+    "id": "qULACa4D_vg",
+    "title": "Learn the STATIC keyword in 8 minutes! 🤝",
+    "duration": 481
+   },
+   {
+    "no": 44,
+    "id": "GTP5lVEKXaU",
+    "title": "Learn Java inheritance in 9 minutes! 👨‍👧‍👦",
+    "duration": 547
+   },
+   {
+    "no": 45,
+    "id": "LN45TyPWAAg",
+    "title": "Learn the Java super keyword in 10 minutes! 🔝",
+    "duration": 630
+   },
+   {
+    "no": 46,
+    "id": "hx_DRanBRRM",
+    "title": "Learn Java METHOD OVERRIDING in 4 minutes! ♻️",
+    "duration": 273
+   },
+   {
+    "no": 47,
+    "id": "u3BGdOunOTI",
+    "title": "Learn the toString() method in 5 minutes! 🎉",
+    "duration": 353
+   },
+   {
+    "no": 48,
+    "id": "4B8XKEORJss",
+    "title": "Learn Java abstraction in 9 minutes! 🌫️",
+    "duration": 574
+   },
+   {
+    "no": 49,
+    "id": "c2sTQk9opO8",
+    "title": "Learn INTERFACES in 6 minutes! 📋",
+    "duration": 376
+   },
+   {
+    "no": 50,
+    "id": "6xRd0j1anzc",
+    "title": "Learn POLYMORPHISM in 6 minutes! 🎭",
+    "duration": 406
+   },
+   {
+    "no": 51,
+    "id": "YDKHfqzaF30",
+    "title": "Learn runtime polymorphism in 5 minutes! 🤷‍♂️",
+    "duration": 310
+   },
+   {
+    "no": 52,
+    "id": "OjrR_C_UPjc",
+    "title": "Learn Java getters and setters in 10 minutes! 🔐",
+    "duration": 606
+   },
+   {
+    "no": 53,
+    "id": "pqQAHA1XjJk",
+    "title": "Learn Java AGGREGATION in 9 minutes! 🏫",
+    "duration": 566
+   },
+   {
+    "no": 54,
+    "id": "6MYaUdSuW24",
+    "title": "Learn composition in 6 minutes! ⚙️",
+    "duration": 377
+   },
+   {
+    "no": 55,
+    "id": "5bt07czziV4",
+    "title": "Learn WRAPPER CLASSES in 10 minutes! 🎁",
+    "duration": 636
+   },
+   {
+    "no": 56,
+    "id": "wsTSREgCE5E",
+    "title": "Learn Java arraylists in 9 minutes! 📃",
+    "duration": 580
+   },
+   {
+    "no": 57,
+    "id": "u1PROb-aRUI",
+    "title": "Learn EXCEPTION HANDLING in 8 minutes! ⚠️",
+    "duration": 482
+   },
+   {
+    "no": 58,
+    "id": "Pg0aoSbrqOE",
+    "title": "How to WRITE FILES with Java in 8 minutes! ✍",
+    "duration": 512
+   },
+   {
+    "no": 59,
+    "id": "eHjbvgw4hsI",
+    "title": "How to READ FILES with Java in 8 minutes! 📖",
+    "duration": 414
+   },
+   {
+    "no": 60,
+    "id": "PmOgruSPy3s",
+    "title": "Let's code a music player with Java! 🎼",
+    "duration": 862
+   },
+   {
+    "no": 61,
+    "id": "0Nn8PZrWZKE",
+    "title": "Code this hangman game in Java! 🕺",
+    "duration": 1715
+   },
+   {
+    "no": 62,
+    "id": "F2bZ1fkAQx0",
+    "title": "Learn DATES & TIMES with Java in 8 minutes! 📆",
+    "duration": 524
+   },
+   {
+    "no": 63,
+    "id": "P_iOnmdww8E",
+    "title": "Learn Java anonymous classes in 5 minutes! 🕵️‍♂️",
+    "duration": 302
+   },
+   {
+    "no": 64,
+    "id": "HjzcZkzRDYs",
+    "title": "Learn Java timertasks in 6 minutes! ⏲️",
+    "duration": 384
+   },
+   {
+    "no": 65,
+    "id": "IwC5T5gtFI4",
+    "title": "Code a Java countdown timer in 6 minutes! ⏳",
+    "duration": 394
+   },
+   {
+    "no": 66,
+    "id": "H9vc4gTtGGA",
+    "title": "Learn Java generics in 13 minutes! 📦",
+    "duration": 836
+   },
+   {
+    "no": 67,
+    "id": "NMHk1CGb28o",
+    "title": "Java hashmaps are easy! 🗺️",
+    "duration": 631
+   },
+   {
+    "no": 68,
+    "id": "BIOxWAfaAgw",
+    "title": "Learn Java enums in 10 minutes! 📅",
+    "duration": 610
+   },
+   {
+    "no": 69,
+    "id": "SztE5W41on4",
+    "title": "Learn Java threading in 10 minutes! 🧵",
+    "duration": 621
+   },
+   {
+    "no": 70,
+    "id": "taI7G6U29L8",
+    "title": "Learn Java multithreading in 8 minutes! 🧶",
+    "duration": 481
+   },
+   {
+    "no": 71,
+    "id": "lGG0LAJf0uE",
+    "title": "Let's code an alarm clock with Java! ⏰",
+    "duration": 1770
+   }
+  ]
+ },
+ {
+  "key": "telusko-spring6",
+  "playlist": "PLsyeobzWxl7qbKoSgR5ub6jolI8-ocxCF",
+  "match": null,
+  "title": "스프링 6 · 스프링 부트 3 입문 (Telusko)",
+  "school": "Telusko",
+  "code": "Spring Boot",
+  "term": "Spring 6 · Boot 3 (2024)",
+  "track": "backend",
+  "max": null,
+  "stack": "Java · Spring Boot 3",
+  "subject": "웹 프레임워크",
+  "quality": {
+   "why": "지금 판(스프링 6·부트 3)으로 IoC·DI 부터 JPA·REST·보안까지 — 좋아요 비율·완주 비율 모두 후보 중 1위",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "Telusko",
+    "channel_followers": 3040000,
+    "first_views": 957637,
+    "first_likes": 19754,
+    "like_per_1k_views": 20.6,
+    "first_uploaded": "2024-04-24",
+    "last_views": 97552,
+    "stay_ratio": 0.102,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  },
+  "playlist_title": "Spring 6 and Spring Boot Tutorial for Beginners",
+  "lectures": [
+   {
+    "no": 1,
+    "id": "Zxwq3aW9ctU",
+    "title": "#1 What is Spring Framework?",
+    "duration": 269
+   },
+   {
+    "no": 2,
+    "id": "Ia90r-SrKZk",
+    "title": "#2  Project for Spring Tutorial",
+    "duration": 307
+   },
+   {
+    "no": 3,
+    "id": "6C6L3Q7nDJU",
+    "title": "#3  Prerequisite and Tools required for Spring",
+    "duration": 302
+   },
+   {
+    "no": 4,
+    "id": "5cRaQqQb14Q",
+    "title": "#4  IoC and DI in Spring",
+    "duration": 473
+   },
+   {
+    "no": 5,
+    "id": "L0v_3MzC1io",
+    "title": "#5 What is Spring Boot?",
+    "duration": 732
+   },
+   {
+    "no": 6,
+    "id": "9EoAXpjnsxM",
+    "title": "#6  Dependency Injection using Spring Boot",
+    "duration": 814
+   },
+   {
+    "no": 7,
+    "id": "ET39IFffr24",
+    "title": "#7 Autowire using Spring Boot",
+    "duration": 916
+   },
+   {
+    "no": 8,
+    "id": "42X_fDrP-Vg",
+    "title": "#8 Spring without Boot",
+    "duration": 806
+   },
+   {
+    "no": 9,
+    "id": "fKwAU1_bn24",
+    "title": "#9 Spring XML Config",
+    "duration": 606
+   },
+   {
+    "no": 10,
+    "id": "02Mv2lc-h-8",
+    "title": "#10 Constructor and Setter Injection in Spring",
+    "duration": 947
+   },
+   {
+    "no": 11,
+    "id": "ifu2UlqIoYM",
+    "title": "Premium Java and spring boot Courses",
+    "duration": 51
+   },
+   {
+    "no": 12,
+    "id": "AYcFlw3FT_M",
+    "title": "#11 Autowire in Spring",
+    "duration": 731
+   },
+   {
+    "no": 13,
+    "id": "UmOO6vvWx8I",
+    "title": "#12 Need for Spring Boot MVC",
+    "duration": 504
+   },
+   {
+    "no": 14,
+    "id": "Pg90Xbsg078",
+    "title": "#13 Spring Boot Web",
+    "duration": 1128
+   },
+   {
+    "no": 15,
+    "id": "5jHC0Cy87c4",
+    "title": "#14 Spring MVC and Layers",
+    "duration": 1034
+   },
+   {
+    "no": 16,
+    "id": "iUAV9msD1NU",
+    "title": "#15 Spring Web Http methods GET and POST",
+    "duration": 1255
+   },
+   {
+    "no": 17,
+    "id": "HWkI0sQPgM4",
+    "title": "#16 Spring Web PUT and DELETE",
+    "duration": 723
+   },
+   {
+    "no": 18,
+    "id": "GkkcZXF-mD8",
+    "title": "#17 Spring Data JPA",
+    "duration": 661
+   },
+   {
+    "no": 19,
+    "id": "YD_ga0r87wU",
+    "title": "#18 Spring Data JPA and H2 Setup",
+    "duration": 565
+   },
+   {
+    "no": 20,
+    "id": "wQLva08PcJY",
+    "title": "#19 Spring Data JPA with JpaRepository",
+    "duration": 667
+   },
+   {
+    "no": 21,
+    "id": "LsCBXqiFMR0",
+    "title": "#20 Understanding React Frontend",
+    "duration": 562
+   },
+   {
+    "no": 22,
+    "id": "htZbweM4fMM",
+    "title": "#21 Project using Spring | Project Setup with Model",
+    "duration": 728
+   },
+   {
+    "no": 23,
+    "id": "_49KFUV7TVY",
+    "title": "#22 Project using Spring | Loading data in H2",
+    "duration": 706
+   },
+   {
+    "no": 24,
+    "id": "iC1a8cUzGgc",
+    "title": "#23 CORS Error in Spring Boot",
+    "duration": 323
+   },
+   {
+    "no": 25,
+    "id": "eznebH5QJrA",
+    "title": "#24 Spring Boot Project | Response Entity and GetByID",
+    "duration": 800
+   },
+   {
+    "no": 26,
+    "id": "JIWdBBtCrjM",
+    "title": "#25 Project using Spring Add Product with Image",
+    "duration": 1076
+   },
+   {
+    "no": 27,
+    "id": "YCvwG_cYpsI",
+    "title": "#26 Project using Spring | Fetching Image",
+    "duration": 426
+   },
+   {
+    "no": 28,
+    "id": "OOsHxFKaVJM",
+    "title": "#27 Project using Spring | Update and Delete",
+    "duration": 773
+   },
+   {
+    "no": 29,
+    "id": "sjLMt7Yefng",
+    "title": "#28 Project using Spring Search Feature",
+    "duration": 919
+   },
+   {
+    "no": 30,
+    "id": "2tf0UY6gV3Y",
+    "title": "#29 Spring Security 6 | Getting Started",
+    "duration": 845
+   },
+   {
+    "no": 31,
+    "id": "VffearGGWCw",
+    "title": "#30 Spring Security | Custom Login",
+    "duration": 912
+   },
+   {
+    "no": 32,
+    "id": "8QDORHQvdu8",
+    "title": "#31 Spring Security | CSRF Token",
+    "duration": 1076
+   },
+   {
+    "no": 33,
+    "id": "d33a1pK4OYs",
+    "title": "#32 Spring Security | Custom Configuration",
+    "duration": 1050
+   },
+   {
+    "no": 34,
+    "id": "bOX1VYNqKCY",
+    "title": "#33 Spring Security | Verify User from Database",
+    "duration": 1984
+   },
+   {
+    "no": 35,
+    "id": "RI3UpqUZq50",
+    "title": "#34 Spring Security | Bcrypt Password Encoder",
+    "duration": 1116
+   },
+   {
+    "no": 36,
+    "id": "CELcrLHQmZs",
+    "title": "#35 What is JWT and Why",
+    "duration": 887
+   },
+   {
+    "no": 37,
+    "id": "dFzvVoS-sRE",
+    "title": "#36 Spring Security Project Setup for JWT",
+    "duration": 1003
+   },
+   {
+    "no": 38,
+    "id": "ifu2UlqIoYM",
+    "title": "Premium Java and spring boot Courses",
+    "duration": 51
+   },
+   {
+    "no": 39,
+    "id": "e2xut5xpmmk",
+    "title": "#37 Spring Security | Generating JWT Token",
+    "duration": 734
+   },
+   {
+    "no": 40,
+    "id": "ZhtF4i-iB1A",
+    "title": "#38 Spring Security | Validating JWT Token",
+    "duration": 1236
+   },
+   {
+    "no": 41,
+    "id": "xAaGxhDiGg8",
+    "title": "#39 Spring Security | Google and Github Login using OAuth2",
+    "duration": 957
+   }
+  ]
+ },
+ {
+  "key": "cmu-15445-2024",
+  "playlist": "PLSE8ODhjZXjYDBpQnSymaectKjxCy6BYq",
+  "match": null,
+  "title": "CMU 15-445 데이터베이스 시스템 (Fall 2024)",
+  "school": "CMU",
+  "code": "15-445",
+  "term": "Fall 2024",
+  "track": "backend",
+  "max": null,
+  "stack": "언어 무관 · DB 내부",
+  "subject": "데이터베이스 내부",
+  "quality": {
+   "why": "Andy Pavlo 의 정규 과목 최신 완결판 — 저장·인덱스·트랜잭션·복구가 DB 안에서 어떻게 도는지",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "CMU Database Group",
+    "channel_followers": 93100,
+    "first_views": 114786,
+    "first_likes": 1399,
+    "like_per_1k_views": 12.2,
+    "first_uploaded": "2024-08-26",
+    "last_views": 9914,
+    "stay_ratio": 0.086,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  },
+  "playlist_title": "CMU Intro to Database Systems (15-445/645 - Fall 2024)",
+  "lectures": [
+   {
+    "no": 1,
+    "id": "otE2WvX3XdQ",
+    "title": "#00 - Course Overview & Logistics (CMU Intro to Database Systems)",
+    "duration": 1280
+   },
+   {
+    "no": 2,
+    "id": "APqWIjtzNGE",
+    "title": "#01 - Relational Model & Algebra (CMU Intro to Database Systems)",
+    "duration": 5018
+   },
+   {
+    "no": 3,
+    "id": "MzigBKf84aY",
+    "title": "#02 - Modern SQL (CMU Intro to Database Systems)",
+    "duration": 4725
+   },
+   {
+    "no": 4,
+    "id": "dSxV5Sob5V8",
+    "title": "#03 - Database Storage: Files & Pages ✸ Neon Database Talk (CMU Intro to Database Systems)",
+    "duration": 4948
+   },
+   {
+    "no": 5,
+    "id": "IHtVWGhG0Xg",
+    "title": "#04 - Database Storage: Log-Structured Merge Trees & Tuples (CMU Intro to Database Systems)",
+    "duration": 4961
+   },
+   {
+    "no": 6,
+    "id": "nhlpwmOBEiE",
+    "title": "#05 - Row vs. Column Storage + Compression ✸ StarTree Database Talk (CMU Intro to Database Systems)",
+    "duration": 5280
+   },
+   {
+    "no": 7,
+    "id": "aoewwZwVmv4",
+    "title": "#06 - Memory & Disk I/O Management (CMU Intro to Database Systems)",
+    "duration": 5037
+   },
+   {
+    "no": 8,
+    "id": "VkP_yLM5KBU",
+    "title": "#07 - Hash Tables ✸ RelationalAI Database Talk (CMU Intro to Database Systems)",
+    "duration": 5024
+   },
+   {
+    "no": 9,
+    "id": "scUtG_6M_lU",
+    "title": "#08 - Tree Indexes: B+Trees (CMU Intro to Database Systems)",
+    "duration": 4935
+   },
+   {
+    "no": 10,
+    "id": "foMMYyycRgk",
+    "title": "#09 - Vector Indexes, Inverted Indexes, Filters, Tries ✸ TiDB Talk (CMU Intro to Database Systems)",
+    "duration": 4871
+   },
+   {
+    "no": 11,
+    "id": "lgUNTj0Q54M",
+    "title": "#10 - Index Concurrency Control (CMU Intro to Database Systems)",
+    "duration": 4602
+   },
+   {
+    "no": 12,
+    "id": "mM3sFwSuGNY",
+    "title": "#11 - Sorting & Aggregation Algorithms ✸ dbt Database Talk (CMU Intro to Database Systems)",
+    "duration": 4677
+   },
+   {
+    "no": 13,
+    "id": "MFazkaZKs1s",
+    "title": "#12 - Join Algorithms: Hash, Sort-Merge, Nested Loop Joins (CMU Intro to Database Systems)",
+    "duration": 4463
+   },
+   {
+    "no": 14,
+    "id": "HNtlew7mCc4",
+    "title": "#13 - Query Execution Part 1 (CMU Intro to Database Systems)",
+    "duration": 4999
+   },
+   {
+    "no": 15,
+    "id": "Vy2t_wZx4Is",
+    "title": "#14 - Query Execution Part 2 ✸ ClickHouse Database Talk (CMU Intro to Database Systems)",
+    "duration": 3770
+   },
+   {
+    "no": 16,
+    "id": "X8EHO8VLeG0",
+    "title": "#15 - Query Planning & Optimization (CMU Intro to Database Systems)",
+    "duration": 4878
+   },
+   {
+    "no": 17,
+    "id": "4y656idl8ZU",
+    "title": "#16 - Concurrency Control Theory ✸ Firebolt Database Talk (CMU Intro to Database Systems)",
+    "duration": 5229
+   },
+   {
+    "no": 18,
+    "id": "bXpkEt5P_Js",
+    "title": "#17 - Two-Phase Locking Concurrency Control (CMU Intro to Database Systems)",
+    "duration": 3922
+   },
+   {
+    "no": 19,
+    "id": "-TA0QIwFUnU",
+    "title": "#18 - Optimistic Concurrency Control ✸ Weaviate Database Talk (CMU Intro to Database Systems)",
+    "duration": 4853
+   },
+   {
+    "no": 20,
+    "id": "niLwbfE3V9Q",
+    "title": "#19 - Multi-Version Concurrency Control (CMU Intro to Database Systems)",
+    "duration": 5227
+   },
+   {
+    "no": 21,
+    "id": "mbelzgz-97s",
+    "title": "#20 - Database Logging ✸ Confluent Database Talk (CMU Intro to Database Systems)",
+    "duration": 4761
+   },
+   {
+    "no": 22,
+    "id": "yVpzHdAP0TY",
+    "title": "#21 - Database Recovery with ARIES (CMU Intro to Database Systems)",
+    "duration": 4375
+   },
+   {
+    "no": 23,
+    "id": "o7bjRUcDMx0",
+    "title": "#22 - Distributed Database Architectures ✸ DataStax Database Talk (CMU Intro to Database Systems)",
+    "duration": 4982
+   },
+   {
+    "no": 24,
+    "id": "3wNmpE6DsSs",
+    "title": "#23 - Distributed Transactional Databases (CMU Intro to Database Systems)",
+    "duration": 5094
+   },
+   {
+    "no": 25,
+    "id": "L6E75IyBgpk",
+    "title": "#24 - Distributed Analytical Databases (CMU Intro to Database Systems)",
+    "duration": 4975
+   },
+   {
+    "no": 26,
+    "id": "fr5lIchF6pw",
+    "title": "#25 - BigQuery + Snowflake + Redshift + Databricks + DuckDB (CMU Intro to Database Systems)",
+    "duration": 5157
+   }
+  ]
+ },
+ {
+  "key": "baraa-sql",
+  "playlist": "PLNcg_FV9n7qZDdRInCl7wfOO8yZqYX5hO",
+  "match": "SQL Tutorial #",
+  "title": "SQL 기초부터 (Data with Baraa)",
+  "school": "Data with Baraa",
+  "code": "SQL",
+  "term": "MySQL",
+  "track": "backend",
+  "max": null,
+  "stack": "SQL · MySQL",
+  "subject": "데이터베이스·SQL",
+  "quality": {
+   "why": "SELECT 부터 JOIN·집계·서브쿼리까지 편으로 나눈 입문 — 그림 설명으로 평이 좋은 데이터 강사(몰아보기 판은 겹쳐서 뺐다)",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "Data with Baraa",
+    "channel_followers": 531000,
+    "first_views": 26729,
+    "first_likes": 663,
+    "like_per_1k_views": 24.8,
+    "first_uploaded": "2023-01-05",
+    "last_views": 6448,
+    "stay_ratio": 0.241,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  },
+  "playlist_title": "SQL Course | For Beginners",
+  "lectures": [
+   {
+    "no": 1,
+    "id": "aHZ0Pb9_uMY",
+    "title": "Introduction to SQL - How SQL Works? -  SQL Tutorial #1",
+    "duration": 417
+   },
+   {
+    "no": 2,
+    "id": "g4_08xS_rVQ",
+    "title": "5 Reasons Why Everyone Should Learn SQL -  SQL Tutorial #2",
+    "duration": 275
+   },
+   {
+    "no": 3,
+    "id": "oWTtxgERvo4",
+    "title": "How Databases Organize Data? - SQL Tutorial #3",
+    "duration": 266
+   },
+   {
+    "no": 4,
+    "id": "WAQQnb3fkLM",
+    "title": "Understanding SQL Tables: Components and Structure - SQL Tutorial #4",
+    "duration": 192
+   },
+   {
+    "no": 5,
+    "id": "BxZOqy3Bnl0",
+    "title": "Types of SQL Commands (DDL, DQL, DML, DCL, TCL) - SQL Tutorial #5",
+    "duration": 290
+   },
+   {
+    "no": 6,
+    "id": "8__c9MeC0Tw",
+    "title": "The Basic Elements of SQL Statement - SQL Tutorial #6",
+    "duration": 295
+   },
+   {
+    "no": 7,
+    "id": "vCWIQSMQYew",
+    "title": "Download and Install MySQL: Step-by-Step Instructions - SQL Tutorial #7",
+    "duration": 373
+   },
+   {
+    "no": 8,
+    "id": "gPxiIBa59ZY",
+    "title": "MySQL Workbench: Interface Tour - SQL Tutorial #8",
+    "duration": 352
+   },
+   {
+    "no": 9,
+    "id": "GDCSgXuWKvw",
+    "title": "Install Database and Dataset to Practice SQL - SQL Tutorial #9",
+    "duration": 299
+   },
+   {
+    "no": 10,
+    "id": "3OD0_hb1C38",
+    "title": "Top 3 Simple Rules for a Professional SQL coding Style  - SQL Tutorial #10",
+    "duration": 303
+   },
+   {
+    "no": 11,
+    "id": "082lfHzdTe8",
+    "title": "SQL SELECT statement Explained - SQL Tutorial #11",
+    "duration": 471
+   },
+   {
+    "no": 12,
+    "id": "7Khm900vYNs",
+    "title": "SQL DISTINCT - Remove Duplicate Rows - SQL Tutorial #12",
+    "duration": 221
+   },
+   {
+    "no": 13,
+    "id": "q_zD7vmNDZw",
+    "title": "SQL ORDER BY - Sort your Results - SQL Tutorial #13",
+    "duration": 573
+   },
+   {
+    "no": 14,
+    "id": "a-AwHLQpaPM",
+    "title": "SQL WHERE - Filtering Query Results - SQL Tutorial #14",
+    "duration": 403
+   },
+   {
+    "no": 15,
+    "id": "6sog_BqM-dg",
+    "title": "SQL Comparison Operators Explained - SQL Tutorial #15",
+    "duration": 447
+   },
+   {
+    "no": 16,
+    "id": "IYEuQBHnaW8",
+    "title": "SQL Logical Operators: AND, OR, NOT Explained - SQL Tutorial #16",
+    "duration": 713
+   },
+   {
+    "no": 17,
+    "id": "YuUGV3eYiD0",
+    "title": "SQL BETWEEN - Filtering Data within a Rang - SQL Tutorial #17",
+    "duration": 394
+   },
+   {
+    "no": 18,
+    "id": "bYt75vnb2pY",
+    "title": "SQL IN Operator - Filter Data in a Set of Values - SQL Tutorial #18",
+    "duration": 303
+   },
+   {
+    "no": 19,
+    "id": "8EDUNE6cTMw",
+    "title": "SQL Like Operator - Searching and Filtering Data - SQL Tutorial #19",
+    "duration": 770
+   },
+   {
+    "no": 20,
+    "id": "SZCmhF81Jmg",
+    "title": "SQL JOINS  Explained - Concept of Combining Data - SQL Tutorial #20",
+    "duration": 304
+   },
+   {
+    "no": 21,
+    "id": "FY6uFn1xPbg",
+    "title": "SQL Alias - AS Statement - SQL Tutorial #21",
+    "duration": 247
+   },
+   {
+    "no": 22,
+    "id": "v7cTKaMj3B8",
+    "title": "SQL INNER JOIN - SQL Tutorial #22",
+    "duration": 523
+   },
+   {
+    "no": 23,
+    "id": "giKwmtsz1U8",
+    "title": "SQL LEFT JOIN - SQL Tutorial #23",
+    "duration": 211
+   },
+   {
+    "no": 24,
+    "id": "T5VKCXJaIfM",
+    "title": "SQL RIGHT JOIN - SQL Tutorial #24",
+    "duration": 172
+   },
+   {
+    "no": 25,
+    "id": "XpBkXo3DCEg",
+    "title": "SQL FULL OUTER JOIN - SQL Tutorial #25",
+    "duration": 268
+   },
+   {
+    "no": 26,
+    "id": "dPYHNsZEuuQ",
+    "title": "Difference Between SQL Joins, Union, and Union All - SQL Tutorial #26",
+    "duration": 633
+   },
+   {
+    "no": 27,
+    "id": "wIljdjni_dc",
+    "title": "SQL Aggregate Functions: COUNT, SUM, AVG, MAX, MIN - SQL Tutorial #27",
+    "duration": 754
+   },
+   {
+    "no": 28,
+    "id": "W5YA5B2RQBU",
+    "title": "SQL String Functions - Manipulate String Values - SQL Tutorial #28",
+    "duration": 794
+   },
+   {
+    "no": 29,
+    "id": "Y4GH8oNPTjY",
+    "title": "SQL GROUP BY Clause - SQL Tutorial #29",
+    "duration": 530
+   },
+   {
+    "no": 30,
+    "id": "O9hORRFxV-A",
+    "title": "SQL HAVING Clause - SQL Tutorial #30",
+    "duration": 369
+   },
+   {
+    "no": 31,
+    "id": "sP6MCZ9patk",
+    "title": "SQL Subquery using EXISTS and IN - SQL Tutorial #31",
+    "duration": 613
+   },
+   {
+    "no": 32,
+    "id": "6X86ilxPPc8",
+    "title": "SQL INSERT - Inserting data into Database - SQL Tutorial #32",
+    "duration": 914
+   },
+   {
+    "no": 33,
+    "id": "RGrYcBMf70Q",
+    "title": "SQL Update - Modify Data in Database - SQL Tutorial #33",
+    "duration": 374
+   },
+   {
+    "no": 34,
+    "id": "K0JLPJ0vKos",
+    "title": "SQL DELETE - Delete Data from Database - SQL Tutorial #34",
+    "duration": 299
+   },
+   {
+    "no": 35,
+    "id": "M1AhPg5H1nQ",
+    "title": "SQL CREATE TABLE - SQL Tutorial #35",
+    "duration": 625
+   }
+  ]
  }
 ]
