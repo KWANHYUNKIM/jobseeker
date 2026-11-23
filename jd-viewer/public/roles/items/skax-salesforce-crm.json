@@ -1,0 +1,1041 @@
+{
+ "id": "skax-salesforce-crm",
+ "company": "SK주식회사(AX)",
+ "role": "Salesforce CRM 개발/운영 및 솔루션 전문가",
+ "team": "Enterprise 솔루션 본부 · AX Solution서비스1팀",
+ "jobs": [
+  "ats-skcareers:sk:R262150"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "고객사(주로 SK 계열사)의 영업·마케팅·상담 업무를 **Salesforce 위에 짓고(구축), 맡아서 돌립니다(운영)** — 설정·Apex 코드·ERP 연계·권한 구조까지.[1][2]",
+  "env": "Salesforce 클라우드 위라 서버 대신 **거버너 한도·1년 세 번 판 올림·Org 권한**이 일의 틀이고[8][9][11], 회사는 CRM 에 AI 에이전트(Agentforce)·데이터(Data 360)를 더해 팔려 합니다.[3]",
+  "oneline": "Salesforce 전문 SI 개발자. 일반 백엔드보다 **설정과 코드의 경계 · 연계 명세 · 권한 설계**가 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "AX Solution서비스1팀을 소개합니다 😊",
+   "short": "Salesforce 로 CRM 을 지어 주고 맡아 운영하는 팀 — SK AX CRM 페이지에 이 팀장이 담당자로 나온다.",
+   "why": "SK AX 의 CRM 소개 페이지는 Salesforce 기반 'Digital CRM' 구축을 내걸고, 담당 전문가로 Enterprise Solution 2본부장과 **AX Solution서비스1팀장**을 적어 두었습니다.[2] 이 공고의 팀이 회사의 Salesforce 사업 창구라는 뜻입니다 {추론}.",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "우리 팀은 Enterprise 솔루션 본부 산하 조직으로, 고객의 디지털 전환과 CRM 고도화를 위한 전문 서비스를 제공합니다.",
+   "short": "남의 회사(고객사)의 영업·마케팅·상담 업무를 Salesforce 위로 옮기고 더 낫게 고치는 일을 판다.",
+   "why": "CRM(고객 관계 관리)은 고객·거래처·영업 기회·상담 이력을 한곳에 모아 두는 시스템입니다. SK AX 는 Salesforce 의 영업(Sales Cloud)·상담(Service Cloud)·마케팅(Marketing Cloud) 제품을 소개하고, 고객 사례로 석유화학 회사의 **고객 주문 포털**(Sales Cloud + Experience Cloud)과 화학 회사의 **ERP 와 이은 주문 포털**을 들었습니다.[2]",
+   "actually": {
+    "items": [
+     "**구축** — 고객사가 쓸 Salesforce 조직(Org)을 새로 꾸리거나 옛 CRM 을 옮겨 온다.[2]",
+     "**고도화** — 이미 쓰는 Org 에 기능·연계를 더한다(포털, ERP 주문 연계 등).[2]",
+     "**판매 대행** — Salesforce 한국 파트너 목록에서 SK㈜ AX 는 'Cloud Reseller'(라이선스 재판매) 칸에 올라 있다. 컨설팅 파트너 칸에는 옛 이름 SK㈜ C&C 가 Marketing Cloud·Sales Cloud·Tableau 로 따로 있다.[3]"
+    ]
+   },
+   "how_far": "이 팀이 하는 일은 '제품 개발'이 아니라 **남의 업무를 Salesforce 설정과 코드로 옮기는 사업(SI)**입니다. 그래서 공고가 PM/사업개발과 개발/운영을 한 공고에 같이 뽑습니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    3
+   ],
+   "study": [
+    "sf-trailhead"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "개발파트는 대내/외 Salesforce 구축·고도화, 외부 시스템 연계, 데이터 및 솔루션 설계를 주도하며, 운영파트는 SK 멤버사 위주 Salesforce CRM 운영 서비스를 안정적으로 수행 중이며, 서비스 품질을 지속적으로 향상시키고 있습니다.",
+   "short": "개발 파트는 새로 짓고 바깥 시스템과 잇는다. 운영 파트는 SK 계열사 CRM 이 매일 멀쩡히 돌게 지킨다.",
+   "why": "Salesforce 는 남의 서버(클라우드)에 있는 제품이라 '서버를 지키는' 일은 없지만, 고객사가 덧붙인 설정·코드·연계는 고객사 몫입니다. 게다가 Salesforce 는 1년에 세 번 판을 올려서 운영 쪽 일이 끊이지 않습니다.[8]",
+   "actually": {
+    "items": [
+     "**개발** — 화면·자동화·Apex(Salesforce 안에서 도는 Java 비슷한 언어) 코드, ERP·홈페이지 등 바깥 시스템과의 연계.[2][10]",
+     "**운영** — 사용자 문의·권한 요청 처리, 보고서·필드 추가 같은 작은 변경, 연계 실패 재처리, 정기 판 올림 점검.[8] {추론}",
+     "**'대내'** — SK AX 자신도 Salesforce 를 쓴다. 회사 개인정보 처리방침에 뉴스레터 발송 수탁사로 Salesforce, Inc. 가 적혀 있다.[6]"
+    ]
+   },
+   "how_far": "한 사람이 둘 다 하지는 않아도, 개발자는 **운영 파트가 받을 결과물(문서·테스트·배포 기록)**까지 넘겨야 끝입니다 {추론}.",
+   "refs": [
+    2,
+    6,
+    8,
+    10
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "그 밖에 다양한 CRM·데이터·AI 솔루션을 기반으로 고객 맞춤형 실행 방안을 함께 설계하고 있습니다.",
+   "short": "CRM 만이 아니라 고객 데이터 통합(Data 360)·AI 에이전트(Agentforce)까지 묶어 제안한다.",
+   "why": "Salesforce 는 2025년 데이터 제품 Data Cloud 의 이름을 **Data 360** 으로 바꿨고[13], AI 에이전트 제품 Agentforce 를 앞세웁니다.[14] Salesforce 파트너 목록의 SK AX 소개도 'Salesforce CRM 과 Agentforce 로 AI 에이전트가 일을 돕고 실행하는 전환'입니다.[3] 2026년 6월 Agentforce 월드투어 코리아에도 SK AX 가 발표 회사로 이름을 올렸습니다(세션 내용은 공개 기사에 없다).[5]",
+   "refs": [
+    3,
+    5,
+    13,
+    14
+   ],
+   "study": [
+    "sf-agentforce"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "수평적인 소통문화와 자율적 업무 환경 속에서 최선의 서비스를 제공할 수 있도록 지원합니다.",
+   "short": "팀 문화 소개 줄이다 — 근무 제도의 구체 조건은 SK 그룹 문화 소개와 처우협의에서 확인한다.",
+   "why": "그룹 채용 사이트의 문화 소개는 출퇴근 시간을 스스로 정하는 근무제와 그날의 근무 장소 선택을 적어 두었습니다.[23] 다만 고객사 상주 프로젝트면 그 회사의 규칙을 따르게 됩니다 {추론}.",
+   "refs": [
+    23
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "구성원을 위한 지속적인 교육 투자와 자기계발을 지원받으며 일할 수 있습니다.",
+   "short": "Salesforce 는 자격증이 곧 이력이라, 교육·시험 지원이 실제로 쓰이는 복지다.",
+   "why": "SK AX 채용 사이트는 해마다 쓰는 학습 예산(Learning Account)과 그룹 학습 플랫폼 mySUNI 를 적었습니다.[22] 우대사항에 Architect 급 자격증이 있으니[1], 시험 응시료·준비 시간을 회사가 얼마나 대는지 면접에서 물어볼 만합니다 {추론}.",
+   "refs": [
+    1,
+    22
+   ],
+   "study": [
+    "sf-cert-aa"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "경험과 노하우를 나누며 함께 성장할 수 있습니다.",
+   "short": "팀 문화 소개 줄 — 구축 경험이 문서·템플릿으로 팀에 쌓인다는 뜻으로 읽는다.",
+   "why": "구축 회사는 프로젝트마다 비슷한 설계(권한 구조·연계 방식·배포 절차)를 되풀이합니다. 앞 프로젝트의 산출물을 다음 프로젝트가 가져다 쓰는 것이 이런 팀의 경쟁력입니다 {추론}.",
+   "refs": []
+  },
+  {
+   "section": "task",
+   "quote": "동료 간 신뢰를 바탕으로 어려운 순간에도 서로 먼저 돕고 함께 해결합니다.",
+   "short": "팀 문화 소개 줄 — 오픈 직전·장애 때 같이 붙는 문화라는 말이다.",
+   "why": "CRM 오픈 날이나 연계 장애 때는 개발·운영·고객사 담당자가 한꺼번에 붙습니다. 그때 서로 넘기지 않는다는 다짐으로 읽으면 됩니다 {추론}.",
+   "refs": []
+  },
+  {
+   "section": "task",
+   "quote": "Salesforce 솔루션 기반 CRM(영업, 마케팅) 시스템 구축 프로젝트 수행합니다.",
+   "short": "영업 담당이 고객·기회·견적을, 마케터가 캠페인을 Salesforce 에서 하도록 시스템을 지어 넘긴다.",
+   "why": "SK AX 가 든 사례는 모두 B2B 영업입니다 — 석유화학·화학 회사의 거래처가 직접 주문을 넣는 포털, 그 주문을 ERP 로 넘기는 연계.[2] 마케팅 쪽은 Marketing Cloud 를 여러 채널 데이터 통합·자동화·분석 도구로 소개합니다.[2]",
+   "actually": {
+    "items": [
+     "**표준 객체 맞추기** — 거래처(Account)·담당자(Contact)·영업 기회(Opportunity)·견적·주문을 고객사 말로 바꾸고 필드를 더한다.",
+     "**영업 단계** — '발굴 → 제안 → 협상 → 수주'처럼 기회의 단계와 단계마다 꼭 채울 칸을 정한다.",
+     "**자동화** — 단계가 바뀌면 승인 요청·알림·작업 생성(코드 없는 Flow 먼저, 안 되면 Apex).",
+     "**포털** — 거래처가 로그인해 주문·출하를 보는 화면(Experience Cloud).[2]",
+     "**보고서·대시보드** — 팀별 파이프라인 금액, 이번 달 예상 수주.",
+     "**이관** — 옛 CRM·엑셀의 거래처·이력을 옮기고 중복을 정리한다."
+    ],
+    "intro": "Salesforce 영업 구축에서 보통 만드는 것입니다. SK AX 의 프로젝트 산출물은 공개되지 않았습니다 {추론}."
+   },
+   "how_far": "코드부터 짜지 않습니다. Salesforce 는 설정(클릭)으로 되는 것을 먼저 쓰고, 설정으로 안 되는 것만 코드로 하는 것이 정석입니다 — 아키텍트 자격의 첫 관문도 설정 중심의 Platform App Builder 입니다.[17] {추론}",
+   "refs": [
+    2,
+    17
+   ],
+   "study": [
+    "sf-trailhead",
+    "sf-dummies",
+    "sf-devorg"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "프로세스/ 운영기준/ 요구기능 등 설계 내역을 솔루션에 반영합니다.(솔루션 기능 및 In/Out Bound 데이터 정의)",
+   "short": "고객사와 정한 업무 규칙을 Salesforce 설정으로 옮기고, 무엇이 들어오고 나가는지 데이터 명세를 쓴다.",
+   "why": "'In/Out Bound' 는 Salesforce 로 **들어오는** 데이터(ERP 의 거래처·단가, 홈페이지 문의)와 **나가는** 데이터(수주 → ERP 주문)입니다. Salesforce 아키텍트 문서는 이런 연계를 여섯 가지 꼴로 나눕니다.[10]",
+   "actually": {
+    "items": [
+     "**요청-응답** — Salesforce 가 바깥 시스템을 부르고 답을 기다린다(예: 주문 버튼 → ERP 재고 확인).",
+     "**보내고 잊기** — 부르고 답을 기다리지 않는다(예: 수주 알림).",
+     "**배치 동기화** — 바깥의 변경을 묶어서 들이고, Salesforce 의 변경을 묶어서 내보낸다(예: 밤마다 거래처 마스터).",
+     "**바깥에서 불러 들어오기(Remote Call-In)** — 바깥 시스템이 Salesforce 데이터를 만들고 읽고 고치고 지운다.",
+     "**데이터 변경에 따른 화면 갱신** · **데이터 가상화**(옮기지 않고 바깥 데이터를 그 자리에서 보여 주기)."
+    ],
+    "intro": "Salesforce 공식 연계 패턴 여섯 가지입니다.[10]"
+   },
+   "examples": [
+    {
+     "title": "바깥 키로 upsert — 같은 파일이 두 번 와도 고객이 늘지 않게 (직접 돌린 출력)",
+     "body": "인바운드 명세에서 제일 먼저 정하는 칸은 '어느 값으로 같은 고객을 알아보나'입니다. Salesforce 에서는 바깥 시스템 번호를 External ID 필드로 두고 upsert(있으면 고치고 없으면 만들기) 합니다 {추론}. 아래는 그 동작을 파이썬으로 흉내 낸 것이고 출력은 `1일차 (2, 0) 고객 수 2 / 2일차 (1, 1) 고객 수 3 / 재전송 (0, 2) 고객 수 3 / 다라유통(주)` 입니다.",
+     "lang": "python",
+     "code": "# 외부 시스템 키(External ID)로 upsert 하면 같은 파일을 두 번 받아도 고객이 둘로 늘지 않는다.\ncrm = {}  # ERP 고객번호 -> 레코드\n\n\ndef upsert(rows):\n    ins = upd = 0\n    for r in rows:\n        key = r[\"erp_customer_no\"]\n        if key in crm:\n            crm[key].update(r)\n            upd += 1\n        else:\n            crm[key] = dict(r)\n            ins += 1\n    return ins, upd\n\n\nday1 = [{\"erp_customer_no\": \"C001\", \"name\": \"가나상사\"}, {\"erp_customer_no\": \"C002\", \"name\": \"다라유통\"}]\nday2 = [{\"erp_customer_no\": \"C002\", \"name\": \"다라유통(주)\"}, {\"erp_customer_no\": \"C003\", \"name\": \"마바전자\"}]\nprint(\"1일차 (새로, 고침)\", upsert(day1), \"고객 수\", len(crm))\nprint(\"2일차 (새로, 고침)\", upsert(day2), \"고객 수\", len(crm))\nprint(\"같은 파일 재전송\", upsert(day2), \"고객 수\", len(crm))\nprint(crm[\"C002\"][\"name\"])"
+    }
+   ],
+   "how_far": "업무 규칙은 고객사 현업과 PM 이 정합니다. 개발자는 **필드 하나하나의 출처·형식·주기·실패 시 처리**를 표로 적고 그대로 구현합니다. 명세에 '누가 원본인가(ERP 냐 CRM 이냐)'가 빠지면 두 시스템이 서로 덮어씁니다 {추론}.",
+   "refs": [
+    10
+   ],
+   "study": [
+    "sf-integration"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SK멤버사를 중심으로 운영 프로젝트 수행합니다.",
+   "short": "SK 계열사가 이미 쓰는 Salesforce 를 맡아 문의·변경·장애를 처리하는 일을 계약 단위로 한다.",
+   "why": "팀 소개대로 운영 파트의 주 고객은 SK 멤버사입니다.[1] SK AX 는 예전 SK C&C 이고 2025년에 이름을 바꿨으며[7], SK C&C 시절인 2023년 Salesforce 코리아와 제조·통신·유통 업종용 디지털 서비스를 같이 만들기로 발표했습니다 — 제조는 ERP·SCM·MES 와 CRM 연계를 내걸었습니다.[4]",
+   "actually": {
+    "items": [
+     "**요청 처리** — 필드·보고서 추가, 권한 신청, 사용자 생성·해지.",
+     "**판 올림 대응** — 1년에 세 번(봄·여름·겨울) 오는 새 판을 미리 받는 샌드박스에서 4~6주 먼저 점검.[8]",
+     "**연계 감시** — 밤사이 ERP 연계가 실패한 건을 찾아 다시 보낸다.",
+     "**작은 개선** — 반복 문의를 자동화·화면 개선으로 줄인다."
+    ]
+   },
+   "how_far": "운영은 '요청이 오면 처리'에서 끝나지 않고, 계약 지표(처리 시간·장애 건수)를 맞추는 일입니다. 개발자는 **바꾸기 전에 샌드박스에서 확인하고 기록을 남기는 습관**이 최소선입니다 {추론}.",
+   "refs": [
+    1,
+    4,
+    7,
+    8
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "데이터 모델 설계와 권한 체계 구성을 통해 확장성 있는 Org 구조를 관리합니다.",
+   "short": "어떤 객체·관계로 데이터를 담고, 누가 어떤 레코드를 보게 할지 정해서 회사가 커져도 안 무너지게 한다.",
+   "why": "Org 는 고객사 하나가 받은 Salesforce 공간입니다. 한 Org 에 여러 사업부·계열사가 들어오면 데이터 구조와 권한이 꼬이기 쉽습니다. Salesforce 의 레코드 접근은 네 겹입니다.[11]",
+   "actually": {
+    "items": [
+     "**조직 기본값(OWD)** — 내 것이 아닌 레코드를 기본으로 얼마나 보나. 비공개·읽기 공개·읽기/쓰기 공개·부모 따라가기. 가장 좁게 잡는다.",
+     "**역할 계층** — 팀장은 팀원의 레코드를 본다(기본값이 읽기/쓰기 공개 밑일 때만 의미가 있다).",
+     "**공유 규칙** — 조건에 맞는 레코드를 특정 그룹에 더 열어 준다.",
+     "**수동 공유** — 소유자가 레코드 하나를 버튼으로 나눈다.",
+     "**데이터 모델** — 거래처-기회처럼 부모·자식 관계를 어떤 종류(조회/주종)로 잇느냐가 권한·삭제·집계를 같이 정한다 {추론}."
+    ],
+    "intro": "레코드 접근 네 겹 — 아래로 갈수록 넓히기만 하고 좁히지는 못합니다.[11]"
+   },
+   "examples": [
+    {
+     "title": "네 겹을 흉내 내 보기 (직접 돌린 출력)",
+     "body": "기본값 '비공개'에서 영업1팀원이 가진 기회를 누가 보나. 출력: 영업1팀장·본부장 → 역할 계층, 영업2팀원 → 못 봄, 영업2팀장 → 공유 규칙(수도권), 수동 공유 뒤 영업2팀원 → 수동 공유.",
+     "lang": "python",
+     "code": "# 레코드 접근 4겹: 조직 기본값(OWD) -> 역할 계층 -> 공유 규칙 -> 수동 공유. 위 겹은 넓히기만 한다.\nroles = {\"영업1팀원\": \"영업1팀장\", \"영업2팀원\": \"영업2팀장\", \"영업1팀장\": \"영업본부장\", \"영업2팀장\": \"영업본부장\"}\n\n\ndef above(role):\n    out = []\n    while role in roles:\n        role = roles[role]\n        out.append(role)\n    return out\n\n\ndef can_read(user_role, rec, owd=\"Private\", sharing_rules=(), manual=()):\n    if owd in (\"Public Read Only\", \"Public Read/Write\"):\n        return \"OWD\"\n    if user_role == rec[\"owner_role\"]:\n        return \"소유자\"\n    if user_role in above(rec[\"owner_role\"]):\n        return \"역할 계층\"\n    for rule in sharing_rules:\n        if rec[\"region\"] == rule[\"region\"] and user_role in rule[\"to\"]:\n            return \"공유 규칙\"\n    if user_role in manual:\n        return \"수동 공유\"\n    return \"못 봄\"\n\n\nrec = {\"name\": \"A사 영업기회\", \"owner_role\": \"영업1팀원\", \"region\": \"수도권\"}\nrules = [{\"region\": \"수도권\", \"to\": {\"영업2팀장\"}}]\nfor r in [\"영업1팀장\", \"영업본부장\", \"영업2팀원\", \"영업2팀장\"]:\n    print(r, \"->\", can_read(r, rec, sharing_rules=rules))\nprint(\"영업2팀원(수동 공유 후) ->\", can_read(\"영업2팀원\", rec, sharing_rules=rules, manual={\"영업2팀원\"}))"
+    }
+   ],
+   "how_far": "'확장성'의 최소선은 **기본값은 좁게, 열어 줄 일은 규칙으로** — 사람마다 예외를 손으로 거는 Org 는 계열사가 하나 더 들어오면 감당이 안 됩니다 {추론}. 이 분야 전용 자격(Sharing and Visibility Architect)이 Application Architect 의 한 조각입니다.[17]",
+   "refs": [
+    11,
+    17
+   ],
+   "study": [
+    "sf-data-security",
+    "sf-well-architected"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Salesforce 정기 릴리즈와 신규 기능을 검토하여 시스템에 적용합니다.",
+   "short": "1년에 세 번 오는 새 판이 우리 설정·코드를 깨지 않는지 미리 보고, 쓸 만한 새 기능을 들인다.",
+   "why": "Salesforce 는 봄·여름·겨울 세 번 판을 올리고, 샌드박스(시험용 복제 Org)를 운영보다 4~6주 먼저 올립니다. 주기 하나는 운영 반영 약 3개월 전부터 시작하고, 날짜는 Trust 사이트에 1년 앞까지 나옵니다.[8] 고객사가 원하든 원치 않든 판이 바뀌므로, 미리 보는 사람이 있어야 합니다.",
+   "actually": {
+    "items": [
+     "**릴리즈 노트 읽기** — 고객사가 쓰는 제품(Sales·Service·Marketing)에 걸리는 변경만 골라 표로.[8]",
+     "**미리보기 샌드박스 시험** — 핵심 업무 흐름·연계·Apex 테스트를 새 판에서 돌려 본다.[8]",
+     "**강제 변경 대응** — 기능 폐기·보안 강화처럼 고객이 고를 수 없는 변경의 일정과 영향 정리 {추론}.",
+     "**새 기능 제안** — 예전엔 코드로 만든 것을 표준 기능으로 바꿀 수 있는지 {추론}."
+    ]
+   },
+   "how_far": "운영 계약이면 판마다 '영향 점검 보고서' 한 장이 산출물이 됩니다 {추론}. 개발자는 **우리 Org 에 무엇을 덧붙여 놨는지 목록을 아는 것**이 출발점입니다.",
+   "refs": [
+    8
+   ],
+   "study": [
+    "sf-releases"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "※ 근무지 : 경기도 분당 및 SK그룹 멤버사 (서울,수도권)",
+   "short": "기본은 분당 SK u-타워 쪽, 프로젝트에 따라 서울·수도권 SK 계열사 건물로 나간다.",
+   "why": "운영 파트의 고객이 SK 멤버사라[1] 그 회사 자리에서 일하는 기간이 있을 수 있습니다 {추론}. SK AX 의 분당 주소는 아래 위치 칸에 있습니다.[24]",
+   "refs": [
+    1,
+    24
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "이런 경험을 갖고 계시다면 저희가 찾는 그분입니다! ✨",
+   "short": "아래 네 줄이 자격요건이다 — 앞 두 줄은 둘 중 하나(PM 또는 개발/운영)를 고르는 갈래다.",
+   "why": "괄호의 (PM/사업개발)·(개발/운영)은 한 공고에 두 자리를 같이 뽑는다는 표시입니다. 공통 요건으로 **채용 분야 경력 3년 이상**이 따로 붙습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "(PM/사업개발) 3년 이상의 Salesforce기반 시스템 구축 PM/사업개발을 경험하신 분",
+   "short": "Salesforce 구축 사업을 따 오고(제안), 일정·범위·사람을 관리해 끝내 본 3년 — 개발자 갈래가 아니다.",
+   "why": "SI 회사의 PM 은 제안서 → 계약 범위 → 요구사항 확정 → 개발·시험 → 오픈 → 운영 넘김까지 책임집니다. Salesforce 는 라이선스 판매도 같이 하므로[3] '사업개발'에 라이선스 견적·계약이 들어갈 수 있습니다 {추론}.",
+   "actually": {
+    "items": [
+     "제안 단계에서 고객 업무를 듣고 어느 Salesforce 제품·몇 명분 라이선스가 필요한지 잡는다 {추론}.",
+     "요구사항 목록과 '이건 표준 기능, 이건 개발' 구분표로 범위를 굳힌다 {추론}.",
+     "판 올림 일정(1년 세 번)을 프로젝트 일정에 넣는다.[8]"
+    ]
+   },
+   "how_far": "이 줄은 개발자 지원자에게는 해당하지 않습니다. 개발 갈래로 지원하면 다음 줄이 기준입니다.[1]",
+   "refs": [
+    1,
+    3,
+    8
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "(개발/운영) 3년 이상의 Salesforce기반 시스템 개발/운영을 수행하신 분",
+   "short": "Salesforce 위에서 설정·Apex·연계를 직접 만들고 운영해 본 3년. 다른 CRM·Java 경력만으로는 약하다.",
+   "why": "Salesforce 는 일반 서버 개발과 규칙이 다릅니다. 가장 큰 차이는 **거버너 한도** — 여러 고객이 서버를 나눠 쓰므로 거래(트랜잭션) 하나에 동기 SOQL(Salesforce 의 SQL) 조회 100번, DML(저장) 150번처럼 상한이 있고, 넘으면 잡을 수 없는 예외로 멈춥니다.[9]",
+   "actually": {
+    "items": [
+     "**묶어서 처리하기** — 트리거는 한 건이 아니라 여러 건을 한꺼번에 받으므로, 반복문 안에서 조회·저장하지 않고 모아서 한 번에.[9]",
+     "**비동기** — 무거운 일은 Queueable·Batch·Scheduled Apex 로 뒤로 미룬다. Batch 는 묶음마다 한도가 새로 잡힌다.[9][18]",
+     "**한도 확인** — 실행 중 `Limits` 메서드로 지금까지 쓴 조회·저장 횟수를 본다.[9]"
+    ]
+   },
+   "level": {
+    "basic": "객체·필드·관계, Flow(코드 없는 자동화), 보고서, 권한 세트, SOQL 조회",
+    "work": "Apex 트리거·클래스와 테스트(배포하려면 테스트 필요), 묶어서 처리하기(bulkify), 비동기(Queueable·Batch·Scheduled), LWC 화면, REST 연계",
+    "team": "여러 계열사가 같이 쓰는 Org 의 권한·배포 관리, 연계 장애 재처리, 판 올림 영향 점검"
+   },
+   "examples": [
+    {
+     "title": "한 건씩 조회하면 101번째에서 멈춘다 (직접 돌린 출력)",
+     "body": "Apex 가 아니라 파이썬으로 한도 규칙만 흉내 낸 것입니다. 200건을 한 건씩 조회하면 `LimitException: Too many SOQL queries: 101`, 모아서 한 번 조회하면 `ok, queries=1`. 실제 Apex 에서는 `WHERE Id IN :ids` 한 문장이 그 '한 번'입니다.[9]",
+     "lang": "python",
+     "code": "# Apex 트리거가 한 번에 받는 200건을 처리할 때, 한 건마다 조회하면 SOQL 한도(동기 100회)를 넘는다.\nSOQL_LIMIT = 100\naccounts = {f\"A{i}\": {\"tier\": \"VIP\" if i % 3 == 0 else \"STD\"} for i in range(200)}\norders = [{\"id\": f\"O{i}\", \"account\": f\"A{i}\"} for i in range(200)]\n\n\ndef per_record(batch):\n    queries = 0\n    for o in batch:\n        queries += 1  # SELECT ... WHERE Id = :o.account\n        if queries > SOQL_LIMIT:\n            return f\"LimitException: Too many SOQL queries: {queries}\"\n        o[\"tier\"] = accounts[o[\"account\"]][\"tier\"]\n    return f\"ok, queries={queries}\"\n\n\ndef bulk(batch):\n    ids = {o[\"account\"] for o in batch}  # 한 번에 모은다\n    found = {k: accounts[k] for k in ids}  # SELECT ... WHERE Id IN :ids (1회)\n    for o in batch:\n        o[\"tier\"] = found[o[\"account\"]][\"tier\"]\n    return \"ok, queries=1\"\n\n\nprint(per_record([dict(o) for o in orders]))\nprint(bulk([dict(o) for o in orders]))"
+    }
+   ],
+   "how_far": "'개발/운영 3년'이면 **한도에 걸리지 않게 짜고, 남이 짠 코드에서 한도 오류가 나면 원인을 찾는** 수준입니다. 경험이 없다면 무료 개발 Org 에서 트리거·테스트·연계를 직접 만들어 보는 것이 최소선입니다 {추론}.",
+   "refs": [
+    9,
+    18
+   ],
+   "study": [
+    "sf-apex-inflearn",
+    "sf-apex-book",
+    "sf-devorg",
+    "sf-dex450"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Salesforce 프로젝트에서 솔루션 설계 및 기술 리딩 경험이 있으신 분",
+   "short": "'설정으로 할까 코드로 할까, 어떻게 이을까'를 정하고 다른 개발자에게 나눠 준 경험.",
+   "why": "Salesforce 는 같은 요구를 Flow·Apex·패키지·바깥 시스템 등 여러 길로 풀 수 있어서, 고르는 사람이 필요합니다. Salesforce 는 설계 판단의 기준으로 **Well-Architected**(신뢰·안정성·운영 우수성·자원과 비용 최적화·공정성)를 공개해 두었습니다.[12]",
+   "actually": {
+    "items": [
+     "**구현 수단 고르기** — 설정 → Flow → Apex 순으로, 왜 그렇게 골랐는지 남긴다 {추론}.",
+     "**연계 방식 고르기** — 여섯 패턴 중 무엇으로, 실시간이냐 배치냐.[10]",
+     "**한도 계산** — 하루 데이터 양이 한도·API 호출 수를 넘지 않는지 미리 셈한다.[9] {추론}",
+     "**코드 리뷰·배포 규칙** — 샌드박스 → 시험 → 운영의 길과 그 길의 점검표 {추론}."
+    ]
+   },
+   "how_far": "'리딩'은 팀장이 아니라도 됩니다. **설계 문서를 쓰고 다른 사람이 그대로 구현하게 만든 경험** 하나를 구체적으로 말할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    9,
+    10,
+    12
+   ],
+   "study": [
+    "sf-well-architected",
+    "sf-integration"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "프로젝트 진행 중, Legacy 인프라 및 보안 관련 협업 경험을 보유하신 분",
+   "short": "고객사의 옛 시스템·방화벽·로그인(SSO)·개인정보 규칙 담당자와 맞춰 Salesforce 를 붙여 본 경험.",
+   "why": "Salesforce 는 바깥(미국 등) 클라우드에 있어, 회사 안의 ERP·DB 와 이으려면 방화벽 열기·인증서·IP 허용 같은 인프라 협의가 필요합니다 {추론}. SK AX 자신의 개인정보 처리방침도 Salesforce 를 쓰며 문의·뉴스레터 데이터를 미국으로 옮긴다고 적었습니다 — 고객사도 같은 '국외 이전' 검토를 거칩니다.[6]",
+   "actually": {
+    "items": [
+     "**로그인** — 회사 계정으로 Salesforce 에 들어가게 하는 SSO 연동(시스템 아키텍트 자격의 한 조각이 ID·접근 관리다).[18]",
+     "**네트워크** — 사내 ERP 를 부르는 길(중계 서버·허용 IP)과 Salesforce 가 부르는 바깥 주소 허용 {추론}.",
+     "**개인정보** — 어떤 고객 정보를 CRM 에 올려도 되나, 국외 이전 고지·암호화·접근 기록.[6] {추론}"
+    ]
+   },
+   "how_far": "인프라·보안을 직접 하는 자리는 아닙니다. **그 담당자에게 무엇을 요청해야 하는지(포트·주소·인증 방식) 목록을 내밀 수 있는** 수준이면 됩니다 {추론}.",
+   "refs": [
+    6,
+    18
+   ],
+   "study": [
+    "sf-integration"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "이런 경험과 역량이 있으면 더 좋아요! 👍",
+   "short": "아래 여섯 줄이 우대사항, 그 밑 세 줄은 성향이다 — 제품·자격·업종 경험 순으로 본다.",
+   "why": "우대사항이 상담(Service Cloud)·마케팅(Marketing Cloud)·데이터/AI(Data 360·Agentforce)로 고르게 퍼져 있어, 영업 CRM 바깥 제품까지 할 사람을 찾는 것으로 읽힙니다.[1] {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Service Cloud 기반 B2C 고객상담(컨택센터) 시스템을 구축해보신 분",
+   "short": "개인 고객의 전화·채팅·메일 문의를 '케이스'로 받아 상담원에게 나눠 주는 시스템을 Salesforce 로 지어 본 경험.",
+   "why": "SK AX 는 Service Cloud 를 CRM 페이지에 소개합니다.[2] 상담 문의를 상담원에게 나누는 기능은 Omni-Channel 이고, 대기열 기준·기술(스킬) 기준·바깥 엔진 기준 세 가지로 나눕니다.[15]",
+   "actually": {
+    "items": [
+     "**케이스** — 문의 하나 = 레코드 하나. 상태·우선순위·처리 기한(SLA)을 단다 {추론}.",
+     "**배분** — 대기열 우선순위로, 또는 '카드 해지 + 영어' 같은 기술이 있는 상담원에게. 상담원이 '응대 가능' 상태일 때만 받는다.[15]",
+     "**전화 연계** — 교환기·CTI 와 붙여 전화가 오면 고객 화면이 뜨게 한다 {추론}.",
+     "**성과 숫자** — 결제 회사 신신엠앤씨는 Service Cloud 운영 뒤 놓친 전화가 월 2,017건에서 451건으로 약 77.6% 줄었다고 Salesforce 고객 사례에 밝혔다(판매사 홍보 글).[16]"
+    ]
+   },
+   "how_far": "B2C 상담은 상담원 수백 명·하루 수만 건이라 **배분 규칙과 화면 속도**가 핵심입니다 {추론}. 같은 회사의 컨택센터 운영 공고 풀이(전화 장비 쪽)와 함께 보면 그림이 맞춰집니다.",
+   "refs": [
+    2,
+    15,
+    16
+   ],
+   "study": [
+    "sf-omni"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Marketing Cloud 기반 B2C 캠페인 실행 시스템 구축을 경험하신 분",
+   "short": "개인 고객에게 문자·메일·앱 알림을 조건에 맞춰 자동으로 보내는 캠페인 시스템을 지어 본 경험.",
+   "why": "SK AX 는 Marketing Cloud 를 여러 채널의 데이터 통합, 자동화, 고급 분석·AI, 실시간 모니터링 도구로 소개합니다.[2] SK AX 자신도 뉴스레터 발송을 Salesforce 에 맡기고 있습니다.[6]",
+   "actually": {
+    "items": [
+     "**대상 고르기** — '30일 안 구매 없음 + 수신 동의'처럼 조건으로 고객 묶음을 만든다 {추론}.",
+     "**여정 자동화** — 가입 → 1일 뒤 환영 메일 → 안 열면 3일 뒤 문자 같은 단계 {추론}.",
+     "**데이터 공급** — CRM·주문 시스템의 고객 데이터를 매일 넣는 연계(배치 동기화 패턴).[10]",
+     "**수신 동의·야간 발송 제한** — 광고성 정보 규칙을 시스템 규칙으로 옮긴다 {추론}."
+    ]
+   },
+   "refs": [
+    2,
+    6,
+    10
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Salesforce Application Architect, System Architect 등 고급 자격증을 보유하신 분",
+   "short": "시험 네 개씩을 묶은 상위 자격 — 앞은 '앱·데이터·권한 설계', 뒤는 '연계·로그인·배포 설계'다.",
+   "why": "두 자격 모두 따로 보는 시험이 아니라 **선행 자격 네 개를 다 따면 주어지는** 묶음입니다.[17][18] 구축 회사는 자격 보유자 수가 파트너 등급·제안 점수에 쓰여 자격을 중히 봅니다 {추론}.",
+   "actually": {
+    "items": [
+     "**Application Architect** — Platform App Builder · Platform Developer · Data Architect · Sharing and Visibility Architect.[17]",
+     "**System Architect** — Platform Developer · Development Lifecycle and Deployment Architect · Identity and Access Management · Integration Architect.[18]",
+     "둘 다 가지면 최상위인 Technical Architect 로 가는 길이 된다.[17]"
+    ]
+   },
+   "how_far": "'우대'라 없어도 지원은 됩니다. 개발자라면 **Platform Developer** 부터가 현실적인 첫 단추이고, 이 공고 업무(권한 체계·연계)와 바로 겹치는 것은 Sharing and Visibility·Integration 입니다.[17][18] {추론}",
+   "refs": [
+    17,
+    18
+   ],
+   "study": [
+    "sf-cert-aa",
+    "sf-cert-sa"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Agentforce, Data 360 등 Salesforce AI·데이터 솔루션 도입해보신 분",
+   "short": "흩어진 고객 데이터를 한 사람 단위로 모으고(Data 360), 그 위에서 일을 처리하는 AI 에이전트를 붙여 본 경험.",
+   "why": "Data 360 은 예전 Data Cloud 의 새 이름이고 기능은 같습니다.[13] Agentforce 에이전트는 '토픽'(맡은 일의 범위)과 '액션'(실제로 하는 작업)으로 짜이고, Atlas 라는 추론 엔진이 대화에 맞는 토픽·액션을 고릅니다.[14] SK AX 는 파트너 소개에 Agentforce 를 내걸었습니다.[3]",
+   "actually": {
+    "items": [
+     "**데이터 모으기** — CRM·홈페이지·앱·매장 데이터를 같은 고객으로 묶는다(신원 통합) {추론}.",
+     "**토픽 정의** — '주문 조회', '반품 접수'처럼 에이전트가 맡을 일과 하지 말아야 할 일을 글로 적는다.[14]",
+     "**액션 연결** — 토픽마다 Flow·Apex·API 를 액션으로 붙인다.[14]",
+     "**권한·검증** — 에이전트도 사용자처럼 권한 안에서만 데이터를 보게 하고, 답을 시험한다 {추론}."
+    ]
+   },
+   "how_far": "새 제품이라 도입 경험자가 드뭅니다 {추론}. 개발자라면 무료 교육 모듈로 토픽·액션을 만들어 본 것만으로도 면접 이야깃거리가 됩니다.",
+   "refs": [
+    3,
+    13,
+    14
+   ],
+   "study": [
+    "sf-agentforce"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "통신, 금융, 유통 등 대규모 고객 기반 산업의 CRM 구축 경험이 있으신 분",
+   "short": "고객이 수백만 명인 회사 — 데이터 양·동시 사용자·개인정보 규칙이 B2B 영업 CRM 과 급이 다르다.",
+   "why": "SK C&C 시절 Salesforce 와 같이 만들기로 한 업종 모델도 제조·통신·유통이었고, 통신·유통에는 AI 상품 예측·추천을 더한다고 했습니다.[4] SK 그룹 안에 통신 회사가 있어 운영 파트의 일감과 겹칩니다.[1] {추론}",
+   "actually": {
+    "items": [
+     "**데이터 양** — 고객·상담 이력이 수천만 건이면 조회 한도(조회로 받는 레코드 5만 건)와 대량 처리(Batch)가 설계를 정한다.[9]",
+     "**중복 고객** — 같은 사람이 여러 번호로 들어온 것을 묶는 규칙 {추론}.",
+     "**규제** — 금융은 개인정보·신용정보, 통신은 가입자 정보 보호가 겹친다 {추론}."
+    ]
+   },
+   "refs": [
+    1,
+    4,
+    9
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "외국어 능력으로 글로벌 커뮤니케이션에 능하신 분",
+   "short": "Salesforce 문서·지원·해외 계열사 사용자가 영어라서 — 읽고 쓰는 영어가 먼저다.",
+   "why": "Salesforce 의 공식 문서·릴리즈 노트·아키텍트 자료는 영어가 먼저 나오고, 일부 교육 모듈만 한국어로 옮겨져 있습니다.[8][10] SK 계열사의 해외 법인이 같은 Org 를 쓰면 사용자 요청도 영어로 옵니다 {추론}.",
+   "refs": [
+    8,
+    10
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "복잡한 문제 앞에서도 쉽게 포기하지 않고, 근본 원인을 끝까지 파고들어 최적의 해결책을 찾아내시는 분",
+   "short": "'가끔 연계가 실패한다' 같은 문의를 로그로 끝까지 쫓아 원인을 찾는 사람.",
+   "why": "Salesforce 운영의 장애는 대개 한도 초과·권한 변경·판 올림·바깥 시스템 변경이 겹쳐서 납니다.[8][9] 증상만 막으면 다음 판 올림 때 다시 터집니다 {추론}.",
+   "refs": [
+    8,
+    9
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "빠르게 변화하는 기술 환경 속에서 새로운 것에 대한 호기심을 잃지 않고, 스스로 학습하며 성장하는 것을 즐기시는 분",
+   "short": "1년에 판이 세 번 바뀌고 제품 이름까지 바뀌는 생태계라서 — 스스로 따라가야 한다.",
+   "why": "판은 1년 세 번[8], 2025년에는 Data Cloud 가 Data 360 으로 이름을 바꿨습니다.[13] 몇 년 전 자료의 기능 이름이 지금과 다른 일이 흔합니다 {추론}.",
+   "refs": [
+    8,
+    13
+   ],
+   "study": [
+    "sf-releases"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "다양한 이해관계자와 열린 자세로 소통하며, 동료와 지식을 나누고 함께 성장하는 협업의 가치를 아시는 분",
+   "short": "고객사 현업·IT·보안 담당, 운영 파트, Salesforce 본사 지원까지 사이에서 일하는 자리라서.",
+   "why": "구축은 현업이 요구를 내고, 인프라·보안 담당이 길을 열고, 운영 파트가 넘겨받는 일입니다.[1] 개발자가 중간에서 말을 옮기지 못하면 설계가 어긋납니다 {추론}.",
+   "refs": [
+    1
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "남의 업무를 듣고 시스템 규칙으로 옮기는 게 재밌는 사람",
+   "코드를 덜 쓰고 표준 기능으로 푸는 걸 '이겼다'고 느끼는 사람 {추론}",
+   "자격증으로 실력을 쌓고 증명하는 길이 맞는 사람[17][18]",
+   "Agentforce·Data 360 같은 새 제품을 남보다 먼저 들여 보고 싶은 사람[3][13]"
+  ],
+  "hard": [
+   "Salesforce 경력 3년 이상이 공통 요건이다 — 신입·전향 자리가 아니다[1]",
+   "SK 계열사 상주로 일하는 곳이 바뀔 수 있다[1] {추론}",
+   "플랫폼 한도·판 올림처럼 내가 못 정하는 규칙 안에서 일한다[8][9]",
+   "개발보다 문서·회의·운영 요청 처리가 큰 몫일 수 있다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "트리거가 데이터 로더로 들어온 200건에서 'Too many SOQL queries' 로 멈췄습니다. 어디부터 보겠어요?",
+   "a": "반복문 안의 조회, 묶어서 처리하기, 비동기로 미루기.[9]"
+  },
+  {
+   "q": "ERP 거래처를 매일 받는데 가끔 같은 회사가 둘로 생깁니다. 왜 그럴까요?",
+   "a": "어느 값으로 같은 고객을 알아보나 — External ID upsert 와 원본 시스템 정하기.[10]"
+  },
+  {
+   "q": "두 계열사가 한 Org 를 씁니다. 서로의 영업 기회를 못 보게 하면서 본사 임원은 다 보게 하려면?",
+   "a": "조직 기본값 → 역할 계층 → 공유 규칙의 네 겹.[11]"
+  },
+  {
+   "q": "겨울 판이 다음 달에 올라옵니다. 운영 담당으로 무엇을 언제 하겠어요?",
+   "a": "미리보기 샌드박스 4~6주, 릴리즈 노트 영향표.[8]"
+  },
+  {
+   "q": "이 요구를 Flow 로 할지 Apex 로 할지 어떻게 정하나요?",
+   "a": "설계 판단 기준(Well-Architected)과 유지보수·한도.[12]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "SK Careers · Salesforce CRM 개발/운영 및 솔루션 전문가 영입",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262150",
+   "kind": "posting",
+   "note": "AX Solution서비스1팀 소개·업무·요건·우대·전형(서류 → SKCT → 면접 2회 → 채용검진/처우협의)·공통 요건 경력 3년 이상"
+  },
+  {
+   "n": 2,
+   "title": "SK AX · Digital CRM(Salesforce) 솔루션 소개",
+   "url": "https://www.skax.co.kr/enterprisesolution/crm",
+   "kind": "company",
+   "note": "Sales·Service·Marketing Cloud, 익명 고객 사례(석유화학 주문 포털·화학 ERP 연계 포털), 담당 전문가 Enterprise Solution 2본부장·AX Solution서비스1팀장 — 홍보 성격"
+  },
+  {
+   "n": 3,
+   "title": "Salesforce Korea · 공식 파트너사",
+   "url": "https://www.salesforce.com/kr/partners/official-partners/",
+   "kind": "reference",
+   "note": "SK㈜ AX 는 Cloud Reseller 칸(Salesforce CRM·Agentforce 소개), SK㈜ C&C 는 Consulting Partner 칸(Marketing·Sales Cloud·Tableau) — 2026-11-23 확인"
+  },
+  {
+   "n": 4,
+   "title": "아시아경제 · SK C&C, Salesforce 와 기업 맞춤 디지털 서비스",
+   "url": "https://www.asiae.co.kr/en/article/2023041108271026656",
+   "kind": "news",
+   "date": "2023-04-11",
+   "note": "제조·통신·유통 업종 SaaS 모델, 제조는 ERP·SCM·MES 와 CRM 연계"
+  },
+  {
+   "n": 5,
+   "title": "Salesforce Korea 블로그 · 에이전트포스 월드투어 코리아 2026 개최",
+   "url": "https://www.salesforce.com/kr/blog/?p=4792",
+   "kind": "news",
+   "date": "2026-06-11",
+   "note": "발표 회사 목록에 SK AX — 세션 제목·내용은 기사에 없음"
+  },
+  {
+   "n": 6,
+   "title": "SK AX · 개인정보 처리방침(2.3판)",
+   "url": "https://www.skax.co.kr/policy",
+   "kind": "company",
+   "date": "2026-10-08",
+   "note": "뉴스레터 발송 수탁사 Salesforce, Inc., 문의·뉴스레터 데이터의 미국 이전"
+  },
+  {
+   "n": 7,
+   "title": "KPI뉴스 · SK C&C, 'SK㈜ AX'로 이름 바꿔",
+   "url": "https://kpinews.kr/newsView/1065576140213162",
+   "kind": "news",
+   "date": "2025"
+  },
+  {
+   "n": 8,
+   "title": "Trailhead · Salesforce Releases(모듈 첫 단원)",
+   "url": "https://trailhead.salesforce.com/en/content/learn/modules/sf_releases/sf_releases_start",
+   "kind": "reference",
+   "note": "봄·여름·겨울 1년 세 번, 샌드박스는 4~6주 먼저, 주기는 약 3개월 전 시작, 날짜는 Trust 사이트"
+  },
+  {
+   "n": 9,
+   "title": "Apex 개발자 안내서 · Execution Governors and Limits",
+   "url": "https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm",
+   "kind": "reference",
+   "note": "동기 SOQL 100·비동기 200, DML 150, 조회 레코드 5만, 넘으면 잡을 수 없는 예외, Batch 는 묶음마다 초기화 — 페이지가 자동 접속을 막아 같은 문서의 판별 사본 검색 요약으로 확인, 판마다 다시 확인"
+  },
+  {
+   "n": 10,
+   "title": "Salesforce Architects · Integration Patterns",
+   "url": "https://architect.salesforce.com/fundamentals/integration-patterns",
+   "kind": "reference",
+   "note": "연계 패턴 여섯 가지 표"
+  },
+  {
+   "n": 11,
+   "title": "Trailhead · Data Security — Control Access to Records",
+   "url": "https://trailhead.salesforce.com/content/learn/modules/data_security/data_security_records",
+   "kind": "reference",
+   "note": "조직 기본값 → 역할 계층 → 공유 규칙 → 수동 공유"
+  },
+  {
+   "n": 12,
+   "title": "Salesforce Architects · Well-Architected",
+   "url": "https://architect.salesforce.com/well-architected/overview",
+   "kind": "reference",
+   "note": "신뢰·안정성·운영 우수성·자원과 비용 최적화·공정성"
+  },
+  {
+   "n": 13,
+   "title": "Salesforce · Data 360 (Formerly Data Cloud)",
+   "url": "https://www.salesforce.com/data/",
+   "kind": "reference",
+   "note": "Data Cloud 의 새 이름, 같은 제품. 이름 변경은 2025년 10월 Dreamforce 때라는 보도가 있다"
+  },
+  {
+   "n": 14,
+   "title": "Trailhead · Get to Know Agentforce Functionality",
+   "url": "https://trailhead.salesforce.com/content/learn/modules/introduction-to-agentforce/get-to-know-agentforce-functionality",
+   "kind": "reference",
+   "note": "토픽·액션·Atlas 추론 엔진 — 검색 요약으로 확인"
+  },
+  {
+   "n": 15,
+   "title": "Trailhead · Get Started with Omni-Channel",
+   "url": "https://trailhead.salesforce.com/content/learn/modules/omni-channel-lex/get-started-omni-lex",
+   "kind": "reference",
+   "note": "대기열·기술·바깥 배분, '응대 가능' 상태일 때만 배정 — 검색 요약으로 확인"
+  },
+  {
+   "n": 16,
+   "title": "Salesforce Korea 고객 사례 · 신신엠앤씨",
+   "url": "https://www.salesforce.com/kr/customer-stories/sinsinmnc/",
+   "kind": "reference",
+   "note": "판매사 홍보 글 — 2026년 4월 Service Cloud 운영, 월 부재 콜 2,017 → 451건(약 77.6%)"
+  },
+  {
+   "n": 17,
+   "title": "Trailhead · Salesforce Certified Application Architect",
+   "url": "https://trailhead.salesforce.com/credentials/applicationarchitect",
+   "kind": "reference",
+   "note": "선행 자격 네 개를 모두 따면 부여 — 목록은 검색 요약으로 확인(페이지 본문은 자동 접속에 비어 나옴)"
+  },
+  {
+   "n": 18,
+   "title": "Trailhead · Salesforce Certified System Architect",
+   "url": "https://trailhead.salesforce.com/credentials/systemarchitect",
+   "kind": "reference",
+   "note": "선행 자격 네 개 — 목록은 검색 요약으로 확인, 응시 전 공식 페이지 재확인"
+  },
+  {
+   "n": 19,
+   "title": "FETV · '월급이 연봉 수준' SK그룹, 급여 Top 계열사는 어디?",
+   "url": "http://www.fetv.co.kr/news/articleView.html?idxno=198852",
+   "kind": "news",
+   "date": "2025-08-14",
+   "note": "2024년 사업보고서 기준 상장사 1인 평균 급여"
+  },
+  {
+   "n": 20,
+   "title": "ZDNet Korea · 올해 상반기 대기업 SI 톱4 '연봉킹' 누구?",
+   "url": "https://zdnet.co.kr/view/?no=20250816174726",
+   "kind": "news",
+   "date": "2025-08-16",
+   "note": "2025년 반기보고서 기준 6개월치 1인 평균 급여"
+  },
+  {
+   "n": 21,
+   "title": "원티드 · 에스케이 에이엑스(SK AX) 기업정보",
+   "url": "https://www.wanted.co.kr/company/25949",
+   "kind": "reference",
+   "note": "공공 자료로 계산한 평균 연봉 집계 — 계산 기간 표기 없음"
+  },
+  {
+   "n": 22,
+   "title": "SK AX Careers · 복리후생",
+   "url": "https://skax.skcareers.com/page/HR/Welfare",
+   "kind": "company",
+   "note": "연도 표기 없음 — 같은 회사 다른 공고 풀이(2026-11-23)에서 확인한 항목"
+  },
+  {
+   "n": 23,
+   "title": "SK Careers · Culture",
+   "url": "https://www.skcareers.com/Culture",
+   "kind": "company",
+   "note": "그룹 채용 사이트의 문화·근무 제도 소개 — 금액·연도 없음"
+  },
+  {
+   "n": 24,
+   "title": "SK AX · 사업장 안내",
+   "url": "https://www.skax.co.kr/company/office",
+   "kind": "company",
+   "note": "SK u-타워·판교 캠퍼스·수내 오피스 등 주소"
+  }
+ ],
+ "caveat": "AX Solution서비스1팀이 어느 계열사의 어떤 Org 를 맡는지, 쓰는 배포 도구·코드 규칙은 공개 자료가 없습니다. 회사 근거는 이 공고·SK AX CRM 소개 페이지(홍보 성격)·Salesforce 파트너 목록·2023년 SK C&C 보도뿐이고, 구축·운영의 실제 모습은 Salesforce 공식 문서와 교육 자료로 '보통 이런 것'을 보였습니다. Apex 한도·자격 선행 목록은 페이지가 자동 접속을 막아 검색 요약으로 확인했으니 판마다 공식 페이지를 다시 보세요. 예시 코드는 Apex 가 아니라 규칙을 흉내 낸 파이썬입니다.",
+ "resources": [
+  {
+   "id": "sf-trailhead",
+   "title": "Trailhead (Salesforce 무료 학습)",
+   "by": "Salesforce",
+   "kind": "course",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://trailhead.salesforce.com/ko",
+   "why": "객체·필드·Flow·보고서·권한을 무료 연습 Org 에서 손으로 익힌다. 업무의 '구축' 줄 전부의 바닥. 일부 모듈은 한국어."
+  },
+  {
+   "id": "sf-devorg",
+   "title": "Salesforce Developer Edition (무료 개발 Org)",
+   "by": "Salesforce Developers",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.salesforce.com/signup",
+   "why": "개발/운영 경력이 없을 때 트리거·테스트·연계를 직접 만들어 볼 자기 Org. 아래 과제를 모두 여기서 한다."
+  },
+  {
+   "id": "sf-dummies",
+   "title": "Salesforce For Dummies (8판)",
+   "by": "Liz Kao · Jon Paz · Wiley · 2024",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.oreilly.com/library/view/-/9781394231669/",
+   "why": "영업·마케팅·상담을 Salesforce 로 어떻게 관리하는지 업무 눈으로 한 바퀴. 고객사 현업 말을 알아듣는 데 쓴다."
+  },
+  {
+   "id": "sf-apex-inflearn",
+   "title": "Salesforce APEX 초급",
+   "by": "SFTC · 인프런",
+   "kind": "course",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.inflearn.com/course/salesforce-apex-초급",
+   "why": "한국어로 Apex 를 처음 배우는 강의. 같은 곳의 실무 과정으로 이어진다. 요건 '개발/운영 3년'의 첫 단계."
+  },
+  {
+   "id": "sf-dex450",
+   "title": "Salesforce 공인 교육 (Apex·LWC 개발 DEX450 등)",
+   "by": "Salesforce Korea",
+   "kind": "course",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.salesforce.com/kr/company/academy/",
+   "why": "공인 강사의 5일 개발 과정. 회사 교육비 지원을 받을 수 있으면 독학보다 빠르다."
+  },
+  {
+   "id": "sf-apex-book",
+   "title": "Mastering Apex Programming (2판)",
+   "by": "Paul Battisson · Packt · 2023",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://packtpub.com/en-ch/product/mastering-apex-programming-9781837638352",
+   "why": "흔한 Apex 실수·디버깅·비동기(Batch·Queueable·Scheduled)·성능 조정. 한도에 걸리지 않게 짜는 법을 여기서 굳힌다."
+  },
+  {
+   "id": "sf-data-security",
+   "title": "Trailhead · Data Security",
+   "by": "Salesforce",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://trailhead.salesforce.com/content/learn/modules/data_security",
+   "why": "Org·객체·필드·레코드 접근과 역할 계층·공유 규칙. 업무 '권한 체계 구성' 줄의 교과서."
+  },
+  {
+   "id": "sf-integration",
+   "title": "Salesforce Architects · Integration Patterns",
+   "by": "Salesforce",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://architect.salesforce.com/fundamentals/integration-patterns",
+   "why": "In/Out Bound 데이터 정의와 외부 연계의 공식 기준. 패턴마다 언제 쓰고 언제 안 쓰는지 표가 있다."
+  },
+  {
+   "id": "sf-well-architected",
+   "title": "Salesforce Well-Architected",
+   "by": "Salesforce Architects",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://architect.salesforce.com/well-architected/overview",
+   "why": "'솔루션 설계·기술 리딩' 요건 — 설계 판단을 무엇으로 정당화하나. 확장성 있는 Org 구조의 판단 기준."
+  },
+  {
+   "id": "sf-releases",
+   "title": "Trailhead · Salesforce Releases",
+   "by": "Salesforce",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://trailhead.salesforce.com/en/content/learn/modules/sf_releases",
+   "why": "판 올림 주기·미리보기 샌드박스·준비 순서. 업무 '정기 릴리즈 검토' 줄 그대로."
+  },
+  {
+   "id": "sf-omni",
+   "title": "Trailhead · Omni-Channel",
+   "by": "Salesforce",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://trailhead.salesforce.com/content/learn/modules/omni-channel-lex",
+   "why": "우대 'Service Cloud 컨택센터' — 대기열·기술 배분과 상담원 상태를 직접 설정해 본다."
+  },
+  {
+   "id": "sf-agentforce",
+   "title": "Trailhead · Introduction to Agentforce",
+   "by": "Salesforce",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://trailhead.salesforce.com/content/learn/modules/introduction-to-agentforce",
+   "why": "우대 'Agentforce 도입' — 토픽·액션·추론 엔진이 무엇인지. 연습 Org 에서 에이전트 하나를 만들어 볼 수 있다."
+  },
+  {
+   "id": "sf-cert-aa",
+   "title": "Salesforce Certified Application Architect",
+   "by": "Salesforce",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://trailhead.salesforce.com/credentials/applicationarchitect",
+   "why": "우대 자격 — 선행 네 시험(App Builder·Developer·Data·Sharing and Visibility)의 범위가 곧 이 공고의 설계 요건 목록이다."
+  },
+  {
+   "id": "sf-cert-sa",
+   "title": "Salesforce Certified System Architect",
+   "by": "Salesforce",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://trailhead.salesforce.com/credentials/systemarchitect",
+   "why": "우대 자격 — 연계·ID 접근·배포 수명주기. 'Legacy 인프라 및 보안 협업' 요건과 겹친다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "Salesforce 를 업무로 보기",
+   "time": "1~2주",
+   "goal": "거래처·기회·케이스가 무엇이고 영업·상담 업무가 그 위에서 어떻게 흐르는지 설명할 수 있다.",
+   "resources": [
+    "sf-trailhead",
+    "sf-dummies",
+    "sf-devorg"
+   ],
+   "task": "무료 개발 Org 에서 가상의 화학 회사 거래처 20곳·영업 기회 50건을 넣고, 단계(발굴 → 제안 → 협상 → 수주)와 팀별 파이프라인 대시보드를 만든다."
+  },
+  {
+   "title": "설정 먼저, 코드는 나중",
+   "time": "2~3주",
+   "goal": "Flow 로 되는 것과 Apex 가 필요한 것을 가르고, 한도에 걸리지 않는 트리거와 테스트를 쓴다.",
+   "resources": [
+    "sf-apex-inflearn",
+    "sf-apex-book",
+    "sf-dex450"
+   ],
+   "task": "'수주로 바뀌면 주문 레코드를 만들고 승인 요청' 을 Flow 로 한 번, Apex 트리거로 한 번 만든다. 데이터 로더로 200건을 한꺼번에 바꿔도 한도 오류가 안 나는지 테스트 클래스로 확인한다."
+  },
+  {
+   "title": "권한과 데이터 모델",
+   "time": "1~2주",
+   "goal": "두 사업부가 같은 Org 를 쓸 때 기본값·역할·공유 규칙으로 서로의 데이터를 가르고 필요한 만큼만 연다.",
+   "resources": [
+    "sf-data-security",
+    "sf-well-architected"
+   ],
+   "task": "조직 기본값을 '비공개'로 두고 영업1·2팀 역할 계층과 '수도권 기회는 2팀장에게 읽기' 공유 규칙을 만든다. 사용자 넷으로 로그인해 누가 무엇을 보는지 표로 남긴다."
+  },
+  {
+   "title": "In/Out Bound 연계",
+   "time": "2주",
+   "goal": "바깥 시스템 번호(External ID)로 upsert 하고, 수주를 바깥으로 내보내는 연계 명세를 쓰고 구현한다.",
+   "resources": [
+    "sf-integration",
+    "sf-releases"
+   ],
+   "task": "가상 ERP 거래처 CSV 를 External ID 로 두 번 upsert 해 중복이 안 생기는지 보고, 수주 시 가짜 바깥 API(웹훅 시험 사이트)로 주문을 보내는 Apex 호출을 만든다. 필드별 출처·형식·주기·실패 처리 표를 같이 쓴다."
+  },
+  {
+   "title": "우대 제품과 자격 (선택)",
+   "time": "계속",
+   "goal": "상담 배분·AI 에이전트를 만들어 보고, Platform Developer 부터 아키텍트 자격의 선행 시험을 차례로 준비한다.",
+   "resources": [
+    "sf-omni",
+    "sf-agentforce",
+    "sf-cert-aa",
+    "sf-cert-sa"
+   ],
+   "task": "케이스를 '해지·영어' 기술 기준으로 상담원에게 배분하는 Omni-Channel 을 설정하고, '주문 조회' 토픽 하나에 Flow 액션을 붙인 에이전트를 만든다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다(처우협의). SK㈜ 전체 평균 **약 1억 1,600만원**(2024년 사업보고서), 기사가 따로 실은 SK AX 값은 **반년에 7,300만원**(2025년 상반기)",
+  "rows": [
+   {
+    "label": "직원 1인 평균 급여(SK㈜ 전체)",
+    "value": "1억 1,600만원",
+    "amount": 11600,
+    "basis": "사업보고서 · 2024년",
+    "note": "SK㈜ 전체 값이라 지주 부문과 사업 부문이 섞여 있다 [19]"
+   },
+   {
+    "label": "SK AX 직원 1인 평균 급여 (6개월)",
+    "value": "7,300만원",
+    "amount": 7300,
+    "basis": "반기보고서 · 2025년 상반기",
+    "note": "1~6월 반년치이고 1년 연봉이 아니다. 전년 같은 기간 7,100만원 [20]"
+   },
+   {
+    "label": "SK AX 평균 연봉(집계)",
+    "value": "6,082만원",
+    "amount": 6082,
+    "basis": "공공데이터 집계",
+    "note": "채용 사이트가 공공 자료로 계산한 값, 계산 기간 표기 없음 [21]"
+   },
+   {
+    "label": "삼성SDS 평균 (6개월)",
+    "value": "6,600만원",
+    "amount": 6600,
+    "basis": "반기보고서 · 2025년 상반기",
+    "peer": true,
+    "note": "같은 기사의 같은 기준 [20]"
+   },
+   {
+    "label": "LG CNS 평균 (6개월)",
+    "value": "6,500만원",
+    "amount": 6500,
+    "basis": "반기보고서 · 2025년 상반기",
+    "peer": true,
+    "note": "같은 기사의 같은 기준 [20]"
+   }
+  ],
+  "how": "전형이 서류 → SKCT → 면접 2회 → **채용검진/처우협의** 순서라 연봉은 경력에 따라 따로 정한다 [1]. 위 평균은 경력이 오래된 직원과 여러 부문이 섞인 회사 전체 값이라 이 자리의 제안 금액으로 읽으면 안 된다 {추론}. 경력 3년 이상 공고라 신입 초봉은 싣지 않았다."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "성장",
+    "detail": "9개 단과대 College·mySUNI, 해마다 Learning Account 예산, MARU 도서관, 사내 직무 공모"
+   },
+   {
+    "name": "장기근속",
+    "detail": "10·15·20·25·30년에 포상금과 포상 휴가"
+   },
+   {
+    "name": "주택 자금",
+    "detail": "구입·전세 최대 6,000만원, 생활안정자금 최대 1,500만원(100만원 단위)"
+   },
+   {
+    "name": "자녀 학자금",
+    "detail": "유치원부터 대학까지, 자녀 수 제한 없음"
+   },
+   {
+    "name": "식대·통신비",
+    "detail": "식대 월 4만원, 통신비 월 7만원(SKT 가입자)"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 100만원 + 월 20만원, SK 패밀리카드 연회비 10만원, 창립기념일 OK캐쉬백 20만 포인트"
+   },
+   {
+    "name": "건강",
+    "detail": "나이에 따라 종합 25만원·정밀 40만원 검진, 난임 지원, 단체보험 3종, 사내 의원, 심리 상담"
+   },
+   {
+    "name": "그 밖",
+    "detail": "외부 사이트 근무자 복지 포인트, 통근·셔틀 버스, 경조 휴가·경조금"
+   }
+  ],
+  "note": "SK AX 채용 사이트의 복리후생 페이지다(연도 표기 없음) [22]. 고객사 상주가 잦은 자리라 '외부 사이트 근무자 복지 포인트'가 해당할 수 있다 {추론}. 근무 시간제·재택은 그룹 문화 소개에만 있고 조건이 없으니 처우협의 때 확인한다 [23]."
+ },
+ "location": {
+  "name": "SK AX 분당 사무실 (SK u-타워)",
+  "address": "경기도 성남시 분당구 성남대로 343번길 9 에스케이유타워",
+  "postal": "13558",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%EC%84%B1%EB%82%A8%EB%8C%80%EB%A1%9C%20343%EB%B2%88%EA%B8%B8%209",
+  "near": "신분당선·수인분당선 정자역 근처 {추론}",
+  "note": "공고 근무지는 '경기도 분당 및 SK그룹 멤버사(서울·수도권)'다 [1]. 분당 주소는 SK AX 사업장 안내의 SK u-타워 [24]. 운영·구축 프로젝트로 SK 계열사 건물에 상주하면 그곳이 근무지가 된다 {추론}."
+ }
+}
