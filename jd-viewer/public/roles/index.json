@@ -87,6 +87,7 @@
   "ats-toss:group:8013755003": "tossbank-platform-po-data-ai",
   "ats-toss:group:4542935003": "tossbank-product-foundation-server",
   "ats-toss:group:4076109003": "tossbank-product-server",
+  "saramin-55608347": "tossbank-security-analyst",
   "saramin-55608433": "tossbank-security-audit-manager",
   "ats-toss_group_5988332003": "tossbank-security-audit-manager",
   "saramin-55606858": "tossbank-security-policy-lead",
@@ -919,6 +920,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 16
+  },
+  {
+   "id": "tossbank-security-analyst",
+   "company": "토스뱅크",
+   "role": "보안 분석가 (Security Analyst)",
+   "jobs": [
+    "saramin-55608347"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 12
   },
   {
    "id": "tossbank-security-audit-manager",
