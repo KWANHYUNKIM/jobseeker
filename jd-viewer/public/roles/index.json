@@ -17,6 +17,7 @@
   "wanted-393885": "litalico-sre-tech-lead",
   "wanted-296040": "mantra-langaku-mobile-lead",
   "wanted-387807": "medcom-android-engineer",
+  "wanted-387811": "medcom-cloud-infra-engineer-japan",
   "wanted-394202": "mediphone-platform-engineer",
   "wanted-306088": "megazone-japan-cloud-engineer-associate",
   "wanted-306087": "megazone-japan-cloud-engineer-senior",
@@ -314,6 +315,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 22
+  },
+  {
+   "id": "medcom-cloud-infra-engineer-japan",
+   "company": "株式会社メドコム (메드콤)",
+   "role": "클라우드 인프라 엔지니어 (AWS, 도쿄)",
+   "jobs": [
+    "wanted-387811"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 23
   },
   {
    "id": "mediphone-platform-engineer",

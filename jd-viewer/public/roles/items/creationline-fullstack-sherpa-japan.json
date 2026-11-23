@@ -1,0 +1,425 @@
+{
+ "id": "creationline-fullstack-sherpa-japan",
+ "company": "クリエーションライン株式会社 (Creationline)",
+ "role": "풀스택 엔지니어 (Sherpa Engineer · 리드 후보)",
+ "team": "대기업 내재화·DX 공동 프로젝트 (일본 완전 원격, 일본 거주 필수)",
+ "jobs": [
+  "wanted-383708"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "일본 대기업(자동차·제조·유통)이 **개발을 외주에서 자기 손으로 가져오는 일(내재화)**을 옆에서 같이 하는 컨설팅 회사의 개발자입니다.[1] 시킨 기능을 만들기 전에 고객과 **'왜 그게 필요한가'**부터 묻고, 화면·서버·클라우드까지 한 사람이 넓게 맡습니다.[1][2]",
+  "env": "Docker·Kubernetes·GitLab 공식 파트너로 커 온 회사라 **컨테이너·Terraform·CI/CD**가 바닥이고[4], CTO 가 'AI 구동 개발 컨소시엄' 좌장이라 **Claude Code·Cursor 를 회사가 전원에게** 줍니다.[1][6] 완전 원격이지만 일본 거주·비즈니스 일본어가 필수입니다.[1]",
+  "oneline": "고객 회사 안에 들어가 같이 만드는 풀스택 — 코드 실력만큼 **요구를 묻고 정리하는 힘**과 **AI 도구를 업무에 붙이는 힘**을 봅니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "・課題整理・要件定義：PMと一緒に顧客との対話を通じて「本当に作りたい機能」の背景にある「Why」を言語化・構造化",
+   "short": "고객이 '이 기능 만들어 줘' 할 때 바로 짜지 않고, 왜 필요한지 묻고 글로 정리해 두는 일.",
+   "why": "회사가 스스로를 부르는 이름 'Co-Creation Sherpa(함께 오르는 길잡이)'가 바로 이 줄입니다 — 주문서대로 만드는 것이 아니라 고객도 아직 모르는 '왜'를 같이 파낸다고 적었습니다.[1] 상대가 고객사 CEO·제품 책임자(PdM)인 경우도 있습니다.[1]",
+   "actually": {
+    "intro": "이 회사 엔지니어가 블로그에 적은 실제 방식입니다.",
+    "items": [
+     "**비기능 요구 정리** — 일본 정보처리추진기구(IPA)의 '비기능 요구 그레이드'(가용성·성능·보안 같은 '기능 말고 지켜야 할 것' 238개 항목)를 출발점으로, 고객과 맞는 것만 남기고 클라우드용 항목을 더해 72개로 줄였다. 값은 '처음'과 '운영 때' 두 칸으로 적었다.[7][19]",
+     "**질문 초안은 AI, 결정은 사람** — 고객에게 물을 질문·항목 대응표는 Claude 가 만들고, 고객과의 협상·최종 판단은 사람이 했다. 근거 없는 백업 요건이 끼어든 것을 나중에 고친 일도 적었다.[7]",
+     "**'왜'를 문서로 남기기** — 지금 따를 규칙(방침서)과 그렇게 정한 이유(ADR, 설계 결정 기록)를 나눠, 고를 기준을 선택지보다 먼저 쓴다. 저장소에 마크다운으로 둬서 코딩 AI 도 읽게 한다.[8][20]",
+     "**만들기 전에 지표 정하기** — 스크럼 팀이 기능을 만들기 전에 목표 성과와 잴 숫자를 정하고, 효과가 없으면 미리 합의한 대로 뺀다.[13]",
+     "**유저 스토리 매핑** — 회사가 애자일 행사(RSGT2025) 스폰서 무대에서 연극으로 권한 책이 『ユーザーストーリーマッピング』였다 — 사용자가 고를 만한 것을 만들자는 메시지.[16]"
+    ]
+   },
+   "how_far": "요구 정의를 혼자 이끄는 자리는 아닙니다 — 문장 주어가 'PM 과 함께'입니다.[1] 개발자 최소선은 **고객 회의에서 '왜'를 되묻고, 들은 것을 결정 기록·비기능 표 같은 글로 남기는 것**입니다.[7][8] {추론}",
+   "refs": [1, 7, 8, 13, 16, 19, 20],
+   "study": ["cl-blog-nfr", "cl-blog-adr", "usm-book", "ipa-nfr"]
+  },
+  {
+   "section": "task",
+   "quote": "・プロダクト開発・設計・実装：フロントエンド〜バックエンドまで幅広く担当",
+   "short": "화면(React·Vue)부터 서버(Python·Go·Java·TS)까지 한 기능을 끝까지 맡는다.",
+   "why": "공동 프로젝트는 팀이 작아 기능 하나를 화면·API·DB 로 나눠 넘길 여유가 적습니다 {추론}. 공고 기술 목록이 프런트 React·TypeScript, 백엔드 Python·Go·Java·TypeScript 입니다.[2]",
+   "actually": {
+    "items": [
+     "**한 사람이 한 바퀴** — 회사 엔지니어가 Claude Code 로 예약 화면(SPA) → Terraform 으로 EKS(AWS 의 쿠버네티스) → GitLab 파이프라인으로 배포까지 혼자 해 본 글. 1주쯤 걸릴 일이 하루로 줄었다고 적었다.[10]",
+     "**언어는 고객 따라** — 고객사가 쓰는 언어를 따르므로 Python·Go·Java·TS 중 무엇이든 만날 수 있다.[1] {추론}",
+     "**설계 결정은 기록으로** — 어떤 구조를 왜 골랐는지 ADR 로 남긴다.[8]"
+    ]
+   },
+   "how_far": "공고 아래 단서가 '모든 경험이 필요하진 않다 — 잘하는 쪽을 축으로 점점 넓혀 달라'입니다.[1] 한쪽(예: 백엔드)이 실무 수준이고 반대쪽은 **읽고 고칠 수 있는** 정도면 출발선입니다. {추론}",
+   "refs": [1, 2, 8, 10],
+   "study": ["cl-blog-eks"]
+  },
+  {
+   "section": "task",
+   "quote": "・クラウドインフラ・アーキテクチャ構築：AWS/GCP、コンテナ（EKS/ECS/Docker/Kubernetes）、IaC（Terraform）での環境設計",
+   "short": "고객 서비스가 돌 클라우드 자리를 Terraform 코드로 짓고, 앱을 컨테이너로 올린다.",
+   "why": "이 회사는 2015년부터 Docker 파트너, 2018년 일본 첫 쿠버네티스 인증 서비스 제공사(KCSP)로 큰 곳이라 컨테이너가 본업입니다.[4] 공고는 AWS 최상위 서비스 파트너라고도 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**EKS 와 ECS** — EKS 는 AWS 가 관리하는 쿠버네티스, ECS 는 AWS 자체 컨테이너 실행 서비스다. 고객 규모·운영 인력에 맞춰 고른다.[24][25]",
+     "**Terraform 으로 짓기** — 네트워크·클러스터를 모듈로 나눠 코드로 만든다(회사 글의 EKS 예).[10] ECS 의 새 간편 모드도 Terraform 으로 올려 본 글이 있다.[15]",
+     "**state(상태 파일)** — Terraform 은 지금 지어진 것을 state 에 기록하고, 여럿이 쓰면 원격 저장·잠금이 필요하다.[23]",
+     "**규칙은 고객 가이드에서** — 설계 검토 10개 분야를 고객사의 클라우드 가이드에서 가져와 방침서로 정리했다.[8]"
+    ]
+   },
+   "how_far": "공고 단서대로 처음부터 전부는 아닙니다.[1] 최소선은 **Terraform 으로 VPC·컨테이너 서비스를 만들고 지우고, plan 결과를 읽고 설명할 수 있는** 정도입니다. {추론}",
+   "refs": [1, 4, 8, 10, 15, 23, 24, 25],
+   "study": ["terraform-ko", "terraform-docs", "eks-docs", "ecs-docs", "k8s-guide"]
+  },
+  {
+   "section": "task",
+   "quote": "・継続的なカイゼン活動：CI/CDパイプライン整備、信頼性向上（SRE活動）",
+   "short": "자동 테스트·배포 길을 깔고, 서비스가 덜 멈추게 운영을 계속 다듬는 일.",
+   "why": "회사는 GitLab 일본 첫 전문 서비스 파트너(2021)·아시아태평양 올해의 파트너(2022)라 CI/CD 를 GitLab 으로 까는 일이 많습니다.[4] 운영 서비스(CCO, Co-Creation Ops)도 따로 있습니다.[12]",
+   "actually": {
+    "items": [
+     "**GitLab CI 에 AI 붙이기** — 바뀐 파일만 Claude Code 에 넘겨 테스트를 만들게 하고, pytest 를 돌린 뒤 머지 요청을 자동으로 연다. 가짜 객체(mock) 금지 규칙을 뒀는데도 없는 코드에 대한 테스트를 쓴 일이 있었다고 적었다.[11]",
+     "**운영에 AI** — 클라우드 비용 분석(약 16시간 절약)·알림 분류·Terraform 리뷰에 AI 를 써 봤지만, 부담은 조금만 줄었고 사람 확인 없이는 아직 못 믿는다고 적었다.[12]",
+     "**SRE 의 기본** — 목표 가용성(SLO)을 정하고, 넘어선 장애 시간만큼 '오류 예산'을 쓴 것으로 본다.[21]",
+     "**개선을 숫자로** — 배포 횟수·변경 리드타임·변경 실패율·복구 시간(DORA 네 지표)으로 나아졌는지 본다.[22]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "한 주 배포 기록으로 DORA 지표 세기 (가상 값, 직접 실행)",
+     "body": "출력: `배포 횟수/주: 5` · `변경 리드타임 중앙값(시간): 3.5` · `변경 실패율: 20%`. 커밋→배포 시간을 줄이고 실패율을 낮추는 것이 '카이젠'의 숫자 쪽입니다.[22]",
+     "lang": "python",
+     "code": "from datetime import datetime as dt\nlog = [(\"2026-11-02 10:00\",\"2026-11-02 15:00\",False),\n       (\"2026-11-03 09:00\",\"2026-11-04 11:00\",True),\n       (\"2026-11-04 13:00\",\"2026-11-04 16:30\",False),\n       (\"2026-11-05 10:00\",\"2026-11-05 12:00\",False),\n       (\"2026-11-06 14:00\",\"2026-11-06 17:00\",False)]\nf = lambda s: dt.strptime(s, \"%Y-%m-%d %H:%M\")\nleads = sorted((f(d) - f(c)).total_seconds() / 3600 for c, d, _ in log)\nprint(\"배포 횟수/주:\", len(log))\nprint(\"변경 리드타임 중앙값(시간):\", leads[len(leads)//2])\nprint(\"변경 실패율:\", f\"{sum(x for *_, x in log)/len(log):.0%}\")"
+    },
+    {
+     "title": "가용성 99.9% 의 한 달 오류 예산 (가상 장애, 직접 실행)",
+     "body": "30일 기준 예산은 43.2분. 장애 12·7·20분이면 `사용 39분 / 남음 4.2분 (90% 소진)` — 이때는 새 기능보다 안정화를 먼저 한다는 것이 SRE 의 약속입니다.[21]",
+     "lang": "python",
+     "code": "slo = 0.999\nbudget = 30 * 24 * 60 * (1 - slo)\nused = sum([12, 7, 20])\nprint(f\"예산 {budget:.1f}분 / 사용 {used}분 / 남음 {budget-used:.1f}분 ({used/budget:.0%} 소진)\")"
+    }
+   ],
+   "how_far": "운영 전담 SRE 자리는 아닙니다.[1] 최소선은 **GitLab CI(또는 GitHub Actions)로 테스트→배포 파이프라인을 직접 짜 본 것**과 장애 뒤 원인·재발 방지를 글로 남기는 습관입니다. {추론}",
+   "refs": [1, 4, 11, 12, 21, 22],
+   "study": ["cl-blog-gitlab-claude", "gitlab-ci-docs", "sre-book", "accelerate-ja"]
+  },
+  {
+   "section": "task",
+   "quote": "・生成AI活用による開発プロセス革新：AIエージェントを用いたPoC・実サービス開発",
+   "short": "AI 에이전트로 시제품(PoC)을 빨리 만들고, 되는 것은 실제 서비스로 키운다.",
+   "why": "CTO 아라이 야스히로가 2025년 10월 대형 벤더 12곳이 함께 만든 'AI 구동 개발 컨소시엄'의 발기인·좌장입니다.[6] 회사는 Cursor·Claude Code·ChatGPT 를 전사 라이선스로 주고, 요구 정의부터 출시까지 AI 를 쓴다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**사내 RAG 봇** — 사내 슬랙 봇에 Gemini 파일 검색을 붙이고, 파일 번호 → 구글 드라이브 주소 대응표를 따로 둬 답에 원문 링크를 달았다. 시험 비용은 5엔 미만.[14]",
+     "**AI 가 틀릴 때** — 같은 질문에 두 AI 도구가 반대 결론(인증서를 어느 리전에 만드나)을 냈고, 원인은 서로 다른 전제였다. AI 가 '안 된다'고 하면 '정말인가'를 되묻는 것을 규칙으로 삼았다.[9]",
+     "**외부 고객 일도** — 회사는 AI·LLM 컨설팅·구축을 사업으로 하고, FDE(고객 현장에 들어가는 엔지니어)·AI 구동 개발 동반 컨설턴트를 따로 뽑고 있다.[3][17]"
+    ]
+   },
+   "how_far": "모델을 학습시키는 자리가 아닙니다 {추론}. **API·에이전트 도구를 묶어 동작하는 시제품을 며칠 안에 내고, 어디서 틀리는지 검증하는** 수준이 기대됩니다.[1][9]",
+   "refs": [1, 3, 6, 9, 14, 17],
+   "study": ["claude-code-docs", "rag-book-ja", "cl-blog-ai-premise"]
+  },
+  {
+   "section": "task",
+   "quote": "※すべての経験・スキルが必要なわけではありません。得意領域を軸に、徐々に幅を広げてフルスタックにご活躍いただくことを期待しています。",
+   "short": "위 다섯 줄을 다 갖출 필요는 없다 — 강한 한 분야로 들어와 넓혀 가면 된다는 단서.",
+   "why": "업무 다섯 줄은 요구 정의·앱·인프라·운영·AI 를 모두 덮어 한 사람이 처음부터 갖추기 어렵습니다 {추론}. 회사가 직접 '잘하는 쪽을 축으로 점점 넓혀 달라'고 적었습니다.[1]",
+   "how_far": "지원서에는 **축이 되는 한 분야의 깊이(성과·숫자)**와 **다른 분야로 넓혀 본 흔적**을 같이 보이는 것이 이 문장에 맞습니다. {추론}",
+   "refs": [1]
+  },
+  {
+   "section": "qualification",
+   "quote": "・生成AIまたはClaude Code、Cursor等のAI駆動開発ツールの活用",
+   "short": "Claude Code·Cursor 같은 AI 코딩 도구를 실제 업무에 써 본 경험 — 필수 요건 첫 줄.",
+   "why": "회사가 전 과정에 AI 를 쓰고, 기계적인 코딩·테스트는 AI 에 맡기고 사람은 '고객이 바라는 가치'에 집중한다는 것이 이 자리 소개입니다.[1] 이 회사 CTO 는 2024년 공개 공부 모임에서 Cursor 의 문서 참조(@Docs)를 가벼운 RAG 처럼 쓰는 법을 소개했습니다.[18]",
+   "actually": {
+    "items": [
+     "**규칙 파일** — 문체·금지 사항을 설정 파일(Claude.md 등)에 두고, 파일 하나에 항목 하나·브랜치 하나에 PR 하나로 나눈다.[9][11]",
+     "**도구 나눠 쓰기** — 요구 정리·문서는 Claude Desktop, 저장소 작업은 Claude Code.[9]",
+     "**CI 에 넣기** — 비대화 모드로 CI 에서 돌려 테스트를 만들게 한다.[11][26]"
+    ]
+   },
+   "how_far": "'써 봤다'보다 **어디에 맡기고 어디서 사람이 확인했는지**를 말할 수 있어야 합니다 — 회사 글들이 하나같이 AI 의 틀린 답을 사람이 잡은 이야기입니다.[7][9][11]",
+   "refs": [1, 7, 9, 11, 18, 26],
+   "study": ["claude-code-docs", "cursor-docs", "cl-blog-gitlab-claude"]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Webアプリケーション開発の実務経験（3年以上）\n　　-フロントエンド：React、Vue.js、TypeScript など\n　　-バックエンド：Python、Go、Java、JavaScript/TypeScript など",
+   "short": "웹 서비스 개발 실무 3년 이상 — 프런트·백엔드 목록은 예시이고 그중 익숙한 것이면 된다.",
+   "why": "고객사 시스템을 함께 만드는 일이라 언어를 회사가 고정하지 않고 '등'으로 열어 두었습니다.[1] 원티드 표기 경력은 5~15년이라 실제로는 3년보다 위를 봅니다.[1] {추론}",
+   "how_far": "프런트·백엔드 중 한쪽 실무 3년이면 요건은 맞습니다. 리드 후보 자리라서 **설계 결정을 설명할 수 있는 경력**이 유리합니다.[2] {추론}",
+   "level": "실무",
+   "refs": [1, 2]
+  },
+  {
+   "section": "qualification",
+   "quote": "・AWS、GCP、Azureなど、パブリッククラウド環境での構築・運用経験",
+   "short": "AWS·GCP·Azure 중 하나에서 직접 짓고 운영해 본 경험.",
+   "why": "업무 ③ 클라우드 설계가 이 경험을 전제로 합니다. 공고 소개는 고객 특성에 맞춰 클라우드 기술을 중립적으로 고른다고 적었습니다.[1]",
+   "how_far": "콘솔로 눌러 만든 경험보다 **코드(Terraform 등)로 만들고, 비용·장애를 겪어 본 운영 경험**이 이 회사 일에 가깝습니다.[10][12] {추론}",
+   "refs": [1, 10, 12],
+   "study": ["terraform-docs"]
+  },
+  {
+   "section": "qualification",
+   "quote": "・複数人のチームにによるチーム開発経験",
+   "short": "혼자가 아니라 여럿이 코드 리뷰·브랜치·스크럼으로 같이 만들어 본 경험.",
+   "why": "회사의 행동 지침 'HRT+Joy'는 『Team Geek』의 겸손·존중·신뢰에서 왔고, 몹·페어 프로그래밍을 문화로 내세웁니다.[1][17]",
+   "how_far": "스크럼(짧은 주기로 계획·회고하는 방식)의 역할과 행사를 알고 참여해 본 정도면 충분합니다.[29] {추론}",
+   "refs": [1, 17, 29],
+   "study": ["team-geek", "scrum-guide"]
+  },
+  {
+   "section": "qualification",
+   "quote": "・クライアントワークまたは社内ステークホルダーとの折衝経験",
+   "short": "고객사나 사내 다른 부서와 일정·범위를 협상해 본 경험.",
+   "why": "업무 ①이 고객과 대화해 요구를 정리하는 일이고, 비기능 요건도 고객과 협상해 정했습니다.[1][7]",
+   "how_far": "영업처럼 계약을 맺는 일은 아닙니다 {추론}. **'이건 이번엔 안 한다'를 이유와 함께 말하고 합의를 글로 남겨 본 경험**이면 됩니다.[8] {추론}",
+   "refs": [1, 7, 8]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本語レベル: ビジネス",
+   "short": "일본 고객과 요구 정의 회의를 일본어로 할 수 있어야 한다 — 서류도 일본어로만 받는다.",
+   "why": "원티드 안내에 일본어 전용 포지션이라 일문 이력서·직무경력서가 필수이고, 국문·영문만 내거나 일본어 소통이 안 되면 따로 알리지 않고 서류에서 뺀다고 적었습니다.[1]",
+   "how_far": "급수는 적혀 있지 않습니다. JLPT 로 N1 은 폭넓은 장면의 일본어를 이해하는 수준입니다.[30] 이 자리는 고객과 '왜'를 캐묻는 대화가 일이라 **회의·문서를 일본어로 이끌 수 있는 N1 근처**를 목표로 보는 것이 안전합니다. {추론}",
+   "refs": [1, 30],
+   "study": ["jlpt"]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本国内への移住が必要",
+   "short": "완전 원격이지만 일본 안에 살아야 한다 — 한국에서 원격은 안 된다.",
+   "why": "근무지는 일본 전국 어디서나 완전 원격이지만, 팀 빌딩·고객 회의로 본사 출근이 필요할 때가 있다고 적었습니다.[1] 이 공고는 LAPRAS Global Bridge 연계 채용입니다.[1]",
+   "how_far": "외국인 엔지니어는 보통 재류자격 '기술·인문지식·국제업무'로 일하고 학력·경력 요건이 있습니다.[31] 비자·이사 지원은 공고에 없으니 면담에서 확인합니다. {추론}",
+   "refs": [1, 31],
+   "study": ["isa-visa"]
+  },
+  {
+   "section": "preference",
+   "quote": "・生成AI／LLM／RAGを活用したシステムの設計・実装経",
+   "short": "LLM 에 사내 문서를 찾아 붙여 답하게 하는(RAG) 시스템을 만들어 본 경험.",
+   "why": "회사가 AI·LLM 컨설팅·구축을 사업으로 키우고 있고[17], 사내에서도 문서 검색 봇을 만들었습니다.[14] RAG 는 질문과 가까운 문서를 먼저 찾아 모델 입력에 붙이는 방식입니다.[28]",
+   "actually": {
+    "items": [
+     "**검색 → 붙이기 → 답하기** — 문서를 쪼개 색인하고, 질문과 가까운 조각을 찾아 '이 자료만 근거로 답하라'는 지시와 함께 넘긴다.[28]",
+     "**출처 달기** — 답에 원문 링크를 다는 대응표를 따로 둔 것이 이 회사 봇의 요점이었다.[14]",
+     "**일본어 문서** — 일본어는 띄어쓰기가 없어 낱말 자르기가 검색 품질을 가른다(아래 예). {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "일본어 FAQ 에서 질문과 가까운 문서 찾기 (직접 실행)",
+     "body": "띄어쓰기로만 자르면 '返品の送料は無料ですか' 가 한 덩어리라 아무 문서와도 겹치지 않아 점수 0.0. 두 글자씩 자르면 반품 FAQ 가 0.254 로 1등이 되고, 그 문서를 근거로 붙인 지시문이 만들어집니다. 실제 서비스는 형태소 분석기나 임베딩(문장 벡터)을 씁니다. {추론}",
+     "lang": "python",
+     "code": "import math, re\nfrom collections import Counter\ndocs = {\"faq-01\": \"返品は 商品到着後 14日以内 なら 送料無料\",\n        \"faq-02\": \"ポイントは 購入金額の 1% が 翌月 付与\",\n        \"faq-03\": \"配送は 平日 15時 までの 注文で 当日 出荷\"}\ndef cos(a, b):\n    dot = sum(a[t] * b[t] for t in a)\n    na = math.sqrt(sum(v*v for v in a.values())); nb = math.sqrt(sum(v*v for v in b.values()))\n    return dot / (na * nb) if na and nb else 0.0\nq = \"返品の送料は無料ですか\"\nwords = lambda s: Counter(re.findall(r\"\\w+\", s))\nbigram = lambda s: Counter(s[i:i+2] for i in range(len(s) - 1) if \" \" not in s[i:i+2])\nfor name, v in ((\"띄어쓰기\", words), (\"두 글자\", bigram)):\n    best = max(docs, key=lambda d: cos(v(q), v(docs[d])))\n    print(name, best, round(cos(v(q), v(docs[best])), 3))\nprint(f\"次の資料だけを根拠に答えて。資料: {docs['faq-01']} / 質問: {q}\")"
+    }
+   ],
+   "how_far": "우대 사항입니다. 작은 것이라도 **문서 검색 + 출처 표시 + 틀린 답 사례 점검**까지 한 바퀴 돌려 본 결과물이 있으면 강하게 읽힙니다. {추론}",
+   "refs": [14, 17, 28],
+   "study": ["rag-book-ja", "rag-paper"]
+  },
+  {
+   "section": "preference",
+   "quote": "・クラウド（AWS / GCP / Azure のいずれか）でのシステム設計・構築",
+   "short": "클라우드에서 운영만이 아니라 구조를 처음부터 설계해 본 경험.",
+   "why": "필수 요건은 '구축·운영'이고 우대는 '설계'입니다 — 리드 후보에게 기대하는 한 단계 위입니다.[1][2] 이 회사는 설계 방침과 결정 이유를 나눠 문서로 남깁니다.[8]",
+   "how_far": "가용성·성능·보안 같은 비기능 요구에서 출발해 서비스·구성을 고르고, 그 이유를 ADR 로 남겨 본 경험이면 이 줄에 맞습니다.[7][8] {추론}",
+   "refs": [1, 2, 7, 8],
+   "study": ["cl-blog-nfr", "cl-blog-adr"]
+  },
+  {
+   "section": "preference",
+   "quote": "・Python、TypeScript、Go等を用いたアプリケーション開発",
+   "short": "Python·TypeScript·Go 로 앱을 만들어 본 경험 — 이 회사 프로젝트에 자주 나오는 언어.",
+   "why": "공고 기술 목록의 백엔드 언어와 겹칩니다.[2] 회사 글의 예시도 Python(pytest·Slack 봇)·JavaScript 가 많습니다.[11][14] {추론}",
+   "how_far": "셋 다가 아니라 하나를 깊게, 나머지는 읽을 수 있는 정도면 됩니다. {추론}",
+   "refs": [2, 11, 14]
+  },
+  {
+   "section": "preference",
+   "quote": "・アジャイル開発・DevOps導入の推進経験",
+   "short": "팀에 애자일·DevOps 를 '들여온' 경험 — 참여가 아니라 도입을 이끈 쪽.",
+   "why": "회사가 2006년부터 애자일·DevOps 로 대기업 내재화를 도와 온 곳이라, 고객 팀에 이 방식을 심는 것이 일의 일부입니다.[1]",
+   "actually": {
+    "items": [
+     "**성과 먼저** — 만들기 전에 목표 성과와 지표를 정하고, 쓰임새를 측정해 효과 없는 기능을 뺀다.[13]",
+     "**전달 성과 재기** — DORA 네 지표로 도입 전후를 비교한다.[22]"
+    ]
+   },
+   "how_far": "자기 팀에 CI·회고·스프린트를 처음 들여와 **무엇이 바뀌었는지 숫자로** 말할 수 있으면 됩니다. {추론}",
+   "refs": [1, 13, 22],
+   "study": ["accelerate-ja", "cl-blog-outcome", "agile-samurai"]
+  },
+  {
+   "section": "preference",
+   "quote": "・技術選定やアーキテクチャに関する意思決定を主体的に担った経験（プロジェクト内でのリード経験、または準ずる裁量を持って開発に携わった経験",
+   "short": "기술·구조를 스스로 정하고 책임져 본 경험 — 리드 후보 자리라서.",
+   "why": "이 공고 제목이 '리드 후보'이고 기술 선정·아키텍처·고객 절충을 맡을 사람을 찾습니다.[2] 회사는 고객 특성에 맞춰 기술을 중립적으로 고른다고 적었습니다.[1]",
+   "how_far": "정식 리드 직함이 없어도 됩니다 — 공고가 '그에 준하는 재량'도 인정합니다.[1] 면접에서는 **고른 기술·버린 대안·그 이유**를 한 사례로 말할 수 있어야 합니다.[8] {추론}",
+   "refs": [1, 2, 8],
+   "study": ["cl-blog-adr"]
+  },
+  {
+   "section": "preference",
+   "quote": "求める人物像\nクリエーションラインでは顧客やチームの「Why」に寄り添い、伴走者としてのリーダーシップを発揮できる「Co-Creation Sherpa（共創型シェルパ）」としてのパーソナリティスキルを持つ方を求めています。特に以下のような姿勢を大切にしています。",
+   "short": "원하는 사람 — 고객 옆에서 '왜'를 같이 붙잡는 길잡이형 리더. 아래 세 줄이 그 내용이다.",
+   "why": "셰르파는 등반가 옆에서 길을 같이 가는 안내인입니다. 회사가 엔지니어상을 이 말로 정했고, 행동 지침 'HRT+Joy'(겸손·존중·신뢰 + 즐거움)도 같은 결입니다.[1]",
+   "refs": [1],
+   "study": ["team-geek"]
+  },
+  {
+   "section": "preference",
+   "quote": "事業の本質的な目的を理解する力：顧客が「この機能を作って」と言ったときにすぐ作り始めるのではなく、「なぜその機能が今必要なのか」という背景を粘り強く問いかけ、解きほぐせる姿勢",
+   "short": "'이 기능 만들어 줘'에 바로 짜지 않고 '왜 지금 필요한가'를 끈질기게 묻는 태도.",
+   "why": "업무 ①과 같은 이야기입니다. 회사 글에서도 만들기 전에 목표 성과를 정하는 쪽으로 바뀐 개발자의 사례를 적었습니다.[13]",
+   "how_far": "면접에서 **요청을 그대로 만들지 않고 되물어 범위를 바꾼 경험** 하나를 준비합니다. {추론}",
+   "refs": [13],
+   "study": ["usm-book", "cl-blog-outcome"]
+  },
+  {
+   "section": "preference",
+   "quote": "顧客と同じ方向を向いて巻き込む力：一方的な説得や仕様の押し付けではなく、顧客とチーム全員で目的地を共有し、当事者意識を醸成できる姿勢",
+   "short": "설득·강요가 아니라 고객과 팀이 같은 목적지를 보고 스스로 움직이게 만드는 태도.",
+   "why": "내재화 지원은 결국 고객 팀이 혼자 해낼 수 있게 되는 것이 목표라, 고객이 주인 의식을 가져야 끝납니다 {추론}. 회사 엔지니어상(Co-Creation Sherpa)이 '같이 오른다'입니다.[1]",
+   "how_far": "결정 과정에 고객을 넣은 방법(같이 쓴 결정 기록·공동 회고 등)을 사례로 말할 수 있으면 됩니다.[8] {추론}",
+   "refs": [1, 8]
+  },
+  {
+   "section": "preference",
+   "quote": "行動によって物事を完遂する力：議論だけで立ち止まらず、まずは動くものを作って検証する実行力",
+   "short": "토론만 하지 않고 먼저 돌아가는 것을 만들어 확인하는 실행력.",
+   "why": "회사 엔지니어가 AI 로 앱·인프라·배포까지 하루 만에 한 바퀴 돌려 본 글이 이 태도의 예입니다.[10]",
+   "how_far": "며칠 안에 만든 시제품으로 결정을 바꾼 경험이 있으면 그대로 이 줄의 답입니다. {추론}",
+   "refs": [10]
+  },
+  {
+   "section": "preference",
+   "quote": "※すべてを完璧に満たす必要はありません。技術力を軸にしながら、上記の姿勢に共感し、成長していきたいという意欲があれば歓迎します。",
+   "short": "다 갖출 필요는 없다 — 기술력이 축이고, 위 태도에 공감하고 자랄 의지면 된다는 단서.",
+   "why": "업무 단서와 같은 말을 인물상에도 다시 붙였습니다.[1]",
+   "how_far": "지원서 첫머리는 **기술 실적**, 그다음에 위 세 태도의 사례 하나씩이 이 문장에 맞는 순서입니다. {추론}",
+   "refs": [1]
+  }
+ ],
+ "resources": [
+  {"id": "cl-blog-nfr", "title": "【インフラ設計×Claude #1】非機能要件をClaudeと策定する", "by": "クリエーションライン CL LAB · 2026-11", "kind": "doc", "lang": "ja", "free": true, "level": "실무", "url": "https://www.creationline.com/tech-blog/chatgpt-ai/ai/86367", "why": "업무 ①의 실제 모습 — 비기능 요구 238개를 고객에 맞게 72개로 줄인 과정과 AI·사람의 역할 나누기. 지원 전에 꼭 볼 글."},
+  {"id": "cl-blog-adr", "title": "【インフラ設計×Claude #2】方針書とADRの分け方", "by": "クリエーションライン CL LAB · 2026-11", "kind": "doc", "lang": "ja", "free": true, "level": "실무", "url": "https://www.creationline.com/tech-blog/cloudnative/aws/86376", "why": "'왜'를 문서로 남기는 이 회사 방식. 우대 ②·⑤(설계·기술 선정)에 바로 쓰인다."},
+  {"id": "cl-blog-ai-premise", "title": "【インフラ設計×Claude #3】同じ問いなのに、AIの結論が正反対になった", "by": "クリエーションライン CL LAB · 2026-11", "kind": "doc", "lang": "ja", "free": true, "level": "실무", "url": "https://www.creationline.com/tech-blog/chatgpt-ai/ai/86378", "why": "AI 답을 어떻게 검증하나 — 요건 ① 면접 대비."},
+  {"id": "cl-blog-eks", "title": "クラウドエンジニアがClaude Codeでフルスタック開発！？アプリ作成からAWS EKSデプロイまでやってみた", "by": "クリエーションライン CL LAB · 2026-03", "kind": "doc", "lang": "ja", "free": true, "level": "입문", "url": "https://www.creationline.com/tech-blog/others/hashicorp/82963", "why": "화면 → Terraform EKS → GitLab 배포 한 바퀴. 업무 ②③을 따라 해 보기 좋은 크기."},
+  {"id": "cl-blog-gitlab-claude", "title": "GitLab CIでClaude Codeにテストコードを生成してもらった際のtips", "by": "クリエーションライン CL LAB · 2025-12", "kind": "doc", "lang": "ja", "free": true, "level": "실무", "url": "https://www.creationline.com/tech-blog/?p=81148", "why": "CI 에 AI 를 넣는 구체 설정과 실패담. 업무 ④·요건 ①."},
+  {"id": "cl-blog-outcome", "title": "「アウトカムが大事」にピンとこなかった開発者が、作る前に指標を決めるようになるまで", "by": "クリエーションライン CL LAB · 2026-11", "kind": "doc", "lang": "ja", "free": true, "level": "입문", "url": "https://www.creationline.com/tech-blog/agile-devops/devops/86473", "why": "인물상 '왜를 묻는 힘'과 우대 ④ 애자일 도입이 실제로 어떤 모습인지."},
+  {"id": "usm-book", "title": "ユーザーストーリーマッピング", "by": "Jeff Patton (川口恭伸 監修, 長尾高弘 訳) · オライリー・ジャパン · 2015", "kind": "book", "lang": "ja", "free": false, "level": "입문", "url": "https://www.oreilly.com/library/view/-/9784873117324/", "why": "회사가 스폰서 무대에서 권한 책. 사용자 흐름으로 요구를 펼쳐 '이번에 만들 것'을 고르는 법 — 업무 ①."},
+  {"id": "agile-samurai", "title": "The Agile Samurai (일본어판 『アジャイルサムライ』)", "by": "Jonathan Rasmusson · Pragmatic Bookshelf · 2010", "kind": "book", "lang": "en", "free": false, "level": "입문", "url": "https://www.oreilly.com/library/view/the-agile-samurai/9781680500066/", "why": "프로젝트 시작 때 '우리는 왜 여기 있나'를 맞추는 인셉션 덱. 고객과 목적지를 공유하는 인물상 ②에 맞다."},
+  {"id": "team-geek", "title": "Team Geek ― Googleのギークたちはいかにしてチームを作るのか", "by": "Brian W. Fitzpatrick, Ben Collins-Sussman (角征典 訳) · オライリー・ジャパン · 2013", "kind": "book", "lang": "ja", "free": false, "level": "입문", "url": "https://www.oreilly.com/library/view/-/9784873116303/", "why": "회사 행동 지침 HRT 의 출처. 요건 ④ 팀 개발과 면접의 문화 질문 대비."},
+  {"id": "accelerate-ja", "title": "LeanとDevOpsの科学 (Accelerate)", "by": "Nicole Forsgren, Jez Humble, Gene Kim (武舎広幸·武舎るみ 訳) · インプレス", "kind": "book", "lang": "ja", "free": false, "level": "실무", "url": "https://www.kinokuniya.co.jp/f/dsg-01-9784295004905", "why": "DORA 네 지표의 근거 연구. 업무 ④·우대 ④ '개선을 숫자로'."},
+  {"id": "k8s-guide", "title": "Kubernetes完全ガイド 第2版", "by": "青山真也 · インプレス", "kind": "book", "lang": "ja", "free": false, "level": "실무", "url": "https://www.kinokuniya.co.jp/f/dsg-01-9784295009795", "why": "EKS 위 쿠버네티스 개념을 일본어 용어로 익힌다 — 업무 ③, 일본어 회의 대비도 겸한다."},
+  {"id": "terraform-ko", "title": "테라폼으로 시작하는 IaC", "by": "한빛미디어 · 2024 개정판", "kind": "book", "lang": "ko", "free": false, "level": "입문", "url": "https://search.kyobobook.co.kr/search?keyword=%ED%85%8C%EB%9D%BC%ED%8F%BC%EC%9C%BC%EB%A1%9C%20%EC%8B%9C%EC%9E%91%ED%95%98%EB%8A%94%20IaC", "why": "Terraform 기본(리소스·모듈·state)을 한국어로 빠르게. 업무 ③의 출발점."},
+  {"id": "terraform-docs", "title": "Terraform 문서 · State", "by": "HashiCorp", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://developer.hashicorp.com/terraform/language/state", "why": "여럿이 Terraform 을 쓸 때 원격 state·잠금이 왜 필요한지."},
+  {"id": "eks-docs", "title": "Amazon EKS 사용 설명서", "by": "AWS", "kind": "doc", "lang": "ko", "free": true, "level": "실무", "url": "https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html", "why": "업무 ③의 EKS — 관리형 쿠버네티스가 무엇을 대신해 주나."},
+  {"id": "ecs-docs", "title": "Amazon ECS 개발자 안내서", "by": "AWS", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html", "why": "쿠버네티스 없이 컨테이너를 돌리는 AWS 방식 — EKS 와 언제 무엇을 고르나."},
+  {"id": "gitlab-ci-docs", "title": "GitLab CI/CD 문서", "by": "GitLab", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://docs.gitlab.com/ci/", "why": "회사가 GitLab 파트너라 프로젝트 CI 가 GitLab 인 경우가 많다 — 업무 ④."},
+  {"id": "sre-book", "title": "Site Reliability Engineering (Google SRE Book)", "by": "Google", "kind": "book", "lang": "en", "free": true, "level": "실무", "url": "https://sre.google/sre-book/table-of-contents/", "why": "SLO·오류 예산의 원전. 업무 ④ 'SRE 활동'의 기본기."},
+  {"id": "claude-code-docs", "title": "Claude Code 문서", "by": "Anthropic", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://code.claude.com/docs/en/overview", "why": "요건 ①의 도구. 규칙 파일·비대화 모드(CI 에서 돌리기)를 익힌다."},
+  {"id": "cursor-docs", "title": "Cursor 문서", "by": "Anysphere", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://docs.cursor.com/", "why": "요건 ①의 다른 도구. 문서 참조·규칙 기능."},
+  {"id": "rag-book-ja", "title": "LangChainとLangGraphによるRAG・AIエージェント［実践］入門", "by": "西見公宏·吉田真吾·大嶋勇樹 · 技術評論社 · 2024", "kind": "book", "lang": "ja", "free": false, "level": "실무", "url": "https://gihyo.jp/book/2024/978-4-297-14530-9", "why": "RAG 만들기·평가와 에이전트 구현을 일본어로. 우대 ①과 업무 ⑤."},
+  {"id": "rag-paper", "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks", "by": "Lewis 외 · 2020", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://arxiv.org/abs/2005.11401", "why": "RAG 라는 이름의 출처 논문. 검색과 생성을 왜 묶나."},
+  {"id": "ipa-nfr", "title": "非機能要求グレード", "by": "IPA(정보처리추진기구)", "kind": "doc", "lang": "ja", "free": true, "level": "실무", "url": "https://www.ipa.go.jp/archive/digital/iot-en-ci/jyouryuu/hikinou/ent03-b.html", "why": "일본 고객과 비기능 요구를 맞출 때 쓰는 공용 표. 회사 글의 출발점."},
+  {"id": "scrum-guide", "title": "スクラムガイド 2020 (일본어판)", "by": "Ken Schwaber, Jeff Sutherland", "kind": "doc", "lang": "ja", "free": true, "level": "입문", "url": "https://scrumguides.org/docs/scrumguide/v2020/2020-Scrum-Guide-Japanese.pdf", "why": "요건 ④ 팀 개발 — 일본어 용어(プロダクトオーナー·スプリント)로 스크럼 기본을 맞춘다."},
+  {"id": "jlpt", "title": "JLPT · N1~N5 인정의 기준", "by": "国際交流基金·日本国際教育支援協会", "kind": "doc", "lang": "ja", "free": true, "level": "입문", "url": "https://www.jlpt.jp/about/levelsummary.html", "why": "요건 '비즈니스 일본어'를 급수로 가늠하기."},
+  {"id": "isa-visa", "title": "在留資格「技術・人文知識・国際業務」", "by": "出入国在留管理庁", "kind": "doc", "lang": "ja", "free": true, "level": "입문", "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html", "why": "일본 이주 요건 — 엔지니어 취업 비자의 학력·경력 기준."}
+ ],
+ "study_path": [
+  {"title": "회사 방식 읽기", "time": "1주", "goal": "이 회사가 요구 정의·설계 결정·AI 검증을 어떻게 하는지 일본어로 설명할 수 있다.", "resources": ["cl-blog-nfr", "cl-blog-adr", "cl-blog-ai-premise", "cl-blog-outcome"], "task": "가상의 '사내 예약 시스템' 요청을 하나 정해, 되물을 '왜' 질문 10개와 비기능 표(가용성·성능·보안 각 3칸, 처음/운영 두 열)를 일본어로 써 본다."},
+  {"title": "요구를 펼치기", "time": "1~2주", "goal": "사용자 흐름으로 요구를 펼치고 이번에 만들 범위를 고를 수 있다.", "resources": ["usm-book", "agile-samurai", "scrum-guide"], "task": "1단계 예약 시스템을 스토리 맵으로 펼치고, 첫 출시 범위·'안 하는 것' 목록·성과 지표 하나를 정해 ADR 한 장으로 남긴다."},
+  {"title": "한 바퀴 만들기", "time": "2~3주", "goal": "AI 코딩 도구로 화면·API 를 만들고 Terraform 으로 컨테이너 서비스에 올린다.", "resources": ["cl-blog-eks", "claude-code-docs", "terraform-ko", "ecs-docs", "eks-docs", "terraform-docs"], "task": "예약 앱(React + Python 또는 Go API)을 Claude Code·Cursor 로 만들고, Terraform 으로 ECS(또는 EKS)에 올린다. AI 가 틀린 곳과 고친 방법을 README 에 적는다."},
+  {"title": "파이프라인과 운영", "time": "1~2주", "goal": "테스트→배포 자동화와 SLO·DORA 지표를 붙일 수 있다.", "resources": ["gitlab-ci-docs", "cl-blog-gitlab-claude", "sre-book", "accelerate-ja"], "task": "GitLab CI 로 테스트·배포를 엮고, 바뀐 파일의 테스트를 AI 로 만드는 단계를 넣는다. 가용성 목표와 오류 예산, 한 달 배포 기록의 DORA 지표를 표로 낸다."},
+  {"title": "RAG 시제품 (우대)", "time": "1~2주", "goal": "일본어 문서를 근거로 답하고 출처를 다는 봇을 만든다.", "resources": ["rag-book-ja", "rag-paper"], "task": "가상의 사내 FAQ 30건으로 검색 + 답변 + 원문 링크를 다는 봇을 만들고, 틀린 답 5개를 모아 원인(자르기·검색·지시문)을 분류한다."}
+ ],
+ "pay": {
+  "summary": "공고 연봉 **600만~900만 엔**(고정 잔업 45시간분·상여 포함). 비상장이라 회사 평균 급여 공시는 없다",
+  "rows": [
+   {"label": "공고 표기 연봉", "value": "600만~900만 엔", "amount": 5400, "basis": "공고", "note": "경력·이전 연봉을 보고 정한다. 기본급 + 잔업·심야·원격 수당 포함 금액이고 월 45시간 고정 잔업분이 들어 있다(평균 잔업 월 10시간 정도). 승급·상여 연 1회(4월), 수습 6개월 조건 같음 [1]. 막대는 하한 600만 엔을 1엔=9원으로 어림한 값이다 {추론}"},
+   {"label": "같은 회사 FDE", "value": "750만~1,200만 엔", "basis": "공고", "peer": true, "note": "회사 채용 페이지의 다른 자리(고객 현장에 들어가는 엔지니어) [3]"},
+   {"label": "같은 회사 AI 구동 개발 동반 컨설턴트", "value": "650만~1,000만 엔", "basis": "공고", "peer": true, "note": "회사 채용 페이지의 다른 자리 [3]"},
+   {"label": "Finatext 풀스택 엔지니어", "value": "900만~1,350만 엔", "basis": "공고", "peer": true, "note": "같은 경로(원티드·일본 근무)의 풀스택 공고, 경력 5~20년 [33]"},
+   {"label": "Ui2 풀스택 엔지니어", "value": "450만~600만 엔", "basis": "공고", "peer": true, "note": "같은 경로의 풀스택 공고, 경력 3~10년 [34]"},
+   {"label": "일본 민간 평균 급여(참고)", "value": "478만 엔 (정사원 545만 엔)", "basis": "국세청 민간급여실태통계 · 2024년분", "note": "일본 전체 민간 급여 소득자 평균 — 회사·직군 구분 없는 나라 전체 값 [32]"}
+  ],
+  "how": "クリエーションライン은 비상장사라 유가증권보고서의 직원 평균 급여가 없습니다(공시 숫자 없음). 비교 줄은 모두 같은 기준(공고 표기 범위)이고 마지막 줄만 나라 전체 평균이라 위치를 가늠하는 참고입니다. 고정 잔업 45시간분이 연봉 안에 있으니, 월 소정 160시간·할증 1.25 로 가정하면 600만 엔 중 약 13만 엔/월이 잔업분이고 기본급은 약 37만 엔/월입니다(직접 계산, 연봉을 12로 나눈 어림) {추론}. 실제 기본급·상여 비율은 제안서에서 확인합니다. 엔화 그대로, 세금·사회보험이 빠지기 전 금액입니다."
+ },
+ "benefits": {
+  "items": [
+   {"name": "근무 방식", "detail": "일본 전국 완전 원격, 코어타임 없는 슈퍼 플렉스(표준 9~18시 또는 10~19시), 전국 WeWork 이용 가능"},
+   {"name": "휴일", "detail": "토·일·공휴일, 연간 120일 이상, 여름휴가·연말연시"},
+   {"name": "연차", "detail": "입사일에 10일 앞당겨 부여"},
+   {"name": "원격 수당", "detail": "있음 — 월 1만 엔(채용 사이트 기재)"},
+   {"name": "실력 향상 지원", "detail": "책·자격·유료 세미나·연수 보조(연 최대 10만 엔, 채용 사이트 기재), Udemy Business 라이선스"},
+   {"name": "통근 수당", "detail": "별도, 월 4만 엔까지"},
+   {"name": "건강", "detail": "정기 검진, 독감 접종·치과 검진 보조, 보건사 상담·산업의 면담"},
+   {"name": "연금·보험", "detail": "기업형 확정기여연금, 사회보험(관동 IT 소프트웨어 건강보험조합)"},
+   {"name": "장비", "detail": "PC 대여(Windows·Mac 선택)"},
+   {"name": "그 밖", "detail": "봉사활동 지원 수당, 사무실 음료 무료, 실내 전면 금연"}
+  ],
+  "note": "공고의 복리후생 칸(2026년) 기준이다 [1]. 원격 수당 금액·실력 향상 지원 상한은 채용 사이트 paiza 의 회사 정보에 적힌 값이다 [17]. 체류 자격·이사 지원은 적혀 있지 않다."
+ },
+ "location": {
+  "name": "クリエーションライン 본사",
+  "address": "神奈川県横浜市西区みなとみらい3-7-1 オーシャンゲートみなとみらい 8F",
+  "postal": "〒220-0012",
+  "map_url": "https://map.naver.com/p/search/%E7%A5%9E%E5%A5%88%E5%B7%9D%E7%9C%8C%E6%A8%AA%E6%B5%9C%E5%B8%82%E8%A5%BF%E5%8C%BA%E3%81%BF%E3%81%AA%E3%81%A8%E3%81%BF%E3%82%89%E3%81%843-7-1",
+  "near": "미나토미라이역 걸어서 2분 [1]",
+  "note": "2026년 7월 도쿄 지요다구에서 옮긴 본사(WeWork 오션게이트 미나토미라이)다 [5]. 공고 주소와 같다 [1]. 완전 원격 자리라 출근지가 아니라 회의·팀 빌딩 때 가는 곳이고, 도야마 사업소(富山市花園町3-2-9)도 있다 [1]."
+ },
+ "fit": {
+  "good": [
+   "코드보다 먼저 '그걸 왜 하죠?'를 묻는 게 편한 사람[1]",
+   "AI 도구를 써 보고 어디서 틀리는지 기록하는 게 재미있는 사람[9][11]",
+   "한 분야에 머물기보다 화면·서버·인프라를 넓게 만지고 싶은 사람[1]",
+   "여러 고객사의 다른 환경을 겪고 싶은 사람 {추론}"
+  ],
+  "hard": [
+   "일본 이주와 비즈니스 일본어가 필수 — 서류부터 일본어다[1]",
+   "고객 회의·협상이 일의 큰 몫이라, 혼자 코드에 집중하고 싶으면 맞지 않는다[1][7]",
+   "연봉에 고정 잔업 45시간분이 들어 있다 — 기본급은 표기보다 작다[1]",
+   "프로젝트마다 언어·클라우드가 바뀔 수 있다[1] {추론}"
+  ]
+ },
+ "interview": [
+  {"q": "고객이 '이 화면에 버튼 하나 추가해 주세요'라고 하면 무엇부터 묻겠어요?", "a": "Co-Creation Sherpa — '왜 지금 필요한가'부터.[1][13]"},
+  {"q": "비기능 요구를 고객과 어떻게 정하겠어요? 다 정할 수 없으면 무엇부터요?", "a": "IPA 그레이드를 줄여 72개로 만든 회사 사례.[7][19]"},
+  {"q": "AI 가 '그건 그 리전에서 안 됩니다'라고 했습니다. 어떻게 확인하나요?", "a": "두 도구가 반대 답을 낸 회사 글 — 전제 확인.[9]"},
+  {"q": "CI 에서 AI 가 만든 테스트를 어떻게 믿을 수 있게 하겠어요?", "a": "mock 금지·pytest 실행·라벨 붙은 머지 요청.[11]"},
+  {"q": "EKS 와 ECS 중 무엇을 고르겠어요? 그 결정을 어떻게 남기나요?", "a": "운영 인력·규모 + ADR.[8][24][25]"}
+ ],
+ "sources": [
+  {"n": 1, "title": "원티드 · [クリエーションライン株式会社] 풀스택 엔지니어 (Sherpa Engineer)_근무지 일본", "url": "https://www.wanted.co.kr/wd/383708", "kind": "posting", "date": "2026-11", "note": "LAPRAS Global Bridge 연계 · 회사 개요·채용 배경·업무·요건·우대·인물상·연봉·근무 조건·복리후생"},
+  {"n": 2, "title": "HERP · フルスタックエンジニア（リード候補・大手企業の内製化・AI駆動開発・DX伴走）", "url": "https://herp.careers/v1/clinc/IndHZWmreVVT", "kind": "posting", "note": "회사 자체 채용 페이지의 같은 자리 — 기술 목록·리드 후보 표기"},
+  {"n": 3, "title": "HERP · クリエーションライン 회사 채용 페이지", "url": "https://herp.careers/careers/companies/clinc", "kind": "posting", "date": "2026-10", "note": "직원 102명 표기·다른 자리(FDE·AI 구동 개발 동반 컨설턴트) 연봉"},
+  {"n": 4, "title": "クリエーションライン · 会社概要", "url": "https://www.creationline.com/company/", "kind": "company", "note": "설립 2006·대표 安田忠弘·CTO 荒井康宏·Docker 파트너(2015)·KCSP(2018)·GitLab 파트너 경력"},
+  {"n": 5, "title": "クリエーションライン · 本社移転のお知らせ", "url": "https://www.creationline.com/news/84625/", "kind": "company", "date": "2026-06", "note": "2026년 7월 미나토미라이 WeWork 로 이전, 완전 원격이 이유"},
+  {"n": 6, "title": "クリエーションライン · AI駆動開発コンソーシアム 設立", "url": "https://www.creationline.com/news/76442/", "kind": "company", "date": "2025-10", "note": "12개사 13명 발기, 荒井 좌장"},
+  {"n": 7, "title": "CL LAB · 【インフラ設計×Claude #1】非機能要件をClaudeと策定する", "url": "https://www.creationline.com/tech-blog/chatgpt-ai/ai/86367", "kind": "company", "date": "2026-11"},
+  {"n": 8, "title": "CL LAB · 【インフラ設計×Claude #2】方針書とADRの分け方", "url": "https://www.creationline.com/tech-blog/cloudnative/aws/86376", "kind": "company", "date": "2026-11"},
+  {"n": 9, "title": "CL LAB · 【インフラ設計×Claude #3】同じ問いなのに、AIの結論が正反対になった", "url": "https://www.creationline.com/tech-blog/chatgpt-ai/ai/86378", "kind": "company", "date": "2026-11"},
+  {"n": 10, "title": "CL LAB · Claude Codeでフルスタック開発！？アプリ作成からAWS EKSデプロイまで", "url": "https://www.creationline.com/tech-blog/others/hashicorp/82963", "kind": "company", "date": "2026-03"},
+  {"n": 11, "title": "CL LAB · GitLab CIでClaude Codeにテストコードを生成してもらった際のtips", "url": "https://www.creationline.com/tech-blog/?p=81148", "kind": "company", "date": "2025-12"},
+  {"n": 12, "title": "CL LAB · AI-Agent Opsで運用が変わる！CCO Forceの挑戦", "url": "https://www.creationline.com/tech-blog/agile-devops/devops/86340", "kind": "company", "date": "2026-11"},
+  {"n": 13, "title": "CL LAB · 「アウトカムが大事」にピンとこなかった開発者が、作る前に指標を決めるようになるまで", "url": "https://www.creationline.com/tech-blog/agile-devops/devops/86473", "kind": "company", "date": "2026-11"},
+  {"n": 14, "title": "CL LAB · Slack 봇에 Gemini File Search 붙이기", "url": "https://www.creationline.com/tech-blog/chatgpt-ai/ai/81751", "kind": "company", "date": "2025-12"},
+  {"n": 15, "title": "CL LAB · ECS Express Mode 를 Terraform 으로", "url": "https://www.creationline.com/tech-blog/others/hashicorp/81152", "kind": "company"},
+  {"n": 16, "title": "RSGT2025 스폰서 토크 (クリエーションライン 공식 채널)", "url": "https://www.youtube.com/watch?v=Yn72SHxy7_I", "kind": "company", "date": "2025-01", "note": "8분 52초 · 자막이 받아지지 않아 30초 간격 장면 18장을 모두 확인 — 추리극 형식으로 『ユーザーストーリーマッピング』을 권함"},
+  {"n": 17, "title": "paiza · クリエーションライン 회사 정보", "url": "https://paiza.jp/recruiters/6942", "kind": "company", "date": "2026-10", "note": "직원 108명·평균 38세·사업 영역·문화·복리후생 금액"},
+  {"n": 18, "title": "クラスメソッド · AI駆動開発勉強会 第1回 참가기", "url": "https://dev.classmethod.jp/articles/event-report-aidd-1/", "kind": "news", "date": "2024-02", "note": "荒井 CTO 의 Cursor 소개 발표 요약"},
+  {"n": 19, "title": "IPA · 非機能要求グレード", "url": "https://www.ipa.go.jp/archive/digital/iot-en-ci/jyouryuu/hikinou/ent03-b.html", "kind": "reference"},
+  {"n": 20, "title": "Architectural Decision Records (adr.github.io)", "url": "https://adr.github.io/", "kind": "reference"},
+  {"n": 21, "title": "Google SRE Book · Service Level Objectives", "url": "https://sre.google/sre-book/service-level-objectives/", "kind": "reference"},
+  {"n": 22, "title": "DORA · Four Keys 지표", "url": "https://dora.dev/guides/dora-metrics-four-keys/", "kind": "reference"},
+  {"n": 23, "title": "Terraform 문서 · State", "url": "https://developer.hashicorp.com/terraform/language/state", "kind": "reference"},
+  {"n": 24, "title": "Amazon EKS 사용 설명서 · What is Amazon EKS", "url": "https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html", "kind": "reference"},
+  {"n": 25, "title": "Amazon ECS 개발자 안내서", "url": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html", "kind": "reference"},
+  {"n": 26, "title": "Claude Code 문서", "url": "https://code.claude.com/docs/en/overview", "kind": "reference"},
+  {"n": 28, "title": "Lewis 외 · Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks", "url": "https://arxiv.org/abs/2005.11401", "kind": "reference", "date": "2020"},
+  {"n": 29, "title": "スクラムガイド 2020 (일본어판)", "url": "https://scrumguides.org/docs/scrumguide/v2020/2020-Scrum-Guide-Japanese.pdf", "kind": "reference"},
+  {"n": 30, "title": "JLPT 공식 · N1~N5 인정의 기준", "url": "https://www.jlpt.jp/about/levelsummary.html", "kind": "reference"},
+  {"n": 31, "title": "일본 출입국재류관리청 · 재류자격 '기술·인문지식·국제업무'", "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html", "kind": "reference"},
+  {"n": 32, "title": "일본 국세청 · 2024년분 민간급여실태통계조사 결과", "url": "https://www.nta.go.jp/publication/statistics/kokuzeicho/minkan/gaiyou/2024.htm", "kind": "reference"},
+  {"n": 33, "title": "원티드 · [株式会社Finatext] 풀스택 엔지니어 (Brokerage)_근무지 일본", "url": "https://www.wanted.co.kr/wd/368239", "kind": "posting"},
+  {"n": 34, "title": "원티드 · [株式会社Ui2] 풀스택 엔지니어 (대형 브랜드 EC 플랫폼 개발)_근무지 일본", "url": "https://www.wanted.co.kr/wd/316962", "kind": "posting"}
+ ],
+ "caveat": "회사 기술 블로그(CL LAB)는 대부분 2025-12~2026-11 글이고, 고객사 이름·프로젝트 구성은 공개되지 않아 어떤 고객 일을 맡을지는 알 수 없습니다. 공고의 'AWS 최상위 파트너' 표기는 회사 소개 페이지에서 따로 확인하지 못했습니다. 발표 영상은 자막이 없어 장면만 봤고, CTO 의 발표 녹화는 찾지 못해 참가기로 대신했습니다. 직원 수는 자료마다 102~108명으로 다릅니다."
+}
