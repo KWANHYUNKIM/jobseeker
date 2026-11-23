@@ -171,6 +171,7 @@
   "ats-toss:group:7788403003": "tosssec-community-reco-mle",
   "ats-toss:group:8006361003": "tosssec-data-engineer-dre",
   "ats-toss:group:7827711003": "tosssec-data-engineer-financial-data",
+  "ats-toss:group:7585698003": "tosssec-dba-mysql",
   "ats-toss:group:4076052003": "tosssec-dba-oracle",
   "ats-toss:group:5863983003": "tosssec-fep-server-developer",
   "ats-toss:group:4076141003": "tosssec-frontend-developer",
@@ -1722,6 +1723,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 19
+  },
+  {
+   "id": "tosssec-dba-mysql",
+   "company": "토스증권",
+   "role": "DBA",
+   "jobs": [
+    "ats-toss:group:7585698003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 11
   },
   {
    "id": "tosssec-dba-oracle",
