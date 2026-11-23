@@ -1,0 +1,878 @@
+{
+ "id": "tosssec-dba-oracle",
+ "company": "토스증권",
+ "role": "Oracle DBA",
+ "team": "Data Division · DBA Team",
+ "jobs": [
+  "ats-toss:group:4076052003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "증권 서비스의 데이터베이스가 **멈추지 않고(이중화), 느려지지 않고(튜닝), 잃어버리지 않게(백업·복구)** 지키는 자리입니다. 그중 Oracle 을 맡습니다.[1]",
+  "env": "한 팀이 **Oracle · MySQL · MongoDB · PostgreSQL** 을 같이 관리하고, 35명 넘는 Data Division 의 다른 팀(DW·실시간·로그)과 붙어 일합니다.[1]",
+  "oneline": "5년 넘게 Oracle 을 직접 운영해 본 사람을 찾는 경력직 자리. **장애를 직접 수습해 본 이야기**가 서류의 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "안정적인 데이터베이스를 위해서 이중화 솔루션 운영, 성능 모니터링, 튜닝, 백업 및 복구 업무를 수행해요.",
+   "short": "DB 가 죽으면 대기 DB 로 넘기고, 느려지면 원인을 찾고, 망가지면 백업으로 되살리는 일.",
+   "why": "DBA 팀의 목적을 공고는 데이터를 **빠르게 제공하고 안전하게 보관하는 것**이라고 적었습니다.[1] 토스증권은 2024년 1월~2025년 5월에 전산 장애가 7건으로 비교한 5개 증권사 중 가장 많았고, 2024년 12월 13~17일에는 프로그램 오류로 86시간 장애가 이어졌습니다.[7] 회사는 2025년에 서버·데이터베이스 최신화와 장비 교체를 마쳤다고 설명했고[7], 2026년 8월에는 금감원이 장애 재발을 막으려고 현장 컨설팅을 했습니다.[9] 법으로도 증권사는 백업을 떨어진 곳에 보관·검증하고 재해복구 전환 훈련을 해야 합니다.[19]",
+   "actually": {
+    "intro": "Oracle 에서 이 네 가지는 보통 이런 일입니다. 토스증권이 어떤 이중화 제품을 쓰는지는 공고에 없고 '이중화 솔루션'이라고만 적혀 있습니다.[1]",
+    "items": [
+     "**이중화** — Oracle 의 기본 방법은 Data Guard(주 DB 의 변경 기록(redo)을 대기 DB 로 보내 계속 따라 적용). 대기 DB 는 블록을 그대로 따라가는 물리, SQL 로 다시 적용하는 논리, 잠깐 고쳐 쓸 수 있는 스냅숏 세 종류다.[10]",
+     "**넘기기 두 가지** — 계획된 작업 때는 역할을 맞바꾸는 switchover(데이터 손실 없음), 주 DB 가 죽었을 때만 대기 DB 를 주 DB 로 올리는 failover.[10] 보호 수준도 셋이고 기본은 성능 우선(Maximum Performance)이다.[10]",
+     "**성능 모니터링** — AWR(Oracle 이 성능 통계를 찍어 두는 저장소)이 기본 1시간마다 스냅숏을 찍고 8일 보관한다. 간격·보관 기간은 바꿀 수 있고, 쓰려면 별도 라이선스(Diagnostic Pack)가 필요하다.[12]",
+     "**튜닝** — 스냅숏 사이에 가장 오래 기다린 일(대기 이벤트)과 가장 비싼 SQL 을 찾아 실행계획·인덱스·통계를 고친다.[12][13]",
+     "**백업** — RMAN(Oracle 의 백업·복구 도구). 전체 백업(증분 level 0) 위에 바뀐 블록만 받는 증분 백업을 쌓는다.[11] 백업은 떨어진 곳에 보관하고 제대로 되는지 검증해야 한다.[19]",
+     "**복구** — 백업이 있다는 것과 되살릴 수 있다는 것은 다르다. 다른 서버에 실제로 복원해 보고, 재해복구 센터로 넘기는 훈련을 정기적으로 한다.[19] {추론}"
+    ]
+   },
+   "how_far": "5년 넘는 경력직 자리라, 장애 때 **넘길지 기다릴지를 스스로 판단하는** 수준을 봅니다. {추론} 최소선은 switchover·failover 를 손으로 해 봤고, RMAN 백업을 다른 서버에 복원해 봤고, AWR 보고서에서 상위 대기 이벤트와 SQL 을 읽어 내는 것입니다. {추론}",
+   "refs": [
+    1,
+    7,
+    9,
+    10,
+    11,
+    12,
+    13,
+    19
+   ],
+   "study": [
+    "oracle-dg",
+    "oracle-rman",
+    "oracle-awr",
+    "kyte",
+    "efsr"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "DB 물리 모델 배포 및 DB New feature 테스트/적용 등 팀원들의 개발과 운영을 지원해요.",
+   "short": "개발팀이 만든 테이블·인덱스 변경을 운영 DB 에 안전하게 넣고, 새 버전의 기능을 먼저 시험해 본다.",
+   "why": "DBA 팀은 Data Division 안의 DW·실시간 데이터·로그 플랫폼 팀과 긴밀히 협업한다고 소개됩니다.[1] 물리 모델(실제 테이블·컬럼 타입·인덱스·파티션 정의)은 그 팀들과 서비스 개발자가 쓰는 바닥이라, 바꿀 때마다 DBA 가 운영 DB 에 맞게 손봅니다. {추론} 공고는 이력서에 'New Feature 도입으로 어려운 이슈를 해소한 경험'을 따로 적어 달라고 합니다.[1]",
+   "actually": {
+    "items": [
+     "**배포 전 검토** — 새 테이블·인덱스 정의를 보고 빠진 인덱스, 맞지 않는 타입, 파티션 기준을 고친다. 큰 테이블이면 만들고 채우는 데 걸리는 시간과 잠금을 먼저 잰다. {추론}",
+     "**서비스를 멈추지 않고 바꾸기** — Oracle 의 온라인 재정의(DBMS_REDEFINITION)는 대부분의 시간 동안 읽기·쓰기를 계속 받고, 마지막에 짧게 바꿔 끼운다.[16]",
+     "**큰 테이블 나누기** — 파티션이 없는 테이블을 날짜별 파티션 테이블로 바꾸는 방법이 공식 문서에 따로 있다.[27]",
+     "**새 기능 시험** — 시험 DB 에서 기능을 켜고, 같은 SQL 의 실행계획·속도·호환을 비교한 뒤 운영에 넣는다. 버전을 올리면 실행계획이 달라질 수 있어 비교가 핵심이다.[14] {추론}"
+    ]
+   },
+   "how_far": "무엇을 담을지(논리 모델)는 개발자·데이터 설계자가 정합니다. DBA 는 그걸 **운영 DB 에서 안전하게 돌 모양으로 고치고, 언제·어떻게 넣을지** 정합니다. {추론}",
+   "refs": [
+    1,
+    14,
+    16,
+    27
+   ],
+   "study": [
+    "oracle-redef",
+    "oracle-upgrade",
+    "kyte"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "단순 반복 작업을 자동화하여 효율적으로 운영하는 방안을 만들어요.",
+   "short": "알럿 로그 확인·백업 결과 확인·느린 SQL 보고처럼 매일 손으로 하던 점검을 스크립트와 도구로 바꾼다.",
+   "why": "같은 회사의 DBA(MySQL) 공고는 Python 으로 필요한 도구를 직접 만들 수 있는 사람을 필수로 적었고[2], 같은 그룹 토스 DBA 공고도 Python 운영 자동화 경험을 우대합니다.[3] 이 공고도 이력서에 비효율·단순 반복 업무를 개선하려고 시도한 방법과 기술을 적어 달라고 합니다.[1] 증권사 시스템이 사람 중심 운영에 많이 기댄다는 업계 관계자의 말도 보도됐습니다.[7]",
+   "actually": {
+    "intro": "DBA 가 보통 자동화하는 것들입니다. {추론}",
+    "items": [
+     "**알럿 로그 감시** — Oracle 이 오류를 남기는 로그에서 ORA- 오류를 세어 처음 보는 것·갑자기 늘어난 것을 알린다.",
+     "**백업 확인** — 매일 RMAN 백업이 성공했는지, 평소보다 오래 걸렸는지 보고한다.[11]",
+     "**느린 SQL 보고** — AWR 스냅숏 사이에 비싸진 SQL 을 뽑아 담당 팀에 보낸다.[12]",
+     "**공간 추세** — 테이블 공간이 늘어나는 속도로 언제 찰지 미리 계산한다.",
+     "**요청 처리** — 계정·권한 발급, 조회 요청을 정해진 양식과 승인 기록으로 처리한다."
+    ]
+   },
+   "examples": [
+    {
+     "title": "알럿 로그에서 ORA- 오류 세기",
+     "body": "가상의 로그 다섯 줄로 돌린 출력입니다. 실제로는 파일을 읽고, 지난번에 본 위치부터 이어 읽고, 결과를 메신저로 보냅니다. {추론}",
+     "lang": "python",
+     "code": "import re\nfrom collections import Counter\n\nalert = \"\"\"2026-11-20T02:10:01 Thread 1 advanced to log sequence 9812\n2026-11-20T02:14:33 ORA-01555: snapshot too old: rollback segment number 12 too small\n2026-11-20T03:00:12 ORA-00060: deadlock detected while waiting for resource\n2026-11-20T03:41:50 ORA-01555: snapshot too old: rollback segment number 7 too small\n2026-11-20T04:05:09 Completed checkpoint\n\"\"\"\ncodes = Counter(m.group(1) for m in re.finditer(r\"(ORA-\\d{5})\", alert))\nfor code, n in codes.most_common():\n    print(code, n)\n# ORA-01555 2\n# ORA-00060 1"
+    }
+   ],
+   "how_far": "스크립트 하나보다 **사람이 손대지 않아도 돌고, 실패하면 알려 주는** 것이 목표입니다. {추론} 언어는 이 공고에 없지만 같은 회사 MySQL 쪽은 Python 입니다.[2]",
+   "refs": [
+    1,
+    2,
+    3,
+    7,
+    11,
+    12
+   ],
+   "study": [
+    "dbre",
+    "oracle-awr"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Oracle DBA로 5년 이상의 운영 경험이 있으신 분이 필요해요.",
+   "short": "팀이 맡은 DB 중 맨 앞이 Oracle 이라서. 5년은 장애·패치·업그레이드를 여러 번 직접 겪은 시간이다.",
+   "why": "팀 소개에서 관리하는 DBMS 를 Oracle 부터 적었습니다.[1] 토스증권은 2020년 증권 전산 전문회사(코스콤)의 시스템으로 서비스를 열고 차츰 고도화하겠다고 했고[6], 2022년 발표 때 원장(계좌·잔고·체결을 기록하는 핵심 장부)은 유닉스·C 기반이었습니다.[5] 원장이 어떤 DB 위에 있는지는 공개되지 않았습니다. 같은 그룹의 토스페이먼츠 DBA 공고도 Oracle 을 주력으로 적었습니다.[4]",
+   "actually": {
+    "intro": "5년차 Oracle DBA 가 보통 해 본 일입니다. {추론}",
+    "items": [
+     "설치·정기 패치(분기별 업데이트) 적용과 되돌리기",
+     "Data Guard 구축·switchover 훈련·실제 failover[10]",
+     "RMAN 백업 설계와 시점 복구[11]",
+     "AWR 로 느려진 원인 찾기·실행계획 바꾸기[12][13]",
+     "버전 올리기(예: 12c → 19c)[14]",
+     "파티션 추가·삭제·정리 같은 대용량 테이블 관리[27]"
+    ]
+   },
+   "how_far": "기간보다 **내가 판단하고 수습한 장애·작업 목록**을 봅니다. 공고는 이력서에 제품 이름·버전과 숫자를 적어 달라고 했습니다.[1]",
+   "refs": [
+    1,
+    4,
+    5,
+    6,
+    10,
+    11,
+    12,
+    13,
+    14,
+    27
+   ],
+   "study": [
+    "kyte",
+    "oracle-dg",
+    "oracle-rman"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "차세대 프로젝트, 업그레이드 프로젝트 등을 주도적으로 이끌었던 경험이 필요해요.",
+   "short": "시스템을 새로 짓거나 DB 버전을 올리는 큰 작업을 맨 앞에서 계획하고 끌어 본 사람이 필요해서.",
+   "why": "토스증권은 2025년에 서버·데이터베이스 최신화와 장비 교체를 마쳤다고 설명했습니다.[7] Oracle 19c 의 지원은 기본 지원 2029년 말, 연장 지원 2032년 말까지로 늘었고[15], 다음 장기 지원판(23ai)의 기본 지원은 2031년 말까지로 예정돼 있습니다.[26] 버전을 올리는 일은 몇 년마다 다시 돌아옵니다. {추론} 공고는 이력서에 차세대·대규모 프로젝트에서 맡은 역할을 적어 달라고 했습니다.[1]",
+   "flows": [
+    {
+     "caption": "DB 업그레이드의 보통 순서 {추론}[14]",
+     "steps": [
+      "사전 점검 · 없어지는 기능·파라미터",
+      "시험 환경 리허설 · 걸린 시간 재기",
+      "실행계획 비교 · 느려진 SQL 미리 찾기",
+      "되돌리기 계획 · 실패하면 몇 분 안에 복귀",
+      "실제 전환 · 장이 쉬는 시간에",
+      "안정화 · 며칠간 상위 SQL 감시"
+     ]
+    }
+   ],
+   "how_far": "'주도' 는 일정·리허설·되돌리기 계획을 **내가 세웠다고 말할 수 있는** 수준입니다. {추론} 참여만 했다면 맡은 부분과 그 숫자(데이터 양·전환 시간)를 정확히 씁니다.[1]",
+   "refs": [
+    1,
+    7,
+    14,
+    15,
+    26
+   ],
+   "study": [
+    "oracle-upgrade",
+    "kyte"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "대용량 Database를 직접 운영하신 경험과 SQL 튜닝을 직접 해보신 분이 필요해요.",
+   "short": "행이 수억 개면 실행계획 하나가 서비스 속도를 바꾸기 때문. '직접' 고쳐 본 경험을 본다.",
+   "why": "동료 한마디는 이 자리의 과제로 **대규모 트랜잭션 처리·데이터 아키텍처 설계·성능 최적화**를 꼽았습니다.[1] 토스증권 직원은 2026년 1분기 516명으로 비교 시점의 380명보다 35.7% 늘었고[21], 2022년에 이미 실시간 시세 서버군이 처음보다 약 5배였습니다.[5]",
+   "level": {
+    "basic": "실행계획 읽기 · 인덱스 원리 · 조인 방식(중첩 반복·해시·정렬 병합)",
+    "work": "바인드 변수 · 통계 정보 · 힌트 · 파티션 잘라 읽기(프루닝)",
+    "team": "AWR 로 비싼 SQL 찾기 · 실행계획 고정 · 수억 행 파티션 운영 {추론}"
+   },
+   "actually": {
+    "items": [
+     "**찾기** — AWR 스냅숏 사이에 가장 시간을 많이 쓴 SQL 을 찾는다.[12]",
+     "**읽기** — 그 SQL 의 실행계획에서 전체를 다 읽는(Full Scan) 곳, 예상 행 수와 실제가 크게 다른 곳을 본다.[13]",
+     "**고치기** — 인덱스 추가·SQL 다시 쓰기·통계 다시 모으기·실행계획 고정 중 서비스에 덜 위험한 것부터.[13] {추론}",
+     "**대용량** — 날짜로 나눈 파티션이면 조건에 맞는 칸만 읽고, 지난 칸은 통째로 떼어 보관한다.[27]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "인덱스 하나가 바꾸는 실행계획 (같은 생각을 SQLite 로)",
+     "body": "Oracle 이 아니라 파이썬 기본 SQLite 로 100만 행을 만들어 직접 돌린 출력입니다. 계좌 번호로 찾는 같은 질의가 전체 읽기(SCAN) 23.64ms 에서 인덱스 찾기(SEARCH) 0.02ms 로 바뀌었습니다. Oracle 에서는 실행계획의 TABLE ACCESS FULL 과 INDEX RANGE SCAN 이 같은 차이입니다.[13]",
+     "lang": "python",
+     "code": "import sqlite3, random, time\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE orders(id INTEGER PRIMARY KEY, account_id INT, symbol TEXT, qty INT)\")\nrandom.seed(1)\ndb.executemany(\"INSERT INTO orders(account_id, symbol, qty) VALUES (?,?,?)\",\n    [(random.randint(1, 100_000), random.choice([\"AAPL\", \"TSLA\", \"NVDA\"]), random.randint(1, 50)) for _ in range(1_000_000)])\nq = \"SELECT COUNT(*) FROM orders WHERE account_id = 4242\"\n\ndef run():\n    plan = db.execute(\"EXPLAIN QUERY PLAN \" + q).fetchall()[0][3]\n    t = time.perf_counter(); n = db.execute(q).fetchone()[0]\n    return plan, n, round((time.perf_counter() - t) * 1000, 2)\n\nprint(\"before:\", run())\ndb.execute(\"CREATE INDEX ix_orders_account ON orders(account_id)\")\nprint(\"after:\", run())\n# before: ('SCAN orders', 14, 23.64)\n# after: ('SEARCH orders USING COVERING INDEX ix_orders_account (account_id=?)', 14, 0.02)"
+    }
+   ],
+   "how_far": "튜닝 책을 읽은 것과 **운영 중 느려진 SQL 을 직접 고쳐 숫자로 말하는 것**은 다릅니다. 이력서에 '몇 초 → 몇 초'처럼 적으라는 안내가 그 뜻입니다.[1]",
+   "refs": [
+    1,
+    5,
+    12,
+    13,
+    21,
+    27
+   ],
+   "study": [
+    "kind-sql",
+    "oracle-tgsql",
+    "oracle-awr",
+    "dataq"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "다양한 Open Source DB, CDC솔루션, DA 업무(데이터 모델링) 등에 경험이 있으시면 더 좋아요.",
+   "short": "팀이 MySQL·MongoDB·PostgreSQL 도 맡고, DB 의 변경을 실시간으로 다른 팀에 흘려보내기 때문.",
+   "why": "팀이 Oracle 과 함께 MySQL·MongoDB·PostgreSQL 을 관리하고[1], 같은 회사 MySQL DBA 공고는 반대로 Oracle·PostgreSQL 경험을 우대합니다[2] — 서로 넘나든다는 뜻입니다. {추론} Data Division 에는 실시간 데이터 팀이 따로 있습니다.[1] 토스증권이 어떤 CDC 제품을 쓰는지는 공개되지 않았습니다.",
+   "actually": {
+    "intro": "CDC(Change Data Capture, DB 에서 바뀐 행을 실시간으로 뽑아 다른 곳에 흘려보내기)는 Oracle 에서 보통 이렇게 합니다.",
+    "items": [
+     "**변경 기록 읽기** — Oracle 의 LogMiner 는 redo 로그를 읽어 어떤 행이 어떻게 바뀌었는지 보여 준다.[17]",
+     "**오픈소스 연결** — Debezium 의 Oracle 커넥터는 LogMiner 로 행 단위 변경을 받아 Kafka 로 보낸다.[18]",
+     "**DBA 가 켜 줄 것** — 바뀌기 전 값까지 남기는 보조 로깅(supplemental logging)을 DB·테이블에 켠다. 새 테이블에 이걸 빠뜨려 커넥터가 시작하지 못한 사례가 보고돼 있다.[18]",
+     "**오픈소스 DB** — MySQL 의 복제·MongoDB 의 레플리카 셋·PostgreSQL 의 청소(VACUUM)처럼 같은 일을 다른 방식으로 한다. {추론}",
+     "**DA(데이터 설계)** — 용어·도메인 표준을 정하고 논리 모델을 물리 모델로 옮긴다. 업무② 의 물리 모델 배포와 바로 이어진다. {추론}"
+    ]
+   },
+   "how_far": "'더 좋아요' 라 없어도 됩니다. 하나를 고른다면 **CDC 가 원본 DB 에 주는 부담(로그 양·지연)을 DBA 쪽에서 설명할 수 있는** 정도가 가장 이 팀에 가깝습니다. {추론}",
+   "refs": [
+    1,
+    2,
+    17,
+    18
+   ],
+   "study": [
+    "oracle-logminer",
+    "debezium-oracle",
+    "dataq"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "데이터베이스와 관련된 새로운 기술, 트렌드 등의 학습을 즐기고 노력하시분, 문제 해결을 위해 원인을 탐구하고 끈기있게 도전하시는 분, 긍정적인 마인드 함께 24시간 365일 대고객 서비스를 주도적으로 이끌어갈 수 있는 열정이 있는 분이면 더 좋아요.",
+   "short": "해외주식 때문에 밤에도 주문이 오가서, DB 장애 연락이 언제든 올 수 있다는 뜻.",
+   "why": "토스증권의 2025년 상반기 해외주식 중개수수료 수익은 업계 2위였습니다.[8] 미국 장은 한국 밤에 열리므로 밤에도 DB 가 바쁩니다. {추론} 장애 이력과 금감원 컨설팅도 보도됐습니다.[7][9] Data Division 은 Tech Weekly 로 서로의 노하우를 나눈다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**당번** — 밤·주말 장애 연락을 돌아가며 받는다. {추론}",
+     "**원인 끝까지** — 넘겨서 살린 뒤에 왜 죽었는지를 찾아 재발 방지까지 쓴다. 비난 없이 원인과 고칠 일을 적는 글(포스트모템)이 흔한 형식이다.[20]",
+     "**새 기술** — 새 버전의 기능을 시험해 써 보는 업무② 와 이어진다.[1]"
+    ]
+   },
+   "how_far": "밤에 불려 나가는 것이 싫지 않은지, 장애를 **원인까지 파고든 이야기**가 있는지를 봅니다. {추론}",
+   "refs": [
+    1,
+    7,
+    8,
+    9,
+    20
+   ],
+   "study": [
+    "sre-postmortem",
+    "dbre"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "# 이런 경험이 있다면 이력서에 꼭 작성해 주세요 — 운영 중 기억에 남는 특별한 장애나 이슈 처리에 대한 경험이 있다면 이력서에 작성해 주세요.",
+   "short": "직무 인터뷰에서 파고들 장애 하나를 미리 골라, 증상 → 원인 → 조치 → 재발 방지 순으로 쓰라는 뜻.",
+   "why": "합류 여정은 서류 다음이 직무 인터뷰입니다.[1] 업무 첫 줄이 이중화·튜닝·백업·복구라[1], 장애 이야기가 이 자리의 실력을 가장 잘 보여 줍니다. {추론}",
+   "how_far": "몇 시에 무엇이 보였고, 무엇을 의심했고, 몇 분 만에 되살렸는지 — 시간과 숫자가 있는 하나가 여러 개 나열보다 낫습니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "sre-postmortem"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "차세대 또는 이와 유사한 대규모 프로젝트 경험이 있다면 주로 담당한 역할과 내용에 대해서 작성해 주세요.",
+   "short": "프로젝트 이름보다 그 안에서 내가 맡은 칸(이관·전환·성능 검증)과 결과를 쓰라는 뜻.",
+   "why": "자격요건 둘째 줄의 '주도'를 서류에서 확인하려는 안내입니다.[1] {추론}",
+   "how_far": "데이터 양·전환에 걸린 시간·멈춘 시간·리허설 횟수처럼 숫자로 쓸 수 있는 것을 고릅니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "oracle-upgrade"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "New Feature 도입으로 기존에 처리하기 어려웠던 이슈를 해소한 적이 있으면 함께 작성해 주세요.",
+   "short": "새 버전·새 기능을 '써 봤다'가 아니라 그걸로 어떤 문제를 풀었는지를 보려는 것.",
+   "why": "업무 둘째 줄에 New feature 테스트·적용이 있습니다.[1] 예를 들어 온라인 재정의로 서비스를 멈추지 않고 테이블 구조를 바꾼 일[16], 파티션이 없던 테이블을 파티션으로 바꾼 일[27]이 이런 사례입니다.",
+   "how_far": "문제 → 왜 기존 방법으로 안 됐나 → 어떤 기능을 어떻게 시험했나 → 결과 순서면 됩니다. {추론}",
+   "refs": [
+    1,
+    16,
+    27
+   ],
+   "study": [
+    "oracle-redef"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "비효율적인 업무나 단순반복되는 업무를 개선하기위해 시도했던 방법과 기술이 있으면 작성해주세요.",
+   "short": "업무 셋째 줄(자동화)을 해 본 적이 있는지 — 무엇을 없앴고 얼마나 줄였는지를 쓰라는 뜻.",
+   "why": "업무 셋째 줄이 반복 작업 자동화이고[1], 같은 회사 MySQL DBA 공고는 도구를 직접 만드는 능력을 필수로 둡니다.[2]",
+   "how_far": "'매일 30분 걸리던 점검을 알림으로 바꿨다'처럼 전후 시간을 적습니다. 실패한 시도도 이유와 함께 쓰면 됩니다. {추론}",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "dbre"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "작성하실 때는 업무에서 사용된 제품의 이름과 버전, 그리고 관련 내용을 수치화해서 작성해 주시면 더 좋아요.",
+   "short": "'Oracle 튜닝' 대신 'Oracle 19c, 3억 행 테이블, 12초 → 0.3초'처럼 쓰라는 뜻.",
+   "why": "버전마다 기능과 지원 기간이 달라[15], 어떤 버전을 다뤘는지가 곧 경험의 범위입니다. {추론}",
+   "how_far": "제품·버전·규모(행 수·용량·TPS)·전후 숫자 넷을 한 줄에. 이전 회사의 민감한 숫자는 비율로 바꿔도 됩니다. {추론}",
+   "refs": [
+    15
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "장애 원인을 끝까지 파고들어야 잠이 오는 사람[1]",
+   "Oracle 하나에 머물지 않고 MySQL·MongoDB·PostgreSQL 까지 넓히고 싶은 사람[1]",
+   "손으로 하던 점검을 도구로 바꾸는 게 즐거운 사람[1]",
+   "금융권 경험이 없어도 된다 — 공고가 직접 환영한다고 적었다[1]"
+  ],
+  "hard": [
+   "밤·주말에도 장애 연락이 올 수 있다[1]",
+   "장애 이력이 보도되고 감독 기관이 보는 회사라 작업 하나하나에 무게가 있다[7][9]",
+   "경력 5년 이상 — 신입이 바로 지원할 자리는 아니다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "주 DB 가 갑자기 응답하지 않아요. 바로 failover 할 건가요, 기다릴 건가요? 무엇을 보고 정하나요?",
+   "a": "switchover 와 failover 의 차이, 보호 수준에 따른 데이터 손실.[10]"
+  },
+  {
+   "q": "어제부터 특정 화면이 느려졌다는 연락이 왔어요. 무엇부터 보나요?",
+   "a": "AWR 스냅숏 비교와 실행계획.[12][13]"
+  },
+  {
+   "q": "RMAN 백업이 매일 성공했다고 나오는데, 정말 복구된다고 어떻게 확신하나요?",
+   "a": "백업 검증과 복구 훈련 의무.[11][19]"
+  },
+  {
+   "q": "수억 행 테이블에 컬럼을 추가하고 파티션을 바꿔야 해요. 서비스를 멈추지 않으려면?",
+   "a": "온라인 재정의와 파티션 전환.[16][27]"
+  },
+  {
+   "q": "실시간 데이터 팀이 이 Oracle 테이블의 변경을 Kafka 로 받고 싶대요. DBA 로서 무엇을 확인하나요?",
+   "a": "보조 로깅과 LogMiner 가 주는 부담.[17][18]"
+  }
+ ],
+ "resources": [
+  {
+   "id": "oracle-dg",
+   "title": "Oracle Data Guard Concepts and Administration (19c) · Introduction to Oracle Data Guard",
+   "by": "Oracle 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/sbydb/introduction-to-oracle-data-guard-concepts.html",
+   "why": "업무① 이중화의 바탕. 대기 DB 세 종류·보호 수준 셋·switchover 와 failover 의 차이를 원문으로 잡는다."
+  },
+  {
+   "id": "oracle-rman",
+   "title": "Oracle Database Backup and Recovery User's Guide (19c) · Getting Started with RMAN",
+   "by": "Oracle 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/bradv/getting-started-rman.html",
+   "why": "업무① 백업·복구. 전체·증분 백업을 만들고 되살리는 명령을 직접 따라 쳐 본다."
+  },
+  {
+   "id": "oracle-awr",
+   "title": "Oracle Database Performance Tuning Guide (19c) · Gathering Database Statistics",
+   "by": "Oracle 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/tgdba/gathering-database-statistics.html",
+   "why": "업무① 모니터링과 요건③ 튜닝의 출발점인 AWR. 스냅숏 간격·보관 기간·보고서 만드는 법."
+  },
+  {
+   "id": "oracle-tgsql",
+   "title": "Oracle Database SQL Tuning Guide (19c)",
+   "by": "Oracle 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/tgsql/",
+   "why": "요건③ SQL 튜닝. 옵티마이저가 실행계획을 고르는 방식, 통계, 실행계획 고정까지."
+  },
+  {
+   "id": "oracle-upgrade",
+   "title": "Oracle Database Upgrade Guide (19c)",
+   "by": "Oracle 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/upgrd/",
+   "why": "요건② 업그레이드 프로젝트. 사전 점검부터 되돌리기까지 버전 올리기의 공식 절차."
+  },
+  {
+   "id": "oracle-redef",
+   "title": "PL/SQL Packages and Types Reference (19c) · DBMS_REDEFINITION",
+   "by": "Oracle 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/arpls/DBMS_REDEFINITION.html",
+   "why": "업무② 물리 모델 배포. 서비스를 멈추지 않고 테이블 구조를 바꾸는 패키지와 예제."
+  },
+  {
+   "id": "oracle-logminer",
+   "title": "Oracle Database Utilities (19c) · Using LogMiner to Analyze Redo Log Files",
+   "by": "Oracle 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/sutil/oracle-logminer-utility.html",
+   "why": "요건④ CDC 의 바닥. redo 로그에서 변경을 읽는 원리와 보조 로깅이 왜 필요한지."
+  },
+  {
+   "id": "debezium-oracle",
+   "title": "Debezium User Guide · Debezium Connector for Oracle",
+   "by": "Red Hat build of Debezium 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.redhat.com/en/documentation/red_hat_build_of_debezium/2.3.4/html/debezium_user_guide/debezium-connector-for-oracle",
+   "why": "요건④ CDC 솔루션. Oracle 변경을 Kafka 로 보내는 오픈소스 커넥터의 설정과 DB 쪽 준비."
+  },
+  {
+   "id": "kind-sql",
+   "title": "친절한 SQL 튜닝",
+   "by": "조시형",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%B9%9C%EC%A0%88%ED%95%9C%20SQL%20%ED%8A%9C%EB%8B%9D",
+   "why": "요건③ 의 한국어 교재. SQL 처리 과정과 I/O 부터 인덱스·조인 튜닝까지 Oracle 기준으로 그림과 함께 설명한다."
+  },
+  {
+   "id": "kyte",
+   "title": "Expert Oracle Database Architecture (3판)",
+   "by": "Thomas Kyte · Darl Kuhn · Apress · 2014",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.oreilly.com/library/view/expert-oracle-database/9781430262992/",
+   "why": "요건① 의 '왜'. redo·undo·잠금·인덱스가 안에서 어떻게 움직이는지 — 장애 원인을 파고들 때의 바탕. 2021년 4판도 있다."
+  },
+  {
+   "id": "dbre",
+   "title": "Database Reliability Engineering",
+   "by": "Laine Campbell · Charity Majors · O'Reilly · 2017",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/database-reliability-engineering/9781491925935/",
+   "why": "업무③ 자동화와 24시간 운영. DB 운영을 코드·지표·자동화로 바꾸는 사고방식."
+  },
+  {
+   "id": "sre-postmortem",
+   "title": "Site Reliability Engineering · Postmortem Culture: Learning from Failure",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "why": "이력서 안내의 '기억에 남는 장애'를 쓰는 틀. 원인·영향·조치·재발 방지를 비난 없이 적는 법."
+  },
+  {
+   "id": "dataq",
+   "title": "데이터자격검정 (SQLP · DAP)",
+   "by": "한국데이터산업진흥원",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.dataq.or.kr/",
+   "why": "요건③ SQL 튜닝(SQLP)과 요건④ 데이터 모델링(DAP)의 국내 자격 과목표. 공부 범위를 정할 때 쓴다."
+  },
+  {
+   "id": "efsr",
+   "title": "전자금융감독규정",
+   "by": "금융위원회 고시",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://ko.wikisource.org/wiki/%EC%A0%84%EC%9E%90%EA%B8%88%EC%9C%B5%EA%B0%90%EB%8F%85%EA%B7%9C%EC%A0%95_(%EC%A0%9C2025-4%ED%98%B8)",
+   "why": "업무① 백업·재해복구가 왜 '의무'인지. 13조(백업)·23조(재해복구) 정도만 읽는다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "Oracle 안쪽 구조",
+   "time": "2~4주",
+   "goal": "redo·undo·잠금이 무엇이고 장애 메시지(ORA-01555 등)가 왜 나는지 설명할 수 있다.",
+   "resources": [
+    "kyte"
+   ],
+   "task": "무료 Oracle 개발판을 내 PC 에 깔고, 오래 걸리는 조회 중에 같은 테이블을 계속 바꿔 ORA-01555 를 일부러 내 본다. 왜 났는지 한 문단으로 쓴다."
+  },
+  {
+   "title": "이중화와 백업·복구",
+   "time": "2~3주",
+   "goal": "대기 DB 를 만들고 switchover·failover, RMAN 백업 → 다른 곳에 복원을 손으로 해 본다.",
+   "resources": [
+    "oracle-dg",
+    "oracle-rman",
+    "efsr"
+   ],
+   "task": "가상 머신 두 대에 주 DB·대기 DB 를 만들고 switchover 를 한 번, 주 DB 를 강제로 끈 뒤 failover 를 한 번 한다. 걸린 시간과 잃은 데이터를 기록한다."
+  },
+  {
+   "title": "SQL 튜닝",
+   "time": "4~6주",
+   "goal": "AWR 보고서에서 비싼 SQL 을 찾아 실행계획을 읽고 고칠 수 있다.",
+   "resources": [
+    "kind-sql",
+    "oracle-awr",
+    "oracle-tgsql",
+    "dataq"
+   ],
+   "task": "가상 주문 테이블 1,000만 행(계좌·종목·날짜)을 만들고 느린 조회 3개를 일부러 만든다. AWR 스냅숏 전후로 실행계획을 비교하며 인덱스·SQL 수정·파티션으로 각각 몇 배 빨라졌는지 적는다."
+  },
+  {
+   "title": "바꾸기·올리기·흘려보내기",
+   "time": "2~4주",
+   "goal": "서비스를 멈추지 않고 테이블을 바꾸고, 버전 올리기 계획을 세우고, 변경을 CDC 로 흘려보낼 수 있다.",
+   "resources": [
+    "oracle-redef",
+    "oracle-upgrade",
+    "oracle-logminer",
+    "debezium-oracle"
+   ],
+   "task": "3단계 테이블에 쓰기를 계속 넣으면서 DBMS_REDEFINITION 으로 날짜 파티션 테이블로 바꾼다. 같은 테이블에 보조 로깅을 켜고 Debezium 으로 변경을 Kafka 로 받아 본다."
+  },
+  {
+   "title": "자동화와 장애 기록",
+   "time": "계속",
+   "goal": "매일 하던 점검이 알아서 돌고, 장애를 재발 방지 글로 남길 수 있다.",
+   "resources": [
+    "dbre",
+    "sre-postmortem"
+   ],
+   "task": "알럿 로그 ORA- 오류 세기·백업 결과·공간 증가를 하루 한 번 보고하는 Python 스크립트를 만든다. 1단계에서 낸 ORA-01555 를 포스트모템 형식으로 다시 써서 이력서 사례 연습으로 쓴다."
+  }
+ ],
+ "pay": {
+  "summary": "신입 초봉 **약 5,003만원**, 직원 평균 **약 7,007만원**(둘 다 집계값, 공시 숫자 없음) — 평균은 경력직이 섞인 회사 전체 값이고, 이 자리는 경력 5년 이상이다",
+  "rows": [
+   {
+    "label": "신입 초봉(집계)",
+    "value": "5,003만원",
+    "amount": 5003,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 기준일·직군 구분이 없다 [28]"
+   },
+   {
+    "label": "직원 평균 연봉(집계)",
+    "value": "7,007만원",
+    "amount": 7007,
+    "basis": "공공데이터 집계",
+    "note": "같은 페이지의 평균값. 같은 페이지의 사원 수(292명)가 금융투자협회 공시의 2026년 1분기 직원 수(516명)보다 적어 오래된 시점 값일 수 있다 [28][21]"
+   },
+   {
+    "label": "비바리퍼블리카(토스) 평균 연봉(집계)",
+    "value": "6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 그룹 다른 회사, 같은 집계 사이트 값 [29]"
+   }
+  ],
+  "how": "공고에 연봉은 없고, 합류 여정에 레퍼런스 체크 뒤 **처우협의** 단계가 따로 있어 사람마다 정한다 [1]. 토스증권은 비상장사라 사업보고서의 직원 1인 평균 급여를 찾지 못했고, 금융투자협회 공시를 옮긴 보도에서도 직원 수와 급여 증가율(21.4%)만 확인했다 [21]. 공시 기준으로는 같은 그룹 다른 회사의 평균만 있다(비바리퍼블리카 2024년 1억 2,300만원 [22], 토스뱅크 2025년 1억 1,600만원 [23]) — 집계값과 기준이 달라 막대에 섞지 않았다. 이 자리는 경력 5년 이상이라 초봉과 거리가 멀고, 평균도 이 자리의 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   }
+  ],
+  "note": "토스 팀 전체를 기준으로 한 2021년 공식 소개 글이다 [25]. 토스증권에 그대로 적용되는지, 지금도 같은지는 글에 없으니 처우협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스증권 본사",
+  "address": "서울특별시 강남구 테헤란로 133, 7층 (역삼동, 한국타이어빌딩)",
+  "postal": "06133",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20133",
+  "near": "2호선 역삼역과 강남역 사이 테헤란로 {추론}",
+  "note": "공고의 근무지 표기는 'Seoul' 이고, 주소는 토스증권 사이트 하단의 회사 정보다 [24]. 팀 자리가 본사와 다를 수 있다 {추론}."
+ },
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 토스증권 DBA (Oracle)",
+   "url": "https://toss.im/career/job-detail?gh_jid=4076052003",
+   "kind": "posting",
+   "note": "팀 소개(Data Division 내 DBA Team, Oracle·MySQL·MongoDB·PostgreSQL)·업무·요건·이력서 안내·합류 여정(처우협의 포함)·동료 한마디"
+  },
+  {
+   "n": 2,
+   "title": "토스 채용 · 토스증권 DBA (MySQL)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7585698003",
+   "kind": "posting",
+   "note": "같은 회사 같은 팀 — MySQL 5년 이상, Python 으로 도구를 직접 만들 수 있는 분(필수), Oracle·PostgreSQL·MongoDB 우대"
+  },
+  {
+   "n": 3,
+   "title": "토스 채용 · 토스 DBA",
+   "url": "https://toss.im/career/job-detail?gh_jid=4071131003",
+   "kind": "posting",
+   "note": "같은 그룹 다른 회사 — 우리 풀이 toss-dba"
+  },
+  {
+   "n": 4,
+   "title": "토스 채용 · 토스페이먼츠 DBA",
+   "url": "https://toss.im/career/job-detail?gh_jid=7767934003",
+   "kind": "posting",
+   "note": "같은 그룹 다른 회사 — Oracle 주력, MySQL 로 점진 이전(우리 풀이 toss-dba 의 출처 기록)"
+  },
+  {
+   "n": 5,
+   "title": "바이라인네트워크 · 토스뱅크·토스증권 시스템은 어떻게 이뤄졌을까?",
+   "url": "https://byline.network/2022/06/10-234/",
+   "kind": "news",
+   "date": "2022-06-12",
+   "note": "SLASH 22 정리 — 토스증권 원장은 유닉스·C 기반, MTS 는 쿠버네티스·자바, 사이에 Kafka. 시세 서버군 초기의 약 5배. DB 제품 언급 없음"
+  },
+  {
+   "n": 6,
+   "title": "토스피드 · 증권업계의 토스를 만드는 사람들, 토스증권 개발자를 만나다",
+   "url": "https://toss.im/tossfeed/article/securities-dev-interview",
+   "kind": "company",
+   "date": "2020-11-24",
+   "note": "출범 전 — 코스콤 시스템으로 서비스를 열고 점진 고도화 계획"
+  },
+  {
+   "n": 7,
+   "title": "조선비즈 · 86시간 전산장애에 IT 인력 이탈도… 토스증권, 시스템 안정성 '경고등'",
+   "url": "https://v.daum.net/v/20250611060024848",
+   "kind": "news",
+   "date": "2025-06-11",
+   "note": "금감원 자료 — 2024.1~2025.5 장애 7건(5개사 중 최다), 2024.12.13~17 86시간. 회사 설명: 2025년 서버·DB 최신화·장비 교체 완료. 장애 원인이 DB 인지는 기사에 없음"
+  },
+  {
+   "n": 8,
+   "title": "CEO스코어데일리 · 금융 전산사고 89%가 증권사에 집중…키움·토스 등 온라인 기반도 사고 잦아",
+   "url": "https://www.ceoscoredaily.com/page/view/2025082716024898721",
+   "kind": "news",
+   "date": "2025-08-28",
+   "note": "토스증권 2025년 상반기 전산운용비 145억원, 해외주식 중개수수료 수익 업계 2위"
+  },
+  {
+   "n": 9,
+   "title": "SBS Biz · 금감원, 토스증권 현장 컨설팅 착수…전산장애 재발 방지",
+   "url": "https://biz.sbs.co.kr/amp/article/20000331326",
+   "kind": "news",
+   "date": "2026-08-28",
+   "note": "2026-08-25~28 면담 중심 사전 예방 컨설팅(검사 아님)"
+  },
+  {
+   "n": 10,
+   "title": "Oracle 19c 문서 · Introduction to Oracle Data Guard",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/sbydb/introduction-to-oracle-data-guard-concepts.html",
+   "kind": "reference"
+  },
+  {
+   "n": 11,
+   "title": "Oracle 19c 문서 · Getting Started with RMAN",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/bradv/getting-started-rman.html",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "Oracle 19c 문서 · Gathering Database Statistics (AWR)",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/tgdba/gathering-database-statistics.html",
+   "kind": "reference",
+   "note": "기본 1시간 간격·8일 보관, Diagnostic Pack 라이선스"
+  },
+  {
+   "n": 13,
+   "title": "Oracle 19c 문서 · SQL Tuning Guide",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/tgsql/",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Oracle 19c 문서 · Database Upgrade Guide",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/upgrd/",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "The Register · Oracle extends 19c database support to 2032",
+   "url": "https://www.theregister.com/2025/02/18/oracle_extends_19c_support/",
+   "kind": "news",
+   "date": "2025-02-18",
+   "note": "19c 기본 지원 2029-12-31, 연장 지원 2032-12-31"
+  },
+  {
+   "n": 16,
+   "title": "Oracle 19c 문서 · DBMS_REDEFINITION",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/arpls/DBMS_REDEFINITION.html",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Oracle 19c 문서 · Using LogMiner to Analyze Redo Log Files",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/sutil/oracle-logminer-utility.html",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Red Hat build of Debezium 2.3.4 · Debezium Connector for Oracle",
+   "url": "https://docs.redhat.com/en/documentation/red_hat_build_of_debezium/2.3.4/html/debezium_user_guide/debezium-connector-for-oracle",
+   "kind": "reference",
+   "note": "LogMiner 로 행 단위 변경 수집, 보조 로깅 필요. 새 테이블에 보조 로깅이 빠져 시작 실패한 사례는 Debezium 이슈 DBZ-3109·DBZ-4869"
+  },
+  {
+   "n": 19,
+   "title": "전자금융감독규정 (금융위원회 고시 제2025-4호)",
+   "url": "https://ko.wikisource.org/wiki/%EC%A0%84%EC%9E%90%EA%B8%88%EC%9C%B5%EA%B0%90%EB%8F%85%EA%B7%9C%EC%A0%95_(%EC%A0%9C2025-4%ED%98%B8)",
+   "kind": "reference",
+   "note": "13조(백업 원격 보관·검증)·23조(재해복구·전환 훈련). 위키문헌 사본 — 공식본은 국가법령정보센터"
+  },
+  {
+   "n": 20,
+   "title": "Site Reliability Engineering · Postmortem Culture",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "CEO스코어데일리 · '호황' 증권가, 임직원 수 2% 늘 때 급여는 48% 증가",
+   "url": "https://www.ceoscoredaily.com/page/view/2026052816034001002",
+   "kind": "news",
+   "date": "2026-05-29",
+   "note": "금융투자협회 공시 1분기 — 토스증권 직원 380명 → 516명, 직원 급여 21.4% 증가"
+  },
+  {
+   "n": 22,
+   "title": "스마트투데이 · 토스 대표보다 더 받은 C레벨 임원들(비바리퍼블리카 2024 사업보고서)",
+   "url": "https://www.smarttoday.co.kr/ko-kr/articles/76626",
+   "kind": "news",
+   "date": "2025-03-31"
+  },
+  {
+   "n": 23,
+   "title": "SBS Biz · 인뱅 3사도 연봉 1억원대로(은행연합회 2025 지배구조 및 보수체계 연차보고서)",
+   "url": "https://biz.sbs.co.kr/amp/article/20000297249",
+   "kind": "news",
+   "date": "2026-03-13"
+  },
+  {
+   "n": 24,
+   "title": "토스증권 — 회사 정보(사이트 하단 주소)",
+   "url": "https://www.tossinvest.com/",
+   "kind": "company"
+  },
+  {
+   "n": 25,
+   "title": "토스피드 · 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 26,
+   "title": "heise · Five years of extra support: Oracle 19c gets support until the end of 2032",
+   "url": "https://heise.de/-10288464",
+   "kind": "news",
+   "date": "2025-02",
+   "note": "23ai 도 장기 지원판, 기본 지원 2031년 말 예정"
+  },
+  {
+   "n": 27,
+   "title": "Oracle 19c 문서 · Changing a Nonpartitioned Table into a Partitioned Table",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/vldbg/evolve-nopartition-table.html",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "자소설닷컴 · 토스증권 기업 정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/13103",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음. 같은 회사 앞선 풀이들에서 확인한 값을 다시 씀(페이지가 자동 접근을 막는다)"
+  },
+  {
+   "n": 29,
+   "title": "자소설닷컴 · 비바리퍼블리카(토스) 기업 정보(공공데이터 집계)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference",
+   "note": "같은 집계 기준의 비교값"
+  }
+ ],
+ "caveat": "토스증권은 Oracle 운영을 발표하거나 글로 쓴 적이 없어(찾은 범위), 업무의 '실제로는' 은 Oracle 공식 문서로 '보통 이런 일' 을 보였습니다. 원장이 어떤 DB 위에 있는지, 어떤 이중화·CDC 제품을 쓰는지는 공개되지 않았습니다. 장애 보도는 원인이 DB 라고 말하지 않습니다."
+}
