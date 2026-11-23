@@ -1,0 +1,1297 @@
+{
+ "id": "tmap-ai-agent-engineer",
+ "company": "티맵모빌리티",
+ "role": "AI Agent Engineer",
+ "team": "AI Agent 개발팀",
+ "jobs": [
+  "ats-skcareers:sk:R262196"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "TMAP 앱과 차 안 TMAP(TMAP AUTO)에서 말로 '근처 주유소 들렀다 집에 가자'를 알아듣고 경로·장소·음악·차량 기능을 처리하는 **AI 에이전트**와 그 백엔드를 만듭니다.[1][4] 회사는 단순 기능은 기존 의도 분류기(NLU), 길 찾기·장소 검색·잡담은 LLM 이 맡게 나눴고, 앱과 차를 잇는 **하나의 통합 에이전트**로 가려 합니다.[8][10]",
+  "env": "월 이용자 1,500만 명 이상, TMAP AUTO 탑재 차 115만 대 이상의 규모에서[11], SKT 의 에이닷을 바탕으로 한 음성 안내 위에서 일합니다.[4][8] 모델 관문(LLM Gateway)과 전사 평가는 같은 회사 LLMOps 자리가 따로 맡습니다.[2]",
+  "oneline": "모델을 만드는 자리가 아니라 **모델에게 길 안내 일을 시키는 서비스**를 만드는 자리입니다. 경력 3년 이상의 백엔드 실력이 바탕이고, LLM 은 '이해와 관심'부터입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Auto 및 모바일 환경의 TMAP AI Agent 서비스를 개발하고 운영합니다",
+   "short": "차 안 TMAP(TMAP AUTO)과 휴대폰 TMAP 앱에서 말로 길·장소·음악을 처리하는 AI 비서를 만들고 굴리는 일.",
+   "why": "티맵은 2025년 9월 차량용 음성 안내를 SKT 의 '누구'에서 '에이닷'으로 바꾸면서 대화형 '모빌리티 AI 에이전트'를 내놓았습니다. 안드로이드부터 적용하고 iOS 는 뒤따른다고 했습니다.[4][5] 회사는 2026년 안에 차 안(인카) AI 에이전트로 넓혀 내비·음악·뉴스·앱스토어를 한 에이전트가 맡게 하겠다고 했고[8], 장기 목표는 TMAP 앱과 TMAP AUTO 를 잇는 **하나의 통합 AI 에이전트**입니다.[10] TMAP AUTO 는 2026년 9월 기준 차량 115만 대 이상, 20개 넘는 브랜드에 들어가 있습니다.[11]",
+   "actually": {
+    "intro": "공고 팀 소개와 회사 발표로 보면 무대가 둘입니다.[1]",
+    "items": [
+     "**모바일 TMAP** — 월 이용자 1,550만 명 규모의 앱.[10] 에이닷 연동 음성 안내, 장소 에이전트 '어디갈까'(2026년 5월 MAU 450만)가 여기 있다.[4][10]",
+     "**TMAP AUTO(차량)** — 완성차에 들어간 TMAP. 르노 필랑트에는 차량용 AI 에이전트 '에이닷 오토'가 처음 들어갔고, 운전 이력·패턴·현재 위치로 장소를 추천한다.[9]",
+     "**둘은 조건이 다르다** — 차에서는 손이 아니라 말로만 쓰고, 화면을 오래 볼 수 없다. 그래서 짧은 답과 되묻기가 중요하다. {추론}",
+     "**운영** — 출시 뒤에도 음성 인식률·호출 성공률·응답 지연·오인식 같은 숫자를 계속 본다. 같은 회사 음성 비서 TPM 공고가 이 지표들을 관리 대상으로 적었다.[3]"
+    ]
+   },
+   "how_far": "음성 인식(ASR)·음성 합성(TTS)·마이크 잡음 제거(ECNR)는 엔진·파트너 쪽 일이고, 차량 탑재 일정은 TPM 이 조율합니다.[3] 이 자리는 그 사이의 **에이전트 두뇌와 백엔드**(의도 이해 → 도구 호출 → 답)를 맡습니다. {추론} 최소선은 LLM 을 부르는 API 서버를 실제 사용자 앞에 내놓고 지표를 보며 고쳐 본 경험입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    5,
+    8,
+    9,
+    10,
+    11
+   ],
+   "study": [
+    "skt-adot-tmap",
+    "byline-agent",
+    "anthropic-agents"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "사용자 의도와 상황을 이해하는 멀티턴 대화 및 Agent 워크플로우를 설계합니다.",
+   "short": "\"거기 몇 시까지 해?\"처럼 앞말에 기대는 대화를 이어 받고, 요청을 단계(찾기→고르기→경로)로 나눠 처리하는 흐름을 짜는 일.",
+   "why": "티맵은 에이닷 연동 뒤 '치과 가는 길 → 거기 영업시간' 처럼 앞 대화를 이어 받는 것을 내세웠고[5], 호출어를 다시 부르지 않고 이어 말할 수 있게 했습니다.[6] 회사 시연에서는 '청담역 근처 조용한 카페 + 매니저에게 문자 + 근처 주유소 들르기'를 한 번에 말하는 요청을 처리했습니다.[7]",
+   "actually": {
+    "items": [
+     "**대명사·생략 풀기** — '거기', '아까 그 집'이 무엇인지 앞 대화에서 찾는다. 못 찾으면 되묻는다.[5]",
+     "**상황 반영** — 지금 위치·주행 중인지·자주 가는 곳(즐겨찾기 유치원을 먼저 보여 주기)을 판단에 넣는다.[5][9]",
+     "**한 말에 여러 일** — 목적지 + 경유지 + 문자처럼 묶인 요청을 하위 작업으로 쪼개 순서대로 처리한다.[7]",
+     "**흐름의 두 종류** — 순서가 정해진 일은 고정 흐름(workflow), 단계 수를 미리 모르는 일만 에이전트가 스스로 다음 행동을 고르게 하는 것이 일반적 권고다.[12]",
+     "**라우팅** — 쉬운 요청과 어려운 요청을 먼저 가르고 다른 처리기로 보낸다(라우팅 패턴).[12] 티맵은 전화·음악 같은 단순 기능은 기존 NLU(의도 분류기), 길 찾기·장소 검색·잡담은 LLM 이 맡도록 나눴다.[8]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "앞말 이어 받기 — 가장 작은 판 (직접 돌린 출력)",
+     "body": "회사가 든 '치과 → 영업시간' 예[5]를 규칙 몇 줄로 줄였습니다. 실제로는 LLM 이 대화 기록을 보고 풀지만, '기억할 칸(last_place)'을 정하고 비었을 때 되묻는 설계는 같습니다.",
+     "lang": "python",
+     "code": "ctx = {}\n\ndef handle(utter):\n    if \"가는 길\" in utter:\n        place = utter.split(\" 가는 길\")[0]\n        ctx[\"last_place\"] = place\n        return f\"경로 안내: {place}\"\n    if \"몇 시까지\" in utter:\n        p = ctx.get(\"last_place\")\n        return f\"영업시간 조회: {p}\" if p else \"어디 말씀이세요?\"\n    return \"?\"\n\nprint(handle(\"몇 시까지 해?\"))\nprint(handle(\"강남 치과 가는 길 알려 줘\"))\nprint(handle(\"거기 몇 시까지 해?\"))\n# 어디 말씀이세요?\n# 경로 안내: 강남 치과\n# 영업시간 조회: 강남 치과"
+    },
+    {
+     "title": "단순 기능은 NLU, 나머지는 LLM 으로 (직접 돌린 출력)",
+     "body": "회사가 밝힌 나눔[8]을 흉내 낸 아주 단순한 라우터입니다. 실제 분류는 학습된 모델이 하지만, '빠르고 확실한 길을 먼저 보고 아니면 LLM' 이라는 구조를 보여 줍니다.",
+     "lang": "python",
+     "code": "SIMPLE = {\"전화\": \"call\", \"음악\": \"play_music\", \"볼륨\": \"volume\"}\n\ndef route(utter):\n    for k, intent in SIMPLE.items():\n        if k in utter and len(utter) <= 15:\n            return (\"NLU\", intent)\n    return (\"LLM\", None)\n\nfor u in [\"엄마한테 전화해 줘\", \"음악 틀어 줘\",\n          \"근처 주유소 들렀다 집에 가자\", \"주차 되는 조용한 카페 찾아 줘\"]:\n    print(u, \"->\", route(u))\n# 엄마한테 전화해 줘 -> ('NLU', 'call')\n# 음악 틀어 줘 -> ('NLU', 'play_music')\n# 근처 주유소 들렀다 집에 가자 -> ('LLM', None)\n# 주차 되는 조용한 카페 찾아 줘 -> ('LLM', None)"
+    }
+   ],
+   "how_far": "어떤 대화를 지원할지(시나리오)는 기획과 같이 정합니다.[1] 개발자는 **대화 상태에 무엇을 남기고, 언제 되묻고, 어느 길(NLU·LLM·도구)로 보낼지**를 그림으로 그리고 코드로 옮깁니다. 최소선은 대화 세 턴이 이어지는 작은 에이전트를 만들어 '거기'를 맞게 풀어 보는 것입니다. {추론}",
+   "refs": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    12
+   ],
+   "study": [
+    "anthropic-agents",
+    "cs329z-patterns",
+    "langgraph-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Context, Memory, Tool Calling, RAG 기반의 복합 요청 처리 기능을 개발합니다.",
+   "short": "모델에 넣을 정보(Context)·기억(Memory)·도구 호출·검색(RAG)을 엮어 '주차 되는 조용한 카페'처럼 조건 많은 요청을 푼다.",
+   "why": "티맵이 내세운 기능이 이 네 가지의 조합입니다 — '주차 가능한 카페'·'지금 영업하는 식당' 같은 조건 검색, 장소의 영업시간·메뉴·리뷰 요약, 주행 이력·즐겨찾기 기반 개인화.[4][5] 회사는 AI 에이전트의 성패가 데이터에 달렸다며 20년 지도 데이터와 하루 2,600만 건 넘는 경로 데이터를 들었습니다.[6][7]",
+   "actually": {
+    "items": [
+     "**Context(맥락)** — 모델 입력 창에 무엇을 얼마나 넣을지 고르는 일. 도구 설명·검색 결과·대화 기록이 다 자리를 다투므로 꼭 필요한 것만 넣는다.[31]",
+     "**Memory(기억)** — 한 대화 안의 짧은 기억(대화 기록)과 대화를 넘어 남는 긴 기억(자주 가는 곳·취향)을 나눠 저장한다.[14] 운영체제가 메모리를 단계로 나누듯 입력 창 밖에 기억을 두고 필요할 때 불러오는 방식도 있다.[15]",
+     "**Tool Calling(도구 호출)** — 도구마다 이름·설명·입력 형식(JSON Schema)을 알려 주면, 모델이 '이 도구를 이 인자로 불러 달라'는 요청을 내고 앱이 실제로 실행해 결과를 돌려준다.[13]",
+     "**RAG(검색 증강 생성)** — 모델이 외워 둔 지식 대신 검색한 문서를 근거로 답하게 하는 방법.[16] 티맵이라면 장소 정보·리뷰가 검색 대상이 된다. {추론}",
+     "**복합 요청** — '주차 되는 조용한 카페 → 가는 길 주유소 → 문자' 는 검색 → 거르기 → 경로 → 메시지 도구를 차례로 부르는 일이다.[7]"
+    ]
+   },
+   "how_far": "장소 데이터·검색 엔진 자체는 다른 팀 몫일 가능성이 큽니다. {추론} 이 자리는 **그 데이터를 도구로 감싸고, 모델이 맞는 도구를 맞는 인자로 부르게 하는 것**까지입니다. 최소선은 도구 3~4개를 둔 에이전트에서 도구 설명을 고쳐 잘못 부르는 비율을 줄여 본 경험입니다. {추론}",
+   "refs": [
+    4,
+    5,
+    6,
+    7,
+    13,
+    14,
+    15,
+    16,
+    31
+   ],
+   "study": [
+    "claude-tools",
+    "anthropic-context",
+    "langgraph-memory",
+    "cs329z-tools",
+    "cs329z-memory",
+    "cs329z-rag"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "내비게이션, 장소 검색, 음악, 차량 제어 등 다양한 서비스 및 외부 API를 연동합니다.",
+   "short": "에이전트가 '일'을 하려면 경로·장소·FLO/멜론·차량 기능 API 를 도구로 붙여야 해서.",
+   "why": "에이닷 연동 음성 안내가 다루는 기능은 실시간 교통, 전화·문자, FLO·멜론 음악, 날씨·뉴스, 일정, 일반 검색입니다. 음악 전체 재생과 일정은 에이닷 계정을 TMAP 계정과 이어야 됩니다.[4][5] 회사는 글로벌 완성차와 '풀 LLM' 에이전트로 차량 제어·장소 검색·정보 질의를 대화로 처리하겠다고 했습니다.[10]",
+   "actually": {
+    "items": [
+     "**내부 API** — 경로 탐색·경유지 추가·장소 검색·영업 정보.[4]",
+     "**외부 서비스** — 음악(FLO·멜론), 일정, 전화·문자. 계정 연동(사용자 동의·토큰)이 있어야 부를 수 있는 것이 섞여 있다.[4]",
+     "**차량 기능** — 공조·창문 같은 것은 완성차가 주는 인터페이스를 거친다. 브랜드가 20곳을 넘어[11] 같은 '에어컨 켜 줘'도 차마다 다른 API 로 갈 수 있다. {추론}",
+     "**위험한 도구 막기** — 모델에게 필요 이상 권한을 주는 것(과도한 행위 권한)과, 도구가 돌려준 글 속에 숨은 지시(프롬프트 주입)는 LLM 앱의 대표 위험으로 꼽힌다.[21]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "차량 도구 호출을 실행 전에 거르기 (직접 돌린 출력)",
+     "body": "모델이 낸 도구 호출[13]을 그대로 실행하지 않고 ① 없는 도구 ② 범위 밖 값 ③ 주행 중 되물어야 할 동작을 먼저 거릅니다. 도구 이름·범위는 가상입니다.",
+     "lang": "python",
+     "code": "TOOLS = {\n    \"set_destination\": {\"confirm\": False},\n    \"set_ac_temp\": {\"confirm\": False, \"min\": 16, \"max\": 30},\n    \"open_window\": {\"confirm\": True},\n}\n\ndef check(call, driving):\n    name, args = call[\"name\"], call.get(\"args\", {})\n    t = TOOLS.get(name)\n    if t is None:\n        return \"거절: 없는 도구\"\n    if \"min\" in t and not (t[\"min\"] <= args.get(\"temp\", -1) <= t[\"max\"]):\n        return \"거절: 범위 밖\"\n    if t[\"confirm\"] and driving:\n        return \"되묻기: 정말 할까요?\"\n    return \"실행\"\n\nfor c in [{\"name\": \"set_ac_temp\", \"args\": {\"temp\": 22}},\n          {\"name\": \"set_ac_temp\", \"args\": {\"temp\": 5}},\n          {\"name\": \"open_window\", \"args\": {}},\n          {\"name\": \"unlock_doors\", \"args\": {}}]:\n    print(c[\"name\"], c.get(\"args\"), \"->\", check(c, driving=True))\n# set_ac_temp {'temp': 22} -> 실행\n# set_ac_temp {'temp': 5} -> 거절: 범위 밖\n# open_window {} -> 되묻기: 정말 할까요?\n# unlock_doors {} -> 거절: 없는 도구"
+    }
+   ],
+   "how_far": "외부 API 계약·제휴는 사업 쪽이 정합니다. 개발자는 **각 API 를 에이전트가 쓸 수 있는 도구로 감싸고(설명·입력 형식·오류 처리), 느리거나 실패할 때도 대화가 깨지지 않게** 만듭니다. 최소선은 외부 API 두 개를 시간 제한·재시도와 함께 붙여 본 경험입니다. {추론}",
+   "refs": [
+    4,
+    5,
+    10,
+    11,
+    13,
+    21
+   ],
+   "study": [
+    "claude-tools",
+    "owasp-llm",
+    "http-basic"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "상용·오픈소스 LLM 평가와 프롬프트·모델 라우팅 전략을 최적화합니다.",
+   "short": "여러 LLM 을 같은 시험으로 재 보고, 요청마다 싼·빠른 모델과 비싼·똑똑한 모델 중 어디로 보낼지 정하는 일.",
+   "why": "음성 비서는 응답이 늦으면 바로 티가 나고, 호출량이 많으면 비용이 커집니다. 같은 회사 LLMOps 공고는 여러 LLM 의 품질·비용·응답 속도·안전성을 비교해 모델을 고르고, LLM Gateway(모델 호출을 한곳으로 모으는 관문)에서 라우팅·장애 전환·캐싱·사용량 제한을 운영한다고 적었습니다.[2] 회사는 이미 단순 기능과 LLM 기능을 나눠 처리합니다.[8]",
+   "actually": {
+    "items": [
+     "**모델 고르기** — 같은 평가 세트로 상용 모델과 오픈소스 모델을 돌려 품질·지연·비용을 한 표에 놓는다.[2]",
+     "**라우팅** — 쉬운 질문은 작은 모델, 어려운 질문은 큰 모델로 보낸다.[12] 사람의 선호 데이터로 라우터를 학습시켜 품질을 지키며 비용을 2배 넘게 줄인 연구가 있다.[17]",
+     "**단계적 호출(cascade)** — 싼 모델이 먼저 답하고 자신 없을 때만 비싼 모델을 부른다. 이 방식으로 큰 모델과 비슷한 성능에 비용을 크게 줄였다는 연구가 있다.[18]",
+     "**프롬프트 다듬기** — 도구 설명·예시·지시문을 바꾸고 같은 평가 세트로 전후를 비교한다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "작은 모델이 얼마를 맡느냐가 비용을 정한다 (직접 돌린 출력)",
+     "body": "호출 100만 번, 작은 모델과 큰 모델의 값 차이를 15배로 **가정**했습니다. 품질이 떨어지지 않는 선에서 작은 모델 비율을 올리는 것이 라우팅 최적화입니다.",
+     "lang": "python",
+     "code": "calls = 1_000_000\nsmall, big = 0.2, 3.0          # 호출 1천 번당 비용(상대값) — 가정\nfor share in (0.0, 0.6, 0.8):\n    cost = calls * (share * small + (1 - share) * big) / 1000\n    print(f\"작은 모델 비율 {share:.0%}: 비용 {cost:,.0f} (상대)\")\n# 작은 모델 비율 0%: 비용 3,000 (상대)\n# 작은 모델 비율 60%: 비용 1,320 (상대)\n# 작은 모델 비율 80%: 비용 760 (상대)"
+    }
+   ],
+   "how_far": "Gateway 운영과 전사 모델 기준은 LLMOps 쪽(MDP팀) 공고가 따로 맡습니다.[2] 이 자리는 **에이전트 서비스 쪽에서 어떤 요청을 어느 모델로 보낼지 정하고, 프롬프트를 고쳐 품질을 올리는 것**으로 읽힙니다. {추론} 최소선은 모델 둘을 같은 시험 세트로 비교한 표 하나를 만들어 본 경험입니다.",
+   "refs": [
+    2,
+    8,
+    12,
+    17,
+    18
+   ],
+   "study": [
+    "routellm",
+    "frugalgpt",
+    "ai-eng"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "평가 데이터셋과 자동화 체계 구축을 통한 응답 품질·안전성을 개선합니다.",
+   "short": "'잘 답했나'를 사람 감이 아니라 시험 문제 묶음으로 매번 자동 채점해, 고칠 때마다 나빠지지 않았는지 보는 일.",
+   "why": "LLM 은 같은 질문에도 답이 달라지고, 프롬프트 한 줄을 고치면 다른 곳이 깨질 수 있습니다. 그래서 평가 세트로 재고 고치는 고리를 먼저 만들라는 것이 실무 권고입니다.[30] 같은 회사 LLMOps 공고도 자동 평가와 사람 검토를 섞어 모델 변경 전후를 검증한다고 적었습니다.[2]",
+   "actually": {
+    "items": [
+     "**평가 세트** — 실제 발화(경유지, 조건 검색, 앞말 잇기, 잡담, 엉뚱한 요청)를 모아 기대 결과(불러야 할 도구·인자)를 붙인다. {추론}",
+     "**정답이 있는 채점** — '경유지 주유소, 목적지 집'처럼 도구와 인자가 맞았는지는 코드로 채점한다.[30]",
+     "**정답이 없는 채점** — 답의 자연스러움은 LLM 에게 채점을 시키기도 한다. 강한 모델 채점이 사람 판단과 80% 넘게 일치했지만, 먼저 나온 답·긴 답·자기 답을 편드는 버릇이 있다.[19]",
+     "**여러 번 돌려 보기** — 같은 과제를 k 번 돌려 k 번 다 성공해야 하는 pass^k 로 일관성을 잰다. 도구를 쓰는 대화 에이전트 시험에서 최고 모델도 과제 성공이 50%에 못 미치고 8번 연속 성공은 25%도 안 됐다.[20]",
+     "**안전성** — 위험한 차량 동작, 개인정보 노출, 프롬프트 주입 같은 공격 문장도 평가 세트에 넣는다.[2][21]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "한 번 잘 되는 것과 매번 잘 되는 것 (직접 돌린 출력)",
+     "body": "pass^k[20]를 시도끼리 서로 독립이라고 **가정**하면 한 번 성공률 p 의 k 제곱입니다. 70% 짜리 기능은 8번 연속이면 6%만 다 성공합니다 — 운전자는 매일 씁니다.",
+     "lang": "python",
+     "code": "for p in (0.9, 0.7, 0.5):\n    print(f\"한 번 성공률 {p:.0%}: \" +\n          \", \".join(f\"pass^{k}={p**k:.0%}\" for k in (1, 4, 8)))\n# 한 번 성공률 90%: pass^1=90%, pass^4=66%, pass^8=43%\n# 한 번 성공률 70%: pass^1=70%, pass^4=24%, pass^8=6%\n# 한 번 성공률 50%: pass^1=50%, pass^4=6%, pass^8=0%"
+    }
+   ],
+   "how_far": "평가 기준(무엇이 좋은 답인가)은 기획·QA 와 같이 정합니다.[1] 개발자는 **평가 세트를 모으는 통로, 배포 전에 자동으로 도는 채점, 결과를 보는 화면**을 만듭니다. {추론} 최소선은 50~100개짜리 시험 세트로 프롬프트 변경 전후 점수를 비교해 본 경험입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    19,
+    20,
+    21,
+    30
+   ],
+   "study": [
+    "hamel-evals",
+    "mt-bench",
+    "tau-bench",
+    "cs329z-terminal"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "대규모 트래픽을 처리하는 Agent 백엔드·플랫폼 개발 및 모니터링·CI/CD 환경을 구축합니다.",
+   "short": "월 1,500만 명이 쓰는 앱과 차 100만 대 넘게서 들어오는 요청을 버티는 서버를 만들고, 재고, 자동으로 배포하는 일.",
+   "why": "TMAP 은 월 이용자 1,500만 명 이상, 월평균 방문 4억 4,600만 회이고, TMAP AUTO 를 단 차가 115만 대를 넘었습니다.[11] 출퇴근처럼 한꺼번에 몰리는 시간이 있고, LLM 호출은 일반 API 보다 느리고 비쌉니다. {추론}",
+   "actually": {
+    "items": [
+     "**느린 호출 견디기** — LLM·외부 API 는 몇 초씩 걸릴 수 있어 시간 제한·재시도 횟수를 정하고, 몰릴 때는 일부 요청을 일찍 거절해 전체가 무너지지 않게 한다.[23][24]",
+     "**재시도 폭풍 막기** — 실패한 요청을 모두가 곧바로 다시 보내면 장애가 번진다. 재시도에 상한과 무작위 간격을 둔다.[24]",
+     "**재기(관측)** — 모델 호출·도구 호출을 추적(trace)으로 남기고 토큰 수·지연을 같은 형식으로 모으는 공개 규약이 있다.[22]",
+     "**CI/CD** — 코드뿐 아니라 프롬프트·모델 설정이 바뀌어도 평가 세트가 자동으로 돌고, 점수가 떨어지면 배포를 막는다. {추론}",
+     "**음성 지표** — 호출 성공률·응답 지연·오인식은 음성 비서 프로젝트가 관리하는 지표다.[3]"
+    ]
+   },
+   "how_far": "공용 인프라(쿠버네티스·관측 플랫폼)는 SRE·플랫폼 조직과 나눕니다. {추론} 이 자리는 **에이전트 서버 자체의 확장·장애 처리·지표와 배포 파이프라인**을 맡습니다. 최소선은 백엔드 하나를 부하를 걸어 보고 p95 지연(느린 쪽 5%의 경계)을 줄여 본 경험입니다. {추론}",
+   "refs": [
+    3,
+    11,
+    22,
+    23,
+    24
+   ],
+   "study": [
+    "sre-book",
+    "otel-genai",
+    "kubernetes"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Software Engineer 경력 3년 이상이거나 이에 준하는 경험을 보유하신 분",
+   "short": "AI 전문가보다 서비스를 만들고 운영해 본 소프트웨어 개발자를 찾는다는 뜻.",
+   "why": "공고의 일 대부분이 백엔드·API·트래픽·CI/CD 입니다.[1] '이에 준하는 경험'이라 연차보다 실제로 서비스를 굴려 본 경험을 보겠다는 문장입니다. {추론}",
+   "how_far": "전형에 **과제 전형**이 서류 다음에 있습니다.[1] 연차를 채우지 못했다면 과제와 포트폴리오로 '운영해 본 서비스'를 보이는 것이 최소선입니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Python, Java/Kotlin, TypeScript, Golang 중 하나 이상의 언어에 능숙하신 분",
+   "short": "네 언어 중 하나로 서버를 '잘' 짜면 된다 — 에이전트 라이브러리는 Python·TypeScript 쪽이 많다.",
+   "why": "공고 기술 목록에 네 언어가 다 있고, 하나만 능숙하면 된다고 했습니다.[1] 우대사항의 LangChain·LangGraph 는 공식 문서가 Python 과 JavaScript/TypeScript 판을 냅니다.[32]",
+   "level": {
+    "basic": "비동기 호출(async/await·코루틴)·JSON 다루기·HTTP 클라이언트·예외 처리",
+    "work": "동시 요청 처리·시간 제한·재시도·스트리밍 응답·테스트 코드",
+    "team": "여러 LLM·외부 API 를 동시에 부르며 느린 쪽에 끌려가지 않는 서버 {추론}"
+   },
+   "how_far": "언어보다 **비동기·실시간 요청 처리**(우대사항에도 있다)를 그 언어로 해 봤는지가 핵심입니다.[1] {추론}",
+   "refs": [
+    1,
+    32
+   ],
+   "study": [
+    "langchain-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "LLM 기반 애플리케이션 또는 AI Agent 개발에 대한 이해와 관심이 있으신 분",
+   "short": "'경험'이 아니라 '이해와 관심' — LLM 앱이 어떻게 도는지 설명하고 작게라도 만들어 봤으면 된다.",
+   "why": "필수 요건은 이해 수준이고, 실제 구현 경험(Tool Calling·RAG·Memory·멀티 에이전트)은 우대사항으로 따로 두었습니다.[1]",
+   "actually": {
+    "items": [
+     "토큰·입력 창(context window)·온도(temperature) 같은 기본 용어. {추론}",
+     "도구 호출이 '모델이 요청을 내고 앱이 실행한다'는 구조라는 것.[13]",
+     "고정 흐름과 에이전트의 차이, 언제 에이전트를 쓰지 말아야 하는지.[12]"
+    ]
+   },
+   "how_far": "최소선은 LLM API 로 도구 하나를 부르는 작은 앱을 직접 만들어 보고, 왜 그렇게 설계했는지 말할 수 있는 정도입니다. {추론}",
+   "refs": [
+    1,
+    12,
+    13
+   ],
+   "study": [
+    "anthropic-agents",
+    "claude-tools",
+    "cs329z-context"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "백엔드 서비스 및 RESTful API를 설계·개발·운영한 경험을 보유하신 분",
+   "short": "에이전트도 결국 앱·차량이 부르는 API 서버라서. 설계부터 운영까지 해 봤어야 한다.",
+   "why": "팀 소개가 'Agent 워크플로우와 백엔드 플랫폼을 설계·운영'한다고 적었습니다.[1] 앱과 차량(IVI)이 같은 에이전트를 부르려면 서버 API 로 열어야 합니다. {추론}",
+   "level": {
+    "basic": "자원(URL)·메서드·상태 코드·인증",
+    "work": "버전 관리·멱등성(같은 요청을 두 번 보내도 결과가 같게)·페이지 나누기·오류 형식 통일",
+    "team": "몇 초씩 걸리는 응답을 스트리밍으로 흘려보내기, 앱·차량 두 종류의 클라이언트 {추론}"
+   },
+   "refs": [
+    1
+   ],
+   "study": [
+    "http-basic"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AWS, GCP, Azure 등 클라우드 환경에서의 서비스 개발 및 배포 경험을 보유하신 분",
+   "short": "서버를 클라우드에 올리고 배포·확장해 본 경험. 셋 중 어느 것이든 된다.",
+   "why": "공고가 세 클라우드를 나란히 적었고 어느 하나로 한정하지 않았습니다.[1] 같은 회사 LLMOps 공고는 Databricks 와 AWS 경험을 우대합니다.[2]",
+   "how_far": "인프라 설계 전문가 수준이 아니라 **내 서비스를 컨테이너로 만들어 올리고, 설정·비밀값·로그·자동 확장을 다뤄 본** 수준입니다. {추론}",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "docker",
+    "kubernetes"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "복잡한 서비스 흐름과 시스템 구조를 분석하고 안정적으로 구현할 수 있으신 분",
+   "short": "음성 → 이해 → 도구 → 답으로 이어지는 긴 사슬에서 어디가 끊길 수 있는지 보고, 끊겨도 버티게 짜는 능력.",
+   "why": "차량 음성 비서 하나에 음성 처리(ECNR·ASR·STT·TTS), AI 에이전트, 내비게이션, 차량 제어, 클라이언트·서버가 얽혀 있습니다.[3] 한 요청이 여러 시스템을 거치니 한 곳이 느려도 전체가 늦어집니다. {추론}",
+   "actually": {
+    "items": [
+     "요청 하나가 거치는 시스템을 그림으로 그리고, 각 칸의 시간 제한과 실패 시 대안(되묻기·간단한 답)을 정한다. {추론}",
+     "한 서버가 느려질 때 다른 서버까지 줄줄이 무너지는 연쇄 장애를 막는 법 — 시간 제한, 재시도 상한, 부하 줄이기.[24]"
+    ]
+   },
+   "refs": [
+    3,
+    24
+   ],
+   "study": [
+    "sre-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "데이터와 사용자 피드백을 기반으로 서비스 문제를 정의하고 개선할 수 있으신 분",
+   "short": "'못 알아들었다'는 불만을 로그와 숫자로 바꿔 어디를 고칠지 정하는 능력.",
+   "why": "팀 소개가 '사용자 관점에서 문제를 정의'하고 출시와 운영까지 함께한다고 적었습니다.[1] 회사는 에이닷 4.0 을 바탕으로 발화 인식 오류율을 6~7%에서 절반 아래로 줄였다고 밝혔습니다.[8]",
+   "actually": {
+    "items": [
+     "실패한 대화 로그를 모아 유형(못 알아들음·잘못된 도구·느림·답은 맞는데 말이 김)으로 나눈다. {추론}",
+     "가장 많은 유형부터 고치고, 고친 뒤 같은 평가 세트로 다시 잰다.[30]"
+    ]
+   },
+   "refs": [
+    1,
+    8,
+    30
+   ],
+   "study": [
+    "hamel-evals"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "기획, 디자인, QA 및 AI·데이터 직군과 원활하게 협업할 수 있으신 분",
+   "short": "대화 시나리오는 기획, 말투·화면은 디자인, 시험은 QA, 모델·데이터는 AI 팀이라 혼자 끝나는 일이 없다.",
+   "why": "팀이 기획부터 출시·운영까지 함께한다고 적었고[1], 같은 회사에 LLMOps(모델 평가·Gateway)와 음성 비서 TPM 자리가 따로 있습니다.[2][3]",
+   "how_far": "\"좋은 답\"의 기준을 기획·QA 와 함께 평가 세트로 적어 두면 말이 덜 엇갈립니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "실제 사용자를 대상으로 한 B2C/B2B Agent 서비스의 개발·출시·운영 경험을 보유하신 분",
+   "short": "데모와 실제 서비스는 다르다 — 이상한 말·몰리는 시간·비용을 겪어 본 사람이 빠르다.",
+   "why": "TMAP 은 모바일 이용자와 완성차 고객사(B2B)를 함께 상대합니다.[10][11] 실제 사용자 앞의 에이전트는 시험보다 훨씬 다양한 말을 받습니다. {추론}",
+   "refs": [
+    10,
+    11
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "LangChain, LangGraph 등 Agent 프레임워크를 활용한 개발 경험을 보유하신 분",
+   "short": "LLM 호출·도구·기억을 엮는 공용 부품(LangChain)과, 단계를 그래프로 짜는 틀(LangGraph)을 써 봤으면 좋다.",
+   "why": "LangChain 은 모델·도구를 엮어 에이전트를 빨리 만드는 라이브러리이고, LangGraph 는 상태를 들고 단계를 오가는 오래 도는 에이전트를 위한 저수준 틀입니다.[32][14]",
+   "actually": {
+    "items": [
+     "**상태 그래프** — 단계(노드)와 이동(엣지)을 정하고 단계 사이에 넘기는 상태를 설계한다.[14]",
+     "**중간 저장(checkpoint)** — 대화마다 상태를 저장해 이어 말하기·재시작에 쓴다. 이것이 짧은 기억이 된다.[14]",
+     "**프레임워크를 꼭 써야 하나** — 처음에는 LLM API 를 직접 부르고, 필요할 때 프레임워크를 들이라는 권고도 있다. 추상화가 디버깅을 어렵게 할 수 있어서다.[12]"
+    ]
+   },
+   "refs": [
+    12,
+    14,
+    32
+   ],
+   "study": [
+    "langgraph-docs",
+    "langchain-docs",
+    "cs329z-frameworks"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Tool Calling, RAG, Memory 또는 멀티 Agent 워크플로우 구현 경험을 보유하신 분",
+   "short": "업무③(복합 요청)을 이미 해 본 사람 — 넷 중 하나만 깊게 해 봐도 된다.",
+   "why": "업무 줄에 같은 낱말들이 그대로 있습니다.[1] '또는'이라 넷 중 하나 이상입니다.",
+   "actually": {
+    "items": [
+     "**멀티 에이전트** — 지휘하는 에이전트가 일을 나눠 맡기는 구조. 여러 에이전트는 단순 대화보다 토큰을 훨씬 많이 쓰므로 값어치 있는 일에만 쓴다.[12] {추론}",
+     "티맵의 목표인 내비·음악·뉴스·앱스토어를 한 에이전트가 맡는 구조[8]에서는 기능별 하위 에이전트를 둘지, 한 에이전트에 도구를 많이 줄지가 설계 질문이 된다. {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    8,
+    12
+   ],
+   "study": [
+    "cs329z-multi",
+    "cs329z-rag",
+    "memgpt"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "다양한 LLM을 비교·평가하고 서비스에 적용하거나 최적화한 경험을 보유하신 분",
+   "short": "업무⑤를 해 본 사람 — 모델을 바꿨을 때 무엇이 좋아지고 나빠졌는지 숫자로 보여 본 경험.",
+   "why": "같은 회사 LLMOps 공고가 품질·비용·응답 속도 사이의 맞바꿈을 분석해 운영 기준을 세운다고 적었습니다.[2]",
+   "refs": [
+    2,
+    17,
+    18
+   ],
+   "study": [
+    "routellm",
+    "frugalgpt"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Agent 평가 자동화, 모니터링 또는 Observability 환경을 구축한 경험을 보유하신 분",
+   "short": "업무⑥⑦을 해 본 사람 — 에이전트가 어느 단계에서 틀리고 느린지 들여다보는 장치를 만들어 본 경험.",
+   "why": "에이전트는 한 요청 안에서 모델과 도구를 여러 번 부르니, 단계별로 남기지 않으면 어디서 틀렸는지 모릅니다. 생성형 AI 호출을 추적으로 남기는 공개 규약이 있습니다.[22]",
+   "refs": [
+    2,
+    22,
+    30
+   ],
+   "study": [
+    "otel-genai",
+    "hamel-evals"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 트래픽과 비동기·실시간 요청을 처리하는 백엔드 시스템 개발 경험을 보유하신 분",
+   "short": "운전 중 말에 바로 답해야 하고 이용자가 많아서 — 기다리지 않는 서버를 만들어 본 경험.",
+   "why": "음성 비서 프로젝트는 응답 지연을 핵심 지표로 관리합니다.[3] 이용 규모는 월 1,500만 명 이상입니다.[11]",
+   "refs": [
+    3,
+    11,
+    23
+   ],
+   "study": [
+    "sre-book",
+    "kafka"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "모빌리티, 내비게이션, 차량 또는 음성 인터페이스 관련 서비스 경험을 보유하신 분",
+   "short": "경로·경유지·주행 중 제약과 음성 대화의 습관을 이미 아는 사람이 빨리 적응해서.",
+   "why": "TMAP AUTO 는 볼보·폴스타·BMW·벤츠·르노 등 20개 넘는 브랜드에 들어가 있고[11], 차량 음성 비서에는 OEM·Tier-1(부품사)·음성 기술 파트너가 함께 엮입니다.[3]",
+   "refs": [
+    3,
+    11
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "백엔드를 운영해 본 뒤 LLM 서비스로 넘어가고 싶은 사람[1]",
+   "운전·지도·장소 같은 생활 서비스를 숫자로 고치는 게 즐거운 사람[8][11]",
+   "새 모델·기법을 빨리 시험해 서비스에 넣어 보고 싶은 사람 — 팀 소개가 꼽은 일하는 방식[1]",
+   "기획부터 운영까지 한 기능을 끝까지 맡고 싶은 사람[1]"
+  ],
+  "hard": [
+   "모델을 직접 학습·연구하고 싶다면 맞지 않을 수 있다 — 업무가 서비스·백엔드 중심이다[1] {추론}",
+   "전형에 과제가 있다[1]",
+   "차량 쪽은 완성차·부품사 일정과 검증에 묶여 속도가 앱보다 느릴 수 있다[3] {추론}",
+   "시용 기간 3개월이 있다(급여는 100% 지급)[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "'거기 몇 시까지 해?'에서 '거기'를 어떻게 찾고, 못 찾으면 어떻게 하겠어요?",
+   "a": "회사가 내세운 앞말 잇기 기능 그대로.[5] 대화 상태 설계와 되묻기."
+  },
+  {
+   "q": "전화 걸기와 '주차 되는 카페 찾기'를 같은 LLM 에 보내야 하나요?",
+   "a": "회사는 단순 기능은 NLU, 나머지는 LLM 으로 나눴다.[8] 지연·비용·정확도의 맞바꿈."
+  },
+  {
+   "q": "모델이 주행 중 '창문 열기'를 부르면 서버는 무엇을 확인하나요?",
+   "a": "차량 제어가 업무에 있다.[1] 허용 목록·값 범위·확인 질문, 과도한 권한 위험.[21]"
+  },
+  {
+   "q": "프롬프트를 고쳤더니 경유지 요청이 깨졌다는 걸 배포 전에 어떻게 알겠어요?",
+   "a": "평가 데이터셋과 자동화가 업무에 있다.[1] 시험 세트·여러 번 돌려 pass^k.[20]"
+  },
+  {
+   "q": "출퇴근 시간에 LLM 응답이 5초로 늘었습니다. 무엇부터 보겠어요?",
+   "a": "대규모 트래픽·모니터링이 업무에 있다.[1] 단계별 추적, 시간 제한, 작은 모델로 돌리기, 몰릴 때 거절.[22][23]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "SK Careers · 티맵모빌리티 AI Agent Engineer",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262196",
+   "kind": "posting",
+   "date": "2026-10-12",
+   "note": "팀 소개·업무·요건·우대·전형(과제 전형 포함). 접수 2026-10-12 ~ 12-31"
+  },
+  {
+   "n": 2,
+   "title": "SK Careers · 티맵모빌리티 LLMOps Engineer (MDP팀)",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262015",
+   "kind": "posting",
+   "note": "같은 회사 공고 — LLM 평가·Gateway 라우팅·장애 전환·비용"
+  },
+  {
+   "n": 3,
+   "title": "SK Careers · 티맵모빌리티 AI Agent TPM (AUTO개발팀)",
+   "url": "https://www.skcareers.com/Recruit/Detail/R261800",
+   "kind": "posting",
+   "note": "같은 회사 공고 — 차량 음성 비서 프로젝트의 범위·품질 지표"
+  },
+  {
+   "n": 4,
+   "title": "SKT 뉴스룸 · SKT 에이닷 품은 티맵, 대화형 '모빌리티 AI'로 도약",
+   "url": "https://news.sktelecom.com/215197",
+   "kind": "company",
+   "date": "2025-09-17",
+   "note": "회사 보도자료 — 기능·계정 연동·출시 순서"
+  },
+  {
+   "n": 5,
+   "title": "뉴시스 · 티맵, 에이닷 만나 AI 에이전트 진화",
+   "url": "https://www.newsis.com/view/NISX20250917_0003332448",
+   "kind": "news",
+   "date": "2025-09-17",
+   "note": "멀티 경유지·이름 보정·조건 검색·앞말 잇기 예"
+  },
+  {
+   "n": 6,
+   "title": "ZDNet Korea · AI 품은 티맵, '통합 모빌리티 AI 에이전트'로 진화",
+   "url": "https://zdnet.co.kr/view/?no=20250918132816",
+   "kind": "news",
+   "date": "2025-09-18",
+   "note": "기자간담회 — 연속 대화·지도 20년·하루 경로 2,600만 건"
+  },
+  {
+   "n": 7,
+   "title": "파이낸셜뉴스 · 약속장소 추천 잘하네… 티맵 '모빌리티AI 에이전트'로 진화",
+   "url": "https://v.daum.net/v/20250918182629493",
+   "kind": "news",
+   "date": "2025-09-18",
+   "note": "복합 요청 시연·3단계 로드맵"
+  },
+  {
+   "n": 8,
+   "title": "이데일리 · 올해 차 안에서 '티맵 AI 에이전트'…길안내 넘어 '차량 OS'로 간다",
+   "url": "https://v.daum.net/v/QzRlARztsN",
+   "kind": "news",
+   "date": "2026-01-07",
+   "note": "사업총괄 인터뷰 — LLM 과 NLU 나눔·오류율·인카 에이전트"
+  },
+  {
+   "n": 9,
+   "title": "이데일리 · 티맵모빌리티, 르노 테크 월드 투어에서 'AI 에이전트' 기술력 소개",
+   "url": "https://www.edaily.co.kr/News/Read?mediaCodeNo=257&newsId=03709686645318376",
+   "kind": "news",
+   "date": "2026-01-16",
+   "note": "필랑트의 '에이닷 오토'"
+  },
+  {
+   "n": 10,
+   "title": "바이라인네트워크 · 티맵, 내비 넘어 '이동 라이프 플랫폼'으로… 궁극 목표는 통합 AI 에이전트",
+   "url": "https://byline.network/?p=9004111222611613",
+   "kind": "news",
+   "date": "2026-07-10",
+   "note": "CPO 간담회 — Mobile to Car·풀 LLM 에이전트·어디갈까 MAU"
+  },
+  {
+   "n": 11,
+   "title": "바이라인네트워크 · 티맵, 월평균 방문 4억4600만회…차량 탑재 115만대 돌파",
+   "url": "https://byline.network/2026/10/21_2018283/",
+   "kind": "news",
+   "date": "2026-10-21",
+   "note": "이용 규모·TMAP AUTO 탑재 브랜드"
+  },
+  {
+   "n": 12,
+   "title": "Anthropic · Building effective agents",
+   "url": "https://www.anthropic.com/engineering/building-effective-agents",
+   "kind": "reference",
+   "date": "2024-12",
+   "note": "고정 흐름 vs 에이전트, 라우팅 등 짜임새"
+  },
+  {
+   "n": 13,
+   "title": "Claude 문서 · Tool use with Claude",
+   "url": "https://docs.claude.com/en/docs/agents-and-tools/tool-use/overview",
+   "kind": "reference",
+   "note": "도구 정의(이름·설명·입력 형식)와 호출·결과 주고받기"
+  },
+  {
+   "n": 14,
+   "title": "LangGraph 문서 · Memory overview",
+   "url": "https://docs.langchain.com/oss/python/langgraph/memory",
+   "kind": "reference",
+   "note": "짧은 기억(대화 단위)과 긴 기억(대화를 넘어)"
+  },
+  {
+   "n": 15,
+   "title": "Packer 외 · MemGPT: Towards LLMs as Operating Systems",
+   "url": "https://arxiv.org/abs/2310.08560",
+   "kind": "reference",
+   "date": "2023",
+   "note": "입력 창 밖에 기억을 두고 불러오기"
+  },
+  {
+   "n": 16,
+   "title": "Lewis 외 · Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+   "url": "https://arxiv.org/abs/2005.11401",
+   "kind": "reference",
+   "date": "2020",
+   "note": "RAG 원 논문"
+  },
+  {
+   "n": 17,
+   "title": "Ong 외 · RouteLLM: Learning to Route LLMs with Preference Data",
+   "url": "https://arxiv.org/abs/2406.18665",
+   "kind": "reference",
+   "date": "2024",
+   "note": "선호 데이터로 학습한 라우터, 비용 2배 넘게 절감"
+  },
+  {
+   "n": 18,
+   "title": "Chen 외 · FrugalGPT",
+   "url": "https://arxiv.org/abs/2305.05176",
+   "kind": "reference",
+   "date": "2023",
+   "note": "싼 모델부터 부르는 단계적 호출"
+  },
+  {
+   "n": 19,
+   "title": "Zheng 외 · Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena",
+   "url": "https://arxiv.org/abs/2306.05685",
+   "kind": "reference",
+   "date": "2023",
+   "note": "LLM 채점의 일치율과 버릇"
+  },
+  {
+   "n": 20,
+   "title": "Yao 외 · τ-bench: A Benchmark for Tool-Agent-User Interaction",
+   "url": "https://arxiv.org/abs/2406.12045",
+   "kind": "reference",
+   "date": "2024",
+   "note": "도구·사용자와 대화하는 에이전트 시험, pass^k"
+  },
+  {
+   "n": 21,
+   "title": "OWASP Top 10 for LLM Applications",
+   "url": "https://genai.owasp.org/llm-top-10/",
+   "kind": "reference",
+   "note": "프롬프트 주입·과도한 권한·민감정보 노출"
+  },
+  {
+   "n": 22,
+   "title": "OpenTelemetry · Semantic conventions for generative AI systems",
+   "url": "https://opentelemetry.io/docs/specs/semconv/gen-ai/",
+   "kind": "reference",
+   "note": "모델·도구 호출 추적 규약"
+  },
+  {
+   "n": 23,
+   "title": "Google SRE Book · Handling Overload",
+   "url": "https://sre.google/sre-book/handling-overload/",
+   "kind": "reference",
+   "note": "몰릴 때 거절하기·클라이언트 쪽 조절"
+  },
+  {
+   "n": 24,
+   "title": "Google SRE Book · Addressing Cascading Failures",
+   "url": "https://sre.google/sre-book/addressing-cascading-failures/",
+   "kind": "reference",
+   "note": "연쇄 장애·재시도 상한·시간 제한"
+  },
+  {
+   "n": 25,
+   "title": "자소설닷컴 · 티맵모빌리티 기업 정보",
+   "url": "https://jasoseol.com/companies/11668",
+   "kind": "reference",
+   "note": "공공데이터로 만든 초봉·평균 집계(기준일 표기 없음)"
+  },
+  {
+   "n": 26,
+   "title": "자소설닷컴 · 카카오모빌리티 기업 정보",
+   "url": "https://jasoseol.com/companies/10478",
+   "kind": "reference",
+   "note": "같은 기준의 비교값"
+  },
+  {
+   "n": 27,
+   "title": "리멤버 · 티맵모빌리티 Automotive Test Manager 공고(기타안내)",
+   "url": "https://career.rememberapp.co.kr/job/posting/259031",
+   "kind": "posting",
+   "note": "회사가 공고에 적은 근무 제도·복리후생"
+  },
+  {
+   "n": 28,
+   "title": "티맵모빌리티 · 회사 사이트 하단 회사 정보",
+   "url": "https://www.tmapmobility.com/",
+   "kind": "company",
+   "note": "주소·우편번호"
+  },
+  {
+   "n": 29,
+   "title": "머니투데이 · [IT사파] 티맵모빌리티, 왜 사옥에 엔진을 심었을까",
+   "url": "https://www.mt.co.kr/tech/2026/01/19/2026011615574546384",
+   "kind": "news",
+   "date": "2026-01-19",
+   "note": "사옥(SKC타워 7~9층)·근무 제도·사내 시설"
+  },
+  {
+   "n": 30,
+   "title": "Hamel Husain · Your AI Product Needs Evals",
+   "url": "https://hamel.dev/blog/posts/evals/",
+   "kind": "reference",
+   "date": "2024",
+   "note": "평가 세트로 재고 고치는 고리"
+  },
+  {
+   "n": 31,
+   "title": "Anthropic · Effective context engineering for AI agents",
+   "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+   "kind": "reference",
+   "date": "2025",
+   "note": "입력 창에 무엇을 얼마나 넣나"
+  },
+  {
+   "n": 32,
+   "title": "LangChain 문서 · LangChain overview",
+   "url": "https://docs.langchain.com/oss/python/langchain/overview",
+   "kind": "reference",
+   "note": "LangChain(빠른 에이전트)과 LangGraph(저수준 틀)의 관계"
+  },
+  {
+   "n": 33,
+   "title": "원티드 · 티맵모빌리티 Client Engineer (Android)",
+   "url": "https://www.wanted.co.kr/wd/393102",
+   "kind": "posting",
+   "note": "같은 회사 공고의 근무지 표기"
+  }
+ ],
+ "caveat": "티맵 엔지니어가 에이전트 내부 구조(쓰는 모델·프레임워크·평가 방식)를 발표한 기술 블로그·컨퍼런스 영상은 찾지 못했습니다. 회사 근거는 이 공고·같은 회사 공고 둘·보도자료와 간담회 기사(2025-09 ~ 2026-10)이고, 구조와 방법은 공개 문서로 '보통 이런 것'을 보였습니다. 기사 속 숫자(이용자·차량 대수)는 기사 날짜 기준입니다.",
+ "resources": [
+  {
+   "id": "skt-adot-tmap",
+   "title": "SKT 에이닷 품은 티맵, 대화형 '모빌리티 AI'로 도약",
+   "by": "SKT 뉴스룸 · 2025",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://news.sktelecom.com/215197",
+   "why": "회사가 직접 밝힌 에이전트 기능 목록. 업무①~④가 무엇을 만드는지 먼저 본다."
+  },
+  {
+   "id": "byline-agent",
+   "title": "티맵, 내비 넘어 '이동 라이프 플랫폼'으로… 궁극 목표는 통합 AI 에이전트",
+   "by": "바이라인네트워크 · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://byline.network/?p=9004111222611613",
+   "why": "Mobile to Car·풀 LLM 에이전트라는 방향. 면접에서 '왜 이 팀인가'를 말할 재료."
+  },
+  {
+   "id": "anthropic-agents",
+   "title": "Building effective agents",
+   "by": "Anthropic · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.anthropic.com/engineering/building-effective-agents",
+   "why": "고정 흐름·라우팅·지휘자–일꾼 같은 짜임새. 업무② 워크플로우 설계의 뼈대."
+  },
+  {
+   "id": "anthropic-context",
+   "title": "Effective context engineering for AI agents",
+   "by": "Anthropic · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+   "why": "업무③의 Context — 도구 설명·검색 결과·기억을 입력 창에 어떻게 나눠 넣나."
+  },
+  {
+   "id": "claude-tools",
+   "title": "Tool use with Claude",
+   "by": "Anthropic 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.claude.com/en/docs/agents-and-tools/tool-use/overview",
+   "why": "도구 정의와 호출·결과를 주고받는 순서. 업무③④ Tool Calling 의 기본."
+  },
+  {
+   "id": "langgraph-docs",
+   "title": "LangGraph overview",
+   "by": "LangChain 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.langchain.com/oss/python/langgraph/overview",
+   "why": "우대②의 LangGraph — 상태 그래프·중간 저장·사람 끼우기를 공식 예제로."
+  },
+  {
+   "id": "langgraph-memory",
+   "title": "Memory overview (LangGraph)",
+   "by": "LangChain 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.langchain.com/oss/python/langgraph/memory",
+   "why": "업무③의 Memory — 대화 안의 짧은 기억과 사용자 취향 같은 긴 기억을 나눠 저장하는 법."
+  },
+  {
+   "id": "langchain-docs",
+   "title": "LangChain overview",
+   "by": "LangChain 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.langchain.com/oss/python/langchain/overview",
+   "why": "우대②의 LangChain. Python·TypeScript 판이 있어 요건②의 어느 언어로든 시작할 수 있다."
+  },
+  {
+   "id": "memgpt",
+   "title": "MemGPT: Towards LLMs as Operating Systems",
+   "by": "Charles Packer 외 · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2310.08560",
+   "why": "기억을 입력 창 밖에 두고 불러오는 설계. 우대③ Memory 를 깊게 볼 때."
+  },
+  {
+   "id": "routellm",
+   "title": "RouteLLM: Learning to Route LLMs with Preference Data",
+   "by": "Isaac Ong 외 · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2406.18665",
+   "why": "업무⑤ 모델 라우팅 — 어떤 질문을 작은 모델로 보내도 되는지 학습으로 정하는 법."
+  },
+  {
+   "id": "frugalgpt",
+   "title": "FrugalGPT: How to Use Large Language Models While Reducing Cost and Improving Performance",
+   "by": "Lingjiao Chen 외 · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2305.05176",
+   "why": "업무⑤ — 싼 모델부터 부르고 자신 없을 때만 올리는 단계적 호출."
+  },
+  {
+   "id": "mt-bench",
+   "title": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena",
+   "by": "Lianmin Zheng 외 · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2306.05685",
+   "why": "업무⑥ — LLM 에게 채점을 맡길 때 얼마나 믿을 수 있고 어떤 버릇을 조심하나."
+  },
+  {
+   "id": "tau-bench",
+   "title": "τ-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains",
+   "by": "Shunyu Yao 외 · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2406.12045",
+   "why": "업무⑥ — 도구를 쓰며 사용자와 여러 턴 대화하는 에이전트를 어떻게 시험하나, pass^k."
+  },
+  {
+   "id": "hamel-evals",
+   "title": "Your AI Product Needs Evals",
+   "by": "Hamel Husain · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://hamel.dev/blog/posts/evals/",
+   "why": "업무⑥·요건⑦ — 로그를 보고 평가 세트를 만들고 고치는 고리를 실무 순서로."
+  },
+  {
+   "id": "owasp-llm",
+   "title": "OWASP Top 10 for LLM Applications",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://genai.owasp.org/llm-top-10/",
+   "why": "업무④⑥ 안전성 — 차량 기능 같은 도구를 붙이기 전 점검표."
+  },
+  {
+   "id": "otel-genai",
+   "title": "Semantic conventions for generative AI systems",
+   "by": "OpenTelemetry",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://opentelemetry.io/docs/specs/semconv/gen-ai/",
+   "why": "업무⑦·우대⑤ — 모델·도구 호출의 지연·토큰을 같은 형식으로 남기는 법."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering (Google SRE Book)",
+   "by": "Google · O'Reilly · 2016",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "why": "업무⑦·요건⑥ — 과부하 처리·연쇄 장애 장을 먼저. 온라인 무료 공개판."
+  },
+  {
+   "id": "ai-eng",
+   "title": "AI 엔지니어링",
+   "by": "칩 후옌 · 변성윤 옮김 · 한빛미디어 · 2025",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=AI%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81%20%EC%B9%A9%20%ED%9B%84%EC%98%8C",
+   "why": "파운데이션 모델 위에 앱을 만들 때의 평가·RAG·에이전트·추론 최적화를 한 권으로. 업무 전체를 훑기."
+  },
+  {
+   "id": "cs329z-patterns",
+   "title": "Stanford CS329Z · AI Agent Design Patterns: ReAct, CodeAct & More (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/JC_pLC5EX_w",
+   "why": "에이전트가 생각·행동·관찰을 도는 기본 짜임새. 업무②를 처음 잡을 때."
+  },
+  {
+   "id": "cs329z-context",
+   "title": "Stanford CS329Z · LLMs for Agent Builders: Context Engineering (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/Vr1NzH8bT44",
+   "why": "요건③ '이해' — 에이전트를 만드는 사람이 알아야 할 LLM 의 성질과 맥락 설계."
+  },
+  {
+   "id": "cs329z-tools",
+   "title": "Stanford CS329Z · How AI Agents Use Tools: Function Calling & MCP (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/s0S38lz6O7M",
+   "why": "업무③④ 도구 호출을 우리 말로."
+  },
+  {
+   "id": "cs329z-rag",
+   "title": "Stanford CS329Z · RAG Explained: From BM25 to Agentic RAG (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/psLc-46GqY0",
+   "why": "업무③ RAG — 키워드 검색부터 에이전트가 직접 검색하는 방식까지."
+  },
+  {
+   "id": "cs329z-memory",
+   "title": "Stanford CS329Z · How AI Agent Memory Works: MemGPT & Memory Types (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/qh5tP6PBZ6U",
+   "why": "업무③ Memory — 기억의 종류와 MemGPT 를 우리 말로."
+  },
+  {
+   "id": "cs329z-frameworks",
+   "title": "Stanford CS329Z · DSPy vs. LangGraph: AI Agent Frameworks Explained (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/q0Q-Hy8TTps",
+   "why": "우대② 프레임워크 — LangGraph 가 무엇을 대신해 주고 무엇은 내가 짜야 하나."
+  },
+  {
+   "id": "cs329z-multi",
+   "title": "Stanford CS329Z · Multi-Agent Systems: When More Agents Help or Hurt (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/TlX_ft_PQIM",
+   "why": "우대③ 멀티 에이전트 — 에이전트를 늘리면 언제 낫고 언제 나빠지나."
+  },
+  {
+   "id": "cs329z-terminal",
+   "title": "Stanford CS329Z · Terminal-Bench: Evaluating AI Agents (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/7GW-9ug2nvw",
+   "why": "업무⑥ — 에이전트 시험 세트를 어떻게 설계하고 채점하나."
+  },
+  {
+   "id": "http-basic",
+   "title": "모든 개발자를 위한 HTTP 웹 기본 지식",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/http-basic",
+   "why": "요건④ RESTful API — 메서드·상태 코드·캐시를 실제로 오간 요청·응답으로."
+  },
+  {
+   "id": "docker",
+   "title": "개발자를 위한 도커",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "요건⑤ 클라우드 배포 — 서비스를 컨테이너로 만드는 첫걸음."
+  },
+  {
+   "id": "kubernetes",
+   "title": "쿠버네티스 입문",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/kubernetes",
+   "why": "업무⑦·요건⑤ — 올린 서비스를 늘리고 줄이고 다시 띄우는 법."
+  },
+  {
+   "id": "kafka",
+   "title": "아파치 카프카 애플리케이션 프로그래밍",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/kafka",
+   "why": "우대⑥ 비동기 처리 — 요청을 줄 세워 나중에 처리하는 구조."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사가 만드는 것 알기",
+   "time": "3~4일",
+   "goal": "티맵 에이전트가 무엇을 하고 어디로 가는지(모바일 → 차량 → 통합) 한 장으로 말할 수 있다.",
+   "resources": [
+    "skt-adot-tmap",
+    "byline-agent"
+   ],
+   "task": "회사가 밝힌 기능(경유지·조건 검색·앞말 잇기·음악·차량 제어)을 표로 만들고, 각 기능에 필요한 도구 이름과 입력 칸을 적어 본다."
+  },
+  {
+   "title": "도구 부르는 에이전트 하나",
+   "time": "1~2주",
+   "goal": "LLM API 로 도구 3~4개를 부르는 대화 에이전트를 만들고, 앞말을 이어 받는다.",
+   "resources": [
+    "claude-tools",
+    "anthropic-agents",
+    "cs329z-tools",
+    "cs329z-patterns"
+   ],
+   "task": "가상 장소 50곳(주차·영업시간·분위기 칸)과 가짜 경로 API 로 '주차 되는 조용한 카페 → 거기 가는 길 → 몇 시까지 해?'가 되는 에이전트를 만든다. 단순 명령(전화·음악)은 규칙으로 먼저 거른다."
+  },
+  {
+   "title": "기억과 검색 붙이기",
+   "time": "1~2주",
+   "goal": "대화 기록(짧은 기억)과 사용자 취향(긴 기억), 장소 리뷰 검색(RAG)을 나눠 붙인다.",
+   "resources": [
+    "langgraph-docs",
+    "langgraph-memory",
+    "anthropic-context",
+    "cs329z-memory",
+    "cs329z-rag"
+   ],
+   "task": "LangGraph 로 위 에이전트를 옮기고 중간 저장을 붙인다. 가상 사용자 세 명의 '자주 가는 곳'을 긴 기억에 넣어 같은 질문에 다른 답이 나오게 한다."
+  },
+  {
+   "title": "재고 고르기",
+   "time": "1~2주",
+   "goal": "시험 세트로 에이전트를 자동 채점하고, 모델 둘을 품질·지연·비용으로 비교한다.",
+   "resources": [
+    "hamel-evals",
+    "tau-bench",
+    "mt-bench",
+    "routellm",
+    "cs329z-terminal"
+   ],
+   "task": "발화 80개(경유지·조건·앞말 잇기·엉뚱한 요청·위험한 차량 동작)에 기대 도구·인자를 붙인 세트를 만들고, 같은 세트를 5번씩 돌려 pass^1·pass^5 를 잰다. 작은 모델로 보내도 점수가 안 떨어지는 유형을 찾는다."
+  },
+  {
+   "title": "서비스로 올리기",
+   "time": "2주",
+   "goal": "에이전트를 API 서버로 감싸 배포하고, 부하·장애·추적을 본다.",
+   "resources": [
+    "http-basic",
+    "docker",
+    "kubernetes",
+    "sre-book",
+    "otel-genai"
+   ],
+   "task": "에이전트를 스트리밍 API 로 열어 컨테이너로 올리고, 가짜 LLM 이 10% 확률로 3초 늦게 답하게 만든 뒤 시간 제한·재시도 상한으로 p95 지연을 지킨다. 평가 세트 점수가 떨어지면 배포가 막히게 CI 에 건다."
+  }
+ ],
+ "pay": {
+  "summary": "공시 숫자는 없다(비상장). 집계 사이트 값으로 **초봉 약 4,800만원 · 평균 약 7,000만원** — 평균은 경력직이 섞인 회사 전체 값이다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "4,793만원",
+    "amount": 4793,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 기준일·직군 구분이 없다. 같은 페이지 사원수 359명 [25]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "7,049만원",
+    "amount": 7049,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균. 경력직이 섞여 있다 [25]"
+   },
+   {
+    "label": "카카오모빌리티 초봉",
+    "value": "4,706만원",
+    "amount": 4706,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 사이트·같은 기준의 비교값 [26]"
+   },
+   {
+    "label": "카카오모빌리티 평균",
+    "value": "6,853만원",
+    "amount": 6853,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 사이트·같은 기준의 비교값 [26]"
+   }
+  ],
+  "how": "공고에 연봉이 없고, 지원서의 연봉 칸에만 적게 한 뒤 레퍼런스 체크 다음 **처우협의** 단계에서 정한다 [1]. 티맵모빌리티는 비상장사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자가 없다. 위 값은 집계 사이트 화면을 검색 결과로 읽은 것이라 기준 시점이 불분명하다 {추론}. 경력 3년 이상 자리라 신입 초봉과는 거리가 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택적 근무",
+    "detail": "4주 160시간 안에서 스스로 근무 시간 설계"
+   },
+   {
+    "name": "Happy Friday",
+    "detail": "근무 시간을 조정해 매월 하루 금요일 휴무"
+   },
+   {
+    "name": "체력단련휴가",
+    "detail": "연차 외에 1년 최대 5일"
+   },
+   {
+    "name": "휴가 사용",
+    "detail": "연차·반차는 사유·승인 없이"
+   },
+   {
+    "name": "장기근속 휴가",
+    "detail": "3년마다 유급 30일"
+   },
+   {
+    "name": "복리후생비",
+    "detail": "연 360만원(IT 기기·교육·여행·운동·가족 검진·휴양소)"
+   },
+   {
+    "name": "건강검진",
+    "detail": "제휴 검진 최대 40만원, 독감 예방접종비"
+   },
+   {
+    "name": "가족 의료비",
+    "detail": "본인·배우자·자녀·양가 부모"
+   },
+   {
+    "name": "통신비",
+    "detail": "SKT 이용 시 월 최대 10만원"
+   },
+   {
+    "name": "교육",
+    "detail": "직무 교육 연 최대 100만원"
+   },
+   {
+    "name": "생일·농수산물",
+    "detail": "생일 SK pay 포인트 10만, '자연이랑' 연 60만 포인트"
+   },
+   {
+    "name": "그 밖의",
+    "detail": "자녀학자금, 금융기관 대출 이자 지원, 최신 장비·허먼밀러 의자, 경조금·휴가"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "라운지·휴게실·수면실·폰부스·간식 자판기, 헬스키퍼 마사지(월 4회 40분), 점심 5,000원·아침 무료"
+   },
+   {
+    "name": "근무 방식(기사)",
+    "detail": "주 1회 재택, 코어타임 10~15시 밖 자율 출퇴근"
+   }
+  ],
+  "note": "근무 제도·복리후생은 회사가 리멤버의 다른 직무 공고(Automotive Test Manager)에 적은 것이다 [27]. 공고에 작성일이 없어 적용 시점은 확인하지 못했다. 사내 시설 중 마사지·식대와 재택·코어타임은 2026-01 기사가 전한 것이다 [29]. 이 공고(SK Careers)에는 복리후생 칸이 없다 [1]."
+ },
+ "location": {
+  "name": "티맵모빌리티 본사 (SK-C타워)",
+  "address": "서울특별시 중구 충무로 15, SK-C타워 7·8·9층",
+  "postal": "04554",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%A4%91%EA%B5%AC%20%EC%B6%A9%EB%AC%B4%EB%A1%9C%2015",
+  "note": "주소는 회사 사이트 하단 회사 정보 [28], 같은 회사 원티드 공고의 근무지도 같다 [33]. 이 공고의 근무지는 '서울'로만 적혀 있다 [1]."
+ }
+}
