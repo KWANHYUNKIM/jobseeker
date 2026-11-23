@@ -100,9 +100,11 @@
   "ats-skcareers:sk:R261800": "tmap-auto-ai-agent-tpm",
   "wanted-399666": "tmap-auto-android-client",
   "wanted-361653": "tmap-auto-dev-pm",
+  "ats-skcareers:sk:R261864": "tmap-automotive-test-manager",
   "ats-skcareers:sk:R262402": "tmap-backend-rp-traffic",
   "wanted-393102": "tmap-client-engineer-android",
   "ats-skcareers:sk:R262169": "tmap-data-analytics-lead",
+  "wanted-394517": "tmap-data-platform-engineer",
   "wanted-393103": "tmap-mobility-ios-client-engineer",
   "ats-skcareers:sk:R262015": "tmap-mobility-llmops-engineer",
   "ats-skcareers:sk:R262310": "tmap-mobility-service-backend",
@@ -1019,6 +1021,16 @@
    "lines": 16
   },
   {
+   "id": "tmap-automotive-test-manager",
+   "company": "티맵모빌리티",
+   "role": "Automotive Test Manager",
+   "jobs": [
+    "ats-skcareers:sk:R261864"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 19
+  },
+  {
    "id": "tmap-backend-rp-traffic",
    "company": "티맵모빌리티",
    "role": "Backend Engineer - RP/교통",
@@ -1047,6 +1059,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 24
+  },
+  {
+   "id": "tmap-data-platform-engineer",
+   "company": "티맵모빌리티",
+   "role": "데이터 플랫폼 엔지니어",
+   "jobs": [
+    "wanted-394517"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 16
   },
   {
    "id": "tmap-mobility-ios-client-engineer",
