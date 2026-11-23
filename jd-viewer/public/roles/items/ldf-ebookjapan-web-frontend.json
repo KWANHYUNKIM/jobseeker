@@ -1,0 +1,1131 @@
+{
+ "id": "ldf-ebookjapan-web-frontend",
+ "company": "LINE Digital Frontier",
+ "role": "ebookjapan 웹 프론트엔드 엔지니어 (일본 도쿄 근무)",
+ "team": "ebookjapan 웹 프론트엔드",
+ "jobs": [
+  "wanted-377335"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "일본 전자책 판매 서비스 **ebookjapan** 웹 화면 — 작품 페이지·열람·구매 흐름 — 을 만들고 고치고, CI와 코드 리뷰로 품질을 지킵니다. 100% 자사 서비스·사내 개발입니다.[1][2]",
+  "env": "Vue.js·Nuxt.js·TypeScript 화면 + Node.js(express) 서버, 상태 관리는 Pinia, 테스트는 Jest·Playwright, CI는 Screwdriver.cd, 코드는 GitHub Enterprise.[1] 기획·디자이너·백엔드와 붙어 일하고 프론트엔드는 전달의 맨 끝에 있습니다.[3]",
+  "oneline": "**Vue/Nuxt로 큰 커머스 화면을 운영하는 사람.** 경력 3년 이상, 일본어 비즈니스 수준과 일본 이주가 조건입니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "・ebookjapanのWEBサービスのフロントエンド開発",
+   "short": "전자책을 찾고·사고·읽는 웹 화면을 Vue/Nuxt로 만드는 일 — 기획 단계부터 들어갈 수도 있다.",
+   "why": "ebookjapan은 25년 된 일본 최대급 전자책 판매 서비스이고, 2024년 운영사가 LDF에 합병됐습니다.[3][6] 합병 뒤 세로 스크롤 만화(웹툰)가 들어오면서 **권 단위로만 팔던 서비스에 화 단위 연재**를 붙여야 했고, 그 화면을 프론트엔드가 만들었습니다.[3] 공고는 과제 발견·제안·사양 검토·요건 정의·설계·개발·출시·운영까지 희망에 따라 맡을 수 있다고 적었습니다.[1]",
+   "actually": {
+    "intro": "회사가 공개한 2023~2024년 '연재' 프로젝트의 프론트엔드 일입니다.[3]",
+    "items": [
+     "**타이머 무료** — 한 화를 무료로 읽으면 23시간 뒤 다음 화가 다시 무료가 되는 기능. 남은 시간·다음 무료 화를 화면에 그린다.",
+     "**열람 화면 다시 만들기** — 화 단위로 읽는 경험을 먼저 내보내고, 써 보며 불편한 곳을 고쳤다.",
+     "**구매 모달** — 표시 조건이 복잡한 결제 경로라 구현 전에 기획과 조건표를 맞췄다.",
+     "**API 호출 줄이기** — 열람 이력이 쌓일수록 서버 부담이 커져, 세션 저장소(sessionStorage, 탭을 닫으면 지워지는 브라우저 저장 공간)에 담아 세션마다 대략 한 번만 받게 했다.[3][26]",
+     "이 프로젝트에는 프론트엔드가 약 **15명** 붙었다.[3]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "세션 캐시로 줄어드는 호출 수 (가상 값, 파이썬으로 계산)",
+     "body": "한 세션에서 작품 화면을 10번 열 때, 열 때마다 열람 이력을 받으면 API 10번, 첫 번째만 받고 이후엔 세션에 둔 값을 고쳐 쓰면 **1번**입니다. 회사 글은 방법(세션 저장소)만 밝혔고 숫자는 가상입니다.",
+     "lang": "python",
+     "code": "views = [\"A\",\"B\",\"A\",\"C\",\"A\",\"B\",\"D\",\"A\",\"C\",\"B\"]\ncache, calls = {}, 0\nfor w in views:\n    if \"history\" not in cache:\n        calls += 1\n        cache[\"history\"] = {\"A\": 3, \"B\": 1}\n    cache[\"history\"][w] = cache[\"history\"].get(w, 0) + 1\nprint(len(views), \"->\", calls)\n# 10 -> 1"
+    },
+    {
+     "title": "23시간 타이머 (가상 값)",
+     "body": "11월 23일 21:30에 무료로 읽었다면 다음 무료는 11월 24일 **20:30**, 24일 09:00에 열면 남은 시간 **11:30:00**을 그립니다. 시계는 서버 시각을 기준으로 받아야 사용자가 기기 시계를 돌려 우회하지 못합니다. {추론}",
+     "lang": "python",
+     "code": "from datetime import datetime, timedelta\nlast = datetime(2026, 11, 23, 21, 30)\nnow = datetime(2026, 11, 24, 9, 0)\nnxt = last + timedelta(hours=23)\nprint(nxt.strftime(\"%m-%d %H:%M\"), nxt - now)\n# 11-24 20:30 11:30:00"
+    }
+   ],
+   "how_far": "무엇을 만들지는 기획이 정하고 가장 자주 말을 섞습니다.[3] 개발자는 그 사양을 화면으로 옮기되, **API에 필요한 값이 빠졌으면 설계 단계에서 백엔드와 맞추는 것**까지 맡습니다 — 백엔드를 먼저 만들었다가 값이 모자라 다시 고친 일이 있었다고 했습니다.[3]",
+   "refs": [
+    1,
+    3,
+    6,
+    26
+   ],
+   "study": [
+    "techplay-ebj",
+    "vue-docs",
+    "nuxt-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・WEBアプリケーションで利用しているCI環境の改善や保守",
+   "short": "PR·병합 때 자동으로 돌아가는 빌드·테스트·배포 설정(Screwdriver.cd)을 고치고 유지하는 일.",
+   "why": "공고의 CI 도구는 **Screwdriver.cd**입니다.[1] Yahoo에서 시작해 2016년 오픈소스로 다시 만든 CI로[9], ebookjapan이 Yahoo! JAPAN(지금의 LINE야후)과 함께 운영돼 온 것과 이어져 보입니다.[22] {추론} 회사 인터뷰의 프론트엔드 엔지니어도 입사 4년 차 무렵부터 **CI/CD·배포 설정**을 맡았다고 했습니다.[3]",
+   "actually": {
+    "intro": "Screwdriver 공식 문서의 설정 방식입니다. ebookjapan의 실제 파이프라인은 공개되지 않았습니다.[9]",
+    "items": [
+     "설정은 저장소의 `screwdriver.yaml` 한 파일 — `shared`(모든 작업 공통), `jobs`(작업 목록), 작업마다 `image`(실행할 도커 이미지, 예: node:lts)와 `steps`(셸 명령).",
+     "**언제 도나** — `requires: [~pr]`는 PR을 열거나 고칠 때, `[~commit]`은 병합될 때. 작업 이름을 적으면 앞 작업이 성공한 뒤에 이어서 돈다.",
+     "보통의 흐름: 의존성 설치 → 타입 검사 → 린트 → 단위 테스트(Jest) → 빌드 → E2E(Playwright) → 이미지 굽기 → 배포. {추론}",
+     "**개선**의 흔한 대상: 느린 설치를 캐시로 줄이기, 바뀐 경로만 돌리기(`sourcePaths`)[9], 자꾸 깨지는 E2E(flaky) 잡기. {추론}"
+    ]
+   },
+   "how_far": "CI 플랫폼 운영은 별도 조직 몫이고, 이 자리는 **자기 서비스 저장소의 파이프라인 정의를 읽고 고칠 수 있는 정도**가 최소선입니다. {추론} Screwdriver를 안 써 봤어도 GitHub Actions처럼 YAML로 단계를 엮어 본 경험이면 옮겨 갈 수 있습니다. {추론}",
+   "refs": [
+    1,
+    3,
+    9,
+    22
+   ],
+   "study": [
+    "screwdriver-docs",
+    "docker-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・GitHub上でのフロントエンドのコードレビューとコードの品質担保",
+   "short": "동료 PR을 읽고 버그·설계·읽기 쉬움을 짚어, 큰 코드베이스의 품질이 무너지지 않게 지키는 일.",
+   "why": "프론트엔드가 2023년 무렵부터 빠르게 늘었고(한 프로젝트에만 약 15명), 회사는 관리 체계가 따라가지 못해 누가 무엇을 하는지 드러내는 일부터 시작했다고 했습니다.[3] 사람이 많을수록 리뷰가 품질의 마지막 문입니다. {추론}",
+   "actually": {
+    "intro": "LDF의 리뷰 규칙은 공개되지 않아, 널리 쓰이는 Google 리뷰 지침으로 '보통 이런 것'을 보입니다.[18]",
+    "items": [
+     "**무엇을 보나** — 설계, 기능(사용자에게 맞게 동작하나), 복잡도, 테스트, 이름, 주석, 스타일 순서로.[18]",
+     "**기준** — 완벽이 아니라 \"코드베이스 전체가 나아지면\" 승인한다.[18]",
+     "GitHub에서는 줄 단위 코멘트·변경 요청·승인으로 남기고, 승인 없이는 병합 못 하게 막을 수 있다.[19]",
+     "프론트엔드 특유의 눈: 불필요한 다시 그리기, 접근성(버튼·대체 텍스트), 번들 크기, SSR(서버에서 먼저 그리기)에서 브라우저 전용 API를 부르지 않나. {추론}"
+    ]
+   },
+   "how_far": "리뷰를 받는 것뿐 아니라 **하는 사람**으로 뽑습니다 — 경력 3년 이상 요건과 맞물립니다.[1] 면접 전에 남의 PR에 근거 있는 코멘트를 다는 연습을 해 두면 좋습니다. {추론}",
+   "refs": [
+    1,
+    3,
+    18,
+    19
+   ],
+   "study": [
+    "google-review",
+    "effective-ts"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・企画チームや複数の部署との連携、コミュニケーション",
+   "short": "기획·디자이너·백엔드·QA와 일정과 사양을 맞추는 일 — 프론트엔드는 전달의 맨 끝이라 더 중요하다.",
+   "why": "회사 인터뷰에서 프론트엔드는 기획과 가장 자주(프로젝트 시작부터), 디자이너와는 앱에서 될지 확인하려고, 백엔드와는 설계 단계부터 API를 맞춘다고 했습니다.[3] 프론트엔드가 일정을 늦추면 다른 페이지에 번지므로 늦추지 않는 것을 원칙으로 삼았다고 했습니다.[3] ebookjapan은 LINE야후와 가깝게 운영되고 PayPay 포인트 캠페인이 많습니다.[3]",
+   "actually": {
+    "items": [
+     "**기획** — 캠페인·기능 사양을 받아 \"이 조건이면 화면이 이렇게 된다\"를 먼저 보여 주고 빈칸을 찾는다.[3]",
+     "**백엔드** — 필요한 값이 API에 있나 설계 단계에서 확인. 연재 때는 \"권 안의 특정 화 가져오기\" 같은 조회 방식을 여럿 합의했다.[3]",
+     "**디자이너** — Figma 화면이 실제로 구현 가능한가. 회사 엔지니어는 Figma MCP로 마크업 초안을 뽑는 것도 시도한다고 했다.[3]",
+     "LDF에는 ebookjapan 기획(PdM)·백엔드, LINEマンガ·ebookjapan을 함께 보는 QA 자리가 따로 있다.[7]"
+    ]
+   },
+   "how_far": "회의·문서가 일본어라 일본어 비즈니스 요건과 이어집니다.[1] 사양을 그대로 받는 것이 아니라 **구현 전에 모순·누락을 짚는 것**까지가 기대치입니다.[3]",
+   "refs": [
+    1,
+    3,
+    7
+   ],
+   "study": [
+    "techplay-ebj"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・不具合発生時の対応",
+   "short": "화면이 깨지거나 결제·열람이 안 될 때 원인을 찾아 막고 고치는 일 — 운영 중인 서비스라서.",
+   "why": "구매 모달처럼 결제 경로에 걸린 화면은 사소한 오류도 매출로 이어집니다. 회사는 그래서 구매 모달을 구현 전에 기획과 맞췄다고 했습니다.[3] 공고가 업무 범위에 '운영'을 넣은 것도 같은 이유입니다.[1]",
+   "actually": {
+    "items": [
+     "**재현** — 어떤 브라우저·기기·로그인 상태에서 나나. 공고는 검증용 단말을 빌려준다고 적었다.[1]",
+     "**어디서 깨졌나** — 서버에서 그릴 때(Node.js)인가, 브라우저에서 이어 붙일 때(hydration, 서버 HTML에 화면 동작을 붙이는 단계)인가, API 응답인가.[10]",
+     "**막기** — 캐시 비우기·기능 끄기·이전 배포로 되돌리기 중 무엇이 빠른가. {추론}",
+     "**다시 안 나게** — 그 경우를 테스트(Jest·Playwright)로 남긴다. {추론}"
+    ]
+   },
+   "how_far": "장애 대응 체계(당번·연락 순서)는 공개되지 않았습니다. 최소한 **브라우저 개발자 도구와 서버 로그로 원인 층을 가려내는 것**은 혼자 할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    3,
+    10
+   ],
+   "study": [
+    "nuxt-docs",
+    "playwright-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "＜開発環境（言語やアーキテクチャ、開発手法、利用ツールなど）＞ ・言語：HTML/CSS/JavaScript",
+   "short": "화면의 바탕 세 가지 — 프레임워크를 써도 결국 HTML·CSS·JavaScript로 나간다.",
+   "why": "Vue·Nuxt가 만든 결과도 브라우저에서는 HTML·CSS·JavaScript입니다.[12] 성능(Core Web Vitals) 우대사항은 이 바탕 위의 일입니다.[8]",
+   "how_far": "시맨틱 HTML(뜻에 맞는 태그), CSS 레이아웃(flex·grid), 브라우저 이벤트·비동기(Promise·async/await)를 프레임워크 없이도 설명할 수 있는 정도. {추론}",
+   "refs": [
+    8,
+    12
+   ],
+   "study": [
+    "perf-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・ライブラリ、パッケージ：Node.js/TypeScript/Vue.js/Nuxt.js/Pinia/Jest/express.js/Scss/Playwright",
+   "short": "Vue 화면을 Nuxt로 서버에서 먼저 그리고, Pinia로 상태를 두고, Jest·Playwright로 검사하는 조합.",
+   "why": "공고가 \"Vue.js × Node.js 환경\"이라고 직접 밝혔습니다.[1] 서버 쪽 express.js가 함께 적혀 있어 Nuxt 앞뒤에 Node 서버(API 중계·캐시)를 두는 구조로 읽힙니다. {추론}",
+   "actually": {
+    "intro": "각 도구가 맡는 칸입니다(공식 문서 기준).",
+    "items": [
+     "**Vue.js** — 화면을 컴포넌트로 쪼개 데이터가 바뀌면 화면이 따라 바뀌게 한다.[12]",
+     "**Nuxt.js** — Vue 앱을 서버에서 먼저 HTML로 그려(SSR) 보내고, 브라우저에서 이어 받는다. 페이지마다 그리는 방식을 고를 수 있다.[10]",
+     "**Pinia** — 여러 화면이 같이 쓰는 상태(로그인·장바구니·열람 이력)를 한곳에 둔다. Vue 공식 상태 관리.[11]",
+     "**express.js / Node.js** — 화면 서버와 API 사이의 중계·캐시·세션. {추론}",
+     "**Scss** — 변수·중첩을 쓰는 CSS. **Jest** 단위 테스트, **Playwright** 실제 브라우저로 클릭해 보는 E2E 테스트.[13]",
+     "Vue·Nuxt의 버전은 공개되지 않았습니다. Vue 2는 2023년 말 지원이 끝났으니[25], 오래된 코드가 있다면 옮기는 일이 남았을 수 있습니다. {추론}"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "작품 페이지 한 장이 보이기까지(Nuxt SSR의 일반 흐름[10] — ebookjapan 구조는 비공개)",
+     "steps": [
+      "브라우저 요청 · 작품 주소를 연다",
+      "Node 서버 · Nuxt가 받아 필요한 API를 부른다",
+      "API · 작품·가격·무료 화 정보를 돌려준다(Redis 캐시 가능)",
+      "서버 렌더 · Vue 컴포넌트를 HTML로 그려 보낸다",
+      "하이드레이션 · 브라우저가 HTML에 클릭 등 동작을 붙인다",
+      "Pinia · 로그인·열람 이력 같은 상태를 이어 쓴다"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "refs": [
+    1,
+    10,
+    11,
+    12,
+    13,
+    25
+   ],
+   "study": [
+    "nuxt-docs",
+    "nuxt3-book",
+    "pinia-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・ツール : GitHub Enterprise/Screwdriver.cd/Jira/Confluence/Slack",
+   "short": "코드는 사내 GitHub, CI는 Screwdriver, 일감은 Jira, 문서는 Confluence, 대화는 Slack.",
+   "why": "GitHub Enterprise는 회사 안에 두는 GitHub이고 리뷰 방식은 github.com과 같습니다.[19] Screwdriver.cd는 Yahoo가 만든 오픈소스 CI입니다.[9]",
+   "how_far": "Jira·Confluence·Slack은 어느 회사에나 흔해 따로 공부할 것은 없습니다. 낯선 것은 Screwdriver 하나 — 공식 문서의 설정 쪽만 읽어 두면 됩니다.[9] {추론}",
+   "refs": [
+    9,
+    19
+   ],
+   "study": [
+    "screwdriver-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・開発端末：入社前に希望スペックを確認の上、社内規程に基づき手配/外部モニターや検証端末の貸与あり",
+   "short": "입사 전에 원하는 사양을 물어 장비를 맞춰 주고, 모니터·테스트용 기기도 빌려준다.",
+   "why": "웹 화면은 여러 기기·브라우저에서 확인해야 해서 검증 단말을 따로 둡니다.[1]",
+   "how_far": "업무 요건이 아니라 근무 조건입니다. 면접에서 쓰는 운영체제·사양을 미리 정해 두면 됩니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・WEBフロントエンドの開発経験3年以上",
+   "short": "실서비스 화면을 혼자 맡아 만들고 운영해 본 3년 — 리뷰어가 될 수 있는 연차라서.",
+   "why": "업무에 코드 리뷰와 품질 담보가 들어 있고 범위가 요건 정의부터 운영까지 넓습니다.[1] 원티드 공고는 경력 3~15년으로 올렸습니다.[1]",
+   "how_far": "연차보다 **무엇을 맡았나**를 봅니다 — 기능 하나를 사양부터 출시·장애 대응까지 끝낸 경험을 이력서에 구체적으로. 전형에 코딩 테스트가 있습니다.[1][2] {추론}",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Vue.js、Reactのいずれかを利用した開発経験3年以上",
+   "short": "Vue나 React 중 하나로 3년 — 회사는 Vue지만 React 경험도 받는다.",
+   "why": "ebookjapan 화면은 Vue.js입니다.[1] 컴포넌트·상태·반응성이라는 생각은 두 도구가 같아서 React 경력도 인정하는 것으로 읽힙니다. {추론}",
+   "level": {
+    "basic": "컴포넌트·props·이벤트 · 조건/반복 렌더 · computed · watch",
+    "work": "Composition API · 컴포저블로 로직 나누기 · 비동기 데이터 받기 · 폼·모달 상태",
+    "team": "큰 화면(구매 모달·열람)의 조건 분기를 읽기 쉽게 나누기 · 다시 그리기 줄이기 · SSR에서 안전한 코드 {추론}"
+   },
+   "how_far": "React만 했다면 Vue 공식 문서의 Composition API 쪽을 읽고 작은 화면 하나를 Vue로 옮겨 보는 것이 최소선입니다.[12] {추론}",
+   "refs": [
+    1,
+    12
+   ],
+   "study": [
+    "vue-docs",
+    "vue3-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Next.js、Nuxt.jsのいずれかを利用した開発経験3年以上",
+   "short": "서버에서 먼저 그리는(SSR) 프레임워크로 3년 — 검색·첫 화면 속도가 중요한 판매 사이트라서.",
+   "why": "작품 페이지는 검색으로 들어오는 사람이 많고 첫 화면이 빨라야 하므로 서버 렌더가 필요합니다. {추론} Nuxt는 페이지마다 서버 렌더·정적 생성·브라우저 렌더를 섞어 고를 수 있습니다.[10]",
+   "actually": {
+    "items": [
+     "서버에서만 도는 코드와 브라우저에서만 도는 코드를 가르기(window·sessionStorage는 브라우저에만 있다).[10][26]",
+     "서버에서 받은 데이터를 브라우저가 다시 받지 않게 넘기기.[10]",
+     "서버와 브라우저가 그린 HTML이 어긋나는 **하이드레이션 불일치** 고치기.[10]"
+    ]
+   },
+   "how_far": "Next.js만 했다면 개념은 같고 이름이 다릅니다(파일 기반 라우팅·서버 데이터 받기). Nuxt 문서의 렌더링 방식 장을 먼저 읽습니다.[10] {추론}",
+   "refs": [
+    10,
+    26
+   ],
+   "study": [
+    "nuxt-docs",
+    "nuxt3-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・WEB APIの開発経験",
+   "short": "화면만이 아니라 API를 직접 만들어 본 경험 — Node(express) 서버와 백엔드 API 설계에 같이 들어가서.",
+   "why": "프론트엔드가 설계 단계부터 백엔드와 API를 맞추고[3], 개발 환경에 express.js가 있습니다.[1] 회사 엔지니어도 BFF(화면 전용 중계 서버)가 데이터 쪽까지 이어지는 흐름을 언급했습니다.[3]",
+   "how_far": "REST 자원 설계, 상태 코드, 캐시 헤더, 페이지 나누기를 직접 만들어 본 정도. 큰 백엔드는 백엔드 직군이 따로 있습니다.[7] {추론}",
+   "refs": [
+    1,
+    3,
+    7
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・TypeScriptでの開発経験",
+   "short": "타입으로 API 응답·상태의 모양을 고정해, 사람이 많은 코드베이스에서 실수를 미리 잡아서.",
+   "why": "개발 환경에 TypeScript가 있고[1] 회사 인터뷰의 엔지니어도 JavaScript·TypeScript로 일한다고 했습니다.[3]",
+   "level": {
+    "basic": "기본 타입 · 인터페이스 · 유니언 · 옵셔널 · 제네릭 함수",
+    "work": "API 응답 타입 · 좁히기(narrowing) · 유틸리티 타입 · Vue 컴포넌트 props 타입",
+    "team": "구매·열람 상태를 유니언으로 표현해 불가능한 상태 막기 · any 줄이기 {추론}"
+   },
+   "refs": [
+    1,
+    3
+   ],
+   "study": [
+    "ts-pro",
+    "effective-ts"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Dockerを利用した開発経験",
+   "short": "로컬·CI·운영이 같은 환경에서 돌도록 컨테이너로 묶어 본 경험.",
+   "why": "CI(Screwdriver)는 작업마다 도커 이미지 안에서 명령을 돌리고[9], 우대사항에 Kubernetes가 있습니다.[1]",
+   "how_far": "Dockerfile로 Node 앱 이미지를 만들고, 다단계 빌드로 크기를 줄이고, compose로 Redis와 같이 띄워 본 정도.[17] {추론}",
+   "refs": [
+    1,
+    9,
+    17
+   ],
+   "study": [
+    "docker-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Jest、Vitestのテストコードの開発経験",
+   "short": "함수·컴포넌트 단위 테스트를 써 본 경험 — CI에서 깨지는 걸 먼저 잡으려고.",
+   "why": "공고 도구는 Jest이지만 요건은 Jest·Vitest 둘 다 받습니다.[1][2] 두 도구는 사용법이 거의 같습니다.[14]",
+   "actually": {
+    "items": [
+     "무료 화 계산·가격 표시 같은 **순수 함수**는 입력·출력으로.",
+     "컴포넌트는 \"이 조건이면 구매 버튼이 보인다\"처럼 화면 결과로.",
+     "API는 가짜(mock)로 바꿔 화면 로직만 검사. {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    14
+   ],
+   "study": [
+    "vitest-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Git/GitHubを使ったソースコード管理経験",
+   "short": "브랜치·PR·리뷰·충돌 해결로 여럿이 한 저장소를 쓰는 기본기.",
+   "why": "코드 리뷰를 GitHub 위에서 합니다.[1][19]",
+   "how_far": "rebase와 merge의 차이, 충돌 해결, 리뷰 반영 커밋 정리를 설명할 수 있는 정도. {추론}",
+   "refs": [
+    1,
+    19
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本語レベル: ビジネス",
+   "short": "일본어로 회의·사양 문서·리뷰 코멘트를 오가야 해서 — 지원서도 일본어로 낸다.",
+   "why": "기획·여러 부서와의 조율이 업무에 들어 있고, 원티드 안내는 일문 이력서·직무경력서가 필수이며 일본어 소통이 안 되면 서류에서 제외한다고 적었습니다.[1] 회사에는 통역·번역 지원 부서도 있습니다.[1][5]",
+   "how_far": "JLPT로는 업무 장면의 말을 알아듣는 N2 이상이 흔한 기준입니다.[24] {추론} 자격증보다 일본어로 기술 면접을 치를 수 있느냐가 실제 관문입니다. {추론}",
+   "refs": [
+    1,
+    5,
+    24
+   ],
+   "study": [
+    "jlpt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本国内への移住が必要",
+   "short": "도쿄 사무실 근무라 일본으로 옮겨 살아야 한다 — 취업 비자도 필요하다.",
+   "why": "근무지가 도쿄 미드타운 타워이고 원격 근무는 '가능'이지 전면 재택이 아닙니다.[1] 외국인 개발자는 보통 '기술·인문지식·국제업무' 재류 자격으로 일합니다.[21]",
+   "how_far": "비자 지원은 회사의 해외 지원 부서가 있습니다.[5] 이주 시기·가족 동반을 면접 전에 정해 두는 편이 좋습니다. {추론}",
+   "refs": [
+    1,
+    5,
+    21
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・Redisを利用したキャッシュサーバーの利用経験",
+   "short": "많이 불리는 응답을 Redis에 잠깐 담아 API·DB 부담을 줄여 본 경험.",
+   "why": "회사 글은 열람 이력이 쌓이며 API 부담이 커진 문제를 말했습니다.[3] 랭킹·작품 정보처럼 모두가 같은 값을 보는 응답은 서버 쪽 캐시가 잘 듣습니다. {추론}",
+   "actually": {
+    "items": [
+     "**먼저 캐시를 보고 없으면 원본**(cache-aside) — 원본에서 받은 값을 유효 시간(TTL)과 함께 넣는다.[15]",
+     "**무엇을 담나** — 모두에게 같은 것(랭킹·작품 메타)은 담고, 사람마다 다른 것(구매 여부)은 키에 사용자를 넣거나 담지 않는다. {추론}",
+     "**언제 지우나** — 가격·무료 캠페인이 바뀌는 순간 지우거나 TTL을 짧게. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "TTL 60초 캐시의 적중률 (가상 값)",
+     "body": "1초에 한 번씩 1,000번 오는 랭킹 요청에 TTL 60초를 걸면 원본은 **17번**만 불리고 적중률은 **98.3%**입니다.",
+     "lang": "python",
+     "code": "ttl, hits, misses, exp = 60, 0, 0, -1\nfor t in range(1000):\n    if t < exp:\n        hits += 1\n    else:\n        misses += 1\n        exp = t + ttl\nprint(misses, f\"{hits/1000:.1%}\")\n# 17 98.3%"
+    }
+   ],
+   "refs": [
+    3,
+    15
+   ],
+   "study": [
+    "redis-expire"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・Core Web Vitals等のサイトパフォーマンスの改善経験",
+   "short": "첫 화면 뜨는 시간(LCP)·반응(INP)·화면 밀림(CLS)을 재고 줄여 본 경험 — 판매 사이트라서.",
+   "why": "Google이 사용자 경험의 핵심으로 정한 세 지표입니다.[8] 표지 이미지가 많은 전자책 목록·작품 페이지에서 LCP와 CLS가 특히 문제 되기 쉽습니다. {추론}",
+   "actually": {
+    "intro": "공식 기준입니다.[8]",
+    "items": [
+     "**LCP**(가장 큰 요소가 그려지는 시간) 2.5초 이하, **INP**(누른 뒤 화면이 반응하는 시간) 200ms 이하, **CLS**(화면 밀림 점수) 0.1 이하가 '좋음'.",
+     "평균이 아니라 **75번째 백분위**로, 모바일·데스크톱을 나눠 본다. 셋 다 넘어야 통과.",
+     "고치는 흔한 손: 첫 화면 표지 이미지 먼저 받기·크기 지정, 안 보이는 이미지 늦게 받기, 큰 스크립트 쪼개기, 서버 렌더 응답 캐시. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "평균은 통과, 75번째 백분위는 '개선 필요' (가상 값)",
+     "body": "LCP 표본 12개의 평균은 2.41초라 통과처럼 보이지만, 기준인 75번째 백분위는 **2.6초**라 '개선 필요'입니다.[8]",
+     "lang": "python",
+     "code": "import math\nlcp = [1.2,1.8,2.1,2.3,2.4,2.6,2.9,3.4,1.9,2.2,4.1,2.0]\ns = sorted(lcp)\np75 = s[math.ceil(0.75*len(s))-1]\nprint(p75, round(sum(lcp)/len(lcp), 2))\n# 2.6 2.41"
+    }
+   ],
+   "refs": [
+    8
+   ],
+   "study": [
+    "webdev-cwv",
+    "perf-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・Kubernatesの利用経験",
+   "short": "컨테이너로 만든 Node 서버를 여러 대 띄우고 배포하는 판(Kubernetes)을 써 본 경험.",
+   "why": "공고 철자는 'Kubernates'지만 Kubernetes를 말합니다. SSR은 Node 서버가 실제로 돌아야 해서 그 서버를 올리는 판이 필요합니다.[10][16] ebookjapan의 실제 배포 구조는 공개되지 않았습니다.",
+   "how_far": "우대라서 운영 전문가 수준은 아닙니다. Deployment·Service·로그 보기·되돌리기(rollout undo) 정도를 써 봤으면 충분합니다.[16] {추론}",
+   "refs": [
+    10,
+    16
+   ],
+   "study": [
+    "k8s-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・レイアードアーキテクチャの開発経験",
+   "short": "화면·로직·데이터 받기를 층으로 나눠, 큰 화면 코드가 뒤엉키지 않게 해 본 경험.",
+   "why": "구매 모달처럼 조건이 복잡한 화면은 표시와 판단을 섞으면 고치기 어렵습니다.[3] 층을 나누면 판단만 따로 테스트할 수 있습니다.[20] {추론}",
+   "actually": {
+    "intro": "프론트엔드에서 흔한 나눔입니다. ebookjapan의 층 구성은 공개되지 않았습니다. {추론}",
+    "items": [
+     "**표시 층** — Vue 컴포넌트. 받은 값을 그리기만.",
+     "**로직 층** — \"무료로 읽을 수 있나·구매 버튼을 보이나\" 같은 판단. 프레임워크 없이 순수 함수로.",
+     "**데이터 층** — API 부르기·캐시·응답을 화면용 모양으로 바꾸기.",
+     "안쪽 층은 바깥(화면·API)을 모르게 — 의존 방향을 한쪽으로.[20]"
+    ]
+   },
+   "refs": [
+    3,
+    20
+   ],
+   "study": [
+    "clean-arch"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・Playwrightのテストコードの開発経験",
+   "short": "실제 브라우저를 띄워 \"검색 → 작품 → 구매 버튼\"을 자동으로 눌러 보는 테스트를 써 본 경험.",
+   "why": "개발 환경에 Playwright가 들어 있습니다.[1] 결제·열람처럼 사람이 매번 눌러 보기 어려운 경로를 지키는 데 씁니다.[13] {추론}",
+   "how_far": "로그인 상태 재사용, 화면 요소를 역할로 찾기(getByRole), 네트워크 가짜 응답, CI에서 실패 시 스크린숏·추적 기록 남기기 정도.[13] {추론}",
+   "refs": [
+    1,
+    13
+   ],
+   "study": [
+    "playwright-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "＜求める人物像＞ ・チームワークを重視してコミュニケーションをとることができる方",
+   "short": "기획·디자인·백엔드와 계속 맞추는 일이라서 — 혼자 잘하는 것보다 같이 맞추는 사람.",
+   "why": "프론트엔드는 기획·디자이너·백엔드 모두와 맞닿아 있고, 회사는 인원이 늘며 팀 사이 연결을 일부러 만들기 시작했다고 했습니다.[3] 같은 회사의 LINEマンガ 쪽은 서버·앱·QA·기획·디자인이 한 팀에 고정된 교차 기능 팀으로 일합니다 — ebookjapan도 같은 방식인지는 밝히지 않았습니다.[4]",
+   "refs": [
+    3,
+    4
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・ユーザーファーストを徹底的に考え、実践することのできる方",
+   "short": "독자가 실제로 불편한 곳을 찾아 고치는 사람 — 연재 열람 화면도 써 보며 다시 만들었다.",
+   "why": "연재 기능을 먼저 내보낸 뒤 써 보며 불편한 곳을 찾아 열람 경험을 다시 만들었습니다.[3]",
+   "refs": [
+    3
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・技術に対する向上意欲が高く、高品質なプロダクトを追求できる方",
+   "short": "새 도구(AI 코딩 도구 포함)를 스스로 써 보고 품질을 끌어올리는 사람.",
+   "why": "회사 엔지니어는 Claude Code로 개발을 빠르게 하는 것, Figma MCP로 마크업을 뽑는 것을 시도한다고 했고, 프론트엔드에 갇히지 않고 CI/CD·인프라로 넘어가는 경로를 말했습니다.[3] 회사는 외부 연수·어학 강좌를 지원합니다.[5]",
+   "refs": [
+    3,
+    5
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・ビジネスマインドを持ってサービスの成長に貢献することのできる方",
+   "short": "기능이 매출·신규 독자에 어떻게 이어지나를 생각하는 사람.",
+   "why": "회사는 지금 독자가 PayPay 이용자 중심이라 가벼운 독자·젊은 층·PayPay 밖의 사람을 늘리고 싶다고 했습니다. 타이머 무료도 새 독자를 들이고 붙잡으려고 만들었습니다.[3]",
+   "refs": [
+    3
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・常に前向きで、チームでの成果を一緒に目指してくれる方",
+   "short": "일정이 빠듯해도 팀 결과를 같이 끝까지 내는 사람.",
+   "why": "프론트엔드가 늦으면 다른 페이지에 번지므로 일정을 늦추지 않는 것을 원칙으로 삼았다고 했습니다.[3]",
+   "refs": [
+    3
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "Vue/Nuxt(또는 React/Next)로 실서비스 화면을 3년 넘게 운영한 사람[1]",
+   "결제·열람처럼 조건이 복잡한 화면을 기획과 맞춰 가며 만드는 걸 즐기는 사람[3]",
+   "화면 밖 CI/CD·인프라로 넓혀 가고 싶은 사람[3]",
+   "만화·전자책을 즐겨 보고, 일본에서 일해 볼 사람[1]"
+  ],
+  "hard": [
+   "일본어 비즈니스 수준과 일본 이주가 필수이고, 지원서도 일본어다[1]",
+   "CI가 Screwdriver.cd라 GitHub Actions와 다른 도구를 익혀야 한다[1][9]",
+   "Vue·Nuxt 버전과 서버 구조가 공개되지 않아 입사 전엔 코드베이스 상태를 모른다"
+  ]
+ },
+ "interview": [
+  {
+   "q": "열람 이력을 화면마다 받느라 API가 몰립니다. 어떻게 줄이겠어요?",
+   "a": "이 팀이 실제로 겪은 문제 — 세션 저장소로 세션당 한 번.[3]"
+  },
+  {
+   "q": "23시간 타이머 무료를 화면에 그릴 때 시간 기준은 무엇으로 잡나요?",
+   "a": "회사가 만든 기능의 규칙과, 기기 시계 우회를 막는 설계.[3]"
+  },
+  {
+   "q": "Nuxt에서 하이드레이션 불일치 경고가 났습니다. 어디부터 보나요?",
+   "a": "SSR 프레임워크 3년 요건의 핵심.[10]"
+  },
+  {
+   "q": "작품 목록 페이지의 LCP 75번째 백분위가 3초입니다. 무엇을 바꾸겠어요?",
+   "a": "Core Web Vitals 우대사항 — 기준과 흔한 원인.[8]"
+  },
+  {
+   "q": "조건이 많은 구매 모달을 어떻게 나눠 테스트하겠어요?",
+   "a": "결제 경로라 기획과 맞췄다는 회사 사례 + 층 나누기·테스트 요건.[3][20]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · [LINE Digital Frontier] ebookjapan 웹 프론트엔드 엔지니어 _ 근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/377335",
+   "kind": "posting",
+   "note": "LAPRAS Global Bridge 채용 · 업무·요건·개발 환경·급여·근무지·전형(서류 → 코딩 테스트 → 1차 → 최종)"
+  },
+  {
+   "n": 2,
+   "title": "LDF 채용(HRMOS) · [ebookjapan] Webフロントエンドエンジニア",
+   "url": "https://hrmos.co/pages/ldf/jobs/00004",
+   "kind": "posting",
+   "note": "회사 자신의 채용 페이지 — 같은 업무·요건·개발 환경·전형"
+  },
+  {
+   "n": 3,
+   "title": "TECH PLAY · 프론트엔드에 갇히지 않는 기술자로 — ebookjapan의 엔지니어",
+   "url": "https://techplay.jp/column/2067",
+   "kind": "company",
+   "date": "2026-02 (내용은 2025-12 기준)",
+   "note": "ebookjapan 프론트엔드 엔지니어 두 명 인터뷰 — 연재·타이머 무료(23시간)·세션 저장소로 API 줄이기·구매 모달·약 15명·협업 상대·Claude Code·Figma MCP"
+  },
+  {
+   "n": 4,
+   "title": "TECH PLAY · LINEマンガ가 교차 기능 개발 체제를 고른 이유",
+   "url": "https://techplay.jp/column/2073",
+   "kind": "company",
+   "date": "2026-03",
+   "note": "같은 회사의 LINEマンガ 쪽 개발 체제(3주 스프린트·QA 처음부터 참여). ebookjapan 이야기는 없다"
+  },
+  {
+   "n": 5,
+   "title": "LDF 채용 · 복리후생과 근무 환경",
+   "url": "https://ldfcorp.com/ja/careers/benefits/",
+   "kind": "company",
+   "note": "페이지에 날짜 표기 없음(2026-11 앞 항목에서 확인)"
+  },
+  {
+   "n": 6,
+   "title": "LINE Digital Frontier 홈페이지 · 미션·연혁",
+   "url": "http://ldfcorp.com/ja",
+   "kind": "company",
+   "note": "2022 ebookjapan 운영사(이북이니셔티브재팬) 자회사화 · 2024 합병"
+  },
+  {
+   "n": 7,
+   "title": "LDF 채용(HRMOS) · 모집 직무 목록",
+   "url": "https://hrmos.co/pages/ldf/jobs",
+   "kind": "posting",
+   "note": "ebookjapan PdM·백엔드, LINEマンガ·ebookjapan QA 자리가 따로 있다(2026-11 확인)"
+  },
+  {
+   "n": 8,
+   "title": "web.dev · Web Vitals",
+   "url": "https://web.dev/articles/vitals",
+   "kind": "reference",
+   "date": "2024-10 갱신",
+   "note": "LCP 2.5초·INP 200ms·CLS 0.1, 75번째 백분위. INP가 2024년 FID를 대신했다"
+  },
+  {
+   "n": 9,
+   "title": "Screwdriver 공식 문서 · Configuration",
+   "url": "https://docs.screwdriver.cd/user-guide/configuration/",
+   "kind": "reference",
+   "note": "screwdriver.yaml · requires(~pr·~commit·작업 이어 걸기) · shared · image · steps · sourcePaths. 기원은 GitHub README(2012 Yahoo 사내 → 2016 오픈소스)"
+  },
+  {
+   "n": 10,
+   "title": "Nuxt 공식 문서 · Rendering Modes",
+   "url": "https://nuxt.com/docs/guide/concepts/rendering",
+   "kind": "reference",
+   "note": "서버 렌더·하이드레이션·하이브리드 렌더링"
+  },
+  {
+   "n": 11,
+   "title": "Pinia 공식 문서",
+   "url": "https://pinia.vuejs.org/",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "Vue.js 공식 가이드(일본어)",
+   "url": "https://ja.vuejs.org/guide/introduction.html",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "Playwright 공식 문서",
+   "url": "https://playwright.dev/docs/intro",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Vitest 공식 가이드",
+   "url": "https://vitest.dev/guide/",
+   "kind": "reference",
+   "note": "Jest와 호환되는 API"
+  },
+  {
+   "n": 15,
+   "title": "Redis 공식 문서 · EXPIRE",
+   "url": "https://redis.io/docs/latest/commands/expire/",
+   "kind": "reference",
+   "note": "키에 유효 시간(TTL)을 거는 명령 — 캐시의 기본"
+  },
+  {
+   "n": 16,
+   "title": "Kubernetes 공식 문서 · 개요",
+   "url": "https://kubernetes.io/docs/concepts/overview/",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Docker 공식 문서 · Get started",
+   "url": "https://docs.docker.com/get-started/",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Google Engineering Practices · How to do a code review",
+   "url": "https://google.github.io/eng-practices/review/",
+   "kind": "reference",
+   "note": "리뷰에서 보는 것·승인 기준"
+  },
+  {
+   "n": 19,
+   "title": "GitHub Docs · About pull request reviews",
+   "url": "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/about-pull-request-reviews",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Robert C. Martin · The Clean Architecture",
+   "url": "https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html",
+   "kind": "reference",
+   "date": "2012-08-13",
+   "note": "층과 의존 방향 규칙"
+  },
+  {
+   "n": 21,
+   "title": "출입국재류관리청 · 재류 자격 '기술·인문지식·국제업무' 명확화 자료",
+   "url": "https://www.moj.go.jp/isa/applications/resources/nyukan_nyukan69.html",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "ebookjapan 서비스 사이트",
+   "url": "https://ebookjapan.yahoo.co.jp/",
+   "kind": "company",
+   "note": "하단 표기 — LINE야후와 LINE Digital Frontier가 운영(2026-11 확인)"
+  },
+  {
+   "n": 23,
+   "title": "원티드 · [LINE Digital Frontier] LINE 만화 데이터 사이언티스트_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/377332",
+   "kind": "posting",
+   "note": "같은 회사 다른 직무 — 급여·근무 시간 비교"
+  },
+  {
+   "n": 24,
+   "title": "JLPT 공식 · N1~N5 인정 기준",
+   "url": "https://www.jlpt.jp/about/levelsummary.html",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "Vue 2 지원 종료 안내",
+   "url": "https://v2.vuejs.org/eol/",
+   "kind": "reference",
+   "note": "Vue 2는 2023-12-31 지원 종료"
+  },
+  {
+   "n": 26,
+   "title": "MDN · Window.sessionStorage",
+   "url": "https://developer.mozilla.org/ja/docs/Web/API/Window/sessionStorage",
+   "kind": "reference",
+   "note": "탭(세션)이 끝나면 지워지는 저장소"
+  }
+ ],
+ "caveat": "ebookjapan 프론트엔드 팀의 기술 블로그 글·발표 영상은 찾지 못했다(받은 영상 재료 없음). 회사 근거는 공고 둘과 TECH PLAY 인터뷰 하나(2025-12 기준)가 전부이고, 인터뷰에는 Vue·Nuxt 버전·서버 구조·리뷰 규칙·장애 대응 체계·Core Web Vitals 수치가 나오지 않는다. 그 부분은 공식 문서와 {추론}으로 '보통 이런 것'을 보였다. 코드 예시는 이 PC에서 node 실행 승인이 없어 같은 계산을 파이썬으로 돌렸다(가상 값). 금액은 일본 엔 그대로다.",
+ "resources": [
+  {
+   "id": "techplay-ebj",
+   "title": "AI時代、フロントエンドに閉じない技術者へ——越境で価値をつくるebookjapanのエンジニア",
+   "by": "TECH PLAY · ebookjapan 프론트엔드 엔지니어 인터뷰 · 2026",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "url": "https://techplay.jp/column/2067",
+   "why": "이 팀이 실제로 만든 것(연재·타이머 무료·API 줄이기)과 협업 방식이 나온다. 지원 전에 가장 먼저 읽을 글."
+  },
+  {
+   "id": "vue-docs",
+   "title": "Vue.js 공식 가이드",
+   "by": "Vue.js",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "url": "https://ja.vuejs.org/guide/introduction.html",
+   "why": "Vue 3년 요건의 바탕. React 출신이면 Composition API·반응성 장을 먼저. 한국어판은 kr.vuejs.org."
+  },
+  {
+   "id": "nuxt-docs",
+   "title": "Nuxt 공식 문서",
+   "by": "Nuxt",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://nuxt.com/docs",
+   "why": "Nuxt 3년 요건과 장애 대응용. 렌더링 방식·데이터 받기·하이드레이션 장이 이 자리의 핵심."
+  },
+  {
+   "id": "vue3-book",
+   "title": "Vue 3 フロントエンド開発の教科書",
+   "by": "齊藤新三 · 山田祥寛 감수 · 技術評論社 · 2022",
+   "kind": "book",
+   "lang": "ja",
+   "free": false,
+   "level": "입문",
+   "url": "https://gihyo.jp/book/2022/978-4-297-13072-5",
+   "why": "Vue 3를 일본어 용어로 처음부터 정리한다. 일본어 기술 면접 준비를 겸한다."
+  },
+  {
+   "id": "nuxt3-book",
+   "title": "Nuxt 3 フロントエンド開発の教科書",
+   "by": "齊藤新三 · 山田祥寛 감수 · 技術評論社 · 2023",
+   "kind": "book",
+   "lang": "ja",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.kinokuniya.co.jp/f/dsg-01-9784297136857",
+   "why": "Nuxt 3 기능·Composition API·배포까지. Next.js 출신이 Nuxt로 옮겨 오는 데 쓴다."
+  },
+  {
+   "id": "pinia-docs",
+   "title": "Pinia 공식 문서",
+   "by": "Pinia",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://pinia.vuejs.org/",
+   "why": "개발 환경의 상태 관리 도구. SSR에서 상태를 넘기는 장을 같이 본다."
+  },
+  {
+   "id": "ts-pro",
+   "title": "プロを目指す人のためのTypeScript入門",
+   "by": "鈴木僚太 · 技術評論社 · 2022",
+   "kind": "book",
+   "lang": "ja",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.kinokuniya.co.jp/f/dsg-01-9784297127473",
+   "why": "TypeScript 요건용. 유니언·리터럴·keyof까지 일본어로 — 일본 개발자들이 같이 쓰는 말을 익힌다."
+  },
+  {
+   "id": "effective-ts",
+   "title": "이펙티브 타입스크립트",
+   "by": "댄 밴더캄 · 장원호 옮김 · 인사이트 · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C%20%ED%83%80%EC%9E%85%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8",
+   "why": "리뷰어로서 타입 설계를 짚는 눈. 불가능한 상태를 타입으로 막는 항목이 구매·열람 상태에 바로 쓰인다."
+  },
+  {
+   "id": "vitest-docs",
+   "title": "Vitest 공식 가이드",
+   "by": "Vitest",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://vitest.dev/guide/",
+   "why": "Jest·Vitest 테스트 요건용. API가 Jest와 같아서 하나만 익혀도 된다."
+  },
+  {
+   "id": "playwright-docs",
+   "title": "Playwright 공식 문서",
+   "by": "Microsoft",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://playwright.dev/docs/intro",
+   "why": "Playwright 우대사항과 장애 재발 막기용. 로케이터·인증 재사용·추적 기록 장."
+  },
+  {
+   "id": "webdev-cwv",
+   "title": "Web Vitals",
+   "by": "web.dev (Google)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://web.dev/articles/vitals",
+   "why": "Core Web Vitals 우대사항의 기준 그 자체. LCP·INP·CLS 각 지표의 개선 글로 이어진다."
+  },
+  {
+   "id": "perf-book",
+   "title": "Webフロントエンド ハイパフォーマンス チューニング",
+   "by": "久保田光則 · 技術評論社 · 2017",
+   "kind": "book",
+   "lang": "ja",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.kinokuniya.co.jp/f/dsg-01-9784774189673",
+   "why": "브라우저가 화면을 그리는 원리부터 속도 문제 대처까지. 2017년 책이라 지표 이름(INP 등)은 web.dev로 보충한다."
+  },
+  {
+   "id": "screwdriver-docs",
+   "title": "Screwdriver 공식 문서",
+   "by": "Screwdriver (Yahoo 기원 오픈소스)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.screwdriver.cd/",
+   "why": "CI 개선·유지 업무용. 설정(Configuration)·작업 흐름(Workflow) 장만 읽어도 파이프라인을 고칠 수 있다."
+  },
+  {
+   "id": "docker-docs",
+   "title": "Docker 공식 문서 · Get started",
+   "by": "Docker",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.docker.com/get-started/",
+   "why": "Docker 요건용. Node 앱 이미지·다단계 빌드·compose."
+  },
+  {
+   "id": "k8s-docs",
+   "title": "Kubernetes 공식 문서 · 기본 튜토리얼",
+   "by": "Kubernetes",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kubernetes.io/docs/tutorials/kubernetes-basics/",
+   "why": "Kubernetes 우대사항용. 배포·확장·되돌리기를 브라우저 실습으로 해 본다."
+  },
+  {
+   "id": "redis-expire",
+   "title": "Redis 공식 문서 · EXPIRE",
+   "by": "Redis",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://redis.io/docs/latest/commands/expire/",
+   "why": "Redis 캐시 우대사항용. 캐시의 핵심인 유효 시간(TTL)이 어떻게 지워지는지."
+  },
+  {
+   "id": "google-review",
+   "title": "Google Engineering Practices · Code Review",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://google.github.io/eng-practices/review/",
+   "why": "코드 리뷰 업무용. 무엇을 어떤 순서로 보고 언제 승인하나의 짧은 지침."
+  },
+  {
+   "id": "clean-arch",
+   "title": "The Clean Architecture",
+   "by": "Robert C. Martin · 2012",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html",
+   "why": "레이어드 아키텍처 우대사항용. 층과 의존 방향을 한 장으로."
+  },
+  {
+   "id": "jlpt",
+   "title": "JLPT 인정 기준",
+   "by": "일본국제교육지원협회 · 국제교류기금",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.jlpt.jp/about/levelsummary.html",
+   "why": "일본어 비즈니스 요건을 가늠하는 잣대. N2·N1이 업무 장면에서 무엇을 뜻하는지."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "이 팀이 하는 일 알기",
+   "time": "3일",
+   "goal": "연재·타이머 무료 프로젝트를 \"문제 → 프론트엔드가 한 일 → 결과\"로 일본어로 설명할 수 있다.",
+   "resources": [
+    "techplay-ebj"
+   ],
+   "task": "ebookjapan 웹을 일주일 써 보며 작품 페이지·무료 화·구매 흐름의 화면을 적고, 각 화면에서 서버에서 그려야 할 것과 브라우저에서 해야 할 것을 나눠 본다."
+  },
+  {
+   "title": "Vue 3 + TypeScript",
+   "time": "2~3주",
+   "goal": "컴포넌트·컴포저블·props 타입으로 작은 화면을 만든다.",
+   "resources": [
+    "vue-docs",
+    "vue3-book",
+    "ts-pro"
+   ],
+   "task": "가상 작품 30개로 목록·상세·'23시간 타이머 무료' 배지를 만든다. 남은 시간 계산은 순수 함수로 빼고 상태는 유니언 타입으로 표현한다."
+  },
+  {
+   "title": "Nuxt SSR과 Pinia",
+   "time": "3주",
+   "goal": "서버에서 그린 작품 페이지를 만들고 하이드레이션 불일치를 직접 내고 고친다.",
+   "resources": [
+    "nuxt-docs",
+    "nuxt3-book",
+    "pinia-docs"
+   ],
+   "task": "2단계 화면을 Nuxt로 옮기고, express로 만든 가짜 API 앞에 Redis 캐시(TTL 60초)를 둔다. 열람 이력은 Pinia + sessionStorage로 세션당 한 번만 받게 하고 호출 수를 센다."
+  },
+  {
+   "title": "테스트·CI·컨테이너",
+   "time": "2~3주",
+   "goal": "단위·E2E 테스트가 PR마다 자동으로 도는 파이프라인을 만든다.",
+   "resources": [
+    "vitest-docs",
+    "playwright-docs",
+    "docker-docs",
+    "screwdriver-docs"
+   ],
+   "task": "타이머 함수·구매 버튼 조건에 Vitest, \"목록 → 작품 → 무료 열람\"에 Playwright를 붙이고, Docker 이미지로 묶어 CI(GitHub Actions든 Screwdriver든)에서 PR마다 돌린다."
+  },
+  {
+   "title": "성능과 리뷰 (우대)",
+   "time": "계속",
+   "goal": "Core Web Vitals를 재고 줄이며, 남의 PR에 근거 있는 리뷰를 단다.",
+   "resources": [
+    "webdev-cwv",
+    "perf-book",
+    "google-review",
+    "effective-ts"
+   ],
+   "task": "작품 목록에 표지 이미지 100장을 넣어 Lighthouse로 LCP·CLS를 재고, 첫 화면 이미지 우선 받기·크기 지정으로 고치기 전후를 표로 남긴다. 오픈소스 Vue 저장소 PR 3개에 리뷰 코멘트를 써 본다."
+  }
+ ],
+ "pay": {
+  "summary": "이 자리는 **연 600만~900만 엔**(공고), 성과 인센티브가 따로 있다 — LDF는 비상장사라 평균 급여 공시가 없다",
+  "rows": [
+   {
+    "label": "공고 표기 연봉",
+    "value": "600만~900만 엔",
+    "amount": 900,
+    "basis": "공고 · 2026년",
+    "note": "연봉제, 기술·경험·능력으로 협의해 정하고 12분의 1씩 매달 준다. 수습 3개월도 같은 조건이다 [1]"
+   },
+   {
+    "label": "인센티브",
+    "value": "별도 (금액 없음)",
+    "basis": "공고 · 2026년",
+    "note": "회사 실적·본인 평가·재직 기간에 따라 줄 수 있고, 지급일에 재직 중이어야 한다. 급여 개정은 1년에 한 번 [1][2]"
+   },
+   {
+    "label": "같은 회사 데이터 사이언티스트",
+    "value": "600만~900만 엔",
+    "amount": 900,
+    "basis": "공고 · 2026년",
+    "peer": true,
+    "note": "LINEマンガ 데이터 사이언티스트 — 같은 범위지만 그쪽은 재량근로제(하루 9.5시간 간주)다 [23]"
+   }
+  ],
+  "how": "금액은 일본 엔이다(원화로 바꾸지 않았다). LDF는 상장사가 아니어서 유가증권보고서의 평균 급여가 없다 — 공시 숫자 없음. 이 자리는 플렉스 근무(코어 11:00~16:00)·하루 실근로 7.5시간이고, 정해진 시간을 넘는 근무가 있다고 적었다 [1]. 같은 범위의 데이터 사이언티스트 공고는 재량근로제라[23] 같은 숫자라도 근무 시간 구조가 다르다."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "LDF Benefit Plan",
+    "detail": "자기계발·휴식·의료·돌봄·육아 등에 쓰는 복지비. 레벨별 정해진 금액을 매달 급여 계좌로"
+   },
+   {
+    "name": "통신비 보조",
+    "detail": "재택에 필요한 통신비, 매달 급여 계좌로"
+   },
+   {
+    "name": "근무 방식",
+    "detail": "플렉스 타임(코어 11:00~16:00), 하루 실근로 7.5시간(휴게 60분), 리모트 가능"
+   },
+   {
+    "name": "LDF 카페테리아",
+    "detail": "아침·점심·저녁 무료, 월 1회 뷔페식 스페셜 런치"
+   },
+   {
+    "name": "휴일",
+    "detail": "토·일 완전 주휴 2일, 공휴일, 연말연시, 경조·특별 휴가"
+   },
+   {
+    "name": "적립 유급휴가",
+    "detail": "사라질 연차를 최대 40일까지 모아 질병·가족 돌봄에 사용"
+   },
+   {
+    "name": "리프레시 휴가",
+    "detail": "입사 후 3년마다 10일, 보조금 30만 엔"
+   },
+   {
+    "name": "건강",
+    "detail": "건강검진 재검사 비용 회사 부담(상한 2만 엔)"
+   },
+   {
+    "name": "임신 준비 지원",
+    "detail": "불임 치료 유급 휴가 연 최대 10일, 본인 부담의 절반(연 상한 10만 엔)"
+   },
+   {
+    "name": "육아",
+    "detail": "베이비시터 할인권·이용료 보조"
+   },
+   {
+    "name": "어학·연수",
+    "detail": "업무 전후 영어·한국어·일본어 강좌 전액 회사 부담(일부 조건), 외부 비즈니스 연수"
+   },
+   {
+    "name": "업무 지원",
+    "detail": "통역·번역, 해외 지원(출장·주거·긴급·비자), 사무 지원 센터"
+   },
+   {
+    "name": "장비",
+    "detail": "입사 전 희망 사양을 물어 개발 단말 지급, 외부 모니터·검증 단말 대여"
+   },
+   {
+    "name": "그 밖의 제도",
+    "detail": "교통비, 재형저축, 동호회, 사내 교류비, 4대 사회보험"
+   }
+  ],
+  "note": "공고의 급여·휴일·복리후생 칸[1]과 회사 채용 사이트 복지 페이지[5]를 합친 것이다(2026-11 확인). 복지 페이지에는 날짜가 없고 Benefit Plan 금액은 밝히지 않았다."
+ },
+ "location": {
+  "name": "LINE Digital Frontier (도쿄 미드타운 타워)",
+  "address": "東京都港区赤坂九丁目7番1号 ミッドタウン・タワー11F",
+  "map_url": "https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B8%AF%E5%8C%BA%E8%B5%A4%E5%9D%82%E4%B9%9D%E4%B8%81%E7%9B%AE7%E7%95%AA1%E5%8F%B7",
+  "near": "도에이 오에도선 롯폰기역 8번 출구 직결 · 히비야선 롯폰기역 지하 통로 직결 · 지요다선 노기자카역 3번 출구 걸어서 약 3분 · 난보쿠선 롯폰기잇초메역 약 10분 [1]",
+  "note": "공고의 근무지[1]와 회사 채용 페이지[2]가 같은 주소다. 일본 주소라 네이버 지도 대신 구글 지도 검색 링크를 달았다."
+ }
+}

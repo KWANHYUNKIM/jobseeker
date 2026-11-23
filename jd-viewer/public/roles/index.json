@@ -5,6 +5,7 @@
   "wanted-395987": "datax-software-engineer-japan",
   "wanted-368239": "finatext-brokerage-fullstack",
   "wanted-385077": "go-android-in-vehicle",
+  "wanted-377335": "ldf-ebookjapan-web-frontend",
   "wanted-377332": "ldf-linemanga-data-scientist",
   "wanted-391370": "litalico-data-engineer",
   "wanted-397938": "litalico-frontend-b2b-saas",
@@ -171,6 +172,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 22
+  },
+  {
+   "id": "ldf-ebookjapan-web-frontend",
+   "company": "LINE Digital Frontier",
+   "role": "ebookjapan 웹 프론트엔드 엔지니어 (일본 도쿄 근무)",
+   "jobs": [
+    "wanted-377335"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 29
   },
   {
    "id": "ldf-linemanga-data-scientist",
