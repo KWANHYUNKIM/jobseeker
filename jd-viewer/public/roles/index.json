@@ -39,6 +39,7 @@
   "ats-toss:group:7901191003": "toss-platform-analytics-engineer",
   "ats-toss:group:5960616003": "toss-product-analytics-engineer",
   "ats-toss:group:7992229003": "toss-search-conversion-ranking-mle",
+  "ats-toss:group:7780944003": "toss-security-researcher-mobile",
   "ats-toss:group:4076085003": "toss-security-researcher-pentest",
   "saramin-55608860": "tossbank-finance-data-system"
  },
@@ -413,6 +414,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 18
+  },
+  {
+   "id": "toss-security-researcher-mobile",
+   "company": "토스",
+   "role": "보안 리서처 (모바일보안)",
+   "jobs": [
+    "ats-toss:group:7780944003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 10
   },
   {
    "id": "toss-security-researcher-pentest",
