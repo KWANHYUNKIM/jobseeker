@@ -1,0 +1,1124 @@
+{
+ "id": "tmap-mobility-ios-client-engineer",
+ "company": "티맵모빌리티",
+ "role": "iOS 클라이언트 엔지니어",
+ "team": "Client Engineer (iOS) — TMAP 앱",
+ "jobs": [
+  "wanted-393103"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "한 달에 1,500만 명 넘게 쓰는 **TMAP 아이폰 앱**의 기능을 만들고, 느려지거나 꺼지지 않게 지킵니다. 내비만이 아니라 장소 추천·대중교통·대리·주차·숏폼까지 한 앱에 들어 있습니다.[1][4][5]",
+  "env": "Swift 네이티브, iOS 17 이상 지원[5]. 검색·경로 탐색 같은 핵심 기능은 백엔드 API를 부르고[1], 운전 중에는 화면이 꺼져도 위치를 받아야 하는 앱입니다.[5][12]",
+  "oneline": "큰 서비스 앱을 오래 굴려 본 5년 차 이상 iOS 개발자 자리. 새 기능만큼 **안정성·성능·위치·배포**가 일의 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "월간 활성 사용자(MAU) 1,500만 명 이상의 TMAP iOS 앱을 개발합니다.",
+   "short": "1,500만 명이 쓰는 내비·생활 앱의 아이폰 판을 만든다 — 작은 실수도 수천 명에게 닿는 규모.",
+   "why": "티맵모빌리티는 2025년 월간 이용자가 1,500만 명을 넘어 역대 최대라고 밝혔고, 길 안내에서 장소 탐색·생활 서비스로 넓힌 것이 이유로 꼽혔습니다.[4] 앱스토어 설명도 내비 말고 대중교통·대리·주차·렌터카·바이크·결제·저장·숏폼 픽을 한 앱에 담고 있습니다.[5]",
+   "actually": {
+    "intro": "앱스토어 페이지(2026-11 확인)에서 보이는 이 앱의 모양입니다.[5]",
+    "items": [
+     "**한 앱에 서비스 여러 개** — 홈 상단 탭 메뉴로 추천·이동·보험과 혜택을 나누고, 숏폼(픽)·만보기·미션이 홈에 올라온다. 기능마다 담당 팀이 달라도 앱은 하나다.",
+     "**큰 앱** — 설치 크기 292.8MB, 처음 설치하면 30~50MB의 필수 파일을 더 받는다. 크기·시작 속도가 늘 관리 대상이다.",
+     "**지원 OS를 끊는 결정** — 10.14.0부터 iOS 17 이상만 지원한다. 낮은 버전을 버리면 새 API(SwiftUI·Swift 동시성의 새 기능)를 쓸 수 있지만 그 사용자에게는 업데이트가 끊긴다.",
+     "**잦은 배포** — 버전 기록에 몇 주 간격으로 기능 추가(11.9.1 주행 화면 최적화·숏폼 검색)와 문제 수정(11.9.2 성능 개선)이 번갈아 나온다.",
+     "**자리 나누기** — 차량 화면(CarPlay)·외부 회사에 주는 내비 SDK는 같은 날 올라온 **Navigation SDK Engineer** 공고가 따로 맡는다.[3] 이 자리는 아이폰 앱 본체다."
+    ]
+   },
+   "examples": [
+    {
+     "title": "99.9%면 충분할까 — 규모의 산수",
+     "body": "크래시를 한 번도 안 겪은 사용자 비율(crash-free users)이 99.9%여도 1,500만 명이면 한 달에 1만 5천 명이 앱이 꺼지는 걸 겪습니다(직접 돌린 출력). 그래서 소수점 아래 자리를 다툽니다.",
+     "lang": "python",
+     "code": "mau = 15_000_000\nfor crash_free in (0.999, 0.9995, 0.9999):\n    print(f\"crash-free {crash_free*100:.2f}% -> 한 달에 크래시를 겪는 사람 {round(mau*(1-crash_free)):,}명\")\n# crash-free 99.90% -> 한 달에 크래시를 겪는 사람 15,000명\n# crash-free 99.95% -> 한 달에 크래시를 겪는 사람 7,500명\n# crash-free 99.99% -> 한 달에 크래시를 겪는 사람 1,500명"
+    }
+   ],
+   "how_far": "처음부터 새로 만드는 일보다 **이미 큰 앱에 기능을 더하고, 더한 뒤에도 빠르고 안 꺼지게** 하는 일이 많을 것입니다. {추론} 자격요건이 출시·운영 경험과 메모리·동시성을 콕 집은 것도 그래서입니다.[1]",
+   "refs": [
+    1,
+    3,
+    4,
+    5
+   ],
+   "study": [
+    "apple-crash",
+    "apple-launch"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "기획자 및 UI/UX 디자이너와 협업하여 신규 기능을 설계하고 구현합니다.",
+   "short": "기획서와 디자인 시안을 받아 '어떻게 만들지'를 같이 정하고, 화면과 로직으로 옮긴다.",
+   "why": "기능이 많은 한 앱이라 새 기능은 늘 기존 화면·흐름과 부딪힙니다. 자격요건이 개발만이 아니라 '기획 검토부터'를 요구하는 이유입니다.[1] 티맵은 홈 탭 메뉴·숏폼처럼 화면 구조를 바꾸는 개편을 자주 내놓습니다.[5]",
+   "actually": {
+    "intro": "기획 검토 자리에서 개발자가 보통 짚는 것들입니다. {추론}",
+    "items": [
+     "**빠진 상태 찾기** — 시안은 잘 된 화면만 그린다. 불러오는 중·결과 없음·네트워크 오류·위치 권한 거절 화면을 누가 그릴지 정한다.",
+     "**운전 중 화면** — 주행 화면은 손을 덜 쓰게, 글자를 크게. 티맵은 지도 글자 크기를 휴대폰과 CarPlay에서 따로 정하게 바꿨다.[5]",
+     "**재사용** — 새 카드·목록이 기존 디자인 부품으로 되는지, 새로 만들어야 하는지 갈라 일정을 산정한다.",
+     "**측정** — 이 기능이 잘 됐는지 무엇으로 볼지(누름 수·전환율) 미리 정한다. 우대사항의 A/B 테스트와 이어진다.[1]"
+    ]
+   },
+   "how_far": "무엇을 만들지는 기획자가, 어떻게 보일지는 디자이너가 정합니다. 개발자는 **된다·안 된다·이렇게 하면 일정이 반이다**를 근거를 들어 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    5
+   ],
+   "study": [
+    "swiftui-intro"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "iOS 앱의 안정성과 성능을 개선하여 쾌적한 사용자 경험을 제공합니다.",
+   "short": "앱이 꺼지지(크래시) 않고, 누르면 바로 반응하고, 빨리 켜지게 만든다 — 숫자로 재며.",
+   "why": "운전 중에 쓰는 앱이라 멈추거나 꺼지면 불편을 넘어 위험합니다. 앱스토어 리뷰에도 업데이트 뒤 카플레이 음량 조절이 안 된다거나 갈림길 방향 표시가 사라졌다는 글이 올라오고, 개발자 답변이 달립니다.[5] 버전 기록의 '성능을 개선했습니다'도 이 일입니다.[5]",
+   "actually": {
+    "intro": "Apple이 공식 문서에 적은 기준입니다. 티맵 내부 목표치는 공개되지 않았습니다.",
+    "items": [
+     "**멈춤(hang)** — 누른 뒤 100ms가 넘게 반응이 없으면 사람이 느낀다. 메인 스레드(화면을 그리는 줄)가 쓸 수 있는 건 그 절반 아래다.[9]",
+     "**끊김(hitch)** — 120Hz 화면은 8.3ms, 60Hz는 16.7ms마다 새 화면이 필요하다. 메인 스레드 일이 5ms 아래면 대개 늦지 않는다.[9]",
+     "**시작 시간** — 너무 오래 걸리면 iOS의 감시 장치(watchdog)가 앱을 죽인다. Xcode Organizer가 실제 사용자 기기의 시작 시간을 보통(50번째 백분위)·느린 쪽(90번째)으로 보여 준다.[10]",
+     "**메모리 초과 종료** — 메모리를 너무 쓰면 크래시 보고서가 아니라 Jetsam 보고서가 남는다. 크래시가 안 잡히는데 앱이 꺼진다는 VOC의 흔한 원인이다.[11]",
+     "**현장 숫자** — MetricKit이 전날의 시작·복귀 시간 분포를 앱에 넘겨준다.[10][24]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "프레임 하나를 준비할 시간",
+     "body": "같은 일을 해도 120Hz 기기에서는 예산이 절반입니다(직접 돌린 출력). 그래서 목록 스크롤 중의 이미지 디코딩·JSON 파싱을 메인 스레드 밖으로 뺍니다.[9]",
+     "lang": "python",
+     "code": "for hz in (60, 120):\n    print(f\"{hz}Hz -> 프레임당 {1000/hz:.1f}ms\")\n# 60Hz -> 프레임당 16.7ms\n# 120Hz -> 프레임당 8.3ms"
+    }
+   ],
+   "how_far": "감으로 '빨라졌다'가 아니라 **고치기 전과 뒤를 같은 도구(Instruments·Organizer)로 재서** 보여 줄 수 있으면 됩니다. {추론}",
+   "refs": [
+    5,
+    9,
+    10,
+    11
+   ],
+   "study": [
+    "apple-responsiveness",
+    "apple-launch",
+    "apple-metrickit"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "고객 VOC를 분석하고, 사용자 경험을 개선하기 위한 기능을 제안·개발합니다.",
+   "short": "앱스토어 리뷰·고객 문의를 모아 원인을 찾고, 고칠 것과 새로 만들 것을 먼저 제안한다.",
+   "why": "VOC(Voice of Customer, 고객의 목소리)는 이 앱에 많고 구체적입니다. 앱스토어 평점은 3.3(3.2만 개)이고, 리뷰에는 차종·업데이트 시점까지 적힌 불편이 올라옵니다.[5] 공고가 '분석'과 '제안'을 같이 적은 건 받아서 고치기만 하는 자리가 아니라는 뜻입니다.[1]",
+   "actually": {
+    "intro": "VOC 한 건이 고침이 되기까지 보통 이렇게 갑니다. {추론}",
+    "items": [
+     "**묶기** — 같은 불편을 모은다. 예: '업데이트 뒤 카플레이 음량', '갈림길 화살표가 사라졌다'는 리뷰가 여러 날 반복된다.[5]",
+     "**재현** — 앱 버전·iOS 버전·차종(카플레이)·권한 상태를 맞춰 똑같이 일으켜 본다.",
+     "**기록 대조** — 그 시간대의 크래시·로그·API 오류와 맞춰 본다.[11]",
+     "**의도된 변경인지** — 화면 개편으로 일부러 바꾼 것이면 기획·디자인과 되돌릴지 정한다.",
+     "**고친 뒤 확인** — 다음 버전에서 같은 불만이 줄었는지 본다."
+    ]
+   },
+   "how_far": "모든 리뷰에 답하는 건 운영 조직의 일입니다. 개발자는 **원인을 찾아 기술로 고칠 수 있는 것과 없는 것을 가르고**, 고칠 방법을 제안합니다. {추론}",
+   "refs": [
+    1,
+    5,
+    11
+   ],
+   "study": [
+    "apple-crash"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "백엔드 API와 연동하여 검색, 경로 탐색, 즐겨찾기 등 핵심 서비스 기능을 구현합니다.",
+   "short": "장소 검색·길 찾기·즐겨찾기는 서버가 계산하고, 앱은 부르고·기다리고·보여 주고·실패에 대비한다.",
+   "why": "경로 계산은 서버에서 합니다. 티맵 경로 팀은 '몇 시간 뒤 출발' 경로 탐색을 어떤 경우에도 500ms 안에 답하는 것을 목표로 알고리즘을 다듬어, 평균 50ms·400km 넘는 장거리도 평균 300ms 아래로 맞췄다고 썼습니다.[6] 서버가 빨라도 앱이 느리게 부르고 그리면 사용자는 느리다고 느낍니다.",
+   "actually": {
+    "items": [
+     "**검색어 칠 때마다 부르지 않기** — 잠깐 기다렸다(디바운스) 부르고, 새 글자가 오면 앞 요청은 취소한다. Swift 동시성에서는 작업(Task)을 취소한다.[13]",
+     "**응답을 화면 모델로** — JSON을 Swift 타입으로 바꾸고(Codable), 화면에 필요한 모양으로 한 번 더 다듬는다. 이 일은 메인 스레드 밖에서.[9]",
+     "**실패 다루기** — 터널·지하 주차장처럼 네트워크가 끊기는 곳이 많다. 다시 시도, 마지막 결과 보여 주기, 오류 화면을 정한다. {추론}",
+     "**즐겨찾기 같은 내 데이터** — 서버와 기기에 둘 다 있으니 어느 쪽이 최신인지 맞추는 규칙이 필요하다. {추론}",
+     "**API 약속** — 서버 팀과 요청·응답 모양, 옛 버전 앱이 계속 부를 때 깨지지 않는지 함께 정한다. {추론}"
+    ]
+   },
+   "how_far": "길 찾기 알고리즘을 짜는 자리는 아닙니다(서버 팀).[6] 이 자리는 **API를 안전하게 부르고 결과를 빠르게 그리는 앱 쪽 전부**입니다. {추론}",
+   "refs": [
+    6,
+    9,
+    13
+   ],
+   "study": [
+    "swift-concurrency",
+    "wwdc-async",
+    "tmap-routing"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "서버, QA, 운영 등 유관 조직과 협업하여 서비스 품질을 개선합니다.",
+   "short": "앱 혼자 품질이 안 나와서 — 서버·QA·운영과 함께 출시 전 거르고, 출시 뒤 빨리 잡는다.",
+   "why": "티맵모빌리티는 QA 자동화 엔지니어를 따로 뽑을 만큼 QA 조직이 있고[25], 같은 문장이 Android 공고에도 그대로 있습니다 — 두 앱이 같은 서버·QA·운영과 일합니다.[2]",
+   "actually": {
+    "items": [
+     "**출시 전** — QA가 시나리오대로 확인하고, 자동화 테스트가 반복 확인을 맡는다.[25]",
+     "**단계적 출시** — App Store는 업데이트를 7일에 걸쳐 1%→2%→5%→10%→20%→50%→100% 사용자에게 자동으로 퍼뜨리고, 문제가 보이면 최대 30일 멈출 수 있다.[20]",
+     "**출시 뒤** — 크래시·오류율을 보고, 서버 문제인지 앱 문제인지 같이 가른다.[11]",
+     "**운영** — 고객 문의를 받는 쪽이 VOC를 넘겨주고, 개발이 원인과 일정을 돌려준다. {추론}"
+    ]
+   },
+   "refs": [
+    2,
+    11,
+    20,
+    25
+   ],
+   "study": [
+    "apple-phased",
+    "fastlane-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "iOS 네이티브 앱 개발 경력 5년 이상이거나 이에 준하는 경험을 보유하신 분",
+   "short": "기능 하나를 기획 검토부터 출시·운영까지 혼자 끌고 갈 수 있는 수준을 숫자로 적은 것.",
+   "why": "같은 날 올라온 Android·내비 SDK 공고도 '5년 이상이거나 이에 준하는'으로 같습니다.[2][3] 팀이 바로 맡길 수 있는 사람을 찾는 기준입니다. 전형에 코딩테스트와 인터뷰 두 번, 레퍼런스 체크가 있습니다.[1]",
+   "how_far": "'이에 준하는'이 붙어 있어 연수보다 **무엇을 해 봤나**를 봅니다. {추론} 이 공고의 다른 요건(아키텍처·생명주기·메모리·동시성·출시 운영)을 실제 경험으로 하나씩 말할 수 있으면 그게 '준하는 경험'입니다. 크로스플랫폼(React Native·Flutter)만 했다면 '네이티브'에서 걸립니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Swift 기반 iOS 앱 개발에 능숙하신 분",
+   "short": "문법을 아는 수준이 아니라, Swift의 타입·메모리·동시성 규칙을 알고 버그 없이 쓰는 수준.",
+   "why": "앱이 Swift 네이티브이고[1], 메모리 누수·동시성이 따로 자격요건에 있을 만큼 Swift의 규칙을 깊게 아는 게 중요합니다.[1]",
+   "level": {
+    "basic": "옵셔널 · 구조체(값)와 클래스(참조) 차이 · 프로토콜 · 클로저 · 오류 처리(throw)",
+    "work": "제네릭 · 프로토콜 확장 · Codable · 클로저 캡처 목록([weak self]) · async/await",
+    "team": "actor·MainActor로 데이터 경쟁 막기 · Sendable · 큰 앱의 모듈 나누기와 빌드 시간"
+   },
+   "actually": {
+    "items": [
+     "**값과 참조** — 구조체는 복사되고 클래스는 공유된다. 화면 상태를 구조체로 두면 '누가 바꿨나'가 줄어든다.",
+     "**클로저가 붙잡는 것** — 클로저가 self를 강하게 붙잡으면 서로 놓지 않아 메모리가 안 풀린다(순환 참조). 요건⑤와 이어진다.[15]",
+     "**동시성** — async/await로 기다리는 코드를 위에서 아래로 쓰고, actor로 여러 작업이 같은 값을 동시에 바꾸지 못하게 막는다.[13][14]"
+    ]
+   },
+   "refs": [
+    1,
+    13,
+    14,
+    15
+   ],
+   "study": [
+    "yagom-swift",
+    "swift-concurrency"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "MVVM 등 iOS 앱 아키텍처를 이해하고 적용한 경험을 보유하신 분",
+   "short": "화면 코드와 데이터·로직을 나눠, 여러 사람이 큰 앱을 고쳐도 덜 부서지게 짜 본 경험.",
+   "why": "기능 많은 앱을 여러 팀이 같이 고치면 화면 하나에 모든 코드를 넣는 방식은 금방 무너집니다. Android 공고도 MVVM·Clean Architecture를 요구하고[2], iOS 우대사항에는 TCA가 있습니다.[1][16]",
+   "flows": [
+    {
+     "caption": "MVVM에서 검색 화면 하나가 움직이는 길 {추론}",
+     "steps": [
+      "View · 검색창·결과 목록을 그린다. 입력만 넘긴다",
+      "ViewModel · 입력을 받아 상태(불러오는 중·결과·오류)를 바꾼다",
+      "Repository · 서버와 기기 저장소 중 어디서 가져올지 정한다",
+      "API 클라이언트 · 실제 요청과 응답 해석"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "actually": {
+    "items": [
+     "**왜 나누나** — ViewModel은 화면 없이 테스트할 수 있다. '검색어가 비면 목록을 비운다' 같은 규칙을 단위 테스트로 잡는다. {추론}",
+     "**MVVM의 약점** — 상태가 여러 곳에서 바뀌면 추적이 어렵다. 그래서 상태를 한 곳에 모으는 TCA(State·Action·Reducer·Store) 같은 방식이 나왔다.[16]",
+     "**이름보다 이유** — 면접에서는 '우리 앱은 왜 이 구조인가, 무엇이 불편했나'를 묻는 경우가 많다. {추론}"
+    ]
+   },
+   "how_far": "특정 패턴의 교과서 정의보다 **실제 앱에 적용하며 겪은 문제와 고친 방법**을 말할 수 있으면 됩니다. 'MVVM 등'이라 다른 구조를 썼어도 됩니다.[1]",
+   "refs": [
+    1,
+    2,
+    16
+   ],
+   "study": [
+    "tca-github",
+    "swiftui-intro"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "서비스 앱의 기획 검토부터 개발, 출시, 운영까지 경험을 보유하신 분",
+   "short": "만들고 끝이 아니라 앱스토어에 내보내고, 사용자 반응·크래시를 보며 고쳐 본 경험.",
+   "why": "이 자리의 업무 여섯 줄 중 셋이 출시 뒤(안정성·VOC·품질 협업) 이야기입니다.[1] 티맵은 몇 주 간격으로 버전을 냅니다.[5]",
+   "flows": [
+    {
+     "caption": "앱 기능 하나의 한살이",
+     "steps": [
+      "기획 검토 · 빠진 상태·일정",
+      "설계·개발 · 구조·API 약속",
+      "QA · 시나리오·자동화 테스트[25]",
+      "심사·배포 · App Store 심사, 단계적 출시[20]",
+      "운영 · 크래시·VOC 보고 고치기[11]"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "출시한 앱이 실제 사용자를 가진 적이 있어야 말할 거리가 생깁니다. 회사 서비스가 아니면 개인 앱이라도 **출시하고 업데이트를 몇 번 해 본 것**이 최소선입니다. {추론}",
+   "refs": [
+    1,
+    5,
+    11,
+    20,
+    25
+   ],
+   "study": [
+    "apple-phased",
+    "apple-crash"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "iOS 앱 생명주기를 이해하고, 메모리 누수 등 리소스 관리 문제를 해결한 경험을 보유하신 분",
+   "short": "앱이 앞·뒤·멈춤 상태를 오갈 때 할 일을 알고, 안 풀리는 메모리를 찾아 고쳐 본 경험.",
+   "why": "내비 앱은 생명주기가 특히 복잡합니다. 사용자가 다른 앱으로 가도 길 안내는 계속돼야 하고, 시스템이 위치 이벤트를 처리하라고 앱을 뒤에서 깨우기도 합니다.[7] 메모리를 오래 쥐고 있으면 뒤에 있던 앱이 시스템에 의해 정리돼 다시 켤 때 처음부터 시작합니다.[11]",
+   "actually": {
+    "items": [
+     "**상태 바뀔 때 할 일** — 앞으로 오면 화면을 준비하고, 앞을 떠나면 데이터를 저장하고 조용해지고, 뒤로 가면 중요한 일만 마치고 메모리를 최대한 비운다. 화면(scene)마다 따로 상태를 가진다.[7]",
+     "**누수 찾기** — Xcode의 메모리 그래프로 안 풀린 객체와 누가 붙잡고 있는지 화살표로 본다. Allocations의 세대(Generations) 보기로 '화면을 열고 닫았는데 남은 것'을 찾는다.[8]",
+     "**흔한 원인** — 클로저·델리게이트·타이머가 서로 강하게 붙잡는 순환 참조, 계속 쌓이는 캐시.[15]",
+     "**메모리 초과 종료** — 시뮬레이터는 메모리 경고를 안 내니 실제 기기로 확인한다.[8]"
+    ]
+   },
+   "how_far": "'[weak self]를 쓴다'에서 그치지 않고 **누수를 도구로 찾아 원인을 고친 사례 하나**를 말할 수 있으면 됩니다. 지원서·면접에서 가장 자주 확인하는 부분일 것입니다. {추론}",
+   "refs": [
+    7,
+    8,
+    11,
+    15
+   ],
+   "study": [
+    "apple-lifecycle",
+    "apple-memory",
+    "wwdc-memory"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "비동기 처리와 동시성을 이해하고, UI 업데이트 및 데이터 처리에 적용한 경험을 보유하신 분",
+   "short": "화면은 메인 스레드에서만, 무거운 일은 밖에서 — 섞이면 앱이 멈추거나 이상한 값이 보인다.",
+   "why": "Apple은 메인 스레드는 화면과의 상호작용에만 쓰고 다른 일은 백그라운드로 보내라고 하고, Swift 동시성에서 실수로 메인 액터(MainActor)에서 일을 돌리지 말라고 따로 적었습니다.[9] 위치·지도·검색·네트워크가 동시에 오가는 내비 앱은 이 실수가 잦은 곳입니다. {추론}",
+   "actually": {
+    "items": [
+     "**async/await** — 콜백을 겹겹이 쌓지 않고 기다리는 코드를 순서대로 쓴다.[14]",
+     "**actor** — 여러 작업이 같은 값(예: 캐시)을 동시에 바꾸지 못하게 줄을 세운다.[13]",
+     "**취소** — 화면을 떠났거나 새 검색이 왔으면 앞 작업을 멈춘다.[13]",
+     "**UI 반영** — 결과를 받으면 메인 액터에서 상태를 바꿔 화면에 그린다. 그 전 계산은 밖에서.[9]"
+    ]
+   },
+   "how_far": "GCD(DispatchQueue)·Combine·async/await 중 무엇을 썼든 **'왜 이 코드가 메인 스레드에서 도나'를 설명하고, 경쟁 상태 버그를 하나 고쳐 본** 수준이면 됩니다. {추론}",
+   "refs": [
+    9,
+    13,
+    14
+   ],
+   "study": [
+    "swift-concurrency",
+    "wwdc-async",
+    "apple-responsiveness"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "문제를 발견했을 때 주도적으로 해결 방안을 찾고 실행하시는 분",
+   "short": "누가 시키기 전에 크래시·느린 화면·VOC를 먼저 집어 고치는 사람을 찾는다.",
+   "why": "같은 문장이 Android·내비 SDK 공고에도 그대로 있어 이 조직 공통 기준입니다.[2][3] 안정성 개선·VOC 분석은 기획서로 내려오기보다 개발자가 먼저 찾아야 하는 일이라서입니다.[1]",
+   "how_far": "면접에서 '스스로 찾은 문제 → 근거(숫자) → 한 일 → 결과' 순서로 말할 사례 하나를 준비합니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "동료를 배려하며 원활하게 소통하고 협업하시는 분",
+   "short": "기획·디자인·서버·QA·운영과 매일 맞춰야 하는 자리라서.",
+   "why": "업무 여섯 줄 중 셋이 협업(기획·디자이너, 백엔드 API, 서버·QA·운영)입니다.[1] 같은 문장이 같은 날의 다른 개발 공고에도 있습니다.[2][3] 복지에도 직급 대신 '님'으로 부르는 수평 문화를 적었습니다.[1]",
+   "how_far": "'안 된다'만 말하지 않고 대안(범위 줄이기·단계 나누기)을 같이 내는 것, 내 코드 리뷰에서 근거를 대는 것이 보통의 기준입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 사용자 기반 서비스 앱을 개발하거나 운영한 경험을 보유하신 분",
+   "short": "사용자가 많으면 드문 버그도 매일 나오고, 배포 하나가 큰 사고가 될 수 있어서.",
+   "why": "1,500만 명 규모에서는 0.1%도 1만 5천 명입니다(업무① 예시).[4] 그래서 큰 앱은 업데이트를 한 번에 다 내보내지 않고 조금씩 퍼뜨립니다.[20]",
+   "actually": {
+    "items": [
+     "**단계적 출시** — 7일에 걸쳐 1%부터 100%까지, 문제가 보이면 멈춘다.[20]",
+     "**기기·OS 다양성** — 같은 iOS라도 기기 메모리·화면 주사율이 다르다. 시작 시간도 기기별로 본다.[10]",
+     "**원격 설정·기능 플래그** — 앱을 다시 내지 않고 기능을 끄거나 켜는 장치. A/B 테스트에도 쓴다. {추론}"
+    ]
+   },
+   "refs": [
+    4,
+    10,
+    20
+   ],
+   "study": [
+    "apple-phased",
+    "apple-metrickit"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "앱 시작 속도, 렌더링, 메모리, 네트워크 등 앱 성능을 최적화한 경험을 보유하신 분",
+   "short": "켜지는 시간·스크롤 끊김·메모리·통신량을 재서 줄여 본 경험 — 큰 앱일수록 다 걸린다.",
+   "why": "설치 크기 292.8MB의 큰 앱이고[5], 버전 기록에 성능 개선이 반복해 나옵니다.[5] 업무③의 '성능 개선'을 해 본 사람이면 바로 일을 맡길 수 있습니다.[1]",
+   "actually": {
+    "intro": "Apple 문서가 시작 시간을 줄이는 방법으로 드는 것들입니다.[10]",
+    "items": [
+     "**외부 프레임워크 줄이기** — 동적으로 붙이는 외부 라이브러리 하나하나가 시작 시간을 늘린다. Xcode 15부터는 병합 가능한 라이브러리로 정적 연결에 가까운 시작 시간을 낼 수 있다.",
+     "**main() 전에 도는 코드 미루기** — 정적 초기화·+load 같은 코드는 앱이 다 켜진 뒤로 옮긴다.",
+     "**다양한 상황에서 재기** — 재부팅 직후, 강제 종료 뒤, 큰 앱을 쓰고 온 뒤처럼 상황을 바꿔 Instruments의 App Launch 템플릿으로 잰다.",
+     "**렌더링** — 메인 스레드 일을 프레임 예산 안으로.[9]",
+     "**네트워크** — 첫 화면에 꼭 필요한 요청만 먼저, 나머지는 뒤로. {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    5,
+    9,
+    10
+   ],
+   "study": [
+    "apple-launch",
+    "apple-responsiveness",
+    "apple-memory"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "크래시를 분석하고 개선한 경험이 있으신 분CI/CD 파이프라인 구축 및 테스트·배포 자동화 경험을 보유하신 분",
+   "short": "원문에서 두 줄이 붙었다 — ① 크래시 보고서를 읽고 고친 경험 ② 빌드·테스트·배포 자동화 경험.",
+   "why": "같은 날의 Android 공고에서는 'ANR 및 크래시 분석'과 'CI/CD 구축'이 두 줄로 나뉘어 있어, 이 줄도 두 요건입니다.[2] 둘 다 잦은 배포를 안전하게 하려는 장치입니다.[5]",
+   "actually": {
+    "items": [
+     "**크래시 ① 기호 붙이기** — 배포용 빌드의 크래시 보고서는 주소(16진수)만 있다. 빌드할 때 남긴 기호 정보로 함수 이름을 되살려야 읽힌다.[11]",
+     "**크래시 ② 원인 찾기** — 흔한 크래시 유형(강제 언래핑, 배열 범위, 메인 스레드 아닌 곳에서 UI 접근 등)에 맞춰 보고, 고친 뒤 XCTest로 같은 일이 다시 안 나게 테스트를 붙인다.[11]",
+     "**CI** — 코드를 올릴 때마다 빌드와 테스트가 자동으로 돈다. {추론}",
+     "**CD** — 인증서 서명·버전 올리기·TestFlight 업로드·스토어 제출을 스크립트로. fastlane이 이 일을 묶는 널리 쓰이는 도구다.[18]"
+    ]
+   },
+   "how_far": "파이프라인을 처음부터 지은 경험이 아니어도 **이미 있는 파이프라인에 테스트·배포 단계를 더해 본** 경험이면 이야기할 거리가 됩니다. {추론}",
+   "refs": [
+    2,
+    5,
+    11,
+    18
+   ],
+   "study": [
+    "apple-crash",
+    "fastlane-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "A/B 테스트와 데이터 분석을 기반으로 기능을 개선한 경험을 보유하신 분",
+   "short": "사용자를 둘로 나눠 다른 화면을 보여 주고, 차이가 우연이 아닌지 숫자로 확인해 고친 경험.",
+   "why": "티맵은 홈 개편·숏폼처럼 화면 구조를 바꾸는 일이 잦습니다.[5] 바꾼 화면이 정말 나은지는 사용자를 나눠 비교해야 압니다. 공고 업무에도 '사용자 경험을 개선하기 위한 기능을 제안'이 있습니다.[1]",
+   "actually": {
+    "intro": "앱 A/B 테스트는 보통 원격 설정 도구로 사용자를 무작위로 나눠 화면을 바꾸고 결과를 잽니다(예: Firebase A/B Testing).[19] 티맵이 어떤 도구를 쓰는지는 공개되지 않았습니다.",
+    "items": [
+     "**앱이 하는 일** — 실험 값에 따라 다른 화면을 그리고, 비교할 이벤트(누름·완료)를 빠짐없이 보낸다.",
+     "**실험 짜기** — 무엇을 볼지(전환율), 얼마 동안, 몇 명에게를 먼저 정한다.",
+     "**차이 판정** — 표본이 작으면 같은 차이도 우연일 수 있다(아래 예)."
+    ]
+   },
+   "examples": [
+    {
+     "title": "전환율 10% vs 10.5% — 표본 크기가 결론을 바꾼다",
+     "body": "그룹당 2,000명이면 p≈0.60으로 우연과 구별이 안 되고, 5만 명이면 p≈0.009로 차이가 있다고 봅니다(두 비율 z-검정, 직접 돌린 출력). 큰 앱이라 이런 실험이 가능합니다.",
+     "lang": "python",
+     "code": "import math\n\ndef ab(n_a, x_a, n_b, x_b):\n    p_a, p_b = x_a / n_a, x_b / n_b\n    p = (x_a + x_b) / (n_a + n_b)\n    se = math.sqrt(p * (1 - p) * (1 / n_a + 1 / n_b))\n    z = (p_b - p_a) / se\n    return p_a, p_b, z, math.erfc(abs(z) / math.sqrt(2))\n\nfor n in (2_000, 50_000):\n    p_a, p_b, z, pv = ab(n, round(n * 0.100), n, round(n * 0.105))\n    print(f\"그룹당 {n:,}명: A {p_a:.3f} vs B {p_b:.3f}, z={z:.2f}, p={pv:.4f}\")\n# 그룹당 2,000명: A 0.100 vs B 0.105, z=0.52, p=0.6022\n# 그룹당 50,000명: A 0.100 vs B 0.105, z=2.61, p=0.0091"
+    }
+   ],
+   "how_far": "통계 분석은 데이터 분석가가 맡는 경우가 많습니다. 개발자는 **실험 장치를 앱에 붙이고 이벤트를 정확히 보내며, 결과를 읽을 줄 아는** 정도면 됩니다. {추론}",
+   "refs": [
+    1,
+    5,
+    19
+   ],
+   "study": [
+    "firebase-ab"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "SwiftUI를 활용한 서비스 개발 경험을 보유하신 분",
+   "short": "새 화면은 SwiftUI로, 옛 화면은 UIKit으로 — 섞인 앱을 다뤄 본 경험이 있으면 좋다는 뜻.",
+   "why": "앱이 iOS 17 이상만 지원하게 되면서[5] SwiftUI의 비교적 새 기능까지 쓸 수 있는 바닥이 됐습니다. {추론} 우대사항에 SwiftUI와 TCA가 함께 있는 건 새 화면을 상태 중심으로 짜는 방향을 가리킵니다.[1][16] {추론}",
+   "actually": {
+    "items": [
+     "**상태를 그리면 화면이 된다** — SwiftUI는 '지금 상태'를 선언하면 바뀔 때마다 화면을 다시 그린다.[23]",
+     "**섞어 쓰기** — 오래된 큰 앱은 보통 UIKit 화면 안에 SwiftUI 화면을 끼우거나 그 반대로 쓴다. {추론}",
+     "**성능 함정** — 상태가 바뀔 때 다시 그려지는 범위가 너무 넓으면 스크롤이 끊긴다.[9]"
+    ]
+   },
+   "refs": [
+    1,
+    5,
+    9,
+    16,
+    23
+   ],
+   "study": [
+    "swiftui-intro"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "TCA(The Composable Architecture)를 활용한 서비스 개발 경험을 보유하신 분",
+   "short": "상태·행동·처리 규칙을 한곳에 모아 테스트하기 쉽게 짜는 Swift 구조(TCA)를 써 본 경험.",
+   "why": "TCA는 Point-Free가 만든 오픈소스로, 일관되고 이해하기 쉬운 방식으로 앱을 만들고 조립·테스트를 쉽게 하는 것을 목표로 합니다.[16] 공고에 따로 적은 건 팀이 이미 쓰고 있거나 쓰려는 것으로 읽힙니다. {추론}",
+   "actually": {
+    "intro": "TCA의 기본 부품입니다.[16]",
+    "items": [
+     "**State** — 화면이 가진 상태 전부(검색어·결과·불러오는 중).",
+     "**Action** — 일어날 수 있는 일(검색어 바뀜·결과 도착·오류).",
+     "**Reducer** — 지금 상태와 행동을 받아 다음 상태를 정하고, 할 바깥일(Effect, 예: API 호출)을 돌려준다.",
+     "**Store** — 화면이 붙는 곳. 화면은 행동을 보내고 상태를 받는다.",
+     "**@Dependency · TestStore** — API·시계 같은 바깥 것을 바꿔 끼워, 행동 하나에 상태가 정확히 어떻게 바뀌는지 테스트한다."
+    ]
+   },
+   "how_far": "TCA를 안 써 봤으면 MVVM과 무엇이 다른지(상태가 한곳, 바뀌는 길이 하나) 설명하고 작은 기능 하나를 만들어 본 정도면 이야기할 수 있습니다. {추론}",
+   "refs": [
+    16
+   ],
+   "study": [
+    "tca-github"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "위치 권한, 백그라운드 위치, 지도 또는 경로 탐색 등 위치 기반 모바일 서비스 개발 경험을 보유하신 분",
+   "short": "내비의 바탕 — 위치 권한 받기, 화면이 꺼져도 위치 받기, 지도 위에 길 그리기를 해 본 경험.",
+   "why": "TMAP은 위치를 필수 권한으로 쓰고, 앱이 열려 있지 않을 때도 위치를 쓸 수 있다고 앱스토어에 밝혀 둡니다.[5] Apple도 백그라운드 위치가 필요한 대표 경우로 '실시간 길 안내'를 듭니다.[12]",
+   "actually": {
+    "intro": "Apple 문서가 정한 백그라운드 위치의 규칙입니다.[12]",
+    "items": [
+     "**기본은 멈춤** — iOS는 뒤로 간 앱을 곧 멈추고, 멈춘 앱은 위치를 못 받는다(쌓아 뒀다 다시 켜질 때 준다). 실시간이 필요하면 멈추지 말라고 요청해야 한다.",
+     "**설정** — 앱 대상의 Signing & Capabilities에서 Background Modes의 Location updates를 켠다.",
+     "**세션** — 뒤에서 받으려면 백그라운드 활동 세션(CLBackgroundActivitySession)을 만들고, 필요한 권한(사용 중 허용·항상 허용)을 요구하는 서비스 세션은 앱이 앞에 있을 때 만든다.",
+     "**다시 켜질 때** — 시스템은 메모리가 모자라면 언제든 앱을 끈다. 뒤에서 다시 켜지면 위치 서비스를 곧바로 다시 시작해야 쌓인 위치가 다시 온다.",
+     "**권한을 아직 안 물었으면** — 시작할 때 위치 서비스를 켜지 않는다.",
+     "**권한 여러 개** — TMAP은 위치(필수) 말고 알림·동작 및 피트니스(길 안내 정확도)·연락처·마이크를 선택 권한으로 쓴다.[5]"
+    ]
+   },
+   "how_far": "지도 엔진·경로 계산은 다른 팀(지도·경로·SDK)이 만듭니다.[3][6] 이 자리는 **권한 흐름과 백그라운드 위치를 배터리 덜 쓰며 끊기지 않게** 다루는 앱 쪽입니다. {추론}",
+   "refs": [
+    3,
+    5,
+    6,
+    12
+   ],
+   "study": [
+    "apple-bgloc",
+    "apple-lifecycle"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "모바일 앱 보안에 대한 이해와 적용 경험을 보유하신 분",
+   "short": "결제·위치·연락처를 다루는 앱이라, 기기 저장·통신·인증·변조를 지키는 방법을 아는 사람.",
+   "why": "TMAP은 결제 수단 등록(TMAP 결제)과 위치·연락처 같은 민감한 권한을 다룹니다.[5] 앱 보안은 보통 OWASP의 모바일 앱 보안 기준(MASVS)으로 점검합니다.[17] 티맵이 어떤 기준으로 점검하는지는 공개되지 않았습니다.",
+   "actually": {
+    "intro": "MASVS가 나누는 여덟 갈래입니다.[17]",
+    "items": [
+     "**STORAGE** — 기기에 민감한 값을 평문으로 두지 않는다(토큰은 키체인).",
+     "**CRYPTO · AUTH** — 암호화를 제대로, 로그인·권한 확인은 서버에서.",
+     "**NETWORK** — 통신은 TLS, 필요하면 인증서 고정.",
+     "**PLATFORM** — 딥링크·다른 앱과 주고받는 데이터를 믿지 않는다.",
+     "**CODE · RESILIENCE** — 오래된 라이브러리 정리, 탈옥·변조 탐지.",
+     "**PRIVACY** — 필요한 만큼만 모으고 쓰는 목적을 알린다."
+    ]
+   },
+   "refs": [
+    5,
+    17
+   ],
+   "study": [
+    "owasp-masvs"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "내가 고친 화면이 다음 주에 수백만 명 손에 가는 게 즐거운 사람[4]",
+   "기능 개발만큼 크래시율·시작 시간 같은 숫자를 줄이는 게 재미있는 사람[1]",
+   "위치·지도·백그라운드처럼 iOS가 까다롭게 구는 부분을 파고들고 싶은 사람[12]",
+   "SwiftUI·TCA로 새 화면을 짜 보고 싶은 사람[1]"
+  ],
+  "hard": [
+   "5년 이상 또는 그에 준하는 네이티브 경험이 기본 — 처음 iOS를 하는 사람에게는 문이 좁다[1]",
+   "오래 쌓인 큰 앱이라 새로 짜기보다 기존 코드와 맞추는 일이 많을 것 {추론}",
+   "평점 3.3의 앱이라 VOC가 많고 직접적이다[5]",
+   "지도 엔진·경로 계산·CarPlay SDK는 다른 팀 몫 — 그쪽을 원하면 Navigation SDK 공고가 맞다[3]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "화면을 열고 닫을 때마다 메모리가 조금씩 늘어요. 어떻게 찾고 고치겠어요?",
+   "a": "메모리 그래프·Allocations 세대 보기·순환 참조 — 자격요건⑤의 핵심.[8][15]"
+  },
+  {
+   "q": "길 안내 중에 사용자가 다른 앱으로 갔어요. 위치를 계속 받으려면 무엇이 필요하고, 시스템이 앱을 끄면 어떻게 되나요?",
+   "a": "백그라운드 모드·세션·재시작 규칙.[12][7]"
+  },
+  {
+   "q": "검색창에 글자를 칠 때마다 API를 부르면 무엇이 문제고, 어떻게 바꾸겠어요?",
+   "a": "디바운스·작업 취소·메인 스레드 밖 처리.[13][9]"
+  },
+  {
+   "q": "크래시 보고서에 주소만 찍혀 있어요. 원인까지 가는 순서를 말해 보세요.",
+   "a": "기호 붙이기 → 유형 대조 → 고친 뒤 테스트.[11]"
+  },
+  {
+   "q": "업데이트 뒤 특정 차종 카플레이에서 문제가 생겼다는 리뷰가 늘었어요. 무엇부터 하겠어요?",
+   "a": "실제 앱스토어 리뷰에 있는 상황 — 재현·단계적 출시 멈춤·원인 분리.[5][20]"
+  },
+  {
+   "q": "MVVM을 쓰며 불편했던 점과, TCA는 그걸 어떻게 다르게 푸는지 설명해 보세요.",
+   "a": "아키텍처 요건과 TCA 우대사항을 한 번에 본다.[1][16]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · 티맵모빌리티 Client Engineer (iOS)",
+   "url": "https://www.wanted.co.kr/wd/393103",
+   "kind": "posting",
+   "date": "2026-10-19",
+   "note": "업무·요건·우대·복지·전형"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · 티맵모빌리티 Client Engineer (Android)",
+   "url": "https://www.wanted.co.kr/wd/393102",
+   "kind": "posting",
+   "note": "같은 날의 Android 짝 공고 — 줄 구성이 같다"
+  },
+  {
+   "n": 3,
+   "title": "원티드 · 티맵모빌리티 Navigation SDK Engineer",
+   "url": "https://www.wanted.co.kr/wd/393106",
+   "kind": "posting",
+   "note": "CarPlay·내비 SDK는 이 공고가 맡는다"
+  },
+  {
+   "n": 4,
+   "title": "한국경제 · AI 서비스 품은 티맵…月이용자 1500만명 돌파",
+   "url": "https://www.hankyung.com/article/2026030238721",
+   "kind": "news",
+   "date": "2026-03-02"
+  },
+  {
+   "n": 5,
+   "title": "App Store · 티맵 - 장소추천, 지도, 운전점수, 대중교통, 대리",
+   "url": "https://apps.apple.com/kr/app/tmap/id431589174",
+   "kind": "company",
+   "date": "2026-11-23 확인",
+   "note": "회사가 쓴 앱 설명·권한·호환성·버전 기록. 리뷰는 사용자 글이라 요약만"
+  },
+  {
+   "n": 6,
+   "title": "티맵모빌리티 브런치 · 티맵, 3시간 뒤 출발하면 얼마나 걸려?",
+   "url": "https://brunch.co.kr/@tmapmobility/20",
+   "kind": "company",
+   "date": "2023-01-06",
+   "note": "경로 팀 테크노트 — 시간대별 경로 탐색 응답 목표 500ms"
+  },
+  {
+   "n": 7,
+   "title": "Apple · Managing your app's life cycle",
+   "url": "https://developer.apple.com/documentation/uikit/managing-your-app-s-life-cycle",
+   "kind": "reference"
+  },
+  {
+   "n": 8,
+   "title": "Apple · Gathering information about memory use",
+   "url": "https://developer.apple.com/documentation/xcode/gathering-information-about-memory-use",
+   "kind": "reference"
+  },
+  {
+   "n": 9,
+   "title": "Apple · Improving app responsiveness",
+   "url": "https://developer.apple.com/documentation/xcode/improving-app-responsiveness",
+   "kind": "reference"
+  },
+  {
+   "n": 10,
+   "title": "Apple · Reducing your app's launch time",
+   "url": "https://developer.apple.com/documentation/xcode/reducing-your-app-s-launch-time",
+   "kind": "reference"
+  },
+  {
+   "n": 11,
+   "title": "Apple · Diagnosing issues using crash reports and device logs",
+   "url": "https://developer.apple.com/documentation/xcode/diagnosing-issues-using-crash-reports-and-device-logs",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "Apple · Handling location updates in the background",
+   "url": "https://developer.apple.com/documentation/corelocation/handling-location-updates-in-the-background",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "The Swift Programming Language · Concurrency",
+   "url": "https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "WWDC21 · Meet async/await in Swift",
+   "url": "https://developer.apple.com/videos/play/wwdc2021/10132/",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "WWDC21 · Detect and diagnose memory issues",
+   "url": "https://developer.apple.com/videos/play/wwdc2021/10180/",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "GitHub · pointfreeco/swift-composable-architecture",
+   "url": "https://github.com/pointfreeco/swift-composable-architecture",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "OWASP · Mobile Application Security Verification Standard (MASVS)",
+   "url": "https://mas.owasp.org/MASVS/",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "fastlane docs",
+   "url": "https://docs.fastlane.tools/",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Firebase A/B Testing",
+   "url": "https://firebase.google.com/docs/ab-testing",
+   "kind": "reference",
+   "note": "앱 A/B 테스트 도구의 예 — 티맵이 쓴다는 근거는 아니다"
+  },
+  {
+   "n": 20,
+   "title": "App Store Connect 도움말 · Release a version update in phases",
+   "url": "https://developer.apple.com/help/app-store-connect/update-your-app/release-a-version-update-in-phases",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "티맵모빌리티 홈페이지 — 하단 회사 정보",
+   "url": "https://www.tmapmobility.com",
+   "kind": "company"
+  },
+  {
+   "n": 22,
+   "title": "자소설닷컴 — 티맵모빌리티 연봉(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11668",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음. 페이지 본문은 자동 접근이 막혀 검색 결과 요약으로 숫자를 확인했다"
+  },
+  {
+   "n": 23,
+   "title": "Apple · Introducing SwiftUI",
+   "url": "https://developer.apple.com/tutorials/swiftui",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "Apple · MetricKit",
+   "url": "https://developer.apple.com/documentation/metrickit",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "잡코리아 · [티맵모빌리티] QA Automation Engineer",
+   "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50073105",
+   "kind": "posting",
+   "note": "QA 자동화를 따로 뽑는 조직"
+  }
+ ],
+ "caveat": "티맵모빌리티는 iOS 앱 구조(아키텍처·도구·내부 지표)를 공개한 발표나 글이 없습니다(2026-11 기준, 브런치 테크노트는 경로·서버 쪽). 그래서 앱이 무엇인지는 회사가 쓴 앱스토어 설명·버전 기록과 같은 날의 다른 공고로, 일이 어떤 모양인지는 Apple 공식 문서와 널리 쓰이는 공개 도구로 '보통 이렇다'를 보였습니다. 앱스토어 리뷰는 사용자 글이라 내용만 요약했습니다.",
+ "resources": [
+  {
+   "id": "tmap-routing",
+   "title": "티맵, 3시간 뒤 출발하면 얼마나 걸려?",
+   "by": "티맵모빌리티 브런치 테크노트 · 2023",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://brunch.co.kr/@tmapmobility/20",
+   "why": "업무⑤의 '경로 탐색'을 서버가 어떤 목표(500ms)로 계산하는지 — 앱이 부르는 API 건너편을 회사 글로 본다."
+  },
+  {
+   "id": "yagom-swift",
+   "title": "스위프트 프로그래밍 (3판)",
+   "by": "야곰",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%8A%A4%EC%9C%84%ED%94%84%ED%8A%B8%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%20%EC%95%BC%EA%B3%B0",
+   "why": "자격요건②의 Swift 기본기(값·참조 타입, 프로토콜, 클로저, 메모리 관리)를 한국어로 정리. 동시성 최신 내용은 공식 문서로 보충."
+  },
+  {
+   "id": "swift-concurrency",
+   "title": "The Swift Programming Language · Concurrency",
+   "by": "Swift 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/",
+   "why": "자격요건⑥ — async/await·Task·취소·actor·Sendable의 정확한 정의."
+  },
+  {
+   "id": "wwdc-async",
+   "title": "Meet async/await in Swift (WWDC21)",
+   "by": "Apple",
+   "kind": "video",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.apple.com/videos/play/wwdc2021/10132/",
+   "why": "콜백 코드를 async/await로 바꾸는 과정을 예제로 — 업무⑤의 API 연동 코드를 정리하는 법."
+  },
+  {
+   "id": "apple-lifecycle",
+   "title": "Managing your app's life cycle",
+   "by": "Apple 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.apple.com/documentation/uikit/managing-your-app-s-life-cycle",
+   "why": "자격요건⑤의 '앱 생명주기' — 화면(scene) 상태와 상태별로 할 일."
+  },
+  {
+   "id": "apple-memory",
+   "title": "Gathering information about memory use",
+   "by": "Apple 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.apple.com/documentation/xcode/gathering-information-about-memory-use",
+   "why": "메모리 그래프·Allocations 세대 보기로 누수를 찾는 절차 — 자격요건⑤의 '해결한 경험'을 만드는 도구."
+  },
+  {
+   "id": "wwdc-memory",
+   "title": "Detect and diagnose memory issues (WWDC21)",
+   "by": "Apple",
+   "kind": "video",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.apple.com/videos/play/wwdc2021/10180/",
+   "why": "누수·메모리 증가를 실제 도구 화면으로 따라가며 찾는다."
+  },
+  {
+   "id": "apple-responsiveness",
+   "title": "Improving app responsiveness",
+   "by": "Apple 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.apple.com/documentation/xcode/improving-app-responsiveness",
+   "why": "멈춤 100ms·프레임 8.3ms 같은 기준과 메인 스레드를 비우는 법 — 업무③과 우대②."
+  },
+  {
+   "id": "apple-launch",
+   "title": "Reducing your app's launch time",
+   "by": "Apple 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.apple.com/documentation/xcode/reducing-your-app-s-launch-time",
+   "why": "시작 시간 재기(Organizer·Instruments)와 줄이기(외부 프레임워크·초기화 미루기) — 우대② '앱 시작 속도'."
+  },
+  {
+   "id": "apple-metrickit",
+   "title": "MetricKit",
+   "by": "Apple 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://developer.apple.com/documentation/metrickit",
+   "why": "실제 사용자 기기에서 시작 시간·멈춤·크래시 지표를 받는 API — 대규모 앱 운영(우대①)."
+  },
+  {
+   "id": "apple-crash",
+   "title": "Diagnosing issues using crash reports and device logs",
+   "by": "Apple 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.apple.com/documentation/xcode/diagnosing-issues-using-crash-reports-and-device-logs",
+   "why": "크래시 보고서 기호 붙이기·흔한 크래시 유형·Jetsam 보고서 — 우대③ '크래시 분석'."
+  },
+  {
+   "id": "apple-bgloc",
+   "title": "Handling location updates in the background",
+   "by": "Apple 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.apple.com/documentation/corelocation/handling-location-updates-in-the-background",
+   "why": "우대⑦ '백그라운드 위치'의 규칙(모드 설정·세션·재시작) 원문."
+  },
+  {
+   "id": "swiftui-intro",
+   "title": "Introducing SwiftUI",
+   "by": "Apple 공식 튜토리얼",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.apple.com/tutorials/swiftui",
+   "why": "우대⑤ SwiftUI — 상태로 화면을 그리는 방식을 예제 앱으로 처음부터."
+  },
+  {
+   "id": "tca-github",
+   "title": "swift-composable-architecture",
+   "by": "Point-Free · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://github.com/pointfreeco/swift-composable-architecture",
+   "why": "우대⑥ TCA — README와 예제(검색·목록 등)로 State·Action·Reducer·TestStore를 익힌다."
+  },
+  {
+   "id": "apple-phased",
+   "title": "Release a version update in phases",
+   "by": "App Store Connect 도움말",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.apple.com/help/app-store-connect/update-your-app/release-a-version-update-in-phases",
+   "why": "7일 단계적 출시와 멈춤 — 큰 앱이 배포 사고를 줄이는 기본 장치(업무⑥·우대①)."
+  },
+  {
+   "id": "fastlane-docs",
+   "title": "fastlane docs",
+   "by": "fastlane",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.fastlane.tools/",
+   "why": "우대③ 배포 자동화 — 서명·빌드·TestFlight 업로드를 스크립트로 묶는 법."
+  },
+  {
+   "id": "firebase-ab",
+   "title": "Firebase A/B Testing",
+   "by": "Google Firebase 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://firebase.google.com/docs/ab-testing",
+   "why": "우대④ — 앱에서 사용자를 나눠 실험하고 결과를 읽는 흐름을 한 도구로 익힌다."
+  },
+  {
+   "id": "owasp-masvs",
+   "title": "OWASP MASVS",
+   "by": "OWASP Mobile Application Security",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://mas.owasp.org/MASVS/",
+   "why": "우대⑧ 모바일 보안 — 저장·암호·인증·통신·플랫폼·코드·변조·개인정보 여덟 갈래 점검표."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "Swift와 생명주기 다지기",
+   "time": "2~3주",
+   "goal": "값·참조 타입, 클로저 캡처, 앱·화면 생명주기를 설명하고 상태마다 할 일을 코드로 넣을 수 있다.",
+   "task": "가상의 '즐겨찾기 장소' 앱을 만들어 앞·뒤로 갈 때 저장·복원을 넣고, 일부러 클로저 순환 참조를 만든 뒤 메모리 그래프로 찾아 고친다.",
+   "resources": [
+    "yagom-swift",
+    "apple-lifecycle",
+    "apple-memory",
+    "wwdc-memory"
+   ]
+  },
+  {
+   "title": "비동기와 API 연동",
+   "time": "2주",
+   "goal": "async/await·취소·actor로 검색 API를 부르고, 결과를 메인 스레드에서만 그린다.",
+   "task": "가짜 장소 검색 API(로컬 JSON + 일부러 넣은 지연·오류)를 만들고, 글자를 칠 때 디바운스·앞 요청 취소·오류 화면까지 붙인다.",
+   "resources": [
+    "swift-concurrency",
+    "wwdc-async",
+    "tmap-routing"
+   ]
+  },
+  {
+   "title": "구조 잡기 — MVVM에서 TCA까지",
+   "time": "2~3주",
+   "goal": "같은 검색 화면을 MVVM과 TCA로 각각 짜고 장단점을 말할 수 있다.",
+   "task": "2단계 화면을 SwiftUI로 옮기고 MVVM 판과 TCA 판을 만든다. 각 판에 '검색어가 비면 결과를 비운다' 테스트를 쓴다(TCA는 TestStore).",
+   "resources": [
+    "swiftui-intro",
+    "tca-github"
+   ]
+  },
+  {
+   "title": "위치와 백그라운드",
+   "time": "1~2주",
+   "goal": "위치 권한 흐름과 백그라운드 위치를 규칙대로 붙이고, 앱이 꺼졌다 켜져도 이어 받는다.",
+   "task": "산책 경로를 기록하는 작은 앱: 권한 거절·사용 중 허용·항상 허용 화면을 나누고, 백그라운드에서 위치를 받아 지도에 선으로 그린다.",
+   "resources": [
+    "apple-bgloc",
+    "apple-lifecycle"
+   ]
+  },
+  {
+   "title": "재고, 내보내고, 지키기",
+   "time": "계속",
+   "goal": "시작 시간·멈춤을 재서 줄이고, 크래시를 읽고, 빌드·배포를 자동으로 돌린다.",
+   "task": "4단계 앱의 시작 시간을 Instruments로 재고 하나 줄인다. 일부러 넣은 크래시를 보고서로 읽어 고치고 테스트를 붙인다. fastlane으로 TestFlight 올리기까지 묶고, MASVS 저장·통신 항목으로 스스로 점검한다.",
+   "resources": [
+    "apple-launch",
+    "apple-responsiveness",
+    "apple-crash",
+    "fastlane-docs",
+    "apple-phased",
+    "owasp-masvs",
+    "apple-metrickit",
+    "firebase-ab"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공시 숫자는 없다(비상장). 집계 사이트 기준 초봉 **약 4,800만원**, 평균 **약 7,000만원** — 이 공고는 5년 이상 경력직이라 처우 협의로 따로 정한다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,793만원",
+    "amount": 4793,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 기준일이 적혀 있지 않고 직군 구분이 없다 [22]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 7,049만원",
+    "amount": 7049,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균. 경력직·비개발직이 섞인 값이다 [22]"
+   }
+  ],
+  "how": "공고에 연봉이 적혀 있지 않고, 전형 끝에 **처우 협의** 단계가 따로 있다 [1]. 비상장사라 사업보고서의 직원 평균 급여가 없어 공시 숫자 없음 — 집계 사이트 값만 있다. 평균은 초봉이 아니고, 5년 이상 경력직의 계약 연봉은 이전 연봉과 협의로 정해지므로 위 숫자와 다를 수 있다 {추론}. 입사 뒤 3개월 시용기간이 있고 그동안 급여는 100% 나온다 [1]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "선택 근무",
+    "detail": "4주 160시간 안에서 근무시간을 스스로 계획"
+   },
+   {
+    "name": "Happy Friday",
+    "detail": "근무시간을 조정해 매월 금요일 하루 쉼"
+   },
+   {
+    "name": "재택",
+    "detail": "주 1회"
+   },
+   {
+    "name": "체력단련휴가",
+    "detail": "연차 외 연 최대 5일"
+   },
+   {
+    "name": "자유로운 연차",
+    "detail": "연차·반차·반반차, 사유 기재·승인 없음"
+   },
+   {
+    "name": "장기근속 휴가",
+    "detail": "재직 3년마다 30일 유급"
+   },
+   {
+    "name": "복리후생비",
+    "detail": "연 360만원(IT 기기·교육·여행·운동·가족 건강검진·휴양소 등)"
+   },
+   {
+    "name": "건강검진",
+    "detail": "협약 프로그램 연 40만원 한도"
+   },
+   {
+    "name": "교육비",
+    "detail": "직무 관련 연 100만원까지"
+   },
+   {
+    "name": "통신비",
+    "detail": "SKT 이용자 월 최대 10만원"
+   },
+   {
+    "name": "의료비",
+    "detail": "본인·배우자·자녀·양가 부모"
+   },
+   {
+    "name": "가족·주거",
+    "detail": "자녀 학자금, 금융기관 대출 이자 일부 지원"
+   },
+   {
+    "name": "포인트",
+    "detail": "생일 TMAP Point 10만, '자연이랑' 연 60만 포인트"
+   },
+   {
+    "name": "사내 시설·장비",
+    "detail": "헬스키퍼 안마 월 4회, 라운지·수면실·폰부스, 허먼밀러 의자, ChatGPT·Gemini·Claude·Codex 등 AI 도구"
+   }
+  ],
+  "note": "이 공고의 '혜택 및 복지'에 회사가 적은 내용이다(2026-10 게시) [1]. 그 밖에 독감 예방접종비·경조금·경조휴가가 있다고 적었다 [1]."
+ },
+ "location": {
+  "name": "티맵모빌리티 본사 (SK-C 타워)",
+  "address": "서울특별시 중구 충무로 15, SK-C 타워 7·8·9층",
+  "postal": "04554",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%A4%91%EA%B5%AC%20%EC%B6%A9%EB%AC%B4%EB%A1%9C%2015",
+  "note": "공고의 근무지 표기는 '서울 중구'이고 [1], 주소는 회사 홈페이지 하단의 회사 정보다 [21]."
+ }
+}
