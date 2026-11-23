@@ -7,6 +7,8 @@
   "jobkorea-50384195": "skax-ai-studio-mlops-pl",
   "jobkorea-50384211": "skax-ai-studio-mlops-pl",
   "dev-581141": "skax-ai-studio-mlops-pl",
+  "ats-skcareers:sk:R262275": "skax-ax-ai-pm-pl",
+  "ats-skcareers:sk:R262418": "skax-contact-center-application",
   "wanted-386999": "speee-dx-sre",
   "ats-toss:group:7990802003": "toss-ads-ai-engineer",
   "ats-toss:group:7998957003": "toss-ads-bidding-pacing-mle",
@@ -128,6 +130,26 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 46
+  },
+  {
+   "id": "skax-ax-ai-pm-pl",
+   "company": "SK주식회사(AX)",
+   "role": "AX/AI 프로젝트 PM/PL",
+   "jobs": [
+    "ats-skcareers:sk:R262275"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 41
+  },
+  {
+   "id": "skax-contact-center-application",
+   "company": "SK주식회사(AX)",
+   "role": "컨택센터 Application 운영/개발 전문가",
+   "jobs": [
+    "ats-skcareers:sk:R262418"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 36
   },
   {
    "id": "speee-dx-sre",
