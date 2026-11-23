@@ -196,6 +196,68 @@
    "confidence": "high",
    "checked_at": "2026-11-23",
    "note": "듀얼타워, 은색 알루미늄 핀 두 묶음을 하나로 덮는 검정 자석 윗 덮개(앞쪽에 길쭉한 홈 두 줄, 가장자리에 잔 톱니 무늬). 히트파이프 6개는 니켈 도금 은색, 니켈 도금 베이스 + 쌍철봉 LITE. 팬은 앞면 ARGB(반투명 날개가 허브 둘레부터 빛남, 허브 검정) + 가운데 불빛 없는 검정 팬(허브에 3RSYS 글자) — 렌더러는 두 팬을 같은 불빛으로 그린다. 날개 수는 켜진 사진이라 비웠다."
+  },
+  "3rsys-rc1910": {
+   "kind": "cooler",
+   "heatpipes": 6,
+   "stacks": 2,
+   "fans": 2,
+   "fan_mm": 120,
+   "base": "plate",
+   "fin_edge": "flat",
+   "color": "#141416",
+   "fan_light": "argb",
+   "sources": [
+    {
+     "title": "3RSYS Socoool RC1910 Quiet 쌍철봉 BLACK — 공식 쇼핑몰 제품 페이지(스펙: 123×137×157mm, 120mm 팬 2개 25T, LED 5V · 사진 5장 — 비스듬한 정면 둘·윗면·정면 + 상세 이미지: '히트파이프 6EA'·'니켈 도금 베이스, 6개의 히트파이프 & 쌍철봉 적용'·'Reflow 솔더링'·'상단 LED 디스플레이 커버'·'히트싱크 및 히트파이프 도색'·Silence GI 120 ARGB 팬, 제품 스펙 표 'PWM 4PIN + 5V ARGB 3PIN')",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1734915258"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "듀얼타워, 핀·히트파이프·팬 틀 전부 검정 도장(흰 판 따로). 히트파이프 6개는 니켈 도금 베이스에 리플로 솔더링 + 가운데 휨 방지 막대 '쌍철봉'. 윗면은 묶음마다 검정 광택 덮개 — 뒤 묶음 덮개에 SOCOOOL 글자, 앞 묶음 덮개에 히트파이프 온도를 보여 주는 LED 숫자 화면(두 자리 숫자 + 막대 게이지)이 있다. 팬 Silence GI 120 ARGB 2개(앞면 + 가운데, 철사 클립), 반투명 날개가 통째로 ARGB 로 빛나고 허브는 검정 원. 켜진 사진이라 날개 수는 비웠다."
+  },
+  "3rsys-rc1080": {
+   "kind": "cooler",
+   "heatpipes": 6,
+   "stacks": 2,
+   "fans": 2,
+   "fan_mm": 120,
+   "base": "plate",
+   "color": "#141416",
+   "fan_light": "rgb",
+   "sources": [
+    {
+     "title": "3RSYS Socoool RC1080 오토 RGB BLACK — 공식 쇼핑몰 제품 페이지(스펙: 120×136×151mm, 120mm 팬 2개 25T 4핀 · 사진 4장 — 비스듬한 정면 둘·정면·옆면 + 상세 이미지: '니켈 도금 베이스 & 6개 히트파이프'·'히트싱크 및 히트파이프 도색'·'스퀘어 패턴 상단 디자인'·'120MM 고정 RGB 팬'·'12V 4Pin PWM 단자 연결 — 메인보드 연동 없이 단독으로 LED 효과')",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1747893429"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "듀얼타워, 핀·히트파이프·팬까지 전부 검정 도장(흰 판 따로). 히트파이프 6개, 니켈 도금 베이스. 윗면은 따로 덮개 없이 맨 윗 핀이 검정 판이고 그 위로 히트파이프 끝(묶음마다 6개)이 둥근 꼭지로 튀어나오며 사이사이 작은 네모 돌기가 바둑판처럼 박힌 '스퀘어 패턴'(뒤 묶음 윗면에 SOCOOOL 글자) — 렌더러는 평평한 덮개로 그린다. 팬 2개(앞면 + 가운데, 철사 클립)는 주소 지정 없는 RGB(팬 자체 제어, 4핀 하나) — 반투명 날개가 허브 둘레부터 빛나고 허브 검정 원. 날개 수는 켜진 사진이라 비웠다."
+  },
+  "thermalright-phantom-spirit-120-evo": {
+   "kind": "cooler",
+   "heatpipes": 7,
+   "stacks": 2,
+   "fans": 2,
+   "fan_mm": 120,
+   "base": "plate",
+   "color": "#141517",
+   "fan_blades": 9,
+   "fan_light": "argb",
+   "marks": [
+    { "text": "THERMALRIGHT", "where": "cover" }
+   ],
+   "sources": [
+    {
+     "title": "Thermalright Phantom Spirit 120 EVO — 공식 제품 페이지(사양: L110×W125×H157mm, 6mm 히트파이프 7개, C1100 순동 니켈 도금 베이스, TL-K12 120×120×25mm · 4핀 PWM + 3핀 5V ARGB · 사진 10장 — 비스듬한 윗면·정면·옆면·윗면·베이스·케이스 장착 모습)",
+     "url": "https://www.thermalright.com/product/phantom-spirit-120-evo/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "듀얼타워, 핀·히트파이프·윗 덮개·팬까지 전부 검정(무광). 히트파이프 7개(검정 도장)가 니켈 도금 은색 베이스로 모인다. 윗면은 묶음마다 검정 덮개에 사선으로 엇갈린 각진 홈 무늬와 THERMALRIGHT 글자, 옆면 핀 가장자리에도 갈매기(V) 무늬 판. 팬 TL-K12 2개(앞면 + 두 묶음 사이, 철사 클립) — 정면 사진에서 날개 9장, 날개는 불투명 검정이고 팬 틀 네 모서리의 호(弧) 띠만 ARGB 로 빛난다(지금 argb 는 날개 전체를 빛나게 그린다), 허브에 금색 축 + 점선 원. 팬 개수는 공식 표에 없고 사진(앞면 + 가운데)으로 셌다."
   }
  }
 }

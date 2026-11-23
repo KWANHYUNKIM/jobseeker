@@ -231,3 +231,14 @@
   3RSYS RC1500 ARGB LITE(high — 상세 이미지 '6개의 히트파이프 & 쌍철봉 LITE'·'상단 마그네틱 커버'·'120MM ARGB & NON-RGB 듀얼 팬', 사진: 은색 핀 위 하나로 이어진 검정 덮개). 다나와는 쓰지 않았다.
 - 막힌 것: 이 세션은 curl·임시 파이썬 스크립트 파일을 쓸 수 없어 사진은 web-fetch 로 받아(tool-results) Read 로 보고, 3RSYS 세로 2~3만 px 상세 이미지는 PIL 로 한 장의 축소 모음(contact sheet)·2400px 조각으로 만들어 봤다(세션 임시 폴더, 저장소에 두지 않음).
 - 실물과 아직 다른 점: RC1500 의 '앞 팬만 ARGB'·TROFEO 의 '팬 틀 모서리만 빛남'·라디에이터 옆 띠·화면 펌프는 렌더러가 못 그린다(REQUESTS [3D 렌더러] 새 줄). RC1900 ARGB 의 두 팬 크기는 기존 요청에 더했다. TROFEO·PA120 SE ARGB 의 models `fans` 가 null 이라 [hw-models] 새 줄. 네 공랭과 TROFEO 모두 켜진 사진이라 날개 수는 RC980N(7장)만 적었다. RC1900N(22회차)의 히트파이프는 RC1900 ARGB 상세가 6개라 같을 공산이 크지만 N 판 자료로 확인하지 못해 그대로 비워 두었다.
+
+## 2026-11-23 · 24회차(무인) — 쿨러 다섯(수랭 240 둘·듀얼타워 셋)
+
+- 12번 맨 앞 그래픽카드 COLORFUL(403)·ZOTAC(468)와 case-atx-mid·cooler-air-single(다른 세션의 미커밋 파일) 항목은 지난 회차처럼 미루고, 쿨러 인기순 다음 다섯을 적었다(공식 사양 표·상세 이미지 + 공식 사진을 저장소 밖 임시 폴더에서 보기만, 다나와는 쓰지 않음):
+  DEEPCOOL MYSTIQUE 240(high — 사양 표 펌프 93×77×66mm·호스 410mm·2.83형 LCD·ARGB 는 펌프만, 갤러리 6장: 윗면 전체가 LCD 인 네모 펌프 + 옆면 청록 띠, 불빛 없는 검정 FT12 SE 팬 2, 검정 편조 호스) ·
+  DEEPCOOL LE240 V2(high — 사양 표 펌프 91×78×65mm·호스 410mm·ARGB 펌프+팬, 갤러리 6장: 젖빛 반투명 ARGB 테두리가 두른 네모 펌프, 반투명 날개 ARGB 팬 2) ·
+  3RSYS RC1910 Quiet(high — 상세 이미지 '히트파이프 6EA'·니켈 도금 베이스·리플로 솔더링·'상단 LED 디스플레이 커버'·도색, 스펙 표 5V ARGB 3핀) ·
+  3RSYS RC1080(high — 상세 이미지 '니켈 도금 베이스 & 6개 히트파이프'·'스퀘어 패턴 상단 디자인'·'120MM 고정 RGB 팬'(4핀 단독 제어라 fan_light rgb)) ·
+  Thermalright Phantom Spirit 120 EVO(high — 사양 표 6mm 히트파이프 7개·C1100 니켈 도금 베이스·TL-K12 ARGB 3핀, 사진 10장: 전부 검정, 팬 2(앞면 + 가운데), 정면 사진에서 날개 9장, 팬 틀 모서리 호 띠만 빛남).
+- 사진 보는 법(이번 회차): `python -I -c` 의 urllib 로 공식 CDN 사진을 시스템 임시 폴더(`%TEMP%/hw3d_*`, 저장소 밖)에 받아 PIL 로 모음 판·조각을 만들어 Read 로 봤다 — 3RSYS 상세 이미지(세로 2~3만 px)는 6줄로 잘라 한 장에 늘어놓으면 글이 읽힌다.
+- 실물과 아직 다른 점: 두 DeepCool 의 네모 펌프·MYSTIQUE 의 LCD·LE240 V2 의 젖빛 펌프 테두리, RC1910 의 덮개 숫자 화면, PS120 EVO 의 '틀 모서리만 빛나는' 팬, RC1080 의 덮개 없는 꼭지 윗면은 렌더러가 못 그린다(REQUESTS [3D 렌더러] 새 줄 — 기존 display·pump_shape·fan_light_at 요청에 더함). PS120 EVO 의 models `fans`, 두 DeepCool 의 `height_mm` 이 null 이라 [hw-models] 새 줄. 네 제품은 켜진 사진·각도 때문에 날개 수를 비웠고, SOCOOOL 글자는 지난 회차처럼 marks 에 넣지 않았다.
