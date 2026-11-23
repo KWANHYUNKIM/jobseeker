@@ -42,6 +42,69 @@
    "confidence": "high",
    "checked_at": "2026-11-23",
    "note": "갤러리 4장: 검정 상자 옆면 대부분을 덮는 남색 판(잔 비늘 무늬)에 흰 'MegaMax II 600W'·'zalman' 글자와 80PLUS 브론즈 표지. 팬은 둥근 철사 격자(바퀴살 4개) 밑의 검정 날개, 가운데 허브가 구리색 원판에 Z 로고. 뒤판은 벌집 타공 + 전원 단자·스위치, 케이블 직결. 날개 수는 정면 사진에서도 격자에 겹쳐 확실히 세지 못해 비웠다."
+  },
+  "aone-storm-600w-bronze": {
+   "kind": "psu",
+   "modular": "none",
+   "fan_mm": 120,
+   "color": "#1c1d1f",
+   "accent": "#c9cbcf",
+   "fan_light": "none",
+   "marks": [
+    { "text": "STORM 600W", "where": "side" },
+    { "text": "AONE", "where": "side" }
+   ],
+   "sources": [
+    {
+     "title": "에이원 STORM 600W 80PLUS BRONZE — 공식 제품 페이지(대표 사진 + 상세 이미지: 크기 그림 85·150mm, Specifications 150×140×85mm·120mm 팬·커넥터 표, 구성품 파워본체·장착나사·케이블 타이·전원케이블)",
+     "url": "https://www.aoneint.com/default/aone/sub1.php?com_board_basic=read_form&com_board_idx=83&com_board_id=16"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "사진: 무광 검정 상자, 팬 덮개는 둥근 철망이 아니라 판을 뚫은 겹팔각형 고리 격자(가운데 팔각 은테 배지에 AONE), 네 귀 나사. 옆면은 검정 사양 딱지에 흰 띠 'STORM' 과 둥근 네모 테 '600W'. 뒤판은 벌집 타공 + 로커 스위치·전원 단자(상세 '벌집모양 통풍구'). 케이블은 직결 플랫(상세 '고급 Flat-Cable', 구성품에 모듈 케이블 없음) — 커넥터 20+4·CPU 4+4·PCI-e 6+2 ×2·SATA 6·IDE 3. 날개는 격자에 가려 세지 못했다."
+  },
+  "micronics-performance-ii-pv-rgb-sync-600w": {
+   "kind": "psu",
+   "modular": "none",
+   "fan_mm": 120,
+   "color": "#3a3c40",
+   "accent": "#1f8fd6",
+   "fan_light": "argb",
+   "marks": [
+    { "text": "PERFORMANCE II PV", "where": "side" },
+    { "text": "600W", "where": "side", "color": "#1f8fd6" }
+   ],
+   "sources": [
+    {
+     "title": "마이크로닉스 Performance II PV RGB Sync 600W(HPW-600BR-F12S) — 공식 제품 페이지(대표 사진 3장: 켜진 비스듬한 윗면·꺼진 팬 쪽 비스듬·팬 정면. 사양 표는 스크립트로 불러와 글로 안 오고, 상세 이미지 주소(micronicsbakup.cafe24.com)는 이미지 대신 웹 문서를 준다)",
+     "url": "https://www.micronics.co.kr/micronics/view_product.php?product_id=KWH6R"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "사진: 짙은 건메탈 회색 상자(꺼진 사진은 검정에 가깝다), 팬 덮개는 둥근 테 + 가로 철사 살(바퀴살 대신 네 귀로 뻗은 X 다리) — 타공판이 아니다. 흰 반투명 날개·허브라 켜면 한 팬 안에 무지개 그라데이션(색이 자리마다 달라 ARGB 로 적었다 — 이름 'RGB Sync'). 옆면 검정 딱지 둘레에 무지개 띠, 'PERFORMANCE II PV' 와 파란 바탕 '600W'. 뒤판 벌집 타공 + 전원 단자·스위치, 케이블 직결(논모듈러). 날개는 살에 겹쳐 확실히 세지 못했다."
+  },
+  "micronics-performance-ii-pv-600w-fdb": {
+   "kind": "psu",
+   "modular": "none",
+   "fan_mm": 120,
+   "color": "#26272a",
+   "accent": "#c06a2b",
+   "fan_light": "none",
+   "marks": [
+    { "text": "PERFORMANCE II PV", "where": "side" },
+    { "text": "600W", "where": "side", "color": "#c06a2b" }
+   ],
+   "sources": [
+    {
+     "title": "마이크로닉스 Performance II PV 600W FDB(HPW-600BR-F12S) — 공식 제품 페이지(대표 사진 3장: 비스듬한 윗면·팬 정면·상자. 사양 표는 스크립트로 불러와 글로 안 온다)",
+     "url": "https://www.micronics.co.kr/micronics/view_product.php?product_id=61X1A"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "사진: 짙은 회색 무광 상자, 앞뒤 끝 모서리를 감싸는 구리(주황)색 띠, 팬 덮개는 판 전체를 벌집 타공한 판(둥근 철망 아님) 가운데에 구리색 3×3 네모 배지. 옆면 검정 딱지에 구리색 테 'PERFORMANCE II PV 600W'. 뒤판도 벌집 타공 + 스위치·전원 단자, 케이블 직결(논모듈러). 날개는 타공판에 가려 세지 못했다."
   }
  }
 }

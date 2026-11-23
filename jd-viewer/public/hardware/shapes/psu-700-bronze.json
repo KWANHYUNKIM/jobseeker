@@ -62,6 +62,48 @@
    "confidence": "high",
    "checked_at": "2026-11-23",
    "note": "블랙 판, 'ALL BLACK'. 사진: 무광 검정 상자, 팬 덮개는 판을 뚫은 사선 긴 구멍 격자(둥근 철망 아님)와 네 귀 나사, 뒤판·옆면 아래는 이중 벌집 타공(상세 '상하단 이중 통풍배기'), 전원 단자 위 주황 입력 전압 딱지. 옆면은 검정 사양 딱지에 'MAXWELL DUO 700W'. 케이블은 전부 검정 고정형(24핀은 메시 피복, 나머지는 플랫). 날개 수는 분해 그림만 있어 비웠다."
+  },
+  "aone-storm-700w-bronze": {
+   "kind": "psu",
+   "modular": "none",
+   "fan_mm": 120,
+   "color": "#1c1d1f",
+   "accent": "#c9cbcf",
+   "fan_light": "none",
+   "marks": [
+    { "text": "STORM 700W", "where": "side" },
+    { "text": "AONE", "where": "side" }
+   ],
+   "sources": [
+    {
+     "title": "에이원 STORM 700W 80PLUS BRONZE — 공식 제품 페이지(대표 사진 + 상세 이미지: Specifications 150×140×85mm·120mm 팬·커넥터 표, 구성품 파워본체·장착나사·케이블 타이·전원케이블)",
+     "url": "https://www.aoneint.com/default/aone/sub1.php?com_board_basic=read_form&com_board_idx=81&com_board_id=16"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "사진(600W 와 같은 몸통): 무광 검정 상자, 팬 덮개는 둥근 철망이 아니라 판을 뚫은 겹팔각형 고리 격자(가운데 팔각 은테 배지에 AONE), 네 귀 나사. 옆면은 검정 사양 딱지에 흰 띠 'STORM' 과 둥근 네모 테 '700W'. 뒤판은 벌집 타공 + 로커 스위치·전원 단자(상세 '벌집모양 통풍구'). 케이블은 직결 플랫(상세 '고급 Flat-Cable', 구성품에 모듈 케이블 없음) — 커넥터 20+4·CPU 4+4·CPU 8·PCI-e 6+2 ×4·SATA 6·IDE 3. 날개는 격자에 가려 세지 못했다."
+  },
+  "micronics-performance-ii-pv-700w-fdb": {
+   "kind": "psu",
+   "modular": "none",
+   "fan_mm": 120,
+   "color": "#26272a",
+   "accent": "#c06a2b",
+   "fan_light": "none",
+   "marks": [
+    { "text": "PERFORMANCE II PV", "where": "side" },
+    { "text": "700W", "where": "side", "color": "#c06a2b" }
+   ],
+   "sources": [
+    {
+     "title": "마이크로닉스 Performance II PV 700W FDB(HPW-700BR-F12S) — 공식 제품 페이지(대표 사진 3장: 비스듬한 윗면·팬 정면·상자. 사양 표는 스크립트로 불러와 글로 안 온다)",
+     "url": "https://www.micronics.co.kr/micronics/view_product.php?product_id=9371F"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "사진: 짙은 회색 무광 상자, 앞뒤 끝 모서리를 감싸는 구리(주황)색 띠, 팬 덮개는 판 전체를 벌집 타공한 판(둥근 철망 아님) 가운데에 구리색 3×3 네모 배지. 옆면 검정 딱지에 구리색 테 'PERFORMANCE II PV 700W'. 뒤판도 벌집 타공 + 스위치·전원 단자, 케이블 직결(논모듈러). 날개는 타공판에 가려 세지 못했다."
   }
  }
 }
