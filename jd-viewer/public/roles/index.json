@@ -4,6 +4,7 @@
   "ats-toss:group:7990802003": "toss-ads-ai-engineer",
   "ats-toss:group:7998957003": "toss-ads-bidding-pacing-mle",
   "ats-toss:group:7998956003": "toss-ads-ranking-mle",
+  "ats-toss:group:7728018003": "toss-ads-reco-data-scientist",
   "ats-toss:group:7998953003": "toss-ads-retrieval-mle",
   "ats-toss:group:7758217003": "toss-ai-engineer-model",
   "ats-toss:group:7646941003": "toss-ai-platform-engineer-platform",
@@ -87,6 +88,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 12
+  },
+  {
+   "id": "toss-ads-reco-data-scientist",
+   "company": "토스",
+   "role": "데이터 사이언티스트 (Recommendation)",
+   "jobs": [
+    "ats-toss:group:7728018003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 8
   },
   {
    "id": "toss-ads-retrieval-mle",

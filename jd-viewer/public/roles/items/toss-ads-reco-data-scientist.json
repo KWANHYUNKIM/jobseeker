@@ -1,0 +1,972 @@
+{
+ "id": "toss-ads-reco-data-scientist",
+ "company": "토스",
+ "role": "데이터 사이언티스트 (Recommendation)",
+ "team": "광고 도메인 · 추천 조직",
+ "jobs": [
+  "ats-toss:group:7728018003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "토스 앱 광고의 **추천·예측 모델이 잘 하고 있는지 데이터로 따지는** 자리입니다 — 누가 어떤 광고에 반응하나 찾고, 모델이 어디서 틀리는지 짚고, 그 변화가 클릭·전환·매출·광고주 성과에 어떻게 이어지는지 재고, 광고 자리 하나의 값을 따져 가격을 정하는 데까지 갑니다.[1]",
+  "env": "광고 도메인의 추천 조직에 배치되고, 도메인은 Ads Catalog Auction·Ads General Auction 같은 팀으로 나뉘며 PO·ML 엔지니어·분석가·서버·데이터 엔지니어가 한 팀입니다.[1] 모델은 옆 자리 ML 엔지니어가 만들고(클릭·구매 확률 예측과 입찰·예산 로직)[3][4], 이 자리는 그 모델을 **분석과 실험으로 고치는 방향**을 냅니다. 전형에 2시간 쿼리 테스트와 라이브 쿼리가 있습니다.[1]",
+  "oneline": "모델을 직접 짜지 않아도 되지만, 모델이 왜 틀리는지·그게 돈으로 얼마인지 말할 수 있어야 하는 광고 데이터 사이언티스트."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "광고 소재·지면·유저에 대한 인사이트 도출: 어떤 유저가 어떤 광고에 반응하는지, 소재 유형·지면·타겟 특성에 따른 성과 패턴을 분석해요. 분석 결과를 통해 추천 및 서빙 로직의 개선 방향을 제시하고 다양한 Feature를 도출해요.",
+   "short": "광고 그림·문구(소재)·자리(지면)·사람마다 반응이 어떻게 다른지 쪼개 보고, 모델에 넣을 단서를 찾아 주는 일.",
+   "why": "토스 광고는 결제·금융·생활 데이터를 쓰는 1차(자사) 데이터 타겟팅과 '구매 확률이 높은 사람에게 더 많이 보여 주는' 방식을 내세웁니다.[6] 지면도 혜택탭 맨 위 보드·라이브 쇼핑·퀴즈·알림·배너처럼 성격이 다른 것이 여럿입니다.[7] 같은 광고라도 자리와 사람에 따라 반응이 크게 갈리니, 어디서 무엇이 먹히는지 아는 사람이 모델 바깥에서 방향을 잡아 줘야 합니다.{추론}",
+   "actually": {
+    "intro": "이런 분석들입니다. 토스가 실제로 쓰는 분석 틀은 공개되지 않아 일반적인 광고 분석으로 보였습니다.",
+    "items": [
+     "**칸 나누어 보기** — 소재 유형(할인·후기·브랜드) × 지면 × 유저군(연령·관심사·최근 활동)별 노출·클릭·전환을 표로 만든다.",
+     "**섞임 의심하기** — 지면 A가 CTR(클릭률)이 낮아 보여도, 그 자리에 가끔 오는 유저가 몰렸을 뿐일 수 있다. 유저군을 맞춰 다시 본다(아래 예시).{추론}",
+     "**누가 왜 받았나 따지기** — 토스 분석가는 푸시를 많이 받은 유저일수록 CTR이 좋아 보였는데, 관심 있을 만한 사람에게만 정교하게 보내서 생긴 착시였다고 발표했다. 광고도 타겟팅을 거쳐 보여 주니 같은 함정이 있다.[5]",
+     "**무엇이 반응을 가르나** — 토스 분석가는 CTR에 가장 영향을 준 요인을 SHAP(예측마다 각 요인이 얼마나 밀었는지 나눠 보는 방법)으로 찾았다.[5][20]",
+     "**모델의 단서(Feature)로 바꾸기** — '최근 7일 같은 업종 광고 클릭 수', '이 지면에서 이 유저의 평소 CTR', '같은 소재를 본 횟수(피로도)' 같은 숫자를 정의해 ML 엔지니어에게 넘긴다.{추론}",
+     "**서빙 로직 제안** — 한 유저에게 같은 소재를 몇 번까지 보여 줄지, 새 소재를 얼마나 섞을지 같은 규칙을 데이터로 제안한다. 토스 쇼핑 추천도 마지막 단계에서 새 상품·광고를 섞는다.[10]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "섞어 보면 뒤집힌다 — 지면별 CTR(가상 값, 직접 돌린 출력)",
+     "body": "두 유저군 모두에서 A가 B보다 CTR이 높은데, 합치면 B가 두 배로 높아 보입니다. B에 자주 쓰는 유저가 몰렸기 때문입니다(심슨의 역설).",
+     "lang": "python",
+     "code": "data = {  # (지면, 유저군): (노출, 클릭)\n    (\"A\", \"자주 쓰는 유저\"): (2000, 100),\n    (\"A\", \"가끔 쓰는 유저\"): (8000, 80),\n    (\"B\", \"자주 쓰는 유저\"): (8000, 360),\n    (\"B\", \"가끔 쓰는 유저\"): (2000, 16),\n}\nfor slot in \"AB\":\n    imp = sum(v[0] for k, v in data.items() if k[0] == slot)\n    clk = sum(v[1] for k, v in data.items() if k[0] == slot)\n    print(f\"지면 {slot} 전체 CTR {clk/imp:.2%}\")\nfor seg in [\"자주 쓰는 유저\", \"가끔 쓰는 유저\"]:\n    a = data[(\"A\", seg)]; b = data[(\"B\", seg)]\n    print(f\"{seg}: A {a[1]/a[0]:.2%} / B {b[1]/b[0]:.2%}\")\n\n# 지면 A 전체 CTR 1.80%\n# 지면 B 전체 CTR 3.76%\n# 자주 쓰는 유저: A 5.00% / B 4.50%\n# 가끔 쓰는 유저: A 1.00% / B 0.80%"
+    }
+   ],
+   "how_far": "인사이트는 '그래서 추천·서빙을 이렇게 바꾸자'로 끝나야 합니다. 같은 광고 도메인 분석가 공고도 행동 분석 뒤 **전략 제시**와 **새 지표 개발**을 업무로 적었습니다.[2] 모델에 Feature를 직접 넣는 건 ML 엔지니어 몫이고, 이 자리는 그 후보를 정의하고 효과를 보여 주는 데까지입니다.{추론}",
+   "refs": [
+    2,
+    5,
+    6,
+    7,
+    10,
+    20
+   ],
+   "study": [
+    "tmc25-ab",
+    "toss-ads-biz",
+    "sql-recipe",
+    "shap-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "추천 품질 개선: 추천, 예측 모델의 성능을 평가하고 개선이 필요한 지점을 데이터로 찾아내요. 이를 바탕으로 가설 수립 → 실험 설계 → 결과 분석 → 액션 제안까지 전 과정을 주도해요.",
+   "short": "모델이 어디서 틀리는지(어떤 지면·유저에서 과대·과소 예측하나) 찾아, 고칠 가설을 실험으로 확인하기까지 이끄는 일.",
+   "why": "광고 순서는 예측한 클릭·구매 확률로 정해지고, 그 확률은 입찰과 곱해져 돈이 됩니다.[3] 그래서 '순서만 맞는' 모델로는 부족하고 **확률의 크기**까지 맞아야 합니다. 전체 평균은 맞아도 지면 하나에서 크게 틀릴 수 있어, 칸마다 들여다보는 사람이 필요합니다.[13] 공고도 이력서에 '모델의 Sub Optimal한 부분을 찾아 퍼포먼스를 개선한 경험'을 적으라고 합니다.[1]",
+   "actually": {
+    "items": [
+     "**칸마다 보정 비율** — 예측한 클릭 수 합 ÷ 실제 클릭 수. 1이면 맞고, 1.5면 50% 과대 예측. 페이스북 광고 팀도 이 값을 따로 감시했다.[13]",
+     "**순서 맞히기 점수** — AUC·로그 손실 같은 오프라인 점수를 지면·유저군별로 쪼개 본다. 전체 점수가 올라도 특정 칸이 나빠질 수 있다.{추론}",
+     "**늦게 오는 전환** — 클릭 뒤 며칠 지나 사는 사람이 있어서, 최근 데이터만 보면 전환율이 낮게 나온다.[15] 토스쇼핑은 클릭 뒤 7일 안 판매를 광고 성과로 센다.[11]",
+     "**보여 준 것만 배운다** — 로그는 이미 위에 보여 준 광고의 반응이라, 아래 자리·안 보여 준 광고는 평가가 치우친다(자리 편향).[16] 구매는 클릭한 사람에게서만 보여 구매율 예측도 치우친다.[29]",
+     "**가설 → 실험** — 토스 분석가는 원인 분석(EDA) → 시뮬레이션으로 후보 정하기 → 실험 설계 → 공감대 → 모니터링 → 결과 → 확대 → 전체 배포 순서로 1년을 진행했다고 발표했다.[5]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "토스 분석가가 발표한 한 바퀴(푸시 사례)[5]",
+     "steps": [
+      "원인 찾기 · 수많은 가설을 세우고 EDA로 검증",
+      "액션 정하기 · 빨리 할 수 있고 임팩트 큰 것부터",
+      "시뮬레이션 · 성공 지표와 부작용 사이의 후보 값",
+      "실험 설계 · 대상 비율·기간·성공·가드레일 지표",
+      "공감대 · 왜 이 실험인지 관련 팀과 공유",
+      "실험 · 대시보드로 감시, 조기 종료하지 않음",
+      "확대 · 더 많은 유저로 다시 확인",
+      "배포 · 다음 고민"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "examples": [
+    {
+     "title": "칸마다 보정 비율 — 전체는 1.08인데(가상 값, 직접 돌린 출력)",
+     "body": "전체로는 8% 과대 예측이지만 혜택탭은 50% 과대, 쇼핑 피드는 23% 과소 예측입니다. 이대로면 혜택탭 광고가 실제보다 비싸게 팔리고 쇼핑 피드 광고는 덜 보입니다.[13]",
+     "lang": "python",
+     "code": "rows = [  # (지면, 노출, 예측 CTR 합, 실제 클릭)\n    (\"홈 배너\", 50000, 1000.0, 1010),\n    (\"혜택탭\", 30000, 900.0, 600),\n    (\"쇼핑 피드\", 20000, 400.0, 520),\n]\ntp = sum(r[2] for r in rows); tc = sum(r[3] for r in rows)\nprint(f\"전체 보정 비율 {tp/tc:.2f}\")\nfor name, imp, psum, clk in rows:\n    print(f\"{name}: 예측 {psum/imp:.2%} 실제 {clk/imp:.2%} 비율 {psum/clk:.2f}\")\n\n# 전체 보정 비율 1.08\n# 홈 배너: 예측 2.00% 실제 2.02% 비율 0.99\n# 혜택탭: 예측 3.00% 실제 2.00% 비율 1.50\n# 쇼핑 피드: 예측 2.00% 실제 2.60% 비율 0.77"
+    }
+   ],
+   "how_far": "\"전 과정을 주도\"라 분석만 넘기고 끝나지 않습니다. 가설을 세우고, 실험을 설계하고, 결과를 읽어 '배포한다/안 한다'를 제안하는 데까지가 이 자리입니다.[1] 모델 구조를 바꾸는 코드는 ML 엔지니어가 짭니다.[3]",
+   "refs": [
+    1,
+    3,
+    5,
+    11,
+    13,
+    15,
+    16,
+    29
+   ],
+   "study": [
+    "fb-ads-ctr",
+    "delayed-fb",
+    "unbiased-ltr",
+    "tmc25-ab"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "지표 체계 고도화: 추천 모델의 성능 변화가 CTR, CVR, 매출, 광고주 성과, 리텐션에 어떤 영향을 미치는지 정량적으로 측정하고, 이를 지속적으로 추적할 수 있는 지표 체계를 설계하고 정착시켜요.",
+   "short": "모델이 바뀌면 클릭·구매·매출·광고주 성과·재방문이 각각 얼마나 움직이는지 재고, 매일 볼 지표 묶음을 만드는 일.",
+   "why": "광고는 세 쪽이 얽혀 있습니다 — 유저(귀찮지 않아야 다시 온다), 광고주(돈 쓴 만큼 팔려야 다시 쓴다), 토스(매출). 한 지표만 올리면 다른 쪽이 상합니다.{추론} 토스 분석가는 푸시 실험에서 성공 지표(CTR)와 함께 **나빠지면 안 되는 지표(가드레일)**로 앱 오픈 유저 수·서비스 이용 유저 수·매출을 잡았습니다.[5] 토스애즈는 광고주 성과도 클릭이 아니라 결제 데이터로 본 **실제 추가 매출**로 재겠다고 밝혔습니다.[8][9]",
+   "actually": {
+    "items": [
+     "**지표 나무** — 맨 위 목표(예: 광고 매출) 아래 노출 수 × CTR × CVR × 객단가로 쪼개, 무엇이 움직였는지 바로 보이게 한다.{추론}",
+     "**성공 지표와 가드레일** — 실험마다 올릴 것과 지킬 것을 미리 정한다. 실험 책은 여러 지표를 묶어 하나의 판단 기준(OEC)을 만들라고 권한다.[14]",
+     "**광고주 성과** — ROAS(광고비 대비 매출)·CPA(전환 1건당 비용). 토스 사례로 오늘의집 CPA 62% 절감이 소개돼 있다.[6]",
+     "**증분(진짜 광고 덕분인 몫)** — 광고를 안 봤어도 샀을 사람을 빼야 한다. 토스애즈 리포트는 결제·금융 데이터로 광고가 만든 '추가 성과'를 매출 단위로 재고, 온라인 광고 뒤 오프라인 구매까지 본다.[8][9] 페이스북의 큰 실험 연구는 관찰 데이터만으로 낸 효과가 무작위 실험 결과와 크게 다를 수 있음을 보였다.[18] 광고를 안 보여 준 대조군을 비용 없이 만드는 방법(고스트 광고)도 쓰인다.[19]",
+     "**리텐션** — 광고를 많이 보여 주면 당장 매출은 오르지만 앱을 덜 열 수 있다. 토스 분석가가 앱 오픈을 가드레일로 둔 이유와 같다.[5]",
+     "**정착** — 대시보드·정의서로 모두 같은 숫자를 보게 하고, 매일 자동으로 갱신한다.{추론}"
+    ]
+   },
+   "how_far": "새 지표를 정의하고 정착시키는 것까지 맡습니다 — 같은 도메인 분석가 공고도 '새로운 지표 개발'을 업무로 적었습니다.[2] 증분 측정 방법(대조군 설계)까지 다룰 수 있으면 강점이 됩니다.{추론}",
+   "refs": [
+    2,
+    5,
+    6,
+    8,
+    9,
+    14,
+    18
+   ],
+   "study": [
+    "kohavi-ko",
+    "gordon-ads",
+    "ghost-ads",
+    "causal-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "입찰 전략 및 매출 최적화 분석: 광고 트래픽의 적정 가치에 대해 분석하고, 이를 통해 적절한 가격 전략을 탐색해요.",
+   "short": "광고 자리 한 번 보여 주는 값이 얼마인지 따져, 최저 입찰가·과금 같은 가격 규칙을 데이터로 제안하는 일.",
+   "why": "토스쇼핑 상품광고는 클릭당 과금이고, 셀러는 입찰가를 직접 넣거나 목표 수익률만 넣고 입찰을 맡깁니다.[11] 토스애즈는 파트너의 80% 넘게가 자동 운영을 쓴다고 밝혔습니다.[12] 입찰·예산 로직 자체는 옆 자리 ML 엔지니어가 만들고[4], 이 자리는 **트래픽의 값과 가격 규칙이 매출에 주는 영향**을 분석합니다.[1]",
+   "actually": {
+    "items": [
+     "**노출 한 번의 값** — 클릭당 입찰 × 예상 CTR(× 1000 = eCPM). 경매는 이 값으로 줄을 세우고, 승자는 2등을 겨우 이기는 만큼만 낸다(2위 가격 경매).[17]",
+     "**지면·시간대·유저군별 값** — 어떤 트래픽이 비싸게 팔리고 어떤 것이 헐값인지 지도를 만든다.{추론}",
+     "**최저 입찰가(reserve)** — 너무 낮으면 좋은 자리가 헐값에, 너무 높으면 안 팔린다. 야후는 이론대로 정한 최저가를 현장 실험해 매출이 크게 오른 것을 보였다.[24]",
+     "**정책을 바꿨다면?** — 기록된 입찰 로그로 '최저가를 올렸으면 매출이 얼마였을까'를 다시 계산한다(로그 시뮬레이션).[22]",
+     "**실험의 함정** — 광고주 예산이 실험군끼리 오가며 결과를 치우치게 할 수 있어, 예산을 군마다 나누는 설계가 쓰인다.[23]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "누가 이기고 얼마를 내나 — eCPM과 2위 가격(가상 값, 직접 돌린 출력)",
+     "body": "입찰이 가장 높은 '다'가 아니라 클릭이 잘 되는 '나'가 이깁니다. '나'는 2등('가')의 값을 겨우 넘는 클릭당 200원만 냅니다.[17]",
+     "lang": "python",
+     "code": "ads = [(\"가\", 500, 0.010), (\"나\", 300, 0.025), (\"다\", 800, 0.004)]  # (광고, 클릭당 입찰, 예측 CTR)\nscored = sorted(((bid * ctr * 1000, name, bid, ctr) for name, bid, ctr in ads), reverse=True)\nfor ecpm, name, bid, ctr in scored:\n    print(f\"{name}: 입찰 {bid}원 × CTR {ctr:.1%} → 노출 1천 회 값 {ecpm:,.0f}원\")\nw, r = scored[0], scored[1]\nprice = r[0] / 1000 / w[3]  # 2등을 겨우 이기는 클릭당 가격\nprint(f\"승자 {w[1]} · 클릭당 {price:.0f}원 냄(입찰 {w[2]}원)\")\n\n# 나: 입찰 300원 × CTR 2.5% → 노출 1천 회 값 7,500원\n# 가: 입찰 500원 × CTR 1.0% → 노출 1천 회 값 5,000원\n# 다: 입찰 800원 × CTR 0.4% → 노출 1천 회 값 3,200원\n# 승자 나 · 클릭당 200원 냄(입찰 300원)"
+    }
+   ],
+   "how_far": "\"탐색해요\"라 가격 규칙을 직접 정하고 배포하는 자리라기보다 **값을 재고 후보를 내는** 자리입니다. 경매 이론을 깊이 알 필요는 없지만, 예시처럼 '예측 CTR이 틀리면 가격도 틀린다'는 연결은 설명할 수 있어야 합니다.{추론}",
+   "refs": [
+    1,
+    4,
+    11,
+    12,
+    17,
+    22,
+    23,
+    24
+   ],
+   "study": [
+    "toss-ads-docs",
+    "gsp",
+    "rtb-monograph",
+    "autobid-survey"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Spark, SQL을 활용해 자유롭게 데이터를 추출하고 분석할 수 있어요.",
+   "short": "노출·클릭·구매 로그가 커서 SQL과 Spark로 직접 뽑아야 해서. 전형의 2시간 쿼리 테스트·라이브 쿼리로 확인한다.",
+   "why": "토스 앱 누적 가입자 3,000만 명, 한 사람이 하루 평균 12번 앱을 엽니다(2026년 6월 내부 데이터).[6] 광고 노출 로그는 이 위에 쌓이니 노트북 한 대로는 못 다룹니다.{추론} 전형에 **2시간짜리 사전 쿼리 테스트**(응시 기간 5일)와 직무 인터뷰 중 **라이브 쿼리 테스트**가 있습니다.[1]",
+   "level": {
+    "basic": "JOIN · GROUP BY · CASE · 서브쿼리 · NULL(클릭 없는 노출) 처리",
+    "work": "윈도우 함수(유저별 순번·직전 노출)·기간 조건 조인(클릭 뒤 7일)·코호트·퍼널·중복 이벤트 걸러내기",
+    "team": "노출 수억 건 규모에서 Spark로 같은 계산 · 조인 순서·파티션으로 느린 쿼리 고치기 · 지표 정의를 쿼리로 정확히 옮기기"
+   },
+   "actually": {
+    "items": [
+     "**노출 → 클릭 → 구매 잇기** — 노출 표·클릭 표·구매 표를 이어, 클릭 뒤 정해진 기간 안의 구매만 광고 성과로 센다. 토스쇼핑 기준은 7일이다.[11]",
+     "**분모 조심** — 클릭이 없는 노출도 분모에 들어가야 한다(LEFT JOIN). 같은 노출 이벤트가 두 번 찍힌 것은 지운다.{추론}",
+     "**Spark** — 같은 SQL을 큰 데이터에 돌린다. 조인·집계가 어디서 느려지는지(셔플·파티션) 아는 정도.[30]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "소재×지면별 CTR과 7일 안 구매(SQLite, 가상 값, 직접 돌린 출력)",
+     "body": "유저 3은 클릭 11일 뒤에 사서 성과에서 빠집니다.",
+     "lang": "sql",
+     "code": "WITH c AS (\n  SELECT i.creative, i.slot, i.user_id, i.imp_id, k.ts AS click_ts\n  FROM imp i LEFT JOIN clk k ON k.imp_id = i.imp_id\n), b AS (  -- 클릭 뒤 7일 안의 구매만 그 광고의 성과로\n  SELECT c.imp_id, SUM(y.amount) AS amount\n  FROM c JOIN buy y ON y.user_id = c.user_id AND y.creative = c.creative\n   AND julianday(y.ts) - julianday(c.click_ts) BETWEEN 0 AND 7\n  GROUP BY c.imp_id\n)\nSELECT c.creative, c.slot, COUNT(*) AS imps, COUNT(c.click_ts) AS clicks,\n       ROUND(100.0*COUNT(c.click_ts)/COUNT(*),1) AS ctr_pct,\n       COUNT(b.imp_id) AS convs, COALESCE(SUM(b.amount),0) AS sales\nFROM c LEFT JOIN b ON b.imp_id = c.imp_id\nGROUP BY c.creative, c.slot ORDER BY c.creative, c.slot;\n\n-- creative|slot|imps|clicks|ctr%|convs|sales\n-- 할인형|혜택탭|1|0|0.0|0|0\n-- 할인형|홈|2|1|50.0|1|30000\n-- 후기형|혜택탭|2|2|100.0|1|20000\n-- 후기형|홈|1|1|100.0|0|0"
+    }
+   ],
+   "how_far": "\"자유롭게\"는 질문을 받으면 남의 도움 없이 바로 쿼리로 답을 내는 수준입니다. 데이터 파이프라인을 짓는 건 데이터 엔지니어 몫이고, 이 자리는 **뽑고 맞게 세는 것**까지입니다.{추론}",
+   "refs": [
+    1,
+    6,
+    11,
+    30
+   ],
+   "study": [
+    "sql-recipe",
+    "sql-levelup",
+    "spark-guide",
+    "spark-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "유저, 제품, 비즈니스 데이터 분석으로 인사이트를 도출하고, 이를 바탕으로 전략과 액션을 제시해본 경험이 있어요.",
+   "short": "분석이 보고서로 끝나지 않고 '그래서 무엇을 바꾸자'로 이어져 실제로 바뀐 경험을 보려는 것.",
+   "why": "공고의 동료 한마디가 바로 이 얘기입니다 — 분석 결과가 반영되지 않아 답답했던 경험과 달리, 여기서는 분석이 바로 액션으로 이어진다고 했습니다.[1] 토스 분석가도 새로 합류한 분석가들이 꼽는 이유가 '분석이 실제 액션과 임팩트로 이어지는 경험'이라고 발표했습니다.[5]",
+   "actually": {
+    "items": [
+     "**빨리 할 수 있고 큰 것부터** — 토스 분석가는 원인 분석 뒤 '지금 당장 실행할 수 있으면서 임팩트가 큰 것'을 골랐다: 계속 반응하지 않는 유저에게는 그 푸시를 보내지 않는 규칙.[5]",
+     "**숫자로 후보 좁히기** — '몇 번 연속 무반응이면 뺄까'의 값을 시뮬레이션으로 정하고, 부작용이 적은 후보만 실험에 올렸다.[5]",
+     "**공감대** — 회사 전체에 영향이 큰 실험이라 제품 담당자들에게 왜·무엇을 기대하는지 먼저 공유하고 우려를 들었다.[5]"
+    ]
+   },
+   "how_far": "이력서에 **문제정의 → 가설 → 실험 설계 → 검증 → 결과**가 드러나게 쓰라고 공고가 안내합니다.[1] 광고 경험은 필수가 아닙니다 — 같은 도메인 분석가 공고도 광고 경험 없이 '데이터로 행동을 정의하고 전략을 실행해 본 경험'을 봤습니다.[2]",
+   "refs": [
+    1,
+    2,
+    5
+   ],
+   "study": [
+    "tmc25-ab",
+    "sql-recipe"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "가설을 세우고 A/B 테스트를 설계·검증하며 지속적으로 개선해온 경험이 있어요.",
+   "short": "추천을 바꿨을 때 정말 좋아졌는지는 실험으로만 알 수 있어서. 표본·기간·지표·함정까지 직접 설계해 본 경험.",
+   "why": "오프라인 점수가 올라도 실제 유저 반응은 다를 수 있어, 추천 변경은 결국 실험으로 판정합니다.[14] 토스 분석가는 푸시 실험에서 전체 유저의 6%·약 두 달로 시작해, 결과가 분명해 보여도 조기 종료하지 않았고, 30%로 넓혀 한 달 반을 더 본 뒤 전체 배포했습니다. 결과는 푸시 CTR 약 +4%p, 클릭 수는 거의 그대로 발송 수 30% 감소였습니다(2024년 11월).[5]",
+   "actually": {
+    "items": [
+     "**표본 크기** — CTR 2%에서 상대 5% 차이를 잡으려면 군마다 노출 약 30만 회가 필요하다(아래 예시).[14]",
+     "**나누기가 고장났나(SRM)** — 50:50으로 나눴는데 수가 어긋나면 결과를 믿지 않는다. 토스 분석가도 백엔드에서 실험을 돌리면서 무작위 배정이 제대로 되는지 시작 전에 따로 확인했다.[5][14]",
+     "**한 안이 아니라 두 안** — 보수적인 안과 공격적인 안을 동시에 돌린 A/B/C 실험. 둘 사이의 CTR 차이는 약 0.5%p였고, 가드레일을 더 확실히 지키는 쪽으로 배포했다.[5]",
+     "**단위 맞추기** — 유저를 나눴으면 유저 단위로 분석한다. 노출 수로 세면 한 유저의 노출들이 서로 닮아 차이를 과장한다.{추론}",
+     "**광고만의 함정** — 광고주 예산이 군끼리 오간다[23], 늦게 오는 전환이 짧은 실험에서 덜 잡힌다.[15] 실험 전 데이터로 분산을 줄이는 CUPED도 쓰인다.[21]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "읽기 전에 SRM, 그다음 차이 검정, 처음엔 표본 크기(가상 값, 직접 돌린 출력)",
+     "body": "카이제곱 9.3은 3.84(유의수준 5%)를 넘으니 이 실험은 배정부터 의심합니다. 아래 z 검정은 배정이 정상이라는 가정에서의 예입니다(편의상 노출 단위).[14]",
+     "lang": "python",
+     "code": "from math import sqrt, erf\n\ndef p_two_sided(z):\n    return 2 * (1 - 0.5 * (1 + erf(abs(z) / sqrt(2))))\n\na_users, b_users = 100_480, 99_120  # 50:50 로 나눴는데 들어온 유저 수\nn = a_users + b_users\nchi2 = (a_users - n / 2) ** 2 / (n / 2) + (b_users - n / 2) ** 2 / (n / 2)\nprint(f\"SRM 카이제곱 {chi2:.1f} (3.84 넘으면 나누기가 고장)\")\n\nia, ca = 400_000, 8_000   # A: CTR 2.00%\nib, cb = 400_000, 8_400   # B: CTR 2.10%\npa, pb = ca / ia, cb / ib\np = (ca + cb) / (ia + ib)\nz = (pb - pa) / sqrt(p * (1 - p) * (1 / ia + 1 / ib))\nprint(f\"A {pa:.2%} B {pb:.2%} 상대 +{(pb/pa-1):.1%} z={z:.2f} p={p_two_sided(z):.4f}\")\n\nbase, lift = 0.02, 0.05  # 유의수준 5%, 검정력 80%\nd = base * lift\nneed = 2 * (1.96 + 0.84) ** 2 * base * (1 - base) / d ** 2\nprint(f\"CTR 2%에서 상대 5% 차이를 잡으려면 군마다 노출 약 {need:,.0f}회\")\n\n# SRM 카이제곱 9.3 (3.84 넘으면 나누기가 고장)\n# A 2.00% B 2.10% 상대 +5.0% z=3.16 p=0.0016\n# CTR 2%에서 상대 5% 차이를 잡으려면 군마다 노출 약 307,328회"
+    }
+   ],
+   "how_far": "\"설계·검증\"이니 남이 만든 실험 결과를 읽는 것보다 한 단계 위 — **대상 비율·기간·성공 지표·가드레일을 직접 정하고**, 이상하면 멈출 줄 아는 수준입니다.[5] 토스에는 실험 세팅·분석까지 되는 내부 도구(TUBA)가 있어 도구를 만들 필요는 없습니다.[5]",
+   "refs": [
+    5,
+    14,
+    15,
+    21,
+    23
+   ],
+   "study": [
+    "kohavi-ko",
+    "tmc25-ab",
+    "cuped",
+    "budget-split-blog"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "추천·타겟팅 등 ML 모델이 어떻게 동작하는지 이해하고, 비즈니스 관점에서 성능을 평가해본 경험이 있으면 좋아요. (ML 모델을 직접 구현한 경험이 없어도 괜찮아요.)",
+   "short": "모델 코드를 짜진 않아도, 무엇을 입력받아 무엇을 내고 어디서 틀리기 쉬운지 알아야 '돈으로 본 성능'을 잴 수 있어서.",
+   "why": "토스 광고 추천은 후보 찾기 → 줄 세우기(클릭·구매 확률 예측) → 마지막 섞기 단계로 돌고[10], 예측 확률은 입찰과 곱해져 가격이 됩니다.[3][17] 이 구조를 모르면 'AUC가 올랐는데 매출은 왜 그대로지?'를 풀 수 없습니다.{추론} 공고는 직접 구현 경험이 없어도 된다고 분명히 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**무엇을 맞히나** — 클릭 확률(pCTR), 클릭 뒤 구매 확률(pCVR). 구매는 클릭한 사람에게서만 관찰돼 치우친다.[29]",
+     "**오프라인 점수 ≠ 비즈니스** — 순서 점수(AUC)는 확률의 크기가 틀려도 같다. 광고는 크기가 가격이 되니 보정을 따로 본다.[13]",
+     "**비즈니스 관점 평가** — 같은 모델 변경을 CTR·광고 매출·광고주 ROAS·유저 재방문으로 같이 본다(업무③의 지표 체계).[5][14]",
+     "**설명하기** — SHAP으로 어떤 단서가 예측을 밀었는지 보여 주면 ML 엔지니어와 같은 말로 이야기할 수 있다.[20]"
+    ]
+   },
+   "how_far": "로지스틱 회귀·트리 모델 정도를 직접 돌려 보고, 보정·자리 편향·늦은 전환을 설명할 수 있으면 충분합니다.{추론} 모델 구조(딥러닝 랭킹 모델 이름)를 외울 필요는 없습니다.",
+   "refs": [
+    1,
+    3,
+    5,
+    10,
+    13,
+    14,
+    17,
+    20,
+    29
+   ],
+   "study": [
+    "toss-reco-blog",
+    "fb-ads-ctr",
+    "shap-docs",
+    "dmls-ko"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "숫자가 이상하면 '왜?'를 쪼개 들어가는 게 재미있는 사람[5]",
+   "분석이 실제 배포로 이어지길 바라는 사람[1]",
+   "모델을 짜기보다 모델을 평가하고 방향을 잡는 쪽이 맞는 사람[1]",
+   "광고를 유저·광고주·회사 세 쪽의 균형 문제로 보는 사람{추론}"
+  ],
+  "hard": [
+   "전형 초입부터 2시간 쿼리 테스트·라이브 쿼리가 있다 — SQL이 약하면 문턱이 높다[1]",
+   "실험 하나가 몇 달씩 간다 — 토스 분석가의 사례는 첫 실험 두 달, 확대 한 달 반이었다[5]",
+   "경매·가격처럼 일반 제품 분석에서 안 보던 영역까지 다룬다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "지면 A의 CTR이 B의 절반입니다. A를 줄일까요?",
+   "a": "유저 구성이 다를 때의 착시(심슨의 역설)와 타겟팅 때문에 생기는 착시 — 토스 분석가가 푸시에서 겪은 것.[5]"
+  },
+  {
+   "q": "새 모델의 오프라인 AUC가 올랐는데 실험에서 매출이 안 올랐습니다. 무엇부터 보나요?",
+   "a": "칸별 보정, 자리 편향, 늦은 전환, 실험 배정(SRM).[13][14][15][16]"
+  },
+  {
+   "q": "광고 노출을 늘리는 실험의 성공 지표와 가드레일을 정해 보세요.",
+   "a": "토스 분석가가 CTR을 성공, 앱 오픈·서비스 이용·매출을 가드레일로 잡은 방식.[5]"
+  },
+  {
+   "q": "이 광고가 매출을 얼마나 '더' 만들었는지 어떻게 재나요?",
+   "a": "증분과 대조군 — 토스애즈가 리포트로 내세우는 것.[8][18]"
+  },
+  {
+   "q": "최저 입찰가를 올리면 매출이 오를까요? 실험 없이 미리 짐작하려면?",
+   "a": "트래픽의 값과 로그 시뮬레이션.[22][24]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 데이터 사이언티스트 (Recommendation)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7728018003",
+   "kind": "posting",
+   "note": "팀 소개(광고 도메인 추천 조직)·업무·요건·이력서 안내·합류 여정(2시간 쿼리 테스트·라이브 쿼리·처우협의)·동료 한마디"
+  },
+  {
+   "n": 2,
+   "title": "토스 채용 · 데이터 분석가 (Ads)",
+   "url": "https://toss.im/career/job-detail?gh_jid=6619423003",
+   "kind": "posting",
+   "note": "같은 광고 도메인 — 광고·앱테크 유저 행동 분석, A/B 테스트, 새 지표 개발, 광고 경험 없어도 됨"
+  },
+  {
+   "n": 3,
+   "title": "토스 채용 · ML 엔지니어 (Ads Ranking)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7998956003",
+   "kind": "posting",
+   "note": "같은 광고 도메인 — pCTR·pCVR 예측·보정·입찰과 묶은 점수"
+  },
+  {
+   "n": 4,
+   "title": "토스 채용 · ML 엔지니어 (Ads Bidding & Pacing)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7998957003",
+   "kind": "posting",
+   "note": "같은 광고 도메인 — 입찰·경매·과금·예산 페이싱"
+  },
+  {
+   "n": 5,
+   "title": "TMC25 · 토스 데이터 분석가가 하는 진짜 A/B테스트",
+   "url": "https://www.youtube.com/watch?v=BljJ1jZ7e3U",
+   "kind": "company",
+   "date": "2025-07",
+   "note": "토스 데이터 분석가 발표(푸시 CTR 사례, 광고 팀 아님) · 자막·화면 전부 읽음 — EDA·SHAP, 시뮬레이션으로 N값, A/B/C, 유저 6%·두 달, 성공 CTR·가드레일 앱 오픈/서비스 AU/매출, TUBA·백엔드 배정 점검, 조기 종료 안 함, 30%로 확대 한 달 반, CTR +4%p·발송 30% 감소(2024-11)"
+  },
+  {
+   "n": 6,
+   "title": "토스 비즈니스 · 광고",
+   "url": "https://toss.im/business/advertising",
+   "kind": "company",
+   "note": "2026년 6월 내부 데이터 기준 — 누적 가입 3,000만·하루 앱 오픈 12회, 1차 데이터, 구매 확률 기반 노출, 결제 데이터로 오프라인 검증, 오늘의집 CPA 62% 절감"
+  },
+  {
+   "n": 7,
+   "title": "토스피드 · 아웃사이트 — 토스애즈",
+   "url": "https://toss.im/tossfeed/article/outsight-tossads",
+   "kind": "company",
+   "date": "2023-12-20",
+   "note": "지면(프리미엄 보드·라이브 쇼핑·행운퀴즈·머니알림·배너), 27개 대분류·272개 업종 — 2023년 숫자"
+  },
+  {
+   "n": 8,
+   "title": "토스피드 · 토스애즈 '광고 성과 측정 리포트' 공개",
+   "url": "https://toss.im/tossfeed/article/42357",
+   "kind": "company",
+   "date": "2025-11-05",
+   "note": "결제·금융 데이터로 광고가 만든 추가 성과를 매출 단위로, 온라인 광고 → 오프라인 구매"
+  },
+  {
+   "n": 9,
+   "title": "바이라인네트워크 · 토스애즈 보고서 — 숨겨진 증분",
+   "url": "https://byline.network/2025/11/5-333/",
+   "kind": "news",
+   "date": "2025-11-05",
+   "note": "증분(uplift)으로 타겟팅·예산 효율, 다채널 상호작용"
+  },
+  {
+   "n": 10,
+   "title": "Toss Tech · 토스 쇼핑 추천 시스템: 멀티 스테이지 접근법",
+   "url": "https://toss.tech/article/toss-shopping-recommendation-system",
+   "kind": "company",
+   "note": "커머스 개인화팀 — Retrieval·Ranking·Re-ranking, 마지막에 새 상품·광고 섞기"
+  },
+  {
+   "n": 11,
+   "title": "토스쇼핑 판매자 문서 · 광고 운영 정책",
+   "url": "https://shopping-docs.toss.im/ads/support/policy",
+   "kind": "company",
+   "note": "클릭당 과금·수동/자동 운영·클릭 뒤 7일 안 판매를 성과로"
+  },
+  {
+   "n": 12,
+   "title": "Toss Ads Insights · Redefining Advertising by Toss Ads",
+   "url": "https://tossads.toss.im/insights/new-ad-standard-eng",
+   "kind": "company",
+   "note": "자동 입찰 시스템, 파트너 80% 이상 자동 운영"
+  },
+  {
+   "n": 13,
+   "title": "He 외 · Practical Lessons from Predicting Clicks on Ads at Facebook (ADKDD 2014)",
+   "url": "https://ai.meta.com/research/publications/practical-lessons-from-predicting-clicks-on-ads-at-facebook/",
+   "kind": "reference",
+   "note": "다른 회사 — 보정 비율(예측 평균/실제)·정규화 엔트로피"
+  },
+  {
+   "n": 14,
+   "title": "Kohavi · Tang · Xu · Trustworthy Online Controlled Experiments (Cambridge, 2020)",
+   "url": "https://experimentguide.com/",
+   "kind": "reference",
+   "note": "OEC·가드레일·SRM·표본 크기 어림식"
+  },
+  {
+   "n": 15,
+   "title": "Chapelle · Modeling Delayed Feedback in Display Advertising (KDD 2014)",
+   "url": "https://doi.org/10.1145/2623330.2623634",
+   "kind": "reference",
+   "note": "다른 회사(Criteo) — 클릭 뒤 늦게 오는 전환"
+  },
+  {
+   "n": 16,
+   "title": "Joachims · Swaminathan · Schnabel · Unbiased Learning-to-Rank with Biased Feedback (WSDM 2017)",
+   "url": "https://arxiv.org/abs/1608.04468",
+   "kind": "reference",
+   "note": "자리 편향 — 로그로 한 평가가 치우치는 이유"
+  },
+  {
+   "n": 17,
+   "title": "Edelman · Ostrovsky · Schwarz · Internet Advertising and the Generalized Second-Price Auction (AER 2007)",
+   "url": "https://www.aeaweb.org/articles?id=10.1257/aer.97.1.242",
+   "kind": "reference",
+   "note": "광고 경매의 순위·2위 가격 과금"
+  },
+  {
+   "n": 18,
+   "title": "Gordon 외 · A Comparison of Approaches to Advertising Measurement: Evidence from Big Field Experiments at Facebook (Marketing Science 2019)",
+   "url": "https://doi.org/10.1287/mksc.2018.1135",
+   "kind": "reference",
+   "note": "다른 회사 — 관찰 데이터로 낸 광고 효과와 무작위 실험 결과의 차이"
+  },
+  {
+   "n": 19,
+   "title": "Johnson · Lewis · Nubbemeyer · Ghost Ads: Improving the Economics of Measuring Online Ad Effectiveness (JMR 2017)",
+   "url": "https://doi.org/10.1509/jmr.15.0297",
+   "kind": "reference",
+   "note": "다른 회사 — 광고 효과 대조군을 싸게 만드는 법"
+  },
+  {
+   "n": 20,
+   "title": "Lundberg · Lee · A Unified Approach to Interpreting Model Predictions (SHAP, NeurIPS 2017)",
+   "url": "https://arxiv.org/abs/1705.07874",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Deng 외 · Improving the Sensitivity of Online Controlled Experiments by Utilizing Pre-Experiment Data (CUPED, WSDM 2013)",
+   "url": "https://doi.org/10.1145/2433396.2433413",
+   "kind": "reference",
+   "note": "다른 회사(Microsoft)"
+  },
+  {
+   "n": 22,
+   "title": "Bottou 외 · Counterfactual Reasoning and Learning Systems: The Example of Computational Advertising (JMLR 2013)",
+   "url": "https://jmlr.org/papers/v14/bottou13a.html",
+   "kind": "reference",
+   "note": "다른 회사(Bing) — 기록으로 정책 변경 효과 추정"
+  },
+  {
+   "n": 23,
+   "title": "LinkedIn Engineering · Budget-split testing",
+   "url": "https://engineering.linkedin.com/blog/2021/budget-split-testing",
+   "kind": "reference",
+   "note": "다른 회사 — 광고주 예산을 군마다 나눠 간섭 없이 실험"
+  },
+  {
+   "n": 24,
+   "title": "Ostrovsky · Schwarz · Reserve Prices in Internet Advertising Auctions: A Field Experiment (JPE 2023)",
+   "url": "https://www.gsb.stanford.edu/faculty-research/publications/reserve-prices-internet-advertising-auctions-field-experiment",
+   "kind": "reference",
+   "note": "다른 회사(Yahoo) — 최저 입찰가 현장 실험"
+  },
+  {
+   "n": 25,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 26,
+   "title": "자소설닷컴 — 토스뱅크 연봉(같은 집계)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "토스 — 회사 소개(사이트 하단 회사 정보)",
+   "url": "https://toss.im/company",
+   "kind": "company"
+  },
+  {
+   "n": 28,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 29,
+   "title": "Ma 외 · Entire Space Multi-Task Model (ESMM, SIGIR 2018)",
+   "url": "https://arxiv.org/abs/1804.07931",
+   "kind": "reference",
+   "note": "클릭한 것에서만 보이는 구매 — pCVR 선택 편향"
+  },
+  {
+   "n": 30,
+   "title": "Apache Spark · Spark SQL, DataFrames and Datasets Guide",
+   "url": "https://spark.apache.org/docs/latest/sql-programming-guide.html",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "광고 추천 조직의 분석 틀·지표 정의·가격 정책은 공개되지 않았습니다. 회사 근거는 공고·같은 도메인 공고·토스애즈 공식 글과, 다른 팀(푸시) 분석가의 TMC25 발표입니다. 보정·증분·경매·실험 설계는 페이스북·구글·야후·LinkedIn의 공개 논문으로 '보통 이런 것'을 보였습니다. 지면 목록은 2023년 글 기준이라 지금은 다를 수 있습니다.",
+ "resources": [
+  {
+   "id": "tmc25-ab",
+   "title": "TMC25 · 토스 데이터 분석가가 하는 진짜 A/B테스트",
+   "by": "토스 데이터 분석가 고은솔 · 21분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=BljJ1jZ7e3U",
+   "why": "원인 분석 → 시뮬레이션 → A/B/C 실험 → 확대 → 배포까지 토스 분석가의 한 바퀴. 업무②와 A/B 요건이 이 회사에서 어떤 모습인지 처음 본다."
+  },
+  {
+   "id": "toss-ads-biz",
+   "title": "토스 비즈니스 · 광고",
+   "by": "토스",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://toss.im/business/advertising",
+   "why": "광고주에게 토스 광고가 무엇을 약속하나(1차 데이터·구매 확률 타겟팅·오프라인 검증). 업무①③의 분석 대상이 무엇인지 잡는다."
+  },
+  {
+   "id": "toss-ads-docs",
+   "title": "토스쇼핑 판매자 문서 · 광고",
+   "by": "토스쇼핑",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://shopping-docs.toss.im/ads/intro",
+   "why": "클릭당 과금·자동/수동 운영·7일 성과 기준 — 업무④ 가격 분석과 성과 집계 규칙의 바깥 모습."
+  },
+  {
+   "id": "toss-reco-blog",
+   "title": "토스 쇼핑 추천 시스템: 멀티 스테이지 접근법",
+   "by": "Toss Tech · 커머스 개인화팀",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://toss.tech/article/toss-shopping-recommendation-system",
+   "why": "후보 찾기·줄 세우기·섞기 구조를 토스 기준으로. 우대 '모델이 어떻게 동작하는지 이해'의 출발점."
+  },
+  {
+   "id": "sql-recipe",
+   "title": "데이터 분석을 위한 SQL 레시피",
+   "by": "가사키 나가토 · 다미야 나오토",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942290",
+   "why": "사용자 행동·퍼널·코호트를 SQL로 뽑는 상황별 모음. 쿼리 테스트와 업무① 칸 나누어 보기에 바로 쓰인다."
+  },
+  {
+   "id": "sql-levelup",
+   "title": "SQL 레벨업",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=SQL%20%EB%A0%88%EB%B2%A8%EC%97%85",
+   "why": "윈도우 함수·CASE로 반복 없이 푸는 법. 2시간 쿼리 테스트에서 속도를 낸다."
+  },
+  {
+   "id": "spark-guide",
+   "title": "스파크 완벽 가이드",
+   "by": "빌 체임버스 · 마테이 자하리아 · 한빛미디어 · 2019",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%8A%A4%ED%8C%8C%ED%81%AC%20%EC%99%84%EB%B2%BD%20%EA%B0%80%EC%9D%B4%EB%93%9C",
+   "why": "DataFrame·Spark SQL·조인·집계 파트만 먼저. 요건 'Spark로 자유롭게 추출'."
+  },
+  {
+   "id": "spark-docs",
+   "title": "Spark SQL, DataFrames and Datasets Guide",
+   "by": "Apache Spark 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://spark.apache.org/docs/latest/sql-programming-guide.html",
+   "why": "최신 Spark SQL 문법과 성능 조정(파티션·셔플). 책과 함께 본다."
+  },
+  {
+   "id": "kohavi-ko",
+   "title": "신뢰할 수 있는 온라인 종합 대조 실험",
+   "by": "론 코하비 · 다이앤 탕 · 야 쉬",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000005201885",
+   "why": "성공 지표·가드레일·SRM·표본 크기·장기 효과 — A/B 요건과 업무③ 지표 체계의 기본서(Trustworthy Online Controlled Experiments 한국어판)."
+  },
+  {
+   "id": "cuped",
+   "title": "Improving the Sensitivity of Online Controlled Experiments by Utilizing Pre-Experiment Data (CUPED)",
+   "by": "Deng 외 · WSDM 2013",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://doi.org/10.1145/2433396.2433413",
+   "why": "실험 전 데이터로 분산을 줄여 같은 기간에 작은 차이를 잡는다. 광고 실험이 몇 달씩 걸릴 때 쓴다."
+  },
+  {
+   "id": "budget-split-blog",
+   "title": "Budget-split testing: A trustworthy and powerful approach to marketplace A/B testing",
+   "by": "LinkedIn Engineering · 2021",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://engineering.linkedin.com/blog/2021/budget-split-testing",
+   "why": "광고주 예산이 실험군끼리 오가는 문제와 그 해법을 그림으로. 광고 A/B의 고유한 함정."
+  },
+  {
+   "id": "causal-ko",
+   "title": "실무로 통하는 인과추론 with 파이썬",
+   "by": "마테우스 파쿠레 · 신진수 옮김",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%8B%A4%EB%AC%B4%EB%A1%9C%20%ED%86%B5%ED%95%98%EB%8A%94%20%EC%9D%B8%EA%B3%BC%EC%B6%94%EB%A1%A0",
+   "why": "실험을 못 할 때 효과를 추정하는 법(이중차분 등). 업무③ 증분 측정과 업무① 착시 걸러내기."
+  },
+  {
+   "id": "gordon-ads",
+   "title": "A Comparison of Approaches to Advertising Measurement: Evidence from Big Field Experiments at Facebook",
+   "by": "Gordon 외 · Marketing Science 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://doi.org/10.1287/mksc.2018.1135",
+   "why": "관찰 데이터로 낸 광고 효과가 실험 결과와 얼마나 어긋나는지. 업무③ '광고주 성과'를 왜 대조군으로 재야 하나."
+  },
+  {
+   "id": "ghost-ads",
+   "title": "Ghost Ads: Improving the Economics of Measuring Online Ad Effectiveness",
+   "by": "Johnson · Lewis · Nubbemeyer · Journal of Marketing Research 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://doi.org/10.1509/jmr.15.0297",
+   "why": "광고를 안 보여 준 대조군을 비용 없이 만드는 방법. 증분 측정 설계의 대표 사례."
+  },
+  {
+   "id": "fb-ads-ctr",
+   "title": "Practical Lessons from Predicting Clicks on Ads at Facebook",
+   "by": "He 외 · ADKDD 2014",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://ai.meta.com/research/publications/practical-lessons-from-predicting-clicks-on-ads-at-facebook/",
+   "why": "광고 클릭 예측을 어떻게 평가하나(보정 비율·정규화 엔트로피). 업무② '모델 성능 평가'의 기준."
+  },
+  {
+   "id": "shap-docs",
+   "title": "SHAP 문서",
+   "by": "SHAP 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://shap.readthedocs.io/",
+   "why": "예측 하나하나에 단서가 얼마나 기여했나. 토스 분석가가 CTR 요인을 찾을 때 쓴 방법."
+  },
+  {
+   "id": "delayed-fb",
+   "title": "Modeling Delayed Feedback in Display Advertising",
+   "by": "Olivier Chapelle · KDD 2014",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://doi.org/10.1145/2623330.2623634",
+   "why": "늦게 오는 전환 때문에 최근 전환율이 낮게 보이는 문제. 업무② CVR 평가의 함정."
+  },
+  {
+   "id": "unbiased-ltr",
+   "title": "Unbiased Learning-to-Rank with Biased Feedback",
+   "by": "Joachims · Swaminathan · Schnabel · WSDM 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1608.04468",
+   "why": "위에 보인 것만 클릭되는 자리 편향과 보정법. 로그로 추천을 평가할 때의 함정."
+  },
+  {
+   "id": "gsp",
+   "title": "Internet Advertising and the Generalized Second-Price Auction",
+   "by": "Edelman · Ostrovsky · Schwarz · AER 2007",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.aeaweb.org/articles?id=10.1257/aer.97.1.242",
+   "why": "광고 경매의 순위·2위 가격이 왜 그렇게 생겼나. 업무④ 트래픽 값·가격 분석의 출발점."
+  },
+  {
+   "id": "rtb-monograph",
+   "title": "Display Advertising with Real-Time Bidding (RTB) and Behavioural Targeting",
+   "by": "Jun Wang · Weinan Zhang · Shuai Yuan",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1610.03013",
+   "why": "경매·클릭 예측·입찰·타겟팅을 교과서처럼 한 권에. 광고가 처음이면 업무①②④를 한 번에 훑는다."
+  },
+  {
+   "id": "autobid-survey",
+   "title": "Auto-bidding and Auctions in Online Advertising: A Survey",
+   "by": "Aggarwal 외 · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2408.07685",
+   "why": "자동 입찰이 대부분인 시장에서 가격 규칙이 어떻게 작동하나. 업무④ '가격 전략' 배경."
+  },
+  {
+   "id": "dmls-ko",
+   "title": "머신러닝 시스템 설계",
+   "by": "칩 후옌 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/-/9791169210850/",
+   "why": "모델 평가·데이터 누수·배포 뒤 감시를 코드 없이 이해한다. 우대 '모델이 어떻게 동작하는지'를 엔지니어와 같은 말로."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "토스 광고와 분석 방식 보기",
+   "time": "1주",
+   "goal": "토스 광고의 지면·과금·성과 기준과, 토스 분석가가 실험을 끝까지 끌고 가는 방식을 말로 설명할 수 있다.",
+   "resources": [
+    "tmc25-ab",
+    "toss-ads-biz",
+    "toss-ads-docs",
+    "toss-reco-blog"
+   ],
+   "task": "발표의 8단계를 광고 상황(예: '한 유저에게 같은 소재는 하루 3번까지')으로 바꿔 한 쪽짜리 실험 계획서를 써 본다 — 성공 지표·가드레일·대상 비율·기간."
+  },
+  {
+   "title": "SQL·Spark로 광고 로그 다루기",
+   "time": "2~4주",
+   "goal": "노출·클릭·구매 표를 이어 소재×지면×유저군 성과표를 2시간 안에 정확히 뽑는다.",
+   "resources": [
+    "sql-recipe",
+    "sql-levelup",
+    "spark-guide",
+    "spark-docs"
+   ],
+   "task": "가상 노출 100만 건·클릭·구매 표를 만들어 7일 기준 CTR·CVR·ROAS 표를 SQL로, 같은 계산을 PySpark로 한 번 더. 일부러 심슨의 역설이 생기게 데이터를 짜고 찾아 본다."
+  },
+  {
+   "title": "실험 설계와 읽기",
+   "time": "2~3주",
+   "goal": "표본 크기를 계산하고, SRM을 확인하고, 유저 단위로 차이를 검정하고, 가드레일까지 보고 결론을 낸다.",
+   "resources": [
+    "kohavi-ko",
+    "cuped",
+    "budget-split-blog"
+   ],
+   "task": "가상 실험 데이터(유저 단위)로 SRM 검사 → CTR 차이 검정 → CUPED 적용 전후 신뢰구간 비교까지 노트북 하나로 만든다."
+  },
+  {
+   "title": "모델을 비즈니스로 평가하기",
+   "time": "2~3주",
+   "goal": "클릭 예측 모델의 칸별 보정·자리 편향·늦은 전환을 찾아내고, 그게 매출로 얼마인지 말할 수 있다.",
+   "resources": [
+    "fb-ads-ctr",
+    "shap-docs",
+    "delayed-fb",
+    "unbiased-ltr",
+    "dmls-ko"
+   ],
+   "task": "공개 광고 클릭 데이터나 가상 데이터로 로지스틱 회귀를 돌려 지면별 보정 비율 표와 SHAP 요약을 만들고, 과대 예측 지면 때문에 잘못 팔린 금액을 eCPM으로 계산해 본다."
+  },
+  {
+   "title": "증분과 가격 (선택)",
+   "time": "계속",
+   "goal": "광고의 진짜 추가 효과를 대조군으로 재는 법과, 최저 입찰가 같은 가격 규칙의 효과를 로그로 짐작하는 법을 안다.",
+   "resources": [
+    "gordon-ads",
+    "ghost-ads",
+    "causal-ko",
+    "gsp",
+    "rtb-monograph",
+    "autobid-survey"
+   ],
+   "task": "가상 입찰 로그로 2위 가격 경매를 다시 돌려 최저 입찰가를 바꿀 때 매출·낙찰률이 어떻게 변하는지 곡선을 그린다."
+  }
+ ],
+ "pay": {
+  "summary": "공공데이터 집계로 신입 초봉 **약 4,200만원**, 평균 **약 6,200만원** — 공시된 평균 급여는 없다(비상장). 이 자리는 A/B·모델 평가 경험을 요구하는 경력직이라 초봉과 거리가 멀다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 없고 직군 구분도 없어 데이터 사이언티스트 계약 연봉과 다를 수 있다 [25]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 [25]"
+   },
+   {
+    "label": "토스뱅크 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 계열사 값 — 견주어 보기용 [26]"
+   },
+   {
+    "label": "토스뱅크 평균",
+    "value": "약 7,208만원",
+    "amount": 7208,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 계열사 평균 [26]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고, 인터뷰·레퍼런스 체크 뒤 **처우협의** 단계에서 사람마다 정한다 [1]. 비바리퍼블리카는 상장사가 아니라 사업보고서의 '직원 평균 급여'가 없다. 평균은 경력직이 섞인 회사 전체 값이라 초봉이 아니고, 집계값은 추정이라 경력 데이터 사이언티스트가 받는 제안과는 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 복지를 소개한 2021년 공식 글이다 [28]. 지금도 같은지는 글에 없으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스(비바리퍼블리카) 본사",
+  "address": "서울특별시 강남구 테헤란로 142, 4·10~13·22·23층",
+  "postal": "06236",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "주소는 토스 회사 소개 페이지 하단의 회사 정보다 [27]. 공고의 근무지는 'Seoul'로만 적혀 있어 광고 도메인 팀 자리가 본사와 다를 수 있다 {추론}."
+ }
+}
