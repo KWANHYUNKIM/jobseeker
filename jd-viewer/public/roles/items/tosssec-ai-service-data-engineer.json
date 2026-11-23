@@ -1,0 +1,1055 @@
+{
+ "id": "tosssec-ai-service-data-engineer",
+ "company": "토스증권",
+ "role": "데이터 엔지니어 (AI Service)",
+ "team": "AI Info & Data Silo",
+ "jobs": [
+  "ats-toss:group:7820096003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "실시간 시세로 **초 단위 랭킹**을 내고, 해외 뉴스·공시를 **LLM으로 요약·추출**하고, 뉴스·테마·산업·종목을 잇는 **금융 지식 그래프**를 지어 AI 서비스(실시간 이슈·AI 시그널 등)가 쓰게 합니다.[1][7]",
+  "env": "Kafka·Flink·ClickHouse로 실시간, Elasticsearch·Neo4j로 검색과 그래프, Airflow·dbt·Spark로 배치, Kubernetes·ArgoCD로 배포합니다.[1]",
+  "oneline": "데이터가 곧 제품인 자리. 파이프라인을 잘 짜는 것보다 **틀린 숫자·틀린 설명이 고객 화면에 나가지 않게** 하는 것이 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "실시간 시세 데이터를 가공해 수백만 유저가 매일 보는 실시간 랭킹 서비스를 만들어요.",
+   "short": "체결·시세·화면 로그를 실시간으로 모아 '지금 많이 사는·오르는·보는 종목' 순위를 초 단위로 내는 일.",
+   "why": "토스증권 랭킹은 실시간 차트의 거래 랭킹·인기·급상승·급하락·ETF·채권, 토스가 나눈 업종별 랭킹까지 냅니다.[2] 예전에는 1분마다 갱신했는데 초 단위 요구가 늘었고, 한 번 집계에 평균 10초대가 걸려 더 줄일 수 없었습니다.[2] 랭킹마다·옵션마다 Airflow 작업을 미리 만들어 두는 구조라 랭킹이 늘수록 작업이 줄줄이 늘었고, 분석가의 무거운 쿼리와 같은 자원을 써서 갱신이 늦거나 실패하기도 했습니다.[2]",
+   "actually": {
+    "intro": "이 팀의 데이터 엔지니어가 SLASH 24에서 밝힌 바꾼 구조입니다.[2][3]",
+    "items": [
+     "**한 곳에서 계산** — 서비스용 ClickHouse(열 단위로 저장해 큰 집계가 빠른 분석용 DB)를 따로 세워 분석계와 떼어 냈다. 필요한 데이터를 거기 모아 요청이 올 때 쿼리로 바로 계산한다.[2]",
+     "**실시간 입수** — 시세·체결·화면 로그는 Kafka로 들어온다. ClickHouse 안의 Kafka 엔진으로 시험해 초당 약 60만 건 적재를 확인했지만, ClickHouse 서버와 자원을 나눠 쓰고 표가 서너 개 필요해 **ClickHouse Sink Connector**를 따로 운영하는 쪽을 골랐다.[2]",
+     "**CDC**(원천 DB의 변경을 그대로 따라 받기) — 종목 메타 정보는 장중에도 바뀐다. MySQL 복제 엔진(MaterializedMySQL)도 시험했지만 아직 실험 기능이라 Sink Connector로 변경을 받는다.[2]",
+     "**급상승·급하락** — 종목마다 가장 최근 시세만 있으면 된다. ReplacingMergeTree(같은 키는 버전이 가장 큰 행만 남기는 표)로 읽을 행 수 자체를 줄였다.[2][12]",
+     "**인기·관심 랭킹** — 화면 로그가 시간당 약 1억 건이라 원본으로 계산하면 600~700ms, 길면 1초. 구체화 뷰(넣을 때마다 도는 변환)가 로그를 분·시간·일 단위로 미리 접어 AggregatingMergeTree(집계 중간값을 저장하는 표)에 담는다. 장 시작 1시간의 1억 건이 약 46만 행으로 줄었고 쿼리는 약 600ms → 200~300ms.[2][13]",
+     "**결과** — 랭킹 계산 작업 10~20초 → 200~300ms, 초 단위 랭킹. 요청이 많은 곳은 앞에 캐시를 두껍게 두고, 깊은 화면은 요청 때마다 ClickHouse가 직접 받는다.[2]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "로그를 분 단위로 미리 접어 두고 창 크기만 바꿔 줄 세우기",
+     "body": "같은 분에 같은 사람이 여러 번 봐도 한 명으로 셉니다. 중간 표만 읽으니 창(최근 1분·2분)을 요청 때 정할 수 있습니다 — 발표의 '기간별 랭킹'과 같은 생각을 작은 숫자로 옮긴 것입니다(직접 돌린 출력).[2]",
+     "lang": "python",
+     "code": "from collections import defaultdict\n# 원본 로그: (시각초, 종목, 사용자) — 같은 분에 같은 사람이 여러 번 봐도 한 명\nlogs = [(0, \"A\", \"u1\"), (5, \"A\", \"u1\"), (9, \"A\", \"u2\"), (20, \"B\", \"u1\"),\n        (61, \"A\", \"u3\"), (70, \"B\", \"u2\"), (75, \"B\", \"u3\"), (80, \"B\", \"u4\")]\n# 1) 분 단위 중간 집계 — 넣을 때마다 구체화 뷰가 하는 일\nminute = defaultdict(set)\nfor t, tk, u in logs:\n    minute[(t // 60, tk)].add(u)\nprint(\"원본\", len(logs), \"행 -> 중간 집계\", len(minute), \"행\")\n# 2) 랭킹 조회: 최근 N분 창을 합쳐 순 방문자 수로 줄 세우기\ndef rank(now_min, window):\n    uv = defaultdict(set)\n    for (m, tk), users in minute.items():\n        if now_min - window < m <= now_min:\n            uv[tk] |= users\n    return sorted(((len(v), k) for k, v in uv.items()), reverse=True)\nprint(\"최근 1분:\", rank(1, 1))\nprint(\"최근 2분:\", rank(1, 2))\n# 원본 8 행 -> 중간 집계 4 행\n# 최근 1분: [(3, 'B'), (1, 'A')]\n# 최근 2분: [(4, 'B'), (3, 'A')]"
+    },
+    {
+     "title": "같은 종목 시세는 버전이 큰 것 하나만",
+     "body": "버전 2가 3보다 늦게 와도 3이 남습니다. ReplacingMergeTree는 이 정리를 백그라운드 병합 때 하므로, 병합 전에는 중복이 보일 수 있어 조회 때 FINAL·argMax 같은 처리를 함께 씁니다.[12] 등락률은 가상 값입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "# 같은 종목 시세가 여러 번 오면 버전이 가장 큰 것 하나만 남긴다 — 순서가 뒤바뀌어 와도\nticks = [(\"005930\", 1, 71000), (\"000660\", 1, 182000), (\"005930\", 3, 71500), (\"005930\", 2, 70900)]\nprev_close = {\"005930\": 70000, \"000660\": 190000}\nlatest = {}\nfor code, ver, price in ticks:\n    if code not in latest or latest[code][0] < ver:\n        latest[code] = (ver, price)\nrows = []\nfor code, (ver, price) in latest.items():\n    chg = (price - prev_close[code]) / prev_close[code] * 100\n    rows.append((chg, code, ver, price))\nfor chg, code, ver, price in sorted(rows, reverse=True):\n    print(code, \"버전\", ver, price, f\"{chg:+.2f}%\")\n# 005930 버전 3 71500 +2.14%\n# 000660 버전 1 182000 -4.21%"
+    }
+   ],
+   "how_far": "ClickHouse 클러스터를 처음부터 짓는 것보다 **랭킹마다 맞는 표 구조(엔진·정렬 키·중간 집계 단위)를 고르고, 늦어지면 어디서 늦는지 찾는** 능력이 핵심입니다.[2] 최소선은 Kafka 토픽에서 받은 이벤트를 분 단위로 접어 '최근 N분 상위 10개'를 1초 안에 내는 것을 직접 만들어 본 경험입니다.{추론}",
+   "refs": [
+    2,
+    3,
+    12,
+    13
+   ],
+   "study": [
+    "slash24-ranking",
+    "ch-replacing",
+    "ch-mv",
+    "internal-kafka"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "글로벌 시장의 뉴스, 소셜, 공시 데이터를 실시간으로 모으고 LLM으로 요약, 분석, 추출을 하는 파이프라인을 만들어요.",
+   "short": "해외 뉴스·공시가 들어오는 순간 분류·번역·요약하고, 회사·사건 같은 칸을 뽑아 제품이 쓰게 하는 일.",
+   "why": "토스증권은 하루 평균 4,000~6,000건의 해외 뉴스를 자체 번역 모델로 처리하고, 미국 공시를 실시간으로 모아 분석·요약·번역하는 자동 파이프라인을 맞춤 알림과 묶어 운영한다고 밝혔습니다.[6] 2026년 3월 낸 '실시간 이슈'는 국내외 뉴스와 사용자 관심도로 시장 영향이 큰 이슈 20개를 고르고, 앞으로 X 같은 소셜 데이터로 넓힐 계획입니다.[7] 공고의 '소셜'이 이 방향입니다.{추론}",
+   "actually": {
+    "intro": "토스증권 ML 엔지니어가 쓴 글에 나온 흐름입니다.[4]",
+    "items": [
+     "**들어올 때 분류** — 뉴스·공시·재무 원천은 입수 시점에 BERT 기반 분류 모델로 자체 분류 체계의 태그를 붙인다. 검색할 때가 아니라 들어올 때 끝낸다.[4]",
+     "**레코드 모양** — 제목·본문·분류 태그(예: 한국 주식·애널리스트 분석)·연결 기업·임베딩(뜻으로 찾기 위한 숫자 벡터)을 한 레코드에 담는다.[4]",
+     "**같은 사건 묶기** — 뜻이 비슷한 기사를 묶어 사건마다 대표 기사만 남긴다.[4]",
+     "**걸러내기** — 광고·홍보성, 근거 부족 같은 '실패 사유' 라벨을 붙여 그대로 거르는 데 쓴다.[4]",
+     "**자체 모델과 외부 LLM** — 뉴스 분류·이슈 랭킹 같은 대량 전처리에는 자체 모델을, 나머지는 외부 LLM을 함께 쓴다.[7]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "뉴스 한 건이 제품까지 가는 길 {추론}[4][6]",
+     "steps": [
+      "원천 · 해외 뉴스·공시·소셜",
+      "입수 · Kafka 토픽",
+      "분류·태깅 · 자체 분류 모델",
+      "번역·요약·추출 · LLM",
+      "검증 · 형식·근거·중복",
+      "저장 · 검색 색인·그래프",
+      "제품 · 알림·실시간 이슈"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "모델 자체(번역·분류 학습)는 ML 엔지니어 몫인 경우가 많고, 이 자리는 **모델을 부르는 파이프라인 — 언제 부르고, 실패하면 다시 부르고, 결과를 검사해 저장하는 것** — 을 맡습니다.{추론} 최소선은 RSS나 공개 공시 목록을 받아 LLM으로 요약·칸 추출을 하고, 같은 기사가 두 번 들어와도 결과가 한 건만 남게 만든 경험입니다.{추론}",
+   "refs": [
+    4,
+    6,
+    7
+   ],
+   "study": [
+    "toss-ai-info",
+    "aie-book",
+    "llm-app"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "차별화된 인사이트를 제공하기 위해 뉴스, 이벤트, 테마, 산업, 종목을 하나로 잇는 금융 지식그래프를 설계, 구축, 운영해요.",
+   "short": "'리튬 값 급락 → 양극재 산업 → 그 산업의 종목'처럼 사건과 종목 사이 관계를 그래프로 저장해 따라가게 하는 일.",
+   "why": "토스증권은 종목·테마·이벤트를 구조화한 **금융 온톨로지**(무엇이 무엇과 어떤 관계인지 정한 틀)를 운영한다고 밝혔습니다.[6] 같은 팀 글은 회사·종목·제품·이벤트·테마를 잇는 금융 지식 그래프를 이미 짓고 있다고 했고[5], '실시간 이슈'는 이슈를 고르면 관련 산업·기업에 미치는 영향을 보여 줍니다(예: 리튬 가격 급락 → 양극재 기업 원가).[7] 사용 기술 목록에 Neo4j가 있습니다.[1]",
+   "actually": {
+    "intro": "같은 팀의 그래프 검색 글에서 공개한 내용입니다.[5]",
+    "items": [
+     "**두 단계 검색** — 먼저 Elasticsearch로 시작 엔티티(회사·이벤트 등) 후보를 찾고, 그다음 그래프에서 이어진 노드를 따라가며 경로를 넓힌다.[5]",
+     "**경로 폭발** — 의미 있는 묶음을 만들려면 3홉 이상 가야 하는데, 한 노드에서 후보 경로가 1홉 1,105개 → 2홉 134,520개 → 3홉 약 4,924만 개로 늘어 Neo4j 트랜잭션 메모리로 감당이 안 됐다.[5]",
+     "**빔 탐색**(홉마다 점수 상위 몇 개만 다음으로 넘기기) — 최대 깊이와 홉별 후보 수를 제한하고, 쓸모없는 노드·관계는 넓히기 전에 뺐다. 점수에는 처음 검색 관련도·시가총액·이벤트 최신성을 보조로 썼다.[5]",
+     "**Cypher 튜닝** — 라벨과 색인 속성을 적어 색인 조회를 타는지 보고, EXPLAIN으로 계획을, PROFILE로 예상 행 수와 실제 행 수·DB 접근 수·메모리를 쟀다.[5]",
+     "**근거 남기기** — 결과에 엔티티뿐 아니라 지나온 관계 경로를 같이 담아 왜 이 결과인지 따라갈 수 있게 했다.[5]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "홉마다 상위 k개만 넘기기",
+     "body": "k=2면 1홉에서 '칠레' 가지를 일찍 버려 2홉에서 볼 경로가 줄어듭니다. 그래프가 작아 차이가 1개지만, 실제 그래프에서는 홉마다 곱으로 늘어나는 것을 막는 장치입니다.[5] 관계 가중치는 가상 값입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "# 지식 그래프에서 홉마다 점수 상위 k 개만 다음 홉으로 넘긴다 (빔 탐색)\ngraph = {\n    \"이벤트:리튬 가격 급락\": [(\"영향\", \"산업:양극재\", 0.9), (\"영향\", \"산업:전기차\", 0.6), (\"언급\", \"국가:칠레\", 0.2)],\n    \"산업:양극재\": [(\"속함\", \"종목:A화학\", 0.8), (\"속함\", \"종목:B소재\", 0.7), (\"속함\", \"종목:C머티\", 0.3)],\n    \"산업:전기차\": [(\"속함\", \"종목:D모터스\", 0.7), (\"속함\", \"종목:E오토\", 0.4)],\n    \"국가:칠레\": [(\"관련\", \"종목:F광업\", 0.5)],\n}\ndef search(start, hops, k):\n    beam = [(1.0, [start])]\n    seen_paths = 0\n    for _ in range(hops):\n        cand = []\n        for score, path in beam:\n            for rel, nxt, w in graph.get(path[-1], []):\n                cand.append((score * w, path + [nxt]))\n        seen_paths += len(cand)\n        beam = sorted(cand, reverse=True)[:k]\n    return beam, seen_paths\nfor k in (2, 10):\n    beam, n = search(\"이벤트:리튬 가격 급락\", 2, k)\n    print(f\"k={k} 본 경로 {n}개 →\", [(round(s, 2), p[-1]) for s, p in beam[:3]])\n# k=2 본 경로 8개 → [(0.72, '종목:A화학'), (0.63, '종목:B소재')]\n# k=10 본 경로 9개 → [(0.72, '종목:A화학'), (0.63, '종목:B소재'), (0.42, '종목:D모터스')]"
+    }
+   ],
+   "how_far": "어떤 관계를 둘지(온톨로지)는 도메인 전문가·PO와 같이 정합니다.[7]{추론} 데이터 엔지니어는 **뉴스·공시에서 뽑은 엔티티를 기존 노드에 잇고(같은 이름의 다른 회사 구별), 관계를 매일 갱신하고, 쿼리가 터지지 않게** 지킵니다.[4][5] 최소선은 노드·관계·속성으로 작은 금융 그래프를 모델링하고 Cypher로 2~3홉 질의를 PROFILE로 재 본 경험입니다.{추론}",
+   "refs": [
+    1,
+    5,
+    6,
+    7
+   ],
+   "study": [
+    "toss-sec-search",
+    "neo4j-cypher",
+    "neo4j-modeling"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AI 서비스에 필요한 데이터를 사내 여러 팀과 AI agent가 빠르고 안정적으로 쓸 수 있도록 데이터 플랫폼과 서빙 인터페이스를 만들어요.",
+   "short": "팀마다 따로 짜던 검색·조회를 공통 API 하나로 묶어, 사람이 만든 서비스와 AI 에이전트가 같은 창구로 데이터를 쓰게 하는 일.",
+   "why": "같은 팀은 토스증권 모든 AI 서비스가 같이 쓰는 데이터 기반을 네 가지로 정리했습니다 — 원천 수집·가공 파이프라인, 실시간·배치 피처 스토어, 자연어 검색용 RAG, 지식 그래프.[5] 예전에는 서비스마다 Elasticsearch 쿼리를 직접 짜서 시험 때마다 쿼리를 새로 찾아야 했고, 이를 공통 RAG 플랫폼으로 합쳤습니다.[5]",
+   "actually": {
+    "items": [
+     "**자연어 검색 API** — '시황 설명 뉴스', '이 회사 주가가 왜 움직였나' 같은 요청이 한 API로 들어와 태그로 범위를 좁히고 → 텍스트 + 벡터 하이브리드 검색 → 리랭커(다시 줄 세우는 모델) 순서를 탄다.[5]",
+     "**에이전트가 부를 기능** — 'ticker·방향·기간을 넣으면 설명과 근거 목록이 나온다'처럼 입력·출력 모양이 정해진 절차를 만들면 다른 에이전트가 도구처럼 부를 수 있다.[4]",
+     "**버전 맞추기** — 임베딩 모델을 바꾸면 벡터 버전, 서빙 버전, 모델과 색인을 같이 바꾸는 일까지 맞춰야 했다.[5]",
+     "**실제 요청 모양으로 시험** — 과거 아이템 벡터를 한꺼번에 가져오는 요청(mget)에서 큰 벡터 응답이 JVM 메모리를 압박해, 지연뿐 아니라 처리량·GC까지 실제 요청 패턴으로 확인했다.[5]"
+    ]
+   },
+   "how_far": "이 줄의 핵심은 **'남이 쓰는 인터페이스'** 입니다 — 입력·출력 계약, 버전, 지연·가용성 목표를 정하고 지키는 것.{추론} 최소선은 검색이나 조회 하나를 API로 내고 응답 스키마·타임아웃·캐시·버전을 설계해 본 경험입니다.{추론}",
+   "refs": [
+    4,
+    5
+   ],
+   "study": [
+    "toss-sec-search",
+    "toss-ai-info",
+    "es-rrf",
+    "ddia"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "데이터 품질 검증 및 모니터링 체계를 만들고, 문제가 생기면 원인을 찾아 해결해요.",
+   "short": "데이터가 늦거나 비거나 틀리면 사람보다 먼저 알아채고, 원천부터 화면까지 따라가 원인을 고치는 일.",
+   "why": "투자 정보는 적시성·정확성(같은 이름의 다른 기업·자회사 기사 구별)·검증 가능성(근거를 남기고 다시 만들 수 있게)이 핵심이라고 같은 회사 글이 정리했습니다.[4] 회사는 환각(지어낸 답)을 막으려 추론·요약에 데이터 검증 루프를 두고 전문 인력이 상시 검수한다고 밝혔습니다.[7] 같은 회사의 다른 데이터 엔지니어 공고는 선언형 데이터 계약으로 품질 기준을 정하고 자동 검증하는 플랫폼, 서비스 화면에서 원천까지 계보 추적을 업무로 적었습니다.[11]",
+   "actually": {
+    "items": [
+     "**기본 검사** — 신선도(마지막 적재가 몇 분 전인가), 건수(평소보다 갑자기 줄었나), 빈 칸·허용 밖 값, 키 중복.{추론}",
+     "**LLM 결과 검사** — 생성 결과에 이벤트 유형·실패 사유 같은 범주 값을 같이 내게 해 정밀도·재현율·F1과 방향성 불일치 비율, 무관한 이슈가 통과한 비율을 잰다.[4]",
+     "**계보**(lineage, 어느 표가 어느 표에서 왔나) — 토스증권은 수천 개 실시간 파이프라인의 관계를 그래프로 저장해 눌러 보면 만든 정보까지 나오게 했다.[9]",
+     "**알림** — 토스증권 실시간 데이터 팀은 지표를 ClickHouse로 모으고 Kafka 스트림으로 탐지하며, 장 시간대에 따라 민감도를 달리하고 같은 알림이 반복되면 눌렀다.[10]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "매 회차 표 하나에 거는 기본 검사 세 가지",
+     "body": "기준값(10분·70%)은 예시입니다 — 장중·장 마감 뒤처럼 시간대마다 달라야 합니다.[10] 건수 검사만 실패했습니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "from datetime import datetime, timedelta\n# 매 회차 표 하나에 거는 기본 검사 세 가지: 신선도·건수·빈 칸\nnow = datetime(2026, 11, 23, 10, 0)\ntable = {\n    \"last_loaded\": datetime(2026, 11, 23, 9, 55),\n    \"rows_today\": 3120,\n    \"rows_7d_avg\": 5400,\n    \"null_ticker\": 0,\n}\nchecks = [\n    (\"신선도(10분 안)\", now - table[\"last_loaded\"] <= timedelta(minutes=10)),\n    (\"건수(7일 평균의 70% 이상)\", table[\"rows_today\"] >= 0.7 * table[\"rows_7d_avg\"]),\n    (\"종목코드 빈 칸 0건\", table[\"null_ticker\"] == 0),\n]\nfor name, ok in checks:\n    print(\"OK  \" if ok else \"FAIL\", name)\n# OK   신선도(10분 안)\n# FAIL 건수(7일 평균의 70% 이상)\n# OK   종목코드 빈 칸 0건"
+    }
+   ],
+   "how_far": "검사 몇 개를 다는 데서 끝나지 않고 **'고객 화면에 틀린 숫자가 나가기 전에 막았나'** 를 기준으로 봅니다.{추론} 최소선은 파이프라인 하나에 신선도·건수·형식 검사와 알림을 달고, 실패 한 건을 원인까지 찾아 고쳐 본 경험입니다.{추론}",
+   "refs": [
+    4,
+    7,
+    9,
+    10,
+    11
+   ],
+   "study": [
+    "toss-lineage",
+    "tmc25-alert",
+    "dbt-tests",
+    "sre-monitoring"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "3년 이상의 데이터 엔지니어링 혹은 이에 준하는 경험이 필요해요.",
+   "short": "혼자 파이프라인 하나를 처음부터 운영까지 책임져 본 정도의 연차.",
+   "why": "이력서 안내가 요구사항 분석 → 데이터 구조·아키텍처 설계, 대규모 파이프라인 운영, 정합성 시스템, 어려운 문제 해결 과정을 써 달라고 합니다.[1] 3년은 이 네 가지를 각각 한 번씩 겪어 볼 수 있는 기간으로 읽힙니다.{추론}",
+   "how_far": "'이에 준하는'이 붙어 있어 직함보다 내용입니다. 백엔드 개발자라도 배치·스트리밍 파이프라인을 직접 만들고 운영했다면 해당합니다.{추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "fde-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "배치 또는 스트리밍 데이터 파이프라인을 설계, 구축, 운영해본 경험이 필요해요.",
+   "short": "정해진 시각에 도는 작업(배치)이든 들어오는 대로 처리하는 흐름(스트리밍)이든, 하나를 끝까지 굴려 본 경험.",
+   "why": "이 팀의 랭킹은 Kafka로 들어온 시세·로그를 바로 처리하고[2], 뉴스·공시도 실시간으로 모읍니다.[1] 사용 기술에 스트리밍 쪽(Kafka·Flink)과 배치 쪽(Airflow·dbt·Spark)이 함께 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**스트리밍** — 랭킹 시험에서 초당 약 70만 건이 들어오는 토픽을 썼고, 장 시작 직후 컨슈머 지연이 생겼다가 1시간쯤 뒤 안정됐다.[2]",
+     "**이중화** — 토스증권은 데이터센터 두 곳의 Kafka를 서로 복제하고 한쪽에서만 소비해 한쪽이 멈춰도 이어서 읽는다.[8]",
+     "**배치** — 일·주 단위 랭킹이나 과거 데이터 다시 채우기는 정해진 시각에 돈다.[2]{추론}"
+    ]
+   },
+   "level": {
+    "basic": "Airflow DAG·재시도 · Kafka 토픽·파티션·컨슈머 그룹 · 멱등 적재(두 번 넣어도 같은 결과)",
+    "work": "백필 · 컨슈머 지연(lag) 감시 · 스키마 변경 대응 · 처음부터 다시 돌리기",
+    "team": "초당 수십만 건 입수 · 데이터센터 두 곳 이중화 · 장중/장외 다른 부하"
+   },
+   "how_far": "'설계·구축·운영' 셋이 다 들어갑니다. 남이 만든 DAG를 고친 경험보다 **내가 만든 파이프라인이 새벽에 멈췄을 때 다시 살리고 빠진 데이터를 채운** 경험이 이 줄의 핵심입니다.{추론}",
+   "refs": [
+    1,
+    2,
+    8
+   ],
+   "study": [
+    "internal-kafka",
+    "kafka-tdg",
+    "flink-docs",
+    "airflow-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "데이터 정합성 문제를 발견하고, 원인을 추적해 재발하지 않도록 구조적으로 해결해본 경험이 필요해요.",
+   "short": "숫자가 원천과 다를 때 어디서 어긋났는지 찾고, 같은 일이 다시 안 생기게 구조를 바꿔 본 경험.",
+   "why": "이력서 안내에 '정합성을 맞추려고 어떤 고민을 하고 시스템을 만들었나'가 따로 있습니다.[1] 증권 데이터는 순서가 뒤바뀐 시세, 두 번 들어온 체결, 같은 이름의 다른 회사 같은 어긋남이 고객 화면에 바로 나갑니다.[4]{추론}",
+   "actually": {
+    "items": [
+     "**중복** — 같은 이벤트가 두 번 와도 결과가 같게(키 + 버전으로 최신만).[12]",
+     "**순서** — 늦게 도착한 옛 값이 새 값을 덮지 않게 버전·이벤트 시각 기준으로 고른다.[12]",
+     "**엔티티 혼동** — 같은 이름의 다른 기업·자회사 기사를 구별한다.[4]",
+     "**구조적 해결** — 사람이 매번 확인하는 대신 검사·대조 작업을 파이프라인 안에 넣는다.{추론}"
+    ]
+   },
+   "how_far": "면접에서 한 건을 **증상 → 원인을 좁힌 과정 → 고친 것 → 다시 안 생기게 바꾼 구조** 순서로 설명할 수 있으면 됩니다.[1]{추론}",
+   "refs": [
+    1,
+    4,
+    12
+   ],
+   "study": [
+    "ddia",
+    "toss-lineage"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "요구사항에 맞춰 여러 기술 선택지를 비교하고, 트레이드오프를 근거로 설계해본 경험이 필요해요.",
+   "short": "'왜 이걸 골랐나'를 시험 숫자로 설명해 본 경험 — 장점만이 아니라 버린 것까지.",
+   "why": "이 팀의 랭킹 발표가 그대로 본보기입니다. ClickHouse 안의 Kafka 엔진은 외부 의존 없이 바로 넣을 수 있어 매력적이었지만 서버 자원을 나눠 쓰고 표가 늘어 버렸고, MySQL 복제 엔진은 실험 기능이라 보류했습니다.[2]",
+   "actually": {
+    "items": [
+     "**시험해 보고 고르기** — 장비 다섯 대 클러스터에 실제 국내 체결 데이터로 처리량·CPU·지연·메모리를 확인한 뒤 판단했다.[2]",
+     "**버린 이유까지** — 성능은 됐지만 운영·관리 부담 때문에 다른 길을 골랐다.[2]",
+     "**나중 여지** — 실험 기능이 정식이 되면 다시 쓰겠다고 남겼다.[2]"
+    ]
+   },
+   "how_far": "'A가 B보다 좋다'가 아니라 **'이 요구(초 단위·자원 분리)에서는 A, 대신 이것을 잃는다'** 를 말할 수 있으면 됩니다.{추론}",
+   "refs": [
+    2
+   ],
+   "study": [
+    "ddia",
+    "slash24-ranking"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "제품을 만드는 과정에서 다양한 포지션의 팀원들과 협업하고 소통할 수 있는 역량이 필요해요.",
+   "short": "PO·ML 엔지니어·금융 전문가·서버 개발자와 한 팀(사일로)에서 같이 제품을 만들어서.",
+   "why": "토스증권은 2026년 1월 AI 트라이브를 만들어 PO·데이터·ML 엔지니어·금융 도메인 전문가를 한 조직에 모았습니다.[7] 공고의 동료 한마디도 여러 직군이 제품·AI·데이터의 경계 없이 깊게 논의한다고 적었습니다.[1]",
+   "how_far": "데이터 엔지니어가 받는 요청은 '이 데이터 주세요'보다 '이 기능을 만들고 싶어요'에 가깝습니다. 요청을 **데이터 요구사항(무엇을·얼마나 빨리·얼마나 정확히)** 으로 바꿔 되묻는 능력입니다.{추론}",
+   "refs": [
+    1,
+    7
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI 서비스를 위한 데이터 파이프라인이나 Agentic 워크플로우를 설계, 운영해 본 경험이 있으면 더 좋아요",
+   "short": "LLM이 여러 단계를 거쳐 답을 만드는 흐름을 데이터 쪽에서 만들어 본 경험.",
+   "why": "같은 회사 글은 고객에게 나가는 정보에는 에이전트의 자율성을 줄였다고 썼습니다 — 여러 에이전트·도구 호출·계획은 실패 지점을 늘리기 때문에, 요건이 분명한 일(특정 종목 등락 설명)은 검색 → 관련성 판단 → 중복 제거 → 근거 구성 → 생성 순서로 정해 둔 절차형으로 돌립니다.[4] 열린 문제(아이디어 찾기)만 자율형이 맞다고 봤습니다.[4]",
+   "how_far": "'에이전트를 만들어 봤다'보다 **언제 자율형을 쓰지 않을지 판단하고, 단계마다 기록(트레이스)을 남겨 어디서 틀렸는지 찾을 수 있게 한** 경험이 더 맞습니다.[4]",
+   "refs": [
+    4
+   ],
+   "study": [
+    "toss-ai-info",
+    "aie-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "분산 처리 시스템(Kafka, Iceberg, ClickHouse, Elasticsearch 등)을 활용해 대규모 데이터를 효율적으로 처리해 본 경험이 있으면 더 좋아요.",
+   "short": "토스증권이 실제로 쓰는 넷 — 실어 나르기(Kafka)·쌓기(Iceberg)·빨리 세기(ClickHouse)·찾기(Elasticsearch).",
+   "why": "네 가지 모두 공고의 사용 기술 목록에 있습니다.[1] 랭킹은 Kafka → ClickHouse[2], 뉴스 검색은 Elasticsearch 하이브리드 검색[5]으로 돕니다.",
+   "actually": {
+    "items": [
+     "**ClickHouse** — 표 엔진 고르기(최신만 남기기·중간 집계 저장), 정렬 키와 구체화 뷰의 묶음 키 맞추기.[2][13]",
+     "**Elasticsearch** — 텍스트 + 벡터 하이브리드, 메타데이터 필터, 새 금융 용어를 형태소 사전에 계속 넣기.[5]",
+     "**Kafka** — 초당 수십만 건 입수와 컨슈머 지연 관리.[2]",
+     "**Iceberg** — 큰 표를 파일로 쌓아 두고 여러 엔진이 같이 읽게 하는 표 형식.{추론}"
+    ]
+   },
+   "how_far": "넷 다 깊게 알 필요는 없고 **하나를 '왜 느린지 설명할 수 있는' 수준**까지, 나머지는 어떤 일에 쓰는지 아는 정도면 충분해 보입니다.{추론}",
+   "refs": [
+    1,
+    2,
+    5
+   ],
+   "study": [
+    "slash24-ranking",
+    "ch-mv",
+    "slash23-es",
+    "kafka-tdg"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Kubernetes 환경 위에서 분산 어플리케이션을 배포, 운영해본 경험이 있으면 더 좋아요.",
+   "short": "파이프라인·커넥터·서빙 API를 쿠버네티스에 올리고, 죽으면 왜 죽었는지 읽을 줄 아는 경험.",
+   "why": "사용 기술에 Kubernetes·ArgoCD(Git에 적힌 대로 배포를 맞추는 도구)와 Grafana·Prometheus가 있습니다.[1] 같은 회사 DRE 공고도 Airflow·Kubernetes 기반 파이프라인을 다룹니다.[11]",
+   "how_far": "클러스터 운영은 플랫폼 팀 몫일 가능성이 큽니다.{추론} 이 자리는 **내 앱의 매니페스트(자원 요청·재시작 정책)를 쓰고 Pending·OOMKilled·CrashLoopBackOff를 읽어 고치는** 수준이면 됩니다.{추론}",
+   "refs": [
+    1,
+    11
+   ],
+   "study": [
+    "internal-k8s",
+    "argocd-appset"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "LLM을 데이터 파이프라인에 적용해 비정형 데이터를 추출, 분류, 요약하고, 품질을 검증하고 모델을 평가해본 경험이 있으면 더 좋아요.",
+   "short": "글에서 칸을 뽑는 데 LLM을 쓰고, 뽑은 결과가 맞는지 숫자로 재 본 경험.",
+   "why": "같은 회사 글은 과제마다 범주형 루브릭(평가 기준표)을 만들어 LLM이 답과 함께 분류 값을 내게 하고, 정밀도·재현율·F1으로 잰다고 썼습니다. 투자 정보에서는 **틀린 것을 맞다고 내보내는 것(오탐)** 이 특히 중요하다고 했습니다.[4] 고정 예시 대신 운영 중 모은 비슷한 성공·실패 예를 찾아 넣는 방식으로 바꿔, 재현율을 지키면서 정밀도를 크게 올렸다고 합니다(숫자는 공개하지 않음).[4]",
+   "examples": [
+    {
+     "title": "LLM 추출 결과를 받기 전에 걸러내기",
+     "body": "형식(JSON인가) → 사전(있는 종목코드인가) → 허용 값 → 근거 문장이 원문에 정말 있는가 순서로 검사합니다. 종목·문장은 가상 값입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "import json\n# LLM 이 뉴스에서 뽑은 결과를 받기 전에 검사한다 — 형식·사전·근거\nmaster = {\"005930\": \"삼성전자\", \"000660\": \"SK하이닉스\"}\narticle = \"SK하이닉스가 HBM 공급 계약을 발표했다. 삼성전자는 언급되지 않았다.\"\noutputs = [\n    '{\"ticker\": \"000660\", \"event\": \"공급계약\", \"polarity\": \"positive\", \"evidence\": \"HBM 공급 계약을 발표\"}',\n    '{\"ticker\": \"005935\", \"event\": \"공급계약\", \"polarity\": \"positive\", \"evidence\": \"HBM 공급 계약을 발표\"}',\n    '{\"ticker\": \"000660\", \"event\": \"공급계약\", \"polarity\": \"great\", \"evidence\": \"HBM 공급 계약을 발표\"}',\n    '{\"ticker\": \"000660\", \"event\": \"공급계약\", \"polarity\": \"positive\", \"evidence\": \"3조원 규모 계약\"}',\n    'SK하이닉스 호재입니다',\n]\nEVENTS = {\"실적\", \"공급계약\", \"인수합병\", \"소송\"}\ndef check(raw):\n    try:\n        o = json.loads(raw)\n    except json.JSONDecodeError:\n        return \"형식 오류\"\n    if o.get(\"ticker\") not in master:\n        return \"없는 종목코드\"\n    if o.get(\"event\") not in EVENTS or o.get(\"polarity\") not in {\"positive\", \"negative\", \"neutral\"}:\n        return \"허용 밖 값\"\n    if o.get(\"evidence\", \"\") not in article:\n        return \"근거가 원문에 없음\"\n    return \"통과\"\nfor raw in outputs:\n    print(check(raw))\n# 통과\n# 없는 종목코드\n# 허용 밖 값\n# 근거가 원문에 없음\n# 형식 오류"
+    },
+    {
+     "title": "정밀도·재현율·F1",
+     "body": "10건 중 모델이 근거라고 한 5건 가운데 3건만 맞았습니다(정밀도 0.60). 투자 정보에서는 이 FP 2건이 고객 화면에 틀린 설명으로 나갑니다.[4] 가상 값입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "# 사람이 붙인 정답과 모델 판정을 비교해 정밀도·재현율·F1 을 잰다\ngold = [1, 1, 0, 0, 1, 0, 0, 1, 0, 0]   # 1 = 이 뉴스가 이 종목 움직임의 근거다\npred = [1, 1, 1, 0, 0, 0, 1, 1, 0, 0]\ntp = sum(g and p for g, p in zip(gold, pred))\nfp = sum((not g) and p for g, p in zip(gold, pred))\nfn = sum(g and (not p) for g, p in zip(gold, pred))\nprecision = tp / (tp + fp)\nrecall = tp / (tp + fn)\nf1 = 2 * precision * recall / (precision + recall)\nprint(f\"TP={tp} FP={fp} FN={fn}\")\nprint(f\"정밀도 {precision:.2f} 재현율 {recall:.2f} F1 {f1:.2f}\")\n# TP=3 FP=2 FN=1\n# 정밀도 0.60 재현율 0.75 F1 0.67"
+    }
+   ],
+   "how_far": "'요약을 붙였다'로는 부족하고 **정답 묶음(평가셋)을 만들어 바꾸기 전후를 숫자로 비교한** 경험이 이 줄의 기준입니다.[4]{추론}",
+   "refs": [
+    4,
+    6
+   ],
+   "study": [
+    "toss-ai-info",
+    "aie-book",
+    "llm-app"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "그래프 DB를 이해하고 관계 데이터 모델링에 대해 고민해본 경험이 있으면 더 좋아요.",
+   "short": "지식 그래프를 Neo4j에 담으니, 무엇을 노드로·무엇을 관계로 둘지 정해 본 경험.",
+   "why": "업무③의 금융 지식 그래프가 Neo4j 위에서 돌고, 경로 폭발과 트랜잭션 메모리 한계를 실제로 겪었습니다.[5]",
+   "actually": {
+    "items": [
+     "**노드냐 속성이냐** — '산업'을 종목의 속성으로 둘지 따로 노드로 둘지에 따라 '같은 산업 종목 찾기' 질의 모양이 바뀐다.{추론}",
+     "**관계 방향·타입** — 질의 처음부터 방향·타입·필터를 적어 넓히는 양을 줄였다.[5]",
+     "**의도 반영** — 특정 노드 유형 순서와 맞는 경로에 가산점을 주는 파라미터로, 제품마다 검색기를 따로 만들지 않았다.[5]"
+    ]
+   },
+   "how_far": "Cypher로 2~3홉 질의를 쓰고 PROFILE로 실제 행 수를 보며 고쳐 본 정도면 이야기할 거리가 됩니다.[5]{추론}",
+   "refs": [
+    1,
+    5
+   ],
+   "study": [
+    "neo4j-modeling",
+    "neo4j-cypher",
+    "toss-sec-search"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "유저의 행동 데이터로 개인화 추천에 쓰이는 피처를 만들고, 온/오프라인 피처스토어를 운영해본 경험이 있으면 더 좋아요.",
+   "short": "'이 사람이 최근 본 종목' 같은 값을 학습용(오프라인)과 실시간 응답용(온라인)으로 똑같이 만들어 주는 일.",
+   "why": "같은 팀은 추천을 배치 방식(사용자를 묶어 묶음별 추천 목록을 미리 Redis·MongoDB에 저장)에서, 행동·아이템 변경 이벤트를 받아 피처 스토어와 벡터 색인에 바로 반영하는 실시간 방식으로 바꾸고 있다고 썼습니다.[5] 관심사가 빨리 바뀌고 장중 이벤트가 계속 생기기 때문입니다.[5]",
+   "how_far": "핵심은 **학습 때 본 값과 서빙 때 보는 값이 같은 정의로 만들어지게** 하는 것입니다.{추론} 최소선은 같은 피처를 배치(SQL)와 실시간(스트림)으로 만들고 두 값이 맞는지 대조해 본 경험입니다.{추론}",
+   "refs": [
+    5
+   ],
+   "study": [
+    "slash24-featurestore",
+    "feast-docs",
+    "dmls-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "증권 도메인과 제품에 관심이 많고, 본인만의 투자 경험이 있는 분이면 더 좋아요.",
+   "short": "시세·체결·공시가 어떻게 움직이는지 알아야 '이 숫자가 이상하다'를 먼저 알아채서.",
+   "why": "랭킹 하나에도 장 시작 직후 부하가 몰리고[2], 알림 민감도는 장 시간대마다 다릅니다.[10] 뉴스가 어느 종목 움직임의 근거인지 판단하는 일도 이 팀의 일입니다.[4]",
+   "how_far": "전문 지식보다 **토스증권 앱의 랭킹·실시간 이슈·AI 시그널을 직접 써 보고 데이터가 어디서 왔을지 설명할 수 있는** 정도가 면접에서 쓸모 있습니다.{추론}",
+   "refs": [
+    2,
+    4,
+    10
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "'왜 느린지'를 시험 숫자로 확인하고 구조를 바꾸는 걸 즐기는 사람[2]",
+   "LLM 결과를 그냥 믿지 않고 평가셋으로 재는 사람[4]",
+   "PO·ML 엔지니어·금융 전문가와 한 팀에서 제품을 같이 만들고 싶은 사람[7]",
+   "주식 앱을 직접 쓰며 데이터가 어디서 왔을지 궁금해하는 사람{추론}"
+  ],
+  "hard": [
+   "실시간·검색·그래프·LLM이 한 자리에 섞여 있어 공부할 범위가 넓다[1]",
+   "장중에는 부하와 장애가 바로 고객 화면에 보인다[2]",
+   "자격요건이 3년 이상 경력이다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "시간당 1억 건 로그로 '최근 1시간 인기 종목'을 1초 안에 내려면 표를 어떻게 만들겠어요?",
+   "a": "이 팀이 분 단위 중간 집계로 1억 건을 46만 행으로 줄인 방법.[2]"
+  },
+  {
+   "q": "같은 종목 시세가 순서가 뒤바뀌어 들어오면 최신 값을 어떻게 보장하나요?",
+   "a": "키 + 버전으로 최신만 남기는 표와 병합 전 중복.[2][12]"
+  },
+  {
+   "q": "ClickHouse Kafka 엔진 대신 Sink Connector를 고른다면 무엇을 얻고 무엇을 잃나요?",
+   "a": "발표에서 직접 비교한 트레이드오프.[2]"
+  },
+  {
+   "q": "그래프에서 3홉 탐색 후보가 수천만 개로 늘면 어떻게 하겠어요?",
+   "a": "홉마다 상위 후보만 넘기는 빔 탐색과 PROFILE.[5]"
+  },
+  {
+   "q": "LLM이 뉴스에서 뽑은 '관련 종목'이 맞는지 어떻게 재고, 오탐을 어떻게 줄이겠어요?",
+   "a": "범주형 루브릭·정밀도·few-shot 검색.[4]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 토스증권 데이터 엔지니어 (AI Service)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7820096003",
+   "kind": "posting",
+   "note": "팀 소개(AI Info & Data Silo)·업무·요건·우대·사용 기술·이력서 안내·합류 여정(처우 협의 포함)·동료 한마디"
+  },
+  {
+   "n": 2,
+   "title": "SLASH 24 · ClickHouse로 토스증권 랭킹 서비스 구조 개선하기",
+   "url": "https://www.youtube.com/watch?v=8P2OL7cwFEU",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스증권 Data Engineer 정채문 · 17분 · 자막 전부 읽음(1분 → 초 단위, 평균 10초대 집계, Kafka 엔진 초당 약 60만 건, Sink Connector, MaterializedMySQL 실험, ReplacingMergeTree, 시간당 약 1억 건 → 46만 행, 600ms → 200~300ms, 작업 10~20초 → 200~300ms, 서비스·분석계 분리)"
+  },
+  {
+   "n": 3,
+   "title": "SLASH 24 세션 소개 · ClickHouse로 토스증권 랭킹 서비스 구조 개선하기",
+   "url": "https://toss.im/slash-24/sessions/29",
+   "kind": "company",
+   "date": "2024"
+  },
+  {
+   "n": 4,
+   "title": "Toss Tech · AI에게 투자정보를 말하게 하기까지",
+   "url": "https://toss.tech/article/tech_talk_talk_1",
+   "kind": "company",
+   "date": "2026-08-13",
+   "note": "토스증권 ML 엔지니어 정현규 — 입수 시점 BERT 분류·중복 묶기·실패 사유 라벨·절차형 오케스트레이션·범주형 루브릭·few-shot 검색"
+  },
+  {
+   "n": 5,
+   "title": "Toss Tech · 토스증권 추천과 검색은 어떻게 진화하고 있을까?",
+   "url": "https://toss.tech/article/tech_talk_talk_3",
+   "kind": "company",
+   "date": "2026-08-26",
+   "note": "토스증권 AI 데이터 플랫폼 팀 황호익 — 플랫폼 네 기둥, 공통 RAG, 그래프 RAG(경로 1,105 → 134,520 → 49,241,786, 빔 탐색, Cypher PROFILE), 실시간 추천"
+  },
+  {
+   "n": 6,
+   "title": "전자신문 · 김규빈 토스증권 대표 \"공시·어닝콜·뉴스까지…AI로 투자 여정 돕는다\"",
+   "url": "https://www.etnews.com/20251211000238",
+   "kind": "news",
+   "date": "2025-12-11",
+   "note": "스마트금융컨퍼런스 기조강연 — 해외 뉴스 하루 4,000~6,000건 자체 번역, RAG, 금융 온톨로지, 미국 공시 실시간 파이프라인"
+  },
+  {
+   "n": 7,
+   "title": "지디넷코리아 · 출범 5주년 토스증권, 승부수는 'AI'",
+   "url": "https://v.daum.net/v/20260429142502536",
+   "kind": "news",
+   "date": "2026-04-29",
+   "note": "AI 트라이브(2026-01), 자체 모델·외부 LLM 병행, 실시간 이슈 20개·소셜 확장 계획, 검증 루프·상시 검수"
+  },
+  {
+   "n": 8,
+   "title": "SLASH 23 · Kafka 이중화로 다양한 장애 상황 완벽 대처하기",
+   "url": "https://www.youtube.com/watch?v=Pzkioe7Dvo4",
+   "kind": "company",
+   "date": "2023",
+   "note": "토스증권 데이터 플랫폼 팀 — 데이터센터 두 곳 미러링·한쪽에서만 소비(다른 회차 풀이에서 자막 확인한 내용)"
+  },
+  {
+   "n": 9,
+   "title": "Toss Tech · 토스증권의 수천 개 실시간 데이터 파이프라인 운영방법 #1: Visualize Lineage",
+   "url": "https://toss.tech/article/toss-securities-visualize-lineage",
+   "kind": "company",
+   "date": "2025-08-11",
+   "note": "토스증권 Realtime Data Team"
+  },
+  {
+   "n": 10,
+   "title": "TMC25 · 증권사 실시간 Alert 플랫폼 고군분투기",
+   "url": "https://www.youtube.com/watch?v=fcTPQAt7KkA",
+   "kind": "company",
+   "date": "2025",
+   "note": "토스증권 실시간 데이터 팀 — ClickHouse 통합·Kafka 스트림 탐지·장 시간대별 민감도·반복 억제(다른 회차 풀이에서 자막 확인한 내용)"
+  },
+  {
+   "n": 11,
+   "title": "토스 채용 · 토스증권 데이터 엔지니어 (금융데이터/DRE)",
+   "url": "https://toss.im/career/job-detail?gh_jid=8006361003",
+   "kind": "posting",
+   "note": "같은 회사 다른 데이터 엔지니어 자리 — 데이터 계약 기반 품질 플랫폼, 계보 추적, 외부 벤더 교차 검증"
+  },
+  {
+   "n": 12,
+   "title": "ClickHouse 문서 · ReplacingMergeTree",
+   "url": "https://clickhouse.com/docs/engines/table-engines/mergetree-family/replacingmergetree",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "ClickHouse 문서 · 증분 구체화 뷰(Incremental materialized view)",
+   "url": "https://clickhouse.com/docs/ko/materialized-view/incremental-materialized-view",
+   "kind": "reference",
+   "note": "넣을 때마다 도는 트리거, AggregatingMergeTree 대상 표, 묶음 키 = 정렬 키"
+  },
+  {
+   "n": 14,
+   "title": "자소설닷컴 — 토스증권 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/13103",
+   "kind": "reference",
+   "note": "다른 회차에서 검색 결과 요약으로 확인(페이지 직접 열람은 막힘). 사원수 292명 표기 — 2023년 무렵 값으로 보인다"
+  },
+  {
+   "n": 15,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(같은 집계)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "CEO스코어데일리 · '호황' 증권가, 임직원 수 2% 늘 때 급여는 48% 증가",
+   "url": "https://www.ceoscoredaily.com/page/view/2026052816034001002",
+   "kind": "news",
+   "date": "2026-05-29",
+   "note": "금융투자협회 공시 1분기 — 토스증권 직원 380명 → 516명, 직원 급여 21.4% 증가"
+  },
+  {
+   "n": 17,
+   "title": "토스증권 — 사이트 하단 회사 정보",
+   "url": "https://tossinvest.com/",
+   "kind": "company"
+  },
+  {
+   "n": 18,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  }
+ ],
+ "caveat": "랭킹 구조는 2024년 발표 기준이라 지금은 달라졌을 수 있습니다. 뉴스·공시 파이프라인의 실제 구성(어떤 LLM을 어디서 부르는지), 지식 그래프의 스키마·규모, 피처 스토어 구현은 공개되지 않아, 같은 팀·같은 회사의 글과 보도로 확인된 데까지만 쓰고 나머지는 {추론}으로 표시했습니다. 출처 [8]·[10]·[14]는 이 회차가 아니라 앞선 풀이에서 확인한 내용을 옮겼습니다.",
+ "resources": [
+  {
+   "id": "slash24-ranking",
+   "title": "SLASH 24 · ClickHouse로 토스증권 랭킹 서비스 구조 개선하기",
+   "by": "토스증권 Data Engineer · 17분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=8P2OL7cwFEU",
+   "why": "업무① 그 자체. 랭킹마다 표 엔진을 어떻게 골랐고 무엇을 버렸는지 — 자격요건 '트레이드오프 설계'의 본보기이기도 하다."
+  },
+  {
+   "id": "toss-ai-info",
+   "title": "AI에게 투자정보를 말하게 하기까지",
+   "by": "토스증권 · Toss Tech · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/tech_talk_talk_1",
+   "why": "업무②⑤·우대①④ — 뉴스를 들어올 때 분류하고, 중복을 묶고, LLM 결과를 루브릭과 정밀도로 재는 실제 흐름."
+  },
+  {
+   "id": "toss-sec-search",
+   "title": "토스증권 추천과 검색은 어떻게 진화하고 있을까?",
+   "by": "토스증권 AI 데이터 플랫폼 팀 · Toss Tech · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/tech_talk_talk_3",
+   "why": "합류할 쪽 팀의 글. 업무③④·우대⑤⑥ — 공통 RAG, 그래프 RAG의 경로 폭발과 빔 탐색, 실시간 추천과 피처 스토어."
+  },
+  {
+   "id": "ch-replacing",
+   "title": "ReplacingMergeTree",
+   "by": "ClickHouse 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://clickhouse.com/docs/engines/table-engines/mergetree-family/replacingmergetree",
+   "why": "급상승·급하락 랭킹처럼 '종목마다 최신 값만' 필요할 때의 표. 병합 전 중복이 보이는 이유와 처리법."
+  },
+  {
+   "id": "ch-mv",
+   "title": "증분 구체화 뷰 (Incremental materialized view)",
+   "by": "ClickHouse 공식 문서(한국어)",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://clickhouse.com/docs/ko/materialized-view/incremental-materialized-view",
+   "why": "로그를 넣을 때마다 분·시간 단위로 접어 AggregatingMergeTree에 담는 방법 — 인기 랭킹을 빠르게 만든 핵심."
+  },
+  {
+   "id": "slash23-es",
+   "title": "SLASH 23 · 대규모 로그 처리도 OK! Elasticsearch 클러스터 개선기",
+   "by": "토스증권 데이터 플랫폼 팀 · 16분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=_SJYU4lHa28",
+   "why": "같은 회사가 Elasticsearch를 큰 규모로 운영하며 겪은 매핑·샤드·메모리 문제 — 우대② 'Elasticsearch로 대규모 처리'."
+  },
+  {
+   "id": "neo4j-cypher",
+   "title": "Cypher Fundamentals",
+   "by": "Neo4j GraphAcademy",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://graphacademy.neo4j.com/courses/cypher-fundamentals/",
+   "why": "업무③·우대⑤ — 노드·관계 패턴을 읽고 쓰는 Cypher 기초. 브라우저에서 바로 실습한다."
+  },
+  {
+   "id": "neo4j-modeling",
+   "title": "Neo4j 과정 목록(그래프 데이터 모델링 등)",
+   "by": "Neo4j GraphAcademy",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://graphacademy.neo4j.com/courses/",
+   "why": "Cypher 다음 단계. 무엇을 노드·관계·속성으로 둘지 정하는 모델링 과정을 여기서 고른다."
+  },
+  {
+   "id": "internal-kafka",
+   "title": "아파치 카프카 애플리케이션 프로그래밍",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kafka",
+   "why": "시세·로그가 들어오는 입구. 토픽·파티션·컨슈머 그룹·오프셋을 실제 명령으로 익힌다."
+  },
+  {
+   "id": "internal-k8s",
+   "title": "쿠버네티스 입문",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "우대③ — 파드·디플로이먼트를 올리고 Pending·CrashLoopBackOff 읽는 법."
+  },
+  {
+   "id": "kafka-tdg",
+   "title": "Kafka: The Definitive Guide (2판)",
+   "by": "Gwen Shapira · Todd Palino · Rajini Sivaram · Krit Petty · O'Reilly · 2021",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/kafka-the-definitive/9781492043072/",
+   "why": "컨슈머 지연·복제·전달 보장 — 초당 수십만 건 스트리밍을 운영하는 바탕."
+  },
+  {
+   "id": "flink-docs",
+   "title": "Stateful Stream Processing",
+   "by": "Apache Flink 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://nightlies.apache.org/flink/flink-docs-stable/docs/concepts/stateful-stream-processing/",
+   "why": "사용 기술의 Flink — 상태를 들고 흐르는 집계와 체크포인트."
+  },
+  {
+   "id": "airflow-book",
+   "title": "Apache Airflow 기반의 데이터 파이프라인",
+   "by": "바스 하렌슬락 · 율리안 더라위터르 · 제이펍 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000002993441",
+   "why": "배치 쪽 — DAG·재시도·백필. 자격요건 '배치 파이프라인 설계·운영'."
+  },
+  {
+   "id": "ddia",
+   "title": "Designing Data-Intensive Applications",
+   "by": "Martin Kleppmann · O'Reilly · 2017",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/",
+   "why": "정합성·중복·순서·트레이드오프를 말로 설명하는 힘. 자격요건 ③④의 바탕."
+  },
+  {
+   "id": "fde-book",
+   "title": "견고한 데이터 엔지니어링",
+   "by": "조 라이스 · 맷 하우슬리 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B2%AC%EA%B3%A0%ED%95%9C%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81",
+   "why": "데이터 엔지니어의 일 전체 지도 — 수집·저장·변환·서빙과 그 사이 선택. 3년 차가 갖출 시야."
+  },
+  {
+   "id": "es-rrf",
+   "title": "Elasticsearch 문서 · Reciprocal rank fusion",
+   "by": "Elastic",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.elastic.co/guide/en/elasticsearch/reference/current/rrf.html",
+   "why": "업무④ 하이브리드 검색 — 텍스트 검색과 벡터 검색 결과를 한 순위로 합치는 방법."
+  },
+  {
+   "id": "dbt-tests",
+   "title": "dbt Data tests",
+   "by": "dbt Labs 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.getdbt.com/docs/build/data-tests",
+   "why": "사용 기술의 dbt — 빈 칸·중복·허용 값 검사를 표 정의 옆에 적는 법. 업무⑤의 출발점."
+  },
+  {
+   "id": "toss-lineage",
+   "title": "토스증권의 수천 개 실시간 데이터 파이프라인 운영방법 #1: Visualize Lineage",
+   "by": "토스증권 Realtime Data Team · Toss Tech · 2025",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/toss-securities-visualize-lineage",
+   "why": "문제가 생겼을 때 원천까지 따라가는 계보 도구를 같은 회사가 어떻게 만들었나."
+  },
+  {
+   "id": "tmc25-alert",
+   "title": "TMC25 · 증권사 실시간 Alert 플랫폼 고군분투기",
+   "by": "토스증권 실시간 데이터 팀 · 17분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=fcTPQAt7KkA",
+   "why": "업무⑤ 모니터링 — 장 시간대별 민감도, 반복 알림 억제, ClickHouse로 신호 모으기."
+  },
+  {
+   "id": "sre-monitoring",
+   "title": "Site Reliability Engineering · Monitoring Distributed Systems",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+   "why": "무엇을 감시하고 언제 사람을 깨울지 — 데이터 품질 알림을 설계하는 기본 원칙."
+  },
+  {
+   "id": "aie-book",
+   "title": "AI Engineering",
+   "by": "Chip Huyen · O'Reilly · 2025",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/ai-engineering/9781098166298/",
+   "why": "우대①④ — LLM 앱의 평가(평가셋·LLM 심판)·RAG·에이전트를 엔지니어 관점에서 정리."
+  },
+  {
+   "id": "llm-app",
+   "title": "LLM을 활용한 실전 AI 애플리케이션 개발",
+   "by": "허정준",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=LLM%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EC%8B%A4%EC%A0%84%20AI%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EA%B0%9C%EB%B0%9C",
+   "why": "한국어로 RAG·임베딩·평가를 코드와 함께 — 업무② 파이프라인을 처음 만들 때."
+  },
+  {
+   "id": "slash24-featurestore",
+   "title": "SLASH 24 · Feature Store로 유연하게 ML 고도화하기",
+   "by": "토스 ML 플랫폼 팀 · 19분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=-u3rhd7k2JQ",
+   "why": "우대⑥ — 같은 그룹이 학습·서빙에 같은 피처를 주는 저장소를 어떻게 만들었나."
+  },
+  {
+   "id": "feast-docs",
+   "title": "Feast 공식 문서",
+   "by": "Feast",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.feast.dev/",
+   "why": "오픈소스 피처 스토어로 온라인·오프라인 저장소를 직접 띄워 보는 실습용."
+  },
+  {
+   "id": "dmls-ko",
+   "title": "머신러닝 시스템 설계",
+   "by": "칩 후옌 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EC%B9%A9%20%ED%9B%84%EC%98%8C",
+   "why": "피처 엔지니어링·학습/서빙 불일치·데이터 분포 변화 — 우대⑥과 업무⑤를 ML 쪽에서 본다."
+  },
+  {
+   "id": "argocd-appset",
+   "title": "Argo CD ApplicationSet",
+   "by": "Argo CD 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/",
+   "why": "사용 기술의 ArgoCD — Git에 적은 대로 여러 앱을 배포하는 방식."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사 글부터",
+   "time": "1주",
+   "goal": "이 팀이 만드는 것(랭킹·뉴스 파이프라인·그래프·검색 API)을 그림 한 장으로 설명할 수 있다.",
+   "resources": [
+    "slash24-ranking",
+    "toss-ai-info",
+    "toss-sec-search"
+   ],
+   "task": "세 자료를 보고 '시세·뉴스가 들어와 고객 화면에 나가기까지'를 상자와 화살표로 그리고, 상자마다 쓰는 기술과 '여기서 틀리면 무엇이 잘못 나가나'를 한 줄씩 적는다."
+  },
+  {
+   "title": "실시간 랭킹 만들기",
+   "time": "2~3주",
+   "goal": "Kafka로 받은 이벤트를 ClickHouse에서 분 단위로 접어 1초 안에 순위를 낸다.",
+   "resources": [
+    "internal-kafka",
+    "ch-replacing",
+    "ch-mv",
+    "kafka-tdg"
+   ],
+   "task": "가상 체결·조회 이벤트를 초당 수천 건 Kafka에 넣고, ClickHouse에 원본 표·ReplacingMergeTree(최신 시세)·구체화 뷰 + AggregatingMergeTree(분 단위 조회 수)를 만든다. 원본 직접 집계와 중간 표 집계의 쿼리 시간을 재서 비교한다."
+  },
+  {
+   "title": "뉴스 파이프라인과 품질",
+   "time": "2~3주",
+   "goal": "뉴스를 받아 LLM으로 칸을 뽑고, 검사하고, 평가셋으로 정밀도를 잰다.",
+   "resources": [
+    "toss-ai-info",
+    "llm-app",
+    "aie-book",
+    "dbt-tests"
+   ],
+   "task": "공개 RSS 뉴스 200건을 받아 같은 사건을 묶고, LLM으로 {회사·사건 유형·방향·근거 문장}을 JSON으로 뽑는다. 50건에 손으로 정답을 달아 정밀도·재현율을 재고, 형식·사전·근거 검사를 붙인 뒤 다시 잰다."
+  },
+  {
+   "title": "지식 그래프와 검색 API",
+   "time": "2주",
+   "goal": "사건·산업·종목 그래프를 Neo4j에 담고, 2~3홉 질의를 API로 낸다.",
+   "resources": [
+    "neo4j-cypher",
+    "neo4j-modeling",
+    "toss-sec-search",
+    "es-rrf"
+   ],
+   "task": "3단계에서 뽑은 결과로 (사건)-[영향]->(산업)<-[속함]-(종목) 그래프를 만들고, '이 사건에 영향받는 종목' 질의를 PROFILE로 재며 고친다. 홉마다 상위 k개만 넘기는 버전과 비교하고, 결과에 경로를 같이 담는 API를 만든다."
+  },
+  {
+   "title": "운영까지 (선택)",
+   "time": "계속",
+   "goal": "만든 것을 쿠버네티스에 올리고, 늦거나 비면 알림이 온다.",
+   "resources": [
+    "internal-k8s",
+    "argocd-appset",
+    "tmc25-alert",
+    "sre-monitoring",
+    "ddia"
+   ],
+   "task": "2~4단계를 컨테이너로 올리고 신선도·건수·형식 검사와 알림을 단다. 일부러 원천을 멈추거나 중복을 넣어 알림이 오는지, 고친 뒤 빠진 데이터를 다시 채울 수 있는지 확인한다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 공공데이터 집계로 신입 초봉 **약 5,000만원**, 평균 **약 7,000만원** — 비상장사라 공시 평균 급여는 없고, 이 자리는 3년 이상 경력직이다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,003만원",
+    "amount": 5003,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없고 사원수 표기(292명)로 보아 2023년 무렵 값으로 보인다 [14]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 7,007만원",
+    "amount": 7007,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 — 경력직이 섞인 값이다 [14]"
+   },
+   {
+    "label": "토스(비바리퍼블리카) 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 그룹 모회사 값 — 견주어 보기용 [15]"
+   },
+   {
+    "label": "토스(비바리퍼블리카) 평균",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 회사 전체 평균 [15]"
+   }
+  ],
+  "how": "합류 여정은 서류 → 직무 인터뷰 → 문화적합성 인터뷰 → 레퍼런스 체크 → **처우 협의** → 최종 합격 순서이고, 연봉은 처우 협의에서 사람마다 정한다 [1]. 토스증권은 금융투자협회 공시로 직원 수(2026년 1분기 516명)와 직원 급여 21.4% 증가가 보도됐지만 1인 평균 금액은 찾지 못했다 [16]. 평균은 초봉이 아니라 경력직이 섞인 회사 전체 값이고, 집계값은 몇 년 전 추정이라 3년 이상 경력직 제안과 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 전체를 기준으로 한 2021년 공식 소개 글이다 [18]. 토스증권에 그대로 적용되는지, 지금도 같은지는 글에 없으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스증권 본사",
+  "address": "서울특별시 강남구 테헤란로 133, 7층 (역삼동, 한국타이어빌딩)",
+  "postal": "06133",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20133",
+  "near": "2호선 역삼역과 강남역 사이 테헤란로 {추론}",
+  "note": "주소는 토스증권 사이트 하단의 회사 정보다 [17]. 공고 근무지는 'Seoul'로만 적혀 있어 팀 자리는 다를 수 있다 [1]."
+ }
+}

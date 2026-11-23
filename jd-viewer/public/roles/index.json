@@ -166,6 +166,7 @@
   "ats-toss:group:7998884003": "tossbank-senior-data-analyst",
   "ats-toss:group:4521687003": "tossbank-server-platform",
   "ats-toss:group:6607772003": "tossbank-system-security-engineer",
+  "ats-toss:group:7820096003": "tosssec-ai-service-data-engineer",
   "ats-toss:group:7788403003": "tosssec-community-reco-mle",
   "ats-toss:group:8006361003": "tosssec-data-engineer-dre",
   "ats-toss:group:7827711003": "tosssec-data-engineer-financial-data",
@@ -1662,6 +1663,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 13
+  },
+  {
+   "id": "tosssec-ai-service-data-engineer",
+   "company": "토스증권",
+   "role": "데이터 엔지니어 (AI Service)",
+   "jobs": [
+    "ats-toss:group:7820096003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 17
   },
   {
    "id": "tosssec-community-reco-mle",
