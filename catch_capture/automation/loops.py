@@ -183,8 +183,8 @@ REGISTRY: list[Loop] = [
              "`python lecture-engine/clean.py --apply` 로 노트를 DB 에 저장하고 끝난 강의의 영상·장면 이미지를 지운다(빼먹지 않는다). 푸시하지 않는다. "
              "무엇을 했는지 한두 줄로 보고한다.")),
     # 직무 역설계 — 공고 한 줄 한 줄이 왜 필요하고 실제로 무슨 일인지. 회사 발표 영상은 강의 노트의 fetch.py 로 자막을 읽는다.
-    Loop("role-engine", "직무 역설계(공고 풀이)", "claude-loop", "any", "1시간마다(repeat)", 72,
-         "python -m automation.loops repeat role-engine --every 60m",
+    Loop("role-engine", "직무 역설계(공고 풀이)", "claude-loop", "any", "30분마다(repeat)", 72,
+         "python -m automation.loops repeat role-engine --every 30m",
          ["engine/roles/state/LOG.md", "jd-viewer/public/roles/index.json"],
          check="python engine/roles/validate.py --gaps",
          owns=["jd-viewer/public/roles/", "engine/roles/state/"],
@@ -192,6 +192,7 @@ REGISTRY: list[Loop] = [
              "직무 역설계 한 사이클: engine/roles/PROMPT.md 절차를 그대로 따른다(본보기 jd-viewer/public/roles/items/"
              "tossbank-finance-data-system.json 을 먼저 읽는다). 대상은 `python engine/roles/validate.py --gaps` 맨 위 공고. "
              "공고의 주요업무·자격요건·우대사항 모든 줄에 short·why·actually·how_far 를 쓴다 — 읽는 사람은 그 공고를 보는 개발자다. "
+             "공부 자료(resources — 존재를 확인한 책·강의·문서만)·줄마다 study·준비 로드맵(study_path)까지 채운다(PROMPT 4-1). "
              "회사가 직접 말한 근거(기술 블로그·컨퍼런스 발표 — 영상은 `python lecture-engine/fetch.py <id>` 로 자막을 받아 전부 "
              "읽는다)를 먼저 찾고, 공개되지 않은 부분은 다른 곳의 공개 문서로 '보통 이런 것'을 보인다. 문장마다 [n] 출처, "
              "근거 없는 판단은 {추론}. 지어낸 1인칭 생각·원문 전재 금지. 코드 예시는 직접 돌려 출력을 확인한다. "
