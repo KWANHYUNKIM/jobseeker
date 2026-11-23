@@ -16,6 +16,7 @@
   "ats-toss:group:7818488003": "toss-dw-analytics-engineer",
   "ats-toss:group:7985496003": "toss-dw-global-analytics-engineer",
   "ats-toss:group:7702871003": "toss-finops-analytics-engineer",
+  "ats-toss:group:4071101003": "toss-frontend-developer",
   "ats-toss:group:7545902003": "toss-frontend-platform-engineer",
   "ats-toss:group:7987773003": "toss-global-data-engineer",
   "ats-toss:group:7795677003": "toss-gpu-systems-engineer",
@@ -176,6 +177,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 19
+  },
+  {
+   "id": "toss-frontend-developer",
+   "company": "토스",
+   "role": "프론트엔드 개발자 (Frontend Developer)",
+   "jobs": [
+    "ats-toss:group:4071101003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 14
   },
   {
    "id": "toss-frontend-platform-engineer",
