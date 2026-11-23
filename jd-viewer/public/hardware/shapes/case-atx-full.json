@@ -52,6 +52,133 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "확장 슬롯 8·그로밋 6(고무)·듀얼 챔버·앞·왼쪽 유리는 공식 표·문구. 갤러리 사진(세션 임시 폴더에서 보기만): 앞·왼쪽 유리가 기둥 없이 비스듬히 맞붙은 어항형, 앞면 오른쪽(트레이 뒤 칸 앞)만 막힌 검정 판 세로 띠에 회색 Antec 글자(그 띠 아래쪽). 파워 덮개가 없다 — 파워·하드(3.5\" 2)는 트레이 뒤 오른쪽 칸에 들어가고 본체 칸 바닥은 팬 자리 메시(shroud false, drive_cage 는 본체 칸에 없어 비웠다). 트레이: 큰 CPU 뒷면 구멍, 보드 오른쪽에 세로로 긴 고무 그로밋 둘과 위·아래 작은 것. 오른쪽 판은 통 메시(형식에 칸 없음 — 기존 REQUESTS ②), 윗면도 메시. 기본 팬이 없는 제품이라 팬 칸은 비웠다. 발은 네 귀퉁이의 사다리꼴 블록이라 비웠다(기존 REQUESTS ①). 다나와는 쓰지 않았다."
+  },
+  "antec-flux-pro-mesh": {
+   "kind": "case",
+   "front": "mesh",
+   "glass_side": true,
+   "panoramic": false,
+   "shroud": true,
+   "shroud_side": "mesh",
+   "drive_cage": true,
+   "grommet_style": "rubber",
+   "cpu_cutout": true,
+   "expansion_slots": 8,
+   "color": "#1b1c1e",
+   "accent": "#8a5c3e",
+   "marks": [
+    {
+     "text": "Antec",
+     "where": "front",
+     "color": "#9a9ca0"
+    }
+   ],
+   "sources": [
+    {
+     "title": "Antec FLUX PRO — 공식 제품 페이지(사양 표: Side Panel 4mm Tempered Glass · Expansion Slots 8 · 3.5\"/2.5\" 4 · PSU shroud 팬 3×120mm, 특징 문구: 금속 메시 + 월넛 원목 앞판 · 모듈식 HDD 케이지 · 온도 표시, 갤러리 사진)",
+     "url": "https://www.antec.com/product/case/flux-pro"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "확장 슬롯 8·4mm 유리 옆판·HDD 케이지는 공식 표·문구. 갤러리 사진(세션 임시 폴더에서 보기만): 앞판은 굵은 사선 무늬가 든 검정 메시를 월넛 원목 틀이 네 변으로 두르고(accent = 원목색, 형식에 원목 칸 없음), 앞면 오른쪽 아래 원목 틀 안쪽에 회색 세로 Antec 글자. 왼쪽 유리 판은 위에서 파워 덮개 위까지만이고, 파워 덮개 옆면은 큰 육각·원 타공 메시 + 오른쪽 끝 온도 표시 창(CPU·GPU 두 숫자 — 형식에 칸 없음). 오른쪽 판은 아래 덮개 높이만 타공, 나머지는 막힌 철판. 트레이: 큰 CPU 뒷면 구멍, 보드 오른쪽에 세로로 긴 고무 그로밋 두 개(개수는 사진 각도로 확신 못 해 비웠다). 뒷면 사진: 확장 슬롯 8 + 그 오른쪽 세로 메시 판. 기본 팬 6개(Tranquil·P12R)는 사진에서 검정·불빛 없어 보이지만 공식 문구가 ARGB 허브만 말해 fan_light 는 비웠다. 발은 네 귀퉁이의 사다리꼴 블록이라 비웠다(기존 REQUESTS ①). 다나와는 쓰지 않았다."
+  },
+  "coolermaster-haf-ii-500": {
+   "kind": "case",
+   "front": "mesh",
+   "glass_side": true,
+   "panoramic": false,
+   "shroud": true,
+   "shroud_side": "solid",
+   "cpu_cutout": true,
+   "expansion_slots": 8,
+   "fan_light": "none",
+   "color": "#2b2c2f",
+   "marks": [
+    {
+     "text": "COOLER MASTER",
+     "where": "front",
+     "color": "#9a9ca2"
+    }
+   ],
+   "sources": [
+    {
+     "title": "Cooler Master HAF II 500 — 공식 제품 페이지(사양 표: Expansion Slots 8 · 강화유리 왼쪽 판 · SGCC 오른쪽 판 · Mighty40 F220×2·V180×1, 특징 문구: Low-Resistance Front Panel · grommets · sliding cable cover, 분해도·뒤 공간·선 정리 그림)",
+     "url": "https://www.coolermaster.com/en-global/products/HAFII-500.html"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "확장 슬롯 8·왼쪽 유리·오른쪽 철판·팬 종류는 공식 표. 공식 그림(세션 임시 폴더에서 보기만): 앞판은 메시 위에 굵은 사선·세로 갈비가 선 플라스틱 그릴(HAF 무늬 — front mesh 로 근사, 갈비는 형식에 칸 없음)이고 가운데에 육각 COOLER MASTER 배지, 왼쪽 아래 세로 I/O 띠. 분해도: 앞 220mm 팬 2개는 검정 날개·불빛 없음(Mighty40 은 비발광 — fan_light none), 뒤 180mm 팬 1개. 완성 사진: 본체 칸 아래 막힌 파워 덮개, 뒷면 트레이 위쪽 큰 CPU 구멍과 미끄러지는 선 덮개(형식에 칸 없음). 그로밋은 공식 문구에 있으나 개수·재질을 사진에서 못 읽어 비웠다. 날개 수·발 모양은 못 읽었다. 색은 짙은 건메탈 회색. 다나와는 쓰지 않았다."
+  },
+  "micronics-wizmax-woodrian-max": {
+   "kind": "case",
+   "front": "glass",
+   "glass_side": true,
+   "panoramic": true,
+   "shroud": false,
+   "expansion_slots": 9,
+   "fan_light": "argb",
+   "color": "#141416",
+   "accent": "#6e3a1f",
+   "sources": [
+    {
+     "title": "한미마이크로닉스 WIZMAX 우드리안 MAX — 공식 제품 페이지(대표 사진 3장, 사양 표는 스크립트로 불러와 글로 안 옴 — PCI 9·ICEROCK G30 인피니티 RVS aRGB 측면 팬은 models 의 같은 공식 사양 표 기록)",
+     "url": "https://www.micronics.co.kr/micronics/view_product.php?product_id=5051M"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "공식 사진 3장(세션 임시 폴더에서 보기만): 앞·왼쪽 유리가 기둥 없이 맞붙은 어항형(듀얼 챔버), 앞면 오른쪽(트레이 뒤 칸 앞)이 세로 원목 판 한 장(accent = 원목색 — 형식에 원목 칸 없음, 기존 REQUESTS 앞판 두 재질 요청과 같은 일). 오른쪽 판 쪽 칸막이에 역방향 120mm 팬 3개가 세로로 서서 본체 칸 안을 향하고, 팬 틀 둘레에 ARGB 고리(aRGB 는 공식 사양). 본체 칸 바닥은 팬 자리(바닥 팬 3개) — 파워 덮개 없음. 확장 슬롯 9 는 models 의 공식 사양 기록(뒷면 사진으로도 세로 줄이 많다). 네 귀퉁이 사다리꼴 블록 발이라 feet 는 비웠다. 4번째 사진(다운로드 DB)은 10MB 를 넘어 못 열었다. 그로밋·CPU 구멍·날개 수는 못 읽었다. 다나와는 쓰지 않았다."
+  },
+  "3rsys-t3000-quiet": {
+   "kind": "case",
+   "front": "mesh",
+   "glass_side": true,
+   "panoramic": false,
+   "shroud": true,
+   "shroud_side": "solid",
+   "drive_cage": true,
+   "grommet_style": "open",
+   "expansion_slots": 10,
+   "fan_light": "argb",
+   "color": "#141416",
+   "marks": [
+    {
+     "text": "3RSYS",
+     "where": "shroud",
+     "color": "#8a8c90"
+    }
+   ],
+   "sources": [
+    {
+     "title": "3RSYS 공식 — T3000 Quiet 제품 상세(사진 4장 + 상세 이미지의 제품 스펙 표: PCI 슬롯 10 · 좌측 원터치 강화유리 / 우측 원터치 미세타공 철판 / 전면 분리형 미세타공 철판 · HDD 기본 4 · Silence XY 140 ARGB ×4)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1698281544"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "PCI 10·유리 왼쪽 판·미세타공 앞판·오른쪽 미세타공 판·HDD 4·ARGB 팬은 공식 스펙 표(상세 이미지를 PIL 로 잘라 봄). 공식 사진: 파워 덮개 앞쪽에 하드 트레이 4칸(2×2)이 드러나 있고 덮개 옆면은 막힌 판, 덮개 오른쪽 위에 작은 3RSYS 글자. 트레이의 선 구멍은 고무 없는 세로 긴 구멍들(open), 보드 자리 위쪽 큰 사각 구멍이 보이나 CPU 구멍인지 사진 각도로 확신 못 해 cpu_cutout 은 비웠다. 오른쪽 미세타공 판은 형식에 칸 없음(기존 REQUESTS ②). 발은 네 귀퉁이 사다리꼴 블록(기존 ①). 팬 날개는 사진으로 확신 못 해 비웠다. models 의 radiator·fan_mounts null 은 이 스펙 표로 채울 수 있다(REQUESTS [hw-models]). 다나와는 쓰지 않았다."
+  },
+  "fractal-north-xl-mesh": {
+   "kind": "case",
+   "front": "mesh",
+   "glass_side": false,
+   "panoramic": false,
+   "expansion_slots": 7,
+   "feet": "round",
+   "fan_light": "none",
+   "color": "#26272a",
+   "accent": "#5a3b2a",
+   "sources": [
+    {
+     "title": "Fractal Design North XL Charcoal Black Mesh — 공식 제품 페이지(사양: Expansion slots 7 · Left side panel Ventilated mesh · Right Steel · Cable grommets Yes · 3x Aspect 14 PWM, 갤러리 사진)",
+     "url": "https://www.fractal-design.com/products/cases/north-series/north-xl/north-xl-charcoal-black-mesh/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "확장 슬롯 7·왼쪽 통풍 메시 판(유리 아님 — glass_side false)·오른쪽 철판은 공식 사양. 공식 사진(세션 임시 폴더에서 보기만): 앞면은 검정 틀 안에 세로 월넛 각재 11개가 틈을 두고 서 있고 그 뒤로 140mm 팬 3개(검정, 불빛 없음 — Aspect 14 비발광)가 비친다 — front mesh 로 근사(각재는 형식에 칸 없음, accent = 월넛색). 윗면은 메시 + 앞쪽 띠에 황동 전원 버튼·I/O. 발은 황동 테두리 둥근 발 4개(round). 뒷면: 확장 슬롯 7, 위쪽 세로 긴 타공 판, 아래 파워 자리. 내부 사진을 못 봐 파워 덮개·그로밋 자리·CPU 구멍은 비웠다(그로밋은 공식 사양에 있음). 다나와는 쓰지 않았다."
   }
  }
 }
