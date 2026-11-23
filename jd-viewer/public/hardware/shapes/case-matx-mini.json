@@ -45,6 +45,48 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "공식 사진: 앞·왼쪽이 기둥 없이 이어진 강화유리(어항형)이고 파워 덮개가 없다 — 파워·저장 장치는 트레이 뒤 칸(듀얼 챔버)에 들어가고 본체 칸 바닥은 팬 자리다. 발은 앞뒤로 길게 뻗은 받침(앞쪽 끝에 비스듬한 I/O 판). 기본 팬은 측면 C22R ARGB 2개·뒤 C22 ARGB 1개 — 팬 틀 둘레 고리와 허브 고리가 빛난다(사진의 바닥·윗 팬은 연출 구성). 상세 사양 이미지는 스크립트로 불러와 못 봐 확장 슬롯 수·트레이 구멍·날개 수는 비웠다."
+  },
+  "darkflash-dmo21": {
+   "kind": "case",
+   "front": "mesh",
+   "glass_side": false,
+   "panoramic": false,
+   "shroud": true,
+   "shroud_side": "solid",
+   "color": "#17181a",
+   "accent": "#55575b",
+   "fan_light": "none",
+   "sources": [
+    {
+     "title": "다크플래쉬 코리아(투웨이) DMO21 (블랙) 상품 페이지 — 대표 사진·추가 사진 4장(정면 비스듬한 셋·옆판 뗀 왼쪽 하나), 상세 SPECIFICATION 표(models 가 옮긴 것)",
+     "url": "https://www.darkflash.co.kr/product/detail2.html?product_no=1067"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "공식 사진(세션 임시 폴더에서 보기만): 앞판은 위에서 아래까지 회색 미세 타공(메시) 판이고 맨 아래만 막힌 회색 띠에 darkFlash 로고 그림(글자 아님이라 marks 는 비웠다) — 앞판 회색을 accent 로 적었다. 왼쪽 옆판은 유리가 아니라 검정 철판(어느 사진에도 창이 없다), 윗면은 메시 필터. 옆판 뗀 사진: 파워 덮개가 앞·옆이 막힌 검정 판이고 그 위에 바닥 팬 자리 2개(models 메모와 같다). 기본 팬은 뒤 Non-LED 120mm 1개라 fan_light none. 발은 네 귀퉁이의 작은 네모 받침이라 round·bar 어느 쪽도 아니어서 비웠다. 상세 사양 이미지는 이번에도 스크립트로 불러와 사진으로 못 봐 확장 슬롯 수·트레이 구멍·하드 칸은 비웠다. 다나와는 쓰지 않았다."
+  },
+  "daven-aqua-lite": {
+   "kind": "case",
+   "front": "glass",
+   "glass_side": true,
+   "panoramic": true,
+   "shroud": true,
+   "shroud_side": "solid",
+   "grommet_style": "open",
+   "cpu_cutout": true,
+   "expansion_slots": 4,
+   "color": "#141517",
+   "fan_light": "rgb",
+   "sources": [
+    {
+     "title": "데이븐 AQUA LITE (블랙) 제품 페이지 — 대표 사진 2장(옆·앞 비스듬한), 상세 이미지(SPECIFICATION 표 · '상단 먼지 필터 기능 메쉬 패널' · '넉넉한 선정리 공간과 홀' · '깔끔한 내부를 위한 파워 커버' · 앞·뒷면 사진)",
+     "url": "https://daven.co.kr/board/product/127"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "공식 표: 재질 'ABS + SPCC, 전면/좌측면 4mm 두께 강화유리', 부제 'COMPACT AND PANORAMA GLASS' → 앞·왼쪽 유리가 기둥 없이 이어진 어항형(panoramic). 기본 팬은 뒤 120mm 1개 'RGB - 3색 고정'(주소 지정 안 되는 RGB → fan_light rgb). 상세 사진(세션 임시 폴더에서 PIL 로 잘라 보기만): 본체 칸 아래가 통째로 막힌 높은 받침(파워 커버)이고 그 앞면에 USB·전원 단추, 받침 아래 네 귀퉁이가 사다리꼴로 파인 다리(블록 발과 같은 꼴이라 feet 는 비웠다). 트레이 뒷면 사진: 고무 없이 뚫린 세로 선 구멍 둘·큰 CPU 뒷면 구멍. 뒷면 사진: 확장 슬롯 4개(판독), 윗면 메시. 하드는 겸용 베이 1개인데 자리가 안 보여 drive_cage 는 비웠다. 날개 수는 켠 팬 사진이라 세지 못했다. 다나와는 쓰지 않았다."
   }
  }
 }

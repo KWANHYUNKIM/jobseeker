@@ -24,6 +24,34 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "공식 스펙 표: 패널 '상단 슬라이드 미세 타공 / 전면 원터치 미세타공 / 좌측(상하) 슬라이드 철판 / 우측(상하) 슬라이드 미세 타공', PCI 슬롯 9개, HDD 최대 5·SSD 4(파워 덮개 앞쪽 아래 하드베이, 분리 가능). 기본 팬 Silence SE(앞 120mm 3·뒤 140mm 1)는 불빛 없는 검정, 날개 7장(상세의 팬 그림). 옆판 연 사진: 파워 덮개는 앞·옆이 막힌 판(앞쪽 위에 3RSYS 글자 — 옆판이 철판이라 밖에서 안 보여 marks 는 비웠다), 트레이는 그로밋 없이 세로로 뚫린 선 구멍, 덮개 위 그래픽카드 지지대. 오른쪽 판도 미세 타공(측면 팬·라디에이터 자리)인데 형식에 칸이 없다. 발은 네 귀퉁이의 네모난 블록이라 비웠다."
+  },
+  "antec-c8-mesh": {
+   "kind": "case",
+   "front": "glass",
+   "glass_side": true,
+   "panoramic": true,
+   "shroud": false,
+   "grommet_style": "rubber",
+   "grommets": 6,
+   "cpu_cutout": true,
+   "expansion_slots": 8,
+   "color": "#18191b",
+   "marks": [
+    {
+     "text": "Antec",
+     "where": "front",
+     "color": "#8e9094"
+    }
+   ],
+   "sources": [
+    {
+     "title": "Antec C8 — 공식 제품 페이지(사양 표: Side Panel 4mm Tempered Glass · Expansion Slots 8 · 2×3.5\" + 4×2.5\", 특징 문구: 45° 베벨로 이은 앞·왼쪽 유리 270° · 위·오른쪽 통 메시 · 듀얼 챔버 · 'six cable-routing rubber grommets', 갤러리 사진)",
+     "url": "https://www.antec.com/product/case/c8"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "확장 슬롯 8·그로밋 6(고무)·듀얼 챔버·앞·왼쪽 유리는 공식 표·문구. 갤러리 사진(세션 임시 폴더에서 보기만): 앞·왼쪽 유리가 기둥 없이 비스듬히 맞붙은 어항형, 앞면 오른쪽(트레이 뒤 칸 앞)만 막힌 검정 판 세로 띠에 회색 Antec 글자(그 띠 아래쪽). 파워 덮개가 없다 — 파워·하드(3.5\" 2)는 트레이 뒤 오른쪽 칸에 들어가고 본체 칸 바닥은 팬 자리 메시(shroud false, drive_cage 는 본체 칸에 없어 비웠다). 트레이: 큰 CPU 뒷면 구멍, 보드 오른쪽에 세로로 긴 고무 그로밋 둘과 위·아래 작은 것. 오른쪽 판은 통 메시(형식에 칸 없음 — 기존 REQUESTS ②), 윗면도 메시. 기본 팬이 없는 제품이라 팬 칸은 비웠다. 발은 네 귀퉁이의 사다리꼴 블록이라 비웠다(기존 REQUESTS ①). 다나와는 쓰지 않았다."
   }
  }
 }
