@@ -1,0 +1,1430 @@
+{
+ "id": "speee-dx-sre",
+ "company": "Speee(스피)",
+ "role": "SRE 엔지니어 · 현장산업 DX 분야",
+ "team": "デジタルトランスフォーメーション事業本部 · 開発基盤グループ",
+ "jobs": [
+  "wanted-386999"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "부동산 매각 중개 「イエウール」, 외벽 리폼 중개 「ヌリカエ」, 요양 중개 「ケアスル 介護」 같은 **10개 넘는 서비스**를 받치는 인프라 팀의 SRE(서비스가 멈추지 않게 운영을 공학으로 푸는 엔지니어)입니다.[1][13] 한쪽 발은 맡은 서비스 팀 안에(Embedded), 다른 발은 모든 서비스가 같이 쓰는 기반(Platform)에 둡니다.[1]",
+  "env": "AWS 위의 **EKS(관리형 Kubernetes) + Argo CD + Terraform + GitHub Actions + Datadog**. 2019~2022년에 EC2·CloudFormation·Jenkins·Zabbix 를 모두 이쪽으로 옮겼고[3], 2023년 글 기준 기반 팀의 SRE 는 2~3명이었습니다.[8] 근무지는 도쿄이고 일본어(비즈니스)·일본 이주가 필수입니다.[1]",
+  "oneline": "서비스는 많고 SRE 는 적은 팀 — **같은 일을 열 번 하지 않게 공통화·자동화하는 사람**을 찾는 공고입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "デジタルトランスフォーメーション事業本部の開発基盤グループに所属するSREとして主に以下の業務を担っていただきます。 デジタルトランスフォーメーション事業本部には10以上のサービスが並行して稼働しており、さらなる新規サービスの立ち上げも行っています。",
+   "short": "서비스 10개 넘게를 소수의 기반 팀이 받친다 — 일의 크기는 '서비스 수 × 운영 일'이다.",
+   "why": "이 사업부(공시상 레거시 산업 DX 부문, 266명)는 「イエウール」「ヌリカエ」「ケアスル 介護」를 주력으로, 소비자와 업체를 잇는 중개 서비스와 업체용 업무 도구를 함께 만듭니다.[13] 인프라는 개발基盤グループ 한 팀이 맡고, Terraform 변경의 약 95%가 이 팀에서 나옵니다.[2]",
+   "actually": {
+    "items": [
+     "2020년 중반 기준 시스템 약 10개, 시스템마다 Terraform 저장소가 하나씩 있었다.[2]",
+     "시스템 구성은 대체로 **Rails + MySQL + Redis + AWS** 로 비슷하고 세부가 조금씩 다르다.[2]",
+     "주요 제품마다 EKS 클러스터를 따로 둔다 — 2022년 기준 7개 클러스터.[5][6]",
+     "새 서비스도 계속 생긴다 — 2025년 글에는 부동산 업체용 「ツナガル」·査定書(감정서) 작성 SaaS 같은 여러 제품이 한 기반을 같이 쓰는 이야기가 나온다.[12]"
+    ]
+   },
+   "how_far": "입사 첫날부터 10개를 다 아는 사람을 바라지는 않습니다. 맡은 서비스 1~몇 개를 깊게 알고, 나머지는 **같은 틀로 생겼다는 점을 이용해** 넓게 보는 것이 이 구조의 전제입니다. {추론}",
+   "refs": [
+    2,
+    5,
+    6,
+    12,
+    13
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "各サービスごとに個別のインフラを提供するシングルテナント方式を現在はとっています。 （徐々に運用負荷が上がっており、一部サービスをマルチテナント化していっています） ▼その様子をまとめたブログ https://tech.speee.jp/entry/spiral-of-terraform-repo",
+   "short": "서비스마다 인프라를 따로 준 결과 운영 일이 서비스 수만큼 불어나, 일부를 합치는 중이다.",
+   "why": "공고가 직접 가리킨 글이 이 팀의 4년 역사입니다. 시스템별로 저장소를 나눴더니 공통 모듈 하나를 고칠 때마다 저장소 약 10곳에 PR·리뷰·배포를 반복해야 했고, 글쓴이는 이를 '악몽'이라고 불렀습니다.[2]",
+   "flows": [
+    {
+     "caption": "Terraform 저장소가 돌아온 길[2]",
+     "steps": [
+      "2019 · 거의 한 저장소, CircleCI",
+      "2019말~2020 · 시스템별 저장소로 분리",
+      "2020 중반 · 템플릿으로 코드 생성 → 반년 만에 포기",
+      "2020 후반 · 공통 모듈 저장소 + git 태그로 버전 고정",
+      "2023 · 다시 한 저장소(모노레포)로 · 이전 약 15%"
+     ],
+     "mine_from": 4
+    }
+   ],
+   "actually": {
+    "items": [
+     "**왜 나눴나** — CircleCI 가 바뀐 경로만 골라 돌리지 못했고, 다른 팀 시스템을 잘못 건드릴 위험을 없애고 싶었다.[2]",
+     "**왜 다시 합치나** — GitHub Actions 는 경로별로 작업을 고를 수 있고, 피해 범위는 디렉터리별 승인자로 줄일 수 있다.[2]",
+     "**남은 문제** — 모듈 의존이 많아 terraform init 만 1~3분, 모듈 60개·외부 모듈 약 10종.[2]",
+     "**배포 방식** — 브랜치로 환경을 나누던 GitOps 대신, 이슈로 배포를 여는 IssueOps 로 바꾸기로 했고 이것이 가장 어려운 부분이라고 했다.[2]"
+    ]
+   },
+   "how_far": "공고의 '싱글테넌트(서비스마다 따로) → 멀티테넌트(여럿이 같이)'는 인프라 계정·클러스터 이야기이고, 이 글은 그 옆의 코드 저장소 이야기입니다. 둘 다 **'따로 두면 안전하지만 같은 일이 N번, 합치면 빠르지만 피해가 넓다'**는 같은 저울입니다. 지원 전에 이 글을 읽고 자기 의견을 한 줄 가지고 가면 면접에서 바로 쓰입니다. {추론}",
+   "refs": [
+    2
+   ],
+   "study": [
+    "speee-terraform-spiral",
+    "tf-up-running"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "【Embedded SRE的振る舞い】 ・担当サービス(1〜複数)の信頼性を維持・向上する各種活動",
+   "short": "서비스 팀 옆에 붙어서 그 서비스가 덜 멈추고 빨리 회복하게 만드는 일 전부.",
+   "why": "Embedded SRE 는 SRE 가 한 제품 팀에 들어가 같이 일하는 방식입니다. 공고는 아래 7줄로 그 내용을 적었습니다.[1] 회사 글에서도 SRE 의 일로 SLO 설정과 장애 대응 훈련을 들었습니다.[9]",
+   "actually": {
+    "items": [
+     "목표 정하기(SLI/SLO) → 인프라 설계 → 알림 다루기 → 밤·휴일 대응 → 업데이트 → 자동화 → 운영 규칙 다듬기, 이 순서가 공고 아래 줄들이다.[1]"
+    ]
+   },
+   "how_far": "'1~여러 개'라고 적혀 있어 처음엔 1~2개 서비스를 맡는 것으로 읽힙니다. {추론}",
+   "refs": [
+    1,
+    9
+   ],
+   "study": [
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・各サービスにおける適切なSLI/SLOの定義",
+   "short": "'얼마나 잘 돌아야 하나'를 숫자로 정한다 — 무엇을 잴지(SLI)와 목표치(SLO).",
+   "why": "서비스가 10개 넘는데 SRE 는 몇 명뿐이라, 모든 알림에 똑같이 달려들 수 없습니다. 목표를 숫자로 정해 두면 '지금 사용자에게 문제인가'로 우선순위를 가를 수 있습니다. {추론} 구글 SRE 책은 SLI 를 서비스 수준의 정량 지표(지연·오류율·가용성), SLO 를 그 지표의 목표치, SLA 를 어겼을 때 대가가 붙는 약속으로 나눕니다.[16]",
+   "actually": {
+    "items": [
+     "**SLI 고르기** — 예: 매각 견적 요청 API 의 성공 비율, 견적 페이지 p99(느린 쪽 1%) 지연.{추론}",
+     "**목표 정하기** — 성공 99.9%면 오류 예산(허용되는 실패)은 0.1%. 4주 동안 300만 요청이면 3,000건까지 실패해도 된다.[17]",
+     "**창 정하기** — 구글 워크북은 일반 용도로 4주 이동 창을 권한다.[17]",
+     "**예산을 쓰는 법** — 예산이 남으면 배포·실험을 빨리, 바닥나면 안정화를 먼저 하자고 팀과 미리 합의한다.[17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "99.9% 목표의 오류 예산과 소진 속도(직접 돌린 출력)",
+     "body": "소진 속도 15배는 '지금 오류율이면 30일 예산을 2일에 다 쓴다'는 뜻이라 사람을 깨울 만한 알림입니다. 계산은 우리가 만든 예입니다.",
+     "lang": "python",
+     "code": "slo = 0.999\nwindow_min = 30 * 24 * 60\nprint(f\"허용 중단: {window_min * (1 - slo):.1f}분 / 30일\")\n\nrequests, errors = 3_000_000, 1_200\nbudget_err = requests * (1 - slo)\nprint(f\"허용 오류: {budget_err:.0f}건, 사용 {errors}건 → {errors / budget_err:.0%} 소진\")\n\nburn = (75 / 5000) / (1 - slo)   # 지난 1시간 오류율 1.5%\nprint(f\"소진 속도: {burn:.1f}배 → 이대로면 {30 / burn:.1f}일 만에 예산 바닥\")\n\n# 허용 중단: 43.2분 / 30일\n# 허용 오류: 3000건, 사용 1200건 → 40% 소진\n# 소진 속도: 15.0배 → 이대로면 2.0일 만에 예산 바닥"
+    }
+   ],
+   "how_far": "목표치를 혼자 정하지 않습니다. 사업 쪽·개발 팀과 '이 정도 실패는 괜찮다'를 합의하고, SRE 는 **잴 수 있게 만들고(Datadog 대시보드·SLO) 그 숫자로 알림을 거는 것**까지 맡습니다. {추론}",
+   "refs": [
+    16,
+    17
+   ],
+   "study": [
+    "sre-book",
+    "sre-workbook"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・開発チームに目的や用途を聞きつつインフラを設計・更新",
+   "short": "개발 팀에게 무엇을 하려는지 먼저 묻고, 그에 맞는 인프라를 Terraform 으로 짓고 고친다.",
+   "why": "이 팀은 서비스마다 구성은 비슷해도 세부가 달라서, 한 가지 틀로 찍어 내려다 실패한 적이 있습니다.[2] 그래서 '무엇에 쓰나'를 듣고 공통 모듈을 조합하는 쪽으로 왔습니다.[2]",
+   "actually": {
+    "items": [
+     "**공통 모듈 조합** — 모듈 저장소의 모듈(2023년 말 60개)을 서비스별 설정에서 불러 쓴다.[2]",
+     "**디렉터리 규칙** — 제공자(aws·gcp·pagerduty) → 제품 → root/child 모듈 → 계정(운영·스테이징) → 환경의 5단 구조. root 모듈을 작게 해 plan·apply 를 빠르게 한다.[10]",
+     "**웹 앞단** — nginx 대신 ALB + CloudFront + WAF, 비밀값은 SSM Parameter Store 에 두고 External Secrets Operator 로 Kubernetes 에 넣는다.[3]",
+     "**검증 환경** — 스테이징을 서로 차지하려 다투지 않게, 브랜치마다 검증 환경을 띄우는 방식을 Argo CD 로 만들었다.[5]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "이 팀의 Terraform 디렉터리 5단 구조(글을 우리 말로 옮긴 꼴)",
+     "body": "깊지만 사업부 전체가 같은 모양이라, 처음 보는 저장소도 길을 잃지 않습니다.[10]",
+     "lang": "text",
+     "code": "aws/                     # 1. 제공자\n  ieul/                  # 2. 제품(예시 이름)\n    root-modules/        # 3. 모듈 종류\n      production/        # 4. 계정\n        prod/            # 5. 환경\n    child-modules/"
+    }
+   ],
+   "how_far": "요구사항을 받아 적는 사람이 아니라, '그 목적이면 이 구성이 더 싸고 안전하다'를 제안하는 사람입니다. 최소선은 VPC·ALB·RDS·EKS 를 Terraform 모듈로 짜고, 바꿨을 때 plan 결과를 읽어 위험을 설명할 수 있는 정도입니다. {추론}",
+   "refs": [
+    2,
+    3,
+    5,
+    10
+   ],
+   "study": [
+    "tf-up-running",
+    "terraform-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・発生するアラートの緊急度を判断してハンドリング(トリアージ)",
+   "short": "울린 알림마다 '지금 깨울 일인가, 내일 할 일인가, 기록만 할 일인가'를 가른다.",
+   "why": "회사는 감시를 Datadog 으로 모으고, Datadog 알림이 PagerDuty 로 이어져 전화가 오게 해 두었습니다.[9] 서비스가 많을수록 알림이 많아서, 다 같은 급으로 다루면 사람이 먼저 지칩니다. {추론}",
+   "actually": {
+    "items": [
+     "**도구** — 감시 Datadog, 전화 호출 PagerDuty, 프런트 오류 Sentry.[9][28]",
+     "**가르는 기준** — 사용자에게 지금 영향이 있나, 오류 예산을 얼마나 빨리 먹나(위 SLO 줄).[17]",
+     "**검증 환경 장애도 트리아지** — 3개월 동안 스테이징 배포 실패 문의가 약 20건 와서, Kubernetes 이벤트로 원인을 가르는 복구 흐름도를 만들었다(디스크 부족 → EBS 키우기, IP 고갈, 이미지 못 받음 등).[6]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "알림을 세 칸으로 가르기(직접 돌린 출력)",
+     "body": "기준은 우리가 만든 예입니다. 핵심은 '사용자 영향'과 '예산 소진 속도' 두 가지만으로 먼저 가르는 것.",
+     "lang": "python",
+     "code": "alerts = [\n    {\"name\": \"API 5xx 비율 5%\", \"users_hit\": True, \"budget_burn\": 20},\n    {\"name\": \"디스크 사용 82%\", \"users_hit\": False, \"budget_burn\": 0},\n    {\"name\": \"배치 1회 실패(재시도 성공)\", \"users_hit\": False, \"budget_burn\": 0},\n    {\"name\": \"p99 지연 1.2초\", \"users_hit\": True, \"budget_burn\": 3},\n]\n\ndef triage(a):\n    if a[\"users_hit\"] and a[\"budget_burn\"] >= 10:\n        return \"P1 지금 호출(전화)\"\n    if a[\"users_hit\"]:\n        return \"P2 근무시간 안 티켓\"\n    return \"P3 기록만·주간 정리\"\n\nfor a in alerts:\n    print(f'{a[\"name\"]} → {triage(a)}')\n\n# API 5xx 비율 5% → P1 지금 호출(전화)\n# 디스크 사용 82% → P3 기록만·주간 정리\n# 배치 1회 실패(재시도 성공) → P3 기록만·주간 정리\n# p99 지연 1.2초 → P2 근무시간 안 티켓"
+    }
+   ],
+   "how_far": "트리아지는 고치는 것까지가 아니라 **급을 정하고 맞는 사람에게 넘기는 것**이 먼저입니다. 같은 알림이 반복되면 알림 자체를 고치거나 없애는 것까지가 SRE 몫입니다. {추론}",
+   "refs": [
+    6,
+    9,
+    17,
+    28
+   ],
+   "study": [
+    "sre-workbook",
+    "datadog-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・深夜・休日の緊急対応(発生頻度は過去実績数ヶ月に1回程度)",
+   "short": "밤·휴일 호출이 있다. 공고가 밝힌 실제 빈도는 '몇 달에 한 번' 정도.",
+   "why": "PagerDuty 로 전화가 오는 구조라 누군가는 받아야 합니다.[9] 공고가 빈도를 숫자로 적어 둔 것은 지원자가 가장 걱정하는 부분이기 때문으로 보입니다. {추론}",
+   "actually": {
+    "items": [
+     "빈도: 과거 실적 기준 몇 달에 한 번.[1]",
+     "근무는 9:30~18:30, 플렉스 제도, 잔업 월 20~45시간 정도라고 공고에 적혀 있다.[1]",
+     "당번 순서·수당은 공개되지 않았다 — 면접에서 물어볼 것."
+    ]
+   },
+   "how_far": "밤에 할 일은 **원인 규명이 아니라 서비스 되살리기**(되돌리기·늘리기·재시작)입니다. 근본 원인과 재발 방지는 다음 근무일에 합니다. {추론}",
+   "refs": [
+    1,
+    9
+   ],
+   "study": [
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・KubernetesクラスタやAWSなどの利用サービスのアップデート",
+   "short": "EKS 버전·애드온·노드, AWS 서비스 지원 종료를 따라가며 클러스터 여러 개를 차례로 올린다.",
+   "why": "이 사업부는 2019~2022년에 EC2·오토스케일링·ECS 를 모두 EKS 로 옮겼고[3], 제품마다 클러스터가 따로 있습니다(2022년 7개).[5] Kubernetes 는 버전마다 지원 기간이 정해져 있어 미루면 한꺼번에 몰립니다. {추론}",
+   "actually": {
+    "items": [
+     "**클러스터 버전 올리기** — 스테이징 클러스터 먼저, 바뀐 API 를 쓰는 매니페스트 찾기, 노드 교체.{추론}",
+     "**클러스터 안 공통 부품** — External Secrets Operator, fluent-bit(2022년 4월 fluentd 에서 바꿈), actions-runner-controller 같은 것도 같이 올린다.[3]",
+     "**HA 기본값** — Helm 차트 replicas 를 2 이상으로 두면 설계 없이도 이중화가 된다는 것이 EKS 로 옮긴 이유 중 하나였다.[4]"
+    ]
+   },
+   "how_far": "클러스터 하나를 올리는 절차를 문서·자동화로 만들어 **두 번째부터는 같은 절차를 되풀이**하는 것이 목표입니다. 최소선은 kubectl 로 Pod·Event 를 읽고, 업그레이드 전에 깨질 리소스를 찾는 것. {추론}",
+   "refs": [
+    3,
+    4,
+    5
+   ],
+   "study": [
+    "book-k8s",
+    "k8s-guide-jp",
+    "k8s-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・運用の自動化(監視・アラート通知・コード変更チェック・テストなど)",
+   "short": "사람이 손으로 하던 확인·알림·권한 처리를 CI·봇으로 옮긴다.",
+   "why": "SRE 가 적으니 반복 일(토일)을 줄이는 것이 곧 팀의 처리량입니다. 회사 글은 한 달간 요청을 기록해 BigQuery 권한 요청이 약 40%임을 찾고, 그 흐름을 자동화해 출시 뒤 반달 동안 해당 요청을 0건으로 만든 과정을 적었습니다.[7]",
+   "actually": {
+    "items": [
+     "**코드 변경 체크** — PR 마다 terraform plan 을 돌려 결과를 댓글로 단다.[11]",
+     "**드리프트 감시** — 하루 네 번 plan 을 돌려 코드와 실제가 어긋나면 Slack 으로 알린다.[11]",
+     "**토일 재기** — 요청을 종류별로 세어 가장 큰 덩어리부터 없앤다(권한 요청 40%).[7]",
+     "**이슈 정리** — 오래된 이슈를 90일 뒤 자동으로 닫는 봇과 수작업 정리로 300개 넘던 이슈를 45개로 줄였다.[8]"
+    ]
+   },
+   "how_far": "자동화 자체보다 **'무엇이 가장 시간을 먹나'를 숫자로 먼저 재는 것**이 이 팀의 방식입니다.[7]",
+   "refs": [
+    7,
+    8,
+    11
+   ],
+   "study": [
+    "speee-toil",
+    "gha-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・運用性を改善する各種施策の実施(デプロイの高速化、ソフトウェアエンジニアリングに限らずルール整備など含む)",
+   "short": "배포를 빠르게 하고, 코드가 아닌 규칙(이슈 운영·승인 방식)까지 손봐 운영을 쉽게 만든다.",
+   "why": "회사는 다음 과제로 카나리 배포(일부 사용자에게 먼저 내보내기)·UX 자동 테스트·배포 고속화를 들었습니다.[3] '규칙 정비'의 실제 예는 이슈 상태의 뜻을 다시 정한 일입니다 — Open 은 '하고 있거나 곧 할 일', Closed 는 '끝냈거나 일부러 미룬 일'.[8]",
+   "actually": {
+    "items": [
+     "배포 고속화·카나리 배포.[3]",
+     "이슈·요청 받는 창구와 담당 규칙 정하기.[8]",
+     "디렉터리별 승인자 설정으로 '누가 무엇을 바꿀 수 있나'를 규칙으로.[2]"
+    ]
+   },
+   "refs": [
+    2,
+    3,
+    8
+   ],
+   "study": [
+    "dora"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "【Platform SRE / Platform Engineering的振る舞い】 複数サービスを横断した取り組みについても、以下の様な業務を担っていただきます。 ・GitHub ActionsによるCI/CD改善",
+   "short": "모든 서비스가 같이 쓰는 CI/CD 를 GitHub Actions 로 다듬는다 — 고치면 10곳이 같이 좋아진다.",
+   "why": "이 팀은 Jenkins·CircleCI 를 GitHub Actions 로 옮겼습니다.[3] 인프라 저장소 10곳 넘게에 비슷한 워크플로 약 80개가 복사돼 있어서, 재사용 워크플로(reusable workflow)로 공통 부분을 한 곳에 모았습니다.[11]",
+   "actually": {
+    "items": [
+     "**재사용 워크플로** — plan·정기 plan·apply 세 가지를 공통 파일로 두고, 환경별 파일은 uses 로 부르기만 한다.[11]",
+     "**VPC 안 작업** — DB 에 직접 붙어야 하는 일은 Kubernetes 위의 self-hosted runner(actions-runner-controller)에서 돌린다.[3]",
+     "**경로별 실행** — 모노레포로 돌아올 수 있었던 이유가 GitHub Actions 의 경로 조건이었다.[2]",
+     "**배포는 Argo CD** — 이미지는 Actions 가 만들어 ECR 에 올리고, 클러스터 반영은 Argo CD 가 한다.[3]"
+    ]
+   },
+   "how_far": "워크플로 YAML 을 읽고 쓰는 것은 기본, 이 자리에서는 **여러 저장소가 같은 워크플로를 쓰게 설계하는 것**(입력·비밀값·권한 나누기)까지입니다.[11]",
+   "refs": [
+    2,
+    3,
+    11
+   ],
+   "study": [
+    "gha-docs",
+    "speee-reusable-wf"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・テスト、デプロイ速度改善など、横断的な開発生産性の向上に対する課題定義と解決",
+   "short": "여러 팀이 공통으로 느린 곳(테스트·배포)을 찾아 '무엇이 문제인지'부터 정의하고 푼다.",
+   "why": "'과제 정의'가 먼저 적혀 있습니다.[1] 이 팀은 검증 환경을 서로 차지하려 기다리는 것이 개발을 늦춘다고 보고, 브랜치마다 검증 환경을 띄우는 방식을 만들었습니다(2022년 7개 클러스터 중 1곳 적용, 나머지는 2023년 계획).[5]",
+   "actually": {
+    "items": [
+     "**병목 재기** — 배포 빈도·변경 리드타임·실패율·복구 시간(DORA 4지표)으로 어디가 느린지 본다.[29]",
+     "**검증 환경 늘리기** — 2020년엔 매니페스트를 terraform apply 로 동적 생성하다 운영이 안 돼 접었고, 2022년엔 매니페스트를 Git 에 두고 Argo CD 로 다시 했다.[5]",
+     "**테스트 시간 줄이기** — 병렬화·캐시·바뀐 곳만 돌리기.{추론}"
+    ]
+   },
+   "how_far": "모든 팀의 테스트를 직접 고치는 게 아니라 **공통 원인을 찾아 기반에서 한 번에** 푸는 것이 이 줄의 뜻입니다. {추론}",
+   "refs": [
+    1,
+    5,
+    29
+   ],
+   "study": [
+    "dora",
+    "speee-infinite-env"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・Kubernetes間で共通でインストールされているべきchartの追加・管理",
+   "short": "모든 클러스터에 똑같이 깔려야 하는 Helm 차트(비밀값 동기화·로그 수집 등)를 한 곳에서 관리한다.",
+   "why": "클러스터가 제품마다 있어서[5], 비밀값 동기화(External Secrets Operator)·로그 수집(fluent-bit)·CI 러너(actions-runner-controller) 같은 부품을 클러스터마다 손으로 깔면 버전이 제각각이 됩니다.[3]",
+   "actually": {
+    "items": [
+     "**공통 차트 목록** — External Secrets Operator · fluent-bit · actions-runner-controller · 감시 에이전트 등.[3]",
+     "**배포 방법** — 이 팀은 Helm 차트를 Argo CD 로 GitOps 배포한다(Git 에 커밋하면 helm 명령과 같은 것이 적용).[4]",
+     "**여러 클러스터에 한 번에** — Argo CD 의 ApplicationSet 처럼 클러스터 목록에 같은 앱을 찍어 내는 기능을 쓰는 것이 흔한 방법이다.[30]"
+    ]
+   },
+   "how_far": "차트 버전·값(values)을 클러스터별로 어디까지 다르게 둘지 정하고, 올릴 때 스테이징 클러스터부터 차례로 내보내는 것까지. {추론}",
+   "refs": [
+    3,
+    4,
+    5,
+    30
+   ],
+   "study": [
+    "helm-docs",
+    "argocd-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・サービスを横断したセキュリティ対策",
+   "short": "서비스마다 따로 막던 보안(비밀값·접근 경로·웹 방화벽)을 공통 방식으로 맞춘다.",
+   "why": "예전에는 비밀값을 점프 서버(배스천)에 그냥 두었고, 이를 KMS 로 암호화되는 SSM Parameter Store 로 옮기고 배스천을 없앴습니다.[3] 감사 기록(CloudTrail)은 Sumo Logic 으로 모았습니다.[9]",
+   "actually": {
+    "items": [
+     "비밀값 → SSM Parameter Store + External Secrets Operator.[3]",
+     "웹 앞단 → ALB + CloudFront + WAF.[3]",
+     "접속 → 배스천 대신 EC2 Instance Connect.[3]",
+     "계정 → AWS SSO, 감사 기록 수집.[9]"
+    ]
+   },
+   "refs": [
+    3,
+    9
+   ],
+   "study": [
+    "k8s-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・全社横断のセキュリティ推進室と連携しながら脆弱性診断や、セキュリティ診断ツールの導入、各サービスが適切にセキュリティ水準を担保できる状態をつくる",
+   "short": "회사 보안팀이 정한 기준을, 각 서비스가 스스로 지킬 수 있게 진단 도구와 절차로 깔아 준다.",
+   "why": "기준은 전사 보안 추진실이 정하고 개발基盤グループ는 그것이 서비스마다 실제로 돌게 만드는 쪽입니다.[1] 이 팀의 블로그에는 취약점 진단 도구 도입기가 공개돼 있지 않습니다 — 어떤 도구를 쓰는지는 면접에서 확인할 부분입니다.",
+   "actually": {
+    "intro": "보통 이런 것들입니다(회사 공개 자료 아님).{추론}",
+    "items": [
+     "컨테이너 이미지·라이브러리 취약점 검사를 CI 에 넣는다.",
+     "Terraform·Kubernetes 설정의 위험한 값(공개 버킷·과한 권한)을 검사한다.",
+     "외부 진단 결과를 서비스별 이슈로 나눠 기한을 붙여 추적한다."
+    ]
+   },
+   "how_far": "SRE 가 보안 전문가일 필요는 없고, **보안팀 요구를 자동 검사로 바꿔 모든 저장소에 퍼뜨리는 것**이 몫입니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・データ解析基盤の構築、運用サポート、改善 ・各サービスが横断で利用するデータを利活用する基盤の構築や、社内メンバーが業務内で最適に利用できるようにサポートを行う",
+   "short": "여러 서비스의 데이터를 BigQuery 등에 모아, 사내 사람들이 권한 걱정 없이 쓰게 받친다.",
+   "why": "개발 환경에 BigQuery·Redash 가 적혀 있습니다.[1] 회사 글을 보면 이 '지원'의 큰 몫이 권한 처리였습니다 — 기반 팀이 받는 요청의 약 40%가 BigQuery 권한 추가였고, 건당 2~3분씩 손이 갔습니다.[7]",
+   "actually": {
+    "items": [
+     "**권한을 셀프서비스로** — Azure AD 의 접근 패키지로 Google Workspace 그룹을 만들게 해, 기반 팀이 권한을 직접 주지 않아도 되게 바꿨다. 출시 뒤 반달 동안 해당 요청 0건, 수작업 토일의 약 절반을 자동화했다고 추정.[7]",
+     "**조회 도구 운영** — Redash 를 EKS 에 Helm 차트로 올려 이중화했다.[4]"
+    ]
+   },
+   "how_far": "데이터 모델링·분석은 다른 사람 몫이고, SRE 는 **데이터가 모이는 길·권한·도구가 안 멈추게** 하는 쪽입니다. {추론}",
+   "refs": [
+    1,
+    4,
+    7
+   ],
+   "study": [
+    "speee-toil"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・車輪の再発明にならないように共通で利用する機能を基盤化し、各サービスで利用できる様な状況をつくる ・住所データや物件の査定データなど各サービスが独自で現在は開発しているものを共通基盤化することで、プロダクト開発のアジリティを加速させる",
+   "short": "서비스마다 따로 만든 주소·물건 감정 데이터 같은 것을 공통 기능으로 묶어 모두가 가져다 쓰게 한다.",
+   "why": "중개 서비스들은 모두 '어느 지역의 어떤 물건인가'를 받습니다 — 예를 들어 イエウール 는 사용자에게 거주 지역·물건 정보를 받아 맞는 부동산 업체를 소개합니다.[13] 같은 것을 서비스마다 만들면 고칠 때도 서비스 수만큼 고쳐야 합니다. {추론}",
+   "actually": {
+    "items": [
+     "같은 사업부의 다른 팀은 여러 제품이 같이 쓰는 청구 기반을 만들며 세 원칙을 적었다 — 필요할 때까지 설계를 미룬다, 중복을 없애 이해할 거리를 줄인다, 결과·비전에서 거꾸로 정한다.[12]",
+     "그 전에는 제품마다 요금 로직과 표가 따로 있어 제품당 평균 4.3개 표였다.[12]"
+    ]
+   },
+   "how_far": "기능의 업무 규칙(주소를 어떻게 정규화하나)은 제품 팀과 정하고, SRE 쪽은 **여러 서비스가 부를 수 있는 형태로 띄우고 운영**하는 것이 중심입니다. {추론}",
+   "refs": [
+    12,
+    13
+   ],
+   "study": [
+    "speee-multi-product"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・長期的なサービスの運用を想定した際のアーキテクチャの再編、新たな技術の導入支援 ・マイクロサービス化はじめとする、大規模なアーキテクチャの再編等を各サービスのプロダクトチームと連携しながら、先行して検討しテスト導入するなど、新たな技術投資を既存のプロダクト開発サイクルと分離して推進し、長期的に見たときのサービスの拡大・運用のリスクに対処していく",
+   "short": "제품 개발 일정과 따로, 몇 년 뒤를 위한 구조 변경(마이크로서비스 등)을 먼저 시험해 본다.",
+   "why": "이 사업부는 실제로 그런 큰 이전을 여러 번 했습니다 — CloudFormation → Terraform 은 리소스 100개 넘게를 손으로 들여오느라 약 1년 반이 걸렸고, EC2·ECS 에서 EKS 로, capistrano 에서 Argo CD 로 배포 방식도 통째로 바꿨습니다.[3]",
+   "actually": {
+    "items": [
+     "**먼저 작게 시험** — 브랜치별 검증 환경은 2020년 첫 시도를 접고 2022년에 방식을 바꿔 다시 했다.[5]",
+     "**한 번에 옮기지 않기** — Terraform 모노레포 이전도 2023년 12월 기준 약 15%만 옮긴 채 차례로 진행했다.[2]"
+    ]
+   },
+   "how_far": "결정은 제품 팀과 같이 합니다. SRE 는 **시험해 보고 '이 정도 비용·위험'을 숫자로 가져오는 사람**입니다. {추론}",
+   "refs": [
+    2,
+    3,
+    5
+   ],
+   "study": [
+    "speee-infra-3y"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■データベース MySQL ■ソースコード管理 Git ■プロジェクト管理 GitHub Projects ■情報共有ツール Slack Kibela GitHub ■その他 AWS Docker Redis Redash GitHub Actions Terraform Kubernetes SendGrid BigQuery",
+   "short": "매일 만지는 도구 — 이 공고에 적힌 것과 회사 글에 나온 것이 거의 같다.",
+   "why": "공고 목록에 회사 글을 겹치면 실제 그림이 나옵니다. 같은 회사의 다른 공고는 감시·운영에 Datadog·Sentry·PagerDuty, 배포에 Argo CD 를 적었습니다.[28]",
+   "actually": {
+    "items": [
+     "**앱** — Rails + MySQL + Redis.[2]",
+     "**실행** — AWS EKS, 배포 Argo CD, 이미지 ECR.[3]",
+     "**인프라 코드** — Terraform(모듈 60개).[2]",
+     "**CI** — GitHub Actions(+ Kubernetes 위 self-hosted runner).[3]",
+     "**데이터** — BigQuery·Redash.[1][7]",
+     "**문서** — Kibela(사내 위키), 메일 발송 SendGrid.[1]"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    3,
+    7,
+    28
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・チームでの業務経験",
+   "short": "혼자 서버를 돌려 본 경험이 아니라, 리뷰·합의를 거쳐 팀으로 일해 본 경험.",
+   "why": "SRE 가 몇 명뿐이라 서로의 변경을 리뷰하고, 서비스 팀과 목표를 합의하는 일이 많습니다.[8] 이 팀은 이슈 하나도 '누구 몫인지' 정리하는 데 공을 들였습니다.[8]",
+   "how_far": "PR 리뷰를 주고받고, 이슈·장애를 팀에 공유해 본 경험이면 됩니다. {추론}",
+   "refs": [
+    8
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・AWS (またはGCP, Azureなど類似クラウド)を使用したインフラの設計・構築及びWebサービスの運用経験 (仕事/プライベート問わず)",
+   "short": "클라우드에 웹 서비스를 직접 올리고 운영해 본 경험 — 개인 프로젝트도 인정한다.",
+   "why": "모든 서비스가 AWS 에 있고(CloudFront·S3·ECR·ALB·WAF·SSM 등), 데이터 쪽은 GCP(BigQuery)도 씁니다.[2][3][7]",
+   "level": {
+    "basic": "VPC·서브넷·보안 그룹 · EC2/컨테이너 · RDS · S3 · IAM 역할",
+    "work": "ALB + CloudFront + WAF 앞단 · 비밀값 관리(SSM) · 감시·알림 · 비용 보기",
+    "team": "계정을 운영·스테이징으로 나누고 같은 틀로 여러 서비스를 찍어 내기[10]"
+   },
+   "how_far": "'일/개인 불문'이라고 적었습니다.[1] 개인 프로젝트라도 **돈이 들고 사용자가 있는 상태로 몇 달 운영**해 본 이야기(장애·비용·백업)가 있으면 충분히 말할 거리가 됩니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    7,
+    10
+   ],
+   "study": [
+    "aws-saa"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Git (またはSubversionなど類似ツール)による開発経験",
+   "short": "인프라도 코드라서 브랜치·PR·리뷰로 바꾼다 — Git 이 작업 방식 그 자체다.",
+   "why": "이 팀은 인프라 변경도, 클러스터 배포도 Git 커밋이 출발점입니다(Terraform 저장소, Argo CD).[2][4]",
+   "how_far": "브랜치·리베이스·충돌 해결·되돌리기(revert)를 혼자 할 수 있으면 됩니다. {추론}",
+   "refs": [
+    2,
+    4
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・GitHub Actions (またはCircleCI, TravisCI, Jenkinsなど類似ツール)によるCICDの構築・運用経験 (仕事/プライベート問わず)",
+   "short": "빌드·테스트·배포 파이프라인을 직접 만들고 고쳐 본 경험. 도구는 무엇이든 된다.",
+   "why": "업무의 Platform 쪽 첫 줄이 CI/CD 개선이고[1], 이 팀 자체가 Jenkins·CircleCI → GitHub Actions 를 겪었습니다.[3]",
+   "level": {
+    "basic": "PR 마다 테스트 돌리기 · 비밀값 주입 · 아티팩트/이미지 만들기",
+    "work": "환경별 배포 · 캐시 · 경로 조건 · 수동 승인",
+    "team": "재사용 워크플로로 여러 저장소 공통화 · self-hosted runner · plan 결과를 PR 에 다는 IaC 파이프라인[11]"
+   },
+   "refs": [
+    1,
+    3,
+    11
+   ],
+   "study": [
+    "gha-docs",
+    "speee-reusable-wf"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Terraform (またはCloudFormationなど類似ツール)によるインフラ運用経験 (仕事/プライベート問わず)",
+   "short": "콘솔 클릭이 아니라 코드로 인프라를 만들고, 바꾸고, 어긋남(드리프트)을 잡아 본 경험.",
+   "why": "이 팀의 일 대부분이 Terraform 저장소에서 일어납니다(변경의 약 95%가 이 팀).[2] 모듈·디렉터리 규칙·드리프트 감시까지 갖춰져 있습니다.[10][11]",
+   "level": {
+    "basic": "resource·variable·output · plan 읽기 · state 개념",
+    "work": "모듈 만들기·버전 고정 · 원격 state · 기존 리소스 import",
+    "team": "모듈 60개 저장소 운영 · root 모듈 작게 나누기 · 하루 네 번 드리프트 검사[2][10][11]"
+   },
+   "how_far": "CloudFormation 경험도 된다고 적었습니다.[1] 이 팀도 CloudFormation 에서 넘어왔기 때문에 두 도구를 다 아는 사람은 이전 이야기를 바로 알아듣습니다. {추론}",
+   "refs": [
+    1,
+    2,
+    10,
+    11
+   ],
+   "study": [
+    "tf-up-running",
+    "terraform-docs",
+    "speee-terraform-spiral"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Kubernetes (またはECS, Docker Swarmなど類似コンテナオーケストレーションシステム)の使用経験 (仕事/プライベート問わず)",
+   "short": "컨테이너를 여러 대에 올리고 늘리고 되살리는 도구를 써 본 경험. ECS 도 된다.",
+   "why": "모든 서비스가 EKS 위에 있고[3], 검증 환경이 깨질 때 Kubernetes 이벤트를 읽어 원인을 가르는 것이 일상입니다.[6]",
+   "level": {
+    "basic": "Pod·Deployment·Service · kubectl get/describe/logs · 매니페스트 읽기",
+    "work": "Helm 차트 · 리소스 요청/한도 · Probe · CrashLoopBackOff·ImagePullBackOff 읽기",
+    "team": "노드 taint(디스크 부족·접속 불가) · VPC CNI IP 고갈 · Secret 동기화 실패 같은 클러스터 쪽 원인 가르기[6]"
+   },
+   "how_far": "'사용 경험'이라 클러스터를 처음부터 지어 봤을 필요는 없습니다.[1] 최소선은 Pod 가 안 뜰 때 이벤트를 보고 원인 칸을 고를 수 있는 것. {추론}",
+   "refs": [
+    1,
+    3,
+    6
+   ],
+   "study": [
+    "book-k8s",
+    "k8s-guide-jp",
+    "speee-recovery-chart"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本語レベル: ビジネス",
+   "short": "일본어로 장애 보고를 쓰고, 개발 팀과 설계를 토론할 수 있어야 한다 — 서류부터 일본어.",
+   "why": "원티드 공고 머리말은 비즈니스 수준 이상의 일본어 필수, 일문 이력서·직무경력서 필수, 한국어·영어 이력서만 내면 서류에서 탈락한다고 적었습니다.[1] 전형 서류 언어도 일본어입니다.[1]",
+   "how_far": "JLPT 기준으로 보면 N2 는 일상과 조금 넓은 장면의 일본어(신문 기사·평이한 논평)를, N1 은 논리가 복잡한 글·강의까지 이해하는 수준입니다.[23] 회사가 급수를 정하지는 않았습니다. 업무 문서(Kibela·이슈·장애 회고)를 일본어로 써야 하니 **읽기보다 쓰기**를 준비하세요. {추론}",
+   "refs": [
+    1,
+    23
+   ],
+   "study": [
+    "jlpt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本国内への移住が必要",
+   "short": "원격이 아니다 — 도쿄 롯폰기 사무실 근무, 일본 취업 재류자격이 필요하다.",
+   "why": "근무지는 본사(롯폰기 그랜드 타워)입니다.[1] 이 포지션은 LAPRAS Global Bridge 를 거친 채용이라 전형 중 라프라스가 연락할 수 있습니다.[1]",
+   "how_far": "엔지니어는 보통 '기술·인문지식·국제업무' 재류자격으로 일합니다. 출입국재류관리청은 이 자격을 자연과학·인문과학 지식이 필요한 업무(기술자 등)로 정의하고, 재류 기간을 5년·3년·1년·3개월로 둡니다.[24] 학력·경력 요건은 같은 청의 안내를 직접 확인하세요.",
+   "refs": [
+    1,
+    24
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・技術選定・開発フローの改善経験",
+   "short": "도구를 골라 본 이유와, 팀의 일하는 흐름을 바꿔 본 결과를 말할 수 있으면 좋다.",
+   "why": "이 팀의 역사는 기술 선정과 되돌리기의 연속입니다 — 템플릿 생성을 반년 만에 접고 모듈로, 분산 저장소를 다시 모노레포로.[2]",
+   "how_far": "'무엇을 골랐나'보다 **'무엇과 비교해 왜 골랐고, 틀렸을 때 어떻게 되돌렸나'**를 말할 수 있는 정도. {추론}",
+   "refs": [
+    2
+   ],
+   "study": [
+    "speee-terraform-spiral"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・アジャイル開発の経験",
+   "short": "짧게 나눠 자주 내놓는 방식에 익숙하면 좋다 — 기반 팀도 이슈를 작게 쪼개 굴린다.",
+   "why": "프로젝트 관리는 GitHub Projects 로 합니다.[1] 기반 팀은 이슈를 '지금 하거나 곧 할 일'만 열어 두는 방식으로 작업 흐름을 관리합니다.[8]",
+   "refs": [
+    1,
+    8
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・エンジニアメンバーのマネジメント経験",
+   "short": "사람을 이끌어 본 경험 — 소수 SRE 팀이 커질 때 리드 후보로 볼 수 있어서.",
+   "why": "기반 팀은 SRE 2~3명 규모에서 여러 해의 계획을 세우는 단계로 왔다고 적었습니다.[8] 팀이 커지면 맡은 영역을 나눠 이끌 사람이 필요합니다. {추론}",
+   "refs": [
+    8
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・AWS認定資格(特にSolutionArchitect/DevOps Engineer)",
+   "short": "AWS 자격증 — 특히 솔루션스 아키텍트, DevOps 엔지니어. 우대일 뿐 필수는 아니다.",
+   "why": "일본 회사에서는 해외 경력을 짧게 확인할 수단으로 자격증이 읽히기 쉽습니다. {추론} 회사는 업무 관련 자격을 따면 응시료를 3만 엔까지 대 줍니다.[1]",
+   "actually": {
+    "items": [
+     "**Solutions Architect – Associate** — 130분, 65문항, 150달러, 3년 유효.[21]",
+     "**DevOps Engineer – Professional** — 180분, 75문항, 300달러, 3년 유효.[22]"
+    ]
+   },
+   "how_far": "Associate 하나면 서류에서 말할 거리로 충분합니다. Professional 은 CI/CD·자동화 경험을 정리하는 공부로 의미가 있습니다. {추론}",
+   "refs": [
+    1,
+    21,
+    22
+   ],
+   "study": [
+    "aws-saa",
+    "aws-dop"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・CKAD/CKA",
+   "short": "Kubernetes 실기 자격증. 명령줄에서 실제로 문제를 푸는 시험이라 실력 증명이 된다.",
+   "why": "모든 서비스가 EKS 위라서[3] Kubernetes 실력이 바로 쓰입니다.",
+   "actually": {
+    "items": [
+     "**공통** — 온라인 감독·실기형(명령줄에서 과제 풀기), 2시간, 2년 유효, 응시료 445달러, 재응시 1회 포함.[19][20]",
+     "**CKA(운영자)** — 문제 해결 30%·클러스터 구성 25%·네트워크 20% 비중.[19]",
+     "**CKAD(앱 개발자)** — 앱 설정·보안 25%, 설계·빌드·배포·네트워크 각 20%.[20]"
+    ]
+   },
+   "how_far": "이 자리에는 문제 해결 비중이 큰 CKA 쪽이 더 맞습니다 — 업무의 검증 환경 복구 흐름도와 겹칩니다.[6][19] {추론}",
+   "refs": [
+    3,
+    6,
+    19,
+    20
+   ],
+   "study": [
+    "cka",
+    "book-k8s"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・ArgoCD,Weaveworksfluxなどの構築運用経験",
+   "short": "Git 을 보고 클러스터를 맞추는 배포 도구(Argo CD·Flux)를 깔고 운영해 본 경험.",
+   "why": "이 팀은 2020년 무렵 Argo CD 를 시험해 들였고, Actions 에서 kubectl apply 하던 배포를 대신했습니다.[3] Flux 를 만든 Weaveworks 는 2024년 2월 문을 닫았지만, Flux 는 CNCF 졸업 프로젝트로 계속됩니다.[26][27]",
+   "actually": {
+    "items": [
+     "Helm 차트를 Argo CD 앱으로 두면 Git 커밋이 곧 배포.[4]",
+     "브랜치별 검증 환경도 매니페스트를 Git 에 두고 Argo CD 가 띄운다.[5]"
+    ]
+   },
+   "how_far": "Argo CD 를 띄워 앱 하나를 Git 으로 배포·되돌려 보고, 동기화 실패를 읽을 줄 알면 말할 거리가 됩니다. {추론}",
+   "refs": [
+    3,
+    4,
+    5,
+    26,
+    27
+   ],
+   "study": [
+    "argocd-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・GitOpsの知識・実戦経験",
+   "short": "'Git 에 적힌 것이 정답이고, 도구가 실제를 그쪽으로 계속 맞춘다'는 운영 방식을 아는 것.",
+   "why": "OpenGitOps 는 원칙을 넷으로 적습니다 — 선언형으로 적기, 버전이 남고 바뀌지 않게 보관, 에이전트가 자동으로 끌어오기, 실제 상태를 계속 맞추기.[18] 이 팀은 클러스터 쪽은 GitOps 이지만, Terraform 배포는 브랜치 기반 GitOps 를 IssueOps 로 바꾸기로 했습니다.[2]",
+   "how_far": "원칙을 외우는 것보다 **GitOps 가 불편했던 지점**(환경 브랜치가 어긋남, 긴급 수정)을 말할 수 있으면 이 팀과 대화가 됩니다.[2] {추론}",
+   "refs": [
+    2,
+    18
+   ],
+   "study": [
+    "opengitops",
+    "argocd-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "求める人物像 ・ ユーザファーストで考え、行動できる方",
+   "short": "인프라 결정도 '사용자에게 무엇이 좋아지나'로 설명할 수 있는 사람.",
+   "why": "공고 머리말은 서비스 전체의 신뢰성을 다시 보는 이유를, 새 서비스와 기존 서비스 성장을 동시에 하며 보안·안정 운영을 강화해야 하기 때문이라고 적었습니다.[1] SLO 를 사용자 경험으로 정하는 것과 같은 말입니다.[16]",
+   "refs": [
+    1,
+    16
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・ 難しい課題を解決するのが好きな方",
+   "short": "정답이 없는 문제(나눌까 합칠까)를 붙들고 여러 번 고쳐 가는 걸 즐기는 사람.",
+   "why": "Terraform 저장소 구조 하나를 4년에 걸쳐 세 번 바꾼 팀입니다.[2]",
+   "refs": [
+    2
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・ チームでのコミュニケーション、HRTを大切にしたい方",
+   "short": "HRT = 겸손·존중·신뢰. 구글 엔지니어들이 쓴 팀워크 책의 말이다.",
+   "why": "HRT 는 『Team Geek』(브라이언 피츠패트릭·벤 콜린스서스먼, 일본어판 오라일리 재팬 2013)의 장 이름에서 온 말입니다.[25] 일본 개발 조직에서 자주 쓰는 말이라, 면접에서 그대로 나올 수 있습니다. {추론}",
+   "refs": [
+    25
+   ],
+   "study": [
+    "team-geek"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・ 良い意味で技術的なこだわりが無い方",
+   "short": "좋아하는 도구를 고집하지 않고, 상황에 맞는 걸 고르는 사람.",
+   "why": "이 팀은 저장소를 나눴다가 다시 합치고, 템플릿을 버리고 모듈로 갔습니다 — 고집보다 결과로 고른 기록입니다.[2]",
+   "refs": [
+    2
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・ プロダクトを良くするためであれば躊躇なく自分の書いたコードを捨てられる方",
+   "short": "더 나은 방법이 보이면 내가 쓴 코드도 망설임 없이 버릴 수 있는 사람.",
+   "why": "반년 들인 템플릿 생성 방식을 접은 것이 이 팀의 실제 예입니다.[2]",
+   "refs": [
+    2
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "speee-terraform-spiral",
+   "title": "Terraformリポジトリがモノレポから分散レポになってもう一度モノレポに戻ってくるまで",
+   "by": "Speee 開発基盤グループ · 2023",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "url": "https://tech.speee.jp/entry/spiral-of-terraform-repo",
+   "why": "공고가 직접 링크한 글(일본어). 이 팀이 무엇을 고민해 왔는지 한 번에 — 지원 전에 꼭 읽는다."
+  },
+  {
+   "id": "speee-infra-3y",
+   "title": "DX事業本部インフラの3年分の進化 (2019 ~ 2022)",
+   "by": "Speee · 2022",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "url": "https://tech.speee.jp/entry/infra-2019-to-2022",
+   "why": "지금 쓰는 도구 표(EKS·Argo CD·Datadog·GitHub Actions·SSM)와 그렇게 바꾼 이유(일본어). 개발 환경 줄의 바탕."
+  },
+  {
+   "id": "speee-reusable-wf",
+   "title": "GitHub Actions のワークフローファイルを共通化した話",
+   "by": "Speee · 2021",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "실무",
+   "url": "https://tech.speee.jp/entry/terraform-reusable-workflow",
+   "why": "워크플로 80개를 재사용 워크플로로 묶은 실제 구성(일본어). CI/CD 개선 줄의 본보기."
+  },
+  {
+   "id": "speee-toil",
+   "title": "GCPの権限追加に関するトイル削減事例について、課題解決の一連の流れを紹介",
+   "by": "Speee · 2025",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "실무",
+   "url": "https://tech.speee.jp/entry/identifying-sre-toil",
+   "why": "토일을 재고(요청 40%), 셀프서비스로 없앤 과정(일본어). 운영 자동화·데이터 기반 지원 줄."
+  },
+  {
+   "id": "speee-recovery-chart",
+   "title": "検証環境復旧チャート",
+   "by": "Speee · 2025",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "실무",
+   "url": "https://tech.speee.jp/entry/test-env-recovery-workflow",
+   "why": "EKS 에서 실제로 나는 장애 유형과 이벤트로 가르는 법(일본어). Kubernetes 요건의 '이 팀 수준'."
+  },
+  {
+   "id": "speee-infinite-env",
+   "title": "CloudFrontがあっても実現できる無限検証環境の話",
+   "by": "Speee · 2022",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "실무",
+   "url": "https://tech.speee.jp/entry/infinite-environments-with-cloudfront",
+   "why": "브랜치별 검증 환경을 Argo CD 로 만든 이야기(일본어). 개발 생산성 줄."
+  },
+  {
+   "id": "speee-multi-product",
+   "title": "マルチプロダクトSaaSにおけるシンプルな共通基盤を作るための3原則",
+   "by": "Speee · 2025",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "실무",
+   "url": "https://tech.speee.jp/entry/multi-product-saas-principle",
+   "why": "같은 사업부가 여러 제품의 공통 기반을 어떤 원칙으로 만드는지(일본어). 공통 기반화 줄."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering",
+   "by": "Google · O'Reilly · 2016 (웹 무료)",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "why": "SLI·SLO·SLA·오류 예산, 당번·장애 대응의 원전. 4장(SLO)·11장(당번)부터."
+  },
+  {
+   "id": "sre-workbook",
+   "title": "The Site Reliability Workbook",
+   "by": "구글 · O'Reilly · 2018 (웹에서 무료)",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/workbook/table-of-contents/",
+   "why": "SLO 를 실제로 정하고 알림을 거는 법. 'Implementing SLOs'·'Alerting on SLOs' 장이 이 공고의 SLI/SLO·트리아지 줄."
+  },
+  {
+   "id": "tf-up-running",
+   "title": "Terraform: Up & Running (3판)",
+   "by": "Yevgeniy Brikman · O'Reilly · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/terraform-up-and/9781098116736/",
+   "why": "모듈·state·환경 나누기·테스트·CI 까지. 이 팀이 겪은 '모듈 버전 고정'과 '저장소 구조' 고민의 교과서."
+  },
+  {
+   "id": "terraform-docs",
+   "title": "Terraform 문서",
+   "by": "HashiCorp",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://developer.hashicorp.com/terraform/docs",
+   "why": "모듈·import·원격 state 의 정확한 정의."
+  },
+  {
+   "id": "book-k8s",
+   "title": "쿠버네티스 입문",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "kubectl 이 돌려준 것을 읽는 연습 — Pending·CrashLoopBackOff 읽기가 절반. Kubernetes 요건의 기본·실무."
+  },
+  {
+   "id": "k8s-guide-jp",
+   "title": "Kubernetes完全ガイド 第2版",
+   "by": "青山真也 · インプレス",
+   "kind": "book",
+   "lang": "ja",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.kinokuniya.co.jp/f/dsg-01-9784295009795",
+   "why": "일본어 책(668쪽). 일본 현장에서 널리 읽히는 Kubernetes 개설서라 일본어 기술 용어도 같이 익힌다."
+  },
+  {
+   "id": "k8s-docs",
+   "title": "Kubernetes 공식 문서(한국어)",
+   "by": "Kubernetes",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://kubernetes.io/ko/docs/home/",
+   "why": "버전 차이·폐기된 API·Secret·노드 taint 의 정확한 정의. 업데이트 줄."
+  },
+  {
+   "id": "helm-docs",
+   "title": "Helm 문서",
+   "by": "Helm",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://helm.sh/docs/",
+   "why": "공통 차트를 values 로 클러스터마다 다르게 까는 법."
+  },
+  {
+   "id": "argocd-docs",
+   "title": "Argo CD 문서",
+   "by": "Argo Project",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://argo-cd.readthedocs.io/en/stable/",
+   "why": "앱·동기화·ApplicationSet. Argo CD 우대 줄과 공통 차트 줄."
+  },
+  {
+   "id": "opengitops",
+   "title": "OpenGitOps 원칙",
+   "by": "OpenGitOps (CNCF)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://opengitops.dev/",
+   "why": "GitOps 네 원칙을 한 쪽에. GitOps 우대 줄."
+  },
+  {
+   "id": "gha-docs",
+   "title": "GitHub Actions 문서",
+   "by": "GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.github.com/en/actions",
+   "why": "재사용 워크플로·경로 조건·self-hosted runner. CI/CD 줄."
+  },
+  {
+   "id": "datadog-docs",
+   "title": "Datadog 문서 · Service Level Objectives",
+   "by": "Datadog",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.datadoghq.com/service_management/service_level_objectives/",
+   "why": "이 회사 감시 도구에서 SLO 를 만들고 알림을 거는 법."
+  },
+  {
+   "id": "dora",
+   "title": "DORA's software delivery metrics: the four keys",
+   "by": "DORA (Google Cloud)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+   "why": "배포·테스트가 '느리다'를 네 숫자로 재는 법. 개발 생산성 줄의 '과제 정의'."
+  },
+  {
+   "id": "aws-saa",
+   "title": "AWS Certified Solutions Architect – Associate",
+   "by": "AWS",
+   "kind": "course",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://aws.amazon.com/certification/certified-solutions-architect-associate/",
+   "why": "AWS 설계 기본을 한 번에 훑는 시험. 클라우드 요건과 자격 우대 줄."
+  },
+  {
+   "id": "aws-dop",
+   "title": "AWS Certified DevOps Engineer – Professional",
+   "by": "AWS",
+   "kind": "course",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://aws.amazon.com/certification/certified-devops-engineer-professional/",
+   "why": "CI/CD·자동화·감시를 AWS 기준으로 정리. 자격 우대 줄."
+  },
+  {
+   "id": "cka",
+   "title": "Certified Kubernetes Administrator (CKA)",
+   "by": "Linux Foundation · CNCF",
+   "kind": "course",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://training.linuxfoundation.org/certification/certified-kubernetes-administrator-cka/",
+   "why": "실기형 — 문제 해결 30%. 검증 환경 복구 같은 이 팀 일과 가장 가깝다."
+  },
+  {
+   "id": "jlpt",
+   "title": "JLPT 레벨 인정의 기준",
+   "by": "일본어능력시험(JLPT)",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.jlpt.jp/about/levelsummary.html",
+   "why": "'비즈니스 일본어'를 가늠할 공식 기준(N1·N2 설명, 일본어 페이지)."
+  },
+  {
+   "id": "team-geek",
+   "title": "Team Geek — Googleのギークたちはいかにしてチームを作るのか",
+   "by": "Brian W. Fitzpatrick · Ben Collins-Sussman · 角征典 옮김 · オライリー・ジャパン · 2013",
+   "kind": "book",
+   "lang": "ja",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.oreilly.co.jp/books/9784873116303/",
+   "why": "공고의 'HRT'가 나온 책(일본어판). 인물상 줄을 면접에서 말로 풀 때."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "이 팀의 글부터",
+   "time": "3~5일",
+   "goal": "이 팀이 왜 지금 구조(EKS·Argo CD·Terraform 모노레포)가 됐는지 일본어로 설명할 수 있다.",
+   "task": "회사 글 4편(저장소 4년사·인프라 3년사·재사용 워크플로·토일 줄이기)을 읽고, '나눌까 합칠까'에 대한 내 의견을 일본어 다섯 문장으로 쓴다.",
+   "resources": [
+    "speee-terraform-spiral",
+    "speee-infra-3y",
+    "speee-reusable-wf",
+    "speee-toil"
+   ]
+  },
+  {
+   "title": "Terraform 으로 서비스 두 개 찍어 내기",
+   "time": "2~3주",
+   "goal": "공통 모듈 하나로 서비스 두 개의 인프라를 만들고, 모듈을 고쳤을 때 둘에 어떻게 번지는지 보인다.",
+   "task": "가상 서비스 A·B 를 위한 VPC·ALB·RDS 모듈을 만들고 이 팀의 5단 디렉터리 구조로 배치한다. 모듈을 한 번 바꿔 두 plan 결과를 비교한다(무료 한도 안에서, 끝나면 destroy).",
+   "resources": [
+    "tf-up-running",
+    "terraform-docs",
+    "aws-saa"
+   ]
+  },
+  {
+   "title": "Kubernetes 와 GitOps",
+   "time": "2~4주",
+   "goal": "로컬 클러스터에 Argo CD 로 앱과 공통 차트를 배포하고, 깨진 Pod 의 원인을 이벤트로 가른다.",
+   "task": "kind 클러스터 두 개에 Argo CD 로 같은 공통 차트(예: 로그 수집기)를 깔고, 일부러 이미지 이름 오타·메모리 부족을 내서 ImagePullBackOff·OOMKilled 를 읽어 본다.",
+   "resources": [
+    "book-k8s",
+    "k8s-guide-jp",
+    "argocd-docs",
+    "helm-docs",
+    "opengitops",
+    "speee-recovery-chart"
+   ]
+  },
+  {
+   "title": "CI/CD 와 SLO",
+   "time": "2주",
+   "goal": "저장소 여러 개가 같은 워크플로를 쓰게 하고, 서비스 하나에 SLO 와 소진 속도 알림을 건다.",
+   "task": "재사용 워크플로로 저장소 두 개에 terraform plan 댓글·정기 드리프트 검사를 붙인다. 가상 API 에 99.9% SLO 를 정하고 위 예시처럼 소진 속도 계산기를 만들어 알림 기준을 정한다.",
+   "resources": [
+    "gha-docs",
+    "speee-reusable-wf",
+    "sre-book",
+    "sre-workbook",
+    "datadog-docs"
+   ]
+  },
+  {
+   "title": "자격증·일본어 서류",
+   "time": "계속",
+   "goal": "CKA 또는 AWS 자격 하나와, 일본어 직무경력서를 갖춘다.",
+   "task": "위 1~4단계 결과를 일본어 직무경력서(職務経歴書)의 프로젝트 항목 셋으로 정리한다 — 무엇을·왜·숫자로 결과.",
+   "resources": [
+    "cka",
+    "aws-saa",
+    "aws-dop",
+    "jlpt",
+    "team-geek"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공고 연봉은 **500만~800만 엔**, 회사 전체 직원 평균은 **약 573만 엔**(공시, 평균 29.6세) — 평균은 비개발직이 섞인 전체 값이다",
+  "rows": [
+   {
+    "label": "공고 표기 연봉",
+    "value": "500만~800만 엔",
+    "basis": "공고",
+    "note": "경험·능력을 보고 정하고 자세한 것은 내정 통지 때 알려 준다고 적었다. 수습 3개월, 조건 같음 [1]"
+   },
+   {
+    "label": "직원 평균 연간 급여",
+    "value": "573만 1천 엔",
+    "basis": "유가증권보고서 · 2025년 9월 결산",
+    "note": "제출 회사(단독) 601명, 평균 29.6세, 평균 근속 3년 2개월. 상여·기준 외 임금 포함 [13]"
+   }
+  ],
+  "how": "공고 범위는 이 자리(경력 3~15년)의 제시액이고, 평균은 영업·컨설팅 등 다른 직군과 젊은 직원(평균 29.6세)이 섞인 회사 전체 값이라 서로 바로 비교하지 않는다 {추론}. 엔화 연봉은 일본의 세금·사회보험이 빠지기 전 금액이다. 신입 초봉은 이 공고와 관계가 없어 싣지 않았다."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "장비",
+    "detail": "2년마다 고사양 MacBook Pro, 원하는 키보드·마우스, 의자 선택(에르고휴먼·콘테사)"
+   },
+   {
+    "name": "책",
+    "detail": "도서 구입비 월 1만 엔까지, 사내 도서관(5,000권 넘음, 오라일리 신간 수시 입고)"
+   },
+   {
+    "name": "클라우드 개인 사용료",
+    "detail": "개인이 쓰는 클라우드 비용 월 1만 엔까지 회사 부담"
+   },
+   {
+    "name": "컨퍼런스",
+    "detail": "참가비 부담(숙박비·교통비 포함)"
+   },
+   {
+    "name": "자격 취득",
+    "detail": "업무 관련 자격을 따면 응시료 3만 엔까지 부담"
+   },
+   {
+    "name": "부업",
+    "detail": "허용(개인 서비스 개발·기술 고문 등)"
+   },
+   {
+    "name": "주택 보조",
+    "detail": "규정 지역 거주 시. 회사 제도 페이지는 사무실 역에서 세 정거장 안이라고 적었다"
+   },
+   {
+    "name": "근무 제도",
+    "detail": "플렉스 타임, 생활 변화(임신·육아·간병)에 맞춰 일시적으로 근무 방식을 바꾸는 제도"
+   },
+   {
+    "name": "휴가",
+    "detail": "완전 주 2일 휴무, 유급·연말연시·여름·경조·출산 전후·출산 입회·리프레시 휴가, 육아휴직"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "무료 드립 커피(Speee Cafe), 마사지실(국가자격 상주 직원, 예약제), 피트니스룸, 낮잠실"
+   },
+   {
+    "name": "수당·보조",
+    "detail": "교통비(상한 있음, 자전거 통근 가능), 팀 식사비(S-pay), 결혼·출산 축하금, 베이비시터 보조, 건강검진·예방접종"
+   }
+  ],
+  "note": "공고의 복리후생 칸과 회사 공식 제도 페이지 기준, Speee 본사 정사원 [1][14]. 각 수당에는 지급 조건이 있고 자세한 것은 내정 때 안내한다고 적었다 [1]."
+ },
+ "location": {
+  "name": "Speee 본사 · 롯폰기 그랜드 타워",
+  "address": "東京都港区六本木3-2-1 六本木グランドタワー35階・39階",
+  "postal": "〒106-0032",
+  "map_url": "https://map.naver.com/p/search/%E5%85%AD%E6%9C%AC%E6%9C%A8%E3%82%B0%E3%83%A9%E3%83%B3%E3%83%89%E3%82%BF%E3%83%AF%E3%83%BC",
+  "near": "지하철 난보쿠선 롯폰기잇초메역 직결 · 히비야선·오에도선 롯폰기역 걸어서 5분",
+  "note": "회사 소개 페이지와 공고의 근무지 [1][15]"
+ },
+ "fit": {
+  "good": [
+   "같은 일을 두 번 하면 자동화하고 싶어지는 사람[7]",
+   "인프라를 고르는 이유를 글로 남기는 걸 좋아하는 사람 — 이 팀은 결정 과정을 블로그로 꾸준히 공개한다[2][3]",
+   "한 서비스보다 여러 서비스를 같은 틀로 다루는 데 흥미가 있는 사람[1]",
+   "일본에서 일하며 일본어로 기술 토론을 하고 싶은 사람[1]"
+  ],
+  "hard": [
+   "몇 달에 한 번이지만 밤·휴일 호출이 있다[1]",
+   "SRE 가 적어 맡는 범위가 넓다 — CI·클러스터·보안·데이터 권한까지[1][8]",
+   "서류부터 일본어 — 일문 이력서·직무경력서 없이는 서류에서 빠진다[1]",
+   "잔업이 월 20~45시간 정도라고 공고에 적혀 있다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "서비스마다 인프라·저장소를 따로 두는 것과 합치는 것, 어느 쪽을 고르겠어요?",
+   "a": "공고가 링크한 글의 주제 그 자체.[2]"
+  },
+  {
+   "q": "우리 서비스 하나의 SLI 를 무엇으로 잡고, 목표는 몇으로 하겠어요?",
+   "a": "Embedded SRE 첫 일이 SLI/SLO 정의.[1][16]"
+  },
+  {
+   "q": "스테이징 배포가 실패했다는 문의가 왔을 때 무엇부터 보나요?",
+   "a": "이 팀이 이벤트 기반 복구 흐름도로 정리한 일.[6]"
+  },
+  {
+   "q": "공통 Terraform 모듈을 고쳤는데 10개 서비스에 어떻게 안전하게 내보내나요?",
+   "a": "모듈 버전 고정 방식이 '악몽'이 된 이유.[2]"
+  },
+  {
+   "q": "반복 요청이 많을 때 무엇부터 자동화할지 어떻게 정하나요?",
+   "a": "요청을 한 달 세어 40%를 찾은 사례.[7]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · [株式会社Speee] 【DX】SRE엔지니어 (현장산업DX분야・사업부 채용)_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/386999",
+   "kind": "posting",
+   "note": "LAPRAS Global Bridge 채용 · 업무·요건·복리후생·근무지"
+  },
+  {
+   "n": 2,
+   "title": "Speee DEVELOPER BLOG · Terraformリポジトリがモノレポから分散レポになってもう一度モノレポに戻ってくるまで",
+   "url": "https://tech.speee.jp/entry/spiral-of-terraform-repo",
+   "kind": "company",
+   "date": "2023-12",
+   "note": "DX事業本部 開発基盤グループ 리더 · 공고가 직접 링크"
+  },
+  {
+   "n": 3,
+   "title": "Speee DEVELOPER BLOG · DX事業本部インフラの3年分の進化 (2019 ~ 2022)",
+   "url": "https://tech.speee.jp/entry/infra-2019-to-2022",
+   "kind": "company",
+   "date": "2022-09"
+  },
+  {
+   "n": 4,
+   "title": "Speee DEVELOPER BLOG · Kubernetesが実現した「インフラ設計不要のHA」というパラダイムシフト",
+   "url": "https://tech.speee.jp/entry/ha-is-default",
+   "kind": "company",
+   "date": "2021-04"
+  },
+  {
+   "n": 5,
+   "title": "Speee DEVELOPER BLOG · CloudFrontがあっても実現できる無限検証環境の話",
+   "url": "https://tech.speee.jp/entry/infinite-environments-with-cloudfront",
+   "kind": "company",
+   "date": "2022-12"
+  },
+  {
+   "n": 6,
+   "title": "Speee DEVELOPER BLOG · 検証環境復旧チャート",
+   "url": "https://tech.speee.jp/entry/test-env-recovery-workflow",
+   "kind": "company",
+   "date": "2025-12"
+  },
+  {
+   "n": 7,
+   "title": "Speee DEVELOPER BLOG · GCPの権限追加に関するトイル削減事例",
+   "url": "https://tech.speee.jp/entry/identifying-sre-toil",
+   "kind": "company",
+   "date": "2025-12"
+  },
+  {
+   "n": 8,
+   "title": "Speee DEVELOPER BLOG · 開発基盤のIssueチケットを300個から50個まで減らした話",
+   "url": "https://tech.speee.jp/entry/dx-platform-issue",
+   "kind": "company",
+   "date": "2023-10"
+  },
+  {
+   "n": 9,
+   "title": "Speee DEVELOPER BLOG · Speee DX事業本部を支えるSaaS",
+   "url": "https://tech.speee.jp/entry/various-saas-in-dx",
+   "kind": "company",
+   "date": "2020-06",
+   "note": "Datadog·PagerDuty·Sentry 등 — 시점이 오래됐다"
+  },
+  {
+   "n": 10,
+   "title": "Speee DEVELOPER BLOG · 開発基盤グループが採用しているTerraformのディレクトリ構造",
+   "url": "https://tech.speee.jp/entry/terraform-directory-structure",
+   "kind": "company",
+   "date": "2022-12"
+  },
+  {
+   "n": 11,
+   "title": "Speee DEVELOPER BLOG · GitHub Actions のワークフローファイルを共通化した話",
+   "url": "https://tech.speee.jp/entry/terraform-reusable-workflow",
+   "kind": "company",
+   "date": "2021-12"
+  },
+  {
+   "n": 12,
+   "title": "Speee DEVELOPER BLOG · マルチプロダクトSaaSにおけるシンプルな共通基盤を作るための3原則",
+   "url": "https://tech.speee.jp/entry/multi-product-saas-principle",
+   "kind": "company",
+   "date": "2025-12"
+  },
+  {
+   "n": 13,
+   "title": "株式会社Speee 有価証券報告書 第18期 (2024.10~2025.9)",
+   "url": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XC4C.pdf",
+   "kind": "company",
+   "date": "2025-12",
+   "note": "EDINET · 사업 내용·종업원 현황(평균 연간 급여)"
+  },
+  {
+   "n": 14,
+   "title": "Speee 採用サイト · 制度・福利厚生",
+   "url": "https://speee.jp/recruit/fabric/",
+   "kind": "company"
+  },
+  {
+   "n": 15,
+   "title": "Speee · 会社概要",
+   "url": "https://speee.jp/company/",
+   "kind": "company",
+   "note": "주소·우편번호"
+  },
+  {
+   "n": 16,
+   "title": "Google SRE Book · Service Level Objectives",
+   "url": "https://sre.google/sre-book/service-level-objectives/",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Google SRE Workbook · Implementing SLOs",
+   "url": "https://sre.google/workbook/implementing-slos/",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "OpenGitOps · Principles v1.0.0",
+   "url": "https://opengitops.dev/",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Linux Foundation · Certified Kubernetes Administrator (CKA)",
+   "url": "https://training.linuxfoundation.org/certification/certified-kubernetes-administrator-cka/",
+   "kind": "reference",
+   "note": "응시료·시간은 2026-11 확인"
+  },
+  {
+   "n": 20,
+   "title": "Linux Foundation · Certified Kubernetes Application Developer (CKAD)",
+   "url": "https://training.linuxfoundation.org/certification/certified-kubernetes-application-developer-ckad/",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "AWS Certified Solutions Architect – Associate",
+   "url": "https://aws.amazon.com/certification/certified-solutions-architect-associate/",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "AWS Certified DevOps Engineer – Professional",
+   "url": "https://aws.amazon.com/certification/certified-devops-engineer-professional/",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "JLPT · N1~N5 認定の目安",
+   "url": "https://www.jlpt.jp/about/levelsummary.html",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "出入国在留管理庁 · 在留資格「技術・人文知識・国際業務」",
+   "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "オライリー・ジャパン · Team Geek",
+   "url": "https://www.oreilly.co.jp/books/9784873116303/",
+   "kind": "reference",
+   "note": "목차에 'HRT' 절"
+  },
+  {
+   "n": 26,
+   "title": "CNCF · Why Flux isn't dying after Weaveworks (The New Stack)",
+   "url": "https://www.cncf.io/news/2024/04/08/the-new-stack-why-flux-isnt-dying-after-weaveworks/",
+   "kind": "news",
+   "date": "2024-04"
+  },
+  {
+   "n": 27,
+   "title": "TechCrunch · Weaveworks shuts its doors",
+   "url": "https://techcrunch.com/2024/02/05/cloud-native-container-management-platform-weaveworks-shuts-its-doors/",
+   "kind": "news",
+   "date": "2024-02"
+  },
+  {
+   "n": 28,
+   "title": "원티드 · [株式会社Speee] 시니어 프로덕트 엔지니어 (부동산 DX 분야)",
+   "url": "https://www.wanted.co.kr/wd/393877",
+   "kind": "posting",
+   "note": "같은 회사 공고의 개발 환경(Datadog·Sentry·PagerDuty·Argo CD)"
+  },
+  {
+   "n": 29,
+   "title": "DORA · Software delivery metrics: the four keys",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "Argo CD 문서 · ApplicationSet",
+   "url": "https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "회사 기술 블로그는 2020~2025년 글이라 지금 구성과 다를 수 있다(특히 2020년의 SaaS 목록). 취약점 진단 도구·당번 순서·수당은 공개되지 않았다. 연봉은 엔화이고 원화로 바꾸지 않았다."
+}
