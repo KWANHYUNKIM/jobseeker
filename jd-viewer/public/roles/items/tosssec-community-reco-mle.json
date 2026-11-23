@@ -1,0 +1,1331 @@
+{
+ "id": "tosssec-community-reco-mle",
+ "company": "토스증권",
+ "role": "ML 엔지니어 (커뮤니티 추천)",
+ "team": "커뮤니티 사일로 (PO·서버 개발자·데이터 분석가와 한 팀)",
+ "jobs": [
+  "ats-toss:group:7788403003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "한 달에 400만 명이 쓰는 투자 커뮤니티에서 **누구에게 어떤 글을 먼저 보여 줄지** 정하는 추천 모델을 만들고, 학습 데이터·평가·서빙까지 맡습니다.[1]",
+  "env": "Python·PyTorch로 학습하고 FastAPI·KServe·Kubernetes로 서빙합니다. 저장과 메시지는 Elasticsearch·ClickHouse·Milvus(벡터 DB)·Kafka·Redis, 실험 기록과 감시는 MLflow·Prometheus·Grafana입니다.[1]",
+  "oneline": "많이 눌릴 글이 아니라 **믿을 만하고 오래 쓰게 만드는 글**을 고르는 추천 엔지니어. 모델만큼 로그의 편향·평가·운영을 봅니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "☑️ 커뮤니티 피드 추천 품질을 고도화해요.",
+   "short": "커뮤니티 첫 화면(피드)에 어떤 글을 어떤 순서로 띄울지 정하는 추천을 더 좋게 만드는 일.",
+   "why": "커뮤니티는 토스증권이 사용자를 붙잡아 두는(리텐션) 핵심 기능이고, 글과 행동 데이터가 쌓일수록 \"누구에게 어떤 글을 보여 줄 것인가\"가 더 중요해졌다고 공고가 밝혔습니다.[1] 보도에 따르면 매매하는 사용자의 80% 넘게 커뮤니티를 씁니다.[8]",
+   "actually": {
+    "intro": "아래 세 줄이 이 묶음의 일입니다. 피드 추천은 보통 여러 단계로 나뉩니다 — 토스 쇼핑의 예입니다.[5]",
+    "items": [
+     "**후보 고르기** — 글 수백만 개 중 수천 개로 빠르게 줄인다(사용자·글을 벡터로 바꿔 가까운 것 찾기).[5]",
+     "**순위 매기기** — 남은 후보마다 누를 확률 같은 점수를 매긴다.[5]",
+     "**다시 섞기** — 다양성·새 글 비율 같은 규칙으로 순서를 고친다.[5]",
+     "커뮤니티는 여기에 **신뢰** 조건이 더 붙는다 — 규칙 위반 글은 추천에서 뺀다.[6]"
+    ]
+   },
+   "refs": [
+    1,
+    5,
+    6,
+    8
+   ],
+   "study": [
+    "toss-reco-blog",
+    "aggarwal"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "사용자의 관심사와 콘텐츠의 맥락을 더 잘 연결할 수 있도록 개인화 추천 모델을 개선해요.",
+   "short": "사람마다 관심 종목·주제가 달라서, 그 사람과 글을 잘 잇는 모델을 계속 고치는 일.",
+   "why": "팀은 \"내가 아는 종목에서 출발해 관심사를 점점 넓혀 가는\" 피드를 목표로 적었습니다.[1] 같은 글이라도 그 종목을 가진 사람과 안 가진 사람에게 가치가 다릅니다 {추론}.",
+   "actually": {
+    "intro": "보통 이런 재료와 모델을 씁니다. 토스증권이 무엇을 쓰는지는 공개되지 않았습니다.",
+    "items": [
+     "**사용자 쪽** — 보유·관심 종목, 최근에 읽고 좋아요를 누른 글, 팔로우한 작성자 {추론}.",
+     "**글 쪽** — 언급한 종목, 글 종류(분석·질문·인증), 본문 의미 벡터(문장 임베딩).[33]",
+     "**두 탑(two-tower) 모델** — 사용자 탑과 글 탑이 각각 벡터를 내고, 내적이 크면 가깝다. 후보 고르기에 쓴다.[5][14]",
+     "**순서 모델** — 최근 행동 순서로 다음에 볼 글을 맞힌다(SASRec 같은 트랜스포머 계열).[5]",
+     "벡터 검색은 공고 기술 목록의 Milvus 같은 벡터 DB가 맡는다.[1][31]"
+    ]
+   },
+   "how_far": "모델 구조를 새로 발명할 필요는 없습니다. **두 탑·순위 모델을 PyTorch로 직접 짜서 오프라인 지표를 올리고, 그 개선이 실제 피드에서도 나는지 확인**하는 데까지가 이 자리의 기본입니다 {추론}.",
+   "refs": [
+    1,
+    5,
+    14,
+    31,
+    33
+   ],
+   "study": [
+    "youtube-dnn",
+    "toss-reco-blog",
+    "sbert"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "단순히 반응 가능성이 높은 콘텐츠를 찾는 데서 멈추지 않고, 커뮤니티의 신뢰도와 장기적인 사용자 경험까지 함께 고려해요.",
+   "short": "자극적인 글이 잘 눌린다고 위로 올리면 커뮤니티가 망가져서, 누를 확률 말고 다른 목표도 함께 잰다.",
+   "why": "투자 커뮤니티에는 불법 리딩방 홍보·허위 정보·추종매매 유도 같은 글이 섞입니다. 토스증권은 2026년 11월 AI 검수를 도입해 이런 글을 **추천에서 빼거나 숨기고**, 거래내역으로 선행·추종매매 유도를 감시한다고 밝혔습니다.[6][7][8] 수익률·자산 배지가 추종매매를 부추길 수 있다는 지적에, 회사는 배지·자산이 추천 가중치가 아니라고 답했습니다.[8]",
+   "actually": {
+    "items": [
+     "**여러 목표 함께 맞히기** — 유튜브는 클릭·시청 시간(참여)과 좋아요·싫어요(만족)를 한 모델이 같이 예측하고 둘을 섞어 순위를 정한다.[13]",
+     "**걸러내기 신호** — 검수 결과 '추천 제외'가 붙은 글은 후보에서 뺀다.[6]",
+     "**다시 섞기 규칙** — 한 작성자·한 종목이 피드를 덮지 않게 다양성 규칙을 둔다.[5]",
+     "**장기 지표로 판정** — 실험의 성공은 클릭률, 지켜야 할 선(가드레일)은 앱 방문·매출처럼 두고 두 달 가까이 본다(토스 푸시 실험의 방식).[4]"
+    ]
+   },
+   "how_far": "무엇을 '좋은 글'로 볼지는 PO·운영 정책과 함께 정합니다. 엔지니어는 **그 기준을 학습 목표·필터·지표로 옮기고, 단기 반응과 장기 지표가 엇갈릴 때 숫자로 보여 주는** 몫입니다 {추론}.",
+   "refs": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    13
+   ],
+   "study": [
+    "youtube-mtl",
+    "kohavi-ko",
+    "rules-of-ml"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "추천 결과가 실제 제품 안에서 어떤 사용자 경험으로 이어지는지 보고, 모델과 서비스 로직을 함께 개선해요.",
+   "short": "모델 점수만 보지 않고 실제 화면에서 사람이 어떻게 쓰는지 보고, 모델과 서버 규칙을 같이 고친다.",
+   "why": "토스 제품 조직(사일로)은 PO·개발자·디자이너·분석가가 한 팀으로 스스로 결정하고, ML 엔지니어는 이 안에서 추천 알고리즘의 주인으로 일합니다.[1] 모델 밖의 규칙(새 글 섞기, 광고·카테고리 배분)도 피드 경험을 크게 바꿉니다.[5]",
+   "actually": {
+    "items": [
+     "추천된 글을 직접 받아 보는 사용자 몇 명의 피드를 뽑아 '왜 이 글이 여기 있나'를 읽어 본다 {추론}.",
+     "같은 글이 연달아 뜨거나 오래된 글이 위에 남는 문제는 모델이 아니라 **중복 제거·신선도 규칙**으로 푸는 편이 빠르다 {추론}.",
+     "모델이 좋아져도 사용자가 화면에서 못 느끼면 다음 실험 방향을 바꾼다.[18]"
+    ]
+   },
+   "refs": [
+    1,
+    5,
+    18
+   ],
+   "study": [
+    "rules-of-ml",
+    "dmls-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "☑️ 추천 학습 데이터와 feature를 설계해요.",
+   "short": "모델이 무엇을 보고(feature) 무엇을 맞히게(정답) 할지 정하는 일.",
+   "why": "토스 ML 플랫폼 팀은 feature를 '사용자를 나타내는 성질'(하루·한 달 앱 사용 수, 휴대폰 OS, 나이 등), 정답을 '모델이 맞히려는 값'(구매·클릭 확률)으로 설명했습니다.[3] 무엇을 정답으로 삼느냐가 추천이 무엇을 좋게 보는지를 정합니다 {추론}.",
+   "refs": [
+    3
+   ],
+   "study": [
+    "toss-featurestore",
+    "dmls-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "사용자 행동 로그와 콘텐츠 데이터를 바탕으로 학습 데이터를 정의하고 검증해요.",
+   "short": "'보여 줬는데 눌렀다/안 눌렀다' 로그로 정답 표를 만들고, 그 표가 맞는지 확인하는 일.",
+   "why": "커뮤니티는 하루 글 20만 건, 하루 방문 75만 명(2024년 말) 규모라 로그가 많지만, 로그는 지난 추천이 보여 준 것만 담습니다.[9][11]",
+   "actually": {
+    "items": [
+     "**정답 정하기** — 노출 뒤 클릭? 끝까지 읽기? 좋아요·댓글? 무엇을 1로 둘지 정한다.[13]",
+     "**음성(0) 정하기** — 보여 줬는데 안 누른 것만 0으로 둔다. 안 보여 준 글은 '싫다'가 아니라 '모른다'.[11]",
+     "**시간 맞추기** — 그 순간 알 수 있던 feature만 붙인다(미래 정보가 새어 들지 않게, point-in-time 조인).[23]",
+     "**검증** — 날짜별 행 수·클릭률·빈 값 비율이 갑자기 바뀌면 학습을 멈춘다. 토스 Feature Store는 이상이 보이면 그날 feature를 아예 싣지 않아 잘못된 모델이 만들어지지 않게 했다.[3]"
+    ]
+   },
+   "how_far": "로그를 쌓는 일은 서버·데이터 엔지니어와 나눕니다. 이 자리는 **정답의 정의를 문서로 남기고, 날짜를 바꿔 다시 만들어도 같은 표가 나오게** 하는 데까지 책임집니다 {추론}.",
+   "refs": [
+    3,
+    9,
+    11,
+    13,
+    23
+   ],
+   "study": [
+    "feast-docs",
+    "toss-featurestore",
+    "schnabel"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "노출 편향, 선택 편향, 데이터 최신성처럼 추천 시스템에서 실제로 품질을 흔드는 문제를 다뤄요.",
+   "short": "로그는 '보여 준 것·위에 있던 것·고른 사람'에 치우쳐 있어서, 그 치우침을 알고 바로잡는 일.",
+   "why": "추천 로그는 무작위가 아닙니다. 위에 놓인 글이 더 눌리고(위치 편향), 보여 준 글만 반응이 남고(노출 편향), 반응하는 사람만 기록됩니다(선택 편향). 그대로 학습하면 모델이 자기 과거 선택을 따라 하는 되먹임에 빠집니다.[12]",
+   "actually": {
+    "items": [
+     "**위치 편향 보정** — 그 자리에 있을 때 눈에 띌 확률로 클릭을 나눠 되돌린다(IPS, 역성향 가중).[10]",
+     "**노출 확률 기록** — 보정하려면 서빙 때 '어느 자리에 몇 번째로' 보여 줬는지를 로그에 남겨야 한다.[11]",
+     "**작은 탐색 칸** — 일부 자리에 무작위·새 글을 섞어 편향 없는 데이터를 조금씩 모은다 {추론}.",
+     "**위치를 따로 배우는 얕은 탑** — 유튜브는 위치 효과만 배우는 작은 탑을 따로 두고, 서빙 때는 뺀다.[13]",
+     "**최신성** — 시장 뉴스 하나로 관심이 몇 시간 만에 바뀐다. 실시간 학습이나 '글 나이' feature로 새 글을 다룬다.[14][21]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "자리만 다른 두 글 — 그냥 세면 B가 반 토막",
+     "body": "A·B 모두 본 사람의 10%가 누르는데 A는 늘 1위(눈에 띌 확률 0.8), B는 늘 2위(0.4)에 놓였다고 가정합니다. 그냥 센 클릭률은 B를 나쁜 글로 보고, 눈에 띌 확률로 나누면(IPS) 둘이 같아집니다(직접 돌린 출력).[10]",
+     "lang": "python",
+     "code": "import random\nrandom.seed(0)\nsee = {1: 0.8, 2: 0.4}           # 그 자리에서 눈에 띌 확률\nlike = {\"A\": 0.10, \"B\": 0.10}    # 본 뒤 누를 확률\nlogs = []\nfor _ in range(100_000):\n    for post, pos in ((\"A\", 1), (\"B\", 2)):\n        clicked = random.random() < see[pos] and random.random() < like[post]\n        logs.append((post, pos, clicked))\nfor post in (\"A\", \"B\"):\n    rows = [r for r in logs if r[0] == post]\n    naive = sum(r[2] for r in rows) / len(rows)\n    ips = sum(r[2] / see[r[1]] for r in rows) / len(rows)\n    print(f\"{post}: 그냥 센 CTR {naive:.3f}  자리 보정(IPS) {ips:.3f}\")\n\n# A: 그냥 센 CTR 0.081  자리 보정(IPS) 0.101\n# B: 그냥 센 CTR 0.041  자리 보정(IPS) 0.102"
+    }
+   ],
+   "how_far": "논문 기법을 다 넣는 것이 아니라, **지금 로그에 어떤 치우침이 있는지 숫자로 보이고, 노출 위치를 로그에 남기게 하고, 보정 전후를 실험으로 비교**하는 수준이 목표입니다 {추론}.",
+   "refs": [
+    10,
+    11,
+    12,
+    13,
+    14,
+    21
+   ],
+   "study": [
+    "bias-survey",
+    "ultr",
+    "schnabel"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "모델이 더 좋은 판단을 할 수 있도록 사용자, 콘텐츠, 커뮤니티 맥락을 표현하는 feature를 고도화해요.",
+   "short": "사람·글·커뮤니티 상황을 숫자로 잘 표현할수록 모델이 잘 고르니, 그 숫자(feature)를 늘리고 다듬는다.",
+   "why": "토스 ML 플랫폼 팀은 같은 feature를 사람마다 다시 만드는 낭비를 줄이려 Feature Store를 직접 만들었고, 커머스·광고·세그먼트 등 여러 프로젝트가 씁니다.[3] 커뮤니티 팀이 이걸 쓰는지는 공개되지 않았습니다.",
+   "actually": {
+    "items": [
+     "**사용자** — 보유 종목, 최근 7일 읽은 글의 종목 분포, 활동 시간대 {추론}.",
+     "**글** — 언급 종목·업종, 본문 임베딩, 작성 뒤 지난 시간, 지금까지 받은 반응 속도 {추론}.",
+     "**커뮤니티 맥락** — 작성자와 읽는 사람이 같은 종목을 갖고 있나, 그 종목에 지금 글이 몰리나, 검수 결과 {추론}.[6]",
+     "**실시간 feature** — '최근 1시간 행동'처럼 신선해야 하는 값은 요청 때 만든 지 1시간 안 된 값만 쓰게 하고, 아니면 새로 계산한다(토스 Feature Store의 온라인 서빙).[3]"
+    ]
+   },
+   "refs": [
+    3,
+    6
+   ],
+   "study": [
+    "toss-featurestore",
+    "feast-docs",
+    "sbert"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "☑️ 평가와 실험 체계를 개선해요.",
+   "short": "새 모델이 정말 나은지 판단하는 잣대(오프라인 지표·A/B 실험)를 믿을 만하게 만드는 일.",
+   "why": "추천은 오프라인 점수가 올라도 실제 사용자 지표가 안 오를 때가 많아, 큰 회사들도 마지막 판단은 실제 실험(A/B)에 맡깁니다.[14][18]",
+   "refs": [
+    14,
+    18
+   ],
+   "study": [
+    "kohavi-ko",
+    "tmc25-ab"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "오프라인에서 좋아 보이는 모델이 실제 사용자 경험에서도 좋아지는지 검증할 수 있는 평가 체계를 만들어요.",
+   "short": "옛 로그로 잰 점수(오프라인)와 실제 반응(온라인)이 어긋나서, 둘을 잇는 평가 방법을 만든다.",
+   "why": "유튜브 추천 논문은 정밀도·재현율 같은 오프라인 지표로 방향을 잡되 최종 결정은 실제 A/B로 했고, 둘이 늘 같이 움직이지는 않았다고 적었습니다.[14] 옛 로그는 옛 모델이 보여 준 글만 담아서 새 모델이 고를 글을 평가하지 못합니다.[11]",
+   "actually": {
+    "items": [
+     "**시간으로 자르기** — 무작위로 나누지 않고 '어제까지로 학습, 오늘로 평가'처럼 나눈다 {추론}.",
+     "**순위 지표** — NDCG@k(위에 맞는 글이 있을수록 높다)·Recall@k.[20]",
+     "**편향 보정 평가** — 노출 확률로 가중한 오프라인 지표(IPS)로 '이 모델이 실제로 띄웠다면'을 추정한다.[11]",
+     "**온라인 실험** — 사용자 일부(토스 푸시 실험은 6%)에 새 모델을 보이고, 성공 지표와 가드레일을 미리 정한다.[4]",
+     "**두 지표의 상관 기록** — 지난 실험마다 오프라인 개선폭과 온라인 개선폭을 표로 남겨 어떤 오프라인 지표를 믿을지 정한다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "NDCG@3 · Recall@3 직접 계산",
+     "body": "한 사용자가 p1·p3을 눌렀습니다. 모델1은 둘을 1·2위에, 모델2는 p1을 2위에만 올렸습니다(직접 돌린 출력).[20]",
+     "lang": "python",
+     "code": "import math\ntruth = {\"p1\": 1, \"p2\": 0, \"p3\": 1, \"p4\": 0, \"p5\": 0}\ndef ndcg_at_k(order, k=3):\n    dcg = sum(truth[p] / math.log2(i + 2) for i, p in enumerate(order[:k]))\n    ideal = sorted(truth.values(), reverse=True)\n    idcg = sum(r / math.log2(i + 2) for i, r in enumerate(ideal[:k]))\n    return dcg / idcg\ndef recall_at_k(order, k=3):\n    return sum(truth[p] for p in order[:k]) / sum(truth.values())\nm1 = [\"p1\", \"p3\", \"p2\", \"p4\", \"p5\"]\nm2 = [\"p2\", \"p1\", \"p4\", \"p3\", \"p5\"]\nfor name, o in ((\"모델1\", m1), (\"모델2\", m2)):\n    print(name, f\"NDCG@3={ndcg_at_k(o):.3f}\", f\"Recall@3={recall_at_k(o):.2f}\")\n\n# 모델1 NDCG@3=1.000 Recall@3=1.00\n# 모델2 NDCG@3=0.387 Recall@3=0.50"
+    }
+   ],
+   "refs": [
+    4,
+    11,
+    14,
+    20
+   ],
+   "study": [
+    "kohavi-ko",
+    "schnabel",
+    "tmc25-ab"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "추천 결과를 해석하고 디버깅할 수 있는 지표와 샘플링 방식을 고도화해요.",
+   "short": "평균 숫자 하나로는 무엇이 잘못됐는지 안 보여서, 쪼개 보는 지표와 직접 읽어 볼 표본을 만든다.",
+   "why": "토스 분석가는 푸시를 많이 받은 사람의 클릭률이 오히려 높아 보이는 함정(관심 있는 사람에게만 골라 보냈기 때문)을 예로 들며, 사용자 묶음별로 쪼개고 feature 영향(SHAP)과 시계열을 하나하나 뜯어봤다고 했습니다.[4]",
+   "actually": {
+    "items": [
+     "**쪼갠 지표** — 신규·기존, 종목 보유 여부, 활동량 구간별로 같은 지표를 나눠 본다.[4]",
+     "**피드 건강 지표** — 상위 몇 % 작성자가 노출을 얼마나 가져가나, 새 글 비율, 검수 제외 글이 노출된 비율 {추론}.",
+     "**표본 읽기** — 무작위 사용자 몇십 명의 피드를 뽑아 사람이 직접 읽는다. 인기 사용자만 뽑으면 다시 치우친다 {추론}.",
+     "**한 요청 재현** — 그 순간의 feature와 점수를 로그로 남겨 '왜 이 글이 1위였나'를 다시 계산한다.[18]"
+    ]
+   },
+   "refs": [
+    4,
+    18
+   ],
+   "study": [
+    "tmc25-ab",
+    "rules-of-ml"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "실험 결과를 제품 지표와 연결해 다음 개선 방향을 정의해요.",
+   "short": "실험에서 이겼나 졌나로 끝내지 않고, 제품 지표에 어떻게 닿았는지 보고 다음 실험을 정한다.",
+   "why": "토스 푸시 실험은 보수안·적극안을 함께 돌린 A/B/C 테스트였고, 클릭률이 약 4%p 올랐지만 가드레일(앱 방문·서비스 방문·매출)을 더 확실히 지키는 보수안을 골라 30% 사용자로 한 달 반 더 확인한 뒤 전체 배포했습니다.[4]",
+   "actually": {
+    "items": [
+     "**성공 지표 하나·가드레일 여럿** — 미리 정하고 실험 중에 바꾸지 않는다.[4][19]",
+     "**기간을 지킨다** — 초반 결과가 좋아도 약속한 기간을 채운다. 짧은 효과와 긴 효과가 다를 수 있다.[4]",
+     "**나눠진 비율 확인** — 실험군·대조군이 계획한 비율로 나뉘었는지 먼저 본다(어긋나면 결과를 믿지 않는다).[19]",
+     "**다음 가설** — 어떤 사용자 묶음에서 이겼는지 보고 다음 실험을 정한다.[4]"
+    ]
+   },
+   "how_far": "실험 설계는 데이터 분석가와 함께 합니다. ML 엔지니어는 **실험 단위로 모델을 바꿔 끼울 수 있게 만들고, 결과를 모델 변경 하나하나와 이어 설명**할 수 있어야 합니다 {추론}.",
+   "refs": [
+    4,
+    19
+   ],
+   "study": [
+    "kohavi-ko",
+    "tmc25-ab"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "☑️ 온라인 적용과 운영 안정성을 함께 책임져요.",
+   "short": "모델을 만든 뒤 실제 서비스에 붙여 빠르고 안 죽게 돌리는 것까지 이 자리의 일이라는 뜻.",
+   "why": "공고는 서빙에 FastAPI·KServe·Kubernetes, 감시에 MLflow·Prometheus·Grafana를 적었습니다.[1] 실서비스 ML 코드는 모델보다 주변(데이터·서빙·감시) 코드가 훨씬 크고, 거기서 빚이 쌓입니다.[25]",
+   "refs": [
+    1,
+    25
+   ],
+   "study": [
+    "ml-test-score",
+    "dmls-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "모델이 안정적으로 서비스될 수 있도록 응답 속도, 모니터링, 배포 안전성을 함께 개선해요.",
+   "short": "피드를 열 때마다 모델이 불리니, 빨리 답하고(지연), 이상을 바로 알고(감시), 바꿔도 안 터지게(배포) 한다.",
+   "why": "토스 ML 플랫폼 팀이 Feature Store를 만든 이유 중 하나가 실시간 추론이었습니다 — 모든 사용자의 결과를 미리 계산해 두는 방식은 결과가 너무 많거나 방금 한 행동을 반영해야 할 때 한계가 있었습니다.[3]",
+   "actually": {
+    "items": [
+     "**지연** — 후보 고르기는 벡터 검색, 순위는 수백 개만. 요청 한 번의 시간 예산을 단계별로 나눈다.[5][31]",
+     "**모니터링** — 요청 수·지연(p99)·오류율은 Prometheus·Grafana, 점수 분포와 feature 빈 값 비율도 같이 본다.[1][24]",
+     "**배포 안전성** — KServe는 새 모델에 트래픽 일부만 보내는 카나리 배포를 지원한다.[22] 사용자에게 안 보이게 실제 요청을 복사해 새 모델을 돌려 보는 그림자(shadow) 시험도 쓴다.[32]",
+     "**되돌리기** — 새 모델이 나쁘면 이전 버전으로 바로 돌린다. 모델 버전은 MLflow 같은 기록소에 남긴다.[1]"
+    ]
+   },
+   "how_far": "클러스터 운영은 플랫폼 팀 몫입니다 {추론}. 이 자리는 **내 모델의 지연·오류 지표를 정하고, 카나리·롤백 절차로 배포하고, 경보가 울리면 원인을 찾는** 수준입니다.",
+   "refs": [
+    1,
+    3,
+    5,
+    22,
+    24,
+    31,
+    32
+   ],
+   "study": [
+    "kserve-docs",
+    "ml-test-score",
+    "milvus-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "운영 중 발생하는 품질 저하나 데이터 변화의 원인을 분석하고 구조적으로 개선해요.",
+   "short": "어제 잘 되던 추천이 오늘 나빠지면 데이터가 바뀐 건지 코드가 깨진 건지 찾아, 다시 안 생기게 고친다.",
+   "why": "토스 Feature Store는 실수한 코드나 원본 데이터 문제로 잘못된 feature가 생기면 모델도 잘못된다(넣는 게 쓰레기면 나오는 것도 쓰레기)는 이유로, feature를 만들 때 미리 정한 조건으로 데이터 드리프트(분포 변화)를 검사하게 했습니다.[3]",
+   "actually": {
+    "items": [
+     "**분포 변화** — 장이 크게 흔들리는 날엔 글 주제·행동이 한꺼번에 바뀐다. 입력 분포·정답 비율·입력과 정답의 관계 변화로 나눠 본다.[26]",
+     "**학습–서빙 어긋남** — 학습 때와 서빙 때 같은 feature가 다르게 계산되면 성능이 몰래 떨어진다. 토스는 학습과 서빙이 같은 feature 묶음(feature service)을 쓰게 해서 막았다.[3][18]",
+     "**구조적 개선** — 원인을 찾으면 검사 규칙·경보·테스트로 남겨 같은 문제가 다시 안 생기게 한다.[24]"
+    ]
+   },
+   "refs": [
+    3,
+    18,
+    24,
+    26
+   ],
+   "study": [
+    "dmls-ko",
+    "toss-featurestore",
+    "ml-test-score"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "제품, 서버, 데이터 엔지니어와 함께 빠르게 실험하면서도 안정적으로 운영되는 추천 시스템을 만들어가요.",
+   "short": "추천은 혼자 못 만들어서, 제품·서버·데이터 엔지니어와 역할을 나눠 빨리 실험하고 안정적으로 돌린다.",
+   "why": "토스 Feature Store 발표는 모델이 바뀔 때마다 데이터 사이언티스트와 서버 개발자가 feature 목록·순서를 맞추는 대화 비용이 컸고, feature 묶음 이름 하나만 정하면 되게 바꿔 그 비용을 크게 줄였다고 했습니다.[3]",
+   "actually": {
+    "items": [
+     "**서버 개발자** — 피드 API가 추천 서버를 부르는 방식·시간 제한·실패 때 대체 결과(인기 글 등)를 함께 정한다 {추론}.",
+     "**데이터 엔지니어** — 행동 로그·노출 로그 형식과 적재 주기를 함께 정한다 {추론}.",
+     "**PO·분석가** — 성공 지표·가드레일과 실험 일정을 함께 정한다.[1][4]"
+    ]
+   },
+   "refs": [
+    1,
+    3,
+    4
+   ],
+   "study": [
+    "toss-featurestore",
+    "tmc25-ab"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "실제 서비스에서 추천 시스템, 검색/랭킹, 개인화 모델 중 하나 이상을 개선해 본 경험이 있는 분을 찾아요.",
+   "short": "실사용자 로그로 모델을 바꾸고 지표가 움직이는 걸 본 경험이 있어야 편향·평가·운영 이야기가 통해서.",
+   "why": "이 자리는 추천 알고리즘의 주인으로 방향을 직접 설계하고 이끕니다.[1] 이력서도 '해결하려던 문제 → 고른 방법 → 지표·제품 변화' 순서로 쓰라고 했습니다.[1]",
+   "how_far": "'개선해 본'이 핵심입니다. 처음부터 만든 게 아니어도, **실서비스에서 무엇을 바꿨고 어떤 지표가 얼마나 움직였는지** 말할 수 있으면 됩니다. 연차는 공고에 없습니다.[1]",
+   "refs": [
+    1
+   ],
+   "study": [
+    "aggarwal",
+    "youtube-dnn"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Python과 PyTorch로 모델 학습, 평가, 실험 코드를 직접 작성해 본 경험이 있으면 좋아요.",
+   "short": "토스증권 ML 코드가 Python·PyTorch라서, 라이브러리 호출을 넘어 학습 반복문과 평가를 직접 짤 수 있어야 한다.",
+   "why": "공고의 기술 목록 첫 줄이 Python·PyTorch·pandas·NumPy·scikit-learn·Transformers입니다.[1]",
+   "level": {
+    "basic": "Dataset·DataLoader · 학습 반복문 · 손실·옵티마이저 · GPU로 옮기기",
+    "work": "임베딩 층 · 배치 안 음성(in-batch negative) 손실 · 평가 지표 직접 구현 · 재현되는 실험(시드·설정 기록)",
+    "team": "수백만 사용자 규모 데이터 · 실험 기록(MLflow) · 서빙용 모델 내보내기"
+   },
+   "examples": [
+    {
+     "title": "배치 안 대조 손실(in-batch softmax) — 짝이 맞으면 손실이 작다",
+     "body": "사용자 i의 정답 글은 i번째 글이고, 같은 배치의 다른 글은 오답으로 씁니다. 두 탑 모델을 학습할 때 흔한 손실입니다. 이 방식은 인기 글이 오답으로 자주 뽑히는 치우침이 있어 보정하기도 합니다(직접 돌린 출력).[15]",
+     "lang": "python",
+     "code": "import numpy as np\nu = np.array([[1.0, 0.0], [0.0, 1.0], [0.7, 0.7]])   # 사용자 벡터\nv = np.array([[0.9, 0.1], [0.1, 0.9], [0.6, 0.8]])   # 각자 읽은 글 벡터\ndef infonce(u, v, t=0.1):\n    u = u / np.linalg.norm(u, axis=1, keepdims=True)\n    v = v / np.linalg.norm(v, axis=1, keepdims=True)\n    s = u @ v.T / t                       # 3x3 점수표, 대각선이 정답\n    s = s - s.max(axis=1, keepdims=True)\n    p = np.exp(s) / np.exp(s).sum(axis=1, keepdims=True)\n    return -np.log(np.diag(p)).mean()\nprint(f\"짝이 맞을 때 손실 {infonce(u, v):.3f}\")\nprint(f\"짝을 섞었을 때 손실 {infonce(u, v[[1, 2, 0]]):.3f}\")\n\n# 짝이 맞을 때 손실 0.125\n# 짝을 섞었을 때 손실 4.413"
+    }
+   ],
+   "refs": [
+    1,
+    15
+   ],
+   "study": [
+    "pytorch-tutorials",
+    "logq",
+    "ce-note"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "로그와 지표를 그대로 믿기보다, 데이터가 만들어진 맥락과 편향을 함께 검증할 수 있는 분이면 좋아요.",
+   "short": "로그는 지난 추천과 화면 설계가 만든 결과라서, 숫자를 보기 전에 '이 숫자가 어떻게 생겼나'부터 묻는 사람.",
+   "why": "토스 분석가의 예 — 푸시를 많이 받은 사람의 클릭률이 높아 보였지만, 관심 있을 사람에게 골라 보냈기 때문이었습니다. 맥락을 모르면 거꾸로 해석하기 쉽다고 했습니다.[4]",
+   "actually": {
+    "items": [
+     "이 숫자는 어떤 화면·어떤 자리에서 보여 준 결과인가(위치 편향).[10]",
+     "누가 이 기능을 쓰게 됐나 — 이미 활발한 사람만 쓰는 기능의 지표는 높아 보인다(선택 편향).[4][12]",
+     "로그 형식이나 집계 기준이 중간에 바뀌지 않았나 — 날짜별로 그려 본다 {추론}.",
+     "필요하면 작은 무작위 실험으로 맥락을 지운 숫자를 직접 만든다.[19]"
+    ]
+   },
+   "refs": [
+    4,
+    10,
+    12,
+    19
+   ],
+   "study": [
+    "tmc25-ab",
+    "bias-survey"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "모델 구조, 학습 데이터, 평가 방식, 제품 지표를 연결해 문제를 정의할 수 있는 분이면 좋아요.",
+   "short": "'모델을 바꾸자'가 아니라 '이 제품 지표가 안 오르는 이유가 데이터·평가·구조 중 어디냐'를 먼저 정하는 사람.",
+   "why": "구글의 실무 규칙은 지표가 막히면 새 feature보다 목표가 제품과 어긋났는지부터 보라고 합니다.[18] 이 공고의 업무 네 묶음(모델·데이터·평가·운영)이 이 연결을 그대로 나눈 것입니다.[1]",
+   "actually": {
+    "items": [
+     "예: 클릭률은 오르는데 재방문이 안 오른다 → 정답 정의(클릭)가 목표(장기 경험)와 어긋났나?[13]",
+     "예: 오프라인 NDCG는 오르는데 실험은 진다 → 평가 데이터가 옛 모델 노출에 치우쳤나?[11]",
+     "예: 새 글이 피드에 거의 안 뜬다 → 모델 문제인가, 다시 섞기 규칙 문제인가?[5]"
+    ]
+   },
+   "refs": [
+    1,
+    5,
+    11,
+    13,
+    18
+   ],
+   "study": [
+    "rules-of-ml",
+    "dmls-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "모델 성능뿐 아니라 서빙 안정성, 운영 지표, 배포 리스크까지 함께 고려할 수 있는 분이면 좋아요.",
+   "short": "점수가 조금 오른 모델이라도 느리거나 터질 위험이 크면 내보내지 않는 판단을 할 수 있는 사람.",
+   "why": "업무 넷째 묶음이 온라인 적용과 운영 안정성입니다.[1] 실서비스 ML 준비도 점검표는 데이터·모델·인프라·모니터링 테스트를 따로 셉니다.[24]",
+   "actually": {
+    "items": [
+     "새 모델의 지연·메모리를 배포 전에 잰다 {추론}.",
+     "카나리로 일부 트래픽에만 먼저 보낸다.[22]",
+     "추천 서버가 죽어도 피드는 떠야 한다 — 대체 결과(인기 글)를 준비한다 {추론}."
+    ]
+   },
+   "refs": [
+    1,
+    22,
+    24
+   ],
+   "study": [
+    "ml-test-score",
+    "kserve-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "복잡한 문제를 동료가 이해할 수 있는 언어로 정리하고, 여러 직군과 밀도 있게 협업할 수 있는 분이면 좋아요.",
+   "short": "PO·서버·분석가가 한 팀이라, 편향·지표 같은 ML 이야기를 그들이 결정할 수 있는 말로 바꿔야 해서.",
+   "why": "사일로는 작은 스타트업처럼 스스로 결정하는 조직이고, ML 엔지니어는 그 안에서 서버 엔지니어·분석가·PO와 추천 방향을 함께 설계합니다.[1] 전사에 영향을 주는 실험은 분석 근거와 기대 결과를 먼저 공유해 공감대를 만든 뒤 시작했다는 사례도 있습니다.[4]",
+   "refs": [
+    1,
+    4
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 추천/랭킹 시스템을 end-to-end로 개선하거나 운영해 본 경험이 있다면 더 좋아요.",
+   "short": "데이터 → 학습 → 평가 → 서빙 → 감시를 한 사람이 다 겪어 본 경험이면 바로 주인이 될 수 있어서.",
+   "why": "공고는 이 자리가 커뮤니티 추천 시스템의 토대를 직접 설계한다고 적었습니다.[1]",
+   "flows": [
+    {
+     "caption": "피드 추천 한 바퀴 — 이 자리는 처음부터 끝까지 {추론}[3][5]",
+     "steps": [
+      "행동·노출 로그 · 누가 무엇을 어느 자리에서 봤나",
+      "학습 데이터 · 정답 정의 · 시점 맞춘 feature",
+      "후보 고르기 · 두 탑 + 벡터 검색",
+      "순위 · 여러 목표 점수",
+      "다시 섞기 · 신뢰·다양성 규칙",
+      "서빙 · 지연·카나리",
+      "실험·감시 · A/B · 드리프트"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "refs": [
+    1,
+    3,
+    5
+   ],
+   "study": [
+    "youtube-dnn",
+    "toss-reco-blog"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Representation learning, contrastive learning 등 모델 학습을 통해 실제 서비스 지표 개선으로 연결해 본 경험이 있다면 더 좋아요.",
+   "short": "사용자·글을 좋은 벡터로 바꾸는 학습(표현 학습)이 후보 고르기와 새 글 추천의 바탕이라서.",
+   "why": "벡터 DB(Milvus)와 Transformers가 기술 목록에 있습니다.[1] 커뮤니티 글은 금방 새 글로 바뀌어 반응이 쌓이기 전에도 본문으로 벡터를 만들어야 합니다 {추론}.",
+   "actually": {
+    "items": [
+     "**대조 학습** — 같은 것의 두 모습은 가깝게, 다른 것은 멀게 학습한다(SimCLR의 생각).[17]",
+     "**추천에 쓰면** — 구글은 글(아이템) feature 일부를 가린 두 모습을 대조 학습에 써서, 반응이 적은 아이템에서 특히 성능이 올랐다고 보고했다.[16]",
+     "**텍스트 벡터** — 문장 임베딩 모델로 글 본문을 벡터로 바꿔 비슷한 글을 찾는다.[33]",
+     "중요한 건 **벡터가 좋아진 게 아니라 서비스 지표가 올랐는지**다 — 공고 문장도 '실제 서비스 지표 개선으로 연결'을 요구한다.[1]"
+    ]
+   },
+   "refs": [
+    1,
+    16,
+    17,
+    33
+   ],
+   "study": [
+    "ssl-reco",
+    "simclr",
+    "sbert"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 이벤트 로그 기반 학습 데이터 파이프라인 또는 feature store에 대한 이해가 있다면 더 좋아요.",
+   "short": "학습 데이터를 매일 같은 방법으로 만들고 학습·서빙이 같은 feature를 쓰게 하는 구조를 알면 바로 일할 수 있어서.",
+   "why": "토스는 Feature Store를 직접 만들었습니다 — Feast 같은 오픈소스가 요구에 안 맞았고, 필요한 기능만 빨리 만들고 싶었기 때문입니다.[3]",
+   "actually": {
+    "intro": "토스 Feature Store의 구조입니다(토스 ML 플랫폼 팀 발표).[3]",
+    "items": [
+     "**배치** — Impala 표를 Airflow로 만들고 'feature 표'로 등록한다. 표는 키(사용자 번호 등)와 feature로 이뤄진다.",
+     "**묶음** — 표의 일부 feature를 고른 것이 feature view, 같은 키의 view를 묶은 것이 feature service. 이름·릴리스로 등록해 다시 쓴다.",
+     "**학습과 서빙이 한 묶음** — 학습 데이터도 서빙 요청도 같은 feature service를 쓴다. 모델마다 feature 목록을 맞출 필요가 없어졌다.",
+     "**저장** — Aerospike·Phoenix. 실시간 feature는 메시지를 거쳐 컨슈머가 적재한다.",
+     "**관리** — 워크스페이스·토큰으로 권한을 나누고, 드리프트가 보이면 그날 feature를 싣지 않는다."
+    ]
+   },
+   "refs": [
+    3
+   ],
+   "study": [
+    "toss-featurestore",
+    "feast-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "모델 배포, 실험 관리, 모니터링 등 온라인 ML 운영 경험이 있다면 더 좋아요.",
+   "short": "모델을 버전으로 기록하고, 안전하게 바꿔 끼우고, 이상을 알아채는 일을 해 봤다면 운영 부담이 줄어서.",
+   "why": "공고 기술 목록의 서빙(KServe)·실험 기록(MLflow)·감시(Prometheus·Grafana)가 이 세 일을 그대로 가리킵니다.[1]",
+   "actually": {
+    "items": [
+     "**배포** — KServe 설정 하나로 모델 서버를 띄우고, 트래픽 비율로 카나리 배포한다.[22]",
+     "**실험 관리** — 실행마다 데이터 기간·feature 묶음·설정·지표를 MLflow에 남긴다 {추론}.",
+     "**모니터링** — 서버 지표(지연·오류)와 모델 지표(점수 분포·feature 신선도)를 같이 본다.[24]"
+    ]
+   },
+   "refs": [
+    1,
+    22,
+    24
+   ],
+   "study": [
+    "kserve-docs",
+    "mlflow-docs",
+    "ml-test-score"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "텍스트, 커뮤니티/소셜 데이터, 금융 도메인 데이터에 대한 경험이 있다면 더 좋아요.",
+   "short": "재료가 투자자 글(텍스트)·팔로우 관계(소셜)·종목·거래(금융)라서, 셋을 다뤄 봤으면 feature가 빨리 나와서.",
+   "why": "커뮤니티 이용자는 하루 75만 명, 하루 팔로우 4만 건, 하루 글 20만 건 규모였고(2024년 말), 가장 많이 이야기된 종목은 엔비디아·테슬라였습니다.[9] 같은 회사의 LLM 팀은 뉴스·공시를 종목 매칭·산업 분류·중요도로 태깅하는 모델을 만듭니다.[2]",
+   "actually": {
+    "items": [
+     "**텍스트** — 글에서 종목을 찾아 잇기(종목 매칭), 글 종류 분류 — 줄임말·은어가 많다 {추론}.[2]",
+     "**소셜** — 팔로우 관계로 비슷한 사람 찾기, 작성자 신뢰도 {추론}.",
+     "**금융** — 시장이 열린 시간과 닫힌 시간의 행동 차이, 급등락 날의 몰림 {추론}."
+    ]
+   },
+   "refs": [
+    2,
+    9
+   ],
+   "study": [
+    "sbert"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "모델 점수보다 '이 숫자가 어떻게 생겼나'를 먼저 묻는 사람[4]",
+   "추천을 처음부터 끝까지 직접 설계하고 싶은 사람 — 공고가 이 자리를 추천 알고리즘의 주인으로 적었다[1]",
+   "투자 커뮤니티의 건강(신뢰)을 제품 문제로 보고 싶은 사람[6][8]",
+   "작은 팀에서 PO·서버·분석가와 바로 붙어 일하고 싶은 사람[1]"
+  ],
+  "hard": [
+   "모델 연구만 하고 싶다면 맞지 않는다 — 데이터 정의·실험·서빙·감시까지 맡는다[1]",
+   "투자 커뮤니티는 추종매매·리딩방 같은 규제 민감 문제가 붙어 있고, AI 큐레이션에 맞춘 규정은 아직 없다는 보도가 있다[8]",
+   "자격요건 첫 줄이 실서비스 추천·랭킹 개선 경험 — 없으면 불리하다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "1위 자리에 늘 놓인 글과 2위에 늘 놓인 글의 클릭률을 어떻게 공정하게 비교하나요?",
+   "a": "위치 편향과 역성향 가중(IPS) — 공고의 '노출 편향' 줄.[10]"
+  },
+  {
+   "q": "오프라인 NDCG는 올랐는데 A/B에서 졌습니다. 무엇부터 의심하나요?",
+   "a": "평가 데이터가 옛 모델 노출에 치우친 문제, 정답 정의와 제품 목표의 어긋남.[11][14]"
+  },
+  {
+   "q": "클릭률만 보고 추천하면 커뮤니티에 어떤 일이 생기나요? 무엇을 같이 재겠어요?",
+   "a": "참여·만족 여러 목표와 가드레일, 검수 결과 반영.[4][6][13]"
+  },
+  {
+   "q": "학습 때와 서빙 때 feature 값이 달라지는 걸 어떻게 막나요?",
+   "a": "토스가 Feature Store에서 학습·서빙이 같은 feature service를 쓰게 한 이유.[3]"
+  },
+  {
+   "q": "방금 올라온 글은 반응이 0입니다. 어떻게 추천 후보에 넣나요?",
+   "a": "본문 임베딩·글 나이 feature·새 글 비율 규칙.[5][14][33]"
+  },
+  {
+   "q": "새 추천 모델을 어떻게 안전하게 내보내나요?",
+   "a": "그림자 시험 → 카나리 → 지표 확인 → 롤백 절차.[22][32]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · ML 엔지니어 (커뮤니티 추천) — 토스증권",
+   "url": "https://toss.im/career/job-detail?gh_jid=7788403003",
+   "kind": "posting",
+   "note": "팀 소개(MAU 400만·월간 글 작성자 30만)·업무·요건·기술 목록·합류 여정"
+  },
+  {
+   "n": 2,
+   "title": "토스 채용 · ML 엔지니어 (LLM) — 토스증권 AI Tribe",
+   "url": "https://toss.im/career/job-detail?gh_jid=7575603003",
+   "kind": "posting",
+   "note": "같은 회사의 다른 ML 자리 — 뉴스·공시 태깅"
+  },
+  {
+   "n": 3,
+   "title": "SLASH 24 · Feature Store로 유연하게 ML 고도화하기",
+   "url": "https://www.youtube.com/watch?v=-u3rhd7k2JQ",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스 ML 플랫폼 팀 · 자막 전부 확인. 토스증권 커뮤니티 팀이 쓰는지는 발표에 없다"
+  },
+  {
+   "n": 4,
+   "title": "TMC25 · 토스 데이터 분석가가 하는 진짜 A/B테스트",
+   "url": "https://www.youtube.com/watch?v=BljJ1jZ7e3U",
+   "kind": "company",
+   "date": "2025",
+   "note": "토스코어 데이터 분석가 · 푸시 실험 사례 · 자막 전부 확인"
+  },
+  {
+   "n": 5,
+   "title": "Toss Tech · 토스 쇼핑 추천 시스템: 멀티 스테이지 접근법",
+   "url": "https://toss.tech/article/toss-shopping-recommendation-system",
+   "kind": "company",
+   "date": "2025-04-17",
+   "note": "토스 커머스 개인화팀 — 같은 그룹 다른 서비스"
+  },
+  {
+   "n": 6,
+   "title": "아시아경제 · 토스증권, 커뮤니티에 AI 검수 도입",
+   "url": "https://core.asiae.co.kr/article/2026110409125378072",
+   "kind": "news",
+   "date": "2026-11-04",
+   "note": "제목·본문·이미지 분석, 위반 정도에 따라 추천 제외·숨김"
+  },
+  {
+   "n": 7,
+   "title": "메트로신문 · 토스증권 커뮤니티 AI 검수 체계",
+   "url": "https://www.metroseoul.co.kr/article/20261104500504",
+   "kind": "news",
+   "date": "2026-11-04",
+   "note": "콘텐츠 가이드라인 신설·금지어 마스킹·이의제기"
+  },
+  {
+   "n": 8,
+   "title": "지디넷코리아 · 토스증권 커뮤니티 AI 콘텐츠 큐레이션 보도",
+   "url": "https://zdnet.co.kr/view?no=20261103133940",
+   "kind": "news",
+   "date": "2026-11-03",
+   "note": "회사는 약관의 AI가 추천 알고리즘이 아니라 검수 수단이며 배지·자산은 가중치가 아니라고 설명"
+  },
+  {
+   "n": 9,
+   "title": "아시아경제 · 토스증권 커뮤니티 150% 성장",
+   "url": "https://www.asiae.co.kr/en/article/2024122608581855682",
+   "kind": "news",
+   "date": "2024-12-26",
+   "note": "MAU 180만·DAU 75만·하루 글 20만 건(당시)"
+  },
+  {
+   "n": 10,
+   "title": "Joachims 외 · Unbiased Learning-to-Rank with Biased Feedback (WSDM 2017)",
+   "url": "https://arxiv.org/abs/1608.04468",
+   "kind": "reference"
+  },
+  {
+   "n": 11,
+   "title": "Schnabel 외 · Recommendations as Treatments: Debiasing Learning and Evaluation (ICML 2016)",
+   "url": "https://arxiv.org/abs/1602.05352",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "Chen 외 · Bias and Debias in Recommender System: A Survey and Future Directions",
+   "url": "https://arxiv.org/abs/2010.03240",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "Zhao 외 · Recommending What Video to Watch Next: A Multitask Ranking System (RecSys 2019)",
+   "url": "https://doi.org/10.1145/3298689.3346997",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Covington 외 · Deep Neural Networks for YouTube Recommendations (RecSys 2016)",
+   "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "Yi 외 · Sampling-Bias-Corrected Neural Modeling for Large Corpus Item Recommendations (RecSys 2019)",
+   "url": "https://doi.org/10.1145/3298689.3346996",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Yao 외 · Self-supervised Learning for Large-scale Item Recommendations (CIKM 2021)",
+   "url": "https://arxiv.org/abs/2007.12865",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Chen 외 · A Simple Framework for Contrastive Learning of Visual Representations (SimCLR, 2020)",
+   "url": "https://arxiv.org/abs/2002.05709",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Google · Rules of Machine Learning",
+   "url": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "론 코하비 외 · 신뢰할 수 있는 온라인 종합 대조 실험 (한국어판)",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000005201885",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Wikipedia · Discounted cumulative gain (NDCG)",
+   "url": "https://en.wikipedia.org/wiki/Discounted_cumulative_gain",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Liu 외 · Monolith: Real Time Recommendation System With Collisionless Embedding Table (2022)",
+   "url": "https://arxiv.org/abs/2209.07663",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "KServe 공식 문서",
+   "url": "https://kserve.github.io/website/",
+   "kind": "reference",
+   "note": "InferenceService · 카나리 배포"
+  },
+  {
+   "n": 23,
+   "title": "Feast 공식 문서 · point-in-time joins",
+   "url": "https://docs.feast.dev/",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "Breck 외 · The ML Test Score: A Rubric for ML Production Readiness and Technical Debt Reduction (Google, 2017)",
+   "url": "https://research.google/pubs/the-ml-test-score-a-rubric-for-ml-production-readiness-and-technical-debt-reduction/",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "Sculley 외 · Hidden Technical Debt in Machine Learning Systems (NeurIPS 2015)",
+   "url": "https://papers.nips.cc/paper/2015/hash/86df7dcfd896fcaf2674f757a2463eba-Abstract.html",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "칩 후옌 · 머신러닝 시스템 설계 (한빛미디어, 2023)",
+   "url": "https://www.oreilly.com/library/view/-/9791169210850/",
+   "kind": "reference",
+   "note": "데이터 분포 변화(8장)"
+  },
+  {
+   "n": 27,
+   "title": "자소설닷컴 — 토스증권 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/13103",
+   "kind": "reference",
+   "note": "검색 결과 요약으로 확인(페이지 직접 열람은 막힘). 사원수 292명 표기 — 2023년 말 수준으로 보인다"
+  },
+  {
+   "n": 28,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(같은 집계)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "토스증권 — 사이트 하단 회사 정보",
+   "url": "https://tossinvest.com/",
+   "kind": "company"
+  },
+  {
+   "n": 30,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 31,
+   "title": "Milvus 공식 문서",
+   "url": "https://milvus.io/docs",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "Amazon SageMaker 문서 · Shadow tests",
+   "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/shadow-tests.html",
+   "kind": "reference",
+   "note": "그림자 시험 개념 — 토스가 SageMaker를 쓴다는 뜻은 아니다"
+  },
+  {
+   "n": 33,
+   "title": "Reimers · Gurevych · Sentence-BERT (EMNLP 2019)",
+   "url": "https://arxiv.org/abs/1908.10084",
+   "kind": "reference"
+  },
+  {
+   "n": 34,
+   "title": "토스피드 — 당신이 지금 토스증권에 합류해야 하는 이유",
+   "url": "https://toss.im/tossfeed/article/why-securities-now",
+   "kind": "company",
+   "date": "2021-08-31",
+   "note": "커뮤니티를 2주 만에 만든 이야기·주주 배지"
+  }
+ ],
+ "caveat": "토스증권 커뮤니티 추천의 모델·feature·지표는 공개된 기술 발표가 없습니다. 회사 근거는 공고와 커뮤니티 검수 보도뿐이고, 구조와 방법은 같은 그룹 다른 팀(토스 ML 플랫폼·커머스 개인화·데이터 분석)의 발표와 공개 논문으로 \"보통 이런 것\"을 보였습니다. 커뮤니티 규모 숫자는 시점마다 다릅니다(2024년 말 MAU 180만 → 공고의 400만).[1][9] 커뮤니티는 출시 때 2주 만에 만들어졌다고 합니다.[34]",
+ "resources": [
+  {
+   "id": "toss-featurestore",
+   "title": "SLASH 24 · Feature Store로 유연하게 ML 고도화하기",
+   "by": "토스 ML 플랫폼 팀 · 19분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=-u3rhd7k2JQ",
+   "why": "feature·정답의 뜻부터 학습–서빙 같은 feature 쓰기, 실시간 feature, 드리프트 검사까지 — 데이터·운영 요건 줄의 회사 쪽 답."
+  },
+  {
+   "id": "tmc25-ab",
+   "title": "TMC25 · 토스 데이터 분석가가 하는 진짜 A/B테스트",
+   "by": "토스 데이터 분석가 · 21분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=BljJ1jZ7e3U",
+   "why": "로그를 맥락 없이 읽으면 틀리는 예, 성공 지표·가드레일·기간을 정한 실제 실험 — 평가·실험 묶음과 '로그를 그대로 믿지 않기' 요건."
+  },
+  {
+   "id": "toss-reco-blog",
+   "title": "토스 쇼핑 추천 시스템: 멀티 스테이지 접근법",
+   "by": "토스 커머스 개인화팀 · Toss Tech · 2025",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://toss.tech/article/toss-shopping-recommendation-system",
+   "why": "후보 고르기 → 순위 → 다시 섞기 세 단계가 한 쪽에 정리돼 있다. 피드 추천의 전체 모양 잡기."
+  },
+  {
+   "id": "aggarwal",
+   "title": "Recommender Systems: The Textbook",
+   "by": "Charu C. Aggarwal · Springer · 2016",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://link.springer.com/book/10.1007/978-3-319-29659-3",
+   "why": "협업 필터링·내용 기반·평가 방법을 교과서 순서로. 추천 경험이 적다면 앞쪽 장과 평가 장부터."
+  },
+  {
+   "id": "youtube-dnn",
+   "title": "Deep Neural Networks for YouTube Recommendations",
+   "by": "Covington 외 · Google · RecSys 2016",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/",
+   "why": "후보 고르기·순위 두 단계, '글 나이' feature, 오프라인과 A/B의 관계 — 추천 실무 논문의 출발점."
+  },
+  {
+   "id": "youtube-mtl",
+   "title": "Recommending What Video to Watch Next: A Multitask Ranking System",
+   "by": "Zhao 외 · Google · RecSys 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://doi.org/10.1145/3298689.3346997",
+   "why": "참여와 만족을 같이 맞히는 여러 목표 순위, 위치 편향을 따로 배우는 얕은 탑 — '반응 가능성에서 멈추지 않기' 줄."
+  },
+  {
+   "id": "bias-survey",
+   "title": "Bias and Debias in Recommender System: A Survey and Future Directions",
+   "by": "Chen 외 · 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2010.03240",
+   "why": "노출·선택·위치·인기 편향과 되먹임 고리를 한 곳에 정리. 공고의 '노출 편향, 선택 편향' 낱말 지도."
+  },
+  {
+   "id": "ultr",
+   "title": "Unbiased Learning-to-Rank with Biased Feedback",
+   "by": "Joachims · Swaminathan · Schnabel · WSDM 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1608.04468",
+   "why": "클릭 로그의 위치 편향을 역성향 가중으로 바로잡는 방법의 원전."
+  },
+  {
+   "id": "schnabel",
+   "title": "Recommendations as Treatments: Debiasing Learning and Evaluation",
+   "by": "Schnabel 외 · ICML 2016",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1602.05352",
+   "why": "보여 준 것만 남는 로그로 학습·평가할 때 생기는 치우침과 보정 — 학습 데이터 정의·오프라인 평가 줄."
+  },
+  {
+   "id": "logq",
+   "title": "Sampling-Bias-Corrected Neural Modeling for Large Corpus Item Recommendations",
+   "by": "Yi 외 · Google · RecSys 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://doi.org/10.1145/3298689.3346996",
+   "why": "두 탑 모델의 배치 안 음성 학습과 인기 아이템 치우침 보정 — PyTorch 학습 코드 요건의 실전 손실."
+  },
+  {
+   "id": "ssl-reco",
+   "title": "Self-supervised Learning for Large-scale Item Recommendations",
+   "by": "Yao 외 · Google · CIKM 2021",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2007.12865",
+   "why": "대조 학습을 추천 두 탑 모델에 얹은 사례 — 우대사항 'contrastive learning'의 추천판."
+  },
+  {
+   "id": "simclr",
+   "title": "A Simple Framework for Contrastive Learning of Visual Representations (SimCLR)",
+   "by": "Chen 외 · 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2002.05709",
+   "why": "대조 학습의 기본 틀(두 모습·온도·큰 배치). 분야는 이미지지만 생각은 그대로 옮겨 쓴다."
+  },
+  {
+   "id": "sbert",
+   "title": "Sentence-Transformers 문서",
+   "by": "SBERT 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.sbert.net/",
+   "why": "글 본문을 벡터로 바꿔 비슷한 글을 찾는 가장 빠른 길 — 텍스트 경험·새 글 추천."
+  },
+  {
+   "id": "rules-of-ml",
+   "title": "Rules of Machine Learning",
+   "by": "Google · 공식 가이드",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+   "why": "학습–서빙 어긋남, 목표와 지표의 어긋남, 실험을 읽는 법 — 문제 정의 요건의 체크리스트."
+  },
+  {
+   "id": "kohavi-ko",
+   "title": "신뢰할 수 있는 온라인 종합 대조 실험",
+   "by": "론 코하비 · 다이앤 탕 · 야 쉬 (이기홍 · 김기영 옮김)",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000005201885",
+   "why": "성공 지표·가드레일·나뉜 비율 확인·장기 효과 — 평가와 실험 묶음 전체."
+  },
+  {
+   "id": "dmls-ko",
+   "title": "머신러닝 시스템 설계",
+   "by": "칩 후옌 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EC%B9%A9%20%ED%9B%84%EC%98%8C",
+   "why": "학습 데이터·feature·배포·분포 변화·감시를 한 권으로 — 온라인 적용과 운영 묶음."
+  },
+  {
+   "id": "ml-test-score",
+   "title": "The ML Test Score: A Rubric for ML Production Readiness and Technical Debt Reduction",
+   "by": "Breck 외 · Google · 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://research.google/pubs/the-ml-test-score-a-rubric-for-ml-production-readiness-and-technical-debt-reduction/",
+   "why": "데이터·모델·인프라·감시 테스트 목록 — '서빙 안정성·배포 리스크' 요건을 점검표로."
+  },
+  {
+   "id": "feast-docs",
+   "title": "Feast 공식 문서",
+   "by": "Feast",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.feast.dev/",
+   "why": "오프라인·온라인 저장소, 시점 맞춘 조인 — 토스가 직접 만든 Feature Store와 견주며 개념 잡기."
+  },
+  {
+   "id": "kserve-docs",
+   "title": "KServe 공식 문서",
+   "by": "KServe",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kserve.github.io/website/",
+   "why": "공고 기술 목록의 서빙 도구. 모델 서버 띄우기·카나리 배포·오토스케일."
+  },
+  {
+   "id": "mlflow-docs",
+   "title": "MLflow 공식 문서",
+   "by": "MLflow",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://mlflow.org/docs/latest/",
+   "why": "실험 기록·모델 등록소 — 공고 기술 목록의 실험 관리 도구."
+  },
+  {
+   "id": "milvus-docs",
+   "title": "Milvus 공식 문서",
+   "by": "Milvus",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://milvus.io/docs",
+   "why": "공고 기술 목록의 벡터 DB. 후보 고르기용 근사 최근접 검색 색인."
+  },
+  {
+   "id": "pytorch-tutorials",
+   "title": "PyTorch 튜토리얼",
+   "by": "PyTorch 공식",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://pytorch.org/tutorials/",
+   "why": "Dataset·학습 반복문·임베딩 층부터 — 'PyTorch로 학습·평가 코드를 직접' 요건의 기본."
+  },
+  {
+   "id": "ce-note",
+   "title": "But what is cross-entropy? (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/GlYgs6v2YfU",
+   "why": "배치 안 대조 손실의 바탕인 소프트맥스·교차 엔트로피를 먼저 이해하기."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "추천의 모양 잡기",
+   "time": "1~2주",
+   "goal": "후보 고르기·순위·다시 섞기가 각각 무엇을 하는지, 커뮤니티 피드에서는 무엇이 더 붙는지 설명할 수 있다.",
+   "resources": [
+    "toss-reco-blog",
+    "youtube-dnn",
+    "aggarwal"
+   ],
+   "task": "가상 사용자 1,000명·글 5,000개·노출 로그 10만 줄을 만들고, '최신순'과 '인기순' 피드를 각각 뽑아 NDCG@10을 비교한다."
+  },
+  {
+   "title": "PyTorch로 두 탑 모델",
+   "time": "2~3주",
+   "goal": "사용자·글 벡터를 배치 안 대조 손실로 학습하고 Recall@k로 평가한다.",
+   "resources": [
+    "pytorch-tutorials",
+    "ce-note",
+    "logq",
+    "sbert"
+   ],
+   "task": "1단계 데이터로 두 탑 모델을 학습한다. 글 탑에 본문 임베딩을 넣은 판과 뺀 판을 비교하고, 새 글(반응 0) 묶음에서 차이를 따로 잰다."
+  },
+  {
+   "title": "로그의 치우침 다루기",
+   "time": "2주",
+   "goal": "위치·노출 편향을 숫자로 보이고 IPS로 보정한 평가를 만든다.",
+   "resources": [
+    "bias-survey",
+    "ultr",
+    "schnabel"
+   ],
+   "task": "가상 로그에 '자리별 눈에 띌 확률'을 넣어 클릭을 만들고, 그냥 센 지표와 IPS 지표가 2단계 두 모델의 순위를 어떻게 다르게 매기는지 표로 낸다."
+  },
+  {
+   "title": "실험과 여러 목표",
+   "time": "1~2주",
+   "goal": "성공 지표·가드레일을 정하고, 클릭과 만족을 함께 보는 순위를 설계한다.",
+   "resources": [
+    "kohavi-ko",
+    "tmc25-ab",
+    "youtube-mtl"
+   ],
+   "task": "'클릭률 최대' 순위와 '클릭 × (1 − 신고 확률)' 순위를 시뮬레이션으로 A/B 해 보고, 클릭률·신고 글 노출 비율·작성자 다양성을 한 장 보고서로 정리한다."
+  },
+  {
+   "title": "서빙과 감시",
+   "time": "2주",
+   "goal": "모델을 API로 띄우고 지연·점수 분포를 감시하며 카나리로 바꿔 끼운다.",
+   "resources": [
+    "feast-docs",
+    "kserve-docs",
+    "mlflow-docs",
+    "ml-test-score",
+    "toss-featurestore"
+   ],
+   "task": "2단계 모델을 FastAPI로 감싸 p99 지연을 재고, MLflow에 두 버전을 남긴 뒤 트래픽 10%만 새 버전으로 보내는 흐름과 'feature 빈 값 비율이 오르면 경보' 규칙을 만든다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 공공데이터 집계로 신입 초봉 **약 5,000만원**, 평균 **약 7,000만원** — 비상장사라 공시 평균 급여는 없다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,003만원",
+    "amount": 5003,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없고 사원수 표기(292명)로 보아 2023년 무렵 값으로 보인다 [27]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 7,007만원",
+    "amount": 7007,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 — 경력직이 섞인 값이다 [27]"
+   },
+   {
+    "label": "토스(비바리퍼블리카) 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 그룹 모회사 값 — 견주어 보기용 [28]"
+   },
+   {
+    "label": "토스(비바리퍼블리카) 평균",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 회사 전체 평균 [28]"
+   }
+  ],
+  "how": "토스증권 합류 여정은 서류 → 직무 인터뷰 → 문화적합성 인터뷰 → 레퍼런스 체크 → **처우 협의** 순서이고, 연봉은 처우 협의에서 사람마다 정한다 [1]. 토스증권은 비상장사라 사업보고서의 '직원 1인 평균 급여'를 찾지 못했다. 평균은 초봉이 아니라 경력직이 섞인 회사 전체 값이고, 집계값은 추정이라 ML 엔지니어 경력직 제안과 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 전체를 기준으로 한 2021년 공식 소개 글이다 [30]. 토스증권에 그대로 적용되는지, 지금도 같은지는 글에 없으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스증권 본사",
+  "address": "서울특별시 강남구 테헤란로 133, 7층 (역삼동, 한국타이어빌딩)",
+  "postal": "06133",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20133",
+  "near": "2호선 역삼역과 강남역 사이 테헤란로 {추론}",
+  "note": "주소는 토스증권 사이트 하단의 회사 정보다 [29]. 공고 근무지는 'Seoul'로만 적혀 있어 팀 자리는 다를 수 있다 [1]."
+ }
+}

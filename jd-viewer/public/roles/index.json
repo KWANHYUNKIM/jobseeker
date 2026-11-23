@@ -166,6 +166,8 @@
   "ats-toss:group:7998884003": "tossbank-senior-data-analyst",
   "ats-toss:group:4521687003": "tossbank-server-platform",
   "ats-toss:group:6607772003": "tossbank-system-security-engineer",
+  "ats-toss:group:7788403003": "tosssec-community-reco-mle",
+  "ats-toss:group:8006356003": "tosssec-dataops-engineer",
   "ats-toss:group:7719156003": "tosssecurities-idc-infra-engineer",
   "wanted-316962": "ui2-ec-fullstack-japan",
   "wanted-316964": "ui2-ec-project-leader-japan",
@@ -1653,6 +1655,26 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 13
+  },
+  {
+   "id": "tosssec-community-reco-mle",
+   "company": "토스증권",
+   "role": "ML 엔지니어 (커뮤니티 추천)",
+   "jobs": [
+    "ats-toss:group:7788403003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 27
+  },
+  {
+   "id": "tosssec-dataops-engineer",
+   "company": "토스증권",
+   "role": "데이터 엔지니어 (DataOps)",
+   "jobs": [
+    "ats-toss:group:8006356003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 27
   },
   {
    "id": "tosssecurities-idc-infra-engineer",
