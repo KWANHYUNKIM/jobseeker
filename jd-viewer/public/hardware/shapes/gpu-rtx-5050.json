@@ -15,6 +15,26 @@
    "confidence": "low",
    "checked_at": "2026-11-23",
    "note": "색만 공식 문구로 적었다(검정 + 짙은 빨강 포인트, hex 는 문구를 옮긴 대략값). 제품 사진은 공식 이미지 서버가 403 으로 막아 보지 못했다(우회하지 않음) — 팬 지름·날개·슬롯·백플레이트·보조전원 자리는 비웠다. 사진을 볼 수 있게 되면 다시 채울 것."
+  },
+  "palit-stormx-rtx5050": {
+   "kind": "gpu",
+   "fan_count": 1,
+   "slots": 2,
+   "color": "#151617",
+   "accent": "#2a2c2f",
+   "sources": [
+    {
+     "title": "Palit GeForce RTX 5050 StormX — 공식 제품 페이지(17cm 소형·0-dB·Composite Heat Pipe, 정면 사진)",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5695&lang=en"
+    },
+    {
+     "title": "Palit GeForce RTX 5050 StormX — 공식 사양 탭(2 Slot · 8핀 x1)",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5695&lang=en&tab=sp"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "2슬롯은 공식 사양 탭. 팬 1개는 공식 정면 사진 — 짧은 카드 가운데에 큰 팬 하나, 검정 무광 쉬라우드에 가로 홈 무늬, 끝 쪽에 비스듬한 홈 판, 허브에 흰 PALIT 글자. 불빛은 사양에 없고 사진에도 안 보이지만 '없다'는 공식 문구가 아니라 fan_light 는 비웠다. 날개는 9장 안팎으로 보이나 사진 해상도로 확실히 세지 못해 비웠다. 팬 지름·백플레이트·8핀 자리는 공식 자료에 없어 비웠다."
   }
  }
 }

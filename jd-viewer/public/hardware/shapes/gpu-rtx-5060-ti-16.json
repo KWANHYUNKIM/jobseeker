@@ -28,6 +28,27 @@
    "confidence": "low",
    "checked_at": "2026-11-23",
    "note": "백플레이트(구멍 뚫린 'Hollowed Backboard')만 공식 문구로 적었다. 파랑·보라 배색·가로 RGB 띠·고리형 팬도 문구에 있지만 어느 색이 주색인지, 띠가 어디인지, 구멍이 플로스루인지는 사진 없이는 알 수 없어 비웠다. 제품 사진은 공식 이미지 서버가 403 으로 막아 보지 못했다(우회하지 않음). 사진을 볼 수 있게 되면 다시 채울 것."
+  },
+  "galax-black-oc-rtx5060ti-16g": {
+   "kind": "gpu",
+   "fans": [
+    92,
+    92
+   ],
+   "fan_blades": 7,
+   "slots": 2,
+   "backplate": true,
+   "color": "#111214",
+   "accent": "#d0d2d4",
+   "sources": [
+    {
+     "title": "GALAX GeForce RTX 5060 Ti 1-Click OC 16GB — 공식 제품 페이지(2*92mm · 7 WINGS 3.0 · Expanded Opening 백플레이트 · 사진 정면/LED)",
+     "url": "https://galax.com/en/product/geforce-rtx-5060-ti-16gb-1-click-oc-2x/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 2개·92mm 는 공식 표, 날개 7장은 공식 문구('7 larger WINGS 3.0 fan blades')와 정면 사진이 같다. 반투명 날개, 켜진 공식 사진에서 팬이 흰색으로 빛난다(카드의 스위치로 끔) — 형식의 fan_light 가 none/rgb/argb 뿐이라 흰 단색 LED 를 적을 수 없어 비웠다(REQUESTS). 쉬라우드는 검정에 탄소 무늬·회로 무늬, 브래킷은 검정에 벌집 구멍. 2슬롯은 models(두께 39.6mm·공식 '2 slot space'). 정면 사진은 V2(8GB)와 같은 판이다(쉬라우드 무늬·팬·브래킷). 16GB 판의 뒷면 사진은 갤러리 파일 이름으로 찾지 못해 플로스루·보조전원 자리는 비웠다 — V2 뒷면은 끝 절반이 뚫린 백플레이트라 같을 가능성이 높지만 미루지 않았다."
   }
  }
 }

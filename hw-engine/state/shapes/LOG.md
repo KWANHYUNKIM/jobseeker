@@ -23,3 +23,13 @@
 - 막힌 것: COLORFUL 공식 이미지 서버(`/en/content/upload/Images/…`)가 403, 스펙 탭은 JS 로 불러와 텍스트로 안 온다 — 우회하지 않았다. 그래서 COLORFUL 셋은 팬 지름·슬롯·보조전원 자리가 비었다(렌더러가 models 의 팬 2개·8핀 1개로 그린다).
   GALAX 의 16핀 자리·백플레이트 뚫린 범위, Palit 의 팬 지름·날개·백플레이트·플로스루는 사진 각도로 안 보여 비웠다.
 - 실물과 아직 다른 점: GameRock 의 곡선 발광 판·GALAX 의 옆면 발광 띠는 accent 한 색으로만 보인다. Palit 은 fans 를 못 적어 models 의 팬 수(null)로 그린다. REQUESTS 에 [3D 렌더러] 3줄·[hw-models] 1줄(low 항목 재방문, 팬 개수만 적는 칸, 발광 판, Palit 팬 수).
+
+## 2026-11-23 · 3회차(무인) — 그래픽카드 인기순 다음 4개
+
+- 적은 것(모두 medium, 공식 제품 페이지 문구 + 공식 사진을 화면으로 보기만): Palit RTX 5050 StormX(사양 탭 2슬롯, 정면 사진으로 팬 1개·검정 홈 무늬 — 지름·날개·백플레이트는 자료에 없어 fan_count 만) ·
+  Palit RTX 5060 Ti Dual 8GB(문구 95mm 팬 2개·2슬롯·백플레이트·subtle RGB, 사진의 윗면 'DUAL' 옆 녹색 줄을 옆 발광 띠로 판독) ·
+  GALAX RTX 5060 Ti 1-Click OC V2 8GB(국내 BLACK OC V2 — 표 2×92mm, 날개 7장, 뒷면 사진으로 백플레이트 끝 절반이 뚫린 플로스루와 PCB 끝(약 55%) 보조전원 자리) ·
+  GALAX RTX 5060 Ti 1-Click OC 16GB(국내 BLACK OC — V2 와 같은 앞판, 뒷면 사진을 못 찾아 플로스루·전원 자리는 비움). 다나와는 쓰지 않았다.
+- 막힌 것: MSI RTX 5060 VENTUS 2X OC V1 — msi.com 403(우회 안 함), 데이터시트 PDF 는 이 PC 에 읽을 도구가 없어 건너뛰었다(REQUESTS [hw-models]).
+- 실물과 아직 다른 점: GALAX 두 장의 팬은 흰색으로만 빛나는데 형식에 흰 단색이 없어 불빛 없이 그려진다(REQUESTS [3D 렌더러]). GALAX 쉬라우드의 탄소·회로 무늬와 Palit 의 굽이치는 홈은 무늬 없이 단색.
+  Palit Dual 의 녹색 띠는 켜진 사진이 아니라 판독이라 실제 RGB 띠 자리·색과 다를 수 있다. StormX 의 팬 지름은 렌더러가 카드 길이로 정한다.

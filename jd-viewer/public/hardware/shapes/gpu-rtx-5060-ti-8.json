@@ -1,0 +1,58 @@
+{
+ "schema": 1,
+ "part": "gpu-rtx-5060-ti-8",
+ "shapes": {
+  "palit-rtx5060ti-dual-8g": {
+   "kind": "gpu",
+   "fans": [
+    95,
+    95
+   ],
+   "slots": 2,
+   "backplate": true,
+   "light": "side",
+   "color": "#141516",
+   "accent": "#76b82a",
+   "sources": [
+    {
+     "title": "Palit GeForce RTX 5060 Ti Dual 8GB — 공식 제품 페이지(Twin 95mm fans · compact 2-slot · sturdy backplate · subtle RGB lighting · 사진)",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5545&lang=en"
+    },
+    {
+     "title": "Palit GeForce RTX 5060 Ti Dual 8GB — 공식 사양 탭(RGB Lighting · 8핀 x1)",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5545&lang=en&pn=NE7506T019P1-GB2062D&tab=sp"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 2개·95mm·2슬롯·백플레이트·RGB 는 공식 문구. 공식 사진(상자와 같이 찍은 비스듬한 정면)에서 쉬라우드는 검정에 굽이치는 홈 무늬, 윗면 모서리에 'GEFORCE RTX' 글자와 끝 쪽 'DUAL' 옆에 녹색 줄이 보인다 — 공식 문구의 'subtle RGB' 가 이 옆 띠로 보여 light=side·accent 를 녹색으로 적었다(켜진 사진이 아니라 판독, 색은 대략). 팬 자체 불빛은 사진에 안 보여 fan_light 는 비웠다. 날개 수·8핀 자리·플로스루는 사진 각도로 안 보여 비웠다."
+  },
+  "galax-black-oc-v2-rtx5060ti-8g": {
+   "kind": "gpu",
+   "fans": [
+    92,
+    92
+   ],
+   "fan_blades": 7,
+   "slots": 2,
+   "backplate": true,
+   "flow_through": true,
+   "power": {
+    "type": "8pin",
+    "n": 1,
+    "at": 0.55
+   },
+   "color": "#111214",
+   "accent": "#d0d2d4",
+   "sources": [
+    {
+     "title": "GALAX GeForce RTX 5060 Ti 1-Click OC V2 — 공식 제품 페이지(2*92mm · 7 WINGS 3.0 · Expanded Opening 백플레이트 · 사진 정면/정면 LED/뒷면/브래킷/비스듬)",
+     "url": "https://galax.com/en/product/geforce-rtx-5060-ti-1-click-oc-v2/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 2개·92mm 는 공식 표, 날개 7장은 공식 문구('7 larger WINGS 3.0 fan blades')와 정면 사진이 같다. 반투명 날개, 켜진 공식 사진에서 팬이 흰색으로 빛난다(카드의 스위치로 끔) — 형식의 fan_light 가 none/rgb/argb 뿐이라 흰 단색 LED 를 적을 수 없어 비웠다(REQUESTS). 쉬라우드는 검정에 탄소 무늬·회로 무늬, 브래킷은 검정에 벌집 구멍. 2슬롯은 models(두께 39.6mm·공식 '2 slot space'). 뒷면 사진: 백플레이트가 PCB 쪽(브래킷부터 절반 남짓)은 막혀 있고 'GEFORCE RTX' 와 흰 사선 무늬, 끝 쪽 절반은 사선 살대만 남기고 뚫려 방열판 핀·히트파이프가 보인다 → flow_through. PCB 끝 모서리(길이의 약 55%)에 보조전원 단자 자리가 보여 power.at=0.55 로 적었다 — 종류는 models 가 공식 요구 사항으로 정한 8핀 1개를 따랐다(동봉 16핀 어댑터와 어긋나는 문제는 models 노트). 비스듬한 사진에 쉬라우드 윗면 끝 쪽 흰 회로 무늬가 크게 있다."
+  }
+ }
+}
