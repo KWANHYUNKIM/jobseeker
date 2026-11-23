@@ -1,0 +1,1083 @@
+{
+ "id": "toss-ai-platform-serving",
+ "company": "토스",
+ "role": "AI 플랫폼 엔지니어 (Serving)",
+ "team": "AI Platform",
+ "jobs": [
+  "ats-toss:group:7786567003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "LLM·embedding·음성 모델이 실제 서비스(상담·검색·쇼핑)에서 **정해진 시간 안에 답하게** 서빙 엔진을 고르고, 띄우고, 고칩니다.[1][2]",
+  "env": "40개가 넘는 모델을 여러 세대 GPU(Hopper·Blackwell·L40S 등)에 vLLM·SGLang·자체 엔진과 Dynamo로 띄우고, 새 모델은 출시 당일 내놓는 것이 원칙입니다.[2]",
+  "oneline": "모델을 만드는 자리가 아니라, **남이 만든 모델을 제시간에·싸게·안 죽게 돌리는** 자리 — 필요하면 엔진과 커널까지 고칩니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "다양한 서빙 프레임워크(vLLM, Dynamo, Triton 등)를 운영하고 성능을 개선해요.",
+   "short": "모델마다 맞는 서빙 엔진을 골라 띄우고, 느린 곳을 직접 고쳐 더 빠르게 만드는 일.",
+   "why": "토스 서빙 팀은 40개가 넘는 모델을 다루고, 모델마다 엔진(vLLM·SGLang·자체 엔진)과 배치 방식을 따로 고른다고 발표했습니다.[2] 검증된 안정 버전을 쓰되 필요하면 출시 전 버전이나 아직 합쳐지지 않은 변경을 이어받아 쓴다고도 했습니다.[2] 그래서 '설치해 두고 지켜보기'가 아니라 엔진 안까지 들여다보는 운영입니다.",
+   "actually": {
+    "items": [
+     "**엔진 고르기** — vLLM(메모리를 쪽 단위로 나눠 쓰는 KV 캐시 관리로 많은 요청을 한꺼번에 처리하는 엔진)[8], SGLang(앞부분이 같은 요청끼리 캐시를 나눠 쓰는 구조)[15], Triton Inference Server(여러 모델·여러 프레임워크를 한 서버에서 묶어 띄우는 서버)[13] 중 모델과 목표에 맞는 것을 고른다.[2]",
+     "**Dynamo 얹기** — NVIDIA Dynamo는 이런 엔진 위에서 라우팅·분리 서빙·자동 확장을 맡는 층이다.[9] 토스는 Dynamo 구성 요소를 붙여 여러 서빙 시스템을 굴린다고 했다.[2]",
+     "**엔진 갈아 끼우기** — 음성 합성(TTS) 모델은 공개 엔진으로 목표 속도가 안 나와 자체 엔진을 만들었고, 기존 서빙 시스템에서 엔진 부분만 바꿔 끼울 수 있게 했다.[2]",
+     "**프로파일링 후 고치기** — 띄운 뒤 프로파일링(어디에 시간이 드는지 재기)을 하고, 더 빠른 커널로 바꾸거나 오픈소스 버그를 고친다. 예: Gemma 모델의 슬라이딩 윈도우 층을 FlashAttention 3로 돌리게 바꾸고, 회귀 시험으로 결과가 같음을 확인했다.[2][17]",
+     "**설정으로 돌리기** — 이 선택들을 코드가 아니라 설정 파일로 고르게 해서, 새로 온 엔지니어도 옵션만 정하면 시뮬레이션부터 배포까지 바로 돈다.[2]"
+    ]
+   },
+   "how_far": "어떤 모델을 쓸지는 그 서비스 팀이 정합니다. 이 자리는 **그 모델을 어떤 엔진·어떤 배치로 띄워 목표 지연(SLA)을 지킬지** 정하고, 안 되면 엔진을 고칩니다.[2] 최소선은 공개 모델 하나를 vLLM과 다른 엔진 하나로 각각 띄워, 같은 부하에서 첫 토큰 시간·초당 토큰을 비교한 표를 내는 것입니다.{추론}",
+   "refs": [
+    2,
+    8,
+    9,
+    13,
+    15,
+    17
+   ],
+   "study": [
+    "slashlive-serving",
+    "vllm-docs",
+    "dynamo-docs",
+    "cs25-serving"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "대규모 LLM 및 embedding 모델의 안정적인 실시간 서빙 환경을 구축하고 모니터링해요.",
+   "short": "사람이 기다리는 서비스(상담·검색)에 모델 답이 늘 제시간에 나가게 만들고, 숫자로 지켜보는 일.",
+   "why": "토스 서빙 팀이 꼽은 첫 번째 문제가 실시간 서비스입니다 — 실시간 전화 상담과 토스쇼핑 실시간 검색처럼 지연에 아주 민감한 일이 늘고 있다고 했습니다.[2] 팀 소개도 LLM 서비스·RAG(검색한 문서를 근거로 답하게 하는 방식)·검색 인프라의 서빙을 이 팀이 책임진다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**LLM과 embedding은 다르다** — LLM은 토큰을 하나씩 이어 만들어 '첫 토큰까지 시간(TTFT)'과 '토큰 사이 시간'을 따로 잰다. embedding(문장을 숫자 벡터로 바꾸는 모델)은 한 번에 답이 나오므로 요청당 지연과 초당 처리 건수를 본다.{추론}",
+     "**SLA 정하기** — 예: 음성 상담은 듣고(STT)·생각하고(LLM)·말하기(TTS)까지 700ms 안. TTS 쪽은 RTF(음성을 만드는 데 걸린 시간 ÷ 음성 길이)[25] 1.0 미만, 첫 음성까지 140ms를 목표로 잡았다.[2]",
+     "**재는 숫자** — vLLM은 TTFT·대기 줄 길이·KV 캐시 사용률 같은 지표를 Prometheus(시계열 지표 수집기) 형식으로 내놓는다.[20] 토스증권은 vLLM과 SGLang의 지표를 한 대시보드로 모아 본다.[31]",
+     "**평균이 아니라 꼬리** — 실시간 서비스는 느린 쪽 1%(p99)가 사용자 불만이 된다. 평균은 최악을 가린다.[23]{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "TTS 실시간 기준 재기 — RTF와 첫 음성 시간 (가상 측정값, 직접 돌린 출력)",
+     "body": "토스가 발표한 기준(RTF 1.0 미만, 첫 음성 140ms)[2]을 가상 측정값에 대 봤습니다. RTF는 통과해도 첫 음성이 늦으면 미달이고, 평균 326ms는 900ms짜리 최악을 가립니다.",
+     "lang": "python",
+     "code": "# 실시간 음성(TTS) 지표: RTF 와 첫 음성까지 시간 (가상 측정값)\n# RTF = 음성을 만드는 데 걸린 시간 / 만든 음성의 길이. 1.0 보다 작으면 말하는 속도보다 빨리 만든다.\nruns = [  # (만든 음성 초, 걸린 시간 초, 첫 음성까지 ms)\n    (4.0, 1.1, 120), (2.5, 0.8, 135), (6.0, 1.9, 150), (3.0, 3.6, 900),\n]\nfor audio, took, ttfa in runs:\n    rtf = took / audio\n    ok = \"통과\" if rtf < 1.0 and ttfa <= 140 else \"미달\"\n    print(f\"음성 {audio:.1f}초를 {took:.1f}초에: RTF {rtf:.2f}, 첫 음성 {ttfa}ms → {ok}\")\nsrt = sorted(t for *_, t in runs)\nprint(f\"첫 음성 중앙값 {srt[len(srt)//2 - 1]}~{srt[len(srt)//2]}ms, 최악 {srt[-1]}ms — 평균 {sum(srt)/len(srt):.0f}ms 는 최악을 가린다\")\n# 음성 4.0초를 1.1초에: RTF 0.28, 첫 음성 120ms → 통과\n# 음성 2.5초를 0.8초에: RTF 0.32, 첫 음성 135ms → 통과\n# 음성 6.0초를 1.9초에: RTF 0.32, 첫 음성 150ms → 미달\n# 음성 3.0초를 3.6초에: RTF 1.20, 첫 음성 900ms → 미달\n# 첫 음성 중앙값 135~150ms, 최악 900ms — 평균 326ms 는 최악을 가린다"
+    }
+   ],
+   "how_far": "SLA 숫자는 서비스(사업) 쪽과 같이 정합니다 — 토스도 RTF·첫 음성 목표를 '사업 관점에서' 잡았다고 했습니다.[2] 이 자리는 **그 숫자를 지표로 만들고, 넘으면 알림이 오고, 왜 넘었는지 찾는** 데까지 맡습니다.{추론} 최소선: 내가 띄운 모델의 TTFT p50·p99와 대기 줄 길이를 대시보드에 그리고 경보 기준을 정해 본 경험.{추론}",
+   "refs": [
+    1,
+    2,
+    20,
+    23,
+    25,
+    31
+   ],
+   "study": [
+    "slashlive-serving",
+    "toss-serving-2",
+    "vllm-docs",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "리소스 효율성, 추론 속도, 확장성을 고려해 시스템 성능을 지속적으로 개선해요.",
+   "short": "비싼 GPU를 놀리지 않으면서 더 빨리, 더 많이 답하게 만드는 일 — 셋은 서로 당긴다.",
+   "why": "토스 서빙 팀은 대규모 트래픽에서도 속도를 지키고, 여러 서비스 요청이 섞여도(멀티테넌트) SLA를 지키는 것을 두 번째 문제로 꼽았습니다.[2] 비싼 GPU를 낭비 없이 쓰는 법은 TMC 25 세션 주제이기도 했습니다.[30]",
+   "actually": {
+    "items": [
+     "**KV 인지 라우팅** — 같은 앞부분(시스템 프롬프트)을 이미 캐시에 든 일꾼에게 보내 다시 계산하지 않게 한다. 다만 캐시만 쫓으면 한 일꾼에 몰려서, 부하에 벌점을 줘 나눠 보낸다고 했다.[2] Dynamo 라우터는 일꾼마다 '새로 계산할 블록 수 × 가중치 + 지금 decode 중인 블록 수'로 비용을 매겨 가장 싼 곳을 고르고, 가중치를 올리면 캐시 재사용(첫 토큰 시간), 내리면 고른 부하(토큰 사이 시간) 쪽으로 기운다.[9]",
+     "**캐시 켜기만 해도** — 토스증권은 한 모델에 꺼져 있던 Prefix Caching(앞부분이 같은 요청의 계산 재사용)을 켜 첫 토큰 시간을 약 10분의 1로 줄였고, KV 캐시 여유를 확인해 동시 처리를 20까지 올려 장비를 늘리지 않고 약 4배 트래픽을 받았다.[31]",
+     "**작은 모델은 GPU를 쪼개서** — 토스증권은 작은 모델이 H100급 GPU 한 장을 통째로 쓰며 낭비하지 않게 MIG(GPU 한 장을 여러 개로 나누는 기능)를 들였다.[32]",
+     "**분리 서빙(disaggregated)** — 입력을 읽는 단계(prefill, 계산이 무겁다)와 답을 한 토큰씩 만드는 단계(decode, 메모리 읽기가 무겁다)를 다른 GPU에 나눈다.[12] 토스는 모든 모델에 쓰지 않고, 기본 방식과 분리 방식을 설정으로 골라 벤치마크 결과를 보고 정한다.[2]",
+     "**여러 세대 GPU 쓰기** — 같은 모델을 Hopper·Blackwell·L40S 같은 서로 다른 GPU에 여러 방식으로 띄우고, 게이트웨이가 용량에 맞춰 나눠 보낸다. 노는 GPU가 없게 필요하면 커널까지 고친다.[2]",
+     "**밤낮 돌려쓰기** — 낮엔 실시간 트래픽이 몰리고, 급하지 않은 배치·백필은 밤에 남는 GPU로 돌리도록 사업 쪽과 맞춘다.[2]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "KV 인지 라우팅: 캐시만 쫓으면 한 일꾼이 터진다 (가상 요청, 직접 돌린 출력)",
+     "body": "앞부분이 같은 요청 100건을 일꾼 넷에 보냈습니다. 벌점이 0이면 캐시 적중은 97건이지만 한 일꾼에 50건이 밀립니다. 벌점을 조금만 줘도 적중을 거의 그대로 두고 부하가 퍼집니다 — 토스가 발표한 '캐시 적중 + 부하 벌점'의 모양입니다.[2]",
+     "lang": "python",
+     "code": "# KV 인지 라우팅: 캐시가 겹치는 일꾼을 고르되, 부하에 벌점을 준다 (가상 요청)\nimport random\nrandom.seed(3)\nW = 4\nprefixes = [\"상담\"] * 70 + [\"검색\"] * 20 + [\"광고\"] * 10   # 요청마다 앞부분(시스템 프롬프트)\nrandom.shuffle(prefixes)\n\ndef run(penalty):\n    cache = [set() for _ in range(W)]   # 일꾼마다 KV 캐시에 들고 있는 앞부분\n    load = [0] * W                      # 일꾼마다 처리 중인 요청 수\n    hits = 0\n    for i, p in enumerate(prefixes):\n        score = [(1.0 if p in cache[w] else 0.0) - penalty * load[w] for w in range(W)]\n        w = max(range(W), key=lambda k: score[k])\n        hits += p in cache[w]\n        cache[w].add(p); load[w] += 1\n        for k in range(W):              # 2건 들어올 때마다 일꾼마다 1건씩 끝난다\n            if i % 2 == 1 and load[k] > 0:\n                load[k] -= 1\n    return hits, load\n\nfor pen in (0.0, 0.1, 1.0):\n    hits, load = run(pen)\n    print(f\"부하 벌점 {pen:3}: 캐시 적중 {hits}/100, 일꾼별 밀린 요청 {load}\")\n# 부하 벌점 0.0: 캐시 적중 97/100, 일꾼별 밀린 요청 [50, 0, 0, 0]\n# 부하 벌점 0.1: 캐시 적중 96/100, 일꾼별 밀린 요청 [5, 5, 0, 0]\n# 부하 벌점 1.0: 캐시 적중 94/100, 일꾼별 밀린 요청 [1, 0, 0, 0]"
+    },
+    {
+     "title": "밤에 남는 GPU로 배치 돌리기 (가상 숫자, 직접 돌린 출력)",
+     "body": "GPU 16장 중 실시간에 낮 8장·밤 2장이 필요하다고 가정했습니다. 밤에만 남는 자리로 GPU 60시간어치 배치를 새벽 3시대에 끝냅니다.",
+     "lang": "python",
+     "code": "# 밤낮 GPU 돌려쓰기: 낮에는 실시간 모델, 밤에는 남는 GPU 로 배치 (가상 숫자)\nhours = list(range(24))\nrealtime = [8 if 9 <= h < 19 else (4 if 7 <= h < 23 else 2) for h in hours]  # 실시간에 필요한 GPU 수\ntotal = 16\nbatch_job = 60                                     # 처리해야 할 배치 작업: GPU 60시간어치\nfree = [total - r for r in realtime]\nprint(f\"하루 남는 GPU 시간 {sum(free)}, 그중 밤(23~7시) {sum(free[h] for h in hours if h >= 23 or h < 7)}\")\nleft, done_at = batch_job, None\nfor h in [23] + list(range(0, 7)):\n    use = min(free[h], left)\n    left -= use\n    if left == 0 and done_at is None:\n        done_at = h\nprint(f\"배치 {batch_job} GPU시간 → 밤에만 돌려도 {done_at}시 대에 끝, 낮 실시간 자리는 그대로\")\n# 하루 남는 GPU 시간 264, 그중 밤(23~7시) 112\n# 배치 60 GPU시간 → 밤에만 돌려도 3시 대에 끝, 낮 실시간 자리는 그대로"
+    }
+   ],
+   "how_far": "예산(GPU 몇 장)은 회사가 정하지만, **그 안에서 어느 모델을 어느 GPU에 몇 벌 둘지, 언제 늘리고 줄일지**는 이 자리 몫입니다.[2]{추론} 최소선: 한 모델의 GPU 사용률·처리량·지연을 같이 놓고 '배치 크기를 키우면 무엇이 나빠지나'를 숫자로 설명할 수 있는 것.{추론}",
+   "refs": [
+    2,
+    9,
+    12,
+    30,
+    31,
+    32
+   ],
+   "study": [
+    "dynamo-docs",
+    "toss-serving-2",
+    "distserve",
+    "cs336-inference"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "모델 서빙 장애 대응, 배포 안정성 확보를 위한 오케스트레이션 및 자동화 작업을 함께해요.",
+   "short": "몰리는 요청에 서버가 무너지지 않게 막고, 새 모델이 나오면 시험·배포까지 자동으로 돌게 하는 일.",
+   "why": "토스는 요청이 갑자기 몰리면 서버 성능이 급격히 떨어지는 지점이 있어 그걸 막는 장치를 단단히 만들었다고 했습니다.[2] 또 처음엔 빠르게 내놓는 데 집중했지만 라이브 장애가 치명적이라 시험·시뮬레이션·검증과 CI/CD(코드를 고치면 자동으로 시험·배포하는 흐름)를 먼저 굳혔다고 했습니다.[2]",
+   "actually": {
+    "items": [
+     "**입장 제한(admission control)** — 처리 중인 decode·prefill 양과 대기 줄 길이에 문턱을 두고, 넘으면 429(요청이 너무 많음)로 돌려보내 호출한 쪽이 재시도·대체 경로로 가게 한다.[2] 과부하 때 일부를 일찍 거절하는 것이 전체를 살리는 길이라는 것은 SRE 책의 과부하 장에도 있다.[23]",
+     "**자동 확장** — 순간이 아니라 계속 몰리면 prefill과 decode 중 어느 쪽이 무거운지 계산해 일꾼을 늘린다. 토스는 Dynamo의 Planner·Grove로 이걸 한다.[2][10][11] GPU 서버가 InfiniBand(서버끼리 잇는 고속망)로 촘촘히 이어져 decode 일꾼만 늘리기 쉽다고 했다.[2]",
+     "**새 모델 자동 흐름** — Hugging Face에 새 모델이 올라오면 감지 → 시뮬레이션(필요한 GPU 수·비용·투자 대비 효과) → 올리기·검증·시험·벤치마크까지 돌고, 사람은 배포 승인만 한다.[2]",
+     "**쓰지 않는 모델 내리기** — 새 판이 나오면 옮기고 사용량이 적은 모델은 내린다.[2]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "토스 서빙 팀이 발표한 새 모델 출시 흐름[2]",
+     "steps": [
+      "감지 · 새 모델 공개를 알아챔",
+      "시뮬레이션 · GPU 수·비용·효과",
+      "올리기·검증 · 결과가 맞나",
+      "시험·벤치마크 · SLA를 넘나",
+      "승인 · 사람이 배포를 허락",
+      "운영 · 지표·자동 확장"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "examples": [
+    {
+     "title": "입장 제한이 없으면 몰린 뒤에도 줄이 안 빠진다 (가상 부하, 직접 돌린 출력)",
+     "body": "초당 100건 서버에 3초 동안 400건씩 몰렸다고 가정했습니다. 제한이 없으면 아무도 거절당하지 않는 대신 최악 9초를 기다리고 10초 뒤에도 840건이 밀려 있습니다. 대기 줄에 문턱을 두면 일부가 429를 받는 대신 받아들인 요청은 제시간에 끝납니다 — 거절당한 쪽은 재시도·대체 경로로 갑니다.[2]",
+     "lang": "python",
+     "code": "# 입장 제한(admission control): 대기 줄이 문턱을 넘으면 429 로 돌려보낸다 (가상 부하)\n# 서버는 초당 100건을 처리한다. 10초 동안 평소 80건/초, 4~6초에는 400건/초가 몰린다.\ncap = 100\narrivals = [80, 80, 80, 80, 400, 400, 400, 80, 80, 80]\n\ndef run(max_wait):\n    queue, rejected, worst = 0, 0, 0.0\n    for a in arrivals:\n        room = (max_wait - queue) if max_wait is not None else a\n        take = min(a, max(room, 0))\n        rejected += a - take\n        queue += take\n        queue -= min(queue, cap)                # 1초 동안 처리\n        worst = max(worst, queue / cap)         # 지금 줄 맨 뒤 요청이 기다릴 초\n    return rejected, worst, queue\n\nfor lim in (None, 300, 100):\n    r, w, q = run(lim)\n    name = \"제한 없음\" if lim is None else f\"대기 {lim}건까지\"\n    print(f\"{name:10s}: 429 {r:4d}건, 최악 대기 {w:4.1f}초, 10초 뒤 남은 줄 {q}건\")\n# 제한 없음     : 429    0건, 최악 대기  9.0초, 10초 뒤 남은 줄 840건\n# 대기 300건까지 : 429  700건, 최악 대기  2.0초, 10초 뒤 남은 줄 140건\n# 대기 100건까지 : 429  900건, 최악 대기  0.0초, 10초 뒤 남은 줄 0건"
+    }
+   ],
+   "how_far": "장애 때 어느 서비스를 먼저 살릴지는 회사·서비스가 정합니다. 이 자리는 **문턱·확장 규칙·배포 관문(시험·벤치마크)을 만들고 자동으로 돌게 하는** 일입니다.[2] 최소선: 쿠버네티스에서 지표를 보고 일꾼 수를 늘리는 규칙(HPA 등)[21]을 직접 걸어 보고, 부하 시험으로 문턱이 버티는지 본 경험.{추론}",
+   "refs": [
+    2,
+    10,
+    11,
+    21,
+    23
+   ],
+   "study": [
+    "dynamo-docs",
+    "k8s-hpa",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "vLLM, SGLang 등 서빙 프레임워크에 컴포넌트를 연동해 성능이나 운영 방식을 개선해 본 분과 함께하고 싶어요. LLM 서빙 경험이 아니더라도 Triton Inference Server, TensorRT 등으로 추천·비전 모델의 서빙 시스템을 깊이 있게 다뤄본 경험이 있다면 좋아요",
+   "short": "엔진을 그냥 띄운 게 아니라 무언가를 붙이거나 고쳐 빠르게 만든 경험 — LLM이 아니어도 된다.",
+   "why": "토스는 엔진에 전·후처리를 사내 구성 요소로 붙이고, 코드를 고치고, Dynamo 구성 요소를 얹어 서빙한다고 했습니다.[2] 공고가 '연동해 개선'이라고 적은 이유입니다.[1]",
+   "actually": {
+    "items": [
+     "**'연동'의 예** — 엔진 앞에 붙이는 라우터·전처리, 엔진 뒤의 후처리, 지표 내보내기, 캐시 저장소 연결.[2]{추론}",
+     "**LLM이 아닌 길** — Triton Inference Server는 요청을 잠깐 모아 한 번에 돌리는 동적 배칭과 여러 모델을 잇는 앙상블을 제공한다.[13] TensorRT는 모델을 GPU에 맞게 미리 최적화해 굽는 도구다.[14] 추천·비전 모델을 이걸로 깊게 다뤘다면 같은 질문(배치·지연·GPU 사용률)을 겪었다.",
+     "**토스증권도 이 조합** — vLLM을 Triton 위에 얹어 띄우고 KServe로 배포했다.[3]"
+    ]
+   },
+   "how_far": "기여 규모보다 **무엇이 느렸고, 무엇을 붙이거나 고쳤고, 전후 숫자가 얼마였나**를 말할 수 있어야 합니다 — 이력서 안내가 그렇게 쓰라고 합니다.[1]",
+   "refs": [
+    1,
+    2,
+    3,
+    13,
+    14
+   ],
+   "study": [
+    "vllm-docs",
+    "triton-server",
+    "toss-llm-serving"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "커널 레벨의 개발 경험이 없더라도, GPU와 모델의 기본적인 동작 방식을 이해하고 이를 바탕으로 문제를 분석할 수 있는 분과 함께하고 싶어요",
+   "short": "커널을 짜지 않아도 'GPU 메모리가 왜 모자라나, 왜 느린가'를 계산으로 설명할 수 있어야 해서.",
+   "why": "토스 서빙 팀은 실제로 Triton·CUDA 커널을 직접 짜고 고칩니다.[2] 그래도 공고는 커널 경험을 요건으로 두지 않고 '기본 동작을 이해하고 분석'을 요건으로 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**KV 캐시** — LLM은 앞에서 계산한 값(K·V)을 토큰마다 저장해 두고 다음 토큰에 다시 쓴다. 이 캐시가 GPU 메모리를 가장 많이 먹고, 쪽 단위로 나눠 관리하면 낭비가 줄어 더 많은 요청을 같이 처리한다.[8]",
+     "**prefill과 decode** — 입력을 읽는 단계는 계산이 무겁고, 한 토큰씩 만드는 단계는 매번 가중치를 메모리에서 읽어 메모리 대역폭이 천장이다.[12]",
+     "**배칭** — 매 단계마다 들어오고 나가는 요청을 바꿔 넣는 방식(반복 단위 스케줄링)이 처리량을 크게 올린다.[19]",
+     "**CPU가 병목일 때** — 토스의 TTS 엔진은 GPU보다 프레임워크의 스케줄링·호출 비용이 컸고, CUDA Graphs(여러 GPU 호출을 한 번에 묶어 내는 기능)[16]와 비동기 스케줄러로 줄였다.[2]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "8B 모델은 H100 한 장에 대화 몇 개, 한 사람에게 초당 몇 토큰? (공개 사양으로 계산, 직접 돌린 출력)",
+     "body": "층 수·KV 헤드 수·헤드 크기로 토큰 하나의 캐시 크기를 구하고, H100 메모리 대역폭(초당 3.35TB)[22]으로 배치 1 decode의 천장을 구했습니다. 실제 값은 엔진 오버헤드·양자화·배치에 따라 다르지만, 이 계산이 '왜 배칭이 필요한가'를 보여 줍니다.{추론}",
+     "lang": "python",
+     "code": "# GPU 와 모델의 기본 동작: KV 캐시 크기와 한 사람에게 내는 속도의 천장 (공개 사양으로 계산)\n# 예: 8B 급 모델(층 32, KV 헤드 8, 헤드 크기 128), 가중치·캐시 모두 BF16(2바이트)\nlayers, kv_heads, head_dim, dtype = 32, 8, 128, 2\nper_token = 2 * layers * kv_heads * head_dim * dtype      # K 와 V 두 벌\nprint(f\"토큰 하나의 KV 캐시: {per_token/1024:.0f} KiB\")\n\nhbm, weights = 80, 8e9 * dtype / 1e9                     # H100 80GB, 가중치 16GB\nfree = (hbm * 0.9 - weights)                              # 90% 만 쓰고 나머지는 여유\ntokens = free * 1e9 / per_token\nprint(f\"캐시에 쓸 수 있는 {free:.0f}GB → 토큰 {tokens/1e3:,.0f}천 개 = 4천 토큰 대화 {tokens/4000:,.0f}개 동시\")\n\nbw = 3.35e12                                              # H100 SXM 메모리 대역폭 초당 3.35TB\nprint(f\"배치 1 디코드 천장: 초당 {bw/(weights*1e9):,.0f} 토큰 (매 토큰마다 가중치를 한 번 다 읽는다)\")\n# 토큰 하나의 KV 캐시: 128 KiB\n# 캐시에 쓸 수 있는 56GB → 토큰 427천 개 = 4천 토큰 대화 107개 동시\n# 배치 1 디코드 천장: 초당 209 토큰 (매 토큰마다 가중치를 한 번 다 읽는다)"
+    }
+   ],
+   "how_far": "**계산 한 장**이면 됩니다 — 모델 크기·KV 캐시·GPU 메모리·대역폭으로 '이 GPU에 몇 명, 몇 토큰'을 추정하고, 프로파일링 결과가 그와 다르면 어디를 의심할지 말할 수 있는 것.{추론} 직무 인터뷰가 심층 기술 면접과 ML 시스템 설계입니다.[1]",
+   "refs": [
+    1,
+    2,
+    8,
+    12,
+    16,
+    19,
+    22
+   ],
+   "study": [
+    "cs336-gpus",
+    "cs336-inference",
+    "pmpp"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "실험 및 운영 효율화를 위한 자동화, 모니터링, 오케스트레이션에 관심이 있는 분과 함께하고 싶어요",
+   "short": "모델이 40개가 넘고 새 모델을 출시 당일 내놓으려면, 손으로 하는 일을 다 자동으로 바꿔야 해서.",
+   "why": "토스는 새 모델이 나오면 그날 쓸 수 있게 하는 것이 원칙이고, 이를 위해 감지부터 벤치마크까지 에이전트 방식 흐름으로 자동화했다고 했습니다.[2] 동료 한마디도 vLLM·Triton·Model Registry(모델 판을 등록·관리하는 저장소)로 실험과 배포를 자동화한다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**자동화** — 설정만 바꾸면 그 구조로 배포·시험·벤치마크까지 도는 흐름.[2]",
+     "**모니터링** — 엔진 지표(TTFT·대기 줄·캐시 사용률)[20]와 GPU 지표를 한 화면에.{추론}",
+     "**오케스트레이션** — 쿠버네티스 위에서 여러 구성 요소(라우터·prefill·decode 일꾼)를 함께 띄우고 늘리는 일. Grove는 이런 여러 부품짜리 추론 서비스를 한 덩어리로 배치·확장하게 돕는다.[11] 같은 직군 Infra 자리 공고도 Dynamo와 쿠버네티스 배치 도구(Volcano·Kueue)를 적었다.[6]"
+    ]
+   },
+   "how_far": "'관심'이 요건입니다. 내가 반복하던 일을 스크립트·파이프라인으로 바꿔 시간을 줄인 사례 하나와, 무엇을 지표로 봤는지 말할 수 있으면 됩니다.{추론}",
+   "refs": [
+    1,
+    2,
+    6,
+    11,
+    20
+   ],
+   "study": [
+    "dynamo-docs",
+    "k8s-hpa",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "유지보수하기 좋은 코드를 작성하고, 적극적인 코드 리뷰로 코드 품질을 높여온 분과 함께하고 싶어요",
+   "short": "엔진·커널을 직접 고치는 팀이라, 고친 코드가 다음 판에서도 깨지지 않게 남겨야 해서.",
+   "why": "토스는 오픈소스 엔진에 패치를 대고, 자체 엔진과 Rust 코드베이스에 커널을 붙인다고 했습니다.[2] 빠르게 내놓다 실수하는 것을 막으려 시험 코드 설계와 검증에 많은 시간을 들였다고도 했습니다.[2]",
+   "actually": {
+    "items": [
+     "**패치를 관리하기** — 위쪽(원본 오픈소스)에 아직 없는 고침을 우리 쪽에 덧대면, 새 판이 나올 때마다 다시 맞춰야 한다. 원본에 기여해 합쳐지면 그 짐이 사라진다 — 토스가 고친 것과 같은 수정이 2주 뒤 원본에 들어간 사례가 있었다.[2]",
+     "**회귀 시험** — 커널을 바꾸면 결과가 같은지 시험으로 확인한다(FlashAttention 3로 바꿀 때 한 일).[2]",
+     "**리뷰** — 성능 코드는 '왜 빨라졌나'를 숫자로 붙여 리뷰한다.{추론}"
+    ]
+   },
+   "how_far": "큰 코드베이스에서 리뷰를 주고받으며 시험을 붙여 온 경험이면 됩니다. 성능 변경에 **벤치마크와 회귀 시험을 같이 올린 PR** 하나면 좋은 예가 됩니다.{추론}",
+   "refs": [
+    2
+   ],
+   "study": [
+    "slashlive-serving",
+    "vllm-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "구조화되지 않은 문제를 기술적으로 정의하고, 시스템적으로 해결해본 분이면 좋아요",
+   "short": "'새 모델이 오늘 나왔는데 안 돈다'처럼 답이 없는 문제를 쪼개 원인을 찾고 장치로 막아야 해서.",
+   "why": "팀 소개가 '아직 정답이 정해지지 않은 문제를 다룬다'고 적었습니다.[1] 토스는 새 모델을 출시 당일 내놓으려다 추측 디코딩이 연결되지 않고 분리 서빙이 바로 죽는 문제를 만났고, 원본 수정을 기다리지 않고 직접 고쳐 그날 서빙했다고 했습니다.[2]",
+   "actually": {
+    "items": [
+     "**정의하기** — '안 된다'를 '어느 단계에서, 어떤 입력에, 어떤 오류'로 좁힌다. 토스가 본 원인은 생각보다 단순했다 — 초안 모델이 검증할 중간 출력을 넘겨받는 코드 몇 줄, 텐서 병렬 처리의 빠진 코드.[2]",
+     "**추측 디코딩** — 작은 초안 모델이 토큰 여러 개를 미리 내고, 큰 모델이 한 번에 맞는지 확인해 속도를 올리는 기법이다.[18]",
+     "**시스템으로 막기** — 한 번 고친 것을 다음 모델에도 쓰게 참고 자료로 남긴다(토스는 새 GPU용 커널을 다음 판 모델의 참고로 쌓는다고 했다).[2]"
+    ]
+   },
+   "how_far": "이력서 안내대로 **목적 → 무엇을 썼나 → 어떻게 풀었나**를 한 사례로 적을 수 있으면 됩니다.[1]",
+   "refs": [
+    1,
+    2,
+    18
+   ],
+   "study": [
+    "slashlive-serving",
+    "cs25-serving"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "새로운 기술 흐름을 빠르게 따라가고, 그 흐름을 팀 내에 자연스럽게 녹여낸 경험이 있다면 좋아요",
+   "short": "서빙 엔진·기법이 몇 달마다 바뀌고 토스는 새 모델을 당일 내놓는 게 원칙이라서.",
+   "why": "토스 서빙 팀은 새 모델을 그날 쓰게 하는 것이 원칙이고, 쓰는 모델이 Qwen·NVIDIA·DeepSeek 계열과 자체 모델까지 다양하다고 했습니다.[2] 분리 서빙·KV 인지 라우팅처럼 최근 퍼진 기법도 이미 쓰고 있습니다.[2]",
+   "actually": {
+    "items": [
+     "**따라가기** — 새 엔진 판·새 커널(FlashAttention 3·4 등)[17]·새 기법(분리 서빙[12]·추측 디코딩[18])을 읽고, 우리 모델로 직접 재 본다.[2]",
+     "**녹여내기** — 써 보고 좋으면 설정 한 줄로 고를 수 있게 공통 흐름에 넣는다. 토스는 기본·분리 서빙을 설정으로 고르면 자동 배포·시험·벤치마크가 돌게 했다.[2]"
+    ]
+   },
+   "how_far": "새 기술을 '써 봤다'가 아니라 **우리 조건에서 재 보고, 팀이 쓰게 문서·도구로 남긴** 경험이 이 줄의 뜻입니다.{추론}",
+   "refs": [
+    2,
+    12,
+    17,
+    18
+   ],
+   "study": [
+    "distserve",
+    "cs25-serving"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 LLM 또는 embedding 모델의 학습/서빙 환경을 최적화하고 운영해 본 경험이 있으신 분이면 더욱 잘 맞아요.",
+   "short": "이 팀이 매일 하는 일이 바로 그것이라, 겪어 본 사람은 첫날부터 같은 말을 한다.",
+   "why": "업무 둘째·셋째 줄과 같습니다.[1] 토스는 큰 모델을 여러 GPU에 나눠 띄우고(텐서 병렬), 분리 서빙·자동 확장까지 운영합니다.[2]",
+   "actually": {
+    "items": [
+     "**대규모의 뜻** — 한 GPU에 안 들어가는 모델을 여러 GPU에 나누는 일, 많은 사용자가 동시에 쓰는 일.[2]{추론}",
+     "**학습 쪽 경험도 통한다** — 여러 GPU 간 통신·메모리 계산은 학습과 서빙이 같은 바탕이다.{추론} 토스증권은 LLM을 직접 돌리려고 자체 GPU 클러스터를 들였다.[4]"
+    ]
+   },
+   "how_far": "규모 숫자(모델 크기·GPU 수·초당 요청)와 **무엇을 최적화해 얼마나 나아졌나**를 함께 말할 수 있으면 됩니다.[1]",
+   "refs": [
+    1,
+    2,
+    4
+   ],
+   "study": [
+    "cs336-inference",
+    "cs25-serving"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "LLM을 최적화하여 서비스에 활용할 수 있게 성능을 이끌어낸 분이면 환영해요.",
+   "short": "모델 품질은 이미 좋은데 속도가 안 나와 출시를 못 하는 일이 실제로 있어서.",
+   "why": "토스의 음성 상담 사례가 그랬습니다 — 품질은 이미 좋았고 풀 것은 속도뿐이었습니다. 자체 TTS 엔진으로 RTF는 처음 목표보다 약 4.5배, 첫 음성 시간은 공개 엔진보다 약 60배 빨라져 실제 사용자에게 내놓을 수 있었다고 했습니다.[2] Gemma 모델은 최적화 뒤 OpenRouter(여러 공급자의 같은 모델 속도를 공개하는 곳)에 올라온 수치 중 첫 토큰이 가장 빨랐다고 했습니다.[2][24]",
+   "actually": {
+    "items": [
+     "**어디서 시간을 줄이나** — 커널(더 빠른 attention 구현)[17], 연산 합치기(두 번 하던 계산을 한 번에), CPU 호출 비용 줄이기(CUDA Graphs)[16], 추측 디코딩[18], 캐시 재사용.[2]",
+     "**결과가 같은지** — 빨라져도 답이 바뀌면 안 된다. 회귀 시험으로 같음을 확인한다.[2]"
+    ]
+   },
+   "how_far": "'서비스에 쓸 수 있게'가 핵심입니다 — **목표 SLA를 먼저 두고, 그걸 넘게 만든 전후 숫자**가 있어야 합니다.[2]{추론}",
+   "refs": [
+    2,
+    16,
+    17,
+    18,
+    24
+   ],
+   "study": [
+    "slashlive-serving",
+    "cs336-inference",
+    "triton-lang"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI/ML 모델들에 대해 일반화하여 플랫폼을 구축해본 경험이 있으시면 더욱 좋아요.",
+   "short": "모델이 40개가 넘어 하나하나 손으로 띄울 수 없어서, 공통 틀로 묶는 경험이 필요해서.",
+   "why": "토스는 엔진·배치 방식·전후처리를 설정으로 고르게 해서 누구나 옵션만으로 배포하게 했습니다.[2] 토스증권도 공용 Docker 이미지 하나와 설정값으로 여러 LLM을 띄우게 만들었습니다.[3]",
+   "actually": {
+    "items": [
+     "**일반화의 예** — 모델마다 다른 것(엔진·GPU 종류·배치 방식)은 설정으로, 같은 것(배포·시험·지표·확장)은 공통 틀로.[2][3] 어떤 모델을 들일지는 토스가 자체 벤치마크로 우리 업무 성능을 재서 고른다.[7]",
+     "**같은 팀의 이웃 자리** — 같은 AI Platform의 Inference Pipeline 자리는 서비스에서 반복되는 요소를 공통 기능으로 끌어올리는 일을 맡는다.[5]"
+    ]
+   },
+   "how_far": "모델 둘 이상을 같은 틀로 배포·관리하게 만들어 본 경험이면 됩니다. **무엇을 설정으로 빼고 무엇을 고정했나**를 설명할 수 있어야 합니다.{추론}",
+   "refs": [
+    2,
+    3,
+    5,
+    7
+   ],
+   "study": [
+    "toss-llm-serving",
+    "mlsd"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "고성능 서빙, 대규모 트래픽 환경에서 모델 운영 경험이 있는 분이면 AI Platform 팀의 방향과 잘 맞을 거예요.",
+   "short": "토스쇼핑·페이·광고 등 여러 서비스가 AI를 붙이면서 트래픽 자체가 커지고 있어서.",
+   "why": "토스는 쇼핑·페이·광고 등 여러 도메인에서 AI 서비스를 만들고 있어 쓰는 사람과 트래픽이 함께 늘고 있다고 했습니다.[2] 트래픽은 업무 시간에 몰린다고도 했습니다.[2]",
+   "actually": {
+    "items": [
+     "**세 겹으로 막기** — 순간 몰림은 입장 제한, 계속 몰림은 자동 확장, 평소엔 KV 인지 라우팅으로 캐시를 살린다(토스가 요약한 핵심 기법 셋).[2]",
+     "**계산부터** — 트래픽(초당 요청 × 토큰 수)을 GPU 한 벌이 감당하는 양으로 나눠 몇 벌이 필요한지 먼저 센다.[23]{추론}"
+    ]
+   },
+   "how_far": "모델이 아니어도 대규모 트래픽 서비스를 운영하며 **과부하·확장·장애**를 겪어 봤다면 같은 언어로 이야기할 수 있습니다.{추론}",
+   "refs": [
+    2,
+    23
+   ],
+   "study": [
+    "sre-book",
+    "dynamo-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "꼭 서빙 분야가 아니더라도 오픈소스 기여 등을 통해 중요한 문제를 해결하고 개선해 본 경험이 있다면 좋아요.",
+   "short": "토스는 오픈소스 엔진의 버그를 직접 고쳐 쓰고 원본에도 기여하는 문화라서.",
+   "why": "토스는 오픈소스 기여를 장려하고 승인도 수월해 많이 기여하려 한다고 했습니다.[2] 이력서 안내도 오픈소스 버그를 고치거나 기능을 보태 기여한 경험을 적어 달라고 합니다.[1]",
+   "actually": {
+    "items": [
+     "**흔한 기여** — 재현 가능한 버그 보고, 빠진 모델 지원 추가, 성능 개선 PR, 문서·시험 보강.{추론}",
+     "**서빙 엔진에서 많은 것** — 새 모델 구조(층마다 다른 헤드 크기 등)를 처리하지 못해 느린 경로로 빠지는 것, 분산 처리 버그.[2]"
+    ]
+   },
+   "how_far": "합쳐진 PR 하나라도 **무엇이 문제였고 어떻게 확인했나**를 말할 수 있으면 됩니다.[1]",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "vllm-docs",
+    "slashlive-serving"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "slashlive-serving",
+   "title": "SlashLive · 토스는 AI모델을 어떻게 서빙할까",
+   "by": "토스 서빙 엔지니어링 · Toss Challengers · 21분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=t_35VpGYgiY",
+   "why": "이 자리가 하는 일을 이 팀이 직접 말한 발표. 음성 상담 700ms SLA, 자체 TTS 엔진, KV 인지 라우팅·입장 제한·자동 확장, 커널 패치, 출시 당일 서빙까지 — 공고 업무 네 줄 전부의 회사 쪽 근거."
+  },
+  {
+   "id": "toss-serving-2",
+   "title": "LLM 서빙, 띄우는 것과 잘 띄우는 것 사이",
+   "by": "토스증권 김민규 · Toss Tech · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/tech_talk_talk_2",
+   "why": "지표를 한 대시보드로 모으고, Prefix Caching·동시 처리 수를 바꿔 장비 없이 처리량을 올린 같은 그룹 사례. 업무 '모니터링'과 '리소스 효율성 개선'."
+  },
+  {
+   "id": "toss-llm-serving",
+   "title": "LLM 쉽고 빠르게 서빙하기",
+   "by": "토스증권 김민규 · Toss Tech · 2024",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/llm-serving",
+   "why": "vLLM + Triton + KServe로 여러 서비스가 같은 방식으로 LLM을 띄우게 만든 이야기. 요건 '서빙 프레임워크에 컴포넌트 연동'과 우대 '일반화한 플랫폼'."
+  },
+  {
+   "id": "vllm-docs",
+   "title": "vLLM 문서 (Automatic Prefix Caching · Speculative Decoding · Metrics)",
+   "by": "vLLM 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.vllm.ai/en/latest/",
+   "why": "이 팀의 주력 엔진. 캐시 재사용·추측 디코딩·Prometheus 지표를 직접 켜고 재 보는 출발점."
+  },
+  {
+   "id": "dynamo-docs",
+   "title": "NVIDIA Dynamo 문서 (KV Router · Planner · 분리 서빙)",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://github.com/ai-dynamo/dynamo",
+   "why": "토스가 엔진 위에 얹어 쓰는 층. 업무 'KV 인지 라우팅·자동 확장·분리 서빙'의 설계를 공식 문서로."
+  },
+  {
+   "id": "triton-server",
+   "title": "Triton Inference Server 사용자 가이드 (Dynamic Batching · Ensemble)",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/user_guide/batcher.html",
+   "why": "LLM이 아닌 추천·비전 모델 서빙으로 요건을 채우는 길. 동적 배칭의 대기 시간과 처리량 거래를 직접 설정해 본다."
+  },
+  {
+   "id": "distserve",
+   "title": "DistServe: Disaggregating Prefill and Decoding for Goodput-optimized LLM Serving",
+   "by": "Zhong 외 · OSDI 2024",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2401.09670",
+   "why": "분리 서빙이 왜·언제 이득인지의 원 논문. 토스가 '모든 모델에 분리 서빙을 쓰지 않는' 이유를 이해할 때."
+  },
+  {
+   "id": "cs25-serving",
+   "title": "Stanford CS25 · Serving Transformers: Lessons from the Trenches (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/ZUdIsRZhWXI",
+   "why": "워크로드·SLO 정의부터 엔진·하드웨어·관측성까지 서빙 전체를 한 바퀴. 이 공고를 처음 읽을 때 지도."
+  },
+  {
+   "id": "cs336-inference",
+   "title": "Stanford CS336 · Lecture 10: Inference (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/EfM546A79aM",
+   "why": "prefill·decode, KV 캐시, 배칭, 추측 디코딩이 속도를 어떻게 바꾸는지. 요건 'GPU와 모델의 기본 동작'."
+  },
+  {
+   "id": "cs336-gpus",
+   "title": "Stanford CS336 · Lecture 5: GPUs, TPUs (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/izZba4UA7iY",
+   "why": "GPU 메모리 계층과 대역폭이 왜 천장이 되는지. 커널을 짜지 않아도 병목을 계산할 수 있게."
+  },
+  {
+   "id": "llm-app-book",
+   "title": "LLM을 활용한 실전 AI 애플리케이션 개발",
+   "by": "허정준 · 책만 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.yes24.com/product/goods/129081594",
+   "why": "7장(KV 캐시·양자화)과 8장(연속 배치·플래시어텐션·페이지어텐션·서빙 실습)이 한국어로 서빙의 기본기를 다룬다."
+  },
+  {
+   "id": "ai-eng",
+   "title": "AI 엔지니어링",
+   "by": "칩 후옌 · 변성윤 옮김 · 한빛미디어 · 2025",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=373097975",
+   "why": "추론 최적화·지연 지표·비용을 제품 관점에서. 우대 'LLM을 최적화해 서비스에 쓰게'의 큰 그림."
+  },
+  {
+   "id": "cuda-book",
+   "title": "CUDA 기반 GPU 병렬 처리 프로그래밍",
+   "by": "김덕수 · 비제이퍼블릭 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=316754356",
+   "why": "스레드·메모리 계층·성능 최적화를 한국어로. 이 팀이 하는 연산 합치기·커널 패치를 읽을 수 있게 되는 첫 책."
+  },
+  {
+   "id": "pmpp",
+   "title": "Programming Massively Parallel Processors (4th ed.)",
+   "by": "Hwu · Kirk · El Hajj · Morgan Kaufmann · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://shop.elsevier.com/books/programming-massively-parallel-processors/hwu/978-0-323-91231-0",
+   "why": "GPU 프로그래밍의 표준 교재. 요건 'GPU의 기본 동작을 이해하고 분석'을 깊게 채운다(한국어판은 2011년 옛 판만 있다)."
+  },
+  {
+   "id": "triton-lang",
+   "title": "Triton 언어 튜토리얼 (Fused Softmax · Matrix Multiplication · Fused Attention)",
+   "by": "OpenAI Triton",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://triton-lang.org/main/getting-started/tutorials/index.html",
+   "why": "토스가 A100용 커널을 짠 도구. 연산 합치기를 파이썬 문법으로 직접 해 보는 길."
+  },
+  {
+   "id": "k8s-hpa",
+   "title": "Kubernetes 문서 · Horizontal Pod Autoscaling",
+   "by": "Kubernetes",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/",
+   "why": "지표를 보고 일꾼 수를 늘리는 기본 장치. Dynamo Planner 같은 서빙 전용 확장기를 이해하기 전 바탕."
+  },
+  {
+   "id": "k8s-book",
+   "title": "쿠버네티스 인 액션",
+   "by": "마르코 룩샤 · 에이콘출판 · 2020",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=235962702",
+   "why": "파드·배포·확장을 처음부터. 업무 '오케스트레이션 및 자동화'의 기초 체력."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering (온라인 무료판)",
+   "by": "Google",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/handling-overload/",
+   "why": "'과부하 다루기'·'연쇄 장애' 장. 업무 '장애 대응'과 입장 제한·429의 원리."
+  },
+  {
+   "id": "mlsd",
+   "title": "머신러닝 시스템 설계",
+   "by": "칩 후옌 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/-/9791169210850/",
+   "why": "배포·모니터링·플랫폼을 한 흐름으로. 직무 인터뷰의 'ML 시스템 설계'와 우대 '일반화한 플랫폼'."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "그림 잡기",
+   "time": "1주",
+   "goal": "LLM 한 요청이 prefill → decode로 돌며 GPU 메모리·대역폭을 어떻게 쓰는지 숫자로 설명할 수 있다.",
+   "task": "공개 모델 두 개(작은 것·큰 것)의 층 수·헤드 수로 토큰당 KV 캐시 크기, GPU 한 장에 들어가는 동시 대화 수, 배치 1 decode 속도 천장을 계산하는 표를 만든다.",
+   "resources": [
+    "cs25-serving",
+    "cs336-gpus",
+    "cs336-inference",
+    "llm-app-book"
+   ]
+  },
+  {
+   "title": "엔진 띄우고 재기",
+   "time": "1~2주",
+   "goal": "vLLM으로 모델을 띄우고 TTFT·토큰 사이 시간·처리량을 부하별로 잴 수 있다.",
+   "task": "작은 공개 모델을 vLLM으로 띄우고, 가상 요청(앞부분이 같은 것 70%)을 동시 1·8·32로 보내 Prefix Caching을 끈 때와 켠 때의 TTFT p50·p99를 비교한다. /metrics 를 Prometheus·Grafana로 그린다.",
+   "resources": [
+    "vllm-docs",
+    "toss-serving-2",
+    "slashlive-serving"
+   ]
+  },
+  {
+   "title": "몰려도 안 무너지게",
+   "time": "1~2주",
+   "goal": "입장 제한·라우팅·자동 확장으로 과부하를 막는 장치를 만들 수 있다.",
+   "task": "엔진 앞에 작은 라우터를 짜서 ① 일꾼 둘 사이 캐시 적중 + 부하 벌점 라우팅, ② 대기 줄 문턱을 넘으면 429를 붙인다. 부하 시험기로 3초 동안 네 배를 몰아 문턱 유무에 따른 최악 대기·거절 수를 그래프로 남긴다. 쿠버네티스(kind 등)에서 HPA로 일꾼 수를 늘려 본다.",
+   "resources": [
+    "dynamo-docs",
+    "sre-book",
+    "k8s-hpa",
+    "k8s-book"
+   ]
+  },
+  {
+   "title": "엔진 안으로",
+   "time": "2~3주",
+   "goal": "프로파일러로 시간이 새는 곳을 찾고, 간단한 커널이나 엔진 설정으로 고친 전후를 보일 수 있다.",
+   "task": "PyTorch 프로파일러로 작은 모델의 decode 한 단계를 재고, CUDA Graphs를 켠 때와 끈 때를 비교한다. Triton 튜토리얼의 Fused Softmax를 따라 짜서 PyTorch 기본 구현과 속도·결과가 같은지 시험한다.",
+   "resources": [
+    "triton-lang",
+    "cuda-book",
+    "pmpp"
+   ]
+  },
+  {
+   "title": "설정 한 줄로 배포",
+   "time": "1~2주",
+   "goal": "모델을 설정 파일만으로 띄우고 시험·벤치마크까지 자동으로 돌게 할 수 있다.",
+   "task": "모델 이름·엔진·GPU 수·배치 방식을 적은 YAML 하나로 띄우고, 정답 몇 개로 결과 회귀 시험과 부하 벤치마크를 돌려 SLA(가상: TTFT p99 500ms)를 넘으면 배포를 막는 CI 흐름을 만든다.",
+   "resources": [
+    "toss-llm-serving",
+    "distserve",
+    "mlsd"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 공공데이터 집계로 신입 초봉 **약 4,200만원**, 평균 **약 6,200만원** — 공시된 평균 급여는 없다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없어 AI 플랫폼 엔지니어 계약 연봉과 다를 수 있다 [26]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 — 경력직이 섞인 값이다 [26]"
+   },
+   {
+    "label": "토스뱅크 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 계열사 값 — 견주어 보기용 [27]"
+   },
+   {
+    "label": "토스뱅크 평균",
+    "value": "약 7,208만원",
+    "amount": 7208,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 계열사 평균 [27]"
+   }
+  ],
+  "how": "공고는 레퍼런스 체크 뒤 **처우 협의** 단계에서 사람마다 정한다고 적었다 [1]. 이 공고는 토스(비바리퍼블리카) 그룹 채용으로 올라왔고 어느 법인 소속인지는 공고에 없다 {추론}. 비바리퍼블리카는 상장사가 아니라 사업보고서의 '직원 평균 급여'가 없어 공시 숫자를 싣지 못했다. 평균은 초봉이 아니라 경력직이 섞인 회사 전체 값이고, 집계값은 추정이라 실제 제안과 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 복지를 소개한 2021년 공식 글이다 [29]. 소속 법인마다 다를 수 있고 지금도 같은지는 글에 없으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스(비바리퍼블리카) 본사",
+  "address": "서울특별시 강남구 테헤란로 142, 4·10~13·22·23층",
+  "postal": "06236",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "주소는 토스 회사 소개 페이지 하단의 회사 정보다 [28]. 공고 근무지는 'Seoul'로만 적혀 있어 실제 근무 건물은 다를 수 있다 [1]."
+ },
+ "fit": {
+  "good": [
+   "모델 점수보다 '첫 토큰 몇 ms, GPU 몇 장'을 따지는 게 즐거운 사람[2]",
+   "오픈소스 엔진의 코드를 열어 보고 고치는 데 거리낌이 없는 사람[2]",
+   "추천·비전 모델 서빙이나 대규모 트래픽 백엔드를 운영해 봤고 LLM 서빙으로 넓히고 싶은 사람[1]",
+   "손으로 하던 배포·시험을 자동 흐름으로 바꾸는 데서 보람을 느끼는 사람[2]"
+  ],
+  "hard": [
+   "새 모델을 출시 당일 내놓는 것이 원칙이라, 공개 직후의 깨진 코드를 그날 고쳐야 할 때가 있다[2]",
+   "실시간 서비스의 지연·장애가 바로 사용자에게 보인다[2]",
+   "엔진·커널·쿠버네티스·GPU까지 걸치는 범위가 넓다[1][2]{추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "H100 한 장에 8B 모델을 띄우면 동시에 몇 개 대화를 받을 수 있나요? 무엇이 그 숫자를 정하나요?",
+   "a": "요건 'GPU와 모델의 기본 동작' — 직무 인터뷰가 심층 기술 면접이다.[1][8]"
+  },
+  {
+   "q": "음성 상담에서 700ms 안에 답해야 해요. STT·LLM·TTS에 시간을 어떻게 나누고, 무엇을 재겠어요?",
+   "a": "토스 서빙 팀이 실제로 푼 문제.[2]"
+  },
+  {
+   "q": "KV 캐시 적중을 올리려고 같은 앞부분을 한 일꾼에 몰면 무슨 일이 생기나요?",
+   "a": "업무 셋째 줄 — 캐시 적중 + 부하 벌점 라우팅.[2][9]"
+  },
+  {
+   "q": "요청이 갑자기 네 배로 몰렸어요. 서버는 어떻게 움직여야 하고, 호출한 쪽은요?",
+   "a": "업무 넷째 줄 — 입장 제한·429·재시도·자동 확장.[2][23]"
+  },
+  {
+   "q": "분리 서빙은 언제 쓰고 언제 안 쓰겠어요?",
+   "a": "토스는 모든 모델에 쓰지 않고 벤치마크로 고른다.[2][12]"
+  },
+  {
+   "q": "vLLM 새 판에서 어떤 모델이 느린 커널로 빠져요. 어떻게 찾고, 고친 걸 어떻게 유지하겠어요?",
+   "a": "요건 넷째 줄과 우대 다섯째 줄 — 패치·회귀 시험·원본 기여.[2]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · AI 플랫폼 엔지니어 (Serving)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7786567003",
+   "kind": "posting",
+   "note": "팀 소개·업무·요건·우대·이력서 안내·합류 여정·동료 한마디"
+  },
+  {
+   "n": 2,
+   "title": "SlashLive · 토스는 AI모델을 어떻게 서빙할까",
+   "url": "https://www.youtube.com/watch?v=t_35VpGYgiY",
+   "kind": "company",
+   "note": "토스 서빙 엔지니어링(21분). 공식 자막 전부 읽음 — 설정 기반 자동 흐름, 음성 상담 700ms·RTF·첫 음성 140ms, 자체 TTS 엔진(CUDA Graphs·비동기 스케줄러), 40개 넘는 모델, KV 인지 라우팅+부하 벌점, 입장 제한·429, Planner·Grove 자동 확장, InfiniBand, FlashAttention 3·4, 출시 당일 패치, A100용 Triton 커널, 여러 세대 GPU, 밤 배치"
+  },
+  {
+   "n": 3,
+   "title": "Toss Tech · LLM 쉽고 빠르게 서빙하기",
+   "url": "https://toss.tech/article/llm-serving",
+   "kind": "company",
+   "date": "2024-11-26",
+   "note": "토스증권 — vLLM + Triton, 공용 이미지, KServe, Grafana"
+  },
+  {
+   "n": 4,
+   "title": "Toss Tech · 고성능 GPU 클러스터 도입기 #1",
+   "url": "https://toss.tech/article/securities_llm_1",
+   "kind": "company",
+   "date": "2024-07-19"
+  },
+  {
+   "n": 5,
+   "title": "토스 채용 · AI 플랫폼 엔지니어 (Inference Pipeline)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7986152003",
+   "kind": "posting",
+   "note": "같은 AI Platform 직군 — 반복 요소를 공통 기능으로"
+  },
+  {
+   "n": 6,
+   "title": "토스 채용 · AI 플랫폼 엔지니어 (Infra)",
+   "url": "https://toss.im/career/job-detail?gh_jid=8007436003",
+   "kind": "posting",
+   "note": "같은 직군 — NVIDIA Dynamo·Volcano·Kueue 언급"
+  },
+  {
+   "n": 7,
+   "title": "Toss Tech · 리더보드 1등 LLM, 토스에서도 1등일까? — Toss Benchmark 구축기",
+   "url": "https://toss.tech/article/toss-benchmark",
+   "kind": "company",
+   "date": "2026-09-16"
+  },
+  {
+   "n": 8,
+   "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention (vLLM)",
+   "url": "https://arxiv.org/abs/2309.06180",
+   "kind": "reference",
+   "date": "2023"
+  },
+  {
+   "n": 9,
+   "title": "NVIDIA Dynamo 문서 · KV Router routing concepts",
+   "url": "https://docs.nvidia.com/dynamo/v1.1.1/components/router/routing-concepts",
+   "kind": "reference",
+   "note": "cost = overlap_score_weight × prefill 블록 + decode 블록, 가중치로 캐시 재사용과 부하 분산을 조절(v1.1.1 기준)"
+  },
+  {
+   "n": 10,
+   "title": "NVIDIA Dynamo 문서 · Planner overview",
+   "url": "https://docs.nvidia.com/dynamo/latest/knowledge-base/modular-components/planner/overview",
+   "kind": "reference",
+   "note": "prefill·decode 일꾼 수를 TTFT·ITL 목표로 자동 조정"
+  },
+  {
+   "n": 11,
+   "title": "ai-dynamo/grove (GitHub)",
+   "url": "https://github.com/ai-dynamo/grove",
+   "kind": "reference",
+   "note": "여러 부품짜리 추론 서비스를 쿠버네티스에서 묶어 배치·확장"
+  },
+  {
+   "n": 12,
+   "title": "DistServe: Disaggregating Prefill and Decoding for Goodput-optimized LLM Serving",
+   "url": "https://arxiv.org/abs/2401.09670",
+   "kind": "reference",
+   "date": "2024"
+  },
+  {
+   "n": 13,
+   "title": "Triton Inference Server 사용자 가이드 · Dynamic Batcher",
+   "url": "https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/user_guide/batcher.html",
+   "kind": "reference",
+   "note": "요청을 모아 배치로, max_queue_delay_microseconds. 앙상블은 같은 가이드의 ensemble_models"
+  },
+  {
+   "n": 14,
+   "title": "TensorRT-LLM 문서",
+   "url": "https://nvidia.github.io/TensorRT-LLM/",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "SGLang: Efficient Execution of Structured Language Model Programs",
+   "url": "https://arxiv.org/abs/2312.07104",
+   "kind": "reference",
+   "date": "2023",
+   "note": "RadixAttention으로 KV 캐시 재사용"
+  },
+  {
+   "n": 16,
+   "title": "CUDA Programming Guide · CUDA Graphs",
+   "url": "https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/cuda-graphs.html",
+   "kind": "reference",
+   "note": "한 번 정의해 반복 실행, 실행 비용을 줄인다"
+  },
+  {
+   "n": 17,
+   "title": "FlashAttention-3: Fast and Accurate Attention with Asynchrony and Low-precision",
+   "url": "https://arxiv.org/abs/2407.08608",
+   "kind": "reference",
+   "date": "2024"
+  },
+  {
+   "n": 18,
+   "title": "Fast Inference from Transformers via Speculative Decoding",
+   "url": "https://arxiv.org/abs/2211.17192",
+   "kind": "reference",
+   "date": "2022"
+  },
+  {
+   "n": 19,
+   "title": "Orca: A Distributed Serving System for Transformer-Based Generative Models (OSDI 22)",
+   "url": "https://www.usenix.org/conference/osdi22/presentation/yu",
+   "kind": "reference",
+   "note": "반복 단위 스케줄링"
+  },
+  {
+   "n": 20,
+   "title": "vLLM 문서 · Metrics",
+   "url": "https://docs.vllm.ai/en/latest/design/metrics.html",
+   "kind": "reference",
+   "note": "/metrics — time_to_first_token_seconds, inter_token_latency_seconds, kv_cache_usage_perc, num_requests_waiting"
+  },
+  {
+   "n": 21,
+   "title": "Kubernetes 문서 · Horizontal Pod Autoscaling",
+   "url": "https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "NVIDIA H100 제품 페이지",
+   "url": "https://www.nvidia.com/en-us/data-center/h100/",
+   "kind": "reference",
+   "note": "H100 SXM 메모리 80GB·대역폭 초당 3.35TB"
+  },
+  {
+   "n": 23,
+   "title": "Google SRE Book · Handling Overload",
+   "url": "https://sre.google/sre-book/handling-overload/",
+   "kind": "reference",
+   "note": "과부하 때 일찍 거절하기, 재시도 예산. 같은 책 '연쇄 장애' 장과 함께"
+  },
+  {
+   "n": 24,
+   "title": "OpenRouter 문서 · Provider selection",
+   "url": "https://openrouter.ai/docs/guides/routing/provider-selection",
+   "kind": "reference",
+   "note": "공급자별 처리량(초당 출력 토큰)·지연(TTFT) 측정값으로 라우팅"
+  },
+  {
+   "n": 25,
+   "title": "Microsoft Learn · Embedded Speech performance evaluations (RTF 정의)",
+   "url": "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/embedded-speech-performance-evaluations",
+   "kind": "reference",
+   "note": "RTF = 처리 시간 ÷ 음성 길이, 1 미만이면 실시간보다 빠르다"
+  },
+  {
+   "n": 26,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 27,
+   "title": "자소설닷컴 — 토스뱅크 연봉(같은 집계)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "토스 — 회사 소개(사이트 하단 주소)",
+   "url": "https://toss.im/company",
+   "kind": "company"
+  },
+  {
+   "n": 29,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 30,
+   "title": "TMC 25 · 비싼 GPU, 낭비 없이 제대로 운영하는 법",
+   "url": "https://toss.im/tmc-25/sessions/engineering/ml-10",
+   "kind": "company",
+   "date": "2025-07-25",
+   "note": "토스증권 ML Platform — 세션 소개문"
+  },
+  {
+   "n": 31,
+   "title": "Toss Tech · LLM 서빙, 띄우는 것과 잘 띄우는 것 사이",
+   "url": "https://toss.tech/article/tech_talk_talk_2",
+   "kind": "company",
+   "date": "2026-08-21",
+   "note": "토스증권 — vLLM·SGLang 지표 한 대시보드, Prefix Caching으로 TTFT 약 1/10, 동시 처리 20·약 4배 트래픽"
+  },
+  {
+   "n": 32,
+   "title": "Toss Tech · GPU를 밀도 있게 쓰는 방법 — 토스증권의 GPU 가상화(MIG) 도입기",
+   "url": "https://toss.tech/article/toss-securities-gpu-mig",
+   "kind": "company",
+   "date": "2025-07-10"
+  }
+ ],
+ "caveat": "회사 근거의 중심은 이 팀 서빙 엔지니어링의 SlashLive 발표[2]이고, 공식 자막(영어 번역)을 처음부터 끝까지 읽었습니다(화면 장면은 받기에 실패해 보지 못했습니다 — 발표에 나온 모델 이름은 자막 표기라 틀릴 수 있어 줄 풀이에는 계열만 적었습니다). 발표 날짜와 음성 상담(AIOC) 서비스의 공식 소개 글은 찾지 못했습니다. 토스증권 글[3][31][32]은 같은 그룹 다른 회사의 사례입니다. Dynamo·vLLM·Triton의 설정·공식은 공식 문서 기준이고 판(version)마다 다를 수 있습니다. 코드 예시의 숫자는 모두 가상이거나 공개 사양으로 계산한 것입니다."
+}

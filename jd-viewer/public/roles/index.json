@@ -5,6 +5,7 @@
   "ats-toss:group:7758217003": "toss-ai-engineer-model",
   "ats-toss:group:7646941003": "toss-ai-platform-engineer-platform",
   "ats-toss:group:7986152003": "toss-ai-platform-inference-pipeline",
+  "ats-toss:group:7786567003": "toss-ai-platform-serving",
   "ats-toss:group:8000575003": "toss-aioc-ai-solution-engineer",
   "ats-toss:group:7798373003": "toss-call-infra-engineer",
   "ats-toss:group:7989660003": "toss-client-platform-engineer",
@@ -63,6 +64,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 17
+  },
+  {
+   "id": "toss-ai-platform-serving",
+   "company": "토스",
+   "role": "AI 플랫폼 엔지니어 (Serving)",
+   "jobs": [
+    "ats-toss:group:7786567003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 15
   },
   {
    "id": "toss-aioc-ai-solution-engineer",
