@@ -1,0 +1,1210 @@
+{
+ "id": "toss-ai-engineer-model",
+ "company": "토스",
+ "role": "AI 엔지니어 (Model)",
+ "team": "Applied AI Team · 모델 파트",
+ "jobs": [
+  "ats-toss:group:7758217003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "토스가 비싼 외부 상용 LLM에 맡기던 일을 **직접 학습한 작은 모델**로 옮깁니다. 데이터 만들기 → 학습 → 평가를 한 사람이 처음부터 끝까지 맡습니다.[1]",
+  "env": "공개 가중치(open weights) LLM 위에서 사후 학습(SFT·DPO·RL·LoRA)을 하고, 기존 LLM의 답을 정답 삼아 배우고 그 답과 얼마나 같은지로 평가하는 방식이 그룹 안에서 이미 돌고 있습니다.[2][3]",
+  "oneline": "모델을 '쓰는' 자리가 아니라 '만드는' 자리. 논문 구현보다 **데이터·실험·평가를 빠르게 반복하는 힘**을 봅니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "토스의 실제 서비스 데이터를 LLM이 학습할 수 있는 고품질 데이터셋으로 구축해요.",
+   "short": "지금 상용 LLM과 주고받은 요청·응답 기록을 골라, 작은 모델이 따라 배울 '문제·정답' 묶음으로 만드는 일.",
+   "why": "이 팀이 내재화하려는 것은 **이미 외부 LLM이 처리하고 있는 일**입니다.[1] 그래서 정답을 줄 선생님(기존 LLM)과 문제(실제 요청)가 이미 쌓여 있습니다. 토스의 SNAP 글은 작업별 LLM 호출 기록(요청과 응답)을 학습 데이터로 쓰고, 기존 LLM의 판단을 정답으로 삼는다고 밝혔습니다.[2] 큰 모델의 답으로 작은 모델을 가르치는 방법을 지식 증류(knowledge distillation)라고 부릅니다.[3][6]",
+   "actually": {
+    "intro": "토스 그룹이 공개한 두 사례(토스 SNAP[2], 토스증권 TMC25 발표[3])에서 데이터 단계가 하는 일입니다.",
+    "items": [
+     "**작업별로 묶기** — 요청의 시스템 프롬프트 앞부분을 해시(짧은 지문)로 만들어 '같은 일'을 묶는다. 예시 문장이 바뀌어도 역할·작업 정의는 대개 그대로라서다.[2]",
+     "**배울 수 있는지 거르기** — 응답이 정해진 꼴이라 정답을 안정적으로 뽑을 수 있나, 정답 종류마다 데이터가 넉넉한가, 학습용과 평가용을 나눌 수 있나. 셋을 다 통과한 작업만 학습으로 넘긴다.[2]",
+     "**정답 뽑기** — 분류 작업이면 기존 LLM 응답에서 레이블을, 뉴스 요약 같은 생성 작업이면 (원문, 요약) 쌍을 만든다.[2][3]",
+     "**살아남은 서비스만** — 토스증권은 고객이 계속 쓴 서비스의 데이터를 양질로 보고, 반응이 없어 접은 서비스의 데이터는 버린다.[3]",
+     "**쓰임새별로 나누기** — 학습·검증·평가에 더해 평가용 보상 모델을 가르칠 데이터까지 네 묶음으로 나눈다.[3]",
+     "**금융 데이터 다루기** — 실제 고객 요청이라 개인정보를 가리고 접근 권한을 지키는 일이 따라붙는다. 토스가 이 부분을 어떻게 하는지는 공개되지 않았다. {추론}"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "호출 기록이 학습 데이터가 되기까지[2][3]",
+     "steps": [
+      "호출 기록 · 요청과 상용 LLM 응답",
+      "작업별 묶기 · 프롬프트 지문",
+      "학습 가능 검사 · 꼴·양·분할",
+      "정답 뽑기 · 레이블 또는 (원문, 답) 쌍",
+      "나누기 · 학습/검증/평가/보상 모델용"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "어느 서비스를 옮길지는 비용·서비스팀과 함께 정하지만, 공고는 데이터부터 평가까지 '전 과정을 책임진다'고 적었습니다.[1] 최소선은 **로그 → 학습 묶음 변환을 스크립트 하나로 다시 돌릴 수 있고, 중복과 학습·평가 섞임(누수)이 없는 것**입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    6
+   ],
+   "study": [
+    "tmc25-steal",
+    "snap-blog",
+    "cs336-data"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "실험 기반으로 데이터를 정제하고, 최적의 데이터 분포를 탐색하며, 이를 안정적으로 재현하는 데이터 파이프라인을 구축해요",
+   "short": "무슨 데이터를 얼마나 섞어야 점수가 오르는지 실험으로 찾고, 그 데이터셋을 언제든 똑같이 다시 만들게 한다.",
+   "why": "토스증권 발표는 데이터 수집·정제가 머신러닝 일의 약 80%(정제 60%, 수집 19%)를 차지해 왔다는 조사 그림을 보여 주며 이 단계를 줄이는 데서 출발했습니다.[3] 양보다 질이 중요하다는 근거도 있습니다 — LIMA 연구는 잘 고른 예시 1,000개만으로 사후 학습한 모델이 꽤 쓸 만한 답을 냈다고 보고했습니다.[12] 그리고 continual learning(새 데이터로 계속 다시 가르치기)이 목표라 같은 데이터 처리를 몇 번이고 다시 돌려야 합니다.[1]",
+   "actually": {
+    "items": [
+     "**정제** — 중복 제거, 상용 LLM이 실수한 응답·형식이 깨진 응답 거르기. 토스증권은 '과거보다 훨씬 간소화된' 정제만 넣었다고 했다 — 성공한 서비스의 데이터라 기본 품질이 보장되기 때문이다.[3]",
+     "**분포 찾기** — 정답 종류별 비율, 쉬운·어려운 예 비율, 작업끼리 섞는 비율, 일반 한국어 데이터를 얼마나 섞을지. 특정 작업만 계속 가르치면 원래 능력을 잊는다는 연구가 있어 섞는 비율 자체가 실험 대상이다.[14] {추론}",
+     "**한 번에 한 가지만 바꾸기** — 데이터 하나를 바꾸면 학습 설정·평가셋은 고정하고 점수를 비교한다(ablation). {추론}",
+     "**재현** — 토스증권은 수집이 끝나면 데이터를 '데이터 레지스트리'에 올리고, 그게 다음 학습 단계를 자동으로 띄운다.[3] 토스 SNAP은 후보 고르기부터 데이터 구성까지 Airflow 일일 배치로 돈다.[2]"
+    ]
+   },
+   "how_far": "데이터셋마다 **버전·만든 날짜·거른 규칙·시드**가 남아서, 석 달 뒤에도 '그때 그 모델'의 데이터를 똑같이 다시 만들 수 있으면 됩니다. 분포 탐색은 감이 아니라 실험표(바꾼 것 → 점수)로 설명할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    12,
+    14
+   ],
+   "study": [
+    "cs336-data",
+    "tmc25-steal",
+    "lima-paper"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Post-training, continual learning을 위한 최적의 학습 파이프라인을 탐색해요",
+   "short": "공개 모델을 우리 일에 맞게 더 가르치고(사후 학습), 새 데이터가 쌓일 때마다 다시 가르치는 틀을 짠다.",
+   "why": "팀의 장기 목표가 공개 가중치 LLM 위에서 한국어·토스 도메인 역량을 키우고, 사내 데이터와 피드백을 **계속 반영하는 체계**를 만드는 것입니다.[1] 처음부터 큰 모델을 만드는 건 메타가 GPU 16,000장을 쓴 규모라 토스 같은 회사가 할 일이 아니라는 게 토스증권 발표의 출발점이었습니다.[3]",
+   "actually": {
+    "intro": "Post-training(사후 학습)은 이미 만들어진 모델에 '말 잘 듣기'와 '우리 일'을 더 가르치는 단계입니다.",
+    "items": [
+     "**SFT(지도 미세조정)** — (질문, 모범 답) 쌍을 그대로 따라 쓰게 가르친다. 토스증권 자동 파이프라인의 기본 학습이 이것이다.[3]",
+     "**선호 학습** — 같은 질문의 좋은 답·나쁜 답을 비교해 좋은 쪽으로 민다. 보상 모델 + 강화학습(RLHF)이 원조이고[7], DPO는 보상 모델 없이 비교 쌍으로 바로 학습한다.[8] 토스증권은 이 단계는 아직 자동화하지 않았다고 밝혔다.[3]",
+     "**RL(강화학습)** — 정답을 채점할 수 있는 일(분류·추출·계산)은 점수를 보상으로 쓰는 방식도 있다. 비평가 모델 없이 여러 답의 평균과 비교하는 GRPO가 한 예다.[22]",
+     "**계속 배우기** — 매일 쌓이는 호출로 새 작업을 찾아 새 모델을 학습한다.[2] 이때 원래 능력을 잊는 문제(catastrophic forgetting)가 있어[14], LoRA처럼 일부만 고치는 방식이 덜 잊는다는 보고도 있다.[15]",
+     "**틀 만들기** — 토스증권은 자체 쿠버네티스 위 Kubeflow로 학습 환경과 GPU 자원을 나누고, 분산 학습 설정은 git 기반으로 관리하고, MLflow로 학습을 지켜본다.[3]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "사후 학습의 보통 순서[7][8]",
+     "steps": [
+      "공개 가중치 모델 · 사전 학습 끝",
+      "SFT · 모범 답 따라 쓰기",
+      "선호 학습 · DPO 또는 RLHF",
+      "평가 · 실전 + 범용",
+      "배포 → 새 데이터로 다시"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "새 학습 기법을 발명하는 자리가 아니라, **어떤 순서·어떤 설정이 이 케이스에 맞나**를 실험으로 고르고 그 과정을 버튼 하나로 다시 돌게 만드는 자리입니다. 토스 SNAP은 기준을 통과한 작업이면 사내 학습 라이브러리로 **하루 안에** 모델이 나온다고 했습니다 — 그 정도 속도가 목표선입니다.[2]",
+   "refs": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    14,
+    15,
+    22
+   ],
+   "study": [
+    "cs336-posttrain",
+    "cs336-rlvr",
+    "cme295-tuning",
+    "trl-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "케이스별 요구 성능·latency·비용 제약을 만족하는 학습 전략을 탐색하여 주어진 문제를 해결해요.",
+   "short": "같은 '내재화'라도 정확도·속도·돈 조건이 달라서, 모델 크기·학습 방법·맡길 범위를 케이스마다 고른다.",
+   "why": "토스증권이 내재화를 '선택이 아닌 필수'라고 한 이유는 비용과 안정성입니다 — 외부 LLM 결제 방식이 바뀌어 꽤 오래 호출을 못 한 일이 있었다고 했습니다.[3] 반대로 모든 요청을 한 번에 작은 모델로 바꾸려면 개발이 1~2달 걸려, 토스 SNAP은 **쉬운 요청만 먼저 맡기는** 길을 택했습니다.[2]",
+   "actually": {
+    "items": [
+     "**맡길 범위 정하기** — 작은 모델이 자신감과 함께 답하고, 자신감이 문턱 이상일 때만 쓰고 아니면 기존 LLM을 부른다. 동일상품 판별에서 기존 LLM과의 일치율 목표를 99.9%로 잡으니 검증 요청 100,648건 중 34.74%를 맡겼다(99%면 51.59%, 95%면 72.35%).[2]",
+     "**실제 효과** — 배포 뒤 6일 동안 하루 33~37%를 작은 모델이 처리해 입력 토큰 약 76억 개, 출력 토큰 약 4,520만 개를 아꼈다.[2]",
+     "**속도 조건** — 같은 모델을 L4 GPU 한 장으로 초당 1,203건까지 받으며 중앙값 9.02ms, 상위 1% 15.23ms를 냈다.[2]",
+     "**모델 크기** — 토스증권은 직접 학습한 더 작은 모델의 요약이 상용 LLM·Llama 70B 요약과 눈으로 거의 구분되지 않았다고 했다.[3] 다음 할 일로 더 작게 만들기(경량화)를 꼽았다.[3]",
+     "**학습 방법 고르기** — 작업 목표에 따라 LoRA 같은 어댑터 학습, 더 큰 개선이 필요하면 전체 미세조정, 때로는 전통적인 ML 모델까지 고른다.[2] 메모리가 모자라면 4비트 양자화한 모델 위에서 LoRA를 학습하는 QLoRA도 있다.[10]",
+     "**LLM 속도 지표** — 생성 모델은 한 건 응답 시간보다 초당 토큰 수(TPS)와 첫 토큰까지 걸린 시간(TTFT)을 본다.[4][5]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "목표 일치율을 정하면 맡길 몫이 정해진다",
+     "body": "토스 SNAP의 문턱 고르기[2]를 가상 데이터로 흉내 낸 것입니다. 자신 있는 순서로 줄 세우고, 목표 일치율을 지키는 가장 넓은 범위를 고릅니다. 목표를 높일수록 맡기는 몫이 줄어드는 것이 핵심이고, 숫자 자체는 가정입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "import random\nrandom.seed(7)\n# 가상 검증 데이터: (작은 모델의 자신감, 큰 LLM 답과 같았나)\nrows = []\nfor _ in range(10000):\n    conf = random.random()\n    agree = random.random() < 0.80 + 0.199 * conf ** 3\n    rows.append((conf, agree))\nrows.sort(reverse=True)  # 자신 있는 것부터\n\ndef pick(target):\n    ok, best = 0, 0\n    for k, (c, a) in enumerate(rows, 1):\n        ok += a\n        if ok / k >= target:\n            best = k\n    return rows[best - 1][0], best / len(rows)\n\nfor t in (0.99, 0.97, 0.95):\n    th, cov = pick(t)\n    print(f\"목표 {t:.0%}: 문턱 {th:.3f}, 맡기는 몫 {cov:.1%}\")\n# 출력\n# 목표 99%: 문턱 0.966, 맡기는 몫 3.6%\n# 목표 97%: 문턱 0.870, 맡기는 몫 13.2%\n# 목표 95%: 문턱 0.814, 맡기는 몫 18.5%"
+    }
+   ],
+   "how_far": "'얼마나 정확해야 하나·얼마나 빨라야 하나·얼마까지 써도 되나'는 서비스팀과 함께 정하는 조건입니다. 이 자리는 그 조건을 **숫자 표(정확도·지연·비용)로 바꿔 후보 전략들을 나란히 비교하고 하나를 고르는** 일을 맡습니다. {추론}",
+   "refs": [
+    2,
+    3,
+    4,
+    5,
+    10
+   ],
+   "study": [
+    "snap-blog",
+    "techtalk-serving",
+    "qlora-paper",
+    "cs336-inference"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "평가 benchmark 구축",
+   "short": "새 모델이 기존 LLM 자리를 맡아도 되는지 숫자로 판정하는 '시험지와 채점기'를 만드는 묶음.",
+   "why": "생성 모델 평가는 원래 사람이 했습니다 — 토스증권 발표는 서비스 답과 우리 모델 답 1만 쌍을 사람이 하나씩 비교하던 방식을 예로 들고, 그래서는 '빠른 자동화'라는 목표에 맞지 않는다고 했습니다.[3] 시험이 자동이어야 매일 새 모델을 내도 됩니다.[2]",
+   "actually": {
+    "items": [
+     "**분류·추출** — 정답이 있으니 기존 LLM 답과의 일치율로 잰다.[2]",
+     "**요약·생성** — 정답이 하나가 아니라 보상 모델(점수 매기는 모델)과 LLM 심판(LLM-as-a-judge)으로 우리 모델이 이긴 비율을 잰다.[3]",
+     "**범용** — 원래 실력을 잃지 않았는지 공개 시험으로 잰다(아래 줄).[16][17]"
+    ]
+   },
+   "refs": [
+    2,
+    3,
+    16,
+    17
+   ],
+   "study": [
+    "cs336-eval",
+    "cme295-eval"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "토스 서비스에서의 실제 성능과 범용 성능을 종합적으로 평가하는 benchmark를 구축해요.",
+   "short": "토스 업무를 잘하나(실전 시험)와 원래 똑똑함을 잃지 않았나(공통 시험)를 둘 다 잰다.",
+   "why": "좁은 작업만 계속 가르치면 다른 능력이 떨어질 수 있어서[14] 실전 점수 하나로는 '좋아졌다'고 말할 수 없습니다. 반대로 공개 시험 점수가 올라도 토스 일을 못하면 쓸모가 없습니다.[3]",
+   "actually": {
+    "items": [
+     "**실전 — 보상 모델** — 토스증권은 '서비스에 나간 답은 좋은 답'으로 가정하고, 그보다 못할 공개 모델들의 답을 나쁜 답으로 붙여 비교 쌍을 자동으로 만들어 보상 모델을 학습한다.[3]",
+     "**실전 — LLM 심판** — 심판 프롬프트를 새로 다듬지 않고, 서비스팀이 출시 때 이미 검증한 평가 기준·프롬프트를 그대로 가져다 쓴다.[3]",
+     "**실전 — 결과 알림** — 강세·약세 요약 서비스 시험에서 보상 모델 기준 우리 모델이 3,000번 중 2,343번(78.10%) 이겼다는 알림이 메신저로 오고, 리더보드로 후보 모델을 비교한다.[3]",
+     "**심판의 버릇** — LLM 심판은 사람 판정과 80% 넘게 일치하지만, 먼저 나온 답·긴 답·자기 답을 편드는 경향이 있어 순서를 바꿔 두 번 묻는 식으로 보정한다.[11]",
+     "**범용** — 한국어 전문 지식 객관식 KMMLU(45개 과목, 35,030문항)[16] 같은 공개 시험을 lm-evaluation-harness[17] 같은 도구로 매 모델마다 돌린다. 토스가 어떤 범용 시험을 쓰는지는 공개되지 않았다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "승률 78%는 몇 판에서 나왔나",
+     "body": "같은 78%라도 3,000판이면 76.6~79.5%, 50판이면 64.8~87.2%까지 흔들립니다. 승률을 보고할 때 판 수와 구간을 같이 적는 이유입니다(2,343/3,000은 발표 화면의 숫자[3], 50판은 가정, 직접 돌린 출력).[25]",
+     "lang": "python",
+     "code": "import math\n\ndef wilson(win, n, z=1.96):\n    p = win / n\n    c = (p + z*z/(2*n)) / (1 + z*z/n)\n    h = z * math.sqrt(p*(1-p)/n + z*z/(4*n*n)) / (1 + z*z/n)\n    return p, c - h, c + h\n\nfor win, n in [(2343, 3000), (39, 50)]:\n    p, lo, hi = wilson(win, n)\n    print(f\"{win}/{n}: {p:.1%}  95% 구간 [{lo:.1%}, {hi:.1%}]\")\n# 출력\n# 2343/3000: 78.1%  95% 구간 [76.6%, 79.5%]\n# 39/50: 78.0%  95% 구간 [64.8%, 87.2%]"
+    }
+   ],
+   "how_far": "시험지(평가셋)를 학습 데이터와 겹치지 않게 떼어 두고, **새 모델이 나오면 사람 손 없이 실전·범용 점수가 한 화면에 뜨는 것**까지가 이 줄입니다. 심판 모델 자체가 맞는지 사람 판정 몇백 건으로 가끔 맞춰 보는 것도 포함입니다. {추론}",
+   "refs": [
+    3,
+    11,
+    14,
+    16,
+    17,
+    25
+   ],
+   "study": [
+    "cs336-eval",
+    "cme295-eval",
+    "llm-judge-paper",
+    "lm-eval-harness"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "평가 결과 분석을 통해 새로운 데이터와 학습 방식에 대한 인사이트를 도출해요",
+   "short": "점수만 보지 않고 틀린 예를 모아 '무슨 데이터를 더 넣을까·학습을 어떻게 바꿀까'로 되돌린다.",
+   "why": "토스 SNAP은 다음 계획으로 도메인 팀과 함께 실제 요청에서 드러난 오류와 요구 품질을 검토해 데이터와 모델을 고치겠다고 했습니다.[2] 토스증권도 자동화로 번 시간을 성능 고도화에 쓰겠다고 했습니다.[3]",
+   "actually": {
+    "items": [
+     "**틀린 것 나눠 보기** — 문턱을 넘겼는데 기존 LLM과 다른 답(SNAP 첫 배포에서는 34,963건 중 34건)[2]을 모아 종류별로 센다 — 옵션 표기 차이, 용량 단위, 새 브랜드 등. {추론}",
+     "**데이터로 되돌리기** — 많이 틀리는 종류의 예를 더 모으거나, 정답 뽑기 규칙을 고친다. {추론}",
+     "**학습 방식으로 되돌리기** — SFT로 안 오르면 선호 학습(DPO·RLHF)을 붙이는 식으로 다음 단계를 정한다.[3]",
+     "**구간별로 보기** — 전체 평균이 같아도 입력 길이·카테고리별로 갈리는 곳을 찾는다. {추론}"
+    ]
+   },
+   "how_far": "보고서 한 장에 **'무엇이 틀렸나 → 왜 그런 것 같나 → 다음 실험은 무엇인가'**가 이어져 있으면 됩니다. 공고가 이력서에 '잘 안 된 시도와 거기서 얻은 결론'을 적어 달라고 한 것과 같은 능력입니다.[1]",
+   "refs": [
+    1,
+    2,
+    3
+   ],
+   "study": [
+    "snap-blog",
+    "ai-engineering"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "LLM/VLM 모델을 직접 학습해 실제 문제를 개선해 본 경험이 필요해요. 데이터 생성-학습-평가로 이어지는 사이클을 돌려보신 분을 찾아요.",
+   "short": "API로 부른 경험이 아니라, 데이터를 만들고 가중치를 바꾸고 전후 숫자로 '나아졌다'를 보인 경험.",
+   "why": "이 자리는 모델을 만드는 전 과정을 책임집니다.[1] 토스증권이 정리한 내재화 단계(수집 → 정제 → 학습 → 평가)가 곧 이 요건의 사이클입니다.[3]",
+   "actually": {
+    "items": [
+     "공고는 이력서에 **모델 적용 전후의 정량 지표**를 적어 달라고 한다.[1]",
+     "'실제 문제'란 캐글 점수보다 서비스 지표(일치율·비용·지연)가 바뀐 것을 말한다 — SNAP 사례처럼.[2] {추론}",
+     "VLM(이미지를 같이 읽는 모델)도 적혀 있다 — 토스 그룹에는 문서 이미지를 다루는 자리(OCR 등)도 있다. {추론}"
+    ]
+   },
+   "how_far": "회사 경험이 없다면 **공개 모델 하나를 LoRA로 학습해 특정 작업에서 기준 모델보다 나아진 숫자**를 만들고, 데이터·학습·평가 코드를 한 저장소에 둔 정도가 최소선입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3
+   ],
+   "study": [
+    "hf-llm-course",
+    "handson-llm",
+    "trl-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "실험을 설계하고 결과를 정량적으로 분석하는 데 능숙한 분이 필요해요. 가설을 스스로 정의하고, 반복 실험으로 모델을 개선해 오신 분",
+   "short": "'이걸 바꾸면 이만큼 오를 것'을 먼저 적고, 한 번에 하나만 바꿔 재고, 우연인지 아닌지 가린다.",
+   "why": "토스증권은 문제가 생기면 지표로 관찰 → 가설 → 바꿔서 시험 → 반영의 순서로 대응한다고 정리했습니다.[4] 학습도 같습니다 — 평가가 자동이어야 이 반복이 빨라집니다.[3]",
+   "actually": {
+    "items": [
+     "**가설 먼저** — '요약 데이터에서 중복을 빼면 승률이 오른다'처럼 바꿀 것과 볼 숫자를 미리 정한다. {추론}",
+     "**고정할 것 고정** — 평가셋·시드·학습 단계 수를 고정하고 하나만 바꾼다. {추론}",
+     "**흔들림 재기** — 판 수가 적으면 승률이 크게 흔들린다(위 평가 줄의 예).[25] 시드를 바꿔 2~3번 돌려 차이가 흔들림보다 큰지 본다. {추론}",
+     "**기록** — 토스증권은 학습을 MLflow로 추적하고 결과를 리더보드에 모은다.[3]"
+    ]
+   },
+   "how_far": "면접의 직무 인터뷰는 심층 기술 면접과 ML 시스템 설계입니다.[1] '왜 그 실험이었나, 결과가 우연이 아님을 어떻게 아나'에 숫자로 답할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    25
+   ],
+   "study": [
+    "cs336-eval",
+    "ai-engineering"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "모델링 사이클을 빠르게 돌리기 위해 학습 파이프라인을 최적화해 본 경험이 필요해요. 가설-실험-개선을 빠르게 반복할 수 있어야 해요.",
+   "short": "실험 한 번이 일주일이면 한 달에 네 번밖에 못 배워서 — 데이터 준비·학습·평가의 걸리는 시간을 줄인 경험.",
+   "why": "토스증권은 손으로 내재화하면 머신러닝 엔지니어 5~10명이 몇 달 걸린다고 보고 전 과정을 자동화했습니다.[3] 토스 SNAP은 기준을 통과한 작업이면 하루 안에 학습 모델이 나온다고 했습니다.[2]",
+   "actually": {
+    "intro": "토스증권이 자동화하며 부딪힌 세 가지와 그 답입니다.[3]",
+    "items": [
+     "**학습 환경** — 베이스 모델마다 맞는 transformers 버전이 다르고 사람마다 파이썬·패키지 버전이 다르다 → Kubeflow로 환경을 나눴다.[3]",
+     "**자원** — GPU를 누가 언제 쓰나 → 같은 Kubeflow에서 관리.[3]",
+     "**학습 설정** — 여러 GPU·여러 노드 학습은 DeepSpeed 등 설정이 많아진다 → git으로 설정을 관리해 맞춘다.[3]",
+     "**한 번의 학습 빠르게** — 혼합 정밀도, 작은 예를 이어 붙여 빈칸 줄이기(packing), 일부만 학습(LoRA), 메모리 아끼기(gradient checkpointing)가 보통 쓰는 방법이다.[9][24] {추론}",
+     "**자동으로 이어지기** — 데이터가 레지스트리에 올라오면 학습이, 학습이 끝나면 평가가 자동으로 뜬다.[3]"
+    ]
+   },
+   "how_far": "GPU 이용률·한 스텝 시간·데이터 로딩 대기 같은 숫자를 보고 **어디서 시간이 새는지 찾아 줄인** 경험이면 됩니다. 쿠버네티스 플랫폼 자체를 짓는 건 플랫폼 팀 몫일 가능성이 큽니다. {추론}",
+   "refs": [
+    2,
+    3,
+    9,
+    24
+   ],
+   "study": [
+    "tmc25-steal",
+    "trl-docs",
+    "cs336-parallel"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "다양한 post-training 기법에 익숙한 분을 찾아요. SFT, DPO, RL, LoRA, Quantization 등 학습 전략을 상황에 맞게 선택하실 수 있어야 해요",
+   "short": "기법 이름을 아는 게 아니라, '이 케이스엔 왜 이것'을 데이터 양·GPU·지연 조건으로 설명할 수 있어야 한다.",
+   "why": "토스 SNAP은 작업 목표에 따라 어댑터 학습과 전체 미세조정, 전통 ML까지 골라 쓴다고 했고[2], 토스증권은 SFT로 시작해 성능이 모자라면 DPO·RLHF로 간다고 했습니다.[3]",
+   "level": {
+    "basic": "SFT가 무엇을 배우나 · LoRA가 왜 메모리를 덜 쓰나 · 양자화가 무엇을 줄이나",
+    "work": "TRL 등으로 SFT·DPO·LoRA 학습을 직접 돌림 · 4비트/8비트 양자화 후 정확도·속도 비교",
+    "team": "케이스(정답 유무·데이터 양·지연·비용)마다 기법 조합을 고르고 실험표로 근거를 댐"
+   },
+   "actually": {
+    "items": [
+     "**SFT** — 모범 답이 있을 때. 큰 LLM 답을 따라 쓰게 하는 증류의 기본.[3][6]",
+     "**DPO** — 좋은 답·나쁜 답 쌍이 있을 때. 보상 모델과 강화학습 없이 쌍으로 바로 학습한다.[8]",
+     "**RL** — 채점기가 있을 때(정답 일치·형식 검사). 보상 모델 + PPO가 원조[7], 요즘은 GRPO 같은 단순한 변형도 쓴다.[22]",
+     "**LoRA** — 원래 가중치는 얼리고 작은 행렬 두 개만 배운다. GPT-3 175B에서 학습할 파라미터를 1만 분의 1로, GPU 메모리를 3분의 1로 줄였다.[9]",
+     "**Quantization(양자화)** — 숫자를 16비트에서 8·4비트로 줄여 메모리와 속도를 번다. QLoRA는 4비트 모델 위에서 LoRA를 학습해 65B 모델을 48GB GPU 한 장으로 미세조정했다.[10]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "LoRA는 몇 개만 배우나",
+     "body": "4096×4096 가중치 한 장을 통째로 고치면 1,677만 개, 순위 16의 LoRA면 13만 개 — 0.78%만 배웁니다(직접 돌린 출력).[9]",
+     "lang": "python",
+     "code": "d, r = 4096, 16           # 4096×4096 가중치 한 장, LoRA 순위 16\nfull = d * d               # 통째로 고치면\nlora = d * r + r * d       # A(d×r) + B(r×d) 만 배우면\nprint(full, lora, f\"{lora / full:.2%}\")\n# 출력\n# 16777216 131072 0.78%"
+    },
+    {
+     "title": "DPO 손실 한 쌍",
+     "body": "DPO는 '기준 모델보다 좋은 답의 확률은 더 올리고 나쁜 답의 확률은 더 내렸나'의 차이(margin)를 키웁니다. 차이가 0이면 손실은 log 2 ≈ 0.693, 좋은 쪽으로 벌어질수록 줄어듭니다(숫자는 가정, 직접 돌린 출력).[8]",
+     "lang": "python",
+     "code": "import math\nbeta = 0.1\n# 같은 질문에 대한 좋은 답(w)·나쁜 답(l)의 로그확률\npi_w, ref_w = -12.0, -14.0   # 학습 중 모델 / 고정 기준 모델\npi_l, ref_l = -15.0, -13.0\nmargin = beta * ((pi_w - ref_w) - (pi_l - ref_l))\nloss = -math.log(1 / (1 + math.exp(-margin)))\nprint(f\"margin={margin:.2f} loss={loss:.4f}\")\nprint(f\"margin=0 이면 loss={-math.log(0.5):.4f}\")\n# 출력\n# margin=0.40 loss=0.5130\n# margin=0 이면 loss=0.6931"
+    }
+   ],
+   "how_far": "다섯 가지를 다 깊게 할 필요는 없고, **SFT + LoRA는 직접 돌려 본 수준, DPO·RL·양자화는 언제 쓰고 무엇을 포기하는지 설명할 수 있는 수준**이 최소선입니다. {추론}",
+   "refs": [
+    2,
+    3,
+    6,
+    7,
+    8,
+    9,
+    10,
+    22
+   ],
+   "study": [
+    "cs336-posttrain",
+    "cs336-rlvr",
+    "cme295-tuning",
+    "dpo-paper",
+    "lora-paper",
+    "qlora-paper",
+    "trl-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 학습을 위한 분산 학습(DeepSpeed, FSDP, Megatron 등) 경험",
+   "short": "모델이 GPU 한 장에 안 들어갈 때 여러 장에 나눠 싣고 학습해 본 경험.",
+   "why": "토스증권은 여러 GPU·여러 노드 학습에서 DeepSpeed 같은 설정이 많아지는 것을 자동화의 어려움으로 꼽았습니다.[3] 장기 목표가 공개 가중치 LLM의 한국어·도메인 역량 강화라[1] 모델이 커질수록 필요해집니다. {추론}",
+   "actually": {
+    "items": [
+     "**왜 나누나** — 혼합 정밀도 + Adam 학습은 파라미터 하나에 16바이트(가중치 2·기울기 2·나머지 12)가 든다.[18] 8B 모델이면 128GB라 80GB GPU 한 장에 안 들어간다.",
+     "**DeepSpeed ZeRO** — 옵티마이저 상태 → 기울기 → 가중치 순으로 여러 GPU에 쪼개 나눠 갖는다(1·2·3단계).[18]",
+     "**FSDP** — PyTorch에 들어 있는 같은 생각의 구현. 가중치·기울기·옵티마이저 상태를 쪼개 둔다.[19]",
+     "**Megatron** — 한 층의 행렬 곱 자체를 여러 GPU가 나눠 계산한다(텐서 병렬).[20]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "8B 모델을 통째로 학습하려면",
+     "body": "활성값을 빼고 계산한 값입니다(직접 돌린 출력).[18]",
+     "lang": "python",
+     "code": "P = 8e9                       # 8B 모델\nprint(\"bf16 가중치만:\", P * 2 / 1e9, \"GB\")\n# 혼합 정밀도 + Adam: 가중치 2 + 기울기 2 + fp32 사본·모멘트 12 = 16바이트\nprint(\"전체 미세조정:\", P * 16 / 1e9, \"GB\")\nprint(\"ZeRO-3로 8장에 나누면 장당:\", P * 16 / 8 / 1e9, \"GB (활성값 제외)\")\n# 출력\n# bf16 가중치만: 16.0 GB\n# 전체 미세조정: 128.0 GB\n# ZeRO-3로 8장에 나누면 장당: 16.0 GB (활성값 제외)"
+    }
+   ],
+   "how_far": "우대 사항입니다. 작은 모델을 LoRA로 다루는 일이 많다면 한 노드 안의 다중 GPU(ZeRO-2/3·FSDP)를 돌려 본 정도로 충분하고, Megatron급은 큰 모델로 갈 때 필요합니다. {추론}",
+   "refs": [
+    1,
+    3,
+    18,
+    19,
+    20
+   ],
+   "study": [
+    "cs336-parallel",
+    "zero-paper",
+    "fsdp-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Synthetic data 생성 파이프라인을 설계하고 데이터 품질이 성능에 미치는 영향을 분석해 본 경험",
+   "short": "모델로 학습 데이터를 만들어 내고, 그 데이터가 좋은지 나쁜지를 학습 결과로 확인해 본 경험.",
+   "why": "이 팀의 학습 데이터 상당수가 이미 합성 데이터입니다 — 상용 LLM(선생님)이 만든 답으로 작은 모델을 가르치고[3], 보상 모델용 '나쁜 답'도 공개 모델로 만들어 붙입니다.[3]",
+   "actually": {
+    "items": [
+     "**선생님 답 받기** — 실제 요청을 큰 모델에 넣어 답을 받는다(증류).[3][6]",
+     "**문제 만들기** — 씨앗 예시 175개로 모델이 새 지시문을 만들고 거르게 하는 Self-Instruct 같은 방법.[13]",
+     "**비교 쌍 만들기** — 좋은 답(서비스 답) + 일부러 약한 모델의 답 = 선호 학습·보상 모델 데이터.[3]",
+     "**품질 재기** — 합성 데이터를 걸렀을 때와 안 걸렀을 때, 양을 늘렸을 때를 같은 평가셋으로 비교한다. 적어도 잘 고른 소량이 대량보다 나을 수 있다.[12] {추론}"
+    ]
+   },
+   "how_far": "만든 데이터의 **오류율을 표본으로 직접 세고**, 그 데이터로 학습한 모델 점수와 연결해 '이 거르기 규칙이 점수를 몇 점 올렸다'까지 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    3,
+    6,
+    12,
+    13
+   ],
+   "study": [
+    "cs336-data",
+    "handson-llm"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "LLM evaluation / benchmark를 직접 설계하고 자동화한 경험",
+   "short": "사람이 일일이 보지 않아도 새 모델이 나오면 점수가 자동으로 매겨지는 시험을 만들어 본 경험.",
+   "why": "토스증권은 사람 평가 대신 보상 모델과 LLM 심판을 자동으로 만드는 데 공을 들였고, 결과가 메신저와 리더보드로 나옵니다.[3] 자동 평가가 있어야 매일 학습도 의미가 있습니다.[2]",
+   "actually": {
+    "items": [
+     "**정답 있는 작업** — 일치율·정확도와 함께, 자신감 문턱별로 '맡기는 몫'까지 계산한다.[2]",
+     "**정답 없는 작업** — 보상 모델 점수, 심판 LLM의 둘 중 고르기(승률).[3][11]",
+     "**심판 검증** — 자리 바꿔 묻기, 길이 편향 확인, 사람 판정과 일치율 재기.[11]",
+     "**공개 시험 자동화** — lm-evaluation-harness 같은 도구로 같은 설정의 점수를 모델마다.[17]"
+    ]
+   },
+   "refs": [
+    2,
+    3,
+    11,
+    17
+   ],
+   "study": [
+    "llm-judge-paper",
+    "lm-eval-harness",
+    "cme295-eval"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "특정 도메인(금융, 의료, 법률, 커머스 등)의 데이터를 활용하여 domain-adapted model을 학습하고 서비스에 배포해 본 경험",
+   "short": "범용 모델이 약한 전문 분야의 말·지식을 더 가르쳐 실제 서비스에 내보내 본 경험.",
+   "why": "토스증권은 상용 LLM이 범용을 위해 만들어져 금융 용어·인사이트가 부족하고, 프롬프트로 주입하는 데 한계가 있다고 했습니다.[3] 대신 금융만 잘하고, 한국어·영어만 하고, 트래픽도 상대적으로 적어 작은 모델로 충분하다는 것이 내재화의 논리였습니다.[3] 토스의 첫 내재화 사례도 커머스의 동일상품 판별입니다.[2]",
+   "actually": {
+    "items": [
+     "**금융 예** — BloombergGPT는 금융 데이터 3,630억 토큰과 일반 데이터 3,450억 토큰으로 50B 모델을 처음부터 학습했다 — 이 공고가 말하는 '공개 모델 위에 더 가르치기'보다 훨씬 큰 방식이다.[21]",
+     "**커머스 예** — 두 상품의 이름·옵션을 비교해 브랜드·모델명·용량·색상·구성품 차이를 읽고 같은 판매 단위인지 가린다.[2]",
+     "**배포까지** — 토스증권은 KServe 위에서 yaml 파일 하나로 모델을 배포하고 vLLM으로 서빙한다.[5]"
+    ]
+   },
+   "refs": [
+    2,
+    3,
+    5,
+    21
+   ],
+   "study": [
+    "tmc25-steal",
+    "snap-blog",
+    "toss-llm-serving"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "LLM 오픈소스(transformers, vLLM 등)에서 발생한 이슈를 해결하거나 커뮤니티에 기여해 본 경험",
+   "short": "학습·서빙 도구의 버그를 직접 만나 원인을 찾고 고쳐 본 경험 — 이 팀이 실제로 자주 부딪히는 일.",
+   "why": "토스증권은 LLM 세계가 너무 빨리 바뀌어 모델뿐 아니라 서빙 프레임워크·옵션이 계속 바뀌고, 대부분의 문제가 vLLM·SGLang 같은 프레임워크에서 생긴다고 했습니다.[4] 학습 쪽도 베이스 모델마다 transformers 버전이 달라집니다.[3]",
+   "actually": {
+    "intro": "토스증권이 실제로 겪은 일입니다.[4]",
+    "items": [
+     "**꺼져 있던 캐시** — 특정 모델(Qwen 3.5 계열)은 앞부분이 같은 요청끼리 계산을 나눠 쓰는 prefix caching(vLLM 기능[23])이 기본으로 꺼져 있었다. 켜자 첫 토큰까지 최대 20초 가까이 걸리던 시간이 10분의 1 가까이 줄고 재사용률이 90%를 넘었다.[4]",
+     "**새어 나온 생각 토큰** — 추론 토큰 수를 제한하는 옵션을 썼더니 생각이 끝났다는 특수 토큰이 실제 답 칸으로 새고 생성이 길이 상한에서 끊겼다. vLLM에 이미 보고된 버그였고, 알려진 우회법을 적용해 하루 오류율이 약 0.2%에서 0.01% 안팎으로 떨어졌다.[4]",
+     "**고친다는 버전의 부작용** — 고쳤다는 새 버전을 올렸더니 CPU 스로틀링으로 오히려 느려진 일도 있었다.[4]",
+     "**쓰지 않던 메모리** — KV 캐시 사용이 1%도 안 되는 걸 보고, 서버를 늘리기 전에 동시 요청을 5에서 20까지 올려도 되는지 시험했다.[4]"
+    ]
+   },
+   "how_far": "이슈를 '검색해서 우회'하는 것에서, **재현 코드를 만들어 이슈를 올리거나 고치는 PR**까지 가 봤다면 강한 신호입니다. 공고도 이력서에 오픈소스 버그를 고치거나 기능을 보탠 경험을 적어 달라고 했습니다.[1]",
+   "refs": [
+    1,
+    3,
+    4,
+    23
+   ],
+   "study": [
+    "techtalk-serving",
+    "toss-llm-serving",
+    "vllm-docs"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "논문 재현보다 '서비스 숫자가 바뀌는 것'에서 보람을 느끼는 사람",
+   "데이터를 직접 들여다보고 틀린 예를 세는 일이 지루하지 않은 사람",
+   "일의 범위를 가리지 않고 넓히고 싶은 사람 — 팀원이 꼽은 적합한 사람[1]",
+   "정답 없는 문제를 정의하는 걸 즐기는 사람[1]"
+  ],
+  "hard": [
+   "최신 거대 모델을 처음부터 학습하는 자리는 아니다 — 작고 싼 모델로 바꾸는 게 목표다[1][3]",
+   "학습 코드만이 아니라 데이터·평가·자동화까지 다 맡는다[1]",
+   "프레임워크 버그·버전 문제를 직접 파고드는 일이 잦다[3][4]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "상용 LLM 호출 기록으로 작은 모델을 가르친다면, 어떤 작업부터 옮기고 무엇을 기준으로 거르겠어요?",
+   "a": "토스 SNAP의 후보 고르기·학습 가능 검사.[2]"
+  },
+  {
+   "q": "기존 LLM과 99.9% 같아야 한다는 조건에서 작은 모델에 몇 %를 맡길 수 있는지 어떻게 정하나요?",
+   "a": "자신감 문턱·선택적 정확도·coverage.[2]"
+  },
+  {
+   "q": "요약처럼 정답이 하나가 아닌 작업을 사람 없이 어떻게 평가하겠어요? 그 평가기는 어떻게 믿나요?",
+   "a": "토스증권의 보상 모델 자동 구축과 LLM 심판, 심판의 편향.[3][11]"
+  },
+  {
+   "q": "SFT만으로 안 오르면 다음에 무엇을 해 보겠어요? DPO와 RLHF는 무엇이 다른가요?",
+   "a": "토스증권이 다음 단계로 꼽은 선호 학습.[3][8]"
+  },
+  {
+   "q": "특정 작업만 계속 학습했더니 다른 능력이 떨어졌어요. 어떻게 알아채고 막겠어요?",
+   "a": "범용 평가와 잊음 문제.[1][14][15]"
+  },
+  {
+   "q": "추론 서버에서 첫 토큰 시간이 갑자기 늘었어요. 무엇부터 보겠어요?",
+   "a": "토스증권의 prefix caching 사례.[4]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · AI Engineer (Model)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7758217003",
+   "kind": "posting",
+   "note": "팀 소개(Applied AI Team 모델 파트)·업무·요건·우대·이력서 안내·합류 여정(직무 인터뷰: 심층 기술 면접·ML 시스템 설계)·팀원 코멘트"
+  },
+  {
+   "n": 2,
+   "title": "토스 기술 블로그 · 손가락 튕기기로 LLM 비용 줄이기 (SNAP)",
+   "url": "https://toss.tech/article/snap-llm-cost-reduction",
+   "kind": "company",
+   "date": "2026-10-27",
+   "note": "토스 — 작업 지문·후보 선정·학습 가능 검사·자신감 문턱(99.9% → coverage 34.74%)·6일 운영 결과·L4 부하 시험. 글을 쓴 팀이 이 공고의 팀인지는 글에 없다"
+  },
+  {
+   "n": 3,
+   "title": "TMC25 · STEAL THE SHOW: 작고 빠르게, 자동화로 만드는 금융 특화 LLM 내재화 전략",
+   "url": "https://www.youtube.com/watch?v=VulWhToQUp8",
+   "kind": "company",
+   "date": "2025-07",
+   "note": "토스증권 ML 엔지니어 발표(같은 그룹 다른 회사) · 자막·화면 전부 확인 — 지식 증류·내재화 4단계·Kubeflow·보상 모델/LLM 심판 자동화·승률 2,343/3,000"
+  },
+  {
+   "n": 4,
+   "title": "테크톡톡 2026 · LLM 서빙, 띄우는 것과 잘 띄우는 것 사이",
+   "url": "https://www.youtube.com/watch?v=Z6JfgjIauSw",
+   "kind": "company",
+   "date": "2026",
+   "note": "토스증권 ML 엔지니어 · 자막·화면 전부 확인 — TPS·TTFT, prefix caching, vLLM 추론 토큰 버그(#39697), 동시 요청 시험"
+  },
+  {
+   "n": 5,
+   "title": "토스 기술 블로그 · LLM 쉽고 빠르게 서빙하기",
+   "url": "https://toss.tech/article/llm-serving",
+   "kind": "company",
+   "date": "2024-11-26",
+   "note": "토스증권 — vLLM·Triton·KServe 선택 이유"
+  },
+  {
+   "n": 6,
+   "title": "Hinton 외 · Distilling the Knowledge in a Neural Network (2015)",
+   "url": "https://arxiv.org/abs/1503.02531",
+   "kind": "reference"
+  },
+  {
+   "n": 7,
+   "title": "Ouyang 외 · Training language models to follow instructions with human feedback (InstructGPT, 2022)",
+   "url": "https://arxiv.org/abs/2203.02155",
+   "kind": "reference",
+   "note": "SFT → 보상 모델 → PPO"
+  },
+  {
+   "n": 8,
+   "title": "Rafailov 외 · Direct Preference Optimization (DPO, 2023)",
+   "url": "https://arxiv.org/abs/2305.18290",
+   "kind": "reference"
+  },
+  {
+   "n": 9,
+   "title": "Hu 외 · LoRA: Low-Rank Adaptation of Large Language Models (2021)",
+   "url": "https://arxiv.org/abs/2106.09685",
+   "kind": "reference"
+  },
+  {
+   "n": 10,
+   "title": "Dettmers 외 · QLoRA: Efficient Finetuning of Quantized LLMs (2023)",
+   "url": "https://arxiv.org/abs/2305.14314",
+   "kind": "reference"
+  },
+  {
+   "n": 11,
+   "title": "Zheng 외 · Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena (2023)",
+   "url": "https://arxiv.org/abs/2306.05685",
+   "kind": "reference",
+   "note": "심판 LLM의 사람 일치율과 자리·길이·자기 편향"
+  },
+  {
+   "n": 12,
+   "title": "Zhou 외 · LIMA: Less Is More for Alignment (2023)",
+   "url": "https://arxiv.org/abs/2305.11206",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "Wang 외 · Self-Instruct (2022)",
+   "url": "https://arxiv.org/abs/2212.10560",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Luo 외 · An Empirical Study of Catastrophic Forgetting in LLMs During Continual Fine-tuning (2023)",
+   "url": "https://arxiv.org/abs/2308.08747",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "Biderman 외 · LoRA Learns Less and Forgets Less (2024)",
+   "url": "https://arxiv.org/abs/2405.09673",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Son 외 · KMMLU: Measuring Massive Multitask Language Understanding in Korean (2024)",
+   "url": "https://arxiv.org/abs/2402.11548",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "EleutherAI · lm-evaluation-harness (GitHub)",
+   "url": "https://github.com/EleutherAI/lm-evaluation-harness",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Rajbhandari 외 · ZeRO: Memory Optimizations Toward Training Trillion Parameter Models (2019)",
+   "url": "https://arxiv.org/abs/1910.02054",
+   "kind": "reference",
+   "note": "혼합 정밀도 Adam의 파라미터당 16바이트, ZeRO 1·2·3단계"
+  },
+  {
+   "n": 19,
+   "title": "PyTorch 문서 · FullyShardedDataParallel",
+   "url": "https://pytorch.org/docs/stable/fsdp.html",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Shoeybi 외 · Megatron-LM (2019)",
+   "url": "https://arxiv.org/abs/1909.08053",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Wu 외 · BloombergGPT: A Large Language Model for Finance (2023)",
+   "url": "https://arxiv.org/abs/2303.17564",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "Shao 외 · DeepSeekMath (GRPO, 2024)",
+   "url": "https://arxiv.org/abs/2402.03300",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "vLLM 공식 문서",
+   "url": "https://docs.vllm.ai/",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "Hugging Face TRL 문서",
+   "url": "https://huggingface.co/docs/trl/index",
+   "kind": "reference",
+   "note": "SFT·DPO·GRPO 트레이너, PEFT(LoRA) 연동"
+  },
+  {
+   "n": 25,
+   "title": "Wikipedia · Binomial proportion confidence interval (Wilson score interval)",
+   "url": "https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 27,
+   "title": "자소설닷컴 — 토스뱅크 연봉(같은 집계)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "토스 — 회사 소개(사이트 하단 회사 정보)",
+   "url": "https://toss.im/company",
+   "kind": "company"
+  },
+  {
+   "n": 29,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  }
+ ],
+ "caveat": "이 공고의 팀(Applied AI Team 모델 파트)이 직접 한 발표는 찾지 못했습니다. 회사 근거는 이 공고[1], 토스가 반복 LLM 호출을 작은 모델로 옮긴 SNAP 글[2], 같은 그룹 토스증권의 내재화·서빙 발표와 글[3][4][5]입니다 — 토스증권은 다른 회사라 도구·절차가 이 팀과 다를 수 있습니다. 사후 학습·평가·분산 학습의 '보통 이런 것'은 공개 논문과 공식 문서로 보였고, 코드 예의 숫자 중 발표에서 온 것(2,343/3,000)을 뺀 나머지는 설명용 가정입니다.",
+ "resources": [
+  {
+   "id": "tmc25-steal",
+   "title": "TMC25 · STEAL THE SHOW: 작고 빠르게, 자동화로 만드는 금융 특화 LLM 내재화 전략",
+   "by": "토스증권 ML 엔지니어 · 22분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=VulWhToQUp8",
+   "why": "이 공고의 데이터 → 학습 → 평가 사이클을 그룹 안에서 실제로 자동화한 이야기. 지원 전에 꼭 볼 영상."
+  },
+  {
+   "id": "snap-blog",
+   "title": "손가락 튕기기로 LLM 비용 줄이기",
+   "by": "토스 기술 블로그 · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://toss.tech/article/snap-llm-cost-reduction",
+   "why": "'고비용 LLM 유스케이스 내재화'가 숫자로 어떻게 보이는지 — 후보 고르기, 자신감 문턱, coverage, 지연."
+  },
+  {
+   "id": "techtalk-serving",
+   "title": "테크톡톡 2026 · LLM 서빙, 띄우는 것과 잘 띄우는 것 사이",
+   "by": "토스증권 ML 엔지니어 · 17분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=Z6JfgjIauSw",
+   "why": "latency 조건과 오픈소스 이슈 우대 줄 — vLLM 버그를 지표·로그로 좁혀 간 실제 사례 셋."
+  },
+  {
+   "id": "toss-llm-serving",
+   "title": "LLM 쉽고 빠르게 서빙하기",
+   "by": "토스 기술 블로그 · 2024",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://toss.tech/article/llm-serving",
+   "why": "학습한 모델이 서비스로 나가는 길(vLLM·Triton·KServe)과 그 선택 이유."
+  },
+  {
+   "id": "cs336-data",
+   "title": "Stanford CS336 · Lecture 14: Data (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/5sxHosTLPF8",
+   "why": "데이터 구축·정제·분포 줄 — 거르기·중복 제거·섞는 비율을 어떻게 정하나."
+  },
+  {
+   "id": "cs336-posttrain",
+   "title": "Stanford CS336 · Lecture 15: Mid/Post-Training (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/2oH6PWPrYFo",
+   "why": "post-training 줄 — SFT와 선호 학습의 흐름을 한 번에."
+  },
+  {
+   "id": "cs336-rlvr",
+   "title": "Stanford CS336 · Lecture 16: Post-Training - RLVR (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "/lectures/dIFAi87Ws4E",
+   "why": "요건의 RL — 채점 가능한 보상으로 강화학습하는 방법."
+  },
+  {
+   "id": "cs336-eval",
+   "title": "Stanford CS336 · Lecture 12: Evaluation (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/JpAxdTWQJxM",
+   "why": "평가 benchmark 줄 — 무엇을 재고 어떻게 속는지."
+  },
+  {
+   "id": "cs336-parallel",
+   "title": "Stanford CS336 · Lecture 7: Parallelism (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "/lectures/SzpOcwdIL0Y",
+   "why": "분산 학습 우대 줄 — 데이터·텐서·파이프라인 병렬과 ZeRO."
+  },
+  {
+   "id": "cs336-inference",
+   "title": "Stanford CS336 · Lecture 10: Inference (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/EfM546A79aM",
+   "why": "latency·비용 조건 줄 — KV 캐시·양자화가 추론 속도에 주는 영향."
+  },
+  {
+   "id": "cme295-tuning",
+   "title": "Stanford CME295 · Lecture 5 - LLM tuning (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/PmW_TMQ3l0I",
+   "why": "SFT·LoRA·선호 학습을 처음 정리하기 좋다."
+  },
+  {
+   "id": "cme295-eval",
+   "title": "Stanford CME295 · Lecture 8 - LLM Evaluation (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/8fNP4N46RRo",
+   "why": "LLM 심판·사람 평가·공개 시험의 장단점."
+  },
+  {
+   "id": "hf-llm-course",
+   "title": "Hugging Face LLM Course",
+   "by": "Hugging Face",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://huggingface.co/learn/llm-course",
+   "why": "transformers로 모델을 불러 미세조정하는 첫 손 연습. 첫 자격요건(직접 학습)의 출발점."
+  },
+  {
+   "id": "trl-docs",
+   "title": "TRL 문서 (SFTTrainer · DPOTrainer · GRPOTrainer)",
+   "by": "Hugging Face · 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://huggingface.co/docs/trl/index",
+   "why": "SFT·DPO·RL·LoRA를 실제로 돌리는 가장 흔한 도구. 요건의 기법을 손으로 해 보기."
+  },
+  {
+   "id": "dpo-paper",
+   "title": "Direct Preference Optimization: Your Language Model is Secretly a Reward Model",
+   "by": "Rafailov 외 · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2305.18290",
+   "why": "DPO 손실이 어디서 나왔는지. 면접에서 RLHF와의 차이를 설명할 때의 바탕."
+  },
+  {
+   "id": "lora-paper",
+   "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+   "by": "Hu 외 · 2021",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2106.09685",
+   "why": "LoRA가 무엇을 얼리고 무엇을 배우나 — 순위(r)·어느 층에 붙이나를 고르는 근거."
+  },
+  {
+   "id": "qlora-paper",
+   "title": "QLoRA: Efficient Finetuning of Quantized LLMs",
+   "by": "Dettmers 외 · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2305.14314",
+   "why": "양자화 + LoRA. GPU가 모자랄 때의 학습 전략."
+  },
+  {
+   "id": "lima-paper",
+   "title": "LIMA: Less Is More for Alignment",
+   "by": "Zhou 외 · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2305.11206",
+   "why": "데이터 분포·품질 줄 — 양보다 고르기가 중요하다는 근거."
+  },
+  {
+   "id": "llm-judge-paper",
+   "title": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena",
+   "by": "Zheng 외 · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2306.05685",
+   "why": "LLM 심판을 믿어도 되는 범위와 편향 보정법."
+  },
+  {
+   "id": "lm-eval-harness",
+   "title": "lm-evaluation-harness",
+   "by": "EleutherAI · GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/EleutherAI/lm-evaluation-harness",
+   "why": "범용 성능 시험을 같은 설정으로 자동으로 돌리는 도구."
+  },
+  {
+   "id": "zero-paper",
+   "title": "ZeRO: Memory Optimizations Toward Training Trillion Parameter Models",
+   "by": "Rajbhandari 외 · 2019",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1910.02054",
+   "why": "DeepSpeed가 메모리를 어떻게 나눠 갖나 — 분산 학습 우대 줄의 바탕."
+  },
+  {
+   "id": "fsdp-docs",
+   "title": "FullyShardedDataParallel",
+   "by": "PyTorch 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://pytorch.org/docs/stable/fsdp.html",
+   "why": "PyTorch 안의 샤딩 학습. 설정 항목을 실제로 읽어 보기."
+  },
+  {
+   "id": "vllm-docs",
+   "title": "vLLM 공식 문서",
+   "by": "vLLM 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.vllm.ai/",
+   "why": "prefix caching·양자화·추론 옵션 — 오픈소스 이슈 우대 줄에서 토스증권이 부딪힌 그 도구."
+  },
+  {
+   "id": "handson-llm",
+   "title": "핸즈온 LLM",
+   "by": "제이 알아마르 · 마르턴 흐루턴도르스트",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%ED%95%B8%EC%A6%88%EC%98%A8%20LLM",
+   "why": "그림으로 트랜스포머부터 미세조정까지. 모델을 처음 직접 학습해 보는 사람의 바탕."
+  },
+  {
+   "id": "llm-app-book",
+   "title": "LLM을 활용한 실전 AI 애플리케이션 개발",
+   "by": "허정준",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=LLM%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EC%8B%A4%EC%A0%84%20AI%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EA%B0%9C%EB%B0%9C",
+   "why": "한국어로 된 미세조정·효율적 학습·서빙 실습. 첫 자격요건과 latency 조건 줄 사이를 잇는다."
+  },
+  {
+   "id": "ai-engineering",
+   "title": "AI Engineering",
+   "by": "Chip Huyen · O'Reilly · 2025",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/ai-engineering/9781098166298/",
+   "why": "평가·미세조정 판단·데이터셋 공학 장 — '언제 무엇을 학습하나'를 고르는 눈."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사가 하는 일 감 잡기",
+   "time": "2~3일",
+   "goal": "토스 그룹이 내재화를 왜·어떻게 하는지 숫자와 함께 말할 수 있다.",
+   "resources": [
+    "tmc25-steal",
+    "snap-blog",
+    "toss-llm-serving"
+   ],
+   "task": "발표·글을 보고 '데이터 → 학습 → 평가 → 배포' 그림을 직접 그리고, 단계마다 토스가 쓴 도구와 숫자를 한 줄씩 적는다."
+  },
+  {
+   "title": "첫 미세조정",
+   "time": "2~3주",
+   "goal": "공개 소형 모델을 LoRA로 SFT하고 기준 모델과 점수로 비교할 수 있다.",
+   "resources": [
+    "hf-llm-course",
+    "cme295-tuning",
+    "trl-docs",
+    "lora-paper",
+    "handson-llm"
+   ],
+   "task": "가상의 '상품명 두 개가 같은 상품인가' 데이터 2,000쌍을 만들어(큰 모델로 레이블), 1B 안팎 모델을 LoRA로 학습하고 학습 전·후 정확도를 표로 남긴다."
+  },
+  {
+   "title": "평가와 문턱",
+   "time": "1~2주",
+   "goal": "일치율·coverage·승률을 구간과 함께 보고하고, 자동 평가를 붙일 수 있다.",
+   "resources": [
+    "cs336-eval",
+    "cme295-eval",
+    "llm-judge-paper",
+    "lm-eval-harness"
+   ],
+   "task": "2단계 모델에 자신감 점수를 뽑아 목표 일치율 99%·95%에서의 coverage를 계산하고, 요약 작업 하나는 LLM 심판으로 자리 바꿔 두 번 묻는 승률을 낸다. 범용 시험 하나로 학습 전·후 하락폭도 잰다."
+  },
+  {
+   "title": "데이터와 선호 학습",
+   "time": "2~3주",
+   "goal": "데이터 분포를 실험으로 고르고, SFT 다음 DPO를 붙여 차이를 설명할 수 있다.",
+   "resources": [
+    "cs336-data",
+    "lima-paper",
+    "cs336-posttrain",
+    "dpo-paper",
+    "cs336-rlvr"
+   ],
+   "task": "같은 데이터의 중복 제거 전·후, 쉬운 예 비율 3가지로 SFT를 돌려 실험표를 만든다. 좋은 답(큰 모델)·나쁜 답(작은 공개 모델) 쌍으로 DPO를 붙여 승률 변화를 본다."
+  },
+  {
+   "title": "빠르게·크게 (선택)",
+   "time": "계속",
+   "goal": "학습 시간을 줄이고, 한 GPU에 안 들어가는 모델을 나눠 학습·서빙할 수 있다.",
+   "resources": [
+    "qlora-paper",
+    "cs336-parallel",
+    "zero-paper",
+    "fsdp-docs",
+    "cs336-inference",
+    "vllm-docs",
+    "techtalk-serving",
+    "llm-app-book",
+    "ai-engineering"
+   ],
+   "task": "같은 학습을 QLoRA·ZeRO-2/FSDP로 다시 돌려 스텝 시간·메모리를 비교하고, 결과 모델을 vLLM으로 띄워 TTFT·TPS를 잰다. 겪은 버그 하나는 재현 코드와 함께 이슈 형식으로 정리한다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 공공데이터 집계로 회사 전체 신입 초봉 **약 4,200만원**, 평균 **약 6,200만원** — 공시된 평균 급여는 없다(비상장)",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없다 [26]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 — 경력직이 섞인 값이다 [26]"
+   },
+   {
+    "label": "토스뱅크 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 계열사 값 — 견주어 보기용 [27]"
+   },
+   {
+    "label": "토스뱅크 평균",
+    "value": "약 7,208만원",
+    "amount": 7208,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 계열사 평균 [27]"
+   }
+  ],
+  "how": "공고는 레퍼런스 체크 뒤 **처우 협의** 단계에서 정한다고 적었고, 연차 요건은 적혀 있지 않다 [1]. 비바리퍼블리카는 상장사가 아니라 사업보고서의 '직원 평균 급여'가 없어 공시 숫자를 싣지 못했다. 평균은 경력직이 섞인 회사 전체 값이라 초봉이 아니고, LLM을 직접 학습해 본 경험을 요구하는 자리라 실제 제안은 이전 처우와 협의로 정해져 집계값과 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 복지를 소개한 2021년 공식 글이다 [29]. 지금도 같은지는 글에 없으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스(비바리퍼블리카) 본사",
+  "address": "서울특별시 강남구 테헤란로 142, 4·10~13·22·23층",
+  "postal": "06236",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "주소는 토스 회사 소개 페이지 하단의 회사 정보다 [28]. 공고 근무지는 'Seoul'로만 적혀 있어 팀 자리가 본사와 다를 수 있다 {추론}."
+ }
+}

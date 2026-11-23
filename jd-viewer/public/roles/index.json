@@ -1,6 +1,7 @@
 {
  "updated_at": "2026-11-23",
  "jobs": {
+  "ats-toss:group:7758217003": "toss-ai-engineer-model",
   "ats-toss:group:7646941003": "toss-ai-platform-engineer-platform",
   "ats-toss:group:7986152003": "toss-ai-platform-inference-pipeline",
   "ats-toss:group:8000575003": "toss-aioc-ai-solution-engineer",
@@ -22,6 +23,16 @@
   "saramin-55608860": "tossbank-finance-data-system"
  },
  "roles": [
+  {
+   "id": "toss-ai-engineer-model",
+   "company": "토스",
+   "role": "AI 엔지니어 (Model)",
+   "jobs": [
+    "ats-toss:group:7758217003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 16
+  },
   {
    "id": "toss-ai-platform-engineer-platform",
    "company": "토스",
