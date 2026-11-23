@@ -77,6 +77,45 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "팬 92·102·92mm·날개 7장·2.5슬롯·16핀 1개는 공식 표·문구 — 5080 EX Gamer 와 같은 틀. 사진(세션 임시 폴더에서 보기만): 검정 쉬라우드에 탄소 무늬 판·각진 홈, 반투명 회색 날개에 고리, 검정 허브 GALAX. 켠 사진에서 팬이 청록·연두·노랑으로 빛나 fan_light=argb, 끝 모서리 세로 줄 세 가닥이 금빛으로 빛나 light=side(공식 문구 Front & Side) — accent 는 그 금빛(ARGB 라 바뀐다). 윗면 직교 사진: 흰 GEFORCE RTX 글자(브래킷 쪽), 16핀은 브래킷부터 길이의 약 51%, 그 자리에서 PCB 가 끝나고 끝 쪽 약 40% 는 핀만 보인다 — 공식 'Expanded Opening' 백플레이트와 합쳐 flow_through(뒷면 사진은 이 제품 페이지에 없다). 국내 EX GAMER BLACK OC 짝은 models 노트를 따른다. 다나와는 쓰지 않았다."
+  },
+  "gainward-python3-rtx5070": {
+   "kind": "gpu",
+   "fan_count": 3,
+   "slots": 2,
+   "backplate": true,
+   "flow_through": true,
+   "power": {
+    "type": "12v-2x6",
+    "n": 1,
+    "at": 0.57
+   },
+   "color": "#141517",
+   "accent": "#c9ccd0",
+   "marks": [
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#e6e7e9"
+    },
+    {
+     "text": "GEFORCE RTX",
+     "where": "backplate",
+     "color": "#e6e7e9"
+    }
+   ],
+   "sources": [
+    {
+     "title": "Gainward GeForce RTX 5070 Python III — 공식 제품 페이지(triple-fan · 2 Slot Fan Cooler · 291.9x116.5x41.3mm · 16-pin x1 · SFF-Ready)",
+     "url": "https://www.gainward.com/main/vgapro.php?id=1237&lang=en"
+    },
+    {
+     "title": "Gainward GeForce RTX 5070 Python III — 공식 갤러리(정면·윗면 직교·뒷면 직교·비스듬한 사진)",
+     "url": "https://www.gainward.com/main/vgapro.php?id=1237&tab=gy&lang=en"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 3개·2슬롯·16핀 1개는 공식 문구·표. 갤러리 사진(세션 임시 폴더에서 보기만): 광택 검정 쉬라우드에 뱀 비늘 양각, 검정 날개에 은빛 헤어라인 허브(양끝 GAINWARD, 가운데 뱀 머리), 윗 모서리에 흰 GEFORCE RTX. 윗면 직교 사진: 16핀은 PCB 가 끝나는 홈 속 브래킷부터 약 57%(at=0.57, 판독). 뒷면 직교 사진: 검정 헤어라인 금속 백플레이트에 흰 GEFORCE RTX, 끝 쪽 약 45% 가 사선 살대만 남은 창이라 핀이 보인다 → flow_through. 조명은 공식 문구에 없고 사진도 모두 꺼진 모양이라 비웠다. 팬 지름은 자료에 없고 날개 수는 사진으로 확실히 세지 못해 비웠다. 뱀 비늘 무늬는 단색 판이다. 다나와는 쓰지 않았다."
   }
  }
 }

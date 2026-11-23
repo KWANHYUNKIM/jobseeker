@@ -236,6 +236,48 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "팬 2개·2슬롯·8핀 1개·금속 백플레이트는 공식 표·문구. 브로슈어 사진(PyMuPDF 로 세션 임시 폴더에 그려 보기만): 8GB 판(gpu-rtx-5060-ti-8)과 같은 겉모양 — 무광 검정 쉬라우드, 두 팬 사이 X 자로 좁아지는 판, 검정 날개에 검정 원판 허브(흰 PNY). 분해도의 백플레이트 끝 V 자 창 → flow_through(판독). 윗면 모서리 PNY·GEFORCE RTX 5060 Ti, 백플레이트에 같은 글자. 불빛은 자료에 없다. 날개 수·팬 지름·8핀 자리는 사진 크기·각도로 못 재 비웠다. 다나와는 쓰지 않았다."
+  },
+  "pny-rtx5060ti-16gb-epic-x-rgb-oc-triple-fan": {
+   "kind": "gpu",
+   "fan_count": 3,
+   "fan_blades": 7,
+   "light": "both",
+   "slots": 2,
+   "backplate": true,
+   "flow_through": true,
+   "color": "#1b1c1f",
+   "accent": "#b45cf0",
+   "marks": [
+    {
+     "text": "PNY",
+     "where": "edge",
+     "color": "#e6e7e9"
+    },
+    {
+     "text": "GEFORCE RTX 5060 Ti",
+     "where": "edge",
+     "color": "#e6e7e9"
+    },
+    {
+     "text": "GEFORCE RTX 5060 Ti",
+     "where": "backplate",
+     "color": "#e6e7e9"
+    },
+    {
+     "text": "PNY",
+     "where": "backplate",
+     "color": "#e6e7e9"
+    }
+   ],
+   "sources": [
+    {
+     "title": "PNY 공식 브로슈어 — GeForce RTX 5060 Ti 16GB ARGB Overclocked Triple Fan(VCG5060T16TFXXPB1-O · 2 Slot · Power Input 1x8 · TRIPLE FAN COOLING · METAL BACKPLATE 'vents that enhance passive cooling' · VelocityX RGB, 정면·분해도·윗면·백플레이트 사진)",
+     "url": "https://www.pny.com/File%20Library/Company/Support/Product%20Brochures/GeForce%20Graphics/English/rtx-5060-ti-16gb-triple-fan-argb-oc-brochure.pdf"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 3개·2슬롯·8핀 1개·금속 백플레이트·ARGB 는 공식 표·문구. 브로슈어 사진(세션 임시 폴더에서 보기만): 짙은 무광 검정 쉬라우드, 검정 날개(정면 사진에서 약 7장으로 셈, 판독)에 검정 원판 허브(흰 PNY). 양 끝 팬 바깥을 반원 ARGB 띠가 감싸고 팬 사이 사선 발광 막대 넷이 켜진 모습 → light front, 윗 모서리의 PNY 글자도 무지개로 빛나 side 까지 both(색은 여러 색이라 accent 는 대략의 보라). 윗면 모서리에 GEFORCE RTX 5060 Ti 글자. 백플레이트: 검정 금속판에 흰 GEFORCE RTX 5060 Ti·PNY, 끝 쪽에 V 자로 뚫린 창(분해도의 백플레이트에도 V 자 창) 둘레가 무지개로 빛난다 → flow_through — 백플레이트 발광 V 는 그릴 칸이 없다(기존 marks glow 요청과 같은 일). 팬 지름·8핀 자리는 사진 각도로 못 재 비웠다. 다나와는 쓰지 않았다."
   }
  }
 }

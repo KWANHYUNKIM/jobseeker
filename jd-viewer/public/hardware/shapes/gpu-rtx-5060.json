@@ -105,6 +105,75 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "92mm 팬 2개·날개 7장·2슬롯·8핀 1개는 공식 표·문구. 국내 BLACK OC V2 = 글로벌 1-Click OC 2X V2 짝은 models 이미지 주소를 따른다. 사진(세션 임시 폴더에서 보기만): 검정 쉬라우드(탄소 무늬 + 끝 쪽 은색 회로 무늬), 반투명 회색 날개, 허브는 검정 바탕 GALAX — 5050 BLACK OC V2 와 같은 앞판. 켠 사진에서 팬이 흰색으로만 빛나 fan_light 는 none(형식에 흰 단색이 없다 — 기존 REQUESTS). 뒷면 정면 사진: 검정 백플레이트에 흰 줄무늬·GEFORCE RTX, PCB 가 끝나는 자리(약 60%)부터 끝까지 X 자 막대만 남기고 뚫려 → flow_through, 8핀은 그 PCB 끝(브래킷부터 약 60%). 끝 면에 불빛 스위치. 다나와는 쓰지 않았다."
+  },
+  "pny-rtx5060-oc-dual-fan": {
+   "kind": "gpu",
+   "fan_count": 2,
+   "fan_blades": 9,
+   "slots": 2,
+   "backplate": true,
+   "flow_through": true,
+   "color": "#16171a",
+   "accent": "#8e9094",
+   "marks": [
+    {
+     "text": "PNY",
+     "where": "edge",
+     "color": "#e6e7e9"
+    },
+    {
+     "text": "GEFORCE RTX 5060",
+     "where": "edge",
+     "color": "#e6e7e9"
+    },
+    {
+     "text": "GEFORCE RTX 5060",
+     "where": "backplate",
+     "color": "#e6e7e9"
+    },
+    {
+     "text": "PNY",
+     "where": "backplate",
+     "color": "#e6e7e9"
+    }
+   ],
+   "sources": [
+    {
+     "title": "PNY 공식 브로슈어 — GeForce RTX 5060 8GB Overclocked Dual Fan(VCG50608DFXPB1-O · 200x120x39.8mm 2 Slot · Power Input 1x8 · DUAL FAN COOLING · SMALL FORM FACTOR, 정면·분해도·I/O·윗면·백플레이트 사진)",
+     "url": "https://www.pny.com/file%20library/company/support/product%20brochures/geforce%20graphics/english/rtx-5060-8gb-dual-fan-oc-brochure.pdf"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 2개·2슬롯·8핀 1개는 공식 표·문구. 브로슈어 사진(세션 임시 폴더에서 보기만): 무광 검정 쉬라우드가 두 팬 사이에서 X 자로 좁아지고, 검정 날개 9장(정면 사진에서 셈, 판독)에 검정 원판 허브(흰 PNY). 분해도: 검정 백플레이트가 있고(이 브로슈어는 백플레이트를 문구로 말하지 않는다) 끝 쪽에 V 자 창 → flow_through(판독, 5060 Ti Dual 과 같은 틀). 백플레이트 사진에 흰 GEFORCE RTX 5060·PNY, 윗 모서리에 PNY GEFORCE RTX 5060. 불빛은 자료에 없고 사진도 꺼진 모양이나 '없다'는 문구가 없어 fan_light 는 비웠다. 분해도에서 8핀은 PCB 끝 윗모서리에 보이나 비율을 못 재 power 는 비웠다. 팬 지름은 자료에 없다. 다나와는 쓰지 않았다."
+  },
+  "manli-polarfox-rtx5060-oc": {
+   "kind": "gpu",
+   "fan_count": 2,
+   "backplate": true,
+   "color": "#eef1f4",
+   "accent": "#a9d8ee",
+   "marks": [
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#2a2d33"
+    },
+    {
+     "text": "GEFORCE RTX",
+     "where": "backplate",
+     "color": "#2a2d33"
+    }
+   ],
+   "sources": [
+    {
+     "title": "대원씨티에스(국내 공식 유통사) 뉴스룸 — Manli GeForce RTX 5060 Polar Fox·Nebula 출시('화이트 바탕의 디자인', Polar 캐릭터 IP · 정면·뒷면 사진 2장)",
+     "url": "https://dwcts.co.kr/DaewonCTS/NewsRoom/NewsDetail/2/1/693"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "국내 공식 유통사 기사(medium). 사진(세션 임시 폴더에서 보기만): 흰 쉬라우드의 팬 둘레·가운데에 하늘색 판(accent), 흰 날개 팬 2개, 윗 모서리에 GEFORCE RTX, 흰 백플레이트에 Polar 캐릭터 그림과 GEFORCE RTX. 백플레이트 끝에 어두운 살대 창이 보이지만 사진이 작아 flow_through 는 비웠다. 기사에 팬 지름·슬롯·전원·조명 문구가 없고, manli.com 은 연결이 끊겨(봇 차단인지 모름, 우회하지 않음) 공식 사양표를 못 봤다 — models 의 specs 가 전부 null 이라 렌더러는 급의 보통 크기로 그린다(REQUESTS [hw-models]). 캐릭터 그림은 단색 판으로만 그려진다. 다나와는 쓰지 않았다."
   }
  }
 }
