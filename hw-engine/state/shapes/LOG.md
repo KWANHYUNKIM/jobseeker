@@ -88,3 +88,13 @@
   `gpu-rx-9070-xt.json` 은 1회차(사람 세션)가 만들고 아직 커밋하지 않은 파일이라 이 회차 커밋에 넣지 않았다 — XFX White 항목은 작업 트리에만 있다(그 세션이 같이 커밋한다).
 - 실물과 아직 다른 점: XFX White 의 빛나는 로고를 적을 칸이 없다(REQUESTS 새 줄). 같은 파일의 1회차 검정 Swift 는 flow_through=false·8핀 0.88 인데 White 의 뒷면 사진은 끝 창·가운데 홈이라 같은 틀이면 다시 볼 일이다.
   EX Gamer 의 16핀 자리는 비스듬한 사진이라 비율을 못 재 비웠다. GALAX 흰 단색 팬 불빛은 기존 REQUESTS 그대로 못 그린다. Palit 의 날개 수·팬 지름·백플레이트·조명은 자료가 없어 비웠다. 탄소·회로 무늬·백플레이트 홈 무늬는 단색 판이다.
+
+## 2026-11-23 · 10회차(무인) — 그래픽카드 인기순 다음 5개
+
+- 적은 것(모두 medium, 공식 문구·표 + 공식 사진을 세션 임시 폴더에서 보기만): PNY RTX 5080 OC Triple Fan(공식 브로슈어 PDF — 3슬롯·팬 3개·16핀, 정면·분해도·윗면·뒷면 사진으로 무광 검정 + 은회색 금속 백플레이트 끝 V 자 창 플로스루, 윗면 PNY·GEFORCE RTX 5080) ·
+  ASUS TUF RTX 5060 Ti OC 8GB(공식 페이지·스펙 — 팬 3개·3.1슬롯·16핀·알루미늄 백플레이트, 정면·비스듬한 정면·백플레이트 사진으로 건메탈 + 은색 모서리, 16핀 약 55%, 끝 30% 사선 플로스루) ·
+  ASUS T1 Edition RTX 5060 Ti OC 8GB(한국 공식 페이지·스펙 — 2.5슬롯·8핀, 정면·뒷면 사진으로 흰 + 빨간 사선 쉬라우드, 팬 3개, 끝 30% X 자 플로스루) ·
+  GALAX RTX 5070 1-Click OC 2X(공식 표 92mm×2·날개 7장·2슬롯·16핀, 정면·켠 정면·비스듬한·뒷면 사진 — 흰 팬 불빛, 끝 사선 창 플로스루, 16핀 약 62%) ·
+  Palit RTX 5090 GameRock OC(공식 스펙 3.5슬롯·16핀, 대표 사진 한 장 — 비OC GameRock 과 같은 Chameleon 판, 팬 3개). 다나와는 쓰지 않았다.
+- 막힌 것: 맨 앞 COLORFUL 6개(403)·ZOTAC(468)는 지난 회차처럼 우회하지 않고 넘겼다. PNY 브로슈어는 web-fetch 가 글을 못 뽑아 PyMuPDF 로 글·쪽 그림을 세션 임시 폴더에 뽑아 봤다.
+- 실물과 아직 다른 점: T1 은 models 의 fans 가 2(공식은 3) — REQUESTS [hw-models], shapes 는 fan_count 3. Palit GameRock OC 의 models fans 도 null(REQUESTS). TUF 백플레이트의 노란 발광 로고, GALAX 흰 단색 팬 불빛은 그릴 칸이 없다(REQUESTS). T1 의 선수 그림·빨간 사선, GALAX 의 회로·탄소 무늬, TUF 모서리 은색 덧판은 단색·accent 로만 그려진다. PNY·T1·Palit 의 보조전원 자리, PNY·TUF·T1·Palit 날개 수는 사진으로 못 읽어 비웠다.

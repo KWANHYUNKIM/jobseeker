@@ -149,6 +149,90 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "102mm 팬 2개·날개 7장·2슬롯·백플레이트·ARGB 는 공식 문구·요구 사항. 국내 EX BLACK OC = 글로벌 RTX 5060 Ti EX 짝은 models 노트의 추정. 공식 사진(보기만): 광택 검정 쉬라우드가 두 팬 사이에서 X 자로 좁아지고 가운데 나사 둘, 탄소 무늬·사선 홈, 반투명 날개에 검정 GALAX 허브. 불 켠 사진에서 팬이 여러 색으로 빛나고(ARGB), 3색 사진에서 윗 모서리 끝 쪽 띠도 같이 빛난다 → light side(문구의 '앞·옆 두 면' 중 앞은 팬 불빛으로 봤다). 윗면 사진: 흰 GEFORCE RTX 글자, 끝 쪽 윗면에 은색 선 무늬(accent). 16핀은 PCB 가 끝나는 단 근처에 보이나 비스듬해 비율을 못 재 power 는 비웠다 — 렌더러가 models 의 16핀을 보통 자리에 그린다. 뒷면 사진이 없어 플로스루는 비웠다. 다나와는 쓰지 않았다."
+  },
+  "asus-tuf-rtx5060ti-o8g": {
+   "kind": "gpu",
+   "fan_count": 3,
+   "fan_light": "none",
+   "slots": 3.1,
+   "backplate": true,
+   "flow_through": true,
+   "power": {
+    "type": "12v-2x6",
+    "n": 1,
+    "at": 0.55
+   },
+   "color": "#3a3b3e",
+   "accent": "#b9bcc0",
+   "marks": [
+    {
+     "text": "TUF GAMING",
+     "where": "shroud",
+     "color": "#e6e7e9"
+    },
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#d9dadc"
+    },
+    {
+     "text": "TUF GAMING",
+     "where": "backplate",
+     "color": "#1d1e20"
+    }
+   ],
+   "sources": [
+    {
+     "title": "ASUS TUF Gaming RTX 5060 Ti 8GB OC — 공식 제품 페이지(Axial-tech 팬 3개 · diecast shroud · vented metal exoskeleton · aluminum backplate · Aura ARGB on the shroud · 정면·비스듬한 정면·백플레이트 사진)",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/tuf-gaming/tuf-rtx5060ti-o8g-gaming/"
+    },
+    {
+     "title": "ASUS TUF Gaming RTX 5060 Ti 8GB OC — 공식 스펙(3.1슬롯 · 1 x 16-pin · AURA SYNC ARGB)",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/tuf-gaming/tuf-rtx5060ti-o8g-gaming/techspec/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 3개·3.1슬롯·16핀 1개·알루미늄 백플레이트·ARGB 는 공식 문구·스펙. 정면 사진: 건메탈 다이캐스트 쉬라우드(color)에 네 모서리 은색 덧판(accent), 검정 날개에 은색 고리 허브(TUF·ASUS·TUF), TUF GAMING·GET TUF GAME TOUGH 글자. 비스듬한 사진: 윗면 GEFORCE RTX 글자, 끝 쪽 PCB 가 끝나 뚫린 창, 16핀은 윗면 가운데쯤(브래킷부터 약 55%, 비스듬한 사진 판독). 백플레이트 사진: 회색 판에 검정 TUF GAMING, 끝 약 30% 가 사선 막대만 남은 플로스루, 가운데 TUF 로고와 줄무늬가 노랗게 빛난다 — 공식 문구는 'ARGB on the shroud' 이고 팬에는 불빛이 없다(fan_light none). 백플레이트 발광 로고는 적을 칸이 없다(REQUESTS 의 marks glow 요청). 날개 수는 사진으로 세기 어려워 비웠다. 다나와는 쓰지 않았다."
+  },
+  "asus-t1-rtx5060ti-o8g": {
+   "kind": "gpu",
+   "fan_count": 3,
+   "slots": 2.5,
+   "backplate": true,
+   "flow_through": true,
+   "color": "#f2f3f4",
+   "accent": "#e3172d",
+   "marks": [
+    {
+     "text": "GEFORCE RTX",
+     "where": "backplate",
+     "color": "#1a1a1a"
+    },
+    {
+     "text": "VICTORY",
+     "where": "shroud",
+     "color": "#ffffff"
+    },
+    {
+     "text": "GAME DAY",
+     "where": "shroud",
+     "color": "#ffffff"
+    }
+   ],
+   "sources": [
+    {
+     "title": "ASUS T1 Edition RTX 5060 Ti 8GB OC — 공식 제품 소개(한국 · '3개의 Axial-tech 팬' · 슈라우드·백플레이트 전체 T1 그림 · 정면·뒷면 사진)",
+     "url": "https://www.asus.com/kr/motherboards-components/graphics-cards/asus/t1-rtx5060ti-o8g-gaming/"
+    },
+    {
+     "title": "ASUS T1 Edition RTX 5060 Ti 8GB OC — 공식 스펙(한국 · 2.5 Slot · 1 x 8-pin · AURA SYNC RGB)",
+     "url": "https://www.asus.com/kr/motherboards-components/graphics-cards/asus/t1-rtx5060ti-o8g-gaming/techspec/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "공식 문구와 정면 사진 모두 팬 3개다 — models 는 fans 2 라 틀렸다(REQUESTS [hw-models]). 2.5슬롯·8핀 1개는 공식 스펙. 정면 사진: 흰 쉬라우드(color)에 빨간 사선 띠(accent), 검정 날개에 빨간 고리 허브(ASUS·T1·ASUS), VICTORY·GAME DAY·WE ARE T1 글자. 뒷면 사진: 흰·빨강 백플레이트에 T1 선수 그림과 세로 GEFORCE RTX, 끝 약 30% 가 X 자 막대만 남은 플로스루. RGB 는 스펙에 'RGB' 만 있고 자리가 안 보여 fan_light·light 는 비웠다. 8핀 자리·날개 수는 사진으로 못 읽어 비웠다. 선수 그림·빨간 사선 무늬는 단색 판으로만 그려진다. 다나와는 쓰지 않았다."
   }
  }
 }

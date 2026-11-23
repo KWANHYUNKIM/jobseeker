@@ -114,6 +114,39 @@
     }
    ],
    "note": "BTF 검정판과 같은 앞면(건메탈 틀 + 은색 가운데 판, 팬 3개·날개 7장, 끝 팬에 은색 고리, 윗면 보라-파랑 Aura 띠). 뒷면 공식 사진: 검정 백플레이트 끝 쪽에 네 번째 팬(플로스루), 16핀은 윗면 가장자리 홈 — 브래킷부터 길이의 약 66%(흰판 65% 와 같은 자리). 뒷면 팬·끝 팬 크기는 형식에 칸이 없어 앞면 3개로만 적었다(REQUESTS 의 rear_fans 요청). 다나와는 쓰지 않았다."
+  },
+  "palit-rtx5090-gamerock-oc": {
+   "kind": "gpu",
+   "fan_count": 3,
+   "fan_light": "none",
+   "slots": 3.5,
+   "color": "#16171a",
+   "accent": "#c3cf4f",
+   "marks": [
+    {
+     "text": "GAMEROCK",
+     "where": "edge",
+     "color": "#d9dadc"
+    },
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#d9dadc"
+    }
+   ],
+   "sources": [
+    {
+     "title": "Palit GeForce RTX 5090 GameRock OC — 공식 스펙(Height 3.5 slot · 16-pin x1 · ARGB SYNC EVO · TurboFan Blade 4.0)",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5335&lang=en&tab=sp"
+    },
+    {
+     "title": "Palit GeForce RTX 5090 GameRock OC — 공식 제품 소개(Chameleon Panel · 대표 사진)",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5335&lang=en"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "3.5슬롯·16핀 1개는 공식 표. 대표 사진(상자와 카드 한 장): 검정 쉬라우드에 검정 날개 팬 3개, 팬을 감싼 곡선 Chameleon Panel 이 보는 각도로 연두·금·보라로 바뀐다(accent 는 가장 넓게 보이는 연두-금) — 비OC GameRock(palit-rtx5090-gamerock)과 같은 겉모양. 윗 모서리에 GAMEROCK·GEFORCE RTX 글자. 팬 자체에는 불빛이 없어 보인다. 팬 지름·날개 수·백플레이트·플로스루·16핀 자리는 공식 자료에 없고 사진 한 장으로 안 보여 비웠다. 다나와는 쓰지 않았다."
   }
  }
 }

@@ -1,0 +1,45 @@
+{
+ "schema": 1,
+ "part": "gpu-rtx-5070",
+ "shapes": {
+  "galax-rtx5070-1clickoc-2x": {
+   "kind": "gpu",
+   "fans": [
+    92,
+    92
+   ],
+   "fan_blades": 7,
+   "fan_light": "none",
+   "slots": 2,
+   "backplate": true,
+   "flow_through": true,
+   "power": {
+    "type": "12v-2x6",
+    "n": 1,
+    "at": 0.62
+   },
+   "color": "#141517",
+   "marks": [
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#e6e7e9"
+    },
+    {
+     "text": "GEFORCE RTX",
+     "where": "backplate",
+     "color": "#e6e7e9"
+    }
+   ],
+   "sources": [
+    {
+     "title": "GALAX GeForce RTX 5070 1-Click OC 2X — 공식 제품 페이지(2*92mm WINGS 3.0 · 7 larger fan blades · LED on/off switch · ENHANCED BACKPLATE 'Expanded Opening' · 2 slot · 16-pin · 정면·켠 정면·비스듬한 사진·뒷면 사진)",
+     "url": "https://galax.com/en/product/geforce-rtx-5070-12gb-1-click-oc-2x/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "92mm 팬 2개·날개 7장·2슬롯 공간·16핀 1개는 공식 표·문구. 정면 사진: 광택 검정 쉬라우드에 탄소 무늬 가운데 판 + 양 끝 회로 무늬 양각, 반투명 날개, 검정 허브에 흰 GALAX. 켠 정면 사진: 팬이 흰색으로만 빛난다 — 형식에 흰 단색이 없어 fan_light 는 none(REQUESTS 의 흰 단색 요청 그대로). 비스듬한 사진: 윗면 흰 GEFORCE RTX 글자. 뒷면 사진: 검정 백플레이트에 흰 줄무늬·GEFORCE RTX, 끝 약 30% 가 사선 창으로 뚫린 플로스루('Expanded Opening'), 16핀은 PCB 끝 모서리 — 브래킷부터 약 62%(판독). 회로·탄소 무늬는 단색 판이다. 다나와는 쓰지 않았다."
+  }
+ }
+}
