@@ -170,6 +170,7 @@
   "ats-toss:group:7827711003": "tosssec-data-engineer-financial-data",
   "ats-toss:group:7575603003": "tosssec-ml-engineer-llm",
   "ats-toss:group:7810517003": "tosssec-senior-data-analyst",
+  "ats-toss:group:7834735003": "tosssecurities-data-engineer-advisory",
   "ats-toss:group:8006356003": "tosssecurities-dataops-engineer",
   "ats-toss:group:7719156003": "tosssecurities-idc-infra-engineer",
   "wanted-316962": "ui2-ec-fullstack-japan",
@@ -1698,6 +1699,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 20
+  },
+  {
+   "id": "tosssecurities-data-engineer-advisory",
+   "company": "토스증권",
+   "role": "데이터 엔지니어 (금융데이터/자문)",
+   "jobs": [
+    "ats-toss:group:7834735003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 19
   },
   {
    "id": "tosssecurities-dataops-engineer",
