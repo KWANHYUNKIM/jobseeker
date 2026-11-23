@@ -5,6 +5,7 @@
   "wanted-391370": "litalico-data-engineer",
   "wanted-391368": "litalico-sre-product",
   "wanted-394202": "mediphone-platform-engineer",
+  "wanted-394722": "nhn-japan-frontend",
   "ats-skcareers:sk:R262457": "skax-ai-studio-mlops-pl",
   "jobkorea-50384147": "skax-ai-studio-mlops-pl",
   "jobkorea-50384195": "skax-ai-studio-mlops-pl",
@@ -154,6 +155,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 27
+  },
+  {
+   "id": "nhn-japan-frontend",
+   "company": "NHN JAPAN",
+   "role": "프론트엔드 엔지니어",
+   "jobs": [
+    "wanted-394722"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 30
   },
   {
    "id": "skax-ai-studio-mlops-pl",

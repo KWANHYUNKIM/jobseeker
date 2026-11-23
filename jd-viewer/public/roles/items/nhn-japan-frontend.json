@@ -1,0 +1,896 @@
+{
+  "id": "nhn-japan-frontend",
+  "company": "NHN JAPAN",
+  "role": "프론트엔드 엔지니어",
+  "team": "CX팀 · FE 파트 (그룹 공통 웹 엔지니어링 조직)",
+  "jobs": [
+    "wanted-394722"
+  ],
+  "researched_at": "2026-11-23",
+  "tldr": {
+    "what": "일본 NHN 그룹 회사들(게임 PlayArt·웹툰 comico·후쿠오카 운영사 등)의 **회사 사이트·채용 사이트·게임 공식 사이트**를 한 팀이 받아 설계·개발·운영합니다. 특정 사업부에 묶이지 않고 그룹 전체에서 일감이 옵니다.[1][2]",
+    "env": "도쿄 NHN 아틀리에 출근, 플렉스 근무. 사이트마다 시대가 달라 jQuery·서버 페이지로 된 옛 사이트와 Astro·Vite+React 로 새로 지은 사이트가 섞여 있습니다.[1][6][7][9]",
+    "oneline": "여러 회사의 웹사이트를 한 팀이 맡는 **사내 웹 에이전시형 프론트엔드**. 비즈니스 일본어와 일본 이주가 필수입니다.[1]"
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "・NHNグループ各社と連携したWebサービスの設計・開発・運用",
+      "short": "그룹 각 회사가 의뢰한 웹사이트·웹 서비스를 설계부터 운영까지 맡는다.",
+      "why": "NHN JAPAN 은 그룹 4개 법인·약 600명의 인사·법무·홍보 같은 공통 기능을 대신 맡는 회사이고, 그 기능 가운데 하나가 **웹 제작·개발**입니다.[1] 회사 자체 직원은 81명(2025년 12월)이고 PlayArt·comico·테코라스·NHN Cloud Japan·후쿠오카가 같은 건물에 있습니다.[4] 그래서 이 팀의 고객은 바깥이 아니라 그룹 회사들입니다.[1]",
+      "actually": {
+        "intro": "공고가 직접 든 대상 사이트로 보면 일의 종류가 이렇게 갈립니다.[1]",
+        "items": [
+          "**회사 소개 사이트** — NHN JAPAN·PlayArt·comico·후쿠오카 등 법인 사이트. 공지·뉴스 갱신과 개편.[1][4]",
+          "**채용 사이트** — recruit.nhn-japan.com. 공고 목록과 복지 소개가 화면에서 그려지는 단일 페이지 앱이다.[1][6]",
+          "**게임 공식 사이트** — '#컴퍼스'·'요괴워치 뿌니뿌니'처럼 운영 중인 게임의 소식·이벤트 페이지.[1][8]",
+          "**문화 시설** — 유후인의 COMICO ART MUSEUM 사이트도 대상이다.[1][10]",
+          "다른 판의 같은 공고는 **한국 법인에서 오는 일감**과 한일 개발팀 공동 프로젝트가 많다고 적었다.[2][3]"
+        ]
+      },
+      "how_far": "사이트 하나를 맡아 요구를 듣고, 구조를 정하고, 만들고, 올린 뒤 고치는 것까지 혼자 끌고 갈 수 있어야 합니다. 경력 조건이 3~15년이라 '받은 화면만 찍는' 수준보다 넓습니다.[1] {추론}",
+      "refs": [1, 2, 3, 4, 6, 8, 10],
+      "study": ["toast-fe-conv", "mjs-deepdive"]
+    },
+    {
+      "section": "task",
+      "quote": "・最新技術を用いたリファクタリングや開発環境の整備",
+      "short": "오래된 사이트를 요즘 도구로 다시 짜고, 팀이 쓰는 빌드·개발 환경을 정리한다.",
+      "why": "대상 사이트의 소스를 열어 보면 시대가 섞여 있습니다. 그룹 회사 소개 사이트는 jQuery 2.2.1 과 서버가 그리는 '.nhn' 페이지이고[9], 게임 '#컴퍼스' 공식 사이트는 2021년 10월 날짜가 붙은 묶음(bundle) 파일을 씁니다.[8] 반대로 PlayArt 회사 사이트는 Astro 로, 채용 사이트는 Vite 로 빌드한 React 앱입니다.[6][7] 공고도 '모던 기술 도입 실적 다수'를 팀 특징으로 꼽습니다.[1]",
+      "actually": {
+        "items": [
+          "**jQuery → 컴포넌트** — DOM 을 직접 고치는 코드를 React·Vue·Svelte 컴포넌트로 옮긴다.[1][9] {추론}",
+          "**정적 사이트는 Astro 로** — 글과 사진이 대부분인 회사 사이트는 기본으로 자바스크립트를 거의 안 보내는 Astro 가 맞다.[7][34]",
+          "**Webpack → Vite** — 개발 서버를 빠르게 띄우고 빌드 설정을 줄인다. 공고에 둘 다 있다.[1][33]",
+          "**Sass 정리** — 선택자 중첩은 3단계까지, @extend 대신 믹스인 같은 규칙을 정해 둔다(한국 NHN FE 개발랩 가이드의 예).[13]",
+          "**성능** — 다른 판 공고는 성능 최적화를 업무 예로 따로 들었다.[3] 로딩·반응 속도는 Core Web Vitals(구글이 정한 사용자 체감 지표) 로 재고[32], 그룹 한국 FE 가이드는 불러오기·그리기 단계별 최적화를 정리해 두었다.[14]"
+        ]
+      },
+      "how_far": "무엇을 언제 바꿀지는 팀과 의뢰한 회사가 정합니다. 개발자는 '왜 바꾸나·무엇이 좋아지나·얼마나 걸리나'를 숫자로 설명하고, 바꾼 뒤 화면이 그대로인지 확인하는 데까지 맡습니다. {추론}",
+      "refs": [1, 3, 6, 7, 8, 9, 13, 14, 32, 33, 34],
+      "study": ["refactoring", "vite-docs", "astro-docs"]
+    },
+    {
+      "section": "task",
+      "quote": "・社内デザイナー・バックエンドエンジニアとの協業によるUI改善・機能開発",
+      "short": "사내 디자이너가 만든 화면과 백엔드가 만든 API 를 이어 화면을 고치고 기능을 붙인다.",
+      "why": "NHN JAPAN 은 웹 제작과 함께 웹·인쇄 그래픽 디자이너 기능도 그룹에 제공합니다.[1] 디자이너와 백엔드가 같은 회사 안에 있어서, 프론트엔드가 둘 사이를 잇는 자리가 됩니다. {추론}",
+      "actually": {
+        "items": [
+          "**디자인 넘겨받기** — Figma 의 개발자 모드에서 간격·색·글꼴 값을 읽고, 빠진 상태(눌림·오류·빈 화면)를 디자이너에게 묻는다.[31]",
+          "**API 모양 맞추기** — 화면에 필요한 필드를 백엔드와 미리 정하고, 응답이 오기 전에는 가짜 데이터로 화면을 먼저 만든다. {추론}",
+          "**고친 결과 보여 주기** — Storybook 같은 곳에 컴포넌트를 올려 디자이너가 브라우저에서 바로 확인하게 한다.[18]"
+        ]
+      },
+      "how_far": "디자인 결정은 디자이너가, API 결정은 백엔드가 합니다. 프론트엔드는 둘이 어긋나는 지점(예: 디자인에는 있는데 API 에 없는 필드)을 먼저 찾아 말하는 것이 몫입니다. {추론}",
+      "refs": [1, 18, 31],
+      "study": ["figma-devmode", "storybook-docs"]
+    },
+    {
+      "section": "task",
+      "quote": "・コードレビュー、技術勉強会を通じたメンバー間のスキル共有と技術向上",
+      "short": "서로 코드를 검토하고 사내 공부 모임을 열어 팀 실력을 같이 올린다.",
+      "why": "대상 사이트가 많고 기술이 사이트마다 달라서, 한 사람만 아는 사이트가 생기면 그 사람이 빠질 때 멈춥니다. {추론} 회사도 Study 제도로 책 구입·온라인 강좌·모임 비용을 대고 '배운 것은 사내에 공유된다'고 적었습니다.[5]",
+      "actually": {
+        "items": [
+          "**리뷰 기준** — 같은 그룹의 한국 FE 개발랩은 들여쓰기·이름·주석 규칙을 문서로 두고 ESLint 설정까지 공개했다. 리뷰에서 취향 다툼을 줄이는 방법이다.[11]",
+          "**공부 모임** — 새로 써 본 프레임워크(예: Svelte, Astro)를 다른 사이트에 쓸 수 있을지 발표한다. {추론}",
+          "회사 Study 제도는 부서를 넘어 모이는 그룹 학습이고 비용을 지원한다.[5]"
+        ]
+      },
+      "how_far": "남의 PR 에 '왜 이렇게 했나'를 묻고 대안을 코드로 보일 수 있으면 됩니다. 공부 모임은 발표 하나를 맡을 수 있는 정도. {추론}",
+      "refs": [5, 11],
+      "study": ["toast-fe-conv"]
+    },
+    {
+      "section": "task",
+      "quote": "●利用技術・ツール\n言語：HTML, CSS (Sass), JavaScript (TypeScript), PHP\nフレームワーク：React (Next.js), Vue (Nuxt), Svelte, Astro\nバージョン管理：GitHub, GitLab, svn\nビルド/CI：Vite, Webpack, Jenkins, GitHub Actions\nテスト：Cypress, Vitest\nUI：Figma, Storybook\nエディタ：VSCode, Cursor\nAI開発支援：Claude Code",
+      "short": "프레임워크 넷·저장소 셋·빌드 도구 넷이 함께 있다 — 사이트마다 다른 것을 쓴다는 뜻이다.",
+      "why": "한 제품을 키우는 팀이면 도구가 하나로 모입니다. 이 팀은 여러 회사의 여러 시대 사이트를 받기 때문에 React·Vue·Svelte·Astro 가 모두 남아 있습니다.[1][6][7] {추론}",
+      "actually": {
+        "items": [
+          "**언어** — HTML·Sass·TypeScript 가 중심이고, PHP 는 서버가 HTML 을 만드는 옛 사이트나 CMS 를 고칠 때 쓴다. {추론}",
+          "**프레임워크** — React(Next.js)·Vue(Nuxt)·Svelte·Astro. Next·Nuxt 는 서버에서 먼저 그리는 큰 앱, Astro 는 글 위주 사이트에 맞다.[15][16][17][35][36]",
+          "**버전 관리** — GitHub·GitLab 에 svn(Subversion, 옛 중앙 저장소)까지. svn 이 있다는 것은 오래된 사이트가 아직 거기 있다는 뜻으로 읽힌다. {추론}",
+          "**빌드·CI** — Vite·Webpack 으로 묶고, Jenkins·GitHub Actions 로 시험과 배포를 자동으로 돌린다.[24][25][33]",
+          "**시험** — 브라우저째 돌리는 Cypress, 함수·컴포넌트를 빠르게 보는 Vitest.[19][20]",
+          "**AI 도구** — 편집기는 VSCode·Cursor, 개발 보조로 Claude Code 를 쓴다.[26]"
+        ]
+      },
+      "how_far": "전부 다 깊게 알 필요는 없습니다. 자격요건은 React·Vue·Svelte 가운데 **하나**만 요구합니다.[1] 나머지는 처음 보는 사이트를 열었을 때 구조를 읽고 고칠 수 있는 정도면 됩니다. {추론}",
+      "refs": [1, 6, 7, 15, 16, 17, 19, 20, 24, 25, 26, 33, 35, 36],
+      "study": ["react-docs", "vue-docs", "svelte-docs", "sass-docs"]
+    },
+    {
+      "section": "task",
+      "quote": "・API連携を含む動的なフロントエンド開発",
+      "short": "API 로 데이터를 받아 그리는 화면을 만든다 — 로딩·오류·빈 목록 상태까지.",
+      "why": "채용 사이트처럼 목록과 상세가 바뀌는 화면은 데이터를 API 로 받아야 합니다.[6] 정적인 회사 소개 페이지와 달리 '기다리는 중·실패·결과 없음'을 화면이 따로 보여 줘야 합니다. {추론}",
+      "actually": {
+        "items": [
+          "**요청** — fetch 로 부르고, 실패(HTTP 상태가 200대가 아님)를 직접 걸러 낸다. fetch 는 500 이 와도 예외를 던지지 않는다.[27]",
+          "**다른 주소의 API** — 브라우저가 막는 교차 출처 요청(CORS)을 서버 설정으로 풀어야 하는 경우가 있다.[28]",
+          "**상태 나누기** — 성공·오류·빈 목록을 한 함수에서 갈라 화면이 고르게 한다(아래 예).",
+          "채용 사이트의 공개 묶음 파일에는 HTTP 요청 라이브러리(axios)와 슬라이드 라이브러리(Swiper)가 들어 있다.[6]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "응답을 화면 상태 셋으로 가르기 (가상 응답, 직접 돌린 출력)",
+          "body": "fetch 는 500 에도 예외를 던지지 않아서 ok 를 따로 봐야 합니다.[27] 같은 갈래를 파이썬으로 돌려 출력을 확인했습니다 — TypeScript 로 옮기면 모양이 같습니다.",
+          "lang": "python",
+          "code": "def load(res):\n    if not res['ok']:\n        return {'state': 'error', 'message': f\"HTTP {res['status']}\"}\n    items = res['body'].get('items', [])\n    return {'state': 'success', 'items': items} if items else {'state': 'empty'}\n\nprint(load({'ok': True, 'status': 200, 'body': {'items': [{'id': 1}]}}))\n# {'state': 'success', 'items': [{'id': 1}]}\nprint(load({'ok': False, 'status': 500, 'body': {}}))\n# {'state': 'error', 'message': 'HTTP 500'}\nprint(load({'ok': True, 'status': 200, 'body': {'items': []}}))\n# {'state': 'empty'}"
+        }
+      ],
+      "how_far": "목록·상세·검색 화면 하나를 API 에 붙여, 느린 망·오류·빈 결과에서도 화면이 깨지지 않게 만들 수 있으면 최소선입니다. 캐시·재시도는 그다음입니다. {추론}",
+      "refs": [6, 27, 28],
+      "study": ["mdn-fetch", "mdn-cors"]
+    },
+    {
+      "section": "task",
+      "quote": "・UIコンポーネントの設計・実装（デザイン意図の再現を重視）",
+      "short": "버튼·카드 같은 화면 부품을 나눠 만들되, 디자이너가 그린 그대로 보이게 한다.",
+      "why": "공고는 괄호까지 넣어 '디자인 의도의 재현'을 강조하고, 인물상 첫 줄도 디자인 재현에 대한 집착입니다.[1] 팀 특징에 디자인 시스템 구축·운영 경험을 쌓을 수 있다고 적었습니다.[1]",
+      "actually": {
+        "items": [
+          "**부품 나누기** — 가장 작은 단위(버튼·입력칸)에서 묶음(검색창)·영역(머리글)으로 쌓는 아토믹 디자인이 흔한 방법이다.[37]",
+          "**값을 토큰으로** — 색·간격·글꼴 크기를 변수로 두고 Figma 의 값과 이름을 맞춘다.[13][31]",
+          "**상태까지 재현** — 마우스를 올렸을 때·눌렀을 때·비활성·오류 상태를 디자인에서 확인한다.[18]",
+          "**단위 바꾸기** — Figma 의 px 를 rem 으로 옮기면 사용자 글꼴 설정을 따른다(아래 예). {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "Figma px → CSS rem (기준 16px, 직접 돌린 출력)",
+          "body": "13px 처럼 16 으로 나눠떨어지지 않는 값은 소수가 길어집니다. 디자이너와 쓸 수 있는 크기 목록을 미리 정하면 이런 값이 줄어듭니다. {추론}",
+          "lang": "python",
+          "code": "for px in [12, 13, 16, 24, 40]:\n    print(f\"{px}px → {px / 16:g}rem\")\n# 12px → 0.75rem\n# 13px → 0.8125rem\n# 16px → 1rem\n# 24px → 1.5rem\n# 40px → 2.5rem"
+        }
+      ],
+      "how_far": "디자인 시안과 나란히 놓았을 때 차이를 못 찾을 정도로 맞추고, 같은 부품을 다른 페이지에서 다시 쓸 수 있게 나누면 됩니다. 디자인 시스템 전체 설계는 팀 단위 일입니다.[1] {추론}",
+      "refs": [1, 13, 18, 31, 37],
+      "study": ["atomic-design", "figma-devmode", "storybook-docs"]
+    },
+    {
+      "section": "task",
+      "quote": "・コードの保守性・可読性向上を意識したリファクタリング",
+      "short": "동작은 그대로 두고, 다음 사람이 읽고 고치기 쉬운 코드로 다시 짠다.",
+      "why": "이 팀이 맡는 사이트는 몇 년씩 살아 있고 담당자가 바뀝니다 — 2021년 묶음 파일이 아직 돌고 있는 사이트도 있습니다.[8] 인물상에도 '오래 쓰기 쉽고 고치기 쉬운 코드'가 있습니다.[1]",
+      "actually": {
+        "items": [
+          "**작게 나눠 바꾸기** — 함수 추출·이름 바꾸기처럼 한 번에 하나씩, 매번 시험을 돌린다.[38]",
+          "**타입 붙이기** — 자바스크립트 파일을 TypeScript 로 옮기며 API 응답 모양부터 타입으로 적는다.[39]",
+          "**규칙으로 묶기** — 이름·들여쓰기·파일 배치를 정적 분석 도구(ESLint·Stylelint)에 맡긴다.[11][13]"
+        ]
+      },
+      "how_far": "고치기 전에 시험(최소한 화면을 눈으로 비교하는 목록)을 먼저 두고, 바꾼 이유를 PR 에 적을 수 있으면 됩니다. {추론}",
+      "refs": [1, 8, 11, 13, 38, 39],
+      "study": ["refactoring", "effective-ts"]
+    },
+    {
+      "section": "task",
+      "quote": "・テスト自動化・CI/CD導入による開発効率化",
+      "short": "시험과 배포를 사람이 손으로 하지 않게 자동으로 돌리는 흐름을 만든다.",
+      "why": "도구 목록에 Jenkins·GitHub Actions(자동 작업 도구)와 Cypress·Vitest(시험 도구)가 함께 있습니다.[1] 사이트가 많으면 손으로 하는 배포 절차가 사이트마다 달라지기 쉽습니다. {추론}",
+      "flows": [
+        {
+          "caption": "PR 하나가 올라가서 사이트에 나가기까지 (보통의 모양)",
+          "steps": [
+            "PR 열기 · 바꾼 코드를 올린다",
+            "정적 분석 · ESLint·Stylelint·타입 검사",
+            "단위 시험 · Vitest 로 함수·컴포넌트",
+            "E2E 시험 · Cypress 로 주요 화면을 브라우저째",
+            "빌드 · Vite·Webpack 으로 묶기",
+            "배포 · 검토 환경 → 운영"
+          ],
+          "mine_from": 1
+        }
+      ],
+      "actually": {
+        "items": [
+          "**GitHub Actions** — 저장소에 YAML 파일을 두면 PR 마다 시험이 돈다.[24]",
+          "**Jenkins** — 사내 서버에서 돌리는 자동화 서버. 파이프라인을 코드(Jenkinsfile)로 적는다. GitLab·svn 저장소 쪽은 이쪽일 가능성이 있다.[25] {추론}",
+          "**시험의 층** — 한국 NHN FE 개발랩 가이드는 단위·통합·E2E 를 범위로 나누고, E2E 는 느리지만 큰 리팩터링에도 안 깨진다고 설명한다.[12]"
+        ]
+      },
+      "how_far": "사이트 하나에 'PR 마다 시험 → 통과하면 빌드'를 붙일 수 있으면 됩니다. 운영 배포 권한·서버 구성은 팀이 정합니다. {추론}",
+      "refs": [1, 12, 24, 25],
+      "study": ["gha-docs", "jenkins-pipeline", "toast-fe-test"]
+    },
+    {
+      "section": "task",
+      "quote": "・Claude Codeを活用した開発効率化・コードレビュー支援",
+      "short": "Claude Code 같은 AI 도구로 코드 작성과 리뷰를 거들게 하는 방법을 팀에 들인다.",
+      "why": "같은 팀의 다른 공고 판에는 이 줄과 'AI 도구' 인물상이 없습니다 — 이 판에서 따로 적은 요구입니다.[1][2][3] 도구 목록에도 AI 개발 지원으로 Claude Code 가 따로 있습니다.[1]",
+      "actually": {
+        "items": [
+          "**터미널에서 일 맡기기** — Claude Code 는 저장소를 읽고 파일을 고치고 명령을 돌리는 도구다.[26]",
+          "**규칙 문서** — 저장소에 팀 규칙(코딩 규칙·명령)을 적은 파일을 두면 도구가 그 규칙을 따라간다.[26]",
+          "**리뷰 거들기** — PR 의 바뀐 부분을 먼저 읽혀 빠진 시험·위험한 변경을 짚게 하고, 판단은 사람이 한다. {추론}"
+        ]
+      },
+      "how_far": "AI 가 만든 코드를 그대로 합치지 않고 시험·리뷰를 거치게 하는 습관, 그리고 팀이 같이 쓸 규칙 문서를 만들 수 있으면 됩니다. 어디까지 쓸지는 회사 보안 규정이 정합니다. {추론}",
+      "refs": [1, 2, 3, 26],
+      "study": ["claude-code-docs"]
+    },
+    {
+      "section": "qualification",
+      "quote": "・HTML/CSS(Sass)・JavaScript(TypeScript)による開発経験（3年以上）",
+      "short": "HTML·Sass·TypeScript 로 화면을 만든 경력 3년 이상.",
+      "why": "원티드 표기 경력은 3~15년입니다.[1] 프레임워크보다 HTML·CSS·자바스크립트 자체를 먼저 적은 것은 회사 사이트처럼 프레임워크 없이 짠 페이지도 맡기 때문으로 읽힙니다.[9] {추론}",
+      "level": {
+        "basic": "의미에 맞는 태그, 반응형 레이아웃(flex·grid), 이벤트·비동기(Promise) 처리.",
+        "work": "Sass 변수·믹스인으로 스타일을 나누고, TypeScript 로 API 응답과 컴포넌트 속성에 타입을 붙인다.[13][39]",
+        "team": "프레임워크 없는 옛 페이지와 새 컴포넌트 코드를 오가며 고친다.[8][9] {추론}"
+      },
+      "how_far": "연차보다 '무엇을 만들었나'가 중요합니다 — 공고가 포트폴리오·Git 저장소를 보내 달라고 합니다.[1]",
+      "refs": [1, 8, 9, 13, 39],
+      "study": ["mjs-deepdive", "effective-ts", "toast-fe-htmlcss"]
+    },
+    {
+      "section": "qualification",
+      "quote": "・React, Vue, Svelte, いずれかのフレームワーク使用経験",
+      "short": "React·Vue·Svelte 가운데 하나라도 실무에서 써 봤으면 된다.",
+      "why": "대상 사이트마다 프레임워크가 달라서 하나를 깊게 아는 사람이 나머지를 배우는 쪽을 택한 요건입니다.[1][6][7] {추론}",
+      "actually": {
+        "items": [
+          "**React** — 함수 컴포넌트와 훅(useState·useEffect). 채용 사이트가 React 다.[6][15]",
+          "**Vue** — 단일 파일 컴포넌트(.vue)와 반응형 데이터.[16]",
+          "**Svelte** — 빌드 때 코드를 바꿔 가벼운 결과를 낸다.[17]",
+          "셋 모두 '상태가 바뀌면 화면이 다시 그려진다'는 같은 생각 위에 있어 하나를 알면 다른 것을 읽을 수 있다. {추론}"
+        ]
+      },
+      "how_far": "하나로 상태 관리·라우팅·API 연동이 들어간 작은 앱을 혼자 만들 수 있으면 됩니다. 나머지 둘은 공식 자습서를 끝낸 정도면 면접에서 이야기가 됩니다. {추론}",
+      "refs": [1, 6, 7, 15, 16, 17],
+      "study": ["react-docs", "vue-docs", "svelte-docs"]
+    },
+    {
+      "section": "qualification",
+      "quote": "・GitHub/GitLabなどを使ったチーム開発経験",
+      "short": "GitHub·GitLab 에서 브랜치·PR·리뷰로 여럿이 같이 개발해 본 경험.",
+      "why": "이 팀은 GitHub·GitLab·svn 을 함께 씁니다.[1] 코드 리뷰가 업무 줄에 따로 있습니다.[1]",
+      "how_far": "브랜치를 나눠 PR 을 올리고, 리뷰 의견을 반영하고, 충돌을 풀 수 있으면 됩니다. svn 은 써 본 적이 없어도 들어가서 배울 수 있는 수준입니다. {추론}",
+      "refs": [1],
+      "study": ["gha-docs"]
+    },
+    {
+      "section": "qualification",
+      "quote": "・デザインツール（Figmaなど）をもとに忠実にUIを実装できるスキル",
+      "short": "Figma 시안을 보고 간격·글꼴·색까지 그대로 화면으로 옮길 수 있는 솜씨.",
+      "why": "공고 전체에서 '디자인 재현'이 세 번 나옵니다(업무·요건·인물상).[1] 사내 디자이너와 같이 일하는 구조입니다.[1]",
+      "how_far": "시안을 받아 반응형까지 같은 느낌으로 만들 수 있어야 합니다. 포트폴리오에 '시안 → 구현' 비교를 넣으면 이 요건을 바로 보여 줄 수 있습니다. {추론}",
+      "refs": [1],
+      "study": ["figma-devmode", "atomic-design"]
+    },
+    {
+      "section": "qualification",
+      "quote": "・外部APIとの連携を考慮した実装の経験（REST/GraphQLなど）",
+      "short": "REST·GraphQL API 와 이어지는 화면을, 실패와 지연까지 생각해 만든 경험.",
+      "why": "업무 첫 예가 API 연동 화면입니다.[1] '고려한'이라는 말이 붙어 있어 단순 호출보다 오류·지연·응답 변경을 다룬 경험을 묻습니다. {추론}",
+      "actually": {
+        "items": [
+          "**REST** — 주소마다 자원이 있고 GET·POST 로 다룬다. 실패는 HTTP 상태로 온다.[27]",
+          "**GraphQL** — 주소 하나에 필요한 필드만 골라 묻는다. 오류가 200 응답 안에 같이 올 수 있다.[23]",
+          "**교차 출처** — 다른 도메인 API 는 서버 쪽 CORS 설정이 있어야 브라우저가 받는다.[28]"
+        ]
+      },
+      "how_far": "오류 화면·재시도·응답 필드가 빠졌을 때의 처리를 코드로 보일 수 있으면 됩니다. {추론}",
+      "refs": [1, 23, 27, 28],
+      "study": ["mdn-fetch", "graphql-learn", "mdn-cors"]
+    },
+    {
+      "section": "qualification",
+      "quote": "・日本語レベル: ビジネス",
+      "short": "일본어로 회의하고 문서를 쓸 수 있는 업무 수준. 서류도 일본어로 낸다.",
+      "why": "원티드 공고 머리에 '일본어 전용 포지션'이라 적혀 있고, 이력서와 직무경력서를 일본어로 내야 하며 한국어·영어 서류만 내면 서류에서 빠진다고 밝혔습니다.[1] 디렉터·디자이너와 의도를 맞추는 일이 많습니다.[1]",
+      "how_far": "공고는 JLPT 급수를 적지 않았습니다.[1] JLPT N1 은 '폭넓은 장면의 일본어를 이해', N2 는 '일상에 더해 폭넓은 장면을 어느 정도 이해'가 기준이라[29], 업무 회의를 하려면 보통 N2 이상을 보는 편입니다. {추론} 회사는 입사 뒤 일본어·한국어 그룹 수업을 열고 출석 조건을 채우면 수강료를 전부 댑니다.[5]",
+      "refs": [1, 5, 29],
+      "study": ["jlpt"]
+    },
+    {
+      "section": "qualification",
+      "quote": "・日本国内への移住が必要",
+      "short": "원격 근무가 아니라 일본에 살며 도쿄 사무실로 출근해야 한다.",
+      "why": "근무지는 도쿄 미나토구 NHN 아틀리에입니다.[1][4] 이 공고는 LAPRAS Global Bridge 를 거친 일본 현지 채용입니다.[1]",
+      "actually": {
+        "items": [
+          "**취업 비자** — 엔지니어는 보통 체류 자격 '기술·인문지식·국제업무'로 일한다. 대학 전공이나 10년 실무 경력 같은 요건이 있다.[30]",
+          "**회사 지원** — 해외 입사자에게 편도 항공권, 첫 1개월 단기 맨션, 이사 초기 비용(사례금·중개 수수료)을 대고 비자 신청을 대행한다.[5]",
+          "근무 장소의 변경 범위에 해외를 포함한 그룹 전 사업소가 들어 있다.[1]"
+        ]
+      },
+      "how_far": "입사일에 맞춰 이주할 수 있는지, 비자 요건(학위·경력)을 채우는지를 지원 전에 확인합니다. {추론}",
+      "refs": [1, 4, 5, 30],
+      "study": ["isa-visa"]
+    },
+    {
+      "section": "preference",
+      "quote": "・REST APIやGraphQLを利用したデータ取得・双方向通信の設計・実装経験",
+      "short": "API 로 데이터를 받는 것에 더해, 서버가 먼저 알려 주는 양방향 통신을 짜 본 경험.",
+      "why": "요건의 'API 연동'보다 한 단계 위입니다 — 받기만이 아니라 설계까지, 그리고 양방향 통신이 들어갑니다.[1] 게임 사이트의 실시간 소식처럼 서버가 먼저 보내야 하는 화면에 쓰일 수 있습니다. {추론}",
+      "actually": {
+        "items": [
+          "**웹소켓** — 연결을 열어 둔 채 서버와 브라우저가 서로 메시지를 보낸다.[40]",
+          "**GraphQL 구독(subscription)** — 정해 둔 사건이 생기면 서버가 결과를 밀어 준다.[41]",
+          "**설계** — 끊겼을 때 다시 잇기, 놓친 메시지 채우기, 화면 상태와 합치기를 정한다. {추론}"
+        ]
+      },
+      "how_far": "웹소켓으로 실시간 목록 하나를 만들고 끊김·재연결을 처리해 본 정도면 이야기가 됩니다. {추론}",
+      "refs": [1, 40, 41],
+      "study": ["graphql-learn", "mdn-websocket"]
+    },
+    {
+      "section": "preference",
+      "quote": "・API仕様のドキュメント（OpenAPI等）を元にした開発経験",
+      "short": "OpenAPI 같은 API 설명서를 보고, 백엔드가 끝나기 전에 화면을 먼저 만든 경험.",
+      "why": "백엔드와 따로 움직이려면 '응답이 이런 모양'이라는 약속 문서가 필요합니다. OpenAPI 는 그 약속을 기계가 읽는 형식으로 적는 표준입니다.[21]",
+      "actually": {
+        "items": [
+          "**타입 뽑기** — OpenAPI 문서에서 TypeScript 타입을 자동으로 만들어, 필드 이름이 틀리면 빌드가 실패하게 한다.[22]",
+          "**가짜 서버** — 문서의 예시 응답으로 화면을 먼저 만든다. {추론}",
+          "**대조** — 실제 응답이 문서와 어긋나는지 확인한다(아래 예)."
+        ]
+      },
+      "examples": [
+        {
+          "title": "문서의 필수 필드와 실제 응답 대조 (가상 값, 직접 돌린 출력)",
+          "body": "id 가 숫자로 약속됐는데 문자열이 왔고, publishedAt 이 빠졌습니다. 이런 어긋남을 화면이 터지기 전에 잡는 것이 목적입니다.",
+          "lang": "python",
+          "code": "required = {'id': int, 'title': str, 'publishedAt': str}\nfor r in [{'id': 1, 'title': '新着', 'publishedAt': '2026-11-23'},\n          {'id': '2', 'title': 'お知らせ'}]:\n    bad = [f\"{k}: {t.__name__} 기대, {'없음' if k not in r else type(r[k]).__name__}\"\n           for k, t in required.items() if not isinstance(r.get(k), t)]\n    print(f\"id={r['id']} \" + ('어긋남 → ' + ' / '.join(bad) if bad else '통과'))\n# id=1 통과\n# id=2 어긋남 → id: int 기대, str / publishedAt: str 기대, 없음"
+        }
+      ],
+      "how_far": "OpenAPI 문서를 읽고 타입을 만들어 쓰면 충분합니다. 문서를 직접 쓰는 것은 백엔드 몫입니다. {추론}",
+      "refs": [21, 22],
+      "study": ["openapi-spec", "openapi-ts"]
+    },
+    {
+      "section": "preference",
+      "quote": "・Storybookによるコンポーネント開発・管理",
+      "short": "화면 부품을 페이지와 떼어 Storybook 에서 따로 만들고 목록으로 관리한 경험.",
+      "why": "팀 특징으로 디자인 시스템 구축·운영을 꼽았고, 도구 목록에 Storybook 이 있습니다.[1] 여러 사이트가 같은 부품을 쓰려면 부품 목록이 한곳에 있어야 합니다. {추론}",
+      "actually": {
+        "items": [
+          "**이야기(story)** — 부품 하나의 상태마다(기본·비활성·오류) 하나씩 적어 브라우저에서 넘겨 본다.[18]",
+          "**시험** — 이야기를 그대로 상호작용 시험·접근성 검사·화면 비교에 쓴다.[18]",
+          "**디자이너 확인** — 페이지를 다 만들기 전에 부품 단위로 검토받는다. {추론}"
+        ]
+      },
+      "how_far": "자기 부품 몇 개를 Storybook 에 올리고 상태별 이야기를 쓴 정도면 됩니다. {추론}",
+      "refs": [1, 18],
+      "study": ["storybook-docs"]
+    },
+    {
+      "section": "preference",
+      "quote": "・CI/CD環境構築（GitHub Actions, Jenkins等）",
+      "short": "GitHub Actions·Jenkins 로 시험·빌드·배포 자동화를 처음부터 만들어 본 경험.",
+      "why": "업무 줄의 'CI/CD 도입'을 맡을 사람을 찾는 우대입니다.[1] 저장소가 GitHub·GitLab·svn 으로 나뉘어 도구도 둘입니다.[1]",
+      "how_far": "워크플로 파일을 직접 써서 PR 시험과 빌드 결과물 올리기까지 붙여 봤으면 됩니다. Jenkins 서버 운영까지는 요구하지 않는 것으로 읽힙니다. {추론}",
+      "refs": [1],
+      "study": ["gha-docs", "jenkins-pipeline"]
+    },
+    {
+      "section": "preference",
+      "quote": "・フロントエンドのE2E/ユニットテスト経験",
+      "short": "브라우저째 도는 E2E 시험과 함수 단위 시험을 직접 써 본 경험.",
+      "why": "도구 목록의 시험 칸이 Cypress(E2E)와 Vitest(단위)입니다.[1] 리팩터링이 업무에 두 번 나오는데, 시험이 있어야 겁 없이 고칠 수 있습니다.[1][12]",
+      "actually": {
+        "items": [
+          "**단위** — Vitest 로 날짜 포맷·가격 계산 같은 함수와 작은 컴포넌트를 본다. 빠르지만 연결은 못 본다.[12][20]",
+          "**E2E** — Cypress 로 '목록 → 상세 → 지원 버튼'처럼 사용자의 길을 실제 브라우저에서 따라간다.[19]",
+          "**어디에 얼마나** — 한국 NHN FE 개발랩 가이드는 세 종류의 장단점을 알고 상황에 맞게 고르라고 한다.[12]"
+        ]
+      },
+      "how_far": "자기 프로젝트에 단위 시험 몇 개와 주요 경로 E2E 하나를 붙여 CI 에서 돌려 봤으면 충분합니다. {추론}",
+      "refs": [1, 12, 19, 20],
+      "study": ["vitest-docs", "cypress-docs", "test-nyumon", "toast-fe-test"]
+    },
+    {
+      "section": "preference",
+      "quote": "※スキル・ご経験が分かるポートフォリオやGitリポジトリ等があればお送りください",
+      "short": "실력을 보여 줄 포트폴리오나 Git 저장소가 있으면 같이 보내라는 안내.",
+      "why": "다른 판의 같은 공고는 서류 단계에서 포트폴리오 제출이나 웹 시험이 있을 수 있다고 적었습니다.[1] 디자인 재현을 강조하는 자리라 결과 화면을 보여 줄 수 있는 자료가 유리합니다. {추론}",
+      "how_far": "README 를 일본어로 쓰고, 시안과 구현 화면 비교·시험·CI 가 붙은 저장소 하나면 요건 여러 줄을 한 번에 보여 줄 수 있습니다. {추론}",
+      "refs": [1]
+    },
+    {
+      "section": "preference",
+      "quote": "・UI/UXやデザイン再現に対して強いこだわりを持てる方",
+      "short": "1px 어긋남이나 어색한 동작을 그냥 넘기지 못하는 사람.",
+      "why": "업무·요건·인물상에 같은 말이 반복됩니다.[1] 그룹 회사 사이트는 그 회사의 얼굴이라 디자인 품질이 곧 결과물입니다. {추론}",
+      "refs": [1]
+    },
+    {
+      "section": "preference",
+      "quote": "・チームワークと自律性を両立できる方",
+      "short": "팀과 맞춰 가면서도, 맡은 사이트는 시키지 않아도 스스로 끌고 가는 사람.",
+      "why": "공고는 UI·UX 에서 개발 방식·기술 선택까지 재량이 넓다고 적었습니다.[1] 재량이 넓으면 스스로 정하고 설명하는 힘이 필요합니다. {추론}",
+      "refs": [1]
+    },
+    {
+      "section": "preference",
+      "quote": "・技術的探求心が強く、常に新しい技術をキャッチアップしている方",
+      "short": "새 프레임워크·도구를 스스로 찾아 써 보고 쓸 만한지 판단하는 사람.",
+      "why": "팀 특징이 '기술 흐름에 유연하게 대응, 모던 기술 도입 실적 다수'입니다.[1] 실제로 Astro·Vite 로 새로 지은 사이트가 있습니다.[6][7]",
+      "refs": [1, 6, 7]
+    },
+    {
+      "section": "preference",
+      "quote": "・メンバーと積極的にナレッジを共有できる方",
+      "short": "알게 된 것을 문서·발표로 팀에 나누는 사람.",
+      "why": "업무 줄의 코드 리뷰·공부 모임과 같은 이야기입니다.[1] 회사 Study 제도도 지식 공유를 목적으로 적었습니다.[5]",
+      "refs": [1, 5]
+    },
+    {
+      "section": "preference",
+      "quote": "・長期的に使いやすく保守しやすいコードを意識できる方",
+      "short": "몇 년 뒤 다른 사람이 고칠 것을 생각하며 코드를 쓰는 사람.",
+      "why": "대상 사이트들이 여러 해 이어지고 옛 코드가 남아 있습니다.[8][9] 리팩터링이 업무에 두 번 나옵니다.[1]",
+      "refs": [1, 8, 9],
+      "study": ["refactoring"]
+    },
+    {
+      "section": "preference",
+      "quote": "・Claude CodeなどのAIツールを積極的に活用し、開発効率とコード品質を高められる方",
+      "short": "AI 도구를 적극 쓰되, 속도만이 아니라 코드 품질까지 올리는 사람.",
+      "why": "업무 줄에도 Claude Code 활용이 따로 있습니다.[1] '품질'을 같이 적어, AI 가 만든 코드를 검토 없이 쓰는 것과는 선을 긋습니다. {추론}",
+      "how_far": "면접에서 'AI 로 무엇을 맡기고 무엇은 직접 확인하나'를 자기 예로 말할 수 있으면 됩니다. {추론}",
+      "refs": [1, 26],
+      "study": ["claude-code-docs"]
+    },
+    {
+      "section": "preference",
+      "quote": "・意図を汲み取り、ディレクター・デザイナーと連携しながら仕様に沿った実装ができる方",
+      "short": "디렉터·디자이너가 말하지 않은 의도까지 읽고, 정한 사양대로 만드는 사람.",
+      "why": "그룹 회사가 의뢰하고 디렉터·디자이너가 사양을 정하는 사내 제작 구조입니다.[1] 사양이 빈 곳을 먼저 묻는 것이 일의 절반입니다. {추론}",
+      "refs": [1]
+    }
+  ],
+  "resources": [
+    {
+      "id": "toast-fe-conv",
+      "title": "FE 가이드 — 코딩 컨벤션",
+      "by": "NHN FE 개발랩 (TOAST UI)",
+      "kind": "doc",
+      "url": "https://ui.toast.com/fe-guide/ko_CODING-CONVENTION",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "같은 NHN 그룹 한국 FE 개발랩의 자바스크립트 규칙. 코드 리뷰 업무의 기준이 어떻게 생기는지 본다."
+    },
+    {
+      "id": "toast-fe-test",
+      "title": "FE 가이드 — 테스트",
+      "by": "NHN FE 개발랩 (TOAST UI)",
+      "kind": "doc",
+      "url": "https://ui.toast.com/fe-guide/ko_TEST",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "단위·통합·E2E 의 차이와 Cypress 시작법 — 우대사항의 E2E·단위 시험 경험을 위한 첫 글."
+    },
+    {
+      "id": "toast-fe-htmlcss",
+      "title": "FE 가이드 — HTML/CSS/Sass",
+      "by": "NHN FE 개발랩 (TOAST UI)",
+      "kind": "doc",
+      "url": "https://ui.toast.com/fe-guide/ko_HTMLCSS",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "Sass 중첩·변수 이름·선택자 규칙. 자격요건 첫 줄(HTML/CSS(Sass))을 팀 규칙 눈높이로 맞춘다."
+    },
+    {
+      "id": "mjs-deepdive",
+      "title": "모던 자바스크립트 Deep Dive",
+      "by": "이웅모 · 위키북스 · 2020",
+      "kind": "book",
+      "url": "https://wikibook.co.kr/mjs/",
+      "lang": "ko",
+      "level": "실무",
+      "why": "프레임워크 밑의 자바스크립트 — 비동기·이벤트·DOM. jQuery 로 된 옛 사이트를 읽고 옮길 때 바탕이 된다."
+    },
+    {
+      "id": "effective-ts",
+      "title": "이펙티브 타입스크립트",
+      "by": "댄 밴더캄 · 장원호 옮김 · 인사이트 · 2021",
+      "kind": "book",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C%20%ED%83%80%EC%9E%85%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8",
+      "lang": "ko",
+      "level": "실무",
+      "why": "타입 설계와 자바스크립트에서 옮기기 — 리팩터링 업무와 API 타입 붙이기에 쓴다."
+    },
+    {
+      "id": "refactoring",
+      "title": "리팩터링 (2판)",
+      "by": "마틴 파울러",
+      "kind": "book",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A6%AC%ED%8C%A9%ED%84%B0%EB%A7%81%202%ED%8C%90",
+      "lang": "ko",
+      "level": "실무",
+      "why": "2판 예제가 자바스크립트다. '동작은 그대로, 한 번에 하나씩' 고치는 방법 — 업무의 리팩터링 두 줄."
+    },
+    {
+      "id": "atomic-design",
+      "title": "Atomic Design ～堅牢で使いやすいUIを効率良く設計・実装する",
+      "by": "五藤佑典 · 技術評論社 · 2018",
+      "kind": "book",
+      "url": "https://gihyo.jp/book/2018/978-4-7741-9705-0",
+      "lang": "ja",
+      "level": "실무",
+      "why": "부품을 작은 것부터 쌓는 설계를 일본어로 — 컴포넌트 설계 업무와 일본어 기술 용어를 같이 익힌다."
+    },
+    {
+      "id": "test-nyumon",
+      "title": "フロントエンド開発のためのテスト入門",
+      "by": "吉井健文 · 翔泳社 · 2023",
+      "kind": "book",
+      "url": "https://www.kinokuniya.co.jp/f/dsg-01-9784798178189",
+      "lang": "ja",
+      "level": "실무",
+      "why": "프론트엔드 시험 전략과 실습을 일본어로. 면접에서 시험 이야기를 일본어로 할 준비가 된다."
+    },
+    {
+      "id": "react-docs",
+      "title": "React 공식 문서 — 빠르게 시작하기",
+      "kind": "doc",
+      "url": "https://ko.react.dev/learn",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "채용 사이트가 React 다. 세 프레임워크 가운데 하나를 고른다면 여기부터."
+    },
+    {
+      "id": "vue-docs",
+      "title": "Vue.js ガイド — はじめに",
+      "kind": "doc",
+      "url": "https://ja.vuejs.org/guide/introduction.html",
+      "lang": "ja",
+      "free": true,
+      "level": "입문",
+      "why": "Vue(Nuxt) 사이트를 읽기 위한 공식 자습서. 일본어판으로 읽으면 용어도 같이 익힌다."
+    },
+    {
+      "id": "svelte-docs",
+      "title": "Svelte Docs — Overview",
+      "kind": "doc",
+      "url": "https://svelte.dev/docs/svelte/overview",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "요건의 세 번째 프레임워크. 빌드 때 바꾸는 방식이 React·Vue 와 어떻게 다른지 본다."
+    },
+    {
+      "id": "astro-docs",
+      "title": "Astro Docs — はじめに",
+      "kind": "doc",
+      "url": "https://docs.astro.build/ja/getting-started/",
+      "lang": "ja",
+      "free": true,
+      "level": "입문",
+      "why": "PlayArt 회사 사이트가 Astro 로 빌드돼 있다. 글 위주 사이트를 가볍게 짓는 방법."
+    },
+    {
+      "id": "vite-docs",
+      "title": "Vite — Getting Started",
+      "kind": "doc",
+      "url": "https://vite.dev/guide/",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "채용 사이트의 빌드 도구. Webpack 사이트를 옮기는 개발 환경 정비 업무의 바탕."
+    },
+    {
+      "id": "sass-docs",
+      "title": "Sass Documentation",
+      "kind": "doc",
+      "url": "https://sass-lang.com/documentation/",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "변수·믹스인·모듈(@use). 자격요건의 CSS(Sass)."
+    },
+    {
+      "id": "storybook-docs",
+      "title": "Storybook Docs — Get started / How to test UIs",
+      "kind": "doc",
+      "url": "https://storybook.js.org/docs",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "우대사항의 Storybook 컴포넌트 관리와 디자이너 확인 흐름."
+    },
+    {
+      "id": "cypress-docs",
+      "title": "Cypress Documentation — Why Cypress?",
+      "kind": "doc",
+      "url": "https://docs.cypress.io/app/get-started/why-cypress",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "도구 목록의 E2E 시험 도구. 주요 경로 시험 하나를 만드는 데까지."
+    },
+    {
+      "id": "vitest-docs",
+      "title": "Vitest — Getting Started",
+      "kind": "doc",
+      "url": "https://vitest.dev/guide/",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "도구 목록의 단위 시험 도구. Vite 설정을 그대로 쓴다."
+    },
+    {
+      "id": "openapi-spec",
+      "title": "OpenAPI Specification v3.1.0",
+      "kind": "doc",
+      "url": "https://spec.openapis.org/oas/v3.1.0.html",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "우대사항의 OpenAPI — 경로·스키마·예시를 읽는 법."
+    },
+    {
+      "id": "openapi-ts",
+      "title": "openapi-typescript",
+      "kind": "doc",
+      "url": "https://openapi-ts.dev/introduction",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "OpenAPI 문서에서 TypeScript 타입을 뽑아 화면 코드와 API 약속을 묶는다."
+    },
+    {
+      "id": "graphql-learn",
+      "title": "Learn GraphQL (Queries · Subscriptions)",
+      "kind": "doc",
+      "url": "https://graphql.org/learn/",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "요건·우대의 GraphQL — 질의와 구독(양방향)."
+    },
+    {
+      "id": "mdn-fetch",
+      "title": "MDN — Fetch API 사용하기",
+      "kind": "doc",
+      "url": "https://developer.mozilla.org/ko/docs/Web/API/Fetch_API/Using_Fetch",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "API 연동 화면의 기본. 실패를 어떻게 알아채는지."
+    },
+    {
+      "id": "mdn-cors",
+      "title": "MDN — 교차 출처 리소스 공유 (CORS)",
+      "kind": "doc",
+      "url": "https://developer.mozilla.org/ko/docs/Web/HTTP/CORS",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "외부 API 연동에서 가장 흔히 막히는 곳."
+    },
+    {
+      "id": "mdn-websocket",
+      "title": "MDN — 웹 소켓",
+      "kind": "doc",
+      "url": "https://developer.mozilla.org/ko/docs/Web/API/WebSockets_API",
+      "lang": "ko",
+      "free": true,
+      "level": "실무",
+      "why": "우대사항의 양방향 통신."
+    },
+    {
+      "id": "figma-devmode",
+      "title": "Figma Dev Mode",
+      "kind": "doc",
+      "url": "https://www.figma.com/dev-mode/",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "시안에서 간격·색·글꼴 값을 읽는 개발자 화면 — 디자인 재현 요건."
+    },
+    {
+      "id": "gha-docs",
+      "title": "GitHub Actions 문서",
+      "kind": "doc",
+      "url": "https://docs.github.com/ko/actions",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "why": "PR 마다 시험·빌드를 돌리는 워크플로 — CI/CD 업무와 우대사항."
+    },
+    {
+      "id": "jenkins-pipeline",
+      "title": "Jenkins User Handbook — Pipeline",
+      "kind": "doc",
+      "url": "https://www.jenkins.io/doc/book/pipeline/",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "why": "도구 목록의 다른 CI. Jenkinsfile 을 읽고 고칠 수 있게."
+    },
+    {
+      "id": "claude-code-docs",
+      "title": "Claude Code Docs — Overview",
+      "kind": "doc",
+      "url": "https://docs.anthropic.com/en/docs/claude-code/overview",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "why": "업무·인물상의 Claude Code 활용 — 무엇을 할 수 있고 팀 규칙을 어떻게 알려 주나."
+    },
+    {
+      "id": "jlpt",
+      "title": "日本語能力試験 JLPT — N1～N5 認定の目安",
+      "kind": "doc",
+      "url": "https://www.jlpt.jp/about/levelsummary.html",
+      "lang": "ja",
+      "free": true,
+      "level": "입문",
+      "why": "'비즈니스 일본어'를 스스로 가늠하는 공식 기준."
+    },
+    {
+      "id": "isa-visa",
+      "title": "在留資格「技術・人文知識・国際業務」",
+      "by": "出入国在留管理庁",
+      "kind": "doc",
+      "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html",
+      "lang": "ja",
+      "free": true,
+      "level": "입문",
+      "why": "일본 이주 요건 — 엔지니어 취업 비자의 학력·경력 조건을 지원 전에 확인한다."
+    }
+  ],
+  "study_path": [
+    {
+      "title": "대상 사이트 뜯어보기",
+      "time": "3일",
+      "goal": "공고가 든 사이트들이 무엇으로 만들어졌는지 설명하고, 면접에서 '이 사이트라면 이렇게 고치겠다'를 말할 수 있다.",
+      "task": "공고의 대상 사이트 몇 곳을 브라우저 개발자 도구로 열어 프레임워크·빌드 흔적·불러오는 파일 크기를 표로 적고, 한 곳을 골라 개선안 세 줄을 일본어로 쓴다.",
+      "resources": ["toast-fe-conv", "vite-docs", "astro-docs"]
+    },
+    {
+      "title": "하나의 프레임워크로 API 화면 만들기",
+      "time": "2~3주",
+      "goal": "React(또는 Vue·Svelte)로 목록·상세·검색이 있는 작은 앱을 API 에 붙여 만든다.",
+      "task": "가상 채용 공고 데이터를 OpenAPI 문서로 먼저 적고 타입을 뽑은 뒤, 로딩·오류·빈 목록 상태를 모두 갖춘 목록 화면을 만든다.",
+      "resources": ["react-docs", "vue-docs", "svelte-docs", "mdn-fetch", "openapi-spec", "openapi-ts", "effective-ts"]
+    },
+    {
+      "title": "시안대로 부품 만들기",
+      "time": "2주",
+      "goal": "Figma 시안을 부품 단위로 나눠 그대로 구현하고 Storybook 에 상태별로 올린다.",
+      "task": "Figma 커뮤니티의 무료 UI 키트 하나를 골라 버튼·카드·머리글을 Sass 토큰으로 만들고, 시안과 구현 화면을 나란히 놓은 비교 이미지를 저장소에 넣는다.",
+      "resources": ["figma-devmode", "atomic-design", "storybook-docs", "sass-docs", "toast-fe-htmlcss"]
+    },
+    {
+      "title": "시험과 CI 붙이기",
+      "time": "1~2주",
+      "goal": "PR 마다 단위 시험과 E2E 하나가 돌고, 통과하면 빌드되는 저장소를 만든다.",
+      "task": "앞 단계 앱에 Vitest 시험 다섯 개와 Cypress 로 '목록 → 상세' 경로 하나를 쓰고 GitHub Actions 워크플로로 묶는다. 옛 jQuery 페이지 하나를 컴포넌트로 옮기는 PR 도 시험과 함께 올린다.",
+      "resources": ["vitest-docs", "cypress-docs", "gha-docs", "test-nyumon", "toast-fe-test", "refactoring"]
+    },
+    {
+      "title": "일본어 서류와 이주 준비",
+      "time": "2주~",
+      "goal": "일본어 이력서·직무경력서를 쓰고, 비자 요건과 일본어 수준을 확인한다.",
+      "task": "저장소 README 와 직무경력서를 일본어로 쓰고, AI 도구를 어디에 쓰고 무엇을 직접 확인했는지를 한 단락으로 정리한다. 비자 학력·경력 요건을 표로 대조한다.",
+      "resources": ["jlpt", "isa-visa", "claude-code-docs"]
+    }
+  ],
+  "pay": {
+    "summary": "이 자리는 **연 450만~700만 엔**(공고), 회사 평균 연봉은 공시가 없다 — NHN JAPAN 은 한국 NHN 의 100% 자회사인 비상장사다",
+    "rows": [
+      {
+        "label": "공고 표기 연봉",
+        "value": "450만~700만 엔",
+        "amount": 700,
+        "basis": "공고 · 2026년",
+        "note": "기술·경험을 보고 정한다. 수습 3개월 동안도 조건이 같다 [1]"
+      },
+      {
+        "label": "같은 자리 다른 공고의 내역",
+        "value": "연봉을 14로 나눠 지급 · 월 기본급 22만 8,857엔~",
+        "basis": "공고",
+        "note": "같은 UIT 팀 프론트엔드 공고. 고정 잔업 수당 월 8만 4,000엔(42시간분)이 연봉 안에 들어 있다고 적었다 [2]"
+      },
+      {
+        "label": "계약사원 판 공고",
+        "value": "협의(応相談)",
+        "basis": "공고",
+        "note": "같은 업무의 계약사원 모집. 첫 계약 3개월 뒤 최장 6개월씩 갱신, 정사원 전환 제도가 있다 [3]"
+      }
+    ],
+    "how": "금액은 일본 엔이다(원화로 바꾸지 않았다). NHN JAPAN 은 상장사가 아니어서 유가증권보고서의 평균 급여가 없다 — 공시 숫자 없음 [4]. 다른 판 공고는 연봉에 고정 잔업 42시간분이 들어 있다고 적었으니, 잔업이 그보다 적어도 그 수당은 받고 넘으면 따로 받는 구조로 읽힌다 [2] {추론}. 반기마다 평가해 인센티브와 급여·레벨을 고친다 [5]."
+  },
+  "benefits": {
+    "items": [
+      {"name": "근무 시간", "detail": "플렉스 근무. 코어타임 11:00~15:00, 출근 8:00~11:00·퇴근 15:00~22:00 사이 자유, 하루 표준 7.5시간"},
+      {"name": "휴일", "detail": "토·일 완전 주휴 2일과 공휴일, 연말연시·경조 휴가"},
+      {"name": "연차", "detail": "법정 일수 + 3일. 하루·반나절·시간 단위로 쓸 수 있고, 남은 연차를 쌓아 두는 제도가 있다"},
+      {"name": "리프레시 휴가", "detail": "근속 5년에 10일"},
+      {"name": "점심", "detail": "날마다 여러 종류의 도시락을 무료로 제공"},
+      {"name": "사내 시설", "detail": "상주 마사지사의 마사지실(근무 시간 안), 강사가 있는 체육관·샤워실, 카페, 도서실(2025년 새로 단장), 무인 매점, 휴게실, 주차장"},
+      {"name": "Study 제도", "detail": "부서를 넘어 모이는 그룹 학습. 책 구입·온라인 강좌·모임 비용 지원"},
+      {"name": "어학 강좌", "detail": "일본어·한국어 그룹 수업. 출석 조건을 채우면 수강료 전액 회사 부담, 어학 시험 응시료도 회사 부담"},
+      {"name": "해외 입사자 이주 지원", "detail": "편도 항공권, 첫 1개월 단기 맨션, 이사 초기 비용(사례금·중개 수수료), 비자 신청 대행"},
+      {"name": "입사 지원", "detail": "환영 키트(마사지권·카페권), 첫날 오리엔테이션·환영 점심, 선배 1명이 상담을 맡는 '엔젤 제도', 몇 달마다 인사 면담"},
+      {"name": "건강", "detail": "정기 건강검진, 독감 예방 접종, 스트레스 검사·상담 서비스, 상병 휴가"},
+      {"name": "그 밖의 제도", "detail": "경조·상병·재해 위로금, 재형 저축, 통근 수당, 사내 추천 제도, 사회보험"}
+    ],
+    "note": "공고의 휴일·복리후생 칸[1]과 회사 채용 사이트 복지 페이지[5]를 합친 것이다(2026-11 기준). 채용 사이트는 NHN 그룹 공통 페이지라 그룹 일본 법인에 함께 적용되는 제도로 읽힌다. 금액은 회사가 밝히지 않았다."
+  },
+  "location": {
+    "name": "NHN 아틀리에 (NHN JAPAN 본사)",
+    "address": "東京都港区西新橋三丁目1番8号 NHN アトリエ",
+    "postal": "105-0003",
+    "map_url": "https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B8%AF%E5%8C%BA%E8%A5%BF%E6%96%B0%E6%A9%8B3-1-8",
+    "near": "도쿄메트로 히비야선 도라노몬힐스역 걸어서 4분 · 긴자선 도라노몬역 7분 · 도에이 미타선 오나리몬역 7분 · JR 신바시역 15분 [4]",
+    "note": "주소와 역은 회사 개요[4], 공고의 근무지도 같다 [1]. 그룹 일본 법인들이 함께 쓰는 자사 건물이다 [4]. 일본 주소라 네이버 지도 대신 구글 지도 검색 링크를 달았다."
+  },
+  "fit": {
+    "good": [
+      "한 제품보다 여러 사이트를 돌며 매번 다른 문제를 푸는 게 즐거운 사람[1]",
+      "디자인 시안과 1px 까지 맞추는 데서 만족을 느끼는 사람[1]",
+      "옛 코드를 새 도구로 옮기는 일을 귀찮아하지 않는 사람[1][8][9]",
+      "한국어와 일본어를 둘 다 쓰는 사람 — 다른 판 공고는 한국 측과의 협업 경험을 우대했다[3]"
+    ],
+    "hard": [
+      "비즈니스 일본어·일본 이주가 필수이고 서류부터 일본어다[1]",
+      "프레임워크·저장소·CI 도구가 사이트마다 달라 한 기술만 깊게 파기 어렵다[1] {추론}",
+      "고객이 그룹 회사라 일정·사양을 의뢰한 쪽이 정하는 일이 많다[1] {추론}"
+    ]
+  },
+  "interview": [
+    {"q": "jQuery 로 된 회사 사이트를 새로 짓는다면 무엇으로, 어떤 순서로 옮기겠어요?", "a": "대상 사이트에 jQuery·서버 페이지와 Astro·Vite 가 섞여 있다.[7][9]"},
+    {"q": "Figma 시안에 오류·빈 상태가 없으면 어떻게 하나요?", "a": "디자인 재현과 디렉터·디자이너 협업 요구.[1]"},
+    {"q": "API 응답 필드가 문서와 다르게 왔어요. 화면은 어떻게 지키나요?", "a": "OpenAPI 우대와 외부 API 연동 요건.[1][21]"},
+    {"q": "React·Vue·Svelte 가운데 하나만 써 봤다면, 다른 프레임워크로 된 사이트를 받았을 때 무엇부터 보나요?", "a": "프레임워크 넷이 함께 쓰인다.[1]"},
+    {"q": "단위 시험과 E2E 시험을 어디에 얼마나 나눠 쓰겠어요?", "a": "Cypress·Vitest 와 리팩터링 업무.[1][12]"},
+    {"q": "Claude Code 에 무엇을 맡기고 무엇은 직접 확인하나요?", "a": "이 판에만 있는 AI 도구 줄 두 개.[1][3]"}
+  ],
+  "sources": [
+    {"n": 1, "title": "원티드 · [NHN Japan 株式会社] 프론트엔드 엔지니어 _근무지 일본", "url": "https://www.wanted.co.kr/wd/394722", "kind": "posting", "date": "2026-11", "note": "LAPRAS Global Bridge 경유 · 회사·부서 소개, 업무·요건·우대·인물상, 연봉·근무 조건·전형"},
+    {"n": 2, "title": "リクルートダイレクトスカウト · 【フロントエンドエンジニア】技術トレンドへの柔軟な対応/技術導入実績多数", "url": "https://directscout.recruit.co.jp/job_descriptions/8344251", "kind": "posting", "note": "같은 자리의 다른 판 — 'NHN JAPAN UIT팀', 한국 법인 일감, 14분할 지급·고정 잔업 42시간분, 면접 2~3회"},
+    {"n": 3, "title": "RecGame · NHN 〔JP〕フロントエンドエンジニア (契約社員)", "url": "https://recgame.jp/job/detail/40067", "kind": "posting", "note": "같은 업무의 계약사원 판 — 한일 개발팀 공동 프로젝트, 성능 최적화, 한국 측 엔지니어와 영어·한국어 협업 우대. AI 도구 줄은 없다"},
+    {"n": 4, "title": "NHN JAPAN株式会社 · Company Info", "url": "https://www.nhn-japan.com/", "kind": "company", "date": "2026-11", "note": "설립 2013-04-01, 사원 81명(2025-12), 주소·역, 그룹 회사 목록, 한국 NHN 이 완전 모회사"},
+    {"n": 5, "title": "NHN Group 採用 · 福利厚生 (benefit)", "url": "https://recruit.nhn-japan.com/benefit", "kind": "company", "date": "2026-11", "note": "성장 지원·사무 환경·입사 지원·건강 제도 설명. 화면을 그리는 공개 스크립트 안의 글로 읽었다"},
+    {"n": 6, "title": "recruit.nhn-japan.com 페이지 소스 (직접 확인)", "url": "https://recruit.nhn-japan.com/", "kind": "company", "date": "2026-11-23", "note": "Vite 빌드 파일(assets/index-해시.js) 하나로 그리는 React 단일 페이지 앱. 묶음 안에 axios·Swiper"},
+    {"n": 7, "title": "NHN PlayArt 회사 사이트 페이지 소스 (직접 확인)", "url": "https://www.nhn-playart.com/", "kind": "company", "date": "2026-11-23", "note": "Astro 가 만든 스크립트 파일 이름(index.astro_astro_type_script…)이 보인다"},
+    {"n": 8, "title": "#コンパス 공식 사이트 페이지 소스 (직접 확인)", "url": "https://app.nhn-playart.com/compass/", "kind": "company", "date": "2026-11-23", "note": "20211025.index.bundle.min.js 묶음 파일, '.nhn' 서버 페이지 링크"},
+    {"n": 9, "title": "NHN JAPAN 회사 사이트 페이지 소스 (직접 확인)", "url": "https://www.nhn-japan.com/", "kind": "company", "date": "2026-11-23", "note": "jQuery 2.2.1, '.nhn' 서버 페이지. comico·뿌니뿌니 사이트도 jQuery 흔적"},
+    {"n": 10, "title": "COMICO ART MUSEUM YUFUIN 사이트 (직접 확인)", "url": "https://www.camy.oita.jp/", "kind": "company", "date": "2026-11-23", "note": "Wix 사이트 빌더로 만든 페이지(nhn-studio-comico.com 도 같다)"},
+    {"n": 11, "title": "TOAST UI FE 가이드 · 코딩 컨벤션", "url": "https://ui.toast.com/fe-guide/ko_CODING-CONVENTION", "kind": "company", "note": "한국 NHN(FE 개발랩)의 자료 — 일본 법인 팀의 규칙은 아니다. 같은 그룹의 보통 방식으로만 인용"},
+    {"n": 12, "title": "TOAST UI FE 가이드 · 테스트", "url": "https://ui.toast.com/fe-guide/ko_TEST", "kind": "company", "note": "단위·통합·E2E 의 장단점, Jest·Cypress. 한국 NHN 자료"},
+    {"n": 13, "title": "TOAST UI FE 가이드 · HTML/CSS/Sass", "url": "https://ui.toast.com/fe-guide/ko_HTMLCSS", "kind": "company", "note": "Sass 중첩 3단계·@extend 쓰지 않기·케밥 케이스 변수. 한국 NHN 자료"},
+    {"n": 14, "title": "TOAST UI FE 가이드 · 성능 최적화", "url": "https://ui.toast.com/fe-guide/ko_PERFORMANCE", "kind": "company", "note": "로딩·렌더링 최적화. 한국 NHN 자료"},
+    {"n": 15, "title": "React 공식 문서", "url": "https://ko.react.dev/learn", "kind": "reference"},
+    {"n": 16, "title": "Vue.js ガイド", "url": "https://ja.vuejs.org/guide/introduction.html", "kind": "reference"},
+    {"n": 17, "title": "Svelte Docs", "url": "https://svelte.dev/docs/svelte/overview", "kind": "reference"},
+    {"n": 18, "title": "Storybook Docs · How to test UIs with Storybook", "url": "https://storybook.js.org/docs/writing-tests", "kind": "reference"},
+    {"n": 19, "title": "Cypress Documentation · Why Cypress?", "url": "https://docs.cypress.io/app/get-started/why-cypress", "kind": "reference"},
+    {"n": 20, "title": "Vitest Guide", "url": "https://vitest.dev/guide/", "kind": "reference"},
+    {"n": 21, "title": "OpenAPI Specification v3.1.0", "url": "https://spec.openapis.org/oas/v3.1.0.html", "kind": "reference"},
+    {"n": 22, "title": "openapi-typescript", "url": "https://openapi-ts.dev/introduction", "kind": "reference"},
+    {"n": 23, "title": "Learn GraphQL", "url": "https://graphql.org/learn/", "kind": "reference"},
+    {"n": 24, "title": "GitHub Actions 빠른 시작", "url": "https://docs.github.com/ko/actions/writing-workflows/quickstart", "kind": "reference"},
+    {"n": 25, "title": "Jenkins User Handbook · Pipeline", "url": "https://www.jenkins.io/doc/book/pipeline/", "kind": "reference"},
+    {"n": 26, "title": "Claude Code Docs · Overview", "url": "https://docs.anthropic.com/en/docs/claude-code/overview", "kind": "reference"},
+    {"n": 27, "title": "MDN · Fetch API 사용하기", "url": "https://developer.mozilla.org/ko/docs/Web/API/Fetch_API/Using_Fetch", "kind": "reference"},
+    {"n": 28, "title": "MDN · 교차 출처 리소스 공유 (CORS)", "url": "https://developer.mozilla.org/ko/docs/Web/HTTP/CORS", "kind": "reference"},
+    {"n": 29, "title": "日本語能力試験 JLPT · N1～N5 認定の目安", "url": "https://www.jlpt.jp/about/levelsummary.html", "kind": "reference"},
+    {"n": 30, "title": "出入国在留管理庁 · 在留資格「技術・人文知識・国際業務」", "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html", "kind": "reference"},
+    {"n": 31, "title": "Figma Dev Mode", "url": "https://www.figma.com/dev-mode/", "kind": "reference"},
+    {"n": 32, "title": "web.dev · Web Vitals", "url": "https://web.dev/articles/vitals", "kind": "reference"},
+    {"n": 33, "title": "Vite Guide", "url": "https://vite.dev/guide/", "kind": "reference"},
+    {"n": 34, "title": "Astro Docs · はじめに", "url": "https://docs.astro.build/ja/getting-started/", "kind": "reference"},
+    {"n": 35, "title": "Next.js Docs", "url": "https://nextjs.org/docs", "kind": "reference"},
+    {"n": 36, "title": "Nuxt Docs · Introduction", "url": "https://nuxt.com/docs/getting-started/introduction", "kind": "reference"},
+    {"n": 37, "title": "技術評論社 · Atomic Design（五藤佑典, 2018）", "url": "https://gihyo.jp/book/2018/978-4-7741-9705-0", "kind": "reference"},
+    {"n": 38, "title": "마틴 파울러 · 리팩터링 2판 (교보문고 검색)", "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A6%AC%ED%8C%A9%ED%84%B0%EB%A7%81%202%ED%8C%90", "kind": "reference"},
+    {"n": 39, "title": "댄 밴더캄 · 이펙티브 타입스크립트 (교보문고 검색)", "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C%20%ED%83%80%EC%9E%85%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8", "kind": "reference"},
+    {"n": 40, "title": "MDN · 웹 소켓", "url": "https://developer.mozilla.org/ko/docs/Web/API/WebSockets_API", "kind": "reference"},
+    {"n": 41, "title": "GraphQL · Subscriptions", "url": "https://graphql.org/learn/subscriptions/", "kind": "reference"}
+  ],
+  "caveat": "NHN JAPAN 프론트엔드 팀이 직접 쓴 기술 글·발표 영상은 찾지 못했다(받은 영상 재료 없음). 팀의 실제 규칙·CI 구성·Claude Code 사용 방식은 공개되지 않아, 대상 사이트의 공개 페이지 소스를 직접 열어 본 것과 같은 그룹 한국 FE 개발랩 가이드·공식 문서·{추론}으로 채웠다. 팀 이름은 이 공고에서 'CX팀 FE 파트', 다른 판에서 'UIT팀'이다. 공고는 하루 표준 7.5시간이라 적었고 다른 판은 8시간이라 적었다. 연봉은 엔 표기 그대로다."
+}
