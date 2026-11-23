@@ -109,7 +109,7 @@ function renderDaemon(s) {
       const busy = !["waiting", "idle"].includes(s.phase || "idle");
       dot.className = busy ? "dot on" : "dot";
       pill.className = "pill " + (busy ? "pill-on" : "pill-muted");
-      pill.textContent = busy ? "회차 실행 중" : "launchd 매시간 실행";
+      pill.textContent = busy ? "회차 실행 중" : cr.via === "windows-task" ? "작업 스케줄러 매시간 실행" : "launchd 매시간 실행";
       $("cfgSub").textContent = `launchd · ${(cr.interval || "").replace(" seconds", "초")} 주기 · 실행 ${cr.runs}회`;
     } else {
       dot.className = "dot off";
@@ -518,7 +518,7 @@ function renderOverview() {
   const schedTotal = lds.length + 1, schedOff = ldOffList.length + (dm.pid ? 0 : 1);
   const schedLv = running || (crawlerLd && crawlerLd.loaded) ? (ldOffList.length ? "warn" : "ok") : "bad";
   cells.push({ lv: schedLv, label: "크롤 스케줄러", val: schedLv === "ok" ? "정상" : `${schedOff}/${schedTotal} 꺼짐`,
-    sub: schedLv === "ok" ? (running ? "지금 회차 실행 중" : "launchd 가 회차를 띄웁니다")
+    sub: schedLv === "ok" ? (running ? "지금 회차 실행 중" : crawlerLd && crawlerLd.via === "windows-task" ? "작업 스케줄러가 회차를 띄웁니다" : "launchd 가 회차를 띄웁니다")
       : [dm.pid ? null : "데몬", ...ldOffList.map((l) => l.label.replace("com.jobseeker.", ""))].filter(Boolean).join(" · ") + " 꺼짐",
     tab: "crawlers" });
   let dbLv = "unknown", dbVal = "—", dbSub = "";
@@ -977,7 +977,7 @@ function renderCrawlers(d) {
     ...lds.map((l) => {
       const fine = !!l.loaded && (l.last_exit === "0" || l.last_exit === "(never exited)");
       return {
-        name: l.label.replace("com.jobseeker.", "launchd · "),
+        name: l.label.replace("com.jobseeker.", l.via === "windows-task" ? "작업 스케줄러 · " : "launchd · "),
         val: l.loaded ? (l.pid ? "실행 중" : "등록됨") : "미등록",
         sub: l.loaded ? `실행 ${esc(l.runs)}회 · 종료코드 ${esc(l.last_exit)} · ${esc((l.interval || "").replace(" seconds", "초 주기"))}` : "setup 스크립트 필요",
         cls: fine ? "done" : "failed blocked",

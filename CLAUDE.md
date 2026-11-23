@@ -353,6 +353,10 @@ ai-job-search 쪽 `/reality` 와 평가 관문이 이걸 부른다.
 - 새 공고·글의 임베딩은 크롤 사이클 끝의 `refresh_vectors()` 가 pgvector 에 증분으로 넣는다.
   그러려면 Ollama 가 늘 떠 있어야 한다 — `brew services start ollama`.
   꺼져 있으면 사이클은 그대로 돌고 임베딩만 건너뛴다(추천·검색이 낡아간다).
+- **윈도우 PC 도 크롤을 돈다**(2026-11-23) — `deploy/install-windows-crawler.ps1` 이 작업 스케줄러에
+  `jobseeker-crawler`(1시간)·`jobseeker-closecheck`(10분)·`jobseeker-albacheck`(30분)을 맥 launchd 와 같은 명령으로
+  등록한다(로그 `catch_capture/var/crawler/`). 8770 은 launchctl 이 없으면 이 작업 이름으로 스케줄러 상태를 읽는다.
+  맥과 둘 다 켜면 같은 사이트를 두 번 긁는다 — 한쪽만 켠다(`-Remove` 로 끈다).
 - 뷰어 API(8771, backend)는 `./deploy/setup-dashboards.sh` 가 launchd 로 상시 등록한다.
   이게 없으면 뷰어의 `/api/` 는 502 이고, 뷰어는 화면마다 정적 파일로 물러선다(느리고, 파일이
   구워진 시점의 상태를 보여준다). DB 가 내려가 있어도 서버는 떠서 503 을 주다가 DB 가 살아나면

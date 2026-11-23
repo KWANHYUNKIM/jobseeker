@@ -190,7 +190,9 @@ def _launchd(label: str) -> dict:
     try:
         r = subprocess.run(["launchctl", "print", f"gui/{os.getuid()}/{label}"],
                            capture_output=True, text=True, timeout=5)
-    except Exception as e:  # launchctl 없음(리눅스 등)
+    except Exception as e:  # launchctl 없음 — 윈도우면 작업 스케줄러에서 같은 일을 찾는다
+        if os.name == "nt":
+            return _wintask(label)
         return {"label": label, "loaded": None, "error": str(e)}
     if r.returncode != 0:
         return {"label": label, "loaded": False}
@@ -199,6 +201,30 @@ def _launchd(label: str) -> dict:
         return m.group(1).strip() if m else None
     return {"label": label, "loaded": True, "state": grab("state"), "runs": grab("runs"),
             "last_exit": grab("last exit code"), "interval": grab("run interval"), "pid": grab("pid")}
+
+
+def _wintask(label: str) -> dict:
+    """윈도우 PC 의 크롤 작업 — deploy/install-windows-crawler.ps1 이 launchd 라벨에서 'com.' 을 뺀 이름으로 등록한다.
+    launchd 칸과 같은 모양(loaded·state·runs·last_exit·interval·pid)으로 돌려줘 화면이 그대로 쓴다."""
+    name = label.removeprefix("com.").replace(".", "-")
+    ps = (f"$t=Get-ScheduledTask -TaskName '{name}' -ErrorAction Stop; $i=$t|Get-ScheduledTaskInfo; "
+          "[pscustomobject]@{state=[string]$t.State; last=$i.LastTaskResult; "
+          "every=[string]$t.Triggers[0].Repetition.Interval; ran=($i.LastRunTime.Year -gt 2000)}|ConvertTo-Json -Compress")
+    try:
+        r = subprocess.run(["powershell", "-NoProfile", "-Command", ps], capture_output=True, text=True, timeout=15)
+        d = json.loads(r.stdout) if r.returncode == 0 and r.stdout.strip() else None
+    except Exception as e:  # noqa: BLE001
+        return {"label": label, "loaded": None, "error": str(e)}
+    if not d:
+        return {"label": label, "loaded": False}
+    m = re.match(r"PT(?:(\d+)H)?(?:(\d+)M)?", d.get("every") or "")
+    sec = (int(m.group(1) or 0) * 3600 + int(m.group(2) or 0) * 60) if m and m.group(0) != "PT" else None
+    code = d.get("last")
+    # 0 = 성공, 267009 = 실행 중, 267011 = 아직 한 번도 안 돎 — launchd 의 '(never exited)' 와 같은 뜻으로 맞춘다
+    exit_s = "0" if code in (0, 267009) else "(never exited)" if code == 267011 or not d.get("ran") else str(code)
+    return {"label": label, "loaded": d.get("state") != "Disabled", "state": d.get("state", "").lower(),
+            "runs": "—", "last_exit": exit_s, "interval": f"{sec} seconds" if sec else None,
+            "pid": "1" if d.get("state") == "Running" else None, "via": "windows-task"}
 
 
 def _daemon() -> dict:
