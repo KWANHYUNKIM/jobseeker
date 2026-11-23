@@ -6,6 +6,7 @@
   "ats-toss:group:7998956003": "toss-ads-ranking-mle",
   "ats-toss:group:7728018003": "toss-ads-reco-data-scientist",
   "ats-toss:group:7998953003": "toss-ads-retrieval-mle",
+  "ats-toss:group:6095529003": "toss-ads-server-developer",
   "ats-toss:group:7758217003": "toss-ai-engineer-model",
   "ats-toss:group:7646941003": "toss-ai-platform-engineer-platform",
   "ats-toss:group:7986152003": "toss-ai-platform-inference-pipeline",
@@ -50,6 +51,7 @@
   "ats-toss:group:8047064003": "toss-p2p-lending-server-developer",
   "ats-toss:group:7901191003": "toss-platform-analytics-engineer",
   "ats-toss:group:5960616003": "toss-product-analytics-engineer",
+  "ats-toss:group:4773428003": "toss-product-server-developer-military",
   "ats-toss:group:4071141003": "toss-product-server-developer",
   "ats-toss:group:7992229003": "toss-search-conversion-ranking-mle",
   "ats-toss:group:7411370003": "toss-security-analysis-ir",
@@ -110,6 +112,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 11
+  },
+  {
+   "id": "toss-ads-server-developer",
+   "company": "토스",
+   "role": "서버 개발자 (Ads)",
+   "jobs": [
+    "ats-toss:group:6095529003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 8
   },
   {
    "id": "toss-ai-engineer-model",
@@ -541,6 +553,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 23
+  },
+  {
+   "id": "toss-product-server-developer-military",
+   "company": "토스",
+   "role": "서버 개발자 (Product · 산업기능요원/전문연구요원)",
+   "jobs": [
+    "ats-toss:group:4773428003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 8
   },
   {
    "id": "toss-product-server-developer",

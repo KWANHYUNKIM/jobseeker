@@ -1,0 +1,940 @@
+{
+ "id": "toss-ads-server-developer",
+ "company": "토스",
+ "role": "서버 개발자 (Ads)",
+ "team": "애즈(Ads) 도메인 · Product Chapter",
+ "jobs": [
+  "ats-toss:group:6095529003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "토스 앱 화면에 **어떤 광고를 띄울지 고르는 서버**와, 광고주가 광고를 등록·충전·과금받는 **광고 플랫폼 서버**를 만듭니다.[1][5]",
+  "env": "Kotlin·Spring 위에서 MySQL·Redis·Kafka·Elasticsearch를 쓰고[1], 하루 수억 회 노출[8]과 **돈이 걸린 과금**[5] 사이에서 일합니다.",
+  "oneline": "대규모 트래픽 서버 + 틀리면 안 되는 돈 계산 + 실험으로 고쳐 가는 제품. 광고 경험은 필수가 아닙니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "수많은 토스 고객이 사용하는 Product 서버를 설계하고 개발해요.",
+   "short": "앱 화면에 어떤 광고를 띄울지 정하는 서버와, 광고주가 광고를 등록·충전하는 서버를 만드는 일.",
+   "why": "애즈 도메인은 앱 안의 배너 등 토스 사용자가 보는 **모든 광고 화면**을 맡는다고 공고가 적었습니다.[1] 토스는 국민 절반이 쓰고 하루 10번 넘게 들어오는 앱이라[3][9] 광고 화면이 있는 곳마다 요청이 들어옵니다. 'Product'는 토스 서버 조직의 세 챕터(Product·Platform·Productivity) 중 사용자가 직접 쓰는 서비스를 만드는 쪽이고, 6~8명 사일로(PO·디자이너·개발자·분석가가 한 팀)에 속해 일합니다.[2]",
+   "flows": [
+    {
+     "caption": "광고 한 번이 보이기까지 — 팀 글들을 이어 붙인 것[4][5]",
+     "steps": [
+      "광고 등록 · 캠페인(예산·기간) → 세트(입찰 전략) → 소재",
+      "충전 · 광고주가 예산을 넣는다",
+      "광고 풀 · 지금 내보낼 수 있는 광고만 모아 둔다",
+      "후보 고르기 · 타깃·필터·남은 예산으로 거른다",
+      "경매 · 예측 CTR·CVR × 입찰가로 순위",
+      "노출·클릭·전환 기록 → 과금 → 성과 리포트"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "actually": {
+    "intro": "토스 광고 조직은 크게 두 파트로 나뉘어 있고, 이 자리의 서버는 둘 중 하나 또는 그 사이에서 일합니다.[5]",
+    "items": [
+     "**서빙 파트** — 수십만 개 광고 중 지금 유효한 것만 모은 '광고 풀'을 관리하고, 광고 요청이 올 때마다 광고주가 건 조건과 예산 상태로 후보를 뽑는다. 예산이 고르게 쓰이도록 거르는 **페이싱**(예산 소진 속도 조절)도 여기다.[5]",
+     "**플랫폼 파트** — 광고주가 직접 들어와 광고를 등록·관리하고 성과 리포트를 보는 서비스. 예산 충전과 충전된 예산에서 빼는 **과금**도 이 파트가 맡는다.[5]",
+     "**경매** — 사용자가 광고 지면이 있는 화면에 들어오면 그 사용자를 겨냥한 광고들이 경매에 참여하고, 클릭 확률(CTR) 예측 × 광고주가 낸 클릭당 비용(CPC)으로 노출 1000번당 예상 수익(eCPM)을 계산해 고른다.[4]",
+     "**광고 상품** — 홈 하단 배너 같은 디스플레이 광고, 만보기·고양이 키우기처럼 토스 서비스 안에 녹인 광고, 정보를 최소한만 받는 리드 수집 광고가 있다.[3] 2026년에는 앱 안에서 탐색부터 결제까지 잇는 커머스 광고와 게임 광고 상품을 새로 공개했다.[10]",
+     "**외부 광고 섞기** — 만보기 지면에는 Google AdMob의 광고도 붙여, 그 앱에서만 하루 2억 회 넘는 노출을 낸다.[8]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "후보 거르기 → eCPM 순위 (가상 값, 직접 돌린 출력)",
+     "body": "팀 글의 계산(CTR 예측 × CPC = eCPM)[4]을 가장 작게 옮긴 것입니다. 예산이 0인 C는 경매 전에 빠지고, 입찰가가 가장 높은 B가 아니라 **클릭될 확률까지 곱한 값**이 높은 D가 1등입니다. 실제 서버에선 이 계산이 요청마다 수 밀리초 안에 끝나야 합니다. {추론}",
+     "lang": "python",
+     "code": "ads = [  # (광고, 클릭당 입찰 원, 예측 CTR, 남은 예산 원) — 가상 값\n    (\"A\", 300, 0.020, 50_000),\n    (\"B\", 800, 0.006, 120_000),\n    (\"C\", 500, 0.015, 0),        # 예산 소진\n    (\"D\", 200, 0.040, 8_000),\n]\ndef ecpm(bid, ctr):\n    return bid * ctr * 1000      # 노출 1000번당 예상 수익(원)\n\nlive = [a for a in ads if a[3] > 0]          # 1) 예산 없는 광고는 후보에서 뺀다\nfor name, bid, ctr, _ in sorted(live, key=lambda a: -ecpm(a[1], a[2])):\n    print(name, round(ecpm(bid, ctr)))       # 2) eCPM 순으로 줄 세운다\n# D 8000\n# A 6000\n# B 4800"
+    }
+   ],
+   "how_far": "공고는 최소 1년 실무 경험을 요구하고, **광고 도메인 경험은 필수가 아니라** 문제를 어떻게 구조화하는지를 본다고 적었습니다.[1] CTR·CVR 예측 모델 자체는 ML 엔지니어 몫이고, 서버 개발자는 모델 결과가 **지연 없이 서빙되고 돈 계산에 정확히 반영되게** 맡습니다 — 모델이 라이브에 나가기 전 서버 지연에 영향이 없는지 서버 개발자와 함께 본다고 했습니다.[4] 위 흐름도의 각 칸을 말로 설명할 수 있으면 출발선입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    8,
+    9,
+    10
+   ],
+   "study": [
+    "toss-ads-leader",
+    "toss-ads-perf",
+    "toss-ads-platform",
+    "system-design"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "광고제품의 효율 향상을 위한 가설을 수립하고, 실험과 데이터 기반 검증을 통해 제품을 고도화해요. 이를 바탕으로 광고주 가치를 높일 수 있도록 제품을 지속적으로 개선해요.",
+   "short": "\"이렇게 바꾸면 광고 성과가 오른다\"를 A/B 실험으로 확인하고, 이긴 쪽을 제품에 넣는 일.",
+   "why": "토스애즈는 '어떤 상황에서 어떤 광고를 어떻게 보여줘야 하나'를 실험으로 정합니다. 지면 하나를 늘릴 때도 일부 사용자에게만 먼저 보여 주는 주 단위 실험을 하고, 다른 서비스 지표가 나빠지지 않는지 본 뒤 전체 배포합니다.[3] 결정의 우선순위는 **1. 토스 사용자의 경험, 2. 광고주의 경험**이라고 리더가 밝혔습니다.[3]",
+   "actually": {
+    "items": [
+     "**실험을 켜고 끄는 코드** — 사용자를 실험군·대조군으로 나누고, 실험군에만 새 지면·새 서빙 규칙을 적용한다. 같은 사람이 매번 같은 쪽에 들어가게 고정한다. {추론}",
+     "**작게 시작** — 리드 수집 광고는 작은 실험으로 시작해, 입력을 최소화한 뒤 제출률이 크게 올랐다.[3] AdMob 광고도 작은 사용자 집단 A/B부터 시작해 사용자 수·활동이 줄지 않는지 보며 넓혔다.[8]",
+     "**양쪽 시장 실험** — 광고는 사용자와 광고주 양쪽이 있는 시장이라, 분석가가 편향 없는 실험 설계를 따로 고민한다.[4] 광고주 예산을 실험군끼리 나누지 않으면 한쪽이 예산을 먼저 써 버려 결과가 치우치는 문제가 알려져 있다.[20]",
+     "**자동 운영 기능** — 셀러가 원하는 광고 수익률(ROAS)과 예산만 넣으면 성과가 날 상품을 골라 광고로 돌리는 '자동 운영 캠페인'을 커머스 애즈가 만들고 있다.[5] 목표 ROAS를 높게 걸수록 노출이 줄 수 있다는 점은 다른 광고 플랫폼 문서에도 있다.[12]",
+     "**결과 보기** — 내재화 뒤 광고주의 광고 재집행률이 유의미하게 오른 것을 전후 비교로 확인했다.[5]"
+    ]
+   },
+   "how_far": "가설·지표는 PO·분석가와 함께 세웁니다.[2][4] 서버 개발자는 **실험을 안전하게 켜고, 실험군·대조군이 섞이지 않게 기록을 남기고, 지면 지표와 광고 외 서비스 지표를 함께 볼 수 있게** 만드는 쪽이 핵심입니다. {추론} 공고 동료 한마디도 '데이터 전반을 보며 광고 전반의 그림을 그릴 수 있는 분'을 찾는다고 했습니다.[1]",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    8,
+    12,
+    20
+   ],
+   "study": [
+    "kohavi-ko",
+    "budget-split-blog",
+    "troas-help",
+    "toss-ads-leader"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "트렌디한 기술을 활용하여 서비스가 안정적으로 운영될 수 있도록 하며, 유저들의 보이스를 듣고 빠르고 유연하게 문제를 해결해요.",
+   "short": "광고 서버가 멈추거나 돈이 틀리게 빠지지 않게 지키고, 사용자·광고주 문의를 빨리 고치는 일.",
+   "why": "광고는 돈이 걸린 시스템이라 문제가 생기면 빨리 감지해야 한다고 커머스 애즈 서버 개발자가 말했습니다.[5] 토스 광고 제품팀은 사용자 VOC(고객의 소리)를 거의 실시간으로 봅니다.[3] 광고주 쪽에선 \"방금 등록했는데 왜 안 보여요?\" 같은 문의가 들어옵니다.[5]",
+   "actually": {
+    "items": [
+     "**과금 사고가 1순위** — 커머스 애즈는 시스템을 새로 만들 때 '의도보다 과금이 더 많이 되는 상황'을 가장 큰 위험으로 정하고 모든 변경을 보수적으로 검토했다. 과금 없이 나가는 건 회사 손해지만, 과하게 빠지면 광고주가 직접 피해를 본다.[5]",
+     "**배포 사고에서 배운 규칙** — 빠르게 옮기다 배포 중 Redis CPU가 급증하고 캐시가 깨졌다. 그 뒤 깨지는 변경(breaking change)을 피하고, 사용자 트래픽을 받는 곳은 **트래픽 섀도잉**(실제 요청을 복사해 새 서버에도 보내고 결과만 비교)을 원칙으로 했다. 캐시 직렬화 오류를 잡는 자동 테스트를 넣고 흩어진 캐시 사용법을 하나로 모았다.[5][18]",
+     "**셀러 화면 동기화** — 광고 상태가 바뀔 때마다 Elasticsearch에 옮겨 대시보드에 바로 보이게 했는데, 이벤트 순서가 꼬이거나 실패한 건이 빠지는 문제가 있었다. 그래서 모니터링과 재처리 로직이 중요했다고 했다.[5] Elasticsearch는 쓴 값이 검색에 보이기까지 짧은 지연이 원래 있다.[14]",
+     "**토스 공통 장치** — 앱 요청은 게이트웨이를 거치며 trace ID가 붙어 서비스마다 로그에 남고, 게이트웨이는 라우트·기능 단위로 서킷 브레이커를 건다. 에러 수를 z-score로 바꿔 갑자기 치솟으면 슬랙으로 알린다.[6]",
+     "**'트렌디한 기술'의 실제** — 공고에 적힌 스택은 Kotlin·Spring, MySQL·MongoDB·Hadoop·Redis·Kafka·Elasticsearch다.[1] 토스 게이트웨이는 Spring Cloud Gateway 위에서 Kotlin 코루틴으로 필터를 쓴다.[6]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "늦게 온 옛 상태는 버리기 (직접 돌린 출력)",
+     "body": "광고를 껐다(버전 2) → 켰다(버전 3) 사이에 옛 이벤트(버전 1)가 늦게 도착한 경우입니다. 버전을 비교하지 않으면 마지막에 받은 값으로 덮여 화면이 틀립니다. 팀 글의 '이벤트 순서가 꼬이는 문제'[5]를 다루는 흔한 방법 하나입니다. {추론}",
+     "lang": "python",
+     "code": "index = {}\nevents = [(\"ad1\", 2, \"PAUSED\"), (\"ad1\", 1, \"ACTIVE\"), (\"ad1\", 3, \"ACTIVE\")]  # 순서가 뒤섞여 도착\nfor ad, ver, status in events:\n    cur = index.get(ad)\n    if cur and cur[0] >= ver:\n        print(\"drop\", ad, ver, status)   # 늦게 온 옛 상태는 버린다\n        continue\n    index[ad] = (ver, status)\n    print(\"apply\", ad, ver, status)\n# apply ad1 2 PAUSED\n# drop ad1 1 ACTIVE\n# apply ad1 3 ACTIVE"
+    }
+   ],
+   "how_far": "서버 플랫폼·DevOps 팀이 게이트웨이·배포·모니터링 바닥을 만들어 둡니다.[6] 이 자리는 **자기 광고 서버의 지표·알림·재처리를 직접 붙이고, 배포 전에 섀도잉·카나리로 확인하는** 쪽입니다. {추론} 문의가 들어오면 trace ID로 요청 하나를 끝까지 따라가 원인을 찾을 수 있어야 합니다.[6]",
+   "refs": [
+    1,
+    3,
+    5,
+    6,
+    14,
+    18
+   ],
+   "study": [
+    "toss-ads-platform",
+    "slash23-gateway",
+    "slash23-otel",
+    "obs-eng",
+    "es-nrt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "고가용성의 확장 가능한 시스템을 설계하고 운영해 본 경험이 있는 분이 필요해요.",
+   "short": "서버 한 대·데이터센터 한 곳이 죽어도 광고가 계속 나가고, 요청이 늘면 서버만 늘리면 되게 짜 본 경험.",
+   "why": "광고 서버는 앱 화면마다 불리기 때문에 멈추면 그 화면이 비거나 느려집니다.[3] 토스 그룹은 데이터센터 두 곳을 평소에도 둘 다 쓰는 **액티브-액티브**로 운영합니다 — 대기만 하던 예비 센터는 막상 장애 때 제대로 안 도는 일이 많아서입니다.[7]",
+   "actually": {
+    "items": [
+     "**상태를 서버 밖으로** — 서버 메모리에 예산 잔액·세션을 두지 않고 Redis·DB로 빼서, 아무 서버나 요청을 받을 수 있게 한다. 그래야 서버를 늘리고 줄일 수 있다. {추론}",
+     "**두 데이터센터** — 토스증권은 Kafka 메시지를 반대편 센터로 실시간 복제(미러링)하고, 소비 위치(오프셋)도 맞춰 두어 한쪽이 죽으면 소비자 주소만 바꿔 이어 받는다. 소비자는 한쪽에만 붙인다 — 양쪽에 붙으면 같은 메시지를 두 번 처리한다.[7]",
+     "**느린 이웃 끊기** — 한 서비스가 느려지면 기다리는 요청이 자원을 다 잡아 전체가 멈춘다. 그래서 빨리 실패시키는 서킷 브레이커를 게이트웨이·애플리케이션에 라우트·기능 단위로 건다.[6][19] 서킷은 닫힘·열림·반열림 세 상태를 오가며, 실패율 문턱과 열림 유지 시간을 설정으로 정한다.[15]",
+     "**버리는 순서 정하기** — 광고는 못 내보내도 앱 화면은 떠야 한다. 광고 서버가 늦으면 빈 칸이나 기본 화면으로 빨리 돌려주는 기본값을 둔다. {추론}",
+     "**데이터 구조부터 다시** — 커머스 애즈는 상품 단위로만 광고를 걸 수 있던 남의 시스템에서 벗어나 캠페인-세트-소재 3단계로 다시 설계하고, 수천 건 일괄 변경은 요청과 실제 처리를 떼어 비동기로 돌렸다.[5]"
+    ]
+   },
+   "how_far": "'설계하고 운영해 본'이라 책에서 읽은 것보다 **직접 돌린 서비스에서 무엇이 병목이었고 어떻게 늘렸나**를 말할 수 있어야 합니다. {추론} 두 데이터센터 구성은 플랫폼 팀이 깔아 둔 것을 쓰는 쪽이니, 내 서버가 그 위에서 **상태 없이 몇 대로든 늘어나는지**가 최소선입니다. {추론}",
+   "refs": [
+    3,
+    5,
+    6,
+    7,
+    15,
+    19
+   ],
+   "study": [
+    "slash23-kafka",
+    "ddia",
+    "system-design",
+    "resilience4j"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "대규모의 실시간 트래픽을 처리하는 시스템 개발 경험이 있는 분이 필요해요.",
+   "short": "광고 요청마다 수십만 개 중 후보를 거르고 순위를 매겨 몇 밀리초 안에 돌려주는 서버라서.",
+   "why": "만보기 한 기능에서만 하루 2억 회 넘는 광고 노출이 나갑니다.[8] 서빙 파트는 광고 요청이 올 때마다 광고주 필터와 예산 상태로 후보를 실시간으로 뽑고, '많은 데이터를 실시간으로 빠르게 처리해야 하는 영역'이라고 팀 PO가 말했습니다.[5] ML 엔지니어도 광고 모델에 실시간 피처를 넣는 일이 속도·일관성·부하·장애 복구·시간 개념 모두에서 어렵다고 했습니다.[4]",
+   "actually": {
+    "items": [
+     "**캐시가 기본** — 광고 풀·소재·타깃 조건처럼 자주 읽고 가끔 바뀌는 값은 Redis나 서버 메모리에 둔다. 대신 캐시가 깨지거나 CPU가 치솟는 일이 실제로 있었다.[5]",
+     "**예산은 실시간에 가깝게** — 노출·클릭이 일어날 때마다 잔여 예산이 줄고, 바닥난 광고는 바로 후보에서 빠져야 한다. 페이싱은 하루 예산이 오전에 다 타지 않게 통과 비율을 조절한다.[5][11]",
+     "**이벤트는 Kafka로** — 노출·클릭·상태 변경을 메시지로 흘려 과금·리포트·검색 색인이 각자 받아 처리한다. 커머스 애즈는 규모가 커지며 **순서 보장과 재처리**를 더 다듬고 있다고 했다.[5] Kafka는 '최소 한 번' 전달이 기본이라 같은 메시지가 두 번 올 수 있다.[25]",
+     "**중복 요청 줄이기** — 토스 게이트웨이는 사용자·기기 정보를 담은 '패스포트'를 요청에 실어 보내, 서비스마다 사용자 API를 다시 부르지 않게 했다.[6]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "같은 클릭은 한 번만, 예산을 넘겨서는 안 빼기 (직접 돌린 출력)",
+     "body": "메시지가 두 번 와도(c1) 한 번만 과금하고, 남은 예산이 100원이면 300원짜리 클릭도 100원까지만 뺍니다. '과금이 의도보다 많이 되는 상황'[5]을 막는 가장 작은 모양입니다. 실제로는 클릭 ID에 DB 유니크 키나 멱등 키를 겁니다.[13]",
+     "lang": "python",
+     "code": "budget = {\"A\": 1000}\ncharged = set()                  # 실제로는 DB 의 유니크 키·멱등 키 표\n\ndef charge(click_id, ad, cpc):\n    if click_id in charged:\n        return \"dup-skip\"            # 같은 클릭이 두 번 와도 한 번만\n    amount = min(cpc, budget[ad])    # 남은 예산까지만 — 초과 과금 금지\n    if amount <= 0:\n        return \"no-budget\"\n    budget[ad] -= amount\n    charged.add(click_id)\n    return f\"charged {amount}, left {budget[ad]}\"\n\nfor cid in [\"c1\", \"c1\", \"c2\", \"c3\", \"c4\"]:\n    print(cid, charge(cid, \"A\", 300))\n# c1 charged 300, left 700\n# c1 dup-skip\n# c2 charged 300, left 400\n# c3 charged 300, left 100\n# c4 charged 100, left 0"
+    }
+   ],
+   "how_far": "몇 TPS를 다뤘는지 숫자보다 **어디가 먼저 터졌고(DB·캐시·외부 호출) 무엇으로 풀었나**를 설명할 수 있어야 합니다. {추론} 최소선은 캐시 무효화, 중복·순서가 뒤바뀐 메시지 처리, 동시에 같은 예산을 깎을 때의 경합을 직접 다뤄 본 정도입니다. {추론}",
+   "refs": [
+    4,
+    5,
+    6,
+    8,
+    11,
+    13,
+    25
+   ],
+   "study": [
+    "real-mysql",
+    "kafka-docs",
+    "internal-kafka",
+    "linkedin-pacing",
+    "stripe-idem"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "장애를 경험하고 문제를 해결해 보신 경험이 있는 분이 필요해요.",
+   "short": "광고는 멈추거나 돈이 틀리면 바로 티가 나서, 원인을 좁히고 재발을 막아 본 사람이 필요해서.",
+   "why": "커머스 애즈는 시스템을 옮기며 배포 중 Redis CPU 급증, 캐시 깨짐, 옛 시스템이 남긴 '유령 데이터'(캠페인은 지웠는데 하위 세트는 살아 있는 등)를 실제로 겪었습니다.[5] 그 경험으로 배포 문화를 바꿨다고 했습니다.[5]",
+   "actually": {
+    "items": [
+     "**먼저 알아채기** — 게이트웨이는 에러 수를 z-score(평소 평균에서 얼마나 벗어났나)로 바꿔 배포나 외부 원인으로 에러가 치솟는 순간을 잡는다.[6]",
+     "**좁히기** — trace ID로 요청 하나가 지나간 서비스를 따라가고, APM(Pinpoint)으로 실패 지점과 호출 스택을 본다. 사이드카(Envoy) 로그는 실패 원인 코드를 남긴다.[6]",
+     "**끊기·되돌리기** — 서킷 브레이커로 번지는 걸 막고, 배포는 카나리(일부만 먼저)로 나가니 문제가 보이면 그 부분만 되돌린다.[6]",
+     "**데이터 바로잡기** — 유령 데이터를 하나씩 분류해 정리한 뒤에야 새 시스템으로 옮길 수 있었다.[5]",
+     "**재발 막기** — 캐시 직렬화 자동 테스트, 캐시 사용 패턴 일원화, 섀도잉 원칙처럼 **사람의 주의가 아니라 장치로** 막는다.[5] 게이트웨이 팀도 라우트를 머지만 하고 배포를 잊는 실수를 봇이 슬랙으로 알리게 했다.[6] 장애 뒤 사람을 탓하지 않는 회고 문서도 업계의 기본 관행이다.[17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "에러 수 z-score로 스파이크 잡기 (가상 값, 직접 돌린 출력)",
+     "body": "지난 10분 분당 5xx가 8~13개였는데 41개가 나오면 z가 20을 넘어 알림을 보냅니다. 토스 게이트웨이가 쓰는 방식[6]을 가장 작게 옮긴 것이고, 문턱 3은 예시값입니다. {추론}",
+     "lang": "python",
+     "code": "from statistics import mean, pstdev\nhistory = [12, 9, 11, 10, 13, 8, 12, 11, 10, 9]   # 지난 10분 분당 5xx 개수\nmu, sd = mean(history), pstdev(history)\nfor now in [14, 41]:\n    z = (now - mu) / sd\n    print(now, round(z, 1), \"ALERT\" if z > 3 else \"ok\")\n# 14 2.3 ok\n# 41 20.3 ALERT"
+    }
+   ],
+   "how_far": "면접에서는 **내가 겪은 장애 하나를 시간순으로**(언제 알았나 → 무엇으로 좁혔나 → 무엇을 바꿨나 → 다시 안 나게 무엇을 넣었나) 말할 수 있어야 합니다. {추론} 장애 대응 역할(지휘·소통·기록)을 나누는 법은 공개된 SRE 문서가 좋은 틀입니다.[16]",
+   "refs": [
+    5,
+    6,
+    16,
+    17
+   ],
+   "study": [
+    "sre-incident",
+    "sre-postmortem",
+    "release-it",
+    "slash23-gateway"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "서비스에 대한 애착이 강해서 ‘내 서비스’라는 마음으로 일하는 분이면 좋아요.",
+   "short": "사일로가 작은 스타트업처럼 움직여서, 맡은 광고 제품을 끝까지 내 것처럼 책임질 사람이어야 해서.",
+   "why": "토스 Product 서버 개발자는 6~8명 사일로에서 높은 자율과 책임으로 제품 중심 결정을 합니다.[2] 커머스 애즈 서버 개발자는 내재화한 시스템에 애착이 크고 \"이건 우리가 만들었다\"고 자부할 수 있게 키우고 싶다고 했습니다.[5]",
+   "actually": {
+    "items": [
+     "기능을 넘긴 뒤에도 그 지면의 광고 성과·사용자 지표·문의를 계속 본다.[3]",
+     "\"외부 시스템에서 지원되나요?\"를 묻던 시절에서 벗어나, 요구가 오면 바로 설계·개발하는 결정권을 팀이 갖게 됐다 — 그만큼 결과도 팀 몫이다.[5]",
+     "광고 리더도 바닥부터 공부하며 만드는 서비스가 재미있다고 했다 — 광고는 토스에게 아직 초기 사업이다.[3]"
+    ]
+   },
+   "how_far": "태도 문장이라 정답은 없습니다. 이력서·면접에서 **배포 뒤에도 지표를 보고 스스로 고친 사례**를 하나 들 수 있으면 됩니다. {추론}",
+   "refs": [
+    2,
+    3,
+    5
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "서비스 개발을 하면서 얻게 되는 새로운 인사이트를 공유하며, 끊임없이 기술적인 도전을 하고 싶은 분과 함께하고 싶어요.",
+   "short": "광고 서버는 ML·분석·플랫폼 팀과 함께 굴러가서, 배운 것을 나누고 새 방식을 시도할 사람이어야 해서.",
+   "why": "광고 요청부터 노출까지가 하나로 이어져 있어, ML 엔지니어·분석가·데이터 엔지니어·서버 개발자가 매주 모델 고도화와 자동 입찰 구현을 함께 논의합니다.[4] 타사 플랫폼 분석을 바탕으로 성과 지표·tCPA(목표 전환당 비용) 상품·A/B 방법까지 영역 구분 없이 의견을 나눈다고 했습니다.[4]",
+   "actually": {
+    "items": [
+     "자동 입찰 파일럿을 여러 팀이 힘을 모아 한 달도 안 돼 냈다.[4]",
+     "토스 서버 개발자는 챕터 단위로 모여 기술을 나누고, 서버 챕터 위키를 공개해 두었다.[2]",
+     "애드테크는 성숙한 분야라 논문·리서치·선두 기업 자료가 풍부하다는 점이 팀 분석가가 꼽은 장점이다.[4] 예산 페이싱처럼 서버가 맡는 로직도 공개 논문이 있다.[11]"
+    ]
+   },
+   "how_far": "글·발표 실적이 필수는 아닙니다. 팀 안에서 **장애 회고나 새 도구 도입을 문서로 남겨 공유한 경험** 정도면 이 줄을 채웁니다. {추론}",
+   "refs": [
+    2,
+    4,
+    11
+   ],
+   "study": [
+    "toss-ads-perf",
+    "linkedin-pacing",
+    "smart-pacing"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "응답 시간 몇 밀리초와 과금 1원을 둘 다 신경 쓰는 사람",
+   "실험 결과를 보고 제품을 고치는 속도감이 좋은 사람 — 지면 하나도 주 단위 실험으로 늘린다[3]",
+   "ML·분석가와 한 테이블에서 '모델 결과를 어떻게 돈 계산에 넣나'를 논의하고 싶은 사람[4]",
+   "광고는 처음이지만 대규모 트래픽·장애를 겪어 본 사람 — 공고가 광고 경험은 필수가 아니라고 했다[1]"
+  ],
+  "hard": [
+   "광고는 토스에게 아직 초기 사업이라 기본 틀과 구조를 새로 짜는 일이 많다[3][5]",
+   "과금이 걸린 영역은 모든 변경을 보수적으로 검토해야 한다[5]",
+   "지원한 Ads 팀이 아니라 다른 팀으로 제안받을 수 있다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "광고 요청 한 번에 수십만 개 광고 중 하나를 수 밀리초 안에 고르려면 어떻게 나누겠어요?",
+   "a": "광고 풀·후보 거르기·경매 단계와 캐시.[4][5]"
+  },
+  {
+   "q": "클릭 이벤트가 두 번 들어왔고, 그 사이 예산이 바닥났습니다. 과금은 어떻게 되나요?",
+   "a": "멱등 키와 '남은 예산까지만'.[5][13]"
+  },
+  {
+   "q": "셀러가 광고를 방금 껐는데 대시보드엔 켜져 있다고 나옵니다. 어디부터 보겠어요?",
+   "a": "ES 동기화·이벤트 순서·재처리.[5][14]"
+  },
+  {
+   "q": "CTR 예측 서버가 느려졌습니다. 광고 서버와 앱 화면은 어떻게 지키나요?",
+   "a": "서킷 브레이커와 기본값.[6][19]"
+  },
+  {
+   "q": "새 서빙 규칙을 배포하다 Redis CPU가 치솟았습니다. 다음엔 무엇을 바꾸겠어요?",
+   "a": "섀도잉·캐시 테스트·캐시 사용 일원화.[5]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 서버개발자 (Ads)",
+   "url": "https://toss.im/career/job-detail?gh_jid=6095529003",
+   "kind": "posting",
+   "note": "도메인 소개·업무·요건·실무 1년 이상·광고 경험 필수 아님·배치 안내·쓰는 기술·동료 한마디"
+  },
+  {
+   "n": 2,
+   "title": "토스 채용 · 서버 개발자 (Product)",
+   "url": "https://toss.im/career/job-detail?gh_jid=4071141003",
+   "kind": "posting",
+   "note": "Product·Platform·Productivity 챕터, 사일로 6~8명, Ads Domain 공고로 안내"
+  },
+  {
+   "n": 3,
+   "title": "토스 커리어 · 토스애즈 성공의 Principle: Toss Ads Leader",
+   "url": "https://toss.im/career/article/tossads",
+   "kind": "company",
+   "date": "2025-03-12",
+   "note": "공고가 링크한 글 — 2022-09 광고 시작, 광고 상품 종류, 사용자 경험 → 광고주 경험 순, 지면 확장 주 단위 실험, 리드 수집 광고"
+  },
+  {
+   "n": 4,
+   "title": "토스 커리어 · 토스애즈 성공의 Principle: Ads Performance",
+   "url": "https://toss.im/career/article/adsperformance",
+   "kind": "company",
+   "date": "2025-03-25",
+   "note": "공고가 링크한 팀 글 — 경매·CTR×CPC=eCPM, CVR·ROAS 자동 입찰, 실시간 피처, 서버 지연 협업, 양면 시장 실험, 파일럿 한 달"
+  },
+  {
+   "n": 5,
+   "title": "토스 커리어 · 광고가 곧 상품 경험이 되기까지, Commerce Ads Platform Team",
+   "url": "https://toss.im/career/article/ads-server-engineer",
+   "kind": "company",
+   "date": "2026-02-26",
+   "note": "토스쇼핑 광고 조직(같은 회사 다른 팀) — 서빙/플랫폼 파트, 내재화, 과금 초과 1순위 위험, 캠페인-세트-소재, ES 동기화, 비동기 대량 작업, Redis CPU 급증 뒤 섀도잉, 유령 데이터, 자동 운영 캠페인"
+  },
+  {
+   "n": 6,
+   "title": "SLASH 23 · 토스는 Gateway 이렇게 씁니다",
+   "url": "https://www.youtube.com/watch?v=Zs3jVelp0L8",
+   "kind": "company",
+   "date": "2023-06",
+   "note": "토스 Server Platform 팀 · 27분 · 자막 전부 읽음(BFF·인그레스/이그레스, Spring Cloud Gateway + Kotlin 코루틴, trace ID·내부 헤더·패스포트, 종단 암호화·요청 서명, 라우트·기능 단위 서킷 브레이커, YAML 라우트·봇, ES 로그·Prometheus·z-score 알림·Pinpoint)"
+  },
+  {
+   "n": 7,
+   "title": "SLASH 23 · Kafka 이중화로 다양한 장애 상황 완벽 대처하기",
+   "url": "https://www.youtube.com/watch?v=Pzkioe7Dvo4",
+   "kind": "company",
+   "date": "2023-06",
+   "note": "토스증권 데이터 플랫폼팀(같은 그룹 다른 회사) · 14분 · 자막 전부 읽음(액티브-액티브, 커넥트 미러링, 오프셋 싱크, 한쪽에서만 소비, 장애 때 전환 순서)"
+  },
+  {
+   "n": 8,
+   "title": "Google AdMob · How Toss preserves its app UX while boosting revenue 891% with AdMob",
+   "url": "https://admob.google.co.in/home/resources/how-toss-preserves-its-app-ux-while-boosting-revenue-891-with-admob/",
+   "kind": "reference",
+   "note": "구글의 고객 사례 — 만보기 하루 2억 회 넘는 노출, 작은 집단 A/B부터, 리텐션 영향 확인"
+  },
+  {
+   "n": 9,
+   "title": "토스 비즈니스 · 광고",
+   "url": "https://toss.im/business/advertising",
+   "kind": "company",
+   "note": "국민 절반·하루 10번 이상, 퍼스트 파티 데이터, 목적별 캠페인, 전환 예측 모델"
+  },
+  {
+   "n": 10,
+   "title": "토스피드 · 토스애즈, 광고 파트너 행사 ‘터처블 2026’ 성료",
+   "url": "https://toss.im/tossfeed/article/46893",
+   "kind": "company",
+   "note": "Play at Toss(게임)·Buy at Toss(커머스) 신상품"
+  },
+  {
+   "n": 11,
+   "title": "Agarwal · Ghosh · Wei · You · Budget Pacing for Targeted Online Advertisements at LinkedIn (KDD 2014)",
+   "url": "https://doi.org/10.1145/2623330.2623366",
+   "kind": "reference",
+   "note": "다른 회사 — 예산 페이싱의 일반적인 구현"
+  },
+  {
+   "n": 12,
+   "title": "Google Ads 고객센터 · About Target ROAS bidding",
+   "url": "https://support.google.com/google-ads/answer/6268637?hl=en",
+   "kind": "reference",
+   "note": "다른 광고 플랫폼 — 목표 ROAS 자동 입찰"
+  },
+  {
+   "n": 13,
+   "title": "Stripe API 문서 · Idempotent requests",
+   "url": "https://docs.stripe.com/api/idempotent_requests",
+   "kind": "reference",
+   "note": "다른 회사 결제 API — 멱등 키의 일반적인 동작"
+  },
+  {
+   "n": 14,
+   "title": "Elasticsearch 문서 · Near real-time search",
+   "url": "https://www.elastic.co/guide/en/elasticsearch/reference/current/near-real-time.html",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "Resilience4j 문서 · CircuitBreaker",
+   "url": "https://resilience4j.readme.io/docs/circuitbreaker",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Google SRE Book · Managing Incidents",
+   "url": "https://sre.google/sre-book/managing-incidents/",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Google SRE Book · Postmortem Culture: Learning from Failure",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Istio 문서 · Mirroring",
+   "url": "https://istio.io/latest/docs/tasks/traffic-management/mirroring/",
+   "kind": "reference",
+   "note": "트래픽 섀도잉의 일반적인 방식 — 토스가 이 도구로 하는지는 글에 없다"
+  },
+  {
+   "n": 19,
+   "title": "Google SRE Book · Addressing Cascading Failures",
+   "url": "https://sre.google/sre-book/addressing-cascading-failures/",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "LinkedIn Engineering · Budget-split testing",
+   "url": "https://engineering.linkedin.com/blog/2021/budget-split-testing",
+   "kind": "reference",
+   "note": "다른 회사 — 광고 실험에서 예산이 새는 문제"
+  },
+  {
+   "n": 21,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 22,
+   "title": "자소설닷컴 — 토스뱅크 연봉(같은 집계)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 24,
+   "title": "토스 — 회사 소개(사이트 하단 주소)",
+   "url": "https://toss.im/company",
+   "kind": "company"
+  },
+  {
+   "n": 25,
+   "title": "Apache Kafka 문서 · Message Delivery Semantics",
+   "url": "https://kafka.apache.org/documentation/#semantics",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "토스애즈 서버 팀 자체의 기술 발표는 찾지 못했다. 팀 구조·과금 원칙·사고 사례는 같은 회사 커머스 애즈 서버 개발자 글[5], 공통 서버 장치는 토스 게이트웨이 발표[6], 두 데이터센터 운영은 토스증권 발표[7]에서 왔다. 페이싱·실험·섀도잉의 일반론은 다른 회사·공식 문서 근거이고, 토스가 그대로 하는지는 공개되지 않았다.",
+ "resources": [
+  {
+   "id": "toss-ads-leader",
+   "title": "토스애즈 성공의 Principle: Toss Ads Leader",
+   "by": "토스 커리어 · 2025-03",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://toss.im/career/article/tossads",
+   "why": "공고가 링크한 글. 광고 상품 종류, '사용자 경험 먼저' 원칙, 지면 확장도 주 단위 실험으로 한다는 일하는 방식 — 업무 ①②의 배경."
+  },
+  {
+   "id": "toss-ads-perf",
+   "title": "토스애즈 성공의 Principle: Ads Performance",
+   "by": "토스 커리어 · 2025-03",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://toss.im/career/article/adsperformance",
+   "why": "공고가 링크한 팀 글. 경매·eCPM 계산, 자동 입찰, 실시간 피처, 서버 개발자와의 협업 — 서버가 어디에 끼는지 본다."
+  },
+  {
+   "id": "toss-ads-platform",
+   "title": "광고가 곧 상품 경험이 되기까지, Commerce Ads Platform Team",
+   "by": "토스 커리어 · 2026-02",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.im/career/article/ads-server-engineer",
+   "why": "같은 광고 조직의 서버 개발자 글. 서빙/플랫폼 파트, 과금 원칙, ES 동기화, Redis CPU 사고 뒤 섀도잉 원칙 — 요건 ①~③의 실제 사례."
+  },
+  {
+   "id": "slash23-gateway",
+   "title": "SLASH 23 · 토스는 Gateway 이렇게 씁니다",
+   "by": "토스 Server Platform 팀 · 27분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=Zs3jVelp0L8",
+   "why": "토스 서버 요청이 지나가는 공통 길 — trace ID·패스포트·서킷 브레이커·카나리·z-score 알림. 장애 요건과 '안정적 운영' 업무의 바닥."
+  },
+  {
+   "id": "slash23-kafka",
+   "title": "SLASH 23 · Kafka 이중화로 다양한 장애 상황 완벽 대처하기",
+   "by": "토스증권 데이터 플랫폼팀 · 14분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=Pzkioe7Dvo4",
+   "why": "액티브-액티브 두 데이터센터에서 메시지·오프셋을 맞추는 법. '고가용성' 요건을 그룹이 실제로 어떻게 했는지 그림으로 본다."
+  },
+  {
+   "id": "slash23-otel",
+   "title": "SLASH 23 · 분산 추적 체계 & 로그 중심으로 Observability 확보하기",
+   "by": "토스페이먼츠 Server Platform 팀장 · 29분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=Ifz0LsfAG94",
+   "why": "\"방금 등록했는데 안 보여요\" 같은 문의를 요청 하나로 따라가는 로그·traceId 설계. 업무 ③."
+  },
+  {
+   "id": "obs-eng",
+   "title": "데브옵스 엔지니어를 위한 실전 관찰 가능성 엔지니어링",
+   "by": "채리티 메이저 · 리즈 퐁존스 · 조지 미란다 · 노승헌 옮김 · 한빛미디어 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/debeuobseu-enjinieoreul-wihan/9791169212519/",
+   "why": "모니터링과 관측 가능성의 차이, 구조화된 이벤트·SLO 기반 알림. 내 광고 서버에 지표·알림을 붙일 때의 생각 틀."
+  },
+  {
+   "id": "kohavi-ko",
+   "title": "신뢰할 수 있는 온라인 종합 대조 실험",
+   "by": "론 코하비 · 다이앤 탕 · 야 쉬 · 이기홍 · 김기영 옮김",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000005201885",
+   "why": "업무 ② '실험과 데이터 기반 검증'. 실험군 배정 고정, 표본 비율 불일치, 보조 지표(가드레일) — 서버가 실험을 켤 때 지킬 것."
+  },
+  {
+   "id": "budget-split-blog",
+   "title": "Budget-split testing: A trustworthy and powerful approach to marketplace A/B testing",
+   "by": "LinkedIn Engineering · 2021",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://engineering.linkedin.com/blog/2021/budget-split-testing",
+   "why": "광고 실험에서 광고주 예산이 실험군 사이로 새는 문제와 예산을 나눠 붙이는 해법. 업무 ②를 서버 쪽에서 구현할 때."
+  },
+  {
+   "id": "troas-help",
+   "title": "About Target ROAS bidding (Google Ads 고객센터)",
+   "by": "Google · 공식 도움말",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://support.google.com/google-ads/answer/6268637?hl=en",
+   "why": "목표 ROAS·예산만 넣는 자동 입찰이 무엇을 입력받고 무엇이 바뀌나. 토스 자동 운영 캠페인의 입력과 같은 개념."
+  },
+  {
+   "id": "linkedin-pacing",
+   "title": "Budget Pacing for Targeted Online Advertisements at LinkedIn",
+   "by": "Agarwal · Ghosh · Wei · You · KDD 2014",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://doi.org/10.1145/2623330.2623366",
+   "why": "실서비스 페이싱(예산을 하루에 고르게 쓰도록 통과 비율 조절)을 어떻게 만들고 운영했나. 서빙 서버가 맡는 로직."
+  },
+  {
+   "id": "smart-pacing",
+   "title": "Smart Pacing for Effective Online Ad Campaign Optimization",
+   "by": "Xu 외 · Yahoo · KDD 2015",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1506.05851",
+   "why": "고르게 쓰기와 성과를 함께 맞추는 페이싱. 모델 팀과 페이싱을 논의할 때의 공통 언어."
+  },
+  {
+   "id": "resilience4j",
+   "title": "Resilience4j 문서 · CircuitBreaker",
+   "by": "Resilience4j",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://resilience4j.readme.io/docs/circuitbreaker",
+   "why": "서킷의 닫힘·열림·반열림 상태와 설정값을 Spring·Kotlin에서 바로 써 본다. 고가용성 요건."
+  },
+  {
+   "id": "internal-kafka",
+   "title": "아파치 카프카 애플리케이션 프로그래밍",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kafka",
+   "why": "토픽·파티션·컨슈머 그룹·오프셋을 직접 친 명령과 오간 레코드로. 노출·클릭 이벤트를 흘리는 바닥."
+  },
+  {
+   "id": "coroutines-book",
+   "title": "코틀린 코루틴의 정석",
+   "by": "조세영 · 에이콘출판 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000007956109",
+   "why": "공고 스택 Kotlin의 코루틴. 광고 후보·소재·예산을 동시에 불러 지연을 줄일 때, 취소·예외 처리까지."
+  },
+  {
+   "id": "sre-incident",
+   "title": "Site Reliability Engineering · Managing Incidents",
+   "by": "Google SRE Book",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://sre.google/sre-book/managing-incidents/",
+   "why": "장애 때 지휘·소통·기록 역할을 나누는 법. '장애를 해결해 본 경험'을 말할 때의 틀."
+  },
+  {
+   "id": "sre-postmortem",
+   "title": "Site Reliability Engineering · Postmortem Culture: Learning from Failure",
+   "by": "Google SRE Book",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "why": "사람을 탓하지 않는 회고와 재발 방지 항목. 장애 요건을 '재발을 장치로 막았다'까지 끌어올린다."
+  },
+  {
+   "id": "istio-mirror",
+   "title": "Istio 문서 · Mirroring",
+   "by": "Istio",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://istio.io/latest/docs/tasks/traffic-management/mirroring/",
+   "why": "실제 요청을 복사해 새 버전에도 보내는 트래픽 미러링(섀도잉). 팀이 사고 뒤 원칙으로 정한 방식을 직접 해 본다."
+  },
+  {
+   "id": "system-design",
+   "title": "가상 면접 사례로 배우는 대규모 시스템 설계 기초",
+   "by": "알렉스 쉬",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%80%EC%83%81%20%EB%A9%B4%EC%A0%91%20%EC%82%AC%EB%A1%80%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%8C%80%EA%B7%9C%EB%AA%A8%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84",
+   "why": "캐시·처리율 제한·일관성 해싱·키-값 저장소 — 대규모 트래픽 요건을 면접 말투로 설명하는 연습."
+  },
+  {
+   "id": "ddia",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+   "why": "복제·트랜잭션·일관성·스트림 처리 장. 실시간성과 정합성이 왜 부딪히는지 원리로 이해한다."
+  },
+  {
+   "id": "real-mysql",
+   "title": "Real MySQL 8.0 (1·2권)",
+   "by": "백은빈 · 이성욱 · 위키북스 · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=Real%20MySQL%208.0",
+   "why": "트랜잭션·잠금·인덱스·실행계획 장. 재고·쿠폰을 동시에 건드릴 때 무엇이 잠기는지, 느린 쿼리가 왜 생기는지."
+  },
+  {
+   "id": "release-it",
+   "title": "Release의 모든 것 2판",
+   "by": "마이클 나이가드 · 박성철 옮김 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ridibooks.com/books/443001250",
+   "why": "타임아웃·회로 차단기·격벽·연쇄 장애. '변화하는 조건 속에서도 안정성' 요건의 운영 쪽 기본서."
+  },
+  {
+   "id": "kafka-docs",
+   "title": "Apache Kafka 문서 · Message Delivery Semantics",
+   "by": "Apache",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kafka.apache.org/documentation/#semantics",
+   "why": "최대 한 번·최소 한 번·정확히 한 번의 차이와 멱등 프로듀서. 이벤트 기반 흐름의 순서·중복을 다룰 때."
+  },
+  {
+   "id": "es-nrt",
+   "title": "Near real-time search",
+   "by": "Elasticsearch 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.elastic.co/guide/en/elasticsearch/reference/current/near-real-time.html",
+   "why": "쓴 값이 언제 검색에 보이나(새로고침). 상태를 ES에 옮겨 보여 줄 때 생기는 지연을 이해한다."
+  },
+  {
+   "id": "stripe-idem",
+   "title": "Idempotent requests",
+   "by": "Stripe API 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.stripe.com/api/idempotent_requests",
+   "why": "멱등 키를 실제 결제 API가 어떻게 받는지(키 보관 기간·같은 키 다른 본문 처리). 주문 API에 그대로 옮겨 볼 수 있다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "토스 광고를 서버 눈으로 읽기",
+   "time": "3~4일",
+   "goal": "광고 등록 → 충전 → 후보 거르기 → 경매 → 과금 → 리포트 흐름을 그리고, 각 칸을 어느 서버가 지키는지 말할 수 있다.",
+   "resources": [
+    "toss-ads-leader",
+    "toss-ads-perf",
+    "toss-ads-platform"
+   ],
+   "task": "팀 글 세 편을 읽고 흐름도 한 장을 그린다. 칸마다 '여기서 틀리면 누가 손해를 보나(사용자·광고주·회사)'를 적고, 과금 초과가 왜 1순위 위험인지 한 문단으로 쓴다."
+  },
+  {
+   "title": "작은 광고 서버 만들기",
+   "time": "2주",
+   "goal": "캠페인-세트-소재 표와 경매 API를 Kotlin·Spring으로 만들고, 예산 소진 광고가 바로 빠지게 할 수 있다.",
+   "resources": [
+    "real-mysql",
+    "coroutines-book",
+    "system-design"
+   ],
+   "task": "가상 광고 1만 개를 MySQL에 넣고, 요청마다 타깃 조건·남은 예산으로 거른 뒤 eCPM(입찰가 × 가상 CTR × 1000)으로 1등을 돌려주는 API를 만든다. 광고 풀은 Redis에 캐시하고, 부하 도구로 초당 수천 번 불러 캐시 전후 응답 시간을 비교한다."
+  },
+  {
+   "title": "클릭·과금을 틀리지 않게",
+   "time": "1~2주",
+   "goal": "중복·순서가 뒤바뀐 이벤트에도 과금이 정확하고, 예산을 넘겨 빼지 않는 파이프라인을 만들 수 있다.",
+   "resources": [
+    "kafka-docs",
+    "internal-kafka",
+    "stripe-idem",
+    "linkedin-pacing"
+   ],
+   "task": "노출·클릭 이벤트를 Kafka로 흘리고 과금 소비자가 클릭 ID 유니크 키로 한 번만 빼게 한다. 같은 메시지를 일부러 두 번 보내고 순서를 섞어 결과가 같은지 확인한다. 시간대별 통과 비율을 조절하는 간단한 페이싱을 넣어 하루 예산이 오전에 다 타지 않는지 본다."
+  },
+  {
+   "title": "장애를 넣고 지키기",
+   "time": "1~2주",
+   "goal": "느린 의존 서비스·캐시 장애를 일부러 일으키고, 서킷 브레이커·기본값·알림으로 버티게 할 수 있다.",
+   "resources": [
+    "resilience4j",
+    "slash23-gateway",
+    "release-it",
+    "obs-eng",
+    "sre-postmortem"
+   ],
+   "task": "경매 API가 부르는 가짜 'CTR 예측 서버'에 랜덤 지연을 넣고, Resilience4j 서킷과 '예측 실패 시 기본 CTR' 경로를 붙인다. 분당 5xx를 z-score로 알리는 대시보드를 만들고, 장애 하나를 회고 문서(타임라인·원인·재발 방지)로 남긴다."
+  },
+  {
+   "title": "새 버전을 안전하게 내보내기",
+   "time": "1주",
+   "goal": "실험군 배정과 트래픽 섀도잉으로 새 서빙 규칙을 사용자 피해 없이 검증할 수 있다.",
+   "resources": [
+    "istio-mirror",
+    "kohavi-ko",
+    "budget-split-blog",
+    "es-nrt"
+   ],
+   "task": "새 경매 규칙 버전에 실제 요청 복사본을 흘려(섀도잉) 옛 버전과 고른 광고·응답 시간을 비교한다. 그다음 사용자 ID 해시로 10%만 실험군에 넣고, 광고 클릭률과 함께 광고 외 화면 이탈률을 가드레일로 본다. 광고 상태를 ES에 옮기며 버전 번호로 늦게 온 이벤트를 버리게 한다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 공공데이터 집계로 신입 초봉 **약 4,200만원**, 평균 **약 6,200만원** — 공시된 평균 급여는 없다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없다 [21]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 — 경력직이 섞인 값이다 [21]"
+   },
+   {
+    "label": "토스뱅크 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 계열사 값 — 견주어 보기용 [22]"
+   },
+   {
+    "label": "토스뱅크 평균",
+    "value": "약 7,208만원",
+    "amount": 7208,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 계열사 평균 [22]"
+   }
+  ],
+  "how": "공고는 레퍼런스 체크 뒤 **처우 협의** 단계에서 정한다고 적었고, 최소 1년 이상의 실무 경험을 요구한다 [1]. 비바리퍼블리카는 상장사가 아니라 사업보고서의 '직원 평균 급여'가 없어 공시 숫자를 싣지 못했다. 평균은 경력직이 섞인 회사 전체 값이고, 집계값은 추정이라 실제 제안과 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 복지를 소개한 2021년 공식 글이다 [23]. 지금도 같은지는 글에 없으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스(비바리퍼블리카) 본사",
+  "address": "서울특별시 강남구 테헤란로 142, 4·10~13·22·23층",
+  "postal": "06236",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "주소는 토스 회사 소개 페이지 하단의 회사 정보다 [24]. 공고 근무지는 'Seoul'로만 적혀 있다 [1]. 애즈 팀이 본사 건물에 있는지는 공고에 없다 {추론}."
+ }
+}
