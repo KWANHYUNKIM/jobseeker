@@ -24,6 +24,7 @@
   "wanted-394722": "nhn-japan-frontend",
   "wanted-395799": "progrit-frontend-tech-lead",
   "wanted-393626": "recruit-data-engineer-japan",
+  "wanted-393625": "recruit-ml-engineer-japan",
   "wanted-288317": "revamp-software-engineer-japan",
   "ats-skcareers:sk:R262457": "skax-ai-studio-mlops-pl",
   "jobkorea-50384147": "skax-ai-studio-mlops-pl",
@@ -385,6 +386,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 27
+  },
+  {
+   "id": "recruit-ml-engineer-japan",
+   "company": "리크루트 (株式会社リクルート)",
+   "role": "머신러닝 엔지니어 (일본 근무)",
+   "jobs": [
+    "wanted-393625"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 23
   },
   {
    "id": "revamp-software-engineer-japan",
