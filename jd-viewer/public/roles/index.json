@@ -1,6 +1,7 @@
 {
  "updated_at": "2026-11-23",
  "jobs": {
+  "ats-toss:group:7646941003": "toss-ai-platform-engineer-platform",
   "ats-toss:group:7986152003": "toss-ai-platform-inference-pipeline",
   "ats-toss:group:7798373003": "toss-call-infra-engineer",
   "ats-toss:group:7989660003": "toss-client-platform-engineer",
@@ -20,6 +21,16 @@
   "saramin-55608860": "tossbank-finance-data-system"
  },
  "roles": [
+  {
+   "id": "toss-ai-platform-engineer-platform",
+   "company": "토스",
+   "role": "AI 플랫폼 엔지니어 (Platform)",
+   "jobs": [
+    "ats-toss:group:7646941003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 16
+  },
   {
    "id": "toss-ai-platform-inference-pipeline",
    "company": "토스",
