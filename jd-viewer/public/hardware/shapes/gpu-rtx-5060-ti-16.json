@@ -126,6 +126,116 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "2슬롯·8핀 1개는 공식 사양 탭. 공식 대표 사진(상자와 같이 세운 정면, 세션 임시 폴더에서 보기만): 무광 검정 쉬라우드에 같은 크기 팬 3개(검정 날개, 허브에 흰 PALIT) — models 의 팬 3개(이름으로 추정)를 사진이 뒷받침한다. 윗 모서리에 흰 GEFORCE RTX(브래킷 쪽)와 INFINITY(끝 쪽) 글자. 팬 지름·날개 수는 자료에 없고 사진이 작아 비웠다. 사양 탭에 백플레이트·조명 언급이 없고(ThunderMaster 의 'LED 효과' 한 줄뿐) 사진이 꺼진 정면이라 backplate·fan_light·light 는 비웠다. 갤러리 탭은 같은 사진 한 장뿐이라 8핀 자리·플로스루도 비웠다. 다나와는 쓰지 않았다."
+  },
+  "inno3d-rtx5060ti-16g-twin-x2-oc": {
+   "kind": "gpu",
+   "fans": [
+    88,
+    88
+   ],
+   "fan_blades": 9,
+   "fan_light": "none",
+   "slots": 2,
+   "backplate": true,
+   "power": {
+    "type": "8pin",
+    "n": 1,
+    "at": 0.5
+   },
+   "flow_through": true,
+   "color": "#17181a",
+   "accent": "#a9abae",
+   "marks": [
+    {
+     "text": "INNO3D GEFORCE RTX",
+     "where": "edge",
+     "color": "#e6e7e9"
+    },
+    {
+     "text": "INNO3D",
+     "where": "backplate",
+     "color": "#b9babc"
+    },
+    {
+     "text": "GEFORCE RTX",
+     "where": "backplate",
+     "color": "#b9babc"
+    }
+   ],
+   "sources": [
+    {
+     "title": "INNO3D GeForce RTX 5060 Ti 16GB TWIN X2 OC — 공식 제품 페이지(Powerful Dual Fan · 88mm scythe fan blades · Dual Slot · Metal Backplate 'Hot air extraction and release' · 1x PCIe 8-pin, 갤러리 정면·비스듬한·지름 도면·분해도·백플레이트 사진)",
+     "url": "https://www.inno3d.com/product/inno3d-geforce-rtx-5060-ti-16gb-twin-x2-oc"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 2개·2슬롯·8핀 1개·금속 백플레이트는 공식 문구, 지름 88mm 는 공식 도면 그림('DIAMETER: 88MM'). 사진(세션 임시 폴더에서 보기만): 검정 쉬라우드 가운데에 은색 헤어라인 금속 판(accent), 끝 모서리는 사선 홈 검정, 검정 날개 9장(도면 정면에서 셈)·검정 허브에 흰 INNO3D. 불빛은 공식 언급이 없고 사진도 꺼진 모양 → none. 윗 모서리 은색 띠에 INNO3D GEFORCE RTX. 백플레이트 직교 사진: 검정 판, 브래킷 쪽 INNO3D(Brutal by Nature)·끝 쪽 GEFORCE RTX, PCB 가 끝나는 약 57% 부터 끝까지 사선 막대 창으로 방열판이 보이는 플로스루. 8핀 자리는 백플레이트 윗변 홈(약 50%, 판독) — 5050 TWIN X2 와 같은 틀. 다나와는 쓰지 않았다."
+  },
+  "inno3d-rtx5060ti-16g-twin-x2-oc-white": {
+   "kind": "gpu",
+   "fans": [
+    88,
+    88
+   ],
+   "fan_blades": 9,
+   "fan_light": "none",
+   "slots": 2,
+   "backplate": true,
+   "flow_through": true,
+   "color": "#f2f3f4",
+   "accent": "#c3c5c8",
+   "marks": [
+    {
+     "text": "INNO3D GEFORCE RTX",
+     "where": "edge",
+     "color": "#c9cbce"
+    }
+   ],
+   "sources": [
+    {
+     "title": "INNO3D GeForce RTX 5060 Ti 16GB TWIN X2 OC WHITE — 공식 제품 페이지(Powerful Dual Fan · 88mm scythe fan blades · Dual Slot · Metal Backplate · 1x PCIe 8-pin · contemporary white aesthetic, 갤러리 정면·지름 도면·분해도 사진)",
+     "url": "https://www.inno3d.com/product/inno3d-geforce-rtx-5060-ti-16gb-twin-x2-oc-white"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 2개·88mm(도면)·2슬롯·8핀 1개·금속 백플레이트는 공식 문구·도면. 사진(보기만): 흰 쉬라우드 가운데 은색 헤어라인 판(accent), 끝 모서리 흰 사선 홈, 흰 날개 9장·흰 허브에 회색 INNO3D, 윗 모서리에 흰 양각 INNO3D GEFORCE RTX(옅은 회색으로 적음). 불빛 언급 없음 → none. 분해도: 흰 금속 백플레이트, 끝 쪽이 X 자 막대만 남은 창 → flow_through. 8핀 자리는 이 페이지에 직교 뒷면 사진이 없어 비웠다(같은 틀의 검정판은 약 50%) — 페이지의 백플레이트 그림은 5070 파일이라 쓰지 않았다. 다나와는 쓰지 않았다."
+  },
+  "pny-rtx5060ti-16gb-oc-dual-fan": {
+   "kind": "gpu",
+   "fan_count": 2,
+   "slots": 2,
+   "backplate": true,
+   "flow_through": true,
+   "color": "#16171a",
+   "accent": "#8e9094",
+   "marks": [
+    {
+     "text": "PNY",
+     "where": "edge",
+     "color": "#d9dadc"
+    },
+    {
+     "text": "GEFORCE RTX 5060 Ti",
+     "where": "edge",
+     "color": "#d9dadc"
+    },
+    {
+     "text": "GEFORCE RTX 5060 Ti",
+     "where": "backplate",
+     "color": "#e6e7e9"
+    }
+   ],
+   "sources": [
+    {
+     "title": "PNY 공식 브로슈어 — GeForce RTX 5060 Ti 16GB Overclocked Dual Fan(VCG5060T16DFXPB1-O · 2 Slot · Power Input 1x8 · DUAL FAN COOLING · METAL BACKPLATE 'vents that enhance passive cooling', 정면·분해도·윗면·백플레이트 사진)",
+     "url": "https://www.pny.com/file%20library/company/support/product%20brochures/geforce%20graphics/english/rtx-5060-ti-16gb-dual-fan-oc-brochure.pdf"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 2개·2슬롯·8핀 1개·금속 백플레이트는 공식 표·문구. 브로슈어 사진(PyMuPDF 로 세션 임시 폴더에 그려 보기만): 8GB 판(gpu-rtx-5060-ti-8)과 같은 겉모양 — 무광 검정 쉬라우드, 두 팬 사이 X 자로 좁아지는 판, 검정 날개에 검정 원판 허브(흰 PNY). 분해도의 백플레이트 끝 V 자 창 → flow_through(판독). 윗면 모서리 PNY·GEFORCE RTX 5060 Ti, 백플레이트에 같은 글자. 불빛은 자료에 없다. 날개 수·팬 지름·8핀 자리는 사진 크기·각도로 못 재 비웠다. 다나와는 쓰지 않았다."
   }
  }
 }

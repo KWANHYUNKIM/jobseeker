@@ -291,6 +291,98 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "팬 2개·2슬롯·8핀 1개는 공식 표, 지름 88mm 는 공식 도면 그림('DIAMETER: 88MM'). 정면 사진: 무광 짙은 회색 쉬라우드(사선 줄무늬 결), 검정 날개 9장(판독), 허브에 흰 INNO3D, 불빛 언급·발광 사진 없음 → none. 윗면 모서리에 INNO3D GEFORCE RTX 글자. 백플레이트 정면 사진(직교): 검정 판, 브래킷 쪽에 INNO3D(Brutal by Nature)·끝 쪽에 GEFORCE RTX, PCB 가 끝나는 약 55% 부터 끝까지 사선 막대 창으로 방열판이 보이는 플로스루, 8핀 자리는 PCB 끝(약 55%). 다나와는 쓰지 않았다."
+  },
+  "asus-dual-rtx5050-8g": {
+   "kind": "gpu",
+   "fan_count": 2,
+   "slots": 2,
+   "backplate": true,
+   "flow_through": true,
+   "power": {
+    "type": "8pin",
+    "n": 1,
+    "at": 0.8
+   },
+   "color": "#16171a",
+   "accent": "#6e7175",
+   "marks": [
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#e6e7e9"
+    },
+    {
+     "text": "ASUS",
+     "where": "edge",
+     "color": "#2a2b2e"
+    },
+    {
+     "text": "ASUS",
+     "where": "backplate",
+     "color": "#e6e7e9"
+    }
+   ],
+   "sources": [
+    {
+     "title": "ASUS Dual RTX 5050 8GB — 공식 제품 페이지(two Axial-tech fans · Vented Backplate · 키비주얼·윗면·백플레이트 사진)",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/dual/dual-rtx5050-8g/"
+    },
+    {
+     "title": "ASUS Dual RTX 5050 8GB — 공식 스펙(2 Slot · 1 x 8-pin · 203x120.2x40mm)",
+     "url": "https://www.asus.com/motherboards-components/graphics-cards/dual/dual-rtx5050-8g/techspec/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 2개·2슬롯·통풍 백플레이트·8핀 1개는 공식 문구·스펙. 제품 소개 본문 사진(files/media — 세션 임시 폴더에서 보기만): OC 판과 같은 온통 검정 헤어라인 쉬라우드, 검정 날개에 회색 ASUS 글자의 검정 허브(accent). 윗면 사진: 모서리에 흰 GEFORCE RTX, 끝 쪽에 같은 검정 ASUS 양각, PCB 가 브래킷부터 약 85% 에서 끝나고 8핀은 그 끝 바로 앞(약 80%), 그 뒤는 쉬라우드 틀만 남아 뚫렸다. 백플레이트 사진: 검정 판에 흰 사선 줄·ASUS, 끝 가장자리에 세로로 긴 창 하나로 핀이 보인다 → flow_through. 조명은 공식 언급이 없어 fan_light 를 비웠다. 날개 수는 비스듬한 사진이라 비웠다. 갤러리(/gallery/)는 404. 다나와는 쓰지 않았다."
+  },
+  "gainward-ghost-rtx5050": {
+   "kind": "gpu",
+   "fans": [
+    95,
+    95
+   ],
+   "light": "side",
+   "slots": 2,
+   "backplate": true,
+   "flow_through": true,
+   "power": {
+    "type": "8pin",
+    "n": 1,
+    "at": 0.5
+   },
+   "color": "#141416",
+   "accent": "#e6e8ea",
+   "marks": [
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#f2f3f4"
+    },
+    {
+     "text": "GHOST",
+     "where": "edge",
+     "color": "#f2f3f4"
+    },
+    {
+     "text": "GEFORCE RTX",
+     "where": "backplate",
+     "color": "#e6e7e9"
+    }
+   ],
+   "sources": [
+    {
+     "title": "Gainward GeForce RTX 5050 Ghost — 공식 제품 페이지(twin 95mm fans · sleek black design · subtle RGB glow on the side shroud · 2 Slot · 8-pin x1 · protective backplate)",
+     "url": "https://www.gainward.com/main/vgapro.php?id=1258&lang=en"
+    },
+    {
+     "title": "Gainward GeForce RTX 5050 Ghost — 공식 갤러리(정면·윗면·I/O·뒷면·비스듬한 사진)",
+     "url": "https://www.gainward.com/main/vgapro.php?id=1258&tab=gy&lang=en"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "95mm 팬 2개·2슬롯·8핀 1개·백플레이트·옆면 RGB·검정은 공식 문구. 갤러리 사진(보기만): 무광 검정 쉬라우드, 검정 날개에 검정 허브(흰 GAINWARD). 윗면 직교 사진: 브래킷 쪽 흰 GEFORCE RTX, 끝 쪽 흰 GHOST 와 그 밑 가늘고 긴 반투명 띠(옆 RGB 자리 → light side, 꺼진 사진이라 accent 는 띠의 흰 반투명 색), 8핀은 길이의 가운데(약 50%) 홈 속. 뒷면 직교 사진: 검정 헤어라인 금속 백플레이트에 세로 GEFORCE RTX, 끝 약 43% 는 쉐브론 막대 창으로 팬이 보이는 플로스루 — 5060 Ti Ghost 8GB 와 같은 틀. 날개 수는 사진으로 확실히 세지 못해 비웠다. 다나와는 쓰지 않았다."
   }
  }
 }
