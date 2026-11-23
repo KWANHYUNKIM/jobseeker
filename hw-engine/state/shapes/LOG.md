@@ -98,3 +98,12 @@
   Palit RTX 5090 GameRock OC(공식 스펙 3.5슬롯·16핀, 대표 사진 한 장 — 비OC GameRock 과 같은 Chameleon 판, 팬 3개). 다나와는 쓰지 않았다.
 - 막힌 것: 맨 앞 COLORFUL 6개(403)·ZOTAC(468)는 지난 회차처럼 우회하지 않고 넘겼다. PNY 브로슈어는 web-fetch 가 글을 못 뽑아 PyMuPDF 로 글·쪽 그림을 세션 임시 폴더에 뽑아 봤다.
 - 실물과 아직 다른 점: T1 은 models 의 fans 가 2(공식은 3) — REQUESTS [hw-models], shapes 는 fan_count 3. Palit GameRock OC 의 models fans 도 null(REQUESTS). TUF 백플레이트의 노란 발광 로고, GALAX 흰 단색 팬 불빛은 그릴 칸이 없다(REQUESTS). T1 의 선수 그림·빨간 사선, GALAX 의 회로·탄소 무늬, TUF 모서리 은색 덧판은 단색·accent 로만 그려진다. PNY·T1·Palit 의 보조전원 자리, PNY·TUF·T1·Palit 날개 수는 사진으로 못 읽어 비웠다.
+
+## 2026-11-23 · 11회차(무인) — 그래픽카드 인기순 다음 4개
+
+- 적은 것(모두 medium, 공식 문구·표 + 공식 사진을 세션 임시 폴더에서 보기만): INNO3D RTX 5050 TWIN X2(공식 페이지 — 팬 2개·2슬롯·8핀, 지름 도면 88mm, 정면·백플레이트 직교 사진 — 짙은 회색, 날개 9장, PCB 끝 약 55% 의 8핀과 그 뒤 사선 막대 창 플로스루, 불빛 없음) ·
+  PNY RTX 5060 Ti 8GB OC Dual Fan(공식 브로슈어 PDF — 2슬롯·8핀·금속 백플레이트 '통풍구', 정면·분해도 사진 — 무광 검정, 끝 V 자 창 플로스루) ·
+  GALAX RTX 5080 HOF Black(공식 표 102·92·102mm·날개 7장·3슬롯·16핀·RGB Top/front/back, 정면·켠 정면·윗면·I/O·뒷면 사진 — 가운데 92mm 팬의 육각 발광 틀과 왕관 막대, 16핀 약 68%, 검정 금속 백플레이트 끝 가로 막대 플로스루) ·
+  이엠텍 RTX 5080 MIRACLE WHITE(공식 페이지·상세 이미지 — ARGB 100mm 팬 3개·알루미늄 백플레이트·16핀, 흰 쉬라우드 + 은회색 덧판, 백플레이트 끝 1/3 계단 창 플로스루, 16핀 약 65%). 다나와는 쓰지 않았다.
+- 막힌 것: 맨 앞 COLORFUL 7개(Battle AX 5070 Ti SFF 포함, 공식 이미지 403)·ZOTAC(468)는 우회하지 않고 넘겼다. PNY 모델 페이지에는 이 Dual SKU 가 없어 브로슈어만 썼다(PyMuPDF 로 쪽 그림을 세션 임시 폴더에). 이엠텍 상세 이미지는 세로로 긴 한 장이라 PIL 로 잘라 봤다(저장소에 두지 않음).
+- 실물과 아직 다른 점: HOF 의 가운데 팬만 감싼 육각 발광 틀은 light 'both' 로 모든 팬에 고리처럼 그려진다(REQUESTS 새 줄). 이엠텍의 빛나는 MIRACLE 글자는 marks glow 요청과 같은 일. models 의 HOF backplate null·이엠텍 slots null(REQUESTS [hw-models]). PNY 의 8핀 자리·날개 수·팬 지름, 이엠텍 날개 수(반투명)·슬롯 수는 비웠다. INNO3D 쉬라우드의 사선 결, HOF 다면체 무늬는 단색 판이다.

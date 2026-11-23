@@ -163,6 +163,111 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "팬 3개·3슬롯·16핀 1개는 공식 표·문구. 브로슈어 정면 사진: 무광 검정 쉬라우드, 검정 날개에 회색 원판 PNY 허브, 팬 사이 은회색 테두리. 윗면 사진: 모서리에 흰 PNY(테두리 그림)·GEFORCE RTX 5080 글자. 분해도·뒷면 사진: 은회색 금속 백플레이트에 GEFORCE RTX 5080·PNY 글자, 끝 쪽(PCB 가 끝난 자리)에 V 자로 뚫린 창 → flow_through(판독, 5070 Ti OC Triple 과 같은 틀). 불빛은 자료에 없고 사진도 꺼진 모양이라 fan_light 는 비웠다. 날개 수·팬 지름·16핀 자리는 사진 해상도·각도로 못 읽어 비웠다. 다나와는 쓰지 않았다."
+  },
+  "galax-hof-rtx5080-black": {
+   "kind": "gpu",
+   "fans": [
+    102,
+    92,
+    102
+   ],
+   "fan_blades": 7,
+   "fan_light": "none",
+   "light": "both",
+   "slots": 3,
+   "backplate": true,
+   "power": {
+    "type": "12v-2x6",
+    "n": 1,
+    "at": 0.68
+   },
+   "flow_through": true,
+   "color": "#1b1c1e",
+   "accent": "#9a9ca0",
+   "marks": [
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#e6e7e9"
+    },
+    {
+     "text": "Hall Of Fame",
+     "where": "edge",
+     "color": "#e6e7e9"
+    },
+    {
+     "text": "GEFORCE RTX",
+     "where": "backplate",
+     "color": "#e6e7e9"
+    },
+    {
+     "text": "HOF",
+     "where": "backplate",
+     "color": "#8a8c90"
+    }
+   ],
+   "sources": [
+    {
+     "title": "GALAX GeForce RTX 5080 HOF Gaming Black Edition — 공식 제품 페이지(Fan Feature 2*102mm, 1*92mm · 7-blade WINGS 3.0 · RGB Top/front/back/HOF crown · 3 slot · native 16-pin, 정면·켠 정면·비스듬한·윗면·I/O·뒷면 사진)",
+     "url": "https://galax.com/en/product/geforce-rtx-hof-5080-black-edition/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 102·92·102mm(가운데가 92 — 정면 사진에서 가운데 팬이 작다)·날개 7장·3슬롯·16핀은 공식 표·문구. 정면 사진: 각진 다면체 무늬의 검정 쉬라우드, 가운데 팬을 육각 틀이 감싸고 그 위에 은회색 왕관 막대. 켠 사진: 육각 틀과 왕관 막대가 빛나고 팬 날개는 안 빛난다 → light both(앞 판 + 윗면 'Hall Of Fame' 띠, 공식 'Top/front/back'), fan_light none. 윗면 사진: GEFORCE RTX 글자와 Hall Of Fame 띠, 16핀 자리는 브래킷에서 약 68%. 뒷면 사진: 검정 금속 백플레이트에 HOF 무늬 선·GEFORCE RTX, 끝 약 18% 가 가로 막대로 뚫린 플로스루. 백플레이트는 공식 문구엔 없지만 뒷면 사진으로 있음. 다나와는 쓰지 않았다."
+  },
+  "emtek-rtx5080-miracle-white": {
+   "kind": "gpu",
+   "fans": [
+    100,
+    100,
+    100
+   ],
+   "fan_light": "argb",
+   "backplate": true,
+   "power": {
+    "type": "12v-2x6",
+    "n": 1,
+    "at": 0.65
+   },
+   "flow_through": true,
+   "color": "#eceef0",
+   "accent": "#b9bcc2",
+   "marks": [
+    {
+     "text": "MIRACLE",
+     "where": "edge",
+     "color": "#c8b6f0"
+    },
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#9a9da2"
+    },
+    {
+     "text": "GEFORCE RTX",
+     "where": "backplate",
+     "color": "#9a9da2"
+    },
+    {
+     "text": "MIRACLE",
+     "where": "backplate",
+     "color": "#9a9da2"
+    }
+   ],
+   "sources": [
+    {
+     "title": "이엠텍아이엔씨 RTX 5080 MIRACLE WHITE — 공식 제품 페이지(3팬·ARGB LED 라이트·백플레이트·16핀 x 1개, 대표 사진)",
+     "url": "https://www.emtekinc.co.kr/html/dh_product/prd_detail/2250"
+    },
+    {
+     "title": "같은 페이지의 공식 상세 이미지(ARGB 100mm 트리플 쿨링팬 · 풀 커버리지 알루미늄 백플레이트 · 6mm x8 히트파이프, 정면·비스듬한·백플레이트·분해도 사진)",
+     "url": "https://www.emtekinc.co.kr/html/dh_product/prd_detail/2250"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 3개·100mm·ARGB·알루미늄 백플레이트·16핀 1개는 공식 문구. 사진: 흰 쉬라우드에 은회색 덧판, 반투명 흰 날개가 ARGB 로 빛난다(fan_light argb). 윗면 모서리에 빛나는 MIRACLE 글자와 GEFORCE RTX(끝 쪽 은색 덧판). 백플레이트 사진: 흰 알루미늄 판에 GEFORCE RTX·MIRACLE 각인, 끝 약 1/3 이 계단 모양 창으로 뚫려 방열판이 보이는 플로스루, 16핀은 PCB 끝(브래킷에서 약 65%, 비스듬한 사진 판독). 날개 수는 사진에서 반투명이라 못 셌다. 슬롯 수는 공식 표에 없어(두께 62mm) 비웠다. 다나와는 쓰지 않았다."
   }
  }
 }

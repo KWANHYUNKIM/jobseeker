@@ -241,6 +241,56 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "팬 2개·TORX 5.0·플로스루 백플레이트·8핀 1개는 데이터시트 문구. 데이터시트 속 정면 사진: 온통 무광 검정 — 두 팬 사이에 세로 홈, 검정 날개(링으로 이은 TORX)에 흰 msi 허브, 은색 덮개가 없다(VENTUS 와 다른 점). 뒷면 사진: 짙은 회색 백플레이트에 흰 GEFORCE RTX·msi 글자와 나사 넷, 끝 쪽 약 1/5 이 뚫려 방열판 핀이 보인다 → flow_through. 뒷면 사진의 윗 모서리, PCB 가 끝나는 자리 바로 앞(브래킷부터 약 70%)에 8핀 단자 홈이 보여 at=0.7(판독). 슬롯 수·조명은 데이터시트에 없어 비웠다(두께 40mm 는 models). 날개 수·팬 지름은 사진이 작아 못 적었다. msi.com 은 403 이라 쓰지 않았고 다나와도 쓰지 않았다."
+  },
+  "inno3d-twin-x2-rtx5050": {
+   "kind": "gpu",
+   "fans": [
+    88,
+    88
+   ],
+   "fan_blades": 9,
+   "fan_light": "none",
+   "slots": 2,
+   "backplate": true,
+   "power": {
+    "type": "8pin",
+    "n": 1,
+    "at": 0.55
+   },
+   "flow_through": true,
+   "color": "#232426",
+   "accent": "#3a3c3f",
+   "marks": [
+    {
+     "text": "INNO3D",
+     "where": "edge",
+     "color": "#d9dadc"
+    },
+    {
+     "text": "GEFORCE RTX",
+     "where": "edge",
+     "color": "#d9dadc"
+    },
+    {
+     "text": "GEFORCE RTX",
+     "where": "backplate",
+     "color": "#c9cacc"
+    },
+    {
+     "text": "INNO3D",
+     "where": "backplate",
+     "color": "#a9aaac"
+    }
+   ],
+   "sources": [
+    {
+     "title": "INNO3D GeForce RTX 5050 TWIN X2 — 공식 제품 페이지(Powerful Dual Fan · 88mm scythe fan blades · 2-slot, SFF · Multifunctional Backplate 'Hot air extraction and release' · 1x PCIe 8-pin, 정면·비스듬한·지름 도면·백플레이트 사진)",
+     "url": "https://www.inno3d.com/product/inno3d-geforce-rtx-5050-twin-x2"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 2개·2슬롯·8핀 1개는 공식 표, 지름 88mm 는 공식 도면 그림('DIAMETER: 88MM'). 정면 사진: 무광 짙은 회색 쉬라우드(사선 줄무늬 결), 검정 날개 9장(판독), 허브에 흰 INNO3D, 불빛 언급·발광 사진 없음 → none. 윗면 모서리에 INNO3D GEFORCE RTX 글자. 백플레이트 정면 사진(직교): 검정 판, 브래킷 쪽에 INNO3D(Brutal by Nature)·끝 쪽에 GEFORCE RTX, PCB 가 끝나는 약 55% 부터 끝까지 사선 막대 창으로 방열판이 보이는 플로스루, 8핀 자리는 PCB 끝(약 55%). 다나와는 쓰지 않았다."
   }
  }
 }

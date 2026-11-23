@@ -233,6 +233,41 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "공식 문구와 정면 사진 모두 팬 3개다 — models 는 fans 2 라 틀렸다(REQUESTS [hw-models]). 2.5슬롯·8핀 1개는 공식 스펙. 정면 사진: 흰 쉬라우드(color)에 빨간 사선 띠(accent), 검정 날개에 빨간 고리 허브(ASUS·T1·ASUS), VICTORY·GAME DAY·WE ARE T1 글자. 뒷면 사진: 흰·빨강 백플레이트에 T1 선수 그림과 세로 GEFORCE RTX, 끝 약 30% 가 X 자 막대만 남은 플로스루. RGB 는 스펙에 'RGB' 만 있고 자리가 안 보여 fan_light·light 는 비웠다. 8핀 자리·날개 수는 사진으로 못 읽어 비웠다. 선수 그림·빨간 사선 무늬는 단색 판으로만 그려진다. 다나와는 쓰지 않았다."
+  },
+  "pny-rtx5060ti-8gb-oc-dual-fan": {
+   "kind": "gpu",
+   "fan_count": 2,
+   "slots": 2,
+   "backplate": true,
+   "flow_through": true,
+   "color": "#16171a",
+   "accent": "#8e9094",
+   "marks": [
+    {
+     "text": "PNY",
+     "where": "edge",
+     "color": "#d9dadc"
+    },
+    {
+     "text": "GEFORCE RTX 5060 Ti",
+     "where": "edge",
+     "color": "#d9dadc"
+    },
+    {
+     "text": "GEFORCE RTX 5060 Ti",
+     "where": "backplate",
+     "color": "#e6e7e9"
+    }
+   ],
+   "sources": [
+    {
+     "title": "PNY 공식 브로슈어 — GeForce RTX 5060 Ti 8GB Overclocked Dual Fan(VCG5060T8DFXPB1-O · 2 Slot · Power Input 1x8 · DUAL FAN COOLING · METAL BACKPLATE 'vents that enhance passive cooling', 정면·분해도·윗면·백플레이트 사진)",
+     "url": "https://www.pny.com/file%20library/company/support/product%20brochures/geforce%20graphics/english/rtx-5060-ti-8gb-dual-fan-oc-brochure.pdf"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 2개·2슬롯·8핀 1개·금속 백플레이트는 공식 표·문구. 브로슈어 정면 사진: 무광 검정 쉬라우드, 검정 날개에 검정 원판 허브(흰 PNY), 두 팬 사이 X 자로 좁아지는 판. 분해도: 백플레이트 끝(PCB 가 끝난 자리)에 V 자 창 → flow_through(판독, 같은 브로슈어의 5070 Ti·5080 OC Triple 과 같은 틀). 백플레이트 옆 사진은 회색 금속 결에 GEFORCE RTX 5060 Ti·PNY 글자, 윗면 모서리에 PNY·GEFORCE RTX 5060 Ti. 불빛은 자료에 없다. 날개 수·팬 지름·8핀 자리는 사진 크기·각도로 못 재 비웠다. pny.com 모델 페이지에는 이 SKU 가 없다(EPIC-X 만). 다나와는 쓰지 않았다."
   }
  }
 }
