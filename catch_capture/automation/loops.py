@@ -183,8 +183,8 @@ REGISTRY: list[Loop] = [
              "`python lecture-engine/clean.py --apply` 로 노트를 DB 에 저장하고 끝난 강의의 영상·장면 이미지를 지운다(빼먹지 않는다). 푸시하지 않는다. "
              "무엇을 했는지 한두 줄로 보고한다.")),
     # 직무 역설계 — 공고 한 줄 한 줄이 왜 필요하고 실제로 무슨 일인지. 회사 발표 영상은 강의 노트의 fetch.py 로 자막을 읽는다.
-    Loop("role-engine", "직무 역설계(공고 풀이)", "claude-loop", "any", "30분마다(repeat)", 72,
-         "python -m automation.loops repeat role-engine --every 30m",
+    Loop("role-engine", "직무 역설계(공고 풀이)", "claude-loop", "any", "1분 쉬고 바로(repeat)", 72,
+         "python -m automation.loops repeat role-engine --every 1m",
          ["engine/roles/state/LOG.md", "jd-viewer/public/roles/index.json"],
          check="python engine/roles/validate.py --gaps",
          owns=["jd-viewer/public/roles/", "engine/roles/state/"],
