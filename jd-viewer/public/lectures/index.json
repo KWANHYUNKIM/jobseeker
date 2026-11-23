@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-23T14:44:59",
- "count": 148,
+ "generated_at": "2026-11-23T15:00:30",
+ "count": 149,
  "topics": [
   {
    "key": "llm",
@@ -61,6 +61,11 @@
    "key": "nlp",
    "label": "자연어 처리",
    "count": 2
+  },
+  {
+   "key": "coding-test",
+   "label": "코딩테스트",
+   "count": 1
   }
  ],
  "tracks": [
@@ -290,13 +295,13 @@
        "school": "동빈나",
        "stack": "Python",
        "subject": "알고리즘 유형",
-       "done": 0,
+       "done": 1,
        "total": 15
       }
      ],
      "why": "국내 코딩테스트 출제 경향에 맞춰 유형을 순서대로 묶었다. 1편이 파이썬 문법 총정리라 그것부터.",
      "tip": "1~5편(문법·그리디·DFS/BFS·정렬·이진 탐색)이 시험의 절반이다.",
-     "done": 0,
+     "done": 1,
      "total": 15
     },
     {
@@ -319,7 +324,7 @@
      "total": 56
     }
    ],
-   "done": 0,
+   "done": 1,
    "total": 71
   },
   {
@@ -2429,14 +2434,14 @@
    },
    "playlist": "https://www.youtube.com/playlist?list=PLRx0vPvlEmdAghTr5mXQxGpHjWqSz0dgC",
    "total": 15,
-   "done": 0,
+   "done": 1,
    "lectures": [
     {
      "no": 1,
      "id": "m-9pAwq1o3w",
      "title": "(이코테 2021 강의 몰아보기) 1. 코딩 테스트 출제 경향 분석 및 파이썬 문법 부수기",
      "duration_sec": 8503,
-     "done": false
+     "done": true
     },
     {
      "no": 2,
@@ -7293,6 +7298,37 @@
    "track": "ai",
    "stack": "통계·이론(그림)",
    "subject": "기초 통계·머신러닝"
+  },
+  {
+   "id": "m-9pAwq1o3w",
+   "title": "(이코테 2021 강의 몰아보기) 1. 코딩 테스트 출제 경향 분석 및 파이썬 문법 부수기",
+   "title_ko": "이코테 1편 — 코딩 테스트란 무엇이고, 시험에 필요한 파이썬 문법 전부",
+   "school": "동빈나",
+   "code": "이코테",
+   "term": "2021",
+   "speaker": "나동빈",
+   "topic": "coding-test",
+   "tags": [
+    "Python",
+    "Algorithm",
+    "Data Structure",
+    "PyPy"
+   ],
+   "level": "입문",
+   "one_line": "코딩 테스트의 모양·출제 경향·복잡도 감각, 그리고 시험에 쓰는 파이썬 문법을 처음부터 끝까지",
+   "duration_sec": 8503,
+   "published": "2020-09-26",
+   "views": 370103,
+   "url": "https://www.youtube.com/watch?v=m-9pAwq1o3w",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/m-9pAwq1o3w/mqdefault.jpg",
+   "chapters": 15,
+   "written_at": "2026-11-23",
+   "series": "icote-2021",
+   "no": 1,
+   "track": "coding-test",
+   "stack": "Python",
+   "subject": "알고리즘 유형"
   },
   {
    "id": "vP06aMoz4v8",
