@@ -71,6 +71,7 @@
   "ats-toss:group:5622017003": "tossbank-fe-platform-engineer",
   "saramin-55608860": "tossbank-finance-data-system",
   "ats-toss:group:5622038003": "tossbank-frontend-product",
+  "saramin-55607797": "tossbank-information-security-manager",
   "ats-toss:group:7702579003": "tossbank-infra-operations-engineer",
   "ats-toss:group:5498959003": "tossbank-ml-llm-ops",
   "ats-toss:group:6118752003": "tossbank-ml-product",
@@ -83,7 +84,8 @@
   "saramin-55606858": "tossbank-security-policy-lead",
   "ats-toss:group:5847765003": "tossbank-security-researcher",
   "ats-toss:group:7998884003": "tossbank-senior-data-analyst",
-  "ats-toss:group:4521687003": "tossbank-server-platform"
+  "ats-toss:group:4521687003": "tossbank-server-platform",
+  "ats-toss:group:6607772003": "tossbank-system-security-engineer"
  },
  "roles": [
   {
@@ -760,6 +762,16 @@
    "lines": 17
   },
   {
+   "id": "tossbank-information-security-manager",
+   "company": "토스뱅크",
+   "role": "보안정책 담당자",
+   "jobs": [
+    "saramin-55607797"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 13
+  },
+  {
    "id": "tossbank-infra-operations-engineer",
    "company": "토스뱅크",
    "role": "인프라 운영 엔지니어",
@@ -879,6 +891,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 18
+  },
+  {
+   "id": "tossbank-system-security-engineer",
+   "company": "토스뱅크",
+   "role": "보안 엔지니어 (시스템 보안)",
+   "jobs": [
+    "ats-toss:group:6607772003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 13
   }
  ]
 }
