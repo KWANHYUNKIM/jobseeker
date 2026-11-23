@@ -3,7 +3,9 @@
  "jobs": {
   "wanted-395987": "datax-software-engineer-japan",
   "wanted-368239": "finatext-brokerage-fullstack",
+  "wanted-377332": "ldf-linemanga-data-scientist",
   "wanted-391370": "litalico-data-engineer",
+  "wanted-397938": "litalico-frontend-b2b-saas",
   "wanted-391368": "litalico-sre-product",
   "wanted-394202": "mediphone-platform-engineer",
   "wanted-394722": "nhn-japan-frontend",
@@ -142,6 +144,16 @@
    "lines": 25
   },
   {
+   "id": "ldf-linemanga-data-scientist",
+   "company": "LINE Digital Frontier",
+   "role": "LINE 만화 데이터 사이언티스트 (일본 도쿄 근무)",
+   "jobs": [
+    "wanted-377332"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 30
+  },
+  {
    "id": "litalico-data-engineer",
    "company": "LITALICO",
    "role": "데이터 엔지니어",
@@ -150,6 +162,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 29
+  },
+  {
+   "id": "litalico-frontend-b2b-saas",
+   "company": "LITALICO",
+   "role": "프로덕트 엔지니어 (프론트엔드 / B2B 복지 SaaS)",
+   "jobs": [
+    "wanted-397938"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 24
   },
   {
    "id": "litalico-sre-product",
