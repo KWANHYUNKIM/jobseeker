@@ -1,0 +1,536 @@
+{
+  "id": "skax-sap-bw-bdc-data-analytics",
+  "company": "SK주식회사(AX)",
+  "role": "SAP BW/BDC/BI · Data Analytics 전문가",
+  "team": "AX ERP서비스2팀",
+  "jobs": [
+    "ats-skcareers:sk:R262392"
+  ],
+  "researched_at": "2026-11-23",
+  "tldr": {
+    "what": "고객사 SAP ERP 에 쌓인 회계·구매·영업 데이터를 꺼내 **분석용 창고(SAP BW)** 나 **데이터 레이크하우스**에 모으고, 그 위에 BI 리포트·업무 화면·AI 서비스를 얹는 **구축·운영 사업**을 합니다. 공고는 SAP BW 파트와 Data Analytics 파트 두 갈래로 사람을 찾습니다.[1]",
+    "env": "같은 팀이 SAP ERP 자체(FI 재무 모듈 등)도 구축·운영합니다.[2] SAP 는 2025년 BW·Datasphere·Databricks 를 묶은 **Business Data Cloud(BDC)** 를 내놓았고[6], 옛 BW 7.5 는 2027년에 기본 유지보수가 끝나 고객사들이 다음 자리를 정해야 하는 때입니다.[10][11]",
+    "oneline": "ERP 데이터를 숫자 틀림 없이 리포트까지 잇는 사람. 경력 3년 이상이 공통 요건이고, 코드보다 **SAP 데이터 구조 · 데이터 모델 · 고객 요구 정리 · 일정 관리**가 중심입니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "AX ERP서비스2팀을 소개합니다 😊",
+      "short": "공고 앞부분은 팀 소개다. SAP ERP 를 고객사에 짓고 돌리는 팀의 '데이터' 쪽 자리다.",
+      "why": "같은 팀 이름으로 SAP FI(재무회계) 모듈 전문가 공고도 함께 올라와 있습니다. 그 공고는 이 팀이 ERP 를 구축·운영하며 관리회계 업무도 맡는다고 적었습니다.[2] 이 공고는 그 ERP 에서 나온 데이터를 분석하는 쪽입니다.[1]",
+      "refs": [1, 2]
+    },
+    {
+      "section": "task",
+      "quote": "저희팀은 SAP ERP시스템을 고객사에 구축·운영하는 조직으로 다년간 고객사의 ERP운영 시스템을 구축하고 Data를 관리하는 역할을 수행하고 있습니다.",
+      "short": "ERP(회사 살림 전체를 기록하는 시스템)를 고객사에 깔고 계속 맡아 돌리는 팀이다.",
+      "why": "ERP 는 구매·생산·영업·회계를 한 시스템에 기록하는 프로그램이고, SAP 는 그 대표 제품입니다. SK AX 는 2025년 파르나스호텔의 SAP S/4HANA(SAP 의 최신 ERP) 기반 ERP 구축을 맡았다고 알렸습니다.[4] 같은 해 SAP 와 'AI 기반 ERP 혁신 모델'을 함께 만들기로 했고, 먼저 국내 기업 ERP 전환에서 증명한 뒤 SK 그룹으로 넓힌다고 했습니다.[5]",
+      "how_far": "'구축'은 새로 짓는 프로젝트, '운영'은 다 지은 뒤 고객 요청·장애를 맡는 일(SM)입니다. 이 자리는 둘 다 할 수 있습니다.[1]",
+      "refs": [1, 4, 5]
+    },
+    {
+      "section": "task",
+      "quote": "다양한 Data Analytics 기술을 기반으로 고객사의 ERP, Non-ERP 데이터를 효과적으로 통합, 모델링하고 최신 BI 도구와 AI 기반 분석 기술을 결합하여, 고객이 원하는 인사이트를 빠르고 정확하게 제공하는 데이터 플랫폼을 설계, 구축, 운영하는 역할을 담당합니다.",
+      "short": "ERP 와 그 밖의 시스템 데이터를 한곳에 모아 표로 정리하고, 리포트·AI 가 그 표를 쓰게 만든다.",
+      "why": "ERP 에는 회계·주문이 있지만 설비 센서·웹 로그·외부 시장 자료 같은 'Non-ERP' 데이터는 다른 곳에 있습니다. 둘을 합쳐야 '이 제품이 왜 손해를 봤나' 같은 질문에 답할 수 있습니다. {추론} SK AX 가 SK이노베이션 E&S 에 지은 데이터·AI 플랫폼도 흩어진 데이터를 원본 층 → 분석 층 → 용도별 마트 층으로 쌓고, 마트를 BI 와 생성형 AI 가 쓰게 했습니다.[3]",
+      "flows": [
+        {
+          "caption": "SK AX 가 공개한 SK이노베이션 E&S 플랫폼의 층[3]",
+          "steps": ["L0 레이크 · 원본 그대로", "L1 DW · 분석·실험용", "L2 마트 · BI·생성형 AI 용"]
+        }
+      ],
+      "refs": [3],
+      "study": ["skax-ske-case", "fde-book"]
+    },
+    {
+      "section": "task",
+      "quote": "고객사의 프로젝트 환경에 따라 업무 환경이 바뀔 수 있으나 주로 서울/ 경기 분당에서 근무하게 됩니다.",
+      "short": "프로젝트마다 일하는 곳이 바뀔 수 있다. 보통은 분당 본사나 서울.",
+      "why": "구축 사업은 고객사 현업과 매일 만나야 해서 고객사에 들어가 일하는(상주) 경우가 흔합니다. {추론} SK AX 사업장 안내의 분당 사무실은 SK u-타워·판교 캠퍼스·수내 오피스입니다.[25]",
+      "how_far": "어느 고객사·어느 건물로 가는지는 면접·처우 협의 때 확인합니다. {추론}",
+      "refs": [25]
+    },
+    {
+      "section": "task",
+      "quote": "SK그룹사는 수평적인 조직문화를 지향하며, 구성원의 행복을 중심 가치로 삼고 있습니다.",
+      "short": "그룹 공통 문화 소개 문장이다. 일 내용과는 따로 읽는다.",
+      "why": "SK 그룹 채용 사이트의 문화 소개도 같은 말(구성원 행복)을 앞세웁니다.[24] 이 팀만의 근무 방식은 공고에 따로 적혀 있지 않습니다.[1]",
+      "refs": [1, 24]
+    },
+    {
+      "section": "task",
+      "quote": "✅SAP BW 구축/운영 파트",
+      "short": "아래 세 줄은 SAP BW(SAP 의 분석용 데이터 창고) 쪽 사람이 맡는 일이다.",
+      "why": "SAP BW(Business Warehouse)는 SAP ERP 데이터를 꺼내 쌓고 리포트로 보여 주는 SAP 의 데이터 웨어하우스 제품입니다. 지금 판은 BW/4HANA 이고, 유지보수가 2040년까지로 늘어났습니다.[10]",
+      "refs": [10]
+    },
+    {
+      "section": "task",
+      "quote": "SAP BW/BDC 시스템 구축·운영 업무를 수행합니다.",
+      "short": "고객사의 SAP 분석 창고(BW)를 짓고 돌리며, 새 제품 BDC 로 옮기는 일까지 맡는다.",
+      "why": "SAP 는 2025년 2월 Business Data Cloud(BDC)를 내놓았습니다. SAP·외부 데이터를 한곳에 묶고 Databricks 기술을 안에 넣은 관리형 서비스입니다.[6] SAP 는 기존 BW 를 BDC 안에서 계속 쓰고, BW 데이터를 '데이터 제품'으로 바꿔 Databricks 와 나누는 길을 제시합니다.[7][8] 옛 BW 7.5 의 기본 유지보수는 2027년 말에 끝나고(추가 비용 연장 2030년) 고객사는 BW/4HANA·BDC·다른 플랫폼 중에 골라야 합니다.[10][11] 공고 제목에 BW 와 BDC 가 나란히 있는 이유로 읽힙니다. {추론}",
+      "actually": {
+        "intro": "BW 를 짓고 돌릴 때 실제로 하는 일입니다(SAP 교육 자료 기준).[12][13][14]",
+        "items": [
+          "**데이터 꺼내기** — ERP 의 표에서 데이터를 BW 로 가져오는 통로(DataSource)를 열고, 처음 한 번 전체를 받은 뒤 그다음부터는 바뀐 것(델타)만 받는다.[15]",
+          "**저장 칸 만들기** — BW/4HANA 에서 거래 데이터를 쌓는 칸은 ADSO(DataStore Object advanced) 하나다.[14]",
+          "**합치는 칸 만들기** — 여러 저장 칸을 실제로 복사하지 않고 엮어 보여 주는 CompositeProvider 를 만든다. 쿼리는 저장 칸이 아니라 이것 위에 짓는 것을 권한다.[12]",
+          "**밖의 데이터 비추기** — 다른 DB 의 표를 BW 에 싣지 않고 바로 보이게 하는 Open ODS View.[13]",
+          "**운영** — 매일 밤 적재 순서(프로세스 체인)를 돌리고, 실패한 회차를 다시 돌리고, 숫자가 ERP 와 맞는지 대조한다. {추론}",
+          "**BDC 로 옮기기** — BW 저장 칸을 데이터 제품으로 내보내면 Databricks 쪽에 Delta Sharing(복사 없이 표를 나눠 보는 규약) 공유가 자동으로 생긴다.[9]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "왜 '바뀐 것'을 앞·뒤 두 줄로 보내나 (가상 값, 직접 돌린 출력)",
+          "body": "주문 금액이 100 → 120 으로 고쳐졌을 때, 합산하는 다음 칸에 새 값만 보내면 220 이 됩니다. BW 의 변경 기록은 옛 값을 빼는 줄(before image)과 새 값 줄(after image)을 함께 남겨 합계를 120 으로 맞춥니다.[15]",
+          "lang": "python",
+          "code": "active = {\"4500001\": 100}\nchange_log = [(\"4500001\", \" \", 100)]\ndef activate(key, new):\n    old = active.get(key)\n    if old is not None:\n        change_log.append((key, \"X\", -old))  # before image\n    change_log.append((key, \" \", new))       # after image\n    active[key] = new\nactivate(\"4500001\", 120)\nprint(sum(v for k, m, v in change_log if m == \" \"))  # 220\nprint(sum(v for k, m, v in change_log))               # 120"
+        }
+      ],
+      "how_far": "BW 를 처음부터 짓는 것보다 **이미 돌고 있는 고객 BW 를 맡아 운영하고 다음 자리로 옮기는 일**이 많을 것입니다. {추론} 최소선은 ERP 데이터가 BW 저장 칸 → 합치는 칸 → 쿼리 → 리포트로 흐르는 길을 한 장으로 그리고, 숫자가 틀렸을 때 어느 칸에서 틀렸는지 찾는 것입니다. {추론}",
+      "refs": [6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+      "study": ["sap-bw4-course", "sap-bw-bdc-course", "barc-bw"]
+    },
+    {
+      "section": "task",
+      "quote": "SAP 및 DW·Cloud 환경(AWS, GCP, Azure 등)의 데이터를 연계·통합하고, 분석 및 리포팅 서비스를 구축.운영합니다.",
+      "short": "SAP 데이터와 클라우드 쪽 데이터 창고를 이어 붙여 한 리포트에서 같이 보게 한다.",
+      "why": "고객사들은 SAP 밖에도 AWS·GCP·Azure 위에 데이터 창고를 따로 둡니다. SK AX 의 SK이노베이션 E&S 플랫폼도 AWS 위였습니다.[3] 분석 업계 조사 기관 BARC 는 BW 이후의 길을 SAP 중심·비 SAP(Databricks·Snowflake·Fabric)·둘을 섞는 방식 셋으로 나누었습니다.[11]",
+      "actually": {
+        "items": [
+          "**SAP → 클라우드** — BW·ERP 데이터를 클라우드 창고로 보낸다. BDC 를 쓰면 Delta Sharing 으로 복사 없이 나눈다.[9]",
+          "**클라우드 → SAP** — 클라우드의 표를 BW 에 싣지 않고 비춰 보이게 한다(Open ODS View).[13]",
+          "**코드 맞추기** — SAP 는 고객·자재 번호 같은 숫자 코드를 앞을 0 으로 채워 저장한다(ALPHA 변환). 다른 시스템의 '12345' 와 SAP 의 '0000012345' 를 그냥 비교하면 하나도 안 맞는다. {추론}",
+          "**돈 단위 맞추기** — SAP 표는 금액을 늘 소수 둘째 자리까지 저장해서, 소수가 없는 엔화 1,585 엔은 15.85 로 들어 있다. 화면은 통화 예외 표(TCURX)를 보고 100 을 곱한다. 원화는 시스템 설정을 확인해야 한다.[16]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "SAP 코드와 다른 시스템 코드 맞추기 (가상 값, 직접 돌린 출력)",
+          "lang": "python",
+          "code": "erp = [\"0000012345\", \"0000000777\"]\ncrm = [\"12345\", \"777\", \"A-01\"]\ndef alpha_in(s, n=10):\n    return s.zfill(n) if s.isdigit() else s\nprint([c for c in crm if c in erp])            # []\nprint([c for c in crm if alpha_in(c) in erp])  # ['12345', '777']"
+        },
+        {
+          "title": "소수 자리가 다른 통화 (가상 값, 직접 돌린 출력)",
+          "body": "DB 값이 같아도 통화에 따라 실제 금액이 100배 다릅니다.[16]",
+          "lang": "python",
+          "code": "from decimal import Decimal as D\nraw = [(\"JPY\", D(\"15.85\")), (\"USD\", D(\"15.85\"))]\ndecimals = {\"JPY\": 0, \"USD\": 2}\nfor cur, v in raw:\n    print(cur, v * (10 ** (2 - decimals.get(cur, 2))))\n# JPY 1585.00\n# USD 15.85"
+        }
+      ],
+      "how_far": "클라우드 플랫폼을 처음부터 운영하는 사람보다 **SAP 쪽 데이터가 밖으로 나갈 때 뜻이 바뀌지 않게 지키는 사람**에 가깝습니다. {추론}",
+      "refs": [3, 9, 11, 13, 16],
+      "study": ["sap-currency", "databricks-sap-bdc", "barc-bw"]
+    },
+    {
+      "section": "task",
+      "quote": "고객사 현업·IT 부서 및 내·외부 개발 인력과 협업하여 과제 범위, 일정, 품질, 리스크를 관리합니다.",
+      "short": "BW 파트도 혼자 만드는 자리가 아니다. 고객·협력사 개발자와 범위·일정·품질을 맞춘다.",
+      "why": "구축 사업은 고객사 현업(재무·영업 담당자), 고객사 IT 부서, SK AX 인력, 외부 협력사 개발자가 같이 움직입니다. 그래서 공고의 두 파트 모두 이 줄이 똑같이 들어가 있습니다.[1] 자격요건도 일정·범위·품질·리스크를 관리한 PM 또는 PL 경험을 묻습니다.[1]",
+      "actually": {
+        "items": [
+          "**범위** — '월말 손익 리포트' 같은 요청을 지표 목록·차원(회사·부서·제품)·기간으로 적어 합의한다. {추론}",
+          "**일정** — 데이터 꺼내기 → 저장 칸 → 쿼리 → 리포트 → 고객 검증 순서를 주 단위로 쪼갠다. {추론}",
+          "**품질** — ERP 원장 합계와 리포트 합계가 같은지 대조표를 만들어 고객과 같이 본다. {추론}",
+          "**리스크** — 원천 시스템 권한이 늦게 나오거나, 고객 정의가 바뀌는 것을 미리 적어 둔다. {추론}"
+        ]
+      },
+      "refs": [1],
+      "study": ["pmbok"]
+    },
+    {
+      "section": "task",
+      "quote": "✅Data Analytics 구축/운영 파트",
+      "short": "아래 세 줄은 SAP 밖의 데이터 플랫폼(레이크하우스) 쪽 사람이 맡는 일이다.",
+      "why": "이 파트는 SAP 제품보다 클라우드 데이터 플랫폼·BI·AI 서비스를 다룹니다. 우대사항에 Databricks·PowerBI·Tableau·LLM 이 이 파트 쪽 단어입니다.[1]",
+      "refs": [1]
+    },
+    {
+      "section": "task",
+      "quote": "고객사의 ERP, Non-ERP 데이터를 통합하는 Data Platform(Data Lakehouse) 구축 사업을 수행합니다.",
+      "short": "데이터 호수(원본 파일 창고)와 데이터 창고(정리된 표)를 하나로 합친 '레이크하우스'를 짓는다.",
+      "why": "데이터 레이크는 원본을 싸게 많이 쌓지만 표로 쓰기 불편하고, 데이터 웨어하우스는 정리된 표지만 비쌉니다. 레이크하우스는 원본 위에 표 관리 기능을 얹어 둘을 합친 방식입니다. {추론} SK AX 가 공개한 SK이노베이션 E&S 사례가 이 모양입니다 — 원본·분석·마트 세 층, 업무 뜻을 함께 적은 메타데이터 카탈로그, 역할별 접근 권한, 프로젝트별 비용 추적.[3]",
+      "actually": {
+        "intro": "Databricks 가 권하는 층 나누기(메달리온)로 보면 이렇습니다.[17]",
+        "items": [
+          "**브론즈** — 원본을 거의 그대로. 원천의 칸 모양이 바뀌어도 잃지 않게 넉넉한 형식으로 받는다.[17]",
+          "**실버** — 중복 없애기·형식 맞추기·검증. 적재에서 바로 쓰지 않고 브론즈를 읽어 만든다.[17]",
+          "**골드** — 업무 사용자용. 차원 모델(사실 표 + 기준 표)과 집계가 여기 있다.[17]",
+          "**카탈로그·권한** — '이 표에 무엇이 있나'를 업무 말로 적고, 부서마다 볼 수 있는 표를 나눈다. SK AX 사례는 카탈로그를 챗봇이 대답하게 했다.[3]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "브론즈 → 실버: 같은 키는 가장 늦게 들어온 것만 (가상 값, 직접 돌린 출력)",
+          "lang": "sql",
+          "code": "SELECT id, amt FROM (\n  SELECT *, ROW_NUMBER() OVER (PARTITION BY id ORDER BY loaded_at DESC) rn\n  FROM bronze\n) WHERE rn = 1 ORDER BY id;\n-- [('A', 12), ('B', 5)]  (A 는 10, 12 두 번 들어와 12 만 남음)"
+        }
+      ],
+      "refs": [3, 17],
+      "study": ["databricks-medallion", "fde-book", "skax-ske-case"]
+    },
+    {
+      "section": "task",
+      "quote": "Data Platform 기반의 BI 리포트, 업무용 Web UI/UX, AI·LLM 기반 서비스의 요구사항을 분석하고 설계·구축합니다.",
+      "short": "모은 데이터 위에 리포트·업무 화면·AI 챗봇을 얹는다. 그 요구를 정리하고 설계하는 쪽이다.",
+      "why": "데이터 플랫폼은 그 위에서 무엇을 보느냐로 값을 냅니다. SK AX 의 SK이노베이션 E&S 사례에서는 마트 층을 BI 와 생성형 AI 가 함께 쓰고, Amazon Bedrock 기반 챗봇이 '어느 표에 무엇이 있나'를 자연어로 답했습니다.[3] 고객이 말로 하던 데이터 찾기·뽑기가 며칠에서 바로로 줄었다고 회사는 밝혔습니다.[3]",
+      "actually": {
+        "items": [
+          "**BI 리포트** — 지표 정의(매출은 출고 기준인가 청구 기준인가)부터 정하고 대시보드를 만든다. {추론}",
+          "**업무용 웹 화면** — 리포트로 안 되는 일(기준값 입력·승인·예외 처리)을 화면으로 만든다. {추론}",
+          "**AI·LLM 서비스** — 표 설명(메타데이터)을 근거로 질문에 답하는 챗봇, 숫자를 요약하는 기능.[3]",
+          "**비용·사용량 감시** — 생성형 AI 호출 수·토큰 사용을 대시보드로 보고 비싼 자원은 만들지 못하게 막는다.[3]"
+        ]
+      },
+      "how_far": "'요구사항을 분석하고 설계·구축'이라 화면을 직접 다 짜기보다 **무엇을 만들지 정하고 개발자에게 넘기는 일**의 비중이 클 것입니다. {추론}",
+      "refs": [3],
+      "study": ["skax-ske-case", "powerbi-sapbw"]
+    },
+    {
+      "section": "task",
+      "quote": "고객사 현업·IT 부서 및 내·외부 개발 인력과 협업하여 과제 범위, 일정, 품질, 리스크를 관리합니다.",
+      "short": "Data Analytics 파트도 같다 — 여러 팀 사이에서 범위·일정·품질·위험을 관리한다.",
+      "why": "레이크하우스 사업은 원천 시스템 담당자, 클라우드 담당자, BI·화면·AI 개발자가 모두 얽혀 있어 조율이 일의 큰 몫입니다. {추론} 자격요건 마지막 줄과 우대사항의 PL/PM 경험이 이 줄과 짝입니다.[1]",
+      "how_far": "경력기술서에 사업마다 **기간·인원·내 역할·데이터 규모·결과(오픈 일정·대조 결과)** 를 숫자로 적어 두면 이 줄을 증명할 수 있습니다. {추론}",
+      "refs": [1],
+      "study": ["pmbok"]
+    },
+    {
+      "section": "task",
+      "quote": "※ 근무지 : 경기도 분당, 서울 종로 등 수도권",
+      "short": "분당(SK AX 사무실)과 종로(SK㈜ 본점 쪽)가 기본, 고객사에 따라 수도권 어디든.",
+      "why": "SK AX 분당 사무실은 SK u-타워(성남대로 343번길 9) 등입니다.[25] 종로 26 은 SK㈜ 공시의 본점 주소입니다.[26] 고객사 상주가 생기면 그 고객사 건물로 갑니다. {추론}",
+      "refs": [25, 26]
+    },
+    {
+      "section": "qualification",
+      "quote": "이런 경험을 갖고 계시다면 저희가 찾는 그분입니다! ✨",
+      "short": "여기부터 자격요건. 두 파트가 따로 적혀 있어 내가 지원할 파트의 세 줄만 맞추면 된다.",
+      "why": "요건이 'SAP BW 구축/운영 파트'와 'Data Analytics 구축/운영 파트'로 나뉘어 있고, 공통 요건은 맨 아래 '채용 분야 경력 3년 이상'입니다.[1] 두 파트를 다 채울 필요는 없는 것으로 읽힙니다. {추론}",
+      "refs": [1]
+    },
+    {
+      "section": "qualification",
+      "quote": "✅SAP BW 구축/운영 파트",
+      "short": "SAP BW 파트 지원자에게 묻는 세 가지 — 플랫폼 기술, SAP 데이터 구조, BW 모델·쿼리 경험.",
+      "refs": [1],
+      "why": "세 줄 모두 SAP 제품 경험을 직접 묻습니다. SAP 를 써 본 적 없는 데이터 엔지니어라면 이 파트보다 Data Analytics 파트가 맞습니다. {추론}"
+    },
+    {
+      "section": "qualification",
+      "quote": "SAP BW/BDC, BI 등 SAP 분석 플랫폼 구축·운영 기술 보유자",
+      "short": "SAP 분석 제품(BW·BDC·SAP 리포트 도구)을 직접 깔고 돌려 본 사람.",
+      "why": "SAP 의 분석 제품은 BW 하나가 아니라 BW·Datasphere(클라우드 창고)·Analytics Cloud(리포트·계획)·Databricks 를 묶은 BDC 로 넓어졌습니다.[6] 고객사가 어느 판을 쓰든 맡을 수 있어야 합니다. {추론}",
+      "how_far": "BDC 는 2025년에 나온 제품이라 실제 구축 경험을 가진 사람이 드뭅니다. {추론} BW 경험 + SAP 교육 과정('BDC 로 BW 현대화하기')을 따라 해 본 정도면 이야기가 됩니다. {추론}",
+      "refs": [6],
+      "study": ["sap-bw-bdc-course", "sap-bw4-course"]
+    },
+    {
+      "section": "qualification",
+      "quote": "SAP 시스템 및 데이터 구조에 대한 이해를 바탕으로 고객 요구사항 분석, 설계 및 구축 방안을 수립할 수 있는 분",
+      "short": "ERP 어느 표에 무엇이 있는지 알아야 '이 리포트는 이렇게 만든다'를 설계할 수 있어서.",
+      "why": "같은 팀 FI 공고는 FI(재무) 모듈이 CO(관리회계)·MM(구매자재)·SD(영업) 같은 다른 모듈과 이어진다고 적었습니다.[2] 매출 리포트 하나도 영업(SD) 주문 → 출고 → 청구 → 회계(FI) 전표로 이어진 데이터를 따라가야 합니다. {추론}",
+      "actually": {
+        "items": [
+          "**모듈 사이의 흐름** — 주문 한 건이 영업·물류·회계 표에 어떻게 남는지 따라간다.[2] {추론}",
+          "**코드값 규칙** — 앞자리 0 이 붙은 번호(ALPHA 변환), 회사 코드, 통화별 소수 자리.[16]",
+          "**회계 기간** — 회사마다 회계연도 시작 월이 다르다. 4월 시작 회사의 3월 31일은 전년도 12기다(아래 예). {추론}",
+          "**바뀐 것만 받기** — 어느 데이터 원천이 델타를 주고, 고친 값을 어떤 모양(앞·뒤 줄)으로 주는지.[15]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "회계연도 시작 월에 따라 같은 날짜의 기간이 다르다 (직접 돌린 출력)",
+          "lang": "python",
+          "code": "from datetime import date\ndef fiscal(d, start_month=1):\n    p = (d.month - start_month) % 12 + 1\n    y = d.year if d.month >= start_month else d.year - 1\n    return y, p\nfor d in [date(2026,3,31), date(2026,4,1)]:\n    print(d, fiscal(d), fiscal(d, 4))\n# 2026-03-31 (2026, 3) (2025, 12)\n# 2026-04-01 (2026, 4) (2026, 1)"
+        }
+      ],
+      "how_far": "모듈 전문가(컨설턴트)만큼은 아니어도, **리포트 숫자 하나를 ERP 전표까지 거꾸로 따라가 설명**할 수 있어야 합니다. {추론}",
+      "refs": [2, 15, 16],
+      "study": ["sap-bw-provisioning", "sap-currency"]
+    },
+    {
+      "section": "qualification",
+      "quote": "SAP BW 기반 데이터 모델, Query, 리포트 또는 업무시스템 구축·운영 경험을 보유하신 분",
+      "short": "BW 안에서 저장 칸·합치는 칸을 설계하고, 그 위에 쿼리와 리포트를 만들어 본 경험.",
+      "why": "BW 의 모델은 정해진 층을 따릅니다 — 거래 데이터는 ADSO 에 쌓고[14], 여러 칸은 CompositeProvider 로 엮고, 쿼리는 그 위에 짓습니다.[12] 쿼리는 Power BI 같은 외부 BI 도구도 그대로 읽습니다.[18]",
+      "flows": [
+        {
+          "caption": "BW/4HANA 의 기본 흐름(SAP 교육 자료)[12][14]",
+          "steps": ["ERP 데이터 원천(DataSource)", "ADSO · 저장", "CompositeProvider · 엮기", "BW Query", "리포트(SAP·Power BI 등)"],
+          "mine_from": 1
+        }
+      ],
+      "level": {
+        "basic": "ADSO·CompositeProvider·Query 가 무엇인지, 전체 적재와 델타 적재의 차이",
+        "work": "변환 규칙(덮어쓰기·합산)·델타의 앞·뒤 줄, 쿼리의 계산 지표·변수",
+        "team": "느린 쿼리 고치기, BW 를 BW/4HANA·BDC 로 옮기기, 외부 BI 와 연결"
+      },
+      "refs": [12, 14, 18],
+      "study": ["sap-bw4-course", "powerbi-sapbw"]
+    },
+    {
+      "section": "qualification",
+      "quote": "✅Data Analytics 구축/운영 파트",
+      "short": "Data Analytics 파트 지원자에게 묻는 세 가지 — 플랫폼 구축, 그 위의 서비스, PM/PL.",
+      "why": "이 파트는 SAP 경험을 필수로 묻지 않습니다. 대신 데이터 플랫폼을 처음부터 지어 봤는지와 프로젝트를 이끌어 봤는지를 묻습니다.[1]",
+      "refs": [1]
+    },
+    {
+      "section": "qualification",
+      "quote": "고객사 내·외부 데이터를 수집·통합하는 DW, Data Lake 또는 Data Lakehouse 구축 경험을 보유하신 분",
+      "short": "데이터 창고·호수·레이크하우스 셋 중 하나를 실제로 지어 본 경험이면 된다.",
+      "why": "'또는'이라 셋 중 하나면 됩니다.[1] 셋은 같은 일(흩어진 데이터를 분석용으로 모으기)의 세대 차이라 한 가지를 깊게 해 봤으면 나머지도 이야기할 수 있습니다. {추론}",
+      "actually": {
+        "items": [
+          "**수집** — 원천 DB 에서 바뀐 것만 받기(변경 캡처)·파일·API. SK AX 사례는 AWS DMS·MSK(카프카)로 받았다.[3]",
+          "**층 나누기** — 원본·정리·업무용 세 층.[3][17]",
+          "**모델링** — 사실 표(거래)와 기준 표(고객·제품·기간)로 나누는 차원 모델. {추론}",
+          "**대조** — 원천 합계와 플랫폼 합계가 같은지 날마다 확인한다(아래 예). {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "원천 대 플랫폼 합계 대조 — 다른 칸만 뽑기 (가상 값, 직접 돌린 출력)",
+          "lang": "sql",
+          "code": "SELECT e.bukrs, e.period, e.s AS erp_sum, IFNULL(b.s,0) AS bw_sum,\n       e.s - IFNULL(b.s,0) AS diff\nFROM (SELECT bukrs, period, SUM(amt) s FROM erp GROUP BY 1,2) e\nLEFT JOIN (SELECT bukrs, period, SUM(amt) s FROM bw GROUP BY 1,2) b\n  USING (bukrs, period)\nWHERE e.s <> IFNULL(b.s,0);\n-- ('2000', '2026-10', 200, 150, 50)"
+        }
+      ],
+      "refs": [1, 3, 17],
+      "study": ["fde-book", "kimball", "databricks-medallion"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Data Platform 기반 BI, Web UI/UX, AI·LLM 서비스 구축 경험을 보유하신 분",
+      "short": "플랫폼 위에 리포트·웹 화면·AI 서비스 중 무엇이든 얹어 실제로 써 보게 한 경험.",
+      "why": "업무 두 번째 줄(BI·웹·AI 요구 분석과 구축)과 짝입니다.[1] SK AX 가 공개한 사례도 플랫폼 위에 BI 와 생성형 AI 챗봇을 함께 얹었습니다.[3]",
+      "how_far": "셋을 다 한 사람은 드뭅니다. 하나를 끝까지(사용자가 매일 쓰는 데까지) 해 봤고 나머지 둘의 구조를 설명할 수 있으면 됩니다. {추론}",
+      "refs": [1, 3]
+    },
+    {
+      "section": "qualification",
+      "quote": "고객 요구사항을 구체화하고, 다양한 전문인력과 협업하여 일정·범위·품질·리스크를 관리한 PM 또는 PL 경험이 있는 분",
+      "short": "흐릿한 고객 요청을 할 일 목록으로 바꾸고, 그 일을 여러 사람에게 나눠 끝까지 끌고 간 경험.",
+      "why": "구축 사업은 계약한 범위·일정 안에서 끝나야 합니다. PMI 의 프로젝트 관리 표준(PMBOK)은 이해관계자·계획·실행·측정·불확실성을 관리 영역으로 다룹니다.[27] 데이터 사업은 '숫자가 맞나'가 품질의 대부분이라 대조 계획이 일정에 들어가야 합니다. {추론}",
+      "how_far": "PM(전체 책임)이 아니어도 PL(한 파트 리딩)이면 됩니다.[1] 데이터 마트 하나·리포트 묶음 하나를 맡아 요구 정리 → 설계 → 개발 → 고객 검증까지 이끈 경험이면 이 줄을 채웁니다. {추론}",
+      "refs": [1, 27],
+      "study": ["pmbok"]
+    },
+    {
+      "section": "preference",
+      "quote": "이런 경험과 역량이 있으면 더 좋아요! 👍",
+      "short": "여기부터 우대사항. 앞 일곱 줄이 기술·경험, 뒤 네 줄은 성향이다.",
+      "why": "우대 줄은 파트 구분 없이 섞여 있습니다. BW 쪽 단어(BW/BDC)와 Data Analytics 쪽 단어(Databricks·PowerBI·LLM)가 함께 있습니다.[1]",
+      "refs": [1]
+    },
+    {
+      "section": "preference",
+      "quote": "SAP BW/ BDC, DW(AWS/ GCP/ Azure) 등 데이터 통합 분석 시스템 운영/개발하신 분",
+      "short": "SAP 쪽과 클라우드 쪽을 둘 다 만져 봤으면 두 파트를 잇는 사람이 된다.",
+      "why": "SAP 와 Databricks 는 BDC 로 서로 데이터를 나누고[9], SAP 는 BW 데이터를 Databricks 로 보내 AI 에 쓰는 길을 내놓았습니다.[7] 두 세계를 다 아는 사람이 옮기는 사업을 이끌기 쉽습니다. {추론}",
+      "refs": [7, 9],
+      "study": ["databricks-sap-bdc", "sap-bw-bdc-course"]
+    },
+    {
+      "section": "preference",
+      "quote": "데이터 파이프라인 설계 역량을 보유하신 분",
+      "short": "데이터가 원천 → 층 → 리포트로 매일 정해진 순서로 흐르게 설계하고, 실패해도 다시 돌게 만든다.",
+      "why": "BW 의 델타 적재도, 레이크하우스의 브론즈 → 실버 → 골드도 결국 파이프라인입니다.[15][17]",
+      "actually": {
+        "items": [
+          "**순서** — 원천 적재가 끝나야 마트, 마트가 끝나야 리포트 새로 고침. {추론}",
+          "**바뀐 것만** — 전체를 매번 다시 받지 않고 델타만. 고친 값은 앞·뒤 줄로 받아 합계를 지킨다.[15]",
+          "**다시 돌려도 같은 결과** — 같은 날짜를 두 번 돌려도 두 번 쌓이지 않게(키로 덮어쓰기). {추론}",
+          "**검증 단계** — 적재 뒤 행 수·합계 대조를 파이프라인 안에 넣는다. {추론}"
+        ]
+      },
+      "refs": [15, 17],
+      "study": ["fde-book", "databricks-medallion"]
+    },
+    {
+      "section": "preference",
+      "quote": "PowerBI, Tableau 등 시각화 Tool을 활용한 데이터 분석 역량을 갖추신 분",
+      "short": "BI 도구로 직접 대시보드를 만들고 숫자를 읽을 줄 알면, 고객에게 '보여 주며' 요구를 정할 수 있다.",
+      "why": "Power BI 는 SAP BW 에 바로 붙는 연결 도구를 공식으로 냅니다. 서버 이름·시스템 번호·클라이언트 번호로 붙고, 데이터를 가져오거나(Import) 그때그때 묻는(DirectQuery) 방식을 고릅니다.[18] BW 7.3·7.5·BW/4HANA 2.0 을 지원한다고 적혀 있습니다.[19]",
+      "how_far": "디자인 감각보다 **지표 정의와 숫자 대조**가 먼저입니다 — 대시보드의 합계가 ERP 와 다르면 아무도 안 씁니다. {추론}",
+      "refs": [18, 19],
+      "study": ["powerbi-sapbw"]
+    },
+    {
+      "section": "preference",
+      "quote": "비즈니스 사용자 대상 데이터 컨설팅 및 교육 경험을 보유하신 분",
+      "short": "현업에게 '이 숫자는 이렇게 나온 것'을 설명하고, 리포트를 스스로 쓰게 가르친 경험.",
+      "why": "같은 팀 FI 공고도 업무에 사용자 교육을 넣었습니다.[2] 다 지은 플랫폼도 현업이 안 쓰면 사업이 성공했다고 보기 어렵습니다. {추론}",
+      "refs": [2]
+    },
+    {
+      "section": "preference",
+      "quote": "Data 플랫폼(DW, Data-Lake) 및 서비스(UI, AI, BI, LLM) 구축 사업 PL/PM 경험을 보유하신 분",
+      "short": "데이터 플랫폼 사업을 PL·PM 으로 이끈 경험이 있으면 바로 사업 하나를 맡길 수 있다.",
+      "why": "자격요건의 PM/PL 경험을 '데이터 플랫폼 사업'으로 좁힌 줄입니다.[1] 데이터 사업은 일반 웹 사업과 달리 원천 시스템 권한·데이터 품질·대조가 일정을 좌우합니다. {추론}",
+      "refs": [1],
+      "study": ["pmbok"]
+    },
+    {
+      "section": "preference",
+      "quote": "Databricks 기반의 Data platform 구현 경험을 보유하신 분",
+      "short": "SAP 가 BDC 안에 Databricks 를 넣어서, SAP 고객의 다음 플랫폼으로 자주 거론된다.",
+      "why": "SAP 와 Databricks 는 2025년 2월 BDC 를 함께 발표했고, Databricks 기술이 BDC 안에 들어갔습니다.[6] BDC 의 데이터 제품을 켜면 SAP Databricks 쪽에 Delta Sharing 공유가 자동으로 생기고 결과를 다시 BDC 로 돌려줄 수도 있습니다.[9] BARC 도 BW 이후의 비 SAP 길로 Databricks 를 먼저 꼽았습니다.[11]",
+      "how_far": "Databricks 로 브론즈·실버·골드 층을 만들고 스케줄로 돌려 본 정도가 최소선입니다. {추론}",
+      "refs": [6, 9, 11],
+      "study": ["databricks-medallion", "databricks-sap-bdc"]
+    },
+    {
+      "section": "preference",
+      "quote": "외국어 능력으로 글로벌 커뮤니케이션에 능하신 분",
+      "short": "SAP 문서·지원 창구가 대부분 영어이고, 고객사 해외 법인 사업도 있어서.",
+      "why": "SAP 교육 자료와 데이터 제품 문서 대부분이 영어입니다.[7][9] SK AX 는 SAP 와 협업 모델을 SAP 의 해외 행사에서 발표했습니다.[5] 이 팀의 해외 사업 규모는 공고에 없습니다. {추론}",
+      "refs": [5, 7, 9]
+    },
+    {
+      "section": "preference",
+      "quote": "깊이 고민하되, 머뭇거림 없이 행동으로 옮기는 생각하는 실천가",
+      "short": "성향 줄. 문제를 오래 분석만 하지 않고 작은 해결책부터 내놓는 사람.",
+      "why": "SK AX 공고 여러 개에 같은 성향 문장이 반복됩니다(같은 팀 FI 공고에도 그대로 있다).[2] 팀 고유 요구라기보다 회사 공통 문장으로 읽습니다. {추론}",
+      "refs": [2]
+    },
+    {
+      "section": "preference",
+      "quote": "개인 성과보다 팀워크와 공동체 성장을 중시하는 상생형 협업가",
+      "short": "성향 줄. 협력사·고객사 사람들과 공을 나누며 일할 수 있는 사람.",
+      "why": "구축 사업은 SK AX 인력만으로 끝나지 않고 외부 개발 인력과 같이 갑니다.[1] {추론}",
+      "refs": [1]
+    },
+    {
+      "section": "preference",
+      "quote": "새로운 도전에 거리낌 없고, 실패를 성장의 기회로 삼는 도전적인 학습자",
+      "short": "성향 줄. BDC·Databricks 처럼 새로 나온 제품을 먼저 배워 써 보는 사람.",
+      "why": "BDC 는 2025년에 나온 제품이라 이 팀도 배우면서 사업을 하게 됩니다.[6] {추론}",
+      "refs": [6]
+    },
+    {
+      "section": "preference",
+      "quote": "변화에 빠르게 적응하고, 문제를 구조적으로 해결하려는 태도를 가진 유연한 문제 해결자",
+      "short": "성향 줄. 숫자가 틀리면 어느 층에서 틀렸는지 차례로 좁혀 가는 사람.",
+      "why": "데이터 문제는 원천 → 적재 → 모델 → 쿼리 → 리포트 중 한 곳에서 생기므로 층을 하나씩 확인하는 습관이 곧 '구조적 해결'입니다. {추론}",
+      "refs": []
+    }
+  ],
+  "fit": {
+    "good": [
+      "리포트 숫자 하나를 원천 전표까지 따라가는 게 재밌는 사람",
+      "SAP 를 써 봤고, 클라우드 데이터 플랫폼으로 넓혀 보고 싶은 사람[1]",
+      "BW 에서 BDC·Databricks 로 옮겨 가는 시기에 그 경험을 먼저 쌓고 싶은 사람[10][11]",
+      "개발과 고객 조율을 같이 하는 구축 사업이 맞는 사람"
+    ],
+    "hard": [
+      "채용 분야 경력 3년 이상이 공통 요건이다 — 신입 자리가 아니다[1]",
+      "고객사 상주로 일하는 곳이 바뀔 수 있다[1] {추론}",
+      "SAP BW 파트는 SAP 제품 경험이 없으면 문이 거의 없다 {추론}",
+      "코드보다 문서·회의·대조가 일의 큰 몫이다 {추론}"
+    ]
+  },
+  "interview": [
+    {
+      "q": "ERP 에서 금액이 고쳐졌는데 BW 리포트 합계가 두 배로 나옵니다. 어디부터 보겠어요?",
+      "a": "델타의 앞·뒤 줄과 변환 규칙(덮어쓰기·합산).[15]"
+    },
+    {
+      "q": "BW 7.5 를 쓰는 고객이 2027년 이후를 묻습니다. 어떤 길들이 있고 무엇을 먼저 따지겠어요?",
+      "a": "BW/4HANA·BDC·비 SAP·혼합, 그리고 의미·권한 정리.[10][11]"
+    },
+    {
+      "q": "SAP 고객 번호와 CRM 고객 번호가 하나도 안 맞습니다. 왜일까요?",
+      "a": "앞자리 0(ALPHA 변환).{추론}"
+    },
+    {
+      "q": "엔화 리포트 금액이 100분의 1로 나옵니다.",
+      "a": "통화별 소수 자리와 TCURX.[16]"
+    },
+    {
+      "q": "레이크하우스의 층을 어떻게 나누고, 현업은 어느 층을 보게 하겠어요?",
+      "a": "원본·정리·업무용, 업무용 층과 카탈로그.[3][17]"
+    }
+  ],
+  "sources": [
+    {"n": 1, "title": "SK Careers · SAP BW/BDC/BI/Data Analytics 분야 전문가 영입", "url": "https://www.skcareers.com/Recruit/Detail/R262392", "kind": "posting", "note": "팀 소개·업무·요건·우대·전형(서류 → SKCT → 면접 2회 → 채용검진/처우협의)·공통 요건 경력 3년 이상"},
+    {"n": 2, "title": "SK Careers · SAP FI Module 전문가 영입 (같은 AX ERP서비스2팀)", "url": "https://www.skcareers.com/Recruit/Detail/R262105", "kind": "posting", "note": "팀이 ERP 구축·운영과 관리회계 업무를 한다는 소개, FI 와 CO·MM·SD 연계, 사용자 교육"},
+    {"n": 3, "title": "SK AX 고객 사례 · SK이노베이션 E&S 통합 데이터·AI 플랫폼(Amazon SageMaker Unified Studio)", "url": "https://www.skax.co.kr/case-study/story/3614", "kind": "company", "date": "2026-07-09", "note": "L0 레이크·L1 DW·L2 마트, 메타데이터 카탈로그와 Bedrock 챗봇, 역할별 권한, 비용 통제 — 홍보 성격의 회사 글"},
+    {"n": 4, "title": "바이라인네트워크 · SK AX, 파르나스호텔 ERP DX 컨설팅 및 구축 사업 착수", "url": "https://byline.network/2025/05/20-450/", "kind": "news", "date": "2025-05-20", "note": "SAP S/4HANA 기반, 구매→정산 흐름·결산 자동화"},
+    {"n": 5, "title": "CEO스코어데일리 · SK AX, SAP 와 AI 기반 글로벌 ERP 혁신 모델 공동 개발", "url": "https://www.ceoscoredaily.com/page/view/2025061109542388145", "kind": "news", "date": "2025-06-11", "note": "SAP Sapphire 마드리드에서 발표, 표준 프로세스·클린 코어"},
+    {"n": 6, "title": "SAP News · SAP Debuts Business Data Cloud with Databricks", "url": "https://news.sap.com/2025/02/sap-business-data-cloud-databricks-turbocharge-business-ai/", "kind": "reference", "date": "2025-02-13", "note": "SAP 보도자료 — BDC 의 구성과 Databricks 내장"},
+    {"n": 7, "title": "SAP · SAP Business Warehouse in Business Data Cloud", "url": "https://www.sap.com/products/data-cloud/business-warehouse.html", "kind": "reference", "note": "BW 를 BDC 안에서 쓰는 길, BW 데이터를 Delta Share 로 SAP Databricks 와 잇기"},
+    {"n": 8, "title": "SAP Learning · Sharing SAP BW Data as Custom Data Product", "url": "https://learning.sap.com/courses/transforming-sap-bw-with-sap-business-data-cloud/sharing-sap-bw-data-as-custom-data-product", "kind": "reference", "note": "BW 저장 칸을 데이터 제품으로 내보내기"},
+    {"n": 9, "title": "Databricks 문서 · SAP Business Data Cloud 와 Delta Sharing", "url": "https://docs.databricks.com/aws/en/delta-sharing/sap-bdc", "kind": "reference", "note": "데이터 제품을 켜면 SAP Databricks 로 공유가 자동 생성, 결과를 BDC 로 되돌리기"},
+    {"n": 10, "title": "SAP Blog · SAP BW/4HANA to extend maintenance in alignment with SAP Business Suite and SAP S/4HANA", "url": "https://blogs.sap.com/2020/04/08/sap-bw-4hana-to-extend-maintenance-in-alignment-with-sap-business-suite-and-sap-s-4hana/", "kind": "reference", "date": "2020-04-08", "note": "BW/4HANA 2040년까지, BW 7.5 는 2027년 말(연장 2030년)"},
+    {"n": 11, "title": "BARC · SAP BW ends in 2027: Strategic reset for data, analytics, and AI", "url": "https://barc.com/sap-bw-end-of-life-2027-data-architecture-analytics-ai/", "kind": "reference", "date": "2026-03-10", "note": "분석 시장 조사 기관 — BW 이후 세 갈래(SAP 중심·비 SAP·혼합)와 할 일"},
+    {"n": 12, "title": "SAP Learning · Introducing CompositeProviders (BW/4HANA)", "url": "https://learning.sap.com/courses/implementing-a-data-warehouse-using-sap-bw-4hana/introducing-compositeproviders_ddb52eb5-86c0-42ca-97f0-9aca6b3ddfd4", "kind": "reference"},
+    {"n": 13, "title": "SAP Learning · Introducing Open ODS Views (BW/4HANA)", "url": "https://learning.sap.com/courses/implementing-a-data-warehouse-using-sap-bw-4hana/introducing-open-ods-views_a1f5b51b-5758-4bc4-b7a0-6d1e2bb0926a", "kind": "reference"},
+    {"n": 14, "title": "SAP Learning · Working with the DataStore Object (advanced)", "url": "https://learning.sap.com/courses/upgrading-your-sap-bw-skills-to-sap-bw-4hana/working-with-the-datastore-object-advanced-_b1fbbc9a-e6ad-44bf-bfce-d5b2defa3ccb", "kind": "reference", "note": "BW/4HANA 에서 거래 데이터를 쌓는 유일한 객체"},
+    {"n": 15, "title": "SAP Learning · Identifying Delta Process Properties (BW/4HANA 데이터 공급)", "url": "https://learning.sap.com/courses/implementing-data-provisioning-in-sap-bw-4hana/identifying-delta-process-properties", "kind": "reference", "note": "after/before/reverse image 와 합산 지표에 앞·뒤 줄이 필요한 이유"},
+    {"n": 16, "title": "SAP Community · Internal storing formats of typical currencies", "url": "https://blogs.sap.com/2009/03/13/internal-storing-formats-of-typical-currencies/", "kind": "community", "date": "2009-03-13", "note": "0자리 통화도 DB 에는 소수 둘째 자리로 저장, TCURX. 원화(KRW) 설정은 자료마다 달라 시스템에서 확인"},
+    {"n": 17, "title": "Databricks 문서 · What is the medallion lakehouse architecture?", "url": "https://docs.databricks.com/aws/en/lakehouse/medallion", "kind": "reference"},
+    {"n": 18, "title": "Microsoft Learn · Use the SAP Business Warehouse connector in Power BI Desktop", "url": "https://learn.microsoft.com/en-us/power-bi/connect-data/desktop-sap-bw-connector", "kind": "reference"},
+    {"n": 19, "title": "Microsoft Learn · SAP BW Application Server connector (Fabric Data Factory)", "url": "https://learn.microsoft.com/fabric/data-factory/connector-sap-bw-application-server", "kind": "reference", "note": "지원 판 BW 7.3·7.5·BW/4HANA 2.0"},
+    {"n": 20, "title": "FETV · '월급이 연봉 수준' SK그룹, 급여 Top 계열사는 어디?", "url": "http://www.fetv.co.kr/news/articleView.html?idxno=198852", "kind": "news", "date": "2025-08-14", "note": "2024년 사업보고서 기준 상장사 1인 평균 급여"},
+    {"n": 21, "title": "ZDNet Korea · 올해 상반기 대기업 SI 톱4 '연봉킹' 누구?", "url": "https://zdnet.co.kr/view/?no=20250816174726", "kind": "news", "date": "2025-08-16", "note": "2025년 반기보고서 기준 6개월치 1인 평균 급여"},
+    {"n": 22, "title": "원티드 · 에스케이 에이엑스(SK AX) 기업정보", "url": "https://www.wanted.co.kr/company/25949", "kind": "reference", "note": "공공 자료로 계산한 평균 연봉 집계 — 계산 기간 표기 없음"},
+    {"n": 23, "title": "SK㈜ · Careers Policy(복리후생)", "url": "https://sk.co.kr/en/careers/policy.jsp", "kind": "company", "note": "항목만 있고 금액·조건·작성일 없음"},
+    {"n": 24, "title": "SK Careers · Culture", "url": "https://www.skcareers.com/Culture", "kind": "company", "note": "그룹 채용 사이트의 문화·근무 제도 소개 — 금액·연도 없음"},
+    {"n": 25, "title": "SK AX · 사업장 안내", "url": "https://www.skax.co.kr/company/office", "kind": "company", "note": "SK u-타워·판교 캠퍼스·수내 오피스 등 주소"},
+    {"n": 26, "title": "KRX KIND · SK 주식회사 분기보고서(제34기 1분기)", "url": "https://kind.krx.co.kr/external/2024/05/16/002060/20240516004803/11013.htm", "kind": "company", "date": "2024-05-16", "note": "표지의 본점 주소(종로 26)"},
+    {"n": 27, "title": "PMI · The Standard for Project Management and PMBOK Guide", "url": "https://www.pmi.org/standards/pmbok", "kind": "reference"}
+  ],
+  "caveat": "AX ERP서비스2팀이 어느 고객사의 BW·BDC 를 맡고 있는지, 어떤 도구와 모델 규칙을 쓰는지는 공개 자료가 없습니다. 회사 근거는 이 공고·같은 팀의 다른 공고·SK AX 고객 사례와 보도(홍보 성격)이고, BW 의 구조·델타·통화 처리는 SAP 교육 자료와 SAP 커뮤니티 글로, 레이크하우스는 Databricks 문서로 '보통 이런 것'을 보였습니다. BDC 는 2025년에 나온 제품이라 기능과 절차가 빠르게 바뀝니다 — 판마다 SAP 문서를 다시 확인해야 합니다.",
+  "resources": [
+    {"id": "skax-ske-case", "title": "SK이노베이션 E&S 통합 데이터·AI 플랫폼 구축 사례", "by": "SK AX · 2026-07", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://www.skax.co.kr/case-study/story/3614", "why": "이 회사가 데이터 플랫폼을 어떤 층·카탈로그·권한·비용 통제로 짓는지 한글로 본다. Data Analytics 파트 업무 줄의 바탕."},
+    {"id": "sap-bw4-course", "title": "Implementing a Data Warehouse Using SAP BW/4HANA", "by": "SAP Learning", "kind": "course", "lang": "en", "free": true, "level": "실무", "url": "https://learning.sap.com/courses/implementing-a-data-warehouse-using-sap-bw-4hana", "why": "ADSO·CompositeProvider·Open ODS View·쿼리를 차례로 배운다. BW 파트 요건 '데이터 모델, Query' 를 채우는 기본 과정."},
+    {"id": "sap-bw-provisioning", "title": "Implementing Data Provisioning in SAP BW/4HANA", "by": "SAP Learning", "kind": "course", "lang": "en", "free": true, "level": "실무", "url": "https://learning.sap.com/courses/implementing-data-provisioning-in-sap-bw-4hana", "why": "ERP 에서 BW 로 데이터를 꺼내는 통로와 델타(앞·뒤 줄)의 성질. 'SAP 데이터 구조 이해' 요건에 직접 닿는다."},
+    {"id": "sap-bw-bdc-course", "title": "Modernizing SAP BW with SAP Business Data Cloud", "by": "SAP Learning", "kind": "course", "lang": "en", "free": true, "level": "심화", "url": "https://learning.sap.com/courses/modernizing-sap-bw-with-sap-business-data-cloud", "why": "BW 를 BDC 로 옮기는 길, BW 데이터를 데이터 제품으로 내보내 Databricks 에서 쓰는 법. 공고 제목의 'BDC' 부분."},
+    {"id": "barc-bw", "title": "SAP BW ends in 2027: Strategic reset for data, analytics, and AI", "by": "BARC · Carsten Bange · 2026", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://barc.com/sap-bw-end-of-life-2027-data-architecture-analytics-ai/", "why": "고객사가 지금 무엇을 고민하는지(BW 이후 세 갈래와 비용)를 짧게 잡는다. 면접에서 '왜 지금 BDC 인가'를 말할 재료."},
+    {"id": "sap-currency", "title": "Internal storing formats of typical currencies", "by": "SAP Community", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://blogs.sap.com/2009/03/13/internal-storing-formats-of-typical-currencies/", "why": "통화별 소수 자리가 저장·표시에서 어떻게 달라지는지. SAP 데이터를 밖으로 옮길 때 가장 흔한 숫자 틀림을 막는다."},
+    {"id": "databricks-medallion", "title": "What is the medallion lakehouse architecture?", "by": "Databricks 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://docs.databricks.com/aws/en/lakehouse/medallion", "why": "브론즈·실버·골드 층마다 무엇을 하고 하지 않는지. 레이크하우스 구축 요건과 Databricks 우대의 출발점."},
+    {"id": "databricks-sap-bdc", "title": "SAP Business Data Cloud 와 Delta Sharing", "by": "Databricks 공식 문서", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://docs.databricks.com/aws/en/delta-sharing/sap-bdc", "why": "SAP 데이터 제품이 Databricks 로 복사 없이 넘어오는 방식. 'SAP 와 클라우드 데이터 연계' 업무의 최신 길."},
+    {"id": "powerbi-sapbw", "title": "Use the SAP Business Warehouse connector in Power BI Desktop", "by": "Microsoft Learn", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://learn.microsoft.com/en-us/power-bi/connect-data/desktop-sap-bw-connector", "why": "BW 쿼리를 Power BI 로 읽는 법(가져오기·DirectQuery). BW 리포트와 우대사항 'PowerBI' 를 한 번에 연습."},
+    {"id": "fde-book", "title": "견고한 데이터 엔지니어링", "by": "조 라이스 · 맷 하우슬리 · 김인범 옮김 · 한빛미디어 · 2023", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B2%AC%EA%B3%A0%ED%95%9C%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81", "why": "수집 → 저장 → 변환 → 제공의 수명 주기로 데이터 플랫폼 전체를 본다. DW·레이크·레이크하우스 중 무엇을 고를지 말할 수 있게 된다."},
+    {"id": "kimball", "title": "The Data Warehouse Toolkit (3판)", "by": "Ralph Kimball · Margy Ross · Wiley · 2013", "kind": "book", "lang": "en", "free": false, "level": "실무", "url": "https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/books/", "why": "사실 표·기준 표로 나누는 차원 모델의 원전. 골드 층·BW 쿼리를 설계할 때 같은 생각을 쓴다."},
+    {"id": "pmbok", "title": "The Standard for Project Management and PMBOK Guide", "by": "PMI", "kind": "doc", "lang": "en", "free": false, "level": "입문", "url": "https://www.pmi.org/standards/pmbok", "why": "범위·일정·품질·리스크를 어떤 말로 관리하는지. 업무 '과제 범위, 일정, 품질, 리스크' 두 줄과 PM/PL 요건."}
+  ],
+  "study_path": [
+    {"title": "SAP 데이터가 어디서 오나", "time": "1~2주", "goal": "ERP 주문 한 건이 영업·회계 표에 어떻게 남고, BW 로 어떻게 넘어가는지 그림 한 장으로 설명한다.", "resources": ["sap-bw-provisioning", "sap-currency", "barc-bw"], "task": "가상 주문 10건으로 '주문 → 출고 → 청구 → 전표' 표 네 개를 만들고, 앞자리 0 코드·엔화 금액·4월 시작 회계 기간을 일부러 섞어 넣은 뒤 바르게 바꾸는 스크립트를 짠다."},
+    {"title": "BW 모델과 쿼리", "time": "2~4주", "goal": "ADSO → CompositeProvider → Query 흐름을 이해하고 델타의 앞·뒤 줄을 손으로 계산한다.", "resources": ["sap-bw4-course", "sap-bw-provisioning"], "task": "SAP Learning 과정을 따라가며 모델 그림을 그리고, 위 풀이의 변경 기록 예처럼 '금액 정정·삭제'가 들어올 때 합계가 맞는지 가상 데이터로 확인한다."},
+    {"title": "레이크하우스 짓기", "time": "2~4주", "goal": "브론즈·실버·골드 층을 만들고 원천 합계와 대조하는 파이프라인을 돌린다.", "resources": ["databricks-medallion", "fde-book", "kimball", "skax-ske-case"], "task": "1단계의 가상 ERP 표와 가상 웹 로그를 브론즈에 싣고, 실버에서 중복·코드를 정리, 골드에 '월·제품별 매출' 사실 표를 만든다. 매회 원천 합계와 다른 칸만 뽑는 대조 쿼리를 붙인다."},
+    {"title": "리포트와 SAP 잇기", "time": "1~2주", "goal": "BI 도구로 대시보드를 만들고, SAP 데이터가 BDC 로 Databricks 에 넘어가는 길을 설명한다.", "resources": ["powerbi-sapbw", "databricks-sap-bdc", "sap-bw-bdc-course"], "task": "3단계 골드 표로 Power BI 대시보드를 만들고, 같은 숫자를 BW 쿼리로 읽는다면 무엇이 다른지(가져오기 대 DirectQuery)를 한 쪽으로 정리한다."},
+    {"title": "사업으로 이끌기", "time": "계속", "goal": "데이터 사업 하나의 범위·일정·품질·리스크 계획을 쓴다.", "resources": ["pmbok", "barc-bw"], "task": "'BW 7.5 → BDC 이전' 가상 사업의 요구 목록·주 단위 일정·대조 계획·리스크 표를 A4 두 장으로 쓰고, 경력기술서에 쓸 숫자(기간·인원·규모·결과) 칸을 채운다."}
+  ],
+  "pay": {
+    "summary": "공고에 연봉은 없다(처우 협의). SK㈜ 전체 평균 **약 1억 1,600만원**(2024년 사업보고서), 기사가 따로 실은 SK AX 값은 **반년에 7,300만원**(2025년 상반기)",
+    "rows": [
+      {"label": "직원 1인 평균 급여(SK㈜ 전체)", "value": "1억 1,600만원", "amount": 11600, "basis": "사업보고서 · 2024년", "note": "SK㈜ 전체 값이라 지주 부문과 사업 부문이 섞여 있다 [20]"},
+      {"label": "SK AX 직원 1인 평균 급여 (6개월)", "value": "7,300만원", "amount": 7300, "basis": "반기보고서 · 2025년 상반기", "note": "1~6월 반년치이고 1년 연봉이 아니다. 전년 같은 기간 7,100만원 [21]"},
+      {"label": "SK AX 평균 연봉(집계)", "value": "6,082만원", "amount": 6082, "basis": "공공데이터 집계", "note": "채용 사이트가 공공 자료로 계산한 값, 계산 기간 표기 없음 [22]"},
+      {"label": "삼성SDS 평균 (6개월)", "value": "6,600만원", "amount": 6600, "basis": "반기보고서 · 2025년 상반기", "peer": true, "note": "같은 기사의 같은 기준 [21]"},
+      {"label": "LG CNS 평균 (6개월)", "value": "6,500만원", "amount": 6500, "basis": "반기보고서 · 2025년 상반기", "peer": true, "note": "같은 기사의 같은 기준 [21]"}
+    ],
+    "how": "전형이 서류 → SKCT → 면접 2회 → **채용검진/처우협의** 순서라 연봉은 경력에 따라 따로 정한다 [1]. 위 평균은 경력이 오래된 직원과 여러 부문이 섞인 회사 전체 값이라 이 자리의 제안 금액으로 읽으면 안 된다 {추론}. 경력 3년 이상 공고라 신입 초봉은 싣지 않았다."
+  },
+  "benefits": {
+    "items": [
+      {"name": "재산 형성", "detail": "저축 장려, 우리사주조합, 주택 구입·전세 자금 지원"},
+      {"name": "교육", "detail": "본인 학자금, 자녀 학비 지원"},
+      {"name": "생활", "detail": "경조사 지원, 휴양소, 여가·취미 활동 지원"},
+      {"name": "건강·노후", "detail": "건강검진, 의료보험, 개인연금, 퇴직 관리 지원"},
+      {"name": "근무 방식", "detail": "출퇴근 시간을 스스로 정하는 근무제, 그날의 근무 장소 선택"},
+      {"name": "성장", "detail": "그룹 학습 플랫폼 mySUNI 와 육성 프로그램"}
+    ],
+    "note": "앞 네 줄은 SK㈜ 공식 채용 정책 페이지 [23], 뒤 두 줄은 SK 그룹 채용 사이트의 문화 소개다 [24]. 둘 다 금액·조건·작성 연도가 없고 이 팀에 그대로 적용되는지도 적혀 있지 않다. 처우 협의 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "SK AX 분당 사무실 (SK u-타워)",
+    "address": "경기도 성남시 분당구 성남대로 343번길 9 에스케이유타워",
+    "postal": "13558",
+    "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%EC%84%B1%EB%82%A8%EB%8C%80%EB%A1%9C%20343%EB%B2%88%EA%B8%B8%209",
+    "near": "신분당선·수인분당선 정자역 근처 {추론}",
+    "note": "공고 근무지는 '경기도 분당, 서울 종로 등 수도권'이다 [1]. 분당 주소는 SK AX 사업장 안내 [25], 종로는 SK㈜ 본점(서울특별시 종로구 종로 26) [26]. 고객사 상주면 그 고객사 건물이 근무지가 된다 {추론}."
+  }
+}

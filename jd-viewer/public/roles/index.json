@@ -18,6 +18,7 @@
   "ats-skcareers:sk:R262415": "skax-mfg-data-engineer-k8s",
   "wanted-396609": "skax-mfg-data-engineer-k8s",
   "jobkorea-50308626": "skax-mfg-data-engineer-k8s",
+  "ats-skcareers:sk:R262392": "skax-sap-bw-bdc-data-analytics",
   "ats-skcareers:sk:R262252": "skax-vision-image-platform-pl-mle",
   "saramin-55459415": "skax-vision-image-platform-pl-mle",
   "wanted-386999": "speee-dx-sre",
@@ -235,6 +236,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 39
+  },
+  {
+   "id": "skax-sap-bw-bdc-data-analytics",
+   "company": "SK주식회사(AX)",
+   "role": "SAP BW/BDC/BI · Data Analytics 전문가",
+   "jobs": [
+    "ats-skcareers:sk:R262392"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 35
   },
   {
    "id": "skax-vision-image-platform-pl-mle",
