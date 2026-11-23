@@ -1,0 +1,479 @@
+{
+  "id": "ui2-ec-project-leader-japan",
+  "company": "Ui2 (株式会社Ui2)",
+  "role": "EC 사이트 개발 프로젝트 리더 (일본 근무)",
+  "team": "비즈니스 디벨롭먼트 본부 또는 솔루션 사업본부 · LAPRAS Global Bridge 연계 채용",
+  "jobs": ["wanted-316964"],
+  "researched_at": "2026-11-23",
+  "tldr": {
+    "what": "대형 패션·스포츠·뷰티 브랜드의 **온라인 쇼핑몰(EC 사이트)** 을 처음 만드는 단계부터 운영까지, 고객과 직접 이야기하며 설계·개발하고 일정과 문제를 챙기는 **현장 리더(PL)** 자리입니다.[1][2] 회사는 브랜드와 직접 계약(1차 수주)하고 자기 사무실에서 개발합니다 — 고객사 상주가 없습니다.[1][13]",
+    "env": "Java(Spring Boot·Hibernate)·TypeScript·React, PostgreSQL·MySQL·Oracle, AWS·Linux·Apache·Tomcat 환경입니다.[1] 회사 글에는 Salesforce Commerce Cloud(대형 브랜드가 많이 쓰는 EC 플랫폼) 연수와 주문관리 개발도 나옵니다.[6] 일본어 업무 소통이 필수이고 완전 원격을 권하지만 일본 이주가 조건입니다.[1]",
+    "oneline": "Java 3년 이상 개발자가 **'고객 앞에 서는 일'** 로 넘어가는 첫 리더 자리. 기존 PM·PL 밑에서 시작하고, 문턱은 Java보다 **일본어 비즈니스 회화**입니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "主にECサイト初期構築から運用業務において、プロジェクトを遂行するリーダーとして、業務をお任せします。",
+      "short": "쇼핑몰을 처음 만드는 단계부터 운영까지, 한 프로젝트를 끝까지 굴리는 현장 리더를 맡는 일.",
+      "why": "Ui2는 대형 브랜드와 직접 계약해 EC 시스템을 기획·제안부터 구축·운영까지 맡는 회사라서, 프로젝트 하나를 처음부터 끝까지 책임질 사람이 필요합니다.[1][3] 회사는 보수 개발 비중이 많고 전체의 약 2할이 새로 만드는 프로젝트라고 적었습니다.[1]",
+      "actually": {
+        "intro": "회사 글이 밝힌 개발 순서는 폭포수(앞 단계를 끝내고 다음으로 넘어가는) 방식입니다.[8]",
+        "items": [
+          "**사양 정하기** — 고객이 원하는 기능(회원·포인트·상품·주문·결제)을 듣고 문서로 고정한다.[8]",
+          "**기술 고르기** — 고객 규모에 맞춰 어떤 EC 패키지를 쓰거나 자체 프레임워크로 짓는다. 회사는 특정 패키지에 묶이지 않는다고 적었다.[1][13]",
+          "**설계 → 구현 → 테스트** — 회사가 적은 5단계의 뒤쪽 셋.[8]",
+          "**운영(보수)** — 이미 돌아가는 사이트의 기능 추가·법 제도 대응 수정. 회사 PM 인터뷰의 첫 관리 업무가 인보이스 제도(일본의 적격청구서 제도) 대응 수정이었다.[7]",
+          "**공개된 사례** — EC를 매장·콜센터와 잇는 OMO(온라인·오프라인 통합) 기반, 회원·포인트 통합 기반과 앱을 만든 프로젝트.[5]"
+        ]
+      },
+      "flows": [
+        {
+          "caption": "회사 글의 개발 순서 — PL은 앞부분부터 고객과 함께 선다",
+          "steps": ["사양 정하기 · 고객 요구를 듣고 문서로", "기술 선정 · 패키지냐 자체 프레임워크냐", "설계 · 화면·데이터·연동", "구현 · Java/Spring·React", "테스트 · 고객 확인까지", "운영 · 보수 개발·장애 대응"],
+          "mine_from": 0
+        }
+      ],
+      "how_far": "혼자 다 정하는 자리는 아닙니다 — 공고는 기존 PM·PL 밑에 들어간다고 적었습니다.[1] 처음에는 한 기능 덩어리(예: 장바구니·주문)를 사양부터 테스트까지 맡아 끝내는 것이 최소선이고, 그다음이 프로젝트 전체입니다. {추론}",
+      "refs": [1, 3, 5, 7, 8, 13],
+      "study": ["ipa-req", "swreq3", "pmbok"]
+    },
+    {
+      "section": "task",
+      "quote": "・顧客との折衝、ヒアリング、提案",
+      "short": "고객 담당자를 만나 무엇을 원하는지 듣고, 일정·범위를 조율하고, 해결안을 제안하는 일.",
+      "why": "1차 수주라 중간에 다른 회사가 없고, 고객 브랜드의 요구를 Ui2가 직접 듣습니다.[1] 회사 PM 인터뷰에서도 개발 다음으로 맡은 일이 요구 듣기·제안 자료 작성·정례 회의 진행이었습니다.[7]",
+      "actually": {
+        "items": [
+          "**히어링(요구 듣기)** — '세일 때 사이트가 느리다', '매장 재고를 온라인에서 보이고 싶다' 같은 말을 기능과 숫자로 바꾼다. IPA 요건정의 가이드는 이 단계에서 사업 목표부터 확인하라고 한다.[15]",
+          "**절충(折衝)** — 예산·납기 안에서 이번에 넣을 것과 뺄 것을 정한다. 추가 요구가 오면 공수와 일정 영향을 보여 주고 고른다. {추론}",
+          "**제안** — 화면 흐름·구성도·견적을 담은 제안 자료. 회사 PM 인터뷰에 제안 자료 작성이 나온다.[7]",
+          "**정례 회의** — 매주 진척·과제·결정할 것을 고객과 맞춘다.[7]",
+          "**기술 쪽 동석** — 기술 판단이 필요한 회의에는 리드 프로그래머가 같이 들어간다고 회사 글에 적혀 있다.[9]"
+        ]
+      },
+      "level": {
+        "basic": "회의록을 일본어로 쓰고, 고객 말을 '결정 · 과제 · 다음 할 일'로 정리한다",
+        "work": "요구를 기능 목록·화면 흐름·대략 공수로 바꾸고, 범위 변경의 일정 영향을 설명한다",
+        "team": "대형 브랜드 담당자와 일본식 정중어(경어)로 납기·범위를 절충한다 {추론}"
+      },
+      "how_far": "처음에는 선배 PM·PL이 하는 회의에 같이 들어가 배우는 구조라고 회사가 적었습니다.[6] 혼자 듣고 회의록·과제표를 정확하게 남기는 것이 최소선입니다. {추론}",
+      "refs": [1, 6, 7, 9, 15],
+      "study": ["ipa-req", "swreq3", "jlpt-levels"]
+    },
+    {
+      "section": "task",
+      "quote": "・設計/開発業務",
+      "short": "리더라도 손을 놓지 않는다 — 설계 문서를 쓰고 Java로 직접 개발까지 하는 일.",
+      "why": "회사 PL 인터뷰의 PL은 리더와 프로그래머를 겸했고, 고객 사양을 듣고 그 사양을 실현하는 개발까지 맡았습니다.[10] 회사는 프런트엔드·백엔드를 나누지 않아 풀스택으로 개발한다고 적었습니다.[1]",
+      "actually": {
+        "items": [
+          "**기본 설계** — 화면 목록·화면 전이, 테이블 정의, 외부 연동(결제·물류·매장 POS) 목록. {추론}",
+          "**상세 설계** — 처리 흐름·입력 검사·오류 코드. 일본 SI에서는 보통 이 문서를 고객과 함께 확인한다. {추론}",
+          "**개발** — Spring Boot로 API·화면 서버를, Hibernate(자바 객체와 DB 표를 잇는 도구)로 DB를 다룬다.[1][23][24]",
+          "**코드 리뷰** — 코드는 GitHub로 관리하고 PM이나 기술 책임자가 리뷰한다.[1]",
+          "**EC다운 함정** — 같은 상품 마지막 1개에 주문이 동시에 몰리는 재고 차감. 아래 예시."
+        ]
+      },
+      "examples": [
+        {
+          "title": "마지막 1개를 두 명이 산다 — 읽고 쓰기 vs 조건부 UPDATE",
+          "body": "재고를 읽은 뒤 따로 빼면, 두 주문이 같은 '1개 남음'을 읽고 둘 다 팔립니다(재고는 0인데 2개 판매). 조건을 UPDATE 한 문장에 넣으면 두 번째 주문은 0건 갱신으로 실패합니다. PostgreSQL 문서도 같은 행을 동시에 고치면 뒤의 UPDATE가 앞의 결과를 보고 조건을 다시 확인한다고 설명합니다.[25] 파이썬 sqlite로 직접 돌린 출력은 맨 아래 두 줄.",
+          "lang": "python",
+          "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE stock(sku TEXT PRIMARY KEY, qty INT)\")\ndb.execute(\"INSERT INTO stock VALUES('SHOE-270', 1)\")\n\n# 나쁜 예: 두 주문이 같은 순간 '1개 남음'을 읽었다고 치자\nq1 = db.execute(\"SELECT qty FROM stock\").fetchone()[0]\nq2 = db.execute(\"SELECT qty FROM stock\").fetchone()[0]\nsold = 0\nfor q in (q1, q2):\n    if q >= 1:\n        db.execute(\"UPDATE stock SET qty=?\", (q - 1,))\n        sold += 1\nprint(\"naive  : 팔린 수\", sold, \"/ 남은 재고\", db.execute(\"SELECT qty FROM stock\").fetchone()[0])\n\n# 좋은 예: 조건을 UPDATE 한 문장 안에\ndb.execute(\"UPDATE stock SET qty=1\")\ndef order(n):\n    cur = db.execute(\"UPDATE stock SET qty=qty-? WHERE sku='SHOE-270' AND qty>=?\", (n, n))\n    return cur.rowcount == 1\nprint(\"guarded:\", [order(1), order(1)], \"/ 남은 재고\", db.execute(\"SELECT qty FROM stock\").fetchone()[0])\n\n# naive  : 팔린 수 2 / 남은 재고 0\n# guarded: [True, False] / 남은 재고 0"
+        }
+      ],
+      "how_far": "설계서를 고객이 읽을 수 있게 쓰고, 맡은 기능을 Java로 직접 만들어 테스트까지 끝내는 것이 최소선입니다. {추론} 입사 뒤 1~3개월 동안 코드 테스트·리뷰로 기술 연수를 한다고 회사가 적었습니다.[1]",
+      "refs": [1, 10, 23, 24, 25],
+      "study": ["internal-spring", "internal-jpa", "internal-jpa-app", "real-mysql"]
+    },
+    {
+      "section": "task",
+      "quote": "・プロジェクト進捗補佐、課題管理　等",
+      "short": "PM을 도와 일정이 계획대로 가는지 재고, 생긴 문제를 목록으로 관리해 닫을 때까지 챙기는 일.",
+      "why": "'보좌'라고 적은 것처럼 전체 책임은 PM에게 있고, PL은 개발 팀 쪽의 진척과 과제를 맡습니다.[1] 새로 만드는 프로젝트는 15명 안팎, 운영 프로젝트는 2~5명이라 사람 수만큼 챙길 일이 늘어납니다.[1][8]",
+      "actually": {
+        "items": [
+          "**WBS(작업 분해표)** — 기능을 며칠짜리 작업으로 쪼개 담당·예정일을 단다. PMBOK 가이드가 다루는 기본 도구다.[22]",
+          "**진척 재기** — '거의 다 됐어요'가 아니라 계획한 양 대비 끝낸 양으로 잰다. 획득가치(EVM)의 일정 성과 지수(SPI)가 1보다 작으면 늦다.[22]",
+          "**과제 관리표** — 문제·담당·기한·상태를 적고 매주 정례 회의에서 닫는다.[7] {추론}",
+          "**위험 미리 알리기** — 늦어질 것 같으면 PM과 고객에게 대안과 함께 일찍 말한다. {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "진척을 숫자로 — SPI",
+          "body": "오늘까지 끝냈어야 하는 작업(상품 목록 API 5인일·장바구니 8인일)의 합이 계획값(PV) 13, 실제로 해낸 양(EV)은 5 + 8×50% + 10×20% = 11입니다. SPI = 11 ÷ 13 ≈ 0.85라 약 15% 늦습니다(직접 계산). 결제 연동을 미리 시작한 것이 장바구니 지연을 가립니다 — 그래서 늦은 작업 목록을 따로 뽑습니다. {추론}",
+          "lang": "python",
+          "code": "wbs = [(\"상품 목록 API\", 5, True, 1.0), (\"장바구니\", 8, True, 0.5),\n       (\"결제 연동\", 10, False, 0.2), (\"주문 메일\", 3, False, 0.0)]\npv = sum(d for _, d, due, _ in wbs if due)   # 오늘까지 하기로 한 양\nev = sum(d * p for _, d, _, p in wbs)        # 실제로 해낸 양\nprint(f\"PV={pv} 인일, EV={ev:.0f} 인일, SPI={ev/pv:.2f}\")\nfor name, d, due, p in wbs:\n    if due and p < 1:\n        print(\"늦음:\", name, f\"{p:.0%}\")\n\n# PV=13 인일, EV=11 인일, SPI=0.85\n# 늦음: 장바구니 50%"
+        }
+      ],
+      "how_far": "팀원 진척을 주마다 숫자로 모으고, 과제표를 빠짐없이 갱신해 PM에게 올리는 것이 최소선입니다. {추론} 견적·계약 범위 결정은 PM 몫입니다 — 같은 회사의 PM 공고는 연봉대도 따로(600만~1,000만 엔) 냈습니다.[2]",
+      "refs": [1, 2, 7, 8, 22],
+      "study": ["pmbok", "mmm", "jira-guide"]
+    },
+    {
+      "section": "task",
+      "quote": "【入社後のフォロー】\nEC業界やEC開発に関する座学やOJTを通して、理解を深めていただきます。\n各プロジェクトは、既存のPM／PLのもと参画しますので、各種業務でわからない点を気軽に聞くことができます。\n部署内で技術をはじめとする勉強会も定期的に開催しています。",
+      "short": "EC를 몰라도 된다 — 강의·현장 실습으로 배우고, 기존 PM·PL 밑에서 시작한다는 뜻.",
+      "why": "회사는 EC 개발 경험 없이 들어온 사람이 대부분이라고 적었습니다.[1] 그래서 EC 업계 지식은 입사 뒤에 가르치는 것으로 잡았습니다.[1]",
+      "actually": {
+        "items": [
+          "**플랫폼 연수** — 회사 글(2023)은 입사 첫 달 Salesforce Commerce Cloud 연수(첫 주는 전담 강사), 그 뒤 3개월 Ui2 자체 연수로 인증 자격을 따게 돕는다고 적었다.[6]",
+          "**기술 연수** — 입사 뒤 1~3개월 코드 테스트·리뷰.[1]",
+          "**공부 지원** — 세미나·온라인 교육·자격 응시료를 매달 5,000엔까지 지원하고, 사내 워크숍을 1년에 두 번 연다.[1][11]",
+          "**기존 PM·PL 밑** — 처음 맡는 프로젝트는 혼자가 아니다.[1]"
+        ]
+      },
+      "how_far": "입사 전에 EC 패키지를 다 익힐 필요는 없습니다.[1] 다만 장바구니·주문·결제·재고가 어떻게 이어지는지는 미리 알고 가면 연수가 빨라집니다. {추론}",
+      "refs": [1, 6, 11],
+      "study": ["sfcc-trailhead", "sfra-docs"]
+    },
+    {
+      "section": "task",
+      "quote": "ビジネスディベロップメント本部 または ソリューション事業本部（顧客先常駐はございません。)",
+      "short": "EC 사이트 자체를 고치는 부서 또는 운영 중 문제를 푸는 부서 중 한 곳, 고객사 상주는 없다.",
+      "why": "회사 사업부장 인터뷰는 개발자 소속이 둘로 나뉜다고 설명합니다 — 비즈니스 디벨롭먼트 본부는 EC 사이트 본체의 맞춤 개발, 솔루션 사업본부는 EC를 운영하며 생기는 과제 해결입니다.[6]",
+      "actually": {
+        "items": [
+          "**비즈니스 디벨롭먼트 본부** — 사이트 본체 맞춤 개발. 회사 PM·리드 프로그래머 인터뷰가 이 본부 소속이다.[7][9]",
+          "**솔루션 사업본부** — 창고·매장·EC 재고를 실시간으로 합쳐 관리하는 시스템 안정화, Salesforce Commerce Cloud 관련 주문관리(OMS) 개발과 연동, 일본 상관습에 맞춘 EC 백오피스 'Commerce-Gate'.[6]",
+          "**상주 없음** — 고객사에 파견 나가지 않고 자기 사무실(또는 원격)에서 개발한다.[1]"
+        ]
+      },
+      "how_far": "어느 본부로 갈지는 회사가 정하지만, 사업부장은 희망대로 배치하는 경우가 대부분이라고 했습니다.[6] 면접에서 어느 쪽 일에 가까운지 물어보면 좋습니다. {추론}",
+      "refs": [1, 6, 7, 9],
+      "study": ["sfcc-trailhead"]
+    },
+    {
+      "section": "task",
+      "quote": "・開発OS：Windows、OS X\n・サーバーOS：Linux",
+      "short": "개발은 윈도우·맥에서, 실제 서비스는 리눅스 서버에서 돈다는 뜻.",
+      "why": "개발 PC와 서버 OS가 달라서, 로컬에서 되던 것이 서버에서 안 되는 차이(경로·대소문자·줄바꿈·권한)를 다룰 줄 알아야 합니다. {추론} 우대사항에 리눅스 서버 관리 경험이 따로 있습니다.[1]",
+      "actually": {
+        "items": [
+          "**접속·배포** — SSH로 서버에 들어가 애플리케이션을 올리고 재시작한다. {추론}",
+          "**로그 보기** — 오류가 나면 Tomcat·Apache 로그부터 연다(아래 우대사항 예시).[26][27]"
+        ]
+      },
+      "how_far": "리눅스 기본 명령(파일·권한·프로세스·로그)을 손에 익히는 정도가 최소선입니다. {추론}",
+      "refs": [1, 26, 27],
+      "study": ["tlcl", "linux-woo"]
+    },
+    {
+      "section": "task",
+      "quote": "・開発言語：Java(Spring)、JavaScript、typescript\n・フレームワーク：Spring Boot、Hibernate、React",
+      "short": "서버는 Java·Spring Boot·Hibernate, 화면은 TypeScript·React로 만든다는 뜻.",
+      "why": "회사 글(2023)이 밝힌 개발 환경도 Java(Spring)·Spring Boot·Hibernate 중심이고, 일부 프로젝트는 PHP를 섞습니다.[8] 프런트·백엔드 분업이 없어 둘 다 만집니다.[1]",
+      "level": {
+        "basic": "Java 컬렉션·예외 · Spring의 의존성 주입 · REST 컨트롤러 · JPA/Hibernate로 조회·저장",
+        "work": "트랜잭션 경계 · N+1(목록 한 번에 쿼리가 줄줄이 나가는 문제) 막기 · 지연 로딩 · React 컴포넌트와 상태",
+        "team": "대형 브랜드 사이트의 세일 시간대 부하, 결제·물류·POS 외부 연동 {추론}"
+      },
+      "actually": {
+        "items": [
+          "**Spring Boot** — 설정을 줄여 바로 띄우는 Spring. 내장 Tomcat으로 실행하거나 WAR로 외부 Tomcat에 올린다.[23]",
+          "**Hibernate** — 자바 객체를 DB 행으로 바꿔 주는 ORM. 쿼리가 몇 번 나가는지 모르면 느려진다.[24]",
+          "**React·TypeScript** — 상품 목록·장바구니 같은 화면. 타입으로 API 응답 모양을 고정한다. {추론}"
+        ]
+      },
+      "how_far": "자격요건이 Java 실무 3년이라 서버 쪽은 바로 쓸 수 있어야 하고, React는 입사 뒤 배워도 되는 쪽입니다. {추론}",
+      "refs": [1, 8, 23, 24],
+      "study": ["internal-spring", "internal-jpa", "internal-spring-boot", "react-docs"]
+    },
+    {
+      "section": "task",
+      "quote": "・DB：PostgreSQL、MySQL、mSQL、Oracle",
+      "short": "프로젝트마다 DB가 다르다 — 고객이 쓰던 DB에 맞춰 SQL을 쓴다는 뜻.",
+      "why": "고객 시스템을 이어받거나 고객 사정에 맞춰 패키지를 고르기 때문에 DB가 하나로 정해져 있지 않습니다.[1][8] 회사 글의 개발 환경 두 벌 중 하나는 PostgreSQL·Oracle입니다.[8]",
+      "actually": {
+        "items": [
+          "**같은 표준 SQL, 다른 방언** — 페이지 나누기(LIMIT/OFFSET 대 FETCH FIRST), 순번 만들기, 날짜 함수가 DB마다 다르다. {추론}",
+          "**동시성** — 재고·포인트처럼 여럿이 같은 행을 고치는 곳은 격리 수준과 잠금을 안다.[25]"
+        ]
+      },
+      "how_far": "조인·집계·인덱스·실행 계획 읽기는 DB 종류와 상관없는 최소선입니다. {추론}",
+      "refs": [1, 8, 25],
+      "study": ["real-mysql", "sql-tuning", "pg-docs"]
+    },
+    {
+      "section": "task",
+      "quote": "・インフラ：AWS\n・開発環境：Git、Githubなど\n・その他：Apache、Tomcat",
+      "short": "AWS 위 서버에 Apache·Tomcat으로 Java 앱을 올리고, 코드는 GitHub로 관리·리뷰한다는 뜻.",
+      "why": "회사는 Git·GitHub로 코드를 관리하고 PM·기술 책임자가 리뷰하는 문화가 있다고 적었습니다.[1] 리드 프로그래머 인터뷰에는 Git 도입·릴리스 자동화를 맡았다는 이야기가 나옵니다.[9]",
+      "actually": {
+        "items": [
+          "**Apache + Tomcat** — 앞의 Apache(웹 서버)가 요청을 받고, 뒤의 Tomcat(자바 앱 서버)이 Spring 앱을 돌린다.[26][27]",
+          "**풀 리퀘스트** — 브랜치에서 고치고 리뷰를 받아 합친다.[1]",
+          "**릴리스** — 손으로 하던 배포를 스크립트로 자동화하는 작업이 회사 개선 과제에 있었다.[9]"
+        ]
+      },
+      "how_far": "브랜치·풀 리퀘스트·충돌 해결과, 앱이 Apache 뒤 Tomcat에서 도는 구조를 설명할 수 있으면 됩니다. {추론}",
+      "refs": [1, 9, 26, 27],
+      "study": ["pro-git", "internal-docker"]
+    },
+    {
+      "section": "task",
+      "quote": "▼開発体制\n新規開発プロジェクトの場合：\n15名アサインされます。\n※開発工程により人数が上下します。\n保守運用プロジェクトの場合：\n2〜5名アサインされます。",
+      "short": "새로 만드는 프로젝트는 15명 안팎, 운영 프로젝트는 2~5명이 붙는다는 뜻.",
+      "why": "PL이 챙길 사람 수를 미리 알려 주는 줄입니다. 같은 회사 PL 공고(HERP)는 새 프로젝트를 10~15명으로 적었습니다.[2] 회사 전체가 30명 안팎이라 큰 프로젝트에 회사 인원의 상당수가 들어갑니다.[13]",
+      "actually": {
+        "items": [
+          "**공정마다 인원이 바뀐다** — 설계 때는 적고 구현·테스트 때 늘었다가 운영으로 가면 2~5명으로 준다.[1]",
+          "**해외 개발 거점** — 회사 연혁에는 2012년 한국·말레이시아와 오프쇼어(해외 위탁) 개발 체계를 만들었다고 적혀 있다.[4] 지금 프로젝트에 얼마나 쓰는지는 공개되지 않았다."
+        ]
+      },
+      "how_far": "운영 프로젝트(2~5명)라면 PL이 개발·고객 대응·과제 관리를 거의 혼자 겸하게 됩니다. {추론}",
+      "refs": [1, 2, 4, 13],
+      "study": ["mmm", "pmbok"]
+    },
+    {
+      "section": "task",
+      "quote": "◎大手ブランド企業の一次請け◎\n大手企業と直取引・一次請けの案件に携わります。顧客と並走し、ブランドや特性を理解した課題設定、課題解決力とカスタマイズ性の高さに評価されています。\n顧客例：世界的ファッションブランド、有名スポーツブランド、美容ブランド、家具ブランドなど",
+      "short": "중간 업체 없이 대형 브랜드와 직접 계약하는 일 — 고객 브랜드를 이해하고 맞춤으로 만든다는 뜻.",
+      "why": "일본 SI는 여러 단계 하청 구조가 흔해서 '1차 수주'는 고객과 직접 말하는 자리라는 뜻입니다. {추론} 회사가 공개한 주요 거래처에는 미즈노·코치(태피스트리 재팬)·코메효·하루야마 상사가 있습니다.[13]",
+      "actually": {
+        "items": [
+          "**브랜드 이해** — 같은 쇼핑몰이라도 패션은 사이즈·색 재고, 가구는 배송 일정, 뷰티는 정기 구매가 중심이 된다. {추론}",
+          "**맞춤 개발** — 패키지를 그대로 쓰지 않고 브랜드 요구에 맞춰 고친다. Salesforce SFRA는 기본 모듈은 건드리지 않고 그 앞에 맞춤 모듈을 겹쳐 쌓으라고 권한다.[16][17]",
+          "**오래 가는 관계** — 회사 글에는 10년 넘게 지원하는 고객이 있다고 적혀 있다.[8]"
+        ]
+      },
+      "how_far": "고객 업무를 모르면 맞춤이 엉뚱해집니다 — 담당 브랜드의 사이트를 손님으로 써 보고 주문 흐름을 그려 오는 것이 출발선입니다. {추론}",
+      "refs": [8, 13, 16, 17],
+      "study": ["sfra-docs", "swreq3"]
+    },
+    {
+      "section": "qualification",
+      "quote": "以下すべてのご経験をお持ちの方からのご応募をおまちしています！\n・何らかのシステム開発経験　実務３年以上",
+      "short": "아래가 모두 필수 — 그중 첫째, 어떤 시스템이든 실무 개발 3년 이상.",
+      "why": "고객 앞에서 공수와 위험을 말하려면 직접 끝까지 만들어 본 경험이 있어야 하기 때문입니다. {추론} HERP의 같은 공고는 '설계와 개발 경험'을 함께 요구했습니다.[2]",
+      "actually": {
+        "items": [
+          "**'실무'** — 회사에서 돈 받고 운영까지 간 시스템. 개인 프로젝트는 보통 빼고 센다. {추론}",
+          "**설계 포함** — 남이 준 사양을 구현만 한 것보다 설계서를 써 본 경험이 PL 자리에 맞다.[2]",
+          "**일본 서류** — 이력서·직무경력서를 일본어로 내야 하고, 한국어·영어 이력서만 내면 서류에서 제외된다.[1]"
+        ]
+      },
+      "how_far": "직무경력서에 프로젝트마다 기간·인원·역할·공정(설계·구현·테스트)·쓴 기술을 적어 3년을 보여 주면 됩니다. {추론}",
+      "refs": [1, 2],
+      "study": ["swreq3"]
+    },
+    {
+      "section": "qualification",
+      "quote": "・Java 実務３年以上",
+      "short": "Java로 회사 일을 3년 넘게 했어야 한다 — 이 자리의 유일한 언어 필수 요건.",
+      "why": "회사 개발 환경이 Java(Spring) 중심이고, Commerce-Gate 같은 회사 백오피스도 Java 기술로 만들었다고 적었습니다.[6][8] HERP 공고는 'Java가 바람직'으로 조금 느슨하게 적었습니다.[2]",
+      "level": {
+        "basic": "객체지향 · 컬렉션 · 예외 · 스트림 · Spring으로 CRUD",
+        "work": "트랜잭션 · JPA/Hibernate 성능(N+1·지연 로딩) · 단위 테스트 · 로그로 장애 찾기",
+        "team": "남의 Java 코드를 리뷰하고 설계 방침을 정하는 수준 — PL이라서 {추론}"
+      },
+      "actually": {
+        "items": [
+          "**선발 순서** — 서류 뒤 paiza 코딩 테스트를 보고 면담·면접 1~2회다.[1]",
+          "**paiza 랭크** — paiza 기술 점검은 S~E 여섯 단계이고, B는 실용 로직을 시간 안에 짜는 수준(상위 30%)이라고 설명한다.[18] 이 공고가 몇 랭크를 요구하는지는 적혀 있지 않다."
+        ]
+      },
+      "how_far": "Spring Boot로 API를 만들고 JPA로 쿼리 수를 설명할 수 있으면 자격요건은 채웁니다. {추론} paiza 문제는 언어를 고를 수 있으니 Java로 미리 풀어 보면 좋습니다. {추론}",
+      "refs": [1, 2, 6, 8, 18],
+      "study": ["internal-spring", "internal-jpa", "internal-testing", "paiza-skillcheck"]
+    },
+    {
+      "section": "qualification",
+      "quote": "・日本語レベル: ビジネス",
+      "short": "고객과 일본어로 회의·절충·메일을 할 수 있어야 한다 — 이 자리의 진짜 문턱.",
+      "why": "업무 첫 줄이 고객과의 절충·히어링·제안이라 통역 없이 일본어로 해야 합니다.[1] 공고는 일본어 전용 포지션이라 일본어 소통이 안 되면 서류에서 제외된다고 적었습니다.[1]",
+      "actually": {
+        "items": [
+          "**JLPT** — N1은 폭넓은 장면의 일본어를 이해하는 수준, N2는 일상과 좀 더 넓은 장면을 어느 정도 이해하는 수준이다.[19] 공고는 시험 급수를 적지 않았다.",
+          "**PL의 일본어** — 회의 진행, 경어 메일, 사양서·회의록 쓰기. 듣기보다 쓰기·말하기가 많다. {추론}",
+          "**면접도 일본어** — 지원 서류 언어가 일본어로 적혀 있다.[1]"
+        ]
+      },
+      "how_far": "개발자끼리의 일본어보다 한 단계 위 — 고객 담당자에게 지연이나 범위 변경을 정중하게 설명할 수 있어야 합니다. {추론}",
+      "refs": [1, 19],
+      "study": ["jlpt-levels", "jlpt-samples"]
+    },
+    {
+      "section": "qualification",
+      "quote": "・日本国内への移住が必要",
+      "short": "완전 원격을 권해도 일본에 살아야 한다 — 한국에서 원격으로 일하는 자리는 아니다.",
+      "why": "고객 회의나 출시 전후에는 사무실에 나올 수 있다고 적었고, 일본 회사 정사원으로 고용되기 때문입니다.[1] {추론}",
+      "actually": {
+        "items": [
+          "**재류 자격** — 일본에서 개발자로 일하려면 보통 '기술·인문지식·국제업무' 재류 자격을 받는다.[20] 비자 지원·이사 비용 지원은 공고에 없다.",
+          "**출근 빈도** — 주 1회 나오는 사람부터 반년에 1회 나오는 사람까지 있고, 월 1회 출근일을 정한 팀도 있다.[1]",
+          "**원격 근무 범위** — 회사 PL 인터뷰(2023)에는 신청하면 자택 밖 근무를 연 60일까지 할 수 있다고 나온다.[10]"
+        ]
+      },
+      "how_far": "도쿄 사무실에 필요할 때 나올 수 있는 곳에 사는 것이 전제입니다. {추론}",
+      "refs": [1, 10, 20],
+      "study": ["isa-gijinkoku"]
+    },
+    {
+      "section": "preference",
+      "quote": "・プロジェクトマネジメントまたはリーダー経験",
+      "short": "몇 명이라도 이끌어 본 경험이 있으면 좋다 — 없어도 지원할 수 있는 우대 조건.",
+      "why": "HERP의 같은 공고는 '이제부터 리더에 도전하려는 사람도 가능'이라고 덧붙였습니다.[2] 회사 PM 인터뷰의 사원도 SES(인력 파견형 개발) 회사에서 4년 개발한 뒤 Ui2에서 처음 관리 업무를 맡았습니다.[7]",
+      "actually": {
+        "items": [
+          "**작게라도 리더** — 2~3명 기능 팀의 일정·리뷰·고객 문의 창구를 맡아 본 것도 리더 경험이다. {추론}",
+          "**경력 길** — 회사는 개발을 파는 길과 관리·고객 절충의 길을 고를 수 있다고 적었다.[7][8]",
+          "**평가** — 1년에 주제 3~5개를 정하고 난이도·과정·품질·공헌도로 본다(2023 회사 글).[8]"
+        ]
+      },
+      "how_far": "직무경력서에 '몇 명을 무엇으로 이끌었고, 무엇이 늦었고, 어떻게 되돌렸나'를 한 건이라도 숫자로 쓰면 됩니다. {추론}",
+      "refs": [2, 7, 8],
+      "study": ["pmbok", "mmm", "scrum-guide"]
+    },
+    {
+      "section": "preference",
+      "quote": "・ECサイト構築経験、Linuxでのサーバ管理実務経験",
+      "short": "쇼핑몰을 만들어 봤거나 리눅스 서버를 운영해 봤으면 우대 — 둘 다 없어도 지원 가능.",
+      "why": "회사 일의 중심이 EC 구축이고 서버가 리눅스라서입니다.[1] 다만 HERP 공고는 EC 경험 없이 들어온 사원이 더 많다고 적었습니다.[2]",
+      "actually": {
+        "items": [
+          "**EC 구축** — 상품·재고·장바구니·주문·결제·배송·회원·포인트가 이어지는 흐름. 결제 대행사·물류·매장 POS와의 연동이 까다롭다. {추론}",
+          "**EC 플랫폼** — 회사 글은 Salesforce Commerce Cloud를 연수 과목으로 적었다.[6] SFRA(그 참고 구조)는 요청을 받는 컨트롤러가 화면용 데이터를 만들어 내는 MVC 변형이다.[16]",
+          "**리눅스 서버 관리** — 디스크·메모리·프로세스 확인, 로그 읽기, 서비스 재시작, 패키지 갱신. {추론}",
+          "**로그에서 장애 찾기** — Apache 접근 로그의 9번째 칸이 응답 코드다.[26] 아래 예시."
+        ]
+      },
+      "examples": [
+        {
+          "title": "주문이 실패한다는 문의 — 접근 로그에서 5xx 세기",
+          "body": "Apache 공통 로그 형식(combined)은 요청 줄 다음에 상태 코드를 적습니다.[26] 가상 로그 다섯 줄에서 500 이상만 경로별로 세면 /order 에 몰린 것이 바로 보입니다. 서버에서는 `awk '$9>=500{print $7,$9}' access.log | sort | uniq -c` 한 줄로 하는 일이고, 여기서는 같은 일을 파이썬으로 돌렸습니다. 출력은 맨 아래 두 줄.",
+          "lang": "python",
+          "code": "from collections import Counter\nc = Counter()\nfor line in open(\"access.log\", encoding=\"utf-8\"):\n    parts = line.split()\n    path, status = parts[6], int(parts[8])   # awk 의 $7, $9\n    if status >= 500:\n        c[(path, status)] += 1\nfor (path, status), n in c.most_common():\n    print(n, path, status)\n\n# 2 /order 500\n# 1 /order 502"
+        }
+      ],
+      "how_far": "EC 경험이 없다면 작은 쇼핑몰(상품·장바구니·주문)을 직접 만들어 리눅스 서버에 올려 보는 것으로 두 우대 조건을 한 번에 메울 수 있습니다. {추론}",
+      "refs": [1, 2, 6, 16, 26],
+      "study": ["sfcc-trailhead", "sfra-docs", "tlcl", "linux-woo"]
+    }
+  ],
+  "fit": {
+    "good": [
+      "Java 개발 3년 넘게 하고, 이제 고객 앞에서 설계를 정하는 일을 해 보고 싶은 사람[1][2]",
+      "파견·하청 구조를 벗어나 직접 계약·자사 내 개발을 원하는 사람[1]",
+      "패션·스포츠·뷰티 브랜드 쇼핑몰처럼 눈에 보이는 서비스를 만들고 싶은 사람[1]",
+      "일본에 살면서 원격 위주로 일하고 싶은 사람[1]"
+    ],
+    "hard": [
+      "일본어로 고객과 절충해야 한다 — 개발자끼리의 일본어로는 부족하다[1]",
+      "일본 이주가 조건이고, 비자·이사 지원은 공고에 없다[1]",
+      "보수 개발이 많다 — 새로 만드는 일은 약 2할이라고 회사가 적었다[1]",
+      "연봉에 월 20시간분 고정 잔업수당이 들어 있다[2]",
+      "회사 전체가 30명 안팎이라 한 사람이 맡는 범위가 넓다[13]"
+    ]
+  },
+  "interview": [
+    {"q": "고객이 출시 2주 전에 기능을 하나 더 넣어 달라고 하면 어떻게 하겠어요?", "a": "업무 첫 줄 '절충' — 범위·일정 영향을 보여 주고 고르게 하는지 본다.[1][15]"},
+    {"q": "세일 시작 직후 같은 상품에 주문이 몰려 재고가 마이너스가 됐어요. 원인과 대책은?", "a": "설계/개발 줄의 재고 차감 동시성.[25]"},
+    {"q": "팀원이 '거의 다 됐다'고만 말하면 진척을 어떻게 확인하나요?", "a": "진척 보좌·과제 관리 — 계획 대비 끝낸 양으로 재는지.[22]"},
+    {"q": "Hibernate로 만든 목록 화면이 느리다면 무엇부터 보겠어요?", "a": "Java 3년 요건의 실무 수준 — 쿼리 수와 지연 로딩.[24]"},
+    {"q": "지금까지 맡은 프로젝트 하나를 일본어로 설명해 주세요 — 인원, 역할, 어려웠던 점.", "a": "일본어 비즈니스 회화와 리더 경험을 한 번에 본다.[1]"}
+  ],
+  "sources": [
+    {"n": 1, "title": "원티드 · [株式会社Ui2] EC 사이트 개발 프로젝트 리더_근무지 일본", "url": "https://www.wanted.co.kr/wd/316964", "kind": "posting", "note": "LAPRAS Global Bridge 연계 · 회사 소개·업무·개발 환경·개발 체제·요건·급여·복리후생·근무지·선발 순서(paiza 코딩 테스트 → 면담·면접 1~2회)"},
+    {"n": 2, "title": "HERP · Ui2 【EC開発PL】 プライムSIer×世界的ブランドのECシステム開発プロジェクトリーダー", "url": "https://herp.careers/careers/companies/ui2saiyou/jobs/ANeDy2E7Jj47", "kind": "posting", "date": "2026-08-14", "note": "회사 채용 페이지의 같은 자리 — 연 550만~800만 엔, 연봉제 14분할(여름·겨울 상여), 고정 잔업수당 월 20시간분, 새 프로젝트 10~15명, 'PL 도전도 가능', 'EC 미경험 입사가 더 많다'. 같은 목록의 PM 공고는 600만~1,000만 엔"},
+    {"n": 3, "title": "Ui2 · 회사 개요", "url": "https://www.ui2.co.jp/company/profile/", "kind": "company", "note": "정식 명칭·주소(〒105-0003)·2011년 1월 설립(2008년 3월 일본 지점으로 사업 시작)·대표 崔勇徹"},
+    {"n": 4, "title": "Ui2 · 연혁", "url": "https://www.ui2.co.jp/company/history/", "kind": "company", "note": "2003 한국 Ui2 Corporation, 2011 일본 법인, 2012 한국·말레이시아 오프쇼어 체계, 2020 ヴィンクス 그룹 편입"},
+    {"n": 5, "title": "Ui2 · 개발 사례", "url": "https://www.ui2.co.jp/business/development-cases/", "kind": "company", "note": "EC 시스템 OMO 기반화, Direct to Customer(회원·포인트 통합 기반·앱) 두 건. 고객 이름·날짜 없음"},
+    {"n": 6, "title": "Ui2 note · [사업부 소개] 솔루션 사업본부의 사업 내용과 기술", "url": "https://note.com/ui2_saiyou/n/n24721e794179", "kind": "company", "date": "2023-11-17", "note": "두 본부의 역할, 재고 통합 관리 안정화, Salesforce Commerce Cloud 관련 OMS 개발, 백오피스 Commerce-Gate, 첫 달 SFCC 연수 + 3개월 자체 연수"},
+    {"n": 7, "title": "Ui2 note · [SE에서 PM으로] 관리 업무에 도전하는 엔지니어", "url": "https://note.com/ui2_saiyou/n/naa28a3e24774", "kind": "company", "date": "2023-12-28", "note": "SES 4년 → 입사 뒤 요구 듣기·제안 자료·정례 회의, 첫 관리 업무는 인보이스 제도 대응 수정"},
+    {"n": 8, "title": "Ui2 note · Java 경험 엔지니어 필독 — Ui2의 사내 환경", "url": "https://note.com/ui2_saiyou/n/n37b4b116093d", "kind": "company", "date": "2023-08-02", "note": "폭포수 5단계(사양→기술 선정→설계→구현→테스트), 개발 환경 두 벌, 새 프로젝트 15명 정도·운영 2~5명, 전체 26명(개발 19), 평가(주제 3~5개, 난이도·과정·품질·공헌도), 10년 넘은 고객"},
+    {"n": 9, "title": "Ui2 note · EC 개발에 특화한 SIer의 매력 — 리드 프로그래머", "url": "https://note.com/ui2_saiyou/n/n3bedc76879a3", "kind": "company", "date": "2023-11-24", "note": "여러 프로젝트의 개발 방침 결정, Git 도입·릴리스 자동화, 기술 판단이 필요한 고객 회의 동석, 요건 정의부터 릴리스까지"},
+    {"n": 10, "title": "Ui2 note · Ui2의 PL이 지금까지를 돌아보다", "url": "https://note.com/ui2_saiyou/n/nf0c18edd6375", "kind": "company", "date": "2023-05-15", "note": "PL과 프로그래머 겸임, 다른 회사에서 넘겨받은 리뉴얼 프로젝트의 사양 히어링과 개발, 자택 밖 근무 연 60일"},
+    {"n": 11, "title": "Ui2 note · 복리후생 소개", "url": "https://note.com/ui2_saiyou/n/n9b5a9817dd39", "kind": "company", "date": "2023-10-02", "note": "다 쓰면 연 15만 엔 정도, 식당 찾기 수당·경력 지원·여행/홈라이프 지원 금액, 경조금 종류"},
+    {"n": 12, "title": "Ui2 · 복리후생", "url": "https://www.ui2.co.jp/recruit/benefits/", "kind": "company", "note": "건강검진·예방접종 전액 부담, 관동 IT 소프트웨어 건강보험조합, 수당 금액(위 note와 같음)"},
+    {"n": 13, "title": "paiza · Ui2 기업 페이지", "url": "https://paiza.jp/recruiters/1122", "kind": "company", "note": "주요 거래처(미즈노·태피스트리 재팬(코치)·코메효·하루야마 상사 등), 주요 주주 ヴィンクス, 30명(2025/08), 평균 36세, 특정 EC 패키지에 의존하지 않음, 평균 잔업 20시간 이하"},
+    {"n": 14, "title": "Ui2 · 오시는 길", "url": "https://www.ui2.co.jp/company/access/", "kind": "company", "note": "도라노몬힐스역 5분, 우치사이와이초역 6분, 신바시역 7분"},
+    {"n": 15, "title": "IPA · ユーザのための要件定義ガイド 第2版", "url": "https://www.ipa.go.jp/archive/digital/iot-en-ci/jyouryuu/youkenteigi20190912.html", "kind": "reference", "date": "2019-09-12", "note": "일본 정보처리추진기구의 요건 정의 지침(128개 요령). 일본 SI 현장의 요건 정의 공통어"},
+    {"n": 16, "title": "Salesforce Developers · SFRA Features and Components", "url": "https://developer.salesforce.com/docs/commerce/sfra/guide/b2c-sfra-features-and-comps.html", "kind": "reference", "note": "app_storefront_base 카트리지, MVC 변형(컨트롤러 → 화면용 모델)"},
+    {"n": 17, "title": "Salesforce Developers · Customize SFRA", "url": "https://developer.salesforce.com/docs/commerce/sfra/guide/b2c-customizing-sfra.html", "kind": "reference", "note": "기본 카트리지는 고치지 않고 맞춤 카트리지를 카트리지 경로 앞에 둔다"},
+    {"n": 18, "title": "paiza · 프로그래밍 스킬 체크 안내", "url": "https://paiza.jp/challenges/info", "kind": "reference", "note": "S~E 여섯 단계, B = 실용 로직 구현(상위 30%), C = 기본 구현(상위 60%)"},
+    {"n": 19, "title": "JLPT 공식 · N1~N5 인정의 기준", "url": "https://www.jlpt.jp/about/levelsummary.html", "kind": "reference"},
+    {"n": 20, "title": "일본 출입국재류관리청 · 재류자격 '기술·인문지식·국제업무'", "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html", "kind": "reference", "note": "학력·경력 기준 세부는 원문에서 확인 필요"},
+    {"n": 21, "title": "일본 국세청 · 2024년분 민간급여실태통계조사 결과", "url": "https://www.nta.go.jp/publication/statistics/kokuzeicho/minkan/gaiyou/2024.htm", "kind": "reference", "note": "1년 근무한 급여소득자 평균 478만 엔"},
+    {"n": 22, "title": "PMI · PMBOK Guide · The Standard for Project Management", "url": "https://www.pmi.org/standards/pmbok", "kind": "reference", "note": "WBS·일정 관리·획득가치(EVM)를 다루는 프로젝트 관리 표준"},
+    {"n": 23, "title": "Spring Boot Reference Documentation", "url": "https://docs.spring.io/spring-boot/index.html", "kind": "reference"},
+    {"n": 24, "title": "Hibernate ORM 문서", "url": "https://hibernate.org/orm/documentation/", "kind": "reference"},
+    {"n": 25, "title": "PostgreSQL 문서 · Transaction Isolation", "url": "https://www.postgresql.org/docs/current/transaction-iso.html", "kind": "reference", "note": "Read Committed에서 같은 행을 동시에 UPDATE하면 뒤 문장이 갱신된 행으로 WHERE 조건을 다시 평가한다"},
+    {"n": 26, "title": "Apache HTTP Server 문서 · Log Files", "url": "https://httpd.apache.org/docs/current/logs.html", "kind": "reference", "note": "Common/Combined Log Format — 요청 줄 다음 칸이 상태 코드"},
+    {"n": 27, "title": "Apache Tomcat 10.1 문서", "url": "https://tomcat.apache.org/tomcat-10.1-doc/index.html", "kind": "reference"}
+  ],
+  "caveat": "회사 기술 블로그·컨퍼런스 발표는 찾지 못했습니다. 회사 근거는 이 공고·회사 채용 페이지(HERP)·회사 사이트·회사 채용 note(2023~2026)뿐이고, note의 개발 환경·인원·연수 내용은 2023년 글이라 지금과 다를 수 있습니다. Commerce-Gate가 Ui2 자체 제품인지 그룹사 제품인지는 공개 자료로 확인하지 못했습니다. 설계 문서의 종류·진척 관리 방법은 회사가 공개하지 않아 일본 SI의 공개 지침(IPA)·PMBOK으로 '보통 이런 것'을 보였습니다. 비자 지원·이사 비용 지원은 공고에 없습니다.",
+  "resources": [
+    {"id": "ipa-req", "title": "ユーザのための要件定義ガイド 第2版 — 要件定義を成功に導く128の勘どころ", "by": "IPA 사회기반센터 · 2019", "kind": "book", "url": "https://www.ipa.go.jp/archive/digital/iot-en-ci/jyouryuu/youkenteigi20190912.html", "lang": "ja", "free": true, "level": "실무", "why": "일본 고객과 요건을 정할 때 쓰는 말과 순서. 업무 '히어링·제안'과 '사양 정하기'를 일본식으로 익힌다."},
+    {"id": "swreq3", "title": "소프트웨어 요구사항 (제3판)", "by": "칼 위거스 · 조이 비티 · 위키북스 · 2017", "kind": "book", "url": "https://ridibooks.com/books/852002434", "lang": "ko", "free": false, "level": "실무", "why": "고객의 말을 요구사항 문서로 바꾸는 방법을 한국어로. 히어링·제안 줄의 바탕."},
+    {"id": "pmbok", "title": "PMBOK Guide · The Standard for Project Management", "by": "PMI", "kind": "doc", "url": "https://www.pmi.org/standards/pmbok", "lang": "en", "free": false, "level": "실무", "why": "WBS·일정·위험·획득가치의 공통어. 진척 보좌·과제 관리 줄."},
+    {"id": "mmm", "title": "맨먼스 미신", "by": "프레더릭 브룩스 · 강중빈 옮김", "kind": "book", "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A7%A8%EB%A8%BC%EC%8A%A4%20%EB%AF%B8%EC%8B%A0", "lang": "ko", "free": false, "level": "입문", "why": "늦은 프로젝트에 사람을 더 넣으면 왜 더 늦어지나. 15명 프로젝트의 리더가 먼저 알아 둘 것."},
+    {"id": "jira-guide", "title": "Jira 워크플로 안내", "by": "Atlassian 공식 문서", "kind": "doc", "url": "https://www.atlassian.com/software/jira/guides/workflows/overview", "lang": "en", "free": true, "level": "입문", "why": "과제를 상태(할 일·진행·확인·완료)로 관리하는 틀. 과제 관리표를 도구로 옮길 때."},
+    {"id": "scrum-guide", "title": "스크럼 가이드 (2020, 한국어판)", "by": "Ken Schwaber · Jeff Sutherland", "kind": "doc", "url": "https://scrumguides.org/download.html", "lang": "ko", "free": true, "level": "입문", "why": "회사는 폭포수 방식이지만, 짧은 주기로 점검하는 습관은 작은 팀 리더 경험을 만드는 데 쓸모 있다."},
+    {"id": "internal-spring", "title": "스프링 핵심 원리 — 기본편", "by": "우리 사이트의 책", "kind": "internal", "url": "/wiki/spring-core", "lang": "ko", "free": true, "level": "실무", "why": "Spring의 의존성 주입과 빈. Java(Spring) 3년 요건의 바탕을 다시 다진다."},
+    {"id": "internal-spring-boot", "title": "스프링 부트 — 핵심 원리와 활용", "by": "우리 사이트의 책", "kind": "internal", "url": "/wiki/spring-boot", "lang": "ko", "free": true, "level": "실무", "why": "내장 Tomcat·자동 설정·외부 설정. Spring Boot + Tomcat 개발 환경 줄."},
+    {"id": "internal-jpa", "title": "자바 ORM 표준 JPA 프로그래밍 — 기본편", "by": "우리 사이트의 책", "kind": "internal", "url": "/wiki/jpa-basic", "lang": "ko", "free": true, "level": "실무", "why": "Hibernate가 실제로 내보내는 SQL을 보며 배운다. 설계/개발·Java 요건 줄."},
+    {"id": "internal-jpa-app", "title": "스프링 부트와 JPA 활용 1편", "by": "우리 사이트의 책", "kind": "internal", "url": "/wiki/jpa-app-1", "lang": "ko", "free": true, "level": "실무", "why": "회원·상품·주문을 가진 쇼핑몰을 처음부터 만든다 — EC 구축 우대 조건을 메우는 과제로 딱 맞다."},
+    {"id": "internal-testing", "title": "Practical Testing — 실용적인 테스트 가이드", "by": "우리 사이트의 책", "kind": "internal", "url": "/wiki/practical-testing", "lang": "ko", "free": true, "level": "입문", "why": "입사 뒤 코드 테스트·리뷰 연수에 대비해 테스트를 쓰는 습관."},
+    {"id": "internal-docker", "title": "개발자를 위한 도커", "by": "우리 사이트의 책", "kind": "internal", "url": "/wiki/docker", "lang": "ko", "free": true, "level": "입문", "why": "로컬(Windows·Mac)과 서버(Linux)의 차이를 줄이는 방법."},
+    {"id": "real-mysql", "title": "Real MySQL 8.0", "by": "백은빈 · 이성욱 · 위키북스 · 2021", "kind": "book", "url": "https://search.kyobobook.co.kr/search?keyword=Real%20MySQL%208.0", "lang": "ko", "free": false, "level": "실무", "why": "인덱스·실행 계획·잠금. 여러 DB를 쓰는 프로젝트에서도 통하는 바탕."},
+    {"id": "sql-tuning", "title": "친절한 SQL 튜닝", "by": "조시형", "kind": "book", "url": "https://search.kyobobook.co.kr/search?keyword=%EC%B9%9C%EC%A0%88%ED%95%9C%20SQL%20%ED%8A%9C%EB%8B%9D", "lang": "ko", "free": false, "level": "실무", "why": "Oracle 기준 SQL 튜닝. DB 목록에 Oracle이 있는 프로젝트에 대비."},
+    {"id": "pg-docs", "title": "PostgreSQL 문서 · Concurrency Control", "by": "PostgreSQL 공식 문서", "kind": "doc", "url": "https://www.postgresql.org/docs/current/mvcc.html", "lang": "en", "free": true, "level": "실무", "why": "재고·포인트처럼 같은 행을 동시에 고칠 때의 격리 수준과 잠금."},
+    {"id": "react-docs", "title": "React 공식 문서 (한국어)", "by": "React", "kind": "doc", "url": "https://ko.react.dev/learn", "lang": "ko", "free": true, "level": "입문", "why": "프런트까지 맡는 풀스택 환경의 React 기본."},
+    {"id": "pro-git", "title": "Pro Git (2판, 한국어)", "by": "Scott Chacon · Ben Straub", "kind": "book", "url": "https://git-scm.com/book/ko/v2", "lang": "ko", "free": true, "level": "입문", "why": "브랜치·리베이스·충돌 해결. GitHub 리뷰 문화 줄."},
+    {"id": "tlcl", "title": "The Linux Command Line", "by": "William Shotts · 무료 공개판", "kind": "book", "url": "https://linuxcommand.org/tlcl.php", "lang": "en", "free": true, "level": "입문", "why": "리눅스 서버 관리 우대 조건의 기본 명령·셸 스크립트."},
+    {"id": "linux-woo", "title": "이것이 리눅스다 with Rocky Linux", "by": "우재남 · 한빛미디어", "kind": "book", "url": "https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=Book&SearchWord=%EC%9D%B4%EA%B2%83%EC%9D%B4+%EB%A6%AC%EB%88%85%EC%8A%A4%EB%8B%A4", "lang": "ko", "free": false, "level": "입문", "why": "서버 설치부터 웹 서버 운영까지 한국어로. Apache·Linux 줄."},
+    {"id": "sfcc-trailhead", "title": "Trailhead · Salesforce B2C Commerce Cartridges", "by": "Salesforce", "kind": "course", "url": "https://trailhead.salesforce.com/content/learn/modules/b2c-cartridges/b2c-cartridges-explore", "lang": "en", "free": true, "level": "입문", "why": "회사 연수 과목인 Salesforce Commerce Cloud의 카트리지 구조를 미리 맛본다."},
+    {"id": "sfra-docs", "title": "SFRA Features and Components", "by": "Salesforce Developers", "kind": "doc", "url": "https://developer.salesforce.com/docs/commerce/sfra/guide/b2c-sfra-features-and-comps.html", "lang": "en", "free": true, "level": "실무", "why": "대형 브랜드 EC가 기본 구조 위에 맞춤 개발을 겹쳐 쌓는 방식."},
+    {"id": "paiza-skillcheck", "title": "paiza 프로그래밍 스킬 체크", "by": "paiza", "kind": "course", "url": "https://paiza.jp/challenges/info", "lang": "ja", "free": true, "level": "입문", "why": "선발의 첫 관문인 paiza 코딩 테스트를 미리 풀어 본다."},
+    {"id": "jlpt-levels", "title": "JLPT N1–N5: Summary of Linguistic Competence Required for Each Level", "by": "일본국제교육지원협회 · 국제교류기금", "kind": "doc", "url": "https://www.jlpt.jp/e/about/levelsummary.html", "lang": "en", "free": true, "level": "입문", "why": "'비즈니스 일본어'가 어느 정도인지 가늠하는 공식 기준."},
+    {"id": "jlpt-samples", "title": "JLPT 문제 예시(Sample Questions)", "by": "JLPT 공식", "kind": "doc", "url": "https://www.jlpt.jp/e/samples/forlearners.html", "lang": "en", "free": true, "level": "입문", "why": "지금 내 일본어가 N1·N2 어디쯤인지 직접 풀어 본다."},
+    {"id": "isa-gijinkoku", "title": "Status of Residence: Engineer / Specialist in Humanities / International Services", "by": "일본 출입국재류관리청", "kind": "doc", "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html?lang=en", "lang": "en", "free": true, "level": "입문", "why": "'일본 이주 필수' 요건 — 개발자가 받는 재류 자격의 조건."}
+  ],
+  "study_path": [
+    {"title": "일본어 서류와 회의 (처음부터 끝까지 같이)", "time": "계속", "goal": "일본어 이력서·직무경력서를 쓰고, 회의를 일본어로 진행하고 회의록을 남긴다.", "task": "지금까지 한 프로젝트 둘을 직무경력서 형식(기간·인원·역할·공정·기술·결과)으로 쓰고, 가상의 고객 회의(범위 추가 요청) 회의록을 '결정·과제·다음 할 일'로 일본어로 써 본다.", "resources": ["jlpt-levels", "jlpt-samples", "ipa-req"]},
+    {"title": "쇼핑몰 하나를 Spring Boot로", "time": "3~4주", "goal": "상품·장바구니·주문을 가진 작은 EC를 Spring Boot·JPA로 만들고, 쿼리 수를 설명한다.", "task": "가상 상품 1,000개·주문 1만 건으로 쇼핑몰 API를 만든다. 마지막 1개 재고에 동시에 두 주문을 넣어 초과 판매가 나는지 테스트로 확인하고 조건부 UPDATE로 막는다.", "resources": ["internal-jpa-app", "internal-jpa", "internal-spring-boot", "internal-testing", "pg-docs"]},
+    {"title": "리눅스 서버에 올리기", "time": "2주", "goal": "Apache 뒤 Tomcat(또는 내장 Tomcat)으로 앱을 돌리고, 로그로 장애를 찾는다.", "task": "2단계 앱을 리눅스 가상 머신에 올리고 Apache를 앞에 둔다. 일부러 주문 API에서 500을 내게 한 뒤 접근 로그에서 5xx를 세어 원인을 찾는 절차를 한 장으로 남긴다.", "resources": ["tlcl", "linux-woo", "internal-docker", "pro-git"]},
+    {"title": "리더의 도구 — 요건·WBS·과제표", "time": "2주", "goal": "고객 요구를 기능 목록·WBS로 바꾸고, 진척을 숫자로 보고한다.", "task": "2단계 쇼핑몰에 '포인트 적립'을 추가해 달라는 가상 요청을 받아 요구사항 목록 → WBS(작업·인일·담당) → 4주 일정표를 만들고, 2주 차에 SPI와 늦은 작업·과제표를 보고서 한 장으로 쓴다.", "resources": ["swreq3", "ipa-req", "pmbok", "mmm", "jira-guide"]},
+    {"title": "EC 플랫폼 맛보기와 paiza", "time": "1~2주", "goal": "Salesforce Commerce Cloud의 카트리지 구조를 설명하고, paiza 문제를 Java로 시간 안에 푼다.", "task": "Trailhead 모듈을 끝내고 '기본 카트리지는 안 고치고 맞춤 카트리지를 앞에 둔다'를 2단계 쇼핑몰에 빗대 그림 한 장으로 정리한다. paiza B급 문제 5개를 Java로 푼다.", "resources": ["sfcc-trailhead", "sfra-docs", "paiza-skillcheck"]}
+  ],
+  "pay": {
+    "summary": "공고 표기 **연 550만~800만 엔**(연봉제, 14로 나눠 매달 + 여름·겨울 상여) — 월 20시간분 고정 잔업수당이 들어 있고, 회사 평균 연봉은 공개되지 않았다",
+    "rows": [
+      {"label": "공고 표기 연봉", "value": "550만~800만 엔", "basis": "공고", "note": "원티드 공고와 회사 채용 페이지(HERP)가 같다 [1][2]"},
+      {"label": "지급 방식", "value": "연봉 ÷ 14 (매달 12번 + 여름·겨울 상여)", "basis": "공고 · 회사 채용 페이지", "note": "HERP 공고의 연봉제 14분할. 이대로면 한 달 몫은 약 39만~57만 엔이다(550÷14, 800÷14 — 직접 계산) [2]"},
+      {"label": "고정 잔업수당", "value": "월 20시간분 포함, 넘으면 따로 지급", "basis": "공고 · 회사 채용 페이지", "note": "월급 = 기본급 + 고정 잔업수당(20시간/월). 평균 잔업은 월 20시간 안이라고 적었다 [1][2]"},
+      {"label": "같은 회사 PM 공고", "value": "600만~1,000만 엔", "basis": "공고", "note": "HERP의 EC 개발 PM 공고 — PL 다음 단계의 연봉대 [2]"},
+      {"label": "일본 급여소득자 평균(참고)", "value": "478만 엔", "basis": "통계 · 2024년", "note": "일본 국세청 민간급여실태통계조사, 1년 내내 근무한 급여소득자 전체 평균. 공고 숫자와 기준이 달라 막대로 견주지 않는다 [21]"}
+    ],
+    "how": "비상장사라 사업보고서의 평균 급여가 없고, 회사가 밝힌 평균 연봉도 찾지 못했습니다 — 공시 숫자 없음 {추론}. 숫자는 모두 엔화이고 원화 환산은 환율에 따라 달라 싣지 않았습니다 {추론}. 급여 개정은 1년에 한 번이고, 평가는 개발 경력이 있는 본부장·대표가 과정 위주로 한다고 적었습니다 [1]."
+  },
+  "benefits": {
+    "items": [
+      {"name": "근무 방식", "detail": "완전 원격 권장 · 출시 전후·지시·업무 사정에 따라 출근"},
+      {"name": "휴일", "detail": "연간 휴일 125일, 완전 주 2일(토·일) · 공휴일 · 여름휴가 3일(7/1~9/30) · 연말연시 · 경조 · 출산·육아휴직"},
+      {"name": "유급휴가", "detail": "첫해 입사일에 5일, 반년 뒤 5일"},
+      {"name": "근무 시간", "detail": "10:00~19:00(소정 8시간, 휴식 60분) · 평균 잔업 월 20시간 이내"},
+      {"name": "수습", "detail": "6개월, 조건 변동 없음"},
+      {"name": "통근 수당", "detail": "월 4만 엔까지"},
+      {"name": "상여·급여 개정", "detail": "상여 연 2회(여름·겨울) · 급여 개정 연 1회"},
+      {"name": "쓸 만한 식당 찾기 수당", "detail": "접대·팀 빌딩에 쓸 가게를 보고하면 식사비를 월 3,000엔까지(연 최대 3만 6천 엔)"},
+      {"name": "경력 지원", "detail": "세미나·온라인 교육·자격 응시·어학원 비용을 월 5,000엔까지(연 최대 6만 엔)"},
+      {"name": "리프레시 여행 · 홈라이프 지원", "detail": "숙박 여행비, 운동·배우기·원격 근무 통신·수도광열비·업무용 옷 등 — 둘을 합쳐 연 4만 8천 엔까지"},
+      {"name": "건강", "detail": "연 1회 건강검진(부인과 검진 포함) · 감염증 예방접종 전액 회사 부담"},
+      {"name": "경조금", "detail": "결혼 축하금 · 출산 축하금 · 경조 수당 · 상병·재해 위문금"},
+      {"name": "사내 행사·공부", "detail": "반기마다 전사 워크숍 · 사내 공부 모임"},
+      {"name": "사회보험", "detail": "건강보험(관동 IT 소프트웨어 건강보험조합)·후생연금·고용보험·산재보험"}
+    ],
+    "note": "공고의 복리후생[1]과 회사 채용 페이지[2]·회사 복리후생 페이지[12]가 같다. 수당 금액은 회사 note 글(2023-10-02)[11]과도 같고, 회사는 다 쓰면 연 15만 엔 정도라고 적었다[11]. 출산 축하금·위문금 금액은 공개되지 않았다."
+  },
+  "location": {
+    "name": "Ui2 본사 (Nan-o Bldg. 신토라 6층)",
+    "address": "東京都港区西新橋2-20-1 Nan-o Bldg.新虎 6F (도쿄도 미나토구 니시신바시 2-20-1)",
+    "postal": "105-0003",
+    "map_url": "https://map.naver.com/p/search/%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B8%AF%E5%8C%BA%E8%A5%BF%E6%96%B0%E6%A9%8B2-20-1",
+    "near": "도쿄메트로 히비야선 도라노몬힐스역 걸어서 5분, 도에이 미타선 우치사이와이초역 6분, JR 신바시역 7분",
+    "note": "공고의 근무지[1]와 회사 개요[3]·오시는 길[14]이 같다. 완전 원격 권장이라 출근은 팀마다 주 1회~반년 1회다[1]. 일본 주소는 도로명이 아니라 지번(정·번지·호)으로 쓴다 {추론}."
+  }
+}
