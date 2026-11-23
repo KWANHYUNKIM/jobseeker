@@ -1,0 +1,743 @@
+{
+ "id": "tmap-security-assessment-engineer",
+ "company": "티맵모빌리티",
+ "role": "보안 진단 엔지니어",
+ "team": "정보보호팀",
+ "jobs": [
+  "ats-skcareers:sk:R262485",
+  "dev-580895"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "TMAP 앱·웹과 그 밑의 **AWS 인프라를 공격자처럼 직접 뚫어 보고**(모의해킹), 찾은 약점을 위험도 순으로 줄 세워 **기한 안에 고쳐지게 끝까지 챙기는** 자리입니다.[1]",
+  "env": "AWS·EKS(아마존의 쿠버네티스) 위의 마이크로서비스[4], 배포 파이프라인(CI/CD)에 붙인 자동 진단 도구, Jira·위키·Slack 협업[1][24]. 차량용 TMAP AUTO 도 같은 회사 제품입니다.[8]",
+  "oneline": "**찾는 사람이자 고치게 만드는 사람.** 해킹 실력만큼 개발팀과 말이 통하고, 수백 건의 취약점을 기준표로 관리하는 능력을 봅니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "웹·앱 서비스 모의해킹 및 비즈니스 로직 취약점을 진단합니다.",
+   "short": "TMAP 웹·앱을 허락받고 직접 공격해 보고, 스캐너가 못 잡는 '규칙의 빈틈'을 사람 손으로 찾는 일.",
+   "why": "TMAP 은 내비게이션에 결제·예약·대리운전 같은 서비스가 붙은 앱이라 사용자 위치·결제 정보를 다룹니다.[7] 이 팀의 상위 업무에 '취약점 진단 수립 및 조치'가 명시돼 있고[1], 회사는 정보보호 투자를 2024년 약 13억 9천만원에서 올해 약 41억 9천만원으로 세 배 늘렸다고 공시했습니다.[7] 2025년 SK 그룹은 SK텔레콤 해킹 뒤 계열사 모의해킹을 돌리겠다고 밝혔습니다.[9]",
+   "actually": {
+    "intro": "보통 웹·앱 모의해킹은 이런 순서로 합니다(국제 지침의 일반론 — TMAP 내부 절차는 공개되지 않았습니다).[20]",
+    "items": [
+     "**범위·허락 받기** — 어느 도메인·앱 버전·계정까지 공격해도 되는지 문서로 정한다. 허락 없는 침투는 정보통신망법 48조 위반이다.[26]",
+     "**정찰** — 앱이 부르는 API 목록을 프록시(요청을 가운데서 보는 도구)로 모은다.",
+     "**자동 점검 + 손 점검** — 주입·인증·접근 통제 같은 OWASP Top 10 항목을 훑는다.[13]",
+     "**비즈니스 로직** — 남의 주문 번호로 바꿔 보기(IDOR), 쿠폰 두 번 쓰기, 결제 금액 바꿔 보내기처럼 '규칙을 어기는 정상 요청'을 만든다. 2025판 Top 10 의 1위가 접근 통제 실패다.[13]",
+     "**모바일** — 앱 저장소의 토큰·키, 루팅 탐지 우회, 통신 고정(인증서 피닝)을 MASTG 항목대로 본다.[19]",
+     "**보고** — 재현 절차·영향·위험 점수·고치는 법을 한 건씩 쓴다.[10]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "비즈니스 로직 취약점의 대표 — 번호만 바꿔 남의 주문 보기",
+     "body": "가상 주문 데이터로 직접 돌린 결과입니다. 주인 확인이 없으면 alice 가 bob 의 목적지를 봅니다.",
+     "lang": "python",
+     "code": "orders = {101: {\"owner\": \"alice\", \"dest\": \"서울역\"}, 102: {\"owner\": \"bob\", \"dest\": \"강남역\"}}\ndef get_order_bad(user, oid):\n    return orders[oid]\ndef get_order_good(user, oid):\n    o = orders.get(oid)\n    if o is None or o[\"owner\"] != user:\n        return \"403 Forbidden\"\n    return o\nprint(get_order_bad(\"alice\", 102))   # {'owner': 'bob', 'dest': '강남역'}\nprint(get_order_good(\"alice\", 102))  # 403 Forbidden\nprint(get_order_good(\"alice\", 101))  # {'owner': 'alice', 'dest': '서울역'}"
+    }
+   ],
+   "how_far": "어디를 공격할지(범위)는 정보보호팀과 서비스 담당이 정하고, 진단자는 **재현 가능한 증거와 고치는 방법**까지 냅니다. 스캐너 결과를 옮겨 적는 수준이 아니라 업무 흐름을 이해하고 빈틈을 찾는 것이 이 줄의 핵심입니다. {추론}",
+   "refs": [1, 7, 9, 13, 19, 20, 26],
+   "study": ["wsa", "web-app-sec", "bug-hunting", "mastg", "owasp-top10"]
+  },
+  {
+   "section": "task",
+   "quote": "AWS 클라우드 아키텍처 및 인프라 취약점을 진단합니다.",
+   "short": "AWS 계정의 권한·저장소·네트워크 설정에서 '열려 있으면 안 되는 문'을 찾아 닫게 하는 일.",
+   "why": "같은 팀의 다른 공고가 클라우드와 EKS 기반 마이크로서비스를 운영 환경으로 적고 있습니다.[4] 클라우드 사고는 코드 결함보다 **설정 실수**(공개 버킷, 너무 넓은 IAM 권한)에서 많이 나서, 앱 진단과 따로 봅니다. 2025판 OWASP Top 10 도 '보안 설정 오류'를 2위로 올렸습니다.[13]",
+   "actually": {
+    "items": [
+     "**IAM(누가 무엇을 할 수 있나)** — `*` 권한, 오래된 접근 키, 다른 계정이 맡을 수 있는 역할(AssumeRole) 신뢰 정책을 본다.[32]",
+     "**S3** — 버킷 정책의 Principal 이 `*` 인지, 퍼블릭 액세스 차단이 꺼졌는지.",
+     "**EC2·네트워크** — 0.0.0.0/0 으로 열린 SSH·DB 포트, 인스턴스 메타데이터(IMDSv1)로 자격증명을 빼 가는 길.[21]",
+     "**Lambda·API Gateway** — 인증 없는 API, 환경 변수에 박힌 비밀, 함수에 붙은 과한 역할.",
+     "**RDS** — 공개 접근, 암호화·스냅샷 공유 설정.",
+     "**자동 점검** — Prowler 같은 오픈소스로 수백 개 항목을 한 번에 돌리고(국내 ISMS-P 기준표도 있다), 사람은 결과 중 실제로 뚫리는 길을 고른다.[17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "버킷 정책에서 '누구나'와 '권한 과다' 골라내기",
+     "body": "가상 정책 JSON 을 읽어 직접 돌린 출력입니다. 0번은 공개, 1번은 공개는 아니지만 모든 S3 동작·모든 자원 권한입니다.",
+     "lang": "python",
+     "code": "import json\npolicy = json.loads('''{\"Statement\":[\n {\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"s3:GetObject\",\"Resource\":\"arn:aws:s3:::demo-assets/*\"},\n {\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"arn:aws:iam::111122223333:role/app\"},\"Action\":\"s3:*\",\"Resource\":\"*\"}\n]}''')\nfor i, st in enumerate(policy[\"Statement\"]):\n    p = st.get(\"Principal\")\n    public = p == \"*\" or (isinstance(p, dict) and p.get(\"AWS\") == \"*\")\n    acts = st[\"Action\"] if isinstance(st[\"Action\"], list) else [st[\"Action\"]]\n    wild = any(a.endswith(\":*\") or a == \"*\" for a in acts) or st.get(\"Resource\") == \"*\"\n    print(i, \"누구나 접근\" if public else \"특정 주체\", \"| 권한 과다\" if wild else \"| 권한 좁음\")\n# 0 누구나 접근 | 권한 좁음\n# 1 특정 주체 | 권한 과다"
+    }
+   ],
+   "how_far": "계정 설계·변경은 인프라 팀 몫이고, 진단자는 **무엇이 왜 위험한지와 바꿀 설정 한 줄**을 냅니다. 공고는 IAM·S3·EC2·Lambda·RDS·API Gateway 를 콕 집었으니(자격요건 2번) 이 여섯 서비스의 보안 설정은 손으로 확인할 수 있어야 합니다.[1]",
+   "refs": [1, 4, 13, 17, 21, 32],
+   "study": ["aws-security", "hackingthecloud", "cloudgoat", "prowler", "aws-iam-best"]
+  },
+  {
+   "section": "task",
+   "quote": "소스코드 정적 분석 도구 및 동적 진단 툴 및 인프라 점검 툴을 운영합니다.",
+   "short": "코드를 읽는 도구(SAST)·실행 중인 서비스를 찔러 보는 도구(DAST)·설정 점검 도구를 돌리고 결과를 거르는 일.",
+   "why": "모의해킹은 사람이 하니 몇 서비스만 깊게 볼 수 있습니다. 나머지 전체는 도구가 넓게 훑어야 합니다. 원티드판 같은 공고는 이 줄을 'SAST/DAST 등 진단 툴 운영'으로 적었습니다.[3]",
+   "actually": {
+    "intro": "OWASP DevSecOps 지침이 나누는 도구 칸입니다.[15]",
+    "items": [
+     "**SAST(정적 분석)** — 실행하지 않고 소스코드에서 SQL 조립·위험 함수 같은 무늬를 찾는다.",
+     "**SCA(구성요소 분석)** — 쓰는 오픈소스 라이브러리 버전에 알려진 CVE 가 있는지.",
+     "**시크릿 스캔** — 커밋에 섞인 AWS 키·토큰.",
+     "**DAST(동적 분석)** — 떠 있는 서비스에 공격 요청을 보내 응답을 본다.",
+     "**IaC·인프라 점검** — Terraform·쿠버네티스 설정과 클라우드 계정 설정.",
+     "**운영의 본체는 오탐 거르기** — 도구가 낸 수천 건 중 진짜를 골라 규칙을 고치고, 같은 오탐이 다시 안 뜨게 예외를 관리한다. {추론}"
+    ]
+   },
+   "how_far": "도구를 고르고 설치하는 것보다 **결과를 믿을 만하게 만드는 것**이 일입니다. 오탐이 많으면 개발자가 경고를 무시하기 시작합니다. {추론}",
+   "refs": [3, 15],
+   "study": ["devsecops-guide", "owasp-top10"]
+  },
+  {
+   "section": "task",
+   "quote": "배포 파이프라인(CI/CD) 보안 진단 환경을 구성 및 운영합니다.",
+   "short": "코드가 합쳐지고 배포될 때마다 위 도구들이 저절로 돌고, 위험하면 배포를 멈추게 엮는 일.",
+   "why": "배포 뒤에 찾으면 이미 사용자에게 나간 뒤입니다. 파이프라인 안에 점검을 넣는 것이 DevSecOps 의 뜻이고, OWASP 지침도 커밋 전 → 빌드 → 배포 전 → 운영 순서로 점검을 배치합니다.[15]",
+   "flows": [
+    {
+     "caption": "보통의 보안 파이프라인 (일반론)[15]",
+     "steps": [
+      "커밋 · 시크릿 스캔(개발자 PC·저장소)",
+      "빌드 · SAST·SCA",
+      "이미지 · 컨테이너 이미지 취약점 스캔",
+      "배포 전 · IaC 점검, 기준 넘으면 차단",
+      "스테이징 · DAST",
+      "운영 · 클라우드 설정 점검·새 CVE 알림"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "actually": {
+    "items": [
+     "**막을지 알릴지 정하기** — 치명 등급·실제 악용 중인 것만 배포를 막고 나머지는 Jira 티켓으로 보낸다. 다 막으면 배포가 멈춘다. {추론}",
+     "**속도** — 전체 스캔은 밤에, 변경분 스캔은 PR 마다.",
+     "**결과 모으기** — 도구마다 다른 결과 형식을 한곳(대시보드·Jira)으로 모아 같은 취약점을 하나로 합친다."
+    ]
+   },
+   "how_far": "파이프라인 자체는 DevOps·플랫폼 팀이 운영하고, 이 자리는 **보안 단계를 끼우고 차단 기준을 정하는** 쪽입니다. 자격요건이 '자동화 파이프라인 연동'을 요구하므로 CI 설정 파일 정도는 직접 고칠 수 있어야 합니다.[1]",
+   "refs": [1, 15],
+   "study": ["devsecops-guide", "dependency-track"]
+  },
+  {
+   "section": "task",
+   "quote": "CVE, CVSS, EPSS 기반 취약점 대응 기준을 수립 및 관리합니다.",
+   "short": "새 취약점이 하루 수십 개 나와도 '무엇부터, 며칠 안에'를 정하는 기준표를 만드는 일.",
+   "why": "CVE 는 취약점의 이름표, CVSS 는 심각도 점수(0~10)[10], EPSS 는 30일 안에 실제로 악용될 확률(0~1)[11]입니다. CVSS 가 높아도 실제 공격이 거의 없는 것이 많아 점수 하나로 순서를 정하면 손이 엉뚱한 데로 갑니다. 미국 CISA 는 실제 악용이 확인된 취약점 목록(KEV)을 따로 냅니다.[12]",
+   "actually": {
+    "items": [
+     "**들어오는 것 보기** — 우리가 쓰는 제품·라이브러리 목록과 새 CVE 를 매일 맞춰 본다(자산 목록이 먼저 있어야 한다).",
+     "**점수 섞기** — CVSS × EPSS × KEV 여부 × 인터넷 노출 여부로 등급을 나눈다.",
+     "**기한 붙이기** — 등급마다 조치 기한(예: 7·30·60·90일)을 정한다. 기한 숫자는 회사가 정한다. {추론}",
+     "**다시 보기** — EPSS 는 매일 바뀌어 어제 낮던 것이 오늘 올라갈 수 있다.[11]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "CVSS 만 보면 놓치는 것 — 가상 취약점 네 개의 조치 기한",
+     "body": "기준(7·30·60·90일)은 예시로 정한 것입니다. 직접 돌린 출력에서 CVSS 7.5 인 CVE-B 가 9.8 인 CVE-A 보다 먼저입니다 — 이미 악용 중(KEV)이고 인터넷에 열려 있어서입니다.",
+     "lang": "python",
+     "code": "vulns = [\n    (\"CVE-A\", 9.8, 0.02, False, \"internal\"),\n    (\"CVE-B\", 7.5, 0.91, True,  \"internet\"),\n    (\"CVE-C\", 5.3, 0.40, False, \"internet\"),\n    (\"CVE-D\", 9.1, 0.001, False, \"internal\"),\n]\ndef due_days(cvss, epss, kev, exposure):\n    if kev or (epss >= 0.5 and exposure == \"internet\"):\n        return 7\n    if cvss >= 9.0 or epss >= 0.1:\n        return 30\n    if cvss >= 7.0:\n        return 60\n    return 90\nfor cve, cvss, epss, kev, exp in sorted(vulns, key=lambda v: due_days(*v[1:])):\n    print(cve, cvss, epss, kev, exp, \"->\", due_days(cvss, epss, kev, exp), \"일\")\n# CVE-B 7.5 0.91 True internet -> 7 일\n# CVE-A 9.8 0.02 False internal -> 30 일\n# CVE-C 5.3 0.4 False internet -> 30 일\n# CVE-D 9.1 0.001 False internal -> 30 일"
+    }
+   ],
+   "how_far": "기준표를 **만들고 지키게 하는** 것까지가 이 자리입니다. 숫자(기한)는 정보보호팀이 경영진과 합의하고, 진단자는 근거 데이터와 초안을 냅니다. {추론}",
+   "refs": [10, 11, 12],
+   "study": ["cvss", "epss", "kev"]
+  },
+  {
+   "section": "task",
+   "quote": "발견된 취약점의 위험도 평가, 조치 기한 및 예외 승인 프로세스를 설계합니다.",
+   "short": "찾은 것마다 위험도·고칠 날짜·'못 고치면 누가 승인하나'를 정한 절차를 만드는 일.",
+   "why": "취약점은 찾는 것보다 닫히는 것이 어렵습니다. 고칠 수 없는 사정(레거시, 협력사 제품)이 있으면 대신 막는 조치와 승인 기록이 있어야 인증 심사·감사에서 설명이 됩니다. 이 팀은 ISMS-P·TISAX 인증과 내·외부 감사를 맡고 있습니다.[1][7] 같은 팀 정책 담당 공고도 ISMS-P 인증심사와 위험평가를 업무로 적었습니다.[6]",
+   "actually": {
+    "items": [
+     "**위험도 = 영향 × 가능성** — 같은 SQL 주입이라도 개인정보 DB 앞이면 높고, 내부 테스트 서버면 낮다.",
+     "**상태 흐름** — 발견 → 담당 배정 → 조치 → 재진단 → 종료. 기한을 넘기면 상위 보고.",
+     "**예외** — 기간·대체 통제(방화벽 차단, WAF 규칙)·승인자·만료일을 적고, 만료되면 다시 본다.",
+     "**지표** — 등급별 평균 조치 일수, 기한 넘긴 건수, 다시 열린 건수를 달마다 본다. {추론}"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "취약점 한 건의 일생 {추론}",
+     "steps": [
+      "발견 · 진단·도구·제보",
+      "평가 · 위험도·기한",
+      "배정 · Jira 티켓",
+      "조치 · 개발·인프라 담당",
+      "재진단 · 진짜 닫혔나",
+      "종료 또는 예외 승인 · 만료일"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "절차를 설계하고 Jira 같은 도구에 옮기는 것까지입니다. 승인권자는 정책으로 정해지고, 진단자는 승인권자가 판단할 수 있게 위험을 **한 쪽 분량으로 설명**합니다. {추론}",
+   "refs": [1, 7],
+   "study": ["cvss", "kisa-guide"]
+  },
+  {
+   "section": "task",
+   "quote": "EOS/EOL(End-of-Service / End-of-Life) 관리 체계를 운영합니다.",
+   "short": "제조사가 보안 패치를 끊은 OS·런타임·제품을 목록으로 잡고, 끊기기 전에 바꾸게 하는 일.",
+   "why": "지원이 끝난 버전은 새 취약점이 나와도 패치가 없어 그 자체가 상시 취약점입니다. 제품별 지원 종료일은 공개 목록으로 모아 볼 수 있습니다.[18]",
+   "actually": {
+    "items": [
+     "**자산 목록** — 서버 OS·DB·언어 런타임·프레임워크·컨테이너 기본 이미지를 서비스별로 적는다.",
+     "**종료일 붙이기** — 공개 목록(API 도 있다)과 맞춰 종료일을 붙인다.[18]",
+     "**미리 알리기** — 6개월·3개월 전에 담당 팀에 티켓. 넘긴 것은 위 '예외 승인'으로 보낸다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "종료일 지난 런타임 골라내기",
+     "body": "가상 자산 목록에 Node.js 18(2025-04-30 종료)·Python 3.9(2025-10 종료)·Node.js 22(2027-04-30 종료) 날짜를 넣어 2026-11-23 기준으로 직접 돌린 출력입니다.[18]",
+     "lang": "python",
+     "code": "from datetime import date\neol = {\"nodejs 18\": date(2025, 4, 30), \"python 3.9\": date(2025, 10, 31), \"nodejs 22\": date(2027, 4, 30)}\ninventory = [(\"결제 API\", \"nodejs 18\"), (\"배치\", \"python 3.9\"), (\"웹\", \"nodejs 22\")]\ntoday = date(2026, 11, 23)\nfor svc, rt in inventory:\n    d = (eol[rt] - today).days\n    print(svc, rt, (\"지원 종료 %d일 지남\" % -d) if d < 0 else (\"종료까지 %d일\" % d))\n# 결제 API nodejs 18 지원 종료 572일 지남\n# 배치 python 3.9 지원 종료 388일 지남\n# 웹 nodejs 22 종료까지 158일"
+    }
+   ],
+   "how_far": "버전을 올리는 것은 각 팀이고, 이 자리는 **목록이 늘 맞게 유지되게** 하는 쪽입니다. 목록이 틀리면 CVE 대응(업무 5번)도 같이 틀립니다. {추론}",
+   "refs": [18],
+   "study": ["endoflife"]
+  },
+  {
+   "section": "qualification",
+   "quote": "웹/모바일 취약점 진단, 모의해킹, 클라우드 보안 진단 관련 경력 2년 이상이거나 이에 준하는 경험을 보유하신 분",
+   "short": "진단 보고서를 직접 써 본 2년 — 보안 컨설팅사·사내 레드팀·버그바운티 경력이면 된다.",
+   "why": "이 자리는 혼자 진단을 끝내는 실무자를 찾습니다. 캐치판 같은 공고는 '경력(2년 이상)'으로, 원티드판은 2~7년으로 적었습니다.[2][3] 같은 팀 보안 기술 엔지니어(관제·엔드포인트) 공고는 7년 이상이라[4], 이 자리가 팀 안에서 상대적으로 젊은 실무 칸입니다. {추론}",
+   "how_far": "'이에 준하는 경험'이 열려 있어 버그바운티 제보·CVE 발급(우대 4번)·CTF 실적으로 보여 줄 수 있습니다. 서류 다음에 **과제 전형**이 있으니 실제 진단 실력이 거기서 갈립니다.[1]",
+   "refs": [1, 2, 3, 4],
+   "study": ["wsa", "bug-hunting"]
+  },
+  {
+   "section": "qualification",
+   "quote": "AWS 핵심 서비스(IAM, S3, EC2, Lambda, RDS, API Gateway 등)의 아키텍처 구성 및 보안 설정 취약점에 대한 실무 진단 역량을 보유하신 분",
+   "short": "여섯 서비스의 권한·공개·네트워크 설정을 직접 열어 보고 어디가 뚫리는지 말할 수 있는 수준.",
+   "why": "업무 2번(AWS 진단)을 혼자 할 수 있느냐는 질문입니다. 콘솔 화면이 아니라 **권한이 어떻게 이어져 데이터까지 닿는가**를 보는 능력입니다.[32]",
+   "level": {
+    "basic": "IAM 사용자·역할·정책 JSON 읽기, S3 공개 여부, 보안 그룹",
+    "work": "역할 위임(AssumeRole) 경로, IMDS 자격증명 탈취, Lambda 실행 역할, API Gateway 인증 방식",
+    "team": "여러 계정·EKS 까지 이어진 권한 경로를 그리고, 자동 점검 결과에서 진짜 공격 경로를 골라내기"
+   },
+   "how_far": "AWS 자격증(보안 전문 분야 등)은 공고에 없습니다. CloudGoat 같은 일부러 취약한 실습 환경을 끝까지 풀어 본 정도면 면접에서 이야기할 거리가 됩니다.[21] {추론}",
+   "refs": [21, 32],
+   "study": ["aws-security", "cloudgoat", "hackingthecloud", "aws-iam-best"]
+  },
+  {
+   "section": "qualification",
+   "quote": "서비스 및 시스템 아키텍처를 이해하고, 보안 위협과 취약점에 대한 개선 방향을 제시할 수 있으신 분",
+   "short": "구멍 하나가 아니라 '이 구조라 이런 구멍이 계속 생긴다'까지 보고 고칠 방향을 내는 능력.",
+   "why": "EKS 위 마이크로서비스는 서비스끼리 API 로 부르고[4], 인증을 어디서 하느냐에 따라 같은 종류의 취약점이 여러 서비스에 반복됩니다. 2025판 Top 10 에 '안전하지 않은 설계'가 따로 있는 이유입니다.[13]",
+   "actually": {
+    "items": [
+     "**그림 그리기** — 사용자 → API 게이트웨이 → 서비스들 → DB·외부 결제사까지 데이터 흐름을 그린다.",
+     "**신뢰 경계** — 어디서 인증하고 내부 서비스끼리는 무엇을 믿나. 게이트웨이만 믿으면 내부 호출 하나로 전체가 열린다. {추론}",
+     "**개선 방향** — 개별 패치 대신 공통 라이브러리·게이트웨이 규칙 한 곳을 고치게 제안한다."
+    ]
+   },
+   "refs": [4, 13],
+   "study": ["owasp-top10", "eks-best"]
+  },
+  {
+   "section": "qualification",
+   "quote": "Python, Go, Shell Script 등을 활용해 자체 진단 스크립트 제작 및 자동화 파이프라인 연동이 가능하신 분",
+   "short": "도구가 없는 점검은 직접 짜고, 그 스크립트를 CI 에 걸어 매번 돌게 만들 줄 아는 것.",
+   "why": "회사마다 쓰는 서비스·설정이 달라 상용 도구가 못 보는 항목이 남습니다. 업무 3·4번(도구 운영·파이프라인)과 이어지는 요건입니다.[1]",
+   "level": {
+    "basic": "Python 으로 HTTP 요청·JSON 파싱, Shell 로 명령 묶기",
+    "work": "AWS SDK(boto3)로 계정 전체 설정 훑기, 결과를 CSV·Jira 로 내기, CI 에 단계로 넣기",
+    "team": "여러 계정·여러 도구 결과를 한 형식으로 합치고 중복을 지우는 자동화"
+   },
+   "actually": {
+    "items": [
+     "위 업무 2번 예시처럼 정책 JSON 을 읽어 공개·권한 과다를 골라내는 스크립트.",
+     "업무 5번 예시처럼 CVE 목록에 EPSS·KEV 를 붙여 기한을 매기는 스크립트.[11][12]",
+     "Go 는 빠르고 실행 파일 하나로 배포돼 스캐너·에이전트에 많이 쓰인다. {추론}"
+    ]
+   },
+   "how_far": "개발자 수준의 서비스 개발이 아니라 **진단을 반복 가능하게 만드는 코드**면 됩니다. 과제 전형에서 스크립트를 요구할 수 있다고 보고 준비합니다. {추론}",
+   "refs": [1, 11, 12],
+   "study": ["prowler", "devsecops-guide"]
+  },
+  {
+   "section": "qualification",
+   "quote": "단순 결함 발견을 넘어 개발/인프라 담당 부서와의 기술 커뮤니케이션을 통해 조치를 완결하고 가이드를 수립해 본 경험을 보유하신 분",
+   "short": "보고서를 던지고 끝내지 않고, 개발팀이 실제로 고칠 때까지 같이 가고 재발 방지 가이드까지 쓴 경험.",
+   "why": "TMAP 은 '보고보다 대화'를 일하는 방식으로 소개합니다.[24] 취약점이 닫히는 속도는 진단자가 개발자 말로 설명하고 고치는 코드를 보여 줄 수 있느냐에 달려 있습니다. {추론}",
+   "actually": {
+    "items": [
+     "티켓에 재현 요청(curl 한 줄)과 고친 코드 예를 같이 단다.",
+     "고쳤다고 하면 재진단으로 확인하고 닫는다.",
+     "같은 유형이 세 번 나오면 시큐어 코딩 가이드·공통 함수로 만든다. {추론}",
+     "가이드의 꼴은 국내 기준서처럼 항목마다 '무엇을 보나 · 양호/취약 기준 · 조치 방법'을 나란히 쓴다.[16]"
+    ]
+   },
+   "how_far": "면접에서 '찾은 것 중 가장 오래 걸려 닫은 건'을 처음부터 끝까지 설명할 수 있으면 이 줄을 채운 것입니다. {추론}",
+   "refs": [24],
+   "study": ["kisa-guide"]
+  },
+  {
+   "section": "qualification",
+   "quote": "OWASP Top 10, MITRE ATT&CK 프레임워크 기반의 공격 흐름 이해 및 시나리오 기반 침투 능력을 보유하신 분",
+   "short": "웹 약점 목록(OWASP)과 공격자 행동 사전(ATT&CK)으로, 한 구멍에서 데이터까지 가는 길을 그리는 능력.",
+   "why": "OWASP Top 10 은 웹 앱 약점의 10가지 분류이고[13], MITRE ATT&CK 은 실제 공격자가 침입 → 권한 상승 → 이동 → 유출하는 단계를 정리한 사전입니다.[14] '시나리오 기반'은 구멍 하나가 아니라 이어진 공격 경로를 보라는 뜻입니다.",
+   "actually": {
+    "intro": "이런 시나리오입니다(가상).",
+    "items": [
+     "웹 SSRF(서버가 대신 요청하게 만들기) → 클라우드 메타데이터에서 임시 키 획득 → S3 목록 → 개인정보 버킷.[21]",
+     "모바일 앱에 박힌 API 키 → 관리자용 API 호출 → 다른 사용자 정보 조회.",
+     "피싱으로 개발자 계정 → CI 비밀 변수 → 운영 배포 권한. ATT&CK 의 초기 침투·자격증명 접근 단계로 적는다.[14]"
+    ]
+   },
+   "refs": [13, 14, 21],
+   "study": ["owasp-top10", "attack", "hackingthecloud"]
+  },
+  {
+   "section": "qualification",
+   "quote": "WIKI, JIRA, SLACK 기반 협업 도구를 활용한 업무 환경에 익숙하신 분",
+   "short": "진단 결과를 Jira 티켓으로, 가이드를 위키로, 급한 건 Slack 으로 — 이 회사가 일하는 그릇이라서.",
+   "why": "회사 소개 글이 Slack·Jira·Confluence 를 일하는 도구로 적었습니다.[24] 취약점 상태 흐름(업무 6번)을 Jira 에 그대로 올리면 기한·담당이 자동으로 추적됩니다. {추론}",
+   "refs": [24]
+  },
+  {
+   "section": "qualification",
+   "quote": "다양한 담당자에게 보안 위험과 개선 방안을 이해하기 쉽게 설명하고 원활하게 소통할 수 있으신 분",
+   "short": "개발자에게는 코드로, 기획·경영진에게는 '사고가 나면 무엇을 잃나'로 바꿔 말하는 능력.",
+   "why": "예외 승인(업무 6번)과 인증 심사는 기술을 모르는 사람이 결정합니다. 회사는 정보보호 위원회와 그룹사 보안 협의체를 운영한다고 공시했습니다.[7]",
+   "how_far": "위험 한 건을 '무엇이 · 누가 · 얼마나 · 언제까지'로 다섯 줄에 쓰는 연습이 가장 직접적입니다. {추론}",
+   "refs": [7]
+  },
+  {
+   "section": "preference",
+   "quote": "취약점 진단, 위험도 평가, 오탐 분석, 조치 가이드 작성 등 취약점 관리 업무에 AI 도구를 적용하여 효율을 개선한 경험을 보유하신 분",
+   "short": "LLM 으로 오탐 거르기·조치 가이드 초안·위험도 설명을 빠르게 해 본 경험 — 사람이 검증하는 전제.",
+   "why": "도구 결과가 수천 건이면 사람이 하나씩 보기 어렵습니다. 국내에서도 OWASP 서울 챕터 2025년 11월 모임에 'LLM 기반 SAST 스캐너 구축기' 발표 자료가 올라와 있습니다.[27]",
+   "actually": {
+    "items": [
+     "SAST 결과 한 건과 주변 코드를 주고 '실제로 사용자 입력이 닿나'를 판단하게 해 오탐 후보를 거른다.",
+     "취약점 유형 + 우리 프레임워크로 조치 코드 예와 가이드 초안을 만든다.",
+     "주의 — 소스코드·취약점 정보를 외부 AI 서비스로 보내면 그것이 유출이다. 사내 허용 범위 안에서만. {추론}"
+    ]
+   },
+   "how_far": "얼마나 줄였는지(예: 검토 시간·오탐 비율)를 숫자로 말할 수 있으면 좋습니다. {추론}",
+   "refs": [27]
+  },
+  {
+   "section": "preference",
+   "quote": "오픈소스 소프트웨어(OSS) 취약점 및 라이선스 거버넌스 경험을 보유하신 분",
+   "short": "쓰는 오픈소스 목록(SBOM)을 잡아 취약 버전과 '써도 되는 라이선스인가'를 같이 관리한 경험.",
+   "why": "앱·서버 코드의 대부분은 오픈소스 라이브러리입니다. 2025판 OWASP Top 10 은 '소프트웨어 공급망 실패'를 3위로 새로 넣었습니다.[13] 차량에 들어가는 TMAP AUTO 처럼 완성차에 소프트웨어를 납품하면 구성요소 목록과 라이선스를 물어 옵니다. {추론}",
+   "actually": {
+    "items": [
+     "**SBOM** — 빌드마다 쓰인 라이브러리·버전을 표준 형식(SPDX 등)으로 뽑는다.[28]",
+     "**취약점** — SBOM 을 Dependency-Track 같은 도구에 넣어 새 CVE 가 나오면 영향받는 서비스를 바로 찾는다.[29]",
+     "**라이선스** — GPL 처럼 소스 공개 의무가 있는 것이 배포 제품에 섞였는지 본다."
+    ]
+   },
+   "refs": [13, 28, 29],
+   "study": ["dependency-track", "spdx"]
+  },
+  {
+   "section": "preference",
+   "quote": "차량용 모빌리티 서비스 또는 임베디드 앱 취약점 진단 경험을 보유하신 분",
+   "short": "TMAP 은 차에 들어가는 내비(TMAP AUTO)도 만들어서 — 차량 앱은 웹과 공격면·규칙이 다르다.",
+   "why": "TMAP AUTO 는 완성차에 기본으로 들어가는 차량용 내비이고, 회사는 2022년 차량 사이버보안 국제 표준(ISO/SAE 21434) 11개 영역 인증을 받았다고 밝혔습니다.[8][30] 같은 회사에 차량 사이버보안 매니저 공고도 따로 있었습니다.[5]",
+   "actually": {
+    "items": [
+     "차량 앱은 인포테인먼트(차 화면) 위의 안드로이드 계열 앱인 경우가 많아 모바일 진단 기술이 이어진다. {추론}",
+     "차와 서버 사이 통신, 차 안 결제, 업데이트(OTA) 서명이 추가 공격면이다. {추론}",
+     "완성차 고객사의 보안 요구사항을 맞추고 증빙을 내야 한다.[5]"
+    ]
+   },
+   "refs": [5, 8, 30]
+  },
+  {
+   "section": "preference",
+   "quote": "취약점 제보, 버그바운티 참여 또는 CVE 발급 이력이 있으신 분​",
+   "short": "남의 서비스에서 진짜 취약점을 찾아 인정받은 기록 — 실력의 가장 확실한 증거라서.",
+   "why": "자격요건의 '이에 준하는 경험'을 보여 주는 가장 좋은 방법입니다. CVE 는 공개 번호가 붙은 취약점 기록이고[31], 국내에서는 KISA 신규 취약점 신고포상제가 있어 같은 업계 카카오모빌리티도 공동 운영사로 참여했습니다.[33]",
+   "how_far": "건수보다 **어떻게 찾았는지 설명할 수 있는 한두 건**이 면접에서 강합니다. 허락된 범위(버그바운티 정책) 밖의 테스트는 경력이 아니라 위법입니다.[26]",
+   "refs": [26, 31, 33],
+   "study": ["bug-hunting", "hacking-apis"]
+  }
+ ],
+ "fit": {
+  "good": [
+   "뚫는 것만큼 '닫히는 것'을 보는 게 즐거운 사람",
+   "앱·클라우드·파이프라인을 두루 보고 싶은 사람 — 한 자리에 모의해킹과 취약점 관리가 같이 있다[1]",
+   "자동화 스크립트로 반복 점검을 없애는 걸 좋아하는 사람[1]",
+   "차량 소프트웨어 보안까지 넓혀 보고 싶은 사람[8]"
+  ],
+  "hard": [
+   "정보보호 전담 인력이 13명 안팎(외주 포함)이라 한 사람이 넓은 범위를 맡는다[7]",
+   "기준표·예외 승인·EOL 목록 같은 관리 업무가 업무 줄의 절반이다[1]",
+   "서류 다음에 과제 전형이 있다 — 실력을 직접 보여 줘야 한다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "CVSS 9.8 인데 EPSS 0.02, CVSS 7.5 인데 KEV 에 올라 있는 것 — 무엇부터 고치게 하겠어요?",
+   "a": "업무 5번 기준표를 실제로 설계해 봤는지.[10][11][12]"
+  },
+  {
+   "q": "주문 조회 API 에서 IDOR 을 찾았어요. 개발팀에 어떻게 전달하고 어디까지 확인하나요?",
+   "a": "비즈니스 로직 진단과 '조치 완결' 요건을 같이 본다.[1][13]"
+  },
+  {
+   "q": "웹 SSRF 하나로 AWS 계정의 데이터까지 가는 길을 그려 보세요. 어디서 끊나요?",
+   "a": "시나리오 기반 침투와 AWS 설정 진단 요건.[14][21]"
+  },
+  {
+   "q": "SAST 가 1,000건을 냈는데 개발팀이 무시하기 시작했어요. 어떻게 하겠어요?",
+   "a": "도구 운영의 본체인 오탐 관리.[15]"
+  },
+  {
+   "q": "지원 종료된 OS 를 당장 못 올린다는 팀이 있으면요?",
+   "a": "예외 승인과 대체 통제.[18]"
+  }
+ ],
+ "resources": [
+  {
+   "id": "wsa",
+   "title": "Web Security Academy",
+   "by": "PortSwigger",
+   "kind": "course",
+   "url": "https://portswigger.net/web-security",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "무료 웹 해킹 실습실. 접근 통제·비즈니스 로직 문제 묶음이 업무 1번(웹 모의해킹)에 그대로 이어진다."
+  },
+  {
+   "id": "web-app-sec",
+   "title": "웹 애플리케이션 보안",
+   "by": "앤드루 호프먼 · 최용 옮김 · 한빛미디어",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9B%B9%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EB%B3%B4%EC%95%88%20%ED%98%B8%ED%94%84%EB%A8%BC",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "why": "정찰 → 공격 → 방어 순서로 웹 앱을 읽는 한국어 책. 웹 진단 기본기를 한 권으로."
+  },
+  {
+   "id": "bug-hunting",
+   "title": "Real-World Bug Hunting: A Field Guide to Web Hacking",
+   "by": "Peter Yaworski · No Starch Press · 2019",
+   "kind": "book",
+   "url": "https://nostarch.com/bughunting",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "실제 버그바운티 보고서로 배우는 웹 취약점. 우대 4번(제보·버그바운티)과 '이에 준하는 경험'을 만들 때."
+  },
+  {
+   "id": "hacking-apis",
+   "title": "Hacking APIs",
+   "by": "Corey J. Ball · No Starch Press · 2022",
+   "kind": "book",
+   "url": "https://nostarch.com/hacking-apis",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "앱 뒤의 API 를 공격하는 법 — 권한 검사 누락(IDOR)·대량 할당. 마이크로서비스 진단에."
+  },
+  {
+   "id": "mastg",
+   "title": "OWASP Mobile Application Security Testing Guide (MASTG)",
+   "by": "OWASP",
+   "kind": "doc",
+   "url": "https://mas.owasp.org/MASTG/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "모바일 앱 진단 절차·도구. 점검 기준(MASVS)의 저장·통신·인증 칸이 TMAP 앱 진단에 맞는다."
+  },
+  {
+   "id": "owasp-top10",
+   "title": "OWASP Top 10:2025",
+   "by": "OWASP",
+   "kind": "doc",
+   "url": "https://top10.owasp.org/2025",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "자격요건에 이름이 박힌 목록. 2025판에서 공급망 실패·예외 처리 실패가 새로 들어왔다."
+  },
+  {
+   "id": "attack",
+   "title": "MITRE ATT&CK",
+   "by": "MITRE",
+   "kind": "doc",
+   "url": "https://attack.mitre.org/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "자격요건의 '공격 흐름'을 단계 이름으로 말하는 공용 언어. 클라우드 매트릭스부터 본다."
+  },
+  {
+   "id": "aws-security",
+   "title": "AWS Security",
+   "by": "Dylan Shields · Manning · 2022",
+   "kind": "book",
+   "url": "https://www.manning.com/books/aws-security",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "IAM·네트워크·데이터 보호·로그를 실제 설정으로 다룬다. 자격요건 2번(AWS 핵심 서비스 보안 설정)용."
+  },
+  {
+   "id": "aws-iam-best",
+   "title": "IAM의 보안 모범 사례",
+   "by": "AWS 공식 문서(한국어)",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/ko_kr/IAM/latest/UserGuide/best-practices.html",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "최소 권한·임시 자격증명·접근 키 관리 — IAM 진단 항목의 출발점."
+  },
+  {
+   "id": "eks-best",
+   "title": "Amazon EKS 보안 모범 사례",
+   "by": "AWS 공식 문서(한국어)",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/ko_kr/eks/latest/best-practices/security.html",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "이 회사 서비스가 도는 EKS 의 권한(RBAC)·파드 보안·이미지 보안. 아키텍처를 이해하는 요건에."
+  },
+  {
+   "id": "cloudgoat",
+   "title": "CloudGoat",
+   "by": "Rhino Security Labs · GitHub",
+   "kind": "doc",
+   "url": "https://github.com/RhinoSecurityLabs/cloudgoat",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "일부러 취약하게 만든 AWS 실습 시나리오를 내 계정에 깔아 직접 뚫어 본다(운영 계정 금지)."
+  },
+  {
+   "id": "hackingthecloud",
+   "title": "Hacking The Cloud",
+   "by": "커뮤니티 백과사전",
+   "kind": "doc",
+   "url": "https://hackingthe.cloud/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "AWS 공격 기법(메타데이터 탈취·역할 위임 남용)을 항목별로. 시나리오 기반 침투 요건에."
+  },
+  {
+   "id": "prowler",
+   "title": "Prowler",
+   "by": "Prowler · GitHub",
+   "kind": "doc",
+   "url": "https://github.com/prowler-cloud/prowler",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "오픈소스 클라우드 설정 점검 도구. KISA ISMS-P 기준표도 있어 국내 인증과 바로 이어진다. Python 코드라 자체 점검 추가법도 배운다."
+  },
+  {
+   "id": "devsecops-guide",
+   "title": "OWASP DevSecOps Guideline",
+   "by": "OWASP",
+   "kind": "doc",
+   "url": "https://owasp.org/www-project-devsecops-guideline/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "시크릿 스캔·SCA·SAST·IaC·DAST 를 파이프라인 어디에 두나. 업무 3·4번의 지도."
+  },
+  {
+   "id": "dependency-track",
+   "title": "OWASP Dependency-Track",
+   "by": "OWASP",
+   "kind": "doc",
+   "url": "https://dependencytrack.org/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "SBOM 을 넣어 두면 새 CVE 가 나올 때 영향받는 서비스를 찾아 준다. 우대 2번(OSS 거버넌스) 실습용."
+  },
+  {
+   "id": "spdx",
+   "title": "SPDX",
+   "by": "Linux Foundation",
+   "kind": "doc",
+   "url": "https://spdx.dev/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "SBOM·라이선스 표기의 국제 표준 형식. 라이선스 거버넌스의 기본 단어."
+  },
+  {
+   "id": "cvss",
+   "title": "CVSS v4.0 Specification",
+   "by": "FIRST",
+   "kind": "doc",
+   "url": "https://www.first.org/cvss/v4-0/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "심각도 점수를 어떤 항목으로 매기나. 위험도 평가·보고서 쓰기의 공용 기준."
+  },
+  {
+   "id": "epss",
+   "title": "Exploit Prediction Scoring System (EPSS)",
+   "by": "FIRST",
+   "kind": "doc",
+   "url": "https://www.first.org/epss/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "30일 안 악용 확률 점수의 뜻과 매일 받는 법. 업무 5번 기준표의 재료."
+  },
+  {
+   "id": "kev",
+   "title": "Known Exploited Vulnerabilities Catalog",
+   "by": "CISA",
+   "kind": "doc",
+   "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "실제 악용이 확인된 취약점 목록(CSV·JSON). 가장 먼저 고칠 것을 고르는 기준."
+  },
+  {
+   "id": "kisa-guide",
+   "title": "주요정보통신기반시설 기술적 취약점 분석·평가 방법 상세가이드",
+   "by": "KISA · 2025",
+   "kind": "doc",
+   "url": "https://www.kisa.or.kr/2060204/form?postSeq=22&lang_type=KO",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "국내 진단 항목·판단 기준·조치 방법이 항목별로 정리된 한국어 기준서. 조치 가이드 쓰는 꼴을 배운다."
+  },
+  {
+   "id": "endoflife",
+   "title": "endoflife.date",
+   "by": "커뮤니티",
+   "kind": "doc",
+   "url": "https://endoflife.date/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "제품별 지원 종료일 목록과 API. 업무 7번(EOS/EOL) 목록을 자동으로 맞출 때."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "웹·API 손 진단 기본기",
+   "time": "3~4주",
+   "goal": "접근 통제·인증·주입 취약점을 손으로 찾고 재현 절차를 쓸 수 있다.",
+   "task": "가상 주문 API(로그인·주문 조회·쿠폰 사용)를 직접 만들어 IDOR·쿠폰 중복 사용을 일부러 넣고, 진단 보고서 한 장(재현·영향·CVSS·고친 코드)을 쓴다.",
+   "resources": ["wsa", "web-app-sec", "hacking-apis", "owasp-top10"]
+  },
+  {
+   "title": "AWS 설정 진단",
+   "time": "3~4주",
+   "goal": "IAM·S3·EC2·Lambda·RDS·API Gateway 설정에서 공격 경로를 그릴 수 있다.",
+   "task": "내 실습 계정에 CloudGoat 시나리오 두 개를 깔고 풀어 본 뒤, Prowler 를 돌려 결과 중 실제로 이어지는 경로 하나를 그림으로 그린다. 끝나면 지운다.",
+   "resources": ["cloudgoat", "hackingthecloud", "aws-security", "aws-iam-best", "prowler"]
+  },
+  {
+   "title": "파이프라인에 점검 넣기",
+   "time": "2주",
+   "goal": "커밋·빌드·배포 단계에 시크릿·SCA·SAST 점검을 걸고 차단 기준을 정할 수 있다.",
+   "task": "1단계의 가상 API 저장소에 CI 를 붙여 시크릿 스캔·의존성 스캔을 돌리고, SBOM 을 Dependency-Track 에 올린다. '치명이면 배포 실패' 규칙 하나를 건다.",
+   "resources": ["devsecops-guide", "dependency-track", "spdx"]
+  },
+  {
+   "title": "취약점 관리 체계",
+   "time": "1~2주",
+   "goal": "CVSS·EPSS·KEV·노출 여부로 조치 기한을 매기고 예외·EOL 을 관리할 수 있다.",
+   "task": "가상 자산 20개와 CVE 30개로 업무 5번 예시 같은 기한표를 만들고, EOL 지난 런타임과 예외 승인 3건을 한 장의 월간 보고서로 낸다.",
+   "resources": ["cvss", "epss", "kev", "endoflife", "kisa-guide"]
+  },
+  {
+   "title": "실적 만들기 (선택)",
+   "time": "계속",
+   "goal": "허락된 범위에서 진짜 취약점을 찾아 인정받은 기록을 만든다.",
+   "task": "공개 버그바운티 프로그램의 정책을 읽고 범위 안에서 한 건을 제보하거나, 오픈소스 프로젝트의 보안 정책대로 취약점을 알린다.",
+   "resources": ["bug-hunting", "attack", "mastg"]
+  }
+ ],
+ "pay": {
+  "summary": "신입 초봉 **약 4,800만원**, 직원 평균 **약 7,000만원**(둘 다 공공데이터 집계) — 비상장이라 공시 평균 급여가 없고, 이 자리는 경력직이라 처우 협의로 정한다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,793만원",
+    "amount": 4793,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없다 [22]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "약 7,049만원",
+    "amount": 7049,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 — 경력직이 섞인 값이다 [22]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고, 지원서의 연봉 기입칸에 현재 연봉을 적은 뒤 레퍼런스 체크 다음 **처우 협의** 단계에서 정한다 [1]. 티맵모빌리티는 비상장사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자가 없어 집계 사이트 값만 실었다. 평균은 경력직이 섞인 회사 전체 값이라 초봉이나 이 자리 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   { "name": "자유 휴가", "detail": "연차·반차·반반차를 승인이나 사유 없이 사용" },
+   { "name": "체력단련 휴가", "detail": "연차와 별도로 5일" },
+   { "name": "Happy Friday", "detail": "매월 금요일 하루 전 직원 함께 휴무" },
+   { "name": "자유 복장", "detail": "후드티·반바지·슬리퍼·정장 모두 허용" },
+   { "name": "사내 시설", "detail": "라운지 간식 자판기·오락기, 헬스키퍼가 있는 헬스케어룸, 수면실" },
+   { "name": "소통", "detail": "매달 전사 타운홀, OKR 기반 자율 목표" }
+  ],
+  "note": "티맵모빌리티 공식 사이트의 2025-11-18 조직문화 글이다 [24]. 금액이 있는 수당은 그 글에 없다. 2026년 1월 보도에는 주 1회 재택근무, 코어타임(10~15시) 밖 출퇴근 조정, 아침 무료·점심 5,000원 구내식당, 월 4회 사내 마사지도 소개됐다 [25] — 회사 공식 글이 아니어서 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "티맵모빌리티 본사 (SK-C타워)",
+  "address": "서울특별시 중구 충무로 15, SK-C타워 7·8·9층",
+  "postal": "04554",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%A4%91%EA%B5%AC%20%EC%B6%A9%EB%AC%B4%EB%A1%9C%2015",
+  "near": "을지로3가역·명동역 사이 충무로 {추론}",
+  "note": "회사 사이트 하단 회사 정보 [23], 원티드판 공고 근무지 [3]. 공고의 근무지 표기는 '서울'·'서울 중구'다 [1][2]."
+ },
+ "sources": [
+  { "n": 1, "title": "SK Careers · 티맵모빌리티 보안 진단 엔지니어", "url": "https://www.skcareers.com/Recruit/Detail/R262485", "kind": "posting", "date": "2026-11-12 ~ 2026-12-31", "note": "팀 소개·업무·요건·우대·전형(서류 > 과제 > 1·2차 인터뷰 > 레퍼런스 체크 > 처우협의). 정규직·경력" },
+  { "n": 2, "title": "캐치 · 티맵모빌리티 보안 진단 엔지니어 채용", "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/580895?ReturnUrl=RecruitInfo", "kind": "posting", "date": "2026-11-12 ~ 2026-12-31", "note": "같은 자리 — 경력 2년 이상, 서울 중구" },
+  { "n": 3, "title": "원티드 · [티맵모빌리티] 보안 진단 엔지니어", "url": "https://www.wanted.co.kr/wd/397947", "kind": "posting", "note": "같은 자리 — 경력 2~7년, 'SAST/DAST' 표기, 근무지 충무로 15 SK-C타워 7-9층" },
+  { "n": 4, "title": "SK Careers · 티맵모빌리티 보안 기술 엔지니어", "url": "https://www.skcareers.com/Recruit/Detail/R262516", "kind": "posting", "date": "~ 2026-12-31", "note": "같은 정보보호팀 공고 — 클라우드·EKS 마이크로서비스, SIEM·EDR, 경력 7년 이상" },
+  { "n": 5, "title": "원티드 · 티맵모빌리티 Automotive Cybersecurity Manager", "url": "https://www.wanted.co.kr/wd/375202", "kind": "posting", "note": "마감 — TMAP AUTO 보안 취약점 분석, ISO/SAE 21434 프로세스, 완성차 요구사항" },
+  { "n": 6, "title": "원티드 · 티맵모빌리티 정보보호 정책 담당자", "url": "https://www.wanted.co.kr/wd/375369", "kind": "posting", "note": "마감 — ISMS-P 인증심사, 신규 서비스 보안성 점검, 위험평가" },
+  { "n": 7, "title": "디지털데일리 · 티맵모빌리티, 보안투자 3년새 3배↑…투자비중 5.8%까지 확대", "url": "https://www.ddaily.co.kr/page/view/2026063015002779322", "kind": "news", "date": "2026-06-30", "note": "정보보호 공시 — 투자액·전담 인력(약 12.9명)·ISMS-P·TISAX·활동 내역" },
+  { "n": 8, "title": "보안뉴스 · 티맵모빌리티, 자동차 사이버보안의 'T'rust Mobility 꿈꾼다", "url": "http://www.boannews.com/news/articleView.html?idxno=110441", "kind": "news", "date": "2022-10-24", "note": "Mobility QE팀 인터뷰 — ISO/SAE 21434 11개 영역 인증(DNV), TMAP AUTO" },
+  { "n": 9, "title": "보안뉴스 · SK, 정보보호 특위 가동...각 계열사 모의 해킹도", "url": "http://www.boannews.com/news/articleView.html?idxno=137255", "kind": "news", "date": "2025-05-14", "note": "SK 그룹 차원 — 티맵모빌리티를 따로 적은 기사는 아니다" },
+  { "n": 10, "title": "FIRST · CVSS v4.0 Specification", "url": "https://www.first.org/cvss/v4-0/", "kind": "reference" },
+  { "n": 11, "title": "FIRST · Exploit Prediction Scoring System (EPSS)", "url": "https://www.first.org/epss/", "kind": "reference", "note": "30일 안 악용 확률, 매일 갱신" },
+  { "n": 12, "title": "CISA · Known Exploited Vulnerabilities Catalog", "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog", "kind": "reference" },
+  { "n": 13, "title": "OWASP Top 10:2025", "url": "https://top10.owasp.org/2025", "kind": "reference", "note": "A01 접근 통제 실패 · A02 보안 설정 오류 · A03 소프트웨어 공급망 실패 · A06 안전하지 않은 설계" },
+  { "n": 14, "title": "MITRE ATT&CK", "url": "https://attack.mitre.org/", "kind": "reference" },
+  { "n": 15, "title": "OWASP DevSecOps Guideline", "url": "https://owasp.org/www-project-devsecops-guideline/", "kind": "reference" },
+  { "n": 16, "title": "KISA · 주요정보통신기반시설 기술적 취약점 분석·평가 방법 상세가이드", "url": "https://www.kisa.or.kr/2060204/form?postSeq=22&lang_type=KO", "kind": "reference", "date": "2025-12-24" },
+  { "n": 17, "title": "Prowler · GitHub", "url": "https://github.com/prowler-cloud/prowler", "kind": "reference", "note": "AWS·Kubernetes 등 설정 점검, KISA ISMS-P 기준 지원" },
+  { "n": 18, "title": "endoflife.date", "url": "https://endoflife.date/", "kind": "reference", "note": "제품별 지원 종료일" },
+  { "n": 19, "title": "OWASP · Mobile Application Security Testing Guide (MASTG)", "url": "https://mas.owasp.org/MASTG/", "kind": "reference" },
+  { "n": 20, "title": "NIST SP 800-115 · Technical Guide to Information Security Testing and Assessment", "url": "https://csrc.nist.gov/pubs/sp/800/115/final", "kind": "reference", "date": "2008-09" },
+  { "n": 21, "title": "Hacking The Cloud", "url": "https://hackingthe.cloud/", "kind": "reference", "note": "AWS 공격 기법 백과사전" },
+  { "n": 22, "title": "자소설닷컴 · 티맵모빌리티(공공데이터 집계: 초봉·평균)", "url": "https://jasoseol.com/companies/11668", "kind": "reference", "note": "기준일 표기 없음 — 이번 조사에서 페이지가 자동 접근을 막아 검색 결과에 실린 값으로 옮겼다" },
+  { "n": 23, "title": "티맵모빌리티 · 회사 사이트(하단 회사 정보)", "url": "https://www.tmapmobility.com/", "kind": "company" },
+  { "n": 24, "title": "티맵모빌리티 · 지원 전, 알아야 할 5가지! 일하기 좋은 회사인 이유", "url": "https://www.tmapmobility.com/people/culture/detail/208", "kind": "company", "date": "2025-11-18" },
+  { "n": 25, "title": "머니투데이 · [IT사파] 티맵모빌리티, 왜 사옥에 엔진을 심었을까", "url": "https://www.mt.co.kr/tech/2026/01/19/2026011615574546384", "kind": "news", "date": "2026-01-19" },
+  { "n": 26, "title": "국가법령정보센터 · 정보통신망 이용촉진 및 정보보호 등에 관한 법률", "url": "https://www.law.go.kr/%EB%B2%95%EB%A0%B9/%EC%A0%95%EB%B3%B4%ED%86%B5%EC%8B%A0%EB%A7%9D%EC%9D%B4%EC%9A%A9%EC%B4%89%EC%A7%84%EB%B0%8F%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8%EB%93%B1%EC%97%90%EA%B4%80%ED%95%9C%EB%B2%95%EB%A5%A0", "kind": "reference", "note": "제48조(정보통신망 침해행위 등의 금지)" },
+  { "n": 27, "title": "OWASP 서울 챕터 · 2025년 11월 발표 자료 「LLM 기반 SAST 스캐너 구축기」", "url": "https://owasp.org/www-chapter-seoul/assets/files/2025%20Nov%20%ED%95%9C%EC%A2%85%ED%9B%88%20-%20LLM%20%EA%B8%B0%EB%B0%98%20SAST%20%EC%8A%A4%EC%BA%90%EB%84%88%20%EA%B5%AC%EC%B6%95%EA%B8%B0.pdf", "kind": "community", "date": "2025-11", "note": "다른 곳의 발표 — 제목만 확인했다" },
+  { "n": 28, "title": "SPDX", "url": "https://spdx.dev/", "kind": "reference" },
+  { "n": 29, "title": "OWASP Dependency-Track", "url": "https://dependencytrack.org/", "kind": "reference" },
+  { "n": 30, "title": "ISO/SAE 21434:2021 · Road vehicles — Cybersecurity engineering", "url": "https://www.iso.org/standard/70918.html", "kind": "reference" },
+  { "n": 31, "title": "CVE Program", "url": "https://www.cve.org/", "kind": "reference" },
+  { "n": 32, "title": "AWS · IAM의 보안 모범 사례", "url": "https://docs.aws.amazon.com/ko_kr/IAM/latest/UserGuide/best-practices.html", "kind": "reference" },
+  { "n": 33, "title": "보안뉴스 · 카카오모빌리티, KISA '신규 보안 취약점 신고포상제' 공동 운영사 참여", "url": "https://m.boannews.com/html/detail.html?idx=138579", "kind": "news", "note": "같은 업계 다른 회사" }
+ ],
+ "caveat": "티맵모빌리티가 진단 절차·사용 도구·조치 기한을 직접 설명한 기술 블로그 글이나 발표 영상은 찾지 못했습니다(받은 영상 없음). 그래서 업무의 '실제로는'은 이 공고·같은 팀 공고·정보보호 공시 보도로 회사 사정을 잡고, 절차와 계산은 OWASP·FIRST·CISA·NIST·KISA 같은 공개 기준의 일반론으로 보였습니다. 코드 예시의 기한(7·30·60·90일)은 설명용으로 정한 값이며 회사 기준이 아닙니다."
+}

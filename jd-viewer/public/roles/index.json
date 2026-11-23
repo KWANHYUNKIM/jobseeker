@@ -96,6 +96,11 @@
   "wanted-393877": "speee-realestate-senior-product-engineer",
   "wanted-389900": "technopro-cloud-engineer-aws-japan",
   "wanted-394499": "technopro-lowcode-java-lead-japan",
+  "ats-skcareers:sk:R262196": "tmap-ai-agent-engineer",
+  "ats-skcareers:sk:R261800": "tmap-auto-ai-agent-tpm",
+  "ats-skcareers:sk:R262169": "tmap-data-analytics-lead",
+  "ats-skcareers:sk:R262485": "tmap-security-assessment-engineer",
+  "dev-580895": "tmap-security-assessment-engineer",
   "ats-skcareers:sk:R262516": "tmap-security-technology-engineer",
   "dev-581410": "tmap-security-technology-engineer",
   "wanted-398468": "tmap-security-technology-engineer",
@@ -963,6 +968,47 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 15
+  },
+  {
+   "id": "tmap-ai-agent-engineer",
+   "company": "티맵모빌리티",
+   "role": "AI Agent Engineer",
+   "jobs": [
+    "ats-skcareers:sk:R262196"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 22
+  },
+  {
+   "id": "tmap-auto-ai-agent-tpm",
+   "company": "티맵모빌리티",
+   "role": "AI Agent TPM",
+   "jobs": [
+    "ats-skcareers:sk:R261800"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 21
+  },
+  {
+   "id": "tmap-data-analytics-lead",
+   "company": "티맵모빌리티",
+   "role": "Data Analytics 리더",
+   "jobs": [
+    "ats-skcareers:sk:R262169"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 24
+  },
+  {
+   "id": "tmap-security-assessment-engineer",
+   "company": "티맵모빌리티",
+   "role": "보안 진단 엔지니어",
+   "jobs": [
+    "ats-skcareers:sk:R262485",
+    "dev-580895"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 19
   },
   {
    "id": "tmap-security-technology-engineer",
