@@ -1,0 +1,1365 @@
+{
+ "id": "tossbank-oss-security-researcher",
+ "company": "토스뱅크",
+ "role": "오픈소스 보안 전문가",
+ "team": "Security Division · Security Red Team",
+ "jobs": [
+  "saramin-55608279"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "은행 서비스가 쓰는 **오픈소스 부품을 들여오는 길부터 고칠 때까지** 관리합니다 — 반입 정책, 부품 목록(SBOM), 자동 검사(SCA), 우선순위, 조치 요청.[1][3]",
+  "env": "외부 저장소에 직접 못 가는 **망분리 은행**이라 사내 저장소(Nexus)가 유일한 통로이고, 결과는 자체 취약점 관리 시스템(VMS)에 모입니다. 같은 팀의 인프라·모의해킹 진단도 맡을 수 있습니다.[1][3][5]",
+  "oneline": "공급망 보안 담당자. 취약점을 찾는 것보다 **어디에 퍼졌나 찾고, 고칠 사람이 바로 고치게 만드는 것**이 일의 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "오픈소스 반입·배포 정책을 수립하고 사내 가이드라인을 운영해요.",
+   "short": "밖의 라이브러리를 어느 길로·어떤 조건에 들여오고, 우리 코드를 밖에 낼 때 무엇을 지키나를 규칙으로 정하는 일.",
+   "why": "토스뱅크는 maven·npm·PyPI 같은 외부 저장소에 사내에서 바로 갈 수 없게 막고, 사내 저장소(Nexus)를 거쳐서만 받게 했습니다.[3] 길이 하나라서 그 길에서 '무엇을 통과시키나'가 곧 정책입니다. 같은 그룹 토스도 이런 검문소가 의미 있으려면 **모든 패키지가 내부 저장소를 거치도록 네트워크를 막는 것이 먼저**라고 했습니다.[4]",
+   "actually": {
+    "items": [
+     "**들여오는 길 하나로** — 외부 저장소 직접 접근을 막고 사내 저장소만 열어 둔다.[3]",
+     "**처음 보는 패키지는 대기** — 평가 정보가 없는 새 부품은 검역 칸에 들어가 정보를 받아 올 동안 못 쓴다. 문제가 없어야 풀린다.[3]",
+     "**너무 새 버전 막기 · 설치 스크립트 막기** — 공개된 지 하루·일주일이 안 된 버전은 설치하지 않게 하고, 설치할 때 저절로 도는 스크립트(postinstall)를 제한한다(pnpm 설정).[3][21]",
+     "**컨테이너 이미지** — 도커 허브 공식 이미지도 취약점이 있어, 안에서 손본(하드닝) 이미지만 쓰게 한다.[3]",
+     "**내보낼 때(배포)** — 우리 제품에 넣은 오픈소스의 라이선스 고지·소스 공개 의무를 지키는 절차. 국제 표준 ISO/IEC 5230 이 이 부분이다.[12]"
+    ]
+   },
+   "how_far": "Security Division 에는 보안정책팀이 따로 있습니다.[1] 문서 문장보다 **저장소 설정·검사 기준·예외 신청 절차처럼 기술로 강제되는 부분**을 이 자리가 정하고 굴린다고 보는 편이 맞습니다. {추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    12,
+    21
+   ],
+   "study": [
+    "g25-oss",
+    "g25-firewall",
+    "openchain-kwg"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "신규 서비스 보안성심의·검토 프로세스에 오픈소스 반입 항목을 포함해 사용 오픈소스의 보안 리스크를 식별·검토해요.",
+   "short": "새 서비스가 나가기 전 보안 검토표에 '어떤 오픈소스를 쓰나' 칸을 넣고, 위험한 부품을 미리 걸러 낸다.",
+   "why": "다른 은행 보안 담당자는 금융당국에서 매일 취약점 공지가 오는데 정작 우리 시스템에 어떤 오픈소스가 있는지 파악하기 어려워, 부서마다 확인 서류를 돌린다고 했습니다.[7] 출시 전에 목록을 받아 두면 이 일이 사라집니다. 토스뱅크는 오픈소스 사용 신청이 들어오면 담당자가 직접 따로 분석(ad hoc)합니다.[3]",
+   "actually": {
+    "items": [
+     "**부품 목록 만들기** — Syft 로 파일시스템·컨테이너 이미지에서 SBOM(소프트웨어 부품 명세서)을 뽑는다.[3][23]",
+     "**알려진 취약점 대조** — Grype 로 그 목록을 취약점 DB 와 맞춘다.[3][24]",
+     "**비밀정보 검사** — 코드·이력에 남은 키·토큰을 Trivy·Kingfisher·TruffleHog 로 찾는다. 지운 파일을 되살려 비밀을 찾은 버그바운티 사례를 들었다.[3]",
+     "**망분리 환경** — 이 도구들은 화면 없는 명령줄이라 내부망에서도 되지만, 취약점 DB 를 최신으로 두려면 자동 업데이트를 끄고 주기적으로 들여오는 길을 따로 만든다.[3]",
+     "**라이선스·유지 상태** — 고지 의무가 큰 라이선스인지, 마지막 릴리스가 언제인지도 같이 본다. {추론}"
+    ],
+    "intro": "토스뱅크 발표에서 말한 신청 건 분석 방법입니다.[3]"
+   },
+   "how_far": "검토 결과로 '쓰지 마라'만 하면 일이 멈춥니다. 위험·대체 버전·조건(예: 이 기능만)을 함께 적어 주는 데까지가 이 줄입니다. {추론}",
+   "refs": [
+    3,
+    7,
+    23,
+    24
+   ],
+   "study": [
+    "syft",
+    "grype",
+    "trivy"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SBOM을 생성·관리하고, Nexus IQ 등 SCA 도구 기반으로 CVE·취약점을 스캔하고 조치를 트래킹해요.",
+   "short": "서비스마다 '들어 있는 부품 목록(SBOM)'을 두고, 새 CVE 가 나오면 어디가 걸리는지 찾아 고칠 때까지 쫓는다.",
+   "why": "SBOM 이 있으면 취약점이 공개됐을 때 어느 시스템이 영향을 받는지 바로 가늠할 수 있습니다. 금융보안원도 2026년 2월부터 금융권 공급망 플랫폼에서 SBOM 을 영향 범위 파악에 씁니다.[6] 토스뱅크는 Sonatype Lifecycle(예전 이름 Nexus IQ)로 앱을 분석하고, 여러 도구 결과를 **자체 취약점 관리 시스템(VMS)** 한 곳에 모읍니다.[3][5]",
+   "actually": {
+    "items": [
+     "**형식** — SBOM 은 CycloneDX 나 SPDX 형식의 파일이다. 부품마다 이름·버전·패키지 주소(purl)가 들어 있다.[15][16] 금보원 플랫폼도 이 두 형식을 받는다.[6] 정부의 SW 공급망 보안 가이드라인 1.0(2024)도 SBOM 생성과 취약점 조치 절차를 담았다(규제는 아니다).[8]",
+     "**앱** — 자바·코틀린 앱은 빌드마다 Sonatype Lifecycle 이 분석해 결과가 쌓인다.[3]",
+     "**컨테이너** — 이미지 저장소(Harbor)는 저장만 해서, Trivy 를 붙여 이미지마다 취약점을 본다. Helm 차트가 바뀌면 Trivy 가 코드(IaC)도 검사한다.[3][25]",
+     "**서버** — 모든 서버에 Wazuh 를 깔아 설치된 패키지와 취약점을 한 화면에 본다. 직원 PC 의 브라우저 확장까지 보인다.[3]",
+     "**모으기** — 도구가 다 달라 결과도 흩어져서 VMS 로 합쳤고, 전체 취약점을 한 번에 본다.[3]",
+     "**트래킹** — 취약점마다 담당·조치 계획·상태를 두고 닫힐 때까지 본다.[3]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "새 CVE 가 공개된 날의 흐름 {추론}[3][6]",
+     "mine_from": 1,
+     "steps": [
+      "공개 · 외부 공지·KrCERT 수집[3]",
+      "SBOM 조회 · 그 부품·버전을 쓰는 서비스",
+      "우선순위 · KEV·EPSS·CVSS",
+      "조치 요청 · 자동 PR·티켓",
+      "재검사 · 다시 스캔해 닫기"
+     ]
+    }
+   ],
+   "examples": [
+    {
+     "title": "SBOM 으로 'Log4Shell 에 걸린 서비스' 찾기",
+     "body": "CVE-2021-44228 은 log4j-core 2.0-beta9~2.14.1 이 대상이고 2.15.0 부터 고쳐졌습니다.[28] 서비스별 부품 목록만 있으면 몇 줄로 찾습니다(가상 데이터, 직접 돌린 출력).",
+     "lang": "python",
+     "code": "sboms = {  # 서비스마다 CycloneDX SBOM 의 components 만 추린 것(가상)\n    \"loan-api\":  [{\"name\": \"log4j-core\", \"version\": \"2.14.1\"}],\n    \"card-api\":  [{\"name\": \"log4j-core\", \"version\": \"2.17.1\"}],\n    \"web-front\": [{\"name\": \"axios\", \"version\": \"1.6.0\"}],\n}\nver = lambda v: tuple(int(x) for x in v.split(\".\"))\nhit = [svc for svc, comps in sboms.items() for c in comps\n       if c[\"name\"] == \"log4j-core\" and ver(\"2.0\") <= ver(c[\"version\"]) < ver(\"2.15.0\")]\nprint(\"Log4Shell(CVE-2021-44228) 영향:\", hit)\n# Log4Shell(CVE-2021-44228) 영향: ['loan-api']"
+    }
+   ],
+   "how_far": "SCA 도구를 사서 켜는 것보다 **결과를 한 곳에 모으고, 같은 취약점을 중복 없이 세고, 닫혔는지 확인하는 운영**이 일의 대부분입니다.[3]",
+   "refs": [
+    3,
+    5,
+    6,
+    8,
+    15,
+    16,
+    25,
+    28
+   ],
+   "study": [
+    "cyclonedx",
+    "sonatype-docs",
+    "syft",
+    "trivy"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "CI/CD 파이프라인에 SCA 스캔 자동화를 통합해 오픈소스 취약점을 개발 초기 단계에서 조기 탐지·차단하는 Shift Left 체계를 구축해요.",
+   "short": "빌드할 때마다 자동으로 검사해, 위험한 부품이 운영에 나가기 전 개발 단계에서 걸리게 한다.",
+   "why": "운영에 나간 뒤 고치면 배포를 한 번 더 해야 합니다. 토스뱅크는 파이프라인 도구 GoCD 로 두 가지를 합니다 — 자바·코틀린 앱이 빌드될 때마다 Sonatype 명령줄 검사를 돌리고, 매일 GitHub 저장소 전체를 검사합니다.[3] 다른 은행은 소스 보안 검사(SAST)를 형상관리에 붙여 취약하면 반영을 자동으로 막고, 여기에 SCA 를 잇겠다고 했습니다.[7]",
+   "actually": {
+    "items": [
+     "**받을 때** — 사내 저장소 앞 방화벽(Repository Firewall)이 새 부품을 평가하고, 모르는 것은 격리한다.[3]",
+     "**빌드할 때** — 빌드마다 SCA 검사, 결과는 VMS 로.[3]",
+     "**매일** — 저장소 전체를 다시 검사한다(어제 괜찮던 버전이 오늘 CVE 를 받는다).[3]",
+     "**토스의 검문소(같은 그룹 다른 회사)** — 내부·외부 저장소 사이 프록시에서 ① GitHub Advisory DB(하루 한 번 동기화)로 알려진 악성 조회 ② 이름이 진짜와 한두 글자 다른지(타이포스쿼팅) ③ LLM 으로 설치 스크립트 검사 → 통과하면 내려 주고, 뒤에서 전체 코드를 다시 본다. 백도어가 나오면 지우고 받아 간 서비스를 추적한다.[4][30]",
+     "**왜 전체 코드까지** — xz 사건처럼 몇 년 동안 기여해 관리자가 된 사람이 정상 라이브러리에 백도어를 넣는 경우가 있어서다.[4]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "타이포스쿼팅 — 진짜 이름과 몇 글자 다른가",
+     "body": "토스 발표는 정상 패키지 이름 목록(npm·PyPI 등 약 6만 개)과 편집 거리(레벤슈타인)로 '오타 이름'을 잡았습니다.[4] 아래는 같은 생각을 작게 옮긴 것입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "def lev(a, b):  # 편집 거리: 몇 글자를 고치면 같아지나\n    prev = list(range(len(b) + 1))\n    for i, ca in enumerate(a, 1):\n        cur = [i]\n        for j, cb in enumerate(b, 1):\n            cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb)))\n        prev = cur\n    return prev[-1]\n\nknown = {\"requests\", \"numpy\", \"flask\"}          # 정상 패키지 이름 목록\nfor name in [\"requests\", \"reqeusts\", \"requestss\", \"nunpy\", \"pandas\"]:\n    if name in known:\n        print(name, \"정상(목록에 있음)\"); continue\n    best = min(known, key=lambda k: lev(name, k))\n    d = lev(name, best)\n    print(name, \"→\", best, \"거리\", d, \"의심\" if d <= 2 else \"통과\")\n# requests 정상(목록에 있음)\n# reqeusts → requests 거리 2 의심\n# requestss → requests 거리 1 의심\n# nunpy → numpy 거리 1 의심\n# pandas → flask 거리 5 통과"
+    }
+   ],
+   "how_far": "모든 경고에 빌드를 막으면 개발이 멈춥니다. **어느 등급에서 막고 어느 등급은 알리기만 할지, 예외는 누가 언제까지 승인할지**를 정해 파이프라인에 넣는 것이 이 줄의 핵심입니다. {추론} 미국 NIST 의 보안 개발 기준(SSDF)도 쓰는 부품을 기록하고 취약점에 대응하는 일을 개발 절차 안에 두라고 합니다.[35]",
+   "refs": [
+    3,
+    4,
+    7,
+    30,
+    35
+   ],
+   "study": [
+    "sonatype-docs",
+    "g25-firewall",
+    "ssdf",
+    "pnpm-sc"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "발견된 취약점(인프라·오픈소스 공통) 조치를 이행하기 위해 다양한 팀의 담당자와 협업해 개선활동을 수행해요.",
+   "short": "고치는 손은 개발·인프라팀이라, '무엇을 몇 버전으로 올리면 되나'까지 만들어 넘기고 닫힐 때까지 확인한다.",
+   "why": "토스뱅크 발표자도 결국 조치는 인프라 담당자와 개발자에게 요청하고 기다려야 한다고 했습니다.[3] 그래서 요청을 가볍게 만들었습니다 — 예전엔 버전 확인·사용 여부·영향도·패치 대기에 오래 걸렸는데, 지금은 개발자가 **자동으로 만들어진 PR 을 확인하고 합치기만** 하면 됩니다.[3]",
+   "actually": {
+    "items": [
+     "**자동 PR·티켓** — 취약한 앱이 나오면 PR 이나 티켓이 저절로 생긴다. 패키지·현재 버전·올릴 버전·취약점이 적혀 있다.[3]",
+     "**고칠 버전 제안** — OSV-Scanner 의 fix 기능으로 바로 올릴 수 있는 것부터 확인한다.[3][22]",
+     "**컨테이너 이미지** — 자동 하드닝은 아직이라 DevOps·개발자 손을 빌린다. 취약점 없는 이미지를 주는 서비스를 검토 중이다.[3]",
+     "**법이 정한 마무리** — 금융사는 취약점마다 이행계획을 세우고, 없앨 수 없으면 그에 맞는 조치를 하며, 그마저 안 되면 최고경영자 승인을 받는다.[10]"
+    ]
+   },
+   "how_far": "고치는 일 자체가 아니라 **고칠 사람이 5분 안에 판단할 수 있는 요청**을 만드는 것, 그리고 기한을 넘긴 것을 다시 묻는 것까지입니다. {추론}",
+   "refs": [
+    3,
+    10,
+    22
+   ],
+   "study": [
+    "sonatype-docs",
+    "osv-scanner",
+    "efsr"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "개발자 대상 오픈소스 보안 정책 교육을 운영하고, 인증심사(OpenChain 등 금융권 규제 대응) 관련 오픈소스 항목의 기술 검토를 지원해요.",
+   "short": "개발자에게 '왜 아무 패키지나 못 받나'를 설명하고, 오픈소스 국제 인증 심사 때 기술 증빙을 맡는다.",
+   "why": "OpenChain 은 오픈소스를 쓰는 조직이 갖출 절차의 국제 표준입니다 — ISO/IEC 5230 은 라이선스 준수, ISO/IEC 18974 는 보안 보증(알려진 취약점 처리)입니다.[12][13] 국내 금융에서도 카카오뱅크가 2022년 5230 인증에 이어 18974 를 도입했고[14], 금융결제원도 5230 인증을 받았습니다.[46]",
+   "actually": {
+    "items": [
+     "**교육 내용** — 사내 저장소로만 받는 이유, 자동 PR 받는 법, pnpm 같은 안전한 설정, 비밀정보를 코드에 남기지 않기.[3]",
+     "**18974 가 보는 것** — 정책 문서, 맡은 사람과 그 역량, 쓰는 부품 목록, 알려진 취약점을 찾고·판단하고·고치는 절차가 실제로 돌고 있다는 기록.[12][13]",
+     "**기술 검토 지원** — 심사에서 '부품 목록이 있다', '취약점을 이렇게 처리했다'를 VMS·파이프라인 기록으로 보여 준다. {추론}"
+    ]
+   },
+   "how_far": "공고는 '금융권 규제 대응'으로 묶었지만 OpenChain 자체는 법이 아니라 회사가 고르는 인증입니다. 심사 서류는 정책·법무 쪽이 쓰고, 이 자리는 **기술 항목의 증거**를 맡는다고 보면 됩니다. {추론}",
+   "refs": [
+    3,
+    12,
+    13,
+    14,
+    46
+   ],
+   "study": [
+    "openchain-kwg",
+    "openchain"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "시스템에 대한 정기 및 비정기 인프라(서버, 네트워크, DBMS, 정보보호솔루션 등) 취약점 진단을 수행해요.",
+   "short": "서버·네트워크 장비·DB·보안 장비 설정을 법정 점검표로 하나씩 확인해 '취약'을 찾는 일.",
+   "why": "전자금융감독규정은 큰 금융사에 연 1회 이상 취약점 분석·평가를 요구하고[10], 금융위는 2026년 11월 이를 연 2회로 늘리고, PHP 처럼 널리 쓰는 소프트웨어에 중요 취약점이 나오면 수시 점검을 요청할 근거를 만들겠다고 예고했습니다.[9] '비정기'가 이 경우입니다. 토스뱅크는 네트워크 전체를 Nessus 로 스캔해 모르던 자산까지 찾습니다.[3]",
+   "actually": {
+    "items": [
+     "**항목표** — KISA 상세가이드의 Unix·Windows·네트워크·DBMS·보안 장비 항목을 설정 파일·명령 결과로 하나씩 판정한다.[31]",
+     "**자산 찾기** — 네트워크 스캐너로 목록에 없는 장비·서비스를 찾는다. 빠진 자산이 가장 위험하다.[3]",
+     "**모아서 쫓기** — 결과는 VMS 로 모아 오픈소스 취약점과 같이 관리한다(업무 문장의 '인프라·오픈소스 공통').[3][5]"
+    ]
+   },
+   "how_far": "오픈소스 쪽으로 자리가 정해지면 이 줄의 비중은 작아집니다(마지막 업무 줄).[1] 그래도 리눅스 설정 파일을 읽고 '왜 취약인가'를 말할 수 있는 정도는 기본입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    5,
+    9,
+    10,
+    31
+   ],
+   "study": [
+    "kisa-guide",
+    "cis-bench",
+    "linux-cmd"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "웹/모바일/침투테스트 등 다양한 관점에서 토스뱅크의 안전을 위해 취약점 진단을 수행하고, 소스코드 레벨에서의 취약점을 발견해 실제 위협인지 테스트해요.",
+   "short": "웹·앱·API 를 공격자처럼 두드리고, 코드에서 찾은 의심 줄이 진짜 공격에 쓰이는지 직접 돌려 가려낸다.",
+   "why": "같은 팀(Security Red Team)은 외주 없이 기획부터 점검·분석·대응까지 직접 합니다.[1][5] 오픈소스 쪽에서도 '그 취약한 함수를 우리 코드가 실제로 부르나'를 확인해야 진짜 위협인지 압니다.[3]",
+   "actually": {
+    "items": [
+     "**웹·API** — 로그인·권한·입력 처리를 OWASP 시험 가이드 순서로 본다.[32]",
+     "**모바일** — 앱을 풀어 저장 데이터·통신·위변조 방지를 본다.[33]",
+     "**코드** — 자동 도구가 찍은 줄을 사람이 읽고, 입력이 그 줄까지 닿는지 실제로 보낸다.[34]",
+     "**오픈소스와 이어지는 곳** — 취약한 부품이 있어도 그 기능을 안 쓰면 '해당 없음'(VEX)으로 적을 수 있다. 그 판단에 이 능력이 쓰인다.[3][20]"
+    ]
+   },
+   "how_far": "모의해킹 쪽으로 자리가 정해질 때 커지는 줄입니다.[1] 오픈소스 쪽이라면 **'이 CVE 가 우리 코드 경로에서 터지나'를 재현해 보는 수준**이 실용적인 최소선입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    5,
+    20,
+    32,
+    33,
+    34
+   ],
+   "study": [
+    "wstg",
+    "mastg",
+    "owasp-crg"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "서류검토 및 인터뷰 과정에서 후보자분의 전문성에 따라 합류 후 담당하실 업무 비중도 함께 조정할 예정이에요. 인프라·모의해킹 진단에 집중할 수도, 오픈소스 보안 체계 구축에 더 집중하게 될 수도 있어요!",
+   "short": "위 업무가 두 갈래(오픈소스 보안 체계 / 인프라·모의해킹 진단)라 강한 쪽으로 자리를 정한다는 뜻.",
+   "why": "업무 1~6번은 오픈소스, 7~8번은 같은 팀의 모의해킹·취약점 분석 공고와 겹치는 진단 업무입니다.[1] 한 사람이 다 하기보다 지원자에 맞춰 무게를 나누겠다는 안내입니다.",
+   "how_far": "자격요건 첫 줄이 오픈소스 반입·활용 관리 경험이라, 기본 축은 오픈소스입니다.[1] 진단 경험이 더 강하면 서류에 그 사례를 분명히 쓰는 편이 좋습니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "오픈소스 반입·활용 관리 경험이 필요해요. (오픈소스 사용 현황 파악, 반입 심사, 버전/취약점 관리, 사내 가이드라인 운영 등 정책·프로세스 운영 경험도 포함되며, SCA 도구를 활용한 CVE 스캔·조치 트래킹 등 기술적 경험이면 더 좋아요)",
+   "short": "도구를 써 본 것보다 '우리 회사가 무엇을 쓰는지 알고, 들어오는 길을 관리해 본' 경험을 본다.",
+   "why": "괄호 안에 정책·프로세스 운영 경험도 인정한다고 적었습니다.[1] 업무 1~4번(정책·심의·SBOM·파이프라인)을 이미 어디선가 굴려 봤느냐는 질문입니다.",
+   "actually": {
+    "items": [
+     "**사용 현황 파악** — '우리 서비스에 어떤 오픈소스가 몇 버전으로 있나'에 답해 본 경험. 다른 은행이 가장 어렵다고 한 부분이다.[7]",
+     "**반입 심사** — 새 라이브러리 신청을 받아 보고 허용·조건부·거절을 내려 본 경험.[3]",
+     "**버전·취약점 관리** — 오래된 버전을 올리게 하고 결과를 확인한 경험.[3]"
+    ]
+   },
+   "how_far": "경험이 없다면, 가상 프로젝트에 일부러 옛 버전을 넣고 SBOM → 스캔 → 우선순위 → 업그레이드 PR 까지 한 바퀴 돌린 기록이 대신할 수 있는 최소선입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    7
+   ],
+   "study": [
+    "g25-oss",
+    "syft",
+    "grype",
+    "dep-check"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "CVE·취약점 관리 프로세스에 대한 기본 이해가 필요해요.",
+   "short": "CVE 가 어떻게 번호를 받고 점수가 붙는지, 그리고 그중 무엇부터 고치나를 정하는 기준을 안다.",
+   "why": "CVE 는 공개된 취약점에 붙는 번호이고, 번호 발급 기관(CNA)이 접수해 매깁니다.[45] 모든 취약점을 고치는 것은 사실상 불가능해서 토스뱅크는 **실제 위협인 것부터** 고치도록 계획을 세운다고 했습니다.[3]",
+   "actually": {
+    "items": [
+     "**CVSS = 이론** — 얼마나 심각할 수 있나, 0~10 점.[3][19]",
+     "**EPSS = 확률** — 앞으로 30일 안에 실제 악용될 확률.[3][17]",
+     "**KEV = 실제 발생** — 실제 공격에 쓰인 것이 확인된 목록. 가장 먼저 본다.[3][18]",
+     "**VEX = 우리 현실** — SBOM 에 있는 취약점이 우리 제품에서 실제로 악용 가능한지 적은 문서(해당 없음·영향 있음·고쳐짐·조사 중). 토스뱅크도 아직 공부 단계라고 했다.[3][20]"
+    ],
+    "intro": "토스뱅크가 우선순위를 정할 때 보는 지표 넷입니다.[3]"
+   },
+   "examples": [
+    {
+     "title": "CVSS 순서와 실제 우선순위는 다르다",
+     "body": "발표 예시에서도 CVSS 9.4 인데 위험 점수는 낮은 항목에 KEV 표시가 있어 그것부터 고치라고 했습니다.[3] 가상 숫자로 순서를 매겨 보면(직접 돌린 출력):",
+     "lang": "python",
+     "code": "findings = [\n    {\"cve\": \"CVE-A\", \"cvss\": 9.8, \"epss\": 0.02, \"kev\": False},\n    {\"cve\": \"CVE-B\", \"cvss\": 7.5, \"epss\": 0.92, \"kev\": False},\n    {\"cve\": \"CVE-C\", \"cvss\": 6.5, \"epss\": 0.40, \"kev\": True},\n    {\"cve\": \"CVE-D\", \"cvss\": 9.1, \"epss\": 0.001, \"kev\": False},\n]\n# KEV(실제 악용) 먼저 → EPSS(악용 확률) → CVSS(심각도)\norder = sorted(findings, key=lambda f: (not f[\"kev\"], -f[\"epss\"], -f[\"cvss\"]))\nprint([f[\"cve\"] for f in order])   # ['CVE-C', 'CVE-B', 'CVE-A', 'CVE-D']\nprint(max(findings, key=lambda f: f[\"cvss\"])[\"cve\"])  # CVE-A  ← CVSS만 보면 1순위"
+    }
+   ],
+   "how_far": "'기본 이해'라 공식을 외울 필요는 없습니다. **번호 → 점수 → 영향 서비스 → 조치 → 확인** 흐름과, CVSS 만 보면 안 되는 이유를 예로 설명할 수 있으면 됩니다. {추론}",
+   "refs": [
+    3,
+    17,
+    18,
+    19,
+    20,
+    45
+   ],
+   "study": [
+    "cvss",
+    "epss",
+    "kev",
+    "vex"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "기본적인 IT 및 보안 인프라 환경에 대한 이해가 있는 분이 필요해요.",
+   "short": "서버·네트워크·컨테이너·저장소가 어떻게 이어져 도는지 알아야, 부품 하나가 어디까지 퍼졌는지 판단한다.",
+   "why": "토스뱅크의 오픈소스 관리는 서버(Wazuh)·네트워크(Nessus)·컨테이너 저장소(Harbor)·쿠버네티스 배포(Helm)·사내 패키지 저장소(Nexus)·파이프라인(GoCD)에 걸쳐 있습니다.[3] 이 그림이 머리에 없으면 '어디에 검사를 붙일지'를 못 정합니다. {추론}",
+   "actually": {
+    "items": [
+     "**패키지 저장소와 프록시** — 개발자 PC·빌드 서버가 어디서 라이브러리를 받는지.[3]",
+     "**컨테이너** — 이미지 안의 OS 패키지도 부품이다. 이미지 저장소·배포 차트까지 검사 대상이다.[3]",
+     "**망분리** — 내부망과 인터넷이 나뉘어 있어 외부 DB 를 쓰는 도구는 업데이트 길을 따로 만들어야 한다.[3][10]"
+    ]
+   },
+   "how_far": "구축할 줄 몰라도 됩니다. 리눅스에서 설치된 패키지를 확인하고, 도커 이미지 층을 열어 보고, 프록시를 거쳐 패키지를 받는 구조를 그려 설명할 수 있는 정도. {추론}",
+   "refs": [
+    3,
+    10
+   ],
+   "study": [
+    "linux-cmd",
+    "book-docker",
+    "book-kubernetes"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "다양한 팀과 원활한 협업을 위해 탁월한 커뮤니케이션 능력을 보유하신 분이 필요해요.",
+   "short": "막는 쪽이 보안팀이고 고치는 쪽이 남의 팀이라, 그 팀이 받아들일 말로 위험과 할 일을 전해야 해서.",
+   "why": "Security Red Team 은 제품 조직, Legal & Compliance, Platform Engineering, Internal Audit 과 협업한다고 공고에 적혀 있습니다.[1] 발표자는 조치를 '요청하고 기다려야 하는' 일이라 했고, 보안은 제품이 아니라 문화라는 말로 발표를 맺었습니다.[3]",
+   "actually": {
+    "items": [
+     "개발자에게: '이 패키지를 몇 버전으로, PR 은 여기' — 할 일 하나로.[3]",
+     "법무에게: 라이선스 고지·공개 의무 여부.[12]",
+     "감사·인증 심사에게: 절차가 실제로 돌았다는 기록.[12]"
+    ]
+   },
+   "how_far": "이력서 안내도 다른 조직과 복잡한 문제를 해결한 경험을 꼭 쓰라고 합니다.[1] 설득해서 끝까지 닫은 사례 하나를 구체적으로 준비합니다. {추론}",
+   "refs": [
+    1,
+    3,
+    12
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Nexus IQ, FOSSA, Black Duck, Snyk, OWASP Dependency-Check 등 SCA 툴 운용 경험이 있으면 좋아요.",
+   "short": "이름은 달라도 하는 일은 같다 — 의존성 목록을 뽑아 취약점·라이선스 DB 와 맞추고 정책으로 막는다.",
+   "why": "토스뱅크가 쓰는 것은 Sonatype 제품(Nexus Repository·Repository Firewall·Lifecycle)이고, 오픈소스 도구(Syft·Grype·Trivy·OSV-Scanner)를 같이 씁니다. 도구마다 결과가 달라 여러 개로 교차해 본다고 했습니다.[3]",
+   "actually": {
+    "items": [
+     "**공통 기능** — 의존성 분석(직접·간접), 알려진 취약점 대조, 라이선스 판별, 정책 위반 시 빌드 실패·알림.[26][27]",
+     "**무료로 연습** — OWASP Dependency-Check 는 무료라 상용 도구 없이도 같은 흐름을 익힐 수 있다.[27]",
+     "**운용의 핵심** — 오탐 처리(예외 등록)와 결과 합치기. 같은 그룹 토스도 알려진 악성 목록에 이유가 안 적혀 오탐이 가끔 나와 손으로 끄는 칸을 만들었다.[4]"
+    ]
+   },
+   "how_far": "특정 제품 경력보다 **한 도구를 팀 전체 파이프라인에 붙여 오탐·예외까지 운영해 본** 경험이 더 잘 옮겨 갑니다. {추론}",
+   "refs": [
+    3,
+    4,
+    26,
+    27
+   ],
+   "study": [
+    "dep-check",
+    "sonatype-docs",
+    "grype"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "OpenChain(ISO/IEC 5230, ISO/IEC 18974) 등 오픈소스 국제 인증 실무 경험이 좋아요.",
+   "short": "인증을 따거나 유지해 본 사람은 '정책·역할·부품 목록·취약점 절차'를 문서와 기록으로 갖춰 본 사람이라서.",
+   "why": "업무 6번의 인증심사 지원과 바로 이어집니다.[1] 5230 은 라이선스 준수, 18974 는 보안 보증 절차의 표준이고 서로 보완합니다.[12][13]",
+   "actually": {
+    "items": [
+     "**자체 선언 또는 제3자 인증** — 요구사항을 스스로 점검해 선언하거나, 인증 기관의 심사를 받는다.[12]",
+     "**국내 금융 사례** — 카카오뱅크가 5230 인증 뒤 18974 를 도입했다.[14]"
+    ]
+   },
+   "how_far": "실무 경험이 없으면 OpenChain 한국 워킹그룹 가이드로 18974 요구사항을 우리 회사(가상)에 대조한 표를 만들어 보는 것이 출발점입니다.[13] {추론}",
+   "refs": [
+    1,
+    12,
+    13,
+    14
+   ],
+   "study": [
+    "openchain",
+    "openchain-kwg"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "오픈소스 커뮤니티 기여 경험 또는 OSPO·컴플라이언스 유사 직무 경험이 있으면 좋아요.",
+   "short": "오픈소스가 밖에서 어떻게 만들어지고 고쳐지는지 알면, 안에서 들여오는 판단이 정확해져서.",
+   "why": "OSPO(Open Source Program Office)는 회사의 오픈소스 사용·기여·라이선스를 맡는 조직이고, TODO Group 이 실무자 모임과 가이드를 냅니다.[36] 커뮤니티를 알면 '이 프로젝트는 관리자가 몇 명이고 패치가 얼마나 빨리 나오나'를 읽을 수 있습니다. {추론}",
+   "actually": {
+    "items": [
+     "**기여 경험이 주는 것** — 이슈·PR·릴리스·보안 공지가 실제로 어떻게 오가는지 안다. {추론}",
+     "**관리자 권한의 무게** — xz 사건은 기여로 신뢰를 쌓아 릴리스 권한을 얻은 뒤 백도어를 넣은 경우였다.[4]"
+    ]
+   },
+   "how_far": "큰 기여일 필요는 없습니다. 쓰는 라이브러리에 버그·보안 이슈를 올리고 PR 이 받아들여진 기록 하나면 이야기할 거리가 됩니다. {추론}",
+   "refs": [
+    4,
+    36
+   ],
+   "study": [
+    "g25-firewall"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "금융권 규제(망분리, 전자금융감독규정 등) 이해가 있으면 좋아요.",
+   "short": "망분리 때문에 외부 저장소·취약점 DB 를 바로 못 쓰고, 감독규정이 점검 주기와 조치 승인을 정해서.",
+   "why": "전자금융감독규정은 내부망을 외부망과 분리하게 하고(제15조), 취약점 분석·평가와 이행계획·승인 절차를 정합니다(제37조의2).[10] 금융위는 2024년 망분리 완화 로드맵을 냈고[11], 2026년 11월에는 점검 주기를 연 2회로 늘리는 개정을 예고했습니다.[9]",
+   "actually": {
+    "items": [
+     "**망분리와 도구** — 외부 저장소에 바로 못 가니 사내 저장소가 필요하고, 스캐너의 취약점 DB 도 주기적으로 들여와야 한다.[3]",
+     "**점검 주기** — 법정 취약점 분석·평가가 1년에 한 번 이상, 개정되면 두 번.[9][10]",
+     "**조치** — 이행계획을 세우고, 없앨 수 없으면 상응 조치, 그것도 안 되면 최고경영자 승인.[10]"
+    ]
+   },
+   "how_far": "조문을 외울 필요는 없습니다. 망분리가 오픈소스 관리에 무슨 불편을 만들고 그걸 어떻게 푸는지 한 가지 예로 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    3,
+    9,
+    10,
+    11
+   ],
+   "study": [
+    "efsr"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "보안 관련 자격증(CISSP, 보안기사, OSCP, CREST 등)을 보유하고 있으면 좋아요.",
+   "short": "필수가 아니라, 지식(CISSP·보안기사)이나 실기(OSCP·CREST)를 남이 확인해 준 증거로 본다.",
+   "why": "CISSP 는 8개 영역 중 2개 이상에서 유급 경력 5년을 요구하는 관리 쪽 자격이고[37], OSCP 는 실습 장비를 실제로 뚫는 실기 시험[38], CREST 는 침투테스트 회사·인력을 인증하는 기관입니다.[39] 오픈소스 보안만을 다루는 자격은 목록에 없습니다.[1]",
+   "how_far": "오픈소스 쪽 자리라면 자격증보다 SBOM·SCA 를 직접 굴린 기록이 더 직접적인 증거입니다. 모의해킹 쪽으로 가려면 OSCP 같은 실기가 무게를 가집니다. {추론}",
+   "refs": [
+    1,
+    37,
+    38,
+    39
+   ],
+   "study": [
+    "oscp"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "목록·버전·상태가 정리돼 있지 않으면 불편한 사람",
+   "자동화로 남의 수고를 줄이는 게 즐거운 사람 — 자동 PR 이 대표 사례[3]",
+   "새 공급망 공격 소식을 찾아 읽는 사람[3][4]",
+   "개발자를 막기보다 설득하는 쪽을 고르는 사람"
+  ],
+  "hard": [
+   "고치는 것은 남의 손이라, 기다리고 다시 묻는 일이 많다[3]",
+   "경고가 많고 오탐도 있어 반복 판단이 끝없다[4]",
+   "망분리·감독규정 때문에 도구를 바로 붙이지 못하는 경우가 있다[3][10]",
+   "업무 비중이 합류 뒤 정해져, 원하는 갈래와 다를 수 있다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "새 CVE 가 오늘 공개됐어요. 우리 서비스 중 어디가 걸렸는지 어떻게 30분 안에 알 수 있죠?",
+   "a": "SBOM 과 통합 관리(VMS)를 두는 이유.[3][6]"
+  },
+  {
+   "q": "CVSS 9.8 과 CVSS 6.5 + KEV, 무엇부터 고치나요? EPSS 는요?",
+   "a": "토스뱅크가 직접 든 지표 순서.[3]"
+  },
+  {
+   "q": "빌드마다 SCA 를 돌리면 개발팀이 멈춘다고 합니다. 어떻게 설계하겠어요?",
+   "a": "막을 등급·예외·자동 PR.[3]"
+  },
+  {
+   "q": "npm 의 설치 스크립트가 왜 위험하고 어떻게 막나요?",
+   "a": "발표의 pnpm 두 옵션과 토스의 설치 스크립트 검사.[3][4][21]"
+  },
+  {
+   "q": "인터넷이 막힌 망에서 Grype 같은 스캐너를 최신으로 쓰려면?",
+   "a": "발표가 짚은 망분리 운영.[3]"
+  },
+  {
+   "q": "정상 라이브러리 관리자가 백도어를 넣으면(xz) 무엇으로 잡을 수 있나요?",
+   "a": "토스가 전체 코드 검사를 따로 둔 이유.[4][29]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 오픈소스 보안 전문가 (Security Researcher) — 토스뱅크",
+   "url": "https://toss.im/career/job-detail?job_id=7985037003",
+   "kind": "posting",
+   "note": "Security Division 8개 팀, Security Red Team 소속, 업무·요건·우대 5줄·이력서 안내·합류 여정(처우협의). 우대 줄은 사람인 사본에 없어 여기서 옮김"
+  },
+  {
+   "n": 2,
+   "title": "사람인 · 토스뱅크 오픈소스 보안 전문가 (Security Researcher)",
+   "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?rec_idx=55608279",
+   "kind": "posting",
+   "date": "2026-11-16",
+   "note": "근무지 테헤란로 131 13층, 급여 면접 후 결정, 접수 11/16~11/29"
+  },
+  {
+   "n": 3,
+   "title": "GUARDIANS 25 · 오픈소스 보안관리 체계 — 박성일 토스뱅크 Security Engineering Team Leader",
+   "url": "https://www.youtube.com/watch?v=XYaaQnPOgbo",
+   "kind": "company",
+   "date": "2025-11-20",
+   "note": "20분 · 자막 전부와 슬라이드 장면 확인(4단계 Discover·Analyze·Evaluate·Remediate, KrCERT/CC 수집, VMS·Nessus·Wazuh·Sonatype Nexus/Repository Firewall/Lifecycle·GoCD·Harbor+Trivy·Syft·Grype·비밀정보 검사·CVSS/EPSS/VEX/KEV·자동 PR·pnpm·OSV-Scanner·Chainguard 검토)"
+  },
+  {
+   "n": 4,
+   "title": "GUARDIANS 25 · AI 기반 Artifact Firewall: 자동화된 공급망 보안 — 표상영 토스 Security Researcher",
+   "url": "https://www.youtube.com/watch?v=k6Ire4XB5C4",
+   "kind": "company",
+   "date": "2025-11-20",
+   "note": "토스(같은 그룹 다른 회사) · 22분 자막 전부 읽음(내부·외부 저장소 사이 프록시, GitHub Advisory DB 하루 한 번 동기화, BK-tree·레벤슈타인 타이포스쿼팅, LLM 설치 스크립트 검사·전체 코드 검사, 격리 저장소, 받아 간 서비스 추적)"
+  },
+  {
+   "n": 5,
+   "title": "토스 채용 아티클 · 위험을 발견하면 실전적인 검증을 통해 현실에 적용해요 — 토스뱅크 Cybersecurity Tech Team, Security Researcher",
+   "url": "https://toss.im/career/article/42773",
+   "kind": "company",
+   "date": "2025-11-21",
+   "note": "공고가 링크한 팀원 인터뷰 — 외주 없이 전 과정, 자체 취약점 관리 시스템(VMS)"
+  },
+  {
+   "n": 6,
+   "title": "바이라인네트워크 · 금보원, 금융권 SW 공급망 보안 플랫폼 구축…SBOM·취약점 관리 결합",
+   "url": "https://byline.network/2026/02/9-393/",
+   "kind": "news",
+   "date": "2026-02-09",
+   "note": "접수·분류 → 영향 분석 → 패치 → 금융사 적용 → 확인, SPDX·CycloneDX, 의무가 아닌 지원 플랫폼"
+  },
+  {
+   "n": 7,
+   "title": "바이라인네트워크 · 제주은행이 오픈소스 스캐너 도입을 서두르는 이유",
+   "url": "https://byline.network/2026/06/0611-7/",
+   "kind": "news",
+   "date": "2026-06-12",
+   "note": "다른 은행 — 우리 시스템에 어떤 오픈소스가 있는지 파악이 어렵다, SCA 3분기 도입, SAST 형상관리 연동 자동 차단"
+  },
+  {
+   "n": 8,
+   "title": "바이라인네트워크 · 정부, SW공급망 보안 가이드라인 발표…SBOM 도입 제도화 검토",
+   "url": "https://byline.network/2024/05/12-292/",
+   "kind": "news",
+   "date": "2024-05",
+   "note": "과기정통부·국정원·KISA 'SW 공급망 보안 가이드라인 1.0' — SBOM 생성·취약점 조치 절차, 이용자 점검항목 30개, 규제 아님"
+  },
+  {
+   "n": 9,
+   "title": "금융위원회 보도자료 · IT자산 식별·관리 의무화, 취약점 점검·평가 제도 내실화",
+   "url": "https://m.korea.kr/briefing/pressReleaseView.do?newsId=156789689",
+   "kind": "news",
+   "date": "2026-11-18",
+   "note": "규정변경예고 — 대형사 연 1회→2회, 널리 쓰는 SW(예: PHP) 중요 취약점 때 수시점검 요청 근거, 연결된 시스템 빠짐없이, 모든 IT 자산 목록"
+  },
+  {
+   "n": 10,
+   "title": "전자금융감독규정 (금융위원회고시 제2025-4호)",
+   "url": "https://ko.wikisource.org/wiki/%EC%A0%84%EC%9E%90%EA%B8%88%EC%9C%B5%EA%B0%90%EB%8F%85%EA%B7%9C%EC%A0%95_(%EC%A0%9C2025-4%ED%98%B8)",
+   "kind": "reference",
+   "date": "2025-02-05",
+   "note": "제15조 내부망·외부망 분리, 제37조의2 취약점 분석·평가(연 1회 이상, 이행계획, 제거 불가 시 최고경영자 승인)"
+  },
+  {
+   "n": 11,
+   "title": "금융위원회 보도자료 · 「금융분야 망분리 개선 로드맵」 발표",
+   "url": "https://www.fsc.go.kr/no010101/82885?curPage=21",
+   "kind": "news",
+   "date": "2024-08-13",
+   "note": "생성형 AI·SaaS·연구개발 망분리 완화, 보안대책을 조건으로"
+  },
+  {
+   "n": 12,
+   "title": "OpenChain Project · ISO/IEC 5230(라이선스 준수)·ISO/IEC 18974(보안 보증)",
+   "url": "https://openchainproject.org/",
+   "kind": "reference",
+   "note": "오픈소스를 쓰는 조직이 갖출 절차의 국제 표준 — 정책·역할·역량·알려진 취약점 처리·부품 목록"
+  },
+  {
+   "n": 13,
+   "title": "OpenChain 한국 워킹그룹 · 기업을 위한 오픈소스 가이드",
+   "url": "https://openchain-project.github.io/OpenChain-KWG/",
+   "kind": "reference",
+   "note": "5230 은 라이선스 준수, 18974 는 보안 취약점 관리 — 서로 보완"
+  },
+  {
+   "n": 14,
+   "title": "OpenChain Project · 카카오뱅크 ISO/IEC 18974 도입",
+   "url": "https://openchainproject.org/news/2023/11/22/kakaobank-iso18974",
+   "kind": "news",
+   "date": "2023-11-22",
+   "note": "국내 금융사 — 2022년 5230 인증에 이어"
+  },
+  {
+   "n": 15,
+   "title": "CycloneDX",
+   "url": "https://cyclonedx.org/",
+   "kind": "reference",
+   "note": "OWASP 의 SBOM 형식"
+  },
+  {
+   "n": 16,
+   "title": "SPDX",
+   "url": "https://spdx.dev/",
+   "kind": "reference",
+   "note": "리눅스 재단의 SBOM 형식(ISO/IEC 5962)"
+  },
+  {
+   "n": 17,
+   "title": "FIRST · EPSS (Exploit Prediction Scoring System)",
+   "url": "https://www.first.org/epss/",
+   "kind": "reference",
+   "note": "앞으로 30일 안에 실제 악용될 확률"
+  },
+  {
+   "n": 18,
+   "title": "CISA · Known Exploited Vulnerabilities Catalog",
+   "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+   "kind": "reference",
+   "note": "실제로 악용된 것이 확인된 CVE 목록"
+  },
+  {
+   "n": 19,
+   "title": "FIRST · CVSS",
+   "url": "https://www.first.org/cvss/",
+   "kind": "reference",
+   "note": "0~10 심각도 점수, 최신 4.0"
+  },
+  {
+   "n": 20,
+   "title": "CISA · Minimum Requirements for VEX",
+   "url": "https://www.cisa.gov/resources-tools/resources/minimum-requirements-vulnerability-exploitability-exchange-vex",
+   "kind": "reference",
+   "date": "2023-04",
+   "note": "상태 넷 — 해당 없음·영향 있음·고쳐짐·조사 중"
+  },
+  {
+   "n": 21,
+   "title": "pnpm · Mitigating supply chain attacks",
+   "url": "https://pnpm.io/supply-chain-security",
+   "kind": "reference",
+   "note": "의존성 설치 스크립트 기본 차단(v10), 공개 직후 버전 설치 막기 minimumReleaseAge(v10.16)"
+  },
+  {
+   "n": 22,
+   "title": "OSV-Scanner",
+   "url": "https://google.github.io/osv-scanner/",
+   "kind": "reference",
+   "note": "구글의 오픈소스 취약점 스캐너, 고칠 버전 제안"
+  },
+  {
+   "n": 23,
+   "title": "Anchore · Syft",
+   "url": "https://github.com/anchore/syft",
+   "kind": "reference",
+   "note": "파일시스템·컨테이너 이미지에서 SBOM 생성"
+  },
+  {
+   "n": 24,
+   "title": "Anchore · Grype",
+   "url": "https://github.com/anchore/grype",
+   "kind": "reference",
+   "note": "SBOM·이미지의 취약점 스캔, EPSS·KEV 표시"
+  },
+  {
+   "n": 25,
+   "title": "Trivy",
+   "url": "https://trivy.dev/",
+   "kind": "reference",
+   "note": "이미지·파일·IaC·비밀정보 스캐너"
+  },
+  {
+   "n": 26,
+   "title": "Sonatype 문서 · Lifecycle(구 Nexus IQ)·Repository Firewall",
+   "url": "https://help.sonatype.com/",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "OWASP Dependency-Check",
+   "url": "https://owasp.org/www-project-dependency-check/",
+   "kind": "reference",
+   "note": "무료 SCA"
+  },
+  {
+   "n": 28,
+   "title": "Apache Log4j · Security",
+   "url": "https://logging.apache.org/log4j/2.x/security.html",
+   "kind": "reference",
+   "note": "CVE-2021-44228 — 2.0-beta9~2.14.1 영향, 2.15.0 부터 고침"
+  },
+  {
+   "n": 29,
+   "title": "NVD · CVE-2024-3094 (xz 백도어)",
+   "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-3094",
+   "kind": "reference",
+   "note": "xz 5.6.0·5.6.1"
+  },
+  {
+   "n": 30,
+   "title": "GitHub Advisory Database",
+   "url": "https://github.com/advisories",
+   "kind": "reference",
+   "note": "패키지 취약점·악성 패키지 공지"
+  },
+  {
+   "n": 31,
+   "title": "KISA · 2026 주요정보통신기반시설 기술적 취약점 분석·평가 방법 상세가이드",
+   "url": "https://www.kisa.or.kr/2060204/form?postSeq=22&page=1",
+   "kind": "reference",
+   "date": "2025-12-24",
+   "note": "Unix·Windows·네트워크·DBMS·보안 장비 등 12분야 항목표"
+  },
+  {
+   "n": 32,
+   "title": "OWASP Web Security Testing Guide",
+   "url": "https://owasp.org/www-project-web-security-testing-guide/",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "OWASP MASTG",
+   "url": "https://mas.owasp.org/MASTG/",
+   "kind": "reference"
+  },
+  {
+   "n": 34,
+   "title": "OWASP Code Review Guide",
+   "url": "https://owasp.org/www-project-code-review-guide/",
+   "kind": "reference"
+  },
+  {
+   "n": 35,
+   "title": "NIST SP 800-218 · Secure Software Development Framework (SSDF)",
+   "url": "https://csrc.nist.gov/pubs/sp/800/218/final",
+   "kind": "reference",
+   "date": "2022-02",
+   "note": "쓰는 부품 목록 유지·취약점 대응을 개발 절차에 넣으라는 기준"
+  },
+  {
+   "n": 36,
+   "title": "TODO Group (OSPO)",
+   "url": "https://todogroup.org/",
+   "kind": "reference",
+   "note": "회사 오픈소스 관리 조직(OSPO) 실무자 모임·가이드"
+  },
+  {
+   "n": 37,
+   "title": "ISC2 · CISSP",
+   "url": "https://www.isc2.org/certifications/cissp",
+   "kind": "reference",
+   "note": "8개 영역 중 2개 이상 유급 경력 5년"
+  },
+  {
+   "n": 38,
+   "title": "OffSec · PEN-200 (OSCP)",
+   "url": "https://www.offsec.com/courses/pen-200/",
+   "kind": "reference",
+   "note": "실습 장비를 뚫는 실기 시험"
+  },
+  {
+   "n": 39,
+   "title": "CREST",
+   "url": "https://www.crest-approved.org/",
+   "kind": "reference",
+   "note": "침투테스트 회사·인력 인증 기관"
+  },
+  {
+   "n": 40,
+   "title": "뉴시스 — 3년 근무 직원 1억4000만원… 인터넷은행 평균 급여(각사 사업보고서)",
+   "url": "https://www.newsis.com/view/NISX20250812_0003287731",
+   "kind": "news",
+   "date": "2025-08-13"
+  },
+  {
+   "n": 41,
+   "title": "SBS Biz — 인뱅 3사도 연봉 1억원대로(은행연합회 2025 지배구조 및 보수체계 연차보고서)",
+   "url": "https://biz.sbs.co.kr/amp/article/20000297249",
+   "kind": "news",
+   "date": "2026-03-13"
+  },
+  {
+   "n": 42,
+   "title": "자소설닷컴 — 토스뱅크 연봉(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 43,
+   "title": "토스뱅크 — 회사 정보(사이트 하단 주소)",
+   "url": "https://tossbank.com/esg",
+   "kind": "company"
+  },
+  {
+   "n": 44,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 45,
+   "title": "CVE Program",
+   "url": "https://www.cve.org/",
+   "kind": "reference",
+   "note": "CVE 번호를 매기는 체계 — CNA(번호 발급 기관)가 접수·발급"
+  },
+  {
+   "n": 46,
+   "title": "아시아경제 · 금융결제원, 오픈소스 국제표준 인증 획득",
+   "url": "https://www.asiae.co.kr/en/article/2025012108424021996",
+   "kind": "news",
+   "date": "2025-01-21",
+   "note": "ISO/IEC 5230 — 국내 금융 기관"
+  }
+ ],
+ "caveat": "토스뱅크의 오픈소스 반입 정책 문서·검사 등급 기준·조치 기한은 공개되지 않았습니다. 도구와 흐름은 토스뱅크 발표(2025-11)에서, 저장소 앞 검문소는 같은 그룹 토스의 발표에서 왔고, 정책·인증의 '보통 이런 것'은 국제 표준(OpenChain·CISA·NIST)과 다른 금융사 사례로 보였습니다. 발표 이후 도구 구성이 바뀌었을 수 있습니다. 우대사항 다섯 줄은 사람인 사본에 없어 토스 채용 페이지에서 옮겼습니다.",
+ "resources": [
+  {
+   "id": "g25-oss",
+   "title": "GUARDIANS 25 · 오픈소스 보안관리 체계",
+   "by": "박성일 · 토스뱅크 Security Engineering Team Leader · 20분",
+   "kind": "video",
+   "url": "https://www.youtube.com/watch?v=XYaaQnPOgbo",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "이 자리의 일 전체 — 4단계(찾기·분석·평가·조치)와 단계마다 쓰는 도구. 지원 전에 꼭 볼 영상."
+  },
+  {
+   "id": "g25-firewall",
+   "title": "GUARDIANS 25 · AI 기반 Artifact Firewall: 자동화된 공급망 보안",
+   "by": "표상영 · 토스 Security Researcher · 22분",
+   "kind": "video",
+   "url": "https://www.youtube.com/watch?v=k6Ire4XB5C4",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "사내 저장소 앞 검문소를 직접 만든 이야기 — 악성 목록 조회·타이포스쿼팅·설치 스크립트 검사. 업무 1·4번의 깊은 쪽."
+  },
+  {
+   "id": "tb-redteam",
+   "title": "위험을 발견하면 실전적인 검증을 통해 현실에 적용해요 — 토스뱅크 Cybersecurity Tech Team",
+   "by": "토스 채용 아티클 · 2025",
+   "kind": "doc",
+   "url": "https://toss.im/career/article/42773",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "공고가 링크한 같은 팀 인터뷰. 외주 없이 하는 범위와 자체 VMS, 서류·면접 팁."
+  },
+  {
+   "id": "openchain-kwg",
+   "title": "기업을 위한 오픈소스 가이드",
+   "by": "OpenChain 한국 워킹그룹",
+   "kind": "doc",
+   "url": "https://openchain-project.github.io/OpenChain-KWG/",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "회사 오픈소스 정책·프로세스·5230/18974 를 한국어로. 업무 1·6번과 우대 2번의 출발점."
+  },
+  {
+   "id": "openchain",
+   "title": "OpenChain Project (ISO/IEC 5230 · 18974)",
+   "by": "Linux Foundation",
+   "kind": "doc",
+   "url": "https://openchainproject.org/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "두 표준의 요구사항과 자체 점검표. 인증 심사에서 무엇을 보여 줘야 하는지."
+  },
+  {
+   "id": "cyclonedx",
+   "title": "CycloneDX 사양",
+   "by": "OWASP",
+   "kind": "doc",
+   "url": "https://cyclonedx.org/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "SBOM 파일 안에 무엇이 들어가나(부품·purl·의존 관계·VEX). 업무 3번의 형식."
+  },
+  {
+   "id": "syft",
+   "title": "Syft",
+   "by": "Anchore",
+   "kind": "doc",
+   "url": "https://github.com/anchore/syft",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "토스뱅크가 신청 건 분석에 쓰는 SBOM 생성기. 폴더·이미지 하나로 바로 해 볼 수 있다."
+  },
+  {
+   "id": "grype",
+   "title": "Grype",
+   "by": "Anchore",
+   "kind": "doc",
+   "url": "https://github.com/anchore/grype",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "SBOM·이미지 취약점 스캐너. EPSS·KEV 를 같이 보여 줘 우선순위 연습에 좋다."
+  },
+  {
+   "id": "trivy",
+   "title": "Trivy 문서",
+   "by": "Aqua Security",
+   "kind": "doc",
+   "url": "https://trivy.dev/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "이미지·파일·IaC·비밀정보를 한 도구로. 토스뱅크가 Harbor 와 Helm 검사에 붙였다."
+  },
+  {
+   "id": "osv-scanner",
+   "title": "OSV-Scanner",
+   "by": "Google",
+   "kind": "doc",
+   "url": "https://google.github.io/osv-scanner/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "고칠 버전 제안(fix)까지 — 업무 5번의 '바로 올릴 수 있는 것부터'."
+  },
+  {
+   "id": "dep-check",
+   "title": "OWASP Dependency-Check",
+   "by": "OWASP",
+   "kind": "doc",
+   "url": "https://owasp.org/www-project-dependency-check/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "무료 SCA. 상용 도구 없이 빌드에 붙여 실패시키는 흐름을 연습한다."
+  },
+  {
+   "id": "sonatype-docs",
+   "title": "Sonatype 문서 (Lifecycle · Repository Firewall)",
+   "by": "Sonatype",
+   "kind": "doc",
+   "url": "https://help.sonatype.com/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "토스뱅크가 쓰는 상용 SCA·저장소 방화벽의 정책·격리·자동 PR 기능."
+  },
+  {
+   "id": "cvss",
+   "title": "CVSS",
+   "by": "FIRST",
+   "kind": "doc",
+   "url": "https://www.first.org/cvss/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "심각도 점수가 어떻게 매겨지나 — 계산기와 사양."
+  },
+  {
+   "id": "epss",
+   "title": "EPSS",
+   "by": "FIRST",
+   "kind": "doc",
+   "url": "https://www.first.org/epss/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "악용 확률 점수와 매일 갱신되는 데이터. 요건 2번의 우선순위."
+  },
+  {
+   "id": "kev",
+   "title": "Known Exploited Vulnerabilities Catalog",
+   "by": "CISA",
+   "kind": "doc",
+   "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "실제 악용된 CVE 목록(내려받기 가능). 가장 먼저 볼 지표."
+  },
+  {
+   "id": "vex",
+   "title": "Minimum Requirements for VEX",
+   "by": "CISA · 2023",
+   "kind": "doc",
+   "url": "https://www.cisa.gov/resources-tools/resources/minimum-requirements-vulnerability-exploitability-exchange-vex",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "'우리 제품은 해당 없음'을 근거와 함께 적는 형식. 토스뱅크도 공부 중이라고 한 주제."
+  },
+  {
+   "id": "pnpm-sc",
+   "title": "Mitigating supply chain attacks",
+   "by": "pnpm 공식 문서",
+   "kind": "doc",
+   "url": "https://pnpm.io/supply-chain-security",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "설치 스크립트 차단과 공개 직후 버전 막기 설정. 발표가 권한 두 가지 옵션."
+  },
+  {
+   "id": "ssdf",
+   "title": "NIST SP 800-218 · SSDF",
+   "by": "NIST · 2022",
+   "kind": "doc",
+   "url": "https://csrc.nist.gov/pubs/sp/800/218/final",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "부품 목록 유지·취약점 대응을 개발 절차에 넣는 기준. Shift Left 를 정책 문장으로 옮길 때."
+  },
+  {
+   "id": "sw-transparency",
+   "title": "Software Transparency: Supply Chain Security in an Era of a Software-Driven Society",
+   "by": "Chris Hughes · Tony Turner · Wiley · 2023",
+   "kind": "book",
+   "url": "https://www.wiley.com/en-us/search?pq=Software%20Transparency",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "SBOM·VEX·공급망 공격 사례·정부 정책을 한 권으로. 업무 3·6번의 배경."
+  },
+  {
+   "id": "kisa-guide",
+   "title": "주요정보통신기반시설 기술적 취약점 분석·평가 방법 상세가이드 (2026)",
+   "by": "한국인터넷진흥원 · 2025-12 게시",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.kisa.or.kr/2060204/form?postSeq=22&page=1",
+   "why": "인프라 진단 항목 12분야의 판단 기준·점검 명령·조치 방법. 자체 진단 도구가 코드로 옮기는 원본."
+  },
+  {
+   "id": "efsr",
+   "title": "전자금융감독규정 (제2025-4호)",
+   "by": "금융위원회",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://ko.wikisource.org/wiki/%EC%A0%84%EC%9E%90%EA%B8%88%EC%9C%B5%EA%B0%90%EB%8F%85%EA%B7%9C%EC%A0%95_(%EC%A0%9C2025-4%ED%98%B8)",
+   "why": "제37조의2~3만 먼저 — 누가, 얼마나 자주, 평가 뒤 무엇을 해야 하나. 은행 점검 일정의 법적 바닥."
+  },
+  {
+   "id": "cis-bench",
+   "title": "CIS Benchmarks",
+   "by": "Center for Internet Security",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.cisecurity.org/cis-benchmarks",
+   "why": "OS·클라우드·쿠버네티스 설정 기준. KISA 항목과 견주면 같은 설정을 다른 기준이 어떻게 보는지 보인다."
+  },
+  {
+   "id": "wstg",
+   "title": "OWASP Web Security Testing Guide",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://owasp.org/www-project-web-security-testing-guide/",
+   "why": "웹 진단을 단계별로 빠짐없이 하는 국제 절차서."
+  },
+  {
+   "id": "mastg",
+   "title": "OWASP Mobile Application Security Testing Guide (MASTG)",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://mas.owasp.org/MASTG/",
+   "why": "모바일 앱 진단의 국제 기준. 앱 저장소·통신·위변조 방지 점검 방법."
+  },
+  {
+   "id": "owasp-crg",
+   "title": "OWASP Code Review Guide",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://owasp.org/www-project-code-review-guide/",
+   "why": "소스코드에서 취약점을 찾는 순서와 자동 도구의 한계. 업무 넷째 줄을 위해."
+  },
+  {
+   "id": "oscp",
+   "title": "PEN-200: Penetration Testing with Kali Linux (OSCP)",
+   "by": "OffSec",
+   "kind": "course",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.offsec.com/courses/pen-200/",
+   "why": "실기 자격 OSCP 의 과정. 모의해킹 쪽 자리를 노린다면."
+  },
+  {
+   "id": "linux-cmd",
+   "title": "The Linux Command Line",
+   "by": "William Shotts",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://linuxcommand.org/tlcl.php",
+   "why": "무료 공개 책. 권한·프로세스·셸 스크립트 — Unix 항목(U-)을 읽고 Shell 로 걷는 바탕."
+  },
+  {
+   "id": "book-docker",
+   "title": "개발자를 위한 도커",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "컨테이너가 무엇을 나누고 무엇을 같이 쓰는지 — 컨테이너 탈출을 이해하는 바탕."
+  },
+  {
+   "id": "book-kubernetes",
+   "title": "쿠버네티스 입문",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "파드·서비스 계정·RBAC 이 실제로 어떻게 생겼는지."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사 발표로 그림 잡기",
+   "time": "1주",
+   "goal": "토스뱅크가 오픈소스를 4단계로 어떻게 관리하는지 도구 이름과 함께 설명할 수 있다.",
+   "resources": [
+    "g25-oss",
+    "g25-firewall",
+    "tb-redteam"
+   ],
+   "task": "발표의 4단계(찾기·분석·평가·조치) 표를 직접 다시 그리고, 칸마다 도구와 '왜 그 도구인가'를 한 줄씩 적는다."
+  },
+  {
+   "title": "SBOM 과 스캔 손에 익히기",
+   "time": "2주",
+   "goal": "프로젝트 하나에서 SBOM 을 뽑고, 스캐너 셋의 결과 차이를 설명할 수 있다.",
+   "resources": [
+    "syft",
+    "grype",
+    "trivy",
+    "osv-scanner",
+    "cyclonedx",
+    "dep-check"
+   ],
+   "task": "가상 스프링 + 파이썬 프로젝트에 일부러 옛 버전(log4j-core 2.14.1 등)을 넣고 Syft 로 CycloneDX SBOM 을 만든 뒤 Grype·Trivy·OSV-Scanner 결과를 표로 비교한다."
+  },
+  {
+   "title": "우선순위와 파이프라인",
+   "time": "2~3주",
+   "goal": "결과를 KEV·EPSS·CVSS 로 줄 세우고, 빌드마다 자동 검사·차단이 돌게 만든다.",
+   "resources": [
+    "cvss",
+    "epss",
+    "kev",
+    "vex",
+    "pnpm-sc",
+    "sonatype-docs",
+    "book-docker"
+   ],
+   "task": "2단계 결과에 EPSS·KEV 를 붙여 정렬하고, CI 에 SBOM 생성 + 스캔 + '심각도 높음이면 실패' 단계를 붙인다. pnpm 에 공개 직후 버전 막기를 설정하고, '해당 없음' VEX 문서를 하나 써 본다."
+  },
+  {
+   "title": "정책과 인증 문서",
+   "time": "1~2주",
+   "goal": "반입 정책 한 쪽과 예외 절차를 쓰고, 18974 요구사항에 우리 절차를 대응시킬 수 있다.",
+   "resources": [
+    "openchain-kwg",
+    "openchain",
+    "ssdf",
+    "efsr",
+    "sw-transparency"
+   ],
+   "task": "가상 회사의 오픈소스 반입 정책(1쪽) · 예외 신청 양식 · 18974 요구사항 대조표를 만든다. 망분리 환경에서 스캐너 DB 를 들여오는 방법도 한 단락 적는다."
+  },
+  {
+   "title": "인프라·모의해킹 갈래 (선택)",
+   "time": "계속",
+   "goal": "업무 7·8번 쪽으로 배정될 때를 대비해 법정 점검표와 웹·앱 진단 순서를 익힌다.",
+   "resources": [
+    "kisa-guide",
+    "cis-bench",
+    "linux-cmd",
+    "wstg",
+    "mastg",
+    "owasp-crg",
+    "oscp",
+    "book-kubernetes"
+   ],
+   "task": "가상 리눅스 서버에서 KISA 가이드 Unix 항목 10개를 셸 스크립트로 판정하고, 취약하게 만든 웹 앱 하나를 WSTG 순서로 점검해 보고서 한 장을 쓴다."
+  }
+ ],
+ "pay": {
+  "summary": "신입 초봉은 **약 5,100만원**(집계값), 직원 평균은 **약 1억 1,600만원**(공시) — 평균은 경력직이 대부분이라 초봉과 다르다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없어 보안 직군 계약 연봉과 다를 수 있다 [42]"
+   },
+   {
+    "label": "직원 평균 보수",
+    "value": "1억 1,600만원",
+    "amount": 11600,
+    "basis": "공시 · 2025년",
+    "note": "은행연합회 공시(지배구조·보수체계 연차보고서), 임원을 뺀 직원만 [41]"
+   },
+   {
+    "label": "임직원 평균 급여",
+    "value": "1억 1,700만원",
+    "amount": 11700,
+    "basis": "사업보고서 · 2024년",
+    "note": "임직원 684명 기준 [40]"
+   },
+   {
+    "label": "카카오뱅크 평균",
+    "value": "1억 2,200만원",
+    "amount": 12200,
+    "basis": "공시 · 2025년",
+    "peer": true,
+    "note": "같은 공시의 평균 보수 [41]"
+   },
+   {
+    "label": "케이뱅크 평균",
+    "value": "1억 200만원",
+    "amount": 10200,
+    "basis": "공시 · 2025년",
+    "peer": true,
+    "note": "같은 공시의 임직원 평균 보수(임원 포함) [41]"
+   }
+  ],
+  "how": "공고의 급여는 '면접 후 결정'이고 [2], 합류 여정이 서류 → 직무 인터뷰 → 문화적합성 인터뷰 → 레퍼런스 체크 → **처우협의** 순이라 연봉은 사람마다 정한다 [1]. 신입·경력 모두 받는 공고다 [2]. 평균 보수는 경력직이 많은 회사 전체 값이라 신입이 받는 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 전체를 기준으로 한 2021년 공식 소개 글이다 [44]. 토스뱅크에 그대로 적용되는지, 지금도 같은지는 글에 적혀 있지 않으니 처우협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스뱅크 본사",
+  "address": "서울특별시 강남구 테헤란로 131, 13층 (역삼동, 한국지식재산센터)",
+  "postal": "06133",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20131",
+  "near": "2호선 역삼역과 강남역 사이 테헤란로 {추론}",
+  "note": "공고의 근무지가 '서울 강남구 테헤란로 131, 13층'이고 [2], 토스뱅크 사이트 하단 회사 정보의 주소와 같다 [43]."
+ }
+}

@@ -74,6 +74,7 @@
   "ats-toss:group:7702579003": "tossbank-infra-operations-engineer",
   "ats-toss:group:5498959003": "tossbank-ml-llm-ops",
   "ats-toss:group:6118752003": "tossbank-ml-product",
+  "saramin-55608279": "tossbank-oss-security-researcher",
   "ats-toss:group:4542935003": "tossbank-product-foundation-server",
   "ats-toss:group:4076109003": "tossbank-product-server",
   "saramin-55608433": "tossbank-security-audit-manager",
@@ -786,6 +787,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 14
+  },
+  {
+   "id": "tossbank-oss-security-researcher",
+   "company": "토스뱅크",
+   "role": "오픈소스 보안 전문가",
+   "jobs": [
+    "saramin-55608279"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 18
   },
   {
    "id": "tossbank-product-foundation-server",
