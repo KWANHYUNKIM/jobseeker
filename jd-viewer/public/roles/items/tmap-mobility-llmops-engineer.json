@@ -1,0 +1,573 @@
+{
+  "id": "tmap-mobility-llmops-engineer",
+  "company": "티맵모빌리티",
+  "role": "LLMOps 엔지니어",
+  "team": "MDP팀 (전사 데이터 플랫폼)",
+  "jobs": ["ats-skcareers:sk:R262015"],
+  "researched_at": "2026-11-23",
+  "tldr": {
+    "what": "티맵 서비스들이 LLM을 부를 때 지나가는 **공용 관문(LLM 게이트웨이)**과 그 위의 **평가·비용·보안 규칙**을 맡습니다 — 어떤 모델을 쓸지 시험으로 고르고, 모델이 죽으면 다른 모델로 넘기고, 누가 토큰을 얼마나 썼는지 세어 줄이는 일입니다.[1]",
+    "env": "자리는 AI 개발팀이 아니라 전사 데이터를 쌓고 내주는 **데이터 플랫폼 팀(MDP)**에 있습니다.[1] 회사 데이터는 **Databricks(Unity Catalog)와 AWS** 위로 모이는 중이고, 그 위에서 TMAP 에이전트(차 안 음성·모바일)가 자라고 있습니다.[5][2][7]",
+    "oneline": "LLM을 만드는 사람이 아니라 **LLM을 '고르고, 잇고, 재고, 막는'** 운영 엔지니어. 개발 실력보다 **평가 설계와 숫자로 결정하는 힘**이 중심입니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "실제 업무 시나리오를 반영한 평가 기준을 설계하고, 여러 LLM의 품질·비용·응답 속도·안전성을 비교하여 서비스에 적합한 모델을 선정합니다.",
+      "short": "공개 순위표 대신 티맵 실제 질문으로 시험지를 만들고, 품질·값·속도·안전 네 칸으로 모델을 고르는 일.",
+      "why": "티맵은 차 안 음성 안내를 에이닷 기반으로 바꿨고(2025-09), 말 한 번에 경유지까지 알아듣는 대화를 내세웠습니다.[8] 2026년에는 '풀 LLM 기반 에이전트'를 한 자동차 회사와 내부 시험 중이라고 밝혔습니다.[7] CTO는 LLM 도입을 위해 여러 곳과 협업을 검토·실험 중이라고 했습니다[6] — 고를 후보가 여럿이라는 뜻이고, 그 비교를 이 자리가 맡습니다.",
+      "actually": {
+        "intro": "모델 비교는 보통 이런 순서로 합니다.",
+        "items": [
+          "**시나리오 모으기** — '근처 주유소 들렀다 집 가자' 같은 실제 요청 유형을 뽑아 문항으로 만든다.[8] {추론}",
+          "**품질 재기** — 정답을 정할 수 있는 문항(목적지·경유지를 맞게 뽑았나)은 코드로, 답이 열린 문항은 사람이나 LLM 심판으로 채점한다.[19][23]",
+          "**값 재기** — 작업 한 건의 입력·출력 토큰 × 모델 단가로 '건당 비용'을 낸다. 같은 일을 시켜도 모델마다 토큰 수가 달라 실제로 돌려 봐야 한다. {추론}",
+          "**속도 재기** — 평균이 아니라 p95(느린 쪽 5% 경계) 지연. 차 안 음성은 기다림이 바로 체감된다. {추론}",
+          "**안전 재기** — 탈옥·개인정보 유출·엉뚱한 지시 수행을 노리는 문항을 따로 둔다.[15]",
+          "**결정** — 품질·속도 문턱을 넘는 후보 중 건당 비용이 가장 싼 것. 모든 칸 1등인 모델은 보통 없다.[23]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "문턱을 넘는 것 중 가장 싼 모델 — 가상 숫자",
+          "body": "품질 0.85 이상·p95 3초 이하를 문턱으로 두면, 가장 똑똑한 A는 느려서, 가장 싼 C는 품질이 모자라서 떨어지고 B가 남는다.",
+          "lang": "python",
+          "code": "cands = [(\"A-대형\",3.00,15.00,0.91,4.8),(\"B-중형\",0.80,4.00,0.87,2.1),(\"C-소형\",0.15,0.60,0.74,0.9)]\ninp, out = 2500, 400\nfor name,pin,pout,q,p95 in cands:\n    cost = (inp*pin + out*pout)/1e6\n    ok = q >= 0.85 and p95 <= 3.0\n    print(f\"{name}: 건당 ${cost:.4f}  품질 {q:.2f}  p95 {p95}s  {'통과' if ok else '탈락'}\")\n# A-대형: 건당 $0.0135  품질 0.91  p95 4.8s  탈락\n# B-중형: 건당 $0.0036  품질 0.87  p95 2.1s  통과\n# C-소형: 건당 $0.0006  품질 0.74  p95 0.9s  탈락"
+        }
+      ],
+      "how_far": "무엇을 '좋은 답'으로 칠지는 서비스 기획·AI Agent 개발팀과 같이 정합니다 — 그 팀 공고에도 '상용·오픈소스 LLM 평가와 라우팅 전략'이 들어 있습니다.[2] 이 자리는 **시험지와 채점기를 만들고, 표로 비교해 근거를 내는 쪽**입니다. {추론} 최소선은 문항 수십~수백 개짜리 평가셋을 스스로 만들어 두 모델을 같은 조건에서 돌려 본 경험입니다. {추론}",
+      "refs": [2, 6, 7, 8, 15, 19, 23],
+      "study": ["ai-eng", "cs336-eval", "mt-bench", "mlflow-genai"]
+    },
+    {
+      "section": "task",
+      "quote": "LLM Gateway, AI Agent 프레임워크, 평가·모니터링 도구 등 오픈소스와 상용 소프트웨어를 비교·검증하고 도입을 주도합니다.",
+      "short": "모델 앞 관문·에이전트 뼈대·평가 도구를 '만들지 말고 고를' 후보로 놓고 직접 띄워 비교하는 일.",
+      "why": "티맵은 데이터를 Databricks 로 모으는 중이고 Unity Catalog를 중앙 허브로 키울 계획이라고 밝혔습니다.[5] Databricks 에는 모델 호출의 권한·사용량 제한·장애 전환·감사 기록을 맡는 관문 기능이 따로 있고[12], 오픈소스 쪽에는 LiteLLM 같은 프록시가 있습니다.[9] 어느 쪽을 쓸지가 이 줄의 '비교·검증'입니다. {추론}",
+      "actually": {
+        "intro": "후보는 칸마다 대략 이렇습니다(티맵이 무엇을 쓰는지는 공개되지 않았습니다).",
+        "items": [
+          "**LLM 게이트웨이** — 오픈소스 LiteLLM 프록시(키별 예산·라우팅·장애 전환)[9][11], Databricks 의 관문 기능(Unity Catalog 권한·추론 기록 표)[12], 관측 도구 Langfuse 도 게이트웨이를 낸다.[18]",
+          "**에이전트 프레임워크** — LangGraph(상태가 있는 그래프로 에이전트 흐름을 짠다)[26], LangChain·LlamaIndex.",
+          "**평가·추적 도구** — MLflow 의 GenAI 평가(`mlflow.genai.evaluate`, 채점기 scorer)[17], Langfuse(추적·LLM 심판·사람 검토 대기열·모델별 비용)[18], RAG 지표 라이브러리 Ragas.[27]",
+          "**비교 축** — 우리 데이터가 밖으로 나가나(직접 설치 가능한가), 이미 쓰는 Databricks·AWS 와 붙나, 장애 때 누가 고치나, 라이선스·비용. {추론}"
+        ]
+      },
+      "how_far": "'도입 주도'는 보통 짧은 시험 설치(PoC) → 비교표 → 보안 검토 → 운영 전환까지입니다. {추론} 도구 안을 고치기보다 **설치·연결·한계 확인**이 일의 대부분이고, 그 결과를 문서로 남겨 다른 팀이 따르게 하는 게 끝입니다. {추론}",
+      "refs": [5, 9, 11, 12, 17, 18, 26, 27],
+      "study": ["litellm-docs", "dbx-gateway", "langfuse-docs", "mlflow-genai", "langgraph-docs"]
+    },
+    {
+      "section": "task",
+      "quote": "평가 데이터와 기준을 구축하고, 자동 평가와 사람의 검토를 결합하여 모델 변경 전후의 품질과 성능을 검증합니다.",
+      "short": "모델을 바꿀 때마다 같은 시험지로 전후를 비교하고, 기계 채점이 사람과 맞는지까지 확인하는 일.",
+      "why": "모델 공급사는 같은 이름으로도 버전을 바꾸고, 더 싼 모델로 갈아탈 일도 생깁니다. {추론} 그래서 '바꿔도 되나'를 매번 같은 기준으로 답해야 합니다. 큰 언어 모델을 다른 모델이 채점하는 방식(LLM 심판)은 사람 판단과 80% 넘게 일치했지만, 앞에 놓인 답을 편드는 위치 편향·긴 답 편향이 있다는 연구가 있습니다.[19] 그래서 자동 채점에 사람 검토를 섞습니다.",
+      "actually": {
+        "items": [
+          "**평가셋 만들기** — 실제 요청 유형별 문항 + 기대 답(또는 채점 기준). 개인정보는 지우고 쓴다.[16]",
+          "**자동 채점** — 규칙으로 맞출 수 있는 건 코드, 열린 답은 LLM 심판. MLflow·Langfuse 모두 LLM 심판과 직접 짠 채점기를 지원한다.[17][18]",
+          "**사람 검토** — 표본을 뽑아 사람이 채점하고, 심판과 얼마나 맞는지(일치율·카파) 본다. Langfuse 는 이를 위한 검토 대기열(annotation queue)을 둔다.[18]",
+          "**전후 비교** — 통과율 하나만 보지 않고 '새로 깨진 문항'을 따로 센다. 평균이 올라도 중요한 문항이 깨질 수 있다. {추론}",
+          "**성능** — 같은 문항으로 지연·토큰 수·비용도 함께 잰다."
+        ]
+      },
+      "examples": [
+        {
+          "title": "전후 비교 + 심판 믿을 만한가 — 가상 200문항",
+          "body": "통과율은 7%p 올랐지만 12문항은 새로 깨졌다. 깨진 12개를 사람이 열어 보는 게 다음 일이다. 심판과 사람의 일치율 80%는 높아 보여도, 우연히 맞을 몫을 뺀 카파는 0.52로 '보통'이다.",
+          "lang": "python",
+          "code": "pairs = [(1,1)]*150 + [(1,0)]*12 + [(0,1)]*26 + [(0,0)]*12\nbefore = sum(a for a,_ in pairs)/len(pairs); after = sum(b for _,b in pairs)/len(pairs)\nbroke = sum(1 for a,b in pairs if a==1 and b==0); fixed = sum(1 for a,b in pairs if a==0 and b==1)\nprint(f\"통과율 {before:.1%} → {after:.1%}, 새로 고쳐진 {fixed}문항, 새로 깨진 {broke}문항\")\njudge = [1]*30+[0]*10+[1]*6+[0]*4; human = [1]*30+[0]*10+[0]*6+[1]*4\nagree = sum(j==h for j,h in zip(judge,human))/len(judge)\npj, ph = sum(judge)/50, sum(human)/50; pe = pj*ph+(1-pj)*(1-ph)\nprint(f\"심판-사람 일치율 {agree:.0%}, 코언 카파 {(agree-pe)/(1-pe):.2f}\")\n# 통과율 81.0% → 88.0%, 새로 고쳐진 26문항, 새로 깨진 12문항\n# 심판-사람 일치율 80%, 코언 카파 0.52"
+        }
+      ],
+      "how_far": "채점 기준의 '정답'은 서비스 담당자와 합의하고, 이 자리는 **그 기준을 반복해서 돌릴 수 있는 파이프라인**으로 만듭니다. {추론} 최소선: 평가셋 버전 관리, 전후 비교 보고서 한 장, 심판과 사람의 일치도 확인. {추론}",
+      "refs": [16, 17, 18, 19],
+      "study": ["mt-bench", "mlflow-genai", "langfuse-docs", "ragas-docs", "ai-eng"]
+    },
+    {
+      "section": "task",
+      "quote": "LLM Gateway의 모델 및 공급자 등록, 모델 라우팅, 장애 전환, 캐싱, 사용량 제한 정책을 관리하고 운영 상태를 모니터링합니다.",
+      "short": "서비스가 부르는 모델 앞 관문에 '누구를 어디로, 죽으면 어디로, 얼마까지'를 설정하고 지키는 일.",
+      "why": "티맵 구성원은 업무에 ChatGPT·Gemini·Claude·Codex 등 여러 AI 도구를 씁니다.[3] 서비스 쪽도 상용·오픈소스 모델을 섞어 라우팅하려 합니다.[2] 공급사가 여럿이면 열쇠·한도·장애가 공급사마다 따로 놀기 때문에, 한 관문에서 모아 관리합니다. {추론}",
+      "actually": {
+        "intro": "오픈소스 LiteLLM 문서로 보는 관문의 설정 칸입니다(티맵의 실제 설정은 공개되지 않았습니다).",
+        "items": [
+          "**모델·공급자 등록** — 같은 이름(모델 그룹) 아래 여러 배포를 걸고, 분당 요청 수(rpm)·토큰 수(tpm) 한도를 적는다.[9]",
+          "**라우팅** — 가중치로 섞기(기본값), 한도에 덜 찬 곳으로, 가장 빠른 곳으로, 가장 싼 곳으로 같은 전략을 고른다.[9]",
+          "**장애 전환** — 재시도를 다 써도 실패하면 정해 둔 순서로 다음 모델에 보낸다. 문맥 길이 초과·콘텐츠 정책 거절은 따로 갈 곳을 정할 수 있다.[10]",
+          "**쉬게 하기(cooldown)** — 실패가 잦은 배포를 잠시 빼 둔다. 문서 예시는 3번 실패하면 30초.[10]",
+          "**사용량 제한** — 열쇠(가상 키)마다 예산·기간·tpm·rpm 한도를 건다.[11]",
+          "**감시** — 요청 수·토큰·지연을 시스템 표로 남기고 서비스·모델·사람별로 비용을 나눠 보는 기능이 Databricks 관문에도 있다.[12]"
+        ]
+      },
+      "flows": [
+        {
+          "caption": "요청 하나가 관문을 지나는 길[9][10][11]",
+          "steps": [
+            "서비스 요청 · 열쇠(가상 키) 확인",
+            "한도 검사 · 예산·rpm·tpm",
+            "캐시 확인 · 같은 앞부분이면 싸게",
+            "라우팅 · 모델 그룹 안에서 배포 고르기",
+            "호출·재시도 · 실패 시 쉬게 하기",
+            "장애 전환 · 다음 모델로",
+            "기록 · 토큰·비용·지연"
+          ],
+          "mine_from": 0
+        }
+      ],
+      "examples": [
+        {
+          "title": "주모델이 죽었을 때 — 장애 전환과 30초 쉬기",
+          "body": "0초에 주모델이 실패하면 예비1로 넘기고 주모델을 30초 쉬게 한다. 5초 요청은 주모델을 아예 건너뛴다. 31초에 쉬는 시간이 끝나고 주모델이 살아났으면 다시 주모델로 간다.",
+          "lang": "python",
+          "code": "chain = [\"주모델\",\"예비1\",\"예비2\"]; down = {\"주모델\"}; cooldown_until = {}\ndef route(t):\n    for m in chain:\n        if cooldown_until.get(m,-1) > t: continue\n        if m not in down: return m\n        cooldown_until[m] = t + 30\nfor t in [0,5,31,40]:\n    if t == 31: down.clear()\n    print(f\"t={t:>2}s → {route(t)}\")\n# t= 0s → 예비1\n# t= 5s → 예비1\n# t=31s → 주모델\n# t=40s → 주모델"
+        }
+      ],
+      "how_far": "관문 도구를 직접 만들기보다 **설정·정책을 정하고 운영**하는 자리입니다. {추론} 다만 장애 전환 순서를 정하려면 예비 모델도 같은 평가셋을 통과해야 하므로 업무 첫 줄(평가)과 이어집니다. {추론}",
+      "refs": [2, 3, 9, 10, 11, 12],
+      "study": ["litellm-docs", "litellm-reliability", "dbx-gateway", "sre-book"]
+    },
+    {
+      "section": "task",
+      "quote": "모델·조직·기능별 토큰 사용량과 비용을 분석하고, 프롬프트·컨텍스트·캐싱·모델 선택 정책을 최적화하여 작업당 비용을 절감합니다.",
+      "short": "누가 어떤 기능에 토큰을 얼마나 썼는지 표로 나누고, 같은 결과를 더 싸게 내는 규칙을 찾는 일.",
+      "why": "LLM 값은 토큰 수로 매겨집니다. 같은 기능도 프롬프트 길이·넣는 문서 양·모델에 따라 값이 몇 배 갈립니다. {추론} 티맵 데이터 플랫폼 팀은 다른 공고에서도 '사용량·비용 분석을 통한 리소스 최적화'를 업무로 두고 있어[4], 같은 팀의 일하는 방식이 LLM 비용에도 적용됩니다. {추론}",
+      "actually": {
+        "items": [
+          "**나눠 세기** — 호출 기록을 조직·기능·모델로 묶어 비용, 성공 1건당 비용, 캐시 비율을 낸다(아래 SQL).",
+          "**프롬프트 캐싱** — 매번 같은 앞부분(시스템 지시·도구 설명)을 공급사가 저장해 두고 싸게 읽게 한다. Anthropic 은 쓰기 1.25배·읽기 0.1배(모델별 예외 있음)이고 기본 5분 유지[13], OpenAI 도 앞부분이 정확히 같아야 맞고 캐시 읽기 할인이 있다.[14]",
+          "**컨텍스트 줄이기** — RAG 로 문서를 통째로 넣지 않고 필요한 조각만. 문서를 많이 넣어도 정확도가 10~20개에서 포화된다는 실험이 있다.[22]",
+          "**모델 선택** — 쉬운 요청은 작은 모델로, 어려운 것만 큰 모델로 보내는 라우팅.[9][20]",
+          "**'작업당' 비용** — 호출당이 아니라 성공한 작업 1건당으로 센다. 실패·재시도도 돈이다. {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "조직·기능별 비용 — SQLite 로 돌린 결과(가상 1,700건)",
+          "body": "장소검색은 호출 4건 중 3건이 앞부분 2,400토큰을 캐시로 읽어 입력의 60%가 캐시다. 대화요약은 싸지만 10건 중 1건이 실패해서 성공 기준으로 다시 나눈다.",
+          "lang": "sql",
+          "code": "select u.org, u.feature, count(*) as calls,\n  round(sum((u.in_tok-u.cached_tok)*p.p_in + u.cached_tok*p.p_cached + u.out_tok*p.p_out)/1e6, 3) as usd,\n  round(sum((u.in_tok-u.cached_tok)*p.p_in + u.cached_tok*p.p_cached + u.out_tok*p.p_out)/1e6 / sum(u.ok), 5) as usd_per_success,\n  round(100.0*sum(u.cached_tok)/sum(u.in_tok),1) as cache_pct\nfrom usage u join price p on p.model=u.model\ngroup by u.org, u.feature order by usd desc;\n-- 내비 | 장소검색 | 1000 | 2.304 | 0.0023  | 60.0\n-- 광고 | 문구생성 |  200 | 0.608 | 0.00304 | 0.0\n-- 내비 | 대화요약 |  500 | 0.135 | 0.0003  | 0.0"
+        },
+        {
+          "title": "캐시가 깎는 돈 — 공통 앞부분 4,000토큰, 하루 10만 건",
+          "body": "쓰기 1.25배·읽기 0.1배로, 5분마다 한 번(하루 288번) 다시 쓴다고 보면 앞부분 값이 약 90% 줄어든다. 단, 앞부분이 한 글자라도 바뀌면 캐시가 안 맞는다.[14]",
+          "lang": "python",
+          "code": "base = 3.00/1e6; prefix, n, writes = 4000, 100_000, 288\nno_cache = prefix*n*base\nwith_cache = prefix*writes*base*1.25 + prefix*(n-writes)*base*0.10\nprint(f\"캐시 없음 ${no_cache:.2f} / 캐시 ${with_cache:.2f} / 절감 {100*(1-with_cache/no_cache):.1f}%\")\n# 캐시 없음 $1200.00 / 캐시 $123.97 / 절감 89.7%"
+        }
+      ],
+      "how_far": "정책(예: '이 기능은 작은 모델 먼저')을 정해 관문에 넣는 것까지가 이 자리이고, 프롬프트 자체를 고치는 건 서비스 팀과 같이 합니다. {추론} 최소선: 비용 표를 매주 뽑고, 줄인 금액을 '품질은 그대로'라는 평가 결과와 함께 보이는 것. {추론}",
+      "refs": [4, 9, 13, 14, 20, 22],
+      "study": ["prompt-cache", "openai-cache", "sql-levelup", "lec-context"]
+    },
+    {
+      "section": "task",
+      "quote": "품질 저하, 개인정보 노출, 정책 위반 및 프롬프트 공격 등 AI 서비스의 이상 징후와 보안 위험을 탐지하고 대응 체계를 개선합니다.",
+      "short": "답이 갑자기 나빠지거나, 위치·연락처가 새거나, 사용자가 모델을 속이려는 시도를 잡아내는 일.",
+      "why": "티맵이 다루는 건 이동 데이터 — GPS 궤적·방문 장소·이용 패턴 — 이고, CTO는 암호화·익명화·가명화로 개인정보를 지킨다고 했습니다.[6] LLM 은 이런 정보를 답이나 로그로 흘릴 수 있는 새 통로입니다. {추론} OWASP 의 LLM 위험 목록 2025판은 1번이 프롬프트 주입, 2번이 민감정보 노출입니다.[15]",
+      "actually": {
+        "intro": "OWASP LLM 10대 위험(2025) 중 이 줄과 바로 닿는 것들입니다.[15]",
+        "items": [
+          "**프롬프트 주입(LLM01)** — 사용자 말이나 검색해 온 문서에 '앞의 지시를 무시하라'를 심는 공격. 입력·출력 검사와 도구 권한 줄이기로 막는다.",
+          "**민감정보 노출(LLM02)** — 답이나 로그에 전화번호·위치가 남는 것. 로그에 쓰기 전에 가린다(아래 예).",
+          "**시스템 프롬프트 유출(LLM07)·과한 권한(LLM06)** — 에이전트가 차량 제어 같은 도구를 쓸수록 커진다.[2]",
+          "**끝없는 소비(LLM10)** — 반복 호출로 비용을 터뜨리는 것. 업무 넷째 줄의 사용량 제한이 막는다.[11]",
+          "**품질 저하** — 거절률·재질문률·평가 점수가 평소보다 떨어지는지 매일 본다. {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "로그에 남기기 전 가리기 — 정규식 예",
+          "body": "실제로는 정규식만으로 부족해 이름·주소 같은 건 별도 탐지기를 쓰지만, 형식이 정해진 번호는 이렇게 먼저 지운다.",
+          "lang": "python",
+          "code": "import re\npats = [(re.compile(r\"\\d{6}-[1-4]\\d{6}\"),\"[주민번호]\"), (re.compile(r\"01[016789]-?\\d{3,4}-?\\d{4}\"),\"[전화]\"),\n        (re.compile(r\"[\\w.+-]+@[\\w-]+\\.[\\w.]+\"),\"[메일]\"), (re.compile(r\"\\d{2,3}[가-힣]\\s?\\d{4}\"),\"[차번호]\")]\ns = \"010-1234-5678 로 연락, 차는 12가 3456, 메일 kim@example.com, 900101-1234567\"\nfor p, tag in pats: s = p.sub(tag, s)\nprint(s)\n# [전화] 로 연락, 차는 [차번호], 메일 [메일], [주민번호]"
+        }
+      ],
+      "how_far": "정보보호·개인정보 담당 조직이 규칙을 정하고, 이 자리는 **관문·로그에서 탐지하고 막는 장치**를 붙입니다. {추론} 최소선: OWASP LLM 10대 위험을 자기 서비스에 대입해 설명할 수 있고, 가림·차단 규칙을 관문에 넣어 본 경험. {추론}",
+      "refs": [2, 6, 11, 15],
+      "study": ["owasp-llm", "pipc-genai", "effective-agents"]
+    },
+    {
+      "section": "task",
+      "quote": "관련 조직과 협업하여 모델 사용 기준과 접근 권한을 수립하고, 모델 도입·변경·종료 과정과 평가 결과 및 변경 이력을 관리합니다.",
+      "short": "어떤 팀이 어떤 모델을 쓸 수 있는지 정하고, 모델을 들이고 바꾸고 내린 기록을 남기는 일.",
+      "why": "티맵 데이터 플랫폼은 Databricks 를 들이며 '경직된 권한 체계'를 풀고 열 단위 가리기 같은 세밀한 권한을 도입했다고 밝혔습니다.[5] 같은 팀이 데이터에 하던 관리(오너십·접근 권한·수명주기)[4]를 이제 모델에도 하는 셈입니다. {추론} 개인정보보호위원회는 2025년 8월 생성형 AI 를 만들고 쓸 때의 개인정보 처리 안내서를 냈습니다.[16]",
+      "actually": {
+        "items": [
+          "**사용 기준** — '고객 개인정보가 든 요청은 이 모델들만', '외부 공급사로 보내면 안 되는 데이터' 같은 규칙.[16] {추론}",
+          "**접근 권한** — 팀·서비스마다 쓸 수 있는 모델과 한도를 열쇠로 준다.[11] Databricks 관문은 Unity Catalog 권한으로 모델 접근을 묶는다.[12]",
+          "**도입·변경·종료** — 평가 통과 → 일부 트래픽 → 전체 전환 → 옛 모델 내림. 공급사가 모델을 종료하면 대체 모델을 미리 평가해 둔다. {추론}",
+          "**변경 이력·감사** — 언제 누가 어떤 모델·프롬프트를 바꿨고 그때 평가 결과가 어땠는지. 요청·응답을 표로 남기는 기능이 Databricks 관문에 있다.[12]"
+        ]
+      },
+      "how_far": "규칙의 최종 결정은 보안·법무·서비스 조직과 같이 하고, 이 자리는 **규칙을 문서와 설정으로 옮기고 지켜졌는지 기록으로 보여 주는** 쪽입니다. {추론}",
+      "refs": [4, 5, 11, 12, 16],
+      "study": ["pipc-genai", "dbx-gateway", "mlflow-genai"]
+    },
+    {
+      "section": "qualification",
+      "quote": "AI/ML 서비스, MLOps·LLMOps 또는 데이터 플랫폼 운영 분야에서 5년 이상이거나 이에 준하는 경험을 보유하신 분",
+      "short": "LLM 경력만 5년을 묻는 게 아니다 — ML 운영이나 데이터 플랫폼 운영 5년도 같은 칸에 들어간다.",
+      "why": "LLMOps 라는 말 자체가 최근 것이라, 공고가 문을 MLOps·데이터 플랫폼 운영까지 넓혀 두었습니다.[1] 자리가 데이터 플랫폼 팀(MDP)에 있는 것과도 맞습니다.[1]",
+      "actually": {
+        "items": [
+          "**데이터 플랫폼 운영 출신** — 파이프라인·권한·비용·장애 대응 경험이 관문 운영과 거버넌스로 그대로 옮겨 간다. {추론}",
+          "**MLOps 출신** — 모델 등록·배포·감시 경험이 모델 도입·변경·종료 관리와 겹친다. {추론}",
+          "**'이에 준하는'** — 연수보다 위 업무 일곱 줄 중 몇 개를 실제로 해 봤는지가 서류에서 읽힌다. {추론}"
+        ]
+      },
+      "how_far": "지원서에는 연수보다 **운영해 본 것의 규모와 숫자**(하루 몇 건, 비용 얼마를 줄였나, 장애를 몇 분 만에 넘겼나)를 적는 편이 이 공고의 다른 줄들과 맞습니다. {추론}",
+      "refs": [1],
+      "study": ["llm-eng", "sre-book"]
+    },
+    {
+      "section": "qualification",
+      "quote": "LLM의 토큰, 컨텍스트, 툴 호출, 임베딩 및 RAG의 동작 원리와 활용 방법을 이해하시는 분",
+      "short": "비용(토큰)·한계(컨텍스트)·도구 쓰기·검색해서 답하기(RAG)가 어떻게 돌아가는지 설명할 수 있어야 한다는 뜻.",
+      "why": "이 다섯 낱말이 곧 이 자리의 운영 대상입니다. 토큰은 비용 단위, 컨텍스트는 한 번에 넣을 수 있는 양, 툴 호출은 에이전트가 내비·장소 검색·차량 제어를 부르는 방식입니다.[2] 원리를 모르면 비용이 왜 뛰었는지, 답이 왜 틀렸는지 진단할 수 없습니다. {추론}",
+      "actually": {
+        "items": [
+          "**토큰** — 모델이 글을 자르는 단위. 값과 길이 한도가 모두 토큰으로 매겨진다.[28]",
+          "**컨텍스트** — 한 번 호출에 넣는 전체(지시·대화·문서·도구 설명). 길수록 비싸고, 가운데 묻힌 정보는 놓치기 쉽다(위치 편향).[22]",
+          "**툴 호출** — 모델은 도구 이름과 인자를 글로 적을 뿐이고 실행은 바깥 프로그램이 한다.[22]",
+          "**임베딩** — 글을 숫자 벡터로 바꿔 뜻이 가까운 글을 찾게 하는 것. RAG 검색의 바탕.[21]",
+          "**RAG** — 질문에 맞는 문서를 먼저 찾아 넣고 답하게 하는 방식.[21] 사실이 바뀌면 모델이 아니라 색인만 고치면 된다."
+        ]
+      },
+      "level": {
+        "basic": "다섯 낱말을 각각 한 문장 + 예로 설명한다.",
+        "work": "'이 기능 비용이 왜 두 배가 됐나'를 토큰·컨텍스트로, '왜 엉뚱한 답을 했나'를 검색 결과·도구 호출 기록으로 진단한다.",
+        "team": "에이전트의 툴 호출·RAG 단계별로 지연·비용·실패를 나눠 재고, 어느 단계를 바꿀지 숫자로 고른다. {추론}"
+      },
+      "refs": [2, 21, 22, 28],
+      "study": ["lec-context", "lec-tools", "lec-rag", "langchain-book"]
+    },
+    {
+      "section": "qualification",
+      "quote": "AI 모델이나 소프트웨어의 평가 기준을 설계하고, 결과를 정량적·정성적으로 분석할 수 있으신 분",
+      "short": "점수표(정량)와 틀린 답을 하나하나 읽고 묶는 일(정성)을 둘 다 할 수 있어야 한다는 뜻.",
+      "why": "업무 일곱 줄 중 첫 줄·둘째 줄·셋째 줄이 모두 평가입니다.[1] 평가는 '대화를 잘한다' 같은 추상적인 목표를 구체적 숫자로 옮기는 일이고, 그 옮기는 과정에서 생기는 틈이 늘 문제가 됩니다.[23]",
+      "actually": {
+        "items": [
+          "**정량** — 통과율·정확도, 지연 p95, 건당 비용, 거절률. 전후 비교와 신뢰 구간. {추론}",
+          "**정성** — 틀린 답 수십 개를 읽고 '경유지를 빠뜨림', '영업시간을 지어냄' 처럼 실패 유형으로 묶는다. {추론}",
+          "**채점기 점검** — LLM 심판의 위치·길이 편향을 알고, 사람 채점과 맞춰 본다.[19]",
+          "**에이전트 평가** — 말이 아니라 행동(도구를 맞게 불렀나, 일을 끝냈나)을 본다.[23]"
+        ]
+      },
+      "how_far": "통계 전문가 수준까지는 아니어도, '0.5%p 올랐다'가 우연인지 의심하고 표본을 늘리거나 문항별로 다시 볼 줄 알아야 합니다. {추론}",
+      "refs": [1, 19, 23],
+      "study": ["cs336-eval", "mt-bench", "ai-eng", "ragas-docs"]
+    },
+    {
+      "section": "qualification",
+      "quote": "모델 평가 결과를 바탕으로 품질·비용·응답 속도 간의 상충 관계를 분석하고 합리적인 운영 기준을 수립할 수 있으신 분",
+      "short": "'제일 좋은 모델'이 아니라 '이 기능에 충분히 좋고 감당할 만한 모델'을 기준으로 정할 수 있어야 한다는 뜻.",
+      "why": "품질을 올리면 대개 값과 지연이 오릅니다. 공개 비교 자료도 벤치마크 점수·비용 대비 점수·사람 선호·실제 사용량이 서로 다른 답을 낸다고 보여 줍니다.[23] 그래서 기능마다 문턱을 정하는 '운영 기준'이 필요합니다. {추론}",
+      "actually": {
+        "items": [
+          "**기능별 문턱** — 차 안 음성은 지연 문턱을 빡빡하게, 장소 요약은 품질 문턱을 높게 같은 식. {추론}",
+          "**문턱 안에서 가장 싼 것** — 업무 첫 줄 예시처럼 탈락·통과로 거르고 남은 것 중 비용 최소.",
+          "**라우팅으로 섞기** — 쉬운 요청은 작은 모델, 어려운 요청만 큰 모델.[9][20]",
+          "**기준 다시 보기** — 새 모델이 나오거나 단가가 바뀌면 같은 평가셋으로 다시 돈다. {추론}"
+        ]
+      },
+      "how_far": "기준은 문서 한 장(기능 × 품질·지연·비용 문턱 × 기본 모델·예비 모델)으로 남기고 관문 설정과 맞춰 두면 됩니다. {추론}",
+      "refs": [9, 20, 23],
+      "study": ["ai-eng", "cs336-eval", "litellm-docs"]
+    },
+    {
+      "section": "qualification",
+      "quote": "프로그래밍 언어와 SQL을 활용하여 평가·분석·운영 업무를 자동화할 수 있으신 분",
+      "short": "평가 돌리기·비용 집계·이상 알림을 손이 아니라 스크립트와 SQL 로 매일 돌게 만들 수 있어야 한다는 뜻.",
+      "why": "호출 기록은 하루에도 수십만 줄이 쌓일 수 있어 손으로 볼 수 없습니다. {추론} 같은 팀의 데이터 플랫폼 공고도 '프로그래밍 언어와 SQL 로 업무 구현 및 자동화'를 요건으로 둡니다.[4] 관문과 평가 도구의 기록은 결국 표(Databricks 시스템 표·추론 기록 표)로 남습니다.[12]",
+      "actually": {
+        "items": [
+          "**평가 자동화** — 모델·프롬프트가 바뀌면 평가셋을 자동으로 돌리고 전후 표를 남긴다.[17]",
+          "**비용 집계** — 조직·기능·모델별 GROUP BY, 성공 1건당 비용, 주간 추이(업무 다섯째 줄 SQL).",
+          "**이상 알림** — 지연 p95·오류율·거절률이 평소 범위를 벗어나면 알린다. {추론}",
+          "**언어** — 공고는 언어를 정하지 않았다. LLM 도구 대부분이 파이썬 라이브러리로 나온다. {추론}"
+        ]
+      },
+      "level": {
+        "basic": "GROUP BY·JOIN 으로 비용 표를 만들고, 파이썬으로 API 를 부른다.",
+        "work": "윈도우 함수로 주간 추이·전주 대비를, 스케줄러로 매일 평가를 돌린다.",
+        "team": "Databricks 의 시스템 표·추론 기록 표에서 비용·지연을 서비스·사람별로 나눈다.[12] {추론}"
+      },
+      "examples": [
+        {
+          "title": "하루 지표 — 평균은 1초인데 p95 는?",
+          "body": "가상 1,000건(0.8초 900건, 1.5초 60건, 4초 30건, 9초 10건)에서 평균 1.02초, p95 1.5초, 오류율 1.4%. 평균만 보면 느린 4% 가 안 보인다.",
+          "lang": "python",
+          "code": "import statistics\nlat = [0.8]*900 + [1.5]*60 + [4.0]*30 + [9.0]*10\ns = sorted(lat)\nprint(f\"평균 {statistics.mean(lat):.2f}s p50 {s[int(0.50*len(s))]}s p95 {s[int(0.95*len(s))]}s 오류율 {14/1000:.1%}\")\n# 평균 1.02s p50 0.8s p95 1.5s 오류율 1.4%"
+        }
+      ],
+      "refs": [4, 12, 17],
+      "study": ["sql-levelup", "mlflow-genai", "observability-book"]
+    },
+    {
+      "section": "qualification",
+      "quote": "새로운 모델과 기술을 빠르게 파악하되, 실제 데이터와 검증 결과를 바탕으로 기술적 의사결정을 내릴 수 있으신 분",
+      "short": "새 모델 소식에 바로 갈아타지 않고, 우리 평가셋으로 돌려 본 결과로 정해야 한다는 뜻.",
+      "why": "모델과 도구가 몇 달마다 바뀌어 발표 자료만으로는 판단할 수 없습니다. 시험형 벤치마크는 몇 년 만에 포화되고 실제 사용을 다 담지 못합니다.[23] 그래서 '빨리 알되, 우리 데이터로 확인'이 요건입니다.",
+      "actually": {
+        "items": [
+          "**빨리 파악** — 새 모델의 단가·문맥 길이·캐시 조건·지원 기능(도구 호출 등)을 공식 문서로 확인.[13][14]",
+          "**우리 데이터로 확인** — 업무 첫 줄의 평가셋으로 돌려 기존 모델과 같은 표에 올린다.",
+          "**결정 기록** — 왜 바꿨는지·안 바꿨는지 평가 결과와 함께 남긴다(업무 일곱째 줄)."
+        ]
+      },
+      "how_far": "면접에서 '최근 나온 모델 중 하나를 골라, 우리 서비스에 쓸지 어떻게 정하겠나'에 절차와 숫자로 답할 수 있으면 됩니다. {추론}",
+      "refs": [13, 14, 23],
+      "study": ["cs336-eval", "ai-eng"]
+    },
+    {
+      "section": "qualification",
+      "quote": "개인정보와 보안 요구 사항을 이해하고 서비스 환경에 적합한 통제 방안을 설계할 수 있으신 분",
+      "short": "위치·연락처 같은 개인정보가 외부 모델로 나가거나 로그에 남지 않게 장치를 설계할 수 있어야 한다는 뜻.",
+      "why": "이동 데이터는 사람이 어디에 사는지·언제 어디에 가는지를 드러냅니다. 티맵은 암호화·익명화·가명화로 이를 다룬다고 했고[6], 데이터 플랫폼에는 열 단위 가리기를 넣었습니다.[5] 개인정보보호위원회는 생성형 AI 단계별(기획·수집·학습·적용·관리) 개인정보 처리 기준을 안내서로 냈습니다.[16]",
+      "actually": {
+        "items": [
+          "**보내기 전** — 외부 공급사로 나가는 요청에서 개인정보를 가리거나, 민감한 요청은 내부·허가된 모델로만 보낸다. {추론}",
+          "**남기기 전** — 로그·평가셋에 쓰기 전에 가린다(업무 여섯째 줄 예).",
+          "**권한** — 누가 원문 로그를 볼 수 있나를 데이터 권한 체계와 같이 묶는다.[5][12]",
+          "**공격 대비** — 프롬프트 주입·과한 도구 권한·끝없는 소비 같은 LLM 고유 위험.[15]"
+        ]
+      },
+      "how_far": "법 해석은 법무·개인정보 담당이 하고, 이 자리는 **그 요구를 관문·로그·권한 설정으로 옮기는** 설계를 합니다. {추론}",
+      "refs": [5, 6, 12, 15, 16],
+      "study": ["pipc-genai", "owasp-llm"]
+    },
+    {
+      "section": "preference",
+      "quote": "여러 AI 모델과 소프트웨어를 비교·검증하고, 반복 가능한 평가 체계를 구축하여 실제 도입까지 주도한 경험을 보유하신 분",
+      "short": "평가를 한 번 해 본 게 아니라, 누가 돌려도 같은 결과가 나오는 틀을 만들고 그걸로 실제 도입을 결정해 본 경험.",
+      "why": "업무 첫 줄~셋째 줄을 이미 해 본 사람을 찾는 줄입니다.[1] '반복 가능한'이 핵심 — 평가셋·채점기·실행 설정이 버전으로 남아야 다음 모델 때 그대로 다시 돌릴 수 있습니다. {추론}",
+      "actually": {
+        "items": [
+          "평가셋·채점 기준의 버전 관리, 실행 결과를 실험 기록으로 남기기(MLflow 평가 데이터셋·회귀 테스트).[17]",
+          "도입 결정 문서 — 후보·평가 결과·선택 이유·되돌리는 방법. {추론}"
+        ]
+      },
+      "how_far": "경험이 없다면 공개 모델 두세 개를 가상 평가셋으로 비교하고, 같은 명령 한 줄로 다시 돌아가는 저장소를 만들어 보여 주는 게 가장 가깝습니다. {추론}",
+      "refs": [1, 17],
+      "study": ["mlflow-genai", "langfuse-docs", "ai-eng"]
+    },
+    {
+      "section": "preference",
+      "quote": "LLM Gateway 또는 AI Agent 환경에서 모델 등록, 라우팅, 장애 전환, 툴 실행 및 사용량 정책을 운영한 경험을 보유하신 분",
+      "short": "모델 앞 관문이나 에이전트 실행 환경을 실제 트래픽으로 운영해 본 경험.",
+      "why": "업무 넷째 줄 그대로입니다.[1] 여기에 '툴 실행'이 더 붙은 건 에이전트가 내비·장소 검색·음악·차량 제어 API 를 부르기 때문입니다.[2]",
+      "actually": {
+        "items": [
+          "관문 설정(모델 그룹·라우팅 전략·장애 전환·쉬게 하기·키별 한도)을 바꾸고 결과를 본 경험.[9][10][11]",
+          "툴 실행 정책 — 어떤 도구를 누가 부를 수 있나, 실패하면 재시도할지, 한 대화에서 몇 번까지 부를지. {추론}"
+        ]
+      },
+      "how_far": "LiteLLM 프록시를 로컬에 띄워 가짜 모델 두 개로 장애 전환·키별 예산을 걸어 보는 정도면 면접 이야기거리가 됩니다. {추론}",
+      "refs": [1, 2, 9, 10, 11],
+      "study": ["litellm-docs", "litellm-reliability", "lec-tools"]
+    },
+    {
+      "section": "preference",
+      "quote": "LangGraph, LangChain, LlamaIndex 등 그래프·에이전트 기반 오케스트레이션 프레임워크를 활용한 경험을 보유하신 분",
+      "short": "에이전트를 '단계와 갈림길이 있는 그래프'로 짜는 도구를 써 본 경험 — 운영할 대상을 이해하려고.",
+      "why": "이 자리는 에이전트를 직접 만들기보다 운영하지만, 같은 회사 AI Agent 개발팀이 LangChain·LangGraph 경험을 우대합니다.[2] 그들이 쓰는 도구를 알아야 어디서 토큰이 새고 어디서 실패하는지 볼 수 있습니다. {추론}",
+      "actually": {
+        "items": [
+          "**LangGraph** — 상태를 들고 노드 사이를 오가는 그래프로 오래 도는 에이전트를 짠다.[26]",
+          "**흔한 짜임** — 순서대로 잇기, 분류해서 갈라 보내기(라우팅), 나눠서 동시에, 지휘자-일꾼, 만들고 평가해 고치기.[20]",
+          "**운영 관점** — 그래프의 노드마다 추적(trace)을 남겨 단계별 비용·지연·실패를 본다.[18]"
+        ]
+      },
+      "how_far": "간단한 RAG + 도구 하나짜리 그래프를 짜고, 추적 도구로 단계별 토큰을 읽어 보는 정도. {추론}",
+      "refs": [2, 18, 20, 26],
+      "study": ["langgraph-docs", "lec-frameworks", "effective-agents", "langchain-book"]
+    },
+    {
+      "section": "preference",
+      "quote": "프롬프트, 컨텍스트, 캐싱 및 모델 라우팅 등을 활용하여 토큰 사용량과 운영 비용을 최적화한 경험을 보유하신 분",
+      "short": "비용을 실제로 줄여 보고, 얼마 줄었고 품질은 어땠는지 숫자로 말할 수 있는 경험.",
+      "why": "업무 다섯째 줄의 경험 버전입니다.[1] 줄이는 수단 네 가지가 공고에 그대로 적혀 있습니다.",
+      "actually": {
+        "items": [
+          "**프롬프트** — 같은 뜻을 짧게, 출력 형식을 정해 쓸데없는 출력 토큰 줄이기. {추론}",
+          "**컨텍스트** — 넣는 문서 수·대화 기록 길이 줄이기, 요약해 넣기.[28]",
+          "**캐싱** — 바뀌지 않는 앞부분을 맨 앞에 고정해 캐시가 맞게 하기.[13][14]",
+          "**라우팅** — 쉬운 요청을 작은 모델로.[9]"
+        ]
+      },
+      "how_far": "'캐시 비율 0%→60%, 건당 비용 몇 % 감소, 평가 통과율 변화 없음' 같은 한 줄을 만들 수 있으면 됩니다. {추론}",
+      "refs": [1, 9, 13, 14, 28],
+      "study": ["prompt-cache", "openai-cache", "lec-context"]
+    },
+    {
+      "section": "preference",
+      "quote": "AI 서비스의 안전성을 검증하고 모델 사용 기준, 접근 권한, 변경 이력 및 감사 체계 등 LLM 거버넌스를 운영한 경험을 보유하신 분",
+      "short": "모델을 '누가 무엇에 써도 되는지'와 '무엇을 바꿨는지'를 기록으로 운영해 본 경험.",
+      "why": "업무 여섯째·일곱째 줄의 경험 버전입니다.[1] 티맵 데이터 플랫폼은 이미 데이터에 세밀한 권한과 거버넌스를 운영하고 있어[5], 같은 틀을 모델로 넓히는 일입니다. {추론}",
+      "actually": {
+        "items": [
+          "안전성 검증 — 공격·유출 문항으로 된 평가셋을 모델 바꿀 때마다 돈다.[15]",
+          "감사 — 요청·응답 기록 표, 권한 변경 기록.[12]",
+          "기준 문서 — 개인정보보호위원회 안내서의 단계별 점검 항목을 우리 서비스에 맞춘 것.[16] {추론}"
+        ]
+      },
+      "refs": [1, 5, 12, 15, 16],
+      "study": ["pipc-genai", "owasp-llm", "dbx-gateway"]
+    },
+    {
+      "section": "preference",
+      "quote": "LLM 서비스의 품질·비용·응답 속도·오류율을 측정하기 위한 관측성과 모니터링 체계를 구축한 경험을 보유하신 분",
+      "short": "LLM 호출마다 품질·값·지연·오류를 남기고, 대시보드와 알림으로 늘 보게 만든 경험.",
+      "why": "같은 회사 SRE 공고는 SLI/SLO(서비스 수준 지표·목표)와 관측성 플랫폼을 강조합니다[3] — 회사 전체가 운영을 숫자로 보는 방식이고, LLM 에도 같은 틀을 씌우는 일입니다. {추론}",
+      "actually": {
+        "items": [
+          "**추적** — 요청 하나를 에이전트 단계별로 나눠 남긴다. Langfuse·MLflow 추적 모두 OpenTelemetry 기반이다.[17][18]",
+          "**대시보드** — 품질·비용·지연을 사용자·키·모델별로.[18]",
+          "**SLO** — '음성 응답 p95 3초 이내 99%' 같은 목표와 알림. {추론}",
+          "**품질 상시 측정** — 실제 트래픽 표본을 LLM 심판으로 매일 채점. {추론}"
+        ]
+      },
+      "refs": [3, 17, 18],
+      "study": ["langfuse-docs", "observability-book", "sre-book"]
+    },
+    {
+      "section": "preference",
+      "quote": "Databricks와 AWS를 활용하여 데이터 플랫폼 또는 AI 시스템을 구축·운영한 경험을 보유하신 분",
+      "short": "티맵 데이터가 모이는 곳이 Databricks·AWS 라서, 그 위에서 일해 본 사람이면 바로 붙을 수 있다는 뜻.",
+      "why": "티맵은 Databricks 를 도입해 Unity Catalog·Databricks SQL·노트북·자연어로 데이터를 묻는 Genie 를 쓰고, AWS 기반 대시보드와 AWS Glue 연동으로 내부 데이터를 Databricks 로 옮기는 중이라고 밝혔습니다.[5] 같은 팀 데이터 플랫폼 공고도 AWS·Databricks 를 우대합니다.[4]",
+      "actually": {
+        "items": [
+          "**Unity Catalog** — 데이터·모델·관문의 권한을 한 곳에서. 티맵은 이를 중앙 허브로 넓힐 계획이다.[5][12]",
+          "**성과 숫자** — 2025년 9월 기준 분석팀의 단순 추출 요청 68% 감소, 직원의 약 48% 가 직접 데이터를 쓴다.[5]",
+          "**LLM 과의 연결** — 호출 기록·평가 결과를 Databricks 표로 쌓으면 기존 데이터처럼 권한·비용 분석을 할 수 있다. {추론}"
+        ]
+      },
+      "refs": [4, 5, 12],
+      "study": ["tmap-dbx", "dbx-gateway"]
+    }
+  ],
+  "fit": {
+    "good": [
+      "새 모델 소식보다 '우리 데이터로 돌려 보면 어떨까'가 먼저 궁금한 사람",
+      "비용 표를 GROUP BY 로 쪼개 보는 게 즐거운 사람[1]",
+      "만들기보다 고르고 잇고 지키는 운영 일이 맞는 사람",
+      "개인정보·보안 규칙을 귀찮은 일이 아니라 설계 조건으로 보는 사람"
+    ],
+    "hard": [
+      "모델을 직접 학습시키거나 에이전트 기능을 만들고 싶다면 AI Agent 개발팀 공고가 더 맞다[2]",
+      "회사 기술 블로그·발표가 거의 없어 들어가기 전에 내부 구조를 알기 어렵다",
+      "경력 5년 이상(또는 그에 준하는) 요건이 있다[1]"
+    ]
+  },
+  "interview": [
+    { "q": "차 안 음성 에이전트에 쓸 모델을 둘 중 하나로 고르라면, 무엇을 어떻게 재겠어요?", "a": "업무 첫 줄 — 시나리오 평가셋과 품질·비용·지연·안전 네 칸.[1][8]" },
+    { "q": "주 공급사가 30분 동안 429 를 내면 관문은 어떻게 움직여야 하나요? 예비 모델 품질은요?", "a": "장애 전환·쉬게 하기와, 예비도 평가를 통과해야 한다는 점.[10]" },
+    { "q": "이번 달 LLM 비용이 두 배가 됐습니다. 어디부터 보겠어요?", "a": "조직·기능·모델별 표, 캐시 비율, 컨텍스트 길이 변화.[13][14]" },
+    { "q": "LLM 심판 점수가 올랐는데 사용자 불만도 늘었습니다. 무엇을 의심하나요?", "a": "심판 편향과 사람 검토와의 일치도.[19]" },
+    { "q": "사용자 위치가 든 요청을 외부 모델로 보내도 되나요? 로그는요?", "a": "개인정보 통제와 LLM02 민감정보 노출.[6][15][16]" }
+  ],
+  "sources": [
+    { "n": 1, "title": "SK Careers · 티맵모빌리티 LLMOps Engineer", "url": "https://www.skcareers.com/Recruit/Detail/R262015", "kind": "posting", "date": "2026-11", "note": "MDP팀 소개·업무·요건·우대·전형(서류 > 1·2차 인터뷰 > 레퍼런스 체크 > 처우협의)" },
+    { "n": 2, "title": "SK Careers · 티맵모빌리티 AI Agent Engineer", "url": "https://www.skcareers.com/Recruit/Detail/R262196", "kind": "posting", "date": "2026-11", "note": "같은 회사 AI Agent 개발팀 — Auto·모바일 에이전트, 툴 호출·RAG, LLM 평가·라우팅" },
+    { "n": 3, "title": "원티드 · 티맵모빌리티 Site Reliability Engineer (SRE)", "url": "https://www.wanted.co.kr/wd/365859", "kind": "posting", "note": "같은 회사 공고 — SLI/SLO·관측성, 혜택 및 복지 전문, 근무지" },
+    { "n": 4, "title": "원티드 · 티맵모빌리티 Data Platform Engineer", "url": "https://www.wanted.co.kr/wd/394517", "kind": "posting", "note": "같은 회사 데이터 플랫폼 공고 — 사용량·비용 최적화, 데이터 오너십·접근 권한, AWS·Databricks" },
+    { "n": 5, "title": "Databricks 고객 사례 · TMAP Mobility", "url": "https://www.databricks.com/kr/customers/tmap-mobility", "kind": "company", "date": "2025-09 기준 수치", "note": "Databricks 가 쓴 사례, 티맵 데이터 플랫폼·AX 담당자 인용 — Unity Catalog·SQL·Genie, 68%·48%" },
+    { "n": 6, "title": "아주경제 · 김재순 티맵모빌리티 CTO 인터뷰", "url": "https://www.ajunews.com/view/20250708155923182", "kind": "news", "date": "2025-07", "note": "LLM 도입 협업 검토·실험, 연간 67억 건 이동 데이터, 암호화·익명화·가명화" },
+    { "n": 7, "title": "이코노미스트 · 티맵모빌리티 기자간담회(전창근 CPO)", "url": "https://economist.co.kr/article/view/ecn202607090025", "kind": "news", "date": "2026-07-09", "note": "르노 차량은 LLM 일부 + NLU, 풀 LLM 에이전트를 한 OEM 과 내부 시험" },
+    { "n": 8, "title": "뉴시스 · 티맵, 에이닷 만나 AI 에이전트 진화", "url": "https://www.newsis.com/view/NISX20250917_0003332448", "kind": "news", "date": "2025-09-17", "note": "차량 음성 안내 누구 → 에이닷, 한 번에 경유지까지" },
+    { "n": 9, "title": "LiteLLM 문서 · Router (라우팅 전략)", "url": "https://docs.litellm.ai/docs/routing", "kind": "reference", "note": "simple-shuffle·usage-based·latency-based·cost-based, rpm·tpm" },
+    { "n": 10, "title": "LiteLLM 문서 · Proxy Reliability (장애 전환)", "url": "https://docs.litellm.ai/docs/proxy/reliability", "kind": "reference", "note": "fallbacks·context_window_fallbacks·content_policy_fallbacks, allowed_fails·cooldown_time" },
+    { "n": 11, "title": "LiteLLM 문서 · Virtual Keys", "url": "https://docs.litellm.ai/docs/proxy/virtual_keys", "kind": "reference", "note": "키별 max_budget·budget_duration·tpm_limit·rpm_limit" },
+    { "n": 12, "title": "Databricks 문서 · AI governance with Unity Gateway (AI Gateway)", "url": "https://docs.databricks.com/aws/en/ai-gateway/", "kind": "reference", "date": "2026-11", "note": "권한·사용량 제한·트래픽 분할·장애 전환·예산·사용량 시스템 표·요청/응답 감사 표" },
+    { "n": 13, "title": "Claude 문서 · Prompt caching", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching", "kind": "reference", "note": "쓰기 1.25배(5분)·2배(1시간), 읽기 0.1배(일부 모델 더 낮음)" },
+    { "n": 14, "title": "OpenAI 문서 · Prompt caching", "url": "https://developers.openai.com/api/docs/guides/prompt-caching", "kind": "reference", "note": "앞부분이 정확히 같아야 맞음, 캐시 읽기 할인" },
+    { "n": 15, "title": "OWASP Top 10 for LLM Applications 2025", "url": "https://genai.owasp.org/llm-top-10/", "kind": "reference", "date": "2025" },
+    { "n": 16, "title": "개인정보보호위원회 · 생성형 인공지능(AI) 개발·활용을 위한 개인정보 처리 안내서", "url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS217&mCode=D010030000&nttId=11439", "kind": "reference", "date": "2025-08" },
+    { "n": 17, "title": "MLflow 문서 · LLM and Agent Evaluation", "url": "https://mlflow.org/docs/latest/genai/eval-monitor/", "kind": "reference", "note": "mlflow.genai.evaluate·scorers·평가 데이터셋·회귀 테스트·추적" },
+    { "n": 18, "title": "Langfuse 문서 · Overview", "url": "https://langfuse.com/docs", "kind": "reference", "note": "추적(OpenTelemetry)·LLM 심판·검토 대기열·사용자/키/모델별 비용" },
+    { "n": 19, "title": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena", "url": "https://arxiv.org/abs/2306.05685", "kind": "reference", "date": "2023", "note": "Zheng 외 — 사람과 80% 넘게 일치, 위치·길이 편향" },
+    { "n": 20, "title": "Anthropic · Building effective agents", "url": "https://www.anthropic.com/engineering/building-effective-agents", "kind": "reference", "date": "2024-12", "note": "프롬프트 잇기·라우팅·병렬·지휘자-일꾼·평가-개선" },
+    { "n": 21, "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks", "url": "https://arxiv.org/abs/2005.11401", "kind": "reference", "date": "2020", "note": "Lewis 외 — RAG 원 논문" },
+    { "n": 22, "title": "Stanford CS329Z Lecture 4 · How AI Agents Use Tools: Function Calling & MCP", "url": "https://www.youtube.com/watch?v=s0S38lz6O7M", "kind": "reference", "date": "2026", "note": "우리 사이트 강의 노트로 읽음 — 위치 편향, 문서 10~20개에서 포화, 도구 실행은 바깥" },
+    { "n": 23, "title": "Stanford CS336 Lecture 12 · Evaluation", "url": "https://www.youtube.com/watch?v=JpAxdTWQJxM", "kind": "reference", "date": "2026", "note": "우리 사이트 강의 노트로 읽음 — 평가는 추상 개념을 지표로 옮기는 일, LLM 심판 편향, 에이전트 평가" },
+    { "n": 24, "title": "티맵모빌리티 회사 사이트 하단 회사 정보", "url": "https://www.tmapmobility.com", "kind": "company", "note": "(04554) 서울특별시 중구 충무로 15 SK-C 타워 7·8·9층" },
+    { "n": 25, "title": "자소설닷컴 · 티맵모빌리티 기업정보", "url": "https://jasoseol.com/companies/11668", "kind": "reference", "note": "공공데이터 기반 집계 — 초봉 4,793만원·평균 7,049만원, 기준일 표기 없음" },
+    { "n": 26, "title": "LangGraph 문서", "url": "https://langchain-ai.github.io/langgraph/", "kind": "reference" },
+    { "n": 27, "title": "Ragas 문서 · 평가 지표", "url": "https://docs.ragas.io/en/stable/concepts/metrics/", "kind": "reference" },
+    { "n": 28, "title": "Stanford CS329Z Lecture 2 · LLMs for Agent Builders: Context Engineering", "url": "https://www.youtube.com/watch?v=Vr1NzH8bT44", "kind": "reference", "date": "2026", "note": "우리 사이트 강의 노트로 읽음 — 토큰·KV 캐시·컨텍스트 예산·프롬프트 캐싱·압축" }
+  ],
+  "caveat": "티맵모빌리티는 LLM 게이트웨이·평가 체계의 내부 구조를 다룬 기술 블로그나 발표 영상을 공개하지 않았습니다(찾지 못해 받은 영상 재료 없음). 회사 근거는 이 공고와 같은 회사 다른 공고, Databricks 고객 사례, CTO·CPO 인터뷰 기사뿐이고, 관문·평가·비용의 '보통 이런 것'은 LiteLLM·Databricks·MLflow·Langfuse 공식 문서와 OWASP·개인정보보호위원회 자료로 보였습니다. 티맵이 실제로 어떤 도구를 쓰는지는 확인되지 않았습니다.",
+  "resources": [
+    { "id": "tmap-dbx", "title": "Databricks 고객 사례 · TMAP Mobility", "by": "Databricks", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://www.databricks.com/kr/customers/tmap-mobility", "why": "이 팀이 쓰는 데이터 플랫폼(Unity Catalog·Genie)과 권한 체계를 바꾼 이유. 우대 마지막 줄과 거버넌스 업무의 배경." },
+    { "id": "ai-eng", "title": "AI 엔지니어링: 기초 모델로 애플리케이션 구축하기 (한국어판)", "by": "칩 후옌 · 2025", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://www.oreilly.com/library/view/-/0642572267490/", "why": "평가(LLM 심판 포함)·모델 선택·RAG·에이전트·비용과 지연을 한 권에. 업무 첫 줄~셋째 줄과 요건의 '상충 관계'를 위한 기본서." },
+    { "id": "llm-eng", "title": "LLM 엔지니어링", "by": "폴 이우수틴 · 한빛미디어 · 2025", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://search.kyobobook.co.kr/search?keyword=LLM%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81%20%EC%9D%B4%EC%9A%B0%EC%88%98%ED%8B%B4", "why": "RAG 파이프라인부터 클라우드 배포·MLOps와 LLMOps 장까지. MLOps·데이터 플랫폼 경력을 LLMOps 로 옮길 때 빈 곳을 채운다." },
+    { "id": "langchain-book", "title": "랭체인으로 LLM 기반의 AI 서비스 개발하기", "by": "서지영 · 길벗 · 2024", "kind": "book", "lang": "ko", "free": false, "level": "입문", "url": "https://product.kyobobook.co.kr/detail/S000212568407", "why": "LangChain 으로 RAG·에이전트를 직접 짜 보는 한국어 입문서. 토큰·임베딩·RAG 요건과 프레임워크 우대 줄의 첫걸음." },
+    { "id": "lec-context", "title": "Stanford CS329Z Lecture 2 · Context Engineering (강의 노트)", "kind": "internal", "lang": "ko", "free": true, "level": "입문", "url": "/lectures/Vr1NzH8bT44", "why": "토큰·KV 캐시·컨텍스트 예산·프롬프트 캐싱을 손계산으로. 비용 최적화 업무와 '토큰·컨텍스트' 요건의 원리." },
+    { "id": "lec-tools", "title": "Stanford CS329Z Lecture 4 · Function Calling & MCP (강의 노트)", "kind": "internal", "lang": "ko", "free": true, "level": "입문", "url": "/lectures/s0S38lz6O7M", "why": "툴 호출이 어떻게 돌아가고 어디서 실패하나. 툴 실행 정책 우대 줄과 요건의 '툴 호출'." },
+    { "id": "lec-rag", "title": "Stanford CS329Z Lecture 3 · RAG: BM25 에서 에이전트형 RAG 까지 (강의 노트)", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/lectures/psLc-46GqY0", "why": "임베딩·청크·검색·재순위. 요건의 '임베딩 및 RAG'를 부품 단위로." },
+    { "id": "lec-frameworks", "title": "Stanford CS329Z Lecture 5 · DSPy vs LangGraph (강의 노트)", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/lectures/q0Q-Hy8TTps", "why": "그래프 기반 오케스트레이션이 무엇을 해 주고 무엇을 안 해 주나. 프레임워크 우대 줄." },
+    { "id": "cs336-eval", "title": "Stanford CS336 Lecture 12 · Evaluation (강의 노트)", "kind": "internal", "lang": "ko", "free": true, "level": "실무", "url": "/lectures/JpAxdTWQJxM", "why": "벤치마크·사람 선호·LLM 심판·에이전트 평가의 한계. 평가 기준 설계 요건의 바탕." },
+    { "id": "mt-bench", "title": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena", "by": "Zheng 외 · 2023", "kind": "doc", "lang": "en", "free": true, "level": "심화", "url": "https://arxiv.org/abs/2306.05685", "why": "LLM 심판이 사람과 얼마나 맞고 어떤 편향이 있나. '자동 평가와 사람 검토를 결합'하는 이유." },
+    { "id": "mlflow-genai", "title": "MLflow 문서 · LLM and Agent Evaluation", "by": "MLflow", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://mlflow.org/docs/latest/genai/eval-monitor/", "why": "평가셋·채점기·회귀 테스트를 코드로. Databricks 위에서 바로 쓰이는 평가 도구라 이 팀 환경과 가깝다." },
+    { "id": "langfuse-docs", "title": "Langfuse 문서", "by": "Langfuse", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://langfuse.com/docs", "why": "추적·비용 대시보드·사람 검토 대기열을 직접 설치해 볼 수 있는 오픈소스. 관측성 우대 줄과 평가 업무." },
+    { "id": "ragas-docs", "title": "Ragas 문서 · 평가 지표", "by": "Ragas", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.ragas.io/en/stable/concepts/metrics/", "why": "RAG 답이 근거에 충실한가·검색이 맞았나를 재는 지표들. RAG 기능 평가셋을 만들 때." },
+    { "id": "litellm-docs", "title": "LiteLLM AI Gateway 문서", "by": "LiteLLM", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.litellm.ai/docs/simple_proxy", "why": "모델 등록·라우팅·키별 예산을 로컬에서 직접 걸어 볼 수 있는 오픈소스 관문. 업무 넷째 줄 연습." },
+    { "id": "litellm-reliability", "title": "LiteLLM 문서 · Proxy Reliability", "by": "LiteLLM", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.litellm.ai/docs/proxy/reliability", "why": "재시도·장애 전환 순서·쉬게 하기 설정. '장애 전환' 업무를 설정 수준에서." },
+    { "id": "dbx-gateway", "title": "Databricks 문서 · AI governance with Unity Gateway", "by": "Databricks", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://docs.databricks.com/aws/en/ai-gateway/", "why": "Unity Catalog 권한·사용량 제한·감사 표로 LLM 을 관리하는 법. 이 팀 플랫폼 위의 거버넌스 후보." },
+    { "id": "prompt-cache", "title": "Claude 문서 · Prompt caching", "by": "Anthropic", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching", "why": "캐시 쓰기·읽기 배율과 유지 시간. 캐싱으로 비용을 줄이는 업무의 계산 근거." },
+    { "id": "openai-cache", "title": "OpenAI 문서 · Prompt caching", "by": "OpenAI", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://developers.openai.com/api/docs/guides/prompt-caching", "why": "앞부분 일치 규칙이 공급사마다 어떻게 다른지 비교. 여러 공급사를 섞는 관문에서 캐시 정책을 정할 때." },
+    { "id": "owasp-llm", "title": "OWASP Top 10 for LLM Applications", "by": "OWASP", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://genai.owasp.org/llm-top-10/", "why": "프롬프트 주입·민감정보 노출·끝없는 소비 등 LLM 고유 위험 10가지. 보안 탐지 업무의 점검표." },
+    { "id": "pipc-genai", "title": "생성형 인공지능(AI) 개발·활용을 위한 개인정보 처리 안내서", "by": "개인정보보호위원회 · 2025", "kind": "doc", "lang": "ko", "free": true, "level": "실무", "url": "https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS217&mCode=D010030000&nttId=11439", "why": "국내 기준으로 생성형 AI 를 쓸 때 개인정보를 어떻게 다뤄야 하나. 개인정보 요건과 사용 기준 수립 업무." },
+    { "id": "effective-agents", "title": "Building effective agents", "by": "Anthropic · 2024", "kind": "doc", "lang": "en", "free": true, "level": "입문", "url": "https://www.anthropic.com/engineering/building-effective-agents", "why": "라우팅·평가-개선 같은 에이전트 짜임 다섯 가지. 운영할 에이전트가 어떤 모양인지 알기." },
+    { "id": "langgraph-docs", "title": "LangGraph 문서", "by": "LangChain", "kind": "doc", "lang": "en", "free": true, "level": "실무", "url": "https://langchain-ai.github.io/langgraph/", "why": "같은 회사 에이전트 팀이 우대하는 프레임워크. 우대 셋째 줄." },
+    { "id": "sre-book", "title": "사이트 신뢰성 엔지니어링", "by": "Betsy Beyer 외 · 장현희 옮김 · 제이펍 · 2018", "kind": "book", "lang": "ko", "free": false, "level": "입문", "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=129407308", "why": "SLO·오류 예산·장애 대응. 관문 운영과 LLM 서비스 모니터링을 숫자로 보는 틀." },
+    { "id": "observability-book", "title": "데브옵스 엔지니어를 위한 실전 관찰 가능성 엔지니어링", "by": "Charity Majors 외 · 노승헌 옮김 · 한빛미디어 · 2024", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=340536001", "why": "추적·이벤트로 '왜 느렸나'를 묻는 법. 관측성 우대 줄." },
+    { "id": "sql-levelup", "title": "SQL 레벨업", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://search.kyobobook.co.kr/search?keyword=SQL%20%EB%A0%88%EB%B2%A8%EC%97%85", "why": "CASE·윈도우 함수로 집계를 한 번에. 비용·지연 표를 SQL 로 자동화하는 요건." }
+  ],
+  "study_path": [
+    { "title": "LLM 이 돈과 시간을 쓰는 방식", "time": "1~2주", "goal": "토큰·컨텍스트·툴 호출·RAG 를 비용과 지연으로 설명할 수 있다.", "resources": ["lec-context", "lec-tools", "lec-rag", "langchain-book"], "task": "작은 RAG + 도구 하나짜리 챗봇을 만들고, 요청 하나의 입력·출력 토큰과 단계별 지연을 표로 남긴다." },
+    { "title": "평가셋과 채점기", "time": "2~3주", "goal": "시나리오 평가셋을 만들고 두 모델을 같은 조건으로 비교한다.", "resources": ["ai-eng", "cs336-eval", "mt-bench", "mlflow-genai", "ragas-docs"], "task": "가상 '경유지 포함 길찾기 요청' 100문항을 만들고, 정답을 코드로 채점하는 문항과 LLM 심판으로 채점하는 문항을 나눠 두 모델의 통과율·새로 깨진 문항·심판-사람 카파를 낸다." },
+    { "title": "관문 세우기", "time": "1~2주", "goal": "모델 등록·라우팅·장애 전환·키별 한도를 설정하고 동작을 확인한다.", "resources": ["litellm-docs", "litellm-reliability", "dbx-gateway"], "task": "LiteLLM 프록시를 로컬에 띄워 모델 그룹 하나에 배포 둘을 걸고, 하나를 일부러 실패시켜 장애 전환·쉬게 하기를 기록으로 확인한다. 팀 키 둘에 서로 다른 예산을 건다." },
+    { "title": "비용과 관측", "time": "2주", "goal": "조직·기능별 비용 표와 지연·오류 대시보드를 만들고 줄일 곳을 고른다.", "resources": ["sql-levelup", "prompt-cache", "openai-cache", "langfuse-docs", "observability-book"], "task": "3단계 관문 기록(가상 1만 건)을 SQL 로 집계해 성공 1건당 비용·캐시 비율·p95 를 내고, 공통 앞부분을 고정해 캐시 비율을 올린 전후를 2단계 평가 결과와 함께 한 장으로 보고한다." },
+    { "title": "안전과 거버넌스", "time": "1~2주", "goal": "개인정보 가림·공격 문항·모델 사용 기준 문서를 만든다.", "resources": ["owasp-llm", "pipc-genai", "effective-agents"], "task": "OWASP 10대 위험 중 다섯 개를 문항으로 만들어 2단계 평가셋에 더하고, 로그 가림 규칙과 '어떤 데이터는 어떤 모델로' 사용 기준표를 한 장으로 쓴다." }
+  ],
+  "pay": {
+    "summary": "공고에 연봉이 없고 비상장사라 공시 평균도 없다 — 집계 사이트 값으로 신입 초봉 **약 4,800만원**, 직원 평균 **약 7,000만원**",
+    "rows": [
+      { "label": "신입 초봉", "value": "약 4,793만원", "amount": 4793, "basis": "공공데이터 집계", "note": "공공데이터를 바탕으로 한 집계 사이트 값. 기준일·직군 구분이 적혀 있지 않다 [25]" },
+      { "label": "직원 평균 연봉", "value": "약 7,049만원", "amount": 7049, "basis": "공공데이터 집계", "note": "같은 집계 사이트의 회사 전체 평균. 경력직이 섞인 값이다 [25]" }
+    ],
+    "how": "티맵모빌리티는 비상장사라 사업보고서의 직원 평균 급여 공시 숫자가 없다 {추론}. 공고는 연봉을 적지 않고, 연봉은 지원서의 연봉 기입칸에만 쓰게 하며 레퍼런스 체크 뒤 **처우협의** 단계에서 정한다 [1]. 이 자리는 경력 5년 이상이라 신입 초봉과는 거리가 멀고, 평균도 회사 전체 값이라 이 자리의 제시액으로 읽으면 안 된다 {추론}. 3개월 시용기간에도 급여는 100% 나간다 [1]."
+  },
+  "benefits": {
+    "items": [
+      { "name": "근무 시간", "detail": "4주 단위 160시간 안에서 스스로 계획" },
+      { "name": "Happy Friday", "detail": "근무시간을 조정해 매월 금요일 중 하루 쉼" },
+      { "name": "재택근무", "detail": "주 1회" },
+      { "name": "체력단련휴가", "detail": "연차 외 연 최대 5일" },
+      { "name": "휴가 사용", "detail": "사유 기재·승인 없이 연차·반차·반반차" },
+      { "name": "장기근속 휴가", "detail": "재직 3년마다 30일 유급" },
+      { "name": "AI 도구", "detail": "ChatGPT·Gemini·Claude·Codex 등 업무 활용 지원" },
+      { "name": "복리후생비", "detail": "연 360만원(IT 기기·교육·여행·운동·가족 건강검진·휴양소 등)" },
+      { "name": "건강검진", "detail": "연 40만원 한도 협약 건강검진" },
+      { "name": "통신비", "detail": "SKT 이용자 월 최대 10만원" },
+      { "name": "교육비", "detail": "직무 관련 연 100만원까지" },
+      { "name": "생일", "detail": "TMAP Point 10만 포인트" },
+      { "name": "농수산물", "detail": "'자연이랑' 연 60만 포인트" },
+      { "name": "의료비", "detail": "본인·배우자·자녀·양가 부모님" },
+      { "name": "자녀 학자금", "detail": "자녀가 있는 구성원" },
+      { "name": "주거비", "detail": "금융기관 대출 이자 일부 지원" },
+      { "name": "사내 시설", "detail": "헬스키퍼 안마 월 4회, 라운지·휴게실·수면실·폰부스" },
+      { "name": "그 밖에", "detail": "최신 업무 장비·허먼밀러 의자·독감 예방접종비·경조금·경조휴가" }
+    ],
+    "note": "같은 회사 SRE 공고(원티드, 2026)의 '혜택 및 복지' 전문이다 [3]. 이 LLMOps 공고에는 복지 칸이 없어서, 같은 회사 정규직 공고의 공통 문구로 보고 옮겼다 — 처우협의 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "티맵모빌리티 본사 (SK-C타워)",
+    "address": "서울특별시 중구 충무로 15, SK-C타워 7·8·9층",
+    "postal": "04554",
+    "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%A4%91%EA%B5%AC%20%EC%B6%A9%EB%AC%B4%EB%A1%9C%2015",
+    "near": "명동·충무로역 근처 {추론}",
+    "note": "주소는 티맵모빌리티 사이트 하단 회사 정보다 [24]. 같은 회사 원티드 공고들의 근무지도 '서울 중구 충무로 15, SK-C타워 7-9층'이다 [3]. 이 공고의 근무지 표기는 '서울'뿐이다 [1]."
+  }
+}

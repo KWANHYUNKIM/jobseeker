@@ -98,7 +98,10 @@
   "wanted-394499": "technopro-lowcode-java-lead-japan",
   "ats-skcareers:sk:R262196": "tmap-ai-agent-engineer",
   "ats-skcareers:sk:R261800": "tmap-auto-ai-agent-tpm",
+  "wanted-399666": "tmap-auto-android-client",
+  "wanted-393102": "tmap-client-engineer-android",
   "ats-skcareers:sk:R262169": "tmap-data-analytics-lead",
+  "ats-skcareers:sk:R262015": "tmap-mobility-llmops-engineer",
   "ats-skcareers:sk:R262310": "tmap-mobility-service-backend",
   "ats-skcareers:sk:R262485": "tmap-security-assessment-engineer",
   "dev-580895": "tmap-security-assessment-engineer",
@@ -991,6 +994,26 @@
    "lines": 21
   },
   {
+   "id": "tmap-auto-android-client",
+   "company": "티맵모빌리티",
+   "role": "Client Engineer (Android) – TMAP AUTO 개발",
+   "jobs": [
+    "wanted-399666"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 21
+  },
+  {
+   "id": "tmap-client-engineer-android",
+   "company": "티맵모빌리티",
+   "role": "Client Engineer",
+   "jobs": [
+    "wanted-393102"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 21
+  },
+  {
    "id": "tmap-data-analytics-lead",
    "company": "티맵모빌리티",
    "role": "Data Analytics 리더",
@@ -999,6 +1022,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 24
+  },
+  {
+   "id": "tmap-mobility-llmops-engineer",
+   "company": "티맵모빌리티",
+   "role": "LLMOps 엔지니어",
+   "jobs": [
+    "ats-skcareers:sk:R262015"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 21
   },
   {
    "id": "tmap-mobility-service-backend",
