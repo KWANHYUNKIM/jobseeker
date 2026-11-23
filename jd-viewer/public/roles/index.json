@@ -1,6 +1,7 @@
 {
  "updated_at": "2026-11-23",
  "jobs": {
+  "ats-toss:group:7989660003": "toss-client-platform-engineer",
   "ats-toss:group:8003064003": "toss-dip-data-scientist",
   "ats-toss:group:7818488003": "toss-dw-analytics-engineer",
   "ats-toss:group:7985496003": "toss-dw-global-analytics-engineer",
@@ -11,6 +12,16 @@
   "saramin-55608860": "tossbank-finance-data-system"
  },
  "roles": [
+  {
+   "id": "toss-client-platform-engineer",
+   "company": "토스",
+   "role": "플랫폼 엔지니어 (전문연구요원)",
+   "jobs": [
+    "ats-toss:group:7989660003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 19
+  },
   {
    "id": "toss-dip-data-scientist",
    "company": "토스",
