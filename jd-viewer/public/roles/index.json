@@ -72,6 +72,7 @@
   "ats-toss:group:5622038003": "tossbank-frontend-product",
   "ats-toss:group:7702579003": "tossbank-infra-operations-engineer",
   "ats-toss:group:5498959003": "tossbank-ml-llm-ops",
+  "ats-toss:group:6118752003": "tossbank-ml-product",
   "ats-toss:group:4542935003": "tossbank-product-foundation-server",
   "ats-toss:group:4076109003": "tossbank-product-server",
   "ats-toss:group:5847765003": "tossbank-security-researcher",
@@ -761,6 +762,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 23
+  },
+  {
+   "id": "tossbank-ml-product",
+   "company": "토스뱅크",
+   "role": "ML 엔지니어 (Product)",
+   "jobs": [
+    "ats-toss:group:6118752003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 14
   },
   {
    "id": "tossbank-product-foundation-server",

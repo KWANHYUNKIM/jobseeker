@@ -1,0 +1,1299 @@
+{
+ "id": "tossbank-ml-product",
+ "company": "토스뱅크",
+ "role": "ML 엔지니어 (Product)",
+ "team": "ML Tribe / Chapter",
+ "jobs": [
+  "ats-toss:group:6118752003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "은행 안에서 사람이 손으로 하던 일 — 신분증 확인, 이상거래 잡기, 대출 심사, 상담, 서류·음성 처리 — 을 **AI 제품으로 바꾸고, 그 제품이 멈추지 않게 서빙**합니다.[1] 모델은 데이터 사이언티스트와 함께 만들고, 이 자리는 그 모델을 서비스로 내보내는 쪽이 중심입니다.[2]",
+  "env": "쿠버네티스 위 파이썬 모델 서버, 같은 챕터 플랫폼 팀이 운영하는 Triton·vLLM·피처 저장소[11], 그리고 배포마다 검증·승인이 붙는 **은행 규제** 안에서 일합니다.[6]",
+  "oneline": "\"모델이 아니라 서비스를 만든다\"[4] — 모델 성능보다 **응답 시간·장애·임계값·사람에게 넘기는 길**까지 책임지는 ML 엔지니어."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "대규모 트래픽과 높은 SLA를 요구하는 ML/AI 서비스를 설계·개발·운영해요.",
+   "short": "계좌 개설·대출·송금 같은 은행 흐름 한가운데서 호출되는 AI라서, 느리거나 죽으면 거래가 멈춘다.",
+   "why": "토스뱅크의 AI는 따로 떨어진 분석 도구가 아닙니다. 신분증 사본 탐지는 계좌 개설과 대출 신청 순간에 실시간으로 불리고[5], 이상거래 탐지는 송금할 때 안내 알림을 띄웁니다.[4] 같은 챕터의 피처 저장소는 초당 약 12만 건을 쓰고 P99(100번 중 가장 느린 1번) 5ms 이하를 목표로 합니다.[13] SLA(서비스 수준 약속)는 이런 호출이 \"얼마나 자주, 얼마나 빨리\" 답해야 하는지 정한 약속입니다.[21]",
+   "actually": {
+    "intro": "이 팀이 실제로 만든 서비스에서 보이는 일입니다.",
+    "items": [
+     "**실시간 판정 서버** — 신분증 사진 id와 종류를 받으면 '원본이 아닐 확률'을 돌려주는 파이썬 웹서버. 신원 서비스와 대출 서비스가 이 서버를 부른다.[5]",
+     "**다른 서비스를 지키기** — 학습 데이터를 모을 때 고객용 신원 서비스에 부하를 주지 않으려고 속도를 조절하는 다운로드 프록시를 따로 뒀다.[5]",
+     "**지연 예산** — ResNet50(100ms)보다 무거운 RegNet(300ms)을 골랐다. 정확도가 올랐고 300ms가 흐름에 문제되지 않는다고 판단했기 때문이다.[5]",
+     "**공통 관측** — 모델 실행마다 추적 id·시간·로그·지표를 공통 코드가 남긴다.[2] 분산 추적으로 장애를 좁히는 일은 같은 팀 백엔드 공고에도 있다.[12]",
+     "**평균이 아니라 꼬리** — SLO(목표치)는 보통 백분위 지연(p99 등)으로 잡는다. 평균이 괜찮아도 1%가 1초를 넘으면 그 1%의 고객은 멈춘 화면을 본다.[21]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "가용성 목표가 허락하는 장애 시간과 평균의 함정 (가상 값, 직접 돌린 출력)",
+     "body": "99.9%면 한 달에 43분, 99.99%면 4분만 멈출 수 있습니다. 요청 1,000개 중 10개만 1초 넘게 걸려도 평균은 91ms로 멀쩡해 보이고, p99.9에서야 1.3초가 드러납니다.",
+     "lang": "python",
+     "code": "for slo in (0.999, 0.9995, 0.9999):\n    print(f\"{slo:.2%} -> 30일 허용 장애 {30*24*60*(1-slo):.1f}분\")\n# 99.90% -> 30일 허용 장애 43.2분\n# 99.95% -> 30일 허용 장애 21.6분\n# 99.99% -> 30일 허용 장애 4.3분\n\nimport random, statistics\nrandom.seed(7)\nlat = [random.gauss(80, 10) for _ in range(990)] + [random.uniform(900, 1500) for _ in range(10)]\nlat.sort()\nprint(\"평균 %.0fms p50 %.0fms p99 %.0fms p99.9 %.0fms\" % (statistics.mean(lat), lat[499], lat[989], lat[998]))\n# 평균 91ms p50 81ms p99 108ms p99.9 1340ms"
+    }
+   ],
+   "how_far": "SLA 숫자 자체는 상품 조직과 함께 정합니다. {추론} 이 자리는 **그 숫자를 지키는 구조**(시간 제한·재시도·대체 경로·관측)를 설계하고, 깨졌을 때 원인을 찾아 고치는 것까지 맡습니다. 공고가 자격요건 첫 줄에 같은 경험을 다시 요구하는 이유입니다.[1]",
+   "refs": [
+    1,
+    2,
+    4,
+    5,
+    12,
+    13,
+    21
+   ],
+   "study": [
+    "slash23-fakeid",
+    "sre-book",
+    "mlsd-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "ML 모델과 LLM을 프로덕션에 서빙하는 시스템을 만들어요.",
+   "short": "데이터 사이언티스트가 만든 모델과 LLM을 서비스가 부를 수 있는 서버로 바꾸고, 새 버전을 안전하게 갈아 끼운다.",
+   "why": "토스뱅크 ML Service 팀은 신분증 OCR·사후 검증, 상담 통화 음성 인식, 문서 OCR 같은 모델을 서빙합니다.[2] 예전에는 데이터 사이언티스트의 노트북 코드를 ML 엔지니어가 처음부터 다시 짰는데, 모델이 5~6개가 되자 이 방식이 무너졌다고 팀이 직접 밝혔습니다.[2] 그래서 서빙은 '서버 하나 띄우기'가 아니라 **모델이 계속 늘어도 버티는 구조**를 만드는 일입니다.",
+   "actually": {
+    "intro": "토스뱅크 팀이 글로 공개한 구조와, 같은 그룹이 공개한 LLM 서빙입니다.",
+    "items": [
+     "**인터페이스 약속** — 모든 모델이 `pre_process`·`inference`·`post_process` 세 칸을 구현하는 추상 클래스를 따른다. 데이터 사이언티스트는 세 칸만 채워 패키지로 내고, ML 엔지니어는 `pip install` 한 줄로 받는다.[2]",
+     "**공통 일은 한 곳에서** — 기본 클래스의 `run()`이 추적 id·타이머·로그·지표를 감싼다. 모델마다 다시 쓰지 않는다.[2]",
+     "**모노레포** — 모델 패키지를 uv 워크스페이스 한 저장소에 두어 기본 클래스와 모델을 한 PR로 바꾼다. poetry에서 uv로 바꿔 빌드가 3~5배 빨라졌다.[2]",
+     "**결과** — 서빙에 며칠 걸리던 일이 한 줄이 됐고, 첫 커밋 당일 운영에 나간 서비스도 있었다.[2]",
+     "**같은 프로세스의 위험** — 노트북에서 가져온 전역 설정 한 줄이 같은 서빙 프로세스의 다른 모델까지 바꿀 수 있었다. 그래서 공통 라이브러리를 고칠 때는 모든 모델이 영향을 받는다.[2]",
+     "**새 버전 교체** — 신용평가 모델은 실제 트래픽을 복사해 새 버전에 같이 흘리는 섀도 배포로 2~3주 결과를 대조한 뒤 바꿨다.[6] 같은 고객에게 같은 점수가 나와야 하기 때문이다.[4]",
+     "**LLM 서빙** — 같은 그룹 토스증권은 vLLM·Triton을 KServe(쿠버네티스 위 서빙 도구)로 띄웠다.[14][28] 이 은행의 서빙 플랫폼(Triton·vLLM·SGLang)은 같은 챕터 플랫폼 팀이 운영한다.[11]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "세 칸 약속과 공통 run() — 글의 의사코드를 돌아가게 옮긴 것 (직접 돌린 출력)",
+     "body": "글은 의사코드만 보였습니다.[2] 아래는 같은 생각을 최소한으로 옮긴 것이고 모델 계산은 가짜입니다.",
+     "lang": "python",
+     "code": "import time\nfrom abc import ABC, abstractmethod\n\nclass Model(ABC):\n    name = \"base\"\n    @abstractmethod\n    def pre_process(self, raw): ...\n    @abstractmethod\n    def inference(self, x): ...\n    @abstractmethod\n    def post_process(self, y): ...\n    def run(self, raw, trace_id):          # 공통 일: 시간·로그(실제론 지표·추적도)\n        t = time.perf_counter()\n        out = self.post_process(self.inference(self.pre_process(raw)))\n        print(f\"[{trace_id}] {self.name} {(time.perf_counter()-t)*1000:.1f}ms -> {out}\")\n        return out\n\nclass IdCardFake(Model):                    # DS는 세 칸만\n    name = \"idcard-fake-v3\"\n    def pre_process(self, raw): return [p / 255 for p in raw]\n    def inference(self, x): return sum(x) / len(x)\n    def post_process(self, y): return {\"fake_prob\": round(y, 3)}\n\nIdCardFake().run([200, 180, 40, 10], trace_id=\"tx-001\")\n# [tx-001] idcard-fake-v3 0.0ms -> {'fake_prob': 0.422}"
+    }
+   ],
+   "how_far": "GPU 클러스터·서빙 엔진 설치는 플랫폼 팀 몫입니다.[11] 이 자리는 **제품 쪽 서빙** — 모델 인터페이스, 서빙 서버 코드, 버전 교체(섀도 비교), 지연·처리량 측정 — 을 맡는다고 보면 됩니다. {추론}",
+   "refs": [
+    2,
+    4,
+    6,
+    11,
+    14,
+    28
+   ],
+   "study": [
+    "toss-llm-serving",
+    "triton-server",
+    "vllm-docs",
+    "mlsd-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "LLM 기반 Agent Workflow 및 RAG 애플리케이션을 개발하고, 품질을 평가·개선해요.",
+   "short": "LLM이 은행 문서를 찾아 읽고 답하거나 정해진 절차를 밟게 만들고, 틀린 답이 얼마나 나오는지 숫자로 잰다.",
+   "why": "토스뱅크는 LLM이 상품 절차·내부 정책 문서를 읽고 답하는 상담으로 혁신금융서비스 지정을 받았고[9], 2026년 10월 AI 채팅 에이전트를 전 고객에게 넓혔습니다 — 5분 넘던 상담을 30초 안팎으로 줄였다고 합니다.[7] 반면 예전 챗봇 만족도는 36%로 콜센터 72%의 절반이었습니다.[8] 답을 잘 찾고 잘 넘기는지가 곧 제품의 질입니다.",
+   "actually": {
+    "intro": "RAG는 질문에 맞는 문서를 먼저 찾아 LLM에 함께 주는 방식이고[22], 에이전트 워크플로는 LLM이 도구를 부르며 여러 단계를 밟는 흐름입니다.[23]",
+    "items": [
+     "**문서 찾기** — 상담 지식(헬프닥스)·정책 문서를 잘게 나눠 색인하고 질문에 맞는 조각을 고른다. 토스뱅크 에이전트는 헬프닥스·헬프챗·헬프데스크와 연결돼 있다.[7]",
+     "**도구 부르기** — 카드 배송 조회·결제 거절 사유·분실 신고처럼 실제 시스템을 조회·변경하는 일. 민감정보는 채팅에 쓰게 하지 않고 얼굴·지문 인증 화면을 띄운다.[7]",
+     "**사람에게 넘기기** — 보이스피싱·사기 긴급 상황, 잘못 안내할 위험, 대화가 길어질 때 같은 창에서 상담원에게 넘기고 고객이 같은 말을 반복하지 않게 한다.[7]",
+     "**정해진 길 먼저** — 모델이 길을 고르는 '에이전트'보다 코드가 길을 정한 '워크플로'가 예측하기 쉽다. 필요할 때만 자율성을 늘린다.[23]",
+     "**품질 재기** — 검색은 정답 문서가 위 k개 안에 있나(recall@k)로, 답은 사람 채점이나 LLM 심판으로 잰다. LLM 심판은 먼저 나온 답·긴 답·자기 답을 편애할 수 있어 보정이 필요하다.[24]",
+     "**긴 입력의 함정** — LLM은 긴 입력의 가운데 정보를 덜 쓴다.[25] 같은 팀은 코딩 에이전트에서도 세션이 길어지면 처음 준 규칙을 무시하는 것을 보고, 필요한 순간에 2~4개만 넣는 방식으로 바꿨다.[3]",
+     "**공격 막기** — 프롬프트 인젝션(문서·입력에 숨긴 명령)·민감정보 노출·과도한 권한이 LLM 앱의 대표 실패다.[32]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "검색 평가 — recall@k와 MRR (가상 값, 직접 돌린 출력)",
+     "body": "질문 4개 중 정답 문서가 1등인 건 1개, 3등 안에는 3개입니다. MRR은 정답 순위의 역수 평균입니다.",
+     "lang": "python",
+     "code": "gold = {\"q1\": \"d3\", \"q2\": \"d7\", \"q3\": \"d1\", \"q4\": \"d9\"}\nranked = {\"q1\": [\"d3\", \"d2\", \"d5\"], \"q2\": [\"d1\", \"d7\", \"d4\"],\n          \"q3\": [\"d8\", \"d6\", \"d2\"], \"q4\": [\"d2\", \"d4\", \"d9\"]}\nfor k in (1, 3):\n    print(f\"recall@{k} =\", sum(gold[q] in ranked[q][:k] for q in gold) / len(gold))\nmrr = sum((1 / (ranked[q].index(gold[q]) + 1) if gold[q] in ranked[q] else 0) for q in gold) / len(gold)\nprint(f\"MRR = {mrr:.3f}\")\n# recall@1 = 0.25\n# recall@3 = 0.75\n# MRR = 0.458"
+    },
+    {
+     "title": "사람에게 넘기는 규칙 — 기사에 나온 세 조건을 코드로 (가상 값, 직접 돌린 출력)",
+     "body": "조건은 기사에 나온 것이고[7] 낱말·문턱 숫자는 지어낸 예입니다.",
+     "lang": "python",
+     "code": "HANDOFF = {\"보이스피싱\", \"사기\", \"명의도용\"}\ndef route(msg, turns, confidence):\n    if any(w in msg for w in HANDOFF): return \"상담원(긴급)\"\n    if confidence < 0.6: return \"상담원(오안내 위험)\"\n    if turns > 8: return \"상담원(대화 길어짐)\"\n    return \"AI 답변\"\n# 카드 배송 언제 와요? -> AI 답변\n# 보이스피싱 당한 것 같아요 -> 상담원(긴급)\n# 한도 예외 되나요? -> 상담원(오안내 위험)\n# 결제 거절 이유요 -> 상담원(대화 길어짐)"
+    }
+   ],
+   "how_far": "토스뱅크가 어떤 모델·검색 방식을 쓰는지는 공개되지 않았습니다. 이 자리는 **평가셋을 만들고(실제 문의를 본떠), 숫자로 고친 효과를 보이는 것**까지가 '품질을 평가·개선'입니다. 같은 그룹 토스는 공개 순위표 점수가 자기 업무 성능과 맞지 않아 업무를 본뜬 평가셋을 따로 만들었습니다.[17]",
+   "refs": [
+    3,
+    7,
+    8,
+    9,
+    17,
+    22,
+    23,
+    24,
+    25,
+    32
+   ],
+   "study": [
+    "anthropic-agents",
+    "cs329z-rag",
+    "llm-app-book",
+    "ai-engineering",
+    "llm-judge-paper",
+    "owasp-llm",
+    "toss-benchmark"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AI로 비즈니스 문제를 정의하고 실제 임팩트로 연결해요.",
+   "short": "\"어떤 모델을 쓸까\"보다 \"어느 업무의 어느 단계를 바꾸면 무엇이 줄어드나\"를 먼저 정하는 일.",
+   "why": "토스뱅크 PF ML 팀장은 실험실에서 잘 되던 모델도 서비스에 나가면 효과가 없을 수 있어 \"모델이 아니라 서비스를 만든다\"고 했고, 정책·영업 팀과 함께 적용 방법을 고민해야 한다고 했습니다.[4] 공고의 동료 한마디도 은행에 아직 사람 손을 타는 업무가 많고, 기획부터 서비스까지 팀 안에서 끝까지 한다고 말합니다.[1]",
+   "actually": {
+    "intro": "신분증 사본 탐지 발표가 그 순서를 그대로 보여 줍니다.[5]",
+    "items": [
+     "**문제 정의** — 직원이 한 장씩 보는 수기 검증은 실수를 바로잡을 장치가 없었고, 사람이 적은 시간엔 5~6시간이 걸렸다. 그렇다고 검증 전 거래를 모두 막으면 고객 경험을 해친다.",
+     "**끼워 넣을 자리** — ① 수기 결과와 AI 결과가 다르면 다시 검증(사람 실수 이중 확인), ② 수기 검증이 아직이면 AI에게 물어 의심될 때만 대출 거래 제한.",
+     "**임계값은 서비스가 고른다** — 모델은 확률만 준다. 최근 49,962장으로 비교하니 50%에선 무고한 고객 5.27%가 막히고(정밀도 17.51%·재현율 72.98%), 99%에선 0.72%(50.90%·48.87%)였다.",
+     "**비용을 메우는 장치** — 대출은 50%를 고르는 대신 막힌 고객의 수기 검증에 우선순위를 줘 불편을 줄였다.",
+     "**임팩트** — 2월 보름 동안 거래 제한의 정확도 약 94%, 사본 신분증 대출 신청의 82%를 사전에 막았다. 이후 이 기술은 금융권 최초로 판매 승인까지 받았다(10만 건 학습·0.5초).[18]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "임계값을 올리면 무엇을 얻고 잃나 (가상 점수 1만 건, 직접 돌린 출력)",
+     "body": "점수 분포는 지어낸 것이라 숫자는 발표와 다릅니다. 문턱을 올리면 무고한 고객이 덜 막히는 대신 잡아내는 비율(재현율)이 떨어지는 모양만 봅니다.",
+     "lang": "python",
+     "code": "import random\nrandom.seed(1)\nrows = [(random.betavariate(2, 8), 0) for _ in range(9700)] + [(random.betavariate(6, 2), 1) for _ in range(300)]\nfor t in (0.5, 0.9, 0.99):\n    tp = sum(1 for s, y in rows if s >= t and y); fp = sum(1 for s, y in rows if s >= t and not y)\n    fn = sum(1 for s, y in rows if s < t and y); neg = sum(1 for s, y in rows if not y)\n    print(f\"임계 {t:.2f}: 무고한 고객 막힘 {fp/neg:.2%} · 정밀도 {tp/(tp+fp):.2%} · 재현율 {tp/(tp+fn):.2%}\")\n# 임계 0.50: 무고한 고객 막힘 2.05% · 정밀도 58.54% · 재현율 93.67%\n# 임계 0.90: 무고한 고객 막힘 0.00% · 정밀도 100.00% · 재현율 14.67%\n# 임계 0.99: 무고한 고객 막힘 0.00% · 정밀도 100.00% · 재현율 0.33%"
+    }
+   ],
+   "how_far": "정책(어디서 막을지)은 상품·리스크 조직과 정합니다.[4] ML 엔지니어는 **선택지마다 숫자(막히는 고객·놓치는 사기·처리 시간)를 내고, 고른 뒤 실제 효과를 측정해 보고**하는 데까지 갑니다. 이력서 안내도 성과 지표를 보며 고도화한 경험을 쓰라고 합니다.[1]",
+   "refs": [
+    1,
+    4,
+    5,
+    18
+   ],
+   "study": [
+    "slash23-fakeid",
+    "mlsd-book",
+    "rules-of-ml"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "대규모 트래픽과 높은 SLA 서비스를 프로덕션으로 개발·운영한 경험이 필요해요.",
+   "short": "ML보다 먼저 보는 요건 — 실제 사용자가 붙은 서버를 장애 없이 굴려 본 경험.",
+   "why": "업무 첫 줄과 같은 내용을 '경험'으로 요구합니다.[1] 같은 팀 ML 백엔드 공고는 아예 \"ML 경험은 없어도 좋다\"고 하며 서버 설계·운영 역량을 앞세웁니다.[12] 이 팀에서 ML 엔지니어는 곧 서버를 운영하는 사람이라는 뜻입니다. {추론}",
+   "actually": {
+    "items": [
+     "**시간 제한·재시도·서킷 브레이커** — 모델 서버가 느릴 때 호출한 쪽까지 같이 멈추지 않게.",
+     "**과부하 대응** — 몰릴 때 큐·동적 배칭(요청을 잠깐 모아 한 번에 계산)으로 처리량을 올리되 대기 시간 상한을 둔다.[27]",
+     "**백분위 지표로 보기** — p50·p99 지연, 오류율, 처리량.[21]",
+     "**배포 안전장치** — 섀도 비교·점진 전환, 문제가 보이면 되돌리기.[6]"
+    ]
+   },
+   "how_far": "\"대규모\"의 기준은 공고에 없습니다. 지원서에서는 **초당 요청 수·지연 목표·겪은 장애와 고친 방법**을 숫자로 적는 것이 이 줄에 답하는 방법입니다 — 이력서 안내가 구현과 트레이드오프를 함께 쓰라고 합니다.[1]",
+   "refs": [
+    1,
+    6,
+    12,
+    21,
+    27
+   ],
+   "study": [
+    "sre-book",
+    "ddia-ko",
+    "internal-k8s"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "사용하는 기술의 동작 원리를 바닥까지 이해하고, 선택한 근거를 설명할 수 있어요.",
+   "short": "\"vLLM을 썼다\"가 아니라 \"왜 빠른지(메모리를 어떻게 나누는지)\"까지 말할 수 있어야 한다.",
+   "why": "전형에 직무 인터뷰가 따로 있고[1], 같은 팀 글들은 도구를 바꿀 때마다 이유를 숫자로 댑니다 — poetry→uv는 빌드 3~5배[2], 규칙 주입에서 AI 판정을 뺀 건 요청당 약 10초 때문이었습니다.[3]",
+   "actually": {
+    "intro": "이 공고의 기술에서 '바닥'은 이런 것입니다.",
+    "items": [
+     "**vLLM** — KV 캐시(앞 토큰의 계산 결과)를 고정 크기 블록으로 나눠 메모리 낭비를 줄이고 동시 처리를 늘린다(PagedAttention).[26]",
+     "**Triton 동적 배칭** — 요청을 얼마나 기다려 묶을지가 지연과 처리량의 거래다.[27]",
+     "**prefix caching** — 같은 앞부분(시스템 프롬프트)의 계산을 재사용해 토스증권은 첫 토큰까지 시간(TTFT)을 약 1/10로 줄였다.[15]",
+     "**양자화** — 가중치를 16비트에서 8·4비트로 줄이면 메모리가 줄지만, 어떤 가중치를 지킬지(AWQ 등)에 따라 품질이 갈린다.[30]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "8B 모델이 GPU 메모리를 얼마나 먹나 — 가중치와 KV 캐시 (어림 계산, 직접 돌린 출력)",
+     "body": "층 32·KV 헤드 8·헤드 차원 128인 8B 모델 가정입니다. 가중치보다 동시 사용자 × 문맥 길이가 메모리를 더 먹을 수 있다는 것이 vLLM이 메모리를 나누는 이유입니다.[26]",
+     "lang": "python",
+     "code": "params = 8e9\nfor name, b in ((\"BF16\", 2), (\"INT8\", 1), (\"INT4\", 0.5)):\n    print(f\"가중치 {name}: {params*b/2**30:.1f} GiB\")\nkv_per_tok = 2 * 32 * 8 * 128 * 2      # K·V × 층 × 헤드 × 차원 × 2바이트\nprint(f\"토큰당 KV {kv_per_tok/1024:.0f} KiB\")\nfor users, ctx in ((16, 4096), (64, 8192)):\n    print(f\"동시 {users}명 x {ctx}토큰 -> KV {users*ctx*kv_per_tok/2**30:.1f} GiB\")\n# 가중치 BF16: 14.9 GiB\n# 가중치 INT8: 7.5 GiB\n# 가중치 INT4: 3.7 GiB\n# 토큰당 KV 128 KiB\n# 동시 16명 x 4096토큰 -> KV 8.0 GiB\n# 동시 64명 x 8192토큰 -> KV 64.0 GiB"
+    }
+   ],
+   "how_far": "모든 걸 깊이 알 필요는 없습니다. **이력서에 쓴 기술마다 \"왜 그것을, 다른 것 대신\"과 \"안에서 무슨 일이 일어나나\"를 두세 단계 내려가 설명**할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    15,
+    26,
+    27,
+    30
+   ],
+   "study": [
+    "cs336-inference",
+    "vllm-docs",
+    "triton-server",
+    "ddia-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "전체 아키텍처를 그리고 각 컴포넌트의 역할, 트레이드오프를 설명할 수 있어요.",
+   "short": "AI 제품 하나가 지나가는 길(호출 서비스 → 모델 서버 → 피처·문서 → 사람 검토)을 한 장에 그릴 수 있어야 한다.",
+   "why": "이력서 안내가 \"아키텍처의 복잡도와 개발 리소스 사이에서 비용 효율을 비교해 우선순위를 정한 경험\"을 쓰라고 합니다.[1] 이 팀의 모노레포 결정도 장점(한 PR로 함께 변경)과 비용(공통 패키지 변경이 모든 모델에 퍼짐, 빌드 느려짐)을 같이 적었습니다.[2]",
+   "flows": [
+    {
+     "caption": "신분증 사본 탐지가 지나가는 길[5]",
+     "steps": [
+      "계좌 개설·대출 · 고객이 사진 제출",
+      "신원 서비스 · 수기 검증 요청",
+      "실시간 탐지 서버 · 원본 아닐 확률",
+      "서비스별 임계값 · 이중 확인·거래 제한",
+      "수기 검증 · 다르면 다시, 막힌 건 우선"
+     ],
+     "mine_from": 2
+    },
+    {
+     "caption": "모델이 서비스로 나가는 길[2][6]",
+     "steps": [
+      "DS · 노트북에서 실험",
+      "모델 패키지 · 세 칸 구현, CI",
+      "서빙 서버 · pip install, 공통 run()",
+      "섀도 비교 · 기존 결과와 대조",
+      "운영 · 지표·로그·추적"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "items": [
+     "**한 프로세스에 여러 모델 vs 모델마다 서버** — 자원은 아끼지만 한 모델의 전역 설정·메모리가 이웃을 건드린다.[2]",
+     "**정확도 vs 지연** — 300ms를 쓰고 정확도 2.92%p를 얻은 선택.[5]",
+     "**자율 에이전트 vs 정해진 워크플로** — 유연함과 예측 가능성의 거래.[23]",
+     "**외부 LLM vs 자체 모델** — 외부는 빠르지만 규제·비용·의존이, 자체는 서빙 부담이 따른다. 토스뱅크 내부용 생성형 AI는 클라우드(AWS Bedrock) 기반으로 혁신금융서비스 지정을 받았다.[10]"
+    ]
+   },
+   "how_far": "면접에서 화이트보드에 그리는 수준이면 됩니다 — 상자마다 **무엇을 맡고, 무엇이 죽으면 어떻게 되며, 왜 이렇게 나눴는지**를 한두 문장으로. {추론}",
+   "refs": [
+    1,
+    2,
+    5,
+    6,
+    10,
+    23
+   ],
+   "study": [
+    "mlsd-book",
+    "ddia-ko",
+    "anthropic-agents"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AI/ML를 제품에 활용하여 비즈니스 임팩트를 만들어 낸 경험이 있어요.",
+   "short": "모델 점수(정확도)가 아니라 \"그래서 처리 시간·사기·비용이 얼마나 줄었나\"를 말할 수 있는 경험.",
+   "why": "팀장이 말한 \"모델 성능만으로는 이용자 가치를 만들기 어렵다\"는 관점이 그대로 요건이 됐습니다.[4] 이력서 안내도 프로덕션에 적용하고 성과 지표를 보며 고도화한 경험을 쓰라고 합니다.[1]",
+   "actually": {
+    "intro": "이 회사가 스스로 내놓은 '임팩트' 숫자의 모양입니다.",
+    "items": [
+     "사본 신분증 대출 신청의 82%를 사전에 차단, 거래 제한 정확도 약 94%.[5]",
+     "상담 대기 5분 이상 → 30초 안팎.[7]",
+     "서빙에 며칠 → `pip install` 한 줄.[2]"
+    ]
+   },
+   "how_far": "규모가 작아도 됩니다. **전·후 숫자, 무엇과 비교했는지(대조군·이전 버전), 내가 맡은 부분**이 드러나면 이 줄에 답한 것입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    4,
+    5,
+    7
+   ],
+   "study": [
+    "mlsd-book",
+    "rules-of-ml"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "처음 보는 기술도 빠르게 배우고 원리를 이해해서 적용해본 경험이 있어요.",
+   "short": "LLM 도구는 반년마다 바뀐다 — 새 서빙 엔진·에이전트 도구를 직접 띄워 재 보고 들일지 정하는 힘.",
+   "why": "이 팀은 2023년 이미지 분류 모델로 시작해[5] 2026년엔 LLM 에이전트와 코딩 에이전트 규칙 도구까지 만들고 있습니다.[7][3] 동료 한마디도 빠르게 발전하는 AI 기술로 문제를 푸는 데 관심 있는 사람을 찾습니다.[1]",
+   "actually": {
+    "items": [
+     "코딩 에이전트가 팀 규칙을 어기자 전역 지침 → 훅 주입으로 바꾸고, 오탐(21개 세션 발동, 실제 변경 0건)을 찾아 정규식을 고쳤다.[3]",
+     "같은 그룹 토스증권은 vLLM과 SGLang의 지표를 한 대시보드에 모아 비교하며 설정을 바꿨다.[15]"
+    ]
+   },
+   "how_far": "\"배웠다\"가 아니라 **작게 띄워 보고, 재고, 들이거나 버린 이유**를 말할 수 있는 사례 하나면 충분합니다. {추론}",
+   "refs": [
+    1,
+    3,
+    5,
+    7,
+    15
+   ],
+   "study": [
+    "toss-serving-2",
+    "cs336-inference"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "정해진 정답(Best Practice)을 따르기보다, 문제를 정의하고 왜 그 기술을 선택했는지 스스로 설명할 수 있는 분을 찾아요.",
+   "short": "\"남들이 RAG를 쓰니까\"가 아니라 \"이 문제엔 규칙·작은 모델·LLM 중 무엇이 맞나\"부터 따지는 사람.",
+   "why": "이 팀의 사례들은 유행보다 문제에서 출발합니다 — FDS는 사람이 정한 룰 위에 ML을 얹었고[4], 규칙 주입은 AI 판정 대신 정규식을 골랐습니다(속도 때문에).[3] 에이전트 설계 지침도 가장 단순한 방법부터 시작하라고 합니다.[23]",
+   "actually": {
+    "items": [
+     "**LLM이 필요 없는 경우** — 정해진 조건 분기, 표로 된 계산은 규칙이 더 빠르고 설명하기 쉽다.",
+     "**작은 모델로 충분한 경우** — 같은 그룹 토스증권은 성공한 서비스만 골라 작은 자체 모델로 옮겼다.[16]",
+     "**ML의 숨은 비용** — 모델 코드보다 데이터·설정·감시 같은 주변이 더 큰 부채가 된다.[31]"
+    ]
+   },
+   "how_far": "면접에서 '다른 선택지는 무엇이었고 왜 버렸나'를 물으면 바로 답할 수 있으면 됩니다. {추론}",
+   "refs": [
+    3,
+    4,
+    16,
+    23,
+    31
+   ],
+   "study": [
+    "hidden-debt",
+    "rules-of-ml",
+    "anthropic-agents"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Triton, KServe, k8s 등 딥러닝 모델 서빙 시스템 및 프레임워크를 구축·운영한 경험",
+   "short": "모델을 파이썬 웹서버 하나가 아니라 쿠버네티스 위 서빙 도구로 띄우고 확장해 본 경험.",
+   "why": "같은 챕터 플랫폼 팀이 Triton·vLLM·SGLang 서빙 환경을 쿠버네티스 위에서 운영합니다.[11] 제품 쪽 엔지니어가 이 도구를 알면 플랫폼 팀과 같은 말로 설정을 고를 수 있습니다. {추론}",
+   "actually": {
+    "items": [
+     "**Triton** — 모델 설정 파일로 배칭·동시 인스턴스를 정하고, 여러 모델을 한 서버에 올린다.[27]",
+     "**KServe** — 쿠버네티스 위에서 모델을 서비스 하나(InferenceService)로 선언하고 자동 확장한다.[28] 토스증권이 LLM 서빙에 썼다.[14]",
+     "**k8s** — 파드 자원(GPU) 요청, 준비 상태 확인(readiness), 확장·되돌리기."
+    ]
+   },
+   "how_far": "로컬 쿠버네티스(kind 등)에 Triton이나 KServe로 작은 모델 하나를 올리고, 동적 배칭을 켜고 끄며 지연·처리량을 재 본 정도면 이야기가 됩니다. {추론}",
+   "refs": [
+    11,
+    14,
+    27,
+    28
+   ],
+   "study": [
+    "triton-server",
+    "toss-llm-serving",
+    "internal-k8s",
+    "k8s-in-action"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "LLM Application, RAG, Multi-Agent 개발 및 LLM 평가 시스템을 구축한 경험",
+   "short": "LLM 앱을 만든 것에 더해, 바꿀 때마다 자동으로 점수를 매기는 평가 장치까지 만든 경험.",
+   "why": "업무 셋째 줄이 '품질 평가·개선'까지 묶었고[1], 상담 AI의 만족도가 콜센터의 절반이던 상황[8]에서 무엇이 좋아졌는지 보이려면 평가 장치가 먼저 있어야 합니다. {추론}",
+   "actually": {
+    "items": [
+     "**평가셋** — 실제 문의를 본뜬 질문 + 정답 문서 + 모범 답. 토스는 업무를 본떠 따로 만들었다.[17]",
+     "**자동 채점** — 검색은 recall@k, 답은 LLM 심판(편향 보정 포함)과 사람 표본 검토.[24] 토스증권은 보상 모델·LLM 심판으로 평가를 자동화했다.[16]",
+     "**멀티 에이전트** — 역할을 나눈 여러 에이전트(분류 → 조회 → 답 작성 → 검토). 단계가 늘수록 실패 지점도 늘어 단순한 구조부터 시작하라는 것이 공개 지침이다.[23]"
+    ]
+   },
+   "how_far": "프롬프트나 검색 설정을 바꿀 때마다 평가셋 점수가 표로 나오는 작은 장치 하나가 있으면 '평가 시스템 구축'이라고 말할 수 있습니다. {추론}",
+   "refs": [
+    1,
+    8,
+    16,
+    17,
+    23,
+    24
+   ],
+   "study": [
+    "cme295-eval",
+    "cs336-eval",
+    "llm-judge-paper",
+    "toss-benchmark",
+    "ai-engineering"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "vLLM 서빙 및 Fine-tuning, Quantization, Inference 최적화 경험",
+   "short": "LLM을 직접 띄우고(vLLM), 우리 일에 맞게 조금 더 가르치고(파인튜닝), 작고 빠르게 만드는(양자화) 경험.",
+   "why": "토스뱅크 내부 생성형 AI는 클라우드 모델을 쓰지만[10], 같은 챕터는 vLLM·SGLang 서빙 환경을 직접 운영합니다.[11] 같은 그룹은 성공한 서비스를 작은 자체 모델로 옮겨 의존과 비용을 줄였습니다.[16]",
+   "actually": {
+    "items": [
+     "**파인튜닝** — 전체 대신 작은 행렬만 학습하는 LoRA로 GPU를 아낀다.[29]",
+     "**양자화** — 가중치를 4비트로 줄이되 중요한 가중치를 보호하는 AWQ 같은 방법.[30]",
+     "**추론 최적화** — KV 캐시 관리(PagedAttention)[26], prefix caching·동시 처리 수 조정으로 장비 없이 처리량 올리기.[15]"
+    ]
+   },
+   "how_far": "우대사항입니다. 작은 공개 모델을 vLLM으로 띄워 양자화 전후 지연·메모리·평가 점수를 표로 비교해 본 정도면 이야기 소재가 됩니다. {추론}",
+   "refs": [
+    10,
+    11,
+    15,
+    16,
+    26,
+    29,
+    30
+   ],
+   "study": [
+    "vllm-docs",
+    "lora-paper",
+    "qlora-paper",
+    "cs336-inference",
+    "toss-serving-2"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "은행/금융처럼 장애·규제 리스크가 큰 도메인에서 신중하게 배포·운영한 경험",
+   "short": "틀린 답 하나가 사고가 되는 곳이라서 — 새 모델을 그림자로 돌려 비교하고, 승인 절차를 지키며 바꾸는 경험.",
+   "why": "신용점수는 같은 고객에게 늘 같은 결과가 나와야 해 이 팀은 섀도 검증을 이중으로 합니다.[4] 신용 모형 시스템은 트래픽을 복사해 2~3주 대조했고 배포에는 전자금융감독규정에 따른 승인이 붙습니다.[6] 생성형 AI는 혁신금융서비스 지정·보안 대책을 조건으로 쓰고 있습니다.[10][20]",
+   "actually": {
+    "items": [
+     "**섀도 배포** — 새 모델을 실제 요청에 같이 돌리되 결과는 쓰지 않고 기존과 비교한다.[6]",
+     "**데이터 다루기** — 학습 데이터를 암호화해 두고 학습 직전에만 받아 끝나면 바로 지웠다.[5]",
+     "**사람이 최종 판단** — 의심거래보고에 AI를 검토하면서도 최종 판단은 사람이 하고 검토·승인 이력을 남기는 방향이다.[19]",
+     "**민감정보 차단** — 상담 에이전트는 민감정보를 채팅에 받지 않고 인증 화면을 띄운다.[7]"
+    ]
+   },
+   "how_far": "금융 경험이 없다면 **되돌릴 수 있는 배포(비교·점진 전환·롤백)를 설계해 본 경험**으로 대신 말할 수 있습니다. {추론}",
+   "refs": [
+    4,
+    5,
+    6,
+    7,
+    10,
+    19,
+    20
+   ],
+   "study": [
+    "slash24-credit",
+    "mlsd-book",
+    "owasp-llm"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "toss-dsmle",
+   "title": "DS와 MLE가 함께 일하는 법",
+   "by": "토스뱅크 ML Service 팀 · Toss Tech · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/ds-mle-cowork",
+   "why": "이 팀이 모델을 서비스로 내보내는 방식 그 자체 — 업무 둘째 줄(서빙 시스템)과 아키텍처 요건을 이 글로 먼저 본다."
+  },
+  {
+   "id": "toss-stylepack",
+   "title": "AI가 팀 규칙을 지키도록 하는 방법",
+   "by": "토스뱅크 ML 엔지니어 · Toss Tech · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/52631",
+   "why": "긴 컨텍스트에서 규칙이 무시되는 문제를 측정하고 고친 기록. 'RAG·에이전트 품질 개선'과 '원리를 이해하고 적용' 요건의 회사 사례."
+  },
+  {
+   "id": "byline-pfml",
+   "title": "정민정 토스뱅크 PF ML 팀장 \"AI모델, 서비스관점에서 개발해야\"",
+   "by": "바이라인네트워크 · 2025-09-30",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://byline.network/2025/09/0930/",
+   "why": "팀장이 말하는 이 팀의 관점(서비스 먼저·FDS·신용평가 섀도 검증). 업무 넷째 줄과 금융 배포 우대의 바탕."
+  },
+  {
+   "id": "slash23-fakeid",
+   "title": "SLASH 23 · AI와 함께 가짜 신분증 찾아내기",
+   "by": "토스뱅크 · 11분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=9JGZxmZxAAM",
+   "why": "토스뱅크가 데이터 수집 → 학습 → 실시간 서버 → 임계값 → 효과 측정까지 한 바퀴 돈 11분짜리 기록. 업무 첫째·넷째 줄을 가장 짧게 보여 준다."
+  },
+  {
+   "id": "slash24-credit",
+   "title": "SLASH 24 · 유연하면서도 안정적인, 토스뱅크만의 신용 모형/전략 시스템 구축하기",
+   "by": "토스뱅크 Data Platform · 22분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=4fk3TxgQ9Ks",
+   "why": "같은 은행의 신용 모형 서빙 — 섀도 배포·승인 절차. 금융 배포 우대 줄과 '새 버전 교체'."
+  },
+  {
+   "id": "toss-llm-serving",
+   "title": "LLM 쉽고 빠르게 서빙하기",
+   "by": "토스 기술 블로그 · 2024",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://toss.tech/article/llm-serving",
+   "why": "같은 그룹의 vLLM·Triton·KServe 구성. 서빙 업무와 Triton·KServe 우대 줄."
+  },
+  {
+   "id": "toss-serving-2",
+   "title": "LLM 서빙, 띄우는 것과 잘 띄우는 것 사이",
+   "by": "토스증권 김민규 · Toss Tech · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/tech_talk_talk_2",
+   "why": "vLLM·SGLang 지표를 보며 설정을 바꾼 같은 그룹 사례. 추론 최적화 우대 줄."
+  },
+  {
+   "id": "toss-benchmark",
+   "title": "Toss Tech · Toss Benchmark 구축기",
+   "by": "토스",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/toss-benchmark",
+   "why": "공개 점수 대신 업무를 본뜬 평가셋을 만든 같은 그룹 사례. LLM 평가 시스템 우대 줄."
+  },
+  {
+   "id": "mlsd-book",
+   "title": "머신러닝 시스템 설계",
+   "by": "칩 후옌 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EC%B9%A9%20%ED%9B%84%EC%98%8C",
+   "why": "문제 정의 → 데이터 → 배포 → 모니터링을 한 흐름으로. 아키텍처·임팩트 요건의 기본서."
+  },
+  {
+   "id": "ai-engineering",
+   "title": "AI 엔지니어링",
+   "by": "칩 후옌 · 변성윤 옮김",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=AI%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81%20%EC%B9%A9%20%ED%9B%84%EC%98%8C",
+   "why": "평가·프롬프트·RAG·에이전트·추론 최적화를 한 권으로. 업무 셋째 줄과 우대 둘째·셋째 줄."
+  },
+  {
+   "id": "llm-app-book",
+   "title": "LLM을 활용한 실전 AI 애플리케이션 개발",
+   "by": "허정준",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=LLM%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EC%8B%A4%EC%A0%84%20AI%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EA%B0%9C%EB%B0%9C",
+   "why": "한국어로 RAG·에이전트·서빙을 코드로 따라 하기. 업무 셋째 줄의 손 연습용."
+  },
+  {
+   "id": "anthropic-agents",
+   "title": "Building effective agents",
+   "by": "Anthropic",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.anthropic.com/engineering/building-effective-agents",
+   "why": "워크플로와 에이전트를 언제 나누나, 라우팅·평가자 패턴. 상담 에이전트 설계의 출발점."
+  },
+  {
+   "id": "cs329z-rag",
+   "title": "Stanford CS329Z · Lecture 3: RAG — BM25부터 에이전트형 RAG까지 (강의 노트)",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/psLc-46GqY0",
+   "why": "키워드 검색·벡터 검색·재정렬·에이전트형 RAG의 흐름을 한 강의로. 업무①과 우대①."
+  },
+  {
+   "id": "cs336-inference",
+   "title": "Stanford CS336 · Lecture 10: Inference (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/EfM546A79aM",
+   "why": "latency·비용 조건 줄 — KV 캐시·양자화가 추론 속도에 주는 영향."
+  },
+  {
+   "id": "cs336-eval",
+   "title": "Stanford CS336 · Lecture 12: Evaluation (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/lectures/JpAxdTWQJxM",
+   "why": "평가 benchmark 줄 — 무엇을 재고 어떻게 속는지."
+  },
+  {
+   "id": "cme295-eval",
+   "title": "Stanford CME295 · Lecture 8 - LLM Evaluation (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/8fNP4N46RRo",
+   "why": "LLM 심판·사람 평가·공개 시험의 장단점."
+  },
+  {
+   "id": "llm-judge-paper",
+   "title": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena",
+   "by": "Zheng 외 · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2306.05685",
+   "why": "LLM 심판을 믿어도 되는 범위와 편향 보정법."
+  },
+  {
+   "id": "owasp-llm",
+   "title": "OWASP Top 10 for LLM Applications",
+   "by": "OWASP",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://genai.owasp.org/llm-top-10/",
+   "why": "프롬프트 인젝션·출력 처리 같은 LLM 앱 실패 유형 목록. 요건 다섯째 줄(실패 먼저 상상하기)의 점검표."
+  },
+  {
+   "id": "vllm-docs",
+   "title": "vLLM 공식 문서",
+   "by": "vLLM 프로젝트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.vllm.ai/",
+   "why": "prefix caching·양자화·추론 옵션 — 오픈소스 이슈 우대 줄에서 토스증권이 부딪힌 그 도구."
+  },
+  {
+   "id": "triton-server",
+   "title": "Triton Inference Server 사용자 가이드 (Dynamic Batching · Ensemble)",
+   "by": "NVIDIA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/user_guide/batcher.html",
+   "why": "LLM이 아닌 추천·비전 모델 서빙으로 요건을 채우는 길. 동적 배칭의 대기 시간과 처리량 거래를 직접 설정해 본다."
+  },
+  {
+   "id": "lora-paper",
+   "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+   "by": "Hu 외 · 2021",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2106.09685",
+   "why": "LoRA가 무엇을 얼리고 무엇을 배우나 — 순위(r)·어느 층에 붙이나를 고르는 근거."
+  },
+  {
+   "id": "qlora-paper",
+   "title": "QLoRA: Efficient Finetuning of Quantized LLMs",
+   "by": "Dettmers 외 · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/2305.14314",
+   "why": "양자화 + LoRA. GPU가 모자랄 때의 학습 전략."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering (온라인 무료판)",
+   "by": "Google",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "why": "SLO·과부하·연쇄 장애 장. 업무 첫 줄과 자격요건 첫 줄(높은 SLA 운영)의 원리."
+  },
+  {
+   "id": "ddia-ko",
+   "title": "데이터 중심 애플리케이션 설계",
+   "by": "마틴 클레프만 · 위키북스 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+   "why": "복제·파티셔닝·일관성 — 아키텍처 트레이드오프를 설명하는 바탕."
+  },
+  {
+   "id": "internal-k8s",
+   "title": "쿠버네티스 입문",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "kubectl 결과로 Pending·CrashLoopBackOff를 읽는 연습. k8s 우대 줄의 첫걸음."
+  },
+  {
+   "id": "k8s-in-action",
+   "title": "쿠버네티스 인 액션",
+   "by": "마르코 룩샤 · 강인호 외 옮김 · 에이콘출판 · 2020",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=235962702",
+   "why": "파드·디플로이먼트·스케줄링·리소스 — 서빙 도구를 올리기 전 기초 체력."
+  },
+  {
+   "id": "rules-of-ml",
+   "title": "Rules of Machine Learning",
+   "by": "Martin Zinkevich · Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+   "why": "규칙부터 시작하라, 학습·서빙 불일치를 막아라 — '정답보다 문제 정의' 요건과 잘 맞는 짧은 규칙 모음."
+  },
+  {
+   "id": "hidden-debt",
+   "title": "Hidden Technical Debt in Machine Learning Systems",
+   "by": "D. Sculley 외 · NeurIPS 2015",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems",
+   "why": "ML 시스템에서 모델 코드보다 주변이 무겁다는 것. 기술 선택의 근거를 댈 때 바탕."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "이 팀의 서비스 읽기",
+   "time": "1주",
+   "goal": "토스뱅크 ML 제품 하나(신분증 사본 탐지)를 문제 → 데이터 → 서버 → 임계값 → 효과 순서로 설명할 수 있다.",
+   "task": "발표와 팀 글 둘을 보고, 위 '신분증 사본 탐지가 지나가는 길'을 내 말로 다시 그린다. 상자마다 무엇이 죽으면 어떤 증상이 나는지 한 줄씩 적는다.",
+   "resources": [
+    "slash23-fakeid",
+    "toss-dsmle",
+    "byline-pfml",
+    "toss-stylepack"
+   ]
+  },
+  {
+   "title": "모델 서빙 서버 만들기",
+   "time": "2~3주",
+   "goal": "세 칸 인터페이스로 모델 둘을 패키지화해 한 서버에 올리고, p50·p99·오류율을 잰다.",
+   "task": "가상 이미지 분류(작은 공개 모델)와 가상 대출 점수 모델을 pre_process·inference·post_process로 감싸 FastAPI 서버에 올린다. 부하 도구로 초당 요청을 늘리며 p99가 무너지는 지점을 찾고, 시간 제한·재시도를 붙여 다시 잰다.",
+   "resources": [
+    "toss-dsmle",
+    "mlsd-book",
+    "sre-book",
+    "rules-of-ml"
+   ]
+  },
+  {
+   "title": "쿠버네티스 위 서빙 도구",
+   "time": "2~3주",
+   "goal": "kind 클러스터에 Triton(또는 KServe)으로 같은 모델을 올리고 동적 배칭의 지연·처리량 거래를 표로 보인다.",
+   "task": "배칭 대기 시간을 0·5·20ms로 바꿔 처리량과 p99를 표로 남긴다. 새 버전을 섀도로 붙여 기존 결과와 다른 비율을 센다.",
+   "resources": [
+    "internal-k8s",
+    "k8s-in-action",
+    "triton-server",
+    "toss-llm-serving",
+    "slash24-credit"
+   ]
+  },
+  {
+   "title": "RAG 상담 에이전트와 평가 장치",
+   "time": "3~4주",
+   "goal": "가상 약관·FAQ로 RAG 상담 흐름을 만들고, 바꿀 때마다 검색·답 점수가 표로 나온다.",
+   "task": "가상 상품 설명서 30쪽을 색인하고 질문 50개 + 정답 문서 평가셋을 만든다. recall@k·MRR과 LLM 심판 점수를 내고, 긴급 낱말·낮은 확신·긴 대화에서 '상담원 연결'로 넘기는 규칙을 붙인다. 프롬프트 인젝션 문장 10개로 공격해 본다.",
+   "resources": [
+    "anthropic-agents",
+    "cs329z-rag",
+    "llm-app-book",
+    "ai-engineering",
+    "llm-judge-paper",
+    "cme295-eval",
+    "owasp-llm",
+    "toss-benchmark"
+   ]
+  },
+  {
+   "title": "LLM 직접 띄우고 줄이기",
+   "time": "2~3주",
+   "goal": "작은 공개 LLM을 vLLM으로 띄워 양자화·prefix caching 전후를 지연·메모리·평가 점수로 비교한다.",
+   "task": "4단계 평가셋으로 BF16과 4비트 모델을 비교하고, 같은 시스템 프롬프트를 쓰는 요청 100개로 prefix caching 켜고 끈 TTFT를 잰다. 여유가 있으면 LoRA로 상담 말투를 조금 가르쳐 점수 변화를 본다.",
+   "resources": [
+    "vllm-docs",
+    "cs336-inference",
+    "toss-serving-2",
+    "lora-paper",
+    "qlora-paper"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "신입 초봉은 **약 5,100만원**(집계값), 직원 평균은 **약 1억 1,600만원**(공시) — 평균은 경력직이 대부분이라 초봉과 다르다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 적혀 있지 않고 직군 구분도 없어 개발자 계약 연봉과 다를 수 있다 [35]"
+   },
+   {
+    "label": "직원 평균 보수",
+    "value": "1억 1,600만원",
+    "amount": 11600,
+    "basis": "공시 · 2025년",
+    "note": "은행연합회 공시(지배구조·보수체계 연차보고서), 임원을 뺀 직원만. 전년보다 300만원 올랐다 [34]"
+   },
+   {
+    "label": "임직원 평균 급여",
+    "value": "1억 1,700만원",
+    "amount": 11700,
+    "basis": "사업보고서 · 2024년",
+    "note": "임직원 684명 기준 [33]"
+   },
+   {
+    "label": "카카오뱅크 평균",
+    "value": "1억 2,200만원",
+    "amount": 12200,
+    "basis": "공시 · 2025년",
+    "peer": true,
+    "note": "같은 공시의 평균 보수 [34]"
+   },
+   {
+    "label": "케이뱅크 평균",
+    "value": "1억 200만원",
+    "amount": 10200,
+    "basis": "공시 · 2025년",
+    "peer": true,
+    "note": "같은 공시의 임직원 평균 보수(임원 포함) [34]"
+   }
+  ],
+  "how": "공고에는 연봉이 적혀 있지 않다. 토스 채용은 면접·레퍼런스 체크 뒤에 **처우 협의** 단계가 따로 있어 연봉을 사람마다 정한다 [1]. 평균 보수는 경력직이 많은 회사 전체 값이라 신입이 받는 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 전체를 기준으로 한 2021년 공식 소개 글이다 [37]. 토스뱅크에 그대로 적용되는지, 지금도 같은지는 글에 적혀 있지 않으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스뱅크 본사",
+  "address": "서울특별시 강남구 테헤란로 131, 13층 (역삼동, 한국지식재산센터)",
+  "postal": "06133",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20131",
+  "near": "2호선 역삼역과 강남역 사이 테헤란로 {추론}",
+  "note": "공고의 근무지 표기는 'Seoul'뿐이고, 주소는 토스뱅크 사이트 하단의 회사 정보다 [36]. 팀 자리가 본사와 다를 수 있다 {추론}."
+ },
+ "fit": {
+  "good": [
+   "모델 점수보다 '막힌 고객이 몇 명 줄었나'가 더 궁금한 사람[4]",
+   "서버를 운영해 본 개발자 — 같은 팀은 ML 경험이 없어도 된다는 공고까지 낸다[12]",
+   "기획부터 서비스까지 한 팀에서 끝까지 하고 싶은 사람[1]",
+   "새 도구를 띄워 재 보고 들일지 버릴지 숫자로 정하는 사람[3]"
+  ],
+  "hard": [
+   "배포마다 섀도 비교·승인 절차가 있어 속도감은 덜하다[6]",
+   "다루는 제품이 넓다(FDS·대출·상담·문서·음성·LLM) — 한 분야만 깊게 파고 싶은 사람에겐 흩어질 수 있다[1]",
+   "GPU·서빙 엔진 인프라는 다른 팀 몫이라 직접 만지는 범위가 제한될 수 있다 {추론}",
+   "전형에 라이브 코딩 테스트가 있다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "모델이 '원본 아닐 확률'만 준다면 임계값은 누가, 어떻게 정하나요? 무고한 고객이 막히는 비용은 어떻게 줄이죠?",
+   "a": "이 팀이 서비스마다 다른 임계값을 고르고 수기 검증 우선순위로 메운 이야기.[5]"
+  },
+  {
+   "q": "데이터 사이언티스트의 노트북 모델이 열 개로 늘면 서빙 코드를 어떻게 관리하겠어요?",
+   "a": "세 칸 인터페이스·공통 run()·모노레포.[2]"
+  },
+  {
+   "q": "신용평가 모델 새 버전을 어떻게 안전하게 바꾸나요?",
+   "a": "섀도 배포와 2~3주 대조, 같은 고객 같은 결과.[6][4]"
+  },
+  {
+   "q": "RAG 상담 답이 좋아졌는지 어떻게 증명하나요? LLM 심판을 믿어도 되나요?",
+   "a": "평가셋·recall@k·심판 편향.[24][17]"
+  },
+  {
+   "q": "상담 에이전트가 사람에게 넘겨야 하는 경우는 언제인가요?",
+   "a": "실제 서비스의 세 조건과 민감정보 처리.[7]"
+  },
+  {
+   "q": "vLLM이 왜 빠른가요? 동시 사용자가 늘면 GPU 메모리는 무엇이 먹나요?",
+   "a": "KV 캐시와 PagedAttention.[26]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 토스뱅크 ML 엔지니어 (Product)",
+   "url": "https://toss.im/career/job-detail?gh_jid=6118752003",
+   "kind": "posting",
+   "note": "ML Tribe/Chapter 소개(FDS·대출 모형·고객 응대 자동화·문서·음성·LLM 에이전트)·업무·요건·우대·이력서 안내·합류 여정(라이브 코딩·처우협의)·동료 한마디"
+  },
+  {
+   "n": 2,
+   "title": "Toss Tech · DS와 MLE가 함께 일하는 법",
+   "url": "https://toss.tech/article/ds-mle-cowork",
+   "kind": "company",
+   "date": "2026-08-03",
+   "note": "토스뱅크 Product Foundation ML Service 팀 ML 엔지니어 — 신분증 OCR·사후 검증, 상담 통화 음성 인식, 문서 OCR, 아이 얼굴 생성. 노트북 넘겨받기 → .py → pre_process·inference·post_process 약속(commons-ml-model), run()이 추적·시간·로그·지표, uv 워크스페이스 모노레포(poetry 대비 빌드 3~5배), 모델 5~6개에서 손 이식이 무너짐, 첫 커밋 당일 운영 반영"
+  },
+  {
+   "n": 3,
+   "title": "Toss Tech · AI가 팀 규칙을 지키도록 하는 방법",
+   "url": "https://toss.tech/article/52631",
+   "kind": "company",
+   "date": "2026-09-08",
+   "note": "같은 팀 — 코딩 에이전트가 팀 규칙을 어기는 문제, 전역 지침은 긴 세션에서 무시됨, 파일 작성 직후·마무리 직전 훅으로 규칙 주입(최대 2개·4개), AI 판정은 요청당 약 10초라 정규식으로, 오탐 21세션 0건 변경을 고친 이야기"
+  },
+  {
+   "n": 4,
+   "title": "바이라인네트워크 · 정민정 토스뱅크 PF ML 팀장 \"AI모델, 서비스관점에서 개발해야\"",
+   "url": "https://byline.network/2025/09/0930/",
+   "kind": "news",
+   "date": "2025-09-30",
+   "note": "2025 금융테크 컨퍼런스 발언 — 모델이 아니라 서비스, 정책·영업과 함께, FDS는 룰 위에 ML, 신용평가는 같은 고객 같은 결과·섀도 검증 이중"
+  },
+  {
+   "n": 5,
+   "title": "SLASH 23 · AI와 함께 가짜 신분증 찾아내기",
+   "url": "https://www.youtube.com/watch?v=9JGZxmZxAAM",
+   "kind": "company",
+   "date": "2023",
+   "note": "토스뱅크 서버 개발자 발표(11분) · 공식 자막 전부 읽고 슬라이드 표는 장면으로 확인 — 이미지 다운로더 프록시·암호화·학습 뒤 즉시 폐기, 8만 장(72,000/8,000), ResNet50 89.00%·100ms → RegNet 사전학습 91.92%·300ms, 파이썬 실시간 웹서버, 신원·대출 서비스가 각자 임계값, 49,962장으로 50/90/99% 비교, 2월 보름 정확도 약 94%·82% 사전 차단"
+  },
+  {
+   "n": 6,
+   "title": "SLASH 24 · 유연하면서도 안정적인, 토스뱅크만의 신용 모형/전략 시스템 구축하기",
+   "url": "https://www.youtube.com/watch?v=4fk3TxgQ9Ks",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스뱅크 Data Platform 리더·ML 엔지니어(22분) · 자막은 앞선 회차(ML/LLM Ops 풀이)에서 전부 읽음 — 게이트웨이로 트래픽 복사·2~3주 전수 검증, 카나리 대신 섀도 배포, 전자금융감독규정 승인 절차, Ray, 전후처리 묶음 패키징"
+  },
+  {
+   "n": 7,
+   "title": "파이낸셜뉴스 · 토스뱅크 AI 채팅 에이전트 전 고객 확대",
+   "url": "https://www.fnnews.com/news/202610071024425706",
+   "kind": "news",
+   "date": "2026-10-07",
+   "note": "카드 배송·결제 거절 사유·분실 신고, LLM이 의도·맥락을 읽음, 5분 넘던 상담을 30초 안팎, 헬프닥스·헬프챗·헬프데스크와 연결, 민감정보는 채팅에 안 쓰고 인증 화면을 띄움, 보이스피싱·오안내 위험·긴 대화는 같은 창에서 상담원에게"
+  },
+  {
+   "n": 8,
+   "title": "머니투데이 · \"차라리 상담원 바꿔줘\"…AI 챗봇 한계, 더 똑똑한 AI로 넘는다",
+   "url": "https://www.mt.co.kr/future/2026/05/05/2026042117032871034",
+   "kind": "news",
+   "date": "2026-05-05",
+   "note": "토스뱅크 2024-09 AI 챗봇 도입 뒤 상담의 약 70%를 AI가 처리, 2026-02 만족도 36% 대 콜센터 72%(회사 자료 인용)"
+  },
+  {
+   "n": 9,
+   "title": "아시아경제 · 토스뱅크, 금융상담 돕는 'AI 에이전트' 도입",
+   "url": "https://view.asiae.co.kr/article/2025121814245881645",
+   "kind": "news",
+   "date": "2025-12-18",
+   "note": "혁신금융서비스 지정 — LLM이 상품 절차·내부 정책 문서를 읽고 답하는 상담"
+  },
+  {
+   "n": 10,
+   "title": "이투데이 · 토스뱅크, '생성형 AI 도입' 혁신금융서비스 4건 지정",
+   "url": "https://www.etoday.co.kr/news/view/2536061",
+   "kind": "news",
+   "date": "2025-12-15",
+   "note": "AWS Bedrock 기반 코드 리뷰·마케팅/법률 검토·경영/재무 분석·Text to SQL, 내부용, 자체 망분리 환경"
+  },
+  {
+   "n": 11,
+   "title": "토스 채용 · 토스뱅크 ML 엔지니어 (ML/LLM Ops)",
+   "url": "https://toss.im/career/job-detail?gh_jid=5498959003",
+   "kind": "posting",
+   "note": "같은 챕터의 플랫폼 팀 — MLflow·Airflow·JupyterHub·Kubeflow, ScyllaDB 피처 저장소, Triton·vLLM·SGLang, LLM 게이트웨이·벡터 DB, 온프레미스 + 클라우드"
+  },
+  {
+   "n": 12,
+   "title": "토스 채용 · 토스뱅크 ML 백엔드 엔지니어",
+   "url": "https://toss.im/career/job-detail?gh_jid=6600650003",
+   "kind": "posting",
+   "note": "같은 ML Service Team — 무거운 모델을 응답 속도·처리량을 지키며 서빙하는 서버, MSA 분산 추적, ML 경험 없어도 됨"
+  },
+  {
+   "n": 13,
+   "title": "TMC25 · ScyllaDB, 토스뱅크 Online Feature Store",
+   "url": "https://www.youtube.com/watch?v=dvijQIfYYb0",
+   "kind": "company",
+   "date": "2025",
+   "note": "토스뱅크 ML Platform 팀(21분) · 자막은 앞선 회차에서 전부 읽음 — 초당 약 12만 쓰기·P99 5ms 이하, 두 센터, FDS·추천·신용·민원에 쓰임"
+  },
+  {
+   "n": 14,
+   "title": "Toss Tech · LLM 쉽고 빠르게 서빙하기",
+   "url": "https://toss.tech/article/llm-serving",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스증권(같은 그룹 다른 회사) — vLLM·Triton, 공용 이미지, KServe"
+  },
+  {
+   "n": 15,
+   "title": "Toss Tech · LLM 서빙, 띄우는 것과 잘 띄우는 것 사이",
+   "url": "https://toss.tech/article/tech_talk_talk_2",
+   "kind": "company",
+   "date": "2026",
+   "note": "토스증권(같은 그룹 다른 회사) — vLLM·SGLang 지표를 한 대시보드로, prefix caching으로 TTFT 약 1/10"
+  },
+  {
+   "n": 16,
+   "title": "TMC25 · STEAL THE SHOW: 작고 빠르게, 자동화로 만드는 금융 특화 LLM 내재화 전략",
+   "url": "https://www.youtube.com/watch?v=VulWhToQUp8",
+   "kind": "company",
+   "date": "2025",
+   "note": "토스증권(같은 그룹 다른 회사) · 자막은 앞선 회차에서 전부 읽음 — 상용 LLM 의존 위험, 성공한 서비스만 작은 모델로 증류, Kubeflow·MLflow, 보상 모델·LLM 심판 자동 평가"
+  },
+  {
+   "n": 17,
+   "title": "Toss Tech · 리더보드 1등 LLM, 토스에서도 1등일까? — Toss Benchmark 구축기",
+   "url": "https://toss.tech/article/toss-benchmark",
+   "kind": "company",
+   "note": "토스(같은 그룹 다른 회사) — 공개 점수와 실제 업무 성능이 어긋나 업무를 본뜬 평가셋을 만든 이야기"
+  },
+  {
+   "n": 18,
+   "title": "아시아경제 · 토스뱅크, 금융권 최초 신분증 진위확인 솔루션 판매 승인",
+   "url": "https://www.asiae.co.kr/en/article/2025112409023704030",
+   "kind": "news",
+   "date": "2025-11-24",
+   "note": "자체 개발 AI · 10만 건 학습 · 0.5초 · 2년간 300만 건 검증, 위조 2만 건 넘게 탐지"
+  },
+  {
+   "n": 19,
+   "title": "MTN · 토스뱅크, 의심거래 잡는 AI 키운다",
+   "url": "https://news.mtn.co.kr/news-detail/2026062414330313980",
+   "kind": "news",
+   "date": "2026-06-24",
+   "note": "의심거래보고(STR)에 AI·ML·LLM을 단계적으로 검토, 최종 판단은 사람, 검토·승인·보고 이력 보존"
+  },
+  {
+   "n": 20,
+   "title": "금융위원회 보도자료 · 「금융분야 망분리 개선 로드맵」 발표",
+   "url": "https://www.fsc.go.kr/no010101/82885?curPage=21",
+   "kind": "reference",
+   "date": "2024-08-13",
+   "note": "생성형 AI 샌드박스 허용·SaaS 범위 확대, 보안대책을 조건으로"
+  },
+  {
+   "n": 21,
+   "title": "Google SRE Book · Service Level Objectives",
+   "url": "https://sre.google/sre-book/service-level-objectives/",
+   "kind": "reference",
+   "note": "SLI·SLO·SLA 구분, 평균보다 백분위 지연"
+  },
+  {
+   "n": 22,
+   "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+   "url": "https://arxiv.org/abs/2005.11401",
+   "kind": "reference",
+   "date": "2020"
+  },
+  {
+   "n": 23,
+   "title": "Anthropic · Building effective agents",
+   "url": "https://www.anthropic.com/engineering/building-effective-agents",
+   "kind": "reference",
+   "date": "2024",
+   "note": "워크플로(정해진 길)와 에이전트(모델이 길을 고름) 구분, 라우팅·평가자-최적화 패턴, 단순한 것부터"
+  },
+  {
+   "n": 24,
+   "title": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena",
+   "url": "https://arxiv.org/abs/2306.05685",
+   "kind": "reference",
+   "date": "2023",
+   "note": "LLM 심판의 위치·길이·자기 편향"
+  },
+  {
+   "n": 25,
+   "title": "Lost in the Middle: How Language Models Use Long Contexts",
+   "url": "https://arxiv.org/abs/2307.03172",
+   "kind": "reference",
+   "date": "2023",
+   "note": "긴 입력의 가운데 정보를 덜 쓴다"
+  },
+  {
+   "n": 26,
+   "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention (vLLM)",
+   "url": "https://arxiv.org/abs/2309.06180",
+   "kind": "reference",
+   "date": "2023"
+  },
+  {
+   "n": 27,
+   "title": "Triton Inference Server 사용자 가이드 · Dynamic Batcher",
+   "url": "https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/user_guide/batcher.html",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "KServe 문서",
+   "url": "https://kserve.github.io/website/",
+   "kind": "reference",
+   "note": "쿠버네티스 위 모델 서빙 — InferenceService, 자동 확장"
+  },
+  {
+   "n": 29,
+   "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+   "url": "https://arxiv.org/abs/2106.09685",
+   "kind": "reference",
+   "date": "2021"
+  },
+  {
+   "n": 30,
+   "title": "AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration",
+   "url": "https://arxiv.org/abs/2306.00978",
+   "kind": "reference",
+   "date": "2023"
+  },
+  {
+   "n": 31,
+   "title": "Hidden Technical Debt in Machine Learning Systems (NeurIPS 2015)",
+   "url": "https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems",
+   "kind": "reference",
+   "date": "2015"
+  },
+  {
+   "n": 32,
+   "title": "OWASP Top 10 for LLM Applications",
+   "url": "https://genai.owasp.org/llm-top-10/",
+   "kind": "reference",
+   "note": "프롬프트 인젝션·민감정보 노출·과도한 권한"
+  },
+  {
+   "n": 33,
+   "title": "뉴시스 — 3년 근무 직원 1억4000만원… 인터넷은행 평균 급여(각사 사업보고서)",
+   "url": "https://www.newsis.com/view/NISX20250812_0003287731",
+   "kind": "news",
+   "date": "2025-08-13"
+  },
+  {
+   "n": 34,
+   "title": "SBS Biz — 인뱅 3사도 연봉 1억원대로(은행연합회 2025 지배구조 및 보수체계 연차보고서)",
+   "url": "https://biz.sbs.co.kr/amp/article/20000297249",
+   "kind": "news",
+   "date": "2026-03-13"
+  },
+  {
+   "n": 35,
+   "title": "자소설닷컴 — 토스뱅크 연봉(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 36,
+   "title": "토스뱅크 — 회사 정보(사이트 하단 주소)",
+   "url": "https://tossbank.com/esg",
+   "kind": "company"
+  },
+  {
+   "n": 37,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  }
+ ],
+ "caveat": "토스뱅크 ML 팀이 직접 말한 자료는 SLASH 23 신분증 발표(2023), 팀 글 두 편(2026), 팀장 컨퍼런스 발언 기사(2025)입니다. 상담 에이전트의 내부 구조(어떤 LLM·검색 방식인지)는 공개되지 않아, 기사에 나온 동작과 공개 문서·같은 그룹 토스·토스증권 자료(회사가 다르다는 점을 줄마다 밝혔다)로 '보통 이런 것'을 보였습니다. 코드는 모두 가상 값이고 발표 숫자를 재현한 것이 아닙니다. 공고에 연차·연봉 표기는 없습니다."
+}
