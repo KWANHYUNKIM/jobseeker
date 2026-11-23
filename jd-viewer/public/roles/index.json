@@ -1,9 +1,20 @@
 {
  "updated_at": "2026-11-23",
  "jobs": {
+  "ats-toss:group:7985496003": "toss-dw-global-analytics-engineer",
   "saramin-55608860": "tossbank-finance-data-system"
  },
  "roles": [
+  {
+   "id": "toss-dw-global-analytics-engineer",
+   "company": "토스",
+   "role": "데이터 분석 엔지니어 (DW/Global)",
+   "jobs": [
+    "ats-toss:group:7985496003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 34
+  },
   {
    "id": "tossbank-finance-data-system",
    "company": "토스뱅크",
