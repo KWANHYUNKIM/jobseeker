@@ -18,6 +18,7 @@
   "wanted-394722": "nhn-japan-frontend",
   "wanted-395799": "progrit-frontend-tech-lead",
   "wanted-393626": "recruit-data-engineer-japan",
+  "wanted-288317": "revamp-software-engineer-japan",
   "ats-skcareers:sk:R262457": "skax-ai-studio-mlops-pl",
   "jobkorea-50384147": "skax-ai-studio-mlops-pl",
   "jobkorea-50384195": "skax-ai-studio-mlops-pl",
@@ -35,6 +36,7 @@
   "jobkorea-50340705": "skax-nova-bss-oss-app-dev",
   "wanted-396834": "skax-nova-bss-oss-app-dev",
   "ats-skcareers:sk:R262392": "skax-sap-bw-bdc-data-analytics",
+  "ats-skcareers:sk:R262527": "skax-securities-it-ax-contract",
   "ats-skcareers:sk:R262430": "skax-security-architect",
   "ats-skcareers:sk:R262135": "skax-security-operations-pm",
   "jobkorea-50267139": "skax-security-operations-pm",
@@ -313,6 +315,16 @@
    "lines": 27
   },
   {
+   "id": "revamp-software-engineer-japan",
+   "company": "株式会社リヴァンプ (리바무프)",
+   "role": "소프트웨어 엔지니어",
+   "jobs": [
+    "wanted-288317"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 25
+  },
+  {
    "id": "skax-ai-studio-mlops-pl",
    "company": "SK주식회사(AX)",
    "role": "제조 AI · Data 분야 AI Studio 개발/운영 PL",
@@ -418,6 +430,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 35
+  },
+  {
+   "id": "skax-securities-it-ax-contract",
+   "company": "SK주식회사(AX)",
+   "role": "증권사 IT 및 AX 시스템 전문가 (계약직)",
+   "jobs": [
+    "ats-skcareers:sk:R262527"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 26
   },
   {
    "id": "skax-security-architect",
