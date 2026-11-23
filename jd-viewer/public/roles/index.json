@@ -62,6 +62,7 @@
   "ats-toss:group:4555752003": "toss-security-researcher-apt",
   "ats-toss:group:7780944003": "toss-security-researcher-mobile",
   "ats-toss:group:4076085003": "toss-security-researcher-pentest",
+  "ats-toss:group:4103438003": "tossbank-data-analyst",
   "wanted-385879": "tossbank-devops-engineer",
   "ats-toss:group:7757550003": "tossbank-devops-engineer",
   "ats-toss:group:5622017003": "tossbank-fe-platform-engineer",
@@ -675,6 +676,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 12
+  },
+  {
+   "id": "tossbank-data-analyst",
+   "company": "토스뱅크",
+   "role": "데이터 분석가 (7년 미만)",
+   "jobs": [
+    "ats-toss:group:4103438003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 17
   },
   {
    "id": "tossbank-devops-engineer",
