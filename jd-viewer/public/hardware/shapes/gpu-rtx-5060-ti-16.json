@@ -1,0 +1,33 @@
+{
+ "schema": 1,
+ "part": "gpu-rtx-5060-ti-16",
+ "shapes": {
+  "colorful-rtx5060ti-gaming-duo-16g": {
+   "kind": "gpu",
+   "color": "#121317",
+   "accent": "#7a1a1e",
+   "sources": [
+    {
+     "title": "COLORFUL GeForce RTX 5060 Ti Gaming DUO 16GB-V — 공식 제품 페이지(Feature Highlights: 'Midnight black with dark-red accents')",
+     "url": "https://www.colorfulgroup.com/home/product?mid=102&id=c42d701b-32fc-47e7-a9f2-baee7d74b444"
+    }
+   ],
+   "confidence": "low",
+   "checked_at": "2026-11-23",
+   "note": "색만 공식 문구로 적었다(검정 + 짙은 빨강 포인트, hex 는 문구를 옮긴 대략값). 제품 사진은 공식 이미지 서버가 403 으로 막아 보지 못했다(우회하지 않음) — 팬 지름·날개·슬롯·백플레이트·보조전원 자리는 비웠다. 사진을 볼 수 있게 되면 다시 채울 것."
+  },
+  "colorful-igame-rtx5060ti-ultra-duo-oc-16g": {
+   "kind": "gpu",
+   "backplate": true,
+   "sources": [
+    {
+     "title": "COLORFUL iGame GeForce RTX 5060 Ti Ultra DUO OC 16GB-V — 공식 제품 페이지(Feature Highlights: 'Hip-Hop Style Hollowed Backboard' · 'Blue and Purple Color Scheme' · 'Large Horizontal RGB Lighting Effects' · 'Ring-Shaped Fans')",
+     "url": "https://www.colorfulgroup.com/home/product?mid=102&id=4e9bd9f5-9265-43ec-ade2-e5d34c1286dc"
+    }
+   ],
+   "confidence": "low",
+   "checked_at": "2026-11-23",
+   "note": "백플레이트(구멍 뚫린 'Hollowed Backboard')만 공식 문구로 적었다. 파랑·보라 배색·가로 RGB 띠·고리형 팬도 문구에 있지만 어느 색이 주색인지, 띠가 어디인지, 구멍이 플로스루인지는 사진 없이는 알 수 없어 비웠다. 제품 사진은 공식 이미지 서버가 403 으로 막아 보지 못했다(우회하지 않음). 사진을 볼 수 있게 되면 다시 채울 것."
+  }
+ }
+}

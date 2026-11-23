@@ -1,0 +1,26 @@
+{
+ "schema": 1,
+ "part": "gpu-rtx-5090",
+ "shapes": {
+  "palit-rtx5090-gamerock": {
+   "kind": "gpu",
+   "slots": 3.5,
+   "color": "#16171a",
+   "accent": "#c3cf4f",
+   "fan_light": "none",
+   "sources": [
+    {
+     "title": "Palit GeForce RTX 5090 GameRock — 공식 스펙(Height 3.5 slot · 16-pin x1 · ARGB SYNC EVO)",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5345&lang=en&tab=sp"
+    },
+    {
+     "title": "Palit GeForce RTX 5090 GameRock — 공식 제품 소개(Chameleon Panel · 제품 사진)",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5345&lang=en"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "3.5슬롯·16핀 1개는 공식 표. 사진: 검정 쉬라우드에 팬 3개(같은 크기로 보인다), 팬을 감싼 곡선 'Chameleon Panel' 이 보는 각도에 따라 연두·금색·보라로 바뀌는 ARGB 판이다 — accent 는 사진에서 가장 넓게 보이는 연두-금색. 팬 자체에는 불빛이 없어 보인다(검은 날개). 팬 지름은 공식 자료에 없고 사진이 비스듬해 재지 않았다 — fans 는 비웠다. 날개 수·백플레이트·플로스루·16핀 자리도 사진으로 확인이 안 돼 비웠다."
+  }
+ }
+}

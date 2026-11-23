@@ -1,0 +1,29 @@
+{
+ "schema": 1,
+ "part": "gpu-rtx-5080",
+ "shapes": {
+  "galax-rtx5080-1clickoc-3x": {
+   "kind": "gpu",
+   "fans": [
+    92,
+    92,
+    92
+   ],
+   "slots": 2.5,
+   "backplate": true,
+   "color": "#131416",
+   "accent": "#d2d4d6",
+   "fan_blades": 7,
+   "fan_light": "argb",
+   "sources": [
+    {
+     "title": "GALAX GeForce RTX 5080 1-Click OC — 공식 제품 페이지(Fan Feature 3*92mm · 2.5 slot · ENHANCED BACKPLATE · ARGB · 사진 정면/측면/뒷면)",
+     "url": "https://galax.com/en/product/geforce-rtx-5080-16gb-1-click-oc-3x/"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 3개·92mm·2.5슬롯·16핀 1개는 공식 표. 날개 7장은 공식 문구('7 larger WINGS 3.0 fan blades')와 사진이 같다 — 반투명 날개에 ARGB(앞·옆 두 면 발광). 쉬라우드는 검정 무광에 각진 홈 무늬, 끝 쪽 윗면·백플레이트에 은색 회로 무늬. 백플레이트는 'Expanded Opening' 이 있다고만 적혀 있고 사진으로 뚫린 범위가 안 보여 flow_through 는 비웠다. 16핀 자리도 사진에 안 보여 power 는 비웠다(models 의 16핀 x1 로 그린다)."
+  }
+ }
+}
