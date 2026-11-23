@@ -1,8 +1,10 @@
 {
  "updated_at": "2026-11-23",
  "jobs": {
+  "wanted-395987": "datax-software-engineer-japan",
   "wanted-391370": "litalico-data-engineer",
   "wanted-391368": "litalico-sre-product",
+  "wanted-394202": "mediphone-platform-engineer",
   "ats-skcareers:sk:R262457": "skax-ai-studio-mlops-pl",
   "jobkorea-50384147": "skax-ai-studio-mlops-pl",
   "jobkorea-50384195": "skax-ai-studio-mlops-pl",
@@ -109,10 +111,20 @@
   "ats-toss:group:7998884003": "tossbank-senior-data-analyst",
   "ats-toss:group:4521687003": "tossbank-server-platform",
   "ats-toss:group:6607772003": "tossbank-system-security-engineer",
-  "wanted-390470": "visasq-data-platform-engineer",
+  "wanted-390470": "visasq-data-platform-engineer-en",
   "wanted-390176": "visasq-data-platform-engineer"
  },
  "roles": [
+  {
+   "id": "datax-software-engineer-japan",
+   "company": "데이터X (株式会社データX)",
+   "role": "신입 소프트웨어 엔지니어 (일본 근무)",
+   "jobs": [
+    "wanted-395987"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 24
+  },
   {
    "id": "litalico-data-engineer",
    "company": "LITALICO",
@@ -132,6 +144,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 42
+  },
+  {
+   "id": "mediphone-platform-engineer",
+   "company": "메디폰(メディフォン株式会社)",
+   "role": "플랫폼 엔지니어",
+   "jobs": [
+    "wanted-394202"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 27
   },
   {
    "id": "skax-ai-studio-mlops-pl",
@@ -1104,15 +1126,24 @@
    "lines": 13
   },
   {
-   "id": "visasq-data-platform-engineer",
-   "company": "ビザスク(VisasQ)",
-   "role": "데이터 플랫폼 엔지니어",
+   "id": "visasq-data-platform-engineer-en",
+   "company": "비자스크 (株式会社ビザスク)",
+   "role": "데이터 플랫폼 엔지니어 (영어 공고)",
    "jobs": [
-    "wanted-390470",
-    "wanted-390176"
+    "wanted-390470"
    ],
    "researched_at": "2026-11-23",
    "lines": 25
+  },
+  {
+   "id": "visasq-data-platform-engineer",
+   "company": "비자스크 (株式会社ビザスク)",
+   "role": "데이터 플랫폼 엔지니어",
+   "jobs": [
+    "wanted-390176"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 31
   }
  ]
 }
