@@ -1,6 +1,7 @@
 {
  "updated_at": "2026-11-23",
  "jobs": {
+  "wanted-335089": "aldagram-kanna-web-engineer",
   "wanted-395987": "datax-software-engineer-japan",
   "wanted-368239": "finatext-brokerage-fullstack",
   "wanted-385077": "go-android-in-vehicle",
@@ -10,6 +11,7 @@
   "wanted-391368": "litalico-sre-product",
   "wanted-394202": "mediphone-platform-engineer",
   "wanted-394722": "nhn-japan-frontend",
+  "wanted-395799": "progrit-frontend-tech-lead",
   "wanted-393626": "recruit-data-engineer-japan",
   "ats-skcareers:sk:R262457": "skax-ai-studio-mlops-pl",
   "jobkorea-50384147": "skax-ai-studio-mlops-pl",
@@ -131,6 +133,16 @@
  },
  "roles": [
   {
+   "id": "aldagram-kanna-web-engineer",
+   "company": "아르다그람 (株式会社アルダグラム)",
+   "role": "웹 애플리케이션 엔지니어",
+   "jobs": [
+    "wanted-335089"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 22
+  },
+  {
    "id": "datax-software-engineer-japan",
    "company": "데이터X (株式会社データX)",
    "role": "신입 소프트웨어 엔지니어 (일본 근무)",
@@ -219,6 +231,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 30
+  },
+  {
+   "id": "progrit-frontend-tech-lead",
+   "company": "프로그릿 (株式会社プログリット)",
+   "role": "프론트엔드 엔지니어 (테크 리드급)",
+   "jobs": [
+    "wanted-395799"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 28
   },
   {
    "id": "recruit-data-engineer-japan",
