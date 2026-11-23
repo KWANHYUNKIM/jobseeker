@@ -48,6 +48,7 @@
   "ats-skcareers:sk:R262392": "skax-sap-bw-bdc-data-analytics",
   "ats-skcareers:sk:R262105": "skax-sap-fi-module",
   "ats-skcareers:sk:R262527": "skax-securities-it-ax-contract",
+  "ats-skcareers:sk:R262011": "skax-securities-ito-server-ops",
   "ats-skcareers:sk:R262430": "skax-security-architect",
   "ats-skcareers:sk:R262135": "skax-security-operations-pm",
   "jobkorea-50267139": "skax-security-operations-pm",
@@ -565,6 +566,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 26
+  },
+  {
+   "id": "skax-securities-ito-server-ops",
+   "company": "SK주식회사(AX)",
+   "role": "시스템 (서버) 전문가 (계약직)",
+   "jobs": [
+    "ats-skcareers:sk:R262011"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 15
   },
   {
    "id": "skax-security-architect",
