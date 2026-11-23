@@ -26,6 +26,7 @@
   "ats-toss:group:7825079003": "toss-credit-modeling-css-mle",
   "ats-toss:group:4071131003": "toss-dba",
   "ats-toss:group:4071151003": "toss-devops-engineer",
+  "ats-toss:group:7830958003": "toss-dia-data-analyst",
   "ats-toss:group:8003064003": "toss-dip-data-scientist",
   "ats-toss:group:7818488003": "toss-dw-analytics-engineer",
   "ats-toss:group:7985496003": "toss-dw-global-analytics-engineer",
@@ -303,6 +304,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 13
+  },
+  {
+   "id": "toss-dia-data-analyst",
+   "company": "토스",
+   "role": "데이터 분석가 (전사 전략)",
+   "jobs": [
+    "ats-toss:group:7830958003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 9
   },
   {
    "id": "toss-dip-data-scientist",
