@@ -10,6 +10,7 @@
   "wanted-391370": "litalico-data-engineer",
   "wanted-397938": "litalico-frontend-b2b-saas",
   "wanted-391368": "litalico-sre-product",
+  "wanted-393885": "litalico-sre-tech-lead",
   "wanted-394202": "mediphone-platform-engineer",
   "wanted-394722": "nhn-japan-frontend",
   "wanted-395799": "progrit-frontend-tech-lead",
@@ -222,6 +223,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 42
+  },
+  {
+   "id": "litalico-sre-tech-lead",
+   "company": "LITALICO",
+   "role": "SRE 테크 리드",
+   "jobs": [
+    "wanted-393885"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 31
   },
   {
    "id": "mediphone-platform-engineer",
