@@ -1,0 +1,1400 @@
+{
+ "id": "medcom-cloud-infra-engineer-japan",
+ "company": "株式会社メドコム (메드콤)",
+ "role": "클라우드 인프라 엔지니어 (AWS, 도쿄)",
+ "team": "프로덕트 개발 조직 · 인프라 리드 자리 (LAPRAS Global Bridge 연계, 일본 근무)",
+ "jobs": [
+  "wanted-387811"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "일본 병원 전용 스마트폰 「메드콤」(PHS·종이·팩스를 대신하는 단말·회선·앱 묶음, 101개 시설·이용자 7만 명)의 **AWS 바닥을 설계·구축·운용하는 인프라 리드**입니다.[1] 병원 여럿이 나눠 쓰는 구조(멀티 테넌트)와 공통 인증·감시를 새로 짓는 **기반 재구축 시기**에 들어갑니다.[1]",
+  "env": "AWS(ECS·Aurora·Lambda) + Terraform/CDK·CloudFormation, 병원과는 **폐역망·VPN** 으로 잇고 **후생노동성 의료정보 가이드라인**을 지켜야 합니다.[1][4][8] 도쿄 도요스 출근 원칙, 일본어 비즈니스(N1 상당)·일본 이주 필수입니다.[1]",
+  "oneline": "의료 규칙 아래에서 **네트워크·계정 통제·IaC** 를 이끄는 AWS 인프라 리드 — 손으로 짓는 것과 순서를 정하는 것이 반반입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "主にAWSを中心としたクラウドインフラ開発全般を担当いただきます。 全てを1人で担うわけではなく、優先順位をつけて他チームと連携しながら段階的に進めます。",
+   "short": "AWS 위의 인프라를 거의 다 맡지만, 혼자가 아니라 우선순위를 정해 다른 팀과 단계적으로 바꾸는 자리다.",
+   "why": "메드콤(メドコム)은 PHS(병원 구내 휴대전화)·종이·팩스를 대신하는 **병원 전용 스마트폰**을 단말·회선·앱 묶음으로 파는 회사이고, 2026년 4월 기준 33개 도도부현 101개 시설·이용자 7만 명입니다.[1] 공고는 지금을 **기반 재구축의 전환기**라고 부르며 그 내용으로 멀티 테넌트화·멀티 플랫폼 통합, 의료 가이드라인 준수, AI 활용을 꼽았습니다.[1] 사원은 89명(2026년 7월)이고 개발 쪽은 프로덕트 개발부·엔지니어링 사업부 등으로 나뉩니다.[5]",
+   "actually": {
+    "items": [
+     "**지금 바닥** — 회사 자료의 기술 표는 AWS(EC2·Lambda·API Gateway·RDS·DynamoDB·CloudFormation)를 적었고[5], 같은 회사 테크 리드 공고는 ECS·Aurora·Lambda·Code 시리즈와 Terraform·CloudFormation 을 적었습니다.[4] 옛 방식과 새 방식이 섞인 상태에서 시작한다고 보는 게 자연스럽습니다. {추론}",
+     "**앱 쪽** — 서버는 Node.js·TypeScript, 단말 앱은 Swift·Kotlin, 웹 화면은 Vue.js·React 입니다.[5] 인프라가 받쳐야 하는 손님이 이 넷입니다.",
+     "**\"혼자가 아니다\"** — 공고 스스로 모든 것을 한 사람이 지지 않고 다른 팀과 단계적으로 나간다고 적었습니다.[1] 백엔드 공고들도 희망하면 AWS 인프라·CI/CD 를 맡는다고 적어, 인프라 일을 나눠 질 사람이 백엔드 쪽에도 있습니다.[3][4]",
+     "**순서 정하기** — 아래 네 줄(설계·구축 / 개발 기반 / 거버넌스 / 팀 리드)을 동시에 다 할 수는 없으니, 가이드라인 준수처럼 기한이 있는 것부터 줄을 세우는 게 이 자리의 첫 일입니다. {추론}"
+    ]
+   },
+   "how_far": "인프라 영역의 **리드**로서 감시까지 포함한 설계 방침을 정하고 밀고 나가는 자리라고 모집 내용에 적혀 있습니다.[1] 즉 손으로 짓는 것과 \"무엇부터 할지\"를 정하는 것이 반반입니다. 최소선은 **AWS 위 서비스 하나의 인프라를 처음부터 설계하고 바꿔 본 경험**입니다(요건 ①·②와 같은 말). {추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    5
+   ],
+   "study": [
+    "medcom-deck",
+    "medcom-video"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・インフラ設計・構築： IaC（Terraform/CDK等）、コンテナ（ECS等）、ネットワーク/VPN（閉域網含む）",
+   "short": "서버·컨테이너·네트워크를 코드로 짓고, 병원과는 인터넷이 아닌 닫힌 길(폐역망·VPN)로 잇는다.",
+   "why": "제품 사이트는 메드콤이 후생노동성 의료정보 가이드라인을 따른다고 적고, 너스콜·전자 차트와 잇는 경우에는 **폐역망(閉域網, 인터넷과 분리된 사설 회선망)·단말 인증서·2요소 인증**이 필요하다고 주석을 달았습니다.[8] 채용 영상의 제품 슬라이드도 \"금융기관과 같은 단단한 구성(폐역망)\"을 특징 두 번째로 꼽았습니다.[6]",
+   "actually": {
+    "items": [
+     "**IaC(Infrastructure as Code, 인프라를 코드로 적기)** — Terraform 이나 CDK 로 VPC·ECS·DB 를 적고, 바꿀 때는 plan(무엇이 바뀌나)을 리뷰한 뒤 적용한다.[16][17] 지금 CloudFormation 으로 된 부분이 있으면 옮길지 둘지 정하는 것도 여기 들어간다.[4][5] {추론}",
+     "**컨테이너(ECS)** — 앱을 이미지로 굽고, ECS 가 정해진 수만큼 띄우고 로드밸런서 뒤에 붙인다.[15][22]",
+     "**네트워크/VPN** — 병원 쪽 장비와 AWS 를 IPsec VPN(인터넷 위에 암호 터널) 2개로 잇는 Site-to-Site VPN[18], 병원·계정이 늘면 Transit Gateway 로 가운데서 길을 나눈다.[19]",
+     "**폐역망 포함** — 통신사 폐역망(휴대 회선)에서 들어온 단말 트래픽이 인터넷을 거치지 않고 AWS 안 서비스에 닿게 한다. 서비스 쪽은 PrivateLink 처럼 공인 IP·NAT 없이 사설로 붙는 장치를 쓴다.[20] 회사가 이 구성을 공개하지는 않았다. {추론}",
+     "**가이드라인이 정한 선** — 병원 시스템과 잇는 통신은 원칙적으로 전용선·IP-VPN·IPsec+IKEv2 이고, 인터넷 위 TLS 로만 잇는다면 TLS 1.3 + 클라이언트 인증서(mTLS) 같은 단말 제한을 요구한다. VPN 으로 여러 병원을 이을 때는 **한 병원을 거쳐 다른 병원으로 넘어가는 경로를 막으라**고도 적었다.[11]"
+    ],
+    "intro": "세 묶음이 각각 무슨 일인지입니다."
+   },
+   "examples": [
+    {
+     "title": "병원 사설망과 VPC 주소가 겹치는지 미리 검사 (가상 값, 직접 실행)",
+     "body": "병원마다 자기 사설 주소를 이미 쓰고 있어서, VPN 으로 잇기 전에 겹침부터 봅니다. 출력: A병원 OK / B병원 겹침 / C병원 OK / A·C 끼리 False. 겹치면 VPC 주소를 바꾸거나 주소 변환(NAT)을 끼워야 합니다. {추론}",
+     "lang": "python",
+     "code": "import ipaddress\n\nvpc = ipaddress.ip_network(\"10.0.0.0/16\")\nhospitals = {\"A병원\": \"192.168.10.0/24\", \"B병원\": \"10.0.128.0/20\", \"C병원\": \"172.16.0.0/22\"}\nfor name, cidr in hospitals.items():\n    net = ipaddress.ip_network(cidr)\n    print(name, cidr, \"겹침\" if net.overlaps(vpc) else \"OK\")\nprint(\"A병원\", \"C병원\", ipaddress.ip_network(hospitals[\"A병원\"]).overlaps(ipaddress.ip_network(hospitals[\"C병원\"])))"
+    }
+   ],
+   "flows": [
+    {
+     "caption": "병원 단말 → 서비스까지 한 갈래 {추론}",
+     "steps": [
+      "병원 전용 스마트폰",
+      "통신사 폐역망 / 병원 VPN",
+      "AWS 쪽 VPN·Transit Gateway",
+      "VPC 안 로드밸런서",
+      "ECS 서비스",
+      "DB(Aurora 등)"
+     ],
+     "mine_from": 2
+    }
+   ],
+   "how_far": "네트워크 구성은 통신사·병원 네트워크 업체와 나눠 집니다 — 같은 회사 도입 SE 공고가 병원 안 네트워크·라우터·회선 수배와 PBX·너스콜 업체 조율을 따로 맡습니다.[2] 이 자리는 **AWS 쪽 끝(VPN·라우팅·DNS·보안 그룹)과 그 코드**를 맡는다고 보면 됩니다. {추론} 최소선은 VPN 한 줄을 Terraform 으로 세우고 경로 표를 설명할 수 있는 것.",
+   "refs": [
+    2,
+    4,
+    5,
+    6,
+    8,
+    11,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    22
+   ],
+   "study": [
+    "tf-docs",
+    "cdk-docs",
+    "ecs-docs",
+    "aws-s2s",
+    "aws-tgw",
+    "privatelink"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・開発基盤・運用推進： CI/CDパイプライン整備、共通基盤（認証/マルチテナント/監視）の設計、AI活用の推進",
+   "short": "배포를 자동화하고, 앞으로 붙을 앱들이 같이 쓸 인증·병원별 분리·감시의 공통 바닥을 설계한다.",
+   "why": "팀 미션은 IaC·릴리스 자동화로 **가치 전달 속도를 올리고**, 앞으로 더해질 앱을 효율적으로 합칠 **공통 플랫폼**을 만드는 것입니다.[1] 회사는 메드콤을 허브로 병원 안 → 지역 의료 → 환자로 앱·서비스를 넓히는 구상을 밝혔습니다.[6] 앱이 늘 때마다 인증·감시를 따로 만들면 안 되니 공통 바닥이 필요합니다. {추론}",
+   "actually": {
+    "items": [
+     "**CI/CD** — PR 에서 테스트·이미지 빌드·Terraform plan, 합치면 ECS 로 배포. 같은 회사 공고에 Code 시리즈(CodeBuild·CodePipeline 등)가 적혀 있다.[4]",
+     "**인증 공통화** — 앱마다 로그인을 만들지 않고 OIDC(OpenID Connect, 로그인 결과를 표준 토큰으로 주고받는 규격) 기반 하나로 모은다. 백엔드 공고가 OIDC/OAuth2 와 Keycloak(오픈소스 인증 서버)을 적었다.[3][23]",
+     "**멀티 테넌트(병원 여럿이 한 시스템을 나눠 쓰기)** — 병원마다 데이터를 어디까지 떼어 놓을지(계정·DB·스키마·행) 정한다. AWS SaaS 렌즈는 사일로(통째로 분리)·풀(같이 쓰고 행으로 구분)·그 중간을 나눠 설명한다.[29]",
+     "**감시 공통화** — 로그·지표·알람 규칙을 모든 서비스가 같은 틀로 남기게 한다(CloudWatch 알람은 OK·ALARM·INSUFFICIENT_DATA 상태로 바뀔 때 행동한다).[25]",
+     "**AI 활용 추진** — 개발 흐름에 AI 를 들인다. 회사는 2026년 상금 100만 엔짜리 사내 AI 해커톤을 열었다.[41] 백엔드 공고들도 Claude Code·Cursor 경험을 우대한다.[3][4]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "ID 토큰의 클레임 검사 — 병원(테넌트)이 다르면 막힌다 (가상 값, 직접 실행)",
+     "body": "OIDC 규격은 iss(발급자)·sub·aud(받는 앱)·exp(만료)·iat 를 필수로 두고, 보냈던 nonce 와 같은지 확인하라고 합니다.[23] 서명 검증은 라이브러리에 맡기고 여기서는 클레임만 봅니다. 출력: ['통과'] / ['iss 다름', '만료됨(exp)'] — 병원 B 의 발급자로 온 토큰은 병원 A 앱에서 거절됩니다.",
+     "lang": "python",
+     "code": "def check_claims(c, iss, client_id, nonce, now):\n    errs = []\n    if c.get(\"iss\") != iss: errs.append(\"iss 다름\")\n    aud = c.get(\"aud\"); aud = aud if isinstance(aud, list) else [aud]\n    if client_id not in aud: errs.append(\"aud 에 내 client_id 없음\")\n    if now >= c.get(\"exp\", 0): errs.append(\"만료됨(exp)\")\n    if c.get(\"nonce\") != nonce: errs.append(\"nonce 다름(재전송 의심)\")\n    return errs or [\"통과\"]\n\nnow = 1_800_000_000\ngood = {\"iss\": \"https://id.example.jp/realms/hosp-a\", \"sub\": \"u123\", \"aud\": \"medcom-app\",\n        \"exp\": now + 300, \"iat\": now, \"nonce\": \"n-42\"}\nprint(check_claims(good, \"https://id.example.jp/realms/hosp-a\", \"medcom-app\", \"n-42\", now))\nbad = dict(good, iss=\"https://id.example.jp/realms/hosp-b\", exp=now - 1)\nprint(check_claims(bad, \"https://id.example.jp/realms/hosp-a\", \"medcom-app\", \"n-42\", now))"
+    }
+   ],
+   "how_far": "\"설계\"라고 적혀 있습니다 — 인증 서버 코드를 짜는 것보다 **병원별 분리 수준·토큰 흐름·감시 기준을 정하고 문서로 남기는 것**이 중심입니다. {추론} 같은 회사 테크 리드 공고가 ADR(설계 결정 기록) 작성을 리더 경험으로 꼽았으니 결정을 글로 남기는 문화로 보입니다.[4]",
+   "refs": [
+    1,
+    3,
+    4,
+    6,
+    23,
+    25,
+    29,
+    41
+   ],
+   "study": [
+    "saas-lens",
+    "oidc-core",
+    "cw-alarms",
+    "ja-platform-eng",
+    "cncf-platforms"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・ガバナンス・最適化： セキュリティ強化、マルチアカウント統制（Control Tower等）、コスト最適化",
+   "short": "AWS 계정을 용도별로 나눠 규칙을 위에서 걸고, 보안을 높이면서 청구서는 줄인다.",
+   "why": "채용 배경 둘째가 의료정보 시스템 안전관리 가이드라인 준수, 즉 **거버넌스 강화**입니다.[1] 가이드라인은 클라우드를 쓸 때도 이용자 쪽 설정 책임이 남는다고 적고, SaaS·PaaS·IaaS 에 따라 누가 무엇을 관리하는지 나눠 정하라고 합니다.[11]",
+   "actually": {
+    "items": [
+     "**멀티 계정** — 운영·개발·로그·보안을 다른 AWS 계정으로 떼고 OU(계정 묶음)로 묶는다. AWS 백서가 로그 보관·보안 도구용 계정을 따로 두는 구조를 권한다.[13]",
+     "**Control Tower** — 이 구조(랜딩 존)를 자동으로 세우고, 계정 공장(Account Factory)으로 새 계정을 같은 틀로 찍어 내고, 컨트롤(예방·탐지·사전 규칙)을 모든 계정에 건다.[14]",
+     "**보안 강화** — 가이드라인은 2027년 4월(令和9年度) 시점에 돌아갈 시스템을 새로 들이거나 바꿀 때 2요소 인증을 요구하고, 서버는 OS 로그인에 2요소 인증 또는 별도 도메인의 踏み台(점프 서버) 경유로 대신할 수 있다고 적었다.[11] AWS 에서는 Session Manager 로 SSH 포트 없이 접속하고 기록을 남기는 방법이 있다.[24]",
+     "**백업** — 중요한 파일은 여러 세대·여러 방식으로 두고, 그 일부는 악성코드가 번지지 못하는 수단(덮어쓸 수 없는 저장 등)으로 두라고 했다.[11]",
+     "**비용 최적화** — 먼저 Cost Explorer 로 어디에 쓰는지 보이게 하고[42], 남는 자원을 줄이고, 꾸준히 쓰는 컴퓨팅은 Savings Plans(1·3년 약정, 최대 72% 할인)로 묶는다.[28][27]"
+    ]
+   },
+   "how_far": "규칙의 원문은 정부 가이드라인이고, 병원과의 책임 나누기는 회사(영업·품질 담당)와 같이 정합니다. {추론} 개발자 몫은 **그 규칙을 계정 구조·컨트롤·로그로 \"증명 가능한 상태\"로 만드는 것**입니다 — 감사 때 \"이 규칙은 이 설정으로 지킨다\"를 보여 줄 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    11,
+    13,
+    14,
+    24,
+    27,
+    28,
+    42
+   ],
+   "study": [
+    "aws-multi",
+    "ct-docs",
+    "mhlw-gl7",
+    "ssm-session",
+    "aws-wa-cost"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・チームリード業務： 技術選定、設計方針決定、メンバーのフォロー・教育",
+   "short": "어떤 기술을 쓸지·어떻게 설계할지 정하고, 팀원이 따라오게 돕고 가르친다.",
+   "why": "이 자리는 인프라 영역의 리드로 설계 방침 결정부터 추진까지 주도하는 포지션이라고 적혀 있습니다.[1] 채용 배경도 개발팀의 \"질과 양\"을 높이는 것입니다.[1]",
+   "actually": {
+    "items": [
+     "**기술 선정** — 예: Terraform 과 CDK 중 무엇으로 통일할지, ECS 와 Kubernetes 중 무엇을 쓸지(Green 공고 태그에는 Kubernetes 도 붙어 있다).[9] {추론}",
+     "**설계 방침** — 계정 나누기·이름 규칙·태그·모듈 구조를 정해 문서로 남긴다(ADR).[4]",
+     "**팔로우·교육** — 백엔드 개발자가 직접 인프라를 고칠 수 있게 모듈과 길(골든 패스)을 깔아 준다. 팀 토폴로지는 이런 역할을 다른 팀의 능력을 키워 주는 \"이네이블링\"으로 부른다.[34][33]"
+    ]
+   },
+   "how_far": "관리직(평가·채용)까지는 적혀 있지 않습니다 — 기술 리드에 가깝습니다. {추론} 최소선은 **자기가 정한 설계를 다른 사람이 이어받아 쓸 수 있게 문서·리뷰로 넘겨 본 경험**입니다. {추론}",
+   "refs": [
+    1,
+    4,
+    9,
+    33,
+    34
+   ],
+   "study": [
+    "ko-team-topo",
+    "cncf-platforms"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "※（雇⼊れ直後）詳細は上記に記載 （変更の範囲）会社の定める業務",
+   "short": "일본 법이 요구하는 표기 — 입사 직후 업무는 위와 같고, 앞으로는 회사가 정하는 업무로 바뀔 수 있다는 뜻.",
+   "why": "일본은 2024년 4월부터 근로 조건을 알릴 때 \"업무 내용의 변경 범위\"를 같이 적게 했습니다. 이 줄은 그 표기 양식입니다. {추론} 같은 회사의 다른 공고에도 같은 문장이 붙어 있습니다.[2][3]",
+   "how_far": "회사 쪽 양식이라 지원자가 준비할 것은 없습니다. \"회사가 정하는 업무\"는 범위가 넓으니, 인프라 외 일(예: 백엔드 개발)을 얼마나 맡게 되는지는 면접에서 물어봅니다. {추론}",
+   "refs": [
+    2,
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・AWSでのアプリケーション基盤の設計構築経験（3年以上）",
+   "short": "AWS 위에 앱이 돌 바닥(네트워크·컨테이너·DB·배포)을 직접 설계하고 지은 경험이 3년 넘게 있어야 한다.",
+   "why": "모집 내용의 첫 문장이 스마트폰 앱·웹 앱의 백엔드 인프라(AWS) 설계·구축·운용입니다.[1] 회사의 서버 쪽은 Node.js API 이고 ECS·Aurora·Lambda 를 씁니다.[4][5]",
+   "actually": {
+    "items": [
+     "VPC·서브넷·보안 그룹을 나누고, 앱을 ECS 나 Lambda 에 올리고, DB(RDS/Aurora)를 붙인다.[4]",
+     "로드밸런서·DNS·인증서로 밖에서 들어오는 길을 만든다.[22][21]",
+     "장애가 나면 어느 층에서 났는지 갈라 본다(요건 ⑤와 이어짐). {추론}"
+    ]
+   },
+   "how_far": "\"운영만\"이나 \"남이 만든 것 수정\"이 아니라 **설계와 구축**이라고 적었습니다. 이력서에는 어떤 서비스의 어떤 구조를 왜 그렇게 정했는지를 적는 것이 좋습니다. {추론}",
+   "refs": [
+    1,
+    4,
+    5,
+    21,
+    22
+   ],
+   "study": [
+    "ko-aws-container",
+    "ecs-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・インフラ構築を技術面で主導した経験",
+   "short": "인프라 구축을 기술적으로 이끈 경험 — 남이 정한 대로가 아니라 내가 방향을 정한 적이 있어야 한다.",
+   "why": "이 자리가 인프라 영역의 리드이기 때문입니다.[1] 업무 ⑤(기술 선정·설계 방침)를 처음부터 맡깁니다.[1]",
+   "how_far": "직책보다 **실제로 정한 것**이 중요합니다 — 예: \"CloudFormation 에서 Terraform 으로 옮기자고 제안하고 순서를 짜서 끝냈다\". 결정 이유와 결과(장애 수·배포 시간·비용)를 숫자로 말할 수 있게 준비합니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "ko-team-topo"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・IaC（Terraform, AWS CDK/CloudFormation等）による構成管理経験",
+   "short": "Terraform·CDK·CloudFormation 중 하나 이상으로 인프라를 코드로 관리해 봤어야 한다.",
+   "why": "회사에 이미 CloudFormation 과 Terraform 이 같이 적혀 있고[4][5], 공고 업무 ①은 IaC(Terraform/CDK 등)로 시작합니다.[1]",
+   "actually": {
+    "items": [
+     "**Terraform** — 상태 파일(state)로 \"지금 무엇이 있나\"를 기억하고 plan → apply 로 바꾼다.[16]",
+     "**CDK** — TypeScript 같은 언어로 쓰면 CloudFormation 템플릿으로 바뀐다. 이 회사 서버 언어(TypeScript)와 같다.[17][5]",
+     "**구성 관리** — 환경(개발·운영)마다 같은 모듈을 다른 값으로 쓰고, 콘솔에서 손으로 바꾼 것(드리프트)을 찾는다. {추론}"
+    ]
+   },
+   "how_far": "세 도구를 다 알 필요는 없습니다 — 하나로 **상태·모듈·환경 분리**를 해 봤으면 다른 하나는 금방 옮겨 갑니다. {추론}",
+   "level": {
+    "basic": "resource · variable · output · plan/apply",
+    "work": "모듈 · 원격 state(S3 + 잠금) · 환경 분리 · import",
+    "team": "CloudFormation 과 섞인 상태에서 옮기기 · PR 에서 plan 리뷰 · 계정별 권한"
+   },
+   "refs": [
+    1,
+    4,
+    5,
+    16,
+    17
+   ],
+   "study": [
+    "tf-docs",
+    "tf-up-running",
+    "ja-jissen-tf",
+    "cdk-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・コンテナ（AWS ECS/Kubernetes等）の構築・運用経験",
+   "short": "ECS 나 Kubernetes 로 컨테이너를 띄우고 운영(배포·확장·장애 대응)해 봤어야 한다.",
+   "why": "업무 ①이 컨테이너(ECS 등)를 적었고[1], 같은 회사 테크 리드 공고도 ECS 를 씁니다.[4]",
+   "actually": {
+    "items": [
+     "태스크 정의(이미지·CPU·메모리·환경 변수·비밀)를 쓰고 서비스로 원하는 개수를 유지한다.[15]",
+     "로드밸런서의 헬스 체크로 건강한 컨테이너에만 요청을 보낸다.[22]",
+     "롤링·블루그린으로 배포하고, 실패하면 되돌린다. {추론}"
+    ]
+   },
+   "how_far": "\"ECS/Kubernetes 등\"이라 둘 중 하나면 됩니다.[1] 회사 자료에 Kubernetes 가 나오지 않으니 ECS 쪽이 바로 쓰일 가능성이 큽니다. {추론}",
+   "refs": [
+    1,
+    4,
+    15,
+    22
+   ],
+   "study": [
+    "ecs-docs",
+    "ko-aws-container",
+    "docker-book",
+    "k8s-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・ネットワーク（DNS, ルーティング, 負荷分散等）の設計・障害対応経験",
+   "short": "DNS·라우팅·로드밸런싱을 설계하고, 네트워크 장애를 직접 풀어 본 경험이 있어야 한다.",
+   "why": "병원과 폐역망·VPN 으로 잇는 제품이라 네트워크가 곧 서비스입니다.[6][8] 같은 회사 도입 SE 공고는 병원마다 전파 조사·병원 내 네트워크 설계를 따로 할 만큼 현장 네트워크가 다양합니다.[2]",
+   "actually": {
+    "items": [
+     "**DNS** — 사설 호스팅 영역은 연결된 VPC 안에서만 답한다. 병원 쪽에서 이름을 풀려면 하이브리드 인바운드 엔드포인트가 필요하다.[21]",
+     "**라우팅** — VPN·Transit Gateway 의 경로 표에서 어느 병원 대역이 어디로 가는지.[19]",
+     "**부하 분산** — ALB 는 7계층(HTTP)에서 나누고, 대상 그룹마다 헬스 체크를 둔다.[22]",
+     "**장애 대응** — \"이름이 안 풀린다 / 경로가 없다 / 보안 그룹이 막았다 / 앱이 죽었다\"를 층별로 갈라 본다. {추론}"
+    ]
+   },
+   "how_far": "시험 문제보다 **실제 장애를 어떻게 좁혀 갔는지**를 묻는 요건입니다. dig·traceroute·VPC Flow Logs 로 원인을 찾은 이야기를 하나 준비합니다. {추론}",
+   "refs": [
+    2,
+    6,
+    8,
+    19,
+    21,
+    22
+   ],
+   "study": [
+    "nw-intro",
+    "aws-tgw"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・ビジネスレベルの日本語能力（N1相当以上）および日本での開発経験",
+   "short": "일본어로 업무를 할 수 있고(N1 상당) 일본에서 개발해 본 경험이 있어야 한다.",
+   "why": "원티드 공고는 일본어 전용 포지션이라 일본어 이력서·직무경력서가 필수이고, 한국어·영어 서류만 내거나 일본어 소통이 안 되면 따로 알리지 않고 서류에서 떨어뜨린다고 적었습니다.[1] JLPT N1 은 폭넓은 장면의 일본어를 이해할 수 있는 수준입니다.[35]",
+   "how_far": "시험 점수보다 **설계 문서·장애 보고·병원·업체와의 조율을 일본어로** 하는 것이 실제 기준입니다. {추론} \"일본에서의 개발 경험\"이 따로 적혀 있어, 한국에서만 일한 경우는 불리합니다.[1]",
+   "refs": [
+    1,
+    35
+   ],
+   "study": [
+    "jlpt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本語レベル: ビジネス",
+   "short": "일본어 수준은 비즈니스 — 바로 위 줄(N1 상당)과 같은 말이다.",
+   "why": "LAPRAS 연계 공고의 정형 표기이고, 바로 위 요건 줄과 같은 내용입니다.[1] 전형은 서류 → 1차 면접 → 최종 면접이고 지원 서류는 일본어입니다.[1]",
+   "how_far": "면접도 일본어로 봅니다. 기술 질문에 일본어 용어(冗長化·閉域網·踏み台·権限分離)로 답할 수 있게 준비합니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "jlpt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本国内への移住が必要",
+   "short": "도쿄 도요스 사무실로 출근해야 해서 일본으로 이사해야 한다 — 한국에서 원격은 안 된다.",
+   "why": "근무지는 도쿄 고토구 도요스이고, 원격 근무는 허가제·상담이며 확대 단계라 **출근해서 소통하는 것을 원칙**으로 한다고 적었습니다.[1]",
+   "how_far": "일본에서 일하려면 취업이 되는 체류 자격(엔지니어는 보통 \"기술·인문지식·국제업무\")이 필요합니다.[36] 비자 지원·이사 지원 여부는 공고에 없으니 LAPRAS 커피챗이나 면접에서 확인합니다. {추론}",
+   "refs": [
+    1,
+    36
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・AI駆動開発の経験（Claude Code等）",
+   "short": "Claude Code 같은 AI 에이전트로 개발해 본 경험 — 회사가 AI 활용을 바꿈의 축으로 꼽았다.",
+   "why": "채용 배경 셋째가 AI 활용에 의한 변혁 가속이고, 업무 ②에도 AI 활용 추진이 있습니다.[1] 회사는 2026년 사내 AI 해커톤을 열었고[41], 백엔드 공고들도 Claude Code·Cursor 경험을 우대합니다.[3][4]",
+   "actually": {
+    "items": [
+     "**인프라 코드에 쓰기** — Terraform 모듈·CI 설정 초안을 AI 에게 쓰게 하고 사람이 plan 결과로 검토한다. {추론}",
+     "**울타리 치기** — Claude Code 는 허용·확인·거부 규칙(거부가 먼저 적용)과, 도구를 쓰기 전에 스크립트로 막는 훅을 준다. 운영 계정 자격 증명·apply·비밀 파일을 막는 데 쓴다.[30][31]",
+     "**팀 지시서** — 저장소의 CLAUDE.md 에 규칙(모듈 구조·이름 규칙·금지 명령)을 적어 팀이 같이 쓴다.[43]"
+    ]
+   },
+   "how_far": "\"써 봤다\"보다 **의료 데이터가 있는 환경에서 AI 에게 무엇을 맡기고 무엇을 막았는지**를 말할 수 있으면 이 회사에 맞습니다. {추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    30,
+    31,
+    41,
+    43
+   ],
+   "study": [
+    "claude-perm",
+    "claude-hooks"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・拠点間接続・閉域網/VPN、認証基盤（OIDC等）の構築経験",
+   "short": "병원·사무실 같은 여러 거점을 닫힌 망·VPN 으로 잇고, OIDC 같은 표준으로 로그인 기반을 지어 본 경험.",
+   "why": "업무 ①의 폐역망·VPN 과 업무 ②의 인증 공통화를 바로 맡을 수 있는 경험이라서입니다.[1] 제품 사이트도 너스콜·전자 차트 연동에 폐역망·단말 인증서·2요소 인증이 필요하다고 적었습니다.[8]",
+   "actually": {
+    "items": [
+     "**거점 간 연결** — 가이드라인은 병원 시스템과 잇는 길로 전용선·IP-VPN·IPsec+IKEv2 를 원칙으로 들고, SSL-VPN 을 쓰면 클라이언트형을 고르라고 했다.[11]",
+     "**IP-VPN 과 인터넷 VPN** — IP-VPN 은 통신사가 관리하는 닫힌 망이라 통신사 밖에서 들어올 위험이 작다고 설명한다.[11]",
+     "**인증 기반** — OIDC 는 OAuth 2.0 위에 \"누가 로그인했나\"를 ID 토큰으로 얹은 층이다.[23] 같은 회사 백엔드 공고가 Keycloak 운영 경험도 우대한다.[3]"
+    ]
+   },
+   "how_far": "둘 다 해 봤을 필요는 없습니다. 하나라도 **설계 단계부터** 해 봤으면 강점입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    8,
+    11,
+    23
+   ],
+   "study": [
+    "aws-s2s",
+    "oidc-core",
+    "mhlw-gl7"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・CI/CD、監視（CloudWatch等）、運用自動化（SSM等）の推進経験",
+   "short": "배포 자동화·감시(CloudWatch)·운영 자동화(SSM)를 팀에 들이고 굴려 본 경험.",
+   "why": "팀 미션이 IaC·릴리스 자동화로 속도를 올리는 것이고[1], 의료 가이드라인은 성능 관리·死活監視(살아 있는지 감시)를 하라고 적었습니다.[11]",
+   "actually": {
+    "items": [
+     "**CI/CD** — Code 시리즈 또는 GitHub Actions 로 빌드·테스트·배포를 묶는다.[4]",
+     "**CloudWatch** — 지표에 알람을 걸고, 상태가 바뀔 때 SNS 로 알린다.[25]",
+     "**SSM** — Session Manager 로 인바운드 포트·배스천·SSH 키 없이 서버에 들어가고, 세션 기록을 S3·CloudWatch Logs 에 남긴다.[24] 가이드라인이 서버 접속을 踏み台 경유로 좁히라는 것과 같은 방향이다.[11] {추론}",
+     "**반복 일 줄이기** — 손으로 하는 반복 운영 일(토일)을 재고 자동화로 줄인다.[32]"
+    ]
+   },
+   "how_far": "\"推進\"(추진)이라고 적었습니다 — 도구를 깐 것보다 **팀이 실제로 쓰게 만든 것**을 묻습니다. {추론}",
+   "refs": [
+    1,
+    4,
+    11,
+    24,
+    25,
+    32
+   ],
+   "study": [
+    "cw-alarms",
+    "ssm-session"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・SRE・プラットフォームエンジニアリングの実践、コスト最適化の経験",
+   "short": "SRE·플랫폼 엔지니어링을 실제로 해 보고, 클라우드 비용을 줄여 본 경험.",
+   "why": "\"앞으로 더해질 앱을 효율적으로 합칠 공통 플랫폼\"이 팀 미션이라[1], 플랫폼을 제품처럼 만들어 본 사람이 바로 쓰입니다. {추론}",
+   "actually": {
+    "items": [
+     "**SRE** — 신뢰성 목표를 숫자로 정하고, 반복 운영 일을 줄인다.[32]",
+     "**플랫폼 엔지니어링** — 개발팀이 셀프서비스로 쓰는 공통 바닥(템플릿·파이프라인·관측)을 만든다.[33]",
+     "**비용** — 보이게 하기(Cost Explorer) → 줄이기 → 약정(Savings Plans) 순서.[42][28][27]"
+    ]
+   },
+   "how_far": "비용은 **얼마에서 얼마로 줄였나**를 숫자로 말할 수 있어야 경험으로 읽힙니다. {추론}",
+   "refs": [
+    1,
+    27,
+    28,
+    32,
+    33,
+    42
+   ],
+   "study": [
+    "ja-sre-book",
+    "ja-platform-eng",
+    "aws-wa-cost"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・医療情報システム安全管理ガイドライン等への準拠対応経験",
+   "short": "일본 의료정보 가이드라인(이른바 3성 2가이드라인)에 맞춰 시스템을 고쳐 본 경험.",
+   "why": "채용 배경 둘째가 이 가이드라인 준수입니다.[1] 후생노동성 가이드라인은 2026년 6월 7.0판으로 바뀌었고 개설편·경영관리편·기획관리편·시스템 운용편으로 나뉩니다.[10] 메드콤처럼 서비스를 파는 쪽에는 총무성·경제산업성의 사업자용 가이드라인(2.0판)이 따로 있습니다.[12]",
+   "actually": {
+    "items": [
+     "**책임 나누기** — SaaS 면 앱 층 아래는 사업자가 관리한다. 그래서 병원은 사업자와 책임 분계를 정하고, 사업자는 사양 적합 개시서·SLA 로 정보를 준다.[11]",
+     "**인증** — 2027년 4월 시점에 돌 시스템은 새로 들이거나 바꿀 때 2요소 인증. \"OS 1요소 + 앱 1요소\" 같은 조합은 인정하지 않는다.[11]",
+     "**네트워크** — 인터넷 위 TLS 만으로 잇는다면 TLS 1.3 + 클라이언트 인증서로 단말을 제한한다.[11]",
+     "**백업** — 여러 세대·여러 방식, 일부는 악성코드가 번지지 못하는 곳에, 복원 절차까지.[11]",
+     "**왜 무섭나** — 회사 채용 영상은 의료·복지 분야 랜섬웨어 피해가 늘고, 전자 차트가 멈춰 진료가 끊기거나 환자 정보가 새는 피해를 보여 준다.[6]"
+    ]
+   },
+   "how_far": "가이드라인 전부를 외울 필요는 없습니다. **\"이 항목은 이 설정으로 지킨다\"는 대응표를 만들어 본 경험**이 있으면 우대 사항을 채웁니다. {추론} 한국 지원자라면 시스템 운용편 13·14장만 먼저 읽어도 면접에서 말할 거리가 생깁니다. {추론}",
+   "refs": [
+    1,
+    6,
+    10,
+    11,
+    12
+   ],
+   "study": [
+    "mhlw-gl7",
+    "soumu-gl2"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・マイクロサービス／共通基盤や、モバイルバックエンド（Push通知等）の構築経験",
+   "short": "여러 서비스가 같이 쓰는 공통 바닥이나, 모바일 앱의 서버(푸시 알림 등)를 지어 본 경험.",
+   "why": "제품이 병원 전용 스마트폰이고 앱이 iOS(Swift)·Android(Kotlin) 둘입니다.[5] 채팅·긴급 호출·너스콜 연동이 기능에 있어, 알림이 늦으면 일이 막힙니다.[5][8] {추론}",
+   "actually": {
+    "items": [
+     "**푸시** — SNS 는 APNs·FCM 등의 자격 증명으로 플랫폼 애플리케이션을 만들고, 단말 토큰마다 엔드포인트를 만들어 거기로 보낸다.[26]",
+     "**공통 바닥** — 인증·알림·감시처럼 앱마다 겹치는 것을 한 번 만들어 같이 쓴다(업무 ②와 같은 줄).[1]",
+     "**마이크로서비스** — 기능별로 서비스를 나누면 배포는 따로 하되 인증·관측은 하나로 맞춰야 한다. {추론}"
+    ]
+   },
+   "how_far": "모바일 앱을 만들 줄 알 필요는 없습니다. 푸시가 **어디서 실패할 수 있나(토큰 만료·외부 서비스 지연)를 알고 감시를 걸 수 있으면** 충분합니다. {추론}",
+   "refs": [
+    1,
+    5,
+    8,
+    26
+   ],
+   "study": [
+    "sns-push"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "ⅰ.挑戦する勇気を持っている人 未知の領域へ飛び込むことや新たな挑戦をする勇気を起点とし、圧倒的な行動力で、学びの機会を創出することにワクワクする。",
+   "short": "모르는 영역에 뛰어드는 용기 — 회사가 내건 가치 세 가지 중 첫째다.",
+   "why": "이 세 줄은 회사가 채용 자료에서 \"소중히 하는 3요소\"로 내건 가치와 같습니다(도전하는 용기·결과를 내는 집념·성장을 즐기기).[5][6]",
+   "how_far": "면접에서 \"처음 해 본 일을 어떻게 익혀 해냈나\"를 묻는 틀이 됩니다. 예: 의료 가이드라인처럼 처음 보는 규칙을 읽고 설계에 옮긴 일. {추론}",
+   "refs": [
+    5,
+    6
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "ⅱ.結果を出す執念を持っている人 結果を出すことがお客様や社会へ貢献することに繋がると考え、未知の領域や困難な課題にも恐れず向き合う。そして、目標を追い続けるために必要な強い意志を生み出す執念を持ち続ける。",
+   "short": "어려워도 결과가 날 때까지 붙드는 사람 — 결과가 곧 고객과 사회에 대한 기여라는 생각.",
+   "why": "회사 가치 둘째입니다.[5] 병원 현장에서 멈추면 안 되는 연락 수단을 파는 회사라서, 결과를 내는 것을 사회 기여와 바로 잇습니다.[1]",
+   "how_far": "장애를 끝까지 추적해 재발을 막은 경험처럼, **끝을 낸 이야기**를 숫자와 함께 준비합니다. {추론}",
+   "refs": [
+    1,
+    5
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "ⅲ.成長を楽しむことができる人 成長とは、少し前の自分よりもできることが増えること、そして何かを成せるようになること。「自分はどうしたいのか／どうありたいのか」を自身に問い続け考え実行し、それに夢中になる。そうした日々に熱狂し、一人一人が着実に成長に向かっていく。",
+   "short": "어제보다 할 수 있는 게 늘어나는 걸 즐기는 사람 — 스스로 묻고 실행하는 태도.",
+   "why": "회사 가치 셋째입니다.[5] 회사는 반기마다 오프사이트, 매주 조회로 방향을 공유합니다.[5]",
+   "how_far": "최근 1년에 새로 익힌 기술과, 그걸 일에 써서 바뀐 것을 한두 개 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    5
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "medcom-deck",
+   "title": "メドコム 채용 피치 자료",
+   "by": "株式会社メドコム · Speaker Deck · 2026-07",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "url": "https://speakerdeck.com/medcom/medcom-saiyo",
+   "why": "제품이 단말·회선·앱 묶음이고 폐역망으로 짓는다는 것, 기술 표(Swift·Kotlin·Node.js·AWS)와 조직도 — 지원 전에 이 공고의 무대를 한 번에 본다."
+  },
+  {
+   "id": "medcom-video",
+   "title": "メドコム 채용 피치 영상",
+   "by": "株式会社メドコム · YouTube",
+   "kind": "video",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=Z-nPJFF1PYY",
+   "why": "6분짜리 슬라이드 영상. 병원 랜섬웨어 피해·폐역망 구성·병원 → 지역 → 환자로 넓히는 플랫폼 구상을 본다(업무 줄 ③과 채용 배경)."
+  },
+  {
+   "id": "mhlw-gl7",
+   "title": "医療情報システムの安全管理に関するガイドライン 第7.0版",
+   "by": "厚生労働省 · 2026-06",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.mhlw.go.jp/stf/shingi/0000516275_00006.html",
+   "why": "우대 ⑤의 원문. 시스템 운용편의 13장(네트워크)·14장(인증)·11장(백업)만 먼저 읽어도 이 회사 인프라 규칙의 뼈대가 보인다."
+  },
+  {
+   "id": "soumu-gl2",
+   "title": "医療情報を取り扱う情報システム・サービスの提供事業者における安全管理ガイドライン 第2.0版",
+   "by": "総務省 · 経済産業省 · 2025-03",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.soumu.go.jp/menu_news/s-news/01ryutsu06_02000427.html",
+   "why": "메드콤처럼 서비스를 파는 쪽이 지킬 것 — 병원에 낼 적합 개시서·SLA 를 이해하는 데 쓴다."
+  },
+  {
+   "id": "aws-multi",
+   "title": "Organizing Your AWS Environment Using Multiple Accounts",
+   "by": "AWS 백서 · 2025",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/organizing-your-aws-environment/organizing-your-aws-environment.html",
+   "why": "업무 ④ 멀티 계정 통제의 교과서. OU(계정 묶음)를 어떻게 나누고 로그·보안 계정을 왜 따로 두는지."
+  },
+  {
+   "id": "ct-docs",
+   "title": "AWS Control Tower 사용 설명서",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/controltower/latest/userguide/what-is-control-tower.html",
+   "why": "랜딩 존·컨트롤·Account Factory — 업무 ④에 이름이 그대로 나온 도구."
+  },
+  {
+   "id": "ecs-docs",
+   "title": "Amazon ECS 개발자 안내서",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/",
+   "why": "요건 ④. 태스크 정의·서비스·배포 방식·Fargate 를 공식 문서로 확인한다."
+  },
+  {
+   "id": "ko-aws-container",
+   "title": "AWS 컨테이너 설계와 구축 철저 입문",
+   "by": "아라이 마사야·우마카츠 아츠시 · 양현 옮김 · 위키북스 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=296061083",
+   "why": "일본 엔지니어가 쓴 ECS·Fargate 설계·CI/CD·보안 책의 한국어판. 업무 ②·요건 ④를 한 권으로 실습."
+  },
+  {
+   "id": "tf-docs",
+   "title": "Terraform 문서",
+   "by": "HashiCorp",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.hashicorp.com/terraform/docs",
+   "why": "요건 ③. 상태(state)·모듈·plan/apply 흐름을 공식 문서로."
+  },
+  {
+   "id": "tf-up-running",
+   "title": "Terraform: Up & Running (3판)",
+   "by": "Yevgeniy Brikman · O'Reilly · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/terraform-up-and/9781098116736/",
+   "why": "상태 파일 나누기·모듈·환경 분리·팀 운영 — 요건 ③을 \"써 봤다\"에서 \"설계했다\"로 올리는 책."
+  },
+  {
+   "id": "ja-jissen-tf",
+   "title": "実践Terraform AWSにおけるシステム設計とベストプラクティス",
+   "by": "野村友規 · インプレスR&D · 2019",
+   "kind": "book",
+   "lang": "ja",
+   "free": false,
+   "level": "실무",
+   "url": "https://ndlsearch.ndl.go.jp/en/books/R100000002-I029962347",
+   "why": "일본 현장에서 많이 읽힌 AWS × Terraform 책. ECS·VPC·CI 를 Terraform 으로 짓는 순서를 일본어 용어로 익힌다."
+  },
+  {
+   "id": "cdk-docs",
+   "title": "AWS CDK v2 개발자 안내서",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/cdk/v2/guide/home.html",
+   "why": "공고가 Terraform 과 같이 적은 CDK — TypeScript 로 CloudFormation 을 만드는 방식. 이 회사 백엔드 언어와 같다."
+  },
+  {
+   "id": "nw-intro",
+   "title": "IT 엔지니어를 위한 네트워크 입문",
+   "by": "고재성 외",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ridibooks.com/books/754029945",
+   "why": "요건 ⑤의 바탕 — 주소·라우팅·DNS·로드밸런서를 한국어로 처음부터."
+  },
+  {
+   "id": "aws-s2s",
+   "title": "AWS Site-to-Site VPN 사용 설명서",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/vpn/latest/s2svpn/VPNTunnels.html",
+   "why": "업무 ①·우대 ②의 거점 간 연결. 터널 2개·IPsec 설정을 읽는다."
+  },
+  {
+   "id": "aws-tgw",
+   "title": "Amazon VPC Transit Gateways",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.aws.amazon.com/vpc/latest/tgw/what-is-transit-gateway.html",
+   "why": "병원·계정·VPC 가 늘어날 때 한가운데서 길을 나누는 장치 — 경로 표를 나눠 병원끼리 못 넘어가게 하는 설계."
+  },
+  {
+   "id": "privatelink",
+   "title": "AWS PrivateLink 안내서",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html",
+   "why": "인터넷을 거치지 않고 서비스에 붙는 방법 — 폐역망 설계의 부품."
+  },
+  {
+   "id": "oidc-core",
+   "title": "OpenID Connect Core 1.0",
+   "by": "OpenID Foundation",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://openid.net/specs/openid-connect-core-1_0.html",
+   "why": "우대 ②의 인증 기반. 2장(ID 토큰)과 3.1장(인가 코드 흐름)만 먼저 읽는다."
+  },
+  {
+   "id": "ssm-session",
+   "title": "AWS Systems Manager · Session Manager",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html",
+   "why": "우대 ③ 운영 자동화(SSM). SSH 포트 없이 접속하고 기록을 남기는 법 — 가이드라인의 서버 접속 규칙과 이어진다."
+  },
+  {
+   "id": "cw-alarms",
+   "title": "Amazon CloudWatch · Using alarms",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html",
+   "why": "우대 ③ 감시. 알람 상태(OK·ALARM·INSUFFICIENT_DATA)와 평가 기간."
+  },
+  {
+   "id": "sns-push",
+   "title": "Amazon SNS · Mobile push notifications",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/sns/latest/dg/sns-mobile-application-as-subscriber.html",
+   "why": "우대 ⑥ 모바일 백엔드의 푸시 — APNs·FCM 에 어떻게 이어지나."
+  },
+  {
+   "id": "aws-wa-cost",
+   "title": "AWS Well-Architected · 비용 최적화 원칙",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/welcome.html",
+   "why": "업무 ④·우대 ④ 비용 최적화의 순서(보이게 → 줄이기 → 약정)."
+  },
+  {
+   "id": "saas-lens",
+   "title": "AWS Well-Architected SaaS Lens · Tenant Isolation",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/saas-lens/tenant-isolation.html",
+   "why": "업무 ②의 멀티 테넌트 — 병원마다 무엇을 나누고 무엇을 같이 쓸지(사일로·풀·브리지)."
+  },
+  {
+   "id": "ja-sre-book",
+   "title": "SRE サイトリライアビリティエンジニアリング",
+   "by": "Betsy Beyer 외 · オライリー・ジャパン · 2017",
+   "kind": "book",
+   "lang": "ja",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.co.jp/books/9784873117911/",
+   "why": "우대 ④ SRE 의 기본서 일본어판. 토일 줄이기·SLO·장애 회고를 일본어 용어로."
+  },
+  {
+   "id": "ja-platform-eng",
+   "title": "プラットフォームエンジニアリング — 成功するプラットフォームとチームを作るガイドライン",
+   "by": "Camille Fournier·Ian Nowland · 松浦隼人 訳 · オライリー・ジャパン · 2025",
+   "kind": "book",
+   "lang": "ja",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/-/9784814401413/",
+   "why": "팀 미션의 \"앞으로 더해질 앱을 효율적으로 합칠 공통 플랫폼\" — 플랫폼을 제품처럼 운영하는 법."
+  },
+  {
+   "id": "cncf-platforms",
+   "title": "CNCF Platforms White Paper",
+   "by": "CNCF TAG App Delivery · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://tag-app-delivery.cncf.io/whitepapers/platforms/",
+   "why": "플랫폼 엔지니어링이 무엇을 제공하나(셀프서비스·골든 패스)를 짧게."
+  },
+  {
+   "id": "ko-team-topo",
+   "title": "팀 토폴로지",
+   "by": "매튜 스켈톤·마누엘 페이스 · 에이콘출판",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=258906450",
+   "why": "업무 ⑤ 팀 리드 — \"혼자 다 하지 않고 다른 팀과 단계적으로\"를 팀 구조로 설명하는 책."
+  },
+  {
+   "id": "claude-perm",
+   "title": "Claude Code 문서 · 권한(permissions)",
+   "by": "Anthropic",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "실무",
+   "url": "https://code.claude.com/docs/ja/permissions",
+   "why": "우대 ① — AI 에이전트가 무엇을 할 수 있게 둘지(허용·확인·거부) 규칙 짜기."
+  },
+  {
+   "id": "claude-hooks",
+   "title": "Claude Code 문서 · Hooks",
+   "by": "Anthropic",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://code.claude.com/docs/en/hooks",
+   "why": "우대 ① — 도구 실행 전에 스크립트로 막는 장치. 운영 계정·비밀 파일을 지키는 데 쓴다."
+  },
+  {
+   "id": "k8s-book",
+   "title": "쿠버네티스 입문 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "요건 ④의 \"ECS/Kubernetes 등\" 중 쿠버네티스 쪽. kubectl 출력을 읽으며 익힌다."
+  },
+  {
+   "id": "docker-book",
+   "title": "개발자를 위한 도커 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "컨테이너 이미지·네트워크의 바탕 — ECS 를 하기 전에."
+  },
+  {
+   "id": "jlpt",
+   "title": "JLPT · N1~N5 認定の目安",
+   "by": "日本語能力試験",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.jlpt.jp/about/levelsummary.html",
+   "why": "요건 ⑥의 \"N1 상당\" 이 어떤 수준인지 공식 기준으로."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사와 규칙 읽기",
+   "time": "1주",
+   "goal": "메드콤이 무엇을 팔고 왜 폐역망·가이드라인이 중요한지 일본어로 설명할 수 있다.",
+   "resources": [
+    "medcom-deck",
+    "medcom-video",
+    "mhlw-gl7"
+   ],
+   "task": "채용 자료와 가이드라인 시스템 운용편 13장(네트워크)·14장(인증)을 읽고, \"규칙 → AWS 에서 지키는 방법\" 대응표를 10줄 만든다(예: 서버 OS 2요소 인증 → Session Manager + IAM MFA)."
+  },
+  {
+   "title": "IaC 로 바닥 짓기",
+   "time": "2~3주",
+   "goal": "VPC·ECS·ALB·Aurora 를 Terraform 모듈로 짓고 개발·운영 환경을 나눌 수 있다.",
+   "resources": [
+    "tf-docs",
+    "tf-up-running",
+    "ja-jissen-tf",
+    "ecs-docs",
+    "ko-aws-container"
+   ],
+   "task": "가상 \"병원 메신저 API\"(Node.js 컨테이너 하나)를 ECS Fargate + ALB + Aurora 로 Terraform 으로 세운다. 원격 state(S3 + 잠금), dev/prod 두 환경, PR 에서 plan 이 도는 CI 까지."
+  },
+  {
+   "title": "닫힌 망 잇기",
+   "time": "2주",
+   "goal": "거점과 AWS 를 VPN 으로 잇고, 병원끼리는 서로 못 넘어가게 경로를 나눌 수 있다.",
+   "resources": [
+    "nw-intro",
+    "aws-s2s",
+    "aws-tgw",
+    "privatelink"
+   ],
+   "task": "가상 병원 3곳의 사설 대역을 정해 겹침 검사 스크립트를 돌리고, Transit Gateway 경로 표를 병원별로 나눈 설계도를 그린다(실제 VPN 은 한 줄만 세워 보고 바로 지운다 — 비용 주의)."
+  },
+  {
+   "title": "계정 통제와 공통 기반",
+   "time": "2~3주",
+   "goal": "멀티 계정 구조·컨트롤·공통 인증·감시를 설계 문서(ADR)로 남길 수 있다.",
+   "resources": [
+    "aws-multi",
+    "ct-docs",
+    "saas-lens",
+    "oidc-core",
+    "cw-alarms",
+    "ssm-session"
+   ],
+   "task": "OU 구조(보안·로그·워크로드)와 걸 컨트롤 5개를 고른 ADR 하나, 병원별 분리 수준(사일로/풀)을 고른 ADR 하나를 쓴다. Keycloak 을 로컬에 띄워 병원 2개를 realm 으로 나누고 ID 토큰 iss 로 거절되는지 확인한다."
+  },
+  {
+   "title": "AI·비용·팀 (계속)",
+   "time": "계속",
+   "goal": "AI 에이전트를 안전하게 들이는 규칙과 비용 보고를 팀 일로 만든다.",
+   "resources": [
+    "claude-perm",
+    "claude-hooks",
+    "aws-wa-cost",
+    "ja-sre-book",
+    "ko-team-topo"
+   ],
+   "task": "2단계 저장소에 CLAUDE.md 와 거부 규칙·훅(apply·운영 자격 증명 막기)을 넣고, Cost Explorer 태그별 비용표를 주 1회 뽑는 스크립트를 만든다."
+  }
+ ],
+ "pay": {
+  "summary": "공고 연봉 **600만~1,000만 엔**, 월급 **50만 엔부터**(고정 잔업수당 포함). 비상장이라 회사 평균 급여 공시는 없다",
+  "rows": [
+   {
+    "label": "공고 표기 연봉",
+    "value": "600만~1,000만 엔",
+    "basis": "공고",
+    "note": "정사원, 수습 3개월(조건 같음). 일본 채용 사이트의 같은 자리도 같은 범위다 [1][9]"
+   },
+   {
+    "label": "공고 표기 월급",
+    "value": "50만 엔~ (기본급 432,425엔~ + 고정 잔업수당 67,575엔~)",
+    "basis": "공고",
+    "note": "월급제. 고정 잔업수당이 월급 안에 들어 있다 — 몇 시간분인지는 적혀 있지 않다 [1]"
+   },
+   {
+    "label": "헨리 Senior SRE",
+    "value": "800만~1,400만 엔",
+    "basis": "공고",
+    "peer": true,
+    "note": "같은 경로(원티드·LAPRAS)의 의료 SaaS 인프라 공고, 경력 7~20년 시니어 [38]"
+   },
+   {
+    "label": "메디폰 플랫폼 엔지니어",
+    "value": "700만~1,000만 엔",
+    "basis": "공고",
+    "peer": true,
+    "note": "같은 경로의 의료 분야 공고, 고정 잔업 45시간분 포함 [39]"
+   },
+   {
+    "label": "MEGAZONE 일본 Cloud Engineer",
+    "value": "850만~1,000만 엔",
+    "basis": "공고",
+    "peer": true,
+    "note": "같은 경로의 AWS 클라우드 공고 [40]"
+   },
+   {
+    "label": "일본 민간 평균 급여(참고)",
+    "value": "478만 엔 (정사원 545만 엔)",
+    "basis": "국세청 민간급여실태통계 · 2024년분",
+    "note": "일본 전체 급여 소득자 평균 — 회사·직군 구분 없는 나라 전체 값 [37]"
+   }
+  ],
+  "how": "메드콤은 비상장사라 유가증권보고서의 직원 평균 급여가 없습니다(공시 숫자 없음). 월급 50만 엔 × 12 = 600만 엔이라 범위의 아래쪽 끝은 상여 없이 월급만 센 값과 같습니다 {추론}. 고정 잔업수당 67,575엔은 월 소정 근로시간을 160~170시간으로 가정하고 25% 할증으로 셈하면 약 20~21시간분입니다(직접 계산한 추정) {추론}. 비교 줄은 모두 같은 기준(공고 표기 범위)이고 마지막 줄만 나라 전체 평균이라 위치를 가늠하는 참고입니다. 엔화 그대로, 세금·사회보험이 빠지기 전 금액입니다."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무 시간",
+    "detail": "플렉스 타임, 하루 표준 8시간, 코어 타임 11~15시"
+   },
+   {
+    "name": "휴일",
+    "detail": "완전 주 2일(토·일·공휴일), 연말연시(12/29~1/3), 여름 휴가 3일, 경조 휴가"
+   },
+   {
+    "name": "연차",
+    "detail": "연 10~20일, 입사일에 10일 부여, 시간 단위 사용 가능"
+   },
+   {
+    "name": "원격 근무",
+    "detail": "허가제로 상담 — 확대 단계라 출근이 원칙, 가정 사정이면 상담 가능"
+   },
+   {
+    "name": "건강",
+    "detail": "본인·가족 종합검진(人間ドック) 보조"
+   },
+   {
+    "name": "학습",
+    "detail": "자격 취득 지원·참고서 구입 보조"
+   },
+   {
+    "name": "소통",
+    "detail": "셔플 런치 제도"
+   },
+   {
+    "name": "할인",
+    "detail": "복리후생 시설(숙박·레스토랑 등) 할인 프로그램"
+   },
+   {
+    "name": "교통비",
+    "detail": "지급(특급권 등 특별 요금 제외)"
+   },
+   {
+    "name": "보험",
+    "detail": "고용·건강(관동 IT 소프트웨어 건강보험조합)·후생연금·산재"
+   }
+  ],
+  "note": "이 공고의 근무 조건·복리후생 칸 기준이다 [1]. 회사 채용 자료(2026년 7월)는 여기에 육아·간병 보조, 경조 위문, 점심 보조를 더 적었다 [5]. 비자·이사 지원은 적혀 있지 않다."
+ },
+ "location": {
+  "name": "株式会社メドコム 도쿄 본사",
+  "address": "東京都江東区豊洲3-2-24 豊洲フォレシア9階",
+  "postal": "〒135-0061",
+  "map_url": "https://map.naver.com/p/search/%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B1%9F%E6%9D%B1%E5%8C%BA%E8%B1%8A%E6%B4%B23-2-24",
+  "near": "도쿄메트로 유라쿠초선 도요스역 1C 출구에서 걸어서 1분(지붕 있는 보도), 유리카모메 도요스역 6분",
+  "note": "공고의 근무지와 회사 사이트의 회사 정보 주소가 같다(2025년 9월 1일 이전) [1][7]. 입사 직후 근무지는 도쿄 본사다 [2]."
+ },
+ "fit": {
+  "good": [
+   "AWS 네트워크(VPN·라우팅·DNS)를 손으로 풀어 본 사람 — 이 제품은 병원과 닫힌 망으로 잇는다[8]",
+   "규칙을 설정으로 옮기는 일이 즐거운 사람 — 의료 가이드라인 준수가 채용 배경이다[1]",
+   "처음부터 갈아엎기보다 단계적으로 바꾸는 걸 잘하는 사람[1]",
+   "인프라 리드를 해 보고 싶은 경력 3년 이상 엔지니어[1]"
+  ],
+  "hard": [
+   "일본어 비즈니스·일본 개발 경험·일본 이주가 모두 필수다[1]",
+   "출근이 원칙이라 원격 위주 근무를 바라면 맞지 않는다[1]",
+   "사원 89명 규모라 인프라 일을 나눠 질 사람이 많지 않다[5] {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "병원 10곳을 VPN 으로 잇는데, 한 병원에서 다른 병원으로 못 넘어가게 하려면 경로를 어떻게 나누나요?",
+   "a": "가이드라인이 VPN 에서 요구하는 것과 Transit Gateway 경로 표 나누기.[11][19]"
+  },
+  {
+   "q": "서버 OS 2요소 인증을 AWS 에서 어떻게 충족하나요?",
+   "a": "踏み台 경유로 대신하는 길과 Session Manager.[11][24]"
+  },
+  {
+   "q": "병원별 데이터 분리는 계정·DB·행 중 어디서 하겠어요? 기준은요?",
+   "a": "SaaS 렌즈의 사일로·풀과 비용·장애 영향 범위.[29]"
+  },
+  {
+   "q": "CloudFormation 과 Terraform 이 섞여 있으면 어떻게 옮기겠어요?",
+   "a": "두 도구가 같이 적힌 회사 현황.[4][5]"
+  },
+  {
+   "q": "AI 에이전트가 운영 계정에 apply 하지 못하게 하려면?",
+   "a": "거부 규칙과 훅.[30][31]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · [株式会社メドコム] 클라우드 인프라 엔지니어 (도쿄)_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/387811",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "LAPRAS Global Bridge 연계 · 사업 개요·모집 내용·팀 미션·채용 배경·업무·요건·우대·인물상·급여·근무지·휴가·복리후생·전형"
+  },
+  {
+   "n": 2,
+   "title": "メドコム 채용(HRMOS) · クラウドインフラエンジニア（AWS）",
+   "url": "https://hrmos.co/pages/medcom/jobs/1873297862650732571",
+   "kind": "posting",
+   "note": "회사 자체 채용 페이지의 같은 자리 — 업무·요건 같음, 회사 정보(설립·자본금·주소)"
+  },
+  {
+   "n": 3,
+   "title": "メドコム 채용(HRMOS) · バックエンドエンジニア（東京拠点）",
+   "url": "https://hrmos.co/pages/medcom/jobs/1829060909820698638",
+   "kind": "posting",
+   "note": "같은 회사 백엔드 공고 — Node.js/TypeScript, OIDC/OAuth2·Keycloak, AWS 멀티 계정 거버넌스, Claude Code·Cursor"
+  },
+  {
+   "n": 4,
+   "title": "メドコム 채용(HRMOS) · バックエンドエンジニア（テックリード）",
+   "url": "https://hrmos.co/pages/medcom/jobs/1829060909820698636",
+   "kind": "posting",
+   "note": "같은 회사 테크 리드 공고 — AWS ECS·Aurora·Lambda·Code 시리즈, Terraform·CloudFormation, ADR, 오사카 거점"
+  },
+  {
+   "n": 5,
+   "title": "メドコム 채용 피치 자료 (Speaker Deck)",
+   "url": "https://speakerdeck.com/medcom/medcom-saiyo",
+   "kind": "company",
+   "date": "2026-07",
+   "note": "2026년 7월 갱신판 · 제품(단말·회선·앱 묶음)·기술 표·조직도·사원 89명·시설 수·투자 이력·가치 3가지"
+  },
+  {
+   "n": 6,
+   "title": "メドコム 채용 피치 영상 (YouTube)",
+   "url": "https://www.youtube.com/watch?v=Z-nPJFF1PYY",
+   "kind": "company",
+   "note": "약 6분 · 말 자막 없이 슬라이드만 — 30초 간격 장면 12장을 전부 확인(랜섬웨어 슬라이드·폐역망 구성·플랫폼 구상)"
+  },
+  {
+   "n": 7,
+   "title": "株式会社メドコム · 会社情報",
+   "url": "https://medcom.ne.jp/company",
+   "kind": "company",
+   "note": "주소(2025-09-01 이전)·설립 2016-07-15·자본금·지점(삿포로·센다이·나고야·오사카·후쿠오카·키팅 센터)"
+  },
+  {
+   "n": 8,
+   "title": "メドコム 제품 사이트 · 機能",
+   "url": "https://medcom.ne.jp/service/function",
+   "kind": "company",
+   "note": "가이드라인 준수 표기, 너스콜·전자 차트 연동에는 폐역망·단말 인증서·2요소 인증이 필요하다는 주석, 단말 관리·원격 잠금"
+  },
+  {
+   "n": 9,
+   "title": "Green · メドコム クラウドインフラエンジニア（AWS）",
+   "url": "https://www.green-japan.com/company/8776/job/327549",
+   "kind": "posting",
+   "note": "일본 채용 사이트의 같은 자리 — 연봉 600만~1,000만 엔, 태그 AWS·Kubernetes·SRE, 종업원 83명(게재 시점)"
+  },
+  {
+   "n": 10,
+   "title": "厚生労働省 · 医療情報システムの安全管理に関するガイドライン 第7.0版",
+   "url": "https://www.mhlw.go.jp/stf/shingi/0000516275_00006.html",
+   "kind": "reference",
+   "date": "2026-06",
+   "note": "개설편·경영관리편·기획관리편·시스템 운용편·Q&A 로 이루어진다"
+  },
+  {
+   "n": 11,
+   "title": "同 ガイドライン 第7.0版 · システム運用編 (PDF)",
+   "url": "https://www.mhlw.go.jp/content/10808000/001716295.pdf",
+   "kind": "reference",
+   "date": "2026-06",
+   "note": "3장 책임 분계, 11장 운용(백업), 13장 네트워크, 14장 인증 — 본문 직접 확인"
+  },
+  {
+   "n": 12,
+   "title": "総務省 · 医療情報を取り扱う情報システム・サービスの提供事業者における安全管理ガイドライン第2.0版 公表",
+   "url": "https://www.soumu.go.jp/menu_news/s-news/01ryutsu06_02000427.html",
+   "kind": "reference",
+   "date": "2025-03",
+   "note": "서비스를 파는 쪽(사업자)이 지키는 가이드라인"
+  },
+  {
+   "n": 13,
+   "title": "AWS 백서 · Organizing Your AWS Environment Using Multiple Accounts",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/organizing-your-aws-environment/organizing-your-aws-environment.html",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "AWS Control Tower 사용 설명서 · What is AWS Control Tower",
+   "url": "https://docs.aws.amazon.com/controltower/latest/userguide/what-is-control-tower.html",
+   "kind": "reference",
+   "note": "랜딩 존·컨트롤(예방·탐지·사전)·Account Factory"
+  },
+  {
+   "n": 15,
+   "title": "Amazon ECS 개발자 안내서",
+   "url": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Terraform 문서",
+   "url": "https://developer.hashicorp.com/terraform/docs",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "AWS CDK v2 개발자 안내서",
+   "url": "https://docs.aws.amazon.com/cdk/v2/guide/home.html",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "AWS Site-to-Site VPN 사용 설명서",
+   "url": "https://docs.aws.amazon.com/vpn/latest/s2svpn/VPNTunnels.html",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Amazon VPC Transit Gateways",
+   "url": "https://docs.aws.amazon.com/vpc/latest/tgw/what-is-transit-gateway.html",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "AWS PrivateLink 안내서",
+   "url": "https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html",
+   "kind": "reference",
+   "note": "인터넷 게이트웨이·NAT·공인 IP 없이 서비스에 사설로 붙는다"
+  },
+  {
+   "n": 21,
+   "title": "Amazon Route 53 · Private hosted zones",
+   "url": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-private.html",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "Elastic Load Balancing · What is an Application Load Balancer",
+   "url": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "OpenID Connect Core 1.0",
+   "url": "https://openid.net/specs/openid-connect-core-1_0.html",
+   "kind": "reference",
+   "note": "ID 토큰의 필수 클레임(iss·sub·aud·exp·iat)과 nonce"
+  },
+  {
+   "n": 24,
+   "title": "AWS Systems Manager · Session Manager",
+   "url": "https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html",
+   "kind": "reference",
+   "note": "인바운드 포트·배스천·SSH 키 없이 접속, 기록은 CloudTrail·S3·CloudWatch Logs"
+  },
+  {
+   "n": 25,
+   "title": "Amazon CloudWatch · Using alarms",
+   "url": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "Amazon SNS · Mobile push notifications",
+   "url": "https://docs.aws.amazon.com/sns/latest/dg/sns-mobile-application-as-subscriber.html",
+   "kind": "reference",
+   "note": "APNs·FCM 등, 플랫폼 애플리케이션 → 엔드포인트"
+  },
+  {
+   "n": 27,
+   "title": "AWS Well-Architected · Cost Optimization Pillar",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/welcome.html",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "Savings Plans 사용 설명서",
+   "url": "https://docs.aws.amazon.com/savingsplans/latest/userguide/what-is-savings-plans.html",
+   "kind": "reference",
+   "note": "1년·3년 약정, 컴퓨팅 최대 72% 할인, Fargate·Lambda 에도 적용"
+  },
+  {
+   "n": 29,
+   "title": "AWS Well-Architected SaaS Lens · Tenant Isolation",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/saas-lens/tenant-isolation.html",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "Claude Code 문서 · 권한(permissions)",
+   "url": "https://code.claude.com/docs/ja/permissions",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "Claude Code 문서 · Hooks",
+   "url": "https://code.claude.com/docs/en/hooks",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "Google SRE Book · Eliminating Toil",
+   "url": "https://sre.google/sre-book/eliminating-toil/",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "CNCF Platforms White Paper",
+   "url": "https://tag-app-delivery.cncf.io/whitepapers/platforms/",
+   "kind": "reference",
+   "date": "2023"
+  },
+  {
+   "n": 34,
+   "title": "팀 토폴로지 (에이콘출판)",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=258906450",
+   "kind": "reference"
+  },
+  {
+   "n": 35,
+   "title": "JLPT · N1~N5 認定の目安",
+   "url": "https://www.jlpt.jp/about/levelsummary.html",
+   "kind": "reference"
+  },
+  {
+   "n": 36,
+   "title": "出入国在留管理庁 · 在留資格「技術・人文知識・国際業務」",
+   "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html",
+   "kind": "reference"
+  },
+  {
+   "n": 37,
+   "title": "国税庁 · 令和6年分 民間給与実態統計調査結果",
+   "url": "https://www.nta.go.jp/information/release/kokuzeicho/2025/minkan_2025/pdf/01.pdf",
+   "kind": "reference",
+   "date": "2025-09",
+   "note": "1년 근무 급여소득자 평균 478만 엔(정사원 545만 엔)"
+  },
+  {
+   "n": 38,
+   "title": "원티드 · [株式会社ヘンリー] Senior SRE_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/342854",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 경로(LAPRAS)의 의료 SaaS 인프라 공고 — 800만~1,400만 엔"
+  },
+  {
+   "n": 39,
+   "title": "원티드 · [メディフォン株式会社] 플랫폼 엔지니어 (SRE·DevOps)_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/394202",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 경로의 의료 분야 공고 — 700만~1,000만 엔, 고정 잔업 45시간분 포함"
+  },
+  {
+   "n": 40,
+   "title": "원티드 · [MEGAZONE株式会社] Cloud Engineer (Senior)_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/306087",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 경로의 AWS 클라우드 공고 — 850만~1,000만 엔"
+  },
+  {
+   "n": 41,
+   "title": "メドコム 공식 note",
+   "url": "https://note.com/medcom_official",
+   "kind": "company",
+   "date": "2026",
+   "note": "사원 소개 릴레이(프로덕트 개발부)·사내 AI 해커톤 2026 보고·Kotlin Multiplatform 선택 이유 — 글 목록의 제목까지 확인"
+  },
+  {
+   "n": 42,
+   "title": "AWS Cost Explorer 사용 설명서",
+   "url": "https://docs.aws.amazon.com/cost-management/latest/userguide/ce-what-is.html",
+   "kind": "reference"
+  },
+  {
+   "n": 43,
+   "title": "Claude Code 문서 · Memory (CLAUDE.md)",
+   "url": "https://code.claude.com/docs/en/memory",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "메드콤은 인프라 구성(폐역망 연결 방식·계정 구조·멀티 테넌트 설계)을 공개한 기술 글이나 발표가 없어서, 회사 근거는 공고·같은 회사 다른 공고·채용 자료·제품 사이트까지입니다. 채용 피치 영상은 말 없이 슬라이드만 있어 장면을 모두 확인했습니다. 연결·분리 설계는 의료 가이드라인과 AWS 공식 문서로 \"보통 이런 것\"을 보였습니다. 회사 자료의 기술 표(2026년 7월)는 CloudFormation 만, 테크 리드 공고는 Terraform 과 CloudFormation 을 같이 적어 지금 어느 쪽이 주인지는 면접에서 확인합니다."
+}
