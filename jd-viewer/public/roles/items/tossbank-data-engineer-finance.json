@@ -1,0 +1,813 @@
+{
+ "id": "tossbank-data-engineer-finance",
+ "company": "토스뱅크",
+ "role": "데이터 엔지니어 (Finance)",
+ "team": "Data Division · Finance Data Platform 팀",
+ "jobs": [
+  "ats-toss:group:6092477003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "은행 재무팀이 매달 보는 숫자 두 가지 — **어디서 얼마를 벌었나(관리회계)**, **금리·예금이 흔들리면 이익과 자금이 어떻게 되나(ALM 시뮬레이션)** — 를 계산하는 마트와 배치를 만들고 운영합니다.[1]",
+  "env": "오라클 장비를 걷어낸 **Hadoop · Spark · Airflow** 바닥 위에서, 배치 하나를 켜는 데도 **책임자 승인**이 필요한 은행 규정 아래 일합니다.[2]",
+  "oneline": "이름은 데이터 엔지니어지만 일의 절반은 **재무 계산을 틀리지 않게 옮기는 것**. SQL · 배치 · 숫자 대조가 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "토스뱅크의 재무분석팀과 긴밀한 커뮤니케이션을 통해 재무분석 마트를 설계하고 관리회계 시스템을 개발하고 운영해요.",
+   "short": "은행 이익·비용을 상품·조직·고객·채널로 쪼개 \"누가 얼마를 벌었나\"를 매달 계산하는 시스템을 만든다.",
+   "why": "재무제표는 은행 전체 숫자만 보여 줍니다. 토스뱅크는 2025년 3분기 누적 순이익 814억원을 냈고, 이자 말고 다른 수익(비이자수익)과 운용수익을 키우는 쪽으로 수익 구조를 바꾸는 중이라고 보도됐습니다.[5] 어느 쪽이 실제로 남는지 보려면 이익·비용을 쪼갠 숫자가 있어야 합니다 {추론}. 관리회계(내부 의사결정용 회계)의 목적을 다른 은행 구축 요청서는 고객·상품·채널·조직별 손익으로 가격·마케팅 결정을 돕는 것이라고 적었습니다.[6]",
+   "actually": {
+    "intro": "토스뱅크의 계산 규칙은 공개되지 않아, 다른 은행 관리회계 요건으로 \"보통 이런 계산\"을 보입니다.[6]",
+    "items": [
+     "**수익 모으기** — 이자수익·이자비용·수수료를 상품·조직·고객·채널 축으로 모은다. 축마다 여러 단계 계층(본부 → 부서 → 상품군)이 있다.[6]",
+     "**비용 배부(나눠 싣기)** — 본점 공통비를 지원 부서로, 지원 부서 비용을 영업 조직·상품으로 단계별로 흘려 나눈다. 단계마다 기준(인원·계좌 수)이 다르다.[6]",
+     "**자금 원가(FTP, 내부 이전 가격)** — 예금으로 모은 돈과 대출로 나간 돈에 은행 안의 금리를 매겨 부서별 마진을 가른다.[6][19]",
+     "**예상 손실** — 떼일 확률 × 떼였을 때 손실률 × 떼일 금액으로 대출의 비용을 미리 잡는다.[6]",
+     "**보고서** — 위 숫자를 일·월·분기로, 계좌까지 내려 볼 수 있게.[6]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "단계 배부 — 마지막에 합계가 그대로여야 한다",
+     "body": "가상 값(만원). 본점 1,000을 인원 비율로, IT센터 600(원래 400 + 받은 200)을 계좌 수 비율로 나눴습니다. 직접 돌린 출력입니다. 배부는 돈을 옮길 뿐이라 **합계가 1,400 그대로인지**가 첫 검증입니다 {추론}.",
+     "lang": "python",
+     "code": "cost = {\"본점\": 1000, \"IT센터\": 400, \"A점\": 0, \"B점\": 0}\nrules = [(\"본점\", {\"IT센터\": 0.2, \"A점\": 0.5, \"B점\": 0.3}),\n         (\"IT센터\", {\"A점\": 0.6, \"B점\": 0.4})]\nfor src, ratio in rules:\n    amt = cost[src]; cost[src] = 0\n    for dst, r in ratio.items():\n        cost[dst] += amt * r\n    print(src, \"배부 후\", {k: round(v) for k, v in cost.items()})\nprint(\"합계 그대로?\", round(sum(cost.values())) == 1400)\n# 본점 배부 후 {'본점': 0, 'IT센터': 600, 'A점': 500, 'B점': 300}\n# IT센터 배부 후 {'본점': 0, 'IT센터': 0, 'A점': 860, 'B점': 540}\n# 합계 그대로? True"
+    }
+   ],
+   "how_far": "배부 기준과 내부 금리 규칙은 재무분석팀이 정합니다. 개발자는 그 규칙을 **표와 코드로 빠짐없이 옮기고, 매달 같은 입력에 같은 결과가 나오게** 운영합니다. 그래서 문장 앞에 \"긴밀한 커뮤니케이션\"이 붙어 있습니다.[1]",
+   "refs": [
+    1,
+    5,
+    6,
+    19
+   ],
+   "study": [
+    "rfp-woori",
+    "dermine-ftp"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "토스뱅크의 재무ALM팀과 긴밀한 커뮤니케이션을 통해 재무ALM 마트를 설계하고 재무 ALM 시뮬레이션 시스템을 개발하고 운영해요.",
+   "short": "맡아 둔 돈과 굴리는 돈의 금리·만기가 어긋나는 위험을 재고, \"금리가 이렇게 바뀌면?\"을 미리 돌려 보는 시스템을 만든다.",
+   "why": "ALM(자산·부채 종합관리)은 예금(부채)과 대출·채권(자산)의 금리·만기를 맞추는 일입니다. 토스뱅크는 2025년 3분기 수신 30조 4,000억원에 여신 15조 4,500억원으로, 맡아 둔 돈이 빌려준 돈의 두 배쯤입니다.[5] 남는 돈을 굴리는 운용수익이 이자수익의 약 32%라[5] 금리가 움직이면 굴리는 쪽 수익도 함께 흔들립니다 {추론}. CFO는 금리 하락기엔 예금이 줄어드는 경향이 있어 경험보다 데이터 예측이 필요하다고 했고, AI로 예금액을 예측하는 ALM을 운영 중이라고 밝혔습니다.[4] 규제로도 금리위험[8]과 30일 유동성(LCR)[13]을 재야 합니다.",
+   "actually": {
+    "intro": "국제 기준(바젤 IRRBB, 은행계정 금리위험)의 표준 방식입니다. 토스뱅크가 이대로 하는지는 공개되지 않았습니다.[8]",
+    "items": [
+     "**현금흐름 펼치기** — 계좌마다 언제 얼마가 들어오고 나가는지. 고정금리는 만기에, 변동금리는 다음 금리 재설정일에 다시 가격이 정해진다고 본다.[8]",
+     "**만기 칸에 담기** — 하루짜리부터 수십 년까지 정해진 구간에 현금흐름을 넣는다.[8]",
+     "**만기 없는 예금 나누기** — 입출금 통장처럼 만기가 없는 돈을 오래 머무는 몫과 곧 빠질 몫으로 가른다. CFO가 말한 예금 예측이 여기 들어간다 {추론}.[4][8]",
+     "**금리 충격 시나리오** — 평행 상승·하락, 단기만 오르기 등 여섯 가지 모양으로 금리를 흔든다.[8]",
+     "**결과 두 가지** — 1년 이자이익이 얼마나 변하나(ΔNII), 자산·부채의 현재 가치가 얼마나 변하나(ΔEVE).[8]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "갭으로 보는 +1%p 충격의 1년 이자이익 변화",
+     "body": "가상 값(억원). 1년 안에 금리가 다시 정해지는 자산에서 부채를 뺀 것이 **갭**입니다. 갭 × 충격 × 남은 기간으로 1년 이자이익 변화를 어림합니다(교과서식 단순 계산 {추론}). 3개월 안에 부채가 더 많이 재설정되면 금리가 오를 때 이익이 줄어듭니다. 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "from decimal import Decimal as D, ROUND_HALF_UP\nassets = [D(300), D(200), D(100)]\nliabs  = [D(500), D(150), D(50)]\nmid    = [D(\"0.125\"), D(\"0.375\"), D(\"0.75\")]  # 구간 가운데 시점(년)\ntotal = D(0)\nfor a, l, t in zip(assets, liabs, mid):\n    d = ((a - l) * D(\"0.01\") * (1 - t)).quantize(D(\"0.01\"), ROUND_HALF_UP)\n    total += d\n    print(a - l, d)\nprint(\"합계\", total)\n# -200 -1.75\n# 50 0.31\n# 50 0.13\n# 합계 -1.31"
+    }
+   ],
+   "how_far": "시나리오 크기와 예금 행동 가정은 재무ALM팀이 정합니다. 개발자는 **모든 계좌의 현금흐름을 빠짐없이 만들고, 가정을 바꿔 언제든 다시 돌릴 수 있게** 합니다. 계좌 수 × 기간 × 시나리오라 계산이 커서 Spark 위에서 돕니다 {추론}.",
+   "refs": [
+    4,
+    5,
+    8,
+    13
+   ],
+   "study": [
+    "coursera-alm",
+    "bis-irrbb",
+    "choudhry-alm"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Hadoop-Ecosystem과 오픈소스솔루션 기반으로 Workflow 개발 및 자동화 업무를 수행해요.",
+   "short": "위 계산들이 매일 밤·매월 말에 정해진 순서로 알아서 돌고, 실패하면 한 번에 다시 돌게 엮는다.",
+   "why": "토스뱅크는 분석 시스템(정보계)을 오라클 장비에서 Hadoop으로 옮겼습니다. 같은 용량이면 오라클이 **10배 넘게 비쌌고**, 데이터가 두 시스템을 오가는 낭비가 있었습니다. 작업 예약은 Airflow, 계산은 Spark로 바꿨고, 손대지 않은 상태에서 5시간 걸리던 작업이 1시간 안팎으로 줄었다고 했습니다.[2]",
+   "actually": {
+    "items": [
+     "**작업 순서 걸기** — \"월 작업은 그 달 일 작업이 다 끝난 뒤\". 기본 센서는 앞 작업의 실행 시각이 바뀔 때마다 뒤 작업을 다 고쳐야 해서, 시간 구간(일·시간) 안에 앞 작업이 끝났으면 통과하는 **자체 센서**를 만들었다.[2]",
+     "**스케줄러가 둘일 때** — 옛 스케줄러에 남은 작업과는 DB·파일에 \"끝났음\"을 남겨 서로 알아보게 했다.[2]",
+     "**다시 돌리기** — 예전엔 1번 끝나길 기다려 2번을 손으로 돌렸다. Airflow에선 재실행용 DAG(작업 묶음) 하나로 한 번에, 동시 실행 수 설정으로 빠르게.[2]",
+     "**Java·Kotlin 프로그램도** — 도커 이미지로 만들어 쿠버네티스에서 Airflow가 실행한다.[2]",
+     "**배치 켜기 승인** — 전자금융감독규정상 배치는 책임자 승인이 있어야 돌 수 있어, 승인 기록을 남기고 DAG 스케줄을 켜 주는 사내 서비스를 따로 만들었다. 코드 변경도 제3자 검토 → 책임자 승인 뒤에만 배포된다.[2]",
+     "**지원서** — \"반복 문제를 자동화했거나 다르게 푼 사례 하나\"를 꼭 쓰게 한다.[1]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "월 작업이 출발해도 되나 — 그 달 일 작업이 다 끝났나",
+     "body": "자체 센서가 하는 판단을 가상 실행 기록으로 흉내 낸 것입니다(Airflow 코드 아님). 10월 17일 일 작업이 빠져서 월 작업은 기다립니다. 직접 돌린 출력입니다.",
+     "lang": "python",
+     "code": "from datetime import date, timedelta\nmonth = [date(2026, 10, 1) + timedelta(days=i) for i in range(31)]\ndone = set(month) - {date(2026, 10, 17)}\nmissing = [d.isoformat() for d in month if d not in done]\nprint(\"월 작업 시작?\", not missing, \"빠진 날\", missing)\n# 월 작업 시작? False 빠진 날 ['2026-10-17']"
+    }
+   ],
+   "how_far": "Airflow·Hadoop 클러스터 자체는 Data Platform 팀이 운영합니다.[3] 이 자리는 그 위에서 **재무 계산 작업을 DAG로 엮고, 순서·재실행·백필(지난 기간 다시 채우기)을 손 안 가게** 만드는 쪽입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    3
+   ],
+   "study": [
+    "slash23",
+    "airflow-book",
+    "airflow-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "금융권에서 관리회계 or ALM 시스템 관리 업무 경험이 있는 분이 필요해요.",
+   "short": "재무팀과 같은 말(배부·FTP·갭·시나리오)을 써야 계산 규칙을 그대로 코드로 옮길 수 있어서.",
+   "why": "배부 기준·내부 금리·현금흐름·예금 행동 가정은 그 자체가 책 한 권 분량입니다.[6][8] 같은 팀의 다른 공고에서도 팀원이 이전 회사에서 은행 분석 마트와 ALM 산출 시스템을 다뤘다고 소개했습니다.[12]",
+   "how_far": "\"시스템 관리 업무\"라서 재무 전문가가 아니라 **그 시스템을 만들거나 운영해 본 개발자**를 찾는 문장입니다 {추론}. 경험이 없다면 업무①②의 계산을 작은 숫자로 따라 하고 \"왜 그렇게 계산하나\"를 설명할 수 있는 정도가 최소선입니다 {추론}.",
+   "refs": [
+    6,
+    8,
+    12
+   ],
+   "study": [
+    "coursera-alm",
+    "rfp-woori"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Java or python 의 언어로 주어진 비즈니스 로직을 구현할 수 있는 분이 필요해요.",
+   "short": "재무팀이 정한 규칙(금리 보간·현금흐름·배부·시나리오)을 SQL로 안 되는 부분까지 코드로 옮긴다.",
+   "why": "\"주어진\"은 재무팀이 정한 규칙이라는 뜻입니다. 토스뱅크는 Spark를 고른 이유로 SQL만이 아니라 Java·Scala·Python으로 로직을 짜고, 앞 쿼리 결과를 담아 다음 계산에 쓸 수 있다는 점을 들었습니다(Impala로는 어려웠다).[2]",
+   "actually": {
+    "items": [
+     "**금리 커브 보간** — 3개월·1년 금리만 있는데 182일짜리 거래의 내부 금리가 필요하면 두 점 사이를 이어 계산한다.[7]",
+     "**상환 방식대로 현금흐름 펼치기** — 원리금 균등·만기 일시 상환을 월별 현금흐름으로.[8]",
+     "**배부 엔진** — 단계별 규칙을 차례로 적용하고 합계를 지킨다.[6]",
+     "**돈은 십진수로** — float 대신 Decimal, 반올림 규칙을 재무팀과 맞춘다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "금리 커브 보간 (Oracle FTP 문서의 예)",
+     "body": "3개월(91.26일) 4.00%, 1년(365일) 5.00%일 때 182일 거래의 내부 금리는 4.00 + (182 − 91.26) × (5.00 − 4.00) / (365 − 91.26) ≈ **4.33%**.[7]"
+    }
+   ],
+   "how_far": "어려운 알고리즘보다 **규칙을 빠짐없이, 같은 입력에 같은 결과로** 옮기는 능력입니다. 월말·윤년·영업일, 반올림, 커브 밖 만기 같은 경계값을 꼼꼼히 다룹니다.[7]",
+   "refs": [
+    2,
+    6,
+    7,
+    8
+   ],
+   "study": [
+    "oracle-ftp",
+    "py-decimal",
+    "dermine-ftp"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "SQL의 언어를 자유롭게 다룰 수 있는 분이 필요해요.",
+   "short": "마트 만들기·계산·대조가 거의 SQL이라서. \"자유롭게\"는 집합으로 생각하고 두 엔진의 차이까지 아는 수준.",
+   "why": "토스뱅크는 오라클에 있던 100개 넘는 배치 프로그램을 Spark로 옮겨 검증했고(한 명이 한 달 안에), 매일 600개 넘는 표를 대조했습니다.[2] 은행은 한국은행·금감원에 보고할 의무가 있어 **옛 시스템과 같은 값**이 나오는지가 가장 중요했다고 했습니다.[2]",
+   "level": {
+    "basic": "JOIN · GROUP BY · 서브쿼리 · CASE · NULL 처리",
+    "work": "윈도우 함수(순번·이전 값·누적합) · ROLLUP/CUBE · MERGE · 날짜 함수 · 소수점",
+    "team": "집합으로 생각하기 · 오라클 ↔ Spark SQL 차이 · 실행계획 · 대조 쿼리"
+   },
+   "actually": {
+    "items": [
+     "**집합 쿼리 원칙** — 토스뱅크 코어뱅킹 팀은 배치에서 반복문으로 DB를 여러 번 부르지 않고 집합 쿼리 한 번으로 처리하는 것을 원칙으로 했다.[9]",
+     "**엔진 차이** — Impala는 숫자 자동 변환이 안 돼 쿼리마다 CAST를 넣어야 했고 낮은 버전엔 ROLLUP/CUBE가 없었다. Spark는 소수점 17자리까지 오라클과 같았다. 다만 MERGE는 Hudi·Iceberg 같은 표 형식이 따로 필요했다.[2]",
+     "**바뀐 줄만 가져오기** — 고쳐지는 표엔 수정 시각 칸을 꼭 두어 바뀐 행만 가져가게 하라는 것이 발표의 조언이다.[2]",
+     "**이력 다루기** — 같은 그룹 토스증권 DW 팀은 날짜순 순번·이전일·다음일을 붙인 표로 신규·이탈을 한 줄 조건으로 뽑는다.[10]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "두 시스템 결과가 같은지",
+     "body": "발표의 Spark 방식(합친 뒤 중복 제거 → 행 수가 각각의 행 수와 같으면 같다)[2]을 SQL로 옮긴 것입니다.",
+     "lang": "sql",
+     "code": "SELECT COUNT(*) FROM (\n  SELECT * FROM mart_new\n  UNION\n  SELECT * FROM mart_origin\n) t;\n-- mart_new, mart_origin 각각의 COUNT(*) 와 같으면 같은 데이터"
+    },
+    {
+     "title": "마지막으로 가져간 시각 뒤에 고쳐진 행만",
+     "body": "가상 표, SQLite로 직접 돌린 출력입니다. 11월 22일 0시 뒤에 바뀐 2·3번 계좌만 나옵니다.",
+     "lang": "sql",
+     "code": "-- account: (1,100,'2026-11-21 23:10'), (2,250,'2026-11-22 09:00'), (3,80,'2026-11-22 18:30')\nSELECT id, balance FROM account\nWHERE updated_at > '2026-11-22 00:00'\nORDER BY id;\n-- (2, 250)\n-- (3, 80)"
+    }
+   ],
+   "refs": [
+    2,
+    9,
+    10
+   ],
+   "study": [
+    "sql-levelup",
+    "sql-tuning"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "재무분석 or ALM에 필요한 마트 설계 / 배치 스케줄링을 구축하고 운영하신 분이 필요해요.",
+   "short": "계산에 쓸 표를 층층이 설계하고, 매일·매월 순서대로 돌며 숫자가 맞는지 지키는 일.",
+   "why": "토스뱅크 정보계의 마트는 원천 복사 → 공통 → 리스크 → 보고서 층으로 쌓이고, 앞 층이 끝나야 다음 층이 돕니다. 옮길 때도 이 층 순서대로 하나씩 옮겼습니다.[2] 데이터 디비전은 공통 마트를 Silver·Gold 층으로 나눠 표준화·중복 정리·폐기까지 관리하는 사람을 따로 뽑고 있습니다.[11]",
+   "flows": [
+    {
+     "caption": "토스뱅크가 마트를 옮긴 순서[2]",
+     "steps": [
+      "원천 복사 · 그대로 스냅샷, 따로 검증 안 함",
+      "공통 마트 · 새로 만들고 1~2주 대조",
+      "리스크 마트 · 같은 방법",
+      "보고서 마트 · 끝나면 오라클을 비운다"
+     ]
+    },
+    {
+     "caption": "재무·ALM 마트를 얹으면 {추론}[8]",
+     "steps": [
+      "계좌 기준 표 · 날짜별 잔액·금리·만기",
+      "현금흐름 표 · 계좌 × 날짜",
+      "만기 칸 집계 · 칸 × 자산/부채",
+      "시나리오 결과 · ΔNII·ΔEVE"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "actually": {
+    "items": [
+     "**합칠까 나눌까** — 공통 항목이 많으면 한 표로, 다르면 나눈다.[9]",
+     "**스냅샷 vs 이력** — \"그날의 잔액\" 표와 \"바뀔 때마다 쌓는\" 이력 표를 구분한다.[9]",
+     "**이름 규칙** — 토스증권 DW 팀은 표 이름을 종류(사실·기준·묶음) + 주제 + 집계 기준 + 기간으로 맞춘다.[10]",
+     "**되돌릴 길 남기기** — 새 마트가 틀리면 바로 옛 결과를 보도록, 확인이 끝날 때까지 옛 배치를 지우지 않았다.[2]",
+     "**백필** — 몇 달 치를 30일씩 잘라 다시 채우고, 망가진 표만 골라 돌린다.[10]"
+    ]
+   },
+   "refs": [
+    2,
+    8,
+    9,
+    10,
+    11
+   ],
+   "study": [
+    "kimball",
+    "slash21",
+    "slash24dw",
+    "airflow-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Frontend / Backend 기술을 활용해 관리회계 or ALM 시스템 개발이 가능하신 분이면 더 좋아요.",
+   "short": "재무팀이 쓰는 화면(기준 편집·시나리오 실행·보고서)까지 한 사람이 끝낼 수 있으면 좋아서.",
+   "why": "관리회계·ALM에는 표만 있는 게 아니라 조직 계층·배부 기준을 고치는 관리 화면, 시나리오를 넣고 돌리는 화면, 축별로 내려 보는 보고서가 있습니다. 다른 은행 구축 요건에도 관리 화면과 조회 화면이 들어갑니다.[6]",
+   "how_far": "\"더 좋아요\" 줄이라 없어도 지원할 수 있습니다.[1] 있으면 재무팀 요청을 화면까지 한 번에 닫을 수 있다는 정도입니다 {추론}.",
+   "refs": [
+    1,
+    6
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Hadoop-Ecosystem 환경의 데이터처리 기술 활용 경험이 있으면 더 좋아요.",
+   "short": "일하는 바닥이 Hadoop이라서. 클러스터를 짓는 게 아니라 그 위에서 Spark를 잘 쓰는 수준.",
+   "why": "저장은 HDFS·Kudu, 계산은 Spark·Impala, 예약은 Airflow, 권한은 Ranger입니다.[2][3] Ranger로 사용자별·칸별 가리기(마스킹)를 걸 수 있어 개인정보 칸은 보이지 않는 상태로 일합니다.[2] 다음 단계로 Hudi·Iceberg 같은 표 형식 도입을 준비 중이라고 했습니다.[2]",
+   "how_far": "클러스터 구축은 Data Platform 팀 몫입니다.[3] 이 자리는 **그 위에서 큰 계산을 돌리고, 느리면 원인을 찾아 고칠 줄 아는** 수준이면 됩니다 {추론}.",
+   "refs": [
+    2,
+    3
+   ],
+   "study": [
+    "spark-guide",
+    "spark-docs"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "숫자 1원이 어긋나는 걸 못 참는 사람",
+   "은행이 어디서 돈을 버는지 궁금한 사람",
+   "반복 작업을 자동화한 경험을 말할 수 있는 사람 — 지원서 필수 항목이다[1]",
+   "여러 부서의 요구를 듣고 데이터로 풀어 보는 걸 즐기는 사람 — 팀원이 꼽은 장점[1]"
+  ],
+  "hard": [
+   "배포·배치 실행마다 검토·승인 절차가 있어 속도감은 덜하다[2]",
+   "자격요건 첫 줄이 금융권 관리회계·ALM 경험 — 없으면 불리하다[1]",
+   "화면보다 표·SQL·배치가 일의 중심이다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "새로 만든 마트가 옛 시스템과 같은 숫자를 내는지 어떻게 확인하겠어요? 다르면요?",
+   "a": "이 회사가 매일 600개 표를 대조하고 옛 배치를 남겨 둔 방식.[2]"
+  },
+  {
+   "q": "월 작업이 그 달 일 작업이 다 끝난 뒤에만 돌게 하려면? 앞 작업 시각이 바뀌면요?",
+   "a": "자체 센서를 만든 이유.[2]"
+  },
+  {
+   "q": "배부를 마친 뒤 가장 먼저 무엇을 검증하나요?",
+   "a": "배부는 돈을 옮길 뿐이라 합계가 그대로여야 한다 {추론}.[6]"
+  },
+  {
+   "q": "만기 없는 입출금 예금의 금리위험은 어떻게 재나요?",
+   "a": "오래 머무는 몫과 곧 빠질 몫 나누기 — CFO가 말한 예금 예측과 이어진다.[4][8]"
+  },
+  {
+   "q": "오라클 SQL을 Spark로 옮길 때 무엇이 깨지나요?",
+   "a": "형 변환·함수·MERGE 차이.[2]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 데이터 엔지니어 (Finance) (Data Engineer)",
+   "url": "https://toss.im/career/job-detail?gh_jid=6092477003",
+   "kind": "posting",
+   "date": "2026-11 확인",
+   "note": "팀 소개·업무·요건·지원서 요구·팀원 코멘트"
+  },
+  {
+   "n": 2,
+   "title": "SLASH 23 · 은행 데이터플랫폼 오픈소스로 전환하기",
+   "url": "https://www.youtube.com/watch?v=RjsG-zKMuX8",
+   "kind": "company",
+   "date": "2023-06",
+   "note": "토스뱅크 Data Platform 팀 · 이번 회차에 자막 전부 다시 읽음"
+  },
+  {
+   "n": 3,
+   "title": "SLASH 24 · 오픈소스로 Hadoop 클러스터 구축하기",
+   "url": "https://www.youtube.com/watch?v=4BcSVF4bLtU",
+   "kind": "company",
+   "date": "2024-10",
+   "note": "토스뱅크 Data Platform 팀"
+  },
+  {
+   "n": 4,
+   "title": "딜사이트 · 토스뱅크 ALM 고도화(CFO 인터뷰)",
+   "url": "https://dealsite.co.kr/articles/151674",
+   "kind": "news",
+   "date": "2025-11"
+  },
+  {
+   "n": 5,
+   "title": "딜사이트 · '실적 축포' 토스뱅크, 플랫폼 수익 강화로 체질 전환 가속",
+   "url": "https://dealsite.co.kr/articles/152501",
+   "kind": "news",
+   "date": "2025-12-03",
+   "note": "2025년 3분기 누적 순이익·수신·여신·NIM·운용수익"
+  },
+  {
+   "n": 6,
+   "title": "베트남우리은행 관리회계시스템 구축 제안요청서",
+   "url": "https://woori.com.vn/wp-content/uploads/2025/07/베트남우리은행-관리회계시스템-구축-사업-제안요청서Implementation-1.pdf",
+   "kind": "reference",
+   "date": "2025",
+   "note": "다른 은행 — 관리회계 시스템이 계산해야 하는 것"
+  },
+  {
+   "n": 7,
+   "title": "Oracle FTP 문서 · 금리 커브 조회와 보간",
+   "url": "https://docs.oracle.com/en/industries/financial-services/ofs-analytical-applications/funds-transfer-pricing/81250/ftpug/interest-rate-codes-rate-lookups.html",
+   "kind": "reference"
+  },
+  {
+   "n": 8,
+   "title": "바젤위원회 · 은행계정 금리위험(IRRBB) 기준",
+   "url": "https://www.bis.org/bcbs/publ/d368.htm",
+   "kind": "reference",
+   "date": "2016"
+  },
+  {
+   "n": 9,
+   "title": "SLASH 21 · 토스뱅크 데이터 설계사상",
+   "url": "https://www.youtube.com/watch?v=KoLObZ9A3Kc",
+   "kind": "company",
+   "date": "2021-04",
+   "note": "토스뱅크 코어뱅킹 팀"
+  },
+  {
+   "n": 10,
+   "title": "SLASH 24 · 전천후 데이터 분석을 위한 DW 설계 및 운영하기",
+   "url": "https://www.youtube.com/watch?v=MWDVBZycou4",
+   "kind": "company",
+   "date": "2024-10",
+   "note": "토스증권 DW 팀 — 같은 그룹 다른 회사"
+  },
+  {
+   "n": 11,
+   "title": "토스 채용 · 데이터 매니저 (Mart) — 토스뱅크 Data Division",
+   "url": "https://toss.im/career/job-detail?gh_jid=7566080003",
+   "kind": "posting",
+   "note": "공통 마트 Silver·Gold 층 설계·표준화·생애주기"
+  },
+  {
+   "n": 12,
+   "title": "토스 채용 · 재무 데이터 시스템 개발자 — 같은 팀 다른 공고",
+   "url": "https://toss.im/career/job-detail?job_id=6434513003",
+   "kind": "posting",
+   "note": "팀원 코멘트(이전 경력)"
+  },
+  {
+   "n": 13,
+   "title": "CEO스코어데일리 · 인터넷은행 LCR",
+   "url": "https://www.ceoscoredaily.com/page/view/2025010916254732840",
+   "kind": "news",
+   "date": "2025-01"
+  },
+  {
+   "n": 14,
+   "title": "뉴시스 — 인터넷은행 평균 급여(각사 사업보고서)",
+   "url": "https://www.newsis.com/view/NISX20250812_0003287731",
+   "kind": "news",
+   "date": "2025-08-13"
+  },
+  {
+   "n": 15,
+   "title": "SBS Biz — 인뱅 3사도 연봉 1억원대로(은행연합회 2025 지배구조 및 보수체계 연차보고서)",
+   "url": "https://biz.sbs.co.kr/amp/article/20000297249",
+   "kind": "news",
+   "date": "2026-03-13"
+  },
+  {
+   "n": 16,
+   "title": "자소설닷컴 — 토스뱅크 연봉(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 17,
+   "title": "토스뱅크 — 회사 정보(사이트 하단 주소)",
+   "url": "https://tossbank.com/esg",
+   "kind": "company"
+  },
+  {
+   "n": 18,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 19,
+   "title": "Wikipedia · Funds transfer pricing",
+   "url": "https://en.wikipedia.org/wiki/Funds_transfer_pricing",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "회사 발표는 2021~2024년 것이라 지금 구조는 달라졌을 수 있습니다. 토스뱅크 관리회계의 배부 기준·내부 금리 규칙, ALM 시뮬레이션의 내부 구조와 예금 예측 모델은 공개 자료가 없어 다른 은행 요건과 국제 기준으로 \"보통 이런 계산\"을 보였습니다. 같은 팀의 '재무 데이터 시스템 개발자' 공고 풀이와 근거 상당수를 같이 씁니다.",
+ "resources": [
+  {
+   "id": "slash23",
+   "title": "SLASH 23 · 은행 데이터플랫폼 오픈소스로 전환하기",
+   "by": "토스뱅크 Data Platform · 21분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=RjsG-zKMuX8",
+   "why": "업무③·요건③④의 바닥 — 왜 Hadoop·Spark·Airflow인지, 마트를 어떤 순서로 옮기고 어떻게 대조했는지. 지원 전에 꼭 볼 영상."
+  },
+  {
+   "id": "slash21",
+   "title": "SLASH 21 · 토스뱅크 데이터 설계사상",
+   "by": "토스뱅크 코어뱅킹 팀 · 17분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=KoLObZ9A3Kc",
+   "why": "요건④ 마트 설계 — 표를 합칠까 나눌까, 스냅샷·이력 구분, 집합 쿼리 원칙."
+  },
+  {
+   "id": "slash24dw",
+   "title": "SLASH 24 · 전천후 데이터 분석을 위한 DW 설계 및 운영하기",
+   "by": "토스증권 DW 팀 · 25분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=MWDVBZycou4",
+   "why": "요건④ — 이름 규칙·이력 표·백필 DAG를 실제 표로 보여 준다."
+  },
+  {
+   "id": "coursera-alm",
+   "title": "Asset Liability Management for Banking Risk",
+   "by": "EDUCBA · Coursera",
+   "kind": "course",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.coursera.org/learn/asset-liability-management-banking-risk",
+   "why": "업무②·요건① — 유동성 갭·듀레이션으로 금리위험을 재는 법을 처음 잡는다."
+  },
+  {
+   "id": "rfp-woori",
+   "title": "베트남우리은행 관리회계시스템 구축 제안요청서",
+   "by": "우리은행 베트남법인 · 2025",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://woori.com.vn/wp-content/uploads/2025/07/베트남우리은행-관리회계시스템-구축-사업-제안요청서Implementation-1.pdf",
+   "why": "업무① — 관리회계 시스템이 계산해야 하는 것(수익 배분·원가 배부·FTP·예상손실)이 요건으로 한눈에."
+  },
+  {
+   "id": "bis-irrbb",
+   "title": "은행계정 금리위험(IRRBB) 기준",
+   "by": "바젤은행감독위원회 · 2016",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.bis.org/bcbs/publ/d368.htm",
+   "why": "업무② 시뮬레이션의 원문 — 만기 칸·금리 충격 여섯 가지·ΔEVE·만기 없는 예금."
+  },
+  {
+   "id": "choudhry-alm",
+   "title": "Bank Asset and Liability Management",
+   "by": "Moorad Choudhry · Wiley · 2007",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://gov.wiley.com/WileyCDA/WileyTitle/productCd-0470821353,descCd-authorInfo.html",
+   "why": "업무② — 은행 ALM 교과서. 갭·유동성·조달 위험 장만 골라 읽는다."
+  },
+  {
+   "id": "dermine-ftp",
+   "title": "Bank Valuation and Value Based Management (2판)",
+   "by": "Jean Dermine · McGraw-Hill",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.mheducation.com/highered/mhp/product/bank-valuation-value-based-management-deposit-loan-pricing-performance-evaluation-risk-2nd-edition.html",
+   "why": "업무①·요건② — FTP 장에서 내부 금리와 부서 성과 평가를 왜 그렇게 하는지."
+  },
+  {
+   "id": "oracle-ftp",
+   "title": "Oracle FTP 문서 · 금리 커브 조회와 보간",
+   "by": "Oracle",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.oracle.com/en/industries/financial-services/ofs-analytical-applications/funds-transfer-pricing/81250/ftpug/interest-rate-codes-rate-lookups.html",
+   "why": "요건② — 기간 환산·보간·끝점 규칙이 숫자 예와 함께 있어 그대로 코드로 옮겨 보기 좋다."
+  },
+  {
+   "id": "py-decimal",
+   "title": "decimal — 십진 고정소수점 및 부동소수점 산술",
+   "by": "Python 공식 문서(한국어)",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.python.org/ko/3/library/decimal.html",
+   "why": "요건② — 돈 계산을 float로 하지 않는 이유와 반올림 규칙."
+  },
+  {
+   "id": "sql-levelup",
+   "title": "SQL 레벨업",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=SQL%20%EB%A0%88%EB%B2%A8%EC%97%85",
+   "why": "요건③ — 반복문 대신 집합으로, CASE·윈도우 함수로 한 번에 처리하는 연습."
+  },
+  {
+   "id": "sql-tuning",
+   "title": "친절한 SQL 튜닝",
+   "by": "조시형",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%B9%9C%EC%A0%88%ED%95%9C%20SQL%20%ED%8A%9C%EB%8B%9D",
+   "why": "요건③ — 실행계획을 읽는 눈. 예시가 오라클 기준이라 옛 정보계 SQL을 읽을 때도 쓸모 있다."
+  },
+  {
+   "id": "kimball",
+   "title": "The Data Warehouse Toolkit (3판)",
+   "by": "Ralph Kimball · Margy Ross · Wiley · 2013",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/books/",
+   "why": "요건④ — 사실 표·기준 표로 나누는 차원 모델링. 금융(계좌 스냅샷) 사례 장을 먼저."
+  },
+  {
+   "id": "spark-guide",
+   "title": "스파크 완벽 가이드",
+   "by": "빌 체임버스 · 마테이 자하리아 · 한빛미디어 · 2019",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%8A%A4%ED%8C%8C%ED%81%AC%20%EC%99%84%EB%B2%BD%20%EA%B0%80%EC%9D%B4%EB%93%9C",
+   "why": "우대(Hadoop) — DataFrame·Spark SQL·조인·집계 파트만 먼저. 스파크 2 기준이라 공식 문서로 보충."
+  },
+  {
+   "id": "spark-docs",
+   "title": "Spark SQL, DataFrames and Datasets Guide",
+   "by": "Apache Spark 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://spark.apache.org/docs/latest/sql-programming-guide.html",
+   "why": "우대(Hadoop) — 최신 Spark SQL 문법과 파티션·셔플 조정."
+  },
+  {
+   "id": "airflow-book",
+   "title": "Apache Airflow 기반의 데이터 파이프라인",
+   "by": "바스 하렌슬락 · 율리안 더라위터르 · 제이펍 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000002993441",
+   "why": "업무③·요건④ — DAG·의존성·센서·백필·테스트. 1판 번역이라 최신 변경은 공식 문서로."
+  },
+  {
+   "id": "airflow-docs",
+   "title": "Airflow Core Concepts",
+   "by": "Apache Airflow 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/index.html",
+   "why": "업무③ — DAG·태스크·센서·재실행의 정확한 정의. 자체 센서가 왜 필요했는지 이해하는 바탕."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사 바닥과 도메인 감 잡기",
+   "time": "1~2주",
+   "goal": "관리회계와 ALM이 무엇을 왜 계산하는지, 토스뱅크 정보계가 어떻게 생겼는지 말로 설명할 수 있다.",
+   "resources": [
+    "slash23",
+    "rfp-woori",
+    "coursera-alm"
+   ],
+   "task": "업무①②의 \"실제로는\" 계산 열 가지를 각각 한 문장 + 작은 숫자 예로 노트에 다시 쓴다. SLASH 23의 마트 이관 순서를 그림 한 장으로 그린다."
+  },
+  {
+   "title": "SQL을 집합으로",
+   "time": "2~4주",
+   "goal": "반복문 없이 월말 마트를 만들고, 두 결과가 같은지 대조 쿼리로 증명한다.",
+   "resources": [
+    "sql-levelup",
+    "sql-tuning"
+   ],
+   "task": "가상 계좌 1,000개·거래 10만 건으로 월말 잔액 스냅샷을 윈도우 함수로 만들고, 상품×조직 ROLLUP 보고서와 UNION 대조 쿼리를 붙인다."
+  },
+  {
+   "title": "재무 마트 설계",
+   "time": "1~2주",
+   "goal": "배부용 표와 ALM용 표(계좌 기준 → 현금흐름 → 만기 칸 → 시나리오)를 어떤 단위·주기로 나눌지 정할 수 있다.",
+   "resources": [
+    "kimball",
+    "slash21",
+    "slash24dw"
+   ],
+   "task": "표 6개(조직 계층·배부 기준·배부 결과·계좌 기준·현금흐름·만기 칸 집계)를 설계하고 표마다 키·주기·스냅샷/이력을 적는다."
+  },
+  {
+   "title": "계산을 코드로",
+   "time": "2~3주",
+   "goal": "단계 배부와 갭·ΔNII 계산을 Decimal로 짜고, 경계값 테스트를 붙인다.",
+   "resources": [
+    "py-decimal",
+    "oracle-ftp",
+    "dermine-ftp",
+    "bis-irrbb"
+   ],
+   "task": "위 풀이의 배부·갭 예시를 함수로 바꾸고, 합계 보존·커브 밖 만기·월말/윤년 테스트를 10개 이상 쓴다."
+  },
+  {
+   "title": "Spark와 Airflow로 돌리기",
+   "time": "2~4주",
+   "goal": "일 배치 → 월 배치가 순서대로 돌고, 실패하면 한 번에 다시 돌고, 결과를 대조하는 파이프라인을 만든다.",
+   "resources": [
+    "spark-guide",
+    "spark-docs",
+    "airflow-book",
+    "airflow-docs"
+   ],
+   "task": "3·4단계를 PySpark 작업으로 옮겨 Airflow DAG로 엮는다(그 달 일 작업이 다 끝나야 출발하는 센서, 재실행 DAG, 30일씩 잘라 백필, 수정 시각 기준 증분 적재)."
+  }
+ ],
+ "pay": {
+  "summary": "신입 초봉은 **약 5,100만원**(집계값), 직원 평균은 **약 1억 1,600만원**(공시) — 평균은 경력직이 대부분이라 초봉과 다르다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없어 개발자 계약 연봉과 다를 수 있다 [16]"
+   },
+   {
+    "label": "직원 평균 보수",
+    "value": "1억 1,600만원",
+    "amount": 11600,
+    "basis": "공시 · 2025년",
+    "note": "은행연합회 지배구조·보수체계 연차보고서, 임원을 뺀 직원 기준 [15]"
+   },
+   {
+    "label": "임직원 평균 급여",
+    "value": "1억 1,700만원",
+    "amount": 11700,
+    "basis": "사업보고서 · 2024년",
+    "note": "임직원 684명 기준 [14]"
+   },
+   {
+    "label": "카카오뱅크 평균",
+    "value": "1억 2,200만원",
+    "amount": 12200,
+    "basis": "공시 · 2025년",
+    "peer": true,
+    "note": "같은 공시의 평균 보수 [15]"
+   },
+   {
+    "label": "케이뱅크 평균",
+    "value": "1억 200만원",
+    "amount": 10200,
+    "basis": "공시 · 2025년",
+    "peer": true,
+    "note": "같은 공시의 임직원 평균 보수(임원 포함) [15]"
+   }
+  ],
+  "how": "공고에 연봉이 없다. 합류 여정에 레퍼런스 체크 뒤 **처우 협의** 단계가 따로 있어 사람마다 정한다 [1]. 평균 보수는 경력직이 많은 회사 전체 값이라 신입이 받는 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   }
+  ],
+  "note": "토스 팀 전체를 기준으로 한 2021년 공식 소개 글이다 [18]. 이 공고 본문에는 복리후생 칸이 없어 [1], 토스뱅크에 그대로 적용되는지·지금도 같은지는 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스뱅크 본사",
+  "address": "서울특별시 강남구 테헤란로 131, 13층 (역삼동, 한국지식재산센터)",
+  "postal": "06133",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20131",
+  "near": "2호선 역삼역과 강남역 사이 테헤란로 {추론}",
+  "note": "공고 근무지 표기는 'Seoul'뿐이고, 주소는 토스뱅크 사이트 하단 회사 정보다 [17]. 팀 자리가 본사와 다를 수 있다 {추론}."
+ }
+}
