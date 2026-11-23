@@ -10,6 +10,7 @@
   "ats-toss:group:8035179003": "toss-ml-engineer-ocr",
   "ats-toss:group:7901191003": "toss-platform-analytics-engineer",
   "ats-toss:group:5960616003": "toss-product-analytics-engineer",
+  "ats-toss:group:7992229003": "toss-search-conversion-ranking-mle",
   "saramin-55608860": "tossbank-finance-data-system"
  },
  "roles": [
@@ -102,6 +103,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 23
+  },
+  {
+   "id": "toss-search-conversion-ranking-mle",
+   "company": "토스",
+   "role": "ML 엔지니어 (Search Conversion/Ranking)",
+   "jobs": [
+    "ats-toss:group:7992229003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 18
   },
   {
    "id": "tossbank-finance-data-system",

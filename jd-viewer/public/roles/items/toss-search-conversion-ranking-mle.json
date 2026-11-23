@@ -1,0 +1,1153 @@
+{
+ "id": "toss-search-conversion-ranking-mle",
+ "company": "토스",
+ "role": "ML 엔지니어 (Search Conversion/Ranking)",
+ "team": "토스 커머스 · Commerce Search Relevance Silo",
+ "jobs": [
+  "ats-toss:group:7992229003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "토스 쇼핑 검색에서 검색어·유저·상품을 보고 **'이 사람이 이 상품을 누르고 살까'를 예측해 최종 노출 순서를 만드는 랭킹 모델**을 맡습니다. 가벼운 랭커로 후보를 줄이고 무거운 랭커로 정밀하게 줄 세우는 2단 구조, 여러 행동(클릭·구매·장바구니·좋아요)을 함께 배우는 모델, 리스트 단위 학습이 이 자리의 숙제입니다.[1]",
+  "env": "같은 Silo의 Relevance 엔지니어가 '이 상품이 이 질의에 맞나'를 판단하는 모델을 만들고, 이 자리는 그 위에서 '무엇을 먼저 보여 줄까'를 정합니다.[1][3] 토스 커머스 추천 쪽은 Hadoop·Spark·Airflow로 학습하고, MLflow·사내 피처 스토어·ONNX Runtime으로 실시간 추론을 한다고 발표했습니다(2024).[2]",
+  "oneline": "검색 결과 **순서**를 책임지는 사람 — pCTR·pCVR을 넘어 여러 행동을 한 점수로 묶고, 오프라인 지표를 A/B 실험의 실제 전환으로 이어 증명하는 랭킹 ML 엔지니어."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "대규모 후보군을 빠르게 좁히는 Light 랭커와 정밀도를 끌어올리는 Heavy 랭커로 이어지는 2-tier 랭킹 구조 전반을 설계하고 고도화해요.",
+   "short": "수만 개 후보를 싼 모델로 수백 개로 줄이고, 비싼 모델로 그 수백 개만 정밀하게 줄 세우는 2단 구조를 맡는 일.",
+   "why": "검색 응답은 빨라야 하고 자원은 한정돼 있습니다. 토스 커머스 발표는 천만 명 넘는 고객을 받으면서 2초도 기다리지 않는 사용자에게 빠르게 답해야 하고, 자원이 한정돼 있다는 것을 서빙의 세 가지 조건으로 꼽았습니다.[2] 같은 발표의 추천 쪽도 상품 수가 빨리 늘자 앞에 필터 층을 두고 뒤에서 랭킹을 매기는 두 층 구조로 바꿨습니다.[2]",
+   "actually": {
+    "items": [
+     "**Light 랭커** — 후보마다 계산이 아주 싼 모델(작은 트리 모델, 투타워 임베딩 내적 같은 것)로 점수를 매겨 상위 몇백 개만 남긴다.[6] {추론}",
+     "**Heavy 랭커** — 남은 후보에 검색어·유저·상품의 교차 피처를 다 넣은 딥러닝 모델로 정밀 점수를 낸다.[1][6]",
+     "**두 단의 맞물림** — Light에서 떨어진 상품은 Heavy가 아무리 좋아도 못 살린다. 그래서 Light는 '정밀도'보다 'Heavy가 뽑을 상품을 놓치지 않는가(재현율)'로 잰다. {추론}",
+     "**같은 생각의 공개 사례** — YouTube 추천은 후보 생성망과 랭킹망 두 단으로 수백만 개를 수백 개로 줄였다.[6]",
+     "**토스 쪽 흔적** — 토스 커머스의 유저 임베딩 투타워 모델은 2단 랭킹에서 앞쪽 후보 생성기 역할도 한다고 발표에서 짧게 언급됐다.[2]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "왜 두 단인가 — 후보 2만 개의 계산 시간 (직접 돌린 출력, 후보당 시간은 가정값)",
+     "body": "Heavy 모델 하나로 2만 개를 다 보면 4초, Light로 500개만 남기고 Heavy를 돌리면 0.11초입니다. 숫자는 가정이지만 '비싼 모델은 적은 후보에만'이라는 이유가 보입니다. {추론}",
+     "lang": "python",
+     "code": "N = 20000; K = 500\nlight_us, heavy_us = 0.5, 200  # 후보 하나당 마이크로초(가정)\nprint(\"heavy만:\", N * heavy_us / 1000, \"ms\")\nprint(\"light→heavy:\", (N * light_us + K * heavy_us) / 1000, \"ms\")\n# heavy만: 4000.0 ms\n# light→heavy: 110.0 ms"
+    }
+   ],
+   "flows": [
+    {
+     "caption": "검색 한 번이 지나가는 길 — 공고와 같은 Silo 공고로 본 단계 {추론}",
+     "steps": [
+      "질의 이해(QU) · 검색어 뜻 풀기",
+      "후보 찾기(Retrieval) · 수만 개",
+      "Relevance 판정 · 질의에 맞는 상품만",
+      "Light 랭커 · 수백 개로",
+      "Heavy 랭커 · 최종 순서",
+      "로그 · 클릭·구매가 다음 학습 라벨로"
+     ],
+     "mine_from": 3
+    }
+   ],
+   "how_far": "2단의 **경계(몇 개를 넘길지)와 두 모델이 같은 목표를 보게 하는 일**까지가 이 자리입니다.[1] 질의 이해·후보 검색·Relevance는 같은 Silo의 다른 자리가 맡고 이 자리는 그 결과를 받아 씁니다.[3] {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    6
+   ],
+   "study": [
+    "youtube-dnn",
+    "slash24-reco",
+    "dmls-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "유저·상품·검색어와 그 교차 관계를 담은 피처를 설계하고, 모델이 피처 조합을 직접 학습하도록 구조를 개선해 나가요.",
+   "short": "'이 검색어에서 이 상품'처럼 둘 이상이 겹칠 때만 보이는 신호를 피처로 만들고, 그 조합을 모델이 스스로 찾게 하는 일.",
+   "why": "같은 상품도 검색어에 따라 반응이 정반대일 수 있어서입니다. 상품 하나의 평균 클릭률만 보면 이 차이가 사라집니다. {추론} 공고 우대사항이 DCN·DeepFM·DIN 같은 '교차 피처 기반' 모델을 직접 꼽았습니다.[1]",
+   "actually": {
+    "items": [
+     "**유저 쪽** — 최근 클릭·구매·검색한 상품과 카테고리, 가격대. 토스 커머스 투타워 모델은 유저 쪽에 클릭·결제·검색 기록을 넣었다.[2]",
+     "**상품 쪽** — 브랜드·카테고리 같은 메타데이터, 그리고 상품 글·이미지를 미리 학습한 모델에 넣어 뽑은 임베딩.[2]",
+     "**검색어 쪽** — 검색어의 카테고리, 검색어와 상품명이 겹치는 정도(같은 Silo Relevance 자리가 만드는 lexical 매칭 피처).[3]",
+     "**손으로 만드는 교차** — '이 검색어에서 이 상품의 과거 클릭률', '유저 선호 가격대와 상품 가격의 차이'. {추론}",
+     "**모델이 찾는 교차** — DCN은 피처끼리 곱하는 층(cross layer)을 쌓아 몇 차 조합까지 자동으로 배우고[7], DeepFM은 두 피처의 조합을 임베딩 내적으로 배운다.[8] DIN은 지금 후보 상품과 비슷한 과거 행동에만 무게를 둔다.[9]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "상품 평균만 보면 사라지는 신호 (직접 돌린 출력)",
+     "body": "상품 평균 클릭률로는 두 상품이 거의 같습니다(0.05·0.045). 검색어와 겹쳐 보면 '생수'에서는 대용량이, '캠핑'에서는 소용량이 6~9배 더 눌립니다. 이런 조합을 사람이 다 만들 수 없어서 모델이 직접 배우게 합니다.[7] {추론}",
+     "lang": "python",
+     "code": "logs = {(\"생수\", \"2L x 12\"): (90, 1000), (\"생수\", \"500ml x 20\"): (30, 1000),\n        (\"캠핑\", \"2L x 12\"): (10, 1000), (\"캠핑\", \"500ml x 20\"): (60, 1000)}\nitem = {}\nfor (q, it), (c, n) in logs.items():\n    a = item.setdefault(it, [0, 0]); a[0] += c; a[1] += n\nfor it, (c, n) in item.items():\n    print(\"상품만\", it, round(c / n, 3))\nfor (q, it), (c, n) in logs.items():\n    print(\"검색어x상품\", q, it, round(c / n, 3))\n# 상품만 2L x 12 0.05\n# 상품만 500ml x 20 0.045\n# 검색어x상품 생수 2L x 12 0.09\n# 검색어x상품 생수 500ml x 20 0.03\n# 검색어x상품 캠핑 2L x 12 0.01\n# 검색어x상품 캠핑 500ml x 20 0.06"
+    }
+   ],
+   "how_far": "피처 아이디어를 내는 데서 끝나지 않고, **그 피처를 학습 때와 서빙 때 똑같이 계산되게** 만드는 것까지입니다. 토스 커머스는 사내 피처 스토어에서 학습·서빙 피처를 가져온다고 발표했습니다.[2] 학습과 서빙의 계산이 어긋나면 오프라인 성능이 온라인에서 안 나옵니다.[26]",
+   "refs": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    9,
+    26
+   ],
+   "study": [
+    "dcn-v2",
+    "deepfm",
+    "din",
+    "dmls-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "현재의 pCTR·pCVR을 넘어 pCart·pLike 등 다양한 유저 액션을 Multi-Task Learning으로 함께 학습하고, 이를 하나의 랭킹 스코어로 통합하는 구조를 설계해요.",
+   "short": "클릭·구매뿐 아니라 장바구니·좋아요 확률까지 한 모델로 같이 예측하고, 그 여러 확률을 줄 세울 점수 하나로 합치는 일.",
+   "why": "공고가 지금 쓰는 것이 pCTR(클릭 확률)·pCVR(구매 전환 확률)이라고 밝혔습니다.[1] 구매는 드물어 라벨이 적고, 장바구니·좋아요는 그보다 자주 일어나는 '살 마음'의 신호라 함께 배우면 드문 구매 예측을 도울 수 있습니다.[10] {추론}",
+   "actually": {
+    "items": [
+     "**한 몸 여러 머리** — 입력과 아래층은 나눠 쓰고, 맨 위에 행동마다 출력(머리)을 둔다.[10]",
+     "**싸움 막기** — 행동끼리 성격이 다르면 한쪽을 배우다 다른 쪽이 나빠진다. MMoE는 전문가 여러 개와 행동별 선택기(gate)를 두고[10], PLE는 행동 전용 전문가와 공용 전문가를 따로 둔다.[11]",
+     "**pCVR의 함정** — 구매는 클릭한 사람에게서만 관찰된다. 클릭 로그로만 pCVR을 배우면 전체 노출에 쓸 때 치우친다. ESMM은 '노출→클릭→구매'를 곱으로 이어 배워 이를 줄인다.[12]",
+     "**하나의 점수로** — 보통 확률들을 가중 곱·가중 합으로 묶고, 가중치는 A/B 실험으로 정한다. 커머스라면 가격을 곱해 기대 매출을 보기도 한다. {추론}",
+     "**합치기 전 보정** — 확률끼리 곱하려면 각 확률이 실제 비율과 맞아야 한다(보정). 토스 커머스 추천 모델도 보정 효과를 위해 temperature scaling을 썼다.[2][18]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "pCTR 순서와 통합 점수 순서가 다르다 (직접 돌린 출력, 가중치는 예시)",
+     "body": "클릭만 보면 C가 1등이지만 C는 눌러 보고 잘 안 삽니다. 구매·장바구니를 같이 보면 B가 1등입니다. 지수(0.7·0.5)를 어떻게 정할지가 이 업무의 실험 대상입니다. {추론}",
+     "lang": "python",
+     "code": "cands = {\"A\": dict(ctr=0.10, cvr=0.02, cart=0.05),\n         \"B\": dict(ctr=0.06, cvr=0.08, cart=0.10),\n         \"C\": dict(ctr=0.12, cvr=0.01, cart=0.02)}\ndef s_fused(p): return p[\"ctr\"] * (p[\"cvr\"] ** 0.7) * ((1 + p[\"cart\"]) ** 0.5)\nprint(\"pCTR순\", sorted(cands, key=lambda k: -cands[k][\"ctr\"]))\nprint(\"통합점수순\", sorted(cands, key=lambda k: -s_fused(cands[k])))\n# pCTR순 ['C', 'A', 'B']\n# 통합점수순 ['B', 'A', 'C']"
+    }
+   ],
+   "how_far": "어떤 행동을 얼마나 중요하게 볼지(매출·만족·광고)는 제품 쪽과 같이 정합니다. MLE는 **그 결정을 점수 공식과 실험으로 바꾸고, 가중치를 바꿨을 때 지표가 어떻게 움직이는지** 보여 줍니다. {추론}",
+   "refs": [
+    1,
+    2,
+    10,
+    11,
+    12,
+    18
+   ],
+   "study": [
+    "mmoe",
+    "ple",
+    "esmm",
+    "calibration"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "후보를 개별적으로 평가하던 방식에서 리스트 안의 상대 순서를 직접 학습하는 방향으로 전환을 리드해요.",
+   "short": "상품 하나하나의 확률을 맞히던 학습(pointwise)에서, 한 검색 결과 안에서 '무엇이 위여야 하나'를 직접 배우는 학습(LTR)으로 바꾸는 일.",
+   "why": "공고가 지금은 후보를 따로따로 평가한다고 밝혔습니다.[1] 유저가 보는 것은 확률값이 아니라 순서라서, 확률을 잘 맞혀도 같은 검색 결과 안의 순서는 틀릴 수 있습니다. {추론} 검색 품질의 대표 지표 NDCG는 위쪽 자리의 실수를 더 크게 벌합니다.[20]",
+   "actually": {
+    "items": [
+     "**pointwise** — 상품마다 '클릭했나'를 맞힌다(지금 방식).[1]",
+     "**pairwise** — 같은 검색에서 산 상품이 안 산 상품보다 위에 오도록 짝으로 배운다(RankNet 계열).[13]",
+     "**listwise** — 검색 결과 한 줄 전체의 순서 지표(NDCG)가 좋아지는 쪽으로 직접 배운다(LambdaRank·LambdaMART, softmax 리스트 손실).[13]",
+     "**데이터 단위가 바뀐다** — 학습 데이터를 '노출 한 건'이 아니라 '검색 한 번(질의 그룹)'으로 묶어야 한다. LightGBM의 lambdarank도 그룹 크기를 따로 받는다.[27]",
+     "**등급 라벨** — 구매 2 · 장바구니·클릭 1 · 무반응 0처럼 행동을 등급으로 바꿔 쓴다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "같은 상품들, 순서만 바꾼 NDCG (직접 돌린 출력)",
+     "body": "다섯 개 결과에 구매(2)·클릭(1)·무반응(0) 등급을 줬습니다. 구매 상품이 3번째에 있으면 0.758, 맨 위면 1.0입니다. listwise 학습은 이 숫자를 직접 올리려 합니다.[13][20]",
+     "lang": "python",
+     "code": "import math\ndef ndcg(rels):\n    dcg = sum((2 ** r - 1) / math.log2(i + 2) for i, r in enumerate(rels))\n    ideal = sorted(rels, reverse=True)\n    idcg = sum((2 ** r - 1) / math.log2(i + 2) for i, r in enumerate(ideal))\n    return round(dcg / idcg, 3)\nprint(\"구매 상품이 3번째:\", ndcg([1, 1, 2, 0, 0]))\nprint(\"구매 상품이 1번째:\", ndcg([2, 1, 1, 0, 0]))\n# 구매 상품이 3번째: 0.758\n# 구매 상품이 1번째: 1.0"
+    }
+   ],
+   "how_far": "공고 표현이 '전환을 리드'입니다.[1] 손실 함수를 바꾸는 것만이 아니라 **학습 데이터를 질의 단위로 다시 짜고, 평가 지표를 NDCG 계열로 바꾸고, 그 결과를 A/B로 증명하는 순서**를 이끄는 자리로 읽힙니다. {추론}",
+   "refs": [
+    1,
+    13,
+    20,
+    27
+   ],
+   "study": [
+    "lambdamart",
+    "lightgbm-rank"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "대규모 로그를 바탕으로 학습 라벨과 피처 파이프라인을 설계하고, 오프라인 평가부터 A/B 실험까지 End-to-End로 오너십을 가져요.",
+   "short": "노출·클릭·구매 로그로 정답 라벨과 피처를 매일 만드는 흐름을 짜고, 모델이 실제로 나아졌는지 A/B 실험까지 직접 끝내는 일.",
+   "why": "토스 커머스 발표는 보통 제품 만들기에는 없는 '로그 수집' 단계가 ML 서비스에는 한 겹 더 있고, 그 피드백으로 모델을 다시 학습시킨다고 설명했습니다.[2] 같은 회사 추천 공고도 오프라인 성능에서 멈추지 않고 클릭·구매 전환·재방문 같은 온라인 지표로 검증하는 것을 업무로 둡니다.[4]",
+   "actually": {
+    "items": [
+     "**라벨** — 무엇을 정답으로 볼지 정한다. 토스 커머스 추천은 구매한 상품을 긍정, 노출됐지만 안 산 상품을 부정으로 뒀다.[2]",
+     "**라벨의 잡음** — 커머스 노출 데이터는 잡음이 많고, 인기 상품은 많이 노출되는 만큼 '안 산 노출'도 많아 거꾸로 벌을 받을 수 있다. 발표 팀은 무작위 추출과 배치 안 추출을 섞는 mixed negative sampling으로 이를 줄였다.[2][17]",
+     "**피처 파이프라인** — Hadoop·Spark로 대용량 피처를 만들고 Airflow로 주기에 맞춰 돌린다(토스 커머스 추천의 구성).[2]",
+     "**오프라인 평가** — AUC·logloss·NDCG를 과거 기간으로 잰다. 미래 데이터가 학습에 섞이지 않게 기간으로 나눈다. {추론}",
+     "**온라인 실험** — 유저를 무작위로 나눠 전환·매출을 비교하고, 같은 실험을 여러 번 들여다보며 멈추는 실수를 피한다.[19]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "A/B 실험은 얼마나 많은 유저가 필요한가 (직접 돌린 출력, 유의수준 5%·검정력 80%)",
+     "body": "구매 전환율 2%에서 10% 상승(2.0%→2.2%)을 보려면 군마다 약 8만 명, 3% 상승이면 약 87만 명이 필요합니다. 랭킹 개선은 보통 작아서, 실험 기간과 지표를 미리 정해야 합니다.[19]",
+     "lang": "python",
+     "code": "import math\ndef n_per_arm(p, lift, alpha_z=1.96, power_z=0.84):\n    p2 = p * (1 + lift); pbar = (p + p2) / 2\n    return math.ceil(((alpha_z * math.sqrt(2*pbar*(1-pbar)) + power_z * math.sqrt(p*(1-p) + p2*(1-p2))) ** 2) / (p2 - p) ** 2)\nprint(\"CVR 2%에서 3% 상승을 보려면 군마다\", n_per_arm(0.02, 0.03))\nprint(\"CVR 2%에서 10% 상승을 보려면 군마다\", n_per_arm(0.02, 0.10))\n# CVR 2%에서 3% 상승을 보려면 군마다 866228\n# CVR 2%에서 10% 상승을 보려면 군마다 80591"
+    }
+   ],
+   "flows": [
+    {
+     "caption": "토스 커머스 ML 서비스의 순환 — 발표에서 설명한 네 단계[2]",
+     "steps": [
+      "모델 학습 · Hadoop·Spark·Airflow",
+      "서빙 구조 · 배치 적재 또는 실시간 추론",
+      "서비스 연결 · 사용자 화면",
+      "로그 수집 · 추천이 얼마나 잘 됐나 → 다시 학습"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "'End-to-End 오너십'이라 **라벨 정의부터 실험 결론까지 한 사람이 설명할 수 있어야** 합니다.[1] 실험 플랫폼·로그 수집 인프라 자체를 만드는 것은 이 자리 몫으로 적혀 있지 않습니다. {추론}",
+   "refs": [
+    1,
+    2,
+    4,
+    17,
+    19
+   ],
+   "study": [
+    "kohavi-ko",
+    "mns",
+    "slash24-reco",
+    "dmls-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "검색·추천·광고 도메인에서 3~4년 이상의 CTR/CVR 예측 모델 실무 경험이 있는 분",
+   "short": "클릭·전환 확률 모델을 실제 서비스에서 3~4년 이상 다뤄 본 경력직 자리라서.",
+   "why": "이 자리가 지금 운영하는 것이 pCTR·pCVR 모델이고, 업무는 그것을 넘어서는 구조 변경입니다.[1] 같은 Silo의 Relevance 공고도 검색 도메인 3년 이상을 요구합니다.[3]",
+   "actually": {
+    "items": [
+     "**셋이 같은 문제** — 검색·추천·광고 모두 '노출된 것 중 무엇이 반응을 얻나'를 맞히는 문제라 경험이 옮겨 간다.[4][5] {추론}",
+     "**CTR 모델 경험의 핵심** — 극단적으로 드문 양성(클릭 몇 %, 구매는 더 드묾), 카테고리 피처 수백만 종류, 매일 바뀌는 데이터. {추론}",
+     "**이력서 안내** — 본인이 정의한 문제·고른 방법·실험 방법·성능 개선을 숫자로 적으라고 합니다.[1]"
+    ]
+   },
+   "how_far": "연차 자체보다 **'내가 바꾼 모델이 온라인에서 몇 % 올렸다'를 설명할 수 있는 사례**가 이력서의 중심입니다.[1] {추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    5
+   ],
+   "study": [
+    "dmls-ko",
+    "deepfm"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "대규모 로그·행동 데이터를 직접 다루고, 피처 파이프라인을 스스로 설계·구축할 수 있는 분",
+   "short": "데이터 엔지니어를 기다리지 않고, 로그에서 학습용 피처를 직접 뽑아 매일 도는 파이프라인으로 만들 수 있어야 한다.",
+   "why": "토스 커머스 추천은 Hadoop·Spark로 대용량 피처를 만들고 Airflow로 주기 실행했습니다.[2] 실시간 추론 쪽은 그 피처를 사내 피처 스토어에 넣어 서빙합니다.[2]",
+   "actually": {
+    "items": [
+     "**로그 이어 붙이기** — 노출 로그에 클릭·장바구니·구매 로그를 시간 창(예: 노출 뒤 24시간)으로 붙여 라벨을 만든다. {추론}",
+     "**시점 지키기** — 노출 시각 이전의 값만 피처로 쓴다. 미래 구매 수를 피처에 넣으면 오프라인 성능이 가짜로 높아진다.[26]",
+     "**같은 계산 두 번 안 하기** — 학습용(배치)과 서빙용(온라인) 피처를 한 정의에서 만들어 어긋남을 막는다.[2][26]"
+    ]
+   },
+   "level": {
+    "basic": "Spark SQL/DataFrame 집계 · 조인 · 윈도우 함수",
+    "work": "노출-행동 로그 시간 창 조인 · 시점 기준 피처 · Airflow 일 배치",
+    "team": "수억 건 노출 로그 · 학습/서빙 피처 일치(피처 스토어) · 실시간 피처"
+   },
+   "how_far": "큰 저장소·피처 스토어를 새로 만드는 일이 아니라, **그 위에서 내 모델이 쓸 피처를 스스로 정의하고 돌리는 것**이 최소선입니다. {추론}",
+   "refs": [
+    2,
+    26
+   ],
+   "study": [
+    "dmls-ko",
+    "slash24-reco"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "딥러닝 랭킹 모델을 직접 학습시키고 실서비스에서 성능을 끌어올려본 분",
+   "short": "트리 모델이 아니라 임베딩·교차층을 가진 딥러닝 랭킹 모델을 직접 학습하고 서비스에서 개선해 봤어야 한다.",
+   "why": "업무의 교차 피처 학습·멀티태스크·리스트 학습이 모두 딥러닝 랭킹 모델 위의 일입니다.[1] 토스 커머스는 실시간 추론 모델을 ONNX Runtime으로 서빙한다고 발표했습니다.[2]",
+   "actually": {
+    "items": [
+     "**구조** — 카테고리 피처를 임베딩으로 바꾸고, 교차층·주의(attention)층을 거쳐 확률을 낸다.[7][9]",
+     "**학습 다루기** — 드문 양성의 불균형, 임베딩 표의 크기, 매일 이어 학습(토스 커머스는 모든 모델을 계속 학습한다고 했다).[2]",
+     "**서빙에 맞추기** — 학습한 모델을 ONNX 같은 형식으로 바꿔 지연 시간 안에 돌게 한다.[2]"
+    ]
+   },
+   "how_far": "논문 구조를 그대로 구현한 것보다 **어떤 구조 변경이 어떤 데이터에서 왜 먹혔는지**를 말할 수 있어야 합니다. 직무 인터뷰가 심층 기술 면접과 ML 시스템 설계입니다.[1]",
+   "refs": [
+    1,
+    2,
+    7,
+    9
+   ],
+   "study": [
+    "dcn-v2",
+    "din",
+    "deepfm"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "오프라인 지표와 온라인 지표의 괴리를 진단하고 좁혀본 경험이 있는 분",
+   "short": "오프라인 AUC는 올랐는데 A/B에서는 전환이 안 오르는 일이 흔해서, 그 이유를 찾아 고쳐 봤어야 한다.",
+   "why": "검색 랭킹에서 오프라인 지표는 과거 노출 로그로만 잴 수 있고, 그 로그는 이전 모델이 고른 결과라 치우쳐 있습니다.[14] 같은 회사 추천 공고도 오프라인 성능에 만족하지 않고 온라인 지표로 검증하라고 적었습니다.[4]",
+   "actually": {
+    "items": [
+     "**지표가 다른 것을 잰다** — 전체 AUC는 '어느 검색어가 잘 눌리나'를 맞혀도 오르지만, 유저가 보는 것은 한 검색 안의 순서다. 검색어별로 잰 AUC(GAUC)나 NDCG가 더 가깝다.[20] {추론}",
+     "**로그가 치우쳐 있다** — 위에 보인 상품만 클릭을 받는다(자리 편향).[14]",
+     "**학습·서빙 어긋남** — 피처 계산이 학습 때와 서빙 때 다르다.[26]",
+     "**점수를 섞는 단계** — 모델 확률이 맞아도 여러 점수를 합치는 공식·후처리에서 순서가 바뀐다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "전체 AUC와 검색어별 AUC가 다르게 말한다 (직접 돌린 출력)",
+     "body": "이 모델은 '생수 검색은 많이 눌린다'만 알고 생수 안의 순서는 동전 던지기(0.5)입니다. 그래도 전체 AUC는 0.75로 좋아 보입니다. 검색어별로 재면 0.625로 내려갑니다. {추론}",
+     "lang": "python",
+     "code": "def auc(pairs):\n    pos = [s for s, y in pairs if y]; neg = [s for s, y in pairs if not y]\n    win = sum((p > n) + 0.5 * (p == n) for p in pos for n in neg)\n    return win / (len(pos) * len(neg))\ndata = {\"생수\": [(0.9, 0), (0.8, 1), (0.85, 1), (0.7, 0), (0.75, 1)],\n        \"캠핑의자\": [(0.3, 1), (0.1, 0), (0.35, 0), (0.2, 0), (0.25, 0)]}\nallp = [x for v in data.values() for x in v]\nprint(\"전체 AUC\", round(auc(allp), 3))\ng = {q: round(auc(v), 3) for q, v in data.items()}\nprint(\"검색어별 AUC\", g, \"평균(GAUC)\", round(sum(g.values()) / len(g), 3))\n# 전체 AUC 0.75\n# 검색어별 AUC {'생수': 0.5, '캠핑의자': 0.75} 평균(GAUC) 0.625"
+    }
+   ],
+   "how_far": "괴리를 봤다는 것만이 아니라 **원인을 하나로 좁힌 방법(어떤 지표를 새로 재서 무엇을 배제했나)**을 설명할 수 있어야 합니다. {추론}",
+   "refs": [
+    4,
+    14,
+    20,
+    26
+   ],
+   "study": [
+    "dmls-ko",
+    "unbiased-ltr",
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "데이터 분석부터 모델 학습, 서빙 반영까지 혼자 끌고 갈 수 있는 분",
+   "short": "분석가·데이터 엔지니어·서버 개발자에게 나눠 맡기지 않고, 문제 찾기부터 서비스 반영까지 한 사람이 끝낼 수 있어야 한다.",
+   "why": "같은 Silo의 Relevance 공고에도 같은 문장이 그대로 있어, 이 Silo의 MLE에게 공통으로 기대하는 일하는 방식입니다.[1][3] 토스 커머스 발표에서는 데이터 사이언티스트가 모델을, ML 엔지니어가 서빙 구조를 설명했는데, 서빙 쪽은 자바·스프링 기반 서빙 시스템과 Redis·Phoenix 저장소, ONNX Runtime 실시간 추론까지 다뤘습니다.[2]",
+   "actually": {
+    "items": [
+     "**분석** — 어떤 검색어에서 전환이 낮은지, 어디서 상품을 놓치는지 로그로 찾는다. {추론}",
+     "**학습** — 라벨·피처·모델·오프라인 평가.[1]",
+     "**서빙 반영** — 배치로 미리 계산해 저장할지, 요청마다 실시간으로 추론할지 고르고, 지연 시간 안에 들게 한다. 토스 커머스는 두 방식을 섞어 쓴다.[2]"
+    ]
+   },
+   "how_far": "서버를 혼자 다 짜라는 뜻보다는, **모델이 서비스에 들어가기까지 막히는 곳을 스스로 풀 수 있는 정도**로 읽힙니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3
+   ],
+   "study": [
+    "slash24-reco",
+    "dmls-ko"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "품질 개선을 가로막는 진짜 원인이 무엇인지 데이터로 밝혀내고, 실험을 설계해 그 결과에서 다음 단계를 직접 읽어내는 Problem Solver",
+   "short": "'모델을 키우면 좋아지겠지'가 아니라, 무엇이 막고 있는지 데이터로 먼저 찾고 실험 결과로 다음 할 일을 정하는 사람.",
+   "why": "같은 Silo 공고는 하루 수십만 건 질의 중 아직 적지 않은 검색이 원하는 상품을 못 찾아 준다고 적었습니다.[3] 원인이 질의 이해·후보 검색·Relevance·랭킹 중 어디냐에 따라 고칠 사람이 다릅니다.[3]",
+   "actually": {
+    "items": [
+     "**어디서 놓쳤나** — 산 상품이 후보에 없었나(검색), 있었는데 밀렸나(랭킹), 맞지 않는 상품이 위에 있었나(Relevance). {추론}",
+     "**가설 하나에 실험 하나** — 바꾸는 것을 하나로 두고, 무엇이 나오면 무엇을 할지 실험 전에 적는다.[19]",
+     "**결과 읽기** — 평균만이 아니라 검색어 종류·신규/기존 유저처럼 나눠서 본다.[19]"
+    ]
+   },
+   "how_far": "면접에서 '실험이 기대와 다르게 나왔을 때 무엇을 했나'를 예로 들 수 있어야 합니다. 이력서 안내도 실험 방법을 구체적으로 적으라고 합니다.[1]",
+   "refs": [
+    1,
+    3,
+    19
+   ],
+   "study": [
+    "kohavi-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "DCN, DeepFM, DIN 등 교차 피처 기반 딥러닝 랭킹 모델 실서비스 적용 경험",
+   "short": "업무② '모델이 피처 조합을 직접 배우는 구조'의 대표 모델들이라, 써 봤으면 바로 시작할 수 있어서.",
+   "why": "공고 업무에 피처 조합을 모델이 학습하도록 구조를 바꾼다는 줄이 있고, 이 세 모델이 그 방법입니다.[1]",
+   "actually": {
+    "items": [
+     "**DCN** — 입력을 자기 자신과 곱하는 교차층을 쌓아 층 수만큼의 조합을 명시적으로 배운다(V2는 이를 대규모 서비스용으로 다듬었다).[7]",
+     "**DeepFM** — 두 피처 조합을 배우는 FM 부분과 깊은 신경망을 같은 임베딩 위에 둔다.[8]",
+     "**DIN** — 유저의 과거 행동 중 지금 후보 상품과 관련된 것에 주의(attention)를 더 준다.[9]"
+    ]
+   },
+   "how_far": "세 모델을 다 쓸 필요는 없고 **하나를 서비스에 넣으며 무엇이 나아지고 무엇이 비쌌는지**를 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    7,
+    8,
+    9
+   ],
+   "study": [
+    "dcn-v2",
+    "deepfm",
+    "din"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Multi-Task Learning(MMoE, PLE 등) 기반 멀티 액션 예측 모델 설계 경험",
+   "short": "업무③(pCart·pLike까지 함께 배우기)이 바로 이 구조라서.",
+   "why": "공고가 다양한 유저 액션을 멀티태스크로 함께 학습하겠다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**MMoE** — 공용 전문가 여러 개 + 행동마다 고르는 선택기. 행동 사이의 관계가 약해도 버틴다.[10]",
+     "**PLE** — 행동 전용 전문가와 공용 전문가를 나눠, 한 행동이 좋아지면 다른 행동이 나빠지는 '시소' 현상을 줄인다.[11]",
+     "**설계에서 고를 것** — 어떤 행동을 같이 묶을지, 행동별 손실 가중치, 드문 행동(구매)의 표본 문제.[12] {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    10,
+    11,
+    12
+   ],
+   "study": [
+    "mmoe",
+    "ple",
+    "esmm"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "LTR(pairwise/listwise) 모델 실서비스 적용 경험",
+   "short": "업무④(리스트 안 상대 순서 학습으로 전환)를 이끌 사람이라, 이미 해 본 사람이 길을 안다.",
+   "why": "공고가 개별 평가에서 리스트 학습으로의 '전환을 리드'한다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**pairwise** — 같은 검색 안의 (산 것, 안 산 것) 짝의 순서를 맞힌다.[13]",
+     "**listwise** — NDCG 같은 목록 지표가 오르는 쪽으로 기울기를 준다(LambdaMART).[13]",
+     "**서비스에서 부딪히는 것** — 질의 그룹 단위 데이터, 확률값이 사라져 다른 점수와 섞기 어려움, 편향된 클릭 로그.[14] {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    13,
+    14
+   ],
+   "study": [
+    "lambdamart",
+    "lightgbm-rank",
+    "unbiased-ltr"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Cold start 해결을 위한 Bandit(Thompson Sampling, LinUCB 등) 모델 적용 경험",
+   "short": "새로 올라온 상품은 클릭 기록이 없어 랭커가 못 올리므로, 조금씩 보여 주며 배우는 방법이 필요해서.",
+   "why": "토스 쇼핑은 새 상품이 빠르게 등록되고 피드백 데이터가 부족한 채로 시작했고, 첫 추천 모델로 멀티암드 밴딧(Thompson Sampling)을 골랐습니다.[2] 이때 결과 수집과 반영 사이에 시차가 있어 배치로 돌렸고, 지나친 탐색을 막으려 사전 분포를 보수적으로 잡았다고 했습니다.[2]",
+   "actually": {
+    "items": [
+     "**밴딧** — 지금까지 가장 좋았던 것을 보여 주기(활용)와 새것을 시험하기(탐색) 사이를 조절한다.[2][15]",
+     "**Thompson Sampling** — 상품마다 클릭률을 분포로 두고 매번 분포에서 하나씩 뽑아 가장 큰 것을 보여 준다. 덜 본 상품은 분포가 넓어 가끔 뽑힌다.[15]",
+     "**LinUCB** — 유저·상품 피처로 기대 반응을 예측하고, 불확실한 만큼 점수를 더 얹어 준다.[16]",
+     "**토스 쪽 쓰임** — 유저를 코호트(무리)로 나눠 코호트마다 밴딧을 돌렸고, 뒤에는 유저 임베딩을 군집해 코호트를 다시 짰다.[2]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "Thompson Sampling이 진짜 좋은 신상품을 찾아낸다 (직접 돌린 출력, seed 7)",
+     "body": "실제 클릭률을 모르는 채로 5,000번 보여 줬더니, 처음엔 기록이 없던 신상품(실제 9%)에 대부분의 노출이 갔습니다.[15]",
+     "lang": "python",
+     "code": "import random\nrandom.seed(7)\ntrue = {\"상품1\": 0.04, \"상품2\": 0.06, \"신상품\": 0.09}\nab = {k: [1, 1] for k in true}\nshown = {k: 0 for k in true}\nfor t in range(5000):\n    pick = max(ab, key=lambda k: random.betavariate(*ab[k]))\n    shown[pick] += 1\n    if random.random() < true[pick]: ab[pick][0] += 1\n    else: ab[pick][1] += 1\nprint(shown)\n# {'상품1': 168, '상품2': 271, '신상품': 4561}"
+    }
+   ],
+   "refs": [
+    2,
+    15,
+    16
+   ],
+   "study": [
+    "slash24-reco",
+    "ts-tutorial",
+    "linucb"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Warm/Cold 상품 Blending 및 노출 기회 배분 전략 설계 경험",
+   "short": "기록 많은 상품(warm)과 새 상품(cold)을 한 결과 화면에 어떤 비율·자리로 섞을지 정해 본 경험.",
+   "why": "랭커는 기록이 많은 상품을 믿기 쉬워, 그대로 두면 새 상품은 노출을 못 받고 영영 기록이 안 쌓입니다. {추론} 토스 커머스 추천도 노출 기회를 고려하지 못하는 단순 클릭률 대신 신뢰구간 하한을 쓰고, 신상품에는 무작위 노출을 따로 줬습니다.[2]",
+   "actually": {
+    "items": [
+     "**신뢰구간 하한** — 노출이 적은 상품은 클릭률이 높아 보여도 하한이 낮다. 충분히 노출돼 믿을 만한 상품 위주로 고른다.[2][21]",
+     "**탐색 자리** — 결과 몇 자리를 새 상품 몫으로 떼어 두거나 점수에 탐색 가산점을 준다.[2] {추론}",
+     "**섞는 규칙** — 상품·광고·프로모션이 한 지면에 섞일 때의 순서 규칙은 같은 회사 추천·광고 공고도 다루는 문제다.[4][5]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "CTR 50%짜리 신상품 vs 4%짜리 스테디셀러 — 신뢰구간 하한 (직접 돌린 출력)",
+     "body": "2번 보여서 1번 눌린 신상품은 클릭률 50%지만 하한(Wilson, 95%)은 9.5%, 1,000번에 40번인 상품은 하한 3%입니다. 하한은 '믿을 수 있는 정도'를 같이 잽니다.[21]",
+     "lang": "python",
+     "code": "import math\ndef wilson_lb(c, n, z=1.96):\n    p = c / n\n    return (p + z*z/(2*n) - z*math.sqrt(p*(1-p)/n + z*z/(4*n*n))) / (1 + z*z/n)\nfor name, c, n in [(\"신상품 A\", 1, 2), (\"스테디 B\", 40, 1000)]:\n    print(name, \"CTR\", round(c/n, 3), \"하한\", round(wilson_lb(c, n), 3))\n# 신상품 A CTR 0.5 하한 0.095\n# 스테디 B CTR 0.04 하한 0.03"
+    }
+   ],
+   "how_far": "노출 배분은 셀러·제품 정책과 맞닿아, 비율은 제품 쪽과 같이 정하고 MLE는 **배분을 바꿨을 때 전체 전환과 새 상품 성장이 어떻게 움직이는지** 실험으로 보여 줍니다. {추론}",
+   "refs": [
+    2,
+    4,
+    5,
+    21
+   ],
+   "study": [
+    "slash24-reco",
+    "ts-tutorial"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Position bias, selection bias 등 랭킹 로그의 편향을 보정해본 경험",
+   "short": "위에 있어서 눌린 것과 좋아서 눌린 것을 가르지 않으면, 모델이 지난 순서를 그대로 베끼게 돼서.",
+   "why": "검색 로그의 클릭은 유저가 본 상품에서만 나오고, 유저는 위쪽을 더 많이 봅니다(자리 편향).[14] 보인 상품만 기록되는 것(선택 편향)은 토스 커머스 추천 발표에서도 인기 상품이 더 많이 노출돼 생기는 편향으로 다뤘습니다.[2]",
+   "actually": {
+    "items": [
+     "**자리 편향 보정(IPS)** — 자리마다 '유저가 볼 확률'을 추정하고, 클릭을 그 확률로 나눠 무게를 준다.[14]",
+     "**자리 확률 추정** — 일부 트래픽에서 순서를 무작위로 섞거나 바꿔 보는 실험으로 잰다.[14]",
+     "**선택 편향** — 구매는 클릭한 것에서만 보인다(ESMM)[12], 노출은 이전 모델이 고른 것만 있다 → 무작위 부정 표본 섞기.[2][17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "3번째 자리 클릭률을 자리 확률로 보정 (직접 돌린 출력, 자리 확률은 가정값)",
+     "body": "3번째 자리 상품 Y의 날 클릭률은 1%지만, 그 자리를 유저가 볼 확률이 35%라면 '봤을 때의 클릭률'은 약 2.9%입니다.[14]",
+     "lang": "python",
+     "code": "exam = [1.0, 0.6, 0.35]  # 자리별로 유저가 볼 확률(추정)\nclicks = {\"X\": (0, 50), \"Y\": (2, 10)}  # (자리, 클릭 수) — 둘 다 1000번 노출\nfor it, (pos, c) in clicks.items():\n    print(it, \"자리\", pos + 1, \"날 CTR\", c / 1000, \"보정 CTR\", round(c / 1000 / exam[pos], 4))\n# X 자리 1 날 CTR 0.05 보정 CTR 0.05\n# Y 자리 3 날 CTR 0.01 보정 CTR 0.0286"
+    }
+   ],
+   "refs": [
+    2,
+    12,
+    14,
+    17
+   ],
+   "study": [
+    "unbiased-ltr",
+    "esmm",
+    "mns"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대규모 커머스 또는 검색 플랫폼에서 A/B 실험 설계·운영 경험",
+   "short": "랭킹 개선은 결국 A/B 실험으로만 증명되고, 작은 차이를 믿을 수 있게 재는 법을 알아야 해서.",
+   "why": "업무가 오프라인 평가부터 A/B 실험까지의 오너십입니다.[1] 같은 Silo의 Relevance 공고와 회사 추천·광고 공고도 온라인 실험으로 효과를 검증하라고 적었습니다.[3][4][5] 토스 커머스 추천 발표도 A/B 테스트 성과로 모델을 평가했습니다.[2]",
+   "actually": {
+    "items": [
+     "**실험 단위** — 유저 단위로 나눈다(같은 유저가 두 랭킹을 섞어 보면 효과가 흐려진다).[19]",
+     "**표본과 기간** — 보고 싶은 차이가 작을수록 유저가 많이 필요하다(업무⑤의 예).[19]",
+     "**믿을 수 있는가** — 두 군의 유저 수 비율이 설계와 맞는지(SRM 검사) 먼저 본다.[19]",
+     "**지표 묶음** — 주 지표(구매 전환)와 지켜야 할 지표(응답 시간·광고 매출)를 함께 둔다.[19]"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    19
+   ],
+   "study": [
+    "kohavi-ko"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "모델 구조보다 '왜 이 순서인가'를 로그로 파고드는 사람[1]",
+   "오프라인 지표가 올랐다는 말을 A/B 결과로만 믿는 사람[1][4]",
+   "분석·학습·서빙을 혼자 끝까지 끌고 가는 쪽이 편한 사람[1]",
+   "토스 쇼핑처럼 빠르게 바뀌는 신규 커머스에서 구조를 바꾸는 일이 즐거운 사람[2]"
+  ],
+  "hard": [
+   "3~4년 이상 CTR/CVR 실무 경력직 자리라 신입·전환자에게는 문이 좁다[1]",
+   "구조 전환(멀티태스크·리스트 학습)을 '리드'해야 해서 정답이 정해져 있지 않다[1]",
+   "검색 품질 문제는 질의 이해·검색·Relevance·랭킹이 얽혀 원인 찾기가 길다[3]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "오프라인 AUC가 0.5%p 올랐는데 A/B에서 구매 전환은 그대로예요. 무엇부터 보겠어요?",
+   "a": "자격요건 '오프라인·온라인 괴리' 그대로 — 지표 단위, 자리 편향, 학습·서빙 어긋남.[1][14][26]"
+  },
+  {
+   "q": "pCTR·pCVR·pCart를 하나의 점수로 합친다면 공식과 가중치를 어떻게 정하겠어요?",
+   "a": "업무③의 핵심 — 보정과 A/B로 가중치 정하기.[1][2]"
+  },
+  {
+   "q": "Light 랭커는 무엇으로 평가하나요? Heavy와 목표가 달라지면 무슨 일이 생기나요?",
+   "a": "2단 구조에서 앞단이 놓친 상품은 뒷단이 못 살린다.[1][6]"
+  },
+  {
+   "q": "어제 등록된 상품은 클릭 기록이 없어요. 검색 결과에 어떻게 올리겠어요?",
+   "a": "토스 쇼핑이 실제로 밴딧·신뢰구간 하한·무작위 노출로 푼 문제.[2]"
+  },
+  {
+   "q": "pointwise에서 listwise로 바꾸면 학습 데이터·평가·서빙 중 무엇이 달라지나요?",
+   "a": "업무④ '전환을 리드' — 질의 그룹 데이터와 NDCG.[1][13]"
+  },
+  {
+   "q": "검색 결과 ML 시스템을 처음부터 설계해 보세요(후보 수·지연 시간·로그).",
+   "a": "직무 인터뷰 주제가 ML 시스템 설계다.[1]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · ML 엔지니어 (Search Conversion/Ranking)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7992229003",
+   "kind": "posting",
+   "note": "팀 소개(Commerce Search Relevance Silo)·업무·요건·우대·이력서 안내·합류 여정(심층 기술 면접·ML 시스템 설계)"
+  },
+  {
+   "n": 2,
+   "title": "SLASH 24 · 기반 데이터가 부족해도 OK! 커머스 추천 시스템 제작기",
+   "url": "https://www.youtube.com/watch?v=LAD6LYnkPsA",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스 데이터 사이언티스트·ML 엔지니어 발표 · 자막 전부 읽음(Thompson Sampling 코호트 밴딧·신뢰구간 하한 필터·신상품 무작위 노출·투타워 유저 임베딩·mixed negative sampling·temperature scaling·Hadoop/Spark/Airflow·Redis/Phoenix·Spring 서빙·MLflow·피처 스토어·ONNX Runtime)"
+  },
+  {
+   "n": 3,
+   "title": "토스 채용 · ML 엔지니어 (Search Relevance)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7992223003",
+   "kind": "posting",
+   "note": "같은 Silo의 다른 자리 — 하루 수십만 건 질의, Light/Heavy Relevance, QU·Retrieval·Ranking 맞물림"
+  },
+  {
+   "n": 4,
+   "title": "토스 채용 · ML 엔지니어 (Commerce Recommendation)",
+   "url": "https://toss.im/career/job-detail?gh_jid=6543801003",
+   "kind": "posting",
+   "note": "같은 회사 커머스 추천 — CTR/CVR·리랭킹·블렌딩·온라인 지표 검증"
+  },
+  {
+   "n": 5,
+   "title": "토스 채용 · ML 엔지니어 (Commerce Ads)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7784598003",
+   "kind": "posting",
+   "note": "같은 회사 커머스 광고 — CTR/CVR 결과의 보정·노출 전략·온라인 실험"
+  },
+  {
+   "n": 6,
+   "title": "Covington 외 · Deep Neural Networks for YouTube Recommendations (RecSys 2016)",
+   "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/",
+   "kind": "reference",
+   "note": "다른 회사 — 후보 생성 + 랭킹 2단 구조"
+  },
+  {
+   "n": 7,
+   "title": "Wang 외 · DCN V2: Improved Deep & Cross Network (2020)",
+   "url": "https://arxiv.org/abs/2008.13535",
+   "kind": "reference"
+  },
+  {
+   "n": 8,
+   "title": "Guo 외 · DeepFM: A Factorization-Machine based Neural Network for CTR Prediction (2017)",
+   "url": "https://arxiv.org/abs/1703.04247",
+   "kind": "reference"
+  },
+  {
+   "n": 9,
+   "title": "Zhou 외 · Deep Interest Network for Click-Through Rate Prediction (2017)",
+   "url": "https://arxiv.org/abs/1706.06978",
+   "kind": "reference"
+  },
+  {
+   "n": 10,
+   "title": "Ma 외 · Modeling Task Relationships in Multi-task Learning with Multi-gate Mixture-of-Experts (KDD 2018)",
+   "url": "https://dl.acm.org/doi/10.1145/3219819.3220007",
+   "kind": "reference"
+  },
+  {
+   "n": 11,
+   "title": "Tang 외 · Progressive Layered Extraction (PLE) (RecSys 2020)",
+   "url": "https://dl.acm.org/doi/10.1145/3383313.3412236",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "Ma 외 · Entire Space Multi-Task Model (ESMM) (SIGIR 2018)",
+   "url": "https://arxiv.org/abs/1804.07931",
+   "kind": "reference",
+   "note": "클릭한 것에서만 보이는 구매 — pCVR 선택 편향"
+  },
+  {
+   "n": 13,
+   "title": "Burges · From RankNet to LambdaRank to LambdaMART: An Overview (2010)",
+   "url": "https://www.microsoft.com/en-us/research/publication/from-ranknet-to-lambdarank-to-lambdamart-an-overview/",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Joachims 외 · Unbiased Learning-to-Rank with Biased Feedback (WSDM 2017)",
+   "url": "https://arxiv.org/abs/1608.04468",
+   "kind": "reference",
+   "note": "자리 편향·IPS 보정·무작위 개입으로 자리 확률 추정"
+  },
+  {
+   "n": 15,
+   "title": "Russo 외 · A Tutorial on Thompson Sampling (2017)",
+   "url": "https://arxiv.org/abs/1707.02038",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Li 외 · A Contextual-Bandit Approach to Personalized News Article Recommendation (LinUCB, 2010)",
+   "url": "https://arxiv.org/abs/1003.0146",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Yang 외 · Mixed Negative Sampling for Learning Two-tower Neural Networks in Recommendations (WWW 2020)",
+   "url": "https://research.google/pubs/mixed-negative-sampling-for-learning-two-tower-neural-networks-in-recommendations/",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Guo 외 · On Calibration of Modern Neural Networks (2017)",
+   "url": "https://arxiv.org/abs/1706.04599",
+   "kind": "reference",
+   "note": "temperature scaling"
+  },
+  {
+   "n": 19,
+   "title": "론 코하비 외 · 신뢰할 수 있는 온라인 종합 대조 실험 (Trustworthy Online Controlled Experiments 한국어판, 이기홍·김기영 옮김)",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000005201885",
+   "kind": "reference",
+   "note": "실험 단위·표본 크기·SRM·지표 묶음"
+  },
+  {
+   "n": 20,
+   "title": "Wikipedia · Discounted cumulative gain (NDCG)",
+   "url": "https://en.wikipedia.org/wiki/Discounted_cumulative_gain",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Wikipedia · Binomial proportion confidence interval (Wilson score interval)",
+   "url": "https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 23,
+   "title": "자소설닷컴 — 토스뱅크 연봉(같은 집계)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "토스 — 회사 소개(사이트 하단 회사 정보)",
+   "url": "https://toss.im/company",
+   "kind": "company"
+  },
+  {
+   "n": 25,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 26,
+   "title": "칩 후옌 · 머신러닝 시스템 설계 (한빛미디어, 2023)",
+   "url": "https://www.oreilly.com/library/view/-/9791169210850/",
+   "kind": "reference",
+   "note": "Designing Machine Learning Systems 한국어판 — 데이터 누수·학습/서빙 어긋남·배포 뒤 감시"
+  },
+  {
+   "n": 27,
+   "title": "LightGBM 문서 · Parameters (objective lambdarank)",
+   "url": "https://lightgbm.readthedocs.io/en/latest/Parameters.html",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "이 Silo(Commerce Search Relevance)가 직접 한 공개 발표는 찾지 못했습니다. 팀의 일은 이 공고[1]와 같은 Silo 공고[3]로, 토스 커머스가 데이터를 다루고 서빙하는 방식은 2024년 SLASH 추천 시스템 발표[2]로 보였는데 그 발표는 검색이 아니라 추천이고 시점도 이르므로 지금 검색 랭킹의 도구·구조는 다를 수 있습니다. 2단 랭킹·교차 피처·멀티태스크·LTR·편향 보정의 '보통 이런 것'은 공개 논문[6]~[17]으로 보였고, 점수 공식·가중치·자리 확률 같은 숫자는 모두 설명용 가정입니다.",
+ "resources": [
+  {
+   "id": "slash24-reco",
+   "title": "SLASH 24 · 기반 데이터가 부족해도 OK! 커머스 추천 시스템 제작기",
+   "by": "토스 데이터 사이언티스트 · ML 엔지니어 · 20분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=LAD6LYnkPsA",
+   "why": "토스 쇼핑이 밴딧·신뢰구간 하한·투타워 임베딩으로 첫 랭킹을 만들고, 배치·실시간 두 가지로 서빙한 과정. 콜드스타트 우대사항과 서빙 요건의 회사 쪽 실제 모습이라 지원 전에 꼭 본다."
+  },
+  {
+   "id": "dmls-ko",
+   "title": "머신러닝 시스템 설계",
+   "by": "칩 후옌 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EC%B9%A9%20%ED%9B%84%EC%98%8C",
+   "why": "라벨·피처 파이프라인·데이터 누수·학습/서빙 어긋남·배포 뒤 감시를 한 권에. 요건 2·4·5번과 직무 인터뷰의 ML 시스템 설계 대비."
+  },
+  {
+   "id": "kohavi-ko",
+   "title": "신뢰할 수 있는 온라인 종합 대조 실험",
+   "by": "론 코하비 · 다이앤 탕 · 야 쉬 (이기홍 · 김기영 옮김)",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000005201885",
+   "why": "A/B 실험의 단위·표본·SRM·지표 설계. 업무⑤의 'A/B 실험까지 오너십'과 우대 7번을 위한 기본서."
+  },
+  {
+   "id": "youtube-dnn",
+   "title": "Deep Neural Networks for YouTube Recommendations",
+   "by": "Covington · Adams · Sargin · 2016",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/",
+   "why": "후보 생성과 랭킹을 두 단으로 나누는 가장 많이 인용되는 사례. 업무①의 2-tier 구조를 이해하는 출발점."
+  },
+  {
+   "id": "dcn-v2",
+   "title": "DCN V2: Improved Deep & Cross Network and Practical Lessons for Web-scale Learning to Rank Systems",
+   "by": "Wang 외 · 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2008.13535",
+   "why": "피처 교차를 층으로 배우는 구조와 대규모 서비스에서의 실전 교훈. 업무②와 우대 1번."
+  },
+  {
+   "id": "deepfm",
+   "title": "DeepFM: A Factorization-Machine based Neural Network for CTR Prediction",
+   "by": "Guo 외 · 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1703.04247",
+   "why": "CTR 모델의 기본형. 두 피처 조합을 임베딩 내적으로 배우는 방법을 짧게 익힌다."
+  },
+  {
+   "id": "din",
+   "title": "Deep Interest Network for Click-Through Rate Prediction",
+   "by": "Zhou 외 · 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1706.06978",
+   "why": "유저 행동 기록 중 지금 후보와 관련된 것만 보는 주의 구조. 유저×상품 교차 피처의 대표."
+  },
+  {
+   "id": "mmoe",
+   "title": "Modeling Task Relationships in Multi-task Learning with Multi-gate Mixture-of-Experts",
+   "by": "Ma 외 · KDD 2018",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://dl.acm.org/doi/10.1145/3219819.3220007",
+   "why": "업무③ 멀티 액션 예측의 기본 구조."
+  },
+  {
+   "id": "ple",
+   "title": "Progressive Layered Extraction (PLE): A Novel Multi-Task Learning Model for Personalized Recommendations",
+   "by": "Tang 외 · RecSys 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://dl.acm.org/doi/10.1145/3383313.3412236",
+   "why": "행동끼리 서로 깎아 먹는 '시소' 현상을 줄이는 구조. MMoE 다음에 읽는다."
+  },
+  {
+   "id": "esmm",
+   "title": "Entire Space Multi-Task Model: An Effective Approach for Estimating Post-Click Conversion Rate",
+   "by": "Ma 외 · SIGIR 2018",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1804.07931",
+   "why": "pCVR을 클릭 로그로만 배우면 생기는 선택 편향과 그 해법. 업무③과 우대 6번을 잇는다."
+  },
+  {
+   "id": "calibration",
+   "title": "On Calibration of Modern Neural Networks",
+   "by": "Guo 외 · 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1706.04599",
+   "why": "여러 확률을 곱해 한 점수로 만들기 전에 필요한 보정. 토스 커머스가 쓴 temperature scaling의 원 논문."
+  },
+  {
+   "id": "lambdamart",
+   "title": "From RankNet to LambdaRank to LambdaMART: An Overview",
+   "by": "Christopher Burges · Microsoft Research · 2010",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.microsoft.com/en-us/research/publication/from-ranknet-to-lambdarank-to-lambdamart-an-overview/",
+   "why": "pairwise에서 listwise로 가는 길을 한 글에. 업무④ '리스트 안 상대 순서 학습'의 바탕."
+  },
+  {
+   "id": "lightgbm-rank",
+   "title": "LightGBM 문서 · Parameters (lambdarank)",
+   "by": "Microsoft · 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://lightgbm.readthedocs.io/en/latest/Parameters.html",
+   "why": "질의 그룹 단위 데이터로 LTR 모델을 가장 빨리 돌려 보는 방법. 딥러닝 LTR 전에 손에 익힌다."
+  },
+  {
+   "id": "unbiased-ltr",
+   "title": "Unbiased Learning-to-Rank with Biased Feedback",
+   "by": "Joachims · Swaminathan · Schnabel · WSDM 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1608.04468",
+   "why": "클릭 로그의 자리 편향을 IPS로 보정하는 기본 틀. 우대 6번과 오프라인·온라인 괴리 요건."
+  },
+  {
+   "id": "ts-tutorial",
+   "title": "A Tutorial on Thompson Sampling",
+   "by": "Russo 외 · 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1707.02038",
+   "why": "토스 쇼핑이 첫 추천에 쓴 Thompson Sampling을 예제로 익힌다. 콜드스타트 우대사항."
+  },
+  {
+   "id": "linucb",
+   "title": "A Contextual-Bandit Approach to Personalized News Article Recommendation",
+   "by": "Li · Chu · Langford · Schapire · 2010",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1003.0146",
+   "why": "피처를 쓰는 밴딧(LinUCB)의 원 논문. 우대 4번이 직접 든 방법."
+  },
+  {
+   "id": "mns",
+   "title": "Mixed Negative Sampling for Learning Two-tower Neural Networks in Recommendations",
+   "by": "Yang 외 · WWW 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://research.google/pubs/mixed-negative-sampling-for-learning-two-tower-neural-networks-in-recommendations/",
+   "why": "토스 커머스가 인기 상품 편향을 줄이려 쓴 부정 표본 섞기. 라벨 설계(업무⑤)에 쓴다."
+  },
+  {
+   "id": "cross-entropy-note",
+   "title": "But what is cross-entropy? (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/GlYgs6v2YfU",
+   "why": "CTR 모델의 손실(logloss)이 무엇을 재는지 그림으로. 확률 보정과 오프라인 지표를 읽는 바탕."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "이 자리의 일 감 잡기",
+   "time": "1주",
+   "goal": "검색 한 번이 질의 이해→후보→Relevance→Light→Heavy→로그로 지나가는 길과, 이 자리가 맡는 칸을 말로 설명할 수 있다.",
+   "resources": [
+    "slash24-reco",
+    "youtube-dnn",
+    "cross-entropy-note"
+   ],
+   "task": "가상 쇼핑몰 검색의 단계 표를 만든다 — 칸: 단계, 후보 수, 허용 지연 시간, 쓰는 모델, 평가 지표."
+  },
+  {
+   "title": "CTR/CVR 모델과 교차 피처",
+   "time": "3~4주",
+   "goal": "노출·클릭·구매 가상 로그에서 시점을 지켜 라벨·피처를 만들고, DeepFM이나 DCN으로 pCTR을 학습해 logloss·GAUC로 잰다.",
+   "resources": [
+    "deepfm",
+    "dcn-v2",
+    "din",
+    "dmls-ko"
+   ],
+   "task": "검색어 50개·상품 2,000개·노출 50만 건의 가상 로그를 만들고(검색어×상품 교차 효과를 일부러 심는다), 교차 피처 없는 로지스틱 회귀와 DCN의 전체 AUC·검색어별 AUC를 한 표로 비교한다."
+  },
+  {
+   "title": "멀티태스크와 점수 합치기",
+   "time": "2~3주",
+   "goal": "클릭·장바구니·구매를 MMoE로 함께 학습하고, 보정한 확률을 하나의 점수로 합쳐 순서가 어떻게 바뀌는지 보인다.",
+   "resources": [
+    "mmoe",
+    "ple",
+    "esmm",
+    "calibration"
+   ],
+   "task": "2단계 로그에 장바구니·구매를 더해 단일 모델 3개와 MMoE 1개를 비교하고, temperature scaling 전·후 보정 곡선과 가중치 세 가지에 따른 NDCG를 낸다."
+  },
+  {
+   "title": "리스트 학습과 편향 보정",
+   "time": "2~3주",
+   "goal": "질의 그룹 단위로 LambdaMART를 학습하고, 자리 편향을 IPS로 보정했을 때 순서 지표가 어떻게 달라지는지 보인다.",
+   "resources": [
+    "lambdamart",
+    "lightgbm-rank",
+    "unbiased-ltr"
+   ],
+   "task": "가상 로그의 클릭에 자리별 '볼 확률'(1.0·0.6·0.35…)을 일부러 곱해 편향을 만든 뒤, 보정 없는 LambdaMART와 IPS 가중 LambdaMART의 '편향 없는 정답' 기준 NDCG@10을 비교한다."
+  },
+  {
+   "title": "콜드스타트와 A/B 실험 (선택)",
+   "time": "계속",
+   "goal": "신상품 노출을 밴딧으로 배분하고, 랭킹 변경을 A/B 실험으로 설계·판정할 수 있다.",
+   "resources": [
+    "ts-tutorial",
+    "linucb",
+    "kohavi-ko",
+    "slash24-reco"
+   ],
+   "task": "신상품 20개를 Thompson Sampling·신뢰구간 하한·고정 탐색 자리 세 방식으로 1만 번 노출하는 시뮬레이션을 돌려 전체 클릭과 신상품 발견 속도를 비교하고, 실제로 실험한다면 필요한 군별 유저 수를 계산한다."
+  }
+ ],
+ "pay": {
+  "summary": "공공데이터 집계로 회사 전체 신입 초봉 **약 4,200만원**, 평균 **약 6,200만원** — 공시된 평균 급여는 없다(비상장). 이 자리는 3~4년 이상 경력직이라 초봉과는 거리가 멀다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 없고 직군 구분도 없다 [22]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 — 경력직이 섞인 값 [22]"
+   },
+   {
+    "label": "토스뱅크 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 계열사 값 — 견주어 보기용 [23]"
+   },
+   {
+    "label": "토스뱅크 평균",
+    "value": "약 7,208만원",
+    "amount": 7208,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 계열사 평균 [23]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고, 레퍼런스 체크 뒤 **처우 협의** 단계에서 사람마다 정한다 [1]. 비바리퍼블리카는 상장사가 아니라 사업보고서의 '직원 평균 급여'가 없다. 평균은 경력직이 섞인 회사 전체 값이라 초봉이 아니고, 이 자리처럼 3~4년 이상 경력직의 제안은 이전 처우와 협의로 정해져 집계값과 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 복지를 소개한 2021년 공식 글이다 [25]. 지금도 같은지, 커머스 조직에도 그대로 적용되는지는 글에 없으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스(비바리퍼블리카) 본사",
+  "address": "서울특별시 강남구 테헤란로 142, 4·10~13·22·23층",
+  "postal": "06236",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "주소는 토스 회사 소개 페이지 하단의 회사 정보다 [24]. 공고의 근무지는 'Seoul'로만 적혀 있어 커머스 조직의 자리가 본사와 다를 수 있다 {추론}."
+ }
+}
