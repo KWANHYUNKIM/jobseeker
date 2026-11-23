@@ -13,8 +13,9 @@
   "wanted-342854": "henry-senior-sre-japan",
   "wanted-385554": "hyundai-autoever-ai-researcher",
   "jobkorea-50301716": "hyundai-autoever-ai-researcher",
-  "jobkorea-50301916": "hyundai-autoever-physical-ai-engineer",
+  "wanted-385488": "hyundai-autoever-auth-account-backend",
   "wanted-385504": "hyundai-autoever-physical-ai-engineer",
+  "jobkorea-50301916": "hyundai-autoever-physical-ai-engineer",
   "jobkorea-50301861": "hyundai-autoever-robot-platform-developer",
   "wanted-377335": "ldf-ebookjapan-web-frontend",
   "wanted-377332": "ldf-linemanga-data-scientist",
@@ -320,15 +321,25 @@
    "lines": 17
   },
   {
+   "id": "hyundai-autoever-auth-account-backend",
+   "company": "현대오토에버",
+   "role": "Backend Developer - 인증/계정플랫폼 개발 및 운영",
+   "jobs": [
+    "wanted-385488"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 13
+  },
+  {
    "id": "hyundai-autoever-physical-ai-engineer",
    "company": "현대오토에버",
    "role": "Physical AI Engineer",
    "jobs": [
-    "jobkorea-50301916",
-    "wanted-385504"
+    "wanted-385504",
+    "jobkorea-50301916"
    ],
    "researched_at": "2026-11-23",
-   "lines": 24
+   "lines": 19
   },
   {
    "id": "hyundai-autoever-robot-platform-developer",
