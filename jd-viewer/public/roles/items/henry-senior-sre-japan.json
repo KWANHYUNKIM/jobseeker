@@ -1,0 +1,1203 @@
+{
+ "id": "henry-senior-sre-japan",
+ "company": "株式会社ヘンリー (Henry)",
+ "role": "Senior Site Reliability Engineer (SRE)",
+ "team": "SRE 팀 (LAPRAS Global Bridge 연계 · 근무지 일본)",
+ "jobs": [
+  "wanted-342854"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "일본 중소병원·진료소가 쓰는 **클라우드 전자 차트 + 진료비 청구 시스템 「Henry」**가 멈추지 않고 빠르게 돌게 하는 SRE(서비스 신뢰성을 공학으로 푸는 엔지니어)입니다.[1] 혼자 지키기보다 **개발팀이 스스로 관측·배포·장애 대응을 하게 돕는 것**이 이 팀의 방식입니다.[6][16]",
+  "env": "공고는 Google Cloud(Cloud Run·Cloud SQL PostgreSQL·BigQuery) + Terraform/tfaction + OpenTelemetry·Honeycomb·Datadog·Sentry 를 적었지만, 회사는 2025년 10월부터 **AWS(ECS·Aurora)로 이전 중**입니다.[1][9][19] 완전 원격이지만 일본 거주·비즈니스 일본어가 필수입니다.[1]",
+  "oneline": "클라우드 이전 한가운데에 들어가는 시니어 SRE — **관측(트레이스)·DB 성능·의료 보안**이 일의 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "患者情報を扱うウェブサービスとして求められる情報セキュリティの確保と、顧客の課題解決をアジャイルに実現するための高い開発生産性、優れたユーザ体験を下支える安定した運用の実現を通じて、顧客に信頼されるサービスの提供を継続的に実現していただきます。",
+   "short": "환자 정보를 다루는 서비스라 보안·개발 속도·안정 운영 세 가지를 같이 지키는 자리다.",
+   "why": "Henry 는 병원·진료소의 전자 차트(カルテ, 진료 기록)와 レセコン(진료비 청구 계산기)을 한 몸으로 만든 클라우드 서비스입니다.[1] 일본 후생노동성 가이드라인은 의료 정보를 다루는 시스템에 접근 로그 보존·변조 방지·인증 같은 안전 관리를 요구하고,[23] 이 회사 SRE 는 그 요구로 '인터넷으로 접속하면 TLS 1.3 + 클라이언트 인증서' 같은 구체 조건을 꼽았습니다.[7] 회사는 ISO/IEC 27001 과 의료 ISAC 규정 인증을 받았다고 적고 있습니다.[2]",
+   "actually": {
+    "intro": "이 회사 SRE 발표에서 세 가지가 실제로 뜻하는 것입니다.",
+    "items": [
+     "**보안** — 3省2ガイドライン(후생노동성·경제산업성·총무성의 의료 정보 안전 관리 지침 묶음)에 맞춰 로그 보존·접근 제한·취약점 관리를 지킨다.[7][23]",
+     "**개발 생산성** — 진료보수 제도가 2년마다 바뀌고 관계 기관의 마스터(약·행위 코드표) 변경을 바로 반영해야 해서 배포 속도 자체가 신뢰성이다.[7]",
+     "**안정 운영** — 진료·회계·처방전 출력에 다 쓰이니 응답이 늦으면 환자가 창구에서 기다린다.[7]"
+    ]
+   },
+   "how_far": "세 가지를 SRE 혼자 지키는 게 아니라 **개발팀이 스스로 지키게 만드는 것**이 이 팀의 방식입니다 — 아래 업무 줄들이 그 수단입니다.[16]",
+   "refs": [
+    1,
+    2,
+    7,
+    23
+   ],
+   "study": [
+    "mhlw-guideline",
+    "henry-blog-sre"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・インフラシステムならびにワークフローの設計・構築",
+   "short": "서버·DB·네트워크 같은 기반과, 코드가 운영에 나가는 흐름(배포 절차)을 설계하고 만든다.",
+   "why": "이 회사는 2019년 전업 인프라 담당 없이 시작해 관리형 서비스인 Cloud Run 을 골랐습니다.[10] 대상이 진료소에서 병원(회복기·급성기)으로 넓어지며 24시간 365일 가용성이 필요해져, 2025년 10월 Google Cloud → AWS 이전을 시작했습니다.[9] 2026년 9월 글에도 '이전 중'이라고 적혀 있습니다.[19]",
+   "actually": {
+    "items": [
+     "**이전 설계** — Cloud SQL for PostgreSQL → Aurora PostgreSQL 데이터 이전 절차와 예상 중단 시간, ECS(AWS 컨테이너 실행 서비스) 구성, CI/CD 다시 만들기, AWS 로 옮기기 어려운 기능은 GCP 에 남기는 안.[9]",
+     "**고른 이유** — Cloud Run 안쪽 부하 분산 동작을 직접 볼 수 없어 장애 원인을 가르기 어려웠고, 자동 확장 조절점이 CPU·요청 수 60% 정도로 한정돼 인스턴스를 넉넉히 띄워 두는 식으로 버텼다.[10]",
+     "**워크플로** — 매주 정기 배포. 운영 배포용 PR 을 GitHub Actions 가 만들고, 개발팀·SRE 가 '배포 계획회'에서 DB 스키마 마이그레이션·API·GraphQL 스키마 호환을 같이 본다. 급한 hotfix 는 계획회 없이 앱별로 바로.[6]",
+     "**이전 뒤 계획** — 재해 복구(DR)와 보안 강화.[9] 채용 사유에도 SLA 제공·리전 장애 대비가 적혀 있다.[1]"
+    ]
+   },
+   "how_far": "이전은 진행 중이라 입사하면 **설계가 끝난 걸 운영하는 게 아니라 이전 자체를 맡을** 가능성이 큽니다. {추론} 회사 채용 페이지의 지금 판은 개발 환경을 ECS·S3·Step Functions·Aurora·Security Hub·GuardDuty 로 바꿔 적었습니다.[2]",
+   "refs": [
+    9,
+    10,
+    19,
+    6
+   ],
+   "study": [
+    "henry-blog-sre",
+    "terraform-docs",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・アプリケーションやデータベースを含めた各レイヤーの信頼性向上及びパフォーマンス改善",
+   "short": "인프라만이 아니라 앱 코드·SQL·DB 까지 내려가 느린 곳과 자주 깨지는 곳을 고친다.",
+   "why": "이 회사 사례에서 병목은 대개 DB 였습니다. 월초 청구 처리(전월 진료분을 모아 보험자에게 7할을 청구)가 일부 병원에서 시간 초과로 멈췄고, 트레이스 하나에 DB 문장이 2,000개 넘게 찍혀 있었습니다.[3]",
+   "actually": {
+    "items": [
+     "**청구 처리 시간 초과** — 대시보드로 상시 감시 → 트레이스 기반 알림 → 스팬에서 느린 쿼리 위치를 찾아 튜닝. 다음 달 시간 초과 0건, DB 를 키우지 않고 해결.[3]",
+     "**반성도 공개** — 시간 초과 값을 늘린 임시 대응이 전체 처리 속도를 떨어뜨렸고, 실행계획을 안 보고 고친 쿼리가 더 느려졌다.[3]",
+     "**인덱스** — Datadog Database Monitoring 경고로 빠진 인덱스를 찾아 추가했다.[15]",
+     "**콜드 스타트** — Kotlin 서버가 새 인스턴스로 뜨는 시간을 약 18초 → 약 10초로. DB 연결을 기동 때 막고 기다리지 않게 바꾸고, 로그 설정 생성(약 1초 → 약 100ms), 기동 CPU 부스트가 가장 효과적이었다.[12]",
+     "**불안정 요인** — 산정 규칙(마스터) 변경, 새 업무 추가, RDB 스키마 마이그레이션 때 흔들린다.[7]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "인덱스 전후의 실행계획 (가상 청구 표 20만 줄, SQLite 로 직접 실행)",
+     "body": "병원(facility_id)·월로 거르는 집계에 복합 인덱스를 걸면 전체 훑기(SCAN)가 인덱스 찾기(SEARCH)로 바뀝니다. 출력: `인덱스 전: SCAN claim_line` → `인덱스 후: SEARCH claim_line USING INDEX ix_facility_month (facility_id=? AND month=?)`, 결과 227814. PostgreSQL 에서는 EXPLAIN 으로 같은 걸 봅니다.[28]",
+     "lang": "python",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE claim_line(id INTEGER PRIMARY KEY, facility_id INT, month TEXT, points INT)\")\ndb.executemany(\"INSERT INTO claim_line(facility_id, month, points) VALUES (?,?,?)\",\n               [(i % 300, f\"2026-{(i % 12) + 1:02d}\", i % 900) for i in range(200_000)])\nq = \"SELECT SUM(points) FROM claim_line WHERE facility_id = 42 AND month = '2026-07'\"\nprint(\"인덱스 전:\", db.execute(\"EXPLAIN QUERY PLAN \" + q).fetchall()[0][3])\ndb.execute(\"CREATE INDEX ix_facility_month ON claim_line(facility_id, month)\")\nprint(\"인덱스 후:\", db.execute(\"EXPLAIN QUERY PLAN \" + q).fetchall()[0][3])\nprint(\"결과:\", db.execute(q).fetchone()[0])"
+    }
+   ],
+   "how_far": "SRE 라도 **실행계획을 읽고 인덱스를 제안하고, 필요하면 앱 코드에 손대는** 수준이 기대됩니다 — 개발 환경 줄에 '필요하면 애플리케이션 구현을 고친다'고 적혀 있습니다.[1]",
+   "refs": [
+    3,
+    7,
+    12,
+    15
+   ],
+   "study": [
+    "pg-explain",
+    "dbre-ja",
+    "henry-sre-next2026"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・オブザーバビリティ基盤をエンジニアリングチームに提供、イネーブリングし、エンジニアリングチームが自ら仮説検証できるようにする",
+   "short": "로그·지표·트레이스를 볼 수 있는 판을 깔아 주고, 개발자가 스스로 원인을 찾게 가르친다.",
+   "why": "오브저버빌리티(관측 가능성)는 '밖에서 보이는 데이터로 시스템 안에서 무슨 일이 났는지 물어볼 수 있는 정도'입니다. 이 회사는 도메인이 복잡해(진료보수 2년 주기 개정, 지자체마다 다른 공비 계산) 문의의 원인을 가르기 어려웠고, 그래서 관측을 SLI/SLO 의 전제로 삼았습니다.[5] 이네이블링(enabling)은 팀 토폴로지의 말로, 다른 팀이 새 능력을 익히게 곁에서 돕는 역할입니다.[30]",
+   "actually": {
+    "items": [
+     "**지금의 판** — 계측은 OpenTelemetry, 로그는 Cloud Logging·Sentry, 지표는 Datadog, 트레이스는 Honeycomb.[3]",
+     "**걸어온 길** — 2023년 8월까지 로그·지표만 → 9월 OpenTelemetry → 12월 Datadog → 그 뒤 Honeycomb.[8][14]",
+     "**계정을 다 준다** — Datadog·Honeycomb 은 사용자 수로 과금하지 않고, 민감 개인정보(要配慮個人情報)를 넣지 않으니 개발자 모두에게 계정을 준다.[6]",
+     "**설명회와 녹화**, 남이 돌린 쿼리를 보며 배우기, Slack 에 쿼리 링크 공유.[6]",
+     "**결과** — 2025년 7월 Honeycomb 쿼리의 61%가 개발팀에서 나왔다.[6] 10월 글에서는 약 7할.[18]",
+     "**성능 분석회** — SRE 가 열고 각 팀 자원자가 와서 엔드포인트별 지연·병원별 오류·느린 쿼리·Cloud Run/Cloud SQL 부하를 같이 본다.[6][15]"
+    ]
+   },
+   "how_far": "도구를 까는 것까지가 절반입니다. **개발자가 Honeycomb 에서 스스로 질문을 던지는 상태**를 숫자(쿼리의 몇 %가 개발팀에서 나오나)로 확인하는 데까지가 이 팀의 기준입니다.[6][18] 회사 채용 페이지 지금 판에는 '생성 AI·MCP 를 쓴 관측 기반 설계'도 업무로 더해졌습니다.[2]",
+   "refs": [
+    5,
+    6,
+    11,
+    14,
+    17,
+    18,
+    3
+   ],
+   "study": [
+    "o11y-eng-ja",
+    "o11y-eng-ko",
+    "otel-docs",
+    "henry-codt2025",
+    "team-topologies"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・計算機資源の最適化や活用するサービスの選定などを通じたコスト最適化",
+   "short": "서버를 필요한 만큼만 띄우고, 관측 도구 사용량까지 줄여 클라우드 청구서를 낮춘다.",
+   "why": "의료기관 업무는 매월 1~10일 청구 작업에 접속이 몰립니다 — 그래서 자원을 늘었다 줄였다 하는 데 비용을 줄일 여지가 있습니다.[7] 반대로 콜드 스타트가 길면 늘 인스턴스를 넉넉히 켜 둬야 해서 돈이 듭니다.[12]",
+   "actually": {
+    "items": [
+     "**콜드 스타트 줄이기 = 상시 인스턴스 줄이기** — 기동 시간을 줄여 늘 켜 두는 수를 줄일 수 있게.[12]",
+     "**네트워크 연결 바꾸기** — Serverless VPC Access 커넥터를 Direct VPC egress 로 바꿔 순단이 사라지고 비용도 조금 줄었다.[13]",
+     "**관측 비용** — Honeycomb 계약 스팬량(15억)을 넘어서, 정상이고 2ms 이하인 DB 커넥션 획득 스팬 같은 '안 봐도 되는 스팬'을 Collector 에서 버렸다. 상위 GraphQL 오퍼레이션 5개만 버려도 약 30%가 줄 수 있었다.[11]",
+     "**비용 점검** — 성능 분석회에서 Cloud Run 인스턴스 수와 과금 인스턴스 시간을 같이 본다.[15]",
+     "**도구 고르기** — 2023년엔 Datadog 요금이 커서 도입을 미뤘다가 나중에 들였다.[5][8]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "정상이고 빠른 커넥션 스팬만 버리기 (가상 스팬 10만 개, 직접 실행)",
+     "body": "회사 글의 규칙(이름이 커넥션 획득 · 2ms 이하 · 오류 없음)[11]을 흉내 낸 계산입니다. 출력: `전체: 100000 남김: 85328 줄어듦: 14.7%`, `남은 커넥션 스팬(느리거나 실패): 5280` — 문제를 볼 때 필요한 느린·실패 스팬은 그대로 남습니다.",
+     "lang": "python",
+     "code": "import random\nrandom.seed(7)\n# 가상 스팬 10만 개: (이름, 걸린 시간 ms, 오류 여부)\nnames = [\"HikariDataSource.getConnection\"] * 20 + [\"SELECT\"] * 45 + [\"graphql.resolve\"] * 30 + [\"http.server\"] * 5\nspans = [(random.choice(names), random.expovariate(1 / 1.5), random.random() < 0.003) for _ in range(100_000)]\n\n\ndef keep(name, ms, err):\n    # 정상이고 2ms 이하인 커넥션 획득 스팬만 버린다 — 느리거나 실패한 것은 남긴다\n    return not (name == \"HikariDataSource.getConnection\" and ms <= 2 and not err)\n\n\nkept = [s for s in spans if keep(*s)]\nprint(\"전체:\", len(spans), \"남김:\", len(kept), f\"줄어듦: {1 - len(kept) / len(spans):.1%}\")\nslow = [s for s in kept if s[0].startswith(\"Hikari\")]\nprint(\"남은 커넥션 스팬(느리거나 실패):\", len(slow))"
+    }
+   ],
+   "how_far": "'싸게'만이 아니라 **무엇을 버려도 장애 조사가 되는지**를 판단하는 게 핵심입니다. {추론} AWS 비용 최적화 지침도 수요에 맞추기·사용량 측정·적절한 서비스 고르기를 같이 듭니다.[38]",
+   "refs": [
+    7,
+    11,
+    12,
+    13,
+    15,
+    38
+   ],
+   "study": [
+    "aws-wa-cost",
+    "henry-blog-sre"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "開発環境 ・CI/CD: Terraform, tfaction, GitHub Actions, CodeBuild",
+   "short": "인프라를 코드(Terraform)로 적고, PR 을 올리면 GitHub Actions 가 plan·apply 를 돌린다.",
+   "why": "Terraform 은 인프라를 코드로 적는 도구이고, tfaction 은 GitHub Actions 위에서 Terraform 작업 흐름(PR 마다 plan, 합치면 apply)을 짜 주는 오픈소스 액션 묶음입니다.[29] 이 회사는 제품 개발자도 Terraform 을 만지고, tfaction 쓰는 법을 문서로 남겨 뒀습니다.[16] CodeBuild 는 AWS 의 빌드 실행 서비스로, AWS 이전과 함께 들어온 것으로 보입니다. {추론}",
+   "actually": {
+    "items": [
+     "**사람 권한도 코드로** — Cloud SQL IAM 그룹 인증을 Terraform 으로 걸어, 입사·퇴사 때 개인별 .tf 파일을 고칠 필요가 없게 했다.[13]",
+     "**PR 단위 변경** — 바뀐 디렉터리별로 fmt·validate·plan 이 돌고, 기본 브랜치에 합치면 apply.[29]"
+    ]
+   },
+   "refs": [
+    16,
+    29,
+    13
+   ],
+   "study": [
+    "tfaction-docs",
+    "terraform-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・ミドルウェアやサービス: Cloud SQL for PostgreSQL, Cloud Run Services, Cloud Run Jobs, Algolia, OpenTelemetry Collector, nginx, BigQuery",
+   "short": "이 공고 시점의 실행 바닥은 Google Cloud — 지금은 AWS(ECS·Aurora)로 옮기는 중이다.",
+   "why": "Cloud Run 은 컨테이너를 올리면 알아서 늘고 주는 관리형 실행 서비스(Services 는 요청을 받는 서버, Jobs 는 끝나면 멈추는 일괄 작업)[37], Cloud SQL 은 관리형 PostgreSQL, BigQuery 는 분석용 데이터 웨어하우스입니다. 회사는 2025년 이전을 시작하며 BigQuery 는 당분간 남기기로 했습니다.[10] 회사 채용 페이지 지금 판은 이 줄을 ECS·S3·Step Functions·Aurora·Security Hub·GuardDuty·OpenTelemetry Collector·BigQuery 로 바꿔 적었습니다.[2]",
+   "actually": {
+    "items": [
+     "**Cloud Run 이 트레이스를 끊는다** — Cloud Run 이 표준 헤더(traceparent)를 제 것으로 바꿔 끼워 트레이스가 둘로 갈라졌다. 이 회사는 헤더 이름만 바꾼 Propagator(전달기)를 JVM·Node.js 양쪽에 직접 만들었다.[17]",
+     "**로그는 표준 출력으로** — OpenTelemetry 로 로그를 보내자 Cloud Run 과 Cloud Logging 의 기본 연동이 깨지고 Collector 메모리가 모자라, stdout 구조화 로그에 trace·spanId 를 넣는 방식으로 되돌렸다.[8]",
+     "**Collector** — Cloud Run 에서 Collector 를 앱 안·옆(사이드카)·따로 중 어디에 둘지 장단을 비교했다.[5] Collector 는 앱이 보낸 신호를 받아 거르고 나눠 보내는 중간 수집기다.[26]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "표준 헤더를 덮어쓰면 트레이스가 갈라지는 이유 (흉내 낸 계산, 직접 실행)",
+     "body": "W3C Trace Context 의 traceparent 는 '버전-트레이스 id-스팬 id-플래그'입니다.[27] 플랫폼이 이 값을 바꿔 끼우면 트레이스 id 가 달라집니다. 출력: `표준 헤더로 이어지나: False`, `자작 헤더로 이어지나: True`.",
+     "lang": "python",
+     "code": "# 플랫폼이 traceparent 를 덮어쓰면 트레이스가 둘로 갈라진다\nimport secrets\n\n\ndef new_span(trace_id):\n    return f\"00-{trace_id}-{secrets.token_hex(8)}-01\"\n\n\napp_trace = secrets.token_hex(16)\nsent = {\"traceparent\": new_span(app_trace), \"my-traceparent\": new_span(app_trace)}\n\n\ndef platform(headers):\n    h = dict(headers)\n    h[\"traceparent\"] = new_span(secrets.token_hex(16))  # 플랫폼이 제 스팬으로 바꿔 끼움\n    return h\n\n\nrecv = platform(sent)\nprint(\"표준 헤더로 이어지나:\", recv[\"traceparent\"].split(\"-\")[1] == app_trace)\nprint(\"자작 헤더로 이어지나:\", recv[\"my-traceparent\"].split(\"-\")[1] == app_trace)"
+    }
+   ],
+   "how_far": "Cloud Run·ECS 어느 쪽이든 **관리형 서비스가 내 대신 하는 일이 무엇이고, 그 때문에 무엇이 안 보이는지**를 아는 게 이 팀이 겪은 문제의 핵심입니다.[10][17] Algolia(검색 SaaS)·nginx 를 이 팀이 어떻게 쓰는지는 공개 자료를 못 찾았습니다.",
+   "refs": [
+    2,
+    9,
+    10,
+    8,
+    17
+   ],
+   "study": [
+    "otel-docs",
+    "henry-blog-sre"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・言語: Kotlin, TypeScript （必要に応じてアプリケーションの実装に手を加えます）",
+   "short": "서버는 Kotlin, 프런트 쪽 백엔드는 TypeScript — 필요하면 SRE 도 앱 코드를 고친다.",
+   "why": "서버는 서버 사이드 Kotlin, 화면용 백엔드(BFF)는 Node.js(TypeScript)이고 둘 사이는 gRPC·GraphQL 입니다.[5] 콜드 스타트 단축도 Kotlin 앱의 DB 연결 설정·로그 설정을 SRE 가 직접 고친 일이었습니다.[12]",
+   "how_far": "새 기능을 짜는 수준이 아니라 **기동·연결·계측 코드를 읽고 고치는** 수준이면 됩니다. {추론} Propagator 처럼 JVM 확장(SPI)과 Node.js 양쪽에 손대는 일이 실제로 있었습니다.[17]",
+   "refs": [
+    5,
+    12,
+    17
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・その他のツールやサービス: Cursor, GitHub Copilot, Sentry, Notion, Honeycomb, Datadog",
+   "short": "AI 코딩 도구, 오류 추적(Sentry), 문서(Notion), 관측(Honeycomb·Datadog)을 같이 쓴다.",
+   "why": "Sentry 는 앱 오류를 모아 알려 주는 서비스, Honeycomb 은 트레이스를 쪼개 묻는 데 강한 관측 도구, Datadog 은 지표·대시보드·DB 모니터링을 맡습니다.[3][15] 2026년 입사한 SRE 는 SRE 팀도 생성 AI 를 적극적으로 쓴다고 적었고,[21] 회사 채용 페이지 지금 판에는 Claude Code·Codex 도 더해졌습니다.[2]",
+   "actually": {
+    "items": [
+     "**Honeycomb 계산 필드** — '32ms 이하면 1' 같은 식을 정의해 문턱 기준으로 쪼개 본다.[18]",
+     "**민감 정보 가리기** — GraphQL 변수를 스팬 속성으로 남기되 민감한 값은 가린다.[18]"
+    ]
+   },
+   "refs": [
+    2,
+    3,
+    15,
+    21,
+    18
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・ネットワーク / Linux / RDBMS / セキュリティの基礎知識",
+   "short": "TCP/HTTP·리눅스·관계형 DB·보안의 기초 — 장애를 층별로 갈라 볼 수 있는 바탕.",
+   "why": "이 팀이 실제로 부딪힌 문제가 층마다 있습니다 — VPC 커넥터 순단(네트워크),[13] DB 연결·느린 쿼리(RDBMS),[3][12] TLS 1.3·클라이언트 인증서·로그 변조 방지(보안).[7]",
+   "level": {
+    "basic": "TCP·DNS·HTTP·TLS 흐름, 리눅스 프로세스·메모리·파일, SQL 과 트랜잭션, 인증·인가",
+    "work": "커넥션 풀·타임아웃, 실행계획·인덱스, 인증서·mTLS, 로그 보존과 접근 제어",
+    "team": "의료 지침(접근 로그 보존·변조 방지)을 설계에 넣기, 관리형 서비스 뒤에 숨은 네트워크 동작 추적"
+   },
+   "refs": [
+    3,
+    7,
+    12,
+    13
+   ],
+   "study": [
+    "http-book",
+    "pg-explain",
+    "mhlw-guideline"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・IaC及びCI/CDによる継続的なサービス運用方法を実践した経験",
+   "short": "인프라를 코드로 관리하고, 배포를 자동 파이프라인으로 돌려 본 실제 경험.",
+   "why": "IaC(Infrastructure as Code)는 서버·권한·네트워크를 손으로 누르지 않고 코드로 적어 리뷰·이력을 남기는 방식입니다. 이 회사는 Terraform + tfaction 이고,[16] 배포는 매주 GitHub Actions 가 운영 배포 PR 을 만들어 통합 테스트 환경까지 올립니다.[6] Four Keys(배포 빈도·장애 수·복구 시간 등)도 배포 워크플로에서 BigQuery 로 쌓아 Grafana 로 봅니다.[20][39]",
+   "how_far": "'파이프라인을 써 봤다'보다 **배포를 더 빠르고 안전하게 바꾼 경험**을 말할 수 있어야 합니다 — 이 팀은 hotfix 도 같은 흐름을 타니 배포 흐름이 빨라지면 복구도 빨라진다고 봅니다.[6]",
+   "refs": [
+    6,
+    16,
+    20,
+    39
+   ],
+   "study": [
+    "tfaction-docs",
+    "terraform-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Webアプリケーションの開発経験",
+   "short": "웹 서비스를 직접 만들어 봐서 앱 쪽 사정(요청·DB·배포)을 개발자 말로 이해하는 것.",
+   "why": "이 팀의 원칙은 '운영과 개발을 나누지 않고 벽을 허문다'입니다.[16] 개발팀과 같은 대시보드·트레이스를 보며 대화하려면 앱을 만들어 본 감각이 필요합니다.[6]",
+   "how_far": "프레임워크는 상관없습니다. 요청 하나가 DB 를 몇 번 부르는지, 왜 N+1 이 생기는지를 코드로 설명할 수 있는 정도. {추론}",
+   "refs": [
+    6,
+    16
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・コンテナ技術（Docker など） / Kubernetes を利用したマイクロサービスWebサービスの運用経験",
+   "short": "컨테이너로 여러 서비스를 나눠 돌리는 운영 경험 — 이 회사 실행 바닥은 K8s 가 아니다.",
+   "why": "Henry 는 여러 서비스(Kotlin 서버·Node.js BFF)를 컨테이너로 돌리지만 실행 바닥은 Cloud Run 이었고, 이전 대상도 GKE(구글 관리형 Kubernetes)를 검토한 끝에 AWS ECS 입니다.[9][10] 그래서 Kubernetes 는 '이걸 직접 운영한다'기보다 **컨테이너를 여러 개 돌릴 때의 감각**(헬스 체크·롤링 업데이트·자원 한도·서비스 간 통신)을 보는 요건으로 읽힙니다. {추론}",
+   "actually": {
+    "items": [
+     "**롤링 업데이트와 여러 인스턴스** — 접근 가용성이 거의 100%였던 이유로 꼽혔다.[7]",
+     "**기동 확인(startup probe)** — 콜드 스타트 단축 때 DB 접속 확인을 여기로 옮겼다.[12]"
+    ]
+   },
+   "refs": [
+    9,
+    10,
+    7
+   ],
+   "study": [
+    "docker-book",
+    "k8s-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・OSSもしくは監視サービス（Datadog / Sentryなど）を用いたObservabilityエンジニアリングの経験",
+   "short": "대시보드를 보는 쪽이 아니라 계측·알림·샘플링을 설계해 본 경험.",
+   "why": "이 회사는 관측 성숙도를 다섯 단계(없음 → 인프라 지표 → 앱 로그 → 앱 지표 → 트레이스)로 스스로 매겼고, 2024년 7월 트레이스 단계의 분석·집계까지 왔다고 적었습니다.[14]",
+   "actually": {
+    "items": [
+     "**알림 설계** — '하나의 알림에 목적 하나, 지울 조건을 같이 적기'. 재발 방지용으로 쌓인 오래된 알림, 코드 이름으로 붙은 알림이 무시당하는 알림의 원인이었다.[4]",
+     "**트레이스 기반 알림** — 오탐이 적고 그 순간의 파라미터·스팬이 남아 바로 CS 로 이을 수 있었다.[3]",
+     "**SLO 와 오류 예산** — 목표치(SLO)를 정하면 남은 실패 허용량(오류 예산)으로 '지금 고쳐야 하나'를 가른다.[24][25]",
+     "**샘플링** — 전량 저장이 원칙이지만 상한을 넘자 엔드포인트별 샘플링으로 줄였다.[11][18]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "오류 예산과 소진 속도 (가상 숫자, 직접 실행)",
+     "body": "SLO 99.9%·4주 창이면 다운타임 약 40분, 요청 300만 건 중 3,000건까지 실패해도 됩니다. 월초 청구 시간에 1시간 동안 오류율 2%가 나면 예산의 27%를 태우고, 소진 속도는 20배입니다 — 구글 워크북은 이렇게 빨리 타는 경우에 즉시 호출을 권합니다.[25] 출력: `허용 다운타임(분): 40.3`, `허용 실패 요청: 3000`, `1시간에 태운 예산: 27%`, `소진 속도(burn rate): 20`.",
+     "lang": "python",
+     "code": "# 오류 예산 — SLO 99.9%, 4주(28일) 창\nslo = 0.999\nwindow_min = 28 * 24 * 60\nrequests = 3_000_000\nprint(\"허용 다운타임(분):\", round(window_min * (1 - slo), 1))\nprint(\"허용 실패 요청:\", round(requests * (1 - slo)))\n# 월초 청구 기간에 1시간 동안 오류율 2% → 예산을 얼마나 태웠나\nhour_reqs = 40_000\nbad = hour_reqs * 0.02\nprint(\"1시간에 태운 예산:\", f\"{bad / (requests * (1 - slo)):.0%}\")\nprint(\"소진 속도(burn rate):\", round(0.02 / (1 - slo)))"
+    }
+   ],
+   "how_far": "도구 이름보다 **'이 알림은 왜 있고 언제 지우나'를 말할 수 있는지**가 이 팀과 대화가 되는 지점입니다.[4]",
+   "refs": [
+    4,
+    14,
+    24,
+    25,
+    11
+   ],
+   "study": [
+    "sre-workbook-slo",
+    "o11y-eng-ja",
+    "henry-sre-next2026"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本語レベル: ビジネス",
+   "short": "일본어로 회의·문서·장애 대응을 할 수 있어야 한다 — 서류도 일본어로만 받는다.",
+   "why": "공고는 일본어 이력서·직무경력서가 필수이고, 한국어·영어 서류만 내거나 일본어 소통이 안 되면 따로 알리지 않고 서류에서 떨어뜨린다고 적었습니다. 면접은 3회입니다.[1]",
+   "how_far": "시험 급수는 적혀 있지 않습니다. 매주 배포 계획회(개발팀과 온라인 리뷰)·매일 스탠드업·문서화가 일본어로 돌아가니, **기술 토론과 장애 보고를 일본어로 쓸 수 있는** 정도가 최소선입니다.[1][6] 의료 용어(レセプト·カルテ·診療報酬)는 따로 익혀야 합니다.[7] {추론}",
+   "refs": [
+    1,
+    6,
+    7
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本国内への移住が必要",
+   "short": "근무는 완전 원격이지만 일본 안에 살아야 한다 — 한국에서 원격은 안 된다.",
+   "why": "공고는 완전 원격·근무지 무관이라고 하면서 일본 이주는 필수라고 적었습니다.[1] 외국인 엔지니어는 보통 '기술·인문지식·국제업무' 체류 자격으로 일하며, 학력 또는 실무 경력 요건이 있습니다.[32]",
+   "how_far": "체류 자격 신청 지원 범위는 공고에 없으니 LAPRAS 커피챗이나 면접에서 확인합니다. {추론}",
+   "refs": [
+    1,
+    32
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・Node.js（TypeScript） / Kotlin / Java 言語の使用経験",
+   "short": "회사 서버 언어라서 — 앱 코드를 읽고 계측·설정을 고칠 수 있으면 일이 빨라진다.",
+   "why": "서버는 Kotlin(JVM), BFF 는 Node.js(TypeScript)입니다.[5] 콜드 스타트 단축(HikariCP·logback·JIT 옵션)[12]과 Propagator 직접 만들기(JVM SPI·Node.js API)[17]가 모두 이 언어로 한 일입니다.",
+   "refs": [
+    5,
+    12,
+    17
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "医療や金融など複雑なドメインにまつわるアプリケーションの開発・運用経験",
+   "short": "규칙이 자주 바뀌고 틀리면 안 되는 업무를 겪어 봐서, '정상 상태'를 업무 말로 정할 수 있다.",
+   "why": "이 팀은 의료 도메인 이해를 SRE 팀 원칙으로 둡니다 — 월 1회 전자 레세프트 제출, 분기 1회 데이터 제출의 정상 상태를 정의하고 Datadog 에 전용 대시보드를 뒀습니다.[16] 부하 주기도 주 단위가 아니라 말일~다음 달 10일, 3개월 주기라 그래프를 6개월 단위로 봅니다.[15]",
+   "how_far": "의료를 몰라도 되지만 '이 업무가 언제 몰리고 무엇이 틀리면 큰일인가'를 먼저 묻는 습관이 있으면 됩니다. {추론} 2026년 입사자도 의료·SRE 둘 다 처음이었다고 적었습니다.[21]",
+   "refs": [
+    15,
+    16,
+    21
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・ビジネスフェーズに合わせ、開発計画や費用対効果を考慮したインフラの設計経験",
+   "short": "회사 단계(작을 때는 관리형, 커지면 직접 제어)에 맞춰 인프라를 고르고 갈아탄 경험.",
+   "why": "이 회사가 그대로 겪은 일입니다 — 전업 인프라 담당이 없던 2019년엔 Cloud Run, 큰 병원과 24시간 가용성이 필요해진 2025년엔 직접 제어할 수 있는 AWS.[9][10] 2025년 7월에는 10억 엔을 조달하며 병원 전체 IT 기반·의료 사무 BPO(청구 업무 대행)·400병상급 급성기 병원용 개발을 계획에 넣었습니다.[22]",
+   "how_far": "'왜 그때는 그걸 골랐고 지금은 바꾸나'를 비용·인력·위험으로 설명하는 능력입니다. 이 팀은 그런 결정을 ADR(아키텍처 결정 기록)로 남기고 누구나 제안할 수 있게 해 둡니다.[1][31]",
+   "refs": [
+    9,
+    10,
+    22
+   ],
+   "study": [
+    "adr",
+    "aws-wa-cost"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・gRPC / GraphQL / Data Warehouseの使用経験",
+   "short": "서비스 간 통신(gRPC)·화면용 API(GraphQL)·분석 DB(BigQuery)를 실제로 쓰는 곳이라서.",
+   "why": "서버 사이는 gRPC, 화면 쪽은 GraphQL 입니다.[5] 배포 계획회는 GraphQL 스키마 호환을 따로 점검하고,[6] 관측 비용도 GraphQL 오퍼레이션 단위로 쪼개 줄였습니다.[11] BigQuery 는 이전 뒤에도 당분간 남습니다.[10]",
+   "refs": [
+    5,
+    6,
+    10,
+    11
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・新しい技術や未知な領域に対する高速なキャッチアップ力",
+   "short": "클라우드 이전·새 관측 도구·의료 제도처럼 처음 보는 걸 빨리 익혀야 하는 시기라서.",
+   "why": "SRE 팀 앞에 관측성 향상·자원 최적화·워크플로 최적화·SLA·리전 장애 대비가 한꺼번에 놓여 있고,[1] 실행 바닥까지 바꾸는 중입니다.[19]",
+   "refs": [
+    1,
+    19
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・DDD / TDD / DevOpsの基礎知識",
+   "short": "개발팀과 같은 말로 이야기하려면 — 도메인 설계·테스트 먼저·개발과 운영을 붙이는 문화.",
+   "why": "DDD(도메인 주도 설계)는 복잡한 업무 규칙을 코드 구조에 담는 방법, TDD 는 테스트를 먼저 쓰는 개발 방식, DevOps 는 개발과 운영을 한 흐름으로 붙이는 문화입니다. 이 팀의 '운영·개발을 나누지 않는다'는 원칙이 DevOps 그 자체입니다.[16]",
+   "refs": [
+    16
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・OSS の公開やコントリビュートの経験",
+   "short": "남이 쓰는 도구를 고쳐 본 경험 — 이 팀은 쓰는 도구의 한계를 직접 메운다.",
+   "why": "SRE NEXT 2026 발표자는 OpenTelemetry 공식 문서 번역과 OpenTelemetry Kotlin SDK 승인자(Approver)를 맡고 있습니다.[3] 클라우드가 표준 헤더를 덮어쓰는 문제도 결국 직접 만든 Propagator 로 풀었습니다.[17]",
+   "refs": [
+    3,
+    17
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "求める人物像 「 社会課題を解決しつづけ、より良い世界をつくる 」 というミッションを達成するため、以下の行動指針に共感いただける方を求めています。",
+   "short": "아래 다섯 가지 행동 지침에 공감하는 사람 — 면접에서 경험으로 묻는 틀이 된다.",
+   "why": "회사는 고령화로 일이 늘어나는 의료 업계의 업무 개선을 사회 과제로 잡았고, 25년 만의 새 레세프트 시스템이라는 말로 제품을 소개합니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・燃える理想 常に、みんなが成し遂げたいと思う理想を描き、更新し続ける",
+   "short": "다 같이 이루고 싶은 목표 그림을 그리고 계속 고쳐 그리는 사람.",
+   "why": "SRE 팀은 분기 목표를 세우고 적어도 한 달에 한 번 다시 봅니다.[16]",
+   "refs": [
+    16
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・自分起点 個人の「こうしたい」こそが、大きな成果を生み出す原動力",
+   "short": "시키기 전에 '이렇게 하고 싶다'를 먼저 내놓는 사람.",
+   "why": "공고는 개인 재량이 크고 ADR 로 아키텍처 제안·도입을 스스로 시작할 수 있다고 적었습니다.[1] 알림을 줄이자는 '느슨한 알림'도 한 엔지니어의 제안에서 시작해 다른 개발자의 수동 계측으로 번졌습니다.[4]",
+   "refs": [
+    1,
+    4
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・爆速アウトプット 小さな行動の積み重ねが、大きな成果へと最終的につながる",
+   "short": "작게 자주 내놓는 사람 — 매주 배포·바로 지울 수 있는 알림이 그 예.",
+   "why": "이 회사는 매주 배포하고,[16] 알림도 목적을 이루면 지우는 걸 전제로 가볍게 만듭니다.[4]",
+   "refs": [
+    4,
+    16
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・ワンチーム 互いに助け合い、支え合い、高め合ってチームで力を合わせる",
+   "short": "SRE 와 개발팀이 한 팀처럼 배포·장애를 같이 맡는 사람.",
+   "why": "배포 계획회는 팀마다 한 명 이상, 사회는 누구나 돌아가며 맡고, 배포가 모든 팀의 '자기 일'이 된 것을 효과로 꼽았습니다.[6]",
+   "refs": [
+    6
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・フィードバック is ギフト フィードバックを積極的に求め、貰ったフィードバックに感謝する",
+   "short": "피드백을 먼저 구하고 고맙게 받는 사람 — 실패도 공개적으로 돌아본다.",
+   "why": "SRE NEXT 2026 발표는 성공만이 아니라 '시간 초과 값을 늘린 것·실행계획을 안 본 것'을 반성으로 공개했습니다.[3] PR 리뷰 담당은 돌아가며 맡습니다.[16]",
+   "refs": [
+    3,
+    16
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "henry-codt2025",
+   "title": "SRE 文化の醸成: stream-aligned チームに Enabling するために実施した事例の解説",
+   "by": "渡辺 · Cloud Operator Days Tokyo 2025",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "url": "https://speakerdeck.com/nabeo/cloud-operator-days-tokyo-2025",
+   "why": "업무 ④ '이네이블링'을 이 팀이 실제로 어떻게 하는지 — 배포 계획회·도구 온보딩·성능 분석회. 지원 전에 꼭 볼 자료."
+  },
+  {
+   "id": "henry-sre-next2026",
+   "title": "電子カルテSaaSを支えるオブザーバビリティ活用と開発者の実践",
+   "by": "杉本 · SRE NEXT 2026",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "실무",
+   "url": "https://speakerdeck.com/msksgm/observability-in-healthcare-saas-electronic-medical-records",
+   "why": "청구 처리 시간 초과를 대시보드 → 트레이스 알림 → 쿼리 튜닝으로 푼 사례. 업무 ③과 요건 ⑤의 실제 모습."
+  },
+  {
+   "id": "henry-blog-sre",
+   "title": "Henry 기술 블로그 · SRE 카테고리",
+   "by": "株式会社ヘンリー",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "url": "https://dev.henry.jp/archive/category/SRE",
+   "why": "AWS 이전 이유·콜드 스타트·스팬 줄이기·SRE 팀 원칙 — 이 공고 거의 모든 줄의 회사 근거."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering (온라인 무료판)",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "why": "SLI·SLO·오류 예산·토일·포스트모템의 원전. 요건 ⑤와 업무 전체의 말뜻."
+  },
+  {
+   "id": "sre-book-ja",
+   "title": "SRE サイトリライアビリティエンジニアリング",
+   "by": "Betsy Beyer 외 편 · オライリー・ジャパン · 2017",
+   "kind": "book",
+   "lang": "ja",
+   "free": false,
+   "level": "입문",
+   "url": "https://www.oreilly.co.jp/books/9784873117911/",
+   "why": "같은 책의 일본어판. 면접·회의에서 쓰는 일본어 용어를 같이 익힌다."
+  },
+  {
+   "id": "sre-workbook-slo",
+   "title": "The Site Reliability Workbook · Alerting on SLOs",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/workbook/alerting-on-slos/",
+   "why": "오류 예산 소진 속도로 알림을 거는 법 — '느슨한 알림'을 숫자로 설계하는 바탕."
+  },
+  {
+   "id": "o11y-eng-ja",
+   "title": "オブザーバビリティ・エンジニアリング",
+   "by": "Charity Majors · Liz Fong-Jones · George Miranda · オライリー・ジャパン · 2023",
+   "kind": "book",
+   "lang": "ja",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.co.jp/books/9784814400126/",
+   "why": "Honeycomb 창업자들이 쓴 책. 이 팀이 트레이스 중심(Honeycomb)으로 간 이유와 사고방식."
+  },
+  {
+   "id": "o11y-eng-ko",
+   "title": "데브옵스 엔지니어를 위한 실전 관찰 가능성 엔지니어링",
+   "by": "채리티 메이저 외 · 한빛미디어 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EB%B8%8C%EC%98%B5%EC%8A%A4%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A5%BC%20%EC%9C%84%ED%95%9C%20%EC%8B%A4%EC%A0%84%20%EA%B4%80%EC%B0%B0%20%EA%B0%80%EB%8A%A5%EC%84%B1%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81",
+   "why": "위 책의 한국어판. 개념은 한국어로 먼저 잡고 일본어판 용어로 옮긴다."
+  },
+  {
+   "id": "dbre-ja",
+   "title": "データベースリライアビリティエンジニアリング",
+   "by": "Laine Campbell · Charity Majors · オライリー・ジャパン · 2021",
+   "kind": "book",
+   "lang": "ja",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.oreilly.co.jp/books/9784873119403/",
+   "why": "업무 ② 'DB 까지 포함한 신뢰성' — 백업·마이그레이션·관측을 SRE 눈으로."
+  },
+  {
+   "id": "pg-explain",
+   "title": "PostgreSQL · Using EXPLAIN",
+   "by": "PostgreSQL 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.postgresql.org/docs/current/using-explain.html",
+   "why": "실행계획 읽기. 이 회사 발표가 반성으로 꼽은 '실행계획 안 보고 고치기'를 피하는 기본기."
+  },
+  {
+   "id": "otel-docs",
+   "title": "OpenTelemetry 공식 문서",
+   "by": "OpenTelemetry",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://opentelemetry.io/docs/",
+   "why": "계측·Collector·Context Propagation. 이 회사 관측의 바닥."
+  },
+  {
+   "id": "tfaction-docs",
+   "title": "tfaction",
+   "by": "Shunsuke Suzuki · 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://suzuki-shunsuke.github.io/tfaction/docs/",
+   "why": "개발 환경 줄의 tfaction — GitHub Actions 로 Terraform 모노레포를 PR 단위로 plan·apply."
+  },
+  {
+   "id": "terraform-docs",
+   "title": "Terraform 공식 문서",
+   "by": "HashiCorp",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.hashicorp.com/terraform/docs",
+   "why": "요건 ② IaC. 이전 중인 AWS 리소스와 남는 GCP 리소스를 같은 방식으로 다룬다."
+  },
+  {
+   "id": "mhlw-guideline",
+   "title": "医療情報システムの安全管理に関するガイドライン 第6.0版",
+   "by": "厚生労働省 · 2023",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.mhlw.go.jp/stf/shingi/0000516275_00006.html",
+   "why": "업무 첫 줄 '환자 정보 보안'의 실체 — 접근 로그·인증·클라우드 이용 요건. 시스템 운영편부터."
+  },
+  {
+   "id": "team-topologies",
+   "title": "Team Topologies",
+   "by": "Matthew Skelton · Manuel Pais",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://teamtopologies.com/book",
+   "why": "stream-aligned·enabling 팀의 원래 뜻. 업무 ④를 왜 '이네이블링'이라 부르는지."
+  },
+  {
+   "id": "adr",
+   "title": "Architectural Decision Records",
+   "by": "adr.github.io",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://adr.github.io/",
+   "why": "이 팀이 아키텍처 제안에 쓰는 ADR 의 형식과 예시."
+  },
+  {
+   "id": "aws-wa-cost",
+   "title": "AWS Well-Architected · 비용 최적화 원칙",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/welcome.html",
+   "why": "업무 ⑤ 비용 최적화를 AWS 로 옮긴 뒤의 기준으로."
+  },
+  {
+   "id": "docker-book",
+   "title": "개발자를 위한 도커 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "요건 ④ 컨테이너 — 실제로 친 명령과 출력으로."
+  },
+  {
+   "id": "k8s-book",
+   "title": "쿠버네티스 입문 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "요건 ④ Kubernetes — 롤링 업데이트·프로브·자원 한도를 kubectl 출력으로."
+  },
+  {
+   "id": "http-book",
+   "title": "모든 개발자를 위한 HTTP 웹 기본 지식 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/http-basic",
+   "why": "요건 ① 네트워크 기초 — 헤더(traceparent 포함)가 오가는 원리."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "이 회사가 겪은 일 읽기",
+   "time": "1주",
+   "goal": "Henry 의 실행 바닥·관측 판·이전 이유를 한 장으로 설명할 수 있다.",
+   "resources": [
+    "henry-blog-sre",
+    "henry-codt2025",
+    "henry-sre-next2026"
+   ],
+   "task": "블로그·발표를 읽고 'Cloud Run 에서 겪은 문제 → 어떻게 풀었나 → 그래서 AWS 로' 를 일본어로 A4 한 장에 정리한다(면접 자기소개 재료)."
+  },
+  {
+   "title": "SLO·알림 설계",
+   "time": "2주",
+   "goal": "서비스 하나에 SLI·SLO·오류 예산·소진 속도 알림을 정의할 수 있다.",
+   "resources": [
+    "sre-book",
+    "sre-book-ja",
+    "sre-workbook-slo"
+   ],
+   "task": "가상 진료 예약 API 의 접근 로그(가상 10만 줄)로 성공률·p95 지연 SLI 를 계산하고, 월초에 오류가 몰리는 시나리오에서 1시간·6시간 소진 속도 알림이 언제 울리는지 표로 만든다."
+  },
+  {
+   "title": "OpenTelemetry 로 끝까지 잇기",
+   "time": "2~3주",
+   "goal": "두 서비스 사이 트레이스를 잇고, Collector 에서 필요 없는 스팬을 거를 수 있다.",
+   "resources": [
+    "otel-docs",
+    "o11y-eng-ja",
+    "o11y-eng-ko"
+   ],
+   "task": "Kotlin(또는 Java) 서버와 Node.js BFF 를 Docker Compose 로 띄우고 OpenTelemetry Collector → Jaeger 로 트레이스를 본다. 헤더를 덮어쓰는 프록시를 일부러 끼워 트레이스가 끊기는 걸 재현한 뒤 커스텀 헤더 Propagator 로 다시 잇고, filter 프로세서로 짧은 정상 스팬을 버려 줄어든 비율을 잰다."
+  },
+  {
+   "title": "Terraform·CI/CD 와 DB 튜닝",
+   "time": "2~3주",
+   "goal": "PR 하나로 인프라를 바꾸고, 느린 쿼리를 실행계획으로 고칠 수 있다.",
+   "resources": [
+    "terraform-docs",
+    "tfaction-docs",
+    "pg-explain",
+    "dbre-ja"
+   ],
+   "task": "Terraform 모노레포에 PostgreSQL(로컬 컨테이너 또는 무료 계층)과 컨테이너 서비스를 적고 tfaction 으로 PR plan·merge apply 를 건다. 가상 청구 표 100만 줄에 느린 집계를 만들어 EXPLAIN ANALYZE 전후를 비교한다."
+  },
+  {
+   "title": "의료·규제와 비용 (선택)",
+   "time": "계속",
+   "goal": "의료 정보 지침이 인프라 설계에 주는 조건과 비용 최적화 원칙을 말할 수 있다.",
+   "resources": [
+    "mhlw-guideline",
+    "aws-wa-cost",
+    "team-topologies",
+    "adr"
+   ],
+   "task": "3단계 구성에 접근 로그 보존·변조 방지·TLS 조건을 넣은 설계를 ADR 한 편(일본어)으로 쓰고, 상시 인스턴스 수를 줄였을 때의 비용·위험을 같이 적는다."
+  }
+ ],
+ "pay": {
+  "summary": "공고 연봉 **800만~1,400만 엔**(면담으로 결정). 비상장이라 회사 평균 급여 공시는 없다",
+  "rows": [
+   {
+    "label": "공고 표기 연봉",
+    "value": "800만~1,400만 엔",
+    "basis": "공고",
+    "note": "면담에서 기술 등을 보고 정한다. 수습 3개월, 수습 중 조건 같음. 소정 시간 넘는 노동 있음 [1]"
+   },
+   {
+    "label": "LITALICO SRE (프로덕트)",
+    "value": "700만~1,050만 엔",
+    "basis": "공고",
+    "peer": true,
+    "note": "같은 경로(원티드·LAPRAS)의 일본 SRE 공고 [34]"
+   },
+   {
+    "label": "메디폰 플랫폼 엔지니어 (SRE·DevOps)",
+    "value": "700만~1,000만 엔",
+    "basis": "공고",
+    "peer": true,
+    "note": "의료 분야 일본 공고, 고정 잔업 45시간분 포함 [35]"
+   },
+   {
+    "label": "Speee SRE (DX 분야)",
+    "value": "500만~800만 엔",
+    "basis": "공고",
+    "peer": true,
+    "note": "같은 경로의 일본 SRE 공고(경력 3~15년) [36]"
+   },
+   {
+    "label": "일본 민간 평균 급여(참고)",
+    "value": "478만 엔 (정사원 545만 엔)",
+    "basis": "국세청 민간급여실태통계 · 2024년분",
+    "note": "일본 전체 민간 급여 소득자 평균 — 회사·직군 구분 없는 나라 전체 값 [33]"
+   }
+  ],
+  "how": "Henry 는 비상장사라 유가증권보고서의 직원 평균 급여가 없습니다(공시 숫자 없음). 비교 줄은 모두 같은 기준(공고 표기 범위)이고, 이 공고는 경력 7~20년 시니어 자리라 위쪽에 있습니다 {추론}. 마지막 줄은 나라 전체 평균이라 같은 기준의 비교가 아니고 위치를 가늠하는 참고로만 씁니다. 회사 채용 페이지 지금 판은 연봉 범위를 적지 않고 면담으로 정한다고만 했습니다 [2]. 엔화 그대로, 세금·사회보험이 빠지기 전 금액입니다."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무 방식",
+    "detail": "완전 원격(일본 국내 어디서나), 풀 플렉스(근무 시간 스스로 결정), 팀마다 매일 30분 정도 스탠드업"
+   },
+   {
+    "name": "휴일",
+    "detail": "완전 주 2일(토·일·공휴일), 연말연시 휴가"
+   },
+   {
+    "name": "연차",
+    "detail": "주 5일 근무면 입사 때 10일 부여"
+   },
+   {
+    "name": "리프레시 휴가",
+    "detail": "2년 근속 시 1주"
+   },
+   {
+    "name": "도서",
+    "detail": "업무·실력 향상에 필요한 책은 품의 없이 회사가 전액 부담"
+   },
+   {
+    "name": "독감 예방 접종",
+    "detail": "비용 전액 회사 부담"
+   },
+   {
+    "name": "건강 검진",
+    "detail": "검진 옵션 최대 1만 엔 지원(부인과 검진 포함)"
+   },
+   {
+    "name": "소통 지원",
+    "detail": "팀 안팎 소통 비용 분기 1회, 1인 5,000엔까지"
+   },
+   {
+    "name": "보험",
+    "detail": "사회보험 완비"
+   }
+  ],
+  "note": "이 공고의 복리후생 칸과 회사 채용 페이지의 같은 자리(2026년) 기준이다 [1][2]. 체류 자격·이사 지원은 적혀 있지 않다."
+ },
+ "location": {
+  "name": "株式会社ヘンリー 본사",
+  "address": "東京都新宿区四谷坂町10-10 NOW/HERE新宿四谷 3001",
+  "postal": "〒160-0002",
+  "map_url": "https://map.naver.com/p/search/%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E5%9B%9B%E8%B0%B7%E5%9D%82%E7%94%BA10-10",
+  "near": "도쿄 신주쿠구 요쓰야 일대 {추론}",
+  "note": "회사 채용 페이지(2026년)의 회사 정보 주소다 [2]. 원티드 공고에는 옛 주소 '東京都品川区東五反田2-9-5 サウスウィング東五反田 3F'가 적혀 있다 [1]. 완전 원격 자리라 출근지가 아니라 등기·사무실 주소로 읽는다 {추론}."
+ },
+ "fit": {
+  "good": [
+   "트레이스를 파고들어 '왜 느린가'를 끝까지 찾는 게 즐거운 사람[3]",
+   "도구를 까는 것보다 개발자가 그 도구를 쓰게 만드는 데 보람을 느끼는 사람[6]",
+   "클라우드 이전 같은 큰 변경을 처음부터 맡고 싶은 사람[9]",
+   "규칙이 자주 바뀌는 업무(의료 제도)를 배우는 데 거부감이 없는 사람[7]"
+  ],
+  "hard": [
+   "일본 이주와 비즈니스 일본어가 필수 — 서류부터 일본어다[1]",
+   "의료 정보 지침 때문에 로그·접근·네트워크 설계에 제약이 많다[7][23]",
+   "SRE 팀이 작다(2025년 5월 3명) — 혼자 맡는 범위가 넓다[16]",
+   "매주 배포 계획회처럼 다른 팀과 맞추는 회의가 일정에 고정돼 있다[6]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "Cloud Run 같은 관리형 서비스에서 트레이스가 둘로 갈라지면 무엇부터 의심하나요?",
+   "a": "이 회사가 실제로 겪고 Propagator 를 만든 문제.[8][17]"
+  },
+  {
+   "q": "월초 청구 처리가 일부 병원에서만 시간 초과가 납니다. 어떻게 조사하겠어요?",
+   "a": "SRE NEXT 2026 사례 — 대시보드·트레이스 알림·실행계획.[3]"
+  },
+  {
+   "q": "관측 비용이 계약량을 넘었습니다. 무엇을 버리고 무엇을 남기겠어요?",
+   "a": "스팬 줄이기 글의 판단.[11]"
+  },
+  {
+   "q": "이 알림은 언제 지워도 되나요? 알림을 만들 때 무엇을 같이 적나요?",
+   "a": "'느슨한 알림' 발표.[4]"
+  },
+  {
+   "q": "Google Cloud 에서 AWS 로 DB 를 옮길 때 중단 시간을 어떻게 줄이겠어요?",
+   "a": "진행 중인 이전 프로젝트의 검토 항목.[9]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · [株式会社ヘンリー] Senior Site Reliability Engineer（SRE）_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/342854",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "LAPRAS Global Bridge 연계 · 업무·요건·우대·채용 배경·연봉·근무 조건·전형"
+  },
+  {
+   "n": 2,
+   "title": "Henry 채용(HRMOS) · Senior Site Reliability Engineer（SRE）",
+   "url": "https://hrmos.co/pages/henry/jobs/000003",
+   "kind": "posting",
+   "note": "회사 자체 채용 페이지 — 같은 자리의 지금 판(개발 환경이 AWS 로 바뀜, 생성 AI·MCP 관측 업무 추가, 사원 150명·2026년 6월, 인증)"
+  },
+  {
+   "n": 3,
+   "title": "SRE NEXT 2026 · 電子カルテSaaSを支えるオブザーバビリティ活用と開発者の実践 (杉本)",
+   "url": "https://speakerdeck.com/msksgm/observability-in-healthcare-saas-electronic-medical-records",
+   "kind": "company",
+   "date": "2026-07",
+   "note": "슬라이드 전부 확인 · 녹화 영상 링크 없음"
+  },
+  {
+   "n": 4,
+   "title": "ゆるSRE勉強会 #16 · ゆるくアラート作ってゆるくアラート消してゆるくSREしよう (杉本)",
+   "url": "https://speakerdeck.com/msksgm/easygoingsrecreatealerts-removealertsrepeat",
+   "kind": "company",
+   "date": "2026-05"
+  },
+  {
+   "n": 5,
+   "title": "OpenTelemetry Meetup · ヘンリーにおける可観測性獲得への取り組み (渡辺)",
+   "url": "https://speakerdeck.com/nabeo/henriniokeruke-guan-ce-xing-huo-de-henoqu-rizu-mi",
+   "kind": "company",
+   "date": "2023-10"
+  },
+  {
+   "n": 6,
+   "title": "Cloud Operator Days Tokyo 2025 · SRE 文化の醸成: stream-aligned チームに Enabling するために実施した事例 (渡辺)",
+   "url": "https://speakerdeck.com/nabeo/cloud-operator-days-tokyo-2025",
+   "kind": "company",
+   "date": "2025-09",
+   "note": "배포 계획회·온보딩·성능 분석회"
+  },
+  {
+   "n": 7,
+   "title": "SRE Online Meetup · 医療機関向けシステムの信頼性 (戸田)",
+   "url": "https://speakerdeck.com/eller86/reliability-of-systems-for-medical-institutions",
+   "kind": "company",
+   "date": "2023-02",
+   "note": "가이드라인 5.2판 기준"
+  },
+  {
+   "n": 8,
+   "title": "OpenTelemetry Meetup LT · クラウドへのOpenTelemetry導入のハマりどころ",
+   "url": "https://speakerdeck.com/sumiren/cloud-native-opentelemetry-2803a3ec-4acf-4b2d-b148-2842fd7ff456",
+   "kind": "company",
+   "date": "2024-02"
+  },
+  {
+   "n": 9,
+   "title": "Henry 기술 블로그 · ヘンリーではクラウド基盤の移行プロジェクトを開始しています",
+   "url": "https://dev.henry.jp/entry/2025/cloud-migration-gcp-to-aws",
+   "kind": "company",
+   "date": "2025-10-01"
+  },
+  {
+   "n": 10,
+   "title": "Henry 기술 블로그 · なぜ AWS 移設をするのか",
+   "url": "https://dev.henry.jp/entry/2025/why-we-are-migrating-from-google-cloud-to-aws",
+   "kind": "company",
+   "date": "2025-12-02"
+  },
+  {
+   "n": 11,
+   "title": "Henry 기술 블로그 · Honeycombでスパンを削減する",
+   "url": "https://dev.henry.jp/entry/2025/04/08/100701",
+   "kind": "company",
+   "date": "2025-04-08"
+  },
+  {
+   "n": 12,
+   "title": "Henry 기술 블로그 · Server-Side Kotlinで書かれたCloud Runサービスのコールドスタートレイテンシを短縮する",
+   "url": "https://dev.henry.jp/entry/cloud-run-cold-start-latency",
+   "kind": "company",
+   "date": "2024-05-13"
+  },
+  {
+   "n": 13,
+   "title": "Henry 기술 블로그 · 4年モノGoogle Cloudプロジェクトで導入して良かった新機能",
+   "url": "https://dev.henry.jp/entry/new-feat-from-google-cloud",
+   "kind": "company",
+   "date": "2024-12-27"
+  },
+  {
+   "n": 14,
+   "title": "Henry 기술 블로그 · ヘンリーのオブザーバビリティ成熟度を考える",
+   "url": "https://dev.henry.jp/entry/henry-observability-maturity",
+   "kind": "company",
+   "date": "2024-07-04"
+  },
+  {
+   "n": 15,
+   "title": "Henry 기술 블로그 · 中長期でサービスの様子を観測する取り組み (パフォーマンス分析会) の紹介",
+   "url": "https://dev.henry.jp/entry/2025/performance-analysis-meeting-introduction-for-mid-to-long-term-service-monitoring",
+   "kind": "company",
+   "date": "2025-05-21"
+  },
+  {
+   "n": 16,
+   "title": "Henry 기술 블로그 · SREチームを作るうえで大切にしていること",
+   "url": "https://dev.henry.jp/entry/how-to-make-sre-team",
+   "kind": "company",
+   "date": "2025-05-13",
+   "note": "당시 SRE 3명"
+  },
+  {
+   "n": 17,
+   "title": "Henry 기술 블로그 · Cloud Run + OpenTelemetryでもトレースが途切れないようにPropagatorを自作する",
+   "url": "https://dev.henry.jp/entry/otel-propagator",
+   "kind": "company",
+   "date": "2025-02-06"
+  },
+  {
+   "n": 18,
+   "title": "Henry 기술 블로그 · ヘンリーにおける Honeycomb 活用を紹介します",
+   "url": "https://dev.henry.jp/entry/2025/introduction-of-honeycomb-utilization-in-henry",
+   "kind": "company",
+   "date": "2025-10-14"
+  },
+  {
+   "n": 19,
+   "title": "Henry 기술 블로그 · あなたもわたしも OpenTelemetry Collector",
+   "url": "https://dev.henry.jp/entry/2026/09/07/120041",
+   "kind": "company",
+   "date": "2026-09-07",
+   "note": "AWS 이전 '진행 중' 언급"
+  },
+  {
+   "n": 20,
+   "title": "Henry 기술 블로그 · Cloud Run (Grafana) + BigQuery + IAPでデータの見える化を実現した",
+   "url": "https://dev.henry.jp/entry/visualize-data-with-grafana",
+   "kind": "company",
+   "date": "2023-04-28"
+  },
+  {
+   "n": 21,
+   "title": "Henry 기술 블로그 · 「医療 × SRE」、両方初心者の私から見たヘンリーとは",
+   "url": "https://dev.henry.jp/entry/2026/04/30/170505",
+   "kind": "company",
+   "date": "2026-04-30"
+  },
+  {
+   "n": 22,
+   "title": "創業手帳 · ヘンリー 10億円 資金調達",
+   "url": "https://sogyotecho.jp/news/20250731henry/",
+   "kind": "news",
+   "date": "2025-07-31"
+  },
+  {
+   "n": 23,
+   "title": "厚生労働省 · 医療情報システムの安全管理に関するガイドライン 第6.0版",
+   "url": "https://www.mhlw.go.jp/stf/shingi/0000516275_00006.html",
+   "kind": "reference",
+   "date": "2023-05"
+  },
+  {
+   "n": 24,
+   "title": "Google SRE Book · Service Level Objectives",
+   "url": "https://sre.google/sre-book/service-level-objectives/",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "Google SRE Workbook · Alerting on SLOs",
+   "url": "https://sre.google/workbook/alerting-on-slos/",
+   "kind": "reference",
+   "note": "소진 속도 기반 알림"
+  },
+  {
+   "n": 26,
+   "title": "OpenTelemetry 공식 문서",
+   "url": "https://opentelemetry.io/docs/",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "W3C · Trace Context",
+   "url": "https://www.w3.org/TR/trace-context/",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "PostgreSQL 공식 문서 · Using EXPLAIN",
+   "url": "https://www.postgresql.org/docs/current/using-explain.html",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "tfaction 공식 문서",
+   "url": "https://suzuki-shunsuke.github.io/tfaction/docs/",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "Team Topologies (책 소개)",
+   "url": "https://teamtopologies.com/book",
+   "kind": "reference",
+   "note": "enabling 팀 개념"
+  },
+  {
+   "n": 31,
+   "title": "Architectural Decision Records (adr.github.io)",
+   "url": "https://adr.github.io/",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "出入国在留管理庁 · 在留資格「技術・人文知識・国際業務」",
+   "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "国税庁 · 令和6年分 民間給与実態統計調査結果",
+   "url": "https://www.nta.go.jp/information/release/kokuzeicho/2025/minkan_2025/pdf/01.pdf",
+   "kind": "reference",
+   "date": "2025-09"
+  },
+  {
+   "n": 34,
+   "title": "원티드 · [株式会社LITALICO] SRE 엔지니어 (프로덕트)",
+   "url": "https://www.wanted.co.kr/wd/391368",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "비교용 — 같은 경로(LAPRAS)의 일본 SRE 공고"
+  },
+  {
+   "n": 35,
+   "title": "원티드 · [メディフォン株式会社] 플랫폼 엔지니어 (SRE·DevOps)",
+   "url": "https://www.wanted.co.kr/wd/394202",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "비교용 — 의료 분야 일본 SRE 공고"
+  },
+  {
+   "n": 36,
+   "title": "원티드 · [株式会社Speee] SRE 엔지니어 (DX 분야)",
+   "url": "https://www.wanted.co.kr/wd/386999",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "비교용"
+  },
+  {
+   "n": 37,
+   "title": "Google Cloud · Cloud Run 문서",
+   "url": "https://cloud.google.com/run/docs",
+   "kind": "reference"
+  },
+  {
+   "n": 38,
+   "title": "AWS Well-Architected · 비용 최적화 원칙",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/welcome.html",
+   "kind": "reference"
+  },
+  {
+   "n": 39,
+   "title": "DORA · Four Keys 지표",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "원티드 공고는 Google Cloud 기준 개발 환경을 적었지만 회사 채용 페이지 지금 판은 AWS 로 바뀌었고, 2026년 9월 글 기준 이전은 진행 중입니다 — 입사 때 무엇이 남아 있을지는 면접에서 확인합니다. 발표 영상 녹화는 찾지 못해 슬라이드와 블로그만 읽었습니다. Algolia·nginx·CodeBuild 를 이 팀이 어떻게 쓰는지, SLO 숫자는 공개 자료가 없습니다."
+}
