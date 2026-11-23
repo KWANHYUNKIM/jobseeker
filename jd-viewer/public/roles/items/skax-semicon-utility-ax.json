@@ -1,0 +1,950 @@
+{
+ "id": "skax-semicon-utility-ax",
+ "company": "SK주식회사(AX)",
+ "role": "반도체 Utility AX 시스템 전문가",
+ "team": "제조서비스부문 설비Intelligence팀",
+ "jobs": [
+  "ats-skcareers:sk:R262455"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "반도체 공장에 공기·냉각수·배기를 대는 **유틸리티 설비**의 데이터를 모아 이상을 잡고(FDC), 설비 자산을 관리하고(EAM), 에너지를 아끼는 시스템을 만들고 운영합니다.[1][4] 이 자리는 그 프로젝트의 **PM/PL** 입니다.[1]",
+  "env": "고객은 주로 SK 계열 반도체 공장이고, 분당 본사와 이천을 오갑니다.[1][8] Java·Oracle 이 중심이고, 설비 쪽은 C#·PLC·SCADA·히스토리안(RTDB)과 맞물립니다.[1][3]",
+  "oneline": "업무 시스템 개발 5년 차가 **공장 설비 데이터** 쪽으로 넘어가는 자리. 초 단위로 쏟아지는 설비 값을 다루는 것이 핵심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "설비Intelligence팀을 소개합니다 😊\n조직 소개\n【설비정보화 영역】\n설비정보화 영역은 설비FDC, 설비Portal, EMS(설비자산관리) 등의 시스템을 개발/운영하고 있습니다.",
+   "short": "공장 설비의 이상 감지(FDC)·설비 정보 화면(Portal)·설비 자산 관리(EMS)를 만드는 쪽이다.",
+   "why": "반도체 공장은 공정 장비 말고도 공기·물·가스·약품·전기를 대는 **유틸리티(Utility) 설비**가 24시간 돌아야 합니다. SK하이닉스는 이 설비를 원격으로 감시·제어하는 팀을 따로 두고, 흩어진 기계실의 설비 상태를 한곳에서 본다고 소개했습니다.[8] 이 팀은 그 감시·관리 소프트웨어를 만듭니다.[1] 회사 제품 페이지에서도 **설비Intelligence팀** 팀장이 담당 전문가로 올라 있습니다.[4]",
+   "actually": {
+    "intro": "공고의 세 시스템이 보통 맡는 일입니다. 이 팀의 화면 구성은 공개되지 않아, 업계 일반 구조로 보였습니다.[9]",
+    "items": [
+     "**설비 FDC(Fault Detection and Classification, 이상 감지·분류)** — 칠러·펌프·스크러버(배기가스 정화 장치)의 온도·압력·전류를 계속 보며 평소와 다르면 알람을 낸다.[6][9]",
+     "**설비 Portal** — 여러 시스템에 흩어진 설비 상태·알람·이력을 한 화면에 모아 본다.[8] {추론}",
+     "**EMS(이 공고에서는 설비자산관리)** — 설비 목록·점검 계획·고장 이력·작업 지시를 관리한다. 업계에서는 보통 EAM·CMMS(설비 보전 관리 시스템)라 부른다.[9][16]",
+     "같은 회사 제품 중에는 에너지 쪽 **Smart FEMS(공장 에너지 관리)** 도 있고, 반도체 회사의 전력 감시 시스템을 사례로 든다.[4]"
+    ]
+   },
+   "how_far": "공고의 'EMS'는 괄호에 '설비자산관리'라고 적혀 있어 에너지 관리(Energy Management System)와 이름이 겹칩니다.[1] 면접 전에 어느 뜻인지 정리해 두면 좋습니다. 이 자리는 이 시스템들을 **새로 짓는 사람이자 운영하는 사람**입니다(공고 표현이 '개발/운영').[1]",
+   "refs": [
+    1,
+    4,
+    6,
+    8,
+    9,
+    16
+   ],
+   "study": [
+    "skhynix-utility",
+    "semix-fms",
+    "skax-fems"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "설비 Digital Twin, FDC, EMS 등 에너지 효율 최적화 서비스를 제공합니다.",
+   "short": "설비 데이터로 '덜 쓰고 같은 일을 하는' 운전 조건을 찾아 주는 서비스를 판다.",
+   "why": "유틸리티 설비는 전기를 많이 씁니다. SK AX는 2025년 배기 유틸리티(유해가스·입자를 빼는 덕트·팬·댐퍼) **디지털 트윈(설비를 컴퓨터 안에 똑같이 옮긴 모형)** 플랫폼을 내놓으며, AI가 팬 속도·운전 주기·배기 압력 같은 조건을 가장 에너지 효율 좋게 추천한다고 밝혔습니다.[5]",
+   "actually": {
+    "intro": "회사가 발표한 기능입니다.[4][5]",
+    "items": [
+     "센서·영상 AI·열화상 카메라로 압력·온도·진동·오염물질 값을 모아 3D 모형 위에 띄운다.[5]",
+     "이상이 생기기 전에 감지하고, 운전 조건을 바꿨을 때를 시뮬레이션한다.[5]",
+     "회사는 설비 사고 최대 5% 감소, 운영·투자 비용 10% 이상 절감, 운영 효율 25% 이상 개선을 목표치로 내걸었다(회사 발표 숫자).[5]",
+     "FEMS 쪽은 효율 운전 지표, 머신러닝으로 고른 최적 설정값 제안, AI 자율 운전 제어, 에너지 사용 지도를 내세운다.[4]",
+     "회사는 유틸리티 트윈을 시작으로 전 공정 설비 통합 관제로 넓힌다고 했다.[5]"
+    ]
+   },
+   "how_far": "최적화 모형(어떤 조건이 효율적인가)은 데이터 분석·AI 담당과 고객사 설비 엔지니어가 함께 정할 일입니다. {추론} 이 자리는 그 모형이 쓸 **데이터를 빠짐없이 모으고, 결과를 화면과 제어로 이어 주는** 쪽을 맡을 가능성이 큽니다. {추론}",
+   "refs": [
+    4,
+    5
+   ],
+   "study": [
+    "ceo-twin",
+    "skax-fems"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "설비정보화 영역은 C# / Java / react / oracle 등의 기술을 요하고 있습니다.",
+   "short": "설비 쪽 프로그램은 C#, 서버는 Java, 화면은 React, 저장은 Oracle — 섞어 쓰는 환경이다.",
+   "why": "공장 현장 PC와 설비 제어 쪽은 윈도우 프로그램(C#·.NET)이 많고, 사내 업무 시스템은 Java·Oracle이 흔합니다. {추론} 이 팀은 두 세계를 잇는 자리라 네 기술을 같이 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**C#** — 설비·PLC에서 값을 읽는 수집 프로그램, 현장 PC 화면. {추론}",
+     "**Java** — Portal·자산 관리 같은 웹 서버. {추론}",
+     "**React** — 설비 상태판·대시보드 같은 웹 화면. {추론}",
+     "**Oracle** — 설비 기준 정보·알람·이력·점검 기록 저장.[1]"
+    ]
+   },
+   "how_far": "네 개를 다 깊이 알 필요는 없습니다. 자격요건은 'Java, Oracle 등'을 앞에 두었으니 **Java·Oracle 이 중심, C#·React 는 읽고 고칠 수 있는 정도**가 현실적인 최소선입니다.[1] {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "sql-tuning",
+    "sql-levelup"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "【설비제어 영역】\nHVAC, SCADA 등 Utility 설비 제어 사업을 수행하고 있습니다.",
+   "short": "클린룸 공조(HVAC)와 설비 감시·제어(SCADA)를 실제로 움직이는 제어 쪽 일도 같은 팀이 한다.",
+   "why": "클린룸은 온도·습도·먼지를 아주 좁은 범위에 묶어야 해서 공조(HVAC, 냉난방·환기)가 멈추면 생산이 멈춥니다. {추론} 같은 팀의 다른 공고는 HVAC·SCADA·폐수처리(WWT)·약품/가스 공급 제어 설계와 **용인 클러스터 설비 제어 프로젝트 PM/PL** 을 일로 적었습니다.[3]",
+   "actually": {
+    "items": [
+     "**SCADA(Supervisory Control And Data Acquisition, 감시 제어·데이터 수집)** — 여러 PLC에서 값을 모아 화면에 띄우고, 운전원이 설정값을 바꾸면 내려보낸다.[13]",
+     "제조 시스템 표준 ISA-95 의 층으로 보면 센서(1층) → PLC 제어(2층) → SCADA·MES(3층) → ERP(4층)이다. 이 팀은 2·3층을 다룬다.[13]",
+     "같은 팀 공고가 적은 도구: Siemens·Rockwell PLC, GE Historian, **WinCC OA**(지멘스 SCADA).[3][17]",
+     "SK하이닉스 용인 1기 팹은 2027년 준공을 목표로 공사 중이라, 새 팹의 설비 제어·정보화 일이 몰리는 시기다.[18]"
+    ]
+   },
+   "how_far": "이 공고(정보화 쪽)는 제어 설계자를 뽑는 자리가 아닙니다.[1] 그래도 SCADA·PLC에서 **데이터가 어떻게 올라오는지**는 알아야 정보화 시스템을 붙일 수 있습니다. {추론}",
+   "refs": [
+    1,
+    3,
+    13,
+    17,
+    18
+   ],
+   "study": [
+    "isa95",
+    "wincc-oa"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "설비제어 영역은 PLC 및 HMI시스템 개발 / 운영을 담당하고 있습니다.",
+   "short": "설비를 직접 움직이는 PLC 프로그램과 운전원이 보는 HMI 화면을 만들고 돌본다.",
+   "why": "PLC(Programmable Logic Controller)는 펌프를 켜고 밸브를 여는 현장 제어기이고, HMI(Human Machine Interface)는 운전원이 그 상태를 보고 조작하는 화면입니다.[13] 한 제어판이 여러 설비를 맡기 때문에 고장 나도 안전한 쪽으로 멈추게(fail-safe) 설계한다고 SK하이닉스 유틸리티 팀이 설명했습니다.[8]",
+   "actually": {
+    "items": [
+     "PLC 래더·블록 프로그램으로 인터록(조건이 안 맞으면 못 켜게 막는 장치)을 짠다. {추론}",
+     "HMI 화면에 설비 그림·값·알람을 배치한다. 화면 설계 표준 **ISA-101** 은 화면을 계획 → 분석 → 설계 → 구현 → 운영 → 유지보수의 수명 주기로 관리하라고 한다.[15]",
+     "알람이 너무 많으면 운전원이 진짜 알람을 놓친다 — 고성능 HMI 지침이 회색 바탕에 이상만 색으로 보이게 하는 이유다.[15] {추론}",
+     "HMI가 쌓는 값이 곧 다음 줄 자격요건의 '대용량 데이터(HMI)'다.[1]"
+    ]
+   },
+   "how_far": "정보화 PM/PL은 PLC를 직접 짜지 않아도 됩니다. {추론} **태그(측정점) 이름 규칙, 수집 주기, 통신 방식(OPC UA 등)** 을 제어 담당과 맞출 수 있으면 됩니다.[14] {추론}",
+   "refs": [
+    1,
+    8,
+    13,
+    14,
+    15
+   ],
+   "study": [
+    "isa101",
+    "hphmi-book",
+    "opcua-p1"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "업무 환경 및 문화\n설비(Utility)분야 투자 확대 및 제조AI를 기반으로 지속 성장하고 있습니다.\n도전과 패기의 정신으로 팀원들이 함께 뭉쳐 사업을 확대하고 있습니다.",
+   "short": "반도체 설비 투자가 늘면서 일감이 늘고, 제조 AI 쪽으로 사업을 넓히는 중인 팀이다.",
+   "why": "SK하이닉스 용인 1기 팹은 골조를 마쳤고 2027년 준공·양산 일정이 보도되고 있습니다.[18] SK AX는 2026년 디지털 트윈과 로봇 통합 관제를 묶은 '제조 RX 풀스택'을 발표하며, 반도체에서 먼저 검증한 뒤 조선으로 넓힌다고 했습니다.[7]",
+   "actually": {
+    "items": [
+     "새 팹이 지어질 때마다 설비 정보화·제어 시스템도 새로 깔린다. {추론}",
+     "같은 팀 공고는 사외로 스마트 팩토리(자동 창고 AS/RS·자율 이동 로봇 AMR) 사업도 한다고 적었다.[3]",
+     "회사 차원에서는 예지보전(iFacts)·SHE(안전·보건·환경)·디지털 트윈을 제조 AI 묶음으로 판다.[5][6]"
+    ]
+   },
+   "refs": [
+    3,
+    5,
+    6,
+    7,
+    18
+   ],
+   "study": [
+    "ceo-twin"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "담당 업무\n설비 정보화(설비 EAM, FDC/SCMS, AR/VR, 등) 개발/운영 사업에 참여합니다.",
+   "short": "설비 자산 관리(EAM)·이상 감지(FDC/SCMS)·AR/VR 시스템을 만들고 운영하는 프로젝트에 들어간다.",
+   "why": "설비가 많아질수록 '어떤 설비가 어디 있고 언제 점검했나'(EAM)와 '지금 이상이 있나'(FDC)를 사람이 손으로 챙길 수 없습니다. {추론} 회사는 FDC를 예지보전 서비스와 묶어 반도체·철강·화학 고객에게 팔고 있고, 도입 고객이 갑작스러운 설비 정지 대응·점검 시간을 절반 넘게 줄였다고 발표했습니다(회사 발표).[6]",
+   "actually": {
+    "items": [
+     "**EAM(Enterprise Asset Management, 설비 자산 관리)** — 설비 대장·예방 점검 일정·고장 이력·예비품. 국제 기준 ISO 55000 이 자산 관리의 원칙과 낱말을 정한다.[16]",
+     "**FDC** — 공정 장비 FDC 와 달리 설비 FDC 는 펌프·칠러·히터·배기 처리 장치 같은 시설 설비의 이상을 본다. 시설 이상은 공정에 바로 영향을 준다.[9]",
+     "**SCMS** — 공고에 풀이가 없습니다. 같은 팀 공고가 '약품/가스 공급 제어'를 적은 것으로 보아 약품·가스 공급 감시 계열일 수 있습니다.[3] {추론}",
+     "**AR/VR** — 설비를 3D 로 보거나 점검 교육을 가상으로 하는 것. 회사의 디지털 트윈도 설비 3D 모형 위에 실시간 값을 띄운다.[5]"
+    ]
+   },
+   "how_far": "'참여합니다'는 혼자 다 짓는 게 아니라 프로젝트 단위로 들어간다는 뜻입니다. {추론} 최소선은 **EAM·FDC 가 무엇을 저장하고 무엇을 알려 주는지** 데이터 모델로 그릴 수 있는 정도입니다. {추론}",
+   "refs": [
+    3,
+    5,
+    6,
+    9,
+    16
+   ],
+   "study": [
+    "iso55000",
+    "nist-ewma",
+    "semix-fms"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SK그룹사 內 제조 산업 설비정보화 프로젝트의 PM/PL 역할을 수행합니다.",
+   "short": "고객은 주로 SK 계열 공장이고, 이 자리는 그 프로젝트를 이끄는 PM·PL이다.",
+   "why": "SK AX(옛 SK C&C)는 그룹 IT 서비스 회사라, 설비정보화 프로젝트의 발주처가 SK 계열 제조사인 경우가 많습니다. {추론} 회사 제품 페이지의 사례도 '반도체 H사' 전력 감시 시스템처럼 이름을 가린 반도체 회사입니다.[4]",
+   "actually": {
+    "items": [
+     "**PM(Project Manager)** — 일정·비용·인력·고객 보고를 맡는다.",
+     "**PL(Project Leader)** — 설계·개발 품질과 개발자들을 이끈다.",
+     "설비 담당(고객사 설비 엔지니어), 제어 담당(PLC·SCADA), 개발자 사이에서 **태그 목록·화면 정의·인터페이스 사양**을 정리한다. {추론}",
+     "팹 공사 일정에 맞춰야 해 장비 반입·시운전 날짜에 시스템이 준비돼 있어야 한다. {추론}"
+    ]
+   },
+   "how_far": "공고 요건이 'PM 또는 시스템 개발 5년'이라 **개발 출신 PL** 도 대상입니다.[1] PM 경험이 없다면 '개발 PL로 무엇을 끝까지 책임졌나'를 숫자로 말할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    4
+   ],
+   "study": [
+    "isa95",
+    "skhynix-utility"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "※ 근무지 : 경기도 분당/이천",
+   "short": "본사(분당 SK u-타워)와 SK하이닉스 공장이 있는 이천을 오간다.",
+   "why": "원티드 사본의 근무지 칸은 분당 SK u-타워입니다.[2] 이천에는 SK하이닉스 본사 팹이 있고, 이 팀의 일감이 반도체 유틸리티이므로 현장 근무가 섞입니다.[8] {추론}",
+   "how_far": "같은 팀의 설비 제어 공고는 근무지를 분당·이천·용인·청주로 더 넓게 적었습니다.[3] 이 공고는 분당·이천 둘입니다.[1]",
+   "refs": [
+    1,
+    2,
+    3,
+    8
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "이런 경험을 갖고 계시다면 저희가 찾는 그분입니다! ✨\n필요 역량 및 경험\n5년 이상의 IT 프로젝트 PM 또는 시스템 개발을 수행해보신 분 (Java, Oracle 등)",
+   "short": "Java·Oracle 로 업무 시스템을 5년 넘게 만들었거나 그런 프로젝트를 이끌어 본 사람.",
+   "why": "공고 맨 아래 공통 요건에도 '채용 분야 경력 5년 이상'이 다시 적혀 있어 문턱이 분명합니다.[1] 바로 PM/PL 로 투입될 사람을 찾기 때문입니다. {추론}",
+   "how_far": "'PM **또는** 개발'이라 둘 중 하나면 됩니다.[1] 개발자라면 Java 서버 + Oracle 설계·튜닝을 실무로 해 본 5년이 최소선입니다. 설비·제조 도메인이 아니어도 자격 줄 자체는 채웁니다(도메인은 다음 줄). {추론}",
+   "level": {
+    "basic": "Java 웹 서버(Spring 등) · Oracle 조인·인덱스 · 배치",
+    "work": "대량 이력 테이블 설계 · 파티션 · 실행계획 보고 튜닝",
+    "team": "설비 이력처럼 시간이 키인 데이터를 Oracle 에 오래 쌓고 빠르게 꺼내기"
+   },
+   "refs": [
+    1
+   ],
+   "study": [
+    "sql-tuning",
+    "sql-levelup"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "제조 설비 정보화 사업에 대해 이해도를 보유하신 분",
+   "short": "공장 설비에서 데이터가 어떻게 나와 어느 시스템으로 가는지 그림을 그릴 수 있는 사람.",
+   "why": "고객사 설비 엔지니어와 같은 말을 써야 요구를 받아 낼 수 있습니다. {추론} 반도체 팹의 설비 소프트웨어는 보통 MES·FMS(유틸리티 감시)·CMMS(보전 관리)·BMS(건물·공조)·EMS(에너지) 다섯 갈래로 회사마다 따로 깔린다는 분석이 있습니다.[9]",
+   "actually": {
+    "items": [
+     "ISA-95 층(센서 → PLC → SCADA/MES → ERP)으로 '내 시스템이 몇 층인가'를 말할 수 있다.[13]",
+     "유틸리티 종류 — 외기 공조(OAC)·공정 냉각수(PCW) 펌프·열교환기·칠러·냉각탑·스크러버.[8]",
+     "팹에는 데이터센터의 DCIM 같은 통합 관리 도구가 없어 유틸리티 하나가 흔들리면 알람·작업 지시·장비 정지가 따로따로 생긴다는 지적 — 통합 Portal 이 필요한 이유.[9]"
+    ]
+   },
+   "how_far": "'이해도'라서 설비를 다뤄 본 경력까지는 아닙니다.[1] 위 유틸리티 이름과 각 설비가 내는 대표 값(온도·압력·유량·전류)을 짝지어 말할 수 있는 정도가 최소선입니다. {추론}",
+   "refs": [
+    1,
+    8,
+    9,
+    13
+   ],
+   "study": [
+    "skhynix-utility",
+    "semix-fms",
+    "isa95"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "대용량 데이터(HMI) 기반 수집/분석 시스템 구축 및 개발을 수행해보신 분",
+   "short": "설비 화면(HMI)에 찍히는 수만 개 측정값을 초 단위로 받아 쌓고 분석하는 시스템을 지어 본 사람.",
+   "why": "설비 하나에도 온도·압력·전류 같은 측정점(태그)이 여러 개라, 팹 전체로는 태그가 매우 많습니다. {추론} 1초마다 쌓으면 하루 행 수가 금방 수십억이 되어 일반 업무 DB 방식으로는 감당하기 어렵습니다(아래 예).",
+   "actually": {
+    "items": [
+     "**수집** — PLC·SCADA 에서 OPC UA 같은 표준 통신으로 값을 읽는다.[14]",
+     "**거르기** — 변화가 없는 값은 버리고 바뀐 것만 남긴다(데드밴드·압축). 다음 우대 줄의 RTDB 가 하는 일.[10][11]",
+     "**쌓기** — 시간으로 쪼갠 테이블(파티션)에 넣고, 오래된 원본은 1분·1시간 요약으로 바꿔 보관한다. {추론}",
+     "**분석** — 평소 범위에서 벗어나는지(관리도), 서서히 나빠지는지(추세)를 본다.[12]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "1초 수집이면 하루에 얼마나 쌓이나",
+     "body": "태그 5만 개를 1초마다 쌓는 가상 규모입니다. 한 행을 시각·태그·값 16바이트로만 잡아도 하루 약 69GB 입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "tags, sec = 50_000, 1            # 태그 5만 개를 1초마다(가상 규모)\nper_day = tags * (86400 // sec)\nprint(\"rows/day:\", f\"{per_day:,}\")\nprint(\"GB/day (16 bytes/row):\", round(per_day * 16 / 1e9, 1))\n# rows/day: 4,320,000,000\n# GB/day (16 bytes/row): 69.1"
+    },
+    {
+     "title": "서서히 나빠지는 것은 3σ 알람보다 EWMA 가 먼저 잡는다",
+     "body": "펌프 전류가 200번째 점부터 천천히 오르는 가상 데이터입니다. 한 점씩 보는 3σ 기준은 351번째에야 울리고, 지난 값을 가중 평균하는 EWMA 관리도는 262번째에 울립니다.[12] 느린 변화에 EWMA 가 낫다는 NIST 설명을 그대로 확인한 것입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "import math, random\nrandom.seed(1)\nmu, sd = 30.0, 0.5               # 펌프 전류 평소 평균·표준편차(가상 값, A)\n# 200번째 점부터 한 점에 0.004A 씩 서서히 오른다(베어링 마모 같은 느린 변화)\nx = [random.gauss(mu, sd) + (0.004*(i-200) if i >= 200 else 0) for i in range(600)]\n\nshewhart = next(i for i, v in enumerate(x) if abs(v - mu) > 3*sd)\n\nlam, L, z, ewma = 0.2, 3.0, mu, None\nlim = L * sd * math.sqrt(lam / (2 - lam))\nfor i, v in enumerate(x):\n    z = lam*v + (1 - lam)*z\n    if ewma is None and abs(z - mu) > lim:\n        ewma = i\nprint(\"drift from 200 | 3-sigma alarm:\", shewhart, \"| EWMA alarm:\", ewma, \"| limit +-\", round(lim, 3))\n# drift from 200 | 3-sigma alarm: 351 | EWMA alarm: 262 | limit +- 0.5"
+    }
+   ],
+   "how_far": "'구축 및 개발을 수행해 보신 분'이라 **직접 지어 본 경험**을 묻습니다.[1] 설비가 아니어도 로그·센서·금융 체결처럼 초당 수천 건 이상을 받아 쌓고 조회한 경험이면 설명할 거리가 됩니다. {추론}",
+   "refs": [
+    1,
+    10,
+    11,
+    12,
+    14
+   ],
+   "study": [
+    "opcua-p1",
+    "aveva-exc",
+    "nist-ewma"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "(개발언어) : Java, C#, Python 등\n(개발도구) : Eclipse, Visual Studio, Git 등\n(DB) : Oracle",
+   "short": "Java(Eclipse)·C#(Visual Studio)·Python 에 Git 과 Oracle — 쓰는 도구 목록이다.",
+   "why": "Eclipse 는 Java, Visual Studio 는 C# 개발 도구라 앞의 언어와 짝입니다. {추론} Python 은 데이터 분석·간단한 수집 스크립트에 쓰일 가능성이 큽니다. {추론}",
+   "level": {
+    "basic": "Java 또는 C# 한 가지로 서버·데스크톱 프로그램 · Git 브랜치·병합",
+    "work": "다른 하나를 읽고 고치기 · Python 으로 데이터 확인(pandas) · Oracle SQL",
+    "team": "수집 프로그램(C#) ↔ 서버(Java) ↔ DB(Oracle) 를 한 흐름으로 디버깅"
+   },
+   "how_far": "목록 끝이 '등'이라 전부가 필수는 아닙니다.[1] 셋 중 하나는 주력, 하나는 읽을 수 있는 정도면 무리가 없습니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "sql-tuning"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "이런 경험과 역량이 있으면 더 좋아요! 👍\n우대사항\n실시간 데이터 베이스(RTDB) 운영 경험을 보유하신 분",
+   "short": "설비 측정값을 시간순으로 빠르게 쌓고 꺼내는 전용 DB(히스토리안)를 운영해 본 사람.",
+   "why": "RTDB(Real-Time Database, 실시간 데이터베이스)는 공장에서 흔히 '히스토리안'이라 부르는 시계열 전용 저장소입니다. 팹 유틸리티 감시는 AVEVA PI 같은 히스토리안 위에 지어지는 경우가 많다는 분석이 있고,[9] 같은 팀 공고도 GE Historian 을 적었습니다.[3]",
+   "actually": {
+    "items": [
+     "**예외 보고(exception)** — 수집 단계에서 직전 값과 일정 이상 다를 때만 보낸다. PI 문서는 계측기 정밀도보다 조금 작게 잡으라고 권한다.[10]",
+     "**압축(compression)** — 저장 단계에서 스윙도어(swinging door) 알고리즘으로 기울기를 따라 중간 점을 버린다. 예외 폭은 압축 폭보다 최소 두 배 작게 잡는다.[11]",
+     "**운영** — 태그 추가·삭제, 버퍼(네트워크가 끊겨도 값 보관), 보관 기간·용량, 끊긴 구간 메우기. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "데드밴드를 너무 넓히면 이상을 잃는다",
+     "body": "칠러 냉수 온도 1시간치(가상 값)에 20초짜리 0.8도 튐을 넣었습니다. 폭 0.05 면 3,600점 중 21점만 남기고도 튐을 지키지만, 폭 1.0 이면 1점만 남고 튐이 사라집니다(직접 돌린 출력). 실제 PI 압축은 단순 데드밴드가 아니라 스윙도어지만 '폭을 정하는 게 운영'이라는 점은 같습니다.[11]",
+     "lang": "python",
+     "code": "import math, random\nrandom.seed(7)\n# 칠러 냉수 온도 1시간치(1초마다) — 600~619초에 0.8도 튀는 이상을 일부러 넣었다(가상 값)\nvals = [12.0 + 0.02*math.sin(i/30) + random.gauss(0, 0.01)\n        + (0.8 if 600 <= i < 620 else 0) for i in range(3600)]\n\ndef deadband(xs, dev):          # 직전에 남긴 값과 dev 넘게 다를 때만 남긴다\n    kept, last = [0], xs[0]\n    for i, x in enumerate(xs[1:], 1):\n        if abs(x - last) > dev:\n            kept.append(i); last = x\n    return kept\n\nfor dev in (0.0, 0.05, 1.0):\n    k = deadband(vals, dev)\n    print(f\"dev={dev}: kept {len(k)}/3600\",\n          \"spike seen\" if any(600 <= i < 620 for i in k) else \"spike LOST\")\n# dev=0.0: kept 3600/3600 spike seen\n# dev=0.05: kept 21/3600 spike seen\n# dev=1.0: kept 1/3600 spike LOST"
+    }
+   ],
+   "how_far": "우대라 필수는 아닙니다.[1] 경험이 없다면 '왜 RDB 에 1초 값을 그대로 넣지 않나'와 '압축 폭을 어떻게 정하나'를 설명할 수 있는 정도면 면접에서 대화가 됩니다. {추론}",
+   "refs": [
+    1,
+    3,
+    9,
+    10,
+    11
+   ],
+   "study": [
+    "aveva-exc",
+    "aveva-comp"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "설비정보 사업기획 및 사업개발을 수행해보신 분",
+   "short": "만들기 전에 '무엇을 왜 만들지'를 정해 고객에게 제안하고 수주까지 해 본 사람.",
+   "why": "회사는 설비 디지털 트윈·FEMS·예지보전을 제품으로 내놓고 다른 제조사로 넓히려 합니다.[4][5][6] 그룹 안 일만이 아니라 새 고객에게 팔 사업을 꾸릴 사람이 필요합니다. {추론}",
+   "actually": {
+    "items": [
+     "고객 공장의 설비 현황을 조사해 '이 설비에 FDC 를 붙이면 정지 시간이 얼마 준다' 같은 효과를 숫자로 낸다. {추론}",
+     "제안서·견적·일정을 만든다. {추론}",
+     "회사가 내건 숫자(사고 5% 감소, 비용 10% 절감 등)는 회사 목표치라, 고객별로 다시 계산해야 한다.[5] {추론}"
+    ]
+   },
+   "refs": [
+    4,
+    5,
+    6
+   ],
+   "study": [
+    "ceo-twin",
+    "skax-fems"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AR/VR 관련 사업 및 Simulation 사업 등 제조 AI 역량을 보유 하신 분",
+   "short": "설비를 3D·가상 공간에 옮겨 보고, 조건을 바꿔 미리 돌려 보는 일을 해 본 사람.",
+   "why": "회사의 디지털 트윈은 설비 3D 모형에 실시간 값을 얹고 운전 조건을 시뮬레이션합니다.[5] 2026년 발표한 제조 RX 서비스도 배치·작업자 동선·물류를 수천 개 시나리오로 미리 검증한다고 했습니다.[7]",
+   "actually": {
+    "items": [
+     "설비 3D 모형 위에 센서 값·알람을 띄우는 화면.[5]",
+     "'팬 속도를 낮추면 배기 압력이 기준 안에 머무나' 같은 조건 시뮬레이션.[5]",
+     "배치·동선을 바꿔 보는 공장 시뮬레이션과 로봇 통합 관제.[7]"
+    ]
+   },
+   "how_far": "우대 줄입니다.[1] 3D 엔진 전문가가 아니어도, **실시간 데이터를 3D·시뮬레이션 쪽에 넘겨 주는 인터페이스**를 설계해 본 경험이면 이 팀에 쓸모가 있습니다. {추론}",
+   "refs": [
+    1,
+    5,
+    7
+   ],
+   "study": [
+    "ceo-twin"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "외국어 능력으로 글로벌 커뮤니케이션에 능하신 분",
+   "short": "외국 장비·소프트웨어 회사, 해외 공장과 영어로 일할 일이 있어서.",
+   "why": "설비 제어·히스토리안 제품(Siemens·Rockwell·GE 등)이 외국 회사 것이라 기술 문서와 지원 창구가 영어입니다.[3][17] 공통 요건에 '해외여행에 결격사유가 없는 분'이 있어 해외 출장 가능성도 있습니다.[1] {추론}",
+   "how_far": "영어 기술 문서를 읽고 메일·화상 회의로 문제를 설명할 수 있는 정도. 시험 점수 기준은 공고에 없습니다.[1]",
+   "refs": [
+    1,
+    3,
+    17
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "성향 및 캐릭터\n업무에 대한 책임감과 도전정신을 갖고 계신 분\n긍정적인 마인드와 고객 친화적이고 원활한 소통역량을 보유하신 분",
+   "short": "고객 공장 사람들과 매일 부딪히며 일정 안에 끝까지 책임지는 사람.",
+   "why": "PM/PL 은 고객사 설비 엔지니어·제어 업체·개발자 사이에서 일합니다.[1] 팹은 24시간 돌아가 시스템 전환·장애 대응이 고객 생산과 바로 이어집니다.[8] {추론}",
+   "how_far": "면접에서는 '고객과 의견이 갈렸을 때 어떻게 풀었나'를 사례로 묻게 됩니다. {추론}",
+   "refs": [
+    1,
+    8
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "웹·업무 시스템 경험을 공장 현장 데이터로 넓혀 보고 싶은 사람",
+   "큰 시계열 데이터를 쌓고 거르는 설계가 재미있는 사람",
+   "새 팹(용인)이 지어지는 시기에 설비 시스템을 처음부터 깔아 보고 싶은 사람[18]",
+   "개발과 고객 조율을 같이 하는 PL 역할이 맞는 사람[1]"
+  ],
+  "hard": [
+   "고객이 주로 그룹 계열사라 고객 공장 일정에 따라 움직인다 {추론}",
+   "분당과 이천을 오가는 근무[1]",
+   "Java·C#·PLC·RTDB 가 섞인 환경이라 한 기술만 깊게 파기는 어렵다 {추론}",
+   "경력 5년 이상이 공통 요건이다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "태그 5만 개를 1초마다 받으면 하루에 몇 행인가요? 어떻게 저장하겠어요?",
+   "a": "규모 감각과 파티션·요약 설계. 자격 '대용량 데이터(HMI)' 줄."
+  },
+  {
+   "q": "히스토리안의 예외 폭·압축 폭은 무엇을 보고 정하나요?",
+   "a": "계측기 정밀도와 이상 보존의 균형.[10][11]"
+  },
+  {
+   "q": "펌프 전류가 서서히 오를 때 3σ 알람은 왜 늦나요?",
+   "a": "Shewhart 와 EWMA 의 차이.[12]"
+  },
+  {
+   "q": "설비 Portal 은 ISA-95 몇 층이고 무엇과 인터페이스하나요?",
+   "a": "PLC·SCADA(2·3층)와 ERP(4층) 사이.[13]"
+  },
+  {
+   "q": "공고의 EMS 와 EAM 은 무엇이 다른가요?",
+   "a": "공고가 EMS 를 '설비자산관리'로 적은 점과 ISO 55000.[1][16]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "SK Careers · 반도체 Utility AX 시스템 전문가 영입",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262455",
+   "kind": "posting",
+   "date": "2026-11-10 ~ 2026-12-31",
+   "note": "정규직 경력 · 직무 'Tech R&D - Software Engineering' · 설비Intelligence팀 소개·업무·요건·우대·전형(서류 > SKCT > 면접 2회 > 채용검진/처우협의)·공통 요건(경력 5년 이상). 복리후생 칸 없음"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · [SK inc.(AX)] 반도체 Utility AX 시스템 전문가 채용",
+   "url": "https://www.wanted.co.kr/wd/398292",
+   "kind": "posting",
+   "date": "2026-12-31 마감",
+   "note": "같은 공고의 사본 — 근무지 칸 '성남시 분당구 SK-U타워'. 수집본에 없어 jobs 에는 넣지 않았다"
+  },
+  {
+   "n": 3,
+   "title": "원티드 · [SK inc.(AX)] 설비(Utility) 분야 전문가 채용",
+   "url": "https://www.wanted.co.kr/wd/398291",
+   "kind": "posting",
+   "date": "2026-12-31 마감",
+   "note": "같은 팀의 설비제어 쪽 공고(3년 이상) — HVAC·SCADA·WWT·약품/가스 공급 제어, 용인 클러스터 설비 제어 PM/PL, Siemens·GE Historian·Rockwell PLC, WinCC OA, AS/RS·AMR. 근무지 분당·이천·용인·청주"
+  },
+  {
+   "n": 4,
+   "title": "SK AX · Smart FEMS",
+   "url": "https://www.skax.co.kr/manufacturing-spec/fems",
+   "kind": "company",
+   "note": "효율 운전 지표·ML 최적 설정값·AI 자율 운전·에너지 사용 지도. 사례: 반도체 H사 전력 감시, 반도체 S사 FEMS, 석유화학 E사 플레어 감시. 담당 전문가에 설비Intelligence팀 팀장. 날짜 표기 없음"
+  },
+  {
+   "n": 5,
+   "title": "CEO스코어데일리 · SK AX, 디지털 트윈 기반 AX로 제조 유틸리티 설비 운영 혁신",
+   "url": "https://www.ceoscoredaily.com/page/view/2025082816480509023",
+   "kind": "news",
+   "date": "2025-08-28",
+   "note": "회사 발표 보도 — 배기 유틸리티 디지털 트윈, IoT·영상 AI·열화상, 사고 최대 5%↓·비용 10%↑ 절감·효율 25%↑(목표치), 전 공정 통합 관제로 확장"
+  },
+  {
+   "n": 6,
+   "title": "아시아경제 · SK C&C, 공장 맞춤형 AI 예지보전 서비스 출시",
+   "url": "https://www.asiae.co.kr/en/article/2024052209172884819",
+   "kind": "news",
+   "date": "2024-05-22",
+   "note": "iFacts — 진동 센서 예지보전(PPdM) + FDC. 철강·화학·에너지·반도체·배터리 고객, 정지 대응·점검 시간 절반 넘게 감소(회사 발표). 영문 기계 번역판"
+  },
+  {
+   "n": 7,
+   "title": "SK AX 뉴스룸 · '로봇 도입부터 자율 공장 운영까지' 제조현장 RX 앞당긴다",
+   "url": "https://www.skax.co.kr/company/news-room/sk-ax-%EB%A1%9C%EB%B4%87-%EB%8F%84%EC%9E%85%EB%B6%80%ED%84%B0-%EC%9E%90%EC%9C%A8-%EA%B3%B5%EC%9E%A5-%EC%9A%B4%EC%98%81%EA%B9%8C%EC%A7%80-%EC%A0%9C%EC%A1%B0%ED%98%84%EC%9E%A5-rx",
+   "kind": "company",
+   "date": "2026-07-09",
+   "note": "제조 RX 풀스택 — 디지털 트윈 시나리오 검증, VLA 피지컬 AI, 이기종 로봇 통합 관제, 반도체 검증 후 조선 확장"
+  },
+  {
+   "n": 8,
+   "title": "SK하이닉스 뉴스룸 · SK하이닉스의 Utility 설비 어떻게 운영되고 있는가",
+   "url": "https://news.skhynix.co.kr/sk-hynixs-utility-facility-operation/",
+   "kind": "company",
+   "date": "2015-02-23",
+   "note": "고객사 자료(오래된 글) — 설비기술1팀·제어기술팀, OAC·PCW·칠러·냉각탑·스크러버, 기계실 상태 통합 감시, fail-safe, 24시간"
+  },
+  {
+   "n": 9,
+   "title": "SemiconductorX · Fab Facility Management Systems",
+   "url": "https://semiconductorx.com/fab-ops-facility-management.html",
+   "kind": "reference",
+   "date": "2026-10 확인",
+   "note": "다른 곳의 업계 분석 — MES·FMS(PI 류 히스토리안)·CMMS·BMS·EMS 다섯 갈래, 팹에는 DCIM 같은 통합 도구 없음, 시설 디지털 트윈은 초기"
+  },
+  {
+   "n": 10,
+   "title": "AVEVA 문서 · PI Server 예외 보고(Exception deviation)",
+   "url": "https://docs.aveva.com/bundle/pi-server-s-da-admin/page/1021927.html",
+   "kind": "reference",
+   "note": "예외는 인터페이스가 적용, 폭은 Span 의 % (보통 약 1%) — 검색 요약으로 확인"
+  },
+  {
+   "n": 11,
+   "title": "AVEVA 문서 · PI Server 압축(Compression deviation)",
+   "url": "https://docs.aveva.com/bundle/pi-server-f-da-smt/page/1021930_2.html",
+   "kind": "reference",
+   "note": "스윙도어 압축, 예외 폭은 압축 폭보다 최소 2배 작게 — 검색 요약으로 확인"
+  },
+  {
+   "n": 12,
+   "title": "NIST/SEMATECH e-Handbook · EWMA Control Charts",
+   "url": "https://itl.nist.gov/div898/handbook/pmc/section3/pmc324.htm",
+   "kind": "reference",
+   "note": "작은·느린 변화에는 Shewhart 보다 EWMA, λ=1 이면 Shewhart 와 같음"
+  },
+  {
+   "n": 13,
+   "title": "ISA · ISA-95 Enterprise-Control System Integration",
+   "url": "https://www.isa.org/standards-and-publications/isa-standards/isa-95-standard",
+   "kind": "reference",
+   "note": "층 0~4 — 1 센서, 2 PLC·DCS, 3 MES·SCADA, 4 ERP (층 설명은 Siemens·OPC 재단 요약)"
+  },
+  {
+   "n": 14,
+   "title": "OPC Foundation · OPC UA Part 1: Overview and Concepts",
+   "url": "https://reference.opcfoundation.org/specs/OPC-10000-1/full",
+   "kind": "reference",
+   "note": "산업 통신 표준 OPC UA 의 개요 — 주소 공간·세션·보안 모델"
+  },
+  {
+   "n": 15,
+   "title": "ISA · ISA-101 HMI 표준",
+   "url": "https://www.isa.org/standards-and-publications/isa-standards/isa-101-standards",
+   "kind": "reference",
+   "note": "HMI 수명 주기(계획·분석·설계·구현·운영·유지보수)는 업체 블로그 요약, TR101.01(HMI 철학)·TR101.02(사용성)"
+  },
+  {
+   "n": 16,
+   "title": "ISO 55000:2024 · Asset management — Vocabulary, overview and principles",
+   "url": "https://www.iso.org/standard/83053.html",
+   "kind": "reference",
+   "date": "2024-07",
+   "note": "자산 관리 원칙·낱말, 요구사항은 ISO 55001"
+  },
+  {
+   "n": 17,
+   "title": "Siemens · SIMATIC WinCC Open Architecture",
+   "url": "https://www.siemens.com/ko-kr/products/scada/wincc-open-architecture/",
+   "kind": "reference",
+   "note": "같은 팀 공고가 적은 SCADA 제품"
+  },
+  {
+   "n": 18,
+   "title": "전자신문 · 골조 끝낸 SK하이닉스 용인 1기 팹, 내년 4분기 첫 양산",
+   "url": "https://www.etnews.com/20261116000037",
+   "kind": "news",
+   "date": "2026-11-16",
+   "note": "1단계 공정률 85.58%(검색 요약). 준공 목표 2027년 5월, 클린룸 오픈 2027년 2월로 앞당긴다는 다른 보도도 있음"
+  },
+  {
+   "n": 19,
+   "title": "FETV · SK 계열사 직원 평균 급여(2024 사업보고서)",
+   "url": "https://www.fetv.co.kr/news/articleView.html?idxno=198852",
+   "kind": "news",
+   "date": "2025-08-14"
+  },
+  {
+   "n": 20,
+   "title": "ZDNet Korea · 올해 상반기 대기업 SI 톱4 '연봉킹' 누구?",
+   "url": "https://zdnet.co.kr/view/?no=20250816174726",
+   "kind": "news",
+   "date": "2025-08-16",
+   "note": "4사 2025년 반기보고서 1인 평균 급여"
+  },
+  {
+   "n": 21,
+   "title": "원티드 · 에스케이 에이엑스(SK AX) 기업정보",
+   "url": "https://www.wanted.co.kr/company/25949",
+   "kind": "reference",
+   "note": "평균 연봉(집계값)"
+  },
+  {
+   "n": 22,
+   "title": "SK AX Careers · 복리후생",
+   "url": "https://skax.skcareers.com/page/HR/Welfare",
+   "kind": "company",
+   "note": "연도 표기 없음 — 같은 날 다른 풀이(skax-aidc-power-construction 등)에서 확인한 항목"
+  },
+  {
+   "n": 23,
+   "title": "SK AX · 사업장 안내",
+   "url": "https://www.skax.co.kr/company/office",
+   "kind": "company",
+   "note": "SK u-타워(13558)·판교 캠퍼스·대덕·보라매 데이터센터"
+  }
+ ],
+ "caveat": "이 팀(설비Intelligence팀)이 직접 쓴 기술 글·발표 영상은 찾지 못해 받은 영상이 없습니다. 회사 쪽 근거는 이 공고·같은 팀의 설비제어 공고·SK AX 제품 페이지와 발표 보도이고, 고객 쪽 설비 구성은 2015년 SK하이닉스 뉴스룸 글입니다. 공고의 SCMS 는 풀이가 없어 뜻을 확정하지 못했습니다. FDC·RTDB·HMI 구조는 업계 일반 자료(AVEVA·NIST·ISA·OPC 재단)로 '보통 이런 것'을 보였습니다. 코드 예시의 숫자는 모두 가상 값입니다.",
+ "resources": [
+  {
+   "id": "skhynix-utility",
+   "title": "그것이 알고 싶다! SK하이닉스의 Utility 설비 어떻게 운영되고 있는가",
+   "by": "SK하이닉스 뉴스룸 · 2015",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://news.skhynix.co.kr/sk-hynixs-utility-facility-operation/",
+   "why": "고객사 유틸리티 설비(OAC·PCW·칠러·냉각탑·스크러버)와 원격 감시 팀이 하는 일을 한 번에 본다. '제조 설비 정보화 이해도' 요건의 출발점."
+  },
+  {
+   "id": "skax-fems",
+   "title": "SK AX Smart FEMS",
+   "by": "SK AX",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.skax.co.kr/manufacturing-spec/fems",
+   "why": "이 팀이 담당하는 에너지 관리 제품의 기능과 반도체 사례. 업무 첫 두 줄(설비정보화·에너지 효율)을 회사 말로 이해한다."
+  },
+  {
+   "id": "ceo-twin",
+   "title": "SK AX, 디지털 트윈 기반 AX로 제조 유틸리티 설비 운영 혁신",
+   "by": "CEO스코어데일리 · 2025",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.ceoscoredaily.com/page/view/2025082816480509023",
+   "why": "배기 유틸리티 디지털 트윈이 무엇을 모으고 무엇을 추천하는지. 디지털 트윈·시뮬레이션 우대 줄의 회사 근거."
+  },
+  {
+   "id": "semix-fms",
+   "title": "Fab Facility Management Systems",
+   "by": "SemiconductorX",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://semiconductorx.com/fab-ops-facility-management.html",
+   "why": "팹 설비 소프트웨어가 MES·FMS·CMMS·BMS·EMS 로 갈리는 구조. 설비 Portal·EAM·FDC 가 어디에 서는지 지도를 그린다."
+  },
+  {
+   "id": "isa95",
+   "title": "ISA-95 Standard: Enterprise-Control System Integration",
+   "by": "ISA",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://www.isa.org/standards-and-publications/isa-standards/isa-95-standard",
+   "why": "센서 → PLC → SCADA/MES → ERP 층으로 '내 시스템이 몇 층에서 무엇과 붙나'를 말하는 공통어. PM/PL 이 인터페이스 범위를 정할 때 쓴다."
+  },
+  {
+   "id": "opcua-p1",
+   "title": "OPC Unified Architecture – Part 1: Overview and Concepts",
+   "by": "OPC Foundation",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://reference.opcfoundation.org/specs/OPC-10000-1/full",
+   "why": "PLC·SCADA 에서 값을 읽어 오는 표준 통신의 개념(주소 공간·구독·보안). '대용량 데이터 수집' 요건의 수집 쪽."
+  },
+  {
+   "id": "aveva-exc",
+   "title": "PI Server · Exception deviation",
+   "by": "AVEVA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aveva.com/bundle/pi-server-s-da-admin/page/1021927.html",
+   "why": "히스토리안이 수집 단계에서 값을 거르는 규칙. RTDB 우대 줄의 '운영'이 무엇을 정하는 일인지 안다."
+  },
+  {
+   "id": "aveva-comp",
+   "title": "PI Server · Compression deviation",
+   "by": "AVEVA",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.aveva.com/bundle/pi-server-f-da-smt/page/1021930_2.html",
+   "why": "스윙도어 압축과 예외 폭·압축 폭의 관계. 저장량과 이상 보존 사이의 균형을 잡는 법."
+  },
+  {
+   "id": "nist-ewma",
+   "title": "NIST/SEMATECH e-Handbook of Statistical Methods · 6.3 Univariate and Multivariate Control Charts",
+   "by": "NIST",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://itl.nist.gov/div898/handbook/pmc/section3/pmc3.htm",
+   "why": "Shewhart·CUSUM·EWMA 관리도 — FDC 의 가장 기본 판정이 어떻게 계산되는지 무료로 배운다."
+  },
+  {
+   "id": "isa101",
+   "title": "ISA-101 Series of Standards (HMI)",
+   "by": "ISA",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://www.isa.org/standards-and-publications/isa-standards/isa-101-standards",
+   "why": "HMI 화면을 수명 주기로 설계·관리하는 표준. PLC·HMI 줄의 화면 쪽."
+  },
+  {
+   "id": "hphmi-book",
+   "title": "The High Performance HMI Handbook",
+   "by": "Bill Hollifield · Dana Oliver · Ian Nimmo · Eddie Habibi",
+   "kind": "book",
+   "lang": "en",
+   "level": "심화",
+   "url": "https://www.abebooks.com/High-Performance-HMI-Handbook-Eddie-Habibi/32447167772/bd",
+   "why": "운전원이 이상을 놓치지 않는 화면 설계 원칙. ISA-101 위원이 쓴 책이라 표준의 배경을 이해한다."
+  },
+  {
+   "id": "iso55000",
+   "title": "ISO 55000:2024 Asset management — Vocabulary, overview and principles",
+   "by": "ISO · 2024",
+   "kind": "doc",
+   "lang": "en",
+   "level": "실무",
+   "url": "https://www.iso.org/standard/83053.html",
+   "why": "EAM(설비 자산 관리)이 따르는 국제 원칙과 낱말. 자산 관리 시스템 데이터 모델을 고객과 맞출 때 기준이 된다."
+  },
+  {
+   "id": "wincc-oa",
+   "title": "SIMATIC WinCC Open Architecture",
+   "by": "Siemens",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.siemens.com/ko-kr/products/scada/wincc-open-architecture/",
+   "why": "같은 팀 제어 공고가 적은 SCADA 제품. 설비 데이터가 올라오는 쪽의 구조를 제품 설명으로 본다."
+  },
+  {
+   "id": "sql-tuning",
+   "title": "친절한 SQL 튜닝",
+   "by": "조시형",
+   "kind": "book",
+   "lang": "ko",
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%B9%9C%EC%A0%88%ED%95%9C%20SQL%20%ED%8A%9C%EB%8B%9D",
+   "why": "Oracle 기준 실행계획·인덱스·파티션. 설비 이력처럼 큰 시간 테이블을 Oracle 에서 빠르게 꺼내는 힘(자격 첫 줄·DB 줄)."
+  },
+  {
+   "id": "sql-levelup",
+   "title": "SQL 레벨업",
+   "kind": "book",
+   "lang": "ko",
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=SQL%20%EB%A0%88%EB%B2%A8%EC%97%85",
+   "why": "윈도우 함수·집합 사고로 설비 값의 변화 구간·연속 이상을 SQL 한 번에 뽑는 연습."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "유틸리티 설비 지도",
+   "time": "1주",
+   "goal": "반도체 팹 유틸리티 설비 이름과 각 설비가 내는 대표 값을 짝지어 말하고, 시스템 다섯 갈래(MES·FMS·CMMS·BMS·EMS)에서 이 팀의 자리를 짚을 수 있다.",
+   "resources": [
+    "skhynix-utility",
+    "semix-fms",
+    "skax-fems"
+   ],
+   "task": "OAC·PCW·칠러·냉각탑·스크러버 다섯 설비마다 측정 태그 5개(이름·단위·정상 범위, 가상 값)를 정한 태그 목록표를 만든다."
+  },
+  {
+   "title": "층과 통신",
+   "time": "1~2주",
+   "goal": "ISA-95 층으로 시스템 경계를 그리고, OPC UA 로 값을 읽는 흐름을 설명할 수 있다.",
+   "resources": [
+    "isa95",
+    "opcua-p1",
+    "wincc-oa"
+   ],
+   "task": "공개 OPC UA 샘플 서버나 직접 만든 가상 서버에서 태그 10개를 1초마다 읽어 CSV 로 쌓는 수집 프로그램(Java·C#·Python 중 하나)을 만든다."
+  },
+  {
+   "title": "쌓기와 거르기",
+   "time": "2주",
+   "goal": "하루 수십억 행 규모를 계산하고, 예외·압축 폭과 파티션·요약 테이블로 저장량을 설계할 수 있다.",
+   "resources": [
+    "aveva-exc",
+    "aveva-comp",
+    "sql-tuning"
+   ],
+   "task": "앞 단계 CSV 에 데드밴드를 적용한 원본 테이블과 1분 요약 테이블을 날짜 파티션으로 설계하고, 폭을 바꿔 저장 행 수와 이상 보존 여부를 표로 비교한다."
+  },
+  {
+   "title": "FDC 판정",
+   "time": "1~2주",
+   "goal": "3σ·EWMA 관리도로 이상과 느린 변화를 잡고, 알람을 설비·원인별로 분류할 수 있다.",
+   "resources": [
+    "nist-ewma",
+    "sql-levelup"
+   ],
+   "task": "가상 펌프 전류·진동 데이터에 튐·느린 상승을 넣고, 두 관리도의 첫 알람 시점과 오경보 수를 비교한 뒤 SQL 윈도우 함수로 '연속 5분 이상' 구간을 뽑는다."
+  },
+  {
+   "title": "화면과 자산",
+   "time": "1~2주",
+   "goal": "운전원이 이상을 놓치지 않는 상태판과, 점검·고장 이력을 담는 자산 관리 데이터 모델을 설계할 수 있다.",
+   "resources": [
+    "isa101",
+    "hphmi-book",
+    "iso55000"
+   ],
+   "task": "설비 다섯 대의 상태판(평소 회색·이상만 색)을 React 로 만들고, 설비–점검 계획–고장 이력–작업 지시 4개 테이블의 ERD 를 그린다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. SK주식회사 전체 직원 평균은 **1억 1,600만원**(2024 사업보고서), SK AX 상반기 평균은 **7,300만원**(6개월치) — 5년 차 이상 경력직 제시액은 처우협의에서 정한다",
+  "rows": [
+   {
+    "label": "직원 평균 급여(SK주식회사 전체)",
+    "value": "1억 1,600만원",
+    "amount": 11600,
+    "basis": "사업보고서 · 2024년",
+    "note": "SK AX 는 SK주식회사 안의 사업 조직이라 지주 부문을 합친 회사 전체 값이다 [19]"
+   },
+   {
+    "label": "SK AX 1인 평균 급여 (6개월)",
+    "value": "7,300만원",
+    "amount": 7300,
+    "basis": "반기보고서 · 2025년 상반기",
+    "note": "1~6월 반년치다. 1년 연봉이 아니다 [20]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "6,082만원",
+    "amount": 6082,
+    "basis": "공공데이터 집계",
+    "note": "채용 사이트가 공공 자료로 계산한 값, 계산 기간은 적혀 있지 않다 [21]"
+   },
+   {
+    "label": "삼성SDS 평균 (6개월)",
+    "value": "6,600만원",
+    "amount": 6600,
+    "basis": "반기보고서 · 2025년 상반기",
+    "peer": true,
+    "note": "같은 기사의 같은 기준 [20]"
+   },
+   {
+    "label": "LG CNS 평균 (6개월)",
+    "value": "6,500만원",
+    "amount": 6500,
+    "basis": "반기보고서 · 2025년 상반기",
+    "peer": true,
+    "note": "같은 기사의 같은 기준 [20]"
+   }
+  ],
+  "how": "전형 끝에 **채용검진/처우협의** 단계가 있어 연봉은 사람마다 정한다 [1]. 위 평균은 신입부터 고참까지 섞인 회사 전체 값이라 5년 차 이상 PM/PL 의 제시액으로 읽으면 안 된다 {추론}. 이천 현장 근무에 붙는 수당·교통 지원은 공고에 없으니 처우협의 때 묻는다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "성장",
+    "detail": "9개 단과대 College·mySUNI, 해마다 Learning Account 예산, MARU 도서관, 사내 직무 공모"
+   },
+   {
+    "name": "장기근속",
+    "detail": "10·15·20·25·30년에 포상금과 포상 휴가"
+   },
+   {
+    "name": "주택 자금",
+    "detail": "구입·전세 최대 6,000만원, 생활안정자금 최대 1,500만원(100만원 단위)"
+   },
+   {
+    "name": "자녀 학자금",
+    "detail": "유치원부터 대학까지, 자녀 수 제한 없음"
+   },
+   {
+    "name": "식대·통신비",
+    "detail": "식대 월 4만원, 통신비 월 7만원(SKT 가입자)"
+   },
+   {
+    "name": "복지 포인트",
+    "detail": "연 100만원 + 월 20만원, SK 패밀리카드 연회비 10만원, 창립기념일 OK캐쉬백 20만 포인트"
+   },
+   {
+    "name": "건강",
+    "detail": "나이에 따라 종합 25만원·정밀 40만원 검진, 난임 지원, 단체보험 3종, 사내 의원, 심리 상담"
+   },
+   {
+    "name": "그 밖",
+    "detail": "외부 사이트 근무자 복지 포인트, 통근·셔틀 버스, 경조 휴가·경조금"
+   }
+  ],
+  "note": "SK AX 채용 사이트의 복리후생 페이지다(연도 표기 없음) [22]. 이 공고 자체에는 복리후생 칸이 없다 [1]. '외부 사이트 근무자 복지 포인트'가 이천 고객사 현장 근무에도 적용되는지는 페이지에 없으니 처우협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "SK AX 본사 (SK u-타워)",
+  "address": "경기도 성남시 분당구 성남대로 343번길 9 에스케이유타워",
+  "postal": "13558",
+  "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%EC%84%B1%EB%82%A8%EB%8C%80%EB%A1%9C%20343%EB%B2%88%EA%B8%B8%209",
+  "near": "신분당선·수인분당선 정자역 근처 {추론}",
+  "note": "공고의 근무지는 '경기도 분당/이천'이다 [1]. 원티드 사본의 근무지 칸이 분당 SK u-타워이고 [2], SK AX 사업장 안내의 본사 주소와 같다 [23]. 이천은 SK하이닉스 팹이 있는 곳으로, 고객사 현장 근무가 섞일 수 있다 [8] {추론}."
+ }
+}

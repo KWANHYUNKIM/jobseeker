@@ -42,6 +42,7 @@
   "ats-skcareers:sk:R262430": "skax-security-architect",
   "ats-skcareers:sk:R262135": "skax-security-operations-pm",
   "jobkorea-50267139": "skax-security-operations-pm",
+  "ats-skcareers:sk:R262455": "skax-semicon-utility-ax",
   "ats-skcareers:sk:R262252": "skax-vision-image-platform-pl-mle",
   "saramin-55459415": "skax-vision-image-platform-pl-mle",
   "ats-skcareers:sk:R262308": "skax-whitehat-pentest",
@@ -483,6 +484,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 30
+  },
+  {
+   "id": "skax-semicon-utility-ax",
+   "company": "SK주식회사(AX)",
+   "role": "반도체 Utility AX 시스템 전문가",
+   "jobs": [
+    "ats-skcareers:sk:R262455"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 18
   },
   {
    "id": "skax-vision-image-platform-pl-mle",
