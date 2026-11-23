@@ -24,6 +24,45 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "팬 3개·92mm·2.5슬롯·16핀 1개는 공식 표. 날개 7장은 공식 문구('7 larger WINGS 3.0 fan blades')와 사진이 같다 — 반투명 날개에 ARGB(앞·옆 두 면 발광). 쉬라우드는 검정 무광에 각진 홈 무늬, 끝 쪽 윗면·백플레이트에 은색 회로 무늬. 백플레이트는 'Expanded Opening' 이 있다고만 적혀 있고 사진으로 뚫린 범위가 안 보여 flow_through 는 비웠다. 16핀 자리도 사진에 안 보여 power 는 비웠다(models 의 16핀 x1 로 그린다)."
+  },
+  "msi-rtx5080-vanguard-soc": {
+   "kind": "gpu",
+   "fan_count": 3,
+   "fan_blades": 7,
+   "fan_light": "argb",
+   "backplate": true,
+   "flow_through": true,
+   "color": "#1c1d20",
+   "accent": "#b04cff",
+   "sources": [
+    {
+     "title": "MSI 공식 데이터시트 — GeForce RTX 5080 16G VANGUARD SOC(STORMFORCE FAN 날개 7장 · 통풍구 금속 백플레이트 · 16-pin x1 · 정면/뒷면 사진)",
+     "url": "https://storage-asset.msi.com/datasheet/vga/global/GeForce-RTX-5080-16G-VANGUARD-SOC.pdf"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "날개 7장(STORMFORCE FAN — Seven fan blades)·통풍구가 있는 금속 백플레이트·16핀 1개는 공식 데이터시트 문구. 데이터시트 정면 사진에서 팬 3개, 검정·짙은 회색 쉬라우드, 팬 안쪽에 빨강·초록·보라 불빛이 보여 fan_light=argb, 끝 모서리의 보라 빛을 accent 로 적었다(색은 대략). 뒷면 사진: 은회색 백플레이트에 MSI 용 그림, 끝 쪽은 뚫려 핀이 보인다 → flow_through. msi.com 403 이라 데이터시트만 읽었다. 팬 지름·16핀 자리·슬롯 수는 자료에 없고 사진이 작아 비웠다(두께 66mm). 쉬라우드 끝 모서리의 발광 모양은 사진이 작아 light 는 비웠다."
+  },
+  "palit-rtx5080-gamingpro": {
+   "kind": "gpu",
+   "fan_count": 3,
+   "slots": 3,
+   "color": "#151618",
+   "accent": "#b8d334",
+   "sources": [
+    {
+     "title": "Palit GeForce RTX 5080 GamingPro — 공식 제품 페이지(TurboFan 4.0 · ARGB accents · full-cover die-cast frame · 사진)",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5395&lang=en"
+    },
+    {
+     "title": "Palit GeForce RTX 5080 GamingPro — 공식 사양 탭(3 slot · 16-pin x1 · ARGB SYNC EVO)",
+     "url": "https://www.palit.com/palit/vgapro.php?id=5395&lang=en&tab=sp"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "3슬롯·16핀 1개·ARGB 는 공식 표. 공식 사진(상자와 같이 세운 정면): 검정 쉬라우드에 팬 3개(같은 크기로 보인다, 검정 날개·PALIT 허브), 첫 팬 옆 윗면 쪽에 연두·노랑 GAMINGPRO 그림이 있어 accent 로 적었다. ARGB 가 어디서 빛나는지는 공식 문구에 없고 사진이 꺼진 상태라 light·fan_light 는 비웠다. 팬 지름·날개 수·백플레이트(문구는 full-cover die-cast frame 뿐)·16핀 자리는 자료에 없어 비웠다."
   }
  }
 }

@@ -1,0 +1,24 @@
+{
+ "schema": 1,
+ "part": "gpu-rtx-5060",
+ "shapes": {
+  "msi-ventus-2x-oc-v1-rtx5060": {
+   "kind": "gpu",
+   "fan_count": 2,
+   "backplate": true,
+   "flow_through": true,
+   "fan_light": "none",
+   "color": "#1a1b1d",
+   "accent": "#bfc1c3",
+   "sources": [
+    {
+     "title": "MSI 공식 데이터시트 — GeForce RTX 5060 8G VENTUS 2X OC V1(Dual Fan · TORX FAN 5.0 · flow-through 보강 백플레이트 · 8-pin x1 · 정면/뒷면 사진)",
+     "url": "https://storage-asset.msi.com/datasheet/vga/global/GeForce-RTX-5060-8G-VENTUS-2X-OC-V1.pdf"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "팬 2개·TORX FAN 5.0(날개 끝을 고리 호로 이은 팬)·플로스루 보강 백플레이트·8핀 1개는 공식 데이터시트 문구. 데이터시트의 정면 사진: 검정 팬 2개에 은색 테두리 쉬라우드, 불빛 없음(조명 항목도 없다). 뒷면 사진: 검정 백플레이트에 MSI 방패 로고·GEFORCE RTX, 끝 쪽 모서리가 뚫려 핀이 보인다. msi.com 제품 페이지는 403(우회 안 함)이라 데이터시트 PDF 만 읽었다. 팬 지름은 공식 자료에 없어 fan_count 만, 날개 수는 사진이 작아 세지 못했다. 8핀 자리는 사진 각도로 안 보여 power 는 비웠다(종류·개수는 models). 슬롯은 두께 41mm 로 공식 슬롯 표기가 없어 비웠다."
+  }
+ }
+}
