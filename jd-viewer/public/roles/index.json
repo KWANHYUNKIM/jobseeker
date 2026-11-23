@@ -44,6 +44,8 @@
   "jobkorea-50308626": "skax-mfg-data-engineer-k8s",
   "jobkorea-50340705": "skax-nova-bss-oss-app-dev",
   "wanted-396834": "skax-nova-bss-oss-app-dev",
+  "ats-skcareers:sk:R262159": "skax-plant-energy-chem-aidt",
+  "wanted-391836": "skax-plant-energy-chem-aidt",
   "ats-skcareers:sk:R262150": "skax-salesforce-crm",
   "ats-skcareers:sk:R262392": "skax-sap-bw-bdc-data-analytics",
   "ats-skcareers:sk:R262105": "skax-sap-fi-module",
@@ -526,6 +528,17 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 34
+  },
+  {
+   "id": "skax-plant-energy-chem-aidt",
+   "company": "SK주식회사(AX)",
+   "role": "제조 에너지/화학 계열 AI/DT 및 시스템 담당자",
+   "jobs": [
+    "ats-skcareers:sk:R262159",
+    "wanted-391836"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 24
   },
   {
    "id": "skax-salesforce-crm",
