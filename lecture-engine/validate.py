@@ -155,7 +155,8 @@ def tracks_index(paths: list[dict], series: list[dict]) -> list[dict]:
     for t in paths:
         steps = []
         for st in t["steps"]:
-            ss = [{"key": k, "title": by[k]["title"], "school": by[k].get("school"), "done": by[k]["done"], "total": by[k]["total"]}
+            ss = [{"key": k, "title": by[k]["title"], "school": by[k].get("school"), "stack": by[k].get("stack"),
+                   "subject": by[k].get("subject"), "done": by[k]["done"], "total": by[k]["total"]}
                   for k in st["series"] if k in by]
             steps.append({**st, "series": ss, "done": sum(x["done"] for x in ss), "total": sum(x["total"] for x in ss)})
         out.append({k: t[k] for k in ("key", "label", "for", "goal", "how")} |
@@ -170,7 +171,8 @@ def series_index(series: list[dict], have: set[str]) -> list[dict]:
         lec = [{"no": l["no"], "id": l["id"], "title": l["title"], "duration_sec": l.get("duration"), "done": l["id"] in have}
                for l in s["lectures"]]
         out.append({"key": s["key"], "title": s["title"], "school": s.get("school"), "code": s.get("code"),
-                    "term": s.get("term"), "track": track_of_series(s), "playlist": f"https://www.youtube.com/playlist?list={s['playlist']}",
+                    "term": s.get("term"), "track": track_of_series(s), "stack": s.get("stack"), "subject": s.get("subject"),
+                    "quality": s.get("quality"), "playlist": f"https://www.youtube.com/playlist?list={s['playlist']}",
                     "total": len(lec), "done": sum(l["done"] for l in lec), "lectures": lec})
     return out
 
@@ -252,6 +254,9 @@ def main() -> None:
         docs.append(d)
     have = {d["id"] for d in docs}
     if "--gaps" in sys.argv:
+        bare = [s["key"] for s in load_series() if not s.get("stack") or not s.get("subject") or not (s.get("quality") or {}).get("why")]
+        if bare:
+            print(f"기술·내용·선정 이유가 없는 과목 {len(bare)}개 — 먼저 채운다: {', '.join(bare)}")
         todo = gaps(have)
         print(f"남은 강의 {len(todo)}편 — 위에서부터")
         for v in todo[:20]:
@@ -265,12 +270,12 @@ def main() -> None:
     for d in docs:
         topics[d["topic"]] = topics.get(d["topic"], 0) + 1
     series = series_index(load_series(), have)
-    where = {l["id"]: (s["key"], l["no"], s["track"]) for s in series for l in s["lectures"]}
+    where = {l["id"]: (s["key"], l["no"], s["track"], s.get("stack"), s.get("subject")) for s in series for l in s["lectures"]}
     items = []
     for d in docs:
         c = card(d)
         if d["id"] in where:
-            c["series"], c["no"], c["track"] = where[d["id"]]
+            c["series"], c["no"], c["track"], c["stack"], c["subject"] = where[d["id"]]
         else:
             c["track"] = TRACK_OF_TOPIC.get(d["topic"], "ai")
         items.append(c)

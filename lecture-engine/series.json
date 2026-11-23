@@ -111,7 +111,25 @@
     "title": "Stanford CS229 Machine Learning | Spring 2026 | Lecture 20: GMM (EM), PCA",
     "duration": 4736
    }
-  ]
+  ],
+  "stack": "이론·수학 · Python",
+  "subject": "머신러닝",
+  "quality": {
+   "why": "Stanford 정규 과목, 2026 최신 학기 공식 채널",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "Stanford Online",
+    "channel_followers": 1360000,
+    "first_views": 209329,
+    "first_likes": 2210,
+    "like_per_1k_views": 10.6,
+    "first_uploaded": "2026-07-29",
+    "last_views": 15292,
+    "stay_ratio": 0.073,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "cs336-2026",
@@ -231,7 +249,25 @@
     "title": "Stanford CS336 Language Modeling from Scratch | Spring 2026 | Guest Lecture: Dan Fu",
     "duration": 4301
    }
-  ]
+  ],
+  "stack": "Python · PyTorch",
+  "subject": "LLM 만들기",
+  "quality": {
+   "why": "Stanford 정규 과목, LLM 을 직접 구현하는 과제형",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "Stanford Online",
+    "channel_followers": 1360000,
+    "first_views": 413953,
+    "first_likes": 5713,
+    "like_per_1k_views": 13.8,
+    "first_uploaded": "2026-04-14",
+    "last_views": 25412,
+    "stay_ratio": 0.061,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "cs231n-2025",
@@ -351,7 +387,25 @@
     "title": "Stanford CS231N Deep Learning for Computer Vision | Spring 2025 | Lecture 18: Human-Centered AI",
     "duration": 3916
    }
-  ]
+  ],
+  "stack": "Python · PyTorch",
+  "subject": "컴퓨터 비전",
+  "quality": {
+   "why": "Stanford 정규 과목, 비전 딥러닝의 표준 강의",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "Stanford Online",
+    "channel_followers": 1360000,
+    "first_views": 834155,
+    "first_likes": 9991,
+    "like_per_1k_views": 12.0,
+    "first_uploaded": "2025-09-02",
+    "last_views": 20935,
+    "stay_ratio": 0.025,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "cme295-2025",
@@ -417,7 +471,25 @@
     "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 9 - Recap & Current Trends",
     "duration": 6691
    }
-  ]
+  ],
+  "stack": "이론",
+  "subject": "LLM·트랜스포머",
+  "quality": {
+   "why": "Stanford 정규 과목, 트랜스포머·LLM 만 다룬다",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "Stanford Online",
+    "channel_followers": 1360000,
+    "first_views": 1347673,
+    "first_likes": 18999,
+    "like_per_1k_views": 14.1,
+    "first_uploaded": "2025-10-17",
+    "last_views": 274277,
+    "stay_ratio": 0.204,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "cs230-2025",
@@ -483,7 +555,25 @@
     "title": "Stanford CS230 | Autumn 2025 | Lecture 10: What’s Going On Inside My Model?",
     "duration": 6414
    }
-  ]
+  ],
+  "stack": "이론 · Python",
+  "subject": "딥러닝",
+  "quality": {
+   "why": "Stanford 정규 과목(Andrew Ng), 딥러닝 전체 그림",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "Stanford Online",
+    "channel_followers": 1360000,
+    "first_views": 775730,
+    "first_likes": 15670,
+    "like_per_1k_views": 20.2,
+    "first_uploaded": "2025-10-01",
+    "last_views": 33596,
+    "stay_ratio": 0.043,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "cs221-2025",
@@ -615,7 +705,25 @@
     "title": "Stanford CS221 | Autumn 2025 | Lecture 20: Fireside Chat, Conclusion",
     "duration": 3529
    }
-  ]
+  ],
+  "stack": "이론 · Python",
+  "subject": "AI 원리",
+  "quality": {
+   "why": "Stanford 정규 과목, 탐색·확률·학습의 바탕",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "Stanford Online",
+    "channel_followers": 1360000,
+    "first_views": 122722,
+    "first_likes": 1267,
+    "like_per_1k_views": 10.3,
+    "first_uploaded": "2026-03-09",
+    "last_views": 11174,
+    "stay_ratio": 0.091,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "cs329z-2026",
@@ -687,7 +795,25 @@
     "title": "Terminal-Bench: Evaluating AI Agents | Stanford CS329Z Guest Lecture with Alex Shaw & Ryan Marten",
     "duration": 4404
    }
-  ]
+  ],
+  "stack": "Python · LLM API",
+  "subject": "AI 에이전트",
+  "quality": {
+   "why": "Stanford 2026 신설 과목, 에이전트 엔지니어링",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "Stanford Online",
+    "channel_followers": 1360000,
+    "first_views": 477302,
+    "first_likes": 7182,
+    "like_per_1k_views": 15.0,
+    "first_uploaded": "2026-11-09",
+    "last_views": 37663,
+    "stay_ratio": 0.079,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "cs25-v6",
@@ -753,7 +879,25 @@
     "title": "Stanford CS25: Transformers United V6 I From Language Models to Native Multimodal Intelligence",
     "duration": 3880
    }
-  ]
+  ],
+  "stack": "이론(연구 발표)",
+  "subject": "LLM·트랜스포머",
+  "quality": {
+   "why": "연구자 초청 세미나 — 최신 흐름, 입문용은 아니다",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "Stanford Online",
+    "channel_followers": 1360000,
+    "first_views": 13727,
+    "first_likes": 223,
+    "like_per_1k_views": 16.2,
+    "first_uploaded": "2026-04-22",
+    "last_views": 142963,
+    "stay_ratio": 10.415,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "cs153",
@@ -843,7 +987,25 @@
     "title": "Stanford CS153 Frontier Systems | Anjney Midha from AMP PBC on Frontier Systems",
     "duration": 3955
    }
-  ]
+  ],
+  "stack": "AI 시스템(특강)",
+  "subject": "AI 시스템·인프라",
+  "quality": {
+   "why": "업계 인사 특강 — 흐름 파악용",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "Stanford Online",
+    "channel_followers": 1360000,
+    "first_views": 33149,
+    "first_likes": 180,
+    "like_per_1k_views": 5.4,
+    "first_uploaded": "2026-09-29",
+    "last_views": 30226,
+    "stay_ratio": 0.912,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "3b1b-nn",
@@ -917,7 +1079,28 @@
     "title": "How might LLMs store facts | Deep Learning Chapter 7",
     "duration": 1363
    }
-  ]
+  ],
+  "stack": "이론(그림)",
+  "subject": "기초 수학·신경망",
+  "quality": {
+   "why": "그림으로 푸는 설명으로 가장 널리 추천되는 입문",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "3Blue1Brown",
+    "channel_followers": 8780000,
+    "first_views": 25392446,
+    "first_likes": 571532,
+    "like_per_1k_views": 22.5,
+    "first_uploaded": "2017-10-05",
+    "last_views": 2365576,
+    "stay_ratio": 0.093,
+    "subtitles": [
+     "en",
+     "ko"
+    ],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "statquest-ml",
@@ -1081,7 +1264,25 @@
     "title": "Regularization Part 1: Ridge (L2) Regression",
     "duration": 1227
    }
-  ]
+  ],
+  "stack": "통계·이론(그림)",
+  "subject": "기초 통계·머신러닝",
+  "quality": {
+   "why": "짧은 편, 비유·그림 위주 — 초보 입문으로 널리 쓰인다",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "StatQuest with Josh Starmer",
+    "channel_followers": 1720000,
+    "first_views": 1801875,
+    "first_likes": 27764,
+    "like_per_1k_views": 15.4,
+    "first_uploaded": "2018-11-26",
+    "last_views": 1451474,
+    "stay_ratio": 0.806,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "dlzeroall-s1",
@@ -1239,7 +1440,25 @@
     "title": "lec12: An Introduction to RNN, the Highlight of Neural Networks",
     "duration": 1183
    }
-  ]
+  ],
+  "stack": "이론 · TensorFlow 1.x",
+  "subject": "딥러닝",
+  "quality": {
+   "why": "한국어 입문의 고전 — 코드는 TensorFlow 1 이라 낡았다(이론만)",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "Sung Kim",
+    "channel_followers": 60400,
+    "first_views": 909180,
+    "first_likes": 3965,
+    "like_per_1k_views": 4.4,
+    "first_uploaded": "2016-03-21",
+    "last_views": 144338,
+    "stay_ratio": 0.159,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "mit-6s191",
@@ -1313,7 +1532,25 @@
     "title": "MIT Introduction to Deep Learning (2025) | 6.S191",
     "duration": 4166
    }
-  ]
+  ],
+  "stack": "Python · TensorFlow·PyTorch",
+  "subject": "딥러닝",
+  "quality": {
+   "why": "MIT 공식 입문, 해마다 새로 찍는다",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "Alexander Amini",
+    "channel_followers": 358000,
+    "first_views": 449681,
+    "first_likes": 7636,
+    "like_per_1k_views": 17.0,
+    "first_uploaded": "2026-03-30",
+    "last_views": 1044762,
+    "stay_ratio": 2.323,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "karpathy-z2h",
@@ -1387,7 +1624,25 @@
     "title": "Let's reproduce GPT-2 (124M)",
     "duration": 14486
    }
-  ]
+  ],
+  "stack": "Python · PyTorch",
+  "subject": "딥러닝 직접 만들기",
+  "quality": {
+   "why": "신경망·GPT 를 바닥부터 코드로 — 실습 최고 평",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "Andrej Karpathy",
+    "channel_followers": 1780000,
+    "first_views": 4517166,
+    "first_likes": 85999,
+    "like_per_1k_views": 19.0,
+    "first_uploaded": "2022-08-16",
+    "last_views": 1246954,
+    "stay_ratio": 0.276,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "icote-2021",
@@ -1491,7 +1746,25 @@
     "title": "최소 공통 조상(Lowest Common Ancestor, LCA) 알고리즘 10분 정복",
     "duration": 569
    }
-  ]
+  ],
+  "stack": "Python",
+  "subject": "알고리즘 유형",
+  "quality": {
+   "why": "국내 코딩테스트 대표 교재 저자의 공식 강의",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "동빈나",
+    "channel_followers": 163000,
+    "first_views": 370103,
+    "first_likes": 3412,
+    "like_per_1k_views": 9.2,
+    "first_uploaded": "2020-09-26",
+    "last_views": 16952,
+    "stay_ratio": 0.046,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "ds-python",
@@ -1841,7 +2114,25 @@
     "title": "Algorithm Interview: Search in the Dark 3/3 - The Lowest Common Ancestor (LCA) Problem",
     "duration": 2178
    }
-  ]
+  ],
+  "stack": "Python",
+  "subject": "자료구조",
+  "quality": {
+   "why": "대학 정규 강의(한국외대) — 자료구조 기본기",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "Chan-Su Shin (신찬수)",
+    "channel_followers": 7430,
+    "first_views": 78935,
+    "first_likes": 619,
+    "like_per_1k_views": 7.8,
+    "first_uploaded": "2020-03-04",
+    "last_views": 2495,
+    "stay_ratio": 0.032,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "net-basics",
@@ -2107,7 +2398,27 @@
     "title": "(※ Very Important) TCP Failure Types and Transmission/Reception Principles That Will Change Your ...",
     "duration": 2887
    }
-  ]
+  ],
+  "stack": "언어 무관",
+  "subject": "네트워크·HTTP",
+  "quality": {
+   "why": "백엔드 관점의 네트워크 — 어떤 언어로 가든 공통",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "널널한 개발자 TV",
+    "channel_followers": 88300,
+    "first_views": 133956,
+    "first_likes": 2306,
+    "like_per_1k_views": 17.2,
+    "first_uploaded": "2022-03-01",
+    "last_views": 7526,
+    "stay_ratio": 0.056,
+    "subtitles": [
+     "en"
+    ],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "cs50w-2020",
@@ -2181,7 +2492,27 @@
     "title": "CS50W - Lecture 8 - Scalability and Security",
     "duration": 5266
    }
-  ]
+  ],
+  "stack": "Python · Django · JavaScript",
+  "subject": "웹 프레임워크",
+  "quality": {
+   "why": "Harvard 공식 — 단, 국내 채용 주류(Java·Spring)와 다르다",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "CS50",
+    "channel_followers": 2540000,
+    "first_views": 1403460,
+    "first_likes": 26579,
+    "like_per_1k_views": 18.9,
+    "first_uploaded": "2021-06-21",
+    "last_views": 145509,
+    "stay_ratio": 0.104,
+    "subtitles": [
+     "en"
+    ],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "hongpark-boot",
@@ -2399,7 +2730,25 @@
     "title": "[Spring Boot Introduction 32] Concluding the lecture..!",
     "duration": 213
    }
-  ]
+  ],
+  "stack": "Java · Spring Boot",
+  "subject": "웹 프레임워크",
+  "quality": {
+   "why": "국내 채용에서 가장 많이 쓰는 스프링 부트의 한국어 입문",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "홍팍",
+    "channel_followers": 8880,
+    "first_views": 56812,
+    "first_likes": 295,
+    "like_per_1k_views": 5.2,
+    "first_uploaded": "2022-04-29",
+    "last_views": 3624,
+    "stay_ratio": 0.064,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "opentutorials-html",
@@ -2677,7 +3026,27 @@
     "title": "HTML - html5 form 4: Checking input values",
     "duration": 978
    }
-  ]
+  ],
+  "stack": "HTML · CSS",
+  "subject": "마크업",
+  "quality": {
+   "why": "생활코딩 — 국내 웹 입문의 표준",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "생활코딩",
+    "channel_followers": 340000,
+    "first_views": 395505,
+    "first_likes": 1246,
+    "like_per_1k_views": 3.2,
+    "first_uploaded": "2015-12-05",
+    "last_views": 34333,
+    "stay_ratio": 0.087,
+    "subtitles": [
+     "ko"
+    ],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "dream-js",
@@ -2853,7 +3222,25 @@
     "title": "Tips for Coding in JavaScript 🍯🐝",
     "duration": 626
    }
-  ]
+  ],
+  "stack": "JavaScript",
+  "subject": "언어 기초",
+  "quality": {
+   "why": "드림코딩 — 자바스크립트 기초로 널리 추천",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "드림코딩",
+    "channel_followers": 160000,
+    "first_views": 500397,
+    "first_likes": 9103,
+    "like_per_1k_views": 18.2,
+    "first_uploaded": "2020-03-30",
+    "last_views": 33815,
+    "stay_ratio": 0.068,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "noona-react",
@@ -2939,7 +3326,25 @@
     "title": "리액트 19에서 새로나온 훅들 싹다 정리해드림 | useActionState, useOptimistic, useTransition, useFormStauts, use",
     "duration": 1368
    }
-  ]
+  ],
+  "stack": "React",
+  "subject": "UI 프레임워크",
+  "quality": {
+   "why": "한국어 리액트 기초",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "코딩알려주는누나",
+    "channel_followers": 142000,
+    "first_views": 97576,
+    "first_likes": 1334,
+    "like_per_1k_views": 13.7,
+    "first_uploaded": "2021-08-11",
+    "last_views": 12134,
+    "stay_ratio": 0.124,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "designbase-web",
@@ -3128,7 +3533,25 @@
     "duration": 381
    }
   ],
-  "keep_order": true
+  "keep_order": true,
+  "stack": "도구 무관",
+  "subject": "화면 디자인 규칙",
+  "quality": {
+   "why": "그리드·타이포·색·여백 — 어떤 도구에도 통하는 원리",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "디자인베이스",
+    "channel_followers": 130000,
+    "first_views": 122011,
+    "first_likes": 2153,
+    "like_per_1k_views": 17.6,
+    "first_uploaded": "2020-03-02",
+    "last_views": null,
+    "stay_ratio": null,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "ux-basics",
@@ -3250,7 +3673,25 @@
     "title": "Chapter 50.  UX 디자인 프로세스-3   The Process of UX design.",
     "duration": 1114
    }
-  ]
+  ],
+  "stack": "도구 무관",
+  "subject": "UX",
+  "quality": {
+   "why": "UX 사고방식 기초",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "시작하는 디자이너를 위하여 ForDesignBeginner",
+    "channel_followers": 988,
+    "first_views": 5708,
+    "first_likes": 161,
+    "like_per_1k_views": 28.2,
+    "first_uploaded": "2022-07-20",
+    "last_views": 194,
+    "stay_ratio": 0.034,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "uxschool-figma",
@@ -3420,7 +3861,25 @@
     "title": "[Figma] Create an Animated Floating Action Button in 5 Minutes #FloatingActionButton #figmaanimation",
     "duration": 381
    }
-  ]
+  ],
+  "stack": "Figma",
+  "subject": "디자인 도구 실습",
+  "quality": {
+   "why": "피그마로 UI·프로토타입까지",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "UX School",
+    "channel_followers": 5530,
+    "first_views": 30511,
+    "first_likes": 191,
+    "like_per_1k_views": 6.3,
+    "first_uploaded": "2022-12-31",
+    "last_views": 471,
+    "stay_ratio": 0.015,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "ps-basics",
@@ -3524,7 +3983,25 @@
     "title": "[포토샵 기초 강좌15] AI 제거 도구 및 배경 제거 그리고 배경생성 (생성형 채우기와 비교 분석)  2025 신기능 | 전선 및 케이블, 인물제거 포함 (소스 제공)",
     "duration": 1164
    }
-  ]
+  ],
+  "stack": "Photoshop",
+  "subject": "도구 기초",
+  "quality": {
+   "why": "최신판(2024~2026) 포토샵 기본 도구",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "Editor Monkey",
+    "channel_followers": 12100,
+    "first_views": 26063,
+    "first_likes": 613,
+    "like_per_1k_views": 23.5,
+    "first_uploaded": "2024-01-07",
+    "last_views": 17581,
+    "stay_ratio": 0.675,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "ps-detail-intro",
@@ -3580,7 +4057,25 @@
     "title": "[포토샵강좌] 시네마그래프 만들기",
     "duration": 497
    }
-  ]
+  ],
+  "stack": "도구 무관",
+  "subject": "상세페이지 기획",
+  "quality": {
+   "why": "상세페이지를 그리기 전 기획",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "김연디",
+    "channel_followers": 14600,
+    "first_views": 268463,
+    "first_likes": 5956,
+    "like_per_1k_views": 22.2,
+    "first_uploaded": "2018-09-08",
+    "last_views": 21584,
+    "stay_ratio": 0.08,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "ps-detail-practice",
@@ -3636,7 +4131,27 @@
     "title": "쇼핑몰 상품페이지 상세페이지 만들기 글씨에 배경보이게 만드는 방법(한글자막지원)",
     "duration": 868
    }
-  ]
+  ],
+  "stack": "Photoshop",
+  "subject": "상세페이지 실습",
+  "quality": {
+   "why": "쇼핑몰 상세페이지 제작 실습",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "오냥냥ONiangNiang",
+    "channel_followers": 15400,
+    "first_views": 1335,
+    "first_likes": 48,
+    "like_per_1k_views": 36.0,
+    "first_uploaded": "2020-04-11",
+    "last_views": 1580,
+    "stay_ratio": 1.184,
+    "subtitles": [
+     "ko"
+    ],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "ezdesign-detail",
@@ -3692,7 +4207,25 @@
     "title": "(무작정 따라하기 04) [템플릿 무료 공유] 반려동물 강아지 상세페이지 이걸로 끝. feat포토샵",
     "duration": 3494
    }
-  ]
+  ],
+  "stack": "Photoshop",
+  "subject": "상세페이지 실습",
+  "quality": {
+   "why": "품목별(가구·화장품) 따라 하기",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "이지디자인 | 디자이너의 AI",
+    "channel_followers": 23100,
+    "first_views": 24679,
+    "first_likes": 290,
+    "like_per_1k_views": 11.8,
+    "first_uploaded": "2020-03-12",
+    "last_views": 6855,
+    "stay_ratio": 0.278,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "toeic-nobase",
@@ -3742,7 +4275,25 @@
     "title": "250 → 855 | Want to hit your target score on your first try? | First Test Practice Part 2 | TOEIC...",
     "duration": 565
    }
-  ]
+  ],
+  "stack": "—",
+  "subject": "공부법",
+  "quality": {
+   "why": "노베이스 → 855 공부법",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "김눕눕",
+    "channel_followers": 8130,
+    "first_views": 920416,
+    "first_likes": 19763,
+    "like_per_1k_views": 21.5,
+    "first_uploaded": "2021-06-03",
+    "last_views": 18268,
+    "stay_ratio": 0.02,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "toeic-grammar",
@@ -3810,7 +4361,25 @@
     "title": "토익 독학러 문법 정복 프로젝트 [9일차 비교&도치구문]",
     "duration": 3583
    }
-  ]
+  ],
+  "stack": "—",
+  "subject": "문법",
+  "quality": {
+   "why": "해커스 공식 채널의 문법 단기 과정",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "토익은 역시 1위 해커스토익",
+    "channel_followers": 258000,
+    "first_views": 42329,
+    "first_likes": 787,
+    "like_per_1k_views": 18.6,
+    "first_uploaded": "2024-03-20",
+    "last_views": 6641,
+    "stay_ratio": 0.157,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "toeic-rc",
@@ -3944,7 +4513,25 @@
     "title": "[ETS 토익기출 공식입문서 RC] 20강 PART 7 CHAPTER 3 이중 지문, 삼중 지문",
     "duration": 1133
    }
-  ]
+  ],
+  "stack": "—",
+  "subject": "RC(읽기)",
+  "quality": {
+   "why": "YBM(ETS 공식 출판사) 무료 인강",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "YBM Books",
+    "channel_followers": 80800,
+    "first_views": 206892,
+    "first_likes": 1275,
+    "like_per_1k_views": 6.2,
+    "first_uploaded": "2018-11-21",
+    "last_views": 17246,
+    "stay_ratio": 0.083,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  },
  {
   "key": "toeic-lc",
@@ -4096,6 +4683,24 @@
     "title": "토익LC 정답이 저절로 보이는 3STEP 풀이법 😎 l 민지원의 토익랜드 20탄",
     "duration": 2973
    }
-  ]
+  ],
+  "stack": "—",
+  "subject": "LC(듣기)",
+  "quality": {
+   "why": "해커스 공식 채널 LC 공부법",
+   "stats": {
+    "checked": "2026-11-23",
+    "channel": "토익은 역시 1위 해커스토익",
+    "channel_followers": 258000,
+    "first_views": 76065,
+    "first_likes": 569,
+    "like_per_1k_views": 7.5,
+    "first_uploaded": "2021-08-11",
+    "last_views": 7485,
+    "stay_ratio": 0.098,
+    "subtitles": [],
+    "auto_subtitles": true
+   }
+  }
  }
 ]
