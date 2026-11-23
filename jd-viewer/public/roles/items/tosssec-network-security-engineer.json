@@ -1,0 +1,1160 @@
+{
+ "id": "tosssec-network-security-engineer",
+ "company": "토스증권",
+ "role": "네트워크 보안 엔지니어 (5년 이상)",
+ "team": "Network Engineering Team (Network Engineer · IDC Manager 와 같은 팀)",
+ "jobs": [
+  "ats-toss:group:5398782003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "증권 앱의 주문·시세가 오가는 망에서 **방화벽·VPN·디도스 방어 장비·패킷 분배기**를 운영하고, IDC와 클라우드 양쪽의 **구역 나누기와 트래픽 검사 길**을 설계합니다.[1]",
+  "env": "Fortinet 같은 장비 위에서 일하지만, 규칙의 검증·배포·변경·폐기를 **Python·Terraform·Ansible 코드**로 돌리는 쪽으로 가고 있고, 금융 규정의 망 분리 아래에서 일합니다.[1][10]",
+  "oneline": "장비를 만지는 방화벽 엔지니어에서 **규칙을 코드로 다루는 엔지니어**로 넘어가는 자리. 5년 이상이라 구조 설계까지 기대합니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "온프레미스 및 클라우드 환경의 네트워크 보안 인프라를 구축하고 운영해요. VPC 설계, 인라인 트래픽 검사, 네트워크 세그멘테이션 등 보안 아키텍처의 설계와 구현에 참여해요.",
+   "short": "IDC와 클라우드 양쪽에서 ‘어느 구역끼리 무슨 통신만 되나’를 정하고, 트래픽이 검사 장비를 꼭 지나게 길을 짠다.",
+   "why": "팀의 목표는 제품 팀이 제품에만 집중하도록 인프라를 다 받쳐 주는 것이고, 같은 팀에 네트워크 엔지니어와 IDC 매니저가 있습니다.[1] 같은 팀의 IDC 공고는 데이터센터 네트워크(Spine-Leaf, 이중화)를 직접 설계하는 일을 적었습니다 — 토스증권은 자기 데이터센터를 운영합니다.[3] 금융회사라 내부 업무망과 인터넷을 나누라는 규정도 있습니다.[10]",
+   "actually": {
+    "intro": "같은 일을 하는 공개 문서 기준의 ‘보통 이런 것’입니다. 토스증권의 실제 구역 구성은 공개되지 않았습니다.",
+    "items": [
+     "**VPC 설계** — 클라우드 안의 사설 망(VPC)을 대고객·내부·DB 같은 구역(서브넷)으로 나누고, 라우팅 표로 ‘이 구역에서 나가는 길’을 정한다. {추론}",
+     "**인라인 검사** — 트래픽을 옆에서 베껴 보는 게 아니라 **길 한가운데에** 검사 장비를 세운다. AWS 게이트웨이 로드밸런서(GWLB)는 패킷을 GENEVE(터널 포장 규격)로 감싸 방화벽 묶음에 나눠 보내고 검사가 끝나면 돌려받는다.[16][17]",
+     "**관리형 방화벽** — 장비를 직접 띄우지 않고 클라우드가 운영하는 방화벽(AWS Network Firewall)을 VPC 경로에 끼우는 방법도 있다.[18]",
+     "**세그멘테이션(구역 나누기)** — 구역 사이를 기본 차단으로 두고 필요한 통신만 연다. 한 구역이 뚫려도 옆 구역으로 번지지 않게 하는 것이 목적이다.[12] 이 생각을 사람·기기 단위까지 좁힌 것이 제로 트러스트다.[13]",
+     "**컨테이너 안쪽** — 쿠버네티스 안의 파드끼리 통신은 바깥 방화벽을 안 지나서, NetworkPolicy로 따로 막는다.[19]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "클라우드 인라인 검사의 한 가지 꼴(GWLB)[16][17]",
+     "steps": [
+      "인터넷 · 들어오는 요청",
+      "라우팅 표 · GWLB 엔드포인트로 보냄",
+      "GWLB · GENEVE로 감싸 방화벽 묶음에 분배",
+      "방화벽(NVA) · 검사 후 되돌려 보냄",
+      "서비스 구역 · 앱 서버"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "문장 끝이 ‘설계와 구현에 **참여**해요’라 혼자 정하는 자리는 아닙니다.[1] 5년 이상 자리이니 구역 나누기 안을 내고, 장비·클라우드 설정으로 직접 구현하는 데까지가 기대치로 보입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    10,
+    12,
+    16,
+    17,
+    18,
+    19
+   ],
+   "study": [
+    "nist-800-41",
+    "aws-gwlb",
+    "aws-nfw"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "대규모 트래픽이 흐르는 서비스망에서 Fortinet 등 글로벌 보안 장비 기반의 방화벽, VPN, DDoS 방어 장비, NPB 등을 운영하며, 모니터링과 장애 대응, 정책 변경을 통해 서비스 안정성을 높여요.",
+   "short": "주문·시세가 몰리는 망의 방화벽·VPN·디도스 장비·패킷 분배기를 지키고, 탈이 나면 먼저 원인을 찾는다.",
+   "why": "증권 서비스는 장이 열린 시간에 트래픽이 몰립니다. 토스증권 보안 엔지니어는 AI 테마주에 관심이 몰리며 거래량이 크게 늘었다고 말했습니다.[8] 공고의 팀원은 방화벽 운영 엔지니어 출신이고, 여기서는 여러 보안 장비와 솔루션을 다뤄 볼 수 있다고 했습니다.[1]",
+   "actually": {
+    "items": [
+     "**방화벽** — 규칙과 지금 열린 연결(세션)을 본다. FortiGate는 출발지·목적지·포트를 넣으면 가짜 패킷을 만들어 ‘어느 규칙에 걸리나’를 알려 주는 조회 기능이 있다.[27][28]",
+     "**VPN** — 사내·대외 기관과 암호화된 터널을 잇는다. 터널이 끊기면 그 뒤의 업무가 다 멈춘다. {추론}",
+     "**디도스 방어** — 연결 요청(SYN)만 잔뜩 보내 서버의 대기 칸을 채우는 공격이 대표적이고, SYN 쿠키처럼 대기 칸을 쓰지 않고 버티는 방법이 표준 문서에 정리돼 있다.[15]",
+     "**NPB(패킷 브로커)** — 탭·미러로 뜬 트래픽 사본을 모아 필요한 분석 장비마다 걸러서 나눠 주는 스위치다.[24]",
+     "**장애 대응** — ‘느리다’, ‘끊긴다’는 신고에 세션 수·CPU·이중화 상태·패킷 캡처로 장비 탓인지 아닌지부터 가린다. {추론}"
+    ]
+   },
+   "how_far": "장비 이름보다 **요청 하나가 어떤 순서로 어떤 장비를 지나가나**를 그림으로 그릴 수 있는 것이 먼저입니다. 그래야 장애 때 어디부터 볼지 정할 수 있습니다. {추론}",
+   "refs": [
+    1,
+    8,
+    15,
+    24,
+    27,
+    28
+   ],
+   "study": [
+    "fortios-admin",
+    "fortinet-training",
+    "rfc4987"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "API, Python, Terraform, Ansible 등을 활용해 방화벽 정책의 검증·배포·변경·폐기 과정과 반복적인 운영 업무를 자동화해요.",
+   "short": "방화벽 규칙의 검사 → 반영 → 수정 → 정리를 사람 손 대신 코드로 돌리고, 잘못 나가면 바로 되돌린다.",
+   "why": "팀은 더 빠른 제품 출시를 위해 자동화를 추진한다고 적었고, 공고의 기술 목록도 Ansible·Python·Terraform입니다.[1] 같은 그룹의 토스는 접근 정책을 바꾸는 일을 **코드 배포처럼** 다룹니다 — 정책 하나를 바꿨는데 업무가 멈출 수 있어서, 나가기 전에 막고·나갔으면 빨리 되돌리고·원인을 남기는 장치를 시스템에 넣었습니다.[4]",
+   "actually": {
+    "intro": "그룹 발표[4][5]와 공식 문서[12][25][26]에서 온 것입니다. 토스증권 팀이 이 장치를 똑같이 쓰는지는 공개되지 않았습니다.",
+    "items": [
+     "**코드로 적기** — Terraform의 FortiOS 프로바이더, Ansible의 fortinet.fortios 모음으로 규칙을 파일에 적고 장비에 반영한다.[25][26]",
+     "**검증** — 새 규칙이 위 규칙에 가려지지 않나, 출발지·목적지가 너무 넓지(any) 않나를 배포 전에 본다.[12]",
+     "**기대 결과 등록** — ‘이 사용자는 업무 포털에 들어가야 한다’를 미리 적어 두고, 새 정책으로 평가해 결과가 다르면 배포를 막는다.[4]",
+     "**큰 변경 보류** — 정책을 받는 사용자가 1,000명에서 600명으로 40% 줄면(임계 30%) 배포를 멈추고 사람이 이유를 확인한다.[4]",
+     "**되돌리기** — 정상이던 정책본을 저장해 두고 가리키는 ‘현재 판’만 바꿔 바로 복구한다. 복구 중에 들어온 변경은 버리지 않고 쌓아 둔다.[4]",
+     "**폐기** — 오래 한 번도 안 걸린 규칙(히트 0)을 지우기 전에 ‘정말 안 쓰나, 다른 규칙에 가려져 못 걸리나’부터 본다.[5]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "규칙 한 줄의 일생 {추론}[4][12]",
+     "steps": [
+      "신청 · 누가 어디로 무슨 포트",
+      "검증 · 가려짐·너무 넓음·기대 결과",
+      "승인 · 기록",
+      "배포 · 코드로 장비에 반영",
+      "확인 · 로그에 실제로 걸리나",
+      "폐기 · 안 쓰면 정리"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "examples": [
+    {
+     "title": "위 규칙에 덮인 규칙 찾기",
+     "body": "방화벽은 위에서부터 처음 맞는 규칙을 씁니다. 3번은 1번과 동작이 같아 지워도 되고, 4번은 2번(차단)에 덮여 **영원히 안 맞습니다**(직접 돌린 출력, 가상 규칙).",
+     "lang": "python",
+     "code": "import ipaddress as ip\n\nrules = [  # (번호, 이름, 출발지, 목적지, 포트, 동작)\n    (1, \"allow-web\",   \"10.0.0.0/8\",  \"172.16.0.0/16\",  {443},  \"allow\"),\n    (2, \"deny-db\",     \"10.0.0.0/8\",  \"172.16.5.0/24\",  {5432}, \"deny\"),\n    (3, \"allow-https\", \"10.1.0.0/16\", \"172.16.5.0/24\",  {443},  \"allow\"),\n    (4, \"allow-pg\",    \"10.1.2.0/24\", \"172.16.5.10/32\", {5432}, \"allow\"),\n]\n\ndef covers(a, b):\n    return (ip.ip_network(a[2]).supernet_of(ip.ip_network(b[2]))\n            and ip.ip_network(a[3]).supernet_of(ip.ip_network(b[3]))\n            and b[4] <= a[4])\n\nfor i, r in enumerate(rules):\n    for up in rules[:i]:\n        if covers(up, r):\n            kind = \"중복(지워도 됨)\" if up[5] == r[5] else \"가려짐(절대 안 맞음)\"\n            print(f\"규칙 {r[0]} {r[1]} → 규칙 {up[0]} {up[1]} 에 {kind}\")\n            break\n\n# 규칙 3 allow-https → 규칙 1 allow-web 에 중복(지워도 됨)\n# 규칙 4 allow-pg → 규칙 2 deny-db 에 가려짐(절대 안 맞음)"
+    },
+    {
+     "title": "큰 변경이면 배포를 멈추기",
+     "body": "그룹 발표의 예시 수치(1,000명 → 600명, 임계 30%)를 그대로 넣었습니다.[4] 숫자는 멈출 신호일 뿐이고, 승인 근거는 변경의 의도와 영향이라고 발표는 덧붙였습니다.",
+     "lang": "python",
+     "code": "before, after, limit = 1000, 600, 0.30\ndrop = (before - after) / before\nprint(f\"감소 {drop:.0%} > 임계 {limit:.0%} → 보류\" if drop > limit else \"배포\")\n# 감소 40% > 임계 30% → 보류"
+    }
+   ],
+   "how_far": "처음부터 큰 체계를 만들 필요는 없습니다. **규칙 목록을 API로 읽어 → 가려진·너무 넓은 규칙을 찾아 → 변경 전후 차이를 남기는** 데까지가 최소선이고, 배포 중단·되돌리기 장치는 그다음입니다. {추론}",
+   "refs": [
+    1,
+    4,
+    5,
+    12,
+    25,
+    26
+   ],
+   "study": [
+    "g26-policy-deploy",
+    "tf-fortios",
+    "ansible-fortios",
+    "npa2"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "금융 분야 정보보호 요구사항에 따른 망 분리·접근 통제 정책을 적용하고, 운영 이력과 증적을 체계적으로 관리해요.",
+   "short": "금융 규정의 망 분리·접근 통제를 장비 설정으로 옮기고, 언제 누가 무엇을 바꿨는지 증거로 남긴다.",
+   "why": "전자금융감독규정 15조는 해킹 방지 대책으로 정보보호시스템을 운영하고 그 결과를 보관하며, 내부 통신망과 외부 통신망을 나누라고 정합니다.[10] 금융위원회는 이 망 분리를 생성형 AI·SaaS 쓰임에 맞춰 단계적으로 고치고 있어서[11], 규정 문장이 바뀔 때마다 설정도 따라 바뀝니다.[39]",
+   "actually": {
+    "items": [
+     "**망 분리** — 고객 정보를 다루는 내부 업무망과 인터넷을 물리적·논리적으로 나눈다.[10]",
+     "**예외 관리** — 평가를 거친 SaaS를 내부 업무망에서 쓰게 하는 예외가 생겼고, 고유식별·개인신용정보를 다루는 곳은 빠진다. 예외는 어디까지 열었는지를 설정과 문서로 남긴다.[39]",
+     "**접근 통제** — 출발지·목적지·포트를 업무에 필요한 만큼만, 기본은 차단.[12]",
+     "**증적** — 변경마다 요청·승인자·변경 전후 값을 남긴다. 그룹의 토스는 정책 변경과 감사 기록을 **한 트랜잭션에** 저장해, 기록이 실패하면 변경도 되돌린다.[4]",
+     "**심사 대응** — ISMS-P 같은 인증 심사에서 ‘규정 → 설정 → 기록’이 이어지는지를 보여 준다.[38]"
+    ]
+   },
+   "how_far": "규정을 어떻게 해석할지는 정보보호 담당 조직이 정합니다. 이 자리는 그 해석을 **설정으로 옮기고, 심사 때 꺼낼 수 있는 기록으로 남기는** 쪽입니다. {추론}",
+   "refs": [
+    4,
+    10,
+    11,
+    12,
+    38,
+    39
+   ],
+   "study": [
+    "efsr",
+    "isms-p"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AI 서비스와 GPU 워크로드의 통신을 파악해 트래픽 가시성과 보안 통제를 개선하고, AI 도구를 활용해 로그 분석과 정책 검토, 변경 영향 분석의 효율과 정확도를 높여요.",
+   "short": "AI 서버가 누구와 통신하는지 보이게 하고, AI로 로그·규칙 검토를 빠르게 하되 판단은 사람이 한다.",
+   "why": "토스증권은 해외 기업 실적 발표를 생성형 AI로 실시간 요약·번역해 내보내고, 사내에서도 AI 도구를 일상적으로 씁니다.[8] 같은 발표는 AI가 사내 시스템에 직접 붙는 MCP 통신이 인증서 고정(SSL 피닝)으로 보호돼 **네트워크에서 풀어 볼 수 없게 됐다**는 것을 지금의 숙제로 꼽았습니다.[8]",
+   "actually": {
+    "items": [
+     "**AI 서버 통신 지도** — 모델 파일 내려받기(외부), 학습 데이터 저장소, GPU 서버끼리 통신, 서비스가 부르는 추론 API를 나눠 보고 필요한 것만 연다. {추론}",
+     "**규칙 검토에 AI** — 토스 보안팀은 정책 1,700여 개의 관계를 **코드가 계산**하고, 남은 이상한 점만 LLM에 원인 추정·수정안을 맡긴다. 정책 목록만 주고 물었을 때는 절반이 오답이었다.[5]",
+     "**로그 분석에 AI** — 토스증권 보안 엔지니어는 외부로 데이터를 내보내지 않으려 로컬 LLM으로 명령줄·코드 해석 초안을 받고, 근거 확인과 최종 판단은 사람이 한다. 공격자가 만든 로그가 모델에게 지시로 읽히는 위험(프롬프트 주입)도 짚었다.[7][35]",
+     "**묻힌 신호 찾기** — 토스증권은 탐지 건수·종류·심각도로 빈도 점수·신호 대 잡음비·엔트로피를 계산해 사고 직전 단계의 사람을 가려냈다.[6]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "신호 대 잡음비 — 드문 경고에 무게를 주면",
+     "body": "같은 27건(info 25·warn 2)이 고정 가중(1·10)으로는 2.2dB, 드문 등급에 큰 가중(합 418)을 주면 11.9dB가 됩니다 — 발표의 숫자를 다시 계산했습니다.[6]",
+     "lang": "python",
+     "code": "import math\nnoise = 27\nprint(round(10 * math.log10((25 * 1 + 2 * 10) / noise), 1), \"dB (고정 가중)\")\nprint(round(10 * math.log10(418 / noise), 1), \"dB (동적 가중)\")\n# 2.2 dB (고정 가중)\n# 11.9 dB (동적 가중)"
+    }
+   ],
+   "how_far": "AI를 탐지 엔진이나 최종 판단자로 쓰는 게 아니라 **읽고 정리하는 시간을 줄이는 도구**로 씁니다 — 두 발표가 같은 선을 그었습니다.[5][7]",
+   "refs": [
+    5,
+    6,
+    7,
+    8,
+    35
+   ],
+   "study": [
+    "g26-policy-zt",
+    "g25-genai-dlp",
+    "owasp-llm"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "대규모 트래픽에 최적화된 보안 네트워크 아키텍처를 설계하고 구축한 경험이 필요해요.",
+   "short": "장비 한 대가 죽거나 트래픽이 몇 배로 뛰어도 서비스가 서 있는 보안 망을 직접 그려 본 경험.",
+   "why": "5년 이상 자리의 첫 요건입니다. 같은 팀의 5년 미만 공고는 첫 요건이 ‘장비를 구축하거나 운영해 본 경험’이라, 이 자리는 **운영보다 설계**를 더 봅니다.[1][2] 같은 팀 IDC 공고도 이중화 설계와 대역폭 산정을 요구합니다.[3]",
+   "actually": {
+    "items": [
+     "**이중화** — 방화벽은 짝(HA)으로, 회선·센터도 둘로. 한쪽이 죽을 때 세션을 넘겨받는지까지 본다. {추론}",
+     "**처리량 산정** — 방화벽은 침입 탐지·암호 풀기 같은 검사를 켤수록 처리량이 줄어서, 켤 기능을 정한 뒤 장비 크기를 고른다. {추론}",
+     "**연결 수** — 증권 앱은 짧은 연결이 몰리는 때가 있어 초당 새 연결 수와 동시 세션 수가 병목이 되기 쉽다. {추론}",
+     "**검사 장비 늘리기** — 클라우드에서는 GWLB 뒤에 방화벽을 여러 대 두고 흐름 단위로 나눠 수평으로 늘린다.[16]"
+    ]
+   },
+   "how_far": "이력서에 **설계 전후 숫자**(처리량·장애 시간·규칙 수)를 쓰라는 게 공고의 안내입니다 — 이력서 항목이 ‘프로젝트 전후 개선된 점’입니다.[1]",
+   "refs": [
+    1,
+    2,
+    3,
+    16
+   ],
+   "study": [
+    "nist-800-41",
+    "aws-gwlb"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "방화벽 정책 분석, 최적화 및 유지 관리 업무를 수행한 경험이 필요해요.",
+   "short": "쌓인 규칙 중 안 쓰는 것·겹치는 것·너무 넓은 것을 찾아 줄이고 순서를 바로잡아 본 경험.",
+   "why": "규칙은 시간이 지나면 쌓이기만 합니다. 미국 표준 기관의 방화벽 지침도 규칙을 주기적으로 검토하고 기본을 차단으로 두라고 권합니다.[12] 그룹의 토스 보안팀은 정책 1,700여 개·목적지 그룹 1,800여 개·그룹 안 주소 16만여 개를 다루며 **사람이 다 따라갈 수 없다**고 했습니다.[5]",
+   "actually": {
+    "intro": "그룹 발표가 실제로 겪은 ‘켜져 있는데 안 도는 규칙’입니다.[5]",
+    "items": [
+     "**위 규칙에 가려짐** — 위쪽의 허용 규칙이 먼저 맞아 아래 차단이 한 번도 안 걸린다.",
+     "**암호 풀기 예외가 덮음** — 다른 화면에 둔 SSL 검사 예외의 와일드카드가 그 도메인을 덮어, 업로드 차단·정보 유출 방지 정책이 통째로 건너뛰어졌다.",
+     "**IP로 넣은 목적지** — 연결 단계 정책은 IP를 보지만 HTTP 정책은 도메인(Host)을 봐서, 같은 그룹이 한쪽에서만 동작했다.",
+     "**정책 밖의 변화** — 규칙은 그대로인데 사용자 그룹 구성원·서버 주소·API 경로가 바뀌어 다른 대상에 적용된다. 변경 기록에는 안 남는다.",
+     "**히트 0** — 위 네 가지 때문에 0일 수도 있어서, 0이면 지우기 전에 제대로 도는지부터 본다."
+    ]
+   },
+   "how_far": "‘규칙 몇 개를 지웠다’보다 **왜 지워도 안전한지 어떻게 확인했나**를 설명할 수 있어야 합니다. {추론}",
+   "refs": [
+    5,
+    12
+   ],
+   "study": [
+    "g26-policy-zt",
+    "nist-800-41"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "TCP/IP 프로토콜 이해도가 높고, 트러블슈팅을 위한 패킷 분석 경험이 필요해요.",
+   "short": "‘연결이 안 돼요’에 패킷을 떠서 어디서 끊겼는지 증거로 답할 수 있어야 해서.",
+   "why": "방화벽이 막았는지, 서버가 거절했는지, 길이 비대칭이라 장비가 버렸는지는 패킷을 봐야 가려집니다. 장애 대응과 정책 변경이 주요 업무라 이 능력이 매일 쓰입니다.[1]",
+   "level": {
+    "basic": "3-way handshake · 포트와 세션 · RST(거절)과 응답 없음(버림)의 차이 · DNS",
+    "work": "tcpdump 필터와 캡처 지점 정하기 · Wireshark 흐름 따라가기 · 재전송·윈도·MTU/MSS · NAT 전후 주소",
+    "team": "상태 기반 방화벽에서 비대칭 경로 · 터널 포장(GENEVE·IPsec)으로 커진 패킷 · TLS 핸드셰이크에서 끊기는 지점"
+   },
+   "actually": {
+    "items": [
+     "**거절과 버림** — 서버가 RST를 보내면 ‘닫힌 포트’, 아무 답 없이 SYN만 재전송되면 중간에서 버린 것이다.[14]",
+     "**캡처 지점** — 방화벽 앞과 뒤 두 곳에서 같은 흐름을 떠서, 들어갔는데 안 나오면 장비가 원인이다. tcpdump는 호스트·포트로 필요한 것만 거른다.[29]",
+     "**커진 패킷** — 터널로 감싸면 헤더가 붙어 원래 크기의 패킷이 길에서 넘칠 수 있다(작은 요청은 되고 큰 응답만 멈추는 증상).[17] {추론}",
+     "**암호 구간** — TLS 1.3은 핸드셰이크 대부분이 암호화돼, 내용 대신 시작 단계(ClientHello의 서버 이름)와 경고 메시지로 판단한다.[36]",
+     "**흐름 보기** — Wireshark로 한 연결을 골라 처음부터 끝까지 순서대로 본다.[30]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "읽는 법 — 응답 없음 vs 거절",
+     "body": "같은 연결을 방화벽 앞뒤에서 떴을 때: 앞에는 SYN이 1초·2초·4초 간격으로 다시 보이고 뒤에는 아무것도 없으면 → 방화벽이 버렸다. 뒤에서 서버의 RST가 보이면 → 방화벽은 통과시켰고 서버가 거절했다.[14] {추론}"
+    }
+   ],
+   "refs": [
+    1,
+    14,
+    17,
+    29,
+    30,
+    36
+   ],
+   "study": [
+    "net-intro-ko",
+    "ppa3",
+    "inflearn-wireshark",
+    "rfc9293"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "네트워크 보안 장비의 API 연동이나 Script(Python 등) 작성으로 업무를 자동화하거나, 내부 운영 도구를 직접 개발한 경험이 있다면 더욱 좋아요.",
+   "short": "장비 화면을 하나씩 누르는 대신 API로 규칙을 읽고 쓰는 작은 도구를 만들어 봤으면 좋다.",
+   "why": "업무 셋째 줄의 자동화를 하려면 장비와 코드로 대화할 수 있어야 합니다.[1] 같은 팀 5년 미만 공고도 보안 시스템 API 연동 경험을 우대로 적었습니다 — 팀 전체가 이 방향입니다.[2]",
+   "actually": {
+    "items": [
+     "**설정 읽기** — FortiOS REST API는 설정을 cmdb 경로(예: 방화벽 정책 목록)로, 지금 상태를 monitor 경로로 준다.[28]",
+     "**규칙 조회** — monitor 쪽의 정책 조회는 출발지·목적지·포트를 넣으면 어느 규칙에 맞는지 돌려준다 — ‘이 통신 열려 있나요?’ 문의를 자동으로 답하는 도구의 바탕이다.[28]",
+     "**내부 도구** — 신청서를 받아 규칙 초안으로 바꾸기, 규칙 검색 화면, 매일 규칙 수·히트 0 규칙 보고. {추론}"
+    ]
+   },
+   "how_far": "큰 플랫폼이 아니어도 됩니다. **반복되던 일 하나를 스크립트로 없애고 얼마나 줄었는지**를 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    2,
+    28
+   ],
+   "study": [
+    "fortios-admin",
+    "npa2"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "IaC(Terraform, Ansible)로 네트워크·보안 정책을 형상 관리하고, 파이프라인에서 정책을 검증해본 경험이 있다면 더욱 좋아요.",
+   "short": "방화벽 규칙을 Git에 두고, 바꾸면 자동 검사를 통과해야만 장비에 나가게 해 봤으면 좋다.",
+   "why": "‘형상 관리’는 규칙의 모든 판을 기록해 언제든 비교·복구할 수 있게 하는 것입니다. 그룹의 토스는 정책 변경을 배포처럼 다루며 발행 전에 실제 정책 엔진으로 의도를 검증합니다.[4]",
+   "actually": {
+    "items": [
+     "**Git이 원본** — 규칙 파일을 고치면 리뷰를 받고 합친다. 장비에서 손으로 바꾼 것(드리프트)은 다음 계획에서 차이로 드러난다.[25] {추론}",
+     "**계획 보기** — Terraform은 반영 전에 무엇이 생기고 바뀌고 지워지는지 계획을 보여 준다 — 이 차이가 승인의 근거다.[25]",
+     "**파이프라인 검사** — 가려진 규칙·any 규칙·만료일 없는 임시 규칙을 걸러낸다(앞의 코드 예시). {추론}",
+     "**의도 검사** — 등록해 둔 ‘계속 돼야 할 통신’을 새 정책으로 평가해, 결과가 다르면 배포를 막는다.[4]"
+    ]
+   },
+   "refs": [
+    4,
+    25
+   ],
+   "study": [
+    "tf-fortios",
+    "ansible-fortios",
+    "g26-policy-deploy"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "클라우드에서 인라인 보안 검사 구조(GWLB/Network Firewall, NVA, 서비스 체이닝)를 설계·구축해본 경험이 있다면 더욱 좋아요.",
+   "short": "클라우드에서도 트래픽이 검사 장비를 빠짐없이 지나가게 길을 짜 봤으면 좋다.",
+   "why": "업무 첫 줄의 ‘인라인 트래픽 검사’를 클라우드에서 하는 방법입니다.[1] 클라우드에는 길 가운데 세울 실물 장비가 없어서, 라우팅으로 트래픽을 검사 장비 쪽으로 돌려야 합니다.[16]",
+   "actually": {
+    "items": [
+     "**GWLB** — 방화벽 가상 장비들을 묶어 앞에 두고, 패킷을 GENEVE(6081번 포트)로 감싸 보낸다. 같은 흐름은 같은 장비로 가서 왕복이 어긋나지 않는다.[16][17]",
+     "**Network Firewall** — 장비 대신 관리형 방화벽을 VPC 경로에 끼운다.[18]",
+     "**NVA** — 클라우드 위에 올린 가상 보안 장비(예: 가상 FortiGate). 온프레미스와 같은 규칙 체계를 쓸 수 있다. {추론}",
+     "**서비스 체이닝** — 방화벽 → 침입 탐지 → 웹 방화벽처럼 검사를 차례로 잇는 것. 하나가 죽었을 때 통과시킬지(fail-open) 막을지(fail-close)를 정해야 한다. {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    16,
+    17,
+    18
+   ],
+   "study": [
+    "aws-gwlb",
+    "aws-nfw"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "컨테이너 환경(EKS, GKE)의 네트워크와 세그멘테이션(NetworkPolicy 등)을 이해하고 있다면 더욱 좋아요.",
+   "short": "컨테이너끼리 통신은 바깥 방화벽을 안 지나서, 쿠버네티스 안에서 막는 법을 알아야 한다.",
+   "why": "서비스가 쿠버네티스 위에서 돌면 파드끼리 통신은 같은 노드·같은 망 안에서 일어나 경계 방화벽이 보지 못합니다. 그래서 구역 나누기를 클러스터 안까지 이어야 합니다.[19]",
+   "actually": {
+    "items": [
+     "**기본은 다 열림** — 아무 정책이 없으면 모든 파드가 서로 통신된다. 정책이 한 파드를 고르는 순간 그 방향은 허용한 것만 된다.[19]",
+     "**이름표로 고른다** — IP 대신 라벨(앱 이름·네임스페이스)로 대상을 고른다. 파드 IP는 재시작마다 바뀌어 IP 규칙이 맞지 않는다.[19] {추론}",
+     "**클라우드별 구현** — EKS는 VPC CNI에서 정책을 켜고[20], GKE는 클러스터 옵션으로 켠다.[21]",
+     "**경계와의 이음매** — 파드가 밖으로 나갈 때 노드 주소로 바뀌면 바깥 방화벽은 어느 앱인지 모른다 — 나가는 주소를 고정하거나 앱별로 나눠야 한다. {추론}"
+    ]
+   },
+   "refs": [
+    19,
+    20,
+    21
+   ],
+   "study": [
+    "k8s-netpol"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Flow Log, 패킷 브로커, SSL 복호화 기반 분석 등으로 트래픽 가시성을 확보해본 경험이 있다면 더욱 좋아요.",
+   "short": "누가 누구와 얼마나 통신했나를 보는 세 가지 길 — 요약 기록, 트래픽 사본, 암호 풀어 보기.",
+   "why": "막으려면 먼저 보여야 합니다. 토스증권 보안 엔지니어는 단말과 네트워크가 **서로 다른 시야의 카메라**라 둘을 한 규칙으로 묶었다고 했고, 암호 통신이 늘며 네트워크 시야가 깨지는 것을 숙제로 꼽았습니다.[8]",
+   "actually": {
+    "items": [
+     "**Flow Log** — 출발·목적 주소와 포트, 바이트 수, 허용·거부만 남는 요약 기록이다. 내용은 없다.[22]",
+     "**사본 뜨기** — 클라우드는 트래픽 미러링으로 패킷 사본을 분석 장비에 보내고[23], IDC는 탭·미러 포트를 NPB로 모아 장비별로 나눠 준다.[24]",
+     "**SSL 복호화** — 중간 장비가 인증서를 바꿔 끼워 암호를 풀고 본다. 앱이 정해진 인증서만 믿게 고정(피닝)해 두면 연결이 깨져서 예외로 빼야 한다.[8][36]",
+     "**예외가 구멍** — 그룹 사례에서는 SSL 검사 예외의 와일드카드 하나가 업로드 차단 정책을 무력하게 만들었다.[5]"
+    ]
+   },
+   "refs": [
+    5,
+    8,
+    22,
+    23,
+    24,
+    36
+   ],
+   "study": [
+    "vpc-flowlogs",
+    "g25-genai-dlp",
+    "g26-policy-zt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AI/LLM을 활용해 보안 운영을 자동화해봤거나, AI 워크로드의 네트워크 통제를 고민해본 경험이 있다면 더욱 좋아요.",
+   "short": "AI로 반복 분석을 줄여 봤거나, AI 서버의 통신을 어떻게 막을지 고민해 봤으면 좋다.",
+   "why": "업무 다섯째 줄 그대로입니다.[1] 그룹의 GUARDIANS 26 발표 대부분이 AI로 보안 운영을 바꾼 이야기였고, 토스증권 보안 엔지니어 발표도 둘이 여기에 있습니다.[9][6][7]",
+   "actually": {
+    "items": [
+     "**코드 먼저, LLM은 나중** — 관계 계산은 코드로, 남은 것만 LLM에 묻는다. LLM에는 솔루션 동작 방식·배포 규칙을 같이 주고, 사용자 이름과 정책 적용 권한은 주지 않는다.[5]",
+     "**외부로 안 내보내기** — 로컬 모델로 분석해 민감한 보안 데이터가 밖으로 나가지 않게 한다.[7]",
+     "**AI 서버 통제** — AI가 사내 시스템에 직접 붙는 MCP 통신은 피닝 때문에 네트워크에서 못 풀어 보니, 단말 쪽 데이터 추적을 검토 중이다.[8]",
+     "**LLM 고유 위험** — 프롬프트 주입·과도한 권한 같은 위험 목록을 알고 설계에 반영한다.[35]"
+    ]
+   },
+   "refs": [
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    35
+   ],
+   "study": [
+    "g26-policy-zt",
+    "owasp-llm"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "금융정보 보호 관련 규정을 이해하고, 관련 구축 경험이 있다면 더욱 좋아요.",
+   "short": "전자금융감독규정 같은 규칙을 읽고, 그걸 실제 망 구성으로 옮겨 본 경험이면 좋다.",
+   "why": "업무 넷째 줄(망 분리·접근 통제·증적)을 하려면 규정 문장을 읽을 줄 알아야 합니다.[1][10] 토스 그룹 각 회사는 ISMS-P·ISO 27001 같은 인증을 받고 유지합니다.[37]",
+   "actually": {
+    "items": [
+     "**전자금융감독규정** — 15조의 해킹 방지 대책과 망 분리가 이 자리의 중심이다.[10]",
+     "**바뀌는 규정** — 망 분리 개선 로드맵으로 생성형 AI·SaaS 쓰임이 단계적으로 열리고 있다.[11][39]",
+     "**인증 기준** — ISMS-P는 관리체계·보호대책·개인정보 처리 단계 항목으로 나뉘고, 네트워크 접근·망 분리 항목이 보호대책에 들어 있다.[38]"
+    ]
+   },
+   "refs": [
+    1,
+    10,
+    11,
+    37,
+    38,
+    39
+   ],
+   "study": [
+    "efsr",
+    "isms-p"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "g26-policy-deploy",
+   "title": "GUARDIANS 26 · ZTNA 정책 변경도 배포다 (발표자료)",
+   "by": "토스 Server Developer 이호열 · 2026",
+   "kind": "doc",
+   "url": "https://static.toss.im/GUARDIANS26_session_slides.zip",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "정책 배포 전 가드·사용자 급감 보류·되돌리기·감사 기록 — 업무 셋째 줄 ‘검증·배포·변경·폐기 자동화’를 같은 그룹이 어떻게 만들었는지(묶음 안 B-4)."
+  },
+  {
+   "id": "g26-policy-zt",
+   "title": "GUARDIANS 26 · ZTNA 정책에도 제로 트러스트를 (발표자료)",
+   "by": "토스 Security Engineer 최승용 · 2026",
+   "kind": "doc",
+   "url": "https://static.toss.im/GUARDIANS26_session_slides.zip",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "켜져 있는데 안 도는 규칙 다섯 가지와 코드·로그·LLM으로 매일 점검하는 방법 — 방화벽 정책 분석·최적화 요건과 AI 정책 검토(묶음 안 B-5)."
+  },
+  {
+   "id": "g25-genai-dlp",
+   "title": "GUARDIANS 25 · GenAI 시대의 데이터 보안",
+   "by": "토스증권 Security Engineer 임용수 · 18분",
+   "kind": "video",
+   "url": "https://www.youtube.com/watch?v=e9CZQSpVT5c",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "토스증권 보안팀이 SSE·DLP로 AI 쓰임을 통제한 방식과 SSL 피닝으로 네트워크 시야가 깨진 숙제 — 트래픽 가시성·AI 워크로드 통제 요건."
+  },
+  {
+   "id": "nist-800-41",
+   "title": "NIST SP 800-41 Rev. 1 · Guidelines on Firewalls and Firewall Policy",
+   "by": "NIST · 2009",
+   "kind": "doc",
+   "url": "https://csrc.nist.gov/pubs/sp/800/41/r1/final",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "방화벽 종류·배치·정책 작성과 관리의 기본 원칙 — 아키텍처 설계와 정책 유지 관리 요건의 바탕."
+  },
+  {
+   "id": "net-intro-ko",
+   "title": "IT 엔지니어를 위한 네트워크 입문",
+   "by": "고재성",
+   "kind": "book",
+   "url": "https://ridibooks.com/books/754029945",
+   "lang": "ko",
+   "level": "입문",
+   "why": "TCP/IP·스위칭·라우팅·로드밸런서·방화벽 동작을 한국어로 처음부터 — TCP/IP 이해 요건의 출발점."
+  },
+  {
+   "id": "ppa3",
+   "title": "Practical Packet Analysis, 3rd Edition",
+   "by": "Chris Sanders · No Starch Press · 2017",
+   "kind": "book",
+   "url": "https://nostarch.com/packetanalysis3",
+   "lang": "en",
+   "level": "실무",
+   "why": "Wireshark로 실제 장애·느림·공격 패킷을 읽는 사례 중심 — 패킷 분석 트러블슈팅 요건."
+  },
+  {
+   "id": "inflearn-wireshark",
+   "title": "와이어샤크(Wireshark) 패킷 분석과 침해대응",
+   "by": "보안프로젝트 · 인프런",
+   "kind": "course",
+   "url": "https://www.inflearn.com/course/wireshark_boanproject",
+   "lang": "ko",
+   "level": "실무",
+   "why": "한국어로 패킷 분석을 손으로 따라 하는 강의 — 패킷 분석 요건을 보안 사고 관점까지."
+  },
+  {
+   "id": "rfc9293",
+   "title": "RFC 9293 · Transmission Control Protocol (TCP)",
+   "by": "IETF · 2022",
+   "kind": "doc",
+   "url": "https://www.rfc-editor.org/rfc/rfc9293",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "연결 상태·재전송·RST의 정확한 규칙 — 패킷을 보고 판단할 때의 기준."
+  },
+  {
+   "id": "rfc4987",
+   "title": "RFC 4987 · TCP SYN Flooding Attacks and Common Mitigations",
+   "by": "IETF · 2007",
+   "kind": "doc",
+   "url": "https://www.rfc-editor.org/rfc/rfc4987",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "SYN 쿠키·대기열 조정 같은 대표적 디도스 방어 원리 — 디도스 방어 장비 운영 업무."
+  },
+  {
+   "id": "fortios-admin",
+   "title": "FortiGate / FortiOS 7.6 Administration Guide",
+   "by": "Fortinet",
+   "kind": "doc",
+   "url": "https://docs.fortinet.com/product/fortigate/7.6",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "공고가 이름을 댄 장비의 정책·VPN·HA·REST API 공식 설명 — 장비 운영과 API 연동 요건."
+  },
+  {
+   "id": "fortinet-training",
+   "title": "Fortinet Training Institute",
+   "by": "Fortinet",
+   "kind": "course",
+   "url": "https://training.fortinet.com/",
+   "lang": "en",
+   "level": "실무",
+   "why": "FortiGate 운영 과정과 공식 인증 경로 — Fortinet 장비 경험이 없을 때 따라잡는 길."
+  },
+  {
+   "id": "tf-fortios",
+   "title": "Terraform Registry · fortinetdev/fortios provider",
+   "by": "Fortinet",
+   "kind": "doc",
+   "url": "https://registry.terraform.io/providers/fortinetdev/fortios/latest/docs",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "방화벽 정책·주소 객체를 Terraform 코드로 적는 공식 프로바이더 — IaC 형상 관리 요건."
+  },
+  {
+   "id": "ansible-fortios",
+   "title": "Ansible · fortinet.fortios collection",
+   "by": "Ansible Community Documentation",
+   "kind": "doc",
+   "url": "https://docs.ansible.com/ansible/latest/collections/fortinet/fortios/index.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "같은 장비를 Ansible로 설정하는 모듈 모음 — 반복 운영 자동화 업무."
+  },
+  {
+   "id": "npa2",
+   "title": "Network Programmability and Automation, 2nd Edition",
+   "by": "Matt Oswalt · Christian Adell · Scott S. Lowe · Jason Edelman · O'Reilly · 2023",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/network-programmability-and/9781098110826/",
+   "lang": "en",
+   "level": "실무",
+   "why": "네트워크 엔지니어가 Python·API·Git·Ansible·Terraform으로 일하는 법을 한 권에 — 자동화 요건 전체."
+  },
+  {
+   "id": "aws-gwlb",
+   "title": "What is a Gateway Load Balancer?",
+   "by": "AWS 문서",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/elasticloadbalancing/latest/gateway/introduction.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "클라우드 인라인 검사의 대표 구조(GENEVE·흐름 고정·엔드포인트) — 인라인 보안 검사 요건."
+  },
+  {
+   "id": "aws-nfw",
+   "title": "What is AWS Network Firewall?",
+   "by": "AWS 문서",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/network-firewall/latest/developerguide/what-is-aws-network-firewall.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "관리형 방화벽을 VPC 경로에 끼우는 법 — GWLB와 견줄 다른 선택지."
+  },
+  {
+   "id": "k8s-netpol",
+   "title": "Kubernetes · Network Policies",
+   "by": "Kubernetes 공식 문서",
+   "kind": "doc",
+   "url": "https://kubernetes.io/docs/concepts/services-networking/network-policies/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "파드 격리 규칙과 라벨로 고르는 법 — 컨테이너 세그멘테이션 요건."
+  },
+  {
+   "id": "vpc-flowlogs",
+   "title": "Logging IP traffic using VPC Flow Logs",
+   "by": "AWS 문서",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "Flow Log에 무엇이 남고 무엇이 안 남는지 — 트래픽 가시성 요건의 첫걸음."
+  },
+  {
+   "id": "efsr",
+   "title": "전자금융감독규정 (금융위원회고시)",
+   "by": "금융위원회 · 위키문헌 사본",
+   "kind": "doc",
+   "url": "https://ko.wikisource.org/wiki/%EC%A0%84%EC%9E%90%EA%B8%88%EC%9C%B5%EA%B0%90%EB%8F%85%EA%B7%9C%EC%A0%95_(%EC%A0%9C2025-4%ED%98%B8)",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "15조(해킹 등 방지대책·망 분리)를 직접 읽는다 — 망 분리·접근 통제 업무와 금융 규정 요건. 공식 원문은 국가법령정보센터에서 확인."
+  },
+  {
+   "id": "isms-p",
+   "title": "ISMS-P 인증기준",
+   "by": "개인정보보호위원회",
+   "kind": "doc",
+   "url": "https://pipc.go.kr/np/default/page.do?mCode=D040020000",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "인증 심사가 보는 항목 — 증적 관리와 심사 대응에서 무엇을 남겨야 하는지."
+  },
+  {
+   "id": "owasp-llm",
+   "title": "OWASP Top 10 for LLM Applications (2025)",
+   "by": "OWASP",
+   "kind": "doc",
+   "url": "https://genai.owasp.org/llm-top-10/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "프롬프트 주입·과도한 권한 등 LLM 위험 목록 — AI로 보안 운영을 자동화할 때 지켜야 할 선."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "패킷으로 말하기",
+   "time": "2~3주",
+   "goal": "연결 실패를 ‘거절·버림·크기 초과·TLS 실패’로 나눠 패킷 증거로 설명할 수 있다.",
+   "task": "집 PC에 가상 머신 둘을 띄우고 그 사이에 리눅스 방화벽(nftables)을 둔다. 포트 차단·RST·MTU 낮추기를 하나씩 일부러 만들고, 양쪽에서 tcpdump로 떠서 증상별 캡처 네 장과 판단 메모를 남긴다.",
+   "resources": [
+    "net-intro-ko",
+    "ppa3",
+    "inflearn-wireshark",
+    "rfc9293"
+   ]
+  },
+  {
+   "title": "방화벽 정책을 읽고 줄이기",
+   "time": "2주",
+   "goal": "규칙 목록에서 가려진·중복·너무 넓은 규칙을 찾아내고, 지워도 안전한 근거를 댈 수 있다.",
+   "task": "가상 규칙 200줄(일부러 중복·가림·any 섞기)을 CSV로 만들고, 앞의 코드 예시를 키워 보고서(가려짐·중복·any·히트 0)를 뽑는다. 히트 0 규칙마다 ‘왜 0인가’ 후보를 적는다.",
+   "resources": [
+    "nist-800-41",
+    "g26-policy-zt",
+    "fortios-admin"
+   ]
+  },
+  {
+   "title": "규칙을 코드로",
+   "time": "3주",
+   "goal": "방화벽 규칙을 Git에 두고, 바꾸면 자동 검사를 통과해야만 반영되는 흐름을 만들 수 있다.",
+   "task": "FortiGate 평가판 VM(또는 Terraform 계획까지만)으로 주소·정책을 Terraform 코드로 적고, GitHub Actions에서 2단계 검사기와 ‘계속 돼야 할 통신’ 목록 검사를 돌린다. 일부러 막히는 변경을 하나 올려 배포가 멈추는 것을 확인한다.",
+   "resources": [
+    "tf-fortios",
+    "ansible-fortios",
+    "npa2",
+    "g26-policy-deploy"
+   ]
+  },
+  {
+   "title": "클라우드와 컨테이너까지",
+   "time": "3주",
+   "goal": "클라우드 인라인 검사 길과 쿠버네티스 안 구역 나누기를 그리고 설명할 수 있다.",
+   "task": "VPC 둘(서비스·검사)로 GWLB 인라인 검사 구성도를 그리고 패킷 경로를 단계별로 적는다. kind로 로컬 쿠버네티스를 띄워 ‘프런트 → 백엔드만 허용, DB는 백엔드만’ NetworkPolicy를 걸고 막히는 통신을 확인한다. Flow Log 예시 줄로 허용·거부를 집계해 본다.",
+   "resources": [
+    "aws-gwlb",
+    "aws-nfw",
+    "k8s-netpol",
+    "vpc-flowlogs"
+   ]
+  },
+  {
+   "title": "금융 규정과 AI 운영",
+   "time": "2주",
+   "goal": "망 분리 규정을 설정과 증적으로 옮기는 표를 만들고, AI로 로그 검토를 돕되 위험을 통제할 수 있다.",
+   "task": "전자금융감독규정 15조 문장 → 설정 → 남길 증거를 세 칸 표로 만든다. 가상 방화벽 로그 1,000줄을 만들어 코드로 아는 원인을 먼저 걸러내고, 남은 것만 로컬 LLM에 요약시킨 뒤 원본과 대조한 결과를 기록한다.",
+   "resources": [
+    "efsr",
+    "isms-p",
+    "g25-genai-dlp",
+    "owasp-llm"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공시 기준 1인당 평균 임금 **약 1억 2,500만원**(2023년) — 경력직이 대부분인 회사 전체 값이다",
+  "rows": [
+   {
+    "label": "1인당 평균 임금",
+    "value": "1억 2,500만원",
+    "amount": 12500,
+    "basis": "사업보고서·금융투자협회 공시 · 2023년",
+    "note": "계약직 포함 임직원 292명 기준이라고 보도됐다 [31]"
+   },
+   {
+    "label": "메리츠증권 평균",
+    "value": "1억 8,300만원",
+    "amount": 18300,
+    "basis": "사업보고서·금융투자협회 공시 · 2023년",
+    "peer": true,
+    "note": "같은 기사의 24개 증권사 중 1위. 24개사 평균은 1억 2,579만원 [31]"
+   },
+   {
+    "label": "카카오페이증권 평균",
+    "value": "9,840만원",
+    "amount": 9840,
+    "basis": "사업보고서·금융투자협회 공시 · 2023년",
+    "peer": true,
+    "note": "같은 기사 — 임원 제외 직원 기준, 24개사 중 최하위 [31]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고, 직무·문화적합성 인터뷰와 레퍼런스 체크 뒤 **처우 협의** 단계에서 사람마다 정한다 [1]. 2023년 숫자라 낡았다 — 2026년 1분기 공시에서 직원은 380명에서 516명으로 늘고 직원 급여는 21.4% 늘었다 [32]. 평균은 회사 전체 값이라 이 자리(5년 이상)의 제안액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   }
+  ],
+  "note": "토스 팀 전체를 기준으로 한 2021년 공식 소개 글이다 [33]. 토스증권에 그대로 적용되는지, 지금도 같은지는 글에 없으니 처우 협의 때 확인한다 {추론}. 같은 팀 IDC 공고는 주 근무지가 데이터센터라 이 자리도 현장 작업이 있을 수 있다 [3] {추론}."
+ },
+ "location": {
+  "name": "토스증권 본사",
+  "address": "서울특별시 강남구 테헤란로 133, 7층 (역삼동, 한국타이어빌딩)",
+  "postal": "06133",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20133",
+  "near": "2호선 역삼역과 강남역 사이 테헤란로 {추론}",
+  "note": "주소는 토스증권 사이트 하단의 회사 정보다 [34]. 공고의 근무지는 Seoul로만 적혀 있고, 장비가 있는 데이터센터 작업은 따로일 수 있다 [1] {추론}."
+ },
+ "fit": {
+  "good": [
+   "방화벽 운영을 해 왔고 이제 규칙을 코드로 다루고 싶은 사람 — 공고 팀원이 걸어온 길[1]",
+   "‘왜 이 규칙이 안 걸리지?’를 끝까지 파는 사람[5]",
+   "패킷 캡처 한 장으로 남을 설득하는 걸 즐기는 사람",
+   "여러 보안 장비·솔루션을 직접 고르고 시도해 보고 싶은 사람[1][3]"
+  ],
+  "hard": [
+   "금융 규정 때문에 바꿀 때마다 승인과 증적이 따라온다[10]",
+   "장중 장애는 바로 돈과 민원으로 이어진다 {추론}",
+   "장비 운영만 하고 싶다면 자동화·코드 비중이 부담일 수 있다[1]",
+   "데이터센터 현장 작업이 섞일 수 있다[3] {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "방화벽 규칙 중 히트 카운트가 1년째 0인 것이 있어요. 지워도 되나요?",
+   "a": "가려짐·SSL 예외·IP로 넣은 목적지·정책 밖 변화 — 그룹 보안팀이 실제로 겪은 0의 이유들.[5]"
+  },
+  {
+   "q": "서비스 하나가 ‘가끔 큰 응답만 멈춘다’고 해요. 무엇부터 보나요?",
+   "a": "터널 포장으로 커진 패킷과 MTU — 캡처 지점과 판단 순서.[17][29]"
+  },
+  {
+   "q": "방화벽 정책을 Terraform으로 관리할 때, 잘못된 변경이 나가는 걸 어떻게 막고 나갔으면 어떻게 되돌리나요?",
+   "a": "기대 결과 가드·큰 변경 보류·정상본으로 되돌리기.[4]"
+  },
+  {
+   "q": "클라우드에서 모든 트래픽이 방화벽을 지나게 하려면? 방화벽이 죽으면요?",
+   "a": "GWLB 경로·흐름 고정과 fail-open/fail-close 선택.[16]"
+  },
+  {
+   "q": "SSL 복호화를 켰더니 일부 앱이 깨졌어요. 왜 그렇고, 예외를 주면 무엇을 잃나요?",
+   "a": "인증서 고정과, 예외 와일드카드가 다른 정책을 꺼버린 사례.[5][8]"
+  },
+  {
+   "q": "AI로 방화벽 로그를 분석한다면 무엇을 맡기고 무엇을 맡기지 않겠어요?",
+   "a": "코드 먼저·LLM은 남은 것만, 판단은 사람, 프롬프트 주입.[5][7][35]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 네트워크 보안 엔지니어 (5년 이상) — 토스증권",
+   "url": "https://toss.im/career/job-detail?gh_jid=5398782003",
+   "kind": "posting",
+   "note": "Network Engineering Team 소개·업무·요건·이력서 안내·합류 여정(서류 > 직무 인터뷰 > 문화적합성 > 레퍼런스 체크 > 처우 협의)·동료의 한마디(방화벽 엔지니어 출신). 2026-11-23 확인"
+  },
+  {
+   "n": 2,
+   "title": "토스 채용 · 네트워크 보안 엔지니어 (5년 미만) — 토스증권",
+   "url": "https://toss.im/career/job-detail?gh_jid=7598977003",
+   "kind": "posting",
+   "note": "같은 팀·같은 업무, 요건이 장비 구축·운영 경험과 주니어 환영 — 이 공고와의 차이를 견주는 데만 씀"
+  },
+  {
+   "n": 3,
+   "title": "토스 채용 · IDC Infrastructure Engineer (Network & System) — 토스증권",
+   "url": "https://toss.im/career/job-detail?gh_jid=7719156003",
+   "kind": "posting",
+   "note": "같은 팀 협업 — 데이터센터 네트워크(Spine-Leaf·이중화) 설계, 대역폭·NIC·광모듈 표준, 펌웨어·설정 배포 자동화, 주 근무지 데이터센터"
+  },
+  {
+   "n": 4,
+   "title": "GUARDIANS 26 · ZTNA 정책 변경도 배포다 (발표자료)",
+   "url": "https://static.toss.im/GUARDIANS26_session_slides.zip",
+   "kind": "company",
+   "date": "2026-11",
+   "note": "토스 Server Developer · 39쪽 전부 읽음(PITR 헤드 전환·자동 발행 중지, Large Diff 1,000→600명·임계 30%, 사전 정의·자동 파생 가드, 불일치/미확인 구분, 감사 로그 Outbox) · 같은 그룹 다른 회사의 자체 SASE"
+  },
+  {
+   "n": 5,
+   "title": "GUARDIANS 26 · ZTNA 정책에도 제로 트러스트를 (발표자료)",
+   "url": "https://static.toss.im/GUARDIANS26_session_slides.zip",
+   "kind": "company",
+   "date": "2026-11",
+   "note": "토스 Security Engineer · 35쪽 전부 읽음(SSL 예외 와일드카드, IP 목적지 그룹, 정책 밖 변화, 히트 0, 정책 1,700여·그룹 1,800여·주소 16만여, 점검 3가지, LLM 절반 오답, 방화벽·웹 필터에도 적용) · 같은 그룹 다른 회사"
+  },
+  {
+   "n": 6,
+   "title": "GUARDIANS 26 · Signal First, LLM Second (발표자료)",
+   "url": "https://static.toss.im/GUARDIANS26_session_slides.zip",
+   "kind": "company",
+   "date": "2026-11",
+   "note": "토스증권 Security Engineer · 26쪽 전부 읽음(빈도 점수 27×10+466=736, SNR 2.2/11.9dB, 엔트로피 기여도 0.491, 사고·예비·정상·평시 네 그룹)"
+  },
+  {
+   "n": 7,
+   "title": "GUARDIANS 26 · AI는 공격자일까, 분석가일까? Local LLM을 활용한 SOC 분석 보조 실험 (발표자료)",
+   "url": "https://static.toss.im/GUARDIANS26_session_slides.zip",
+   "kind": "company",
+   "date": "2026-11",
+   "note": "토스증권 Security Engineer · 25쪽 전부 읽음(Qwen3 Coder 30B·Ollama 로컬, 분석가가 자료 선택·최종 판단, 환각·프롬프트 주입·과신 한계)"
+  },
+  {
+   "n": 8,
+   "title": "GUARDIANS 25 · GenAI 시대의 데이터 보안",
+   "url": "https://www.youtube.com/watch?v=e9CZQSpVT5c",
+   "kind": "company",
+   "date": "2025",
+   "note": "토스증권 Security Engineer 임용수 · 18분 · 자막 전부 읽음(AI 테마주 거래량, 실적 발표 실시간 번역, SSE 기반 행위·신원 통제, 단말·네트워크 DLP 통합, NHI 탐지·소명·키 재발급, DSPM, MCP·SSL 피닝으로 가시성 깨짐, 차세대 DLP 검토)"
+  },
+  {
+   "n": 9,
+   "title": "토스 · GUARDIANS 26 세션 목록",
+   "url": "https://toss.im/guardians-26",
+   "kind": "company",
+   "date": "2026-11",
+   "note": "3트랙 21개 세션·발표자 소속 — 토스증권 Security Engineer 발표 4개·Security Researcher·Privacy Manager"
+  },
+  {
+   "n": 10,
+   "title": "전자금융감독규정 (금융위원회고시 제2025-4호)",
+   "url": "https://ko.wikisource.org/wiki/%EC%A0%84%EC%9E%90%EA%B8%88%EC%9C%B5%EA%B0%90%EB%8F%85%EA%B7%9C%EC%A0%95_(%EC%A0%9C2025-4%ED%98%B8)",
+   "kind": "reference",
+   "note": "제15조(해킹 등 방지대책 — 정보보호시스템 운영·결과 보관·망 분리) · 위키문헌 사본이라 공식 원문은 국가법령정보센터로 확인"
+  },
+  {
+   "n": 11,
+   "title": "금융위원회 · 금융분야 망분리 개선 로드맵",
+   "url": "https://fsc.go.kr/po010101/82885",
+   "kind": "reference",
+   "note": "생성형 AI 활용 허용, SaaS 이용 범위 확대, 연구·개발 환경 개선 — 단계적 개선"
+  },
+  {
+   "n": 12,
+   "title": "NIST SP 800-41 Rev. 1 · Guidelines on Firewalls and Firewall Policy",
+   "url": "https://csrc.nist.gov/pubs/sp/800/41/r1/final",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "NIST SP 800-207 · Zero Trust Architecture",
+   "url": "https://nvlpubs.nist.gov/nistpubs/specialpublications/NIST.SP.800-207.pdf",
+   "kind": "reference",
+   "note": "정책 판단 지점·집행 지점 — 구역 나누기를 사람·기기 단위로 넓힌 기준"
+  },
+  {
+   "n": 14,
+   "title": "RFC 9293 · Transmission Control Protocol (TCP)",
+   "url": "https://www.rfc-editor.org/rfc/rfc9293",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "RFC 4987 · TCP SYN Flooding Attacks and Common Mitigations",
+   "url": "https://www.rfc-editor.org/rfc/rfc4987",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "AWS 문서 · What is a Gateway Load Balancer?",
+   "url": "https://docs.aws.amazon.com/elasticloadbalancing/latest/gateway/introduction.html",
+   "kind": "reference",
+   "note": "GENEVE 6081 포트, 흐름 고정, GWLB 엔드포인트로 경로 전환"
+  },
+  {
+   "n": 17,
+   "title": "RFC 8926 · Geneve: Generic Network Virtualization Encapsulation",
+   "url": "https://www.rfc-editor.org/rfc/rfc8926",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "AWS 문서 · What is AWS Network Firewall?",
+   "url": "https://docs.aws.amazon.com/network-firewall/latest/developerguide/what-is-aws-network-firewall.html",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Kubernetes · Network Policies",
+   "url": "https://kubernetes.io/docs/concepts/services-networking/network-policies/",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Amazon EKS · Limit Pod traffic with Kubernetes network policies",
+   "url": "https://docs.aws.amazon.com/eks/latest/userguide/cni-network-policy.html",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "GKE · Control communication between Pods and Services using network policies",
+   "url": "https://cloud.google.com/kubernetes-engine/docs/how-to/network-policy",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "AWS 문서 · Logging IP traffic using VPC Flow Logs",
+   "url": "https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "AWS 문서 · What is Traffic Mirroring?",
+   "url": "https://docs.aws.amazon.com/vpc/latest/mirroring/what-is-traffic-mirroring.html",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "Wikipedia · Network packet broker (Data monitoring switch)",
+   "url": "https://en.wikipedia.org/wiki/Network_packet_broker",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "Terraform Registry · fortinetdev/fortios provider",
+   "url": "https://registry.terraform.io/providers/fortinetdev/fortios/latest/docs",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "Ansible · fortinet.fortios collection",
+   "url": "https://docs.ansible.com/ansible/latest/collections/fortinet/fortios/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "Fortinet · FortiGate / FortiOS 7.6 문서",
+   "url": "https://docs.fortinet.com/product/fortigate/7.6",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "Fortinet Community · REST API endpoint for diag firewall iprope lookup",
+   "url": "https://community.fortinet.com/t5/Support-Forum/What-is-the-REST-API-endpoint-for-diag-firewall-iprope-lookup/td-p/302786",
+   "kind": "community",
+   "note": "정책 조회의 REST 경로(/api/v2/monitor/firewall/policy-lookup)와 cmdb·monitor 구분 — 공식 API 문서는 Fortinet 개발자 네트워크(로그인 필요)"
+  },
+  {
+   "n": 29,
+   "title": "tcpdump 매뉴얼",
+   "url": "https://www.tcpdump.org/manpages/tcpdump.1.html",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "Wireshark User’s Guide",
+   "url": "https://www.wireshark.org/docs/wsug_html_chunked/",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "뉴스토마토 · 토스증권, 급여도 정상급…카카오페이증권, 사실상 꼴찌",
+   "url": "https://www.newstomato.com/ReadNews.aspx?no=1236020",
+   "kind": "news",
+   "date": "2024-07-24",
+   "note": "각 사 사업보고서·금융투자협회 공시, 2023년 기준 — 토스증권 1인당 평균 임금 1억2,500만원(계약직 포함 292명), 24개사 평균 1억2,579만원"
+  },
+  {
+   "n": 32,
+   "title": "CEO스코어데일리 · '호황' 증권가, 임직원 수 2% 늘 때 급여는 48% 증가",
+   "url": "https://www.ceoscoredaily.com/page/view/2026052816034001002",
+   "kind": "news",
+   "date": "2026-05-29",
+   "note": "금융투자협회 공시 2026년 1분기 — 토스증권 직원 380 → 516명, 직원 급여 21.4% 증가"
+  },
+  {
+   "n": 33,
+   "title": "토스피드 · 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 34,
+   "title": "토스증권 · 사이트 하단 회사 정보",
+   "url": "https://www.tossinvest.com/",
+   "kind": "company",
+   "note": "토스증권(주) 주소·사업자 정보"
+  },
+  {
+   "n": 35,
+   "title": "OWASP Top 10 for LLM Applications (2025)",
+   "url": "https://genai.owasp.org/llm-top-10/",
+   "kind": "reference"
+  },
+  {
+   "n": 36,
+   "title": "RFC 8446 · The Transport Layer Security (TLS) Protocol Version 1.3",
+   "url": "https://www.rfc-editor.org/rfc/rfc8446",
+   "kind": "reference"
+  },
+  {
+   "n": 37,
+   "title": "토스피드 · 금융 수퍼앱을 지키는 방패, 보안 엔지니어를 만나다",
+   "url": "https://toss.im/tossfeed/article/security-engineer-interview",
+   "kind": "company",
+   "note": "계열사 보안 엔지니어 인터뷰 — ISMS-P·ISO 27001/27701·PCI DSS 인증, 망분리·정보 유출 대응 · 2022년 기준"
+  },
+  {
+   "n": 38,
+   "title": "개인정보보호위원회 · ISMS-P 인증기준",
+   "url": "https://pipc.go.kr/np/default/page.do?mCode=D040020000",
+   "kind": "reference",
+   "note": "관리체계 16 · 보호대책 64 · 개인정보 처리 단계 21 = 101개"
+  },
+  {
+   "n": 39,
+   "title": "금융위원회·금융감독원 · 내부 업무망 SaaS 망분리 예외 시행",
+   "url": "https://www.fsc.go.kr/no010101/86745",
+   "kind": "reference",
+   "note": "감독규정 제15조 제1항 제3호 예외, 고유식별·개인신용정보 처리 시 제외, 평가받은 SaaS·단말 보호"
+  }
+ ],
+ "caveat": "토스증권 네트워크 보안 팀이 직접 발표한 글·영상은 찾지 못했다. 회사 근거는 이 공고와 같은 팀 공고 둘, 토스증권 보안 엔지니어의 GUARDIANS 25·26 발표 셋, 같은 그룹 토스의 정책 배포·점검 발표 둘이다. 토스의 발표는 자체 SASE(타이탄) 정책 이야기라 토스증권 방화벽 운영에 같은 장치가 있는지는 공개되지 않았다. 구역 구성·장비 수·트래픽 규모도 공개되지 않아 공식 문서로 ‘보통 이런 것’을 보였다."
+}

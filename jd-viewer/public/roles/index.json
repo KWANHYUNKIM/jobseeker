@@ -171,10 +171,12 @@
   "ats-toss:group:7788403003": "tosssec-community-reco-mle",
   "ats-toss:group:8006361003": "tosssec-data-engineer-dre",
   "ats-toss:group:7827711003": "tosssec-data-engineer-financial-data",
+  "ats-toss:group:4076052003": "tosssec-dba-oracle",
   "ats-toss:group:5863983003": "tosssec-fep-server-developer",
   "ats-toss:group:4076141003": "tosssec-frontend-developer",
   "ats-toss:group:5130165003": "tosssec-frontend-platform-engineer",
   "ats-toss:group:7575603003": "tosssec-ml-engineer-llm",
+  "ats-toss:group:5398782003": "tosssec-network-security-engineer",
   "ats-toss:group:4154060003": "tosssec-product-data-analyst",
   "ats-toss:group:8011230003": "tosssec-security-engineer-infra",
   "ats-toss:group:7810517003": "tosssec-senior-data-analyst",
@@ -1721,6 +1723,16 @@
    "lines": 19
   },
   {
+   "id": "tosssec-dba-oracle",
+   "company": "토스증권",
+   "role": "Oracle DBA",
+   "jobs": [
+    "ats-toss:group:4076052003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 13
+  },
+  {
    "id": "tosssec-fep-server-developer",
    "company": "토스증권",
    "role": "서버 개발자 (FEP)",
@@ -1759,6 +1771,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 20
+  },
+  {
+   "id": "tosssec-network-security-engineer",
+   "company": "토스증권",
+   "role": "네트워크 보안 엔지니어 (5년 이상)",
+   "jobs": [
+    "ats-toss:group:5398782003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 15
   },
   {
    "id": "tosssec-product-data-analyst",
