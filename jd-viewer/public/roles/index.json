@@ -21,8 +21,10 @@
   "wanted-396609": "skax-mfg-data-engineer-k8s",
   "jobkorea-50308626": "skax-mfg-data-engineer-k8s",
   "ats-skcareers:sk:R262392": "skax-sap-bw-bdc-data-analytics",
+  "ats-skcareers:sk:R262430": "skax-security-architect",
   "ats-skcareers:sk:R262252": "skax-vision-image-platform-pl-mle",
   "saramin-55459415": "skax-vision-image-platform-pl-mle",
+  "ats-skcareers:sk:R262308": "skax-whitehat-pentest",
   "wanted-386999": "speee-dx-sre",
   "wanted-393877": "speee-realestate-senior-product-engineer",
   "ats-toss:group:7990802003": "toss-ads-ai-engineer",
@@ -270,6 +272,16 @@
    "lines": 35
   },
   {
+   "id": "skax-security-architect",
+   "company": "SK주식회사(AX)",
+   "role": "보안 아키텍트",
+   "jobs": [
+    "ats-skcareers:sk:R262430"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 35
+  },
+  {
    "id": "skax-vision-image-platform-pl-mle",
    "company": "SK주식회사(AX)",
    "role": "전사 통합 Image 솔루션 제공 플랫폼 Application PL 및 ML 엔지니어",
@@ -279,6 +291,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 41
+  },
+  {
+   "id": "skax-whitehat-pentest",
+   "company": "SK주식회사(AX)",
+   "role": "화이트해킹/침투테스트 분야 전문가",
+   "jobs": [
+    "ats-skcareers:sk:R262308"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 25
   },
   {
    "id": "speee-dx-sre",
