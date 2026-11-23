@@ -64,6 +64,7 @@
   "ats-skcareers:sk:R262308": "skax-whitehat-pentest",
   "wanted-386999": "speee-dx-sre",
   "wanted-393877": "speee-realestate-senior-product-engineer",
+  "wanted-394499": "technopro-lowcode-java-lead-japan",
   "ats-toss:group:7990802003": "toss-ads-ai-engineer",
   "ats-toss:group:7998957003": "toss-ads-bidding-pacing-mle",
   "ats-toss:group:6619423003": "toss-ads-data-analyst",
@@ -694,6 +695,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 33
+  },
+  {
+   "id": "technopro-lowcode-java-lead-japan",
+   "company": "株式会社テクノプロ (TechnoPro) · コンサルティング・パートナーズ社",
+   "role": "로우코드 웹 개발 리더 (2~5명 소규모 팀 리딩)",
+   "jobs": [
+    "wanted-394499"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 15
   },
   {
    "id": "toss-ads-ai-engineer",
