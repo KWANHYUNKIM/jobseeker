@@ -51,6 +51,69 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "팬 4개(ROG 첫 쿼드 팬)는 공식 문구 — 공식 정면 사진에 앞면 팬 3개, 뒷면 사진에 백플레이트 끝 쪽에 네 번째 팬이 하나 더 있다. 형식에 뒷면 팬 칸이 없어 앞면 3개만 fan_count 로 적었다(REQUESTS). 끝 쪽 앞면 팬은 다른 둘보다 조금 커 보이고 무지개 ARGB 고리를 둘렀다 — 지름은 공식 자료에 없다. 날개 7장은 뒷면 팬 사진에서 셌다(앞면 팬도 같은 모양으로 보인다). 흰 다이캐스트 쉬라우드·백플레이트, 윗면 모서리를 따라 파란 간접 Aura 발광 띠(조명 사진) → light=side·accent 파랑(ARGB 라 색은 바뀐다). 16핀은 윗면 가장자리의 홈, 뒷면 사진에서 브래킷부터 길이의 약 65% 자리. 3.8슬롯은 models(공식 스펙). 백플레이트 끝은 네 번째 팬 자리로 뚫려 있어 flow_through. 다나와는 쓰지 않았다."
+  },
+  "asus-rog-astral-rtx5090-o32g-btf": {
+   "kind": "gpu",
+   "fan_count": 3,
+   "fan_blades": 7,
+   "fan_light": "argb",
+   "light": "side",
+   "slots": 3.8,
+   "backplate": true,
+   "flow_through": true,
+   "color": "#2e2f33",
+   "accent": "#5b4bff",
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "sources": [
+    {
+     "title": "ASUS ROG Astral RTX 5090 BTF OC — 공식 제품 페이지(quad-fan · Indirect Aura ARGB · die-cast frame/shroud/backplate · GC-HPWR 골드핑거)",
+     "url": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-rtx5090-o32g-btf-gaming/"
+    },
+    {
+     "title": "ASUS ROG Astral RTX 5090 BTF OC — 공식 갤러리(정면 2D·뒷면 2D 사진)",
+     "url": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-rtx5090-o32g-btf-gaming/gallery/"
+    },
+    {
+     "title": "ASUS ROG Astral RTX 5090 BTF OC — 공식 스펙(3.8슬롯 · 1 x 16-pin GC-HPWR gold finger)",
+     "url": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-rtx5090-o32g-btf-gaming/spec/"
+    }
+   ],
+   "note": "흰판(o32g-white)과 같은 몸체의 검정판 — 공식 정면 사진: 짙은 건메탈 다이캐스트 틀(color) 위에 은색 가운데 판(약 #9fa2a6), 앞 팬 3개(날개 7장, 끝 팬은 조금 크고 은색 눈금 고리), 윗면 모서리를 따라 보라-파랑 간접 Aura 띠(accent, ARGB 라 바뀐다). 뒷면 사진: 검정 다이캐스트 백플레이트, 끝 쪽에 네 번째 팬(플로스루 자리) — 형식에 뒷면 팬 칸이 없어 fan_count 는 앞면 3개(REQUESTS 의 rear_fans 요청). 사진을 카드 길이 357.6mm 로 재면 앞 두 팬 약 105mm·끝 팬 약 115mm 지만 사진 판독이라 fans 에는 적지 않았다. 보조전원: BTF 는 공식 스펙상 GC-HPWR 골드핑거(PCIe 손가락 옆, 정면 사진에서 브래킷부터 약 56% 자리)로 받는다 — power 칸은 윗면 단자만 그려서 비웠다(REQUESTS). 다나와는 쓰지 않았다."
+  },
+  "asus-rog-astral-rtx5090-o32g": {
+   "kind": "gpu",
+   "fan_count": 3,
+   "fan_blades": 7,
+   "fan_light": "argb",
+   "light": "side",
+   "slots": 3.8,
+   "backplate": true,
+   "flow_through": true,
+   "color": "#2e2f33",
+   "accent": "#5b4bff",
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "power": {
+    "type": "12v-2x6",
+    "n": 1,
+    "at": 0.66
+   },
+   "sources": [
+    {
+     "title": "ASUS ROG Astral RTX 5090 OC — 공식 제품 페이지(ROG first quad-fan · Indirect Aura ARGB · die-cast)",
+     "url": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-rtx5090-o32g-gaming/"
+    },
+    {
+     "title": "ASUS ROG Astral RTX 5090 OC — 공식 갤러리(정면·뒷면 2D 사진)",
+     "url": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-rtx5090-o32g-gaming/gallery/"
+    },
+    {
+     "title": "ASUS ROG Astral RTX 5090 OC — 공식 스펙(3.8슬롯 · 1 x 16-pin)",
+     "url": "https://rog.asus.com/graphics-cards/graphics-cards/rog-astral/rog-astral-rtx5090-o32g-gaming/spec/"
+    }
+   ],
+   "note": "BTF 검정판과 같은 앞면(건메탈 틀 + 은색 가운데 판, 팬 3개·날개 7장, 끝 팬에 은색 고리, 윗면 보라-파랑 Aura 띠). 뒷면 공식 사진: 검정 백플레이트 끝 쪽에 네 번째 팬(플로스루), 16핀은 윗면 가장자리 홈 — 브래킷부터 길이의 약 66%(흰판 65% 와 같은 자리). 뒷면 팬·끝 팬 크기는 형식에 칸이 없어 앞면 3개로만 적었다(REQUESTS 의 rear_fans 요청). 다나와는 쓰지 않았다."
   }
  }
 }

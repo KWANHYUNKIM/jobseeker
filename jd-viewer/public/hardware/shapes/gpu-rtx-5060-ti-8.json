@@ -53,6 +53,34 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "팬 2개·92mm 는 공식 표, 날개 7장은 공식 문구('7 larger WINGS 3.0 fan blades')와 정면 사진이 같다. 반투명 날개, 켜진 공식 사진에서 팬이 흰색으로 빛난다(카드의 스위치로 끔) — 형식의 fan_light 가 none/rgb/argb 뿐이라 흰 단색 LED 를 적을 수 없어 비웠다(REQUESTS). 쉬라우드는 검정에 탄소 무늬·회로 무늬, 브래킷은 검정에 벌집 구멍. 2슬롯은 models(두께 39.6mm·공식 '2 slot space'). 뒷면 사진: 백플레이트가 PCB 쪽(브래킷부터 절반 남짓)은 막혀 있고 'GEFORCE RTX' 와 흰 사선 무늬, 끝 쪽 절반은 사선 살대만 남기고 뚫려 방열판 핀·히트파이프가 보인다 → flow_through. PCB 끝 모서리(길이의 약 55%)에 보조전원 단자 자리가 보여 power.at=0.55 로 적었다 — 종류는 models 가 공식 요구 사항으로 정한 8핀 1개를 따랐다(동봉 16핀 어댑터와 어긋나는 문제는 models 노트). 비스듬한 사진에 쉬라우드 윗면 끝 쪽 흰 회로 무늬가 크게 있다."
+  },
+  "gainward-rtx5060ti-ghost-8g": {
+   "kind": "gpu",
+   "fan_count": 2,
+   "light": "side",
+   "slots": 2,
+   "backplate": true,
+   "flow_through": true,
+   "power": {
+    "type": "8pin",
+    "n": 1,
+    "at": 0.5
+   },
+   "color": "#141416",
+   "accent": "#e6e8ea",
+   "sources": [
+    {
+     "title": "Gainward GeForce RTX 5060 Ti Ghost 8GB — 공식 제품 페이지(dual-fan · black shroud · subtle touch of RGB lighting on the side · 2 Slot · 8-pin x1)",
+     "url": "https://www.gainward.com/main/vgapro.php?id=1248&lang=en"
+    },
+    {
+     "title": "Gainward GeForce RTX 5060 Ti Ghost 8GB — 공식 갤러리(정면·윗면·뒷면·비스듬한 사진)",
+     "url": "https://www.gainward.com/main/vgapro.php?id=1248&tab=gy&lang=en"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "공식 문구: 팬 2개·검정 쉬라우드·옆면 RGB·2슬롯·8핀 1개. 갤러리 사진(보기만): 무광 검정 쉬라우드에 검정 팬 2개(허브 검정 바탕 로고), 윗면 GHOST 글자 위 가늘고 긴 반투명 띠가 옆 RGB 자리(light=side — 꺼진 사진이라 accent 는 띠의 흰 반투명 색, 켰을 때 색은 모른다). 윗면 사진에서 8핀은 길이의 가운데(약 50%) 홈 속. 뒷면 사진: 검은 헤어라인 금속 백플레이트, 끝 쪽 약 40% 는 쉐브론 모양으로 뚫린 플로스루. 팬 지름·날개 수는 자료에 없고 사진으로 확실히 세지 못해 비웠다. 다나와는 쓰지 않았다."
   }
  }
 }
