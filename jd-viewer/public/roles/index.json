@@ -64,6 +64,7 @@
   "ats-toss:group:4076085003": "toss-security-researcher-pentest",
   "wanted-385879": "tossbank-devops-engineer",
   "ats-toss:group:7757550003": "tossbank-devops-engineer",
+  "ats-toss:group:5622017003": "tossbank-fe-platform-engineer",
   "saramin-55608860": "tossbank-finance-data-system",
   "ats-toss:group:7702579003": "tossbank-infra-operations-engineer",
   "ats-toss:group:5498959003": "tossbank-ml-llm-ops",
@@ -684,6 +685,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 13
+  },
+  {
+   "id": "tossbank-fe-platform-engineer",
+   "company": "토스뱅크",
+   "role": "FE 플랫폼 엔지니어",
+   "jobs": [
+    "ats-toss:group:5622017003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 21
   },
   {
    "id": "tossbank-finance-data-system",
