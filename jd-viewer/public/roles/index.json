@@ -11,6 +11,7 @@
   "wanted-377332": "ldf-linemanga-data-scientist",
   "wanted-391370": "litalico-data-engineer",
   "wanted-397938": "litalico-frontend-b2b-saas",
+  "wanted-389086": "litalico-new-grad-engineer",
   "wanted-391368": "litalico-sre-product",
   "wanted-393885": "litalico-sre-tech-lead",
   "wanted-387807": "medcom-android-engineer",
@@ -243,6 +244,16 @@
    "role": "프로덕트 엔지니어 (프론트엔드 / B2B 복지 SaaS)",
    "jobs": [
     "wanted-397938"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 24
+  },
+  {
+   "id": "litalico-new-grad-engineer",
+   "company": "LITALICO",
+   "role": "신입 엔지니어 (2028년 졸업)",
+   "jobs": [
+    "wanted-389086"
    ],
    "researched_at": "2026-11-23",
    "lines": 24

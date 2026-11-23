@@ -1,0 +1,1307 @@
+{
+ "id": "litalico-new-grad-engineer",
+ "company": "LITALICO",
+ "role": "신입 엔지니어 (2028년 졸업)",
+ "team": "엔지니어 신입 공채 — 배속 부서·제품은 공고에 적혀 있지 않다",
+ "jobs": [
+  "wanted-389086"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "장애아동 교실·취업 지원 같은 복지 현장과, 그 현장이 쓰는 **복지 SaaS·플랫폼**(시설 업무 소프트웨어·발달나비 같은 서비스)을 만드는 회사의 신입 개발자 공채입니다. 들어가서 어느 제품을 맡을지는 공고에 없습니다.[1][2]",
+  "env": "도쿄 나카메구로 본사, 원격 근무 가능(팀에 따라 주 단위로 출근). 앞쪽은 TypeScript·React/Vue, 뒤쪽은 Rails·Laravel, 인프라는 AWS 입니다. 지원서·면접은 전부 **일본어**이고 일본으로 이주해야 합니다.[1]",
+  "oneline": "2028년 4월 입사 신입. 보는 것은 **수업 밖에서 끝까지 만들어 본 결과물(URL)** 과 비즈니스 일본어입니다. 직무는 들어간 뒤 바꿀 수 있습니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "■キャリアの可能性\n「個人のWill」を最優先にする文化です。決まったレールはありません。",
+   "short": "정해진 승진·순환 코스가 없고, 본인이 하고 싶은 것(Will)을 말하면 그쪽으로 길을 낸다는 뜻.",
+   "why": "공고는 신입에게 정해진 레일이 없다고 먼저 말합니다.[1] 같은 회사가 소개한 2015년 신입 두 사람은 한 명은 내정자 시절 웹 엔지니어로 방향을 틀어 4년쯤 만에 신규 사업 두 개를 띄우고 PM 이 됐고, 다른 한 명은 3년 차에 새 서비스를 세 명으로 시작했습니다.[3]",
+   "actually": {
+    "intro": "회사 자료에 나온 '레일 없음'의 실제 모습입니다.",
+    "items": [
+     "**배속이 고정이 아니다** — 첫 배속(발달나비) 뒤 신규 사업으로 옮긴 사례.[3]",
+     "**전문가가 다 있지 않다** — 그래서 프로그래밍을 중심에 두고 디자인·마케팅까지 필요한 만큼 배웠다고 했다.[3]",
+     "**신규 사업이 많다** — 0→1 신규 사업을 해마다 5~10개 띄운다고 적었다.[1]",
+     "**반대로 말하면** — 누가 커리어를 짜 주지 않으니, 무엇을 하고 싶은지 스스로 말해야 길이 생긴다. {추론}"
+    ]
+   },
+   "how_far": "입사 전에 정할 필요는 없습니다. 면접에서 '무엇을 해 보고 싶은가'를 제품·사용자 이야기로 한두 문장 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    3
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "TechLead、EM、PjM、PdM、SRE、データサイエンティストなど、志向に合わせて柔軟に役割を変更可能です。",
+   "short": "개발로 시작해도 기술 리더·관리자·기획(PdM)·인프라(SRE)·데이터로 역할을 바꿀 수 있다.",
+   "why": "회사가 경력직으로 따로 뽑는 역할이 바로 이것들입니다 — SRE·데이터 엔지니어·프론트엔드 리드 공고가 같은 경로로 올라와 있습니다.[28][33][34] 신입이 안에서 그 자리로 옮길 수 있다는 말입니다.",
+   "actually": {
+    "intro": "역할 이름 풀이입니다(일본 IT 회사에서 쓰는 뜻).",
+    "items": [
+     "**TechLead** — 팀의 기술 결정(설계·리뷰 기준)을 맡는 사람.",
+     "**EM(엔지니어링 매니저)** — 사람·팀 운영(채용·1:1·평가)을 맡는 관리자.",
+     "**PjM / PdM** — 일정·범위를 관리하는 프로젝트 관리자 / 무엇을 만들지 정하는 제품 관리자. 2015년 신입 엔지니어가 4년쯤 만에 PM 이 됐다.[3]",
+     "**SRE** — 서비스가 안 죽게 인프라·감시·배포를 만드는 사람. 이 회사 SRE 그룹은 AWS·Terraform·Datadog 을 쓴다.[33]",
+     "**데이터 사이언티스트** — 지원 기록·이용 기록을 분석·AI 에 쓰는 사람. 데이터 기반 담당이 겸임 2명뿐이라 틀부터 세우는 단계다.[28]"
+    ]
+   },
+   "how_far": "신입에게 이 역할 중 하나를 고르라는 요건은 아닙니다. 처음 1~2년은 한 제품에서 코드를 쓰는 개발자로 시작한다고 보는 게 자연스럽습니다. {추론}",
+   "refs": [
+    3,
+    28,
+    33,
+    34
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "事業部や職種の垣根を超えた異動、横断プロジェクトへの参加が活発で、エンジニアとしての「幅」と「視座」を広げられます。",
+   "short": "사업부·직종을 넘는 이동과 여러 제품을 가로지르는 프로젝트가 잦다는 뜻 — 한 서비스에 묶이지 않는다.",
+   "why": "회사가 여러 사업(아동 교실·취업 지원·발달나비·시설용 소프트웨어)을 같이 굴리고 신규 사업도 많아서 사람이 사업 사이를 오갑니다.[1][3] 회사 글에도 사업을 가로지르는 '아키텍처 추진 그룹'이 장애 복지 시설 제품의 코드 정리를 돕는 이야기가 나옵니다.[12]",
+   "actually": {
+    "items": [
+     "**사업부 이동** — 발달나비 → 신규 사업처럼 제품을 바꿔 맡는다.[3]",
+     "**횡단 프로젝트** — 여러 제품에 공통으로 쓰는 것(배포 틀·AI 기능·리팩터링 지원)을 만드는 일.[12][31]",
+     "**'視座(시좌)'** — 보는 높이. 내 코드만이 아니라 사업·조직 전체에서 보는 눈이라는 일본 회사식 표현이다."
+    ]
+   },
+   "how_far": "입사 직후의 일이 아니라 '나중에 이럴 수 있다'는 설명입니다. 신입 단계에서는 맡은 제품의 코드와 도메인(제도)을 먼저 익히는 것이 최소선입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    12,
+    31
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 開発環境・技術スタック\n各プロダクト（福祉SaaS・福祉プラットフォーム等）の特性やフェーズに合わせ、最適な技術選定・モダン化を日々推進しています。",
+   "short": "제품마다 기술이 다르고, 오래된 코드를 새 기술로 바꾸는 일(모던화)을 계속 하고 있다는 뜻.",
+   "why": "공고 앞부분은 매출 수백억 엔 사업을 받치는 옛 시스템을 새로 짓고 마이크로서비스로 나누는 일이 진행 중이라고 적었습니다.[1] 시설용 제품은 법·보수 제도가 3년마다 바뀌어 그때마다 코드가 크게 바뀝니다 — 한 팀은 개정 대응 뒤 서비스 코드가 약 6,000 → 16,000 으로 늘었다고 썼습니다.[13][14]",
+   "actually": {
+    "intro": "'모던화'가 실제로 가리키는 것들입니다.",
+    "items": [
+     "**프레임워크 교체** — Vue 2 는 2023년 말에 지원이 끝났다. 남아 있으면 Vue 3·React 로 옮겨야 한다.[16]",
+     "**테스트 붙이기** — 요양 쪽 제품 팀은 Rails 약 25만 줄에 AI 로 테스트를 붙여 커버리지를 23% → 84% 로 올렸다.[11]",
+     "**리팩터링 고르기** — git 이력에서 자주 바뀌는 곳을 뽑아 테크 리드와 같이 정한다.[12]",
+     "**새 방식 시험** — CDK for Terraform 을 실무에 조금 넣어 본 기록.[15]"
+    ]
+   },
+   "how_far": "신입은 이 결정을 하지 않습니다. 다만 '옛 코드를 읽고 고치는 일'이 많다는 걸 알고 들어가는 게 좋습니다 — 새 코드만 쓰고 싶은 사람에게는 맞지 않을 수 있습니다. {추론}",
+   "refs": [
+    1,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "study": [
+    "lit-narrative",
+    "lit-ai-test"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・Frontend: TypeScript, React.js, Vue.js, Nuxt.js",
+   "short": "화면 쪽 언어는 TypeScript, 틀은 React 또는 Vue(Nuxt). 제품마다 둘 중 하나를 쓴다.",
+   "why": "같은 회사의 경력직 프론트엔드 공고는 제품에 따라 Vue/Nuxt 또는 React/Next 를 쓴다고 적었습니다.[34] 2020년부터 기존 TypeScript 프로젝트를 조금씩 엄격하게(strict) 바꿔 온 기록도 있습니다.[29]",
+   "actually": {
+    "items": [
+     "**TypeScript** — 자바스크립트에 타입을 붙인 언어. 옛 코드는 타입 검사가 느슨해 조금씩 조인다.[29]",
+     "**React / Vue** — 화면을 부품(컴포넌트)으로 나눠 만드는 라이브러리. 하나를 제대로 익히면 다른 쪽도 금방 읽힌다. {추론}",
+     "**Nuxt.js** — Vue 위에 주소(라우팅)·서버 렌더링을 얹은 틀."
+    ]
+   },
+   "how_far": "신입은 둘 중 **하나로 화면 몇 개를 끝까지 만들어 본** 수준이면 충분합니다. 둘 다 할 필요는 없습니다. {추론}",
+   "level": {
+    "basic": "HTML·CSS·자바스크립트 기본, 컴포넌트·props·state",
+    "work": "TypeScript 타입 쓰기, API 호출·로딩/오류 처리, 폼 입력 검사",
+    "team": "기존 코드 읽고 고치기, 타입을 조금씩 엄격하게, 접근성 배려"
+   },
+   "refs": [
+    29,
+    34
+   ],
+   "study": [
+    "ko-js-deep-dive",
+    "ts-handbook",
+    "react-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・（※Storybook, Jest, Vitest, Playwrightなどのテスト・UI環境も活用）",
+   "short": "화면 부품 견본집(Storybook)과 자동 테스트 도구(Jest·Vitest·Playwright)도 쓴다는 뜻.",
+   "why": "법 개정 때마다 화면과 계산이 같이 바뀌는 제품이라 사람이 일일이 눌러 보는 것만으로는 못 지킵니다.[13] 회사 개발자는 Playwright 테스트 환경을 직접 다듬은 글도 썼습니다.[11]",
+   "actually": {
+    "items": [
+     "**Storybook** — 부품을 하나씩 띄워 보는 견본집. 디자이너·QA 와 같이 본다.",
+     "**Jest·Vitest** — 함수·부품 단위 테스트를 돌리는 도구.",
+     "**Playwright** — 진짜 브라우저를 띄워 클릭·입력을 흉내 내는 끝단(E2E) 테스트. 요양 제품 팀이 작성 중이라고 적었다.[11]"
+    ]
+   },
+   "how_far": "신입은 자기가 만든 기능에 **테스트 몇 개를 붙이고 CI 에서 돌게** 하는 정도면 됩니다. 결과물에 테스트가 있으면 '授業だけでなく'의 증거가 됩니다. {추론}",
+   "refs": [
+    11,
+    13
+   ],
+   "study": [
+    "ja-fe-test",
+    "gha-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・Backend: Ruby on Rails, PHP (Laravel)",
+   "short": "서버 쪽은 Ruby on Rails 와 PHP 의 Laravel. 둘 다 '정해진 틀대로 빨리 만드는' 웹 프레임워크다.",
+   "why": "제품마다 다릅니다 — 요양 쪽 제품은 Rails(약 25만 줄)[11], 장애 복지 시설용 제품 API 는 PHP/Laravel 입니다.[12] 그룹 회사에서 넘겨받은 Rails 제품은 Oracle DB 를 쓴다고 했습니다.[6]",
+   "actually": {
+    "items": [
+     "**Rails** — 모델(ActiveRecord)·컨트롤러·뷰 틀, 테스트는 RSpec.[6][11]",
+     "**Laravel** — PHP 판 같은 틀(Eloquent·라우팅·마이그레이션).[12]",
+     "**신입이 처음 맡은 일 예** — 입사 직후 Rails 앱의 자동 테스트 환경(GitHub Actions)을 만든 경력 입사자의 글.[6]"
+    ]
+   },
+   "how_far": "어느 쪽도 입사 전 필수는 아닙니다. 웹 프레임워크 하나(Spring·Django·Express 등 무엇이든)로 CRUD·로그인·DB 를 만들어 봤다면 Rails/Laravel 은 들어가서 익힐 수 있는 수준입니다. {추론}",
+   "level": {
+    "basic": "HTTP 요청·응답, 라우팅, CRUD, DB 마이그레이션",
+    "work": "ORM 관계·N+1 피하기, 인증, 테스트(RSpec/PHPUnit)",
+    "team": "수십만 줄 기존 코드 읽기, 제도 개정에 맞춰 계산 로직 고치기"
+   },
+   "refs": [
+    6,
+    11,
+    12
+   ],
+   "study": [
+    "railstutorial",
+    "rails-guides",
+    "laravel-docs",
+    "http-basic"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・Database/Data platform: MySQL, Redis, Elasticsearch(OpenSearch), Oracle, BigQuery, Fluentd, Redash",
+   "short": "서비스 DB 는 MySQL(일부 Oracle), 캐시 Redis, 검색 OpenSearch, 분석은 BigQuery·Redash.",
+   "why": "서비스 DB 는 AWS 의 Aurora(MySQL 호환)이고, 분석용으로 Google 의 BigQuery 에 모으는 중입니다.[28] Oracle 은 그룹 회사에서 넘겨받은 제품 하나의 사정입니다.[6]",
+   "actually": {
+    "items": [
+     "**MySQL / Aurora** — 서비스 데이터. 신입이 가장 먼저 SQL 을 쓰게 되는 곳. {추론}",
+     "**Redis** — 자주 읽는 값을 메모리에 잠깐 두는 캐시.",
+     "**OpenSearch** — 글 검색·추천용 검색 엔진.",
+     "**Fluentd → BigQuery → Redash** — 로그를 모아(Fluentd) 분석 DB 에 넣고(BigQuery) 대시보드로 본다(Redash).[28]"
+    ]
+   },
+   "how_far": "신입은 MySQL 에서 JOIN·GROUP BY·인덱스를 쓰고 N+1 을 알아보는 수준이면 됩니다. 나머지는 이름과 역할만 알면 충분합니다. {추론}",
+   "examples": [
+    {
+     "title": "N+1 — 시설 50곳의 기록 수 세기",
+     "body": "시설 목록을 한 번 읽고 시설마다 다시 물으면 쿼리가 51번 나갑니다. JOIN 한 번이면 1번입니다(직접 돌린 출력, 가상 데이터). ISUCON 연습에서 회사 엔지니어가 가장 많이 연습했다는 것이 이 N+1 고치기입니다.[7]",
+     "lang": "python",
+     "code": "# 출력:\n# N+1 쿼리 수: 51\n# JOIN 쿼리 수: 1 / 시설 50 곳 / 첫 줄 (1, 10)\nfor fid, name in q(\"SELECT id, name FROM facility\"):\n    q(\"SELECT COUNT(*) FROM record WHERE facility_id=?\", fid)\n\nrows = q(\"\"\"SELECT f.id, COUNT(r.id) FROM facility f\n            LEFT JOIN record r ON r.facility_id=f.id GROUP BY f.id\"\"\")"
+    }
+   ],
+   "refs": [
+    6,
+    7,
+    28
+   ],
+   "study": [
+    "isucon-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・Infra: AWS (ECS/Fargate, Aurora, Lambda, API Gateway, S3, SQSなど), Docker, Terraform, CDK for Terraform, Ansible",
+   "short": "서버는 AWS 에서 컨테이너(Docker → ECS/Fargate)로 돌리고, 인프라는 코드(Terraform)로 관리한다.",
+   "why": "SRE 그룹이 CloudFormation 에서 Terraform 으로 옮겼고[35], 7년 동안 EC2 에서 돌던 웹 서비스를 컨테이너로 바꾼 글도 있습니다.[36] CDK for Terraform 은 실무에 조금 넣어 본 기록이 있습니다.[15]",
+   "actually": {
+    "items": [
+     "**Docker** — 개발 환경과 배포 단위를 같은 상자로 만든다. 신입이 첫날부터 쓰는 도구. {추론}",
+     "**ECS/Fargate · Aurora** — 컨테이너 실행 · MySQL 호환 DB(서버 관리 없이).",
+     "**Lambda · API Gateway · SQS · S3** — 작은 함수 · API 입구 · 작업 대기열 · 파일 저장.",
+     "**Terraform / CDKTF / Ansible** — 인프라를 코드로 적어 리뷰·재현한다. 주로 SRE 가 맡는다.[33]"
+    ]
+   },
+   "how_far": "신입 개발자는 Docker 로 앱을 띄우고, 배포 흐름(PR → CI → 배포)을 이해하는 수준이면 됩니다. Terraform 은 SRE 쪽 일입니다.[33] {추론}",
+   "refs": [
+    15,
+    33,
+    35,
+    36
+   ],
+   "study": [
+    "docker-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・CI/CD・Monitoring: GitHub, GitHub Actions, CircleCI, Datadog, Sentry, OpenAPI",
+   "short": "코드는 GitHub PR 로 리뷰받고, CI(Actions·CircleCI)로 테스트, 운영 오류는 Datadog·Sentry 로 본다.",
+   "why": "회사 글에 GitHub Actions 로 RSpec 을 4대에 나눠 돌리는 설정을 처음부터 풀어 쓴 글[6], PR 을 내기 전에 스스로 리뷰하는 법[9]이 있습니다. 청구 도메인 팀은 OpenAPI 로 API 명세를 먼저 쓰는 방식을 씁니다.[37]",
+   "actually": {
+    "items": [
+     "**PR 과 셀프 리뷰** — 리뷰 요청 전에 오타·딴 작업 섞임·이름을 스스로 고친다.[9]",
+     "**CI** — PR 마다 테스트가 돈다. 같은 브랜치에 새로 올리면 옛 실행을 취소해 돈을 아낀다.[6]",
+     "**Datadog · Sentry** — 서버 상태와 오류를 모아 알림을 준다.",
+     "**OpenAPI** — API 모양을 문서로 먼저 정하고 앞·뒤가 그것에 맞춘다.[37]"
+    ]
+   },
+   "how_far": "신입은 **PR 을 작게 나눠 설명을 쓰고, CI 가 빨간불이면 로그를 읽고 고치는** 습관이면 됩니다. 결과물 저장소에 Actions 가 돌고 있으면 그대로 보여 줄 수 있습니다. {추론}",
+   "examples": [
+    {
+     "title": "테스트 파일을 러너 4대에 나누기",
+     "body": "회사 글은 matrix 로 같은 작업을 4대(id 0~3)에 띄우고, id 로 맡을 테스트 파일을 나눈다고 설명합니다.[6] 아래는 '번호를 4로 나눈 나머지'로 나누는 가장 단순한 방법입니다 — 회사가 실제로 어떻게 나누는지는 글의 설정을 봅니다(직접 돌린 출력, 가상 파일 10개).",
+     "lang": "python",
+     "code": "files = [f\"spec/models/m{i:02}_spec.rb\" for i in range(10)]\n\ndef mine(files, job_id, total=4):\n    return [f for i, f in enumerate(sorted(files)) if i % total == job_id]\n\nfor job_id in range(4):\n    print(job_id, mine(files, job_id))\n# 0 ['spec/models/m00_spec.rb', 'spec/models/m04_spec.rb', 'spec/models/m08_spec.rb']\n# 1 ['spec/models/m01_spec.rb', 'spec/models/m05_spec.rb', 'spec/models/m09_spec.rb']\n# 2 ['spec/models/m02_spec.rb', 'spec/models/m06_spec.rb']\n# 3 ['spec/models/m03_spec.rb', 'spec/models/m07_spec.rb']"
+    }
+   ],
+   "refs": [
+    6,
+    9,
+    37
+   ],
+   "study": [
+    "lit-ga-rspec",
+    "lit-selfreview",
+    "gha-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・AI（開発補助等）: GitHub Copilot, Claude Code, Gemini, NotebookLM",
+   "short": "코드 작성 보조(Copilot·Claude Code)와 자료 정리(Gemini·NotebookLM) AI 를 업무에 쓴다.",
+   "why": "회사 글에 AI 로 테스트 커버리지를 23% → 84% 로 올린 일[11], 리팩터링 후보는 AI 가 아니라 git 이력에서 뽑아 테크 리드와 맞춰 본다는 원칙[12]이 같이 나옵니다. 제품에도 지원 기록 AI 요약을 넣고 있습니다.[31]",
+   "actually": {
+    "items": [
+     "**쓰는 곳** — 테스트 초안 쓰기, 기존 코드 읽기, 자료 요약.[11]",
+     "**선을 긋는 곳** — 무엇을 고칠지 판단은 사람이 한다(AI 에 맡기지 않는다).[12]",
+     "**신입에게 뜻하는 것** — AI 가 만든 코드를 리뷰에 낼 때 '왜 이렇게 됐는지' 설명할 수 있어야 한다. {추론}"
+    ]
+   },
+   "how_far": "써 본 경험이 있으면 좋지만 요건은 아닙니다. 결과물을 AI 와 같이 만들었다면 어디까지가 내 판단이었는지 말할 수 있게 준비합니다. {추론}",
+   "refs": [
+    11,
+    12,
+    31
+   ],
+   "study": [
+    "lit-ai-test",
+    "claude-code-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "■2028年4月入社可能な方\n※2028年4月以前の入社は応相談",
+   "short": "2028년 4월 입사가 기본(일본은 4월 일괄 입사). 졸업이 빠르면 더 일찍도 상의할 수 있다.",
+   "why": "일본 신입 공채는 졸업 직후 4월 1일에 한꺼번에 입사하는 관행이 있고, 이 공고도 2028년 4월을 기준으로 둡니다.[1] 한국 대학은 2월 졸업이라 두 달쯤 빕니다. {추론}",
+   "actually": {
+    "items": [
+     "**대상** — 2028년 봄 졸업 예정자(한국 기준 2028년 2월 졸업). 이미 졸업했어도 '그 전 입사 상의'로 열려 있다.[1]",
+     "**일정 거꾸로 세기** — 입사 전에 체류 자격(비자) 절차가 끝나야 하므로 내정은 그보다 몇 달 앞서야 한다.[22] {추론}",
+     "**설명회** — 신입 엔지니어 전형 설명회 예약 양식이 공고에 붙어 있다.[1][2]"
+    ]
+   },
+   "how_far": "졸업 시점만 맞으면 됩니다. 병역·졸업 유예가 있으면 지원할 때 적어 상의합니다. {추론}",
+   "refs": [
+    1,
+    2,
+    22
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "■プログラミング経験\n・授業で習っただけでなく、ハッカソン等開発を通して成果物を生んだことがある",
+   "short": "수업 과제가 아니라, 해커톤·개인·팀 개발로 '돌아가는 결과물'을 끝까지 만들어 본 적이 있어야 한다.",
+   "why": "이 공고가 기술을 보는 유일한 필수 요건입니다.[1] 회사가 예전 엔지니어 인턴에서도 기획 → 디자인 → 구현 → 발표까지 팀으로 끝내는 형식을 썼습니다.[4] 일본에는 학생 대상 해커톤이 흔하고, 큰 행사는 1주일 개발 + 당일 발표 형식입니다.[25]",
+   "actually": {
+    "intro": "'成果物(결과물)'으로 보이는 것들입니다.",
+    "items": [
+     "**사용자가 쓸 수 있는 상태** — 배포된 주소나 실행 방법이 있다. 화면 캡처만 있는 것보다 낫다. {추론}",
+     "**코드 저장소** — README 에 무엇을·왜·어떻게(기술·구조)·내가 맡은 부분.",
+     "**과정의 흔적** — PR·이슈·테스트·CI. 팀 개발이면 리뷰를 주고받은 기록.[9]",
+     "**만든 이유** — 누구의 어떤 불편을 풀려 했나. 이 회사가 보는 '사회 과제' 줄과 이어진다.[1]"
+    ]
+   },
+   "how_far": "규모보다 **끝까지** 가 중요합니다. 작은 웹 앱 하나라도 배포·README·테스트까지 있으면 '수업 밖' 증거가 됩니다. 수업 과제를 키워 배포까지 했다면 그것도 됩니다. {추론}",
+   "refs": [
+    1,
+    4,
+    9,
+    25
+   ],
+   "study": [
+    "railstutorial",
+    "lit-selfreview"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・「応募先へのメッセージ」等に開発経験について、記載やURLのリンクをご記入をお願いします。",
+   "short": "지원서의 '회사에 보내는 메시지' 칸에 개발 경험을 쓰고 GitHub·배포 주소 같은 링크를 꼭 넣으라는 뜻.",
+   "why": "서류 단계에서 위 요건(결과물)을 확인하는 방법입니다.[1] 회사 채용 페이지의 같은 공고에도 같은 부탁이 있습니다.[2] 원티드판은 일본어 이력서·직무경력서를 내지 않으면 서류에서 빠진다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**쓸 것(일본어로)** — 무엇을 만들었나 · 기간·인원 · 내가 맡은 부분 · 쓴 기술 · 어려웠던 점과 해결 · URL.",
+     "**링크** — 저장소(README 일본어 요약이 있으면 좋다), 배포 주소, 발표 자료·글. {추론}",
+     "**서류** — 일본어 이력서(履歴書)와 직무경력서(職務経歴書). 신입이라 경력서에는 개발 경험·인턴을 쓴다.[1] {추론}"
+    ]
+   },
+   "how_far": "결과물 2~3개를 위 틀로 짧게. 링크를 눌렀을 때 1분 안에 무엇인지 알 수 있게 README 첫 줄을 다듬는 것이 최소선입니다. {추론}",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本語レベル: ビジネス",
+   "short": "회의·문서·면접을 일본어로 할 수 있는 수준. 시험으로는 JLPT N2 이상·BJT 400점 이상이 하나의 기준.",
+   "why": "원티드판 머리말이 이 자리는 일본어 전용이라고 못 박았습니다 — 한국어·영어 이력서만 내거나 일본어 소통이 안 되면 통보 없이 서류에서 빠집니다.[1] 제도 개정 자료(정부 일본어 원문)를 읽고 정리하는 일도 개발 팀 몫입니다.[14]",
+   "actually": {
+    "items": [
+     "**일본 출입국청 기준 예** — 언어를 주로 쓰는 일로 체류 자격을 받을 때 'CEFR B2 상당'을 JLPT N2 이상 또는 BJT 400점 이상으로 본다(개발직은 보통 이 서류가 필요 없는 경우다).[22]",
+     "**시험** — JLPT 는 N1~N5[23], BJT 는 업무 상황 일본어 0~800점.[24]",
+     "**실제로 필요한 것** — 면접 3~4번(캐주얼 면담 → 1·2차 → 최종)을 일본어로.[1] 회의에서 사양을 묻고 Slack 으로 짧게 보고하기. {추론}"
+    ]
+   },
+   "how_far": "N2 는 최소선에 가깝고, 면접을 버티려면 기술 이야기를 일본어로 설명하는 연습이 따로 필요합니다(결과물 설명을 일본어로 3분). {추론}",
+   "refs": [
+    1,
+    14,
+    22,
+    23,
+    24
+   ],
+   "study": [
+    "jlpt",
+    "bjt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本国内への移住が必要",
+   "short": "원격 근무가 있어도 일본에 살아야 한다 — 일본 취업 체류 자격을 받아 옮겨 가는 조건.",
+   "why": "원격 근무는 자택(또는 그에 준하는 곳)에서만 허용되고 팀 사정에 따라 주 단위로 출근할 수 있어 일본 거주가 전제입니다.[1][18] 외국인 개발자는 보통 '기술·인문지식·국제업무' 체류 자격으로 일합니다.[22]",
+   "actually": {
+    "items": [
+     "**체류 자격** — 자연과학(공학 등) 지식이 필요한 업무를 일본 회사와 계약해 하는 사람. 체류 기간은 5년·3년·1년·3개월 중 하나.[22]",
+     "**절차** — 입국 전에 '재류자격인정증명서'를 신청해 받고, 그걸로 비자를 받아 들어간다.[22]",
+     "**회사 쪽 서류** — 일본 증권거래소 상장사는 가장 간단한 '카테고리 1'이다. LITALICO 는 유가증권보고서를 내는 상장사다.[19][22]",
+     "**집** — 회사가 빌린 집에 사는 제도(会社de賃貸)가 있다.[1]"
+    ]
+   },
+   "how_far": "학력·전공 같은 상세 심사 기준은 출입국청 PDF 와 회사 안내를 따릅니다(여기서는 확인하지 않았다). 전형 중 LAPRAS·회사에 절차 지원을 묻습니다. {추론}",
+   "refs": [
+    1,
+    18,
+    19,
+    22
+   ],
+   "study": [
+    "isa-gijinkoku"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・Webアプリケーション開発経験",
+   "short": "회사 제품이 전부 웹 서비스라서. 화면 + 서버 + DB 를 이어 붙여 본 경험이 바로 쓰인다.",
+   "why": "기술 스택 전체가 웹(TypeScript 화면 · Rails/Laravel 서버 · MySQL)입니다.[1] 시설용 제품 하나가 300~500 기능이라 웹 기본기 위에 업무 규칙을 쌓는 일입니다.[34]",
+   "actually": {
+    "items": [
+     "**로그인과 권한** — 시설 직원·관리자·보호자가 볼 수 있는 것이 다르다. {추론}",
+     "**폼과 검사** — 지원 기록·계획처럼 입력이 많은 화면.[34]",
+     "**목록·검색·페이지 나누기** — 기록 수천 건을 빠르게 보이기(N+1 주의).[7]"
+    ]
+   },
+   "how_far": "'웹 앱 하나를 혼자 처음부터 배포까지'가 있으면 우대 줄을 채웁니다. 앞·뒤 중 한쪽만 깊어도 됩니다. {추론}",
+   "refs": [
+    1,
+    7,
+    34
+   ],
+   "study": [
+    "railstutorial",
+    "http-basic",
+    "react-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・長期インターン参加経験",
+   "short": "몇 주 이상 회사 코드에 직접 기여한 인턴 경험 — 남의 코드·리뷰·배포 흐름에 익숙하다는 증거.",
+   "why": "일본 IT 회사의 '장기 인턴'은 몇 달씩 실제 업무에 들어가는 유급 인턴을 말하는 경우가 많습니다. {추론} 이 회사도 예전 3일 엔지니어 인턴 참가자에게 장기 인턴을 먼저 안내했습니다.[4]",
+   "actually": {
+    "items": [
+     "**보이는 것** — 큰 기존 코드를 읽고, 작은 PR 을 리뷰받아 넣고, CI 를 통과시킨 경험.[9]",
+     "**한국에서 대신할 것** — 국내 회사 인턴·산학 프로젝트·오픈소스 기여도 같은 신호다. {추론}",
+     "**적는 법** — 기간·팀 크기·맡은 기능·머지된 PR 수처럼 숫자로. {추론}"
+    ]
+   },
+   "how_far": "없어도 지원할 수 있는 우대 줄입니다. 대신 팀 개발 결과물(리뷰 기록이 있는 저장소)로 메웁니다. {추론}",
+   "refs": [
+    4,
+    9
+   ],
+   "study": [
+    "lit-selfreview"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・学業における研究活動、学会発表経験",
+   "short": "연구실에서 문제를 정하고 실험해 남 앞에서 발표해 본 경험 — 근거를 모아 설명하는 힘을 본다.",
+   "why": "회사는 현장 지원을 데이터로 만들고 다시 현장에 돌려주는 R&D 순환을 강조하고, 데이터 통괄부에 R&D 그룹이 따로 있습니다.[1][28] 회사 엔지니어들도 컨퍼런스에서 발표합니다.[32]",
+   "actually": {
+    "items": [
+     "**이어지는 곳** — 데이터 분석·AI 기능(회원 50만 명 서비스의 생성형 AI 기능 발표).[32]",
+     "**개발에서도 쓰이는 것** — 가설 → 측정 → 결론. 성능 검증에서 측정을 어떻게 남길지 미리 설계하지 않아 원인을 못 찾은 회사 글이 반대 사례다.[8]",
+     "**전공이 달라도** — 주제보다 '왜 그 방법을 골랐고 무엇이 한계였나'를 일본어로 말할 수 있으면 된다. {추론}"
+    ]
+   },
+   "how_far": "학부생이면 졸업 연구·논문 발표 한 번이면 충분합니다. 없으면 기술 글·사내외 발표로 대신할 수 있습니다. {추론}",
+   "refs": [
+    1,
+    8,
+    28,
+    32
+   ],
+   "study": [
+    "lit-perf-first"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・社会課題解決への関心がある方",
+   "short": "회사 목표가 '장애가 없는 사회'라서 — 복지 제도와 그 사용자에 관심이 있어야 일이 버텨진다.",
+   "why": "비전이 '障害のない社会をつくる(장애 없는 사회를 만든다)'이고, 공고 첫머리가 복지 영역을 기술로 바꾸는 일이라고 적었습니다.[1][2] 실제 일은 장애 복지 서비스 보수(정부가 시설에 주는 돈) 개정에 맞춰 시스템을 고치는 것처럼 제도와 맞닿아 있습니다.[13][14]",
+   "actually": {
+    "items": [
+     "**제도 읽기** — 정부 개정 자료가 몇 단계에 걸쳐 나오고, 개발 팀이 원문을 읽어 일정에 맞춘다.[14]",
+     "**사용자 이해** — 2015년 신입은 보호자 커뮤니티 글을 꼼꼼히 읽어 사용자 7명의 모습을 그리고 제품을 만들었다.[3]",
+     "**면접에서** — '왜 복지인가'에 내 경험(가족·봉사·관찰한 불편)으로 답할 수 있게. {추론}"
+    ]
+   },
+   "how_far": "전문 지식은 필요 없습니다. 회사 서비스 하나(발달나비 등)를 직접 보고 '누구의 무엇을 푸는가'를 자기 말로 설명하는 정도면 됩니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    13,
+    14
+   ],
+   "study": [
+    "lit-narrative"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・技術だけでなく、事業やビジネスに関心がある方",
+   "short": "코드만이 아니라 '이 기능이 사업에 무엇을 주나'까지 생각하는 사람 — 신규 사업이 많은 회사라서.",
+   "why": "신규 사업을 해마다 5~10개 띄우고[1], 신입 엔지니어가 신규 사업을 띄우고 PM 이 된 사례를 회사가 직접 소개합니다.[3] 회사의 학생 여름 인턴(2025)도 개발이 아니라 신규 사업 만들기 3일 과정이었습니다.[5]",
+   "actually": {
+    "items": [
+     "**누가 돈을 내나** — 시설용 소프트웨어는 시설이, 시설 운영비는 국가 보수가 받친다 — 그래서 제도 개정이 곧 제품 요구다.[13] {추론}",
+     "**작게 확인하기** — 만들기 전에 사용자 인터뷰·가설 검증(회사 인턴 과정의 내용).[4][5]",
+     "**결과물 설명에** — '사용자 몇 명·무엇이 줄었나'를 한 줄 넣는다. {추론}"
+    ]
+   },
+   "how_far": "사업 계획서를 쓰라는 게 아닙니다. 내가 만든 것의 사용자·가치·한계를 한 문단으로 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    5,
+    13
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・主体性、積極性のある方",
+   "short": "시키기 전에 스스로 문제를 찾아 손을 드는 사람 — 정해진 레일이 없는 회사라서.",
+   "why": "첫 줄의 '레일이 없다'와 짝입니다.[1] 2015년 신입은 전문가가 없는 자리에서 필요한 일을 스스로 배워 맡았다고 했습니다.[3]",
+   "actually": {
+    "items": [
+     "**개발에서의 모습** — 리뷰받기 전에 스스로 고친다(셀프 리뷰).[9]",
+     "**팀에서의 모습** — 모브 프로그래밍(여럿이 한 화면으로 같이 짜기)에서 질문하고 운전자를 맡는다 — 도메인 지식 0 에서 빨리 올라섰다고 쓴 글.[10]",
+     "**증거로 보일 것** — 시키지 않았는데 만든 것(개인 프로젝트·동아리 도구·기여). {추론}"
+    ]
+   },
+   "how_far": "면접에서 '스스로 시작한 일' 사례 하나를 상황 → 행동 → 결과로 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    3,
+    9,
+    10
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・実行力、行動力と継続性のある方",
+   "short": "생각에서 끝내지 않고 만들어 내고, 한 번이 아니라 꾸준히 이어 가는 사람.",
+   "why": "필수 요건이 '결과물을 낸 적이 있다'인 것과 같은 이유입니다.[1] 회사 엔지니어는 ISUCON(서버 성능 대회)에 세 번째 나가 834팀 중 232위를 했다고 결과를 그대로 적었습니다 — 꾸준히 도전한 기록입니다.[7]",
+   "actually": {
+    "items": [
+     "**실행력** — 기한 안에 '돌아가는 것'을 낸다(해커톤·대회).[7][25]",
+     "**계속성** — 결과물을 한 번 내고 끝이 아니라 고쳐 가는 커밋 이력, 대회·시험에 반복 도전. {추론}",
+     "**보이는 법** — GitHub 커밋 그래프보다 '무엇을 몇 달 이어 갔나'를 글로. {추론}"
+    ]
+   },
+   "how_far": "몇 달 이상 이어 간 개인 프로젝트·공부 기록 하나면 됩니다. {추론}",
+   "refs": [
+    1,
+    7,
+    25
+   ],
+   "study": [
+    "isucon-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・素直さを持ち、失敗から学ぶことができる方",
+   "short": "지적을 받아들이고, 실수를 숨기지 않고 기록해 다음에 고치는 사람 — 이 회사 글들이 그렇게 쓰여 있다.",
+   "why": "회사 글에는 실패를 그대로 적은 것이 많습니다 — 첫 성능 검증에서 E2E 시간만 재고 API 별 기록을 남기지 않아 원인을 못 찾은 반성[8], 담당자 없이 포스트모템(장애 뒤 돌아보기)을 하다 헤맨 이야기[26], 장애 대응에서 서두르다 실수한 경험과 역할 나누기[27]. 뒤의 두 편은 회사 엔지니어들이 해마다 쓰는 Advent Calendar 에 실렸습니다.[30]",
+   "actually": {
+    "items": [
+     "**포스트모템** — 장애 뒤 사람을 탓하지 않고 원인·대책을 적는 문서.[26][27]",
+     "**반성의 꼴** — '무엇을 몰랐나 → 다음엔 무엇을 미리 남기나'(브라우저 Network 탭으로 API 별 시간을 남기기).[8]",
+     "**리뷰 받기** — 지적은 사람이 아니라 코드에 대한 것이라고 받아들이기. {추론}"
+    ]
+   },
+   "how_far": "면접에서 '실패한 경험과 그 뒤 바꾼 것' 하나를 구체적으로(무엇을 바꿨나까지) 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    8,
+    26,
+    27,
+    30
+   ],
+   "study": [
+    "lit-perf-first"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "혼자든 팀이든 무언가를 끝까지 만들어 배포해 본 사람[1]",
+   "복지·교육 문제에 관심이 있고 그 사용자를 위해 만들고 싶은 사람[1]",
+   "개발로 시작해 PdM·SRE·데이터 등으로 넓혀 가고 싶은 사람[1][3]",
+   "옛 코드를 읽고 조금씩 고치는 일이 싫지 않은 사람[11][12]"
+  ],
+  "hard": [
+   "모든 전형·업무가 일본어 — N2 언저리면 면접에서 버겁다[1]",
+   "일본 이주와 체류 자격 절차가 필요하다[1][22]",
+   "배속 제품·연수 내용이 공고에 없어 입사 전에 알기 어렵다[1][2]",
+   "법·제도 개정 일정에 맞춰 바쁜 시기가 온다[13][14]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "지금까지 만든 것 중 하나를 골라, 누구를 위해 무엇을 만들었고 당신이 맡은 부분은 어디인지 일본어로 설명해 주세요.",
+   "a": "필수 요건(수업 밖 결과물·URL)을 직접 확인하는 질문.[1]"
+  },
+  {
+   "q": "그 결과물에서 가장 크게 실패한 것은 무엇이고, 그 뒤 무엇을 바꿨나요?",
+   "a": "'실패에서 배우기' 인물상과 회사 글의 문화.[8][26]"
+  },
+  {
+   "q": "목록 화면이 느립니다. 무엇부터 보겠어요?",
+   "a": "N+1·측정부터 — 회사 엔지니어들이 연습하고 반성한 부분.[7][8]"
+  },
+  {
+   "q": "LITALICO 에서 처음 3년 동안 무엇을 해 보고 싶나요? 그 다음은요?",
+   "a": "'개인의 Will' 문화 — 역할을 바꿀 수 있다는 첫 줄.[1][3]"
+  },
+  {
+   "q": "왜 복지 영역인가요? 우리 서비스 하나를 써 보고 느낀 점은?",
+   "a": "사회 과제·사업 관심 인물상.[1][5]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · [株式会社LITALICO] 신입 엔지니어_28년도 졸업생_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/389086",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "LAPRAS Global Bridge 경유 · 미션·업무·요건·우대·연봉·근무 조건·전형, 일본어 전용 안내"
+  },
+  {
+   "n": 2,
+   "title": "LITALICO 채용(HERP) · 新卒エンジニア_28新卒",
+   "url": "https://herp.careers/v1/litalico/h0__yhOE1zIb",
+   "kind": "posting",
+   "note": "회사 자체 채용 페이지 — 같은 자리·같은 연봉, 설명회 예약 양식. 연수·배속 안내는 없음"
+  },
+  {
+   "n": 3,
+   "title": "Wantedly · 僕らがやらずに誰がやるのか、ファーストキャリアで社会課題の解決に挑むLITALICO新卒のキャリア論。",
+   "url": "https://sg.wantedly.com/projects/293315",
+   "kind": "company",
+   "date": "2024-05",
+   "note": "회사 채용 글(모집 종료) — 2015년 신입 2명의 첫 몇 년"
+  },
+  {
+   "n": 4,
+   "title": "Wantedly · なくてはならないプロダクト開発に挑む。3Daysサマーインターン開幕！",
+   "url": "https://www.wantedly.com/projects/208163",
+   "kind": "company",
+   "date": "2018-07",
+   "note": "옛 엔지니어 인턴(모집 종료) — 3일, 기획→구현→발표, 3명당 멘토 1명, 장기 인턴 우선 안내"
+  },
+  {
+   "n": 5,
+   "title": "Wantedly · 【LITALICO INTERNSHIP 2025】サマーインターンシップレポート",
+   "url": "https://sg.wantedly.com/companies/litalico-co/post_articles/1027693",
+   "kind": "company",
+   "date": "2025-09",
+   "note": "신규 사업 만들기 3일 과정(개발 인턴 아님)"
+  },
+  {
+   "n": 6,
+   "title": "GitHub Actions 入門 〜RSpec自動化事例〜",
+   "url": "https://zenn.dev/litalico/articles/20251221-github-actions-rspec",
+   "kind": "company",
+   "date": "2025-12",
+   "note": "LITALICO Zenn · 입사 직후 맡은 Rails 자동 테스트 환경, Oracle DB, matrix 4대"
+  },
+  {
+   "n": 7,
+   "title": "ISUCON14に参加した",
+   "url": "https://zenn.dev/litalico/articles/dc3206c66f99df",
+   "kind": "company",
+   "date": "2024-12",
+   "note": "LITALICO Zenn · 834팀 중 232위, N+1 연습"
+  },
+  {
+   "n": 8,
+   "title": "初めての性能検証で経験した失敗と学び",
+   "url": "https://zenn.dev/litalico/articles/4eb6dac880d858",
+   "kind": "company",
+   "date": "2024-12",
+   "note": "LITALICO Zenn · 직종 전환 QA 엔지니어 — Aurora 2→3 비교, 약 20% 지연, 반성"
+  },
+  {
+   "n": 9,
+   "title": "Pull Requestのセルフレビューでやっていること",
+   "url": "https://zenn.dev/litalico/articles/pullreq-selfreview",
+   "kind": "company",
+   "date": "2021-12"
+  },
+  {
+   "n": 10,
+   "title": "リモートモブプログラミングを9ヶ月間やってきたので振り返ってみる",
+   "url": "https://zenn.dev/litalico/articles/36bdc74887543c",
+   "kind": "company",
+   "date": "2020-12",
+   "note": "청구(레세프트) 업무 팀 — 도메인 지식 0 에서 모브로 적응"
+  },
+  {
+   "n": 11,
+   "title": "AIでテストカバレッジを23%から84%に引き上げた方法",
+   "url": "https://zenn.dev/litalico/articles/20261029-test-with-ai",
+   "kind": "company",
+   "date": "2026-11",
+   "note": "요양 쪽 제품 개발팀 — Rails 약 25만 줄, RSpec, E2E 는 Playwright 작성 중"
+  },
+  {
+   "n": 12,
+   "title": "リファクターの判断はAIに任せない ― git履歴から候補を出して、テックリードと答え合わせする",
+   "url": "https://zenn.dev/litalico/articles/84d2427087c27b",
+   "kind": "company",
+   "date": "2026-11",
+   "note": "아키텍처 추진 그룹 — 장애 복지 시설용 제품의 PHP/Laravel API"
+  },
+  {
+   "n": 13,
+   "title": "法改正システム対応は物語で考えると良いのでは？",
+   "url": "https://zenn.dev/litalico/articles/narrative-approach-to-welfare-system",
+   "kind": "company",
+   "date": "2024-12",
+   "note": "보수 개정 대응 — 서비스 코드 약 6,000 → 약 16,000"
+  },
+  {
+   "n": 14,
+   "title": "情報の渦に飲まれずに一次資料の荒波を乗りこなす！障害福祉サービス報酬改定対応開発",
+   "url": "https://qiita.com/mka10/items/d645b129afaa514d873d",
+   "kind": "company",
+   "date": "2025-12",
+   "note": "아동 복지 SaaS 팀 — 개정 자료 공개 일정"
+  },
+  {
+   "n": 15,
+   "title": "CDK for Terraformを実務でちょっと入れてみての気付き",
+   "url": "https://zenn.dev/litalico/articles/cdktf-real-try",
+   "kind": "company",
+   "date": "2022-12"
+  },
+  {
+   "n": 16,
+   "title": "Vue 2 End of Life",
+   "url": "https://v2.vuejs.org/eol/",
+   "kind": "reference",
+   "note": "2023-12-31 지원 종료"
+  },
+  {
+   "n": 17,
+   "title": "LITALICO · 会社概要",
+   "url": "https://litalico.co.jp/about/company/",
+   "kind": "company",
+   "date": "2026-11",
+   "note": "본사 주소"
+  },
+  {
+   "n": 18,
+   "title": "LITALICO · 働く環境",
+   "url": "https://litalico.co.jp/recruit/workplace/",
+   "kind": "company",
+   "note": "근무·휴가·복리후생(회사 전체)"
+  },
+  {
+   "n": 19,
+   "title": "LITALICO 有価証券報告書 第6期 (edinetdb 본문)",
+   "url": "https://edinetdb.jp/company/E36134/text?fy=2026",
+   "kind": "reference",
+   "date": "2026-06",
+   "note": "提出会社 従業員の状況"
+  },
+  {
+   "n": 20,
+   "title": "LITALICO 有価証券報告書 第5期 (edinetdb 본문)",
+   "url": "https://edinetdb.jp/company/E36134/text?fy=2025",
+   "kind": "reference",
+   "date": "2025-06",
+   "note": "提出会社 従業員の状況"
+  },
+  {
+   "n": 21,
+   "title": "厚生労働省 · 令和6年賃金構造基本統計調査 結果の概況",
+   "url": "https://www.mhlw.go.jp/toukei/itiran/roudou/chingin/kouzou/z2024/",
+   "kind": "reference",
+   "date": "2025",
+   "note": "신규 학졸자 학력별 초임(第10表 · 대졸 24만 8,300엔, 대학원 28만 7,400엔)"
+  },
+  {
+   "n": 22,
+   "title": "出入国在留管理庁 · 在留資格「技術・人文知識・国際業務」",
+   "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html",
+   "kind": "reference",
+   "date": "2026-11",
+   "note": "해당 활동·체류 기간·인정증명서 신청·기관 카테고리·CEFR B2 상당 기준(2026-04-15 신청분부터)"
+  },
+  {
+   "n": 23,
+   "title": "日本語能力試験 JLPT",
+   "url": "https://www.jlpt.jp/",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "BJTビジネス日本語能力テスト",
+   "url": "https://www.kanken.or.jp/bjt/",
+   "kind": "reference",
+   "note": "0~800점"
+  },
+  {
+   "n": 25,
+   "title": "리세맘(보도자료) · 技育CAMP キャラバン 全国でオフラインハッカソン開催",
+   "url": "https://resemom.jp/release/prtimes/20230323/95956.html",
+   "kind": "news",
+   "date": "2023-03",
+   "note": "일본 학생 해커톤의 예 — 사전 약 1주 개발 + 당일, 팀마다 기업 엔지니어"
+  },
+  {
+   "n": 26,
+   "title": "「わらの家」を建てたこぶたはもういない。〜担当者不在のポストモーテムで迷走した話〜",
+   "url": "https://qiita.com/haru614/items/dab4720f83a045804a4e",
+   "kind": "company",
+   "date": "2025-12",
+   "note": "LITALICO Advent Calendar 2025"
+  },
+  {
+   "n": 27,
+   "title": "失敗から学んだ、焦らない障害対応",
+   "url": "https://qiita.com/marie-y/items/cf031d2ee3e64d716953",
+   "kind": "company",
+   "date": "2025-12",
+   "note": "LITALICO Advent Calendar 2025"
+  },
+  {
+   "n": 28,
+   "title": "원티드 · [株式会社LITALICO] 데이터 엔지니어 (데이터 부문)_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/391370",
+   "kind": "posting",
+   "date": "2026-10",
+   "note": "Aurora → BigQuery, 데이터 기반 겸임 2명, R&D 그룹"
+  },
+  {
+   "n": 29,
+   "title": "既存TypeScriptプロジェクトを少しずつstrictにする",
+   "url": "https://zenn.dev/litalico/articles/gradually-strict-ts",
+   "kind": "company",
+   "date": "2020-12"
+  },
+  {
+   "n": 30,
+   "title": "LITALICO Advent Calendar 2025",
+   "url": "https://qiita.com/advent-calendar/2025/litalico",
+   "kind": "company",
+   "note": "사내 기술 글 모음"
+  },
+  {
+   "n": 31,
+   "title": "生成AI×PoCからプロダクションに向けて決めてきた9つのこと",
+   "url": "https://zenn.dev/litalico/articles/cf0fe2e684658f",
+   "kind": "company",
+   "date": "2026-10",
+   "note": "아키텍처 추진 그룹 — 시설용 소프트웨어의 지원 경과 AI 요약"
+  },
+  {
+   "n": 32,
+   "title": "【イベントレポート】児童福祉×生成AI：会員50万人「LITALICO発達ナビ」に生成AIを組み込んだ3つの挑戦と振り返り",
+   "url": "https://zenn.dev/litalico/articles/6e0641fe267b6f",
+   "kind": "company",
+   "date": "2026-10",
+   "note": "AI Engineering Summit Tokyo 2026 발표 정리"
+  },
+  {
+   "n": 33,
+   "title": "원티드 · [株式会社LITALICO] SRE 엔지니어 (프로덕트)",
+   "url": "https://www.wanted.co.kr/wd/391368",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 회사 경력직 — AWS(ECS on Fargate·Aurora)·Terraform·Datadog"
+  },
+  {
+   "n": 34,
+   "title": "원티드 · [株式会社LITALICO] 프로덕트 엔지니어 (프론트엔드 / B2B 복지 SaaS 영역)",
+   "url": "https://www.wanted.co.kr/wd/397938",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "같은 회사 경력직 — 제품 하나가 300~500 기능, Vue/Nuxt 또는 React/Next"
+  },
+  {
+   "n": 35,
+   "title": "CloudformationからTerraformに移行した話",
+   "url": "https://cross-black777.hatenablog.com/entry/2021/12/02/000000",
+   "kind": "company",
+   "date": "2021-12",
+   "note": "SRE 그룹 매니저 개인 블로그(회사 Advent Calendar)"
+  },
+  {
+   "n": 36,
+   "title": "リリースから7年間EC2で稼働していたWEBサービスをついにコンテナ化した話",
+   "url": "https://qiita.com/ti_aiuto/items/987a2fe439cb7a3ab7c9",
+   "kind": "company",
+   "date": "2023-12",
+   "note": "LITALICO 개발자 — Rails 서비스"
+  },
+  {
+   "n": 37,
+   "title": "アーキテクチャレベルで依存性を逆転させたら最高だった話",
+   "url": "https://zenn.dev/litalico/articles/domain-distillation",
+   "kind": "company",
+   "date": "2024-12",
+   "note": "청구 도메인 — OpenAPI·runn"
+  }
+ ],
+ "resources": [
+  {
+   "id": "railstutorial",
+   "title": "Ruby on Rails チュートリアル",
+   "by": "Michael Hartl · 일본어판 YassLab",
+   "kind": "course",
+   "lang": "ja",
+   "level": "입문",
+   "url": "https://railstutorial.jp/",
+   "why": "웹 앱 하나를 처음부터 테스트·배포까지 만드는 일본어 교재 — 필수 요건 '결과물'과 Rails 를 한 번에. 일본 신입 개발자가 흔히 거치는 교재라 면접에서 말이 통한다."
+  },
+  {
+   "id": "rails-guides",
+   "title": "Railsガイド",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "실무",
+   "url": "https://railsguides.jp/",
+   "why": "ActiveRecord 관계·마이그레이션·테스트의 일본어 공식 번역. 들어가서 Rails 제품을 맡으면 늘 펼친다."
+  },
+  {
+   "id": "laravel-docs",
+   "title": "Laravel Documentation",
+   "by": "Laravel",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://laravel.com/docs",
+   "why": "시설용 제품 API 가 Laravel 이다 — 라우팅·Eloquent·마이그레이션 장만 먼저 읽어 Rails 와 같은 틀임을 확인한다."
+  },
+  {
+   "id": "http-basic",
+   "title": "모든 개발자를 위한 HTTP 웹 기본 지식 (우리 사이트 책)",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/http-basic",
+   "why": "웹 앱 우대 줄의 바닥 — 요청·응답·상태 코드·쿠키를 실제로 오간 원문으로."
+  },
+  {
+   "id": "ko-js-deep-dive",
+   "title": "모던 자바스크립트 Deep Dive",
+   "by": "이웅모 · 위키북스",
+   "kind": "book",
+   "lang": "ko",
+   "level": "입문",
+   "url": "https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=Book&SearchWord=%EB%AA%A8%EB%8D%98+%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8+Deep+Dive",
+   "why": "TypeScript·React/Vue 앞에 자바스크립트 자체(스코프·비동기·this)를 한국어로 단단히."
+  },
+  {
+   "id": "ts-handbook",
+   "title": "TypeScript Handbook",
+   "by": "Microsoft",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.typescriptlang.org/docs/handbook/intro.html",
+   "why": "화면 쪽 공통 언어 TypeScript 의 공식 설명. strict 옵션이 무엇을 막는지까지."
+  },
+  {
+   "id": "react-docs",
+   "title": "React 공식 문서 · 학습하기",
+   "by": "React",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://ko.react.dev/learn",
+   "why": "컴포넌트·state·이펙트를 한국어로. 결과물 화면을 React 로 만들 때의 기준."
+  },
+  {
+   "id": "ja-fe-test",
+   "title": "フロントエンド開発のためのテスト入門",
+   "by": "吉井健文 · 翔泳社 · 2023",
+   "kind": "book",
+   "lang": "ja",
+   "level": "입문",
+   "url": "https://www.kinokuniya.co.jp/f/dsg-01-9784798178189",
+   "why": "Jest·Storybook·Playwright 를 일본어로 — 공고의 테스트 도구 줄과 일본어 용어를 같이 익힌다."
+  },
+  {
+   "id": "gha-docs",
+   "title": "GitHub Actions 문서",
+   "by": "GitHub",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.github.com/ko/actions",
+   "why": "결과물 저장소에 테스트 자동 실행을 붙이는 법 — workflow·job·step·matrix."
+  },
+  {
+   "id": "lit-ga-rspec",
+   "title": "GitHub Actions 入門 〜RSpec自動化事例〜",
+   "by": "LITALICO Zenn · 2025",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "url": "https://zenn.dev/litalico/articles/20251221-github-actions-rspec",
+   "why": "이 회사 Rails 제품의 실제 CI 설정을 항목마다 풀어 쓴 글. 입사 후 처음 만질 법한 것을 미리 본다."
+  },
+  {
+   "id": "lit-selfreview",
+   "title": "Pull Requestのセルフレビューでやっていること",
+   "by": "LITALICO Zenn · 2021",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "url": "https://zenn.dev/litalico/articles/pullreq-selfreview",
+   "why": "팀 개발 결과물의 PR 을 어떻게 다듬어 내나 — 이 회사 리뷰어가 기대하는 것."
+  },
+  {
+   "id": "lit-perf-first",
+   "title": "初めての性能検証で経験した失敗と学び",
+   "by": "LITALICO Zenn · 2024",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "url": "https://zenn.dev/litalico/articles/4eb6dac880d858",
+   "why": "'실패에서 배우기'를 이 회사 사람이 어떻게 쓰는지의 본보기 — 측정을 미리 설계하는 법도 같이."
+  },
+  {
+   "id": "lit-narrative",
+   "title": "法改正システム対応は物語で考えると良いのでは？",
+   "by": "LITALICO Zenn · 2024",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "url": "https://zenn.dev/litalico/articles/narrative-approach-to-welfare-system",
+   "why": "복지 제도 개정이 코드에 무엇을 하는지 — '사회 과제' 줄과 모던화 줄을 실제 일로 이해한다."
+  },
+  {
+   "id": "lit-ai-test",
+   "title": "AIでテストカバレッジを23%から84%に引き上げた方法",
+   "by": "LITALICO Zenn · 2026",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "실무",
+   "url": "https://zenn.dev/litalico/articles/20261029-test-with-ai",
+   "why": "큰 Rails 코드에 AI 로 테스트를 붙인 실제 사례 — AI 도구 줄을 이 회사가 어떻게 쓰나."
+  },
+  {
+   "id": "isucon-book",
+   "title": "達人が教えるWebパフォーマンスチューニング 〜ISUCONから学ぶ高速化の実践",
+   "by": "技術評論社 · 2022",
+   "kind": "book",
+   "lang": "ja",
+   "level": "실무",
+   "url": "https://gihyo.jp/book/pickup/2022/0035",
+   "why": "측정 → 병목 찾기 → N+1·인덱스 고치기. 회사 엔지니어가 나간 ISUCON 의 교재이고 DB 줄의 연습장."
+  },
+  {
+   "id": "docker-book",
+   "title": "개발자를 위한 도커 (우리 사이트 책)",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "인프라 줄에서 신입이 실제로 손댈 부분 — 앱을 컨테이너로 띄우고 막힌 출력을 읽는 법."
+  },
+  {
+   "id": "claude-code-docs",
+   "title": "Claude Code 문서",
+   "by": "Anthropic",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.anthropic.com/en/docs/claude-code/overview",
+   "why": "공고 개발 환경에 적힌 AI 도구 — 규칙 파일로 결과를 통제하고 사람이 판단할 곳을 남기는 법."
+  },
+  {
+   "id": "jlpt",
+   "title": "日本語能力試験 JLPT",
+   "by": "국제교류기금·일본국제교육지원협회",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.jlpt.jp/",
+   "why": "비즈니스 일본어 요건을 숫자로 보이는 방법 — N2 가 출입국청이 B2 상당으로 보는 선."
+  },
+  {
+   "id": "bjt",
+   "title": "BJTビジネス日本語能力テスト",
+   "by": "일본한자능력검정협회",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.kanken.or.jp/bjt/",
+   "why": "업무 상황 일본어 시험(0~800점, 400점 이상이 B2 상당) — 회의·메일 장면이 시험에 나온다."
+  },
+  {
+   "id": "isa-gijinkoku",
+   "title": "在留資格「技術・人文知識・国際業務」",
+   "by": "出入国在留管理庁",
+   "kind": "doc",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html",
+   "why": "일본 이주 요건의 공식 절차 — 인정증명서·회사 카테고리·제출 서류와 상세 기준 PDF."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "웹 앱 하나 끝까지",
+   "time": "4~8주",
+   "goal": "화면·서버·DB 가 이어진 웹 앱을 혼자 만들어 배포하고, README 로 설명할 수 있다.",
+   "resources": [
+    "railstutorial",
+    "http-basic",
+    "ko-js-deep-dive",
+    "laravel-docs"
+   ],
+   "task": "가상의 '아동 교실 출석·기록' 앱(시설 3곳·아동 30명·기록 300건 가짜 데이터)을 Rails 또는 원하는 틀로 만든다 — 로그인, 시설별 권한, 기록 목록·검색, 배포 주소, 일본어 README 요약."
+  },
+  {
+   "title": "테스트와 CI",
+   "time": "1~2주",
+   "goal": "자기 기능에 테스트를 붙이고 PR 마다 자동으로 돌게 한다.",
+   "resources": [
+    "gha-docs",
+    "lit-ga-rspec",
+    "ja-fe-test",
+    "lit-selfreview"
+   ],
+   "task": "1단계 앱에 모델 테스트 10개·화면 E2E 2개를 붙이고, GitHub Actions 로 PR 마다 돌린다(matrix 2대로 나눠 보기). PR 3개를 셀프 리뷰 체크리스트로 다듬어 머지한다."
+  },
+  {
+   "title": "느린 곳 찾고 고치기",
+   "time": "1~2주",
+   "goal": "측정으로 병목을 찾고 N+1·인덱스를 고쳐 숫자로 보인다.",
+   "resources": [
+    "isucon-book",
+    "lit-perf-first",
+    "docker-book"
+   ],
+   "task": "기록을 10만 건으로 늘려 목록 화면 응답 시간을 잰다. 쿼리 로그로 N+1 을 찾아 고치고 인덱스를 붙여 전·후 시간을 README 에 적는다. Docker 로 누구나 같은 환경을 띄우게 한다."
+  },
+  {
+   "title": "도메인과 회사 읽기",
+   "time": "1주",
+   "goal": "이 회사 제품이 어떤 제도 위에 있는지, 왜 자주 바뀌는지 일본어로 설명할 수 있다.",
+   "resources": [
+    "lit-narrative",
+    "lit-ai-test"
+   ],
+   "task": "회사 기술 글 5편(제도 개정·테스트·AI·셀프 리뷰·실패)을 읽고 편마다 3줄 요약을 일본어로 쓴다. 1단계 앱에 '제도가 바뀌면 바꿀 곳'을 설정 하나로 모으는 리팩터링을 해 본다."
+  },
+  {
+   "title": "일본어 서류와 면접",
+   "time": "계속(지원 전 3개월 이상)",
+   "goal": "결과물 설명·지원 동기·실패 경험을 일본어로 3분씩 말하고, 履歴書·職務経歴書를 낸다.",
+   "resources": [
+    "jlpt",
+    "bjt",
+    "isa-gijinkoku"
+   ],
+   "task": "'応募先へのメッセージ' 초안(결과물 2개 · 기간·인원·맡은 부분·기술·어려움·URL)을 일본어로 쓰고, 위 면접 질문 5개 답을 녹음해 다시 듣는다. 체류 자격 절차 순서를 한 장으로 정리한다."
+  }
+ ],
+ "pay": {
+  "summary": "이 자리는 **연 450만~500만 엔**(공고, 월 32만 5,900엔~ + 상여 연 2회). 회사 직원 평균 **약 550만 엔**은 시설 직원·경력직이 섞인 값이라 초봉과 다르다",
+  "rows": [
+   {
+    "label": "공고 표기 연봉 (신입)",
+    "value": "450만~500만 엔 (상정 연봉 4,500,800엔~)",
+    "basis": "공고 · 2028년 4월 입사",
+    "note": "상여 연 2회, 등급 제도로 반년마다 승급 기회 [1][2]"
+   },
+   {
+    "label": "월급 내역",
+    "value": "월 325,900엔~",
+    "basis": "공고 · 2028년 4월 입사",
+    "note": "본급 232,400엔 + 라이프플랜 수당 50,000엔 + 고정 잔업수당 43,500엔(시간외 20시간분, 넘으면 따로 지급) [1]"
+   },
+   {
+    "label": "연봉 중 상여 몫",
+    "value": "약 59만 엔",
+    "basis": "공고 숫자로 계산",
+    "note": "4,500,800 − 325,900 × 12 = 590,000. 공고가 상여 금액을 따로 적지 않아 뺄셈으로 구한 값이다 [1] {추론}"
+   },
+   {
+    "label": "일본 대졸 신입 평균 초임",
+    "value": "월 248,300엔",
+    "basis": "정부 통계 · 2024년",
+    "note": "후생노동성 임금구조기본통계조사, 남녀 합계. 대학원 졸은 월 287,400엔 [21]. 잔업 수당을 뺀 정해진 월급 기준이라, 비교하려면 이 공고에서 고정 잔업을 뺀 282,400엔과 견준다 {추론}"
+   },
+   {
+    "label": "직원 평균 연간 급여",
+    "value": "549만 8천 엔",
+    "basis": "유가증권보고서 · 2026년 3월기",
+    "note": "제출회사 1,616명, 평균 34.7세·근속 4.9년. 상여·라이프플랜 수당 포함 [19]"
+   },
+   {
+    "label": "직원 평균 연간 급여 (전년)",
+    "value": "565만 2천 엔",
+    "basis": "유가증권보고서 · 2025년 3월기",
+    "note": "1,495명, 평균 34.2세 [20]"
+   },
+   {
+    "label": "같은 회사 경력직 SRE",
+    "value": "700만~1,050만 엔",
+    "basis": "공고 · 2026년",
+    "note": "경력 공고 — 몇 년 뒤의 범위를 가늠하는 참고 [33]"
+   },
+   {
+    "label": "같은 회사 경력직 프론트엔드",
+    "value": "800만~1,050만 엔",
+    "basis": "공고 · 2026년",
+    "note": "경력 5년 이상 공고 [34]"
+   }
+  ],
+  "how": "금액은 일본 엔이다(원화로 바꾸지 않았다 — 환율에 따라 달라진다). 신입은 공고 하한(4,500,800엔~)에서 시작한다고 읽는 게 자연스럽다 {추론}. 전문업무형 재량근로제(하루 8시간으로 간주, 원하지 않으면 플렉스제)이고, 고정 잔업 20시간분이 월급에 들어 있으며 넘는 몫과 휴일·심야 근무는 따로 준다 [1]. 회사 평균은 복지 시설에서 일하는 직원까지 넣은 회사 전체 값이라 엔지니어 초봉으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "휴일",
+    "detail": "연 120일 이상, 토·일·공휴일 주휴 2일, 여름·연말연시·특별 휴가"
+   },
+   {
+    "name": "연차",
+    "detail": "입사한 달부터 부여"
+   },
+   {
+    "name": "장기 연속 휴가",
+    "detail": "5일 이상 가능"
+   },
+   {
+    "name": "육아 휴직",
+    "detail": "최장 6년, 아이의 초등학교 입학 전까지 쓸 수 있음. 육아·간병 단축 근무"
+   },
+   {
+    "name": "원격 근무",
+    "detail": "가능. 팀 사정에 따라 주 단위로 출근하는 경우가 있음"
+   },
+   {
+    "name": "근무 시간",
+    "detail": "전문업무형 재량근로제(원하지 않으면 플렉스제), 출퇴근 시각은 본인이 정함"
+   },
+   {
+    "name": "교통비",
+    "detail": "월 5만 엔까지"
+   },
+   {
+    "name": "사택",
+    "detail": "회사가 빌린 집에 사는 제도(会社de賃貸)"
+   },
+   {
+    "name": "연금·주식",
+    "detail": "확정기여형 + 확정급여형 기업연금(はぐくみ企業年金), 우리사주"
+   },
+   {
+    "name": "건강",
+    "detail": "건강검진·예방접종 보조, 사내 상담사 상주"
+   },
+   {
+    "name": "부업·정년",
+    "detail": "부업·겸업 가능(업종·직종 제한 없음), 정년 없음"
+   },
+   {
+    "name": "가족 범위",
+    "detail": "동성혼·사실혼 파트너도 복리후생 이용 가능"
+   },
+   {
+    "name": "그 밖",
+    "detail": "재입사(컴백) 제도, 근무 중 이어폰 가능, 음료 무료, 사회보험 완비"
+   }
+  ],
+  "note": "공고의 복리후생 칸[1]을 옮기고, 회사 채용 사이트 '働く環境' 페이지[18]로 회사 전체 제도임을 확인했다. 지금(2026-11) 공고 기준. 신입 연수 내용은 공고·회사 채용 페이지 어디에도 적혀 있지 않다 [2]."
+ },
+ "location": {
+  "name": "LITALICO 본사 (中目黒GTタワー)",
+  "address": "東京都目黒区上目黒2-1-1 中目黒GTタワー 15F/16F/20F",
+  "postal": "153-0051",
+  "map_url": "https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E7%9B%AE%E9%BB%92%E5%8C%BA%E4%B8%8A%E7%9B%AE%E9%BB%922-1-1%20%E4%B8%AD%E7%9B%AE%E9%BB%92GT%E3%82%BF%E3%83%AF%E3%83%BC",
+  "near": "도큐 도요코선·도쿄메트로 히비야선 나카메구로역 걸어서 1분 [1][2]",
+  "note": "공고의 근무지(본사 15·16·20층)[1]와 회사 개요 페이지의 본사 주소[17]. 일본 주소라 네이버 지도 대신 구글 지도 검색 링크를 달았다. 원격 근무가 가능하지만 일본 거주가 조건이다 [1]."
+ },
+ "caveat": "신입 연수·배속 방식·코딩 테스트 유무는 공고와 회사 채용 페이지 어디에도 없어 쓰지 않았다(설명회에서 묻는다). 엔지니어 채용 사이트(engineer.litalico.jp)는 화면을 스크립트로 그려 내용을 읽지 못했다. 신입 사례 글은 2015년 입사자 이야기(2024년 글)와 2018년 인턴 공고라 지금과 다를 수 있다. 회사 기술 글 대부분은 경력 입사자가 쓴 것이다. 회사 발표 영상은 찾지 못해 받은 영상 재료가 없다. 체류 자격의 학력·전공 기준은 출입국청 PDF 를 읽지 않았으니 회사·LAPRAS 안내를 따른다. 코드 예시 2개는 파이썬으로 직접 돌린 출력(가상 데이터)이다. 연봉은 엔 표기 그대로다."
+}
