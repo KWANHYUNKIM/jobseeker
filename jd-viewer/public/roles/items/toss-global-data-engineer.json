@@ -1,0 +1,1192 @@
+{
+ "id": "toss-global-data-engineer",
+ "company": "토스",
+ "role": "데이터 엔지니어 (Global)",
+ "team": "Data Online Processing 팀 · Global Data Platform 길드",
+ "jobs": [
+  "ats-toss:group:7987773003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "토스가 호주·유럽 등 해외로 나가면서 **나라(리전)마다 따로 세우는 데이터 플랫폼**을 만듭니다 — 서버·네트워크(인프라)부터 데이터를 옮기고 가공하는 흐름(파이프라인)까지 한 사람이 끝까지 봅니다.[1]",
+  "env": "**AWS**(계정 여러 개) 위에 **Terraform**(인프라를 코드로 적는 도구)·**Kubernetes(EKS)**·**ArgoCD**로 깔고, **Kafka·Flink**(실시간)와 **Airflow·dbt·Snowflake**(배치) 두 갈래로 데이터를 흘립니다. 싱가포르 허브가 각 나라를 코드로 관리합니다.[1]",
+  "oneline": "\"새 나라가 생기면 며칠 안에 데이터 스택 전체를 복제한다\"가 목표인 자리.[1] 데이터 엔지니어링 5년 이상에 **인프라와 파이프라인 양쪽**을 다 다뤄 본 사람을 찾습니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "호주·유럽을 비롯한 여러 리전의 글로벌 데이터 플랫폼을 AWS 멀티계정 환경에서 인프라부터 파이프라인까지 end-to-end로 설계하고 운영해요.",
+   "short": "나라마다 따로 사는 데이터 플랫폼을, 서버·네트워크부터 데이터 흐름까지 처음부터 끝까지 책임지는 일.",
+   "why": "토스는 2025년 6월 호주 법인을 세우고 2026년 2월 현지 금융서비스 라이선스를 받아, 여러 은행 계좌를 한 화면에 모으고 계좌 사이 송금을 무료로 하는 앱을 냈습니다.[8] 호주를 시작으로 다른 시장으로 넓히겠다고 밝혔고[9], 공고도 호주에 이어 유럽과 그 밖의 나라로 빠르게 넓히는 중이라고 적었습니다.[1] 나라마다 데이터를 따로 두어야 하니 플랫폼도 나라 수만큼 생깁니다.{추론}",
+   "actually": {
+    "intro": "회사가 공개한 구성은 공고의 낱말까지입니다. 아래는 그 낱말들이 보통 뜻하는 일입니다.",
+    "items": [
+     "**리전**(region, 클라우드의 지역 단위) — 호주 데이터는 호주 리전에, 유럽 데이터는 유럽 리전에 둔다. 같은 플랫폼을 여러 벌 운영하는 셈이다.[1]{추론}",
+     "**멀티계정** — AWS는 관리 계정·보안 도구·로그 보관·네트워크·공용 서비스·업무 계정을 조직 단위(OU)로 나눠 두는 참조 구조를 낸다.[19] 나라·용도마다 계정을 갈라 사고가 번지는 범위를 줄이는 방식이다.{추론}",
+     "**end-to-end** — 파이프라인이 멈췄는데 원인이 네트워크나 Kubernetes에 있으면 그것까지 직접 고친다. 공고가 이력서에 이런 경험을 꼭 쓰라고 했다.[1]",
+     "**길드** — 한 팀이 아니라 여러 팀의 엔지니어가 모인 Global Data Platform 길드가 같이 만든다. 소속은 StarRocks 운영과 CDC 입수를 맡는 Data Online Processing 팀이다.[1]"
+    ]
+   },
+   "how_far": "\"5년 이상\"이 붙은 자리라 처음 배우는 사람을 기대하지 않습니다.[1] 최소선은 **AWS 계정 하나에 네트워크·Kubernetes·Kafka·Airflow를 직접 올리고, 장애 때 어느 층이 문제인지 가를 수 있는** 정도입니다.{추론}",
+   "refs": [
+    1,
+    8,
+    9,
+    19
+   ],
+   "study": [
+    "aws-sra",
+    "fde-book",
+    "ddia"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "싱가폴 허브에서 각 국가 리전의 데이터 플랫폼을 코드로 선언적으로 관리하고, 신규 국가 런칭 시 Terraform 기반 IaC로 EKS·Kafka·네트워크 등 데이터 인프라를 구축하며 ArgoCD·Vault 기반 GitOps 스택을 새 리전에 빠르게 복제해요.",
+   "short": "새 나라가 생기면 클릭 대신 코드 몇 줄로 서버·Kafka·네트워크·배포 도구를 통째로 복제하는 일.",
+   "why": "팀의 목표가 \"새 나라가 추가될 때 며칠 안에 전체 데이터 스택이 복제되는 것\"입니다.[1] 손으로 콘솔을 눌러 세우면 나라마다 조금씩 달라지고 며칠 안에 끝낼 수 없습니다.{추론}",
+   "actually": {
+    "items": [
+     "**선언적 관리** — \"서버를 만들어라\"가 아니라 \"서버가 3대 있어야 한다\"고 적으면 도구가 지금 상태와 비교해 모자란 것만 만든다.{추론}",
+     "**Terraform 모듈** — 함께 관리하는 자원 묶음을 모듈로 만들어 같은 구성을 여러 번 부른다. 루트 모듈이 자식 모듈을 부르고, 모듈은 레지스트리·Git에서 받아 쓸 수 있다.[17] 나라 하나 = 같은 모듈을 다른 값으로 한 번 더 부르기.{추론}",
+     "**EKS** — AWS가 관리해 주는 Kubernetes. Kafka·Airflow·Flink 같은 데이터 도구를 이 위에 올린다.[1]",
+     "**ArgoCD ApplicationSet** — 하나의 정의에서 여러 클러스터용 배포 단위(Application)를 찍어 낸다. Cluster 생성기는 Argo CD에 등록된 클러스터 목록에서 값을 자동으로 만든다. 즉 새 클러스터를 등록하면 배포가 따라온다.[18]",
+     "**Vault** — 비밀번호·키 같은 비밀값을 코드 밖에 두고 꺼내 쓰는 저장소. 리전을 복제할 때 비밀값도 같은 규칙으로 따라가야 한다.[1]{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "나라 하나 = 공통 틀 + 다른 값 몇 개",
+     "body": "Terraform 모듈이 하는 일을 파이썬 딕셔너리로 흉내 낸 것입니다. 공통 틀은 한 번만 적고 나라마다 다른 값만 덮어씁니다(직접 돌린 출력).[17]",
+     "lang": "python",
+     "code": "base = {\"kafka_brokers\": 3, \"eks_version\": \"1.31\", \"mirror_to_hub\": True}\nregions = {\"au\": {\"aws_region\": \"ap-southeast-2\", \"tz\": \"Australia/Sydney\"},\n           \"eu\": {\"aws_region\": \"eu-central-1\", \"tz\": \"Europe/Berlin\", \"kafka_brokers\": 6}}\nfor name, over in regions.items():\n    print(name, {**base, **over})\n# au {'kafka_brokers': 3, 'eks_version': '1.31', 'mirror_to_hub': True, 'aws_region': 'ap-southeast-2', 'tz': 'Australia/Sydney'}\n# eu {'kafka_brokers': 6, 'eks_version': '1.31', 'mirror_to_hub': True, 'aws_region': 'eu-central-1', 'tz': 'Europe/Berlin'}"
+    }
+   ],
+   "how_far": "Terraform으로 VPC·EKS를 직접 만들어 본 적이 있고, **같은 코드를 값만 바꿔 두 번째 환경에 올려 본** 경험이 최소선입니다. 이 팀 수준은 그 반복을 \"며칠\"로 줄이는 것입니다.[1]{추론}",
+   "refs": [
+    1,
+    17,
+    18
+   ],
+   "study": [
+    "tf-up-running",
+    "tf-modules",
+    "argocd-appset",
+    "internal-k8s"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Kafka, Kafka Connect(CDC), Flink 기반 스트리밍 파이프라인을 구축하고 리전으로 확장하며, 허브와 리전 간 Kafka 토픽 미러링 체계를 운영해요.",
+   "short": "서비스 DB의 변경을 실시간으로 Kafka에 흘리고, 허브와 각 나라 Kafka 사이에서 토픽을 복사해 두는 일.",
+   "why": "토스 그룹은 이미 이 방식을 씁니다. 토스증권은 두 데이터센터의 Kafka를 Kafka Connect로 서로 미러링하고, 컨슈머 위치(오프셋)도 따로 맞춰 데이터센터 하나가 죽어도 이어서 읽게 했습니다.[2] 토스 데이터 플랫폼팀은 Kafka Connect로 약 1,000개 입수 파이프라인을 3명이 관리합니다.[4] 이 자리는 그 구조를 나라 사이로 넓힙니다.[1]",
+   "actually": {
+    "items": [
+     "**CDC**(Change Data Capture, DB 변경 잡기) — Debezium MySQL 커넥터는 binlog(DB가 남기는 변경 기록)를 읽어 행 단위 생성·수정·삭제를 Kafka 이벤트로 만든다. 처음엔 스냅샷을 찍고 그 시점부터 이어 읽는다.[15]",
+     "**미러링** — 토스증권은 활성 토픽마다 미러링 작업이 하나씩 필요해 **수백 개**를 돌렸고, 새 토픽의 이중화를 자동으로 만드는 관리 앱을 따로 만들었다.[2]",
+     "**오프셋 번역** — 같은 메시지도 클러스터마다 번호가 다르다. 토스증권 발표의 예에서 IDC1의 99023번은 IDC2에서 67번이다. 그래서 번호를 상대 쪽 체계로 바꿔 저장하는 데몬을 따로 돌린다.[2]",
+     "**MirrorMaker 2**(Kafka Connect 위에서 도는 Kafka 공식 복제 도구)[14]는 기본 규칙으로 원격 토픽 이름 앞에 원본 클러스터 별칭을 붙인다(topicA → source.topicA).[12] 그룹 오프셋 동기화는 기본으로 꺼져 있고, 켜면 60초마다 맞춘다.[13]",
+     "**한쪽에서만 소비** — 양쪽 다 전체 메시지를 갖게 되니 양쪽에 다 붙으면 두 번 처리한다. 토스증권은 컨슈머를 한쪽 데이터센터에만 붙였다.[2]",
+     "**Flink** — 상태를 들고 흐르는 계산(집계·조인)을 한다. 체크포인트(입력 위치와 상태의 스냅샷)를 찍어 두고 장애가 나면 거기서 다시 시작한다.[16] 토스페이먼츠는 Kafka와 Flink로 거래 변경을 StarRocks에 실시간으로 반영한다.[7]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "오프셋 번역 — 모르면 \"조금 앞에서 다시 읽기\"",
+     "body": "오프셋 싱크가 남긴 대응점만 알 때, 원본 99010번까지 읽었으면 복제 쪽에서는 대응점 99000↔44부터 다시 읽습니다. 99001~99010의 10건은 **두 번 처리**됩니다 — 그래서 받는 쪽이 중복에 강해야 합니다(직접 돌린 출력).[2][13]",
+     "lang": "python",
+     "code": "import bisect\nsyncs = [(98000, 0), (99000, 44), (99023, 67)]  # (원본 offset, 복제 offset)\ndef translate(src_offset):\n    keys = [s for s, _ in syncs]\n    i = bisect.bisect_right(keys, src_offset) - 1\n    if i < 0:\n        return 0\n    return syncs[i][1]  # 대응점 뒤는 모르니 마지막 대응점부터\nfor off in (99023, 99010, 99030):\n    print(off, \"->\", translate(off))\n# 99023 -> 67\n# 99010 -> 44\n# 99030 -> 67"
+    }
+   ],
+   "flows": [
+    {
+     "caption": "허브와 리전 사이 흐름 {추론}[1][2]",
+     "steps": [
+      "리전 서비스 DB · 각 나라 앱의 원장",
+      "CDC 커넥터 · binlog를 이벤트로",
+      "리전 Kafka · 그 나라 토픽",
+      "미러링 · 허브로 복사(+오프셋 번역)",
+      "허브 Kafka · 모아 보기",
+      "Flink·적재 · StarRocks·Snowflake로"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "how_far": "Kafka 토픽·파티션·컨슈머 그룹·오프셋을 설명할 수 있고, Kafka Connect 커넥터 하나를 직접 띄워 DB 변경을 토픽으로 받아 본 것이 최소선입니다. 이 팀 수준은 **수백 개 미러링을 자동으로 만들고 지켜보는** 것입니다.[2]{추론}",
+   "refs": [
+    1,
+    2,
+    4,
+    7,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "study": [
+    "slash23-kafka",
+    "internal-kafka",
+    "kafka-tdg",
+    "mm2-docs",
+    "debezium-docs",
+    "flink-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Airflow, dbt, Snowflake 기반 DW 배치 파이프라인을 설계·운영하고, 다국가 타임존·스키마 정책 등 글로벌 데이터 표준을 만들어요.",
+   "short": "매일 도는 배치로 분석용 표(DW)를 만들고, 나라마다 다른 시간대·표 규칙을 하나의 표준으로 정하는 일.",
+   "why": "같은 회사의 글로벌 DW 공고도 Snowflake·Airflow·dbt 위에서 리전마다 다른 시간대·규제를 다룬다고 적었습니다.[10] 이 자리는 그 배치가 도는 바닥을 만들고, 나라가 늘어도 같은 규칙이 적용되게 표준을 정합니다.[1]",
+   "actually": {
+    "items": [
+     "**같은 순간, 다른 날짜** — 이벤트 한 건이 UTC로는 22일인데 시드니에서는 23일이다. \"어제 거래\"를 어느 시간대로 자를지 정해야 한다.{추론}",
+     "**Snowflake 시각 타입** — TIMESTAMP_NTZ는 시간대 없이 벽시계 값만, LTZ는 UTC로 저장하고 세션 시간대로 보여 주고, TZ는 UTC와 오프셋을 같이 저장한다. 그냥 TIMESTAMP라고 쓰면 기본이 NTZ다.[22] 표준은 \"어느 칸에 어느 타입\"부터 정한다.{추론}",
+     "**스키마 정책** — 표 이름·칸 이름·나라 코드·통화 칸을 어떻게 둘지. 나라마다 다르면 허브에서 합칠 수 없다.{추론}",
+     "**dbt 테스트** — unique·not_null·accepted_values·relationships 네 가지 기본 검사를 표마다 걸고, 실패한 행이 0개면 통과다.[21]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "이벤트 한 건, 다섯 개의 현지 시각",
+     "body": "UTC 11월 22일 14:30은 시드니에서 이미 23일입니다. 나라별 일 배치가 \"22일\"을 다르게 자르는 이유입니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "from datetime import datetime, timezone\nfrom zoneinfo import ZoneInfo\ne = datetime(2026, 11, 22, 14, 30, tzinfo=timezone.utc)\nfor tz in (\"UTC\", \"Australia/Sydney\", \"Asia/Singapore\", \"Europe/Berlin\", \"Asia/Seoul\"):\n    print(f\"{tz:17}\", e.astimezone(ZoneInfo(tz)).strftime(\"%Y-%m-%d %H:%M\"))\n# UTC               2026-11-22 14:30\n# Australia/Sydney  2026-11-23 01:30\n# Asia/Singapore    2026-11-22 22:30\n# Europe/Berlin     2026-11-22 15:30\n# Asia/Seoul        2026-11-22 23:30"
+    }
+   ],
+   "how_far": "마트의 업무 규칙은 분석 엔지니어(DW 팀)가 정하고[10], 이 자리는 **배치가 도는 바닥과 모든 나라에 똑같이 걸리는 공통 규칙**을 맡는 것으로 보입니다.{추론}",
+   "refs": [
+    1,
+    10,
+    21,
+    22
+   ],
+   "study": [
+    "airflow-book",
+    "dbt-tests",
+    "snowflake-time"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "데이터 입수 요청 접수부터 리전 반영까지 사람 손을 거치지 않는 입수 자동화 체계를 만들고, 데이터 조직의 생산성을 높이는 내부 도구를 직접 개발해요.",
+   "short": "\"이 표 좀 받아 주세요\" 요청이 오면 사람이 손대지 않아도 각 나라에 입수 파이프라인이 생기게 만드는 일.",
+   "why": "토스 데이터 플랫폼팀은 Kafka Connect 기반 **설정형 자동 입수**를 만들어 약 1,000개 파이프라인을 3명이 관리한다고 썼습니다.[4] 토스증권도 제한된 인원으로 수백 개 토픽 이중화를 관리하려고 관리 앱을 만들어 운영 공수를 줄였습니다.[2] 나라 수만큼 곱해지는 일은 사람 손으로는 못 버팁니다.{추론}",
+   "actually": {
+    "items": [
+     "**설정 한 장 → 파이프라인** — 원천 DB·표·대상만 적으면 커넥터·토픽·적재 표가 만들어진다. 메타데이터·계보를 같이 남기고 메신저로 알린다.[4]",
+     "**리전 반영** — 같은 설정을 지정한 나라의 클러스터에 배포한다. GitOps라면 설정 파일 병합이 곧 배포다.[18]{추론}",
+     "**계보(lineage) 도구** — 토스증권은 수천 개 실시간 파이프라인의 관계를 그래프로 저장해 클릭하면 생성 정보까지 보이게 했다.[5]",
+     "**연결 지도** — 파드 약 1만 개가 토픽 약 1,000개를 쓰는 환경에서, 브로커 로그·커널 연결 정보를 조인해 \"누가 어느 토픽을 쓰나\"를 자동으로 그렸다.[6]"
+    ]
+   },
+   "how_far": "공고는 이력서에 반복 작업을 자동화로 바꾼 경험을 **전후 수치**로 보여 달라고 했습니다.[1] \"몇 명이 며칠 걸리던 일을 몇 분으로\" 같은 숫자를 만들 수 있는 자동화가 기준입니다.{추론}",
+   "refs": [
+    1,
+    2,
+    4,
+    5,
+    6,
+    18
+   ],
+   "study": [
+    "toss-iceberg",
+    "toss-lineage"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "리전별 관측성 스택을 구축하고, PII 접근통제·GDPR 리텐션 등 글로벌 데이터 거버넌스를 시스템으로 풀어가요.",
+   "short": "나라마다 지표·로그를 모아 이상을 먼저 알아채게 하고, 개인정보 접근·보관 기간 규칙을 코드로 강제하는 일.",
+   "why": "토스증권은 모든 클러스터 지표를 Prometheus로 모으고 Thanos Ruler로 조건이 맞으면 알림을 보내며, 로그는 Elasticsearch로 받아 에러가 나면 알린다고 발표했습니다.[2] 유럽에 나가면 GDPR(유럽 개인정보보호법)이 개인정보를 목적에 필요한 기간보다 오래 알아볼 수 있는 형태로 두지 말라고 요구합니다.[24]",
+   "actually": {
+    "items": [
+     "**관측성**(observability, 밖에서 보고 속을 알 수 있게 하기) — Thanos는 Prometheus를 대체하지 않고 넓힌다. 여러 Prometheus를 하나의 쿼리 창구로 묶고, 오래된 데이터는 객체 저장소에 두고 꺼내 본다.[20] 리전이 여럿일 때 \"한눈에 보기\"가 여기서 나온다.{추론}",
+     "**PII**(개인 식별 정보) **접근통제** — 이름·연락처 칸은 가리거나 권한 있는 사람만 보게 한다. 같은 회사 글로벌 DW 공고도 Snowflake에서 칸 단위 가리기를 다룬다.[10]",
+     "**리텐션**(보관 기간) — 기간이 지나면 지우거나 알아볼 수 없게 만든다.[24] 정보주체가 지워 달라고 하면 지체 없이 지워야 하는 경우도 있다.[25]",
+     "**\"시스템으로\"** — 사람이 기억해서 지우는 게 아니라 매일 도는 작업이 기간 지난 행을 찾아 지운다.{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "나라마다 다른 보관 기간을 매일 검사",
+     "body": "보관 기간 값은 예시입니다 — 실제 기간은 법무가 정합니다. 날짜가 지난 행만 지울 대상으로 뽑습니다(직접 돌린 출력).[24]",
+     "lang": "python",
+     "code": "from datetime import date, timedelta\nretention = {\"au\": 365 * 7, \"eu\": 365 * 2}  # 예시 값\nrows = [(\"eu\", \"u1\", date(2024, 11, 1)), (\"eu\", \"u2\", date(2025, 6, 1)), (\"au\", \"u3\", date(2020, 1, 1))]\ntoday = date(2026, 11, 23)\nfor region, user, closed in rows:\n    expire = closed + timedelta(days=retention[region])\n    print(region, user, \"삭제 대상\" if expire < today else f\"보관({expire}까지)\")\n# eu u1 삭제 대상\n# eu u2 보관(2027-06-01까지)\n# au u3 보관(2026-12-30까지)"
+    }
+   ],
+   "how_far": "몇 년을 보관할지, 누가 무엇을 볼 수 있는지는 법무·보안이 정합니다. 개발자는 **그 규칙이 빠짐없이 지켜지게 하는 장치**(가리기 정책·삭제 작업·접근 기록)를 만듭니다.{추론}",
+   "refs": [
+    2,
+    10,
+    20,
+    24,
+    25
+   ],
+   "study": [
+    "thanos-docs",
+    "gdpr"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "데이터 플랫폼 또는 데이터 엔지니어링 경력 5년 이상, 혹은 그에 준하는 역량으로 인프라와 파이프라인 양쪽을 모두 다뤄본 분이 필요해요.",
+   "short": "인프라만, 또는 파이프라인만 해 본 사람이 아니라 둘 사이를 오가며 문제를 끝까지 풀어 본 사람.",
+   "why": "공고는 이력서에 \"파이프라인 장애의 원인이 인프라에 있어 직접 고친 경험\"을 예로 들며 경계를 넘은 경험을 꼭 쓰라고 했습니다.[1] 새 나라를 세우는 사람이 인프라와 파이프라인을 둘 다 올리기 때문입니다.[1]",
+   "how_far": "\"그에 준하는 역량\"이 붙어 있어 연차보다 **양쪽을 다 해 본 증거**가 중요합니다.[1] 예: Kafka 클러스터를 직접 운영하면서 그 위 커넥터도 짜 본 경험.{추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "fde-book",
+    "ddia"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AWS 기반 클라우드 환경에서 서비스를 개발하거나 운영해본 경험이 필요해요.",
+   "short": "모든 나라의 플랫폼이 AWS 위에 서니까.",
+   "why": "글로벌 데이터 플랫폼이 AWS 멀티계정 환경에 있습니다.[1] 토스 국내 데이터 플랫폼은 자체 하둡 클러스터 위에서 일해 왔기 때문에[4] 이 자리의 AWS 경험은 따로 요구됩니다.{추론}",
+   "level": {
+    "basic": "VPC·서브넷·보안 그룹 · IAM 역할 · S3 · EC2",
+    "work": "EKS · MSK 또는 EC2 위 Kafka · 비용 확인 · 계정 간 권한(assume role)",
+    "team": "계정 여러 개를 조직 단위로 나눈 구조[19] · 리전마다 같은 구성 반복 · 리전 사이 네트워크"
+   },
+   "refs": [
+    1,
+    4,
+    19
+   ],
+   "study": [
+    "aws-sra"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Kubernetes 환경에서 Terraform 등 IaC 도구로 인프라를 구축·운영해본 경험이 필요해요.",
+   "short": "새 나라를 며칠 안에 세우려면 인프라가 코드여야 해서.",
+   "why": "신규 국가를 런칭할 때 Terraform으로 EKS·Kafka·네트워크를 세운다고 업무에 적혀 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**모듈 나누기** — 네트워크·EKS·Kafka를 각각 모듈로 두고 나라마다 부른다.[17]",
+     "**상태 파일** — Terraform은 만든 자원을 상태로 기억한다. 나라별·층별로 상태를 나눠야 한 나라 작업이 다른 나라를 건드리지 않는다.{추론}",
+     "**Kubernetes 위 데이터 도구** — 토스 그룹의 다른 플랫폼 공고는 Kubernetes와 EC2에서 Kafka·StarRocks·Airflow·Spark·Elasticsearch를 운영한다고 적었다.[11]"
+    ]
+   },
+   "how_far": "plan/apply 차이, 상태 파일, 모듈 입력·출력을 설명할 수 있고 Kubernetes에 Helm이나 매니페스트로 데이터 도구 하나를 올려 운영해 본 수준.{추론}",
+   "refs": [
+    1,
+    11,
+    17
+   ],
+   "study": [
+    "tf-up-running",
+    "tf-modules",
+    "internal-k8s"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Airflow 등 워크플로 오케스트레이터 기반 배치 파이프라인 개발·운영 경험과 Data Warehouse·Mart에 대한 이해가 필요해요.",
+   "short": "매일 도는 배치를 순서대로 엮어 본 경험과, 분석용 표가 어떤 층으로 쌓이는지 아는 것.",
+   "why": "DW 배치를 Airflow·dbt·Snowflake로 설계·운영합니다.[1] 토스 데이터 플랫폼팀도 Iceberg 표 유지보수 작업을 Airflow로 돌립니다.[4]",
+   "level": {
+    "basic": "DAG · 태스크 의존 · 스케줄 · 재시도",
+    "work": "백필 · 센서 · 실패 알림 · 원천 → 스테이징 → 마트 층",
+    "team": "나라마다 시간대가 다른 스케줄 · 리전별 Airflow를 같은 코드로 배포"
+   },
+   "refs": [
+    1,
+    4
+   ],
+   "study": [
+    "airflow-book",
+    "fde-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Snowflake 등 클라우드 데이터 웨어하우스를 사용해본 경험이 필요해요.",
+   "short": "글로벌 쪽 DW가 Snowflake라서.",
+   "why": "업무의 DW 배치가 Snowflake 기반이고[1], 같은 회사 글로벌 DW 공고도 Snowflake 위에서 일합니다.[10]",
+   "how_far": "적재·쿼리·웨어하우스(계산 자원) 크기 조절과 권한 정도를 써 본 경험. 시각 타입 셋의 차이처럼 나라가 여럿일 때 터지는 부분을 알면 강점입니다.[22]{추론}",
+   "refs": [
+    1,
+    10,
+    22
+   ],
+   "study": [
+    "snowflake-time"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Kafka 기반 데이터 파이프라인을 직접 구축·운영해본 경험이 필요해요.",
+   "short": "실시간 입수·미러링이 모두 Kafka 위에서 돌아서. 쓰기만 한 게 아니라 운영해 본 경험.",
+   "why": "소속 팀이 CDC를 포함한 실시간 입수를 맡고[1], 토스 그룹에서 Kafka는 시세·서비스 간 통신·로그·CDC까지 실어 나르는 핵심입니다.[2]",
+   "actually": {
+    "items": [
+     "**작은 장애와 큰 장애** — 노드 몇 대가 죽는 건 Kafka가 분산 시스템이라 견디지만, 데이터센터 전체가 죽는 건 이중화로만 막는다.[2]",
+     "**운영 지표** — 컨슈머 지연(lag), 미러링 지연, 브로커 디스크.{추론}",
+     "**로그 양** — 토스증권 브로커는 요청이 초당 100만 건이 넘어 요청 로그를 다 남길 수 없어, 메타데이터 요청만 골라 남기는 식으로 풀었다.[6]"
+    ]
+   },
+   "how_far": "토픽·파티션·복제 계수·컨슈머 그룹 리밸런스·오프셋 커밋을 장애 상황에 빗대 설명할 수 있는 수준.{추론}",
+   "refs": [
+    1,
+    2,
+    6
+   ],
+   "study": [
+    "internal-kafka",
+    "kafka-tdg",
+    "slash23-kafka"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Python 개발 역량을 갖추고, Git 중심의 코드 리뷰와 CI/CD 워크플로가 익숙한 분이 필요해요.",
+   "short": "DAG·자동화 도구는 Python으로, 인프라·설정 변경은 Git 리뷰와 자동 배포로 하니까.",
+   "why": "입수 자동화와 내부 도구를 직접 개발하고[1], 인프라를 코드로 선언해 GitOps로 배포합니다.[1] 설정 파일 하나가 곧 운영 환경이라 리뷰 없이 바뀌면 사고입니다.{추론}",
+   "how_far": "Python으로 작은 CLI·라이브러리를 테스트와 함께 만들고, 풀 리퀘스트에서 terraform plan이나 dbt 테스트가 자동으로 도는 흐름을 써 본 수준.{추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "장애가 발생했을 때 근본 원인을 추적하고, backfill과 재발 방지까지 스스로 완결해본 경험이 필요해요.",
+   "short": "불만 끄는 게 아니라, 빠진 기간 데이터를 다시 채우고 같은 일이 안 생기게 막는 데까지.",
+   "why": "공고는 치명적인 장애를 해결한 경험을 과정 중심으로 써 달라고 했습니다.[1] 토스페이먼츠는 대량 적재로 ZooKeeper 로그 디스크가 차서 조회 저장소 전체가 내려간 일을 겪고 보존 주기·압축으로 고쳤습니다.[7]",
+   "actually": {
+    "items": [
+     "**근본 원인** — 파이프라인이 멈춘 이유가 코드인지, 원천 변경인지, 인프라(디스크·네트워크)인지 가른다.[1]",
+     "**backfill**(빠진 기간 다시 채우기) — 몇 달 치를 한 번에 돌리면 자원이 모자라니 기간을 잘라 돌린다.{추론}",
+     "**다시 돌려도 같은 결과** — 같은 이벤트가 두 번 와도 표가 같아야 안전하게 다시 돌릴 수 있다. 미러링 전환 때도 중복이 생긴다.[2]",
+     "**재발 방지** — 같은 징후에 알림을 걸고 설정을 고친다. 토스증권은 시계열 이상 징후를 잡는 모델까지 만들고 있다고 했다.[2]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "백필을 30일씩 자르기",
+     "body": "9월 1일~11월 22일을 30일 단위로 겹치지도 빠지지도 않게 나눕니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "from datetime import date, timedelta\ndef windows(start, end, days):\n    cur = start\n    while cur <= end:\n        stop = min(cur + timedelta(days=days - 1), end)\n        yield cur, stop\n        cur = stop + timedelta(days=1)\nfor w in windows(date(2026, 9, 1), date(2026, 11, 22), 30):\n    print(w[0], \"~\", w[1])\n# 2026-09-01 ~ 2026-09-30\n# 2026-10-01 ~ 2026-10-30\n# 2026-10-31 ~ 2026-11-22"
+    },
+    {
+     "title": "변경 이벤트를 두 번 받아도 같은 표",
+     "body": "Debezium 모양의 이벤트(op: c 생성·u 수정·d 삭제)[15]를 순번(lsn)으로 걸러 반영합니다. 같은 이벤트가 다시 와도 결과가 같습니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "events = [\n    {\"op\": \"c\", \"after\": {\"id\": 1, \"status\": \"OPEN\"}, \"lsn\": 10},\n    {\"op\": \"u\", \"after\": {\"id\": 1, \"status\": \"PAID\"}, \"lsn\": 11},\n    {\"op\": \"c\", \"after\": {\"id\": 2, \"status\": \"OPEN\"}, \"lsn\": 12},\n    {\"op\": \"d\", \"before\": {\"id\": 2, \"status\": \"OPEN\"}, \"lsn\": 13},\n]\ndef apply(table, ev):\n    key = (ev.get(\"after\") or ev.get(\"before\"))[\"id\"]\n    cur = table.get(key)\n    if cur and cur[\"lsn\"] >= ev[\"lsn\"]:\n        return  # 이미 반영한 변경\n    if ev[\"op\"] == \"d\":\n        table[key] = {\"deleted\": True, \"lsn\": ev[\"lsn\"]}\n    else:\n        table[key] = {**ev[\"after\"], \"lsn\": ev[\"lsn\"]}\nt = {}\nfor ev in events: apply(t, ev)\nprint(\"한 번:\", t)\nfor ev in events: apply(t, ev)\nprint(\"두 번:\", t)\n# 한 번: {1: {'id': 1, 'status': 'PAID', 'lsn': 11}, 2: {'deleted': True, 'lsn': 13}}\n# 두 번: {1: {'id': 1, 'status': 'PAID', 'lsn': 11}, 2: {'deleted': True, 'lsn': 13}}"
+    }
+   ],
+   "how_far": "이력서에 쓸 수 있는 장애 한 건 — **증상 → 원인을 찾은 과정 → 빠진 데이터를 어떻게 채웠나 → 무엇을 바꿔 다시 안 생기게 했나** — 이 네 칸이 다 채워져야 합니다.[1]{추론}",
+   "refs": [
+    1,
+    2,
+    7,
+    15
+   ],
+   "study": [
+    "ddia",
+    "airflow-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "멀티리전·멀티계정 클라우드 환경이나 멀티 타임존 데이터 아키텍처를 설계해본 경험",
+   "short": "나라·계정·시간대가 여럿인 환경을 한 벌의 코드로 설계해 본 경험 — 이 자리의 본업이라서.",
+   "why": "업무 첫 줄이 여러 리전·멀티계정이고, 표준 업무에 다국가 타임존이 들어 있습니다.[1]",
+   "how_far": "위 업무 줄의 \"같은 순간, 다른 날짜\"와 \"공통 틀 + 다른 값\"을 실제로 겪어 본 사람이면 강점입니다.[19][22]{추론}",
+   "refs": [
+    1,
+    19,
+    22
+   ],
+   "study": [
+    "aws-sra",
+    "snowflake-time"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "dbt를 활용해 데이터 모델과 품질 테스트를 코드로 관리하고, CI/CD 기반으로 배포·운영해본 경험",
+   "short": "표 만드는 SQL과 그 표의 검사를 코드로 두고, 리뷰를 거쳐 자동 배포해 본 경험.",
+   "why": "DW 배치가 dbt 기반입니다.[1] dbt는 기본 검사 네 가지를 설정만으로 걸 수 있고, 검사는 실패한 행을 돌려주는 SELECT라 0행이면 통과입니다.[21]",
+   "how_far": "모델마다 기본 검사를 걸고, 풀 리퀘스트에서 바뀐 모델만 빌드·검사하는 흐름을 만들어 본 수준.{추론}",
+   "refs": [
+    1,
+    21
+   ],
+   "study": [
+    "dbt-tests"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Flink, Spark 등 분산 처리 엔진과 Debezium 등 CDC 파이프라인 경험",
+   "short": "실시간 계산(Flink)과 DB 변경 잡기(Debezium)를 직접 운영해 본 경험.",
+   "why": "스트리밍 파이프라인이 Kafka Connect(CDC)와 Flink 기반입니다.[1] 토스증권 실시간 파이프라인도 MySQL·Oracle·MongoDB·Vitess CDC를 원천으로 Flink·Kafka Connect가 처리합니다.[5]",
+   "actually": {
+    "items": [
+     "**Debezium** — 처음 시작할 때 스냅샷을 찍고 그 binlog 위치부터 이어 읽는다. 읽어야 할 binlog가 이미 지워졌으면 커넥터가 멈추니, DB의 binlog 보관 기간이 운영 포인트다.[15]",
+     "**표 구조 바뀜** — DDL은 내부 이력 토픽에 남겨 재시작 때 그 시점의 표 구조를 되살린다.[15]",
+     "**Flink 체크포인트** — 기본으로 꺼져 있어 켜야 하고, 간격이 짧을수록 평소 부담은 늘고 장애 때 다시 처리할 양은 준다.[16]"
+    ]
+   },
+   "refs": [
+    1,
+    5,
+    15,
+    16
+   ],
+   "study": [
+    "debezium-docs",
+    "flink-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "스키마 레지스트리 등 선언적 데이터 관리 체계를 구축해본 경험",
+   "short": "메시지 형식을 등록해 두고, 호환이 깨지는 변경은 미리 막는 장치를 만들어 본 경험.",
+   "why": "나라마다 같은 이벤트가 다른 형식으로 흘러오면 허브에서 합칠 수 없습니다.{추론} 공고는 스키마 정책을 글로벌 표준으로 만든다고 했습니다.[1]",
+   "actually": {
+    "items": [
+     "**호환 규칙** — Confluent Schema Registry의 기본은 BACKWARD(새 스키마로 직전 형식의 데이터를 읽을 수 있어야 함)다. FORWARD·FULL·NONE도 있다.[23]",
+     "**배포 순서** — BACKWARD 계열이면 소비자를 먼저, FORWARD 계열이면 생산자를 먼저 올린다.[23]",
+     "**안전한 변경** — 기본값이 있는 칸을 더하거나 빼는 변경은 양쪽으로 호환된다.[23]"
+    ]
+   },
+   "refs": [
+    1,
+    23
+   ],
+   "study": [
+    "schema-evo"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "ArgoCD 등 GitOps 배포 체계나 Prometheus·Thanos 관측성 스택 운영 경험",
+   "short": "Git에 적힌 대로 클러스터가 맞춰지는 배포와, 여러 클러스터 지표를 한데 모아 보는 감시를 운영해 본 경험.",
+   "why": "새 리전에 ArgoCD·Vault 기반 GitOps 스택을 복제하고 리전별 관측성 스택을 세웁니다.[1] 토스증권은 Prometheus로 모으고 Thanos Ruler로 알림을 건다고 발표했습니다.[2]",
+   "how_far": "ApplicationSet으로 클러스터마다 같은 앱을 배포하고[18], Thanos로 여러 Prometheus를 한 창구에서 조회해 본 수준.[20]",
+   "refs": [
+    1,
+    2,
+    18,
+    20
+   ],
+   "study": [
+    "argocd-appset",
+    "thanos-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "GDPR 등 데이터 규제 대응, PII 마스킹·접근통제 설계 경험",
+   "short": "유럽에 나가면 GDPR을 지켜야 해서 — 개인정보를 가리고, 볼 사람을 정하고, 기한이 지나면 지우는 설계.",
+   "why": "공고가 PII 접근통제·GDPR 리텐션을 시스템으로 푼다고 적었습니다.[1] GDPR은 보관 기간 제한과 함께, 그것을 지켰다고 **증명할 책임**도 처리자에게 둡니다.[24]",
+   "how_far": "법 조문 해석은 법무 몫입니다. 개발자는 가릴 칸 목록·역할별 권한·삭제 작업·접근 기록을 **증명할 수 있게** 남기는 데까지.[24]{추론}",
+   "refs": [
+    1,
+    24
+   ],
+   "study": [
+    "gdpr"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "# 이런 경험이 있다면 이력서에 꼭 작성해주세요",
+   "short": "아래 네 가지는 서류에서 직접 보겠다는 항목 — 경험을 이 틀에 맞춰 다시 쓰면 된다.",
+   "why": "토스는 서류 뒤 직무 인터뷰가 두 번 이어지므로[1] 이 네 항목이 인터뷰 질문의 재료가 됩니다.{추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "어떤 언어나 기술을 썼는지보다, 어떤 과제였고 무엇으로 어떻게 풀었는지를 자세히 작성해주세요.",
+   "short": "기술 목록 말고 '문제 → 고른 방법 → 결과'로 쓴다.",
+   "why": "이 자리는 도구가 많아(Terraform·Kafka·Flink·dbt…) 이름만 나열하면 누구나 비슷해 보입니다.[1]{추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "인프라와 파이프라인의 경계를 넘나들며 문제를 끝까지 해결한 경험이 있다면 꼭 담아주세요. 예를 들어 파이프라인 장애의 원인이 인프라에 있어 직접 고친 경험 같은 것이요.",
+   "short": "\"배치가 실패했다 → 알고 보니 디스크·네트워크·권한 문제 → 내가 고쳤다\" 같은 이야기 하나.",
+   "why": "자격요건 첫 줄의 \"인프라와 파이프라인 양쪽\"을 증명하는 칸입니다.[1] 토스페이먼츠 사례처럼 적재 작업이 인프라(디스크)를 넘치게 해 전체가 내려가는 일이 실제로 생깁니다.[7]",
+   "refs": [
+    1,
+    7
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "반복 작업을 자동화 체계로 바꿔 조직의 운영 부담을 줄인 경험이 있다면, 전후 변화를 수치나 객관적인 근거로 보여주시면 좋아요.",
+   "short": "자동화 전후를 숫자로 — 걸린 시간, 사람 수, 요청 처리 건수.",
+   "why": "토스 데이터 플랫폼팀이 스스로 쓴 숫자가 기준점입니다 — 입수 파이프라인 약 1,000개를 3명이 관리.[4]",
+   "refs": [
+    4
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "플랫폼을 운영하며 치명적인 장애를 해결했거나 성능·비용을 최적화한 경험을 과정 중심으로 정리해주세요.",
+   "short": "결과 한 줄보다 원인을 좁혀 간 과정 — 어떤 가설을 세우고 무엇으로 확인했나.",
+   "why": "토스 DOP 팀의 StarRocks 운영기가 좋은 예입니다. CPU 비율 조정으로 안 되자 전용 코어를 예약했고, 92코어 적재 그룹의 CPU를 98%에서 약 60%로 낮추는 대신 적재 시간이 약 100초 늘어난 대가까지 적었습니다.[3]",
+   "refs": [
+    3
+   ],
+   "study": [
+    "toss-starrocks"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "같은 걸 두 번 손으로 만들면 코드로 바꾸고 싶은 사람[1]",
+   "인프라와 데이터 사이에서 \"그건 내 일 아님\"이라고 하지 않는 사람[1]",
+   "나라가 하나씩 늘어나는 걸 처음부터 세워 보고 싶은 사람[1]",
+   "규제(GDPR)·시간대 같은 지저분한 경계 문제를 재미있어하는 사람{추론}"
+  ],
+  "hard": [
+   "경력 5년 이상(또는 그에 준하는 역량)이 필수다[1]",
+   "도구 가짓수가 많다 — AWS·Terraform·EKS·ArgoCD·Vault·Kafka·Flink·Airflow·dbt·Snowflake[1]",
+   "나라가 늘수록 운영할 클러스터도 늘어난다 — 토스증권은 이중화만으로 클러스터와 운영 일이 두 배가 됐다고 했다[2]",
+   "싱가포르 허브·해외 리전과 일해 시간대가 다른 상대와 협업할 수 있다{추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "허브와 리전 Kafka 사이를 미러링하다가 리전 클러스터가 죽었어요. 컨슈머를 다른 쪽으로 옮길 때 무엇이 유실·중복될 수 있나요?",
+   "a": "오프셋 번역과 한쪽에서만 소비하는 이유.[2][13]"
+  },
+  {
+   "q": "새 나라를 하나 더 열어야 합니다. 무엇을 코드로 두고, 나라마다 달라지는 값은 어떻게 빼겠어요?",
+   "a": "팀 목표인 \"며칠 안에 복제\".[1][17][18]"
+  },
+  {
+   "q": "Debezium 커넥터가 며칠 멈춰 있었는데 그사이 binlog가 지워졌어요. 어떻게 복구하나요?",
+   "a": "스냅샷 다시 찍기와 binlog 보관 기간.[15]"
+  },
+  {
+   "q": "\"어제 거래 수\"가 시드니와 서울에서 다르게 나온다는 문의가 왔어요. 어디부터 보나요?",
+   "a": "시각 타입과 날짜 경계.[22]"
+  },
+  {
+   "q": "유럽 사용자가 탈퇴하며 삭제를 요청했어요. DW·Kafka·백업 중 어디까지 지워야 하고, 지웠다는 건 어떻게 증명하나요?",
+   "a": "보관 제한·삭제권과 책임성.[24][25]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 데이터 엔지니어 (Global)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7987773003",
+   "kind": "posting",
+   "note": "팀 소개(Global Data Platform 길드·Data Online Processing 팀)·업무·요건·우대·이력서 요구·합류 여정"
+  },
+  {
+   "n": 2,
+   "title": "SLASH 23 · Kafka 이중화로 다양한 장애 상황 완벽 대처하기",
+   "url": "https://www.youtube.com/watch?v=Pzkioe7Dvo4",
+   "kind": "company",
+   "date": "2023",
+   "note": "토스증권 데이터 플랫폼팀 · 자막 전부와 장면(미러링·오프셋 싱크 그림) 확인 — 같은 그룹 다른 회사"
+  },
+  {
+   "n": 3,
+   "title": "토스 테크 · StarRocks 운영기: Resource Group으로 멀티테넌트 워크로드 격리하기",
+   "url": "https://toss.tech/article/operating-starrocks-1",
+   "kind": "company",
+   "date": "2026-04-23",
+   "note": "토스 DOP(Data Online Processing) 팀 — 이 공고의 소속 팀"
+  },
+  {
+   "n": 4,
+   "title": "토스 테크 · 입수는 Datalake로! (feat. Iceberg)",
+   "url": "https://toss.tech/article/datalake-iceberg",
+   "kind": "company",
+   "date": "2024-10-29",
+   "note": "토스 데이터 플랫폼팀 — Kafka Connect 설정형 자동 입수, 파이프라인 약 1,000개를 3명이 관리"
+  },
+  {
+   "n": 5,
+   "title": "토스 테크 · 토스증권의 수천 개 실시간 데이터 파이프라인 운영방법 #1: Visualize Lineage",
+   "url": "https://toss.tech/article/toss-securities-visualize-lineage",
+   "kind": "company",
+   "date": "2025-08-11",
+   "note": "토스증권 Realtime Data Team"
+  },
+  {
+   "n": 6,
+   "title": "토스 테크 · 토스증권의 수천 개 실시간 데이터 파이프라인 운영방법 #2: MSA 환경 Observability 높이기",
+   "url": "https://toss.tech/article/MSA-observability",
+   "kind": "company",
+   "note": "토스증권 Realtime Data Team — 게시일은 확인 못 함"
+  },
+  {
+   "n": 7,
+   "title": "토스 테크 · 고객은 절대 기다려주지 않는다: 빠른 데이터 서빙으로 고객 만족도를 수직 상승 시키는 법",
+   "url": "https://toss.tech/article/payments-legacy-7",
+   "kind": "company",
+   "date": "2025-12-16",
+   "note": "토스페이먼츠 Data Engineer — Druid 장애, Kafka·Flink → StarRocks"
+  },
+  {
+   "n": 8,
+   "title": "MTN · [단독] 토스, 호주 이어 브라질 간다…현지 결제망 활용 송금 검토",
+   "url": "https://news.mtn.co.kr/news-detail/2026080317193990326",
+   "kind": "news",
+   "date": "2026-08-03"
+  },
+  {
+   "n": 9,
+   "title": "Fintech News Singapore · Toss to launch super-app in Australia, eyes won stablecoin",
+   "url": "https://fintechnews.sg/117948/australia/toss-australia-launch-won-stablecoin/",
+   "kind": "news",
+   "date": "2025-09-10",
+   "note": "로이터 인터뷰 인용"
+  },
+  {
+   "n": 10,
+   "title": "토스 채용 · 데이터 분석 엔지니어 (DW/Global)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7985496003",
+   "kind": "posting",
+   "note": "같은 회사 글로벌 DW 자리"
+  },
+  {
+   "n": 11,
+   "title": "토스 채용 · 데이터 엔지니어 (Platform)",
+   "url": "https://toss.im/career/job-detail?gh_jid=5581491003",
+   "kind": "posting",
+   "note": "토스플레이스 — 같은 그룹 다른 회사"
+  },
+  {
+   "n": 12,
+   "title": "AWS · Amazon MSK Migration Guide — MirrorMaker 2.0",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/amazon-msk-migration-guide/mirrormaker-2.0-mm2.html",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "Red Hat Streams for Apache Kafka · Using MirrorMaker 2",
+   "url": "https://docs.redhat.com/en/documentation/red_hat_streams_for_apache_kafka/2.5/html/using_amq_streams_on_rhel/assembly-mirrormaker-str",
+   "kind": "reference",
+   "note": "체크포인트·그룹 오프셋 동기화 기본값"
+  },
+  {
+   "n": 14,
+   "title": "Apache Kafka · KIP-382: MirrorMaker 2.0",
+   "url": "https://cwiki.apache.org/confluence/spaces/KAFKA/pages/95650722/KIP-382+MirrorMaker+2.0",
+   "kind": "reference",
+   "note": "MirrorMaker 2 설계 원문"
+  },
+  {
+   "n": 15,
+   "title": "Debezium 문서 · MySQL connector",
+   "url": "https://debezium.io/documentation/reference/stable/connectors/mysql.html",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Apache Flink 문서 · Stateful Stream Processing",
+   "url": "https://nightlies.apache.org/flink/flink-docs-stable/docs/concepts/stateful-stream-processing/",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Terraform 문서 · Modules",
+   "url": "https://developer.hashicorp.com/terraform/language/modules",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Argo CD 문서 · ApplicationSet",
+   "url": "https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "AWS Security Reference Architecture · 계정·OU 구성",
+   "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/security-reference-architecture/architecture.html",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Thanos 문서 · Quick Tutorial",
+   "url": "https://thanos.io/tip/thanos/quick-tutorial.md/",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "dbt 문서 · Data tests",
+   "url": "https://docs.getdbt.com/docs/build/data-tests",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "Snowflake 문서 · Date & time data types",
+   "url": "https://docs.snowflake.com/en/sql-reference/data-types-datetime",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Confluent 문서 · Schema Evolution and Compatibility",
+   "url": "https://docs.confluent.io/platform/current/schema-registry/fundamentals/schema-evolution.html",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "GDPR 제5조 · 개인정보 처리 원칙(보관 제한·책임성)",
+   "url": "https://gdpr-info.eu/art-5-gdpr/",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "GDPR 제17조 · 삭제권(잊힐 권리)",
+   "url": "https://gdpr-info.eu/art-17-gdpr/",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 27,
+   "title": "자소설닷컴 — 토스뱅크 연봉(같은 집계)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "토스 — 회사 소개(사이트 하단 회사 정보)",
+   "url": "https://toss.im/company",
+   "kind": "company"
+  },
+  {
+   "n": 29,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  }
+ ],
+ "caveat": "이 팀(글로벌 데이터 플랫폼)이 직접 구조를 발표한 자료는 찾지 못했습니다. 소속 팀(DOP)의 StarRocks 글[3], 토스 데이터 플랫폼팀의 입수 글[4], 같은 그룹 토스증권·토스페이먼츠의 Kafka 이중화·실시간 파이프라인 발표와 글[2][5][6][7]로 '이 그룹은 이렇게 한다'를 보였고, 공고의 나머지 낱말은 공식 문서로 '보통 이런 것'을 보였습니다. 토스증권 발표의 이중화는 두 데이터센터 사이 이야기라, 허브–리전 미러링이 같은 방식인지는 공개되지 않았습니다. 진출 국가는 보도[8][9] 기준입니다.",
+ "resources": [
+  {
+   "id": "slash23-kafka",
+   "title": "SLASH 23 · Kafka 이중화로 다양한 장애 상황 완벽 대처하기",
+   "by": "토스증권 데이터 플랫폼팀 · 14분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=Pzkioe7Dvo4",
+   "why": "미러링·오프셋 싱크·한쪽에서만 소비하기 — 업무③ '토픽 미러링 체계'를 그룹이 실제로 어떻게 했는지 그림으로 본다."
+  },
+  {
+   "id": "toss-starrocks",
+   "title": "StarRocks 운영기: Resource Group으로 멀티테넌트 워크로드 격리하기",
+   "by": "토스 DOP 팀 · 토스 테크 · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/operating-starrocks-1",
+   "why": "합류할 팀이 쓴 글. 이 팀이 장애·성능 문제를 어떤 순서로 풀고 어떻게 기록하는지 — 이력서 '과정 중심' 요구의 본보기."
+  },
+  {
+   "id": "toss-iceberg",
+   "title": "입수는 Datalake로! (feat. Iceberg)",
+   "by": "토스 데이터 플랫폼팀 · 토스 테크 · 2024",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/datalake-iceberg",
+   "why": "Kafka Connect 설정형 자동 입수와 유지보수 자동화 — 업무⑤ '사람 손을 거치지 않는 입수'의 국내판."
+  },
+  {
+   "id": "toss-lineage",
+   "title": "토스증권의 수천 개 실시간 데이터 파이프라인 운영방법 #1: Visualize Lineage",
+   "by": "토스증권 Realtime Data Team · 토스 테크 · 2025",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/toss-securities-visualize-lineage",
+   "why": "CDC·Flink·Kafka Connect 파이프라인 수천 개를 그래프로 관리하는 내부 도구 — '생산성을 높이는 내부 도구'의 예."
+  },
+  {
+   "id": "internal-kafka",
+   "title": "아파치 카프카 애플리케이션 프로그래밍",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kafka",
+   "why": "토픽·파티션·컨슈머 그룹·오프셋을 실제로 친 명령과 오간 레코드로 익힌다. 미러링을 이해하기 전의 바닥."
+  },
+  {
+   "id": "internal-k8s",
+   "title": "쿠버네티스 입문",
+   "by": "우리 사이트의 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "EKS 위에 데이터 도구를 올리기 전에 파드·디플로이먼트·Pending·CrashLoopBackOff 읽는 법."
+  },
+  {
+   "id": "kafka-tdg",
+   "title": "Kafka: The Definitive Guide (2판)",
+   "by": "Gwen Shapira · Todd Palino · Rajini Sivaram · Krit Petty · O'Reilly · 2021",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/kafka-the-definitive/9781492043072/",
+   "why": "운영 관점의 Kafka 교과서. 클러스터 간 미러링 장과 운영·모니터링 장을 먼저 본다."
+  },
+  {
+   "id": "mm2-docs",
+   "title": "Using MirrorMaker 2 (Red Hat Streams for Apache Kafka)",
+   "by": "Red Hat",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.redhat.com/en/documentation/red_hat_streams_for_apache_kafka/2.5/html/using_amq_streams_on_rhel/assembly-mirrormaker-str",
+   "why": "MirrorMaker 2의 토픽 이름 규칙·체크포인트·그룹 오프셋 동기화 설정을 예시와 함께. 허브–리전 미러링을 직접 꾸려 볼 때."
+  },
+  {
+   "id": "debezium-docs",
+   "title": "Debezium MySQL connector",
+   "by": "Debezium 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://debezium.io/documentation/reference/stable/connectors/mysql.html",
+   "why": "스냅샷 방식·이벤트 모양(before/after/op)·binlog가 사라졌을 때 — CDC 운영의 거의 모든 질문이 여기 있다."
+  },
+  {
+   "id": "flink-docs",
+   "title": "Stateful Stream Processing",
+   "by": "Apache Flink 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://nightlies.apache.org/flink/flink-docs-stable/docs/concepts/stateful-stream-processing/",
+   "why": "상태·체크포인트·정확히 한 번 처리의 뜻. Flink 파이프라인을 장애에 강하게 만드는 기초."
+  },
+  {
+   "id": "tf-up-running",
+   "title": "Terraform: Up & Running (3판)",
+   "by": "Yevgeniy Brikman · O'Reilly · 2022",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.terraformupandrunning.com/",
+   "why": "상태 파일 나누기·모듈·여러 환경 운영 — '신규 국가를 Terraform으로'의 바탕."
+  },
+  {
+   "id": "tf-modules",
+   "title": "Terraform Modules",
+   "by": "HashiCorp 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.hashicorp.com/terraform/language/modules",
+   "why": "루트·자식 모듈과 모듈 소스. 나라 하나 = 같은 모듈 한 번 더 부르기."
+  },
+  {
+   "id": "argocd-appset",
+   "title": "Argo CD ApplicationSet",
+   "by": "Argo CD 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/",
+   "why": "클러스터 생성기로 여러 클러스터에 같은 앱을 찍어 내는 법 — 'GitOps 스택을 새 리전에 복제'."
+  },
+  {
+   "id": "aws-sra",
+   "title": "AWS Security Reference Architecture",
+   "by": "AWS Prescriptive Guidance",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/security-reference-architecture/architecture.html",
+   "why": "계정을 관리·보안·로그·네트워크·업무로 나누는 참조 구조. '멀티계정'이 무엇을 나누는지 그림으로."
+  },
+  {
+   "id": "ddia",
+   "title": "Designing Data-Intensive Applications",
+   "by": "Martin Kleppmann · O'Reilly · 2017",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/",
+   "why": "복제·파티션·스트림·변경 데이터 잡기를 한 권에. 미러링·CDC·재처리가 왜 어려운지 원리부터."
+  },
+  {
+   "id": "fde-book",
+   "title": "견고한 데이터 엔지니어링",
+   "by": "조 라이스 · 맷 하우슬리 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B2%AC%EA%B3%A0%ED%95%9C%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81",
+   "why": "입수 → 저장 → 변환 → 서빙과 그 밑의 보안·운영(언더커런트) 전체 지도. '인프라와 파이프라인 양쪽'을 한 그림으로."
+  },
+  {
+   "id": "airflow-book",
+   "title": "Apache Airflow 기반의 데이터 파이프라인",
+   "by": "바스 하렌슬락 · 율리안 더라위터르 · 제이펍 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000002993441",
+   "why": "DAG·스케줄·백필·테스트. 원서 1판 번역이라 최신 변경은 공식 문서로 보충."
+  },
+  {
+   "id": "dbt-tests",
+   "title": "dbt Data tests",
+   "by": "dbt Labs 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.getdbt.com/docs/build/data-tests",
+   "why": "기본 검사 네 가지와 직접 쓰는 검사 — '품질 테스트를 코드로'."
+  },
+  {
+   "id": "snowflake-time",
+   "title": "Snowflake Date & time data types",
+   "by": "Snowflake 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.snowflake.com/en/sql-reference/data-types-datetime",
+   "why": "NTZ·LTZ·TZ 차이 — 다국가 타임존 표준을 정하기 전에 꼭 읽을 쪽."
+  },
+  {
+   "id": "schema-evo",
+   "title": "Schema Evolution and Compatibility",
+   "by": "Confluent 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.confluent.io/platform/current/schema-registry/fundamentals/schema-evolution.html",
+   "why": "호환 규칙과 배포 순서 — '스키마 레지스트리 등 선언적 데이터 관리'."
+  },
+  {
+   "id": "thanos-docs",
+   "title": "Thanos Quick Tutorial",
+   "by": "Thanos 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://thanos.io/tip/thanos/quick-tutorial.md/",
+   "why": "사이드카·쿼리·스토어·룰러 — 리전 여러 곳의 Prometheus를 한 창구로 묶는 구조."
+  },
+  {
+   "id": "gdpr",
+   "title": "GDPR 제5조 · 제17조",
+   "by": "gdpr-info.eu(조문 정리)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://gdpr-info.eu/art-5-gdpr/",
+   "why": "보관 제한·책임성·삭제권 조문. 'GDPR 리텐션'이 개발자에게 무엇을 요구하는지 원문으로."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "Kafka 바닥 다지기",
+   "time": "2~3주",
+   "goal": "토픽·파티션·컨슈머 그룹·오프셋을 장애 상황에 빗대 설명하고, 커넥터로 DB 변경을 토픽에 받을 수 있다.",
+   "resources": [
+    "internal-kafka",
+    "slash23-kafka",
+    "debezium-docs"
+   ],
+   "task": "로컬 Docker로 MySQL + Kafka + Debezium을 띄워 가상 주문 표 1,000행을 넣고 수정·삭제한 뒤, 토픽에 쌓인 이벤트(op c/u/d)를 세어 본다."
+  },
+  {
+   "title": "클러스터 두 개 잇기",
+   "time": "1~2주",
+   "goal": "MirrorMaker 2로 한쪽 토픽을 다른 쪽에 복제하고, 컨슈머를 옮겼을 때 몇 건이 중복되는지 숫자로 말할 수 있다.",
+   "resources": [
+    "mm2-docs",
+    "kafka-tdg",
+    "ddia"
+   ],
+   "task": "Kafka 두 개(허브·리전 흉내)를 띄워 미러링을 걸고, 리전 쪽 컨슈머를 멈췄다가 허브 쪽으로 옮겨 다시 읽힌 메시지 수를 기록한다."
+  },
+  {
+   "title": "인프라를 코드로, 두 번 찍기",
+   "time": "2~4주",
+   "goal": "같은 Terraform 모듈을 값만 바꿔 두 번째 환경에 올리고, ArgoCD가 두 클러스터에 같은 앱을 배포하게 만든다.",
+   "resources": [
+    "tf-up-running",
+    "tf-modules",
+    "internal-k8s",
+    "argocd-appset",
+    "aws-sra"
+   ],
+   "task": "AWS 프리 티어나 로컬 kind 클러스터 두 개로 '나라 au·eu' 환경을 만들고, ApplicationSet 하나로 둘 다에 같은 Kafka 컨슈머 앱을 배포한다. 끝나면 꼭 지운다."
+  },
+  {
+   "title": "배치·표준·품질",
+   "time": "2~3주",
+   "goal": "나라마다 시간대가 다른 일 배치를 한 벌의 코드로 돌리고, 품질 검사를 자동으로 건다.",
+   "resources": [
+    "airflow-book",
+    "dbt-tests",
+    "snowflake-time",
+    "fde-book"
+   ],
+   "task": "가상 거래 10만 건(UTC 저장)을 시드니·베를린 기준 '하루'로 각각 집계하는 dbt 모델과 Airflow DAG를 만들고, unique·not_null 검사와 30일씩 자르는 백필을 붙인다."
+  },
+  {
+   "title": "관측성과 거버넌스 (선택)",
+   "time": "계속",
+   "goal": "여러 환경의 지표를 한 창구로 보고, 개인정보 보관 기간을 작업으로 강제할 수 있다.",
+   "resources": [
+    "thanos-docs",
+    "schema-evo",
+    "gdpr",
+    "toss-starrocks",
+    "toss-iceberg",
+    "toss-lineage",
+    "flink-docs"
+   ],
+   "task": "3단계의 두 환경에 Prometheus를 하나씩 두고 Thanos로 묶어 컨슈머 지연 알림을 건다. 가상 사용자 표에 나라별 보관 기간을 두고 기한 지난 행을 지우는 일 배치와 삭제 기록 표를 만든다."
+  }
+ ],
+ "pay": {
+  "summary": "공공데이터 집계로 신입 초봉 **약 4,200만원**, 평균 **약 6,200만원** — 비상장사라 공시된 평균 급여는 없다. 이 자리는 5년 이상 경력직이라 두 숫자 모두 기준이 되기 어렵다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 없고 직군 구분도 없다 [26]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균(사원 1,636명) [26]"
+   },
+   {
+    "label": "토스뱅크 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 계열사 값 — 견주어 보기용 [27]"
+   },
+   {
+    "label": "토스뱅크 평균",
+    "value": "약 7,208만원",
+    "amount": 7208,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 계열사 평균 [27]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고, 직무 인터뷰 두 번·문화적합성 인터뷰·레퍼런스 체크 뒤 **처우 협의** 단계에서 사람마다 정한다 [1]. 비바리퍼블리카는 상장사가 아니라 사업보고서의 '직원 평균 급여'가 없다(공시 숫자 없음). 평균은 경력직이 섞인 회사 전체 값이고 초봉은 신입 값이라, 5년 이상 경력을 요구하는 이 자리의 제안 금액과는 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 복지를 소개한 2021년 공식 글이다 [29]. 지금도 같은지, 해외 허브 근무자에게도 같은지는 글에 없으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스(비바리퍼블리카) 본사",
+  "address": "서울특별시 강남구 테헤란로 142, 4·10~13·22·23층",
+  "postal": "06236",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "공고의 근무지 표기는 'Seoul'이고, 주소는 토스 회사 소개 페이지 하단의 회사 정보다 [28]. 업무에 '싱가폴 허브'가 나오지만 그곳이 근무지인지 플랫폼 위치인지는 공고에 적혀 있지 않다 [1] {추론}."
+ }
+}

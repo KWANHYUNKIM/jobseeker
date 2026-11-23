@@ -1,12 +1,24 @@
 {
  "updated_at": "2026-11-23",
  "jobs": {
+  "ats-toss:group:8003064003": "toss-dip-data-scientist",
   "ats-toss:group:7818488003": "toss-dw-analytics-engineer",
   "ats-toss:group:7985496003": "toss-dw-global-analytics-engineer",
+  "ats-toss:group:7987773003": "toss-global-data-engineer",
   "ats-toss:group:7901191003": "toss-platform-analytics-engineer",
   "saramin-55608860": "tossbank-finance-data-system"
  },
  "roles": [
+  {
+   "id": "toss-dip-data-scientist",
+   "company": "토스",
+   "role": "데이터 사이언티스트 (Data Intelligence Platform)",
+   "jobs": [
+    "ats-toss:group:8003064003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 23
+  },
   {
    "id": "toss-dw-analytics-engineer",
    "company": "토스",
@@ -26,6 +38,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 34
+  },
+  {
+   "id": "toss-global-data-engineer",
+   "company": "토스",
+   "role": "데이터 엔지니어 (Global)",
+   "jobs": [
+    "ats-toss:group:7987773003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 25
   },
   {
    "id": "toss-platform-analytics-engineer",
