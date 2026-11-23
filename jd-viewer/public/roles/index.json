@@ -21,6 +21,7 @@
   "ats-toss:group:7827378003": "toss-commerce-data-graph-mle",
   "ats-toss:group:7992223003": "toss-commerce-search-relevance-mle",
   "ats-toss:group:7795787003": "toss-commerce-signal-data-scientist",
+  "ats-toss:group:7984081003": "toss-commerce-sre",
   "ats-toss:group:4071131003": "toss-dba",
   "ats-toss:group:4071151003": "toss-devops-engineer",
   "ats-toss:group:8003064003": "toss-dip-data-scientist",
@@ -243,6 +244,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 14
+  },
+  {
+   "id": "toss-commerce-sre",
+   "company": "토스",
+   "role": "서버 개발자 (Commerce - SRE)",
+   "jobs": [
+    "ats-toss:group:7984081003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 11
   },
   {
    "id": "toss-dba",

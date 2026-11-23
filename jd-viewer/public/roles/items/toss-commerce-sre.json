@@ -1,0 +1,1031 @@
+{
+ "id": "toss-commerce-sre",
+ "company": "토스",
+ "role": "서버 개발자 (Commerce - SRE)",
+ "team": "Server Platform Chapter · Commerce PRO 팀",
+ "jobs": [
+  "ats-toss:group:7984081003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "토스쇼핑이 **빠르고 안 죽게** 지키는 서버 개발자입니다. 쇼핑에 맞는 안정성·지연 지표를 정하고, 수많은 마이크로서비스를 꿰뚫어 보는 관측 시스템을 만들고, 장애가 나면 대응과 사후 분석을 이끕니다.[1]",
+  "env": "Kotlin·Spring 서버가 쿠버네티스 + Istio 위에서 돌고, 지표는 Prometheus + Thanos + Grafana로 봅니다.[1] 직함은 서버 개발자이고 Server Platform Chapter 소속으로 커머스 도메인에 배치됩니다.[1]",
+  "oneline": "도구를 다루는 운영자보다 **원인을 코드·JVM·커널까지 따라가 고치는 개발자**에 가깝습니다. 토스 서버 플랫폼 팀이 공개한 사례가 모두 그렇게 끝납니다.[2][4]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "토스쇼핑 서비스에 특화된 Stability, Scalability, Availability, Latency 지표를 고도화하고 지속적으로 개선해요.",
+   "short": "쇼핑에 맞는 '잘 돌고 있나' 숫자(성공률·지연·여유 용량)를 정하고, 목표선을 그어 지키는 일.",
+   "why": "Commerce PRO 팀은 토스쇼핑의 성능·안정성·관측가능성을 책임지는 팀입니다.[1] 서버 한 대의 CPU 그래프로는 고객이 상품 화면에서 겪는 일을 알 수 없어서, **사용자 쪽에서 본 숫자**를 따로 정해야 합니다.[14] 같은 그룹의 다른 SRE 공고들도 주요 흐름마다 SLI·SLO(아래 풀이)를 정하는 일을 업무 첫 줄에 두었습니다.[7][8]",
+   "actually": {
+    "intro": "구글 SRE 책이 정리한 표준 방식입니다. 토스쇼핑이 어떤 숫자를 쓰는지는 공개되지 않았습니다.[14][15]",
+    "items": [
+     "**SLI(서비스 수준 지표) 고르기** — 고객이 느끼는 숫자. 성공한 요청 비율, 응답 시간 분포, 처리량. 구글은 기본 신호로 지연·트래픽·오류·포화 넷을 꼽는다.[14][15]",
+     "**SLO(목표) 긋기** — \"30일 동안 상품 상세 요청의 99.9%가 성공\"처럼 목표와 기간을 함께 정한다. 남는 실패 허용량(에러 버짓)이 배포를 서두를지 멈출지의 기준이 된다.[15]",
+     "**흐름마다 따로** — 토스플레이스 SRE 공고는 '주요 결제·매장 운영 흐름'마다 SLI·SLO를 정하라고 적었다.[8] 쇼핑이라면 홈·검색·상품 상세·주문이 각각 한 흐름이 될 것이다 {추론}.",
+     "**평균 대신 분위수** — 평균은 느린 1%를 가린다. 응답 시간은 히스토그램으로 모아 p99(100번 중 가장 느린 1번 근처)를 계산한다.[23]",
+     "**알림은 예산 소진 속도로** — 오류율 자체보다 '에러 버짓을 얼마나 빨리 쓰나(burn rate)'로 알림을 건다. 1시간 만에 30일 예산의 2%를 쓰면(14.4배) 바로 사람을 부르는 식이다.[16]",
+     "**Scalability 숫자** — 지금보다 몇 배 트래픽까지 버티나. 성능 테스트로 잰다(요건②).[8]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "SLO 99.9%면 한 달에 몇 분 실패해도 되나 (직접 돌린 출력)",
+     "body": "구글 SRE 워크북의 burn rate 계산을 그대로 옮겼습니다.[16] 출력: `30일 SLO 99.9% → 허용 실패 시간 43.2분` · `1시간 오류율 1.44% → burn rate 14.4배, 1시간에 30일 예산의 2.0% 소진` · `이 속도가 이어지면 예산이 바닥나는 시간: 50시간`",
+     "lang": "python",
+     "code": "slo = 0.999\nminutes = 30 * 24 * 60\nbudget = (1 - slo) * minutes\nprint(f\"30일 SLO {slo:.1%} → 허용 실패 시간 {budget:.1f}분\")\n# 지난 1시간 오류율이 1.44%라면 예산을 얼마나 빨리 쓰나(burn rate)\nerr_1h = 0.0144\nburn = err_1h / (1 - slo)\nprint(f\"1시간 오류율 {err_1h:.2%} → burn rate {burn:.1f}배, 1시간에 30일 예산의 {burn/(30*24):.1%} 소진\")\nprint(f\"이 속도가 이어지면 예산이 바닥나는 시간: {30*24/burn:.0f}시간\")"
+    }
+   ],
+   "how_far": "목표 숫자를 얼마로 할지는 제품팀·사업과 같이 정하고, SRE는 **재는 방법·대시보드·알림**을 만들고 지킵니다 {추론}. 최소선은 SLI·SLO·에러 버짓을 말로 설명하고, Prometheus 쿼리로 흐름별 성공률과 p99를 그려 보일 수 있는 정도입니다.",
+   "refs": [
+    1,
+    7,
+    8,
+    14,
+    15,
+    16,
+    23
+   ],
+   "study": [
+    "sre-book",
+    "sre-workbook",
+    "prometheus-docs",
+    "book-spring-boot"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "잠깐의 응답 지연, 자원 포화도 놓치지 않고 분석해서 근본 원인을 파악하고 개선해요.",
+   "short": "몇 초 느려짐·잠깐 찬 메모리도 그냥 넘기지 않고, 코드·JVM·커널 중 어디서 났는지 끝까지 찾는 일.",
+   "why": "토스 서버 플랫폼 팀장은 장애 대부분은 코드 변경을 보면 풀리지만 **그렇지 않은 경우**가 있어 프로파일러로 서비스 안을 들여다본다고 했습니다.[2] 토스 SRE 발표의 첫 사례도 'Memcached 타임아웃'이라는 작은 증상에서 시작해 전혀 다른 곳(지표 수집)에서 원인을 찾았습니다.[4]",
+   "actually": {
+    "intro": "토스가 직접 발표한 사례입니다.",
+    "items": [
+     "**타임아웃 → 지표 수집** — Memcached 타임아웃이 났다. 앱 지표에서 GC(쓰레기 수거) 시간이 길었고, 두 데이터센터 중 한쪽만 그랬다. 1월 17일부터 그쪽에서 Prometheus 수집을 시작한 게 실마리였다. 수집 응답이 MB 단위라 JVM이 '아주 큰 객체'를 계속 만들었다. 지표 개수 줄이기·힙 리전 크기 키우기·스트림 응답으로 풀었다.[4]",
+     "**Redis가 느리다?** — 앱 로그와 Pinpoint(분산 추적 도구) 모두 Redis 응답이 느렸다. tcpdump로 보니 Redis가 늦게 보낸 경우와 **앱이 늦게 받은** 경우가 섞여 있었다. strace로 read 시스템 콜이 240ms 뒤에 돌아오는 걸 확인했고, 운영체제·커널을 올린 뒤 200ms 넘는 현상이 사라졌다.[2]",
+     "**배포가 느리다** — Pinpoint로 설정 서버를 보니 암호화된 값을 하나씩 풀고 있었다. 하나에 약 5ms라 2,000개면 10초. 여러 스레드로 나눠 풀었다.[2]",
+     "**메모리가 자꾸 찬다** — 힙 덤프로 Redis 응답 시간 지표가 계속 새 객체를 만들고 있던 걸 찾았다. 힙 밖(네이티브) 메모리가 새는 건 jemalloc으로 압축 관련 코드의 close 누락을 찾았다.[2]",
+     "**CPU를 누가 먹나** — 로그 검색용 Elasticsearch의 CPU가 높아 async-profiler(CPU·메모리·벽시계 시간을 재는 자바 프로파일러)를 돌렸다. 긴 ISO 날짜 문자열을 해석하는 비용이 보여, 숫자(epoch millis) 형식이 훨씬 빠르다는 걸 코드로 재어 확인했다.[2][26]",
+     "**자원 점검 순서** — 자원마다 사용률·포화·오류를 차례로 본다(USE 방법). 토스 모니터링 발표도 CPU 스로틀링·OOMKilled·디스크·네트워크 드롭 지표를 이 틀로 나눴다.[5][19]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "느려짐 하나를 좁혀 가는 순서 — 발표 사례의 흐름[2]",
+     "steps": [
+      "앱 로그 · 어느 요청이 느렸나",
+      "분산 추적(Pinpoint) · 어느 호출에서",
+      "tcpdump · 상대가 늦었나 내가 늦게 받았나",
+      "strace · perf · 시스템 콜·커널",
+      "고치기 · 코드·설정·커널 버전"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "이 자리의 기준은 **'원인 미상'으로 닫지 않는 것**입니다 {추론}. 최소선은 스레드 덤프·힙 덤프·GC 로그·프로파일러 결과(불꽃 그래프)를 읽고, tcpdump로 '누가 늦었나'를 가를 수 있는 정도입니다. 같은 그룹 토스증권 SRE는 eBPF·메모리·커널까지 내려가는 분석을 업무로 적었습니다.[7]",
+   "refs": [
+    2,
+    4,
+    5,
+    7,
+    19,
+    26
+   ],
+   "study": [
+    "slash23-profiler",
+    "slash21-sre",
+    "async-profiler",
+    "book-jvm",
+    "sysperf-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "수많은 마이크로서비스(MSA) 환경에서 발생하는 대규모 트래픽의 병목을 실시간으로 감지하고 추적할 수 있는 관측 가능성(Observability) 시스템을 고도화해요.",
+   "short": "요청 하나가 거쳐 간 수십 개 서비스를 한 ID로 이어, 어디서 막혔는지 바로 보이게 하는 일.",
+   "why": "토스 마이크로서비스는 2019년 130개에서 2021년 236개로 늘었습니다.[5] 같은 그룹 토스페이먼츠 발표는 서비스가 수시로 바뀌고 요청 하나가 여러 네트워크 구간을 지나며 지표 종류가 폭발하면, 이미 겪은 장애만 잡는 모니터링으로는 부족하다고 했습니다. 그래서 **'왜?'라는 질문에 답할 수 있는 시스템**(관측 가능성)이 필요하다는 것입니다.[3]",
+   "actually": {
+    "items": [
+     "**세 층의 지표** — 앱(스프링 지표, 오류와 가장 관계가 깊은 층) · 네트워크(서비스 간 요청 지표, 실패 원인 표시) · OS(CPU·메모리·디스크·커널). 앱 지표만으로는 네트워크 경로 문제를 못 본다.[5]",
+     "**실패 원인 표시 읽기** — Istio가 쓰는 Envoy 프록시는 실패마다 UH(건강한 대상 없음)·UO(넘침)·UT(시간 초과)·UF(연결 실패)·URX(재시도 한도) 같은 표시를 붙인다. 토스는 이 값을 지표 라벨로 모은다.[5][24]",
+     "**traceId로 잇기** — 요청마다 ID를 만들어 모든 로그에 남기고, 다른 서버를 부를 때 헤더로 넘긴다. 이 형식은 W3C Trace Context와 OpenTelemetry로 표준이 모이고 있다.[3][21][22]",
+     "**로그는 JSON으로, 맥락과 함께** — 항목 순서가 바뀌어도 파싱되게 정형화하고 API·사용자·주문 ID를 같이 남긴다.[3]",
+     "**인프라 끝까지** — CDN·방화벽·로드밸런서·사이드카·DB(쿼리 주석에 ID)·TCP 서버(본문 첫 줄에 ID)까지 같은 ID로 찾는다. 에러 추적(Sentry)·성능 도구(Pinpoint)에도 그 ID를 넣는다.[3]",
+     "**수집 쪽도 버텨야** — Prometheus 메모리가 터져 수집 지표를 줄이고, 대상을 나눠(hashmod) 여러 대가 수집한 뒤 Thanos로 합쳐 묻고 오래 보관한다.[5]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "같은 traceId로 느린 구간 찾기 (가상 로그, 직접 돌린 출력)",
+     "body": "서버마다 따로 남긴 JSON 로그라도 traceId가 같으면 한 요청으로 묶입니다.[3] 출력: `느린 요청 a1 612ms → 가장 오래 걸린 곳: product 540ms`",
+     "lang": "python",
+     "code": "import json\n# 가상 JSON 로그 — 서버마다 따로 남겼지만 traceId 가 같다\nlogs = \"\"\"{\"svc\":\"gateway\",\"traceId\":\"a1\",\"ms\":612}\n{\"svc\":\"home-bff\",\"traceId\":\"a1\",\"ms\":598}\n{\"svc\":\"recommend\",\"traceId\":\"a1\",\"ms\":41}\n{\"svc\":\"product\",\"traceId\":\"a1\",\"ms\":540}\n{\"svc\":\"coupon\",\"traceId\":\"a1\",\"ms\":22}\n{\"svc\":\"gateway\",\"traceId\":\"b2\",\"ms\":75}\"\"\".splitlines()\nrows = [json.loads(l) for l in logs]\nfor g in (r for r in rows if r[\"svc\"] == \"gateway\" and r[\"ms\"] > 300):\n    hops = sorted((r for r in rows if r[\"traceId\"] == g[\"traceId\"] and r[\"svc\"] not in (\"gateway\", \"home-bff\")),\n                  key=lambda r: -r[\"ms\"])\n    print(f'느린 요청 {g[\"traceId\"]} {g[\"ms\"]}ms → 가장 오래 걸린 곳: {hops[0][\"svc\"]} {hops[0][\"ms\"]}ms')"
+    }
+   ],
+   "how_far": "공통 수집 바닥은 Server Platform 팀이 라이브러리·게이트웨이·관측 기반으로 맡고 있습니다.[9] 이 자리는 그 위에서 **쇼핑 서비스에 무엇을 재고 어떻게 이을지** 정하고 빈 곳을 메우는 쪽입니다 {추론}. 최소선은 traceId 전파 원리, Prometheus 지표 종류(카운터·게이지·히스토그램), 라벨을 늘리면 시계열이 폭발한다는 감각입니다.[23]",
+   "refs": [
+    3,
+    5,
+    9,
+    21,
+    22,
+    23,
+    24
+   ],
+   "study": [
+    "slash23-otel",
+    "slash21-mon",
+    "otel-docs",
+    "obs-eng",
+    "prometheus-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "장애 시 비상 대응 및 Post-mortem을 주도하며, 장애 자동 복구 시스템 설계 및 아키텍쳐 개선을 통한 재발 방지 시스템을 마련해요.",
+   "short": "장애 때 대응을 지휘하고, 끝나면 원인·재발 방지를 글로 남기며, 같은 장애는 사람 없이 복구되게 만드는 일.",
+   "why": "팀 소개에 'Incident 대응 프로세스를 총괄한다'고 적혀 있고, 팀원은 장애가 나도 **누구나 복구할 수 있는 시스템**을 설계한다고 했습니다.[1] 2019년 인터뷰에서도 토스 SRE는 장애를 실시간으로 지켜보고, 끝난 뒤 같은 장애가 다시 안 나게 후속 작업까지 맡는다고 소개됐습니다.[6]",
+   "actually": {
+    "items": [
+     "**비상 대응** — 먼저 피해를 줄이고(차단·우회·증설·롤백) 원인은 나중에 판다. 2025년 10월 토스페이먼츠 DDoS 장애는 세 번(32분·13분·74분), 평소의 최대 250배·7,800배 요청이 몰렸다. 공격 패턴·IP 차단, 긴급 증설, 트래픽 경로 우회, 클라우드 자원 확장으로 막았다.[10]",
+     "**포스트모템** — 같은 보고서는 원인 · 영향(시간·범위) · 조치 · 재발 방지(즉시·단기·중기·장기)로 썼다.[10] 사람을 탓하지 않고 구조를 고치는 글이 기본 형식이다.[17]",
+     "**자동 복구 예** — 모든 머신에 1초마다 ping을 보내고, 기준을 넘으면 그 머신의 앱 주소를 서비스 목록에서 자동으로 빼고 메신저로 알린다.[5] 쿠버네티스로 옮기며 장비가 고장 나면 스스로 복구되게 했다.[6]",
+     "**연쇄 장애 막기** — 한 서비스가 느려지면 부르는 쪽 스레드가 묶여 같이 넘어진다. 타임아웃·재시도 상한·회로 차단·부하 거절로 끊는다.[18]",
+     "**알림부터 대응 확인까지** — 토스 클라이언트 플랫폼 팀은 알림·담당자 호출을 코드로 정하고, '자동으로 꺼진 알림'과 '사람이 대응을 확인한 알림'을 나눴다.[11]",
+     "**분석에 필요한 것** — 토스 SRE 발표는 변경 기록(Change Log)·로그·지표 세 가지를 꼽았다.[4]"
+    ]
+   },
+   "how_far": "고치는 코드는 대개 그 서비스 팀 몫이고, SRE는 **대응을 이끌고 원인을 확정하고 재발 방지를 끝까지 챙깁니다**.[1][6] 최소선은 장애 타임라인을 시간순으로 재구성하고 '왜 늦게 알았나·왜 번졌나'까지 쓴 포스트모템 한 장을 만들 수 있는 정도입니다 {추론}.",
+   "refs": [
+    1,
+    4,
+    5,
+    6,
+    10,
+    11,
+    17,
+    18
+   ],
+   "study": [
+    "sre-book",
+    "release-it",
+    "tmc-incident"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "토스쇼핑 주요 지면의 지연 시간을 분석해 병목 지점을 찾고, 각 제품팀과 협력하여 개선해요.",
+   "short": "홈·상품 상세 같은 화면이 늦게 뜨는 이유를 호출 단위로 쪼개 찾고, 그 화면 팀과 같이 고치는 일.",
+   "why": "쇼핑 화면 하나에는 여러 서버의 결과가 모입니다 {추론}. 추천만 해도 수백만 상품에서 후보를 고르고 → 순위를 매기고 → 다시 섞는 단계를 거치고[12], 미리 계산한 결과를 Redis에 두고 Spring 서버가 내줍니다.[13] 화면은 **가장 느린 호출**을 기다리므로, 부르는 서버가 많을수록 드문 지연이 자주 보이게 됩니다.[20]",
+   "actually": {
+    "items": [
+     "**화면 하나를 펼치기** — 그 화면 요청을 traceId로 펼쳐 가장 오래 걸린 구간부터 본다(업무③의 도구).[3]",
+     "**꼬리를 본다** — 평균이 30ms여도 p99가 수백 ms면 고객 100명 중 1명은 느린 화면을 본다. 부르는 서버가 100개면 63%의 화면이 느린 응답을 하나 이상 만난다.[20]",
+     "**쓸데없는 일 지우기** — 토스 게이트웨이는 같은 주소가 와도 라우트 수만큼 매번 주소를 해석하고 있었다. 미리 해석해 캐시하자 크게 빨라졌다.[2]",
+     "**꼬리 줄이는 기법** — 늦어지면 다른 복제본에 한 번 더 보내기(헤지 요청), 직렬 호출을 병렬로, 꼭 필요 없는 호출은 나중에.[20]",
+     "**제품팀과 같이** — 고칠 코드는 대개 그 화면 팀의 것이다. SRE는 '어디가 몇 ms'인지 숫자와 위치를 내밀고 개선 전후를 잰다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "평균은 괜찮은데 화면은 느리다 (가상 값, 직접 돌린 출력)",
+     "body": "응답의 99%는 20~40ms, 1%만 GC 멈춤 등으로 1초 가까이 걸리는 서버입니다. 마지막 네 줄은 'The Tail at Scale' 논문의 계산과 같습니다.[20] 출력: `평균 40ms · p50 30ms · p99 853ms · p99.9 1165ms` · `호출 1개 → 1%` · `10개 → 10%` · `50개 → 39%` · `100개 → 63%`",
+     "lang": "python",
+     "code": "import random, statistics\nrandom.seed(7)\n# 가상 응답 시간(ms): 99%는 20~40ms, 1%는 GC 멈춤 등으로 800~1200ms\nlat = [random.uniform(20, 40) if random.random() > 0.01 else random.uniform(800, 1200) for _ in range(10_000)]\nq = statistics.quantiles(lat, n=1000)\nprint(f\"평균 {statistics.mean(lat):.0f}ms · p50 {q[499]:.0f}ms · p99 {q[989]:.0f}ms · p99.9 {q[998]:.0f}ms\")\n# 한 화면이 서버 N개를 부르면, 한 번이라도 느린(1%) 응답을 만날 확률\nfor n in (1, 10, 50, 100):\n    print(f\"호출 {n:>3}개 → 느린 응답을 하나 이상 만날 확률 {1 - 0.99**n:.0%}\")"
+    }
+   ],
+   "how_far": "어느 화면이 '주요 지면'인지, 몇 ms를 목표로 할지는 공개되지 않았습니다. 지원자는 **화면 지연 = 가장 느린 경로의 합**이라는 감각과, 그 경로를 traceId로 찾아 숫자로 보여 주는 능력을 갖추면 됩니다 {추론}.",
+   "refs": [
+    2,
+    3,
+    12,
+    13,
+    20
+   ],
+   "study": [
+    "tail-at-scale",
+    "slash23-otel",
+    "slash24-reco"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Java/Kotlin, Spring Framework 관련 개발 경험과 문제해결 능력이 있는 분이면 좋아요.",
+   "short": "원인이 서비스 코드나 라이브러리 안에 있는 일이 많아서. 읽고 고칠 줄 알아야 끝까지 따라간다.",
+   "why": "이 자리의 직함은 서버 개발자이고, 토스가 쓰는 기술은 Kotlin·Java·Netty·Spring MVC·WebFlux·Spring Cloud Gateway입니다.[1] 서버 플랫폼 팀 사례는 모두 **코드를 고쳐서** 끝났습니다 — 설정 서버의 복호화를 병렬로, 게이트웨이의 라우트 해석을 캐시로.[2] 팀원도 맞는 오픈소스가 없으면 서버·웹을 직접 만든다고 했습니다.[1]",
+   "level": {
+    "basic": "Spring Boot로 API를 만들고, 로그·예외 처리·DB 호출을 쓸 수 있다",
+    "work": "스레드 풀·커넥션 풀·타임아웃 설정의 뜻, MVC(요청마다 스레드)와 WebFlux(이벤트 루프)의 차이, Actuator·Micrometer로 지표 내기",
+    "team": "이벤트 루프를 막는 코드 찾기, 힙·네이티브 메모리 분석, 남의 라이브러리 코드를 읽고 원인 짚기[2]"
+   },
+   "how_far": "새 기능을 빨리 만드는 능력보다 **남이 만든 서비스 코드를 빨리 읽고 병목을 짚는 능력**이 더 쓰입니다 {추론}. 플랫폼 챕터 공통 공고는 실무 1년 이상, JVM·네트워크·커널까지 파고드는 사람을 찾는다고 적었습니다.[9]",
+   "refs": [
+    1,
+    2,
+    9
+   ],
+   "study": [
+    "book-spring-boot",
+    "book-thread",
+    "book-jvm"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "성능 테스트를 통해 시스템의 가용성을 확인하고, 병목 지점을 찾아 해결할 수 있는 분이면 좋아요.",
+   "short": "트래픽을 일부러 만들어 어디까지 버티는지 재고, 먼저 막히는 곳을 찾아 고치는 일.",
+   "why": "팀원은 서비스 성장을 돕는 **성능 테스트 환경을 만들고 돌리는 것**이 중요한 목표라고 했고, 이력서에 순간 트래픽 급증을 고려해 설계한 경험을 묻습니다.[1] 같은 그룹 토스증권 SRE의 도구 목록에는 부하 도구 k6가[7], 토스플레이스 SRE 업무에는 성능 테스트·용량 계획·통제된 장애 주입이 있습니다.[8]",
+   "actually": {
+    "items": [
+     "**테스트 종류** — 평소 부하 · 한계까지 올리는 스트레스 · 순간 급증(스파이크) · 몇 시간 이어 돌리는 소크. 질문마다 다른 테스트다.[25]",
+     "**필요한 동시성 계산** — 동시에 처리 중인 요청 수 = 초당 요청 × 응답 시간(리틀의 법칙). 응답이 느려지면 같은 트래픽에도 스레드가 모자라 줄이 선다.[32]",
+     "**결과 읽기** — 처리량만 보지 않고 p99·오류율을 같이, 그때 어느 자원이 먼저 찼는지 USE로 본다.[19]",
+     "**장애도 시험한다** — 토스플레이스 SRE는 Chaos Mesh로 일부러 장애를 넣어 본다.[8][33]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "응답이 느려지면 한 대가 받는 양이 준다 (가상 값, 직접 돌린 출력)",
+     "body": "리틀의 법칙으로 서버 한 대의 한계를 어림합니다.[32] 출력: `응답 50ms → 최대 4000 rps` · `200ms → 1000 rps` · `1000ms → 200 rps` · `1500 rps 가 200ms 로 느려지면 동시에 300개 처리 중 → 스레드 200개를 넘어 줄이 선다`",
+     "lang": "python",
+     "code": "# 리틀의 법칙: 동시에 처리 중인 요청 수 = 초당 요청 × 응답 시간\nthreads = 200  # 가상: 서버 한 대의 요청 처리 스레드\nfor latency_ms in (50, 200, 1000):\n    print(f\"응답 {latency_ms:>4}ms → 한 대가 감당하는 최대 {threads / (latency_ms / 1000):>5.0f} rps\")\nrps = 1500\nprint(f\"{rps} rps 가 200ms 로 느려지면 동시에 {rps * 0.2:.0f}개 처리 중 → 스레드 {threads}개를 넘어 줄이 선다\")"
+    }
+   ],
+   "how_far": "도구 이름보다 **'무엇을 알고 싶어 이 테스트를 돌렸나'**를 말할 수 있어야 합니다 {추론}. 최소선은 k6 같은 도구로 시나리오를 짜고, 목표 rps에서 p99·오류율·자원 사용률을 표로 내고, 먼저 찬 자원을 짚는 것입니다.",
+   "refs": [
+    1,
+    7,
+    8,
+    19,
+    25,
+    32,
+    33
+   ],
+   "study": [
+    "k6-docs",
+    "sysperf-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "기술적 문제에만 국한되지 않고, 비즈니스 맥락까지 파악해 주도적으로 문제를 해결할 수 있는 분이면 좋아요.",
+   "short": "같은 1초 지연도 주문 버튼과 배너는 무게가 달라서. 무엇부터 지킬지 사업에 미치는 영향으로 고른다.",
+   "why": "토스페이먼츠 발표는 좋은 관측 체계가 있으면 '요즘 결제 실패가 잦나?'라는 질문에 'A 금융사 API 실패율이 여러 서비스에서 높아 금융사에 확인을 요청했고, 기술지원팀이 고객사에 안내 중'처럼 **사업 상황까지 이해한 답**을 할 수 있다고 했습니다.[3] 이력서 안내도 경험을 나열하지 말고 임팩트를 보여 달라고 합니다.[1]",
+   "actually": {
+    "items": [
+     "**우선순위** — 어느 흐름의 SLO를 더 빡빡하게 둘지는 그 흐름이 사업에 주는 영향으로 정한다.[15]",
+     "**질문을 사업 말로** — '오류율 0.3%'보다 '상품 상세에서 주문으로 못 넘어간 고객 몇 명'이 제품팀을 움직인다 {추론}.",
+     "**장애 보고도 고객 말로** — 토스페이먼츠 장애 보고서는 원인보다 먼저 '결제창이 안 열리거나 API가 시간 초과로 실패했다'는 고객 영향을 적었다.[10]"
+    ]
+   },
+   "how_far": "사업 지표를 직접 만들 필요는 없습니다. **기술 숫자를 고객·매출 영향으로 옮겨 말하고**, 그걸로 무엇부터 고칠지 제안할 수 있으면 됩니다 {추론}.",
+   "refs": [
+    1,
+    3,
+    10,
+    15
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "리눅스 및 네트워크 시스템에 대한 깊은 이해가 있는 분을 찾아요.",
+   "short": "앱 로그로 안 보이는 지연은 커널·TCP·프록시에서 나서. 패킷과 시스템 콜을 읽을 줄 알아야 한다.",
+   "why": "'좋아요'가 아니라 '찾아요'로 끝나는 요건입니다.[1] 토스 사례에서 Redis 지연의 답은 커널 쪽에 있었고, 서비스 메시 때문에 요청 하나에 연결이 세 개(앱→프록시→프록시→앱) 생겨 급증 때 연결 비용이 세 배가 되는 문제도 있었습니다 — 프록시끼리는 HTTP/2로, 앱과 프록시 사이는 유닉스 도메인 소켓을 시험했습니다.[2] 토스 DevOps는 eBPF로 커널 함수까지 재서 Redis 지연을 분석했습니다.[31]",
+   "level": {
+    "basic": "TCP 연결 맺기·끊기(TIME_WAIT), DNS, HTTP keep-alive, L4·L7 로드밸런서의 차이",
+    "work": "tcpdump·ss·strace·vmstat으로 구간 가르기, 컨테이너 CPU 스로틀링·OOMKilled 읽기[5]",
+    "team": "perf·eBPF로 커널 안 재기, 커널 버전에 따른 차이, Envoy 연결 관리와 실패 표시 읽기[2][24][31]"
+   },
+   "how_far": "커널 개발자가 될 필요는 없습니다. **'앱이 늦은가, 네트워크가 늦은가, 커널이 늦게 깨웠나'를 증거로 가를 수 있는** 수준이 이 팀이 찾는 깊이입니다.[2] 토스증권 SRE도 리눅스 커널·TCP/IP 기본기를 필수로 적었습니다.[7]",
+   "refs": [
+    1,
+    2,
+    5,
+    7,
+    24,
+    31
+   ],
+   "study": [
+    "sysperf-book",
+    "bpf-book",
+    "slash24-ebpf",
+    "book-http",
+    "book-k8s"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Mission-Critical 한 서비스 운영 환경을 즐기며 높은 책임감으로 탄탄한 서비스를 같이 만들어 갈 수 있는 분을 찾아요.",
+   "short": "쇼핑은 주문·결제가 걸린 서비스라, 장애 하나가 바로 고객 불편과 매출 손실이 돼서.",
+   "why": "팀원은 토스 SRE가 서비스 신뢰성을 지키는 **최전선**에 있다고 했습니다.[1] 2019년 서버 플랫폼 팀의 목표는 '장애를 내려고 해도 장애가 나지 않는' 서비스였습니다.[6] 장애는 시간을 가리지 않습니다 — 토스페이먼츠의 첫 장애는 토요일 오후 5시에 났습니다.[10]",
+   "how_far": "장애 대응이 일의 일부라 근무 시간 밖 호출이 있을 수 있습니다 {추론}. 온콜 방식은 공고에 없으니 면접에서 물어보는 게 좋습니다.",
+   "refs": [
+    1,
+    6,
+    10
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "변화를 두려워 하지 않고 새로운 기술에 빠르게 적응하며 지속적인 성장을 원하는 분을 찾아요.",
+   "short": "바닥이 계속 바뀌어서 — DC/OS는 쿠버네티스로, InfluxDB는 Prometheus·Thanos로 옮겨 왔다.",
+   "why": "토스 모니터링 발표는 서버 인프라가 DC/OS에서 쿠버네티스·Istio로, 지표 수집이 InfluxDB·telegraf에서 Prometheus·Thanos로 바뀐 과정을 보였습니다.[5][6] 팀원은 오픈소스를 실험·도입하되 맞는 게 없으면 직접 만든다고 했고[1], 플랫폼 챕터는 '도입하지 않기로 한 결정'도 실험으로 친다고 적었습니다.[9]",
+   "actually": {
+    "items": [
+     "**지금 하려는 것** — 서버 플랫폼 팀은 분산 추적 스택에서 문제 패턴을 찾아 배포 때 막기, JFR(자바 실행 기록) 분석을 자동화해 CPU·메모리가 크게 늘면 담당자에게 알리기, eBPF로 앱·네트워크·시스템 지표를 분리하기를 다음 일로 꼽았다.[2]",
+     "**커널도 바꾼다** — 운영체제를 CentOS에서 Rocky로 옮기며 커널을 올렸고, 그게 지연 문제를 풀었다.[2]"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    5,
+    6,
+    9
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "'원인 미상'이라는 결론을 못 참는 사람 — 이 팀은 시스템 콜·커널까지 따라갔다[2]",
+   "코드도 쓰고 패킷도 읽는 사람 — 직함이 서버 개발자다[1]",
+   "숫자로 전후를 보여 주는 개선을 좋아하는 사람[1]",
+   "장애 뒤 '다시는 안 나게'를 끝까지 챙기는 사람[6]"
+  ],
+  "hard": [
+   "장애 대응이 일의 일부라 근무 시간 밖 대응이 있을 수 있다 {추론}",
+   "고치는 코드는 대개 다른 팀 것이라 설득과 협업이 많다[1]",
+   "리눅스·네트워크는 '찾아요' 요건 — 앱만 해 왔다면 준비가 필요하다[1]",
+   "공개된 사례 대부분이 2021~2023년 토스 본체·토스페이먼츠 것이고, 커머스 팀 자체 발표는 아직 없다"
+  ]
+ },
+ "interview": [
+  {
+   "q": "평균 응답 시간은 30ms인데 고객은 화면이 느리다고 합니다. 무엇을 보겠어요?",
+   "a": "분위수와 팬아웃 — 호출이 많은 화면은 꼬리 지연이 화면 지연이 된다.[20]"
+  },
+  {
+   "q": "Redis 응답이 가끔 200ms 넘게 걸립니다. 네트워크 탓이라고 결론 내리기 전에 무엇을 확인하겠어요?",
+   "a": "tcpdump로 '누가 늦었나'를 가르고 strace로 시스템 콜을 본 이 팀의 순서.[2]"
+  },
+  {
+   "q": "한 데이터센터에서만 GC 시간이 길어졌습니다. 어디서부터 찾겠어요?",
+   "a": "두 곳의 차이(그날부터 바뀐 것)를 찾는 것 — 이 팀은 그게 지표 수집이었다.[4]"
+  },
+  {
+   "q": "SLO 99.9%인 서비스에서 1시간 오류율이 1.44%입니다. 사람을 깨워야 하나요?",
+   "a": "burn rate 14.4 — 1시간에 30일 예산의 2%.[16]"
+  },
+  {
+   "q": "서버 A가 느려지자 A를 부르는 B·C까지 같이 넘어졌습니다. 왜고, 어떻게 막겠어요?",
+   "a": "묶인 스레드와 연쇄 장애 — 타임아웃·회로 차단·부하 거절.[18][32]"
+  },
+  {
+   "q": "DB나 TCP 서버처럼 HTTP 헤더를 못 붙이는 곳까지 요청을 추적하려면요?",
+   "a": "쿼리 주석·본문 첫 줄에 추적 정보를 싣는 토스페이먼츠 방식.[3]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 서버 개발자 (Commerce - SRE)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7984081003",
+   "kind": "posting",
+   "note": "팀 소개(Commerce PRO 팀)·업무·요건·이력서 안내·쓰는 기술·팀원 코멘트"
+  },
+  {
+   "n": 2,
+   "title": "SLASH 23 · 프로파일러로 시스템 성능 향상시키기",
+   "url": "https://www.youtube.com/watch?v=tZjjqhnwtYY",
+   "kind": "company",
+   "date": "2023",
+   "note": "토스 Server Platform 팀장 · 17분 · 자막 전부 읽음(Pinpoint·힙 덤프·jemalloc·async-profiler·strace/perf·Istio 연결 3개·바이너리 분석·다음 계획)"
+  },
+  {
+   "n": 3,
+   "title": "SLASH 23 · 분산 추적 체계 & 로그 중심으로 Observability 확보하기",
+   "url": "https://www.youtube.com/watch?v=Ifz0LsfAG94",
+   "kind": "company",
+   "date": "2023",
+   "note": "토스페이먼츠 Server Platform 팀장 · 29분 · 자막 전부 읽음(JSON 로그·traceId 전파·글로벌 traceId·DB 주석·TCP 첫 줄·Sentry/Pinpoint 연계·Istio 헤더 라우팅 디버깅 환경). 같은 그룹 다른 회사"
+  },
+  {
+   "n": 4,
+   "title": "SLASH 21 · SRE 사례 소개 (발표 자료)",
+   "url": "https://toss.im/slash-21/sessions/1-4",
+   "kind": "company",
+   "date": "2021",
+   "note": "토스코어 SRE · 영상 없이 슬라이드 42쪽 확인(Redis 클러스터 재분배와 ASK 오류·Memcached 재분배·Prometheus 수집이 만든 GC 문제·분석에 필요한 것)"
+  },
+  {
+   "n": 5,
+   "title": "SLASH 21 · 토스의 서버 인프라 모니터링 (발표 자료)",
+   "url": "https://toss.im/slash-21/sessions/1-2",
+   "kind": "company",
+   "date": "2021",
+   "note": "토스코어 DevOps · 슬라이드 40쪽 확인(마이크로서비스 130→236개·3층 지표·Envoy response_flags·USE 방법·장비 자동 제외·Prometheus 샤딩·Thanos)"
+  },
+  {
+   "n": 6,
+   "title": "토스피드 · 토스 서비스를 든든하게 지키는 사람들, 서버 플랫폼 팀을 만나다",
+   "url": "https://toss.im/tossfeed/article/serverplatformteam-interview",
+   "kind": "company",
+   "date": "2019-11-26",
+   "note": "SRE·DevOps 역할, 카나리 배포, DC/OS → 쿠버네티스, 주간 서버 챕터 회의"
+  },
+  {
+   "n": 7,
+   "title": "토스 채용 · 토스증권 Site Reliability Engineer",
+   "url": "https://toss.im/career/job-detail?gh_jid=7985105003",
+   "kind": "posting",
+   "note": "같은 그룹 다른 회사 — SLO·eBPF·커널·TCP/IP·k6·async profiler"
+  },
+  {
+   "n": 8,
+   "title": "토스 채용 · 토스플레이스 Site Reliability Engineer",
+   "url": "https://toss.im/career/job-detail?gh_jid=7809363003",
+   "kind": "posting",
+   "note": "같은 그룹 다른 회사 — 흐름별 SLI·SLO, 포스트모템, 성능 테스트·용량 계획·장애 주입(Chaos Mesh)"
+  },
+  {
+   "n": 9,
+   "title": "토스 채용 · 서버 개발자 공통 공고(Platform 챕터)",
+   "url": "https://toss.im/career/job-detail?job_id=4071141003&sub_position_id=7977821003&company=%ED%86%A0%EC%8A%A4",
+   "kind": "posting",
+   "note": "Server Platform·Messaging Platform·SRE 팀, 실무 1년 이상, JVM·네트워크·커널"
+  },
+  {
+   "n": 10,
+   "title": "토스페이먼츠 · DDoS 공격으로 인한 결제서비스 장애 보고서",
+   "url": "https://static.tosspayments.com/public/tosspayments_issue_report_251016.pdf",
+   "kind": "company",
+   "date": "2025-10-16",
+   "note": "같은 그룹 다른 회사 — 세 차례 장애 시간·공격량·조치·단계별 재발 방지"
+  },
+  {
+   "n": 11,
+   "title": "TMC25 · 알림부터 대응까지, 장애 대응을 시스템으로",
+   "url": "https://www.youtube.com/watch?v=SqF2D7OoiJA",
+   "kind": "company",
+   "date": "2025",
+   "note": "토스 Client Platform 팀 — 같은 회사 다른 팀(프런트엔드) 발표"
+  },
+  {
+   "n": 12,
+   "title": "Toss Tech · 토스 쇼핑 추천 시스템: 멀티 스테이지 접근법",
+   "url": "https://toss.tech/article/toss-shopping-recommendation-system",
+   "kind": "company",
+   "date": "2025-04-17",
+   "note": "커머스 개인화팀 — 후보 찾기·순위·재정렬 단계"
+  },
+  {
+   "n": 13,
+   "title": "SLASH 24 · 기반 데이터가 부족해도 OK! 커머스 추천 시스템 제작기",
+   "url": "https://www.youtube.com/watch?v=LAD6LYnkPsA",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스 커머스 — 배치 결과를 Redis에 두고 Spring 서버가 서빙"
+  },
+  {
+   "n": 14,
+   "title": "Google SRE Book · Monitoring Distributed Systems",
+   "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+   "kind": "reference",
+   "note": "네 가지 기본 신호(지연·트래픽·오류·포화)"
+  },
+  {
+   "n": 15,
+   "title": "Google SRE Book · Service Level Objectives",
+   "url": "https://sre.google/sre-book/service-level-objectives/",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Google SRE Workbook · Alerting on SLOs",
+   "url": "https://sre.google/workbook/alerting-on-slos/",
+   "kind": "reference",
+   "note": "burn rate — 1시간에 예산 2% = 14.4배"
+  },
+  {
+   "n": 17,
+   "title": "Google SRE Book · Postmortem Culture",
+   "url": "https://sre.google/sre-book/postmortem-culture/",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Google SRE Book · Addressing Cascading Failures",
+   "url": "https://sre.google/sre-book/addressing-cascading-failures/",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Brendan Gregg · The USE Method",
+   "url": "https://www.brendangregg.com/usemethod.html",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Dean · Barroso · The Tail at Scale (CACM 2013)",
+   "url": "https://research.google/pubs/the-tail-at-scale/",
+   "kind": "reference",
+   "note": "팬아웃 100에서 1% 지연이 63%의 요청을 늦춘다 · 헤지 요청"
+  },
+  {
+   "n": 21,
+   "title": "W3C · Trace Context",
+   "url": "https://www.w3.org/TR/trace-context/",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "OpenTelemetry 문서",
+   "url": "https://opentelemetry.io/docs/",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Prometheus 문서 · Histograms and summaries",
+   "url": "https://prometheus.io/docs/practices/histograms/",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "Envoy 문서 · Access logging (RESPONSE_FLAGS)",
+   "url": "https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log/usage",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "Grafana k6 문서 · Load test types",
+   "url": "https://grafana.com/docs/k6/latest/testing-guides/test-types/",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "async-profiler (GitHub)",
+   "url": "https://github.com/async-profiler/async-profiler",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 28,
+   "title": "자소설닷컴 — 토스뱅크 연봉(같은 집계)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 30,
+   "title": "토스 — 회사 소개(사이트 하단 주소)",
+   "url": "https://toss.im/company",
+   "kind": "company"
+  },
+  {
+   "n": 31,
+   "title": "SLASH 24 · 미처 알지 못했던 Kernel까지 Observability 향상시키기",
+   "url": "https://www.youtube.com/watch?v=e8cEDhAPm-E",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스 DevOps — eBPF로 NUMA·Redis 지연 분석"
+  },
+  {
+   "n": 32,
+   "title": "Wikipedia · Little's law",
+   "url": "https://en.wikipedia.org/wiki/Little%27s_law",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "Chaos Mesh 문서",
+   "url": "https://chaos-mesh.org/docs/",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "Commerce PRO 팀이 직접 한 발표·글은 찾지 못했습니다. 팀의 일은 공고[1]로, 일하는 방식은 토스 서버 플랫폼·SRE·DevOps의 2019~2024년 공개 자료[2][4][5][6]와 같은 그룹 회사의 발표·공고·장애 보고서[3][7][8][10]로 보였습니다. 쇼핑 흐름별 지표·목표치·온콜 방식은 공개되지 않아 구글 SRE 책 등 일반 기준[14]~[20]으로 '보통 이렇게 한다'를 적었습니다. 경력 연차는 공고에 없습니다.",
+ "resources": [
+  {
+   "id": "slash23-profiler",
+   "title": "SLASH 23 · 프로파일러로 시스템 성능 향상시키기",
+   "by": "토스 Server Platform 팀장 · 17분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=tZjjqhnwtYY",
+   "why": "업무②·요건④의 본보기. 느려짐 하나를 Pinpoint → 힙 덤프 → tcpdump → strace → 커널까지 좁혀 간 실제 순서를 본다. 지원 전에 꼭 볼 영상."
+  },
+  {
+   "id": "slash23-otel",
+   "title": "SLASH 23 · 분산 추적 체계 & 로그 중심으로 Observability 확보하기",
+   "by": "토스페이먼츠 Server Platform 팀장 · 29분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=Ifz0LsfAG94",
+   "why": "업무③·⑤에 쓸 '좋은 로그와 traceId'를 처음부터 쌓아 올린다. 관측 가능성이 왜 모니터링과 다른지 잡기 좋다."
+  },
+  {
+   "id": "slash21-sre",
+   "title": "SLASH 21 · SRE 사례 소개 (발표 자료 PDF)",
+   "by": "토스코어 SRE · 2021",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "https://toss.im/slash-21/sessions/1-4",
+   "why": "Redis 클러스터 재분배 중 ASK 오류, Memcached 노드 장애 때 키 재분배, 지표 수집이 만든 GC 문제 — 토스 SRE가 원인을 라이브러리 코드까지 따라간 기록."
+  },
+  {
+   "id": "slash21-mon",
+   "title": "SLASH 21 · 토스의 서버 인프라 모니터링 (발표 자료 PDF)",
+   "by": "토스코어 DevOps · 2021",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.im/slash-21/sessions/1-2",
+   "why": "앱·네트워크·OS 세 층으로 무엇을 재는지, Envoy 실패 표시와 USE 방법, Prometheus가 커졌을 때 나누는 법. 업무③의 지도."
+  },
+  {
+   "id": "sre-book",
+   "title": "사이트 신뢰성 엔지니어링 (원서 무료 공개)",
+   "by": "구글 SRE 팀 · 제이펍 · 2018",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "why": "SLO·모니터링·장애 대응·포스트모템·연쇄 장애 장만 먼저 읽는다. 업무①④의 공통 말과 틀."
+  },
+  {
+   "id": "sre-workbook",
+   "title": "The Site Reliability Workbook",
+   "by": "구글 · O'Reilly · 2018 (웹에서 무료)",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://sre.google/workbook/table-of-contents/",
+   "why": "'Implementing SLOs'·'Alerting on SLOs' 두 장에 SLO를 실제로 정하고 burn rate 알림을 거는 계산이 예시와 함께 있다. 업무①."
+  },
+  {
+   "id": "obs-eng",
+   "title": "데브옵스 엔지니어를 위한 실전 관찰 가능성 엔지니어링",
+   "by": "채리티 메이저 · 리즈 퐁존스 · 조지 미란다 · 노승헌 옮김 · 한빛미디어 · 2024",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.oreilly.com/library/view/debeuobseu-enjinieoreul-wihan/9791169212519/",
+   "why": "모니터링과 관측 가능성의 차이, 구조화된 이벤트·분산 추적·SLO 기반 알림. 업무③을 설계할 때의 생각 틀."
+  },
+  {
+   "id": "otel-docs",
+   "title": "OpenTelemetry 문서",
+   "by": "OpenTelemetry (CNCF)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://opentelemetry.io/docs/",
+   "why": "trace·span·context 전파와 자바 자동 계측. traceId를 서비스 사이로 넘기는 표준 방식을 손으로 해 볼 때."
+  },
+  {
+   "id": "prometheus-docs",
+   "title": "Prometheus 문서",
+   "by": "Prometheus",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://prometheus.io/docs/introduction/overview/",
+   "why": "지표 종류·히스토그램으로 p99 구하기·라벨 이름 짓기. 이 팀의 지표 바닥이다(쓰는 기술 목록)."
+  },
+  {
+   "id": "tail-at-scale",
+   "title": "The Tail at Scale",
+   "by": "Jeffrey Dean · Luiz André Barroso · CACM · 2013",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://research.google/pubs/the-tail-at-scale/",
+   "why": "부르는 서버가 많을수록 드문 지연이 화면 지연이 되는 이유와 줄이는 기법(헤지 요청 등). 업무⑤의 이론."
+  },
+  {
+   "id": "sysperf-book",
+   "title": "시스템 성능 엔지니어링",
+   "by": "브렌던 그레그 · 이호연 옮김 · 인사이트",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=Book&SearchWord=%EC%8B%9C%EC%8A%A4%ED%85%9C+%EC%84%B1%EB%8A%A5+%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A7%81",
+   "why": "USE 방법·CPU·메모리·파일 시스템·네트워크를 리눅스 도구로 재는 법. 요건②④의 교과서 — 방법론 장과 네트워크 장부터."
+  },
+  {
+   "id": "bpf-book",
+   "title": "BPF 성능 분석 도구",
+   "by": "브렌던 그레그 · 이호연 옮김",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000003160869",
+   "why": "커널 안의 지연을 재는 도구들. 토스 SRE·DevOps가 다음 단계로 꼽은 eBPF 분석을 준비할 때."
+  },
+  {
+   "id": "slash24-ebpf",
+   "title": "SLASH 24 · 미처 알지 못했던 Kernel까지 Observability 향상시키기",
+   "by": "토스 DevOps · 22분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "https://www.youtube.com/watch?v=e8cEDhAPm-E",
+   "why": "같은 회사가 eBPF로 Redis 지연을 커널 함수까지 따라간 사례. 요건④의 '깊은 이해'가 어느 정도인지 본다."
+  },
+  {
+   "id": "async-profiler",
+   "title": "async-profiler",
+   "by": "오픈소스 (GitHub)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/async-profiler/async-profiler",
+   "why": "토스 서버 플랫폼 팀이 CPU·메모리·벽시계 시간을 잴 때 쓰는 자바 프로파일러. 불꽃 그래프 읽기를 연습한다."
+  },
+  {
+   "id": "k6-docs",
+   "title": "Grafana k6 문서",
+   "by": "Grafana Labs",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://grafana.com/docs/k6/latest/",
+   "why": "부하·스트레스·스파이크·소크 테스트를 자바스크립트로 짠다. 토스증권 SRE 도구 목록에 있는 도구. 요건②."
+  },
+  {
+   "id": "release-it",
+   "title": "Release의 모든 것 2판",
+   "by": "마이클 나이가드 · 박성철 옮김 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ridibooks.com/books/443001250",
+   "why": "운영에서 시스템이 무너지는 패턴(연쇄 장애·묶인 스레드)과 막는 패턴(타임아웃·회로 차단기·격벽). 업무④의 '재발 방지 설계'."
+  },
+  {
+   "id": "tmc-incident",
+   "title": "TMC25 · 알림부터 대응까지, 장애 대응을 시스템으로",
+   "by": "토스 Client Platform 팀 발표",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=SqF2D7OoiJA",
+   "why": "같은 회사에서 알림·담당자 호출·대응 확인을 코드로 만든 사례. 업무④의 '대응 프로세스 총괄'을 어떻게 시스템으로 만드는지."
+  },
+  {
+   "id": "slash24-reco",
+   "title": "SLASH 24 · 기반 데이터가 부족해도 OK! 커머스 추천 시스템 제작기",
+   "by": "토스 커머스 · 20분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=LAD6LYnkPsA",
+   "why": "토스쇼핑 화면 뒤에서 도는 추천 서빙(Redis·Spring·실시간 추론)의 모양. 업무⑤에서 지연을 쪼갤 대상을 미리 안다."
+  },
+  {
+   "id": "book-spring-boot",
+   "title": "스프링 부트 — 핵심 원리와 활용",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/spring-boot",
+   "why": "뒷부분의 액추에이터·지표·Prometheus·Grafana·알림 절. 스프링 서버가 지표를 내는 쪽을 직접 본다. 업무①·요건①."
+  },
+  {
+   "id": "book-jvm",
+   "title": "자바 성능 튜닝 — JVM 과 GC",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "심화",
+   "url": "/wiki/jvm-tuning",
+   "why": "GC 로그와 힙 스냅숏 읽기. 업무②의 'GC 시간이 길다'에서 원인까지 가는 기본기."
+  },
+  {
+   "id": "book-thread",
+   "title": "실전 자바 — 멀티스레드와 동시성",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/java-thread",
+   "why": "스레드 풀·대기·경합. 스레드 덤프를 읽고 '왜 줄이 섰나'를 설명하려면 필요하다. 요건①②."
+  },
+  {
+   "id": "book-http",
+   "title": "모든 개발자를 위한 HTTP 웹 기본 지식",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/http-basic",
+   "why": "와이어에 오간 요청·응답 원문. tcpdump로 본 패킷을 읽는 첫걸음. 요건④."
+  },
+  {
+   "id": "book-k8s",
+   "title": "쿠버네티스 입문",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "Pending·CrashLoopBackOff·OOMKilled 읽기. 서비스가 도는 바닥에서 생기는 장애를 알아본다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "지표와 목표선 긋기",
+   "time": "2주",
+   "goal": "스프링 서버의 성공률·p99를 Prometheus로 모으고, SLO와 burn rate 알림을 걸 수 있다.",
+   "resources": [
+    "book-spring-boot",
+    "prometheus-docs",
+    "sre-book",
+    "sre-workbook"
+   ],
+   "task": "가상 쇼핑 API 세 개(홈·상품 상세·주문)를 Spring Boot로 만들고 Actuator로 히스토그램 지표를 낸다. Grafana에 흐름별 성공률·p99를 그리고, '30일 99.9%' SLO에 대해 1시간 14.4배 burn rate 알림 규칙을 쓴다. 일부러 오류를 2% 내서 알림이 오는지 본다."
+  },
+  {
+   "title": "요청 하나를 끝까지 잇기",
+   "time": "2주",
+   "goal": "traceId가 여러 서비스·로그에 같이 남게 하고, 느린 요청에서 가장 긴 구간을 찾을 수 있다.",
+   "resources": [
+    "slash23-otel",
+    "otel-docs",
+    "obs-eng",
+    "slash21-mon"
+   ],
+   "task": "1단계 API를 게이트웨이 → 홈 → 추천·상품·쿠폰 서비스로 쪼개 OpenTelemetry로 추적을 붙인다. 로그를 JSON으로 바꾸고 traceId·사용자 ID를 넣는다. 상품 서비스에 가끔 500ms 지연을 넣고, 로그 검색만으로 '느린 홈 화면 → 상품 서비스'를 찾아내는 쿼리를 만든다."
+  },
+  {
+   "title": "느려짐의 원인을 JVM 안에서 찾기",
+   "time": "2주",
+   "goal": "불꽃 그래프·힙 덤프·GC 로그·스레드 덤프로 '왜 느린가'를 증거로 말할 수 있다.",
+   "resources": [
+    "slash23-profiler",
+    "async-profiler",
+    "book-jvm",
+    "book-thread"
+   ],
+   "task": "상품 서비스에 세 가지 문제를 하나씩 심는다 — 요청마다 큰 문자열 만들기(GC), 하나씩 도는 느린 복호화(CPU), 동기화 블록(스레드 대기). async-profiler·힙 덤프·스레드 덤프로 각각 찾아내고, 고치기 전후 p99를 표로 남긴다."
+  },
+  {
+   "title": "부하를 걸고 한계 재기",
+   "time": "1~2주",
+   "goal": "목표 rps에서 p99·오류율·자원 사용률을 재고, 먼저 찬 자원을 짚을 수 있다.",
+   "resources": [
+    "k6-docs",
+    "sysperf-book",
+    "release-it"
+   ],
+   "task": "k6로 평소 부하·스파이크(10배 순간 급증)·소크(1시간) 시나리오를 짠다. 추천 서비스를 느리게 만들었을 때 홈이 같이 넘어지는지 보고, 타임아웃·회로 차단을 넣은 뒤 다시 돌려 결과를 비교한다. 리틀의 법칙으로 스레드 수를 미리 계산해 실제와 견준다."
+  },
+  {
+   "title": "커널·네트워크까지 (선택)",
+   "time": "계속",
+   "goal": "'앱이 늦었나, 네트워크가 늦었나, 커널이 늦게 깨웠나'를 tcpdump·strace·eBPF로 가를 수 있다.",
+   "resources": [
+    "sysperf-book",
+    "bpf-book",
+    "slash24-ebpf",
+    "book-http"
+   ],
+   "task": "앱 → Redis 호출에 tc로 지연을 넣은 경우와, 앱 컨테이너 CPU limit을 낮춰 스로틀링을 만든 경우를 만든다. 두 경우를 tcpdump 시각 차이와 strace의 read 지연, CPU 스로틀링 지표로 구분하고, 그 과정을 포스트모템 한 장으로 쓴다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 공공데이터 집계로 신입 초봉 **약 4,200만원**, 평균 **약 6,200만원** — 공시된 평균 급여는 없다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없다 [27]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 — 경력직이 섞인 값이다 [27]"
+   },
+   {
+    "label": "토스뱅크 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 계열사 값 — 견주어 보기용 [28]"
+   },
+   {
+    "label": "토스뱅크 평균",
+    "value": "약 7,208만원",
+    "amount": 7208,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 계열사 평균 [28]"
+   }
+  ],
+  "how": "공고는 레퍼런스 체크 뒤 **처우 협의** 단계에서 정한다고 적었다 [1]. 경력 연차는 공고에 없다. 비바리퍼블리카는 상장사가 아니라 사업보고서의 '직원 평균 급여'가 없어 공시 숫자를 싣지 못했다. 평균은 경력직이 섞인 회사 전체 값이고, 집계값은 추정이라 실제 제안과 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 복지를 소개한 2021년 공식 글이다 [29]. 지금도 같은지는 글에 없으니 처우 협의 때 확인한다 {추론}. 장애 대응이 있는 자리라 근무 장소·시간이 다를 수 있다 {추론}."
+ },
+ "location": {
+  "name": "토스(비바리퍼블리카) 본사",
+  "address": "서울특별시 강남구 테헤란로 142, 4·10~13·22·23층",
+  "postal": "06236",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "주소는 토스 회사 소개 페이지 하단의 회사 정보다 [30]. 공고 근무지는 'Seoul'로만 적혀 있다 [1]."
+ }
+}
