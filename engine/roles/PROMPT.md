@@ -7,7 +7,7 @@
 본보기: `tossbank-finance-data-system.json` — 길이·말투·근거 다는 법을 여기에 맞춘다.
 
 ## 절차
-1. **대상**: `python engine/roles/validate.py --gaps` 맨 위 공고 키. 공고 본문은 `jd-viewer/public/all_jobs_enriched.json`
+1. **대상**: `python engine/roles/validate.py --claim` 이 집어 주는 공고 키(일꾼 여럿이 같이 돈다 — 집은 공고는 다른 일꾼이 안 잡는다. 사람이 볼 때는 `--gaps`). 공고 본문은 `jd-viewer/public/all_jobs_enriched.json`
    에서 그 키(site-pid)로 찾는다. 같은 회사·같은 제목의 다른 사이트 공고가 있으면 `jobs` 에 같이 넣는다.
 2. **공고 줄 나누기**: 주요업무 · 자격요건 · 우대사항의 **모든 줄**을 원문 그대로 `lines[].quote` 로 옮긴다(빠지면 validate 경고).
 3. **근거 모으기** — 회사가 직접 말한 것부터.
@@ -43,8 +43,8 @@
    **지어낸 1인칭 생각·회사 속사정 금지**(예전 역설계의 thinking 칸이 이상했던 이유). 원문은 옮기지 않고 우리 말로.
    공고 문장 자체는 원문 그대로 둔다(quote 만).
 6. **눈높이**: 처음 보는 낱말은 처음 나올 때 괄호로 풀이. 한 문장에 새 개념 하나. 세부 기술 이름은 줄이고 뜻을 먼저.
-7. **검사·커밋**: `python engine/roles/validate.py` 통과 → `state/LOG.md` 한 줄 →
-   `git add jd-viewer/public/roles engine/roles/state` → `feat(roles): <회사> <직무> 공고 풀이`. 푸시하지 않는다.
+7. **검사·커밋**: `python engine/roles/validate.py --only <id>` 통과 → `state/LOG.md` 한 줄 →
+   `git add jd-viewer/public/roles/items/<id>.json jd-viewer/public/roles/index.json engine/roles/state/LOG.md`(다른 일꾼의 파일을 섞지 않는다) → `feat(roles): <회사> <직무> 공고 풀이`. 푸시하지 않는다.
    DB(viewer_doc) 옮기기는 회차가 ok 로 끝나면 러너가 한다(loops.py `after`) — 루프 세션은 직접 돌리지 않는다. 손으로 돌릴 때는 `cd catch_capture && .venv/Scripts/python -m store.ingest.docs`(맥 `.venv/bin/python`).
 
 ## 하지 않는 것
