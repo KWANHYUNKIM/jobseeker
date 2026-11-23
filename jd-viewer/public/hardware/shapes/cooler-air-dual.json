@@ -1,0 +1,75 @@
+{
+ "schema": 1,
+ "part": "cooler-air-dual",
+ "shapes": {
+  "deepcool-ag620-g2": {
+   "kind": "cooler",
+   "heatpipes": 6,
+   "stacks": 2,
+   "fans": 2,
+   "fan_mm": 120,
+   "base": "plate",
+   "fin_edge": "stepped",
+   "color": "#1c1d20",
+   "fan_light": "none",
+   "marks": [
+    { "text": "DeepCool", "where": "cover" }
+   ],
+   "sources": [
+    {
+     "title": "DEEPCOOL AG620 G2 — 공식 제품 페이지(사양 표: 히트파이프 Ø6mm×6, 팬 120×120×25mm, 니켈 도금 콜드플레이트·CTT 2.0, 'two 120mm PWM fans', RGB 대신 무발광 · 갤러리 사진 6장)",
+     "url": "https://www.deepcool.com/products/Cooling/cpuaircoolers/AG620-G2-Superior-Performance-6-Heatpipe-Dual-Tower-CPU-Cooler/2025/22513.shtml"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "듀얼타워, 히트파이프 6개는 니켈 도금 콜드플레이트(직접 접촉 아님) 위로 지나 고정 막대 + 나사 2개. 팬 2개(앞면 1 + 두 묶음 사이 1)는 철사 클립, 날개가 길게 휘었고 수는 사진으로 확실히 세지 못해 비웠다. 핀 앞면이 '매트릭스' 바둑판 무늬로 들쭉날쭉해 stepped 로 적었다(렌더러의 톱니 근사). 핀은 은색 그대로, 윗면은 점 무늬 검정 덮개에 작은 DeepCool 글자, 팬·팬 틀은 검정. 발광 없음(공식 '무발광 디자인')."
+  },
+  "thermalright-peerless-assassin-120-se": {
+   "kind": "cooler",
+   "heatpipes": 6,
+   "stacks": 2,
+   "fans": 2,
+   "fan_mm": 120,
+   "base": "plate",
+   "fin_edge": "flat",
+   "color": "#151618",
+   "fan_blades": 9,
+   "fan_light": "none",
+   "marks": [
+    { "text": "THERMALRIGHT", "where": "cover" }
+   ],
+   "sources": [
+    {
+     "title": "Thermalright Peerless Assassin 120 SE — 공식 제품 페이지(사양: 6mm 히트파이프 6개, C1100 순동 니켈 도금 베이스, TL-C12C 120×120×25mm · 대표 사진 3장 — 비스듬한 윗면·정면·윗면)",
+     "url": "https://www.thermalright.com/product/peerless-assassin-120-se/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "듀얼타워, 니켈 도금 구리 베이스 위로 히트파이프 6개. 팬 TL-C12C 2개(앞면 + 가운데, 철사 클립), 정면 사진에서 날개 9장, 불빛 없음. 맨 윗 핀이 검정 도장이고 히트파이프 끝 6개씩이 은색 고깔로 튀어나오며 THERMALRIGHT 글자가 음각, 윗 핀 앞뒤 모서리가 톱니처럼 파였다(옆면 핀 가장자리는 평평). 아래 핀은 은색 알루미늄."
+  },
+  "thermalright-peerless-assassin-120-digital-argb": {
+   "kind": "cooler",
+   "heatpipes": 6,
+   "stacks": 2,
+   "fans": 2,
+   "fan_mm": 120,
+   "base": "plate",
+   "color": "#141517",
+   "fan_light": "argb",
+   "marks": [
+    { "text": "THERMALRIGHT", "where": "cover" }
+   ],
+   "sources": [
+    {
+     "title": "Thermalright Peerless Assassin 120 Digital ARGB BLACK — 공식 제품 페이지(사양: 6mm 히트파이프 6개, C1100 니켈 도금 베이스, 디지털 커넥터 MB 9핀/USB, TL-C12C-X28-S V2 120×120×28mm · 3핀 5V ARGB · 사진 4장)",
+     "url": "https://www.thermalright.com/product/peerless-assassin-120-digital-argb/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "듀얼타워, 히트파이프 6개, 니켈 도금 베이스. 팬 2개(앞면 + 가운데, 두께 28mm, 반투명 날개가 통째로 ARGB 로 빛난다 — 켜진 사진이라 날개 수는 못 셌다). 두 묶음을 하나로 덮는 검정 윗 덮개 가운데에 CPU·GPU 온도·사용률을 보여 주는 숫자 화면이 있고 옆에 흰 THERMALRIGHT 글자 띠, 덮개 모서리에 사선 홈. 핀은 은색."
+  }
+ }
+}

@@ -199,6 +199,50 @@
    "confidence": "high",
    "checked_at": "2026-11-23",
    "note": "PCI 4·패널 종류는 공식 스펙 표(상세 이미지를 PIL 로 잘라 봄). 공식 사진: 앞판은 타공 없는 검정 철판(10mm 울트라 슬림 베젤), I/O 는 윗면 앞쪽(윗면은 자석 먼지 필터 메시). 왼쪽은 경첩으로 여는 스윙도어 유리인데 본체 칸 높이까지만이고, 그 아래는 막힌 검정 파워 덮개 옆면. 덮개 안에 HDD 2 를 다는 하드베이(상세 그림 '하드 베이를 앞으로 당겨 분리') → drive_cage true. 흰색 판 빈 케이스 그림: 트레이 오른쪽에 고무 없는 세로 선 구멍(open), 큰 CPU 뒷면 구멍. 기본 팬은 뒤 120mm 검정 일반팬 하나 — 날개 7장·불빛 없음. 발은 작고 낮은 네모 받침이라 비웠다(블록 발 요청과 같은 일). 흰색 판도 있지만 models 사진이 블랙이라 검정으로 적었다. 다나와는 쓰지 않았다."
+  },
+  "darkflash-ds500m-rgb": {
+   "kind": "case",
+   "front": "glass",
+   "glass_side": true,
+   "panoramic": true,
+   "shroud": true,
+   "shroud_side": "solid",
+   "color": "#18191b",
+   "fan_light": "rgb",
+   "sources": [
+    {
+     "title": "다크플래쉬 코리아(투웨이) DS500M RGB 블랙 — 공식 유통사 상품 페이지(대표 사진 1장 + 사진 4장: 비스듬한 앞·윗면, 왼쪽 정면, 흑백 두 대)",
+     "url": "https://www.darkflash.co.kr/product/detail2.html?product_no=937"
+    },
+    {
+     "title": "다크플래쉬 코리아(투웨이) DS500M RGB 화이트 상품 페이지",
+     "url": "https://www.darkflash.co.kr/product/detail2.html?product_no=938"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "앞·왼쪽 유리가 기둥 없이 이어진 어항형. 파워는 본체 칸 밑의 따로 떨어진 막힌 받침(플린스) 안에 들어가고 받침 앞면 가운데에 darkFlash 그림 로고(글자가 아니라 marks 로 안 옮겼다) — 덮개(shroud)로 적었다. 본체 바닥판에 바닥 팬 3개 자리, 오른쪽 판 안쪽에 측면 흡기 팬 2개(오른쪽 판은 촘촘한 타공), 뒤판·뒤 팬 자리 둘레는 육각 타공, 윗면은 고운 메시 + 앞쪽 오른편 I/O. 기본 팬 C7RS/C7M RGB 는 반투명 날개가 통째로 빛난다(켜진 사진이라 날개 수 못 셈). 발은 네 귀퉁이 네모 블록이라 비웠다. 상세 사양 이미지는 이번에도 스크립트로 불러와 못 봐 확장 슬롯 수·선 구멍·CPU 구멍을 비웠다. 흰색 판도 있다(models 는 블랙 기준). 다나와는 쓰지 않았다."
+  },
+  "jonsbo-d34-digital-btf": {
+   "kind": "case",
+   "front": "glass",
+   "glass_side": true,
+   "panoramic": true,
+   "shroud": false,
+   "expansion_slots": 4,
+   "color": "#151618",
+   "marks": [
+    { "text": "JONSBO DESIGN", "where": "front" }
+   ],
+   "sources": [
+    {
+     "title": "JONSBO D34 — 공식 제품 페이지(Specifications: 확장 슬롯 4, 3.5\" 2·2.5\" 2, 팬 상단·하단 120/140×2·후면 120×1 선택, ATX PS2 · 설명: 윗면·옆면 그릴 일체 메시, 앞면 하드웨어 모니터링 숫자 화면, 뒷면 선 정리·파워 가림판 · 대표 사진 5장)",
+     "url": "https://www.jonsbo.com/en/products/D34.html"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "앞(288.9mm 쪽)과 왼쪽이 기둥 없이 이어진 유리 — 어항형. 앞면 오른쪽 끝에 세로 띠가 따로 있고 위쪽 2/3 가 시간·CPU/GPU 온도·사용률·클럭을 보여 주는 숫자 화면, 그 밑에 전원 버튼·USB·C타입·오디오. 윗면은 가로 각재가 줄지은 그릴, 오른쪽 판도 같은 그릴 메시(공식 '그릴 일체'). 본체 칸에 파워 덮개가 없고 바닥에 팬 2개 자리 — 파워는 트레이 뒤 칸(듀얼 챔버, 앞쪽 'CABLE COVER' 판이 선을 가린다)이라 shroud false. BTF(뒷면 커넥터) 보드용이라 트레이 앞에 선 구멍이 안 보인다(grommets 비움). 기본 팬 없음. 발은 네 귀퉁이 네모 블록이라 비웠다. 앞 아래 왼쪽에 작은 JONSBO DESIGN 글자. 하드 칸 자리는 사진에 안 보여 비웠다."
   }
  }
 }
