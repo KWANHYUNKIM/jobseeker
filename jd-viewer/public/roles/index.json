@@ -6,6 +6,7 @@
   "ats-toss:group:7985496003": "toss-dw-global-analytics-engineer",
   "ats-toss:group:7987773003": "toss-global-data-engineer",
   "ats-toss:group:7901191003": "toss-platform-analytics-engineer",
+  "ats-toss:group:5960616003": "toss-product-analytics-engineer",
   "saramin-55608860": "tossbank-finance-data-system"
  },
  "roles": [
@@ -58,6 +59,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 35
+  },
+  {
+   "id": "toss-product-analytics-engineer",
+   "company": "토스",
+   "role": "데이터 분석 엔지니어 (Product)",
+   "jobs": [
+    "ats-toss:group:5960616003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 23
   },
   {
    "id": "tossbank-finance-data-system",

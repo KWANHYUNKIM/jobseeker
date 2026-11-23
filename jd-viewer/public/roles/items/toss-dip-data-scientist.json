@@ -1,0 +1,1149 @@
+{
+ "id": "toss-dip-data-scientist",
+ "company": "토스",
+ "role": "데이터 사이언티스트 (Data Intelligence Platform)",
+ "team": "토스 · Data Intelligence Platform 팀",
+ "jobs": [
+  "ats-toss:group:8003064003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "토스의 결제 기록을 **카테고리·브랜드로 분류**하고, 유저·가맹점마다 '어떤 사람·어떤 가게인가'를 설명하는 **프로파일과 점수 모델**을 만들고, 그것을 **온톨로지(대상과 관계의 지도)**로 이어 AI 에이전트가 쓰게 합니다.[1]",
+  "env": "같은 팀 DAE가 통합마트·프로파일을 만들고 이 자리는 그 위의 정의·분류·모델을 맡습니다.[3] 토스 DS는 표 데이터에 LightGBM, 운영에 Airflow·Ray·MLflow를 써 왔습니다(2022년 발표).[2]",
+  "oneline": "분석가와 ML 엔지니어 사이 — **SQL로 데이터를 접고, 분류 체계를 세우고, 모델과 골든셋으로 정확도를 증명**하는 데이터 사이언티스트."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "유저 프로파일 분석 및 모델링",
+   "short": "유저 한 사람을 '어떤 사람인가'로 설명하는 칸을 만들고, 그 사람이 다음에 할 행동을 맞히는 일.",
+   "why": "이 팀은 거래·가맹점·유저를 꿰는 데이터의 뼈대를 만들고, 유저를 설명하는 지표를 정의하는 데서 멈추지 않고 예측·스코어링 모델까지 서비스에 넣는다고 소개합니다.[1] 같은 팀 DAE 공고도 유저·가맹점·서비스 프로파일 구축을 맡는다고 적었습니다.[3]",
+   "actually": {
+    "items": [
+     "**설명** — 주로 쓰는 업종, 결제 시간대, 쓰는 서비스, 돈의 흐름 같은 속성을 유저 한 줄에 모은다.[3]",
+     "**예측** — 토스 DS 팀은 '앞으로 30일 안에 이 서비스로 전환할 확률', '이 브랜드에서 결제할 확률'을 유저마다 계산해 메시지·광고 대상 고르기에 썼다.[2]",
+     "**재료** — 그 발표에서 기존 마트(200여 칸·1~3달)로는 성능이 안 나와 1년 치·3,000~6,000칸의 마트를 새로 만들었다.[2]"
+    ]
+   },
+   "how_far": "무엇을 '전환'으로 볼지는 제품팀이 정합니다(토스는 제품마다 전환 정의가 있다).[2] DS는 그 정의로 라벨을 만들고, 모델이 쓸 칸을 고르고, 맞는지 증명합니다.",
+   "refs": [
+    1,
+    2,
+    3
+   ],
+   "study": [
+    "slash22-ds",
+    "handson-ml"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "미시적인 유저 세분화(segmentation)를 통해 유저를 깊이 있게 이해해요.",
+   "short": "'20대 여성' 같은 큰 묶음이 아니라 행동이 비슷한 작은 무리로 유저를 나누는 일.",
+   "why": "토스 DS 발표에서 제품팀이 '신규 브랜드에 맞는 유저 무리를 뽑아 달라'고 요청했는데, 정답(라벨) 데이터가 없어 지도학습 모델로는 풀 수 없었습니다. 그래서 유저를 벡터로 바꾸고 비슷한 유저를 찾는 방법을 검토했습니다.[2]",
+   "actually": {
+    "items": [
+     "**규칙으로 나누기** — 최근성·빈도·금액(RFM)으로 점수를 매겨 칸을 나눈다.[17]",
+     "**군집** — 여러 속성을 숫자로 바꿔 비슷한 유저끼리 묶는다(k-평균 같은 군집 알고리즘).[11]",
+     "**벡터로 나누기** — 소비 기록을 학습해 유저 벡터를 만들고, 기준 유저 무리와 가까운 사람을 찾는다.[2]",
+     "**'미시적'의 뜻** — 무리가 작을수록 무리마다 표본이 적어 숫자가 흔들린다. 무리 크기와 안정성을 같이 본다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "RFM — 최근성·빈도·금액으로 유저 나누기 (SQLite로 직접 돌린 출력)",
+     "body": "세분화의 가장 오래된 출발점입니다.[17] 같은 '5만원 쓴 유저'라도 u1(3일 전·3번)과 u2(83일 전·1번 50만원)는 전혀 다른 사람입니다.",
+     "lang": "sql",
+     "code": "SELECT user_id,\n       CAST(julianday('2026-11-23') - julianday(MAX(ymd)) AS INT) AS recency_days,\n       COUNT(*)    AS frequency,\n       SUM(amount) AS monetary,\n       NTILE(3) OVER (ORDER BY SUM(amount)) AS m_score\nFROM tx GROUP BY user_id ORDER BY user_id;\n-- u1 | 3  | 3 | 50000  | 2\n-- u2 | 83 | 1 | 500000 | 3\n-- u3 | 1  | 4 | 16700  | 1"
+    }
+   ],
+   "how_far": "나눈 무리에 이름을 붙이고 '이 무리는 이렇게 다르다'를 숫자로 보여 줄 수 있으면 됩니다. 군집 알고리즘 자체보다 **어떤 칸으로 나눴고 왜 그 칸인가**가 질문받는 부분입니다. {추론}",
+   "refs": [
+    2,
+    11,
+    17
+   ],
+   "study": [
+    "sql-recipe",
+    "sklearn-clustering"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "유저 행동과 특성을 설명하고 예측하는 모델링을 수행해요.",
+   "short": "표 데이터로 '이 유저가 30일 안에 이걸 할까'를 맞히고, 왜 그렇게 봤는지까지 설명하는 일.",
+   "why": "토스 DS 팀은 표 형태의 유저 데이터에 강하고 사내 경험이 쌓인 LightGBM을 기본 모델로 골랐고, 뒤에 트랜스포머 모델을 시험해 카테고리별 AUC 0.8~1.0이 나왔다고 했습니다.[2] 같은 발표는 모델이 무엇을 중요하게 봤는지 사람이 들여다볼 수 있어야 제품 가설로 이어진다고 했습니다.[2]",
+   "actually": {
+    "items": [
+     "**문제 틀** — 기준일 T에 그때까지의 데이터로, T 뒤 30일 안에 사건이 일어날 확률을 맞힌다(미래 데이터가 섞이지 않게).[2]",
+     "**기본 모델** — 그레이디언트 부스팅(LightGBM).[2][13]",
+     "**믿게 만들기** — 확률 구간별로 예측 인원과 실제 반응 인원을 나란히 보여 주는 백테스트. 발표 팀은 확률 보정을 생략하고 이것으로 대신했다.[2][12]",
+     "**효과 확인** — 쿼리로 뽑은 대상보다 모델로 뽑은 대상의 광고 클릭률이 13~17% 높았다.[2]",
+     "**운영** — 주 단위 재학습, MLflow로 버전 관리, 과거 시점 재현.[2][20]"
+    ]
+   },
+   "how_far": "모델을 만드는 것보다 **기준일을 지켜 라벨을 만들고, 오프라인 성능을 실제 지표로 이어 보이는 것**이 최소선입니다. {추론}",
+   "refs": [
+    2,
+    12,
+    13,
+    20
+   ],
+   "study": [
+    "slash22-ds",
+    "handson-ml",
+    "lightgbm-docs",
+    "sklearn-calibration"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "가맹점 프로파일 분석 및 모델링",
+   "short": "가맹점 하나하나를 '어떤 가게인가'로 정리한 표를 만들고 점수를 매기는 일.",
+   "why": "팀 소개 첫 줄이 거래 데이터를 분류·구조화해 유저와 **가맹점**을 이해하는 뼈대를 만든다는 것입니다.[1] 카드 승인 기록의 가맹점 이름은 지점·법인명·결제대행사 이름이 섞여 있어, 그대로는 '같은 가게'인지도 알기 어렵습니다.[7] {추론}",
+   "actually": {
+    "items": [
+     "**누구인가** — 승인 기록의 이름·업종 코드를 실제 가맹점·브랜드 한 곳에 묶는다.[7]",
+     "**어떤 곳인가** — 업종·가격대·주 손님층·시간대·재방문 같은 속성.[1]",
+     "**얼마나 좋은가** — 로열티·등급 같은 점수.[1]"
+    ]
+   },
+   "refs": [
+    1,
+    7
+   ],
+   "study": [
+    "ramp-blog"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "가맹점 단위 SSOT를 위한 핵심 지표를 설계해요.",
+   "short": "회사 어디서 물어도 같은 답이 나오는 '가맹점 기준 숫자'의 정의를 정하는 일.",
+   "why": "SSOT(단일 진실 공급원)는 같은 숫자를 한 곳에서만 정의하자는 뜻입니다. 이 팀은 거래·가맹점·유저를 관통하는 데이터 자산을 설계해 조직 전체가 믿고 쓰게 한다고 적었습니다.[1] 토스 데이터 조직은 2024년부터 도메인마다 마트를 따로 만드는 구조라, 같은 '가맹점 매출'이 팀마다 달라질 수 있습니다.[6]",
+   "actually": {
+    "items": [
+     "**정의 문장** — '월 매출 = 승인 − 취소, 결제일 기준, 해외 결제 제외'처럼 포함·제외·기준일을 글로 적는다. {추론}",
+     "**단위 맞추기** — 가맹점(사업자)·매장(지점)·브랜드 중 무엇을 한 줄로 보나를 먼저 정한다. {추론}",
+     "**연결** — 같은 팀 DAE가 이 지표를 통합마트·프로파일로 만들고 온톨로지에 잇는다.[3]"
+    ]
+   },
+   "how_far": "지표 정의는 DS가 제안하고, 쓰는 팀들과 합의하고, DAE가 마트로 굳힙니다.[3] DS는 **정의가 왜 이 모양인지 데이터로 보여 주는** 쪽입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    6
+   ],
+   "study": [
+    "tmc25-mesh",
+    "sql-recipe"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "거래유저 로열티, 가맹점 등급 등 가맹점 속성을 정의하고, 이를 산출하는 스코어링 모델을 개발해요.",
+   "short": "'단골이 많은 가게인가', '어느 급의 가게인가'를 정의하고 모든 가맹점에 점수를 매기는 일.",
+   "why": "공고가 직접 든 예가 거래유저 로열티와 가맹점 등급입니다.[1] 정답이 없는 속성이라, 먼저 정의를 세우고 그 정의를 계산하는 점수 모델을 만듭니다.",
+   "actually": {
+    "items": [
+     "**로열티** — 재방문 유저 비율, 다시 오는 간격, 한 유저 소비 중 이 가게 몫. {추론}",
+     "**등급** — 매출 규모·성장·손님 수를 묶어 구간을 나눈다. 업종마다 기준이 다르다. {추론}",
+     "**점수 모델** — 규칙 점수로 시작하고, 정답으로 쓸 사건(폐업·이탈 같은)이 있으면 예측 모델로 바꾼다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "가맹점 로열티의 가장 단순한 판 — 재방문 유저 비율 (직접 돌린 출력)",
+     "body": "같은 기간 손님 3명이라도 A카페는 2명이 다시 왔고 B식당은 아무도 다시 오지 않았습니다. 실제 지표는 기간·업종별 평소 재방문 주기를 맞춰야 공정해집니다. {추론}",
+     "lang": "sql",
+     "code": "WITH per_user AS (\n  SELECT merchant, user_id, COUNT(*) AS n FROM pay GROUP BY merchant, user_id\n)\nSELECT merchant, COUNT(*) AS users, SUM(n >= 2) AS repeat_users,\n       ROUND(1.0 * SUM(n >= 2) / COUNT(*), 2) AS repeat_rate\nFROM per_user GROUP BY merchant ORDER BY merchant;\n-- A카페 | 3 | 2 | 0.67\n-- B식당 | 3 | 0 | 0.0"
+    }
+   ],
+   "how_far": "점수가 '그럴듯한가'보다 **점수가 높은 가맹점이 실제로 무엇이 다른지** 보여 줄 수 있어야 합니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "sql-recipe",
+    "lightgbm-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "거래데이터 분류 고도화",
+   "short": "결제 한 건 한 건이 무슨 업종·어느 브랜드인지 붙이는 분류를 더 정확하게 만드는 일.",
+   "why": "토스 앱은 결제 내역을 보고 유저가 캐시백 대상 브랜드에서 샀는지 확인해 혜택을 줍니다.[2] 소비 대분류·소분류·브랜드 소비 이력은 DS 모델의 재료이기도 합니다.[2] 분류가 틀리면 혜택·통계·모델이 함께 틀립니다. {추론}",
+   "actually": {
+    "items": [
+     "**입력** — 가맹점 이름, 업종 코드, 결제 금액·시간 같은 거래 정보.[7]",
+     "**출력** — 토스 카테고리(대·소분류)와 브랜드.[1][2]",
+     "**다른 곳의 예** — Ramp는 카드 승인 이름·업종 코드·영수증·메모에 비슷한 가맹점 검색 결과를 붙여 LLM이 '새로 만들기·고치기·다른 곳으로 옮기기' 중 하나만 고르게 한다.[7] Square는 가맹점 분류에 RoBERTa 언어 모델을 썼다.[8]"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    7,
+    8
+   ],
+   "study": [
+    "ramp-blog",
+    "sbert-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "토스 카테고리·브랜드 분류 체계를 운영하며, 분류 로직을 설계하고 개선해요.",
+   "short": "카테고리 목록(체계)을 관리하고, 거래를 그 칸에 넣는 규칙·모델을 고치며 운영하는 일.",
+   "why": "체계가 바뀌면 그 위의 모든 것이 흔들립니다. 토스 DS 발표는 '결제 카테고리 통합' 같은 변경이 모델 학습 파이프라인을 깨뜨릴 수 있는 대표 위험이라고 꼽았습니다.[2]",
+   "actually": {
+    "items": [
+     "**체계** — 칸이 서로 겹치지 않고 빠짐없게. 칸을 합치거나 쪼갤 때 옛 칸 → 새 칸 대응표를 남긴다.[2] {추론}",
+     "**로직** — 확실한 것은 규칙(사전), 애매한 것은 모델, 아주 드문 것은 사람 검수. {추론}",
+     "**운영** — 칸별 정확도와 '분류 못 함' 비율을 매일 본다. 정합성 문제는 슬랙 알림으로 미리 잡았다.[2]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "적요 → 브랜드 규칙과 골든셋 채점 (직접 돌린 출력)",
+     "body": "규칙 세 줄로 적요를 브랜드에 붙이고, 정답을 단 6건(골든셋)으로 채점했습니다. '쿠팡' 규칙이 '쿠팡이츠'까지 먹어 틀렸고, CU는 규칙이 없어 못 붙였습니다 — **틀린 것(정밀도)과 못 붙인 것(커버리지)을 따로 세야** 다음에 무엇을 고칠지 보입니다. {추론}",
+     "lang": "python",
+     "code": "import re\nRULES = [(\"스타벅스\", r\"스타벅스|STARBUCKS\"), (\"GS25\", r\"GS25|지에스25\"), (\"쿠팡\", r\"쿠팡|COUPANG\")]\ndef brand(memo):\n    m = re.sub(r\"\\s+\", \"\", memo.upper())\n    for b, pat in RULES:\n        if re.search(pat, m):\n            return b\n    return None\n\ngolden = [(\"스타벅스 강남R점\", \"스타벅스\"), (\"STARBUCKS COFFEE\", \"스타벅스\"), (\"지에스25 역삼점\", \"GS25\"),\n          (\"쿠팡이츠\", \"쿠팡이츠\"), (\"CU 역삼점\", \"CU\"), (\"COUPANG\", \"쿠팡\")]\npred = [(memo, brand(memo), ans) for memo, ans in golden]\nhit = sum(b == a for _, b, a in pred)\ncovered = sum(b is not None for _, b, _ in pred)\nprint(f\"정확도 {hit}/{len(pred)} · 붙인 것 중 맞은 비율 {hit}/{covered}\")\n# 정확도 4/6 · 붙인 것 중 맞은 비율 4/5\n# pred[3] = ('쿠팡이츠', '쿠팡', '쿠팡이츠')  ← 규칙이 너무 넓다\n# pred[4] = ('CU 역삼점', None, 'CU')         ← 규칙이 없다"
+    }
+   ],
+   "how_far": "체계를 바꾸는 결정은 이 팀과 쓰는 팀들이 같이 합니다. DS는 **바꾸면 무엇이 얼마나 달라지는지** 미리 숫자로 보여 줍니다. {추론}",
+   "refs": [
+    2
+   ],
+   "study": [
+    "slash22-ds",
+    "sql-recipe"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "신규 데이터와 새로운 기술을 탐색하고 적용해 분류 정확도를 끌어올려요.",
+   "short": "새 데이터(가맹점 정보·상품명 등)와 새 기술(임베딩·LLM)을 붙여 보고, 정확도가 오르면 쓰는 일.",
+   "why": "같은 그룹 커머스 쪽 Commerce Data Graph 팀은 LLM으로 상품 속성을 판단하고 그 판단을 가벼운 분류 모델로 옮겨(증류) 전체 상품에 넓히고, 사람 검수와 능동 학습으로 라벨 품질을 지킨다고 적었습니다.[4] 같은 방식이 거래 분류에도 쓰일 수 있습니다. {추론}",
+   "actually": {
+    "items": [
+     "**임베딩 검색** — 가맹점 이름을 문장 임베딩으로 바꿔, 이미 분류된 비슷한 가맹점의 칸을 빌린다.[24]",
+     "**LLM 판단** — 애매한 건만 LLM에 보내고, 후보를 좁혀 정해진 칸 중에서만 고르게 한다.[7]",
+     "**증류** — LLM 판단을 라벨로 작은 모델을 학습시켜 비용을 줄인다.[4]",
+     "**비교** — 같은 골든셋에서 바꾸기 전·후 정확도와 커버리지를 나란히 잰다. {추론}"
+    ]
+   },
+   "how_far": "새 기술을 '써 봤다'가 아니라 **같은 평가셋에서 몇 %p 올랐고 비용이 얼마인가**로 말할 수 있어야 합니다. {추론}",
+   "refs": [
+    4,
+    7,
+    24
+   ],
+   "study": [
+    "sbert-docs",
+    "llm-app",
+    "ramp-blog"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "온톨로지 프로젝트 데이터 분석 및 설계",
+   "short": "유저·가맹점·브랜드·카테고리를 '대상과 관계'로 잇는 데이터 지도를 설계하는 일.",
+   "why": "팀은 최근 온톨로지로 데이터를 잇고, AI 에이전트가 쓸 지식 체계(Knowledge Base)를 만드는 프로젝트를 하고 있다고 적었습니다.[1] 같은 팀 DAE 공고는 마트와 프로파일을 중앙 온톨로지의 대상·관계로 잇는 일을 맡습니다.[3]",
+   "actually": {
+    "items": [
+     "**대상 유형** — 유저·가맹점·브랜드·카테고리. 각각 속성을 가진다.[9]",
+     "**관계 유형** — '가맹점은 브랜드에 속한다', '브랜드는 카테고리에 속한다', '유저는 가맹점에서 결제한다'.[9]",
+     "**왜 에이전트에** — 표 이름과 칸만 보면 AI가 뜻을 오해한다. 대상·관계·정의를 붙여 줘야 맞는 표를 찾는다.[10]"
+    ]
+   },
+   "how_far": "DS 쪽은 **어떤 대상과 관계가 질문에 답하는 데 필요한지 데이터로 고르는 일**, DAE 쪽은 그것을 마트·메타로 굳히는 일로 나뉜다고 봅니다. {추론}",
+   "refs": [
+    1,
+    3,
+    9,
+    10
+   ],
+   "study": [
+    "palantir-ontology",
+    "kg-survey"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "프로젝트 목적에 맞게 데이터를 설계하고 지식 그래프를 구축해요.",
+   "short": "답해야 할 질문부터 정하고, 그 질문에 필요한 대상·관계만 그래프로 만드는 일.",
+   "why": "지식 그래프는 대상을 점, 관계를 선으로 둔 데이터입니다.[18] '목적에 맞게'라는 말대로, 모든 데이터를 다 올리는 게 아니라 쓰임새부터 정합니다. {추론}",
+   "actually": {
+    "items": [
+     "**질문 목록** — '이 브랜드와 손님층이 비슷한 브랜드는?', '이 가맹점은 어느 브랜드의 몇 번째 지점?'. {추론}",
+     "**점과 선** — (가맹점)-[속한다]→(브랜드), (유저)-[결제했다 {횟수, 금액}]→(가맹점).[18]",
+     "**표기 방식** — 세 단어(주어·관계·대상) 묶음으로 적는 RDF 같은 표준 형식도 있다.[19]",
+     "**품질** — 같은 대상이 두 점으로 갈라지지 않게(중복 묶기), 관계마다 출처·갱신일. {추론}"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "질문에서 그래프까지 {추론}",
+     "steps": [
+      "질문 정하기 · 에이전트가 답할 것",
+      "대상·관계 고르기 · 필요한 것만",
+      "데이터 잇기 · 마트·프로파일 → 점·선",
+      "골든셋 · 질문과 정답",
+      "측정·개선 · 구조·프롬프트 고치기"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "refs": [
+    18,
+    19
+   ],
+   "study": [
+    "kg-survey",
+    "cs224w"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "골든셋(Golden Set)으로 Agent의 답변 정확도를 측정하고, 데이터 구조와 프롬프트를 개선해요.",
+   "short": "정답을 미리 단 질문 묶음으로 에이전트를 채점하고, 틀린 이유를 데이터·프롬프트에서 찾아 고치는 일.",
+   "why": "공고가 측정 도구를 '골든셋'이라고 못박았습니다.[1] 측정 없이 프롬프트를 고치면 좋아졌는지 알 수 없습니다. 같은 팀 DAE 공고도 AI가 읽는 것을 전제로 데이터에 맥락을 입히는 일을 맡습니다.[3]",
+   "actually": {
+    "items": [
+     "**골든셋 만들기** — 실제로 나올 질문과 확인된 정답. 쉬운 것·헷갈리는 것·답이 없는 것을 섞는다. {추론}",
+     "**채점 규칙** — 숫자는 숫자로, 이름은 같은 대상인지로. 사람이 보기 어려운 것은 LLM 채점을 쓰되 사람이 표본을 확인한다.[16]",
+     "**틀린 원인 나누기** — 맞는 데이터를 못 찾았나(검색), 찾았는데 잘못 셌나(계산), 데이터에 없었나. {추론}",
+     "**고치기** — 원인이 데이터면 구조·설명을, 지시면 프롬프트를 바꾸고 같은 골든셋으로 다시 잰다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "골든셋 채점 — 숫자는 숫자로 비교 (직접 돌린 출력)",
+     "body": "정답 '0.00'과 에이전트 답 '0'은 같은 뜻인데 글자로 비교하면 틀린 것으로 셉니다. 채점 규칙부터 정해야 정답률이 믿을 만해집니다. {추론}",
+     "lang": "python",
+     "code": "gold  = [(\"지난달 스타벅스 결제 유저 수는?\", \"1204\"), (\"A카페의 업종은?\", \"카페\"), (\"B식당 재방문 비율은?\", \"0.00\")]\nagent = [\"1204\", \"음식점\", \"0\"]\ndef same(a, b):\n    try:\n        return float(a) == float(b)\n    except ValueError:\n        return a.strip() == b.strip()\nscore = [same(a, g) for (_, g), a in zip(gold, agent)]\nprint(score, f\"정답률 {sum(score)}/{len(score)}\")\n# [True, False, True] 정답률 2/3"
+    }
+   ],
+   "refs": [
+    1,
+    3,
+    16
+   ],
+   "study": [
+    "ragas-docs",
+    "llm-app"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "문제에 맞는 방법론을 통계부터 ML·DL·LLM까지 폭넓게 검토해 선택하고, 가설을 세워 검증할 수 있는 분",
+   "short": "늘 쓰던 모델이 아니라 문제에 맞는 도구를 고르고, '왜 이것인가'를 실험으로 증명할 수 있어야 한다.",
+   "why": "토스 DS 발표가 바로 이 과정입니다 — 표 데이터에는 LightGBM, 라벨이 없는 세분화에는 그래프 임베딩, 성능을 더 올릴 때는 트랜스포머를 검토했습니다.[2] 이력서 안내도 '어떤 문제를 왜 그 방법으로 풀었나'와 가설·검증 과정을 적으라고 합니다.[1]",
+   "actually": {
+    "items": [
+     "**간단한 것부터** — 집계·규칙으로 기준선을 먼저 만들고, 모델은 그 기준선을 넘을 때만.[2] {추론}",
+     "**라벨 유무** — 정답이 있으면 지도학습, 없으면 군집·임베딩·규칙.[2]",
+     "**LLM은 비용과 같이** — 정확도뿐 아니라 건당 비용·속도를 같이 비교한다.[4] {추론}"
+    ]
+   },
+   "how_far": "모든 방법을 깊게 알 필요는 없고, **세 가지 이상을 견주어 고른 경험 하나를 처음부터 끝까지** 설명할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    2,
+    4
+   ],
+   "study": [
+    "handson-ml",
+    "slash22-ds"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "유저·가맹점 단위의 예측·스코어링 모델을 실서비스에 적용해 본 경험",
+   "short": "노트북에서 끝난 모델이 아니라, 매일 돌며 실제 화면·발송에 쓰인 모델을 만들어 봤어야 한다.",
+   "why": "토스 DS 팀은 모델을 만든 뒤 일 단위 배치 서빙, Airflow 의존성(데이터웨어하우스 집계가 끝난 뒤 시작), Ray로 학습·추론 분산, MLflow로 버전·재현, 정합성 알림까지 갖춰야 했다고 말했습니다.[2]",
+   "actually": {
+    "items": [
+     "**서빙** — 실시간이 필요 없으면 하루 한 번 점수를 계산해 표로 둔다.[2]",
+     "**재현** — '3월 10일 기준 점수를 다시 내라'에 그날 쓰인 모델을 꺼낼 수 있어야 한다.[2][20]",
+     "**감시** — 점수 인원과 대상 인원이 맞나, 비율 합이 1인가, 빈 값이 생겼나.[2]",
+     "**효과** — 실제 발송·광고에서 기존 방식과 비교했다.[2]"
+    ]
+   },
+   "how_far": "경험이 없다면 공개 데이터로 '학습 → 일 배치 점수 → 백테스트 → 버전 관리'를 작게라도 끝까지 돌려 본 것이 대신합니다. {추론}",
+   "refs": [
+    2,
+    20
+   ],
+   "study": [
+    "slash22-ds",
+    "mlflow-docs",
+    "lightgbm-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "SQL과 Python으로 대용량 데이터를 능숙하게 다룰 수 있는 분",
+   "short": "수억 건 거래를 SQL로 직접 뽑고 Python으로 모델까지 잇는다. 전형에 쿼리 테스트가 따로 있다.",
+   "why": "합류 여정에 약 2시간짜리 사전 쿼리 테스트(응시 기간 5일)가 있고, 직무 인터뷰 중 라이브 쿼리 테스트도 있을 수 있습니다.[1] 같은 회사의 다른 DS 자리도 같은 쿼리 테스트를 보고 'SQL로 자유롭게 추출·분석'을 첫 요건으로 둡니다.[5] 토스 코어 데이터는 Hadoop 위에서 주로 Impala SQL로 만들고 Spark·Hive도 씁니다.[6]",
+   "actually": {
+    "items": [
+     "**유저 한 줄 만들기** — 거래 표를 유저별로 접어 RFM·업종 비중 같은 칸을 만든다.[2][17]",
+     "**기준일 지키기** — 라벨 기간의 데이터가 특징 칸에 섞이지 않게.[2]",
+     "**Python** — 모델 학습·평가는 Python. 큰 집계는 SQL에서 끝내고 결과만 가져온다. {추론}"
+    ]
+   },
+   "level": {
+    "basic": "JOIN · GROUP BY · CASE · NULL 처리 · 날짜 함수",
+    "work": "윈도우 함수(ROW_NUMBER · LAG · NTILE · 누적합) · 기간 비교 · 코호트 · 중복 제거",
+    "team": "기준일을 지키는 학습 데이터 만들기 · 큰 표 조인 비용 · SQL ↔ pandas/PySpark 경계"
+   },
+   "refs": [
+    1,
+    2,
+    5,
+    6,
+    17
+   ],
+   "study": [
+    "sql-recipe",
+    "sql-levelup"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "데이터 분석과 구조화 역량으로 분류 체계와 로직을 설계해 본 분",
+   "short": "흩어진 값들을 겹치지 않는 칸으로 나누는 체계와, 데이터를 그 칸에 넣는 규칙을 만들어 봤어야 한다.",
+   "why": "업무③(카테고리·브랜드 분류 운영)을 하려면 바로 필요한 능력입니다.[1] 분류 체계 변경이 모델 파이프라인을 깨뜨린 경험이 토스 DS 발표에 나옵니다.[2]",
+   "actually": {
+    "items": [
+     "**체계** — 몇 단계(대·중·소)로, 칸마다 정의와 경계 사례를 적는다. {추론}",
+     "**로직** — 규칙 → 모델 → 사람 검수 순서로, 무엇이 어디서 처리됐는지 남긴다.[4] {추론}",
+     "**측정** — 칸별 정확도, 분류 못 한 비율, 칸끼리 헷갈린 표. {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    2,
+    4
+   ],
+   "study": [
+    "sql-recipe",
+    "kg-survey"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "데이터와 모델링의 목적, 판단 근거를 논리적으로 커뮤니케이션할 수 있는 분",
+   "short": "모델을 모르는 사람이 결과를 믿고 쓰게, 목적과 근거를 말로 풀어 설명할 수 있어야 한다.",
+   "why": "토스 DS 팀은 확률값만 주면 블랙박스처럼 보여 쓰기 어렵다고 보고, 확률 구간별 예측·실제 반응 비교를 화면에 같이 띄웠습니다.[2] 이력서 안내도 판단 근거를 논리적으로, 지표가 어떤 의사결정으로 이어졌는지 사례로 쓰라고 합니다.[1]",
+   "actually": {
+    "items": [
+     "**목적 먼저** — '이 점수는 메시지 대상을 고르려고 만든다'.[2]",
+     "**근거** — 비교 대상(기존 쿼리 방식)과 숫자(클릭률 13~17% 상승).[2]",
+     "**한계** — 라벨이 없던 곳, 데이터 품질 문제를 어떻게 다뤘나.[1]"
+    ]
+   },
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "slash22-ds"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "다양한 최신 기술에 관심이 있고, 새로운 것을 학습하고 성장하기를 원하시는 분",
+   "short": "임베딩·LLM·에이전트·온톨로지처럼 아직 굳지 않은 기술을 직접 붙여 보는 자리라서.",
+   "why": "이 팀의 최근 프로젝트가 온톨로지와 에이전트용 지식 체계이고, 업무에 '새로운 기술을 탐색하고 적용'이 들어 있습니다.[1] 토스 데이터 조직도 LLM으로 표준 검토를 하는 등 도구를 바꾸고 있습니다.[6]",
+   "how_far": "최근 써 본 기술 하나를 골라 '어디에 붙였고 무엇이 나아졌나'를 말할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    6
+   ],
+   "study": [
+    "llm-app"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "금융(자산·보험·결제 등) 도메인 데이터를 다뤄본 경험",
+   "short": "토스 거래 데이터는 결제·계좌·카드·보험이 섞여 있어, 그 데이터의 버릇을 아는 사람이 빨라서.",
+   "why": "토스 DS 발표에 나온 재료가 인구통계·소비 명세·계좌·카드 정보였고, 보험·대출 같은 서비스는 한 번 쓰면 다음까지 6개월 넘게 걸려 긴 기간의 데이터가 필요했습니다.[2]",
+   "actually": {
+    "items": [
+     "**결제 데이터의 버릇** — 승인과 취소, 부분 취소, 결제대행사 이름으로 찍히는 가맹점.[7] {추론}",
+     "**주기 차이** — 커피는 매일, 대출·보험은 수개월에 한 번.[2]"
+    ]
+   },
+   "refs": [
+    2,
+    7
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "임베딩·표현학습으로 유저·가맹점을 벡터화하고 활용해 본 경험",
+   "short": "유저와 가맹점을 숫자 벡터로 바꾸면 '비슷한 유저·비슷한 브랜드'를 거리로 찾을 수 있어서.",
+   "why": "토스 DS 팀은 라벨 없는 세분화 요청을 풀려고 소비 기록을 그래프로 두고 그래프 신경망으로 유저·아이템 벡터를 학습해, 비슷한 유저와 비슷한 브랜드를 찾는 방법을 실험 중이라고 했습니다.[2] 같은 그룹 Commerce Data Graph 팀은 그래프 표현 학습과 링크 예측을 핵심 과업으로 둡니다.[4]",
+   "actually": {
+    "items": [
+     "**함께 쓰기로 배우기** — 같은 유저가 쓴 가맹점끼리 가깝게(item2vec 계열).[15]",
+     "**그래프로 배우기** — 유저-가맹점 그래프 위를 걸어 다니며 이웃을 배운다(node2vec).[14]",
+     "**글로 배우기** — 가맹점 이름·설명을 문장 임베딩으로.[24]",
+     "**쓰임** — 비슷한 유저 찾기(세분화), 비슷한 브랜드 찾기, 분류·예측 모델의 입력 칸.[2]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "함께 쓰는 유저로 비슷한 브랜드 찾기 (직접 돌린 출력)",
+     "body": "브랜드마다 '누가 썼나'를 0/1 벡터로 두고 코사인 유사도를 쟀습니다. 임베딩 학습(그래프 신경망·item2vec)은 이 생각을 수백만 유저·브랜드로 키우고 차원을 줄인 것입니다.[2][15]",
+     "lang": "python",
+     "code": "import math\nbaskets = {\"u1\": [\"스타벅스\", \"투썸\", \"쿠팡\"], \"u2\": [\"스타벅스\", \"투썸\"], \"u3\": [\"GS25\", \"CU\"],\n           \"u4\": [\"GS25\", \"CU\", \"쿠팡\"], \"u5\": [\"스타벅스\", \"쿠팡\"]}\nusers = sorted(baskets)\nbrands = sorted({b for v in baskets.values() for b in v})\nvec = {b: [1 if b in baskets[u] else 0 for u in users] for b in brands}\ndef cos(a, b):\n    return sum(x * y for x, y in zip(a, b)) / (math.sqrt(sum(a)) * math.sqrt(sum(b)))\nfor b in [\"스타벅스\", \"GS25\"]:\n    print(b, sorted(((round(cos(vec[b], vec[o]), 2), o) for o in brands if o != b), reverse=True)[:3])\n# 스타벅스 [(0.82, '투썸'), (0.67, '쿠팡'), (0.0, 'GS25')]\n# GS25 [(1.0, 'CU'), (0.41, '쿠팡'), (0.0, '투썸')]"
+    }
+   ],
+   "refs": [
+    2,
+    4,
+    14,
+    15,
+    24
+   ],
+   "study": [
+    "cs224w",
+    "node2vec",
+    "item2vec",
+    "sbert-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "상품명·거래 적요 같은 텍스트 데이터를 분류하거나 구조화해 본 경험",
+   "short": "결제 기록의 가맹점 이름·적요는 짧고 지저분한 글이라, 그런 글을 칸으로 바꿔 본 경험이 바로 쓰여서.",
+   "why": "업무③의 입력이 바로 이런 글입니다.[1] Ramp는 카드 승인 이름만으로는 가맹점을 잘못 붙이기 쉬워, 영수증·메모·비슷한 가맹점 검색을 같이 넣었습니다.[7]",
+   "actually": {
+    "items": [
+     "**정리** — 대소문자·공백·지점명(강남R점)·법인 표기 떼기.",
+     "**사전과 규칙** — 확실한 브랜드는 별칭 사전으로.",
+     "**모델** — 언어 모델로 분류하고, 확신이 낮은 것만 사람·LLM에게.[8][7]"
+    ]
+   },
+   "refs": [
+    1,
+    7,
+    8
+   ],
+   "study": [
+    "sbert-docs",
+    "ramp-blog"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "온톨로지, 지식그래프, 데이터 카탈로그 등 데이터 구조화 프로젝트 경험",
+   "short": "업무④(온톨로지·지식 그래프)를 바로 할 수 있어서.",
+   "why": "팀의 최근 프로젝트가 온톨로지 기반 연결과 에이전트용 지식 체계입니다.[1] 데이터 카탈로그(어떤 표가 무엇이고 누가 주인인가를 모은 목록)도 같은 계열의 일입니다. {추론}",
+   "actually": {
+    "items": [
+     "**온톨로지** — 대상 유형·속성·관계 유형을 정의한다(팔란티어 문서의 예).[9]",
+     "**지식 그래프** — 정의에 따라 실제 데이터를 점·선으로.[18]"
+    ]
+   },
+   "refs": [
+    1,
+    9,
+    18
+   ],
+   "study": [
+    "palantir-ontology",
+    "kg-survey"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "LLM·Agent를 활용한 데이터 파이프라인이나 프롬프트를 설계해 본 경험",
+   "short": "분류 라벨 만들기와 에이전트 답변 개선에 LLM을 직접 쓰는 자리라서.",
+   "why": "업무③④가 LLM을 쓰는 일과 맞닿습니다 — 분류 정확도 올리기, 골든셋으로 에이전트 답변 개선.[1] 같은 그룹 팀은 LLM 레이블링 파이프라인을 설계하고 증류·사람 검수와 함께 운영합니다.[4]",
+   "actually": {
+    "items": [
+     "**정해진 답 중에서만** — LLM이 자유롭게 쓰지 않고 정해진 칸·행동 중 하나를 고르게.[7]",
+     "**후보 좁히기** — 모든 가맹점을 넣지 않고 비슷한 것 몇 개만 검색해 붙인다(RAG).[7]",
+     "**평가와 같이** — 프롬프트를 바꿀 때마다 같은 골든셋으로.[16] {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    4,
+    7,
+    16
+   ],
+   "study": [
+    "llm-app",
+    "ragas-docs"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "'이 가게는 대체 어느 브랜드지?'를 끝까지 파는 사람[1]",
+   "정답이 없는 지표(로열티·등급)를 정의하고 설득하는 일이 즐거운 사람[1]",
+   "모델 성능보다 실제 지표로 증명하는 쪽을 좋아하는 사람[2]",
+   "LLM·온톨로지를 실제 데이터에 붙여 보고 싶은 사람[1]"
+  ],
+  "hard": [
+   "분류 체계 운영은 반복과 예외 처리가 많은 일이다{추론}",
+   "전형 첫 관문이 2시간 쿼리 테스트 — 모델 경험만으로는 못 넘는다[1]",
+   "온톨로지·에이전트 쪽은 아직 정답이 없는 시도다[1][3]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "확률 0.9로 예측한 유저가 실제로는 60%만 반응했어요. 어떻게 설명하고 무엇을 하겠어요?",
+   "a": "토스 DS가 백테스트와 보정 사이에서 고른 부분.[2]"
+  },
+  {
+   "q": "'쿠팡'과 '쿠팡이츠'를 어떻게 가르겠어요? 분류 정확도는 무엇으로 재나요?",
+   "a": "규칙이 넓으면 정밀도, 없으면 커버리지가 떨어진다.[1][7]"
+  },
+  {
+   "q": "라벨이 없는데 '신규 브랜드에 맞는 유저'를 뽑아 달라고 하면요?",
+   "a": "발표에서 실제로 받은 요청 — 임베딩 유사도.[2]"
+  },
+  {
+   "q": "카테고리 두 개를 합치면 이미 학습된 모델과 지표는 어떻게 되나요?",
+   "a": "발표가 꼽은 파이프라인 위험.[2]"
+  },
+  {
+   "q": "에이전트 정답률이 70%예요. 틀린 30%를 어떻게 나눠 고치겠어요?",
+   "a": "골든셋으로 구조·프롬프트 개선 — 공고 문장.[1]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 데이터 사이언티스트 (Data Intelligence Platform)",
+   "url": "https://toss.im/career/job-detail?gh_jid=8003064003",
+   "kind": "posting",
+   "note": "팀 소개·업무 네 갈래·요건·우대·이력서 안내·합류 여정(쿼리 테스트)"
+  },
+  {
+   "n": 2,
+   "title": "SLASH 22 · Data Scientist는 어떻게 비즈니스에 기여할 수 있을까?",
+   "url": "https://www.youtube.com/watch?v=mKf1kvWXiPY",
+   "kind": "company",
+   "date": "2022",
+   "note": "토스 코어 데이터 사이언티스트 발표 · 자막 전부 읽음(CDP·LightGBM·30일 예측·마트 재구성·Ray·MLflow·백테스트·GNN 임베딩)"
+  },
+  {
+   "n": 3,
+   "title": "토스 채용 · 데이터 분석 엔지니어 (Platform)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7901191003",
+   "kind": "posting",
+   "note": "같은 Data Intelligence Platform 팀의 DAE 공고 — 통합마트·프로파일·온톨로지"
+  },
+  {
+   "n": 4,
+   "title": "토스 채용 · ML 엔지니어 (Commerce Data Graph)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7827378003",
+   "kind": "posting",
+   "note": "같은 회사 커머스 팀 — taxonomy·ontology·knowledge graph, LLM 레이블링·증류·사람 검수"
+  },
+  {
+   "n": 5,
+   "title": "토스 채용 · 데이터 사이언티스트 (Commerce Signal)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7795787003",
+   "kind": "posting",
+   "note": "같은 회사 다른 DS 자리 — 같은 쿼리 테스트 전형"
+  },
+  {
+   "n": 6,
+   "title": "TMC25 · 중앙에서 Data Mesh로 Data Ownership 강화를 위한 변화",
+   "url": "https://www.youtube.com/watch?v=P00wKMrqBwE",
+   "kind": "company",
+   "date": "2025",
+   "note": "토스 DAE 발표 — 도메인별 마트·Impala/Spark/Hive·LLM 표준 검토(같은 팀 DAE 풀이에서 자막 확인)"
+  },
+  {
+   "n": 7,
+   "title": "Ramp Builders · How Ramp Fixes Merchant Matches with AI",
+   "url": "https://builders.ramp.com/post/fixing-merchant-classifications-with-ai",
+   "kind": "reference",
+   "note": "다른 회사 — 카드 승인 이름·업종 코드·영수증·검색 결과로 LLM이 가맹점을 고친다"
+  },
+  {
+   "n": 8,
+   "title": "Square Developer Blog · RoBERTa Model for Merchant Categorization at Square",
+   "url": "https://developer.squareup.com/blog/roberta-model-for-merchant-categorization-at-square/",
+   "kind": "reference",
+   "note": "다른 회사 — 가맹점 분류에 언어 모델"
+  },
+  {
+   "n": 9,
+   "title": "Palantir Foundry 문서 · Ontology core concepts",
+   "url": "https://palantir.com/docs/foundry/ontology/core-concepts/",
+   "kind": "reference",
+   "note": "대상 유형·속성·관계 유형"
+  },
+  {
+   "n": 10,
+   "title": "Databricks 블로그 · 데이터 온톨로지, AI 에이전트에 빠진 맥락 층",
+   "url": "https://www.databricks.com/kr/blog/data-ontology-defined-context-layer-your-ai-agents-are-missing",
+   "kind": "reference"
+  },
+  {
+   "n": 11,
+   "title": "scikit-learn 문서 · Clustering",
+   "url": "https://scikit-learn.org/stable/modules/clustering.html",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "scikit-learn 문서 · Probability calibration",
+   "url": "https://scikit-learn.org/stable/modules/calibration.html",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "LightGBM 문서",
+   "url": "https://lightgbm.readthedocs.io/en/latest/",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "Grover & Leskovec · node2vec: Scalable Feature Learning for Networks (2016)",
+   "url": "https://arxiv.org/abs/1607.00653",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "Barkan & Koenigstein · Item2Vec: Neural Item Embedding for Collaborative Filtering (2016)",
+   "url": "https://arxiv.org/abs/1603.04259",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Ragas 문서 · LLM 애플리케이션 평가",
+   "url": "https://docs.ragas.io/en/stable/",
+   "kind": "reference",
+   "note": "정답 셋·채점 지표·LLM 채점"
+  },
+  {
+   "n": 17,
+   "title": "Wikipedia · RFM (market research)",
+   "url": "https://en.wikipedia.org/wiki/RFM_(market_research)",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Hogan 외 · Knowledge Graphs (2020 개관 논문)",
+   "url": "https://arxiv.org/abs/2003.02320",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "W3C · RDF 1.1 Primer",
+   "url": "https://www.w3.org/TR/rdf11-primer/",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "MLflow 문서",
+   "url": "https://mlflow.org/docs/latest/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 22,
+   "title": "자소설닷컴 — 토스뱅크 연봉(같은 집계)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "토스 — 회사 소개(사이트 하단 회사 정보)",
+   "url": "https://toss.im/company",
+   "kind": "company"
+  },
+  {
+   "n": 24,
+   "title": "Sentence Transformers 문서",
+   "url": "https://www.sbert.net/",
+   "kind": "reference",
+   "note": "문장 임베딩·의미 검색"
+  },
+  {
+   "n": 25,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  }
+ ],
+ "caveat": "이 팀(Data Intelligence Platform)이 직접 한 공개 발표는 찾지 못했습니다. 팀의 일은 이 공고[1]와 같은 팀 DAE 공고[3]로, 토스 DS의 일하는 방식은 2022년 SLASH 발표[2]로 보였는데 그 발표는 다른 시기·다른 팀이라 지금 도구는 다를 수 있습니다. 거래 분류·가맹점 매칭의 '보통 이런 것'은 Ramp·Square 공개 글[7][8]로, 로열티·등급의 계산은 공개 자료가 없어 {추론}으로 표시했습니다.",
+ "resources": [
+  {
+   "id": "slash22-ds",
+   "title": "SLASH 22 · Data Scientist는 어떻게 비즈니스에 기여할 수 있을까?",
+   "by": "토스 코어 데이터 사이언티스트 · 24분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=mKf1kvWXiPY",
+   "why": "이 회사 DS가 유저 예측 모델을 만들고, 마트를 다시 짜고, 서비스에 넣고, 효과를 증명한 전 과정. 요건 1·2·5번의 실제 모습이라 지원 전에 꼭 본다."
+  },
+  {
+   "id": "tmc25-mesh",
+   "title": "TMC25 · 중앙에서 Data Mesh로 Data Ownership 강화를 위한 변화",
+   "by": "토스 DAE",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=P00wKMrqBwE",
+   "why": "도메인마다 마트를 만드는 토스 데이터 조직에서 '가맹점 SSOT'가 왜 따로 필요한지 배경을 잡는다."
+  },
+  {
+   "id": "handson-ml",
+   "title": "핸즈온 머신러닝 (3판)",
+   "by": "오렐리앙 제롱 · 한빛미디어",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%ED%95%B8%EC%A6%88%EC%98%A8%20%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D",
+   "why": "통계적 학습부터 트리 앙상블·신경망까지 한 권에. 요건 1번 '통계부터 DL까지 검토해 고르기'의 바탕."
+  },
+  {
+   "id": "sql-recipe",
+   "title": "데이터 분석을 위한 SQL 레시피",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942290",
+   "why": "매출·유저 행동·이상값·추천을 SQL로 뽑는 상황별 예제. 쿼리 테스트와 프로파일·지표 만들기 연습에 바로 맞는다."
+  },
+  {
+   "id": "sql-levelup",
+   "title": "SQL 레벨업",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=SQL%20%EB%A0%88%EB%B2%A8%EC%97%85",
+   "why": "CASE·윈도우 함수로 한 번에 처리하기. 큰 거래 표를 유저·가맹점 한 줄로 접는 쿼리를 다듬는다."
+  },
+  {
+   "id": "llm-app",
+   "title": "LLM을 활용한 실전 AI 애플리케이션 개발",
+   "by": "허정준",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=LLM%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EC%8B%A4%EC%A0%84%20AI%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EA%B0%9C%EB%B0%9C",
+   "why": "임베딩 검색·RAG·평가를 한국어로. 업무③의 LLM 분류와 업무④의 에이전트 개선에 쓰는 기본기."
+  },
+  {
+   "id": "sklearn-clustering",
+   "title": "scikit-learn · Clustering",
+   "by": "scikit-learn 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://scikit-learn.org/stable/modules/clustering.html",
+   "why": "군집 알고리즘마다 어떤 모양의 무리에 맞는지 그림으로 비교. 세분화 방법을 고를 때."
+  },
+  {
+   "id": "sklearn-calibration",
+   "title": "scikit-learn · Probability calibration",
+   "by": "scikit-learn 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://scikit-learn.org/stable/modules/calibration.html",
+   "why": "'확률 0.9면 정말 90%가 반응하나'를 보는 보정 곡선. 토스 DS가 백테스트로 대신한 부분을 이해한다."
+  },
+  {
+   "id": "lightgbm-docs",
+   "title": "LightGBM 문서",
+   "by": "Microsoft · 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://lightgbm.readthedocs.io/en/latest/",
+   "why": "토스 DS가 표 데이터의 기본 모델로 쓴 도구. 파라미터·범주형 처리·중요도."
+  },
+  {
+   "id": "mlflow-docs",
+   "title": "MLflow 문서",
+   "by": "MLflow 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://mlflow.org/docs/latest/index.html",
+   "why": "실험 기록·모델 버전·과거 시점 재현. 요건 2번 '실서비스 적용'의 운영 부분."
+  },
+  {
+   "id": "cs224w",
+   "title": "Stanford CS224W: Machine Learning with Graphs",
+   "by": "Stanford · Jure Leskovec",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://web.stanford.edu/class/cs224w/",
+   "why": "그래프 임베딩·그래프 신경망·지식 그래프를 한 강의에. 우대 2번(임베딩)과 업무④(지식 그래프)."
+  },
+  {
+   "id": "node2vec",
+   "title": "node2vec: Scalable Feature Learning for Networks",
+   "by": "Grover · Leskovec · 2016",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1607.00653",
+   "why": "유저-가맹점 그래프에서 이웃 관계로 벡터를 배우는 대표 방법."
+  },
+  {
+   "id": "item2vec",
+   "title": "Item2Vec: Neural Item Embedding for Collaborative Filtering",
+   "by": "Barkan · Koenigstein · 2016",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1603.04259",
+   "why": "'같이 쓴 것끼리 가깝게' — 비슷한 브랜드 찾기의 가장 단순한 학습법."
+  },
+  {
+   "id": "sbert-docs",
+   "title": "Sentence Transformers 문서",
+   "by": "공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.sbert.net/",
+   "why": "가맹점 이름·적요를 문장 임베딩으로 바꾸고 비슷한 것을 찾는 코드 예제."
+  },
+  {
+   "id": "kg-survey",
+   "title": "Knowledge Graphs (개관 논문)",
+   "by": "Aidan Hogan 외 · 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/2003.02320",
+   "why": "지식 그래프의 모양·스키마·품질·구축 방법을 정리. 업무④의 설계 어휘."
+  },
+  {
+   "id": "palantir-ontology",
+   "title": "Foundry Ontology · Core concepts",
+   "by": "Palantir 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://palantir.com/docs/foundry/ontology/core-concepts/",
+   "why": "기업 온톨로지를 대상·속성·관계로 짜는 공개된 예. 짧아서 처음 보기 좋다."
+  },
+  {
+   "id": "ragas-docs",
+   "title": "Ragas 문서",
+   "by": "공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.ragas.io/en/stable/",
+   "why": "정답 셋으로 LLM 답을 채점하는 지표와 방법. 골든셋 업무를 손에 익힌다."
+  },
+  {
+   "id": "ramp-blog",
+   "title": "How Ramp Fixes Merchant Matches with AI",
+   "by": "Ramp Builders 블로그",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://builders.ramp.com/post/fixing-merchant-classifications-with-ai",
+   "why": "카드 거래의 가맹점을 LLM·검색으로 고치는 실제 구조. 업무③과 가장 가까운 공개 사례."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "이 팀의 일 감 잡기",
+   "time": "1주",
+   "goal": "유저·가맹점 프로파일, 분류, 온톨로지가 서로 어떻게 이어지는지 말로 설명할 수 있다.",
+   "resources": [
+    "slash22-ds",
+    "tmc25-mesh",
+    "palantir-ontology"
+   ],
+   "task": "이 풀이의 업무 네 갈래를 표 하나로 정리한다 — 칸: 입력 데이터, 만드는 것, 쓰는 팀, 성공을 재는 숫자."
+  },
+  {
+   "title": "쿼리 테스트 대비 SQL",
+   "time": "2~3주",
+   "goal": "거래 표를 유저·가맹점 한 줄로 접고, 기간·코호트·재방문을 윈도우 함수로 뽑는다.",
+   "resources": [
+    "sql-recipe",
+    "sql-levelup"
+   ],
+   "task": "가상 거래 10만 건(유저 1,000·가맹점 200)을 만들어 RFM 표, 가맹점 재방문 비율, 월별 신규·이탈 유저를 2시간 안에 SQL로 뽑아 본다."
+  },
+  {
+   "title": "예측·스코어링 모델 끝까지",
+   "time": "2~4주",
+   "goal": "기준일을 지켜 라벨을 만들고, LightGBM으로 학습하고, 확률 구간별 백테스트로 설명한다.",
+   "resources": [
+    "handson-ml",
+    "lightgbm-docs",
+    "sklearn-calibration",
+    "mlflow-docs"
+   ],
+   "task": "2단계 데이터로 '30일 안에 재방문할 유저'를 맞히는 모델을 만들고, 확률 10구간별 예측·실제 표와 보정 곡선을 그리고, MLflow에 날짜 태그로 저장한다."
+  },
+  {
+   "title": "분류와 임베딩",
+   "time": "2~3주",
+   "goal": "가맹점 이름을 브랜드·카테고리에 붙이는 규칙 + 임베딩 방식을 만들고 골든셋으로 비교한다.",
+   "resources": [
+    "sbert-docs",
+    "ramp-blog",
+    "item2vec",
+    "llm-app"
+   ],
+   "task": "지저분한 가맹점 이름 300개와 정답을 만들고, ① 별칭 사전 ② 문장 임베딩 최근접 ③ 애매한 것만 LLM, 세 방식의 정확도·커버리지·건당 비용을 한 표로 낸다."
+  },
+  {
+   "title": "지식 그래프와 에이전트 평가 (선택)",
+   "time": "계속",
+   "goal": "작은 지식 그래프 위에서 질문에 답하는 에이전트를 골든셋으로 채점하고 고친다.",
+   "resources": [
+    "kg-survey",
+    "cs224w",
+    "ragas-docs",
+    "node2vec"
+   ],
+   "task": "유저-가맹점-브랜드-카테고리 그래프를 만들고 질문 30개 골든셋을 적은 뒤, 그래프 설명을 붙이기 전·후 에이전트 정답률을 비교한다."
+  }
+ ],
+ "pay": {
+  "summary": "공공데이터 집계로 신입 초봉 **약 4,200만원**, 평균 **약 6,200만원** — 공시된 평균 급여는 없다(비상장)",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일이 없고 직군 구분도 없어 데이터 사이언티스트 계약 연봉과 다를 수 있다 [21]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 [21]"
+   },
+   {
+    "label": "토스뱅크 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 계열사 값 — 견주어 보기용 [22]"
+   },
+   {
+    "label": "토스뱅크 평균",
+    "value": "약 7,208만원",
+    "amount": 7208,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 계열사 평균 [22]"
+   }
+  ],
+  "how": "공고에는 연봉이 없고, 인터뷰·레퍼런스 체크 뒤 **처우 협의** 단계에서 사람마다 정한다 [1]. 비바리퍼블리카는 상장사가 아니라 사업보고서의 '직원 평균 급여'가 없다. 평균은 경력직이 섞인 회사 전체 값이라 초봉이 아니고, 집계값은 추정이라 실제 제안과 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 복지를 소개한 2021년 공식 글이다 [25]. 지금도 같은지는 글에 없으니 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "토스(비바리퍼블리카) 본사",
+  "address": "서울특별시 강남구 테헤란로 142, 4·10~13·22·23층",
+  "postal": "06236",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "주소는 토스 회사 소개 페이지 하단의 회사 정보다 [23]. 공고의 근무지는 'Seoul'로만 적혀 있어 팀 자리가 본사와 다를 수 있다 {추론}."
+ }
+}
