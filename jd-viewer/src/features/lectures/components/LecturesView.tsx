@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { useLectureIndex, useLecture, hms, at, type LectureCard, type Lecture, type Chapter, type Series } from '../hooks/useLectures'
+import { useLectureIndex, useLecture, hms, at, type LectureCard, type Lecture, type Chapter, type Series, type Track } from '../hooks/useLectures'
 import { ArchitectureDiagram } from '../../../components/ArchitectureDiagram'
 import { goBack, onLinkClick } from '../../../utils/navigation'
 import { paths } from '../../../utils/urls'
@@ -99,7 +99,7 @@ export function LecturesView({ seg = [] }: { seg?: string[] }) {
       : null,
   )
 
-  if (id) return <LectureDetail id={id} series={data?.series ?? []} />
+  if (id) return <LectureDetail id={id} series={data?.series ?? []} tracks={tracks} />
   if (seriesKey) {
     const sr = data?.series?.find((x) => x.key === seriesKey)
     if (sr) return <SeriesView s={sr} />
@@ -315,9 +315,10 @@ function Card({ c }: { c: LectureCard }) {
 
 // ── 상세 ─────────────────────────────────────────────────────
 
-function LectureDetail({ id, series }: { id: string; series: Series[] }) {
+function LectureDetail({ id, series, tracks }: { id: string; series: Series[]; tracks: Track[] }) {
   const { data: d, loading, error } = useLecture(id)
   const sr = series.find((x) => x.lectures.some((l) => l.id === id))
+  const after = sr ? nextCourse(sr, series, tracks) : undefined
   if (loading) return <Loader label="노트 불러오는 중…" />
   if (error || !d) return <ErrorState title="노트를 찾을 수 없습니다" detail={error ?? id} />
   return (
@@ -454,7 +455,7 @@ function LectureDetail({ id, series }: { id: string; series: Series[] }) {
           </Section>
         )}
 
-        {sr && <SeriesNav s={sr} id={id} bottom />}
+        {sr && <SeriesNav s={sr} id={id} bottom after={after} />}
 
         <p className="mt-12 text-xs leading-5 text-[#999]">
           이 노트는 원본 영상의 {d.materials.transcript === 'official' ? '공식' : d.materials.transcript === 'auto' ? '자동' : ''} 자막
@@ -752,11 +753,22 @@ function SeriesView({ s }: { s: Series }) {
   )
 }
 
-/** 노트 안에서 같은 과목의 앞뒤 강의로 — 정리 안 된 강의는 '준비 중'으로 보인다. */
-function SeriesNav({ s, id, bottom }: { s: Series; id: string; bottom?: boolean }) {
+/** 학습 순서(paths.json)에서 이 과목 다음에 오는 과목 — 과목을 다 들으면 다음 단계로 이어지게 */
+function nextCourse(s: Series, series: Series[], tracks: Track[]): Series | undefined {
+  const t = tracks.find((x) => x.key === (s.track ?? 'ai'))
+  if (!t) return undefined
+  const order = t.steps.flatMap((st) => st.series.map((x) => x.key))
+  const k = order[order.indexOf(s.key) + 1]
+  return order.includes(s.key) && k ? series.find((x) => x.key === k) : undefined
+}
+
+/** 노트 안에서 같은 과목의 앞뒤 강의로 — 정리 안 된 강의는 '준비 중'으로 보인다.
+ *  과목의 마지막 강의 아래에는 학습 순서의 다음 과목 1강을 잇는다(강의처럼 이어 듣게). */
+function SeriesNav({ s, id, bottom, after }: { s: Series; id: string; bottom?: boolean; after?: Series }) {
   const i = s.lectures.findIndex((l) => l.id === id)
   const prev = s.lectures[i - 1]
   const next = s.lectures[i + 1]
+  const first = !next && after ? after.lectures[0] : undefined
   const link = (l: Series['lectures'][number] | undefined, label: string) =>
     !l ? (
       <span />
@@ -774,7 +786,21 @@ function SeriesNav({ s, id, bottom }: { s: Series; id: string; bottom?: boolean 
       <a href={href} onClick={onLinkClick(href)} className="text-sm font-bold text-[#272727] hover:text-(--color-accent)">
         {s.code ?? s.title} · {s.lectures[i]?.no}/{s.total}강 차례
       </a>
-      {link(next, '→')}
+      {next ? (
+        link(next, '→')
+      ) : first && after ? (
+        first.done ? (
+          <a href={paths.lecture(first.id)} onClick={onLinkClick(paths.lecture(first.id))} className="text-sm font-bold text-(--color-accent) hover:underline">
+            다음 과목 · {after.title} 1강 →
+          </a>
+        ) : (
+          <a href={paths.lectureSeries(after.key)} onClick={onLinkClick(paths.lectureSeries(after.key))} className="text-sm text-[#888] hover:text-(--color-accent)">
+            다음 과목 · {after.title} →
+          </a>
+        )
+      ) : (
+        <span />
+      )}
     </nav>
   )
 }
