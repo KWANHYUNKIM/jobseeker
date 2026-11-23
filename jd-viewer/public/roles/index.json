@@ -104,20 +104,6 @@
  },
  "roles": [
   {
-   "id": "skax-ai-studio-mlops-pl",
-   "company": "SK주식회사(AX)",
-   "role": "제조 AI · Data 분야 AI Studio 개발/운영 PL",
-   "jobs": [
-    "ats-skcareers:sk:R262457",
-    "jobkorea-50384147",
-    "jobkorea-50384195",
-    "jobkorea-50384211",
-    "dev-581141"
-   ],
-   "researched_at": "2026-11-23",
-   "lines": 46
-  },
-  {
    "id": "speee-dx-sre",
    "company": "Speee(스피)",
    "role": "SRE 엔지니어 · 현장산업 DX 분야",
@@ -1021,6 +1007,20 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 13
+  },
+  {
+   "id": "skax-ai-studio-mlops-pl",
+   "company": "SK주식회사(AX)",
+   "role": "제조 AI · Data 분야 AI Studio 개발/운영 PL",
+   "jobs": [
+    "ats-skcareers:sk:R262457",
+    "jobkorea-50384147",
+    "jobkorea-50384195",
+    "jobkorea-50384211",
+    "dev-581141"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 46
   }
  ]
 }

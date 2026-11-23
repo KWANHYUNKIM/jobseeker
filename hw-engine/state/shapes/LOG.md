@@ -209,3 +209,14 @@
   Peerless Assassin 120 Digital ARGB(high — 사양 표 + 사진 4장: 두 묶음을 덮는 하나의 윗 덮개에 온도 숫자 화면, ARGB 28mm 팬 2). 다나와는 쓰지 않았다.
 - 막힌 것: darkFlash 상세 사양 이미지는 이번에도 스크립트로 불러와 못 봐 DS500M 의 슬롯 수·선 구멍을 비웠다. AG620 G2 의 날개 수는 사진 각도로 확실히 세지 못했고, Digital ARGB 는 켜진 사진뿐이라 날개 수를 비웠다.
 - 실물과 아직 다른 점: Digital ARGB 의 윗 덮개 화면·하나로 이어진 덮개, D34 의 앞면 숫자 화면·그릴 윗면·듀얼 챔버는 렌더러가 못 그린다(REQUESTS [3D 렌더러] 새 줄 — `display` 칸). DS500M·D34 의 블록 발·받침은 기존 요청에 더했다. AG620 G2 의 매트릭스 핀은 stepped(톱니)로 근사했다. 세 쿨러의 models `fans` 가 null 이라 [hw-models] 새 줄(렌더러는 shapes 의 fans 2 로 그린다).
+
+## 2026-11-23 · 22회차(무인) — 쿨러 다섯(수랭 셋·듀얼타워 둘)
+
+- 12번 맨 앞 그래픽카드 COLORFUL(403)·ZOTAC(468)와 case-atx-mid·cooler-air-single(다른 세션의 미커밋 파일) 항목은 지난 회차처럼 미루고, 쿨러 인기순 다음 다섯을 적었다(공식 표·도면·문구 + 공식 사진을 세션 임시 폴더에서 보기만):
+  DEEPCOOL LT360 VISION(high — 사양 표 펌프 131×89×58mm·4.5형 LCD·ARGB 팬 3, 갤러리 4장: 경첩으로 세우는 LCD 판, 넓은 구리 바닥, 검정 편조 호스, 닫힌 날개 ARGB 팬 — 새 파일 `cooler-aio-360.json`) ·
+  ARCTIC Liquid Freezer III Pro 360(medium — 갤러리 4장: 둥근 펌프 위 VRM 블로워 팬 + ARCTIC 로고, 오프셋 피팅, 편조 호스, 무발광 팬 3, 펌프 지름 91mm 는 Pro 240 도면의 같은 펌프 값) ·
+  ARCTIC Liquid Freezer III Pro 240(high — 공식 치수 도면: 펌프 지름 91·높이 68.5·폭 108.5mm, 라디에이터 38mm, 피팅 19mm — 새 파일 `cooler-aio-240.json`) ·
+  3RSYS Socoool RC1900N(high — 쇼핑몰 사진 5장 + 상세 이미지 스펙: 130mm(25T) + 120mm(28T) 팬, 전체 검정 도장, 은색 줄 윗 덮개, 거울 구리 베이스 + 쌍철봉, NON-LED) ·
+  DEEPCOOL AK620 DIGITAL SE(high — 사양 표 Ø6mm×6·ARGB, 갤러리 4장: 은색 핀, 숫자 화면 윗 덮개 옆 모서리 ARGB 띠, 팬은 불빛 없음). 다나와는 쓰지 않았다.
+- 막힌 것: ARCTIC 제품 페이지 글(사양 목록)은 web-fetch 가 갤러리 뒤를 못 읽어 사진·도면만 썼다. 3RSYS 상세 이미지는 세로 2.9만 px 라 PIL 로 잘라 봤다(세션 임시 폴더, 저장소에 두지 않음).
+- 실물과 아직 다른 점: ARCTIC 의 38mm 라디에이터·VRM 팬·오프셋 피팅, LT360 의 네모 펌프와 LCD 판, 편조 호스는 렌더러가 못 그린다(REQUESTS [3D 렌더러] 새 줄). RC1900N 의 서로 다른 두 팬 크기와 AK620 DIGITAL SE 의 덮개 ARGB 띠·숫자 화면도 칸이 없다(새 줄 · 기존 `display` 요청). RC1900N 히트파이프 수는 사진과 분해 그림이 맞지 않아 비웠고, 다섯 제품 모두 날개 수를 비웠다. SOCOOOL·DeepCool 로고 글자는 글자 모양이 확실치 않아 marks 에 넣지 않았다.

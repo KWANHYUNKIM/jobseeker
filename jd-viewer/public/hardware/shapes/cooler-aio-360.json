@@ -1,0 +1,46 @@
+{
+ "schema": 1,
+ "part": "cooler-aio-360",
+ "shapes": {
+  "deepcool-lt360vision": {
+   "kind": "cooler",
+   "fans": 3,
+   "fan_mm": 120,
+   "color": "#16171a",
+   "fan_light": "argb",
+   "sources": [
+    {
+     "title": "DEEPCOOL LT360 VISION ARGB — 공식 제품 페이지(사양 표: 라디에이터 402×120×27mm 알루미늄, 호스 410mm, 펌프 131×89×58mm, 팬 120×120×25mm, Addressable RGB LED(펌프·팬×3), 4.5형 480×854 IPS LCD · 문구 'closed-wheel ARGB fans'·'damped hinge, tilted up to 90°' · 갤러리 800X800 01~04 — 정면·펌프 바닥·라디에이터·팬)",
+     "url": "https://www.deepcool.com/products/Cooling/cpuliquidcoolers/LT360-VISION-ARGB-4.5-Ultrawide-LCD-Liquid-Cooler-with-Adjustable-Viewing-Angle/2026/22717.shtml"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "펌프 머리가 둥글지 않고 131×89mm 네모 상자라 pump_mm(지름)을 적지 않았다 — 그 위에 4.5형 가로로 긴 LCD 판이 경첩으로 달려 90°까지 세워진다(사진은 세운 모습, 화면에 온도·클럭 숫자). 펌프 바닥은 나사 10개로 고정한 넓은 구리판, 호스 두 가닥은 펌프 옆면에서 나와 검정 편조 피복. 팬 3개는 날개 끝이 고리로 이어진 닫힌 날개(closed-wheel)이고 반투명 날개 전체가 ARGB 로 빛나(켠 사진이라 날개 수는 못 셌다), 팬 틀 모서리에 계단 무늬. 라디에이터·팬 틀·펌프 몸통 모두 검정(흰 판 WH 따로)."
+  },
+  "arctic-liquid-freezer-iii-pro-360": {
+   "kind": "cooler",
+   "fans": 3,
+   "fan_mm": 120,
+   "pump_mm": 91,
+   "color": "#151618",
+   "fan_light": "none",
+   "marks": [
+    { "text": "ARCTIC", "where": "cover" }
+   ],
+   "sources": [
+    {
+     "title": "ARCTIC Liquid Freezer III Pro 360 — 공식 제품 페이지 갤러리(Black g00~g03 — 비스듬한 정면·세운 모습·윗면)",
+     "url": "https://www.arctic.de/en/Liquid-Freezer-III-Pro-360/ACFRE00180A"
+    },
+    {
+     "title": "ARCTIC Liquid Freezer III Pro 240 — 공식 치수 도면(같은 펌프: 머리 지름 91mm·높이 68.5mm·폭 108.5mm, 팬 120×25mm, 라디에이터 두께 38mm)",
+     "url": "https://www.arctic.de/media/38/13/72/1744095963/Liquid_Freezer_III_Pro_Series_240_Dimensions.jpg"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "검정 판(A-RGB·흰 판은 따로). 둥근 펌프 머리 윗면에 VRM 식힘 팬(작은 날개가 방사형으로 촘촘한 블로워 꼴)이 있고 가운데 원판에 ARCTIC 로고 글자 — 펌프 지름 91mm 는 Pro 240 공식 도면의 같은 펌프 값이라 medium. 호스는 펌프 옆 한쪽(오프셋)으로 나와 검정 편조 피복으로 두 가닥이 붙어 내려간다. 라디에이터 38mm 두께(models), 옆판에 ARCTIC 글자. 팬 3개는 P12 Pro 계열 검정, 불빛 없음, 날개 수는 사진 각도로 못 셌다."
+  }
+ }
+}

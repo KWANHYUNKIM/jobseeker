@@ -70,6 +70,46 @@
    "confidence": "high",
    "checked_at": "2026-11-23",
    "note": "듀얼타워, 히트파이프 6개, 니켈 도금 베이스. 팬 2개(앞면 + 가운데, 두께 28mm, 반투명 날개가 통째로 ARGB 로 빛난다 — 켜진 사진이라 날개 수는 못 셌다). 두 묶음을 하나로 덮는 검정 윗 덮개 가운데에 CPU·GPU 온도·사용률을 보여 주는 숫자 화면이 있고 옆에 흰 THERMALRIGHT 글자 띠, 덮개 모서리에 사선 홈. 핀은 은색."
+  },
+  "3rsys-rc1900n": {
+   "kind": "cooler",
+   "stacks": 2,
+   "fans": 2,
+   "fan_mm": 130,
+   "base": "plate",
+   "fin_edge": "flat",
+   "color": "#141416",
+   "accent": "#b9bcc0",
+   "fan_light": "none",
+   "sources": [
+    {
+     "title": "3RSYS Socoool RC1900N — 공식 쇼핑몰 제품 페이지(사진 5장 — 비스듬한 정면·윗면·정면 + 상세 이미지의 제품 스펙: 132×140×157mm, 팬 130×130×25mm 1600RPM · 120×120×28mm 2200RPM, 'NON-LED DUAL FAN', 'ALL 도색 및 상단 커버', 쌍철봉)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1702860370"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "듀얼타워, 핀·히트파이프·팬까지 전부 검정 도장(흰 판 따로). 팬은 앞면 130mm(25mm 두께) + 두 묶음 사이 120mm(28mm 두께) 두 크기라 fan_mm 는 앞면 130 — 렌더러는 두 팬을 같은 크기로 그린다. 베이스는 거울처럼 닦은 은색 구리판(직접 접촉 아님) + 가운데 휨 방지 막대 '쌍철봉'. 히트파이프는 정면 사진에 굽은 관이 7줄 보이나 분해 그림의 끝 수와 맞지 않아 비웠다. 윗면은 묶음마다 검정 덮개에 은색 세로 줄 4개와 SOCOOOL 로고 글자. 팬 허브에 금색 점 + 원형 SOCOOOL 글자, 불빛 없음. 날개 수는 비웠다."
+  },
+  "deepcool-ak620-digital-se": {
+   "kind": "cooler",
+   "heatpipes": 6,
+   "stacks": 2,
+   "fans": 2,
+   "fan_mm": 120,
+   "base": "plate",
+   "fin_edge": "flat",
+   "color": "#141517",
+   "fan_light": "none",
+   "sources": [
+    {
+     "title": "DEEPCOOL AK620 DIGITAL SE — 공식 제품 페이지(사양 표: 129×138×161mm, 히트파이프 Ø6mm×6, 팬 120×120×25mm, Addressable RGB LED 3핀 + USB 2.0 9핀 · 문구 'REAL-TIME STATUS SCREEN'·'ARGB LED strips'·'pure copper cold plate'·'two FDB PWM fans' · 갤러리 800X800 01~04 — 비스듬한 윗면·정면·옆면)",
+     "url": "https://www.deepcool.com/products/Cooling/cpuaircoolers/AK620-DIGITAL-SE-Performance-CPU-Cooler-With-A-Status-Display/2025/21605.shtml"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "듀얼타워, 은색 핀 두 묶음을 하나로 덮는 검정 유리 같은 윗 덮개 가운데에 CPU 온도·사용률 숫자 화면과 청록 DeepCool 로고, 덮개 양 옆 모서리를 따라 ARGB 띠가 빛난다(팬은 불빛 없는 검정, 허브에 청록 로고). 히트파이프 6개는 니켈 도금 은색, 구리 콜드플레이트 위. 핀 옆면은 세로 홈 3줄이 있는 평평한 가장자리. 팬 2개(앞면 + 가운데) 철사 클립. 날개 수는 정면 사진에서 확실히 세지 못해 비웠다."
   }
  }
 }

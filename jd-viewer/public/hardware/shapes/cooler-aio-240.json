@@ -1,0 +1,30 @@
+{
+ "schema": 1,
+ "part": "cooler-aio-240",
+ "shapes": {
+  "arctic-liquid-freezer-iii-pro-240": {
+   "kind": "cooler",
+   "fans": 2,
+   "fan_mm": 120,
+   "pump_mm": 91,
+   "color": "#151618",
+   "fan_light": "none",
+   "marks": [
+    { "text": "ARCTIC", "where": "cover" }
+   ],
+   "sources": [
+    {
+     "title": "ARCTIC Liquid Freezer III Pro 240 — 공식 치수 도면(펌프 머리 지름 91mm·높이 68.5mm·폭 108.5mm, 팬 120×25mm, 라디에이터 277×120×38mm, 피팅 19mm 돌출)",
+     "url": "https://www.arctic.de/media/38/13/72/1744095963/Liquid_Freezer_III_Pro_Series_240_Dimensions.jpg"
+    },
+    {
+     "title": "ARCTIC Liquid Freezer III Pro 240 — 공식 제품 페이지(Black 갤러리)",
+     "url": "https://www.arctic.de/en/Liquid-Freezer-III-Pro-240/ACFRE00178A"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "검정 판. 공식 도면: 둥근 펌프 머리(지름 91mm) 윗면에 방사형 날개의 VRM 식힘 팬과 가운데 ARCTIC 로고, 호스 피팅 두 개가 펌프 옆 한쪽에 붙은 오프셋 꼴(폭 108.5mm), 펌프 아래는 갈퀴 모양 고정 다리. 라디에이터는 38mm 로 두껍고 피팅이 한쪽 끝판에서 19mm 튀어나온다. 호스는 검정 편조 피복. 팬 2개 P12 Pro 계열 검정, 불빛 없음 — 날개 수는 도면 선이 겹쳐 확실히 세지 못해 비웠다."
+  }
+ }
+}
