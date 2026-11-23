@@ -21,6 +21,9 @@ import { fetchHome, type HomeCompany } from '../../home/api'
 import { careerOf, ddayLabel } from '../../home/utils'
 import { JobGuide } from './JobGuide'
 import { parseJdText, type JdBlock } from '../utils/jdText'
+import { useRoleReading } from '../hooks/useRoleReading'
+import { matchRoleLine } from '../utils/roleText'
+import { RoleAside, RoleLineNote, RoleSummary } from './RoleReading'
 
 interface Props {
   job: Job
@@ -78,6 +81,25 @@ export function JobDetail({ job, onOpenUrl }: Props) {
     for (const s of posting?.study || []) if (by[s.from]) by[s.from].push(s)
     return by
   }, [posting])
+
+  // 직무 역설계(공고 한 줄씩 읽기) — 풀이가 있는 공고만. 공고 줄 밑에 한 줄 답이 늘 보이고, 누르면 풀이가 펼쳐진다.
+  const reading = useRoleReading(`${job.site}-${job.pid}`)
+  const [openLines, setOpenLines] = useState<Set<string>>(() => new Set())
+  const allOpen = !!reading && openLines.size >= reading.lines.length
+  const toggleLine = (q: string) =>
+    setOpenLines((prev) => {
+      const next = new Set(prev)
+      if (next.has(q)) next.delete(q)
+      else next.add(q)
+      return next
+    })
+  const toggleAll = () => setOpenLines(allOpen || !reading ? new Set() : new Set(reading.lines.map((l) => l.quote)))
+  const noteFor = reading
+    ? (text: string) => {
+        const line = matchRoleLine(reading.lines, text)
+        return line ? <RoleLineNote line={line} sources={reading.sources} open={openLines.has(line.quote)} onToggle={() => toggleLine(line.quote)} /> : null
+      }
+    : undefined
 
   // 좁은 화면에서는 두 단이 안 들어간다. 가이드를 본문 아래로 흘리면 스크롤 두 화면
   // 아래로 밀려나 아무도 안 보므로, 탭으로 갈아끼운다.
@@ -188,6 +210,7 @@ export function JobDetail({ job, onOpenUrl }: Props) {
             )}
 
             <div className="mt-[49px] space-y-[49px] text-base text-[#272727]">
+              {reading && <RoleSummary r={reading} allOpen={allOpen} onToggleAll={toggleAll} />}
               {job.tech_stack && job.tech_stack.length > 0 && (
                 <Section title="기술 스택">
                   <div className="flex flex-wrap gap-2">
@@ -201,15 +224,15 @@ export function JobDetail({ job, onOpenUrl }: Props) {
               )}
 
               <Section title="주요 업무" marks={marksBySection.task.length}>
-                <FieldOrPlaceholder text={job.main_tasks} url={job.url} marks={marksBySection.task} activeQuote={activeQuote} onQuote={jumpToGuide} />
+                <FieldOrPlaceholder text={job.main_tasks} url={job.url} noteFor={noteFor} marks={marksBySection.task} activeQuote={activeQuote} onQuote={jumpToGuide} />
               </Section>
 
               <Section title="자격 요건" marks={marksBySection.qualification.length}>
-                <FieldOrPlaceholder text={job.qualifications} url={job.url} marks={marksBySection.qualification} activeQuote={activeQuote} onQuote={jumpToGuide} />
+                <FieldOrPlaceholder text={job.qualifications} url={job.url} noteFor={noteFor} marks={marksBySection.qualification} activeQuote={activeQuote} onQuote={jumpToGuide} />
               </Section>
 
               <Section title="우대 사항" marks={marksBySection.preference.length}>
-                <FieldOrPlaceholder text={job.preferences} url={job.url} marks={marksBySection.preference} activeQuote={activeQuote} onQuote={jumpToGuide} />
+                <FieldOrPlaceholder text={job.preferences} url={job.url} noteFor={noteFor} marks={marksBySection.preference} activeQuote={activeQuote} onQuote={jumpToGuide} />
               </Section>
 
               {job.benefits && (
@@ -227,6 +250,7 @@ export function JobDetail({ job, onOpenUrl }: Props) {
 
         {/* 오른쪽 칸 — 비슷한 공고 · 이 회사의 다른 공고 · 취업 브리핑 */}
         <aside className={'w-full lg:w-[352px] lg:shrink-0 mt-6 lg:mt-0 flex flex-col gap-[30px] ' + (pane === 'guide' ? 'block' : 'hidden lg:flex')}>
+          {reading && <RoleAside r={reading} />}
           {similar.length > 0 && onOpenUrl && (
             <SideList title="비슷한 공고">
               {similar.slice(0, 5).map((s) => (
@@ -319,12 +343,14 @@ function FieldOrPlaceholder({
   marks,
   activeQuote,
   onQuote,
+  noteFor,
 }: {
   text: string | undefined
   url: string
   marks?: HighlightMark[]
   activeQuote?: string | null
   onQuote?: (q: string | null) => void
+  noteFor?: (text: string) => React.ReactNode
 }) {
   const trimmed = (text || '').trim()
   if (trimmed.length < 10) {
@@ -344,7 +370,7 @@ function FieldOrPlaceholder({
       </div>
     )
   }
-  return <JdBody text={trimmed} marks={marks} activeQuote={activeQuote} onQuote={onQuote} />
+  return <JdBody text={trimmed} marks={marks} activeQuote={activeQuote} onQuote={onQuote} noteFor={noteFor} />
 }
 
 // ── 본문 ────────────────────────────────────────────────────────────────
@@ -382,11 +408,13 @@ function JdBody({
   marks,
   activeQuote,
   onQuote,
+  noteFor,
 }: {
   text: string
   marks?: HighlightMark[]
   activeQuote?: string | null
   onQuote?: (q: string | null) => void
+  noteFor?: (text: string) => React.ReactNode
 }) {
   const groups = useMemo(() => groupBlocks(parseJdText(text)), [text])
   // 하이라이트는 덩어리마다 다시 찾는다. 인용이 줄을 넘나들면 못 찾는데, 그때는
@@ -437,6 +465,7 @@ function JdBody({
                 </span>
                 <div className="min-w-0">
                   <div>{t(r.text)}</div>
+                  {noteFor?.(r.text)}
                   {r.subs.length > 0 && (
                     <ul className="mt-1.5 space-y-1 text-[13px] text-(--color-muted)">
                       {r.subs.map((sub, si) => (
