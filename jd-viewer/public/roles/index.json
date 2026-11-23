@@ -46,6 +46,7 @@
   "wanted-396834": "skax-nova-bss-oss-app-dev",
   "ats-skcareers:sk:R262150": "skax-salesforce-crm",
   "ats-skcareers:sk:R262392": "skax-sap-bw-bdc-data-analytics",
+  "ats-skcareers:sk:R262105": "skax-sap-fi-module",
   "ats-skcareers:sk:R262527": "skax-securities-it-ax-contract",
   "ats-skcareers:sk:R262430": "skax-security-architect",
   "ats-skcareers:sk:R262135": "skax-security-operations-pm",
@@ -544,6 +545,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 35
+  },
+  {
+   "id": "skax-sap-fi-module",
+   "company": "SK주식회사(AX)",
+   "role": "SAP FI(재무회계) Module 전문가",
+   "jobs": [
+    "ats-skcareers:sk:R262105"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 24
   },
   {
    "id": "skax-securities-it-ax-contract",

@@ -1,0 +1,427 @@
+{
+  "id": "skax-sap-fi-module",
+  "company": "SK주식회사(AX)",
+  "role": "SAP FI(재무회계) Module 전문가",
+  "team": "AX ERP서비스2팀 · FI Module",
+  "jobs": [
+    "ats-skcareers:sk:R262105"
+  ],
+  "researched_at": "2026-11-23",
+  "tldr": {
+    "what": "고객사에 깔린 SAP ERP 의 **FI(재무회계) 모듈** — 전표·총계정원장(GL)·매출채권(AR)·매입채무(AP) — 을 고치고 돌리는 자리입니다. 구매(MM)·영업(SD)·관리회계(CO)에서 넘어오는 전표가 회계 장부에 맞게 떨어지도록 설정을 짜고, 필요하면 ABAP 프로그램까지 읽고 설계합니다.[1]",
+    "env": "같은 AX ERP서비스2팀이 SAP BW(분석 창고) 자리도 함께 뽑고 있습니다.[2] SAP 의 옛 ERP(Business Suite 7, ERP 6.0)는 2027년 말에 기본 유지보수가 끝나서[6] 고객사들이 S/4HANA 로 옮기는 때이고, SK AX 도 그 전환을 주력 사업으로 알리고 있습니다.[3][5]",
+    "oneline": "회계 원리(차변·대변·채권·채무)와 SAP 설정, ABAP 을 같이 아는 사람. **SAP FI 실무 5년 이상**이 필수라 신입·전환자 자리는 아니고, 코드보다 **설정·전표 추적·고객 요구 정리**가 일의 중심입니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "AX ERP서비스2팀 산하 FI Module를 소개합니다😊",
+      "short": "SAP ERP 를 고객사에 짓고 돌리는 팀 안의 '재무회계(FI)' 담당 자리다.",
+      "why": "SAP ERP 는 모듈 단위로 나뉩니다 — FI(재무회계)·CO(관리회계)·MM(구매·자재)·SD(영업·유통) 등. 이 공고는 그중 FI 를 맡을 사람을 찾습니다.[1] 같은 팀은 FI 와 별도로 SAP BW·데이터 분석 자리도 뽑고 있어서, 팀 안에서 모듈별로 사람을 나눠 두는 구조로 읽힙니다.[2] {추론}",
+      "refs": [1, 2]
+    },
+    {
+      "section": "task",
+      "quote": "AX ERP서비스2팀은 SAP ERP시스템을 고객사에 구축 및 관리 운영하는 조직으로 다년간 고객사의 ERP운영 시스템을 구축하고 관리회계 업무를 수행하고 있습니다.",
+      "short": "고객사 ERP 를 새로 짓고(구축), 다 지은 뒤에도 맡아서 돌리는(운영) 팀이다.",
+      "why": "ERP(전사적 자원 관리)는 구매·생산·영업·회계를 한 시스템에 기록하는 프로그램이고 SAP 가 대표 제품입니다. SK AX 는 2025년 파르나스호텔의 SAP S/4HANA 기반 ERP 구축을 맡았고[4], 같은 해 SAP 와 'AI 기반 ERP 혁신 모델'을 함께 만들어 국내 기업 ERP 전환에 먼저 적용한 뒤 SK 그룹으로 넓힌다고 밝혔습니다.[5]",
+      "how_far": "'구축'은 정해진 기간 안에 새 시스템을 여는 프로젝트, '운영'은 연 단위 계약으로 고객 요청·장애·결산 지원을 맡는 일(SM)입니다. 이 자리는 둘 다 맡을 수 있습니다.[1]",
+      "refs": [1, 4, 5]
+    },
+    {
+      "section": "task",
+      "quote": "지원자께서 입사 후 수행하시게 될 FI(재무회계) 분야는 ERP 전 영역의 Data를 기반으로 한 고객사의 재무회계 전 영역을 관리하게 됩니다.",
+      "short": "구매·영업·생산이 남긴 숫자가 결국 회계 전표로 모이고, 그 전표 전체를 FI 가 책임진다.",
+      "why": "SAP S/4HANA 에서는 FI·CO·자산회계·원가 등의 줄 항목이 **유니버설 저널**(Universal Journal, 표 이름 ACDOCA) 한 곳에 쌓입니다.[8] SAP 는 이것을 FI 와 CO 거래의 '최초 기록 장부'라 부르고, 그래서 FI 와 CO 사이의 대사(두 장부 숫자 맞추기)가 구조적으로 필요 없어졌다고 설명합니다.[7] 다른 모듈의 거래가 전부 이 장부로 들어오니 '재무회계 전 영역'이 곧 'ERP 전 영역의 데이터'입니다. {추론}",
+      "flows": [
+        {
+          "caption": "S/4HANA 에서 회계 숫자가 모이는 길[7][8][9]",
+          "steps": ["SD 청구 · MM 입고·송장 · 수기 전표", "전표 머리(BKPF) + 줄 항목", "유니버설 저널(ACDOCA)", "재무제표 · 관리회계 리포트"],
+          "mine_from": 1
+        }
+      ],
+      "refs": [7, 8, 9],
+      "study": ["sap-ujournal", "sap-press-fi"]
+    },
+    {
+      "section": "task",
+      "quote": "고객사의 프로젝트 환경에 따라 업무 환경이 바뀔 수 있으나 주로 서울/분당에서 근무하게 됩니다.",
+      "short": "프로젝트마다 근무지가 바뀔 수 있다. 보통은 분당 사무실이나 서울.",
+      "why": "ERP 구축은 고객사 재무팀과 매일 회의하고 결산 일정에 맞춰야 해서 고객사에 들어가 일하는(상주) 경우가 흔합니다. {추론} SK AX 사업장 안내의 분당 사무실은 SK u-타워·판교 캠퍼스·수내 오피스입니다.[25]",
+      "how_far": "어느 고객사·어느 건물로 가는지는 면접·처우 협의 때 확인합니다. {추론}",
+      "refs": [25]
+    },
+    {
+      "section": "task",
+      "quote": "수평적인 조직문화를 지향하며, 구성원의 행복을 중심 가치로 삼고 있습니다.",
+      "short": "그룹 공통 문화 소개 문장이다. 일 내용과는 따로 읽는다.",
+      "why": "SK 그룹 채용 사이트의 문화 소개도 같은 말(구성원 행복)을 앞세웁니다.[24] 같은 팀 BW 공고에도 거의 같은 문장이 있습니다.[2] 이 팀만의 근무 방식은 공고에 따로 적혀 있지 않습니다.[1]",
+      "refs": [1, 2, 24]
+    },
+    {
+      "section": "task",
+      "quote": "SAP FI (Finance) 모듈을 개선하고 운영합니다.",
+      "short": "이미 돌고 있는 고객사 FI 설정·프로그램을 맡아, 고장은 고치고 불편은 줄인다.",
+      "why": "FI 의 기본 칸은 총계정원장(GL, 모든 계정의 장부), 매출채권(AR, 고객에게 받을 돈), 매입채무(AP, 공급업체에 줄 돈)입니다. 고객·공급업체 장부(보조원장)에 전표가 들어가면 GL 의 **조정계정**(reconciliation account)에도 자동으로 같이 쌓이고, 조정계정에는 손으로 직접 전기할 수 없습니다.[10] 운영의 대부분이 이런 규칙이 고객사 업무에 맞게 돌도록 지키는 일입니다. {추론}",
+      "actually": {
+        "intro": "FI 운영 담당이 보통 맡는 일입니다(공개 SAP 자료와 일반 실무 기준).",
+        "items": [
+          "**월·분기 결산 지원** — 결산 일정표대로 전표 마감, 환율 평가, 미결 항목 정리가 끝나는지 본다. {추론}",
+          "**전표 오류 추적** — '이 금액이 왜 이 계정으로 갔나'를 전표 → 원천(구매·영업 문서) → 설정 순서로 거꾸로 따라간다. {추론}",
+          "**미결 항목 반제** — 받을 돈·줄 돈의 송장과 입금을 짝지어 지운다. 입고·송장 대사 계정(GR/IR)은 자동 반제 프로그램(F.13)으로 맞는 것끼리 지울 수 있다.[14]",
+          "**조정계정 관리** — 국내·해외·계열사 고객을 다른 조정계정으로 나누는 것처럼, 보조원장이 재무제표에 어떻게 묶일지 정한다.[11]",
+          "**권한·마스터** — 계정과목·고객·공급업체 기준 정보가 틀려 전표가 막히는 일을 고친다. {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "보조원장 → 조정계정, 그리고 대차가 안 맞으면 막힌다 (가상 값, 직접 돌린 출력)",
+          "body": "고객 C100 에 1,100(매출 1,000 + 부가세 100)을 청구하면 고객 장부와 GL 조정계정 11300000 에 같은 금액이 쌓입니다.[10] 차변·대변 합이 0 이 아니면 SAP 는 'Balance in transaction currency'(F5702) 오류로 전표를 거부합니다.[16]",
+          "lang": "python",
+          "code": "recon = {\"C100\": \"11300000\"}   # 고객 -> 조정계정\ngl, sub = {}, {}\ndef post(lines):\n    if sum(a for _, a in lines) != 0:\n        return \"F5702 대차 불일치\"\n    for acct, amt in lines:\n        if acct in recon:\n            sub[acct] = sub.get(acct, 0) + amt\n        g = recon.get(acct, acct)\n        gl[g] = gl.get(g, 0) + amt\n    return \"posted\"\nprint(post([(\"C100\", 1100), (\"41000000\", -1000), (\"22200000\", -100)]))\nprint(post([(\"C100\", 1100), (\"41000000\", -1000)]))\nprint(gl)\nprint(sub)\n# posted\n# F5702 대차 불일치\n# {'11300000': 1100, '41000000': -1000, '22200000': -100}\n# {'C100': 1100}"
+        }
+      ],
+      "how_far": "구축보다 **이미 돌고 있는 고객 FI 를 맡는 일**이 먼저입니다('개선하고 운영'). {추론} 최소선은 전표 하나를 보고 어느 모듈·어느 설정에서 왔는지 말하고, 결산 일정 안에 고칠 수 있는지 판단하는 것입니다. {추론}",
+      "refs": [10, 11, 14, 16],
+      "study": ["sap-bible-fi", "sap-press-fi", "accounting-principles"]
+    },
+    {
+      "section": "task",
+      "quote": "FI 모듈과 타 모듈(CO, MM, SD 등)의 연계 프로세스를 설계하고 최적화합니다.",
+      "short": "구매 입고·송장, 영업 청구가 '어느 계정으로' 전표가 될지를 설정으로 정하는 일이다.",
+      "why": "SAP 에서 구매(MM)의 입고 한 건은 회계 전표 여러 줄을 자동으로 만듭니다. 재고 계정은 거래 키 BSX, 입고·송장 대사 계정(GR/IR)은 WRX 로 찾아지고, 자재의 평가 클래스에 따라 계정이 갈립니다.[12] 이 연결표는 SAP 가 미리 정한 거래 키 위에 고객사 계정번호를 붙이는 방식이라[13], 연계 설계는 곧 '거래 키 × 평가 클래스 × 계정' 표를 고객사 계정과목에 맞게 채우는 일입니다. {추론} CO 쪽은 비용 계정에 전기할 때 코스트센터 같은 원가 귀속을 자동으로 채우는 기본값(OKB9)을 둘 수 있습니다.[15]",
+      "actually": {
+        "items": [
+          "**MM → FI** — 입고(재고↑, GR/IR↓), 송장(GR/IR↑, 공급업체 채무↓) 전표가 맞게 생기도록 자동 계정 결정을 짠다.[12][13]",
+          "**가격 차이** — 표준가와 발주가가 다르면 차이가 가격차이 계정(PRD)으로 간다.[12][13]",
+          "**SD → FI** — 청구 문서가 매출·부가세·고객 채권 전표가 되도록 매출 계정 결정을 맞춘다. {추론}",
+          "**FI → CO** — 비용 전표가 코스트센터·내부 오더로 떨어지게 기본 귀속을 정한다.[15]",
+          "**대사 계정 정리** — 입고와 송장이 짝을 이루면 GR/IR 잔액이 0 이 되고, 남은 것은 자동 반제나 원인 조사 대상이다.[14]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "입고 → 송장, GR/IR 이 0 이 되는 길 (SAP 교육 자료의 숫자를 따라 한 가상 값, 직접 돌린 출력)",
+          "body": "SAP 교육 자료의 예처럼 표준가 10, 발주가 12, 수량 10 이면 입고 때 재고 100 · 가격차이 20 · GR/IR -120 이 생깁니다.[12] 송장(부가세 10% 가정)이 오면 GR/IR +120 이 들어와 잔액이 0 이 됩니다. {추론}",
+          "lang": "python",
+          "code": "qty, std, po = 10, 10, 12\ngr = [(\"BSX\", qty*std), (\"PRD\", qty*(po-std)), (\"WRX\", -qty*po)]\nprint(gr, sum(a for _, a in gr))\nir = [(\"WRX\", qty*po), (\"VST\", qty*po//10), (\"V200\", -(qty*po + qty*po//10))]\nprint(ir, sum(a for _, a in ir))\nprint(\"GR/IR\", sum(a for k, a in gr + ir if k == \"WRX\"))\n# [('BSX', 100), ('PRD', 20), ('WRX', -120)] 0\n# [('WRX', 120), ('VST', 12), ('V200', -132)] 0\n# GR/IR 0"
+        }
+      ],
+      "how_far": "MM·SD 화면을 직접 설정하는 건 그 모듈 담당이지만, **'이 거래가 어느 계정으로 가야 하나'는 FI 가 정해 준다**는 것이 보통의 역할 나눔입니다. {추론} 그래서 다른 모듈 문서(구매 발주·입고·청구)의 흐름을 FI 전표까지 따라갈 수 있어야 합니다. {추론}",
+      "refs": [12, 13, 14, 15],
+      "study": ["sap-acct-det", "sap-press-fi", "sap-bible-fi"]
+    },
+    {
+      "section": "task",
+      "quote": "사용자의 요구사항을 분석하고 시스템 반영을 위한 커스터마이징을 수행합니다.",
+      "short": "재무팀의 '이렇게 해 주세요'를 SAP 설정이나 프로그램 변경으로 바꾼다.",
+      "why": "SAP 는 코드를 고치지 않고 설정 표로 동작을 바꾸는 '커스터마이징'이 기본입니다 — 자동 계정 결정도 SAP 가 정한 문자열 위에 계정만 채우는 설정입니다.[13] SK AX 는 S/4HANA 전환에서 표준 코어를 깨끗하게 두고(Clean Core) 회사 고유의 요구는 SAP 확장 플랫폼 쪽에서 처리하는 방향을 소개했습니다.[3] SAP 와의 협업 모델도 표준 프로세스·클린 코어 원칙을 따른다고 했습니다.[5]",
+      "actually": {
+        "items": [
+          "**요구를 업무 말로 적기** — '해외 법인 채권을 따로 보고 싶다' → 조정계정 분리인가, 리포트 문제인가를 먼저 가른다.[11] {추론}",
+          "**표준으로 되나 보기** — 설정(계정 결정·필드 상태·문서 유형)으로 되면 설정으로 끝낸다.[13] {추론}",
+          "**규칙 걸기** — '비용 계정이면 코스트센터 필수' 같은 입력 규칙을 건다(아래 예). {추론}",
+          "**안 되면 확장** — 표준 밖의 요구는 ABAP 개발로 넘기되, 핵심 프로그램은 건드리지 않는 방식을 고른다.[3][18]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "입력 규칙 하나 — 비용 계정은 코스트센터가 있어야 저장 (가상 규칙, 직접 돌린 출력)",
+          "body": "SAP 에서는 이런 규칙을 전표 검증 설정이나 ABAP 확장으로 겁니다. 아래는 생각의 모양만 보인 것입니다. {추론}",
+          "lang": "python",
+          "code": "def validate(line):\n    if line[\"hkont\"][0] in \"567\" and not line.get(\"kostl\"):\n        return \"E: \" + line[\"hkont\"] + \" 는 코스트센터가 필요합니다\"\n    return \"OK\"\nfor l in [dict(hkont=\"52041000\"), dict(hkont=\"52041000\", kostl=\"CC1000\"), dict(hkont=\"11300000\")]:\n    print(validate(l))\n# E: 52041000 는 코스트센터가 필요합니다\n# OK\n# OK"
+        }
+      ],
+      "how_far": "설정으로 할 수 있는 것과 개발이 필요한 것을 구분하고, 개발이 필요하면 **기능 명세서**(무엇을·왜·어떤 입력과 결과)를 써서 ABAP 개발자에게 넘길 수 있어야 합니다. {추론} 이 공고는 ABAP 분석·설계도 요건이라 명세 수준을 넘어 코드를 같이 읽는 쪽입니다.[1]",
+      "refs": [1, 3, 5, 11, 13, 18],
+      "study": ["skax-s4-insight", "sap-bible-fi", "easy-fi"]
+    },
+    {
+      "section": "task",
+      "quote": "SAP FI 관련 신규 프로젝트 및 시스템 업그레이드에 참여합니다.",
+      "short": "새 ERP 구축이나 옛 ERP → S/4HANA 전환 프로젝트에 FI 담당으로 들어간다.",
+      "why": "SAP 는 Business Suite 7(ERP 6.0 포함)의 기본 유지보수를 2027년 말까지, 추가 비용을 낸 연장 유지보수를 2030년 말까지로 정했고 S/4HANA 는 2040년 말까지 유지한다고 발표했습니다.[6] SK AX 는 2026년 글에서 ECC 지원 종료가 다가와 많은 기업이 S/4HANA 전환을 미룰 수 없게 됐다고 썼습니다.[3]",
+      "actually": {
+        "items": [
+          "**옛 장부 옮기기** — S/4HANA 에서 FI·CO 줄 항목이 ACDOCA 한 표로 모이므로 옛 ERP 의 FI·CO 데이터를 그 모양으로 옮기고 숫자를 맞춘다.[8][9]",
+          "**전표 표의 변화 알기** — 전표 머리(BKPF)와 줄 항목(BSEG)은 S/4HANA 에도 남아 미결 항목 관리 등에 쓰인다. 'BSEG 가 사라졌다'는 오해다.[9]",
+          "**설정 일관성** — 유니버설 저널은 FI 와 CO 설정의 일관성을 새로 요구한다.[7]",
+          "**업무 다시 맞추기** — 전환 때 부서마다 다르던 처리 기준과 과하게 붙은 맞춤 로직을 줄이는 일이 같이 온다.[3]"
+        ]
+      },
+      "how_far": "전환 프로젝트 전체를 설계하는 건 PM·아키텍트 몫이고, FI 담당은 **FI 범위의 설정 이전·데이터 검증·테스트 시나리오**를 맡는 것이 보통입니다. {추론}",
+      "refs": [3, 6, 7, 8, 9],
+      "study": ["sap-press-migrating", "skax-s4-insight", "sap-ujournal"]
+    },
+    {
+      "section": "task",
+      "quote": "SAP FI 관련 이슈 대응 및 사용자 교육을 진행합니다.",
+      "short": "'전표가 안 올라가요'에 답하고, 재무팀이 새 화면·절차를 쓸 수 있게 가르친다.",
+      "why": "운영 계약에서는 결산 주간에 문의가 몰리고, 원인은 대개 기준 정보·권한·설정 중 하나입니다. {추론} 예를 들어 사용자가 조정계정에 직접 전기하려 하면 SAP 가 막는데[10], 그건 고장이 아니라 고객·공급업체 화면으로 입력해야 한다는 뜻이라 교육으로 풀어야 합니다. {추론}",
+      "actually": {
+        "items": [
+          "**오류 메시지 읽기** — 대차 불일치(F5702) 같은 메시지를 보고 어느 줄이 빠졌는지 찾는다.[16]",
+          "**재현** — 테스트 시스템에서 같은 입력으로 다시 일으켜 본다. {추론}",
+          "**사용자 안내서** — 결산 절차·자주 묻는 오류를 화면 순서대로 정리한다. {추론}"
+        ]
+      },
+      "refs": [10, 16]
+    },
+    {
+      "section": "task",
+      "quote": "※ 근무지 : 경기도 분당, 서울 등 수도권",
+      "short": "분당(SK AX 사무실)과 서울이 기본, 고객사에 따라 수도권 어디든.",
+      "why": "SK AX 분당 사무실은 SK u-타워(성남대로 343번길 9) 등입니다.[25] 같은 팀 BW 공고는 근무지를 '분당, 서울 종로 등'으로 적었고 종로 26 은 SK㈜ 공시의 본점 주소입니다.[2][26] 고객사 상주가 생기면 그 고객사 건물로 갑니다. {추론}",
+      "refs": [2, 25, 26]
+    },
+    {
+      "section": "qualification",
+      "quote": "이런 경험을 갖고 계시다면 저희가 찾는 그분입니다! ✨",
+      "short": "여기부터 자격요건 세 줄 — 경력 5년, FI 업무 이해, ABAP.",
+      "why": "공고 아래 공통 요건에도 '채용 분야 경력 5년 이상'이 다시 적혀 있어 연차 조건은 분명합니다.[1]",
+      "refs": [1]
+    },
+    {
+      "section": "qualification",
+      "quote": "5년 이상의 SAP FI 모듈 실무를 수행하신 분",
+      "short": "SAP FI 를 5년 넘게 실제로 설정·운영해 본 사람. 일반 회계 경력이나 다른 ERP 는 따로 본다.",
+      "why": "공통 요건에도 '채용 분야의 경력을 5년 이상'이 있습니다.[1] 운영과 구축을 다 맡기는 자리라 한두 번의 결산 주기가 아니라 여러 해의 결산·전환을 겪어 본 사람을 찾는 것으로 읽힙니다. {추론}",
+      "how_far": "경력기술서에 프로젝트마다 **고객 업종·기간·구축/운영·맡은 범위(GL·AR·AP·자산)·S/4HANA 여부**를 적어 두면 이 줄을 증명하기 쉽습니다. {추론}",
+      "refs": [1]
+    },
+    {
+      "section": "qualification",
+      "quote": "AR, AP, GL 등 FI 주요 프로세스에 대한 이해도를 보유하신 분",
+      "short": "받을 돈(AR)·줄 돈(AP)·전체 장부(GL)가 어떻게 이어지는지 설명할 수 있어야 해서.",
+      "why": "AR·AP 는 고객·공급업체별 보조원장이고, 각 보조원장은 GL 의 조정계정으로 요약됩니다.[10] 고객·공급업체 기준 정보에 조정계정이 지정돼 있어야 전기가 되고, 국내·해외·계열사처럼 여러 조정계정을 두는 일이 흔합니다.[11]",
+      "actually": {
+        "items": [
+          "**AR(매출채권)** — 청구 → 고객 송장 → 입금 → 반제. 일부만 입금되면 남은 금액이 새 미결 항목이 된다(아래 예). {추론}",
+          "**AP(매입채무)** — 발주 → 입고 → 송장(GR/IR 대사) → 지급.[12][14]",
+          "**GL(총계정원장)** — 모든 전표가 모이는 장부. S/4HANA 에서는 유니버설 저널.[7][8]",
+          "**결산** — 미결 항목 정리, 외화 평가, 기간 마감 뒤 재무제표. {추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "부분 입금 — 1,100 송장에 600 이 들어오면 (가상 값, 직접 돌린 출력)",
+          "body": "원래 송장 1,100 은 입금 전표가 지우고(반제), 남은 500 을 새 미결 항목으로 남기는 방식입니다. 고객 잔액은 500 입니다. {추론}",
+          "lang": "python",
+          "code": "items = [dict(doc=\"1800000001\", amt=1100, open=True)]\npay = 600\nitems[0][\"open\"] = False\nitems.append(dict(doc=\"1400000001\", amt=-1100, open=False))\nitems.append(dict(doc=\"1400000001\", amt=1100 - pay, open=True))\nprint([(i[\"doc\"], i[\"amt\"]) for i in items if i[\"open\"]], sum(i[\"amt\"] for i in items))\n# [('1400000001', 500)] 500"
+        }
+      ],
+      "level": {
+        "basic": "차변·대변, 보조원장과 조정계정, 미결 항목과 반제",
+        "work": "자동 계정 결정(MM·SD → FI), GR/IR 대사, 외화 평가, 결산 절차",
+        "team": "S/4HANA 유니버설 저널로의 전환, 여러 회계 기준·법인 구조를 고객사에 맞게 설계"
+      },
+      "refs": [7, 8, 10, 11, 12, 14],
+      "study": ["accounting-principles", "sap-bible-fi", "sap-press-fi"]
+    },
+    {
+      "section": "qualification",
+      "quote": "ABAP 개발 및 프로그램을 분석하고 설계하실 수 있는 분",
+      "short": "SAP 의 프로그래밍 언어 ABAP 으로 된 맞춤 프로그램을 읽고, 새로 만들 것을 설계할 수 있어야 한다.",
+      "why": "표준 설정으로 안 되는 요구(외부 시스템 전표 일괄 생성, 고객사 전용 리포트)는 ABAP 으로 만듭니다. 외부 데이터로 회계 전표를 만들 때 쓰는 대표적인 함수가 BAPI_ACC_DOCUMENT_POST 이고, SAP 지원 문서는 이 함수가 대차가 안 맞으면 F5702 오류를 낸다고 적었습니다.[16] SAP 의 ABAP 교육 과정은 이제 ABAP 기본에 더해 RAP(ABAP RESTful 프로그래밍 모델)과 Clean Core 원칙에 맞는 확장을 함께 가르칩니다.[18]",
+      "actually": {
+        "items": [
+          "**읽기** — 고객사 맞춤 프로그램(보통 이름이 Z·Y 로 시작)을 열어 어느 표를 읽고 어느 전표를 만드는지 따라간다. {추론}",
+          "**ABAP SQL** — 전표 머리·줄 항목·유니버설 저널 표를 조회하는 문장을 읽고 쓴다.[9][19]",
+          "**전표 만드는 인터페이스** — 외부에서 받은 데이터를 대차가 맞는 전표로 만들어 넘긴다.[16]",
+          "**확장 방식 고르기** — 표준 코드를 고치지 않고 정해진 확장 자리를 쓰는 방식이 S/4HANA 전환에 유리하다.[3][18]"
+        ]
+      },
+      "level": {
+        "basic": "ABAP 문법, ABAP SQL 조회, 디버거로 값 따라가기",
+        "work": "맞춤 리포트·인터페이스 프로그램 분석, 전표 생성 함수 호출과 오류 처리",
+        "team": "Clean Core 를 지키는 확장 설계(RAP·공개 API), 옛 맞춤 코드를 S/4HANA 에 맞게 정리"
+      },
+      "how_far": "전업 ABAP 개발자만큼 짤 필요는 없어도, **코드를 읽고 '이 줄이 이 전표를 만든다'를 설명하고, 고칠 곳을 설계로 적을 수 있는 수준**이 요구됩니다('분석하고 설계'). {추론}",
+      "refs": [3, 9, 16, 18, 19],
+      "study": ["basic-abap", "abap-core-journey", "abap-of-sap", "easy-abap"]
+    },
+    {
+      "section": "preference",
+      "quote": "이런 경험과 역량이 있으면 더 좋아요! 👍",
+      "short": "여기부터 우대사항. 앞 세 줄이 경험, 뒤 다섯 줄은 성향이다.",
+      "why": "성향 줄은 같은 팀 BW 공고와 문장이 거의 같아 SK AX 공통 문장으로 읽습니다.[2] {추론}",
+      "refs": [2]
+    },
+    {
+      "section": "preference",
+      "quote": "SAP CO, MM, SD 등 타 모듈과의 연계를 경험해보신 분",
+      "short": "다른 모듈 담당과 전표 흐름을 같이 맞춰 본 경험이 있으면 연계 설계를 바로 맡길 수 있다.",
+      "why": "업무 두 번째 줄(타 모듈 연계 설계·최적화)과 짝입니다.[1] 입고 한 건이 재고·GR/IR·가격차이 계정으로 나뉘는 것처럼[12] 연계 문제는 FI 혼자 설정을 봐서는 안 풀리고 MM·SD 설정을 같이 봐야 합니다. {추론}",
+      "how_far": "'MM 담당과 계정 결정 표를 같이 채웠다', 'GR/IR 잔액 원인을 찾아 정리했다' 같은 구체 사례 하나면 이 줄을 말할 수 있습니다. {추론}",
+      "refs": [1, 12],
+      "study": ["sap-acct-det"]
+    },
+    {
+      "section": "preference",
+      "quote": "SAP S/4HANA 및 PCE 등 구축 업무를 수행해보신 분",
+      "short": "S/4HANA, 특히 SAP 가 운영해 주는 클라우드 판(Private Edition) 구축 경험이 있으면 좋다.",
+      "why": "PCE 는 SAP 의 정식 이름이 아니라 업계에서 'S/4HANA Cloud, private edition'(RISE with SAP 로 판매)을 줄여 부르는 말입니다. {추론} 이 판은 고객사 하나만 쓰는 클라우드 ERP 이고, 인프라 운영·기술 지원은 SAP 가 맡으며 고객사는 클라우드 업체를 고를 수 있습니다.[17] 이 판에서는 서버·DB 를 고객사가 직접 만지지 않으니 FI 담당은 설정·확장을 SAP 운영 규칙 안에서 해야 합니다. {추론}",
+      "how_far": "S/4HANA 구축 한 번(설계 → 설정 → 데이터 이전 → 테스트 → 오픈)을 끝까지 해 봤으면 이 줄의 중심은 채웁니다. {추론}",
+      "refs": [17],
+      "study": ["sap-press-migrating", "sap-ujournal"]
+    },
+    {
+      "section": "preference",
+      "quote": "외국어 능력으로 글로벌 커뮤니케이션에 능하신 분",
+      "short": "SAP 문서·지원 창구가 대부분 영어이고, 고객사 해외 법인 회계도 함께 다룰 수 있어서.",
+      "why": "SAP 교육 자료·지원 문서가 거의 영어입니다.[12][16] SK AX 는 SAP 와의 협업 모델을 SAP 의 해외 행사에서 발표했습니다.[5] 이 팀의 해외 사업 규모는 공고에 없습니다. {추론}",
+      "refs": [5, 12, 16]
+    },
+    {
+      "section": "preference",
+      "quote": "다양한 경험을 통한 커뮤니케이션 능력을 보유하신 분",
+      "short": "성향 줄. 재무팀·다른 모듈 담당·개발자 사이에서 같은 말로 통역하는 사람.",
+      "why": "FI 담당은 회계 말(채권·결산)과 시스템 말(설정·전표 표)을 둘 다 써야 하고, 이슈 대응과 사용자 교육도 업무에 있습니다.[1] {추론}",
+      "refs": [1]
+    },
+    {
+      "section": "preference",
+      "quote": "깊이 고민하되, 머뭇거림 없이 행동으로 옮기는 생각하는 실천가",
+      "short": "성향 줄. 원인을 다 밝힐 때까지 멈추지 않고, 결산 일정 안에 먼저 막을 것을 막는 사람.",
+      "why": "같은 팀 BW 공고에도 같은 문장이 있어 SK AX 공통 성향 문장으로 읽습니다.[2] {추론}",
+      "refs": [2]
+    },
+    {
+      "section": "preference",
+      "quote": "개인 성과보다 팀워크와 공동체 성장을 중시하는 상생형 협업가",
+      "short": "성향 줄. 모듈 담당끼리, 협력사 인력과 공을 나누며 일할 수 있는 사람.",
+      "why": "ERP 구축은 FI·CO·MM·SD 담당과 개발자가 한 프로젝트에 같이 들어가는 일입니다.[1] {추론}",
+      "refs": [1]
+    },
+    {
+      "section": "preference",
+      "quote": "새로운 도전에 거리낌 없고, 실패를 성장의 기회로 삼는 도전적인 학습자",
+      "short": "성향 줄. 옛 ERP 경험에 머물지 않고 S/4HANA·클라우드 판의 새 방식을 배우는 사람.",
+      "why": "SAP 의 ABAP 교육도 RAP·Clean Core 로 바뀌었고[18], 고객사들은 2027년 유지보수 종료를 앞두고 S/4HANA 로 옮기는 중입니다.[6]",
+      "refs": [6, 18]
+    },
+    {
+      "section": "preference",
+      "quote": "변화에 빠르게 적응하고, 문제를 구조적으로 해결하려는 태도를 가진 유연한 문제 해결자",
+      "short": "성향 줄. 틀린 숫자를 원천 문서 → 설정 → 전표 순서로 좁혀 가는 사람.",
+      "why": "회계 숫자 문제는 원천 거래·기준 정보·계정 결정 설정·전표 중 한 곳에서 생기므로, 층을 하나씩 확인하는 습관이 곧 '구조적 해결'입니다. {추론}",
+      "refs": []
+    }
+  ],
+  "fit": {
+    "good": [
+      "회계 숫자 하나를 원천 문서까지 거꾸로 따라가는 게 재밌는 사람",
+      "SAP FI 를 5년 넘게 해 왔고 S/4HANA 전환 경험을 쌓고 싶은 사람[1][6]",
+      "설정과 ABAP 코드를 같이 보는 '기술 쪽 FI 컨설턴트'로 가고 싶은 사람[1]",
+      "재무팀과 개발자 사이에서 말을 옮기는 일이 맞는 사람"
+    ],
+    "hard": [
+      "SAP FI 실무 5년 이상이 필수다 — 신입·전환자 자리가 아니다[1]",
+      "고객사 상주로 근무지가 바뀔 수 있다[1] {추론}",
+      "결산 주간에 문의와 일이 몰린다 {추론}",
+      "회계 원리를 모르면 설정의 뜻을 따라갈 수 없다 {추론}"
+    ]
+  },
+  "interview": [
+    {
+      "q": "사용자가 매출채권 조정계정에 직접 전표를 넣으려다 막혔다고 합니다. 무엇이라고 안내하겠어요?",
+      "a": "조정계정은 직접 전기 불가, 고객 화면으로 입력.[10]"
+    },
+    {
+      "q": "월말에 GR/IR 계정 잔액이 0 이 아닙니다. 어디부터 보겠어요?",
+      "a": "입고만 있고 송장이 없거나 그 반대, 수량·금액 차이, 자동 반제.[12][14]"
+    },
+    {
+      "q": "입고 전표가 엉뚱한 재고 계정으로 갔습니다.",
+      "a": "자재 평가 클래스와 BSX 계정 결정.[12][13]"
+    },
+    {
+      "q": "외부 시스템에서 받은 데이터로 전표를 만드는 ABAP 프로그램이 F5702 로 실패합니다.",
+      "a": "대차 합계, 반올림·통화별 금액 줄 확인.[16]"
+    },
+    {
+      "q": "옛 ERP 에서 S/4HANA 로 옮길 때 FI 담당이 가장 먼저 확인할 것은?",
+      "a": "유니버설 저널로 FI·CO 데이터 이전과 설정 일관성.[7][8]"
+    }
+  ],
+  "sources": [
+    {"n": 1, "title": "SK Careers · SAP FI Module 전문가 영입", "url": "https://www.skcareers.com/Recruit/Detail/R262105", "kind": "posting", "note": "팀 소개·업무·요건·우대·전형(서류 → SKCT → 면접 2회 → 채용검진/처우협의)·공통 요건 경력 5년 이상"},
+    {"n": 2, "title": "SK Careers · SAP BW/BDC/BI/Data Analytics 분야 전문가 영입 (같은 AX ERP서비스2팀)", "url": "https://www.skcareers.com/Recruit/Detail/R262392", "kind": "posting", "note": "같은 팀의 다른 공고 — 근무지 '분당, 서울 종로 등', 같은 성향 문장"},
+    {"n": 3, "title": "SK AX 인사이트 · AI 도입의 토대가 되는 ERP, S/4HANA 전환이 곧 AI 전략인 이유", "url": "https://www.skax.co.kr/insight/trend/3750", "kind": "company", "date": "2026-05-29", "note": "ECC 지원 종료와 전환, Clean Core(표준 코어 + 확장 플랫폼), 모듈마다 흩어진 데이터와 과한 맞춤 로직 — 회사 홍보 성격의 글"},
+    {"n": 4, "title": "바이라인네트워크 · SK AX, 파르나스호텔 ERP DX 컨설팅 및 구축 사업 착수", "url": "https://byline.network/2025/05/20-450/", "kind": "news", "date": "2025-05-20", "note": "SAP S/4HANA 기반 통합 ERP 구축"},
+    {"n": 5, "title": "CEO스코어데일리 · SK AX, SAP 와 AI 기반 글로벌 ERP 혁신 모델 공동 개발", "url": "https://www.ceoscoredaily.com/page/view/2025061109542388145", "kind": "news", "date": "2025-06-11", "note": "SAP Sapphire 에서 발표, 표준 프로세스·클린 코어"},
+    {"n": 6, "title": "SAP News · SAP Extends SAP S/4HANA Maintenance Through 2040", "url": "https://news.sap.com/2020/02/sap-s4hana-maintenance-2040-clarity-choice-sap-business-suite-7/", "kind": "reference", "date": "2020-02-04", "note": "Business Suite 7 기본 유지보수 2027년 말, 선택 연장 2030년 말, S/4HANA 2040년 말"},
+    {"n": 7, "title": "SAP Help · Universal Journal (SAP S/4HANA 1511)", "url": "https://help.sap.com/doc/3a51d7531a4d424de10000000a174cb4/1511%20000/en-US/523b8a55559ad007e10000000a44538d.html", "kind": "reference", "note": "FI·CO 의 최초 기록 장부, FI–CO 대사 제거, 설정 일관성"},
+    {"n": 8, "title": "SAP Learning · Discussing the Universal Journal", "url": "https://learning.sap.com/courses/outlining-cost-management-and-profitability-analysis/discussing-the-concept-of-the-universal-journal_f62cf151-5562-44f5-8ff6-df16fb232e94", "kind": "reference", "note": "FI·CO 데이터를 ACDOCA 한 표에, GL·자산·CO·수익성 분석·자재 원장 통합"},
+    {"n": 9, "title": "SAP PRESS Blog · What Is SAP's Universal Journal?", "url": "https://blog.sap-press.com/what-is-saps-universal-journal", "kind": "reference", "note": "ACDOCA 가 줄 항목을 담고 BKPF·BSEG 는 남아 미결 항목 관리 등에 쓰인다"},
+    {"n": 10, "title": "SAP Help · Define 'Reconciliation Account for Account Type' (FI-GL)", "url": "https://help.sap.com/saphelp_46c/helpdata/en/c7/a88b8f43dd11d182b30000e829fbfe/content.htm", "kind": "reference", "note": "보조원장이 조정계정으로 자동 전기, 조정계정에 수기 전기 불가 — 옛 판(4.6C) 문서지만 원칙은 같다"},
+    {"n": 11, "title": "SAP PRESS Blog · Reconciliation Accounts in SAP S/4HANA", "url": "https://blog.sap-press.com/reconciliation-accounts-in-sap-s4hana", "kind": "reference", "note": "국내·해외·계열사별 조정계정, 고객·공급업체 기준 정보에 필수"},
+    {"n": 12, "title": "SAP Learning · Describing Automatic Account Determination (S/4HANA MM)", "url": "https://learning.sap.com/courses/cross-functional-customizing-in-sap-s-4hana-materials-management/describing-automatic-account-determination", "kind": "reference", "note": "입고 = BSX(재고) + WRX(GR/IR), 표준가 10·발주가 12 예, 평가 클래스"},
+    {"n": 13, "title": "SAP Learning · Setting Up Account Determination for Specific Transactions", "url": "https://learning.sap.com/courses/cross-functional-customizing-in-sap-s-4hana-materials-management/setting-up-account-determination-for-specific-transactions", "kind": "reference", "note": "BSX·WRX·PRD·KDM 거래 키, SAP 가 정한 값 문자열, 시뮬레이션 기능"},
+    {"n": 14, "title": "SAP Help · Automatic Clearing of GR/IR Clearing Accounts (FI)", "url": "https://help.sap.com/SAPHelp_46c/helpdata/EN/6e/1225c39f0411d189b80000e829fbbd/content.htm", "kind": "reference", "note": "F.13 자동 반제, 시험 실행 먼저"},
+    {"n": 15, "title": "SAP PRESS Blog · SAP OKB9 Explained: Automatic Account Assignment for FI-CO Postings", "url": "https://blog.sap-press.com/sap-okb9-explained-automatic-account-assignment-for-fi-co-postings", "kind": "reference", "note": "원가 요소 전기 때 기본 CO 귀속"},
+    {"n": 16, "title": "SAP Knowledge Base 3040407 · BAPI_ACC_DOCUMENT_POST balance error F5702", "url": "https://userapps.support.sap.com/sap/support/knowledge/en/3040407", "kind": "reference", "note": "공개 미리보기 — 증상(거래 통화 대차 불일치)과 대상 제품만, 해결은 로그인 필요"},
+    {"n": 17, "title": "AWS 문서 · RISE with SAP on AWS Cloud", "url": "https://docs.aws.amazon.com/sap/latest/general/rise.html", "kind": "reference", "note": "S/4HANA Cloud, private edition 은 단일 고객용, SAP 가 운영·기술 지원·SLA 를 맡는다"},
+    {"n": 18, "title": "SAP Learning · Acquiring Core ABAP Skills", "url": "https://learning.sap.com/learning-journeys/acquiring-core-abap-skills", "kind": "reference", "note": "ABAP 기본, RAP, S/4HANA 확장의 Clean Core 원칙"},
+    {"n": 19, "title": "SAP Learning · Learning Basic ABAP Programming", "url": "https://learning.sap.com/courses/basic-abap-programming", "kind": "reference", "note": "입문, 약 17시간 30분, ABAP SQL·객체지향·RAP 기초"},
+    {"n": 20, "title": "FETV · '월급이 연봉 수준' SK그룹, 급여 Top 계열사는 어디?", "url": "http://www.fetv.co.kr/news/articleView.html?idxno=198852", "kind": "news", "date": "2025-08-14", "note": "2024년 사업보고서 기준 상장사 1인 평균 급여"},
+    {"n": 21, "title": "ZDNet Korea · 올해 상반기 대기업 SI 톱4 '연봉킹' 누구?", "url": "https://zdnet.co.kr/view/?no=20250816174726", "kind": "news", "date": "2025-08-16", "note": "2025년 반기보고서 기준 6개월치 1인 평균 급여"},
+    {"n": 22, "title": "원티드 · 에스케이 에이엑스(SK AX) 기업정보", "url": "https://www.wanted.co.kr/company/25949", "kind": "reference", "note": "공공 자료로 계산한 평균 연봉 집계 — 계산 기간 표기 없음"},
+    {"n": 23, "title": "SK㈜ · Careers Policy(복리후생)", "url": "https://sk.co.kr/en/careers/policy.jsp", "kind": "company", "note": "항목만 있고 금액·조건·작성일 없음"},
+    {"n": 24, "title": "SK Careers · Culture", "url": "https://www.skcareers.com/Culture", "kind": "company", "note": "그룹 채용 사이트의 문화·근무 제도 소개 — 금액·연도 없음"},
+    {"n": 25, "title": "SK AX · 사업장 안내", "url": "https://www.skax.co.kr/company/office", "kind": "company", "note": "SK u-타워·판교 캠퍼스·수내 오피스 등 주소"},
+    {"n": 26, "title": "KRX KIND · SK 주식회사 분기보고서(제34기 1분기)", "url": "https://kind.krx.co.kr/external/2024/05/16/002060/20240516004803/11013.htm", "kind": "company", "date": "2024-05-16", "note": "표지의 본점 주소(종로 26)"}
+  ],
+  "caveat": "AX ERP서비스2팀이 어느 고객사의 FI 를 맡고 있는지, 어떤 판(ECC·S/4HANA·Private Edition)과 개발 규칙을 쓰는지는 공개 자료가 없습니다. SK AX 가 FI 를 직접 다룬 기술 블로그·발표 영상도 찾지 못했습니다. 회사 근거는 이 공고·같은 팀의 다른 공고·SK AX 인사이트 글과 보도(홍보 성격)이고, FI 의 구조(조정계정·자동 계정 결정·유니버설 저널·GR/IR)는 SAP 공식 도움말·교육 자료와 SAP PRESS 글로 '보통 이런 것'을 보였습니다. 일부 SAP 도움말은 옛 판(4.6C) 문서라 화면·거래 코드는 판마다 확인해야 합니다. 'PCE' 를 S/4HANA Cloud, private edition 으로 읽은 것은 업계 관용에 따른 판단입니다.",
+  "resources": [
+    {"id": "skax-s4-insight", "title": "AI 도입의 토대가 되는 ERP, S/4HANA 전환이 곧 AI 전략인 이유", "by": "SK AX 인사이트 · 2026-05", "kind": "doc", "lang": "ko", "free": true, "level": "입문", "url": "https://www.skax.co.kr/insight/trend/3750", "why": "이 회사가 S/4HANA 전환과 Clean Core 를 어떻게 말하는지 한글로 본다. '신규 프로젝트·업그레이드'와 '커스터마이징' 줄의 배경."},
+    {"id": "accounting-principles", "title": "사례와 함께하는 회계원리 (개정판 5판)", "by": "최종학 · 송혁준 · 이우종 · 최선화 외 · 신영사 · 2024", "kind": "book", "lang": "ko", "free": false, "level": "입문", "url": "https://product.kyobobook.co.kr/detail/S000213901960", "why": "차변·대변, 채권·채무, 결산의 뜻. 'AR, AP, GL 등 FI 주요 프로세스 이해' 요건의 바닥이 되는 회계 지식."},
+    {"id": "sap-bible-fi", "title": "SAP Bible FI: S/4 HANA Version (상·하)", "by": "유승철 · 북랩 · 2019", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://product.kyobobook.co.kr/detail/S000001817253", "why": "SAP FI 모듈의 설정과 업무 흐름을 한국어로 차례대로 본다. FI 운영·개선 업무와 AR·AP·GL 요건."},
+    {"id": "easy-fi", "title": "알기쉽게 정리한 SAP FI (S/4HANA 개정판)", "by": "송종훈 · 2018", "kind": "book", "lang": "ko", "free": false, "level": "입문", "url": "https://product.kyobobook.co.kr/detail/S000060606314", "why": "FI 전체를 짧게 훑는 한국어 입문서. 두꺼운 책 전에 용어와 화면 흐름을 잡는다."},
+    {"id": "sap-press-fi", "title": "Financial Accounting with SAP S/4HANA: Business User Guide (2판)", "by": "Jonas Tritschler · Stefan Walz · Reinhard Rupp · Nertila Mucka · SAP PRESS · 2023", "kind": "book", "lang": "en", "free": false, "level": "실무", "url": "https://www.sap-press.com/financial-accounting-with-sap-s4hana-business-user-guide_5698/", "why": "S/4HANA 화면 기준으로 GL·AR·AP·결산을 사용자 입장에서 따라간다. 이슈 대응·사용자 교육 줄에 바로 쓴다."},
+    {"id": "sap-ujournal", "title": "Discussing the Universal Journal", "by": "SAP Learning", "kind": "course", "lang": "en", "free": true, "level": "입문", "url": "https://learning.sap.com/courses/outlining-cost-management-and-profitability-analysis/discussing-the-concept-of-the-universal-journal_f62cf151-5562-44f5-8ff6-df16fb232e94", "why": "S/4HANA 에서 FI·CO 가 ACDOCA 한 표로 모인 이유. 'ERP 전 영역의 데이터'와 S/4HANA 구축 우대의 출발점."},
+    {"id": "sap-acct-det", "title": "Cross-Functional Customizing in SAP S/4HANA Materials Management — Automatic Account Determination", "by": "SAP Learning", "kind": "course", "lang": "en", "free": true, "level": "실무", "url": "https://learning.sap.com/courses/cross-functional-customizing-in-sap-s-4hana-materials-management/describing-automatic-account-determination", "why": "입고·송장이 어떤 거래 키로 어느 계정에 떨어지는지. 'FI 와 타 모듈 연계' 업무와 우대사항의 핵심."},
+    {"id": "sap-press-migrating", "title": "Migrating to SAP S/4HANA (4판)", "by": "Frank Densborn 외 · SAP PRESS · 2026", "kind": "book", "lang": "en", "free": false, "level": "심화", "url": "https://www.sap-press.com/migrating-to-sap-s4hana_6256/", "why": "옛 ERP 에서 S/4HANA 로 옮기는 방식·도구·운영 모델. '시스템 업그레이드'와 'S/4HANA·PCE 구축' 우대."},
+    {"id": "basic-abap", "title": "Learning Basic ABAP Programming", "by": "SAP Learning", "kind": "course", "lang": "en", "free": true, "level": "입문", "url": "https://learning.sap.com/courses/basic-abap-programming", "why": "ABAP 문법·ABAP SQL·객체지향 기초를 약 17시간에. 'ABAP 개발 및 프로그램 분석' 요건의 첫 단계."},
+    {"id": "abap-core-journey", "title": "Acquiring Core ABAP Skills", "by": "SAP Learning", "kind": "course", "lang": "en", "free": true, "level": "실무", "url": "https://learning.sap.com/learning-journeys/acquiring-core-abap-skills", "why": "RAP 와 Clean Core 확장까지. S/4HANA 에서 표준을 깨지 않고 맞춤 기능을 설계하는 법."},
+    {"id": "abap-of-sap", "title": "삼성에서 ERP로 먹고사는 컨설턴트가 알려주는 ABAP of SAP", "by": "주호재 · 서기준 · 생능북스 · 2025", "kind": "book", "lang": "ko", "free": false, "level": "입문", "url": "https://product.kyobobook.co.kr/detail/S000217277532", "why": "한국어로 ABAP 을 처음부터. 국내 고객사의 맞춤 프로그램을 읽는 데 필요한 기본기."},
+    {"id": "easy-abap", "title": "기본 이론에서 실무 예제까지, HANA 기반 Easy ABAP 3.0", "by": "김성준 · 박재형 · 임재원 · 한익환 · 장성일 외 · 프리렉 · 2025", "kind": "book", "lang": "ko", "free": false, "level": "실무", "url": "https://product.kyobobook.co.kr/detail/S000217502880", "why": "HANA 기반 ABAP 실무 예제. 리포트·인터페이스 프로그램을 '분석하고 설계'하는 연습."}
+  ],
+  "study_path": [
+    {"title": "회계부터", "time": "2~3주", "goal": "차변·대변, 채권·채무, 결산이 무엇인지 거래 예로 설명한다.", "resources": ["accounting-principles"], "task": "가상 회사의 한 달 거래 20건(매출·매입·입금·지급)을 분개하고, 시산표와 고객·공급업체별 잔액표를 스프레드시트로 만든다."},
+    {"title": "SAP FI 의 뼈대", "time": "3~4주", "goal": "GL·AR·AP 와 조정계정, 미결 항목·반제를 SAP 말로 설명한다.", "resources": ["easy-fi", "sap-bible-fi", "sap-press-fi"], "task": "1단계 거래를 위 풀이의 파이썬 예처럼 '고객 장부 → 조정계정' 구조로 옮기고, 부분 입금·대차 불일치 오류까지 처리하는 작은 장부 프로그램을 짠다."},
+    {"title": "모듈 연계", "time": "2~3주", "goal": "입고·송장·청구가 어떤 거래 키로 어느 계정에 떨어지는지 그린다.", "resources": ["sap-acct-det", "sap-ujournal"], "task": "가상 자재 3종(평가 클래스 다르게)으로 발주 → 입고 → 송장 흐름을 표로 만들고, 표준가와 발주가 차이가 PRD 로, GR/IR 잔액이 0 이 되는지 계산해 본다."},
+    {"title": "ABAP 읽고 쓰기", "time": "4~6주", "goal": "ABAP SQL 로 전표를 조회하고, 외부 데이터로 전표를 만드는 프로그램 흐름을 설계한다.", "resources": ["basic-abap", "abap-core-journey", "abap-of-sap", "easy-abap"], "task": "SAP Learning 실습 환경에서 '가상 전표 표를 읽어 계정별 합계를 내는 리포트'를 만들고, 엑셀로 받은 전표를 대차 검사 뒤 넘기는 인터페이스의 기능 명세서를 쓴다."},
+    {"title": "S/4HANA 전환", "time": "계속", "goal": "옛 ERP 의 FI 데이터를 유니버설 저널로 옮길 때 확인할 목록을 만든다.", "resources": ["sap-press-migrating", "skax-s4-insight", "sap-ujournal"], "task": "가상 FI·CO 전표를 하나의 표(ACDOCA 모양)로 합치는 스크립트를 짜고, 옮기기 전·후 계정별 합계 대조표와 'Clean Core 로 바꿀 맞춤 로직' 목록을 A4 두 장으로 정리한다."}
+  ],
+  "pay": {
+    "summary": "공고에 연봉은 없다(처우 협의). SK㈜ 전체 평균 **약 1억 1,600만원**(2024년 사업보고서), 기사가 따로 실은 SK AX 값은 **반년에 7,300만원**(2025년 상반기)",
+    "rows": [
+      {"label": "직원 1인 평균 급여(SK㈜ 전체)", "value": "1억 1,600만원", "amount": 11600, "basis": "사업보고서 · 2024년", "note": "SK㈜ 전체 값이라 지주 부문과 사업 부문이 섞여 있다 [20]"},
+      {"label": "SK AX 직원 1인 평균 급여 (6개월)", "value": "7,300만원", "amount": 7300, "basis": "반기보고서 · 2025년 상반기", "note": "1~6월 반년치이고 1년 연봉이 아니다. 전년 같은 기간 7,100만원 [21]"},
+      {"label": "SK AX 평균 연봉(집계)", "value": "6,082만원", "amount": 6082, "basis": "공공데이터 집계", "note": "채용 사이트가 공공 자료로 계산한 값, 계산 기간 표기 없음 [22]"},
+      {"label": "삼성SDS 평균 (6개월)", "value": "6,600만원", "amount": 6600, "basis": "반기보고서 · 2025년 상반기", "peer": true, "note": "같은 기사의 같은 기준 [21]"},
+      {"label": "LG CNS 평균 (6개월)", "value": "6,500만원", "amount": 6500, "basis": "반기보고서 · 2025년 상반기", "peer": true, "note": "같은 기사의 같은 기준 [21]"}
+    ],
+    "how": "전형이 서류 → SKCT → 면접 2회 → **채용검진/처우협의** 순서라 연봉은 경력에 따라 따로 정한다 [1]. 위 평균은 경력이 오래된 직원과 여러 부문이 섞인 회사 전체 값이라 이 자리의 제안 금액으로 읽으면 안 된다 {추론}. 경력 5년 이상 공고라 신입 초봉은 싣지 않았다."
+  },
+  "benefits": {
+    "items": [
+      {"name": "재산 형성", "detail": "저축 장려, 우리사주조합, 주택 구입·전세 자금 지원"},
+      {"name": "교육", "detail": "본인 학자금, 자녀 학비 지원"},
+      {"name": "생활", "detail": "경조사 지원, 휴양소, 여가·취미 활동 지원"},
+      {"name": "건강·노후", "detail": "건강검진, 의료보험, 개인연금, 퇴직 관리 지원"},
+      {"name": "근무 방식", "detail": "출퇴근 시간을 스스로 정하는 근무제, 그날의 근무 장소 선택"},
+      {"name": "성장", "detail": "그룹 학습 플랫폼 mySUNI 와 육성 프로그램"}
+    ],
+    "note": "앞 네 줄은 SK㈜ 공식 채용 정책 페이지 [23], 뒤 두 줄은 SK 그룹 채용 사이트의 문화 소개다 [24]. 둘 다 금액·조건·작성 연도가 없고 이 팀에 그대로 적용되는지도 적혀 있지 않다. 처우 협의 때 확인한다 {추론}."
+  },
+  "location": {
+    "name": "SK AX 분당 사무실 (SK u-타워)",
+    "address": "경기도 성남시 분당구 성남대로 343번길 9 에스케이유타워",
+    "postal": "13558",
+    "map_url": "https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%EC%84%B1%EB%82%A8%EB%8C%80%EB%A1%9C%20343%EB%B2%88%EA%B8%B8%209",
+    "near": "신분당선·수인분당선 정자역 근처 {추론}",
+    "note": "공고 근무지는 '경기도 분당, 서울 등 수도권'이다 [1]. 분당 주소는 SK AX 사업장 안내 [25], 서울은 SK㈜ 본점(서울특별시 종로구 종로 26) [26] 쪽으로 읽힌다 {추론}. 고객사 상주면 그 고객사 건물이 근무지가 된다 {추론}."
+  }
+}
