@@ -1,6 +1,7 @@
 {
  "updated_at": "2026-11-23",
  "jobs": {
+  "wanted-391368": "litalico-sre-product",
   "ats-skcareers:sk:R262457": "skax-ai-studio-mlops-pl",
   "jobkorea-50384147": "skax-ai-studio-mlops-pl",
   "jobkorea-50384195": "skax-ai-studio-mlops-pl",
@@ -100,9 +101,34 @@
   "ats-toss:group:5847765003": "tossbank-security-researcher",
   "ats-toss:group:7998884003": "tossbank-senior-data-analyst",
   "ats-toss:group:4521687003": "tossbank-server-platform",
-  "ats-toss:group:6607772003": "tossbank-system-security-engineer"
+  "ats-toss:group:6607772003": "tossbank-system-security-engineer",
+  "wanted-390176": "visasq-data-platform-engineer"
  },
  "roles": [
+  {
+   "id": "litalico-sre-product",
+   "company": "LITALICO",
+   "role": "SRE 엔지니어 (프로덕트)",
+   "jobs": [
+    "wanted-391368"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 42
+  },
+  {
+   "id": "skax-ai-studio-mlops-pl",
+   "company": "SK주식회사(AX)",
+   "role": "제조 AI · Data 분야 AI Studio 개발/운영 PL",
+   "jobs": [
+    "ats-skcareers:sk:R262457",
+    "jobkorea-50384147",
+    "jobkorea-50384195",
+    "jobkorea-50384211",
+    "dev-581141"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 46
+  },
   {
    "id": "speee-dx-sre",
    "company": "Speee(스피)",
@@ -1009,18 +1035,14 @@
    "lines": 13
   },
   {
-   "id": "skax-ai-studio-mlops-pl",
-   "company": "SK주식회사(AX)",
-   "role": "제조 AI · Data 분야 AI Studio 개발/운영 PL",
+   "id": "visasq-data-platform-engineer",
+   "company": "비자스크 (株式会社ビザスク)",
+   "role": "데이터 플랫폼 엔지니어",
    "jobs": [
-    "ats-skcareers:sk:R262457",
-    "jobkorea-50384147",
-    "jobkorea-50384195",
-    "jobkorea-50384211",
-    "dev-581141"
+    "wanted-390176"
    ],
    "researched_at": "2026-11-23",
-   "lines": 46
+   "lines": 31
   }
  ]
 }

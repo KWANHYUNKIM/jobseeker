@@ -1,0 +1,1514 @@
+{
+ "id": "litalico-sre-product",
+ "company": "LITALICO",
+ "role": "SRE 엔지니어 (프로덕트)",
+ "team": "SRE 그룹 · 프로덕트 리드(Embedded / Enabling SRE)",
+ "jobs": [
+  "wanted-391368"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "장애 아동 학습 지원·장애인 취업 지원 같은 복지·교육 서비스 가운데 **한 서비스의 SRE 리드**를 맡아, 개발팀과 함께 AWS 인프라를 코드로 짓고 감시하고 배포를 단순하게 만듭니다.[1]",
+  "env": "도쿄 본사, 대부분 원격. AWS(ECS on Fargate·Aurora) + Terraform/Terragrunt + GitHub Actions + Datadog. SRE 그룹은 정규직 5명·위탁 3명입니다.[1][2]",
+  "oneline": "일본어로 일하는 AWS SRE. 남은 숙제는 **계정 분리·SLO 도입·배포 권한 넘기기**입니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "・プロダクトのクラウドインフラ部分のTerraformによる設計・構築",
+   "short": "맡은 서비스의 AWS 자원을 손으로 만들지 않고 Terraform 코드로 설계하고 만든다.",
+   "why": "이 SRE 팀은 2021년에 CloudFormation(AWS 자체 IaC — 인프라를 코드로 적는 방식)을 Terraform 으로 옮겼습니다. 만든 사람이 떠나 관리가 안 됐고, 스택 이름이 일련번호였고, 배포를 콘솔에서 눌러서 했기 때문입니다. 바뀔 내용을 미리 보여 주는 `terraform plan` 을 더 믿을 수 있다는 점도 이유였습니다.[5] 공고도 \"운영을 생각한 구축, IaC 를 지키는 문화\"를 일하는 매력으로 꼽습니다.[1]",
+   "actually": {
+    "items": [
+     "**환경별 폴더** — `env/` 아래 common·dev·stg·prd·shared·test 로 나누고, 공통 설정은 Terragrunt(Terraform 설정을 여러 환경에 나눠 쓰게 돕는 도구)의 `terragrunt.hcl` 하나에 둔다. 작업 공간(workspace) 기능은 써 보고 뺐다.[5]",
+     "**규칙부터 합의** — 파일 배치·환경 분리·모듈 설계·이름·태그 규칙을 9번 모여 정하고 팀 지침으로 남겼다.[5]",
+     "**PR 마다 plan** — 바뀐 폴더만 골라 plan 을 돌리고, 결과를 PR 댓글 하나에 계속 고쳐 쓴다(tfcmt). 전체를 보고 싶으면 라벨을 붙인다.[8]",
+     "새 서비스가 계속 생기는 회사라 \"처음부터 코드로 짓는\" 일이 잦다.[1]"
+    ]
+   },
+   "how_far": "새 서비스의 네트워크·ECS·DB·CDN 을 팀 지침에 맞춰 코드로 짓고, 콘솔에서 고친 흔적(drift — 코드와 실제가 어긋난 상태)을 남기지 않는 것이 최소선입니다. 구조 자체(폴더·모듈 규칙)는 팀이 이미 정했으니 따르면서 고칠 점을 제안하는 수준입니다. {추론}",
+   "refs": [
+    1,
+    5,
+    8
+   ],
+   "study": [
+    "tf-docs",
+    "ko-tf-iac",
+    "ko-tf-uar",
+    "ja-jissen-tf",
+    "lit-cfn-tf"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・障害検知やキャパシティプランニングのための監視・運用設計",
+   "short": "장애를 먼저 알아채는 감시와, 자원이 언제 모자랄지 미리 재는 용량 계획을 설계한다.",
+   "why": "팀의 사명이 \"서비스의 안정 가동\"이고, 서비스 수가 많고 계속 늘어납니다.[1][3] 감시 도구는 Datadog 과 CloudWatch(AWS 기본 감시)입니다.[1]",
+   "actually": {
+    "items": [
+     "**무엇을 볼지 정하기** — 사용자가 겪는 증상(느림·오류)을 먼저, 원인 지표(CPU·메모리)는 그다음.[17]",
+     "**자동 작업도 감시** — ECS 작업을 정기 교체하는 Step Functions 실행을 Datadog 이 지켜보고 실패하면 Slack 으로 알린다.[10]",
+     "**용량 계획** — 저장소·메모리·연결 수가 늘어나는 속도로 한도에 닿는 날을 어림하고, 그 전에 늘리거나 줄인다.[29]",
+     "**알림 기준** — 사람을 깨울 알림과 다음 날 볼 알림을 나눈다.[17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "저장소가 언제 문턱에 닿나 (가상 값, 직접 돌린 출력)",
+     "body": "주별 사용량에 직선을 맞춰 남은 기간을 어림합니다. 실제로는 계절성(학기·연말)을 같이 봅니다. {추론}",
+     "lang": "python",
+     "code": "weeks = [0, 1, 2, 3, 4, 5]\nused = [410, 418, 425, 434, 441, 450]  # GB\nn = len(weeks)\nmx, my = sum(weeks) / n, sum(used) / n\nslope = sum((x - mx) * (y - my) for x, y in zip(weeks, used)) / sum((x - mx) ** 2 for x in weeks)\nprint(f\"주당 증가 {slope:.1f}GB\")                 # 주당 증가 7.9GB\nprint(f\"600GB 도달까지 약 {(600 - used[-1]) / slope:.0f}주\")  # 약 19주"
+    }
+   ],
+   "how_far": "서비스 하나의 대시보드·알림·용량 점검표를 혼자 만들고 고칠 수 있으면 됩니다. 기준값(몇 % 에 울릴지)은 개발팀과 같이 정합니다. {추론}",
+   "refs": [
+    1,
+    3,
+    10,
+    17,
+    29
+   ],
+   "study": [
+    "ja-nyumon-kanshi",
+    "ko-obs-eng",
+    "aws-wa-rel"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・開発のための各種環境の整備・運用",
+   "short": "개발자가 쓰는 로컬·개발·검토 환경을 만들고 굴린다.",
+   "why": "개발 조직이 5년 사이 80명 남짓에서 200명 규모로 커졌고, 개발자 경험을 높이는 것이 팀 사명에 들어 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**로컬·개발 환경 정리** — 윈도우·맥이 섞인 개발자들의 로컬·개발 환경을 다시 정리한 것이 SRE 그룹 초기 일 가운데 하나였다(2021년 글).[6]",
+     "**권한 없는 사람에게 이미지 주기** — 협력사 개발자가 AWS 권한 없이도 사내 컨테이너 저장소(ECR)에서 이미지를 받게, Slack 봇이 임시 로그인 암호를 보내 준다. 봇은 읽기 권한만, 회사 IP 에서만.[7]",
+     "**브랜치마다 검토 환경** — 어느 서비스는 브랜치를 올리면 CloudFront → ALB → Fargate 로 그 브랜치만의 환경이 뜨고, DB 는 개인정보를 가린 운영 스냅숏을 담은 컨테이너로 띄운다. SRE 가 맡았는지는 글에 없다.[12]"
+    ]
+   },
+   "how_far": "\"개발자가 기다리지 않게\"가 기준입니다. 환경 하나를 코드로 다시 만들 수 있고, 비용이 새지 않게 쓰지 않는 환경을 지우는 것까지. {추론}",
+   "refs": [
+    1,
+    6,
+    7,
+    12
+   ],
+   "study": [
+    "lit-review-env"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・プロダクト横断で利用できるような共通ワークフロー・アクションの整備（GitHub Action）",
+   "short": "여러 서비스가 같이 쓰는 GitHub Actions 작업 틀을 만들어, 팀마다 CI 를 따로 짜지 않게 한다.",
+   "why": "서비스가 많아 같은 일을 팀마다 따로 만들면 고칠 곳도 그만큼 늘어납니다. SRE 테크 리드 공고는 서비스를 가로지르는 IaC·CI/CD 표준과 공통 GitHub Actions 를 맡는다고 적었습니다.[4]",
+   "actually": {
+    "items": [
+     "**재사용 워크플로** — 다른 저장소가 `workflow_call` 로 불러 쓰는 워크플로와, 여러 단계를 묶은 복합 액션(composite action).[19]",
+     "**실제 예 1** — Renovate 가 연 의존성 PR 을 plan 이 통과하면 복합 액션이 승인하고 자동 병합한다.[9]",
+     "**실제 예 2** — Terraform plan 을 바뀐 상태 파일만 골라 행렬(matrix) 작업으로 돌려 Actions 비용을 줄였다.[8]",
+     "**비용도 본다** — 매일 돌던 cron 작업 하나가 Actions 시간을 2시간 20분씩 써서 AWS 쪽(EventBridge + Step Functions)으로 옮겼다.[10]"
+    ]
+   },
+   "how_far": "자기 서비스용으로 잘 도는 워크플로를 다른 팀이 입력값만 바꿔 쓸 수 있게 일반화하는 수준. 버전을 붙여 내놓고 깨지는 변경을 알리는 것까지 맡습니다. {추론}",
+   "refs": [
+    4,
+    8,
+    9,
+    10,
+    19
+   ],
+   "study": [
+    "gha-reuse",
+    "ko-gha",
+    "lit-tf-ci"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・AWSの全体の設計・管理・運用",
+   "short": "서비스 하나를 넘어 회사 AWS 전체 — 계정 구조·권한·비용·네트워크 — 를 설계하고 관리한다.",
+   "why": "SRE 그룹은 AWS Organizations(여러 AWS 계정을 한 회사 아래 묶는 기능)로 멀티 계정을 설계했고, 비용 정책도 만들었습니다(2021년 글).[6]",
+   "actually": {
+    "items": [
+     "**계정 나누기** — 운영·검증·공용 같은 목적별로 계정을 나누고 조직 단위(OU)로 묶어 정책을 건다.[18]",
+     "**최소 권한** — 필요한 동작만, 필요한 자원만, 필요한 곳에서만 허용한다. 위 ECR 봇이 그 예다.[7]",
+     "**비용** — 쓰지 않는 자원, 과하게 잡은 크기를 찾아 줄인다.[6]",
+     "**계정을 가로지르는 공용 자원** — 로그 모음·보안 감시·네트워크 연결을 따로 둔다.[18]"
+    ]
+   },
+   "how_far": "입사 직후에 회사 전체 구조를 새로 짜는 일은 테크 리드 몫입니다.[4] 이 자리는 맡은 서비스 범위에서 그 구조를 지키고, 어긋난 곳을 찾아 고치는 것부터입니다. {추론}",
+   "refs": [
+    4,
+    6,
+    7,
+    18
+   ],
+   "study": [
+    "aws-multi",
+    "ko-aws-container"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・監査・セキュリティを担保した運用設計や対応",
+   "short": "감사에서 \"누가 언제 무엇을 바꿨나\"를 보여 줄 수 있게 운영 절차와 권한을 설계한다.",
+   "why": "이 회사 서비스는 발달장애 아동·장애인 취업 지원 같은 복지·교육 영역이라 다루는 정보가 민감합니다.[1][14] {추론} SRE 테크 리드 공고는 AWS 전체 설계와 함께 보안·감사 대응을 맡는다고 적었습니다.[4]",
+   "actually": {
+    "items": [
+     "**운영 데이터를 밖으로 꺼낼 때** — 검토 환경에 쓰는 DB 는 개인정보를 가린 운영 스냅숏으로 만든다.[12]",
+     "**권한 좁히기** — 사람에게 넓은 권한을 주지 않고, 봇·역할에 필요한 동작만 준다.[7]",
+     "**기록 남기기** — 바꾼 것은 PR·plan 기록으로, 콘솔 조작은 감사 로그로 남는다.[5][8]",
+     "**계정 분리** — 운영 계정에 들어갈 수 있는 사람을 줄이는 가장 쉬운 방법.[18]"
+    ]
+   },
+   "how_far": "보안 정책 자체는 회사가 정합니다. 이 자리는 \"그 정책이 인프라에서 지켜지게\" 만들고 감사 때 근거를 꺼내 줄 수 있는 수준입니다. {추론}",
+   "refs": [
+    1,
+    4,
+    5,
+    7,
+    8,
+    12,
+    14,
+    18
+   ],
+   "study": [
+    "aws-multi"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・OS/ミドルウェアの脆弱性対策やパフォーマンス改善のためのアップデート",
+   "short": "OS·Nginx·DB·언어 버전을 제때 올려 취약점을 막고 성능도 챙긴다.",
+   "why": "오래된 버전은 보안 패치가 끊깁니다. 이 회사의 한 서비스는 2020년 12월 Amazon Linux 지원 종료 때문에 Ansible(서버 설정 자동화 도구)을 들였습니다.[11]",
+   "actually": {
+    "items": [
+     "**의존성 갱신 자동화** — Renovate·Dependabot 이 새 버전 PR 을 연다.[1] CI 에만 쓰는 도구의 작은 버전 올림은 자동 병합하고, 서비스 런타임은 빼고 사람이 본다.[9]",
+     "**컨테이너는 갈아 끼우기** — Fargate 작업을 정기적으로 새로 띄워 메모리를 비우고, AWS 가 강제로 패치하는 시점을 우리가 정한다.[10]",
+     "**서버를 컨테이너로** — 7년간 EC2 에서 돌던 서비스를 Fargate 로 옮겼다. 옮긴 뒤 응답이 두 배쯤 느려져 쿼리·Redis·S3 호출 수를 줄여 되돌렸다.[11]"
+    ]
+   },
+   "how_far": "갱신 PR 을 쌓아 두지 않고, 큰 버전 올림은 영향 범위를 확인하고 되돌릴 길을 마련한 뒤 올리는 수준. {추론}",
+   "refs": [
+    1,
+    9,
+    10,
+    11
+   ],
+   "study": [
+    "renovate",
+    "lit-renovate",
+    "lit-fargate-maint"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "これから取り組むこと/技術など\n・AWSアカウント分離が終わっていないプロダクトの環境毎分離",
+   "short": "아직 한 계정에 섞여 있는 서비스의 개발·검증·운영 환경을 계정째 나눈다.",
+   "why": "멀티 계정 설계는 2021년부터 있었지만[6], 공고는 \"아직 분리가 끝나지 않은 서비스\"가 남았다고 적었습니다.[1] 계정은 AWS 에서 가장 강한 울타리라, 개발 환경의 실수가 운영으로 번지지 않고 권한·비용도 환경별로 갈립니다.[18]",
+   "actually": {
+    "items": [
+     "**새 계정 만들기** — 조직 단위에 맞는 계정을 만들고 공통 정책·로그를 붙인다.[18]",
+     "**옮기기** — 한 계정의 자원을 새 계정으로 다시 짓고(Terraform 환경 폴더 단위), 데이터·DNS·인증서를 옮긴다. {추론}",
+     "**끊김 없이** — 운영 환경은 서비스를 멈추지 않고 옮길 순서를 짠다. {추론}"
+    ]
+   },
+   "how_far": "한 서비스의 분리를 계획 → 새 계정 구축 → 이전 → 옛 자원 정리까지 끝내는 것. 앞으로 할 일이라 회사 쪽 공개 글은 아직 없습니다.",
+   "refs": [
+    1,
+    6,
+    18
+   ],
+   "study": [
+    "aws-multi"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・SLI/SLOの本格導入",
+   "short": "\"이 정도면 사용자가 괜찮다\"는 목표치(SLO)를 숫자로 정하고, 그 숫자로 일의 순서를 정하게 한다.",
+   "why": "공고가 \"본격 도입\"이라고 쓴 것은 아직 회사 전체에 자리 잡지 않았다는 뜻입니다.[1] 이 회사의 SLO 운영 글은 찾지 못했습니다.",
+   "actually": {
+    "items": [
+     "**SLI(측정값)** — 좋은 요청 수 ÷ 전체 요청 수. 예: 0.5초 안에 성공한 요청 비율.[16]",
+     "**SLO(목표)** — 30일 동안 99.9%. 남은 0.1% 가 오류 예산이다.[16]",
+     "**소진 속도 알림** — 예산을 평소보다 몇 배 빨리 쓰는지로 알린다. 1시간 창에서 14.4배면 사람을 부른다.[17]",
+     "**도구** — Datadog 에 SLO 기능이 있다.[22]",
+     "**쓰는 법** — 예산이 남으면 새 기능, 바닥나면 안정화 작업을 먼저.[16]"
+    ],
+    "intro": "구글 SRE 워크북의 표준 방식입니다.[16][17]"
+   },
+   "examples": [
+    {
+     "title": "99.9% 의 오류 예산과 소진 속도 (가상 값, 직접 돌린 출력)",
+     "body": "1시간에 12만 건 중 210건이 5xx 면 소진 속도 1.75배 — 기록은 하되 사람을 부를 정도는 아닙니다.[17]",
+     "lang": "python",
+     "code": "slo = 0.999\nbudget_min = 30 * 24 * 60 * (1 - slo)\nprint(f\"30일 오류 예산: {budget_min:.1f}분\")        # 43.2분\ntotal, bad = 120_000, 210\nburn = (bad / total) / (1 - slo)\nprint(f\"소진 속도 {burn:.2f}배\")                    # 1.75배\nprint(f\"예산 소진까지 {30 * 24 / burn:.0f}시간\")     # 411시간\nprint(\"호출?\", burn >= 14.4)                         # False"
+    }
+   ],
+   "how_far": "서비스 하나에서 사용자 여정 2~3개의 SLI 를 정하고, 대시보드·알림을 만들고, 개발팀과 목표치를 합의하는 것까지. 목표치를 몇으로 할지는 사업 쪽과 같이 정합니다. {추론}",
+   "refs": [
+    1,
+    16,
+    17,
+    22
+   ],
+   "study": [
+    "sre-wb-slo",
+    "hidalgo-slo",
+    "datadog-slo"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・DBデータメンテナンスオペレーションの効率化",
+   "short": "운영 DB 데이터를 손으로 고치던 일을 안전하고 빠른 절차·도구로 바꾼다.",
+   "why": "공고에 앞으로 할 일로 적혀 있습니다.[1] 지금 어떤 방식인지는 공개된 글이 없습니다.",
+   "actually": {
+    "items": [
+     "**운영 데이터를 고칠 때** — SQL 을 PR 로 올려 검토받고, 실행 기록과 되돌리기 방법을 같이 남긴다. {추론}",
+     "**운영 데이터를 가져다 쓸 때** — 개인정보를 가린 스냅숏을 매일 만들어 검토 환경에 싣는 방식은 이미 있다.[12]",
+     "**DB 는 Aurora·RDS(MySQL)** — 스냅숏·복제(clone)로 운영 DB 를 건드리지 않고 시험한다. 그 글은 clone 을 비용과 개수 제한(16개) 때문에 쓰지 않았다.[1][12]"
+    ]
+   },
+   "how_far": "\"누가 와도 같은 절차로, 기록이 남게\"가 목표입니다. 위 첫 항목처럼 할지는 들어가서 정할 일입니다. {추론}",
+   "refs": [
+    1,
+    12
+   ],
+   "study": [
+    "lit-review-env"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・リリースフローの簡略化および、リリース権限の開発チームへの移譲",
+   "short": "배포를 단순하게 만들고, SRE 를 거치지 않고 개발팀이 스스로 배포하게 권한을 넘긴다.",
+   "why": "SRE 그룹 매니저는 일이 자신에게 너무 몰려 병목이 됐다고 보고 팀을 Embedded SRE(개발팀 안에서 같이 일하는 SRE) 쪽으로 옮겼습니다.[6] 배포 권한 넘기기도 같은 방향입니다.[1]",
+   "actually": {
+    "items": [
+     "**배포 도구** — ECS 배포는 ecspresso(작업 정의·서비스 설정을 파일로 두고 배포하는 도구)를 쓴다.[1][20]",
+     "**Jenkins → GitHub Actions** — 한 서비스는 배포를 사내 Jenkins 에서 GitHub Actions 로 옮기고, Actions 가 멈춰도 배포할 수 있는 예비 절차를 따로 뒀다.[11]",
+     "**넘기기 전에 안전장치** — 되돌리기 한 번에, 배포 전 자동 검사, 누가 배포했는지 기록. {추론}"
+    ]
+   },
+   "how_far": "개발자가 문서 한 장 보고 혼자 배포·되돌리기를 할 수 있게 되면 넘긴 것입니다. {추론}",
+   "refs": [
+    1,
+    6,
+    11,
+    20
+   ],
+   "study": [
+    "ecspresso",
+    "gha-reuse"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "■ 現在の技術スタック（必要に応じて最適な技術選定をして頂きます）",
+   "short": "아래 도구는 지금 쓰는 것이고, 필요하면 더 나은 것을 직접 골라도 된다는 뜻이다.",
+   "why": "공고는 팀마다 권한을 넘기고 있어 새 기술을 들이기 쉽고, 기술 선택을 되도록 현장에 맡긴다고 적었습니다.[1] 실제로 CloudFormation → Terraform, Jenkins → GitHub Actions, EC2 → Fargate 로 바꿔 왔습니다.[5][11]",
+   "how_far": "목록을 다 써 봤을 필요는 없습니다. 아래 줄마다 \"이 도구가 무슨 자리인가\"를 알면 됩니다. {추론}",
+   "refs": [
+    1,
+    5,
+    11
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "## 開発言語\nNuxt.js、Vue.js、PHP、一部Java、Go、python、Node.js",
+   "short": "개발팀이 쓰는 언어. SRE 도 이 코드를 읽고 고칠 수 있어야 해서 적혀 있다.",
+   "why": "장애가 나면 SRE 가 코드를 읽고 패치를 보내거나 로그에서 원인 자리를 찾는다고 공고에 적혀 있습니다.[1]",
+   "actually": {
+    "items": [
+     "화면 Nuxt.js·Vue.js, 서버 PHP 가 중심이고 일부 Java·Go·Python·Node.js.[1]",
+     "Ruby on Rails 로 된 서비스도 있다(EC2 → Fargate 이관 글).[11]",
+     "SRE 가 직접 짠 도구는 Python(Slack 봇) 예가 있다.[7]"
+    ]
+   },
+   "how_far": "언어를 다 쓸 필요는 없고, 로그·스택 추적을 보고 문제 줄을 짚을 수 있는 정도. {추론}",
+   "refs": [
+    1,
+    7,
+    11
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "## インフラ\nAWS（ALB、Fargate、ECS、Aurora、RDS、S3、SQS、Lambda、CloudFront、CloudFormation、CodeDeploy、CodeBuild、StepFunctions、APIGateway etc..）、GoogleCloud (BigQuery、DataStream、Firebase)等",
+   "short": "AWS 가 중심이고 데이터 쪽만 Google Cloud. 컨테이너는 서버 없이 Fargate 로 돈다.",
+   "why": "공고가 적은 자원 목록입니다.[1] 웹 요청은 CloudFront → ALB → ECS(Fargate) 로 들어오는 꼴이 기본입니다.[12][13]",
+   "actually": {
+    "items": [
+     "**요청 길** — CloudFront(CDN) → ALB(부하 분산) → ECS on Fargate(서버 관리 없는 컨테이너) → Aurora·RDS(MySQL).[1][12]",
+     "**비동기** — SQS(대기열)·Lambda(함수)·Step Functions(여러 단계를 잇는 작업 흐름).[1][10]",
+     "**배포** — CodeDeploy·CodeBuild.[1]",
+     "**데이터** — Google Cloud 의 BigQuery(분석 DB)·Datastream·Firebase.[1]",
+     "사내 공부 모임용으로 Fargate 를 처음부터 다시 정리한 글이 있다.[13]"
+    ]
+   },
+   "refs": [
+    1,
+    10,
+    12,
+    13
+   ],
+   "study": [
+    "ko-aws-container",
+    "lit-fargate"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "## ミドルウェア\nNginx、Apache、MySQL、Redis等",
+   "short": "웹 서버(Nginx·Apache), DB(MySQL), 캐시(Redis). 버전 올림과 설정 조정이 이 자리 몫이다.",
+   "why": "업무 줄의 \"OS·미들웨어 취약점 대책과 성능 개선\"이 이 목록을 가리킵니다.[1] 컨테이너로 옮긴 뒤 Redis·S3 호출 수를 줄여 응답 시간을 되돌린 예가 있습니다.[11]",
+   "refs": [
+    1,
+    11
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "## ソースコード管理\nGitHub",
+   "short": "코드·인프라 코드·이슈·토론이 모두 GitHub 에 있다.",
+   "why": "일은 GitHub Issue·Pull Request 로 토론하고 관리합니다.[1] 인프라 변경도 PR 에서 plan 결과를 보고 합칩니다.[8]",
+   "refs": [
+    1,
+    8
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "## プロビジョニング\nTerraform、Terragrunt、Ecspresso、Ansible",
+   "short": "인프라는 Terraform·Terragrunt, ECS 배포는 ecspresso, 서버 설정은 Ansible 로 코드화한다.",
+   "why": "Terraform 은 AWS 자원, Terragrunt 는 환경별 공통 설정을 맡습니다.[5][21] ecspresso 는 ECS 서비스·작업 정의를 파일로 두고 배포합니다.[20] Ansible 은 EC2 시절 서버 설정에 들였습니다.[11]",
+   "how_far": "Terraform 은 실무, 나머지는 \"무엇을 맡는 도구인지\" 알고 문서를 보며 고칠 수 있는 수준. {추론}",
+   "refs": [
+    5,
+    11,
+    20,
+    21
+   ],
+   "study": [
+    "tf-docs",
+    "terragrunt",
+    "ecspresso"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "## CI/CD\nGitHub Action、Jenkins、Code Build、 Renovate、Dependabot",
+   "short": "CI 는 GitHub Actions 가 중심이고 옛 Jenkins 가 남아 있다. 의존성 갱신은 Renovate·Dependabot.",
+   "why": "Jenkins 에서 GitHub Actions 로 옮겨 온 흔적입니다.[11] Renovate 는 갱신 PR 을 열고, 조건이 맞으면 자동 병합까지 합니다.[9][28]",
+   "refs": [
+    9,
+    11,
+    28
+   ],
+   "study": [
+    "renovate",
+    "gha-reuse"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "## 監視モニタリング\nDatadog 、Cloudwatch",
+   "short": "지표·로그·알림은 Datadog 이 중심이고 AWS 기본 감시 CloudWatch 를 같이 쓴다.",
+   "why": "SRE 그룹이 감시를 SaaS 로 옮긴 것이 초기 일 가운데 하나였고[6], 지금 공고의 도구는 Datadog 입니다.[1] 자동 작업 실패도 Datadog → Slack 으로 알립니다.[10]",
+   "refs": [
+    1,
+    6,
+    10
+   ],
+   "study": [
+    "datadog-slo"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "## コミュニケーションツール\nSlack、Google Meet、Gather、Google Chat\n## プロジェクト管理・ドキュメント\nGithub Project、esa、Miro、draw.io等\n## AIツール\nGithub Copilot for Business",
+   "short": "대화는 Slack, 문서는 esa, 그림은 Miro·draw.io. 대부분 원격이라 글로 일한다.",
+   "why": "직원 대부분이 원격 근무이고, 과제를 먼저 문서로 쓴 뒤 토론하는 문화가 있다고 적었습니다.[1] Gather 는 가상 사무실 도구입니다.[1] HERP 판 공고에는 AI 도구로 Claude Code 도 적혀 있습니다.[2]",
+   "how_far": "일본어로 설계 문서를 쓰고 토론할 수 있어야 한다는 뜻이기도 합니다 — 자격요건의 비즈니스 일본어와 이어집니다. {추론}",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・AWS含むクラウド上でのWebサービスのインフラ設計/構築/運用経験（2年以上）",
+   "short": "AWS 같은 클라우드에서 웹 서비스 인프라를 직접 설계·구축·운영한 경력 2년 이상.",
+   "why": "업무 대부분이 AWS 위에서 이뤄집니다.[1] 경력 조건은 원티드 표기로 2~20년입니다.[1]",
+   "how_far": "\"설계\"까지 들어 있어, 남이 만든 것을 운영만 한 경험보다 네트워크·계정·데이터베이스 구성을 스스로 고른 경험이 있어야 유리합니다. {추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "aws-wa-rel",
+    "ko-aws-container"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Terraform/Cloudformation/cdkなどのIaCでの構成管理・設計及び運用経験",
+   "short": "인프라를 코드로 관리한 경험. 도구는 Terraform 이 아니어도 되지만 설계·운영까지.",
+   "why": "회사가 CloudFormation 에서 Terraform 으로 옮겨 왔고[5], 공고는 IaC 를 지키는 문화를 강조합니다.[1]",
+   "actually": {
+    "items": [
+     "**구성 관리** — 모든 자원이 코드에 있고, 코드와 실제가 같다.[5]",
+     "**설계** — 환경을 어떻게 나누고, 무엇을 모듈로 빼고, 이름·태그를 어떻게 붙이나.[5]",
+     "**운영** — PR 마다 plan, 상태 파일 관리, 도구 버전 올림.[8][9]"
+    ]
+   },
+   "how_far": "Terraform 이 처음이어도 CloudFormation·CDK 로 같은 일을 했다면 요건은 채웁니다. 상태 파일(state)이 무엇이고 왜 잠그는지는 설명할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    5,
+    8,
+    9
+   ],
+   "study": [
+    "ko-tf-uar",
+    "ko-tf-iac",
+    "tf-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Docker等のコンテナ技術を利用したシステムの設計や運用経験",
+   "short": "Docker 이미지를 만들고 ECS 같은 곳에서 돌려 본 경험 — 설계와 운영까지.",
+   "why": "서비스가 ECS on Fargate 로 돌고, EC2 서비스도 컨테이너로 옮겨 왔습니다.[1][11]",
+   "actually": {
+    "items": [
+     "가볍고 안전한 이미지 만들기, 사설 저장소(ECR) 권한.[7]",
+     "작업 정의의 CPU·메모리 크기, 헬스 체크, 배포 중 끊김 없애기.[13]",
+     "정기 작업(70개쯤)을 cron 서버에서 EventBridge + Fargate 로 옮긴 예.[11]"
+    ]
+   },
+   "refs": [
+    1,
+    7,
+    11,
+    13
+   ],
+   "study": [
+    "ko-aws-container",
+    "lit-fargate"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・CI/CDパイプラインの構築・運用経験",
+   "short": "코드가 합쳐지면 검사·빌드·배포가 자동으로 도는 길을 만들고 운영해 본 경험.",
+   "why": "공통 워크플로 정비와 배포 단순화가 업무에 들어 있습니다.[1]",
+   "how_far": "파이프라인 하나를 처음부터 만들어 봤고, 느리거나 비싼 곳을 고쳐 본 경험이면 충분합니다 — 이 회사도 Terraform CI 의 비용을 줄였습니다.[8] {추론}",
+   "refs": [
+    1,
+    8
+   ],
+   "study": [
+    "ko-gha",
+    "gha-reuse"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・CI/CDやメトリクス等モニタリング環境などの設計/構築/運用経験",
+   "short": "CI/CD 와 지표 감시 같은 '운영을 돕는 바탕'을 설계부터 운영까지 해 본 경험.",
+   "why": "바로 위·아래 줄과 겹치는데, 따로 적은 것은 도구를 쓰는 사람보다 그 바탕을 만드는 사람을 찾는다는 뜻으로 읽힙니다. {추론} 팀 사명의 \"개발자 경험 향상\"과 이어집니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Datadog，Cloudwatch等モニタリング環境の設計/構築/運用経験",
+   "short": "Datadog·CloudWatch 로 대시보드·알림을 만들고 운영해 본 경험.",
+   "why": "지금 쓰는 감시 도구가 이 둘입니다.[1]",
+   "actually": {
+    "items": [
+     "지표·로그·APM(요청 추적)을 한곳에서 보는 대시보드.",
+     "알림 기준과 받는 곳(Slack).[10]",
+     "SLO 기능으로 목표 대비 현재 값 보기.[22]"
+    ]
+   },
+   "how_far": "Datadog 를 안 써 봤어도 Prometheus·Grafana 같은 다른 도구로 같은 일을 했으면 옮겨 갈 수 있는 수준이라고 보는 게 보통입니다. {추론}",
+   "refs": [
+    1,
+    10,
+    22
+   ],
+   "study": [
+    "datadog-slo",
+    "ja-nyumon-kanshi"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Webアプリケーションの開発/運用経験",
+   "short": "웹 애플리케이션을 직접 만들고 운영해 본 경험 — 개발자 입장을 알아야 해서.",
+   "why": "SRE 가 코드를 읽고 패치를 보낸다고 적혀 있습니다.[1] 컨테이너 이관 뒤 느려진 응답을 쿼리 수를 줄여 되돌린 것처럼, 인프라 문제가 코드에서 풀리는 일이 많습니다.[11]",
+   "refs": [
+    1,
+    11
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本語レベル: ビジネス",
+   "short": "일본어로 회의·설계 토론·문서 작성이 되는 수준. 서류도 일본어로 낸다.",
+   "why": "원티드 공고 머리말에 일본어 전용 자리이고, 일문 이력서·직무경력서가 없거나 일본어 소통이 안 되면 서류에서 떨어진다고 적혀 있습니다.[1] 팀은 과제를 문서로 먼저 써서 토론합니다.[1]",
+   "actually": {
+    "items": [
+     "**서류** — 일본어 이력서(履歴書)와 직무경력서(職務経歴書).[1]",
+     "**전형** — 서류 → 1차 → 2차 → 최종, 대개 온라인.[1]",
+     "**수준 재기** — 일본어능력시험(JLPT)이나 비즈니스 일본어 시험(BJT)이 흔한 기준이다.[30][31]"
+    ]
+   },
+   "how_far": "공고에 시험 등급은 적혀 있지 않습니다. 기술 토론을 일본어로 끝까지 할 수 있느냐가 실제 기준입니다. {추론}",
+   "refs": [
+    1,
+    30,
+    31
+   ],
+   "study": [
+    "bjt",
+    "jlpt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本国内への移住が必要",
+   "short": "일본에 살면서 일해야 한다. 원격 근무는 일본 안의 집에서만.",
+   "why": "원격 근무는 자택이나 그에 준하는 곳에서만 되고 카페·공유 사무실은 안 된다고 적혀 있습니다. 입사 후 한 달쯤은 주에 몇 번 사무실에 나올 수 있습니다.[1] 이 공고는 일본 기업 채용을 잇는 LAPRAS 를 거칩니다.[1]",
+   "how_far": "취업 비자·이사 지원이 있는지는 공고에 없습니다 — 지원 전에 담당자에게 묻습니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・SLI/SLOの策定経験",
+   "short": "SLO 를 실제로 정해 본 경험. 회사가 막 '본격 도입'하려는 일이라 바로 쓰인다.",
+   "why": "앞으로 할 일에 SLI/SLO 본격 도입이 들어 있습니다.[1]",
+   "how_far": "숫자를 정한 것보다 \"그 숫자로 개발팀과 무엇을 바꿨나\"를 말할 수 있으면 좋습니다.[16] {추론}",
+   "refs": [
+    1,
+    16
+   ],
+   "study": [
+    "sre-wb-slo",
+    "hidalgo-slo"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・Enabling SREやEmbedded SREとしての業務経験",
+   "short": "개발팀 안에 들어가거나(Embedded), 개발팀이 스스로 하게 가르치는(Enabling) SRE 로 일해 본 경험.",
+   "why": "SRE 팀은 서비스마다 SRE 한 명을 리드로 붙이는 제도를 쓰고, 지금의 가로 조직을 Central SRE 와 Embedded SRE 로 나눌 예정입니다.[1][3] 이 자리가 바로 그 리드입니다.[1]",
+   "actually": {
+    "items": [
+     "**Embedded** — 개발팀의 매일 회의·주간 회의에 들어가 같이 계획한다.[1]",
+     "**Enabling** — 다른 팀이 새 능력을 스스로 갖추도록 돕고 빠지는 팀. 팀 토폴로지(Team Topologies)에서 온 말이다.[27]",
+     "**Central** — 서비스들에서 가져온 과제로 표준을 만든다.[1]"
+    ]
+   },
+   "refs": [
+    1,
+    3,
+    27
+   ],
+   "study": [
+    "ko-team-topo"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・大・中・小規模問わず、サービスのシステム設計から運用までに関わってきた経験",
+   "short": "서비스의 설계부터 운영까지 처음부터 끝까지 함께한 경험. 규모는 상관없다.",
+   "why": "새 사업·새 서비스가 계속 기획돼 0→1, 1→10, 10→100 단계의 서비스를 몇 년씩 겪을 수 있다고 적었습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・依頼されたことをただそのまま実装するのではなく、システムのあるべき姿を本質的に考えた上で、必要な施策を実行できる方",
+   "short": "시킨 대로만 하지 않고, 시스템이 어떠해야 하는지부터 생각해 필요한 일을 하는 사람.",
+   "why": "공고는 스스로 시스템의 바람직한 모습을 그려 제안·추진할 수 있다는 점을 일하는 매력으로 꼽습니다.[1] 지금은 각 서비스의 의뢰에 응하는 방식이라, 의뢰를 받아 처리만 하면 SRE 가 병목이 됩니다.[1][6]",
+   "actually": {
+    "items": [
+     "예: CI 비용이 늘자 plan 을 줄이는 방법부터 다시 짰다.[8]",
+     "예: 리뷰 부담이 커지자 위험 낮은 갱신은 자동 병합하는 규칙을 만들었다.[9]"
+    ]
+   },
+   "refs": [
+    1,
+    6,
+    8,
+    9
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・OS、ネットワーク、ストレージ、データベース、Web等ミドルウェアの深い知見",
+   "short": "OS·네트워크·저장소·DB·웹 미들웨어를 깊이 아는 것 — 원인을 끝까지 찾으려면.",
+   "why": "로그에서 원인 자리를 찾는 일이 SRE 몫이라고 적혀 있습니다.[1]",
+   "actually": {
+    "items": [
+     "오래 돈 컨테이너의 메모리를 비우려 작업을 정기 교체한다 — 메모리가 왜 차는지 알아야 고를 수 있는 방법.[10]",
+     "이관 뒤 응답이 느려진 원인을 DB 쿼리·Redis·S3 호출 횟수에서 찾았다.[11]"
+    ]
+   },
+   "refs": [
+    1,
+    10,
+    11
+   ],
+   "study": [
+    "ja-sre-book",
+    "ko-sre-book"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・各種クラウド技術の内部アーキテクチャの知見",
+   "short": "클라우드 서비스가 안에서 어떻게 도는지(한도·동작 방식)를 아는 것.",
+   "why": "클라우드 내부를 알면 문서에 없는 문제를 덜 겪습니다. {추론}",
+   "actually": {
+    "items": [
+     "Step Functions 의 상태 간 데이터 크기 한도(256KB)에 걸려 필요한 값만 골라 넘기게 고쳤다.[10]",
+     "Fargate 는 AWS 가 정한 때에 작업을 패치 교체한다 — 그 시점을 우리가 먼저 정하려 정기 교체를 한다.[10]",
+     "검토 환경을 Aurora 복제로 만들려다 개수·비용 때문에 접었다.[12]"
+    ]
+   },
+   "refs": [
+    10,
+    12
+   ],
+   "study": [
+    "lit-fargate-maint",
+    "lit-fargate"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・SREの文化を社内に広めるような行動を取られてきた方、チームビルディング・リーダー経験",
+   "short": "SRE 방식을 회사에 퍼뜨려 본 경험, 팀을 만들고 이끈 경험.",
+   "why": "서비스마다 SRE 리드를 두는 제도라 이 자리는 개발팀과 함께 서비스를 이끕니다.[1] 회사는 이런 일을 이끌 사람이 모자란 것이 가장 큰 과제라고 적었습니다.[1][3] 더 위 단계로 SRE 테크 리드 자리가 따로 있습니다.[4]",
+   "refs": [
+    1,
+    3,
+    4
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・セキュリティ関連の知見",
+   "short": "보안 지식 — 권한 설계·취약점 대응·감사를 위해.",
+   "why": "업무에 감사·보안을 지키는 운영 설계와 취약점 대책이 있습니다.[1] 회사 글의 예는 최소 권한·IP 제한(ECR 봇)[7], 개인정보를 가린 데이터[12] 입니다.",
+   "refs": [
+    1,
+    7,
+    12
+   ],
+   "study": [
+    "aws-multi"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・ソフトウェア開発経験",
+   "short": "도구를 직접 만들 수 있는 개발 실력 — 반복 일(Toil)을 코드로 없애려고.",
+   "why": "반복 운영 일(Toil)을 줄이는 것이 기대 역할에 적혀 있습니다.[1] SRE 그룹은 Slack 봇(Python·Lambda)[7], Step Functions 정기 작업[10] 처럼 필요한 도구를 직접 만듭니다.",
+   "refs": [
+    1,
+    7,
+    10
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・データ基盤の構築・運用経験",
+   "short": "데이터 기반(BigQuery 등)을 만들고 운영해 본 경험.",
+   "why": "지금 쓰는 것으로 Google Cloud 의 BigQuery·Datastream 이 적혀 있습니다.[1] 회사는 직접 운영하는 400곳 넘는 시설에서 쌓은 지식과 데이터를 제품으로 만들고, AI·데이터로 새 가치를 만드는 것을 앞으로의 일로 꼽습니다.[1]",
+   "how_far": "Datastream 은 운영 DB 의 바뀐 내용을 분석 DB 로 옮기는 서비스로 쓰이는 게 보통입니다. 이 회사의 구성은 공개 글을 찾지 못했습니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・LITALICOが掲げるビジョン「障害のない社会をつくる」に共感していただける方",
+   "short": "\"장애 없는 사회를 만든다\"는 회사 비전에 공감하는 사람.",
+   "why": "회사는 발달장애 아동 학습 지원·장애인 취업 지원 같은 시설을 직접 운영하고, 가족·복지 사업소·학교·기업을 위한 서비스를 냅니다.[1][14]",
+   "refs": [
+    1,
+    14
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・技術を用いて社会課題を解決したい方",
+   "short": "기술로 사회 문제를 풀고 싶은 사람.",
+   "why": "공고는 한 사람 한 사람의 삶을 바꾸는 공공성 높은 서비스를 일하는 매력으로 꼽습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・一緒に働く仲間やチーム、組織に対してリスペクトを持って接することができる方",
+   "short": "동료·팀·조직을 존중하며 대하는 사람.",
+   "why": "공고는 HRT(겸손·존중·신뢰)를 소중히 한다고 적었습니다.[1] 입사 뒤 한 달은 팀을 만들려 사무실에 나올 수 있습니다.[1]",
+   "refs": [
+    1
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "lit-cfn-tf",
+   "title": "CloudformationからTerraformに移行した話",
+   "by": "tjinjin(LITALICO SRE) · 2021",
+   "kind": "doc",
+   "url": "https://cross-black777.hatenablog.com/entry/2021/12/02/000000",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "why": "이 팀의 Terraform 폴더 구조와 그렇게 정한 이유. 업무 첫 줄을 읽기 전에 본다."
+  },
+  {
+   "id": "lit-tf-ci",
+   "title": "Terraform CI/CDの改善してみた",
+   "by": "tjinjin · Qiita · 2023",
+   "kind": "doc",
+   "url": "https://qiita.com/tjinjin/items/776192159a1b093f49b0",
+   "lang": "ja",
+   "free": true,
+   "level": "실무",
+   "why": "바뀐 상태만 plan 하는 GitHub Actions — 공통 워크플로 업무의 실제 예."
+  },
+  {
+   "id": "lit-renovate",
+   "title": "Renovate による Pull Request を auto-merge してレビューコストを削減する",
+   "by": "yhidetoshi · 2024",
+   "kind": "doc",
+   "url": "https://yhidetoshi.hatenablog.com/entry/2024/12/03/223006",
+   "lang": "ja",
+   "free": true,
+   "level": "실무",
+   "why": "의존성 갱신을 어디까지 자동으로 합칠지 정한 규칙 — 취약점 대책 업무의 예."
+  },
+  {
+   "id": "lit-fargate-maint",
+   "title": "EventBridge と StepFunctions による ECS Fargate タスクの定期メンテナンス自動化",
+   "by": "yhidetoshi · 2025",
+   "kind": "doc",
+   "url": "https://yhidetoshi.hatenablog.com/entry/2025/12/03/172512",
+   "lang": "ja",
+   "free": true,
+   "level": "실무",
+   "why": "ECS 30개 서비스를 정기 교체하는 설계와 부딪힌 한도 — 클라우드 내부 지식 우대의 예."
+  },
+  {
+   "id": "lit-review-env",
+   "title": "レビュー環境はじめました",
+   "by": "LITALICO · Zenn · 2025",
+   "kind": "doc",
+   "url": "https://zenn.dev/litalico/articles/8bb44e98fa7b14",
+   "lang": "ja",
+   "free": true,
+   "level": "실무",
+   "why": "브랜치별 검토 환경과 가린 운영 데이터 — 개발 환경·DB 데이터 업무의 예."
+  },
+  {
+   "id": "lit-fargate",
+   "title": "あらためて、じっくり動かすFargate",
+   "by": "inomoto · Zenn · 2023",
+   "kind": "doc",
+   "url": "https://zenn.dev/cumet04/articles/fargate-jikkuri",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "why": "사내 공부 모임용 Fargate 정리 — 이 회사가 컨테이너를 어떻게 보는지."
+  },
+  {
+   "id": "ko-sre-book",
+   "title": "사이트 신뢰성 엔지니어링",
+   "by": "Betsy Beyer 외 · 장현희 옮김 · 제이펍 · 2018",
+   "kind": "book",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=129407308",
+   "lang": "ko",
+   "level": "실무",
+   "why": "SRE 의 기본 생각(오류 예산·Toil·감시·장애 대응) — 공고 낱말 대부분이 여기서 왔다."
+  },
+  {
+   "id": "ja-sre-book",
+   "title": "SRE サイトリライアビリティエンジニアリング",
+   "by": "Betsy Beyer 외 · オライリー・ジャパン · 2017",
+   "kind": "book",
+   "url": "https://www.oreilly.co.jp/books/9784873117911/",
+   "lang": "ja",
+   "level": "실무",
+   "why": "같은 책의 일본어판. 면접에서 쓸 일본어 용어를 같이 익힌다."
+  },
+  {
+   "id": "sre-wb-slo",
+   "title": "The Site Reliability Workbook · Implementing SLOs",
+   "by": "Google",
+   "kind": "doc",
+   "url": "https://sre.google/workbook/implementing-slos/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "SLI 고르기 → SLO 정하기 → 오류 예산 정책. SLI/SLO 도입 업무의 교과서."
+  },
+  {
+   "id": "hidalgo-slo",
+   "title": "Implementing Service Level Objectives",
+   "by": "Alex Hidalgo · O'Reilly · 2020",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/implementing-service-level/9781492076803/",
+   "lang": "en",
+   "level": "심화",
+   "why": "SLO 를 조직에 들이는 법 한 권 — 우대 첫 줄 '策定経験'을 말할 거리로 만든다."
+  },
+  {
+   "id": "ja-nyumon-kanshi",
+   "title": "入門 監視 — モダンなモニタリングのためのデザインパターン",
+   "by": "Mike Julian · 松浦隼人 訳 · オライリー・ジャパン · 2019",
+   "kind": "book",
+   "url": "https://www.oreilly.co.jp/books/9784873118642/",
+   "lang": "ja",
+   "level": "입문",
+   "why": "무엇을 감시하고 언제 알릴지. 감시 설계 업무의 기본. 한국어판은 찾지 못했다."
+  },
+  {
+   "id": "ko-obs-eng",
+   "title": "데브옵스 엔지니어를 위한 실전 관찰 가능성 엔지니어링",
+   "by": "Charity Majors 외 · 노승헌 옮김 · 한빛미디어 · 2024",
+   "kind": "book",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=340536001",
+   "lang": "ko",
+   "level": "심화",
+   "why": "지표를 넘어 요청 단위로 원인을 찾는 관찰 가능성 — Datadog APM 을 깊이 쓰려면."
+  },
+  {
+   "id": "tf-docs",
+   "title": "Terraform 문서",
+   "by": "HashiCorp",
+   "kind": "doc",
+   "url": "https://developer.hashicorp.com/terraform/docs",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "상태·모듈·plan 의 공식 설명."
+  },
+  {
+   "id": "ko-tf-iac",
+   "title": "테라폼으로 시작하는 IaC (개정판)",
+   "by": "김민수·김재준·이규석·이유종 · 한빛미디어 · 2024",
+   "kind": "book",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=346369474",
+   "lang": "ko",
+   "level": "입문",
+   "why": "한국어로 Terraform 기초부터 — IaC 요건의 최소선."
+  },
+  {
+   "id": "ko-tf-uar",
+   "title": "테라폼 업앤러닝 (2판)",
+   "by": "Yevgeniy Brikman · 김문주 옮김 · 루비페이퍼 · 2021",
+   "kind": "book",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=270854635",
+   "lang": "ko",
+   "level": "실무",
+   "why": "상태 파일 나누기·환경별 구성·모듈 — 이 팀이 9번 모여 정한 주제들."
+  },
+  {
+   "id": "ja-jissen-tf",
+   "title": "実践Terraform AWSにおけるシステム設計とベストプラクティス",
+   "by": "野村友規 · インプレスR&D · 2019",
+   "kind": "book",
+   "url": "https://ndlsearch.ndl.go.jp/en/books/R100000002-I029962347",
+   "lang": "ja",
+   "level": "실무",
+   "why": "AWS 위 Terraform 설계를 일본어로. 일본 현장 용어를 익힌다."
+  },
+  {
+   "id": "terragrunt",
+   "title": "Terragrunt 문서",
+   "by": "Gruntwork",
+   "kind": "doc",
+   "url": "https://docs.terragrunt.com/getting-started/quick-start/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "환경별 공통 설정을 묶는 법 — 이 팀 구조의 바탕."
+  },
+  {
+   "id": "ecspresso",
+   "title": "kayac/ecspresso",
+   "by": "KAYAC",
+   "kind": "doc",
+   "url": "https://github.com/kayac/ecspresso",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "ECS 배포 도구 README — 배포 단순화 업무에 쓰인다."
+  },
+  {
+   "id": "ko-aws-container",
+   "title": "AWS 컨테이너 설계와 구축 철저 입문",
+   "by": "아라이 마사야·우마카츠 아츠시 · 양현 옮김 · 위키북스 · 2022",
+   "kind": "book",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=296061083",
+   "lang": "ko",
+   "level": "실무",
+   "why": "ECS·Fargate·ALB·CI/CD 를 한 서비스로 짓는 책. 일본 원서를 옮긴 것이라 이 회사 구성과 결이 같다(종이책은 절판, 전자책)."
+  },
+  {
+   "id": "ko-gha",
+   "title": "러닝 깃허브 액션",
+   "by": "Brent Laster · 정의형·정한결 옮김 · 한빛미디어 · 2024",
+   "kind": "book",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=339921811",
+   "lang": "ko",
+   "level": "입문",
+   "why": "GitHub Actions 기초부터 재사용 워크플로까지."
+  },
+  {
+   "id": "gha-reuse",
+   "title": "GitHub Docs · Reuse workflows",
+   "by": "GitHub",
+   "kind": "doc",
+   "url": "https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "공통 워크플로 업무의 공식 방법."
+  },
+  {
+   "id": "renovate",
+   "title": "Renovate 문서",
+   "by": "Mend",
+   "kind": "doc",
+   "url": "https://docs.renovatebot.com/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "packageRules·automerge — 갱신 자동화 규칙을 짤 때."
+  },
+  {
+   "id": "aws-multi",
+   "title": "Organizing Your AWS Environment Using Multiple Accounts",
+   "by": "AWS 백서 · 2025",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/organizing-your-aws-environment/organizing-your-aws-environment.html",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "계정·OU 를 어떻게 나누나 — 계정 분리 업무의 기준 문서."
+  },
+  {
+   "id": "aws-wa-rel",
+   "title": "AWS Well-Architected · Reliability Pillar",
+   "by": "AWS",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "장애에 견디는 설계·용량 관리의 점검표."
+  },
+  {
+   "id": "datadog-slo",
+   "title": "Datadog · Service Level Objectives",
+   "by": "Datadog",
+   "kind": "doc",
+   "url": "https://docs.datadoghq.com/service_management/service_level_objectives/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "지금 쓰는 감시 도구로 SLO 를 만드는 법."
+  },
+  {
+   "id": "ko-team-topo",
+   "title": "팀 토폴로지",
+   "by": "Matthew Skelton·Manuel Pais · 김연수 옮김 · 에이콘출판 · 2020",
+   "kind": "book",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=258906450",
+   "lang": "ko",
+   "level": "실무",
+   "why": "Enabling 팀·플랫폼 팀이 무엇인지 — 우대의 Enabling/Embedded SRE 와 Central SRE 전환을 이해한다."
+  },
+  {
+   "id": "jlpt",
+   "title": "日本語能力試験 JLPT",
+   "by": "国際交流基金 · 日本国際教育支援協会",
+   "kind": "doc",
+   "url": "https://www.jlpt.jp/",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "why": "일본어 수준을 숫자로 보여 줄 때 가장 흔한 시험."
+  },
+  {
+   "id": "bjt",
+   "title": "BJTビジネス日本語能力テスト",
+   "by": "日本漢字能力検定協会",
+   "kind": "doc",
+   "url": "https://www.kanken.or.jp/bjt/",
+   "lang": "ja",
+   "level": "실무",
+   "why": "업무 일본어를 재는 시험 — '비즈니스 레벨' 요건을 보여 줄 근거."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "이 팀이 쓴 글 읽기",
+   "time": "1주",
+   "goal": "이 팀의 Terraform 구조·CI·갱신 규칙·정기 작업을 일본어로 설명할 수 있다.",
+   "resources": [
+    "lit-cfn-tf",
+    "lit-tf-ci",
+    "lit-renovate",
+    "lit-fargate-maint",
+    "lit-review-env"
+   ],
+   "task": "글 다섯 편을 읽고 \"무엇이 문제였고 무엇으로 바꿨나\"를 한 편에 세 줄씩 일본어로 적는다 — 면접 준비와 일본어 연습을 같이 한다."
+  },
+  {
+   "title": "Terraform 으로 ECS 서비스 하나 짓기",
+   "time": "2~3주",
+   "goal": "VPC·ALB·ECS on Fargate·RDS 를 dev/prd 두 환경으로 코드로 짓고 지운다.",
+   "resources": [
+    "ko-tf-iac",
+    "ko-tf-uar",
+    "ko-aws-container",
+    "terragrunt",
+    "ecspresso"
+   ],
+   "task": "작은 웹 앱(가상 데이터)을 Docker 로 만들고, Terraform 으로 dev·prd 두 환경 폴더를 둬 짓는다. 배포는 ecspresso 로, 공통 설정은 Terragrunt 로 묶는다."
+  },
+  {
+   "title": "공통 워크플로와 갱신 자동화",
+   "time": "1~2주",
+   "goal": "다른 저장소가 불러 쓰는 워크플로와 Renovate 자동 병합 규칙을 만든다.",
+   "resources": [
+    "ko-gha",
+    "gha-reuse",
+    "renovate"
+   ],
+   "task": "2단계 저장소에 바뀐 환경만 plan 하는 재사용 워크플로를 만들어 두 번째 저장소에서 불러 쓴다. Renovate 를 붙여 CI 도구의 패치 갱신만 자동 병합하게 한다."
+  },
+  {
+   "title": "감시와 SLO",
+   "time": "2주",
+   "goal": "서비스의 SLI 두 개를 정하고 오류 예산·소진 속도 알림을 만든다.",
+   "resources": [
+    "ja-nyumon-kanshi",
+    "sre-wb-slo",
+    "datadog-slo",
+    "hidalgo-slo"
+   ],
+   "task": "2단계 앱에 일부러 오류·지연을 섞는 부하를 걸고, 성공률·지연 SLI 로 30일 99.9% SLO 와 1시간 14.4배 소진 알림을 만든다(Datadog 체험판이나 CloudWatch)."
+  },
+  {
+   "title": "계정 분리와 일본어 서류",
+   "time": "계속",
+   "goal": "멀티 계정 설계를 설명하고, 위 결과물을 일본어 직무경력서에 쓴다.",
+   "resources": [
+    "aws-multi",
+    "ko-team-topo",
+    "bjt",
+    "jlpt"
+   ],
+   "task": "2단계 두 환경을 AWS Organizations 아래 계정 둘로 옮기는 계획서(순서·권한·되돌리기)를 일본어로 한 장 쓰고, 1~4단계를 職務経歴書 의 한 항목으로 정리한다."
+  }
+ ],
+ "pay": {
+  "summary": "이 자리는 **연 700만~1,050만 엔**(공고), 회사 직원 평균은 **약 550만 엔**(유가증권보고서) — 평균은 복지 시설 직원까지 포함한 값이다",
+  "rows": [
+   {
+    "label": "공고 표기 연봉",
+    "value": "700만~1,050만 엔",
+    "amount": 1050,
+    "basis": "공고 · 2026년",
+    "note": "월급 48만 5,900~70만 엔 + 상여 117만~210만 엔(5단계 평가 중 3 기준, 5월·11월). 고정 잔업 20시간분 수당(6만 4,900엔~)이 월급에 들어 있다 [1][2]"
+   },
+   {
+    "label": "SRE 테크 리드 (같은 팀 윗자리)",
+    "value": "1,000만~1,450만 엔",
+    "amount": 1450,
+    "basis": "공고",
+    "note": "같은 SRE 팀의 테크 리드 공고, 상여 200만~335만 엔 [4]"
+   },
+   {
+    "label": "신입 엔지니어",
+    "value": "450만 엔~",
+    "amount": 450,
+    "basis": "공고 · 2028년 졸업",
+    "note": "월 32만 5,900엔~(기본급 23만 2,400엔 + 라이프플랜 수당 5만 엔 + 고정 잔업 4만 3,500엔) [26]"
+   },
+   {
+    "label": "직원 평균 연간 급여",
+    "value": "549만 8천 엔",
+    "amount": 550,
+    "basis": "유가증권보고서 · 2026년 3월기",
+    "note": "제출회사 1,616명, 평균 34.7세·근속 4.9년. 상여·라이프플랜 수당 포함, 이 해부터 주식 보수 비용도 더했다 [23]"
+   },
+   {
+    "label": "직원 평균 연간 급여 (전년)",
+    "value": "565만 2천 엔",
+    "amount": 565,
+    "basis": "유가증권보고서 · 2025년 3월기",
+    "note": "1,495명, 평균 34.2세 [24]"
+   },
+   {
+    "label": "エス・エム・エス 평균",
+    "value": "517만 9천 엔",
+    "amount": 518,
+    "basis": "유가증권보고서 · 2026년 3월기",
+    "peer": true,
+    "note": "의료·복지 영역 IT 기업, 제출회사 3,214명·평균 32.8세 [25]"
+   }
+  ],
+  "how": "금액은 일본 엔이다(원화로 바꾸지 않았다 — 환율에 따라 달라진다). 공고 연봉은 경험·능력을 보고 정한다고 적혀 있다 [1]. 평균 급여는 시설에서 일하는 직원까지 들어간 회사 전체 값이라 엔지니어 연봉으로 읽으면 안 된다 {추론}. 재량 노동제(하루 8시간으로 간주)라 잔업 수당이 따로 붙지 않는 구조다 [1]."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "휴일",
+    "detail": "연 120일 이상, 토·일·공휴일 완전 주휴 2일, 여름·연말연시 휴가"
+   },
+   {
+    "name": "연차",
+    "detail": "입사한 달부터 부여"
+   },
+   {
+    "name": "라이프 서포트 휴가",
+    "detail": "용도 무관, 연차와 별도로 유급 연 최대 7일 + 무급 연 5일"
+   },
+   {
+    "name": "육아 휴직",
+    "detail": "성별 무관, 최장 아이의 초등학교 입학 전까지"
+   },
+   {
+    "name": "근무 시간",
+    "detail": "주 32시간(4일)·35시간(5일) 단축 근무 선택 가능"
+   },
+   {
+    "name": "원격 근무",
+    "detail": "자택(또는 그에 준하는 곳)에서만, 카페·공유 사무실 불가. 입사 후 한 달쯤은 주 몇 회 출근할 수 있음"
+   },
+   {
+    "name": "교통비",
+    "detail": "월 5만 엔까지"
+   },
+   {
+    "name": "사택",
+    "detail": "회사가 빌린 집에 사는 제도(会社de賃貸)"
+   },
+   {
+    "name": "연금",
+    "detail": "확정기여형 + 확정급여형 기업연금, 우리사주"
+   },
+   {
+    "name": "건강",
+    "detail": "사내 상담사 상주, 건강검진·독감 접종 보조(상한 있음)"
+   },
+   {
+    "name": "부업·정년",
+    "detail": "부업 가능(사전 신청), 정년 없음"
+   },
+   {
+    "name": "보험",
+    "detail": "건강·후생연금·산재·고용 보험"
+   }
+  ],
+  "note": "공고의 복리후생 칸[1]과 회사 채용 사이트 '働く環境' 페이지[15]를 합친 것이다. 회사 페이지에는 금액이 없어 금액은 공고에서 옮겼다. 회사 전체 제도이며 지금(2026-11) 페이지 기준."
+ },
+ "location": {
+  "name": "LITALICO 본사 (中目黒GTタワー)",
+  "address": "東京都目黒区上目黒2-1-1 中目黒GTタワー 15F",
+  "postal": "153-0051",
+  "map_url": "https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E7%9B%AE%E9%BB%92%E5%8C%BA%E4%B8%8A%E7%9B%AE%E9%BB%922-1-1%20%E4%B8%AD%E7%9B%AE%E9%BB%92GT%E3%82%BF%E3%83%AF%E3%83%BC",
+  "near": "도큐 도요코선·도쿄메트로 히비야선 나카메구로역 걸어서 1분 [1]",
+  "note": "주소는 회사 개요 페이지(15F·16F·20F)[14], 공고의 근무지는 15F 본사다 [1]. 일본 주소라 네이버 지도 대신 구글 지도 검색 링크를 달았다. 팀 대부분이 원격 근무다 [1]."
+ },
+ "fit": {
+  "good": [
+   "인프라를 코드로 깔끔하게 지키는 게 즐거운 사람[1][5]",
+   "개발팀 회의에 들어가 같이 계획하는 게 편한 사람[1]",
+   "문서로 먼저 생각을 정리하고 토론하는 사람[1]",
+   "복지·교육 서비스에 의미를 느끼는 사람[1]"
+  ],
+  "hard": [
+   "비즈니스 일본어와 일본 이주가 필수 — 서류부터 일본어다[1]",
+   "서비스가 많고 PHP·Rails·Vue 등 섞여 있어 넓게 알아야 한다[1][11]",
+   "계정 분리·SLO 처럼 아직 정해지지 않은 일을 스스로 끌고 가야 한다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "CloudFormation 으로 된 인프라를 Terraform 으로 옮긴다면 무엇부터 정하겠어요?",
+   "a": "이 팀이 9번 모여 정한 것 — 환경 분리·모듈·이름 규칙.[5]"
+  },
+  {
+   "q": "PR 마다 모든 환경의 plan 을 돌리니 느리고 비싸요. 어떻게 하겠어요?",
+   "a": "바뀐 상태만 고르는 행렬 작업.[8]"
+  },
+  {
+   "q": "Renovate PR 이 하루 수십 개 쌓여요. 어디까지 자동으로 합치겠어요?",
+   "a": "CI 도구의 작은 버전만, 런타임은 사람.[9]"
+  },
+  {
+   "q": "한 계정에 dev·prd 가 섞인 서비스를 멈추지 않고 나누려면?",
+   "a": "남은 숙제 1번.[1][18]"
+  },
+  {
+   "q": "SLO 99.9% 의 30일 오류 예산은 몇 분이고, 언제 사람을 부르나요?",
+   "a": "43.2분, 소진 속도 알림.[16][17]"
+  },
+  {
+   "q": "개발팀에 배포 권한을 넘기기 전에 무엇을 갖춰 두겠어요?",
+   "a": "배포 권한 넘기기와 Embedded SRE 전환.[1][6]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · [株式会社LITALICO] SRE 엔지니어 (프로덕트)",
+   "url": "https://www.wanted.co.kr/wd/391368",
+   "kind": "posting",
+   "date": "2026-11",
+   "note": "LAPRAS Global Bridge 경유 · 업무·요건·우대·조직·연봉·근무 조건"
+  },
+  {
+   "n": 2,
+   "title": "LITALICO 채용(HERP) · SREエンジニア (Embedded SRE / プロダクト担当)",
+   "url": "https://herp.careers/v1/litalico/63S9Q4UFUeev",
+   "kind": "posting",
+   "note": "회사 자체 채용 페이지 — 같은 자리, 정규직 5명·업무위탁 3명"
+  },
+  {
+   "n": 3,
+   "title": "Wantedly · 教育・福祉業界の社会課題を解決するEmbedded SREを募集",
+   "url": "https://www.wantedly.com/projects/2151315",
+   "kind": "posting",
+   "date": "2025-07",
+   "note": "프로덕트 리드 제도·Central/Embedded 전환"
+  },
+  {
+   "n": 4,
+   "title": "LITALICO SREテックリード 공고 (HERP 사본)",
+   "url": "https://freehire.me/jobs/engineer-sre-tetsukurido-zhu-shi-hui-she-litalico-yqryxd4z",
+   "kind": "posting",
+   "note": "같은 팀 윗자리 — 표준화·공통 GitHub Actions·보안/감사·연봉"
+  },
+  {
+   "n": 5,
+   "title": "CloudformationからTerraformに移行した話",
+   "url": "https://cross-black777.hatenablog.com/entry/2021/12/02/000000",
+   "kind": "company",
+   "date": "2021-12",
+   "note": "SRE 그룹 매니저 tjinjin 개인 블로그(회사 Advent Calendar)"
+  },
+  {
+   "n": 6,
+   "title": "SREグループのマネージャとして意識してきたこと",
+   "url": "https://cross-black777.hatenablog.com/entry/2021/12/25/180000",
+   "kind": "company",
+   "date": "2021-12",
+   "note": "SRE 그룹 매니저 — 팀 역사·한 일"
+  },
+  {
+   "n": 7,
+   "title": "AWSの権限がなくてもprivateなECRからimageをpullできるようにした話",
+   "url": "https://cross-black777.hatenablog.com/entry/2021/12/01/000000",
+   "kind": "company",
+   "date": "2021-12",
+   "note": "SRE 그룹 매니저"
+  },
+  {
+   "n": 8,
+   "title": "Terraform CI/CDの改善してみた",
+   "url": "https://qiita.com/tjinjin/items/776192159a1b093f49b0",
+   "kind": "company",
+   "date": "2023-12",
+   "note": "SRE 그룹 — 바뀐 상태만 plan·tfcmt"
+  },
+  {
+   "n": 9,
+   "title": "Renovate による Pull Request を auto-merge してレビューコストを削減する",
+   "url": "https://yhidetoshi.hatenablog.com/entry/2024/12/03/223006",
+   "kind": "company",
+   "date": "2024-12",
+   "note": "SRE 그룹 멤버"
+  },
+  {
+   "n": 10,
+   "title": "EventBridge と StepFunctions による ECS Fargate タスクの定期メンテナンス自動化",
+   "url": "https://yhidetoshi.hatenablog.com/entry/2025/12/03/172512",
+   "kind": "company",
+   "date": "2025-12",
+   "note": "SRE 그룹 멤버"
+  },
+  {
+   "n": 11,
+   "title": "リリースから7年間EC2で稼働していたWEBサービスをついにコンテナ化した話",
+   "url": "https://qiita.com/ti_aiuto/items/987a2fe439cb7a3ab7c9",
+   "kind": "company",
+   "date": "2023-12",
+   "note": "LITALICO 개발자 — Rails 서비스"
+  },
+  {
+   "n": 12,
+   "title": "レビュー環境はじめました",
+   "url": "https://zenn.dev/litalico/articles/8bb44e98fa7b14",
+   "kind": "company",
+   "date": "2025-12",
+   "note": "LITALICO 엔지니어 Zenn — 서비스 이름·SRE 관여는 안 밝힘"
+  },
+  {
+   "n": 13,
+   "title": "あらためて、じっくり動かすFargate",
+   "url": "https://zenn.dev/cumet04/articles/fargate-jikkuri",
+   "kind": "company",
+   "date": "2023-12",
+   "note": "LITALICO 엔지니어 — 사내 공부 모임 자료"
+  },
+  {
+   "n": 14,
+   "title": "LITALICO · 会社概要",
+   "url": "https://litalico.co.jp/about/company/",
+   "kind": "company",
+   "date": "2026-11",
+   "note": "본사 주소·서비스 목록"
+  },
+  {
+   "n": 15,
+   "title": "LITALICO · 働く環境",
+   "url": "https://litalico.co.jp/recruit/workplace/",
+   "kind": "company",
+   "note": "근무·휴가·복리후생(금액 없음)"
+  },
+  {
+   "n": 16,
+   "title": "Google SRE Workbook · Implementing SLOs",
+   "url": "https://sre.google/workbook/implementing-slos/",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Google SRE Workbook · Alerting on SLOs",
+   "url": "https://sre.google/workbook/alerting-on-slos/",
+   "kind": "reference",
+   "note": "소진 속도 알림 기준"
+  },
+  {
+   "n": 18,
+   "title": "AWS 백서 · Organizing Your AWS Environment Using Multiple Accounts",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/organizing-your-aws-environment/organizing-your-aws-environment.html",
+   "kind": "reference",
+   "date": "2025-04"
+  },
+  {
+   "n": 19,
+   "title": "GitHub Docs · Reuse workflows",
+   "url": "https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "kayac/ecspresso",
+   "url": "https://github.com/kayac/ecspresso",
+   "kind": "reference",
+   "note": "ECS 배포 도구"
+  },
+  {
+   "n": 21,
+   "title": "Terragrunt 문서",
+   "url": "https://docs.terragrunt.com/getting-started/quick-start/",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "Datadog · Service Level Objectives",
+   "url": "https://docs.datadoghq.com/service_management/service_level_objectives/",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "LITALICO 有価証券報告書 第6期 (EDINET S100YDDX, edinetdb 본문)",
+   "url": "https://edinetdb.jp/company/E36134/text?fy=2026",
+   "kind": "reference",
+   "date": "2026-06",
+   "note": "提出会社 従業員の状況 · 원문 PDF https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100YDDX.pdf"
+  },
+  {
+   "n": 24,
+   "title": "LITALICO 有価証券報告書 第5期 (edinetdb 본문)",
+   "url": "https://edinetdb.jp/company/E36134/text?fy=2025",
+   "kind": "reference",
+   "date": "2025-06",
+   "note": "提出会社 従業員の状況"
+  },
+  {
+   "n": 25,
+   "title": "エス・エム・エス 有価証券報告書 2026年3月期 (edinetdb 본문)",
+   "url": "https://edinetdb.jp/company/E05697/text?fy=2026",
+   "kind": "reference",
+   "date": "2026-06",
+   "note": "비교 — 같은 의료·복지 영역 IT 기업"
+  },
+  {
+   "n": 26,
+   "title": "LITALICO 채용(HERP) · 新卒エンジニア_28新卒",
+   "url": "https://herp.careers/v1/litalico/h0__yhOE1zIb",
+   "kind": "posting",
+   "note": "신입 엔지니어 연봉"
+  },
+  {
+   "n": 27,
+   "title": "팀 토폴로지 — 빠른 업무 플로우를 만드는 조직 설계",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=258906450",
+   "kind": "reference",
+   "date": "2020-12",
+   "note": "Enabling 팀 개념"
+  },
+  {
+   "n": 28,
+   "title": "Renovate 문서",
+   "url": "https://docs.renovatebot.com/",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "AWS Well-Architected · 안정성 원칙(Reliability Pillar)",
+   "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "日本語能力試験 JLPT",
+   "url": "https://www.jlpt.jp/",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "BJTビジネス日本語能力テスト",
+   "url": "https://www.kanken.or.jp/bjt/",
+   "kind": "reference",
+   "note": "0~800점, J5~J1+"
+  }
+ ],
+ "caveat": "SRE 그룹 글의 상당수는 멤버 개인 블로그(회사 Advent Calendar)이고 2021년 글은 지금과 다를 수 있다. 회사의 SLO 운영·ecspresso 사용 방식·계정 구조·DB 운영 절차·Datastream 구성은 공개된 글을 찾지 못해 일반 문서와 {추론}으로 채웠다. 영상 발표는 찾지 못했다. 연봉은 엔 표기 그대로다."
+}
