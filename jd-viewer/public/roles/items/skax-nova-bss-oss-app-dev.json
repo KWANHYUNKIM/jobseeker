@@ -1,0 +1,1270 @@
+{
+ "id": "skax-nova-bss-oss-app-dev",
+ "company": "SK주식회사(AX)",
+ "role": "AI 기반 차세대 통신 BSS/OSS(NOVA) 응용개발 전문가",
+ "team": "NOVA개발1/2팀 (SK텔레콤 차세대 BSS/OSS 'NOVA' 구축)",
+ "jobs": [
+  "jobkorea-50340705",
+  "wanted-396834"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "SK텔레콤의 새 전산 **NOVA** — 요금제 가입·변경·해지 주문부터 개통, 망 자원 할당, 요금 청구, 대리점 정산까지 — 를 도메인 하나씩 맡아 **Java/Spring API로 다시 만듭니다**. 2029년 오픈이 목표입니다.[2]",
+  "env": "옛 시스템을 읽어 새 구조로 옮기는 **대형 차세대 프로젝트**이고, **SDD(Spec 먼저 쓰고 AI 에이전트가 코드를 만드는 방식)**가 공식 방법론입니다.[2] 근무지는 SK텔레콤 본사가 있는 을지로입니다.[2][5]",
+  "oneline": "통신 업무 지식과 AI 개발 방식을 같이 키우는 백엔드 개발자 자리. 화려한 기술보다 **도메인 규칙·데이터 매핑·SQL·테스트**가 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "담당 업무 도메인의 요구사항 분석부터 설계·개발·검증까지 응용 서비스 전 과정을 주도적으로 수행합니다.",
+   "short": "도메인 하나를 맡아 요구사항 정리부터 테스트 통과까지 직접 끌고 가는 일 — 코딩만 하는 자리가 아니다.",
+   "why": "NOVA는 주문·개통·상품·과금·파트너·고객 같은 **업무 도메인별 전문가가 한 팀으로 움직이는** 프로젝트입니다.[2] 게다가 SDD에서는 요구사항·API·데이터 모델을 Spec으로 정하는 일이 개발자 업무에 들어가 있습니다.[1] 그래서 남이 준 설계서대로 코드만 치는 자리가 아니라 앞 단계부터 맡습니다. {추론}",
+   "flows": [
+    {
+     "caption": "한 기능이 지나가는 길 — 같은 회사 BSS 기획 공고와 이 공고를 이어 붙임[1][3]",
+     "steps": [
+      "업무 요구 · 기획 조직의 업무·기능 요구서(BRD·FRD)와 업무 흐름도(BPMN)",
+      "Spec · 요구사항·API·데이터 모델 정의",
+      "개발 · AI 에이전트와 코드 생성, 사람이 읽고 고침",
+      "검증 · 단위·도메인 간 통합 테스트",
+      "통합·인수 테스트(SIT·UAT) · 오픈 전환"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "items": [
+     "기획 조직이 만든 업무 요구서를 읽고 **빠진 경우**(해지 당일 변경, 미납 고객의 가입 등)를 되묻는다.[3] {추론}",
+     "맡은 기능의 Spec을 쓰고 다른 도메인 담당과 API 모양을 맞춘다.[1]",
+     "코드를 만들고 테스트로 Spec을 지키는지 확인한다.[1]",
+     "통합 테스트·인수 테스트에서 나온 결함을 고치고 오픈 전환까지 간다.[3]"
+    ]
+   },
+   "how_far": "업무 정책(요금 규칙, 가입 조건)은 현업과 기획이 정합니다.[3] 개발자는 그 정책을 **빠짐없이 Spec과 코드·테스트로 옮기고 결과를 책임**집니다. 최소선은 맡은 기능의 Spec과 테스트를 스스로 쓸 수 있는 정도입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3
+   ],
+   "study": [
+    "spec-kit",
+    "practical-testing"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Product Order(무선/유선) : 상품 가입·변경·해지 등 고객 주문 처리",
+   "short": "고객이 낸 '이 요금제 가입·변경·해지해 주세요' 주문을 받아 검사하고 진행 상태를 끝까지 챙기는 일.",
+   "why": "통신사 BSS(사업 지원 시스템)는 가입부터 해지까지의 고객·상품·청구 절차를 다루고[7], 그 입구가 상품 주문입니다. 통신 표준에서는 상품 주문이 **카탈로그에 정의된 상품 오퍼링**을 바탕으로 만들어지고, 주문을 넣는 표준 API(TMF622)가 따로 있습니다.[11]",
+   "actually": {
+    "intro": "보통 상품 주문 도메인이 하는 일입니다. NOVA 내부 설계는 공개되지 않았습니다.",
+    "items": [
+     "**접수** — 주문 한 건에 여러 항목(휴대폰 회선 + 부가서비스 + 결합 할인)이 들어온다.[11] {추론}",
+     "**검사** — 명의자 확인, 미납 여부, 약정 중복, 이 요금제와 같이 못 쓰는 부가서비스. {추론}",
+     "**변경 계산** — '변경'은 지금 가진 상품과 새 상품의 차이를 계산해 빼고 더할 것을 정한다. {추론}",
+     "**진행 상태** — 접수 → 진행 → 완료·실패·취소를 남기고, 개통(서비스 주문) 결과를 받아 닫는다.[11] {추론}",
+     "**무선/유선 차이** — 무선은 번호·유심, 유선은 설치 기사 방문 일정처럼 따라오는 일이 다르다. {추론}"
+    ]
+   },
+   "how_far": "가입 조건·변경 규칙은 상품 기획이 정합니다.[3] 개발자는 그 규칙이 **모든 조합에서 같은 답을 내게** 만들고, 주문이 중간에 멈췄을 때 어디서 멈췄는지 보이게 합니다. {추론}",
+   "refs": [
+    3,
+    7,
+    11
+   ],
+   "study": [
+    "tmf622",
+    "tmf-etom"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Service Order / Resource Order(무선/유선) : 서비스 개통 및 네트워크 자원 할당·오케스트레이션",
+   "short": "주문받은 상품을 실제 통신 서비스로 켜고(개통), 번호·IP·장비 포트 같은 망 자원을 잡아 순서대로 묶는 일.",
+   "why": "공고 팀 소개가 이 일을 '서비스 개통, 네트워크 자원 할당'으로 적었습니다.[2] SK텔레콤은 TM 포럼 기준 자율 네트워크 4단계를 목표로 **차세대 OSS(운영 지원 시스템) 전환**을 4대 과제에 넣었습니다.[5] 표준에서도 서비스 주문(TMF641)과 자원 주문(TMF652)이 상품 주문과 따로 있습니다.[14][15]",
+   "actually": {
+    "items": [
+     "**분해** — 상품 하나를 서비스 여러 개로, 서비스 하나를 자원 여러 개로 쪼갠다(아래 예). {추론}",
+     "**순서** — 번호를 먼저 잡고 유심을 연결한 뒤 데이터를 켜는 식으로, 앞 단계가 끝나야 다음 단계가 돈다. {추론}",
+     "**되돌리기** — 중간에 실패하면 이미 잡은 자원을 풀어 준다. 안 풀면 번호·IP가 묶여 남는다. {추론}",
+     "**망 쪽 연동** — 실제 장비를 켜는 시스템과 요청·결과를 주고받는다. 서비스 카탈로그에 있는 서비스를 서비스 주문으로 요청하는 구조가 표준 예다.[15]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "상품 주문 → 서비스 주문 → 자원 주문 (가상의 카탈로그, 직접 돌린 출력)",
+     "body": "상품 둘을 주문하면 서비스 3개, 자원 5개로 쪼개집니다. 실제 카탈로그는 훨씬 크고, 이 쪼개는 규칙이 EPC(상품 카탈로그)에 있습니다. {추론}",
+     "lang": "python",
+     "code": "CATALOG = {\n    \"5G-PLUS\":  [\"mobile-voice\", \"mobile-data-5g\"],\n    \"GIGA-NET\": [\"fixed-internet\"],\n}\nSERVICE_NEEDS = {\n    \"mobile-voice\":   [\"msisdn\"],            # 전화번호\n    \"mobile-data-5g\": [\"ip-pool\", \"usim\"],\n    \"fixed-internet\": [\"port\", \"ip-pool\"],\n}\n\ndef decompose(items):\n    so = [s for offering in items for s in CATALOG[offering]]\n    ro = [r for s in so for r in SERVICE_NEEDS[s]]\n    return so, ro\n\nso, ro = decompose([\"5G-PLUS\", \"GIGA-NET\"])\nprint(len(so), \"service orders:\", so)\nprint(len(ro), \"resource orders:\", ro)\n# 3 service orders: ['mobile-voice', 'mobile-data-5g', 'fixed-internet']\n# 5 resource orders: ['msisdn', 'ip-pool', 'usim', 'port', 'ip-pool']"
+    }
+   ],
+   "how_far": "망 장비 자체를 다루는 건 네트워크 조직 몫입니다. {추론} 이 자리는 **주문을 쪼개고 순서·실패·재시도를 관리하는 응용 로직**까지입니다. 상태가 여러 단계로 오가므로 상태 전이를 표로 그려 설명할 수 있어야 합니다. {추론}",
+   "refs": [
+    2,
+    5,
+    14,
+    15
+   ],
+   "study": [
+    "tmf-oda",
+    "tmf622"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "EPC : 상품·요금제·할인 등 상품 카탈로그 관리",
+   "short": "요금제·부가서비스·할인·결합 규칙을 한곳에 정의해 두고, 주문과 과금이 그 정의를 같이 읽게 하는 일.",
+   "why": "같은 회사 BSS 기획 공고가 **상품·요금·프로모션 카탈로그 표준화**를 맡을 일로 적었습니다.[3] 카탈로그가 갈라지면 주문이 판 상품과 과금이 매긴 요금이 어긋납니다. {추론} 표준 카탈로그 API(TMF620)는 카탈로그·상품 오퍼링·상품 스펙을 만들고 읽는 일을 다룹니다.[14]",
+   "actually": {
+    "items": [
+     "**스펙과 오퍼링 나누기** — '무엇인가'(데이터 무제한 회선)와 '어떤 조건으로 얼마에 파나'(월 69,000원, 24개월 약정 할인)를 따로 둔다.[14] {추론}",
+     "**같이 못 쓰는 것·꼭 같이 쓰는 것** — 부가서비스 배타 규칙, 결합 할인 조건. {추론}",
+     "**유효 기간** — 판매 시작·종료일, 기존 가입자는 옛 요금제를 그대로 유지. {추론}",
+     "**버전** — 요금이 바뀌면 덮어쓰지 않고 새 판을 만든다. 지난달 청구서는 지난달 판으로 계산해야 하기 때문이다. {추론}"
+    ]
+   },
+   "how_far": "어떤 요금제를 낼지는 상품 기획이 정합니다.[3] 개발자는 그 정의를 **데이터로 표현할 수 있게 모델을 짜고**, 주문·과금이 같은 정의를 읽게 합니다. {추론}",
+   "refs": [
+    3,
+    14
+   ],
+   "study": [
+    "tmf-oda",
+    "ddd-core"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Billing : 요금 계산·청구·수납",
+   "short": "쓴 만큼·가입한 만큼 요금을 계산하고, 청구서를 만들고, 들어온 돈을 맞춰 보는 일.",
+   "why": "SK AX는 통신 과금 솔루션(TOMARS)으로 **통합 중재·실시간 과금·배치 일정 관리**를 내세우고, BSS 범위에 청구·납부·미납 관리를 넣습니다.[7] SK AX의 차세대 BSS 보고서도 테스트를 먼저 자동화할 대상으로 상품·주문과 함께 빌링을 꼽았습니다.[8]",
+   "actually": {
+    "items": [
+     "**중재** — 망 장비가 남긴 사용 기록을 모아 형식을 맞추고 중복을 걸러 과금이 읽을 수 있게 한다.[7] {추론}",
+     "**과금** — 요금제·할인 규칙(EPC)을 사용량에 적용한다. 월 중간에 요금제를 바꾸면 날짜로 나눈다(일할 계산, 아래 예). {추론}",
+     "**청구** — 월말 배치로 고객별 청구서를 만든다. 표준 청구서 API(TMF678)는 고객 청구서를 찾고 읽는 일을 다룬다.[16]",
+     "**수납·미납** — 들어온 돈을 청구서에 맞추고, 안 낸 돈은 미납 절차로 넘긴다.[7]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "월 중간 요금제 변경의 일할 계산 (가상 금액, 직접 돌린 출력)",
+     "body": "11월 1~14일 55,000원 요금제, 15~30일 69,000원 요금제. 돈 계산은 float 대신 Decimal로 하고, 원 단위 미만 처리(여기서는 버림)를 규칙으로 정해 둡니다.[29] 실제 반올림 규칙은 회사가 정합니다. {추론}",
+     "lang": "python",
+     "code": "from decimal import Decimal as D, ROUND_DOWN\nfrom datetime import date\nimport calendar\n\ndef prorate(monthly_fee, start, end_inclusive):\n    days_in_month = calendar.monthrange(start.year, start.month)[1]\n    used = (end_inclusive - start).days + 1\n    return (D(monthly_fee) * used / days_in_month).quantize(D(\"1\"), rounding=ROUND_DOWN)\n\na = prorate(55000, date(2026, 11, 1), date(2026, 11, 14))\nb = prorate(69000, date(2026, 11, 15), date(2026, 11, 30))\nprint(a, b, a + b)   # 25666 36800 62466"
+    }
+   ],
+   "how_far": "요금 규칙은 상품·요금 기획이 정합니다.[3] 개발자는 **같은 입력에 늘 같은 금액**이 나오게 하고, 날짜 경계(월말·윤년)·반올림·중도 해지를 테스트로 덮습니다. {추론}",
+   "refs": [
+    3,
+    7,
+    8,
+    16,
+    29
+   ],
+   "study": [
+    "py-decimal",
+    "skax-mi-bss"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Partner : 대리점·제휴사 등 파트너 관리 및 정산",
+   "short": "대리점·판매점·제휴사의 정보를 관리하고, 그들이 판 실적에 따라 줄 수수료를 계산해 정산하는 일.",
+   "why": "SK AX의 통신 BSS 소개에 파트너 관리가 들어가 있고[7], BSS 기획 공고도 정산/수납을 핵심 도메인으로 꼽았습니다.[3] 통신 상품은 대부분 대리점·판매점을 거쳐 팔리므로 정산이 틀리면 바로 분쟁이 됩니다. {추론}",
+   "actually": {
+    "intro": "보통 이런 계산입니다. SK텔레콤의 수수료 정책은 공개되지 않았습니다.",
+    "items": [
+     "**파트너 정보** — 대리점·판매점·제휴사의 계층(본사 → 대리점 → 판매점), 계약, 정산 계좌. {추론}",
+     "**실적 모으기** — 어느 파트너가 어떤 주문을 받았나를 주문 도메인에서 가져온다. {추론}",
+     "**수수료 계산** — 개통 건수·요금제 등급·유지 기간 조건에 따라 단가를 매긴다. {추론}",
+     "**환수** — 일정 기간 안에 해지되면 이미 준 수수료를 다음 정산에서 뺀다. {추론}"
+    ]
+   },
+   "how_far": "수수료 정책은 영업·정산 담당이 정합니다. {추론} 개발자는 정책이 바뀔 때 **코드를 고치지 않고 규칙 데이터만 바꿔도 되게** 만들고, 지난달 정산을 다시 돌려도 같은 값이 나오게 합니다. {추론}",
+   "refs": [
+    3,
+    7
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Party / Shared Service : 고객·조직 등 당사자 정보 관리 및 도메인 공통 비즈니스 서비스",
+   "short": "고객·법인·조직 같은 '당사자' 정보를 한 벌로 두고, 여러 도메인이 같이 쓰는 공통 기능을 만드는 일.",
+   "why": "통신 표준에서 '당사자(Party)'는 회사와 관계 맺은 사람·조직(소비자, 계정, 연락처)을 뜻하고, 이를 다루는 표준 API(TMF632)가 있습니다.[14] SID(정보 모델)는 회사 전체가 같은 데이터를 같은 뜻으로 쓰게 하는 공통 정보 모델입니다.[13]",
+   "actually": {
+    "items": [
+     "**개인과 조직** — 같은 '고객' 칸에 사람과 법인이 다 들어온다. {추론}",
+     "**역할** — 한 사람이 명의자·사용자·요금 납부자를 따로 할 수 있다(가족 회선). {추론}",
+     "**공통 서비스** — 코드 관리, 알림 발송, 주소 검색, 인증처럼 모든 도메인이 쓰는 기능. {추론}",
+     "**개인정보** — 고객 데이터 보호와 권한 기반 통제는 SK텔레콤이 BSS AI 에이전트 표준에도 명시한 원칙이다.[4]"
+    ]
+   },
+   "how_far": "다른 도메인이 다 이 데이터를 읽으므로 **모양을 한 번 정하면 바꾸기 어렵습니다**. 그래서 추가는 쉽고 변경은 신중하게, 역할을 붙였다 뗄 수 있게 설계하는 감각이 필요합니다. {추론}",
+   "refs": [
+    4,
+    13,
+    14
+   ],
+   "study": [
+    "ddd-core",
+    "tmf-oda"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SDD 방법론에 따라 AI Agent와 협업하여 Spec(요구사항·API·데이터 모델)을 정의하고,",
+   "short": "AI에게 코드를 맡기기 전에 요구사항·API·데이터 모델을 Spec 문서로 먼저 정해 두는 일.",
+   "why": "NOVA는 SDD를 **공식 방법론**으로 정했고, AI Leading CoE(전담 조직)가 설계·개발·검증 전 과정에 AI 에이전트를 실제로 적용한다고 공고에 적었습니다.[2] SK AX는 AI가 코드를 빨리 써도 무엇을 만들지 정리가 안 돼 있으면 재작업이 늘어난다고 보고, 코딩 전에 태스크 정의서·화면 설계서·개발 지침서·공통 규칙(룰셋)을 먼저 만든다고 밝혔습니다.[9]",
+   "actually": {
+    "intro": "SDD 공개 도구(GitHub Spec Kit)의 흐름입니다. NOVA가 이 도구를 쓰는지는 공개되지 않았습니다.[10]",
+    "items": [
+     "**원칙** — 프로젝트 공통 원칙·개발 지침 파일을 먼저 둔다.[10]",
+     "**무엇을(specify)** — 사용자가 하려는 일과 성공 조건을 적는다.[10]",
+     "**어떻게(plan)** — 기술 선택·구조·데이터 모델·API를 적는다.[10]",
+     "**일감(tasks)** — 계획을 작은 작업으로 쪼개고 에이전트가 하나씩 구현한다.[10]"
+    ]
+   },
+   "how_far": "Spec을 쓰고 리뷰하는 건 사람 몫이고, 에이전트가 만든 코드를 **읽고 고칠 수 있어야** 합니다. {추론} 공고가 요건에서 '관심과 학습 의지'만 요구하므로, 지금 AI 도구 경험이 깊지 않아도 Spec 문서를 또렷하게 쓰는 힘이 더 중요합니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    9,
+    10
+   ],
+   "study": [
+    "spec-kit",
+    "ibm-sdd",
+    "skax-axnow"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "코드 생성과 검증까지 이어지는 AI 주도 개발을 수행합니다",
+   "short": "정한 Spec으로 에이전트가 코드를 만들게 하고, 그 코드가 Spec을 지키는지 테스트로 걸러 내는 일.",
+   "why": "공고는 Spec 정의에서 멈추지 않고 **코드 생성과 검증까지** 한 흐름으로 이어진다고 적었습니다.[1] AI 코드 생성은 같은 입력에도 결과가 달라질 수 있어, 생성된 코드를 믿으려면 검증 장치가 필요하다는 지적이 있습니다.[31]",
+   "actually": {
+    "items": [
+     "**구현(implement)** — tasks로 쪼갠 작업을 에이전트가 하나씩 구현한다.[10]",
+     "**검증** — Spec에 적은 조건을 테스트로 만들어 생성된 코드를 거른다.[1] {추론}",
+     "**사람의 리뷰** — 테스트가 못 잡는 업무 규칙 위반(예: 해지 고객에게 요금 부과)은 도메인을 아는 사람이 읽고 잡는다. {추론}",
+     "SK AX는 다른 고객사(C사)에 설계 산출물 기반 AI 개발을 적용해 **개발 생산성 30% 이상**을 냈다고 했지만, 그 한 프로젝트의 값이다.[9]"
+    ]
+   },
+   "how_far": "에이전트가 만든 코드를 그대로 넣지 않고 **읽고 고칠 수 있어야** 합니다. {추론} 테스트를 먼저 쓰는 습관이 있으면 이 흐름에 가장 빨리 적응합니다. {추론}",
+   "refs": [
+    1,
+    9,
+    10,
+    31
+   ],
+   "study": [
+    "spec-kit",
+    "practical-testing"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "As-Is 레거시 시스템을 분석하여 To-Be 기능으로 전환 설계하고, 데이터 모델·테이블 매핑",
+   "short": "옛 시스템이 실제로 무엇을 하는지 코드·테이블에서 읽어 내고, 새 구조의 기능·표에 하나씩 대응시키는 일.",
+   "why": "NOVA는 기존 전산을 대신할 차세대 시스템입니다.[2] SK텔레콤 대표는 영업 IT·회선관리·과금 같은 핵심 전산을 AI 중심으로 다시 짜겠다고 발표했습니다.[6] 옛 시스템의 규칙은 문서보다 코드와 데이터에 남아 있는 경우가 많아, 읽어 내는 일이 먼저입니다. {추론}",
+   "actually": {
+    "items": [
+     "**기능 대조표** — 옛 화면·배치·프로그램 목록을 새 기능 목록과 1:1, 1:N, 폐기로 맞춘다. {추론}",
+     "**테이블·컬럼 매핑** — 옛 코드값(1/2)을 새 값(M/F)으로, 'YYYYMMDD' 문자열을 날짜로, 빈 문자열을 NULL로(아래 예). {추론}",
+     "**이관 검증** — 건수·합계·규칙별 건수를 옛 표와 새 표에서 같이 세 본다. {추론}",
+     "**조금씩 바꾸기** — 한 번에 갈아엎지 않고 새 기능이 옛 기능을 하나씩 대신하게 하는 방식(스트랭글러 피그)이 있다.[17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "옛 고객 표 → 새 당사자 표 매핑과 대조 (가상 데이터, 직접 돌린 출력)",
+     "body": "건수가 4 대 4로 같아도 규칙 밖 값(성별 코드 9)과 빈 가입일이 숨어 있습니다. 매핑표에 '그 밖의 값은 어떻게'를 꼭 적습니다. {추론}",
+     "lang": "python",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ndb.executescript(\"\"\"\nCREATE TABLE asis_cust (CUST_NO TEXT, CUST_NM TEXT, SEX_CD TEXT, JOIN_DT TEXT);\nINSERT INTO asis_cust VALUES ('C001','김하나','1','20190301'),('C002','이두리','2','20200715'),\n                             ('C003','박세찬','1',''),('C004','최네모','9','20211201');\nCREATE TABLE tobe_party (party_id TEXT, name TEXT, gender TEXT, valid_from TEXT);\nINSERT INTO tobe_party\nSELECT CUST_NO, CUST_NM,\n       CASE SEX_CD WHEN '1' THEN 'M' WHEN '2' THEN 'F' END,\n       CASE WHEN JOIN_DT = '' THEN NULL\n            ELSE substr(JOIN_DT,1,4)||'-'||substr(JOIN_DT,5,2)||'-'||substr(JOIN_DT,7,2) END\nFROM asis_cust;\n\"\"\")\nprint(db.execute(\"SELECT (SELECT COUNT(*) FROM asis_cust), (SELECT COUNT(*) FROM tobe_party)\").fetchone())\nprint(db.execute(\"\"\"SELECT a.SEX_CD, t.gender, COUNT(*) FROM asis_cust a\n                    JOIN tobe_party t ON t.party_id = a.CUST_NO GROUP BY 1, 2 ORDER BY 1\"\"\").fetchall())\nprint(db.execute(\"SELECT party_id FROM tobe_party WHERE valid_from IS NULL\").fetchall())\n# (4, 4)\n# [('1', 'M', 2), ('2', 'F', 1), ('9', None, 1)]\n# [('C003',)]"
+    }
+   ],
+   "how_far": "옛 시스템 전체를 혼자 읽는 게 아니라 **맡은 도메인의 표와 기능**을 끝까지 맞추는 일입니다. {추론} 우대사항에 같은 경험(As-Is 분석·To-Be 설계)이 따로 있으니 해 봤다면 강점입니다.[1]",
+   "refs": [
+    1,
+    2,
+    6,
+    17
+   ],
+   "study": [
+    "legacy-book",
+    "fowler-strangler",
+    "sql-tuning"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Java/Spring 기반 API를 개발하고, 도메인 간 연계 및 통합 테스트",
+   "short": "Java/Spring으로 도메인 API를 만들고, 다른 도메인 API와 이어 붙여 주문→개통→과금이 끝까지 도는지 시험한다.",
+   "why": "기획 조직은 오더-개통-과금을 **끝에서 끝까지(E2E)** 설계하고 통합·인수 테스트를 운영한다고 적었습니다.[3] SK AX 보고서는 차세대 BSS 테스트를 화면 중심에서 **API·데이터 중심**으로 바꾸고, 1순위를 테스트 데이터로 두라고 했습니다.[8]",
+   "level": {
+    "basic": "Spring으로 REST API(조회·등록·수정), 예외 처리, 트랜잭션",
+    "work": "도메인 간 호출·이벤트, 실패 시 재시도와 보상, 테스트 데이터 만들기, 통합 테스트 자동화",
+    "team": "주문 한 건이 여러 도메인을 지나는 흐름을 API 단위로 쪼개 시험하고, 결함이 어느 도메인에서 났는지 짚는 것"
+   },
+   "actually": {
+    "items": [
+     "주문 API가 개통 API를 부르고, 개통 결과가 과금에 가입 정보를 넘기는 사슬을 시나리오로 묶는다.[3][8] {추론}",
+     "가입자 수천만 명 규모라 테스트 데이터를 따로 만들어야 하고, 개인정보가 든 실데이터는 그대로 못 쓴다.[8] {추론}",
+     "API 단위 테스트를 먼저 자동화하고 화면 테스트는 줄인다.[8]"
+    ]
+   },
+   "how_far": "Spring을 처음부터 배우는 자리는 아닙니다(경력 3년 이상).[1] **트랜잭션 경계와 도메인 간 실패 처리**를 설명할 수 있으면 실무선입니다. {추론}",
+   "refs": [
+    1,
+    3,
+    8
+   ],
+   "study": [
+    "spring-mvc-1",
+    "spring-db-1",
+    "practical-testing"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AI 개발 표준(프롬프트, MCP, Agent 등)의 개선과 확산 활동에 참여하며 NOVA의 AI 개발 방식을 함께 고도화합니다.",
+   "short": "팀이 같이 쓰는 프롬프트·규칙 파일·MCP 연결·에이전트 설정을 써 보고 고쳐서 다른 팀에 퍼뜨리는 일.",
+   "why": "NOVA는 AI Leading CoE를 중심으로 AI 개발 방식을 적용하는 SK AX의 대표 선도 프로젝트입니다.[2] SK AX가 밝힌 설계 산출물에도 **공통 개발 표준(룰셋)**이 들어갑니다.[9] 고객사 SK텔레콤도 구성원 4,000명 넘게 AI 에이전트를 직접 만들 만큼 AI 전환을 밀고 있습니다.[28]",
+   "actually": {
+    "items": [
+     "**규칙 파일** — 코딩 에이전트가 프로젝트마다 읽는 지침 파일(예: Claude Code의 CLAUDE.md)에 코드 규칙·금지 사항을 적는다.[20]",
+     "**MCP** — AI 도구가 외부 도구·데이터에 붙는 공개 규약이다.[19] 카탈로그 정의나 DB 스키마를 에이전트가 읽게 연결할 수 있다. {추론}",
+     "**재사용 프롬프트** — 'Spec에서 API 뼈대 만들기', '매핑표로 이관 SQL 만들기'처럼 자주 하는 일을 정형화한다. {추론}",
+     "**확산** — 잘 된 방식을 문서와 예제로 다른 도메인 팀에 넘긴다. {추론}"
+    ]
+   },
+   "how_far": "표준을 처음부터 만드는 건 CoE 몫이고, 이 자리는 **참여**입니다.[1] 직접 써 보고 '이 도메인에서는 이게 안 된다'를 근거와 함께 돌려주는 정도면 됩니다. {추론}",
+   "refs": [
+    1,
+    2,
+    9,
+    19,
+    20,
+    28
+   ],
+   "study": [
+    "claude-code-docs",
+    "mcp-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "근무지 : 서울 을지로",
+   "short": "SK텔레콤 본사(SK T-타워)가 있는 을지로 — 고객사 곁에서 일하는 자리다.",
+   "why": "원티드 공고의 근무지 주소가 을지로 65이고[2], 같은 주소가 SK텔레콤 본사(SK T-타워)입니다.[5] SK AX 본사는 분당이라, 고객 현장 가까이에 프로젝트 조직을 둔 것으로 보입니다. {추론}",
+   "refs": [
+    2,
+    5
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AI 기반 차세대 통신 BSS/OSS(NOVA) 응용개발",
+   "short": "자격 목록의 머리줄 — 이 공고가 뽑는 자리는 응용개발 하나다.",
+   "why": "잡코리아 공고는 '포지션 및 자격요건' 밑에 자리 이름을 한 번 더 적고 그 밑에 요건을 붙였습니다.[1] 같은 프로젝트의 기획 자리는 따로 공고가 나왔습니다(경력 5년 이상).[3]",
+   "refs": [
+    1,
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Java, SQL 등 프로그래밍 및 데이터베이스에 대한 이해가 있으신 분",
+   "short": "API는 Java로, 데이터는 SQL로 다루는 자리라서. '이해'지만 경력 3년 공고라 실무선이 기본이다.",
+   "why": "업무 줄에 Java/Spring API 개발과 데이터 모델·테이블 매핑이 함께 있습니다.[1] 이관·과금처럼 표를 직접 다루는 일이 많아 SQL이 빠질 수 없습니다. {추론}",
+   "level": {
+    "basic": "Java 컬렉션·예외·스트림, SQL JOIN·GROUP BY·서브쿼리·CASE",
+    "work": "JPA/MyBatis 등으로 DB 다루기, 트랜잭션, 윈도우 함수, 날짜·NULL 처리",
+    "team": "매핑 규칙을 SQL 한 문장으로 옮기고 건수·합계로 검증하기, 실행계획 읽기"
+   },
+   "refs": [
+    1
+   ],
+   "study": [
+    "jpa-basic",
+    "sql-tuning"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "웹 애플리케이션 구조(Front/Back-end, API, DB)에 대한 기본 이해가 있으신 분",
+   "short": "화면·서버·API·DB가 어떻게 이어지는지 알아야 맡은 기능이 전체 어디에 끼는지 알 수 있어서.",
+   "why": "도메인별로 나뉜 팀이 API로 서로 이어지는 구조라[2][3], 내 API가 누구에게 불리고 무엇을 부르는지 그려 낼 수 있어야 합니다. {추론}",
+   "how_far": "'기본 이해'입니다.[1] 요청 하나가 화면 → API → DB를 지나 돌아오는 길을 HTTP 요청·응답으로 설명할 수 있으면 충분합니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3
+   ],
+   "study": [
+    "http-basic",
+    "spring-mvc-1"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "AI 개발 도구(Claude Code, GitHub Copilot, Cursor 등)를 활용한 새로운 개발 방식에 대한 관심과 학습 의지가 높으신 분",
+   "short": "AI 코딩 도구로 일하는 방식이 이 프로젝트의 공식 방법이라서. 지금은 '써 봤고 더 배울 의지'면 된다.",
+   "why": "SDD가 공식 방법론이고 설계·개발·검증에 AI 에이전트를 실제로 쓰는 프로젝트입니다.[2] 공고는 숙련이 아니라 **관심과 학습 의지**를 요건으로 적었습니다.[1]",
+   "how_far": "개인 프로젝트에서 코딩 에이전트에게 Spec을 주고 기능 하나를 만들게 한 뒤, 틀린 부분을 어떻게 잡았는지 말할 수 있으면 좋은 근거가 됩니다. {추론}",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "claude-code-docs",
+    "spec-kit"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "다양한 이해관계자(현업, 설계, 아키텍처, 테스트 등)와 원활하게 소통하고 협업하는 역량이 뛰어나신 분",
+   "short": "현업·기획·아키텍처·테스트 담당이 다 따로 있는 대형 프로젝트라, 말이 어긋나면 기능이 어긋나서.",
+   "why": "기획 조직이 요구서와 업무 흐름도를 만들고 통합·인수 테스트를 운영하는 등 역할이 나뉘어 있습니다.[3] 도메인 사이 API 모양도 담당끼리 맞춰야 합니다. {추론}",
+   "how_far": "회의 말솜씨보다 **결정을 글로 남기는 습관**입니다 — Spec 자체가 이해관계자와 맞춘 결과물이기 때문입니다.[10] {추론}",
+   "refs": [
+    3,
+    10
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "대규모 SI/SM 프로젝트에서 요구사항 분석부터 테스트·오픈까지 수행한 경험을 보유하신 분",
+   "short": "분석→설계→개발→테스트→오픈을 대형 프로젝트에서 한 바퀴 돌아 본 사람이어야 일정을 같이 탈 수 있어서.",
+   "why": "NOVA는 2029년 오픈을 목표로 여러 도메인이 같이 가는 대형 차세대 프로젝트입니다.[2] SI(구축)·SM(운영)에서 단계별 산출물·결함 관리·오픈 리허설을 겪어 본 경험이 그대로 쓰입니다. {추론}",
+   "how_far": "오픈을 한 번이라도 끝까지 가 봤는지가 핵심입니다 — 이관 리허설, 오픈 당일 대응, 오픈 뒤 안정화. {추론}",
+   "refs": [
+    2
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "RDBMS 기반 SQL 작성·분석 및 성능 개선 역량이 있으신 분",
+   "short": "가입자 수천만 명 데이터라 느린 SQL 하나가 월말 과금 배치와 화면을 다 늦추기 때문에.",
+   "why": "SK AX는 차세대 MNO(이동통신사) BSS가 수천만 가입자 데이터와 많은 연계 시스템을 다룬다고 적었습니다.[8] SK AX가 Oracle DB 운영 특화 솔루션을 따로 내세울 만큼 통신 전산에 Oracle이 많이 쓰입니다.[7] {추론} 성능 개선의 출발은 실행계획을 띄워 어디서 시간이 드는지 읽는 것입니다.[18]",
+   "level": {
+    "basic": "인덱스가 왜 필요한지, 실행계획을 띄워 보는 법",
+    "work": "실행계획에서 풀 스캔·조인 순서·정렬 비용 읽기, 인덱스 설계, 바인드 변수",
+    "team": "월말 배치처럼 큰 SQL을 집합으로 다시 쓰기, 이관 SQL의 대량 처리와 검증"
+   },
+   "refs": [
+    7,
+    8,
+    18
+   ],
+   "study": [
+    "sql-tuning",
+    "oracle-tuning"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "채용 분야의 경력을 3년 이상 보유하신 분",
+   "short": "공통 요건 — 응용개발 경력 3년 이상. 신입 자리는 아니다.",
+   "why": "공고의 공통 요건입니다.[1][2] 같은 프로젝트의 BSS 기획 자리는 5년 이상이라[3], 응용개발이 문턱이 낮은 편입니다. {추론}",
+   "refs": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "해외여행에 결격사유가 없는 분 (병역 대상자의 경우 병역필 또는 면제자)",
+   "short": "SK 그룹 공고의 공통 요건 — 출장·해외 교류에 문제가 없어야 한다.",
+   "why": "공고의 공통 요건입니다.[1][2] SK텔레콤이 해외 통신사·빅테크와 BSS 공동 프로젝트를 하는 등 해외 교류가 있습니다.[4] {추론}",
+   "refs": [
+    1,
+    2,
+    4
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "통신사 BSS/OSS(주문, 개통, 상품, 요금/빌링, 정산, 고객 관리 등) 구축 또는 운영 경험이 있으신 분",
+   "short": "통신 업무 용어(개통·중재·일할·환수)를 이미 알면 배우는 시간 없이 바로 Spec을 쓸 수 있어서.",
+   "why": "업무 줄의 도메인 여섯 개가 모두 통신 BSS/OSS 영역입니다.[1] SK AX는 오래전부터 통신 BSS·과금 솔루션을 만들어 왔습니다.[7]",
+   "how_far": "경험이 없다면 위 업무 줄의 '실제로는'을 따라 주문 → 개통 → 과금 흐름을 그림 한 장으로 설명할 수 있는 정도가 최소선입니다. {추론}",
+   "refs": [
+    1,
+    7
+   ],
+   "study": [
+    "tmf-etom",
+    "skax-mi-bss"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "TM Forum(SID, eTOM, Open API, ODA 등) 통신 표준에 대한 이해가 높으신 분",
+   "short": "NOVA가 따르는 통신 업계 공통 설계도라서 — 업무 흐름(eTOM)·데이터(SID)·API(Open API)·구조(ODA).",
+   "why": "같은 조직의 기획 공고가 TM Forum 표준 기반 클라우드 네이티브 구조를 도입한다고 적었습니다.[3] SK텔레콤은 TM 포럼 행사에서 표준을 자율 네트워크의 필수 전제로 내세웠습니다.[5]",
+   "actually": {
+    "items": [
+     "**eTOM** — 통신 사업을 굴리는 업무 흐름을 층층이 나눈 업계 공통 지도.[12]",
+     "**SID** — 회사 전체가 같은 데이터를 같은 뜻으로 쓰게 하는 공통 정보 모델.[13]",
+     "**Open API** — 주문(TMF622)·서비스 주문(TMF641)·자원 주문(TMF652)·카탈로그(TMF620)·당사자(TMF632)·청구서(TMF678) 같은 표준 REST API.[11][14][15][16]",
+     "**ODA** — 위 자산을 다시 묶어 부품(컴포넌트)으로 나누고 부품끼리 Open API로 잇는 클라우드 네이티브 구조.[13]"
+    ]
+   },
+   "how_far": "표준 문서를 외울 필요는 없습니다. **맡은 도메인의 표준 API 하나**(예: 주문이면 TMF622)의 자원 모양과 상태를 읽어 본 정도면 면접에서 말할 거리가 됩니다. {추론}",
+   "refs": [
+    3,
+    5,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "study": [
+    "tmf-oda",
+    "tmf-etom",
+    "tmf622"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "REST API 설계·개발 및 시스템 간 연계 경험이 있으신 분",
+   "short": "도메인끼리 API로만 말하는 구조라, API 모양을 잘못 정하면 여러 팀이 같이 고쳐야 해서.",
+   "why": "SK AX 보고서는 차세대 BSS를 API·데이터 중심으로 테스트하라고 했고, Verizon 사례에서 Open API 기반 자동화를 들었습니다.[8] Spec의 세 요소 중 하나가 API입니다.[1]",
+   "how_far": "자원 이름·상태 코드·오류 응답·버전 관리를 일관되게 정하고, 비동기 처리(주문 접수 후 나중에 결과 알림)를 설계해 본 경험이면 됩니다.[11] {추론}",
+   "refs": [
+    1,
+    8,
+    11
+   ],
+   "study": [
+    "http-basic",
+    "tmf622"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "생성형 AI(LLM, RAG, AI Agent, MCP 등)를 개발 업무에 적용해 본 경험 또는 Spec 기반 개발(SDD) 경험이 있으신 분",
+   "short": "요건은 '관심'이지만, 실제로 에이전트에게 일을 시켜 본 사람은 첫날부터 SDD 흐름에 바로 낄 수 있어서.",
+   "why": "NOVA는 SDD를 공식 방법론으로 쓰고 AI 에이전트를 전 과정에 적용합니다.[2] 자격요건의 '관심과 학습 의지'보다 한 단계 위를 우대로 둔 것입니다.[1]",
+   "how_far": "RAG(문서를 찾아 붙여 답하게 하는 방식)나 MCP 서버를 직접 만든 경험까지는 아니어도, Spec → 에이전트 구현 → 테스트로 거르기를 한 번 돌려 본 결과물이 있으면 좋습니다. {추론}",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "spec-kit",
+    "mcp-docs",
+    "ibm-sdd"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "차세대(레거시 전환) 프로젝트에서 As-Is 분석 및 To-Be 전환 설계 경험이 있으신 분",
+   "short": "업무 줄의 '레거시 분석·테이블 매핑'을 이미 해 본 사람은 이관 함정(코드값·빈 값·이력)을 미리 알아서.",
+   "why": "업무에 As-Is 분석과 To-Be 전환 설계·데이터 매핑이 그대로 있습니다.[1] 기획 공고도 운영 전환을 맡을 일로 적었습니다.[3]",
+   "how_far": "금융·공공 등 다른 업종의 차세대 경험도 같은 근육입니다 — 매핑표 작성, 이관 리허설, 건수·합계 대조. {추론}",
+   "refs": [
+    1,
+    3
+   ],
+   "study": [
+    "legacy-book",
+    "fowler-strangler"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AWS, Kubernetes, Docker 등 클라우드·컨테이너 환경 경험이 있으신 분",
+   "short": "새 시스템을 클라우드 네이티브 구조로 짓기 때문에 — 내 API가 컨테이너로 떠서 돈다.",
+   "why": "기획 공고가 TM Forum 표준 기반 **클라우드 네이티브 아키텍처** 도입을 적었고[3], ODA도 클라우드 네이티브 IT·망을 위한 구조입니다.[13]",
+   "how_far": "클러스터를 짓는 건 인프라 조직 몫일 가능성이 큽니다. {추론} 응용개발자는 내 서비스를 이미지로 만들고, 설정·로그·헬스체크를 컨테이너 환경에 맞추는 정도면 됩니다. {추론}",
+   "refs": [
+    3,
+    13
+   ],
+   "study": [
+    "docker",
+    "kubernetes"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "외국어 능력으로 글로벌 커뮤니케이션에 능하신 분",
+   "short": "표준 문서가 영어이고, SK텔레콤이 해외 통신사·빅테크와 BSS 공동 작업을 하고 있어서.",
+   "why": "SK텔레콤은 AWS·도이치텔레콤·텔레포니카 등과 BSS AI 에이전트 공동 프로젝트를 이끌어 결과를 TM 포럼 행사에서 공개했습니다.[4] TM Forum 표준 문서와 API 명세는 영어입니다.[11] {추론}",
+   "how_far": "회화보다 **영어 표준 문서를 읽고 정확히 옮기는 힘**이 먼저 쓰입니다. {추론}",
+   "refs": [
+    4,
+    11
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "동료와 기꺼이 지식을 나누고, 도움을 주고받는 것을 즐기는 분",
+   "short": "도메인 여러 개가 한 팀으로 오래 가는 프로젝트라, 아는 걸 나누는 사람이 팀을 빨리 키운다.",
+   "why": "2029년 오픈까지 여러 도메인이 한 팀으로 움직입니다.[2] 업무 줄에도 AI 개발 표준의 '확산'이 들어 있습니다.[1]",
+   "refs": [
+    1,
+    2
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "밝고 긍정적인 에너지로 팀 분위기를 함께 만들어가는 분",
+   "short": "긴 프로젝트라 막히는 날이 많아서 — 분위기가 무너지면 문제를 늦게 말하게 된다.",
+   "why": "2029년 오픈을 목표로 도메인 여러 팀이 한 팀으로 움직이는 긴 프로젝트입니다.[2] 분위기와 결함 보고의 관계는 판단입니다. {추론}",
+   "refs": [
+    2
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI와 함께 일하는 새로운 개발 방식에 호기심을 갖고 먼저 시도해보는 분",
+   "short": "방식 자체가 아직 다듬어지는 중이라, 먼저 써 보고 무엇이 되고 안 되는지 알려 주는 사람이 필요해서.",
+   "why": "공고는 NOVA의 AI 개발 방식을 '함께 고도화'한다고 적었습니다.[1] SK AX도 AI 개발에서 무엇을 먼저 정리해야 하는지를 지금 다듬어 공개하고 있습니다.[9]",
+   "refs": [
+    1,
+    9
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "통신 업무를 깊이 이해하려 노력하고, 맡은 기능을 끝까지 책임지는 분",
+   "short": "통신 규칙을 깊이 알고 맡은 기능을 오픈 뒤까지 책임지는 사람이 필요해서.",
+   "why": "업무 줄의 도메인이 모두 통신 업무이고, 공고는 기능 하나를 요구사항부터 검증까지 맡긴다고 적었습니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "대형 프로젝트의 일원으로 성장하며 \"도메인 + AI\" 역량을 갖춘 양손잡이 개발자로 커리어를 키우고 싶은 분",
+   "short": "AI가 코드를 대신 써 줄수록 '무엇이 맞는 요금·주문인가'를 아는 도메인 지식이 개발자의 몫으로 남아서.",
+   "why": "SK AX는 AI 개발의 성패가 AI에게 무엇을 만들지 정확히 알려 주는 데 있다고 봅니다.[9] 그 '무엇'은 통신 업무 규칙입니다.[1] {추론}",
+   "refs": [
+    1,
+    9
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "요금·주문 규칙처럼 경우의 수가 많은 업무를 표로 정리하는 게 즐거운 사람",
+   "AI 코딩 도구를 업무에 제대로 써 보고 싶은 사람 — 공식 방법론인 곳은 드물다[2]",
+   "대형 차세대 프로젝트를 오픈까지 한 번 끝내 보고 싶은 사람[2]",
+   "통신이라는 큰 도메인을 깊게 배우고 싶은 사람[1]"
+  ],
+  "hard": [
+   "2029년 오픈까지 긴 호흡이다 — 빠른 출시·실험을 원하면 답답할 수 있다[2] {추론}",
+   "옛 시스템 분석·매핑·이관 검증처럼 눈에 안 띄는 일이 많다[1]",
+   "SDD는 업계에서도 아직 초기 방식이라 절차가 바뀔 수 있다[31] {추론}",
+   "고객사(SK텔레콤) 본사 쪽 근무라 SK AX 본사 문화와 거리가 있을 수 있다[2][5] {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "월 중간에 요금제를 바꾼 고객의 요금을 어떻게 계산하겠어요? 반올림은요?",
+   "a": "Billing 도메인의 기본 — 일할 계산과 돈 계산의 정확성.[29]"
+  },
+  {
+   "q": "상품 주문 하나가 서비스·자원 주문으로 쪼개지다 중간에 실패하면 어떻게 처리하나요?",
+   "a": "Service/Resource Order 오케스트레이션의 핵심 — 순서·되돌리기·재시도.[14][15]"
+  },
+  {
+   "q": "옛 테이블을 새 테이블로 옮긴 뒤 같다는 걸 어떻게 증명하겠어요?",
+   "a": "As-Is → To-Be 매핑 업무 그대로 — 건수·합계·규칙별 대조.[1]"
+  },
+  {
+   "q": "AI 에이전트에게 API 하나를 만들게 할 때 Spec에 무엇을 적겠어요? 결과가 틀렸는지는 어떻게 알죠?",
+   "a": "SDD가 공식 방법론인 프로젝트라 가장 먼저 볼 부분.[2][10]"
+  },
+  {
+   "q": "요금이 바뀌었을 때 카탈로그를 덮어쓰면 안 되는 이유는?",
+   "a": "EPC의 버전 관리 — 지난 청구서를 지난 규칙으로 다시 계산해야 한다.[14] {추론}"
+  },
+  {
+   "q": "TM Forum Open API 중 하나를 골라 자원 모양과 상태를 설명해 보세요.",
+   "a": "우대사항의 TM Forum 이해를 확인하는 질문.[11]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "잡코리아 · SK㈜ AX — AI 기반 차세대 통신 BSS/OSS(NOVA) 응용개발 분야 전문가 영입",
+   "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50340705",
+   "kind": "posting",
+   "date": "2026-11-04 ~ 2026-12-25",
+   "note": "업무·요건·우대·성향·공통 요건(경력 3년 이상), 근무지 서울 을지로, 접수는 회사 채용 홈페이지"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · [SK inc.(AX)] AI 기반 차세대 통신 BSS/OSS(NOVA) 응용개발 분야 전문가",
+   "url": "https://www.wanted.co.kr/wd/396834",
+   "kind": "posting",
+   "date": "마감 2026-12-25",
+   "note": "포지션 상세의 팀 소개(NOVA개발1/2팀, 2029년 오픈 목표, 도메인 8개, SDD 공식 방법론·AI Leading CoE), 근무지역 필드 '을지로 65', 전형(서류 → SKCT → 면접 2회 → 채용검진/처우협의)"
+  },
+  {
+   "n": 3,
+   "title": "원티드 · [SK inc.(AX)] 통신 BSS 차세대 비즈니스 기획 분야 전문가",
+   "url": "https://www.wanted.co.kr/wd/396837",
+   "kind": "posting",
+   "note": "같은 차세대 BSS 전환 조직의 기획 자리 — 과금/청구·고객/상품·주문/개통/상담·정산/수납, BRD·FRD·BPMN, 카탈로그 표준화, 오더-개통-과금 E2E, SIT/UAT, TM Forum 기반 클라우드 네이티브, 경력 5년 이상"
+  },
+  {
+   "n": 4,
+   "title": "뉴스1 · \"핵심 통신서비스도 AI로 탈바꿈\"…SKT가 내건 자신감",
+   "url": "https://www.news1.kr/it-science/cc-newmedia/6224351",
+   "kind": "news",
+   "date": "2026-07-13",
+   "note": "SKT가 AWS·도이치텔레콤·텔레포니카 등과 BSS AI 에이전트 프레임워크 공동 프로젝트 — 고객 데이터 보호·권한 기반 통제·인간 감독 절차. NOVA 이름은 없음"
+  },
+  {
+   "n": 5,
+   "title": "SK텔레콤 뉴스룸 · DTW 이그나이트 2026에서 AI 자율 네트워크 청사진 공개",
+   "url": "https://news.sktelecom.com/227036",
+   "kind": "company",
+   "date": "2026-06-25",
+   "note": "고객사 SKT 발표 — 4대 과제(프로세스 재정의·데이터 온톨로지·차세대 OSS 전환·AI 에이전트 표준화), TM 포럼 자율 네트워크 4단계 목표. 뉴스룸 하단 주소 '서울특별시 중구 을지로65(을지로2가) SK T-타워'"
+  },
+  {
+   "n": 6,
+   "title": "디지털데일리 · 구글 출신 AI 전문가 \"SKT, 통신사 AX 청사진 제시\"",
+   "url": "https://m.ddaily.co.kr/page/view/2026071516052955091",
+   "kind": "news",
+   "date": "2026-07-15",
+   "note": "MWC26에서 정재헌 대표가 영업 IT·회선관리·과금·네트워크 운영 전산을 AI 중심으로 개편한다고 발표한 것을 전함. 평가 부분은 외부 인사의 의견"
+  },
+  {
+   "n": 7,
+   "title": "SK AX · 통신/미디어 솔루션",
+   "url": "https://www.skax.co.kr/telecom",
+   "kind": "company",
+   "note": "BSS(고객·상품·파트너·고객센터·청구·납부·미납), 과금 솔루션 TOMARS(통합 중재·실시간 과금·배치 일정), Oracle DB 운영 특화 솔루션. 고객사·수치 없음"
+  },
+  {
+   "n": 8,
+   "title": "SK AX 인사이트 · 글로벌 통신사 사례로 본 차세대 BSS 테스트 자동화 전략 (8월 MI리포트)",
+   "url": "https://www.skax.co.kr/insight/trend/3830/",
+   "kind": "company",
+   "date": "2026-08-20",
+   "note": "수천만 가입자·다수 연계, AT&T·Verizon 사례, API·데이터 중심 재설계, 우선순위 테스트 데이터 → 시나리오 생성 → 실행·결함관리, 상품/카탈로그·주문·빌링 먼저 — SK AX의 분석·제언이며 SKT 결정은 아님"
+  },
+  {
+   "n": 9,
+   "title": "SK AX 뉴스룸 · [AX Now] AI가 코드를 빨리 작성해도 개발이 늦어지는 이유는 무엇일까요?",
+   "url": "https://www.skax.co.kr/company/news-room/ax-now-ai가-코드를-빨리-작성해도-개발이-늦어지는-이유는/",
+   "kind": "company",
+   "date": "2026-11-19",
+   "note": "설계 산출물 4종(태스크 정의서·화면 설계서·개발 지침서·룰셋), C사 플랫폼 구축에서 생산성 30% 이상(그 프로젝트 값). SDD·NOVA 언급 없음. 글 끝에 회사 자료를 바탕으로 AI가 작성했다고 밝힘"
+  },
+  {
+   "n": 10,
+   "title": "GitHub Spec Kit (공식 문서)",
+   "url": "https://github.github.com/spec-kit/",
+   "kind": "reference",
+   "note": "SDD 공개 도구 — constitution → specify → plan → tasks → 구현"
+  },
+  {
+   "n": 11,
+   "title": "TM Forum · Product Ordering Management API (TMF622) v5",
+   "url": "https://tmforum.org/oda/open-apis/directory/product-ordering-management-api-TMF622/v5.0.0",
+   "kind": "reference",
+   "note": "고객 도메인의 비동기 REST API, 카탈로그의 상품 오퍼링으로 주문을 만든다"
+  },
+  {
+   "n": 12,
+   "title": "TM Forum · Process Framework (eTOM)",
+   "url": "https://www.tmforum.org/process-framework-etom",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "TM Forum · Evolution of Frameworx (ODA·SID·eTOM·TAM)",
+   "url": "https://tmforum.org/download-frameworx",
+   "kind": "reference",
+   "note": "ODA는 Frameworx 자산을 다시 묶고 클라우드 네이티브 IT·망을 위한 요소를 더한 것, 부품 단위·Open API로 노출"
+  },
+  {
+   "n": 14,
+   "title": "ServiceNow 문서 · TMF APIs for TMT",
+   "url": "https://www.servicenow.com/docs/r/telecom-media-technology/tmt-api-reference.html",
+   "kind": "reference",
+   "note": "TMF620(카탈로그·오퍼링·스펙), TMF632(당사자 — 소비자·계정·연락처), TMF641 등 구현 문서"
+  },
+  {
+   "n": 15,
+   "title": "ETSI OpenSlice · TMF API",
+   "url": "https://osl.etsi.org/hypo/documentation/architecture/tmf-api/",
+   "kind": "reference",
+   "note": "서비스 카탈로그의 서비스를 TMF641로 주문, TMF652 자원 주문"
+  },
+  {
+   "n": 16,
+   "title": "TM Forum · Open API Table (Historic)",
+   "url": "https://projects.tmforum.org/wiki/display/API/Open+API+Table+-+Historic",
+   "kind": "reference",
+   "note": "TMF678 Customer Bill — 고객에게 만든 청구서를 찾고 읽는 API, 그 밖의 API 번호와 판"
+  },
+  {
+   "n": 17,
+   "title": "Martin Fowler · Strangler Fig Application",
+   "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Oracle Database 19c · SQL Tuning Guide",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/tgsql/",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Model Context Protocol (공식 사이트)",
+   "url": "https://modelcontextprotocol.io/",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Claude Code 문서 · 개요",
+   "url": "https://code.claude.com/docs/en/overview",
+   "kind": "reference",
+   "note": "프로젝트 지침 파일(CLAUDE.md)·MCP 연결"
+  },
+  {
+   "n": 21,
+   "title": "ZDNet Korea · 올해 상반기 대기업 SI 톱4 '연봉킹' 누구?",
+   "url": "https://zdnet.co.kr/view/?no=20250816174726",
+   "kind": "news",
+   "date": "2025-08-16",
+   "note": "4사 2025년 반기보고서 1인 평균 급여"
+  },
+  {
+   "n": 22,
+   "title": "원티드 · 에스케이 에이엑스(SK AX) 기업정보",
+   "url": "https://www.wanted.co.kr/company/25949",
+   "kind": "reference",
+   "note": "평균 연봉·국민연금 가입자 수(집계값)"
+  },
+  {
+   "n": 23,
+   "title": "SK㈜ · Careers Policy(복리후생)",
+   "url": "https://sk.co.kr/en/careers/policy.jsp",
+   "kind": "company",
+   "note": "항목만 있고 금액·조건·작성일 없음"
+  },
+  {
+   "n": 24,
+   "title": "SK Careers · Culture",
+   "url": "https://www.skcareers.com/Culture",
+   "kind": "company",
+   "note": "그룹 채용 사이트의 근무 제도 소개 — 금액·연도 없음"
+  },
+  {
+   "n": 25,
+   "title": "SK AX · 사업장 안내",
+   "url": "https://www.skax.co.kr/company/office",
+   "kind": "company",
+   "note": "본사는 분당 SK u-타워"
+  },
+  {
+   "n": 28,
+   "title": "SK텔레콤 뉴스룸 · AI 전환 고속도로 뚫는다… 'AX 혁신 2.0' 본격화",
+   "url": "https://news.sktelecom.com/232606",
+   "kind": "company",
+   "date": "2026-11-01",
+   "note": "고객사 SKT — 구성원 4,000명 이상이 AI 에이전트를 직접 만들었고 정기적으로 쓰는 사내 에이전트 1,500개"
+  },
+  {
+   "n": 29,
+   "title": "Python 공식 문서 · decimal",
+   "url": "https://docs.python.org/ko/3/library/decimal.html",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "IBM Think · 사양 기반 개발(Spec-driven development)",
+   "url": "https://www.ibm.com/kr-ko/think/topics/spec-driven-development",
+   "kind": "reference",
+   "note": "개발 전 상세 사양을 쓰고 합의하는 방법론, AI 코드 생성의 비결정성에 대한 한계도 적음"
+  }
+ ],
+ "caveat": "NOVA의 내부 구조(도메인 경계·상태 설계·요금 규칙·SDD 도구와 절차)는 공개되지 않았습니다. 회사가 직접 말한 것은 공고의 팀 소개와 SK AX의 통신 솔루션·BSS 보고서·AI 개발 글, 고객사 SK텔레콤의 발표뿐이고, SK AX의 NOVA·SDD 발표 영상은 찾지 못했습니다. 그래서 각 도메인의 '실제로는'은 TM Forum 표준과 공개 구현 문서로 '보통 이런 일'을 보였고 대부분 {추론}입니다.",
+ "resources": [
+  {
+   "id": "spec-kit",
+   "title": "GitHub Spec Kit",
+   "by": "GitHub · 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://github.github.com/spec-kit/",
+   "why": "업무 'SDD로 Spec 정의 → 코드 생성·검증'을 직접 해 보는 가장 빠른 길. specify → plan → tasks 흐름을 작은 기능 하나로 돌려 본다."
+  },
+  {
+   "id": "ibm-sdd",
+   "title": "사양 기반 개발(Spec-driven development)이란?",
+   "by": "IBM Think(한국어)",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.ibm.com/kr-ko/think/topics/spec-driven-development",
+   "why": "SDD가 무엇이고 어디서 한계가 있는지 한국어로 짧게. 면접에서 장단점을 말할 거리."
+  },
+  {
+   "id": "skax-axnow",
+   "title": "[AX Now] AI가 코드를 빨리 작성해도 개발이 늦어지는 이유는 무엇일까요?",
+   "by": "SK AX 뉴스룸 · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.skax.co.kr/company/news-room/ax-now-ai가-코드를-빨리-작성해도-개발이-늦어지는-이유는/",
+   "why": "이 회사가 AI 개발 전에 무엇(태스크 정의서·화면 설계서·개발 지침서·룰셋)을 먼저 만드는지. 지원 전에 꼭 읽을 회사 글."
+  },
+  {
+   "id": "skax-mi-bss",
+   "title": "글로벌 통신사 사례로 본 차세대 BSS 테스트 자동화 전략",
+   "by": "SK AX 인사이트 · 2026-08",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.skax.co.kr/insight/trend/3830/",
+   "why": "차세대 BSS를 회사가 어떻게 보는지 — API·데이터 중심 테스트, 상품·주문·빌링 우선. 통합 테스트 업무의 방향."
+  },
+  {
+   "id": "tmf-oda",
+   "title": "Evolution of Frameworx (ODA·SID·eTOM)",
+   "by": "TM Forum",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://tmforum.org/download-frameworx",
+   "why": "우대 'TM Forum(SID·eTOM·Open API·ODA)' 네 낱말이 서로 어떻게 묶이는지 한 번에."
+  },
+  {
+   "id": "tmf-etom",
+   "title": "Process Framework (eTOM)",
+   "by": "TM Forum",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.tmforum.org/process-framework-etom",
+   "why": "주문·개통·과금이 통신 업무 지도 어디에 있는지. 도메인 경험이 없을 때 전체 그림 잡기."
+  },
+  {
+   "id": "tmf622",
+   "title": "Product Ordering Management API (TMF622)",
+   "by": "TM Forum",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://tmforum.org/oda/open-apis/directory/product-ordering-management-api-TMF622/v5.0.0",
+   "why": "업무 'Product Order'의 표준 API. 주문·항목·상태 모양을 읽고 내 API 설계와 견줘 본다."
+  },
+  {
+   "id": "claude-code-docs",
+   "title": "Claude Code 문서",
+   "by": "Anthropic",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://code.claude.com/docs/en/overview",
+   "why": "공고가 이름을 든 도구. 프로젝트 지침 파일·MCP 연결을 직접 써 보며 'AI 개발 표준'이 무엇을 다루는지 감 잡기."
+  },
+  {
+   "id": "mcp-docs",
+   "title": "Model Context Protocol",
+   "by": "공식 사이트",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://modelcontextprotocol.io/",
+   "why": "업무 'AI 개발 표준(MCP)'과 우대 'MCP 적용 경험'. 작은 MCP 서버 하나를 만들어 에이전트에 붙여 본다."
+  },
+  {
+   "id": "fowler-strangler",
+   "title": "Strangler Fig Application",
+   "by": "Martin Fowler",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+   "why": "레거시를 한 번에 갈아엎지 않고 조금씩 바꾸는 방법. As-Is → To-Be 전환 설계를 말할 때의 기본 낱말."
+  },
+  {
+   "id": "legacy-book",
+   "title": "레거시 코드 활용 전략",
+   "by": "마이클 C. 페더스",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A0%88%EA%B1%B0%EC%8B%9C%20%EC%BD%94%EB%93%9C%20%ED%99%9C%EC%9A%A9%20%EC%A0%84%EB%9E%B5",
+   "why": "테스트 없는 옛 코드를 안전하게 읽고 바꾸는 법. As-Is 분석에서 '이 코드가 실제로 뭘 하나'를 확인하는 기술."
+  },
+  {
+   "id": "ddd-core",
+   "title": "도메인 주도 설계 핵심",
+   "by": "반 버논",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8F%84%EB%A9%94%EC%9D%B8%20%EC%A3%BC%EB%8F%84%20%EC%84%A4%EA%B3%84%20%ED%95%B5%EC%8B%AC",
+   "why": "주문·카탈로그·과금·당사자처럼 도메인을 나누고 경계를 정하는 법을 얇은 책으로. 도메인별 팀 구조를 이해하는 바탕."
+  },
+  {
+   "id": "sql-tuning",
+   "title": "친절한 SQL 튜닝",
+   "by": "조시형",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%B9%9C%EC%A0%88%ED%95%9C%20SQL%20%ED%8A%9C%EB%8B%9D",
+   "why": "요건 'SQL 작성·분석 및 성능 개선'. 인덱스·조인·실행계획을 오라클 기준 그림으로."
+  },
+  {
+   "id": "oracle-tuning",
+   "title": "Oracle Database 19c SQL Tuning Guide",
+   "by": "Oracle 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/tgsql/",
+   "why": "실행계획 보기와 옵티마이저 동작의 원문. 책으로 감을 잡은 뒤 필요한 장만."
+  },
+  {
+   "id": "py-decimal",
+   "title": "decimal — 십진 고정소수점 및 부동소수점 산술",
+   "by": "Python 공식 문서(한국어)",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.python.org/ko/3/library/decimal.html",
+   "why": "Billing의 돈 계산을 float로 하지 않는 이유와 반올림 규칙. Java에서는 BigDecimal이 같은 역할이다."
+  },
+  {
+   "id": "jpa-basic",
+   "title": "자바 ORM 표준 JPA 프로그래밍 — 기본편",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/jpa-basic",
+   "why": "요건 'Java, SQL 이해' — Java 코드가 실제로 어떤 SQL을 내보내는지 보며 익히기."
+  },
+  {
+   "id": "spring-mvc-1",
+   "title": "스프링 MVC 1편",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/spring-mvc-1",
+   "why": "업무 'Java/Spring 기반 API 개발'과 요건 '웹 애플리케이션 구조' — 오간 HTTP로 API를 이해한다."
+  },
+  {
+   "id": "spring-db-1",
+   "title": "스프링 DB 1편",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/spring-db-1",
+   "why": "도메인 API의 트랜잭션·커넥션을 로그로 확인. 도메인 간 연계에서 실패를 다룰 바탕."
+  },
+  {
+   "id": "practical-testing",
+   "title": "Practical Testing — 실용적인 테스트 가이드",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/practical-testing",
+   "why": "SDD의 '검증'과 업무 '통합 테스트' — Spec 조건을 테스트로 옮기는 연습."
+  },
+  {
+   "id": "http-basic",
+   "title": "모든 개발자를 위한 HTTP 웹 기본 지식",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/http-basic",
+   "why": "우대 'REST API 설계' — 메서드·상태 코드·헤더를 와이어에 오간 원문으로."
+  },
+  {
+   "id": "docker",
+   "title": "개발자를 위한 도커",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "우대 '클라우드·컨테이너' — 내 Spring 서비스를 이미지로 만들어 띄우기."
+  },
+  {
+   "id": "kubernetes",
+   "title": "쿠버네티스 입문",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "우대 'Kubernetes' — 배포한 서비스가 왜 안 뜨는지(Pending·CrashLoopBackOff) 읽는 법."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "통신 도메인 지도 그리기",
+   "time": "1~2주",
+   "goal": "주문 → 개통 → 과금 → 정산이 어떤 순서로 무엇을 주고받는지 그림 한 장으로 설명할 수 있다.",
+   "resources": [
+    "tmf-etom",
+    "tmf-oda",
+    "skax-mi-bss"
+   ],
+   "task": "가상의 통신사 '하나모바일'을 정해, 고객이 5G 요금제에 가입해서 첫 청구서를 받기까지를 도메인 6개(Product Order·Service/Resource Order·EPC·Billing·Partner·Party) 상자와 화살표로 그리고 화살표마다 오가는 데이터를 적는다."
+  },
+  {
+   "title": "Spring으로 도메인 API 만들기",
+   "time": "2~4주",
+   "goal": "주문·카탈로그 API를 만들고 트랜잭션·실패 처리·테스트를 붙일 수 있다.",
+   "resources": [
+    "spring-mvc-1",
+    "spring-db-1",
+    "jpa-basic",
+    "http-basic",
+    "tmf622"
+   ],
+   "task": "TMF622 모양을 참고해 '상품 주문 접수 → 상태 조회' API와, 요금제 2개·부가서비스 3개짜리 카탈로그 API를 만든다. 같이 못 쓰는 부가서비스를 주문하면 거절되는 테스트를 쓴다."
+  },
+  {
+   "title": "SDD로 한 기능 끝내기",
+   "time": "1~2주",
+   "goal": "Spec을 먼저 쓰고 코딩 에이전트로 구현한 뒤 테스트로 거를 수 있다.",
+   "resources": [
+    "spec-kit",
+    "ibm-sdd",
+    "skax-axnow",
+    "claude-code-docs",
+    "practical-testing"
+   ],
+   "task": "'월 중간 요금제 변경 일할 계산' 기능을 Spec Kit 흐름(원칙 → specify → plan → tasks)으로 Spec부터 쓰고 에이전트에게 구현시킨다. 월말·윤년·당일 변경 경계 테스트를 직접 써서 에이전트 코드가 통과하는지 보고, 틀린 곳과 고친 방법을 기록한다."
+  },
+  {
+   "title": "레거시 매핑과 SQL",
+   "time": "2~3주",
+   "goal": "옛 표를 새 표로 옮기는 매핑표와 이관 SQL을 쓰고, 같다는 걸 숫자로 보일 수 있다.",
+   "resources": [
+    "legacy-book",
+    "fowler-strangler",
+    "sql-tuning",
+    "oracle-tuning"
+   ],
+   "task": "가상 옛 고객 표 1만 건(코드값·문자열 날짜·빈 값 섞기)을 새 당사자 표로 옮기는 매핑표와 SQL을 쓰고, 건수·규칙별 건수 대조 쿼리를 만든다. 느린 대조 쿼리 하나를 실행계획을 보고 고친다."
+  },
+  {
+   "title": "AI 개발 표준과 배포 (선택)",
+   "time": "계속",
+   "goal": "팀이 같이 쓸 규칙 파일과 MCP 연결을 만들고, 서비스를 컨테이너로 띄운다.",
+   "resources": [
+    "mcp-docs",
+    "claude-code-docs",
+    "docker",
+    "kubernetes"
+   ],
+   "task": "2단계의 카탈로그 정의를 읽어 주는 작은 MCP 서버를 만들어 코딩 에이전트에 붙이고, 'Spec → API 뼈대' 규칙 파일을 써서 다른 기능에 다시 써 본다. 서비스를 도커 이미지로 만들어 로컬 쿠버네티스에 띄운다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다(처우협의). SK AX 직원 1인 평균 급여는 **2025년 상반기 6개월에 7,300만원**(반기보고서), 집계 사이트 평균 연봉은 **6,082만원** — 기준이 달라 숫자가 다르다",
+  "rows": [
+   {
+    "label": "직원 1인 평균 급여 (6개월)",
+    "value": "7,300만원",
+    "amount": 7300,
+    "basis": "반기보고서 · 2025년 상반기",
+    "note": "1~6월 반년치다. 1년 연봉이 아니다. 전년 같은 기간 7,100만원 [21]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "6,082만원",
+    "amount": 6082,
+    "basis": "공공데이터 집계",
+    "note": "채용 사이트가 공공 자료로 계산한 값. 국민연금 가입자 3,901명 기준이며 계산 기간은 적혀 있지 않다 [22]"
+   },
+   {
+    "label": "삼성SDS 평균 (6개월)",
+    "value": "6,600만원",
+    "amount": 6600,
+    "peer": true,
+    "basis": "반기보고서 · 2025년 상반기",
+    "note": "같은 기사의 같은 기준 [21]"
+   },
+   {
+    "label": "LG CNS 평균 (6개월)",
+    "value": "6,500만원",
+    "amount": 6500,
+    "peer": true,
+    "basis": "반기보고서 · 2025년 상반기",
+    "note": "같은 기사의 같은 기준 [21]"
+   }
+  ],
+  "how": "이 자리는 **경력 3년 이상**이고 연봉은 서류 → SKCT → 면접 2회 뒤 '채용검진/처우협의' 단계에서 정한다 [2]. 위 평균은 신입부터 고참까지 섞인 회사 전체 값이라 이 자리의 제시액과 같지 않다 {추론}. 상반기 값에는 성과급이 들어간 해가 있어 두 배 하면 연봉이라고 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "재산 형성",
+    "detail": "저축 장려, 우리사주조합, 주택 구입·전세 자금 지원"
+   },
+   {
+    "name": "교육",
+    "detail": "본인 학자금, 자녀 학비 지원"
+   },
+   {
+    "name": "생활",
+    "detail": "경조사 지원, 휴양소, 여가·취미 활동 지원"
+   },
+   {
+    "name": "건강·노후",
+    "detail": "건강검진, 의료보험, 개인연금, 퇴직 관리 지원"
+   },
+   {
+    "name": "근무 방식",
+    "detail": "출퇴근 시간을 스스로 정하는 근무제, 그날의 근무 장소 선택"
+   },
+   {
+    "name": "성장",
+    "detail": "그룹 학습 플랫폼 mySUNI와 육성 프로그램"
+   }
+  ],
+  "note": "앞 네 줄은 SK㈜ 공식 채용 정책 페이지 [23], 뒤 두 줄은 SK 그룹 채용 사이트의 문화 소개다 [24]. 둘 다 금액·조건·작성 연도가 없고, 원티드 공고는 '홈페이지 참조'라고만 적었다 [2]. 고객사 본사에서 일하는 프로젝트라 근무 장소 선택 같은 제도가 그대로 적용되는지는 처우협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "SK T-타워 (SK텔레콤 본사)",
+  "address": "서울특별시 중구 을지로 65 (을지로2가)",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%A4%91%EA%B5%AC%20%EC%9D%84%EC%A7%80%EB%A1%9C%2065",
+  "near": "2호선 을지로입구역과 1호선 종각역 사이 {추론}",
+  "note": "원티드 공고의 근무지역 필드가 '을지로 65'이고 [2], SK텔레콤 뉴스룸 하단 주소가 같은 곳(SK T-타워)이다 [5]. SK AX 본사는 분당 SK u-타워라 [25], 이 주소는 고객사 건물의 프로젝트 근무지다 {추론}."
+ }
+}
