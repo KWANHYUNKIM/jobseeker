@@ -1,0 +1,936 @@
+{
+ "id": "toss-dba",
+ "company": "토스",
+ "role": "DBA",
+ "team": "Data Division · Data Platform Tribe · DBA 팀",
+ "jobs": [
+  "ats-toss:group:4071131003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "토스 앱 뒤에서 돈과 고객 정보를 담고 있는 **서비스 데이터베이스(주로 MySQL·MongoDB)** 가 멈추지 않고, 느려지지 않고, 지워져도 되살릴 수 있게 지키는 자리입니다.[1]",
+  "env": "데이터센터 두 곳에 MySQL 을 대칭으로 두고 서로 복제하며, 한쪽이 무너져도 연결만 옮기면 되게 만든 구조 위에서 일합니다.[2] 같은 그룹의 다른 DBA 팀은 AWS 관리형 DB 도 씁니다.[4]",
+  "oneline": "10년 차 이상을 찾는 운영 전문가 자리. **복제·장애 전환·복구·튜닝**이 일의 중심이고, 반복 작업은 Python 으로 없앱니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "안정적인 데이터베이스를 위해서 이중화 솔루션 운영, 성능 모니터링, 튜닝, 백업 및 복구 업무를 수행해요.",
+   "short": "DB 가 죽으면 몇 초 안에 다른 서버로 넘기고, 느려지면 원인을 찾고, 지워지면 되살리는 일.",
+   "why": "토스는 간편결제 제휴사가 늘면서 **무중단 운영**의 필요가 커졌다고 설명했습니다. 네트워크 공사처럼 데이터센터를 하나씩 내려야 하는 작업이 잦아졌고, 그때마다 DB 역할을 손으로 바꾸다가 복제가 깨진 적도 있었다고 합니다.[2] DB 가 멈추면 송금·결제가 멈추니, 이중화·감시·복구가 이 자리의 첫 줄입니다.",
+   "actually": {
+    "intro": "토스 DBA 가 SLASH 21 에서 공개한 구조입니다(2021년 기준, 지금은 바뀌었을 수 있습니다).[2]",
+    "items": [
+     "**이중화(HA, 한 대가 죽어도 서비스가 계속 도는 구성)** — 마스터 두 대(01 쓰기·02 대기)를 서로 복제하고, 오픈소스 장애 전환 도구 MMM 이 감시한다. 업데이트가 끊긴 도구라 필요한 부분은 직접 고쳐 쓴다.[2]",
+     "**감시 4가지** — 서버가 살아 있나(ping), MySQL 이 살아 있나, 복제 스레드가 도나, 복제 지연이 기준을 넘었나. 이상하면 대기 마스터로 넘기고 **서비스 IP** 를 옮겨 앱 연결이 따라오게 한다.[2]",
+     "**재해 복구(DR, 데이터센터 하나가 통째로 무너질 때)** — 두 데이터센터를 대칭으로 두고 01 끼리 양방향 복제. 복제가 돌고 도는 문제(binlog looping)를 **server_id 필터**로 막았다. 대기 쪽 서버는 모두 super_read_only(관리자도 못 쓰게 잠금)로 둔다.[2][8][9]",
+     "**계획된 전환** — 앱 연결을 L7 장비 뒤로 옮겨 두었다가 정한 시각에 한 번에 대기 데이터센터로 넘긴다. 앱은 연결이 한 번 끊겼다 다시 붙는 정도만 겪는다.[2]",
+     "**논리 장애(데이터를 잘못 지운 경우) 복구** — 데이터센터마다 일부러 늦게 따라오는 복제 서버(운영 쪽 1시간·대기 쪽 3시간 지연)와 당일 백업본을 둔다. 빨리 알수록 빨리 되살린다.[2][10]",
+     "**성능 감시·튜닝** — 느린 쿼리 기록(slow query log)을 묶어 세고, 실행계획(EXPLAIN)을 보고 인덱스·쿼리를 고친다.[14][15][16]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "마스터 장애 때 MMM 이 하는 일[2]",
+     "steps": [
+      "감지 · ping·mysql·복제 스레드·복제 지연",
+      "확인 · 대기 마스터가 받은 binlog 를 다 적용했나",
+      "승격 · 대기 마스터의 read_only 해제",
+      "연결 이동 · 서비스 IP 를 새 마스터로",
+      "사람 확인 · 원인 분석·옛 마스터 복구"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "examples": [
+    {
+     "title": "양방향 복제에 필터를 걸면 binlog 가 도는 걸 멈춘다(가상 서버 넷, 직접 돌린 출력)",
+     "body": "binlog(변경 기록)는 처음 만든 서버의 server_id 를 달고 돕니다. 받는 쪽이 '내 id 와 다르면 적용'만 보면 두 데이터센터 사이에서 같은 변경이 계속 돌 수 있습니다 — 발표가 말한 '이론적으로 무한 루핑'.[2] MySQL 은 채널마다 특정 server_id 를 무시하게 할 수 있습니다(IGNORE_SERVER_IDS).[8] 아래는 그 규칙을 흉내 낸 것입니다 — MySQL 동작 전체가 아닙니다.",
+     "lang": "python",
+     "code": "links = {  # 받는 서버: [(보내는 서버, 채널)]\n    \"dc1-01\": [(\"dc2-01\", \"DR\"), (\"dc1-02\", \"MM\")],\n    \"dc1-02\": [(\"dc1-01\", \"MM\")],\n    \"dc2-01\": [(\"dc1-01\", \"DR\"), (\"dc2-02\", \"MM\")],\n    \"dc2-02\": [(\"dc2-01\", \"MM\")],\n}\nsid = {\"dc1-01\": 101, \"dc1-02\": 102, \"dc2-01\": 1001, \"dc2-02\": 1002}\n\ndef run(ignore, hops=6):\n    applied, queue = [], [(\"dc1-01\", 101)]  # dc1-01 에서 생긴 변경 하나\n    for _ in range(hops):\n        nxt = []\n        for at, origin in queue:\n            for dst, srcs in links.items():\n                for src, ch in srcs:\n                    if src != at or origin == sid[dst]:\n                        continue\n                    if origin in ignore.get((dst, ch), set()):\n                        continue\n                    applied.append(dst); nxt.append((dst, origin))\n        queue = nxt\n    return applied\n\nprint(\"필터 없음:\", run({}))\nflt = {(\"dc2-01\", \"MM\"): {101, 102}, (\"dc1-01\", \"MM\"): {1001, 1002},   # 원격 DC 것은 MM 으로 안 받는다\n       (\"dc2-01\", \"DR\"): {1001, 1002}, (\"dc1-01\", \"DR\"): {101, 102}}   # 내 DC 것은 DR 로 안 받는다\nprint(\"필터 있음:\", run(flt))\n\n# 필터 없음: ['dc1-02', 'dc2-01', 'dc2-02', 'dc2-01', 'dc2-02', 'dc2-01', 'dc2-02']\n# 필터 있음: ['dc1-02', 'dc2-01', 'dc2-02']"
+    },
+    {
+     "title": "지연 복제로 '실수로 지운 데이터' 되살리기 — 시간표",
+     "body": "14:00 에 누군가 잘못된 DELETE 를 돌렸고 14:40 에 알았다고 하면, 1시간 늦게 따라오는 복제 서버는 아직 13:40 상태입니다. 그 서버의 복제를 **지운 문장 직전까지만** 진행시키고 멈추면(START REPLICA … UNTIL) 사라지기 전 행을 꺼내 운영 DB 에 다시 넣을 수 있습니다.[10] 15:00 을 넘기면 지연 복제에도 이미 반영돼 당일 백업본 + binlog 로 가야 해 더 오래 걸립니다 — 발표가 '빨리 공유될수록 빨리 복구'라고 한 이유입니다.[2]"
+    }
+   ],
+   "how_far": "구조(이중화 방식·지연 시간·백업 주기)는 팀이 정하고, 새로 온 DBA 는 그 구조로 **장애 때 실제로 넘기고, 되살리고, 느린 쿼리를 찾아 고치는 일**을 맡습니다 {추론}. 10년 차 자리라 'MMM 대신 무엇을 쓸까' 같은 구조 판단까지 기대됩니다. GitHub 이 만든 Orchestrator 처럼 복제 구조를 읽고 장애 전환을 하는 다른 도구도 알아 두면 비교해 말할 수 있습니다.[25] {추론}",
+   "refs": [
+    2,
+    8,
+    9,
+    10,
+    14,
+    15,
+    16,
+    25
+   ],
+   "study": [
+    "slash21-ha",
+    "real-mysql",
+    "mysql-repl",
+    "hpm"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "DB 물리 모델 배포 및 DB New Feature 테스트/적용 등 팀원들의 개발과 운영을 지원해요.",
+   "short": "개발팀이 만든 테이블·인덱스 변경을 서비스를 멈추지 않고 넣고, 새 버전·기능을 먼저 시험해 본다.",
+   "why": "'물리 모델'은 실제 DB 에 만들어지는 테이블·컬럼·인덱스·파티션입니다. 큰 테이블에 컬럼 하나 넣다가 잠금이 걸리면 서비스가 멈추기 때문에, 개발자가 설계한 것을 **언제·어떻게 넣을지**는 DBA 가 봅니다. 같은 그룹 토스플레이스 DBA 공고는 이 일을 DDL 작업의 수행 시간·잠금 가능성·호환성·실패 시 영향 검토, 작업 중단 기준과 복구 방안 마련으로 풀어 적었습니다.[4]",
+   "actually": {
+    "items": [
+     "**변경 검토** — 새 인덱스가 정말 쓰일지, 컬럼 타입이 맞는지, 이 변경이 잠금을 얼마나 거는지 본다.[4][12]",
+     "**온라인 DDL** — MySQL 8 은 많은 변경을 테이블을 막지 않고 하지만(INSTANT·INPLACE), 일부는 테이블을 통째로 다시 쓴다. 어떤 방식으로 도는지 먼저 확인한다.[12]",
+     "**도구로 넣기** — 테이블을 막지 않는 방식이 안 될 때 gh-ost 같은 도구로 그림자 테이블을 만들고 binlog 로 따라잡은 뒤 이름을 바꿔 끼운다.[13]",
+     "**새 기능 시험** — 새 버전·기능을 운영 전에 시험 서버에서 돌려 본다. 토스뱅크 DBA 공고는 'DBMS 신규 버전과 기능을 테스트하고 운영 환경에 적용'을 따로 한 줄로 적었다.[6]",
+     "**데이터 쪽 영향** — 스키마가 바뀌면 그 DB 를 읽는 데이터 파이프라인·분석 환경도 깨질 수 있어 변경 이력을 공유한다(토스플레이스 공고).[4] 이 DBA 팀도 Data Division 안에 있다.[1]"
+    ]
+   },
+   "how_far": "테이블 설계 자체는 개발팀 몫이고, DBA 는 **운영 DB 에 안전하게 들어가는지**를 판정하고 넣는 사람입니다.[4] 최소선은 'ALTER 한 줄이 어떤 방식으로 돌고 얼마나 걸리고 무엇을 막는지'를 실행 전에 말할 수 있는 것입니다 {추론}.",
+   "refs": [
+    1,
+    4,
+    6,
+    12,
+    13
+   ],
+   "study": [
+    "real-mysql",
+    "mysql-online-ddl",
+    "gh-ost"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "단순 반복 작업을 자동화하여 효율적으로 운영 할 수 있는 방안을 만들어요.",
+   "short": "계정 발급·변경 점검·백업 확인·느린 쿼리 보고처럼 매일 손으로 하던 일을 스크립트와 도구로 바꾼다.",
+   "why": "같은 그룹 DBA 공고 다섯 개(토스·토스증권·토스페이먼츠·토스플레이스·토스뱅크)가 모두 이 줄을 넣었습니다.[1][3][4][5][6] 토스페이먼츠·토스뱅크 공고의 팀원 한마디도 '반복적인 단순 작업 때문에 중요한 DBA 업무에 집중하기 어려웠다면'으로 시작합니다.[5][6] 사람 손을 거치는 작업이 실수를 부른다는 건 발표에서도 나옵니다 — 데이터센터 전환 때 손으로 역할을 바꾸다 복제가 깨졌습니다.[2]",
+   "actually": {
+    "intro": "토스 DBA 팀의 자동화 목록은 공개되지 않았습니다. 같은 그룹 토스플레이스 공고가 적은 것과 흔히 하는 것입니다.",
+    "items": [
+     "**운영 정보 조회 도구** — 어느 DB 가 어디 있고 어떤 상태인지 한 곳에서 본다.[4]",
+     "**변경 사전 검증을 CI 에** — 위험한 DDL(큰 테이블 잠금, 인덱스 없는 외래 키 등)을 배포 전에 자동으로 걸러 낸다.[4]",
+     "**셀프서비스** — 정해진 요청(계정·권한·조회용 복제본)을 개발팀이 직접 처리할 범위와 권한을 정해 도구로 연다.[4]",
+     "**느린 쿼리 보고** — slow query log 를 쿼리 모양별로 묶어 '가장 시간을 많이 쓴 쿼리'를 매일 보낸다(pt-query-digest 가 하는 일).[14][16]",
+     "**백업·복원 검증** — 백업이 됐는지만이 아니라 실제로 복원되는지 주기적으로 돌려 본다.[4][17]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "느린 쿼리를 모양별로 묶어 세기(가상 로그, 직접 돌린 출력)",
+     "body": "숫자·문자 값을 ? 로 바꾸면 '같은 쿼리'끼리 묶입니다. 한 번은 빠르지만 자주 도는 쿼리가 합계로는 가장 비쌀 수 있습니다. pt-query-digest 가 이 원리로 보고서를 만듭니다.[16]",
+     "lang": "python",
+     "code": "import re\nfrom collections import defaultdict\n\nlog = [\n    (\"SELECT * FROM transfer WHERE user_id = 1842 AND created_at > '2026-11-01'\", 2.31),\n    (\"SELECT * FROM transfer WHERE user_id = 77 AND created_at > '2026-11-20'\", 1.95),\n    (\"SELECT * FROM transfer WHERE user_id = 9001 AND created_at > '2026-10-01'\", 2.88),\n    (\"UPDATE account SET balance = balance - 5000 WHERE id = 12\", 0.41),\n    (\"SELECT count(*) FROM point_log WHERE status IN (1,2,3)\", 1.20),\n]\n\ndef fingerprint(sql):\n    sql = re.sub(r\"'[^']*'\", \"?\", sql)\n    sql = re.sub(r\"\\b\\d+\\b\", \"?\", sql)\n    return re.sub(r\"IN \\([?, ]+\\)\", \"IN (?+)\", sql)\n\nagg = defaultdict(lambda: [0, 0.0])\nfor sql, sec in log:\n    a = agg[fingerprint(sql)]; a[0] += 1; a[1] += sec\nfor fp, (n, total) in sorted(agg.items(), key=lambda x: -x[1][1]):\n    print(f\"{total:5.2f}s  {n}회  {fp}\")\n\n#  7.14s  3회  SELECT * FROM transfer WHERE user_id = ? AND created_at > ?\n#  1.20s  1회  SELECT count(*) FROM point_log WHERE status IN (?+)\n#  0.41s  1회  UPDATE account SET balance = balance - ? WHERE id = ?"
+    }
+   ],
+   "how_far": "'자동화'는 거창한 플랫폼이 아니어도 됩니다. 반복 작업 하나를 골라 **스크립트 → 실패 알림 → 다른 사람도 쓰는 도구**까지 끌고 간 경험이면 이력서에 쓸 거리가 됩니다 {추론}. 토스플레이스 공고는 도구를 누가 어떻게 썼는지, 실패에 어떻게 대응했는지까지 적어 달라고 합니다.[4]",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    14,
+    16,
+    17
+   ],
+   "study": [
+    "pt-query-digest",
+    "pymysql",
+    "dbre"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "DBA로서 10년 이상의 경험을 가지고 계시며, 특히 MySQL DB(MariaDB) 경험이 있으신 분이 필요해요.",
+   "short": "서비스 DB 의 중심이 MySQL 이라서. 10년은 큰 장애를 여러 번 직접 겪어 본 시간을 뜻한다.",
+   "why": "공고는 이 팀이 운영하는 주요 DBMS 를 **MySQL 과 MongoDB** 로 밝혔습니다.[1] 이중화·DR 구조도 MySQL 복제 위에 지어져 있습니다.[2] MariaDB 는 MySQL 에서 갈라져 나온 DB 라 같이 적혔습니다.",
+   "level": {
+    "basic": "설치·설정 파일·계정과 권한·백업과 복원·복제 한 쌍 구성",
+    "work": "InnoDB 구조(버퍼 풀·redo/undo·잠금)·복제(binlog·GTID·지연 복제)·장애 전환·실행계획·온라인 DDL·버전 업그레이드",
+    "team": "다중 데이터센터 양방향 복제·복제 필터·super_read_only 로 데이터 불일치 막기·오픈소스 장애 전환 도구를 직접 고쳐 쓰기[2]"
+   },
+   "actually": {
+    "items": [
+     "**10년 차에게 기대하는 것** — 같은 그룹 다른 회사 DBA 공고는 5년 이상을 요구한다(토스증권 MySQL·토스뱅크).[3][6] 이 공고는 10년이라 운영을 넘어 **구조를 정하고 이끄는** 쪽이다 {추론}.",
+     "**MySQL 과 MariaDB 의 차이** — 같은 뿌리지만 GTID(트랜잭션마다 붙는 전역 번호) 형식이 서로 다르고 호환되지 않는다. 둘이 섞인 환경에서는 복제·이전 때 이걸 따로 챙긴다.[11][23]",
+     "**발표에 나온 깊이** — 장애로 재시작한 서버가 복제가 멈춘 채 쓰기를 받으면 고칠 수 없는 불일치가 생긴다. 그래서 재시작하면 super_read_only 로 올라오게 하고, 장애 전환 도구가 그런 서버로는 넘기지 않고 기다리게 고쳤다 — **서비스가 잠깐 멈추는 쪽을 골라 데이터가 틀어지는 걸 막은** 판단이다.[2][9]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "넘겨도 되나 — 발표의 두 규칙을 코드로(가상, 직접 돌린 출력)",
+     "body": "발표에서 고친 장애 전환 판단을 단순하게 옮긴 것입니다.[2] 실제 MMM 코드가 아닙니다.",
+     "lang": "python",
+     "code": "def can_promote(c):\n    if not c[\"alive\"]:\n        return \"전환 불가: 후보도 죽음\"\n    if c[\"super_read_only\"]:\n        return \"대기: 후보가 super_read_only (복제가 멈춘 채 재시작했을 수 있음)\"\n    if c[\"lag_sec\"] > 0:\n        return f\"대기: 받은 binlog 를 다 적용할 때까지 ({c['lag_sec']}초 밀림)\"\n    return \"전환: read_only 해제 → 서비스 IP 이동\"\n\nprint(can_promote({\"alive\": True, \"super_read_only\": False, \"lag_sec\": 0}))\nprint(can_promote({\"alive\": True, \"super_read_only\": False, \"lag_sec\": 4}))\nprint(can_promote({\"alive\": True, \"super_read_only\": True, \"lag_sec\": 0}))\n\n# 전환: read_only 해제 → 서비스 IP 이동\n# 대기: 받은 binlog 를 다 적용할 때까지 (4초 밀림)\n# 대기: 후보가 super_read_only (복제가 멈춘 채 재시작했을 수 있음)"
+    }
+   ],
+   "how_far": "연차보다 **무엇을 직접 겪고 고쳤나**가 실제로 보는 것입니다 — 이력서 칸이 임팩트 있는 프로젝트와 수치를 요구합니다.[1] 연차가 모자라면 같은 그룹의 5년 이상 공고(토스증권·토스뱅크)가 더 맞을 수 있습니다.[3][6] {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    6,
+    9,
+    11,
+    23
+   ],
+   "study": [
+    "real-mysql",
+    "hpm",
+    "mysql-repl",
+    "slash21-ha"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "대용량 DB 운영 경험을 가지고 계시고 SQL 튜닝이 가능하신 분이 필요해요.",
+   "short": "테이블이 수억 행이면 인덱스 하나·쿼리 한 줄이 서비스 전체 속도를 바꾸기 때문.",
+   "why": "토스 서비스 DB 의 크기는 공개되지 않았습니다. 같은 그룹 DBA 공고 다섯 개가 모두 '대용량 DB 운영 + SQL 튜닝'을 필수로 적었고,[1][3][4][5][6] 토스증권 공고는 국내·해외 시장의 대규모 트랜잭션을 처리하는 고가용성 설계를 팀의 일로 소개했습니다.[3]",
+   "level": {
+    "basic": "EXPLAIN 읽기(type·key·rows)·복합 인덱스 순서·커버링 인덱스",
+    "work": "slow query log 분석·잠금 대기와 데드락 읽기·조인 순서·옵티마이저 통계·파티셔닝",
+    "team": "수억 행 테이블의 변경·보관(아카이빙)·커넥션과 앱의 DB 접근 방식까지 같이 보고 개발팀과 고치기[4]"
+   },
+   "actually": {
+    "items": [
+     "**찾기** — 느린 쿼리 기록과 감시 지표로 '가장 시간을 많이 쓰는 쿼리'를 고른다.[14][16]",
+     "**읽기** — EXPLAIN 으로 테이블을 처음부터 끝까지 읽는지(full scan), 인덱스를 타는지, 몇 행을 볼 거라 예상하는지 본다.[15]",
+     "**고치기** — 인덱스 추가·순서 변경, 쿼리 다시 쓰기, 한 번에 너무 많이 지우는 작업은 나눠 돌리기.",
+     "**같이 보기** — 인덱스·잠금·트랜잭션·커넥션과 애플리케이션의 DB 접근 방식(ORM 이 만든 쿼리 포함)을 함께 보고 제품팀과 개선안을 적용해 효과를 확인한다(토스플레이스 공고).[4]",
+     "**대용량에서만 생기는 일** — 인덱스 하나 만드는 데 몇 시간, 백업·복원에 몇 시간, 복제 지연이 쌓임. 그래서 변경과 복구에도 시간 계산이 붙는다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "복합 인덱스 하나로 '전부 읽기'가 '찾아 읽기'로(SQLite 로 직접 확인, 가상 5만 행)",
+     "body": "MySQL 이 아니라 SQLite 로 돌린 것이라 실행계획 표기가 다릅니다. 같은 조건(사용자 + 기간)에 (user_id, created_at) 인덱스를 만들면 SCAN 이 SEARCH 로 바뀝니다. MySQL EXPLAIN 에서는 type 이 ALL 에서 range 로 바뀌는 것으로 보입니다.[15]",
+     "lang": "python",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE transfer(id INTEGER PRIMARY KEY, user_id INT, created_at TEXT, amount INT)\")\ndb.executemany(\"INSERT INTO transfer(user_id, created_at, amount) VALUES (?,?,?)\",\n               [(i % 5000, f\"2026-11-{i % 28 + 1:02d}\", i) for i in range(50000)])\nq = \"SELECT * FROM transfer WHERE user_id = 1842 AND created_at > '2026-11-01'\"\nprint(\"전:\", [r[3] for r in db.execute(\"EXPLAIN QUERY PLAN \" + q)])\ndb.execute(\"CREATE INDEX ix_user_created ON transfer(user_id, created_at)\")\nprint(\"후:\", [r[3] for r in db.execute(\"EXPLAIN QUERY PLAN \" + q)])\n\n# 전: ['SCAN transfer']\n# 후: ['SEARCH transfer USING INDEX ix_user_created (user_id=? AND created_at>?)']"
+    }
+   ],
+   "how_far": "느린 쿼리를 **스스로 찾아내고, 왜 느린지 실행계획으로 설명하고, 고친 뒤 얼마나 빨라졌는지 숫자로** 보여 줄 수 있으면 됩니다. 토스 공고가 이력서에 '개선 결과를 수치로'를 요구하는 것과 같은 결입니다.[1]",
+   "refs": [
+    1,
+    3,
+    4,
+    5,
+    6,
+    14,
+    15,
+    16
+   ],
+   "study": [
+    "real-mysql",
+    "mysql-explain",
+    "pt-query-digest",
+    "hpm"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "MongoDB 운영 경험이 있으면 좋아요.",
+   "short": "MySQL 과 함께 이 팀의 주요 DBMS 라서. 복제·백업 방식이 MySQL 과 달라 따로 익혀야 한다.",
+   "why": "공고가 주요 DBMS 를 MySQL 과 MongoDB 둘로 적었습니다.[1] 같은 그룹 토스플레이스는 MongoDB 를 클라우드 관리형이 아니라 **서버에 직접 구성**해 운영한다고 밝혔습니다.[4] 토스 본사 쪽 구성은 공개되지 않았습니다.",
+   "actually": {
+    "intro": "MongoDB 공식 문서의 기본 구조입니다. 토스가 어떻게 구성했는지는 공개되지 않았습니다.",
+    "items": [
+     "**레플리카 셋** — 보통 3대(프라이머리 1·세컨더리 2). 프라이머리가 죽으면 남은 멤버가 투표로 새 프라이머리를 뽑는다 — MySQL 처럼 외부 도구가 넘기지 않는다.[18]",
+     "**oplog** — 프라이머리의 변경 기록. 정해진 크기를 넘으면 오래된 것부터 지워진다. 세컨더리가 그보다 오래 멈추면 따라잡지 못하고 처음부터 다시 받아야 한다.[19]",
+     "**쓰기 확인 수준(write concern)** — 몇 대에 기록돼야 '저장됨'으로 볼지 정한다. 장애 때 데이터 유실 범위가 여기서 갈린다.[18]",
+     "**샤딩** — 데이터가 한 셋에 안 들어가면 키로 나눠 여러 셋에 담는다. 키를 잘못 고르면 한쪽에만 몰린다 {추론}."
+    ]
+   },
+   "examples": [
+    {
+     "title": "oplog 가 몇 시간을 버티나(가상 숫자)",
+     "body": "oplog 50GB, 쓰기가 가장 많을 때 시간당 6.5GB 가 쌓이면 50 ÷ 6.5 ≈ **7.7시간**입니다(직접 계산). 세컨더리를 점검하느라 이보다 오래 멈추면 처음부터 다시 받아야 하니, 점검 계획은 이 창 안에서 짭니다.[19]"
+    }
+   ],
+   "how_far": "'좋아요'라서 필수는 아닙니다. 레플리카 셋을 직접 세 대로 띄워 프라이머리를 죽여 보고, oplog 창과 쓰기 확인 수준을 설명할 수 있으면 MySQL 경험을 옮겨 쓸 바탕이 됩니다 {추론}.",
+   "refs": [
+    1,
+    4,
+    18,
+    19
+   ],
+   "study": [
+    "mongo-guide",
+    "mongo-repl"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Python으로 운영 자동화 스크립트 개발 경험이 있으면 좋아요.",
+   "short": "업무 셋째 줄(반복 작업 자동화)을 실제로 만드는 손이 Python 이라서.",
+   "why": "토스증권 DBA 공고는 Python 개발을 **필수**로 올리고 '언제든 필요한 것을 만들 수 있는 분'이라고 적었습니다.[3] 토스페이먼츠도 같은 문장의 Python 우대 줄을 두었습니다.[5] 이 공고에서는 우대지만 업무 셋째 줄과 이어집니다.[1]",
+   "actually": {
+    "items": [
+     "DB 에 붙어 상태를 읽는 스크립트 — 복제 지연·잠금 대기·오래 도는 쿼리를 모아 기준을 넘으면 알림.[9][14]",
+     "로그 분석 — 느린 쿼리 기록을 모양별로 묶어 매일 보고(업무 셋째 줄의 예).[16]",
+     "변경 검증 — 배포 전 DDL 을 읽어 위험한 변경을 걸러 내는 검사(토스플레이스는 CI 에 넣는다고 적었다).[4]",
+     "반복 요청 처리 — 계정·권한 발급, 조회용 복제본 연결 정보 안내."
+    ]
+   },
+   "how_far": "웹 서비스를 만들 수준까지는 아니어도 됩니다. **DB 에 붙어 쿼리를 돌리고, 결과를 가공하고, 실패하면 알리고, 다른 사람이 다시 돌릴 수 있게** 쓰는 정도가 최소선입니다 {추론}. 토스플레이스 공고는 테스트·리뷰·변경 관리로 도구를 유지한 경험을 중요하게 본다고 했습니다.[4]",
+   "refs": [
+    1,
+    3,
+    4,
+    5,
+    9,
+    14,
+    16
+   ],
+   "study": [
+    "pymysql",
+    "pt-query-digest"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "PostgreSQL 운영 경험이 있으면 좋아요.",
+   "short": "그룹 안에서 MySQL·MongoDB 다음으로 쓰는 DB 라서. 복제와 청소(VACUUM)가 MySQL 과 다르다.",
+   "why": "토스증권·토스플레이스 DBA 공고가 관리 대상에 PostgreSQL 을 넣었고,[3][4] 토스뱅크 공고도 우대 줄에 적었습니다.[6] 이 공고의 주요 DBMS 에는 없어 '있으면 좋은' 쪽입니다.[1]",
+   "actually": {
+    "intro": "PostgreSQL 공식 문서 기준으로 MySQL DBA 가 새로 익혀야 하는 부분입니다.",
+    "items": [
+     "**복제** — 변경 기록(WAL)을 대기 서버로 흘려보내는 스트리밍 복제가 기본. 대기 서버를 읽기 전용으로 쓸 수 있다.[20]",
+     "**VACUUM** — 지우거나 고친 행이 바로 사라지지 않아 주기적으로 치워야 한다. 안 치우면 테이블이 부풀고, 아주 오래 방치하면 트랜잭션 번호가 한 바퀴 돌아(wraparound) DB 가 쓰기를 막는다.[21]",
+     "**확장 기능** — 필요한 기능을 확장(extension)으로 붙여 쓰는 문화. 무엇이 붙어 있는지 운영자가 알아야 한다 {추론}."
+    ]
+   },
+   "how_far": "운영 경험이 없다면 스트리밍 복제 한 쌍을 띄워 보고 VACUUM 이 왜 필요한지 설명할 수 있는 정도면 됩니다 {추론}.",
+   "refs": [
+    1,
+    3,
+    4,
+    6,
+    20,
+    21
+   ],
+   "study": [
+    "pg-ha",
+    "pg-vacuum"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "클라우드 환경에서의 운영 경험이 있으면 좋아요.",
+   "short": "그룹 안에 AWS 관리형 DB 를 쓰는 곳이 있고, 운영 방식이 직접 깐 서버와 달라서.",
+   "why": "발표 속 토스 DB 는 자체 데이터센터 두 곳에 있었습니다.[2] 반면 같은 그룹 토스플레이스는 주로 AWS 에서 MySQL 을 RDS·Aurora(AWS 가 관리해 주는 DB)로, MongoDB 는 EC2(가상 서버)에 직접 구성해 운영합니다.[4] 토스증권 공고도 On-premise/Cloud 를 함께 적었습니다.[3]",
+   "actually": {
+    "items": [
+     "**관리형에서 달라지는 것** — 백업·장애 전환·패치를 클라우드가 해 주는 대신, 설정은 파라미터 그룹으로 하고 서버에 들어가 파일을 볼 수 없다.[22]",
+     "**Aurora 의 복제** — 저장소를 여러 복제본이 같이 쓰는 구조라 MySQL 의 binlog 복제와 장애 전환 방식이 다르다.[22]",
+     "**비용과 용량** — 크기·읽기 복제본 수·저장 공간을 정할 때 비용이 바로 붙는다. 토스플레이스 공고는 용량 계획과 비용 효율화를 DBA 의 일로 적었다.[4]"
+    ]
+   },
+   "how_far": "'좋아요'입니다. RDS 나 Aurora 에 MySQL 을 하나 띄우고 장애 전환·스냅샷 복원을 해 보고, 직접 운영과 무엇이 다른지 말할 수 있으면 충분합니다 {추론}.",
+   "refs": [
+    2,
+    3,
+    4,
+    22
+   ],
+   "study": [
+    "aurora-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "# 이런 경험이 있다면 이력서에 꼭 작성해주세요 — 그동안 해오신 업무 중 임팩트 있었던 프로젝트를 구체적으로 적어주세요.",
+   "short": "10년 경력을 다 나열하지 말고, 가장 큰 변화를 만든 일을 골라 '무엇을 왜 어떻게'로 쓰라는 뜻.",
+   "why": "토스 DBA 면접은 서류 다음이 바로 직무 인터뷰입니다.[1] 같은 그룹 공고들은 같은 칸을 더 풀어서 적었습니다 — 토스페이먼츠·토스뱅크는 '가장 기억에 남는 개선 사례 두 가지', 토스플레이스는 '원인을 좁혀 간 과정과 선택한 방법, 확인한 결과'.[4][5][6]",
+   "actually": {
+    "intro": "DBA 이력서에 들어갈 만한 '임팩트' 예입니다 {추론}.",
+    "items": [
+     "이중화·DR 구조를 바꾼 일 — 전환에 걸리던 시간, 손으로 하던 단계 수가 어떻게 바뀌었나(발표의 '전 → 후' 구성과 같다).[2]",
+     "큰 버전 업그레이드·DB 이전(예: Oracle → MySQL, 토스페이먼츠가 진행 중인 일).[5]",
+     "장애를 겪고 재발 방지까지 한 일 — 원인, 그때 한 조치, 이후 바꾼 설정·도구.",
+     "튜닝으로 응답 시간·서버 수를 줄인 일."
+    ]
+   },
+   "how_far": "제품 이름·버전과 숫자를 함께 쓰면 좋다고 같은 그룹 토스증권 Oracle DBA 공고가 직접 적었습니다.[7]",
+   "refs": [
+    1,
+    2,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "실제 서비스에 적용하여 개선한 경험이 있다면 결과를 수치로 나타내주면 좋아요.(외부 공개가 민감한 사항일 경우, 해당 부분은 제외해 주세요)",
+   "short": "'빨라졌다' 대신 '2.3초 → 0.05초'처럼. 이전 회사의 민감한 숫자는 빼도 된다.",
+   "why": "운영 개선은 숫자로만 비교됩니다. 토스플레이스 공고는 볼 만한 숫자를 직접 꼽았습니다 — 도구 사용 범위, 변경 소요 시간·실패율, 반복 작업량, DB 응답 지연·복구 시간, 자원 사용·비용.[4]",
+   "actually": {
+    "items": [
+     "응답 시간: 특정 쿼리 평균·p99(상위 1% 느린 요청) 지연 전후.",
+     "가용성: 장애 전환에 걸린 시간, 데이터센터 전환 때 손작업 단계 수.",
+     "운영량: 한 달 수작업 요청 건수 전후, 자동화 뒤 남은 건수.",
+     "비용: 줄인 서버·저장 공간."
+    ]
+   },
+   "how_far": "정확한 숫자를 밝힐 수 없으면 비율(70% 감소)이나 단위(분 → 초)로 써도 됩니다. 공고가 민감한 부분은 빼라고 직접 적었습니다.[1] 숫자가 없어도 변화와 결과를 설명하면 된다는 게 토스플레이스 공고의 말입니다.[4]",
+   "refs": [
+    1,
+    4
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "장애 때 '데이터를 지키려고 서비스를 잠깐 멈추는' 결정을 할 수 있는 사람[2]",
+   "같은 손작업을 두 번 하면 스크립트로 바꾸고 싶은 사람[1]",
+   "오픈소스 도구를 그대로 쓰지 않고 고쳐 쓰는 걸 즐기는 사람[2]",
+   "MySQL 복제를 깊게 다뤄 본 사람"
+  ],
+  "hard": [
+   "24시간 365일 서비스라 밤·주말 장애 대응이 따라온다는 것을 같은 그룹 공고들이 직접 적었다[3][5][6]",
+   "필수 경력이 10년 이상 — 같은 그룹 다른 회사 DBA 공고(5년 이상)보다 문턱이 높다[1][3][6]",
+   "개발 자리가 아니라 운영 자리 — 새 기능을 만드는 일보다 지키고 고치는 일이 많다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "두 데이터센터 마스터를 양방향으로 복제하면 어떤 문제가 생기고, 어떻게 막나요?",
+   "a": "토스가 실제로 겪고 server_id 필터로 푼 문제.[2][8]"
+  },
+  {
+   "q": "마스터가 죽었는데 대기 마스터의 복제가 밀려 있었다면, 바로 넘기겠어요?",
+   "a": "발표의 '재시작은 super_read_only, 후보가 잠겨 있으면 기다린다' 규칙.[2][9]"
+  },
+  {
+   "q": "누군가 운영 DB 에서 행을 지웠고 40분 뒤 알았습니다. 어떻게 되살리나요?",
+   "a": "지연 복제·당일 백업의 단계적 복구.[2][10]"
+  },
+  {
+   "q": "수억 행 테이블에 컬럼을 추가해야 합니다. 서비스를 멈추지 않고 하려면?",
+   "a": "온라인 DDL 방식 확인과 gh-ost 류 도구.[12][13]"
+  },
+  {
+   "q": "MongoDB 세컨더리를 반나절 내려 점검해도 되나요? 무엇을 먼저 보나요?",
+   "a": "oplog 창.[19]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · DBA",
+   "url": "https://toss.im/career/job-detail?gh_jid=4071131003",
+   "kind": "posting",
+   "note": "팀 소개(Data Platform Tribe 내 DBA팀, 주요 DBMS MySQL·MongoDB)·업무·요건·이력서 안내·합류 여정"
+  },
+  {
+   "n": 2,
+   "title": "SLASH 21 · MySQL HA & DR Topology",
+   "url": "https://www.youtube.com/watch?v=t96l6ry_qmw",
+   "kind": "company",
+   "date": "2021",
+   "note": "토스 코어 데이터서비스팀 DBA · 15분 · 자막·화면 전부 읽음(자동 자막의 'L7'·'MMM' 은 화면으로 확인)"
+  },
+  {
+   "n": 3,
+   "title": "토스 채용 · 토스증권 DBA (MySQL)",
+   "url": "https://toss.im/career/job-detail?gh_jid=7585698003",
+   "kind": "posting",
+   "note": "같은 그룹 다른 회사 — Oracle·MySQL·MongoDB·PostgreSQL 관리, Python 필수, 5년 이상"
+  },
+  {
+   "n": 4,
+   "title": "토스 채용 · 토스플레이스 DBA",
+   "url": "https://toss.im/career/job-detail?gh_jid=5181924003",
+   "kind": "posting",
+   "note": "같은 그룹 다른 회사 — AWS RDS·Aurora·EC2 MongoDB, DDL 검토·셀프서비스 도구·지표를 자세히 적음"
+  },
+  {
+   "n": 5,
+   "title": "토스 채용 · 토스페이먼츠 DBA",
+   "url": "https://toss.im/career/job-detail?gh_jid=7767934003",
+   "kind": "posting",
+   "note": "같은 그룹 다른 회사 — Oracle 주력, MySQL 로 점진 이전"
+  },
+  {
+   "n": 6,
+   "title": "토스 채용 · 토스뱅크 DBA",
+   "url": "https://toss.im/career/job-detail?gh_jid=8043933003",
+   "kind": "posting",
+   "note": "같은 그룹 다른 회사 — 멀티 데이터센터 MySQL 이중화, 신규 버전·기능 시험, 5년 이상"
+  },
+  {
+   "n": 7,
+   "title": "토스 채용 · 토스증권 DBA (Oracle)",
+   "url": "https://toss.im/career/job-detail?gh_jid=4076052003",
+   "kind": "posting",
+   "note": "같은 그룹 다른 회사 — 이력서에 제품 이름·버전·수치를 적어 달라는 안내"
+  },
+  {
+   "n": 8,
+   "title": "MySQL 8.0 문서 · CHANGE REPLICATION SOURCE TO (IGNORE_SERVER_IDS)",
+   "url": "https://dev.mysql.com/doc/refman/8.0/en/change-replication-source-to.html",
+   "kind": "reference"
+  },
+  {
+   "n": 9,
+   "title": "MySQL 8.0 문서 · 서버 시스템 변수(read_only·super_read_only)",
+   "url": "https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html",
+   "kind": "reference"
+  },
+  {
+   "n": 10,
+   "title": "MySQL 8.0 문서 · Delayed Replication",
+   "url": "https://dev.mysql.com/doc/refman/8.0/en/replication-delayed.html",
+   "kind": "reference",
+   "note": "지연 복제 — 실수로 지운 데이터 복구에 쓰는 용도를 문서가 직접 든다"
+  },
+  {
+   "n": 11,
+   "title": "MySQL 8.0 문서 · Replication with Global Transaction Identifiers",
+   "url": "https://dev.mysql.com/doc/refman/8.0/en/replication-gtids.html",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "MySQL 8.0 문서 · InnoDB and Online DDL",
+   "url": "https://dev.mysql.com/doc/refman/8.0/en/innodb-online-ddl.html",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "GitHub · gh-ost (온라인 스키마 변경 도구)",
+   "url": "https://github.com/github/gh-ost",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "MySQL 8.0 문서 · The Slow Query Log",
+   "url": "https://dev.mysql.com/doc/refman/8.0/en/slow-query-log.html",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "MySQL 8.0 문서 · EXPLAIN Output Format",
+   "url": "https://dev.mysql.com/doc/refman/8.0/en/explain-output.html",
+   "kind": "reference"
+  },
+  {
+   "n": 16,
+   "title": "Percona Toolkit 문서 · pt-query-digest",
+   "url": "https://docs.percona.com/percona-toolkit/pt-query-digest.html",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Percona XtraBackup 8.0 문서",
+   "url": "https://docs.percona.com/percona-xtrabackup/8.0/",
+   "kind": "reference",
+   "note": "MySQL 물리 백업·복원 도구"
+  },
+  {
+   "n": 18,
+   "title": "MongoDB 문서 · Replication",
+   "url": "https://www.mongodb.com/docs/manual/replication/",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "MongoDB 문서 · Replica Set Oplog",
+   "url": "https://www.mongodb.com/docs/manual/core/replica-set-oplog/",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "PostgreSQL 문서 · High Availability, Load Balancing, and Replication",
+   "url": "https://www.postgresql.org/docs/current/high-availability.html",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "PostgreSQL 문서 · Routine Vacuuming",
+   "url": "https://www.postgresql.org/docs/current/routine-vacuuming.html",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "AWS 문서 · What is Amazon Aurora?",
+   "url": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "MariaDB 문서 · Global Transaction ID",
+   "url": "https://mariadb.com/kb/en/gtid/",
+   "kind": "reference",
+   "note": "MariaDB GTID 는 MySQL GTID 와 형식이 다르다"
+  },
+  {
+   "n": 24,
+   "title": "MySQL 고객 사례 · Toss Bank (MySQL Enterprise Edition)",
+   "url": "https://www.mysql.com/why-mysql/case-studies/toss-bank-financial-services-mysql-enterprise-edition.html",
+   "kind": "reference",
+   "note": "같은 그룹 토스뱅크 — 오라클이 쓴 사례 글, 날짜 표기 없음"
+  },
+  {
+   "n": 25,
+   "title": "GitHub · Orchestrator (MySQL 복제 구조 관리·장애 전환 도구)",
+   "url": "https://github.com/openark/orchestrator",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 27,
+   "title": "자소설닷컴 — 토스뱅크 연봉(같은 집계)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 29,
+   "title": "토스 — 회사 소개(사이트 하단 주소)",
+   "url": "https://toss.im/company",
+   "kind": "company"
+  }
+ ],
+ "caveat": "토스 DBA 팀이 직접 공개한 구조는 2021년 SLASH 발표 하나뿐이라 지금은 달라졌을 수 있습니다(예: 장애 전환 도구, GTID 도입 여부). MongoDB·PostgreSQL·클라우드·자동화 도구의 실제 구성은 공개되지 않아, 같은 그룹 다른 회사 DBA 공고와 각 제품의 공식 문서로 '보통 이런 것'을 보였습니다. 같은 그룹 토스뱅크가 MySQL 상용판(Enterprise Edition)의 백업·감사·감시 기능을 쓴다는 오라클 사례 글도 있지만[24], 토스 본사에 해당하는지는 알 수 없습니다.",
+ "resources": [
+  {
+   "id": "slash21-ha",
+   "title": "SLASH 21 · MySQL HA & DR Topology",
+   "by": "토스 DBA · 15분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=t96l6ry_qmw",
+   "why": "이 팀이 쓰는 이중화·DR 구조와 장애 시나리오를 직접 설명한다. 지원 전에 꼭 보고 '나라면 지금 무엇을 바꿀까'를 생각해 둔다."
+  },
+  {
+   "id": "real-mysql",
+   "title": "Real MySQL 8.0 (1·2권)",
+   "by": "백은빈 · 이성욱 · 위키북스 · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=Real%20MySQL%208.0",
+   "why": "InnoDB 구조·잠금·인덱스·실행계획(1권)과 복제·GTID·InnoDB 클러스터(2권). 요건 첫째·둘째 줄을 한국어로 가장 깊게 다룬다."
+  },
+  {
+   "id": "hpm",
+   "title": "High Performance MySQL (4판)",
+   "by": "Silvia Botros · Jeremy Tinley · O'Reilly · 2021",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.oreilly.com/library/view/high-performance-mysql/9781492080503/",
+   "why": "운영자 시선으로 쓴 판 — 감시 지표 고르기, 복제, 백업·복구, 클라우드 MySQL 까지. 10년 차 면접에서 구조 판단을 말할 바탕."
+  },
+  {
+   "id": "dbre",
+   "title": "Database Reliability Engineering",
+   "by": "Laine Campbell · Charity Majors · O'Reilly · 2017",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.oreilly.com/library/view/database-reliability-engineering/9781491925935/",
+   "why": "DB 운영을 자동화·지표·복구 검증으로 다루는 책. 업무 셋째 줄(자동화)과 이력서 칸(개선을 수치로)을 위한 사고 틀."
+  },
+  {
+   "id": "mysql-repl",
+   "title": "MySQL 8.0 Reference Manual · Replication",
+   "by": "Oracle 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://dev.mysql.com/doc/refman/8.0/en/replication.html",
+   "why": "binlog 형식·GTID·복제 필터·지연 복제·멀티 소스 복제의 정확한 정의. 발표에 나온 설정을 원문으로 확인한다."
+  },
+  {
+   "id": "mysql-explain",
+   "title": "MySQL 8.0 Reference Manual · EXPLAIN Output Format",
+   "by": "Oracle 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://dev.mysql.com/doc/refman/8.0/en/explain-output.html",
+   "why": "실행계획의 칸(type·key·rows·Extra)이 무슨 뜻인지. SQL 튜닝 요건의 기본 사전."
+  },
+  {
+   "id": "mysql-online-ddl",
+   "title": "MySQL 8.0 Reference Manual · InnoDB and Online DDL",
+   "by": "Oracle 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://dev.mysql.com/doc/refman/8.0/en/innodb-online-ddl.html",
+   "why": "어떤 ALTER 가 테이블을 막지 않고 도는지 표로 정리돼 있다. 물리 모델 배포 업무의 판단 근거."
+  },
+  {
+   "id": "gh-ost",
+   "title": "gh-ost",
+   "by": "GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/github/gh-ost",
+   "why": "트리거 없이 binlog 로 따라잡는 온라인 스키마 변경 도구. 문서의 동작 설명이 '큰 테이블 변경을 어떻게 안전하게 하나'의 좋은 교재다."
+  },
+  {
+   "id": "pt-query-digest",
+   "title": "pt-query-digest",
+   "by": "Percona Toolkit 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.percona.com/percona-toolkit/pt-query-digest.html",
+   "why": "느린 쿼리 기록을 모양별로 묶어 보고서를 만드는 표준 도구. 튜닝 대상을 고르는 법과 자동화 보고의 본보기."
+  },
+  {
+   "id": "pymysql",
+   "title": "PyMySQL",
+   "by": "PyMySQL 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://pymysql.readthedocs.io/en/latest/",
+   "why": "Python 에서 MySQL 에 붙는 가장 단순한 길. 운영 자동화 스크립트(상태 조회·알림)의 첫 재료."
+  },
+  {
+   "id": "mongo-guide",
+   "title": "몽고DB 완벽 가이드 (3판)",
+   "by": "크리스티나 초도로우 외 · 한빛미디어 · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%AA%BD%EA%B3%A0DB%20%EC%99%84%EB%B2%BD%20%EA%B0%80%EC%9D%B4%EB%93%9C",
+   "why": "복제(레플리카 셋)·샤딩·운영 파트가 MongoDB 운영 우대 줄에 바로 쓰인다. 앞쪽 개발 파트는 훑고 뒤쪽 운영 파트를 먼저."
+  },
+  {
+   "id": "mongo-repl",
+   "title": "MongoDB Manual · Replication",
+   "by": "MongoDB 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.mongodb.com/docs/manual/replication/",
+   "why": "선거·oplog·쓰기 확인 수준의 최신 정의. 책 이후 바뀐 부분을 여기서 확인한다."
+  },
+  {
+   "id": "pg-ha",
+   "title": "PostgreSQL Documentation · High Availability, Load Balancing, and Replication",
+   "by": "PostgreSQL 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.postgresql.org/docs/current/high-availability.html",
+   "why": "WAL 스트리밍 복제와 대기 서버 구성. MySQL 복제와 견주며 읽는다."
+  },
+  {
+   "id": "pg-vacuum",
+   "title": "PostgreSQL Documentation · Routine Vacuuming",
+   "by": "PostgreSQL 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.postgresql.org/docs/current/routine-vacuuming.html",
+   "why": "MySQL DBA 가 PostgreSQL 에서 가장 먼저 부딪히는 운영 개념(VACUUM·wraparound)."
+  },
+  {
+   "id": "aurora-docs",
+   "title": "Amazon Aurora User Guide",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html",
+   "why": "공유 저장소 구조·장애 전환·백업이 직접 운영하는 MySQL 과 어떻게 다른지. 클라우드 운영 우대 줄."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "MySQL 속을 안다",
+   "time": "3~4주",
+   "goal": "InnoDB 가 데이터를 어떻게 저장·잠그는지, 실행계획이 왜 그렇게 나오는지 설명할 수 있다.",
+   "resources": [
+    "real-mysql",
+    "mysql-explain"
+   ],
+   "task": "도커로 MySQL 8 을 띄우고 가상 송금 테이블에 1,000만 행을 넣는다. 느린 쿼리 기록을 켜고 일부러 느린 쿼리 5개를 돌린 뒤, EXPLAIN 으로 원인을 적고 인덱스로 고쳐 전후 시간을 표로 남긴다."
+  },
+  {
+   "title": "복제와 장애 전환",
+   "time": "2~3주",
+   "goal": "복제 한 쌍과 지연 복제를 구성하고, 장애 전환과 '지운 데이터 되살리기'를 손으로 해 본다.",
+   "resources": [
+    "mysql-repl",
+    "slash21-ha",
+    "hpm"
+   ],
+   "task": "도커로 MySQL 세 대(소스·복제·1시간 지연 복제)를 GTID 로 묶는다. 소스에서 일부러 DELETE 를 돌리고 지연 복제에서 그 직전까지만 진행해 행을 되살린다. 재시작하면 super_read_only 로 올라오게 설정하고, 복제가 멈춘 서버로 넘기면 무엇이 깨지는지 기록한다."
+  },
+  {
+   "title": "변경 배포와 자동화",
+   "time": "2주",
+   "goal": "큰 테이블 변경을 서비스를 막지 않고 넣고, 반복 점검을 스크립트로 돌린다.",
+   "resources": [
+    "mysql-online-ddl",
+    "gh-ost",
+    "pt-query-digest",
+    "pymysql"
+   ],
+   "task": "1단계 테이블에 컬럼 추가를 ALGORITHM=INSTANT·INPLACE·gh-ost 세 방법으로 해 보고 걸린 시간과 잠금을 비교한다. Python 으로 복제 지연·긴 트랜잭션·느린 쿼리 상위 10개를 모아 기준을 넘으면 알림을 보내는 스크립트를 만든다."
+  },
+  {
+   "title": "MongoDB 와 PostgreSQL",
+   "time": "2~3주",
+   "goal": "다른 두 DB 의 복제·장애 전환·운영 함정을 MySQL 과 견주어 말할 수 있다.",
+   "resources": [
+    "mongo-guide",
+    "mongo-repl",
+    "pg-ha",
+    "pg-vacuum"
+   ],
+   "task": "MongoDB 레플리카 셋 3대를 띄워 프라이머리를 죽이고 선거를 지켜본다. 쓰기량을 늘려 oplog 창이 몇 시간인지 계산한다. PostgreSQL 스트리밍 복제 한 쌍을 띄우고 VACUUM 전후 테이블 크기를 잰다."
+  },
+  {
+   "title": "클라우드와 운영 사고 틀 (선택)",
+   "time": "계속",
+   "goal": "관리형 DB 와 직접 운영의 차이, 개선을 숫자로 말하는 법을 갖춘다.",
+   "resources": [
+    "aurora-docs",
+    "dbre"
+   ],
+   "task": "Aurora MySQL(무료 체험 범위 안)을 하나 만들어 장애 전환 시간과 스냅샷 복원 시간을 재고, 2단계에서 직접 구성한 복제의 전환 시간과 표로 비교한다. 이 표를 이력서의 '개선을 수치로' 칸 연습으로 쓴다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 공공데이터 집계로 신입 초봉 **약 4,200만원**, 평균 **약 6,200만원** — 10년 이상 경력직 자리라 둘 다 참고만 된다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없다 [26]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 — 경력직이 섞인 값이다 [26]"
+   },
+   {
+    "label": "토스뱅크 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 계열사 값 — 견주어 보기용 [27]"
+   },
+   {
+    "label": "토스뱅크 평균",
+    "value": "약 7,208만원",
+    "amount": 7208,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 계열사 평균 [27]"
+   }
+  ],
+  "how": "토스는 레퍼런스 체크 뒤 처우 협의로 사람마다 연봉을 정한다(같은 그룹 공고들의 합류 여정) [3][4]. 이 자리는 **DBA 10년 이상**이라 초봉·회사 평균 어느 쪽과도 맞지 않는다 {추론}. 비바리퍼블리카는 상장사가 아니라 사업보고서의 '직원 평균 급여'가 없어 공시 숫자를 싣지 못했다. 집계값은 추정이라 실제 제안과 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 복지를 소개한 2021년 공식 글이다 [28]. 지금도 같은지는 글에 없으니 처우 협의 때 확인한다 {추론}. 장애 대응이 있는 자리라 근무 장소·시간이 다를 수 있다 {추론}."
+ },
+ "location": {
+  "name": "토스(비바리퍼블리카) 본사",
+  "address": "서울특별시 강남구 테헤란로 142, 4·10~13·22·23층",
+  "postal": "06236",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "주소는 토스 회사 소개 페이지 하단의 회사 정보다 [29]. 공고 근무지는 'Seoul'로만 적혀 있다 [1]. 발표 속 DB 는 데이터센터 두 곳에 있어 현장 작업이 있을 수 있다 [2] {추론}."
+ }
+}
