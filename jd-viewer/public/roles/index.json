@@ -38,6 +38,7 @@
   "ats-toss:group:7795677003": "toss-gpu-systems-engineer",
   "wanted-347560": "toss-gpu-systems-engineer",
   "ats-toss:group:8035179003": "toss-ml-engineer-ocr",
+  "ats-toss:group:4770769003": "toss-ml-engineer-research",
   "ats-toss:group:7821080003": "toss-network-engineer-edge",
   "ats-toss:group:6620395003": "toss-network-software-engineer",
   "ats-toss:group:7734083003": "toss-nodejs-mobile-automation",
@@ -413,6 +414,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 18
+  },
+  {
+   "id": "toss-ml-engineer-research",
+   "company": "토스",
+   "role": "ML 엔지니어 (전문연구요원)",
+   "jobs": [
+    "ats-toss:group:4770769003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 9
   },
   {
    "id": "toss-network-engineer-edge",

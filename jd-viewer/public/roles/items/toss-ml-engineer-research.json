@@ -1,0 +1,1075 @@
+{
+ "id": "toss-ml-engineer-research",
+ "company": "토스",
+ "role": "ML 엔지니어 (전문연구요원)",
+ "team": "Data Division · ML Chapter (도메인은 면접 뒤 배치)",
+ "jobs": [
+  "ats-toss:group:4770769003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "커머스 추천·MLOps 플랫폼·검색·LLM 가운데 **한 도메인에 배치돼** 토스의 문제를 머신러닝으로 풀고 자동화합니다. 어느 도메인인지는 면접에서 강점을 보고 정합니다.[1]",
+  "env": "병역을 회사에서 연구원으로 마치는 **전문연구요원**(현역·보충역 신규 편입과 전직 모두 가능) 자리입니다.[1] 전문연구요원은 정해진 연구 분야에서 36개월을 복무합니다.[15][16] 바닥은 Hadoop·Spark·Airflow 데이터와 자체 ML 플랫폼(Feature Store·MLflow·Kubernetes)입니다.[3][5][6]",
+  "oneline": "도메인은 넷 중 하나, 공통은 **모델을 실제 서비스에 붙이고 숫자로 결과를 보는 일**입니다. 병역 특례라 복무 규칙도 같이 읽어야 합니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "(Commerce) 커머스 도메인에서 상품 노출을 최적화하는 추천 알고리즘을 설계 및 고도화하고, 상품 클릭률(CTR), 전환율(CVR) 등을 예측하는 모델을 개발해요.",
+   "short": "수백만 상품 중 이 사람에게 보여 줄 몇 개를 고르고, 누를 확률·살 확률을 숫자로 맞히는 일.",
+   "why": "토스 쇼핑은 살 물건을 정하지 않고 둘러보는 사용자가 많아서, 수백만 사용자와 수백만 상품을 잇는 추천이 화면의 중심입니다.[4] 토스 커머스 팀은 서비스 초기에 기반 데이터가 부족한 상태에서 추천을 만든 과정을 발표했습니다.[3]",
+   "actually": {
+    "intro": "토스 커머스 개인화팀이 공개한 구조입니다.[4]",
+    "items": [
+     "**후보 찾기(Retrieval)** — 수백만 상품을 수천 개 후보로 줄인다. 사용자와 상품을 각각 숫자 벡터로 바꿔 가까운 것을 찾는 투타워(Two-Tower), 그래프 모델, 최근 본 순서를 쓰는 시퀀스 모델을 쓴다.[4]",
+     "**순위 매기기(Ranking)** — 후보마다 클릭 확률(pCTR)과 구매 확률(pCVR)을 예측한다. DeepFM·DLRM·DCN·ESMM 계열 모델이다.[4][22]",
+     "**다시 섞기(Re-ranking)** — 새 상품을 정해진 비율로 끼우고, 광고가 몰리지 않게 섞고, 카테고리가 한쪽으로 쏠리지 않게 한다.[4]",
+     "**데이터가 적을 때** — 기록이 쌓이기 전에는 사용자 묶음(코호트)별로 Thompson Sampling 밴딧(써 보며 배우는 방식)을 쓰고, 신상품은 무작위로 노출해 기록을 모았다.[3]",
+     "**확률을 믿을 수 있게** — 예측 확률이 실제 비율과 맞도록 temperature scaling으로 보정하고, 모델은 새 기록으로 계속 학습한다.[3][27]",
+     "**CTR × CVR** — 클릭 뒤 구매 확률만 학습하면 클릭한 사람만 보게 돼 치우친다. ESMM은 노출 전체에서 '클릭하고 구매'(CTCVR = CTR × CVR)를 같이 배운다.[21]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "토스 쇼핑 추천의 단계[4]",
+     "steps": [
+      "후보 찾기 · 수백만 → 수천 개",
+      "순위 매기기 · pCTR·pCVR",
+      "다시 섞기 · 신상품·광고·다양성",
+      "노출 · 홈 피드"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "examples": [
+    {
+     "title": "클릭률만 보면 순서가 틀린다 (가상 데이터, 직접 돌린 출력)",
+     "body": "B가 가장 많이 눌리지만 노출당 구매는 C가 가장 높습니다. 마지막 줄은 보정 점검입니다 — 모델이 5%라 했는데 실제는 3.1%면 확률이 부풀려진 것입니다.",
+     "lang": "python",
+     "code": "items = {\"A\": (10000, 300, 30), \"B\": (10000, 500, 10), \"C\": (2000, 90, 18)}\nfor k, (imp, clk, buy) in items.items():\n    ctr, cvr = clk / imp, buy / clk\n    print(f\"{k}: CTR {ctr:.3f}  CVR {cvr:.3f}  CTR×CVR {ctr*cvr:.4f}\")\npred, clicks, n = 0.05, 31, 1000\nprint(f\"예측 평균 {pred:.3f} / 실제 {clicks/n:.3f} → 비율 {clicks/n/pred:.2f}\")\n# A: CTR 0.030  CVR 0.100  CTR×CVR 0.0030\n# B: CTR 0.050  CVR 0.020  CTR×CVR 0.0010\n# C: CTR 0.045  CVR 0.200  CTR×CVR 0.0090\n# 예측 평균 0.050 / 실제 0.031 → 비율 0.62"
+    }
+   ],
+   "how_far": "무엇을 최적화할지(클릭·구매·매출)는 사업과 같이 정하고, 이 자리는 **그 목표를 모델과 실험으로 옮겨 숫자로 보이는** 데까지입니다.{추론} 최소선은 공개 데이터로 후보 찾기 → 순위 매기기 두 단계를 만들고 오프라인 지표와 보정 정도를 같이 보고하는 것입니다.{추론}",
+   "refs": [
+    3,
+    4,
+    21,
+    22,
+    27
+   ],
+   "study": [
+    "slash24-reco",
+    "toss-reco-blog",
+    "deepfm",
+    "esmm",
+    "sklearn-calib"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "(MLOps) 다양한 ML 요구사항을 안전하고 빠르게 실험을 반복하고 배포할 수 있는 플랫폼 및 Kubernetes 인프라를 구축하고 제공해요.",
+   "short": "모델 만드는 사람이 설정 몇 줄로 실험·배포하게, 학습·서빙·감시를 공통 부품과 쿠버네티스 위에 깐다.",
+   "why": "토스 ML 플랫폼 발표는 플랫폼 전에는 요구마다 따로 만들어 시간이 오래 걸리고 사람 실수가 늘었다고 했습니다.[5] 학습 때와 서빙 때 피처 값이 달라 성능이 조용히 깎이는 문제도 Feature Store로 줄였다고 했습니다.[6]",
+   "actually": {
+    "items": [
+     "**설정으로 작업 만들기** — Airflow(작업 순서를 짜 주는 도구) 위에 자체 DagBuilder를 얹어 YAML로 학습 흐름을 만들고, 학습된 모델은 MLflow(모델 판 저장소)에 올린다.[5]",
+     "**같은 피처 쓰기** — 학습도 서빙도 같은 '피처 서비스' 이름으로 값을 받는다. 피처를 만들 때 분포가 갑자기 달라지면(드리프트) 그날 값을 싣지 않는다.[6]",
+     "**서빙** — 모델에 따라 Triton 추론 서버를 쓰거나 Kotlin 서버에서 직접 추론하고, 서빙 서버는 10분마다 새 모델 판을 확인한다.[5]",
+     "**감시** — 추론 점수 분포가 매일 일정한지 보고, 최근 다섯 번보다 크게 바뀌면 알린다.[5]",
+     "**GPU 쿠버네티스** — 토스 서빙 팀은 40개 넘는 모델을 여러 세대 GPU에 띄우고, 낮엔 실시간·밤엔 배치로 GPU를 돌려 쓴다.[7] 같은 그룹 토스증권은 작업의 약 1/3이 GPU의 1/4도 못 쓰는 것을 보고 GPU를 쪼개 쓰는 MIG를 들였다.[8]",
+     "**운영자(Operator) 패턴** — 쿠버네티스에 우리 객체를 정의하고 컨트롤러가 '원하는 상태'를 맞추게 해 배포·복구 지식을 코드로 옮긴다.[25]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "토스 ML 플랫폼의 한 바퀴[5][6]",
+     "steps": [
+      "피처 만들기 · Feature Store",
+      "실험 · ML Hub 노트북",
+      "학습 · YAML DAG",
+      "등록 · MLflow",
+      "서빙 · Triton 또는 Kotlin",
+      "감시 · 점수 분포 알림"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "모델을 직접 잘 만드는 것보다 **다른 사람이 같은 실수를 다시 안 하게 만드는** 것이 일입니다.{추론} 최소선은 학습 작업 하나를 컨테이너로 만들어 쿠버네티스 Job으로 돌리고, 모델을 판 관리 저장소에 올려 서버가 새 판을 받아 가게 해 본 정도입니다.{추론}",
+   "refs": [
+    5,
+    6,
+    7,
+    8,
+    25
+   ],
+   "study": [
+    "slash24-mlplatform",
+    "slash24-featurestore",
+    "kube-book",
+    "mlflow-docs",
+    "k8s-operator"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "(검색) 실시간 대용량 데이터 처리, 검색 인프라 운영, 검색 품질 개선까지 검색 플랫폼을 설계하고 운영하며 고객 경험을 개선해요.",
+   "short": "새 상품·글이 바로 검색되게 색인을 돌리고, 검색 서버를 지키고, 찾은 결과가 정말 맞는지 재서 고친다.",
+   "why": "같은 그룹 토스증권은 처음엔 서비스마다 Elasticsearch(검색 엔진) 쿼리를 따로 짰고, 그 반복을 하나의 검색·추천 흐름으로 모았습니다.[9] 대용량을 다루는 일 자체도 무겁습니다 — 토스증권 로그 클러스터는 하루 6TB를 받으면서 매핑(필드 정의)을 통제하지 않아 장애를 겪었습니다.[10]",
+   "actually": {
+    "intro": "토스 검색 플랫폼 자체의 발표는 찾지 못해, 같은 그룹 토스증권의 공개 자료로 보입니다.",
+    "items": [
+     "**실시간 색인** — 상품·글이 바뀌면 바로 검색 색인에 반영한다. 임베딩(글을 숫자 벡터로 바꾼 것) 모델을 바꾸면 색인도 같이 다시 만들어 판을 맞춘다.[9]",
+     "**하이브리드 검색** — 낱말이 맞는 문서(키워드)와 뜻이 가까운 문서(벡터)를 둘 다 찾아 합친다.[9] 순위만 보고 합치는 RRF가 흔한 방법이다.[23]",
+     "**한국어 처리** — 형태소 사전을 갱신해 신조어·상품명이 잘 쪼개지게 한다.[9]",
+     "**인프라 운영** — 필드가 끝없이 늘지 않게 매핑을 막고, 샤드 수·갱신 주기를 맞춘다.[10]",
+     "**품질 개선** — 질문-결과 쌍에 '맞다/아니다'를 붙여 잰다. 토스는 LLM의 판단을 정답 삼아 작은 모델을 학습시켜, 비싼 LLM을 덜 부르는 방법을 공개했다.[12]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "키워드 순위와 벡터 순위 합치기 — RRF (직접 돌린 출력)",
+     "body": "점수 = Σ 1/(60 + 순위). 두 목록에 다 나온 문서가 위로 올라옵니다.[23]",
+     "lang": "python",
+     "code": "bm25   = [\"무선 이어폰\", \"이어폰 케이스\", \"유선 이어폰\", \"블루투스 스피커\"]\nvector = [\"블루투스 이어폰\", \"무선 이어폰\", \"노이즈캔슬링 헤드폰\", \"이어폰 케이스\"]\nscore = {}\nfor ranking in (bm25, vector):\n    for rank, doc in enumerate(ranking, 1):\n        score[doc] = score.get(doc, 0) + 1 / (60 + rank)\nfor doc, s in sorted(score.items(), key=lambda x: -x[1]):\n    print(f\"{s:.4f}  {doc}\")\n# 0.0325  무선 이어폰\n# 0.0318  이어폰 케이스\n# 0.0164  블루투스 이어폰\n# 0.0159  유선 이어폰\n# 0.0159  노이즈캔슬링 헤드폰\n# 0.0156  블루투스 스피커"
+    }
+   ],
+   "how_far": "이 줄은 모델보다 **시스템 쪽**(색인 파이프라인·클러스터 운영)이 큽니다.{추론} 최소선은 Elasticsearch에 한국어 분석기를 붙여 색인을 만들고, 키워드·벡터·합친 결과를 같은 평가 세트로 비교해 본 것입니다.{추론}",
+   "refs": [
+    9,
+    10,
+    12,
+    23
+   ],
+   "study": [
+    "toss-sec-search",
+    "slash23-es",
+    "es-rrf",
+    "ir-book",
+    "nori"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "(AI) LLM, RAG, 멀티모달 등 다양한 AI 기술을 활용해, 문제를 정의하고 기술적으로 접근하는 방식 자체를 설계해요.",
+   "short": "\"이걸 AI로 할 수 있나\"부터 정한다 — LLM·검색 결합(RAG)·이미지 모델 중 무엇을 어떻게 쓸지, 어떻게 잴지.",
+   "why": "토스 데이터 조직의 ML Tribe는 추천·광고·검색과 함께 LLM·Vision 모델을 만든다고 소개합니다.[2] 토스는 리더보드 1등 LLM이 토스 일에서도 1등인지 따로 재는 사내 벤치마크를 만들었고,[13] 회사 문서를 LLM에 근거와 함께 넘기는 사내 지식 시스템도 공개했습니다.[11]",
+   "actually": {
+    "items": [
+     "**RAG** — 질문과 관련된 문서를 먼저 찾아 LLM에 같이 넣어 답하게 하는 방식.[24] 토스증권 뉴스 RAG는 질문 이해 → 하이브리드 검색+조건 필터 → 리랭커(다시 줄 세우는 모델) → 답 생성의 4단계다.[9]",
+     "**근거 달기** — 사내 지식 시스템은 문서·메신저·코드를 출처별로 나누고 '믿을 만함·다툼 있음·낡았을 수 있음' 같은 상태를 근거와 함께 넘긴다.[11]",
+     "**내 일로 재기** — 공개 순위가 아니라 상품 속성 뽑기·같은 상품 판단 같은 실제 작업으로 모델을 비교한다.[13]",
+     "**비용 설계** — 모든 요청에 큰 LLM을 부르지 않고, LLM 답을 정답 삼아 학습한 작은 모델이 자신 있는 것만 처리하게 했다.[12]",
+     "**멀티모달** — 글과 이미지를 같이 다루는 모델. 상품 이미지·문서 사진처럼 입력이 그림일 때 쓴다.{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "RAG는 찾기부터 따로 잰다 — recall@k (가상 데이터, 직접 돌린 출력)",
+     "body": "정답 문서가 상위 k개 안에 들어왔는지 봅니다. 찾기가 놓치면 LLM이 아무리 좋아도 답이 틀립니다.{추론}",
+     "lang": "python",
+     "code": "results = {\n    \"q1\": ([\"d3\", \"d7\", \"d1\"], {\"d1\"}),\n    \"q2\": ([\"d2\", \"d9\", \"d4\"], {\"d5\"}),\n    \"q3\": ([\"d8\", \"d6\", \"d2\"], {\"d8\", \"d6\"}),\n}\nfor k in (1, 3):\n    hit = [len(set(top[:k]) & gold) / len(gold) for top, gold in results.values()]\n    print(f\"recall@{k} = {sum(hit)/len(hit):.2f}\")\n# recall@1 = 0.17\n# recall@3 = 0.67"
+    }
+   ],
+   "how_far": "'방식 자체를 설계'는 모델을 고르기 전에 **입력·출력·성공 기준·비용**을 먼저 적는다는 뜻으로 읽힙니다.{추론} 최소선은 작은 RAG를 만들어 찾기와 답하기를 따로 채점하고, 작은 모델로 바꿨을 때 품질·비용 차이를 표로 보인 것입니다.{추론}",
+   "refs": [
+    2,
+    9,
+    11,
+    12,
+    13,
+    24
+   ],
+   "study": [
+    "cs329z-rag",
+    "toss-benchmark",
+    "snap-blog",
+    "llm-app",
+    "ragas-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "머신러닝에 대한 깊이 있는 이해와, 이를 다양한 비즈니스 문제에 적용해 본 경험이 있으신 분이면 좋아요.",
+   "short": "도메인이 면접 뒤에 정해져서, 어느 문제가 와도 \"무엇을 예측하고 어떻게 잴지\"를 세울 수 있어야 해서.",
+   "why": "ML 엔지니어는 여러 사업부에 흩어져 각자의 문제를 풀고, 배치는 면접에서 강점을 보고 정합니다.[1] 공고의 팀원도 주어진 모델에 데이터를 넣던 일에서, 집계되지 않는 데이터를 모델에 어떻게 녹일지 고민하는 일로 바뀐 것을 장점으로 꼽았습니다.[1]",
+   "actually": {
+    "items": [
+     "**문제를 모델 말로** — '쇼핑 매출을 늘리고 싶다'를 '노출당 구매 확률을 예측해 순서를 바꾼다'로 바꾼다.[4]{추론}",
+     "**라벨 정의** — 무엇을 정답으로 칠지(클릭? 구매? 며칠 안 구매?)가 결과를 바꾼다. 토스 커머스 발표도 노출 기록의 잡음을 라벨 정의 문제로 다뤘다.[3]",
+     "**깊이** — 손실 함수·과적합·데이터 누수·불균형·보정을 왜 그렇게 하는지 설명할 수 있는 것.[27]{추론}",
+     "**다양한 문제** — 토스의 첫 경진대회도 실제 토스 앱 광고 데이터로 광고 클릭 확률을 맞히는 과제였다.[14]"
+    ]
+   },
+   "how_far": "직무 인터뷰가 코딩 → 직무 순서라[1] 알고리즘 문제와 ML 개념을 둘 다 준비합니다. '다양한'은 한 도메인을 깊게 + 다른 문제에도 같은 틀을 옮겨 본 경험 정도로 읽힙니다.{추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    14,
+    27
+   ],
+   "study": [
+    "handson-ml3",
+    "rules-of-ml",
+    "mlsd-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "SQL 및 Hadoop, Spark 등의 빅데이터 플랫폼에 익숙하신 분이면 좋아요.",
+   "short": "학습 데이터와 피처가 Hadoop 위 표에서 SQL·Spark로 만들어져서.",
+   "why": "토스 커머스 추천은 Hadoop·Spark·Airflow로 큰 데이터를 배치로 가공해 학습했습니다.[3] Feature Store도 Impala(Hadoop 위 SQL 엔진)와 Airflow로 피처를 만들어 싣습니다.[6]",
+   "level": {
+    "basic": "JOIN · GROUP BY · CASE · NULL 처리 · 날짜 조건",
+    "work": "윈도우 함수(ROW_NUMBER · LAG) · 사용자·날짜별 집계 · 중복 제거 · 파티션 걸러 읽기",
+    "team": "노출·클릭 로그로 학습용 표 만들기 · 시점 누수 막기 · Spark 셔플·쏠린 키 다루기"
+   },
+   "actually": {
+    "items": [
+     "**학습 표 만들기** — 노출 로그에 클릭·구매를 붙여 '한 줄 = 한 노출, 정답 = 눌렀나'로 만든다.{추론}",
+     "**시점 누수** — 그 노출 시점 이후에 생긴 값을 피처로 쓰면 오프라인 점수만 좋아진다. 피처는 노출 시각 기준으로 자른다.{추론}",
+     "**Spark** — 표를 여러 대에 나눠 조인·집계한다. 오래 걸리는 곳은 대개 셔플(기계끼리 데이터 다시 나누기)이다.[28]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "노출·클릭 로그로 상품별 CTR (직접 돌린 출력, SQLite)",
+     "body": "같은 사람이 B를 두 번 봤습니다 — 노출 수와 사람 수가 다릅니다. CTR의 분모를 무엇으로 할지가 첫 결정입니다.",
+     "lang": "sql",
+     "code": "SELECT item,\n       SUM(event='imp')                                       AS imps,\n       COUNT(DISTINCT CASE WHEN event='imp' THEN user_id END) AS users,\n       SUM(event='click')                                     AS clicks,\n       ROUND(1.0*SUM(event='click')/SUM(event='imp'), 3)      AS ctr\nFROM ev GROUP BY item ORDER BY ctr DESC;\n-- ('A', 3, 3, 2, 0.667)\n-- ('B', 3, 2, 1, 0.333)"
+    }
+   ],
+   "how_far": "'익숙'이라 클러스터를 짓는 수준은 아닙니다. **SQL로 학습 표를 직접 만들고, Spark 작업이 느릴 때 원인을 찾을 줄 아는** 정도입니다.{추론}",
+   "refs": [
+    3,
+    6,
+    28
+   ],
+   "study": [
+    "sql-recipe",
+    "spark-guide",
+    "spark-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "모델을 설계하고 개발하여 실제 서비스에 적용하고, 그 결과를 분석해 본 경험이 있으신 분이면 좋아요.",
+   "short": "오프라인 점수가 아니라 실제 사용자 반응(A/B 테스트)으로 모델을 판정하는 회사라서.",
+   "why": "토스 커머스 추천은 모델을 바꿀 때 A/B 테스트로 결과를 확인했고,[3] ML 플랫폼은 서빙 중인 모델의 점수 분포를 매일 감시합니다.[5] 이력서 안내도 사용한 기술과 **그로 인한 변화**까지 적으라고 합니다.[1]",
+   "actually": {
+    "items": [
+     "**서비스에 붙이기** — 모델을 배치(미리 계산해 저장)나 실시간 추론으로 서비스 서버에 연결한다. 토스 커머스는 둘 다 썼고 실시간은 ONNX Runtime으로 돌렸다.[3]",
+     "**A/B 테스트** — 사용자를 나눠 클릭·구매·매출을 견준다. 기간·표본 수를 미리 정하고 중간에 몰래 들여다보며 멈추지 않는다.[3]{추론}",
+     "**결과 분석** — 오프라인 지표는 올랐는데 온라인이 그대로면 라벨·피처·노출 위치 차이를 의심한다.[6]{추론}",
+     "**운영 감시** — 점수 분포가 갑자기 바뀌면 모델보다 데이터가 먼저 바뀐 경우가 많다.[5][6]"
+    ]
+   },
+   "how_far": "개인 프로젝트라도 **실제 사용자가 결과를 받았고 그 반응을 숫자로 재 봤다**면 같은 종류의 경험입니다.{추론} 이력서에는 지표 변화와 내가 맡은 부분을 따로 적습니다.[1]",
+   "refs": [
+    1,
+    3,
+    5,
+    6
+   ],
+   "study": [
+    "kohavi-ko",
+    "mlsd-book",
+    "onnxruntime-docs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "PyTorch, TensorFlow, XGBoost, LightGBM 등 주요 ML 라이브러리들을 실무에서 사용해 본 경험이 있다면 좋아요.",
+   "short": "딥러닝(PyTorch·TensorFlow)과 표 데이터에 강한 트리 모델(XGBoost·LightGBM)을 상황 따라 골라 써서.",
+   "why": "토스 CTR 예측 플랫폼은 새 상품·광고가 많아 트리 모델 대신 DeepFM·DLRM 같은 딥러닝 모델을 쓴다고 했습니다.[5] 반대로 표 형태의 중간 크기 데이터에서는 트리 모델이 여전히 딥러닝보다 잘 맞는 경우가 많다는 비교 연구가 있습니다.[26]",
+   "actually": {
+    "items": [
+     "**트리 모델** — 숫자·범주 피처가 섞인 표에서 빠르게 강한 기준선을 낸다. 피처 중요도로 무엇이 효과 있는지 보기 쉽다.[26]",
+     "**딥러닝** — 아이디가 수백만 개인 범주형 피처를 임베딩으로 바꿔 배우고, 새 아이템이 계속 생겨도 이어 학습하기 쉽다.[5][22]",
+     "**서빙까지** — PyTorch 모델을 ONNX(공통 모델 형식)로 내보내 다른 실행기에서 돌린다.[3]",
+     "**실무 사용** — 조기 종료·교차 검증·하이퍼파라미터 탐색·재현 가능한 학습 설정.{추론}"
+    ]
+   },
+   "how_far": "넷 다 깊을 필요는 없습니다. **딥러닝 하나 + 트리 하나**를 실제 데이터로 써 봤고, 같은 문제에 둘을 비교해 왜 하나를 골랐는지 말할 수 있으면 됩니다.{추론}",
+   "refs": [
+    3,
+    5,
+    22,
+    26
+   ],
+   "study": [
+    "lightgbm-docs",
+    "pytorch-tutorials",
+    "handson-ml3"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "새로운 문제에 빠르게 몰입하고, 필요한 역량을 스스로 학습하며 해결해 본 경험이 있다면 더욱 좋아요.",
+   "short": "들어와서 어느 도메인에 갈지 모르고, 그 도메인 지식은 대부분 스스로 익혀야 해서.",
+   "why": "배치는 면접 뒤에 정해집니다.[1] 이력서 안내도 경험이 많지 않더라도 **문제를 정의하고 해결한 과정**이 드러나면 좋은 인상을 준다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**도메인마다 다른 바닥** — 커머스는 추천·랭킹, MLOps는 쿠버네티스·서빙, 검색은 색인·분석기, AI는 LLM 평가 — 서로 겹치는 교과서가 적다.[1]{추론}",
+     "**보여 주는 법** — 처음 보는 문제를 맡아 무엇을 읽고, 무엇을 먼저 해 봤고, 어디서 막혔고, 숫자가 어떻게 바뀌었는지 순서대로 적는다.{추론}"
+    ]
+   },
+   "how_far": "전문연구요원 지원자는 석·박사 과정에서 연구 주제를 스스로 정한 경험이 있는 경우가 많습니다.{추론} 그 과정을 '모르는 분야를 몇 주 만에 따라잡은 이야기'로 바꿔 쓰는 것이 이 줄의 답입니다.{추론}",
+   "refs": [
+    1
+   ],
+   "study": [
+    "mlsd-book",
+    "rules-of-ml"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "slash24-reco",
+   "title": "SLASH 24 · 기반 데이터가 부족해도 OK! 커머스 추천 시스템 제작기",
+   "by": "토스 데이터 사이언티스트 · ML 엔지니어 · 20분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=LAD6LYnkPsA",
+   "why": "업무 (Commerce)의 회사 쪽 실제 모습 — 밴딧·투타워·보정·배치/실시간 서빙·A/B 테스트까지 한 번에."
+  },
+  {
+   "id": "toss-reco-blog",
+   "title": "토스 쇼핑 추천 시스템: 수백만 사용자와 상품을 잇는 멀티 스테이지 접근법",
+   "by": "토스 커머스 개인화팀 · Toss Tech · 2025",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://toss.tech/article/toss-shopping-recommendation-system",
+   "why": "후보 찾기 → 순위 매기기 → 다시 섞기와 단계별 모델 이름. 업무 (Commerce)의 지도."
+  },
+  {
+   "id": "slash24-mlplatform",
+   "title": "SLASH 24 · ML 플랫폼으로 개발 속도와 안정성 높이기",
+   "by": "토스 ML Chapter Lead · 19분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=-im8Gzmf3TM",
+   "why": "업무 (MLOps)의 회사 쪽 설계 — YAML DAG·MLflow·Triton/Kotlin 서빙·점수 분포 감시."
+  },
+  {
+   "id": "slash24-featurestore",
+   "title": "SLASH 24 · Feature Store로 유연하게 ML 고도화하기",
+   "by": "토스 ML 플랫폼 팀 · 19분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=-u3rhd7k2JQ",
+   "why": "학습과 서빙이 같은 피처를 쓰게 만든 이유와 구조. 업무 (MLOps)·요건 'SQL·Hadoop' 둘 다에 걸린다."
+  },
+  {
+   "id": "toss-sec-search",
+   "title": "토스증권 추천과 검색은 어떻게 진화하고 있을까?",
+   "by": "토스증권 · Toss Tech · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/tech_talk_talk_3",
+   "why": "하이브리드 검색·임베딩 판 교체·형태소 사전·뉴스 RAG 4단계. 업무 (검색)과 (AI)의 같은 그룹 사례."
+  },
+  {
+   "id": "slash23-es",
+   "title": "SLASH 23 · 대규모 로그 처리도 OK! Elasticsearch 클러스터 개선기",
+   "by": "토스증권 데이터 플랫폼 팀 · 16분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=_SJYU4lHa28",
+   "why": "매핑·샤드·갱신 주기를 잘못 두면 무엇이 무너지나. 업무 (검색)의 '검색 인프라 운영'."
+  },
+  {
+   "id": "es-rrf",
+   "title": "Elasticsearch 문서 · Reciprocal rank fusion",
+   "by": "Elastic",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.elastic.co/guide/en/elasticsearch/reference/current/rrf.html",
+   "why": "키워드·벡터 결과를 순위로 합치는 법. 위 예시 코드의 공식 정의."
+  },
+  {
+   "id": "nori",
+   "title": "Elasticsearch 문서 · Korean (nori) analysis plugin",
+   "by": "Elastic",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-nori.html",
+   "why": "한국어 형태소 분석기와 사용자 사전. 업무 (검색)의 품질 개선 첫걸음."
+  },
+  {
+   "id": "ir-book",
+   "title": "Introduction to Information Retrieval",
+   "by": "Manning · Raghavan · Schütze · Cambridge (온라인 무료판)",
+   "kind": "book",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://nlp.stanford.edu/IR-book/",
+   "why": "색인·점수·평가(정밀도·재현율)의 교과서. 검색 품질을 숫자로 재는 바탕."
+  },
+  {
+   "id": "cs329z-rag",
+   "title": "Stanford CS329Z · RAG Explained: From BM25 to Agentic RAG (강의 노트)",
+   "by": "우리 사이트 강의 노트",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/lectures/psLc-46GqY0",
+   "why": "키워드 검색에서 RAG까지 한 줄기로. 업무 (AI)의 RAG 설계 입문."
+  },
+  {
+   "id": "toss-benchmark",
+   "title": "리더보드 1등 LLM, 토스에서도 1등일까?",
+   "by": "Toss Tech · LLM Modeling 팀 · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://toss.tech/article/toss-benchmark",
+   "why": "공개 순위 대신 우리 일로 LLM을 재는 법. 업무 (AI)의 '문제 정의와 접근 방식 설계'."
+  },
+  {
+   "id": "snap-blog",
+   "title": "손가락 튕기기로 LLM 비용 줄이기",
+   "by": "토스 기술 블로그 · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://toss.tech/article/snap-llm-cost-reduction",
+   "why": "LLM 답을 정답 삼아 작은 모델로 넘기는 비용 설계. 업무 (AI)·(검색) 둘 다의 실제 예."
+  },
+  {
+   "id": "llm-app",
+   "title": "LLM을 활용한 실전 AI 애플리케이션 개발",
+   "by": "허정준",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=LLM%EC%9D%84%20%ED%99%9C%EC%9A%A9%ED%95%9C%20%EC%8B%A4%EC%A0%84%20AI%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EA%B0%9C%EB%B0%9C",
+   "why": "임베딩·벡터 검색·RAG·미세조정을 한국어로 코드와 함께. 업무 (AI) 손 연습용."
+  },
+  {
+   "id": "ragas-docs",
+   "title": "Ragas 문서",
+   "by": "공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.ragas.io/en/stable/",
+   "why": "RAG의 찾기·답하기를 따로 채점하는 지표 모음. 위 recall@k 예시를 넓히는 도구."
+  },
+  {
+   "id": "deepfm",
+   "title": "DeepFM: A Factorization-Machine based Neural Network for CTR Prediction",
+   "by": "Guo 외 · 2017",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://arxiv.org/abs/1703.04247",
+   "why": "토스 랭킹 단계가 쓰는 계열의 대표 CTR 모델. 피처 교차를 어떻게 배우나."
+  },
+  {
+   "id": "esmm",
+   "title": "Entire Space Multi-Task Model: An Effective Approach for Estimating Post-Click Conversion Rate",
+   "by": "Ma 외 · SIGIR 2018",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://arxiv.org/abs/1804.07931",
+   "why": "CVR을 클릭한 사람만으로 배우면 왜 치우치나, CTR × CVR로 어떻게 푸나. 업무 (Commerce)의 CVR 예측."
+  },
+  {
+   "id": "sklearn-calib",
+   "title": "Probability calibration (scikit-learn User Guide)",
+   "by": "scikit-learn · 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://scikit-learn.org/stable/modules/calibration.html",
+   "why": "예측 확률이 실제 비율과 맞는지 그려 보고 고치는 법. CTR 모델의 보정 첫 연습."
+  },
+  {
+   "id": "kube-book",
+   "title": "쿠버네티스 입문 (우리 사이트 책)",
+   "by": "우리 사이트 책",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "파드·디플로이먼트·Job과 Pending·CrashLoopBackOff 읽기. 업무 (MLOps)의 Kubernetes 바닥."
+  },
+  {
+   "id": "k8s-operator",
+   "title": "Kubernetes 문서 · Operator pattern",
+   "by": "Kubernetes 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://kubernetes.io/docs/concepts/extend-kubernetes/operator/",
+   "why": "학습·서빙 작업을 쿠버네티스 객체로 정의해 자동으로 맞추는 방식. ML 플랫폼 부품을 만드는 틀."
+  },
+  {
+   "id": "mlflow-docs",
+   "title": "MLflow 문서",
+   "by": "MLflow 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://mlflow.org/docs/latest/index.html",
+   "why": "실험 기록·모델 판 등록. 토스 플랫폼이 쓰는 모델 저장소."
+  },
+  {
+   "id": "mlsd-book",
+   "title": "머신러닝 시스템 설계",
+   "by": "칩 후옌 · 한빛미디어 · 2023",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EC%B9%A9%20%ED%9B%84%EC%98%8C",
+   "why": "문제 정의 → 데이터 → 학습 → 배포 → 감시를 한 흐름으로. 요건 '서비스에 적용하고 분석'과 '새 문제 몰입'의 공통 바탕."
+  },
+  {
+   "id": "rules-of-ml",
+   "title": "Rules of Machine Learning",
+   "by": "Martin Zinkevich · Google",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+   "why": "첫 모델은 단순하게, 지표부터 정하기 같은 실무 규칙 43개. 요건 '비즈니스 문제에 적용'을 짧게 정리."
+  },
+  {
+   "id": "handson-ml3",
+   "title": "핸즈온 머신러닝 (3판)",
+   "by": "오렐리앙 제롱 · 박해선 옮김 · 한빛미디어",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%ED%95%B8%EC%A6%88%EC%98%A8%20%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%203%ED%8C%90",
+   "why": "트리 모델부터 신경망까지 코드로. 요건 'ML 깊은 이해'와 '주요 라이브러리'의 바탕."
+  },
+  {
+   "id": "sql-recipe",
+   "title": "데이터 분석을 위한 SQL 레시피",
+   "by": "",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942290",
+   "why": "로그로 사용자·날짜별 지표를 만드는 쿼리 모음. 노출·클릭 로그로 학습 표를 만드는 연습."
+  },
+  {
+   "id": "spark-guide",
+   "title": "스파크 완벽 가이드",
+   "by": "빌 체임버스 · 마테이 자하리아 · 한빛미디어 · 2019",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%8A%A4%ED%8C%8C%ED%81%AC%20%EC%99%84%EB%B2%BD%20%EA%B0%80%EC%9D%B4%EB%93%9C",
+   "why": "DataFrame·Spark SQL·조인·집계 파트만 먼저. 스파크 2 기준이라 최신 기능은 공식 문서로 보충."
+  },
+  {
+   "id": "spark-docs",
+   "title": "Spark SQL, DataFrames and Datasets Guide",
+   "by": "Apache Spark 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://spark.apache.org/docs/latest/sql-programming-guide.html",
+   "why": "최신 Spark SQL 문법과 성능 조정(파티션·셔플)."
+  },
+  {
+   "id": "kohavi-ko",
+   "title": "신뢰할 수 있는 온라인 통제 실험",
+   "by": "론 코하비 · 다이앤 탕 · 야 쉬 (이기홍 · 김기영 옮김)",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000005201885",
+   "why": "A/B 테스트를 설계하고 결과를 믿어도 되는지 판단하는 법. 요건 '서비스에 적용하고 결과를 분석'."
+  },
+  {
+   "id": "onnxruntime-docs",
+   "title": "ONNX Runtime 문서",
+   "by": "Microsoft · ONNX Runtime",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://onnxruntime.ai/docs/",
+   "why": "토스 커머스가 실시간 추론에 쓴 실행기. 학습한 모델을 서비스에 붙이는 마지막 단계."
+  },
+  {
+   "id": "lightgbm-docs",
+   "title": "LightGBM 문서",
+   "by": "Microsoft · 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://lightgbm.readthedocs.io/en/latest/",
+   "why": "범주형 피처·조기 종료·파라미터 조정. 요건의 XGBoost·LightGBM 실무 사용."
+  },
+  {
+   "id": "pytorch-tutorials",
+   "title": "PyTorch Tutorials",
+   "by": "PyTorch 공식",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://pytorch.org/tutorials/",
+   "why": "데이터 로더·학습 루프·모델 저장·ONNX 내보내기까지 공식 예제. 요건의 PyTorch 실무 사용."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "네 도메인 지도 그리기",
+   "time": "1주",
+   "goal": "커머스 추천·ML 플랫폼·검색·LLM이 토스에서 각각 무엇을 하는지 말로 설명하고, 내 강점이 어디에 맞는지 고를 수 있다.",
+   "task": "토스 발표·글 네 개를 보고 도메인마다 '입력 → 모델 → 출력 → 재는 숫자'를 한 줄씩 적는다. 내 연구·프로젝트 하나를 그 중 한 줄에 맞춰 다시 써 본다.",
+   "resources": [
+    "slash24-reco",
+    "slash24-mlplatform",
+    "toss-sec-search",
+    "toss-benchmark"
+   ]
+  },
+  {
+   "title": "로그에서 학습 표까지",
+   "time": "2~3주",
+   "goal": "노출·클릭 로그로 시점 누수 없는 학습 표를 SQL·Spark로 만들 수 있다.",
+   "task": "가상 사용자 1만 명·상품 1,000개·노출 100만 건 로그를 만들고, 노출 시각 이전 값만 쓴 피처 표를 PySpark로 만든다. 같은 표를 SQL로도 뽑아 결과가 같은지 대조한다.",
+   "resources": [
+    "sql-recipe",
+    "spark-guide",
+    "spark-docs",
+    "slash24-featurestore"
+   ]
+  },
+  {
+   "title": "CTR·CVR 모델과 보정",
+   "time": "2~3주",
+   "goal": "트리 모델과 딥러닝 CTR 모델을 같은 데이터로 비교하고, 확률 보정까지 확인한다.",
+   "task": "2단계 표로 LightGBM과 PyTorch DeepFM을 학습해 AUC·logloss·보정 곡선을 한 표로 낸다. CTR × CVR로 순위를 바꿨을 때 노출당 구매가 어떻게 달라지는지 본다.",
+   "resources": [
+    "lightgbm-docs",
+    "pytorch-tutorials",
+    "deepfm",
+    "esmm",
+    "sklearn-calib"
+   ]
+  },
+  {
+   "title": "올리고 재기",
+   "time": "2주",
+   "goal": "모델을 쿠버네티스 위에서 학습·서빙하고, 판을 바꿔도 같은 답이 나오는지 확인한다.",
+   "task": "3단계 모델을 컨테이너로 만들어 로컬 쿠버네티스(kind 등)에서 Job으로 학습하고 MLflow에 등록한 뒤, ONNX Runtime 서버가 새 판을 받아 가게 한다. 학습 코드와 서버의 출력 차이를 잰다.",
+   "resources": [
+    "kube-book",
+    "mlflow-docs",
+    "onnxruntime-docs",
+    "k8s-operator"
+   ]
+  },
+  {
+   "title": "검색과 RAG (도메인 선택)",
+   "time": "2주",
+   "goal": "하이브리드 검색과 작은 RAG를 만들고, 찾기와 답하기를 따로 채점할 수 있다.",
+   "task": "가상 상품 설명 5,000개를 Elasticsearch(nori)로 색인하고 키워드·벡터·RRF 결과를 질문 50개로 비교한다. 같은 검색 위에 RAG를 얹어 recall@k와 답 정확도를 따로 낸다.",
+   "resources": [
+    "nori",
+    "es-rrf",
+    "ir-book",
+    "cs329z-rag",
+    "ragas-docs"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 공공데이터 집계로 신입 초봉 **약 4,200만원**, 평균 **약 6,200만원** — 공시된 평균 급여는 없다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없어 ML 엔지니어 계약 연봉과 다를 수 있다 [18]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 — 경력직이 섞인 값이다 [18]"
+   },
+   {
+    "label": "토스뱅크 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 계열사 값 — 견주어 보기용 [29]"
+   },
+   {
+    "label": "토스뱅크 평균",
+    "value": "약 7,208만원",
+    "amount": 7208,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 계열사 평균 [29]"
+   }
+  ],
+  "how": "공고는 레퍼런스 체크 뒤 **처우 협의** 단계에서 사람마다 정한다고 적었다 [1]. 비바리퍼블리카는 상장사가 아니라 사업보고서의 '직원 평균 급여'가 없어 공시 숫자를 싣지 못했다. 평균은 초봉이 아니라 경력직이 섞인 회사 전체 값이고, 집계값은 추정이라 실제 제안과 차이가 클 수 있다 {추론}. 전문연구요원이라고 처우가 따로 정해지는지는 공고에 없다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 복지를 소개한 2021년 공식 글이다 [20]. 지금도 같은지는 글에 없고, 근무 장소 같은 항목이 전문연구요원 복무 규칙(정해진 연구 분야·복무 관리)과 어떻게 맞물리는지도 적혀 있지 않으니 처우 협의 때 확인한다 [16] {추론}."
+ },
+ "location": {
+  "name": "토스(비바리퍼블리카) 본사",
+  "address": "서울특별시 강남구 테헤란로 142, 4·10~13·22·23층",
+  "postal": "06236",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "주소는 토스 회사 소개 페이지 하단의 회사 정보다 [19]. 공고 근무지는 'Seoul'로만 적혀 있어 실제 근무 건물은 다를 수 있다 [1]."
+ },
+ "fit": {
+  "good": [
+   "병역을 연구 경력으로 채우고 싶은 석·박사 과정생·졸업생[1][15]",
+   "모델링에서 멈추지 않고 서비스 숫자가 바뀌는 걸 보고 싶은 사람[1]",
+   "추천·검색·플랫폼·LLM 중 어디에 가도 새로 배울 각오가 된 사람[1]",
+   "데이터가 부족한 상태에서 방법을 만들어 내는 게 즐거운 사람[3]"
+  ],
+  "hard": [
+   "도메인이 면접 뒤 배치로 정해진다 — 원하는 도메인이 아닐 수 있다[1]",
+   "전문연구요원은 전공·학위와 관련된 연구 분야에서 복무해야 하고, 업체를 옮기는 데 조건이 붙는다[16]",
+   "1차 인터뷰가 코딩이라 연구 경력만으로는 첫 관문을 못 넘을 수 있다[1]",
+   "석사급 전문연구요원 배정은 2019년에 줄었다 — 자리 수가 정해져 있어 경쟁이 있다[17]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "클릭률이 가장 높은 상품을 맨 위에 두면 안 되는 이유는요? CVR은 어떻게 학습하겠어요?",
+   "a": "노출당 구매와 CVR 표본 치우침 — ESMM·토스 랭킹 단계.[4][21]"
+  },
+  {
+   "q": "기록이 거의 없는 신상품을 어떻게 추천 후보에 넣겠어요?",
+   "a": "토스 커머스가 실제로 한 밴딧·무작위 노출·정해진 비율 섞기.[3][4]"
+  },
+  {
+   "q": "오프라인 AUC는 올랐는데 A/B 테스트에서 차이가 없어요. 무엇부터 보겠어요?",
+   "a": "학습-서빙 피처 차이·라벨 정의·보정 — 토스 Feature Store가 풀려던 문제.[5][6]"
+  },
+  {
+   "q": "RAG 답이 틀렸어요. 찾기 문제인지 생성 문제인지 어떻게 가르겠어요?",
+   "a": "단계별로 따로 채점하기 — 토스증권 RAG 4단계와 recall@k.[9][24]"
+  },
+  {
+   "q": "표 데이터 문제에 트리 모델과 딥러닝 중 무엇을 먼저 쓰겠어요? 토스 CTR 플랫폼은 왜 딥러닝일까요?",
+   "a": "새 아이템이 많은 환경 vs 중간 크기 표 데이터.[5][26]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · ML 엔지니어 (전문연구요원)",
+   "url": "https://toss.im/career/job-detail?gh_jid=4770769003",
+   "kind": "posting",
+   "note": "팀 소개·업무 4갈래·요건·이력서 안내·병역 안내(현역·보충역 신규 편입과 전직 가능)·합류 여정·동료 한마디"
+  },
+  {
+   "n": 2,
+   "title": "토스 Data Division 채용 위키",
+   "url": "https://recruit-data-division.oopy.io/",
+   "kind": "company",
+   "note": "ML Tribe(ML 플랫폼·Feature Store·모니터링, LLM·Vision·추천·광고·검색 모델)와 ML Chapter 소개"
+  },
+  {
+   "n": 3,
+   "title": "SLASH 24 · 기반 데이터가 부족해도 OK! 커머스 추천 시스템 제작기",
+   "url": "https://www.youtube.com/watch?v=LAD6LYnkPsA",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스 커머스 DS·MLE — 코호트 밴딧·신상품 무작위 노출·투타워·temperature scaling·계속 학습·Hadoop/Spark/Airflow·ONNX Runtime·A/B 테스트. 자막 내용은 우리 다른 토스 커머스 풀이에서 전부 읽은 기록을 따랐다"
+  },
+  {
+   "n": 4,
+   "title": "Toss Tech · 토스 쇼핑 추천 시스템: 수백만 사용자와 상품을 잇는 멀티 스테이지 접근법",
+   "url": "https://toss.tech/article/toss-shopping-recommendation-system",
+   "kind": "company",
+   "date": "2025-04-17",
+   "note": "토스 커머스 개인화팀 ML Engineer — Retrieval(Two-Tower·그래프·시퀀스, 수천 개 후보) · Ranking(pCTR·pCVR, DeepFM·DLRM·DCN·ESMM) · Re-ranking(신상품 비율·광고 섞기·다양성)"
+  },
+  {
+   "n": 5,
+   "title": "SLASH 24 · ML 플랫폼으로 개발 속도와 안정성 높이기",
+   "url": "https://www.youtube.com/watch?v=-im8Gzmf3TM",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스 ML Chapter Lead — DagBuilder(YAML)·MLflow·ML Hub·Triton/Kotlin 추론·10분마다 판 확인·점수 분포 감시·CTR 플랫폼(DeepFM·DLRM). 우리 ML 플랫폼 풀이에서 자막 전부 읽은 기록"
+  },
+  {
+   "n": 6,
+   "title": "SLASH 24 · Feature Store로 유연하게 ML 고도화하기",
+   "url": "https://www.youtube.com/watch?v=-u3rhd7k2JQ",
+   "kind": "company",
+   "date": "2024",
+   "note": "토스 ML 플랫폼 팀 — Impala·Airflow·Aerospike·Phoenix·Kafka, 학습·서빙 같은 피처 서비스, 드리프트 때 적재 중단"
+  },
+  {
+   "n": 7,
+   "title": "SlashLive · 토스는 AI모델을 어떻게 서빙할까",
+   "url": "https://www.youtube.com/watch?v=t_35VpGYgiY",
+   "kind": "company",
+   "date": "2026-10-14",
+   "note": "토스 서빙 엔지니어링 — 40개 넘는 모델, 여러 세대 GPU, 낮 실시간·밤 배치"
+  },
+  {
+   "n": 8,
+   "title": "Toss Tech · GPU를 밀도 있게 쓰는 방법 — 토스증권의 GPU 가상화(MIG) 도입기",
+   "url": "https://toss.tech/article/toss-securities-gpu-mig",
+   "kind": "company",
+   "date": "2025-07-10",
+   "note": "같은 그룹 다른 회사 — 작업의 약 1/3이 GPU의 1/4도 못 씀"
+  },
+  {
+   "n": 9,
+   "title": "Toss Tech · 토스증권 추천과 검색은 어떻게 진화하고 있을까?",
+   "url": "https://toss.tech/article/tech_talk_talk_3",
+   "kind": "company",
+   "date": "2026-08-26",
+   "note": "같은 그룹 다른 회사 — 서비스마다 쿼리를 짜던 문제, 하이브리드 검색, 임베딩 판과 색인 함께 교체, 형태소 사전, 뉴스 RAG 4단계"
+  },
+  {
+   "n": 10,
+   "title": "SLASH 23 · 대규모 로그 처리도 OK! Elasticsearch 클러스터 개선기",
+   "url": "https://www.youtube.com/watch?v=_SJYU4lHa28",
+   "kind": "company",
+   "date": "2023",
+   "note": "토스증권 데이터 플랫폼 팀 — 일 6TB, 매핑 폭발로 인한 장애, 샤드·refresh 조정"
+  },
+  {
+   "n": 11,
+   "title": "Toss Tech · LLM은 똑똑한데, 왜 우리 회사 일은 모를까",
+   "url": "https://toss.tech/article/llm_context_topic",
+   "kind": "company",
+   "date": "2026-07-30",
+   "note": "토스 사내 지식 시스템 Topic — 출처별 단위·신뢰 상태·근거를 에이전트에 넘김"
+  },
+  {
+   "n": 12,
+   "title": "Toss Tech · 손가락 튕기기로 LLM 비용 줄이기 (SNAP)",
+   "url": "https://toss.tech/article/snap-llm-cost-reduction",
+   "kind": "company",
+   "date": "2026-10-27",
+   "note": "LLM 판단을 정답으로 작은 분류 모델 학습, 확신도 문턱으로 일부만 처리"
+  },
+  {
+   "n": 13,
+   "title": "Toss Tech · 리더보드 1등 LLM, 토스에서도 1등일까? (Toss Benchmark)",
+   "url": "https://toss.tech/article/toss-benchmark",
+   "kind": "company",
+   "date": "2026-09-16",
+   "note": "LLM Modeling 팀 — 상품 속성 추출·동일성 판단 등 사내 작업으로 모델 평가"
+  },
+  {
+   "n": 14,
+   "title": "토스피드 · 첫 기술 경진대회 'NEXT ML 챌린지'",
+   "url": "https://toss.im/tossfeed/article/nextml",
+   "kind": "company",
+   "date": "2025-09-01",
+   "note": "실제 토스 앱 광고 데이터로 광고 클릭 확률 예측"
+  },
+  {
+   "n": 15,
+   "title": "병무청 · 전문연구요원 개요",
+   "url": "https://www.mma.go.kr/contents.do?mc=mma0000760",
+   "kind": "reference",
+   "note": "복무기간 36개월(현역·보충역 동일, 2005-07-01 편입자부터) · 제도 연혁"
+  },
+  {
+   "n": 16,
+   "title": "병무청 · 전문연구요원 복무관리",
+   "url": "https://www.mma.go.kr/contents.do?mc=mma0000765",
+   "kind": "reference",
+   "note": "전공·학위와 관련된 편입 당시 연구 분야에서 근무 · 전직 조건(일반 전문연구요원은 1년 6개월 이상 근무 뒤 승인 전직 등) · 박사과정 편입자의 학위 취득 의무. 페이지 요약으로 확인 — 세부는 원문 재확인 필요"
+  },
+  {
+   "n": 17,
+   "title": "머니투데이 · 석사급 전문연구요원 300명 감축…'일→주' 단위 관리체계 전환",
+   "url": "https://www.mt.co.kr/tech/2019/11/21/2019112109424716437",
+   "kind": "news",
+   "date": "2019-11-21",
+   "note": "석사급 전문연구요원 배정 인원이 줄어든 제도 변화"
+  },
+  {
+   "n": 18,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 19,
+   "title": "토스 — 회사 소개(사이트 하단 주소)",
+   "url": "https://toss.im/company",
+   "kind": "company"
+  },
+  {
+   "n": 20,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 21,
+   "title": "Entire Space Multi-Task Model (ESMM)",
+   "url": "https://arxiv.org/abs/1804.07931",
+   "kind": "reference",
+   "date": "2018"
+  },
+  {
+   "n": 22,
+   "title": "DeepFM: A Factorization-Machine based Neural Network for CTR Prediction",
+   "url": "https://arxiv.org/abs/1703.04247",
+   "kind": "reference",
+   "date": "2017"
+  },
+  {
+   "n": 23,
+   "title": "Elasticsearch 문서 · Reciprocal rank fusion",
+   "url": "https://www.elastic.co/guide/en/elasticsearch/reference/current/rrf.html",
+   "kind": "reference",
+   "note": "점수 = Σ 1/(k + 순위), 기본 k = 60"
+  },
+  {
+   "n": 24,
+   "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+   "url": "https://arxiv.org/abs/2005.11401",
+   "kind": "reference",
+   "date": "2020"
+  },
+  {
+   "n": 25,
+   "title": "Kubernetes 문서 · Operator pattern",
+   "url": "https://kubernetes.io/docs/concepts/extend-kubernetes/operator/",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "Why do tree-based models still outperform deep learning on tabular data?",
+   "url": "https://arxiv.org/abs/2207.08815",
+   "kind": "reference",
+   "date": "2022"
+  },
+  {
+   "n": 27,
+   "title": "On Calibration of Modern Neural Networks",
+   "url": "https://arxiv.org/abs/1706.04599",
+   "kind": "reference",
+   "date": "2017"
+  },
+  {
+   "n": 28,
+   "title": "Spark SQL, DataFrames and Datasets Guide",
+   "url": "https://spark.apache.org/docs/latest/sql-programming-guide.html",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "자소설닷컴 — 토스뱅크 연봉(같은 집계)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "이 공고는 도메인 넷을 한데 묶은 자리라, 줄마다 그 도메인의 토스 발표·글을 근거로 썼습니다. 토스 검색 플랫폼 자체의 공개 발표는 찾지 못해 같은 그룹 토스증권 자료로 '보통 이런 것'을 보였습니다. SLASH 24 발표 세 편의 세부는 우리 다른 토스 풀이에서 자막을 전부 읽은 기록을 따랐습니다. 전문연구요원 규정은 병무청 페이지 요약으로 확인했고 해마다 바뀌므로, 편입 자격(학위)·전직 조건은 지원 전에 병무청 원문과 회사에 다시 확인하세요."
+}
