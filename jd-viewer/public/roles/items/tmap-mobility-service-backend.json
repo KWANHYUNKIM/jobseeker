@@ -1,0 +1,512 @@
+{
+  "id": "tmap-mobility-service-backend",
+  "company": "티맵모빌리티",
+  "role": "Backend Engineer – 모빌리티 서비스",
+  "team": "모빌리티서비스 조직(로컬 서비스·운전점수·대리·모빌리티 핵심 서비스)",
+  "jobs": ["ats-skcareers:sk:R262310"],
+  "researched_at": "2026-11-23",
+  "tldr": {
+    "what": "TMAP 앱 안의 **로컬(장소 추천·맛집 순위), 운전점수, 대리, 모빌리티 핵심 서비스** 뒤에서 도는 서버와 API를 설계·개발·운영합니다.[1] 월 이용자 1,500만 명 이상, 월 방문 약 4억 4,600만 회인 앱입니다.[12]",
+    "env": "Java·Kotlin + Spring, MySQL·PostgreSQL + NoSQL, AWS 위에서 일합니다.[1] 같은 회사 백엔드는 EKS·Elastic Beanstalk·Kafka·Redis를 써 왔다고 직접 글로 밝혔습니다.[4][5][6]",
+    "oneline": "이동 데이터가 붙은 서비스 여러 개를 맡는 5년 차 이상 백엔드. 새 기능만큼 **트래픽·장애·외부 연동**을 견디는 구조가 중심입니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "TMAP의 모빌리티 및 위치·로컬 데이터 기반 서비스를 함께 만들어갈 백엔드 엔지니어를 찾습니다.",
+      "short": "TMAP의 주행·위치 데이터를 쓰는 서비스들의 서버를 만들 사람을 뽑는다는 뜻.",
+      "why": "TMAP은 주행 데이터를 월 53억 km 모은다고 밝혔고(2022년), 그 데이터로 대리 수요 예측과 안전운전 점수를 만든다고 설명했습니다.[11] 장소 추천과 맛집 순위도 실제 목적지 주행 데이터로 셉니다.[15] 이 자리는 그런 데이터를 쓰는 서비스의 **서버 쪽**입니다.[1]",
+      "how_far": "데이터 분석·추천 모델은 데이터·AI 쪽 몫이고, 이 자리는 그 결과를 API로 내주고 서비스로 굴리는 쪽입니다 {추론}.",
+      "refs": [1, 11, 15],
+      "study": ["tmap-tech-recommend"]
+    },
+    {
+      "section": "task",
+      "quote": "로컬 서비스, 운전점수, 대리, 모빌리티 핵심 서비스 등 다양한 도메인의 백엔드 시스템을 설계·개발·운영합니다.",
+      "short": "장소·맛집, 운전점수, 대리처럼 성격이 다른 서비스 여러 개의 서버를 같이 맡는다.",
+      "why": "TMAP은 내비 하나가 아니라 대중교통·택시·PM(전동 킥보드 같은 개인형 이동수단)을 한 앱에 묶은 '카 라이프 플랫폼'을 내세웠습니다.[13] 그래서 한 조직이 맡는 도메인이 여럿입니다.[1]",
+      "actually": {
+        "intro": "공고가 이름을 댄 네 도메인이 앱에서 실제로 하는 일입니다.",
+        "items": [
+          "**로컬 서비스** — '어디갈까'의 내 주변 추천, 실제 운전자가 많이 간 곳으로 센 '티맵랭킹', 메뉴별 맛집 순위, 주행으로 방문을 확인한 리뷰와 방문자에게 묻는 '장소 이야기'.[15]",
+          "**운전점수** — 과속·급가속·급감속 같은 운전 이력을 도로 유형·주행 시간과 함께 따져 100점으로 바꾼 점수. 2016년에 시작했고 2023년 기준 점수를 가진 이용자가 900만 명입니다.[14] 점수가 일정 이상이면 보험료 할인 같은 혜택으로 이어집니다.[14][17]",
+          "**대리** — 호출·매칭·결제, 탈 때마다 쌓이는 마일리지, 가족에게 보내는 도착 알림, 경유지 최대 2곳, 사고 보상 요금제.[16] 호출 뒤 30초 안에 매칭이 안 되면 이용자가 떠난다고 팀이 말했습니다(2022년).[10]",
+          "**모빌리티 핵심 서비스** — 공고는 이름만 적었습니다.[1] 앱에 묶인 대중교통·택시·PM 같은 이동 서비스의 공통 기능일 것으로 보입니다.[13] {추론}"
+        ]
+      },
+      "how_far": "입사하면 한 도메인을 주로 맡고 필요에 따라 옆 도메인으로 옮겨 갈 것으로 보입니다 {추론}. 면접 전에 TMAP 앱에서 네 화면을 직접 써 보고 '서버가 무엇을 계산하나'를 적어 가면 이야깃거리가 생깁니다 {추론}.",
+      "refs": [1, 10, 13, 14, 15, 16, 17],
+      "study": ["tmap-tech-lbs", "wanted-daeri"]
+    },
+    {
+      "section": "task",
+      "quote": "신규 서비스와 기능의 요구사항을 바탕으로 아키텍처 설계부터 개발, 배포, 운영까지 서비스의 전체 라이프사이클에 참여하며, 복잡한 비즈니스 로직을 안정적이고 확장 가능한 구조로 구현합니다.",
+      "short": "요구사항 단계부터 설계·개발·배포·운영까지, 만든 사람이 끝까지 본다는 뜻.",
+      "why": "대리 팀 인터뷰에서 백엔드 개발자도 기획 단계부터 들어간다고 했습니다(2022년).[10] 결제 플랫폼 팀은 DevOps 인력 없이 EKS on Fargate(서버 관리 없이 컨테이너를 돌리는 AWS 방식)로 클러스터·배포·모니터링을 직접 꾸렸다고 썼습니다.[4]",
+      "how_far": "배포 파이프라인을 처음부터 짓지는 않더라도, 자기 서비스의 배포 설정(Pod 수·오토스케일·로그 수집)은 직접 고칠 줄 알아야 합니다.[4] {추론}",
+      "refs": [4, 10],
+      "study": ["tmap-tech-eks", "kubernetes"]
+    },
+    {
+      "section": "task",
+      "quote": "대용량 트래픽 환경에서도 안정적인 서비스를 제공할 수 있도록 고가용성(HA)을 고려한 API와 시스템을 개발합니다.",
+      "short": "서버 한 대나 데이터센터 한 곳이 빠져도 서비스가 멈추지 않게 API를 만든다.",
+      "why": "이용이 한꺼번에 몰리는 앱이라서입니다. 회사 분석에서 여행 주행은 토요일이 평일의 약 2배였고, 연휴 첫날·둘째 날에 출발이 몰렸습니다.[7]",
+      "how_far": "자세한 일은 담당업무 셋째 줄과 우대사항 첫 줄에서 다룹니다. 여기서는 '여러 대·여러 가용 영역(AWS의 독립된 데이터센터 묶음)에 나눠 두고, 한 곳이 빠져도 나머지가 받는다'를 설명할 수 있으면 됩니다.[28]",
+      "refs": [7, 28],
+      "study": ["aws-wa-rel"]
+    },
+    {
+      "section": "task",
+      "quote": "내부 유관 조직 및 외부 파트너와 협업하여 API 연동과 데이터 처리 구조를 설계하고 개선하며, 사용자 경험과 서비스 품질을 높이기 위한 지속적인 개선과 고도화를 함께 이끌어갑니다.",
+      "short": "사내 다른 팀·외부 회사(보험사·기관 등)와 API로 주고받는 길을 만들고 다듬는다.",
+      "why": "운전점수는 KB손해보험·메리츠화재·한화손해보험·삼성화재의 보험료 할인과 이어지고,[14] 도로 상황 정보는 기상청·국가교통정보센터·경찰청 등에서 받아 씁니다.[9] 남의 시스템에 기대는 구간이 많은 서비스입니다.",
+      "how_far": "구체적인 연동 방법은 담당업무 넷째 줄에서 다룹니다.",
+      "refs": [9, 14],
+      "study": ["resilience4j"]
+    },
+    {
+      "section": "task",
+      "quote": "모빌리티 및 위치·로컬 데이터 기반 서비스의 백엔드 시스템을 설계·개발·운영합니다.",
+      "short": "위치·장소 데이터가 들어간 서버를 설계부터 운영까지 맡는다 — 이 자리의 본업.",
+      "why": "팀 소개 문장을 담당업무로 다시 적은 줄입니다.[1] 위치 데이터가 들어가면 '내 주변'처럼 좌표로 찾는 조회가 많아져, 보통 웹 서버에 없는 고민(공간 인덱스·위치 캐시)이 생깁니다 {추론}.",
+      "actually": {
+        "items": [
+          "**좌표로 찾기** — '내 주변 1km 맛집'은 위도·경도 네모 상자로 먼저 거르고 진짜 거리로 다시 잽니다. PostgreSQL 확장 PostGIS의 `ST_DWithin`, Redis의 `GEOSEARCH`가 이 일을 합니다.[29][30]",
+          "**장소(POI, 이름 붙은 지점) 데이터** — TMAP이 외부에 여는 POI 검색 API만 해도 약 150만 건의 장소를 다루고, 주소↔좌표 변환·경로 안내 API도 따로 있습니다.[24]",
+          "**주행 데이터와 잇기** — 실제로 그 장소까지 주행했는지로 순위를 세고 리뷰를 인증합니다.[15]",
+          "**시간대 맞추기** — 같은 장소라도 출발 시간대에 따라 추천이 달라지게 설계했다고 회사가 썼습니다.[7]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "내 주변 1km 장소 찾기 — 상자로 거르고 거리로 다시 재기",
+          "body": "상자 안에는 넷이 들어오지만 진짜 거리로 재면 돈까스집(약 1.2km)은 빠진다(직접 돌린 출력). DB의 공간 인덱스가 첫 단계를, 거리 계산이 둘째 단계를 맡는다. 좌표는 가상 값이다.",
+          "lang": "python",
+          "code": "import math\ndef dist_m(lat1, lon1, lat2, lon2):\n    R = 6371000\n    p1, p2 = math.radians(lat1), math.radians(lat2)\n    dp, dl = p2 - p1, math.radians(lon2 - lon1)\n    a = math.sin(dp/2)**2 + math.cos(p1)*math.cos(p2)*math.sin(dl/2)**2\n    return 2 * R * math.asin(math.sqrt(a))\n\nme = (37.5636, 126.9900)\npois = {\"김밥집\": (37.5651, 126.9895), \"카페\": (37.5600, 126.9950),\n        \"돈까스\": (37.5710, 126.9800), \"주차장\": (37.5640, 126.9905)}\n\nd_lat = 1000 / 111320\nd_lon = 1000 / (111320 * math.cos(math.radians(me[0])))\nbox = {n: p for n, p in pois.items()\n       if abs(p[0]-me[0]) <= d_lat and abs(p[1]-me[1]) <= d_lon}\nprint(\"상자 안:\", sorted(box))\nnear = sorted((round(dist_m(*me, *p)), n) for n, p in box.items())\nprint([(n, m) for m, n in near if m <= 1000])\n\n# 상자 안: ['김밥집', '돈까스', '주차장', '카페']\n# [('주차장', 63), ('김밥집', 173), ('카페', 595)]"
+        }
+      ],
+      "how_far": "공간 알고리즘을 새로 만드는 일은 아닙니다. DB·캐시가 주는 공간 기능을 골라 쓰고, 느려지면 인덱스를 손볼 줄 아는 수준이면 됩니다 {추론}.",
+      "refs": [1, 7, 15, 24, 29, 30],
+      "study": ["postgis", "redis-geo", "tmap-api-guide"]
+    },
+    {
+      "section": "task",
+      "quote": "비즈니스 요구사항을 분석하고, 유지보수와 확장이 용이한 API 및 데이터 구조를 설계합니다.",
+      "short": "요구를 듣고, 기능이 붙어도 덜 뜯어고치게 API 모양과 테이블 구조를 정한다.",
+      "why": "한 앱에 서비스가 계속 붙습니다 — 2023년 대중교통·택시·PM 통합,[13] 2026년 '어디갈까' 개편처럼요.[15] 대중교통을 다시 만들 때 팀은 한꺼번에 갈아엎지 않고 앱이 부르는 API부터 차례로 옮겼다고 썼습니다.[6]",
+      "actually": {
+        "items": [
+          "**앱 옛 버전 지키기** — 앱은 옛 버전이 오래 남으므로 응답에 칸을 더하기만 하고 지우지 않거나, 판(`/v2`)을 나눕니다 {추론}.",
+          "**상태 먼저 정하기** — 대리 호출이면 '대기 → 배정 → 운행 → 완료·취소'처럼 상태와 바뀌는 규칙을 먼저 표로 정합니다 {추론}.",
+          "**자주 바뀌는 값 떼어 두기** — 대중교통 팀은 실시간 도착 정보를 Redis에 쓰고 만료·덮어쓰기로 관리했습니다.[6] 덜 바뀌는 기본 정보와 저장소를 나눈 예입니다."
+        ]
+      },
+      "how_far": "화면 요구를 그대로 API로 옮기지 않고 다른 화면·파트너도 쓸 수 있게 일반화하는 것까지입니다 {추론}. 최소선은 상태 전이와 하위 호환을 이유와 함께 설명하는 것.",
+      "refs": [6, 13, 15],
+      "study": ["http-basic", "clean-arch", "real-mysql"]
+    },
+    {
+      "section": "task",
+      "quote": "대용량 트래픽과 서비스 장애에 대응할 수 있도록 가용성과 성능을 고려한 시스템을 개발합니다.",
+      "short": "몰릴 때 느려지지 않고, 한 부분이 고장 나도 전체가 멈추지 않게 만든다.",
+      "why": "월 방문 약 4억 4,600만 회이고 한 해 사이 10% 넘게 늘었습니다.[12] 같은 회사 RP/교통 백엔드 공고도 대용량 트래픽을 위한 성능 측정·최적화를 본업으로 적었습니다.[2]",
+      "actually": {
+        "intro": "회사 엔지니어들이 직접 쓴 글에 나온 방법들입니다.",
+        "items": [
+          "**자동으로 늘리기** — 결제 플랫폼은 CPU 50%를 넘으면 Pod(컨테이너 묶음)를 3개에서 5개까지 늘리게 했고, 부하 중 배포에서 Pod가 갑자기 줄어드는 문제를 겪어 설정을 맞췄습니다.[4]",
+          "**같은 돈으로 더 빠르게** — 경로탐색 엔진 서버를 ARM 칩(Graviton2)으로 바꿔 성능 13~16% 향상, 비용 20% 절감을 측정했습니다.[5]",
+          "**기다리지 않는 처리** — 대중교통 메시지 소비 서버는 Kotlin 코루틴과 Reactive Redis로 Kafka 밀린 양(lag)을 0~2로 유지했습니다. 다만 중간에 기다리는 DB 호출이 있으면 도입을 미루라고 적었습니다.[6]",
+          "**고장 가두기** — 외부가 느리면 끝까지 기다리지 않고 끊는 타임아웃과 서킷 브레이커(실패가 이어지면 잠시 호출을 막는 장치).[26]"
+        ]
+      },
+      "how_far": "부하 테스트 도구(회사 글에서는 nGrinder)로 한계를 재고, 그 숫자로 서버 수·스레드 수를 정하는 데까지입니다.[5] {추론}",
+      "refs": [2, 4, 5, 6, 12, 26],
+      "study": ["tmap-tech-reactive", "tmap-tech-graviton", "coroutines-book", "release-it"]
+    },
+    {
+      "section": "task",
+      "quote": "내부 서비스 및 외부 파트너와의 API 연동과 데이터 처리 흐름을 설계하고 개선합니다.",
+      "short": "남의 API가 느리거나 죽어도 우리 서비스는 버티게 연동하고, 데이터가 흐르는 길을 짠다.",
+      "why": "도로 상황 정보는 여러 기관에서 받아 겹치는 것을 합치고 5분마다 안내용으로 다시 만듭니다.[9] 대중교통은 약 50개 지자체에서 5~10초마다 데이터를 받아 Kafka(메시지를 쌓아 두는 중간 저장소)에 넣고 1~2초 안에 이용자에게 보냅니다.[6]",
+      "actually": {
+        "items": [
+          "**가져오기와 받기** — 정해진 주기로 가져오는 방식과 상대가 밀어 주는 방식을 섞습니다. 회사는 긴급 돌발 정보만 연동처가 밀어 준다고 썼습니다.[9]",
+          "**끊고 대신 답하기** — 실패가 이어지면 잠깐 부르지 않고 대체 응답을 줍니다(서킷 브레이커).[26]",
+          "**두 번 와도 한 번만** — Kafka는 보통 '적어도 한 번' 전달이라 같은 메시지가 두 번 올 수 있습니다. 받는 쪽이 같은 키를 한 번만 처리해야 합니다.[32]",
+          "**형식 맞추기** — 기관마다 다른 위치 표기를 TMAP 도로 링크 좌표로 바꿔 저장합니다.[9] 대중교통 메시지는 protobuf(구글의 이진 직렬화 형식)로 주고받았습니다.[6]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "파트너 API가 죽었을 때 — 세 번 실패하면 잠시 부르지 않는다",
+          "body": "세 번 연속 실패하면 차단 상태가 되어 4·5번째 요청은 파트너를 부르지 않고 바로 대체 응답을 준다. 잠시 뒤 다시 부르면 정상으로 돌아온다(직접 돌린 출력). 실무에서는 Resilience4j 같은 라이브러리가 이 일을 한다.",
+          "lang": "python",
+          "code": "import time\nclass Breaker:\n    def __init__(self, limit=3, cool=0.2):\n        self.fail, self.limit, self.cool, self.opened = 0, limit, cool, None\n    def call(self, fn):\n        if self.opened and time.time() - self.opened < self.cool:\n            return \"차단: 바로 대체 응답\"\n        try:\n            r = fn(); self.fail, self.opened = 0, None; return r\n        except Exception:\n            self.fail += 1\n            if self.fail >= self.limit: self.opened = time.time()\n            return \"실패: 대체 응답\"\ndef partner_down(): raise TimeoutError()\nb = Breaker()\nfor i in range(5): print(i+1, b.call(partner_down))\ntime.sleep(0.25)\nprint(6, b.call(lambda: \"정상 응답\"))\n\n# 1 실패: 대체 응답\n# 2 실패: 대체 응답\n# 3 실패: 대체 응답\n# 4 차단: 바로 대체 응답\n# 5 차단: 바로 대체 응답\n# 6 정상 응답"
+        }
+      ],
+      "how_far": "계약(API 사양·응답 보장 수준)은 사업·제휴 쪽이 맺고, 개발자는 사양을 읽고 실패할 때의 동작(타임아웃 몇 초, 몇 번 재시도, 무엇으로 대신 답할지)을 정해 구현합니다 {추론}.",
+      "refs": [6, 9, 26, 32],
+      "study": ["resilience4j", "kafka", "kafka-docs"]
+    },
+    {
+      "section": "task",
+      "quote": "서비스 지표와 운영 데이터를 바탕으로 성능 병목과 장애 원인을 분석하고, 재발 방지와 서비스 품질 개선을 수행합니다.",
+      "short": "지표·로그로 어디가 느린지, 왜 죽었는지 찾고 같은 장애가 다시 안 나게 고친다.",
+      "why": "결제 플랫폼 팀은 앱 로그를 JSON으로 찍어 CloudWatch를 거쳐 Datadog으로 모으고, Datadog 에이전트를 서비스 옆에 같이 띄웠다고 썼습니다.[4] 지표가 모여 있어야 원인을 숫자로 찾을 수 있습니다.",
+      "actually": {
+        "items": [
+          "**평균 말고 꼬리** — 응답 시간은 평균보다 p99(가장 느린 1%)가 체감을 좌우합니다.[27]",
+          "**네 가지 신호** — 지연·트래픽·오류·포화(자원이 얼마나 찼나)를 기본으로 봅니다.[27]",
+          "**원인 좁히기** — 느린 요청 하나를 따라가 DB·외부 API·GC(자바의 메모리 청소) 중 어디서 시간을 썼는지 봅니다 {추론}.",
+          "**재발 방지** — 장애 뒤 원인·조치·다음 할 일을 문서로 남기고 알람을 고칩니다 {추론}."
+        ]
+      },
+      "examples": [
+        {
+          "title": "평균은 괜찮아 보여도 100명 중 1명은 1.4초를 기다린다",
+          "body": "요청 1,000건 중 2%만 외부 API를 기다리다 느려진 가상 데이터. 평균 68ms·p95 55ms만 보면 멀쩡하지만 p99는 1,446ms다(직접 돌린 출력).",
+          "lang": "python",
+          "code": "import random\nrandom.seed(7)\nlat = [random.gauss(40, 8) for _ in range(980)] + [random.gauss(1500, 300) for _ in range(20)]\nlat.sort()\ndef pct(p): return round(lat[int(len(lat)*p) - 1])\nprint(\"평균:\", round(sum(lat)/len(lat)), \"ms\")\nprint(\"p50:\", pct(0.50), \"ms  p95:\", pct(0.95), \"ms  p99:\", pct(0.99), \"ms\")\n\n# 평균: 68 ms\n# p50: 41 ms  p95: 55 ms  p99: 1446 ms"
+        }
+      ],
+      "how_far": "대시보드·알람을 직접 걸고, 장애 때 지표로 원인 후보를 좁혀 설명할 수 있으면 됩니다. 모니터링 플랫폼 자체를 짓는 일은 아닙니다 {추론}.",
+      "refs": [4, 27],
+      "study": ["sre-book", "obs-eng", "jvm-tuning"]
+    },
+    {
+      "section": "task",
+      "quote": "기획·디자인·프론트엔드 등 다양한 직군의 동료들과 협업하며 기능과 서비스의 개선 방향을 함께 고민하고 실행합니다.",
+      "short": "기획·디자인·프론트와 함께 무엇을 고칠지 정한다 — 시킨 서버만 만드는 자리가 아니다.",
+      "why": "대리 팀은 카드 자동 인식이 취한 이용자를 떠나게 한다고 보고 현금 결제를 넣었고, 차종 필수 입력은 데이터로 따져 본 뒤 뺐다고 말했습니다(2022년).[10] 같은 인터뷰에서 개발자도 기획부터 참여한다고 했습니다.[10]",
+      "how_far": "서버 쪽 사정(이건 비싸다, 이건 하루면 된다)을 숫자로 말해 주는 것이 최소선입니다 {추론}.",
+      "refs": [10],
+      "study": ["wanted-daeri"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Backend 개발 경력 5년 이상이거나 이에 준하는 경험을 보유하신 분",
+      "short": "5년 이상, 또는 그만한 경험. 연차보다 '끝까지 맡아 굴려 본 서비스'가 있느냐를 본다.",
+      "why": "여러 도메인을 설계부터 운영까지 맡기는 자리라서입니다.[1] 같은 회사의 RP/교통 백엔드 공고도 5년 이상을 적었습니다.[2]",
+      "how_far": "'이에 준하는 경험'이 열려 있으니, 연차가 모자라면 트래픽·장애를 직접 다룬 사례로 채웁니다 {추론}. 전형에는 코딩테스트와 레퍼런스 체크가 들어 있습니다.[1]",
+      "refs": [1, 2],
+      "study": ["system-design-interview"]
+    },
+    {
+      "section": "qualification",
+      "quote": "Java 또는 Kotlin과 Spring Framework를 활용한 상용 서비스 개발·운영 경험을 보유하신 분",
+      "short": "Java나 Kotlin + Spring으로 실제 사용자가 쓰는 서비스를 만들고 운영해 봤어야 한다.",
+      "why": "공고에 적힌 기술이 Java·Spring입니다.[1] 같은 회사는 Java 11 + Spring Boot 경로탐색 엔진,[5] Kotlin 코루틴으로 만든 메시지 소비 서버와 Spring Cloud 전환을 글로 밝혔습니다.[6] 대중교통을 다시 만들 때 여러 언어가 섞여 있던 것을 배우기 쉬운 언어로 정리했다고도 썼습니다.[6]",
+      "level": {
+        "basic": "Spring Boot로 REST API를 만들고 JPA로 저장하며 테스트 코드를 쓴다.",
+        "work": "트랜잭션 범위·커넥션 풀·스레드 모델을 이해하고, 운영 중 느린 쿼리·스레드 고갈 같은 문제를 고쳐 봤다.",
+        "team": "Kotlin 코루틴·Reactive(기다리지 않는 처리)를 맞는 곳에만 골라 쓴다 — 대중교통 팀이 실제로 한 판단.[6]"
+      },
+      "how_far": "둘 중 하나를 깊게 알면 됩니다. Kotlin을 안 써 봤다면 Java로 깊이를 보이고, 코루틴의 개념은 설명할 수 있게 준비합니다 {추론}.",
+      "refs": [1, 5, 6],
+      "study": ["spring-boot", "jpa-basic", "java-thread", "coroutines-book"]
+    },
+    {
+      "section": "qualification",
+      "quote": "MySQL, PostgreSQL 등 RDBMS와 NoSQL을 활용한 개발 경험을 보유하신 분",
+      "short": "관계형 DB로 원본을 지키고, Redis 같은 NoSQL로 빠른 조회를 받쳐 본 경험.",
+      "why": "공고가 MySQL·PostgreSQL과 NoSQL을 함께 적었고,[1] 같은 회사 백엔드 공고의 기술 목록에도 RDB·NoSQL·Redis가 같이 있습니다.[3]",
+      "level": {
+        "basic": "조인·인덱스·트랜잭션 격리 수준을 설명하고 실행계획을 읽는다.",
+        "work": "느린 쿼리를 인덱스·쿼리 고쳐 쓰기로 빠르게 하고, 같은 행을 둘이 동시에 바꿀 때를 막는다.",
+        "team": "자주 바뀌는 실시간 값은 Redis에, 원본은 관계형 DB에 나눠 두는 설계.[6] {추론}"
+      },
+      "actually": {
+        "items": [
+          "**동시에 바꾸기 막기** — 대리 호출 하나를 기사 둘이 거의 동시에 수락하면 한 명만 성공해야 합니다 {추론}. 버전 칼럼을 조건에 넣는 낙관적 락이 흔한 방법입니다.[33]",
+          "**캐시는 사라질 수 있다** — Redis 값은 만료로 지워질 수 있으니 원본은 관계형 DB에 둡니다 {추론}.",
+          "**반경 검색** — PostgreSQL은 PostGIS로 '이 점에서 몇 m 안'을 인덱스로 찾습니다.[29]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "기사 둘이 같은 호출을 수락하면 — 버전으로 한 명만",
+          "body": "둘 다 버전 0을 읽고 수락을 보냈지만, 먼저 바꾼 쪽이 버전을 1로 올려 두 번째 UPDATE는 0행을 바꾼다(직접 돌린 출력). JPA에서는 `@Version` 칼럼이 같은 일을 한다.",
+          "lang": "python",
+          "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"create table call(id int primary key, state text, driver text, version int)\")\ndb.execute(\"insert into call values (1, 'WAITING', null, 0)\")\n\ndef accept(driver, seen_version):\n    cur = db.execute(\n        \"update call set state='MATCHED', driver=?, version=version+1 \"\n        \"where id=1 and state='WAITING' and version=?\", (driver, seen_version))\n    db.commit()\n    return \"수락\" if cur.rowcount == 1 else \"이미 배정됨\"\n\nv = db.execute(\"select version from call where id=1\").fetchone()[0]\nprint(\"기사A:\", accept(\"A\", v))\nprint(\"기사B:\", accept(\"B\", v))\nprint(db.execute(\"select state, driver, version from call\").fetchone())\n\n# 기사A: 수락\n# 기사B: 이미 배정됨\n# ('MATCHED', 'A', 1)"
+        }
+      ],
+      "how_far": "DB 운영(복제 구성·백업)은 인프라 쪽 몫이고, 이 자리는 스키마·쿼리·락을 맡습니다 {추론}.",
+      "refs": [1, 3, 6, 29, 33],
+      "study": ["real-mysql", "sql-tuning", "jpa-basic", "redis-docs"]
+    },
+    {
+      "section": "qualification",
+      "quote": "비즈니스 요구사항과 데이터 흐름을 이해하고, 유지보수하기 좋은 코드와 서비스 구조를 설계할 수 있으신 분",
+      "short": "요구와 데이터 흐름을 이해하고, 남이 이어받아 고치기 쉬운 구조로 나눌 수 있어야 한다.",
+      "why": "TMAP 대중교통 서비스는 담당자가 바뀐 뒤 여러 언어가 섞인 채 유지보수만 하다가 결국 새로 만들었다고 회사가 썼습니다.[6] 이 요건이 들어간 까닭으로 읽힙니다 {추론}.",
+      "actually": {
+        "items": [
+          "**규칙과 바깥 떼기** — 요금 계산·상태 전이 같은 업무 규칙을 웹·DB 코드와 떼어 둡니다(헥사고날·클린 아키텍처라고 부르는 방식) {추론}.",
+          "**조금씩 옮기기** — 한꺼번에 갈아엎지 않고 API부터 하나씩 옮깁니다.[6]",
+          "**테스트로 묶기** — 규칙을 단위 테스트로 묶어 두면 고칠 때 덜 겁납니다 {추론}."
+        ]
+      },
+      "how_far": "면접에서 예전 프로젝트로 '왜 이렇게 나눴나'를 설명하는 수준이면 됩니다 {추론}.",
+      "refs": [6],
+      "study": ["clean-arch", "practical-testing"]
+    },
+    {
+      "section": "qualification",
+      "quote": "운영 중 발생한 장애나 성능 문제의 원인을 분석하고 해결해 본 경험을 보유하신 분",
+      "short": "장애·성능 문제를 직접 찾아 고쳐 본 이야기가 있어야 한다 — 면접 단골 질문.",
+      "why": "담당업무의 '병목·장애 원인 분석'을 경험으로 묻는 줄입니다.[1] 회사 결제 팀 글에도 버전이 안 맞아 생긴 로드밸런서 오류, 배포 중 Pod가 갑자기 줄어든 문제를 겪고 고친 기록이 있습니다.[4]",
+      "actually": {
+        "items": [
+          "**말하는 순서** — 증상(어느 지표가 언제) → 가설 → 확인 → 조치 → 재발 방지.[27] {추론}",
+          "**흔한 원인** — 커넥션 풀 고갈, 쿼리가 N번 더 나가는 N+1, GC 멈춤, 외부 API 지연이 내 스레드를 붙잡음, 캐시가 한꺼번에 만료됨 {추론}."
+        ]
+      },
+      "how_far": "큰 장애가 아니어도 됩니다. 원인을 숫자로 찾았다는 점을 보이면 됩니다 {추론}.",
+      "refs": [1, 4, 27],
+      "study": ["jvm-tuning", "sre-book", "obs-eng"]
+    },
+    {
+      "section": "qualification",
+      "quote": "다양한 직군의 동료들과 문제와 해결 방향을 명확히 공유하며 협업할 수 있으신 분",
+      "short": "기술 이야기를 기획·디자인 동료가 알아듣게 말하고, 결정을 같이 내릴 수 있어야 한다.",
+      "why": "대리 서비스는 애자일로, 내비게이션은 워터폴로 개발한다고 했습니다(2022년).[10] 일하는 방식이 다른 팀과도 맞춰 가야 합니다 {추론}.",
+      "how_far": "회의 뒤 결정과 이유를 글로 남겨 두는 습관 정도가 최소선입니다 {추론}.",
+      "refs": [10],
+      "study": ["wanted-daeri"]
+    },
+    {
+      "section": "qualification",
+      "quote": "서비스의 문제를 주도적으로 발견하고, 개선을 실행하는 데 즐거움을 느끼시는 분",
+      "short": "시키지 않아도 문제를 찾아 고치는 사람. 면접에서 '내가 먼저 고친 것'을 묻게 된다.",
+      "why": "회사 엔지니어들이 Graviton2가 나오자 먼저 모듈별로 성능·비용을 재 보고, 이득이 있는 모듈만 바꾸고 나머지는 그대로 둔 글이 그런 예입니다.[5]",
+      "how_far": "개선을 전후 숫자로 보여 주면 설득력이 큽니다 {추론}.",
+      "refs": [5],
+      "study": ["tmap-tech-graviton"]
+    },
+    {
+      "section": "preference",
+      "quote": "대규모 트래픽 환경에서 서비스의 성능과 안정성을 개선한 경험을 보유하신 분",
+      "short": "트래픽이 큰 곳에서 빠르고 안 죽게 바꿔 본 경험 — 전후 숫자가 있으면 좋다.",
+      "why": "월 방문 4억 회가 넘는 앱입니다.[12] 회사 글들도 늘 측정한 숫자로 판단했습니다.[5]",
+      "actually": {
+        "items": [
+          "**측정 먼저** — nGrinder로 부하를 걸어 응답 시간·처리량을 바꾸기 전후로 비교했습니다.[5]",
+          "**자원 고르기** — 서버 종류를 바꿔 비용 대비 성능을 35~40% 올렸습니다.[5]",
+          "**캐시와 기다리지 않는 처리** — Redis 캐시와 코루틴으로 메시지 밀림을 없앴습니다.[6]"
+        ]
+      },
+      "how_far": "본인이 무엇을 바꿨고 숫자가 얼마나 움직였는지 말할 수 있으면 됩니다 {추론}.",
+      "refs": [5, 6, 12],
+      "study": ["system-design-interview", "ddia", "tmap-tech-graviton"]
+    },
+    {
+      "section": "preference",
+      "quote": "모빌리티 또는 플랫폼 서비스의 설계·개발·운영 경험을 보유하신 분",
+      "short": "이동 서비스나, 여러 서비스가 한 바탕 위에 얹히는 플랫폼을 만들어 봤으면 더 좋다.",
+      "why": "TMAP은 내비·대중교통·택시·PM을 한 앱에 묶은 플랫폼이고,[13] 사업을 운전자·비운전자 이동·화물 이동·데이터 넷으로 나눠 설명했습니다(2022년).[11]",
+      "how_far": "경험이 없으면 회사 기술 글과 앱을 직접 써 본 것으로 도메인 감을 채웁니다 {추론}.",
+      "refs": [11, 13],
+      "study": ["tmap-tech-lbs", "tmap-tech-recommend"]
+    },
+    {
+      "section": "preference",
+      "quote": "AWS 기반 클라우드 환경에서 애플리케이션을 개발·배포·운영한 경험을 보유하신 분",
+      "short": "AWS에 직접 올리고 배포·운영해 봤으면 더 좋다 — 회사 서비스들이 AWS 위에 있다.",
+      "why": "결제 플랫폼은 EKS on Fargate,[4] 경로탐색 엔진은 Elastic Beanstalk·EC2,[5] 대중교통은 온프레미스 수백 대에서 AWS로 다시 만들었다고 회사가 썼습니다.[6]",
+      "actually": {
+        "items": [
+          "**Fargate의 제약** — 정해진 CPU·메모리 조합만 되고 노드마다 도는 DaemonSet을 못 써서, 로그 수집기를 서비스 옆 컨테이너(사이드카)로 넣었습니다.[4]",
+          "**설정 한 줄로 바꾸기** — JVM 서비스라 Beanstalk 설정의 인스턴스 종류만 바꿔 ARM으로 옮겼습니다.[5]",
+          "**여러 가용 영역** — 한 영역이 빠져도 견디게 나눠 둡니다.[28]"
+        ]
+      },
+      "how_far": "클러스터 설계는 따로 맡는 사람이 있을 수 있지만, 자기 서비스의 배포 설정·오토스케일·로그 경로는 직접 다룹니다.[4] {추론}",
+      "refs": [4, 5, 6, 28],
+      "study": ["tmap-tech-eks", "aws-wa-rel", "docker", "kubernetes"]
+    },
+    {
+      "section": "preference",
+      "quote": "분산 시스템 환경에서 서비스 간 연동, 데이터 정합성, 장애 대응을 고민하고 개선한 경험을 보유하신 분",
+      "short": "서비스가 여럿으로 나뉘었을 때 데이터가 어긋나지 않게 하고, 한쪽 장애가 번지지 않게 해 본 경험.",
+      "why": "대중교통 재구축은 Spring Cloud와 Kafka로 서비스 사이를 잇는 구조입니다.[6] 결제가 끝났는데 '결제 완료' 알림이 안 나가면 돈과 얽힌 문제가 됩니다 {추론}.",
+      "actually": {
+        "items": [
+          "**아웃박스** — DB 저장과 '보낼 이벤트' 기록을 한 트랜잭션에 넣고, 따로 도는 발행기가 나중에 보냅니다.[25]",
+          "**중복 견디기** — Kafka는 같은 메시지를 두 번 줄 수 있으니 받는 쪽이 한 번만 처리합니다.[32]",
+          "**동시 수정** — 버전 칼럼으로 늦게 온 쪽을 막습니다.[33]",
+          "**번지지 않게** — 서킷 브레이커로 느린 서비스를 잠시 끊습니다.[26]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "결제 저장과 이벤트를 한 트랜잭션에 — 아웃박스",
+          "body": "결제 행과 아웃박스 행이 함께 저장되므로 '결제는 됐는데 이벤트는 없음'이 생기지 않는다. 발행기를 두 번 돌려도 이미 보낸 것은 다시 안 보낸다(직접 돌린 출력). 보내고 표시하기 전에 죽으면 한 번 더 갈 수 있어서, 받는 쪽은 여전히 중복을 견뎌야 한다.",
+          "lang": "python",
+          "code": "import sqlite3, json\ndb = sqlite3.connect(\":memory:\")\ndb.executescript(\"\"\"\ncreate table payment(id int primary key, call_id int, amount int);\ncreate table outbox(id integer primary key, topic text, payload text, sent int default 0);\n\"\"\")\nwith db:\n    db.execute(\"insert into payment values (1, 77, 32000)\")\n    db.execute(\"insert into outbox(topic, payload) values (?, ?)\",\n               (\"payment.done\", json.dumps({\"call_id\": 77, \"amount\": 32000})))\ndef relay(send):\n    for oid, topic, payload in db.execute(\"select id, topic, payload from outbox where sent=0\").fetchall():\n        send(topic, payload)\n        with db: db.execute(\"update outbox set sent=1 where id=?\", (oid,))\nrelay(lambda t, p: print(\"보냄\", t, p))\nrelay(lambda t, p: print(\"보냄\", t, p))\nprint(\"남은 미발송:\", db.execute(\"select count(*) from outbox where sent=0\").fetchone()[0])\n\n# 보냄 payment.done {\"call_id\": 77, \"amount\": 32000}\n# 남은 미발송: 0"
+        }
+      ],
+      "how_far": "여러 DB를 한 번에 묶는 분산 트랜잭션보다, 아웃박스·중복 처리로 '결국 맞춘다'를 설명할 수 있으면 충분합니다 {추론}.",
+      "refs": [6, 25, 26, 32, 33],
+      "study": ["ddia", "outbox", "kafka"]
+    },
+    {
+      "section": "preference",
+      "quote": "LBS/GIS 또는 POI 등 위치·공간 데이터를 활용한 서비스 개발 경험을 보유하신 분",
+      "short": "좌표·지도·장소 데이터를 다뤄 봤으면 더 좋다 — 로컬 서비스가 장소 데이터 위에 있다.",
+      "why": "LBS는 위치 기반 서비스, GIS는 지리 정보 시스템, POI는 이름 붙은 장소를 뜻합니다. 로컬 서비스의 랭킹·리뷰가 장소와 주행 기록을 잇는 일입니다.[15] 회사는 측위 방식과 오차를 다룬 글도 냈습니다.[8]",
+      "actually": {
+        "items": [
+          "**위치는 늘 틀린다** — 기지국 측위는 1초 안에 나오지만 오차가 수 km까지, GPS는 위성 궤도·시계·대기·반사로 수 m의 오차가 납니다.[8]",
+          "**격자로 묶기** — 지구를 육각형 칸으로 나눈 H3 같은 격자로 '이 칸의 주행 수'를 셉니다.[31]",
+          "**반경 검색** — PostGIS·Redis의 공간 기능.[29][30]",
+          "**좌표 바꾸기** — 기관 자료의 위치를 TMAP 도로 링크 좌표로 옮겨 저장합니다.[9]",
+          "**장소 이어 보기** — 여행 한 번에 들른 장소 순서로 다음 장소를 추천했습니다.[7]"
+        ]
+      },
+      "how_far": "GIS 전문가 수준은 아니고, 거리 계산·공간 인덱스·위치 오차를 알고 쓰면 됩니다 {추론}. TMAP 공개 API로 POI 검색을 직접 불러 보면 감이 빨리 옵니다.[24]",
+      "refs": [7, 8, 9, 15, 24, 29, 30, 31],
+      "study": ["tmap-tech-lbs", "postgis", "h3", "tmap-api-guide"]
+    },
+    {
+      "section": "preference",
+      "quote": "사용자 경험이나 운영 효율의 문제를 발견하고, 기술적 개선으로 성과를 만들어 본 경험을 보유하신 분",
+      "short": "사용자·운영의 불편을 찾아 기술로 고치고, 그 효과를 숫자로 보인 경험.",
+      "why": "대리 팀은 차종 필수 입력이 필요한 경우(수동 변속기)를 0.5%로 추정하고 뺐는데, 그 뒤 6개월간 불만이 한 건도 없었다고 말했습니다(2022년).[10] 추천 팀은 실험실 지표와 실제 A/B 테스트 결과가 어긋나는 것을 남은 과제로 적었습니다.[7]",
+      "how_far": "지표 하나를 정하고 바꾸기 전후를 비교해 보인 경험이면 됩니다 {추론}.",
+      "refs": [7, 10],
+      "study": ["wanted-daeri", "tmap-tech-recommend"]
+    }
+  ],
+  "fit": {
+    "good": [
+      "실제 이동(운전·대리·장소 방문)이 데이터로 남는 서비스를 만들고 싶은 백엔드 개발자[11][15]",
+      "한 도메인만 깊게보다 여러 서비스를 오가며 넓게 맡는 게 맞는 사람[1]",
+      "측정한 숫자로 성능·비용을 판단하는 문화가 맞는 사람[5]",
+      "Kotlin 코루틴·Reactive 같은 기술을 '맞는 곳에만' 쓰는 판단을 해 보고 싶은 사람[6]"
+    ],
+    "hard": [
+      "도메인이 여럿이라 처음에는 익힐 것이 많다[1] {추론}",
+      "보험사·공공기관 등 외부 연동이 많아 내 코드 밖의 장애도 감당해야 한다[9][14] {추론}",
+      "이 조직(로컬·운전점수·대리)의 서버 구조를 다룬 공개 글·발표가 없어 실제 스택을 미리 알기 어렵다 {추론}"
+    ]
+  },
+  "interview": [
+    {"q": "대리 호출 하나를 기사 둘이 거의 동시에 수락하면 어떻게 막나요?", "a": "낙관적 락·상태 전이 — 대리 도메인의 기본 문제.[16][33]"},
+    {"q": "보험사 API가 갑자기 5초씩 걸리면 우리 서비스는 어떻게 되나요?", "a": "타임아웃·서킷 브레이커·대체 응답 — 외부 연동이 많은 자리.[14][26]"},
+    {"q": "'내 주변 1km 맛집'을 빠르게 찾으려면 DB를 어떻게 설계하나요?", "a": "공간 인덱스와 2단계 거르기 — 로컬 서비스의 핵심 조회.[15][29]"},
+    {"q": "평균 응답 시간은 괜찮은데 불만이 늘었다면 무엇을 보나요?", "a": "p99와 네 가지 신호.[27]"},
+    {"q": "Reactive를 쓰면 다 빨라지나요? 언제 쓰지 말아야 하나요?", "a": "대중교통 팀이 블로킹 DB가 있으면 미루라고 한 판단.[6]"},
+    {"q": "결제는 저장됐는데 완료 이벤트가 안 나갔다면요?", "a": "아웃박스와 중복 처리.[25][32]"}
+  ],
+  "resources": [
+    {"id": "tmap-tech-reactive", "title": "TMAP 대중교통이 티맵 안으로 들어온 이유 — Reactive Programming으로 재탄생한 대중교통", "by": "티맵모빌리티 테크노트 26편 · 2024-05", "kind": "doc", "url": "https://brunch.co.kr/@@dsaj/37", "lang": "ko", "free": true, "level": "실무", "why": "같은 회사 백엔드가 Kafka·Redis·코루틴을 어떻게, 어디까지 썼는지 — 업무 '트래픽·연동'과 Kotlin 요건을 이 회사 말로 읽는다."},
+    {"id": "tmap-tech-eks", "title": "결제플랫폼 구축에 EKS on Fargate 적용하기 — AWS에서 MSA 서비스 구축하기", "by": "티맵모빌리티 테크노트 10편 · 2022-04", "kind": "doc", "url": "https://brunch.co.kr/@@dsaj/13", "lang": "ko", "free": true, "level": "실무", "why": "오토스케일·배포 중 문제·로그 경로를 회사 개발자가 직접 꾸린 기록. 우대 'AWS 배포·운영'과 업무 '라이프사이클'에 맞다."},
+    {"id": "tmap-tech-graviton", "title": "AWS Graviton2 출시 후 바로 도입해본 후기", "by": "티맵모빌리티 테크노트 11편 · 2022-05", "kind": "doc", "url": "https://brunch.co.kr/@@dsaj/14", "lang": "ko", "free": true, "level": "입문", "why": "부하 테스트로 모듈마다 바꿀지 말지를 정한 과정 — '측정해서 개선하기'를 보여 주는 본보기."},
+    {"id": "tmap-tech-lbs", "title": "포켓몬고와 티맵은 내 위치를 어떻게 잡을까? — 위치 기반 서비스의 이해 및 측위 방법", "by": "티맵모빌리티 테크노트 18편 · 2023-02", "kind": "doc", "url": "https://brunch.co.kr/@@dsaj/21", "lang": "ko", "free": true, "level": "입문", "why": "우대 'LBS/GIS'의 기초 — 기지국·WiFi·GPS 측위와 오차가 어디서 오는지."},
+    {"id": "tmap-tech-recommend", "title": "\"다음 여행지 추천\" 서비스 개발기 — 세션 기반의 다음 장소 추천받기", "by": "티맵모빌리티 테크노트 24편 · 2023-11", "kind": "doc", "url": "https://brunch.co.kr/@@dsaj/34", "lang": "ko", "free": true, "level": "입문", "why": "로컬 서비스가 주행 데이터로 장소를 어떻게 다루는지, 서버가 내줄 추천 결과가 어떻게 만들어지는지."},
+    {"id": "tmap-api-guide", "title": "TMAP API 가이드 (POI 검색·지오코딩·경로 안내)", "by": "티맵모빌리티", "kind": "doc", "url": "https://tmapapi.tmapmobility.com/main.html#webservice/sample/WebSamplePoi", "lang": "ko", "free": true, "level": "입문", "why": "회사가 공개한 장소·좌표 API를 직접 불러 보며 POI 데이터의 모양을 익힌다(무료 호출 한도 안에서)."},
+    {"id": "wanted-daeri", "title": "티맵모빌리티가 대리 서비스를 시작한 이유", "by": "원티드 · 2022-11 (PM·디자이너·백엔드 개발자 인터뷰)", "kind": "doc", "url": "https://www.wanted.co.kr/events/22_11_s01_b11", "lang": "ko", "free": true, "level": "입문", "why": "대리 도메인에서 무엇을 지표로 보고 기획·디자인과 어떻게 결정했는지 — 협업 요건과 우대 '사용자 경험 개선'의 예."},
+    {"id": "spring-boot", "title": "스프링 부트 — 핵심 원리와 활용", "by": "우리 서가", "kind": "internal", "url": "/wiki/spring-boot", "lang": "ko", "free": true, "level": "실무", "why": "Spring으로 상용 서비스를 운영하는 데 필요한 설정·액추에이터·외부 설정."},
+    {"id": "jpa-basic", "title": "자바 ORM 표준 JPA 프로그래밍 — 기본편", "by": "우리 서가", "kind": "internal", "url": "/wiki/jpa-basic", "lang": "ko", "free": true, "level": "입문", "why": "RDBMS 요건 — 실제로 나가는 SQL과 낙관적 락(`@Version`)."},
+    {"id": "java-thread", "title": "실전 자바 — 멀티스레드와 동시성", "by": "우리 서가", "kind": "internal", "url": "/wiki/java-thread", "lang": "ko", "free": true, "level": "실무", "why": "스레드 풀·동시성 — 트래픽이 몰릴 때 서버 안에서 무슨 일이 생기나."},
+    {"id": "jvm-tuning", "title": "자바 성능 튜닝 — JVM 과 GC", "by": "우리 서가", "kind": "internal", "url": "/wiki/jvm-tuning", "lang": "ko", "free": true, "level": "심화", "why": "장애·성능 원인 분석 요건 — GC 로그와 힙을 읽는 법."},
+    {"id": "kafka", "title": "아파치 카프카 애플리케이션 프로그래밍", "by": "우리 서가", "kind": "internal", "url": "/wiki/kafka", "lang": "ko", "free": true, "level": "실무", "why": "외부·내부 연동 업무 — 회사 대중교통 흐름처럼 Kafka로 받고 보내기."},
+    {"id": "http-basic", "title": "모든 개발자를 위한 HTTP 웹 기본 지식", "by": "우리 서가", "kind": "internal", "url": "/wiki/http-basic", "lang": "ko", "free": true, "level": "입문", "why": "API 설계 업무의 바탕 — 메서드·상태 코드·캐시."},
+    {"id": "docker", "title": "개발자를 위한 도커", "by": "우리 서가", "kind": "internal", "url": "/wiki/docker", "lang": "ko", "free": true, "level": "입문", "why": "AWS 컨테이너 배포(EKS) 전에 컨테이너부터."},
+    {"id": "kubernetes", "title": "쿠버네티스 입문", "by": "우리 서가", "kind": "internal", "url": "/wiki/kubernetes", "lang": "ko", "free": true, "level": "실무", "why": "Pod·오토스케일·배포 — 회사 결제 플랫폼이 겪은 문제를 읽을 수 있게."},
+    {"id": "practical-testing", "title": "Practical Testing — 실용적인 테스트 가이드", "by": "우리 서가", "kind": "internal", "url": "/wiki/practical-testing", "lang": "ko", "free": true, "level": "실무", "why": "유지보수하기 좋은 코드 요건 — 규칙을 테스트로 묶기."},
+    {"id": "coroutines-book", "title": "코틀린 코루틴의 정석", "by": "조세영 · 에이콘출판 · 2024", "kind": "book", "url": "https://ebook-product.kyobobook.co.kr/dig/epd/sam/E000007956109", "lang": "ko", "free": false, "level": "실무", "why": "Kotlin 요건과 회사의 코루틴 사용(Dispatchers.IO·스레드 과다 문제)을 제대로 이해하려면."},
+    {"id": "real-mysql", "title": "Real MySQL 8.0", "by": "백은빈 · 이성욱 · 위키북스", "kind": "book", "url": "https://search.kyobobook.co.kr/search?keyword=Real%20MySQL%208.0", "lang": "ko", "free": false, "level": "실무", "why": "MySQL 요건 — 인덱스·잠금·실행계획을 운영 수준으로."},
+    {"id": "sql-tuning", "title": "친절한 SQL 튜닝", "by": "조시형", "kind": "book", "url": "https://search.kyobobook.co.kr/search?keyword=%EC%B9%9C%EC%A0%88%ED%95%9C%20SQL%20%ED%8A%9C%EB%8B%9D", "lang": "ko", "free": false, "level": "실무", "why": "느린 쿼리 원인 찾기 — 성능 문제 해결 경험의 재료."},
+    {"id": "redis-docs", "title": "Redis 문서 · Data types", "by": "Redis", "kind": "doc", "url": "https://redis.io/docs/latest/develop/data-types/", "lang": "en", "free": true, "level": "입문", "why": "NoSQL 요건 — 캐시·만료·자료형을 고르는 기준."},
+    {"id": "redis-geo", "title": "Redis 문서 · Geospatial", "by": "Redis", "kind": "doc", "url": "https://redis.io/docs/latest/develop/data-types/geospatial/", "lang": "en", "free": true, "level": "입문", "why": "'내 주변' 조회를 메모리에서 빠르게 — GEOADD·GEOSEARCH."},
+    {"id": "postgis", "title": "PostGIS 문서 · ST_DWithin", "by": "PostGIS Project", "kind": "doc", "url": "https://postgis.net/docs/ST_DWithin.html", "lang": "en", "free": true, "level": "실무", "why": "PostgreSQL 요건과 위치 데이터 우대를 같이 — 인덱스를 타는 반경 검색."},
+    {"id": "h3", "title": "H3 문서", "by": "Uber · H3 프로젝트", "kind": "doc", "url": "https://h3geo.org/docs/", "lang": "en", "free": true, "level": "실무", "why": "위치를 칸으로 묶어 세는 방법 — 주행·방문 집계 API를 만들 때."},
+    {"id": "resilience4j", "title": "Resilience4j 문서 · CircuitBreaker", "by": "Resilience4j", "kind": "doc", "url": "https://resilience4j.readme.io/docs/circuitbreaker", "lang": "en", "free": true, "level": "입문", "why": "외부 파트너 연동 업무 — Spring에서 쓰는 서킷 브레이커 설정."},
+    {"id": "kafka-docs", "title": "Apache Kafka 문서 · Message Delivery Semantics", "by": "Apache", "kind": "doc", "url": "https://kafka.apache.org/documentation/#semantics", "lang": "en", "free": true, "level": "실무", "why": "메시지가 두 번 올 수 있는 이유 — 데이터 정합성 우대의 바탕."},
+    {"id": "outbox", "title": "Pattern: Transactional outbox", "by": "Chris Richardson · microservices.io", "kind": "doc", "url": "https://microservices.io/patterns/data/transactional-outbox.html", "lang": "en", "free": true, "level": "실무", "why": "분산 시스템 정합성 우대 — DB 저장과 이벤트 발행을 어긋나지 않게."},
+    {"id": "release-it", "title": "Release의 모든 것 2판", "by": "마이클 나이가드 · 박성철 옮김 · 2023", "kind": "book", "url": "https://ridibooks.com/books/443001250", "lang": "ko", "free": false, "level": "실무", "why": "가용성·장애 대응 업무 — 타임아웃·격벽·서킷 브레이커가 왜 필요한지 실제 장애 사례로."},
+    {"id": "sre-book", "title": "Site Reliability Engineering · Monitoring Distributed Systems", "by": "Google · O'Reilly · 2016 (온라인 무료)", "kind": "doc", "url": "https://sre.google/sre-book/monitoring-distributed-systems/", "lang": "en", "free": true, "level": "실무", "why": "지표로 장애를 찾는 업무 — 네 가지 신호와 꼬리 지연."},
+    {"id": "obs-eng", "title": "데브옵스 엔지니어를 위한 실전 관찰 가능성 엔지니어링", "by": "채리티 메이저 · 리즈 퐁존스 · 조지 미란다 · 노승헌 옮김 · 한빛미디어 · 2024", "kind": "book", "url": "https://www.oreilly.com/library/view/debeuobseu-enjinieoreul-wihan/9791169212519/", "lang": "ko", "free": false, "level": "실무", "why": "로그·지표·추적으로 원인을 좁히는 법 — 성능 병목 분석 업무."},
+    {"id": "ddia", "title": "데이터 중심 애플리케이션 설계", "by": "마틴 클레프만 · 위키북스", "kind": "book", "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84", "lang": "ko", "free": false, "level": "심화", "why": "분산 시스템·정합성 우대의 정석 — 복제·파티션·트랜잭션."},
+    {"id": "system-design-interview", "title": "가상 면접 사례로 배우는 대규모 시스템 설계 기초", "by": "알렉스 쉬 · 인사이트", "kind": "book", "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B0%80%EC%83%81%20%EB%A9%B4%EC%A0%91%20%EC%82%AC%EB%A1%80%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EB%8C%80%EA%B7%9C%EB%AA%A8%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%84%A4%EA%B3%84%20%EA%B8%B0%EC%B4%88", "lang": "ko", "free": false, "level": "실무", "why": "5년 차 면접의 설계 질문 대비 — '주변 친구 찾기' 같은 위치 서비스 설계 장이 있다."},
+    {"id": "clean-arch", "title": "만들면서 배우는 클린 아키텍처", "by": "톰 홈버그 · 박소은 옮김 · 위키북스 · 2021", "kind": "book", "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000005295801", "lang": "ko", "free": false, "level": "실무", "why": "유지보수하기 좋은 구조 요건 — 업무 규칙을 웹·DB에서 떼는 법을 Spring 코드로."},
+    {"id": "aws-wa-rel", "title": "AWS Well-Architected · Reliability Pillar", "by": "AWS", "kind": "doc", "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html", "lang": "en", "free": true, "level": "실무", "why": "고가용성 업무와 AWS 우대 — 다중 가용 영역·장애 격리의 공식 기준."}
+  ],
+  "study_path": [
+    {"title": "회사와 도메인 읽기", "time": "1주", "goal": "TMAP의 로컬·운전점수·대리 서비스가 서버에서 무엇을 계산하는지 말로 설명할 수 있다.", "task": "TMAP 앱의 어디갈까·운전점수·대리 화면을 써 보고, 화면마다 '서버가 내주는 값'과 'API 주소·응답 칸'을 가상으로 적어 본다. 회사 테크노트 5편을 읽고 쓰인 기술을 표로 정리한다.", "resources": ["tmap-tech-reactive", "tmap-tech-eks", "tmap-tech-recommend", "wanted-daeri"]},
+    {"title": "Spring 서비스와 DB 다지기", "time": "2~4주", "goal": "상태가 있는 도메인을 API·테이블로 설계하고, 동시 수정을 막을 수 있다.", "task": "가상 '대리 호출' API를 Spring Boot로 만든다 — 상태(대기·배정·운행·완료·취소) 전이, `@Version` 낙관적 락, 같은 호출을 두 스레드가 동시에 수락하는 테스트.", "resources": ["spring-boot", "jpa-basic", "real-mysql", "practical-testing"]},
+    {"title": "위치 데이터 다루기", "time": "2주", "goal": "반경 검색을 인덱스로 하고, 캐시와 원본을 나눠 둘 수 있다.", "task": "가상 장소 1만 개를 PostGIS에 넣고 '내 주변 1km'를 `ST_DWithin`으로 찾는다. 같은 조회를 Redis GEOSEARCH로도 만들어 응답 시간을 비교한다. TMAP POI 검색 API를 몇 번 불러 응답 모양을 본다.", "resources": ["postgis", "redis-geo", "tmap-api-guide", "tmap-tech-lbs"]},
+    {"title": "트래픽과 외부 연동 견디기", "time": "2~3주", "goal": "외부 API 장애가 번지지 않게 하고, 부하를 걸어 p99로 판단할 수 있다.", "task": "가상 '보험사 API'를 일부러 느리게 만들고 Resilience4j 타임아웃·서킷 브레이커를 붙인다. 부하 도구로 전후 p50·p99를 재서 표로 남긴다.", "resources": ["resilience4j", "release-it", "sre-book", "java-thread"]},
+    {"title": "분산 정합성과 AWS 배포", "time": "2~3주", "goal": "이벤트 발행을 어긋나지 않게 하고, 컨테이너로 AWS에 올려 오토스케일을 설명할 수 있다.", "task": "결제 저장 + 아웃박스 + Kafka 발행 + 중복을 견디는 소비자를 만든다. 도커로 묶어 쿠버네티스(로컬 kind 등)에 올리고 CPU 기준 오토스케일을 걸어 본다.", "resources": ["outbox", "kafka", "kafka-docs", "kubernetes", "aws-wa-rel"]}
+  ],
+  "pay": {
+    "summary": "신입 초봉은 **약 4,793만원**, 평균은 **약 7,049만원**(둘 다 공공데이터 집계) — 비상장사라 공시 평균 급여가 없고, 평균은 경력직이 섞인 회사 전체 값이다",
+    "rows": [
+      {"label": "신입 초봉", "value": "약 4,793만원", "amount": 4793, "basis": "공공데이터 집계", "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없어 5년 차 이상 경력직 백엔드의 계약 연봉과는 다르다 [21]"},
+      {"label": "평균 연봉", "value": "약 7,049만원", "amount": 7049, "basis": "공공데이터 집계", "note": "같은 집계, 사원 359명 기준 [21]"},
+      {"label": "평균 연봉(다른 집계)", "value": "약 6,474만원", "amount": 6474, "basis": "공공데이터 집계", "note": "다른 집계 사이트 값. 고용보험·국민연금 등으로 추정한 참고값이라고 밝히며, 직원 수는 345명(2025-12)으로 적었다 [22]"},
+      {"label": "카카오모빌리티 초봉", "value": "약 4,706만원", "amount": 4706, "basis": "공공데이터 집계", "peer": true, "note": "같은 집계 사이트의 값 [23]"},
+      {"label": "카카오모빌리티 평균", "value": "약 6,853만원", "amount": 6853, "basis": "공공데이터 집계", "peer": true, "note": "같은 집계 사이트의 값 [23]"}
+    ],
+    "how": "공고에는 연봉이 적혀 있지 않고, 지원서의 연봉 기입칸에 적게 한 뒤 면접·레퍼런스 체크 다음 **처우 협의** 단계에서 정합니다 [1]. 비상장사라 사업보고서의 '직원 1인 평균 급여액' 같은 공시 숫자를 찾지 못했다. 평균은 경력직이 섞인 회사 전체 값이라 신입 초봉으로도, 5년 차 제안액으로도 그대로 읽으면 안 된다 {추론}. 3개월 시용기간에도 급여는 100% 나온다 [1]."
+  },
+  "benefits": {
+    "items": [
+      {"name": "유연근무", "detail": "4주 160시간 안에서 스스로 근무 계획, 공통 협업 시간 10~15시"},
+      {"name": "Happy Friday", "detail": "유연근무를 써서 매월 금요일 하루 쉼"},
+      {"name": "AI Shift", "detail": "매주 금요일 오후는 회의 없이 AI 학습·실습"},
+      {"name": "복지포인트", "detail": "여행·IT 기기·운동 등에 사용(금액은 안 밝힘)"},
+      {"name": "식사", "detail": "조식·석식 지원"},
+      {"name": "통신비·자녀 학자금", "detail": "지원(금액은 안 밝힘)"},
+      {"name": "의료비", "detail": "본인·배우자·자녀·양가 부모"},
+      {"name": "사내 안마", "detail": "전문 안마사 상주"},
+      {"name": "교육비", "detail": "연 100만원 한도, AI 교육 무제한 수강"}
+    ],
+    "note": "티맵모빌리티 공식 사이트의 조직문화 글(2026-06-30, 인사 담당자 인터뷰)에 나온 내용이다 [19]. 금액이 빠진 항목이 많고 규정 문서가 아니므로 처우 협의 때 확인한다 {추론}. 공고에는 복리후생 칸이 없다 [1]."
+  },
+  "location": {
+    "name": "티맵모빌리티 본사 (SK-C 타워)",
+    "address": "서울특별시 중구 충무로 15 SK-C 타워 7~9층",
+    "postal": "04554",
+    "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%A4%91%EA%B5%AC%20%EC%B6%A9%EB%AC%B4%EB%A1%9C%2015",
+    "note": "주소는 티맵모빌리티 공식 사이트 하단 회사 정보다 [18]. 7~9층을 쓰는 사옥은 2026년 1월 보도에도 나온다 [20]. 공고의 근무지 표기는 '서울'뿐이다 [1]."
+  },
+  "sources": [
+    {"n": 1, "title": "SK Careers · 티맵모빌리티 Backend Engineer – 모빌리티 서비스", "url": "https://www.skcareers.com/Recruit/Detail/R262310", "kind": "posting", "date": "2026-10", "note": "팀 소개·담당업무·지원자격·우대사항·전형·참고사항(지원 기간 2026-10-22 ~ 12-31)"},
+    {"n": 2, "title": "SK Careers · 티맵모빌리티 Backend Engineer - RP/교통", "url": "https://www.skcareers.com/Recruit/Detail/R262402", "kind": "posting", "date": "2026-11", "note": "같은 회사 백엔드 공고 — 경로탐색·교통 정보, 성능 최적화"},
+    {"n": 3, "title": "원티드 · [티맵모빌리티] Backend Engineer - RP/교통", "url": "https://www.wanted.co.kr/wd/396108", "kind": "posting", "note": "사용 기술: Java·Kotlin·Scala·Spring·RDB·NoSQL·Redis·Kafka·Flink"},
+    {"n": 4, "title": "티맵모빌리티 테크노트 10편 · 결제플랫폼 구축에 EKS on Fargate 적용하기", "url": "https://brunch.co.kr/@@dsaj/13", "kind": "company", "date": "2022-04", "note": "티맵결제 팀 — 오토스케일·배포 테스트·Datadog 로그 경로"},
+    {"n": 5, "title": "티맵모빌리티 테크노트 11편 · AWS Graviton2 출시 후 바로 도입해본 후기", "url": "https://brunch.co.kr/@@dsaj/14", "kind": "company", "date": "2022-05", "note": "경로탐색 엔진 모듈별 nGrinder 측정·비용 비교"},
+    {"n": 6, "title": "티맵모빌리티 테크노트 26편 · TMAP 대중교통이 티맵 안으로 들어온 이유", "url": "https://brunch.co.kr/@@dsaj/37", "kind": "company", "date": "2024-05", "note": "AWS·Spring Cloud 재구축, 지자체 데이터 → Kafka → 코루틴·Reactive Redis"},
+    {"n": 7, "title": "티맵모빌리티 테크노트 24편 · \"다음 여행지 추천\" 서비스 개발기", "url": "https://brunch.co.kr/@@dsaj/34", "kind": "company", "date": "2023-11", "note": "여행 세션 분석·세션 기반 장소 추천·남은 과제"},
+    {"n": 8, "title": "티맵모빌리티 테크노트 18편 · 위치 기반 서비스의 이해 및 측위 방법", "url": "https://brunch.co.kr/@@dsaj/21", "kind": "company", "date": "2023-02"},
+    {"n": 9, "title": "티맵모빌리티 테크노트 22편 · 티맵의 도로 상황 정보 수집, 가공, 표출 시스템", "url": "https://brunch.co.kr/@@dsaj/30", "kind": "company", "date": "2023-10", "note": "기관 연동(Pull·Push)·중복 통합·링크 좌표 변환·5분 주기"},
+    {"n": 10, "title": "원티드 · 티맵모빌리티가 대리 서비스를 시작한 이유", "url": "https://www.wanted.co.kr/events/22_11_s01_b11", "kind": "news", "date": "2022-11", "note": "PM·디자이너·백엔드 개발자 인터뷰"},
+    {"n": 11, "title": "원티드 · 티맵모빌리티, 살아있는 유저 데이터를 분석하다", "url": "https://www.wanted.co.kr/events/22_11_s01_b10", "kind": "company", "date": "2022-11", "note": "티맵모빌리티가 쓴 회사 소개 — 이용 규모·사업 구조"},
+    {"n": 12, "title": "바이라인네트워크 · 티맵, 월평균 방문 4억4600만회…차량 탑재 115만대 돌파", "url": "https://byline.network/2026/10/21_2018283/", "kind": "news", "date": "2026-10"},
+    {"n": 13, "title": "바이라인네트워크 · 티맵, 통합 모빌리티로 진화 \"경로는 물론, 명소까지 추천\"", "url": "https://byline.network/2023/09/%ED%8B%B0%EB%A7%B5-%ED%86%B5%ED%95%A9-%EB%AA%A8%EB%B9%8C%EB%A6%AC%ED%8B%B0%EB%A1%9C-%EC%A7%84%ED%99%94-%EA%B2%BD%EB%A1%9C%EB%8A%94-%EB%AC%BC%EB%A1%A0-%EB%AA%85%EC%86%8C%EA%B9%8C%EC%A7%80/", "kind": "news", "date": "2023-09", "note": "올 뉴 TMAP 기자간담회"},
+    {"n": 14, "title": "뉴스1 · 안전 운전하면 자동차 보험료 할인…'운전점수'로 이용자 잡는다", "url": "https://v.daum.net/v/YBHZg5wMFc", "kind": "news", "date": "2025-07"},
+    {"n": 15, "title": "티맵모빌리티 보도자료 · '어디갈까' 업데이트", "url": "https://tmapmobility.com/story/pr/detail/271", "kind": "company", "date": "2026-09"},
+    {"n": 16, "title": "티맵모빌리티 · TMAP 대리 서비스 소개", "url": "https://tmapmobility.com/service/drive/driver", "kind": "company"},
+    {"n": 17, "title": "티맵모빌리티 · 운전점수 서비스 소개", "url": "https://tmapmobility.com/service/drive/ubi", "kind": "company"},
+    {"n": 18, "title": "티맵모빌리티 공식 사이트 · 하단 회사 정보", "url": "https://tmapmobility.com/", "kind": "company"},
+    {"n": 19, "title": "티맵모빌리티 조직문화 · 인사 담당자 인터뷰(근무 제도·복지)", "url": "https://tmapmobility.com/people/culture/detail/243", "kind": "company", "date": "2026-06"},
+    {"n": 20, "title": "머니투데이 · [IT사파] 티맵모빌리티, 왜 사옥에 엔진을 심었을까", "url": "https://www.mt.co.kr/tech/2026/01/19/2026011615574546384", "kind": "news", "date": "2026-01"},
+    {"n": 21, "title": "자소설닷컴 · 티맵모빌리티 기업 정보", "url": "https://jasoseol.com/companies/11668", "kind": "reference", "note": "공공데이터 기반 초봉·평균 연봉 집계"},
+    {"n": 22, "title": "캐치 · 티맵모빌리티 기업 정보", "url": "https://www.catch.co.kr/Comp/CompSummary/MB8295", "kind": "reference", "note": "추정 평균 연봉·직원 수 집계"},
+    {"n": 23, "title": "자소설닷컴 · 카카오모빌리티 기업 정보", "url": "https://jasoseol.com/companies/10478", "kind": "reference"},
+    {"n": 24, "title": "TMAP API 가이드 · POI 검색", "url": "https://tmapapi.tmapmobility.com/main.html#webservice/sample/WebSamplePoi", "kind": "company"},
+    {"n": 25, "title": "microservices.io · Pattern: Transactional outbox", "url": "https://microservices.io/patterns/data/transactional-outbox.html", "kind": "reference"},
+    {"n": 26, "title": "Resilience4j 문서 · CircuitBreaker", "url": "https://resilience4j.readme.io/docs/circuitbreaker", "kind": "reference"},
+    {"n": 27, "title": "Google SRE Book · Monitoring Distributed Systems", "url": "https://sre.google/sre-book/monitoring-distributed-systems/", "kind": "reference"},
+    {"n": 28, "title": "AWS Well-Architected · Reliability Pillar", "url": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html", "kind": "reference"},
+    {"n": 29, "title": "PostGIS 문서 · ST_DWithin", "url": "https://postgis.net/docs/ST_DWithin.html", "kind": "reference"},
+    {"n": 30, "title": "Redis 문서 · Geospatial", "url": "https://redis.io/docs/latest/develop/data-types/geospatial/", "kind": "reference"},
+    {"n": 31, "title": "H3 문서 · Introduction", "url": "https://h3geo.org/docs/", "kind": "reference"},
+    {"n": 32, "title": "Apache Kafka 문서 · Message Delivery Semantics", "url": "https://kafka.apache.org/documentation/#semantics", "kind": "reference"},
+    {"n": 33, "title": "Hibernate ORM User Guide · Optimistic locking", "url": "https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html#locking-optimistic", "kind": "reference"}
+  ],
+  "caveat": "이 조직(로컬·운전점수·대리)의 서버 구조를 다룬 회사 발표 영상이나 글은 찾지 못했다 — 받은 영상 재료도 없다. 그래서 같은 회사 다른 팀의 테크노트(결제·경로탐색·대중교통, 2022~2024년)와 공식 서비스 소개로 회사가 쓰는 방식을 보였고, 동시성·연동·공간 검색은 공개 문서로 '보통 이런 것'을 보였다. 대리 인터뷰(2022년)의 숫자는 지금과 다를 수 있다. 연봉 집계 사이트는 직접 열람이 막혀 검색 결과에 보인 값을 실었다."
+}
