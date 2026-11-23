@@ -1,0 +1,456 @@
+{
+ "id": "hyundai-autoever-diag-crypto-module",
+ "company": "현대오토에버",
+ "role": "진단/Crypto 모듈 개발 (Embedded SW 플랫폼)",
+ "team": "차량SW · 클래식오토사4팀",
+ "jobs": [
+  "jobkorea-50301703",
+  "wanted-395347",
+  "saramin-55552285"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "현대·기아·제네시스 양산차 제어기에 깔리는 회사 자체 바탕 SW **모빌진 클래식(mobilgene Classic)** 에서 **진단 · 암호(Crypto) · OTA** 모듈을 만들고, 그 플랫폼을 쓰는 협력사를 기술 지원합니다.[2][6]",
+  "env": "MCU(인피니언·NXP·르네사스·ST) 위의 **C**, AUTOSAR Classic 표준, CAN·이더넷 통신, **A-SPICE CL3 · 기능안전 ASIL-D** 수준의 개발 절차.[2][6][7]",
+  "oneline": "자동차 제어기의 '윈도우'를 만드는 임베디드 개발자. 앱 기능보다 **표준 사양을 정확히 코드로 옮기고, 절차대로 증명하는 일**이 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "임베디드 SW 개발/검증",
+   "short": "양산차 제어기 수백 종에 깔리는 바탕 SW의 진단·암호·OTA 모듈을 C로 짜고 시험하는 일.",
+   "why": "팀 소개에 따르면 클래식오토사4팀은 모빌진 클래식으로 제어기용 임베디드 SW를 만들고, 지금 다니는 현대·기아차 대부분에 이 팀의 SW가 들어 있습니다.[2] 회사는 모빌진 클래식을 \"제어기의 윈도우\" — 응용 SW 밑에서 공통 일을 맡는 **베이직 SW(BSW)** — 라고 설명합니다.[4] 모빌진은 200종이 넘는 제어기에 쓰이고[8], 클래식 2.0은 현대차그룹 양산차 전체에 들어갑니다.[6] 보안·OTA 가 따로 붙은 까닭도 있습니다 — 유럽 형식승인은 사이버보안 관리체계(UN R155)와 SW 업데이트 관리체계(UN R156)를 요구하고[14], 회사는 모빌진 보안 솔루션이 MCU 부터 차량 네트워크까지 지킨다고 소개합니다.[22]",
+   "actually": {
+    "intro": "공고가 적은 세 모듈이 AUTOSAR 표준에서 맡는 일입니다. 모빌진 내부 코드는 공개되지 않아 표준 문서로 보였습니다.",
+    "items": [
+     "**진단 통신(Dcm)** — 정비소 진단기가 보낸 요청을 받아 처리하고 답한다. 진단 세션과 보안 잠금 상태도 이 모듈이 관리한다. 안은 세 칸 — 요청·응답 흐름과 시간 제한(DSL), 서비스 분배(DSD), 서비스 처리(DSP).[9]",
+     "**고장 기록** — 제어기가 이상을 감지해 남긴 고장 코드(DTC)를 진단기가 0x19 로 읽고 0x14 로 지운다.[12] Dcm 은 고장 기록 모듈(Dem)의 인터페이스로 이 기록을 가져온다.[9]",
+     "**암호 서비스(Csm → CryIf → Crypto 드라이버)** — 응용이 \"이 키로 MAC 을 만들어 줘\" 같은 작업(job)을 맡기면, 아래 드라이버가 하드웨어나 소프트웨어로 계산한다. 드라이버 객체 하나는 한 번에 한 계산만 한다.[11]",
+     "**HSM** — 키를 지키고 암호 계산을 하는 칩 안의 별도 보안 하드웨어. 회사는 HSM 을 AUTOSAR 와 따로 돌아가는 칩 내장형으로 제공한다.[5]",
+     "**보안 통신(SecOC)** — CAN 메시지 뒤에 짧은 MAC(위조 방지 서명)과 카운터를 붙여 가짜·재전송 메시지를 걸러낸다.[10]",
+     "**OTA·재프로그래밍** — 진단 서비스(0x34 다운로드 요청 → 0x36 전송 → 0x37 종료)로 새 SW 를 받는다.[12] 회사 보안 솔루션에는 서명된 SW 만 쓰게 하는 Secure Flash 가 있다.[5]"
+    ]
+   },
+   "how_far": "이 팀은 모듈 자체(표준 사양 → 코드)를 만듭니다. 제어기마다 다른 값 — 제품 번호, 고장 코드 목록 — 은 플랫폼을 받은 제어기 회사가 설정하고, 플랫폼은 기본 설정과 예제를 줍니다.[4] 최소선은 진단 요청 하나가 CAN 프레임에서 서비스 처리까지 어떤 모듈을 지나는지 그림으로 그릴 수 있는 것입니다. {추론}",
+   "refs": [2, 4, 5, 6, 8, 9, 10, 11, 12],
+   "study": ["hae-webinar", "autosar-dcm", "autosar-csm", "soffar"]
+  },
+  {
+   "section": "task",
+   "quote": "SW 개발 표준 프로세스(A-SPICE, 기능안전 등) 기반 SW 개발",
+   "short": "요구사항→설계→코드→시험이 서로 이어진 기록을 남기며 개발해서 — 회사가 CL3·ASIL-D 인증을 지키는 중이다.",
+   "why": "공고는 이 팀의 일 셋째 칸에 'ASPICE CL3'와 '기능안전 인증'을 적었습니다.[2] 모빌진 클래식 2.0은 2024년 10월 독일 심사기관 Kugler Maag 에게 A-SPICE 레벨 3을 받았고, 심사는 약 130개 항목으로 개발 과정을 봅니다.[7] 2025년 7월에는 63개 모듈 전체가 DNV 에게 기능안전 ASIL-D 인증을 받았습니다(2021년엔 8개).[6] 유럽 완성차에 SW 를 대려면 A-SPICE 레벨 2가 필요하다고 보도됐습니다.[7]",
+   "actually": {
+    "items": [
+     "**A-SPICE** — 자동차 SW 개발 과정이 얼마나 체계적인지 0~5 단계로 재는 모델. 레벨 3은 '회사 표준 절차가 정의돼 있고 그대로 쓴다'는 뜻이다. 지금 판은 4.1이다.[15]",
+     "**기능안전(ISO 26262)** — 고장이 나도 사람이 다치지 않게 미리 위험을 찾아 대비하는 것. 회사 발표의 비유로는 커터 칼의 안전장치다.[4] ASIL 은 A~D 네 등급이고 D 가 가장 엄격하다. {추론}",
+     "**어느 모듈이 안전 등급인가** — 2022년 발표 자료의 옛 판(4.0.3)은 OS·E2E·워치독·RTE 만 ASIL 수준으로 만들었다.[4] 지금 2.0은 전체 모듈이 ASIL-D 다.[6]",
+     "**메모리 침범 시험(MIVT)** — 품질 등급이 낮은 다른 코드가 안전 모듈의 메모리를 건드리지 않는지 도구로 검사하는 회사 서비스.[4]",
+     "**릴리스 산출물** — 배포 패키지에 요구사항 문서(SRS)·릴리스 노트·통합 시험 결과가 같이 들어간다.[4]",
+     "**기술 리뷰** — 15개 모듈 160여 항목의 점검표로 잘못 쓰는 설정을 막는다.[4]"
+    ]
+   },
+   "how_far": "절차를 새로 만드는 자리가 아니라 **이미 인증받은 절차를 지키는 개발자** 자리입니다 {추론}. 내가 고친 코드 한 줄이 어느 요구사항에서 왔고 어떤 시험이 그걸 확인하는지 연결해 남길 수 있으면 됩니다. {추론}",
+   "refs": [2, 4, 6, 7, 15],
+   "study": ["aspice", "hae-webinar"]
+  },
+  {
+   "section": "task",
+   "quote": "고객사 기술 지원",
+   "short": "협력사가 모빌진으로 제어기를 만들다 막히면 원인을 같이 찾아 주는 일.",
+   "why": "공고는 기술 지원을 '협력사 제어기(ECU) 개발 플랫폼 기술 문의 대응'과 '개발 중 생긴 기술 이슈를 빨리 해결'로 적었습니다.[2] 모빌진은 현대모비스·현대케피코 같은 그룹사와 국내 협력사가 쓰는 국산 플랫폼이라 지원 요청이 이 팀으로 옵니다.[4]",
+   "actually": {
+    "intro": "회사가 발표에서 소개한 지원 방식입니다.[4]",
+    "items": [
+     "**제어기 띄우기(bring-up)** — MCU 클럭·비휘발 메모리·CAN·진단 설정을 고객 하드웨어에서 직접 맞춰 '돌아가는 패키지'로 준다. 평균 6주가 목표다.[4][5]",
+     "**기술 리뷰** — 양산 경험으로 만든 점검표로 고객 프로젝트 설정을 오프라인 검토한다.[4]",
+     "**옛 코드 옮기기** — 기존 C 코드를 AUTOSAR 구조로 바꾸는 상담과 코드 분석.[4]",
+     "**부트로더만 따로** — 다른 플랫폼을 쓰는 협력사가 현대차 보안·OTA 요건만 맞추려 할 때 부트로더를 따로 지원한 사례가 있다.[4]",
+     "**교육** — 입문(외부 교육 회사), 심화(회사 직접), 하루짜리 워크숍.[4]"
+    ]
+   },
+   "how_far": "고객 로그와 설정 파일만 보고 '플랫폼 결함인지 설정 실수인지'를 가를 수 있어야 합니다 {추론}. 그러려면 진단·암호 모듈의 설정 항목이 코드에서 어떻게 쓰이는지 알아야 합니다. {추론}",
+   "refs": [2, 4, 5],
+   "study": ["hae-webinar", "soffar"]
+  },
+  {
+   "section": "task",
+   "quote": "Embedded, A-SPICE, C, C++",
+   "short": "모듈 코드는 MCU 위의 C. 공고는 C++ 도 적었지만 쓰이는 자리는 공개되지 않았다.",
+   "why": "회사 발표의 개발 흐름도에서 베이직 SW·직접 만드는 드라이버(CDD)는 'C-Code' 칸으로 그려져 있습니다.[4] AUTOSAR Classic 표준의 모듈 API도 C 함수 형태입니다.[9][11] 원티드 공고는 같은 낱말을 해시태그(#Embedded #A-SPICE #C, C++)로 적었습니다.[2]",
+   "level": {
+    "basic": "포인터 · 구조체 · 비트 연산 · 바이트 순서(빅/리틀 엔디언) · volatile",
+    "work": "동적 할당 없이 정적 메모리로 · 인터럽트와 공유 변수 · 상태 기계 · 콜백",
+    "team": "AUTOSAR 모듈 API · 설정 생성 코드 읽기 · 여러 MCU·컴파일러에서 같은 동작"
+   },
+   "how_far": "C++ 가 어디에 쓰이는지는 공고에 없습니다. 형제 팀(클래식오토사2팀)이 설계 도구·생성 도구를 맡는다고 적은 것으로 보아 도구 쪽일 수 있습니다[24] {추론}. 이 자리의 기본은 C 입니다. {추론}",
+   "refs": [2, 4, 9, 11, 24],
+   "study": ["making-embedded", "soffar"]
+  },
+  {
+   "section": "qualification",
+   "quote": "OS/Mode 모듈 개발 및 플랫폼 개발",
+   "short": "잡코리아 공고에 섞여 든 옆 팀 포지션 이름이다 — 이 자리의 일은 진단/Crypto 다.",
+   "why": "같은 날 회사는 클래식오토사 1~4팀 공고를 함께 올렸습니다. 'OS/Mode 모듈 개발 및 플랫폼 개발'은 1팀 공고의 제목입니다.[17] 같은 진단/Crypto 자리의 원티드 공고에는 이 줄이 없고 팀도 4팀으로 적혀 있습니다.[2]",
+   "how_far": "요건으로 읽지 않아도 됩니다. 다만 1팀(OS·모드)·3팀(CAN·LIN·이더넷 통신 스택)[18]과 같은 플랫폼을 나눠 만드니, 옆 모듈이 무엇을 하는지는 알아 두면 좋습니다. {추론}",
+   "refs": [2, 17, 18]
+  },
+  {
+   "section": "qualification",
+   "quote": "임베디드 SW 개발 경험",
+   "short": "MCU 레지스터·인터럽트·작은 메모리 위에서 C 를 짜고 보드에 올려 본 경험.",
+   "why": "이 팀은 인피니언·NXP·르네사스·ST 같은 주요 MCU 와 SoC 위에서 개발합니다.[2] 2022년 발표 기준 옛 판(4.0.3)은 MCU 13종을, 새 판은 인피니언 TC36x·TC38x·TC39x 를 지원했습니다.[4] 제어기를 띄우려면 MCU 클럭·비휘발 메모리(NvM)·CAN·진단부터 맞춰야 합니다.[5]",
+   "actually": {
+    "items": [
+     "**층 구조** — MCU → 하드웨어를 직접 만지는 MCAL → 하드웨어를 몰라도 쓰게 하는 추상화 층 → 서비스 층 → RTE(응용과 BSW 를 잇는 층).[4]",
+     "**새 MCU 로 옮기기(포팅)** — 같은 모듈이 여러 MCU 에서 같은 동작을 하게 맞춘다. 1팀 공고가 신규 MCU 포팅을 맡는다고 적었다.[17]",
+     "**멀티코어** — 새 판은 BSW 를 여러 코어에 나눠 배치해, CAN·이더넷이 한 코어에 몰려 생기던 병목을 줄였다.[4]",
+     "**하나의 ROM, 여러 통신 사양(포스트 빌드)** — 부팅 때 어떤 사양인지 확인해 다른 CAN 메시지 표를 쓴다.[4]"
+    ]
+   },
+   "how_far": "경력 3~7년 자리라[2] 보드 하나에 펌웨어를 올려 본 수준을 넘어 **디버거로 메모리·레지스터를 보며 버그를 잡아 본** 경험이 기대됩니다. {추론}",
+   "refs": [2, 4, 5, 17],
+   "study": ["making-embedded", "soffar"]
+  },
+  {
+   "section": "qualification",
+   "quote": "CAN/Eth 통신 기반 개발/검증 경험",
+   "short": "진단 요청도 MAC 을 단 메시지도 결국 CAN·이더넷 위로 오가서 — 바이트를 읽을 줄 알아야 한다.",
+   "why": "AUTOSAR 진단 모듈은 CAN 위의 전송 규칙(ISO 15765-2) 위에서 UDS(ISO 14229-1) 서비스를 처리합니다.[9] UDS 는 이더넷(ISO 13400)으로도 오갑니다.[12] 모빌진은 OEM 전용 이더넷 진단(EthDiag)과 보안 기능을 특화 기능으로 넣었고[4], 통신 사양은 OEM 이 준 CAN·LIN·이더넷 DB 를 설정 도구로 불러와 맞춥니다.[4]",
+   "actually": {
+    "items": [
+     "**ISO-TP 프레임** — 첫 바이트 앞 4비트가 프레임 종류(0 단일·1 첫·2 연속·3 흐름 제어). 클래식 CAN 단일 프레임에는 데이터 7바이트까지 들어간다.[13]",
+     "**UDS 응답 읽기** — 성공이면 요청 번호 + 0x40(0x22 → 0x62), 실패면 0x7F · 요청 번호 · 거절 이유(NRC) 세 바이트.[12]",
+     "**보안 잠금 풀기** — 0x27 SecurityAccess 로 씨앗(seed)을 받고 열쇠(key)를 계산해 보낸다.[12] 회사 솔루션은 OTA 경로와 게이트웨이 경로에서 씨앗·열쇠, 별도 인증서를 다르게 확인한다.[5]",
+     "**SecOC 프로필 1** — AES-128 CMAC 으로 MAC 을 만들고 앞 24비트만, 카운터는 뒤 8비트만 메시지에 싣는다.[10] MAC 입력은 데이터 ID · 메시지 · 전체 카운터를 이어 붙인 것이다.[10]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "UDS 요청을 CAN 한 프레임에 싣고, 응답 읽기 (직접 돌린 출력)",
+     "body": "VIN 읽기(0x22 F190) 요청 프레임과 세 가지 응답을 해석합니다. 채움 바이트 값(여기선 0xAA)은 OEM 사양이 정합니다 {추론}. 출력: `03 22 f1 90 aa aa aa aa` / `거절: ReadDataByIdentifier → requestOutOfRange` / `성공: SecurityAccess 01 3a 9c 51 07` / `거절: SecurityAccess → securityAccessDenied`.[12][13]",
+     "lang": "python",
+     "code": "NAMES = {0x22: \"ReadDataByIdentifier\", 0x27: \"SecurityAccess\"}\nNRC = {0x31: \"requestOutOfRange\", 0x33: \"securityAccessDenied\"}\n\ndef single_frame(uds, pad=0xAA):   # 상위 4비트 0 = 단일 프레임, 하위 4비트 = 길이\n    assert len(uds) <= 7\n    return bytes([len(uds)]) + uds + bytes([pad] * (7 - len(uds)))\n\ndef read(frame):\n    n = frame[0] & 0x0F; uds = frame[1:1 + n]\n    if uds[0] == 0x7F:\n        return \"거절: \" + NAMES[uds[1]] + \" → \" + NRC[uds[2]]\n    return \"성공: \" + NAMES[uds[0] - 0x40] + \" \" + uds[1:].hex(\" \")\n\nprint(single_frame(bytes([0x22, 0xF1, 0x90])).hex(\" \"))\nprint(read(bytes.fromhex(\"03 7F 22 31 AA AA AA AA\")))\nprint(read(bytes.fromhex(\"06 67 01 3A 9C 51 07 AA\")))\nprint(read(bytes.fromhex(\"03 7F 27 33 AA AA AA AA\")))"
+    },
+    {
+     "title": "SecOC 프로필 1 흉내 — 같은 값도 카운터가 바뀌면 MAC 이 바뀐다 (직접 돌린 출력)",
+     "body": "먼저 RFC 4493 예시 2로 라이브러리 값이 맞는지 확인합니다(`070a16b4…287c`).[16] 데이터 ID·신호·카운터 길이는 예시로 정한 값입니다. 출력의 두 메시지는 신호 4바이트가 같지만 뒤 4바이트(카운터 1바이트 + MAC 3바이트)가 다릅니다: `00 64 12 34 e8 4e d2 93` / `00 64 12 34 e9 20 d1 80`.[10]",
+     "lang": "python",
+     "code": "from cryptography.hazmat.primitives.cmac import CMAC\nfrom cryptography.hazmat.primitives.ciphers import algorithms\n\ndef cmac(key, data):\n    c = CMAC(algorithms.AES(key)); c.update(data); return c.finalize()\n\nkey = bytes.fromhex(\"2b7e151628aed2a6abf7158809cf4f3c\")\nprint(cmac(key, bytes.fromhex(\"6bc1bee22e409f96e93d7e117393172a\")).hex())\n\ndata_id = (0x0123).to_bytes(2, \"big\")       # 예시 Data ID\npayload = bytes([0x00, 0x64, 0x12, 0x34])     # 예시 신호\n\ndef secured_pdu(fv):                          # 카운터 32비트(예시)\n    mac = cmac(key, data_id + payload + fv.to_bytes(4, \"big\"))\n    return payload + bytes([fv & 0xFF]) + mac[:3]   # 카운터 뒤 8비트 + MAC 앞 24비트\n\nprint(secured_pdu(1000).hex(\" \"))\nprint(secured_pdu(1001).hex(\" \"))"
+    }
+   ],
+   "how_far": "통신 스택 자체는 3팀 몫입니다.[18] 이 자리는 **진단·보안 메시지를 바이트 단위로 읽고, 분석 도구 로그로 '어느 쪽이 틀렸나'를 가리는** 수준이면 됩니다. {추론}",
+   "refs": [4, 5, 9, 10, 12, 13, 16, 18],
+   "study": ["uds-wiki", "autosar-secoc", "nist-cmac", "python-can", "udsoncan", "car-hacker"]
+  },
+  {
+   "section": "qualification",
+   "quote": "경력 : 경력1년↑",
+   "short": "잡코리아는 1년 이상, 원티드·사람인은 3~7년 — 3~7년으로 읽는 게 안전하다.",
+   "why": "같은 자리의 원티드·사람인 공고는 경력을 3~7년으로 적었습니다.[2][3] 잡코리아 공고만 '1년↑'입니다.[1]",
+   "how_far": "1~2년 차라면 진단·CAN 을 직접 다뤄 본 일을 구체적으로 보여 줘야 서류를 넘을 수 있습니다. {추론}",
+   "refs": [1, 2, 3]
+  },
+  {
+   "section": "preference",
+   "quote": "전장 제어기 개발 경험",
+   "short": "플랫폼을 '받아 쓰는' 제어기 회사 입장을 알면 모듈 설계와 기술 지원이 빨라져서.",
+   "why": "모빌진은 차체(IBU 등), ADAS, 친환경(넥쏘 연료전지 제어기·아이오닉 충전 통신 제어기), 샤시, 인포테인먼트 제어기에 쓰였습니다.[4] 제어기 회사는 플랫폼 위에 제품 번호·고장 코드를 설정하고 전용 드라이버(CDD)를 직접 만듭니다.[4]",
+   "how_far": "어느 도메인이든 제어기 하나를 양산까지 가져가 본 경험이면 충분합니다 — 진단 사양(고장 코드·리프로그래밍)을 맞춰 본 적이 있으면 더 직접적입니다. {추론}",
+   "refs": [4],
+   "study": ["hae-webinar"]
+  },
+  {
+   "section": "preference",
+   "quote": "mobilgene Classic 플랫폼 사용 경험",
+   "short": "회사 자체 플랫폼이라 써 본 사람은 바로 일한다 — 주로 현대차그룹 협력사에서 써 본다.",
+   "why": "모빌진 클래식은 2016년 그랜저(IG)에 처음 양산 적용됐고, 2022년 발표 기준 70종 제어기·180개 프로젝트에 들어갔습니다.[4] 설정 도구 하나(mobilgene C Studio)로 BSW 와 응용 SW 컴포넌트를 같이 설정하고, CAN 리프로그래밍 도구(CRT)를 같이 줍니다.[4][24] 회사가 현대차와 연 2023년 모빌진 행사에는 그룹사·LG전자·콘티넨탈·HL클레무브 등 실무자 300여 명이 왔습니다 — 쓰는 곳이 대개 이 범위입니다.[23]",
+   "how_far": "써 본 적이 없다면 다른 회사의 AUTOSAR Classic 도구로 BSW 를 설정해 본 경험이 가장 가까운 대체입니다 {추론}. 회사는 처음 쓰는 사람을 위한 입문·심화 교육을 따로 운영합니다.[4]",
+   "refs": [4, 24],
+   "study": ["hae-webinar", "inflearn-autosar", "soffar"]
+  }
+ ],
+ "fit": {
+  "good": [
+   "표준 문서(수백 쪽짜리 사양)를 읽고 그대로 구현하는 게 괴롭지 않은 사람",
+   "내 코드가 국내 대부분의 현대·기아차에 들어간다는 무게를 즐기는 사람[2]",
+   "바이트 단위로 통신 로그를 읽으며 원인을 좁혀 가는 일이 재미있는 사람",
+   "보안(암호·키 관리)과 임베디드를 같이 깊게 파고 싶은 사람[2]"
+  ],
+  "hard": [
+   "A-SPICE CL3·ASIL-D 절차라 문서·리뷰·추적 기록이 많다[6][7]",
+   "고객사 기술 지원이 업무에 들어 있어 남의 프로젝트 문제에 끌려갈 수 있다[2]",
+   "회사 자체 플랫폼 경험은 다른 회사로 옮길 때 'AUTOSAR 일반 경험'으로 다시 설명해야 한다 {추론}"
+  ]
+ },
+ "interview": [
+  {
+   "q": "진단기가 보낸 0x22 F190 요청이 제어기 안에서 어떤 모듈을 지나 답이 나가나요?",
+   "a": "CAN → 전송 규칙(ISO-TP) → Dcm 의 세 칸(DSL·DSD·DSP) → 데이터 제공 → 다시 아래로.[9][13]"
+  },
+  {
+   "q": "UDS 응답의 첫 바이트가 0x7F 면 무슨 뜻이고, 0x78 이 오면 진단기는 어떻게 하나요?",
+   "a": "거절 응답의 형식과 '처리 중이니 기다려라' 응답.[12]"
+  },
+  {
+   "q": "SecOC 에서 MAC 을 24비트로 자르면 왜 괜찮고, 카운터는 왜 필요하죠?",
+   "a": "CAN 한 프레임의 공간과 재전송 공격.[10]"
+  },
+  {
+   "q": "HSM 이 없는 MCU 에서 Crypto 드라이버를 어떻게 구성하나요? 한 드라이버 객체에 작업 둘이 동시에 오면?",
+   "a": "하드웨어·소프트웨어 드라이버 객체와 한 번에 한 계산 규칙.[11]"
+  },
+  {
+   "q": "A-SPICE 레벨 3에서 내 코드 변경 하나에 남겨야 하는 것은?",
+   "a": "요구사항·설계·시험과의 연결(추적성) — 회사가 받은 인증 수준.[7][15]"
+  }
+ ],
+ "resources": [
+  {
+   "id": "hae-webinar",
+   "title": "[웨비나] mobilgene Classic과 모빌리티 소프트웨어",
+   "by": "현대오토에버 · 2022",
+   "kind": "video",
+   "url": "https://www.youtube.com/watch?v=zH29jB2LJfg",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "회사가 직접 모빌진 클래식의 구조·판 차이·납품 패키지·기술 지원 방식을 설명한다. 업무 세 줄과 우대 '모빌진 사용 경험'의 배경을 한 번에 잡는다."
+  },
+  {
+   "id": "soffar",
+   "title": "AUTOSAR Fundamentals and Applications",
+   "by": "Hossam Soffar · Packt · 2024",
+   "kind": "book",
+   "url": "https://www.packtpub.com/en-ca/product/autosar-fundamentals-and-applications-9781805122807",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "why": "AUTOSAR 를 처음 보는 임베디드 개발자용으로 층 구조·SW 컴포넌트·RTE·방법론을 다룬다. 모빌진을 안 써 봤다면 그 자리를 메우는 바탕."
+  },
+  {
+   "id": "inflearn-autosar",
+   "title": "[AUTOSAR] 신입사원에게 들려주는 AUTOSAR기초 개념 완성",
+   "kind": "course",
+   "url": "https://www.inflearn.com/course/autosar-기초-개념-완성",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "why": "한국어로 AUTOSAR 기초 개념을 훑는 강의. 책 전에 용어(BSW·RTE·MCAL)를 귀에 익히는 용도."
+  },
+  {
+   "id": "autosar-dcm",
+   "title": "AUTOSAR CP R22-11 · Specification of Diagnostic Communication Manager",
+   "by": "AUTOSAR",
+   "kind": "doc",
+   "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_SWS_DiagnosticCommunicationManager.pdf",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "업무 '진단 모듈'의 원 사양. 1장(개요)과 7.4~7.6(DSL·DSD·DSP)부터 읽으면 진단 요청이 처리되는 길이 보인다."
+  },
+  {
+   "id": "autosar-csm",
+   "title": "AUTOSAR CP R22-11 · Specification of Crypto Service Manager",
+   "by": "AUTOSAR",
+   "kind": "doc",
+   "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_SWS_CryptoServiceManager.pdf",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "업무 'Crypto 모듈'의 원 사양. 작업(job)·키·드라이버 객체가 무엇인지, 동기·비동기 처리가 어떻게 다른지."
+  },
+  {
+   "id": "autosar-secoc",
+   "title": "AUTOSAR CP R22-11 · Specification of Secure Onboard Communication",
+   "by": "AUTOSAR",
+   "kind": "doc",
+   "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_SWS_SecureOnboardCommunication.pdf",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "'차량 통신 보안'의 핵심 모듈. 7.1(MAC·카운터 만드는 법)과 7.10(프로필 1~3)이 이 자리의 기본 질문을 다 담는다."
+  },
+  {
+   "id": "nist-cmac",
+   "title": "NIST SP 800-38B · The CMAC Mode for Authentication",
+   "by": "NIST",
+   "kind": "doc",
+   "url": "https://csrc.nist.gov/pubs/sp/800/38/b/upd1/final",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "SecOC 프로필이 쓰는 CMAC 의 정의. 직접 구현한 CMAC 를 시험 벡터로 맞춰 볼 때."
+  },
+  {
+   "id": "uds-wiki",
+   "title": "Wikipedia · Unified Diagnostic Services",
+   "kind": "doc",
+   "url": "https://en.wikipedia.org/wiki/Unified_Diagnostic_Services",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "UDS 서비스 번호·응답 규칙·거절 이유 코드를 한 표로 본다. ISO 14229 원문은 유료라 입구로 쓴다."
+  },
+  {
+   "id": "python-can",
+   "title": "python-can 문서",
+   "by": "python-can 프로젝트",
+   "kind": "doc",
+   "url": "https://python-can.readthedocs.io/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "장비 없이 가상 CAN 버스로 메시지를 주고받아 본다. 요건 'CAN 통신 기반 개발/검증'을 집에서 연습하는 도구."
+  },
+  {
+   "id": "udsoncan",
+   "title": "udsoncan 문서 (Python UDS 클라이언트)",
+   "by": "Pier-Yves Lessard",
+   "kind": "doc",
+   "url": "https://udsoncan.readthedocs.io/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "진단기 쪽 요청을 코드로 보내 본다. 내가 만든 가짜 제어기가 0x22·0x27 에 제대로 답하는지 시험할 때."
+  },
+  {
+   "id": "car-hacker",
+   "title": "The Car Hacker's Handbook",
+   "by": "Craig Smith · No Starch Press · 2016",
+   "kind": "book",
+   "url": "https://nostarch.com/carhacking",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "why": "CAN·진단·씨앗/열쇠를 공격자 눈으로 본다. 업무 'Crypto 모듈 — 차량 통신 보안 강화'가 왜 필요한지 감을 잡는다."
+  },
+  {
+   "id": "aspice",
+   "title": "VDA QMC · Automotive SPICE",
+   "by": "VDA QMC",
+   "kind": "doc",
+   "url": "https://vda-qmc.de/en/automotive-spice/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "업무 'A-SPICE 기반 개발'의 원 모델(현재 4.1). 능력 수준 0~5와 프로세스 묶음을 확인하고 평가 모델 문서를 받는 곳."
+  },
+  {
+   "id": "making-embedded",
+   "title": "Making Embedded Systems (2nd Edition)",
+   "by": "Elecia White · O'Reilly · 2024",
+   "kind": "book",
+   "url": "https://www.oreilly.com/search/?q=Making%20Embedded%20Systems",
+   "lang": "en",
+   "free": false,
+   "level": "입문",
+   "why": "MCU·인터럽트·메모리 제약 아래서 C 로 설계하는 법. 요건 '임베디드 SW 개발 경험'의 바탕을 다진다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "임베디드 C 와 MCU 바닥",
+   "time": "2~3주",
+   "goal": "개발 보드에서 타이머 인터럽트·UART 를 직접 다루고, 동적 할당 없이 버퍼를 설계할 수 있다.",
+   "task": "아무 MCU 개발 보드로 1ms 타이머 인터럽트를 걸고, 수신 버퍼(링 버퍼)를 정적 배열로 만들어 넘침을 시험한다.",
+   "resources": ["making-embedded"]
+  },
+  {
+   "title": "AUTOSAR 층 구조와 모빌진",
+   "time": "2주",
+   "goal": "MCAL·서비스 층·RTE 가 각각 무엇을 맡는지, 모빌진 클래식의 판 차이와 납품 방식을 말할 수 있다.",
+   "task": "회사 웨비나를 보고 '진단 요청 하나가 지나가는 모듈' 그림을 직접 그린 뒤, 책의 층 구조 그림과 맞춰 본다.",
+   "resources": ["hae-webinar", "inflearn-autosar", "soffar"]
+  },
+  {
+   "title": "CAN 과 UDS 를 손으로",
+   "time": "2~3주",
+   "goal": "ISO-TP 단일·다중 프레임을 직접 만들고, UDS 요청·성공·거절 응답을 바이트로 읽을 수 있다.",
+   "task": "python-can 가상 버스에 가짜 제어기를 띄워 0x10·0x22·0x27 에 답하게 하고, udsoncan 클라이언트로 요청한다. 잘못된 열쇠에 거절(0x7F 27 …)이 나오는지 확인한다.",
+   "resources": ["uds-wiki", "python-can", "udsoncan", "autosar-dcm"]
+  },
+  {
+   "title": "암호 스택과 보안 통신",
+   "time": "2주",
+   "goal": "Csm 작업·키·드라이버 객체를 설명하고, SecOC 프로필 1 메시지를 만들고 검증할 수 있다.",
+   "task": "앞 단계 가상 버스에 SecOC 프로필 1(CMAC 24비트·카운터 8비트)을 얹고, 같은 메시지를 다시 보내는 재전송 공격이 거절되는지 시험한다.",
+   "resources": ["autosar-csm", "autosar-secoc", "nist-cmac", "car-hacker"]
+  },
+  {
+   "title": "절차로 증명하기",
+   "time": "1주",
+   "goal": "요구사항 → 설계 → 코드 → 시험의 연결을 표로 남길 수 있다.",
+   "task": "앞에서 만든 가짜 제어기에 요구사항 10줄을 붙이고, 줄마다 구현 위치와 시험 이름을 잇는 추적표를 만든다.",
+   "resources": ["aspice"]
+  }
+ ],
+ "pay": {
+  "summary": "공고는 '면접 후 결정'이고, 공시로 본 직원 평균은 **2026년 상반기 4,500만원(연으로 약 9,000만원)** — 경력직이 섞인 회사 전체 값이다",
+  "rows": [
+   {
+    "label": "직원 1인 평균 급여(상반기)",
+    "value": "4,500만원",
+    "amount": 4500,
+    "basis": "반기보고서 · 2026년 상반기",
+    "note": "6월 말 본사 직원 5,749명 기준, 상반기 6개월 치다 [20]"
+   },
+   {
+    "label": "직원 1인 평균 급여(연 환산)",
+    "value": "약 9,000만원",
+    "amount": 9000,
+    "basis": "반기보고서 · 2026년 상반기 × 2",
+    "note": "기사가 상반기 값을 두 배로 푼 것이라 하반기 성과급은 반영되지 않았을 수 있다 [20]"
+   }
+  ],
+  "how": "사람인 공고는 급여를 '면접 후 결정'으로 적었고 전형 끝에 처우협의가 있다 [3]. 이 자리는 경력 3~7년이라 신입 초봉은 해당하지 않는다 [2]. 평균은 직군·연차가 다 섞인 회사 전체 값이라 이 자리의 제안 금액으로 읽으면 안 된다 {추론}. 연간 사업보고서 평균과 공공데이터 집계 초봉은 원문을 확인하지 못해 싣지 않았다."
+ },
+ "benefits": {
+  "items": [
+   {"name": "통신비", "detail": "휴대전화 통신비 월 최대 6만원"},
+   {"name": "차량 구입", "detail": "현대자동차그룹 차량 구입 시 최대 30%, 입사 후 첫 차는 20% 지원"},
+   {"name": "하계 휴가", "detail": "연차 외 5일 추가, 하계 휴가비"},
+   {"name": "건강", "detail": "직원 본인·가족 종합검진, 의료비, 독감 예방접종, 단체 상해보험"},
+   {"name": "주거·학자금", "detail": "주거 지원금, 본인 학자금 대출 이자 지원, 자녀 학자금"},
+   {"name": "육아", "detail": "강남구 안 사내 어린이집 2곳, 출산 전후 휴가, 자녀 초등학교 입학 선물"},
+   {"name": "휴양·여가", "detail": "전국 40여 곳 리조트, 복지포인트, 사내 동호회"},
+   {"name": "경조·명절", "detail": "경조휴가·경조비, 명절 귀향비"},
+   {"name": "상담", "detail": "외부 전문가 심리 상담(EAP)"}
+  ],
+  "note": "원티드 공고는 복리후생을 '회사 내규에 따름'으로만 적었다 [2]. 위 항목은 현대오토에버 채용 사이트 Life 메뉴 기준이고, 페이지에 기준 연도는 적혀 있지 않다 [19]."
+ },
+ "location": {
+  "name": "현대오토에버 본사",
+  "address": "서울특별시 강남구 테헤란로 510",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20510",
+  "near": "2호선 삼성역 근처",
+  "note": "원티드 공고의 근무지가 테헤란로 510이고 [2], 회사 국내 사업장 페이지의 본사 주소와 같다 [21]. 사람인 공고는 근무지를 '서울 강남 대치동'으로 적었다 [3]."
+ },
+ "sources": [
+  {"n": 1, "title": "잡코리아 · 현대오토에버 진단/Crypto 모듈 개발", "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/50301703", "kind": "posting", "date": "2026-11", "note": "업무·자격·우대·전형. 자격 칸 첫 줄에 1팀 포지션 이름이 섞여 있다"},
+  {"n": 2, "title": "원티드 · [SDV] Embedded SW 플랫폼 디벨로퍼 - 진단/Crypto 모듈 개발", "url": "https://www.wanted.co.kr/wd/395347", "kind": "posting", "date": "2026-11", "note": "클래식오토사4팀 소개·모듈(진단·Crypto·OTA)·MCU 제조사·기술 지원·프로세스(ASPICE CL3·기능안전), 경력 3~7년, 근무지"},
+  {"n": 3, "title": "사람인 · [SDV] Embedded SW Platform Developer - 진단/Crypto 모듈 개발", "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?rec_idx=55552285", "kind": "posting", "date": "2026-11", "note": "경력 3~7년 · 급여 면접 후 결정 · 근무지 서울 강남 대치동 · 접수 11-12~11-26"},
+  {"n": 4, "title": "현대오토에버 웨비나 · mobilgene Classic과 모빌리티 소프트웨어", "url": "https://www.youtube.com/watch?v=zH29jB2LJfg", "kind": "company", "date": "2022-02", "note": "클래식오토사팀 수석연구원·실장 발표 — 대본 전부와 슬라이드 장면 확인"},
+  {"n": 5, "title": "현대오토에버 · 차량 소프트웨어 플랫폼 mobilgene 브랜드 소개", "url": "https://www.youtube.com/watch?v=lhuB1k4JjQY", "kind": "company", "date": "2023-06", "note": "ECU bring-up·보안 솔루션(Secure Access·Security Access·Secure Flash·HSM) — 자막 전부 확인"},
+  {"n": 6, "title": "현대자동차그룹 뉴스룸 · 현대오토에버, 모빌진 클래식 2.0 전체 모듈 'ASIL-D' 인증 획득", "url": "https://www.hyundaimotorgroup.com/ko/news/CONT0000000000181767", "kind": "company", "date": "2025-07-24", "note": "63개 모듈 · DNV · 2021년 8개 모듈"},
+  {"n": 7, "title": "전자신문 · 현대오토에버 '모빌진 클래식 2.0', A-SPICE 레벨3 인증", "url": "https://m.etnews.com/20241022000224", "kind": "news", "date": "2024-10-22", "note": "Kugler Maag 심사 · 약 130개 항목"},
+  {"n": 8, "title": "현대자동차그룹 · 현대오토에버 차량 SW 플랫폼 모빌진 이야기", "url": "https://www.hyundaimotorgroup.com/ko/story/CONT0000000000107771", "kind": "company", "date": "2023-08-31", "note": "200종 이상 제어기 적용 · OTA · 모빌진 시큐리티"},
+  {"n": 9, "title": "AUTOSAR CP R22-11 · Specification of Diagnostic Communication Manager", "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_SWS_DiagnosticCommunicationManager.pdf", "kind": "reference", "note": "1장 개요·DSL/DSD/DSP·진단 프로토콜과 OSI 층 표"},
+  {"n": 10, "title": "AUTOSAR CP R22-11 · Specification of Secure Onboard Communication", "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_SWS_SecureOnboardCommunication.pdf", "kind": "reference", "note": "7.1 MAC·신선도 값 · 7.10 프로필"},
+  {"n": 11, "title": "AUTOSAR CP R22-11 · Specification of Crypto Service Manager", "url": "https://www.autosar.org/fileadmin/standards/R22-11/CP/AUTOSAR_SWS_CryptoServiceManager.pdf", "kind": "reference", "note": "용어(작업·키·드라이버 객체)"},
+  {"n": 12, "title": "Wikipedia · Unified Diagnostic Services", "url": "https://en.wikipedia.org/wiki/Unified_Diagnostic_Services", "kind": "reference"},
+  {"n": 13, "title": "Wikipedia · ISO 15765-2", "url": "https://en.wikipedia.org/wiki/ISO_15765-2", "kind": "reference"},
+  {"n": 14, "title": "영국 차량인증청(VCA) · Cyber Security and Software Updating", "url": "https://www.vehicle-certification-agency.gov.uk/connected-and-automated-vehicles/cyber-security-and-software-updating/", "kind": "reference", "note": "UN R155·R156 요구와 적용 시점"},
+  {"n": 15, "title": "VDA QMC · Automotive SPICE", "url": "https://vda-qmc.de/en/automotive-spice/", "kind": "reference"},
+  {"n": 16, "title": "RFC 4493 · The AES-CMAC Algorithm", "url": "https://datatracker.ietf.org/doc/html/rfc4493", "kind": "reference", "note": "예시 2로 코드 출력 확인"},
+  {"n": 17, "title": "원티드 · [SDV] 임베디드SW플랫폼디벨로퍼 - OS/Mode 모듈 개발 및 플랫폼 개발", "url": "https://www.wanted.co.kr/wd/395350", "kind": "posting", "date": "2026-11", "note": "클래식오토사1팀 — BSW·MCAL 통합, 신규 MCU 포팅, OS·Mode"},
+  {"n": 18, "title": "원티드 · [SDV] 임베디드SW플랫폼디벨로퍼 - Classic Autosar 통신 스택 개발", "url": "https://www.wanted.co.kr/wd/395348", "kind": "posting", "date": "2026-11", "note": "클래식오토사3팀 — CAN·LIN·ETH 통신 스택"},
+  {"n": 19, "title": "현대오토에버 채용 · Life(복리후생)", "url": "https://career.hyundai-autoever.com/ko/life", "kind": "company"},
+  {"n": 20, "title": "ZDNet Korea · 현대오토에버, 상반기 매출 2.2조 돌파…SI 부문 26% 급성장", "url": "https://zdnet.co.kr/view/?no=20260814185634", "kind": "news", "date": "2026-08-14", "note": "반기보고서 직원 평균 급여"},
+  {"n": 21, "title": "현대오토에버 · 국내 사업장", "url": "https://www.hyundai-autoever.com/kor/about/workplace/domestic/contents.do?cntnSeq=239", "kind": "company"},
+  {"n": 22, "title": "현대오토에버 · 자동차 소프트웨어 개발 복잡성을 mobilgene으로 관리하세요", "url": "https://www.youtube.com/watch?v=p5K1q-a2YJE", "kind": "company", "date": "2026-06", "note": "모빌진 여섯 솔루션(MCU·AP·OTA·보안·가상 검증·개발 플랫폼) — 자막 전부 확인"},
+  {"n": 23, "title": "보안뉴스 · 현대오토에버, 'AUTOSAR Day With mobilgene 2023' 개최", "url": "https://www.boannews.com/news/articleView.html?idxno=123363", "kind": "news", "date": "2023-11-03"},
+  {"n": 24, "title": "원티드 · Embedded SW Platform Developer - 클래식 오토사 툴 개발", "url": "https://www.wanted.co.kr/wd/398512", "kind": "posting", "date": "2026-11", "note": "클래식오토사2팀 — 시스템 모듈(OS·RTE·모드)·설계 도구(mobilgene C Studio·생성·빌드 도구)·기능안전"}
+ ],
+ "caveat": "모빌진 내부 구조·코드는 공개되지 않아 '실제로는' 칸의 상당 부분을 AUTOSAR 표준 문서로 보였다. 회사 웨비나는 2022년 것이라 판 이름(4.0.3/4.4.0)과 숫자(70종 제어기·180개 프로젝트)는 그때 기준이다."
+}
