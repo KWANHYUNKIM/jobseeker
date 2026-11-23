@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-23T11:33:29",
- "count": 146,
+ "generated_at": "2026-11-23T12:38:09",
+ "count": 147,
  "topics": [
   {
    "key": "llm",
@@ -10,7 +10,7 @@
   {
    "key": "ml-basics",
    "label": "머신러닝 기초",
-   "count": 25
+   "count": 26
   },
   {
    "key": "deep-learning",
@@ -102,7 +102,7 @@
        "key": "statquest-ml",
        "title": "StatQuest 머신러닝 기초 — 아주 쉽게 설명하기",
        "school": "StatQuest",
-       "done": 10,
+       "done": 11,
        "total": 25
       },
       {
@@ -115,7 +115,7 @@
      ],
      "why": "교차검증·과적합·회귀·분류 같은 용어를 하나씩 아주 쉽게 푼다. '모두를 위한 딥러닝'은 같은 내용을 한국어로 10~15분씩 짧게.",
      "tip": "둘 중 편한 쪽 하나만 끝까지. 한국어가 편하면 모두의 딥러닝 lec 01~07(회귀·분류)부터.",
-     "done": 10,
+     "done": 11,
      "total": 49
     },
     {
@@ -246,7 +246,7 @@
      "total": 50
     }
    ],
-   "done": 143,
+   "done": 144,
    "total": 202
   },
   {
@@ -1732,7 +1732,7 @@
    "track": "ai",
    "playlist": "https://www.youtube.com/playlist?list=PLblh5JKOoLUICTaGLRoHQDuF_7q2GfuJF",
    "total": 25,
-   "done": 10,
+   "done": 11,
    "lectures": [
     {
      "no": 1,
@@ -1809,7 +1809,7 @@
      "id": "zITIFTsivN8",
      "title": "Multiple Regression, Clearly Explained!!!",
      "duration_sec": 325,
-     "done": false
+     "done": true
     },
     {
      "no": 12,
@@ -5657,6 +5657,36 @@
    "written_at": "2026-11-23",
    "series": "statquest-ml",
    "no": 2,
+   "track": "ai"
+  },
+  {
+   "id": "zITIFTsivN8",
+   "title": "Multiple Regression, Clearly Explained!!!",
+   "title_ko": "다중 회귀 — 재료를 하나 더 넣어도 R² 와 F 는 똑같이 계산하고, 그 재료가 값을 하는지 F 로 따진다",
+   "school": "StatQuest",
+   "code": "StatQuest",
+   "term": "기초 25편",
+   "speaker": "Josh Starmer",
+   "topic": "ml-basics",
+   "tags": [
+    "Machine Learning",
+    "Statistics",
+    "Python",
+    "NumPy",
+    "scikit-learn"
+   ],
+   "level": "입문",
+   "one_line": "다중 회귀는 선 대신 평면(또는 더 많은 축)을 맞추는 것일 뿐이다 — R² 는 그대로, F 는 매개변수 개수만 바꿔 넣고, 단순 회귀와 직접 겨뤄 '그 재료를 더 모을 가치가 있나'를 묻는다",
+   "duration_sec": 325,
+   "published": "2017-10-30",
+   "views": 674534,
+   "url": "https://www.youtube.com/watch?v=zITIFTsivN8",
+   "platform": "youtube",
+   "thumbnail": "https://i.ytimg.com/vi/zITIFTsivN8/mqdefault.jpg",
+   "chapters": 5,
+   "written_at": "2026-11-23",
+   "series": "statquest-ml",
+   "no": 11,
    "track": "ai"
   },
   {
