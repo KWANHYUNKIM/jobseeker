@@ -1,0 +1,1290 @@
+{
+ "id": "speee-realestate-senior-product-engineer",
+ "company": "Speee (원티드 일본 현지 채용)",
+ "role": "시니어 프로덕트 엔지니어 — 부동산 DX · 테크 리드 후보",
+ "team": "부동산 DX 개발 조직 · 사업부 VPoE 직속",
+ "jobs": [
+  "wanted-393877"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "일본 Speee 의 부동산 DX 제품들(집 팔기 견적 비교 이에우루·스마이스텝, 회원제 집 찾기 Housii, 부동산 회사용 영업 SaaS 츠나가루)에 걸쳐 **아키텍처와 기술 기준**을 세우고, 개발을 막는 기술 문제를 직접 풉니다.[1]",
+  "env": "정사원 약 20명 조직이 **사람 × AI 에이전트** 소팀으로 옮겨 가는 중입니다. 구현·테스트·릴리스는 에이전트 몫을 늘리고, 사람은 방향·요건·설계·기술 판단·평가에 집중합니다.[1] 근무지는 도쿄 롯폰기이고, 일본어 비즈니스 수준과 일본 이주가 조건입니다.[1]",
+  "oneline": "관리자가 아니라 **기술로 사업을 책임지는 시니어** 자리. 코드를 많이 쓰는 것보다 'AI 가 쓴 코드가 늘어도 구조가 무너지지 않게 하는 기준'을 만드는 일이 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "主要なミッションは、開発成果の達成を阻む技術課題を解決し、中長期の開発速度と品質を高めることです。 具体的には、以下を担っていただきます。",
+   "short": "성과를 막는 기술 문제를 찾아 풀고, 몇 년 뒤에도 빠르고 안전하게 만들 수 있는 바탕을 만든다.",
+   "why": "공고가 이유를 직접 적었습니다. AI 코딩으로 한 사람이 만드는 코드 양이 늘면서 아키텍처 일관성·리뷰 기준·기술 부채 통제 같은 **기술 거버넌스**(기술 결정의 규칙과 책임)가 중요해졌다는 것입니다.[1] 조직은 정사원 약 20명이고, 지금은 사업부 VPoE(개발 조직을 책임지는 임원) 한 사람이 조직·성과·기술을 모두 맡고 있습니다.[1]",
+   "actually": {
+    "intro": "공고가 밝힌 지금의 개발 테마 넷과 이 자리의 자리매김입니다.[1]",
+    "items": [
+     "**SaaS 멀티프로덕트화** — 장애에 강하면서도 빨리 만들 수 있게, 제품 여러 개를 펼칠 수 있는 구조.",
+     "**AI 네이티브 운영** — 개발만이 아니라 영업·마케팅·채용·업무 운영까지 AI 를 전제로 다시 설계.",
+     "**레거시 교체와 기술 선정** — '무엇을 교체할지' 정하는 것부터 Rails 밖 기술 선정까지.",
+     "**사업 횡단 데이터·청구 기반** — 제품마다 나뉜 데이터·청구를 합쳐 횡단 분석과 교차 판매를 가능하게.",
+     "**처음엔 제품 하나, 나중엔 여러 제품** — 먼저 담당 제품의 시니어로 일하고, 실적과 적성에 따라 여러 제품을 가로지르는 테크 리드로 넓힌다. 각 팀 리드 엔지니어는 팀 안의 판단을, 이 자리는 팀 사이의 판단을 맡는다."
+    ]
+   },
+   "how_far": "첫 담당 제품과 테마는 본인 강점과 사업 필요를 보고 **전형 중에 같이 정합니다**.[1] 그래서 지원서에는 아래 9개 업무 중 내가 이끌어 본 것을 숫자(규모·기간·결과)와 함께 적어 두는 것이 최소선입니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "複数プロダクトにまたがるアーキテクチャ設計・技術選定の起案と実践",
+   "short": "제품 여러 개가 같이 쓸 구조와 기술을 제안하고, 직접 만들어 보여 준다.",
+   "why": "부동산 DX 는 집 팔기 매칭(이에우루·스마이스텝)에서 집 사기(Housii)·부동산 회사용 SaaS(츠나가루)로 넓어졌고, 이제 제품마다 따로 만든 데이터와 청구를 합치려 합니다.[1] 츠나가루 개발자는 지금 청구 시스템이 제품마다 로직과 표를 따로 갖고 있어(제품당 평균 4.3개 표) 한계에 닿았고, 다시 설계 중이라고 썼습니다.[2]",
+   "actually": {
+    "intro": "같은 사업부 츠나가루 팀이 공통 기반을 만들며 세운 원칙 셋입니다.[2]",
+    "items": [
+     "**필요할 때까지 설계를 미룬다** — 회사(본사) 층 없이 점포 층만으로 출시해 약 2년을 문제없이 돌렸다. 덕분에 관리 화면이 단순해졌다.",
+     "**중복을 줄여 머리 부담을 줄인다** — 제품별 청구 표 대신 계약·계약 단가·가격 조건·이용 실적·청구 예정 다섯 가지 공통 모델로 바꾸는 안.",
+     "**결과와 비전에서 거꾸로 정한다** — 빨리 내야 해서 층을 뺐고, 제품을 더 붙일 계획이라 청구를 다시 짠다.",
+     "**'起案と実践'** — 문서로 제안하는 데서 그치지 않고 첫 구현까지 손으로 한다. 이 조직은 사람이 요건·설계·기술 판단을 맡고 구현·테스트·릴리스는 AI 에이전트 활용을 넓히는 중이다.[1]"
+    ]
+   },
+   "how_far": "팀 편성과 기술 투자의 최종 판단은 VPoE 가 합니다.[1] 이 자리는 **대안과 트레이드오프(무엇을 얻고 무엇을 잃나)를 비교한 안**을 내고, 그 결정의 근거를 남기고, 첫 구현으로 되는지 보여 주는 데까지입니다.",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "arch101",
+    "hardparts",
+    "speee-multiproduct"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "アーキテクチャ・設計レビューおよび技術基準の整備",
+   "short": "설계를 리뷰하는 자리와, '이 정도면 통과'라는 기술 기준을 글로 만든다.",
+   "why": "테크 리드 단계에서는 아키텍처·설계 리뷰 같은 기술 판단을 이 자리에 맡길 예정이라고 공고에 적혀 있습니다.[1] 스마이스텝 개발자는 이유를 모른 채 테스트를 고쳤다가 리뷰에서 근거를 요구받은 일을 적었고, 그 뒤로 리뷰어가 표 구조 같은 선택에도 근거를 묻는다고 했습니다.[5]",
+   "actually": {
+    "items": [
+     "**결정 기록(ADR)** — 제목·맥락·결정·상태·결과를 짧게 번호 붙여 저장소에 두고, 결정이 바뀌면 지우지 않고 '대체됨'으로 표시한다.[24]",
+     "**기준이 있어야 넘길 수 있다** — 같은 회사 개발기반 그룹은 공통 코드 품질 기준과 린터·포매터·자동 검사가 있어야 'PR 을 쓴 사람이 머지'하는 방식이 돈다고 썼다.[6]",
+     "**기준의 예** — 새 제품에서 고객사(테넌트) 구분을 어느 층에서 하나, 외부 API 타임아웃 기본값, DB 마이그레이션 규칙처럼 여러 팀이 매번 다시 고민하는 것부터. {추론}"
+    ]
+   },
+   "how_far": "기준을 혼자 만들어 내려보내는 게 아니라 리뷰에서 반복된 지적을 모아 글로 굳히는 쪽이 현실적입니다. 기계가 검사할 수 있는 부분은 린터·CI 로 옮깁니다. {추론}",
+   "refs": [
+    1,
+    5,
+    6,
+    24
+   ],
+   "study": [
+    "nygard-adr",
+    "google-review"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "レビュー基準、設計原則、AIエージェントが従う開発規約の策定",
+   "short": "사람과 AI 에이전트가 함께 따를 리뷰 기준·설계 원칙·개발 규칙을 정한다.",
+   "why": "AI 가 만드는 코드가 늘수록 중요해지는 '검증하는 힘'을 리뷰 기준·개발 규약·설계 원칙·개발 기반으로 조직에 심는 것이 이 자리의 매력이라고 공고가 꼽습니다.[1]",
+   "actually": {
+    "items": [
+     "**에이전트가 읽는 규칙 파일** — Claude Code 는 저장소의 CLAUDE.md 를 지시로 읽고,[27] 반복 절차는 SKILL.md 가 든 폴더(스킬)로 묶어 필요할 때 불러온다.[28] 우대사항의 '規約、Skill、レビュー基準'이 바로 이것이다.[1]",
+     "**위험한 동작 막기** — 같은 회사 리폼 DX 사업부는 비개발자에게 Claude Code 를 열기 전에 30문제 시험(27개 이상 합격)을 보게 하고, 관리 설정의 금지 목록(rm -rf, .env 읽기, 외부 메일 보내기)과 실행 직전 훅(DELETE FROM, curl … | sh)으로 막았다.[10]",
+     "**근거를 달게 하기** — 스마이스텝 팀은 Rails 업그레이드 때 LLM 에게 주장마다 참조 위치를 달게 하고 공식 문서·저장소로 확인하게 했다.[5]",
+     "**AI 리뷰 도구** — 개발 환경 목록에 CodeRabbit 이 있다.[1]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "에이전트 실행 전 금지 규칙 (사례[10]를 흉내 낸 작은 검사기 · 직접 돌린 출력)",
+     "body": "WHERE 없는 DELETE 는 막고, 조건이 있는 DELETE 는 통과시킵니다. 실제로는 이런 검사를 훅으로 걸고, 규칙의 이유는 규칙 파일에 사람 말로 적어 둡니다.",
+     "lang": "python",
+     "code": "import re\nDENY = [r'rm\\s+-rf\\s+/', r'cat\\s+.*\\.env\\b', r'curl[^|]*\\|\\s*sh', r\"DELETE\\s+FROM\\s+\\w+\\s*;?'?$\"]\ndef check(cmd):\n    return '막음' if any(re.search(p, cmd, re.I) for p in DENY) else '허용'\nfor c in ['bundle exec rspec', 'cat config/.env', 'curl https://x.sh | sh',\n          \"mysql -e 'DELETE FROM users;'\", \"mysql -e 'DELETE FROM users WHERE id=3'\"]:\n    print(check(c), c)\n# 허용 bundle exec rspec\n# 막음 cat config/.env\n# 막음 curl https://x.sh | sh\n# 막음 mysql -e 'DELETE FROM users;'\n# 허용 mysql -e 'DELETE FROM users WHERE id=3'"
+    }
+   ],
+   "how_far": "규칙은 **사람이 읽고 납득하는 이유**와 **기계가 검사하는 부분**으로 나눠 씁니다. 이유 없는 금지는 사람도 에이전트도 우회합니다. {추론}",
+   "refs": [
+    1,
+    5,
+    10,
+    27,
+    28
+   ],
+   "study": [
+    "cc-memory",
+    "cc-skills",
+    "speee-cc-test"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "技術的負債の可視化、返済計画の策定・推進",
+   "short": "기술 부채를 눈에 보이게 만들고, 무엇부터 언제 갚을지 계획해 실제로 갚아 나간다.",
+   "why": "레거시 교체가 네 개발 테마 중 하나이고, AI 코딩으로 코드가 늘수록 부채 통제가 더 중요해진다고 공고가 밝힙니다.[1]",
+   "actually": {
+    "items": [
+     "**부채를 네 칸으로** — 알고 졌나(의도)·모르고 졌나(무심) × 신중했나·무모했나로 나눠, 갚을 가치가 큰 것부터 본다.[22]",
+     "**핫스팟** — 자주 바뀌면서 복잡한 파일이 가장 비싼 부채다. 변경 횟수(git 기록)와 복잡도를 곱해 줄 세운다(아래 예). {추론}",
+     "**백로그 정리** — 개발기반 그룹은 이슈가 300개를 넘자 전체가 안 보여 중복과 사기 저하가 생겼고, 90일 활동 없는 이슈를 자동으로 닫아 45개까지 줄였다.[7]",
+     "**버전 부채** — 스마이스텝은 지원 종료가 닥친 Rails 6.1→7.1 을 약 한 달에 올렸고, 7.1 지원도 빨리 끝나 같은 방식으로 다시 올렸다.[5]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "변경 횟수 × 복잡도로 부채 줄 세우기 (가상 값 · 직접 돌린 출력)",
+     "body": "자주 고치면서 복잡한 account.rb 가 맨 위로, 복잡해도 거의 안 고치는 csv_export.rb 는 맨 아래로 갑니다 — 안 건드리는 레거시는 급하지 않습니다.",
+     "lang": "python",
+     "code": "files = {  # 파일: (최근 6개월 변경 횟수, 복잡도)\n    'app/models/account.rb': (48, 62),\n    'app/models/assessment.rb': (35, 40),\n    'app/services/billing/invoice.rb': (12, 55),\n    'app/controllers/top_controller.rb': (40, 8),\n    'lib/legacy/csv_export.rb': (2, 70),\n}\nmc = max(c for c, _ in files.values()); mx = max(x for _, x in files.values())\nscore = {f: round((c / mc) * (x / mx), 2) for f, (c, x) in files.items()}\nfor f, s in sorted(score.items(), key=lambda kv: -kv[1]):\n    print(f'{s:4.2f}  {f}')\n# 0.89  app/models/account.rb\n# 0.42  app/models/assessment.rb\n# 0.20  app/services/billing/invoice.rb\n# 0.10  app/controllers/top_controller.rb\n# 0.04  lib/legacy/csv_export.rb"
+    }
+   ],
+   "how_far": "갚을 시간은 기능 개발과 겨뤄서 받아야 합니다. 그래서 '보이게 만들기'는 표를 그리는 데서 끝나지 않고 **사업 말(장애 감소·개발 속도)로 바꿔** 3개월 단위 개발 테마[20]에 올리는 데까지입니다. {추론}",
+   "refs": [
+    1,
+    5,
+    7,
+    20,
+    22
+   ],
+   "study": [
+    "fowler-debt",
+    "legacy-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "障害・品質問題の技術的要因の分析と再発防止",
+   "short": "장애가 왜 났는지 기술 원인을 파고들고, 같은 장애가 다시 안 나게 구조를 고친다.",
+   "why": "운영 도구로 Datadog(관측)·Sentry(오류 수집)·PagerDuty(호출)를 씁니다.[1] 같은 사업 영역의 SRE 공고는 SLI/SLO 정하기와 몇 달에 한 번 도는 온콜을 업무로 듭니다.[32]",
+   "actually": {
+    "items": [
+     "**장애 뒤 검토** — 타임라인 → 원인 → 재발 방지 조치를 적되, 사람 탓이 아니라 그 실수를 허락한 구조를 고친다. {추론}",
+     "**오류 예산** — 목표가 99.9% 면 30일 중 43.2분까지는 실패해도 되고, 그보다 빨리 쓰면 기능보다 안정화가 먼저다.[26]",
+     "**테스트로 둘레를 친다** — 에이전트로 라이브러리를 올린 사례에서 결론은 '높은 테스트 커버리지가 필수'였다.[12]",
+     "**사고가 날 뻔한 곳에 안전 단계** — Terraform 을 CI 에서 자동 적용하다 운영 사고가 날 뻔해 안전 단계를 넣었다.[8]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "오류 예산과 소진 속도 (가상 값 · 직접 돌린 출력)",
+     "body": "지난 1시간 오류율 0.24% 는 목표(0.1%)의 2.4배 속도로 예산을 쓰는 중이라는 뜻입니다.",
+     "lang": "python",
+     "code": "slo = 0.999\nbudget = (1 - slo) * 30 * 24 * 60\nprint(f'30일 오류 예산: {budget:.1f}분')\nrate = 120 / 50000          # 지난 1시간 실패 / 전체 요청\nburn = rate / (1 - slo)\nprint(f'오류율 {rate:.2%} → 소진 속도 {burn:.1f}배')\nprint(f'이대로면 30일 예산이 {30 / burn:.1f}일 만에 바닥')\n# 30일 오류 예산: 43.2분\n# 오류율 0.24% → 소진 속도 2.4배\n# 이대로면 30일 예산이 12.5일 만에 바닥"
+    }
+   ],
+   "refs": [
+    1,
+    8,
+    12,
+    26,
+    32
+   ],
+   "study": [
+    "sre-workbook",
+    "sre-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "技術的難所における先行検証・プロトタイピング・実装",
+   "short": "어려운 기술 지점을 먼저 작게 만들어 되는지 확인하고, 필요하면 직접 구현까지 한다.",
+   "why": "공고가 찾는 사람은 '스스로 계속 손을 움직이고 싶은 사람'입니다.[1] 츠나가루 팀은 가치가 불분명한 기능을 빼고 그 시간을 신제품 기술 검증에 돌렸습니다.[3]",
+   "actually": {
+    "items": [
+     "**Rails 밖 기술을 고르기 전에** — 새 제품·기반 제품은 Rails 밖까지 놓고 고른다.[1] 고르기 전에 가장 위험한 부분만 작게 만들어 본다. {추론}",
+     "**에이전트로 업그레이드 실험** — aws-sdk-go v1→v2 를 Copilot 에이전트로 옮길 때 리팩터링과 업그레이드를 섞자 막혔고, v1 에서 먼저 정리한 뒤 올리자 풀렸다. 특수 결과 모드는 사람이 고쳤고, 에이전트가 테스트를 통과시키려 인터페이스를 지어낸 일도 있었다.[12]",
+     "**검증 기준을 먼저** — 핵심 기능마다 정량 지표를 먼저 정하고 사용 데이터로 본다.[3]"
+    ]
+   },
+   "how_far": "프로토타입은 **버릴 코드**라고 미리 밝히고, 결과(되는가·얼마나 드나·무엇이 위험한가)를 결정 기록으로 남깁니다. {추론}[24]",
+   "refs": [
+    1,
+    3,
+    12,
+    24
+   ],
+   "study": [
+    "hardparts",
+    "nygard-adr"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "AIエージェントを前提とした開発基盤の整備と開発生産性向上",
+   "short": "에이전트가 안전하게 코드를 짜고 테스트·배포할 수 있는 바탕을 만들어 팀 속도를 올린다.",
+   "why": "팀은 PO·리드 엔지니어·프로덕트 엔지니어 몇 명에 **구현·테스트·조사·운영을 맡는 AI 에이전트**를 붙인 소팀이고, 사람 수를 늘리는 데만 기대지 않는 것이 목표입니다.[1]",
+   "actually": {
+    "items": [
+     "**에이전트가 돌릴 환경** — 회사 안 'AI 플래너'(비개발 기획자)들이 Claude Code 와 Docker Compose(Rails·MySQL·Redis)로 직접 기능을 냈고, 조직 전체 릴리스 수가 134% 늘었다고 적었다. 환경 준비가 생각보다 어렵고 엔지니어의 단기 부담이 늘었다는 문제도 함께 적었다.[11]",
+     "**권한과 안전장치** — 시험·등급·금지 목록으로 쓸 수 있는 범위를 나눈다.[10]",
+     "**반복 일 없애기** — 개발기반 그룹은 전체 요청의 약 40% 이던 BigQuery 권한 요청을 Azure AD 접근 패키지 → Google Workspace 그룹으로 자동화했고, 2주 뒤 관련 문의가 0건이 됐다.[9]",
+     "**생산성을 재는 법** — 변경 리드타임·배포 빈도·실패 배포 복구 시간·변경 실패율·재작업률(DORA 지표).[30]"
+    ]
+   },
+   "how_far": "생산성은 코드 줄 수나 PR 수가 아니라 위 지표와 사업 성과로 보여야 합니다. 에이전트가 늘린 코드만큼 리뷰·테스트 부담도 늘어나니, 그 병목까지 같이 봅니다. {추론}",
+   "refs": [
+    1,
+    9,
+    10,
+    11,
+    30
+   ],
+   "study": [
+    "dora",
+    "cc-skills",
+    "speee-aiplanner"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "設計レビューや技術面の育成を通じたレビュー文化の醸成",
+   "short": "설계 리뷰와 기술 지도로, 서로 근거를 묻고 답하는 리뷰 습관을 팀에 뿌리내린다.",
+   "why": "회사 직원은 평균 29.6세, 평균 근속 3년 2개월로 젊습니다.[16] 기술 블로그에도 1~2년차 개발자의 글이 많습니다.[5][13]",
+   "actually": {
+    "items": [
+     "**PR 을 쓴 사람이 머지** — 리더가 리뷰 병목이 되지 않게. 쓴 사람은 봐 줬으면 하는 곳을, 리뷰어는 보지 않은 곳을 밝힌다.[6]",
+     "**밖에서 배운 것을 실무로** — Kaigi on Rails 2026 발표를 듣고, 비대해진 Account 모델에서 비밀번호 변경을 별도 객체로 떼어 낸 1년 미만 개발자의 글.[13]",
+     "**리뷰를 말로 정리** — DX 사업본부 EM 이 '좋은 코드 리뷰란' 사내 자료를 외부 행사에서 발표했다.[14]",
+     "**무엇을 보나** — 설계·기능·복잡도·테스트·이름·주석·스타일·문서.[29]"
+    ]
+   },
+   "refs": [
+    5,
+    6,
+    13,
+    14,
+    16,
+    29
+   ],
+   "study": [
+    "google-review",
+    "speee-merger"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "採用面接における技術面の見極め",
+   "short": "채용 면접에서 지원자의 기술 수준을 가려낸다.",
+   "why": "약 20명 조직에서 기술 판단을 맡는 역할을 **이제부터 강화하는 단계**라,[1] 다음에 올 사람을 고르는 눈도 이 자리에 맡깁니다.",
+   "actually": {
+    "items": [
+     "전형은 서류 → 1차 면접 → 2차 면접 → 최종 면접 → 내정 통지·면담이다.[1]",
+     "면접관끼리 평가 기준을 맞추고, 설계 질문·코드 과제를 다듬는 일이 들어간다. {추론}"
+    ]
+   },
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "テックリードを担う段階では、アーキテクチャ・設計レビューなどの技術判断をテックリードに委ねることを想定しています。",
+   "short": "테크 리드가 되면 아키텍처·설계 리뷰 같은 기술 판단을 이 사람이 책임진다.",
+   "why": "지금은 VPoE 가 기술까지 책임지는데,[1] 테크 리드로 넘어가는 것은 실적과 적성에 따라서입니다.[1] 처음부터 테크 리드 권한이 있는 자리가 아니라는 뜻입니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "チーム編成や技術投資に関する最終判断は事業部VPoEが担います。",
+   "short": "사람 배치와 기술에 돈 쓰는 결정의 마지막 도장은 VPoE 가 찍는다 — 이 자리는 근거를 낸다.",
+   "why": "공고는 기술 선정을 '사업의 개발 투자 판단' 안에서 정하고, 해 보고, 결과를 보며 고치는 경험을 이 자리의 매력으로 꼽습니다.[1] 사업 전략 → PRD(제품 요구 문서) → 개발 투자 판단 → 개발 → 평가·회고를 한 사이클로 돌립니다.[1]",
+   "how_far": "투자안은 VPoE 가 다른 안과 견줄 수 있게 비용·기대 효과·위험·되돌리는 법을 한 장으로 냅니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "【開発環境】 言語 Ruby / Python / TypeScript Webフレームワーク Ruby on Rails / FastAPI / React / Next.js データベース MySQL / Redis / BigQuery インフラ・クラウド Docker / Kubernetes / Terraform / Argo CD / GitHub Actions / AWS / GCP / Azure / Firebase 監視・運用 Datadog / Sentry / PagerDuty AI開発支援 Claude Code / Codex / Gemini / Dify / CodeRabbit 開発基盤・情報共有 GitHub / SendGrid / GraphQL / Google Workspace / Slack / Kibela / Figma",
+   "short": "Rails·MySQL 이 중심이고 쿠버네티스·Terraform 위에서 돌며, AI 코딩 도구를 팀 단위로 쓴다.",
+   "why": "개발기반 그룹은 적은 인원으로 많은 시스템을 돌리며, 배우기 쉬운 도구(Kubernetes 매니페스트·Argo CD·Terraform)를 쓴다고 했습니다.[6]",
+   "actually": {
+    "items": [
+     "**앱** — Ruby on Rails 가 주축, 프런트는 React·Next.js, 새로 FastAPI(Python).[1]",
+     "**데이터** — 서비스 DB 는 MySQL·Redis, 분석은 BigQuery. BigQuery 권한 요청이 개발기반 일의 약 40% 였을 만큼 많이 쓴다.[9]",
+     "**인프라** — Terraform 저장소는 시스템별로 쪼갰다가 공통 모듈 저장소(내부 모듈 약 60개)로, 2023년 12월 다시 하나의 저장소(모노레포)로 돌아왔다. 변경의 약 95% 가 개발기반 그룹에서 나왔고, 폴더별 승인자로 영향 범위를 묶었다.[8]",
+     "**AI** — Claude Code·Codex·Gemini 로 코딩, Dify 로 LLM 업무 흐름, CodeRabbit 으로 리뷰.[1]"
+    ]
+   },
+   "refs": [
+    1,
+    6,
+    8,
+    9
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "各チームが事業・プロダクトに合わせて技術を選択しています。 立ち上げ期はRailsを主軸としてきましたが、フロントエンドのリッチ化、共通基盤の構築、AIエージェントベースの開発を踏まえ、新規・基盤プロダクトではRails以外も含めて技術選定を行っています。",
+   "short": "팀마다 기술을 고르고, 처음엔 Rails 였지만 새 제품·기반 제품은 Rails 밖까지 놓고 고른다.",
+   "why": "공고가 이유 셋을 듭니다 — 프런트가 풍부해졌고, 공통 기반을 만들어야 하고, AI 에이전트 중심으로 개발하기 때문입니다.[1]",
+   "actually": {
+    "items": [
+     "**한 번에 갈아엎지 않는다** — 옛 시스템 옆에 새 것을 세우고 기능을 조금씩 옮기는 방식(스트랭글러 피그).[23]",
+     "**Rails 를 버리는 게 아니다** — 이에우루·스마이스텝 팀은 지금도 Rails 를 올리고 다듬는다.[5][13] 어디를 옮기고 어디를 남길지가 판단의 중심이다. {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    5,
+    13,
+    23
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "5年以上の商用アプリケーション開発（Webフロントエンドからバックエンドまで）のご経験",
+   "short": "웹 화면부터 서버까지, 실제 돈이 오가는 서비스를 5년 넘게 만들어 본 경험.",
+   "why": "제품들이 Rails 백엔드와 점점 풍부해지는 React·Next.js 프런트를 함께 갖고 있고,[1] 여러 제품을 가로질러 판단하려면 양쪽 비용을 다 알아야 합니다. {추론}",
+   "how_far": "양쪽 모두 전문가일 필요는 없고, 한쪽은 깊게, 다른 쪽은 실무로 고칠 수 있는 정도가 현실적인 선입니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "言語はPHP / Ruby / Python / Java / Go / TypeScriptなど、Web開発に用いる主要言語であれば可",
+   "short": "Ruby 를 안 써 봤어도 된다 — 주요 웹 언어면 받는다.",
+   "why": "회사 스스로 새 제품에서 Rails 밖 기술을 고르는 중입니다.[1] Rails 경험 1년 미만인 개발자가 입사 반년 만에 Rails 모델을 다시 설계한 글도 있습니다.[13]",
+   "refs": [
+    1,
+    13
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "一定規模の商用サービスにおいて、アーキテクチャ設計と技術選定を主導したご経験",
+   "short": "어느 정도 규모의 실서비스에서 구조와 기술을 직접 정하고 이끈 경험.",
+   "why": "이에우루는 전국 부동산 업체와 계약해 집을 팔려는 사람을 소개하고 건당 보수를 받는 서비스이고,[16] 이에우루가 속한 레거시 산업 DX 부문 매출은 약 113억 엔(2025년 9월 결산)입니다.[16]",
+   "how_far": "'主導'는 대안 비교 → 결정 → 설득 → 결과 책임까지입니다. 면접에서는 그 결정이 틀렸던 부분과 어떻게 고쳤는지도 말할 수 있어야 합니다. {추론}",
+   "refs": [
+    16
+   ],
+   "study": [
+    "arch101",
+    "hardparts"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "複数チームまたは複数プロダクトにまたがる設計・レビューを担ったご経験",
+   "short": "팀 하나를 넘어, 여러 팀·제품이 걸린 설계와 리뷰를 맡아 본 경험.",
+   "why": "각 팀 리드와 달리 이 자리는 팀 사이에 걸친 과제를 맡습니다.[1] 츠나가루 개발자는 출시 뒤 회고 없이 다음 제품으로 넘어갔다가, 3~4개월 뒤 거의 같은 기능을 다른 페이지에 또 만든 일을 적었습니다.[3]",
+   "refs": [
+    1,
+    3
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "技術的負債の返済やシステムのリプレイスを、計画から実行まで主導したご経験",
+   "short": "부채 갚기나 시스템 교체를 계획부터 끝까지 이끈 경험.",
+   "why": "레거시 교체는 공고의 네 개발 테마 중 하나입니다.[1]",
+   "actually": {
+    "items": [
+     "**조금씩 옮긴다** — 길(경로)별로, 사용자 일부부터 새 시스템으로 보내고 늘려 간다(아래 예).[23]",
+     "**교체는 길다** — Terraform 저장소를 다시 하나로 합치는 일은 글을 쓴 시점에 약 15% 진행 중이었다.[8]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "경로별로 새 시스템에 조금씩 넘기기 (가상 값 · 직접 돌린 출력)",
+     "body": "/assessment 는 사용자 10% 만, /mypage 는 전부 새 시스템으로, 나머지는 Rails 에 남습니다. 사용자 번호로 나누니 같은 사람은 늘 같은 쪽으로 갑니다.",
+     "lang": "python",
+     "code": "import hashlib\nfrom collections import Counter\nROUTES = {'/assessment': 10, '/mypage': 100}   # 새 시스템으로 보낼 비율(%)\ndef route(path, user_id):\n    pct = next((v for k, v in ROUTES.items() if path.startswith(k)), 0)\n    bucket = int(hashlib.md5(str(user_id).encode()).hexdigest(), 16) % 100\n    return 'new' if bucket < pct else 'rails'\nfor p in ['/assessment/1', '/mypage', '/top']:\n    print(p, dict(Counter(route(p, u) for u in range(1000))))\n# /assessment/1 {'rails': 896, 'new': 104}\n# /mypage {'new': 1000}\n# /top {'rails': 1000}"
+    }
+   ],
+   "how_far": "면접에서 묻기 좋은 것은 '얼마나 크게 바꿨나'보다 **어떻게 되돌릴 수 있게 했나**, 옛 것과 새 것의 결과를 어떻게 대조했나입니다. {추론}",
+   "refs": [
+    1,
+    8,
+    23
+   ],
+   "study": [
+    "fowler-strangler",
+    "legacy-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "日本語レベル: ビジネス",
+   "short": "일본어로 설계 토론·리뷰·면접을 할 수 있어야 한다 — 서류도 일본어로 낸다.",
+   "why": "공고 첫머리에 일본어 전용 포지션이고, 일본어 이력서·직무경력서가 필수이며, 국문·영문 서류만 내거나 일본어 소통이 안 되면 서류에서 제외된다고 적혀 있습니다.[1] 사업 조직과 같은 층에서 일하며 고객·사업 과제를 가까이서 듣는 것도 중요하게 봅니다.[1]",
+   "how_far": "공고에 시험 등급은 없습니다. 일본어능력시험(JLPT)은 N1~N5 다섯 등급이라[33] 증빙으로 흔히 쓰지만, 이 공고가 요구한 것은 등급이 아니라 **일본어로 기술 판단을 설명하는 힘**입니다. {추론}",
+   "refs": [
+    1,
+    33
+   ],
+   "study": [
+    "jlpt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "日本国内への移住が必要",
+   "short": "원격 근무 자리가 아니다 — 일본에 살며 도쿄 롯폰기 사무실로 출근한다.",
+   "why": "근무는 출근이 기본이고, 가정 사정 등에 따라 원격이 가능하다고 적혀 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**체류 자격** — 일본에서 IT 엔지니어로 일하는 외국인은 보통 '기술·인문지식·국제업무' 재류 자격에 해당한다.[31]",
+     "**채용 경로** — 원티드 공고는 LAPRAS Global Bridge 가 연결하고, 안내 메일이나 커피챗을 LAPRAS 가 보낸다.[1]",
+     "**급여 구성** — 월급 × 12개월, 시용 기간 3개월(조건 같음).[1]"
+    ]
+   },
+   "refs": [
+    1,
+    31
+   ],
+   "study": [
+    "isa-visa"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Claude Code / Codex等のエージェントを活用したプロダクト開発と、その運用をチームの型（規約、Skill、レビュー基準）に落とし込んだご経験",
+   "short": "AI 에이전트로 제품을 만들고, 그 방식을 팀 규칙·스킬·리뷰 기준으로 굳혀 본 경험.",
+   "why": "이 조직은 구현·테스트·릴리스를 에이전트에 넘기는 범위를 넓히는 중입니다.[1] 혼자 잘 쓰는 것과 팀의 '틀'로 만드는 것은 다른 일이라 따로 적었습니다. {추론}",
+   "actually": {
+    "items": [
+     "**규약** — 저장소의 CLAUDE.md 같은 지시 파일.[27]",
+     "**Skill** — 반복 절차를 SKILL.md 폴더로 묶어 누구나 같은 순서로 부르게 한다.[28]",
+     "**리뷰 기준** — 에이전트가 만든 PR 을 사람이 볼 때 무엇을 반드시 확인하나. 같은 회사 사례는 시험·등급·금지 목록까지 만들었다.[10]"
+    ]
+   },
+   "refs": [
+    1,
+    10,
+    27,
+    28
+   ],
+   "study": [
+    "cc-memory",
+    "cc-skills",
+    "speee-cc-test"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "マルチテナント / マルチプロダクトのアーキテクチャ設計のご経験",
+   "short": "고객사 여럿이 한 시스템을, 제품 여럿이 한 기반을 나눠 쓰는 구조를 설계해 본 경험.",
+   "why": "츠나가루는 부동산 회사들이 쓰는 SaaS 이고,[1] 점포 단위로 데이터를 나누고 청구를 제품 공통으로 합치는 중입니다.[2]",
+   "actually": {
+    "items": [
+     "**사일로** — 고객사마다 전체 스택을 따로. 격리는 가장 강하지만 비용과 운영이 가장 크다.[25]",
+     "**풀** — 모두 같은 인프라를 공유. 싸지만 격리가 어렵다 — 쿼리 하나만 빠뜨려도 남의 데이터가 보인다(아래 예).[25]",
+     "**브리지** — 층마다 사일로와 풀을 섞는다.[25]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "풀 방식에서 테넌트로 거르지 않으면 (가상 값 · 직접 돌린 출력)",
+     "body": "고객사 거르기를 함수 한 곳에 모아 두면, 화면마다 WHERE 를 기억할 필요가 없습니다.",
+     "lang": "python",
+     "code": "import sqlite3\ndb = sqlite3.connect(':memory:')\ndb.execute('create table leads(id int, tenant_id int, name text)')\ndb.executemany('insert into leads values(?,?,?)',\n               [(1, 10, 'A부동산 고객1'), (2, 10, 'A부동산 고객2'), (3, 20, 'B부동산 고객1')])\ndef leads_for(tenant):\n    return [r[0] for r in db.execute('select name from leads where tenant_id=?', (tenant,))]\nprint('거르지 않음:', [r[0] for r in db.execute('select name from leads')])\nprint('A사(10):', leads_for(10))\nprint('B사(20):', leads_for(20))\n# 거르지 않음: ['A부동산 고객1', 'A부동산 고객2', 'B부동산 고객1']\n# A사(10): ['A부동산 고객1', 'A부동산 고객2']\n# B사(20): ['B부동산 고객1']"
+    }
+   ],
+   "refs": [
+    1,
+    2,
+    25
+   ],
+   "study": [
+    "aws-tenant",
+    "speee-multiproduct"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Rails以外を含む複数スタックを比較評価し、技術選定を行ったご経験",
+   "short": "Rails 와 다른 스택을 같은 기준표로 견주어 골라 본 경험.",
+   "why": "새 제품·기반 제품에서 Rails 밖 기술까지 놓고 고르는 중입니다.[1]",
+   "examples": [
+    {
+     "title": "가중치 표로 견주기 (점수·가중치는 가상 · 직접 돌린 출력)",
+     "body": "가중치를 무엇에 두느냐가 답을 바꿉니다. 그래서 표보다 **가중치를 왜 그렇게 뒀는지**를 결정 기록에 남기는 것이 핵심입니다.[24]",
+     "lang": "python",
+     "code": "weights = {'팀 숙련도': 3, '프런트 풍부함': 2, 'AI 에이전트가 다루기': 2, '운영 비용': 1}\noptions = {\n    'Rails 모놀리스 유지': {'팀 숙련도': 5, '프런트 풍부함': 2, 'AI 에이전트가 다루기': 4, '운영 비용': 5},\n    'Rails API + Next.js': {'팀 숙련도': 4, '프런트 풍부함': 5, 'AI 에이전트가 다루기': 4, '운영 비용': 3},\n    'FastAPI + Next.js': {'팀 숙련도': 2, '프런트 풍부함': 5, 'AI 에이전트가 다루기': 4, '운영 비용': 3},\n}\nfor name, s in options.items():\n    print(sum(weights[k] * v for k, v in s.items()), name)\n# 32 Rails 모놀리스 유지\n# 33 Rails API + Next.js\n# 27 FastAPI + Next.js"
+    }
+   ],
+   "refs": [
+    1,
+    24
+   ],
+   "study": [
+    "nygard-adr",
+    "arch101"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "SLOや可観測性の整備、障害対応の仕組み化のご経験",
+   "short": "서비스 목표치(SLO)와 관측 도구를 갖추고, 장애 대응을 사람이 아닌 절차로 만든 경험.",
+   "why": "Datadog·Sentry·PagerDuty 를 쓰고,[1] 같은 영역 SRE 공고가 SLI/SLO 와 온콜을 맡깁니다.[32]",
+   "actually": {
+    "items": [
+     "**SLI → SLO → 오류 예산** — 무엇을 잴지(성공률·지연), 목표를 얼마로 할지, 예산을 다 쓰면 무엇을 멈출지를 이해관계자와 미리 합의한다.[26]",
+     "**절차로 만들기** — 호출 → 1차 대응 → 기록 → 검토가 누가 당번이든 같게 돈다. {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    26,
+    32
+   ],
+   "study": [
+    "sre-workbook"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "データ基盤やID統合など、サービス横断の基盤開発のご経験",
+   "short": "여러 서비스가 함께 쓰는 데이터 기반이나 회원 ID 통합 같은 기반을 만들어 본 경험.",
+   "why": "제품마다 나뉜 데이터·청구를 합쳐 횡단 분석과 교차 판매를 하려는 것이 공고의 개발 테마입니다.[1]",
+   "actually": {
+    "items": [
+     "**데이터** — 분석은 BigQuery 에 모이고, 권한은 데이터셋 묶음 단위로 자동 부여한다.[9]",
+     "**ID 통합** — 집을 판 사람이 다음엔 살 사람이 되듯, 제품마다 따로 있는 고객을 한 사람으로 잇는 일. 동의·개인정보 처리 범위를 같이 설계해야 한다. {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    9
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "技術面の育成やレビュー文化の醸成、技術ブログ・登壇などの対外発信のご経験",
+   "short": "후배 기술 지도와 리뷰 문화 만들기, 기술 블로그·발표 같은 바깥 활동 경험.",
+   "why": "회사는 기술 블로그·컨퍼런스 발표로 내보내는 문화와 OSS 활동 지원(클리어코드와 제휴)을 내세우고,[1] 기술 블로그에 연말 연재(어드벤트 캘린더) 글이 이어집니다.[2][3][4][5] EM 의 외부 발표도 있습니다.[14]",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    14
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "技術判断を、事業成果と顧客価値につなげて説明できる方（Why / What / Howの一貫性）",
+   "short": "기술 결정을 '사업과 고객에게 무엇이 좋아지나'로 설명할 수 있는 사람.",
+   "why": "이에우루 개발자는 요청대로 만들면 두 달 넘게 걸릴 일을 관계자와 업무 흐름도로 다시 보고, 핵심 가치는 지키며 범위를 절반으로 줄여 한 달 마감에 맞췄습니다.[4]",
+   "refs": [
+    4
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "マネジメントに進まず、技術で事業に責任を持ち続けたい方。自ら手を動かし続けたい方",
+   "short": "관리자 대신 기술로 책임지는 길, 계속 직접 만드는 길을 원하는 사람.",
+   "why": "공고가 '매니지먼트 말고도 넓어지는 기술 경력'을 이 자리의 매력으로 듭니다 — 시니어에서 테크 리드로 기술 책임 범위를 넓혀 가는 길입니다.[1]",
+   "refs": [
+    1
+   ],
+   "study": [
+    "staff-eng"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "自身のユーザー体験が無い領域であっても、知的好奇心や想像力を働かせてドメイン理解を行う姿勢・素養がある方",
+   "short": "집을 팔아 본 적이 없어도 부동산 업무를 파고들어 이해하려는 사람.",
+   "why": "회사는 부동산·리폼·의료·간병을 합쳐 약 30조 엔 시장을 겨냥하고, 빈집 840만 호 같은 산업 문제를 듭니다.[15] 고객은 개인(집 파는 사람)과 부동산 회사 둘이고, 회사는 소개 한 건마다 업체에서 보수를 받습니다.[16]",
+   "refs": [
+    15,
+    16
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "チームでのコミュニケーション、HRT（謙虚・尊敬・信頼）を大切にしたい方",
+   "short": "겸손·존중·신뢰(HRT)를 지키며 팀으로 일하려는 사람.",
+   "why": "리뷰에서 근거를 묻고, 쓴 사람이 책임지고 머지하는 문화는 서로 믿을 때 돕니다.[5][6] HRT 는 공고가 괄호로 풀어 쓴 그대로 겸손·존중·신뢰입니다.[1]",
+   "refs": [
+    1,
+    5,
+    6
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AI時代に、人にしかできない仕事・意味のある仕事に取り組みたい方",
+   "short": "AI 가 못 하는 일 — 무엇을 왜 만들지 정하고 판단하는 일 — 을 하고 싶은 사람.",
+   "why": "이 조직에서 사람은 가치의 방향·요건·설계·기술 판단·평가에 집중합니다.[1] 이에우루 개발자 글의 주제도 'AI 가 코딩하는 지금 사람만 할 수 있는 역할'입니다.[4]",
+   "refs": [
+    1,
+    4
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "上司や周囲に答えを求めすぎず、当事者意識を持って事業成果に向かえる方",
+   "short": "답을 기다리지 않고 스스로 사업 성과를 책임지는 사람.",
+   "why": "츠나가루 개발자는 '출시가 목표'였던 시절 성과를 아무도 몰랐고, 지금은 정량 지표와 반기·1년 개발 성과 정의로 우선순위를 정한다고 썼습니다.[3]",
+   "refs": [
+    3
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "여러 팀이 같이 쓰는 기준·구조를 만드는 일이 즐거운 시니어[1]",
+   "AI 에이전트를 팀 규칙으로 굳혀 본 사람 — 이 회사가 지금 가장 찾는 경험[1][10]",
+   "관리자가 아닌 기술 경력 길을 원하는 사람[1]",
+   "일본에서 일하며 사업 조직 바로 옆에서 고객 문제를 듣고 싶은 사람[1]"
+  ],
+  "hard": [
+   "일본어 비즈니스 수준과 일본 이주가 필수 — 서류부터 일본어다[1]",
+   "테크 리드 권한은 처음부터가 아니라 실적에 따라 온다[1]",
+   "공고 연봉은 월급 × 12 로만 적혀 있고 상여 표기가 없다[1]",
+   "출근이 기본이다(사정에 따라 원격 가능)[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "AI 가 만든 PR 이 하루 수십 개라면, 리뷰 기준과 에이전트 규칙을 어떻게 나누겠어요?",
+   "a": "공고가 이 자리의 핵심으로 꼽은 '검증하는 힘'.[1][10]"
+  },
+  {
+   "q": "제품마다 따로 있는 청구 표를 공통 모델로 바꾼다면 무엇부터, 어떻게 되돌릴 수 있게 하겠어요?",
+   "a": "츠나가루가 실제로 다시 설계하는 부분.[2]"
+  },
+  {
+   "q": "Rails 를 유지할 곳과 다른 스택으로 옮길 곳을 어떤 기준으로 가르겠어요?",
+   "a": "레거시 교체와 기술 선정 테마.[1][23]"
+  },
+  {
+   "q": "기술 부채를 갚을 시간을 VPoE 와 사업 쪽에 어떻게 설득하겠어요?",
+   "a": "최종 투자 판단은 VPoE 몫이다.[1][22]"
+  },
+  {
+   "q": "멀티테넌트 SaaS 에서 다른 고객사의 데이터가 보이는 사고를 구조적으로 막는 법은?",
+   "a": "풀 방식의 격리 문제.[25]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · [株式会社Speee] 시니어 프로덕트 엔지니어 (부동산 DX / 테크 리드급)",
+   "url": "https://www.wanted.co.kr/wd/393877",
+   "kind": "posting",
+   "date": "2026-10",
+   "note": "모집 배경·미션·팀 구성·개발 환경·급여·복리후생·전형 (LAPRAS Global Bridge 연결)"
+  },
+  {
+   "n": 2,
+   "title": "Speee 기술 블로그 · マルチプロダクトSaaSにおけるシンプルな共通基盤を作るための3原則",
+   "url": "https://tech.speee.jp/entry/multi-product-saas-principle",
+   "kind": "company",
+   "date": "2025-12-16",
+   "note": "츠나가루 개발자 — 공통 기반·청구 재설계"
+  },
+  {
+   "n": 3,
+   "title": "Speee 기술 블로그 · 複数プロダクトを横断して気づいた検証可能な開発の必要性",
+   "url": "https://tech.speee.jp/entry/tsunagaru-2025",
+   "kind": "company",
+   "date": "2025-12-10",
+   "note": "부동산 사업부 츠나가루"
+  },
+  {
+   "n": 4,
+   "title": "Speee 기술 블로그 · AIがコーディングをする今、人間にしかできない役割を引き受けていく話",
+   "url": "https://tech.speee.jp/entry/speee-human-value-beyond-coding",
+   "kind": "company",
+   "date": "2025-12-09",
+   "note": "이에우루 개발"
+  },
+  {
+   "n": 5,
+   "title": "Speee 기술 블로그 · Railsアップデートから学ぶ意思決定に根拠を持ち、残すことの重要性",
+   "url": "https://tech.speee.jp/entry/importace-of-leave-evidence",
+   "kind": "company",
+   "date": "2025-12-15",
+   "note": "스마이스텝 개발 — Rails 6.1→7.1"
+  },
+  {
+   "n": 6,
+   "title": "Speee 기술 블로그 · なぜ開発基盤グループではPR作成者がマージを行うことにしているのか",
+   "url": "https://tech.speee.jp/entry/merger-is-owner",
+   "kind": "company",
+   "date": "2023-09-15",
+   "note": "개발기반 그룹 리더"
+  },
+  {
+   "n": 7,
+   "title": "Speee 기술 블로그 · 開発基盤のIssueチケットを300個から50個まで減らした話",
+   "url": "https://tech.speee.jp/entry/dx-platform-issue",
+   "kind": "company",
+   "date": "2023-10-04",
+   "note": "본문의 2023-10 숫자는 45개"
+  },
+  {
+   "n": 8,
+   "title": "Speee 기술 블로그 · Terraformリポジトリがモノレポから分散レポになってもう一度モノレポに戻ってくるまで",
+   "url": "https://tech.speee.jp/entry/spiral-of-terraform-repo",
+   "kind": "company",
+   "date": "2023-12-03"
+  },
+  {
+   "n": 9,
+   "title": "Speee 기술 블로그 · GCPの権限追加に関するトイル削減事例",
+   "url": "https://tech.speee.jp/entry/identifying-sre-toil",
+   "kind": "company",
+   "date": "2025-12-05",
+   "note": "개발기반 그룹 — BigQuery 권한 자동화"
+  },
+  {
+   "n": 10,
+   "title": "Speee 기술 블로그 · Claude Code を安全に広げるために、社内試験と学習教材を作った話",
+   "url": "https://tech.speee.jp/entry/2026/07/29/160549",
+   "kind": "company",
+   "date": "2026-07-29",
+   "note": "리폼 DX 사업부 — 같은 회사 다른 사업부"
+  },
+  {
+   "n": 11,
+   "title": "Speee 기술 블로그 · 組織全体の開発スループットを劇的に向上させた「AIプランナー」とは？",
+   "url": "https://tech.speee.jp/entry/AIplanner",
+   "kind": "company",
+   "date": "2025-11-04"
+  },
+  {
+   "n": 12,
+   "title": "Speee 기술 블로그 · Copilot Agent modeを活用してaws-sdk-goパッケージをメジャーアップグレード",
+   "url": "https://tech.speee.jp/entry/2025/03/18/070000",
+   "kind": "company",
+   "date": "2025-03-18",
+   "note": "광고 플랫폼 사업부 — 같은 회사 다른 사업부"
+  },
+  {
+   "n": 13,
+   "title": "Speee 기술 블로그 · Kaigi on Rails 2026 で学んだ「操作を見出す」設計で、実務の fat model をリファクタした話",
+   "url": "https://tech.speee.jp/entry/2026/11/09/142755",
+   "kind": "company",
+   "date": "2026-11-09",
+   "note": "이에우루 개발"
+  },
+  {
+   "n": 14,
+   "title": "Speee 기술 블로그 · 「良いコードレビューとは」というタイトルで登壇しました",
+   "url": "https://tech.speee.jp/entry/code-review-event",
+   "kind": "company",
+   "date": "2025-03-07",
+   "note": "DX 사업본부 EM · 발표 자료 speakerdeck.com/danimal141"
+  },
+  {
+   "n": 15,
+   "title": "Speee 기술 블로그 · SpeeeのAI戦略「AX」が切り拓く産業変革とは",
+   "url": "https://tech.speee.jp/entry/ai-strategy-ax",
+   "kind": "company",
+   "date": "2025-09-12"
+  },
+  {
+   "n": 16,
+   "title": "Speee 有価証券報告書 第18期 (2024-10 ~ 2025-09)",
+   "url": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100XC4C.pdf",
+   "kind": "company",
+   "date": "2025-12-22",
+   "note": "EDINET 공시 — 종업원 현황·평균 연간 급여·세그먼트 실적·이에우루 사업 설명"
+  },
+  {
+   "n": 17,
+   "title": "Speee 有価証券報告書 第17期 (2023-10 ~ 2024-09)",
+   "url": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100UZY2.pdf",
+   "kind": "company",
+   "date": "2024-12-23"
+  },
+  {
+   "n": 18,
+   "title": "Speee 채용 · 制度・福利厚生 (fabric)",
+   "url": "https://speee.jp/recruit/fabric/",
+   "kind": "company",
+   "note": "작성일 표기 없음"
+  },
+  {
+   "n": 19,
+   "title": "Speee · 会社概要",
+   "url": "https://speee.jp/company/",
+   "kind": "company",
+   "note": "주소·직원 679명(2026-09-30 기준)"
+  },
+  {
+   "n": 20,
+   "title": "Speee 채용(HERP) · 【レガシー産業DX事業本部】プロダクトエンジニア",
+   "url": "https://herp.careers/v1/speeecareer/QirDzPhW9CYk",
+   "kind": "posting",
+   "note": "10명 이하 스크럼 팀 · 3개월 단위 개발 테마"
+  },
+  {
+   "n": 21,
+   "title": "원티드 · [株式会社Speee] 【DX】SRE엔지니어 (현장산업DX분야)",
+   "url": "https://www.wanted.co.kr/wd/386999",
+   "kind": "posting",
+   "note": "같은 회사 같은 경로의 다른 공고 — 급여 비교용"
+  },
+  {
+   "n": 22,
+   "title": "Martin Fowler · Technical Debt Quadrant",
+   "url": "https://martinfowler.com/bliki/TechnicalDebtQuadrant.html",
+   "kind": "reference",
+   "date": "2009-10-14"
+  },
+  {
+   "n": 23,
+   "title": "Martin Fowler · Strangler Fig Application",
+   "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+   "kind": "reference",
+   "date": "2024-08-22"
+  },
+  {
+   "n": 24,
+   "title": "Michael Nygard · Documenting Architecture Decisions",
+   "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+   "kind": "reference",
+   "date": "2011-11-15"
+  },
+  {
+   "n": 25,
+   "title": "AWS 백서 · SaaS Tenant Isolation Strategies",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/saas-tenant-isolation-strategies/saas-tenant-isolation-strategies.html",
+   "kind": "reference",
+   "date": "2020-08",
+   "note": "사일로·풀·브리지 — 일부 페이지는 '과거 참고용' 표시"
+  },
+  {
+   "n": 26,
+   "title": "Google SRE Workbook · Implementing SLOs",
+   "url": "https://sre.google/workbook/implementing-slos/",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "Claude Code 문서 · Memory (CLAUDE.md)",
+   "url": "https://code.claude.com/docs/en/memory",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "Claude Code 문서 · Extend Claude with skills",
+   "url": "https://code.claude.com/docs/en/skills",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "Google Engineering Practices · Code Review",
+   "url": "https://google.github.io/eng-practices/review/",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "DORA · software delivery performance metrics",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+   "kind": "reference",
+   "date": "2026-01-05",
+   "note": "지금은 지표 다섯(재작업률 추가)"
+  },
+  {
+   "n": 31,
+   "title": "出入国在留管理庁 · 在留資格「技術・人文知識・国際業務」",
+   "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "Speee 채용(HERP) · 【レガシー産業DX事業本部】SREエンジニア",
+   "url": "https://herp.careers/v1/speeecareer/mbReJQWJ-fmp",
+   "kind": "posting",
+   "note": "SLI/SLO·온콜(몇 달에 한 번)·Terraform·Kubernetes"
+  },
+  {
+   "n": 33,
+   "title": "日本語能力試験 JLPT 공식 사이트",
+   "url": "https://www.jlpt.jp/",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "Speee 부동산 DX 조직의 내부 아키텍처(제품별 저장소 구성, 멀티테넌트 방식, 교체 대상)는 공개 자료가 없어, 회사 기술 블로그(같은 회사 다른 사업부 글 포함)와 공개 기준 문서로 '보통 이런 일'을 보였습니다. 회사 발표 영상은 찾지 못해 블로그 글로 대신했습니다. 연봉은 엔화 그대로이며, 원화로는 그때 환율로 바꿔 봐야 합니다.",
+ "resources": [
+  {
+   "id": "speee-multiproduct",
+   "title": "マルチプロダクトSaaSにおけるシンプルな共通基盤を作るための3原則",
+   "by": "Speee 기술 블로그 · 2025",
+   "kind": "doc",
+   "url": "https://tech.speee.jp/entry/multi-product-saas-principle",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "why": "이 자리가 맡을 '여러 제품의 공통 기반'을 회사 사람이 어떻게 생각하는지 — 면접 전에 꼭 읽을 글."
+  },
+  {
+   "id": "speee-cc-test",
+   "title": "Claude Code を安全に広げるために、社内試験と学習教材を作った話",
+   "by": "Speee 기술 블로그 · 2026",
+   "kind": "doc",
+   "url": "https://tech.speee.jp/entry/2026/07/29/160549",
+   "lang": "ja",
+   "free": true,
+   "level": "실무",
+   "why": "에이전트 규칙·권한 등급·금지 목록을 회사가 실제로 어떻게 정했는지. 업무 '에이전트가 따를 개발 규약'의 회사 안 선례."
+  },
+  {
+   "id": "speee-aiplanner",
+   "title": "組織全体の開発スループットを劇的に向上させた「AIプランナー」とは？",
+   "by": "Speee 기술 블로그 · 2025",
+   "kind": "doc",
+   "url": "https://tech.speee.jp/entry/AIplanner",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "why": "비개발자까지 에이전트로 릴리스하는 조직에서 개발 기반이 무엇을 받쳐야 하는지 — 성과와 문제를 같이 적었다."
+  },
+  {
+   "id": "speee-merger",
+   "title": "なぜ開発基盤グループではPR作成者がマージを行うことにしているのか",
+   "by": "Speee 기술 블로그 · 2023",
+   "kind": "doc",
+   "url": "https://tech.speee.jp/entry/merger-is-owner",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "why": "리뷰 문화와 책임을 이 회사가 어떻게 나누는지. 업무 '리뷰 문화 만들기'의 출발점."
+  },
+  {
+   "id": "arch101",
+   "title": "소프트웨어 아키텍처 101",
+   "by": "마크 리처즈 · 닐 포드 · 한빛미디어 · 2021",
+   "kind": "book",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942580",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "why": "아키텍처 특성 고르기·패턴·결정 남기기의 기본. '설계·기술 선정 주도' 요건의 공통 말을 익힌다. 개정판은 『소프트웨어 아키텍처 The Basics』(2025)."
+  },
+  {
+   "id": "hardparts",
+   "title": "소프트웨어 아키텍처 The Hard Parts",
+   "by": "닐 포드 · 마크 리처즈 · 프라모드 사달게 · 자마크 데가니",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%86%8C%ED%94%84%ED%8A%B8%EC%9B%A8%EC%96%B4%20%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98%20The%20Hard%20Parts",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "why": "나눌까 합칠까, 데이터를 누가 가질까 같은 트레이드오프를 다룬다 — 멀티프로덕트 공통 기반·청구 통합 판단에 바로 쓰인다."
+  },
+  {
+   "id": "legacy-book",
+   "title": "Working Effectively with Legacy Code",
+   "by": "Michael Feathers · Prentice Hall · 2004",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/working-effectively-with/0131177052/",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "테스트 없는 코드에 안전하게 손대는 법(특성 테스트·이음새). '부채 갚기·교체를 계획부터 실행까지' 요건의 손기술."
+  },
+  {
+   "id": "fowler-debt",
+   "title": "Technical Debt Quadrant",
+   "by": "Martin Fowler",
+   "kind": "doc",
+   "url": "https://martinfowler.com/bliki/TechnicalDebtQuadrant.html",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "부채를 네 칸으로 나눠 말하는 공통 언어 — 부채를 '보이게' 만들 때 첫 분류."
+  },
+  {
+   "id": "fowler-strangler",
+   "title": "Strangler Fig Application",
+   "by": "Martin Fowler",
+   "kind": "doc",
+   "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "한 번에 갈아엎지 않고 옮기는 교체 방식 — 레거시 교체 테마의 기본 패턴."
+  },
+  {
+   "id": "nygard-adr",
+   "title": "Documenting Architecture Decisions",
+   "by": "Michael Nygard · 2011",
+   "kind": "doc",
+   "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "결정 기록(ADR)의 원문. 설계 리뷰·기술 기준·기술 선정 근거를 남기는 틀."
+  },
+  {
+   "id": "aws-tenant",
+   "title": "SaaS Tenant Isolation Strategies",
+   "by": "AWS 백서 · 2020",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/saas-tenant-isolation-strategies/saas-tenant-isolation-strategies.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "사일로·풀·브리지로 멀티테넌트 격리를 고르는 법 — 우대사항 '멀티테넌트 설계'의 기준 문서."
+  },
+  {
+   "id": "sre-workbook",
+   "title": "Implementing SLOs (The Site Reliability Workbook 2장)",
+   "by": "Google",
+   "kind": "doc",
+   "url": "https://sre.google/workbook/implementing-slos/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "SLI 고르기·SLO 정하기·오류 예산 합의까지 — 우대사항 'SLO·장애 대응 구조화'를 그대로 연습한다."
+  },
+  {
+   "id": "sre-book",
+   "title": "Site Reliability Engineering",
+   "by": "Google · O'Reilly · 2016 (온라인 무료)",
+   "kind": "book",
+   "url": "https://sre.google/sre-book/table-of-contents/",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "why": "장애 뒤 검토(포스트모템)·온콜·모니터링 장만 골라 읽는다 — '장애 원인 분석과 재발 방지' 업무."
+  },
+  {
+   "id": "cc-memory",
+   "title": "Claude Code · Memory (CLAUDE.md)",
+   "by": "Anthropic 공식 문서",
+   "kind": "doc",
+   "url": "https://code.claude.com/docs/en/memory",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "에이전트가 저장소에서 읽는 지시 파일의 범위(조직·사용자·프로젝트). 우대사항의 '規約'."
+  },
+  {
+   "id": "cc-skills",
+   "title": "Claude Code · Extend Claude with skills",
+   "by": "Anthropic 공식 문서",
+   "kind": "doc",
+   "url": "https://code.claude.com/docs/en/skills",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "반복 절차를 SKILL.md 로 묶는 법. 우대사항의 'Skill' 이 이것."
+  },
+  {
+   "id": "google-review",
+   "title": "Google Engineering Practices · Code Review",
+   "by": "Google",
+   "kind": "doc",
+   "url": "https://google.github.io/eng-practices/review/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "리뷰어가 무엇을 보고 어떻게 말하나 — 리뷰 기준을 처음 글로 쓸 때 뼈대."
+  },
+  {
+   "id": "dora",
+   "title": "DORA's software delivery performance metrics",
+   "by": "DORA",
+   "kind": "doc",
+   "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "'개발 생산성 향상'을 무엇으로 잴지. 에이전트 도입 전후를 견줄 지표."
+  },
+  {
+   "id": "staff-eng",
+   "title": "스태프 엔지니어",
+   "by": "윌 라슨 · 장현희 옮김 · 길벗 · 2022",
+   "kind": "book",
+   "url": "https://ridibooks.com/books/754036152",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "why": "관리자가 아닌 시니어(테크 리드·아키텍트)가 무엇을 하는지 — '매니지먼트로 가지 않고 기술로 책임' 자리가 어떤 일인지 감을 잡는다."
+  },
+  {
+   "id": "isa-visa",
+   "title": "在留資格「技術・人文知識・国際業務」",
+   "by": "일본 출입국재류관리청",
+   "kind": "doc",
+   "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "why": "'일본 이주 필수' 요건 — 엔지니어가 보통 받는 재류 자격의 공식 설명."
+  },
+  {
+   "id": "jlpt",
+   "title": "日本語能力試験 JLPT",
+   "by": "국제교류기금 · 일본국제교육지원협회",
+   "kind": "doc",
+   "url": "https://www.jlpt.jp/",
+   "lang": "ja",
+   "free": true,
+   "level": "입문",
+   "why": "'일본어 비즈니스' 요건의 흔한 증빙. 등급 기준과 시험 일정."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "회사와 일본어 서류",
+   "time": "1~2주",
+   "goal": "Speee 부동산 DX 의 제품·개발 테마를 일본어로 설명하고, 일본어 직무경력서를 쓸 수 있다.",
+   "resources": [
+    "speee-multiproduct",
+    "speee-merger",
+    "jlpt",
+    "isa-visa"
+   ],
+   "task": "기술 블로그 글 다섯 편을 읽고 '이 회사가 지금 푸는 문제 3가지'를 일본어 한 장으로 정리한다. 내 경력 중 설계·교체를 이끈 일 두 개를 일본어 직무경력서 형식으로 쓴다."
+  },
+  {
+   "title": "결정을 글로 남기기",
+   "time": "2~3주",
+   "goal": "대안을 비교하고 결정 기록(ADR)으로 남겨 설득할 수 있다.",
+   "resources": [
+    "arch101",
+    "nygard-adr",
+    "hardparts"
+   ],
+   "task": "가상의 '부동산 회사용 SaaS 에 두 번째 제품 붙이기'를 두고 Rails 모놀리스 유지 / Rails API + Next.js / FastAPI + Next.js 를 가중치 표로 견주고, ADR 세 장(결정·대안·결과)을 쓴다."
+  },
+  {
+   "title": "멀티테넌트와 공통 기반",
+   "time": "2~3주",
+   "goal": "고객사 격리 방식을 고르고, 제품 공통 청구 모델을 설계할 수 있다.",
+   "resources": [
+    "aws-tenant",
+    "speee-multiproduct",
+    "hardparts"
+   ],
+   "task": "가상 고객사 3곳·제품 2개로 계약·단가·가격 조건·이용 실적·청구 예정 다섯 표를 만들고, 모든 조회가 tenant_id 로 걸러지는지 검사하는 테스트를 붙인다."
+  },
+  {
+   "title": "부채 보이기와 교체",
+   "time": "2~4주",
+   "goal": "부채를 숫자로 줄 세우고, 되돌릴 수 있는 교체 계획을 세운다.",
+   "resources": [
+    "fowler-debt",
+    "fowler-strangler",
+    "legacy-book"
+   ],
+   "task": "공개 Rails 저장소 하나의 git 기록으로 변경 횟수 × 복잡도 핫스팟 상위 10개를 뽑고, 1위 파일을 특성 테스트로 감싼 뒤 경로별 10% → 100% 로 옮기는 계획서를 쓴다."
+  },
+  {
+   "title": "에이전트를 팀의 틀로 · SLO",
+   "time": "계속",
+   "goal": "에이전트 규칙·스킬·리뷰 기준과 SLO·오류 예산을 팀이 쓰는 형태로 만든다.",
+   "resources": [
+    "cc-memory",
+    "cc-skills",
+    "speee-cc-test",
+    "google-review",
+    "sre-workbook",
+    "dora"
+   ],
+   "task": "내 토이 프로젝트에 CLAUDE.md(설계 원칙)·스킬 하나(마이그레이션 절차)·금지 훅을 넣고, 에이전트 PR 리뷰 체크리스트를 만든다. 가상 요청 로그로 SLO 99.9% 오류 예산 소진 경보를 계산해 본다."
+  }
+ ],
+ "pay": {
+  "summary": "공고 표기 **연 750만~1,200만 엔**(월급 × 12). 회사 직원 평균은 **573만 엔**(평균 29.6세) — 이 자리는 회사 평균보다 높게 잡힌 시니어 자리다",
+  "rows": [
+   {
+    "label": "공고 표기 연봉",
+    "value": "750万円 ~ 1,200万円",
+    "basis": "공고",
+    "note": "월급 × 12개월로만 적혀 있다. 목표치일 뿐이고 경험·능력을 보고 최종 결정, 내정 통지 때 설명한다 [1]"
+   },
+   {
+    "label": "직원 평균 연간 급여",
+    "value": "573万1千円",
+    "basis": "공시 · 2025년 9월 결산 (有価証券報告書)",
+    "note": "제출 회사 601명, 평균 29.6세, 평균 근속 3년 2개월. 상여와 기준 외 임금(초과 근무 수당 등)을 포함한다 [16]"
+   },
+   {
+    "label": "직원 평균 연간 급여 (전년)",
+    "value": "580万3千円",
+    "basis": "공시 · 2024년 9월 결산 (有価証券報告書)",
+    "note": "제출 회사 563명, 평균 29.3세, 평균 근속 2년 11개월 [17]"
+   },
+   {
+    "label": "같은 회사 SRE 공고",
+    "value": "500万円 ~ 800万円",
+    "basis": "공고",
+    "peer": true,
+    "note": "같은 원티드 일본 채용 경로의 현장산업 DX SRE 공고 표기 — 견주어 보기용 [21]"
+   }
+  ],
+  "how": "연봉은 공고 범위 안에서 경험·능력으로 정하고 내정 통지 때 알려 준다 [1]. 입사 뒤에는 반기마다 자기·360도·상사 평가로 급여를 다시 본다 [18]. 평균 급여는 젊은 직원이 많은 회사 전체 값이라 이 시니어 자리의 제안액으로 읽으면 안 된다 {추론}. 엔화이므로 원화로는 그때 환율로 바꿔 본다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "장비",
+    "detail": "2년마다 고사양 MacBook Pro, 원하는 키보드·마우스, 의자 선택(에르고휴먼·콘테사)"
+   },
+   {
+    "name": "책",
+    "detail": "도서 구입비 월 1만 엔까지, 사내 도서관(5,000권 넘음, 오라일리 신간이 계속 들어옴)"
+   },
+   {
+    "name": "개인 클라우드 비용",
+    "detail": "개인이 쓰는 클라우드 환경 이용료 월 1만 엔까지 회사 부담"
+   },
+   {
+    "name": "컨퍼런스",
+    "detail": "참가비 부담, 숙박·교통비도 지원"
+   },
+   {
+    "name": "자격 취득",
+    "detail": "업무 관련 자격을 따면 취득 비용 3만 엔까지"
+   },
+   {
+    "name": "부업",
+    "detail": "개인 서비스 개발·기술 고문 등 부업 허가 제도"
+   },
+   {
+    "name": "교통비",
+    "detail": "월 5만 엔까지"
+   },
+   {
+    "name": "주택 보조",
+    "detail": "회사 규정 범위 안 — 사무실 가장 가까운 역에서 3역 안에 살 때 월세 보조"
+   },
+   {
+    "name": "수당·축하금",
+    "detail": "가족 수당, 근속 수당, 결혼·출산 축하금"
+   },
+   {
+    "name": "휴가",
+    "detail": "토·일·공휴일, 여름·연말연시·특별·유급 휴가, 출산 입회 특별 유급 휴가 1.5일, 임신 검진 휴가·보조"
+   },
+   {
+    "name": "근무 제도",
+    "detail": "플렉스타임, 임신·육아·간병 때 일시적으로 일하는 방식을 바꾸는 워크스타일 옵션. 정시 9:30~18:30, 잔업 월 20~45시간 정도"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "마사지실(국가자격 상주 직원·예약제), 피트니스룸, 라운지, 커피 무료"
+   },
+   {
+    "name": "건강",
+    "detail": "건강검진·독감 예방접종 회사 부담, 사회보험 완비"
+   }
+  ],
+  "note": "공고의 복리후생 칸[1]과 회사 채용 페이지의 제도·복리후생[18]을 합쳤다. 주택 보조 조건(3역 안)과 출산 입회 휴가 일수는 채용 페이지 것이고, 채용 페이지에는 작성일이 없다. 둘 다 회사 전체 기준이다."
+ },
+ "location": {
+  "name": "Speee 본사 (롯폰기 그랜드 타워)",
+  "address": "東京都港区六本木3-2-1 六本木グランドタワー35階・39階",
+  "postal": "106-0032",
+  "map_url": "https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B8%AF%E5%8C%BA%E5%85%AD%E6%9C%AC%E6%9C%A83-2-1",
+  "near": "도쿄메트로 난보쿠선 롯폰기잇초메역 바로 연결, 히비야선·도에이 오에도선 롯폰기역 걸어서 약 5분",
+  "note": "공고의 근무지[1]와 회사 개요 페이지의 본사 주소[19]가 같다. 일본 주소라 네이버 지도 대신 구글 지도 검색 링크를 달았다."
+ }
+}

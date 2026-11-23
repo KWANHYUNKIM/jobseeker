@@ -10,6 +10,7 @@
   "ats-skcareers:sk:R262275": "skax-ax-ai-pm-pl",
   "ats-skcareers:sk:R262418": "skax-contact-center-application",
   "wanted-386999": "speee-dx-sre",
+  "wanted-393877": "speee-realestate-senior-product-engineer",
   "ats-toss:group:7990802003": "toss-ads-ai-engineer",
   "ats-toss:group:7998957003": "toss-ads-bidding-pacing-mle",
   "ats-toss:group:6619423003": "toss-ads-data-analyst",
@@ -160,6 +161,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 39
+  },
+  {
+   "id": "speee-realestate-senior-product-engineer",
+   "company": "Speee (원티드 일본 현지 채용)",
+   "role": "시니어 프로덕트 엔지니어 — 부동산 DX · 테크 리드 후보",
+   "jobs": [
+    "wanted-393877"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 33
   },
   {
    "id": "toss-ads-ai-engineer",
