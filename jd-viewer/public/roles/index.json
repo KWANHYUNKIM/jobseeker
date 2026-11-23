@@ -9,6 +9,7 @@
   "ats-toss:group:8000575003": "toss-aioc-ai-solution-engineer",
   "ats-toss:group:7798373003": "toss-call-infra-engineer",
   "ats-toss:group:7989660003": "toss-client-platform-engineer",
+  "ats-toss:group:7827378003": "toss-commerce-data-graph-mle",
   "ats-toss:group:7992223003": "toss-commerce-search-relevance-mle",
   "ats-toss:group:8003064003": "toss-dip-data-scientist",
   "ats-toss:group:7818488003": "toss-dw-analytics-engineer",
@@ -104,6 +105,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 19
+  },
+  {
+   "id": "toss-commerce-data-graph-mle",
+   "company": "토스",
+   "role": "ML 엔지니어 (Commerce Data Graph)",
+   "jobs": [
+    "ats-toss:group:7827378003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 14
   },
   {
    "id": "toss-commerce-search-relevance-mle",
