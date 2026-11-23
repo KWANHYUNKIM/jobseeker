@@ -220,3 +220,14 @@
   DEEPCOOL AK620 DIGITAL SE(high — 사양 표 Ø6mm×6·ARGB, 갤러리 4장: 은색 핀, 숫자 화면 윗 덮개 옆 모서리 ARGB 띠, 팬은 불빛 없음). 다나와는 쓰지 않았다.
 - 막힌 것: ARCTIC 제품 페이지 글(사양 목록)은 web-fetch 가 갤러리 뒤를 못 읽어 사진·도면만 썼다. 3RSYS 상세 이미지는 세로 2.9만 px 라 PIL 로 잘라 봤다(세션 임시 폴더, 저장소에 두지 않음).
 - 실물과 아직 다른 점: ARCTIC 의 38mm 라디에이터·VRM 팬·오프셋 피팅, LT360 의 네모 펌프와 LCD 판, 편조 호스는 렌더러가 못 그린다(REQUESTS [3D 렌더러] 새 줄). RC1900N 의 서로 다른 두 팬 크기와 AK620 DIGITAL SE 의 덮개 ARGB 띠·숫자 화면도 칸이 없다(새 줄 · 기존 `display` 요청). RC1900N 히트파이프 수는 사진과 분해 그림이 맞지 않아 비웠고, 다섯 제품 모두 날개 수를 비웠다. SOCOOOL·DeepCool 로고 글자는 글자 모양이 확실치 않아 marks 에 넣지 않았다.
+
+## 2026-11-23 · 23회차(무인) — 쿨러 다섯(수랭 하나·듀얼타워 넷)
+
+- 12번 맨 앞 그래픽카드 COLORFUL(403)·ZOTAC(468)와 case-atx-mid·cooler-air-single(다른 세션의 미커밋 파일) 항목은 지난 회차처럼 미루고, 쿨러 인기순 다음 다섯을 적었다(공식 표·도면·문구 + 공식 사진을 세션 임시 폴더에서 보기만):
+  Thermalright TROFEO VISION 360 ARGB(high — 사양 표 펌프 187.2×81.7×81mm·6.86형 화면·TL-UB36 ARGB, 공식 치수 도면 호스 400±10mm, 사진 3장: 앞면 전체가 화면인 가로 상자 펌프, 검정 편조 호스, 팬 틀 모서리 호 띠만 빛나는 불투명 날개 팬 3, 라디에이터 옆 ARGB 띠) ·
+  Peerless Assassin 120 SE ARGB(high — 사양 표 6×6mm·C1100 니켈 도금·TL-C12C-S ARGB + 사진 4장: 120 SE 와 같은 몸통에 반투명 ARGB 팬 2) ·
+  3RSYS Socoool RC980N(high — 쇼핑몰 스펙 100mm 팬 2·non-LED + 상세 이미지 '히트파이프 6EA'·전체 도색·상단 커버, 사진: 날개 7장) ·
+  3RSYS Socoool RC1900 ARGB(high — 상세 이미지 '니켈 도금 베이스, 6개의 히트파이프 & 쌍철봉'·리플로 솔더링, 130 + 120mm ARGB 팬) ·
+  3RSYS RC1500 ARGB LITE(high — 상세 이미지 '6개의 히트파이프 & 쌍철봉 LITE'·'상단 마그네틱 커버'·'120MM ARGB & NON-RGB 듀얼 팬', 사진: 은색 핀 위 하나로 이어진 검정 덮개). 다나와는 쓰지 않았다.
+- 막힌 것: 이 세션은 curl·임시 파이썬 스크립트 파일을 쓸 수 없어 사진은 web-fetch 로 받아(tool-results) Read 로 보고, 3RSYS 세로 2~3만 px 상세 이미지는 PIL 로 한 장의 축소 모음(contact sheet)·2400px 조각으로 만들어 봤다(세션 임시 폴더, 저장소에 두지 않음).
+- 실물과 아직 다른 점: RC1500 의 '앞 팬만 ARGB'·TROFEO 의 '팬 틀 모서리만 빛남'·라디에이터 옆 띠·화면 펌프는 렌더러가 못 그린다(REQUESTS [3D 렌더러] 새 줄). RC1900 ARGB 의 두 팬 크기는 기존 요청에 더했다. TROFEO·PA120 SE ARGB 의 models `fans` 가 null 이라 [hw-models] 새 줄. 네 공랭과 TROFEO 모두 켜진 사진이라 날개 수는 RC980N(7장)만 적었다. RC1900N(22회차)의 히트파이프는 RC1900 ARGB 상세가 6개라 같을 공산이 크지만 N 판 자료로 확인하지 못해 그대로 비워 두었다.

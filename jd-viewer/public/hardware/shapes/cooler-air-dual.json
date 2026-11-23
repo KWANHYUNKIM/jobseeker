@@ -110,6 +110,92 @@
    "confidence": "high",
    "checked_at": "2026-11-23",
    "note": "듀얼타워, 은색 핀 두 묶음을 하나로 덮는 검정 유리 같은 윗 덮개 가운데에 CPU 온도·사용률 숫자 화면과 청록 DeepCool 로고, 덮개 양 옆 모서리를 따라 ARGB 띠가 빛난다(팬은 불빛 없는 검정, 허브에 청록 로고). 히트파이프 6개는 니켈 도금 은색, 구리 콜드플레이트 위. 핀 옆면은 세로 홈 3줄이 있는 평평한 가장자리. 팬 2개(앞면 + 가운데) 철사 클립. 날개 수는 정면 사진에서 확실히 세지 못해 비웠다."
+  },
+  "thermalright-peerless-assassin-120-se-argb": {
+   "kind": "cooler",
+   "heatpipes": 6,
+   "stacks": 2,
+   "fans": 2,
+   "fan_mm": 120,
+   "base": "plate",
+   "fin_edge": "flat",
+   "color": "#151618",
+   "fan_light": "argb",
+   "marks": [
+    { "text": "THERMALRIGHT", "where": "cover" }
+   ],
+   "sources": [
+    {
+     "title": "Thermalright Peerless Assassin 120 SE ARGB — 공식 제품 페이지(사양: 125×110×155mm, 6mm 히트파이프 6개, C1100 순동 니켈 도금 베이스, TL-C12C-S 120×120×25mm · 3핀 5V ARGB · 사진 4장 — 비스듬한 윗면·옆면·정면)",
+     "url": "https://www.thermalright.com/product/peerless-assassin-120-se-argb/"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "모양은 120 SE 와 같다 — 듀얼타워, 니켈 도금 구리 베이스 위로 히트파이프 6개, 맨 윗 핀이 검정 도장이고 히트파이프 끝 6개씩이 은색 고깔로 튀어나오며 THERMALRIGHT 글자 음각, 윗 핀 앞뒤 모서리가 톱니처럼 파였다(옆면 가장자리는 평평). 다른 점은 팬 TL-C12C-S — 반투명 날개가 허브 둘레부터 ARGB 로 빛나고 허브 가운데는 검정 원. 팬 2개(앞면 + 가운데, 철사 클립), 켜진 사진이라 날개 수는 비웠다. 아래 핀은 은색."
+  },
+  "3rsys-rc980n": {
+   "kind": "cooler",
+   "heatpipes": 6,
+   "stacks": 2,
+   "fans": 2,
+   "fan_mm": 100,
+   "base": "plate",
+   "fin_edge": "flat",
+   "color": "#141416",
+   "accent": "#b9bcc0",
+   "fan_blades": 7,
+   "fan_light": "none",
+   "sources": [
+    {
+     "title": "3RSYS Socoool RC980N 쌍철봉 BLACK — 공식 쇼핑몰 제품 페이지(스펙: 100×118×137mm, 100mm 팬 2개 25T, non-LED · 사진 3장 — 비스듬한 정면·정면 + 상세 이미지: '히트파이프 6EA'·'100MM NON-RGB FAN'·'상단 커버 디자인'·'히트싱크 및 히트파이프 도색'·쌍철봉)",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1751344194"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "100mm 팬을 쓴 작은 듀얼타워 — 핀·히트파이프·팬까지 전부 검정 도장(흰 판 따로). 히트파이프 6개(상세 이미지 표기)가 구리판 베이스 위로 지나고 가운데 휨 방지 막대 '쌍철봉'. 윗면은 묶음마다 검정 덮개에 은색 가로 줄 하나와 SOCOOOL 로고 글자. 팬 2개(앞면 + 가운데) 철사 클립, 정면 사진에서 날개 7장, 허브에 흰 원형 로고, 불빛 없음."
+  },
+  "3rsys-rc1900-argb": {
+   "kind": "cooler",
+   "heatpipes": 6,
+   "stacks": 2,
+   "fans": 2,
+   "fan_mm": 130,
+   "base": "plate",
+   "fin_edge": "flat",
+   "color": "#141416",
+   "accent": "#b9bcc0",
+   "fan_light": "argb",
+   "sources": [
+    {
+     "title": "3RSYS Socoool RC1900 ARGB 솔더링 BLACK — 공식 쇼핑몰 제품 페이지(스펙: 132×140×157mm, 130mm 25T + 120mm 28T 팬 2개, LED 5V ARGB, '25년 3월부로 제품외관 변경' · 사진 2장 + 상세 이미지: '니켈 도금 베이스, 6개의 히트파이프 & 쌍철봉 적용'·'Reflow 솔더링'·'절제된 디자인의 상부 커버'·'120MM & 130MM 듀얼팬')",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1701066030"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "RC1900N 과 같은 몸통의 ARGB 판 — 듀얼타워, 핀·히트파이프 검정 도장, 히트파이프 6개는 니켈 도금 베이스에 솔더링(리플로) + 쌍철봉. 윗면은 묶음마다 검정 덮개에 은색 가로 줄 3개와 SOCOOOL 로고 글자. 팬은 앞면 130mm(25T) + 가운데 120mm(28T) 두 크기라 fan_mm 는 앞면 130 — 렌더러는 같은 크기로 그린다. 반투명 날개가 통째로 ARGB 로 빛나고 허브 가운데 금색 점, 팬 틀 모서리에 홈 무늬. 켜진 사진이라 날개 수는 비웠다."
+  },
+  "3rsys-rc1500-argb-lite": {
+   "kind": "cooler",
+   "heatpipes": 6,
+   "stacks": 2,
+   "fans": 2,
+   "fan_mm": 120,
+   "base": "plate",
+   "fin_edge": "flat",
+   "color": "#18191b",
+   "fan_light": "argb",
+   "sources": [
+    {
+     "title": "3RSYS RC1500 ARGB 쌍철봉 LITE BLACK — 공식 쇼핑몰 제품 페이지(스펙: 120×117×158mm, 120mm 팬 2개 25T, RGB · 사진 2장 — 비스듬한 정면·정면 + 상세 이미지: '니켈 도금 베이스, 6개의 히트파이프 & 쌍철봉 LITE'·'상단 마그네틱 커버'·'120MM ARGB & NON-RGB 듀얼 팬')",
+     "url": "https://www.3rsys.com/shop/item.php?it_id=1781068291"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "듀얼타워, 은색 알루미늄 핀 두 묶음을 하나로 덮는 검정 자석 윗 덮개(앞쪽에 길쭉한 홈 두 줄, 가장자리에 잔 톱니 무늬). 히트파이프 6개는 니켈 도금 은색, 니켈 도금 베이스 + 쌍철봉 LITE. 팬은 앞면 ARGB(반투명 날개가 허브 둘레부터 빛남, 허브 검정) + 가운데 불빛 없는 검정 팬(허브에 3RSYS 글자) — 렌더러는 두 팬을 같은 불빛으로 그린다. 날개 수는 켜진 사진이라 비웠다."
   }
  }
 }
