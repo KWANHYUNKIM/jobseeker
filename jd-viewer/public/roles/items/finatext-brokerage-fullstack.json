@@ -1,0 +1,1433 @@
+{
+  "id": "finatext-brokerage-fullstack",
+  "company": "Finatext (株式会社Finatext)",
+  "role": "풀스택 엔지니어 (Brokerage)",
+  "team": "Brokerage(증권) 사업 — 증권 바탕 시스템 BaaS · 근무지 일본 도쿄",
+  "jobs": [
+    "wanted-368239"
+  ],
+  "researched_at": "2026-11-23",
+  "tldr": {
+    "what": "다른 회사가 증권 서비스를 쉽게 차리도록 빌려주는 **증권 바탕 시스템 BaaS**(19개 서비스가 그 위에서 돈다)와, 그 위에 얹는 파트너 증권 앱을 서버·화면·인프라까지 만들고 5~6명 팀을 이끕니다.[1][10]",
+    "env": "Go·TypeScript(Vue/React)·AWS(ECS·Lambda·SQS·DynamoDB·Aurora)·Terraform. 장 시간표대로 오는 부하와 금융 보안 기준(FISC) 안에서 일합니다. **일본어 비즈니스 수준 + 일본 이주**가 조건입니다.[1][2][3][5]",
+    "oneline": "증권사의 핵심 시스템을 직접 짓는 회사의 실무 리드 — 순서·중복·장 시간·감사가 늘 따라붙는 풀스택입니다."
+  },
+  "lines": [
+    {
+      "section": "task",
+      "quote": "・証券ビジネスプラットフォーム「BaaS」のサーバサイド/フロントエンド/インフラの設計・開発\n　・ex.) 口座開設モジュールのサーバサイドの開発・取引系機能のサーバサイドの開発\n　・ex.) プラットフォームとして提供している共通のフロントエンドの開発",
+      "short": "증권 회사의 '바탕 시스템'(BaaS) 자체 — 계좌 개설·주문·공통 화면을 서버부터 인프라까지 만든다.",
+      "why": "Finatext 그룹의 증권사 스마트플러스(スマートプラス)는 증권 서비스를 만들 때 필요한 기능을 묶은 클라우드 기반 '증권 바탕 시스템' BaaS(Brokerage as a Service)를 운영하고, 다른 회사에 빌려줍니다.[1][10] 이 위에 서비스를 얹으면 직접 만들 때보다 개발비를 80~90% 줄일 수 있다는 것이 회사 설명입니다.[1] 2025년 3월 말 BaaS 위에서 도는 서비스는 19개(1년 전 12개)였고, 회사는 첫 구축비·월 고정 이용료·거래 건수에 따른 수수료를 받습니다.[10] 그래서 BaaS의 공통 기능 하나가 여러 회사 서비스에 한꺼번에 영향을 줍니다{추론}.",
+      "actually": {
+        "items": [
+          "**계좌 개설 모듈** — 신청 접수, 본인 확인, 심사 상태 관리. 증권 계좌라 본인 확인 단계가 빠질 수 없습니다{추론}.",
+          "**거래 기능 서버** — 주문을 받아 큐(SQS, 줄 세우는 메시지 상자)에 넣고, 일꾼 서비스가 꺼내 FIX(증권사·거래소가 주문을 주고받는 표준 통신 규약)로 내보냅니다. 체결 결과는 나중에 따로 돌아옵니다.[3][24]",
+          "**공통 프런트엔드** — 여러 파트너 서비스가 같이 쓰는 화면 부품. 같은 그룹 보험 팀은 공통·상품별 화면을 레이어로 나눠 import 경계를 lint로 막는 방법을 시험했습니다.[31]",
+          "**인프라** — AWS 위 컨테이너(ECS)·Aurora(MySQL 호환 DB)를 Terraform 코드로 관리합니다.[4][7]"
+        ]
+      },
+      "how_far": "'서버사이드/프런트엔드/인프라'를 한 사람이 다 짓는다는 뜻이라기보다, 한 기능을 화면부터 DB·인프라까지 혼자 끝까지 밀 수 있어야 한다는 뜻입니다. 같은 팀 엔지니어 인터뷰도 서버·인프라·프런트를 넓게 맡는 것이 기본이라고 했습니다.[6] 증권 규칙(계좌 개설 요건 등)은 증권사 쪽이 정하고, 개발자는 그것을 **틀리지 않고 여러 파트너가 같이 쓸 수 있는 모듈**로 만드는 몫입니다{추론}.",
+      "refs": [
+        1,
+        3,
+        4,
+        6,
+        7,
+        10,
+        24,
+        31
+      ],
+      "study": [
+        "aws-int",
+        "learning-go",
+        "fix-std"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "・証券ビジネスプラットフォーム「BaaS」を利用して開発するアプリケーションのサーバサイド/フロントサイドの設計・開発\n　・ex.) セゾンポケットのような証券アプリのサーバサイド・フロントエンドの開発",
+      "short": "BaaS를 빌려 쓰는 파트너의 증권 앱(예: 세존포켓)을 서버·화면까지 만들어 준다.",
+      "why": "Finatext는 플랫폼만 빌려주는 것이 아니라 그 위에서 도는 파트너 서비스 개발도 맡습니다.[4] 세존포켓(セゾンポケット)은 BaaS 위에 올라간 첫 번째 증권 서비스였고 이 팀 엔지니어가 BaaS와 함께 개발·운영했습니다.[6] 회사 설명으로는 지금 여러 대기업 파트너와 제품을 연달아 내는 단계라 이 일이 많습니다.[1]",
+      "actually": {
+        "items": [
+          "**파트너마다 다른 화면, 같은 바탕** — 적립 위주 앱, 테마 투자 앱, 로보어드바이저처럼 겉모습은 달라도 주문·계좌는 BaaS 공통 기능을 부릅니다.[1]",
+          "**계정 분리** — 회사는 개발하는 서비스마다 AWS 계정을 따로 써서 한 서비스의 사고가 다른 서비스로 번지지 않게 한다고 밝혔습니다.[4]",
+          "**공통으로 올릴지 정하기** — 한 파트너의 요구가 다른 파트너에게도 쓸모 있으면 BaaS 공통 모듈로, 아니면 그 앱 안에 둡니다{추론}."
+        ]
+      },
+      "how_far": "파트너 회사의 기획자와 요구사항을 정리하는 일까지 포함됩니다 — 같은 팀 백엔드 공고는 요구사항 정의·사양서·공수 산정을 업무에 적었습니다.[7] 최소선은 **파트너 요구를 듣고 'BaaS로 되는 것 / 새로 만들 것'을 나눠 견적을 내는 것**입니다{추론}.",
+      "refs": [
+        1,
+        4,
+        6,
+        7
+      ],
+      "study": [
+        "aws-case",
+        "arch101"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "・開発チーム（5-6人程度）のリード",
+      "short": "5~6명 개발팀의 일정·설계·리뷰를 이끄는 실무 리드다.",
+      "why": "같은 자리의 다른 공고도 5~6명 개발팀 리드를 업무로 적었습니다.[8] 2019년 인터뷰에서 회사는 제품마다 팀이 있고 개발 방식은 팀에 맡긴다고 했습니다.[2] 그래서 팀 리드가 그 팀의 방식(리뷰 규칙·테스트 기준)을 사실상 정합니다{추론}.",
+      "actually": {
+        "items": [
+          "**일 나누기** — 기능을 쪼개 담당을 정하고 공수를 잡는다.[7]",
+          "**리뷰** — 팀원의 설계·코드를 본다. 회사 공고는 코드 리뷰가 활발하다고 적었습니다.[7]",
+          "**지식 나누기** — 회사는 저녁 회의에서 '한 일'뿐 아니라 '배운 것'을 나누고, 궁금한 사람이 질문을 들고 오는 '역질문 공부 모임'을 연다고 소개했습니다.[2]",
+          "**함께 일하는 범위** — 2019년 기준으로 국내 엔지니어 13명 외에 베트남 협력사 Teqnological 개발팀 약 20명이 있었습니다.[2] 리드는 이 팀과도 일을 나눌 수 있습니다{추론}."
+        ]
+      },
+      "how_far": "인사 관리자(EM)라기보다 **직접 코드를 쓰면서 팀을 이끄는 테크 리드**에 가깝습니다 — 공고의 다른 업무가 모두 설계·개발입니다.[1] 평가·채용 권한이 어디까지인지는 공고에 없으니 면접에서 묻습니다{추론}.",
+      "refs": [
+        1,
+        2,
+        7,
+        8
+      ],
+      "study": [
+        "swe-google",
+        "google-review"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "・プロダクトにおける技術的な意思決定\"",
+      "short": "언어·구조·도입 기술 같은 결정을 근거와 함께 내리고 문서로 남긴다.",
+      "why": "회사는 처음부터 기능을 '책임·쓰는 기술·성능과 보안 요구·나중에 늘어날 방식'이 다른 단위로 나눠 여러 서비스로 지었다고 설명했습니다(예: 시세 배포, FIX 서버, 후선 업무 연결, 권한 제어).[3] 이런 판단이 이 줄의 '기술적인 의사결정'입니다.",
+      "actually": {
+        "items": [
+          "**나누기·합치기** — 새 기능을 기존 서비스에 넣을지 따로 뺄지.[3]",
+          "**통신 방식** — 회사는 서비스 사이를 주로 http로, 일부는 gRPC로 잇고, 쓰임에 맞게 고르게 하겠다고 했습니다.[3]",
+          "**비용과 정확성 비교** — DynamoDB의 오래된 데이터를 TTL(기한 지나면 자동 삭제)로 지울지 주말 배치로 지울지, 비용을 따져 배치를 골랐습니다. TTL은 삭제 시점이 최대 48시간 늦을 수 있어서였습니다.[3]",
+          "**기록** — 결정과 이유를 짧은 문서(ADR, 아키텍처 결정 기록)로 남기면 나중에 온 사람이 이유를 알 수 있습니다.[21]"
+        ]
+      },
+      "how_far": "혼자 정하는 것이 아니라 테크 리드·CTO와 같이 정합니다(공고에 CTO·테크 리드가 소개돼 있습니다).[1] 개발자 몫은 **선택지 2~3개를 비용·위험·되돌리기 쉬움으로 비교한 글**을 가져오는 것입니다{추론}.",
+      "refs": [
+        1,
+        3,
+        21
+      ],
+      "study": [
+        "nygard-adr",
+        "arch101",
+        "aws-int"
+      ]
+    },
+    {
+      "section": "task",
+      "quote": "【開発環境】\n・Amazon Web Services\n・Terraform\n・TypeScript (Vue.js / React.js)\n・Webpack 5",
+      "short": "AWS·Terraform·TypeScript(Vue/React)·Webpack 5 — 서버 언어는 다른 줄의 Go다.",
+      "why": "개발 환경 목록에는 서버 언어가 빠져 있지만, 자격요건 첫 줄이 Go 같은 정적 타입 언어이고, 회사는 Go를 주 언어로 골랐다고 여러 번 밝혔습니다.[1][3][4] 같은 팀 백엔드 공고의 환경은 AWS·Terraform·Docker·Go·Kotlin(Spring Boot)·MySQL(Aurora)입니다.[7]",
+      "actually": {
+        "items": [
+          "**AWS** — ECS(컨테이너 실행), Lambda(짧은 함수 실행), SQS·Kinesis(메시지 전달), DynamoDB·ElastiCache(Redis)·Aurora(DB).[2][3][4]",
+          "**Terraform** — 인프라를 코드로 적고 Git으로 바뀐 이력을 남긴다.[3]",
+          "**TypeScript + Vue.js / React** — 화면. 2020년 인터뷰의 엔지니어는 때로 Vue.js로 프런트를 짠다고 했습니다.[6]",
+          "**Webpack 5** — 화면 코드를 묶어 내보내는 도구. 같은 그룹 프런트 팀은 새 도구(Vite+)로 옮기는 시험도 글로 남겼습니다.[15]",
+          "**운영 도구** — 같은 사업부 인프라 공고에는 GitHub Actions·Datadog·PagerDuty·Snowflake가 더 적혀 있습니다.[9]"
+        ]
+      },
+      "how_far": "전부 실무 경험이 있어야 하는 것이 아니라, **Go 서버 + 화면 프레임워크 하나 + AWS 기본**을 갖추고 나머지는 들어가서 익히는 구성이 현실적입니다{추론}.",
+      "refs": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        9,
+        15
+      ],
+      "study": [
+        "learning-go",
+        "effective-ts",
+        "vue-docs",
+        "modern-react"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "・Go等の静的型付け言語での開発経験",
+      "short": "Go처럼 컴파일 때 타입을 검사하는 언어로 서비스를 만들어 봤어야 한다.",
+      "why": "회사는 Go와 컨테이너를 핵심 기술로 꼽았고, Go를 주 언어로 쓴 덕에 Docker 도입도 쉬웠다고 설명했습니다.[3][4] 돈과 주문을 다루는 코드는 타입이 틀린 값이 실행 중에야 드러나면 위험하므로 정적 타입 언어가 맞습니다{추론}.",
+      "actually": {
+        "items": [
+          "**Go의 기본** — 구조체·인터페이스·에러 값 반환, goroutine(가벼운 동시 실행)과 채널.[30]",
+          "**돈 계산** — 금액은 소수(float)가 아니라 정수(엔 단위)나 십진 소수 타입으로 다룬다(예시).{추론}",
+          "**'등'의 범위** — 같은 팀 공고에 Kotlin(Spring Boot)도 있어 Java·Kotlin 경험도 '정적 타입 언어'로 인정될 수 있습니다.[7]{추론}"
+        ]
+      },
+      "level": {
+        "basic": "Go 문법·표준 라이브러리로 작은 HTTP API를 만든다",
+        "work": "DB·큐와 잇는 서비스, 테이블 기반 테스트, 에러·타임아웃 처리",
+        "team": "주문·체결처럼 순서와 중복이 중요한 흐름을 Go로 짜고 리뷰한다"
+      },
+      "examples": [
+        {
+          "title": "돈은 float로 더하지 않는다 (가상 값, Python으로 확인)",
+          "body": "0.1 + 0.2 는 float로 0.30000000000000004 가 되고 0.3과 같지 않습니다. 십진 소수 타입은 0.3 그대로입니다. 약정 123,456엔 × 수수료율 0.55% = 679.0080 → 엔 미만 버림 679엔. Go라면 정수(엔)로 계산하거나 십진 소수 라이브러리를 씁니다{추론}.",
+          "lang": "python",
+          "code": "from decimal import Decimal, ROUND_DOWN\nprint(0.1 + 0.2 == 0.3)                                  # False\nprint(Decimal('0.1') + Decimal('0.2') == Decimal('0.3'))  # True\nfee = (Decimal('123456') * Decimal('0.0055')).quantize(Decimal('1'), rounding=ROUND_DOWN)\nprint(fee)  # 679"
+        }
+      ],
+      "how_far": "Go가 처음이어도 다른 정적 타입 언어 실무가 있으면 지원은 됩니다. 다만 **코딩 테스트가 전형에 있으므로** Go 한 가지로 문제를 풀 수 있게 준비합니다.[1]",
+      "refs": [
+        1,
+        3,
+        4,
+        7,
+        30
+      ],
+      "study": [
+        "go-tour",
+        "learning-go",
+        "effective-go"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "・Webアプリケーションのバックエンドもしくはフロントエンドの開発経験",
+      "short": "웹 서비스의 서버나 화면 어느 한쪽은 실제로 만들어 운영해 봤어야 한다.",
+      "why": "공고 제목은 풀스택이지만 요건은 '백엔드 또는 프런트엔드'입니다.[1] 한쪽이 강하면 다른 쪽은 팀 안에서 넓혀 가는 구조입니다 — 같은 팀 엔지니어는 서버·인프라·프런트를 넓게 맡는 것이 기본이라고 했습니다.[6]",
+      "actually": {
+        "items": [
+          "**백엔드 쪽** — REST API 설계, 인증·권한, DB 트랜잭션, 비동기 작업(큐).[3]",
+          "**프런트 쪽** — TypeScript, 상태 관리, 서버와 주고받는 데이터 형식, 화면 테스트.[1]",
+          "**증권 화면의 특이점** — 시세는 WebSocket(서버가 먼저 밀어 주는 연결)으로 실시간 갱신하고, 가입 안 한 사용자에게는 20분 늦춘 시세를 보여 주는 규칙이 있었습니다.[2]"
+        ]
+      },
+      "how_far": "'운영해 봤다'가 핵심입니다 — 출시 뒤 장애·성능 문제를 직접 받아 본 경험을 이력서에 씁니다{추론}.",
+      "refs": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "study": [
+        "modern-react",
+        "vue-docs",
+        "ddia"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "・AWS等のクラウド上でのインフラ構築経験",
+      "short": "AWS 같은 클라우드에 네트워크·서버·DB를 직접 깔아 본 경험이 있어야 한다.",
+      "why": "Finatext 그룹은 증권 바탕 시스템을 포함해 거의 모든 시스템을 AWS 위에 둡니다.[4] 관리형 서비스(ECS·Aurora 등)를 적극 써서 인프라 운영에 드는 사람 손을 줄이고 그만큼 기능 개발에 쓴다고 설명했습니다.[4]",
+      "actually": {
+        "items": [
+          "**시세 배포 구조(2019 공개)** — 시세 회사 QUICK와 전용선(Direct Connect)으로 붙고, ECS 작업 3개가 종목을 셋으로 나눠 받으며, 내부 로드밸런서(NLB) → Redis 발행 → WebSocket 서버(ALB 뒤) 순서로 앱까지 흘립니다.[2]",
+          "**네트워크 성능 맞추기** — 배포 서비스는 ECS를 호스트 모드로, 한 서버에 작업 하나만 올려 네트워크 성능을 다 쓰게 조정했습니다.[2]",
+          "**계정 나누기** — AWS Organizations로 그룹 계정을 묶고, SCP(계정별 허용 범위 정책)로 RDS 백업 삭제 같은 위험한 조작을 막습니다.[3]",
+          "**리뷰 받기** — 2021년 AWS Well-Architected 리뷰(보안·신뢰성·비용 등을 묻는 점검표)에서 52개 항목 가운데 개선점은 몇 개뿐이었다고 소개됐습니다.[4][23]"
+        ]
+      },
+      "how_far": "최소선은 **VPC·서브넷·보안 그룹·로드밸런서·컨테이너 서비스·관리형 DB를 직접 만들고 왜 그렇게 했는지 설명**하는 수준입니다{추론}. AWS 자격증은 필수가 아니지만, 회사는 파트너 프로그램 조건 때문에 사내 자격 취득을 지원한 적이 있습니다.[4]",
+      "refs": [
+        2,
+        3,
+        4,
+        23
+      ],
+      "study": [
+        "ecs-docs",
+        "aws-wa",
+        "aws-int"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "・データベースやネットワーク等、システムパフォーマンスのチューニング経験",
+      "short": "느린 쿼리·연결 한계 같은 병목을 숫자로 찾아 고쳐 본 경험이 있어야 한다.",
+      "why": "증권 시스템은 부하가 시계처럼 정해져 있습니다 — 오전 8시 주문 접수가 시작되면 쓰기가 몰리고, 9시 개장에는 조회와 체결 결과가 몰립니다. 전장 끝(11:30)·후장 시작(12:30)·후장 끝도 정점입니다.[2] 도쿄증권거래소는 2024년 11월 5일부터 후장 끝을 15시에서 15시 30분으로 늦췄습니다.[16] 장이 열린 시간에 멈추면 피해가 크므로 이 정점을 버티는 튜닝이 필요합니다.[2]",
+      "actually": {
+        "items": [
+          "**쓰기 묶기** — 시세 변화를 DynamoDB에 그때그때 쓰니 HTTP 연결 부담과 파일 디스크립터(열 수 있는 연결 수) 한계에 걸렸고, 컨테이너에서 아주 짧게 모아 한꺼번에 쓰도록 바꿨습니다.[2]",
+          "**규모** — 이 표의 쓰기 용량은 30,000 WCU(초당 쓰기 단위)로 잡혀 있었고 한 달에 약 1TB가 새로 쌓였습니다.[2]",
+          "**시간표에 맞춘 증설** — 8시·9시 전에 Lambda로 한꺼번에 서버를 늘리고, 필요 없어지면 줄였습니다.[3]",
+          "**DB 인덱스** — 계좌별 체결 조회처럼 자주 쓰는 조건에 인덱스가 없으면 표 전체를 훑습니다(예시).{추론}"
+        ]
+      },
+      "examples": [
+        {
+          "title": "인덱스 전후 실행 계획 (가상 체결 5만 건, SQLite로 확인)",
+          "body": "같은 조회가 인덱스 전에는 표 전체를 훑고(SCAN), 인덱스를 만든 뒤에는 인덱스로 찾아갑니다(SEARCH). MySQL(Aurora)에서는 EXPLAIN으로 같은 것을 봅니다.[32]",
+          "lang": "python",
+          "code": "import sqlite3\ndb = sqlite3.connect(':memory:')\ndb.execute('create table executions(id integer primary key, account text, symbol text, qty int)')\ndb.executemany('insert into executions(account,symbol,qty) values(?,?,?)', [(f'u{i % 5000}', '7203', 100) for i in range(50000)])\nplan = lambda: db.execute(\"explain query plan select * from executions where account = 'u42'\").fetchall()[0][3]\nprint(plan())  # SCAN executions\ndb.execute('create index ix_exec_account on executions(account)')\nprint(plan())  # SEARCH executions USING INDEX ix_exec_account (account=?)"
+        },
+        {
+          "title": "장 시간표에 맞춘 미리 늘리기 (가상 값)",
+          "body": "07:55 작업 12개(8시 주문 접수 전) → 08:55 20개(9시 개장 전) → 11:30 8개 → 12:25 16개 → 15:30 6개(정산·파일 배치) → 17:00 2개. 숫자는 가상이고, 회사가 공개한 것은 '8시·9시 전에 Lambda로 한꺼번에 늘린다'는 방식입니다.[3]"
+        }
+      ],
+      "how_far": "'튜닝 경험'은 **무엇이 느렸고, 무엇으로 재서 원인을 찾았고, 고친 뒤 몇 배 좋아졌나**를 숫자로 말할 수 있으면 됩니다{추론}.",
+      "refs": [
+        2,
+        3,
+        16,
+        32
+      ],
+      "study": [
+        "real-mysql",
+        "ddia",
+        "aws-int"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "・セキュアコーディングに関する知見",
+      "short": "SQL 주입·권한 우회 같은 흔한 구멍을 코드에서 처음부터 막는 법을 알아야 한다.",
+      "why": "증권 회사 시스템이라 일본 금융정보시스템센터의 안전대책 기준(FISC)을 따르고, 회사는 그 기준을 자기 환경에 맞게 해석해 지킵니다.[5] 이 팀 CTO 겸 CISO는 CISSP·OSCP·OSWE(웹 공격·방어) 자격을 가진 보안 전문가로 소개돼 있습니다.[1] 같은 사업부는 AWS의 보안 진단 에이전트로 개발 환경 침투 테스트를 하는 방법도 글로 남겼습니다.[13]",
+      "actually": {
+        "items": [
+          "**입력은 늘 의심** — SQL은 문자열을 이어 붙이지 않고 자리표시자로 넘긴다(예시).[17][18]",
+          "**권한 검사** — 'A 사용자가 B 계좌의 주문을 볼 수 있나'를 모든 API에서 서버가 확인한다. OWASP 목록 1위가 접근 제어 실패입니다.[17]",
+          "**비밀 값 관리** — 키·비밀번호를 코드에 넣지 않는다. 회사 서버 접속은 1시간짜리 인증서와 실물 보안 키(YubiKey)로 하고, 작업 권한은 Slack 승인 뒤에만 잠깐 열립니다.[5]",
+          "**로그 지키기** — 로그는 따로 떼어 둔 계정에 모으고 S3 객체 잠금으로 최고 권한자도 지우지 못하게 했습니다.[5]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "문자열 이어 붙이기 vs 자리표시자 (SQLite로 확인)",
+          "body": "공격 문자열 x' OR '1'='1 을 이어 붙이면 모든 계좌가 나오고, 자리표시자로 넘기면 아무것도 안 나옵니다. Go의 database/sql도 같은 방식(? 자리표시자)입니다.[18]",
+          "lang": "python",
+          "code": "import sqlite3\ndb = sqlite3.connect(':memory:')\ndb.execute('create table accounts(id text, name text)')\ndb.executemany('insert into accounts values(?,?)', [('u1','kim'), ('u2','lee')])\nevil = \"x' OR '1'='1\"\nprint(db.execute(\"select id from accounts where id = '\" + evil + \"'\").fetchall())  # [('u1',), ('u2',)]\nprint(db.execute('select id from accounts where id = ?', (evil,)).fetchall())        # []"
+        }
+      ],
+      "how_far": "보안 전문가 수준이 아니라 **OWASP Top 10을 알고, 코드 리뷰에서 그 구멍을 짚을 수 있는 수준**이 '지식'입니다{추론}. 보안 규정 해석과 감사 대응은 CISO와 보안 담당이 이끕니다.[1][5]",
+      "refs": [
+        1,
+        5,
+        13,
+        17,
+        18
+      ],
+      "study": [
+        "owasp-top10",
+        "go-scp"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "・ユニットテストやE2Eテストの実装経験",
+      "short": "함수 단위 테스트와 화면부터 서버까지 도는 E2E 테스트를 직접 짜 봤어야 한다.",
+      "why": "같은 팀 백엔드 공고는 테스트 설계·구현을 업무로, 단위·E2E 테스트 경험을 필수로 적었습니다.[7] BaaS 공통 모듈은 여러 파트너 서비스가 같이 쓰므로 한 번의 실수가 여러 앱에 번집니다{추론}.",
+      "actually": {
+        "items": [
+          "**단위 테스트** — 수수료·세금·주문 가능 수량처럼 규칙이 많은 계산을 경우별 표로 검사한다(Go는 테이블 기반 테스트가 흔하다).[30]{추론}",
+          "**E2E 테스트** — 브라우저를 자동으로 움직여 '가입 → 계좌 개설 → 주문'을 끝까지 돌려 본다. Playwright 같은 도구를 씁니다.[25]",
+          "**경계 검사도 테스트로** — 같은 그룹의 다른 팀은 모듈 경계를 어기는 import를 테스트와 lint로 CI에서 막습니다.[14]"
+        ]
+      },
+      "how_far": "커버리지 숫자보다 **틀리면 돈이 잘못 나가는 곳에 테스트가 있는가**를 설명할 수 있으면 됩니다{추론}.",
+      "refs": [
+        7,
+        14,
+        25,
+        30
+      ],
+      "study": [
+        "unit-testing",
+        "playwright-docs"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "・コンテナベースのアプリケーションの開発・運用経験",
+      "short": "Docker 컨테이너로 서비스를 만들고 배포·운영해 봤어야 한다.",
+      "why": "회사는 Docker를 전면적으로 쓰고 Amazon ECS 위에 여러 서비스를 돌립니다.[3][4] 컨테이너로 만들면 서버에 상태를 남기지 않게(stateless) 짓게 되고, 그 결과 늘리기·옮기기·장애 견디기가 좋아졌다고 했습니다.[3]",
+      "actually": {
+        "items": [
+          "**이미지 만들기** — Go는 실행 파일 하나라 작은 이미지(Alpine Linux 등)로 만들기 쉽다. 같은 사업부 공고에 Alpine Linux가 있습니다.[9]",
+          "**오래 도는 서비스와 짧은 일** — 시세 수신·FIX 연결처럼 계속 도는 것은 ECS 서비스로, 체결 뒤 알림 같은 짧은 일은 Lambda로 나눴습니다.[3]",
+          "**정기 작업도 코드로** — cron 대신 이벤트로 깨우는 Lambda나 ECS 작업으로 정의해, 운영 중인 정기 작업을 API로 한눈에 볼 수 있게 했습니다.[3]"
+        ]
+      },
+      "how_far": "쿠버네티스는 공고에 없습니다. **Dockerfile → 이미지 → ECS 서비스 배포 → 로그·지표 보기**까지 한 번 해 보면 됩니다{추론}.",
+      "refs": [
+        3,
+        4,
+        9
+      ],
+      "study": [
+        "docker-book",
+        "ecs-docs"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "・日本語レベル: ビジネス",
+      "short": "일본어로 회의·문서·이력서를 쓸 수 있어야 한다 — 일본어 서류가 없으면 서류에서 떨어진다.",
+      "why": "원티드 공고 머리말은 이 자리가 일본어 전용이고 일본어 이력서·직무경력서가 필수이며, 국문·영문만 내면 통보 없이 서류에서 제외된다고 적었습니다.[1] 증권사 쪽 사람들은 대부분 일본 증권업계 출신이라 요구사항 회의가 일본어로 이뤄집니다.[3]{추론}",
+      "actually": {
+        "items": [
+          "**'비즈니스 수준'** — 공식 기준은 없지만 흔히 JLPT N2 이상을 가리킵니다. N2는 일상과 좀 더 넓은 장면의 일본어를 어느 정도 이해하는 수준입니다.[27]{추론}",
+          "**쓰기가 중요** — 설계 문서·리뷰 댓글·장애 보고를 일본어로 씁니다.{추론}",
+          "**전형 언어** — 서류 기재 언어가 일본어로 정해져 있습니다.[1]"
+        ]
+      },
+      "how_far": "시험 점수보다 **일본어로 기술 면접을 치를 수 있는가**가 기준입니다. 이력서·직무경력서(職務経歴書) 양식부터 일본식으로 준비합니다{추론}.",
+      "refs": [
+        1,
+        3,
+        27
+      ],
+      "study": [
+        "jlpt"
+      ]
+    },
+    {
+      "section": "qualification",
+      "quote": "・日本国内への移住が必要",
+      "short": "근무지가 일본(도쿄)이라 이사해야 한다 — 회사가 비자를 지원한다.",
+      "why": "공고는 일본 국내 이주를 필수로 적었습니다.[1] 근무 방식에 '풀리모트 가능'이 있지만 이는 일본 안에서의 이야기이고, 복리후생에 비자 지원이 들어 있습니다.[1]",
+      "actually": {
+        "items": [
+          "**흔한 체류 자격** — 개발자는 보통 '기술·인문지식·국제업무' 체류 자격으로 일합니다. 학력이나 실무 경력 요건이 있습니다.[26]",
+          "**수습 기간** — 3개월이고, 그동안 조건은 정식 채용과 같습니다.[1]",
+          "**출근** — 사무실과 원격을 날마다 바꿀 수 있고, 출근·하이브리드면 더 좋다고 적었습니다.[1]"
+        ]
+      },
+      "how_far": "비자 서류는 회사와 같이 준비하지만, 졸업 증명·경력 증명은 지원자가 냅니다.[26]{추론}",
+      "refs": [
+        1,
+        26
+      ],
+      "study": [
+        "isa-visa"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "すべてが必要というわけではなく、いずれかに該当しているだけでも歓迎です。\n\n・事業の将来を見越したシステムアーキテクチャの0からの設計経験",
+      "short": "몇 년 뒤 사업을 내다보고 시스템 구조를 처음부터 그려 본 경험.",
+      "why": "공고는 우대사항이 전부 필요한 것이 아니고 하나만 맞아도 환영한다고 적었습니다.[1] BaaS 자체가 처음부터 서비스를 여러 개로 나눠 설계된 시스템이고, 회사는 지금 보면 데이터 분석 바탕을 처음부터 더 생각해 뒀어야 했다고 돌아봤습니다 — 마케터가 데이터를 달라 할 때 바로 못 내 사업 속도에 영향이 있었다는 것입니다.[3]",
+      "actually": {
+        "items": [
+          "**나눌 단위 정하기** — 다루는 데이터, 업무 범위, 성능·보안 요구, 나중에 기능이 늘어날 방식이 다른 곳에서 자른다.[3]",
+          "**처음부터 넣을 것** — 로그·분석 데이터 수집, 감사 로그, 파트너별 분리.[3][4]",
+          "**결정 남기기** — 왜 이렇게 나눴는지 ADR로.[21]"
+        ]
+      },
+      "how_far": "실제로 0부터 설계해 본 적이 없다면, **기존 시스템을 다시 짓는다면 어떻게 나누겠나**를 그림 한 장과 이유로 설명할 수 있게 준비합니다{추론}.",
+      "refs": [
+        1,
+        3,
+        4,
+        21
+      ],
+      "study": [
+        "arch101",
+        "msa-patterns",
+        "ddia"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "・チームメンバーの設計・コード等のアウトプットのレビューの経験",
+      "short": "팀원의 설계 문서와 코드를 리뷰해 고치게 해 본 경험.",
+      "why": "이 자리가 팀 리드라서입니다.[1] 같은 팀 공고들은 코드 리뷰를 업무로 넣었고 리뷰가 활발하다고 소개했습니다.[7]",
+      "actually": {
+        "items": [
+          "**무엇을 보나** — 맞게 동작하나, 설계가 맞나, 읽기 쉬운가, 테스트가 있나, 보안 구멍은 없나.[20]",
+          "**속도** — 리뷰가 늦으면 팀 전체가 느려진다. 구글 지침은 리뷰 응답을 하루 안에 하라고 권합니다.[20]",
+          "**설계 리뷰** — 코드 전에 설계 문서를 보면 고치는 비용이 작다.{추론}"
+        ]
+      },
+      "how_far": "'리뷰했다'가 아니라 **리뷰로 무엇을 막았고 팀 기준을 어떻게 맞췄나**의 사례 1~2개면 됩니다{추론}.",
+      "refs": [
+        1,
+        7,
+        20
+      ],
+      "study": [
+        "google-review",
+        "swe-google"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "・システム障害やインシデントの対応をリードした経験",
+      "short": "장애가 났을 때 대응을 지휘하고 원인 정리까지 이끈 경험.",
+      "why": "증권은 장이 열린 시간에 서비스가 멈추면 영향이 매우 큽니다.[2] 같은 사업부는 온콜 도구를 PagerDuty로 옮기면서 BaaS를 포함한 Brokerage 서비스를 '서비스 × 환경' 단위로 나눠 알림을 보내고, 평일 업무 시간에 10분 안에 확인이 없으면 다음 단계로 넘기는 규칙을 만들었다고 발표했습니다.[12]",
+      "actually": {
+        "items": [
+          "**지휘** — 누가 고치고, 누가 파트너·증권사에 알리고, 누가 기록하나를 나눈다.[19]",
+          "**되돌리기 먼저** — 원인을 다 찾기 전에 직전 배포 되돌리기·트래픽 줄이기로 피해부터 멈춘다.{추론}",
+          "**포스트모템** — 사람을 탓하지 않는 원인 분석 문서와 재발 방지 작업.[19]"
+        ]
+      },
+      "how_far": "'리드'라 직접 다 고치기보다 **상황을 정리하고 결정을 내리는 사람** 역할입니다. 금융 쪽은 감독 기관 보고가 필요한 사고가 있어 증권사 담당과 같이 움직입니다{추론}.",
+      "refs": [
+        2,
+        12,
+        19
+      ],
+      "study": [
+        "sre-postmortem",
+        "zenn-pagerduty"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "・技術的負債の返済を計画的に実行した経験",
+      "short": "쌓인 기술 부채를 목록으로 만들고 계획을 세워 실제로 갚아 본 경험.",
+      "why": "BaaS 위 서비스가 늘면서 클라우드 자원과 미들웨어가 계속 늘고 있어, 같은 사업부는 버전 올리기·옮기기·안 쓰는 자원 정리를 팀을 넘어 맡을 인프라 엔지니어를 따로 뽑고 있습니다.[9] 회사 리드 엔지니어는 지금은 고치기 쉬운 구조지만 개선을 멈추면 그 장점이 점점 사라진다고 했습니다.[4]",
+      "actually": {
+        "items": [
+          "**목록 만들기** — 지원 종료가 다가오는 런타임·라이브러리·관리형 서비스 버전을 기한과 함께 적는다.[9]",
+          "**값 매기기** — 그대로 두면 생길 비용(장애·보안·개발 속도)과 고치는 비용을 견준다.[22]",
+          "**조금씩 갚기** — 큰 재작성 대신 기능 개발 사이사이에 나눠 넣는다.{추론}"
+        ]
+      },
+      "how_far": "**'무엇을 왜 먼저 갚았고, 그 뒤 무엇이 좋아졌나'**를 말할 수 있으면 됩니다{추론}.",
+      "refs": [
+        4,
+        9,
+        22
+      ],
+      "study": [
+        "legacy-code"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "・Terraform等によるIaCを用いたクラウドインフラの構築経験",
+      "short": "Terraform 같은 코드로 클라우드 인프라를 만들어 본 경험.",
+      "why": "회사는 감사 때 필요한 자원 관리·재고 조사를 Terraform으로 대신 보여 줍니다 — 자원 상태가 코드에 적혀 있고 Git 이력이 남기 때문입니다.[3] 같은 팀 백엔드 공고도 AWS 위 Terraform 인프라 구축·운영을 업무로 적었습니다.[7]",
+      "actually": {
+        "items": [
+          "**모듈** — 파트너 서비스마다 같은 구성(네트워크·ECS·DB)을 모듈로 찍어 낸다.{추론}",
+          "**계획 확인** — 적용 전에 plan 결과를 리뷰한다. 운영 환경을 깨지 않는 변경 절차를 인프라 공고가 강조했습니다.[9]",
+          "**CI/CD** — GitHub Actions로 plan·apply를 돌린다.[9]"
+        ]
+      },
+      "how_far": "**가상 서비스 하나(VPC + ECS + Aurora)를 Terraform으로 올렸다 지우기**를 해 보면 면접에서 말할 거리가 생깁니다{추론}.",
+      "refs": [
+        3,
+        7,
+        9
+      ],
+      "study": [
+        "ko-tf-uar",
+        "ko-tf-iac"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "・大規模ユーザーを持つWebアプリケーションの開発・運用経験",
+      "short": "사용자가 아주 많은 웹 서비스를 만들고 운영해 본 경험.",
+      "why": "BaaS는 개인 고객이 많은 대기업을 파트너로 노립니다.[10] 회사는 앞으로 트래픽이 늘어도 안정적으로 돌리는 것을 과제로 꼽았습니다.[6]",
+      "actually": {
+        "items": [
+          "**몰림 대비** — 정해진 시각에 몰리는 부하를 미리 늘린 서버로 받는다.[3]",
+          "**지난 데이터 옮기기** — DynamoDB에 반년치만 남기고 오래된 데이터는 S3로 옮겨 저장 비용을 줄였습니다.[3]",
+          "**관찰** — 지표·로그로 느려지는 곳을 먼저 찾는다. 같은 사업부는 Datadog을 씁니다.[9]"
+        ]
+      },
+      "how_far": "'대규모'의 숫자 기준은 공고에 없습니다. 자기 경험의 **사용자 수·초당 요청 수·데이터 크기**를 숫자로 적습니다{추론}.",
+      "refs": [
+        3,
+        6,
+        9,
+        10
+      ],
+      "study": [
+        "ddia",
+        "aws-wa"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "・生成AIを活用した機能のWebサービスへの組み込み経験",
+      "short": "LLM 같은 생성형 AI 기능을 실제 서비스 안에 넣어 본 경험.",
+      "why": "그룹 미션이 'AI 시대의 금융 인프라'이고, 같은 그룹은 금융 업무 자동화 제품(Finstage)을 만들고 있습니다.[1][14] 그 제품의 백엔드 글은 입구 서버를 Go로, 일꾼을 Python Lambda로 나누고, 실패를 '다시 해도 안 되는 것'과 '잠깐의 실패'로 갈라 처리한다고 설명했습니다.[14] 같은 그룹 관리 화면은 거의 코딩 에이전트가 작성하고, lint 규칙으로 에이전트의 코드 모양을 묶습니다.[15]",
+      "actually": {
+        "items": [
+          "**넣는 자리** — 상담 요약, 문서 검토, 고객 질문 답변 같은 곳. 증권 서비스에서는 틀린 투자 정보가 나가지 않게 막는 장치가 같이 필요합니다{추론}.",
+          "**위험** — 프롬프트 주입, 민감 정보 유출, 지나친 권한 같은 LLM 앱 위험 목록을 안다.[29]",
+          "**개발에 쓰기** — 코딩 에이전트에 일을 맡길 때 규칙(lint·테스트)으로 품질을 지킨다.[15]"
+        ]
+      },
+      "how_far": "BaaS 팀에서 생성형 AI가 어디에 쓰이는지는 공고에 없으니 면접에서 묻습니다. 최소선은 **API를 불러 결과를 검증하고, 실패·비용을 관리하는 기능 하나**를 만들어 본 것입니다{추론}.",
+      "refs": [
+        1,
+        14,
+        15,
+        29
+      ],
+      "study": [
+        "zenn-ai-service",
+        "owasp-llm"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "・ベトナムのエンジニアチーム等とのコミュニケーションに必要な日常会話レベルの英語力",
+      "short": "베트남 개발팀과 영어로 일상 대화를 나눌 정도의 영어.",
+      "why": "2019년 인터뷰 기준으로 회사는 베트남 개발사 Teqnological의 엔지니어 약 20명과 함께 일했습니다.[2] 같은 팀 백엔드 공고에도 같은 우대 줄이 있어, 지금도 베트남 팀과 협업하는 것으로 보입니다.[7]{추론}",
+      "actually": {
+        "items": [
+          "**쓰는 곳** — 작업 설명, 리뷰 댓글, 화상 회의.{추론}",
+          "**수준** — '일상 회화'라 유창할 필요는 없고, 사양과 질문을 짧고 분명하게 쓰는 쪽이 중요합니다{추론}."
+        ]
+      },
+      "how_far": "한국어·일본어·영어 세 언어가 되면 강점이지만 필수는 아닙니다.[1]",
+      "refs": [
+        1,
+        2,
+        7
+      ],
+      "study": []
+    },
+    {
+      "section": "preference",
+      "quote": "・各種ステークホルダーの性質に合わせた適切なコミュニケーションの能力",
+      "short": "파트너 회사·증권사 담당·팀원 등 상대에 맞춰 말을 바꿔 설명하는 능력.",
+      "why": "증권사 쪽은 정보를 부서 사이에 필요 이상 나누지 않는 규칙이 있어, 정보가 저절로 흘러오지 않습니다.[3] 회사는 시스템 구성과 보안 요건을 다른 개발자가 알 수 있게 정리하는 일, '모두 클라우드에 짓는다'는 것을 증권 쪽 사람들이 이해하게 하는 일에 신경 썼다고 했습니다.[3]",
+      "actually": {
+        "items": [
+          "**파트너 기획자** — 기술 대신 일정·비용·할 수 있는 것으로 말한다.{추론}",
+          "**증권사 컴플라이언스 담당** — 규정 문구를 '이 구조라 이렇게 지킨다'로 바꿔 설명한다.[3]",
+          "**팀원·베트남 팀** — 사양을 글로 분명히.{추론}"
+        ]
+      },
+      "how_far": "**같은 내용을 세 사람에게 다르게 설명한 경험**을 하나 준비합니다{추론}.",
+      "refs": [
+        3
+      ],
+      "study": []
+    },
+    {
+      "section": "preference",
+      "quote": "・金融サービスの開発経験",
+      "short": "금융 서비스(증권·은행·결제 등)를 만들어 본 경험.",
+      "why": "회사는 FinTech가 시세 회사·거래소 같은 바깥 시스템과의 연결 요건이 많고, 오래된 기술부터 새 기술까지 폭넓게 만난다고 했습니다.[3] 증권 규칙이 추상적으로 적혀 있어 해석의 여지가 크므로, 자기가 만드는 것에 비춰 해석하는 힘이 중요하다고도 했습니다.[3]",
+      "actually": {
+        "items": [
+          "**증권 용어** — 주문·약정(체결)·정산, 현물, 적립, NISA(일본 비과세 투자 계좌).{추론}",
+          "**비동기 체결** — 거래소에 주문을 보내면 결과는 늘 나중에 따로 옵니다. 체결 정보는 FIX 컨테이너 → DynamoDB·Kinesis → Lambda → 푸시 알림 순서로 처리됐습니다.[3]",
+          "**순서와 중복** — 주문은 순서가 지켜져야 하고 중복이 없어야 합니다. 처음엔 DynamoDB로 직접 구현했다가, 순서·중복 제거를 해 주는 SQS FIFO 큐가 도쿄에 나오자 바로 옮겼습니다.[3][28]"
+        ]
+      },
+      "examples": [
+        {
+          "title": "같은 주문이 두 번 와도 한 번만 받기 (가상 값, SQLite로 확인)",
+          "body": "앱이 주문마다 고유 번호(client_order_id)를 붙여 보내고, 서버는 그 번호가 이미 있으면 무시합니다. 네트워크가 끊겨 앱이 다시 보내도 주문이 두 번 나가지 않습니다. SQS FIFO의 중복 제거 ID도 같은 생각입니다.[28]",
+          "lang": "python",
+          "code": "import sqlite3\ndb = sqlite3.connect(':memory:')\ndb.execute('create table orders(client_order_id text primary key, account text, symbol text, qty int)')\ndef accept(cid, acct, sym, qty):\n    cur = db.execute('insert into orders values(?,?,?,?) on conflict(client_order_id) do nothing', (cid, acct, sym, qty))\n    return '접수' if cur.rowcount == 1 else '중복 — 무시'\nfor r in [('A-001','u1','7203',100), ('A-001','u1','7203',100), ('A-002','u1','6758',100)]:\n    print(r[0], accept(*r))\n# A-001 접수 / A-001 중복 — 무시 / A-002 접수"
+        }
+      ],
+      "how_far": "필수가 아닙니다. 금융 경험이 없으면 **순서·중복·되돌리기·감사 로그**를 다룬 경험을 금융 쪽 말로 바꿔 설명합니다{추론}.",
+      "refs": [
+        3,
+        28
+      ],
+      "study": [
+        "fix-std",
+        "aws-int"
+      ]
+    },
+    {
+      "section": "preference",
+      "quote": "求める人物像\n・開発において自ら、議論しアイディアを提案できるためのコミュニケーション能力を持った方\n・成果を出すためにできることを真剣に考え、行動に移せる方\n・責任感を持ち、考えや行動に信念があり、冷静に物事を考えられる方\n・新しい知識を学ぶことに貪欲で、先端技術に積極的に挑戦していける方\"",
+      "short": "인물상 — 먼저 제안하고, 결과를 위해 움직이며, 냉정하게 판단하고, 새 기술을 배우는 사람.",
+      "why": "회사는 엔지니어도 기획 단계부터 들어가고 구현 단계에서는 누구나 지적과 토론에 참여한다고 소개했습니다 — 무엇이든 '내 일'로 받아들이자는 행동 지침(JIBUNGOTO)이 있습니다.[6] 공고도 개발 조직이 재량과 책임이 크고, 다른 팀 코드·설계 자료를 원칙적으로 자유롭게 볼 수 있으며, 날카로운 토론도 나쁜 분위기가 되지 않는다고 적었습니다.[1]",
+      "actually": {
+        "items": [
+          "**제안** — 기획 회의에서 기술로 할 수 있는 다른 방법을 먼저 말한다.[6]",
+          "**냉정함** — 장애·규정 해석처럼 압박이 큰 순간에 사실부터 정리한다.{추론}",
+          "**배움** — 새 도구를 직접 시험해 글로 남기는 문화가 회사 기술 블로그에 보입니다.[15]"
+        ]
+      },
+      "how_far": "면접에서 **스스로 문제를 찾아 제안하고 끝까지 간 사례**를 묻는다고 보고 준비합니다{추론}.",
+      "refs": [
+        1,
+        6,
+        15
+      ],
+      "study": []
+    }
+  ],
+  "fit": {
+    "good": [
+      "주문·체결처럼 틀리면 안 되는 흐름을 끝까지 맞추는 일이 즐거운 사람[3]",
+      "서버·화면·인프라를 가리지 않고 한 기능을 끝까지 미는 사람[6]",
+      "일본에서 일하고 싶고 일본어로 설계 문서를 쓸 수 있는 사람[1]"
+    ],
+    "hard": [
+      "장이 열린 시간의 장애는 영향이 커서 긴장감이 있다[2]",
+      "증권사 규정·정보 차단 규칙 때문에 정보가 저절로 오지 않는다[3]",
+      "일본어 이력서·직무경력서 필수, 일본 이주 필수, 고정 잔업 40시간 포함 연봉[1]"
+    ]
+  },
+  "interview": [
+    {
+      "q": "앱이 같은 주문을 네트워크 오류로 두 번 보냈습니다. 서버는 어떻게 한 번만 처리하나요?",
+      "a": "회사가 밝힌 '주문 순서 보장과 중복 제거' 요건과 SQS FIFO 이전.[3][28]"
+    },
+    {
+      "q": "오전 8시와 9시에 부하가 어떻게 다른가요? 각각 무엇을 미리 준비하겠어요?",
+      "a": "8시 쓰기·9시 조회와 체결이 몰린다는 회사 설명, 예약 증설.[2][3]"
+    },
+    {
+      "q": "DynamoDB의 오래된 데이터를 TTL과 배치 삭제 중 무엇으로 지우겠어요?",
+      "a": "회사가 비용을 따져 배치를 고른 결정 — '기술적 의사결정' 줄.[3]"
+    },
+    {
+      "q": "Terraform이 감사 대응에 어떻게 도움이 되나요?",
+      "a": "자원 상태가 코드와 Git 이력으로 남는다는 회사 설명.[3]"
+    },
+    {
+      "q": "팀원 PR에서 다른 사용자의 계좌 주문이 보이는 구멍을 찾았습니다. 어떻게 말하고 막겠어요?",
+      "a": "시큐어 코딩 요건, 접근 제어 실패, 리뷰 경험 우대.[1][17][20]"
+    }
+  ],
+  "sources": [
+    {
+      "n": 1,
+      "title": "원티드 · [株式会社Finatext] 풀스택 엔지니어 (Brokerage)_근무지 일본",
+      "url": "https://www.wanted.co.kr/wd/368239",
+      "kind": "posting",
+      "date": "2026-11",
+      "note": "LAPRAS Global Bridge 채용 · 그룹·BaaS 소개·업무·요건·우대·급여·근무지·복리후생·전형"
+    },
+    {
+      "n": 2,
+      "title": "AWS Startup 블로그 · Finatext 石橋さん 인터뷰 前編 (Docker 전면 활용, 금융의 성능·보안 요건)",
+      "url": "https://aws.amazon.com/jp/blogs/startup/tech-interview-finatext-1/",
+      "kind": "company",
+      "date": "2019-09-04",
+      "note": "창업기부터 개발을 이끈 엔지니어 인터뷰 — 조직 규모, 장 시간표와 부하, 시세 배포 구조 (일본어)"
+    },
+    {
+      "n": 3,
+      "title": "AWS Startup 블로그 · Finatext 石橋さん 인터뷰 後編",
+      "url": "https://aws.amazon.com/jp/blogs/startup/tech-interview-finatext-2/",
+      "kind": "company",
+      "date": "2019-09-06",
+      "note": "서비스 나누기, Go·Docker·ECS·Lambda, 주문·체결 흐름, Terraform·Organizations 로 감사 대응 (일본어)"
+    },
+    {
+      "n": 4,
+      "title": "AWS 사례 · セキュリティの堅牢さと生産性の高さを両立 — Finatext 社の AWS 活用事例",
+      "url": "https://aws.amazon.com/jp/blogs/startup/tech-interview-finatext-3/",
+      "kind": "company",
+      "date": "2021-10-26",
+      "note": "리드 엔지니어 田島 — Go·컨테이너, ECS·Aurora, 보안 서비스, 서비스별 AWS 계정, Well-Architected 리뷰 (일본어)"
+    },
+    {
+      "n": 5,
+      "title": "Classmethod · 【レポート】AWSにおけるクラウドネイティブでセキュアな証券システムの運用 #AWSSummit",
+      "url": "https://dev.classmethod.jp/articles/aws-summit-tokyo-201906131200-l/",
+      "kind": "reference",
+      "date": "2019-06-13",
+      "note": "AWS Summit Tokyo 2019 Finatext 발표(石橋·田島)를 다른 회사가 듣고 정리한 보고 — FISC, 1회용 운영 서버, 1시간 SSH 인증서, Slack 승인, 로그 계정. 발표 영상은 찾지 못함"
+    },
+    {
+      "n": 6,
+      "title": "Finatext note · 社員インタビュー 大木 卓哉",
+      "url": "https://note.com/finatext/n/n76c802014d1c",
+      "kind": "company",
+      "date": "2020-10-01",
+      "note": "BaaS·세존포켓 개발·운영, Go·Ruby·AWS·Vue.js, 서버·인프라·프런트 넓게, JIBUNGOTO (일본어)"
+    },
+    {
+      "n": 7,
+      "title": "HERP · 212.バックエンドエンジニア｜Brokerage",
+      "url": "https://herp.careers/v1/finatexthd/YL6ZDVnaecFZ",
+      "kind": "posting",
+      "date": "2026-11",
+      "note": "같은 사업부 백엔드 공고 — 기술 스택, 요구사항 정의·테스트·코드 리뷰 업무, 같은 연봉 범위"
+    },
+    {
+      "n": 8,
+      "title": "HERP · 232.マルチスタックエンジニア｜Brokerage",
+      "url": "https://herp.careers/v1/finatexthd/5-H7iRGj-GtO",
+      "kind": "posting",
+      "date": "2026-11",
+      "note": "이 공고와 같은 업무·요건을 회사 채용 사이트에 올린 판"
+    },
+    {
+      "n": 9,
+      "title": "HERP · 236.クラウドインフラエンジニア（ライフサイクル管理・基盤運用）｜Brokerage",
+      "url": "https://herp.careers/v1/finatexthd/lI5sEdh889xz",
+      "kind": "posting",
+      "date": "2026-11",
+      "note": "같은 사업부 인프라 공고 — 자원 증가·버전 관리 과제, GitHub Actions·Datadog·PagerDuty 등"
+    },
+    {
+      "n": 10,
+      "title": "Finatext홀딩스 유가증권보고서 제11기 (2024-04 ~ 2025-03)",
+      "url": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100W328.pdf",
+      "kind": "company",
+      "date": "2025-06-24",
+      "note": "BaaS 수익 구조·가동 서비스 19개, 연혁, 종업원 현황(연결 341명, 제출회사 23명·평균 703.3만 엔)"
+    },
+    {
+      "n": 11,
+      "title": "Finatext홀딩스 유가증권보고서 제10기 (2023-04 ~ 2024-03)",
+      "url": "https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S100TWR8.pdf",
+      "kind": "company",
+      "date": "2024-06-28",
+      "note": "종업원 현황(연결 294명, 제출회사 18명·평균 710.4만 엔)"
+    },
+    {
+      "n": 12,
+      "title": "Finatext Tech Blog · PagerDuty Tech Hub 2026 登壇レポート",
+      "url": "https://zenn.dev/finatext/articles/c94c939c3fec96",
+      "kind": "company",
+      "date": "2026-10-19",
+      "note": "온콜 도구 이전 — Brokerage(BaaS 포함) 서비스×환경 단위, 업무 시간 10분 미확인 시 다음 단계"
+    },
+    {
+      "n": 13,
+      "title": "Finatext Tech Blog · IP制限された環境をAWS Security Agentでペネトレーションテストするときに考えること",
+      "url": "https://zenn.dev/finatext/articles/aws-security-agent-ip-restricted-pentest",
+      "kind": "company",
+      "date": "2026-10-02",
+      "note": "Brokerage 태그 — 여러 계정 환경의 IP 제한 개발 환경 침투 테스트"
+    },
+    {
+      "n": 14,
+      "title": "Finatext Tech Blog · 金融の本番運用に耐えるAIサービスをどう設計するか",
+      "url": "https://zenn.dev/finatext/articles/27b5ba182170d3",
+      "kind": "company",
+      "date": "2026-11-20",
+      "note": "Finstage 워크플로 백엔드 — Go 입구 + Python Lambda 일꾼, 모듈 경계 CI 검사, 실패 분류"
+    },
+    {
+      "n": 15,
+      "title": "Finatext Tech Blog · useEffect も switch も禁止する lint で、コーディングエージェントの書き方を縛る",
+      "url": "https://zenn.dev/finatext/articles/2d8517a285385e",
+      "kind": "company",
+      "date": "2026-10-23",
+      "note": "관리 화면(React)을 코딩 에이전트가 쓰고 lint로 모양을 묶는 방법. 같은 블로그에 Vite+ 이전 시험기(2026-10-22)도 있음"
+    },
+    {
+      "n": 16,
+      "title": "JPX · 현물 거래 시간 연장(후장 끝 15:30) 안내",
+      "url": "https://www.jpx.co.jp/corporate/news/news-releases/0060/20241009-01.html",
+      "kind": "reference",
+      "date": "2024-10-09",
+      "note": "2024-11-05 부터 도쿄증권거래소 후장 끝 15:00 → 15:30. 2019 인터뷰의 15시는 그 전 기준"
+    },
+    {
+      "n": 17,
+      "title": "OWASP Top 10 (2021)",
+      "url": "https://top10.owasp.org/2021",
+      "kind": "reference",
+      "note": "웹 앱의 흔한 보안 위험 10가지 — 1위 접근 제어 실패"
+    },
+    {
+      "n": 18,
+      "title": "OWASP Go Secure Coding Practices",
+      "url": "https://github.com/OWASP/Go-SCP",
+      "kind": "reference",
+      "note": "Go 시큐어 코딩 지침 — 입력 검증, 자리표시자 SQL, 인증·세션"
+    },
+    {
+      "n": 19,
+      "title": "Google SRE Book · Postmortem Culture: Learning from Failure",
+      "url": "https://sre.google/sre-book/postmortem-culture/",
+      "kind": "reference",
+      "note": "탓하지 않는 사후 분석"
+    },
+    {
+      "n": 20,
+      "title": "Google Engineering Practices · Code Review",
+      "url": "https://google.github.io/eng-practices/review/",
+      "kind": "reference",
+      "note": "리뷰어·작성자 지침"
+    },
+    {
+      "n": 21,
+      "title": "Michael Nygard · Documenting Architecture Decisions",
+      "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+      "kind": "reference",
+      "date": "2011-11-15",
+      "note": "ADR 형식"
+    },
+    {
+      "n": 22,
+      "title": "Martin Fowler · Technical Debt Quadrant",
+      "url": "https://martinfowler.com/bliki/TechnicalDebtQuadrant.html",
+      "kind": "reference",
+      "date": "2009",
+      "note": "기술 부채를 일부러/모르고 × 신중/무모로 나누기"
+    },
+    {
+      "n": 23,
+      "title": "AWS Well-Architected Framework",
+      "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html",
+      "kind": "reference",
+      "note": "회사가 받은 아키텍처 리뷰의 기준"
+    },
+    {
+      "n": 24,
+      "title": "FIX Trading Community · Standards",
+      "url": "https://www.fixtrading.org/standards/",
+      "kind": "reference",
+      "note": "증권 주문·체결 전송 표준 FIX"
+    },
+    {
+      "n": 25,
+      "title": "Playwright 문서",
+      "url": "https://playwright.dev/docs/intro",
+      "kind": "reference",
+      "note": "브라우저 E2E 테스트 도구"
+    },
+    {
+      "n": 26,
+      "title": "일본 출입국재류관리청 · 在留資格「技術・人文知識・国際業務」",
+      "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html",
+      "kind": "reference",
+      "note": "개발자가 흔히 받는 체류 자격의 요건"
+    },
+    {
+      "n": 27,
+      "title": "JLPT · N1~N5 인정 기준",
+      "url": "https://www.jlpt.jp/about/levelsummary.html",
+      "kind": "reference",
+      "note": "급수별로 할 수 있는 일본어"
+    },
+    {
+      "n": 28,
+      "title": "Amazon SQS 개발자 안내서 · FIFO 큐의 정확히 한 번 처리",
+      "url": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues-exactly-once-processing.html",
+      "kind": "reference",
+      "note": "순서 보장과 중복 제거 ID"
+    },
+    {
+      "n": 29,
+      "title": "OWASP Top 10 for LLM Applications",
+      "url": "https://genai.owasp.org/llm-top-10/",
+      "kind": "reference",
+      "note": "LLM 앱의 위험 목록"
+    },
+    {
+      "n": 30,
+      "title": "A Tour of Go",
+      "url": "https://go.dev/tour/",
+      "kind": "reference",
+      "note": "Go 공식 입문 — 타입·인터페이스·동시 실행"
+    },
+    {
+      "n": 31,
+      "title": "Finatext Tech Blog · Nuxt LayersでAI開発の保守性を担保する",
+      "url": "https://zenn.dev/finatext/articles/3b944c5539c446",
+      "kind": "company",
+      "date": "2026-10-21",
+      "note": "같은 그룹 보험 팀 — 공통·상품별·마이페이지 레이어, ESLint로 레이어 간 import 막기(아직 시험 단계라고 밝힘)"
+    },
+    {
+      "n": 32,
+      "title": "MySQL 8.0 Reference Manual · EXPLAIN Output Format",
+      "url": "https://dev.mysql.com/doc/refman/8.0/en/explain-output.html",
+      "kind": "reference",
+      "note": "실행 계획 읽기"
+    }
+  ],
+  "caveat": "BaaS의 구조는 2019~2021년 회사 인터뷰가 가장 자세하고, 그 뒤 바뀐 부분(서비스 수·도구)은 2025년 유가증권보고서·2026년 공고·기술 블로그로 보충했다. 2019년의 장 마감 시각(15시)은 2024-11 부터 15시 30분으로 바뀌었다. AWS Summit Tokyo 2019 발표는 영상을 찾지 못해 다른 회사의 청강 보고로 읽었다(받은 영상 재료 없음). 연봉 공시 평균은 지주회사 직원만의 값이다. 코드 예시는 개념을 보이려고 Python·SQLite로 돌린 가상 값이다.",
+  "resources": [
+    {
+      "id": "aws-int",
+      "title": "Docker をフル活用して金融業界のシビアなパフォーマンス、セキュリティ要件に対応している株式会社Finatext石橋さん – 前編·後編",
+      "by": "AWS Startup 블로그 · 2019",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://aws.amazon.com/jp/blogs/startup/tech-interview-finatext-1/",
+      "why": "이 팀이 직접 말한 BaaS 구조 — 장 시간표 부하, 시세 배포, 주문·체결 흐름, 감사 대응. 지원 전에 먼저 읽을 것. (일본어 자료)"
+    },
+    {
+      "id": "aws-case",
+      "title": "セキュリティの堅牢さと生産性の高さを両立 — Finatext 社の AWS 活用事例",
+      "by": "AWS · 2021",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://aws.amazon.com/jp/blogs/startup/tech-interview-finatext-3/",
+      "why": "플랫폼과 파트너 서비스 개발을 같이 맡는 구조, 서비스별 계정 분리와 보안 서비스. (일본어 자료)"
+    },
+    {
+      "id": "zenn-pagerduty",
+      "title": "PagerDuty Tech Hub 2026 登壇レポート",
+      "by": "Finatext Tech Blog · 2026",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://zenn.dev/finatext/articles/c94c939c3fec96",
+      "why": "같은 사업부의 장애 알림·당번 규칙 — 우대 '장애 대응 리드' 준비. (일본어 자료)"
+    },
+    {
+      "id": "zenn-ai-service",
+      "title": "金融の本番運用に耐えるAIサービスをどう設計するか",
+      "by": "Finatext Tech Blog · 2026",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://zenn.dev/finatext/articles/27b5ba182170d3",
+      "why": "같은 그룹이 금융용 AI 기능을 어떻게 나누고 실패를 다루나 — 우대 '생성형 AI 기능 넣기'. (일본어 자료)"
+    },
+    {
+      "id": "go-tour",
+      "title": "A Tour of Go",
+      "by": "Go 팀",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://go.dev/tour/",
+      "why": "Go를 처음 잡을 때 — 자격요건 첫 줄의 기본 문법을 브라우저에서 바로 연습."
+    },
+    {
+      "id": "effective-go",
+      "title": "Effective Go",
+      "by": "Go 팀",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://go.dev/doc/effective_go",
+      "why": "Go다운 코드 습관(에러 처리·인터페이스). 2009년 기준 문서라 제네릭·모듈은 따로 본다."
+    },
+    {
+      "id": "learning-go",
+      "title": "러닝 Go",
+      "by": "존 보드너 · 윤대석 옮김 · 한빛미디어 · 2022",
+      "kind": "book",
+      "lang": "ko",
+      "level": "실무",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EB%9F%AC%EB%8B%9D%20Go",
+      "why": "Go로 실무 서비스를 짤 때 알아야 할 것 — 타입·에러·동시성·테스트까지 한 권으로."
+    },
+    {
+      "id": "go-scp",
+      "title": "OWASP Go Secure Coding Practices",
+      "by": "OWASP",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://github.com/OWASP/Go-SCP",
+      "why": "자격요건 '시큐어 코딩'을 Go 코드로 — 입력 검증·SQL 자리표시자·세션."
+    },
+    {
+      "id": "owasp-top10",
+      "title": "OWASP Top 10 (2021)",
+      "by": "OWASP",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://top10.owasp.org/2021",
+      "why": "리뷰에서 짚어야 할 흔한 웹 보안 구멍 10가지."
+    },
+    {
+      "id": "effective-ts",
+      "title": "이펙티브 타입스크립트",
+      "by": "댄 밴더캄 · 장원호 옮김 · 인사이트 · 2021",
+      "kind": "book",
+      "lang": "ko",
+      "level": "실무",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C%20%ED%83%80%EC%9E%85%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8",
+      "why": "개발 환경의 TypeScript를 타입으로 실수를 막는 수준까지."
+    },
+    {
+      "id": "vue-docs",
+      "title": "Vue.js 공식 가이드 (한국어)",
+      "by": "Vue.js",
+      "kind": "doc",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "https://ko.vuejs.org/guide/introduction.html",
+      "why": "개발 환경의 Vue.js — React만 해 봤다면 차이부터."
+    },
+    {
+      "id": "modern-react",
+      "title": "모던 리액트 Deep Dive",
+      "by": "김용찬 · 위키북스 · 2023",
+      "kind": "book",
+      "lang": "ko",
+      "level": "실무",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EB%AA%A8%EB%8D%98%20%EB%A6%AC%EC%95%A1%ED%8A%B8%20Deep%20Dive",
+      "why": "개발 환경의 React를 원리부터 — 프런트 쪽으로 요건을 채울 때."
+    },
+    {
+      "id": "real-mysql",
+      "title": "Real MySQL 8.0 (1·2권)",
+      "by": "백은빈 · 이성욱 · 위키북스 · 2021",
+      "kind": "book",
+      "lang": "ko",
+      "level": "심화",
+      "url": "https://search.kyobobook.co.kr/search?keyword=Real%20MySQL%208.0",
+      "why": "Aurora(MySQL 호환) 성능 튜닝 — 인덱스·실행 계획·잠금. 자격요건 '성능 튜닝'."
+    },
+    {
+      "id": "ddia",
+      "title": "데이터 중심 애플리케이션 설계",
+      "by": "마틴 클레프만 · 위키북스 · 2018",
+      "kind": "book",
+      "lang": "ko",
+      "level": "심화",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%A4%91%EC%8B%AC%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EC%84%A4%EA%B3%84",
+      "why": "큐·복제·트랜잭션·순서 보장 — 주문·체결처럼 순서와 중복이 중요한 시스템의 바탕."
+    },
+    {
+      "id": "unit-testing",
+      "title": "단위 테스트",
+      "by": "블라디미르 코리코프 · 에이콘출판",
+      "kind": "book",
+      "lang": "ko",
+      "level": "실무",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EB%8B%A8%EC%9C%84%20%ED%85%8C%EC%8A%A4%ED%8A%B8%20%EC%BD%94%EB%A6%AC%EC%BD%94%ED%94%84",
+      "why": "자격요건 '유닛 테스트' — 무엇을 테스트하고 무엇을 가짜로 바꿀지."
+    },
+    {
+      "id": "playwright-docs",
+      "title": "Playwright",
+      "by": "Microsoft 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://playwright.dev/docs/intro",
+      "why": "자격요건 'E2E 테스트' — 브라우저로 가입·주문 흐름을 끝까지 돌리기."
+    },
+    {
+      "id": "docker-book",
+      "title": "개발자를 위한 도커 (우리 사이트 책)",
+      "by": "우리 사이트 책장",
+      "kind": "internal",
+      "lang": "ko",
+      "free": true,
+      "level": "입문",
+      "url": "/wiki/docker",
+      "why": "자격요건 '컨테이너 기반 개발·운영' — 실제로 친 명령과 출력으로 익히기."
+    },
+    {
+      "id": "ecs-docs",
+      "title": "Amazon ECS 개발자 안내서",
+      "by": "AWS 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/",
+      "why": "이 팀이 서비스를 돌리는 ECS — 서비스·작업·네트워크 모드."
+    },
+    {
+      "id": "aws-wa",
+      "title": "AWS Well-Architected Framework",
+      "by": "AWS 공식 문서",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html",
+      "why": "회사가 받은 리뷰의 기준 — 보안·신뢰성·비용을 한 표로 점검."
+    },
+    {
+      "id": "ko-tf-uar",
+      "title": "테라폼 업앤러닝 (2판)",
+      "by": "Yevgeniy Brikman · 김문주 옮김 · 루비페이퍼 · 2021",
+      "kind": "book",
+      "lang": "ko",
+      "level": "실무",
+      "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=270854635",
+      "why": "우대 'Terraform IaC' — 모듈·상태·팀 작업 흐름."
+    },
+    {
+      "id": "ko-tf-iac",
+      "title": "테라폼으로 시작하는 IaC (개정판)",
+      "by": "김민수·김재준·이규석·이유종 · 한빛미디어 · 2024",
+      "kind": "book",
+      "lang": "ko",
+      "level": "입문",
+      "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=346369474",
+      "why": "Terraform을 처음 잡을 때 한국어로."
+    },
+    {
+      "id": "swe-google",
+      "title": "구글 엔지니어는 이렇게 일한다",
+      "by": "타이터스 윈터스 외 · 한빛미디어",
+      "kind": "book",
+      "lang": "ko",
+      "level": "심화",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EA%B5%AC%EA%B8%80%20%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%8A%94%20%EC%9D%B4%EB%A0%87%EA%B2%8C%20%EC%9D%BC%ED%95%9C%EB%8B%A4",
+      "why": "팀 리드·코드 리뷰·테스트 문화 — 업무 '팀 리드'와 우대 '리뷰 경험'."
+    },
+    {
+      "id": "google-review",
+      "title": "Google Engineering Practices · Code Review",
+      "by": "Google",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://google.github.io/eng-practices/review/",
+      "why": "리뷰에서 무엇을 보고 어떻게 말할지 — 짧은 무료 지침."
+    },
+    {
+      "id": "sre-postmortem",
+      "title": "Site Reliability Engineering · Postmortem Culture",
+      "by": "Google SRE Book",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "실무",
+      "url": "https://sre.google/sre-book/postmortem-culture/",
+      "why": "우대 '장애 대응 리드' — 탓하지 않는 사후 분석 쓰는 법."
+    },
+    {
+      "id": "legacy-code",
+      "title": "레거시 코드 활용 전략",
+      "by": "마이클 C. 페더스 · 에이콘",
+      "kind": "book",
+      "lang": "ko",
+      "level": "심화",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A0%88%EA%B1%B0%EC%8B%9C%20%EC%BD%94%EB%93%9C%20%ED%99%9C%EC%9A%A9%20%EC%A0%84%EB%9E%B5",
+      "why": "우대 '기술 부채 갚기' — 테스트 없는 코드를 안전하게 바꾸는 방법."
+    },
+    {
+      "id": "arch101",
+      "title": "소프트웨어 아키텍처 101",
+      "by": "마크 리처즈 · 닐 포드 · 한빛미디어 · 2021",
+      "kind": "book",
+      "lang": "ko",
+      "level": "실무",
+      "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000002942580",
+      "why": "업무 '기술적 의사결정'·우대 '0부터 설계' — 구조 스타일과 트레이드오프."
+    },
+    {
+      "id": "msa-patterns",
+      "title": "마이크로서비스 패턴",
+      "by": "크리스 리처드슨",
+      "kind": "book",
+      "lang": "ko",
+      "level": "심화",
+      "url": "https://search.kyobobook.co.kr/search?keyword=%EB%A7%88%EC%9D%B4%ED%81%AC%EB%A1%9C%EC%84%9C%EB%B9%84%EC%8A%A4%20%ED%8C%A8%ED%84%B4%20%EB%A6%AC%EC%B2%98%EB%93%9C%EC%8A%A8",
+      "why": "BaaS처럼 여러 서비스로 나뉜 시스템의 분리·메시지·일관성 패턴."
+    },
+    {
+      "id": "nygard-adr",
+      "title": "Documenting Architecture Decisions",
+      "by": "Michael Nygard · 2011",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+      "why": "결정을 한 장으로 남기는 ADR 형식 — 업무 '기술적 의사결정'."
+    },
+    {
+      "id": "owasp-llm",
+      "title": "OWASP Top 10 for LLM Applications",
+      "by": "OWASP",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://genai.owasp.org/llm-top-10/",
+      "why": "우대 '생성형 AI 기능' — 금융 서비스에 넣기 전에 알아야 할 위험."
+    },
+    {
+      "id": "fix-std",
+      "title": "FIX Trading Community · Standards",
+      "by": "FIX Trading Community",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "심화",
+      "url": "https://www.fixtrading.org/standards/",
+      "why": "BaaS가 증권사와 주문을 주고받는 표준 — 주문·체결 메시지의 모양."
+    },
+    {
+      "id": "isa-visa",
+      "title": "在留資格「技術・人文知識・国際業務」",
+      "by": "일본 출입국재류관리청",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html",
+      "why": "자격요건 '일본 이주' — 개발자 체류 자격의 학력·경력 요건. (일본어 자료)"
+    },
+    {
+      "id": "jlpt",
+      "title": "JLPT N1~N5 인정 기준",
+      "by": "일본국제교육지원협회 · 국제교류기금",
+      "kind": "doc",
+      "lang": "en",
+      "free": true,
+      "level": "입문",
+      "url": "https://www.jlpt.jp/about/levelsummary.html",
+      "why": "자격요건 '일본어 비즈니스 수준'을 급수로 가늠하기. (일본어 자료)"
+    }
+  ],
+  "study_path": [
+    {
+      "title": "회사와 시스템 알기",
+      "time": "1주",
+      "goal": "BaaS가 무엇이고, 장 시간표에 따라 어떤 부하가 오며, 주문·체결이 어떻게 흐르는지 그림으로 설명할 수 있다.",
+      "resources": [
+        "aws-int",
+        "aws-case"
+      ],
+      "task": "인터뷰를 읽고 '앱 → 큐 → FIX 일꾼 → 증권사 → 체결 → 알림' 흐름도와 8:00·9:00·11:30·12:30·15:30 부하 시간표를 한 장에 그린다."
+    },
+    {
+      "title": "Go 서버 하나",
+      "time": "2~3주",
+      "goal": "Go로 주문 접수 API를 만들고, 중복 주문을 막고, 테이블 기반 단위 테스트를 단다.",
+      "resources": [
+        "go-tour",
+        "learning-go",
+        "effective-go",
+        "unit-testing"
+      ],
+      "task": "가상 종목·계좌로 '주문 접수(client_order_id 중복 거르기) → 큐에 넣기 → 일꾼이 꺼내 가짜 체결' 서비스를 Go로 짓고, 수수료 계산을 경우 10개짜리 표로 테스트한다."
+    },
+    {
+      "title": "화면과 E2E",
+      "time": "2주",
+      "goal": "TypeScript 화면에서 주문하고 결과를 보는 흐름을 E2E 테스트로 끝까지 돌린다.",
+      "resources": [
+        "effective-ts",
+        "vue-docs",
+        "modern-react",
+        "playwright-docs"
+      ],
+      "task": "Vue 또는 React로 계좌 개설 신청 → 주문 → 체결 확인 세 화면을 만들고, Playwright로 세 화면을 지나는 테스트 하나를 CI에서 돌린다."
+    },
+    {
+      "title": "AWS·컨테이너·Terraform",
+      "time": "2주",
+      "goal": "서비스를 컨테이너로 만들어 Terraform으로 AWS에 올리고, 시간표에 맞춰 미리 늘린다.",
+      "resources": [
+        "docker-book",
+        "ecs-docs",
+        "ko-tf-iac",
+        "ko-tf-uar",
+        "aws-wa"
+      ],
+      "task": "2단계 서비스를 Docker 이미지로 만들고 Terraform으로 VPC·ECS·Aurora를 올린 뒤, 8:55에 작업 수를 늘리는 예약 규칙을 넣고 plan 결과를 PR로 리뷰받는다. 끝나면 destroy."
+    },
+    {
+      "title": "성능·보안·리드",
+      "time": "2주",
+      "goal": "느린 쿼리를 실행 계획으로 고치고, 보안 구멍을 리뷰로 짚고, 결정과 장애를 글로 남긴다.",
+      "resources": [
+        "real-mysql",
+        "owasp-top10",
+        "go-scp",
+        "nygard-adr",
+        "sre-postmortem",
+        "google-review"
+      ],
+      "task": "가상 체결 100만 건에서 계좌별 조회를 EXPLAIN으로 인덱스 전후 비교하고, 일부러 SQL 주입·권한 우회를 넣은 PR에 리뷰 댓글을 단다. 'DynamoDB TTL vs 주말 배치 삭제' ADR 한 장과 가상 장애 포스트모템 한 장을 일본어로 쓴다."
+    }
+  ],
+  "pay": {
+    "summary": "공고 표기 연봉 **900만~1,350만 엔**(고정 잔업 40시간분 포함) — 공시 평균은 지주회사 직원 23명만의 값(703.3만 엔)이라 개발자 연봉과 견주기 어렵다",
+    "rows": [
+      {
+        "label": "공고 표기 연봉",
+        "value": "900만~1,350만 엔",
+        "basis": "공고 · 2026년",
+        "note": "경험·기술로 최종 결정, 입사 때 예상 연봉이고 상한이 아니라고 적었다. 고정 잔업 40시간분 포함, 전문업무형 재량노동(간주 8시간) 등 적용 [1]"
+      },
+      {
+        "label": "같은 사업부 백엔드 공고",
+        "value": "900만~1,350만 엔",
+        "basis": "공고 · 2026년",
+        "note": "212 백엔드 엔지니어｜Brokerage [7]"
+      },
+      {
+        "label": "같은 사업부 인프라 공고",
+        "value": "800만~1,200만 엔",
+        "basis": "공고 · 2026년",
+        "note": "236 클라우드 인프라 엔지니어｜Brokerage [9]"
+      },
+      {
+        "label": "제출회사 평균 연간 급여",
+        "value": "703.3만 엔",
+        "basis": "유가증권보고서 · 2025년 3월기",
+        "note": "지주회사 단체 23명, 평균 44.6세·근속 4.2년, 상여·초과근무수당 포함. 그룹 연결 종업원은 341명이다 [10]"
+      },
+      {
+        "label": "제출회사 평균 연간 급여 (전년)",
+        "value": "710.4만 엔",
+        "basis": "유가증권보고서 · 2024년 3월기",
+        "note": "지주회사 단체 18명, 평균 45.5세·근속 4.0년 [11]"
+      }
+    ],
+    "how": "유가증권보고서의 평균은 **지주회사(株式会社Finatextホールディングス)에 소속된 관리 기능 직원**만의 값이고, 개발자가 소속되는 사업 회사(株式会社Finatext)의 평균은 공시되지 않는다 [10]. 그래서 평균은 초봉도 개발자 평균도 아니다. 신입 초봉은 경력 5~20년 자리와 맞지 않아 싣지 않았다. 연봉은 경험·스킬로 정하고, 전형 마지막에 오퍼 면담이 있다 [1]. 엔화를 원화로 바꾼 값은 환율 기준을 정하지 않아 싣지 않는다 {추론}."
+  },
+  "benefits": {
+    "items": [
+      {
+        "name": "휴일",
+        "detail": "완전 주 5일(토·일·공휴일), 연말연시(12/30~1/3), 경조 휴가, 특별 휴가"
+      },
+      {
+        "name": "연차",
+        "detail": "입사한 달에 따른 일수를 입사 때 부여"
+      },
+      {
+        "name": "연속 휴가",
+        "detail": "연차와 별도로 최대 연속 5일"
+      },
+      {
+        "name": "근무 방식",
+        "detail": "출근·원격을 날마다 바꿀 수 있음(풀리모트 가능, 출근·하이브리드면 더 좋음), 업무 시작·끝 시각 조정 가능(자리에 따라 고정)"
+      },
+      {
+        "name": "육아 시간",
+        "detail": "생후 1년 미만 자녀를 키우는 사람은 하루 2번, 각 30분"
+      },
+      {
+        "name": "교통비",
+        "detail": "전액 지급(월 15만 엔까지)"
+      },
+      {
+        "name": "장비",
+        "detail": "PC 대여"
+      },
+      {
+        "name": "건강",
+        "detail": "건강검진 선택 항목 비용 일부 보조"
+      },
+      {
+        "name": "주식",
+        "detail": "장려금 50%의 종업원 지주회, 1엔 무상 스톡옵션"
+      },
+      {
+        "name": "비자",
+        "detail": "비자 지원"
+      },
+      {
+        "name": "보험",
+        "detail": "사회보험 완비"
+      }
+    ],
+    "note": "공고의 복리후생 칸(2026년, 회사가 쓴 조건 그대로)이다 [1]. 공고가 가리키는 그룹 공통 복리후생 페이지(finatext.com/recruit/culture/benefits)는 화면을 스크립트로 그려 내용을 읽지 못해 싣지 않았다. 株式会社Finatext 기준이다."
+  },
+  "location": {
+    "name": "Finatext 도쿄 본사",
+    "address": "東京都千代田区九段北1-8-10 住友不動産九段ビル 9階",
+    "map_url": "https://www.google.com/maps/search/%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8D%83%E4%BB%A3%E7%94%B0%E5%8C%BA%E4%B9%9D%E6%AE%B5%E5%8C%971-8-10",
+    "near": "구단시타역(九段下) 걸어서 4분, 스이도바시역(水道橋)·이다바시역(飯田橋) 걸어서 8분",
+    "note": "공고의 근무지와 유가증권보고서의 본점 소재지가 같다 [1][10]. 일본 주소라 네이버 지도 대신 구글 지도 검색 링크를 단다."
+  }
+}
