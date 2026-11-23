@@ -171,6 +171,7 @@
   "ats-toss:group:8006361003": "tosssec-data-engineer-dre",
   "ats-toss:group:7827711003": "tosssec-data-engineer-financial-data",
   "ats-toss:group:5863983003": "tosssec-fep-server-developer",
+  "ats-toss:group:5130165003": "tosssec-frontend-platform-engineer",
   "ats-toss:group:7575603003": "tosssec-ml-engineer-llm",
   "ats-toss:group:4154060003": "tosssec-product-data-analyst",
   "ats-toss:group:7810517003": "tosssec-senior-data-analyst",
@@ -1711,6 +1712,16 @@
    "role": "서버 개발자 (FEP)",
    "jobs": [
     "ats-toss:group:5863983003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 15
+  },
+  {
+   "id": "tosssec-frontend-platform-engineer",
+   "company": "토스증권",
+   "role": "프론트엔드 플랫폼 엔지니어",
+   "jobs": [
+    "ats-toss:group:5130165003"
    ],
    "researched_at": "2026-11-23",
    "lines": 15
