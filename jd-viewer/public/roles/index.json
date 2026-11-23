@@ -51,6 +51,7 @@
   "ats-toss:group:7411370003": "toss-security-analysis-ir",
   "ats-toss:group:7411162003": "toss-security-analysis-platform",
   "ats-toss:group:6586572003": "toss-security-engineer-infra",
+  "ats-toss:group:4555752003": "toss-security-researcher-apt",
   "ats-toss:group:7780944003": "toss-security-researcher-mobile",
   "ats-toss:group:4076085003": "toss-security-researcher-pentest",
   "saramin-55608860": "tossbank-finance-data-system"
@@ -546,6 +547,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 10
+  },
+  {
+   "id": "toss-security-researcher-apt",
+   "company": "토스",
+   "role": "보안 리서처 (APT/인프라 모의해킹)",
+   "jobs": [
+    "ats-toss:group:4555752003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 9
   },
   {
    "id": "toss-security-researcher-mobile",

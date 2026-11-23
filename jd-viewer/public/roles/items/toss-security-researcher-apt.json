@@ -1,0 +1,858 @@
+{
+ "id": "toss-security-researcher-apt",
+ "company": "토스",
+ "role": "보안 리서처 (APT/인프라 모의해킹)",
+ "team": "Security Assessment 팀",
+ "jobs": [
+  "ats-toss:group:4555752003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "토스의 서버·네트워크·클라우드·보안 장비를 **실제 해커 집단(APT)처럼 몰래, 오래 공격해 보고**, 어디까지 들어갔는지보다 **어디서 못 알아챘는지**를 탐지·대응 팀(Blue Team)과 같이 메우는 일입니다.[1][3]",
+  "env": "화이트해커(레드)와 SOC·침해사고 대응(블루)이 한 조직에 섞인 **퍼플팀** 구조이고, 공격 결과는 사내 탐지 도구(Falco·Splunk)의 규칙으로 바로 이어집니다.[3]",
+  "oneline": "사내 레드팀. 웹 취약점 찾기보다 **사내망·AD·쿠버네티스를 타고 들어가는 공격 경로**와 **탐지 공백 리뷰**가 일의 중심입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "토스의 인프라(서버, 네트워크, 클라우드, 보안 솔루션)에 대한 모의해킹과 APT 공격을 수행해요.",
+   "short": "웹 화면이 아니라 서버·사내망·클라우드·보안 장비 자체를 해커처럼 오래 공격해 보는 일.",
+   "why": "토스 보안 팀은 모의해킹을 '서비스 취약점 찾기'와 '**내부 업무 환경에서의 APT 침투 테스트**' 두 갈래로 나눠 말했습니다.[2] 같은 팀의 다른 공고(모의해킹/취약점 분석)가 웹·모바일·API를 맡고[6], 이 자리는 그 아래 인프라를 맡습니다. 발표자는 사고가 대개 **관리 목록에서 빠진 자산**에서 시작되고, 레드팀 입장에서는 '잘 모르는 서비스가 가장 위험하다'고 했습니다.[2]",
+   "actually": {
+    "intro": "APT(Advanced Persistent Threat, 지능형 지속 위협)는 한 번 찌르고 끝내는 공격이 아니라 **들어와서 오래 머물며 넓혀 가는** 공격입니다. 그래서 시뮬레이션도 단계가 깁니다.",
+    "items": [
+     "**서버** — 리눅스·윈도우 서버의 설정, 남은 계정·키, 권한 상승 경로를 찾는다. 토스는 서버 계층마다 지켜야 할 보안 요소를 자산 종류별로 정리해 두었다.[2]",
+     "**네트워크** — 경계 장비(IDS·IPS·WAF)를 지나 안쪽으로 옮겨 다닐 수 있는지. 토스 퍼플팀 프로젝트에서는 경계의 IDS·IPS(Suricata·Snort)가 일반 공격은 잡았지만 **고도화된 공격 문장(페이로드)은 놓쳤다**.[3]",
+     "**클라우드·쿠버네티스** — 토스는 쿠버네티스·AWS EKS 위에서 서비스를 돌린다. 파드(컨테이너 묶음) 안에서 리버스 셸을 열거나, 설정(ConfigMap)에 박힌 접근 키를 줍는 길을 본다.[3][16]",
+     "**보안 솔루션 자체** — EDR·백신·DLP(정보 유출 방지)가 정말 막는지. 토스는 DLP 규칙에 더미 개인정보를 흘려 겹치는 규칙·충돌·누락을 찾았다.[2]",
+     "**사내 업무 환경** — 직원 PC·계정·사내 시스템을 발판으로 삼는 경로. 토스의 '어택 매트릭스'는 서비스판과 **엔터프라이즈(사내)판**을 따로 둔다.[2]"
+    ]
+   },
+   "how_far": "공격 범위·시간·멈출 조건은 팀이 미리 정하고 승인받은 안에서만 합니다 {추론}. 이 자리는 **실제 운영 환경에서 서비스를 멈추지 않고** 공격을 재현하는 수준이 기본입니다 — 토스 퍼플팀도 취약 환경을 라이브에 만들었고, 탐지 도구는 먼저 알파 환경에서 검증했습니다.[3]",
+   "refs": [
+    2,
+    3,
+    6,
+    16
+   ],
+   "study": [
+    "g25-redteam",
+    "g25-falco",
+    "isakov-ad",
+    "k8s-matrix"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "실제 공격자의 TTP를 기반으로 사이버 킬 체인 시나리오를 설계하고, 토스 환경에서 실현 가능한 공격 경로를 직접 검증해요.",
+   "short": "실존 해커 집단의 수법(TTP)을 골라 토스에 들어온다면 어떤 순서로 갈지 짜고, 그 길이 정말 열리는지 직접 걸어 보는 일.",
+   "why": "레드티밍의 목적은 취약점 개수가 아니라 **지금 보안 수준을 정확히 재고**, 한정된 인력·비용을 어디에 먼저 쓸지 정하는 것이라고 팀이 말했습니다. 그러려면 '그럴 것 같다'는 가설이 아니라 **실제로 증명한 경로**가 필요합니다.[2]",
+   "actually": {
+    "intro": "TTP는 공격자의 **전술(Tactic, 왜) · 기법(Technique, 어떻게) · 절차(Procedure, 실제로 친 명령)**입니다.",
+    "items": [
+     "**수법 고르기** — MITRE ATT&CK(실제 공격 관찰로 쌓은 공격 기법 사전)에서 금융을 노린 집단이 쓴 기법을 고른다. 엔터프라이즈 표는 정찰부터 영향까지 14개 전술로 나뉜다.[8]",
+     "**순서 짜기** — 사이버 킬 체인(정찰 → 무기화 → 전달 → 악용 → 설치 → 명령·제어 → 목표 달성의 7단계)에 맞춰 시나리오를 잇는다.[9]",
+     "**토스 판 지도** — 토스는 자체 '어택 매트릭스'를 정찰 · 분석 · 취약점 테스트 · 공격 · 공격 유지 및 내부 탐색 · 정보 유출 및 시스템 장악 순서로 만들고, 위협마다 사례·파급력·조치·대체 통제를 적어 둔다.[2]",
+     "**본보기 계획** — 공개된 에뮬레이션 계획(예: APT29·FIN6 같은 집단을 단계별 명령까지 옮긴 것)을 뼈대로 쓰고 토스 환경에 맞게 바꾼다.[10]",
+     "**증명** — 토스는 이를 '로지컬 밸리데이션'이라 부른다. 지켜야 할 것을 불변식(예: 방화벽에 any-open 정책은 없어야 한다)으로 적고 → 그걸 지키는 데 필요한 요소(권한·세션·키·방화벽 정책)를 모델로 만들고 → 공격자 관점에서 정말 지켜지는지 검증한다.[2]"
+    ]
+   },
+   "flows": [
+    {
+     "caption": "가상 시나리오 한 줄 — ATT&CK 기법 번호로 적는다[8][12][13]",
+     "steps": [
+      "초기 침투 · 스피어피싱 첨부(T1566.001)",
+      "실행 · PowerShell(T1059.001)",
+      "자격 증명 · Kerberoasting(T1558.003)",
+      "내부 이동 · SMB 관리 공유(T1021.002)",
+      "장악 · DCSync(T1003.006)"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "how_far": "\"실현 가능한\"이 핵심입니다. 이론상 가능한 경로를 나열하는 게 아니라 **토스 환경에서 실제로 한 단계씩 넘어간 증거**(명령·로그·시각)를 남겨야 합니다.[1][2] 위협 정보(어떤 집단이 금융을 노리나)를 읽고 고르는 일까지가 이 자리 몫입니다 — 공고의 이력서 안내도 위협 인텔리전스 경험을 적으라고 합니다.[1]",
+   "refs": [
+    1,
+    2,
+    8,
+    9,
+    10,
+    12,
+    13
+   ],
+   "study": [
+    "mitre",
+    "ctid-emu",
+    "vest-redteam",
+    "g25-redteam"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "APT 시뮬레이션이 끝나면 공격 성공 여부만 보지 않고 공격 타임라인, 탐지 공백, 대응 절차까지 다각도로 리뷰해요.",
+   "short": "\"뚫었다\"로 끝내지 않고, 어느 단계를 언제 했고 무엇이 몇 분 만에 잡혔나·안 잡혔나·대응은 맞았나를 같이 되짚는 일.",
+   "why": "토스 퍼플팀 프로젝트의 가장 큰 결과는 침투 성공이 아니라 '**경계 장비가 고도화된 공격을 못 잡는다**'는 공백 발견이었고, 그게 호스트형 탐지 도구(Falco) 도입으로 이어졌습니다.[3] 레드팀의 값은 고칠 곳을 알려 주는 데서 나옵니다.",
+   "actually": {
+    "items": [
+     "**타임라인** — 단계마다 실행 시각·쓴 기법·남은 흔적을 한 줄씩. 블루팀의 경보 시각과 나란히 놓는다.",
+     "**탐지 공백** — 기법별로 '경보 있음/없음'과 걸린 시간을 표로. ATT&CK Navigator로 기법 칸에 색을 칠해 한눈에 본다.[20]",
+     "**대응 절차** — 경보가 떴을 때 누가 보고, 격리·계정 잠금까지 몇 분 걸렸나. 절차서대로 됐나.",
+     "**바로 규칙으로** — 토스 퍼플팀은 BPFDoor(커널의 패킷 필터를 악용하는 백도어)를 컨테이너에서 돌려 시스템 호출 타임라인을 그렸고, 거기서 찾은 호출을 탐지 규칙으로 만들었다.[3]",
+     "**정리 틀** — 공개 퍼플팀 연습 틀(PTEF)은 계획 → 위협 인텔리전스 → 함께 실행 → 교훈 정리 순서를 둔다.[11]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "탐지 공백 표 만들기 (가상 기록, 직접 돌린 출력)",
+     "body": "시뮬레이션 기록에 블루팀의 첫 경보 시각을 붙이면 기법별 탐지 여부·걸린 시간·탐지율이 나옵니다. 리뷰 회의는 이 표의 '공백' 줄부터 봅니다 {추론}.",
+     "lang": "python",
+     "code": "from datetime import datetime as dt\n\n# (ATT&CK 기법, 실행 시각, 첫 경보 시각 또는 None)\nrun = [\n    (\"T1566.001 스피어피싱 첨부\", \"09:00\", \"09:04\"),\n    (\"T1059.001 PowerShell\", \"09:10\", \"09:11\"),\n    (\"T1558.003 Kerberoasting\", \"09:40\", None),\n    (\"T1021.002 SMB 관리 공유\", \"10:15\", None),\n    (\"T1003.006 DCSync\", \"11:02\", \"11:30\"),\n]\nt = lambda s: dt.strptime(s, \"%H:%M\")\nseen = 0\nfor tech, ran, alert in run:\n    if alert:\n        seen += 1\n        print(f\"{tech:<26} 탐지 {(t(alert) - t(ran)).seconds // 60:>3}분 뒤\")\n    else:\n        print(f\"{tech:<26} 공백 (경보 없음)\")\nprint(f\"탐지율 {seen}/{len(run)} = {seen / len(run):.0%}\")\n\n# 출력\n# T1566.001 스피어피싱 첨부   탐지   4분 뒤\n# T1059.001 PowerShell       탐지   1분 뒤\n# T1558.003 Kerberoasting    공백 (경보 없음)\n# T1021.002 SMB 관리 공유    공백 (경보 없음)\n# T1003.006 DCSync           탐지  28분 뒤\n# 탐지율 3/5 = 60%"
+    }
+   ],
+   "how_far": "리뷰 결과는 **블루팀이 바로 규칙을 만들 수 있는 수준**이어야 합니다 — 어떤 호스트에서 어떤 프로세스가 어떤 호출을 했는지까지.[3] 탐지 규칙 자체를 쓰는 건 블루팀(SOC·침해대응) 몫이지만, 같은 조직이라 같이 씁니다.[3]",
+   "refs": [
+    3,
+    11,
+    20
+   ],
+   "study": [
+    "ptef",
+    "navigator",
+    "g25-falco",
+    "g25-detect"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "새로운 공격 기법과 방어 대책을 연구하고, 탐지·대응(Blue Team) 조직과 협업해 탐지 역량을 함께 끌어올려요.",
+   "short": "새로 나온 공격(우회 기법·백도어)을 먼저 재현해 보고, 그걸 잡는 탐지 규칙을 블루팀과 같이 만드는 일.",
+   "why": "토스의 퍼플팀은 펜테스트·모의해킹을 하는 레드 영역과 SOC 이벤트 분석·침해사고 대응을 하는 블루 영역이 섞인 조직입니다.[3] 연구 결과가 같은 조직 안에서 바로 탐지 규칙이 됩니다.",
+   "actually": {
+    "intro": "토스 발표에 나온 실제 사례입니다.",
+    "items": [
+     "**BPFDoor** — 팀원이 컨테이너 안에서 실행해 함수·시스템 호출 순서를 그렸고, 특정 소켓 설정 호출을 잡자고 제안해 Falco 규칙이 됐다.[3]",
+     "**io_uring 우회** — 시스템 호출을 가로채는 방식의 탐지를 피하려고 io_uring(리눅스의 비동기 입출력 기능)을 쓰는 공격이 늘어, 그 설정 호출을 잡는 규칙을 만들었다.[3]",
+     "**호스트에서 웹 공격 잡기** — 명령 주입·SSRF·웹셸을 경계 장비뿐 아니라 서버 안에서 Node·Java·Python 프로세스의 시스템 호출로 같이 잡는다.[3]",
+     "**이상 행위 탐지** — 토스증권 보안팀은 '이미 아는 취약점'만 보는 탐지의 한계를 들어, 분포 양 끝단의 행동(예: 짧은 시간에 접근 거부를 많이 낸 계정)을 작은 단위로 쌓고 여러 계층을 엮어 경보로 올린다.[4]",
+     "**AI 활용** — 같은 팀은 보안 문의 자동 답변·보안성 심의 보조·증적 보고서 자동 생성에 AI를 쓴다. 공고도 LLM·에이전트로 업무를 자동화한 경험을 적으라고 한다.[1][2]"
+    ]
+   },
+   "how_far": "연구는 **재현 → 흔적(로그·시스템 호출) 기록 → 탐지 제안**까지가 한 묶음입니다.[3] 블로그·발표·오픈소스로 밖에 공유한 기록이 있으면 이력서에 적으라고 공고가 따로 안내합니다.[1] 팀은 화이트해커에게 토스를 해킹하게 한 보안 캠페인 영상처럼 연구를 밖에 알리는 일도 한다.[2][7]",
+   "refs": [
+    1,
+    2,
+    3,
+    4,
+    7
+   ],
+   "study": [
+    "g25-falco",
+    "g25-detect",
+    "falco-docs",
+    "atomic"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "APT 공격 시뮬레이션이나 보안 솔루션(EDR, AV 등) 우회 경험이 있는 분과 함께하고 싶어요.",
+   "short": "백신·EDR이 깔린 실제 회사 PC·서버에서 들키지 않고 단계를 넘어가 본 경험 — 그래야 방어의 빈칸을 찾을 수 있어서.",
+   "why": "회사 환경에는 EDR(단말에서 행동을 기록·차단하는 보안 도구)과 백신이 깔려 있어, 이를 못 넘으면 다음 단계 시뮬레이션이 안 됩니다. 공고의 '쓰는 기술'에도 EDR Evasion과 C2 Framework(감염 PC를 원격 조종하는 도구)가 적혀 있습니다.[1]",
+   "actually": {
+    "items": [
+     "**우회는 탐지 원리부터** — EDR이 무엇을 보는지(프로세스 생성, 함수 가로채기, 커널 알림, 이벤트 기록)를 알아야 어디가 비는지 안다. 공격 기법 사전에서는 '보안 도구 끄기·바꾸기'가 별도 기법(T1562.001)이다.[14]",
+     "**C2 운영** — 감염된 단말이 바깥 서버와 몰래 통신하게 하고, 그 통신이 탐지되는지 본다. 토스는 파드의 바깥 통신을 위협 정보(IOC)와 맞춰 C2를 잡는 규칙을 둔다.[3]",
+     "**서버 쪽 EDR** — 토스 발표는 시스템 호출 가로채기 방식 탐지의 한계와 eBPF(커널 안에서 안전하게 관찰하는 기술) 방식의 장점을 설명했다. 우회 연구도 이 차이를 알아야 한다.[3]"
+    ]
+   },
+   "how_far": "\"경험이 있는 분\"이라 실무 경력(레드팀·APT 시뮬레이션 컨설팅)을 원하는 자리로 읽힙니다 {추론}. 최소선은 **허락된 실습 환경**에서 EDR이 켜진 윈도우를 상대로 한 번 실행 → 권한 상승 → 내부 이동을 해 보고, 어느 단계가 어떤 이유로 잡혔는지 설명할 수 있는 정도입니다 {추론}. 실제 회사·남의 시스템에는 절대 하지 않습니다.",
+   "refs": [
+    1,
+    3,
+    14
+   ],
+   "study": [
+    "evading-edr",
+    "vest-redteam",
+    "goad"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "실제 공격자의 TTP와 MITRE ATT&CK 기반의 Adversary Emulation, Red Teaming, Purple Teaming에 관심이 많으신 분이면 좋아요.",
+   "short": "세 가지 공격 연습 방식을 구분하고, 결과를 ATT&CK 기법 번호로 적어 블루팀과 같은 말로 이야기할 수 있어서.",
+   "why": "이 팀은 공격 결과를 탐지 개선으로 잇는 퍼플팀 구조라, 레드와 블루가 같은 기준표로 말해야 합니다.[3] 공고의 쓰는 기술 첫 줄이 Red Teaming · Adversary Emulation · Purple Teaming · MITRE ATT&CK입니다.[1]",
+   "actually": {
+    "items": [
+     "**Adversary Emulation(공격자 흉내)** — 특정 실존 집단의 수법을 순서까지 그대로 재연한다. 공개 계획 모음이 있다.[10]",
+     "**Red Teaming** — 목표(예: 고객 정보 서버 장악)만 정하고 방법은 자유롭게, 방어 쪽은 모르게 진행해 실제 대응까지 본다.[2]",
+     "**Purple Teaming** — 레드와 블루가 한자리에서 기법을 하나씩 실행하고 그 자리에서 탐지를 확인·고친다.[11]",
+     "**금융권 표준 틀** — 유럽 중앙은행의 TIBER-EU는 금융사의 운영 시스템을 상대로 위협 정보 기반 레드팀 테스트를 하는 틀이다. 국내 금융사는 전자금융감독규정에 따른 취약점 분석·평가를 받는다.[17][18]"
+    ]
+   },
+   "how_far": "\"관심이 많으신 분이면 좋아요\"라 필수는 아닙니다.[1] 다만 면접에서 세 방식의 차이와 ATT&CK 기법 몇 개(번호·뜻·흔적)를 설명하는 정도는 기본으로 보입니다 {추론}.",
+   "refs": [
+    1,
+    2,
+    3,
+    10,
+    11,
+    17,
+    18
+   ],
+   "study": [
+    "mitre",
+    "ctid-emu",
+    "ptef",
+    "atomic"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Active Directory, 내부 네트워크 등 내부망 환경에서의 공격 경험이 있는 분을 찾고 있어요.",
+   "short": "회사 계정·PC를 한데 묶는 AD와 사내망은 한 번 들어오면 관리자까지 길이 이어지는 곳이라, 그 길을 아는 사람이 필요해서.",
+   "why": "토스 레드팀의 모의해킹에는 사내 업무 환경 APT 침투가 들어가고, 어택 매트릭스에도 사내(엔터프라이즈)판이 있습니다.[2] 공고의 이력서 안내는 AD/LDAP · IAM/SSO · 단말 · 클라우드 · 쿠버네티스/Istio · CI/CD에서 공격 경로를 검증한 경험을 구체적으로 쓰라고 합니다.[1]",
+   "actually": {
+    "intro": "AD(Active Directory)는 윈도우 회사망에서 계정·PC·권한을 한곳에서 관리하는 서비스입니다. 대표적인 공격 단계입니다.",
+    "items": [
+     "**관계 지도 그리기** — 누가 어느 PC에 로그인해 있고 어느 그룹이 어디의 관리자인지를 그래프로 그려 관리자까지 가는 최단 경로를 찾는다(BloodHound).[15]",
+     "**Kerberoasting** — 도메인 사용자라면 누구나 서비스 계정용 티켓을 요청할 수 있고, 그 티켓이 서비스 계정 비밀번호로 잠겨 있어 밖에서 풀어 볼 수 있다.[12]",
+     "**DCSync** — 복제 권한을 가진 계정으로 도메인 컨트롤러인 척 비밀번호 해시를 통째로 받아 간다.[13]",
+     "**사내망 이동** — 관리 공유·원격 접속으로 옆 서버로 옮긴다. 토스는 망분리(VDI·원격접속 통제)와 제로 트러스트 접근을 운영한다고 발표했다 — 이걸 넘을 수 있는지가 시험 대상이다.[5]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "공격 경로 = 그래프의 최단 경로 (가상 사내망, 직접 돌린 출력)",
+     "body": "BloodHound가 하는 일을 손으로 줄였습니다. 직원 한 명이 피싱되면 'PC에 남은 관리자 세션'을 타고 도메인 관리자까지 다섯 걸음입니다. 방어 쪽은 이 줄 중 하나만 끊어도 됩니다 {추론}.",
+     "lang": "python",
+     "code": "from collections import deque\n\nedges = {\n    \"kim(피싱된 직원)\": [(\"PC-042\", \"로그인 세션\")],\n    \"PC-042\": [(\"svc_backup\", \"세션에 남은 계정\")],\n    \"svc_backup\": [(\"SRV-FILE\", \"로컬 관리자\")],\n    \"SRV-FILE\": [(\"admin_lee\", \"세션에 남은 계정\")],\n    \"admin_lee\": [(\"Domain Admins\", \"그룹 구성원\")],\n}\n\ndef path(src, dst):\n    q, prev = deque([src]), {src: None}\n    while q:\n        n = q.popleft()\n        if n == dst:\n            out = []\n            while prev[n]:\n                p, why = prev[n]\n                out.append(f\"{p} --{why}--> {n}\")\n                n = p\n            return out[::-1]\n        for m, why in edges.get(n, []):\n            if m not in prev:\n                prev[m] = (n, why)\n                q.append(m)\n\nfor step in path(\"kim(피싱된 직원)\", \"Domain Admins\"):\n    print(step)\n\n# 출력\n# kim(피싱된 직원) --로그인 세션--> PC-042\n# PC-042 --세션에 남은 계정--> svc_backup\n# svc_backup --로컬 관리자--> SRV-FILE\n# SRV-FILE --세션에 남은 계정--> admin_lee\n# admin_lee --그룹 구성원--> Domain Admins"
+    }
+   ],
+   "how_far": "\"공격 경험\"을 묻는 필수 요건입니다.[1] 최소선은 실습용 AD 환경(예: GOAD)을 직접 세워 정찰 → 자격 증명 탈취 → 내부 이동 → 도메인 장악을 해 보고, **단계마다 남는 윈도우 이벤트**까지 말할 수 있는 정도입니다 {추론}. 토스는 쿠버네티스 비중이 커서 클라우드·컨테이너 쪽 경로도 같이 보면 유리합니다.[1][3]",
+   "refs": [
+    1,
+    2,
+    3,
+    5,
+    12,
+    13,
+    15
+   ],
+   "study": [
+    "isakov-ad",
+    "goad",
+    "bloodhound",
+    "k8s-matrix"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "공격 성공 여부뿐 아니라 탐지 가능성, 대응 절차까지 함께 검증하는 관점을 가진 분과 함께하고 싶어요.",
+   "short": "사내 레드팀은 '뚫었다'보다 '왜 몰랐나, 알았으면 제대로 막았나'를 증명해야 값이 생겨서.",
+   "why": "발표자는 외부 컨설팅은 정해진 기간에 가장 치명적인 구멍을 찾아 보고서로 끝내는 **스냅샷**이고, 사내 보안은 비즈니스 맥락을 알고 **계속 고쳐 가는** 일이라고 차이를 설명했습니다.[2]",
+   "actually": {
+    "items": [
+     "**탐지 가능성** — 이 기법이 어떤 로그를 남기나, 우리가 그 로그를 모으고 있나. 토스증권은 보안 로그를 양은 많고 위험도는 낮은 층(nginx·OS 감사·CloudTrail)부터 확정된 증거·IOC 층까지 네 층으로 나눠 본다.[4]",
+     "**탐지 위치** — 경계(WAF·IDS) · 웹 서버 · 애플리케이션 · 호스트 중 어디서 잡히나. 토스는 경계에서 놓친 공격을 호스트 탐지로 보완했다.[3][4]",
+     "**대응 절차** — 경보 → 분석 → 격리까지 절차서대로 됐나, 몇 분 걸렸나.",
+     "**측정 기준** — 같은 시나리오를 다음에 다시 돌려 탐지율과 걸린 시간이 줄었는지 본다 {추론}."
+    ]
+   },
+   "how_far": "블루팀만큼 탐지 규칙을 잘 쓸 필요는 없지만, **내 공격이 남긴 흔적을 스스로 찾을 줄 아는** 수준이면 됩니다 {추론}. 공격 기록을 시각까지 남기는 습관이 시작입니다.",
+   "refs": [
+    2,
+    3,
+    4
+   ],
+   "study": [
+    "g25-detect",
+    "navigator",
+    "ptef"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "블루팀과 협업하며 공격자의 시각을 방어 역량 강화로 연결해본 경험이 있는 분이면 더 좋아요.",
+   "short": "찾은 공격을 '이 호출·이 로그를 이 규칙으로 잡자'는 제안까지 가져가 실제 탐지가 늘어난 경험.",
+   "why": "토스는 레드와 블루가 섞인 퍼플팀으로 일하고, BPFDoor·io_uring 사례처럼 공격 재현이 곧 탐지 규칙이 됐습니다.[3] 탐지 규칙도 알파 환경에서 취약 환경을 공격해 보며 다듬었습니다.[3]",
+   "actually": {
+    "items": [
+     "**규칙 검증** — 블루팀이 만든 규칙을 실제 공격으로 두드려 잡히는지, 오탐은 얼마인지 확인한다. 토스는 Falco 기본 규칙 중 맞지 않는 것을 걸러 토스 환경용 규칙을 만들었다.[3]",
+     "**작은 단위 시험** — 기법 하나씩 돌려 보는 공개 시험 모음(Atomic Red Team)으로 규칙을 반복 확인한다.[19]",
+     "**말 맞추기** — 공격 단계를 ATT&CK 번호로 적어 넘기면 블루팀이 기존 규칙과 바로 대조할 수 있다.[8]"
+    ]
+   },
+   "how_far": "\"더 좋아요\"라 우대 성격입니다.[1] 경험이 없다면 실습 환경에서 공격 하나를 돌리고, 그 흔적을 잡는 탐지 규칙(예: Falco·Sigma 규칙)을 직접 써서 잡히는 것까지 보인 기록이 대신할 수 있습니다 {추론}.",
+   "refs": [
+    1,
+    3,
+    8,
+    19
+   ],
+   "study": [
+    "atomic",
+    "falco-docs",
+    "g25-falco",
+    "ptef"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "침투 자체보다 '왜 아무도 몰랐나'를 파고드는 게 재미있는 사람[2][3]",
+   "공격을 재현하고 시스템 호출·로그 흔적까지 적어 두는 꼼꼼한 사람[3]",
+   "블루팀과 같은 자리에서 탐지 규칙을 같이 고치고 싶은 사람[3]",
+   "CTF·버그바운티·CVE·발표·오픈소스처럼 밖에 남긴 기록이 있는 사람[1]"
+  ],
+  "hard": [
+   "운영 서비스를 멈추면 안 되는 금융 환경이라 범위·승인·검증 절차가 길다[3] {추론}",
+   "외부 컨설팅처럼 짧게 크게 터뜨리는 일보다 한 회사를 오래 고쳐 가는 일이다[2]",
+   "AD·사내망 공격 경험이 필수 요건이라 웹 해킹만 해 본 사람에겐 문턱이 높다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "피싱된 직원 PC 한 대에서 도메인 관리자까지 어떤 경로로 가겠어요? 단계마다 어떤 흔적이 남나요?",
+   "a": "관계 지도 → Kerberoasting → 내부 이동 → DCSync.[12][13][15]"
+  },
+  {
+   "q": "레드티밍, Adversary Emulation, 퍼플티밍은 무엇이 다른가요?",
+   "a": "흉내의 정확도와 블루팀이 아는지 여부.[10][11]"
+  },
+  {
+   "q": "APT 시뮬레이션을 마쳤습니다. 리뷰 보고서 첫 장에 무엇을 놓겠어요?",
+   "a": "타임라인 · 탐지 공백 · 대응 절차 — 이 공고의 업무 3번.[1][3]"
+  },
+  {
+   "q": "경계의 IDS·IPS를 지나간 공격을 어디서 잡을 수 있을까요?",
+   "a": "토스가 Falco로 호스트 탐지를 붙인 이유.[3]"
+  },
+  {
+   "q": "시스템 호출을 가로채는 탐지를 피하는 기법을 하나 들고, 그걸 어떻게 다시 잡겠어요?",
+   "a": "io_uring 우회와 그 설정 호출 탐지.[3]"
+  },
+  {
+   "q": "외부 모의해킹 컨설팅과 사내 레드팀은 무엇이 다른가요?",
+   "a": "스냅샷과 상시 개선.[2]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 보안 리서처 (APT/인프라 모의해킹) (Security Researcher)",
+   "url": "https://toss.im/career/job-detail?gh_jid=4555752003",
+   "kind": "posting",
+   "note": "Security Assessment 팀 소개·업무·요건·이력서 안내·쓰는 기술·팀 한마디"
+  },
+  {
+   "n": 2,
+   "title": "GUARDIANS 25 · Red Teaming 기반의 Security Assessment",
+   "url": "https://www.youtube.com/watch?v=_iKtUyBV6cI",
+   "kind": "company",
+   "date": "2025-11-20",
+   "note": "토스 Security Researcher 발표 · 자막 전부 읽음(모의해킹에 APT 내부 침투 포함, 아웃소싱과 인하우스 차이, 로지컬 밸리데이션, DLP 사례, 어택 매트릭스 서비스·엔터프라이즈판) · 장면으로 매트릭스 단계 이름 확인"
+  },
+  {
+   "n": 3,
+   "title": "GUARDIANS 25 · 토스의 K8S를 더 안전하게: Falco를 활용한 K8S 위협 모니터링",
+   "url": "https://www.youtube.com/watch?v=jRjbOPjgDaE",
+   "kind": "company",
+   "date": "2025-11-20",
+   "note": "토스 Security Engineer 발표 · 자막 전부 읽음(레드·블루가 섞인 퍼플팀, 라이브 취약 환경 프로젝트에서 경계 IDS·IPS 공백 발견, Falco 규칙 4분류, BPFDoor·io_uring 탐지, Kafka·Splunk 연동)"
+  },
+  {
+   "n": 4,
+   "title": "GUARDIANS 25 · 사례로 알아보는 토스증권의 위협 탐지와 Detection Engineering",
+   "url": "https://www.youtube.com/watch?v=kwWulyAtES8",
+   "kind": "company",
+   "date": "2025-11-20",
+   "note": "토스증권 Security Engineer 발표(같은 그룹 다른 회사) · 자막 전부 읽음(이상 행위 탐지, 요약 인덱스와 상관 분석, 보안 로그 4계층) · 사례는 모두 모의 데이터"
+  },
+  {
+   "n": 5,
+   "title": "토스 · GUARDIANS 25 보안 컨퍼런스 세션 목록",
+   "url": "https://toss.im/guardians-25",
+   "kind": "company",
+   "date": "2025-11-20",
+   "note": "망분리 환경 운영(VDI·원격접속 통제), Zero Trust Network Access 내재화, Threat Intelligence Platform 세션 제목 — 이 둘은 제목만 확인"
+  },
+  {
+   "n": 6,
+   "title": "토스 채용 · 보안 리서처 (모의해킹/취약점 분석)",
+   "url": "https://toss.im/career/job-detail?gh_jid=4076085003",
+   "kind": "posting",
+   "note": "같은 팀 다른 자리 — 웹·모바일·API·내부 시스템 진단과 보안성 심의"
+  },
+  {
+   "n": 7,
+   "title": "토스피드 · 오리지널 필름 바이 토스, 헬소닉",
+   "url": "https://toss.im/tossfeed/article/security-campaign-hellsonic",
+   "kind": "company",
+   "note": "화이트해커에게 토스 해킹 미션을 준 보안 캠페인 — 발표[2]에서 말한 '토스를 해킹하는 다큐멘터리'"
+  },
+  {
+   "n": 8,
+   "title": "MITRE ATT&CK",
+   "url": "https://attack.mitre.org/",
+   "kind": "reference",
+   "note": "실제 공격 관찰로 쌓은 전술·기법 사전 · 엔터프라이즈 14개 전술"
+  },
+  {
+   "n": 9,
+   "title": "Lockheed Martin · Cyber Kill Chain",
+   "url": "https://www.lockheedmartin.com/en-us/capabilities/cyber/cyber-kill-chain.html",
+   "kind": "reference",
+   "note": "7단계"
+  },
+  {
+   "n": 10,
+   "title": "Center for Threat-Informed Defense · Adversary Emulation Library",
+   "url": "https://github.com/center-for-threat-informed-defense/adversary_emulation_library",
+   "kind": "reference",
+   "note": "실존 집단별 공개 에뮬레이션 계획"
+  },
+  {
+   "n": 11,
+   "title": "SCYTHE · Purple Team Exercise Framework (PTEF)",
+   "url": "https://github.com/scythe-io/purple-team-exercise-framework",
+   "kind": "reference",
+   "note": "계획 · 위협 인텔리전스 · 연습 실행 · 교훈 정리 · MIT 라이선스"
+  },
+  {
+   "n": 12,
+   "title": "MITRE ATT&CK · T1558.003 Kerberoasting",
+   "url": "https://attack.mitre.org/techniques/T1558/003/",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "MITRE ATT&CK · T1003.006 DCSync",
+   "url": "https://attack.mitre.org/techniques/T1003/006/",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "MITRE ATT&CK · T1562.001 Impair Defenses: Disable or Modify Tools",
+   "url": "https://attack.mitre.org/techniques/T1562/001/",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "SpecterOps · BloodHound 문서",
+   "url": "https://bloodhound.specterops.io/",
+   "kind": "reference",
+   "note": "AD 관계를 그래프로 그려 공격 경로를 찾는 도구"
+  },
+  {
+   "n": 16,
+   "title": "Microsoft · Threat Matrix for Kubernetes",
+   "url": "https://microsoft.github.io/Threat-Matrix-for-Kubernetes/",
+   "kind": "reference",
+   "note": "ATT&CK 꼴로 정리한 쿠버네티스 공격 기법"
+  },
+  {
+   "n": 17,
+   "title": "European Central Bank · TIBER-EU",
+   "url": "https://www.ecb.europa.eu/paym/cyber-resilience/tiber-eu/html/index.en.html",
+   "kind": "reference",
+   "note": "금융사 대상 위협 정보 기반 레드팀 테스트 틀"
+  },
+  {
+   "n": 18,
+   "title": "전자금융감독규정 (금융위원회고시 제2025-4호) — 제37조의2 취약점 분석·평가",
+   "url": "https://ko.wikisource.org/wiki/%EC%A0%84%EC%9E%90%EA%B8%88%EC%9C%B5%EA%B0%90%EB%8F%85%EA%B7%9C%EC%A0%95_(%EC%A0%9C2025-4%ED%98%B8)",
+   "kind": "reference",
+   "date": "2025-02-05"
+  },
+  {
+   "n": 19,
+   "title": "Red Canary · Atomic Red Team",
+   "url": "https://github.com/redcanaryco/atomic-red-team",
+   "kind": "reference",
+   "note": "ATT&CK 기법별 작은 시험 모음"
+  },
+  {
+   "n": 20,
+   "title": "MITRE · ATT&CK Navigator",
+   "url": "https://mitre-attack.github.io/attack-navigator/",
+   "kind": "reference",
+   "note": "기법 칸에 색을 칠해 탐지 범위를 보는 도구"
+  },
+  {
+   "n": 21,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음"
+  },
+  {
+   "n": 22,
+   "title": "자소설닷컴 — 토스뱅크 연봉(같은 집계)",
+   "url": "https://jasoseol.com/companies/13930/insights",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 24,
+   "title": "토스 — 회사 소개(사이트 하단 주소)",
+   "url": "https://toss.im/company",
+   "kind": "company"
+  }
+ ],
+ "caveat": "발표는 2025년 11월 것이라 지금 방식과 다를 수 있습니다. 토스의 어택 매트릭스 세부 항목·APT 시나리오·내부 망 구조는 공개되지 않아, 공격 단계·AD 기법·퍼플팀 진행은 MITRE·SCYTHE·ECB의 공개 자료로 '보통 이런 것'을 보였습니다. 코드 예시는 모두 가상 데이터로 직접 돌린 것입니다. 여기 나온 공격 기법은 허락받은 실습 환경에서만 연습해야 하고, 남의 시스템에 시도하면 정보통신망법 위반입니다.",
+ "resources": [
+  {
+   "id": "g25-redteam",
+   "title": "GUARDIANS 25 · Red Teaming 기반의 Security Assessment",
+   "by": "토스 Security Researcher · 26분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.youtube.com/watch?v=_iKtUyBV6cI",
+   "why": "이 팀이 레드티밍을 왜·어떻게 하나 — 로지컬 밸리데이션과 어택 매트릭스. 업무 1·2번을 이해하는 첫 자료."
+  },
+  {
+   "id": "g25-falco",
+   "title": "GUARDIANS 25 · 토스의 K8S를 더 안전하게: Falco를 활용한 K8S 위협 모니터링",
+   "by": "토스 Security Engineer · 23분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=jRjbOPjgDaE",
+   "why": "토스 퍼플팀이 공격 재현(BPFDoor·io_uring)을 탐지 규칙으로 바꾼 과정 — 업무 3·4번과 블루팀 협업 요건."
+  },
+  {
+   "id": "g25-detect",
+   "title": "GUARDIANS 25 · 사례로 알아보는 토스증권의 위협 탐지와 Detection Engineering",
+   "by": "토스증권 Security Engineer · 19분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.youtube.com/watch?v=kwWulyAtES8",
+   "why": "블루팀이 무엇을 어떻게 잡나 — 탐지 가능성까지 검증하라는 요건을 위해 상대편의 시선을 익힌다."
+  },
+  {
+   "id": "mitre",
+   "title": "MITRE ATT&CK",
+   "by": "MITRE",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://attack.mitre.org/",
+   "why": "TTP·킬 체인 시나리오(업무 2번)와 요건 2번의 공통 언어. 기법 페이지마다 탐지 방법도 같이 적혀 있다."
+  },
+  {
+   "id": "ctid-emu",
+   "title": "Adversary Emulation Library",
+   "by": "Center for Threat-Informed Defense",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/center-for-threat-informed-defense/adversary_emulation_library",
+   "why": "실존 집단의 공격을 단계별 계획으로 옮긴 공개 본보기 — 시나리오 설계(업무 2번)를 어떻게 적는지 그대로 본다."
+  },
+  {
+   "id": "ptef",
+   "title": "Purple Team Exercise Framework (PTEF)",
+   "by": "SCYTHE",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/scythe-io/purple-team-exercise-framework",
+   "why": "레드·블루가 같이 하는 연습의 계획·진행·정리 틀 — 업무 3번(리뷰)과 블루팀 협업 요건."
+  },
+  {
+   "id": "navigator",
+   "title": "ATT&CK Navigator",
+   "by": "MITRE",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://mitre-attack.github.io/attack-navigator/",
+   "why": "탐지 공백을 기법 칸 색으로 보여 주는 도구 — 리뷰 결과를 한 장으로 정리할 때."
+  },
+  {
+   "id": "atomic",
+   "title": "Atomic Red Team",
+   "by": "Red Canary",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/redcanaryco/atomic-red-team",
+   "why": "기법 하나씩 돌려 보는 작은 시험 모음 — 탐지 규칙을 반복 확인하는 퍼플팀 연습에 쓴다."
+  },
+  {
+   "id": "vest-redteam",
+   "title": "Red Team Development and Operations: A Practical Guide",
+   "by": "Joe Vest · James Tubberville · 2020",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://bookshop.org/p/books/red-team-development-and-operations-a-practical-guide-james-tubberville/cbff6a2f49da09ae",
+   "why": "레드팀 작전의 계획·범위·규칙·보고를 단계별로 — 사내 레드팀이 '안전하게, 증거를 남기며' 공격하는 법."
+  },
+  {
+   "id": "isakov-ad",
+   "title": "Pentesting Active Directory and Windows-based Infrastructure",
+   "by": "Denis Isakov · Packt · 2023",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.packtpub.com/en-us/product/pentesting-active-directory-and-windows-based-infrastructure-9781804611364",
+   "why": "실습 환경 구축부터 정찰·자격 증명·내부 이동·도메인 권한 상승·AD CS까지 — 요건 3번(AD·내부망 공격)을 위한 한 권."
+  },
+  {
+   "id": "evading-edr",
+   "title": "Evading EDR",
+   "by": "Matt Hand · No Starch Press · 2023",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://nostarch.com/book-edr",
+   "why": "EDR 센서가 무엇을 어떻게 보는지(함수 가로채기·커널 알림·ETW)와 문서화된 우회 — 요건 1번의 우회를 원리부터."
+  },
+  {
+   "id": "goad",
+   "title": "GOAD (Game of Active Directory)",
+   "by": "Orange Cyberdefense",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://github.com/Orange-Cyberdefense/GOAD",
+   "why": "내 PC에 띄우는 취약한 AD 실습 환경 — 요건 3번의 '공격 경험'을 합법적으로 쌓는 곳."
+  },
+  {
+   "id": "bloodhound",
+   "title": "BloodHound 문서",
+   "by": "SpecterOps",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://bloodhound.specterops.io/",
+   "why": "AD 관계를 그래프로 그려 공격 경로를 찾는 도구 — 공격 쪽도 방어 쪽도 쓰는 기본기."
+  },
+  {
+   "id": "k8s-matrix",
+   "title": "Threat Matrix for Kubernetes",
+   "by": "Microsoft",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://microsoft.github.io/Threat-Matrix-for-Kubernetes/",
+   "why": "쿠버네티스 공격 기법을 ATT&CK 꼴로 — 토스 인프라(쿠버네티스·EKS)를 상대로 한 시나리오를 짤 때."
+  },
+  {
+   "id": "falco-docs",
+   "title": "Falco 문서",
+   "by": "The Falco Project (CNCF)",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://falco.org/docs/",
+   "why": "토스가 쓰는 런타임 탐지 도구의 규칙 쓰는 법 — 내 공격을 잡는 규칙을 직접 써 보는 과제에 쓴다."
+  },
+  {
+   "id": "book-kubernetes",
+   "title": "쿠버네티스 입문",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/kubernetes",
+   "why": "파드·서비스·ConfigMap·권한이 무엇인지 먼저 알아야 쿠버네티스 공격 경로가 보인다."
+  },
+  {
+   "id": "book-docker",
+   "title": "개발자를 위한 도커",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/docker",
+   "why": "컨테이너가 호스트와 무엇을 나누고 무엇을 공유하나 — 컨테이너 탈출·런타임 탐지를 이해하는 바탕."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "이 팀의 일 이해하기",
+   "time": "1주",
+   "goal": "토스가 레드팀·퍼플팀·탐지를 어떻게 잇는지 말로 설명할 수 있다.",
+   "resources": [
+    "g25-redteam",
+    "g25-falco",
+    "g25-detect"
+   ],
+   "task": "발표 3편을 보고, 토스 어택 매트릭스 6단계마다 ATT&CK 기법 2개씩과 '그걸 잡을 만한 로그'를 짝지은 표를 만든다."
+  },
+  {
+   "title": "AD·사내망 공격 기본기",
+   "time": "4~8주",
+   "goal": "실습 AD에서 정찰부터 도메인 장악까지 혼자 가고, 단계마다 남는 이벤트를 말할 수 있다.",
+   "resources": [
+    "goad",
+    "isakov-ad",
+    "bloodhound",
+    "mitre"
+   ],
+   "task": "GOAD를 내 PC에 세우고 BloodHound로 경로를 찾은 뒤 Kerberoasting → 내부 이동 → DCSync까지 간다. 단계마다 실행 시각과 윈도우 이벤트 ID를 기록한 타임라인을 쓴다."
+  },
+  {
+   "title": "클라우드·컨테이너 경로",
+   "time": "2~4주",
+   "goal": "쿠버네티스 안에서 권한을 넓히는 경로와 그 흔적을 안다.",
+   "resources": [
+    "book-docker",
+    "book-kubernetes",
+    "k8s-matrix",
+    "falco-docs"
+   ],
+   "task": "로컬 kind 클러스터에 일부러 과한 권한의 파드와 키가 박힌 ConfigMap을 만들고, 파드 안에서 키를 줍고 리버스 셸을 여는 시나리오를 돌린다. 같은 클러스터에 Falco를 깔아 잡히는지 본다."
+  },
+  {
+   "title": "에뮬레이션 계획과 퍼플팀 리뷰",
+   "time": "2~3주",
+   "goal": "실존 집단 하나를 골라 시나리오를 짜고, 탐지 공백 리뷰 보고서를 쓴다.",
+   "resources": [
+    "ctid-emu",
+    "vest-redteam",
+    "ptef",
+    "atomic",
+    "navigator"
+   ],
+   "task": "공개 에뮬레이션 계획 하나를 2단계 실습 AD에 맞게 줄여 돌리고, 위 '탐지 공백 표' 코드처럼 기법별 탐지 여부·걸린 시간을 정리한다. Navigator 레이어로 색칠하고 공백 3개에 대한 탐지 제안을 붙인다."
+  },
+  {
+   "title": "우회 원리와 외부 기록 (계속)",
+   "time": "계속",
+   "goal": "EDR이 보는 것과 못 보는 것을 원리로 설명하고, 그 연구를 밖에 남긴다.",
+   "resources": [
+    "evading-edr",
+    "falco-docs",
+    "g25-falco"
+   ],
+   "task": "실습 환경에서 기법 하나가 어떤 센서(프로세스 생성·함수 가로채기·커널 알림)에 걸리는지 실험하고, 그걸 잡는 규칙까지 써서 블로그 글로 정리한다. 허락된 범위의 CTF·버그바운티에 참여한다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 공공데이터 집계로 신입 초봉 **약 4,200만원**, 평균 **약 6,200만원** — 공시된 평균 급여는 없다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없다 [21]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균 — 경력직이 섞인 값이다 [21]"
+   },
+   {
+    "label": "토스뱅크 초봉",
+    "value": "약 5,146만원",
+    "amount": 5146,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 계열사 값 — 견주어 보기용 [22]"
+   },
+   {
+    "label": "토스뱅크 평균",
+    "value": "약 7,208만원",
+    "amount": 7208,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 계열사 평균 [22]"
+   }
+  ],
+  "how": "공고는 레퍼런스 체크 뒤 **처우협의** 단계에서 정한다고 적었다 [1]. 경력 연차는 공고에 없지만 요건이 '경험이 있는 분'이라 경력직 자리로 보인다 {추론}. 비바리퍼블리카는 상장사가 아니라 사업보고서의 '직원 평균 급여'가 없어 공시 숫자를 싣지 못했다. 평균은 경력직이 섞인 회사 전체 값이고, 집계값은 추정이라 실제 제안과 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "근무 장소",
+    "detail": "재택 여부를 스스로 정하고 팀에 공유"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "커피·간식·생필품 무료, 헤어살롱, 거점형 어린이집"
+   }
+  ],
+  "note": "토스 팀 복지를 소개한 2021년 공식 글이다 [23]. 지금도 같은지는 글에 없으니 처우협의 때 확인한다 {추론}. 보안 직무는 망분리 같은 규정 때문에 재택·장비 사용이 다를 수 있다 {추론}."
+ },
+ "location": {
+  "name": "토스(비바리퍼블리카) 본사",
+  "address": "서울특별시 강남구 테헤란로 142, 4·10~13·22·23층",
+  "postal": "06236",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20142",
+  "near": "2호선 역삼역 근처 테헤란로 {추론}",
+  "note": "주소는 토스 회사 소개 페이지 하단의 회사 정보다 [24]. 공고 근무지는 'Seoul'로만 적혀 있다 [1]."
+ }
+}
