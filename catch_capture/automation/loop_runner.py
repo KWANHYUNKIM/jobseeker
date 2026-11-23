@@ -153,6 +153,13 @@ def run_once(loop, root, timeout_s: int = TIMEOUT_S, dry_run: bool = False) -> d
     finally:
         _unlock(loop.key)
     (d / "last.json").write_text(json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8")
+    # 병렬 일꾼(키@번호)도 대시보드는 본래 키 하나로 본다 — 마지막 결과와 회차 기록을 본래 키 폴더에도 남긴다.
+    base = _dir(loop.key.split("@")[0])
+    if base != d:
+        (base / "last.json").write_text(json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8")
+    with open(base / "runs.jsonl", "a", encoding="utf-8") as f:
+        f.write(json.dumps({k: rec.get(k) for k in ("key", "started", "ended", "seconds", "ok", "exit", "cost_usd", "skipped")},
+                           ensure_ascii=False) + "\n")
     for old in sorted(d.glob("*.log"))[:-KEEP_LOGS]:
         old.unlink(missing_ok=True)
     mark = "ok" if rec["ok"] else f"실패({rec['exit']})"
@@ -166,6 +173,22 @@ def parse_every(text: str) -> int:
     if not m:
         raise ValueError(f"주기는 20m·2h·90s 꼴: {text!r}")
     return int(m.group(1)) * {"s": 1, "m": 60, "h": 3600}[m.group(2)]
+
+
+def repeat_parallel(loop, root, workers: int, every_s: int, times: int | None = None, timeout_s: int = TIMEOUT_S) -> None:
+    """같은 엔진을 일꾼 N 개로 — 일꾼마다 잠금·로그가 따로다(키@번호). 같은 일감을 안 잡게 하는 건 엔진 몫이다
+    (직무 역설계는 validate.py --claim). 일꾼끼리 시작을 20초씩 어긋나게 해 같은 순간에 집지 않게 한다."""
+    import threading
+    from dataclasses import replace
+    ts = []
+    for i in range(1, workers + 1):
+        w = replace(loop, key=f"{loop.key}@{i}")
+        t = threading.Thread(target=repeat, args=(w, root, every_s, times, timeout_s), daemon=False)
+        t.start()
+        ts.append(t)
+        time.sleep(20)
+    for t in ts:
+        t.join()
 
 
 def repeat(loop, root, every_s: int, times: int | None = None, timeout_s: int = TIMEOUT_S) -> None:

@@ -2,6 +2,9 @@
 
     python engine/roles/validate.py            # 검사 + jd-viewer/public/roles/index.json 굽기
     python engine/roles/validate.py --gaps     # 다음에 조사할 공고(대상 1건 + 후보 몇 건)
+    python engine/roles/validate.py --claim    # 병렬 루프: 맨 위 후보를 집는다(다른 회차가 같은 공고를 못 잡게)
+    python engine/roles/validate.py --only <id>   # 내 파일만 검사(쓰는 중인 남의 파일은 index 에서만 뺀다)
+    python engine/roles/validate.py --release <키> # 집기를 푼다(커밋 뒤)
 
 산출물: jd-viewer/public/roles/items/<id>.json (형식은 engine/roles/schema.json, 절차는 PROMPT.md).
 단위는 '회사 × 직무' 하나 — 같은 자리가 여러 사이트·여러 번 올라와도 파일은 하나이고 `jobs` 에 공고 키를 모은다.
@@ -25,6 +28,8 @@ SECTIONS = {"task": "main_tasks", "qualification": "qualifications", "preference
 SOURCE_KINDS = {"company", "posting", "news", "reference", "community"}
 RES_KINDS = {"book", "course", "doc", "video", "internal"}
 LEVELS = ["입문", "실무", "심화"]
+CLAIMS = ROOT / "catch_capture" / "var" / "roles" / "claims"   # 병렬 루프가 집어 간 공고(커밋 안 함)
+CLAIM_TTL_S = 3 * 3600   # 이보다 오래된 집기는 죽은 회차로 보고 무시한다
 REF = re.compile(r"\[(\d{1,2})\]")
 SHORT_MAX = 90            # 공고 줄 바로 밑에 늘 보이는 한 줄 — 길면 훑어 읽기가 깨진다
 LONG_ENGLISH = re.compile(r"[A-Za-z ,.'\"()\-:;]{220,}")   # 영어 원문을 옮긴 흔적
@@ -171,11 +176,29 @@ def build_index(items: list[dict]) -> dict:
     }
 
 
-def gaps(items: list[dict], jobs: list[dict], show: int = 6) -> None:
-    """다음 일감: 모집중이고 업무·요건 줄이 충분한 공고 중, 그 회사 모집중 공고가 많은 곳부터.
-    이미 풀이가 있는 공고와 같은 회사·같은 제목은 건너뛴다(같은 자리)."""
+def _claim_path(key: str) -> Path:
+    return CLAIMS / (re.sub(r"[^A-Za-z0-9_.-]", "_", key) + ".claim")
+
+
+def claimed() -> set[str]:
+    """살아 있는 집기 — 다른 회차가 지금 쓰고 있는 공고 키."""
+    import time
+    out = set()
+    for f in CLAIMS.glob("*.claim") if CLAIMS.exists() else []:
+        try:
+            if time.time() - f.stat().st_mtime < CLAIM_TTL_S:
+                out.add(f.read_text(encoding="utf-8").strip())
+        except OSError:
+            pass
+    return out
+
+
+def candidates(items: list[dict], jobs: list[dict]) -> list[tuple]:
+    """다음 일감 후보: 모집중이고 업무·요건 줄이 충분한 공고, 그 회사 모집중 공고가 많은 곳부터.
+    이미 풀이가 있는 공고와 같은 회사·같은 제목(같은 자리)과 다른 회차가 집어 간 공고는 건너뛴다."""
     done = {k for d in items for k in d["jobs"]}
     done_titles = {(d["company"], norm(d["role"])) for d in items}
+    busy = claimed()
     active = [j for j in jobs if j.get("status") != "closed"]
     per_co: dict[str, int] = {}
     for j in active:
@@ -183,14 +206,37 @@ def gaps(items: list[dict], jobs: list[dict], show: int = 6) -> None:
     cand = []
     for j in active:
         key = f"{j.get('site')}-{j.get('pid')}"
-        if key in done or (j.get("company"), norm(j.get("title", ""))) in done_titles:
+        if key in done or key in busy or (j.get("company"), norm(j.get("title", ""))) in done_titles:
             continue
         n = sum(len(posting_lines(j.get(f))) for f in SECTIONS.values())
         if n < 5:
             continue
         cand.append((per_co.get(j.get("company", ""), 0), n, key, j))
     cand.sort(key=lambda x: (-x[0], -x[1]))
-    print(f"[roles] 풀이 {len(items)}개 · 후보 공고 {len(cand)}건 — 위에서부터")
+    return cand
+
+
+def claim(items: list[dict], jobs: list[dict]) -> int:
+    """맨 위 후보 하나를 집는다(파일을 O_EXCL 로 만들어 두 회차가 같은 공고를 못 잡는다). 집은 키를 찍는다."""
+    import os
+    CLAIMS.mkdir(parents=True, exist_ok=True)
+    for _, n, key, j in candidates(items, jobs):
+        try:
+            fd = os.open(_claim_path(key), os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        except FileExistsError:
+            continue
+        os.write(fd, key.encode("utf-8"))
+        os.close(fd)
+        print(f"▶ 대상 {key} · {j.get('company')} · {j.get('title')} (줄 {n})")
+        print(f"  (집기: {_claim_path(key).relative_to(ROOT)} — 커밋하면 validate --release {key} 로 푼다)")
+        return 0
+    print("[roles] 집을 후보가 없다")
+    return 1
+
+
+def gaps(items: list[dict], jobs: list[dict], show: int = 6) -> None:
+    cand = candidates(items, jobs)
+    print(f"[roles] 풀이 {len(items)}개 · 후보 공고 {len(cand)}건 · 집힌 것 {len(claimed())}건 — 위에서부터")
     for i, (co_n, n, key, j) in enumerate(cand[:show]):
         mark = "▶ 대상" if i == 0 else "  후보"
         print(f"  {mark} {key} · {j.get('company')} · {j.get('title')} (줄 {n}, 회사 모집중 {co_n})")
@@ -200,6 +246,10 @@ def main() -> int:
     sys.stdout.reconfigure(encoding="utf-8")
     jobs = load_jobs()
     by_key = {f"{j.get('site')}-{j.get('pid')}": j for j in jobs}
+    only = sys.argv[sys.argv.index("--only") + 1] if "--only" in sys.argv else None
+    if "--release" in sys.argv:
+        _claim_path(sys.argv[sys.argv.index("--release") + 1]).unlink(missing_ok=True)
+        return 0
     items, errs, warns = [], [], []
     for p in sorted(DIR.glob("*.json")):
         try:
@@ -208,10 +258,19 @@ def main() -> int:
             errs.append(f"{p.name}: JSON 깨짐 — {e}")
             continue
         e, wn = check(d, p, by_key)
+        if only and p.stem != only:
+            # 다른 회차가 쓰는 중인 파일 — 이번 검사를 막지 않고 index 에서만 뺀다
+            if e:
+                warns.append(f"{p.name}: 오류 {len(e)}건 — 쓰는 중으로 보고 index 에서 뺀다")
+            else:
+                items.append(d)
+            continue
         errs += e
         warns += wn
         if not e:
             items.append(d)
+    if "--claim" in sys.argv:
+        return claim(items, jobs)
     if "--gaps" in sys.argv:
         gaps(items, jobs)
         return 0

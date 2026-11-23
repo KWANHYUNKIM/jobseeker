@@ -184,23 +184,25 @@ REGISTRY: list[Loop] = [
              "`python lecture-engine/clean.py --apply` 로 노트를 DB 에 저장하고 끝난 강의의 영상·장면 이미지를 지운다(빼먹지 않는다). 푸시하지 않는다. "
              "무엇을 했는지 한두 줄로 보고한다.")),
     # 직무 역설계 — 공고 한 줄 한 줄이 왜 필요하고 실제로 무슨 일인지. 회사 발표 영상은 강의 노트의 fetch.py 로 자막을 읽는다.
-    Loop("role-engine", "직무 역설계(공고 풀이)", "claude-loop", "any", "1분 쉬고 바로(repeat)", 72,
-         "python -m automation.loops repeat role-engine --every 1m",
+    Loop("role-engine", "직무 역설계(공고 풀이)", "claude-loop", "any", "일꾼 3개 · 1분 쉬고 바로(repeat)", 72,
+         "python -m automation.loops repeat role-engine --every 1m --workers 3",
          ["engine/roles/state/LOG.md", "jd-viewer/public/roles/index.json"],
          check="python engine/roles/validate.py --gaps",
          owns=["jd-viewer/public/roles/", "engine/roles/state/"],
-         after=["-m", "store.ingest.docs"],
+         after=["-m", "store.ingest.docs"], backlog="roles",
          prompt=(
              "직무 역설계 한 사이클: engine/roles/PROMPT.md 절차를 그대로 따른다(본보기 jd-viewer/public/roles/items/"
-             "tossbank-finance-data-system.json 을 먼저 읽는다). 대상은 `python engine/roles/validate.py --gaps` 맨 위 공고. "
+             "tossbank-finance-data-system.json 을 먼저 읽는다). 대상은 `python engine/roles/validate.py --claim` 이 집어 주는 공고 하나(일꾼 여럿이 같이 돈다 — --gaps 맨 위를 직접 고르지 않는다). "
              "공고의 주요업무·자격요건·우대사항 모든 줄에 short·why·actually·how_far 를 쓴다 — 읽는 사람은 그 공고를 보는 개발자다. "
              "공부 자료(resources — 존재를 확인한 책·강의·문서만)·줄마다 study·준비 로드맵(study_path)까지 채운다(PROMPT 4-1). "
              "연봉(초봉·평균 — 기준과 출처를 줄마다)·복지(회사 공식)·회사 위치(도로명 주소)도 찾아 넣는다(PROMPT 4-2). "
              "회사가 직접 말한 근거(기술 블로그·컨퍼런스 발표 — 영상은 `python lecture-engine/fetch.py <id>` 로 자막을 받아 전부 "
              "읽는다)를 먼저 찾고, 공개되지 않은 부분은 다른 곳의 공개 문서로 '보통 이런 것'을 보인다. 문장마다 [n] 출처, "
              "근거 없는 판단은 {추론}. 지어낸 1인칭 생각·원문 전재 금지. 코드 예시는 직접 돌려 출력을 확인한다. "
-             "validate.py 가 통과하면 state/LOG.md 에 한 줄 쓰고 feat(roles) 로 커밋한다(git add 는 jd-viewer/public/roles "
-             "engine/roles/state 만, git add -A 금지). DB 옮기기(store.ingest.docs)는 회차가 끝나면 러너가 한다 — 직접 돌리지 않는다. "
+             "`python engine/roles/validate.py --only <내 id>` 가 통과하면 state/LOG.md 에 한 줄 쓰고 feat(roles) 로 커밋한다 — git add 는 "
+             "내 파일 jd-viewer/public/roles/items/<id>.json · jd-viewer/public/roles/index.json · engine/roles/state/LOG.md 만(다른 일꾼이 쓰는 "
+             "파일을 섞지 않는다, git add -A 금지). git 이 index.lock 으로 막히면 몇 초 뒤 다시 한다. 커밋 뒤 "
+             "`python engine/roles/validate.py --release <공고 키>` 로 집기를 푼다. DB 옮기기(store.ingest.docs)는 회차가 끝나면 러너가 한다 — 직접 돌리지 않는다. "
              "받은 영상 재료(catch_capture/var/lectures/<id>)는 다 읽은 뒤 지운다. 푸시하지 않는다. 무엇을 했는지 한두 줄로 보고한다.")),
     Loop("study-engine", "기술 백과사전", "claude-loop", "any", "자율(화면에서는 빠져 있다)", 24 * 30,
          "/loop <prompt>", ["study-engine/state", "jd-viewer/public/study"],
@@ -433,7 +435,44 @@ def _hw_datacenter_backlog() -> str | None:
     return f"섹션 {old_sec} · 데이터센터 {old_dc}"
 
 
-BACKLOG = {"hw_models": _hw_models_backlog, "hw_datacenter": _hw_datacenter_backlog}
+def _roles_progress() -> dict | None:
+    """직무 역설계 — 풀이 수 / (풀이 + 남은 후보), 지금 쓰는 중, 오늘 회차·비용."""
+    import importlib.util
+    try:
+        spec = importlib.util.spec_from_file_location("roles_validate", ROOT / "engine" / "roles" / "validate.py")
+        v = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(v)
+        items = [json.loads(p.read_text(encoding="utf-8")) for p in sorted(v.DIR.glob("*.json"))]
+        items = [d for d in items if d.get("jobs")]
+        left = len(v.candidates(items, v.load_jobs()))
+        busy = len(v.claimed())
+    except Exception:  # noqa: BLE001
+        return None
+    today = datetime.now().date().isoformat()
+    runs = cost = ok = 0
+    try:
+        from automation.loop_runner import RUN_DIR
+        for ln in (RUN_DIR / "role-engine" / "runs.jsonl").read_text(encoding="utf-8").splitlines():
+            r = json.loads(ln)
+            if (r.get("started") or "").startswith(today) and not r.get("skipped"):
+                runs += 1
+                ok += 1 if r.get("ok") else 0
+                cost += r.get("cost_usd") or 0
+    except (OSError, ValueError):
+        pass
+    jobs = sum(len(d["jobs"]) for d in items)
+    return {"done": len(items), "total": len(items) + left, "busy": busy, "jobs": jobs,
+            "today_runs": runs, "today_ok": ok, "today_cost": round(cost, 2),
+            "text": f"풀이 {len(items)}개(공고 {jobs}건) · 남은 후보 {left:,}건 · 쓰는 중 {busy} · 오늘 {ok}/{runs}회 ${cost:.1f}"}
+
+
+def _roles_backlog() -> str | None:
+    p = _roles_progress()
+    return p["text"] if p else None
+
+
+BACKLOG = {"hw_models": _hw_models_backlog, "hw_datacenter": _hw_datacenter_backlog, "roles": _roles_backlog}
+PROGRESS = {"roles": _roles_progress}
 
 
 # ── 상태 ─────────────────────────────────────────────────────────────
@@ -502,15 +541,16 @@ def status(l: Loop) -> dict:
     else:
         state = "ok"
     try:
-        backlog = BACKLOG[l.backlog]() if l.backlog else None
+        progress = PROGRESS[l.backlog]() if l.backlog in PROGRESS else None
+        backlog = progress["text"] if progress else (BACKLOG[l.backlog]() if l.backlog else None)
     except Exception:
-        backlog = None
+        progress, backlog = None, None
     run = None
     if l.kind == "claude-loop":
         from automation.loop_runner import last_run
         r = last_run(l.key)
         run = {k: r.get(k) for k in ("started", "ok", "exit", "seconds", "cost_usd", "summary", "skipped")} if r else None
-    return {**asdict(l), "backlog": backlog, "last_run": run,
+    return {**asdict(l), "backlog": backlog, "progress": progress, "last_run": run,
             "last": last.isoformat(timespec="minutes") if last else None,
             "age_hours": round(age_h, 1) if age_h is not None else None, "launchd_alive": alive, "state": state}
 
@@ -558,7 +598,11 @@ def main(argv: list[str]) -> int:
             rec = lr.run_once(l, ROOT, timeout_s, dry_run="--dry-run" in argv)
             return 0 if rec.get("ok") or rec.get("dry_run") or rec.get("skipped") else 1
         times = opt("--times")
-        lr.repeat(l, ROOT, lr.parse_every(opt("--every", "20m")), int(times) if times else None, timeout_s)
+        workers = int(opt("--workers", "1"))
+        if workers > 1:
+            lr.repeat_parallel(l, ROOT, workers, lr.parse_every(opt("--every", "20m")), int(times) if times else None, timeout_s)
+        else:
+            lr.repeat(l, ROOT, lr.parse_every(opt("--every", "20m")), int(times) if times else None, timeout_s)
         return 0
     if cmd == "status":
         print(json.dumps(status_all(), ensure_ascii=False, indent=None if "--json" in argv else 2))

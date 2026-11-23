@@ -844,6 +844,21 @@ function renderLoops(rows) {
       grp("세션·러너가 닫혀서 멈춤", "/loop 엔진은 세션이 닫히면 멈춰요 — repeat 러너로 다시 띄웁니다.", "off", sess,
         (r) => r.kind === "claude-loop" ? `python -m automation.loops repeat ${r.key} --every 60m` : r.run)
     : `<div class="banner ok">✓ 반복 작업 ${rows.length}개 모두 정상</div>`;
+  // 진행률이 있는 엔진(직무 역설계 등) — 몇 개 끝났고 몇 개 남았나, 지금 몇 개를 쓰는 중인가, 오늘 회차·비용.
+  $("loopProgress").innerHTML = rows.filter((r) => r.progress).map((r) => {
+    const p = r.progress;
+    const pct = p.total ? (p.done / p.total) * 100 : 0;
+    const lr = r.last_run;
+    const last = lr ? `마지막 회차 ${lr.ok ? "성공" : "실패"} · ${Math.round((lr.seconds || 0) / 60)}분 · $${(lr.cost_usd || 0).toFixed(2)}` +
+      (lr.started ? ` · ${esc(lr.started.slice(11, 16))} 시작` : "") : "아직 회차 기록 없음";
+    return `<div class="lprog">` +
+      `<div class="lp-h"><b>${esc(r.name)}</b><span class="muted">${esc(r.key)} · ${esc(r.cadence)}</span></div>` +
+      `<div class="lp-nums"><span class="lp-big">${p.done.toLocaleString()}</span><span class="muted"> / ${p.total.toLocaleString()} (${pct < 1 ? pct.toFixed(2) : pct.toFixed(1)}%)</span>` +
+      `<span class="lp-busy">${p.busy ? `● 지금 ${p.busy}개 쓰는 중` : "○ 쉬는 중"}</span></div>` +
+      `<div class="lp-bar" role="progressbar" aria-valuenow="${p.done}" aria-valuemax="${p.total}"><i style="width:${Math.max(pct, 0.4)}%"></i></div>` +
+      `<div class="lp-meta">오늘 ${p.today_ok}/${p.today_runs}회 성공 · $${p.today_cost.toFixed(1)} · 풀이가 붙은 공고 ${p.jobs}건 · ${last}</div>` +
+      `</div>`;
+  }).join("");
   const rest = rows.filter((r) => !bad.includes(r));
   const nOk = rest.filter((r) => r.state === "ok").length;
   $("loopOkSum").textContent = `정상 ${nOk}개 · 모름 ${rest.length - nOk}개 — 펼쳐서 보기`;

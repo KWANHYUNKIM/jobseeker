@@ -389,3 +389,15 @@ a.igpost:hover { border-color: var(--accent); }
 #dbRuns td:last-child { width: 30%; }
 .minibar { height: 6px; background: var(--accent-bg); border-radius: 3px; overflow: hidden; min-width: 60px; }
 .minibar > span { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
+
+/* 반복 작업 — 진행률이 있는 엔진(직무 역설계 등) */
+.lprog { border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin: 0 0 14px; background: var(--card); }
+.lprog .lp-h { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+.lprog .lp-h b { font-size: 15px; }
+.lprog .lp-h .muted { font-size: 12px; }
+.lprog .lp-nums { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 6px; margin-top: 8px; }
+.lprog .lp-big { font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--txt); }
+.lprog .lp-busy { margin-left: auto; font-size: 12px; color: var(--ok); font-weight: 600; }
+.lprog .lp-bar { height: 8px; border-radius: 4px; background: var(--line); margin-top: 8px; overflow: hidden; }
+.lprog .lp-bar i { display: block; height: 100%; border-radius: 0 4px 4px 0; background: var(--accent); }
+.lprog .lp-meta { margin-top: 8px; font-size: 12px; color: var(--muted); line-height: 1.6; }
