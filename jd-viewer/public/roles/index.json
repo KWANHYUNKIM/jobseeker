@@ -168,6 +168,7 @@
   "ats-toss:group:6607772003": "tossbank-system-security-engineer",
   "ats-toss:group:7788403003": "tosssec-community-reco-mle",
   "ats-toss:group:7575603003": "tosssec-ml-engineer-llm",
+  "ats-toss:group:7810517003": "tosssec-senior-data-analyst",
   "ats-toss:group:8006356003": "tosssecurities-dataops-engineer",
   "ats-toss:group:7719156003": "tosssecurities-idc-infra-engineer",
   "wanted-316962": "ui2-ec-fullstack-japan",
@@ -1673,6 +1674,16 @@
    "role": "ML 엔지니어 (LLM)",
    "jobs": [
     "ats-toss:group:7575603003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 20
+  },
+  {
+   "id": "tosssec-senior-data-analyst",
+   "company": "토스증권",
+   "role": "데이터 분석가 (7년 이상)",
+   "jobs": [
+    "ats-toss:group:7810517003"
    ],
    "researched_at": "2026-11-23",
    "lines": 20
