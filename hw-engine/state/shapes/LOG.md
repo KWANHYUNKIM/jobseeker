@@ -288,3 +288,13 @@
   마이크로닉스 Performance II PV 600W Surge 4K(medium — 사양 줄 '120mm 팬 1개·Reform 케이블' + 대표 사진 3장, FDB 판과 같은 벌집 타공판 + 구리색 3×3 배지·모서리 띠).
 - 알게 된 것: eoptimus.kr·darkflash.co.kr 은 카페24 — 갤러리 `web/product/extra/small/…` 를 `extra/big/` 로 바꾸면 큰 사진이 온다. 상세 본문은 둘 다 글로 안 온다.
 - 실물과 아직 다른 점: 파워 렌더러가 여전히 색·덮개 모양을 받지 않아 은색 팔각 테 + 벌집 격자(EXCEL CLASSIC)·네모 바둑판 덮개(퍼펙트모스트)가 둥근 메시로 보인다(REQUESTS [3D 렌더러] 새 줄 — 기존 덮개 요청에 더함, 풀모듈러 선 안 그리기 확인 포함). 다섯 다 덮개에 가려 날개 수를 비웠다. models 치수(길이 140·120mm 팬)는 사진과 어긋나지 않아 [hw-models] 줄은 없다.
+
+## 2026-11-23 · 30회차(무인) — 파워 다섯
+
+- 12번 맨 앞 그래픽카드 COLORFUL(403)·ZOTAC(468)와 case-atx-mid·cooler-air-single(여전히 다른 세션의 미커밋 파일) 항목은 지난 회차처럼 미루고, 파워 인기순 다음 다섯을 적었다(공식 제품 페이지 사진을 저장소 밖 임시 폴더 `%TEMP%/hw3d30` 에서 모음 판으로 보기만, 다나와는 쓰지 않음):
+  잘만 GV2SE 600W·700W(high — 사양 표 140×150×86mm, 갤러리 3장 + 상세 이미지: 검정 상자, 옆면 검정 딱지 흰 'GV2 SE', 둥근 철사 격자 + 구리색 Z 허브 — MegaMax II 의 남색 옆판은 없다) ·
+  FSP HYPER K PRO(ATX3.1) 600W(high — 한국어 제품 페이지 120mm HYB 팬·올 블랙 플랫 케이블, 사진 4장 + 설명 그림 3장: 옆면 딱지 위아래 노란 선 + 노란 'K', 둥근 철사 격자, 뒤판 'POWER NEVER ENDS', 선 직결) ·
+  마이크로닉스 Classic II 풀체인지 700W 230V EU(high — 사양 줄 케이블 일체형·플랫·12VHPWR, 대표 사진 3장: ATX3.1 판과 같은 가로 긴 구멍 격자 + 금색 선) ·
+  Performance II PV 700W Surge 4K(medium — 사양 줄 + 대표 사진 3장, FDB 판과 같은 벌집 판 + 구리 3×3 배지·모서리 띠).
+- 알게 된 것: FSP 한국어 페이지는 `<base href=".../kr/">` 라 `../upload/…` 사진은 `https://www.fsplifestyle.com/upload/…` 에 있다(/kr/upload 는 404). 사진 주소가 글로 보인다.
+- 실물과 아직 다른 점: 파워 렌더러는 여전히 색·덮개 모양을 받지 않아 철사 격자 + 구리 허브·노란 선·가로 구멍 격자·벌집 판이 모두 둥근 메시로 보인다(REQUESTS [3D 렌더러] — accent 가 칠해질 자리를 고르는 칸 요청을 더함). 다섯 다 덮개에 가려 날개 수를 비웠다. FSP 600W 의 models `modular` 가 비어 있어 [hw-models] 한 줄(사진상 논모듈러), 나머지 치수는 공식 값과 맞다.

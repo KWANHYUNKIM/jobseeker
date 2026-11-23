@@ -166,6 +166,68 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "사진: 무광 검정 상자, 팬 덮개는 둥근 철망이 아니라 판을 뚫은 벌집 격자이고 그 둘레를 은색 판(네 귀를 비스듬히 깎은 팔각 테, 네 귀 나사)이 감싼다. 가운데 둥근 구리색 고리 배지에 'Energy OPTIMUS'. 옆면은 검정 사양 딱지에 흰 'EXCEL CLASSIC'·금색 'BRONZE 700W'·80PLUS 브론즈 마크와 금색 띠, 윗면(케이블 쪽 끝)에 금색 '700W' 띠. 뒤판·옆면 아래는 벌집 타공. 풀모듈러 판과 같은 몸통이고 케이블은 본체 직결(사진에는 선이 안 찍혔다). 날개는 격자에 가려 세지 못했다."
+  },
+  "zalman-gv2se-700w": {
+   "kind": "psu",
+   "modular": "none",
+   "fan_mm": 120,
+   "color": "#1c1d20",
+   "accent": "#c4713f",
+   "fan_light": "none",
+   "marks": [
+    { "text": "GV2 SE 700W", "where": "side" },
+    { "text": "zalman", "where": "side" }
+   ],
+   "sources": [
+    {
+     "title": "잘만 GV2SE 700W(ZM700-GV2SE) — 공식 제품 페이지(사양 표 140(L)×150(W)×86(H)mm, 갤러리 3장·상세 이미지)",
+     "url": "https://www.zalman.com/KO/Product/ProductDetail.do?productSeq=1821"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "잘만 공식 제품 페이지 갤러리 3장(비스듬한 윗면·팬 쪽 비스듬한 모습·옆면 딱지 정면)과 상세 이미지: 검정 상자, 옆면 검정 딱지에 흰 'GV2 SE 700W'·'80PLUS BRONZE POWER SUPPLY'·'zalman' 과 구리색 80PLUS 브론즈 표지. 팬은 둥근 철사 격자(동심 고리 + 바퀴살 4개) 밑 검정 날개, 가운데 허브가 구리색 원판에 흰 Z 로고(MegaMax II 와 같은 허브). 뒤판·옆면 끝은 둥근 구멍 타공 + 전원 단자·스위치, 케이블은 검정 피복 다발로 직결(논모듈러). MegaMax II 와 달리 옆면 남색 비늘 판이 없다. 날개 수는 격자에 겹쳐 비웠다."
+  },
+  "micronics-classic-ii-fullchange-700w-230v-eu": {
+   "kind": "psu",
+   "modular": "none",
+   "fan_mm": 120,
+   "color": "#232426",
+   "accent": "#b8955a",
+   "fan_light": "none",
+   "marks": [
+    { "text": "CLASSIC II FULL CHANGE", "where": "side", "color": "#b8955a" }
+   ],
+   "sources": [
+    {
+     "title": "마이크로닉스 Classic II 풀체인지 700W 230V EU — 공식 제품 페이지(사양 줄 120mm 팬·깊이 140mm·케이블 일체형·플랫 케이블·12VHPWR 1개, 대표 사진 3장: 비스듬한 윗면·팬 정면·상자)",
+     "url": "https://www.micronics.co.kr/micronics/view_product.php?product_id=TA131"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "ATX3.1 판과 같은 몸통. 무광 짙은 회색 상자, 옆면 금색 'CLASSIC II FULL CHANGE' 와 그 앞뒤로 뻗은 금색 가는 선, MICRONICS 글자. 팬 덮개는 판을 뚫은 가로 긴 구멍 격자(물결 테) + 가운데 둥근 사각 MICRONICS 배지. 옆면 끝·뒤판은 네모 구멍 타공 + 스위치·전원 단자, 케이블 일체형 플랫 선(사진의 상자에 12VHPWR 표지). 날개는 격자에 가려 세지 못했다."
+  },
+  "micronics-performance-ii-pv-700w-surge-4k": {
+   "kind": "psu",
+   "modular": "none",
+   "fan_mm": 120,
+   "color": "#26272a",
+   "accent": "#c06a2b",
+   "fan_light": "none",
+   "marks": [
+    { "text": "PERFORMANCE II PV", "where": "side" },
+    { "text": "700W", "where": "side", "color": "#c06a2b" }
+   ],
+   "sources": [
+    {
+     "title": "마이크로닉스 Performance II PV 700W 80Plus Bronze Surge 4K(HPW-700BR-F12S) — 공식 제품 페이지(사양 줄 120mm 팬 1개·깊이 140mm·Reform 케이블, 대표 사진 3장: 비스듬한 윗면·옆면·팬 정면)",
+     "url": "https://www.micronics.co.kr/micronics/view_product.php?product_id=20OVQ"
+    }
+   ],
+   "confidence": "medium",
+   "checked_at": "2026-11-23",
+   "note": "FDB 판·600W Surge 4K 와 같은 몸통. 사진: 짙은 회색 무광 상자, 앞뒤 끝 모서리를 감싸는 구리(주황)색 띠, 팬 덮개는 판 전체 벌집 타공(네 귀를 비스듬히 깎은 테) 가운데에 구리색 3×3 네모 배지. 옆면 검정 딱지에 구리색 테 'PERFORMANCE II PV 700W'. 뒤판도 벌집 타공 + 스위치·전원 단자, 케이블 직결. 날개는 타공판에 가려 세지 못했다."
   }
  }
 }

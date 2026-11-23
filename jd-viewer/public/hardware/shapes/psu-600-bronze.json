@@ -147,6 +147,48 @@
    "confidence": "medium",
    "checked_at": "2026-11-23",
    "note": "FDB 판과 같은 몸통. 사진: 짙은 회색 무광 상자, 앞뒤 끝 모서리를 감싸는 구리(주황)색 띠, 팬 덮개는 판 전체를 벌집 타공한 판(둥근 철망 아님, 네 귀를 비스듬히 깎은 테) 가운데에 구리색 3×3 네모 배지. 옆면 검정 딱지에 구리색 테 'PERFORMANCE II PV 600W'. 뒤판·옆면 아래도 벌집 타공 + 스위치·전원 단자, 케이블 직결(논모듈러). 날개는 타공판에 가려 세지 못했다."
+  },
+  "zalman-gv2se-600w": {
+   "kind": "psu",
+   "modular": "none",
+   "fan_mm": 120,
+   "color": "#1c1d20",
+   "accent": "#c4713f",
+   "fan_light": "none",
+   "marks": [
+    { "text": "GV2 SE 600W", "where": "side" },
+    { "text": "zalman", "where": "side" }
+   ],
+   "sources": [
+    {
+     "title": "잘만 GV2SE 600W(ZM600-GV2SE) — 공식 제품 페이지(사양 표 140(L)×150(W)×86(H)mm, 갤러리 3장·상세 이미지)",
+     "url": "https://www.zalman.com/KO/Product/ProductDetail.do?productSeq=1820"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "잘만 공식 제품 페이지 갤러리 3장(비스듬한 윗면·팬 쪽 비스듬한 모습·옆면 딱지 정면)과 상세 이미지: 검정 상자, 옆면 검정 딱지에 흰 'GV2 SE 600W'·'80PLUS BRONZE POWER SUPPLY'·'zalman' 과 구리색 80PLUS 브론즈 표지. 팬은 둥근 철사 격자(동심 고리 + 바퀴살 4개) 밑 검정 날개, 가운데 허브가 구리색 원판에 흰 Z 로고(MegaMax II 와 같은 허브). 뒤판·옆면 끝은 둥근 구멍 타공 + 전원 단자·스위치, 케이블은 검정 피복 다발로 직결(논모듈러). MegaMax II 와 달리 옆면 남색 비늘 판이 없다. 날개 수는 격자에 겹쳐 비웠다."
+  },
+  "fsp-hyper-k-pro-600w-bronze-atx31": {
+   "kind": "psu",
+   "modular": "none",
+   "fan_mm": 120,
+   "color": "#1e1f21",
+   "accent": "#e3b21c",
+   "fan_light": "none",
+   "marks": [
+    { "text": "HYPER K PRO", "where": "side" },
+    { "text": "FSP", "where": "side" }
+   ],
+   "sources": [
+    {
+     "title": "FSP HYPER K PRO(ATX3.1) 600W 브론즈 — 공식 제품 페이지(한국어, 120mm HYB 팬·올 블랙 플랫 케이블, 제품 사진 4장 + 팬·몸통 설명 그림 3장)",
+     "url": "https://www.fsplifestyle.com/kr/product/HYPER_K_PRO600W_BR_ATX31.html"
+    }
+   ],
+   "confidence": "high",
+   "checked_at": "2026-11-23",
+   "note": "사진: 무광 검정 상자, 옆면 검정 딱지에 위아래 노란 가는 선 두 줄과 흰 'HYPER' + 노란 'K' + 흰 바탕 'PRO' 상자, FSP 로고. 팬은 둥근 철사 격자(동심 고리 + 바퀴살 4개, 허브 앞 작은 원) 밑 검정 날개. 뒤판은 벌집 타공 + 세로 흰 'POWER NEVER ENDS' 글자·전원 단자·스위치. 케이블은 검정 플랫 선 다발 직결(사진상 논모듈러 — models 의 modular 는 비어 있다). 팬 단품 설명 그림은 있으나 날개가 겹쳐 수를 비웠다."
   }
  }
 }
