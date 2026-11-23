@@ -3,6 +3,7 @@
  "jobs": {
   "wanted-335089": "aldagram-kanna-web-engineer",
   "wanted-383708": "creationline-fullstack-sherpa-japan",
+  "wanted-389061": "datachain-senior-sre-stablecoin",
   "wanted-395987": "datax-software-engineer-japan",
   "wanted-368239": "finatext-brokerage-fullstack",
   "wanted-368237": "finatext-frontend",
@@ -165,6 +166,7 @@
   "ats-toss:group:7998884003": "tossbank-senior-data-analyst",
   "ats-toss:group:4521687003": "tossbank-server-platform",
   "ats-toss:group:6607772003": "tossbank-system-security-engineer",
+  "ats-toss:group:7719156003": "tosssecurities-idc-infra-engineer",
   "wanted-316962": "ui2-ec-fullstack-japan",
   "wanted-316964": "ui2-ec-project-leader-japan",
   "wanted-390470": "visasq-data-platform-engineer-en",
@@ -190,6 +192,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 23
+  },
+  {
+   "id": "datachain-senior-sre-stablecoin",
+   "company": "Datachain(데이터체인)",
+   "role": "시니어 SRE · 스테이블코인 사업",
+   "jobs": [
+    "wanted-389061"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 21
   },
   {
    "id": "datax-software-engineer-japan",
@@ -1641,6 +1653,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 13
+  },
+  {
+   "id": "tosssecurities-idc-infra-engineer",
+   "company": "토스증권",
+   "role": "IDC 인프라 엔지니어 (Network & System)",
+   "jobs": [
+    "ats-toss:group:7719156003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 27
   },
   {
    "id": "ui2-ec-fullstack-japan",
