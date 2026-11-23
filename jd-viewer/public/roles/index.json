@@ -145,6 +145,7 @@
   "ats-toss:group:7998884003": "tossbank-senior-data-analyst",
   "ats-toss:group:4521687003": "tossbank-server-platform",
   "ats-toss:group:6607772003": "tossbank-system-security-engineer",
+  "wanted-316962": "ui2-ec-fullstack-japan",
   "wanted-316964": "ui2-ec-project-leader-japan",
   "wanted-390470": "visasq-data-platform-engineer-en",
   "wanted-390176": "visasq-data-platform-engineer"
@@ -1454,6 +1455,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 13
+  },
+  {
+   "id": "ui2-ec-fullstack-japan",
+   "company": "株式会社Ui2",
+   "role": "풀스택 엔지니어 (대형 브랜드 EC 플랫폼 개발)",
+   "jobs": [
+    "wanted-316962"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 24
   },
   {
    "id": "ui2-ec-project-leader-japan",

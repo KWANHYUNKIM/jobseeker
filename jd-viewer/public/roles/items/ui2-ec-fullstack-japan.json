@@ -1,0 +1,1300 @@
+{
+ "id": "ui2-ec-fullstack-japan",
+ "company": "株式会社Ui2",
+ "role": "풀스택 엔지니어 (대형 브랜드 EC 플랫폼 개발)",
+ "team": "개발 부문 (원티드·LAPRAS Global Bridge 일본 채용)",
+ "jobs": [
+  "wanted-316962"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "세계적 패션·스포츠·뷰티·가구 브랜드의 **온라인 쇼핑몰**을 고객사와 직접 계약(원청)해 짓고, 기능을 붙이고, 지키는 Java 풀스택 개발자입니다.[1] 일의 약 8할은 이미 도는 몰의 기능 추가·부하 대책·화면 쇄신입니다.[2]",
+  "env": "Java(Spring Boot·Hibernate) + React·TypeScript, DB 는 PostgreSQL·MySQL·Oracle, 서버는 Linux·AWS·Tomcat, 워터폴 개발.[1][2] 직원 약 30명, 완전 원격 권장이지만 **일본 거주·비즈니스 일본어 필수**입니다.[1][3]",
+  "oneline": "EC 를 몰라도 들어갈 수 있는 일본 SI 의 Java 풀스택 자리 — **일본어 서류·paiza 코딩 테스트**가 첫 관문입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "Javaメインで、ECサイト構築、追加開発などの開発案件や、システム保守、運用保守などをご担当いただきます。",
+   "short": "Java 로 대형 브랜드 쇼핑몰을 새로 짓고, 기능을 붙이고, 고장 없이 돌게 지키는 일이다.",
+   "why": "Ui2 는 스스로를 '뉴리테일 솔루션 제공자'라 부르고, 사업의 첫째가 EC(온라인 쇼핑몰) 시스템 구축입니다.[1][4] 고객사와 직접 계약하는 **원청(一次請け, 하청을 거치지 않는 첫 계약자)** 일이라 한 번 지은 몰을 해마다 고치고 지키는 일이 계속 이어집니다.[1] 같은 자리의 paiza 공고는 일의 약 **8할이 기존 몰의 기능 추가·부하 대책·프론트 쇄신**, 약 2할이 새로 짓기라고 적었습니다.[2]",
+   "actually": {
+    "intro": "회사가 적은 일을 종류별로 나누면 이렇습니다.",
+    "items": [
+     "**새로 짓기(構築)** — 패키지 고르기 → 아키텍처 설계 → 옛 몰 교체(리플레이스). 전체의 약 2할.[2]",
+     "**추가 개발** — 쿠폰·회원 등급·새 결제 수단처럼 운영 중인 몰에 기능을 붙인다.[2]{추론}",
+     "**부하 대책** — 세일·신상품 발매 때 몰리는 접속을 버티게 캐시·DB·서버를 손본다.[2]{추론}",
+     "**프론트 쇄신** — 오래된 화면을 React 같은 새 화면 기술로 바꾼다.[1][2]",
+     "**보수·운영 보수** — 장애 대응, 라이브러리·OS 업데이트, 고객 문의 조사.{추론}"
+    ]
+   },
+   "how_far": "몰의 기획·요구는 고객과 PM/PL 이 정리합니다.[1] 입사 초 개발자는 **설계서대로 기능을 만들고, 고친 부분을 시험해 넘기는 것**이 최소선입니다. 고객사 상주는 없고 회사 안에서 개발합니다.[2]{추론}",
+   "refs": [
+    1,
+    2,
+    4
+   ],
+   "study": [
+    "ui2-note-env",
+    "spring-boot-book",
+    "sb3-book"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "業界知識や自社サービス／パッケージソフトへの理解を深めていただき、ECサイト構築案件に携わり、開発・導入業務をお任せいたします。",
+   "short": "회사가 쓰는 쇼핑몰 패키지·자체 틀을 먼저 익힌 뒤, 그걸로 고객 몰을 짓고 넣는다.",
+   "why": "Ui2 는 특정 EC 패키지 하나에 기대지 않고, 고객 규모에 맞는 패키지를 고르거나 맞는 게 없으면 **자체 프레임워크**로 짓는다고 밝힙니다.[1][3] 그래서 입사하면 일반 Spring 지식 위에 '이 회사가 다룰 줄 아는 패키지들'을 따로 배워야 합니다.[1]",
+   "actually": {
+    "intro": "어떤 패키지인지는 공개되지 않았습니다. 업계에서 패키지를 쓰면 보통 이런 일입니다.",
+    "items": [
+     "**패키지 골격 읽기** — 상품·재고·장바구니·주문·회원·포인트가 어떤 표와 화면으로 나뉘는지 먼저 익힌다.{추론}",
+     "**덧씌워 고치기** — 원본 코드를 직접 고치지 않고 위에 고객용 코드를 얹는다. Salesforce 의 EC 제품도 기본 모듈 위에 덧씌우는 '카트리지'를 쌓는 방식이고, 원본을 고치면 업그레이드 지원을 잃는다고 적었다.[24]",
+     "**도입(導入)** — 고객의 상품 데이터 옮기기, 결제·배송사 연동, 운영자 교육까지 넘겨 주는 일.{추론}",
+     "**회사 사례** — OMO(온·오프라인 통합) 기반화 프로젝트에서 EC·콜센터·개인 간 거래(CtoC) 시스템을, DtoC 프로젝트에서 EC·회원·포인트 통합 기반·네이티브 앱을 만들었다.[6]"
+    ]
+   },
+   "how_far": "입사 뒤 EC 업계·EC 개발 교육과 OJT 가 붙습니다.[1] 지원 단계에서는 패키지를 몰라도 되고, **쇼핑몰의 기본 흐름(상품 → 장바구니 → 주문 → 결제 → 배송)을 표와 API 로 설명할 수 있으면** 충분합니다.{추론}",
+   "refs": [
+    1,
+    3,
+    6,
+    24
+   ],
+   "study": [
+    "jpa-app-1",
+    "sfra-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "またその後は経験を重ね、技術を突き詰めることも可能ですし、上流工程にシフトしリーダーやマネジメントへのスキルアップも可能です。\n得意を伸ばしたい方、積極的に挑戦したい方、専門性を高めたい方などなど、それぞれのキャリアプランをサポートします。",
+   "short": "몇 년 뒤엔 기술을 깊이 파거나, 요건 정의 쪽으로 올라가 리더·관리자가 되는 길이 있다.",
+   "why": "일본 SI(시스템 구축 대행) 업계는 요건 정의·설계 같은 **상류 공정(上流工程)** 과 구현·시험 같은 하류 공정을 나눠 부릅니다.{추론} 회사는 SIer·SES(인력을 고객사에 보내는 계약) 출신이 '하류 공정만 해 왔다'는 불만으로 많이 옮겨 왔다고 적었습니다.[1]",
+   "actually": {
+    "items": [
+     "**기술 쪽** — 리드 프로그래머로 여러 프로젝트의 방침을 정하고, Git 전환·릴리스 자동화·IDE 도입 같은 개발 효율화를 맡은 사원 인터뷰가 있다. 기술로 PM 과 같은 등급 이상이 될 수 있다고 했다.[13]",
+     "**관리 쪽** — 같은 회사가 'EC 사이트 개발 프로젝트 리더' 공고를 따로 낸다. 고객 협상·요구 듣기·제안, 설계·개발, 진척·과제 관리가 그 자리의 일이다.[17]",
+     "**평가** — 해마다 3~5개 주제를 정해 난이도·과정·품질·공헌도로 본다(2023년 글).[12] 평가는 엔지니어 출신 사업본부장과 대표가 한다.[1]"
+    ]
+   },
+   "how_far": "지원할 때 정할 필요는 없습니다. 면접에서 '3년 뒤 기술과 관리 중 무엇에 가깝고 싶은가'를 물을 수 있으니 한 문장으로 답을 준비합니다.{추론}",
+   "refs": [
+    1,
+    12,
+    13,
+    17
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "【入社後のフォロー】\nEC業界やEC開発に関する座学やOJTを通して、理解を深めていただきます。",
+   "short": "EC 업계와 EC 개발을 강의와 현장 실습(OJT)으로 가르쳐 준다 — EC 경험이 없어도 된다.",
+   "why": "회사는 EC 개발을 해 보지 않고 들어온 사람이 대부분이라고 적었습니다.[1] 경험에 맞춰 입사 후 1~3개월 동안 **코드 테스트·리뷰 형식의 기술 연수**를 한다고 합니다.[1][2]",
+   "actually": {
+    "items": [
+     "**座学(강의)** — EC 업계 구조와 개발 지식을 배우는 시간.[1]",
+     "**OJT(On the Job Training, 실제 일을 하며 배우기)** — 선배가 맡은 프로젝트에 들어가 작은 기능부터 만든다.[1]{추론}",
+     "**기술 연수** — 과제 코드를 쓰고 리뷰를 받는 방식, 1~3개월.[2]"
+    ]
+   },
+   "how_far": "연수가 있어도 Java·Spring 기본은 들어올 때 갖고 와야 합니다(자격요건 Java 실무 1년).[1]",
+   "refs": [
+    1,
+    2
+   ],
+   "study": [
+    "practical-testing"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "各プロジェクトは、PM／PLのもと参画しますので、各種業務でわからない点を気軽に聞くことができます。",
+   "short": "프로젝트마다 PM·PL 밑에 들어가니, 모르는 건 바로 물어보며 일할 수 있다는 뜻이다.",
+   "why": "PM(프로젝트 관리자)은 일정·비용·고객을, PL(프로젝트 리더)은 개발팀의 설계·작업 분배를 맡는 것이 일본 SI 의 흔한 나눔입니다.{추론} 회사 개발 방식은 사양 정하기 → 기술 선정 → 설계 → 구현 → 테스트의 **워터폴(단계를 차례로 끝내는 방식)** 입니다.[2][12]",
+   "actually": {
+    "items": [
+     "작업은 PL 이 설계서 단위로 나눠 준다.{추론}",
+     "만든 코드는 GitHub 에서 PM·기술 책임자가 리뷰한다.[1]",
+     "워터폴이라 단계마다 설계서·테스트 결과 같은 문서를 남긴다.{추론}"
+    ]
+   },
+   "how_far": "혼자 다 정하는 자리는 아닙니다. **질문을 일본어로 짧고 정확하게** — 무엇을 해 봤고, 어디서 막혔고, 무엇을 정해 주면 되는지 — 하는 것이 최소선입니다.{추론}",
+   "refs": [
+    1,
+    2,
+    12
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "部署内で技術をはじめとする勉強会も定期的に開催しています。",
+   "short": "부서 안에서 기술 공부 모임을 정기적으로 연다 — 월 1~2회, 그리고 연 2회 전사 워크숍.",
+   "why": "회사는 부서마다 월 1~2회 기술 공부 모임, 연 2회 사내 워크숍을 연다고 적었습니다.[2] 원격 근무가 중심이라 6월·12월 워크숍이 부서를 넘어 얼굴을 보는 자리입니다 — 사장과 각 사업부가 반기 목표와 실적을 발표합니다.[15]",
+   "actually": {
+    "items": [
+     "**공부 모임** — 부서·뜻있는 사람이 주제를 정해 여는 기술 세미나.[2][12]",
+     "**외부 공부 비용** — 세미나·온라인 교육·어학·자격 시험 비용을 매달 5,000엔까지 회사가 낸다.[8]"
+    ]
+   },
+   "refs": [
+    2,
+    8,
+    12,
+    15
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・開発OS：Windows、OS X\n・サーバーOS：Linux",
+   "short": "개발은 Windows·Mac 중 고르고, 몰은 Linux 서버에서 돈다.",
+   "why": "사원마다 Windows·Mac 을 골라 받고, 원하는 기계를 상담해 지급합니다.[2][12] 몰이 도는 서버는 Linux 라서 배포·로그 확인은 Linux 명령으로 합니다.[1]{추론}",
+   "how_far": "Mac 에서 만들고 Linux 에서 돌리므로 **줄바꿈·파일 이름 대소문자·경로 차이**로 생기는 문제를 알아보는 정도면 됩니다.{추론}",
+   "refs": [
+    1,
+    2,
+    12
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・開発言語：Java(Spring)、JavaScript、typescript",
+   "short": "서버는 Java(Spring), 화면은 JavaScript·TypeScript — 나눠 맡지 않고 둘 다 한다.",
+   "why": "회사는 백엔드·프론트엔드를 나누는 분업을 하지 않아 **풀스택으로 개발한다**고 적었습니다.[1] paiza 공고는 주 언어를 Java, 일부를 JavaScript·PHP 로 적었습니다.[2]",
+   "level": {
+    "basic": "Java 컬렉션·예외·날짜(LocalDate) · JavaScript 비동기(fetch·Promise)",
+    "work": "Spring 의 의존성 주입·트랜잭션 · TypeScript 타입으로 API 응답 모양 맞추기",
+    "team": "돈·재고 계산을 틀리지 않기(정수 엔·반올림 규칙), 옛 코드(일부 PHP)를 읽고 고치기"
+   },
+   "actually": {
+    "items": [
+     "**TypeScript** — JavaScript 에 타입을 얹어 실행 전에 잘못된 값을 잡는다.[40]",
+     "**돈 계산** — 엔은 소수점이 없지만 소비세 10%를 상품마다 끊을지 주문 합계에서 끊을지에 따라 결과가 달라진다. 어느 쪽으로 할지는 고객사가 정한다.{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "세금을 어디서 끊나 — 98엔 3개",
+     "lang": "python",
+     "body": "같은 장바구니인데 상품마다 1엔 아래를 버리면 27엔, 합계에서 버리면 29엔입니다(직접 돌린 출력). 규칙 하나가 화면·영수증·정산 숫자를 다 바꿉니다.",
+     "code": "from decimal import Decimal as D, ROUND_DOWN\nitems = [D(98), D(98), D(98)]          # 98엔짜리 3개(세금 빼고)\nrate = D(\"0.10\")\nper_line = sum((p * rate).quantize(D(1), ROUND_DOWN) for p in items)\nper_order = (sum(items) * rate).quantize(D(1), ROUND_DOWN)\nprint(\"line-by-line tax:\", per_line)\nprint(\"order total tax :\", per_order)\n# line-by-line tax: 27\n# order total tax : 29"
+    }
+   ],
+   "refs": [
+    1,
+    2,
+    40
+   ],
+   "study": [
+    "spring-core",
+    "ts-handbook"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・フレームワーク：Spring Boot、Hibernate、React",
+   "short": "Spring Boot 로 서버를, Hibernate 로 DB 를, React 로 화면을 만든다.",
+   "why": "회사 공고와 사내 소개 글이 같은 조합을 적었습니다.[1][12] Spring Boot 는 설정을 줄여 바로 실행되는 Spring 앱을 만들게 해 주고,[26] Hibernate 는 자바 객체와 DB 표를 이어 주는 ORM 이며,[25] React 는 화면을 컴포넌트로 쪼개 만드는 라이브러리입니다.[27]",
+   "actually": {
+    "items": [
+     "**Spring Boot** — 상품 목록·주문 같은 REST API, 관리 화면용 API.[26]{추론}",
+     "**Hibernate** — 주문·주문 상세·재고를 엔티티로 다룬다. 같은 상품을 여러 사람이 동시에 사면 `@Version` 칸으로 늦게 온 쪽을 막는 **낙관적 잠금**을 쓴다.[25]",
+     "**React** — 상품 상세·장바구니 같은 화면. 프론트 쇄신 일감의 주인공.[2][27]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "마지막 1켤레를 두 사람이 동시에 산다",
+     "lang": "python",
+     "body": "Hibernate 가 `@Version` 칸으로 하는 일을 SQL 로 직접 보인 것입니다. 둘 다 version 7 을 읽었지만 먼저 쓴 A 만 1행을 바꾸고, B 는 0행 — Hibernate 는 이때 예외를 던집니다.[25] (SQLite 로 직접 돌린 출력)",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE stock (sku TEXT PRIMARY KEY, qty INT, version INT)\")\ndb.execute(\"INSERT INTO stock VALUES ('SHOE-27', 1, 7)\")\n\ndef buy(user, seen_version):\n    cur = db.execute(\n        \"UPDATE stock SET qty = qty - 1, version = version + 1 \"\n        \"WHERE sku = 'SHOE-27' AND version = ? AND qty > 0\", (seen_version,))\n    print(user, \"updated rows =\", cur.rowcount)\n\n# 두 사람이 같은 순간에 '남은 1개, version 7' 을 읽었다\nbuy(\"A\", 7)\nbuy(\"B\", 7)\nprint(db.execute(\"SELECT qty, version FROM stock\").fetchone())\n# A updated rows = 1\n# B updated rows = 0\n# (0, 8)"
+    }
+   ],
+   "how_far": "Spring Boot 로 CRUD API 를 만들고, Hibernate 가 실제로 내보내는 SQL 을 로그로 보며 N+1(목록 한 번에 상세 조회가 줄줄이 따라 나가는 문제)을 알아보는 수준이 실무 1년 차의 기준선입니다.{추론}",
+   "refs": [
+    1,
+    2,
+    12,
+    25,
+    26,
+    27
+   ],
+   "study": [
+    "spring-boot-book",
+    "jpa-basic",
+    "jpa-book",
+    "hibernate-locking",
+    "react-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・DB：PostgreSQL、MySQL、mSQL、Oracle",
+   "short": "고객마다 DB 가 다르다 — PostgreSQL·MySQL·Oracle 을 오가며 SQL 을 쓴다.",
+   "why": "원청으로 여러 고객의 몰을 맡으니 고객이 이미 쓰는 DB 를 따라갑니다.{추론} 사내 소개 글은 개발 환경 두 가지를 적었는데 하나는 PostgreSQL·MySQL, 다른 하나는 PostgreSQL·Oracle 입니다.[12] 목록의 'mSQL' 은 오래된 작은 DB(Mini SQL)일 수도, MySQL 의 오타일 수도 있습니다.[38]{추론}",
+   "level": {
+    "basic": "JOIN · GROUP BY · CASE · 인덱스가 왜 빠른가",
+    "work": "트랜잭션과 격리 수준 · 실행계획 읽기 · DB 마다 다른 날짜·문자열 함수",
+    "team": "세일 때 주문·재고 표가 막히지 않게 — 잠금 범위 줄이기, 느린 쿼리 찾기"
+   },
+   "actually": {
+    "items": [
+     "**매출 집계** — 주문 상태(결제·취소·환불)별로 나눠 날마다 합친다.{추론}",
+     "**격리 수준** — PostgreSQL 기본은 Read Committed 라서 같은 트랜잭션 안에서도 두 번 읽은 값이 다를 수 있다. 재고처럼 민감한 곳은 잠금이나 버전으로 지킨다.[28]",
+     "**Oracle** — 시퀀스·날짜 함수·페이징 문법이 PostgreSQL 과 다르다. 고객 시스템을 옮길 때 이 차이를 맞춘다.[34]{추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "날마다 결제된 매출과 결제 안 된 주문 수",
+     "lang": "python",
+     "body": "취소·환불을 매출에서 빼는 가장 흔한 집계입니다(SQLite 로 직접 돌린 출력). FILTER 같은 문법은 DB 마다 되는지 달라서 어디서나 되는 CASE 로 썼습니다.",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ndb.executescript(\"\"\"\nCREATE TABLE orders (id INT, ordered_on TEXT, status TEXT, amount INT);\nINSERT INTO orders VALUES\n (1,'2026-11-01','paid',5500),(2,'2026-11-01','cancelled',3300),\n (3,'2026-11-02','paid',12100),(4,'2026-11-02','paid',2200),\n (5,'2026-11-02','refunded',2200);\n\"\"\")\nfor r in db.execute(\"\"\"\nSELECT ordered_on,\n       SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS sales,\n       SUM(CASE WHEN status <> 'paid' THEN 1 ELSE 0 END) AS not_paid\nFROM orders GROUP BY ordered_on ORDER BY ordered_on\"\"\"):\n    print(r)\n# ('2026-11-01', 5500, 1)\n# ('2026-11-02', 14300, 1)"
+    }
+   ],
+   "refs": [
+    12,
+    28,
+    34,
+    38
+   ],
+   "study": [
+    "real-mysql",
+    "pg-iso",
+    "oracle-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・インフラ：AWS",
+   "short": "서버는 AWS 위에 있다 — 인프라를 코드(CloudFormation)로 만드는 걸 읽을 줄 알면 된다.",
+   "why": "paiza 공고는 인프라 도구로 AWS 와 **AWS CloudFormation**(서버·네트워크 구성을 설정 파일로 적어 만드는 서비스)을 적었습니다.[2][30] 세일 때 몰리는 접속은 보통 CDN(가까운 곳에서 화면·이미지를 대신 주는 캐시)으로 먼저 받아 냅니다.[39]{추론}",
+   "actually": {
+    "items": [
+     "**구성 읽기** — 웹 서버·DB·로드밸런서가 템플릿 파일에 어떻게 적혔는지 보고 고친다.[30]",
+     "**부하 대책** — 정적 파일을 CDN 캐시로 돌리고, 캐시 유지 시간을 조절한다.[39]{추론}"
+    ]
+   },
+   "how_far": "인프라 전담이 따로 있다는 말은 없습니다. 풀스택이라 **배포·로그 확인·간단한 설정 변경은 직접** 한다고 보는 게 안전합니다.[1]{추론}",
+   "refs": [
+    1,
+    2,
+    30,
+    39
+   ],
+   "study": [
+    "cfn-docs"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・開発環境：Git、Githubなど",
+   "short": "코드는 Git·GitHub 로 관리하고, PM·기술 책임자가 리뷰한다.",
+   "why": "회사는 코드 리뷰 문화가 자리 잡았고 PM·기술 책임자가 리뷰한다고 적었습니다.[1] 한 사원은 버전 관리를 Git 으로 바꾸는 일을 직접 맡았다고 했습니다 — 예전엔 다른 도구였다는 뜻입니다.[13]",
+   "actually": {
+    "items": [
+     "**브랜치와 풀 리퀘스트** — 기능마다 갈래를 나눠 만들고, 풀 리퀘스트로 리뷰를 받은 뒤 합친다.[35][36]",
+     "**리뷰에 답하기** — 지적에 고친 커밋으로 답하고, 이유는 댓글로 남긴다.[36]"
+    ]
+   },
+   "refs": [
+    1,
+    13,
+    35,
+    36
+   ],
+   "study": [
+    "pro-git",
+    "gh-review"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "・その他：Apache Tomcat",
+   "short": "Java 웹 앱은 Apache(웹 서버)와 Tomcat(Java 실행 서버) 위에 올린다.",
+   "why": "Tomcat 은 Java 웹 앱(서블릿)을 실행하는 서버이고, 앞에 Apache 웹 서버를 두어 정적 파일과 요청 전달을 맡기는 구성이 오래 쓰였습니다.[29]{추론} Spring Boot 는 Tomcat 을 품고 jar 하나로 뜨지만, 오래된 고객 몰은 war 파일을 Tomcat 에 올리는 방식이 남아 있을 수 있습니다.[26][29]{추론}",
+   "actually": {
+    "items": [
+     "**배포** — war 를 Tomcat 의 webapps 에 올리거나 jar 로 직접 띄운다.[29]",
+     "**장애 조사** — Tomcat 로그(catalina.out)와 Apache 접속 로그에서 오류 시각과 요청을 맞춰 본다.{추론}"
+    ]
+   },
+   "refs": [
+    26,
+    29
+   ],
+   "study": [
+    "tomcat-docs",
+    "http-basic"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "新規開発プロジェクトの場合：10～15名アサインされます。\n※開発工程により人数が上下します。",
+   "short": "새로 짓는 프로젝트는 10~15명이 붙는다 — 공정에 따라 사람 수가 오르내린다.",
+   "why": "새 몰은 설계·구현·시험이 한꺼번에 몰려 사람이 많이 듭니다.[1] 회사 전체가 약 30명(2025년 8월), 29명(2026년 7월)이라 새 프로젝트 하나에 개발 인력 상당수가 모이는 셈입니다.[3][10]{추론}",
+   "how_far": "큰 팀에서는 **맡은 화면·API 의 범위를 설계서대로 지키고, 남의 코드와 부딪치지 않게** 하는 것이 기본입니다.{추론}",
+   "refs": [
+    1,
+    3,
+    10
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "保守運用プロジェクトの場合：2〜5名アサインされます。",
+   "short": "운영 중인 몰을 지키는 프로젝트는 2~5명 — 일의 대부분이 이쪽이다.",
+   "why": "기존 고객이 많아 보수 개발 비율이 높고, 새로 짓기는 전체의 2할입니다.[1] 사람이 적어 한 사람이 화면·서버·DB·배포를 다 만지는 일이 많습니다.[1]{추론}",
+   "actually": {
+    "items": [
+     "고객 요청으로 작은 기능을 붙이고, 고친 부분이 다른 곳을 깨지 않았는지 시험한다.{추론}",
+     "라이브러리·Java 버전 올리기, 보안 패치.{추론}",
+     "회사는 테스트 자동화 같은 사내 패키지를 만들어 반복 일을 줄이고 있다고 적었다.[3]"
+    ]
+   },
+   "refs": [
+    1,
+    3
+   ],
+   "study": [
+    "practical-testing"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "以下すべてのご経験をお持ちの方からのご応募をおまちしています！\n・何らかのシステム開発経験　実務３年以上",
+   "short": "언어는 상관없이 시스템을 만들어 본 실무 3년 — 학교·개인 과제가 아니라 일로 한 것.",
+   "why": "아래 요건을 '전부' 갖춘 사람을 받는다고 적었습니다.[1] 회사는 SIer·SES 출신이 많다고 했으니 일본 SI 경력이 아니어도 되지만, **돈을 받고 만든 시스템 3년**은 넘어야 합니다.[1]{추론}",
+   "how_far": "일본어 직무경력서에 프로젝트마다 기간·인원·맡은 공정(설계·구현·시험)·기술을 표로 적어 3년을 보여 줍니다. 일본어 이력서·직무경력서가 없으면 서류에서 빠집니다.[1]",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・Java 実務１年以上",
+   "short": "Java 를 일로 1년 이상 — Spring 으로 API 를 만들고 고쳐 본 수준이다.",
+   "why": "일이 Java 중심이고,[1] 같은 회사 리더 공고는 Java 3년을 요구하니 이 자리가 그보다 낮은 단계입니다.[17]",
+   "level": {
+    "basic": "Java 문법·컬렉션·예외 · Spring MVC 컨트롤러",
+    "work": "Spring Boot + JPA/Hibernate 로 CRUD · 트랜잭션 · 단위 테스트",
+    "team": "남이 짠 큰 코드(패키지·자체 틀) 위에 덧붙이기 · 동시 주문 같은 경계 상황"
+   },
+   "how_far": "전형 첫 관문이 **paiza 코딩 테스트**이고 이 공고의 통과 기준은 C 랭크입니다.[1][2] paiza 는 C 랭크를 '비교적 쉬운 로직을 시간 안에 구현할 수 있는' 상위 약 60% 수준으로 설명합니다.[23]",
+   "refs": [
+    1,
+    2,
+    17,
+    23
+   ],
+   "study": [
+    "spring-core",
+    "jpa-basic",
+    "paiza-skillcheck"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本語レベル: ビジネス",
+   "short": "일본어로 회의·문서·고객 대화를 해야 해서 — 보통 JLPT N2 이상을 뜻한다.",
+   "why": "원티드 공고 머리에 '일본어 전용 포지션'이라 적고, 일본어로 이력서·직무경력서를 내지 않거나 일본어 소통이 안 되면 따로 알리지 않고 서류에서 뺀다고 했습니다.[1] 원청이라 고객사와 직접 이야기하고, 설계서도 일본어입니다.[1]{추론}",
+   "actually": {
+    "items": [
+     "'비즈니스 수준'의 공식 기준은 없습니다. 흔히 JLPT N2 이상으로 읽고, N2 는 일상과 좀 더 넓은 장면의 일본어를 어느 정도 이해하는 수준입니다.[22]{추론}",
+     "사원 인터뷰에 '한국 국적 사원이 많다고 들었지만 모두 일본어가 능숙했다'는 말이 있습니다.[14] 대표도 한국계 이름이고 회사는 한국에서 오프쇼어 개발을 합니다.[4][5]"
+    ]
+   },
+   "how_far": "면접에서 자기 프로젝트를 일본어로 3분 설명하고 질문에 답할 수 있으면 최소선입니다.{추론}",
+   "refs": [
+    1,
+    4,
+    5,
+    14,
+    22
+   ],
+   "study": [
+    "jlpt"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "・日本国内への移住が必要",
+   "short": "완전 원격이어도 일본에 살아야 한다 — 일할 수 있는 체류 자격이 필요하다.",
+   "why": "완전 원격을 권하지만 릴리스 전후나 지시가 있으면 출근할 수 있고,[1] 회사 계약·사회보험은 일본 거주자 기준입니다.{추론} 외국인 개발자는 보통 '기술·인문지식·국제업무' 체류 자격으로 일합니다.[21]",
+   "how_far": "비자 지원·이사 지원은 공고에 적혀 있지 않습니다 — 면담 때 확인합니다.[1]{추론}",
+   "refs": [
+    1,
+    21
+   ],
+   "study": [
+    "isa-visa"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "ECサイト構築経験",
+   "short": "쇼핑몰을 지어 본 사람은 상품·재고·주문·결제 흐름을 이미 알아서 바로 투입된다.",
+   "why": "회사 일의 거의 전부가 EC 이고, EC 개발 경험 없이 들어온 사람이 대부분이라 연수를 한다고 했으니 '우대'에 그칩니다.[1]",
+   "flows": [
+    {
+     "caption": "쇼핑몰 한 건의 흐름 {추론}",
+     "steps": [
+      "상품 · 상품·가격·재고 등록",
+      "장바구니 · 담기·쿠폰·세금 계산",
+      "주문 · 재고 확보(동시 구매 막기)",
+      "결제 · 결제 대행사 연동",
+      "배송·반품 · 상태 바꾸기·환불",
+      "회원·포인트 · 적립·사용"
+     ]
+    }
+   ],
+   "refs": [
+    1
+   ],
+   "study": [
+    "jpa-app-1"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Salesforce環境を利用したWeb開発経験",
+   "short": "Salesforce 위에서 웹을 만들어 봤다면 고객이 Salesforce 를 쓰는 프로젝트에 바로 들어간다.",
+   "why": "회사는 SFA(영업 관리) 같은 전문 개발을 주제로 하는 부서가 있다고 적었습니다.[1] 어느 Salesforce 제품인지는 공고에 없습니다 — EC 쪽 제품(B2C Commerce)이면 서버 쪽 JavaScript 로 기본 카트리지 위에 고객용 카트리지를 쌓아 만듭니다.[24]{추론}",
+   "how_far": "경험이 없다면 Salesforce 무료 학습 사이트 Trailhead 로 기본 개념을 보는 정도로 충분합니다.[37]{추론}",
+   "refs": [
+    1,
+    24,
+    37
+   ],
+   "study": [
+    "trailhead",
+    "sfra-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "Linuxでのサーバ管理実務経験",
+   "short": "Linux 서버를 직접 만져 봤다면 배포·로그·장애 조사를 남에게 맡기지 않아도 된다.",
+   "why": "서버 OS 가 Linux 이고 Apache·Tomcat 을 씁니다.[1] 보수 프로젝트는 2~5명이라 서버 일을 따로 맡을 사람이 없을 때가 많습니다.[1]{추론}",
+   "actually": {
+    "items": [
+     "서비스 켜고 끄기·상태 보기, 로그에서 오류 시각 찾기, 디스크·메모리 확인.{추론}",
+     "Tomcat 설정 바꾸고 다시 띄우기.[29]"
+    ]
+   },
+   "refs": [
+    1,
+    29
+   ],
+   "study": [
+    "tomcat-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "アプリ開発経験（AndroidまたはIOS）",
+   "short": "쇼핑몰 회원·포인트를 앱으로도 내주는 프로젝트가 있어서 — 앱 경험은 덤이다.",
+   "why": "회사 DtoC 사례에 EC·회원·포인트 통합 기반과 함께 **네이티브 앱**이 들어 있습니다.[6]",
+   "how_far": "앱은 Android(Kotlin/Java)[31]와 iOS(Swift)[32]가 따로 있습니다. 서버 개발자라면 앱이 부르는 API 와 로그인·푸시 흐름을 알면 충분합니다.{추론}",
+   "refs": [
+    6,
+    31,
+    32
+   ],
+   "study": [
+    "android-docs"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "・PostgreSQL、Oracle、HTML、CSSの知識または経験",
+   "short": "고객이 쓰는 DB(PostgreSQL·Oracle)와 화면 기본(HTML·CSS)을 알면 처음부터 덜 막힌다.",
+   "why": "사내 개발 환경 하나가 Java + PostgreSQL·Oracle 입니다.[12] 프론트 쇄신 일감이 많아 화면 마크업도 직접 고칩니다.[2]",
+   "actually": {
+    "items": [
+     "PostgreSQL·Oracle 의 문법 차이(페이징·날짜·시퀀스)를 알아본다.[28][34]{추론}",
+     "HTML·CSS — 반응형(휴대폰·PC) 화면과 접근성 기본. 일본 브랜드 몰은 휴대폰 화면이 먼저다.[33]{추론}"
+    ]
+   },
+   "refs": [
+    2,
+    12,
+    28,
+    33,
+    34
+   ],
+   "study": [
+    "pg-iso",
+    "mdn-web"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "ui2-note-env",
+   "title": "Java経験のエンジニア必見｜上場子会社Ui2の社内環境を徹底的に紹介します！",
+   "by": "Ui2 채용 note · 2023-08",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://note.com/ui2_saiyou/n/n37b4b116093d",
+   "why": "이 회사 개발 방식(워터폴)·개발 환경 두 가지·인원 구성·평가·급여 지급 방식을 회사가 직접 적은 글. 지원 전에 한 번."
+  },
+  {
+   "id": "spring-core",
+   "title": "스프링 핵심 원리 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/spring-core",
+   "why": "Java 실무 1년 요건의 바탕 — 의존성 주입과 컨테이너를 실행 결과로."
+  },
+  {
+   "id": "spring-boot-book",
+   "title": "스프링 부트 — 핵심 원리와 활용 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/spring-boot",
+   "why": "Spring Boot 가 대신 해 주는 설정과 내장 Tomcat — 프레임워크 줄과 Tomcat 줄을 같이."
+  },
+  {
+   "id": "jpa-basic",
+   "title": "자바 ORM 표준 JPA 프로그래밍 — 기본편 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/jpa-basic",
+   "why": "Hibernate 가 실제로 내보내는 SQL 을 보며 엔티티·연관관계·영속성 컨텍스트를 익힌다."
+  },
+  {
+   "id": "jpa-app-1",
+   "title": "스프링 부트와 JPA 활용 1편 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/jpa-app-1",
+   "why": "상품·주문·재고가 있는 작은 쇼핑몰을 처음부터 만든다 — EC 구축 경험 우대 줄의 연습판."
+  },
+  {
+   "id": "http-basic",
+   "title": "모든 개발자를 위한 HTTP 웹 기본 지식 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "/wiki/http-basic",
+   "why": "Apache 앞단·캐시·리다이렉트를 이해하는 바탕."
+  },
+  {
+   "id": "practical-testing",
+   "title": "Practical Testing — 실용적인 테스트 가이드 (우리 사이트 책)",
+   "by": "우리 사이트 책장",
+   "kind": "internal",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "/wiki/practical-testing",
+   "why": "입사 연수가 코드 테스트·리뷰 형식이고, 보수 일은 '고친 게 다른 걸 깨지 않았나'가 핵심."
+  },
+  {
+   "id": "jpa-book",
+   "title": "자바 ORM 표준 JPA 프로그래밍",
+   "by": "김영한 · 에이콘출판 · 2015",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%9E%90%EB%B0%94%20ORM%20%ED%91%9C%EC%A4%80%20JPA%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D",
+   "why": "Hibernate 를 쓰는 이 자리의 한국어 기본서. 잠금(낙관적·비관적) 장은 재고 동시성에 바로 쓴다."
+  },
+  {
+   "id": "sb3-book",
+   "title": "스프링 부트 3 백엔드 개발자 되기 (2판)",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://wikidocs.net/book/14881",
+   "why": "Spring Boot 3 + JPA 로 API 를 만들고 AWS 에 올리기까지 한 권으로 — Java 실무 1년을 채우는 연습."
+  },
+  {
+   "id": "real-mysql",
+   "title": "Real MySQL 8.0 (1·2권)",
+   "by": "백은빈 · 이성욱 · 위키북스",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "url": "https://search.kyobobook.co.kr/search?keyword=Real%20MySQL%208.0",
+   "why": "인덱스·실행계획·잠금을 MySQL 로 깊게. 세일 때 주문 표가 막히는 이유를 이해한다."
+  },
+  {
+   "id": "hibernate-locking",
+   "title": "Hibernate ORM 사용자 가이드 · Locking",
+   "by": "Hibernate",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.jboss.org/hibernate/orm/5.2/userguide/html_single/chapters/locking/Locking.html",
+   "why": "@Version 낙관적 잠금과 잠금 모드의 원문 — 위 재고 예시의 출처."
+  },
+  {
+   "id": "spring-boot-docs",
+   "title": "Spring Boot 공식 문서",
+   "by": "Spring",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.spring.io/spring-boot/index.html",
+   "why": "설정·내장 서버·배포 방식(jar/war)을 막힐 때 찾아본다."
+  },
+  {
+   "id": "react-docs",
+   "title": "React 공식 문서 · Learn",
+   "by": "Meta",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://react.dev/learn",
+   "why": "프론트 쇄신 일감 — 컴포넌트·상태·효과를 공식 자습서로."
+  },
+  {
+   "id": "ts-handbook",
+   "title": "TypeScript Handbook",
+   "by": "Microsoft",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.typescriptlang.org/docs/handbook/intro.html",
+   "why": "언어 줄의 TypeScript — API 응답 모양을 타입으로 맞추는 데까지."
+  },
+  {
+   "id": "mdn-web",
+   "title": "MDN · 웹 개발 배우기 (HTML·CSS)",
+   "by": "Mozilla",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.mozilla.org/ko/docs/Learn_web_development",
+   "why": "HTML·CSS 우대 줄 — 반응형 레이아웃과 접근성 기본."
+  },
+  {
+   "id": "pg-iso",
+   "title": "PostgreSQL 문서 · Transaction Isolation",
+   "by": "PostgreSQL",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.postgresql.org/docs/current/transaction-iso.html",
+   "why": "기본 격리 수준에서 무엇이 보이고 안 보이나 — 재고·주문 정합성."
+  },
+  {
+   "id": "oracle-docs",
+   "title": "Oracle Database 문서",
+   "by": "Oracle",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/",
+   "why": "Oracle 을 쓰는 고객 몰에서 문법 차이를 찾아볼 때."
+  },
+  {
+   "id": "tomcat-docs",
+   "title": "Apache Tomcat 10.1 문서",
+   "by": "Apache Software Foundation",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://tomcat.apache.org/tomcat-10.1-doc/index.html",
+   "why": "war 배포·로그·설정 — Apache Tomcat 줄과 Linux 서버 관리 우대 줄."
+  },
+  {
+   "id": "cfn-docs",
+   "title": "AWS CloudFormation 사용 설명서",
+   "by": "AWS",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html",
+   "why": "인프라 줄 — 템플릿을 읽고 작은 값을 고칠 수 있게."
+  },
+  {
+   "id": "pro-git",
+   "title": "Pro Git (한국어판)",
+   "by": "Scott Chacon · Ben Straub",
+   "kind": "book",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://git-scm.com/book/ko/v2",
+   "why": "브랜치·병합·되돌리기 — Git 줄의 기본."
+  },
+  {
+   "id": "gh-review",
+   "title": "GitHub 문서 · 풀 리퀘스트 리뷰",
+   "by": "GitHub",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/about-pull-request-reviews",
+   "why": "PM·기술 책임자가 하는 리뷰를 받고 답하는 방식."
+  },
+  {
+   "id": "sfra-docs",
+   "title": "Salesforce B2C Commerce · SFRA Features and Components",
+   "by": "Salesforce",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://developer.salesforce.com/docs/commerce/sfra/guide/b2c-sfra-features-and-comps.html",
+   "why": "EC 패키지를 '덧씌워 고치는' 구조의 대표 예 — 패키지 이해 줄과 Salesforce 우대 줄."
+  },
+  {
+   "id": "trailhead",
+   "title": "Trailhead",
+   "by": "Salesforce",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://trailhead.salesforce.com/",
+   "why": "Salesforce 우대 줄 — 무료로 기본 개념과 개발 환경을 체험."
+  },
+  {
+   "id": "android-docs",
+   "title": "Android 개발자 문서",
+   "by": "Google",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://developer.android.com/",
+   "why": "앱 개발 우대 줄 — 회원·포인트 앱이 서버 API 를 어떻게 부르는지."
+  },
+  {
+   "id": "paiza-skillcheck",
+   "title": "paiza 스킬 체크",
+   "by": "paiza",
+   "kind": "course",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://paiza.jp/challenges/info",
+   "why": "전형 첫 관문(C 랭크 통과). 표준 입력을 받아 답을 내는 형식에 미리 익숙해진다."
+  },
+  {
+   "id": "jlpt",
+   "title": "JLPT · N1~N5 인정 기준",
+   "by": "国際交流基金 · 日本国際教育支援協会",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.jlpt.jp/about/levelsummary.html",
+   "why": "'비즈니스 수준' 일본어가 대략 어느 급인지 가늠."
+  },
+  {
+   "id": "isa-visa",
+   "title": "出入国在留管理庁 · 在留資格「技術・人文知識・国際業務」",
+   "by": "出入国在留管理庁",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html",
+   "why": "일본 이주 필수 줄 — 개발자가 받는 체류 자격의 요건과 서류."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "Java·Spring Boot 로 작은 몰 API",
+   "time": "2~4주",
+   "goal": "Spring Boot 로 상품·장바구니·주문 API 를 만들고 테스트를 붙인다.",
+   "task": "가상 상품 50개로 상품 목록·장바구니 담기·주문 API 를 만들고, 소비세를 상품마다/합계에서 끊는 두 방식을 테스트로 비교한다.",
+   "resources": [
+    "spring-core",
+    "spring-boot-book",
+    "sb3-book",
+    "spring-boot-docs",
+    "practical-testing"
+   ]
+  },
+  {
+   "title": "Hibernate·DB 와 재고 지키기",
+   "time": "2~3주",
+   "goal": "엔티티를 설계하고, 나가는 SQL 을 읽고, 동시 주문에서 재고가 음수가 되지 않게 한다.",
+   "task": "1단계 몰에 @Version 낙관적 잠금을 넣고, 스레드 10개가 마지막 1개를 동시에 사게 해 1건만 성공하는지 확인한다. 같은 표를 PostgreSQL·MySQL 에서 돌려 격리 수준 차이를 적는다.",
+   "resources": [
+    "jpa-basic",
+    "jpa-book",
+    "jpa-app-1",
+    "hibernate-locking",
+    "pg-iso",
+    "real-mysql"
+   ]
+  },
+  {
+   "title": "React·TypeScript 화면",
+   "time": "2주",
+   "goal": "상품 목록·상세·장바구니 화면을 TypeScript 로 만들고 휴대폰 화면에 맞춘다.",
+   "task": "1단계 API 를 부르는 장바구니 화면을 만들고, 응답 타입을 정의해 잘못된 칸을 컴파일에서 잡는다.",
+   "resources": [
+    "react-docs",
+    "ts-handbook",
+    "mdn-web"
+   ]
+  },
+  {
+   "title": "Linux·Tomcat·AWS 에 올리기",
+   "time": "1~2주",
+   "goal": "앱을 Linux 서버의 Tomcat 에 올리고 로그로 오류를 찾는다.",
+   "task": "war 로 묶어 Tomcat 에 올리고 일부러 낸 오류를 catalina.out 에서 찾는다. CloudFormation 템플릿 하나로 서버를 만들어 보고 지운다.",
+   "resources": [
+    "tomcat-docs",
+    "http-basic",
+    "cfn-docs",
+    "pro-git",
+    "gh-review"
+   ]
+  },
+  {
+   "title": "지원 준비 — 일본어 서류와 paiza",
+   "time": "계속",
+   "goal": "일본어 직무경력서를 쓰고 paiza C 랭크를 받는다.",
+   "task": "1~4단계 결과를 일본어 직무경력서 한 장(프로젝트·기간·인원·공정·기술 표)으로 정리하고, paiza 스킬 체크 C 랭크 문제를 시간 안에 푼다.",
+   "resources": [
+    "paiza-skillcheck",
+    "jlpt",
+    "isa-visa",
+    "ui2-note-env"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공고 연봉 **450만~600만 엔**(14개월로 나눠 지급, 고정 잔업 20시간분 포함). 비상장 자회사라 회사 평균 급여 공시는 없다",
+  "rows": [
+   {
+    "label": "공고 표기 연봉",
+    "value": "450만~600만 엔",
+    "basis": "공고",
+    "note": "원티드 공고의 급여 칸. 수습 6개월, 수습 중 조건 같음 [1]"
+   },
+   {
+    "label": "월급(기본급 + 고정 잔업)",
+    "value": "321,500~430,500엔",
+    "basis": "공고 · paiza 2026-11",
+    "note": "고정 잔업 월 20시간분(44,000~59,000엔)이 들어 있다. 연 450만~603만 엔 사례로 적었다 [2]"
+   },
+   {
+    "label": "Ui2 EC 사이트 개발 프로젝트 리더",
+    "value": "550만~800만 엔",
+    "basis": "공고",
+    "peer": true,
+    "note": "같은 회사·같은 경로의 리더 자리(Java 3년) [17]"
+   },
+   {
+    "label": "테크노프로 로우코드 웹 개발 리더",
+    "value": "480만~800만 엔",
+    "basis": "공고",
+    "peer": true,
+    "note": "같은 경로(원티드 일본 채용)의 SI 계열 공고 [18]"
+   },
+   {
+    "label": "クリエーションライン 풀스택 엔지니어",
+    "value": "600만~900만 엔",
+    "basis": "공고",
+    "peer": true,
+    "note": "같은 경로의 풀스택 공고(경력 5~15년) [19]"
+   },
+   {
+    "label": "일본 민간 평균 급여(참고)",
+    "value": "478만 엔 (정사원 545만 엔)",
+    "basis": "국세청 민간급여실태통계 · 2024년분",
+    "note": "일본 전체 민간 급여 소득자 평균 — 회사·직군 구분 없는 나라 전체 값 [20]"
+   }
+  ],
+  "how": "Ui2 는 비상장사이고 모회사 ヴィンクス도 2024년 富士ソフト 공개매수로 상장 폐지돼 유가증권보고서의 평균 급여가 없습니다(공시 숫자 없음) [16]. 연봉은 **14개월로 나눠** 월급 12번 + 여름·겨울 상여(기본 각 1/14, 평가·실적으로 조정)로 나옵니다 [7] — 월급 321,500엔 × 14 = 450.1만 엔, 430,500엔 × 14 = 602.7만 엔이라 공고 범위와 맞습니다(직접 계산). 월급에 잔업 20시간분이 이미 들어 있어 그 이상만 따로 붙는다고 읽습니다 [2]{추론}. 비교 줄은 모두 같은 기준(공고 표기 범위)이고, 마지막 줄은 나라 전체 평균이라 위치를 가늠하는 참고로만 씁니다. 엔화 그대로, 세금·사회보험이 빠지기 전 금액입니다."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무 방식",
+    "detail": "완전 원격 권장. 릴리스 전후·지시가 있으면 출근. 주 1회부터 반년 1회까지 팀·사람마다 다름"
+   },
+   {
+    "name": "근무 시간",
+    "detail": "10:00~19:00(소정 8시간, 휴게 60분), 평균 잔업 월 20시간 이내"
+   },
+   {
+    "name": "휴일",
+    "detail": "연간 휴일 125일, 완전 주 2일(토·일)·공휴일, 여름 휴가 3일(7/1~9/30), 연말연시, 경조·산휴·육휴"
+   },
+   {
+    "name": "연차",
+    "detail": "10~20일. 첫해는 입사일 5일 + 반년 뒤 5일"
+   },
+   {
+    "name": "급여",
+    "detail": "연봉 14개월 분할(상여 연 2회), 급여 개정 연 1회(1월)"
+   },
+   {
+    "name": "통근 수당",
+    "detail": "월 40,000엔까지"
+   },
+   {
+    "name": "식당 찾기 수당",
+    "detail": "외식·포장·배달 월 3,000엔까지(연 최대 36,000엔), 다녀온 가게를 사내 지도에 공유"
+   },
+   {
+    "name": "커리어업 지원",
+    "detail": "세미나·온라인 교육·어학·자격 비용 월 5,000엔까지(연 최대 60,000엔)"
+   },
+   {
+    "name": "여행·생활 지원",
+    "detail": "숙박 여행비 일부 + 운동·학원·원격 근무 장비·통신·수도광열·업무용 옷 — 둘 합쳐 연 48,000엔까지"
+   },
+   {
+    "name": "건강",
+    "detail": "연 1회 건강검진(부인과 검진 포함), 감염병 예방 접종 전액 회사 부담, 관동 IT 소프트웨어 건강보험조합"
+   },
+   {
+    "name": "경조금",
+    "detail": "결혼·출산 축하금, 경조·질병·재해 위로금"
+   },
+   {
+    "name": "보험",
+    "detail": "사회보험 완비(건강·후생연금·고용·산재)"
+   }
+  ],
+  "note": "원티드 공고의 복리후생 칸과 회사 채용 페이지(기본 조건·복리후생, 2026년)·채용 note 의 복리후생 글(2023-10) 기준이다 [1][7][8][11]. 이사·비자 지원은 적혀 있지 않다 {추론}."
+ },
+ "location": {
+  "name": "株式会社Ui2 본사",
+  "address": "東京都港区西新橋2-20-1 Nan-o Bldg.新虎 6F",
+  "postal": "〒105-0003",
+  "map_url": "https://map.naver.com/p/search/%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B8%AF%E5%8C%BA%E8%A5%BF%E6%96%B0%E6%A9%8B2-20-1",
+  "near": "도쿄 미나토구 니시신바시·도라노몬 일대 {추론}",
+  "note": "회사 사이트의 회사 개요와 공고 근무지가 같은 주소다 [1][5]. 일부 기업 정보 사이트에는 옛 주소(芝5丁目)가 남아 있다 {추론}. 원격 권장 자리라 출근은 가끔이다 [1]."
+ },
+ "fit": {
+  "good": [
+   "SI·SES 에서 하류 공정만 하다가 요건·설계까지 넓히고 싶은 Java 개발자[1]",
+   "화면·서버·DB 를 가리지 않고 다 만지고 싶은 사람[1]",
+   "EC 경험은 없지만 연수를 받으며 쇼핑몰 도메인을 익히고 싶은 사람[1][2]",
+   "일본 거주를 원하고 완전 원격에 가까운 근무를 바라는 사람[1]"
+  ],
+  "hard": [
+   "일본어 서류·일본어 소통이 안 되면 서류에서 바로 빠진다[1]",
+   "일의 약 8할이 기존 몰 보수·추가 개발이다 — 새로 짓기만 원하면 맞지 않는다[2]",
+   "워터폴이라 단계·문서가 많고 속도감은 덜하다[2][12]",
+   "연봉 범위가 같은 경로의 다른 풀스택 공고보다 낮은 편이다[18][19]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "마지막 재고 1개를 두 사람이 동시에 주문하면 어떻게 막나요?",
+   "a": "Hibernate @Version 낙관적 잠금 — 이 회사 프레임워크 그대로.[25]"
+  },
+  {
+   "q": "운영 중인 몰에 기능을 붙일 때 다른 곳이 깨지지 않았는지 어떻게 확인하나요?",
+   "a": "일의 8할이 기존 몰 추가 개발이다.[2]"
+  },
+  {
+   "q": "세일 날 접속이 10배로 늘면 어디부터 보나요?",
+   "a": "paiza 공고가 적은 '부하 대책' 일감.[2]"
+  },
+  {
+   "q": "패키지 원본을 고치지 않고 고객 요구를 넣으려면?",
+   "a": "패키지·자체 틀 위에서 짓는 회사라서.[1][24]"
+  },
+  {
+   "q": "(일본어로) 지금까지 맡은 프로젝트의 공정과 역할을 설명해 주세요.",
+   "a": "일본어 전용 자리, 서류·면접 모두 일본어.[1] 1차는 현장 책임자, 최종은 사장 면접.[9]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "원티드 · [株式会社Ui2] 풀스택 엔지니어 (대형 브랜드 EC 플랫폼 개발) _근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/316962",
+   "kind": "posting",
+   "note": "LAPRAS Global Bridge 채용 — 회사 소개·업무·요건·복지 원문(일본어)"
+  },
+  {
+   "n": 2,
+   "title": "paiza · Ui2 풀스택 엔지니어 (대형 브랜드 EC 플랫폼 개발)",
+   "url": "https://paiza.jp/job_offers/39108",
+   "kind": "posting",
+   "date": "2026-11-20",
+   "note": "같은 자리 — 일감 비율(기존 8할·신규 2할)·월급 내역·워터폴·연수·공부 모임"
+  },
+  {
+   "n": 3,
+   "title": "paiza · 株式会社Ui2 기업 페이지",
+   "url": "https://paiza.jp/recruiters/1122",
+   "kind": "company",
+   "note": "직원 30명·평균 36세(2025-08), 주요 거래처·주주, 테스트 자동화 사내 패키지"
+  },
+  {
+   "n": 4,
+   "title": "Ui2 공식 사이트",
+   "url": "https://www.ui2.co.jp/",
+   "kind": "company",
+   "note": "뉴리테일 솔루션, ヴィンクス 그룹, 한국·말레이시아 오프쇼어"
+  },
+  {
+   "n": 5,
+   "title": "Ui2 · 회사 개요",
+   "url": "https://www.ui2.co.jp/company/profile/",
+   "kind": "company",
+   "note": "주소·설립(2011-01)·대표"
+  },
+  {
+   "n": 6,
+   "title": "Ui2 · 개발 사례",
+   "url": "https://www.ui2.co.jp/business/development-cases/",
+   "kind": "company",
+   "note": "OMO 기반화·DtoC 프로젝트"
+  },
+  {
+   "n": 7,
+   "title": "Ui2 채용 · 기본 조건",
+   "url": "https://www.ui2.co.jp/recruit/information/",
+   "kind": "company",
+   "note": "14개월 분할·상여·급여 개정·휴일·연차"
+  },
+  {
+   "n": 8,
+   "title": "Ui2 채용 · 복리후생",
+   "url": "https://www.ui2.co.jp/recruit/benefits/",
+   "kind": "company"
+  },
+  {
+   "n": 9,
+   "title": "Ui2 채용 · 채용 프로세스",
+   "url": "https://www.ui2.co.jp/recruit/process/",
+   "kind": "company",
+   "note": "서류 → 1차(웹, 현장 책임자) → 최종(사장)"
+  },
+  {
+   "n": 10,
+   "title": "Ui2 채용 · 데이터로 보는 Ui2",
+   "url": "https://www.ui2.co.jp/recruit/ui2data/",
+   "kind": "company",
+   "date": "2026-07",
+   "note": "직원 29명 — 나머지 숫자는 이미지라 못 읽음"
+  },
+  {
+   "n": 11,
+   "title": "Ui2 채용 note · 인기 대폭발 복리후생",
+   "url": "https://note.com/ui2_saiyou/n/n9b5a9817dd39",
+   "kind": "company",
+   "date": "2023-10-02"
+  },
+  {
+   "n": 12,
+   "title": "Ui2 채용 note · Java 경험 엔지니어를 위한 사내 환경 소개",
+   "url": "https://note.com/ui2_saiyou/n/n37b4b116093d",
+   "kind": "company",
+   "date": "2023-08-02",
+   "note": "워터폴·개발 환경 두 가지·26명 구성·평가·14개월 분할(당시 '상장 자회사')"
+  },
+  {
+   "n": 13,
+   "title": "Ui2 채용 note · EC 개발 특화 SIer 의 자유로운 개발 환경 (리드 프로그래머 인터뷰)",
+   "url": "https://note.com/ui2_saiyou/n/n3bedc76879a3",
+   "kind": "company",
+   "date": "2023-11-24"
+  },
+  {
+   "n": 14,
+   "title": "Ui2 채용 note · IT 미경험에서 SES 를 거쳐 Ui2 로",
+   "url": "https://note.com/ui2_saiyou/n/n7bdec493d02c",
+   "kind": "company",
+   "date": "2023-05-15"
+  },
+  {
+   "n": 15,
+   "title": "Ui2 채용 note · 전사 이벤트 #05 (2025 상반기 워크숍)",
+   "url": "https://note.com/ui2_saiyou/n/n4280a05f2719",
+   "kind": "company",
+   "date": "2025-07-08"
+  },
+  {
+   "n": 16,
+   "title": "ヴィンクス · 회사 개요(연혁)",
+   "url": "https://www.vinx.co.jp/corporate_info/profile.html",
+   "kind": "company",
+   "note": "2024년 富士ソフト 공개매수로 상장 폐지"
+  },
+  {
+   "n": 17,
+   "title": "원티드 · [株式会社Ui2] EC 사이트 개발 프로젝트 리더_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/316964",
+   "kind": "posting"
+  },
+  {
+   "n": 18,
+   "title": "원티드 · [株式会社テクノプロ] 로우코드 웹 개발 리더_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/394499",
+   "kind": "posting"
+  },
+  {
+   "n": 19,
+   "title": "원티드 · [クリエーションライン株式会社] 풀스택 엔지니어 (Sherpa Engineer)_근무지 일본",
+   "url": "https://www.wanted.co.kr/wd/383708",
+   "kind": "posting"
+  },
+  {
+   "n": 20,
+   "title": "国税庁 · 令和6年分 民間給与実態統計調査結果",
+   "url": "https://www.nta.go.jp/information/release/kokuzeicho/2025/minkan_2025/pdf/01.pdf",
+   "kind": "reference",
+   "date": "2025-09"
+  },
+  {
+   "n": 21,
+   "title": "出入国在留管理庁 · 在留資格「技術・人文知識・国際業務」",
+   "url": "https://www.moj.go.jp/isa/applications/status/gijinkoku.html",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "JLPT · N1~N5 인정 기준",
+   "url": "https://www.jlpt.jp/about/levelsummary.html",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "paiza · 스킬 체크 안내(랭크 설명)",
+   "url": "https://paiza.jp/challenges/info",
+   "kind": "reference",
+   "note": "랭크 비율은 시기마다 바뀐다고 적혀 있다"
+  },
+  {
+   "n": 24,
+   "title": "Salesforce · SFRA Features and Components",
+   "url": "https://developer.salesforce.com/docs/commerce/sfra/guide/b2c-sfra-features-and-comps.html",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "Hibernate ORM 5.2 사용자 가이드 · Locking",
+   "url": "https://docs.jboss.org/hibernate/orm/5.2/userguide/html_single/chapters/locking/Locking.html",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "Spring Boot 공식 문서",
+   "url": "https://docs.spring.io/spring-boot/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 27,
+   "title": "React 공식 문서",
+   "url": "https://react.dev/learn",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "PostgreSQL 문서 · Transaction Isolation",
+   "url": "https://www.postgresql.org/docs/current/transaction-iso.html",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "Apache Tomcat 10.1 문서",
+   "url": "https://tomcat.apache.org/tomcat-10.1-doc/index.html",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "AWS CloudFormation 사용 설명서",
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "Android 개발자 문서",
+   "url": "https://developer.android.com/",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "Apple Developer Documentation",
+   "url": "https://developer.apple.com/documentation/",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "MDN · 웹 개발 배우기",
+   "url": "https://developer.mozilla.org/ko/docs/Learn_web_development",
+   "kind": "reference"
+  },
+  {
+   "n": 34,
+   "title": "Oracle Database 문서",
+   "url": "https://docs.oracle.com/en/database/oracle/oracle-database/",
+   "kind": "reference"
+  },
+  {
+   "n": 35,
+   "title": "Pro Git (한국어판)",
+   "url": "https://git-scm.com/book/ko/v2",
+   "kind": "reference"
+  },
+  {
+   "n": 36,
+   "title": "GitHub 문서 · About pull request reviews",
+   "url": "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/about-pull-request-reviews",
+   "kind": "reference"
+  },
+  {
+   "n": 37,
+   "title": "Salesforce Trailhead",
+   "url": "https://trailhead.salesforce.com/",
+   "kind": "reference"
+  },
+  {
+   "n": 38,
+   "title": "Wikipedia · mSQL (Mini SQL)",
+   "url": "https://en.wikipedia.org/wiki/MSQL",
+   "kind": "reference"
+  },
+  {
+   "n": 39,
+   "title": "Amazon CloudFront 개발자 안내서 · 캐싱",
+   "url": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/ConfiguringCaching.html",
+   "kind": "reference"
+  },
+  {
+   "n": 40,
+   "title": "TypeScript Handbook",
+   "url": "https://www.typescriptlang.org/docs/handbook/intro.html",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "Ui2 는 기술 블로그·발표 영상이 없어(채용 note 만 있다) 받은 영상 재료는 없습니다. 어떤 EC 패키지·자체 프레임워크를 쓰는지, Salesforce 가 어느 제품인지, 부하 대책의 구체 방법은 공개되지 않아 다른 곳의 공식 문서로 '보통 이런 것'을 보였습니다. 2023년 note 는 모회사를 '상장 자회사'라 적었지만 모회사는 2024년에 상장 폐지됐습니다. 원티드 공고의 전형은 paiza 코딩 테스트 → 면담 1~2회이고, 회사 채용 페이지는 서류 → 1차 → 사장 면접으로 적었습니다."
+}
