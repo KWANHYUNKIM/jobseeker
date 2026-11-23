@@ -1,0 +1,1306 @@
+{
+ "id": "tmap-security-technology-engineer",
+ "company": "티맵모빌리티",
+ "role": "보안 기술 엔지니어",
+ "team": "정보보호팀",
+ "jobs": [
+  "ats-skcareers:sk:R262516",
+  "dev-581410",
+  "wanted-398468"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "직원 PC·맥(엔드포인트)과 사무실 네트워크·메일을 지키는 솔루션을 운영하고, 로그를 모아 공격 징후를 찾아 막고, 클라우드(AWS)·EKS(AWS 의 관리형 쿠버네티스) 위의 서비스에서 생기는 위협까지 지켜봅니다.[1]",
+  "env": "정보보호 전담 인력이 2026년 공시 기준 **12.9명**(내부 6.3 · 외주 6.6)인 작은 팀입니다.[6] 서비스는 AWS 위에서 돌고[4][5], 관제는 그룹 원격관제·파견 상주관제와 같이 합니다.[1]",
+  "oneline": "**단말 보안 + 보안관제·사고 대응 + 클라우드·컨테이너 모니터링**을 한 사람이 넓게 맡는 7년 차 이상 실무자 자리입니다."
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "엔드포인트 · 오피스 보안 운영",
+   "short": "직원이 쓰는 PC·맥과 사무실 네트워크·메일을 지키는 솔루션을 굴리는 묶음이다.",
+   "why": "엔드포인트(endpoint, 직원이 손에 쥔 단말)는 피싱 메일·악성 파일이 처음 닿는 곳입니다. 티맵모빌리티는 2026년 공시 활동으로 **PC 안의 개인정보 점검**과 **정보보호 솔루션 추가 도입**을 적었습니다.[6] 아래 세 줄이 이 묶음입니다.",
+   "how_far": "새 솔루션을 직접 개발하는 자리가 아니라 **사 온 솔루션을 정책대로 운영하고, 빈 곳을 찾아 메우는** 자리입니다. {추론}",
+   "refs": [
+    1,
+    6
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Windows/macOS 단말의 보안 정책과 구성을 관리하고, 완전삭제·문서보안·패치 관리 체계를 운영합니다.",
+   "short": "회사 PC·맥의 보안 설정을 한 벌로 맞추고, 지울 땐 복구 못 하게, 문서는 밖에서 못 열게, 패치는 빠짐없이.",
+   "why": "티맵모빌리티는 위치정보·개인정보를 다루고 ISMS-P(정보보호 및 개인정보보호 관리체계 인증)를 받았습니다.[6] 이 인증과 개인정보 안전성 확보조치 기준은 단말의 접근 통제·암호화·파기·보안 업데이트를 점검 항목으로 둡니다.[31][33] 같은 팀 정책 담당자 공고가 ISMS-P 심사와 그룹사 점검 대응을 맡는 것을 보면, 이 자리가 운영하는 설정·기록이 그 심사의 증적이 됩니다.[9] {추론} TMAP AUTO 를 자동차 회사에 공급하는 티어1 이라 자동차 업계 정보보안 평가(TISAX)도 받았습니다.[8] 단말 운영체제가 Windows 와 macOS 둘이라 정책도 두 벌입니다.[1]",
+   "actually": {
+    "intro": "보통 이런 일입니다. 티맵모빌리티가 어떤 제품을 쓰는지는 공개되지 않았습니다.",
+    "items": [
+     "**설정 기준선(baseline)** — 화면 잠금 시간·디스크 암호화(BitLocker·FileVault)·관리자 권한·USB 차단 같은 설정을 CIS 벤치마크 같은 공개 기준에서 골라 회사 기준으로 정하고, 단말마다 맞는지 본다.[28][27]",
+     "**완전삭제** — 퇴사자 PC·고장 디스크를 반납·폐기할 때 다시 살릴 수 없게 지운다. 덮어쓰기(Clear)·암호 키 폐기(Purge)·물리 파괴(Destroy) 중 매체에 맞는 방법을 고르고 기록을 남긴다.[11]",
+     "**문서보안(DRM)** — 회사 문서를 암호화해 허가된 사람·기기에서만 열리게 한다. 외부 공유·인쇄 요청을 승인하고 예외를 관리한다. {추론}",
+     "**패치 관리** — 운영체제·브라우저·오피스의 보안 업데이트가 나오면 시험 그룹 → 전체 순서로 배포하고, 몇 대가 안 깔렸는지 세어 쫓아간다.[12]",
+     "**형상 관리** — 누가 어떤 단말을 쓰고 어떤 솔루션이 깔렸는지 대장을 최신으로 둔다. 대장이 틀리면 나머지 통제가 다 빈다(아래 예시)."
+    ]
+   },
+   "examples": [
+    {
+     "title": "자산 대장과 설치 목록 맞대기 — 빈 곳 찾기",
+     "body": "가상 단말 5대입니다. 대장(자산 목록)과 EDR·NAC·MDM 이 본 단말 목록을 집합으로 빼면, 보호가 빠진 맥 한 대와 대장에 없는 기기 한 대가 나옵니다(직접 돌린 출력).",
+     "lang": "python",
+     "code": "assets = {\"PC-001\": \"win\", \"PC-002\": \"win\", \"MAC-101\": \"mac\", \"MAC-102\": \"mac\", \"PC-003\": \"win\"}\nedr = {\"PC-001\", \"PC-002\", \"MAC-101\", \"PC-003\"}\nmdm = {\"MAC-101\"}\nnac = {\"PC-001\", \"PC-002\", \"MAC-101\", \"MAC-102\", \"PC-003\", \"PHONE-77\"}\nfor host, os_ in sorted(assets.items()):\n    miss = [n for n, s in ((\"EDR\", edr), (\"NAC\", nac)) if host not in s]\n    if os_ == \"mac\" and host not in mdm:\n        miss.append(\"MDM\")\n    if miss:\n        print(host, \"빠짐:\", \",\".join(miss))\nprint(\"대장에 없는데 NAC 에 붙은 기기:\", sorted(nac - assets.keys()))\n# MAC-102 빠짐: EDR,MDM\n# 대장에 없는데 NAC 에 붙은 기기: ['PHONE-77']"
+    }
+   ],
+   "how_far": "정책 문서는 정보보호팀이 같이 정하지만, **솔루션 콘솔에서 정책을 걸고 적용률을 숫자로 보고하는 일**은 이 자리가 맡습니다. 맥은 윈도와 관리 도구·설정 이름이 달라 둘 다 손에 익어야 합니다. {추론}",
+   "refs": [
+    1,
+    6,
+    8,
+    9,
+    11,
+    12,
+    27,
+    28,
+    31,
+    33
+   ],
+   "study": [
+    "cis-bench",
+    "macos-scp",
+    "nist-800-88",
+    "nist-800-40",
+    "privacy-rule"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "네트워크 접근 제어·무선 침입 방지·이메일 DLP 등 오피스 보안 솔루션을 운영하고 관련 이슈에 대응합니다.",
+   "short": "허락 안 된 기기는 사내망에 못 붙게, 수상한 와이파이는 막고, 메일로 개인정보가 새지 않게.",
+   "why": "사무실은 직원·손님·개인 휴대폰이 섞이는 곳이라 '누가 붙었나'를 먼저 막아야 합니다. 이메일은 개인정보가 가장 쉽게 새는 길이기도 합니다.[31] {추론}",
+   "actually": {
+    "items": [
+     "**NAC(네트워크 접근 제어)** — 사내 유선·무선에 붙는 기기를 인증하고, 백신·EDR 이 없거나 패치가 밀린 기기는 격리망으로 보낸다. 예외(회의실 장비·프린터)를 관리하는 게 일의 절반이다. {추론}",
+     "**WIPS(무선 침입 방지)** — 회사 와이파이 이름을 흉내 낸 가짜 AP, 직원이 몰래 꽂은 공유기를 찾아 끊는다. {추론}",
+     "**이메일 DLP(정보 유출 방지)** — 주민번호·카드번호 같은 패턴이 든 메일·첨부를 밖으로 보낼 때 막거나 승인을 받게 한다. 오탐(정상 메일이 걸림)을 줄이는 규칙 다듬기가 계속된다. {추론}",
+     "**관련 이슈** — '회의실에서 인터넷이 안 돼요', '거래처 메일이 막혔어요' 같은 직원 문의가 대부분이다. 막는 것과 일이 되게 하는 것 사이를 맞춘다. {추론}"
+    ]
+   },
+   "how_far": "제품 이름보다 **각 솔루션이 무엇을 보고 언제 막는지, 예외를 어떻게 승인·기록하는지**를 설명할 수 있으면 됩니다. 자격요건은 NAC·EDR·MDM·DLP 중 **2개 이상** 운영 경험입니다.[1]",
+   "refs": [
+    1,
+    31
+   ],
+   "study": [
+    "privacy-rule",
+    "isms-p"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "EDR 기반으로 단말 이상행위를 탐지·대응하고, 엔드포인트 보안 정책과 운영 프로세스를 고도화합니다.",
+   "short": "단말에서 프로세스·파일·네트워크 움직임을 기록하는 EDR 경보를 보고, 감염 단말을 떼어 내고 원인을 찾는다.",
+   "why": "백신은 알려진 악성 파일만 막습니다. EDR(Endpoint Detection and Response)은 '워드가 파워셸을 띄웠다' 같은 **행동**을 기록해 처음 보는 공격도 잡게 해 줍니다. 공격 행동의 이름표로는 MITRE ATT&CK 을 씁니다.[13] {추론}",
+   "actually": {
+    "items": [
+     "**경보 분류** — 경보가 오면 진짜 공격인지(정탐), 정상 업무인지(오탐) 가른다. 프로세스 부모-자식 관계, 명령줄, 서명 여부, 처음 보는 해시인지를 본다.[13]",
+     "**격리와 조사** — 진짜면 단말을 망에서 떼고(EDR 콘솔의 격리), 같은 해시·같은 도메인이 다른 단말에도 있는지 전체를 훑는다.[15]",
+     "**정책 고도화** — 자주 나는 오탐은 예외로, 놓친 공격은 새 규칙으로. 윈도는 Sysmon 같은 공개 도구로 어떤 행동이 기록되는지 직접 보며 익힐 수 있다.[29]",
+     "**검증** — 공개된 공격 재현 시험(Atomic Red Team)을 시험 PC 에서 돌려 규칙이 실제로 울리는지 확인한다.[30]"
+    ]
+   },
+   "how_far": "EDR 제품을 만드는 게 아니라 **경보 하나를 받아 '무엇이 어디서 어떻게'를 30분 안에 설명하고 격리 여부를 판단하는** 수준이 기본입니다. {추론}",
+   "refs": [
+    13,
+    15,
+    29,
+    30
+   ],
+   "study": [
+    "mitre",
+    "sysmon",
+    "atomic",
+    "detect-eng-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "보안관제 · 이상징후 탐지 및 대응",
+   "short": "로그를 한곳에 모아 공격 징후를 찾고, 사고가 나면 끝까지 처리하는 묶음이다.",
+   "why": "티맵모빌리티는 2025년 공시 활동으로 **이상징후 모니터링 체계 정립**을 적었습니다.[6] 아래 세 줄은 그 체계를 운영하고 키우는 일입니다.",
+   "refs": [
+    6
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "SIEM과 위협 인텔리전스를 활용해 보안 로그·IoC를 분석하고, 위협 시나리오·탐지룰·차단 정책 및 자동 대응 체계를 고도화합니다.",
+   "short": "여러 장비 로그를 모은 SIEM 에서 '이런 순서면 공격'이라는 규칙을 만들고, 나쁜 IP·도메인 목록과 맞대 막는다.",
+   "why": "방화벽·EDR·메일·클라우드 로그가 따로 있으면 한 공격의 앞뒤를 못 잇습니다. SIEM(보안 정보·이벤트 관리)은 그 로그를 한곳에 모아 검색·상관 분석을 합니다.[15] IoC(침해 지표 — 공격에 쓰인 IP·도메인·파일 해시)는 위협 인텔리전스(외부·내부에서 모은 공격 정보)에서 옵니다.[24]",
+   "actually": {
+    "items": [
+     "**위협 시나리오** — '피싱 메일 → 첨부 실행 → 외부 서버 접속' 처럼 공격 흐름을 ATT&CK 기법 번호로 적고, 각 단계에서 남는 로그를 짝짓는다.[13]",
+     "**탐지룰** — 그 로그 조합을 SIEM 검색식으로 쓴다. 제품마다 문법이 달라 Sigma 같은 공통 형식으로 적어 두고 옮기기도 한다.[25]",
+     "**IoC 맞대기** — 위협 인텔리전스의 나쁜 도메인·해시를 프록시·EDR 로그와 매일 대조한다(아래 예시).[24]",
+     "**차단 정책·자동 대응** — 확실한 IoC 는 방화벽·메일 게이트웨이에 자동으로 넣고, 애매한 건 사람이 보게 나눈다. {추론}"
+    ]
+   },
+   "examples": [
+    {
+     "title": "실패 5번 뒤 성공 — 무차별 대입 탐지룰",
+     "body": "같은 계정·같은 IP 에서 10분 안에 로그인 실패가 5번 이상 쌓인 뒤 성공하면 경보를 냅니다(ATT&CK T1110 무차별 대입[13]). 가상 로그 8줄로 돌린 출력입니다. lee 는 실패 1번이라 걸리지 않습니다.",
+     "lang": "python",
+     "code": "from datetime import datetime as dt, timedelta\nlogs = [(\"09:00:01\",\"kim\",\"fail\",\"1.2.3.4\"), (\"09:00:05\",\"kim\",\"fail\",\"1.2.3.4\"),\n        (\"09:00:09\",\"kim\",\"fail\",\"1.2.3.4\"), (\"09:00:13\",\"kim\",\"fail\",\"1.2.3.4\"),\n        (\"09:00:17\",\"kim\",\"fail\",\"1.2.3.4\"), (\"09:03:40\",\"kim\",\"success\",\"1.2.3.4\"),\n        (\"09:10:00\",\"lee\",\"fail\",\"10.0.0.8\"), (\"09:10:30\",\"lee\",\"success\",\"10.0.0.8\")]\nfails = {}\nfor t, user, result, ip in logs:\n    t = dt.strptime(t, \"%H:%M:%S\")\n    k = (user, ip)\n    if result == \"fail\":\n        fails.setdefault(k, []).append(t)\n    else:\n        recent = [f for f in fails.get(k, []) if t - f <= timedelta(minutes=10)]\n        if len(recent) >= 5:\n            print(f\"경보 {user} {ip}: 실패 {len(recent)}번 뒤 성공 ({t:%H:%M:%S})\")\n        fails[k] = []\n# 경보 kim 1.2.3.4: 실패 5번 뒤 성공 (09:03:40)"
+    },
+    {
+     "title": "IoC 도메인 맞대기 — 끝부분만 보면 틀린다",
+     "body": "나쁜 도메인의 하위 도메인(img.evil-cdn.example)은 잡고, 이름만 비슷한 다른 도메인(notevil-cdn.example)은 잡지 않으려면 '점 + 도메인'으로 끝나는지 봐야 합니다(직접 돌린 출력 — PC-003 은 안 걸린다).",
+     "lang": "python",
+     "code": "bad = {\"evil-cdn.example\", \"login-tmap.example\"}\nproxy = [(\"PC-001\", \"www.tmap.co.kr\"), (\"PC-002\", \"login-tmap.example\"),\n         (\"MAC-101\", \"img.evil-cdn.example\"), (\"PC-003\", \"notevil-cdn.example\")]\nfor pc, host in proxy:\n    if any(host == d or host.endswith(\".\" + d) for d in bad):\n        print(\"IoC 일치:\", pc, host)\n# IoC 일치: PC-002 login-tmap.example\n# IoC 일치: MAC-101 img.evil-cdn.example"
+    }
+   ],
+   "how_far": "SIEM 을 구축하는 자리가 아니라 **그 위에서 규칙을 쓰고, 오탐을 줄이고, 놓친 공격을 규칙으로 되돌리는** 자리입니다. 규칙 하나마다 '무엇을 잡나 · 왜 · 오탐은 언제 · 울리면 무엇을 하나'를 적어 두는 습관이 이 자리의 기본입니다.[25] {추론}",
+   "refs": [
+    13,
+    15,
+    24,
+    25
+   ],
+   "study": [
+    "detect-eng-ko",
+    "sigma",
+    "mitre",
+    "misp",
+    "hunt-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "그룹 원격관제 및 파견 상주관제와 협업하여 통합 보안관제 운영을 주도하고, 피싱·악성 메일 등 이메일 위협에 대응합니다.",
+   "short": "24시간 보는 외부 관제 인력이 올린 경보를 받아 판단·지시하고, 피싱 메일은 직접 걸러 낸다.",
+   "why": "정보보호 전담 인력이 12.9명이고 그중 6.6명이 외주입니다.[6] 회사 안 인원만으로 밤낮 로그를 볼 수 없어서 그룹 쪽 원격관제와 회사에 와 있는 상주관제 인력을 같이 씁니다.[1] 티맵모빌리티는 SK스퀘어·SK텔레콤 그룹사 보안 협의체에 들어 있고, 악성메일 모의훈련을 공시 활동으로 적었습니다.[6]",
+   "actually": {
+    "intro": "관제 업체·계약 범위는 공개되지 않았습니다. 보통의 나눔입니다. {추론}",
+    "items": [
+     "**원격관제** — 외부 관제센터가 로그를 받아 24시간 1차로 본다. 이 자리는 그들에게 줄 탐지룰과 '이럴 땐 전화, 이럴 땐 메일' 같은 보고 기준을 정한다.",
+     "**상주관제** — 사내에 앉은 관제 인력이 경보를 1차 분류한다. 이 자리는 2차 판단(진짜인가·얼마나 큰가)과 조치 지시를 한다.",
+     "**통합 운영을 주도** — 두 관제가 같은 사건을 두 번 올리거나 서로 미루지 않게 근무표·보고 양식·처리 시간을 맞춘다.",
+     "**이메일 위협** — 직원이 신고한 피싱 메일을 열어 보고(링크·첨부·보낸 서버), 같은 메일을 받은 사람 전체에서 지우고, 링크 도메인을 차단 목록에 넣는다. 모의훈련 결과로 교육 대상을 고른다.[6]"
+    ]
+   },
+   "how_far": "직접 모든 경보를 보는 게 아니라 **관제 인력이 잘 보게 만드는 사람**입니다. 지원자격의 '7년 이상'과 우대사항의 '보안관제 또는 CERT/CSIRT 운영 경험'이 이 줄과 짝입니다.[1]",
+   "refs": [
+    1,
+    6
+   ],
+   "study": [
+    "soc-auto-ko",
+    "nist-ir"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "침해사고 탐지·분석·대응 전반을 수행하고, 사고 대응 프로세스를 설계 및 개선합니다.",
+   "short": "사고가 나면 범위를 재고, 막고, 없애고, 되살리고, 다음엔 덜 아프게 절차를 고친다.",
+   "why": "사고 대응(IR)의 표준 틀은 NIST SP 800-61 입니다. 2025년 3판은 사고 대응을 따로 떼지 않고 평소 위험 관리(식별·보호·탐지·대응·복구)의 한 부분으로 다룹니다.[15] 개인정보가 새면 법이 정한 신고·통지 기한도 있습니다.[31] {추론}",
+   "flows": [
+    {
+     "caption": "사고 한 건이 지나가는 길 {추론}[15]",
+     "steps": [
+      "탐지 · 관제·EDR·직원 신고",
+      "분류 · 진짜인가, 얼마나 큰가",
+      "봉쇄 · 단말 격리·계정 잠금·키 폐기",
+      "근절 · 악성 파일·백도어·잘못된 권한 제거",
+      "복구 · 서비스·단말 되돌리기, 재발 감시",
+      "사후 검토 · 타임라인·원인·개선 과제"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "items": [
+     "**타임라인** — 처음 들어온 시각부터 발견까지 로그로 시간순 표를 만든다. 로그가 남는 기간이 짧으면 여기서 막힌다.[15]",
+     "**보고** — 경영진·개인정보 담당·법무에 '지금 아는 것 / 모르는 것 / 다음 보고 시각'으로 짧게 자주. {추론}",
+     "**프로세스 설계** — 사고 유형별 대응 절차(플레이북), 연락망, 증거 보존 방법, 훈련 계획을 문서로 둔다.[15]"
+    ]
+   },
+   "how_far": "지원자격은 IR 프로세스를 **주도적으로 관리한 경험**입니다.[1] 포렌식 전문가 수준까지는 아니어도, 사고 하나를 처음부터 사후 검토까지 이끌어 본 이야기를 할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    15,
+    31
+   ],
+   "study": [
+    "nist-ir",
+    "idir"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "클라우드 · 컨테이너 보안 모니터링",
+   "short": "AWS 와 EKS 위에서 도는 티맵 서비스 쪽의 위협을 지켜보는 묶음이다.",
+   "why": "같은 팀의 보안 진단 엔지니어 공고는 AWS 클라우드 아키텍처 진단을 맡기고[4], SRE 공고는 AWS 운영 3년 이상을 요구합니다.[5] 서비스가 AWS 위에 있다는 뜻입니다. 이 공고는 그중 EKS 기반 마이크로서비스를 콕 집었습니다.[1]",
+   "refs": [
+    1,
+    4,
+    5
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "클라우드 및 EKS 기반 마이크로서비스 환경의 보안 이벤트를 모니터링하고 이상징후를 탐지 및 대응합니다.",
+   "short": "AWS 계정 활동 기록과 EKS 의 보안 경보를 보고, 평소와 다른 접근·권한 변경을 잡는다.",
+   "why": "클라우드에서는 서버를 뚫지 않아도 **열쇠(액세스 키·권한)** 하나로 큰일이 납니다. EKS 는 AWS 가 쿠버네티스 제어부를 운영하고, 그 위의 권한·파드·네트워크는 고객이 지킵니다(공동 책임).[19]",
+   "actually": {
+    "items": [
+     "**AWS 활동 기록** — 누가 어떤 API 를 불렀나(CloudTrail). 루트 계정 로그인, 처음 보는 나라에서의 콘솔 접속, 대량 권한 부여를 본다.[32]",
+     "**관리형 위협 탐지** — GuardDuty 의 EKS 보호를 켜면 감사 로그를 읽어 익명 접근·의심스러운 권한 상승 같은 결과를 낸다. 결과를 받아 진짜인지 가르는 건 사람 몫이다.[18]",
+     "**대응** — 새는 키는 비활성화, 이상한 파드는 격리(네트워크 정책)·삭제, 원인 이미지·배포를 찾아 개발팀에 넘긴다.[19]"
+    ]
+   },
+   "how_far": "클라우드를 설계·운영하는 건 인프라 팀입니다. 이 자리는 **로그와 경보로 이상을 알아채고, 무엇을 끊어야 하는지 아는** 수준입니다. {추론}",
+   "refs": [
+    18,
+    19,
+    32
+   ],
+   "study": [
+    "eks-bp",
+    "guardduty-eks",
+    "aws-cloudtrail"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "컨테이너 런타임 위협·파드 이상행위·API 서버 접근 이상 등 워크로드 및 API 위협을 분석하고 대응 프로세스를 운영합니다.",
+   "short": "돌고 있는 컨테이너 안에서 셸이 뜨거나, 파드가 남의 비밀을 읽거나, 쿠버네티스 API 에 이상한 요청이 오면 잡는다.",
+   "why": "쿠버네티스 공격은 ATT&CK 에 컨테이너 매트릭스로 따로 정리돼 있습니다 — 컨테이너 안 명령 실행, 권한 있는 컨테이너로 노드 탈출, 서비스 계정 토큰 훔치기 같은 것입니다.[14]",
+   "actually": {
+    "items": [
+     "**런타임 위협** — 컨테이너 안에서 셸이 뜨거나 민감한 파일(/etc/shadow)을 읽으면 Falco 같은 런타임 도구가 커널 이벤트로 잡는다.[23]",
+     "**파드 이상행위** — 평소 안 하던 외부 접속, 채굴 프로그램, 권한 상승. {추론}",
+     "**API 서버 접근 이상** — 감사 로그(audit log)에 누가 무엇을 했는지 남는다. exec(파드 안으로 들어가기)·익명 요청·남의 네임스페이스 secret 읽기가 대표 신호다(아래 예시).[16]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "쿠버네티스 감사 로그에서 세 가지 신호",
+     "body": "감사 로그 한 줄의 user·verb·objectRef 칸만 봅니다.[16] 가상 이벤트 4줄 중 3줄이 걸립니다(직접 돌린 출력). web 네임스페이스의 서비스 계정이 pay 의 secret 을 읽은 건 200 — 성공이라 가장 급합니다.",
+     "lang": "python",
+     "code": "events = [\n {\"user\": {\"username\": \"system:serviceaccount:pay:api\"}, \"verb\": \"get\", \"objectRef\": {\"resource\": \"pods\", \"namespace\": \"pay\"}, \"responseStatus\": {\"code\": 200}},\n {\"user\": {\"username\": \"dev-park\"}, \"verb\": \"create\", \"objectRef\": {\"resource\": \"pods\", \"subresource\": \"exec\", \"name\": \"pay-api-7d9\", \"namespace\": \"pay\"}, \"responseStatus\": {\"code\": 101}},\n {\"user\": {\"username\": \"system:anonymous\"}, \"verb\": \"list\", \"objectRef\": {\"resource\": \"secrets\"}, \"responseStatus\": {\"code\": 403}},\n {\"user\": {\"username\": \"system:serviceaccount:web:front\"}, \"verb\": \"list\", \"objectRef\": {\"resource\": \"secrets\", \"namespace\": \"pay\"}, \"responseStatus\": {\"code\": 200}},\n]\nfor e in events:\n    u, o, code = e[\"user\"][\"username\"], e[\"objectRef\"], e[\"responseStatus\"][\"code\"]\n    if o.get(\"subresource\") == \"exec\":\n        print(\"파드 안으로 들어감(exec):\", u, \"->\", o[\"namespace\"] + \"/\" + o[\"name\"])\n    if u == \"system:anonymous\":\n        print(\"익명 요청:\", e[\"verb\"], o[\"resource\"], code)\n    if o[\"resource\"] == \"secrets\" and u.startswith(\"system:serviceaccount:\") and u.split(\":\")[2] != o.get(\"namespace\"):\n        print(\"다른 네임스페이스의 secret 읽기:\", u, \"->\", o[\"namespace\"], code)\n# 파드 안으로 들어감(exec): dev-park -> pay/pay-api-7d9\n# 익명 요청: list secrets 403\n# 다른 네임스페이스의 secret 읽기: system:serviceaccount:web:front -> pay 200"
+    }
+   ],
+   "how_far": "'대응 프로세스를 운영'까지가 이 줄입니다 — 경보마다 누구에게 넘기고(서비스 개발팀·인프라 팀) 무엇을 먼저 끊는지 정해 두는 일입니다. {추론}",
+   "refs": [
+    14,
+    16,
+    23
+   ],
+   "study": [
+    "k8s-audit",
+    "falco-docs",
+    "k8s-matrix",
+    "g25-falco"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "클라우드·EKS 로그를 SIEM과 연동하여 통합 보안 가시성을 확보하고 탐지 범위를 확대합니다.",
+   "short": "AWS·EKS 로그를 사내 SIEM 으로 끌어와, PC·메일 로그와 한 화면에서 이어 보게 만든다.",
+   "why": "피싱으로 뺏긴 직원 계정이 클라우드 콘솔에 들어오는 공격은 단말 로그와 클라우드 로그를 이어야 보입니다. EKS 제어부 로그(API 서버·감사·인증)는 기본으로 꺼져 있어 켜고 CloudWatch 로 보내야 합니다.[17]",
+   "flows": [
+    {
+     "caption": "로그가 SIEM 까지 가는 길 {추론}[17]",
+     "steps": [
+      "EKS 감사·인증 로그 켜기",
+      "CloudWatch Logs · CloudTrail 에 쌓임",
+      "수집기가 SIEM 으로 보냄",
+      "필드 맞추기 · 사용자·IP·시각 이름 통일",
+      "탐지룰 · 단말·메일 로그와 엮기"
+     ],
+     "mine_from": 2
+    }
+   ],
+   "actually": {
+    "items": [
+     "**무엇을 가져올지** — 감사 로그는 양이 많아 비용이 든다. 보안에 필요한 것(인증·권한 변경·exec·secret 접근)을 먼저. {추론}",
+     "**필드 맞추기** — 같은 사람이 단말에선 사번, AWS 에선 역할 이름으로 찍힌다. 이걸 이어 줘야 한 사람의 행동이 한 줄로 보인다. {추론}",
+     "**탐지 범위 확대** — ATT&CK 컨테이너·클라우드 기법 중 지금 규칙이 덮는 칸과 빈칸을 표로 세어, 빈칸부터 채운다.[14]"
+    ]
+   },
+   "refs": [
+    14,
+    17
+   ],
+   "study": [
+    "eks-logs",
+    "aws-cloudtrail",
+    "k8s-matrix"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "관련 경력 7년 이상이거나 이에 준하는 경험을 보유하신 분",
+   "short": "단말·관제·사고 대응·클라우드를 넓게 맡겨야 해서 7년 차 이상을 찾는다.",
+   "why": "업무 세 묶음을 한 사람이 맡고, 외주 관제를 이끌어야 합니다.[1][6] 캐치에 올라온 같은 공고도 경력 7년 이상·정규직입니다.[3] 같은 팀의 보안 진단 엔지니어는 2년 이상이라[4], 이 자리가 팀에서 운영 쪽 선임이라는 점이 보입니다. {추론}",
+   "how_far": "'이에 준하는 경험'이 있어 연수보다 **어떤 사고를 어디까지 이끌어 봤나**가 서류에서 읽혀야 합니다. 전형은 서류 → 1차·2차 인터뷰 → 레퍼런스 체크입니다(진단 엔지니어와 달리 과제 전형이 없다).[1][4]",
+   "refs": [
+    1,
+    3,
+    4,
+    6
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "엔드포인트 보안 솔루션(NAC, EDR, MDM, DLP 중 2개 이상) 실무 운영 경험을 보유하신 분",
+   "short": "네 가지 중 둘은 콘솔에서 정책을 걸고 문제를 풀어 본 사람이어야 첫날부터 손을 댈 수 있어서.",
+   "why": "업무 첫 묶음이 이 솔루션들을 운영하는 일입니다.[1] MDM(모바일·단말 관리)은 맥·휴대폰에 설정을 내려보내고 분실 시 지우는 도구입니다. {추론}",
+   "actually": {
+    "items": [
+     "**NAC** — 붙는 기기 인증, 격리 기준, 예외 승인.",
+     "**EDR** — 경보 분류, 격리, 예외 규칙.",
+     "**MDM** — 설정 묶음(프로파일) 배포, 운영체제 업데이트 강제, 분실 단말 원격 삭제. 맥 설정 기준은 공개 프로젝트로 연습할 수 있다.[27]",
+     "**DLP** — 패턴(주민번호·카드번호) 규칙, 차단/승인 흐름, 오탐 조정."
+    ]
+   },
+   "how_far": "'운영 경험'이라 도입 담당이 아니어도 됩니다. 면접에서 **솔루션 이름 + 맡은 단말 수 + 고친 정책 하나**를 구체적으로 말할 수 있어야 합니다. {추론}",
+   "refs": [
+    1,
+    27
+   ],
+   "study": [
+    "macos-scp",
+    "cis-bench"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "SIEM 기반 로그 분석, 위협 시나리오 설계, 이상징후 탐지 및 대응 경험을 보유하신 분",
+   "short": "로그를 검색해 이야기를 만들고, 그 이야기를 규칙으로 바꿔 본 사람이어야 해서.",
+   "why": "업무 둘째 묶음의 중심이 SIEM 입니다.[1]",
+   "level": {
+    "basic": "필드 검색 · 시간 범위 · 집계(사용자별·IP별 횟수)",
+    "work": "두 로그 잇기(조인·상관) · 시간 창(10분 안 N번) · 처음 보는 값 찾기",
+    "team": "ATT&CK 기법 단위의 시나리오 → 규칙 → 오탐 조정 → 관제 인력이 쓰는 대응 절차까지"
+   },
+   "how_far": "특정 SIEM 제품 문법보다 **어느 로그의 어느 칸을 어떤 조건으로 묶는지**를 설명할 수 있어야 합니다. 업무 줄의 무차별 대입 예시를 자기 손에 익은 SIEM 문법으로 다시 써 보면 연습이 됩니다.[25] {추론}",
+   "refs": [
+    1,
+    25
+   ],
+   "study": [
+    "detect-eng-ko",
+    "sigma",
+    "splunk-bots"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "Windows 및 macOS 단말 보안 정책 운영·형상 관리 경험을 보유하신 분",
+   "short": "회사 단말이 윈도·맥 둘이라, 둘의 설정·관리 도구가 어떻게 다른지 알아야 해서.",
+   "why": "업무 첫 줄과 같은 요구입니다.[1] 맥은 윈도와 달리 그룹 정책(GPO)이 없고 MDM 의 설정 묶음으로 관리합니다. 미국 NIST 등이 맥 보안 기준과 설정 묶음을 만드는 도구를 공개해 둡니다.[27]",
+   "how_far": "두 운영체제에서 **디스크 암호화·화면 잠금·관리자 권한·업데이트를 강제하는 방법**을 각각 말할 수 있고, 몇 대가 기준을 어겼는지 셀 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    27
+   ],
+   "study": [
+    "macos-scp",
+    "cis-bench"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "보안 인시던트 탐지·분석·대응(IR) 프로세스를 주도적으로 관리한 경험을 보유하신 분",
+   "short": "사고를 따라간 사람이 아니라 사고 처리를 이끈 사람을 찾는다.",
+   "why": "업무의 '사고 대응 프로세스를 설계 및 개선'과 짝입니다.[1] 외주 관제를 쓰는 구조라 판단과 지시는 회사 사람이 해야 합니다.[6] {추론}",
+   "how_far": "면접에서 사고 하나를 **탐지 경로 → 범위 → 봉쇄 결정 → 보고 → 재발 방지**로 말할 수 있어야 합니다. NIST 800-61 의 낱말로 말하면 짧아집니다.[15] {추론}",
+   "refs": [
+    1,
+    6,
+    15
+   ],
+   "study": [
+    "nist-ir",
+    "idir"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "클라우드 환경의 보안 모니터링 경험을 보유하신 분",
+   "short": "회사 서비스가 AWS 위에 있어서, 클라우드 로그와 경보를 읽어 본 사람이 필요하다.",
+   "why": "같은 회사 공고들이 AWS 를 전제로 합니다.[4][5]",
+   "how_far": "AWS 가 아니어도 클라우드 활동 기록(누가 어떤 API 를 불렀나)과 관리형 위협 탐지 결과를 분석해 본 경험이면 됩니다. AWS 이름으로는 CloudTrail·GuardDuty 입니다.[32][18] {추론}",
+   "refs": [
+    4,
+    5,
+    18,
+    32
+   ],
+   "study": [
+    "aws-cloudtrail",
+    "guardduty-eks"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "EKS 또는 Kubernetes 기반 마이크로서비스 환경의 구조와 동작 방식을 이해하시는 분",
+   "short": "파드·네임스페이스·서비스 계정을 모르면 쿠버네티스 경보가 무슨 말인지 읽을 수 없어서.",
+   "why": "업무 셋째 묶음은 EKS 위의 위협입니다.[1] 경보 한 줄('web 서비스 계정이 pay 의 secret 을 읽었다')을 이해하려면 권한이 어떻게 묶이는지(RBAC)부터 알아야 합니다.[20]",
+   "level": {
+    "basic": "파드·디플로이먼트·서비스·네임스페이스가 무엇인지, kubectl 로 조회",
+    "work": "서비스 계정과 RBAC(Role·RoleBinding), API 서버로 가는 요청 흐름, 감사 로그 읽기",
+    "team": "EKS 에서 AWS 권한(IAM)과 쿠버네티스 권한이 어떻게 이어지는지, 공격 경로를 그릴 수 있음"
+   },
+   "how_far": "'이해하시는 분'이라 운영자 수준은 아닙니다. **경보를 보고 어떤 리소스가 어떤 권한으로 무엇을 했는지 설명**할 수 있으면 됩니다. {추론}",
+   "refs": [
+    1,
+    20
+   ],
+   "study": [
+    "k8s-rbac",
+    "eks-bp",
+    "k8s-audit"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "엔드포인트 보안 솔루션 운영 경험을 보유하신 분",
+   "short": "자격요건(2개 이상)보다 더 많이, 더 깊게 운영해 봤으면 좋다는 뜻.",
+   "why": "자격요건 둘째 줄과 겹칩니다.[1] 우대에 다시 적은 건 이 묶음의 비중이 크다는 뜻으로 읽힙니다. {추론}",
+   "refs": [
+    1
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "SIEM 쿼리를 활용한 탐지룰 작성 및 대시보드 구성 경험을 보유하신 분",
+   "short": "규칙을 '받아 쓰는' 게 아니라 쿼리로 직접 쓰고, 관제 인력이 볼 화면까지 만든 사람.",
+   "why": "업무의 '탐지룰·차단 정책 고도화'를 직접 할 사람이 필요합니다.[1] 대시보드는 관제 인력과 경영진이 보는 화면입니다. {추론}",
+   "actually": {
+    "items": [
+     "**탐지룰** — 업무 줄의 예처럼 시간 창·횟수·연결 조건을 쿼리로. Sigma 형식으로 적어 두면 제품이 바뀌어도 옮길 수 있다.[25]",
+     "**대시보드** — 오늘 경보 수(정탐/오탐), 규칙별 오탐률, EDR·NAC 미설치 단말 수, 처리 시간. {추론}"
+    ]
+   },
+   "refs": [
+    1,
+    25
+   ],
+   "study": [
+    "sigma",
+    "splunk-bots"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "위협 인텔리전스 플랫폼 활용 경험을 보유하신 분",
+   "short": "밖에서 들어오는 공격 정보(IoC·공격 그룹)를 한곳에 모아 관리하는 도구를 써 본 사람.",
+   "why": "업무의 'SIEM과 위협 인텔리전스를 활용해'와 짝입니다.[1] TIP(위협 인텔리전스 플랫폼)는 여러 피드의 IoC 를 모아 중복을 지우고, 믿을 만한 정도를 매기고, SIEM·방화벽으로 내보냅니다. 오픈소스로는 MISP 가 있습니다.[24]",
+   "how_far": "피드를 붙이는 것보다 **어떤 IoC 를 자동 차단하고 어떤 건 사람이 보게 할지 기준을 세워 본 경험**이 이야깃거리가 됩니다. {추론}",
+   "refs": [
+    1,
+    24
+   ],
+   "study": [
+    "misp",
+    "hunt-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "MITRE ATT&CK 프레임워크 기반 위협 분석 또는 헌팅 경험을 보유하신 분",
+   "short": "공격 행동의 공용 이름표(ATT&CK)로 분석하고, 경보가 없어도 먼저 찾아 나서 본 사람.",
+   "why": "ATT&CK 은 실제 공격에서 본 전술·기법을 번호로 정리한 공개 지식 베이스입니다.[13] 같은 팀의 보안 진단 엔지니어 공고도 ATT&CK 기반 공격 흐름 이해를 요구합니다 — 팀이 같은 말을 씁니다.[4]",
+   "actually": {
+    "items": [
+     "**분석** — 사고 하나를 기법 번호 순서로 다시 적어 어느 단계에서 막을 수 있었나 본다.[13]",
+     "**헌팅(threat hunting)** — '우리 회사에 이 기법이 이미 쓰였다면 어떤 로그가 남았을까' 가설을 세우고 로그를 뒤진다. 못 찾으면 그 가설을 탐지룰로 남긴다. {추론}"
+    ]
+   },
+   "refs": [
+    4,
+    13
+   ],
+   "study": [
+    "mitre",
+    "hunt-ko",
+    "atomic"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "보안관제 또는 CERT/CSIRT 운영 경험을 보유하신 분",
+   "short": "관제 센터에서 일했거나 사고 대응 전담 조직을 꾸려 본 사람이면 외주 관제를 이끌기 쉬워서.",
+   "why": "업무가 그룹 원격관제·파견 상주관제와 협업해 통합 관제를 주도하는 일입니다.[1] CERT/CSIRT 는 침해사고 대응 전담 조직을 부르는 이름입니다.[15]",
+   "refs": [
+    1,
+    15
+   ],
+   "study": [
+    "soc-auto-ko",
+    "nist-ir"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "EKS 환경 보안 운영(Kubernetes RBAC, 컨테이너 이미지 취약점 스캔, 런타임 보안 등) 경험을 보유하신 분",
+   "short": "권한 줄이기·이미지 검사·실행 중 감시, 쿠버네티스 보안의 세 축을 실제로 돌려 본 사람.",
+   "why": "업무 셋째 묶음을 '보는 것'에서 '막는 것'까지 넓힐 수 있는 경험입니다.[1]",
+   "actually": {
+    "items": [
+     "**RBAC** — 서비스 계정에 꼭 필요한 동사·리소스만 주고, 클러스터 전체 권한(cluster-admin)을 쓰는 곳을 줄인다.[20]",
+     "**이미지 취약점 스캔** — 배포 전에 Trivy 같은 도구로 이미지 안 패키지의 알려진 취약점(CVE)을 찾아 심각한 건 배포를 막는다.[22]",
+     "**런타임 보안** — Falco 같은 도구로 실행 중 이상 행동을 잡고, 파드 보안 표준(Pod Security Standards)으로 권한 있는 컨테이너를 막는다.[23][21]"
+    ]
+   },
+   "refs": [
+    1,
+    20,
+    21,
+    22,
+    23
+   ],
+   "study": [
+    "k8s-rbac",
+    "trivy",
+    "falco-docs",
+    "pss",
+    "g25-falco"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "클라우드 보안 거버넌스(보안 정책 수립, 계정 관리, IAM 설계 등) 경험을 보유하신 분",
+   "short": "클라우드에서 누가 무엇을 할 수 있는지 규칙을 세우고, 계정·권한을 설계해 본 사람.",
+   "why": "클라우드 사고의 많은 부분이 과한 권한과 오래된 키에서 시작합니다. AWS 는 사람에게 임시 자격 증명, 최소 권한, 안 쓰는 권한 정리, 다중 인증을 권합니다.[26]",
+   "how_far": "운영 자리라 설계를 다 하진 않지만, 모니터링에서 '이 권한은 너무 넓다'를 찾아 고치자고 할 수 있으면 우대입니다. {추론}",
+   "refs": [
+    26
+   ],
+   "study": [
+    "aws-iam-bp"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "클라우드 보안 아키텍처 설계 또는 형상 관리 운영 경험을 보유하신 분",
+   "short": "클라우드 보안 구조를 그려 봤거나, 설정이 기준에서 벗어나는지 계속 지켜본 사람.",
+   "why": "모니터링은 '평소 모습'을 알아야 이상을 압니다. 형상 관리(설정이 기준대로인지 계속 보는 일)는 단말 쪽 업무와 같은 생각을 클라우드에 옮긴 것입니다.[1] EKS 보안 모범 사례가 계정·네트워크·데이터·런타임 층별로 무엇을 정해야 하는지 정리해 둡니다.[19] {추론}",
+   "refs": [
+    1,
+    19
+   ],
+   "study": [
+    "eks-bp",
+    "aws-iam-bp"
+   ]
+  }
+ ],
+ "resources": [
+  {
+   "id": "detect-eng-ko",
+   "title": "실전 위협 탐지 엔지니어링",
+   "by": "메건 로디·제이슨 데이알싱·게리 J. 캐츠 · 서도현 옮김 · 에이콘출판 · 2026",
+   "kind": "book",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000012746248",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "why": "탐지룰을 설계 → 만들기 → 시험 → 유지하는 순서. SIEM 요건과 '탐지룰 작성' 우대를 한 권으로 잇는다."
+  },
+  {
+   "id": "hunt-ko",
+   "title": "위협 인텔리전스와 데이터 기반 위협 사냥",
+   "by": "발렌티나 코스타 가즈콘 · 박지수 옮김 · 에이콘출판 · 2024",
+   "kind": "book",
+   "url": "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000009265024",
+   "lang": "ko",
+   "free": false,
+   "level": "심화",
+   "why": "위협 인텔리전스 활용과 ATT&CK 기반 헌팅 — 우대사항 두 줄을 같이 채운다."
+  },
+  {
+   "id": "soc-auto-ko",
+   "title": "정보보안 관제 및 운영 자동화 실무 가이드",
+   "by": "최대수 · 에이콘출판 · 2024",
+   "kind": "book",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%A0%95%EB%B3%B4%EB%B3%B4%EC%95%88%20%EA%B4%80%EC%A0%9C%20%EB%B0%8F%20%EC%9A%B4%EC%98%81%20%EC%9E%90%EB%8F%99%ED%99%94%20%EC%8B%A4%EB%AC%B4%20%EA%B0%80%EC%9D%B4%EB%93%9C",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "why": "국내 관제 현장의 운영·자동화. 원격·상주 관제와 일하는 업무 줄의 감을 잡는다."
+  },
+  {
+   "id": "nist-ir",
+   "title": "NIST SP 800-61 Rev. 3 · Incident Response Recommendations and Considerations",
+   "by": "NIST · 2025",
+   "kind": "doc",
+   "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "사고 대응 절차의 표준 낱말. IR 프로세스를 '주도적으로 관리' 요건을 설명할 틀이 된다."
+  },
+  {
+   "id": "idir",
+   "title": "Intelligence-Driven Incident Response (2판)",
+   "by": "Rebekah Brown · Scott J. Roberts · O'Reilly · 2023",
+   "kind": "book",
+   "url": "https://www.oreilly.com/library/view/intelligence-driven-incident-response/9781098120672/",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "why": "사고 대응과 위협 인텔리전스를 한 흐름으로 묶는다. 사고 뒤 무엇을 인텔리전스로 남기나."
+  },
+  {
+   "id": "mitre",
+   "title": "MITRE ATT&CK",
+   "by": "MITRE",
+   "kind": "doc",
+   "url": "https://attack.mitre.org/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "공격 행동의 공용 이름표. 시나리오·탐지룰·헌팅 모두 이 번호로 말한다."
+  },
+  {
+   "id": "k8s-matrix",
+   "title": "MITRE ATT&CK · Containers 매트릭스",
+   "by": "MITRE",
+   "kind": "doc",
+   "url": "https://attack.mitre.org/matrices/enterprise/containers/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "컨테이너·쿠버네티스에서 쓰이는 공격 기법만 모은 표. EKS 탐지 범위의 빈칸을 셀 때 쓴다."
+  },
+  {
+   "id": "sigma",
+   "title": "Sigma 규칙 형식",
+   "by": "SigmaHQ · GitHub",
+   "kind": "doc",
+   "url": "https://github.com/SigmaHQ/sigma",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "SIEM 제품에 묶이지 않는 탐지룰 형식과 공개 규칙 수천 개. 남이 쓴 규칙을 읽으며 쓰는 법을 익힌다."
+  },
+  {
+   "id": "splunk-bots",
+   "title": "Boss of the SOC (BOTS) v3 데이터셋",
+   "by": "Splunk · GitHub",
+   "kind": "doc",
+   "url": "https://github.com/splunk/botsv3",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "공격이 섞인 공개 보안 로그 묶음. SIEM 로그 분석 요건을 집에서 연습할 재료."
+  },
+  {
+   "id": "misp",
+   "title": "MISP — 오픈소스 위협 인텔리전스 플랫폼",
+   "by": "MISP Project",
+   "kind": "doc",
+   "url": "https://www.misp-project.org/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "TIP 가 무엇을 하는지(IoC 모으기·공유·내보내기) 직접 띄워 보며 익힌다. 우대사항 'TIP 활용'의 연습장."
+  },
+  {
+   "id": "sysmon",
+   "title": "Sysmon",
+   "by": "Microsoft Sysinternals",
+   "kind": "doc",
+   "url": "https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "윈도 단말의 프로세스·네트워크·파일 행동을 기록하는 무료 도구. EDR 이 보는 것을 손으로 확인해 본다."
+  },
+  {
+   "id": "atomic",
+   "title": "Atomic Red Team",
+   "by": "Red Canary · GitHub",
+   "kind": "doc",
+   "url": "https://github.com/redcanaryco/atomic-red-team",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "ATT&CK 기법별 작은 재현 시험. 만든 탐지룰이 실제로 울리는지 시험 PC 에서 확인한다."
+  },
+  {
+   "id": "cis-bench",
+   "title": "CIS Benchmarks",
+   "by": "Center for Internet Security",
+   "kind": "doc",
+   "url": "https://www.cisecurity.org/cis-benchmarks",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "Windows·macOS·쿠버네티스의 보안 설정 기준선. 단말 보안 정책을 정할 때 출발점."
+  },
+  {
+   "id": "macos-scp",
+   "title": "macOS Security Compliance Project",
+   "by": "NIST 등 · GitHub",
+   "kind": "doc",
+   "url": "https://github.com/usnistgov/macos_security",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "맥 보안 기준을 고르면 MDM 설정 묶음과 점검 스크립트를 만들어 준다. macOS 정책 운영 요건 연습."
+  },
+  {
+   "id": "nist-800-88",
+   "title": "NIST SP 800-88 Rev. 2 · Guidelines for Media Sanitization",
+   "by": "NIST",
+   "kind": "doc",
+   "url": "https://csrc.nist.gov/pubs/sp/800/88/r2/final",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "완전삭제의 표준. 매체별로 어떤 방법이면 되돌릴 수 없는지."
+  },
+  {
+   "id": "nist-800-40",
+   "title": "NIST SP 800-40 Rev. 4 · Guide to Enterprise Patch Management Planning",
+   "by": "NIST · 2022",
+   "kind": "doc",
+   "url": "https://csrc.nist.gov/pubs/sp/800/40/r4/final",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "패치 관리를 '예방 정비'로 계획하는 법. 패치 관리 체계 운영 줄의 틀."
+  },
+  {
+   "id": "privacy-rule",
+   "title": "개인정보의 안전성 확보조치 기준",
+   "by": "개인정보보호위원회 고시 · 국가법령정보센터",
+   "kind": "doc",
+   "url": "https://www.law.go.kr/행정규칙/개인정보의안전성확보조치기준",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "접근 통제·암호화·접속기록·파기 등 단말·메일 보안 솔루션이 왜 필요한지의 법적 바탕."
+  },
+  {
+   "id": "isms-p",
+   "title": "ISMS-P 인증제도 안내 (인증기준·세부 점검항목)",
+   "by": "KISA",
+   "kind": "doc",
+   "url": "https://isms.kisa.or.kr/",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "why": "회사가 받은 인증의 점검항목. 운영하는 솔루션이 어느 항목의 증적이 되는지 이어 본다."
+  },
+  {
+   "id": "eks-bp",
+   "title": "Amazon EKS 보안 모범 사례",
+   "by": "AWS 공식 문서(한국어)",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/ko_kr/eks/latest/best-practices/security.html",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "IAM·파드 보안·런타임·네트워크·탐지까지 EKS 보안의 전체 그림. 클라우드·컨테이너 묶음의 기본서."
+  },
+  {
+   "id": "eks-logs",
+   "title": "Send control plane logs to CloudWatch Logs",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "EKS 감사·인증 로그를 켜고 보내는 법. 'EKS 로그를 SIEM 과 연동' 줄의 첫 단계."
+  },
+  {
+   "id": "guardduty-eks",
+   "title": "GuardDuty EKS Protection",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/guardduty/latest/ug/kubernetes-protection.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "관리형 위협 탐지가 EKS 감사 로그에서 무엇을 찾아 주는지. 결과 유형을 읽을 줄 알아야 분류를 한다."
+  },
+  {
+   "id": "aws-cloudtrail",
+   "title": "AWS CloudTrail 사용 설명서",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "AWS 계정에서 누가 어떤 API 를 불렀는지 남는 기록. 클라우드 모니터링 요건의 기본 로그."
+  },
+  {
+   "id": "aws-iam-bp",
+   "title": "Security best practices in IAM",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "임시 자격 증명·최소 권한·다중 인증 — 클라우드 거버넌스 우대사항의 출발점."
+  },
+  {
+   "id": "k8s-audit",
+   "title": "Kubernetes Auditing",
+   "by": "Kubernetes 공식 문서",
+   "kind": "doc",
+   "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "감사 로그에 무엇이 어떤 단계로 남는지. API 서버 접근 이상을 읽는 법."
+  },
+  {
+   "id": "k8s-rbac",
+   "title": "Using RBAC Authorization",
+   "by": "Kubernetes 공식 문서",
+   "kind": "doc",
+   "url": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "Role·RoleBinding·서비스 계정. 쿠버네티스 경보를 이해하는 데 가장 먼저 필요한 낱말."
+  },
+  {
+   "id": "pss",
+   "title": "Pod Security Standards",
+   "by": "Kubernetes 공식 문서",
+   "kind": "doc",
+   "url": "https://kubernetes.io/docs/concepts/security/pod-security-standards/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "권한 있는 컨테이너·호스트 접근을 막는 세 단계 기준. 런타임 보안 우대사항."
+  },
+  {
+   "id": "trivy",
+   "title": "Trivy",
+   "by": "Aqua Security · 오픈소스",
+   "kind": "doc",
+   "url": "https://trivy.dev/",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "why": "컨테이너 이미지 취약점 스캔을 바로 돌려 볼 수 있는 도구. 우대사항 '이미지 취약점 스캔'."
+  },
+  {
+   "id": "falco-docs",
+   "title": "Falco 문서",
+   "by": "Falco Project (CNCF)",
+   "kind": "doc",
+   "url": "https://falco.org/docs/",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "why": "컨테이너 런타임 위협을 커널 이벤트로 잡는 규칙 쓰는 법."
+  },
+  {
+   "id": "g25-falco",
+   "title": "GUARDIANS 25 · 토스의 K8S를 더 안전하게: Falco를 활용한 K8S 위협 모니터링",
+   "by": "토스 Security Engineer · 22분",
+   "kind": "video",
+   "url": "https://youtu.be/jRjbOPjgDaE",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "why": "다른 회사지만 국내에서 쿠버네티스 런타임 모니터링을 실제로 돌린 이야기. 우리 말로 감을 잡기 좋다."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "단말 기준선 세우기",
+   "time": "1~2주",
+   "goal": "윈도·맥에 같은 보안 기준을 정하고, 기준을 어긴 단말 수를 셀 수 있다.",
+   "task": "가상 단말 20대의 표(운영체제·암호화·화면 잠금·패치 날짜·EDR 설치)를 만들고 CIS 기준 5개를 골라 위반 단말 목록과 적용률을 뽑는다. 업무 줄의 자산 대장 맞대기를 같이 붙인다.",
+   "resources": [
+    "cis-bench",
+    "macos-scp",
+    "nist-800-40",
+    "nist-800-88"
+   ]
+  },
+  {
+   "title": "단말 행동을 직접 보기",
+   "time": "2주",
+   "goal": "EDR 이 보는 프로세스·네트워크 행동을 로그로 읽고 ATT&CK 번호를 붙일 수 있다.",
+   "task": "시험용 윈도 가상 머신에 Sysmon 을 깔고 Atomic Red Team 시험 3개를 돌려, 남은 이벤트를 기법 번호별로 표로 정리한다.",
+   "resources": [
+    "sysmon",
+    "atomic",
+    "mitre"
+   ]
+  },
+  {
+   "title": "탐지룰 쓰고 다듬기",
+   "time": "3~4주",
+   "goal": "시나리오 → 탐지룰 → 오탐 조정 → 대응 절차를 한 벌로 만들 수 있다.",
+   "task": "BOTS v3 같은 공개 로그나 2단계 로그로 Sigma 규칙 5개를 쓰고, 규칙마다 '무엇을 잡나·오탐은 언제·울리면 무엇을 하나'를 적는다. IoC 목록 맞대기 작업을 하나 더한다.",
+   "resources": [
+    "detect-eng-ko",
+    "sigma",
+    "splunk-bots",
+    "misp"
+   ]
+  },
+  {
+   "title": "EKS 위협 읽기",
+   "time": "3주",
+   "goal": "쿠버네티스 감사 로그와 런타임 경보를 읽고 어떤 권한으로 무엇을 했는지 설명할 수 있다.",
+   "task": "kind·minikube 로 작은 클러스터를 띄워 감사 로그를 켜고, exec·남의 네임스페이스 secret 읽기·익명 요청을 일부러 일으켜 업무 줄 예시처럼 잡는다. Falco 를 붙여 컨테이너 안 셸 실행을 잡고, Trivy 로 이미지 하나를 스캔한다.",
+   "resources": [
+    "k8s-rbac",
+    "k8s-audit",
+    "falco-docs",
+    "trivy",
+    "eks-bp",
+    "g25-falco"
+   ]
+  },
+  {
+   "title": "사고 하나를 끝까지",
+   "time": "2주",
+   "goal": "사고 하나를 탐지부터 사후 검토까지 NIST 낱말로 문서화할 수 있다.",
+   "task": "'피싱으로 뺏긴 직원 계정 → AWS 콘솔 로그인 → EKS secret 조회' 가상 사고의 타임라인·봉쇄 결정·보고문·재발 방지 과제를 2쪽으로 쓴다.",
+   "resources": [
+    "nist-ir",
+    "idir",
+    "aws-cloudtrail",
+    "soc-auto-ko"
+   ]
+  }
+ ],
+ "pay": {
+  "summary": "공시 숫자는 없다(비상장). 집계 사이트 기준 초봉 **약 4,793만원**, 평균 **약 7,049만원** — 이 자리는 7년 차 이상이라 처우 협의로 정한다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 4,793만원",
+    "amount": 4793,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값. 기준일 표기가 없고 직군 구분도 없다 [10]"
+   },
+   {
+    "label": "직원 평균 연봉",
+    "value": "약 7,049만원",
+    "amount": 7049,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계(사원 수 359명으로 표시) — 경력직이 섞인 회사 전체 값이다 [10]"
+   }
+  ],
+  "how": "티맵모빌리티는 비상장사라 사업보고서의 직원 평균 급여 공시가 없다. 공고는 연봉을 적지 않고, 지원서의 연봉 기입칸에 현재 연봉을 쓰게 한 뒤 레퍼런스 체크 다음의 **처우협의** 단계에서 정한다 [1]. 집계 평균은 신입부터 섞인 값이라 7년 차 이상 경력직이 받는 금액으로 읽으면 안 된다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "근무 시간",
+    "detail": "4주 단위 160시간 안에서 스스로 계획, 매월 금요일 하루 쉬는 Happy Friday"
+   },
+   {
+    "name": "재택",
+    "detail": "주 1회"
+   },
+   {
+    "name": "휴가",
+    "detail": "연차 외 체력단련휴가 연 최대 5일, 사유·승인 없는 연차·반차·반반차"
+   },
+   {
+    "name": "장기 근속",
+    "detail": "재직 3년마다 30일 유급 휴가"
+   },
+   {
+    "name": "복리후생비",
+    "detail": "연 360만원(IT 기기·교육·여행·운동·가족 건강검진·휴양소 등)"
+   },
+   {
+    "name": "건강",
+    "detail": "협약 건강검진 연 40만원 한도, 본인·배우자·자녀·양가 부모 의료비, 독감 예방접종비"
+   },
+   {
+    "name": "교육",
+    "detail": "직무 교육비 연 100만원까지"
+   },
+   {
+    "name": "통신비",
+    "detail": "SKT 이용자 월 최대 10만원"
+   },
+   {
+    "name": "포인트",
+    "detail": "생일 TMAP Point 10만, 농수산물 '자연이랑' 연 60만 포인트"
+   },
+   {
+    "name": "가족·주거",
+    "detail": "자녀 학자금, 금융기관 대출 이자 일부 지원"
+   },
+   {
+    "name": "사내",
+    "detail": "헬스키퍼 안마 월 4회, 라운지·수면실·폰부스, 구내식당(점심 5,000원·아침 무료), 허먼밀러 의자, AI 도구(ChatGPT·Gemini·Claude·Codex)"
+   }
+  ],
+  "note": "이 공고(SK Careers)에는 복지 칸이 없어, 같은 회사가 2026년에 원티드에 올린 다른 공고의 '혜택 및 복지'를 옮겼다 [5]. 구내식당 값은 2026년 1월 사옥 취재 기사다 [7]. 정규직 전체 기준으로 읽히지만 적용 조건은 처우 협의 때 확인한다 {추론}."
+ },
+ "location": {
+  "name": "티맵모빌리티 본사 (SK-C타워)",
+  "address": "서울특별시 중구 충무로 15, SK-C타워 7-9층",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%A4%91%EA%B5%AC%20%EC%B6%A9%EB%AC%B4%EB%A1%9C%2015",
+  "note": "원티드의 같은 공고 근무지 표기다 [2]. 사옥 취재 기사도 중구 SKC 타워 7~9층이라고 적었다 [7]. 우편번호는 확인하지 못했다."
+ },
+ "fit": {
+  "good": [
+   "단말·네트워크·클라우드를 가리지 않고 넓게 보는 게 즐거운 사람 — 업무 세 묶음이 다 한 자리다[1]",
+   "외주 관제 인력과 같이 일하며 기준을 세우고 이끄는 데 익숙한 사람[1][6]",
+   "경보 하나를 끝까지 따라가 '무엇이 어디서 어떻게'를 밝히는 걸 좋아하는 사람"
+  ],
+  "hard": [
+   "전담 인력 12.9명(그중 외주 6.6명)인 작은 팀이라 한 사람이 맡는 범위가 넓다[6]",
+   "솔루션 운영·직원 문의 대응처럼 반복되는 일이 적지 않다 {추론}",
+   "개발 중심 보안(코드·진단)을 원하면 같은 팀의 보안 진단 엔지니어 자리가 더 맞을 수 있다[4]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "EDR 경보 하나 — '워드가 파워셸을 띄웠다' — 를 받았어요. 처음 10분 동안 무엇을 보고, 언제 단말을 격리하나요?",
+   "a": "업무의 EDR 탐지·대응 줄과 IR 주도 요건을 한 번에 본다.[1][13]"
+  },
+  {
+   "q": "원격관제와 상주관제가 같은 사건을 서로 다르게 판단하면 어떻게 맞추겠어요?",
+   "a": "통합 보안관제를 '주도'하라는 업무 줄 — 외주 비중이 큰 팀 구조.[1][6]"
+  },
+  {
+   "q": "IoC 를 자동 차단에 넣을 때 무엇을 기준으로 거르나요? 오탐으로 거래처 메일이 막히면요?",
+   "a": "위협 인텔리전스·차단 정책·자동 대응 줄.[1][24]"
+  },
+  {
+   "q": "EKS 감사 로그에서 '다른 네임스페이스의 서비스 계정이 secret 을 list 했다'가 나오면 무엇을 확인하나요?",
+   "a": "EKS 구조 이해 요건과 API 위협 업무 줄.[1][16][20]"
+  },
+  {
+   "q": "피싱으로 뺏긴 계정이 AWS 콘솔에 들어왔다면, 단말 로그와 클라우드 로그를 어떻게 이어 보겠어요?",
+   "a": "클라우드·EKS 로그를 SIEM 과 연동하는 이유.[1][17][26]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "SK Careers · 티맵모빌리티 보안 기술 엔지니어",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262516",
+   "kind": "posting",
+   "note": "정보보호팀 소개·업무·요건·우대·전형(서류 → 1·2차 인터뷰 → 레퍼런스 체크 → 처우협의)"
+  },
+  {
+   "n": 2,
+   "title": "원티드 · [티맵모빌리티] 보안 기술 엔지니어",
+   "url": "https://www.wanted.co.kr/wd/398468",
+   "kind": "posting",
+   "note": "같은 자리 — 근무지 충무로 15, SK-C타워 7-9층"
+  },
+  {
+   "n": 3,
+   "title": "캐치 · [티맵모빌리티] 보안 기술 엔지니어 채용",
+   "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/581410",
+   "kind": "posting",
+   "note": "같은 자리 — 경력 7년 이상·정규직·학력무관, 12/31 마감"
+  },
+  {
+   "n": 4,
+   "title": "SK Careers · 티맵모빌리티 보안 진단 엔지니어",
+   "url": "https://www.skcareers.com/Recruit/Detail/R262485",
+   "kind": "posting",
+   "note": "같은 정보보호팀 — AWS 클라우드 진단, ATT&CK, 경력 2년 이상, 과제 전형"
+  },
+  {
+   "n": 5,
+   "title": "원티드 · [티맵모빌리티] Site Reliability Engineer (SRE)",
+   "url": "https://www.wanted.co.kr/wd/365859",
+   "kind": "posting",
+   "note": "AWS 운영 3년 이상 요구 · 회사 공통 '혜택 및 복지'"
+  },
+  {
+   "n": 6,
+   "title": "디지털데일리 · 티맵모빌리티, 보안투자 3년새 3배↑…투자비중 5.8%까지 확대",
+   "url": "https://www.ddaily.co.kr/page/view/2026063015002779322",
+   "kind": "news",
+   "date": "2026-06-30",
+   "note": "회사 정보보호 공시 — 투자액 41억8,868만원, IT 대비 5.8%, 전담 12.9명(내부 6.3·외주 6.6), ISMS-P·TISAX, 연도별 활동"
+  },
+  {
+   "n": 7,
+   "title": "머니투데이 · [IT사파] 티맵모빌리티, 왜 사옥에 엔진을 심었을까",
+   "url": "https://www.mt.co.kr/tech/2026/01/19/2026011615574546384",
+   "kind": "news",
+   "date": "2026-01-19",
+   "note": "사옥(중구 SKC 타워 7~9층) 취재 — 재택·Happy Friday·구내식당"
+  },
+  {
+   "n": 8,
+   "title": "보안뉴스 · 티맵모빌리티, “자동차 사이버보안의 ‘T’rust Mobility 꿈꾼다”",
+   "url": "https://m.boannews.com/html/detail.html?idx=110441",
+   "kind": "news",
+   "note": "Mobility QE 팀 리더 인터뷰 — 티어1 공급사로서 TISAX·ISMS·CSMS 취득"
+  },
+  {
+   "n": 9,
+   "title": "원티드 · [티맵모빌리티] 정보보호 정책 담당자",
+   "url": "https://www.wanted.co.kr/wd/375369",
+   "kind": "posting",
+   "note": "마감 — 같은 팀의 정책 쪽 자리(ISMS-P 심사·그룹사 점검 대응)"
+  },
+  {
+   "n": 10,
+   "title": "자소설닷컴 · 티맵모빌리티 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/11668",
+   "kind": "reference",
+   "note": "기준일 표기 없음 — 검색 결과 요약으로 확인(페이지는 자동 접근 차단)"
+  },
+  {
+   "n": 11,
+   "title": "NIST SP 800-88 Rev. 2 · Guidelines for Media Sanitization",
+   "url": "https://csrc.nist.gov/pubs/sp/800/88/r2/final",
+   "kind": "reference"
+  },
+  {
+   "n": 12,
+   "title": "NIST SP 800-40 Rev. 4 · Guide to Enterprise Patch Management Planning",
+   "url": "https://csrc.nist.gov/pubs/sp/800/40/r4/final",
+   "kind": "reference"
+  },
+  {
+   "n": 13,
+   "title": "MITRE ATT&CK",
+   "url": "https://attack.mitre.org/",
+   "kind": "reference"
+  },
+  {
+   "n": 14,
+   "title": "MITRE ATT&CK · Containers 매트릭스",
+   "url": "https://attack.mitre.org/matrices/enterprise/containers/",
+   "kind": "reference"
+  },
+  {
+   "n": 15,
+   "title": "NIST SP 800-61 Rev. 3 · Incident Response Recommendations and Considerations",
+   "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+   "kind": "reference",
+   "date": "2025-04"
+  },
+  {
+   "n": 16,
+   "title": "Kubernetes 문서 · Auditing(감사 로그)",
+   "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/",
+   "kind": "reference"
+  },
+  {
+   "n": 17,
+   "title": "Amazon EKS · Send control plane logs to CloudWatch Logs",
+   "url": "https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html",
+   "kind": "reference"
+  },
+  {
+   "n": 18,
+   "title": "Amazon GuardDuty · EKS Protection",
+   "url": "https://docs.aws.amazon.com/guardduty/latest/ug/kubernetes-protection.html",
+   "kind": "reference"
+  },
+  {
+   "n": 19,
+   "title": "Amazon EKS · 보안 모범 사례(한국어)",
+   "url": "https://docs.aws.amazon.com/ko_kr/eks/latest/best-practices/security.html",
+   "kind": "reference"
+  },
+  {
+   "n": 20,
+   "title": "Kubernetes 문서 · Using RBAC Authorization",
+   "url": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "Kubernetes 문서 · Pod Security Standards",
+   "url": "https://kubernetes.io/docs/concepts/security/pod-security-standards/",
+   "kind": "reference"
+  },
+  {
+   "n": 22,
+   "title": "Trivy",
+   "url": "https://trivy.dev/",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "Falco 문서",
+   "url": "https://falco.org/docs/",
+   "kind": "reference"
+  },
+  {
+   "n": 24,
+   "title": "MISP — 오픈소스 위협 인텔리전스 플랫폼",
+   "url": "https://www.misp-project.org/",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "SigmaHQ · Sigma 규칙 형식",
+   "url": "https://github.com/SigmaHQ/sigma",
+   "kind": "reference"
+  },
+  {
+   "n": 26,
+   "title": "AWS IAM · Security best practices",
+   "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+   "kind": "reference",
+   "note": "CloudTrail 은 resources 의 사용 설명서"
+  },
+  {
+   "n": 27,
+   "title": "macOS Security Compliance Project",
+   "url": "https://github.com/usnistgov/macos_security",
+   "kind": "reference"
+  },
+  {
+   "n": 28,
+   "title": "CIS Benchmarks",
+   "url": "https://www.cisecurity.org/cis-benchmarks",
+   "kind": "reference"
+  },
+  {
+   "n": 29,
+   "title": "Microsoft Sysinternals · Sysmon",
+   "url": "https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon",
+   "kind": "reference"
+  },
+  {
+   "n": 30,
+   "title": "Red Canary · Atomic Red Team",
+   "url": "https://github.com/redcanaryco/atomic-red-team",
+   "kind": "reference"
+  },
+  {
+   "n": 31,
+   "title": "국가법령정보센터 · 개인정보의 안전성 확보조치 기준",
+   "url": "https://www.law.go.kr/행정규칙/개인정보의안전성확보조치기준",
+   "kind": "reference"
+  },
+  {
+   "n": 32,
+   "title": "AWS CloudTrail 사용 설명서",
+   "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html",
+   "kind": "reference"
+  },
+  {
+   "n": 33,
+   "title": "KISA · ISMS-P 인증제도 안내",
+   "url": "https://isms.kisa.or.kr/",
+   "kind": "reference"
+  }
+ ],
+ "caveat": "티맵모빌리티 정보보호팀의 기술 발표·블로그는 찾지 못했습니다(받은 영상 없음). 회사 근거는 이 공고와 같은 팀·같은 회사의 다른 공고, 2026년 정보보호 공시 기사, 사옥 취재 기사뿐이고, 어떤 SIEM·EDR·NAC 제품을 쓰는지, 관제를 어느 회사가 맡는지는 공개되지 않았습니다. 그 부분은 NIST·MITRE·AWS·쿠버네티스 공식 문서로 '보통 이런 일'을 보였습니다."
+}

@@ -19,9 +19,12 @@
   "jobkorea-50301694": "hyundai-autoever-classic-autosar-com",
   "wanted-395348": "hyundai-autoever-classic-autosar-com",
   "saramin-55552392": "hyundai-autoever-classic-autosar-com",
-  "saramin-55552527": "hyundai-autoever-os-mode-platform",
-  "wanted-395350": "hyundai-autoever-os-mode-platform",
+  "jobkorea-50301703": "hyundai-autoever-diag-crypto-module",
+  "wanted-395347": "hyundai-autoever-diag-crypto-module",
+  "saramin-55552285": "hyundai-autoever-diag-crypto-module",
   "jobkorea-50301680": "hyundai-autoever-os-mode-platform",
+  "wanted-395350": "hyundai-autoever-os-mode-platform",
+  "saramin-55552527": "hyundai-autoever-os-mode-platform",
   "wanted-385504": "hyundai-autoever-physical-ai-engineer",
   "jobkorea-50301916": "hyundai-autoever-physical-ai-engineer",
   "jobkorea-50301866": "hyundai-autoever-robot-backend",
@@ -93,6 +96,9 @@
   "wanted-393877": "speee-realestate-senior-product-engineer",
   "wanted-389900": "technopro-cloud-engineer-aws-japan",
   "wanted-394499": "technopro-lowcode-java-lead-japan",
+  "ats-skcareers:sk:R262516": "tmap-security-technology-engineer",
+  "dev-581410": "tmap-security-technology-engineer",
+  "wanted-398468": "tmap-security-technology-engineer",
   "ats-toss:group:7990802003": "toss-ads-ai-engineer",
   "ats-toss:group:7998957003": "toss-ads-bidding-pacing-mle",
   "ats-toss:group:6619423003": "toss-ads-data-analyst",
@@ -367,16 +373,16 @@
    "lines": 7
   },
   {
-   "id": "hyundai-autoever-classic-autosar-os-mode",
+   "id": "hyundai-autoever-diag-crypto-module",
    "company": "현대오토에버",
-   "role": "[SDV] Embedded SW Platform Developer - OS/Mode 모듈 개발 및 플랫폼 개발",
+   "role": "진단/Crypto 모듈 개발 (Embedded SW 플랫폼)",
    "jobs": [
-    "saramin-55552527",
-    "wanted-395350",
-    "jobkorea-50301680"
+    "jobkorea-50301703",
+    "wanted-395347",
+    "saramin-55552285"
    ],
    "researched_at": "2026-11-23",
-   "lines": 12
+   "lines": 10
   },
   {
    "id": "hyundai-autoever-os-mode-platform",
@@ -957,6 +963,18 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 15
+  },
+  {
+   "id": "tmap-security-technology-engineer",
+   "company": "티맵모빌리티",
+   "role": "보안 기술 엔지니어",
+   "jobs": [
+    "ats-skcareers:sk:R262516",
+    "dev-581410",
+    "wanted-398468"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 27
   },
   {
    "id": "toss-ads-ai-engineer",
