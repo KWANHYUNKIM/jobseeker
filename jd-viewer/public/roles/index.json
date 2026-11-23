@@ -2,6 +2,7 @@
  "updated_at": "2026-11-23",
  "jobs": {
   "wanted-335089": "aldagram-kanna-web-engineer",
+  "wanted-395344": "autoever-india-security-expat",
   "wanted-383708": "creationline-fullstack-sherpa-japan",
   "wanted-389061": "datachain-senior-sre-stablecoin",
   "wanted-395987": "datax-software-engineer-japan",
@@ -215,6 +216,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 22
+  },
+  {
+   "id": "autoever-india-security-expat",
+   "company": "현대오토에버",
+   "role": "Security Engineer - 인도 법인 보안&인프라 주재원",
+   "jobs": [
+    "wanted-395344"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 25
   },
   {
    "id": "creationline-fullstack-sherpa-japan",
