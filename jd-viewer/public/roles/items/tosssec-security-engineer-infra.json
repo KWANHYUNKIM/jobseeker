@@ -1,0 +1,1108 @@
+{
+ "id": "tosssec-security-engineer-infra",
+ "company": "토스증권",
+ "role": "Security Engineer (보안 인프라)",
+ "team": "보안팀 · Security Engineering Team",
+ "jobs": [
+  "ats-toss:group:8011230003"
+ ],
+ "researched_at": "2026-11-23",
+ "tldr": {
+  "what": "토스증권 서비스가 도는 **데이터센터(온프레미스)와 퍼블릭 클라우드 전체**에서, 데이터가 새 나갈 길·잘못 열린 설정·규제 위반을 찾아 **구조로 막는 보안 통제**를 설계하고 만듭니다.[1]",
+  "env": "금융회사라 **망분리**(업무망과 인터넷을 떼어 두는 규제) 위에서 일하고[9], 올해 팀 과제는 **ZTNA(사람·기기를 요청마다 확인하는 사내 접속)와 클라우드·컨테이너 보안**입니다.[1] 같은 팀은 단말 상태 점수를 ZTNA 접근 판단에 넘기는 일을 진행 중입니다.[3]",
+  "oneline": "보안 장비를 '운영'하는 자리가 아니라 **통제를 설계하고 자동으로 집행되게 만드는** 자리. 네트워크·트래픽 분석 경험이 필수, 클라우드·쿠버네티스·IaC 는 우대입니다.[1]"
+ },
+ "lines": [
+  {
+   "section": "task",
+   "quote": "고객에게 서비스를 제공하는 인프라를 중심으로, 온프레미스와 클라우드(AWS, Azure, GCP 등) 전 구간에서 발생할 수 있는 인프라 보안 위협, 데이터 유출 경로, 컴플라이언스 위반 가능성을 식별하고 해결해요.",
+   "short": "데이터센터와 세 클라우드 어디서 공격받거나 데이터가 새거나 규제를 어길 수 있는지 찾아 막는 일.",
+   "why": "공고는 범위를 \"고객에게 서비스를 제공하는 인프라\"로 먼저 못 박고, 온프레미스와 AWS·Azure·GCP 를 한꺼번에 봅니다.[1] 토스증권 보안팀은 데이터 유출을 **사람의 실수와 AI 사용 습관이 만든 새 공격 표면**으로 봅니다 — 코드에 박힌 API 키, 문서 스크린샷, AI 프롬프트에 붙여 넣은 비밀값 같은 것입니다.[2]",
+   "actually": {
+    "intro": "세 갈래를 따로 찾습니다.",
+    "items": [
+     "**보안 위협** — 인터넷에 직접 열린 관리 포트, 너무 넓은 권한, 패치 안 된 장비처럼 공격자가 들어올 문.{추론}",
+     "**데이터 유출 경로** — 토스증권 발표는 API 키·OAuth 토큰·인증서·서비스 계정 같은 '사람이 아닌 신원(NHI)'이 코드·문서·AI 프롬프트로 새는 경로를 꼽았다.[2]",
+     "**컴플라이언스 위반** — 망분리(전자금융감독규정 15조)와 클라우드 이용 절차(14조의2)처럼 금융 규정이 요구하는 것을 지금 설정이 지키는가.[9][10]",
+     "같은 그룹 보안팀은 설정만 보고 \"켜져 있으니 동작한다\"고 믿지 않고, **로그와 맞춰 보니 동작하지 않는 정책**을 매일 찾는다 — 클라우드에서는 \"막았는데 인터넷에서 응답하는 경로\"를 같은 방식으로 본다.[5]"
+    ]
+   },
+   "how_far": "찾기만 하는 진단 자리가 아니라 **해결까지** 맡습니다(공고 끝말이 \"해결해요\").[1] 모의해킹·취약점 진단은 따로 Security Researcher 자리가 있습니다 — 이 자리는 찾은 것을 통제로 바꾸는 쪽입니다.[1] {추론}",
+   "refs": [
+    1,
+    2,
+    5,
+    9,
+    10
+   ],
+   "study": [
+    "g25-genai",
+    "aws-sra",
+    "cis-bench"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "서비스 구조와 임직원의 업무 환경을 고려해, 보안 요구사항과 서비스 가용성·사용성을 함께 충족하는 보안 통제를 설계하고 구현해요.",
+   "short": "막기만 하면 일이 멈추니, 서비스가 안 죽고 직원이 불편하지 않은 선에서 통제를 짜는 일.",
+   "why": "토스증권 보안팀은 생성형 AI 를 막지 않고 **누가 어떤 환경에서 무엇을 하는지 구분해 제어**하는 쪽으로 방향을 바꿨다고 발표했습니다 — \"막는 보안이 아니라 구분하고 제어하는 보안\".[2] 공고의 팀원도 보안을 혁신의 속도를 늦추지 않고 지키는 \"보안관\"으로 소개합니다.[1] 그룹 CISO 도 보안팀이 막는 조직에서 가능하게 하는 조직이 돼야 한다고 했습니다.[6]",
+   "actually": {
+    "intro": "토스증권 발표의 실제 예입니다.[2]",
+    "items": [
+     "**같은 앱, 다른 정책** — 업무 메신저를 회사 워크스페이스와 개인 워크스페이스로 나눠, 회사 쪽은 파일 첨부·다운로드·전송을 허용하고 개인 쪽은 읽기만 허용.",
+     "**두 겹의 눈** — 단말 DLP(파일 생성·복사·붙여넣기 같은 PC 안 행동)와 네트워크 DLP(밖으로 나가는 흐름)를 한 정책·한 규칙 묶음으로 합쳐, 한쪽이 놓친 것을 다른 쪽이 본다.",
+     "**막은 다음 절차** — 비밀값 전송이 걸리면 차단하고 사용자에게 소명을 받고, 위험을 평가해 키 재발급 여부를 정한다.",
+     "**예외는 기록과 함께** — 같은 회사 다른 발표는 USB 쓰기 허용 같은 예외마다 '누구에게 열렸나·무엇이 대신 지키나'를 이어 보니, 대상과 대체 통제가 정해진 예외만 위험이 보였다고 했다.[3]"
+    ]
+   },
+   "how_far": "\"설계하고 구현해요\"라 정책 문서가 아니라 **실제로 걸리는 규칙**까지 직접 만듭니다.[1] 가용성과 충돌할 때 어디까지 열지 판단 근거(로그·예외 목록)를 남기는 것까지가 이 자리 몫입니다.[3] {추론}",
+   "refs": [
+    1,
+    2,
+    3,
+    6
+   ],
+   "study": [
+    "g25-genai",
+    "ztn-ko"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "인프라 보안 이슈를 단건 대응으로 처리하지 않고, 구조적인 원인을 분석해 아키텍처 수준에서 재발하지 않도록 개선해요.",
+   "short": "문제 하나를 고치고 끝내지 않고, 같은 문제가 다시 못 생기게 구조를 바꾸는 일.",
+   "why": "토스증권 발표는 비밀값 유출을 한 건씩 처리하지 않고 업로드 원칙과 키 관리 가이드를 계속 고쳐 **탐지 → 복구 → 재발 방지**까지 잇는 '전주기 대응'을 한다고 했습니다.[2]",
+   "actually": {
+    "items": [
+     "**유출 한 건 → 원칙** — 비밀값이 새면 키를 폐기·재발급하고, 접근 통제(ACL)가 걸려 있었는지·영향이 어디까지인지로 위험을 매긴 뒤 업로드 원칙을 고친다.[2]",
+     "**미통신 단말 한 대 → 규칙** — MDM 만 232일 끊긴 채 다른 보안 솔루션은 방금 통신한 단말을 찾은 뒤, 같은 패턴을 운영 규칙으로 자동으로 찾게 했다.[3]",
+     "**정책이 안 먹는 이유 → 점검 코드** — SSL 복호화 예외의 와일드카드가 업로드 차단 정책을 덮은 사례를 찾은 뒤, 정책이 바뀔 때마다 같은 도메인에 걸린 다른 정책까지 코드가 확인하게 했다(토스).[5]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "히트 카운트 0 = 안 쓰는 정책? (토스 발표의 예)",
+     "body": "로그에서 차단 정책이 한 번도 안 걸렸다고 지우면 안 됩니다. 0건의 이유는 ① 더 위 허용 정책이 먼저 처리 ② 목적지를 IP로 넣어 HTTP 정책이 비교를 못 함 ③ SSL 예외로 복호화가 안 됨 ④ 서버·경로가 바뀜 ⑤ 정말 막을 요청이 없음 — 다섯 가지였고, 그래서 0건이면 **제대로 동작하는지부터** 본다고 했습니다.[5]"
+    }
+   ],
+   "how_far": "재발 방지는 보통 **사람이 아니라 코드·규칙이 지키게** 만드는 것입니다(점검 자동화, 기준 위반 알림, 배포 전 검증). 원인을 글로 정리하는 데서 멈추지 않습니다.[3][5] {추론}",
+   "refs": [
+    2,
+    3,
+    5
+   ],
+   "study": [
+    "nsm-book",
+    "g26-slides"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "온프레미스부터 클라우드까지 하이브리드 인프라 전 구간에 걸쳐 일관된 보안 기준이 유지되도록 관리해요.",
+   "short": "데이터센터 장비와 클라우드 설정이 같은 보안 기준을 따르게 맞추고, 어긋나지 않게 지키는 일.",
+   "why": "공고가 다루는 곳만 데이터센터와 클라우드 세 곳입니다.[1] 도구가 서로 달라 기준도 흩어지기 쉽습니다 — 토스증권 단말 보안 발표는 콘솔 9개와 담당자마다 상태를 따로 확인해야 겨우 답이 나왔고 **기준부터 흩어져 있어 대조하기 어려웠다**고 했습니다.[3]",
+   "actually": {
+    "items": [
+     "**기준을 한 벌로** — 'SSH 는 인터넷에 열지 않는다', '모든 자원에 담당 팀 태그' 같은 기준을 장비·클라우드 구분 없이 한 목록으로 적는다.{추론}",
+     "**도구마다 번역** — 같은 기준을 데이터센터 방화벽 정책, AWS 보안 그룹, Azure NSG, GCP 방화벽 규칙으로 각각 옮긴다.{추론}",
+     "**공개 기준을 바탕으로** — CIS 벤치마크 같은 공개 설정 기준이 OS·클라우드별로 있다.[19]",
+     "**판정과 근거를 같이** — 같은 팀은 수집한 값과 비교 규칙을 기준마다 한 행으로 DB 에 두고, 데이터가 없으면 '정상'이 아니라 '판단 불가'로 따로 본다.[3][4]"
+    ]
+   },
+   "how_far": "기준을 정하는 것은 정보보호 관리체계(ISMS-P 등)를 맡는 Information Security Manager 와 함께이고, 엔지니어는 **그 기준이 실제 설정에 걸려 있는지 기계로 확인하는 체계**를 맡습니다.[1][3] {추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    19
+   ],
+   "study": [
+    "cis-bench",
+    "aws-sra"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "클라우드 계정과 워크로드의 보안 기준(네트워크 구성, 권한 경계, 외부 노출 등)을 정의하고, 기준에서 벗어난 구성이 빠르게 드러나 교정되는 체계를 만들어요.",
+   "short": "클라우드 설정이 기준에서 벗어나면 곧바로 보이고 고쳐지게, 기준과 감시 장치를 같이 만드는 일.",
+   "why": "클라우드는 누구나 콘솔이나 코드로 설정을 바꿀 수 있어 기준에서 벗어난 구성(드리프트)이 생기기 쉽습니다.{추론} 이를 잡는 제품 부류가 CSPM(클라우드 보안 상태 관리)으로, 멀티·하이브리드 클라우드의 잘못된 설정과 취약점을 우선순위로 보여 줍니다.[15]",
+   "actually": {
+    "intro": "공고가 든 세 가지 기준의 보통 모습입니다.",
+    "items": [
+     "**네트워크 구성** — 어떤 서브넷·VPC 가 서로 통하나, 데이터센터와 클라우드 연결은 어디로 지나가나.{추론}",
+     "**권한 경계** — 계정·역할이 할 수 있는 최대 범위를 정해 두는 것. 클라우드 권한을 한곳에서 관리하는 부류를 CIEM 이라 부른다.[15]",
+     "**외부 노출** — 인터넷에서 닿는 IP·로드밸런서·저장소 버킷 목록과 열린 포트.{추론}",
+     "**드러나게** — AWS Config 처럼 자원 설정을 계속 기록하고 규칙 위반을 평가하는 서비스가 클라우드마다 있다.[28]",
+     "**교정되게** — 같은 그룹의 단말 보안 플랫폼은 위반마다 담당자가 할 정책 변경을 안내하고, **승인하면 규칙 변경까지 자동으로** 한다.[3]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "기준에서 벗어난 보안 그룹 찾기 (가상 데이터 · 직접 돌린 출력)",
+     "body": "기준: 인터넷 전체(0.0.0.0/0)에는 443 만, 모든 자원에 owner·data_class 태그. 출력은 `sg-web 기준 충족` / `sg-batch ['외부 노출: 22/tcp 가 인터넷 전체에 열림', \"태그 누락: ['data_class']\"]`.",
+     "lang": "python",
+     "code": "BASELINE = {\"allowed_public_ports\": {443}, \"required_tags\": {\"owner\", \"data_class\"}}\n\nsecurity_groups = [\n    {\"id\": \"sg-web\", \"tags\": {\"owner\": \"trade\", \"data_class\": \"public\"},\n     \"ingress\": [{\"cidr\": \"0.0.0.0/0\", \"port\": 443}]},\n    {\"id\": \"sg-batch\", \"tags\": {\"owner\": \"data\"},\n     \"ingress\": [{\"cidr\": \"0.0.0.0/0\", \"port\": 22}, {\"cidr\": \"10.0.0.0/8\", \"port\": 5432}]},\n]\n\ndef check(sg):\n    issues = []\n    for rule in sg[\"ingress\"]:\n        if rule[\"cidr\"] == \"0.0.0.0/0\" and rule[\"port\"] not in BASELINE[\"allowed_public_ports\"]:\n            issues.append(f\"외부 노출: {rule['port']}/tcp 가 인터넷 전체에 열림\")\n    missing = BASELINE[\"required_tags\"] - sg[\"tags\"].keys()\n    if missing:\n        issues.append(f\"태그 누락: {sorted(missing)}\")\n    return issues\n\nfor sg in security_groups:\n    print(sg[\"id\"], check(sg) or \"기준 충족\")"
+    }
+   ],
+   "how_far": "\"체계를 만들어요\"라 한 번 점검하는 게 아니라 **늘 돌아가는 감시 + 고치는 경로**까지입니다.[1] 상용 CSPM 을 쓸지 직접 만들지는 팀이 정하지만, 어느 쪽이든 기준을 코드로 적고 결과를 담당 팀에 돌려주는 흐름은 같습니다.{추론}",
+   "refs": [
+    1,
+    3,
+    15,
+    28
+   ],
+   "study": [
+    "aws-sra",
+    "aws-config",
+    "cnapp-ms"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "Kubernetes 환경을 포함한 내부(East-West) 트래픽의 가시성을 확보하고, Micro segmentation 기반의 통제 체계를 만들어가요.",
+   "short": "서버끼리 안에서 오가는 통신을 먼저 다 보이게 하고, 필요한 통신만 허용하도록 잘게 나눠 막는 일.",
+   "why": "경계 방화벽은 밖↔안(South-North) 통신을 봅니다. 공격자가 안으로 한 번 들어오면 서버끼리(East-West) 옆으로 퍼지는데, 이 길은 경계 장비가 못 봅니다.{추론} NIST 는 클라우드 네이티브 환경에서 통제의 기준이 **IP·서브넷·경계에서 서비스 신원으로** 옮겨 가야 한다고 정리했습니다.[14] 팀은 올해 클라우드·컨테이너 보안을 강화한다고 밝혔습니다.[1]",
+   "flows": [
+    {
+     "caption": "마이크로세그멘테이션을 까는 보통 순서 {추론}",
+     "steps": [
+      "보기 · 플로우 로그·eBPF 로 누가 누구와 통신하나 지도 만들기",
+      "묶기 · IP 가 아니라 서비스·라벨 단위로 이름 붙이기",
+      "허용 목록 · 실제 통신을 바탕으로 필요한 것만 적기",
+      "모니터 모드 · 막지 않고 위반만 기록하며 빠진 통신 찾기",
+      "차단 · 기본 거부로 바꾸고 예외는 기한과 함께"
+     ],
+     "mine_from": 0
+    }
+   ],
+   "actually": {
+    "items": [
+     "**클라우드 가시성** — VPC 플로우 로그는 네트워크 인터페이스를 오간 IP 트래픽(출발·도착 주소·포트·허용/거부)을 기록한다.[18]",
+     "**쿠버네티스 통제** — NetworkPolicy 로 파드끼리 통신을 라벨 단위로 허용·차단한다. 정책을 실제로 집행하는 건 네트워크 플러그인이라 플러그인이 지원해야 효과가 있다.[16]",
+     "**eBPF/Cilium** — 커널 안에서 패킷을 보는 eBPF 로 네트워크 정책을 집행하고, Hubble 로 서비스 간 흐름을 관측한다.[17]",
+     "**서비스 메시** — 사이드카 프록시가 서비스끼리 mTLS 로 신원을 확인하고 AuthorizationPolicy 로 누가 누구를 부를지 정한다.[20]",
+     "토스(그룹 운영사)는 Falco 로 쿠버네티스 위협을 모니터링한다고 발표했다 — 토스증권이 같은지는 공개되지 않았다.[21]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "플로우를 허용 목록과 맞춰 보기 (가상 데이터 · 직접 돌린 출력)",
+     "body": "플로우 로그를 서비스 이름으로 바꾼 뒤라고 가정합니다. `order-api → batch :22` 가 목록 밖으로 걸립니다 — 허용 목록을 만들 때 '실제로 쓰는데 빠진 것'과 '쓰지 않는데 열린 것'을 같이 봅니다.",
+     "lang": "python",
+     "code": "from collections import Counter\n\nflows = [\n    (\"order-api\", \"order-db\", 5432), (\"order-api\", \"order-db\", 5432),\n    (\"order-api\", \"quote-api\", 8080), (\"quote-api\", \"redis\", 6379),\n    (\"batch\", \"order-db\", 5432), (\"order-api\", \"batch\", 22),\n]\nallow = {(\"order-api\", \"order-db\", 5432), (\"order-api\", \"quote-api\", 8080),\n         (\"quote-api\", \"redis\", 6379), (\"batch\", \"order-db\", 5432)}\n\nseen = Counter(flows)\nfor flow, n in sorted(seen.items()):\n    mark = \"허용 목록\" if flow in allow else \"목록 밖 → 검토\"\n    print(f\"{flow[0]:>9} → {flow[1]:<9} :{flow[2]:<5} {n}회  {mark}\")\nprint(\"허용했지만 안 쓰인 규칙:\", sorted(allow - set(seen)) or \"없음\")\n\n# 출력\n#     batch → order-db  :5432  1회  허용 목록\n# order-api → batch     :22    1회  목록 밖 → 검토\n# order-api → order-db  :5432  2회  허용 목록\n# order-api → quote-api :8080  1회  허용 목록\n# quote-api → redis     :6379  1회  허용 목록\n# 허용했지만 안 쓰인 규칙: 없음"
+    }
+   ],
+   "how_far": "\"만들어가요\"라 아직 완성된 체계가 아니라 **세워 가는 중**으로 읽힙니다.[1] 먼저 보이게 하는 것(가시성)이 출발점이고, 차단은 서비스를 깨지 않게 단계적으로 합니다.{추론}",
+   "refs": [
+    1,
+    14,
+    16,
+    17,
+    18,
+    20,
+    21
+   ],
+   "study": [
+    "k8s-netpol",
+    "cilium-docs",
+    "learning-ebpf",
+    "nist-207a"
+   ]
+  },
+  {
+   "section": "task",
+   "quote": "망분리 등 금융권에 요구되는 규제를 지키면서도 Zero Trust가 실제로 작동하는 구조를 찾아, 정책 결정 체계와 연계해 SSE, ZTNA 기반 통제가 네트워크 경로에서 자동으로 집행되도록 설계하고 구현해요.",
+   "short": "망분리 규제는 지키되, 접속할 때마다 사람·기기를 확인하는 판단이 네트워크에서 저절로 집행되게 만드는 일.",
+   "why": "금융회사는 전자금융감독규정 15조로 내부 업무망과 인터넷을 떼어야 합니다.[9] 금융위는 2022년 클라우드 이용 절차를 줄이고 연구·개발 망분리를 완화했고[10], 2024년 망분리 개선 로드맵에서 생성형 AI·SaaS 활용을 단계적으로 넓히기로 했으며[11], 2026년 4월 내부 업무망 SaaS 예외를 시행했습니다.[12] 규제가 바뀌는 만큼 **열어 주는 곳마다 다른 통제가 받쳐야** 합니다.{추론}",
+   "flows": [
+    {
+     "caption": "NIST 제로 트러스트의 세 자리 — 토스증권 발표가 이 그림으로 설명했다[3][13]",
+     "steps": [
+      "PIP · 판단 재료 — 사용자 신원(IAM), 단말 상태(EDR·MDM·DLP), 취약점·위협 정보",
+      "PDP · 정책 결정 — 허용·추가 인증·차단을 정한다",
+      "PEP · 집행 — IAM(로그인할 때)·ZTNA(연결할 때)가 접근을 열고 끊는다"
+     ],
+     "mine_from": 1
+    }
+   ],
+   "actually": {
+    "items": [
+     "**SSE** — 인터넷 접속 감시(SWG)·SaaS 감시(CASB)·사내 앱 접속(ZTNA)·DLP 를 클라우드에서 묶어 주는 것. 토스증권은 SSE 를 기준으로 행위·신원 중심 통제를 만들었고, 모바일에서는 SSE 에 붙은 DSPM 으로 AI 앱에 올라가는 데이터를 검사한다.[2]",
+     "**정책 결정 체계와 연계** — 토스증권 단말 위험 평가 플랫폼(TERA)은 단말마다 A~D·U 등급(Device Trust Score)을 매기고, 상태가 바뀌면 SSF(보안 상태 변화를 표준 이벤트로 주고받는 규격)로 IAM 에 알리고, ZTNA 는 접속할 때 API 로 True/False 를 읽어 가게 확장 중이다.[3]",
+     "**자동 집행** — 위 연결이 끝나면 디스크 암호화가 꺼진 단말은 사람이 막지 않아도 로그인·연결에서 걸린다. 발표는 암호화 안 된 단말로 업무 앱 로그인이 계속 성공하던 사례를 이 작업의 이유로 들었다.[3]",
+     "**집행 지점의 한계** — SSL 피닝(앱이 정해 둔 인증서만 믿는 것)이 걸린 MCP 통신은 중간 복호화가 안 돼 SSE 로 볼 수 없었고, 그래서 클립보드까지 보는 차세대 DLP 를 검토 중이다.[2]",
+     "그룹 운영사 토스는 2022년부터 상용 SASE 로 제로 트러스트를 돌리다 자체 ZTNA 제품 '타이탄'으로 대체해 망분리 PC 까지 전사 적용했다 — 토스증권이 같은 제품을 쓰는지는 발표에 없다.[6]"
+    ]
+   },
+   "how_far": "제품 하나 사서 켜는 일이 아니라, **판단 재료(단말·신원) → 결정 → 집행 지점**을 잇는 연결부를 설계·구현합니다.[3] 규제 해석은 정보보호 관리 담당과 함께 하고, 엔지니어는 그 요건이 기술 통제로 어떻게 걸리는지를 책임집니다.{추론}",
+   "refs": [
+    2,
+    3,
+    6,
+    9,
+    10,
+    11,
+    12,
+    13
+   ],
+   "study": [
+    "nist-207",
+    "ztn-ko",
+    "g25-genai",
+    "g26-slides"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "네트워크 보안 통제 구조를 직접 설계·구축하고, 네트워크 구조와 트래픽 특성을 분석해 가시성과 통제의 사각지대를 해소해본 경험이 필요해요. (WAF, IPS, NDR 등 다뤄온 통제 수단의 종류는 관계없어요)",
+   "short": "어떤 장비였든 '어디가 안 보이고 안 막히는지'를 트래픽으로 찾아 메워 본 사람을 찾아서.",
+   "why": "업무 ⑥⑦이 결국 트래픽을 보고 경로에 통제를 거는 일입니다.[1] 괄호의 뜻은 **장비 이름이 아니라 구조를 보는 눈**을 본다는 것입니다 — WAF(웹 공격 차단), IPS(침입 차단), NDR(네트워크 이상 탐지) 어느 쪽이든 됩니다.[1]",
+   "actually": {
+    "items": [
+     "**사각지대의 예** — 복호화 예외에 덮여 업로드 차단·DLP 가 안 걸리던 도메인, IP 로 넣은 목적지라 HTTP 정책이 비교를 못 하던 그룹(토스 발표).[5]",
+     "**구조 그리기** — 트래픽이 어느 장비를 어떤 순서로 지나가는지, 복호화되는 구간과 안 되는 구간이 어디인지.{추론}",
+     "**트래픽 특성** — 평소 대비 갑자기 줄거나 는 정책 적중 수는 경로가 바뀌었다는 신호다.[5]"
+    ]
+   },
+   "how_far": "\"직접 설계·구축\"이 핵심이라 장비 운영·정책 반영만 해 본 경험보다, **배치를 정하고 빈 곳을 찾아 메운 사례**를 이력서에 씁니다.{추론} 장비 자체 운영은 같은 회사 Network Engineering Team 의 네트워크 보안 엔지니어 자리가 따로 있습니다.[7]",
+   "refs": [
+    1,
+    5,
+    7
+   ],
+   "study": [
+    "nw-intro",
+    "nsm-book"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "서비스 구조와 트래픽 흐름을 이해하고, 보안 요구사항과 서비스 가용성을 함께 고려해 보안 통제를 직접 설계·구현해본 경험이 필요해요.",
+   "short": "통제를 걸었다가 서비스가 멈추면 안 되니, 서비스가 어떻게 도는지 알고 통제를 짜 본 사람이어서.",
+   "why": "업무 ②의 요건판입니다.[1] 증권은 장중에 통신이 끊기면 바로 고객 손해라 가용성 무게가 큽니다.{추론} 토스증권 보안팀은 생성형 AI 도 막는 대신 구분해 제어하는 방식으로 풀었습니다.[2]",
+   "actually": {
+    "items": [
+     "새 차단 정책을 **모니터 모드로 먼저** 걸어 오탐을 본 뒤 차단으로 바꾸기.{추론}",
+     "정책 변경을 배포처럼 다루기 — 토스는 정책 변경안을 코드가 다른 정책 영향까지 확인하고 사람이 확인한 뒤 배포하며, 배포 뒤에는 매일 예상 동작과 로그를 대조한다.[5]",
+     "장애 때 통제가 서비스를 끊지 않게 하는 쪽(fail-open)과 통제를 지키는 쪽(fail-closed) 중 무엇을 고를지 서비스별로 정하기.{추론}"
+    ]
+   },
+   "how_far": "이력서에는 \"무엇을 막았나\"만이 아니라 **그 통제를 넣는 동안 서비스가 어떻게 안 멈췄나**를 같이 씁니다.{추론}",
+   "refs": [
+    1,
+    2,
+    5
+   ],
+   "study": [
+    "ztn-ko",
+    "g26-slides"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "네트워크와 클라우드 인프라에서 보안 이슈가 발생했을 때 패킷, 플로우, 클라우드 로그 분석 등을 통해 근본 원인을 파악하고 재발 방지 체계를 구축해본 경험이 필요해요",
+   "short": "사고가 나면 패킷·플로우·클라우드 기록을 직접 읽어 원인을 찾고, 다시 안 나게 막아 본 사람이어서.",
+   "why": "업무 ③(구조적 원인 분석)의 요건판입니다.[1] 보는 자료가 세 겹입니다 — 패킷(내용까지), 플로우(누가 누구와 얼마나), 클라우드 로그(누가 어떤 설정을 바꿨나).{추론}",
+   "level": {
+    "basic": "tcpdump·Wireshark 로 TCP 연결 수립·종료, DNS·TLS 핸드셰이크 읽기",
+    "work": "VPC 플로우 로그·방화벽 로그로 출발·도착·허용/거부 집계, 클라우드 감사 로그로 설정 변경자 찾기",
+    "team": "여러 출처 기록을 한 시간축에 겹쳐 원인 찾기 — 토스증권 TERA 는 여러 보안 솔루션의 통신이 짧은 간격으로 함께 끊기고 같은 단말에서 로그인 시도가 급증한 것을 엮어 '통제 무력화 의심'으로 잡았다"
+   },
+   "actually": {
+    "items": [
+     "**플로우** — VPC 플로우 로그에는 출발·도착 주소와 포트, 허용·거부 결과가 남는다.[18]",
+     "**교차 확인** — 콘솔은 정상인데 단말에서는 에이전트가 안 돌던 사례처럼, 서버가 보고한 상태와 실제 상태를 맞대어 본다.[4]",
+     "**재발 방지** — 한 번 찾은 패턴을 규칙으로 저장해 다음부터 자동으로 잡히게 한다.[3][4]"
+    ]
+   },
+   "how_far": "로그 수집 플랫폼 운영은 보안 분석 쪽 일이고, 이 자리는 **그 기록을 읽어 인프라 구조의 원인까지 내려가는** 수준을 요구합니다.[1] {추론}",
+   "refs": [
+    1,
+    3,
+    4,
+    18
+   ],
+   "study": [
+    "packet-analysis",
+    "nsm-book",
+    "aws-flowlogs"
+   ]
+  },
+  {
+   "section": "qualification",
+   "quote": "대규모 하이브리드(온프레미스 + 퍼블릭 클라우드) 환경에서 네트워크 구성과 클라우드 리소스 설정에 일관된 보안 기준을 정의하고, 그 기준이 유지되도록 보안 아키텍처를 설계하고 운영해본 경험이 필요해요",
+   "short": "데이터센터와 클라우드가 섞인 큰 환경에서 기준을 세우고, 그 기준이 지켜지게 구조를 짜 본 사람이어서.",
+   "why": "업무 ④⑤의 요건판입니다.[1] '대규모'는 손으로 대조할 수 없는 규모라는 뜻입니다 — 토스 ZTNA 정책 발표만 해도 정책 1,700여 개, 목적지 그룹 1,800여 개, 그룹에 든 도메인·IP 16만여 개라 관계를 사람이 다 따라가기 어려워 코드가 계산한다고 했습니다.[5]",
+   "actually": {
+    "items": [
+     "기준 정의 → 설정 수집 → 자동 대조 → 위반 알림·교정의 고리를 하나 끝까지 만들어 본 경험.{추론}",
+     "토스증권 TERA 는 적용된 정책을 승인 기준과 자동 대조해 다르면 '정책 검토 필요'로 띄운다 — 예전에는 감사 때마다 콘솔을 하나씩 열어 확인했다.[3]",
+     "새 자원이 생길 때 기준이 처음부터 걸리게(IaC 템플릿·조직 정책) 하는 것과, 이미 있는 자원을 주기적으로 대조하는 것을 같이 한다.{추론}"
+    ]
+   },
+   "how_far": "\"설계하고 운영해본\"이라 만든 뒤 **예외·장애·사용자 불편을 겪으며 고쳐 본 경험**까지 봅니다 — 같은 회사 팀 리더 공고도 구축 이후 운영하며 개선한 경험을 요구합니다.[8]",
+   "refs": [
+    1,
+    3,
+    5,
+    8
+   ],
+   "study": [
+    "aws-sra",
+    "cis-bench",
+    "tf-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "클라우드, 컨테이너 보안(CNAPP, 즉 CSPM, CWPP, CIEM 등의 통합 관점이나 Microsegmentation, Kubernetes Network Policy, eBPF/Cilium, Service Mesh)을 운영해봤거나 도입을 검토, 설계해본 경험이 있다면 더욱 좋아요",
+   "short": "팀이 올해 키우려는 분야(클라우드·컨테이너 보안)를 이미 해 봤거나 도입을 검토해 봤다면 바로 쓸모가 있어서.",
+   "why": "팀이 올해 기술 과제로 ZTNA 와 클라우드·컨테이너 보안을 꼽았습니다.[1] \"검토, 설계해본\"도 받는다는 건 **운영 경험이 없어도 비교·설계를 해 봤으면** 된다는 뜻입니다.[1]",
+   "actually": {
+    "items": [
+     "**CNAPP** — 클라우드 앱을 처음부터 끝까지 지키는 도구를 한 플랫폼으로 묶은 것. 안에 CSPM(설정 위반), CWPP(가상머신·컨테이너·서버리스 같은 워크로드 보호), CIEM(권한 관리)이 들어간다.[15]",
+     "**Kubernetes NetworkPolicy** — 파드 라벨·네임스페이스·IP 대역으로 들어오고 나가는 통신을 정한다.[16]",
+     "**eBPF/Cilium** — 커널에서 정책 집행과 관측(Hubble)을 같이 한다.[17]",
+     "**서비스 메시** — mTLS 로 서비스 신원을 확인하고 인가 정책을 건다.[20] NIST 800-207A 는 이것을 클라우드 네이티브 제로 트러스트의 집행 방식으로 다룬다.[14]"
+    ]
+   },
+   "examples": [
+    {
+     "title": "기본 거부 + 필요한 것만 허용 (NetworkPolicy 문법 예)",
+     "body": "공식 문서의 문법을 따른 설정 예입니다(클러스터에 적용해 확인한 것은 아님).[16] 첫 정책이 네임스페이스의 들어오는 통신을 모두 막고, 둘째가 order-api 에서 order-db 5432 만 엽니다.",
+     "lang": "yaml",
+     "code": "apiVersion: networking.k8s.io/v1\nkind: NetworkPolicy\nmetadata:\n  name: default-deny-ingress\nspec:\n  podSelector: {}\n  policyTypes: [Ingress]\n---\napiVersion: networking.k8s.io/v1\nkind: NetworkPolicy\nmetadata:\n  name: allow-order-api-to-db\nspec:\n  podSelector:\n    matchLabels: {app: order-db}\n  policyTypes: [Ingress]\n  ingress:\n  - from:\n    - podSelector:\n        matchLabels: {app: order-api}\n    ports:\n    - protocol: TCP\n      port: 5432"
+    }
+   ],
+   "how_far": "괄호 안 전부가 아니라 **하나라도 깊게**면 됩니다. 도구 이름보다 '왜 그 방식을 골랐고 무엇을 포기했나'를 설명할 수 있는 정도가 기준입니다.{추론}",
+   "refs": [
+    1,
+    14,
+    15,
+    16,
+    17,
+    20
+   ],
+   "study": [
+    "cnapp-ms",
+    "k8s-netpol",
+    "cilium-docs",
+    "container-sec-ko",
+    "istio-sec"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "AWS, Azure, GCP 등 퍼블릭 클라우드에서 네트워크, IAM, 로깅 등의 보안 기능을 직접 설계하고, Terraform 등 IaC와 Python/Go, AI/MCP 기반 도구를 활용해 보안 인프라 구축과 운영을 자동화해본 경험이 있다면 더욱 좋아요",
+   "short": "클라우드 보안 기능을 손으로 설정하지 않고 코드·AI 도구로 짓고 돌려 본 사람이면 이 팀 방식과 맞아서.",
+   "why": "공고의 기술 태그가 AWS·Azure·GCP·Kubernetes·Terraform·Python·Go 입니다.[1] 같은 회사 보안팀 발표들은 반복 일을 코드와 AI 로 줄이는 사례가 대부분이었습니다 — 단말 보안 플랫폼은 AI 에이전트가 새 위험 규칙과 SQL 을 제안하고 반박 에이전트가 검토한 뒤 담당자가 채택합니다.[4]",
+   "actually": {
+    "items": [
+     "**IaC** — 보안 그룹·IAM 역할·로그 설정을 Terraform 코드로 두면 바뀐 내용이 리뷰에 남고, 기준 위반을 배포 전에 걸 수 있다.[22]",
+     "**로깅 설계** — 어떤 로그(감사 로그·플로우 로그·DNS 로그)를 어디에 얼마나 남길지 정하는 것도 보안 기능 설계다.{추론}",
+     "**AI/MCP 도구** — 토스는 정책 목록만 주고 LLM 에 맞는지 물으니 절반이 오답이었고, 그래서 관계 계산은 코드가, 원인 추정과 변경안은 LLM 이, 판단과 배포는 사람이 하도록 나눴다. 사용자 이름·계정명과 정책 적용 권한은 LLM 에 주지 않는다.[5]"
+    ]
+   },
+   "how_far": "개발자 수준의 서비스 개발이 아니라 **보안 운영을 자동화하는 스크립트·작은 서비스**를 짤 수 있으면 됩니다(API 호출, 결과 대조, 알림).{추론}",
+   "refs": [
+    1,
+    4,
+    5,
+    22
+   ],
+   "study": [
+    "tf-ko",
+    "aws-sra",
+    "g26-slides"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "SSE, ZTNA 기반 접근 제어 아키텍처를 설계하거나 기존 네트워크 보안 체계를 전환해본 경험이 있다면 더욱 좋아요",
+   "short": "VPN·IP 기반 사내 접속을 제로 트러스트 방식으로 바꿔 본 경험이 업무 ⑦에 그대로 쓰여서.",
+   "why": "업무 ⑦이 SSE·ZTNA 통제를 네트워크 경로에서 자동 집행하는 것입니다.[1] 전환은 정책을 옮기는 일이기도 합니다 — 토스는 상용 SASE 에서 자체 제품으로 정책을 옮길 때 기능 차이 분석 → 정책 구조 분석 → 추출·변환 → 전후 교차 검증 → 사용자별 단계 이관 순서로 했고, **똑같이 옮겼다고 원래 정책이 맞다는 뜻은 아니었다**고 했습니다.[5]",
+   "flows": [
+    {
+     "caption": "토스가 사내 접속 정책을 옮긴 순서[5]",
+     "steps": [
+      "기능 차이 분석",
+      "정책 구조 분석",
+      "추출·변환",
+      "배포·전후 교차 검증",
+      "사용자별 단계 이관"
+     ]
+    }
+   ],
+   "how_far": "제품 구축 경험이 없어도, **IP 기반 접근 통제의 한계와 신원·기기 기반으로 바꿀 때의 순서**를 설명할 수 있으면 면접에서 이야기가 됩니다.[13] {추론}",
+   "refs": [
+    1,
+    5,
+    13
+   ],
+   "study": [
+    "nist-207",
+    "ztn-ko"
+   ]
+  },
+  {
+   "section": "preference",
+   "quote": "금융권 등 규제 환경에서 망분리, 클라우드 이용 규제 등의 요건을 기술적 통제로 구현해본 경험이 있다면 더욱 좋아요",
+   "short": "규정 문장을 실제 방화벽·접속·클라우드 설정으로 옮겨 본 사람이면 금융 규제 해석에 시간을 덜 써서.",
+   "why": "망분리는 전자금융감독규정 15조, 클라우드 이용 절차는 14조의2 에 있습니다.[9] 규정은 2022년(클라우드 절차 합리화·연구개발망 완화)[10]과 2026년(SaaS 예외)[12]처럼 계속 바뀌어, 바뀐 요건을 통제로 다시 옮기는 일이 반복됩니다.{추론}",
+   "actually": {
+    "items": [
+     "**망분리 → 통제** — 업무망 단말에서 인터넷 접속 경로를 끊거나 정해진 경로(가상 PC 등)로만 보내기.{추론}",
+     "**SaaS 예외 → 통제** — 2026년 예외는 고유식별·개인신용정보 처리 업무는 빼고, 평가받은 SaaS·단말 보호를 조건으로 했다 — 이 조건이 그대로 기술 통제 목록이 된다.[12]",
+     "**클라우드 이용 → 통제** — 업무 중요도 평가에 따라 절차가 달라져, 어떤 데이터가 어느 클라우드에 있는지 아는 것부터가 통제다.[10] {추론}"
+    ]
+   },
+   "how_far": "법 해석을 혼자 하는 자리는 아닙니다. 규정 문장이 **어떤 설정·로그·증적으로 증명되는지**를 아는 것이 핵심입니다.{추론}",
+   "refs": [
+    9,
+    10,
+    12
+   ],
+   "study": [
+    "efsr",
+    "fsc-saas"
+   ]
+  }
+ ],
+ "fit": {
+  "good": [
+   "장비 이름보다 '트래픽이 실제로 어디로 지나가나'를 그려 보는 게 재밌는 사람",
+   "반복 점검을 스크립트·코드로 없애는 걸 좋아하는 사람[4][5]",
+   "막는 것보다 '안전하게 쓰게 하는 방법'을 찾고 싶은 사람[2][6]",
+   "데이터센터와 클라우드를 둘 다 다뤄 보고 싶은 사람[1]"
+  ],
+  "hard": [
+   "자격요건이 모두 '직접 설계·구축해 본 경험'이라 신입·주니어에게는 높다[1]",
+   "망분리 같은 금융 규제 때문에 쓸 수 있는 도구와 경로가 일반 IT 회사보다 좁다[9]",
+   "범위가 데이터센터 + 클라우드 세 곳 + 쿠버네티스라 넓다[1]"
+  ]
+ },
+ "interview": [
+  {
+   "q": "차단 정책의 적중 수가 몇 달째 0입니다. 지워도 될까요?",
+   "a": "같은 그룹이 실제로 겪은 다섯 가지 원인(우선순위·IP 목적지·SSL 예외·정책 밖 변화·정말 없음).[5]"
+  },
+  {
+   "q": "쿠버네티스 안 서비스끼리 통신을 기본 거부로 바꾸려면 어떤 순서로 하겠어요? 서비스가 안 깨지게 하려면요?",
+   "a": "업무 ⑥ — 가시성 먼저, 모니터 모드, 단계적 차단.[16][17]"
+  },
+  {
+   "q": "단말 상태가 나빠졌을 때 이미 연결된 세션은 어떻게 끊나요? 로그인할 때만 보면 무엇을 놓치나요?",
+   "a": "토스증권이 IAM 에는 상태 변화를 밀어 주고(SSF) ZTNA 는 접속마다 읽게 나눈 이유.[3]"
+  },
+  {
+   "q": "SSL 피닝이 걸린 앱의 데이터 유출은 네트워크에서 어떻게 보나요?",
+   "a": "토스증권 발표가 털어놓은 현재 과제 — SSE 로는 못 보고 단말 쪽에서 본다.[2]"
+  },
+  {
+   "q": "클라우드 계정에서 인터넷에 열린 자원을 어떻게 빠짐없이 찾고, 계속 안 생기게 하겠어요?",
+   "a": "업무 ⑤ — 기준 정의, 계속 기록·평가, 교정 경로.[15][28]"
+  }
+ ],
+ "sources": [
+  {
+   "n": 1,
+   "title": "토스 채용 · 토스증권 Security Engineer (보안 인프라)",
+   "url": "https://toss.im/career/job-detail?gh_jid=8011230003",
+   "kind": "posting",
+   "note": "보안팀 구성(CISO·Security Engineer·Researcher·Information Security Manager·Privacy Manager)·올해 과제(ZTNA, Cloud/Container 보안)·업무·요건·합류 여정(처우 협의 포함)·팀원 한마디"
+  },
+  {
+   "n": 2,
+   "title": "GUARDIANS 25 · GenAI 시대의 데이터 보안",
+   "url": "https://youtu.be/e9CZQSpVT5c",
+   "kind": "company",
+   "date": "2025-11-20",
+   "note": "토스증권 Security Engineer 임용수 · 18분 · 자막·장면 전부 읽음(NHI 유출, SSE 기반 행위·신원 통제, 업무/개인 워크스페이스 분리, 단말·네트워크 DLP 통합, 소명·키 재발급, DSPM, MCP·SSL 피닝 한계, 차세대 DLP 검토, 데이터 보안 아키텍처)"
+  },
+  {
+   "n": 3,
+   "title": "GUARDIANS 26 · 엔드포인트 보안 통제, 데이터로 증명하기 (발표자료)",
+   "url": "https://static.toss.im/GUARDIANS26_session_slides.zip",
+   "kind": "company",
+   "date": "2026-11-06",
+   "note": "토스증권 Security Engineer 정연우 · 45쪽 전부 읽음(콘솔 9개·단말 1천여 대, TERA, MDM 232일 미통신, 디스크 암호화 꺼진 단말 로그인 성공, 예외별 대체 통제, NIST PIP·PDP·PEP, Device Trust Score A~D·U, SSF 로 IAM·API 로 ZTNA 연계 진행 중) · 묶음 파일 안 B-1"
+  },
+  {
+   "n": 4,
+   "title": "GUARDIANS 26 · 엔드포인트 위험 평가 플랫폼 내재화 과정 (발표자료)",
+   "url": "https://static.toss.im/GUARDIANS26_session_slides.zip",
+   "kind": "company",
+   "date": "2026-11-06",
+   "note": "토스증권 Security Engineer 문찬혁 · 26쪽 전부 읽음(4가지 위험 축, 시리얼 우선 장치 통합, 10분 통합 배치·PostgreSQL, 서버 API·클라이언트 센서 교차 검증, 판정 기준을 행으로, AI 규칙 제안·반박 에이전트·담당자 채택, 통제 무력화 의심 탐지) · 묶음 파일 안 B-2"
+  },
+  {
+   "n": 5,
+   "title": "GUARDIANS 26 · ZTNA 정책에도 제로 트러스트를 (발표자료)",
+   "url": "https://static.toss.im/GUARDIANS26_session_slides.zip",
+   "kind": "company",
+   "date": "2026-11-06",
+   "note": "토스(같은 그룹 다른 회사) Security Engineer 최승용 · 35쪽 전부 읽음(상용 SASE → 타이탄 이관 순서, SSL 예외가 HTTP·DLP 정책을 덮음, IP 목적지 그룹, 정책 밖 변화, 히트 카운트 0의 원인, 정책 1,700여·그룹 1,800여·도메인·IP 16만여, 코드·LLM·사람 분담, 클라우드 노출 점검) · 묶음 파일 안 B-5"
+  },
+  {
+   "n": 6,
+   "title": "GUARDIANS 26 · Enable Innovation. Secure What's Next. (CISO 기조연설 발표자료)",
+   "url": "https://static.toss.im/GUARDIANS26_session_slides.zip",
+   "kind": "company",
+   "date": "2026-11-06",
+   "note": "토스 CISO 지정호 · 31쪽 전부 읽음(막는 조직 → 가능하게 하는 조직, AI Gateway·MCP Gateway, 2022 상용 SASE → 2026 타이탄 전사 적용(망분리 PC 포함), 보안 인력 49.5명 → 70명) · 그룹 운영사 기준"
+  },
+  {
+   "n": 7,
+   "title": "토스 채용 · 토스증권 네트워크 보안 엔지니어 (5년 이상)",
+   "url": "https://toss.im/career/job-detail?gh_jid=5398782003",
+   "kind": "posting",
+   "note": "같은 회사 — Network Engineering Team 소속, 방화벽·VPN·DDoS 장비·NPB 운영, VPC 설계·인라인 검사·세그멘테이션, Terraform·Ansible 정책 자동화, NetworkPolicy·Flow Log 우대"
+  },
+  {
+   "n": 8,
+   "title": "토스 채용 · 토스증권 보안 엔지니어링 팀 리더",
+   "url": "https://toss.im/career/job-detail?gh_jid=8039740003",
+   "kind": "posting",
+   "note": "같은 팀 리더 공고 — 구축 이후 운영·개선, API·코드 자동화·셀프서비스, 보안 플랫폼"
+  },
+  {
+   "n": 9,
+   "title": "전자금융감독규정 (금융위원회 고시 제2025-4호)",
+   "url": "https://ko.wikisource.org/wiki/%EC%A0%84%EC%9E%90%EA%B8%88%EC%9C%B5%EA%B0%90%EB%8F%85%EA%B7%9C%EC%A0%95_(%EC%A0%9C2025-4%ED%98%B8)",
+   "kind": "reference",
+   "date": "2025-02-05",
+   "note": "제14조의2(클라우드컴퓨팅서비스 이용절차)·제15조(해킹 등 방지대책 — 망분리). 위키문헌 사본 — 법적 근거는 국가법령정보센터 원문"
+  },
+  {
+   "n": 10,
+   "title": "금융위원회 · 클라우드 이용절차 합리화 및 망분리 규제 완화 「전자금융감독규정」 개정안 의결",
+   "url": "https://www.fsc.go.kr/no010101/78962",
+   "kind": "reference",
+   "date": "2022-11-23",
+   "note": "업무 중요도 평가에 따른 절차 차등, 연구·개발 망분리 완화"
+  },
+  {
+   "n": 11,
+   "title": "금융위원회 · 금융분야 망분리 개선 로드맵",
+   "url": "https://fsc.go.kr/po010101/82885",
+   "kind": "reference",
+   "date": "2024-08-13",
+   "note": "생성형 AI 활용 허용, SaaS 이용 범위 확대 — 단계적 개선"
+  },
+  {
+   "n": 12,
+   "title": "금융위원회·금융감독원 · 내부 업무망 SaaS 망분리 예외 시행",
+   "url": "https://www.fsc.go.kr/no010101/86745",
+   "kind": "reference",
+   "date": "2026-04-20",
+   "note": "고유식별·개인신용정보 처리 시 제외, 평가받은 SaaS·단말 보호·반기 평가"
+  },
+  {
+   "n": 13,
+   "title": "NIST SP 800-207 · Zero Trust Architecture",
+   "url": "https://nvlpubs.nist.gov/nistpubs/specialpublications/NIST.SP.800-207.pdf",
+   "kind": "reference",
+   "date": "2020-08",
+   "note": "정책 결정 지점(PDP)·집행 지점(PEP)·정보 지점(PIP)"
+  },
+  {
+   "n": 14,
+   "title": "NIST SP 800-207A · A Zero Trust Architecture Model for Access Control in Cloud-Native Applications in Multi-Location Environments",
+   "url": "https://csrc.nist.gov/pubs/sp/800/207/a/final",
+   "kind": "reference",
+   "date": "2023-09",
+   "note": "IP·서브넷·경계 기준에서 신원 기준으로, API 게이트웨이·사이드카 프록시·SPIFFE, 네트워크 층·신원 층 정책"
+  },
+  {
+   "n": 15,
+   "title": "Microsoft Security 101 · What is CNAPP?",
+   "url": "https://www.microsoft.com/en-us/security/business/security-101/what-is-cnapp",
+   "kind": "reference",
+   "note": "CNAPP = CSPM·CWPP·CIEM 등을 묶은 통합 플랫폼 — 업체 설명 문서"
+  },
+  {
+   "n": 16,
+   "title": "Kubernetes 문서 · Network Policies",
+   "url": "https://kubernetes.io/docs/concepts/services-networking/network-policies/",
+   "kind": "reference",
+   "note": "정책 집행은 네트워크 플러그인이 지원해야 한다, 기본 거부 예"
+  },
+  {
+   "n": 17,
+   "title": "Cilium 문서 · Introduction to Cilium & Hubble",
+   "url": "https://docs.cilium.io/en/stable/overview/intro/",
+   "kind": "reference",
+   "note": "eBPF 기반 네트워크 정책 집행·Hubble 관측"
+  },
+  {
+   "n": 18,
+   "title": "AWS · VPC Flow Logs",
+   "url": "https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html",
+   "kind": "reference",
+   "note": "네트워크 인터페이스를 오간 IP 트래픽 기록"
+  },
+  {
+   "n": 19,
+   "title": "CIS Benchmarks",
+   "url": "https://www.cisecurity.org/cis-benchmarks",
+   "kind": "reference",
+   "note": "OS·클라우드 보안 설정 기준"
+  },
+  {
+   "n": 20,
+   "title": "Istio 문서 · Security (mTLS·AuthorizationPolicy)",
+   "url": "https://istio.io/latest/docs/concepts/security/",
+   "kind": "reference"
+  },
+  {
+   "n": 21,
+   "title": "GUARDIANS 25 · 토스의 K8S를 더 안전하게: Falco를 활용한 K8S 위협 모니터링",
+   "url": "https://youtu.be/jRjbOPjgDaE",
+   "kind": "company",
+   "date": "2025-11-20",
+   "note": "토스(같은 그룹 다른 회사) Security Engineer 발표 — 이 풀이에서는 발표 제목(Falco 로 K8S 위협 모니터링)만 인용"
+  },
+  {
+   "n": 22,
+   "title": "HashiCorp · Terraform 튜토리얼",
+   "url": "https://developer.hashicorp.com/terraform/tutorials",
+   "kind": "reference"
+  },
+  {
+   "n": 23,
+   "title": "자소설닷컴 — 토스증권 기업정보(공공데이터 집계: 초봉·평균)",
+   "url": "https://jasoseol.com/companies/13103",
+   "kind": "reference",
+   "note": "기업이 공공데이터에 낸 정보로 계산한 집계 — 기준일 표기 없음, 사원수 292명으로 표기(실제 인원보다 적다)"
+  },
+  {
+   "n": 24,
+   "title": "자소설닷컴 — 비바리퍼블리카(토스) 기업정보(같은 집계)",
+   "url": "https://jasoseol.com/companies/11256",
+   "kind": "reference"
+  },
+  {
+   "n": 25,
+   "title": "토스증권 — 회사 정보(사이트 하단 주소)",
+   "url": "https://www.tossinvest.com/",
+   "kind": "company"
+  },
+  {
+   "n": 26,
+   "title": "토스피드 — 출근 첫날 만나는 토스 복지 패키지",
+   "url": "https://toss.im/tossfeed/article/employee-benefits",
+   "kind": "company",
+   "date": "2021-03-10"
+  },
+  {
+   "n": 27,
+   "title": "토스피드 — 원장개발자는 왜 10년 넘게 다닌 증권사 그만두고 토스증권을 선택했을까?",
+   "url": "https://toss.im/tossfeed/article/work-and-life-balance-of-securities",
+   "kind": "company",
+   "date": "2021-08-31",
+   "note": "토스증권 개발자 인터뷰 — 자율 출퇴근, 휴가 무제한, 사정이 있으면 공유하고 재택, 사내 헤어살롱 무료"
+  },
+  {
+   "n": 28,
+   "title": "AWS · What Is AWS Config?",
+   "url": "https://docs.aws.amazon.com/config/latest/developerguide/WhatIsConfig.html",
+   "kind": "reference",
+   "note": "자원 설정 기록·규칙 평가"
+  }
+ ],
+ "caveat": "토스증권이 쓰는 SSE·클라우드 보안 제품, 클라우드별 비중, 쿠버네티스 네트워크 구성은 공개되지 않았습니다. 회사 근거는 토스증권 보안팀 발표 3건(2025~2026)과 같은 그룹 토스의 발표이고, 마이크로세그멘테이션·CNAPP·NetworkPolicy 는 표준·공식 문서로 '보통 이런 것'을 보였습니다. 가디언즈 26 발표자료는 한 묶음 파일(zip) 안에 있어 출처 3~6 의 주소가 같습니다.",
+ "resources": [
+  {
+   "id": "g25-genai",
+   "title": "GUARDIANS 25 · GenAI 시대의 데이터 보안",
+   "by": "토스증권 Security Engineer · 18분",
+   "kind": "video",
+   "lang": "ko",
+   "free": true,
+   "level": "입문",
+   "url": "https://youtu.be/e9CZQSpVT5c",
+   "why": "이 팀이 SSE·DLP·DSPM 을 어떻게 엮었고 어디서 막혔는지(SSL 피닝) 직접 말한다. 업무 ①②⑦ 이해에 가장 먼저 볼 것."
+  },
+  {
+   "id": "g26-slides",
+   "title": "GUARDIANS 26 발표자료 묶음",
+   "by": "토스 · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://static.toss.im/GUARDIANS26_session_slides.zip",
+   "why": "B-1·B-2(토스증권 단말 위험 평가와 제로 트러스트 연계), B-5(정책이 실제로 동작하는지 매일 확인하는 법)를 먼저 읽는다. 업무 ③⑦·우대 ②③에 해당."
+  },
+  {
+   "id": "nist-207",
+   "title": "NIST SP 800-207 · Zero Trust Architecture",
+   "by": "NIST · 2020",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://nvlpubs.nist.gov/nistpubs/specialpublications/NIST.SP.800-207.pdf",
+   "why": "PDP·PEP·PIP 낱말의 원전. 업무 ⑦의 '정책 결정 체계와 연계'가 무엇을 뜻하는지 여기서 잡는다."
+  },
+  {
+   "id": "nist-207a",
+   "title": "NIST SP 800-207A · Zero Trust for Cloud-Native Applications in Multi-Location Environments",
+   "by": "NIST · 2023",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "심화",
+   "url": "https://csrc.nist.gov/pubs/sp/800/207/a/final",
+   "why": "하이브리드·멀티클라우드에서 IP 대신 서비스 신원으로 통제하는 법(서비스 메시·SPIFFE). 업무 ⑥과 우대 ①."
+  },
+  {
+   "id": "ztn-ko",
+   "title": "제로 트러스트 네트워크 — 안전한 네트워크를 만드는 보안 모델",
+   "by": "에반 길먼·더그 바르트 · 에이콘출판 · 2022",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=298090378",
+   "why": "경계 보안에서 제로 트러스트로 옮기는 이유와 기기·사용자·트래픽 신뢰를 어떻게 세우나. 업무 ⑦·우대 ③."
+  },
+  {
+   "id": "nw-intro",
+   "title": "IT 엔지니어를 위한 네트워크 입문",
+   "by": "고재성 · 이상훈 · 길벗",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "입문",
+   "url": "https://ridibooks.com/books/754029945",
+   "why": "스위치·라우터·방화벽·로드밸런서가 실제 데이터센터에서 어떻게 놓이는지. 자격 ①의 '네트워크 구조' 기본기."
+  },
+  {
+   "id": "packet-analysis",
+   "title": "Practical Packet Analysis (3판)",
+   "by": "Chris Sanders · No Starch Press · 2017",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "실무",
+   "url": "https://nostarch.com/packetanalysis3",
+   "why": "Wireshark·tcpdump 로 패킷을 읽어 원인을 찾는 연습. 자격 ③의 '패킷 분석'."
+  },
+  {
+   "id": "nsm-book",
+   "title": "The Practice of Network Security Monitoring",
+   "by": "Richard Bejtlich · No Starch Press · 2013",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://nostarch.com/nsm",
+   "why": "패킷·세션(플로우)·로그를 어디서 어떻게 모아 사각지대를 줄이나. 자격 ①③과 업무 ③."
+  },
+  {
+   "id": "aws-flowlogs",
+   "title": "VPC Flow Logs",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html",
+   "why": "클라우드 East-West 가시성의 첫 재료. 필드 의미와 한계(내용은 안 보임)를 알아 둔다. 업무 ⑥·자격 ③."
+  },
+  {
+   "id": "aws-sra",
+   "title": "AWS Security Reference Architecture",
+   "by": "AWS Prescriptive Guidance",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/security-reference-architecture/welcome.html",
+   "why": "여러 계정에 보안 기능(로깅·권한 경계·탐지)을 어떻게 나눠 까는지의 참고 구조. 업무 ④⑤·자격 ④."
+  },
+  {
+   "id": "aws-config",
+   "title": "What Is AWS Config?",
+   "by": "AWS 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.aws.amazon.com/config/latest/developerguide/WhatIsConfig.html",
+   "why": "설정을 계속 기록하고 규칙으로 평가하는 구조 — 업무 ⑤의 '기준에서 벗어난 구성이 빠르게 드러나는 체계'의 기본형."
+  },
+  {
+   "id": "cis-bench",
+   "title": "CIS Benchmarks",
+   "by": "Center for Internet Security",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.cisecurity.org/cis-benchmarks",
+   "why": "OS·클라우드별 공개 설정 기준. 자기 기준을 처음 세울 때 출발점. 업무 ④."
+  },
+  {
+   "id": "cnapp-ms",
+   "title": "What is CNAPP?",
+   "by": "Microsoft Security 101",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "입문",
+   "url": "https://www.microsoft.com/en-us/security/business/security-101/what-is-cnapp",
+   "why": "CSPM·CWPP·CIEM 이 각각 무엇을 맡는지 한 장으로. 우대 ①의 낱말 정리."
+  },
+  {
+   "id": "k8s-netpol",
+   "title": "Network Policies",
+   "by": "Kubernetes 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://kubernetes.io/docs/concepts/services-networking/network-policies/",
+   "why": "파드 간 통신 허용·차단 문법과 기본 거부 예. 업무 ⑥·우대 ①."
+  },
+  {
+   "id": "cilium-docs",
+   "title": "Introduction to Cilium & Hubble",
+   "by": "Cilium 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://docs.cilium.io/en/stable/overview/intro/",
+   "why": "eBPF 로 정책을 집행하고 Hubble 로 서비스 간 흐름을 보는 구조. 업무 ⑥의 '가시성 + 통제'를 한 도구로."
+  },
+  {
+   "id": "learning-ebpf",
+   "title": "Learning eBPF",
+   "by": "Liz Rice · O'Reilly · 2023",
+   "kind": "book",
+   "lang": "en",
+   "free": false,
+   "level": "심화",
+   "url": "https://www.oreilly.com/library/view/learning-ebpf/9781098135119/",
+   "why": "eBPF 가 커널에서 무엇을 보고 어떻게 네트워크·보안 도구가 되는지. Cilium·Falco 를 깊게 볼 때."
+  },
+  {
+   "id": "container-sec-ko",
+   "title": "컨테이너 보안",
+   "by": "리즈 라이스 · 한빛미디어 · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://search.kyobobook.co.kr/search?keyword=%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88%20%EB%B3%B4%EC%95%88%20%EB%A6%AC%EC%A6%88%20%EB%9D%BC%EC%9D%B4%EC%8A%A4",
+   "why": "컨테이너 격리·이미지·네트워크 보안과 쿠버네티스 점검. 우대 ①의 CWPP 쪽 기초."
+  },
+  {
+   "id": "istio-sec",
+   "title": "Istio Security (mTLS·AuthorizationPolicy)",
+   "by": "Istio 공식 문서",
+   "kind": "doc",
+   "lang": "en",
+   "free": true,
+   "level": "실무",
+   "url": "https://istio.io/latest/docs/concepts/security/",
+   "why": "서비스 메시로 서비스 신원을 확인하고 인가를 거는 법. 우대 ①의 Service Mesh."
+  },
+  {
+   "id": "tf-ko",
+   "title": "테라폼 업앤러닝 (2판)",
+   "by": "예브게니 브릭만 · 루비페이퍼 · 2021",
+   "kind": "book",
+   "lang": "ko",
+   "free": false,
+   "level": "실무",
+   "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=270854635",
+   "why": "상태·모듈·여러 환경 관리. 보안 그룹·IAM 을 코드로 다루고 리뷰받는 기본기. 우대 ②."
+  },
+  {
+   "id": "efsr",
+   "title": "전자금융감독규정",
+   "by": "금융위원회 고시",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.law.go.kr/행정규칙/전자금융감독규정",
+   "why": "14조의2(클라우드)·15조(망분리)를 원문으로. 업무 ⑦·우대 ④의 규제 출발점."
+  },
+  {
+   "id": "fsc-saas",
+   "title": "내부 업무망 SaaS 망분리 예외 시행 (보도자료)",
+   "by": "금융위원회·금융감독원 · 2026",
+   "kind": "doc",
+   "lang": "ko",
+   "free": true,
+   "level": "실무",
+   "url": "https://www.fsc.go.kr/no010101/86745",
+   "why": "규제가 풀릴 때 어떤 조건(평가·단말 보호)이 붙는지 — 그 조건이 곧 만들어야 할 기술 통제 목록."
+  }
+ ],
+ "study_path": [
+  {
+   "title": "이 팀의 말 배우기",
+   "time": "1주",
+   "goal": "SSE·ZTNA·DLP·DSPM·PDP/PEP 가 각각 무엇이고 토스증권이 어떻게 엮었는지 설명할 수 있다.",
+   "resources": [
+    "g25-genai",
+    "g26-slides",
+    "nist-207"
+   ],
+   "task": "발표 셋을 보고 '단말 → 신원 확인 → SSE → SaaS/사내 앱' 그림을 직접 그린 뒤, 각 칸에 PIP·PDP·PEP 중 무엇인지 적는다."
+  },
+  {
+   "title": "트래픽 읽기",
+   "time": "2~3주",
+   "goal": "패킷과 플로우 기록으로 '누가 누구와 왜 통신했나'를 찾을 수 있다.",
+   "resources": [
+    "nw-intro",
+    "packet-analysis",
+    "aws-flowlogs"
+   ],
+   "task": "도커로 웹·DB·캐시 컨테이너 셋을 띄우고 tcpdump 로 잡은 패킷에서 TCP 연결 수립·DNS 조회·TLS 핸드셰이크를 찾는다. 같은 통신을 플로우(출발·도착·포트·횟수) 표로 요약한다."
+  },
+  {
+   "title": "클라우드 기준을 코드로",
+   "time": "2~4주",
+   "goal": "보안 기준을 적고, 클라우드 설정이 그 기준을 어기면 자동으로 드러나게 할 수 있다.",
+   "resources": [
+    "cis-bench",
+    "aws-sra",
+    "aws-config",
+    "tf-ko"
+   ],
+   "task": "무료 계정에 Terraform 으로 VPC·보안 그룹 둘을 만들고, 일부러 22번 포트를 인터넷에 연 다음 위 업무 ⑤ 예시 같은 점검 스크립트(또는 Config 규칙)로 잡아낸다. 고친 커밋까지 남긴다."
+  },
+  {
+   "title": "쿠버네티스 안쪽 나누기",
+   "time": "2~3주",
+   "goal": "서비스 간 통신 지도를 만들고 기본 거부 + 필요한 것만 허용으로 바꿀 수 있다.",
+   "resources": [
+    "k8s-netpol",
+    "cilium-docs",
+    "container-sec-ko",
+    "nist-207a"
+   ],
+   "task": "kind 로 띄운 클러스터에 Cilium 을 깔고 가상 서비스 서너 개를 올린 뒤 Hubble 로 흐름을 본다. 본 흐름으로 NetworkPolicy 허용 목록을 만들고 기본 거부를 켜서 깨지는 통신이 없는지 확인한다."
+  },
+  {
+   "title": "규제를 통제로 옮기기 (계속)",
+   "time": "계속",
+   "goal": "망분리·클라우드 이용 규정 한 줄을 설정·로그·증적으로 바꿔 말할 수 있다.",
+   "resources": [
+    "efsr",
+    "fsc-saas",
+    "ztn-ko",
+    "learning-ebpf"
+   ],
+   "task": "2026년 SaaS 예외 조건을 표로 옮기고, 조건마다 '어떤 설정으로 지키나 · 어떤 로그로 증명하나' 칸을 채운다."
+  }
+ ],
+ "pay": {
+  "summary": "공고에 연봉은 없다. 공공데이터 집계로 신입 초봉 **약 5,000만원**, 회사 평균 **약 7,000만원** — 공시된 1인 평균 급여는 찾지 못했다",
+  "rows": [
+   {
+    "label": "신입 초봉",
+    "value": "약 5,003만원",
+    "amount": 5003,
+    "basis": "공공데이터 집계",
+    "note": "기업이 공공데이터에 낸 정보로 계산한 집계 사이트 값이다. 기준일·직군 구분이 없다 [23]"
+   },
+   {
+    "label": "평균 연봉",
+    "value": "약 7,007만원",
+    "amount": 7007,
+    "basis": "공공데이터 집계",
+    "note": "같은 집계의 회사 전체 평균(월 약 584만원) — 경력직이 섞인 값이다 [23]"
+   },
+   {
+    "label": "비바리퍼블리카(토스) 초봉",
+    "value": "약 4,206만원",
+    "amount": 4206,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계 사이트의 그룹 운영사 값 — 견주어 보기용 [24]"
+   },
+   {
+    "label": "비바리퍼블리카(토스) 평균",
+    "value": "약 6,163만원",
+    "amount": 6163,
+    "basis": "공공데이터 집계",
+    "peer": true,
+    "note": "같은 집계의 그룹 운영사 평균 [24]"
+   }
+  ],
+  "how": "합류 여정에 레퍼런스 체크 뒤 **처우 협의** 단계가 있어 연봉은 사람마다 정한다 [1]. 토스증권 자체의 사업보고서 1인 평균 급여는 찾지 못했다. 집계값은 추정이고 회사 전체 평균이라, 자격요건이 모두 실무 경험인 이 경력직 자리의 제안과는 차이가 클 수 있다 {추론}."
+ },
+ "benefits": {
+  "items": [
+   {
+    "name": "식대",
+    "detail": "1인 1법인카드, 금액 제한 없음"
+   },
+   {
+    "name": "업무 비용",
+    "detail": "책·사무용품·업무 교육 100% 지원"
+   },
+   {
+    "name": "장비",
+    "detail": "최고급 노트북·모니터·소프트웨어"
+   },
+   {
+    "name": "자율 휴가",
+    "detail": "보고·승인 없이, 당일 오전에도 사용(토스증권 인터뷰에서도 '휴가 무제한')"
+   },
+   {
+    "name": "근무 방식",
+    "detail": "자율 출퇴근, 사정이 있으면 동료에게 공유하고 재택(토스증권 인터뷰)"
+   },
+   {
+    "name": "리프레쉬 휴가",
+    "detail": "근속 3년마다 1개월 유급"
+   },
+   {
+    "name": "주택 자금 대출",
+    "detail": "1억원 한도 무이자(6개월 이상 재직)"
+   },
+   {
+    "name": "건강",
+    "detail": "매년 종합건강검진·독감 주사, 체력 단련비 월 10만원"
+   },
+   {
+    "name": "단체 보험",
+    "detail": "본인·배우자·부모·자녀·배우자 부모, 보험료 회사 부담"
+   },
+   {
+    "name": "교통",
+    "detail": "주차비·택시비 100%(법인카드)"
+   },
+   {
+    "name": "통신비",
+    "detail": "매월 10만원"
+   },
+   {
+    "name": "경조사",
+    "detail": "결혼·출산 축하금 각 50만원, 명절 20만원, 생일 10만원"
+   },
+   {
+    "name": "사내 시설",
+    "detail": "사내 헤어살롱 무료, 사내 카페·매점(토스증권 인터뷰)"
+   }
+  ],
+  "note": "토스 팀 전체를 기준으로 한 2021년 공식 복지 글[26]과 2021년 토스증권 개발자 인터뷰[27]다. 지금도 같은지는 글에 없으니 처우 협의 때 확인한다 {추론}. 보안 직무는 망분리 단말 같은 규정 때문에 재택·장비 사용이 다를 수 있다 {추론}."
+ },
+ "location": {
+  "name": "토스증권 본사",
+  "address": "서울특별시 강남구 테헤란로 133, 7층 (역삼동, 한국타이어빌딩)",
+  "postal": "06133",
+  "map_url": "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EA%B0%95%EB%82%A8%EA%B5%AC%20%ED%85%8C%ED%97%A4%EB%9E%80%EB%A1%9C%20133",
+  "near": "2호선 역삼역과 강남역 사이 테헤란로 {추론}",
+  "note": "주소는 토스증권 사이트 하단의 회사 정보다 [25]. 공고 근무지는 'Seoul'로만 적혀 있다 [1]."
+ }
+}

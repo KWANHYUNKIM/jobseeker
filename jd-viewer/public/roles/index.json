@@ -175,6 +175,7 @@
   "ats-toss:group:5130165003": "tosssec-frontend-platform-engineer",
   "ats-toss:group:7575603003": "tosssec-ml-engineer-llm",
   "ats-toss:group:4154060003": "tosssec-product-data-analyst",
+  "ats-toss:group:8011230003": "tosssec-security-engineer-infra",
   "ats-toss:group:7810517003": "tosssec-senior-data-analyst",
   "ats-toss:group:7834735003": "tosssecurities-data-engineer-advisory",
   "ats-toss:group:8006356003": "tosssecurities-dataops-engineer",
@@ -1756,6 +1757,16 @@
    ],
    "researched_at": "2026-11-23",
    "lines": 16
+  },
+  {
+   "id": "tosssec-security-engineer-infra",
+   "company": "토스증권",
+   "role": "Security Engineer (보안 인프라)",
+   "jobs": [
+    "ats-toss:group:8011230003"
+   ],
+   "researched_at": "2026-11-23",
+   "lines": 15
   },
   {
    "id": "tosssec-senior-data-analyst",
