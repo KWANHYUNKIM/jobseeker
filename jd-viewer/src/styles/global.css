@@ -357,7 +357,11 @@ html, body, #root {
   border: 1px solid var(--color-border);
   border-radius: 4px;
   padding: 0.08em 0.32em;
-  white-space: nowrap;
+  /* 줄바꿈을 막으면 좁은 칸(공고 상세 오른쪽 352px)에서 긴 인용이 카드 밖으로 넘친다 — 접히게 두고 테두리는 줄마다 닫는다 */
+  white-space: normal;
+  overflow-wrap: anywhere;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 
 /* 본문 선택 하이라이트 — 드래그로 짚어 가며 읽을 수 있게 대비를 준다.

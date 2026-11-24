@@ -479,7 +479,7 @@ function GuideHeader({ guide, posting }: { guide: CompanyGuide; posting: GuidePo
   const core = study.filter((s) => s.priority === 'core').length
 
   return (
-    <div className="rounded-lg border border-(--color-accent)/30 bg-(--color-accent)/8 p-4">
+    <div className="min-w-0 rounded-lg border border-(--color-accent)/30 bg-(--color-accent)/8 p-4 [overflow-wrap:anywhere]">
       <div className="flex items-center gap-2 mb-1.5">
         <span className="text-xs font-medium tracking-wider text-(--color-accent)">
           이 회사 가려면
@@ -529,7 +529,7 @@ function FitRow({ label, items, tone }: { label: string; items: string[]; tone: 
       >
         {label}
       </span>
-      <span className="text-xs text-(--color-muted) leading-relaxed">
+      <span className="min-w-0 text-xs text-(--color-muted) leading-relaxed">
         {items.map((it, i) => (
           <Fragment key={i}>
             {i > 0 && ' · '}

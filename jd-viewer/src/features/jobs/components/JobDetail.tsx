@@ -247,8 +247,6 @@ export function JobDetail({ job, onOpenUrl }: Props) {
 
               {reading && <RoleLocation r={reading} />}
 
-              {job.full_jd && <FullJd text={job.full_jd} />}
-
               {co && <CompanyInfo co={co} location={job.location} />}
             </div>
           </div>
@@ -282,9 +280,12 @@ export function JobDetail({ job, onOpenUrl }: Props) {
               ))}
             </SideList>
           )}
-          <div className="rounded-[22px] bg-[#f3f6f8] px-6 py-6 empty:hidden">
-            <JobGuide company={job.company} url={job.url} activeQuote={activeQuote} onQuote={setActiveQuote} />
-          </div>
+          {/* 공고 풀이가 있으면 그것이 오른쪽 칸의 주인이다(맞는 사람·면접·출처) — 예전 취업 브리핑 카드는 같은 공고 줄을 또 풀어서 겹친다 */}
+          {!reading && (
+            <div className="min-w-0 rounded-[22px] bg-[#f3f6f8] px-6 py-6 empty:hidden">
+              <JobGuide company={job.company} url={job.url} activeQuote={activeQuote} onQuote={setActiveQuote} />
+            </div>
+          )}
         </aside>
       </div>
       <SiteFooter />
@@ -489,35 +490,6 @@ function JdBody({
         )
       })}
     </div>
-  )
-}
-
-function Pre({
-  text,
-  muted = false,
-  marks,
-  activeQuote,
-  onQuote,
-}: {
-  text: string
-  muted?: boolean
-  marks?: HighlightMark[]
-  activeQuote?: string | null
-  onQuote?: (q: string | null) => void
-}) {
-  return (
-    <pre
-      className={
-        'whitespace-pre-wrap font-sans text-[13px] leading-relaxed ' +
-        (muted ? 'text-(--color-muted)' : 'text-(--color-text)')
-      }
-    >
-      {marks && marks.length > 0 ? (
-        <Highlighted text={text} marks={marks} activeQuote={activeQuote} onQuote={onQuote} />
-      ) : (
-        text
-      )}
-    </pre>
   )
 }
 
@@ -746,27 +718,6 @@ function ShareButton() {
         <path d="M7 9 13 5.6M7 11l6 3.4" />
       </svg>
     </button>
-  )
-}
-
-/** 전체 JD 원문 — 검은 단추로 편다. */
-function FullJd({ text }: { text: string }) {
-  const [open, setOpen] = useState(false)
-  return (
-    <div>
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        className="w-full inline-flex items-center justify-center gap-2 h-11 rounded-[30px] bg-[#272727] text-base font-medium text-white hover:bg-black"
-      >
-        {open ? '원문 접기' : '공고 원문 전체 보기'}
-        <svg width="10" height="8" viewBox="0 0 10 8" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" aria-hidden>
-          <path d={open ? 'M1.5 5.5 5 2l3.5 3.5' : 'M1.5 2.5 5 6l3.5-3.5'} />
-        </svg>
-      </button>
-      {open && <Pre text={text} muted />}
-    </div>
   )
 }
 
